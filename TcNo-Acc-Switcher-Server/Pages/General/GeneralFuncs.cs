@@ -852,10 +852,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
         public static async Task<string> ExportAccountList()
         {
-            var platform = AppData.SelectedPlatform;
+            var platform = AppSettings.GetPlatform(AppData.SelectedPlatform);
             Globals.DebugWriteLine(@$"[Func:Pages\General\GeneralInvocableFuncs.GiExportAccountList] platform={platform}");
-            platform = BasicPlatforms.PlatformFullName(platform);
-            if (!Directory.Exists(Path.Join("LoginCache", platform)))
+            if (!Directory.Exists(Path.Join("LoginCache", platform.SafeName)))
             {
                 await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_AddAccountsFirst"], Lang["Toast_AddAccountsFirstTitle"], "toastarea");
                 return "";
@@ -863,10 +862,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             var s = CultureInfo.CurrentCulture.TextInfo.ListSeparator; // Different regions use different separators in csv files.
 
-            await BasicStats.SetCurrentPlatform(platform);
+            await BasicStats.SetCurrentPlatform(platform.Name);
 
             List<string> allAccountsTable = new();
-            if (platform == "Steam")
+            if (platform.Name == "Steam")
             {
                 // Add headings and separator for programs like Excel
                 allAccountsTable.Add($"SEP={s}");
@@ -899,7 +898,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 allAccountsTable.Add($"SEP={s}");
                 // Platform does not have specific details other than usernames saved.
                 allAccountsTable.Add($"Account name:{s}Stats game:{s}Stat name:{s}Stat value:");
-                foreach (var accDirectory in Directory.GetDirectories(Path.Join("LoginCache", platform)))
+                foreach (var accDirectory in Directory.GetDirectories(Path.Join("LoginCache", platform.SafeName)))
                 {
                     allAccountsTable.Add(Path.GetFileName(accDirectory) + s +
                                          BasicStats.GetGameStatsString(accDirectory, s, true));

@@ -41,43 +41,17 @@ namespace TcNo_Acc_Switcher_Server.Data
         // ---------------
 
         private JObject _jData;
-        private readonly SortedDictionary<string, string> _platformDict = new();
-        private readonly Dictionary<string, string> _platformDictAllPossible = new();
-
-        private static JObject JData {            set => Instance._jData = value; }
+        private static JObject JData { set => Instance._jData = value; }
         public static JToken GetPlatforms => (JObject)Instance._jData["Platforms"];
-        public static SortedDictionary<string, string> PlatformDict => Instance._platformDict;
-        public static Dictionary<string, string> PlatformDictAllPossible => Instance._platformDictAllPossible;
         public static JObject GetPlatformJson(string platform) => (JObject)GetPlatforms![platform];
-        public static bool PlatformExists(string platform) => ((JObject)GetPlatforms).ContainsKey(platform);
-        public static bool PlatformExistsFromShort(string id) => ((JObject)GetPlatforms).ContainsKey(PlatformFullName(id));
 
-        /* ---------------
-        public static void SetCurrentPlatform(string platform)
+        public static void SetCurrentPlatform(string id)
         {
             CurrentPlatform.Instance = new CurrentPlatform();
-            CurrentPlatform.Instance.CurrentPlatformInit(platform);
-        }
-        */
-        public static void SetCurrentPlatformFromShort(string id)
-        {
-            CurrentPlatform.Instance = new CurrentPlatform();
-            var fullName = PlatformFullName(id);
+            var fullName = AppSettings.GetPlatform(id)?.Name;
+            if (fullName == null) return;
             CurrentPlatform.Instance.CurrentPlatformInit(fullName);
             AppData.CurrentSwitcher = fullName;
-        }
-
-        public static Dictionary<string, string> InactivePlatforms()
-        {
-            // Create local copy of platforms dict:
-            var platforms = PlatformDict.ToDictionary(
-                entry => entry.Key,
-                entry => entry.Value);
-
-            foreach (var enabledPlat in AppSettings.EnabledBasicPlatforms)
-                platforms.Remove(enabledPlat);
-
-            return platforms;
         }
 
         private static async Task BasicPlatformsInit()
@@ -101,20 +75,18 @@ namespace TcNo_Acc_Switcher_Server.Data
                 var x = (JProperty)jToken;
                 var identifiers = GetPlatforms[x.Name]?["Identifiers"]?.ToObject<List<string>>();
                 if (identifiers == null) continue;
-                foreach (var platformShort in identifiers)
+                var exeName = Path.GetFileName((string) ((JObject) GetPlatforms[x.Name])?["ExeLocationDefault"]);
+                // Add to master platform list
+                if (AppSettings.Platforms.Count(y => y.Name == x.Name) == 0)
+                    AppSettings.Platforms.Add(new AppSettings.PlatformItem(x.Name, identifiers, exeName, false));
+                else
                 {
-                    PlatformDictAllPossible.Add(platformShort, x.Name);
+                    // Make sure that everything is set up properly.
+                    var platform = AppSettings.Platforms.First(y => y.Name == x.Name);
+                    platform.SetFromPlatformItem(new AppSettings.PlatformItem(x.Name, identifiers, exeName, false));
                 }
-
-                PlatformDict.Add(identifiers[0], x.Name);
             }
         }
-
-        public static string PlatformFullName(string id) => PlatformDict.ContainsKey(id) ? PlatformDict[id] : id;
-        public static string PlatformSafeName(string id) =>
-            PlatformDict.ContainsKey(id) ? Globals.GetCleanFilePath(PlatformDict[id]) : id;
-        public static string PrimaryIdFromPlatform(string platform) => PlatformDictAllPossible.FirstOrDefault(x => x.Value == platform).Key;
-        public static string GetExeNameFromPlatform(string platform) => Path.GetFileName((string)((JObject)GetPlatforms[platform])?["ExeLocationDefault"]);
     }
 
     public sealed class CurrentPlatform
@@ -228,20 +200,24 @@ namespace TcNo_Acc_Switcher_Server.Data
         // ----------
         #endregion
 
-        public void CurrentPlatformInit(string platform)
+        public void CurrentPlatformInit(string requestedPlatform)
         {
-            if (!(BasicPlatforms.PlatformExists(platform) || BasicPlatforms.PlatformExistsFromShort(platform))) return;
+            var platform =
+                AppSettings.Platforms.FirstOrDefault(x => x.Name == requestedPlatform || x.PossibleIdentifiers.Contains(requestedPlatform));
+            if (platform is null) return;
 
-            FullName = platform;
-            SafeName = Globals.GetCleanFilePath(platform);
+
+            FullName = platform.Name;
+            SafeName = platform.SafeName;
             SettingsFile = Path.Join("Settings\\", SafeName + ".json");
 
-            DefaultExePath = BasicSwitcherFuncs.ExpandEnvironmentVariables((string)BasicPlatforms.GetPlatformJson(platform)["ExeLocationDefault"]);
-            ExeExtraArgs = (string)BasicPlatforms.GetPlatformJson(platform)["ExeExtraArgs"] ?? "";
-            DefaultFolderPath = BasicSwitcherFuncs.ExpandEnvironmentVariables(Path.GetDirectoryName(DefaultExePath));
-            ExeName = Path.GetFileName(DefaultExePath);
+            var jPlatform = BasicPlatforms.GetPlatformJson(platform.Name);
 
-            var jPlatform = BasicPlatforms.GetPlatformJson(platform);
+            DefaultExePath = BasicSwitcherFuncs.ExpandEnvironmentVariables((string)jPlatform["ExeLocationDefault"]);
+            ExeExtraArgs = (string)jPlatform["ExeExtraArgs"] ?? "";
+            DefaultFolderPath = BasicSwitcherFuncs.ExpandEnvironmentVariables(Path.GetDirectoryName(DefaultExePath));
+            ExeName = platform.ExeName;
+
             PlatformIds = jPlatform["Identifiers"]!.Values<string>().ToList();
             ExesToEnd = jPlatform["ExesToEnd"]!.Values<string>().ToList();
 

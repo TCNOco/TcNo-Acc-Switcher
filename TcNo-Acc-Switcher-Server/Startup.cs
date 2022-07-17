@@ -71,9 +71,9 @@ namespace TcNo_Acc_Switcher_Server
             _ = env.IsDevelopment() ? app.UseDeveloperExceptionPage() : app.UseExceptionHandler("/Error");
 
             // Moves any old files from previous installs.
-            foreach (var p in AppData.Instance.PlatformList) // Copy across all platform files
+            foreach (var p in AppSettings.Platforms) // Copy across all platform files
             {
-                MoveIfFileExists(p + "Settings.json");
+                MoveIfFileExists(p.SafeName + "Settings.json");
             }
             MoveIfFileExists("Tray_Users.json");
             MoveIfFileExists("WindowSettings.json");

@@ -199,45 +199,6 @@ namespace TcNo_Acc_Switcher_Server.Data
         private string _currentSwitcherSafe = "";
         public static string CurrentSwitcherSafe { get => Instance._currentSwitcherSafe; set => Instance._currentSwitcherSafe = value; }
 
-        #region Basic_Platforms
-
-        public List<string> OldPlatformList = new() { "Steam" };
-        private List<string> _platformList;
-        public List<string> PlatformList
-        {
-            get
-            {
-                Instance._platformList = new List<string>(OldPlatformList);
-
-                // Add enabled basic platforms:
-                Instance._platformList =
-                    Instance._platformList.Union(AppSettings.EnabledBasicPlatforms).ToList();
-                return Instance._platformList;
-            }
-            set => Instance._platformList = value;
-        }
-
-        public List<string> SortedPlatformListHandleDisabled() => GenericFunctions.OrderAccounts(
-            Instance.PlatformList.Where(p => !AppSettings.DisabledPlatforms.Contains(p)).ToList(),
-            "Settings\\platformOrder.json");
-
-        public List<string> EnabledPlatformSorted()
-        {
-            var enabled = Instance.PlatformList.Where(p => !AppSettings.DisabledPlatforms.Contains(p)).ToList();
-            enabled.Sort(StringComparer.InvariantCultureIgnoreCase);
-            return enabled;
-        }
-        public List<string> DisabledPlatformSorted()
-        {
-            var disabled = new List<string>(BasicPlatforms.InactivePlatforms().Keys);
-            disabled = disabled.Concat(Instance.PlatformList.Where(p => AppSettings.DisabledPlatforms.Contains(p)).ToList()).ToList();
-            disabled.Sort(StringComparer.InvariantCultureIgnoreCase);
-            return disabled;
-        }
-
-        public bool AnyPlatformsShowing() => Instance.PlatformList.Count > AppSettings.DisabledPlatforms.Count;
-        #endregion
-
         public event Action OnChange;
         public void NotifyDataChanged() => OnChange?.Invoke();
 

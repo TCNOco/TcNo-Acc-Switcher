@@ -73,6 +73,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
                     LoadStylesheetFromFile().ConfigureAwait(true).GetAwaiter().GetResult();
                     CheckShortcuts();
+                    InitPlatformsList();
 
                     _instance._currentlyModifying = false;
 
@@ -101,22 +102,20 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonProperty("WindowSize", Order = 4)] private Point _windowSize = new() { X = 800, Y = 450 };
         [JsonProperty("AllowTransparency", Order = 5)] private bool _allowTransparency = true;
         [JsonProperty("Version", Order = 6)] private readonly string _version = Globals.Version;
-        [JsonProperty("DisabledPlatforms", Order = 7)] private SortedSet<string> _disabledPlatforms = new();
         [JsonProperty("TrayMinimizeNotExit", Order = 8)] private bool _trayMinimizeNotExit;
         [JsonProperty("ShownMinimizedNotification", Order = 9)] private bool _shownMinimizedNotification;
         [JsonProperty("StartCentered", Order = 10)] private bool _startCentered;
         [JsonProperty("ActiveTheme", Order = 11)] private string _activeTheme = "Dracula_Cyan";
         [JsonProperty("ActiveBrowser", Order = 12)] private string _activeBrowser = "WebView";
         [JsonProperty("Background", Order = 13)] private string _background = "";
-        [JsonProperty("EnabledBasicPlatforms", Order = 14)] private HashSet<string> _enabledBasicPlatforms;
-        [JsonProperty("CollectStats", Order = 15)] private bool _statsEnabled = true;
-        [JsonProperty("ShareAnonymousStats", Order = 16)] private bool _statsShare = true;
-        [JsonProperty("MinimizeOnSwitch", Order = 17)] private bool _minimizeOnSwitch;
-        [JsonProperty("DiscordRpcEnabled", Order = 18)] private bool _discordRpc = true;
-        [JsonProperty("DiscordRpcShareTotalSwitches", Order = 19)] private bool _discordRpcShare = true;
-        [JsonProperty("PasswordHash", Order = 20)] private string _passwordHash = "";
-        [JsonProperty("GloballyHiddenMetrics", Order = 21)] private Dictionary<string, Dictionary<string, bool>> _globallyHiddenMetrics = new();
-        [JsonProperty("AlwaysAdmin", Order = 22)] private bool _alwaysAdmin;
+        [JsonProperty("CollectStats", Order = 14)] private bool _statsEnabled = true;
+        [JsonProperty("ShareAnonymousStats", Order = 15)] private bool _statsShare = true;
+        [JsonProperty("MinimizeOnSwitch", Order = 16)] private bool _minimizeOnSwitch;
+        [JsonProperty("DiscordRpcEnabled", Order = 17)] private bool _discordRpc = true;
+        [JsonProperty("DiscordRpcShareTotalSwitches", Order = 18)] private bool _discordRpcShare = true;
+        [JsonProperty("PasswordHash", Order = 19)] private string _passwordHash = "";
+        [JsonProperty("GloballyHiddenMetrics", Order = 20)] private Dictionary<string, Dictionary<string, bool>> _globallyHiddenMetrics = new();
+        [JsonProperty("AlwaysAdmin", Order = 21)] private bool _alwaysAdmin;
         [JsonIgnore] private bool _desktopShortcut;
         [JsonIgnore] private bool _startMenu;
         [JsonIgnore] private bool _startMenuPlatforms;
@@ -126,6 +125,100 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonIgnore] private bool _preRenderUpdate;
         [JsonIgnore] private string _passwordCurrent;
 
+
+        public class PlatformItem : IComparable
+        {
+            public string Name = "";
+            [JsonIgnore] public string SafeName = "";
+            [JsonIgnore] public string Identifier = "";
+            [JsonIgnore] public string ExeName = "";
+            [JsonIgnore] public List<string> PossibleIdentifiers = new(); // Other identifiers that can refer to this platform. (b, bnet, battlenet, etc)
+            public bool Enabled;
+            public int DisplayIndex = -1;
+            public int CompareTo(object o)
+            {
+                var a = this;
+                var b = (PlatformItem)o;
+                return string.CompareOrdinal(a.Name, b.Name);
+            }
+
+            // Needed for JSON serialization/deserialization
+            public PlatformItem() { }
+
+            // Used for first init. The rest of the info is added by BasicPlatforms.
+            public PlatformItem(string name, bool enabled)
+            {
+                Name = name;
+                SafeName = Globals.GetCleanFilePath(name);
+                Enabled = enabled;
+            }
+            public PlatformItem(string name, List<string> identifiers, string exeName, bool enabled)
+            {
+                Name = name;
+                SafeName = Globals.GetCleanFilePath(name);
+                Enabled = enabled;
+                DisplayIndex = -1;
+                Identifier = identifiers[0];
+                PossibleIdentifiers = identifiers;
+                ExeName = exeName;
+            }
+
+            /// <summary>
+            /// Set from a new PlatformItem - Not including Enabled.
+            /// </summary>
+            public void SetFromPlatformItem(PlatformItem inItem)
+            {
+                Name = inItem.Name;
+                SafeName = Globals.GetCleanFilePath(Name);
+                DisplayIndex = inItem.DisplayIndex;
+                Identifier = inItem.Identifier;
+                ExeName = inItem.ExeName;
+            }
+
+            public void SetEnabled(bool enabled)
+            {
+                Enabled = enabled;
+                SaveSettings();
+            }
+        }
+
+        private static readonly ObservableCollection<PlatformItem> DefaultPlatforms = new()
+        {
+            new PlatformItem("Discord", true),
+            new PlatformItem("Epic Games", true),
+            new PlatformItem("Origin", true),
+            new PlatformItem("Riot Games", true),
+            new PlatformItem("Steam", true),
+            new PlatformItem("Ubisoft", true),
+        };
+
+        [JsonProperty("Platforms", Order = 7)] private ObservableCollection<PlatformItem> _platforms = new();
+
+        public static ObservableCollection<PlatformItem> Platforms
+        {
+            get => Instance._platforms;
+            set
+            {
+                Instance._platforms = value;
+                Instance._platforms.Sort();
+            }
+        }
+        /// <summary>
+        /// Get platform details from an identifier, or the name.
+        /// </summary>
+        public static PlatformItem GetPlatform(string nameOrId) => Platforms.FirstOrDefault(x => x.Name == nameOrId || x.PossibleIdentifiers.Contains(nameOrId));
+        private static void InitPlatformsList()
+        {
+            // Add platforms, if none there.
+            if (Instance._platforms.Count == 0)
+                Instance._platforms = DefaultPlatforms;
+
+            Instance._platforms.First(x => x.Name == "Steam").SetFromPlatformItem(new PlatformItem("Steam", new List<string> { "s", "steam" }, "steam.exe", true));
+
+            // Load other platforms by initializing BasicPlatforms
+            _ = BasicPlatforms.Instance;
+        }
+
         public static string Language { get => Instance._lang; set => Instance._lang = value; }
         public static bool Rtl { get => Instance._rtl; set => Instance._rtl = value; }
         public static bool StreamerModeEnabled { get => Instance._streamerModeEnabled; set => Instance._streamerModeEnabled = value; }
@@ -133,26 +226,12 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static Point WindowSize { get => Instance._windowSize; set => Instance._windowSize = value; }
         public static bool AllowTransparency { get => Instance._allowTransparency; set => Instance._allowTransparency = value; }
         public static string Version => Instance._version;
-
-        public static SortedSet<string> DisabledPlatforms { get => Instance._disabledPlatforms; set => Instance._disabledPlatforms = value; }
-
-        public event Action PlatformListOnChange;
-        public static void PlatformListNotifyDataChanged() => Instance.PlatformListOnChange?.Invoke();
         public static bool TrayMinimizeNotExit { get => Instance._trayMinimizeNotExit; set => Instance._trayMinimizeNotExit = value; }
         public static bool ShownMinimizedNotification { get => Instance._shownMinimizedNotification; set => Instance._shownMinimizedNotification = value; }
         public static bool StartCentered { get => Instance._startCentered; set => Instance._startCentered = value; }
         public static string ActiveTheme { get => Instance._activeTheme; set => Instance._activeTheme = value; }
         public static string ActiveBrowser { get => Instance._activeBrowser; set => Instance._activeBrowser = value; }
         public static string Background { get => Instance._background; set => Instance._background = value; }
-
-        public static HashSet<string> EnabledBasicPlatforms
-        {
-            get =>
-                Instance._enabledBasicPlatforms ??
-                (Instance._enabledBasicPlatforms = new HashSet<string> {"o", "u", "e", "r", "d"});
-            set => Instance._enabledBasicPlatforms = value;
-        }
-
         public static bool DiscordRpc { get => Instance._discordRpc; set
         {
             if (!value) Instance._discordRpcShare = false;
@@ -211,20 +290,6 @@ namespace TcNo_Acc_Switcher_Server.Data
                 new ("Context_CreateShortcut", new Action(async () => await AppFuncs.CreatePlatformShortcut())),
                 new ("Context_ExportAccList", new Action(async () => await AppFuncs.ExportAllAccounts())),
             }).Result();
-
-        public static async Task ShowPlatform(string platform)
-        {
-            Globals.DebugWriteLine(@"[JSInvoke:Data\AppSettings.ShowPlatform]");
-            if (BasicPlatforms.PlatformExistsFromShort(platform))
-            {
-                if (!EnabledBasicPlatforms.Contains(platform))
-                    EnabledBasicPlatforms.Add(platform);
-            }
-            _ = DisabledPlatforms.Remove(platform);
-
-            SaveSettings();
-            AppData.ReloadPage();
-        }
 
         private string _stylesheet;
         public static string Stylesheet { get => Instance._stylesheet; set => Instance._stylesheet = value; }
@@ -654,9 +719,9 @@ namespace TcNo_Acc_Switcher_Server.Data
                 else
                 {
                     _ = Directory.CreateDirectory(platformsFolder);
-                    foreach (var platform in AppData.Instance.PlatformList)
+                    foreach (var platform in Platforms)
                     {
-                        CreatePlatformShortcut(platformsFolder, platform, platform.ToLowerInvariant());
+                        CreatePlatformShortcut(platformsFolder, platform.Name, platform.SafeName.ToLowerInvariant());
                     }
                 }
 

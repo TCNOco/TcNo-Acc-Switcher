@@ -221,7 +221,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             GameStats[game].SaveStats();
         }
 
-        public static bool PlatformHasAnyGames(string platform) => PlatformGames.ContainsKey(platform) && PlatformGames[platform].Count > 0;
+        public static bool PlatformHasAnyGames(string platform) => platform is not null && (PlatformGames.ContainsKey(platform) && PlatformGames[platform].Count > 0);
         public static JToken StatsDefinitions => (JObject)JData["StatsDefinitions"];
         public static JToken PlatformCompatibilities => (JObject)JData["PlatformCompatibilities"];
         public static JObject GetGame(string game) => (JObject) StatsDefinitions![game];

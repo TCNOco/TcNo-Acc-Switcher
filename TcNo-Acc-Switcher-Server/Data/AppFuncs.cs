@@ -61,11 +61,6 @@ namespace TcNo_Acc_Switcher_Server.Data
             await SteamSwitcherFuncs.SwapSteamAccounts("", state);
         }
 
-        public static async Task ShowModal(string modal)
-        {
-            await AppData.InvokeVoidAsync("showModalOld", modal);
-        }
-
         public static async Task ForgetAccount()
         {
             var skipConfirm = AppData.CurrentSwitcher == "Steam" ? Steam.ForgetAccountEnabled : Basic.ForgetAccountEnabled;
@@ -166,33 +161,23 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public static async Task CreatePlatformShortcut()
         {
-            var platform = AppData.SelectedPlatform;
+            var platform = AppSettings.GetPlatform(AppData.SelectedPlatform);
 
             Globals.DebugWriteLine(@$"[Func:Pages\General\GeneralInvocableFuncs.GiCreatePlatformShortcut] platform={platform}");
-            var platId = platform.ToLowerInvariant();
-            platform = BasicPlatforms.PlatformFullName(platform); // If it's a basic platform
-
             var s = new Shortcut();
-            _ = s.Shortcut_Platform(Shortcut.Desktop, platform, platId);
+            _ = s.Shortcut_Platform(Shortcut.Desktop, platform.Name, platform.Identifier);
             s.ToggleShortcut(true);
 
             await GeneralInvocableFuncs.ShowToast("success", Lang.Instance["Toast_ShortcutCreated"], Lang.Instance["Success"], "toastarea");
         }
 
+        /// <summary>
+        /// Hide a platform from the platforms list. Not giving an item input will use the AppData.SelectedPlatform.
+        /// </summary>
         public static void HidePlatform(string item = null)
         {
             var platform = item ?? AppData.SelectedPlatform;
-            Globals.DebugWriteLine(@"[JSInvoke:Data\AppSettings.HidePlatform]");
-            if (BasicPlatforms.PlatformExistsFromShort(platform))
-                AppSettings.EnabledBasicPlatforms.Remove(platform);
-            else
-                AppSettings.DisabledPlatforms.Add(platform);
-
-            if (AppSettings.DisabledPlatforms.Contains(""))
-                AppSettings.DisabledPlatforms.Remove("");
-
-            AppSettings.SaveSettings();
-            AppSettings.PlatformListNotifyDataChanged();
+            AppSettings.Platforms.First(x => x.Name == platform).SetEnabled(false);
         }
         #endregion
 

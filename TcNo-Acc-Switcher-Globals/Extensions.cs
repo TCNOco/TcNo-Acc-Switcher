@@ -1,12 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace TcNo_Acc_Switcher_Globals
 {
-    public partial class Globals
+    public static class Extensions
     {
-
+        public static void Sort<T>(this ObservableCollection<T> collection) where T : IComparable
+        {
+            var sorted = collection.OrderBy(x => x).ToList();
+            for (var i = 0; i < sorted.Count; i++)
+                collection.Move(collection.IndexOf(sorted[i]), i);
+        }
     }
 
     public static class JsonExtensions

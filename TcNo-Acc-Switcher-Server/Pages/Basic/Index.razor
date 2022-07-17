@@ -145,11 +145,11 @@
             requestPlat = param.First();
         }
 
-    // Get platform name from URI if not set.
+        // Get platform name from URI if not set.
         if (!string.IsNullOrEmpty(requestPlat))
-            BasicPlatforms.SetCurrentPlatformFromShort(requestPlat);
+            BasicPlatforms.SetCurrentPlatform(requestPlat);
 
-    // If current platform is NOT valid -> Go back
+        // If current platform is NOT valid -> Go back
         if (!CurrentPlatform.IsInit)
         {
             _navBack = true;

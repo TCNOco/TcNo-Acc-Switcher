@@ -31,34 +31,28 @@ namespace TcNo_Acc_Switcher_Server.Pages
         public async Task Check(string platform)
         {
             Globals.DebugWriteLine($@"[Func:Index.Check] platform={platform}");
-            switch (platform)
+            if (platform == "Steam")
             {
-                case "Steam":
-                    if (!await GeneralFuncs.CanKillProcess(SteamSettings.Processes, SteamSettings.ClosingMethod)) return;
-                    if (!Directory.Exists(SteamSettings.FolderPath) || !File.Exists(SteamSettings.Exe()))
-                    {
-                        AppData.CurrentSwitcher = "Steam";
-                        ModalFuncs.ShowUpdatePlatformFolderModal();
-                        return;
-                    }
-                    if (SteamSwitcherFuncs.SteamSettingsValid()) AppData.NavigateTo("/Steam/");
-                    else await GeneralInvocableFuncs.ShowModal(Lang["Toast_Steam_CantLocateLoginusers"]);
-                    break;
-
-                default:
-                    if (BasicPlatforms.PlatformExistsFromShort(platform)) // Is a basic platform!
-                    {
-                        BasicPlatforms.SetCurrentPlatformFromShort(platform);
-                        AppData.CurrentSwitcher = CurrentPlatform.FullName;
-                        if (!await GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd, BasicSettings.ClosingMethod)) return;
-
-                        if (Directory.Exists(BasicSettings.FolderPath) && File.Exists(BasicSettings.Exe()))
-                            AppData.NavigateTo("/Basic/");
-                        else
-                            ModalFuncs.ShowUpdatePlatformFolderModal();
-                    }
-                    break;
+                if (!await GeneralFuncs.CanKillProcess(SteamSettings.Processes, SteamSettings.ClosingMethod)) return;
+                if (!Directory.Exists(SteamSettings.FolderPath) || !File.Exists(SteamSettings.Exe()))
+                {
+                    AppData.CurrentSwitcher = "Steam";
+                    ModalFuncs.ShowUpdatePlatformFolderModal();
+                    return;
+                }
+                if (SteamSwitcherFuncs.SteamSettingsValid()) AppData.NavigateTo("/Steam/");
+                else await GeneralInvocableFuncs.ShowModal(Lang["Toast_Steam_CantLocateLoginusers"]);
+                return;
             }
+
+            AppData.CurrentSwitcher = platform;
+            BasicPlatforms.SetCurrentPlatform(platform);
+            if (!await GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd, BasicSettings.ClosingMethod)) return;
+
+            if (Directory.Exists(BasicSettings.FolderPath) && File.Exists(BasicSettings.Exe()))
+                AppData.NavigateTo("/Basic/");
+            else
+                ModalFuncs.ShowUpdatePlatformFolderModal();
         }
     }
 }

@@ -1,2 +1,21 @@
-﻿<button class="modalOK extra" type="button" onclick="usernameModalCopyText()"><span><i class="fas fa-copy footerIcoInline"></i></span></button>
+﻿<script>
+    async function usernameModalCopyText() {
+        const toastTitle = await GetLang("Toast_Copied");
+        const platform = getCurrentPage();
+
+        const toastHintText = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformHintText", platform);
+        const code = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformUserModalCopyText");
+
+        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CopyText", code);
+        window.notification.new({
+            type: "success",
+            title: toastTitle,
+            message: toastHintText,
+            renderTo: "toastarea",
+            duration: 5000
+        });
+    }
+</script>
+
+<button class="modalOK extra" type="button" onclick="usernameModalCopyText()"><span><i class="fas fa-copy footerIcoInline"></i></span></button>
 <button class="modalOK extra" type="button" onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#adding-accounts-to-the-discord-switcher-list');"><span><i class="fas fa-question footerIcoInline"></i></span></button>

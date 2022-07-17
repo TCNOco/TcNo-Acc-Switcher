@@ -290,139 +290,9 @@ async function refreshAccount(game, accountId) {
 // Link handling
 OpenLinkInBrowser = async(link) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "OpenLinkInBrowser", link);
 
-let pathPickerRequestedFile = "";
-
-// Info Window
-async function showModalOld(modaltype) {
-    let input, platform;
-
-    const notice = await GetLang("Notice");
-
-    $("#modalTitle").text(notice);
-    $("#modal_contents").empty();
-    $("#modal_contents").append(`<div class="infoWindow"><div class="fullWidthContent">${modaltype}</div></div>`);
-
-    $(".modalBG").fadeIn(() => {
-        try {
-            if (input === undefined) return;
-            input.focus();
-            if (input.nodeName !== "TEXTAREA") input.select();
-        }
-        catch (err) {
-
-        }
-    });
-}
 
 
 
-
-
-
-
-
-
-
-async function getLogicalDrives() {
-    var folderContent = "";
-    const logicalDrives = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetLogicalDrives");
-    folderContent = "<div>";
-    logicalDrives.Folders.forEach((f) => { folderContent += "<span class=\"folder\" path=\"" + f + "\">" + f + "</span>"; });
-    folderContent += "</div>";
-
-    return folderContent;
-}
-
-function updateIndicator(e) {
-    console.log("Update Indicator REQUESTED");
-    // Update Found/Not Found preview
-    var foundRequested;
-    if (pathPickerRequestedFile === "AnyFolder" && e !== "" && $(e.target).hasClass("folder")) {
-        foundRequested = true;
-    } else if (pathPickerRequestedFile === "AnyFile" && e !== "" && !$(e.target).hasClass("folder")) {
-        foundRequested = true;
-    } else {
-        // Everything else
-        pathPickerRequestedFile = pathPickerRequestedFile.replace("*", "");
-        foundRequested = $("#FolderLocation").val().toLowerCase().includes(pathPickerRequestedFile.toLowerCase());
-    }
-    Modal_RequestedLocated(foundRequested);
-}
-async function pathPickerClick(e) {
-    const result = $(e.target).attr("path");
-    if (result === undefined) return;
-    //console.log(result);
-    $("#FolderLocation").val(result);
-    updateIndicator(e); // Because the above doesn't trigger the event
-    const currentSpanPath = $(e.target).attr("path");
-    var folderContent = "";
-
-    // Because this is reset: see if has .exe inside it.
-    if ($(e.target).hasClass("folder") && pathPickerRequestedFile.endsWith(".exe")) {
-        //console.log($(e.target).parent().html());
-        Modal_RequestedLocated($(e.target).parent().html().toLowerCase().includes(pathPickerRequestedFile.toLowerCase()));
-    }
-    // If is not currently open: Continue
-    if ($(e.target).hasClass("c")) return;
-
-    $(".pathPicker .c").each((_, s) => {
-        var path = $(s).attr("path");
-        if (!result.includes(path)) {
-            $(s).parent().replaceWith("<span class=\"folder\" path=\"" + path + "\">" + (path.at(-1) !== "\\" ? path.split("\\").at(-1) : path) + "</span>");
-        }
-    });
-
-    // Reset all selected-path highlights.
-    $(".pathPicker .selected-path").removeClass("selected-path");
-    $(e.target).addClass("selected-path");
-
-    // Expand folder
-    if ($(e.target).hasClass("folder") && !$(e.target).hasClass("c")) {
-        let getFunc = "GetFoldersAndFiles";
-        if (pathPickerRequestedFile === "AnyFolder") getFunc = "GetFolders";
-
-        const fileSystemResult = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", getFunc, result);
-        folderContent = "<div path=\"" + currentSpanPath + "\"><span class=\"folder c head selected-path\" path=\"" + currentSpanPath + "\">" + (currentSpanPath.at(-1) !== "\\" ? currentSpanPath.split("\\").at(-1) : currentSpanPath) + "</span>";
-        fileSystemResult.Folders.forEach((f) => {
-            folderContent += "<span class=\"folder\" path=\"" + f + "\">" + (f.at(-1) !== "\\" ? f.split("\\").at(-1) : f) + "</span>";
-        });
-        fileSystemResult.Files.forEach((f) => {
-            folderContent += "<span " + (f.includes(pathPickerRequestedFile) ? "class=\"suggested\" " : "") + "path=\"" + f + "\">" + (f.at(-1) !== "\\" ? f.split("\\").at(-1) : f) + "</span>";
-        });
-        folderContent += "</div>";
-
-        //console.log(folderContent);
-        $(e.target).replaceWith(folderContent);
-
-        // After expanding, see if has .exe inside it.
-        if ($(e.target).hasClass("folder") && pathPickerRequestedFile.endsWith(".exe")) {
-            Modal_RequestedLocated(folderContent.toLowerCase().includes(pathPickerRequestedFile.toLowerCase()));
-        }
-    }
-}
-
-
-// For finding files with modal:
-function Modal_RequestedLocated(found) {
-    try {
-        $(".folder_indicator").removeClass("notfound found");
-        $(".folder_indicator_bg").removeClass("notfound found");
-        if (found === true) {
-            $(".folder_indicator").addClass("found");
-            $(".folder_indicator_bg").addClass("found");
-        } else {
-            $(".folder_indicator").addClass("notfound");
-            $(".folder_indicator_bg").addClass("notfound");
-        }
-    } catch (_) {
-
-    }
-}
-
-async function Modal_SaveNotes(accId) {
-    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `Set${getCurrentPage()}Notes`, accId, $("#accNotes").val());
-    location.reload(true);
-}
 
 var appendDelay = 100; // Milliseconds
 var recentlyAppend = false;
@@ -449,23 +319,6 @@ function flushJQueryAppendQueue() {
     recentlyAppend = false;
     // have this as detect and run at some point. For now the only use for this function is the Steam Cleaning list thingy
     $(".clearingRight")[0].scrollTop = $(".clearingRight")[0].scrollHeight;
-}
-
-async function usernameModalCopyText() {
-    const toastTitle = await GetLang("Toast_Copied");
-    const platform = getCurrentPage();
-
-    const toastHintText = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformHintText", platform);
-    const code = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformUserModalCopyText");
-
-    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CopyText", code);
-    window.notification.new({
-	    type: "success",
-        title: toastTitle,
-        message: toastHintText,
-	    renderTo: "toastarea",
-	    duration: 5000
-    });
 }
 
 

@@ -86,16 +86,14 @@ namespace TcNo_Acc_Switcher_Client
                 // Iterate through arguments
                 foreach (var eArg in e.Args)
                 {
-                    // Check if arguments are a platform
-                    foreach (var p in AppData.Instance.PlatformList.Where(p => p.Equals(eArg, StringComparison.InvariantCultureIgnoreCase)))
+                    // Check if argument was Steam
+                    if (eArg.ToLowerInvariant() == "s")
                     {
-                        StartPage = p;
+                        StartPage = "/Steam/";
                         break;
                     }
 
-                    // Check if platform short is BasicPlatform
-                    if (BasicPlatforms.PlatformExistsFromShort(eArg))
-                        StartPage = "Basic?plat=" + eArg;
+                    if (eArg is not "v" or "vv" or "verbose") StartPage = "Basic?plat=" + eArg;
 
                     // Check if it was verbose mode.
                     Globals.VerboseMode = Globals.VerboseMode || eArg is "v" or "vv" or "verbose";
@@ -359,21 +357,21 @@ release = true;
                 // --- Switching to accounts ---
                 if (e.Args[i]?[0] == '+')
                 {
-                    CliSwitch(e.Args, i);
+                    await CliSwitch(e.Args, i);
                     continue;
                 }
 
                 // --- Switching to accounts via protocol ---
                 if (e.Args[i].ToLowerInvariant().StartsWith(@"tcno:\\"))
                 {
-                    CliSwitch(e.Args, i);
+                    await CliSwitch(e.Args, i);
                     continue;
                 }
 
                 // --- Log out of accounts ---
                 if (e.Args[i].StartsWith("logout"))
                 {
-                    CliLogout(e.Args[i]);
+                    await CliLogout(e.Args[i]);
                     continue;
                 }
 
@@ -468,31 +466,23 @@ release = true;
             var remainingArguments = args[1..];
             var combinedArgs = string.Join(' ', args);
 
-            switch (platform)
+            if (platform == "s")
             {
-                // Steam
-                case "s":
-                    {
-                        // Steam format: +s:<steamId>[:<PersonaState (0-7)>]
-                        Globals.WriteToLog("Steam switch requested");
-                        if (!await GeneralFuncs.CanKillProcess(TcNo_Acc_Switcher_Server.Data.Settings.Steam.Processes)) Restart(combinedArgs, true);
-                        await SteamSwitcherFuncs.SwapSteamAccounts(account.Split(":")[0],
-                            ePersonaState: command.Length > 2
-                                ? int.Parse(command[2])
-                                : -1, args: string.Join(' ', remainingArguments)); // Request has a PersonaState in it
-                        return;
-                    }
-
-                // BASIC ACCOUNT PLATFORM
-                default:
-                    if (!BasicPlatforms.PlatformExistsFromShort(platform)) break;
-                    // Is a basic platform!
-                    BasicPlatforms.SetCurrentPlatformFromShort(platform);
-                    Globals.WriteToLog(CurrentPlatform.FullName + " switch requested");
-                    if (!await GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd)) Restart(combinedArgs, true);
-                    BasicSwitcherFuncs.SwapBasicAccounts(account, string.Join(' ', remainingArguments));
-                    break;
+                // Steam format: +s:<steamId>[:<PersonaState (0-7)>]
+                Globals.WriteToLog("Steam switch requested");
+                if (!await GeneralFuncs.CanKillProcess(TcNo_Acc_Switcher_Server.Data.Settings.Steam.Processes)) Restart(combinedArgs, true);
+                await SteamSwitcherFuncs.SwapSteamAccounts(account.Split(":")[0],
+                    ePersonaState: command.Length > 2
+                        ? int.Parse(command[2])
+                        : -1, args: string.Join(' ', remainingArguments)); // Request has a PersonaState in it
+                return;
             }
+
+            if (AppSettings.GetPlatform(platform) is null) return;
+            BasicPlatforms.SetCurrentPlatform(platform);
+            Globals.WriteToLog(CurrentPlatform.FullName + " switch requested");
+            if (!await GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd)) Restart(combinedArgs, true);
+            BasicSwitcherFuncs.SwapBasicAccounts(account, string.Join(' ', remainingArguments));
         }
 
         /// <summary>
@@ -514,9 +504,9 @@ release = true;
 
                 // BASIC ACCOUNT PLATFORM
                 default:
-                    if (!BasicPlatforms.PlatformExistsFromShort(platform)) break;
+                    if (AppSettings.GetPlatform(platform) is null) break;
                     // Is a basic platform!
-                    BasicPlatforms.SetCurrentPlatformFromShort(platform);
+                    BasicPlatforms.SetCurrentPlatform(platform);
                     Globals.WriteToLog(CurrentPlatform.FullName + " logout requested");
                     AppData.CurrentSwitcher = platform;
                     await AppFuncs.SwapToNewAccount();

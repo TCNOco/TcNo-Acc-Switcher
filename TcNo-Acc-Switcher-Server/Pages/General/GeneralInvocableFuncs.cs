@@ -199,24 +199,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
 
         [JSInvokable]
-        public static string GiCurrentBasicPlatform(string platform)
-        {
-            if (platform == "Basic")
-                return CurrentPlatform.FullName;
-            return BasicPlatforms.PlatformExists(platform)
-                ? BasicPlatforms.PlatformFullName(platform)
-                : platform;
-        }
+        public static string GiCurrentBasicPlatform(string platform) => platform == "Basic" ? CurrentPlatform.FullName : AppSettings.GetPlatform(platform).Name;
 
         [JSInvokable]
         public static string GiCurrentBasicPlatformExe(string platform)
         {
             // EXE name from current platform by name:
-            if (platform == "Basic")
-                return CurrentPlatform.ExeName;
-            return BasicPlatforms.PlatformExists(platform)
-                ? BasicPlatforms.GetExeNameFromPlatform(platform)
-                : platform;
+            return platform == "Basic" ? CurrentPlatform.ExeName : AppSettings.GetPlatform(platform).Name;
         }
 
         [JSInvokable]

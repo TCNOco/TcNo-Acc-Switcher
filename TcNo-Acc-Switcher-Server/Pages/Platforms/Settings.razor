@@ -20,6 +20,7 @@
 @inject IJSRuntime JsRuntime
 @{ AppData.SetActiveIJsRuntime(JsRuntime); }
 @inject AppData AData
+@inject AppSettings ASettings
 @inject Lang Locale
 
 <div class="container mainblock">
@@ -27,7 +28,7 @@
         <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
             <toastarea class="toastarea" />
 
-            @if (!AData.AnyPlatformsShowing())
+            @if (ASettings.Platforms.All(x => !x.Enabled))
             {
                 <span>@Locale["Settings_NoPlatforms"]</span>
 
@@ -41,33 +42,30 @@
                 <h2 class="SettingsHeader">@Locale["Settings_Header_ExtraPlatforms"]</h2>
             }
 
-            @if (AppSettings.DisabledPlatforms.Count > 0 || BasicPlatforms.PlatformDict.Count != AppSettings.EnabledBasicPlatforms.Count)
+            @if (AppSettings.Platforms.Any(x => !x.Enabled))
             {
                 <h2 class="SettingsHeader">@Locale["Settings_ExtraPlatformsDisabled"]</h2>
 
                 <div class="rowSetting">
-                    @foreach (var item in AData.DisabledPlatformSorted())
+                    @foreach (var item in AppSettings.Platforms.Where(x => !x.Enabled))
                     {
-                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="@item" @onclick="() => AppSettings.ShowPlatform(item)"><label class="form-check-label" for="@item"></label><label for="@item">@BasicPlatforms.PlatformFullName(item)<br></label></div>
+                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="@item.SafeName" @onclick="() => item.SetEnabled(true)"><label class="form-check-label" for="@item.SafeName"></label><label for="@item.SafeName">@item.Name<br></label></div>
                     }
                 </div>
             }
 
-            @if (AData.AnyPlatformsShowing()) {
+            @if (AppSettings.Platforms.Any(x => x.Enabled)) {
                 <div class="SettingsHeader mt-2">
                     <p>@Locale["Settings_ExtraPlatformsEnabled"]</p>
                 </div>
 
                 <div class="rowSetting">
-                    @foreach (var item in AData.EnabledPlatformSorted())
+                    @foreach (var item in AppSettings.Platforms.Where(x => x.Enabled))
                     {
-                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="@item" checked @onclick="() => AppFuncs.HidePlatform(item)"><label class="form-check-label" for="@item"></label><label for="@item">@BasicPlatforms.PlatformFullName(item)<br></label></div>
+                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="@item.SafeName" checked @onclick="() => item.SetEnabled(false)"><label class="form-check-label" for="@item.SafeName"></label><label for="@item.SafeName">@item.Name<br></label></div>
                     }
                 </div>
-            }
 
-            @if (AData.AnyPlatformsShowing())
-            {
                 <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Locale["Button_Close"]</span></button></div>
             }
         </div>
@@ -89,11 +87,21 @@
     protected override void OnAfterRender(bool firstRender)
     {
         AppStats.NewNavigation("/Platforms/");
+        AppSettings.Platforms.CollectionChanged += (_, _) => InvokeAsync(StateHasChanged);
     }
 
     public void SaveAndClose()
     {
+        var i1 = AppSettings.Platforms;
         AppSettings.SaveSettings();
+        var i2 = AppSettings.Platforms;
         NavManager.NavigateTo("/");
     }
+
+
+
+    /// <summary>
+    /// Show a platform. This is only called from the platforms list.
+    /// </summary>
+    public static void ShowPlatform(string platform) => AppSettings.Platforms.First(x => x.Name == platform).SetEnabled(true);
 }

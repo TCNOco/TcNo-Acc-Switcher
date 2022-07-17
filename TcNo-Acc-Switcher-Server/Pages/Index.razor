@@ -35,18 +35,23 @@
     </div>
 }
 
+@code
+{
+    private static string _imagePath(AppSettings.PlatformItem platform) => Path.Join(Globals.UserDataFolder, $"wwwroot\\img\\platform\\{platform.SafeName}.svg");
+}
+
 <ContextMenu MenuItems="@AppSettings.PlatformContextMenuItems" ContextMenuId="AccOrPlatList" />
 <div class="platformTable">
     <div class="platform_list">
-        @foreach (var platform in AData.SortedPlatformListHandleDisabled())
+        @foreach (var platform in AppSettings.Platforms.Where(x => x.Enabled))
         {
-            <div class="platform_list_item" id="@(platform)" @onclick="() => Check(platform)" @onmouseup="(e) => PlatformRightClick(e, platform)" oncontextmenu="return false;">
-                <div class="fgText @(!File.Exists(Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{BasicPlatforms.PlatformSafeName(platform)}.svg")) ? "noImageCenterText" : "") @(BasicPlatforms.PlatformFullName(platform).Length < 7 ? "shortText" : BasicPlatforms.PlatformFullName(platform).Length > 12 ? "longText" : "")"><p>@BasicPlatforms.PlatformFullName(platform).ToUpper(CultureInfo.InvariantCulture)</p></div>
+            <div class="platform_list_item" id="@(platform.Identifier)" @onclick="() => Check(platform.Name)" @onmouseup="(e) => PlatformRightClick(e, platform.Name)" oncontextmenu="return false;">
+                <div class="fgText @(!File.Exists(_imagePath(platform)) ? "noImageCenterText" : "") @(platform.Name.Length < 7 ? "shortText" : platform.Name.Length > 12 ? "longText" : "")"><p>@platform.Name.ToUpper(CultureInfo.InvariantCulture)</p></div>
                 <div class="fgImg">
-                    @if(File.Exists(Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{BasicPlatforms.PlatformSafeName(platform)}.svg")))
+                    @if(File.Exists(_imagePath(platform)))
                     {
-                        <svg viewBox="0 0 500 500" draggable="false" alt="@(BasicPlatforms.PlatformSafeName(platform))">
-                            <use href="@($"img/platform/{BasicPlatforms.PlatformSafeName(platform)}.svg#FG")" class="@("icoFG")"></use>
+                        <svg viewBox="0 0 500 500" draggable="false" alt="@(platform.SafeName)">
+                            <use href="@($"img/platform/{platform.SafeName}.svg#FG")" class="@("icoFG")"></use>
                         </svg>
                     }
                 </div>
@@ -63,13 +68,10 @@
         @*<button id="btnTextEditor" onclick="location = 'TextEditor'">
             <i class="fas fa-cog footerIcoSettings"></i>
         </button>*@
-        @if (BasicPlatforms.PlatformDict.Count > 0)
-        {
-            <button id="btnPlatforms" @onclick='() => AppData.NavigateTo("/Platforms/")' data-toggle="tooltip" title="@(Locale["Tooltip_ManagePlatforms"])">
-                <i class="fas fa-plus footerIcoInline"></i>
-                @Lang["Button_ManagePlatforms"]
-            </button>
-        }
+        <button id="btnPlatforms" @onclick='() => AppData.NavigateTo("/Platforms/")' data-toggle="tooltip" title="@(Locale["Tooltip_ManagePlatforms"])">
+            <i class="fas fa-plus footerIcoInline"></i>
+            @Lang["Button_ManagePlatforms"]
+        </button>
         <button class="btnSettings" @onclick='() => AppData.NavigateTo("/Settings/")' data-toggle="tooltip" title="@(Locale["Tooltip_Settings"])">
             <i class="fas fa-cog footerIcoSettings"></i>
         </button>
@@ -81,32 +83,23 @@
 
 @code
 {
-    private async void OnChangeHandler()
-    {
-        await InvokeAsync(StateHasChanged);
-    }
-
-    public void Dispose()
-    {
-        AppSettings.Instance.PlatformListOnChange -= OnChangeHandler;
-    }
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         AppData.WindowTitle = "TcNo Account Switcher";
+        AppSettings.Platforms.CollectionChanged += (_, _) => InvokeAsync(StateHasChanged);
 
         // If no platforms are showing:
-        if (!AData.AnyPlatformsShowing())
+        if (AppSettings.Platforms.All(x => !x.Enabled))
         {
             NavManager.NavigateTo("Platforms");
         }
 
         // If just 1 platform is showing, and first launch: Nav into:
-        if (AppData.FirstMainMenuVisit && AData.SortedPlatformListHandleDisabled().Count == 1)
+        if (AppData.FirstMainMenuVisit && AppSettings.Platforms.Count(x => x.Enabled) == 1)
         {
             AppData.FirstMainMenuVisit = false;
-            var onlyPlatform = AData.SortedPlatformListHandleDisabled().First();
-            await Check(onlyPlatform);
+            var onlyPlatform = AppSettings.Platforms.First(x => x.Enabled);
+            await Check(onlyPlatform.Name);
         }
         AppData.FirstMainMenuVisit = false;
 
@@ -116,9 +109,6 @@
             //await AppData.InvokeVoidAsync("initContextMenu");
             await AppData.InvokeVoidAsync("initPlatformListSortable");
             //await AData.InvokeVoidAsync("initAccListSortable");
-
-            // This is the earliest this can be added.
-            AppSettings.Instance.PlatformListOnChange += OnChangeHandler;
         }
 
         AppData.FirstLaunchCheck();
