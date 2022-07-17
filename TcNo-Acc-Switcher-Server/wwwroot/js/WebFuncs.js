@@ -273,52 +273,8 @@ async function refreshAccount(game, accountId) {
     location.reload();
 }
 
-hidePlatform = async() => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HidePlatform", selectedElem);
-createPlatformShortcut = async() => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCreatePlatformShortcut", selectedElem);
 
 
-
-
-
-
-
-
-
-
-
-
-
-var exportingAccounts = false;
-async function exportAllAccounts() {
-    if (exportingAccounts) {
-	    const toastAlreadyProcessing = await GetLang("Toast_AlreadyProcessing"),
-		    error = await GetLang("Error");
-
-	    window.notification.new({
-		    type: "error",
-            title: error,
-            message: toastAlreadyProcessing,
-		    renderTo: "toastarea",
-            duration: 5000
-	    });
-        return;
-    }
-    exportingAccounts = true;
-    const r = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiExportAccountList", selectedElem);
-    const filename = r.split("/");
-    saveFile(filename[filename.length - 1], r);
-    exportingAccounts = false;
-}
-
-function saveFile(fileName, urlFile) {
-	const a = document.createElement("a");
-	a.style = "display: none";
-	document.body.appendChild(a);
-	a.href = urlFile;
-	a.download = fileName;
-	a.click();
-	a.remove();
-}
 
 
 
@@ -765,4 +721,15 @@ function pathPickerScrollToElement()
     } catch (e) {
         // Do nothing
     }
+}
+
+// Start downloading a file, with specified filename.
+function saveFile(fileName, urlFile) {
+    const a = document.createElement("a");
+    a.style = "display: none";
+    document.body.appendChild(a);
+    a.href = urlFile;
+    a.download = fileName;
+    a.click();
+    a.remove();
 }

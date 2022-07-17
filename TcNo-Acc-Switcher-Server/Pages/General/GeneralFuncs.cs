@@ -24,6 +24,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Runtime.Versioning;
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -848,6 +849,70 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             return true;
         }
 
+
+        public static async Task<string> ExportAccountList()
+        {
+            var platform = AppData.SelectedPlatform;
+            Globals.DebugWriteLine(@$"[Func:Pages\General\GeneralInvocableFuncs.GiExportAccountList] platform={platform}");
+            platform = BasicPlatforms.PlatformFullName(platform);
+            if (!Directory.Exists(Path.Join("LoginCache", platform)))
+            {
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_AddAccountsFirst"], Lang["Toast_AddAccountsFirstTitle"], "toastarea");
+                return "";
+            }
+
+            var s = CultureInfo.CurrentCulture.TextInfo.ListSeparator; // Different regions use different separators in csv files.
+
+            await BasicStats.SetCurrentPlatform(platform);
+
+            List<string> allAccountsTable = new();
+            if (platform == "Steam")
+            {
+                // Add headings and separator for programs like Excel
+                allAccountsTable.Add($"SEP={s}");
+                allAccountsTable.Add($"Account name:{s}Community name:{s}SteamID:{s}VAC status:{s}Last login:{s}Saved profile image:{s}Stats game:{s}Stat name:{s}Stat value:");
+
+                AppData.SteamUsers = await SteamSwitcherFuncs.GetSteamUsers(Data.Settings.Steam.LoginUsersVdf());
+                // Load cached ban info
+                SteamSwitcherFuncs.LoadCachedBanInfo();
+
+                foreach (var su in AppData.SteamUsers)
+                {
+                    var banInfo = "";
+                    if (su.Vac && su.Limited) banInfo += "VAC + Limited";
+                    else banInfo += (su.Vac ? "VAC" : "") + (su.Limited ? "Limited" : "");
+
+                    var imagePath = Path.GetFullPath($"{Data.Settings.Steam.SteamImagePath + su.SteamId}.jpg");
+
+                    allAccountsTable.Add(su.AccName + s +
+                                         su.Name + s +
+                                         su.SteamId + s +
+                                         banInfo + s +
+                                         SteamSwitcherFuncs.UnixTimeStampToDateTime(su.LastLogin) + s +
+                                         (File.Exists(imagePath) ? imagePath : "Missing from disk") + s +
+                                         BasicStats.GetGameStatsString(su.SteamId, s));
+                }
+            }
+            else
+            {
+                // Add headings and separator for programs like Excel
+                allAccountsTable.Add($"SEP={s}");
+                // Platform does not have specific details other than usernames saved.
+                allAccountsTable.Add($"Account name:{s}Stats game:{s}Stat name:{s}Stat value:");
+                foreach (var accDirectory in Directory.GetDirectories(Path.Join("LoginCache", platform)))
+                {
+                    allAccountsTable.Add(Path.GetFileName(accDirectory) + s +
+                                         BasicStats.GetGameStatsString(accDirectory, s, true));
+                }
+            }
+
+            var outputFolder = Path.Join("wwwroot", "Exported");
+            _ = Directory.CreateDirectory(outputFolder);
+
+            var outputFile = Path.Join(outputFolder, platform + ".csv");
+            await File.WriteAllLinesAsync(outputFile, allAccountsTable).ConfigureAwait(false);
+            return Path.Join("Exported", platform + ".csv");
+        }
 
         #endregion
     }

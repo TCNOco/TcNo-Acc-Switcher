@@ -61,7 +61,7 @@
                 <div class="rowSetting">
                     @foreach (var item in AData.EnabledPlatformSorted())
                     {
-                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="@item" checked @onclick="() => AppSettings.HidePlatform(item)"><label class="form-check-label" for="@item"></label><label for="@item">@BasicPlatforms.PlatformFullName(item)<br></label></div>
+                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="@item" checked @onclick="() => AppFuncs.HidePlatform(item)"><label class="form-check-label" for="@item"></label><label for="@item">@BasicPlatforms.PlatformFullName(item)<br></label></div>
                     }
                 </div>
             }

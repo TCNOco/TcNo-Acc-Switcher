@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using DiscordRPC;
 using DiscordRPC.Logging;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
@@ -181,6 +182,9 @@ namespace TcNo_Acc_Switcher_Server.Data
             set => Instance._selectedAccount = value;
         }
 
+        private string _selectedPlatform = "";
+        public static string SelectedPlatform { get => Instance._selectedPlatform; set => Instance._selectedPlatform = value; }
+
         private string _currentSwitcher = "";
         public static string CurrentSwitcher
         {
@@ -338,6 +342,9 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         [JsonIgnore] private ObservableCollection<Account> _basicAccounts = new();
         public static ObservableCollection<Account> BasicAccounts { get => Instance._basicAccounts; set => Instance._basicAccounts = value; }
+
+        [JsonIgnore] private bool _isCurrentlyExportingAccounts;
+        public static bool IsCurrentlyExportingAccounts { get => Instance._isCurrentlyExportingAccounts; set => Instance._isCurrentlyExportingAccounts = value; }
     }
     public class InitializedClasses
     {

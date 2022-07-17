@@ -40,7 +40,7 @@
     <div class="platform_list">
         @foreach (var platform in AData.SortedPlatformListHandleDisabled())
         {
-            <div class="platform_list_item" id="@(platform)" @onclick="() => Check(platform)">
+            <div class="platform_list_item" id="@(platform)" @onclick="() => Check(platform)" @onmouseup="(e) => PlatformRightClick(e, platform)" oncontextmenu="return false;">
                 <div class="fgText @(!File.Exists(Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{BasicPlatforms.PlatformSafeName(platform)}.svg")) ? "noImageCenterText" : "") @(BasicPlatforms.PlatformFullName(platform).Length < 7 ? "shortText" : BasicPlatforms.PlatformFullName(platform).Length > 12 ? "longText" : "")"><p>@BasicPlatforms.PlatformFullName(platform).ToUpper(CultureInfo.InvariantCulture)</p></div>
                 <div class="fgImg">
                     @if(File.Exists(Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{BasicPlatforms.PlatformSafeName(platform)}.svg")))
@@ -81,22 +81,27 @@
 
 @code
 {
-	// This is run before everything is painted on, so that it can get the correct values for the CSS Block.
-	protected override void OnParametersSet()
-	{
-	}
+    private async void OnChangeHandler()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        AppSettings.Instance.PlatformListOnChange -= OnChangeHandler;
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         AppData.WindowTitle = "TcNo Account Switcher";
 
-    // If no platforms are showing:
+        // If no platforms are showing:
         if (!AData.AnyPlatformsShowing())
         {
             NavManager.NavigateTo("Platforms");
         }
 
-    // If just 1 platform is showing, and first launch: Nav into:
+        // If just 1 platform is showing, and first launch: Nav into:
         if (AppData.FirstMainMenuVisit && AData.SortedPlatformListHandleDisabled().Count == 1)
         {
             AppData.FirstMainMenuVisit = false;
@@ -111,10 +116,25 @@
             //await AppData.InvokeVoidAsync("initContextMenu");
             await AppData.InvokeVoidAsync("initPlatformListSortable");
             //await AData.InvokeVoidAsync("initAccListSortable");
+
+            // This is the earliest this can be added.
+            AppSettings.Instance.PlatformListOnChange += OnChangeHandler;
         }
 
         AppData.FirstLaunchCheck();
 
         AppStats.NewNavigation("/");
     }
+
+    #region Context menu
+    /// <summary>
+    /// Shows the context menu for the requested platform
+    /// </summary>
+    public static async void PlatformRightClick(MouseEventArgs e, string plat)
+    {
+        if (e.Button != 2) return;
+        AppData.SelectedPlatform = plat;
+        await AppData.InvokeVoidAsync("positionAndShowMenu", e, "#AccOrPlatList");
+    }
+    #endregion
 }

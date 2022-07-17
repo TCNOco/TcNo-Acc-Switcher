@@ -23,6 +23,7 @@ using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.General;
+using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
 using TcNo_Acc_Switcher_Server.Shared.Accounts;
 using TextCopy;
@@ -145,6 +146,53 @@ namespace TcNo_Acc_Switcher_Server.Data
                 }
 
             ModalData.IsShown = false;
+        }
+
+        public static async Task ExportAllAccounts()
+        {
+            if (AppData.IsCurrentlyExportingAccounts)
+            {
+                await GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_AlreadyProcessing"], Lang.Instance["Error"], "toastarea");
+                return;
+            }
+
+            AppData.IsCurrentlyExportingAccounts = true;
+
+            //AppData.SelectedPlatform
+            var exportPath = await GeneralFuncs.ExportAccountList();
+            await AppData.InvokeVoidAsync("saveFile", exportPath.Split('\\').Last(), exportPath);
+            AppData.IsCurrentlyExportingAccounts = false;
+        }
+
+        public static async Task CreatePlatformShortcut()
+        {
+            var platform = AppData.SelectedPlatform;
+
+            Globals.DebugWriteLine(@$"[Func:Pages\General\GeneralInvocableFuncs.GiCreatePlatformShortcut] platform={platform}");
+            var platId = platform.ToLowerInvariant();
+            platform = BasicPlatforms.PlatformFullName(platform); // If it's a basic platform
+
+            var s = new Shortcut();
+            _ = s.Shortcut_Platform(Shortcut.Desktop, platform, platId);
+            s.ToggleShortcut(true);
+
+            await GeneralInvocableFuncs.ShowToast("success", Lang.Instance["Toast_ShortcutCreated"], Lang.Instance["Success"], "toastarea");
+        }
+
+        public static void HidePlatform(string item = null)
+        {
+            var platform = item ?? AppData.SelectedPlatform;
+            Globals.DebugWriteLine(@"[JSInvoke:Data\AppSettings.HidePlatform]");
+            if (BasicPlatforms.PlatformExistsFromShort(platform))
+                AppSettings.EnabledBasicPlatforms.Remove(platform);
+            else
+                AppSettings.DisabledPlatforms.Add(platform);
+
+            if (AppSettings.DisabledPlatforms.Contains(""))
+                AppSettings.DisabledPlatforms.Remove("");
+
+            AppSettings.SaveSettings();
+            AppSettings.PlatformListNotifyDataChanged();
         }
         #endregion
 

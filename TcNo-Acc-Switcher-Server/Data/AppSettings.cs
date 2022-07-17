@@ -136,6 +136,8 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public static SortedSet<string> DisabledPlatforms { get => Instance._disabledPlatforms; set => Instance._disabledPlatforms = value; }
 
+        public event Action PlatformListOnChange;
+        public static void PlatformListNotifyDataChanged() => Instance.PlatformListOnChange?.Invoke();
         public static bool TrayMinimizeNotExit { get => Instance._trayMinimizeNotExit; set => Instance._trayMinimizeNotExit = value; }
         public static bool ShownMinimizedNotification { get => Instance._shownMinimizedNotification; set => Instance._shownMinimizedNotification = value; }
         public static bool StartCentered { get => Instance._startCentered; set => Instance._startCentered = value; }
@@ -205,28 +207,10 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static readonly ObservableCollection<MenuItem> PlatformContextMenuItems = new MenuBuilder(
             new Tuple<string, object>[]
             {
-                new ("Context_HidePlatform", "hidePlatform()"),
-                new ("Context_CreateShortcut", "createPlatformShortcut()"),
-                new ("Context_ExportAccList", "exportAllAccounts()"),
+                new ("Context_HidePlatform", new Action(() => AppFuncs.HidePlatform())),
+                new ("Context_CreateShortcut", new Action(async () => await AppFuncs.CreatePlatformShortcut())),
+                new ("Context_ExportAccList", new Action(async () => await AppFuncs.ExportAllAccounts())),
             }).Result();
-
-        [JSInvokable]
-        public static async Task HidePlatform(string platform)
-        {
-            Globals.DebugWriteLine(@"[JSInvoke:Data\AppSettings.HidePlatform]");
-            if (BasicPlatforms.PlatformExistsFromShort(platform))
-            {
-                EnabledBasicPlatforms.Remove(platform);
-            }
-            else
-                _ = DisabledPlatforms.Add(platform);
-
-            if (DisabledPlatforms.Contains(""))
-                DisabledPlatforms.Remove("");
-
-            SaveSettings();
-            AppData.ReloadPage();
-        }
 
         public static async Task ShowPlatform(string platform)
         {

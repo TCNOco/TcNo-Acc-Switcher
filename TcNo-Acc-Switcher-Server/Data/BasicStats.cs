@@ -336,23 +336,44 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Returns a string with all the statistics available for the specified account
         /// </summary>
-        public static string GetGameStatsString(string accountId)
+        public static string GetGameStatsString(string accountId, string sep, bool isBasic = false)
         {
             var outputString = "";
             // Foreach game in platform
+            var oneAdded = false;
             foreach (var gs in GameStats)
             {
                 // Check to see if it contains the requested accountID
                 var cachedStats = gs.Value.CachedStats;
                 if (!cachedStats.ContainsKey(accountId)) continue;
 
-                outputString += $"{gs.Key}: {Environment.NewLine}";
+                if (!oneAdded) outputString += $"{gs.Key}:,";
+                else
+                {
+                    if (isBasic)
+                        outputString += $"{Environment.NewLine},{gs.Key}:,";
+                    else
+                        outputString += $"{Environment.NewLine},,,,,,{gs.Key}:,";
+                    oneAdded = false;
+                }
 
                 // Add each stat from account to the string, starting with the game name.
-                var collectedStats = cachedStats["accountId"].Collected;
+                var collectedStats = cachedStats[accountId].Collected;
                 foreach (var stat in collectedStats)
                 {
-                    outputString += $"{stat.Key}: {stat.Value}{Environment.NewLine}";
+                    if (oneAdded)
+                    {
+                        if (isBasic)
+                            outputString += $"{Environment.NewLine},, {stat.Key}{sep}{stat.Value.Replace(sep, " ")}";
+                        else
+                            outputString +=
+                                $"{Environment.NewLine},,,,,,, {stat.Key}{sep}{stat.Value.Replace(sep, " ")}";
+                    }
+                    else
+                    {
+                        outputString += $"{stat.Key}{sep}{stat.Value.Replace(sep, " ")}";
+                        oneAdded = true;
+                    }
                 }
             }
 
