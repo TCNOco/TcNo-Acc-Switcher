@@ -1,15 +1,15 @@
 ---
-Update: Update verfügbar! Klicken Sie hier, um es zu starten.
-Header_ChooseLanguage: 'Sprache auswählen:'
+Update: Update verfüägbar! Klikät si hia, zum starte.
+Header_ChooseLanguage: 'Wäl t sproch us:'
 Steam_ShowSteamID: SteamID
-Steam_ShowVac: VAC-Status
-Steam_ShowLastLogin: Letzte Anmeldezeit
-Steam_ShowLimited: Eingeschränkter Status
-Steam_ShowAccUsername: Konto-Benutzername
-Steam_Tray_AccountName: Accountnamen anzeigen [kein Freundesname]
+Steam_ShowVac: VAC status
+Steam_ShowLastLogin: Letstä ameldä ziit
+Steam_ShowLimited: Igeschränkte status
+Steam_ShowAccUsername: Account benutzernamä
+Steam_Tray_AccountName: Accountnamä azeigä [nöt fründesname]
 Steam_CheckVac: Kontostatus VAC prüfen
 Steam_OverrideDefaultState: "Überschreibe Standard-Login-Status:"
-Steam_StartSilent: "Öffnen Sie Dampf in die Aufgabenablage am Schalter (Starten Sie Dampf mit '-silent')"
+Steam_StartSilent: "Öffnen Sie Steam in der Taskleiste beim Umschalten (Starten Sie Steam mit '-silent')"
 Button_AddNew: Hinzufügen
 Button_SaveCurrent: Aktuellen speichern
 Button_SaveFile: Datei speichern
@@ -26,7 +26,7 @@ Button_Backup: Sicherung
 Button_BackupAll: Alles sichern
 Button_Restore: Wiederherstellen
 Button_OpenBackup: Backup-Ordner anzeigen
-Button_Back: Zurück zur Übersicht
+Button_Back: Zurück
 Button_RestartAdmin: Als Admin neu starten
 Button_SetPassword: App-Passwort festlegen
 Settings_Shortcut: ' {platform} Switcher Desktop-Verknüpfung'
@@ -56,7 +56,7 @@ Settings_ExtraPlatformsDisabled: Deaktivierte Plattformen. Klicken Sie, um sie z
 Settings_ExtraPlatformsEnabled: Sichtbare Plattformen. Klicken Sie, um sie zu deaktivieren.
 Settings_RTL: Text von rechts nach links anzeigen
 Settings_CollectStats: Statistiken sammeln
-Settings_ShareStats: Statistiken lästig teilen (empfohlen)
+Settings_ShareStats: Statistiken annonym teilen (empfohlen)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Gesamtswitches teilen
 Settings_ViewStats: Statistiken anzeigen
@@ -70,12 +70,12 @@ Settings_OpenFolder: '{platform} Ordner öffnen'
 Settings_ClearForgotten: Vergessene löschen
 Settings_ClearAccounts: Accounts löschen
 Settings_StreamerMode: Streamer-Modus aktivieren
-Settings_ExitToTray: Ausgang minimiert zur Ablage
+Settings_ExitToTray: Beenden minimiert zur Ablage
 Settings_DesktopShortcut: Desktop-Verknüpfung
 Settings_StartMenu_ProgramTray: Programm & Tray
-Settings_StartMenu_Platform: Bahnsteig
-Settings_Tray_StartWindows: Tablett mit Windows starten
-Settings_Tray_StartNow: '[Starten Sie das Fach jetzt]'
+Settings_StartMenu_Platform: Plattform
+Settings_Tray_StartWindows: Tray mit Windows starten
+Settings_Tray_StartNow: '[Tray jetzt starten]'
 Settings_CurrentStyle: Aktuelles Design
 Settings_ThemeBackground: '[Hintergrund einstellen]'
 Settings_ThemeOpenFolder: '[Theme-Ordner öffnen]'
@@ -85,8 +85,8 @@ Settings_WindowsAccent: Verwende die Windows-Akzentfarbe
 Settings_HelpTranslate: "[Beim Übersetzen helfen]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "(Erweitert) Rendering-Engine einstellen:"
-Settings_Header_ClosingMethod: "(Erweitert) Methode zum Schließen von {platform}einstellen"
-Settings_Header_StartingMethod: "(Erweitert) Methode auf Start {platform}einstellen"
+Settings_Header_ClosingMethod: "(Erweitert) Methode zum Schließen von {platform} einstellen"
+Settings_Header_StartingMethod: "(Erweitert) Methode auf Start {platform} einstellen"
 Settings_AutoStart: "Automatisch {platform} auf Konto Schalter starten"
 Settings_NoPlatforms: Derzeit sind keine Plattformen aktiviert. Bitte wähle optionale Plattformen unten aus, um sie zu aktivieren, oder wähle deaktivierte Plattformen ab.
 Settings_MinimizeOnSwitch: Minimieren Sie den Schalter auf dem Konto-Switch
@@ -109,11 +109,11 @@ Stats_TotalSwitches: "Gesamtzahl der Kontowechsel: "
 Stats_TotalGamesLaunched: "Insgesamt über Switcher gestartete Apps/Spiele: "
 Stats_UniqueDaysLong: "Einzigartige Tage mit Kontenwechsel: "
 Stats_LastUpload: "Letzter Upload: "
-Stats_SwitcherStats: "Switcher-Statistik: "
+Stats_SwitcherStats: "Wechsler-Statistik: "
 Stats_PageStats: "Seitenstatistik: "
 Stats_VisitsTotalTime: "{visits} Besuche insgesamt, {hours} Besuch insgesamt"
 Stats_Accounts: "Konten: "
-Stats_Switches: "Schalter: "
+Stats_Switches: "Wechsel: "
 Stats_FirstActive: "Erster aktiver: "
 Stats_LastActive: "Zuletzt aktiv: "
 Stats_UniqueDays: "Einzigartige Tage: "
@@ -133,7 +133,7 @@ Cleaning_Header_PlatformCleaning: '{platform} Switcher'
 Cleaning_ImportantInfoHeader: 'Wichtige Informationen:'
 Cleaning_ImportantInfo: >
   Wenn du auf einen Button klickst, werden die zugehörigen Datei(en) von deiner Steam-Installation gelöscht.<br /> Das löschen von loginusers.vdf sorgt dafür, dass der Account-Switcher keine Konten anzeigt.<br /> Sie müssen sich mit Steam anmelden, um sie wieder zurückzuholen.
-Cleaning_Button_KillProcess: Kill {platform} Prozess
+Cleaning_Button_KillProcess: Beende {platform} Prozess
 Cleaning_Button_ForgottenBackups: Account-Backups vergessen
 Cleaning_Understand: Ich verstehe, was diese Buttons machen.
 Restore_Info: >
@@ -145,10 +145,10 @@ Ignored_Stop: Ausgewählte nicht mehr ignorieren
 Toast_DataLocationCopying: (1/2) Vorhandene Dateien in den neuen Benutzerdatenordner kopieren!
 Toast_DataLocationNotCopying: (1/2) Ordner enthält bereits Dateien! Benutzerdaten werden nicht migriert.
 Toast_DataLocationSet: (2/2) Starten Sie den Kontoumschalter neu, um den neuen Ordner zu verwenden!
-Toast_PlaceShortcutFiles: Ein Ordner wird geöffnet. Lege Spielverknüpfungen in diesen Ordner und starte den Account Switcher neu.
-Toast_TrayStarted: Tablett angefangen!
+Toast_PlaceShortcutFiles: Ein Ordner wird geöffnet. Legen Sie Spielverknüpfungen in diesen Ordner und starten Sie den Account Switcher neu.
+Toast_TrayStarted: Tray gestartet!
 Toast_TrayRunning: Tray bereits geöffnet
-Toast_TrayUsersMissing: Keine Tablettbenutzer gespeichert
+Toast_TrayUsersMissing: Keine Tray benutzer gespeichert
 Toast_TrayFail: Tray-Anwendung konnte nicht gestartet werden!
 Toast_TrayPosition: "Wenn du den Exit button klickst bin ich im Windows Tray! (Rechte Seite der Taskleiste)"
 Toast_TrayHint: "Tipp: Strg+Klick auf das 'X' um mich komplett zu schließen, oder über das Tray > 'Beenden'"
@@ -167,7 +167,7 @@ Toast_RestartRequired: Neu starten, um Änderungen zu übernehmen
 Toast_LoadStylesheetFailed: Stylesheet konnte nicht geladen werden! Siehe die Benutzerdatenordner für mehr Details.
 Toast_LoadingStats: Ein oder mehrere Profile sind aktualisierende Statistiken. Bitte warten.
 Toast_ItemNotFound: "{item} wurde nicht gefunden"
-Toast_DeletedTotal: "{files} von {totalFiles} gelöscht. Gesamtsumme: {totalSize}"
+Toast_DeletedTotal: "{files} von {totalFiles} gelöscht. Gesamt: {totalSize}"
 Toast_CantChangeUsername: Benutzername konnte nicht geändert werden
 Toast_CantClearLoginFiles: Alte Anmeldedateien konnten nicht gelöscht werden
 Toast_AccountIdReg: Account-ID konnte nicht aus der Registry abgerufen werden!
@@ -197,14 +197,14 @@ Toast_NoFindSteamUserdata: Ordner Steam\\userdata konnte nicht gefunden werden
 Toast_NoFindGameBackup: Sicherungsspieldatenordner für dieses Konto kann nicht gefunden werden.
 Toast_GameBackupDone: "Spieldatenordner erfolgreich gesichert: {folderLocation}"
 Toast_Steam_VdfLast: Konnte von vdf_last laden. Einige Accounts könnten fehlen.
-Toast_PartiallyFixed: Teilweise fest
-Toast_Steam_FailedLoginusers: Dampf/config/loginusers.vdf konnte nicht geladen werden
+Toast_PartiallyFixed: Teilweise behoben
+Toast_Steam_FailedLoginusers: steam/config/loginusers.vdf konnte nicht geladen werden
 Toast_Steam_CantLocateLoginusers: '''.../Steam/config/loginusers.vdf'' kann nicht gefunden werden. Versuche zuerst dich in einen Account anzumelden.'
 Toast_CantClearImages: Bilder konnten nicht gelöscht werden
 Toast_RefreshedImages: Bilder aktualisiert
 Toast_ClearForgottenCheck: Bist du sicher, dass du Backups von vergessenen Accounts löschen möchtest?
-Toast_ForgotAccount: Account vergessen
-Toast_ClearedPlatformSettings: "{platform} Switcher-Einstellungen gelöscht"
+Toast_ForgotAccount: Konto vergessen
+Toast_ClearedPlatformSettings: "{platform} Wechsler-Einstellungen gelöscht"
 Toast_ClearedImages: "Gelöschte Bilder"
 Toast_SavedItem: "Gespeichert: {item}"
 Toast_ChangedUsername: Geänderter Benutzername
@@ -226,23 +226,23 @@ Toast_FailedPlatformsLoad: Platforms.json konnte nicht geladen werden! Bitte üb
 Toast_FailedLoadSettings: "Einstellungen konnten nicht geladen werden! Lade stattdessen die Standardeinstellungen. Hinzufügen von 'alt' zum Namen der vorhandenen Einstellungsdatei."
 Toast_FailedLoadStats: "Statistik konnte nicht geladen werden! Neustart."
 Toast_FailedStatsLoad: GameStats.json konnte nicht geladen werden! Bitte überprüfen Sie, ob diese Datei vorhanden ist.
-Toast_GameStatsLoadFail: "Spielstatistiken aus dem Web für {Game}konnten nicht abgerufen werden"
-Toast_GameStatsEmpty: "Keine Spielstatistiken auf der Webseite für {Game}gefunden. Denkst du, es ist ein Fehler? Überprüfen Sie den Ordner userdata und 'temp\\ download-{AccoundId}-{Game}.html', um zu sehen, ob die Seite einen Fehler enthielt!"
+Toast_GameStatsLoadFail: "Spielstatistiken aus dem Web für {Game} konnten nicht abgerufen werden"
+Toast_GameStatsEmpty: "Keine Spielstatistiken auf der Webseite für {Game} gefunden. Denkst du, es ist ein Fehler? Überprüfen Sie den Ordner userdata und 'temp\\ download-{AccoundId}-{Game}.html', um zu sehen, ob die Seite einen Fehler enthielt!"
 Toast_FileCopyFail: Dateien konnten nicht kopiert werden! Siehe Protokoll für weitere Details.
-Toast_UserDataLoadFail: Fehler beim Laden der Benutzerdaten {UserData}\\WindowSettings.json. Zurücksetzen und Zurücksetzen! Fehler beim Protokollieren gespeichert.
+Toast_UserDataLoadFail: Fehler beim Laden der Benutzerdaten {UserData}\\WindowSettings.json. Sichern und Zurücksetzen! Fehler im Protokoll gespeichert.
 Toast_UpdateCheckFail: Https://tcno.co/ konnte nicht erreicht werden, um nach Updates zu suchen. Diese Meldung wird einmal täglich angezeigt.
 Toast_FailedCreateIcon: Symbol konnte nicht erstellt werden. Siehe Protokoll für Details.
 Toast_SameAccount: Dateien können nicht in dasselbe/aus demselben Konto kopiert werden. Versuchen Sie es mit einem anderen Konto oder besuchen Sie Wiki für weitere Informationen.
 Toast_Steam_DownloadingAppIds: Steam AppId-Liste wird heruntergeladen...
 Toast_Steam_DownloadingAppIdsComplete: Das Herunterladen ist abgeschlossen. Das Untermenü Spieldaten wurde aktualisiert.
-Toast_SteamWebKeyInvalid: Der Steam-Web-API-Schlüssel scheint ungültig zu sein. Bitte legen Sie eine neue fest.
+Toast_SteamWebKeyInvalid: Der Steam-Web-API-Schlüssel scheint ungültig zu sein. Bitte legen Sie einen neuen fest.
 Toast_DownloadingProfileData: Herunterladen von Profildaten
 Toast_PasswordChanged: Passwort geändert
 Toast_JsonFailModify: Die JSON-Datei konnte nicht geändert werden. Siehe Protokoll.
 Modal_Crowdin_Header: Crowdin-Übersetzer
 Modal_Crowdin_Info: "Hier sind alle, die geholfen haben, diese Software zu übersetzen.<br>Benutzer mit Sprachen neben ihnen haben bei der Übersetzung sehr geholfen (Rolle des Korrekturlesers)."
 Modal_Info_Creator: Erstellt von TechNobo [Wesley Pyburn]
-Modal_Info_Version: Versionsnummer
+Modal_Info_Version: Version
 Modal_Info_ViewGitHub: Auf GitHub anzeigen
 Modal_Info_BugReport: Fehlerbericht/Feature-Anfrage
 Modal_Info_VisitSite: Öffne tcno.co
@@ -257,7 +257,7 @@ Modal_Title_Userdata: Legen Sie den Benutzerdatenordner fest
 Modal_Title_GameStats: Spielstatistiken aktivieren/deaktivieren
 Modal_GameStats_Header: "Aktivieren/Deaktivieren von Spielstatistiken für: {accountName}"
 Modal_Title_Stats: Ihre Statistiken
-Modal_Title_GameVars: "Eingabedetails für {game}"
+Modal_Title_GameVars: "Eingabe von Details für {game}"
 Modal_GameVars_Header: "Bitte geben Sie die folgenden Details für Ihr {game} -Konto ein, {username} auf {platform}"
 Modal_Title_AccountNotes: "Kontohinweise für: {accountName}"
 Modal_Title_SetPassword: Passwort festlegen
@@ -309,17 +309,17 @@ Context_CommunityUrl: Community-URL
 Context_CommunityUsername: Community-Benutzername
 Context_LoginUsername: Login-Benutzername
 Context_CopySteamIdSubmenu: SteamID kopieren
-Context_Steam_Id: DampfID [STEAM0:~]
-Context_Steam_Id3: DampfID3 [U:1:~]
-Context_Steam_Id32: DampfID32
-Context_Steam_Id64: DampfID64 7656~
+Context_Steam_Id: SteamID [STEAM0:~]
+Context_Steam_Id3: SteamID3 [U:1:~]
+Context_Steam_Id32: SteamID32
+Context_Steam_Id64: SteamID64 7656~
 Context_Steam_OpenUserdata: Benutzerdaten öffnen
 Context_ManageSubmenu: Verwalten
 Context_GameDataSubmenu: Spieldaten
 Context_ManageGameStats: Spielstatistiken verwalten
 Context_Game_CopySettingsFrom: Einstellungen auf den aktuellen Stand kopieren
 Context_Game_RestoreSettingsTo: Spieldaten wiederherstellen
-Context_Game_BackupData: Backup Spieldaten
+Context_Game_BackupData: Spieldaten sichern
 Context_CopyOtherSubmenu: Andere kopieren
 Context_HidePlatform: Plattform ausblenden
 Context_ExportAccList: Kontoliste exportieren
@@ -331,7 +331,7 @@ Title_Settings_TestCss: TcNo Account Switcher - CSS Styling testen
 Title_AccountsList: TcNo Account Switcher - {platform}
 Title_TextEditor: TcNo Account Switcher - Texteditor
 Title_Settings: TcNo Account Switcher - Einstellungen
-Title_Steam_Cleaning: TcNo Account Switcher - Dampfreinigung
+Title_Steam_Cleaning: TcNo Account Switcher - Steam reinigung
 Title_Steam_Settings: TcNo Account Switcher - Steam-Einstellungen
 Title_Template_Settings: TcNo Account Switcher - {platformName}-Einstellungen
 Title_Login: TcNo Account Switcher - Login
@@ -339,15 +339,15 @@ Installer_Downloading: Herunterladen {file}
 Installer_DownloadFinished: Herunterladen abgeschlossen {file}
 Installer_Installing: "Installation: {runtime}"
 Installer_RuntimeTitle: TcNo Account Switcher - Laufzeit-Installationsprogramm
-Installer_Welcome: Willkommen beim TcNo Account Switcher - Runtime Installer
+Installer_Welcome: Willkommen beim TcNo Account Switcher - Runtime Instalierer
 Installer_InstalledRuntimes: "Aktuell installierte Laufzeiten:"
-Installer_ErrorRuntime: "Eine oder mehrere Laufzeiten wurden nicht installiert:"
+Installer_ErrorRuntime: "Eine oder mehrere runtimes wurden nicht installiert:"
 Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB bei der Installation]"
 Installer_TotalSize: "Gesamt-Downloadgröße: ~{size} MB"
 Installer_AnyKeyStart: Drücken Sie eine beliebige Taste, um den Download zu starten...
-Runtime_WebView2: Microsoft WebView2-Laufzeit
-Runtime_Desktop: Microsoft .NET 5 Desktop-Laufzeit
-Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} Laufzeit
+Runtime_WebView2: Microsoft WebView2-Runtime
+Runtime_Desktop: Microsoft .NET 5 Desktop-Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} Runtime
 Installer_FailedFolder: "Fehler beim Erstellen des Ordners:"
 Installer_FailedWV: "Herunterladen und Installieren von Microsoft WebView2 Runtime fehlgeschlagen. Um herunterzuladen: 1. Klicken Sie auf den untenstehenden Link: {link} 2. Klicken Sie unter Server-Apps ausführen auf „Hosting-Paket herunterladen“."
 Installer_FailedDR: "Fehler beim Herunterladen und Installieren von .NET 5 Desktop Runtime. Bitte laden Sie es hier herunter:"
@@ -371,7 +371,7 @@ Updater_StatusChecking: Version wird überprüft
 Updater_FailedVersionCheck: "Version konnte nicht abgerufen werden. Klicken Sie auf „Verifizieren“, um Dateien zu aktualisieren und zu verifizieren"
 Updater_PressBelow: Drücken Sie die Taste unten!
 Updater_PressBelowStart: Klicken Sie auf die Schaltfläche unten, um das Update zu starten.
-Updater_PatchApplied: Patch angebracht!
+Updater_PatchApplied: Patch angewendet!
 Updater_UpdatingAppData: Aktualisieren von Dateien in AppData!
 Updater_Complete: Alle Updates abgeschlossen!
 Updater_Checking: Nach Updates suchen
@@ -381,40 +381,40 @@ Updater_Downloading: "Update wird heruntergeladen: {version}"
 Updater_Downloaded: Download abgeschlossen.
 Updater_CantExtract: Update konnte nicht extrahiert werden.
 Updater_Verify: Dateien verifizieren
-Updater_Verifying: Bestätigen...
+Updater_Verifying: Überprüfen...
 Updater_VerifySkip: Überprüfen von Dateien, um alle kleinen Updates zu überspringen und einfach zum neuesten zu springen.
 Updater_NoConnection: "Konnte keine Verbindung zu tcno.co herstellen, um Dateien zu überprüfen. Sie können versuchen, das Installationsprogramm manuell von der GitHub-Seite herunterzuladen und zum Aktualisieren neu zu installieren.\n\nFehler:"
 Updater_NoServer: Update-Server konnte nicht erreicht werden
 Updater_Hashlist: Neueste Hash-Liste wird heruntergeladen...
-Updater_CantCheck: Nach Updates kann nicht gesucht werden
-Updater_Failed: "FEHLER: Einige der Dateien werden verwendet und können nicht aktualisiert werden.\n\n1. Stellen Sie sicher, dass alle TcNo-Prozesse vollständig abgeschlossen sind\n(oder starten Sie Ihren PC neu)\n\n2. Klicken Sie dann unten auf Verify, oder wenn Sie neu gestartet haben:\n-   Öffnen Sie diesen Updater und überprüfen Sie die Dateien\n    (im Ordner \"Updater\" im Installationsverzeichnis)"
+Updater_CantCheck: Suche nach Updates nicht möglich
+Updater_Failed: "FEHLER: Einige der Dateien werden verwendet und können nicht aktualisiert werden.\n\n1. Stellen Sie sicher, dass alle TcNo-Prozesse vollständig geschlossen sind\n(oder starten Sie Ihren PC neu)\n\n2. Klicken Sie dann unten auf Verify, oder wenn Sie neu gestartet haben:\n-   Öffnen Sie diesen Updater und überprüfen Sie die Dateien\n    (im Ordner \"Updater\" im Installationsverzeichnis)"
 Updater_Missing: "DATEI FEHLT: {file}"
 Updater_FileMismatch: "Datei: {file} hat MD5: {md5} ERWARTET: {value}"
 Updater_DownloadingWeb: Datei wird von der Website heruntergeladen...
-Updater_UnpackingAppData: Dateien auf %AppData%/TcNo Account Switcher kopieren... (sofern nicht anders eingestellt)
+Updater_UnpackingAppData: Dateien zu %AppData%/TcNo Account Switcher kopieren... (sofern nicht anders eingestellt)
 Updater_VerifyComplete: Dateien überprüft!
 Updater_UpdateFound: "Gefundene Aktualisierungen: {name} [{updateSize}]"
-Updater_TotalFound: "Insgesamt aktualisierungen gefunden: {x}"
+Updater_TotalFound: "Insgesamt gefundene Updates: {x}"
 Updater_TotalSize: "Gesamtgröße: {size}"
 Updater_AwaitingUser: Warten auf Benutzereingabe...
 Updater_UpToDate: "Du bist auf dem Laufenden.\n:)"
-Updater_FailedDecode: Dies liegt höchstwahrscheinlich daran, dass ich (TechNobo) ein Update schob und einen Tippfehler machte, der die .json-Aktualisierungsdatei brach. Lassen Sie es mich wissen :)
+Updater_FailedDecode: Dies liegt höchstwahrscheinlich daran, dass ich (TechNobo) ein Update hochgeladen habe und einen Tippfehler machte, der die .json-Aktualisierungsdatei brach. Lassen Sie es mich wissen :)
 Updater_FailedDecodeTitle: Fehler beim Entschlüsseln der Aktualisierungsliste
 Updater_Extracting: Extrahieren von Patchdateien
 Updater_Applying: Patch wird angewendet...
 Updater_Moving: Dateien werden verschoben...
 Updater_Title: TcNo Account Switcher Updater
-Updater_Started: Begonnen
+Updater_Started: Gestartet
 Updater_Start: TcNo Account Switcher starten
 Updater_Begin: Update starten
-Updater_Exit: Exit
+Updater_Exit: Beenden
 FatalError: Schwerwiegender Fehler aufgetreten!
 Online: Online
 OnlineDefault: Online (Standard)
 Offline: Offline
 Invisible: Unsichtbar
-Busy: Bitte nicht stören
-Away: Auswärts
+Busy: Beschäftigt
+Away: Weg
 Snooze: Schlummern
 LookingToTrade: Suche nach Handel
 LookingToPlay: Auf der Suche nach Spielen
@@ -427,15 +427,15 @@ PngRequired: Das erforderliche Bildformat ist eine tragbare Netzwerkgrafik (png)
 PngDimensions: Die Abmessungen müssen kleiner oder gleich {MaxIconWidth}x{MaxIconHeight}sein
 ThemeSyntaxAnd: "Ein Syntaxfehler ist aufgetreten (weitere Details siehe unten)! UND:"
 ThemesNotFound: "Der Ordner \"themes\" konnte im Verzeichnis von TcNo Account Switcher nicht gefunden werden. Dies (insbesondere der Ordner 'Dracula_Cyan') ist für die Ausführung dieser Software erforderlich.\nSie können den Updater im Ordner \"updater\" ausführen, um Dateien zu überprüfen und die fehlenden Dateien wiederherzustellen."
-Yes: "JA"
-No: "- Nein."
+Yes: "Ja"
+No: "Nein"
 Save: Speichern
 NoDefault: Nein (Standard)
 Ok: "I.O."
 Submit: Absenden
 Forget: Vergessen
-Notice: Bekanntmachung
-Notes: Anmerkungen
+Notice: Hinweis
+Notes: Notizen
 Error: Fehler
 ErrorDetails: "FEHLER: {ex}"
 Failed: Fehlgeschlagen
@@ -445,12 +445,12 @@ Done: Erledigt
 Edit: Bearbeiten
 Refresh: Aktualisieren
 Working: Bitte warten...
-ForName: "For: {name}"
+ForName: "Für: {name}"
 DeletedFiles: Gelöschte Dateien
 FileFoldersToClear: "Liste der zu löschenden Dateien/Ordner:"
-CouldNotFindX: '{x}konnte nicht gefunden werden'
-CouldNotCloseX: '{x}konnte nicht geschlossen werden!'
-CouldNotReadFile: '{file}konnte nicht gelesen werden!'
+CouldNotFindX: '{x} konnte nicht gefunden werden'
+CouldNotCloseX: '{x} konnte nicht geschlossen werden!'
+CouldNotReadFile: '{file} konnte nicht gelesen werden!'
 DirectoryNotFound: Verzeichnis nicht gefunden
 DirectoryNotFoundFolder: "Verzeichnis nicht gefunden: {folder}"
 DeletingFile: "Löschen: {file}"
@@ -479,15 +479,15 @@ Tooltip_ShortcutFolder: Verknüpfungsordner öffnen. Platziere dort und im TcNo 
 Tooltip_Backup: Konfigurations-Dateien und -Order sichern, wie es in den Plattformeinstellungen festgelegt wurde.
 Tooltip_BackupAll: Sichern ALLER Konfigurations-Dateien und -Ordner, inklusive Bilder und anderer großer Dateien.
 Tooltip_ClosingMethod: "Kombiniert ist am besten. Schließen versucht, direkt durch eine Schließfunktion zu schließen und TaskKill verwendet cmd (Am besten, wenn kombiniert nicht funktioniert)"
-Tooltip_StartingMethod: "Der Standardwert ist der beste. Direct hat keine Kontrolle über Admin-Level oder UAC. Es beginnt mit dem gleichen Niveau (oder höher - aber nicht niedriger) als dieser Kontowechsler"
+Tooltip_StartingMethod: "Standard ist das beste. Direct hat keine Kontrolle über Admin-Level oder UAC. Es beginnt mit dem gleichen Niveau (oder höher - aber nicht niedriger) als dieser Kontowechsler"
 Tooltip_CurrentAccount: Sie sind derzeit in diesem Konto angemeldet.
 Tooltip_Restore: Klicken, um eine 7z-Datei auszuwählen, oder ziehe eine auf diesen Button.
 Tooltip_DisabledGlobally: Dieses Element ist für alle Konten ausgeblendet. Sie können dies in den Plattformeinstellungen ändern.
-Discord_Status: Derzeit wechselt das Konto.
+Discord_Status: Wechselt derzeit die Konten.
 Discord_StatusDetails: "Konten gewechselt: {number}"
 Website: Website
 Preview_Platforms: Plattform-Vorschau
 Preview_Accounts: Kontenvorschau
 Preview_Notifications: Toast-Benachrichtigungen Vorschau
 Preview_Settings: Vorschau der Einstellungen
-Preview_Modals: Modals-Vorschau
+Preview_Modals: Modale Vorschau
