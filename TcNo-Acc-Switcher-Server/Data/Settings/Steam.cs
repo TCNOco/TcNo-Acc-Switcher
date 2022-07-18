@@ -418,7 +418,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     gameData is not null
                         ? new Tuple<string, object>("Context_GameDataSubmenu", gameData)
                         : null, BasicStats.PlatformHasAnyGames("Steam")
-                            ? new Tuple<string, object>("Context_ManageGameStats", "ShowGameStatsSetup(event)")
+                            ? new Tuple<string, object>("Context_ManageGameStats", new Action(ModalData.ShowGameStatsSelectorModal))
                             : null,
                     new ("Context_ChangeImage", new Action(ModalFuncs.ShowChangeAccImageModal)),
                     new ("Context_Steam_OpenUserdata", new Action(SteamSwitcherBase.SteamOpenUserdata)),

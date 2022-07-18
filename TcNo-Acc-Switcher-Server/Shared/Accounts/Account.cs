@@ -40,9 +40,9 @@ public class Account
     public string Note { get; set; } = "";
     public Dictionary<string, Dictionary<string, BasicStats.StatValueAndIcon>> UserStats { get; set; }
 
-    public void SetUserStats(string platform)
+    public void SetUserStats()
     {
-        UserStats = BasicStats.GetUserStatsAllGamesMarkup(platform, AccountId);
+        UserStats = BasicStats.GetUserStatsAllGamesMarkup(AccountId);
     }
     public ClassCollection Classes { get; set; } = new();
 

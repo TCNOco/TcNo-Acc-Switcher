@@ -45,21 +45,48 @@ function getSelected() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Open Game Stats menu 1: Enable/Disable stats for specific games
 async function ShowGameStatsSetup(e = null) {
     if (e !== undefined && e !== null) e.preventDefault();
     if (!getSelected()) return;
 
     const accountId = selected.attr("id");
+    const currentPage = await getCurrentPageFullname();
 
     const modalHeading = await GetLangSub("Modal_GameStats_Header", { accountName: getDisplayName() }),
-        modalTitle= await GetLang("Modal_Title_GameStats"),
+        modalTitle = await GetLang("Modal_Title_GameStats"),
+
+
         edit = await GetLang("Edit"),
         refresh = await GetLang("Refresh");
 
-    const currentPage = await getCurrentPageFullname();
-    const safeGameNames = [];
 
+
+    const safeGameNames = [];
     const enabledGames =
         await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetEnabledGames", currentPage, accountId);
     const disabledGames = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetDisabledGames", currentPage, accountId);
@@ -92,11 +119,6 @@ async function ShowGameStatsSetup(e = null) {
                     </div>`;
         safeGameNames.push(safeGame);
     }
-
-                //@foreach (var item in AData.EnabledPlatformSorted())
-                //{
-                //
-                //}
     html += "</div></div></div>";
     $("#modal_contents").append(html);
 
@@ -140,6 +162,22 @@ async function toggleGameStats(safeGame, isChecked) {
     showGameStatsVars(game);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Open the variable setting menu for game stats for account.
 // This is the Manage button, when variables are already set.
 async function showGameStatsVars(game) {
@@ -176,24 +214,24 @@ async function showGameVarCollectionModel(game, requiredVars, existingVars = {},
 
     let checkboxesMarkup = "";
 
-    for (let [key, value] of Object.entries(requiredVars)) {
-        console.log(key, value);
+    for (let [key, promptText] of Object.entries(requiredVars)) {
+        console.log(key, promptText);
         let placeholder = "";
-        if (value.includes("[") && value.includes("]")) {
-            const parts = value.split("[");
-            value = parts[0].trim();
+        if (promptText.includes("[") && promptText.includes("]")) {
+            const parts = promptText.split("[");
+            promptText = parts[0].trim();
             placeholder = parts[1].trim().replace("]", "");
         }
 
         let existingValue = key in existingVars ? existingVars[key] : "";
-        if (value === "%ACCOUNTID%") {
-            value = await GetLang("Stats_AccountId");
+        if (promptText === "%ACCOUNTID%") {
+            promptText = await GetLang("Stats_AccountId");
             if (existingValue === "")
                 existingValue = accountId;
         }
 
         html +=
-            `<div class="rowSetting"><span>${value}</span><input type="text" id="acc${key}" spellcheck="false" placeholder="${placeholder}" value="${existingValue}"></div>`;
+            `<div class="rowSetting"><span>${promptText}</span><input type="text" id="acc${key}" spellcheck="false" placeholder="${placeholder}" value="${existingValue}"></div>`;
     }
 
     for (let [key, value] of Object.entries(hidden)) {
@@ -265,6 +303,16 @@ async function Modal_FinaliseGameVars(game, accountId) {
     const success = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `SetGameVars`, currentPage, game, accountId, returnDict, hidden);
     if (success) location.reload();
 }
+
+
+
+
+
+
+
+
+
+
 
 async function refreshAccount(game, accountId) {
     const currentPage = await getCurrentPageFullname();

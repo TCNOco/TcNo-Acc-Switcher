@@ -89,28 +89,33 @@ namespace TcNo_Acc_Switcher_Server.Data
             public string IndicatorMarkup { get; set; }
         }
 
+        // List of possible games on X platform
+        public static List<string> GetAvailableGames => PlatformGames.ContainsKey(AppData.CurrentSwitcher) ? PlatformGames[AppData.CurrentSwitcher] : new List<string>();
+
         /// <summary>
         /// Returns list Dictionary of Game Names:[Dictionary of statistic names and StatValueAndIcon (values and indicator text for HTML)]
         /// </summary>
-        public static Dictionary<string, Dictionary<string, StatValueAndIcon>> GetUserStatsAllGamesMarkup(string platform, string accountId)
+        public static Dictionary<string, Dictionary<string, StatValueAndIcon>> GetUserStatsAllGamesMarkup(string account = "")
         {
+            if (account == "") account = AppData.SelectedAccountId;
+
             var returnDict = new Dictionary<string, Dictionary<string, StatValueAndIcon>>( );
             // Foreach available game
-            foreach (var availableGame in GetAvailableGames(platform))
+            foreach (var availableGame in GetAvailableGames)
             {
                 if (!GameStats.ContainsKey(availableGame)) continue;
 
                 // That has the requested account
-                if (!GameStats[availableGame].CachedStats.ContainsKey(accountId)) continue;
+                if (!GameStats[availableGame].CachedStats.ContainsKey(account)) continue;
                 var gameIndicator = GameStats[availableGame].Indicator;
                 //var gameUniqueId = GameStats[availableGame].UniqueId;
 
                 var statValueIconDict = new Dictionary<string, StatValueAndIcon>();
 
                 // Add icon or identifier to stat pair for displaying
-                foreach (var (statName, statValue) in GameStats[availableGame].CachedStats[accountId].Collected)
+                foreach (var (statName, statValue) in GameStats[availableGame].CachedStats[account].Collected)
                 {
-                    if (GameStats[availableGame].CachedStats[accountId].HiddenMetrics.Contains(statName)) continue;
+                    if (GameStats[availableGame].CachedStats[account].HiddenMetrics.Contains(statName)) continue;
 
                     // Foreach stat
                     // Check if has icon, otherwise use just indicator string
@@ -131,51 +136,6 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             return returnDict;
         }
-
-        /// <summary>
-        /// List of possible games on X platform
-        /// </summary>
-        [JSInvokable]
-        public static List<string> GetAvailableGames(string platform) => PlatformGames.ContainsKey(platform) ? PlatformGames[platform] : new List<string>();
-        /// <summary>
-        /// List of games from X platform, with Y accountId associated.
-        /// </summary>
-        [JSInvokable]
-        public static List<string> GetEnabledGames(string platform, string accountId) => GetAvailableGames(platform).Where(game => GameStats[game].CachedStats.ContainsKey(accountId)).ToList();
-        /// <summary>
-        /// List of games from X platform, NOT with Y accountId associated.
-        /// </summary>
-        [JSInvokable]
-        public static List<string> GetDisabledGames(string platform, string accountId) => GetAvailableGames(platform).Where(game => !GameStats[game].CachedStats.ContainsKey(accountId)).ToList();
-
-        [JSInvokable]
-        public static Dictionary<string, string> GetRequiredVars(string game) => GameStats[game].RequiredVars;
-        [JSInvokable]
-        public static Dictionary<string, string> GetExistingVars(string game, string account) => GameStats[game].CachedStats.ContainsKey(account) ? GameStats[game].CachedStats[account].Vars : new Dictionary<string, string>();
-
-        /// <summary>
-        /// Gets list of all metric names to collect for the provided account, as well as whether each is hidden or not, and the text to display in the UI checkbox.
-        /// </summary>
-        [JSInvokable]
-        public static Dictionary<string, Tuple<bool, string>> GetHiddenMetrics(string game, string account)
-        {
-            var returnDict = new Dictionary<string, Tuple<bool, string>>();
-            foreach (var (key, _) in GameStats[game].ToCollect)
-            {
-                var hidden = GameStats[game].CachedStats.ContainsKey(account) && GameStats[game].CachedStats[account].HiddenMetrics.Contains(key);
-                var text = GameStats[game].ToCollect[key].ToggleText;
-                returnDict.Add(key, new Tuple<bool, string>(hidden, text));
-            }
-
-            return returnDict;
-        }
-
-        /// <summary>
-        /// Get list of metrics that are set to hidden from the settings menu. This overrides individual account settings.
-        /// </summary>
-        [JSInvokable]
-        public static List<string> GetGloballyHiddenMetrics(string game) =>
-            (from metric in AppSettings.GloballyHiddenMetrics[game] where metric.Value select metric.Key).ToList();
 
         /// <summary>
         /// Gets list of all metric names to collect, as well as whether each is hidden or not, and the text to display in the UI checkbox.
@@ -199,26 +159,6 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
 
             return allMetrics;
-        }
-
-        [JSInvokable]
-        public static async Task<bool> SetGameVars(string platform, string game, string accountId, Dictionary<string, string> returnDict, List<string> hiddenMetrics) =>
-            await GameStats[game].SetAccount(accountId, returnDict, hiddenMetrics, platform);
-
-        [JSInvokable]
-        public static void DisableGame(string game, string accountId)
-        {
-            if (!GameStats.ContainsKey(game) || !GameStats[game].CachedStats.ContainsKey(accountId)) return;
-
-            GameStats[game].CachedStats.Remove(accountId);
-            GameStats[game].SaveStats();
-        }
-
-        [JSInvokable]
-        public static async Task RefreshAccount(string accountId, string game, string platform = "")
-        {
-            await GameStats[game].LoadStatsFromWeb(accountId, platform);
-            GameStats[game].SaveStats();
         }
 
         public static bool PlatformHasAnyGames(string platform) => platform is not null && (PlatformGames.ContainsKey(platform) && PlatformGames[platform].Count > 0);
@@ -310,7 +250,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 GameStats[game].SaveStats();
         }
 
-        public static List<string> PlatformGamesWithStats(string platform) => PlatformGames.ContainsKey(platform) ? GetAvailableGames(platform) : new List<string>();
+        public static List<string> PlatformGamesWithStats(string platform) => PlatformGames.ContainsKey(platform) ? GetAvailableGames : new List<string>();
 
         /// <summary>
         /// Loads games and stats for requested platform
@@ -323,7 +263,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             GameStats = new Dictionary<string, GameStat>();
             // TODO: Verify this works as intended when more games are added.
-            foreach (var game in GetAvailableGames(platform))
+            foreach (var game in GetAvailableGames)
             {
                 var gs = new GameStat();
                 await gs.SetGameStat(game);
@@ -464,21 +404,21 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Set up new accounts. Set game name if you want all accounts to save after setting values (Recommended).
         /// </summary>
-        public async Task<bool> SetAccount(string accountId, Dictionary<string, string> vars, List<string> hiddenMetrics, string platform = "")
+        public async Task<bool> SetAccount(Dictionary<string, string> vars, List<string> hiddenMetrics)
         {
-            if (CachedStats.ContainsKey(accountId))
+            if (CachedStats.ContainsKey(AppData.SelectedAccountId))
             {
-                CachedStats[accountId].Vars = vars;
-                CachedStats[accountId].HiddenMetrics = hiddenMetrics;
+                CachedStats[AppData.SelectedAccountId].Vars = vars;
+                CachedStats[AppData.SelectedAccountId].HiddenMetrics = hiddenMetrics;
             }
             else
-                CachedStats[accountId] = new UserGameStat() { Vars = vars, HiddenMetrics = hiddenMetrics };
+                CachedStats[AppData.SelectedAccountId] = new UserGameStat() { Vars = vars, HiddenMetrics = hiddenMetrics };
 
-            if (CachedStats[accountId].Collected.Count == 0 || DateTime.Now.Subtract(CachedStats[accountId].LastUpdated).Days >= 1)
+            if (CachedStats[AppData.SelectedAccountId].Collected.Count == 0 || DateTime.Now.Subtract(CachedStats[AppData.SelectedAccountId].LastUpdated).Days >= 1)
             {
                 await GeneralInvocableFuncs.ShowToast("info", Lang.Instance["Toast_LoadingStats"], renderTo: "toastarea");
                 _lastLoadingNotification = DateTime.Now;
-                return await LoadStatsFromWeb(accountId, platform);
+                return await LoadStatsFromWeb(AppData.SelectedAccountId, AppData.CurrentSwitcher);
             }
             else
                 SaveStats();

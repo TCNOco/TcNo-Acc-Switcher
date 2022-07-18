@@ -173,7 +173,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             set => Instance._currentStatus = value;
         }
 
-        public static string SelectedAccountId => SelectedAccount.AccountId;
+        public static string SelectedAccountId => SelectedAccount?.AccountId ?? "";
 
         private Account _selectedAccount;
         public static Account SelectedAccount

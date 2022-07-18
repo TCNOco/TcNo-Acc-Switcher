@@ -100,6 +100,20 @@ namespace TcNo_Acc_Switcher_Server.Data
             IsShown = true;
         }
 
+        public static void ShowGameStatsSelectorModal()
+        {
+            CurrentStatsSelectorState = StatsSelectorState.GamesList;
+            ShowModal("gameStatsSelector");
+            GameStatsModalOnChangeChanged();
+        }
+
+        private StatsSelectorState _currentStatsSelectorState;
+        public static StatsSelectorState CurrentStatsSelectorState {get => Instance._currentStatsSelectorState; set => Instance._currentStatsSelectorState = value; }
+        public enum StatsSelectorState
+        {
+            GamesList,
+            VarsList
+        }
 
         #region PathPicker
         public class PathPickerRequest
@@ -249,6 +263,12 @@ namespace TcNo_Acc_Switcher_Server.Data
         // These MUST be separate from the class above to refresh the element properly.
         public event Action TextInputOnChange;
         public static void TextInputNotifyDataChanged() => Instance.TextInputOnChange?.Invoke();
+        #endregion
+
+
+        #region GameStatsModal
+        public event Action GameStatsModalOnChange;
+        public static void GameStatsModalOnChangeChanged() => Instance.GameStatsModalOnChange?.Invoke();
         #endregion
     }
 }

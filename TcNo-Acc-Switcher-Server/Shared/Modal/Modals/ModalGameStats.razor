@@ -1,0 +1,296 @@
+﻿@*TcNo Account Switcher - A Super fast account switcher
+    Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses />.*@
+
+@using TcNo_Acc_Switcher_Server.Shared.Modal
+@using TcNo_Acc_Switcher_Server.Data
+@using TcNo_Acc_Switcher_Globals
+@using TcNo_Acc_Switcher_Server.Data.Settings
+@using TcNo_Acc_Switcher_Server.Pages.General
+@using TcNo_Acc_Switcher_Server.Shared.Modal.Components
+@using Newtonsoft.Json
+@using System.IO
+@using SteamKit2.GC.Dota.Internal
+
+@code {
+    protected override void OnInitialized()
+    {
+        ModalData.Instance.GameStatsModalOnChange += OnChangeHandler;
+        OnChangeHandler(); // Run once just to set vars
+    }
+
+    private async void OnChangeHandler()
+    {
+        if (ModalData.CurrentStatsSelectorState == ModalData.StatsSelectorState.GamesList)
+        {
+            ModalData.Title = Lang.Instance["Modal_Title_GameStats"];
+            _editButtonText = Lang.Instance["Edit"];
+            _refreshButtonText = Lang.Instance["Refresh"];
+
+        }
+        else if (ModalData.CurrentStatsSelectorState == ModalData.StatsSelectorState.VarsList)
+        {
+            ModalData.Title = Lang.Instance["Modal_Title_GameVars", new { game = _currentGame }];
+            CalcGameVars();
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private void Dispose()
+    {
+        ModalData.Instance.GameStatsModalOnChange -= OnChangeHandler;
+    }
+
+
+
+    // List of games from X platform, with Y accountId associated.
+    private Dictionary<string, string> GetEnabledGames => BasicStats.GetAvailableGames.Where(game => BasicStats.GameStats[game].CachedStats.ContainsKey(AppData.SelectedAccountId)).ToList().ToDictionary(game => game, Globals.GetCleanFilePath);
+    //private Dictionary<string, string> GetEnabledGames
+    //{
+    //    get
+    //    {
+    //        var val = new Dictionary<string, string>();
+    //        foreach (var availableGame in BasicStats.GetAvailableGames)
+    //        {
+    //            if (BasicStats.GameStats.ContainsKey(availableGame) && BasicStats.GameStats[availableGame].CachedStats.ContainsKey(AppData.SelectedAccountId))
+    //            {
+    //                val.Add(availableGame, Globals.GetCleanFilePath(Globals.GetCleanFilePath(availableGame)));
+    //            }
+    //        }
+    //        return val;
+    //    }
+    //}
+
+
+    // List of games from X platform, NOT with Y accountId associated.
+    private Dictionary<string, string> GetDisabledGames => BasicStats.GetAvailableGames.Where(game => !BasicStats.GameStats[game].CachedStats.ContainsKey(AppData.SelectedAccountId)).ToList().ToDictionary(game => game, Globals.GetCleanFilePath);
+
+    // Disables specific games
+    private void DisableGame(string game)
+    {
+        if (!BasicStats.GameStats.ContainsKey(game) || !BasicStats.GameStats[game].CachedStats.ContainsKey(AppData.SelectedAccountId)) return;
+
+        BasicStats.GameStats[game].CachedStats.Remove(AppData.SelectedAccountId);
+        BasicStats.GameStats[game].SaveStats();
+
+        InvokeAsync(StateHasChanged);
+        UpdateAccountList();
+    }
+
+
+    #region Game Vars
+    private string _currentGame = "";
+
+    private Dictionary<string, string> GetRequiredVars => BasicStats.GameStats.ContainsKey(_currentGame) ? BasicStats.GameStats[_currentGame].RequiredVars : new Dictionary<string, string>();
+
+    private Dictionary<string, string> GetExistingVars
+    {
+        get
+        {
+            if (!BasicStats.GameStats.ContainsKey(_currentGame)) return new Dictionary<string, string>();
+            if (BasicStats.GameStats[_currentGame].CachedStats.ContainsKey(AppData.SelectedAccountId))
+                return BasicStats.GameStats[_currentGame].CachedStats[AppData.SelectedAccountId].Vars;
+            return new Dictionary<string, string>();
+        }
+    }
+
+    // Gets list of all metric names to collect for the provided account, as well as whether each is hidden or not, and the text to display in the UI checkbox.
+    private Dictionary<string, Tuple<bool, string>> GetHiddenMetrics()
+    {
+        var returnDict = new Dictionary<string, Tuple<bool, string>>();
+        if (_currentGame == "") return returnDict;
+        foreach (var (key, _) in BasicStats.GameStats[_currentGame].ToCollect)
+        {
+            var hidden = BasicStats.GameStats[_currentGame].CachedStats.ContainsKey(AppData.SelectedAccountId)
+                         && BasicStats.GameStats[_currentGame].CachedStats[AppData.SelectedAccountId].HiddenMetrics.Contains(key);
+            var text = BasicStats.GameStats[_currentGame].ToCollect[key].ToggleText;
+            returnDict.Add(key, new Tuple<bool, string>(hidden, text));
+        }
+
+        return returnDict;
+    }
+
+    // Get list of metrics that are set to hidden from the settings menu. This overrides individual account settings.
+    private List<string> GetGloballyHiddenMetrics =>
+        (from metric in AppSettings.GloballyHiddenMetrics[_currentGame] where metric.Value select metric.Key).ToList();
+
+    private class VarTextInput
+    {
+        public string Text;
+        public string Placeholder;
+        public string Value;
+    }
+
+    private class HiddenMetrics
+    {
+        public string Text;
+        public bool IsChecked;
+        public bool GloballyHidden;
+    }
+
+    private Dictionary<string, VarTextInput> _varTextInputs = new();
+    private Dictionary<string, HiddenMetrics> _hiddenMetrics = new();
+
+    private void CalcGameVars()
+    {
+        _varTextInputs = new Dictionary<string, VarTextInput>();
+        _hiddenMetrics = new Dictionary<string, HiddenMetrics>();
+
+        foreach (var (varName, v) in GetRequiredVars)
+        {
+            var placeholder = "";
+            var text = v;
+
+            if (text.Contains("[") && text.Contains("]")) {
+                var parts = text.Split("[");
+                text = parts[0].Trim();
+                placeholder = parts[1].Trim().Replace("]", "");
+            }
+
+            var existingValue = GetExistingVars.ContainsKey(varName) ? GetExistingVars[varName] : "";
+            if (text == "%ACCOUNTID%")
+            {
+                text = Lang.Instance["Stats_AccountId"];
+                if (existingValue == "")
+                    existingValue = AppData.SelectedAccountId;
+            }
+
+            _varTextInputs.Add(varName, new VarTextInput { Text = text, Placeholder = placeholder, Value = existingValue });
+        }
+
+
+        foreach (var (metricId, (metricHidden, checkboxText)) in GetHiddenMetrics())
+        {
+            _hiddenMetrics.Add(metricId, new HiddenMetrics { Text = checkboxText, IsChecked = !metricHidden, GloballyHidden = GetGloballyHiddenMetrics.Contains(metricId) });
+        }
+    }
+    #endregion
+
+    private string _editButtonText;
+    private string _refreshButtonText;
+}
+
+@if (ModalData.CurrentStatsSelectorState == ModalData.StatsSelectorState.GamesList)
+{
+    <div class="gameStatsWindow">
+        <p>@Lang.Instance["Modal_GameStats_Header", new { accountName = AppData.SelectedAccount.DisplayName }]</p>
+        <div class="modalScrollSection">
+            @foreach (var (game, safeGame) in GetEnabledGames)
+            {
+                <div class="rowSetting">
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="@safeGame" @onclick="() => DisableGame(game)" checked><label class="form-check-label" for="@safeGame"></label><label for="@safeGame">@game<br></label></div>
+                    <div>
+                        <button type="button" @onclick="() => ShowVarsList(game)"><span>@_editButtonText</span></button>
+                        <button type="button" @onclick="() => RefreshAccount(game)"><span>@_refreshButtonText</span></button>
+                    </div>
+                </div>
+            }
+
+            @foreach (var (game, safeGame) in GetDisabledGames)
+            {
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="@safeGame" @onclick="() => ShowVarsList(game)"><label class="form-check-label" for="@safeGame"></label><label for="@safeGame">@game<br></label>
+                </div>
+            }
+        </div>
+    </div>
+}
+@if (ModalData.CurrentStatsSelectorState == ModalData.StatsSelectorState.VarsList)
+{
+    <div class="gameStatsWindow">
+        <p>@Lang.Instance["Modal_GameVars_Header", new { game = _currentGame, username = AppData.SelectedAccount.DisplayName, platform = AppData.CurrentSwitcher }]</p>
+        <div class="modalScrollSection centeredContainer">
+            <div class="centeredSection">
+                @foreach (var (id, textInput) in _varTextInputs)
+                {
+                    <div class="rowSetting">
+                        <span>@textInput.Text</span>
+                        <input type="text" @bind="textInput.Value" spellcheck="false" placeholder="@textInput.Placeholder">
+                    </div>
+                }
+            </div>
+        </div>
+        <div>
+            <p>@Lang.Instance["Stats_MetricsToShow"]</p>
+            @foreach (var (id, hiddenMetric) in _hiddenMetrics)
+            {
+                @if (hiddenMetric.GloballyHidden)
+                {
+                    <div class="form-check mb-2" data-toggle="tooltip" title="@Lang.Instance["Tooltip_DisabledGlobally"]">
+                        <input class="form-check-input" type="checkbox" id="@id" @bind="hiddenMetric.IsChecked" disabled>
+                        <label class="form-check-label" for="@id"></label>
+                        <label for="@id">@hiddenMetric.Text<br></label>
+                    </div>
+                } else {
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="@id" @bind="hiddenMetric.IsChecked">
+                        <label class="form-check-label" for="@id"></label>
+                        <label for="@id">@hiddenMetric.Text<br></label>
+                    </div>
+                }
+            }
+        </div>
+        <div class="settingsCol inputAndButton">
+            <button class="modalOK" type="button" id="set_password" @onclick="SaveGameVars"><span>@Lang.Instance["Submit"]</span></button>
+        </div>
+    </div>
+}
+
+
+
+
+
+@code
+{
+    private void ShowVarsList(string game)
+    {
+        _currentGame = game;
+        ModalData.CurrentStatsSelectorState = ModalData.StatsSelectorState.VarsList;
+        OnChangeHandler();
+    }
+    private async Task RefreshAccount(string game)
+    {
+        await BasicStats.GameStats[game].LoadStatsFromWeb(AppData.SelectedAccountId, AppData.CurrentSwitcher);
+        BasicStats.GameStats[game].SaveStats();
+        UpdateAccountList();
+    }
+
+    private void UpdateAccountList(){
+        AppData.SelectedAccount.SetUserStats();
+        AppData.SelectedAccount.NotifyDataChanged();
+        ModalData.IsShown = false;
+
+    }
+
+    private async Task SaveGameVars()
+    {
+        var vars = new Dictionary<string, string>();
+        foreach (var (id, textInput) in _varTextInputs)
+        {
+            vars.Add(id, textInput.Value);
+        }
+
+        var hiddenMetrics = new List<string>();
+        foreach (var (id, hiddenMetric) in _hiddenMetrics.Where(x => !x.Value.IsChecked))
+        {
+            hiddenMetrics.Add(id);
+        }
+
+        await BasicStats.GameStats[_currentGame].SetAccount(vars, hiddenMetrics);
+
+        ModalData.CurrentStatsSelectorState = ModalData.StatsSelectorState.GamesList;
+        UpdateAccountList();
+    }
+}

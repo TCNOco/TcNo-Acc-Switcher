@@ -166,7 +166,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     new ("Forget", new Action(async () => await AppFuncs.ForgetAccount())),
                     new ("Notes", new Action(() => ModalData.ShowModal("notes"))),
                     BasicStats.PlatformHasAnyGames(CurrentPlatform.SafeName) ?
-                        new Tuple<string, object>("Context_ManageGameStats", "ShowGameStatsSetup(event)") : null,
+                        new Tuple<string, object>("Context_ManageGameStats", new Action(ModalData.ShowGameStatsSelectorModal)) : null,
                 }).Result());
         }
 

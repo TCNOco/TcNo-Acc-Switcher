@@ -293,6 +293,8 @@ namespace TcNo_Acc_Switcher_Globals
         {
             try
             {
+                HClient.DefaultRequestHeaders.Add("User-Agent", "TcNo Account Switcher");
+
                 if (!Uri.TryCreate(url, UriKind.Absolute, out _))
                     throw new InvalidOperationException("URI is invalid.");
 

@@ -164,7 +164,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     }
 
                     // Handle game stats (if any enabled and collected.)
-                    account.UserStats = BasicStats.GetUserStatsAllGamesMarkup(CurrentPlatform.FullName, str);
+                    account.UserStats = BasicStats.GetUserStatsAllGamesMarkup(str);
 
                     AppData.BasicAccounts.Add(account);
                     continue;
@@ -178,7 +178,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     account.ImagePath = GetImgPath(platform, key);
 
                     // Handle game stats (if any enabled and collected.)
-                    account.UserStats = BasicStats.GetUserStatsAllGamesMarkup(CurrentPlatform.FullName, key);
+                    account.UserStats = BasicStats.GetUserStatsAllGamesMarkup(key);
 
                     account.AccountId = key;
                     account.DisplayName = value;

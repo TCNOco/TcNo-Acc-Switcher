@@ -35,6 +35,7 @@
   text-overflow: ellipsis;
 }
 .acc_list_item .acc_stat {
+  overflow: visible;
   font-size: 0.8em;
 }
 .acc_list_item .acc_stat sup {
