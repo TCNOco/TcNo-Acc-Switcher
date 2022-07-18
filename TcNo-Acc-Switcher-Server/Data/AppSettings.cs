@@ -51,13 +51,13 @@ namespace TcNo_Acc_Switcher_Server.Data
                 {
                     // Load settings if have changed, or not set
                     if (_instance is {_currentlyModifying: true}) return _instance;
-                    if (_instance != new AppSettings() && Globals.GetFileMd5(SettingsFile) == _instance._lastHash) return _instance;
+                    if (_instance._lastHash != "") return _instance;
 
                     _instance = new AppSettings { _currentlyModifying = true };
 
                     if (File.Exists(SettingsFile))
                     {
-                        _instance = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(SettingsFile), new JsonSerializerSettings());
+                        if (File.Exists(SettingsFile)) JsonConvert.PopulateObject(File.ReadAllText(SettingsFile), _instance);
                         if (_instance == null)
                         {
                             _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedLoadSettings"]);
@@ -130,11 +130,12 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             public string Name = "";
             [JsonIgnore] public string SafeName = "";
+            [JsonIgnore] public string NameNoSpace = "";
             [JsonIgnore] public string Identifier = "";
             [JsonIgnore] public string ExeName = "";
             [JsonIgnore] public List<string> PossibleIdentifiers = new(); // Other identifiers that can refer to this platform. (b, bnet, battlenet, etc)
             public bool Enabled;
-            public int DisplayIndex = -1;
+            public int DisplayIndex = 99;
             public int CompareTo(object o)
             {
                 var a = this;
@@ -150,14 +151,15 @@ namespace TcNo_Acc_Switcher_Server.Data
             {
                 Name = name;
                 SafeName = Globals.GetCleanFilePath(name);
+                NameNoSpace = SafeName.Replace(" ", "");
                 Enabled = enabled;
             }
             public PlatformItem(string name, List<string> identifiers, string exeName, bool enabled)
             {
                 Name = name;
                 SafeName = Globals.GetCleanFilePath(name);
+                NameNoSpace = SafeName.Replace(" ", "");
                 Enabled = enabled;
-                DisplayIndex = -1;
                 Identifier = identifiers[0];
                 PossibleIdentifiers = identifiers;
                 ExeName = exeName;
@@ -170,7 +172,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             {
                 Name = inItem.Name;
                 SafeName = Globals.GetCleanFilePath(Name);
-                DisplayIndex = inItem.DisplayIndex;
+                NameNoSpace = SafeName.Replace(" ", "");
                 Identifier = inItem.Identifier;
                 ExeName = inItem.ExeName;
             }
@@ -178,7 +180,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             public void SetEnabled(bool enabled)
             {
                 Enabled = enabled;
-                SaveSettings();
+                Platforms.Sort();
             }
         }
 

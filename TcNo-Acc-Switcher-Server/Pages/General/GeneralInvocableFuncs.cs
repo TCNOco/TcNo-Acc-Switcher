@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Runtime.Versioning;
@@ -51,10 +52,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         }
 
         [JSInvokable]
-        public static void GiSaveOrder(string file, string jsonString)
+        public static void GiSaveOrder(string jsonString)
         {
-            Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.GiSaveOrder] file={file}, jsonString.length={jsonString.Length}");
-            GeneralFuncs.SaveOrder(file, JArray.Parse(jsonString));
+            Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.GiSaveOrder]  jsonString.length={jsonString.Length}");
+            var arr = JArray.Parse(jsonString);
+            for (var i = 0; i < arr.Count; i++)
+            {
+                var plat = AppSettings.Platforms.FirstOrDefault(x => x.SafeName == arr[i].ToString());
+                if (plat is null) continue;
+                plat.DisplayIndex = i;
+            }
+
+            AppSettings.SaveSettings();
         }
 
         /// <summary>

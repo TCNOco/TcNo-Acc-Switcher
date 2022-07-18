@@ -55,13 +55,13 @@ namespace TcNo_Acc_Switcher_Server.Data
                 {
                     // Load settings if have changed, or not set
                     if (_instance is { _currentlyModifying: true }) return _instance;
-                    if (_instance != new AppStats() && Globals.GetFileMd5(SettingsFile) == _instance._lastHash) return _instance;
+                    if (_instance._lastHash != "") return _instance;
 
                     _instance = new AppStats { _currentlyModifying = true };
 
                     if (File.Exists(SettingsFile))
                     {
-                        _instance = JsonConvert.DeserializeObject<AppStats>(File.ReadAllText(SettingsFile), new JsonSerializerSettings());
+                        if (File.Exists(SettingsFile)) JsonConvert.PopulateObject(File.ReadAllText(SettingsFile), _instance);
                         if (_instance == null)
                         {
                             _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedLoadStats"]);

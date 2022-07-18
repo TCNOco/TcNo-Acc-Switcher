@@ -86,6 +86,8 @@ namespace TcNo_Acc_Switcher_Server.Data
                     platform.SetFromPlatformItem(new AppSettings.PlatformItem(x.Name, identifiers, exeName, false));
                 }
             }
+
+            AppSettings.Platforms.Sort();
         }
     }
 

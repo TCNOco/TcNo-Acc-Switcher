@@ -51,7 +51,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
                     if (File.Exists(CurrentPlatform.SettingsFile))
                     {
-                        _instance = JsonConvert.DeserializeObject<Basic>(File.ReadAllText(CurrentPlatform.SettingsFile), new JsonSerializerSettings());
+                        if (File.Exists(CurrentPlatform.SettingsFile)) JsonConvert.PopulateObject(File.ReadAllText(CurrentPlatform.SettingsFile), _instance);
                         if (_instance == null)
                         {
                             _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedLoadSettings"]);
@@ -89,13 +89,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         private string _lastHash = "";
         private bool _currentlyModifying;
 
-        public static void SaveSettings()
-        {
-            // Accounts seem to reset when saving, for some reason...
-            var accList = AppData.BasicAccounts;
-            GeneralFuncs.SaveSettings(CurrentPlatform.SettingsFile, Instance);
-            AppData.BasicAccounts = accList;
-        }
+        public static void SaveSettings() => GeneralFuncs.SaveSettings(CurrentPlatform.SettingsFile, Instance);
 
         // Variables
         [JsonProperty("FolderPath", Order = 1)] private string _folderPath = "";

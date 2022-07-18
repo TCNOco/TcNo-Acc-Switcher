@@ -46,13 +46,13 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 {
                     // Load settings if have changed, or not set
                     if (_instance is { _currentlyModifying: true }) return _instance;
-                    if (_instance != new Steam() && Globals.GetFileMd5(SettingsFile) == _instance._lastHash) return _instance;
+                    if (_instance._lastHash != "") return _instance;
 
                     _instance = new Steam { _currentlyModifying = true };
 
                     if (File.Exists(SettingsFile))
                     {
-                        _instance = JsonConvert.DeserializeObject<Steam>(File.ReadAllText(SettingsFile), new JsonSerializerSettings());
+                        if (File.Exists(SettingsFile)) JsonConvert.PopulateObject(File.ReadAllText(SettingsFile), _instance);
                         if (_instance == null)
                         {
                             _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedLoadSettings"]);
@@ -94,13 +94,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         private string _lastHash = "";
         private bool _currentlyModifying;
 
-        public static void SaveSettings()
-        {
-            // Accounts seem to reset when saving, for some reason...
-            var accList = AppData.SteamAccounts;
-            GeneralFuncs.SaveSettings(SettingsFile, Instance);
-            AppData.SteamAccounts = accList;
-        }
+        public static void SaveSettings() => GeneralFuncs.SaveSettings(SettingsFile, Instance);
 
         #region Basic Compatability
         public static string GetShortcutImagePath(string gameShortcutName) =>

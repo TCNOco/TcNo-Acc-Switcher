@@ -64,9 +64,9 @@ async function initPlatformListSortable() {
     // On drag end, save list of items.
     sortable(".platform_list")[0].addEventListener("sortupdate", () => {
         var order = [];
-        $(".platform_list > div").each((i, e) => { order.push(e.id); });
+        $(".platform_list > div").each((i, e) => { order.push(e.getAttribute("safeName")); });
 
-        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiSaveOrder", `Settings\\platformOrder.json`, JSON.stringify(order));
+        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiSaveOrder", JSON.stringify(order));
     });
 }
 

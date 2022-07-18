@@ -528,8 +528,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 var folder = Path.GetDirectoryName(file);
                 if (folder != "") _ = Directory.CreateDirectory(folder ?? string.Empty);
 
-                File.WriteAllText(file,
-                    JsonConvert.SerializeObject(JObject.FromObject(jSettings), Formatting.Indented));
+                File.WriteAllText(file, JsonConvert.SerializeObject(jSettings, Formatting.Indented));
             }
             catch (Exception ex)
             {

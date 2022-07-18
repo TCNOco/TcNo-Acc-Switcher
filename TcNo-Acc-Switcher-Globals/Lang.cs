@@ -201,7 +201,7 @@ namespace TcNo_Acc_Switcher_Globals
                 {
                     // Load settings if have changed, or not set
                     if (_instance is { _currentlyModifying: true }) return _instance;
-                    if (_instance != new GLangAppSettings() && Globals.GetFileMd5(SettingsFile) == _instance._lastHash) return _instance;
+                    if (_instance._lastHash != "") return _instance;
 
                     _instance = new GLangAppSettings { _currentlyModifying = true };
 
