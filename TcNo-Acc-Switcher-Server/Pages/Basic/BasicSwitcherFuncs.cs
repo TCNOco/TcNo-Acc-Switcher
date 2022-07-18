@@ -24,6 +24,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.Interfaces;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Shared.Accounts;
 using BasicSettings = TcNo_Acc_Switcher_Server.Data.Settings.Basic;
@@ -32,8 +33,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 {
     public class BasicSwitcherFuncs
     {
-        private static readonly Lang Lang = Lang.Instance;
-
         /// <summary>
         /// Main function for Basic Account Switcher. Run on load.
         /// Collects accounts from cache folder

@@ -19,16 +19,14 @@
 @{ AppData.SetActiveNavMan(NavManager); }
 @inject IJSRuntime JsRuntime
 @{ AppData.SetActiveIJsRuntime(JsRuntime); }
-@inject AppData AData
-@inject AppSettings ASettings
-@inject Lang Locale
+@inject ILang Lang
 
 <div class="container mainblock">
     <div class="row">
         <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
             <toastarea class="toastarea" />
 
-            @if (ASettings.Platforms.All(x => !x.Enabled))
+            @if (AppSettings.Platforms.All(x => !x.Enabled))
             {
                 <span>@Locale["Settings_NoPlatforms"]</span>
 

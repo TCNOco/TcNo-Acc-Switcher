@@ -39,7 +39,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
     public class SteamSwitcherFuncs
     {
-        private static readonly Lang Lang = Lang.Instance;
+        [Inject] private ILang Lang { get; set; }
 
         #region STEAM_SWITCHER_MAIN
         // Checks if Steam path set properly, and can load.

@@ -111,7 +111,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
                 AppData.Instance.NotifyDataChanged();
 
-                await GeneralInvocableFuncs.ShowToast("success", Lang.Instance["Success"], renderTo: "toastarea");
+                await GeneralInvocableFuncs.ShowToast("success", Lang["Success"], renderTo: "toastarea");
             }
         }
 
@@ -147,7 +147,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             if (AppData.IsCurrentlyExportingAccounts)
             {
-                await GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_AlreadyProcessing"], Lang.Instance["Error"], "toastarea");
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_AlreadyProcessing"], Lang["Error"], "toastarea");
                 return;
             }
 
@@ -168,7 +168,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             _ = s.Shortcut_Platform(Shortcut.Desktop, platform.Name, platform.Identifier);
             s.ToggleShortcut(true);
 
-            await GeneralInvocableFuncs.ShowToast("success", Lang.Instance["Toast_ShortcutCreated"], Lang.Instance["Success"], "toastarea");
+            await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_ShortcutCreated"], Lang["Success"], "toastarea");
         }
 
         /// <summary>

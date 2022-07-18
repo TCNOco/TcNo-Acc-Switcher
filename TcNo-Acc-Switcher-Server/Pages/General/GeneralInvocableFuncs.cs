@@ -26,6 +26,7 @@ using Microsoft.JSInterop;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.Interfaces;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
@@ -36,8 +37,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 {
     public class GeneralInvocableFuncs
     {
-        private static readonly Lang Lang = Lang.Instance;
-
         /// <summary>
         /// JS function handler for saving settings from Settings GUI page into [Platform]Settings.json file
         /// </summary>
@@ -124,6 +123,26 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         }
 
         /// <summary>
+        /// JS function handler for showing Toast message.
+        /// Instead of putting in messages (which you still can), use lang vars and they will expand.
+        /// </summary>
+        public static async Task<bool> ShowToastLangVars(ILang lang, string toastType, string langToastMessage, string langToastTitle = "", string renderTo = "body", int duration = 5000)
+        {
+            Globals.DebugWriteLine($@"[JSInvoke:General\ShowToast] type={toastType}, message={langToastMessage}, title={langToastTitle}, renderTo={renderTo}, duration={duration}");
+            return await AppData.InvokeVoidAsync("window.notification.new", new { type = toastType, title = lang[langToastTitle], message = lang[langToastMessage], renderTo, duration });
+        }
+
+        /// <summary>
+        /// JS function handler for showing Toast message.
+        /// Instead of putting in messages (which you still can), use lang vars and they will expand.
+        /// </summary>
+        public static async Task<bool> ShowToastLangVars(ILang lang, string toastType, LangItem langItem, string langToastTitle = "", string renderTo = "body", int duration = 5000)
+        {
+            Globals.DebugWriteLine($@"[JSInvoke:General\ShowToast] type={toastType}, message={langItem.LangTitle}, title={langToastTitle}, renderTo={renderTo}, duration={duration}");
+            return await AppData.InvokeVoidAsync("window.notification.new", new { type = toastType, title = lang[langToastTitle], message = lang[langItem.LangTitle, langItem.LangObject], renderTo, duration });
+        }
+
+        /// <summary>
         /// Creates a shortcut to start the Account Switcher, and swap to the account related.
         /// </summary>
         /// <param name="args">(Optional) arguments for shortcut</param>
@@ -166,7 +185,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             if (!File.Exists(fgImg)) fgImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{AppData.CurrentSwitcherSafe}\\{AppData.SelectedAccountId}.png");
             if (!File.Exists(fgImg))
             {
-                await ShowToast("error", Lang["Toast_CantFindImage"], Lang["Toast_CantCreateShortcut"], "toastarea");
+                await ShowToastLangVars(Lang, "error", "Toast_CantFindImage", "Toast_CantCreateShortcut", "toastarea");
                 return;
             }
 
@@ -192,10 +211,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         public static string PlatformHintText() => CurrentPlatform.GetUserModalHintText();
 
         [JSInvokable]
-        public static string GiLocale(string k) => Lang.Instance[k];
+        public string GiLocale(string k) => Lang[k];
 
         [JSInvokable]
-        public static string GiLocaleObj(string k, object obj) => Lang.Instance[k, obj];
+        public string GiLocaleObj(string k, object obj) => Lang[k, obj];
 
 
         [JSInvokable]
@@ -210,5 +229,27 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
         [JSInvokable]
         public static string GiGetCleanFilePath(string f) => Globals.GetCleanFilePath(f);
+    }
+
+    public class LangItem
+    {
+        public string LangTitle { get; set; }
+        public object LangObject { get; set; }
+
+        public LangItem()
+        {
+            LangTitle = "";
+            LangObject = new object();
+        }
+        public LangItem(string title)
+        {
+            LangTitle = title;
+            LangObject = new object();
+        }
+        public LangItem(string langTitle, object langObject)
+        {
+            LangTitle = langTitle;
+            LangObject = langObject;
+        }
     }
 }

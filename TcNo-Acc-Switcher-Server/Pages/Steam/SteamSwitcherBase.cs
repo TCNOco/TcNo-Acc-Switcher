@@ -26,7 +26,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
     public class SteamSwitcherBase
     {
-        private static readonly Lang Lang = Lang.Instance;
+        [Inject] private ILang Lang { get; set; }
 
         public static void SteamOpenUserdata()
         {

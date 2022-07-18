@@ -20,7 +20,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.PreviewCss
 {
     public partial class PreviewCss
     {
-        private static readonly Lang Lang = Lang.Instance;
+        [Inject] private ILang Lang { get; set; }
         [Inject]
         public AppData AppData { get; set; }
         protected override void OnInitialized()

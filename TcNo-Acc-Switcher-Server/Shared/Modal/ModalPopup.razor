@@ -16,10 +16,11 @@
 @using TcNo_Acc_Switcher_Server.Shared.Modal.Modals
 @using TcNo_Acc_Switcher_Server.Data
 @using System.Collections.ObjectModel
+@using TcNo_Acc_Switcher_Server.Interfaces
 
 @inject IJSRuntime JsRuntime
 @inject AppData AData
-@inject Lang Locale
+@inject ILang Lang
 
 <div class="modalBG" onclick="if (event.target === this)$('.modalBG').fadeOut();" style="display: none;">
 @*<div class="modalBG" onclick="if (event.target === this)$('.modalBG').fadeOut();" style="display: none;">*@

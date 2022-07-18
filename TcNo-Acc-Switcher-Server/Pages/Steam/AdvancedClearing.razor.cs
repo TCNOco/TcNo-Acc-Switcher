@@ -26,9 +26,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
     public partial class AdvancedClearing
     {
-        private static readonly Lang Lang = Lang.Instance;
-        [Inject]
-        protected AppData AppData { get; set; }
+        [Inject] protected AppData AppData { get; set; }
 
         protected override void OnInitialized()
         {

@@ -24,6 +24,7 @@ using Microsoft.Extensions.Hosting;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Data.Settings;
+using TcNo_Acc_Switcher_Server.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server
 {
@@ -60,14 +61,12 @@ namespace TcNo_Acc_Switcher_Server
             _ = services.AddSingleton<CurrentPlatform>();
             _ = services.AddSingleton<Basic>();
             _ = services.AddSingleton<Steam>();
-            _ = services.AddSingleton<Lang>();
+            _ = services.AddSingleton<ILang, Lang>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            Lang.LoadLocalized();
-
             _ = env.IsDevelopment() ? app.UseDeveloperExceptionPage() : app.UseExceptionHandler("/Error");
 
             // Moves any old files from previous installs.

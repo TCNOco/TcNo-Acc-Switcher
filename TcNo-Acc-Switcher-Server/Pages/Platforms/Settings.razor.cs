@@ -20,7 +20,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Platforms
 {
     public partial class Settings
     {
-        private static readonly Lang Lang = Lang.Instance;
+        [Inject] private ILang Lang { get; set; }
         [Inject]
         public AppData AppData { get; set; }
         protected override void OnInitialized()

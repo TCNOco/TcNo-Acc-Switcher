@@ -20,6 +20,7 @@
 @using TcNo_Acc_Switcher_Server.Shared.Accounts
 @using System.IO
 @using Microsoft.AspNetCore.WebUtilities
+@using TcNo_Acc_Switcher_Server.Interfaces
 @using TcNo_Acc_Switcher_Server.Shared.Modal
 @inject AppData AData
 @inject IJSRuntime JsRuntime
@@ -28,7 +29,7 @@
 @{ AData.SetActiveNavMan(NavManager); }
 
 <style>@(AppSettings.GetCssBlock()) </style>
-@inject Lang Locale
+@inject ILang Lang
 
 <ContextMenu MenuItems="@Basic.ContextMenuItems" ContextMenuId="AccOrPlatList"/>
 <ContextMenu MenuItems="@Basic.ContextMenuShortcutItems" ContextMenuId="Shortcuts"/>
@@ -48,7 +49,7 @@
             }
         }
     </div>
-    <button id="btnOpenShortcutFolder" @onclick="() => Basic.OpenFolder(Path.GetFullPath(CurrentPlatform.ShortcutFolder))" data-toggle="tooltip" title="@(Locale["Tooltip_ShortcutFolder"])" data-placement="right">
+    <button id="btnOpenShortcutFolder" @onclick="() => Basic.OpenFolder(Path.GetFullPath(CurrentPlatform.ShortcutFolder))" data-toggle="tooltip" title="@(Lang["Tooltip_ShortcutFolder"])" data-placement="right">
         <i class="fas fa-plus"></i>
     </button>
 </div>
@@ -69,7 +70,7 @@
                 }
             }
         </div>
-        <button id="shortcutDropdownBtn" onclick="shortcutDropdownBtnClick()" data-toggle="tooltip" title="@(Locale["Tooltip_ExpandShortcuts"])" data-placement="right">
+        <button id="shortcutDropdownBtn" onclick="shortcutDropdownBtnClick()" data-toggle="tooltip" title="@(Lang["Tooltip_ExpandShortcuts"])" data-placement="right">
             <i class="fas fa-chevron-up"></i>
         </button>
 
@@ -82,22 +83,22 @@
 
         <button id="btnAddNew" @onclick="() => AppFuncs.SwapToNewAccount()">
             <i class="fas fa-plus footerIcoInline"></i>
-            <span>@Locale["Button_AddNew"]</span>
+            <span>@Lang["Button_AddNew"]</span>
         </button>
         <button id="btnAddCurrent" @onclick="ModalFuncs.ShowSetAccountStringModal">
             <i class="fas fa-save footerIcoInline"></i>
-            <span>@Locale["Button_SaveCurrent"]</span>
+            <span>@Lang["Button_SaveCurrent"]</span>
         </button>
         <button class="btn_login" id="btnLogin" @onclick="() => AppFuncs.SwapToAccount()">
-            <span>@Locale["Button_Login"]</span>
+            <span>@Lang["Button_Login"]</span>
             <i class="fas fa-caret-right footerIcoInline"></i>
         </button>
 
-        <button class="btnSettings" @onclick='() => AppData.NavigateTo("/Basic/Settings/")' data-toggle="tooltip" title="@(Locale["Tooltip_Settings"])">
+        <button class="btnSettings" @onclick='() => AppData.NavigateTo("/Basic/Settings/")' data-toggle="tooltip" title="@(Lang["Tooltip_Settings"])">
             <i class="fas fa-cog footerIcoSettings"></i>
         </button>
 
-        <button class="btnHelp" @onclick='() => ModalData.ShowModal("info")' data-toggle="tooltip" title="@(Locale["Tooltip_Info"])">
+        <button class="btnHelp" @onclick='() => ModalData.ShowModal("info")' data-toggle="tooltip" title="@(Lang["Tooltip_Info"])">
             <i class="fas fa-question footerIcoQuestion"></i>
         </button>
     </div>
@@ -167,7 +168,7 @@
     {
         if (_navBack)
         {
-            AppData.ReloadWithToast("error", Locale["Error"], Lang.Instance["Toast_FailedLoad", new {platform = CurrentPlatform.FullName}]);
+            AppData.ReloadWithToast("error", Lang["Error"], Lang["Toast_FailedLoad", new {platform = CurrentPlatform.FullName}]);
             return;
         }
         await GeneralFuncs.HandleFirstRender(firstRender, CurrentPlatform.FullName);

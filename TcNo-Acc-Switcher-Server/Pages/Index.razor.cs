@@ -14,8 +14,10 @@
 
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.Interfaces;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
 using TcNo_Acc_Switcher_Server.Shared.Modal;
@@ -26,7 +28,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
 {
     public partial class Index
     {
-        private static readonly Lang Lang = Lang.Instance;
+        [Inject] private ILang Lang { get; set; }
 
         public async Task Check(string platform)
         {

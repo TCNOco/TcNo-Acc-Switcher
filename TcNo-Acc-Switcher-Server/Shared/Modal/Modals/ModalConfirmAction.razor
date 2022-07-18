@@ -27,15 +27,15 @@
     private MarkupString _message = new();
     protected override void OnInitialized()
     {
-        ModalData.Title = Lang.Instance["Modal_Title_ConfirmAction"];
+        ModalData.Title = Lang["Modal_Title_ConfirmAction"];
 
         _message = ModalData.ExtraArgs switch
         {
             ModalData.ExtraArg.ForgetAccount => AppData.CurrentSwitcher == "Steam"
-                ? new MarkupString(Lang.Instance["Prompt_ForgetSteam"])
-                : new MarkupString(Lang.Instance["Prompt_ForgetAccount"]),
-            ModalData.ExtraArg.ClearStats => new MarkupString(Lang.Instance["Prompt_ClearStats"]),
-            ModalData.ExtraArg.RestartAsAdmin => new MarkupString(Lang.Instance["Prompt_RestartAsAdmin"]),
+                ? new MarkupString(Lang["Prompt_ForgetSteam"])
+                : new MarkupString(Lang["Prompt_ForgetAccount"]),
+            ModalData.ExtraArg.ClearStats => new MarkupString(Lang["Prompt_ClearStats"]),
+            ModalData.ExtraArg.RestartAsAdmin => new MarkupString(Lang["Prompt_RestartAsAdmin"]),
             _ => _message
             };
     }
@@ -47,19 +47,19 @@
 }
 
 <div class="infoWindow">
-    <div class="fullWidthContent"><h3>@Lang.Instance["Modal_ConfirmAction"]:</h3> @_message
+    <div class="fullWidthContent"><h3>@Lang["Modal_ConfirmAction"]:</h3> @_message
         <div class="YesNo">
             @if (ModalData.ExtraArgs == ModalData.ExtraArg.RestartAsAdmin)
             {
-                <button type="button" id="modal_true" @onclick="ButtonOk"><span>@Lang.Instance["Ok"]</span></button>
+                <button type="button" id="modal_true" @onclick="ButtonOk"><span>@Lang["Ok"]</span></button>
                 <br />
                 <br />
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="AlwaysAdmin" @bind="AppSettings.AlwaysAdmin" @onclick="AlwaysAdminClicked"><label class="form-check-label" for="AlwaysAdmin"></label></div><label for="AlwaysAdmin">@Lang.Instance["Settings_AlwaysAdmin"]<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="AlwaysAdmin" @bind="AppSettings.AlwaysAdmin" @onclick="AlwaysAdminClicked"><label class="form-check-label" for="AlwaysAdmin"></label></div><label for="AlwaysAdmin">@Lang["Settings_AlwaysAdmin"]<br></label>
             }
             else
             {
-                <button type="button" id="modal_true" @onclick="ButtonYes"><span>@Lang.Instance["Yes"]</span></button>
-                <button type="button" id="modal_false" @onclick="ButtonNo"><span>@Lang.Instance["No"]</span></button>
+                <button type="button" id="modal_true" @onclick="ButtonYes"><span>@Lang["Yes"]</span></button>
+                <button type="button" id="modal_false" @onclick="ButtonNo"><span>@Lang["No"]</span></button>
             }
         </div>
     </div>

@@ -16,14 +16,13 @@ using System;
 using System.Threading.Tasks;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.Interfaces;
 using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
     public partial class Settings
     {
-        private static readonly Lang Lang = Lang.Instance;
-
         protected override void OnInitialized()
         {
             AppData.WindowTitle = Lang["Title_Steam_Settings"];
@@ -39,7 +38,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
 
         // BUTTON: Check account VAC status
-        public static async Task ClearVacStatus()
+        public async Task ClearVacStatus()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearVacStatus]");
             if (Globals.DeleteFile(Data.Settings.Steam.VacCacheFile))
@@ -50,7 +49,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
 
         // BUTTON: Reset settings
-        public static void ClearSettings()
+        public void ClearSettings()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearSettings]");
             Data.Settings.Steam.ResetSettings();

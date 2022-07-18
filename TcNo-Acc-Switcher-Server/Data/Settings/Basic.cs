@@ -19,9 +19,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Interfaces;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Shared;
@@ -33,7 +35,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
     public class Basic
     {
-        private static readonly Lang Lang = Lang.Instance;
+        [Inject] private ILang Lang { get; set; }
         private static Basic _instance = new();
 
         private static readonly object LockObj = new();
@@ -167,7 +169,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     new ("Context_SwapTo", new Action(async () => await AppFuncs.SwapToAccount())),
                     new ("Context_CopyUsername", new Action(async () => await AppFuncs.CopyText(AppData.SelectedAccount.DisplayName))),
                     new ("Context_ChangeName", new Action(ModalFuncs.ShowChangeUsernameModal)),
-                    new ("Context_CreateShortcut", new Action(async () => await GeneralInvocableFuncs.CreateShortcut())),
+                    new ("Context_CreateShortcut", new Action(async () => await AppData.Instance.CreateShortcut())),
                     new ("Context_ChangeImage", new Action(ModalFuncs.ShowChangeAccImageModal)),
                     new ("Forget", new Action(async () => await AppFuncs.ForgetAccount())),
                     new ("Notes", new Action(() => ModalData.ShowModal("notes"))),
@@ -222,14 +224,14 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             StartingMethod = method;
             SaveSettings();
         }
-        public static async Task OpenFolder(string folder)
+        public static async Task OpenFolder(ILang lang, string folder)
         {
             Directory.CreateDirectory(folder); // Create if doesn't exist
             Process.Start("explorer.exe", folder);
-            await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_PlaceShortcutFiles"], renderTo: "toastarea");
+            await GeneralInvocableFuncs.ShowToast("info", lang["Toast_PlaceShortcutFiles"], renderTo: "toastarea");
         }
 
-        public static void RunPlatform(string exePath, bool admin, string args, string platName, string startingMethod = "Default")
+        public static void RunPlatform(ILang Lang, string exePath, bool admin, string args, string platName, string startingMethod = "Default")
         {
             _ = Globals.StartProgram(exePath, admin, args, startingMethod)
                 ? GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new {platform = platName}], renderTo: "toastarea")
@@ -237,18 +239,18 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         }
 
 
-        public static void RunPlatform(bool admin)
+        public static void RunPlatform(ILang Lang, bool admin)
         {
             _ = Globals.StartProgram(Exe(), admin, CurrentPlatform.ExeExtraArgs, CurrentPlatform.StartingMethod)
                 ? GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new {platform = CurrentPlatform.SafeName}], renderTo: "toastarea")
                 : GeneralInvocableFuncs.ShowToast("error", Lang["Toast_StartingPlatformFailed", new {platform = CurrentPlatform.SafeName}], renderTo: "toastarea");
         }
-        public static async Task RunPlatform()
+        public static async Task RunPlatform(ILang Lang)
         {
             Globals.StartProgram(Exe(), Admin, CurrentPlatform.ExeExtraArgs, CurrentPlatform.StartingMethod);
-            await GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea");
+            await GeneralInvocableFuncs.ShowToastLangVars(Lang, "info", new LangItem("Status_StartingPlatform", new { platform = CurrentPlatform.SafeName }), renderTo: "toastarea");
         }
-        public static async Task RunShortcut(string s, string shortcutFolder = "", bool admin = false, string platform = "")
+        public static async Task RunShortcut(ILang Lang, string s, string shortcutFolder = "", bool admin = false, string platform = "")
         {
             AppStats.IncrementGameLaunches(platform);
 
@@ -272,7 +274,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 proc.StartInfo.CreateNoWindow = true;
                 proc.StartInfo.RedirectStandardInput = true;
                 proc.StartInfo.RedirectStandardOutput = true;
-                if (admin) await GeneralInvocableFuncs.ShowToast("warning", Lang["Toast_UrlAdminErr"], duration: 15000, renderTo: "toastarea");
+                if (admin) await GeneralInvocableFuncs.ShowToastLangVars(Lang, "warning", "Toast_UrlAdminErr", duration: 15000, renderTo: "toastarea");
             }
             else if (Globals.IsAdministrator && !admin)
             {
@@ -283,22 +285,22 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             try
             {
                 proc.Start();
-                await GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = PlatformFuncs.RemoveShortcutExt(s) }], renderTo: "toastarea");
+                await GeneralInvocableFuncs.ShowToastLangVars(Lang, "info",new LangItem("Status_StartingPlatform", new { platform = PlatformFuncs.RemoveShortcutExt(s) }), renderTo: "toastarea");
             }
             catch (Exception e)
             {
                 // Cancelled by user, or another error.
                 Globals.WriteToLog($"Tried to start \"{s}\" but failed.", e);
-                await GeneralInvocableFuncs.ShowToast("error", Lang["Status_FailedLog"], duration: 15000, renderTo: "toastarea");
+                await GeneralInvocableFuncs.ShowToastLangVars(Lang, "error", "Status_FailedLog", duration: 15000, renderTo: "toastarea");
             }
         }
 
         [JSInvokable]
-        public static async Task HandleShortcutAction(string shortcut, string action)
+        public static async Task HandleShortcutAction(ILang Lang, string shortcut, string action)
         {
             if (shortcut == "btnStartPlat") // Start platform requested
             {
-                RunPlatform(action == "admin");
+                RunPlatform(Lang, action == "admin");
                 return;
             }
 
@@ -318,7 +320,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     break;
                 }
                 case "admin":
-                    await RunShortcut(shortcut, admin: true);
+                    await RunShortcut(Lang, shortcut, admin: true);
                     break;
             }
         }

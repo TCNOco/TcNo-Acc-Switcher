@@ -15,7 +15,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Threading;
 using System.Threading.Tasks;
 using DiscordRPC;
@@ -26,6 +28,10 @@ using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data.Settings;
+using TcNo_Acc_Switcher_Server.Interfaces;
+using TcNo_Acc_Switcher_Server.Pages.General;
+using TcNo_Acc_Switcher_Server.Pages.General.Classes;
+using TcNo_Acc_Switcher_Server.Pages.Steam;
 using TcNo_Acc_Switcher_Server.Shared.Accounts;
 using Index = TcNo_Acc_Switcher_Server.Pages.Steam.Index;
 
@@ -33,7 +39,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 {
     public class AppData
     {
-        private static readonly Lang Lang = Lang.Instance;
+        [Inject] private ILang Lang { get; set; }
         private static AppData _instance = new();
 
         private static readonly object LockObj = new();
@@ -306,6 +312,71 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         [JsonIgnore] private bool _isCurrentlyExportingAccounts;
         public static bool IsCurrentlyExportingAccounts { get => Instance._isCurrentlyExportingAccounts; set => Instance._isCurrentlyExportingAccounts = value; }
+
+
+
+        /// <summary>
+        /// Creates a shortcut to start the Account Switcher, and swap to the account related.
+        /// </summary>
+        /// <param name="args">(Optional) arguments for shortcut</param>
+        [JSInvokable]
+        [SupportedOSPlatform("windows")]
+        public async Task CreateShortcut(string args = "")
+        {
+            Globals.DebugWriteLine(@"[JSInvoke:General\GeneralInvocableFuncs.CreateShortcut]");
+            if (args.Length > 0 && args[0] != ':') args = $" {args}"; // Add a space before arguments if doesn't start with ':'
+            string platformName;
+            var primaryPlatformId = "" + CurrentSwitcher[0];
+            var bgImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\platform\\{CurrentSwitcherSafe}.svg");
+            string currentPlatformImgPath, currentPlatformImgPathOverride;
+            switch (CurrentSwitcher)
+            {
+                case "Steam":
+                    currentPlatformImgPath = Path.Join(GeneralFuncs.WwwRoot(), "\\img\\platform\\Steam.svg");
+                    currentPlatformImgPathOverride = Path.Join(GeneralFuncs.WwwRoot(), "\\img\\platform\\Steam.png");
+                    var ePersonaState = -1;
+                    if (args.Length == 2) _ = int.TryParse(args[1].ToString(), out ePersonaState);
+                    platformName = $"Switch to {SelectedAccount.DisplayName} {(args.Length > 0 ? $"({SteamSwitcherFuncs.PersonaStateToString(ePersonaState)})" : "")} [{CurrentSwitcher}]";
+                    break;
+                default:
+                    currentPlatformImgPath = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\platform\\{CurrentPlatform.SafeName}.svg");
+                    currentPlatformImgPathOverride = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\platform\\{CurrentPlatform.SafeName}.png");
+                    primaryPlatformId = CurrentPlatform.PrimaryId;
+                    platformName = $"Switch to {SelectedAccount.DisplayName} [{CurrentSwitcher}]";
+                    break;
+            }
+
+            if (File.Exists(currentPlatformImgPathOverride))
+                bgImg = currentPlatformImgPathOverride;
+            else if (File.Exists(currentPlatformImgPath))
+                bgImg = currentPlatformImgPath;
+            else if (File.Exists(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\BasicDefault.png")))
+                bgImg = Path.Join(GeneralFuncs.WwwRoot(), "\\img\\BasicDefault.png");
+
+
+            var fgImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{CurrentSwitcherSafe}\\{SelectedAccountId}.jpg");
+            if (!File.Exists(fgImg)) fgImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{CurrentSwitcherSafe}\\{SelectedAccountId}.png");
+            if (!File.Exists(fgImg))
+            {
+                await GeneralInvocableFuncs.ShowToastLangVars(Lang, "error", Lang["Toast_CantFindImage"], Lang["Toast_CantCreateShortcut"], "toastarea");
+                return;
+            }
+
+            var s = new Shortcut();
+            _ = s.Shortcut_Platform(
+                Shortcut.Desktop,
+                platformName,
+                $"+{primaryPlatformId}:{SelectedAccountId}{args}",
+                $"Switch to {SelectedAccount.DisplayName} [{CurrentSwitcher}] in TcNo Account Switcher",
+                true);
+            await s.CreateCombinedIcon(bgImg, fgImg, $"{SelectedAccountId}.ico");
+            s.TryWrite();
+
+            if (AppSettings.StreamerModeTriggered)
+                await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_ShortcutCreated"], Lang["Success"], "toastarea");
+            else
+                await GeneralInvocableFuncs.ShowToast("success", Lang["ForName", new { name = SelectedAccount.DisplayName }], Lang["Toast_ShortcutCreated"], "toastarea");
+        }
     }
     public class InitializedClasses
     {

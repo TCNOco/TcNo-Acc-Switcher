@@ -182,7 +182,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             catch (Exception e)
             {
                 Globals.WriteToLog($"Failed to CreateIcon! '{bgImg}', '{fgImg}, '{iconName}'", e);
-                await GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_FailedCreateIcon"]);
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedCreateIcon"]);
             }
         }
         #endregion

@@ -20,7 +20,7 @@
 @inject NavigationManager NavManager
 @{ AData.SetActiveNavMan(NavManager); }
 
-@inject Lang Locale
+@inject ILang Lang
 
 <div class="text-editor d-flex flex-column">
     <div class="flex-grow-1 editor-container">
@@ -42,7 +42,7 @@ Actions will show here
 
 @code
 {
-	private static readonly Lang Lang = Lang.Instance;
+	[Inject] private ILang Lang { get; set; }
     // This has to be here for NavManager.
     // This is run before everything is painted on, so that it can get the correct values for the CSS Block.
     protected override void OnParametersSet()

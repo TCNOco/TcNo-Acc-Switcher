@@ -18,7 +18,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
-@inject Lang Locale
+@inject ILang Lang
 @inject NavigationManager NavManager
 @inject AppData AData
 @{ AData.SetActiveNavMan(NavManager); }
@@ -85,7 +85,7 @@
     <div class="form-check">
         <input class="form-check-input" type="checkbox" id="AlwaysAdmin_Settings" @bind="AppSettings.AlwaysAdmin"><label class="form-check-label" for="AlwaysAdmin_Settings"></label>
     </div>
-    <label for="AlwaysAdmin_Settings">@Lang.Instance["Settings_AlwaysAdmin"]<br></label>
+    <label for="AlwaysAdmin_Settings">@Lang["Settings_AlwaysAdmin"]<br></label>
 </div>
 <div class="rowSetting">
     <div class="form-check">

@@ -16,7 +16,7 @@
 @code {
     protected override void OnInitialized()
     {
-        ModalData.Title = Lang.Instance["Modal_Title_Stats"];
+        ModalData.Title = Lang["Modal_Title_Stats"];
         AppStats.GenerateTotals();
         AppStats.SaveSettings();
     }
@@ -27,60 +27,60 @@
         <div style="text-align:left"><p>
             @if (!AppSettings.StatsEnabled)
             {
-                @Lang.Instance["Stats_Disabled"];
+                @Lang["Stats_Disabled"];
             }
             else
             {
                 <h3>TcNo Account Switcher Stats - @DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")</h3><br />
                 @if (AppSettings.StatsShare)
                 {
-                    @(new MarkupString(Lang.Instance["Stats_ShareEnabled", new {WebsiteLink = "OpenLinkInBrowser('https://tcno.co/Projects/AccSwitcher/stats/')"}]))
+                    @(new MarkupString(Lang["Stats_ShareEnabled", new {WebsiteLink = "OpenLinkInBrowser('https://tcno.co/Projects/AccSwitcher/stats/')"}]))
                 }
                 else
                 {
-                    @(new MarkupString(Lang.Instance["Stats_ShareDisabled", new { WebsiteLink = "https://tcno.co/Projects/AccSwitcher/stats/" }]))
+                    @(new MarkupString(Lang["Stats_ShareDisabled", new { WebsiteLink = "https://tcno.co/Projects/AccSwitcher/stats/" }]))
                 }
                 <div class="statSection">
-                    <span><b>@Lang.Instance["Stats_OperatingSystem"]</b>@AppStats.OperatingSystem</span>
-                    <span><b>@Lang.Instance["Stats_FirstLaunch"]</b>@AppStats.FirstLaunch.ToString("yyyy-MM-dd HH:mm:ss")</span>
-                    <span><b>@Lang.Instance["Stats_LaunchCount"]</b>@AppStats.LaunchCount</span>
-                    <span><b>@Lang.Instance["Stats_CrashCount"]</b>@AppStats.CrashCount</span>
-                    <span><b>@Lang.Instance["Stats_MostUsedPlatform"]</b>@AppStats.MostUsedPlatform</span>
-                    <span><b>@Lang.Instance["Stats_TotalTime"]</b>@TimeSpan.FromSeconds(AppStats.PageStats["_Total"].TotalTime).ToString("hh\\:mm\\:ss")</span>
-                    <span><b>@Lang.Instance["Stats_TotalSwitches"]</b>@AppStats.SwitcherStats["_Total"].Switches</span>
-                    <span><b>@Lang.Instance["Stats_TotalGamesLaunched"]</b>@AppStats.SwitcherStats["_Total"].GamesLaunched</span>
-                    <span><b>@Lang.Instance["Stats_UniqueDaysLong"]</b>@AppStats.SwitcherStats["_Total"].UniqueDays</span>
+                    <span><b>@Lang["Stats_OperatingSystem"]</b>@AppStats.OperatingSystem</span>
+                    <span><b>@Lang["Stats_FirstLaunch"]</b>@AppStats.FirstLaunch.ToString("yyyy-MM-dd HH:mm:ss")</span>
+                    <span><b>@Lang["Stats_LaunchCount"]</b>@AppStats.LaunchCount</span>
+                    <span><b>@Lang["Stats_CrashCount"]</b>@AppStats.CrashCount</span>
+                    <span><b>@Lang["Stats_MostUsedPlatform"]</b>@AppStats.MostUsedPlatform</span>
+                    <span><b>@Lang["Stats_TotalTime"]</b>@TimeSpan.FromSeconds(AppStats.PageStats["_Total"].TotalTime).ToString("hh\\:mm\\:ss")</span>
+                    <span><b>@Lang["Stats_TotalSwitches"]</b>@AppStats.SwitcherStats["_Total"].Switches</span>
+                    <span><b>@Lang["Stats_TotalGamesLaunched"]</b>@AppStats.SwitcherStats["_Total"].GamesLaunched</span>
+                    <span><b>@Lang["Stats_UniqueDaysLong"]</b>@AppStats.SwitcherStats["_Total"].UniqueDays</span>
                 </div>
-                <h4>@Lang.Instance["Stats_InDepth"]</h4>
+                <h4>@Lang["Stats_InDepth"]</h4>
                 <div class="statSection">
                     <span><b>Uuid</b>: @AppStats.Uuid</span>
-                    <span><b>@Lang.Instance["Stats_LastUpload"]</b>@AppStats.LastUpload.ToString("yyyy-MM-dd HH:mm:ss")</span>
+                    <span><b>@Lang["Stats_LastUpload"]</b>@AppStats.LastUpload.ToString("yyyy-MM-dd HH:mm:ss")</span>
                     @if (AppStats.SwitcherStats.Count > 1)
                     {
-                        <span><b>@Lang.Instance["Stats_SwitcherStats"]</b></span>
+                        <span><b>@Lang["Stats_SwitcherStats"]</b></span>
                     }
 
                     @foreach (var switcherStat in AppStats.SwitcherStats.Where(switcherStat => switcherStat.Key != "_Total"))
                     {
                         <b>- @switcherStat.Key: </b>
                         <div class="statIndent">
-                            <span><b>- @Lang.Instance["Stats_Accounts"]</b>@switcherStat.Value.Accounts</span>
-                            <span><b>- @Lang.Instance["Stats_Switches"]</b>@switcherStat.Value.Switches</span>
-                            <span><b>- @Lang.Instance["Stats_FirstActive"]</b>@switcherStat.Value.FirstActive.ToString("yyyy-MM-dd HH:mm:ss")</span>
-                            <span><b>- @Lang.Instance["Stats_LastActive"]</b>@switcherStat.Value.LastActive.ToString("yyyy-MM-dd HH:mm:ss")</span>
-                            <span><b>- @Lang.Instance["Stats_UniqueDays"]</b>@switcherStat.Value.UniqueDays</span>
-                            <span><b>- @Lang.Instance["Stats_GameShortcuts"]</b>@switcherStat.Value.GameShortcuts</span>
-                            <span><b>- @Lang.Instance["Stats_GameShortcutsHotbar"]</b>@switcherStat.Value.GameShortcutsHotbar</span>
-                            <span><b>- @Lang.Instance["Stats_GamesLaunched"]</b>@switcherStat.Value.GamesLaunched</span>
+                            <span><b>- @Lang["Stats_Accounts"]</b>@switcherStat.Value.Accounts</span>
+                            <span><b>- @Lang["Stats_Switches"]</b>@switcherStat.Value.Switches</span>
+                            <span><b>- @Lang["Stats_FirstActive"]</b>@switcherStat.Value.FirstActive.ToString("yyyy-MM-dd HH:mm:ss")</span>
+                            <span><b>- @Lang["Stats_LastActive"]</b>@switcherStat.Value.LastActive.ToString("yyyy-MM-dd HH:mm:ss")</span>
+                            <span><b>- @Lang["Stats_UniqueDays"]</b>@switcherStat.Value.UniqueDays</span>
+                            <span><b>- @Lang["Stats_GameShortcuts"]</b>@switcherStat.Value.GameShortcuts</span>
+                            <span><b>- @Lang["Stats_GameShortcutsHotbar"]</b>@switcherStat.Value.GameShortcutsHotbar</span>
+                            <span><b>- @Lang["Stats_GamesLaunched"]</b>@switcherStat.Value.GamesLaunched</span>
                         </div>
                     }
                     @if (AppStats.PageStats.Count > 1){
-                        <b>@Lang.Instance["Stats_PageStats"]</b><br />
+                        <b>@Lang["Stats_PageStats"]</b><br />
                     }
                     <div class="statIndent">
                         @foreach (var pageStat in AppStats.PageStats.Where(pageStat => pageStat.Key != "_Total"))
                         {
-                            <span><b>- @pageStat.Key: </b>@Lang.Instance["Stats_VisitsTotalTime", new { visits = pageStat.Value.Visits, hours = TimeSpan.FromSeconds(pageStat.Value.TotalTime).ToString("hh\\:mm\\:ss")}]</span>
+                            <span><b>- @pageStat.Key: </b>@Lang["Stats_VisitsTotalTime", new { visits = pageStat.Value.Visits, hours = TimeSpan.FromSeconds(pageStat.Value.TotalTime).ToString("hh\\:mm\\:ss")}]</span>
                         }
                     </div>
                 </div>

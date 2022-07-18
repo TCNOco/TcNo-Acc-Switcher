@@ -131,14 +131,14 @@ namespace TcNo_Acc_Switcher_Server.Shared.Modal
 
             if (folderEmpty)
             {
-                await GeneralInvocableFuncs.ShowToast("info", Lang.Instance["Toast_DataLocationCopying"], renderTo: "toastarea");
+                await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_DataLocationCopying"], renderTo: "toastarea");
                 if (!Globals.CopyFilesRecursive(Globals.UserDataFolder, path))
-                    await GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_FileCopyFail"], renderTo: "toastarea");
+                    await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
             }
             else
-                await GeneralInvocableFuncs.ShowToast("info", Lang.Instance["Toast_DataLocationNotCopying"], renderTo: "toastarea");
+                await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_DataLocationNotCopying"], renderTo: "toastarea");
 
-            await GeneralInvocableFuncs.ShowToast("info", Lang.Instance["Toast_DataLocationSet"], renderTo: "toastarea");
+            await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_DataLocationSet"], renderTo: "toastarea");
         }
 
         /// <summary>
@@ -166,7 +166,7 @@ namespace TcNo_Acc_Switcher_Server.Shared.Modal
 
             // Reload page.
             AppData.CacheReloadPage();
-            await GeneralInvocableFuncs.ShowToast("success", Lang.Instance["Toast_UpdatedImage"], renderTo: "toastarea");
+            await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_UpdatedImage"], renderTo: "toastarea");
         }
 
         #endregion
@@ -192,7 +192,7 @@ namespace TcNo_Acc_Switcher_Server.Shared.Modal
         {
             AppSettings.PasswordHash = Globals.GetSha256HashString(ModalData.TextInput.LastString);
             AppSettings.SaveSettings();
-            await GeneralInvocableFuncs.ShowToast("success", Lang.Instance["Toast_PasswordChanged"], renderTo: "toastarea");
+            await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_PasswordChanged"], renderTo: "toastarea");
         }
 
         /// <summary>

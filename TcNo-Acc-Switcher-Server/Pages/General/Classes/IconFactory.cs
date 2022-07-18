@@ -32,7 +32,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
     /// </summary>
     public class IconFactory
     {
-        private static readonly Lang Lang = Lang.Instance;
+        [Inject] private ILang Lang { get; set; }
 
         #region FACTORY
         // https://stackoverflow.com/a/32530019/5165437

@@ -238,7 +238,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (!File.Exists(BasicStatsPath))
             {
                 // Once again verify the file exists. If it doesn't throw an error here.
-                await GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_FailedStatsLoad"], renderTo: "toastarea");
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedStatsLoad"], renderTo: "toastarea");
                 Globals.WriteToLog("Failed to locate GameStats.json! This will cause a lot of stats to break.");
                 return;
             }
@@ -449,7 +449,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             if (ToCollect != null)
                 foreach (var collectInstruction in ToCollect.Where(collectInstruction => collectInstruction.Key == "%PROFILEIMAGE%"))
-                    collectInstruction.Value.ToggleText = Lang.Instance["ProfileImage_ToggleText"];
+                    collectInstruction.Value.ToggleText = Lang["ProfileImage_ToggleText"];
 
             //foreach (var (k, v) in jGame["Collect"]?.ToObject<Dictionary<string, CollectInstruction>>()!)
             //{
@@ -476,7 +476,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             if (CachedStats[accountId].Collected.Count == 0 || DateTime.Now.Subtract(CachedStats[accountId].LastUpdated).Days >= 1)
             {
-                await GeneralInvocableFuncs.ShowToast("info", Lang.Instance["Toast_LoadingStats"], renderTo: "toastarea");
+                await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_LoadingStats"], renderTo: "toastarea");
                 _lastLoadingNotification = DateTime.Now;
                 return await LoadStatsFromWeb(accountId, platform);
             }
@@ -515,7 +515,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             // Notify user than an account is being loaded - >5 seconds apart.
             if (DateTime.Now.Subtract(_lastLoadingNotification).Seconds >= 5)
             {
-                await GeneralInvocableFuncs.ShowToast("info", Lang.Instance["Toast_LoadingStats"], renderTo: "toastarea");
+                await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_LoadingStats"], renderTo: "toastarea");
                 _lastLoadingNotification = DateTime.Now;
             }
 
@@ -523,7 +523,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             HtmlDocument doc = new();
             if (!Globals.GetWebHtmlDocument(ref doc, UrlSubbed(userStat), out var responseText, Cookies))
             {
-                await GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_GameStatsLoadFail", new { Game }], renderTo: "toastarea");
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_GameStatsLoadFail", new { Game }], renderTo: "toastarea");
                 return false;
             }
 
@@ -588,7 +588,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             {
                 Directory.CreateDirectory(Path.Join(Globals.UserDataFolder, "temp"));
                 await File.WriteAllTextAsync(Path.Join(Globals.UserDataFolder, "temp", $"download-{Globals.GetCleanFilePath(accountId)}-{Globals.GetCleanFilePath(Game)}.html"), responseText);
-                await GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_GameStatsEmpty", new { AccoundId = Globals.GetCleanFilePath(accountId), Game = Globals.GetCleanFilePath(Game) }], renderTo: "toastarea");
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_GameStatsEmpty", new { AccoundId = Globals.GetCleanFilePath(accountId), Game = Globals.GetCleanFilePath(Game) }], renderTo: "toastarea");
                 if (CachedStats.ContainsKey(accountId))
                     CachedStats.Remove(accountId);
                 return false;

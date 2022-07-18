@@ -35,7 +35,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
     public class Steam
     {
-        private static readonly Lang Lang = Lang.Instance;
+        [Inject] private ILang Lang { get; set; }
         private static Steam _instance = new();
         private static readonly object LockObj = new();
         public static Steam Instance
@@ -345,15 +345,15 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                         Text = AppIds.Value.ContainsKey(gameId) ? AppIds.Value[gameId] : gameId,
                         Children = new List<MenuItem>{
                             new() {
-                                Text = Lang.Instance["Context_Game_CopySettingsFrom"],
+                                Text = Lang["Context_Game_CopySettingsFrom"],
                                 MenuAction = async () => await SteamSwitcherFuncs.CopySettingsFrom(gameId)
                             },
                             new() {
-                                Text = Lang.Instance["Context_Game_RestoreSettingsTo"],
+                                Text = Lang["Context_Game_RestoreSettingsTo"],
                                 MenuAction = async () => await SteamSwitcherFuncs.RestoreSettingsTo(gameId)
                             },
                             new() {
-                                Text = Lang.Instance["Context_Game_BackupData"],
+                                Text = Lang["Context_Game_BackupData"],
                                 MenuAction = async () => await SteamSwitcherFuncs.BackupGameData(gameId)
                             }
                         }

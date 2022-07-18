@@ -42,7 +42,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 {
     public class GeneralFuncs
     {
-        private static readonly Lang Lang = Lang.Instance;
+        [Inject] private ILang Lang { get; set; }
 
         #region PROCESS_OPERATIONS
 

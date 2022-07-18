@@ -90,7 +90,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
         }
 
-        private static readonly Lang Lang = Lang.Instance;
+        [Inject] private ILang Lang { get; set; }
         private string _lastHash = "";
         private bool _currentlyModifying;
         public static readonly string SettingsFile = "Statistics.json";

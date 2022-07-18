@@ -12,14 +12,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.Pages
 {
     public partial class Settings
     {
-        private static readonly Lang Lang = Lang.Instance;
+        [Inject] private ILang Lang { get; set; }
         protected override void OnInitialized()
         {
             AppData.WindowTitle = Lang["Title_Settings"];

@@ -29,7 +29,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 {
     public class GenericFunctions
     {
-        private static readonly Lang Lang = Lang.Instance;
+        [Inject] private ILang Lang { get; set; }
 
         /// <summary>
         /// Save settings with Ctrl+S Hot key
