@@ -24,9 +24,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
@@ -39,6 +41,7 @@ namespace TcNo_Acc_Switcher_Client
     /// </summary>
     public partial class App
     {
+
 #pragma warning disable CA2211 // Non-constant fields should not be visible - Accessed from App.xaml.cs
         public static string StartPage = "";
 #pragma warning restore CA2211 // Non-constant fields should not be visible
@@ -63,6 +66,16 @@ namespace TcNo_Acc_Switcher_Client
 
         private static readonly Mutex Mutex = new(true, "{A240C23D-6F45-4E92-9979-11E6CE10A22C}");
 
+        private AppSettings _appSettings;
+        private GeneralFuncs _generalFuncs;
+        private AppStats _appStats;
+        private BasicPlatforms _basicPlatforms;
+        private AppData _appData;
+        private CurrentPlatform _currentPlatform;
+        private AppFuncs _appFuncs;
+        private Basic _basic;
+        private TcNo_Acc_Switcher_Server.Data.Settings.Steam _steam;
+
         [STAThread]
         protected override async void OnStartup(StartupEventArgs e)
         {
@@ -73,13 +86,23 @@ namespace TcNo_Acc_Switcher_Client
             CleanupAppFolder();
 
             Directory.SetCurrentDirectory(Globals.UserDataFolder);
-
-            if (AppSettings.AlwaysAdmin && !Globals.IsAdministrator) GeneralFuncs.RestartAsAdmin();
+            _appSettings = new();
+            if (_appSettings.AlwaysAdmin && !Globals.IsAdministrator) _generalFuncs.RestartAsAdmin();
 
             // Crash handler
             AppDomain.CurrentDomain.UnhandledException += Globals.CurrentDomain_UnhandledException;
             // Upload crash logs if any, before starting program
             UploadLogs();
+
+            _generalFuncs = new();
+            _appStats = new();
+            _basicPlatforms = new();
+            _appData = new();
+            _currentPlatform = new();
+            _appFuncs = new();
+            _basic = new();
+            _steam = new();
+
 
             if (e.Args.Length != 0) // An argument was passed
             {
@@ -144,7 +167,7 @@ namespace TcNo_Acc_Switcher_Client
                 (Keyboard.GetKeyStates(Key.Scroll) & KeyStates.Down) != 0)
             {
                 // This can be improved. Somehow ignore self, and make sure all processes are killed before self.
-                if (await GeneralFuncs.CanKillProcess("TcNo"))
+                if (await _generalFuncs.CanKillProcess("TcNo"))
                     Globals.KillProcess("TcNo");
             }
 
@@ -182,7 +205,7 @@ namespace TcNo_Acc_Switcher_Client
             {
                 // Check if CEF issue, and download if missing.
                 if (!ex.ToString().Contains("CefSharp")) throw;
-                AppSettings.AutoStartUpdaterAsAdmin("downloadCEF");
+                _appSettings.AutoStartUpdaterAsAdmin("downloadCEF");
                 Environment.Exit(1);
                 throw;
             }
@@ -196,8 +219,8 @@ namespace TcNo_Acc_Switcher_Client
             MessageBox.Show("Last error message:" + Environment.NewLine + string.Join(Environment.NewLine, lastError), "Error from last crash", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
             Globals.DeleteFile("LastError.txt");
 
-            AppStats.CrashCount++;
-            AppStats.SaveSettings();
+            _appStats.CrashCount++;
+            _appStats.SaveSettings();
         }
 
         /// <summary>
@@ -243,39 +266,10 @@ namespace TcNo_Acc_Switcher_Client
         }
 */
 
-        public static SolidColorBrush GetStylesheetColor(string key, string fallback)
-        {
-            string color;
-            try
-            {
-                var start = AppSettings.Stylesheet.IndexOf(key + ":", StringComparison.Ordinal) + key.Length + 1;
-                var end = AppSettings.Stylesheet.IndexOf(";", start, StringComparison.Ordinal);
-                color = AppSettings.Stylesheet[start..end];
-                color = color.Trim(); // Remove whitespace around variable
-            }
-            catch (Exception)
-            {
-                color = "";
-            }
-
-
-            var returnColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString(fallback)!);
-            if (!color.StartsWith("#")) return returnColor;
-            try
-            {
-                returnColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color)!);
-            }
-            catch (Exception)
-            {
-                // Failed to set color
-            }
-            return returnColor;
-        }
-
         /// <summary>
         /// Shows error and exits program is program is already running
         /// </summary>
-        private static void IsRunningAlready()
+        private void IsRunningAlready()
         {
             try
             {
@@ -284,7 +278,7 @@ namespace TcNo_Acc_Switcher_Client
 
                 // The program is running at this point.
                 // If set to minimize to tray, try open it.
-                if (AppSettings.TrayMinimizeNotExit)
+                if (_appSettings.TrayMinimizeNotExit)
                 {
                     if (NativeFuncs.BringToFront())
                         Environment.Exit(1056); // 1056	An instance of the service is already running.
@@ -315,7 +309,7 @@ release = true;
                 }
                 else
                 {
-	                if (!AppSettings.ShownMinimizedNotification)
+	                if (!_appSettings.ShownMinimizedNotification)
 	                {
 		                text = "TcNo Account Switcher was running." + Environment.NewLine +
 		                       "I've brought it to the top." + Environment.NewLine +
@@ -328,8 +322,8 @@ release = true;
 			                MessageBoxImage.Information,
 			                MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
 
-		                AppSettings.ShownMinimizedNotification = true;
-		                AppSettings.SaveSettings();
+		                _appSettings.ShownMinimizedNotification = true;
+		                _appSettings.SaveSettings();
 	                }
 
 	                Environment.Exit(1056); // 1056	An instance of the service is already running.
@@ -347,7 +341,7 @@ release = true;
         /// </summary>
         /// <param name="e">StartupEventArgs for the program</param>
         /// <returns>True if handled and should close. False if launch GUI.</returns>
-        private static async Task<bool> ConsoleMain(StartupEventArgs e)
+        private async Task<bool> ConsoleMain(StartupEventArgs e)
         {
             Console.WriteLine(@"Welcome to the TcNo Account Switcher - Command Line Interface!");
             Console.WriteLine(@"Use -h (or --help) for more info." + Environment.NewLine);
@@ -383,11 +377,11 @@ release = true;
                     case "--help":
                         var availableList = new List<string>();
                         var switchList = new List<string>();
-                        foreach (var jToken in BasicPlatforms.GetPlatforms)
+                        foreach (var jToken in _basicPlatforms.GetPlatforms)
                         {
                             var line = "";
                             var x = (JProperty)jToken;
-                            var identifiers = BasicPlatforms.GetPlatforms[x.Name]?["Identifiers"]?.ToObject<List<string>>();
+                            var identifiers = _basicPlatforms.GetPlatforms[x.Name]?["Identifiers"]?.ToObject<List<string>>();
 
                             if (identifiers != null)
                             {
@@ -454,7 +448,7 @@ release = true;
         /// </summary>
         /// <param name="args">Arguments</param>
         /// <param name="i">Index of argument to process</param>
-        private static async Task CliSwitch(string[] args, int i)
+        private async Task CliSwitch(string[] args, int i)
         {
             if (args.Length < i) return;
             if (args[i].StartsWith(@"tcno:\\")) // Launched through Protocol
@@ -470,26 +464,26 @@ release = true;
             {
                 // Steam format: +s:<steamId>[:<PersonaState (0-7)>]
                 Globals.WriteToLog("Steam switch requested");
-                if (!await GeneralFuncs.CanKillProcess(TcNo_Acc_Switcher_Server.Steam.Processes)) Restart(combinedArgs, true);
-                await Steam.SwapSteamAccounts(account.Split(":")[0],
+                if (!await _generalFuncs.CanKillProcess(_steam.Processes)) Restart(combinedArgs, true);
+                await _steam.SwapSteamAccounts(account.Split(":")[0],
                     ePersonaState: command.Length > 2
                         ? int.Parse(command[2])
                         : -1, args: string.Join(' ', remainingArguments)); // Request has a PersonaState in it
                 return;
             }
 
-            if (AppSettings.GetPlatform(platform) is null) return;
-            BasicPlatforms.SetCurrentPlatform(platform);
-            Globals.WriteToLog(CurrentPlatform.FullName + " switch requested");
-            if (!await GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd)) Restart(combinedArgs, true);
-            Basic.SwapBasicAccounts(account, string.Join(' ', remainingArguments));
+            if (_appSettings.GetPlatform(platform) is null) return;
+            _basicPlatforms.SetCurrentPlatform(platform);
+            Globals.WriteToLog(_currentPlatform.FullName + " switch requested");
+            if (!await _generalFuncs.CanKillProcess(_currentPlatform.ExesToEnd)) Restart(combinedArgs, true);
+            _basic.SwapBasicAccounts(account, string.Join(' ', remainingArguments));
         }
 
         /// <summary>
         /// Handle logout given as arguments to the CLI
         /// </summary>
         /// <param name="arg">Argument to process</param>
-        private static async Task CliLogout(string arg)
+        private async Task CliLogout(string arg)
         {
             var platform = arg.Split(':')[1];
             switch (platform.ToLowerInvariant())
@@ -498,18 +492,18 @@ release = true;
                 case "s":
                 case "steam":
                     Globals.WriteToLog("Steam logout requested");
-                    AppData.CurrentSwitcher = "Steam";
-                    await AppFuncs.SwapToNewAccount();
+                    _appData.CurrentSwitcher = "Steam";
+                    await _appFuncs.SwapToNewAccount();
                     break;
 
                 // BASIC ACCOUNT PLATFORM
                 default:
-                    if (AppSettings.GetPlatform(platform) is null) break;
+                    if (_appSettings.GetPlatform(platform) is null) break;
                     // Is a basic platform!
-                    BasicPlatforms.SetCurrentPlatform(platform);
-                    Globals.WriteToLog(CurrentPlatform.FullName + " logout requested");
-                    AppData.CurrentSwitcher = platform;
-                    await AppFuncs.SwapToNewAccount();
+                    _basicPlatforms.SetCurrentPlatform(platform);
+                    Globals.WriteToLog(_currentPlatform.FullName + " logout requested");
+                    _appData.CurrentSwitcher = platform;
+                    await _appFuncs.SwapToNewAccount();
                     break;
             }
         }

@@ -41,18 +41,38 @@ namespace TcNo_Acc_Switcher_Server.Data
 {
     public class GeneralFuncs : IGeneralFuncs
     {
-        [Inject] private ILang Lang { get; }
-        [Inject] private ISteam Steam { get; }
-        [Inject] private IBasic Basic { get; }
-        [Inject] private IAppData AppData { get; }
-        [Inject] private IAppStats AppStats { get; }
-        [Inject] private IAppFuncs AppFuncs { get; }
-        [Inject] private IBasicStats BasicStats { get; }
-        [Inject] private IAppSettings AppSettings { get; }
-        [Inject] private IModalData ModalData { get; }
-        [Inject] private ICurrentPlatform CurrentPlatform { get; }
-        [Inject] private NavigationManager NavManager { get; }
-        [Inject] private IShortcut Shortcut { get; }
+        private readonly ILang _lang;
+        private readonly IAppData _appData;
+        private readonly IAppStats _appStats;
+        private readonly IAppFuncs _appFuncs;
+        private readonly IBasicStats _basicStats;
+        private readonly IAppSettings _appSettings;
+        private readonly IModalData _modalData;
+        private readonly ICurrentPlatform _currentPlatform;
+        private readonly NavigationManager _navManager;
+        private readonly IGeneralFuncs _generalFuncs;
+        private readonly ISteam _Steam;
+
+        private IBasic Basic => _lBasic.Value;
+        private readonly Lazy<IBasic> _lBasic;
+
+        public GeneralFuncs(ILang lang, ISteam steam, Lazy<IBasic> basic, IAppData appData, IAppStats appStats,
+            IAppFuncs appFuncs, IBasicStats basicStats, IAppSettings appSettings, IModalData modalData,
+            ICurrentPlatform currentPlatform, NavigationManager navManager, IGeneralFuncs generalFuncs)
+        {
+            _lang = lang;
+            _Steam = steam;
+            _lBasic = basic;
+            _appData = appData;
+            _appStats = appStats;
+            _appFuncs = appFuncs;
+            _basicStats = basicStats;
+            _appSettings = appSettings;
+            _modalData = modalData;
+            _currentPlatform = currentPlatform;
+            _navManager = navManager;
+            _generalFuncs = generalFuncs;
+        }
 
         #region PROCESS_OPERATIONS
 
@@ -79,7 +99,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             // Restart self as if can't close admin.
             if (Globals.CanKillProcess(processName)) return true;
             if (showModal)
-                ModalData.ShowModal("confirm", ExtraArg.RestartAsAdmin);
+                _modalData.ShowModal("confirm", ExtraArg.RestartAsAdmin);
             return false;
         }
 
@@ -114,12 +134,12 @@ namespace TcNo_Acc_Switcher_Server.Data
             while (Globals.ProcessHelper.IsProcessRunning(procName) && timeout < 10)
             {
                 timeout++;
-                await AppData.InvokeVoidAsync("updateStatus", Lang["Status_WaitingForClose", new { processName = procName, timeout, timeLimit = "10" }]);
+                await _appData.InvokeVoidAsync("updateStatus", _lang["Status_WaitingForClose", new { processName = procName, timeout, timeLimit = "10" }]);
                 Thread.Sleep(1000);
             }
 
             if (timeout == 10)
-                await ShowToast("error", Lang["CouldNotCloseX", new { x = procName }], Lang["Error"], "toastarea");
+                await ShowToast("error", _lang["CouldNotCloseX", new { x = procName }], _lang["Error"], "toastarea");
 
             return timeout != 10; // Returns true if timeout wasn't reached.
         }
@@ -159,7 +179,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     procToClose.Remove(p);
 
                 if (procToClose.Count > 0)
-                    await AppData.InvokeVoidAsync("updateStatus", Lang["Status_WaitingForMultipleClose", new { processName = procToClose[0], count = appCount, timeout, timeLimit = "10" }]);
+                    await _appData.InvokeVoidAsync("updateStatus", _lang["Status_WaitingForMultipleClose", new { processName = procToClose[0], count = appCount, timeout, timeLimit = "10" }]);
                 if (areAnyRunning)
                     Thread.Sleep(1000);
                 else
@@ -171,7 +191,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 #pragma warning disable CA1416 // Validate platform compatibility
             var leftOvers = procNames.Where(x => !Globals.ProcessHelper.IsProcessRunning(x));
 #pragma warning restore CA1416 // Validate platform compatibility
-            await ShowToast("error", Lang["CouldNotCloseX", new { x = string.Join(", ", leftOvers.ToArray()) }], Lang["Error"], "toastarea");
+            await ShowToast("error", _lang["CouldNotCloseX", new { x = string.Join(", ", leftOvers.ToArray()) }], _lang["Error"], "toastarea");
             return false; // Returns true if timeout wasn't reached.
         }
 
@@ -182,7 +202,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public void RestartAsAdmin(string args = "")
         {
             var fileName = "TcNo-Acc-Switcher_main.exe";
-            if (!AppData.TcNoClientApp) fileName = Assembly.GetEntryAssembly()?.Location.Replace(".dll", ".exe") ?? "TcNo-Acc-Switcher-Server_main.exe";
+            if (!_appData.TcNoClientApp) fileName = Assembly.GetEntryAssembly()?.Location.Replace(".dll", ".exe") ?? "TcNo-Acc-Switcher-Server_main.exe";
             else
             {
                 // Is client app, but could be developing >> No _main just yet.
@@ -226,7 +246,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             {
                 if (isBasic && !Globals.IsDirectoryEmpty(Path.GetDirectoryName(dictPath)))
                 {
-                    _ = ShowToast("error", Lang["Toast_RegSaveMissing"], Lang["Error"], "toastarea");
+                    _ = ShowToast("error", _lang["Toast_RegSaveMissing"], _lang["Error"], "toastarea");
                 }
                 return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
             }
@@ -335,7 +355,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             if (string.IsNullOrEmpty(jsDest)) return;
             Globals.DebugWriteLine($@"[Func:General\JsDestNewline] jsDest={jsDest}");
-            await AppData.InvokeVoidAsync(jsDest, "<br />"); //Newline
+            await _appData.InvokeVoidAsync(jsDest, "<br />"); //Newline
         }
 
         // Overload for below
@@ -351,22 +371,22 @@ namespace TcNo_Acc_Switcher_Server.Data
             Globals.DebugWriteLine($@"[Func:General\DeleteFile] file={f?.FullName ?? ""}{(jsDest != "" ? ", jsDest=" + jsDest : "")}");
             try
             {
-                if (f is { Exists: false } && !string.IsNullOrEmpty(jsDest)) await AppData.InvokeVoidAsync(jsDest, "File not found: " + f.FullName);
+                if (f is { Exists: false } && !string.IsNullOrEmpty(jsDest)) await _appData.InvokeVoidAsync(jsDest, "File not found: " + f.FullName);
                 else
                 {
                     if (f == null) return;
                     f.IsReadOnly = false;
                     f.Delete();
                     if (!string.IsNullOrEmpty(jsDest))
-                        await AppData.InvokeVoidAsync(jsDest, "Deleted: " + f.FullName);
+                        await _appData.InvokeVoidAsync(jsDest, "Deleted: " + f.FullName);
                 }
             }
             catch (Exception e)
             {
                 if (string.IsNullOrEmpty(jsDest)) return;
-                await AppData.InvokeVoidAsync(jsDest,
-                    f != null ? Lang["CouldntDeleteX", new {x = f.FullName}] : Lang["CouldntDeleteUndefined"]);
-                await AppData.InvokeVoidAsync(jsDest, e.ToString());
+                await _appData.InvokeVoidAsync(jsDest,
+                    f != null ? _lang["CouldntDeleteX", new {x = f.FullName}] : _lang["CouldntDeleteUndefined"]);
+                await _appData.InvokeVoidAsync(jsDest, e.ToString());
                 await JsDestNewline(jsDest);
             }
         }
@@ -407,7 +427,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             if (keepFolders) return;
             baseDir.Delete();
-            if (!string.IsNullOrEmpty(jsDest)) await  AppData.InvokeVoidAsync(jsDest, Lang["DeletingFolder"] + baseDir.FullName);
+            if (!string.IsNullOrEmpty(jsDest)) await  _appData.InvokeVoidAsync(jsDest, _lang["DeletingFolder"] + baseDir.FullName);
             await JsDestNewline(jsDest);
         }
 
@@ -423,12 +443,12 @@ namespace TcNo_Acc_Switcher_Server.Data
             Globals.DebugWriteLine($@"[Func:General\DeleteRegKey] subKey={subKey}, val={val}, jsDest={jsDest}");
             using var key = Registry.CurrentUser.OpenSubKey(subKey, true);
             if (key == null)
-                await AppData.InvokeVoidAsync(jsDest, Lang["Reg_DoesntExist", new { subKey }]);
+                await _appData.InvokeVoidAsync(jsDest, _lang["Reg_DoesntExist", new { subKey }]);
             else if (key.GetValue(val) == null)
-                await AppData.InvokeVoidAsync(jsDest, Lang["Reg_DoesntContain", new { subKey, val }]);
+                await _appData.InvokeVoidAsync(jsDest, _lang["Reg_DoesntContain", new { subKey, val }]);
             else
             {
-                await AppData.InvokeVoidAsync(jsDest, Lang["Reg_Removing", new { subKey, val }]);
+                await _appData.InvokeVoidAsync(jsDest, _lang["Reg_Removing", new { subKey, val }]);
                 key.DeleteValue(val);
             }
             await JsDestNewline(jsDest);
@@ -463,20 +483,20 @@ namespace TcNo_Acc_Switcher_Server.Data
             Globals.DebugWriteLine($@"[Func:General\ClearFilesOfType] folder={folder}, extensions={extensions}, jsDest={jsDest}");
             if (!Directory.Exists(folder))
             {
-                await AppData.InvokeVoidAsync(jsDest, Lang["DirectoryNotFound", new { folder }]);
+                await _appData.InvokeVoidAsync(jsDest, _lang["DirectoryNotFound", new { folder }]);
                 await JsDestNewline(jsDest);
                 return;
             }
             foreach (var file in GetFiles(folder, extensions, so))
             {
-                await AppData.InvokeVoidAsync(jsDest, Lang["DeletingFile", new { file }]);
+                await _appData.InvokeVoidAsync(jsDest, _lang["DeletingFile", new { file }]);
                 try
                 {
                     Globals.DeleteFile(file);
                 }
                 catch (Exception ex)
                 {
-                    await AppData.InvokeVoidAsync(jsDest, Lang["ErrorDetails", new { ex = Globals.MessageFromHResult(ex.HResult) }]);
+                    await _appData.InvokeVoidAsync(jsDest, _lang["ErrorDetails", new { ex = Globals.MessageFromHResult(ex.HResult) }]);
                 }
             }
             await JsDestNewline(jsDest);
@@ -525,9 +545,9 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         #region SETTINGS
         // Overload for below
-        public void SaveSettings(string file, JObject joNewSettings) => SaveSettings(file, joNewSettings, false);
+        public static void SaveSettings(string file, JObject joNewSettings) => SaveSettings(file, joNewSettings, false);
 
-        public void SaveSettings<T>(string file, T jSettings)
+        public static void SaveSettings<T>(string file, T jSettings)
         {
             if (file is null) return;
 
@@ -554,7 +574,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <param name="joNewSettings">JObject of settings to be saved</param>
         /// <param name="mergeNewIntoOld">True merges old with new settings, false merges new with old</param>
         /// <param name="replaceAll"></param>
-        public void SaveSettings(string file, JObject joNewSettings, bool mergeNewIntoOld, bool replaceAll = false)
+        public static void SaveSettings(string file, JObject joNewSettings, bool mergeNewIntoOld, bool replaceAll = false)
         {
             Globals.DebugWriteLine($@"[Func:General\SaveSettings] file={file}, joNewSettings=hidden, mergeNewIntoOld={mergeNewIntoOld}");
             var sFilename = file.EndsWith(".json") ? file : file + ".json";
@@ -700,7 +720,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             if (Globals.TryReadJsonFile(path, ref jToken)) return jToken;
 
-            await ShowToast("error", Lang["CouldNotReadFile", new { file = path }], renderTo: "toastarea");
+            await ShowToast("error", _lang["CouldNotReadFile", new { file = path }], renderTo: "toastarea");
             return new JObject();
 
         }
@@ -783,7 +803,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             {
                 // Handle website not loading or JObject not loading properly
                 Globals.WriteToLog("Failed to load Crowdin users", e);
-                _ = ShowToast("error", Lang["Crowdin_Fail"], renderTo: "toastarea");
+                _ = ShowToast("error", _lang["Crowdin_Fail"], renderTo: "toastarea");
                 return new CrowdinResponse();
             }
         }
@@ -795,10 +815,10 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             if (firstRender)
             {
-                AppData.WindowTitle = Lang["Title_AccountsList", new { platform }];
+                _appData.WindowTitle = _lang["Title_AccountsList", new { platform }];
                 // Handle Streamer Mode notification
-                if (AppSettings.StreamerModeEnabled && AppSettings.StreamerModeTriggered)
-                    await ShowToast("info", Lang["Toast_StreamerModeHint"], Lang["Toast_StreamerModeTitle"], "toastarea");
+                if (_appSettings.StreamerModeEnabled && _appSettings.StreamerModeTriggered)
+                    await ShowToast("info", _lang["Toast_StreamerModeHint"], _lang["Toast_StreamerModeTitle"], "toastarea");
 
                 // Handle loading accounts for specific platforms
                 // - Init file if it doesn't exist, or isn't fully initialised (adds missing settings when true)
@@ -808,8 +828,8 @@ namespace TcNo_Acc_Switcher_Server.Data
                         return;
 
                     case "Steam":
-                        await Steam.LoadProfiles();
-                        Steam.SaveSettings();
+                        await _Steam.LoadProfiles();
+                        _Steam.SaveSettings();
                         break;
 
                     default:
@@ -820,7 +840,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
                 // Handle queries and invoke status "Ready"
                 await HandleQueries();
-                await AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
+                await _appData.InvokeVoidAsync("updateStatus", _lang["Done"]);
             }
         }
 
@@ -830,7 +850,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public async Task<bool> HandleQueries()
         {
             Globals.DebugWriteLine(@"[JSInvoke:General\HandleQueries]");
-            var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+            var uri = _navManager.ToAbsoluteUri(_navManager.Uri);
             // Clear cache reload
             var queries = QueryHelpers.ParseQuery(uri.Query);
             // cacheReload handled in JS
@@ -848,7 +868,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 try
                 {
                     await ShowToast(toastType[i], toastMessage[i], toastTitle[i], "toastarea");
-                    await AppData.InvokeVoidAsync("removeUrlArgs", "toast_type,toast_title,toast_message");
+                    await _appData.InvokeVoidAsync("removeUrlArgs", "toast_type,toast_title,toast_message");
                 }
                 catch (TaskCanceledException e)
                 {
@@ -862,17 +882,17 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public async Task<string> ExportAccountList()
         {
-            var platform = AppSettings.GetPlatform(AppData.SelectedPlatform);
+            var platform = _appSettings.GetPlatform(_appData.SelectedPlatform);
             Globals.DebugWriteLine(@$"[Func:Pages\General\GiExportAccountList] platform={platform}");
             if (!Directory.Exists(Path.Join("LoginCache", platform.SafeName)))
             {
-                await ShowToast("error", Lang["Toast_AddAccountsFirst"], Lang["Toast_AddAccountsFirstTitle"], "toastarea");
+                await ShowToast("error", _lang["Toast_AddAccountsFirst"], _lang["Toast_AddAccountsFirstTitle"], "toastarea");
                 return "";
             }
 
             var s = CultureInfo.CurrentCulture.TextInfo.ListSeparator; // Different regions use different separators in csv files.
 
-            await BasicStats.SetCurrentPlatform(platform.Name);
+            await _basicStats.SetCurrentPlatform(platform.Name);
 
             List<string> allAccountsTable = new();
             if (platform.Name == "Steam")
@@ -881,25 +901,25 @@ namespace TcNo_Acc_Switcher_Server.Data
                 allAccountsTable.Add($"SEP={s}");
                 allAccountsTable.Add($"Account name:{s}Community name:{s}SteamID:{s}VAC status:{s}Last login:{s}Saved profile image:{s}Stats game:{s}Stat name:{s}Stat value:");
 
-                AppData.SteamUsers = await Steam.GetSteamUsers(Steam.LoginUsersVdf());
+                _appData.SteamUsers = await _Steam.GetSteamUsers(_Steam.LoginUsersVdf());
                 // Load cached ban info
-                Steam.LoadCachedBanInfo();
+                _Steam.LoadCachedBanInfo();
 
-                foreach (var su in AppData.SteamUsers)
+                foreach (var su in _appData.SteamUsers)
                 {
                     var banInfo = "";
                     if (su.Vac && su.Limited) banInfo += "VAC + Limited";
                     else banInfo += (su.Vac ? "VAC" : "") + (su.Limited ? "Limited" : "");
 
-                    var imagePath = Path.GetFullPath($"{Steam.SteamImagePath + su.SteamId}.jpg");
+                    var imagePath = Path.GetFullPath($"{_Steam.SteamImagePath + su.SteamId}.jpg");
 
                     allAccountsTable.Add(su.AccName + s +
                                          su.Name + s +
                                          su.SteamId + s +
                                          banInfo + s +
-                                         Steam.UnixTimeStampToDateTime(su.LastLogin) + s +
+                                         _Steam.UnixTimeStampToDateTime(su.LastLogin) + s +
                                          (File.Exists(imagePath) ? imagePath : "Missing from disk") + s +
-                                         BasicStats.GetGameStatsString(su.SteamId, s));
+                                         _basicStats.GetGameStatsString(su.SteamId, s));
                 }
             }
             else
@@ -911,7 +931,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 foreach (var accDirectory in Directory.GetDirectories(Path.Join("LoginCache", platform.SafeName)))
                 {
                     allAccountsTable.Add(Path.GetFileName(accDirectory) + s +
-                                         BasicStats.GetGameStatsString(accDirectory, s, true));
+                                         _basicStats.GetGameStatsString(accDirectory, s, true));
                 }
             }
 
@@ -975,7 +995,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// </summary>
         /// <param name="link">URL string</param>
         [JSInvokable]
-        public void OpenLinkInBrowser(string link)
+        public static void OpenLinkInBrowser(string link)
         {
             Globals.DebugWriteLine($@"[JSInvoke:General\OpenLinkInBrowser] link={link}");
             var ps = new ProcessStartInfo(link)
@@ -994,7 +1014,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public async Task<bool> ShowModal(string args)
         {
             Globals.DebugWriteLine($@"[JSInvoke:General\ShowModal] args={args}");
-            return await AppData.InvokeVoidAsync("showModal", args);
+            return await _appData.InvokeVoidAsync("showModal", args);
         }
 
         /// <summary>
@@ -1009,7 +1029,27 @@ namespace TcNo_Acc_Switcher_Server.Data
         public async Task<bool> ShowToast(string toastType, string toastMessage, string toastTitle = "", string renderTo = "body", int duration = 5000)
         {
             Globals.DebugWriteLine($@"[JSInvoke:General\ShowToast] type={toastType}, message={toastMessage}, title={toastTitle}, renderTo={renderTo}, duration={duration}");
-            return await AppData.InvokeVoidAsync("window.notification.new", new { type = toastType, title = toastTitle, message = toastMessage, renderTo, duration });
+            return await _appData.InvokeVoidAsync("window.notification.new", new { type = toastType, title = toastTitle, message = toastMessage, renderTo, duration });
+        }
+
+        /// <summary>
+        /// JS function handler for showing Toast message.
+        /// Instead of putting in messages (which you still can), use lang vars and they will expand.
+        /// </summary>
+        public async Task<bool> ShowToastLangVars(string toastType, string langToastMessage, string langToastTitle = "", string renderTo = "body", int duration = 5000)
+        {
+            Globals.DebugWriteLine($@"[JSInvoke:General\ShowToast] type={toastType}, message={langToastMessage}, title={langToastTitle}, renderTo={renderTo}, duration={duration}");
+            return await _appData.InvokeVoidAsync("window.notification.new", new { type = toastType, title = _lang[langToastTitle], message = _lang[langToastMessage], renderTo, duration });
+        }
+
+        /// <summary>
+        /// JS function handler for showing Toast message.
+        /// Instead of putting in messages (which you still can), use lang vars and they will expand.
+        /// </summary>
+        public async Task<bool> ShowToastLangVars(string toastType, LangItem langItem, string langToastTitle = "", string renderTo = "body", int duration = 5000)
+        {
+            Globals.DebugWriteLine($@"[JSInvoke:General\ShowToast] type={toastType}, message={langItem.LangTitle}, title={langToastTitle}, renderTo={renderTo}, duration={duration}");
+            return await _appData.InvokeVoidAsync("window.notification.new", new { type = toastType, title = _lang[langToastTitle], message = _lang[langItem.LangTitle, langItem.LangObject], renderTo, duration });
         }
 
         /// <summary>
@@ -1022,23 +1062,23 @@ namespace TcNo_Acc_Switcher_Server.Data
             Globals.DebugWriteLine(@"[JSInvoke:General\CreateShortcut]");
             if (args.Length > 0 && args[0] != ':') args = $" {args}"; // Add a space before arguments if doesn't start with ':'
             string platformName;
-            var primaryPlatformId = "" + AppData.CurrentSwitcher[0];
-            var bgImg = Path.Join(WwwRoot(), $"\\img\\platform\\{AppData.CurrentSwitcherSafe}.svg");
+            var primaryPlatformId = "" + _appData.CurrentSwitcher[0];
+            var bgImg = Path.Join(WwwRoot(), $"\\img\\platform\\{_appData.CurrentSwitcherSafe}.svg");
             string currentPlatformImgPath, currentPlatformImgPathOverride;
-            switch (AppData.CurrentSwitcher)
+            switch (_appData.CurrentSwitcher)
             {
                 case "Steam":
                     currentPlatformImgPath = Path.Join(WwwRoot(), "\\img\\platform\\Steam.svg");
                     currentPlatformImgPathOverride = Path.Join(WwwRoot(), "\\img\\platform\\Steam.png");
                     var ePersonaState = -1;
                     if (args.Length == 2) _ = int.TryParse(args[1].ToString(), out ePersonaState);
-                    platformName = $"Switch to {AppData.SelectedAccount.DisplayName} {(args.Length > 0 ? $"({Steam.PersonaStateToString(ePersonaState)})" : "")} [{AppData.CurrentSwitcher}]";
+                    platformName = $"Switch to {_appData.SelectedAccount.DisplayName} {(args.Length > 0 ? $"({_Steam.PersonaStateToString(ePersonaState)})" : "")} [{_appData.CurrentSwitcher}]";
                     break;
                 default:
-                    currentPlatformImgPath = Path.Join(WwwRoot(), $"\\img\\platform\\{CurrentPlatform.SafeName}.svg");
-                    currentPlatformImgPathOverride = Path.Join(WwwRoot(), $"\\img\\platform\\{CurrentPlatform.SafeName}.png");
-                    primaryPlatformId = CurrentPlatform.PrimaryId;
-                    platformName = $"Switch to {AppData.SelectedAccount.DisplayName} [{AppData.CurrentSwitcher}]";
+                    currentPlatformImgPath = Path.Join(WwwRoot(), $"\\img\\platform\\{_currentPlatform.SafeName}.svg");
+                    currentPlatformImgPathOverride = Path.Join(WwwRoot(), $"\\img\\platform\\{_currentPlatform.SafeName}.png");
+                    primaryPlatformId = _currentPlatform.PrimaryId;
+                    platformName = $"Switch to {_appData.SelectedAccount.DisplayName} [{_appData.CurrentSwitcher}]";
                     break;
             }
 
@@ -1050,50 +1090,50 @@ namespace TcNo_Acc_Switcher_Server.Data
                 bgImg = Path.Join(WwwRoot(), "\\img\\BasicDefault.png");
 
 
-            var fgImg = Path.Join(WwwRoot(), $"\\img\\profiles\\{AppData.CurrentSwitcherSafe}\\{AppData.SelectedAccountId}.jpg");
-            if (!File.Exists(fgImg)) fgImg = Path.Join(WwwRoot(), $"\\img\\profiles\\{AppData.CurrentSwitcherSafe}\\{AppData.SelectedAccountId}.png");
+            var fgImg = Path.Join(WwwRoot(), $"\\img\\profiles\\{_appData.CurrentSwitcherSafe}\\{_appData.SelectedAccountId}.jpg");
+            if (!File.Exists(fgImg)) fgImg = Path.Join(WwwRoot(), $"\\img\\profiles\\{_appData.CurrentSwitcherSafe}\\{_appData.SelectedAccountId}.png");
             if (!File.Exists(fgImg))
             {
-                await ShowToast("error", Lang["Toast_CantFindImage"], Lang["Toast_CantCreateShortcut"], "toastarea");
+                await ShowToast("error", _lang["Toast_CantFindImage"], _lang["Toast_CantCreateShortcut"], "toastarea");
                 return;
             }
 
             var s = new Shortcut();
             _ = s.Shortcut_Platform(
-                Shortcut.Desktop,
+                ShortcutFuncs.Desktop,
                 platformName,
-                $"+{primaryPlatformId}:{AppData.SelectedAccountId}{args}",
-                $"Switch to {AppData.SelectedAccount.DisplayName} [{AppData.CurrentSwitcher}] in TcNo Account Switcher",
+                $"+{primaryPlatformId}:{_appData.SelectedAccountId}{args}",
+                $"Switch to {_appData.SelectedAccount.DisplayName} [{_appData.CurrentSwitcher}] in TcNo Account Switcher",
                 true);
-            await s.CreateCombinedIcon(bgImg, fgImg, $"{AppData.SelectedAccountId}.ico");
+            await s.CreateCombinedIcon(_generalFuncs, _appSettings, bgImg, fgImg, $"{_appData.SelectedAccountId}.ico");
             s.TryWrite();
 
-            if (AppSettings.StreamerModeTriggered)
-                await ShowToast("success", Lang["Toast_ShortcutCreated"], Lang["Success"], "toastarea");
+            if (_appSettings.StreamerModeTriggered)
+                await ShowToast("success", _lang["Toast_ShortcutCreated"], _lang["Success"], "toastarea");
             else
-                await ShowToast("success", Lang["ForName", new { name = AppData.SelectedAccount.DisplayName }], Lang["Toast_ShortcutCreated"], "toastarea");
+                await ShowToast("success", _lang["ForName", new { name = _appData.SelectedAccount.DisplayName }], _lang["Toast_ShortcutCreated"], "toastarea");
         }
 
         [JSInvokable]
-        public string PlatformUserModalCopyText() => CurrentPlatform.GetUserModalCopyText;
+        public string PlatformUserModalCopyText() => _currentPlatform.GetUserModalCopyText;
         [JSInvokable]
-        public string PlatformHintText() => CurrentPlatform.GetUserModalHintText();
+        public string PlatformHintText() => _currentPlatform.GetUserModalHintText();
 
         [JSInvokable]
-        public string GiLocale(string k) => Lang[k];
+        public string GiLocale(string k) => _lang[k];
 
         [JSInvokable]
-        public string GiLocaleObj(string k, object obj) => Lang[k, obj];
+        public string GiLocaleObj(string k, object obj) => _lang[k, obj];
 
 
         [JSInvokable]
-        public string GiCurrentBasicPlatform(string platform) => platform == "Basic" ? CurrentPlatform.FullName : AppSettings.GetPlatform(platform).Name;
+        public string GiCurrentBasicPlatform(string platform) => platform == "Basic" ? _currentPlatform.FullName : _appSettings.GetPlatform(platform).Name;
 
         [JSInvokable]
         public string GiCurrentBasicPlatformExe(string platform)
         {
             // EXE name from current platform by name:
-            return platform == "Basic" ? CurrentPlatform.ExeName : AppSettings.GetPlatform(platform).Name;
+            return platform == "Basic" ? _currentPlatform.ExeName : _appSettings.GetPlatform(platform).Name;
         }
 
         [JSInvokable]
@@ -1106,17 +1146,17 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JSInvokable]
         public async Task GiCtrlS(string platform)
         {
-            AppSettings.SaveSettings();
+            _appSettings.SaveSettings();
             switch (platform)
             {
                 case "Steam":
-                    Steam.SaveSettings();
+                    _Steam.SaveSettings();
                     break;
                 case "Basic":
                     Basic.SaveSettings();
                     break;
             }
-            await ShowToast("success", Lang["Saved"], renderTo: "toastarea");
+            await ShowToast("success", _lang["Saved"], renderTo: "toastarea");
         }
 
         #region ACCOUNT SWITCHER SHARED FUNCTIONS
@@ -1130,10 +1170,10 @@ namespace TcNo_Acc_Switcher_Server.Data
             accList = OrderAccounts(accList, $"{localCachePath}\\order.json");
 
             await InsertAccounts(accList, name, isBasic);
-            AppStats.SetAccountCount(CurrentPlatform.SafeName, accList.Count);
+            _appStats.SetAccountCount(_currentPlatform.SafeName, accList.Count);
 
             // Load notes
-            AppFuncs.LoadNotes();
+            _appFuncs.LoadNotes();
             return true;
         }
 
@@ -1187,9 +1227,9 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// </summary>
         public async Task FinaliseAccountList()
         {
-            await AppData.InvokeVoidAsync("jQueryProcessAccListSize");
-            await AppData.InvokeVoidAsync("initContextMenu");
-            await AppData.InvokeVoidAsync("initAccListSortable");
+            await _appData.InvokeVoidAsync("jQueryProcessAccListSize");
+            await _appData.InvokeVoidAsync("initContextMenu");
+            await _appData.InvokeVoidAsync("initAccListSortable");
         }
 
         /// <summary>
@@ -1203,13 +1243,13 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (isBasic)
                 Basic.LoadAccountIds();
 
-            AppData.BasicAccounts.Clear();
+            _appData.BasicAccounts.Clear();
 
             foreach (var element in accList)
             {
                 var account = new Shared.Accounts.Account
                 {
-                    Platform = CurrentPlatform.SafeName
+                    Platform = _currentPlatform.SafeName
                 };
 
                 if (element is string str)
@@ -1233,9 +1273,9 @@ namespace TcNo_Acc_Switcher_Server.Data
                     }
 
                     // Handle game stats (if any enabled and collected.)
-                    account.UserStats = BasicStats.GetUserStatsAllGamesMarkup(CurrentPlatform.FullName, str);
+                    account.UserStats = _basicStats.GetUserStatsAllGamesMarkup(_currentPlatform.FullName, str);
 
-                    AppData.BasicAccounts.Add(account);
+                    _appData.BasicAccounts.Add(account);
                     continue;
                 }
 
@@ -1247,12 +1287,12 @@ namespace TcNo_Acc_Switcher_Server.Data
                     account.ImagePath = GetImgPath(platform, key);
 
                     // Handle game stats (if any enabled and collected.)
-                    account.UserStats = BasicStats.GetUserStatsAllGamesMarkup(CurrentPlatform.FullName, key);
+                    account.UserStats = _basicStats.GetUserStatsAllGamesMarkup(_currentPlatform.FullName, key);
 
                     account.AccountId = key;
                     account.DisplayName = value;
 
-                    AppData.BasicAccounts.Add(account);
+                    _appData.BasicAccounts.Add(account);
                 }
             }
             await FinaliseAccountList(); // Init context menu & Sorting
@@ -1271,5 +1311,27 @@ namespace TcNo_Acc_Switcher_Server.Data
             return imgPath + ".jpg";
         }
         #endregion
+    }
+
+    public class LangItem
+    {
+        public string LangTitle { get; set; }
+        public object LangObject { get; set; }
+
+        public LangItem()
+        {
+            LangTitle = "";
+            LangObject = new object();
+        }
+        public LangItem(string title)
+        {
+            LangTitle = title;
+            LangObject = new object();
+        }
+        public LangItem(string langTitle, object langObject)
+        {
+            LangTitle = langTitle;
+            LangObject = langObject;
+        }
     }
 }

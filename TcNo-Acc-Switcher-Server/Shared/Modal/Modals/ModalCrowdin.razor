@@ -61,14 +61,14 @@
                 <li>@Lang["Crowdin_Proofreaders", new {number = _crowdinList.ProofReaders.Count}]</li>
                 @foreach (var (username, languages) in _crowdinList.ProofReaders)
                 {
-                    <li><a @onclick='() => GeneralFuncs.OpenLinkInBrowser("https://crowdin.com/profile/" + username)' href="">@username</a> - @languages</li>
+                    <li><a @onclick='() => Data.GeneralFuncs.OpenLinkInBrowser("https://crowdin.com/profile/" + username)' href="">@username</a> - @languages</li>
                 }
 
                 <li><br />@Lang["Crowdin_Translators", new {number = _crowdinList.Translators.Count}]</li>
                 <li class="text-wrap">
                     @foreach (var username in _crowdinList.Translators)
                     {
-                        <span><a @onclick='() => GeneralFuncs.OpenLinkInBrowser("https://crowdin.com/profile/" + username)' href="">@username</a>, </span>
+                        <span><a @onclick='() => Data.GeneralFuncs.OpenLinkInBrowser("https://crowdin.com/profile/" + username)' href="">@username</a>, </span>
                     }
                 </li>
             </ul>

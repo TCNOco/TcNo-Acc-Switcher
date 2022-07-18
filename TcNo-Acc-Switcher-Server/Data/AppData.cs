@@ -26,7 +26,6 @@ using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.Shared.Accounts;
-using Index = TcNo_Acc_Switcher_Server.Pages.Steam.Index;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
@@ -84,15 +83,23 @@ namespace TcNo_Acc_Switcher_Server.Data
 
     public class AppData : IAppData
     {
-        [Inject] private ILang Lang { get; }
-        [Inject] private IAppSettings AppSettings { get; }
-        [Inject] private IAppStats AppStats { get; }
-        [Inject] private NavigationManager NavManager { get; }
-        [Inject] private IJSRuntime JsRuntime { get; }
+        private readonly ILang _lang;
+        private readonly IAppSettings _appSettings;
+        private readonly IAppStats _appStats;
+        private readonly NavigationManager _navManager;
+        private readonly IJSRuntime _jsRuntime;
 
-        public AppData()
+        public AppData() { }
+
+        public AppData(ILang lang, IAppSettings appSettings, IAppStats appStats, NavigationManager navManager, IJSRuntime jsRuntime)
         {
-            CurrentStatus = Lang["Status_Init"];
+            _lang = lang;
+            _appSettings = appSettings;
+            _appStats = appStats;
+            _navManager = navManager;
+            _jsRuntime = jsRuntime;
+
+            CurrentStatus = _lang["Status_Init"];
         }
 
         #region First Launch
@@ -116,9 +123,9 @@ namespace TcNo_Acc_Switcher_Server.Data
             FirstLaunch = false;
             // Check for update in another thread
             // Also submit statistics, if enabled
-            new Thread(AppSettings.CheckForUpdate).Start();
-            if (AppSettings.StatsEnabled && AppSettings.StatsShare)
-                new Thread(AppStats.UploadStats).Start();
+            new Thread(_appSettings.CheckForUpdate).Start();
+            if (_appSettings.StatsEnabled && _appSettings.StatsShare)
+                new Thread(_appStats.UploadStats).Start();
 
             // Discord integration
             RefreshDiscordPresenceAsync(true);
@@ -139,7 +146,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             Thread.Sleep(1000);
 
-            if (!AppSettings.DiscordRpc)
+            if (!_appSettings.DiscordRpc)
             {
                 if (DiscordClient != null)
                 {
@@ -161,22 +168,22 @@ namespace TcNo_Acc_Switcher_Server.Data
             else timestamp = DiscordClient.CurrentPresence.Timestamps;
 
             var state = "";
-            if (AppSettings.StatsEnabled && AppSettings.DiscordRpcShare)
+            if (_appSettings.StatsEnabled && _appSettings.DiscordRpcShare)
             {
-                AppStats.GenerateTotals();
-                state = Lang["Discord_StatusDetails", new { number = AppStats.SwitcherStats["_Total"].Switches }];
+                _appStats.GenerateTotals();
+                state = _lang["Discord_StatusDetails", new { number = _appStats.SwitcherStats["_Total"].Switches }];
             }
 
 
             DiscordClient.SetPresence(new RichPresence
             {
-                Details = Lang["Discord_Status"],
+                Details = _lang["Discord_Status"],
                 State = state,
                 Timestamps = timestamp,
                 Buttons = new Button[]
                 { new() {
                     Url = "https://github.com/TcNobo/TcNo-Acc-Switcher/",
-                    Label = Lang["Website"]
+                    Label = _lang["Website"]
                 }},
                 Assets = new Assets
                 {
@@ -241,8 +248,8 @@ namespace TcNo_Acc_Switcher_Server.Data
             Globals.WriteToLog(!Globals.VerboseMode ? $"JS InvokeVoidAsync: {func}" : $"JS CALL: {func}: {args}");
             try
             {
-                if (JsRuntime is null) return false;
-                await JsRuntime.InvokeVoidAsync(func, args);
+                if (_jsRuntime is null) return false;
+                await _jsRuntime.InvokeVoidAsync(func, args);
                 return true;
             }
             catch (Exception e) when (e is ArgumentNullException or InvalidOperationException or TaskCanceledException
@@ -260,8 +267,8 @@ namespace TcNo_Acc_Switcher_Server.Data
             Globals.WriteToLog(!Globals.VerboseMode ? $"JS InvokeAsync: {func}" : $"JS CALL: {func}: {args}");
             try
             {
-                if (JsRuntime is null) return default;
-                return await JsRuntime.InvokeAsync<TValue>(func, args);
+                if (_jsRuntime is null) return default;
+                return await _jsRuntime.InvokeAsync<TValue>(func, args);
             }
             catch (Exception e) when (e is ArgumentNullException or InvalidOperationException or TaskCanceledException
                                           or ArgumentNullException or TaskCanceledException or JSDisconnectedException)
@@ -270,17 +277,17 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
         }
 
-        public void ReloadPage() => NavManager.NavigateTo(NavManager.Uri, forceLoad: false);
-        public void CacheReloadPage() => NavManager.NavigateTo(NavManager.Uri, forceLoad: true);
+        public void ReloadPage() => _navManager.NavigateTo(_navManager.Uri, forceLoad: false);
+        public void CacheReloadPage() => _navManager.NavigateTo(_navManager.Uri, forceLoad: true);
         public void ReloadWithToast(string type, string title, string message) =>
-            NavManager.NavigateTo($"{NavManager.BaseUri}?toast_type={type}&toast_title={Uri.EscapeDataString(title)}&toast_message={Uri.EscapeDataString(message)}");
+            _navManager.NavigateTo($"{_navManager.BaseUri}?toast_type={type}&toast_title={Uri.EscapeDataString(title)}&toast_message={Uri.EscapeDataString(message)}");
         public void NavigateToWithToast(string uri, string type, string title, string message) =>
-            NavManager.NavigateTo($"{uri}?toast_type={type}&toast_title={Uri.EscapeDataString(title)}&toast_message={Uri.EscapeDataString(message)}");
-        public void NavigateTo(string uri, bool forceLoad = false) => NavManager.NavigateTo(uri, forceLoad);
+            _navManager.NavigateTo($"{uri}?toast_type={type}&toast_title={Uri.EscapeDataString(title)}&toast_message={Uri.EscapeDataString(message)}");
+        public void NavigateTo(string uri, bool forceLoad = false) => _navManager.NavigateTo(uri, forceLoad);
 
         public async Task NavigateUpOne()
         {
-            var uri = NavManager.Uri;
+            var uri = _navManager.Uri;
             if (uri.EndsWith('/')) uri = uri[..^1];
             uri = uri.Replace("http://", "").Replace("https://", "");
 
@@ -289,7 +296,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             {
                 var split = uri.Split('/');
                 var newUri = "http://" + string.Join("/", split.Take(split.Length - 1));
-                NavManager.NavigateTo(newUri);
+                _navManager.NavigateTo(newUri);
             }
             else
             {

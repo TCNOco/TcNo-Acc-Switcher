@@ -16,13 +16,13 @@ using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Server.Data;
-using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Shared.Accounts;
 
 public class Account
 {
     [Inject] private IBasicStats BasicStats { get; }
+    [Inject] private IGeneralFuncs GeneralFuncs { get; }
 
     public event Action OnChange;
     public void NotifyDataChanged() => OnChange?.Invoke();

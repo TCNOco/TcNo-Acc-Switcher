@@ -9,7 +9,6 @@ using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
@@ -119,13 +118,19 @@ namespace TcNo_Acc_Switcher_Server.Data
 
     public sealed class BasicStats : IBasicStats
     {
-        [Inject] private ILang Lang { get; }
-        [Inject] private IAppSettings AppSettings { get; }
-        [Inject] private IAppData AppData { get; }
-        [Inject] private IGeneralFuncs GeneralFuncs { get; }
+        private readonly ILang _lang;
+        private readonly IAppSettings _appSettings;
+        private readonly IAppData _appData;
+        private readonly IGeneralFuncs _generalFuncs;
+        private readonly IBasicStats _basicStats;
 
-        public BasicStats()
+        public BasicStats(ILang lang, IAppSettings appSettings, IAppData appData, IGeneralFuncs generalFuncs, IBasicStats basicStats)
         {
+            _lang = lang;
+            _appSettings = appSettings;
+            _appData = appData;
+            _generalFuncs = generalFuncs;
+            _basicStats = basicStats;
             BasicStatsInit().GetAwaiter().GetResult();
         }
 
@@ -260,7 +265,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// </summary>
         [JSInvokable]
         public List<string> GetGloballyHiddenMetrics(string game) =>
-            (from metric in AppSettings.GloballyHiddenMetrics[game] where metric.Value select metric.Key).ToList();
+            (from metric in _appSettings.GloballyHiddenMetrics[game] where metric.Value select metric.Key).ToList();
 
         /// <summary>
         /// Gets list of all metric names to collect, as well as whether each is hidden or not, and the text to display in the UI checkbox.
@@ -323,12 +328,12 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (!File.Exists(BasicStatsPath))
             {
                 // Once again verify the file exists. If it doesn't throw an error here.
-                await GeneralFuncs.ShowToast("error", Lang["Toast_FailedStatsLoad"], renderTo: "toastarea");
+                await _generalFuncs.ShowToast("error", _lang["Toast_FailedStatsLoad"], renderTo: "toastarea");
                 Globals.WriteToLog("Failed to locate GameStats.json! This will cause a lot of stats to break.");
                 return;
             }
 
-            JData = GeneralFuncs.LoadSettings(BasicStatsPath);
+            JData = _generalFuncs.LoadSettings(BasicStatsPath);
 
             // Populate the List of all Games with stats
             var statsDefinitions = StatsDefinitions?.ToObject<Dictionary<string, JObject>>();
@@ -351,16 +356,16 @@ namespace TcNo_Acc_Switcher_Server.Data
             foreach (var game in GamesDict)
             {
                 // If game not on global settings list, add it to the list.
-                if (!AppSettings.GloballyHiddenMetrics.ContainsKey(game))
-                    AppSettings.GloballyHiddenMetrics.Add(game, new Dictionary<string, bool>());
+                if (!_appSettings.GloballyHiddenMetrics.ContainsKey(game))
+                    _appSettings.GloballyHiddenMetrics.Add(game, new Dictionary<string, bool>());
 
                 var allMetrics = statsDefinitions?[game]["Collect"]?.ToObject<Dictionary<string, JObject>>();
                 if (allMetrics is null) continue;
                 foreach (var key in allMetrics.Keys)
                 {
                     // Add to list if not there already.
-                    if (!AppSettings.GloballyHiddenMetrics[game].ContainsKey(key))
-                        AppSettings.GloballyHiddenMetrics[game].Add(key, false);
+                    if (!_appSettings.GloballyHiddenMetrics[game].ContainsKey(key))
+                        _appSettings.GloballyHiddenMetrics[game].Add(key, false);
 
                 }
 
@@ -403,14 +408,14 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <returns>If successfully loaded platform</returns>
         public async Task<bool> SetCurrentPlatform(string platform)
         {
-            AppData.CurrentSwitcher = platform;
+            _appData.CurrentSwitcher = platform;
             if (!PlatformGames.ContainsKey(platform)) return false;
 
             GameStats = new Dictionary<string, GameStat>();
             // TODO: Verify this works as intended when more games are added.
             foreach (var game in GetAvailableGames(platform))
             {
-                var gs = new GameStat();
+                var gs = new GameStat(_generalFuncs, _lang, _basicStats);
                 await gs.SetGameStat(game);
                 GameStats.Add(game, gs);
             }
@@ -471,9 +476,9 @@ namespace TcNo_Acc_Switcher_Server.Data
     /// </summary>
     public sealed class GameStat
     {
-        [Inject] private IGeneralFuncs GeneralFuncs { get; }
-        [Inject] private ILang Lang { get; }
-        [Inject] private IBasicStats BasicStats { get; }
+        private readonly IGeneralFuncs _generalFuncs;
+        private readonly ILang _lang;
+        private readonly IBasicStats _basicStats;
 
         #region Properties
 
@@ -500,6 +505,13 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// Dictionary of AccountId:UserGameStats
         /// </summary>
         public SortedDictionary<string, UserGameStat> CachedStats = new();
+        public GameStat(IGeneralFuncs generalFuncs, ILang lang, IBasicStats basicStats)
+        {
+            _generalFuncs = generalFuncs;
+            _lang = lang;
+            _basicStats = basicStats;
+        }
+
         #endregion
 
         public class CollectInstruction
@@ -518,9 +530,9 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public async Task SetGameStat(string game)
         {
-            if (!BasicStats.GameExists(game)) return;
+            if (!_basicStats.GameExists(game)) return;
 
-            var jGame = BasicStats.GetGame(game);
+            var jGame = _basicStats.GetGame(game);
 
             Game = game;
             UniqueId = (string)jGame["UniqueId"];
@@ -538,7 +550,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             if (ToCollect != null)
                 foreach (var collectInstruction in ToCollect.Where(collectInstruction => collectInstruction.Key == "%PROFILEIMAGE%"))
-                    collectInstruction.Value.ToggleText = Lang["ProfileImage_ToggleText"];
+                    collectInstruction.Value.ToggleText = _lang["ProfileImage_ToggleText"];
 
             //foreach (var (k, v) in jGame["Collect"]?.ToObject<Dictionary<string, CollectInstruction>>()!)
             //{
@@ -565,7 +577,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             if (CachedStats[accountId].Collected.Count == 0 || DateTime.Now.Subtract(CachedStats[accountId].LastUpdated).Days >= 1)
             {
-                await GeneralFuncs.ShowToast("info", Lang["Toast_LoadingStats"], renderTo: "toastarea");
+                await _generalFuncs.ShowToast("info", _lang["Toast_LoadingStats"], renderTo: "toastarea");
                 _lastLoadingNotification = DateTime.Now;
                 return await LoadStatsFromWeb(accountId, platform);
             }
@@ -604,7 +616,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             // Notify user than an account is being loaded - >5 seconds apart.
             if (DateTime.Now.Subtract(_lastLoadingNotification).Seconds >= 5)
             {
-                await GeneralFuncs.ShowToast("info", Lang["Toast_LoadingStats"], renderTo: "toastarea");
+                await _generalFuncs.ShowToast("info", _lang["Toast_LoadingStats"], renderTo: "toastarea");
                 _lastLoadingNotification = DateTime.Now;
             }
 
@@ -612,7 +624,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             HtmlDocument doc = new();
             if (!Globals.GetWebHtmlDocument(ref doc, UrlSubbed(userStat), out var responseText, Cookies))
             {
-                await GeneralFuncs.ShowToast("error", Lang["Toast_GameStatsLoadFail", new { Game }], renderTo: "toastarea");
+                await _generalFuncs.ShowToast("error", _lang["Toast_GameStatsLoadFail", new { Game }], renderTo: "toastarea");
                 return false;
             }
 
@@ -649,7 +661,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 {
                     if (platform != "")
                     {
-                        Globals.DownloadProfileImage(platform, accountId, text, GeneralFuncs.WwwRoot());
+                        Globals.DownloadProfileImage(platform, accountId, text, _generalFuncs.WwwRoot());
                     }
                     continue;
                 }
@@ -658,7 +670,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 if (ci.SpecialType == "ImageDownload")
                 {
                     var fileName = $"{Indicator}-{itemName}-{accountId}.jpg";
-                    var imgPath = Path.Join(GeneralFuncs.WwwRoot(), "img\\statsCache\\" + fileName);
+                    var imgPath = Path.Join(_generalFuncs.WwwRoot(), "img\\statsCache\\" + fileName);
                     if (!await Globals.DownloadFileAsync(text, imgPath))
                     {
                         continue;
@@ -677,7 +689,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             {
                 Directory.CreateDirectory(Path.Join(Globals.UserDataFolder, "temp"));
                 await File.WriteAllTextAsync(Path.Join(Globals.UserDataFolder, "temp", $"download-{Globals.GetCleanFilePath(accountId)}-{Globals.GetCleanFilePath(Game)}.html"), responseText);
-                await GeneralFuncs.ShowToast("error", Lang["Toast_GameStatsEmpty", new { AccoundId = Globals.GetCleanFilePath(accountId), Game = Globals.GetCleanFilePath(Game) }], renderTo: "toastarea");
+                await _generalFuncs.ShowToast("error", _lang["Toast_GameStatsEmpty", new { AccoundId = Globals.GetCleanFilePath(accountId), Game = Globals.GetCleanFilePath(Game) }], renderTo: "toastarea");
                 if (CachedStats.ContainsKey(accountId))
                     CachedStats.Remove(accountId);
                 return false;
@@ -706,7 +718,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             _ = Directory.CreateDirectory(_cacheFileFolder);
 
             if (!File.Exists(CacheFilePath)) return;
-            var jCachedStats = GeneralFuncs.LoadSettings(CacheFilePath);
+            var jCachedStats = _generalFuncs.LoadSettings(CacheFilePath);
             CachedStats = jCachedStats.ToObject<SortedDictionary<string, UserGameStat>>() ?? new SortedDictionary<string, UserGameStat>();
 
             // Check for outdated items, and refresh them

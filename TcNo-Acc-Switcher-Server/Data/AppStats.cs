@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
-using System.Reflection;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
@@ -38,10 +36,8 @@ namespace TcNo_Acc_Switcher_Server.Data
 
     public class AppStats : IAppStats
     {
-        [Inject] private IAppData AppData { get; }
-        [Inject] private IAppSettings AppSettings { get; }
-        [Inject] private ILang Lang { get; }
-        [Inject] private IGeneralFuncs GeneralFuncs { get; }
+        private readonly IAppData _appData;
+        private readonly IAppSettings _appSettings;
 
         // --------------------
         // GOALS:
@@ -73,8 +69,10 @@ namespace TcNo_Acc_Switcher_Server.Data
         // - Unique days platform switcher used (For switches/day stats, for each platform)
         // - First and Last active days
 
-        public AppStats(bool fresh = false)
+        public AppStats(IAppData appData, IAppSettings appSettings, ILang lang, IGeneralFuncs generalFuncs, bool fresh = false)
         {
+            _appData = appData;
+            _appSettings = appSettings;
             try
             {
                 if (!fresh) JsonConvert.PopulateObject(File.ReadAllText(SettingsFile), this);
@@ -83,10 +81,13 @@ namespace TcNo_Acc_Switcher_Server.Data
             catch (Exception e)
             {
                 Globals.WriteToLog("Failed to load AppStats", e);
-                _ = GeneralFuncs.ShowToast("error", Lang["Toast_FailedLoadStats"]);
+                _ = generalFuncs.ShowToast("error", lang["Toast_FailedLoadStats"]);
                 if (File.Exists(SettingsFile))
                     Globals.CopyFile(SettingsFile, SettingsFile.Replace(".json", ".old.json"));
             }
+
+            // Increment launch count.
+            LaunchCount++;
         }
 
         public readonly string SettingsFile = "Statistics.json";
@@ -94,7 +95,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public void SaveSettings()
         {
             GenerateTotals();
-            GeneralFuncs.SaveSettings(SettingsFile, this);
+            Data.GeneralFuncs.SaveSettings(SettingsFile, this);
         }
 
 
@@ -113,7 +114,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             try
             {
                 // Upload stats file if enabled.
-                if (!AppSettings.StatsEnabled || !AppSettings.StatsShare) return;
+                if (!_appSettings.StatsEnabled || !_appSettings.StatsShare) return;
                 // If not a new day
                 if (LastUpload.Date == DateTime.Now.Date) return;
 
@@ -175,7 +176,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public void NewNavigation(string newPage)
         {
-            if (!AppSettings.StatsEnabled) return;
+            if (!_appSettings.StatsEnabled) return;
 
             // First page loaded, so just save current page and time.
             if (LastActivePage == "")
@@ -211,7 +212,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         private void IncrementSwitcherLastActive(string platform)
         {
-            if (!AppSettings.StatsEnabled) return;
+            if (!_appSettings.StatsEnabled) return;
             // Increment unique days if day is not the same (Compares year, month, day - As we're not looking for 24 hours)
             if (SwitcherStats[platform].LastActive.Date == DateTime.Now.Date) return;
             SwitcherStats[platform].UniqueDays += 1;
@@ -220,24 +221,24 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public void IncrementSwitches(string platform)
         {
-            if (!AppSettings.StatsEnabled) return;
+            if (!_appSettings.StatsEnabled) return;
             AddPlatformIfNotExist(platform);
             SwitcherStats[platform].Switches++;
 
             IncrementSwitcherLastActive(platform);
-            AppData.RefreshDiscordPresenceAsync(false);
+            _appData.RefreshDiscordPresenceAsync(false);
         }
 
         public void SetAccountCount(string platform, int count)
         {
-            if (!AppSettings.StatsEnabled) return;
+            if (!_appSettings.StatsEnabled) return;
             AddPlatformIfNotExist(platform);
             SwitcherStats[platform].Accounts = count;
         }
 
         public void IncrementGameLaunches(string platform)
         {
-            if (!AppSettings.StatsEnabled) return;
+            if (!_appSettings.StatsEnabled) return;
             AddPlatformIfNotExist(platform);
             SwitcherStats[platform].GamesLaunched++;
 
@@ -246,7 +247,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public void SetGameShortcutCount(string platform, Dictionary<int, string> shortcuts)
         {
-            if (!AppSettings.StatsEnabled) return;
+            if (!_appSettings.StatsEnabled) return;
             AddPlatformIfNotExist(platform);
             SwitcherStats[platform].GameShortcuts = shortcuts.Count;
 

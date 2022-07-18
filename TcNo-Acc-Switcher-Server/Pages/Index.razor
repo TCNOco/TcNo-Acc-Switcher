@@ -14,21 +14,17 @@
 
 @page "/"
 @using TcNo_Acc_Switcher_Server.Data
-@using TcNo_Acc_Switcher_Server.Pages.General
 @using System.Globalization
 @using System.IO
 @using TcNo_Acc_Switcher_Globals
 @using TcNo_Acc_Switcher_Server.Shared.ContextMenu
-@inject IJSRuntime JsRuntime
-
 @inject NavigationManager NavManager
-
 @inject ILang Lang
-@inject IAppSettings AppSettings
 @inject IAppData AppData
 @inject IAppStats AppStats
 @inject IModalData ModalData
 @inject IGeneralFuncs GeneralFuncs
+@inject IAppSettings AppSettings
 
 @if (AppSettings.PreRenderUpdate)
 {

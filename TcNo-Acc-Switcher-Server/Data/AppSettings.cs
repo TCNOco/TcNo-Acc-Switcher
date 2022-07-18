@@ -32,7 +32,6 @@ using Newtonsoft.Json.Linq;
 using SharpScss;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data.Classes;
-using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Shared.ContextMenu;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -41,9 +40,10 @@ namespace TcNo_Acc_Switcher_Server.Data
 {
     public interface IAppSettings
     {
+        void Init();
         void SaveSettings();
         ObservableCollection<AppSettings.PlatformItem> Platforms { get; set; }
-        string Language { get; set; }
+        string language { get; set; }
         bool Rtl { get; set; }
         bool StreamerModeEnabled { get; set; }
         int ServerPort { get; set; }
@@ -70,7 +70,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         bool ProtocolEnabled { get; set; }
         bool TrayStartup { get; set; }
         bool PreRenderUpdate { get; set; }
-        ObservableCollection<MenuItem> PlatformContextMenuItems { get; init; }
+        ObservableCollection<MenuItem> PlatformContextMenuItems { get; set; }
         string Stylesheet { get; set; }
         bool WindowsAccent { get; set; }
         string WindowsAccentColor { get; set; }
@@ -154,17 +154,24 @@ namespace TcNo_Acc_Switcher_Server.Data
 
     public class AppSettings : IAppSettings
     {
-        [Inject] private ILang Lang { get; }
-        [Inject] private IAppData AppData { get; }
-        [Inject] private IAppFuncs AppFuncs { get; }
-        [Inject] private IModalData ModalData { get; }
-        [Inject] private IGeneralFuncs GeneralFuncs { get; }
-        [Inject] private IShortcut Shortcut { get; }
+        private readonly IGeneralFuncs _generalFuncs;
+        private readonly IModalData _modalData;
+        private readonly IAppFuncs _appFuncs;
+        private readonly IAppSettings _appSettings;
+        private IAppData AppData => _lAppData.Value;
+        private readonly Lazy<IAppData> _lAppData;
+        private readonly ILang _lang;
 
-        private readonly bool _isInit;
-        public AppSettings()
+        private AppSettings(){}
+        public AppSettings(ILang lang, IGeneralFuncs generalFuncs, IModalData modalData, Lazy<IAppData> appData, IAppFuncs appFuncs, IAppSettings appSettings)
         {
-            if (!_isInit) return;
+            _lang = lang;
+            _generalFuncs = generalFuncs;
+            _modalData = modalData;
+            _lAppData = appData;
+            _appFuncs = appFuncs;
+            _appSettings = appSettings;
+
             try
             {
                 if (File.Exists(SettingsFile)) JsonConvert.PopulateObject(File.ReadAllText(SettingsFile), this);
@@ -173,23 +180,50 @@ namespace TcNo_Acc_Switcher_Server.Data
             catch (Exception e)
             {
                 Globals.WriteToLog("Failed to load AppSettings", e);
-                _ = GeneralFuncs.ShowToast("error", Lang["Toast_FailedLoadSettings"]);
+                _ = _generalFuncs.ShowToast("error", lang["Toast_FailedLoadSettings"]);
                 if (File.Exists(SettingsFile))
                     Globals.CopyFile(SettingsFile, SettingsFile.Replace(".json", ".old.json"));
             }
 
+            LoadStylesheetFromFile();
+            CheckShortcuts();
+            InitPlatformsList();
+
+            PlatformContextMenuItems = new MenuBuilder(
+                new Tuple<string, object>[]
+                {
+                    new ("Context_HidePlatform", () => _appFuncs.HidePlatform()),
+                    new ("Context_CreateShortcut", async () => await ShortcutFuncs.CreatePlatformShortcut(generalFuncs, appSettings, AppData)),
+                    new ("Context_ExportAccList", async () => await _appFuncs.ExportAllAccounts()),
+                }).Result();
+        }
+
+        private bool _isInit;
+        public void Init()
+        {
+            if (_isInit) return;
             _isInit = true;
             LoadStylesheetFromFile();
             CheckShortcuts();
             InitPlatformsList();
+
+            PlatformContextMenuItems = new MenuBuilder(
+                new Tuple<string, object>[]
+                {
+                    new ("Context_HidePlatform", () => _appFuncs.HidePlatform()),
+                    new ("Context_CreateShortcut", async () => await ShortcutFuncs.CreatePlatformShortcut(_generalFuncs, _appSettings, AppData)),
+                    new ("Context_ExportAccList", async () => await _appFuncs.ExportAllAccounts()),
+                }).Result();
         }
+
+        public static JObject AppSettingsFromFile => File.Exists(Globals.UserDataFolder + SettingsFile) ? JObject.Load(new JsonTextReader(File.OpenText(Globals.UserDataFolder + SettingsFile))) : new JObject(new AppSettings());
 
         // From: https://stackoverflow.com/questions/44497878/singleton-how-do-i-instance-a-singleton-for-the-first-time
         //private static readonly Lazy<AppSettings> Lazy = new(() => new AppSettings());
         //public static AppSettings Instance => Lazy.Value;
 
         //public void SaveSettings() => GeneralFuncs.SaveSettings(SettingsFile, Lazy.Value);
-        public void SaveSettings() => GeneralFuncs.SaveSettings(SettingsFile, this);
+        public void SaveSettings() => Data.GeneralFuncs.SaveSettings(SettingsFile, this);
 
 
         public class PlatformItem : IComparable
@@ -257,8 +291,8 @@ namespace TcNo_Acc_Switcher_Server.Data
             new PlatformItem("Ubisoft", true),
         };
 
-        [JsonProperty("Platforms", Order = 7)]
         private ObservableCollection<PlatformItem> _platforms = new();
+        [JsonProperty("Platforms", Order = 7)]
         public ObservableCollection<PlatformItem> Platforms
         {
             get => _platforms;
@@ -281,7 +315,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             Platforms.First(x => x.Name == "Steam").SetFromPlatformItem(new PlatformItem("Steam", new List<string> { "s", "steam" }, "steam.exe", true));
         }
 
-        [JsonProperty("Language", Order = 0)] public string Language { get; set; } = "";
+        [JsonProperty("language", Order = 0)] public string language { get; set; } = "";
         [JsonProperty("Rtl", Order = 1)]  public bool Rtl { get; set; } = CultureInfo.CurrentCulture.TextInfo.IsRightToLeft;
         [JsonProperty("StreamerModeEnabled", Order = 2)]  public bool StreamerModeEnabled { get; set; }
         [JsonProperty("ServerPort", Order = 3)] public int ServerPort { get; set; } = 1337;
@@ -344,13 +378,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// List of all games:[Settings:Hidden metric] metric keys.
         /// </summary>
 
-        public ObservableCollection<MenuItem> PlatformContextMenuItems { get; init; } = new MenuBuilder(
-            new Tuple<string, Action>[]
-            {
-                new ("Context_HidePlatform", () => AppFuncs.HidePlatform()),
-                new ("Context_CreateShortcut", async () => await Shortcut.CreatePlatformShortcut()),
-                new ("Context_ExportAccList", async () => await AppFuncs.ExportAllAccounts()),
-            }).Result();
+        public ObservableCollection<MenuItem> PlatformContextMenuItems { get; set; } = new();
 
         [JsonIgnore] public string Stylesheet { get; set; }
         [JsonIgnore] public bool WindowsAccent { get; set; }
@@ -361,7 +389,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonIgnore] public (int, int, int) WindowsAccentColorInt => GetAccentColor();
 
         // Constants
-        [JsonIgnore] public readonly string SettingsFile = "WindowSettings.json";
+        [JsonIgnore] public static readonly string SettingsFile = "WindowSettings.json";
         private string StylesheetFile => Path.Join("themes", ActiveTheme, "style.css");
         private string StylesheetInfoFile => Path.Join("themes", ActiveTheme, "info.yaml");
         [JsonIgnore] public Dictionary<string, string> StylesheetInfo { get; set; }
@@ -411,7 +439,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public async Task SetActiveBrowser(string browser)
         {
             ActiveBrowser = browser;
-            await GeneralFuncs.ShowToast("success", Lang["Toast_RestartRequired"], Lang["Notice"], "toastarea");
+            await _generalFuncs.ShowToast("success", _lang["Toast_RestartRequired"], _lang["Notice"], "toastarea");
         }
 
         #region STYLESHEET
@@ -463,12 +491,12 @@ namespace TcNo_Acc_Switcher_Server.Data
             try
             {
                 if (LoadStylesheetFromFile()) AppData.ReloadPage();
-                else await GeneralFuncs.ShowToast("error", Lang["Toast_LoadStylesheetFailed"],
+                else await _generalFuncs.ShowToast("error", _lang["Toast_LoadStylesheetFailed"],
                     "Stylesheet error", "toastarea");
             }
             catch (Exception)
             {
-                await GeneralFuncs.ShowToast("error", Lang["Toast_LoadStylesheetFailed"],
+                await _generalFuncs.ShowToast("error", _lang["Toast_LoadStylesheetFailed"],
                     "Stylesheet error", "toastarea");
             }
         }
@@ -497,7 +525,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     {
                         scss = StylesheetFile.Replace("css", "scss");
                         if (File.Exists(scss)) GenCssFromScss(scss);
-                        else throw new Exception(Lang["ThemesNotFound"]);
+                        else throw new Exception(_lang["ThemesNotFound"]);
                     }
                 }
             }
@@ -546,7 +574,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             catch (Exception ex)
             {
                 // Catches generic errors, as well as not being able to overwrite file errors, etc.
-                _ = GeneralFuncs.ShowToast("error", Lang["Toast_LoadStylesheetFailed"],
+                _ = _generalFuncs.ShowToast("error", _lang["Toast_LoadStylesheetFailed"],
                     "Stylesheet error", "toastarea");
                 Globals.WriteToLog($"Could not delete stylesheet file: {StylesheetFile}. Could not refresh stylesheet from scss.", ex);
             }
@@ -628,10 +656,10 @@ namespace TcNo_Acc_Switcher_Server.Data
         public void CheckShortcuts()
         {
             Globals.DebugWriteLine(@"[Func:Data\AppSettings.CheckShortcuts]");
-            DesktopShortcut = File.Exists(Path.Join(Shortcut.Desktop, "TcNo Account Switcher.lnk"));
-            StartMenu = File.Exists(Path.Join(Shortcut.StartMenu, "TcNo Account Switcher.lnk"));
-            StartMenuPlatforms = Directory.Exists(Path.Join(Shortcut.StartMenu, "Platforms"));
-            TrayStartup = Shortcut.StartWithWindows_Enabled();
+            DesktopShortcut = File.Exists(Path.Join(ShortcutFuncs.Desktop, "TcNo Account Switcher.lnk"));
+            StartMenu = File.Exists(Path.Join(ShortcutFuncs.StartMenu, "TcNo Account Switcher.lnk"));
+            StartMenuPlatforms = Directory.Exists(Path.Join(ShortcutFuncs.StartMenu, "Platforms"));
+            TrayStartup = ShortcutFuncs.StartWithWindows_Enabled();
 
             if (OperatingSystem.IsWindows())
                 ProtocolEnabled = Protocol_IsEnabled();
@@ -641,7 +669,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.DesktopShortcut_Toggle]");
             var s = new Shortcut();
-            _ = s.Shortcut_Switcher(Shortcut.Desktop);
+            _ = s.Shortcut_Switcher(ShortcutFuncs.Desktop);
             s.ToggleShortcut(!DesktopShortcut);
         }
 
@@ -649,8 +677,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.TrayMinimizeNotExit_Toggle]");
             if (TrayMinimizeNotExit) return;
-            await GeneralFuncs.ShowToast("info", Lang["Toast_TrayPosition"], duration: 15000, renderTo: "toastarea");
-            await GeneralFuncs.ShowToast("info", Lang["Toast_TrayHint"], duration: 15000, renderTo: "toastarea");
+            await _generalFuncs.ShowToast("info", _lang["Toast_TrayPosition"], duration: 15000, renderTo: "toastarea");
+            await _generalFuncs.ShowToast("info", _lang["Toast_TrayHint"], duration: 15000, renderTo: "toastarea");
         }
 
         /// <summary>
@@ -678,20 +706,20 @@ namespace TcNo_Acc_Switcher_Server.Data
                     key?.SetValue("URL Protocol", "", RegistryValueKind.String);
                     using var defaultKey = Registry.ClassesRoot.CreateSubKey(@"tcno\Shell\Open\Command");
                     defaultKey?.SetValue("", $"\"{Path.Join(Globals.AppDataFolder, "TcNo-Acc-Switcher.exe")}\" \"%1\"", RegistryValueKind.String);
-                    await GeneralFuncs.ShowToast("success", Lang["Toast_ProtocolEnabled"], Lang["Toast_ProtocolEnabledTitle"], "toastarea");
+                    await _generalFuncs.ShowToast("success", _lang["Toast_ProtocolEnabled"], _lang["Toast_ProtocolEnabledTitle"], "toastarea");
                 }
                 else
                 {
                     // Remove
                     Registry.ClassesRoot.DeleteSubKeyTree("tcno");
-                    await GeneralFuncs.ShowToast("success", Lang["Toast_ProtocolDisabled"], Lang["Toast_ProtocolDisabledTitle"], "toastarea");
+                    await _generalFuncs.ShowToast("success", _lang["Toast_ProtocolDisabled"], _lang["Toast_ProtocolDisabledTitle"], "toastarea");
                 }
                 ProtocolEnabled = Protocol_IsEnabled();
             }
             catch (UnauthorizedAccessException)
             {
-                await GeneralFuncs.ShowToast("error", Lang["Toast_RestartAsAdmin"], Lang["Failed"], "toastarea");
-                ModalData.ShowModal("confirm", ExtraArg.RestartAsAdmin);
+                await _generalFuncs.ShowToast("error", _lang["Toast_RestartAsAdmin"], _lang["Failed"], "toastarea");
+                _modalData.ShowModal("confirm", ExtraArg.RestartAsAdmin);
             }
         }
 
@@ -767,8 +795,8 @@ namespace TcNo_Acc_Switcher_Server.Data
             Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.StartMenu_Toggle]");
             if (platforms)
             {
-                var platformsFolder = Path.Join(Shortcut.StartMenu, "Platforms");
-                if (Directory.Exists(platformsFolder)) Globals.RecursiveDelete(Path.Join(Shortcut.StartMenu, "Platforms"), false);
+                var platformsFolder = Path.Join(ShortcutFuncs.StartMenu, "Platforms");
+                if (Directory.Exists(platformsFolder)) Globals.RecursiveDelete(Path.Join(ShortcutFuncs.StartMenu, "Platforms"), false);
                 else
                 {
                     _ = Directory.CreateDirectory(platformsFolder);
@@ -782,26 +810,26 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
             // Only create these shortcuts of requested, by setting platforms to false.
             var s = new Shortcut();
-            _ = s.Shortcut_Switcher(Shortcut.StartMenu);
+            _ = s.Shortcut_Switcher(ShortcutFuncs.StartMenu);
             s.ToggleShortcut(!StartMenu, false);
 
-            _ = s.Shortcut_Tray(Shortcut.StartMenu);
+            _ = s.Shortcut_Tray(ShortcutFuncs.StartMenu);
             s.ToggleShortcut(!StartMenu, false);
         }
         public void AutoStart_Toggle()
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.Task_Toggle]");
-            Shortcut.StartWithWindows_Toggle(!TrayStartup);
+            ShortcutFuncs.StartWithWindows_Toggle(!TrayStartup);
         }
 
         public void StartNow()
         {
             _ = NativeFuncs.StartTrayIfNotRunning() switch
             {
-                "Started Tray" => GeneralFuncs.ShowToast("success", Lang["Toast_TrayStarted"], renderTo: "toastarea"),
-                "Already running" => GeneralFuncs.ShowToast("info", Lang["Toast_TrayRunning"], renderTo: "toastarea"),
-                "Tray users not found" => GeneralFuncs.ShowToast("error", Lang["Toast_TrayUsersMissing"], renderTo: "toastarea"),
-                _ => GeneralFuncs.ShowToast("error", Lang["Toast_TrayFail"], renderTo: "toastarea")
+                "Started Tray" => _generalFuncs.ShowToast("success", _lang["Toast_TrayStarted"], renderTo: "toastarea"),
+                "Already running" => _generalFuncs.ShowToast("info", _lang["Toast_TrayRunning"], renderTo: "toastarea"),
+                "Tray users not found" => _generalFuncs.ShowToast("error", _lang["Toast_TrayUsersMissing"], renderTo: "toastarea"),
+                _ => _generalFuncs.ShowToast("error", _lang["Toast_TrayFail"], renderTo: "toastarea")
             };
         }
 
@@ -844,29 +872,26 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
             catch (Exception e) when (e is WebException or AggregateException)
             {
-                if (File.Exists("WindowSettings.json"))
+                try
                 {
-                    try
+                    var o = AppSettingsFromFile;
+                    if (o.ContainsKey("LastUpdateCheckFail"))
                     {
-                        var o = JObject.Parse(Globals.ReadAllText("WindowSettings.json"));
-                        if (o.ContainsKey("LastUpdateCheckFail"))
-                        {
-                            if (!(DateTime.TryParseExact((string)o["LastUpdateCheckFail"], "yyyy-MM-dd HH:mm:ss.fff",
-                                      CultureInfo.InvariantCulture, DateTimeStyles.None, out var timediff) &&
-                                  DateTime.Now.Subtract(timediff).Days >= 1)) return;
-                        }
+                        if (!(DateTime.TryParseExact((string)o["LastUpdateCheckFail"], "yyyy-MM-dd HH:mm:ss.fff",
+                                  CultureInfo.InvariantCulture, DateTimeStyles.None, out var timediff) &&
+                              DateTime.Now.Subtract(timediff).Days >= 1)) return;
+                    }
 
-                        // Has not shown error today
-                        await GeneralFuncs.ShowToast("error", Lang["Toast_UpdateCheckFail"], renderTo: "toastarea", duration: 15000);
-                        o["LastUpdateCheckFail"] = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                        await File.WriteAllTextAsync("WindowSettings.json", o.ToString());
-                    }
-                    catch (JsonException je)
-                    {
-                        Globals.WriteToLog("Could not interpret <User Data>\\WindowSettings.json.", je);
-                        await GeneralFuncs.ShowToast("error", Lang["Toast_UserDataLoadFail"], renderTo: "toastarea", duration: 15000);
-                        File.Move("WindowSettings.json", "WindowSettings.bak.json", true);
-                    }
+                    // Has not shown error today
+                    await _generalFuncs.ShowToast("error", _lang["Toast_UpdateCheckFail"], renderTo: "toastarea", duration: 15000);
+                    o["LastUpdateCheckFail"] = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                    await File.WriteAllTextAsync("WindowSettings.json", o.ToString());
+                }
+                catch (JsonException je)
+                {
+                    Globals.WriteToLog("Could not interpret <User Data>\\WindowSettings.json.", je);
+                    await _generalFuncs.ShowToast("error", _lang["Toast_UserDataLoadFail"], renderTo: "toastarea", duration: 15000);
+                    File.Move("WindowSettings.json", "WindowSettings.bak.json", true);
                 }
                 Globals.WriteToLog(@"Could not reach https://tcno.co/ to check for updates.", e);
             }
@@ -882,7 +907,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             {
                 if (Globals.InstalledToProgramFiles() && !Globals.IsAdministrator || !Globals.HasFolderAccess(Globals.AppDataFolder))
                 {
-                    ModalData.ShowModal("confirm", ExtraArg.RestartAsAdmin);
+                    _modalData.ShowModal("confirm", ExtraArg.RestartAsAdmin);
                     return;
                 }
 
@@ -895,7 +920,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 var verifyDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(Globals.ReadAllText(hashFilePath));
                 if (verifyDictionary == null)
                 {
-                    await GeneralFuncs.ShowToast("error", Lang["Toast_UpdateVerifyFail"]);
+                    await _generalFuncs.ShowToast("error", _lang["Toast_UpdateVerifyFail"]);
                     return;
                 }
 
@@ -906,7 +931,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 foreach (var (key, value) in updaterDict)
                 {
                     if (key == null) continue;
-                    if (File.Exists(key) && value == GeneralFuncs.GetFileMd5(key))
+                    if (File.Exists(key) && value == _generalFuncs.GetFileMd5(key))
                         continue;
                     await Globals.DownloadFileAsync("https://tcno.co/Projects/AccSwitcher/latest/" + key.Replace('\\', '/'), key);
                 }
@@ -915,7 +940,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
             catch (Exception e)
             {
-                await GeneralFuncs.ShowToast("error", Lang["Toast_FailedUpdateCheck"]);
+                await _generalFuncs.ShowToast("error", _lang["Toast_FailedUpdateCheck"]);
                 Globals.WriteToLog("Failed to check for updates:" + e);
             }
             Directory.SetCurrentDirectory(Globals.UserDataFolder);

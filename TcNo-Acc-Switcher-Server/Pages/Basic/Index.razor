@@ -15,12 +15,10 @@
 @page "/Basic/"
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Data.Settings
-@using TcNo_Acc_Switcher_Server.Pages.General
 @using TcNo_Acc_Switcher_Server.Shared.ContextMenu
 @using TcNo_Acc_Switcher_Server.Shared.Accounts
 @using System.IO
 @using Microsoft.AspNetCore.WebUtilities
-@using TcNo_Acc_Switcher_Server.Shared.Modal
 @inject NavigationManager NavManager
 @inject ICurrentPlatform CurrentPlatform
 @inject ILang Lang
@@ -49,13 +47,13 @@
         {
             @if (i >= 0)
             {
-                <button class="HasContextMenu" id="@(shortcut)" @onclick="() => Basic.RunShortcut(shortcut, platform: CurrentPlatform.SafeName)" data-toggle="tooltip" title="@(RemoveShortcutExt(shortcut))">
+                <button class="HasContextMenu" id="@(shortcut)" @onclick="() => BasicFuncs.RunShortcut(GeneralFuncs, CurrentPlatform, AppStats, shortcut, platform: CurrentPlatform.SafeName)" data-toggle="tooltip" title="@(RemoveShortcutExt(shortcut))">
                     <img src="@(CurrentPlatform.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
                 </button>
             }
         }
     </div>
-    <button id="btnOpenShortcutFolder" @onclick="() => Basic.OpenFolder(Path.GetFullPath(CurrentPlatform.ShortcutFolder))" data-toggle="tooltip" title="@(Lang["Tooltip_ShortcutFolder"])" data-placement="right">
+    <button id="btnOpenShortcutFolder" @onclick="() => BasicFuncs.OpenFolder(GeneralFuncs, Path.GetFullPath(CurrentPlatform.ShortcutFolder))" data-toggle="tooltip" title="@(Lang["Tooltip_ShortcutFolder"])" data-placement="right">
         <i class="fas fa-plus"></i>
     </button>
 </div>
@@ -70,7 +68,7 @@
             {
                 @if (i < 0)
                 {
-                    <button class="HasContextMenu" id="@(shortcut)" @onclick="() => Basic.RunShortcut(shortcut, platform: CurrentPlatform.SafeName)" data-toggle="tooltip" title="@(RemoveShortcutExt(shortcut))">
+                    <button class="HasContextMenu" id="@(shortcut)" @onclick="() => BasicFuncs.RunShortcut(GeneralFuncs, shortcut, platform: CurrentPlatform.SafeName)" data-toggle="tooltip" title="@(RemoveShortcutExt(shortcut))">
                         <img src="@(CurrentPlatform.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
                     </button>
                 }

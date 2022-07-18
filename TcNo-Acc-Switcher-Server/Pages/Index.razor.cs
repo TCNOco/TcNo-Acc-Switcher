@@ -18,18 +18,15 @@ using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Data.Settings;
-using TcNo_Acc_Switcher_Server.Pages.General;
-using TcNo_Acc_Switcher_Server.Pages.Steam;
-using TcNo_Acc_Switcher_Server.Shared.Modal;
 
 namespace TcNo_Acc_Switcher_Server.Pages
 {
     public partial class Index
     {
-        [Inject] private IBasicPlatforms BasicPlatforms { get; }
-        [Inject] private ISteam Steam { get; }
-        [Inject] private IBasic Basic { get; }
-        [Inject] private ICurrentPlatform CurrentPlatform { get; }
+        [Inject] private IBasicPlatforms BasicPlatforms { get; set; }
+        [Inject] private ISteam Steam { get; set; }
+        [Inject] private IBasic Basic { get; set; }
+        [Inject] private ICurrentPlatform CurrentPlatform { get; set; }
 
         public async Task Check(string platform)
         {

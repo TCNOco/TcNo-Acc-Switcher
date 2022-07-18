@@ -18,9 +18,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data.Settings;
-using TcNo_Acc_Switcher_Server.Pages.Basic;
-using TcNo_Acc_Switcher_Server.Pages.General;
-using TcNo_Acc_Switcher_Server.Pages.Steam;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
@@ -104,15 +101,26 @@ namespace TcNo_Acc_Switcher_Server.Data
 
     public class ModalData : IModalData
     {
-        [Inject] private ILang Lang { get; }
-        [Inject] private IAppSettings AppSettings { get; }
-        [Inject] private IAppData AppData { get; }
-        [Inject] private ISteam Steam { get; }
-        [Inject] private IBasic Basic { get; }
-        [Inject] private ICurrentPlatform CurrentPlatform { get; }
-        [Inject] private IGeneralFuncs GeneralFuncs { get; }
+        private readonly ILang _lang;
+        private readonly IAppSettings _appSettings;
+        private readonly IAppData _appData;
+        private readonly Lazy<ISteam> _lSteam;
+        private ISteam Steam => _lSteam.Value;
+        private readonly Lazy<IBasic> _lBasic;
+        private IBasic Basic => _lBasic.Value;
+        private readonly ICurrentPlatform _currentPlatform;
+        private readonly IGeneralFuncs _generalFuncs;
 
-        public ModalData(){}
+        public ModalData(ILang lang, IAppSettings appSettings, IAppData appData, Lazy<ISteam> lSteam, Lazy<IBasic> lBasic, ICurrentPlatform currentPlatform, IGeneralFuncs generalFuncs)
+        {
+            _lang = lang;
+            _appSettings = appSettings;
+            _appData = appData;
+            _lSteam = lSteam;
+            _lBasic = lBasic;
+            _currentPlatform = currentPlatform;
+            _generalFuncs = generalFuncs;
+        }
 
         public event Action OnChange;
         public void NotifyDataChanged() => OnChange?.Invoke();
@@ -124,7 +132,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             set
             {
                 _isShown = value;
-                _ = AppData.InvokeVoidAsync(value ? "showModal" : "hideModal");
+                _ = _appData.InvokeVoidAsync(value ? "showModal" : "hideModal");
                 NotifyDataChanged();
             }
         }
@@ -192,20 +200,20 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             var path = PathPicker.LastPath;
 
-            Globals.DebugWriteLine($@"[ModalData.UpdatePlatformFolder] file={AppData.CurrentSwitcher}, path={path}");
-            var settingsFile = AppData.CurrentSwitcher == "Steam"
+            Globals.DebugWriteLine($@"[ModalData.UpdatePlatformFolder] file={_appData.CurrentSwitcher}, path={path}");
+            var settingsFile = _appData.CurrentSwitcher == "Steam"
                 ? Steam.SettingsFile
-                : CurrentPlatform.SettingsFile;
+                : _currentPlatform.SettingsFile;
 
-            var settings = GeneralFuncs.LoadSettings(settingsFile);
+            var settings = _generalFuncs.LoadSettings(settingsFile);
             settings["FolderPath"] = path;
-            GeneralFuncs.SaveSettings(settingsFile, settings);
+            Data.GeneralFuncs.SaveSettings(settingsFile, settings);
             if (!Globals.IsFolder(path))
                 path = Path.GetDirectoryName(path); // Remove .exe
             if (!string.IsNullOrWhiteSpace(path) && path.EndsWith(".exe"))
                 path = Path.GetDirectoryName(path) ?? string.Join("\\", path.Split("\\")[..^1]);
 
-            if (AppData.CurrentSwitcher == "Steam")
+            if (_appData.CurrentSwitcher == "Steam")
                 Steam.FolderPath = path;
             else
                 Basic.FolderPath = path;
@@ -227,16 +235,16 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             var path = PathPicker.LastPath;
 
-            AppSettings.Background = $"{path}";
+            _appSettings.Background = $"{path}";
 
             if (File.Exists(path) && path != "")
             {
                 Directory.CreateDirectory(Path.Join(Globals.UserDataFolder, "wwwroot\\img\\custom\\"));
                 Globals.CopyFile(path, Path.Join(Globals.UserDataFolder, "wwwroot\\img\\custom\\background" + Path.GetExtension(path)));
-                AppSettings.Background = $"img/custom/background{Path.GetExtension(path)}";
-                AppSettings.SaveSettings();
+                _appSettings.Background = $"img/custom/background{Path.GetExtension(path)}";
+                _appSettings.SaveSettings();
             }
-            AppData.CacheReloadPage();
+            _appData.CacheReloadPage();
         }
 
         /// <summary>
@@ -276,14 +284,14 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             if (folderEmpty)
             {
-                await GeneralFuncs.ShowToast("info", Lang["Toast_DataLocationCopying"], renderTo: "toastarea");
+                await _generalFuncs.ShowToast("info", _lang["Toast_DataLocationCopying"], renderTo: "toastarea");
                 if (!Globals.CopyFilesRecursive(Globals.UserDataFolder, path))
-                    await GeneralFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
+                    await _generalFuncs.ShowToast("error", _lang["Toast_FileCopyFail"], renderTo: "toastarea");
             }
             else
-                await GeneralFuncs.ShowToast("info", Lang["Toast_DataLocationNotCopying"], renderTo: "toastarea");
+                await _generalFuncs.ShowToast("info", _lang["Toast_DataLocationNotCopying"], renderTo: "toastarea");
 
-            await GeneralFuncs.ShowToast("info", Lang["Toast_DataLocationSet"], renderTo: "toastarea");
+            await _generalFuncs.ShowToast("info", _lang["Toast_DataLocationSet"], renderTo: "toastarea");
         }
 
         /// <summary>
@@ -302,15 +310,15 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             // Verify path exists and copy image in.
             if (!File.Exists(PathPicker.LastPath)) return;
-            var imageDest = Path.Join(Globals.UserDataFolder, "wwwroot\\img\\profiles\\", AppData.CurrentSwitcherSafe);
-            Globals.CopyFile(PathPicker.LastPath, Path.Join(imageDest, AppData.SelectedAccountId + ".jpg"));
+            var imageDest = Path.Join(Globals.UserDataFolder, "wwwroot\\img\\profiles\\", _appData.CurrentSwitcherSafe);
+            Globals.CopyFile(PathPicker.LastPath, Path.Join(imageDest, _appData.SelectedAccountId + ".jpg"));
 
             // Update file last write time, so it's not deleted and updated.
-            File.SetLastWriteTime(Path.Join(imageDest, AppData.SelectedAccountId + ".jpg"), DateTime.Now);
+            File.SetLastWriteTime(Path.Join(imageDest, _appData.SelectedAccountId + ".jpg"), DateTime.Now);
 
             // Reload page.
-            AppData.CacheReloadPage();
-            await GeneralFuncs.ShowToast("success", Lang["Toast_UpdatedImage"], renderTo: "toastarea");
+            _appData.CacheReloadPage();
+            await _generalFuncs.ShowToast("success", _lang["Toast_UpdatedImage"], renderTo: "toastarea");
         }
 
         #endregion
@@ -333,9 +341,9 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// </summary>
         public async Task SetAppPassword()
         {
-            AppSettings.PasswordHash = Globals.GetSha256HashString(TextInput.LastString);
-            AppSettings.SaveSettings();
-            await GeneralFuncs.ShowToast("success", Lang["Toast_PasswordChanged"], renderTo: "toastarea");
+            _appSettings.PasswordHash = Globals.GetSha256HashString(TextInput.LastString);
+            _appSettings.SaveSettings();
+            await _generalFuncs.ShowToast("success", _lang["Toast_PasswordChanged"], renderTo: "toastarea");
         }
 
         /// <summary>
@@ -363,7 +371,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             IsShown = false;
 
-            if (AppData.CurrentSwitcher == "Steam")
+            if (_appData.CurrentSwitcher == "Steam")
             {
                 if (TextInput.Goal is TextInputRequest.TextInputGoal.ChangeUsername)
                     await Steam.ChangeUsername();
@@ -371,7 +379,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             else
             {
                 if (TextInput.Goal is TextInputRequest.TextInputGoal.ChangeUsername)
-                    await Basic.ChangeUsername(AppData.SelectedAccountId, TextInput.LastString);
+                    await Basic.ChangeUsername(_appData.SelectedAccountId, TextInput.LastString);
                 else
                     await Basic.BasicAddCurrent(TextInput.LastString);
             }

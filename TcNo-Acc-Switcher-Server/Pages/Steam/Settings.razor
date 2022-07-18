@@ -15,7 +15,6 @@
 @page "/Steam/Settings"
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Data.Settings
-@using TcNo_Acc_Switcher_Server.Pages.General
 @using System.Diagnostics
 @using System.IO
 @using TcNo_Acc_Switcher_Globals
@@ -31,7 +30,6 @@
 @inject IAppSettings AppSettings
 @inject IAppStats AppStats
 @inject IGeneralFuncs GeneralFuncs
-@inject IShortcut Shortcut
 
 @code
 {
@@ -49,7 +47,7 @@
             <h2 class="SettingsHeader">@Lang["Settings_Header_GeneralSettings"]</h2>
             <div class="rowSetting">
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="Steam_DesktopShortcut" @bind="Steam.DesktopShortcut" @onclick='() => Shortcut.DesktopShortcut_Toggle("Steam", Steam.DesktopShortcut)'><label class="form-check-label" for="Steam_DesktopShortcut"></label>
+                    <input class="form-check-input" type="checkbox" id="Steam_DesktopShortcut" @bind="Steam.DesktopShortcut" @onclick='() => ShortcutFuncs.DesktopShortcut_Toggle(AppSettings, "Steam", Steam.DesktopShortcut)'><label class="form-check-label" for="Steam_DesktopShortcut"></label>
                 </div>
                 <label for="Steam_DesktopShortcut">@Lang["Settings_Shortcut", new { platform = Platform }]<br></label>
             </div>

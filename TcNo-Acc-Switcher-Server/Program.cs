@@ -20,24 +20,18 @@ using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
-using TcNo_Acc_Switcher_Server.Pages.General;
 
 
 namespace TcNo_Acc_Switcher_Server
 {
     public class Program
     {
-        [Inject] private IAppSettings AppSettings { get; set; }
-        [Inject] private IGeneralFuncs GeneralFuncs { get; }
-
-        public void Main(string[] args)
-        {
-            // Empty
-            _ = MainProgram(args);
-        }
-        public bool MainProgram(string[] args)
+        [STAThread]
+        public static void Main(string[] args)
         {
             // Set working directory to documents folder
             Globals.CreateDataFolder(false);
@@ -52,13 +46,10 @@ namespace TcNo_Acc_Switcher_Server
                 // Failed to bind to port
                 if (ioe.HResult != -2146232800) throw;
                 Globals.WriteToLog(ioe);
-                return false;
             }
-
-            return true;
         }
 
-        public IHostBuilder CreateHostBuilder(string[] args)
+        public static IHostBuilder CreateHostBuilder(string[] args)
         {
             var port = "";
             foreach (var arg in args)
@@ -70,13 +61,12 @@ namespace TcNo_Acc_Switcher_Server
 
             if (string.IsNullOrEmpty(port))
             {
-                FindOpenPort();
-                port = AppSettings.ServerPort.ToString();
+                port = FindOpenPort().ToString();
                 Console.WriteLine(@"Using saved/random port: " + port);
             }
 
             // Start browser - if not started with nobrowser
-            if (!args.Contains("nobrowser")) GeneralFuncs.OpenLinkInBrowser($"http://localhost:{port}");
+            if (!args.Contains("nobrowser")) Data.GeneralFuncs.OpenLinkInBrowser($"http://localhost:{port}");
 
             return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
@@ -89,24 +79,32 @@ namespace TcNo_Acc_Switcher_Server
         /// <summary>
         /// Find first available port up from requested
         /// </summary>
-        public void FindOpenPort()
+        public static int FindOpenPort()
         {
             Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.FindOpenPort]");
             // Check if port available:
             var ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
             var tcpConnInfoArray = ipGlobalProperties.GetActiveTcpConnections();
+            var serverPort = 1337;
+            if (File.Exists(Path.Join(Globals.UserDataFolder, "WindowSettings.json")))
+            {
+                var appSettings = JObject.Load(new JsonTextReader(File.OpenText(Globals.UserDataFolder + "WindowSettings.json")));
+                serverPort = appSettings.Value<int>("ServerPort");
+            }
+
             while (true)
             {
-                if (tcpConnInfoArray.All(x => x.LocalEndPoint.Port != AppSettings.ServerPort)) break;
-                NewPort();
+                if (tcpConnInfoArray.All(x => x.LocalEndPoint.Port != serverPort)) break;
+                serverPort = NewPort();
             }
+
+            return serverPort;
         }
 
-        public void NewPort()
+        public static int NewPort()
         {
             var r = new Random();
-            AppSettings.ServerPort = r.Next(20000, 40000); // Random int [Why this range? See: https://www.sciencedirect.com/topics/computer-science/registered-port & netsh interface ipv4 show excludedportrange protocol=tcp]
-            AppSettings.SaveSettings();
+            return r.Next(20000, 40000); // Random int [Why this range? See: https://www.sciencedirect.com/topics/computer-science/registered-port & netsh interface ipv4 show excludedportrange protocol=tcp]
         }
     }
 }

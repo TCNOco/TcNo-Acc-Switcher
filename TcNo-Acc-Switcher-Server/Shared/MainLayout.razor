@@ -16,12 +16,10 @@
 
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Shared.Modal
-@using Newtonsoft.Json
-@inject IJSRuntime JsRuntime
-
+@inject IAppData AppData
+@inject IAppSettings AppSettings
 @inject NavigationManager NavManager
 
-@inject AppData AData
 <app @onmouseup="MouseUp">
     <div class="headerbar">
         <Headerbar />

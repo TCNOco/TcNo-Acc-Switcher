@@ -14,6 +14,7 @@
 
 @page "/Basic/Settings"
 @using TcNo_Acc_Switcher_Server.Data
+@using TcNo_Acc_Switcher_Server.Data.Classes
 @using TcNo_Acc_Switcher_Server.Data.Settings
 @namespace TcNo_Acc_Switcher_Server.Pages.Basic
 @inject NavigationManager NavManager
@@ -37,7 +38,7 @@
 
             <h2 class="SettingsHeader">@Lang["Settings_Header_GeneralSettings"]</h2>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="Basic.DesktopShortcut" @onclick="() => Shortcut.DesktopShortcut_Toggle(CurrentPlatform.FullName, Basic.DesktopShortcut)"><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="Basic.DesktopShortcut" @onclick="() => ShortcutFuncs.DesktopShortcut_Toggle(AppSettings, CurrentPlatform.FullName, Basic.DesktopShortcut)"><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">
 		            @Lang["Settings_Shortcut", new { platform = CurrentPlatform.FullName }]<br></label>
             </div>
             <div>

@@ -22,6 +22,11 @@
 @using System.Text.RegularExpressions
 @using TcNo_Acc_Switcher_Server.Pages.Basic
 @using TcNo_Acc_Switcher_Server.Pages.Steam
+@inject IModalData ModalData
+@inject IAppData AppData
+@inject ILang Lang
+@inject IGeneralFuncs GeneralFuncs
+
 @code {
 
     [Parameter]
@@ -43,7 +48,7 @@
 <div class="pathPicker">
     <div>
         <CascadingValue Value="@_lastSelectedPath">
-            @foreach (var drive in Pages.General.PathPicker.LogicalDrivesList)
+            @foreach (var drive in LogicalDrivesList)
             {
                 <PathPickerChildren CurrentPath="@drive" Depth="0"/>
             }
@@ -65,4 +70,20 @@
     //    AppData.SelectedAccount.NotifyDataChanged();
 
     //}
+    public List<string> LogicalDrivesList
+    {
+        get
+        {
+            try
+            {
+                return Directory.GetLogicalDrives().ToList();
+            }
+            catch (Exception e)
+            {
+                Globals.WriteToLog("Could not list Logical Drives.", e);
+                _ = GeneralFuncs.ShowToast("error", Lang["PathPicker_NoLogicalDrives"], renderTo: "toastarea");
+                return new List<string>();
+            }
+        }
+    }
 }

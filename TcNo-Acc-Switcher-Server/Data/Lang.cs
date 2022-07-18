@@ -24,7 +24,6 @@ using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server.Pages.General;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -75,9 +74,12 @@ namespace TcNo_Acc_Switcher_Server.Data
 
     public class Lang : ILang
     {
-        [Inject] private IAppSettings AppSettings { get; }
-        [Inject] private IGeneralFuncs GeneralFuncs { get; }
-        public Dictionary<string, string> Strings { get; set; }
+        public Lang()
+        {
+            LoadLocalized();
+        }
+
+        public Dictionary<string, string> Strings { get; set; } = new();
         public string Current { get; set; }
 
         /// <summary>
@@ -136,10 +138,11 @@ namespace TcNo_Acc_Switcher_Server.Data
         public void LoadLocalized()
         {
             LoadDefault();
+
+            var appSettings = AppSettings.AppSettingsFromFile;
+            var language = appSettings?.Value<string>("Language") ?? CultureInfo.CurrentCulture.Name;
             // If setting does not exist in settings file then load the system default
-            _ = Load(AppSettings.Language == ""
-                ? CultureInfo.CurrentCulture.Name
-                : AppSettings.Language);
+            _ = Load(language);
         }
 
         /// <summary>
@@ -174,12 +177,13 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             try
             {
+                var appSettings = AppSettings.AppSettingsFromFile;
                 var path = Path.Join(Globals.AppDataFolder, "Resources", filename + ".yml");
                 Current = filename;
                 if (save && Current == filename)
                 {
-                    AppSettings.Language = filename;
-                    AppSettings.SaveSettings();
+                    appSettings!["Language"] = filename;
+                    GeneralFuncs.SaveSettings(filename, appSettings);
                 }
                 if (!File.Exists(path))
                 {
@@ -196,8 +200,8 @@ namespace TcNo_Acc_Switcher_Server.Data
                         Current = l;
                         if (save && Current == l)
                         {
-                            AppSettings.Language = l;
-                            AppSettings.SaveSettings();
+                            appSettings!["Language"] = l;
+                            GeneralFuncs.SaveSettings(filename, appSettings);
                         }
                         break;
                     }
@@ -221,7 +225,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
             catch (Exception e)
             {
-                await GeneralFuncs.ShowToast("error", "Can not load language information! See log for more info!", "Stylesheet error", "toastarea");
+                //await GeneralFuncs.ShowToast("error", "Can not load language information! See log for more info!", "Stylesheet error", "toastarea");
                 Globals.WriteToLog("Could not load language information!", e);
                 return false;
             }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 
@@ -14,23 +13,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
     {
         [Inject] private IGeneralFuncs GeneralFuncs { get; }
         [Inject] private ILang Lang { get; }
-
-        public List<string> LogicalDrivesList
-        {
-            get
-            {
-                try
-                {
-                    return Directory.GetLogicalDrives().ToList();
-                }
-                catch (Exception e)
-                {
-                    Globals.WriteToLog("Could not list Logical Drives.", e);
-                    _ = GeneralFuncs.ShowToast("error", Lang["PathPicker_NoLogicalDrives"], renderTo: "toastarea");
-                    return new List<string>();
-                }
-            }
-        }
 
 
         public class FolderFileList

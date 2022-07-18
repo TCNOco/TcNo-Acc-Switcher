@@ -16,12 +16,17 @@
 // iR3turnZ: https://github.com/HoeblingerDaniel
 
 using System;
+using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Server.Data;
 
 namespace TcNo_Acc_Switcher_Server.Shared
 {
     public partial class DynamicStylesheet
     {
+        [Inject] private ILang Lang { get; set; }
+        [Inject] private IAppData AppData { get; set; }
+        [Inject] private IAppSettings AppSettings { get; set; }
+
         public string GetStylesheetMarkupString()
         {
             var style = AppSettings.Stylesheet;

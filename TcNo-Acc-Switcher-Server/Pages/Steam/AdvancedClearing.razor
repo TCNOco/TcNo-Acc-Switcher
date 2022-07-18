@@ -14,7 +14,6 @@
 
 @page "/Steam/AdvancedClearing"
 @using TcNo_Acc_Switcher_Server.Data
-@using TcNo_Acc_Switcher_Server.Pages.General
 @namespace TcNo_Acc_Switcher_Server.Pages.Steam
 @inject NavigationManager NavManager
 @inject ILang Lang
@@ -80,7 +79,7 @@
 
 
             <div class="buttoncol col_close">
-                <a @onclick='() => GeneralFuncs.OpenLinkInBrowser("https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Steam#steam-cleaning")' class="fancyLink">@Lang["Button_WikiInfo"]</a>
+                <a @onclick='() => Data.GeneralFuncs.OpenLinkInBrowser("https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Steam#steam-cleaning")' class="fancyLink">@Lang["Button_WikiInfo"]</a>
                 <button class="btn_close" type="button" @onclick='() => NavManager.NavigateTo("/Steam/Settings")'><span>@Lang["Button_Close"]</span></button>
             </div>
         </div>

@@ -12,12 +12,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
-@using TcNo_Acc_Switcher_Server.Data
-@using Microsoft.JSInterop
-@inject AppData AData
-@inject IJSRuntime JsRuntime
-
-@inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
+@inject NavigationManager NavigationManager
 @implements IDisposable
 
 <Router AppAssembly="@typeof(Program).Assembly">

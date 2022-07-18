@@ -112,18 +112,6 @@ public interface IGeneralFuncs
     /// <returns></returns>
     string FileSizeString(double len);
 
-    void SaveSettings(string file, JObject joNewSettings);
-    void SaveSettings<T>(string file, T jSettings);
-
-    /// <summary>
-    /// Saves input JObject of settings to input file path
-    /// </summary>
-    /// <param name="file">File path to save JSON string to</param>
-    /// <param name="joNewSettings">JObject of settings to be saved</param>
-    /// <param name="mergeNewIntoOld">True merges old with new settings, false merges new with old</param>
-    /// <param name="replaceAll"></param>
-    void SaveSettings(string file, JObject joNewSettings, bool mergeNewIntoOld, bool replaceAll = false);
-
     /// <summary>
     /// Saves input JArray of items to input file path
     /// </summary>
@@ -200,12 +188,6 @@ public interface IGeneralFuncs
     Task GiFileReadAllText(string file);
 
     /// <summary>
-    /// Opens a link in user's browser through Shell
-    /// </summary>
-    /// <param name="link">URL string</param>
-    void OpenLinkInBrowser(string link);
-
-    /// <summary>
     /// JS function handler for running showModal JS function, with input arguments.
     /// </summary>
     /// <param name="args">Argument string, containing a command to be handled later by modal</param>
@@ -222,6 +204,20 @@ public interface IGeneralFuncs
     /// <param name="duration">(Optional) Duration to show the toast before fading</param>
     /// <returns></returns>
     Task<bool> ShowToast(string toastType, string toastMessage, string toastTitle = "", string renderTo = "body", int duration = 5000);
+
+    /// <summary>
+    /// JS function handler for showing Toast message.
+    /// Instead of putting in messages (which you still can), use lang vars and they will expand.
+    /// </summary>
+    Task<bool> ShowToastLangVars(string toastType, string langToastMessage, string langToastTitle = "",
+        string renderTo = "body", int duration = 5000);
+
+    /// <summary>
+    /// JS function handler for showing Toast message.
+    /// Instead of putting in messages (which you still can), use lang vars and they will expand.
+    /// </summary>
+    Task<bool> ShowToastLangVars(string toastType, LangItem langItem, string langToastTitle = "",
+        string renderTo = "body", int duration = 5000);
 
     /// <summary>
     /// Creates a shortcut to start the Account Switcher, and swap to the account related.

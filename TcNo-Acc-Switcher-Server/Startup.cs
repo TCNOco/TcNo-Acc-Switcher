@@ -26,7 +26,6 @@ using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Data.Classes;
 using TcNo_Acc_Switcher_Server.Data.Settings;
-using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Shared.Accounts;
 
 namespace TcNo_Acc_Switcher_Server
@@ -52,24 +51,25 @@ namespace TcNo_Acc_Switcher_Server
             _ = services.AddRazorPages();
             _ = services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });
 
-            _ = services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            _ = services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
 
             // Persistent settings:
-            _ = services.AddSingleton<AccountFuncs>();
-            _ = services.AddSingleton<AppSettings>();
-            _ = services.AddSingleton<AppStats>();
-            _ = services.AddSingleton<AppData>();
-            _ = services.AddSingleton<AppFuncs>();
-            _ = services.AddSingleton<AppStats>();
-            _ = services.AddSingleton<GeneralFuncs>();
-            _ = services.AddSingleton<ModalData>();
-            _ = services.AddSingleton<BasicPlatforms>();
-            _ = services.AddSingleton<BasicStats>();
-            _ = services.AddSingleton<CurrentPlatform>();
-            _ = services.AddSingleton<Basic>();
-            _ = services.AddSingleton<Steam>();
-            _ = services.AddSingleton<Lang>();
-            _ = services.AddSingleton<Shortcut>();
+            _ = services.AddTransient<IAccountFuncs, AccountFuncs>();
+            _ = services.AddTransient<Program>();
+            _ = services.AddTransient<IAppSettings, AppSettings>();
+
+            _ = services.AddTransient<IAppStats, AppStats>();
+            _ = services.AddTransient<IAppData, AppData>();
+            _ = services.AddTransient<IAppFuncs, AppFuncs>();
+            _ = services.AddTransient<IAppStats, AppStats>();
+            _ = services.AddTransient<IGeneralFuncs, GeneralFuncs >();
+            _ = services.AddTransient<IModalData, ModalData>();
+            _ = services.AddTransient<IBasicPlatforms, BasicPlatforms>();
+            _ = services.AddTransient<IBasicStats, BasicStats>();
+            _ = services.AddTransient<ICurrentPlatform, CurrentPlatform>();
+            _ = services.AddTransient<IBasic, Basic>();
+            _ = services.AddTransient<ISteam, Steam>();
+            _ = services.AddTransient<ILang, Lang>();
         }
 
         [Inject] private ILang Lang { get; }
@@ -79,15 +79,12 @@ namespace TcNo_Acc_Switcher_Server
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            Lang.LoadLocalized();
+            //var prog = app.ApplicationServices.GetRequiredService<Program>();
+            //app.ApplicationServices.GetRequiredService<IAccountFuncs>();
+            //app.ApplicationServices.GetRequiredService<ILang>();
 
             _ = env.IsDevelopment() ? app.UseDeveloperExceptionPage() : app.UseExceptionHandler("/Error");
 
-            // Moves any old files from previous installs.
-            foreach (var p in AppSettings.Platforms) // Copy across all platform files
-            {
-                MoveIfFileExists(p.SafeName + "Settings.json");
-            }
             MoveIfFileExists("Tray_Users.json");
             MoveIfFileExists("WindowSettings.json");
 
@@ -123,9 +120,6 @@ namespace TcNo_Acc_Switcher_Server
                   _ = endpoints.MapBlazorHub();
                   _ = endpoints.MapFallbackToPage("/_Host");
               });
-
-            // Increment launch count. I don't know if this should be here, but it is.
-            AppStats.LaunchCount++;
         }
 
         public void CurrentDomain_OnProcessExit(object sender, EventArgs e)

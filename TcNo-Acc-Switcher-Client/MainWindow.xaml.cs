@@ -28,15 +28,17 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
 using CefSharp;
 using CefSharp.Wpf;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server;
 using TcNo_Acc_Switcher_Server.Data;
-using Point = System.Drawing.Point;
+using TcNo_Acc_Switcher_Server.Data.Settings;
 
 namespace TcNo_Acc_Switcher_Client
 {
@@ -47,11 +49,21 @@ namespace TcNo_Acc_Switcher_Client
     // This is reported as "never used" by JetBrains Inspector... what?
     public partial class MainWindow
     {
-        private static readonly Thread Server = new(RunServer);
-        private static string _address = "";
-        private readonly string _mainBrowser = AppSettings.ActiveBrowser; // <CEF/WebView>
+        [Inject] private IAppSettings AppSettings { get; }
+        [Inject] private IAppFuncs AppFuncs { get; }
+        [Inject] private IGeneralFuncs GeneralFuncs { get; }
+        [Inject] private IAppStats AppStats { get; }
+        [Inject] private IBasicPlatforms BasicPlatforms { get; }
+        [Inject] private IBasic Basic { get; }
+        [Inject] private ICurrentPlatform CurrentPlatform { get; }
+        [Inject] private ISteam Steam { get; }
+        [Inject] private IAppData AppData { get; }
 
-        private static void RunServer()
+        private readonly Thread _server;
+        private static string _address = "";
+        private readonly string _mainBrowser;
+
+        private void RunServer()
         {
             const string serverPath = "TcNo-Acc-Switcher-Server_main.exe";
             if (Process.GetProcessesByName(Path.GetFileNameWithoutExtension(serverPath)).Length > 0)
@@ -61,9 +73,9 @@ namespace TcNo_Acc_Switcher_Client
             }
 
             var attempts = 0;
-            while (!Program.MainProgram(new[] { _address, "nobrowser" }) && attempts < 10)
+            while (!Program.ProgramInstance.MainProgram(new[] { _address, "nobrowser" }) && attempts < 10)
             {
-                Program.NewPort();
+                Program.ProgramInstance.NewPort();
                 _address = "--urls=http://localhost:" + AppSettings.ServerPort + "/";
                 attempts++;
             }
@@ -91,14 +103,17 @@ namespace TcNo_Acc_Switcher_Client
                 Directory.Move(Path.Join(Globals.AppDataFolder, "wwwroot"), Globals.OriginalWwwroot);
             }
 
-            Program.FindOpenPort();
+            _server = new Thread(RunServer);
+            _mainBrowser = AppSettings.ActiveBrowser; // <CEF/WebView>
+
+            Program.ProgramInstance.FindOpenPort();
             _address = "--urls=http://localhost:" + AppSettings.ServerPort + "/";
 
             AppData.TcNoClientApp = true;
 
             // Start web server
-            Server.IsBackground = true;
-            Server.Start();
+            _server.IsBackground = true;
+            _server.Start();
 
             // Initialize correct browser
             BrowserInit();
@@ -121,7 +136,7 @@ namespace TcNo_Acc_Switcher_Client
                 _cefView.Load("http://localhost:" + AppSettings.ServerPort + "/");
             }
 
-            MainBackground.Background = App.GetStylesheetColor("headerbarBackground", "#253340");
+            MainBackground.Background = GetStylesheetColor("headerbarBackground", "#253340");
 
             Width = AppSettings.WindowSize.X;
             Height = AppSettings.WindowSize.Y;
@@ -133,6 +148,35 @@ namespace TcNo_Acc_Switcher_Client
             if (!AppSettings.StartCentered) return;
             Left = (SystemParameters.PrimaryScreenWidth / 2) - (Width / 2);
             Top = (SystemParameters.PrimaryScreenHeight / 2) - (Height / 2);
+        }
+
+        public SolidColorBrush GetStylesheetColor(string key, string fallback)
+        {
+            string color;
+            try
+            {
+                var start = AppSettings.Stylesheet.IndexOf(key + ":", StringComparison.Ordinal) + key.Length + 1;
+                var end = AppSettings.Stylesheet.IndexOf(";", start, StringComparison.Ordinal);
+                color = AppSettings.Stylesheet[start..end];
+                color = color.Trim(); // Remove whitespace around variable
+            }
+            catch (Exception)
+            {
+                color = "";
+            }
+
+
+            var returnColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString(fallback)!);
+            if (!color.StartsWith("#")) return returnColor;
+            try
+            {
+                returnColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color)!);
+            }
+            catch (Exception)
+            {
+                // Failed to set color
+            }
+            return returnColor;
         }
 
         private ChromiumWebBrowser _cefView;
@@ -218,7 +262,7 @@ namespace TcNo_Acc_Switcher_Client
         /// <summary>
         /// Check if all CEF Files are available. If not > Close and download, or revert to WebView.
         /// </summary>
-        private static void CheckCefFiles()
+        private void CheckCefFiles()
         {
             string[] cefFiles = { "libcef.dll", "icudtl.dat", "resources.pak", "libGLESv2.dll", "d3dcompiler_47.dll", "vk_swiftshader.dll", "chrome_elf.dll", "CefSharp.BrowserSubprocess.Core.dll" };
             foreach (var cefFile in cefFiles)
@@ -536,7 +580,7 @@ namespace TcNo_Acc_Switcher_Client
         protected override void OnClosing(CancelEventArgs e)
         {
             Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.OnClosing]");
-            AppSettings.WindowSize = new Point { X = Convert.ToInt32(Width), Y = Convert.ToInt32(Height) };
+            AppSettings.WindowSize = new System.Drawing.Point { X = Convert.ToInt32(Width), Y = Convert.ToInt32(Height) };
             AppSettings.SaveSettings();
         }
 

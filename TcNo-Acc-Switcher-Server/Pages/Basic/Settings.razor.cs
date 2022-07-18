@@ -21,7 +21,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
-using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Basic
 {
@@ -141,7 +140,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             if (!everything)
                 foreach (var (f, t) in CurrentPlatform.BackupPaths)
                 {
-                    var fExpanded = Basic.ExpandEnvironmentVariables(f);
+                    var fExpanded = BasicSettings.ExpandEnvironmentVariables(f);
                     var dest = Path.Join(tempFolder, t);
 
                     // Handle file entry
@@ -161,7 +160,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             else
                 foreach (var (f, t) in CurrentPlatform.BackupPaths)
                 {
-                    var fExpanded = Basic.ExpandEnvironmentVariables(f);
+                    var fExpanded = BasicSettings.ExpandEnvironmentVariables(f);
                     var dest = Path.Join(tempFolder, t);
 
                     // Handle file entry

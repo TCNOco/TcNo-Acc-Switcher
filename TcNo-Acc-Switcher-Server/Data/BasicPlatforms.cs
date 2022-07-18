@@ -7,8 +7,6 @@ using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data.Settings;
-using TcNo_Acc_Switcher_Server.Pages.Basic;
-using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
@@ -21,14 +19,19 @@ namespace TcNo_Acc_Switcher_Server.Data
 
     public sealed class BasicPlatforms : IBasicPlatforms
     {
-        [Inject] private IAppSettings AppSettings { get; }
-        [Inject] private IAppData AppData { get; }
-        [Inject] private ILang Lang { get; }
-        [Inject] private ICurrentPlatform CurrentPlatform { get; }
-        [Inject] private IGeneralFuncs GeneralFuncs { get; }
+        private readonly IAppSettings _appSettings;
+        private readonly IAppData _appData;
+        private readonly ILang _lang;
+        private readonly ICurrentPlatform _currentPlatform;
+        private readonly IGeneralFuncs _generalFuncs;
 
-        public BasicPlatforms()
+        public BasicPlatforms(IAppSettings appSettings, IAppData appData, ILang lang, ICurrentPlatform currentPlatform, IGeneralFuncs generalFuncs)
         {
+            _appSettings = appSettings;
+            _appData = appData;
+            _lang = lang;
+            _currentPlatform = currentPlatform;
+            _generalFuncs = generalFuncs;
             BasicPlatformsInit().GetAwaiter().GetResult();
         }
 
@@ -38,28 +41,30 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public void SetCurrentPlatform(string id)
         {
-            CurrentPlatform.Reset();
-            var fullName = AppSettings.GetPlatform(id)?.Name;
+            _currentPlatform.Reset();
+            var fullName = _appSettings.GetPlatform(id)?.Name;
             if (fullName == null) return;
-            CurrentPlatform.CurrentPlatformInit(fullName);
-            AppData.CurrentSwitcher = fullName;
+            _currentPlatform.CurrentPlatformInit(fullName);
+            _appData.CurrentSwitcher = fullName;
         }
 
         private async Task BasicPlatformsInit()
         {
+            //GeneralFuncs = new GeneralFuncs();
+
             // Check if Platforms.json exists.
             // If it doesnt: Copy it from the programs' folder to the user data folder.
             var basicPlatformsPath = Path.Join(Globals.AppDataFolder, "Platforms.json");
             if (!File.Exists(basicPlatformsPath))
             {
                 // Once again verify the file exists. If it doesn't throw an error here.
-                await GeneralFuncs.ShowToast("error", Lang["Toast_FailedPlatformsLoad"],
+                await _generalFuncs.ShowToast("error", _lang["Toast_FailedPlatformsLoad"],
                     renderTo: "toastarea");
                 Globals.WriteToLog("Failed to locate Platforms.json! This will cause a lot of features to break.");
                 return;
             }
 
-            JData = GeneralFuncs.LoadSettings(Path.Join(Globals.AppDataFolder, "Platforms.json"));
+            JData = _generalFuncs.LoadSettings(Path.Join(Globals.AppDataFolder, "Platforms.json"));
             // Populate platform Primary Token to Full Name dictionary
             foreach (var jToken in GetPlatforms)
             {
@@ -68,12 +73,12 @@ namespace TcNo_Acc_Switcher_Server.Data
                 if (identifiers == null) continue;
                 var exeName = Path.GetFileName((string) ((JObject) GetPlatforms[x.Name])?["ExeLocationDefault"]);
                 // Add to master platform list
-                if (AppSettings.Platforms.Count(y => y.Name == x.Name) == 0)
-                    AppSettings.Platforms.Add(new AppSettings.PlatformItem(x.Name, identifiers, exeName, false));
+                if (_appSettings.Platforms.Count(y => y.Name == x.Name) == 0)
+                    _appSettings.Platforms.Add(new AppSettings.PlatformItem(x.Name, identifiers, exeName, false));
                 else
                 {
                     // Make sure that everything is set up properly.
-                    var platform = AppSettings.Platforms.First(y => y.Name == x.Name);
+                    var platform = _appSettings.Platforms.First(y => y.Name == x.Name);
                     platform.SetFromPlatformItem(new AppSettings.PlatformItem(x.Name, identifiers, exeName, false));
                 }
             }
@@ -140,14 +145,23 @@ namespace TcNo_Acc_Switcher_Server.Data
 
     public sealed class CurrentPlatform : ICurrentPlatform
     {
-        [Inject] private IGeneralFuncs GeneralFuncs { get; }
-        [Inject] private IAppSettings AppSettings { get; }
-        [Inject] private IBasic Basic { get; }
-        [Inject] private IBasicPlatforms BasicPlatforms { get; }
-        [Inject] private ILang Lang { get; }
-        [Inject] private IAppStats AppStats { get; }
+        private readonly IGeneralFuncs _generalFuncs;
+        private readonly IAppSettings _appSettings;
+        private readonly Lazy<IBasic> _lBasic;
+        private IBasic Basic => _lBasic.Value;
+        private readonly IBasicPlatforms _basicPlatforms;
+        private readonly ILang _lang;
+        private readonly IAppStats _appStats;
 
-        public CurrentPlatform(){}
+        public CurrentPlatform(IGeneralFuncs generalFuncs, IAppSettings appSettings, Lazy<IBasic> lBasic, IBasicPlatforms basicPlatforms, ILang lang, IAppStats appStats)
+        {
+            _generalFuncs = generalFuncs;
+            _appSettings = appSettings;
+            _lBasic = lBasic;
+            _basicPlatforms = basicPlatforms;
+            _lang = lang;
+            _appStats = appStats;
+        }
 
         #region Properties
         public List<string> PlatformIds { get; set; }
@@ -206,7 +220,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public void CurrentPlatformInit(string requestedPlatform)
         {
             var platform =
-                AppSettings.Platforms.FirstOrDefault(x => x.Name == requestedPlatform || x.PossibleIdentifiers.Contains(requestedPlatform));
+                _appSettings.Platforms.FirstOrDefault(x => x.Name == requestedPlatform || x.PossibleIdentifiers.Contains(requestedPlatform));
             if (platform is null) return;
 
 
@@ -214,11 +228,11 @@ namespace TcNo_Acc_Switcher_Server.Data
             SafeName = platform.SafeName;
             SettingsFile = Path.Join("Settings\\", SafeName + ".json");
 
-            var jPlatform = BasicPlatforms.GetPlatformJson(platform.Name);
+            var jPlatform = _basicPlatforms.GetPlatformJson(platform.Name);
 
-            DefaultExePath = Basic.ExpandEnvironmentVariables((string)jPlatform["ExeLocationDefault"]);
-            ExeModalData.ExtraArgs = (string)jPlatform["ExeModalData.ExtraArgs"] ?? "";
-            DefaultFolderPath = Basic.ExpandEnvironmentVariables(Path.GetDirectoryName(DefaultExePath));
+            DefaultExePath = BasicSettings.ExpandEnvironmentVariables((string)jPlatform["ExeLocationDefault"]);
+            ExtraArgs = (string)jPlatform["ExeModalData.ExtraArgs"] ?? "";
+            DefaultFolderPath = BasicSettings.ExpandEnvironmentVariables(Path.GetDirectoryName(DefaultExePath));
             ExeName = platform.ExeName;
 
             PlatformIds = jPlatform["Identifiers"]!.Values<string>().ToList();
@@ -227,7 +241,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             LoginFiles.Clear();
             foreach ((string k, string v) in jPlatform["LoginFiles"]?.ToObject<Dictionary<string, string>>()!)
             {
-                LoginFiles.Add(Basic.ExpandEnvironmentVariables(k), v);
+                LoginFiles.Add(BasicSettings.ExpandEnvironmentVariables(k), v);
                 if (k.Contains("REG:")) HasRegistryFiles = true;
             }
 
@@ -288,7 +302,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     BackupPaths.Clear();
                     foreach (var (k, v) in extras["BackupFolders"].ToObject<Dictionary<string, string>>())
                     {
-                        BackupPaths.Add(Basic.ExpandEnvironmentVariables(k), v);
+                        BackupPaths.Add(BasicSettings.ExpandEnvironmentVariables(k), v);
                     }
                 }
                 if (extras.ContainsKey("BackupFileTypesIgnore"))
@@ -318,8 +332,8 @@ namespace TcNo_Acc_Switcher_Server.Data
                     {
                         if (SearchStartMenuForIcon)
                         {
-                            var startMenuFiles = Directory.GetFiles(Basic.ExpandEnvironmentVariables("%StartMenuAppData%"), SafeName + ".lnk", SearchOption.AllDirectories);
-                            var commonStartMenuFiles = Directory.GetFiles(Basic.ExpandEnvironmentVariables("%StartMenuProgramData%"), SafeName + ".lnk", SearchOption.AllDirectories);
+                            var startMenuFiles = Directory.GetFiles(BasicSettings.ExpandEnvironmentVariables("%StartMenuAppData%"), SafeName + ".lnk", SearchOption.AllDirectories);
+                            var commonStartMenuFiles = Directory.GetFiles(BasicSettings.ExpandEnvironmentVariables("%StartMenuProgramData%"), SafeName + ".lnk", SearchOption.AllDirectories);
                             if (startMenuFiles.Length > 0)
                                 Globals.SaveIconFromFile(startMenuFiles[0], imagePath);
                             else if (commonStartMenuFiles.Length > 0)
@@ -340,7 +354,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 {
                     if (sFolder == "") continue;
                     // Foreach file in folder
-                    var desktopShortcutFolder = Basic.ExpandEnvironmentVariables(sFolder, true);
+                    var desktopShortcutFolder = BasicSettings.ExpandEnvironmentVariables(sFolder, Basic.FolderPath);
                     if (!Directory.Exists(desktopShortcutFolder)) continue;
                     foreach (var shortcut in new DirectoryInfo(desktopShortcutFolder).GetFiles())
                     {
@@ -400,14 +414,14 @@ namespace TcNo_Acc_Switcher_Server.Data
                 }
             }
 
-            AppStats.SetGameShortcutCount(SafeName, Basic.Shortcuts);
+            _appStats.SetGameShortcutCount(SafeName, Basic.Shortcuts);
             Basic.SaveSettings();
 
             IsInit = true;
         }
 
         // Variables that may not be set:
-        public string GetUniqueFilePath() => Basic.ExpandEnvironmentVariables(UniqueIdFile);
+        public string GetUniqueFilePath() => BasicSettings.ExpandEnvironmentVariables(UniqueIdFile);
         public string GetShortcutImageFolder => $"img\\shortcuts\\{SafeName}\\";
         public string GetShortcutImagePath() => Path.Join(Globals.UserDataFolder, "wwwroot\\", GetShortcutImageFolder);
         public string GetShortcutIgnoredPath(string shortcut) => Path.Join(ShortcutFolder, shortcut.Replace(".lnk", "_ignored.lnk").Replace(".url", "_ignored.url"));
@@ -420,12 +434,12 @@ namespace TcNo_Acc_Switcher_Server.Data
             Path.Join(GetShortcutImageFolder, PlatformFuncs.RemoveShortcutExt(gameShortcutName) + ".png");
 
         public Dictionary<string, string> ReadRegJson(string acc) =>
-            GeneralFuncs.ReadDict(Path.Join(AccountLoginCachePath(acc), "reg.json"), true);
+            _generalFuncs.ReadDict(Path.Join(AccountLoginCachePath(acc), "reg.json"), true);
 
         public void SaveRegJson(Dictionary<string, string> regJson, string acc)
         {
             if (regJson.Count > 0)
-                GeneralFuncs.SaveDict(regJson, Path.Join(AccountLoginCachePath(acc), "reg.json"), true);
+                _generalFuncs.SaveDict(regJson, Path.Join(AccountLoginCachePath(acc), "reg.json"), true);
         }
 
         public MarkupString GetUserModalExtraButtons => UsernameModalExtraButtons == ""
@@ -439,7 +453,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             try
             {
-                return Lang[UserModalHintText];
+                return _lang[UserModalHintText];
             }
             catch (Exception)
             {

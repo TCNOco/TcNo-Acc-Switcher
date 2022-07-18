@@ -49,7 +49,7 @@
     "Discord": {
       "Identifiers": [ "d", "discord" ],
       "ExeLocationDefault": "%LocalAppData%\\Discord\\Update.exe",
-      "ExeModalData.ExtraArgs": "--processStart Discord.exe",
+      "ExtraArgs": "--processStart Discord.exe",
       "ExesToEnd": [ "Discord.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
@@ -88,7 +88,7 @@
         "canary"
       ],
       "ExeLocationDefault": "%LocalAppData%\\DiscordCanary\\Update.exe",
-      "ExeModalData.ExtraArgs": "--processStart DiscordCanary.exe",
+      "ExtraArgs": "--processStart DiscordCanary.exe",
       "ExesToEnd": [ "DiscordCanary.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
@@ -127,7 +127,7 @@
         "ptb"
       ],
       "ExeLocationDefault": "%LocalAppData%\\DiscordPTB\\Update.exe",
-      "ExeModalData.ExtraArgs": "--processStart DiscordPTB.exe",
+      "ExtraArgs": "--processStart DiscordPTB.exe",
       "ExesToEnd": [ "DiscordPTB.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
