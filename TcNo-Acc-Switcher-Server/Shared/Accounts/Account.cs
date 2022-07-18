@@ -22,6 +22,8 @@ namespace TcNo_Acc_Switcher_Server.Shared.Accounts;
 
 public class Account
 {
+    [Inject] private IBasicStats BasicStats { get; }
+
     public event Action OnChange;
     public void NotifyDataChanged() => OnChange?.Invoke();
 

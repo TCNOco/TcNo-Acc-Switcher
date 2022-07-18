@@ -27,9 +27,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 {
     public partial class Settings
     {
-        private static readonly Lang Lang = Lang.Instance;
         [Inject]
         public AppData AppData { get; set; }
+        [Inject] private IGeneralFuncs GeneralFuncs { get; }
         protected override void OnInitialized()
         {
             AppData.WindowTitle = Lang["Title_Template_Settings", new { platformName = CurrentPlatform.FullName }];
@@ -41,14 +41,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         public async Task PickFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Basic\Settings.razor.cs.PickFolder]");
-            await GeneralInvocableFuncs.ShowModal("find:Basic:BasicGamesLauncher.exe:BasicSettings");
+            await GeneralFuncs.ShowModal("find:Basic:BasicGamesLauncher.exe:BasicSettings");
         }
 
         // BUTTON: Reset settings
-        public static void ClearSettings()
+        public void ClearSettings()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Basic\Settings.razor.cs.ClearSettings]");
-            Data.Settings.Basic.ResetSettings();
+            Basic.ResetSettings();
             AppData.NavigateToWithToast("/Basic/", "success", Lang["Success"], Lang["Toast_ClearedPlatformSettings", new { platform = "Basic" }]);
         }
         #endregion
@@ -61,7 +61,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 _currentlyRestoring = true;
             else
             {
-                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RestoreBusy"], renderTo: "toastarea");
+                await GeneralFuncs.ShowToast("error", Lang["Toast_RestoreBusy"], renderTo: "toastarea");
                 return;
             }
 
@@ -71,7 +71,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 {
                     if (!file.Name.EndsWith("7z")) continue;
 
-                    await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_RestoreExt"], renderTo: "toastarea");
+                    await GeneralFuncs.ShowToast("info", Lang["Toast_RestoreExt"], renderTo: "toastarea");
 
                     var outputFolder = Path.Join("Restore", Path.GetFileNameWithoutExtension(file.Name));
                     Directory.CreateDirectory(outputFolder);
@@ -87,7 +87,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     Globals.DecompressZip(tempFile, outputFolder);
                     File.Delete(tempFile);
 
-                    await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_RestoreCopying"], renderTo: "toastarea");
+                    await GeneralFuncs.ShowToast("info", Lang["Toast_RestoreCopying"], renderTo: "toastarea");
 
                     // Move files and folders back
                     foreach (var (toPath, fromPath) in CurrentPlatform.BackupPaths)
@@ -98,21 +98,21 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                         else if (Globals.IsFolder(fullFromPath))
                         {
                             if (!Globals.CopyFilesRecursive(fullFromPath, toPath))
-                                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
+                                await GeneralFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
                         }
                     }
 
-                    await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_RestoreDeleting"], renderTo: "toastarea");
+                    await GeneralFuncs.ShowToast("info", Lang["Toast_RestoreDeleting"], renderTo: "toastarea");
 
                     // Remove temp files
                     Globals.RecursiveDelete(outputFolder, false);
 
-                    await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_RestoreComplete"], renderTo: "toastarea");
+                    await GeneralFuncs.ShowToast("success", Lang["Toast_RestoreComplete"], renderTo: "toastarea");
                 }
                 catch (Exception ex)
                 {
                     Globals.WriteToLog("Failed to restore from file: " + file.Name, ex);
-                    await GeneralInvocableFuncs.ShowToast("error", Lang["Status_FailedLog"], renderTo: "toastarea");
+                    await GeneralFuncs.ShowToast("error", Lang["Status_FailedLog"], renderTo: "toastarea");
 
                 }
                 _currentlyRestoring = false;
@@ -128,11 +128,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 _currentlyBackingUp = true;
             else
             {
-                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BackupBusy"], renderTo: "toastarea");
+                await GeneralFuncs.ShowToast("error", Lang["Toast_BackupBusy"], renderTo: "toastarea");
                 return;
             }
             // Let user know it's copying files to a temp location
-            await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_BackupCopy"], renderTo: "toastarea");
+            await GeneralFuncs.ShowToast("info", Lang["Toast_BackupCopy"], renderTo: "toastarea");
 
             // Generate temporary folder:
             var tempFolder = $"BackupTemp\\Backup_{CurrentPlatform.FullName}_{DateTime.Now:dd-MM-yyyy_hh-mm-ss}";
@@ -141,7 +141,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             if (!everything)
                 foreach (var (f, t) in CurrentPlatform.BackupPaths)
                 {
-                    var fExpanded = BasicSwitcherFuncs.ExpandEnvironmentVariables(f);
+                    var fExpanded = Basic.ExpandEnvironmentVariables(f);
                     var dest = Path.Join(tempFolder, t);
 
                     // Handle file entry
@@ -161,7 +161,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             else
                 foreach (var (f, t) in CurrentPlatform.BackupPaths)
                 {
-                    var fExpanded = BasicSwitcherFuncs.ExpandEnvironmentVariables(f);
+                    var fExpanded = Basic.ExpandEnvironmentVariables(f);
                     var dest = Path.Join(tempFolder, t);
 
                     // Handle file entry
@@ -174,7 +174,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
                     // Handle folder entry
                     if (!Globals.CopyFilesRecursive(fExpanded, dest))
-                        await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
+                        await GeneralFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
                 }
 
             var backupThread = new Thread(FinishBackup(tempFolder).RunSynchronously);
@@ -184,11 +184,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         /// <summary>
         /// Runs async so the previous function can return, and an error isn't thrown with the Blazor function timeout
         /// </summary>
-        private static async Task FinishBackup(string tempFolder)
+        private async Task FinishBackup(string tempFolder)
         {
 
             var folderSize = Globals.FolderSizeString(tempFolder);
-            await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_BackupCompress", new { size = folderSize }], duration: 3000, renderTo: "toastarea");
+            await GeneralFuncs.ShowToast("info", Lang["Toast_BackupCompress", new { size = folderSize }], duration: 3000, renderTo: "toastarea");
 
             var zipFile = Path.Join("Backups", (tempFolder.Contains("\\") ? tempFolder.Split("\\")[1] : tempFolder) + ".7z");
 
@@ -202,13 +202,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             {
                 if (e is FileNotFoundException && e.ToString().Contains("7z.dll"))
                 {
-                    await GeneralInvocableFuncs.ShowToast("error", Lang["Error_RequiredFileVerify"],
+                    await GeneralFuncs.ShowToast("error", Lang["Error_RequiredFileVerify"],
                         "Stylesheet error", "toastarea");
                 }
             }
 
             Globals.RecursiveDelete(tempFolder, false);
-            await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_BackupComplete", new { size = folderSize, compressedSize = Globals.FileSizeString(zipFile) }], renderTo: "toastarea");
+            await GeneralFuncs.ShowToast("success", Lang["Toast_BackupComplete", new { size = folderSize, compressedSize = Globals.FileSizeString(zipFile) }], renderTo: "toastarea");
 
             _currentlyBackingUp = false;
         }
@@ -216,12 +216,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         /// <summary>
         /// Keeps the user updated with compression progress
         /// </summary>
-        private static async Task CompressionUpdater(string zipFile)
+        private async Task CompressionUpdater(string zipFile)
         {
             Thread.Sleep(3500);
             while (_currentlyBackingUp)
             {
-                await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_BackupProgress", new { compressedSize = Globals.FileSizeString(zipFile) }], duration: 1000, renderTo: "toastarea");
+                await GeneralFuncs.ShowToast("info", Lang["Toast_BackupProgress", new { compressedSize = Globals.FileSizeString(zipFile) }], duration: 1000, renderTo: "toastarea");
                 Thread.Sleep(2000);
             }
         }

@@ -30,13 +30,14 @@ namespace TcNo_Acc_Switcher_Server
     public class Program
     {
         [Inject] private IAppSettings AppSettings { get; set; }
+        [Inject] private IGeneralFuncs GeneralFuncs { get; }
 
-        public static void Main(string[] args)
+        public void Main(string[] args)
         {
             // Empty
             _ = MainProgram(args);
         }
-        public static bool MainProgram(string[] args)
+        public bool MainProgram(string[] args)
         {
             // Set working directory to documents folder
             Globals.CreateDataFolder(false);
@@ -57,7 +58,7 @@ namespace TcNo_Acc_Switcher_Server
             return true;
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args)
+        public IHostBuilder CreateHostBuilder(string[] args)
         {
             var port = "";
             foreach (var arg in args)
@@ -75,7 +76,7 @@ namespace TcNo_Acc_Switcher_Server
             }
 
             // Start browser - if not started with nobrowser
-            if (!args.Contains("nobrowser")) GeneralInvocableFuncs.OpenLinkInBrowser($"http://localhost:{port}");
+            if (!args.Contains("nobrowser")) GeneralFuncs.OpenLinkInBrowser($"http://localhost:{port}");
 
             return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
@@ -88,7 +89,7 @@ namespace TcNo_Acc_Switcher_Server
         /// <summary>
         /// Find first available port up from requested
         /// </summary>
-        public static void FindOpenPort()
+        public void FindOpenPort()
         {
             Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.FindOpenPort]");
             // Check if port available:
@@ -101,7 +102,7 @@ namespace TcNo_Acc_Switcher_Server
             }
         }
 
-        public static void NewPort()
+        public void NewPort()
         {
             var r = new Random();
             AppSettings.ServerPort = r.Next(20000, 40000); // Random int [Why this range? See: https://www.sciencedirect.com/topics/computer-science/registered-port & netsh interface ipv4 show excludedportrange protocol=tcp]

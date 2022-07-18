@@ -19,11 +19,17 @@
 @using System.IO
 @using TcNo_Acc_Switcher_Server.Shared.Accounts
 @using TcNo_Acc_Switcher_Server.Shared.ContextMenu
-@inject AppData AData
-@inject IJSRuntime JsRuntime
-@{ AData.SetActiveIJsRuntime(JsRuntime); }
-@inject NavigationManager NavManager
-@{ AData.SetActiveNavMan(NavManager); }
+@inject IAppData AppData
+@inject IAppSettings AppSettings
+@inject ISteam Steam
+@inject IBasic Basic
+@inject IBasicStats BasicStats
+@inject IAppStats AppStats
+@inject IModalData ModalData
+@inject IAppFuncs AppFuncs
+@inject IGeneralFuncs GeneralFuncs
+@inject IAccountFuncs AccountFuncs
+
 
 <style>@(AppSettings.GetCssBlock())</style>
 <style>@(Steam.GetSteamIdCssBlock())</style>
@@ -96,7 +102,7 @@
 
     protected override void OnInitialized()
     {
-        AppData.Instance.OnChange += OnChangeHandler;
+        AppData.OnChange += OnChangeHandler;
     }
     private async void OnChangeHandler()
     {
@@ -105,7 +111,7 @@
 
     public void Dispose()
     {
-        AppData.Instance.OnChange -= OnChangeHandler;
+        AppData.OnChange -= OnChangeHandler;
     }
 
     // This has to be here for NavManager.
@@ -126,7 +132,7 @@
         await AppData.InvokeVoidAsync("initCopyHotKey");
         await AppData.InvokeVoidAsync("showNoteTooltips");
 
-        var curAcc = SteamSwitcherFuncs.GetCurrentAccountId(true);
+        var curAcc = Steam.GetCurrentAccountId(true);
         if (curAcc != "") await AccountFuncs.SetCurrentAccount(curAcc);
 
         AppData.FirstLaunchCheck();

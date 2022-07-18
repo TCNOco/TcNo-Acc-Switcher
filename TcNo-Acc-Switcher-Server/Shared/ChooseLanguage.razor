@@ -16,11 +16,15 @@
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using System.Globalization
 @inject NavigationManager NavigationManager
-@inject Lang Locale
+@inject ILang Lang
+@inject IModalData ModalData
+@inject IAppSettings AppSettings
+@inject IAppData AppData
+@inject IGeneralFuncs GeneralFuncs
 
 @if (_cultures != null)
 {
-	<span>@Locale["Header_ChooseLanguage"]</span>
+	<span>@Lang["Header_ChooseLanguage"]</span>
 	<div class="dropdown">
 		<ul class="custom-dropdown-menu dropdown-menu">
 			@foreach (var (key, value) in _cultures)
@@ -32,18 +36,19 @@
 			@_selectedCulture
 			<span class="caret"></span>
 		</button>
-		&nbsp;<a class="fancyLink" @onclick='() => { GeneralInvocableFuncs.OpenLinkInBrowser("https://crowdin.com/project/tcno-account-switcher"); }'>@Locale["Settings_HelpTranslate"]</a>
-		&nbsp;<a class="fancyLink" @onclick='() => ModalData.ShowModal("crowdin")'>@Locale["Settings_ViewTranslators"]</a>
+		&nbsp;<a class="fancyLink" @onclick='() => { GeneralFuncs.OpenLinkInBrowser("https://crowdin.com/project/tcno-account-switcher"); }'>@Lang["Settings_HelpTranslate"]</a>
+		&nbsp;<a class="fancyLink" @onclick='() => ModalData.ShowModal("crowdin")'>@Lang["Settings_ViewTranslators"]</a>
 	</div>
 }
 
 @code {
-	private readonly string _selectedCulture = Lang.GetCurrentLanguage().Key;
-	private Dictionary<string, string> _cultures = Lang.GetAvailableLanguagesDict();
+	private string _selectedCulture;
+	private Dictionary<string, string> _cultures;
 
 	protected override void OnInitialized()
 	{
-
+        _selectedCulture = Lang.GetCurrentLanguage().Key;
+        _cultures = Lang.GetAvailableLanguagesDict();
 	}
 
 	private async Task RequestCultureChange(string key)

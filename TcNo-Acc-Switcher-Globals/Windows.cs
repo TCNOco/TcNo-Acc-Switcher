@@ -283,7 +283,7 @@ namespace TcNo_Acc_Switcher_Globals
         //https://github.com/CopyText/TextCopy/blob/master/src/TextCopy/WindowsClipboard.cs
         public static void SetText(string text)
         {
-            Globals.DebugWriteLine(@"[Func:Data\GenericFunctions.SetText] text=hidden");
+            Globals.DebugWriteLine(@"[Func:Data\GeneralFuncs.SetText] text=hidden");
             if (text == null) return;
             OpenClipboard();
 
@@ -319,7 +319,7 @@ namespace TcNo_Acc_Switcher_Globals
 
         public static void OpenClipboard()
         {
-            Globals.DebugWriteLine(@"[Func:Data\GenericFunctions.OpenClipboard]");
+            Globals.DebugWriteLine(@"[Func:Data\GeneralFuncs.OpenClipboard]");
             var num = 10;
             while (true)
             {

@@ -22,25 +22,62 @@ using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Shared.Accounts
 {
-    public class AccountFuncs : ComponentBase
+    public interface IAccountFuncs
     {
+        /// <summary>
+        /// Highlights the specified account
+        /// </summary>
+        void SetSelectedAccount(Account acc);
+
+        /// <summary>
+        /// Removes highlight from all accounts
+        /// </summary>
+        void UnselectAllAccounts();
+
+        /// <summary>
+        /// Highlights the right-clicked account, and shows the context menu
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="acc"></param>
+        void AccountRightClick(MouseEventArgs e, Account acc);
+
+        /// <summary>
+        /// Highlights the specified account
+        /// </summary>
+        Task SetCurrentAccount(Account acc);
+
+        Task SetCurrentAccount(string accId);
+
+        /// <summary>
+        /// Removes "currently logged in" border from all accounts
+        /// </summary>
+        Task UnCurrentAllAccounts();
+
+        Task SetParametersAsync(ParameterView parameters);
+    }
+
+    public class AccountFuncs : ComponentBase, IAccountFuncs
+    {
+        [Inject] private ILang Lang { get; }
+        [Inject] private IAppData AppData { get; }
+
         #region Selecting accounts
         /// <summary>
         /// Highlights the specified account
         /// </summary>
-        public static void SetSelectedAccount(Account acc)
+        public void SetSelectedAccount(Account acc)
         {
-            AppData.CurrentStatus = Lang.Instance["Status_SelectedAccount", new { name = acc.DisplayName }];
+            AppData.CurrentStatus = Lang["Status_SelectedAccount", new { name = acc.DisplayName }];
             AppData.SelectedAccount = acc;
             UnselectAllAccounts();
             acc.IsChecked = true;
-            AppData.Instance.NotifyDataChanged();
+            AppData.NotifyDataChanged();
         }
 
         /// <summary>
         /// Removes highlight from all accounts
         /// </summary>
-        public static void UnselectAllAccounts()
+        public void UnselectAllAccounts()
         {
             if (AppData.CurrentSwitcher == "Steam")
                 foreach (var account in AppData.SteamAccounts)
@@ -61,7 +98,7 @@ namespace TcNo_Acc_Switcher_Server.Shared.Accounts
         /// </summary>
         /// <param name="e"></param>
         /// <param name="acc"></param>
-        public static async void AccountRightClick(MouseEventArgs e, Account acc)
+        public async void AccountRightClick(MouseEventArgs e, Account acc)
         {
             if (e.Button != 2) return;
             SetSelectedAccount(acc);
@@ -73,25 +110,25 @@ namespace TcNo_Acc_Switcher_Server.Shared.Accounts
         /// <summary>
         /// Highlights the specified account
         /// </summary>
-        public static async Task SetCurrentAccount(Account acc)
+        public async Task SetCurrentAccount(Account acc)
         {
             await UnCurrentAllAccounts();
             acc.IsCurrent = true;
-            acc.TitleText = $"{Lang.Instance["Tooltip_CurrentAccount"]}";
-            AppData.Instance.NotifyDataChanged();
+            acc.TitleText = $"{Lang["Tooltip_CurrentAccount"]}";
+            AppData.NotifyDataChanged();
 
             // getBestOffset
             await AppData.InvokeVoidAsync("setBestOffset", acc.AccountId);
             // then initTooltips
             await AppData.InvokeVoidAsync("initTooltips");
         }
-        public static async Task SetCurrentAccount(string accId) =>
+        public async Task SetCurrentAccount(string accId) =>
             await SetCurrentAccount(AppData.CurrentSwitcher == "Steam" ? AppData.SteamAccounts.First(x => x.AccountId == accId) : AppData.BasicAccounts.First(x => x.AccountId == accId));
 
         /// <summary>
         /// Removes "currently logged in" border from all accounts
         /// </summary>
-        public static async Task UnCurrentAllAccounts()
+        public async Task UnCurrentAllAccounts()
         {
             if (AppData.CurrentSwitcher == "Steam")
                 foreach (var account in AppData.SteamAccounts)

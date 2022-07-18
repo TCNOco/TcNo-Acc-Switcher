@@ -16,30 +16,29 @@
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Pages.General
 @namespace TcNo_Acc_Switcher_Server.Pages.Steam
-@inject IJSRuntime JsRuntime
-@{ AppData.SetActiveIJsRuntime(JsRuntime); }
 @inject NavigationManager NavManager
-@{ AppData.SetActiveNavMan(NavManager); }
-@inject Lang Locale
+@inject ILang Lang
+@inject IAppStats AppStats
+@inject IGeneralFuncs GeneralFuncs
 
 <div class="container mainblock">
     <div class="row">
         <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol clearingPage">
             <toastarea class="toastarea" />
-            <h2 class="SettingsHeader">@Locale["Cleaning_ImportantInfoHeader"]</h2>
+            <h2 class="SettingsHeader">@Lang["Cleaning_ImportantInfoHeader"]</h2>
             <div>
                 <p>
-                    @(new MarkupString(Locale["Cleaning_ImportantInfo"]))
+                    @(new MarkupString(Lang["Cleaning_ImportantInfo"]))
                 </p>
             </div>
             <div id="restoreUnderstand">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_Clearing_Understand" @bind="_notAccepted"><label class="form-check-label" for="Steam_Clearing_Understand"></label></div><label for="Steam_Clearing_Understand">@Locale["Cleaning_Understand"]<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_Clearing_Understand" @bind="_notAccepted"><label class="form-check-label" for="Steam_Clearing_Understand"></label></div><label for="Steam_Clearing_Understand">@Lang["Cleaning_Understand"]<br></label>
             </div>
-            <button id="Steam_Close" type="button" @onclick="Steam_Close" disabled="@Accepted"><span>@Locale["Cleaning_Button_KillProcess", new { platform = "Steam" }]</span></button>
+            <button id="Steam_Close" type="button" @onclick="Steam_Close" disabled="@Accepted"><span>@Lang["Cleaning_Button_KillProcess", new { platform = "Steam" }]</span></button>
 
             <div class="clearingRow">
                 <div class="clearingLeft advancedClearingButtonCol">
-                    <h2 class="SettingsHeader">@Locale["Cleaning_Header_General"]</h2>
+                    <h2 class="SettingsHeader">@Lang["Cleaning_Header_General"]</h2>
                     <div class="buttoncol">
                         <button id="Steam_Clear_Logs" type="button" @onclick="Steam_Clear_Logs" disabled="@Accepted"><span>..\Steam\Logs</span></button>
                         <button id="Steam_Clear_Dumps" type="button" @onclick="Steam_Clear_Dumps" disabled="@Accepted"><span>..\Steam\Dumps</span></button>
@@ -56,7 +55,7 @@
                         <button id="Steam_Clear_DepotCache" type="button" @onclick="Steam_Clear_DepotCache" disabled="@Accepted"><span>..\Steam\depotcache</span></button>
                     </div>
 
-                    <h2 class="SettingsHeader">@Locale["Cleaning_Header_LoginHistory"]</h2>
+                    <h2 class="SettingsHeader">@Lang["Cleaning_Header_LoginHistory"]</h2>
                     <div class="buttoncol">
                         <button id="Steam_Clear_LoginUsers" type="button" @onclick="Steam_Clear_LoginUsers" disabled="@Accepted"><span>..\Steam\config\loginusers.vdf</span></button>
                         <button id="Steam_Clear_Ssfn" type="button" @onclick="Steam_Clear_Ssfn" disabled="@Accepted"><span>..\Steam\ssfn*</span></button>
@@ -77,12 +76,12 @@
                     <div id="lines"></div>
                 </div>
             </div>
-            <div class="clearLogDiv"><button onclick="document.getElementById('lines').innerHTML = ''"><span>@Locale["Button_ClearLog"]</span></button></div>
+            <div class="clearLogDiv"><button onclick="document.getElementById('lines').innerHTML = ''"><span>@Lang["Button_ClearLog"]</span></button></div>
 
 
             <div class="buttoncol col_close">
-                <a @onclick='() => GeneralInvocableFuncs.OpenLinkInBrowser("https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Steam#steam-cleaning")' class="fancyLink">@Locale["Button_WikiInfo"]</a>
-                <button class="btn_close" type="button" @onclick='() => NavManager.NavigateTo("/Steam/Settings")'><span>@Locale["Button_Close"]</span></button>
+                <a @onclick='() => GeneralFuncs.OpenLinkInBrowser("https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Steam#steam-cleaning")' class="fancyLink">@Lang["Button_WikiInfo"]</a>
+                <button class="btn_close" type="button" @onclick='() => NavManager.NavigateTo("/Steam/Settings")'><span>@Lang["Button_Close"]</span></button>
             </div>
         </div>
     </div>

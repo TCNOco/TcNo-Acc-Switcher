@@ -22,8 +22,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
     public partial class Settings
     {
-        private static readonly Lang Lang = Lang.Instance;
-
         protected override void OnInitialized()
         {
             AppData.WindowTitle = Lang["Title_Steam_Settings"];
@@ -35,33 +33,33 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public async Task PickFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.PickFolder]");
-            await GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
+            await GeneralFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
         }
 
         // BUTTON: Check account VAC status
-        public static async Task ClearVacStatus()
+        public async Task ClearVacStatus()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearVacStatus]");
-            if (Globals.DeleteFile(Data.Settings.Steam.VacCacheFile))
-                await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_Steam_VacCleared"], renderTo: "toastarea");
+            if (Globals.DeleteFile(Steam.VacCacheFile))
+                await GeneralFuncs.ShowToast("success", Lang["Toast_Steam_VacCleared"], renderTo: "toastarea");
             else
-                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Steam_CantDeleteVacCache"], Lang["Error"],
+                await GeneralFuncs.ShowToast("error", Lang["Toast_Steam_CantDeleteVacCache"], Lang["Error"],
                     "toastarea");
         }
 
         // BUTTON: Reset settings
-        public static void ClearSettings()
+        public void ClearSettings()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearSettings]");
-            Data.Settings.Steam.ResetSettings();
+            Steam.ResetSettings();
             AppData.NavigateToWithToast("/Steam", "success", Lang["Success"], Lang["Toast_ClearedPlatformSettings", new { platform = "Steam" }]);
         }
 
         // BUTTON: Reset images
-        public static async Task ClearImages()
+        public async Task ClearImages()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearImages]");
-            await SteamSwitcherFuncs.ClearImages();
+            await Steam.ClearImages();
         }
         #endregion
     }

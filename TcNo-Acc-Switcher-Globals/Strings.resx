@@ -133,7 +133,7 @@ Full path:</value>
   <data name="ErrUnhandledExceptionHeader" xml:space="preserve">
     <value>TcNo Account Switcher Unhandled exception</value>
   </data>
-  <data name="SteamSwitcherFuncs_PrepareProfileImages_" xml:space="preserve">
+  <data name="Steam_PrepareProfileImages_" xml:space="preserve">
     <value>ERROR: Could not connect and download Steam profile's image from Steam servers.
 Check your internet connection.
 

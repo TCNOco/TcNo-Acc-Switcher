@@ -20,10 +20,18 @@
 @using TcNo_Acc_Switcher_Server.Shared.Modal.Components
 @using Newtonsoft.Json
 @using System.IO
+@inject ILang Lang
+@inject IModalData ModalData
+@inject IAppData AppData
+@inject IAppSettings AppSettings
+@inject IAppStats AppStats
+@inject IGeneralFuncs GeneralFuncs
+@inject IAppFuncs AppFuncs
+
 @code {
     protected override void OnInitialized()
     {
-        ModalData.Instance.TextInputOnChange += OnChangeHandler;
+        ModalData.TextInputOnChange += OnChangeHandler;
         OnChangeHandler(); // Run once just to set vars
     }
 
@@ -37,7 +45,7 @@
 
     public void Dispose()
     {
-        ModalData.Instance.TextInputOnChange -= OnChangeHandler;
+        ModalData.TextInputOnChange -= OnChangeHandler;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -88,19 +96,19 @@
     }
 
     // Update dynamically as the user types.
-    private static void Update() => ModalData.TextInputNotifyDataChanged();
+    private void Update() => ModalData.TextInputNotifyDataChanged();
 
 
-    private static async Task Confirm()
+    private async Task Confirm()
     {
         ModalData.IsShown = false;
 
-        if (ModalData.TextInput.Goal == ModalData.TextInputRequest.TextInputGoal.AppPassword)
-            await ModalFuncs.SetAppPassword();
+        if (ModalData.TextInput.Goal == TextInputRequest.TextInputGoal.AppPassword)
+            await ModalData.SetAppPassword();
         else if (ModalData.TextInput.Goal is
-                ModalData.TextInputRequest.TextInputGoal.AccString
-                or ModalData.TextInputRequest.TextInputGoal.ChangeUsername)
-            await ModalFuncs.SetAccountString();
+                TextInputRequest.TextInputGoal.AccString
+                or TextInputRequest.TextInputGoal.ChangeUsername)
+            await ModalData.SetAccountString();
 
 
     }

@@ -15,106 +15,93 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Runtime.Versioning;
+using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
+using Gameloop.Vdf;
+using Gameloop.Vdf.JsonConverter;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using Microsoft.Win32;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Converters;
+using TcNo_Acc_Switcher_Server.Data.Classes;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.General;
-using TcNo_Acc_Switcher_Server.Pages.General.Classes;
-using TcNo_Acc_Switcher_Server.Pages.Steam;
 using TcNo_Acc_Switcher_Server.Shared;
 using TcNo_Acc_Switcher_Server.Shared.Accounts;
 using TcNo_Acc_Switcher_Server.Shared.ContextMenu;
-using TcNo_Acc_Switcher_Server.Shared.Modal;
 
 namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
-    public class Steam
+    public class Steam : ISteam
     {
-        private static readonly Lang Lang = Lang.Instance;
-        private static Steam _instance = new();
-        private static readonly object LockObj = new();
-        public static Steam Instance
+        [Inject] private ILang Lang { get; }
+        [Inject] private IAppData AppData { get; }
+        [Inject] private IBasic Basic { get; }
+        [Inject] private IGeneralFuncs GeneralFuncs { get; }
+        [Inject] private ICurrentPlatform CurrentPlatform { get; }
+        [Inject] private IAppStats AppStats { get; }
+        [Inject] private IAppFuncs AppFuncs { get; }
+        [Inject] private IAccountFuncs AccountFuncs { get; }
+        [Inject] private IBasicStats BasicStats { get; }
+        [Inject] private IModalData ModalData { get; }
+        [Inject] private IAppSettings AppSettings { get; }
+        [Inject] private IShortcut Shortcut { get; }
+
+        public Steam()
         {
-            get
+            try
             {
-                lock (LockObj)
-                {
-                    // Load settings if have changed, or not set
-                    if (_instance is { _currentlyModifying: true }) return _instance;
-                    if (_instance != new Steam() && Globals.GetFileMd5(SettingsFile) == _instance._lastHash) return _instance;
-
-                    _instance = new Steam { _currentlyModifying = true };
-
-                    if (File.Exists(SettingsFile))
-                    {
-                        _instance = JsonConvert.DeserializeObject<Steam>(File.ReadAllText(SettingsFile), new JsonSerializerSettings());
-                        if (_instance == null)
-                        {
-                            _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedLoadSettings"]);
-                            if (File.Exists(SettingsFile))
-                                Globals.CopyFile(SettingsFile, SettingsFile.Replace(".json", ".old.json"));
-                            _instance = new Steam { _currentlyModifying = true };
-                        }
-                        _instance._lastHash = Globals.GetFileMd5(SettingsFile);
-                        if (_instance._folderPath.EndsWith(".exe"))
-                            _instance._folderPath = Path.GetDirectoryName(_instance._folderPath) ?? string.Join("\\", _instance._folderPath.Split("\\")[..^1]);
-                    }
-                    else
-                    {
-                        SaveSettings();
-                    }
-                    LoadBasicCompat(); // Add missing features in templated platforms system.
-
-                    //// Forces lazy values to be instantiated
-                    //_ = InstalledGames.Value;
-                    //_ = AppIds.Value;
-
-                    BuildContextMenu();
-                    AppData.InitializedClasses.Steam = true;
-
-                    _instance._currentlyModifying = false;
-
-                    return _instance;
-                }
+                if (File.Exists(CurrentPlatform.SettingsFile)) JsonConvert.PopulateObject(File.ReadAllText(CurrentPlatform.SettingsFile), this);
+                //_instance = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(SettingsFile), new JsonSerializerSettings());
             }
-            set
+            catch (Exception e)
             {
-                lock (LockObj)
-                {
-                    _instance = value;
-                }
+                Globals.WriteToLog("Failed to load BasicSettings", e);
+                _ = GeneralFuncs.ShowToast("error", Lang["Toast_FailedLoadSettings"]);
+                if (File.Exists(SettingsFile))
+                    Globals.CopyFile(SettingsFile, SettingsFile.Replace(".json", ".old.json"));
             }
+
+            InstalledGames = LoadInstalledGames();
+            AppIds = LoadAppNames();
+
+            LoadBasicCompat(); // Add missing features in templated platforms system.
+
+            //// Forces lazy values to be instantiated
+            //_ = InstalledGames.Value;
+            //_ = AppIds.Value;
+
+            BuildContextMenu();
+            AppData.InitializedClasses.Steam = true;
         }
 
-        private string _lastHash = "";
-        private bool _currentlyModifying;
-
-        public static void SaveSettings()
+        public void SaveSettings()
         {
             // Accounts seem to reset when saving, for some reason...
             var accList = AppData.SteamAccounts;
-            GeneralFuncs.SaveSettings(SettingsFile, Instance);
+            GeneralFuncs.SaveSettings(SettingsFile, this);
             AppData.SteamAccounts = accList;
         }
 
         #region Basic Compatability
-        public static string GetShortcutImagePath(string gameShortcutName) =>
+        public string GetShortcutImagePath(string gameShortcutName) =>
             Path.Join(GetShortcutImageFolder, PlatformFuncs.RemoveShortcutExt(gameShortcutName) + ".png");
-        public static Dictionary<int, string> Shortcuts { get => Instance._shortcuts; set => Instance._shortcuts = value; }
-        public static bool ShowShortNotes { get => Instance._showShortNotes; set => Instance._showShortNotes = value; }
-        public static string ClosingMethod { get => Instance._closingMethod; set => Instance._closingMethod = value; }
-        public static string StartingMethod { get => Instance._startingMethod; set => Instance._startingMethod = value; }
         private static string GetShortcutImageFolder => "img\\shortcuts\\Steam\\";
         private static string GetShortcutImagePath() => Path.Join(Globals.UserDataFolder, "wwwroot\\", GetShortcutImageFolder);
-        public static string ShortcutFolder => "LoginCache\\Steam\\Shortcuts\\";
-        private static readonly List<string> ShortcutFolders = new () { "%StartMenuAppData%\\Steam\\" };
-        private static string GetShortcutIgnoredPath(string shortcut) => Path.Join(ShortcutFolder, shortcut.Replace(".lnk", "_ignored.lnk").Replace(".url", "_ignored.url"));
-        private static void LoadBasicCompat()
+        public string ShortcutFolder => "LoginCache\\Steam\\Shortcuts\\";
+        private readonly List<string> _shortcutFolders = new () { "%StartMenuAppData%\\Steam\\" };
+        private string GetShortcutIgnoredPath(string shortcut) => Path.Join(ShortcutFolder, shortcut.Replace(".lnk", "_ignored.lnk").Replace(".url", "_ignored.url"));
+        private void LoadBasicCompat()
         {
             if (OperatingSystem.IsWindows())
             {
@@ -124,8 +111,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 if (!File.Exists(imagePath))
                 {
                     // Search start menu for Steam.
-                    var startMenuFiles = Directory.GetFiles(BasicSwitcherFuncs.ExpandEnvironmentVariables("%StartMenuAppData%", true), "Steam.lnk", SearchOption.AllDirectories);
-                    var commonStartMenuFiles = Directory.GetFiles(BasicSwitcherFuncs.ExpandEnvironmentVariables("%StartMenuProgramData%", true), "Steam.lnk", SearchOption.AllDirectories);
+                    var startMenuFiles = Directory.GetFiles(Basic.ExpandEnvironmentVariables("%StartMenuAppData%", true), "Steam.lnk", SearchOption.AllDirectories);
+                    var commonStartMenuFiles = Directory.GetFiles(Basic.ExpandEnvironmentVariables("%StartMenuProgramData%", true), "Steam.lnk", SearchOption.AllDirectories);
                     if (startMenuFiles.Length > 0)
                         Globals.SaveIconFromFile(startMenuFiles[0], imagePath);
                     else if (commonStartMenuFiles.Length > 0)
@@ -136,11 +123,11 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
 
                 var cacheShortcuts = ShortcutFolder; // Shortcut cache
-                foreach (var sFolder in ShortcutFolders)
+                foreach (var sFolder in _shortcutFolders)
                 {
                     if (sFolder == "") continue;
                     // Foreach file in folder
-                    var desktopShortcutFolder = BasicSwitcherFuncs.ExpandEnvironmentVariables(sFolder, true);
+                    var desktopShortcutFolder = Basic.ExpandEnvironmentVariables(sFolder, true);
                     if (!Directory.Exists(desktopShortcutFolder)) continue;
                     foreach (var shortcut in new DirectoryInfo(desktopShortcutFolder).GetFiles())
                     {
@@ -205,25 +192,25 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         }
 
         [JSInvokable]
-        public static void SaveShortcutOrderSteam(Dictionary<int, string> o)
+        public void SaveShortcutOrderSteam(Dictionary<int, string> o)
         {
             Shortcuts = o;
             SaveSettings();
         }
 
-        public static void SetClosingMethod(string method)
+        public void SetClosingMethod(string method)
         {
             ClosingMethod = method;
             SaveSettings();
         }
-        public static void SetStartingMethod(string method)
+        public void SetStartingMethod(string method)
         {
             StartingMethod = method;
             SaveSettings();
         }
 
         [JSInvokable]
-        public static async Task HandleShortcutActionSteam(string shortcut, string action)
+        public async Task HandleShortcutActionSteam(string shortcut, string action)
         {
             if (shortcut == "btnStartPlat") // Start platform requested
             {
@@ -252,109 +239,73 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             }
         }
 
-        public static readonly Lazy<List<string>> InstalledGames =
-            new (SteamSwitcherFuncs.LoadInstalledGames);
-
-        public static readonly Lazy<Dictionary<string, string>> AppIds =
-            new (SteamSwitcherFuncs.LoadAppNames);
+        public List<string> InstalledGames { get; set; }
+        public Dictionary<string, string> AppIds { get; set; }
 
         #endregion
 
-        // Variables
-        [JsonProperty("ForgetAccountEnabled", Order = 0)] private bool _forgetAccountEnabled;
-        [JsonProperty("FolderPath", Order = 1)] private string _folderPath = "C:\\Program Files (x86)\\Steam\\";
-        [JsonProperty("Steam_Admin", Order = 3)] private bool _admin;
-        [JsonProperty("Steam_ShowSteamID", Order = 4)] private bool _showSteamId;
-        [JsonProperty("Steam_ShowVAC", Order = 5)] private bool _showVac = true;
-        [JsonProperty("Steam_ShowLimited", Order = 6)] private bool _showLimited = true;
-        [JsonProperty("Steam_ShowLastLogin", Order = 7)] private bool _showLastLogin = true;
-        [JsonProperty("Steam_ShowAccUsername", Order = 8)] private bool _showAccUsername = true;
-        [JsonProperty("Steam_TrayAccountName", Order = 9)] private bool _trayAccName;
-        [JsonProperty("Steam_ImageExpiryTime", Order = 10)] private int _imageExpiryTime = 7;
-        [JsonProperty("Steam_TrayAccNumber", Order = 11)] private int _trayAccNumber = 3;
-        [JsonProperty("Steam_OverrideState", Order = 12)] private int _overrideState = -1;
-        [JsonProperty("ShortcutsJson", Order = 13)] private Dictionary<int, string> _shortcuts = new();
-        [JsonProperty("ClosingMethod", Order = 14)] private string _closingMethod = "TaskKill";
-        [JsonProperty("StartingMethod", Order = 15)] private string _startingMethod = "Default";
-        [JsonProperty("AutoStart", Order = 16)] private bool _autoStart = true;
-        [JsonProperty("ShowShortNotes", Order = 17)] private bool _showShortNotes = true;
-        [JsonProperty("SteamWebApiKey", Order = 19)] private string _steamWebApiKey = "";
-        [JsonProperty("StartSilent", Order = 20)] private bool _startSilent;
-        [JsonProperty("CustomAccountNames", Order = 21)] private Dictionary<string, string> _customAccNames = new();
-        [JsonIgnore] private bool _desktopShortcut;
-        [JsonIgnore] private int _lastAccTimestamp;
-        [JsonIgnore] private string _lastSteamId = "";
-        [JsonIgnore] private bool _steamWebApiWasReset;
-        [JsonIgnore] public static readonly string SteamAppsListPath = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\AppIdsFullListCache.json");
-        [JsonIgnore] public static readonly string SteamAppsUserCache = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\AppIdsUser.json");
 
-        public static int LastAccTimestamp { get => Instance._lastAccTimestamp; set => Instance._lastAccTimestamp = value; }
-        public static string LastAccSteamId { get => Instance._lastSteamId; set => Instance._lastSteamId = value; }
 
-        public static bool ForgetAccountEnabled { get => Instance._forgetAccountEnabled; set => Instance._forgetAccountEnabled = value; }
-
-        public static string FolderPath { get => Instance._folderPath; set => Instance._folderPath = value; }
-
-        public static bool Admin { get => Instance._admin; set => Instance._admin = value; }
-
-        public static bool AutoStart { get => Instance._autoStart; set => Instance._autoStart = value; }
-
-        public static bool ShowSteamId { get => Instance._showSteamId; set => Instance._showSteamId = value; }
-
-        public static bool ShowVac { get => Instance._showVac; set => Instance._showVac = value; }
-
-        public static bool ShowLimited { get => Instance._showLimited; set => Instance._showLimited = value; }
-        public static bool ShowLastLogin { get => Instance._showLastLogin; set => Instance._showLastLogin = value; }
-
-        public static bool ShowAccUsername { get => Instance._showAccUsername; set => Instance._showAccUsername = value; }
-
-        public static bool TrayAccName { get => Instance._trayAccName; set => Instance._trayAccName = value; }
-
-        public static int ImageExpiryTime { get => Instance._imageExpiryTime; set => Instance._imageExpiryTime = value; }
-
-        public static int TrayAccNumber { get => Instance._trayAccNumber; set => Instance._trayAccNumber = value; }
-
-        public static int OverrideState { get => Instance._overrideState; set => Instance._overrideState = value; }
-
-        public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
-        public static string SteamWebApiKey { get => Instance._steamWebApiKey; set => Instance._steamWebApiKey = value; }
-        public static bool StartSilent { get => Instance._startSilent; set => Instance._startSilent = value; }
-        public static Dictionary<string, string> CustomAccNames { get => Instance._customAccNames; set => Instance._customAccNames = value; }
-        public static bool SteamWebApiWasReset { get => Instance._steamWebApiWasReset; set => Instance._steamWebApiWasReset = value; }
+        [JsonProperty(Order = 0)] public bool ForgetAccountEnabled { get;set; }
+        [JsonProperty(Order = 1)] public string FolderPath { get; set; } = "C:\\Program Files (x86)\\Steam\\";
+        [JsonProperty(Order = 3)] public bool Admin { get; set; }
+        [JsonProperty(Order = 4)] public bool ShowSteamId { get; set; }
+        [JsonProperty(Order = 5)] public bool ShowVac { get; set; } = true;
+        [JsonProperty(Order = 6)] public bool ShowLimited { get; set; } = true;
+        [JsonProperty(Order = 7)] public bool ShowLastLogin { get; set; } = true;
+        [JsonProperty(Order = 8)] public bool ShowAccUsername { get; set; } = true;
+        [JsonProperty(Order = 9)] public bool TrayAccName { get; set; }
+        [JsonProperty(Order = 10)] public int ImageExpiryTime { get; set; } = 7;
+        [JsonProperty(Order = 11)] public int TrayAccNumber { get; set; } = 3;
+        [JsonProperty(Order = 12)] public int OverrideState { get; set; } = -1;
+        [JsonProperty(Order = 13)] public Dictionary<int, string> Shortcuts { get; set; } = new();
+        [JsonProperty(Order = 14)] public string ClosingMethod { get; set; } = "TaskKill";
+        [JsonProperty(Order = 15)] public string StartingMethod { get; set; } = "Default";
+        [JsonProperty(Order = 16)] public bool AutoStart { get; set; } = true;
+        [JsonProperty(Order = 17)] public bool ShowShortNotes { get; set; } = true;
+        [JsonProperty(Order = 19)] public string SteamWebApiKey { get; set; } = "";
+        [JsonProperty(Order = 20)] public bool StartSilent { get; set; }
+        [JsonProperty(Order = 21)] public Dictionary<string, string> CustomAccNames { get; set; }
+        [JsonIgnore] public bool DesktopShortcut { get; set; }
+        [JsonIgnore] public int LastAccTimestamp { get; set; }
+        [JsonIgnore] public string LastAccSteamId { get; set; } = "";
+        [JsonIgnore] public bool SteamWebApiWasReset { get; set; }
+        [JsonIgnore] public string SteamAppsListPath { get; set; } = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\AppIdsFullListCache.json");
+        [JsonIgnore] public string SteamAppsUserCache { get; set; } = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\AppIdsUser.json");
 
         // Constants
-        public static readonly List<string> Processes = new() { "steam.exe", "SERVICE:steamservice.exe", "steamwebhelper.exe", "GameOverlayUI.exe" };
-        public static readonly string VacCacheFile = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\VACCache\\SteamVACCache.json");
-        public static readonly string SettingsFile = "SteamSettings.json";
-        public static readonly string SteamImagePath = "wwwroot/img/profiles/steam/";
-        public static readonly string SteamImagePathHtml = "img/profiles/steam/";
-        public static readonly ObservableCollection<MenuItem> Menu = new();
-        public static void BuildContextMenu()
+        public List<string> Processes { get; set; } = new() { "steam.exe", "SERVICE:steamservice.exe", "steamwebhelper.exe", "GameOverlayUI.exe" };
+        public string VacCacheFile { get; set; } = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\VACCache\\SteamVACCache.json");
+        public string SettingsFile { get; set; } = "SteamSettings.json";
+        public string SteamImagePath { get; set; } = "wwwroot/img/profiles/steam/";
+        public string SteamImagePathHtml { get; set; } = "img/profiles/steam/";
+        public ObservableCollection<MenuItem> Menu { get; set; } = new();
+        public void BuildContextMenu()
         {
             Menu.Clear();
 
             /* Games submenu, or Game data item */
             MenuItem gameData = null;
-            if (File.Exists(SteamAppsUserCache) && AppIds.Value.Count > 0)
+            if (File.Exists(SteamAppsUserCache) && AppIds.Count > 0)
             {
                 var menuItems = new List<MenuItem>();
-                foreach (var gameId in InstalledGames.Value)
+                foreach (var gameId in InstalledGames)
                 {
                     menuItems.Add(new MenuItem
                     {
-                        Text = AppIds.Value.ContainsKey(gameId) ? AppIds.Value[gameId] : gameId,
+                        Text = AppIds.ContainsKey(gameId) ? AppIds[gameId] : gameId,
                         Children = new List<MenuItem>{
                             new() {
-                                Text = Lang.Instance["Context_Game_CopySettingsFrom"],
-                                MenuAction = async () => await SteamSwitcherFuncs.CopySettingsFrom(gameId)
+                                Text = Lang["Context_Game_CopySettingsFrom"],
+                                MenuAction = async () => await CopySettingsFrom(gameId)
                             },
                             new() {
-                                Text = Lang.Instance["Context_Game_RestoreSettingsTo"],
-                                MenuAction = async () => await SteamSwitcherFuncs.RestoreSettingsTo(gameId)
+                                Text = Lang["Context_Game_RestoreSettingsTo"],
+                                MenuAction = async () => await RestoreSettingsTo(gameId)
                             },
                             new() {
-                                Text = Lang.Instance["Context_Game_BackupData"],
-                                MenuAction = async () => await SteamSwitcherFuncs.BackupGameData(gameId)
+                                Text = Lang["Context_Game_BackupData"],
+                                MenuAction = async () => await BackupGameData(gameId)
                             }
                         }
                     });
@@ -408,14 +359,14 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 }),
                 new ("Context_CreateShortcut", new Tuple<string, object>[]
                 {
-                    new ("OnlineDefault", new Action(async () => await GeneralInvocableFuncs.CreateShortcut())),
-                    new ("Invisible", new Action(async () => await GeneralInvocableFuncs.CreateShortcut(":7"))),
-                    new ("Offline", new Action(async () => await GeneralInvocableFuncs.CreateShortcut(":0"))),
-                    new ("Busy", new Action(async () => await GeneralInvocableFuncs.CreateShortcut(":2"))),
-                    new ("Away", new Action(async () => await GeneralInvocableFuncs.CreateShortcut(":3"))),
-                    new ("Snooze", new Action(async () => await GeneralInvocableFuncs.CreateShortcut(":4"))),
-                    new ("LookingToTrade", new Action(async () => await GeneralInvocableFuncs.CreateShortcut(":5"))),
-                    new ("LookingToPlay", new Action(async () => await GeneralInvocableFuncs.CreateShortcut(":6"))),
+                    new ("OnlineDefault", new Action(async () => await GeneralFuncs.CreateShortcut())),
+                    new ("Invisible", new Action(async () => await GeneralFuncs.CreateShortcut(":7"))),
+                    new ("Offline", new Action(async () => await GeneralFuncs.CreateShortcut(":0"))),
+                    new ("Busy", new Action(async () => await GeneralFuncs.CreateShortcut(":2"))),
+                    new ("Away", new Action(async () => await GeneralFuncs.CreateShortcut(":3"))),
+                    new ("Snooze", new Action(async () => await GeneralFuncs.CreateShortcut(":4"))),
+                    new ("LookingToTrade", new Action(async () => await GeneralFuncs.CreateShortcut(":5"))),
+                    new ("LookingToPlay", new Action(async () => await GeneralFuncs.CreateShortcut(":6"))),
                 }),
                 new ("Forget", new Action(async () => await AppFuncs.ForgetAccount())),
                 new ("Notes", new Action(() => ModalData.ShowModal("notes"))),
@@ -426,16 +377,24 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                         : null, BasicStats.PlatformHasAnyGames("Steam")
                             ? new Tuple<string, object>("Context_ManageGameStats", "ShowGameStatsSetup(event)")
                             : null,
-                    new ("Context_ChangeImage", new Action(ModalFuncs.ShowChangeAccImageModal)),
-                    new ("Context_Steam_OpenUserdata", new Action(SteamSwitcherBase.SteamOpenUserdata)),
-                    new ("Context_ChangeName", new Action(ModalFuncs.ShowChangeUsernameModal))
+                    new ("Context_ChangeImage", new Action(ModalData.ShowChangeAccImageModal)),
+                    new ("Context_Steam_OpenUserdata", new Action(SteamOpenUserdata)),
+                    new ("Context_ChangeName", new Action(ModalData.ShowChangeUsernameModal))
                 })
             });
 
             Menu.AddRange(menuBuilder.Result());
         }
 
-        public static string StateToString(int state)
+        public void SteamOpenUserdata()
+        {
+            var steamId32 = new SteamIdConvert(AppData.SelectedAccountId);
+            var folder = Path.Join(FolderPath, $"userdata\\{steamId32.Id32}");
+            if (Directory.Exists(folder)) _ = Process.Start("explorer.exe", folder);
+            else _ = GeneralFuncs.ShowToast("error", Lang["Toast_NoFindSteamUserdata"], Lang["Failed"], "toastarea");
+        }
+
+        public string StateToString(int state)
         {
             return state switch
             {
@@ -455,7 +414,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// <summary>
         /// Default settings for SteamSettings.json
         /// </summary>
-        public static void ResetSettings()
+        public void ResetSettings()
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.ResetSettings]");
             ForgetAccountEnabled = false;
@@ -477,7 +436,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// Get path of loginusers.vdf, resets & returns "RESET_PATH" if invalid.
         /// </summary>
         /// <returns>(Steam's path)\config\loginusers.vdf</returns>
-        public static string LoginUsersVdf()
+        public string LoginUsersVdf()
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.LoginUsersVdf]");
             var path = Path.Join(FolderPath, "config\\loginusers.vdf");
@@ -492,13 +451,13 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// Get Steam.exe path from SteamSettings.json
         /// </summary>
         /// <returns>Steam.exe's path string</returns>
-        public static string Exe() => Path.Join(FolderPath, "Steam.exe");
+        public string Exe() => Path.Join(FolderPath, "Steam.exe");
 
         /// <summary>
         /// Updates the ForgetAccountEnabled bool in Steam settings file
         /// </summary>
         /// <param name="enabled">Whether will NOT prompt user if they're sure or not</param>
-        public static void SetForgetAcc(bool enabled)
+        public void SetForgetAcc(bool enabled)
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.SetForgetAcc]");
             if (ForgetAccountEnabled == enabled) return; // Ignore if already set
@@ -509,6 +468,1130 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// <summary>
         /// Returns a block of CSS text to be used on the page. Used to hide or show certain things in certain ways, in components that aren't being added through Blazor.
         /// </summary>
-        public static string GetSteamIdCssBlock() => ".steamId { display: " + (ShowSteamId ? "block" : "none") + " } .lastLogin { display: " + (ShowLastLogin ? "block" : "none") + " }";
+        public string GetSteamIdCssBlock() => ".steamId { display: " + (ShowSteamId ? "block" : "none") + " } .lastLogin { display: " + (ShowLastLogin ? "block" : "none") + " }";
+
+
+
+        #region STEAM_SWITCHER_MAIN
+
+        private static string GetName(SteamUserAcc su) => string.IsNullOrWhiteSpace(su.Name) ? su.AccName : su.Name;
+
+        /// <summary>
+        /// Main function for Steam Account Switcher. Run on load.
+        /// Collects accounts from Steam's loginusers.vdf
+        /// Prepares images and VAC/Limited status
+        /// Prepares HTML Elements string for insertion into the account switcher GUI.
+        /// </summary>
+        /// <returns>Whether account loading is successful, or a path reset is needed (invalid dir saved)</returns>
+        public async Task LoadProfiles()
+        {
+            if (AppData.SteamLoadingProfiles) return;
+            Globals.DebugWriteLine(@"[Func:Steam\Steam.LoadProfiles] Loading Steam profiles");
+            AppData.SteamLoadingProfiles = true;
+
+            AppData.SteamUsers = await GetSteamUsers(LoginUsersVdf());
+
+            // Order
+            if (File.Exists("LoginCache\\Steam\\order.json"))
+            {
+                var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync("LoginCache\\Steam\\order.json").ConfigureAwait(false));
+                if (savedOrder != null)
+                {
+                    var index = 0;
+                    if (savedOrder is { Count: > 0 })
+                        foreach (var acc in from i in savedOrder where AppData.SteamUsers.Any(x => x.SteamId == i) select AppData.SteamUsers.Single(x => x.SteamId == i))
+                        {
+                            AppData.SteamUsers.Remove(acc);
+                            AppData.SteamUsers.Insert(Math.Min(index, AppData.SteamUsers.Count), acc);
+                            index++;
+                        }
+                }
+            }
+
+            // If Steam Web API key to be used instead
+            if (SteamWebApiKey != "")
+            {
+                // Handle all image downloads
+                await WebApiPrepareImages();
+                await WebApiPrepareBans();
+
+                // Key was fine? Continue. If not, the non-api method will be used.
+                if (!SteamWebApiWasReset)
+                {
+                    AppData.SteamAccounts.Clear();
+                    foreach (var su in AppData.SteamUsers)
+                    {
+                        InsertAccount(su);
+                    }
+                }
+            }
+
+            // If Steam Web API key was not used, or was reset (encountered an error)
+            if (SteamWebApiKey == "" || SteamWebApiWasReset)
+            {
+                SteamWebApiWasReset = false;
+
+                // Load cached ban info
+                LoadCachedBanInfo();
+                AppData.SteamAccounts.Clear();
+
+                foreach (var su in AppData.SteamUsers)
+                {
+                    // If not cached: Get ban status and images
+                    // If cached: Just get images
+                    PrepareProfile(su.SteamId, !su.BanInfoLoaded); // Get ban status as well if was not loaded (missing from cache)
+
+                    InsertAccount(su);
+                }
+
+                SaveVacInfo();
+            }
+
+            // Load notes
+            AppFuncs.LoadNotes();
+
+            await GeneralFuncs.FinaliseAccountList();
+            AppStats.SetAccountCount("Steam", AppData.SteamUsers.Count);
+            AppData.SteamLoadingProfiles = false;
+        }
+
+        private void InsertAccount(SteamUserAcc su)
+        {
+            var account = new Account
+            {
+                Platform = "Steam",
+                AccountId = su.SteamId,
+                DisplayName = GeneralFuncs.EscapeText(GetName(su)),
+                Classes = new Account.ClassCollection()
+                {
+                    Image = (ShowVac && su.Vac ? " status_vac" : "") + (ShowLimited && su.Limited ? " status_limited" : ""),
+                    Line0 = "streamerCensor",
+                    Line2 = "streamerCensor steamId",
+                    Line3 = "lastLogin"
+                },
+                LoginUsername = su.AccName,
+                UserStats = BasicStats.GetUserStatsAllGamesMarkup("Steam", su.SteamId),
+                ImagePath = su.ImgUrl,
+                Line0 = ShowAccUsername ? su.AccName : "",
+                Line2 = su.SteamId,
+                Line3 = UnixTimeStampToDateTime(su.LastLogin)
+            };
+            AppData.SteamAccounts.Add(account);
+        }
+
+
+        /// <summary>
+        /// This relies on Steam updating loginusers.vdf. It could go out of sync assuming it's not updated reliably. There is likely a better way to do this.
+        /// I am avoiding using the Steam API because it's another DLL to include, but is the next best thing - I assume.
+        /// </summary>
+        public string GetCurrentAccountId(bool getNumericId = false)
+        {
+            Globals.DebugWriteLine($@"[Func:Steam\Steam.GetCurrentAccountId]");
+            try
+            {
+                // Refreshing the list of SteamUsers doesn't help here when switching, as the account list is not updated by Steam just yet.
+                SteamUserAcc mostRecent = null;
+                foreach (var su in AppData.SteamUsers)
+                {
+                    int.TryParse(su.LastLogin, out var last);
+
+                    int.TryParse(mostRecent?.LastLogin, out var recent);
+
+                    if (mostRecent == null || last > recent)
+                        mostRecent = su;
+                }
+
+                int.TryParse(mostRecent?.LastLogin, out var mrTimestamp);
+
+                if (LastAccTimestamp > mrTimestamp)
+                {
+                    return LastAccSteamId;
+                }
+
+                if (getNumericId) return mostRecent?.SteamId ?? "";
+                return mostRecent?.AccName ?? "";
+            }
+            catch (Exception)
+            {
+                //
+            }
+
+            return "";
+        }
+
+        /// <summary>
+        /// Takes loginusers.vdf and iterates through each account, loading details into output Steamuser list.
+        /// </summary>
+        /// <param name="loginUserPath">loginusers.vdf path</param>
+        /// <returns>List of SteamUser classes, from loginusers.vdf</returns>
+        public async Task<List<SteamUserAcc>> GetSteamUsers(string loginUserPath)
+        {
+            Globals.DebugWriteLine($@"[Func:Steam\Steam.GetSteamUsers] Getting list of Steam users from {loginUserPath}");
+            _ = Directory.CreateDirectory("wwwroot/img/profiles");
+
+            if (LoadFromVdf(loginUserPath, out var userAccounts)) return userAccounts;
+
+            // Didn't work, try last file, if exists.
+            var lastVdf = loginUserPath.Replace(".vdf", ".vdf_last");
+            if (!File.Exists(lastVdf) || !LoadFromVdf(lastVdf, out userAccounts)) return new List<SteamUserAcc>();
+
+            await GeneralFuncs.ShowToast("info", Lang["Toast_Steam_VdfLast"], Lang["Toast_PartiallyFixed"], "toastarea", 10000);
+            return userAccounts;
+        }
+
+        // TODO: Copy the GitHub repo that downloads the latest apps, and shares as XML and CSV. Then remove those, and replace it with compressing with 7-zip. Download the latest 7-zip archive here, decompress then read. It takes literally ~1.5MB instead of ~8MB. HUGE saving for super slow internet.
+        /// <summary>
+        /// Fetches the names corresponding to each game ID from Valve's API.
+        /// </summary>
+        private string FetchSteamAppsData() => File.Exists(SteamAppsListPath) ? File.ReadAllText(SteamAppsListPath) : "";
+
+        public async Task DownloadSteamAppsData()
+        {
+            await GeneralFuncs.ShowToast("info", Lang["Toast_Steam_DownloadingAppIds"], renderTo: "toastarea");
+
+            try
+            {
+                // Save to file
+                var file = new FileInfo(SteamAppsListPath);
+                if (file.Exists) file.Delete();
+                if (Globals.ReadWebUrl("https://api.steampowered.com/ISteamApps/GetAppList/v2/", out var appList))
+                    await File.WriteAllTextAsync(file.FullName, appList);
+                else
+                    throw new Exception("Failed to download Steam apps list.");
+            }
+            catch (Exception e)
+            {
+                Globals.DebugWriteLine($@"Error downloading Steam app list: {e}");
+            }
+
+            await GeneralFuncs.ShowToast("info", Lang["Toast_Steam_DownloadingAppIdsComplete"], renderTo: "toastarea");
+        }
+
+        /// <summary>
+        /// Given a JSON string fetched from Valve's API, return a dictionary mapping game IDs to names.
+        /// </summary>
+        /// <param name="text">A JSON string matching Valve's API format</param>
+        /// <returns></returns>
+        private static Dictionary<string, string> ParseSteamAppsText(string text)
+        {
+            if (text == "") return new Dictionary<string, string>();
+
+            var appIds = new Dictionary<string, string>();
+            try
+            {
+                var json = JObject.Parse(text);
+                foreach (var app in json["applist"]?["apps"]!)
+                {
+                    if (appIds.ContainsKey(app["appid"]!.Value<string>()!)) continue;
+                    appIds.Add(app["appid"].Value<string>()!, app["name"]!.Value<string>());
+                }
+            }
+            catch (Exception e)
+            {
+                Globals.DebugWriteLine($@"Error parsing Steam app list: {e}");
+            }
+            return appIds;
+        }
+
+        public Dictionary<string, string> LoadAppNames()
+        {
+            // Check if cached Steam AppId list is downloaded
+            // If not, skip. Download is handled in a background task.
+            if (!File.Exists(SteamAppsListPath))
+            {
+                // Download Steam AppId list if not already.
+                Task.Run(DownloadSteamAppsData).ContinueWith(_ =>
+                {
+                    var names = LoadAppNames();
+                    foreach (var kv in names)
+                    {
+                        try
+                        {
+                            AppIds.Add(kv.Key, kv.Value);
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.ToString());
+                        }
+                    }
+                    BuildContextMenu();
+                });
+                return new Dictionary<string, string>();
+            }
+
+            var cacheFilePath = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\AppIdsUser.json");
+            var appIds = new Dictionary<string, string>();
+            var gameList = InstalledGames;
+            try
+            {
+                // Check if all the IDs we need are in the cache, i.e. the user has not installed any new games.
+                if (File.Exists(cacheFilePath))
+                {
+                    var cachedAppIds = ParseSteamAppsText(File.ReadAllText(cacheFilePath));
+                    if (gameList.All(id => cachedAppIds.ContainsKey(id)))
+                    {
+                        return cachedAppIds;
+                    }
+                }
+
+                // If the cache is missing or incomplete, fetch app Ids from Steam's API
+                appIds =
+                    (from game in ParseSteamAppsText(FetchSteamAppsData())
+                     where gameList.Contains(game.Key)
+                     select game)
+                    .ToDictionary(game => game.Key, game => game.Value);
+
+                // Downloading app list for the first time.
+                if (appIds.Count == 0) return appIds;
+
+                // Add any missing games as just the appid. These can include games/apps not on steam (developer Steam accounts), or otherwise removed games from
+                if (appIds.Count != gameList.Count)
+                {
+                    foreach (var g in (from game in gameList where !appIds.ContainsKey(game) select game))
+                    {
+                        appIds.Add(g, g);
+                    }
+                }
+
+
+                // Write the IDs of currently installed games to the cache
+                dynamic cacheObject = new System.Dynamic.ExpandoObject();
+                cacheObject.applist = new System.Dynamic.ExpandoObject();
+                cacheObject.applist.apps = (from app in appIds
+                                            select new { appid = app.Key, name = app.Value }).ToArray();
+                File.WriteAllText(cacheFilePath, JObject.FromObject(cacheObject).ToString(Newtonsoft.Json.Formatting.None));
+            }
+            catch (Exception e)
+            {
+                Globals.DebugWriteLine($@"Error Loading names for Steam game IDs: {e}");
+            }
+            return appIds;
+        }
+        public static bool BackupGameDataFolder(string folder)
+        {
+            var backupFolder = folder + "_switcher_backup";
+            if (!Directory.Exists(folder) || Directory.Exists(backupFolder)) return false;
+            Globals.CopyDirectory(folder, backupFolder, true);
+            return true;
+        }
+        public List<string> LoadInstalledGames()
+        {
+            List<string> gameIds;
+            try
+            {
+                var libraryFile = Path.Join(FolderPath, "\\steamapps\\libraryfolders.vdf");
+                var libraryVdf = VdfConvert.Deserialize(File.ReadAllText(libraryFile));
+                var library = new JObject { libraryVdf.ToJson() };
+                gameIds = library["libraryfolders"]!
+                    .SelectMany(folder => ((JObject)folder.First?["apps"])?.Properties()
+                        .Select(p => p.Name))
+                    .ToList();
+            }
+            catch (Exception e)
+            {
+                Globals.WriteToLog("ERROR: Could not fetch Steam game library.\nDetails: " + e);
+                gameIds = new List<string>();
+            }
+            return gameIds;
+        }
+        private bool LoadFromVdf(string vdf, out List<SteamUserAcc> userAccounts)
+        {
+            userAccounts = new List<SteamUserAcc>();
+
+            try
+            {
+                var vdfText = VerifyVdfText(vdf);
+
+                var loginUsersVToken = VdfConvert.Deserialize(vdfText);
+                var loginUsers = new JObject { loginUsersVToken.ToJson() };
+
+                if (loginUsers["users"] != null)
+                {
+                    foreach (var jUsr in loginUsers["users"])
+                    {
+                        try
+                        {
+                            var jOUsr = (JObject)jUsr.First();
+                            var steamId = jUsr.ToObject<JProperty>()?.Name;
+                            if (string.IsNullOrWhiteSpace(steamId) && string.IsNullOrWhiteSpace(jOUsr.GetValue("AccountName", StringComparison.OrdinalIgnoreCase)?.Value<string>())) continue;
+
+                            userAccounts.Add(new SteamUserAcc
+                            {
+                                Name = jOUsr.GetValue("PersonaName", StringComparison.OrdinalIgnoreCase)?.Value<string>() ?? "PersonaNotFound",
+                                AccName = jOUsr.GetValue("AccountName", StringComparison.OrdinalIgnoreCase)?.Value<string>() ?? "NameNotFound",
+                                SteamId = steamId,
+                                ImgUrl = "img/QuestionMark.jpg",
+                                LastLogin = jOUsr.GetValue("Timestamp", StringComparison.OrdinalIgnoreCase)?.Value<string>() ?? "0",
+                                OfflineMode = !string.IsNullOrWhiteSpace(jOUsr.GetValue("WantsOfflineMode", StringComparison.OrdinalIgnoreCase)?.Value<string>())
+                                    ? jOUsr.GetValue("WantsOfflineMode", StringComparison.OrdinalIgnoreCase)?.Value<string>() : "0"
+                            });
+                        }
+                        catch (Exception)
+                        {
+                            Globals.WriteToLog("Could not import Steam user. Please send your loginusers.vdf file to TechNobo for analysis.");
+                        }
+                    }
+                }
+            }
+            catch (FileNotFoundException)
+            {
+                _ = GeneralFuncs.ShowToast("error", Lang["Toast_Steam_FailedLoginusers"], Lang["NotFound"], "toastarea");
+                return false;
+            }
+            catch (AggregateException)
+            {
+                _ = GeneralFuncs.ShowToast("error", Lang["Toast_Steam_FailedLoginusers"], Lang["Error"], "toastarea");
+                return false;
+            }
+            catch (Exception)
+            {
+                _ = GeneralFuncs.ShowToast("error", Lang["Toast_Steam_FailedLoginusers"], Lang["Error"], "toastarea");
+                return false;
+            }
+
+
+            return true;
+        }
+
+        public async Task ChangeUsername()
+        {
+            CustomAccNames[AppData.SelectedAccountId] = ModalData.TextInput.LastString;
+            SaveSettings();
+
+            AppData.SelectedAccount.NotifyDataChanged();
+            ModalData.TextInputNotifyDataChanged();
+            await GeneralFuncs.ShowToast("success", Lang["Toast_ChangedUsername"], renderTo: "toastarea");
+        }
+        private static string VerifyVdfText(string loginUserPath)
+        {
+            var original = Globals.ReadAllText(loginUserPath);
+            var vdf = original;
+            // Replaces double quotes, sometimes added by mistake (?) with single, as they should be.
+            vdf = vdf.Replace("\"\"", "\"");
+            if (original == vdf) return vdf;
+
+            // Save original file if different.
+            try
+            {
+                File.WriteAllText(loginUserPath, vdf);
+            }
+            catch (Exception)
+            {
+                //
+            }
+            return vdf;
+        }
+
+        /// <summary>
+        /// Loads ban info from cache file
+        /// </summary>
+        /// <returns>Whether file was loaded. False if deleted ~ failed to load.</returns>
+        public void LoadCachedBanInfo()
+        {
+            Globals.DebugWriteLine(@"[Func:Steam\Steam.LoadCachedBanInfo]");
+            _ = GeneralFuncs.DeletedOutdatedFile(VacCacheFile, ImageExpiryTime);
+            if (!File.Exists(VacCacheFile)) return;
+
+            // Load list of banStatus
+            var banInfoList = JsonConvert.DeserializeObject<List<VacStatus>>(Globals.ReadAllText(VacCacheFile));
+
+            if (banInfoList == null) return;
+            foreach (var su in AppData.SteamUsers)
+            {
+                var banInfo = banInfoList.FirstOrDefault(x => x.SteamId == su.SteamId);
+                su.BanInfoLoaded = banInfo != null;
+                if (!su.BanInfoLoaded) continue;
+
+                su.Vac = banInfo!.Vac;
+                su.Limited = banInfo.Ltd;
+            }
+        }
+
+        /// <summary>
+        /// Class for storing SteamID, VAC status and Limited status.
+        /// </summary>
+        public class VacStatus
+        {
+            [JsonProperty("SteamID", Order = 0)] public string SteamId { get; set; }
+            [JsonProperty("Vac", Order = 1)] public bool Vac { get; set; }
+            [JsonProperty("Ltd", Order = 2)] public bool Ltd { get; set; }
+        }
+
+        /// <summary>
+        /// Saves List of VacStatus into cache file as JSON.
+        /// </summary>
+        public void SaveVacInfo()
+        {
+            var vsList = AppData.SteamUsers.Select(su => new VacStatus
+            {
+                SteamId = su.SteamId,
+                Vac = su.Vac,
+                Ltd = su.Limited
+            })
+                .ToList();
+
+            _ = Directory.CreateDirectory(Path.GetDirectoryName(VacCacheFile) ?? string.Empty);
+            File.WriteAllText(VacCacheFile, JsonConvert.SerializeObject(vsList));
+        }
+
+        /// <summary>
+        /// Converts Unix Timestamp string to DateTime
+        /// </summary>
+        public string UnixTimeStampToDateTime(string stringUnixTimeStamp)
+        {
+            if (!double.TryParse(stringUnixTimeStamp, out var unixTimeStamp)) return "";
+            // Unix timestamp is seconds past epoch
+            var dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+            return dtDateTime.ToString(CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// Deletes outdated/invalid profile images (If they exist)
+        /// Then downloads a new copy from Steam
+        /// </summary>
+        /// <param name="steamId"></param>
+        /// <param name="noCache">Whether a new copy of XML data should be downloaded</param>
+        /// <returns></returns>
+        public void PrepareProfile(string steamId, bool noCache)
+        {
+            var su = AppData.SteamUsers.FirstOrDefault(x => x.SteamId == steamId);
+            if (su == null) return;
+            Globals.DebugWriteLine(
+                $@"[Func:Steam\Steam.PrepareProfile] Preparing image and ban info for: {su.SteamId.Substring(su.SteamId.Length - 4, 4)}");
+            _ = Directory.CreateDirectory(SteamImagePath);
+
+            var dlDir = $"{SteamImagePath}{su.SteamId}.jpg";
+            var cachedFile = $"LoginCache/Steam/VACCache/{su.SteamId}.xml";
+
+            if (noCache)
+            {
+                // 1. Clear cached image and profile data
+                Globals.DeleteFile(dlDir);
+                Globals.DeleteFile(cachedFile);
+            }
+            else
+            {
+                // 1.1 Clear old images
+                _ = GeneralFuncs.DeletedOutdatedFile(dlDir, ImageExpiryTime);
+                _ = GeneralFuncs.DeletedInvalidImage(dlDir);
+
+                // 1.2 Clear old cached profile data
+                _ = GeneralFuncs.DeletedOutdatedFile(cachedFile, 1);
+            }
+
+            // 2. Download new copy of user data if not cached.
+            _ = Directory.CreateDirectory("LoginCache/Steam/VACCache/");
+            var profileXml = new XmlDocument();
+            try
+            {
+                profileXml.Load(File.Exists(cachedFile)
+                    ? cachedFile
+                    : $"https://steamcommunity.com/profiles/{su.SteamId}?xml=1");
+            }
+            catch (Exception e)
+            {
+                Globals.WriteToLog("Failed to load Steam account XML. ", e);
+                // Issue was caused by web. Throw.
+                if (!File.Exists(cachedFile)) throw;
+                Globals.DeleteFile(cachedFile);
+                Globals.WriteToLog("The issue was the local XML file. It has been deleted and re-downloaded.");
+                // Issue was caused by cached fil. Delete, and re-download.
+                profileXml.Load($"https://steamcommunity.com/profiles/{su.SteamId}?xml=1");
+            }
+
+            if (!File.Exists(cachedFile)) profileXml.Save(cachedFile);
+
+
+            if (profileXml.DocumentElement == null ||
+                profileXml.DocumentElement.SelectNodes("/profile/privacyMessage")?.Count != 0) return;
+
+
+            // 3. Set ban info in SteamUsers
+            ProcessSteamUserXml(profileXml);
+
+            // 4. Download profile image if missing
+            if (!File.Exists(dlDir))
+            {
+                try
+                {
+                    Globals.DownloadFile(su.ImageDownloadUrl, dlDir);
+                    su.ImgUrl = $"{SteamImagePathHtml}{su.SteamId}.jpg";
+                    return;
+                }
+                catch (WebException ex)
+                {
+                    if (ex.HResult == -2146233079) return;
+                    Globals.WriteToLog(
+                        "ERROR: Could not connect and download Steam profile's image from Steam servers.\nCheck your internet connection.\n\nDetails: " +
+                        ex);
+                }
+            }
+
+            su.ImgUrl = File.Exists(dlDir)
+                ? $"{SteamImagePathHtml}{su.SteamId}.jpg"
+                : "img/QuestionMark.jpg";
+        }
+
+        /// <summary>
+        /// Gets ban status and image from input XML Document.
+        /// </summary>
+        /// <param name="profileXml">User's profile XML string</param>
+        private void ProcessSteamUserXml(XmlDocument profileXml)
+        {
+            Globals.DebugWriteLine(@"[Func:Steam\Steam.XmlGetVacLimitedStatus] Get Ban status for Steam account.");
+
+            // Read SteamID and select the correct Steam User to edit
+            var steamId = profileXml.DocumentElement?.SelectNodes("/profile/steamID64")?[0]?.InnerText;
+            if (steamId == null) return;
+            var su = AppData.SteamUsers.FirstOrDefault(x => x.SteamId == steamId);
+            if (su == null) return;
+
+            // Set ban info in SteamUsers
+            try
+            {
+                // Set ban info
+                if (profileXml.DocumentElement.SelectNodes("/profile/vacBanned")?[0] != null)
+                    su.Vac = profileXml.DocumentElement.SelectNodes("/profile/vacBanned")?[0]?.InnerText == "1";
+                if (profileXml.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0] != null)
+                    su.Limited = profileXml.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0]?.InnerText == "1";
+                if (profileXml.DocumentElement.SelectNodes("/profile/avatarFull")?[0] != null)
+                    su.ImageDownloadUrl = profileXml.DocumentElement.SelectNodes("/profile/avatarFull")?[0]?.InnerText;
+            }
+            catch (NullReferenceException)
+            {
+                Globals.DebugWriteLine(@"[Func:Steam\Steam.XmlGetVacLimitedStatus] SUPPRESSED ERROR: NullReferenceException");
+            }
+        }
+
+        /// <summary>
+        /// Gets a list of profile image URLs for all profiles
+        /// This replaces GetUserImageUrl, and does it for every SteamId at once
+        /// </summary>
+        /// <returns>Dictionary of [Profile image URL] = Destination file path</returns>
+        private async Task<Dictionary<string, string>> WebApiGetImageList(IReadOnlyCollection<SteamUserAcc> steamUsers)
+        {
+            var images = new Dictionary<string, string>();
+            // Web API can take up to 100 items at once.
+            for (var i = 0; i < steamUsers.Count; i += 100)
+            {
+                var steamUsersGroup = steamUsers.Skip(i).Take(100);
+                var steamIds = steamUsersGroup.Select(su => su.SteamId).ToList();
+                var uri =
+                    $"https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={SteamWebApiKey}&steamids={string.Join(',', steamIds)}";
+                Globals.ReadWebUrl(uri, out var jsonString);
+                if (!await IsSteamApiKeyValid(jsonString)) return images;
+                var json = JObject.Parse(jsonString);
+
+                if (!json.ContainsKey("response")) return images;
+                json = json.Value<JObject>("response");
+                if (!json!.ContainsKey("players")) return images;
+                var players = json.Value<JArray>("players");
+
+                foreach (var player in players!)
+                {
+                    var steamId = player["steamid"]!.Value<string>();
+                    var imageUrl = player["avatarfull"]!.Value<string>();
+                    if (steamId != null && imageUrl != null) images.Add(imageUrl, $"{SteamImagePath}/{steamId}.jpg");
+                }
+            }
+
+            return images;
+        }
+
+        /// <summary>
+        /// Download all missing or outdated Steam profile images, multi-threaded
+        /// </summary>
+        private async Task WebApiPrepareImages()
+        {
+            // Create a queue of SteamUsers to download images for
+            var queue = new List<SteamUserAcc>();
+
+            foreach (var su in AppData.SteamUsers)
+            {
+                var dlDir = $"{SteamImagePath}{su.SteamId}.jpg";
+                // Delete outdated file, if it exists
+                var wasDeleted = GeneralFuncs.DeletedOutdatedFile(dlDir, ImageExpiryTime);
+                // ... & invalid files
+                wasDeleted = wasDeleted || GeneralFuncs.DeletedInvalidImage(dlDir);
+
+                if (wasDeleted) queue.Add(su);
+            }
+
+            // Either return if queue is empty, or download queued images and then continue.
+            if (queue.Count != 0)
+            {
+                await GeneralFuncs.ShowToast("info", Lang["Toast_DownloadingProfileData"], renderTo: "toastarea");
+                await Globals.MultiThreadParallelDownloads(await WebApiGetImageList(queue)).ConfigureAwait(true);
+            }
+
+            // Set the correct path
+            foreach (var su in AppData.SteamUsers)
+            {
+                su.ImgUrl = $"{SteamImagePathHtml}{su.SteamId}.jpg";
+            }
+        }
+
+        /// <summary>
+        /// Checks ban status for all AppData.SteamUsers
+        /// Then updates with ban info
+        /// Saves VAC info into SteamVACCache.json as well for caching
+        /// </summary>
+        private async Task WebApiGetBans()
+        {
+            // Web API can take up to 100 items at once.
+            for (var i = 0; i < AppData.SteamUsers.Count; i += 100)
+            {
+                var steamUsersGroup = AppData.SteamUsers.Skip(i).Take(100);
+                var steamIds = steamUsersGroup.Select(su => su.SteamId).ToList();
+                var uri =
+                    $"https://api.steampowered.com/ISteamUser/GetPlayerBans/v0001/?key={SteamWebApiKey}&steamids={string.Join(',', steamIds)}";
+                try
+                {
+                    Globals.ReadWebUrl(uri, out var jsonString);
+                    if (!await IsSteamApiKeyValid(jsonString)) return;
+                    var json = JObject.Parse(jsonString);
+
+                    if (!json!.ContainsKey("players")) return;
+                    var players = json.Value<JArray>("players");
+
+                    foreach (var player in players!)
+                    {
+                        var steamId = player["SteamId"]!.Value<string>();
+
+                        // Update Vac and Limited in AppData.SteamUsers
+                        var su = AppData.SteamUsers.FirstOrDefault(x => x.SteamId == steamId);
+                        if (su == null) continue;
+
+                        su.Vac = player["VACBanned"]!.Value<bool>();
+                        su.Limited = player["CommunityBanned"]!.Value<bool>();
+
+                    }
+                }
+                catch (JsonReaderException e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
+
+            SaveVacInfo();
+        }
+
+        /// <summary>
+        /// After querying Steam API, check the response here to see if the Web API key is valid
+        /// </summary>
+        /// <returns>True if key is valid. False if not, and action should be cancelled</returns>
+        private async Task<bool> IsSteamApiKeyValid(string jsResponse)
+        {
+            if (!jsResponse.StartsWith("<html>")) return true;
+
+            // Error: Key was likely invalid.
+            await GeneralFuncs.ShowToast("error", Lang["Toast_SteamWebKeyInvalid"],
+                renderTo: "toastarea");
+
+            SteamWebApiKey = "";
+            SaveSettings();
+            SteamWebApiWasReset = true;
+            return false;
+
+        }
+
+        /// <summary>
+        /// Checks for SteamVACCache.json, and assuming all info is there: Updates AppSettings.SteamUsers.
+        /// Otherwise it updates all VAC/Limited info from Web API.
+        /// </summary>
+        private async Task WebApiPrepareBans()
+        {
+            _ = GeneralFuncs.DeletedOutdatedFile(VacCacheFile, ImageExpiryTime);
+            if (File.Exists(VacCacheFile))
+            {
+                var vsList = JsonConvert.DeserializeObject<List<VacStatus>>(Globals.ReadAllText(VacCacheFile));
+                if (vsList != null && vsList.Count == AppData.SteamUsers.Count)
+                {
+                    foreach (var vs in vsList)
+                    {
+                        var su = AppData.SteamUsers.FirstOrDefault(x => x.SteamId == vs.SteamId);
+                        if (su == null) continue;
+
+                        su.Vac = vs.Vac;
+                        su.Limited = vs.Ltd;
+                    }
+
+                    return;
+                }
+            }
+
+            // File doesn't exist, has an error or has a different number of users > Refresh all vac info.
+            await WebApiGetBans();
+        }
+
+
+
+        /// <summary>
+        /// Restart Steam with a new account selected. Leave args empty to log into a new account.
+        /// </summary>
+        /// <param name="steamId">(Optional) User's SteamID</param>
+        /// <param name="ePersonaState">(Optional) Persona state for user [0: Offline, 1: Online...]</param>
+        /// <param name="args">Starting arguments</param>
+        public async Task SwapSteamAccounts(string steamId = "", int ePersonaState = -1, string args = "")
+        {
+            Globals.DebugWriteLine($@"[Func:Steam\Steam.SwapSteamAccounts] Swapping to: hidden. ePersonaState={ePersonaState}");
+            if (steamId != "" && !VerifySteamId(steamId))
+            {
+                return;
+            }
+
+            await AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = "Steam" }]);
+            if (!await GeneralFuncs.CloseProcesses(Processes, ClosingMethod))
+            {
+                if (Globals.IsAdministrator)
+                    await AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = "Steam" }]);
+                else
+                {
+                    await GeneralFuncs.ShowToast("error", Lang["Toast_RestartAsAdmin"], Lang["Failed"], "toastarea");
+                    ModalData.ShowModal("confirm", ExtraArg.RestartAsAdmin);
+                }
+                return;
+            }
+
+            if (OperatingSystem.IsWindows()) await UpdateLoginUsers(steamId, ePersonaState);
+
+            await AppData.InvokeVoidAsync("updateStatus", Lang["Status_StartingPlatform", new { platform = "Steam" }]);
+            if (AutoStart)
+            {
+                if (StartSilent) args += " -silent";
+
+                if (Globals.StartProgram(Exe(), Admin, args, StartingMethod))
+                    await GeneralFuncs.ShowToast("info",
+                        Lang["Status_StartingPlatform", new { platform = "Steam" }], renderTo: "toastarea");
+                else
+                    await GeneralFuncs.ShowToast("error",
+                        Lang["Toast_StartingPlatformFailed", new { platform = "Steam" }], renderTo: "toastarea");
+            }
+
+            if (AutoStart && AppSettings.MinimizeOnSwitch) await AppData.InvokeVoidAsync("hideWindow");
+
+            NativeFuncs.RefreshTrayArea();
+            await AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
+            AppStats.IncrementSwitches("Steam");
+
+            try
+            {
+                LastAccSteamId = AppData.SteamUsers.Where(x => x.SteamId == steamId).ToList()[0].SteamId;
+                LastAccTimestamp = Globals.GetUnixTimeInt();
+                if (LastAccSteamId != "")
+                    await AccountFuncs.SetCurrentAccount(LastAccSteamId);
+            }
+            catch (Exception)
+            {
+                //
+            }
+        }
+
+        /// <summary>
+        /// Verify whether input Steam64ID is valid or not
+        /// </summary>
+        public static bool VerifySteamId(string steamId)
+        {
+            Globals.DebugWriteLine($@"[Func:Steam\Steam.VerifySteamId] Verifying SteamID: {steamId.Substring(steamId.Length - 4, 4)}");
+            const long steamIdMin = 0x0110000100000001;
+            const long steamIdMax = 0x01100001FFFFFFFF;
+            if (!IsDigitsOnly(steamId) || steamId.Length != 17) return false;
+            // Size check: https://stackoverflow.com/questions/33933705/steamid64-minimum-and-maximum-length#40810076
+            var steamIdVal = double.Parse(steamId);
+            return steamIdVal is > steamIdMin and < steamIdMax;
+        }
+        private static bool IsDigitsOnly(string str) => str.All(c => c is >= '0' and <= '9');
+        #endregion
+
+        #region STEAM_MANAGEMENT
+        /// <summary>
+        /// Updates loginusers and registry to select an account as "most recent"
+        /// </summary>
+        /// <param name="selectedSteamId">Steam ID64 to switch to</param>
+        /// <param name="pS">[PersonaState]0-7 custom persona state [0: Offline, 1: Online...]</param>
+        [SupportedOSPlatform("windows")]
+        public async Task UpdateLoginUsers(string selectedSteamId, int pS)
+        {
+            Globals.DebugWriteLine($@"[Func:Steam\Steam.UpdateLoginUsers] Updating loginusers: selectedSteamId={(selectedSteamId.Length > 0 ? selectedSteamId.Substring(selectedSteamId.Length - 4, 4) : "")}, pS={pS}");
+            var userAccounts = await GetSteamUsers(LoginUsersVdf());
+            // -----------------------------------
+            // ----- Manage "loginusers.vdf" -----
+            // -----------------------------------
+            await AppData.InvokeVoidAsync("updateStatus", Lang["Status_UpdatingFile", new { file = "loginusers.vdf" }]);
+            var tempFile = LoginUsersVdf() + "_temp";
+            Globals.DeleteFile(tempFile);
+
+            // MostRec is "00" by default, just update the one that matches SteamID.
+            try
+            {
+                userAccounts.Where(x => x.SteamId == selectedSteamId).ToList().ForEach(u =>
+                {
+                    u.MostRec = "1";
+                    u.RememberPass = "1";
+                    u.OfflineMode = pS == -1 ? u.OfflineMode : pS > 1 ? "0" : pS == 1 ? "0" : "1";
+                    // u.OfflineMode: Set ONLY if defined above
+                    // If defined & > 1, it's custom, therefor: Online
+                    // Otherwise, invert [0 == Offline => Online, 1 == Online => Offline]
+                });
+            }
+            catch (InvalidOperationException)
+            {
+                await GeneralFuncs.ShowToast("error", Lang["Toast_MissingUserId"]);
+            }
+            //userAccounts.Single(x => x.SteamId == selectedSteamId).MostRec = "1";
+
+            // Save updated loginusers.vdf
+            await SaveSteamUsersIntoVdf(userAccounts);
+
+            // -----------------------------------
+            // - Update localconfig.vdf for user -
+            // -----------------------------------
+            if (pS != -1) SetPersonaState(selectedSteamId, pS); // Update persona state, if defined above.
+
+            SteamUserAcc user = new() { AccName = "" };
+            try
+            {
+                if (selectedSteamId != "")
+                    user = userAccounts.Single(x => x.SteamId == selectedSteamId);
+            }
+            catch (InvalidOperationException)
+            {
+                await GeneralFuncs.ShowToast("error", Lang["Toast_MissingUserId"]);
+            }
+            // -----------------------------------
+            // --------- Manage registry ---------
+            // -----------------------------------
+            /*
+            ------------ Structure ------------
+            HKEY_CURRENT_USER\Software\Valve\Steam\
+                --> AutoLoginUser = username
+                --> RememberPassword = 1
+            */
+            await AppData.InvokeVoidAsync("updateStatus", Lang["Status_UpdatingRegistry"]);
+            using var key = Registry.CurrentUser.CreateSubKey(@"Software\Valve\Steam");
+            key?.SetValue("AutoLoginUser", user.AccName); // Account name is not set when changing user accounts from launch arguments (part of the viewmodel). -- Can be "" if no account
+            key?.SetValue("RememberPassword", 1);
+
+            // -----------------------------------
+            // ------Update Tray users list ------
+            // -----------------------------------
+            if (selectedSteamId != "")
+                Globals.AddTrayUser("Steam", "+s:" + user.SteamId, TrayAccName ? user.AccName : GetName(user), TrayAccNumber);
+        }
+
+        /// <summary>
+        /// Save updated list of Steamuser into loginusers.vdf, in vdf format.
+        /// </summary>
+        /// <param name="userAccounts">List of Steamuser to save into loginusers.vdf</param>
+        public async Task SaveSteamUsersIntoVdf(List<SteamUserAcc> userAccounts)
+        {
+            Globals.DebugWriteLine($@"[Func:Steam\Steam.SaveSteamUsersIntoVdf] Saving updated loginusers.vdf. Count: {userAccounts.Count}");
+            // Convert list to JObject list, ready to save into vdf.
+            var outJObject = new JObject();
+            foreach (var ua in userAccounts)
+            {
+                outJObject[ua.SteamId] = (JObject)JToken.FromObject(ua);
+            }
+
+            // Write changes to files.
+            var tempFile = LoginUsersVdf() + "_temp";
+            await File.WriteAllTextAsync(tempFile, @"""users""" + Environment.NewLine + outJObject.ToVdf());
+            if (!File.Exists(tempFile))
+            {
+                File.Replace(tempFile, LoginUsersVdf(), LoginUsersVdf() + "_last");
+                return;
+            }
+            try
+            {
+                // Let's try break this down, as some users are having issues with the above function.
+                // Step 1: Backup
+                if (File.Exists(LoginUsersVdf()))
+                {
+                    File.Copy(LoginUsersVdf(), LoginUsersVdf() + "_last", true);
+                }
+
+                // Step 2: Write new info
+                await File.WriteAllTextAsync(LoginUsersVdf(), @"""users""" + Environment.NewLine + outJObject.ToVdf());
+            }
+            catch (Exception ex)
+            {
+                Globals.WriteToLog("Failed to swap Steam users! Could not create temp loginusers.vdf file, and replace original using workaround! Contact TechNobo.", ex);
+                await GeneralFuncs.ShowToast("error", Lang["CouldNotFindX", new { x = tempFile }]);
+            }
+        }
+
+        /// <summary>
+        /// Clears images folder of contents, to re-download them on next load.
+        /// </summary>
+        /// <returns>Whether files were deleted or not</returns>
+        public async Task ClearImages()
+        {
+            Globals.DebugWriteLine(@"[Func:Steam\Steam.ClearImages] Clearing images.");
+            if (!Directory.Exists(SteamImagePath))
+            {
+                await GeneralFuncs.ShowToast("error", Lang["Toast_CantClearImages"], Lang["Error"], "toastarea");
+            }
+            Globals.DeleteFiles(SteamImagePath);
+            // Reload page, then display notification using a new thread.
+            AppData.NavigateTo(
+                $"/steam/?cacheReload&toast_type=success&toast_title={Uri.EscapeDataString(Lang["Success"])}&toast_message={Uri.EscapeDataString(Lang["Toast_ClearedImages"])}", true);
+        }
+
+        /// <summary>
+        /// Sets whether the user is invisible or not
+        /// </summary>
+        /// <param name="steamId">SteamID of user to update</param>
+        /// <param name="ePersonaState">Persona state enum for user (0-7)</param>
+        public void SetPersonaState(string steamId, int ePersonaState)
+        {
+            Globals.DebugWriteLine($@"[Func:Steam\Steam.SetPersonaState] Setting persona state for: {steamId.Substring(steamId.Length - 4, 4)}, To: {ePersonaState}");
+            // Values:
+            // 0: Offline, 1: Online, 2: Busy, 3: Away, 4: Snooze, 5: Looking to Trade, 6: Looking to Play, 7: Invisible
+            var id32 = new SteamIdConvert(steamId).Id32; // Get SteamID
+            var localConfigFilePath = Path.Join(FolderPath, "userdata", id32, "config", "localconfig.vdf");
+            if (!File.Exists(localConfigFilePath)) return;
+            var localConfigText = Globals.ReadAllText(localConfigFilePath); // Read relevant localconfig.vdf
+
+            // Find index of range needing to be changed.
+            var positionOfVar = localConfigText.IndexOf("ePersonaState", StringComparison.Ordinal); // Find where the variable is being set
+            if (positionOfVar == -1) return;
+            var indexOfBefore = localConfigText.IndexOf(":", positionOfVar, StringComparison.Ordinal) + 1; // Find where the start of the variable's value is
+            var indexOfAfter = localConfigText.IndexOf(",", positionOfVar, StringComparison.Ordinal); // Find where the end of the variable's value is
+
+            // The variable is now in-between the above numbers. Remove it and insert something different here.
+            var sb = new StringBuilder(localConfigText);
+            _ = sb.Remove(indexOfBefore, indexOfAfter - indexOfBefore);
+            _ = sb.Insert(indexOfBefore, ePersonaState);
+            localConfigText = sb.ToString();
+
+            // Output
+            File.WriteAllText(localConfigFilePath, localConfigText);
+        }
+
+        /// <summary>
+        /// Returns string representation of Steam ePersonaState int
+        /// </summary>
+        /// <param name="ePersonaState">integer state to return string for</param>
+        public string PersonaStateToString(int ePersonaState)
+        {
+            return ePersonaState switch
+            {
+                -1 => "",
+                0 => Lang["Offline"],
+                1 => Lang["Online"],
+                2 => Lang["Busy"],
+                3 => Lang["Away"],
+                4 => Lang["Snooze"],
+                5 => Lang["LookingToTrade"],
+                6 => Lang["LookingToPlay"],
+                7 => Lang["Invisible"],
+                _ => Lang["Unrecognized_EPersonaState"]
+            };
+        }
+        #endregion
+
+        #region STEAM_GAME_MANAGEMENT
+        /// <summary>
+        /// Copy settings from currently logged in account to selected game and account
+        /// </summary>
+        public async Task CopySettingsFrom(string gameId)
+        {
+            var destSteamId = GetCurrentAccountId(true);
+            if (!VerifySteamId(AppData.SelectedAccountId) || !VerifySteamId(destSteamId))
+            {
+                await GeneralFuncs.ShowToast("error", Lang["Toast_NoValidSteamId"], Lang["Failed"],
+                    "toastarea");
+                return;
+            }
+            if (destSteamId == AppData.SelectedAccountId)
+            {
+                await GeneralFuncs.ShowToast("info", Lang["Toast_SameAccount"], Lang["Failed"],
+                    "toastarea");
+                return;
+            }
+
+            var sourceSteamId32 = new SteamIdConvert(AppData.SelectedAccountId).Id32;
+            var destSteamId32 = new SteamIdConvert(destSteamId).Id32;
+            var sourceFolder = Path.Join(FolderPath, $"userdata\\{sourceSteamId32}\\{gameId}");
+            var destFolder = Path.Join(FolderPath, $"userdata\\{destSteamId32}\\{gameId}");
+            if (!Directory.Exists(sourceFolder))
+            {
+                await GeneralFuncs.ShowToast("error", Lang["Toast_NoFindSteamUserdata"], Lang["Failed"],
+                    "toastarea");
+                return;
+            }
+
+            if (Directory.Exists(destFolder))
+            {
+                // Backup the account's data you're copying to
+                var toAccountBackup = Path.Join(Globals.UserDataFolder, $"Backups\\Steam\\{destSteamId32}\\{gameId}");
+                if (Directory.Exists(toAccountBackup)) Directory.Delete(toAccountBackup, true);
+                Globals.CopyDirectory(destFolder, toAccountBackup, true);
+                Directory.Delete(destFolder, true);
+            }
+            Globals.CopyDirectory(sourceFolder, destFolder, true);
+            await GeneralFuncs.ShowToast("success", Lang["Toast_SettingsCopied"], Lang["Success"], "toastarea");
+        }
+
+
+        public async Task RestoreSettingsTo(string gameId)
+        {
+            if (!VerifySteamId(AppData.SelectedAccountId)) return;
+            var steamId32 = new SteamIdConvert(AppData.SelectedAccountId).Id32;
+            var backupFolder = Path.Join(Globals.UserDataFolder, $"Backups\\Steam\\{steamId32}\\{gameId}");
+
+            var folder = Path.Join(FolderPath, $"userdata\\{steamId32}\\{gameId}");
+            if (!Directory.Exists(backupFolder))
+            {
+                await GeneralFuncs.ShowToast("error", Lang["Toast_NoFindGameBackup"], Lang["Failed"],
+                    "toastarea");
+                return;
+            }
+            if (Directory.Exists(folder)) Directory.Delete(folder, true);
+            Globals.CopyDirectory(backupFolder, folder, true);
+            await GeneralFuncs.ShowToast("success", Lang["Toast_GameDataRestored"], Lang["Success"], "toastarea");
+        }
+
+        public async Task BackupGameData(string gameId)
+        {
+            var steamId32 = new SteamIdConvert(AppData.SelectedAccountId).Id32;
+            var sourceFolder = Path.Join(FolderPath, $"userdata\\{steamId32}\\{gameId}");
+            if (!VerifySteamId(AppData.SelectedAccountId) || !Directory.Exists(sourceFolder))
+            {
+                await GeneralFuncs.ShowToast("error", Lang["Toast_NoFindGameData"], Lang["Failed"],
+                    "toastarea");
+                return;
+            }
+
+            var destFolder = Path.Join(Globals.UserDataFolder, $"Backups\\Steam\\{steamId32}\\{gameId}");
+            if (Directory.Exists(destFolder)) Directory.Delete(destFolder, true);
+
+            Globals.CopyDirectory(sourceFolder, destFolder, true);
+            await GeneralFuncs.ShowToast("success", Lang["Toast_GameBackupDone", new { folderLocation = destFolder }], Lang["Success"], "toastarea");
+        }
+        #endregion
+    }
+
+    /// <summary>
+    /// Simple class for storing info related to Steam account, for switching and displaying.
+    /// </summary>
+    public class SteamUserAcc
+    {
+        [JsonIgnore] public string SteamId { get; set; }
+        [JsonProperty("AccountName", Order = 0)] public string AccName { get; set; }
+        [JsonProperty("PersonaName", Order = 1)] public string Name { get; set; }
+        [JsonProperty("RememberPassword", Order = 2)] public string RememberPass = "1"; // Should always be 1
+        [JsonProperty("mostrecent", Order = 3)] public string MostRec = "0";
+        [JsonProperty("Timestamp", Order = 4)] public string LastLogin { get; set; }
+        [JsonProperty("WantsOfflineMode", Order = 5)] public string OfflineMode = "0";
+        [JsonIgnore] public string ImageDownloadUrl { get; set; }
+        [JsonIgnore] public string ImgUrl { get; set; }
+        [JsonIgnore] public bool BanInfoLoaded { get; set; }
+        [JsonIgnore] public bool Vac { get; set; }
+        // Either Limited or Community banned status (when using Steam Web API)
+        [JsonIgnore] public bool Limited { get; set; }
+
     }
 }

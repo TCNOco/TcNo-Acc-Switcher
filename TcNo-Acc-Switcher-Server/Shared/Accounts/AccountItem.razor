@@ -18,6 +18,10 @@
 @using TcNo_Acc_Switcher_Server.Data.Settings
 @using TcNo_Acc_Switcher_Server.Pages.General
 @inherits AccountFuncs
+@inject IAppData AppData
+@inject ISteam Steam
+@inject IAppSettings AppSettings
+@inject IAppFuncs AppFuncs
 
 @code {
     [Parameter]

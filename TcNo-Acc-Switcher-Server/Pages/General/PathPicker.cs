@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
@@ -11,7 +12,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
     public class PathPicker
     {
-        public static List<string> LogicalDrivesList
+        [Inject] private IGeneralFuncs GeneralFuncs { get; }
+        [Inject] private ILang Lang { get; }
+
+        public List<string> LogicalDrivesList
         {
             get
             {
@@ -22,7 +26,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 catch (Exception e)
                 {
                     Globals.WriteToLog("Could not list Logical Drives.", e);
-                    _ = GeneralInvocableFuncs.ShowToast("error", Lang.Instance["PathPicker_NoLogicalDrives"], renderTo: "toastarea");
+                    _ = GeneralFuncs.ShowToast("error", Lang["PathPicker_NoLogicalDrives"], renderTo: "toastarea");
                     return new List<string>();
                 }
             }
@@ -50,8 +54,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     catch (Exception e)
                     {
                         Globals.WriteToLog($"PathPicker: Failed to crawl path or drive: \"{FullPath}\"", e);
-                        if (Depth != 0)
-                            _ = GeneralInvocableFuncs.ShowToast("error", Lang.Instance["PathPicker_FailedGetFolders", new { path = FolderName }], renderTo: "toastarea");
+                        // TODO: SEE HOW TO DO THIS!
+                        //if (Depth != 0)
+                        //    _ = GeneralFuncs.ShowToast("error", Lang["PathPicker_FailedGetFolders", new { path = FolderName }], renderTo: "toastarea");
                         return new List<FolderFileList>();
                     }
                 });

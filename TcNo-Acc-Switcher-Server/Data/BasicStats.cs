@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -12,60 +13,144 @@ using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
-    public sealed class BasicStats
+    public interface IBasicStats
     {
-        // Make this a singleton
-        private static BasicStats _instance;
-        private static readonly object LockObj = new();
-        public static BasicStats Instance
+        /// <summary>
+        /// List of all games with stats
+        /// </summary>
+        List<string> GamesDict { get; set; }
+
+        /// <summary>
+        /// Dictionary of Platform:List of supported game names
+        /// </summary>
+        SortedDictionary<string, List<string>> PlatformGames { get; set; }
+
+        /// <summary>
+        /// Dictionary of Game Name:Available user game statistics
+        /// </summary>
+        Dictionary<string, GameStat> GameStats { get; set; }
+
+        JToken StatsDefinitions { get; }
+        JToken PlatformCompatibilities { get; }
+
+        UserGameStat GetUserGameStat(string game, string accountId);
+
+        /// <summary>
+        /// Get list of games for current platform - That have at least 1 account for settings.
+        /// </summary>
+        List<string> GetAllCurrentlyEnabledGames();
+
+        /// <summary>
+        /// Get and return icon html markup for specific game
+        /// </summary>
+        string GetIcon(string game, string statName);
+
+        /// <summary>
+        /// Returns list Dictionary of Game Names:[Dictionary of statistic names and StatValueAndIcon (values and indicator text for HTML)]
+        /// </summary>
+        Dictionary<string, Dictionary<string, BasicStats.StatValueAndIcon>> GetUserStatsAllGamesMarkup(string platform, string accountId);
+
+        /// <summary>
+        /// List of possible games on X platform
+        /// </summary>
+        List<string> GetAvailableGames(string platform);
+
+        /// <summary>
+        /// List of games from X platform, with Y accountId associated.
+        /// </summary>
+        List<string> GetEnabledGames(string platform, string accountId);
+
+        /// <summary>
+        /// List of games from X platform, NOT with Y accountId associated.
+        /// </summary>
+        List<string> GetDisabledGames(string platform, string accountId);
+
+        Dictionary<string, string> GetRequiredVars(string game);
+        Dictionary<string, string> GetExistingVars(string game, string account);
+
+        /// <summary>
+        /// Gets list of all metric names to collect for the provided account, as well as whether each is hidden or not, and the text to display in the UI checkbox.
+        /// </summary>
+        Dictionary<string, Tuple<bool, string>> GetHiddenMetrics(string game, string account);
+
+        /// <summary>
+        /// Get list of metrics that are set to hidden from the settings menu. This overrides individual account settings.
+        /// </summary>
+        List<string> GetGloballyHiddenMetrics(string game);
+
+        /// <summary>
+        /// Gets list of all metric names to collect, as well as whether each is hidden or not, and the text to display in the UI checkbox.
+        /// Example: "AP":"Arena Points"
+        /// </summary>
+        //public Dictionary<string, Tuple<bool, string>> GetAllMetrics(string game)
+        Dictionary<string, string> GetAllMetrics(string game);
+
+        Task<bool> SetGameVars(string platform, string game, string accountId, Dictionary<string, string> returnDict, List<string> hiddenMetrics);
+        void DisableGame(string game, string accountId);
+        Task RefreshAccount(string accountId, string game, string platform = "");
+        bool PlatformHasAnyGames(string platform);
+        JObject GetGame(string game);
+        bool GameExists(string game);
+
+        /// <summary>
+        /// Get longer game name from it's short unique ID.
+        /// </summary>
+        string GetGameNameFromId(string id);
+
+        /// <summary>
+        /// Get short unique ID from game name.
+        /// </summary>
+        string GetGameIdFromName(string name);
+
+        Task RefreshAllAccounts(string game, string platform = "");
+        List<string> PlatformGamesWithStats(string platform);
+
+        /// <summary>
+        /// Loads games and stats for requested platform
+        /// </summary>
+        /// <returns>If successfully loaded platform</returns>
+        Task<bool> SetCurrentPlatform(string platform);
+
+        /// <summary>
+        /// Returns a string with all the statistics available for the specified account
+        /// </summary>
+        string GetGameStatsString(string accountId, string sep, bool isBasic = false);
+    }
+
+    public sealed class BasicStats : IBasicStats
+    {
+        [Inject] private ILang Lang { get; }
+        [Inject] private IAppSettings AppSettings { get; }
+        [Inject] private IAppData AppData { get; }
+        [Inject] private IGeneralFuncs GeneralFuncs { get; }
+
+        public BasicStats()
         {
-            get
-            {
-                lock (LockObj)
-                {
-                    if (_instance != null) return _instance;
-
-                    _instance = new BasicStats();
-                    BasicStatsInit().GetAwaiter().GetResult();
-                    return _instance;
-                }
-            }
-            set
-            {
-                lock (LockObj)
-                {
-                    _instance = value;
-                }
-            }
+            BasicStatsInit().GetAwaiter().GetResult();
         }
-        // ---------------
 
-        private JObject _jData;
-        private static JObject JData { get => Instance._jData; set => Instance._jData = value; }
-        private List<string> _gamesDict = new();
-        private SortedDictionary<string, List<string>> _platformGames = new();
-        private Dictionary<string, GameStat> _gameStats = new();
+        private JObject JData { get; set; }
 
         /// <summary>
         /// List of all games with stats
         /// </summary>
-        public static List<string> GamesDict { get => Instance._gamesDict; set => Instance._gamesDict = value; }
+        public List<string> GamesDict { get; set; } = new();
         /// <summary>
         /// Dictionary of Platform:List of supported game names
         /// </summary>
-        public static SortedDictionary<string, List<string>> PlatformGames { get => Instance._platformGames; set => Instance._platformGames = value; }
+        public SortedDictionary<string, List<string>> PlatformGames { get; set; } = new();
         /// <summary>
         /// Dictionary of Game Name:Available user game statistics
         /// </summary>
-        public static Dictionary<string, GameStat> GameStats { get => Instance._gameStats; set => Instance._gameStats = value; }
+        public Dictionary<string, GameStat> GameStats { get; set; } = new();
 
-        public static UserGameStat GetUserGameStat(string game, string accountId) =>
+        public UserGameStat GetUserGameStat(string game, string accountId) =>
             GameStats[game].CachedStats.ContainsKey(accountId) ? GameStats[game].CachedStats[accountId] : null;
 
         /// <summary>
         /// Get list of games for current platform - That have at least 1 account for settings.
         /// </summary>
-        public static List<string> GetAllCurrentlyEnabledGames()
+        public List<string> GetAllCurrentlyEnabledGames()
         {
             var games = new HashSet<string>();
             foreach (var gameStat in GameStats)
@@ -81,7 +166,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Get and return icon html markup for specific game
         /// </summary>
-        public static string GetIcon(string game, string statName) => GameStats[game].ToCollect[statName].Icon;
+        public string GetIcon(string game, string statName) => GameStats[game].ToCollect[statName].Icon;
 
         public class StatValueAndIcon
         {
@@ -92,7 +177,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Returns list Dictionary of Game Names:[Dictionary of statistic names and StatValueAndIcon (values and indicator text for HTML)]
         /// </summary>
-        public static Dictionary<string, Dictionary<string, StatValueAndIcon>> GetUserStatsAllGamesMarkup(string platform, string accountId)
+        public Dictionary<string, Dictionary<string, StatValueAndIcon>> GetUserStatsAllGamesMarkup(string platform, string accountId)
         {
             var returnDict = new Dictionary<string, Dictionary<string, StatValueAndIcon>>( );
             // Foreach available game
@@ -136,28 +221,28 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// List of possible games on X platform
         /// </summary>
         [JSInvokable]
-        public static List<string> GetAvailableGames(string platform) => PlatformGames.ContainsKey(platform) ? PlatformGames[platform] : new List<string>();
+        public List<string> GetAvailableGames(string platform) => PlatformGames.ContainsKey(platform) ? PlatformGames[platform] : new List<string>();
         /// <summary>
         /// List of games from X platform, with Y accountId associated.
         /// </summary>
         [JSInvokable]
-        public static List<string> GetEnabledGames(string platform, string accountId) => GetAvailableGames(platform).Where(game => GameStats[game].CachedStats.ContainsKey(accountId)).ToList();
+        public List<string> GetEnabledGames(string platform, string accountId) => GetAvailableGames(platform).Where(game => GameStats[game].CachedStats.ContainsKey(accountId)).ToList();
         /// <summary>
         /// List of games from X platform, NOT with Y accountId associated.
         /// </summary>
         [JSInvokable]
-        public static List<string> GetDisabledGames(string platform, string accountId) => GetAvailableGames(platform).Where(game => !GameStats[game].CachedStats.ContainsKey(accountId)).ToList();
+        public List<string> GetDisabledGames(string platform, string accountId) => GetAvailableGames(platform).Where(game => !GameStats[game].CachedStats.ContainsKey(accountId)).ToList();
 
         [JSInvokable]
-        public static Dictionary<string, string> GetRequiredVars(string game) => GameStats[game].RequiredVars;
+        public Dictionary<string, string> GetRequiredVars(string game) => GameStats[game].RequiredVars;
         [JSInvokable]
-        public static Dictionary<string, string> GetExistingVars(string game, string account) => GameStats[game].CachedStats.ContainsKey(account) ? GameStats[game].CachedStats[account].Vars : new Dictionary<string, string>();
+        public Dictionary<string, string> GetExistingVars(string game, string account) => GameStats[game].CachedStats.ContainsKey(account) ? GameStats[game].CachedStats[account].Vars : new Dictionary<string, string>();
 
         /// <summary>
         /// Gets list of all metric names to collect for the provided account, as well as whether each is hidden or not, and the text to display in the UI checkbox.
         /// </summary>
         [JSInvokable]
-        public static Dictionary<string, Tuple<bool, string>> GetHiddenMetrics(string game, string account)
+        public Dictionary<string, Tuple<bool, string>> GetHiddenMetrics(string game, string account)
         {
             var returnDict = new Dictionary<string, Tuple<bool, string>>();
             foreach (var (key, _) in GameStats[game].ToCollect)
@@ -174,15 +259,15 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// Get list of metrics that are set to hidden from the settings menu. This overrides individual account settings.
         /// </summary>
         [JSInvokable]
-        public static List<string> GetGloballyHiddenMetrics(string game) =>
+        public List<string> GetGloballyHiddenMetrics(string game) =>
             (from metric in AppSettings.GloballyHiddenMetrics[game] where metric.Value select metric.Key).ToList();
 
         /// <summary>
         /// Gets list of all metric names to collect, as well as whether each is hidden or not, and the text to display in the UI checkbox.
         /// Example: "AP":"Arena Points"
         /// </summary>
-        //public static Dictionary<string, Tuple<bool, string>> GetAllMetrics(string game)
-        public static Dictionary<string, string> GetAllMetrics(string game)
+        //public Dictionary<string, Tuple<bool, string>> GetAllMetrics(string game)
+        public Dictionary<string, string> GetAllMetrics(string game)
         {
             //// Get hidden metrics for this game
             //var hiddenMetrics = new List<string>();
@@ -202,11 +287,11 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         [JSInvokable]
-        public static async Task<bool> SetGameVars(string platform, string game, string accountId, Dictionary<string, string> returnDict, List<string> hiddenMetrics) =>
+        public async Task<bool> SetGameVars(string platform, string game, string accountId, Dictionary<string, string> returnDict, List<string> hiddenMetrics) =>
             await GameStats[game].SetAccount(accountId, returnDict, hiddenMetrics, platform);
 
         [JSInvokable]
-        public static void DisableGame(string game, string accountId)
+        public void DisableGame(string game, string accountId)
         {
             if (!GameStats.ContainsKey(game) || !GameStats[game].CachedStats.ContainsKey(accountId)) return;
 
@@ -215,30 +300,30 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         [JSInvokable]
-        public static async Task RefreshAccount(string accountId, string game, string platform = "")
+        public async Task RefreshAccount(string accountId, string game, string platform = "")
         {
             await GameStats[game].LoadStatsFromWeb(accountId, platform);
             GameStats[game].SaveStats();
         }
 
-        public static bool PlatformHasAnyGames(string platform) => platform is not null && (PlatformGames.ContainsKey(platform) && PlatformGames[platform].Count > 0);
-        public static JToken StatsDefinitions => (JObject)JData["StatsDefinitions"];
-        public static JToken PlatformCompatibilities => (JObject)JData["PlatformCompatibilities"];
-        public static JObject GetGame(string game) => (JObject) StatsDefinitions![game];
-        public static bool GameExists(string game) => GamesDict.Contains(game);
-        public static readonly string BasicStatsPath = Path.Join(Globals.AppDataFolder, "GameStats.json");
+        public bool PlatformHasAnyGames(string platform) => platform is not null && (PlatformGames.ContainsKey(platform) && PlatformGames[platform].Count > 0);
+        public JToken StatsDefinitions => (JObject)JData["StatsDefinitions"];
+        public JToken PlatformCompatibilities => (JObject)JData["PlatformCompatibilities"];
+        public JObject GetGame(string game) => (JObject) StatsDefinitions![game];
+        public bool GameExists(string game) => GamesDict.Contains(game);
+        public readonly string BasicStatsPath = Path.Join(Globals.AppDataFolder, "GameStats.json");
 
         /// <summary>
         /// Read BasicStats.json and collect game definitions, as well as platform-game relations.
         /// </summary>
-        private static async Task BasicStatsInit()
+        private async Task BasicStatsInit()
         {
             // Check if Platforms.json exists.
             // If it doesnt: Copy it from the programs' folder to the user data folder.
             if (!File.Exists(BasicStatsPath))
             {
                 // Once again verify the file exists. If it doesn't throw an error here.
-                await GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_FailedStatsLoad"], renderTo: "toastarea");
+                await GeneralFuncs.ShowToast("error", Lang["Toast_FailedStatsLoad"], renderTo: "toastarea");
                 Globals.WriteToLog("Failed to locate GameStats.json! This will cause a lot of stats to break.");
                 return;
             }
@@ -293,11 +378,11 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Get longer game name from it's short unique ID.
         /// </summary>
-        public static string GetGameNameFromId(string id) => GameStats.FirstOrDefault(x => x.Value.UniqueId.Equals(id, StringComparison.OrdinalIgnoreCase)).Key;
+        public string GetGameNameFromId(string id) => GameStats.FirstOrDefault(x => x.Value.UniqueId.Equals(id, StringComparison.OrdinalIgnoreCase)).Key;
         /// <summary>
         /// Get short unique ID from game name.
         /// </summary>
-        public static string GetGameIdFromName(string name) => GameStats.FirstOrDefault(x => x.Key.Equals(name, StringComparison.OrdinalIgnoreCase)).Value.UniqueId;
+        public string GetGameIdFromName(string name) => GameStats.FirstOrDefault(x => x.Key.Equals(name, StringComparison.OrdinalIgnoreCase)).Value.UniqueId;
 
         public async Task RefreshAllAccounts(string game, string platform = "")
         {
@@ -310,13 +395,13 @@ namespace TcNo_Acc_Switcher_Server.Data
                 GameStats[game].SaveStats();
         }
 
-        public static List<string> PlatformGamesWithStats(string platform) => PlatformGames.ContainsKey(platform) ? GetAvailableGames(platform) : new List<string>();
+        public List<string> PlatformGamesWithStats(string platform) => PlatformGames.ContainsKey(platform) ? GetAvailableGames(platform) : new List<string>();
 
         /// <summary>
         /// Loads games and stats for requested platform
         /// </summary>
         /// <returns>If successfully loaded platform</returns>
-        public static async Task<bool> SetCurrentPlatform(string platform)
+        public async Task<bool> SetCurrentPlatform(string platform)
         {
             AppData.CurrentSwitcher = platform;
             if (!PlatformGames.ContainsKey(platform)) return false;
@@ -336,7 +421,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Returns a string with all the statistics available for the specified account
         /// </summary>
-        public static string GetGameStatsString(string accountId, string sep, bool isBasic = false)
+        public string GetGameStatsString(string accountId, string sep, bool isBasic = false)
         {
             var outputString = "";
             // Foreach game in platform
@@ -386,6 +471,10 @@ namespace TcNo_Acc_Switcher_Server.Data
     /// </summary>
     public sealed class GameStat
     {
+        [Inject] private IGeneralFuncs GeneralFuncs { get; }
+        [Inject] private ILang Lang { get; }
+        [Inject] private IBasicStats BasicStats { get; }
+
         #region Properties
 
         private DateTime _lastLoadingNotification = DateTime.MinValue;
@@ -449,7 +538,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             if (ToCollect != null)
                 foreach (var collectInstruction in ToCollect.Where(collectInstruction => collectInstruction.Key == "%PROFILEIMAGE%"))
-                    collectInstruction.Value.ToggleText = Lang.Instance["ProfileImage_ToggleText"];
+                    collectInstruction.Value.ToggleText = Lang["ProfileImage_ToggleText"];
 
             //foreach (var (k, v) in jGame["Collect"]?.ToObject<Dictionary<string, CollectInstruction>>()!)
             //{
@@ -476,7 +565,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             if (CachedStats[accountId].Collected.Count == 0 || DateTime.Now.Subtract(CachedStats[accountId].LastUpdated).Days >= 1)
             {
-                await GeneralInvocableFuncs.ShowToast("info", Lang.Instance["Toast_LoadingStats"], renderTo: "toastarea");
+                await GeneralFuncs.ShowToast("info", Lang["Toast_LoadingStats"], renderTo: "toastarea");
                 _lastLoadingNotification = DateTime.Now;
                 return await LoadStatsFromWeb(accountId, platform);
             }
@@ -515,7 +604,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             // Notify user than an account is being loaded - >5 seconds apart.
             if (DateTime.Now.Subtract(_lastLoadingNotification).Seconds >= 5)
             {
-                await GeneralInvocableFuncs.ShowToast("info", Lang.Instance["Toast_LoadingStats"], renderTo: "toastarea");
+                await GeneralFuncs.ShowToast("info", Lang["Toast_LoadingStats"], renderTo: "toastarea");
                 _lastLoadingNotification = DateTime.Now;
             }
 
@@ -523,7 +612,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             HtmlDocument doc = new();
             if (!Globals.GetWebHtmlDocument(ref doc, UrlSubbed(userStat), out var responseText, Cookies))
             {
-                await GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_GameStatsLoadFail", new { Game }], renderTo: "toastarea");
+                await GeneralFuncs.ShowToast("error", Lang["Toast_GameStatsLoadFail", new { Game }], renderTo: "toastarea");
                 return false;
             }
 
@@ -588,7 +677,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             {
                 Directory.CreateDirectory(Path.Join(Globals.UserDataFolder, "temp"));
                 await File.WriteAllTextAsync(Path.Join(Globals.UserDataFolder, "temp", $"download-{Globals.GetCleanFilePath(accountId)}-{Globals.GetCleanFilePath(Game)}.html"), responseText);
-                await GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_GameStatsEmpty", new { AccoundId = Globals.GetCleanFilePath(accountId), Game = Globals.GetCleanFilePath(Game) }], renderTo: "toastarea");
+                await GeneralFuncs.ShowToast("error", Lang["Toast_GameStatsEmpty", new { AccoundId = Globals.GetCleanFilePath(accountId), Game = Globals.GetCleanFilePath(Game) }], renderTo: "toastarea");
                 if (CachedStats.ContainsKey(accountId))
                     CachedStats.Remove(accountId);
                 return false;

@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Microsoft.AspNetCore.Components;
+using TcNo_Acc_Switcher_Server.Data;
 
 namespace TcNo_Acc_Switcher_Server.Shared.ContextMenu;
 
 public class MenuBuilder
 {
+    [Inject] private IAppFuncs AppFuncs { get; }
     private readonly ObservableCollection<MenuItem> _menu;
     public ObservableCollection<MenuItem> Result() => _menu;
     public MenuBuilder()

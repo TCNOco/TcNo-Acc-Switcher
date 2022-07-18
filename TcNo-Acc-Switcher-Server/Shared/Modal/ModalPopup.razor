@@ -18,8 +18,13 @@
 @using System.Collections.ObjectModel
 
 @inject IJSRuntime JsRuntime
-@inject AppData AData
-@inject Lang Locale
+@inject ILang Lang
+@inject IModalData ModalData
+@inject IAppData AppData
+@inject IAppSettings AppSettings
+@inject IAppStats AppStats
+@inject IGeneralFuncs GeneralFuncs
+@inject IAppFuncs AppFuncs
 
 <div class="modalBG" onclick="if (event.target === this)$('.modalBG').fadeOut();" style="display: none;">
 @*<div class="modalBG" onclick="if (event.target === this)$('.modalBG').fadeOut();" style="display: none;">*@
@@ -79,7 +84,7 @@
 {
     protected override void OnInitialized()
     {
-        ModalData.Instance.OnChange += OnChangeHandler;
+        ModalData.OnChange += OnChangeHandler;
     }
     private async void OnChangeHandler()
     {
@@ -88,7 +93,7 @@
 
     public void Dispose()
     {
-        ModalData.Instance.OnChange -= OnChangeHandler;
+        ModalData.OnChange -= OnChangeHandler;
     }
 
     // Modal back button clicked

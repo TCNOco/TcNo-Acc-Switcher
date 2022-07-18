@@ -19,33 +19,32 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.Pages.General;
-using SteamSettings = TcNo_Acc_Switcher_Server.Data.Settings.Steam;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
     public partial class AdvancedClearing
     {
-        private static readonly Lang Lang = Lang.Instance;
-        [Inject]
-        protected AppData AppData { get; set; }
+        [Inject] private IAppData AppData { get; set; }
+        [Inject] private ISteam Steam { get; set; }
 
         protected override void OnInitialized()
         {
-            Globals.DebugWriteLine(@"[Auto:Steam\AdvancedClearing.razor.cs.OnInitialisedAsync]");
+            Globals.DebugWriteLine(@"[Auto:Steam\AdvancedClearing.razor.cs.OnInitializedAsync]");
             AppData.WindowTitle = Lang["Title_Steam_Cleaning"];
         }
 
 
         public static readonly string SteamReturn = "steamAdvancedClearingAddLine";
 
-        private static async Task WriteLine(string text)
+        private async Task WriteLine(string text)
         {
             Globals.DebugWriteLine($@"[Auto:Steam\AdvancedClearing.razor.cs.WriteLine] Line: {text}");
             await AppData.InvokeVoidAsync(SteamReturn, text);
         }
 
-        private static async Task NewLine()
+        private async Task NewLine()
         {
             await AppData.InvokeVoidAsync(SteamReturn, "<br />");
         }
@@ -54,7 +53,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public async Task Steam_Close()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Close]");
-            await WriteLine(await GeneralFuncs.CloseProcesses(SteamSettings.Processes, SteamSettings.ClosingMethod) ? "Closed Steam." : "ERROR: COULD NOT CLOSE STEAM!");
+            await WriteLine(await GeneralFuncs.CloseProcesses(Steam.Processes, Steam.ClosingMethod) ? "Closed Steam." : "ERROR: COULD NOT CLOSE STEAM!");
             await NewLine();
         }
 
@@ -62,7 +61,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public async Task Steam_Clear_Logs()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_Logs]");
-            await GeneralFuncs.ClearFolder(Path.Join(SteamSettings.FolderPath, "logs\\"), SteamReturn);
+            await GeneralFuncs.ClearFolder(Path.Join(Steam.FolderPath, "logs\\"), SteamReturn);
             await WriteLine("Cleared logs folder.");
             await NewLine();
         }
@@ -71,7 +70,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public async Task Steam_Clear_Dumps()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_Dumps]");
-            await GeneralFuncs.ClearFolder(Path.Join(SteamSettings.FolderPath, "dumps\\"), SteamReturn);
+            await GeneralFuncs.ClearFolder(Path.Join(Steam.FolderPath, "dumps\\"), SteamReturn);
             await WriteLine("Cleared dumps folder.");
             await NewLine();
         }
@@ -93,7 +92,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             // Overlay UI logs -
             //   Steam\GameOverlayUI.exe.log
             //   Steam\GameOverlayRenderer.log
-            await GeneralFuncs.ClearFilesOfType(SteamSettings.FolderPath, "*.log|*.last", SearchOption.TopDirectoryOnly, SteamReturn);
+            await GeneralFuncs.ClearFilesOfType(Steam.FolderPath, "*.log|*.last", SearchOption.TopDirectoryOnly, SteamReturn);
             await WriteLine("Cleared UI Logs.");
             await NewLine();
         }
@@ -103,7 +102,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_AppCache]");
             // App Cache - Steam\appcache
-            await GeneralFuncs.ClearFilesOfType(Path.Join(SteamSettings.FolderPath, "appcache"), "*.*", SearchOption.TopDirectoryOnly, SteamReturn);
+            await GeneralFuncs.ClearFilesOfType(Path.Join(Steam.FolderPath, "appcache"), "*.*", SearchOption.TopDirectoryOnly, SteamReturn);
             await WriteLine("Cleared AppCache.");
             await NewLine();
         }
@@ -112,7 +111,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public async Task Steam_Clear_HttpCache()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_HttpCache]");
-            await GeneralFuncs.ClearFilesOfType(Path.Join(SteamSettings.FolderPath, "appcache\\httpcache"), "*.*", SearchOption.AllDirectories, SteamReturn);
+            await GeneralFuncs.ClearFilesOfType(Path.Join(Steam.FolderPath, "appcache\\httpcache"), "*.*", SearchOption.AllDirectories, SteamReturn);
             await WriteLine("Cleared HTTPCache.");
             await NewLine();
         }
@@ -121,7 +120,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public async Task Steam_Clear_DepotCache()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_DepotCache]");
-            await GeneralFuncs.ClearFilesOfType(Path.Join(SteamSettings.FolderPath, "depotcache"), "*.*", SearchOption.TopDirectoryOnly, SteamReturn);
+            await GeneralFuncs.ClearFilesOfType(Path.Join(Steam.FolderPath, "depotcache"), "*.*", SearchOption.TopDirectoryOnly, SteamReturn);
             await WriteLine("Cleared DepotCache.");
             await NewLine();
         }
@@ -130,7 +129,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public async Task Steam_Clear_Config()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_Config]");
-            await GeneralFuncs.DeleteFile(Path.Join(SteamSettings.FolderPath, "config\\config.vdf"), SteamReturn);
+            await GeneralFuncs.DeleteFile(Path.Join(Steam.FolderPath, "config\\config.vdf"), SteamReturn);
             await WriteLine("Cleared config\\config.vdf");
             await NewLine();
         }
@@ -139,7 +138,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public async Task Steam_Clear_LoginUsers()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_LoginUsers]");
-            await GeneralFuncs.DeleteFile(Path.Join(SteamSettings.FolderPath, "config\\loginusers.vdf"), SteamReturn);
+            await GeneralFuncs.DeleteFile(Path.Join(Steam.FolderPath, "config\\loginusers.vdf"), SteamReturn);
             await WriteLine("Cleared config\\loginusers.vdf");
             await NewLine();
         }
@@ -148,7 +147,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public async Task Steam_Clear_Ssfn()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_Ssfn]");
-            var d = new DirectoryInfo(SteamSettings.FolderPath);
+            var d = new DirectoryInfo(Steam.FolderPath);
             var i = 0;
             foreach (var f in d.GetFiles("ssfn*"))
             {

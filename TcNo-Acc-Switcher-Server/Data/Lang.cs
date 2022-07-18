@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
@@ -29,8 +30,53 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
-    public class Lang
+    public interface ILang
     {
+        Dictionary<string, string> Strings { get; set; }
+        string Current { get; set; }
+
+        /// <summary>
+        /// Get a string
+        /// </summary>
+        string this[string key] { get; }
+
+        /// <summary>
+        /// Get a string, and replace variables
+        /// </summary>
+        /// <param name="key">String to look up</param>
+        /// <param name="obj">Object of variables to replace</param>
+        string this[string key, object obj] { get; }
+
+        /// <summary>
+        /// Loads the programs default language: English.
+        /// </summary>
+        void LoadDefault();
+
+        /// <summary>
+        /// Loads the system's language, or the user's saved language
+        /// </summary>
+        void LoadLocalized();
+
+        /// <summary>
+        /// Tries to load a requested language
+        /// </summary>
+        /// <param name="lang">Formatted language, example: "en-US"</param>
+        Task<bool> LoadLang(string lang);
+
+        /// <summary>
+        /// Get list of files in Resources folder
+        /// </summary>
+        List<string> GetAvailableLanguages();
+
+        Dictionary<string, string> GetAvailableLanguagesDict();
+        KeyValuePair<string, string> GetCurrentLanguage();
+        Task<bool> Load(string filename, bool save = false);
+    }
+
+    public class Lang : ILang
+    {
+        [Inject] private IAppSettings AppSettings { get; }
+        [Inject] private IGeneralFuncs GeneralFuncs { get; }
         public Dictionary<string, string> Strings { get; set; }
         public string Current { get; set; }
 
@@ -110,7 +156,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// Get list of files in Resources folder
         /// </summary>
         public List<string> GetAvailableLanguages() => Directory.GetFiles(Path.Join(Globals.AppDataFolder, "Resources")).Select(f => Path.GetFileName(f).Split(".yml")[0]).ToList();
-        public Dictionary<string, string> GetAvailableLanguagesDict() {
+        public Dictionary<string, string> GetAvailableLanguagesDict()
+        {
             var dict = GetAvailableLanguages().ToDictionary(l => new CultureInfo(l).DisplayName);
             dict.Remove("English (Portugal)");
             dict["English (Pirate)"] = "en-PT";
@@ -174,7 +221,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
             catch (Exception e)
             {
-                await GeneralInvocableFuncs.ShowToast("error", "Can not load language information! See log for more info!", "Stylesheet error", "toastarea");
+                await GeneralFuncs.ShowToast("error", "Can not load language information! See log for more info!", "Stylesheet error", "toastarea");
                 Globals.WriteToLog("Could not load language information!", e);
                 return false;
             }

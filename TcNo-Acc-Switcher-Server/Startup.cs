@@ -15,6 +15,7 @@
 using System;
 using System.IO;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -23,7 +24,10 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.Data.Classes;
 using TcNo_Acc_Switcher_Server.Data.Settings;
+using TcNo_Acc_Switcher_Server.Pages.General;
+using TcNo_Acc_Switcher_Server.Shared.Accounts;
 
 namespace TcNo_Acc_Switcher_Server
 {
@@ -51,9 +55,13 @@ namespace TcNo_Acc_Switcher_Server
             _ = services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             // Persistent settings:
+            _ = services.AddSingleton<AccountFuncs>();
             _ = services.AddSingleton<AppSettings>();
             _ = services.AddSingleton<AppStats>();
             _ = services.AddSingleton<AppData>();
+            _ = services.AddSingleton<AppFuncs>();
+            _ = services.AddSingleton<AppStats>();
+            _ = services.AddSingleton<GeneralFuncs>();
             _ = services.AddSingleton<ModalData>();
             _ = services.AddSingleton<BasicPlatforms>();
             _ = services.AddSingleton<BasicStats>();
@@ -61,7 +69,12 @@ namespace TcNo_Acc_Switcher_Server
             _ = services.AddSingleton<Basic>();
             _ = services.AddSingleton<Steam>();
             _ = services.AddSingleton<Lang>();
+            _ = services.AddSingleton<Shortcut>();
         }
+
+        [Inject] private ILang Lang { get; }
+        [Inject] private IAppStats AppStats { get; }
+        [Inject] private IAppSettings AppSettings { get; }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -115,7 +128,7 @@ namespace TcNo_Acc_Switcher_Server
             AppStats.LaunchCount++;
         }
 
-        public static void CurrentDomain_OnProcessExit(object sender, EventArgs e)
+        public void CurrentDomain_OnProcessExit(object sender, EventArgs e)
         {
             try
             {

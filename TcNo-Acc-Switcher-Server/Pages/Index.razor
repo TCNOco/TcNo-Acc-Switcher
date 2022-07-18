@@ -20,17 +20,20 @@
 @using TcNo_Acc_Switcher_Globals
 @using TcNo_Acc_Switcher_Server.Shared.ContextMenu
 @inject IJSRuntime JsRuntime
-@{ AData.SetActiveIJsRuntime(JsRuntime); }
+
 @inject NavigationManager NavManager
-@{ AData.SetActiveNavMan(NavManager); }
-@inject AppData AData
-@inject Lang Locale
+
+@inject ILang Lang
 @inject IAppSettings AppSettings
+@inject IAppData AppData
+@inject IAppStats AppStats
+@inject IModalData ModalData
+@inject IGeneralFuncs GeneralFuncs
 
 @if (AppSettings.PreRenderUpdate)
 {
     <div class="updateBar">
-        <span>@Locale["Update"]</span>
+        <span>@Lang["Update"]</span>
         <i class="fas fa-times-circle" id="closeUpdateBar"></i>
     </div>
 }
@@ -68,14 +71,14 @@
         @*<button id="btnTextEditor" onclick="location = 'TextEditor'">
             <i class="fas fa-cog footerIcoSettings"></i>
         </button>*@
-        <button id="btnPlatforms" @onclick='() => AppData.NavigateTo("/Platforms/")' data-toggle="tooltip" title="@(Locale["Tooltip_ManagePlatforms"])">
+        <button id="btnPlatforms" @onclick='() => AppData.NavigateTo("/Platforms/")' data-toggle="tooltip" title="@(Lang["Tooltip_ManagePlatforms"])">
             <i class="fas fa-plus footerIcoInline"></i>
             @Lang["Button_ManagePlatforms"]
         </button>
-        <button class="btnSettings" @onclick='() => AppData.NavigateTo("/Settings/")' data-toggle="tooltip" title="@(Locale["Tooltip_Settings"])">
+        <button class="btnSettings" @onclick='() => AppData.NavigateTo("/Settings/")' data-toggle="tooltip" title="@(Lang["Tooltip_Settings"])">
             <i class="fas fa-cog footerIcoSettings"></i>
         </button>
-        <button class="btnHelp" @onclick='() => ModalData.ShowModal("info")' data-toggle="tooltip" title="@(Locale["Tooltip_Info"])">
+        <button class="btnHelp" @onclick='() => ModalData.ShowModal("info")' data-toggle="tooltip" title="@(Lang["Tooltip_Info"])">
             <i class="fas fa-question footerIcoQuestion"></i>
         </button>
     </div>
@@ -120,7 +123,7 @@
     /// <summary>
     /// Shows the context menu for the requested platform
     /// </summary>
-    public static async void PlatformRightClick(MouseEventArgs e, string plat)
+    public async void PlatformRightClick(MouseEventArgs e, string plat)
     {
         if (e.Button != 2) return;
         AppData.SelectedPlatform = plat;

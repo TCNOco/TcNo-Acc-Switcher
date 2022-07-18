@@ -470,8 +470,8 @@ release = true;
             {
                 // Steam format: +s:<steamId>[:<PersonaState (0-7)>]
                 Globals.WriteToLog("Steam switch requested");
-                if (!await GeneralFuncs.CanKillProcess(TcNo_Acc_Switcher_Server.Data.Settings.Steam.Processes)) Restart(combinedArgs, true);
-                await SteamSwitcherFuncs.SwapSteamAccounts(account.Split(":")[0],
+                if (!await GeneralFuncs.CanKillProcess(TcNo_Acc_Switcher_Server.Steam.Processes)) Restart(combinedArgs, true);
+                await Steam.SwapSteamAccounts(account.Split(":")[0],
                     ePersonaState: command.Length > 2
                         ? int.Parse(command[2])
                         : -1, args: string.Join(' ', remainingArguments)); // Request has a PersonaState in it
@@ -482,7 +482,7 @@ release = true;
             BasicPlatforms.SetCurrentPlatform(platform);
             Globals.WriteToLog(CurrentPlatform.FullName + " switch requested");
             if (!await GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd)) Restart(combinedArgs, true);
-            BasicSwitcherFuncs.SwapBasicAccounts(account, string.Join(' ', remainingArguments));
+            Basic.SwapBasicAccounts(account, string.Join(' ', remainingArguments));
         }
 
         /// <summary>

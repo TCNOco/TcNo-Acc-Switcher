@@ -24,30 +24,40 @@ using System.Net.Http;
 using System.Reflection;
 using System.Runtime.Versioning;
 using System.Security.Cryptography;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.JSInterop;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server.Data;
-using TcNo_Acc_Switcher_Server.Pages.Basic;
-using TcNo_Acc_Switcher_Server.Pages.Steam;
+using TcNo_Acc_Switcher_Server.Data.Classes;
+using TcNo_Acc_Switcher_Server.Data.Settings;
 
-namespace TcNo_Acc_Switcher_Server.Pages.General
+namespace TcNo_Acc_Switcher_Server.Data
 {
-    public class GeneralFuncs
+    public class GeneralFuncs : IGeneralFuncs
     {
-        private static readonly Lang Lang = Lang.Instance;
+        [Inject] private ILang Lang { get; }
+        [Inject] private ISteam Steam { get; }
+        [Inject] private IBasic Basic { get; }
+        [Inject] private IAppData AppData { get; }
+        [Inject] private IAppStats AppStats { get; }
+        [Inject] private IAppFuncs AppFuncs { get; }
+        [Inject] private IBasicStats BasicStats { get; }
+        [Inject] private IAppSettings AppSettings { get; }
+        [Inject] private IModalData ModalData { get; }
+        [Inject] private ICurrentPlatform CurrentPlatform { get; }
+        [Inject] private NavigationManager NavManager { get; }
+        [Inject] private IShortcut Shortcut { get; }
 
         #region PROCESS_OPERATIONS
 
-        //public static bool CanKillProcess(List<string> procNames) => procNames.Aggregate(true, (current, s) => current & CanKillProcess(s));
-        public static async Task<bool> CanKillProcess(List<string> procNames, string closingMethod = "Combined", bool showModal = true)
+        //public bool CanKillProcess(List<string> procNames) => procNames.Aggregate(true, (current, s) => current & CanKillProcess(s));
+        public async Task<bool> CanKillProcess(List<string> procNames, string closingMethod = "Combined", bool showModal = true)
         {
             var canKillAll = true;
             foreach (var procName in procNames)
@@ -59,7 +69,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             return canKillAll;
         }
 
-        public static async Task<bool> CanKillProcess(string processName, string closingMethod = "Combined", bool showModal = true)
+        public async Task<bool> CanKillProcess(string processName, string closingMethod = "Combined", bool showModal = true)
         {
             if (processName.StartsWith("SERVICE:") && closingMethod == "TaskKill") return true; // Ignore explicit services when using TaskKill - Admin isn't ALWAYS needed. Eg: Steam.
             if (processName.StartsWith("SERVICE:")) // Services need admin to close (as far as I understand)
@@ -69,11 +79,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             // Restart self as if can't close admin.
             if (Globals.CanKillProcess(processName)) return true;
             if (showModal)
-                ModalData.ShowModal("confirm", ModalData.ExtraArg.RestartAsAdmin);
+                ModalData.ShowModal("confirm", ExtraArg.RestartAsAdmin);
             return false;
         }
 
-        public static async Task<bool> CloseProcesses(string procName, string closingMethod)
+        public async Task<bool> CloseProcesses(string procName, string closingMethod)
         {
             if (!OperatingSystem.IsWindows()) return false;
             Globals.DebugWriteLine(@"Closing: " + procName);
@@ -82,7 +92,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             return await WaitForClose(procName);
         }
-        public static async Task<bool> CloseProcesses(List<string> procNames, string closingMethod)
+        public async Task<bool> CloseProcesses(List<string> procNames, string closingMethod)
         {
             if (!OperatingSystem.IsWindows()) return false;
             Globals.DebugWriteLine(@"Closing: " + string.Join(", ", procNames));
@@ -97,7 +107,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// </summary>
         /// <param name="procName">Name of process to lookup</param>
         /// <returns>Whether it was closed before this function returns or not.</returns>
-        public static async Task<bool> WaitForClose(string procName)
+        public async Task<bool> WaitForClose(string procName)
         {
             if (!OperatingSystem.IsWindows()) return false;
             var timeout = 0;
@@ -109,11 +119,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             }
 
             if (timeout == 10)
-                await GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotCloseX", new { x = procName }], Lang["Error"], "toastarea");
+                await ShowToast("error", Lang["CouldNotCloseX", new { x = procName }], Lang["Error"], "toastarea");
 
             return timeout != 10; // Returns true if timeout wasn't reached.
         }
-        public static async Task<bool> WaitForClose(List<string> procNames, string closingMethod)
+        public async Task<bool> WaitForClose(List<string> procNames, string closingMethod)
         {
             if (!OperatingSystem.IsWindows()) return false;
             var procToClose = new List<string>(); // Make a copy to edit
@@ -161,7 +171,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 #pragma warning disable CA1416 // Validate platform compatibility
             var leftOvers = procNames.Where(x => !Globals.ProcessHelper.IsProcessRunning(x));
 #pragma warning restore CA1416 // Validate platform compatibility
-            await GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotCloseX", new { x = string.Join(", ", leftOvers.ToArray()) }], Lang["Error"], "toastarea");
+            await ShowToast("error", Lang["CouldNotCloseX", new { x = string.Join(", ", leftOvers.ToArray()) }], Lang["Error"], "toastarea");
             return false; // Returns true if timeout wasn't reached.
         }
 
@@ -169,7 +179,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// Restart the TcNo Account Switcher as Admin
         /// Launches either the Server or main exe, depending on what's currently running.
         /// </summary>
-        public static void RestartAsAdmin(string args = "")
+        public void RestartAsAdmin(string args = "")
         {
             var fileName = "TcNo-Acc-Switcher_main.exe";
             if (!AppData.TcNoClientApp) fileName = Assembly.GetEntryAssembly()?.Location.Replace(".dll", ".exe") ?? "TcNo-Acc-Switcher-Server_main.exe";
@@ -208,7 +218,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// </summary>
         /// <param name="dictPath">Full *.json file path (file safe)</param>
         /// <param name="isBasic"></param>
-        public static Dictionary<string, string> ReadDict(string dictPath, bool isBasic = false)
+        public Dictionary<string, string> ReadDict(string dictPath, bool isBasic = false)
         {
             Globals.DebugWriteLine(@"[Func:General\GeneralSwitcherFuncs.ReadDict]");
             var s = JsonConvert.SerializeObject(new Dictionary<string, string>());
@@ -216,7 +226,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             {
                 if (isBasic && !Globals.IsDirectoryEmpty(Path.GetDirectoryName(dictPath)))
                 {
-                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RegSaveMissing"], Lang["Error"], "toastarea");
+                    _ = ShowToast("error", Lang["Toast_RegSaveMissing"], Lang["Error"], "toastarea");
                 }
                 return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
             }
@@ -232,7 +242,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
         }
 
-        public static void SaveDict(Dictionary<string, string> dict, string path, bool deleteIfEmpty = false)
+        public void SaveDict(Dictionary<string, string> dict, string path, bool deleteIfEmpty = false)
         {
             Globals.DebugWriteLine(@"[Func:General\GeneralSwitcherFuncs.SaveDict]");
             if (path == null) return;
@@ -244,13 +254,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         }
 
 
-        public static string WwwRoot()
+        public string WwwRoot()
         {
             return Path.Join(Globals.UserDataFolder, "\\wwwroot");
         }
 
         // Overload for below
-        public static bool DeletedOutdatedFile(string filename) => DeletedOutdatedFile(filename, 0);
+        public bool DeletedOutdatedFile(string filename) => DeletedOutdatedFile(filename, 0);
 
         /// <summary>
         /// Checks if input file is older than 7 days, then deletes if it is
@@ -258,9 +268,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="filename">File path to be checked, and possibly deleted</param>
         /// <param name="daysOld">How many days old the file needs to be to be deleted</param>
         /// <returns>Whether file was deleted or not (Outdated or not)</returns>
-        public static bool DeletedOutdatedFile(string filename, int daysOld)
+        public bool DeletedOutdatedFile(string filename, int daysOld)
         {
-            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.DeletedOutdatedFile] filename={filename.Substring(filename.Length - 8, 8)}, daysOld={daysOld}");
+            Globals.DebugWriteLine($@"[Func:General\DeletedOutdatedFile] filename={filename.Substring(filename.Length - 8, 8)}, daysOld={daysOld}");
             if (!File.Exists(filename)) return true;
             if (DateTime.Now.Subtract(File.GetLastWriteTime(filename)).Days <= daysOld) return false;
             Globals.DeleteFile(filename);
@@ -272,9 +282,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// </summary>
         /// <param name="filename">File path of image to be checked</param>
         /// <returns>Whether file was deleted, or file was not deleted and was valid</returns>
-        public static bool DeletedInvalidImage(string filename)
+        public bool DeletedInvalidImage(string filename)
         {
-            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.DeletedInvalidImage] filename={filename.Substring(filename.Length - 8, 8)}");
+            Globals.DebugWriteLine($@"[Func:General\DeletedInvalidImage] filename={filename.Substring(filename.Length - 8, 8)}");
             try
             {
                 if (File.Exists(filename) && OperatingSystem.IsWindows() && !IsValidGdiPlusImage(filename)) // Delete image if is not as valid, working image.
@@ -306,9 +316,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="filename">File path of image to be checked</param>
         /// <returns>Whether image is a valid file or not</returns>
         [SupportedOSPlatform("windows")]
-        private static bool IsValidGdiPlusImage(string filename)
+        private bool IsValidGdiPlusImage(string filename)
         {
-            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.IsValidGdiPlusImage] filename={filename.Substring(filename.Length - 8, 8)}");
+            Globals.DebugWriteLine($@"[Func:General\IsValidGdiPlusImage] filename={filename.Substring(filename.Length - 8, 8)}");
             //From https://stackoverflow.com/questions/8846654/read-image-and-determine-if-its-corrupt-c-sharp
             try
             {
@@ -321,24 +331,24 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             }
         }
 
-        public static async Task JsDestNewline(string jsDest)
+        public async Task JsDestNewline(string jsDest)
         {
             if (string.IsNullOrEmpty(jsDest)) return;
-            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.JsDestNewline] jsDest={jsDest}");
+            Globals.DebugWriteLine($@"[Func:General\JsDestNewline] jsDest={jsDest}");
             await AppData.InvokeVoidAsync(jsDest, "<br />"); //Newline
         }
 
         // Overload for below
-        public static async Task DeleteFile(string file, string jsDest) => await DeleteFile(new FileInfo(file), jsDest);
+        public async Task DeleteFile(string file, string jsDest) => await DeleteFile(new FileInfo(file), jsDest);
 
         /// <summary>
         /// Deletes a single file
         /// </summary>
         /// <param name="f">(Optional) FileInfo of file to delete</param>
         /// <param name="jsDest">Place to send responses (if any)</param>
-        public static async Task DeleteFile(FileInfo f, string jsDest)
+        public async Task DeleteFile(FileInfo f, string jsDest)
         {
-            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.DeleteFile] file={f?.FullName ?? ""}{(jsDest != "" ? ", jsDest=" + jsDest : "")}");
+            Globals.DebugWriteLine($@"[Func:General\DeleteFile] file={f?.FullName ?? ""}{(jsDest != "" ? ", jsDest=" + jsDest : "")}");
             try
             {
                 if (f is { Exists: false } && !string.IsNullOrEmpty(jsDest)) await AppData.InvokeVoidAsync(jsDest, "File not found: " + f.FullName);
@@ -362,14 +372,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         }
 
         // Overload for below
-        public static async Task ClearFolder(string folder) => await ClearFolder(folder, "");
+        public async Task ClearFolder(string folder) => await ClearFolder(folder, "");
 
         /// <summary>
         /// Shorter RecursiveDelete (Sets keep folders to true)
         /// </summary>
-        public static async Task ClearFolder(string folder, string jsDest)
+        public async Task ClearFolder(string folder, string jsDest)
         {
-            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.ClearFolder] folder={folder}, jsDest={jsDest}");
+            Globals.DebugWriteLine($@"[Func:General\ClearFolder] folder={folder}, jsDest={jsDest}");
             await RecursiveDelete(new DirectoryInfo(folder), true, jsDest);
         }
 
@@ -379,9 +389,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="baseDir">Folder to start working inwards from (as DirectoryInfo)</param>
         /// <param name="keepFolders">Set to False to delete folders as well as files</param>
         /// <param name="jsDest">Place to send responses (if any)</param>
-        public static async Task RecursiveDelete(DirectoryInfo baseDir, bool keepFolders, string jsDest)
+        public async Task RecursiveDelete(DirectoryInfo baseDir, bool keepFolders, string jsDest)
         {
-            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.RecursiveDelete] baseDir={baseDir.Name}, jsDest={jsDest}");
+            Globals.DebugWriteLine($@"[Func:General\RecursiveDelete] baseDir={baseDir.Name}, jsDest={jsDest}");
             if (!baseDir.Exists)
                 return;
 
@@ -408,9 +418,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="val">Value to delete</param>
         /// <param name="jsDest">Place to send responses (if any)</param>
         [SupportedOSPlatform("windows")]
-        public static async Task DeleteRegKey(string subKey, string val, string jsDest)
+        public async Task DeleteRegKey(string subKey, string val, string jsDest)
         {
-            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.DeleteRegKey] subKey={subKey}, val={val}, jsDest={jsDest}");
+            Globals.DebugWriteLine($@"[Func:General\DeleteRegKey] subKey={subKey}, val={val}, jsDest={jsDest}");
             using var key = Registry.CurrentUser.OpenSubKey(subKey, true);
             if (key == null)
                 await AppData.InvokeVoidAsync(jsDest, Lang["Reg_DoesntExist", new { subKey }]);
@@ -430,9 +440,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="sourceFolder">Folder to search for files in</param>
         /// <param name="filter">Filter for files in folder</param>
         /// <param name="searchOption">Option: ie: Sub-folders, TopLevel only etc.</param>
-        private static IEnumerable<string> GetFiles(string sourceFolder, string filter, SearchOption searchOption)
+        private IEnumerable<string> GetFiles(string sourceFolder, string filter, SearchOption searchOption)
         {
-            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.GetFiles] sourceFolder={sourceFolder}, filter={filter}");
+            Globals.DebugWriteLine($@"[Func:General\GetFiles] sourceFolder={sourceFolder}, filter={filter}");
             var alFiles = new ArrayList();
             var multipleFilters = filter.Split('|');
             foreach (var fileFilter in multipleFilters)
@@ -448,9 +458,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="extensions">Extensions of files to delete</param>
         /// <param name="so">SearchOption of where to look for files</param>
         /// <param name="jsDest">Place to send responses (if any)</param>
-        public static async Task ClearFilesOfType(string folder, string extensions, SearchOption so, string jsDest)
+        public async Task ClearFilesOfType(string folder, string extensions, SearchOption so, string jsDest)
         {
-            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.ClearFilesOfType] folder={folder}, extensions={extensions}, jsDest={jsDest}");
+            Globals.DebugWriteLine($@"[Func:General\ClearFilesOfType] folder={folder}, extensions={extensions}, jsDest={jsDest}");
             if (!Directory.Exists(folder))
             {
                 await AppData.InvokeVoidAsync(jsDest, Lang["DirectoryNotFound", new { folder }]);
@@ -477,14 +487,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// </summary>
         /// <param name="filePath">Path to file to get hash of</param>
         /// <returns></returns>
-        public static string GetFileMd5(string filePath)
+        public string GetFileMd5(string filePath)
         {
             using var md5 = MD5.Create();
             using var stream = File.OpenRead(filePath);
             return stream.Length != 0 ? BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "").ToLowerInvariant() : "0";
         }
 
-        public static string ReadOnlyReadAllText(string f)
+        public string ReadOnlyReadAllText(string f)
         {
             var text = "";
             using var stream = File.Open(f, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
@@ -503,7 +513,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// </summary>
         /// <param name="len"></param>
         /// <returns></returns>
-        public static string FileSizeString(double len)
+        public string FileSizeString(double len)
         {
             if (len < 0.001) return "0 bytes";
             string[] sizes = { "B", "KB", "MB", "GB" };
@@ -515,9 +525,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
         #region SETTINGS
         // Overload for below
-        public static void SaveSettings(string file, JObject joNewSettings) => SaveSettings(file, joNewSettings, false);
+        public void SaveSettings(string file, JObject joNewSettings) => SaveSettings(file, joNewSettings, false);
 
-        public static void SaveSettings<T>(string file, T jSettings)
+        public void SaveSettings<T>(string file, T jSettings)
         {
             if (file is null) return;
 
@@ -544,9 +554,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="joNewSettings">JObject of settings to be saved</param>
         /// <param name="mergeNewIntoOld">True merges old with new settings, false merges new with old</param>
         /// <param name="replaceAll"></param>
-        public static void SaveSettings(string file, JObject joNewSettings, bool mergeNewIntoOld, bool replaceAll = false)
+        public void SaveSettings(string file, JObject joNewSettings, bool mergeNewIntoOld, bool replaceAll = false)
         {
-            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.SaveSettings] file={file}, joNewSettings=hidden, mergeNewIntoOld={mergeNewIntoOld}");
+            Globals.DebugWriteLine($@"[Func:General\SaveSettings] file={file}, joNewSettings=hidden, mergeNewIntoOld={mergeNewIntoOld}");
             var sFilename = file.EndsWith(".json") ? file : file + ".json";
 
             // Create folder if it doesn't exist:
@@ -592,9 +602,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// </summary>
         /// <param name="file">File path to save JSON string to</param>
         /// <param name="joOrder">JArray order of items on page</param>
-        public static void SaveOrder(string file, JArray joOrder)
+        public void SaveOrder(string file, JArray joOrder)
         {
-            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.SaveOrder] file={file}, joOrder=hidden");
+            Globals.DebugWriteLine($@"[Func:General\SaveOrder] file={file}, joOrder=hidden");
             var sFilename = file.EndsWith(".json") ? file : file + ".json";
 
             // Create folder if it doesn't exist:
@@ -605,7 +615,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         }
 
         // Overload for below
-        public static JObject LoadSettings(string file) => LoadSettings(file, null);
+        public JObject LoadSettings(string file) => LoadSettings(file, null);
 
         /// <summary>
         /// Loads settings from input file (JSON string to JObject)
@@ -613,9 +623,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="file">JSON file to be read</param>
         /// <param name="defaultSettings">(Optional) Default JObject, for merging in missing parameters</param>
         /// <returns>JObject created from file</returns>
-        public static JObject LoadSettings(string file, JObject defaultSettings)
+        public JObject LoadSettings(string file, JObject defaultSettings)
         {
-            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.LoadSettings] file={file}, defaultSettings=hidden");
+            Globals.DebugWriteLine($@"[Func:General\LoadSettings] file={file}, defaultSettings=hidden");
             var sFilename = file.EndsWith(".json") ? file : file + ".json";
             if (!File.Exists(sFilename)) return defaultSettings ?? new JObject();
 
@@ -683,19 +693,19 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <summary>
         /// Read a JSON file from provided path. Returns JObject
         /// </summary>
-        public static async Task<JToken> ReadJsonFile(string path)
+        public async Task<JToken> ReadJsonFile(string path)
         {
-            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.ReadJsonFile] path={path}");
+            Globals.DebugWriteLine($@"[Func:General\ReadJsonFile] path={path}");
             JToken jToken             = null;
 
             if (Globals.TryReadJsonFile(path, ref jToken)) return jToken;
 
-            await GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotReadFile", new { file = path }], renderTo: "toastarea");
+            await ShowToast("error", Lang["CouldNotReadFile", new { file = path }], renderTo: "toastarea");
             return new JObject();
 
         }
 
-        //public static JObject SortJObject(JObject joIn)
+        //public JObject SortJObject(JObject joIn)
         //{
         //    return new JObject( joIn.Properties().OrderByDescending(p => p.Name) );
         //}
@@ -710,7 +720,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="sOld">String to find (and replace)</param>
         /// <param name="sNew">New string to input</param>
         /// <returns></returns>
-        public static string ReplaceLast(string input, string sOld, string sNew)
+        public string ReplaceLast(string input, string sOld, string sNew)
         {
             var lastIndex = input.LastIndexOf(sOld, StringComparison.Ordinal);
             var lastIndexEnd = lastIndex + sOld.Length;
@@ -722,7 +732,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// </summary>
         /// <param name="text">String to escape</param>
         /// <returns>HTML escaped string</returns>
-        public static string EscapeText(string text)
+        public string EscapeText(string text)
         {
             return text.Replace("&", "&amp;")
                 .Replace("<", "&lt;")
@@ -745,7 +755,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <summary>
         /// Returns an object with a list of all translators, and proofreaders with their languages.
         /// </summary>
-        public static CrowdinResponse CrowdinList()
+        public CrowdinResponse CrowdinList()
         {
             try
             {
@@ -773,7 +783,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             {
                 // Handle website not loading or JObject not loading properly
                 Globals.WriteToLog("Failed to load Crowdin users", e);
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Crowdin_Fail"], renderTo: "toastarea");
+                _ = ShowToast("error", Lang["Crowdin_Fail"], renderTo: "toastarea");
                 return new CrowdinResponse();
             }
         }
@@ -781,14 +791,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
         #region SWITCHER_FUNCTIONS
 
-        public static async Task HandleFirstRender(bool firstRender, string platform)
+        public async Task HandleFirstRender(bool firstRender, string platform)
         {
             if (firstRender)
             {
                 AppData.WindowTitle = Lang["Title_AccountsList", new { platform }];
                 // Handle Streamer Mode notification
                 if (AppSettings.StreamerModeEnabled && AppSettings.StreamerModeTriggered)
-                    await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_StreamerModeHint"], Lang["Toast_StreamerModeTitle"], "toastarea");
+                    await ShowToast("info", Lang["Toast_StreamerModeHint"], Lang["Toast_StreamerModeTitle"], "toastarea");
 
                 // Handle loading accounts for specific platforms
                 // - Init file if it doesn't exist, or isn't fully initialised (adds missing settings when true)
@@ -798,13 +808,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                         return;
 
                     case "Steam":
-                        await SteamSwitcherFuncs.LoadProfiles();
-                        Data.Settings.Steam.SaveSettings();
+                        await Steam.LoadProfiles();
+                        Steam.SaveSettings();
                         break;
 
                     default:
-                        await BasicSwitcherFuncs.LoadProfiles();
-                        Data.Settings.Basic.SaveSettings();
+                        await Basic.LoadProfiles();
+                        Basic.SaveSettings();
                         break;
                 }
 
@@ -817,17 +827,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <summary>
         /// For handling queries in URI
         /// </summary>
-        public static async Task<bool> HandleQueries()
+        public async Task<bool> HandleQueries()
         {
-            Globals.DebugWriteLine(@"[JSInvoke:General\GeneralFuncs.HandleQueries]");
-            var uri = AppData.ActiveNavMan.ToAbsoluteUri(AppData.ActiveNavMan.Uri);
+            Globals.DebugWriteLine(@"[JSInvoke:General\HandleQueries]");
+            var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
             // Clear cache reload
             var queries = QueryHelpers.ParseQuery(uri.Query);
             // cacheReload handled in JS
 
             //Modal
             if (queries.TryGetValue("modal", out var modalValue))
-                foreach (var stringValue in modalValue) await GeneralInvocableFuncs.ShowModal(Uri.UnescapeDataString(stringValue));
+                foreach (var stringValue in modalValue) await ShowModal(Uri.UnescapeDataString(stringValue));
 
             // Toast
             if (!queries.TryGetValue("toast_type", out var toastType) ||
@@ -837,7 +847,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             {
                 try
                 {
-                    await GeneralInvocableFuncs.ShowToast(toastType[i], toastMessage[i], toastTitle[i], "toastarea");
+                    await ShowToast(toastType[i], toastMessage[i], toastTitle[i], "toastarea");
                     await AppData.InvokeVoidAsync("removeUrlArgs", "toast_type,toast_title,toast_message");
                 }
                 catch (TaskCanceledException e)
@@ -850,13 +860,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         }
 
 
-        public static async Task<string> ExportAccountList()
+        public async Task<string> ExportAccountList()
         {
             var platform = AppSettings.GetPlatform(AppData.SelectedPlatform);
-            Globals.DebugWriteLine(@$"[Func:Pages\General\GeneralInvocableFuncs.GiExportAccountList] platform={platform}");
+            Globals.DebugWriteLine(@$"[Func:Pages\General\GiExportAccountList] platform={platform}");
             if (!Directory.Exists(Path.Join("LoginCache", platform.SafeName)))
             {
-                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_AddAccountsFirst"], Lang["Toast_AddAccountsFirstTitle"], "toastarea");
+                await ShowToast("error", Lang["Toast_AddAccountsFirst"], Lang["Toast_AddAccountsFirstTitle"], "toastarea");
                 return "";
             }
 
@@ -871,9 +881,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 allAccountsTable.Add($"SEP={s}");
                 allAccountsTable.Add($"Account name:{s}Community name:{s}SteamID:{s}VAC status:{s}Last login:{s}Saved profile image:{s}Stats game:{s}Stat name:{s}Stat value:");
 
-                AppData.SteamUsers = await SteamSwitcherFuncs.GetSteamUsers(Data.Settings.Steam.LoginUsersVdf());
+                AppData.SteamUsers = await Steam.GetSteamUsers(Steam.LoginUsersVdf());
                 // Load cached ban info
-                SteamSwitcherFuncs.LoadCachedBanInfo();
+                Steam.LoadCachedBanInfo();
 
                 foreach (var su in AppData.SteamUsers)
                 {
@@ -881,13 +891,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     if (su.Vac && su.Limited) banInfo += "VAC + Limited";
                     else banInfo += (su.Vac ? "VAC" : "") + (su.Limited ? "Limited" : "");
 
-                    var imagePath = Path.GetFullPath($"{Data.Settings.Steam.SteamImagePath + su.SteamId}.jpg");
+                    var imagePath = Path.GetFullPath($"{Steam.SteamImagePath + su.SteamId}.jpg");
 
                     allAccountsTable.Add(su.AccName + s +
                                          su.Name + s +
                                          su.SteamId + s +
                                          banInfo + s +
-                                         SteamSwitcherFuncs.UnixTimeStampToDateTime(su.LastLogin) + s +
+                                         Steam.UnixTimeStampToDateTime(su.LastLogin) + s +
                                          (File.Exists(imagePath) ? imagePath : "Missing from disk") + s +
                                          BasicStats.GetGameStatsString(su.SteamId, s));
                 }
@@ -913,6 +923,353 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             return Path.Join("Exported", platform + ".csv");
         }
 
+        #endregion
+
+
+
+        /// <summary>
+        /// JS function handler for saving settings from Settings GUI page into [Platform]Settings.json file
+        /// </summary>
+        /// <param name="file">Platform specific filename (has .json appended later)</param>
+        /// <param name="jsonString">JSON String to be saved to file, from GUI</param>
+        [JSInvokable]
+        public void GiSaveSettings(string file, string jsonString)
+        {
+            Globals.DebugWriteLine($@"[JSInvoke:General\GiSaveSettings] file={file}, jsonString.length={jsonString.Length}");
+            SaveSettings(file, JObject.Parse(jsonString));
+        }
+
+        [JSInvokable]
+        public void GiSaveOrder(string file, string jsonString)
+        {
+            Globals.DebugWriteLine($@"[JSInvoke:General\GiSaveOrder] file={file}, jsonString.length={jsonString.Length}");
+            SaveOrder(file, JArray.Parse(jsonString));
+        }
+
+        /// <summary>
+        /// JS function handler for returning JObject of settings from [Platform]Settings.json file
+        /// </summary>
+        /// <param name="file">Platform specific filename (has .json appended later)</param>
+        /// <returns>JObject of settings, to be loaded into GUI</returns>
+        [JSInvokable]
+        public Task GiLoadSettings(string file)
+        {
+            Globals.DebugWriteLine($@"[JSInvoke:General\GiLoadSettings] file={file}");
+            return Task.FromResult(LoadSettings(file).ToString());
+        }
+
+        /// <summary>
+        /// JS function handler for returning string contents of a *.* file
+        /// </summary>
+        /// <param name="file">Name of file to be read and contents returned in string format</param>
+        /// <returns>string of file contents</returns>
+        [JSInvokable]
+        public Task GiFileReadAllText(string file)
+        {
+            Globals.DebugWriteLine($@"[JSInvoke:General\GiFileReadAllText] file={file}");
+            return Task.FromResult(File.Exists(file) ? Globals.ReadAllText(file) : "");
+        }
+
+        /// <summary>
+        /// Opens a link in user's browser through Shell
+        /// </summary>
+        /// <param name="link">URL string</param>
+        [JSInvokable]
+        public void OpenLinkInBrowser(string link)
+        {
+            Globals.DebugWriteLine($@"[JSInvoke:General\OpenLinkInBrowser] link={link}");
+            var ps = new ProcessStartInfo(link)
+            {
+                UseShellExecute = true,
+                Verb = "open"
+            };
+            _ = Process.Start(ps);
+        }
+
+        /// <summary>
+        /// JS function handler for running showModal JS function, with input arguments.
+        /// </summary>
+        /// <param name="args">Argument string, containing a command to be handled later by modal</param>
+        /// <returns></returns>
+        public async Task<bool> ShowModal(string args)
+        {
+            Globals.DebugWriteLine($@"[JSInvoke:General\ShowModal] args={args}");
+            return await AppData.InvokeVoidAsync("showModal", args);
+        }
+
+        /// <summary>
+        /// JS function handler for showing Toast message.
+        /// </summary>
+        /// <param name="toastType">success, info, warning, error</param>
+        /// <param name="toastMessage">Message to be shown in toast</param>
+        /// <param name="toastTitle">(Optional) Title to be shown in toast (Empty doesn't show any title)</param>
+        /// <param name="renderTo">(Optional) Part of the document to append the toast to (Empty = Default, document.body)</param>
+        /// <param name="duration">(Optional) Duration to show the toast before fading</param>
+        /// <returns></returns>
+        public async Task<bool> ShowToast(string toastType, string toastMessage, string toastTitle = "", string renderTo = "body", int duration = 5000)
+        {
+            Globals.DebugWriteLine($@"[JSInvoke:General\ShowToast] type={toastType}, message={toastMessage}, title={toastTitle}, renderTo={renderTo}, duration={duration}");
+            return await AppData.InvokeVoidAsync("window.notification.new", new { type = toastType, title = toastTitle, message = toastMessage, renderTo, duration });
+        }
+
+        /// <summary>
+        /// Creates a shortcut to start the Account Switcher, and swap to the account related.
+        /// </summary>
+        /// <param name="args">(Optional) arguments for shortcut</param>
+        [JSInvokable]
+        public async Task CreateShortcut(string args = "")
+        {
+            Globals.DebugWriteLine(@"[JSInvoke:General\CreateShortcut]");
+            if (args.Length > 0 && args[0] != ':') args = $" {args}"; // Add a space before arguments if doesn't start with ':'
+            string platformName;
+            var primaryPlatformId = "" + AppData.CurrentSwitcher[0];
+            var bgImg = Path.Join(WwwRoot(), $"\\img\\platform\\{AppData.CurrentSwitcherSafe}.svg");
+            string currentPlatformImgPath, currentPlatformImgPathOverride;
+            switch (AppData.CurrentSwitcher)
+            {
+                case "Steam":
+                    currentPlatformImgPath = Path.Join(WwwRoot(), "\\img\\platform\\Steam.svg");
+                    currentPlatformImgPathOverride = Path.Join(WwwRoot(), "\\img\\platform\\Steam.png");
+                    var ePersonaState = -1;
+                    if (args.Length == 2) _ = int.TryParse(args[1].ToString(), out ePersonaState);
+                    platformName = $"Switch to {AppData.SelectedAccount.DisplayName} {(args.Length > 0 ? $"({Steam.PersonaStateToString(ePersonaState)})" : "")} [{AppData.CurrentSwitcher}]";
+                    break;
+                default:
+                    currentPlatformImgPath = Path.Join(WwwRoot(), $"\\img\\platform\\{CurrentPlatform.SafeName}.svg");
+                    currentPlatformImgPathOverride = Path.Join(WwwRoot(), $"\\img\\platform\\{CurrentPlatform.SafeName}.png");
+                    primaryPlatformId = CurrentPlatform.PrimaryId;
+                    platformName = $"Switch to {AppData.SelectedAccount.DisplayName} [{AppData.CurrentSwitcher}]";
+                    break;
+            }
+
+            if (File.Exists(currentPlatformImgPathOverride))
+                bgImg = currentPlatformImgPathOverride;
+            else if (File.Exists(currentPlatformImgPath))
+                bgImg = currentPlatformImgPath;
+            else if (File.Exists(Path.Join(WwwRoot(), "\\img\\BasicDefault.png")))
+                bgImg = Path.Join(WwwRoot(), "\\img\\BasicDefault.png");
+
+
+            var fgImg = Path.Join(WwwRoot(), $"\\img\\profiles\\{AppData.CurrentSwitcherSafe}\\{AppData.SelectedAccountId}.jpg");
+            if (!File.Exists(fgImg)) fgImg = Path.Join(WwwRoot(), $"\\img\\profiles\\{AppData.CurrentSwitcherSafe}\\{AppData.SelectedAccountId}.png");
+            if (!File.Exists(fgImg))
+            {
+                await ShowToast("error", Lang["Toast_CantFindImage"], Lang["Toast_CantCreateShortcut"], "toastarea");
+                return;
+            }
+
+            var s = new Shortcut();
+            _ = s.Shortcut_Platform(
+                Shortcut.Desktop,
+                platformName,
+                $"+{primaryPlatformId}:{AppData.SelectedAccountId}{args}",
+                $"Switch to {AppData.SelectedAccount.DisplayName} [{AppData.CurrentSwitcher}] in TcNo Account Switcher",
+                true);
+            await s.CreateCombinedIcon(bgImg, fgImg, $"{AppData.SelectedAccountId}.ico");
+            s.TryWrite();
+
+            if (AppSettings.StreamerModeTriggered)
+                await ShowToast("success", Lang["Toast_ShortcutCreated"], Lang["Success"], "toastarea");
+            else
+                await ShowToast("success", Lang["ForName", new { name = AppData.SelectedAccount.DisplayName }], Lang["Toast_ShortcutCreated"], "toastarea");
+        }
+
+        [JSInvokable]
+        public string PlatformUserModalCopyText() => CurrentPlatform.GetUserModalCopyText;
+        [JSInvokable]
+        public string PlatformHintText() => CurrentPlatform.GetUserModalHintText();
+
+        [JSInvokable]
+        public string GiLocale(string k) => Lang[k];
+
+        [JSInvokable]
+        public string GiLocaleObj(string k, object obj) => Lang[k, obj];
+
+
+        [JSInvokable]
+        public string GiCurrentBasicPlatform(string platform) => platform == "Basic" ? CurrentPlatform.FullName : AppSettings.GetPlatform(platform).Name;
+
+        [JSInvokable]
+        public string GiCurrentBasicPlatformExe(string platform)
+        {
+            // EXE name from current platform by name:
+            return platform == "Basic" ? CurrentPlatform.ExeName : AppSettings.GetPlatform(platform).Name;
+        }
+
+        [JSInvokable]
+        public string GiGetCleanFilePath(string f) => Globals.GetCleanFilePath(f);
+
+
+        /// <summary>
+        /// Save settings with Ctrl+S Hot key
+        /// </summary>
+        [JSInvokable]
+        public async Task GiCtrlS(string platform)
+        {
+            AppSettings.SaveSettings();
+            switch (platform)
+            {
+                case "Steam":
+                    Steam.SaveSettings();
+                    break;
+                case "Basic":
+                    Basic.SaveSettings();
+                    break;
+            }
+            await ShowToast("success", Lang["Saved"], renderTo: "toastarea");
+        }
+
+        #region ACCOUNT SWITCHER SHARED FUNCTIONS
+        public async Task<bool> GenericLoadAccounts(string name, bool isBasic = false)
+        {
+            var localCachePath = Path.Join(Globals.UserDataFolder, $"LoginCache\\{name}\\");
+            if (!Directory.Exists(localCachePath)) return false;
+            if (!ListAccountsFromFolder(localCachePath, out var accList)) return false;
+
+            // Order
+            accList = OrderAccounts(accList, $"{localCachePath}\\order.json");
+
+            await InsertAccounts(accList, name, isBasic);
+            AppStats.SetAccountCount(CurrentPlatform.SafeName, accList.Count);
+
+            // Load notes
+            AppFuncs.LoadNotes();
+            return true;
+        }
+
+        /// <summary>
+        /// Gets a list of 'account names' from cache folder provided
+        /// </summary>
+        /// <param name="folder">Cache folder containing accounts</param>
+        /// <param name="accList">List of account strings</param>
+        /// <returns>Whether the directory exists and successfully added listed names</returns>
+        public bool ListAccountsFromFolder(string folder, out List<string> accList)
+        {
+            accList = new List<string>();
+
+            if (!Directory.Exists(folder)) return false;
+            var idsFile = Path.Join(folder, "ids.json");
+            accList = File.Exists(idsFile)
+                ? ReadDict(idsFile).Keys.ToList()
+                : (from f in Directory.GetDirectories(folder)
+                   where !f.EndsWith("Shortcuts")
+                   let lastSlash = f.LastIndexOf("\\", StringComparison.Ordinal) + 1
+                   select f[lastSlash..]).ToList();
+
+            return true;
+        }
+
+        /// <summary>
+        /// Orders a list of strings by order specific in jsonOrderFile
+        /// </summary>
+        /// <param name="accList">List of strings to sort</param>
+        /// <param name="jsonOrderFile">JSON file containing list order</param>
+        /// <returns></returns>
+        public List<string> OrderAccounts(List<string> accList, string jsonOrderFile)
+        {
+            // Order
+            if (!File.Exists(jsonOrderFile)) return accList;
+            var savedOrder = JsonConvert.DeserializeObject<List<string>>(Globals.ReadAllText(jsonOrderFile));
+            if (savedOrder == null) return accList;
+            var index = 0;
+            if (savedOrder is not { Count: > 0 }) return accList;
+            foreach (var acc in from i in savedOrder where accList.Any(x => x == i) select accList.Single(x => x == i))
+            {
+                _ = accList.Remove(acc);
+                accList.Insert(Math.Min(index, accList.Count), acc);
+                index++;
+            }
+            return accList;
+        }
+
+        /// <summary>
+        /// Runs jQueryProcessAccListSize, initContextMenu and initAccListSortable - Final init needed for account switcher to work.
+        /// </summary>
+        public async Task FinaliseAccountList()
+        {
+            await AppData.InvokeVoidAsync("jQueryProcessAccListSize");
+            await AppData.InvokeVoidAsync("initContextMenu");
+            await AppData.InvokeVoidAsync("initAccListSortable");
+        }
+
+        /// <summary>
+        /// Iterate through account list and insert into platforms account screen
+        /// </summary>
+        /// <param name="accList">Account list</param>
+        /// <param name="platform">Platform name</param>
+        /// <param name="isBasic">(Unused for now) To use Basic platform account's ID as accId)</param>
+        public async Task InsertAccounts(IEnumerable accList, string platform, bool isBasic = false)
+        {
+            if (isBasic)
+                Basic.LoadAccountIds();
+
+            AppData.BasicAccounts.Clear();
+
+            foreach (var element in accList)
+            {
+                var account = new Shared.Accounts.Account
+                {
+                    Platform = CurrentPlatform.SafeName
+                };
+
+                if (element is string str)
+                {
+                    account.AccountId = str;
+                    account.DisplayName = isBasic ? Basic.GetNameFromId(str) : str;
+
+                    // Handle account image
+                    account.ImagePath = GetImgPath(platform, str).Replace("%", "%25");
+                    var actualImagePath = Path.Join("wwwroot\\", GetImgPath(platform, str));
+                    if (!File.Exists(actualImagePath))
+                    {
+                        // Make sure the directory exists
+                        Directory.CreateDirectory(Path.GetDirectoryName(actualImagePath)!);
+                        var defaultPng = $"wwwroot\\img\\platform\\{platform}Default.png";
+                        const string defaultFallback = "wwwroot\\img\\BasicDefault.png";
+                        if (File.Exists(defaultPng))
+                            File.Copy(defaultPng, actualImagePath, true);
+                        else if (File.Exists(defaultFallback))
+                            File.Copy(defaultFallback, actualImagePath, true);
+                    }
+
+                    // Handle game stats (if any enabled and collected.)
+                    account.UserStats = BasicStats.GetUserStatsAllGamesMarkup(CurrentPlatform.FullName, str);
+
+                    AppData.BasicAccounts.Add(account);
+                    continue;
+                }
+
+                // TODO: I have no idea what this was for... But the continue skips the section here, right? Or at least there doesn't need to be brackets around it? Lost in my own code here... Whoops.
+                if (element is not KeyValuePair<string, string> pair) continue;
+                {
+                    // Handle account image
+                    var (key, value) = pair;
+                    account.ImagePath = GetImgPath(platform, key);
+
+                    // Handle game stats (if any enabled and collected.)
+                    account.UserStats = BasicStats.GetUserStatsAllGamesMarkup(CurrentPlatform.FullName, key);
+
+                    account.AccountId = key;
+                    account.DisplayName = value;
+
+                    AppData.BasicAccounts.Add(account);
+                }
+            }
+            await FinaliseAccountList(); // Init context menu & Sorting
+        }
+
+        /// <summary>
+        /// Finds if file exists as .jpg or .png
+        /// </summary>
+        /// <param name="platform">Platform name</param>
+        /// <param name="user">Username/ID for use in image name</param>
+        /// <returns>Image path</returns>
+        private string GetImgPath(string platform, string user)
+        {
+            var imgPath = $"\\img\\profiles\\{platform.ToLowerInvariant()}\\{Globals.GetCleanFilePath(user.Replace("#", "-"))}";
+            if (File.Exists("wwwroot\\" + imgPath + ".png")) return imgPath + ".png";
+            return imgPath + ".jpg";
+        }
         #endregion
     }
 }

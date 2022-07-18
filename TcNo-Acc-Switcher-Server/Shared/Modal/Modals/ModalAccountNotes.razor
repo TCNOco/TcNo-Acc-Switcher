@@ -19,11 +19,15 @@
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using Newtonsoft.Json
 @using System.IO
+@inject ILang Lang
+@inject IModalData ModalData
+@inject IAppData AppData
+
 @code {
 
     protected override void OnInitialized()
     {
-        ModalData.Title = Lang.Instance["Modal_Title_AccountNotes", new { accountName = AppData.SelectedAccount.DisplayName }];
+        ModalData.Title = Lang["Modal_Title_AccountNotes", new { accountName = AppData.SelectedAccount.DisplayName }];
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -38,8 +42,8 @@
             <textarea id="accNotes" @bind="AppData.SelectedAccount.Note"></textarea>
         </div>
         <div class="YesNo">
-            <button type="button" id="modal_true" @onclick="SaveNotes"><span>@Lang.Instance["Save"]</span></button>
-            <button type="button" id="modal_false" @onclick="() => ModalData.IsShown = false"><span>@Lang.Instance["Button_Cancel"]</span></button>
+            <button type="button" id="modal_true" @onclick="SaveNotes"><span>@Lang["Save"]</span></button>
+            <button type="button" id="modal_false" @onclick="() => ModalData.IsShown = false"><span>@Lang["Button_Cancel"]</span></button>
         </div>
     </div>
 </div>

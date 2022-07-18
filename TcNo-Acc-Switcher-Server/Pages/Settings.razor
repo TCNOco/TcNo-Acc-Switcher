@@ -14,13 +14,13 @@
 
 @page "/Settings"
 @using TcNo_Acc_Switcher_Server.Data
+@using TcNo_Acc_Switcher_Globals
 @namespace TcNo_Acc_Switcher_Server.Pages
 @inject NavigationManager NavManager
-@inject AppData AData
-@{ AData.SetActiveNavMan(NavManager); }
-@inject IJSRuntime JsRuntime
-@{ AData.SetActiveIJsRuntime(JsRuntime); }
-@inject Lang Locale
+@inject IAppData AppData
+@inject ILang Lang
+@inject IAppStats AppStats
+@inject IAppSettings AppSettings
 
 <div class="container mainblock">
     <div class="row">
@@ -28,7 +28,7 @@
             <div class="toastarea"></div>
             <SharedSettings />
 
-            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Locale["Button_Close"]</span></button></div>
+            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Lang["Button_Close"]</span></button></div>
         </div>
     </div>
 </div>
@@ -54,6 +54,9 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        AppData.WindowTitle = Lang["Title_Settings"];
+        Globals.DebugWriteLine(@"[Auto:Settings.razor.cs.OnInitializedAsync]");
+
         AppStats.NewNavigation("/Settings/");
         if (!firstRender) return;
         await AppData.InvokeVoidAsync("initSavingHotKey");

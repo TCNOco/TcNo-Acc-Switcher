@@ -17,55 +17,88 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Data.Classes;
 using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.General;
-using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
-using TcNo_Acc_Switcher_Server.Shared.Accounts;
 using TextCopy;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
-    public class AppFuncs
+    public interface IAppFuncs
     {
+        /// <summary>
+        /// Swap to the current AppData.SelectedAccountId.
+        /// </summary>
+        /// <param name="state">Optional profile state for Steam accounts</param>
+        Task SwapToAccount(int state = -1);
+
+        /// <summary>
+        /// Swaps to an empty account, allowing the user to sign in.
+        /// </summary>
+        /// <param name="state">Optional profile state for Steam accounts</param>
+        Task SwapToNewAccount(int state = -1);
+
+        Task ForgetAccount();
+        void LoadNotes();
+        Task ExportAllAccounts();
+
+        /// <summary>
+        /// Hide a platform from the platforms list. Not giving an item input will use the AppData.SelectedPlatform.
+        /// </summary>
+        void HidePlatform(string item = null);
+        Task CopyText(string text);
+    }
+
+    public class AppFuncs : IAppFuncs
+    {
+        [Inject] private ILang Lang { get; }
+        [Inject] private IAppSettings AppSettings { get; }
+        [Inject] private IGeneralFuncs GeneralFuncs { get; }
+        [Inject] private IAppData AppData { get; }
+        [Inject] private ISteam Steam { get; }
+        [Inject] private IBasic Basic { get; }
+        [Inject] private IModalData ModalData { get; }
+
         #region Account Management
         /// <summary>
         /// Swap to the current AppData.SelectedAccountId.
         /// </summary>
         /// <param name="state">Optional profile state for Steam accounts</param>
-        public static async Task SwapToAccount(int state = -1)
+        public async Task SwapToAccount(int state = -1)
         {
             if (!OperatingSystem.IsWindows()) return;
 
-            if (AppData.CurrentSwitcher != "Steam") BasicSwitcherFuncs.SwapBasicAccounts(AppData.SelectedAccountId);
+            if (AppData.CurrentSwitcher != "Steam") Basic.SwapBasicAccounts(AppData.SelectedAccountId);
 
             if (state == -1) state = Steam.OverrideState;
-            await SteamSwitcherFuncs.SwapSteamAccounts(AppData.SelectedAccountId, state);
+            await Steam.SwapSteamAccounts(AppData.SelectedAccountId, state);
         }
 
         /// <summary>
         /// Swaps to an empty account, allowing the user to sign in.
         /// </summary>
         /// <param name="state">Optional profile state for Steam accounts</param>
-        public static async Task SwapToNewAccount(int state = -1)
+        public async Task SwapToNewAccount(int state = -1)
         {
             if (!OperatingSystem.IsWindows()) return;
 
-            if (AppData.CurrentSwitcher == "Steam") BasicSwitcherFuncs.SwapBasicAccounts("");
+            if (AppData.CurrentSwitcher == "Steam") Basic.SwapBasicAccounts();
 
             if (state == -1) state = Steam.OverrideState;
-            await SteamSwitcherFuncs.SwapSteamAccounts("", state);
+            await Steam.SwapSteamAccounts("", state);
         }
 
-        public static async Task ForgetAccount()
+        public async Task ForgetAccount()
         {
             var skipConfirm = AppData.CurrentSwitcher == "Steam" ? Steam.ForgetAccountEnabled : Basic.ForgetAccountEnabled;
             if (!skipConfirm)
-                ModalData.ShowModal("confirm", ModalData.ExtraArg.ForgetAccount);
+                ModalData.ShowModal("confirm", ExtraArg.ForgetAccount);
             else
             {
                 var trayAcc = AppData.SelectedAccountId;
@@ -74,11 +107,11 @@ namespace TcNo_Acc_Switcher_Server.Data
                     Steam.SetForgetAcc(true);
 
                     // Load and remove account that matches SteamID above.
-                    var userAccounts = await SteamSwitcherFuncs.GetSteamUsers(Steam.LoginUsersVdf());
+                    var userAccounts = await Steam.GetSteamUsers(Steam.LoginUsersVdf());
                     _ = userAccounts.RemoveAll(x => x.SteamId == AppData.SelectedAccountId);
 
                     // Save updated loginusers.vdf file
-                    await SteamSwitcherFuncs.SaveSteamUsersIntoVdf(userAccounts);
+                    await Steam.SaveSteamUsersIntoVdf(userAccounts);
                     trayAcc = "+s:" + AppData.SelectedAccountId;
 
                     // Remove from Steam accounts list
@@ -109,13 +142,13 @@ namespace TcNo_Acc_Switcher_Server.Data
                 // Remove image
                 Globals.DeleteFile(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{AppData.CurrentSwitcher}\\{Globals.GetCleanFilePath(AppData.SelectedAccountId)}.jpg"));
 
-                AppData.Instance.NotifyDataChanged();
+                AppData.NotifyDataChanged();
 
-                await GeneralInvocableFuncs.ShowToast("success", Lang.Instance["Success"], renderTo: "toastarea");
+                await GeneralFuncs.ShowToast("success", Lang["Success"], renderTo: "toastarea");
             }
         }
 
-        public static void LoadNotes()
+        public void LoadNotes()
         {
             var filePath = AppData.CurrentSwitcher == "Steam"
                 ? "LoginCache\\Steam\\AccountNotes.json"
@@ -143,11 +176,11 @@ namespace TcNo_Acc_Switcher_Server.Data
             ModalData.IsShown = false;
         }
 
-        public static async Task ExportAllAccounts()
+        public async Task ExportAllAccounts()
         {
             if (AppData.IsCurrentlyExportingAccounts)
             {
-                await GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_AlreadyProcessing"], Lang.Instance["Error"], "toastarea");
+                await GeneralFuncs.ShowToast("error", Lang["Toast_AlreadyProcessing"], Lang["Error"], "toastarea");
                 return;
             }
 
@@ -159,31 +192,20 @@ namespace TcNo_Acc_Switcher_Server.Data
             AppData.IsCurrentlyExportingAccounts = false;
         }
 
-        public static async Task CreatePlatformShortcut()
-        {
-            var platform = AppSettings.GetPlatform(AppData.SelectedPlatform);
-
-            Globals.DebugWriteLine(@$"[Func:Pages\General\GeneralInvocableFuncs.GiCreatePlatformShortcut] platform={platform}");
-            var s = new Shortcut();
-            _ = s.Shortcut_Platform(Shortcut.Desktop, platform.Name, platform.Identifier);
-            s.ToggleShortcut(true);
-
-            await GeneralInvocableFuncs.ShowToast("success", Lang.Instance["Toast_ShortcutCreated"], Lang.Instance["Success"], "toastarea");
-        }
-
         /// <summary>
         /// Hide a platform from the platforms list. Not giving an item input will use the AppData.SelectedPlatform.
         /// </summary>
-        public static void HidePlatform(string item = null)
+        public void HidePlatform(string item = null)
         {
             var platform = item ?? AppData.SelectedPlatform;
             AppSettings.Platforms.First(x => x.Name == platform).SetEnabled(false);
+            AppSettings.SaveSettings();
         }
         #endregion
 
         #region Clipboard
         [JSInvokable]
-        public static async Task CopyText(string text) => await ClipboardService.SetTextAsync(text);
+        public async Task CopyText(string text) => await ClipboardService.SetTextAsync(text);
 
         #endregion
     }

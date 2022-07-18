@@ -21,7 +21,6 @@ using System.Threading.Tasks;
 using DiscordRPC;
 using DiscordRPC.Logging;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
@@ -31,41 +30,87 @@ using Index = TcNo_Acc_Switcher_Server.Pages.Steam.Index;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
-    public class AppData
+    public interface IAppData
     {
-        private static readonly Lang Lang = Lang.Instance;
-        private static AppData _instance = new();
+        List<SteamUserAcc> SteamUsers { get; set; }
+        bool SteamLoadingProfiles { get; set; }
+        string WindowTitle { get; set; }
+        string CurrentStatus { get; set; }
+        string SelectedAccountId { get; }
+        Account SelectedAccount { get; set; }
+        string SelectedPlatform { get; set; }
+        string CurrentSwitcher { get; set; }
+        string CurrentSwitcherSafe { get; set; }
+        bool FirstMainMenuVisit { get; set; }
+        InitializedClasses InitializedClasses { get; set; }
+        DiscordRpcClient DiscordClient { get; set; }
 
-        private static readonly object LockObj = new();
+        /// <summary>
+        /// Contains whether the Client app is running, and the server is it's child.
+        /// </summary>
+        bool TcNoClientApp { get; set; }
 
-        public static AppData Instance
+        ObservableCollection<Account> SteamAccounts { get; set; }
+        ObservableCollection<Account> BasicAccounts { get; set; }
+        bool IsCurrentlyExportingAccounts { get; set; }
+
+        /// <summary>
+        /// (Only one time) Checks for update, and submits statistics if enabled.
+        /// </summary>
+        void FirstLaunchCheck();
+
+        void RefreshDiscordPresenceAsync(bool firstLaunch);
+        void RefreshDiscordPresence();
+        event Action OnChange;
+        void NotifyDataChanged();
+
+        /// <summary>
+        /// A general wrapper for InvokeVoidAsync, that returns true if it ran, or false if it doesn't.
+        /// </summary>
+        Task<bool> InvokeVoidAsync(string func, params object[] args);
+
+        /// <summary>
+        /// A general wrapper for InvokeVoid. This will do nothing if ActiveIJsRuntime is null.
+        /// </summary>
+        Task<TValue> InvokeAsync<TValue>(string func, params object[] args);
+
+        void ReloadPage();
+        void CacheReloadPage();
+        void ReloadWithToast(string type, string title, string message);
+        void NavigateToWithToast(string uri, string type, string title, string message);
+        void NavigateTo(string uri, bool forceLoad = false);
+        Task NavigateUpOne();
+    }
+
+    public class AppData : IAppData
+    {
+        [Inject] private ILang Lang { get; }
+        [Inject] private IAppSettings AppSettings { get; }
+        [Inject] private IAppStats AppStats { get; }
+        [Inject] private NavigationManager NavManager { get; }
+        [Inject] private IJSRuntime JsRuntime { get; }
+
+        public AppData()
         {
-            get
-            {
-                lock (LockObj)
-                {
-                    return _instance ??= new AppData();
-                }
-            }
-            set
-            {
-                lock (LockObj)
-                {
-                    _instance = value;
-                }
-            }
+            CurrentStatus = Lang["Status_Init"];
         }
 
         #region First Launch
         // I'm not really sure where to include this for the first page visit, so it is here and called on every page.
         // As far as I understand this works like a browser, and getting it to try and display something may not work the best...
         // So it's called on each page, but only run once.
-        private bool _firstLaunch = true;
-        private static bool FirstLaunch { get => Instance._firstLaunch; set => Instance._firstLaunch = value; }
+        private bool FirstLaunch { get; set; } = true;
+
+        #region Accounts
+        // These hold accounts for different switchers. Changing settings reloads the Settings, wiping them. This is the second best place to store these.
+        public List<SteamUserAcc> SteamUsers { get; set; }
+        public bool SteamLoadingProfiles { get; set; }
+        #endregion
+
         /// <summary>
         /// (Only one time) Checks for update, and submits statistics if enabled.
         /// </summary>
-        public static void FirstLaunchCheck()
+        public void FirstLaunchCheck()
         {
             if (!FirstLaunch) return;
             FirstLaunch = false;
@@ -83,14 +128,14 @@ namespace TcNo_Acc_Switcher_Server.Data
             //DiscordClient.OnPresenceUpdate += (sender, e) => { Console.WriteLine("Received Update! {0}", e.Presence); };
         }
 
-        public static void RefreshDiscordPresenceAsync(bool firstLaunch)
+        public void RefreshDiscordPresenceAsync(bool firstLaunch)
         {
             if (!firstLaunch && DiscordClient.CurrentUser is null) return;
             var dThread = new Thread(RefreshDiscordPresence);
             dThread.Start();
         }
 
-        public static void RefreshDiscordPresence()
+        public void RefreshDiscordPresence()
         {
             Thread.Sleep(1000);
 
@@ -142,102 +187,62 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
         #endregion
 
-        #region Accounts
-        // These hold accounts for different switchers. Changing settings reloads the Settings, wiping them. This is the second best place to store these.
-
-        private List<Index.Steamuser> _steamUsers;
-        public static List<Index.Steamuser> SteamUsers { get => Instance._steamUsers; set => Instance._steamUsers = value; }
-
-        private bool _steamLoadingProfiles;
-        public static bool SteamLoadingProfiles { get => Instance._steamLoadingProfiles; set => Instance._steamLoadingProfiles = value; }
-        #endregion
-
         // Window stuff
         private string _windowTitle = "TcNo Account Switcher";
 
-        public static string WindowTitle
+        public string WindowTitle
         {
-            get => Instance._windowTitle;
+            get => _windowTitle;
             set
             {
-                Instance._windowTitle = value;
-                Instance.NotifyDataChanged();
+                _windowTitle = value;
+                NotifyDataChanged();
                 Globals.WriteToLog($"{Environment.NewLine}Window Title changed to: {value}");
             }
         }
 
-        private string _currentStatus = Lang["Status_Init"];
-        public static string CurrentStatus
-        {
-            get => Instance._currentStatus;
-            set => Instance._currentStatus = value;
-        }
+        public string CurrentStatus { get; set; }
 
-        public static string SelectedAccountId => SelectedAccount.AccountId;
-
-        private Account _selectedAccount;
-        public static Account SelectedAccount
-        {
-            get => Instance._selectedAccount;
-            set => Instance._selectedAccount = value;
-        }
-
-        private string _selectedPlatform = "";
-        public static string SelectedPlatform { get => Instance._selectedPlatform; set => Instance._selectedPlatform = value; }
+        public string SelectedAccountId => SelectedAccount.AccountId;
+        public Account SelectedAccount { get; set; }
+        public string SelectedPlatform { get; set; } = "";
 
         private string _currentSwitcher = "";
-        public static string CurrentSwitcher
+        public string CurrentSwitcher
         {
-            get => Instance._currentSwitcher;
+            get => _currentSwitcher;
             set
             {
-                Instance._currentSwitcher = value;
+                _currentSwitcher = value;
                 CurrentSwitcherSafe = Globals.GetCleanFilePath(CurrentSwitcher);
             }
         }
 
-        private string _currentSwitcherSafe = "";
-        public static string CurrentSwitcherSafe { get => Instance._currentSwitcherSafe; set => Instance._currentSwitcherSafe = value; }
+        public string CurrentSwitcherSafe { get; set; } = "";
 
         public event Action OnChange;
         public void NotifyDataChanged() => OnChange?.Invoke();
+        [JsonIgnore] public bool FirstMainMenuVisit { get; set; } = true;
+        [JsonIgnore] public InitializedClasses InitializedClasses { get; set; } = new();
 
-        private IJSRuntime _activeIJsRuntime;
-        [JsonIgnore] public static IJSRuntime ActiveIJsRuntime { get => Instance._activeIJsRuntime; set => Instance._activeIJsRuntime = value; }
-        public void SetActiveIJsRuntime(IJSRuntime jsr) => Instance._activeIJsRuntime = jsr;
-
-        private NavigationManager _activeNavMan;
-        [JsonIgnore] public static NavigationManager ActiveNavMan { get => Instance._activeNavMan; set => Instance._activeNavMan = value; }
-
-        private bool _firstMainMenuVisit = true;
-        [JsonIgnore] public static bool FirstMainMenuVisit { get => Instance._firstMainMenuVisit; set => Instance._firstMainMenuVisit = value; }
-        public void SetActiveNavMan(NavigationManager nm) => Instance._activeNavMan = nm;
-
-
-        private InitializedClasses _initializedClasses = new();
-        [JsonIgnore] public static InitializedClasses InitializedClasses { get => Instance._initializedClasses; set => Instance._initializedClasses = value; }
-
-
-        private DiscordRpcClient _discordClient;
-        [JsonIgnore] public static DiscordRpcClient DiscordClient { get => Instance._discordClient; set => Instance._discordClient = value; }
+        [JsonIgnore] public DiscordRpcClient DiscordClient { get; set; }
 
         /// <summary>
         /// Contains whether the Client app is running, and the server is it's child.
         /// </summary>
-        private bool _tcNoClientApp;
-        [JsonIgnore] public static bool TcNoClientApp { get => Instance._tcNoClientApp; set => Instance._tcNoClientApp = value; }
+        [JsonIgnore] public bool TcNoClientApp { get; set; }
 
         #region JS_INTEROP
         /// <summary>
         /// A general wrapper for InvokeVoidAsync, that returns true if it ran, or false if it doesn't.
         /// </summary>
-        public static async Task<bool> InvokeVoidAsync(string func, params object?[]? args)
+        public async Task<bool> InvokeVoidAsync(string func, params object?[]? args)
         {
             Globals.WriteToLog(!Globals.VerboseMode ? $"JS InvokeVoidAsync: {func}" : $"JS CALL: {func}: {args}");
             try
             {
-                if (ActiveIJsRuntime is null) return false;
-                await ActiveIJsRuntime.InvokeVoidAsync(func, args);
+                if (JsRuntime is null) return false;
+                await JsRuntime.InvokeVoidAsync(func, args);
                 return true;
             }
             catch (Exception e) when (e is ArgumentNullException or InvalidOperationException or TaskCanceledException
@@ -250,13 +255,13 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// A general wrapper for InvokeVoid. This will do nothing if ActiveIJsRuntime is null.
         /// </summary>
-        public static async Task<TValue> InvokeAsync<TValue>(string func, params object?[]? args)
+        public async Task<TValue> InvokeAsync<TValue>(string func, params object?[]? args)
         {
             Globals.WriteToLog(!Globals.VerboseMode ? $"JS InvokeAsync: {func}" : $"JS CALL: {func}: {args}");
             try
             {
-                if (ActiveIJsRuntime is null) return default;
-                return await ActiveIJsRuntime.InvokeAsync<TValue>(func, args);
+                if (JsRuntime is null) return default;
+                return await JsRuntime.InvokeAsync<TValue>(func, args);
             }
             catch (Exception e) when (e is ArgumentNullException or InvalidOperationException or TaskCanceledException
                                           or ArgumentNullException or TaskCanceledException or JSDisconnectedException)
@@ -265,17 +270,17 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
         }
 
-        public static void ReloadPage() => ActiveNavMan.NavigateTo(ActiveNavMan.Uri, forceLoad: false);
-        public static void CacheReloadPage() => ActiveNavMan.NavigateTo(ActiveNavMan.Uri, forceLoad: true);
-        public static void ReloadWithToast(string type, string title, string message) =>
-            ActiveNavMan.NavigateTo($"{ActiveNavMan.BaseUri}?toast_type={type}&toast_title={Uri.EscapeDataString(title)}&toast_message={Uri.EscapeDataString(message)}");
-        public static void NavigateToWithToast(string uri, string type, string title, string message) =>
-            ActiveNavMan.NavigateTo($"{uri}?toast_type={type}&toast_title={Uri.EscapeDataString(title)}&toast_message={Uri.EscapeDataString(message)}");
-        public static void NavigateTo(string uri, bool forceLoad = false) => ActiveNavMan.NavigateTo(uri, forceLoad);
+        public void ReloadPage() => NavManager.NavigateTo(NavManager.Uri, forceLoad: false);
+        public void CacheReloadPage() => NavManager.NavigateTo(NavManager.Uri, forceLoad: true);
+        public void ReloadWithToast(string type, string title, string message) =>
+            NavManager.NavigateTo($"{NavManager.BaseUri}?toast_type={type}&toast_title={Uri.EscapeDataString(title)}&toast_message={Uri.EscapeDataString(message)}");
+        public void NavigateToWithToast(string uri, string type, string title, string message) =>
+            NavManager.NavigateTo($"{uri}?toast_type={type}&toast_title={Uri.EscapeDataString(title)}&toast_message={Uri.EscapeDataString(message)}");
+        public void NavigateTo(string uri, bool forceLoad = false) => NavManager.NavigateTo(uri, forceLoad);
 
-        public static async Task NavigateUpOne()
+        public async Task NavigateUpOne()
         {
-            var uri = ActiveNavMan.Uri;
+            var uri = NavManager.Uri;
             if (uri.EndsWith('/')) uri = uri[..^1];
             uri = uri.Replace("http://", "").Replace("https://", "");
 
@@ -284,7 +289,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             {
                 var split = uri.Split('/');
                 var newUri = "http://" + string.Join("/", split.Take(split.Length - 1));
-                ActiveNavMan.NavigateTo(newUri);
+                NavManager.NavigateTo(newUri);
             }
             else
             {
@@ -294,19 +299,12 @@ namespace TcNo_Acc_Switcher_Server.Data
         #endregion
 
 
-        [JsonIgnore] private ObservableCollection<Account> _steamAccounts = new();
-        public static ObservableCollection<Account> SteamAccounts
-        {
-            get => Instance._steamAccounts;
-            set => Instance._steamAccounts = value;
-        }
+        [JsonIgnore] public ObservableCollection<Account> SteamAccounts { get; set; } = new();
+        [JsonIgnore] public ObservableCollection<Account> BasicAccounts { get; set; } = new();
 
-        [JsonIgnore] private ObservableCollection<Account> _basicAccounts = new();
-        public static ObservableCollection<Account> BasicAccounts { get => Instance._basicAccounts; set => Instance._basicAccounts = value; }
-
-        [JsonIgnore] private bool _isCurrentlyExportingAccounts;
-        public static bool IsCurrentlyExportingAccounts { get => Instance._isCurrentlyExportingAccounts; set => Instance._isCurrentlyExportingAccounts = value; }
+        [JsonIgnore] public bool IsCurrentlyExportingAccounts { get; set; }
     }
+
     public class InitializedClasses
     {
         public InitializedClasses()

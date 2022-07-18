@@ -21,7 +21,7 @@
 @inject Lang Locale
 @inject NavigationManager NavManager
 @inject AppData AData
-@{ AData.SetActiveNavMan(NavManager); }
+
 
 <h1 class="SettingsHeader">@Locale["Settings_Header_AppWide"]</h1>
 
@@ -61,7 +61,7 @@
 <div class="rowSetting listWithBars">
     <ul>
         <li>
-            <a class="fancyLink" @onclick="ModalFuncs.ShowSetBackgroundModal">@Locale["Settings_ThemeBackground"]</a>
+            <a class="fancyLink" @onclick="ModalData.ShowSetBackgroundModal">@Locale["Settings_ThemeBackground"]</a>
         </li>
         <li>
             <a class="fancyLink" @onclick='() => Process.Start("explorer.exe", Path.Join(Globals.UserDataFolder, "themes"))'>@Locale["Settings_ThemeOpenFolder"]</a>
@@ -85,7 +85,7 @@
     <div class="form-check">
         <input class="form-check-input" type="checkbox" id="AlwaysAdmin_Settings" @bind="AppSettings.AlwaysAdmin"><label class="form-check-label" for="AlwaysAdmin_Settings"></label>
     </div>
-    <label for="AlwaysAdmin_Settings">@Lang.Instance["Settings_AlwaysAdmin"]<br></label>
+    <label for="AlwaysAdmin_Settings">@Lang["Settings_AlwaysAdmin"]<br></label>
 </div>
 <div class="rowSetting">
     <div class="form-check">
@@ -212,7 +212,7 @@
     </label>
 
     <button id="AppSett_ViewStats" type="button" @onclick='() => ModalData.ShowModal("showStats")'><span>@Locale["Settings_ViewStats"]</span></button>
-    <button id="AppSett_ClearStats" type="button" @onclick='() => ModalData.ShowModal("notice", ModalData.ExtraArg.ClearStats)'><span>@Locale["Settings_ClearStats"]</span></button>
+    <button id="AppSett_ClearStats" type="button" @onclick='() => ModalData.ShowModal("notice", ExtraArg.ClearStats)'><span>@Locale["Settings_ClearStats"]</span></button>
 </div>
 <div class="rowSetting">
     <div class="form-check">
@@ -235,7 +235,7 @@
     public async Task SetPassword()
     {
         Globals.DebugWriteLine(@"[ButtonClicked:SharedSettings.razor/SetPassword]");
-        await GeneralInvocableFuncs.ShowModal("setAppPassword");
+        await GeneralFuncs.ShowModal("setAppPassword");
     }
 
     private async Task TrySetUserData()
@@ -250,11 +250,11 @@
             await File.WriteAllTextAsync(userDataFile, "");
             File.Delete(userDataFile);
 
-            ModalFuncs.ShowChangeUserdataFolderModal();
+            ModalData.ShowChangeUserdataFolderModal();
         }
         catch (Exception)
         {
-            await GeneralInvocableFuncs.ShowToast("info", Locale["Toast_RestartRequired"], Locale["Notice"], "toastarea");
+            await GeneralFuncs.ShowToast("info", Locale["Toast_RestartRequired"], Locale["Notice"], "toastarea");
         }
     }
 }
