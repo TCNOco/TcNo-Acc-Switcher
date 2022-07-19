@@ -33,7 +33,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
             Globals.DebugWriteLine($@"[Func:Index.Check] platform={platform}");
             if (platform == "Steam")
             {
-                if (!await GeneralFuncs.CanKillProcess(SteamSettings.Processes, SteamSettings.ClosingMethod)) return;
+                if (!GeneralFuncs.CanKillProcess(SteamSettings.Processes, SteamSettings.ClosingMethod)) return;
                 if (!Directory.Exists(SteamSettings.FolderPath) || !File.Exists(SteamSettings.Exe()))
                 {
                     AppData.CurrentSwitcher = "Steam";
@@ -47,7 +47,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
 
             AppData.CurrentSwitcher = platform;
             BasicPlatforms.SetCurrentPlatform(platform);
-            if (!await GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd, BasicSettings.ClosingMethod)) return;
+            if (!GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd, BasicSettings.ClosingMethod)) return;
 
             if (Directory.Exists(BasicSettings.FolderPath) && File.Exists(BasicSettings.Exe()))
                 AppData.NavigateTo("/Basic/");

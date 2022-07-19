@@ -646,10 +646,10 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         #region WindowsAccent
         [SupportedOSPlatform("windows")]
-        public static async Task WindowsAccent_Toggle()
+        public static void WindowsAccent_Toggle()
         {
             if (!WindowsAccent)
-                await SetAccentColor(true);
+                SetAccentColor(true);
             else
             {
                 WindowsAccentColor = "";
@@ -658,9 +658,9 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         [SupportedOSPlatform("windows")]
-        private static async Task SetAccentColor() => await SetAccentColor(false);
+        private static void SetAccentColor() => SetAccentColor(false);
         [SupportedOSPlatform("windows")]
-        private static async Task SetAccentColor(bool userInvoked)
+        private static void SetAccentColor(bool userInvoked)
         {
             WindowsAccentColor = GetAccentColorHexString();
             var (r, g, b) = GetAccentColor();

@@ -137,9 +137,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// </summary>
         /// <param name="args">(Optional) arguments for shortcut</param>
         [JSInvokable]
-        [SupportedOSPlatform("windows")]
         public static async Task CreateShortcut(string args = "")
         {
+            if (!OperatingSystem.IsWindows()) return;
             Globals.DebugWriteLine(@"[JSInvoke:General\GeneralInvocableFuncs.CreateShortcut]");
             if (args.Length > 0 && args[0] != ':') args = $" {args}"; // Add a space before arguments if doesn't start with ':'
             string platformName;

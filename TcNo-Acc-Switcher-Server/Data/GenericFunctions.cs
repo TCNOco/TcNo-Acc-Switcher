@@ -118,7 +118,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// </summary>
         public static async Task FinaliseAccountList()
         {
-            await AppData.InvokeVoidAsync("jQueryProcessAccListSize");
+            //await AppData.InvokeVoidAsync("jQueryProcessAccListSize");
             await AppData.InvokeVoidAsync("initContextMenu");
             await AppData.InvokeVoidAsync("initAccListSortable");
         }

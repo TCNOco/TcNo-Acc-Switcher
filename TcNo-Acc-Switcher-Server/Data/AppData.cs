@@ -273,7 +273,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             ActiveNavMan.NavigateTo($"{uri}?toast_type={type}&toast_title={Uri.EscapeDataString(title)}&toast_message={Uri.EscapeDataString(message)}");
         public static void NavigateTo(string uri, bool forceLoad = false) => ActiveNavMan.NavigateTo(uri, forceLoad);
 
-        public static async Task NavigateUpOne()
+        public static void NavigateUpOne()
         {
             var uri = ActiveNavMan.Uri;
             if (uri.EndsWith('/')) uri = uri[..^1];
@@ -288,9 +288,14 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
             else
             {
-                await InvokeVoidAsync("spinBackButton");
+                Instance.ClickBackButton();
             }
         }
+
+        public event Action OnBackButtonClick;
+        public void ClickBackButton() => OnBackButtonClick?.Invoke();
+        public event Action OnBackButtonReset;
+        public void ResetBackButton() => OnBackButtonReset?.Invoke();
         #endregion
 
 

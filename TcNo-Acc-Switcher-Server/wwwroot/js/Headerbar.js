@@ -35,44 +35,6 @@ const WindowNotifications = {
     WmClose: 0x0010
 };
 
-var possibleAnimations = [
-    "Y",
-    "X",
-    "Z"
-];
-
-
-
-
-
-
-
-
-
-
-// Spins the back button, indicating the user can not go further back.
-function spinBackButton() {
-    $("#btnBack i").css({ "transform": "rotate" + possibleAnimations[Math.floor(Math.random() * possibleAnimations.length)] + "(360deg)", "transition": "transform 500ms ease-in-out" });
-    setTimeout(() => $("#btnBack i").css({ "transform": "", "transition": "transform 0 ease-in-out" }), 500);
-}
-
-function btnBack_Click() {
-    if (window.location.pathname === "/") {
-        $("#btnBack i").css({ "transform": "rotate" + possibleAnimations[Math.floor(Math.random() * possibleAnimations.length)] + "(360deg)", "transition": "transform 500ms ease-in-out" });
-        setTimeout(() => $("#btnBack i").css({ "transform": "", "transition": "transform 0 ease-in-out" }), 500);
-    }
-    else {
-	    const tempUri = document.location.href.split("?")[0];
-	    document.location.href = tempUri + (tempUri.endsWith("/") ? "../" : "/../");
-    }
-}
-
-
-
-
-
-
-
 
 function hideWindow() {
     // Used in hide window on account switch

@@ -144,7 +144,7 @@ namespace TcNo_Acc_Switcher_Client
                 (Keyboard.GetKeyStates(Key.Scroll) & KeyStates.Down) != 0)
             {
                 // This can be improved. Somehow ignore self, and make sure all processes are killed before self.
-                if (await GeneralFuncs.CanKillProcess("TcNo"))
+                if (GeneralFuncs.CanKillProcess("TcNo"))
                     Globals.KillProcess("TcNo");
             }
 
@@ -470,7 +470,7 @@ release = true;
             {
                 // Steam format: +s:<steamId>[:<PersonaState (0-7)>]
                 Globals.WriteToLog("Steam switch requested");
-                if (!await GeneralFuncs.CanKillProcess(TcNo_Acc_Switcher_Server.Data.Settings.Steam.Processes)) Restart(combinedArgs, true);
+                if (!GeneralFuncs.CanKillProcess(TcNo_Acc_Switcher_Server.Data.Settings.Steam.Processes)) Restart(combinedArgs, true);
                 await SteamSwitcherFuncs.SwapSteamAccounts(account.Split(":")[0],
                     ePersonaState: command.Length > 2
                         ? int.Parse(command[2])
@@ -481,7 +481,7 @@ release = true;
             if (AppSettings.GetPlatform(platform) is null) return;
             BasicPlatforms.SetCurrentPlatform(platform);
             Globals.WriteToLog(CurrentPlatform.FullName + " switch requested");
-            if (!await GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd)) Restart(combinedArgs, true);
+            if (!GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd)) Restart(combinedArgs, true);
             BasicSwitcherFuncs.SwapBasicAccounts(account, string.Join(' ', remainingArguments));
         }
 

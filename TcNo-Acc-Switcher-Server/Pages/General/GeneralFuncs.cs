@@ -47,19 +47,19 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         #region PROCESS_OPERATIONS
 
         //public static bool CanKillProcess(List<string> procNames) => procNames.Aggregate(true, (current, s) => current & CanKillProcess(s));
-        public static async Task<bool> CanKillProcess(List<string> procNames, string closingMethod = "Combined", bool showModal = true)
+        public static bool CanKillProcess(List<string> procNames, string closingMethod = "Combined", bool showModal = true)
         {
             var canKillAll = true;
             foreach (var procName in procNames)
             {
                 if (procName.StartsWith("SERVICE:") && closingMethod == "TaskKill") continue; // Ignore explicit services when using TaskKill - Admin isn't ALWAYS needed. Eg: Steam.
-                canKillAll = canKillAll && await CanKillProcess(procName, closingMethod);
+                canKillAll = canKillAll && CanKillProcess(procName, closingMethod);
             }
 
             return canKillAll;
         }
 
-        public static async Task<bool> CanKillProcess(string processName, string closingMethod = "Combined", bool showModal = true)
+        public static bool CanKillProcess(string processName, string closingMethod = "Combined", bool showModal = true)
         {
             if (processName.StartsWith("SERVICE:") && closingMethod == "TaskKill") return true; // Ignore explicit services when using TaskKill - Admin isn't ALWAYS needed. Eg: Steam.
             if (processName.StartsWith("SERVICE:")) // Services need admin to close (as far as I understand)
@@ -77,7 +77,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         {
             if (!OperatingSystem.IsWindows()) return false;
             Globals.DebugWriteLine(@"Closing: " + procName);
-            if (!await CanKillProcess(procName, closingMethod)) return false;
+            if (!CanKillProcess(procName, closingMethod)) return false;
             Globals.KillProcess(procName, closingMethod);
 
             return await WaitForClose(procName);
@@ -86,7 +86,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         {
             if (!OperatingSystem.IsWindows()) return false;
             Globals.DebugWriteLine(@"Closing: " + string.Join(", ", procNames));
-            if (!await CanKillProcess(procNames, closingMethod)) return false;
+            if (!CanKillProcess(procNames, closingMethod)) return false;
             Globals.KillProcess(procNames, closingMethod);
 
             return await WaitForClose(procNames, closingMethod);
