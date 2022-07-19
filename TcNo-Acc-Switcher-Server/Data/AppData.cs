@@ -72,7 +72,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             FirstLaunch = false;
             // Check for update in another thread
             // Also submit statistics, if enabled
-            new Thread(AppSettings.CheckForUpdate).Start();
+            new Thread(() => AppSettings.Instance.CheckForUpdate()).Start();
             if (AppSettings.StatsEnabled && AppSettings.StatsShare)
                 new Thread(AppStats.UploadStats).Start();
 
@@ -347,7 +347,31 @@ namespace TcNo_Acc_Switcher_Server.Data
                 }
             }, toastItem.Cancellation);
         }
+
+        public void ShowToast(ToastType type, string message, int duration = 5000) =>
+            ShowToast(type, "", message, duration);
+        public void ShowToastLang(ToastType type, string titleVar, string messageVar, int duration = 5000) =>
+            ShowToast(type, Lang.Instance[titleVar], Lang.Instance[messageVar], duration);
+        public void ShowToastLang(ToastType type, string messageVar, int duration = 5000) =>
+            ShowToast(type, "", Lang.Instance[messageVar], duration);
+        public void ShowToastLang(ToastType type, string titleVar, LangSub message, int duration = 5000) =>
+            ShowToast(type, Lang.Instance[titleVar], Lang.Instance[message.LangKey, message.Variable], duration);
+        public void ShowToastLang(ToastType type, LangSub message, int duration = 5000) =>
+            ShowToast(type, "", Lang.Instance[message.LangKey, message.Variable], duration);
     }
+
+    public class LangSub
+    {
+        public string LangKey { get; set; }
+        public object Variable { get; set; }
+
+        public LangSub(string key, object var)
+        {
+            LangKey = key;
+            Variable = var;
+        }
+    }
+
     public class InitializedClasses
     {
         public InitializedClasses()

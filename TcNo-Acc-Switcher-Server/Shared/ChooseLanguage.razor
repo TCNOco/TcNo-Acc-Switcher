@@ -46,10 +46,10 @@
 
 	}
 
-	private async Task RequestCultureChange(string key)
+	private void RequestCultureChange(string key)
 	{
 		if (string.IsNullOrWhiteSpace(key)) return;
-	    await Lang.LoadLang(key);
+	    Lang.LoadLang(key);
 	    AppSettings.Rtl = new CultureInfo(Lang.Current).TextInfo.IsRightToLeft;
 		AppData.ReloadPage();
 	}

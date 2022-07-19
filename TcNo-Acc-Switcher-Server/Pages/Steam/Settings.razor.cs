@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
+using TcNo_Acc_Switcher_Server.Shared.Toast;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
@@ -39,14 +40,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
 
         // BUTTON: Check account VAC status
-        public static async Task ClearVacStatus()
+        public void ClearVacStatus()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearVacStatus]");
             if (Globals.DeleteFile(Data.Settings.Steam.VacCacheFile))
-                await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_Steam_VacCleared"], renderTo: "toastarea");
+                AData.ShowToastLang(ToastType.Success, "Toast_Steam_VacCleared");
             else
-                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Steam_CantDeleteVacCache"], Lang["Error"],
-                    "toastarea");
+                AData.ShowToastLang(ToastType.Error, "Error", "Toast_Steam_CantDeleteVacCache");
         }
 
         // BUTTON: Reset settings

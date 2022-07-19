@@ -14,6 +14,7 @@
 
 @page "/Settings"
 @using TcNo_Acc_Switcher_Server.Data
+@using TcNo_Acc_Switcher_Globals
 @namespace TcNo_Acc_Switcher_Server.Pages
 @inject NavigationManager NavManager
 @inject AppData AData
@@ -50,6 +51,12 @@
         AppSettings.SaveSettings();
 
         NavManager.NavigateTo("/");
+    }
+
+    protected override void OnInitialized()
+    {
+        AppData.WindowTitle = Lang.Instance["Title_Settings"];
+        Globals.DebugWriteLine(@"[Auto:Settings.razor.cs.OnInitializedAsync]");
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

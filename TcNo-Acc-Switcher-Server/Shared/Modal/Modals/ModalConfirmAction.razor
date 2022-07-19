@@ -23,6 +23,8 @@
 @using TcNo_Acc_Switcher_Server.Pages.Basic
 @using TcNo_Acc_Switcher_Server.Pages.Steam
 @using System.Configuration
+@using TcNo_Acc_Switcher_Server.Shared.Toast
+@inject AppData AData
 @code {
     private MarkupString _message = new();
     protected override void OnInitialized()
@@ -98,7 +100,7 @@
                 break;
         }
 
-        await GeneralInvocableFuncs.ShowToast("success", "Success", renderTo: "toastarea");
+        AData.ShowToastLang(ToastType.Success, "Success");
         //AppData.Instance.NotifyDataChanged();
         ModalData.IsShown = false;
         ModalData.ExtraArgs = ModalData.ExtraArg.None;

@@ -18,24 +18,27 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.General;
+using TcNo_Acc_Switcher_Server.Shared.Toast;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
     public class GenericFunctions
     {
+        [Inject] private AppData AData { get; set; }
         private static readonly Lang Lang = Lang.Instance;
 
         /// <summary>
         /// Save settings with Ctrl+S Hot key
         /// </summary>
         [JSInvokable]
-        public static async Task GiCtrlS(string platform)
+        public void GiCtrlS(string platform)
         {
             AppSettings.SaveSettings();
             switch (platform)
@@ -47,7 +50,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     Basic.SaveSettings();
                     break;
             }
-            await GeneralInvocableFuncs.ShowToast("success", Lang["Saved"], renderTo:"toastarea");
+            AData.ShowToastLang(ToastType.Success, "Saved");
         }
 
         #region ACCOUNT SWITCHER SHARED FUNCTIONS

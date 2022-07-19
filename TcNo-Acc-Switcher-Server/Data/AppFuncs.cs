@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
@@ -26,12 +27,15 @@ using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
 using TcNo_Acc_Switcher_Server.Shared.Accounts;
+using TcNo_Acc_Switcher_Server.Shared.Toast;
 using TextCopy;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
     public class AppFuncs
     {
+        [Inject] private AppData AData { get; set; }
+
         #region Account Management
         /// <summary>
         /// Swap to the current AppData.SelectedAccountId.
@@ -111,7 +115,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
                 AppData.Instance.NotifyDataChanged();
 
-                await GeneralInvocableFuncs.ShowToast("success", Lang.Instance["Success"], renderTo: "toastarea");
+                AppData.Instance.ShowToastLang(ToastType.Success, "Success");
             }
         }
 
@@ -141,43 +145,6 @@ namespace TcNo_Acc_Switcher_Server.Data
                 }
 
             ModalData.IsShown = false;
-        }
-
-        public static async Task ExportAllAccounts()
-        {
-            if (AppData.IsCurrentlyExportingAccounts)
-            {
-                await GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_AlreadyProcessing"], Lang.Instance["Error"], "toastarea");
-                return;
-            }
-
-            AppData.IsCurrentlyExportingAccounts = true;
-
-            //AppData.SelectedPlatform
-            var exportPath = await GeneralFuncs.ExportAccountList();
-            await AppData.InvokeVoidAsync("saveFile", exportPath.Split('\\').Last(), exportPath);
-            AppData.IsCurrentlyExportingAccounts = false;
-        }
-
-        public static async Task CreatePlatformShortcut()
-        {
-            var platform = AppSettings.GetPlatform(AppData.SelectedPlatform);
-
-            Globals.DebugWriteLine(@$"[Func:Pages\General\GeneralInvocableFuncs.GiCreatePlatformShortcut] platform={platform}");
-            var s = new Shortcut();
-            _ = s.Shortcut_Platform(Shortcut.Desktop, platform.Name, platform.Identifier);
-            s.ToggleShortcut(true);
-
-            await GeneralInvocableFuncs.ShowToast("success", Lang.Instance["Toast_ShortcutCreated"], Lang.Instance["Success"], "toastarea");
-        }
-
-        /// <summary>
-        /// Hide a platform from the platforms list. Not giving an item input will use the AppData.SelectedPlatform.
-        /// </summary>
-        public static void HidePlatform(string item = null)
-        {
-            var platform = item ?? AppData.SelectedPlatform;
-            AppSettings.Platforms.First(x => x.Name == platform).SetEnabled(false);
         }
         #endregion
 

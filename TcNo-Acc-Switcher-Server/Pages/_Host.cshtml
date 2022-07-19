@@ -67,6 +67,17 @@
 <script src="js/context_menu.js?@currentTime"></script>
 <script src="js/WebFuncs.js?@currentTime"></script>
 <script src="js/Headerbar.js?@currentTime"></script>
+<script type="module">
+        import Notification from './js/Notification.min.js';
+        window.notification = new Notification({
+            position: 'bottom-right',
+            thickBorder: 'top',
+            duration: 5000,
+            transition: 200,
+            maxActive: 10,
+            imgPath: './img/'
+        });
+    </script>
 <script src="_framework/blazor.server.js?@currentTime"></script>
 </body>
 </html>

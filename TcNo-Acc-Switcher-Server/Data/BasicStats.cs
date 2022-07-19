@@ -4,16 +4,19 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General;
+using TcNo_Acc_Switcher_Server.Shared.Toast;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
     public sealed class BasicStats
     {
+        [Inject] private AppData AData { get; set; }
         // Make this a singleton
         private static BasicStats _instance;
         private static readonly object LockObj = new();
@@ -26,7 +29,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     if (_instance != null) return _instance;
 
                     _instance = new BasicStats();
-                    BasicStatsInit().GetAwaiter().GetResult();
+                    _instance.BasicStatsInit();
                     return _instance;
                 }
             }
@@ -171,14 +174,14 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Read BasicStats.json and collect game definitions, as well as platform-game relations.
         /// </summary>
-        private static async Task BasicStatsInit()
+        private void BasicStatsInit()
         {
             // Check if Platforms.json exists.
             // If it doesnt: Copy it from the programs' folder to the user data folder.
             if (!File.Exists(BasicStatsPath))
             {
                 // Once again verify the file exists. If it doesn't throw an error here.
-                await GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_FailedStatsLoad"], renderTo: "toastarea");
+                AData.ShowToastLang(ToastType.Error, "Toast_FailedStatsLoad");
                 Globals.WriteToLog("Failed to locate GameStats.json! This will cause a lot of stats to break.");
                 return;
             }
@@ -326,6 +329,8 @@ namespace TcNo_Acc_Switcher_Server.Data
     /// </summary>
     public sealed class GameStat
     {
+        [Inject] private AppData AData { get; set; }
+
         #region Properties
 
         private DateTime _lastLoadingNotification = DateTime.MinValue;
@@ -416,7 +421,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             if (CachedStats[AppData.SelectedAccountId].Collected.Count == 0 || DateTime.Now.Subtract(CachedStats[AppData.SelectedAccountId].LastUpdated).Days >= 1)
             {
-                await GeneralInvocableFuncs.ShowToast("info", Lang.Instance["Toast_LoadingStats"], renderTo: "toastarea");
+                AData.ShowToastLang(ToastType.Info, "Toast_LoadingStats");
                 _lastLoadingNotification = DateTime.Now;
                 return await LoadStatsFromWeb(AppData.SelectedAccountId, AppData.CurrentSwitcher);
             }
@@ -455,7 +460,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             // Notify user than an account is being loaded - >5 seconds apart.
             if (DateTime.Now.Subtract(_lastLoadingNotification).Seconds >= 5)
             {
-                await GeneralInvocableFuncs.ShowToast("info", Lang.Instance["Toast_LoadingStats"], renderTo: "toastarea");
+                AData.ShowToastLang(ToastType.Info, "Toast_LoadingStats");
                 _lastLoadingNotification = DateTime.Now;
             }
 
@@ -463,7 +468,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             HtmlDocument doc = new();
             if (!Globals.GetWebHtmlDocument(ref doc, UrlSubbed(userStat), out var responseText, Cookies))
             {
-                await GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_GameStatsLoadFail", new { Game }], renderTo: "toastarea");
+                AData.ShowToastLang(ToastType.Error, new LangSub("Toast_GameStatsLoadFail", new {Game}));
                 return false;
             }
 
@@ -528,7 +533,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             {
                 Directory.CreateDirectory(Path.Join(Globals.UserDataFolder, "temp"));
                 await File.WriteAllTextAsync(Path.Join(Globals.UserDataFolder, "temp", $"download-{Globals.GetCleanFilePath(accountId)}-{Globals.GetCleanFilePath(Game)}.html"), responseText);
-                await GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_GameStatsEmpty", new { AccoundId = Globals.GetCleanFilePath(accountId), Game = Globals.GetCleanFilePath(Game) }], renderTo: "toastarea");
+                AData.ShowToastLang(ToastType.Error, new LangSub("Toast_GameStatsEmpty", new { AccoundId = Globals.GetCleanFilePath(accountId), Game = Globals.GetCleanFilePath(Game) }));
                 if (CachedStats.ContainsKey(accountId))
                     CachedStats.Remove(accountId);
                 return false;

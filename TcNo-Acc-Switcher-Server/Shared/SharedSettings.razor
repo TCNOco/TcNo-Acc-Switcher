@@ -4,6 +4,7 @@
 @using System.IO
 @using TcNo_Acc_Switcher_Globals
 @using TcNo_Acc_Switcher_Server.Shared.Modal
+@using TcNo_Acc_Switcher_Server.Shared.Toast
 @*TcNo Account Switcher - A Super fast account switcher
     Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
     This program is free software: you can redistribute it and/or modify
@@ -21,6 +22,7 @@
 @inject Lang Locale
 @inject NavigationManager NavManager
 @inject AppData AData
+@inject AppSettings ASettings
 @{ AData.SetActiveNavMan(NavManager); }
 
 <h1 class="SettingsHeader">@Locale["Settings_Header_AppWide"]</h1>
@@ -52,7 +54,7 @@
         <ul class="custom-dropdown-menu dropdown-menu">
             @foreach (var item in AppSettings.GetStyleList())
             {
-                <li class="custom-dropdown-item dropdown-item" @onclick="() => AppSettings.SwapStylesheet(item)">@item</li>
+                <li class="custom-dropdown-item dropdown-item" @onclick="() => ASettings.SwapStylesheet(item)">@item</li>
             }
         </ul>
     </div>
@@ -70,7 +72,7 @@
 </div>
 <div class="rowSetting">
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_WinAccent" @bind="AppSettings.WindowsAccent" @onclick="AppSettings.WindowsAccent_Toggle"><label class="form-check-label" for="AppSett_WinAccent"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_WinAccent" @bind="AppSettings.WindowsAccent" @onclick="WindowsAccent_Toggle"><label class="form-check-label" for="AppSett_WinAccent"></label>
     </div>
     <label for="AppSett_WinAccent">
         @Locale["Settings_WindowsAccent"]<br>
@@ -89,7 +91,7 @@
 </div>
 <div class="rowSetting">
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_DesktopShortcut" @bind="AppSettings.DesktopShortcut" @onclick="AppSettings.DesktopShortcut_Toggle"><label class="form-check-label" for="AppSett_DesktopShortcut"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_DesktopShortcut" @bind="AppSettings.DesktopShortcut" @onclick="DesktopShortcut_Toggle"><label class="form-check-label" for="AppSett_DesktopShortcut"></label>
     </div>
     <label for="AppSett_DesktopShortcut">
         @Locale["Settings_DesktopShortcut"]<br>
@@ -98,13 +100,13 @@
 <div class="rowSetting">
     <span>@Locale["Cleaning_Header_StartMenuShortcuts"]</span>
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_StartMenu" @bind="AppSettings.StartMenu" @onclick="() => AppSettings.StartMenu_Toggle(false)"><label class="form-check-label" for="AppSett_StartMenu"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_StartMenu" @bind="AppSettings.StartMenu" @onclick="() => StartMenu_Toggle(false)"><label class="form-check-label" for="AppSett_StartMenu"></label>
     </div>
     <label for="AppSett_StartMenu">
         @Locale["Settings_StartMenu_ProgramTray"]<br>
     </label>
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_StartMenuPlatform" @bind="AppSettings.StartMenuPlatforms" @onclick="() => AppSettings.StartMenu_Toggle(true)"><label class="form-check-label" for="AppSett_StartMenuPlatform"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_StartMenuPlatform" @bind="AppSettings.StartMenuPlatforms" @onclick="() => StartMenu_Toggle(true)"><label class="form-check-label" for="AppSett_StartMenuPlatform"></label>
     </div>
     <label for="AppSett_StartMenuPlatform">
         @Locale["Settings_StartMenu_Platform"]<br>
@@ -112,16 +114,16 @@
 </div>
 <div class="rowSetting">
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_TrayStartup" @bind="AppSettings.TrayStartup" @onclick="AppSettings.AutoStart_Toggle"><label class="form-check-label" for="AppSett_TrayStartup"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_TrayStartup" @bind="AppSettings.TrayStartup" @onclick="AutoStart_Toggle"><label class="form-check-label" for="AppSett_TrayStartup"></label>
     </div>
     <label for="AppSett_TrayStartup">
         @Locale["Settings_Tray_StartWindows"]<br>
-    </label>&nbsp;<a class="fancyLink" @onclick="AppSettings.StartNow">@Locale["Settings_Tray_StartNow"]</a>
+    </label>&nbsp;<a class="fancyLink" @onclick="Button_StartTray">@Locale["Settings_Tray_StartNow"]</a>
 </div>
 
 <div class="rowSetting">
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_Protocol" @bind="AppSettings.ProtocolEnabled" @onclick="AppSettings.Protocol_Toggle"><label class="form-check-label" for="AppSett_Protocol"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_Protocol" @bind="AppSettings.ProtocolEnabled" @onclick="Button_ToggleProtocol"><label class="form-check-label" for="AppSett_Protocol"></label>
     </div>
     <label for="AppSett_Protocol">
         @Locale["Settings_Protocol"]<br>
@@ -159,8 +161,8 @@
         <span>@Locale["Settings_Header_ActiveBrowser"]</span>
         <div class="dropdown">
             <ul class="custom-dropdown-menu dropdown-menu">
-                <li class="custom-dropdown-item dropdown-item" @onclick='() => AppSettings.SetActiveBrowser("WebView")'>WebView</li>
-                <li class="custom-dropdown-item dropdown-item" @onclick='() => AppSettings.SetActiveBrowser("CEF")'>CEF</li>
+                <li class="custom-dropdown-item dropdown-item" @onclick='() => SetActiveBrowser("WebView")'>WebView</li>
+                <li class="custom-dropdown-item dropdown-item" @onclick='() => SetActiveBrowser("CEF")'>CEF</li>
             </ul>
             <button class="dropdown-toggle" type="button" data-toggle="dropdown">
                 @AppSettings.ActiveBrowser
@@ -170,7 +172,7 @@
     </div>
     <div class="rowSetting">
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="TrayMinimizeNotExit" @bind="AppSettings.TrayMinimizeNotExit" @onclick="AppSettings.TrayMinimizeNotExit_Toggle"><label class="form-check-label" for="TrayMinimizeNotExit"></label>
+            <input class="form-check-input" type="checkbox" id="TrayMinimizeNotExit" @bind="AppSettings.TrayMinimizeNotExit" @onclick="TrayMinimizeNotExit_Toggle"><label class="form-check-label" for="TrayMinimizeNotExit"></label>
         </div>
         <label for="TrayMinimizeNotExit">
             @Locale["Settings_ExitToTray"]<br>
@@ -238,7 +240,7 @@
         await GeneralInvocableFuncs.ShowModal("setAppPassword");
     }
 
-    private async Task TrySetUserData()
+    private void TrySetUserData()
     {
         // Verify that user can create file in program files folder first.
         try
@@ -247,14 +249,14 @@
             if (File.Exists(userDataFile))
                 File.Delete(userDataFile);
 
-            await File.WriteAllTextAsync(userDataFile, "");
+            File.WriteAllText(userDataFile, "");
             File.Delete(userDataFile);
 
             ModalFuncs.ShowChangeUserdataFolderModal();
         }
         catch (Exception)
         {
-            await GeneralInvocableFuncs.ShowToast("info", Locale["Toast_RestartRequired"], Locale["Notice"], "toastarea");
+            AData.ShowToastLang(ToastType.Info, "Notice", "Toast_RestartRequired");
         }
     }
 }

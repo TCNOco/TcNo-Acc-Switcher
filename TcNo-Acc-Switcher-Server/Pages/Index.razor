@@ -20,6 +20,8 @@
 @using TcNo_Acc_Switcher_Globals
 @using TcNo_Acc_Switcher_Server.Shared.ContextMenu
 @using TcNo_Acc_Switcher_Server.Shared.Toast
+@using System.Collections.ObjectModel
+@using TcNo_Acc_Switcher_Server.Pages.General.Classes
 @inject IJSRuntime JsRuntime
 @{ AData.SetActiveIJsRuntime(JsRuntime); }
 @inject NavigationManager NavManager
@@ -39,9 +41,11 @@
 @code
 {
     private static string _imagePath(AppSettings.PlatformItem platform) => Path.Join(Globals.UserDataFolder, $"wwwroot\\img\\platform\\{platform.SafeName}.svg");
+
+    private ObservableCollection<MenuItem> _platformContextMenuItems;
 }
 
-<ContextMenu MenuItems="@AppSettings.PlatformContextMenuItems" ContextMenuId="AccOrPlatList" />
+<ContextMenu MenuItems="@_platformContextMenuItems" ContextMenuId="AccOrPlatList" />
 <div class="platformTable">
     <div class="platform_list">
         @foreach (var platform in AppSettings.Platforms.OrderBy(x => x.DisplayIndex).Where(x => x.Enabled))
@@ -84,52 +88,4 @@
 
 @code
 {
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        AppData.WindowTitle = "TcNo Account Switcher";
-        AppSettings.Platforms.CollectionChanged += (_, _) => InvokeAsync(StateHasChanged);
-
-        // If no platforms are showing:
-        if (AppSettings.Platforms.All(x => !x.Enabled))
-        {
-            NavManager.NavigateTo("Platforms");
-        }
-
-        // If just 1 platform is showing, and first launch: Nav into:
-        if (AppData.FirstMainMenuVisit && AppSettings.Platforms.Count(x => x.Enabled) == 1)
-        {
-            AppData.FirstMainMenuVisit = false;
-            var onlyPlatform = AppSettings.Platforms.First(x => x.Enabled);
-            await Check(onlyPlatform.Name);
-        }
-        AppData.FirstMainMenuVisit = false;
-
-        if (firstRender)
-        {
-            await GeneralFuncs.HandleQueries();
-            //await AppData.InvokeVoidAsync("initContextMenu");
-            await AppData.InvokeVoidAsync("initPlatformListSortable");
-            //await AData.InvokeVoidAsync("initAccListSortable");
-        }
-
-        AppData.FirstLaunchCheck();
-
-        AppStats.NewNavigation("/");
-
-
-
-        // TOAST TEST: AData.ShowToast(ToastType.Success, "Fast Message", "This message goes away quickly.");
-    }
-
-    #region Context menu
-    /// <summary>
-    /// Shows the context menu for the requested platform
-    /// </summary>
-    public static async void PlatformRightClick(MouseEventArgs e, string plat)
-    {
-        if (e.Button != 2) return;
-        AppData.SelectedPlatform = plat;
-        await AppData.InvokeVoidAsync("positionAndShowMenu", e, "#AccOrPlatList");
-    }
-    #endregion
 }

@@ -39,7 +39,7 @@
                     <ul class="custom-dropdown-menu dropdown-menu">
                         @foreach (var item in AppSettings.GetStyleList())
                         {
-                            <li class="custom-dropdown-item dropdown-item" @onclick="() => AppSettings.SwapStylesheet(item)">@item</li>
+                            <li class="custom-dropdown-item dropdown-item" @onclick="() => AppSettings.Instance.SwapStylesheet(item)">@item</li>
                         }
                     </ul>
                 </div>

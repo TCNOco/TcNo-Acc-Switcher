@@ -24,6 +24,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General;
+using TcNo_Acc_Switcher_Server.Shared.Toast;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -106,7 +107,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// </summary>
         public static void LoadDefault()
         {
-            _ = Load("en-US");
+            Load("en-US");
         }
 
         /// <summary>
@@ -125,10 +126,10 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// Tries to load a requested language
         /// </summary>
         /// <param name="lang">Formatted language, example: "en-US"</param>
-        public static async Task<bool> LoadLang(string lang)
+        public static bool LoadLang(string lang)
         {
             LoadDefault();
-            return await Load(lang, true);
+            return Load(lang, true);
         }
 
         /// <summary>
@@ -148,7 +149,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             return new KeyValuePair<string, string>(new CultureInfo(Current).DisplayName, Current);
         }
 
-        public static async Task<bool> Load(string filename, bool save = false)
+        public static bool Load(string filename, bool save = false)
         {
             try
             {
@@ -199,8 +200,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
             catch (Exception e)
             {
-                await GeneralInvocableFuncs.ShowToast("error", "Can not load language information! See log for more info!", "Stylesheet error", "toastarea");
-                Globals.WriteToLog("Could not load language information!", e);
+                Globals.WriteToLog("Can not load language information! See log for more info!", e);
                 return false;
             }
         }

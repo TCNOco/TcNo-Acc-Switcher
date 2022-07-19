@@ -224,12 +224,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             return File.Exists(Path.Join(Desktop, $"{platform} - TcNo Account Switcher.lnk"));
         }
 
-        public static void DesktopShortcut_Toggle(string platform, bool desktopShortcut)
+        public static void DesktopShortcut_Toggle(string platform, bool desktopShortcut) =>
+            PlatformDesktopShortcut(Desktop, platform, AppSettings.GetPlatform(platform).Identifier, !desktopShortcut);
+
+        public static void PlatformDesktopShortcut(string location, string platform, string args, bool shouldExist, bool folderShouldExist = true)
         {
-            Globals.DebugWriteLine(@$"[Func:Data\Settings\Shared.DesktopShortcut_Toggle] platform={platform}");
             var s = new Shortcut();
-            _ = s.Shortcut_Platform(Desktop, platform, AppSettings.GetPlatform(platform).Identifier);
-            s.ToggleShortcut(!desktopShortcut);
+            _ = s.Shortcut_Platform(location, platform, args);
+            s.ToggleShortcut(shouldExist, folderShouldExist);
         }
         #endregion
 
