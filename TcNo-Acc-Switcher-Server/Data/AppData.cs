@@ -27,6 +27,7 @@ using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.Shared.Accounts;
+using TcNo_Acc_Switcher_Server.Shared.Toast;
 using Index = TcNo_Acc_Switcher_Server.Pages.Steam.Index;
 
 namespace TcNo_Acc_Switcher_Server.Data
@@ -151,6 +152,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         private bool _steamLoadingProfiles;
         public static bool SteamLoadingProfiles { get => Instance._steamLoadingProfiles; set => Instance._steamLoadingProfiles = value; }
         #endregion
+
 
         // Window stuff
         private string _windowTitle = "TcNo Account Switcher";
@@ -311,6 +313,40 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         [JsonIgnore] private bool _isCurrentlyExportingAccounts;
         public static bool IsCurrentlyExportingAccounts { get => Instance._isCurrentlyExportingAccounts; set => Instance._isCurrentlyExportingAccounts = value; }
+
+
+
+
+        // Toast stuff - This is the first attempt at properly using AppData as a Blazor DI Singleton.
+        public ObservableCollection<Toast> ToastQueue = new();
+        public void ShowToast(ToastType type, string title = "", string message = "", int duration = 5000)
+        {
+            var toastItem = new Toast(type, title, message);
+            Toast existing;
+            // If already exists, increment counter and re-add (Cancelling the task).
+            if ((existing = ToastQueue.FirstOrDefault(x => x is not null && x.Type == type && x.Title == title && x.Message == message)) is not null)
+            {
+                // Cancel existing and remove
+                existing.CancellationSource.Cancel();
+                ToastQueue.Remove(existing);
+                // Then add new, with duplicate counter and fresh timer.
+                toastItem.DuplicateCount += 1;
+            }
+            ToastQueue.Add(toastItem);
+            toastItem.RemoveSelf = Task.Run(() =>
+            {
+                Thread.Sleep(duration);
+                if (toastItem.Cancellation.IsCancellationRequested) return;
+                try
+                {
+                    ToastQueue.Remove(toastItem);
+                }
+                catch (Exception)
+                {
+                    //
+                }
+            }, toastItem.Cancellation);
+        }
     }
     public class InitializedClasses
     {

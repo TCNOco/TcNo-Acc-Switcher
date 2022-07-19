@@ -71,7 +71,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                         SaveSettings();
                     }
 
-                    LoadStylesheetFromFile().ConfigureAwait(true).GetAwaiter().GetResult();
+                    LoadStylesheetFromFile();
                     CheckShortcuts();
                     InitPlatformsList();
 
@@ -411,7 +411,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             ActiveTheme = swapTo.Replace(" ", "_");
             try
             {
-                if (await LoadStylesheetFromFile()) AppData.ReloadPage();
+                if (LoadStylesheetFromFile()) AppData.ReloadPage();
                 else await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_LoadStylesheetFailed"],
                     "Stylesheet error", "toastarea");
             }
@@ -425,7 +425,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Load stylesheet settings from stylesheet file.
         /// </summary>
-        public static async Task<bool> LoadStylesheetFromFile()
+        public static bool LoadStylesheetFromFile()
         {
             // This is the first function that's called, and sometimes fails if this is not reset after being changed previously.
             Directory.SetCurrentDirectory(Globals.UserDataFolder);
@@ -453,7 +453,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             try
             {
-                await LoadStylesheet();
+                LoadStylesheet();
             }
             catch (FileNotFoundException ex)
             {
@@ -502,7 +502,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         }
 
-        private static async Task LoadStylesheet()
+        private static void LoadStylesheet()
         {
             // Load new stylesheet
             var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
@@ -517,7 +517,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             StylesheetInfo = newSheet;
 
-            if (OperatingSystem.IsWindows() && WindowsAccent) await SetAccentColor();
+            if (OperatingSystem.IsWindows() && WindowsAccent) SetAccentColor();
         }
 
         /// <summary>

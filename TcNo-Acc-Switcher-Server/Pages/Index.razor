@@ -19,6 +19,7 @@
 @using System.IO
 @using TcNo_Acc_Switcher_Globals
 @using TcNo_Acc_Switcher_Server.Shared.ContextMenu
+@using TcNo_Acc_Switcher_Server.Shared.Toast
 @inject IJSRuntime JsRuntime
 @{ AData.SetActiveIJsRuntime(JsRuntime); }
 @inject NavigationManager NavManager
@@ -114,6 +115,10 @@
         AppData.FirstLaunchCheck();
 
         AppStats.NewNavigation("/");
+
+
+
+        // TOAST TEST: AData.ShowToast(ToastType.Success, "Fast Message", "This message goes away quickly.");
     }
 
     #region Context menu
