@@ -97,7 +97,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
                     return;
                 }
                 if (SteamSwitcherFuncs.SteamSettingsValid()) AppData.NavigateTo("/Steam/");
-                else await GeneralInvocableFuncs.ShowModal(Lang["Toast_Steam_CantLocateLoginusers"]);
+                else AData.ShowToastLang(ToastType.Error, "Toast_Steam_CantLocateLoginusers");
                 return;
             }
 

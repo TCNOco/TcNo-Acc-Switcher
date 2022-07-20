@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
+using TcNo_Acc_Switcher_Server.Shared.Modal;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Basic
 {
@@ -38,10 +39,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
         #region SETTINGS_GENERAL
         // BUTTON: Pick folder
-        public async Task PickFolder()
+        public void PickFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Basic\Settings.razor.cs.PickFolder]");
-            await GeneralInvocableFuncs.ShowModal("find:Basic:BasicGamesLauncher.exe:BasicSettings");
+            ModalFuncs.ShowUpdatePlatformFolderModal();
         }
 
         // BUTTON: Reset settings

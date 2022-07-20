@@ -234,10 +234,10 @@
 
 @code
 {
-    public async Task SetPassword()
+    public void SetPassword()
     {
         Globals.DebugWriteLine(@"[ButtonClicked:SharedSettings.razor/SetPassword]");
-        await GeneralInvocableFuncs.ShowModal("setAppPassword");
+        ModalFuncs.ShowSetAppPasswordModal();
     }
 
     private void TrySetUserData()

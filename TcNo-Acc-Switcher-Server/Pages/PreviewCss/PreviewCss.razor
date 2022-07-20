@@ -23,6 +23,7 @@
 @inject IJSRuntime JsRuntime
 @{ AppData.SetActiveIJsRuntime(JsRuntime); }
 @inject Lang Locale
+@inject AppData AData
 
 <div class="container mainblock">
     <div class="row">
@@ -204,11 +205,11 @@
         <div class="row">
             <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
                 <div class="buttoncol">
-                    <button id="Steam_PickFolder" type="button" @onclick='async () => await GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings")'><span>@Locale["Settings_PickFolder", new {platform = "Steam"}]</span></button>
+                    <button id="Steam_PickFolder" type="button" @onclick="ModalFuncs.ShowUpdatePlatformFolderModal"><span>@Locale["Settings_PickFolder", new {platform = "Steam"}]</span></button>
                     <button id="RestartAsAdmin" type="button" @onclick='() => ModalData.ShowModal("confirm", ModalData.ExtraArg.RestartAsAdmin)'><span>@Locale["Button_RestartAdmin"]</span></button>
                 </div>
                 <div class="buttoncol">
-                    <button id="Info" type="button" @onclick='async () => await GeneralInvocableFuncs.ShowModal("info")'><span>@Locale["Tooltip_Info"]</span></button>
+                    <button id="Info" type="button" @onclick='() => ModalData.ShowModal("info")'><span>@Locale["Tooltip_Info"]</span></button>
                     <button id="crowdin" type="button" @onclick='() => ModalData.ShowModal("crowdin")'><span>@Locale["Modal_Crowdin_Header"]</span></button>
                 </div>
                 <div class="buttoncol">
@@ -216,7 +217,7 @@
                     <button id="ShowStats" type="button" @onclick='() => ModalData.ShowModal("showStats")'><span>@Locale["Settings_ViewStats"]</span></button>
                 </div>
                 <div class="buttoncol">
-                    <button id="changeUsername" type="button" @onclick='async () => await GeneralInvocableFuncs.ShowModal("changeUsername")'><span>@Locale["Context_ChangeName"]</span></button>
+                    <button id="changeUsername" type="button" @onclick="ModalFuncs.ShowChangeUsernameModal"><span>@Locale["Context_ChangeName"]</span></button>
                 </div>
             </div>
         </div>

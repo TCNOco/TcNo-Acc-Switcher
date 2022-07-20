@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
+using TcNo_Acc_Switcher_Server.Shared.Modal;
 using TcNo_Acc_Switcher_Server.Shared.Toast;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Steam
@@ -33,10 +34,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
         #region SETTINGS_GENERAL
         // BUTTON: Pick folder
-        public async Task PickFolder()
+        public void PickFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.PickFolder]");
-            await GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
+            ModalFuncs.ShowUpdatePlatformFolderModal();
         }
 
         // BUTTON: Check account VAC status

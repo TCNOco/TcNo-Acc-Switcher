@@ -37,6 +37,7 @@ using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
+using TcNo_Acc_Switcher_Server.Shared.Modal;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General
 {
@@ -823,10 +824,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             // Clear cache reload
             var queries = QueryHelpers.ParseQuery(uri.Query);
             // cacheReload handled in JS
-
-            //Modal
-            if (queries.TryGetValue("modal", out var modalValue))
-                foreach (var stringValue in modalValue) await GeneralInvocableFuncs.ShowModal(Uri.UnescapeDataString(stringValue));
 
             // Toast
             if (!queries.TryGetValue("toast_type", out var toastType) ||
