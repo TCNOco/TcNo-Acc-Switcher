@@ -39,7 +39,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
     public class SteamSwitcherFuncs
     {
-        private static readonly Lang Lang = Lang.Instance;
+        private static readonly Lang Lang = Lang;
 
         #region STEAM_SWITCHER_MAIN
         // Checks if Steam path set properly, and can load.
@@ -844,7 +844,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                         Lang["Toast_StartingPlatformFailed", new {platform = "Steam"}], renderTo: "toastarea");
             }
 
-            if (SteamSettings.AutoStart && AppSettings.MinimizeOnSwitch) await AppData.InvokeVoidAsync("hideWindow");
+            if (SteamSettings.AutoStart && AppSettings.Instance.MinimizeOnSwitch) await AppData.InvokeVoidAsync("hideWindow");
 
             NativeFuncs.RefreshTrayArea();
             await AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);

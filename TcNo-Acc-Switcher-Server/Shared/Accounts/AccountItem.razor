@@ -76,7 +76,7 @@
                 var gameStats = game.Value;
                 foreach (var gameStat in gameStats)
                 {
-                    @if (!AppSettings.GloballyHiddenMetrics[gameName][gameStat.Key])
+                    @if (!AppSettings.Instance.GloballyHiddenMetrics[gameName][gameStat.Key])
                     {
                         <h6 class="acc_stat">@(new MarkupString(gameStat.Value.IndicatorMarkup + gameStat.Value.StatValue))</h6>
                     }

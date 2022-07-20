@@ -38,7 +38,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 {
     public class GeneralInvocableFuncs
     {
-        private static readonly Lang Lang = Lang.Instance;
+        private static readonly Lang Lang = Lang;
 
         /// <summary>
         /// JS function handler for saving settings from Settings GUI page into [Platform]Settings.json file
@@ -190,7 +190,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             await s.CreateCombinedIcon(bgImg, fgImg, $"{AppData.SelectedAccountId}.ico");
             s.TryWrite();
 
-            if (AppSettings.StreamerModeTriggered)
+            if (AppSettings.Instance.StreamerModeTriggered)
                 await ShowToast("success", Lang["Toast_ShortcutCreated"], Lang["Success"], "toastarea");
             else
                 await ShowToast("success", Lang["ForName", new { name = AppData.SelectedAccount.DisplayName }], Lang["Toast_ShortcutCreated"], "toastarea");
@@ -200,12 +200,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         public static string PlatformUserModalCopyText() => CurrentPlatform.GetUserModalCopyText;
         [JSInvokable]
         public static string PlatformHintText() => CurrentPlatform.GetUserModalHintText();
-
-        [JSInvokable]
-        public static string GiLocale(string k) => Lang.Instance[k];
-
-        [JSInvokable]
-        public static string GiLocaleObj(string k, object obj) => Lang.Instance[k, obj];
 
 
         [JSInvokable]

@@ -27,7 +27,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 {
     public partial class Settings
     {
-        private static readonly Lang Lang = Lang.Instance;
         [Inject]
         public AppData AppData { get; set; }
         protected override void OnInitialized()
@@ -45,7 +44,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         }
 
         // BUTTON: Reset settings
-        public static void ClearSettings()
+        public void ClearSettings()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Basic\Settings.razor.cs.ClearSettings]");
             Data.Settings.Basic.ResetSettings();
@@ -184,7 +183,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         /// <summary>
         /// Runs async so the previous function can return, and an error isn't thrown with the Blazor function timeout
         /// </summary>
-        private static async Task FinishBackup(string tempFolder)
+        private async Task FinishBackup(string tempFolder)
         {
 
             var folderSize = Globals.FolderSizeString(tempFolder);
@@ -202,8 +201,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             {
                 if (e is FileNotFoundException && e.ToString().Contains("7z.dll"))
                 {
-                    await GeneralInvocableFuncs.ShowToast("error", Lang["Error_RequiredFileVerify"],
-                        "Stylesheet error", "toastarea");
+                    await GeneralInvocableFuncs.ShowToast("error", Lang["Error_RequiredFileVerify"], "toastarea");
                 }
             }
 
@@ -216,7 +214,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         /// <summary>
         /// Keeps the user updated with compression progress
         /// </summary>
-        private static async Task CompressionUpdater(string zipFile)
+        private async Task CompressionUpdater(string zipFile)
         {
             Thread.Sleep(3500);
             while (_currentlyBackingUp)

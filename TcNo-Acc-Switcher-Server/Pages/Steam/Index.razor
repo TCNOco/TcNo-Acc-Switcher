@@ -17,6 +17,7 @@
 @using TcNo_Acc_Switcher_Server.Data.Settings
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using System.IO
+@using TcNo_Acc_Switcher_Server.Data.Interfaces
 @using TcNo_Acc_Switcher_Server.Shared.Accounts
 @using TcNo_Acc_Switcher_Server.Shared.ContextMenu
 @inject AppData AData
@@ -25,9 +26,8 @@
 @inject NavigationManager NavManager
 @{ AData.SetActiveNavMan(NavManager); }
 
-<style>@(AppSettings.GetCssBlock())</style>
 <style>@(Steam.GetSteamIdCssBlock())</style>
-@inject Lang Locale
+@inject ILang Lang
 <ContextMenu MenuItems="@Steam.Menu" ContextMenuId="AccOrPlatList" @ref="SteamContextMenu" />
 <ContextMenu MenuItems="@Basic.ContextMenuShortcutItems" ContextMenuId="Shortcuts" />
 <ContextMenu MenuItems="@Basic.ContextMenuPlatformItems" ContextMenuId="Platform" />
@@ -45,7 +45,7 @@
             }
         }
     </div>
-    <button id="btnOpenShortcutFolder" @onclick="() => Basic.OpenFolder(Path.GetFullPath(Steam.ShortcutFolder))" data-toggle="tooltip" title="@(Locale["Tooltip_ShortcutFolder"])" data-placement="right"><i class="fas fa-plus"></i></button>
+    <button id="btnOpenShortcutFolder" @onclick="() => Basic.OpenFolder(Path.GetFullPath(Steam.ShortcutFolder))" data-toggle="tooltip" title="@(Lang["Tooltip_ShortcutFolder"])" data-placement="right"><i class="fas fa-plus"></i></button>
 </div>
 
 <div class="acc_list_actionbar">
@@ -62,7 +62,7 @@
                 }
             }
         </div>
-        <button id="shortcutDropdownBtn" onclick="shortcutDropdownBtnClick()" data-toggle="tooltip" title="@(Locale["Tooltip_ExpandShortcuts"])" data-placement="right"><i class="fas fa-chevron-up"></i></button>
+        <button id="shortcutDropdownBtn" onclick="shortcutDropdownBtnClick()" data-toggle="tooltip" title="@(Lang["Tooltip_ExpandShortcuts"])" data-placement="right"><i class="fas fa-chevron-up"></i></button>
 
         <button id="btnStartPlat" @onclick='() => Basic.RunPlatform(Steam.Exe(), Steam.Admin, "", "Steam", Steam.StartingMethod)' data-toggle="tooltip" title="Steam">
             <img src="@(Steam.GetShortcutImagePath("Steam"))" alt="Start platform"/>
@@ -70,17 +70,17 @@
 
         <button id="btnAddNew" @onclick="() => AppFuncs.SwapToNewAccount()">
             <i class="fas fa-plus footerIcoInline"></i>
-            <span>@Locale["Button_AddNew"]</span>
+            <span>@Lang["Button_AddNew"]</span>
         </button>
         <button class="btn_login" id="btnLogin" @onclick="() => AppFuncs.SwapToAccount()">
-            <span>@Locale["Button_Login"]</span>
+            <span>@Lang["Button_Login"]</span>
             <i class="fas fa-caret-right footerIcoInline"></i>
         </button>
 
-        <button class="btnSettings" @onclick='() => AppData.NavigateTo("/Steam/Settings/")' data-toggle="tooltip" title="@(Locale["Tooltip_Settings"])">
+        <button class="btnSettings" @onclick='() => AppData.NavigateTo("/Steam/Settings/")' data-toggle="tooltip" title="@(Lang["Tooltip_Settings"])">
             <i class="fas fa-cog footerIcoSettings"></i>
         </button>
-        <button class="btnHelp" @onclick='() => ModalData.ShowModal("info")' data-toggle="tooltip" title="@(Locale["Tooltip_Info"])">
+        <button class="btnHelp" @onclick='() => ModalData.ShowModal("info")' data-toggle="tooltip" title="@(Lang["Tooltip_Info"])">
             <i class="fas fa-question footerIcoQuestion"></i>
         </button>
     </div>
@@ -112,7 +112,7 @@
     // This is run before everything is painted on, so that it can get the correct values for the CSS Block.
     protected override async Task OnParametersSetAsync()
     {
-        AppSettings.StreamerModeCheck();
+        AppSettings.Instance.StreamerModeCheck();
         await BasicStats.SetCurrentPlatform("Steam");
         //var f = AppSettings.UsingTcNoBrowser;
     }

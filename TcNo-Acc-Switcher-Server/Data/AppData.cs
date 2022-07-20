@@ -25,6 +25,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Data.Interfaces;
 using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.Shared.Accounts;
 using TcNo_Acc_Switcher_Server.Shared.Toast;
@@ -34,7 +35,8 @@ namespace TcNo_Acc_Switcher_Server.Data
 {
     public class AppData
     {
-        private static readonly Lang Lang = Lang.Instance;
+        [Inject] private ILang Lang { get; set; }
+        [Inject] private IAppStats AppStats { get; set; }
         private static AppData _instance = new();
 
         private static readonly object LockObj = new();
@@ -45,6 +47,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             {
                 lock (LockObj)
                 {
+                    //_currentStatus = Lang["Status_Init"];
                     return _instance ??= new AppData();
                 }
             }
@@ -66,14 +69,14 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// (Only one time) Checks for update, and submits statistics if enabled.
         /// </summary>
-        public static void FirstLaunchCheck()
+        public void FirstLaunchCheck()
         {
             if (!FirstLaunch) return;
             FirstLaunch = false;
             // Check for update in another thread
             // Also submit statistics, if enabled
             new Thread(() => AppSettings.Instance.CheckForUpdate()).Start();
-            if (AppSettings.StatsEnabled && AppSettings.StatsShare)
+            if (AppSettings.Instance.StatsEnabled && AppSettings.Instance.ShareAnonymousStats)
                 new Thread(AppStats.UploadStats).Start();
 
             // Discord integration
@@ -84,18 +87,18 @@ namespace TcNo_Acc_Switcher_Server.Data
             //DiscordClient.OnPresenceUpdate += (sender, e) => { Console.WriteLine("Received Update! {0}", e.Presence); };
         }
 
-        public static void RefreshDiscordPresenceAsync(bool firstLaunch)
+        public void RefreshDiscordPresenceAsync(bool firstLaunch)
         {
             if (!firstLaunch && DiscordClient.CurrentUser is null) return;
             var dThread = new Thread(RefreshDiscordPresence);
             dThread.Start();
         }
 
-        public static void RefreshDiscordPresence()
+        public void RefreshDiscordPresence()
         {
             Thread.Sleep(1000);
 
-            if (!AppSettings.DiscordRpc)
+            if (!AppSettings.Instance.DiscordRpc)
             {
                 if (DiscordClient != null)
                 {
@@ -117,7 +120,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             else timestamp = DiscordClient.CurrentPresence.Timestamps;
 
             var state = "";
-            if (AppSettings.StatsEnabled && AppSettings.DiscordRpcShare)
+            if (AppSettings.Instance.StatsEnabled && AppSettings.Instance.DiscordRpcShareTotalSwitches)
             {
                 AppStats.GenerateTotals();
                 state = Lang["Discord_StatusDetails", new { number = AppStats.SwitcherStats["_Total"].Switches }];
@@ -168,7 +171,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
         }
 
-        private string _currentStatus = Lang["Status_Init"];
+        private string _currentStatus;
         public static string CurrentStatus
         {
             get => Instance._currentStatus;
@@ -351,13 +354,13 @@ namespace TcNo_Acc_Switcher_Server.Data
         public void ShowToast(ToastType type, string message, int duration = 5000) =>
             ShowToast(type, "", message, duration);
         public void ShowToastLang(ToastType type, string titleVar, string messageVar, int duration = 5000) =>
-            ShowToast(type, Lang.Instance[titleVar], Lang.Instance[messageVar], duration);
+            ShowToast(type, Lang[titleVar], Lang[messageVar], duration);
         public void ShowToastLang(ToastType type, string messageVar, int duration = 5000) =>
-            ShowToast(type, "", Lang.Instance[messageVar], duration);
+            ShowToast(type, "", Lang[messageVar], duration);
         public void ShowToastLang(ToastType type, string titleVar, LangSub message, int duration = 5000) =>
-            ShowToast(type, Lang.Instance[titleVar], Lang.Instance[message.LangKey, message.Variable], duration);
+            ShowToast(type, Lang[titleVar], Lang[message.LangKey, message.Variable], duration);
         public void ShowToastLang(ToastType type, LangSub message, int duration = 5000) =>
-            ShowToast(type, "", Lang.Instance[message.LangKey, message.Variable], duration);
+            ShowToast(type, "", Lang[message.LangKey, message.Variable], duration);
     }
 
     public class LangSub

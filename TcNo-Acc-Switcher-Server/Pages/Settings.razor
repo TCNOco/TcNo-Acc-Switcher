@@ -15,13 +15,16 @@
 @page "/Settings"
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Globals
+@using TcNo_Acc_Switcher_Server.Data.Interfaces
+@using TcNo_Acc_Switcher_Server.State.Interfaces
 @namespace TcNo_Acc_Switcher_Server.Pages
 @inject NavigationManager NavManager
 @inject AppData AData
 @{ AData.SetActiveNavMan(NavManager); }
 @inject IJSRuntime JsRuntime
 @{ AData.SetActiveIJsRuntime(JsRuntime); }
-@inject Lang Locale
+@inject ILang Lang
+@inject IStylesheetSettings StylesheetSettings;
 
 <div class="container mainblock">
     <div class="row">
@@ -29,7 +32,7 @@
             <div class="toastarea"></div>
             <SharedSettings />
 
-            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Locale["Button_Close"]</span></button></div>
+            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Lang["Button_Close"]</span></button></div>
         </div>
     </div>
 </div>
@@ -55,8 +58,9 @@
 
     protected override void OnInitialized()
     {
-        AppData.WindowTitle = Lang.Instance["Title_Settings"];
+        AppData.WindowTitle = Lang["Title_Settings"];
         Globals.DebugWriteLine(@"[Auto:Settings.razor.cs.OnInitializedAsync]");
+        StylesheetSettings.Updated += () => InvokeAsync(StateHasChanged);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

@@ -14,42 +14,46 @@
 
 @page "/Settings/PreviewCss/"
 @using TcNo_Acc_Switcher_Server.Data
+@using TcNo_Acc_Switcher_Server.Data.Interfaces
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using TcNo_Acc_Switcher_Server.Shared.ContextMenu
 @using TcNo_Acc_Switcher_Server.Shared.Modal
+@using TcNo_Acc_Switcher_Server.State.Interfaces
 @namespace TcNo_Acc_Switcher_Server.Pages.PreviewCss
 @inject NavigationManager NavManager
 @{ AppData.SetActiveNavMan(NavManager); }
 @inject IJSRuntime JsRuntime
 @{ AppData.SetActiveIJsRuntime(JsRuntime); }
-@inject Lang Locale
+@inject ILang Lang
+@inject AppData AData
+@inject IStylesheetSettings StylesheetSettings
 
 <div class="container mainblock">
     <div class="row">
         <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
-            <h1 class="SettingsHeader">@Locale["Settings_PreviewCssHeader"]</h1>
-            <p>@Locale["Settings_PreviewCss"]</p>
+            <h1 class="SettingsHeader">@Lang["Settings_PreviewCssHeader"]</h1>
+            <p>@Lang["Settings_PreviewCss"]</p>
             <div class="rowSetting rowDropdown">
-                <span>@Locale["Settings_CurrentStyle"]</span>
+                <span>@Lang["Settings_CurrentStyle"]</span>
                 <div class="dropdown">
                     <button class="dropdown-toggle" type="button" data-toggle="dropdown">
-                        @AppSettings.StylesheetInfo["name"]
+                        @StylesheetSettings.StylesheetInfo["name"]
                         <span class="caret"></span>
                     </button>
                     <ul class="custom-dropdown-menu dropdown-menu">
-                        @foreach (var item in AppSettings.GetStyleList())
+                        @foreach (var item in StylesheetSettings.GetStyleList())
                         {
-                            <li class="custom-dropdown-item dropdown-item" @onclick="() => AppSettings.Instance.SwapStylesheet(item)">@item</li>
+                            <li class="custom-dropdown-item dropdown-item" @onclick="() => StylesheetSettings.SwapStylesheet(item)">@item</li>
                         }
                     </ul>
                 </div>
             </div>
-            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="AppData.NavigateUpOne"><span>@Locale["Button_Back"]</span></button></div>
+            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="AppData.NavigateUpOne"><span>@Lang["Button_Back"]</span></button></div>
         </div>
     </div>
 
 
-    <h2 class="SettingsHeader">@Locale["Preview_Platforms"]</h2>
+    <h2 class="SettingsHeader">@Lang["Preview_Platforms"]</h2>
     <div class="preview_element">
         <ContextMenu MenuItems="@Data.Settings.Basic.ContextMenuItems" ContextMenuId="AccOrPlatList" />
         <ContextMenu MenuItems="@Data.Settings.Basic.ContextMenuShortcutItems" ContextMenuId="Shortcuts" />
@@ -84,7 +88,7 @@
     </div>
 
 
-    <h2 class="SettingsHeader">@Locale["Preview_Accounts"]</h2>
+    <h2 class="SettingsHeader">@Lang["Preview_Accounts"]</h2>
     <div class="preview_element previewMain">
         <div id="acc_list" class="acc_list" style="grid-template-rows: repeat(auto-fill, 135px)" aria-dropeffect="move">
             <div class="acc_list_item preview_list_item" data-toggle="tooltip" draggable="true" role="option" aria-grabbed="false" title="" data-placement="right" data-original-title="You are currently logged into this account.">
@@ -161,7 +165,7 @@
     </div>
 
 
-    <h2 class="SettingsHeader">@Locale["Preview_Notifications"]</h2>
+    <h2 class="SettingsHeader">@Lang["Preview_Notifications"]</h2>
     <div class="preview_element">
         <div class="notification-container bottom-right">
             <div class="notification top-border success" style="opacity: 1;">
@@ -198,54 +202,54 @@
     </div>
 
 
-    <h2 class="SettingsHeader">@Locale["Preview_Modals"]</h2>
+    <h2 class="SettingsHeader">@Lang["Preview_Modals"]</h2>
 <div class="preview_element">
     <div class="container mainblock">
         <div class="row">
             <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
                 <div class="buttoncol">
-                    <button id="Steam_PickFolder" type="button" @onclick='async () => await GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings")'><span>@Locale["Settings_PickFolder", new {platform = "Steam"}]</span></button>
-                    <button id="RestartAsAdmin" type="button" @onclick='() => ModalData.ShowModal("confirm", ModalData.ExtraArg.RestartAsAdmin)'><span>@Locale["Button_RestartAdmin"]</span></button>
+                    <button id="Steam_PickFolder" type="button" @onclick='async () => await GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings")'><span>@Lang["Settings_PickFolder", new {platform = "Steam"}]</span></button>
+                    <button id="RestartAsAdmin" type="button" @onclick='() => ModalData.ShowModal("confirm", ModalData.ExtraArg.RestartAsAdmin)'><span>@Lang["Button_RestartAdmin"]</span></button>
                 </div>
                 <div class="buttoncol">
-                    <button id="Info" type="button" @onclick='async () => await GeneralInvocableFuncs.ShowModal("info")'><span>@Locale["Tooltip_Info"]</span></button>
-                    <button id="crowdin" type="button" @onclick='() => ModalData.ShowModal("crowdin")'><span>@Locale["Modal_Crowdin_Header"]</span></button>
+                    <button id="Info" type="button" @onclick='async () => await GeneralInvocableFuncs.ShowModal("info")'><span>@Lang["Tooltip_Info"]</span></button>
+                    <button id="crowdin" type="button" @onclick='() => ModalData.ShowModal("crowdin")'><span>@Lang["Modal_Crowdin_Header"]</span></button>
                 </div>
                 <div class="buttoncol">
-                    <button id="SetBackground" type="button" @onclick="ModalFuncs.ShowSetBackgroundModal"><span>@Locale["Modal_SetBackground_Button"]</span></button>
-                    <button id="ShowStats" type="button" @onclick='() => ModalData.ShowModal("showStats")'><span>@Locale["Settings_ViewStats"]</span></button>
+                    <button id="SetBackground" type="button" @onclick="ModalFuncs.ShowSetBackgroundModal"><span>@Lang["Modal_SetBackground_Button"]</span></button>
+                    <button id="ShowStats" type="button" @onclick='() => ModalData.ShowModal("showStats")'><span>@Lang["Settings_ViewStats"]</span></button>
                 </div>
                 <div class="buttoncol">
-                    <button id="changeUsername" type="button" @onclick='async () => await GeneralInvocableFuncs.ShowModal("changeUsername")'><span>@Locale["Context_ChangeName"]</span></button>
+                    <button id="changeUsername" type="button" @onclick='async () => await GeneralInvocableFuncs.ShowModal("changeUsername")'><span>@Lang["Context_ChangeName"]</span></button>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-    <h2 class="SettingsHeader">@Locale["Preview_Settings"]</h2>
+    <h2 class="SettingsHeader">@Lang["Preview_Settings"]</h2>
     <div class="preview_element">
         <div class="container mainblock">
 	        <div class="row">
                 <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
-                    <div class="form-text"><span>@Locale["Settings_ImageExpiry"]</span><input type="number" id="Steam_ImageExpiryTime" min="0" max="365" /></div>
+                    <div class="form-text"><span>@Lang["Settings_ImageExpiry"]</span><input type="number" id="Steam_ImageExpiryTime" min="0" max="365" /></div>
                     <div class="rowSetting">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="StreamerMode" checked>
                             <label class="form-check-label" for="StreamerMode"></label>
                         </div>
-                        <label for="StreamerMode">@Locale["Settings_StreamerMode"]<br></label>
+                        <label for="StreamerMode">@Lang["Settings_StreamerMode"]<br></label>
                     </div>
 
                     <h2 class="SettingsHeader">Program</h2>
                     <div class="rowSetting rowDropdown">
-                        <span>@Locale["Settings_Header_ActiveBrowser"]</span>
+                        <span>@Lang["Settings_Header_ActiveBrowser"]</span>
                         <div class="dropdown">
                             <ul class="custom-dropdown-menu dropdown-menu">
                                 <li class="custom-dropdown-item dropdown-item">WebView</li>
                                 <li class="custom-dropdown-item dropdown-item">CEF</li>
                             </ul>
-                            <button class="dropdown-toggle" type="button" data-toggle="dropdown">@AppSettings.ActiveBrowser
+                            <button class="dropdown-toggle" type="button" data-toggle="dropdown">@AppSettings.Instance.ActiveBrowser
                                 <span class="caret"></span>
                             </button>
                         </div>
@@ -255,14 +259,14 @@
                             <input class="form-check-input" type="checkbox" id="TrayMinimizeNotExit">
                             <label class="form-check-label" for="TrayMinimizeNotExit"></label>
                         </div>
-                        <label for="TrayMinimizeNotExit">@Locale["Settings_ExitToTray"]<br></label>
+                        <label for="TrayMinimizeNotExit">@Lang["Settings_ExitToTray"]<br></label>
                     </div>
                     <div class="rowSetting">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="AppSett_MinimizeOnSwitch">
                             <label class="form-check-label" for="AppSett_MinimizeOnSwitch"></label>
                         </div>
-                        <label for="AppSett_MinimizeOnSwitch">@Locale["Settings_MinimizeOnSwitch"]<br></label>
+                        <label for="AppSett_MinimizeOnSwitch">@Lang["Settings_MinimizeOnSwitch"]<br></label>
                     </div>
                 </div>
 	        </div>

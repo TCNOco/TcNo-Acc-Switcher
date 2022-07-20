@@ -23,8 +23,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
     public partial class Settings
     {
-        private static readonly Lang Lang = Lang.Instance;
-
         protected override void OnInitialized()
         {
             AppData.WindowTitle = Lang["Title_Steam_Settings"];
@@ -50,7 +48,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
 
         // BUTTON: Reset settings
-        public static void ClearSettings()
+        public void ClearSettings()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearSettings]");
             Data.Settings.Steam.ResetSettings();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Win32;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
@@ -54,7 +55,7 @@ namespace TcNo_Acc_Switcher_Server.Shared
                     Registry.ClassesRoot.DeleteSubKeyTree("tcno");
                     AData.ShowToastLang(ToastType.Success, "Toast_ProtocolDisabledTitle", "Toast_ProtocolDisabled");
                 }
-                AppSettings.ProtocolEnabled = SharedStaticFuncs.Protocol_IsEnabled();
+                AppSettings.Instance.ProtocolEnabled = SharedStaticFuncs.Protocol_IsEnabled();
             }
             catch (UnauthorizedAccessException)
             {
@@ -74,7 +75,7 @@ namespace TcNo_Acc_Switcher_Server.Shared
             {
                 var platformsFolder = Path.Join(Shortcut.StartMenu, "Platforms");
                 if (Directory.Exists(platformsFolder)) Globals.RecursiveDelete(Path.Join(Shortcut.StartMenu, "Platforms"), false);
-                else if (!AppSettings.StartMenuPlatforms) return;
+                else if (!AppSettings.Instance.StartMenuPlatforms) return;
 
                 _ = Directory.CreateDirectory(platformsFolder);
                 foreach (var platform in AppSettings.Platforms)
@@ -85,10 +86,10 @@ namespace TcNo_Acc_Switcher_Server.Shared
             // Only create these shortcuts of requested, by setting platforms to false.
             var s = new Shortcut();
             _ = s.Shortcut_Switcher(Shortcut.StartMenu);
-            s.ToggleShortcut(!AppSettings.StartMenu, false);
+            s.ToggleShortcut(!AppSettings.Instance.StartMenu, false);
 
             _ = s.Shortcut_Tray(Shortcut.StartMenu);
-            s.ToggleShortcut(!AppSettings.StartMenu, false);
+            s.ToggleShortcut(!AppSettings.Instance.StartMenu, false);
         }
 
         /// <summary>
@@ -99,22 +100,21 @@ namespace TcNo_Acc_Switcher_Server.Shared
             Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.DesktopShortcut_Toggle]");
             var s = new Shortcut();
             _ = s.Shortcut_Switcher(Shortcut.Desktop);
-            s.ToggleShortcut(!AppSettings.StartMenu);
+            s.ToggleShortcut(!AppSettings.Instance.StartMenu);
         }
 
         /// <summary>
         /// Toggle using the Windows highlight as in-app highlight
         /// </summary>
-        public static void WindowsAccent_Toggle()
+        public void WindowsAccent_Toggle()
         {
             if (!OperatingSystem.IsWindows()) return;
-            if (!AppSettings.WindowsAccent)
-                AppSettings.SetAccentColor(true);
+            if (!StylesheetSettings.WindowsAccent)
+                StylesheetSettings.SetAccentColor(true);
             else
-            {
-                AppSettings.WindowsAccentColor = "";
-                AppData.ReloadPage();
-            }
+                StylesheetSettings.WindowsAccentColor = "";
+
+            StylesheetSettings.NotifyDataChanged();
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace TcNo_Acc_Switcher_Server.Shared
         /// </summary>
         public void SetActiveBrowser(string browser)
         {
-            AppSettings.ActiveBrowser = browser;
+            AppSettings.Instance.ActiveBrowser = browser;
             AData.ShowToastLang(ToastType.Info, "Notice", "Toast_RestartRequired");
         }
 
@@ -132,11 +132,11 @@ namespace TcNo_Acc_Switcher_Server.Shared
         public void TrayMinimizeNotExit_Toggle()
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.TrayMinimizeNotExit_Toggle]");
-            if (AppSettings.TrayMinimizeNotExit) return;
+            if (AppSettings.Instance.TrayMinimizeNotExit) return;
             AData.ShowToastLang(ToastType.Info, "Toast_TrayPosition", 15000);
             AData.ShowToastLang(ToastType.Info, "Toast_TrayHint", 15000);
         }
 
-        public static void AutoStart_Toggle() => Shortcut.StartWithWindows_Toggle(!AppSettings.TrayStartup);
+        public static void AutoStart_Toggle() => Shortcut.StartWithWindows_Toggle(!AppSettings.Instance.TrayStartup);
     }
 }

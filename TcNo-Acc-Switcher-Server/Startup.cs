@@ -15,6 +15,7 @@
 using System;
 using System.IO;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -23,12 +24,16 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.Data.Interfaces;
 using TcNo_Acc_Switcher_Server.Data.Settings;
+using TcNo_Acc_Switcher_Server.State;
+using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server
 {
     public class Startup
     {
+        [Inject] private ILang Lang { get; set; }
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -42,7 +47,6 @@ namespace TcNo_Acc_Switcher_Server
         {
             // Crash handler
             AppDomain.CurrentDomain.UnhandledException += Globals.CurrentDomain_UnhandledException;
-            AppDomain.CurrentDomain.ProcessExit += CurrentDomain_OnProcessExit;
             _ = services.AddControllers();
 
             _ = services.AddRazorPages();
@@ -52,7 +56,6 @@ namespace TcNo_Acc_Switcher_Server
 
             // Persistent settings:
             _ = services.AddSingleton<AppSettings>();
-            _ = services.AddSingleton<AppStats>();
             _ = services.AddSingleton<AppData>();
             _ = services.AddSingleton<ModalData>();
             _ = services.AddSingleton<BasicPlatforms>();
@@ -61,6 +64,9 @@ namespace TcNo_Acc_Switcher_Server
             _ = services.AddSingleton<Basic>();
             _ = services.AddSingleton<Steam>();
             _ = services.AddSingleton<Lang>();
+
+            _ = services.AddSingleton<IStylesheetSettings, StylesheetSettings>();
+            _ = services.AddSingleton<IAppStats, AppStats>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -110,21 +116,6 @@ namespace TcNo_Acc_Switcher_Server
                   _ = endpoints.MapBlazorHub();
                   _ = endpoints.MapFallbackToPage("/_Host");
               });
-
-            // Increment launch count. I don't know if this should be here, but it is.
-            AppStats.LaunchCount++;
-        }
-
-        public static void CurrentDomain_OnProcessExit(object sender, EventArgs e)
-        {
-            try
-            {
-                AppStats.SaveSettings();
-            }
-            catch (Exception)
-            {
-                // Do nothing, just close.
-            }
         }
 
         private static void MoveIfFileExists(string f)

@@ -19,9 +19,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Data.Interfaces;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Shared;
@@ -33,7 +35,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
     public class Basic
     {
-        private static readonly Lang Lang = Lang.Instance;
+        [Inject] private ILang Lang { get; set; }
+        [Inject] private IAppStats AppStats { get; set; }
         private static Basic _instance = new();
 
         private static readonly object LockObj = new();
@@ -242,7 +245,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             Globals.StartProgram(Exe(), Admin, CurrentPlatform.ExeExtraArgs, CurrentPlatform.StartingMethod);
             await GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea");
         }
-        public static async Task RunShortcut(string s, string shortcutFolder = "", bool admin = false, string platform = "")
+        public async Task RunShortcut(string s, string shortcutFolder = "", bool admin = false, string platform = "")
         {
             AppStats.IncrementGameLaunches(platform);
 

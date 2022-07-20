@@ -24,9 +24,6 @@ if (winUrl.length > 1 && winUrl[1].indexOf("cacheReload") !== -1) {
     location.reload(true);
 }
 
-GetLang = async(k) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiLocale", k);
-GetLangSub = async(key, obj) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiLocaleObj", key, obj);
-
 
 // Take a string that is HTML escaped, and return a normal string back.
 unEscapeString = (s) => s.replace("&lt;", "<").replace("&gt;", ">").replace("&#34;", "\"").replace("&#39;", "'").replace("&#47;", "/");

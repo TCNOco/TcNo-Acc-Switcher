@@ -49,7 +49,7 @@ namespace TcNo_Acc_Switcher_Client
     {
         private static readonly Thread Server = new(RunServer);
         private static string _address = "";
-        private readonly string _mainBrowser = AppSettings.ActiveBrowser; // <CEF/WebView>
+        private readonly string _mainBrowser = AppSettings.Instance.ActiveBrowser; // <CEF/WebView>
 
         private static void RunServer()
         {
@@ -64,7 +64,7 @@ namespace TcNo_Acc_Switcher_Client
             while (!Program.MainProgram(new[] { _address, "nobrowser" }) && attempts < 10)
             {
                 Program.NewPort();
-                _address = "--urls=http://localhost:" + AppSettings.ServerPort + "/";
+                _address = "--urls=http://localhost:" + AppSettings.Instance.ServerPort + "/";
                 attempts++;
             }
             if (attempts == 10)
@@ -92,7 +92,7 @@ namespace TcNo_Acc_Switcher_Client
             }
 
             Program.FindOpenPort();
-            _address = "--urls=http://localhost:" + AppSettings.ServerPort + "/";
+            _address = "--urls=http://localhost:" + AppSettings.Instance.ServerPort + "/";
 
             AppData.TcNoClientApp = true;
 
@@ -118,19 +118,19 @@ namespace TcNo_Acc_Switcher_Client
             {
                 _cefView.BrowserSettings.WindowlessFrameRate = 60;
                 _cefView.Visibility = Visibility.Visible;
-                _cefView.Load("http://localhost:" + AppSettings.ServerPort + "/");
+                _cefView.Load("http://localhost:" + AppSettings.Instance.ServerPort + "/");
             }
 
             MainBackground.Background = App.GetStylesheetColor("headerbarBackground", "#253340");
 
-            Width = AppSettings.WindowSize.X;
-            Height = AppSettings.WindowSize.Y;
-            AllowsTransparency = AppSettings.AllowTransparency;
+            Width = AppSettings.Instance.WindowSize.X;
+            Height = AppSettings.Instance.WindowSize.Y;
+            AllowsTransparency = AppSettings.Instance.AllowTransparency;
             StateChanged += WindowStateChange;
             // Each window in the program would have its own size. IE Resize for Steam, and more.
 
             // Center:
-            if (!AppSettings.StartCentered) return;
+            if (!AppSettings.Instance.StartCentered) return;
             Left = (SystemParameters.PrimaryScreenWidth / 2) - (Width / 2);
             Top = (SystemParameters.PrimaryScreenHeight / 2) - (Height / 2);
         }
@@ -234,7 +234,7 @@ namespace TcNo_Acc_Switcher_Client
                 }
                 else
                 {
-                    AppSettings.ActiveBrowser = "WebView";
+                    AppSettings.Instance.ActiveBrowser = "WebView";
                     AppSettings.SaveSettings();
                     Restart();
                 }
@@ -352,7 +352,7 @@ namespace TcNo_Acc_Switcher_Client
                 await _mView2.EnsureCoreWebView2Async(env);
                 _mView2.CoreWebView2.Settings.UserAgent = "TcNo 1.0";
 
-                _mView2.Source = new Uri($"http://localhost:{AppSettings.ServerPort}/{App.StartPage}");
+                _mView2.Source = new Uri($"http://localhost:{AppSettings.Instance.ServerPort}/{App.StartPage}");
                 MViewAddForwarders();
                 _mView2.NavigationStarting += MViewUrlChanged;
                 _mView2.CoreWebView2.ProcessFailed += CoreWebView2OnProcessFailed;
@@ -381,7 +381,7 @@ namespace TcNo_Acc_Switcher_Client
                     if (await File.ReadAllTextAsync(failFile) == "1") await File.WriteAllTextAsync(failFile, "2");
                     else
                     {
-                        AppSettings.ActiveBrowser = "CEF";
+                        AppSettings.Instance.ActiveBrowser = "CEF";
                         AppSettings.SaveSettings();
                         _ = MessageBox.Show(
                             "WebView2 Runtime is not installed. The program will now download and use the fallback CEF browser. (Less performance, more compatibility)",
@@ -536,7 +536,7 @@ namespace TcNo_Acc_Switcher_Client
         protected override void OnClosing(CancelEventArgs e)
         {
             Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.OnClosing]");
-            AppSettings.WindowSize = new Point { X = Convert.ToInt32(Width), Y = Convert.ToInt32(Height) };
+            AppSettings.Instance.WindowSize = new Point { X = Convert.ToInt32(Width), Y = Convert.ToInt32(Height) };
             AppSettings.SaveSettings();
         }
 

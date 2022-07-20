@@ -149,8 +149,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             //// Get hidden metrics for this game
             //var hiddenMetrics = new List<string>();
-            //if (AppSettings.GloballyHiddenMetrics.ContainsKey(game))
-            //    hiddenMetrics = AppSettings.GloballyHiddenMetrics[game];
+            //if (AppSettings.Instance.GloballyHiddenMetrics.ContainsKey(game))
+            //    hiddenMetrics = AppSettings.Instance.GloballyHiddenMetrics[game];
 
             // Get list of all metrics and add to list.
             //var allMetrics = new Dictionary<string, Tuple<bool, string>>();
@@ -209,16 +209,16 @@ namespace TcNo_Acc_Switcher_Server.Data
             foreach (var game in GamesDict)
             {
                 // If game not on global settings list, add it to the list.
-                if (!AppSettings.GloballyHiddenMetrics.ContainsKey(game))
-                    AppSettings.GloballyHiddenMetrics.Add(game, new Dictionary<string, bool>());
+                if (!AppSettings.Instance.GloballyHiddenMetrics.ContainsKey(game))
+                    AppSettings.Instance.GloballyHiddenMetrics.Add(game, new Dictionary<string, bool>());
 
                 var allMetrics = statsDefinitions?[game]["Collect"]?.ToObject<Dictionary<string, JObject>>();
                 if (allMetrics is null) continue;
                 foreach (var key in allMetrics.Keys)
                 {
                     // Add to list if not there already.
-                    if (!AppSettings.GloballyHiddenMetrics[game].ContainsKey(key))
-                        AppSettings.GloballyHiddenMetrics[game].Add(key, false);
+                    if (!AppSettings.Instance.GloballyHiddenMetrics[game].ContainsKey(key))
+                        AppSettings.Instance.GloballyHiddenMetrics[game].Add(key, false);
 
                 }
 
@@ -226,8 +226,8 @@ namespace TcNo_Acc_Switcher_Server.Data
                 //foreach (var gameMetrics in GetAllMetrics(game))
                 //{
                 //    // Add to list if not there already.
-                //    if (!AppSettings.GloballyHiddenMetrics[game].ContainsKey(gameMetrics.Key))
-                //        AppSettings.GloballyHiddenMetrics[game].Add(gameMetrics.Key, false);
+                //    if (!AppSettings.Instance.GloballyHiddenMetrics[game].ContainsKey(gameMetrics.Key))
+                //        AppSettings.Instance.GloballyHiddenMetrics[game].Add(gameMetrics.Key, false);
                 //}
 
             }
@@ -394,7 +394,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             if (ToCollect != null)
                 foreach (var collectInstruction in ToCollect.Where(collectInstruction => collectInstruction.Key == "%PROFILEIMAGE%"))
-                    collectInstruction.Value.ToggleText = Lang.Instance["ProfileImage_ToggleText"];
+                    collectInstruction.Value.ToggleText = Lang["ProfileImage_ToggleText"];
 
             //foreach (var (k, v) in jGame["Collect"]?.ToObject<Dictionary<string, CollectInstruction>>()!)
             //{

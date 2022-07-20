@@ -20,10 +20,12 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
 using ImageMagick;
+using Microsoft.AspNetCore.Components;
 using SkiaSharp;
 using Svg.Skia;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
 {
@@ -32,7 +34,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
     /// </summary>
     public class IconFactory
     {
-        private static readonly Lang Lang = Lang.Instance;
+        private static readonly Lang Lang = Lang;
+        [Inject] private AppData AData { get; set; }
+        [Inject] private IStylesheetSettings StylesheetSettings { get; set; }
 
         #region FACTORY
         // https://stackoverflow.com/a/32530019/5165437
@@ -162,7 +166,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// <param name="sFgImg">User's profile image, for the foreground</param>
         /// <param name="icoOutput">Output filename</param>
         [SupportedOSPlatform("windows")]
-        public static void CreateIcon(string sBgImg, string sFgImg, ref string icoOutput)
+        public void CreateIcon(string sBgImg, string sFgImg, ref string icoOutput)
         {
             var ms = new MemoryStream();
             // If input is SVG, create PNG
@@ -190,7 +194,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
                 if (svgContent.Contains("id=\"FG\""))
                 {
                     // Set color of foreground content, and insert background image
-                    svgContent = svgContent.Replace("<path id=\"FG\"", $"<rect fill=\"{AppSettings.TryGetStyle("platformLogoBackground")}\" width=\"500\" height=\"500\"></rect>\"<path id=\"FG\" fill=\"{AppSettings.TryGetStyle("platformLogoForeground")}\"");
+                    svgContent = svgContent.Replace("<path id=\"FG\"", $"<rect fill=\"{StylesheetSettings.TryGetStyle("platformLogoBackground")}\" width=\"500\" height=\"500\"></rect>\"<path id=\"FG\" fill=\"{StylesheetSettings.TryGetStyle("platformLogoForeground")}\"");
                     // Add the glass effect
                     svgContent = svgContent.Replace("/></svg>", "/><path d=\"M500, 0L0, 0L0, 500L500, 0Z\" fill=\"#FFFFFF\" fill-opacity=\"0.02\"/></svg>");
                 }

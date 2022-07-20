@@ -18,24 +18,24 @@
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using TcNo_Acc_Switcher_Globals
+@using TcNo_Acc_Switcher_Server.Data.Interfaces
 @using TcNo_Acc_Switcher_Server.Shared.Toast
 @inject IJSRuntime JsRuntime
 @{ AData.SetActiveIJsRuntime(JsRuntime); }
 @inject NavigationManager NavManager
 @{ AData.SetActiveNavMan(NavManager); }
 @inject AppData AData
-
-@inject Lang Locale
+@inject ILang Lang
 
 <div class="container mainblock">
     <div class="row">
         <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
-            <h1 class="SettingsHeader">@Locale["Locked"]</h1>
-            <p>@Locale["Auth_LoginRequired"]</p>
-            <div class="form-text"><span>@Locale["Auth_EnterPassword"]</span><input type="password" id="password" @bind="_password" spellcheck="false"></div>
+            <h1 class="SettingsHeader">@Lang["Locked"]</h1>
+            <p>@Lang["Auth_LoginRequired"]</p>
+            <div class="form-text"><span>@Lang["Auth_EnterPassword"]</span><input type="password" id="password" @bind="_password" spellcheck="false"></div>
             <div class="buttoncol">
                 <button class="btn_login btn_app_login" id="btnLogin" type="button" @onclick="CheckPassword">
-                    <span>@Locale["Button_Login"]</span>
+                    <span>@Lang["Button_Login"]</span>
                     <i class="fas fa-caret-right footerIcoInline"></i>
                 </button>
             </div>
@@ -44,22 +44,22 @@
             <div class="linksList">
                 <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher');return false;" href="">
                     <svg viewBox="0 0 24 24" draggable="false" alt="GitHub" class="modalIcoGitHub"><use href="img/icons/ico_github.svg#icoGitHub"></use></svg>
-                    @Locale["Modal_Info_ViewGitHub"]
+                    @Lang["Modal_Info_ViewGitHub"]
                 </a>
                 <a onclick="OpenLinkInBrowser('https://s.tcno.co/AccSwitcherDiscord');return false;" href="">
                     <svg viewBox="0 0 24 24" draggable="false" alt="Discord" class="modalIcoDiscord"><use href="img/icons/ico_discord.svg#icoDiscord"></use></svg>
-                    @Locale["Modal_Info_BugReport"]
+                    @Lang["Modal_Info_BugReport"]
                 </a>
                 <a onclick="OpenLinkInBrowser('https://tcno.co');return false;" href="">
                     <svg viewBox="0 0 24 24" draggable="false" alt="Website" class="modalIcoNetworking"><use href="img/icons/ico_networking.svg#icoNetworking"></use></svg>
-                    @Locale["Modal_Info_VisitSite"]
+                    @Lang["Modal_Info_VisitSite"]
                 </a>
                 <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/DISCLAIMER.md');return false;" href="">
                     <svg viewBox="0 0 2084 2084" draggable="false" alt="GitHub" class="modalIcoDoc"><use href="img/icons/ico_doc.svg#icoDoc"></use></svg>
-                    @Locale["Modal_Info_Disclaimer"]
+                    @Lang["Modal_Info_Disclaimer"]
                 </a>
             </div>
-            <div class="mt-2"><span>@Locale["Modal_Info_Version"]: @Globals.Version</span></div>
+            <div class="mt-2"><span>@Lang["Modal_Info_Version"]: @Globals.Version</span></div>
         </div>
     </div>
 </div>
@@ -75,8 +75,8 @@
 
     private void CheckPassword()
     {
-        AppSettings.PasswordCurrent = Globals.GetSha256HashString(_password);
-        if (AppSettings.PasswordCurrent == AppSettings.PasswordHash)
+        AppSettings.Instance.PasswordCurrent = Globals.GetSha256HashString(_password);
+        if (AppSettings.Instance.PasswordCurrent == AppSettings.Instance.PasswordHash)
             NavManager.NavigateTo(ReturnUrl); // Success! Redirect user back.
         else
             AData.ShowToastLang(ToastType.Error, "Fast Message", "Auth_PassIncorrect");
@@ -89,6 +89,6 @@
 
 	protected override void OnAfterRender(bool firstRender)
 	{
-		AppData.WindowTitle = Locale["Title_Login"];
+		AppData.WindowTitle = Lang["Title_Login"];
 	}
 }

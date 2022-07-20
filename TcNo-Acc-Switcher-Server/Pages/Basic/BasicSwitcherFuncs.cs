@@ -32,7 +32,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 {
     public class BasicSwitcherFuncs
     {
-        private static readonly Lang Lang = Lang.Instance;
+        private static readonly Lang Lang = Lang;
 
         /// <summary>
         /// Main function for Basic Account Switcher. Run on load.
@@ -125,7 +125,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             if (BasicSettings.AutoStart)
                 BasicSettings.RunPlatform(BasicSettings.Exe(), BasicSettings.Admin, args, CurrentPlatform.FullName, CurrentPlatform.StartingMethod);
 
-            if (accName != "" && BasicSettings.AutoStart && AppSettings.MinimizeOnSwitch) await AppData.InvokeVoidAsync("hideWindow");
+            if (accName != "" && BasicSettings.AutoStart && AppSettings.Instance.MinimizeOnSwitch) await AppData.InvokeVoidAsync("hideWindow");
 
             NativeFuncs.RefreshTrayArea();
             await AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);

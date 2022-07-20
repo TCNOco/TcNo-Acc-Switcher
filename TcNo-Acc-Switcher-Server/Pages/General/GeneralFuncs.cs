@@ -42,7 +42,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 {
     public class GeneralFuncs
     {
-        private static readonly Lang Lang = Lang.Instance;
+        private static readonly Lang Lang = Lang;
 
         #region PROCESS_OPERATIONS
 
@@ -786,7 +786,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             {
                 AppData.WindowTitle = Lang["Title_AccountsList", new { platform }];
                 // Handle Streamer Mode notification
-                if (AppSettings.StreamerModeEnabled && AppSettings.StreamerModeTriggered)
+                if (AppSettings.Instance.StreamerModeEnabled && AppSettings.Instance.StreamerModeTriggered)
                     await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_StreamerModeHint"], Lang["Toast_StreamerModeTitle"], "toastarea");
 
                 // Handle loading accounts for specific platforms

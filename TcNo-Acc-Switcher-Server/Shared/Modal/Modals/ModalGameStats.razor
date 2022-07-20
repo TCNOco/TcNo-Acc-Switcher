@@ -33,14 +33,14 @@
     {
         if (ModalData.CurrentStatsSelectorState == ModalData.StatsSelectorState.GamesList)
         {
-            ModalData.Title = Lang.Instance["Modal_Title_GameStats"];
-            _editButtonText = Lang.Instance["Edit"];
-            _refreshButtonText = Lang.Instance["Refresh"];
+            ModalData.Title = Lang["Modal_Title_GameStats"];
+            _editButtonText = Lang["Edit"];
+            _refreshButtonText = Lang["Refresh"];
 
         }
         else if (ModalData.CurrentStatsSelectorState == ModalData.StatsSelectorState.VarsList)
         {
-            ModalData.Title = Lang.Instance["Modal_Title_GameVars", new { game = _currentGame }];
+            ModalData.Title = Lang["Modal_Title_GameVars", new { game = _currentGame }];
             CalcGameVars();
         }
 
@@ -123,7 +123,7 @@
 
     // Get list of metrics that are set to hidden from the settings menu. This overrides individual account settings.
     private List<string> GetGloballyHiddenMetrics =>
-        (from metric in AppSettings.GloballyHiddenMetrics[_currentGame] where metric.Value select metric.Key).ToList();
+        (from metric in AppSettings.Instance.GloballyHiddenMetrics[_currentGame] where metric.Value select metric.Key).ToList();
 
     private class VarTextInput
     {
@@ -161,7 +161,7 @@
             var existingValue = GetExistingVars.ContainsKey(varName) ? GetExistingVars[varName] : "";
             if (text == "%ACCOUNTID%")
             {
-                text = Lang.Instance["Stats_AccountId"];
+                text = Lang["Stats_AccountId"];
                 if (existingValue == "")
                     existingValue = AppData.SelectedAccountId;
             }
@@ -184,7 +184,7 @@
 @if (ModalData.CurrentStatsSelectorState == ModalData.StatsSelectorState.GamesList)
 {
     <div class="gameStatsWindow">
-        <p>@Lang.Instance["Modal_GameStats_Header", new { accountName = AppData.SelectedAccount.DisplayName }]</p>
+        <p>@Lang["Modal_GameStats_Header", new { accountName = AppData.SelectedAccount.DisplayName }]</p>
         <div class="modalScrollSection">
             @foreach (var (game, safeGame) in GetEnabledGames)
             {
@@ -210,7 +210,7 @@
 @if (ModalData.CurrentStatsSelectorState == ModalData.StatsSelectorState.VarsList)
 {
     <div class="gameStatsWindow">
-        <p>@Lang.Instance["Modal_GameVars_Header", new { game = _currentGame, username = AppData.SelectedAccount.DisplayName, platform = AppData.CurrentSwitcher }]</p>
+        <p>@Lang["Modal_GameVars_Header", new { game = _currentGame, username = AppData.SelectedAccount.DisplayName, platform = AppData.CurrentSwitcher }]</p>
         <div class="modalScrollSection centeredContainer">
             <div class="centeredSection">
                 @foreach (var (id, textInput) in _varTextInputs)
@@ -223,12 +223,12 @@
             </div>
         </div>
         <div>
-            <p>@Lang.Instance["Stats_MetricsToShow"]</p>
+            <p>@Lang["Stats_MetricsToShow"]</p>
             @foreach (var (id, hiddenMetric) in _hiddenMetrics)
             {
                 @if (hiddenMetric.GloballyHidden)
                 {
-                    <div class="form-check mb-2" data-toggle="tooltip" title="@Lang.Instance["Tooltip_DisabledGlobally"]">
+                    <div class="form-check mb-2" data-toggle="tooltip" title="@Lang["Tooltip_DisabledGlobally"]">
                         <input class="form-check-input" type="checkbox" id="@id" @bind="hiddenMetric.IsChecked" disabled>
                         <label class="form-check-label" for="@id"></label>
                         <label for="@id">@hiddenMetric.Text<br></label>
@@ -243,7 +243,7 @@
             }
         </div>
         <div class="settingsCol inputAndButton">
-            <button class="modalOK" type="button" id="set_password" @onclick="SaveGameVars"><span>@Lang.Instance["Submit"]</span></button>
+            <button class="modalOK" type="button" id="set_password" @onclick="SaveGameVars"><span>@Lang["Submit"]</span></button>
         </div>
     </div>
 }

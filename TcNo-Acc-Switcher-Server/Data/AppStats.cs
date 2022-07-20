@@ -3,16 +3,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Data.Interfaces;
 using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
-    public class AppStats
+    public class AppStats : IAppStats
     {
+        [Inject] private AppData AData { get; set; }
+        [Inject] private ILang Lang { get; set; }
         // --------------------
         // GOALS:
         // --------------------
@@ -43,83 +48,67 @@ namespace TcNo_Acc_Switcher_Server.Data
         // - Unique days platform switcher used (For switches/day stats, for each platform)
         // - First and Last active days
 
-        private static AppStats _instance = new();
-
-        private static readonly object LockObj = new();
-
-        public static AppStats Instance
+        public AppStats()
         {
-            get
+
+            if (File.Exists(SettingsFile))
             {
-                lock (LockObj)
-                {
-                    // Load settings if have changed, or not set
-                    if (_instance is { _currentlyModifying: true }) return _instance;
-                    if (_instance._lastHash != "") return _instance;
-
-                    _instance = new AppStats { _currentlyModifying = true };
-
-                    if (File.Exists(SettingsFile))
-                    {
-                        if (File.Exists(SettingsFile)) JsonConvert.PopulateObject(File.ReadAllText(SettingsFile), _instance);
-                        if (_instance == null)
-                        {
-                            _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedLoadStats"]);
-                            if (File.Exists(SettingsFile))
-                                Globals.CopyFile(SettingsFile, SettingsFile.Replace(".json", ".old.json"));
-                            _instance = new AppStats { _currentlyModifying = true };
-                        }
-                        _instance._lastHash = Globals.GetFileMd5(SettingsFile);
-                    }
-                    else
-                    {
-                        SaveSettings();
-                    }
-
-                    _instance._currentlyModifying = false;
-
-                    return _instance;
-                }
+                if (File.Exists(SettingsFile)) JsonConvert.PopulateObject(File.ReadAllText(SettingsFile), this);
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedLoadStats"]);
+                if (File.Exists(SettingsFile))
+                    Globals.CopyFile(SettingsFile, SettingsFile.Replace(".json", ".old.json"));
+                LaunchCount++;
+                SaveSettings();
+                AppDomain.CurrentDomain.ProcessExit += CurrentDomain_OnProcessExit;
             }
-            set
+            else
             {
-                lock (LockObj)
-                {
-                    _instance = value;
-                }
+                SaveSettings();
+            }
+        }
+        private void CurrentDomain_OnProcessExit(object sender, EventArgs e)
+        {
+            try
+            {
+                SaveSettings();
+            }
+            catch (Exception)
+            {
+                // Do nothing, just close.
             }
         }
 
-        private static readonly Lang Lang = Lang.Instance;
-        private string _lastHash = "";
-        private bool _currentlyModifying;
         public static readonly string SettingsFile = "Statistics.json";
 
-        public static void SaveSettings()
+        public void SaveSettings()
         {
             GenerateTotals();
-            GeneralFuncs.SaveSettings(SettingsFile, Instance);
+            GeneralFuncs.SaveSettings(SettingsFile, this);
         }
 
 
-        public static void ClearStats()
+        public void ClearStats()
         {
-            Instance = _instance = new AppStats { _currentlyModifying = true };
+            var type = GetType();
+            var properties = type.GetProperties();
+            foreach (var t in properties)
+                t.SetValue(this, null); //trick that actually defaults value types
+
             SaveSettings();
         }
 
-        public static void UploadStats()
+        public void UploadStats()
         {
             try
             {
                 // Upload stats file if enabled.
-                if (!AppSettings.StatsEnabled || !AppSettings.StatsShare) return;
+                if (!AppSettings.Instance.StatsEnabled || !AppSettings.Instance.ShareAnonymousStats) return;
                 // If not a new day
                 if (LastUpload.Date == DateTime.Now.Date) return;
 
                 // Save data in temp file.
                 var tempFile = Path.GetTempFileName();
-                var statsJson = JsonConvert.SerializeObject(JObject.FromObject(Instance), Formatting.None);
+                var statsJson = JsonConvert.SerializeObject(JObject.FromObject(this), Formatting.None);
                 File.WriteAllText(tempFile, statsJson);
 
                 // Upload using HTTPClient
@@ -145,33 +134,17 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         #region System stats
-        [JsonProperty("LastUpload", Order = 1)] private DateTime _lastUpload = DateTime.MinValue;
-        public static DateTime LastUpload { get => Instance._lastUpload; set => Instance._lastUpload = value; }
-
-        [JsonProperty("OperatingSystem", Order = 2)] private string _operatingSystem;
-        public static string OperatingSystem => Instance._operatingSystem ?? (Instance._operatingSystem = Globals.GetOsString());
-
+        [JsonProperty(Order = 1)] private DateTime LastUpload { get; set; } = DateTime.MinValue;
+        [JsonProperty(Order = 2)] private string OperatingSystem { get; set; }
         #endregion
 
 
         #region User stats
-
-        [JsonProperty("Uuid", Order = 0)] private string _uuid = Guid.NewGuid().ToString();
-        public static string Uuid { get => Instance._uuid; set => Instance._uuid = value; }
-
-        [JsonProperty("LaunchCount", Order = 2)] private int _launchCount;
-        public static int LaunchCount { get => Instance._launchCount; set => Instance._launchCount = value; }
-
-
-        [JsonProperty("CrashCount", Order = 3)] private int _crashCount;
-        public static int CrashCount { get => Instance._crashCount; set => Instance._crashCount = value; }
-
-        [JsonProperty("FirstLaunch", Order = 4)] private DateTime _firstLaunch = DateTime.Now;
-        public static DateTime FirstLaunch { get => Instance._firstLaunch; set => Instance._firstLaunch = value; }
-
-        [JsonProperty("MostUsedPlatform", Order = 5)] private string _mostUsed = "";
-        public static string MostUsedPlatform { get => Instance._mostUsed; set => Instance._mostUsed = value; }
-
+        [JsonProperty(Order = 0)] private string Uuid { get; set; } = Guid.NewGuid().ToString();
+        [JsonProperty(Order = 2)] private int LaunchCount { get; set; }
+        [JsonProperty(Order = 3)] private int CrashCount { get; set; }
+        [JsonProperty(Order = 4)] private DateTime FirstLaunch { get; set; } = DateTime.Now;
+        [JsonProperty(Order = 5)] private string MostUsedPlatform { get; set; } = "";
         #endregion
 
 
@@ -180,20 +153,17 @@ namespace TcNo_Acc_Switcher_Server.Data
         // EXAMPLE:
         // "Steam": {TotalTime: 3600, TotalVisits: 10}
         // "SteamSettings": {TotalTime: 300, TotalVisits: 6}
-        [JsonProperty("PageStats", Order = 6)] private Dictionary<string, PageStat> _pageStats = new() { { "_Total", new PageStat() } };
-        public static Dictionary<string, PageStat> PageStats { get => Instance._pageStats; set => Instance._pageStats = value; }
+        [JsonProperty("PageStats", Order = 6)] private Dictionary<string, PageStat> PageStats { get; set; } = new() { { "_Total", new PageStat() } };
 
         // Total time is incremented on navigating to a new page.
         // -> Check last page, and compare times. Then add seconds.
         // This won't save, and will be lost on app restart.
-        [JsonIgnore] private string _lastActivePage = "";
-        public static string LastActivePage { get => Instance._lastActivePage; set => Instance._lastActivePage = value; }
-        [JsonIgnore] private DateTime _lastActivePageTime = DateTime.Now;
-        public static DateTime LastActivePageTime { get => Instance._lastActivePageTime; set => Instance._lastActivePageTime = value; }
+        [JsonIgnore] private string LastActivePage { get; set; } = "";
+        [JsonIgnore] private DateTime LastActivePageTime { get; set; } = DateTime.Now;
 
-        public static void NewNavigation(string newPage)
+        public void NewNavigation(string newPage)
         {
-            if (!AppSettings.StatsEnabled) return;
+            if (!AppSettings.Instance.StatsEnabled) return;
 
             // First page loaded, so just save current page and time.
             if (LastActivePage == "")
@@ -220,52 +190,51 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         // EXAMPLE:
         // "Steam": {Accounts: 0, Switches: 0, Days: 0, LastActive: 2022-05-01}
-        [JsonProperty("SwitcherStats", Order = 6)] private Dictionary<string, SwitcherStat> _switcherStats = new() { { "_Total", new SwitcherStat() } };
-        public static Dictionary<string, SwitcherStat> SwitcherStats { get => Instance._switcherStats; set => Instance._switcherStats = value; }
+        [JsonProperty("SwitcherStats", Order = 6)] public Dictionary<string, SwitcherStat> SwitcherStats { get; set; } = new() { { "_Total", new SwitcherStat() } };
 
-        private static void AddPlatformIfNotExist(string platform)
+        private void AddPlatformIfNotExist(string platform)
         {
             if (!SwitcherStats.ContainsKey(platform)) SwitcherStats.Add(platform, new SwitcherStat());
         }
 
-        private static void IncrementSwitcherLastActive(string platform)
+        private void IncrementSwitcherLastActive(string platform)
         {
-            if (!AppSettings.StatsEnabled) return;
+            if (!AppSettings.Instance.StatsEnabled) return;
             // Increment unique days if day is not the same (Compares year, month, day - As we're not looking for 24 hours)
             if (SwitcherStats[platform].LastActive.Date == DateTime.Now.Date) return;
             SwitcherStats[platform].UniqueDays += 1;
             SwitcherStats[platform].LastActive = DateTime.Now;
         }
 
-        public static void IncrementSwitches(string platform)
+        public void IncrementSwitches(string platform)
         {
-            if (!AppSettings.StatsEnabled) return;
+            if (!AppSettings.Instance.StatsEnabled) return;
             AddPlatformIfNotExist(platform);
             SwitcherStats[platform].Switches++;
 
             IncrementSwitcherLastActive(platform);
-            AppData.RefreshDiscordPresenceAsync(false);
+            AData.RefreshDiscordPresenceAsync(false);
         }
 
-        public static void SetAccountCount(string platform, int count)
+        public void SetAccountCount(string platform, int count)
         {
-            if (!AppSettings.StatsEnabled) return;
+            if (!AppSettings.Instance.StatsEnabled) return;
             AddPlatformIfNotExist(platform);
             SwitcherStats[platform].Accounts = count;
         }
 
-        public static void IncrementGameLaunches(string platform)
+        public void IncrementGameLaunches(string platform)
         {
-            if (!AppSettings.StatsEnabled) return;
+            if (!AppSettings.Instance.StatsEnabled) return;
             AddPlatformIfNotExist(platform);
             SwitcherStats[platform].GamesLaunched++;
 
             IncrementSwitcherLastActive(platform);
         }
 
-        public static void SetGameShortcutCount(string platform, Dictionary<int, string> shortcuts)
+        public void SetGameShortcutCount(string platform, Dictionary<int, string> shortcuts)
         {
-            if (!AppSettings.StatsEnabled) return;
+            if (!AppSettings.Instance.StatsEnabled) return;
             AddPlatformIfNotExist(platform);
             SwitcherStats[platform].GameShortcuts = shortcuts.Count;
 
@@ -278,7 +247,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             SwitcherStats[platform].GameShortcutsHotbar = tHShortcuts;
         }
 
-        public static void GenerateTotals()
+        public void GenerateTotals()
         {
             // Account stat totals
             var totalAccounts = 0;

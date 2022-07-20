@@ -74,7 +74,7 @@ namespace TcNo_Acc_Switcher_Client
 
             Directory.SetCurrentDirectory(Globals.UserDataFolder);
 
-            if (AppSettings.AlwaysAdmin && !Globals.IsAdministrator) GeneralFuncs.RestartAsAdmin();
+            if (AppSettings.Instance.AlwaysAdmin && !Globals.IsAdministrator) GeneralFuncs.RestartAsAdmin();
 
             // Crash handler
             AppDomain.CurrentDomain.UnhandledException += Globals.CurrentDomain_UnhandledException;
@@ -248,9 +248,9 @@ namespace TcNo_Acc_Switcher_Client
             string color;
             try
             {
-                var start = AppSettings.Stylesheet.IndexOf(key + ":", StringComparison.Ordinal) + key.Length + 1;
-                var end = AppSettings.Stylesheet.IndexOf(";", start, StringComparison.Ordinal);
-                color = AppSettings.Stylesheet[start..end];
+                var start = AppSettings.Instance.Stylesheet.IndexOf(key + ":", StringComparison.Ordinal) + key.Length + 1;
+                var end = AppSettings.Instance.Stylesheet.IndexOf(";", start, StringComparison.Ordinal);
+                color = AppSettings.Instance.Stylesheet[start..end];
                 color = color.Trim(); // Remove whitespace around variable
             }
             catch (Exception)
@@ -284,7 +284,7 @@ namespace TcNo_Acc_Switcher_Client
 
                 // The program is running at this point.
                 // If set to minimize to tray, try open it.
-                if (AppSettings.TrayMinimizeNotExit)
+                if (AppSettings.Instance.TrayMinimizeNotExit)
                 {
                     if (NativeFuncs.BringToFront())
                         Environment.Exit(1056); // 1056	An instance of the service is already running.
@@ -315,7 +315,7 @@ release = true;
                 }
                 else
                 {
-	                if (!AppSettings.ShownMinimizedNotification)
+	                if (!AppSettings.Instance.ShownMinimizedNotification)
 	                {
 		                text = "TcNo Account Switcher was running." + Environment.NewLine +
 		                       "I've brought it to the top." + Environment.NewLine +
@@ -328,7 +328,7 @@ release = true;
 			                MessageBoxImage.Information,
 			                MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
 
-		                AppSettings.ShownMinimizedNotification = true;
+                        AppSettings.Instance.ShownMinimizedNotification = true;
 		                AppSettings.SaveSettings();
 	                }
 

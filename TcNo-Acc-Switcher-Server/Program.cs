@@ -66,7 +66,7 @@ namespace TcNo_Acc_Switcher_Server
             if (string.IsNullOrEmpty(port))
             {
                 FindOpenPort();
-                port = AppSettings.ServerPort.ToString();
+                port = AppSettings.Instance.ServerPort.ToString();
                 Console.WriteLine(@"Using saved/random port: " + port);
             }
 
@@ -92,7 +92,7 @@ namespace TcNo_Acc_Switcher_Server
             var tcpConnInfoArray = ipGlobalProperties.GetActiveTcpConnections();
             while (true)
             {
-                if (tcpConnInfoArray.All(x => x.LocalEndPoint.Port != AppSettings.ServerPort)) break;
+                if (tcpConnInfoArray.All(x => x.LocalEndPoint.Port != AppSettings.Instance.ServerPort)) break;
                 NewPort();
             }
         }
@@ -100,7 +100,7 @@ namespace TcNo_Acc_Switcher_Server
         public static void NewPort()
         {
             var r = new Random();
-            AppSettings.ServerPort = r.Next(20000, 40000); // Random int [Why this range? See: https://www.sciencedirect.com/topics/computer-science/registered-port & netsh interface ipv4 show excludedportrange protocol=tcp]
+            AppSettings.Instance.ServerPort = r.Next(20000, 40000); // Random int [Why this range? See: https://www.sciencedirect.com/topics/computer-science/registered-port & netsh interface ipv4 show excludedportrange protocol=tcp]
             AppSettings.SaveSettings();
         }
     }

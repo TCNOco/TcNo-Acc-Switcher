@@ -31,10 +31,11 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SharpScss;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Data.Interfaces;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
-using TcNo_Acc_Switcher_Server.Shared.ContextMenu;
 using TcNo_Acc_Switcher_Server.Shared.Toast;
+using TcNo_Acc_Switcher_Server.State.Interfaces;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -42,7 +43,9 @@ namespace TcNo_Acc_Switcher_Server.Data
 {
     public class AppSettings
     {
+        [Inject] private ILang Lang { get; set; }
         [Inject] private AppData AData { get; set; }
+        [Inject] private IStylesheetSettings StylesheetSettings { get; set; }
 
         private static AppSettings _instance = new();
 
@@ -64,7 +67,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                         if (File.Exists(SettingsFile)) JsonConvert.PopulateObject(File.ReadAllText(SettingsFile), _instance);
                         if (_instance == null)
                         {
-                            _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedLoadSettings"]);
+                            //_ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedLoadSettings"]);
                             if (File.Exists(SettingsFile))
                                 Globals.CopyFile(SettingsFile, SettingsFile.Replace(".json", ".old.json"));
                             _instance = new AppSettings { _currentlyModifying = true };
@@ -75,11 +78,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                         SaveSettings();
                     }
 
-                    Instance.LoadStylesheetFromFile();
-                    CheckShortcuts();
-                    InitPlatformsList();
-
-                    _instance._currentlyModifying = false;
+                    _instance.OnLoad();
 
                     return _instance;
                 }
@@ -93,42 +92,149 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
         }
 
-        private static readonly Lang Lang = Lang.Instance;
+        private void OnLoad()
+        {
+            // if (StylesheetSettings is not null) StylesheetSettings.Load(_instance);
+            CheckShortcuts();
+            InitPlatformsList();
+            _currentlyModifying = false;
+        }
+
+
+        // Constants
+        private static readonly string SettingsFile = "WindowSettings.json";
+
         private string _lastHash = "";
         private bool _currentlyModifying;
         public static void SaveSettings() => GeneralFuncs.SaveSettings(SettingsFile, Instance);
 
         // Variables
-        [JsonProperty("Language", Order = 0)] private string _lang = "";
-        [JsonProperty("Rtl", Order = 1)] private bool _rtl = CultureInfo.CurrentCulture.TextInfo.IsRightToLeft;
-        [JsonProperty("StreamerModeEnabled", Order = 2)] private bool _streamerModeEnabled = true;
-        [JsonProperty("ServerPort", Order = 3)] private int _serverPort = 1337;
-        [JsonProperty("WindowSize", Order = 4)] private Point _windowSize = new() { X = 800, Y = 450 };
-        [JsonProperty("AllowTransparency", Order = 5)] private bool _allowTransparency = true;
-        [JsonProperty("Version", Order = 6)] private readonly string _version = Globals.Version;
-        [JsonProperty("TrayMinimizeNotExit", Order = 8)] private bool _trayMinimizeNotExit;
-        [JsonProperty("ShownMinimizedNotification", Order = 9)] private bool _shownMinimizedNotification;
-        [JsonProperty("StartCentered", Order = 10)] private bool _startCentered;
-        [JsonProperty("ActiveTheme", Order = 11)] private string _activeTheme = "Dracula_Cyan";
-        [JsonProperty("ActiveBrowser", Order = 12)] private string _activeBrowser = "WebView";
-        [JsonProperty("Background", Order = 13)] private string _background = "";
-        [JsonProperty("CollectStats", Order = 14)] private bool _statsEnabled = true;
-        [JsonProperty("ShareAnonymousStats", Order = 15)] private bool _statsShare = true;
-        [JsonProperty("MinimizeOnSwitch", Order = 16)] private bool _minimizeOnSwitch;
-        [JsonProperty("DiscordRpcEnabled", Order = 17)] private bool _discordRpc = true;
-        [JsonProperty("DiscordRpcShareTotalSwitches", Order = 18)] private bool _discordRpcShare = true;
-        [JsonProperty("PasswordHash", Order = 19)] private string _passwordHash = "";
-        [JsonProperty("GloballyHiddenMetrics", Order = 20)] private Dictionary<string, Dictionary<string, bool>> _globallyHiddenMetrics = new();
-        [JsonProperty("AlwaysAdmin", Order = 21)] private bool _alwaysAdmin;
-        [JsonIgnore] private bool _desktopShortcut;
-        [JsonIgnore] private bool _startMenu;
-        [JsonIgnore] private bool _startMenuPlatforms;
-        [JsonIgnore] private bool _protocolEnabled;
-        [JsonIgnore] private bool _trayStartup;
-        [JsonIgnore] private bool _updateCheckRan;
-        [JsonIgnore] private bool _preRenderUpdate;
-        [JsonIgnore] private string _passwordCurrent;
+        [JsonProperty(Order = 0)] public string Language = "";
+        [JsonProperty(Order = 3)] public int ServerPort = 1337;
+        [JsonProperty(Order = 4)] public Point WindowSize = new() { X = 800, Y = 450 };
+        [JsonProperty(Order = 5)] public bool AllowTransparency = true;
+        [JsonProperty("Version", Order = 6)] private readonly string _version = Globals.Version; // Just for reference in the settings JSON file
+        [JsonProperty(Order = 8)] public bool TrayMinimizeNotExit;
+        [JsonProperty(Order = 9)] public bool ShownMinimizedNotification;
+        [JsonProperty(Order = 10)] public bool StartCentered;
+        [JsonProperty(Order = 12)] public string ActiveBrowser = "WebView";
+        [JsonProperty(Order = 15)] public bool ShareAnonymousStats = true;
+        [JsonProperty(Order = 16)] public bool MinimizeOnSwitch;
+        [JsonProperty(Order = 18)] public bool DiscordRpcShareTotalSwitches = true;
+        [JsonProperty(Order = 19)] public string PasswordHash = "";
+        [JsonProperty(Order = 21)] public bool AlwaysAdmin;
+        [JsonIgnore] public bool DesktopShortcut;
+        [JsonIgnore] public bool StartMenu;
+        [JsonIgnore] public bool StartMenuPlatforms;
+        [JsonIgnore] public bool ProtocolEnabled;
+        [JsonIgnore] public bool TrayStartup;
+        [JsonIgnore] public bool UpdateCheckRan;
+        [JsonIgnore] public bool PreRenderUpdate;
+        [JsonIgnore] public string PasswordCurrent;
 
+        [JsonProperty("CollectStats", Order = 14)] private bool _statsEnabled = true;
+        public bool StatsEnabled
+        {
+            get => _statsEnabled;
+            set
+            {
+                if (!value) ShareAnonymousStats = false;
+                _statsEnabled = value;
+            }
+        }
+
+        [JsonProperty("DiscordRpcEnabled", Order = 17)] private bool _discordRpc = true;
+        public bool DiscordRpc
+        {
+            get => _discordRpc; set
+            {
+                if (!value) DiscordRpcShareTotalSwitches = false;
+                _discordRpc = value;
+            }
+        }
+
+        #region Used in Stylesheet
+        private string _activeTheme = "Dracula_Cyan";
+        private bool _rtl = CultureInfo.CurrentCulture.TextInfo.IsRightToLeft;
+        private string _background = "";
+        private bool _streamerModeEnabled = true;
+        private bool _streamerModeTriggered;
+
+        [JsonProperty(Order = 11)]
+        public string ActiveTheme
+        {
+            get => _activeTheme;
+            set
+            {
+                _activeTheme = value;
+                if (StylesheetSettings is null) return;
+                StylesheetSettings.ActiveTheme = value;
+                StylesheetSettings.NotifyDataChanged();
+            }
+        }
+
+        [JsonProperty(Order = 1)]
+        public bool Rtl
+        {
+            get => _rtl;
+            set
+            {
+                _rtl = value;
+                if (StylesheetSettings is null) return;
+                StylesheetSettings.Rtl = value;
+                StylesheetSettings.NotifyDataChanged();
+            }
+        }
+
+        [JsonProperty(Order = 2)]
+        public bool StreamerModeEnabled
+        {
+            get => _streamerModeEnabled;
+            set
+            {
+                _streamerModeEnabled = value;
+                if (StylesheetSettings is null) return;
+                StylesheetSettings.StreamerModeEnabled = value;
+                StylesheetSettings.NotifyDataChanged();
+            }
+        }
+
+        [JsonProperty(Order = 13)]
+        public string Background
+        {
+            get => _background;
+            set
+            {
+                _background = value;
+                if (StylesheetSettings is null) return;
+                StylesheetSettings.BackgroundPath = value;
+                StylesheetSettings.NotifyDataChanged();
+            }
+        }
+
+        public bool StreamerModeTriggered
+        {
+            get => _streamerModeTriggered;
+            set
+            {
+                _streamerModeTriggered = value;
+                if (StylesheetSettings is null) return;
+                StylesheetSettings.StreamerModeTriggered = value;
+                StylesheetSettings.NotifyDataChanged();
+            }
+        }
+
+        #endregion
+
+
+
+
+        /// <summary>
+        /// For BasicStats // Game statistics collection and showing
+        /// Keys for metrics on this list are not shown for any account.
+        /// List of all games:[Settings:Hidden metric] metric keys.
+        /// </summary>
+        [JsonProperty(Order = 20)] public Dictionary<string, Dictionary<string, bool>> GloballyHiddenMetrics = new();
 
         public class PlatformItem : IComparable
         {
@@ -225,103 +331,32 @@ namespace TcNo_Acc_Switcher_Server.Data
             _ = BasicPlatforms.Instance;
         }
 
-        public static string Language { get => Instance._lang; set => Instance._lang = value; }
-        public static bool Rtl { get => Instance._rtl; set => Instance._rtl = value; }
-        public static bool StreamerModeEnabled { get => Instance._streamerModeEnabled; set => Instance._streamerModeEnabled = value; }
-        public static int ServerPort { get => Instance._serverPort; set => Instance._serverPort = value; }
-        public static Point WindowSize { get => Instance._windowSize; set => Instance._windowSize = value; }
-        public static bool AllowTransparency { get => Instance._allowTransparency; set => Instance._allowTransparency = value; }
-        public static string Version => Instance._version;
-        public static bool TrayMinimizeNotExit { get => Instance._trayMinimizeNotExit; set => Instance._trayMinimizeNotExit = value; }
-        public static bool ShownMinimizedNotification { get => Instance._shownMinimizedNotification; set => Instance._shownMinimizedNotification = value; }
-        public static bool StartCentered { get => Instance._startCentered; set => Instance._startCentered = value; }
-        public static string ActiveTheme { get => Instance._activeTheme; set => Instance._activeTheme = value; }
-        public static string ActiveBrowser { get => Instance._activeBrowser; set => Instance._activeBrowser = value; }
-        public static string Background { get => Instance._background; set => Instance._background = value; }
-        public static bool DiscordRpc { get => Instance._discordRpc; set
-        {
-            if (!value) Instance._discordRpcShare = false;
-            Instance._discordRpc = value;
-        }
-    }
-        public static bool DiscordRpcShare { get => Instance._discordRpcShare; set => Instance._discordRpcShare = value; }
-        public static string PasswordHash { get => Instance._passwordHash; set => Instance._passwordHash = value; } // SET should hash password.
-        public static string PasswordCurrent { get => Instance._passwordCurrent; set => Instance._passwordCurrent = value; } // SET should hash password.
-
-        public static bool StatsEnabled
-        {
-            get => Instance._statsEnabled;
-            set
-            {
-                if (!value) Instance._statsShare = false;
-                Instance._statsEnabled = value;
-            }
-        }
-
-        public static bool StatsShare { get => Instance._statsShare; set => Instance._statsShare = value; }
-        public static bool MinimizeOnSwitch { get => Instance._minimizeOnSwitch; set => Instance._minimizeOnSwitch = value; }
-        public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
-
-        public static bool StartMenu { get => Instance._startMenu; set => Instance._startMenu = value; }
-
-        public static bool StartMenuPlatforms { get => Instance._startMenuPlatforms; set => Instance._startMenuPlatforms = value; }
-
-        public static bool ProtocolEnabled { get => Instance._protocolEnabled; set => Instance._protocolEnabled = value; }
-        public static bool TrayStartup { get => Instance._trayStartup; set => Instance._trayStartup = value; }
-        private static bool UpdateCheckRan { get =>Instance._updateCheckRan; set => Instance._updateCheckRan = value; }
-        public static bool PreRenderUpdate { get =>Instance._preRenderUpdate; set => Instance._preRenderUpdate = value; }
-
-        public static bool AlwaysAdmin
-        {
-            get =>Instance._alwaysAdmin;
-            set => Instance._alwaysAdmin = value;
-        }
         public class GameSetting
         {
             public string SettingId { get; set; } = "";
             public bool Checked { get; set; }
         }
 
-        /// <summary>
-        /// For BasicStats // Game statistics collection and showing
-        /// Keys for metrics on this list are not shown for any account.
-        /// List of all games:[Settings:Hidden metric] metric keys.
-        /// </summary>
-        public static Dictionary<string, Dictionary<string, bool>> GloballyHiddenMetrics { get => Instance._globallyHiddenMetrics; set => Instance._globallyHiddenMetrics = value; }
 
-        private string _stylesheet;
-        public static string Stylesheet { get => Instance._stylesheet; set => Instance._stylesheet = value; }
 
-        private bool _windowsAccent;
-        public static bool WindowsAccent { get => Instance._windowsAccent; set => Instance._windowsAccent = value; }
 
-        private string _windowsAccentColor = "";
-        public static string WindowsAccentColor { get => Instance._windowsAccentColor; set => Instance._windowsAccentColor = value; }
 
-        private (float, float, float) _windowsAccentColorHsl = (0, 0, 0);
-        public static (float, float, float) WindowsAccentColorHsl { get => Instance._windowsAccentColorHsl; set => Instance._windowsAccentColorHsl = value; }
 
-        [SupportedOSPlatform("windows")]
-        public static (int, int, int) WindowsAccentColorInt => GetAccentColor();
 
-        // Constants
-        public static readonly string SettingsFile = "WindowSettings.json";
-        private static string StylesheetFile => Path.Join("themes", ActiveTheme, "style.css");
-        private static string StylesheetInfoFile => Path.Join("themes", ActiveTheme, "info.yaml");
-        private Dictionary<string, string> _stylesheetInfo;
-        public static Dictionary<string, string> StylesheetInfo { get => Instance._stylesheetInfo; set => Instance._stylesheetInfo = value; }
 
-        public static bool StreamerModeTriggered;
+
+
+
 
         /// <summary>
         /// Check if any streaming software is running. Do let me know if you have a program name that you'd like to expand this list with!
         /// It's basically the program's .exe file, but without ".exe".
         /// </summary>
         /// <returns>True when streaming software is running</returns>
-        public static bool StreamerModeCheck()
+        public bool StreamerModeCheck()
         {
             Globals.DebugWriteLine(@"[Func:Data\AppSettings.StreamerModeCheck]");
-            if (!StreamerModeEnabled) return false; // Don't hide anything if disabled.
+            if (!Instance.StreamerModeEnabled) return false; // Don't hide anything if disabled.
             StreamerModeTriggered = false;
             foreach (var p in Process.GetProcesses())
             {
@@ -348,223 +383,12 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// </summary>
         /// <returns></returns>
         [JSInvokable]
-        public static Task<bool> GetTrayMinimizeNotExit() => Task.FromResult(TrayMinimizeNotExit);
+        public Task<bool> GetTrayMinimizeNotExit() => Task.FromResult(TrayMinimizeNotExit);
 
 
-        #region STYLESHEET
-
-        public static string TryGetStyle(string key)
-        {
-            try
-            {
-                return StylesheetInfo[key];
-            }
-            catch (Exception ex)
-            {
-                // Try load default theme for values
-                var fallback = Path.Join("themes", "Dracula_Cyan", "info.yaml");
-                if (File.Exists(fallback))
-                {
-                    var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
-                    var fallbackSheet = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(string.Join(Environment.NewLine, Globals.ReadAllLines(fallback)))));
-                    try
-                    {
-                        if (fallbackSheet is not null) return fallbackSheet[key];
-                        Globals.WriteToLog("fallback stylesheet was null!");
-                        return "";
-                    }
-                    catch (Exception exFallback)
-                    {
-                        Globals.WriteToLog($"Could not find {key} in fallback stylesheet Dracula_Cyan", exFallback);
-                        return "";
-                    }
-                }
-
-                Globals.WriteToLog($"Could not find {key} in stylesheet, and fallback Dracula_Cyan does not exist", ex);
-                return "";
-            }
-        }
-
-        /// <summary>
-        /// Returns a block of CSS text to be used on the page. Used to hide or show certain things in certain ways, in components that aren't being added through Blazor.
-        /// </summary>
-        public static string GetCssBlock() => ".streamerCensor { display: " + (StreamerModeEnabled && StreamerModeTriggered ? "none!important" : "block") + "}";
-
-        /// <summary>
-        /// Swaps in a requested stylesheet, and loads styles from file.
-        /// </summary>
-        /// <param name="swapTo">Stylesheet name (without .json) to copy and load</param>
-        public void SwapStylesheet(string swapTo)
-        {
-            ActiveTheme = swapTo.Replace(" ", "_");
-            try
-            {
-                if (LoadStylesheetFromFile())
-                {
-                    AppData.ReloadPage();
-                    return;
-                }
-            }
-            catch (Exception)
-            {
-                //
-            }
-
-            AData.ShowToastLang(ToastType.Error, "Error", "Toast_LoadStylesheetFailed");
-        }
-
-        /// <summary>
-        /// Load stylesheet settings from stylesheet file.
-        /// </summary>
-        public bool LoadStylesheetFromFile()
-        {
-            // This is the first function that's called, and sometimes fails if this is not reset after being changed previously.
-            Directory.SetCurrentDirectory(Globals.UserDataFolder);
-#if DEBUG
-            if (true) // Always generate file in debug mode.
-#else
-            if (!File.Exists(StylesheetFile))
-#endif
-            {
-                // Check if SCSS file exists.
-                var scss = StylesheetFile.Replace("css", "scss");
-                if (File.Exists(scss)) GenCssFromScss(scss);
-                else
-                {
-                    ActiveTheme = "Dracula_Cyan";
-
-                    if (!File.Exists(StylesheetFile))
-                    {
-                        scss = StylesheetFile.Replace("css", "scss");
-                        if (File.Exists(scss)) GenCssFromScss(scss);
-                        else throw new Exception(Lang["ThemesNotFound"]);
-                    }
-                }
-            }
-
-            try
-            {
-                LoadStylesheet();
-            }
-            catch (FileNotFoundException ex)
-            {
-                // Check if CEF issue, and download if missing.
-                if (!ex.ToString().Contains("YamlDotNet")) throw;
-                AutoStartUpdaterAsAdmin("verify");
-                Environment.Exit(1);
-                throw;
-            }
-
-            return true;
-        }
-
-        private void GenCssFromScss(string scss)
-        {
-            ScssResult convertedScss;
-            try
-            {
-                convertedScss = Scss.ConvertFileToCss(scss, new ScssOptions { InputFile = scss, OutputFile = StylesheetFile });
-            }
-            catch (ScssException e)
-            {
-                Globals.DebugWriteLine("ERROR in CSS: " + e.Message);
-                throw;
-            }
-
-            // Convert from SCSS to CSS. The arguments are for "exception reporting", according to the SharpScss Git Repo.
-            try
-            {
-                if (Globals.DeleteFile(StylesheetFile))
-                {
-                    var text = convertedScss.Css;
-                    File.WriteAllText(StylesheetFile, text);
-                    if (Globals.DeleteFile(StylesheetFile + ".map"))
-                        File.WriteAllText(StylesheetFile + ".map", convertedScss.SourceMap);
-                }
-                else throw new Exception($"Could not delete StylesheetFile: '{StylesheetFile}'");
-            }
-            catch (Exception ex)
-            {
-                // Catches generic errors, as well as not being able to overwrite file errors, etc.
-                AData.ShowToastLang(ToastType.Error, "Error", "Toast_LoadStylesheetFailed");
-                Globals.WriteToLog($"Could not delete stylesheet file: {StylesheetFile}. Could not refresh stylesheet from scss.", ex);
-            }
-
-        }
-
-        private static void LoadStylesheet()
-        {
-            // Load new stylesheet
-            var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
-            Stylesheet = Globals.ReadAllText(StylesheetFile);
-
-            // Load stylesheet info
-            string[] infoText = null;
-            if (File.Exists(StylesheetInfoFile)) infoText = Globals.ReadAllLines(StylesheetInfoFile);
-
-            infoText ??= new[] {"name: \"[ERR! info.yml]\"", "accent: \"#00D4FF\""};
-            var newSheet = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(string.Join(Environment.NewLine, infoText))));
-
-            StylesheetInfo = newSheet;
-
-            if (OperatingSystem.IsWindows() && WindowsAccent) SetAccentColor();
-        }
-
-        /// <summary>
-        /// Returns a list of Stylesheets in the Stylesheet folder.
-        /// </summary>
-        public static string[] GetStyleList()
-        {
-            var themeList = Directory.GetDirectories("themes");
-            for (var i = 0; i < themeList.Length; i++)
-            {
-                var start = themeList[i].LastIndexOf("\\", StringComparison.Ordinal) + 1;
-                themeList[i] = themeList[i][start..].Replace('_', ' ');
-            }
-            return themeList;
-        }
-        private static (int, int, int) FromRgb(byte r, byte g, byte b)
-        {
-            // Adapted from: https://stackoverflow.com/a/4794649/5165437
-            var rf = (r / 255f);
-            var gf = (g / 255f);
-            var bf = (b / 255f);
-
-            var min = Math.Min(Math.Min(rf, gf), bf);
-            var max = Math.Max(Math.Max(rf, gf), bf);
-            var delta = max - min;
-
-            var h = (float)0;
-            var s = (float)0;
-            var l = (max + min) / 2.0f;
-
-            if (delta != 0)
-            {
-                if (l < 0.5f)
-                    s = delta / (max + min);
-                else
-                    s = delta / (2.0f - max - min);
-
-                if (Math.Abs(rf - max) < 0.01)
-                    h = (gf - bf) / delta;
-                else if (Math.Abs(gf - max) < 0.01)
-                    h = 2f + (bf - rf) / delta;
-                else if (Math.Abs(bf - max) < 0.01)
-                    h = 4f + (rf - gf) / delta;
-            }
-
-            // Rounding and formatting for CSS
-            h *= 60;
-            s *= 100;
-            l *= 100;
-
-            return ((int)Math.Round(h), (int)Math.Round(s), (int)Math.Round(l));
-        }
-
-        #endregion
 
         #region SHORTCUTS
-        public static void CheckShortcuts()
+        public void CheckShortcuts()
         {
             Globals.DebugWriteLine(@"[Func:Data\AppSettings.CheckShortcuts]");
             DesktopShortcut = File.Exists(Path.Join(Shortcut.Desktop, "TcNo Account Switcher.lnk"));
@@ -575,59 +399,12 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (OperatingSystem.IsWindows())
                 ProtocolEnabled = SharedStaticFuncs.Protocol_IsEnabled();
         }
-
-        #region WindowsAccent
-
-        [SupportedOSPlatform("windows")]
-        public static void SetAccentColor() => SetAccentColor(false);
-        [SupportedOSPlatform("windows")]
-        public static void SetAccentColor(bool userInvoked)
-        {
-            WindowsAccentColor = GetAccentColorHexString();
-            var (r, g, b) = GetAccentColor();
-            WindowsAccentColorHsl = FromRgb(r, g, b);
-
-            if (userInvoked)
-                AppData.ReloadPage();
-        }
-
-        [SupportedOSPlatform("windows")]
-        public static string GetAccentColorHexString()
-        {
-            var (r, g, b) = GetAccentColor();
-            byte[] rgb = { r, g, b };
-            return '#' + BitConverter.ToString(rgb).Replace("-", string.Empty);
-        }
-
-        [SupportedOSPlatform("windows")]
-        public static (byte r, byte g, byte b) GetAccentColor()
-        {
-            using var dwmKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\DWM", RegistryKeyPermissionCheck.ReadSubTree);
-            const string keyExMsg = "The \"HKCU\\Software\\Microsoft\\Windows\\DWM\" registry key does not exist.";
-            if (dwmKey is null) throw new InvalidOperationException(keyExMsg);
-
-            var accentColorObj = dwmKey.GetValue("AccentColor");
-            if (accentColorObj is int accentColorDWord)
-            {
-                return ParseDWordColor(accentColorDWord);
-            }
-
-            const string valueExMsg = "The \"HKCU\\Software\\Microsoft\\Windows\\DWM\\AccentColor\" registry key value could not be parsed as an ABGR color.";
-            throw new InvalidOperationException(valueExMsg);
-        }
-
-        private static (byte r, byte g, byte b) ParseDWordColor(int color)
-        {
-            byte
-                //a = (byte)((color >> 24) & 0xFF),
-                b = (byte)((color >> 16) & 0xFF),
-                g = (byte)((color >> 8) & 0xFF),
-                r = (byte)((color >> 0) & 0xFF);
-
-            return (r, g, b);
-        }
         #endregion
-        #endregion
+
+
+
+
+
 
 
         #region Updater
@@ -793,7 +570,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
         }
 
-        public static void AutoStartUpdaterAsAdmin(string args = "")
+        public void AutoStartUpdaterAsAdmin(string args = "")
         {
             // Run updater
             if (Globals.InstalledToProgramFiles() || !Globals.HasFolderAccess(Globals.AppDataFolder))

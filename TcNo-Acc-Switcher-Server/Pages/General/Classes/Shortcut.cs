@@ -176,13 +176,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.CreateCombinedIcon] bgImg={bgImg}, fgImg={fgImg.Substring(fgImg.Length - 6, 6)}, iconName=hidden");
             try
             {
-                IconFactory.CreateIcon(bgImg, fgImg, ref iconName);
+                new IconFactory().CreateIcon(bgImg, fgImg, ref iconName);
                 IconDir = Path.GetFullPath(iconName);
             }
             catch (Exception e)
             {
                 Globals.WriteToLog($"Failed to CreateIcon! '{bgImg}', '{fgImg}, '{iconName}'", e);
-                await GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_FailedCreateIcon"]);
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedCreateIcon"]);
             }
         }
         #endregion
@@ -220,7 +220,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         public static bool CheckShortcuts(string platform)
         {
             Globals.DebugWriteLine(@$"[Func:Data\Settings\Shared.CheckShortcuts] platform={platform}");
-            AppSettings.CheckShortcuts();
+            AppSettings.Instance.CheckShortcuts();
             return File.Exists(Path.Join(Desktop, $"{platform} - TcNo Account Switcher.lnk"));
         }
 

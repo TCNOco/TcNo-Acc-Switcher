@@ -21,19 +21,19 @@
 @using TcNo_Acc_Switcher_Server.Shared.ContextMenu
 @using TcNo_Acc_Switcher_Server.Shared.Toast
 @using System.Collections.ObjectModel
+@using TcNo_Acc_Switcher_Server.Data.Interfaces
 @using TcNo_Acc_Switcher_Server.Pages.General.Classes
 @inject IJSRuntime JsRuntime
 @{ AData.SetActiveIJsRuntime(JsRuntime); }
 @inject NavigationManager NavManager
 @{ AData.SetActiveNavMan(NavManager); }
 @inject AppData AData
+@inject ILang Lang
 
-@inject Lang Locale
-
-@if (AppSettings.PreRenderUpdate)
+@if (AppSettings.Instance.PreRenderUpdate)
 {
     <div class="updateBar">
-        <span>@Locale["Update"]</span>
+        <span>@Lang["Update"]</span>
         <i class="fas fa-times-circle" id="closeUpdateBar"></i>
     </div>
 }
@@ -73,14 +73,14 @@
         @*<button id="btnTextEditor" onclick="location = 'TextEditor'">
             <i class="fas fa-cog footerIcoSettings"></i>
         </button>*@
-        <button id="btnPlatforms" @onclick='() => AppData.NavigateTo("/Platforms/")' data-toggle="tooltip" title="@(Locale["Tooltip_ManagePlatforms"])">
+        <button id="btnPlatforms" @onclick='() => AppData.NavigateTo("/Platforms/")' data-toggle="tooltip" title="@(Lang["Tooltip_ManagePlatforms"])">
             <i class="fas fa-plus footerIcoInline"></i>
             @Lang["Button_ManagePlatforms"]
         </button>
-        <button class="btnSettings" @onclick='() => AppData.NavigateTo("/Settings/")' data-toggle="tooltip" title="@(Locale["Tooltip_Settings"])">
+        <button class="btnSettings" @onclick='() => AppData.NavigateTo("/Settings/")' data-toggle="tooltip" title="@(Lang["Tooltip_Settings"])">
             <i class="fas fa-cog footerIcoSettings"></i>
         </button>
-        <button class="btnHelp" @onclick='() => ModalData.ShowModal("info")' data-toggle="tooltip" title="@(Locale["Tooltip_Info"])">
+        <button class="btnHelp" @onclick='() => ModalData.ShowModal("info")' data-toggle="tooltip" title="@(Lang["Tooltip_Info"])">
             <i class="fas fa-question footerIcoQuestion"></i>
         </button>
     </div>

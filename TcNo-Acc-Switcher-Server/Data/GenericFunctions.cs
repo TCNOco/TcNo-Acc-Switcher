@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Data.Interfaces;
 using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.General;
@@ -31,8 +32,9 @@ namespace TcNo_Acc_Switcher_Server.Data
 {
     public class GenericFunctions
     {
+        [Inject] private IAppStats AppStats { get; set; }
         [Inject] private AppData AData { get; set; }
-        private static readonly Lang Lang = Lang.Instance;
+        [Inject] private ILang Lang { get; set; }
 
         /// <summary>
         /// Save settings with Ctrl+S Hot key
@@ -54,7 +56,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         #region ACCOUNT SWITCHER SHARED FUNCTIONS
-        public static async Task<bool> GenericLoadAccounts(string name, bool isBasic = false)
+        public async Task<bool> GenericLoadAccounts(string name, bool isBasic = false)
         {
             var localCachePath = Path.Join(Globals.UserDataFolder, $"LoginCache\\{name}\\");
             if (!Directory.Exists(localCachePath)) return false;

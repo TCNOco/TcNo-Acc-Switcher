@@ -28,9 +28,9 @@ namespace TcNo_Acc_Switcher_Server.Shared.Accounts
         /// <summary>
         /// Highlights the specified account
         /// </summary>
-        public static void SetSelectedAccount(Account acc)
+        public void SetSelectedAccount(Account acc)
         {
-            AppData.CurrentStatus = Lang.Instance["Status_SelectedAccount", new { name = acc.DisplayName }];
+            AppData.CurrentStatus = Lang["Status_SelectedAccount", new { name = acc.DisplayName }];
             AppData.SelectedAccount = acc;
             UnselectAllAccounts();
             acc.IsChecked = true;
@@ -77,7 +77,7 @@ namespace TcNo_Acc_Switcher_Server.Shared.Accounts
         {
             await UnCurrentAllAccounts();
             acc.IsCurrent = true;
-            acc.TitleText = $"{Lang.Instance["Tooltip_CurrentAccount"]}";
+            acc.TitleText = $"{Lang["Tooltip_CurrentAccount"]}";
             AppData.Instance.NotifyDataChanged();
 
             // getBestOffset

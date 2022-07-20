@@ -33,9 +33,6 @@ namespace TcNo_Acc_Switcher_Server.Pages
 {
     public partial class Index
     {
-        private static readonly Lang Lang = Lang.Instance;
-        [Inject] private AppSettings ASettings { get; set; }
-
         protected override void OnInitialized()
         {
             _platformContextMenuItems = new MenuBuilder(

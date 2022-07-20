@@ -21,7 +21,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 {
     public class ModalData
     {
-        private static readonly Lang Lang = Lang.Instance;
+        private static readonly Lang Lang = Lang;
         private static ModalData _instance = new();
 
         private static readonly object LockObj = new();
@@ -160,29 +160,29 @@ namespace TcNo_Acc_Switcher_Server.Data
                     string platformName = AppData.CurrentSwitcher;
                     RequestedFile = AppData.CurrentSwitcher == "Steam" ? "steam.exe" : CurrentPlatform.ExeName;
 
-                    ModalHeader = Lang.Instance["Modal_Title_LocatePlatform", new { platform = platformName }];
-                    ModalText = new MarkupString(Lang.Instance["Modal_EnterDirectory", new { platform = platformName }]);
-                    ModalButtonText = Lang.Instance["Modal_LocatePlatformFolder", new { platform = platformName }];
+                    ModalHeader = Lang["Modal_Title_LocatePlatform", new { platform = platformName }];
+                    ModalText = new MarkupString(Lang["Modal_EnterDirectory", new { platform = platformName }]);
+                    ModalButtonText = Lang["Modal_LocatePlatformFolder", new { platform = platformName }];
                 }
                 else if (Goal == PathPickerGoal.SetBackground)
                 {
-                    ModalHeader = Lang.Instance["Modal_Title_Background"];
-                    ModalText = new MarkupString(Lang.Instance["Modal_SetBackground"]);
-                    ModalButtonText = Lang.Instance["Modal_SetBackground_Button"];
+                    ModalHeader = Lang["Modal_Title_Background"];
+                    ModalText = new MarkupString(Lang["Modal_SetBackground"]);
+                    ModalButtonText = Lang["Modal_SetBackground_Button"];
                     RequestedFile = "AnyFile";
                 }
                 else if (Goal == PathPickerGoal.SetUserdata)
                 {
-                    ModalHeader = Lang.Instance["Modal_Title_Userdata"];
-                    ModalText = new MarkupString(Lang.Instance["Modal_SetUserdata"]);
-                    ModalButtonText = Lang.Instance["Modal_SetUserdata_Button"];
+                    ModalHeader = Lang["Modal_Title_Userdata"];
+                    ModalText = new MarkupString(Lang["Modal_SetUserdata"]);
+                    ModalButtonText = Lang["Modal_SetUserdata_Button"];
                     RequestedFile = "AnyFolder";
                 }
                 else if (Goal == PathPickerGoal.SetAccountImage)
                 {
-                    ModalHeader = Lang.Instance["Modal_Title_Userdata"];
-                    ModalText = new MarkupString(Lang.Instance["Modal_SetImageHeader"]);
-                    ModalButtonText = Lang.Instance["Modal_SetImage"];
+                    ModalHeader = Lang["Modal_Title_Userdata"];
+                    ModalText = new MarkupString(Lang["Modal_SetImageHeader"]);
+                    ModalButtonText = Lang["Modal_SetImage"];
                     RequestedFile = "AnyFile";
                 }
 
@@ -229,27 +229,27 @@ namespace TcNo_Acc_Switcher_Server.Data
                     // Adding a new account, but need a DisplayName before.
                     ModalSubheading = new MarkupString();
 
-                    ModalHeader = Lang.Instance["Modal_Title_AddNew", new { platform = AppData.CurrentSwitcher }];
-                    ModalText = new MarkupString(Lang.Instance["Modal_AddNew", new { platform = AppData.CurrentSwitcher }]);
-                    ModalButtonText = Lang.Instance["Modal_AddCurrentAccount", new { platform = AppData.CurrentSwitcher }];
+                    ModalHeader = Lang["Modal_Title_AddNew", new { platform = AppData.CurrentSwitcher }];
+                    ModalText = new MarkupString(Lang["Modal_AddNew", new { platform = AppData.CurrentSwitcher }]);
+                    ModalButtonText = Lang["Modal_AddCurrentAccount", new { platform = AppData.CurrentSwitcher }];
                     ExtraButtons = AppData.CurrentSwitcher == "Steam" ? new MarkupString() : CurrentPlatform.GetUserModalExtraButtons;
                 }
                 else if (Goal == TextInputGoal.AppPassword)
                 {
                     ExtraButtons = new MarkupString();
 
-                    ModalHeader = Lang.Instance["Modal_Title_SetPassword"];
-                    ModalSubheading = new MarkupString(Lang.Instance["Modal_SetPassword"]);
-                    ModalText = new MarkupString(Lang.Instance["Modal_SetPassword_Info", new { link = "https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/FAQ---More-Info#can-i-put-this-program-on-a-usb-portable" }]);
-                    ModalButtonText = Lang.Instance["Modal_SetPassword_Button"];
+                    ModalHeader = Lang["Modal_Title_SetPassword"];
+                    ModalSubheading = new MarkupString(Lang["Modal_SetPassword"]);
+                    ModalText = new MarkupString(Lang["Modal_SetPassword_Info", new { link = "https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/FAQ---More-Info#can-i-put-this-program-on-a-usb-portable" }]);
+                    ModalButtonText = Lang["Modal_SetPassword_Button"];
                 }
                 else if (Goal == TextInputGoal.ChangeUsername)
                 {
                     ModalSubheading = new MarkupString();
 
-                    ModalHeader = Lang.Instance["Modal_Title_ChangeUsername"];
-                    ModalText = new MarkupString(Lang.Instance["Modal_ChangeUsername", new { link = AppData.CurrentSwitcher }]);
-                    ModalButtonText = Lang.Instance["Toast_SetUsername"];
+                    ModalHeader = Lang["Modal_Title_ChangeUsername"];
+                    ModalText = new MarkupString(Lang["Modal_ChangeUsername", new { link = AppData.CurrentSwitcher }]);
+                    ModalButtonText = Lang["Toast_SetUsername"];
                     ExtraButtons = AppData.CurrentSwitcher == "Steam" ? new MarkupString() : CurrentPlatform.GetUserModalExtraButtons;
                 }
 

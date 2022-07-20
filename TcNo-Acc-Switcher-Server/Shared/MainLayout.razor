@@ -18,11 +18,16 @@
 @using TcNo_Acc_Switcher_Server.Shared.Modal
 @using Newtonsoft.Json
 @using TcNo_Acc_Switcher_Server.Shared.Toast
+@using TcNo_Acc_Switcher_Server.Shared.Stylesheet
+@using TcNo_Acc_Switcher_Server.State.Interfaces
 @inject IJSRuntime JsRuntime
 @{ AData.SetActiveIJsRuntime(JsRuntime); }
 @inject NavigationManager NavManager
 @{ AData.SetActiveNavMan(NavManager); }
 @inject AppData AData
+@inject AppSettings ASettings
+@inject IStylesheetSettings StylesheetSettings
+
 <app @onmouseup="MouseUp">
     <div class="headerbar">
         <Headerbar />
@@ -43,7 +48,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        if (AppSettings.PasswordHash != "" && AppSettings.PasswordCurrent != AppSettings.PasswordHash)
+        if (AppSettings.Instance.PasswordHash != "" && AppSettings.Instance.PasswordCurrent != AppSettings.Instance.PasswordHash)
         {
             if (!NavManager.Uri.Contains("/login")) NavManager.NavigateTo($"/login?returnUrl={Uri.EscapeDataString(NavManager.Uri)}");
         }

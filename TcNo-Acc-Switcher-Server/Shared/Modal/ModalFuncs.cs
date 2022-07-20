@@ -81,13 +81,13 @@ namespace TcNo_Acc_Switcher_Server.Shared.Modal
         {
             var path = ModalData.PathPicker.LastPath;
 
-            AppSettings.Background = $"{path}";
+            AppSettings.Instance.Background = $"{path}";
 
             if (File.Exists(path) && path != "")
             {
                 Directory.CreateDirectory(Path.Join(Globals.UserDataFolder, "wwwroot\\img\\custom\\"));
                 Globals.CopyFile(path, Path.Join(Globals.UserDataFolder, "wwwroot\\img\\custom\\background" + Path.GetExtension(path)));
-                AppSettings.Background = $"img/custom/background{Path.GetExtension(path)}";
+                AppSettings.Instance.Background = $"img/custom/background{Path.GetExtension(path)}";
                 AppSettings.SaveSettings();
             }
             AppData.CacheReloadPage();
@@ -131,14 +131,14 @@ namespace TcNo_Acc_Switcher_Server.Shared.Modal
 
             if (folderEmpty)
             {
-                await GeneralInvocableFuncs.ShowToast("info", Lang.Instance["Toast_DataLocationCopying"], renderTo: "toastarea");
+                await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_DataLocationCopying"], renderTo: "toastarea");
                 if (!Globals.CopyFilesRecursive(Globals.UserDataFolder, path))
-                    await GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_FileCopyFail"], renderTo: "toastarea");
+                    await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
             }
             else
-                await GeneralInvocableFuncs.ShowToast("info", Lang.Instance["Toast_DataLocationNotCopying"], renderTo: "toastarea");
+                await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_DataLocationNotCopying"], renderTo: "toastarea");
 
-            await GeneralInvocableFuncs.ShowToast("info", Lang.Instance["Toast_DataLocationSet"], renderTo: "toastarea");
+            await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_DataLocationSet"], renderTo: "toastarea");
         }
 
         /// <summary>
@@ -166,7 +166,7 @@ namespace TcNo_Acc_Switcher_Server.Shared.Modal
 
             // Reload page.
             AppData.CacheReloadPage();
-            await GeneralInvocableFuncs.ShowToast("success", Lang.Instance["Toast_UpdatedImage"], renderTo: "toastarea");
+            await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_UpdatedImage"], renderTo: "toastarea");
         }
 
         #endregion
@@ -190,9 +190,9 @@ namespace TcNo_Acc_Switcher_Server.Shared.Modal
         /// </summary>
         public static async Task SetAppPassword()
         {
-            AppSettings.PasswordHash = Globals.GetSha256HashString(ModalData.TextInput.LastString);
+            AppSettings.Instance.PasswordHash = Globals.GetSha256HashString(ModalData.TextInput.LastString);
             AppSettings.SaveSettings();
-            await GeneralInvocableFuncs.ShowToast("success", Lang.Instance["Toast_PasswordChanged"], renderTo: "toastarea");
+            await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_PasswordChanged"], renderTo: "toastarea");
         }
 
         /// <summary>

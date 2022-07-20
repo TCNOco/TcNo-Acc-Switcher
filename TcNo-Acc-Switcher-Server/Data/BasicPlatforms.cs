@@ -62,7 +62,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (!File.Exists(basicPlatformsPath))
             {
                 // Once again verify the file exists. If it doesn't throw an error here.
-                await GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_FailedPlatformsLoad"],
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedPlatformsLoad"],
                     renderTo: "toastarea");
                 Globals.WriteToLog("Failed to locate Platforms.json! This will cause a lot of features to break.");
                 return;
@@ -438,7 +438,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             try
             {
-                return Lang.Instance[UserModalHintText];
+                return Lang[UserModalHintText];
             }
             catch (Exception)
             {

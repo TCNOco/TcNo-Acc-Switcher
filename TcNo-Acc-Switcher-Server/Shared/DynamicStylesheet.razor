@@ -11,7 +11,27 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
-@namespace TcNo_Acc_Switcher_Server.Shared
+
+@using TcNo_Acc_Switcher_Server.Data
+@using TcNo_Acc_Switcher_Server.State
+@using TcNo_Acc_Switcher_Server.State.Interfaces
+@namespace TcNo_Acc_Switcher_Server.Shared.Stylesheet
+@inject AppData AData;
+@inject IStylesheetSettings StylesheetSettings;
+@code{
+    private MarkupString _styleSheetMarkup;
+
+    protected override void OnInitialized()
+    {
+        StylesheetSettings.Updated += OnSettingsChanged;
+        OnSettingsChanged();
+    }
+
+    private void OnSettingsChanged()
+    {
+        _styleSheetMarkup = StylesheetSettings.GetStylesheetMarkupString();
+    }
+}
 <style>
-    @((MarkupString)GetStylesheetMarkupString())
+    @_styleSheetMarkup
 </style>
