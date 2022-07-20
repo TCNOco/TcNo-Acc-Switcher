@@ -21,11 +21,10 @@
 @using System.IO
 @using Microsoft.AspNetCore.WebUtilities
 @using TcNo_Acc_Switcher_Server.Shared.Modal
-@inject AppData AData
 @inject IJSRuntime JsRuntime
-@{ AData.SetActiveIJsRuntime(JsRuntime); }
+@{ AppData.SetActiveIJsRuntime(JsRuntime); }
 @inject NavigationManager NavManager
-@{ AData.SetActiveNavMan(NavManager); }
+@{ AppData.SetActiveNavMan(NavManager); }
 
 <style>@(AppSettings.GetCssBlock()) </style>
 @inject Lang Locale

@@ -14,11 +14,10 @@
 
 @page "/TextEditor/"
 @using TcNo_Acc_Switcher_Server.Data
-@inject AppData AData
 @inject IJSRuntime JsRuntime
-@{ AData.SetActiveIJsRuntime(JsRuntime); }
+@{ AppData.SetActiveIJsRuntime(JsRuntime); }
 @inject NavigationManager NavManager
-@{ AData.SetActiveNavMan(NavManager); }
+@{ AppData.SetActiveNavMan(NavManager); }
 
 @inject Lang Locale
 

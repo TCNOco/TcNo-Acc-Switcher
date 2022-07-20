@@ -86,11 +86,6 @@ async function initAccListSortable() {
         });
     });
 
-    var platformName = getCurrentPage();
-    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCurrentBasicPlatform", platformName).then((r) => {
-        platformName = r;
-    });
-
     // On drag end, save list of items.
     sortable(".acc_list")[0].addEventListener("sortupdate", (e) => {
         const order = [];
@@ -99,7 +94,7 @@ async function initAccListSortable() {
             order.push(i.getElementsByTagName("input")[0].getAttribute("id"));
         });
 
-        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiSaveOrder", `LoginCache\\${platformName}\\order.json`, JSON.stringify(order));
+        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiSaveOrder", JSON.stringify(order));
     });
 }
 

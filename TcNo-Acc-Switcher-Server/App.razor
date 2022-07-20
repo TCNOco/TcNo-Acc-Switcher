@@ -13,11 +13,9 @@
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
 @using TcNo_Acc_Switcher_Server.Data
-@using Microsoft.JSInterop
-@inject AppData AData
 @inject IJSRuntime JsRuntime
-@{ AData.SetActiveIJsRuntime(JsRuntime); }
-@inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
+@{ AppData.SetActiveIJsRuntime(JsRuntime); }
+@inject NavigationManager NavigationManager
 @implements IDisposable
 
 <Router AppAssembly="@typeof(Program).Assembly">

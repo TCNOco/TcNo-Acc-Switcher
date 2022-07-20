@@ -207,17 +207,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         [JSInvokable]
         public static string GiLocaleObj(string k, object obj) => Lang.Instance[k, obj];
 
-
-        [JSInvokable]
-        public static string GiCurrentBasicPlatform(string platform) => platform == "Basic" ? CurrentPlatform.FullName : AppSettings.GetPlatform(platform).Name;
-
-        [JSInvokable]
-        public static string GiCurrentBasicPlatformExe(string platform)
-        {
-            // EXE name from current platform by name:
-            return platform == "Basic" ? CurrentPlatform.ExeName : AppSettings.GetPlatform(platform).Name;
-        }
-
         [JSInvokable]
         public static string GiGetCleanFilePath(string f) => Globals.GetCleanFilePath(f);
     }

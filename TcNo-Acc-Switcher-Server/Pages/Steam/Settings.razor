@@ -25,9 +25,9 @@
 @namespace TcNo_Acc_Switcher_Server.Pages.Steam
 @inject NavigationManager NavManager
 @inject AppData AData
-@{ AData.SetActiveNavMan(NavManager); }
+@{ AppData.SetActiveNavMan(NavManager); }
 @inject IJSRuntime JsRuntime
-@{ AData.SetActiveIJsRuntime(JsRuntime); }
+@{ AppData.SetActiveIJsRuntime(JsRuntime); }
 
 @inject Lang Locale
 @code

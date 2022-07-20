@@ -19,9 +19,9 @@
 @using Newtonsoft.Json
 @using TcNo_Acc_Switcher_Server.Shared.Toast
 @inject IJSRuntime JsRuntime
-@{ AData.SetActiveIJsRuntime(JsRuntime); }
+@{ AppData.SetActiveIJsRuntime(JsRuntime); }
 @inject NavigationManager NavManager
-@{ AData.SetActiveNavMan(NavManager); }
+@{ AppData.SetActiveNavMan(NavManager); }
 @inject AppData AData
 <app @onmouseup="MouseUp">
     <div class="headerbar">

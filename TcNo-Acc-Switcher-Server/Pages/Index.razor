@@ -23,9 +23,9 @@
 @using System.Collections.ObjectModel
 @using TcNo_Acc_Switcher_Server.Pages.General.Classes
 @inject IJSRuntime JsRuntime
-@{ AData.SetActiveIJsRuntime(JsRuntime); }
+@{ AppData.SetActiveIJsRuntime(JsRuntime); }
 @inject NavigationManager NavManager
-@{ AData.SetActiveNavMan(NavManager); }
+@{ AppData.SetActiveNavMan(NavManager); }
 @inject AppData AData
 
 @inject Lang Locale

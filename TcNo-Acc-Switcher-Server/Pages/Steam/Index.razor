@@ -21,9 +21,9 @@
 @using TcNo_Acc_Switcher_Server.Shared.ContextMenu
 @inject AppData AData
 @inject IJSRuntime JsRuntime
-@{ AData.SetActiveIJsRuntime(JsRuntime); }
+@{ AppData.SetActiveIJsRuntime(JsRuntime); }
 @inject NavigationManager NavManager
-@{ AData.SetActiveNavMan(NavManager); }
+@{ AppData.SetActiveNavMan(NavManager); }
 
 <style>@(AppSettings.GetCssBlock())</style>
 <style>@(Steam.GetSteamIdCssBlock())</style>

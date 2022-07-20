@@ -90,7 +90,7 @@ namespace TcNo_Acc_Switcher_Server.Shared.Modal
                 AppSettings.Background = $"img/custom/background{Path.GetExtension(path)}";
                 AppSettings.SaveSettings();
             }
-            AppData.CacheReloadPage();
+            AppData.ReloadPage();
         }
 
         /// <summary>
@@ -165,7 +165,7 @@ namespace TcNo_Acc_Switcher_Server.Shared.Modal
             File.SetLastWriteTime(Path.Join(imageDest, AppData.SelectedAccountId + ".jpg"), DateTime.Now);
 
             // Reload page.
-            AppData.CacheReloadPage();
+            AppData.ReloadPage();
             await GeneralInvocableFuncs.ShowToast("success", Lang.Instance["Toast_UpdatedImage"], renderTo: "toastarea");
         }
 

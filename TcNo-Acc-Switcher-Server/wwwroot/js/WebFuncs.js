@@ -7,16 +7,6 @@ function getCurrentPage() {
         window.location.pathname.split("/")[1]);
 }
 
-async function getCurrentPageFullname() {
-    // If a name for text is required, rather than code (Steam instead of steam or basic)
-    var platform = getCurrentPage();
-    if (platform === "Basic") {
-        platform = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCurrentBasicPlatform", platform);
-    }
-    return platform;
-}
-
-
 // Clear Cache reload:
 var winUrl = window.location.href.split("?");
 if (winUrl.length > 1 && winUrl[1].indexOf("cacheReload") !== -1) {

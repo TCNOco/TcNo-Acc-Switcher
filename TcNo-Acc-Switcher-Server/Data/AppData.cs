@@ -206,14 +206,14 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         private IJSRuntime _activeIJsRuntime;
         [JsonIgnore] public static IJSRuntime ActiveIJsRuntime { get => Instance._activeIJsRuntime; set => Instance._activeIJsRuntime = value; }
-        public void SetActiveIJsRuntime(IJSRuntime jsr) => Instance._activeIJsRuntime = jsr;
+        public static void SetActiveIJsRuntime(IJSRuntime jsr) => Instance._activeIJsRuntime = jsr;
 
         private NavigationManager _activeNavMan;
         [JsonIgnore] public static NavigationManager ActiveNavMan { get => Instance._activeNavMan; set => Instance._activeNavMan = value; }
 
         private bool _firstMainMenuVisit = true;
         [JsonIgnore] public static bool FirstMainMenuVisit { get => Instance._firstMainMenuVisit; set => Instance._firstMainMenuVisit = value; }
-        public void SetActiveNavMan(NavigationManager nm) => Instance._activeNavMan = nm;
+        public static void SetActiveNavMan(NavigationManager nm) => Instance._activeNavMan = nm;
 
 
         private InitializedClasses _initializedClasses = new();
@@ -267,8 +267,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
         }
 
-        public static void ReloadPage() => ActiveNavMan.NavigateTo(ActiveNavMan.Uri, forceLoad: false);
-        public static void CacheReloadPage() => ActiveNavMan.NavigateTo(ActiveNavMan.Uri, forceLoad: true);
+        public static void ReloadPage() => ActiveNavMan.NavigateTo(ActiveNavMan.Uri, forceLoad: true);
         public static void ReloadWithToast(string type, string title, string message) =>
             ActiveNavMan.NavigateTo($"{ActiveNavMan.BaseUri}?toast_type={type}&toast_title={Uri.EscapeDataString(title)}&toast_message={Uri.EscapeDataString(message)}");
         public static void NavigateToWithToast(string uri, string type, string title, string message) =>

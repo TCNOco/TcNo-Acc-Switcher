@@ -396,10 +396,10 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <param name="swapTo">Stylesheet name (without .json) to copy and load</param>
         public void SwapStylesheet(string swapTo)
         {
-            ActiveTheme = swapTo.Replace(" ", "_");
+            Instance._activeTheme = swapTo.Replace(" ", "_");
             try
             {
-                if (LoadStylesheetFromFile())
+                if (Instance.LoadStylesheetFromFile())
                 {
                     AppData.ReloadPage();
                     return;

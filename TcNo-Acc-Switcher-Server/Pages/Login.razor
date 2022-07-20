@@ -20,9 +20,9 @@
 @using TcNo_Acc_Switcher_Globals
 @using TcNo_Acc_Switcher_Server.Shared.Toast
 @inject IJSRuntime JsRuntime
-@{ AData.SetActiveIJsRuntime(JsRuntime); }
+@{ AppData.SetActiveIJsRuntime(JsRuntime); }
 @inject NavigationManager NavManager
-@{ AData.SetActiveNavMan(NavManager); }
+@{ AppData.SetActiveNavMan(NavManager); }
 @inject AppData AData
 
 @inject Lang Locale
