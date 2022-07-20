@@ -98,7 +98,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static void SaveSettings()
         {
             GenerateTotals();
-            GeneralFuncs.SaveSettings(SettingsFile, Instance);
+            Globals.SaveJsonFile(SettingsFile, Instance);
         }
 
 

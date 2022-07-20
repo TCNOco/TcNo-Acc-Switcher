@@ -518,24 +518,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         // Overload for below
         public static void SaveSettings(string file, JObject joNewSettings) => SaveSettings(file, joNewSettings, false);
 
-        public static void SaveSettings<T>(string file, T jSettings)
-        {
-            if (file is null) return;
-
-            try
-            {
-                file = file.EndsWith(".json") ? file : file + ".json";
-                // Create folder if it doesn't exist:
-                var folder = Path.GetDirectoryName(file);
-                if (folder != "") _ = Directory.CreateDirectory(folder ?? string.Empty);
-
-                File.WriteAllText(file, JsonConvert.SerializeObject(jSettings, Formatting.Indented));
-            }
-            catch (Exception ex)
-            {
-                Globals.WriteToLog(ex.ToString());
-            }
-        }
 
         /// <summary>
         /// Saves input JObject of settings to input file path

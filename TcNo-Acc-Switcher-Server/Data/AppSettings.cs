@@ -96,7 +96,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         private static readonly Lang Lang = Lang.Instance;
         private string _lastHash = "";
         private bool _currentlyModifying;
-        public static void SaveSettings() => GeneralFuncs.SaveSettings(SettingsFile, Instance);
+        public static void SaveSettings() => Globals.SaveJsonFile(SettingsFile, Instance);
 
         // Variables
         [JsonProperty("Language", Order = 0)] private string _lang = "";

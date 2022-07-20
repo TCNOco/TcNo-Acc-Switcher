@@ -15,8 +15,10 @@
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using System.Globalization
+@using TcNo_Acc_Switcher_Server.State
 @inject NavigationManager NavigationManager
 @inject Lang Locale
+@inject IWindowSettings WindowSettings
 
 @if (_cultures != null)
 {

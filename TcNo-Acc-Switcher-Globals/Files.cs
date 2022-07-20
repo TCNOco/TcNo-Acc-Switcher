@@ -40,7 +40,7 @@ namespace TcNo_Acc_Switcher_Globals
 
                 // It is a good idea to check what kind of variable it is to replace it with it's default... Though most of the time a "" will suffice here.
                 //var originalValue = js.SelectToken(selector);
-                var newJs = jToken                .ReplacePath(selector, replaceWith); // Using JsonExtensions.ReplacePath in Globals\Extensions.cs
+                var newJs = jToken.ReplacePath(selector, replaceWith); // Using JsonExtensions.ReplacePath in Globals\Extensions.cs
                 SaveJsonFile(path, newJs);
             }
             catch (Exception e)
@@ -50,6 +50,25 @@ namespace TcNo_Acc_Switcher_Globals
             }
 
             return true;
+        }
+
+        public static void SaveJsonFile<T>(string file, T jSettings)
+        {
+            if (file is null) return;
+
+            try
+            {
+                file = file.EndsWith(".json") ? file : file + ".json";
+                // Create folder if it doesn't exist:
+                var folder = Path.GetDirectoryName(file);
+                if (folder != "") _ = Directory.CreateDirectory(folder ?? string.Empty);
+
+                File.WriteAllText(file, JsonConvert.SerializeObject(jSettings, Formatting.Indented));
+            }
+            catch (Exception ex)
+            {
+                Globals.WriteToLog(ex.ToString());
+            }
         }
 
         /// <summary>

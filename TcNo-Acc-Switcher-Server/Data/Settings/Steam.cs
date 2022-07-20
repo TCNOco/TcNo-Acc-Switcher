@@ -94,7 +94,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         private string _lastHash = "";
         private bool _currentlyModifying;
 
-        public static void SaveSettings() => GeneralFuncs.SaveSettings(SettingsFile, Instance);
+        public static void SaveSettings() => Globals.SaveJsonFile(SettingsFile, Instance);
 
         #region Basic Compatability
         public static string GetShortcutImagePath(string gameShortcutName) =>

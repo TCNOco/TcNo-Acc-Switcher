@@ -13,15 +13,18 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
+using TcNo_Acc_Switcher_Server.State;
 
 namespace TcNo_Acc_Switcher_Server
 {
@@ -55,6 +58,10 @@ namespace TcNo_Acc_Switcher_Server
 
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
+            // Create WindowSettings instance. This loads from saved file if available.
+            WindowSettings windowSettings = new();
+            var savedPort = windowSettings.ServerPort;
+
             var port = "";
             foreach (var arg in args)
             {
@@ -65,43 +72,52 @@ namespace TcNo_Acc_Switcher_Server
 
             if (string.IsNullOrEmpty(port))
             {
-                FindOpenPort();
-                port = AppSettings.ServerPort.ToString();
-                Console.WriteLine(@"Using saved/random port: " + port);
+                // The server was launched without the client, or a specified port
+                windowSettings.ServerPort = FindOpenPort(windowSettings.ServerPort);
+                Console.WriteLine(@"Using saved/random port: " + windowSettings.ServerPort);
             }
 
+            // Save new port, if different.
+            if (savedPort.ToString() != port)
+                windowSettings.Save();
+
             // Start browser - if not started with nobrowser
-            if (!args.Contains("nobrowser")) GeneralInvocableFuncs.OpenLinkInBrowser($"http://localhost:{port}");
+            if (!args.Contains("nobrowser")) GeneralInvocableFuncs.OpenLinkInBrowser($"http://localhost:{windowSettings.ServerPort}");
 
             return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     _ = webBuilder.UseStartup<Startup>()
-                        .UseUrls($"http://localhost:{port}");
+                        .UseUrls($"http://localhost:{windowSettings.ServerPort}");
                 });
         }
 
         /// <summary>
-        /// Find first available port up from requested
+        /// Find first available port. Returns open port to use.
+        /// May return same as input, if it was open.
         /// </summary>
-        public static void FindOpenPort()
+        public static int FindOpenPort(int port = 0)
         {
             Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.FindOpenPort]");
+            // Pick random port if none assigned.
+            if (port == 0) port = NewPort();
+
             // Check if port available:
             var ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
             var tcpConnInfoArray = ipGlobalProperties.GetActiveTcpConnections();
             while (true)
             {
-                if (tcpConnInfoArray.All(x => x.LocalEndPoint.Port != AppSettings.ServerPort)) break;
-                NewPort();
+                if (tcpConnInfoArray.All(x => x.LocalEndPoint.Port != port)) break;
+                port = NewPort();
             }
+
+            return port;
         }
 
-        public static void NewPort()
+        private static int NewPort()
         {
             var r = new Random();
-            AppSettings.ServerPort = r.Next(20000, 40000); // Random int [Why this range? See: https://www.sciencedirect.com/topics/computer-science/registered-port & netsh interface ipv4 show excludedportrange protocol=tcp]
-            AppSettings.SaveSettings();
+            return r.Next(20000, 40000); // Random int [Why this range? See: https://www.sciencedirect.com/topics/computer-science/registered-port & netsh interface ipv4 show excludedportrange protocol=tcp]
         }
     }
 }

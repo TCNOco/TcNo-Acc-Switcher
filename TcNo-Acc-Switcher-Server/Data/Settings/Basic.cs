@@ -89,7 +89,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         private string _lastHash = "";
         private bool _currentlyModifying;
 
-        public static void SaveSettings() => GeneralFuncs.SaveSettings(CurrentPlatform.SettingsFile, Instance);
+        public static void SaveSettings() => Globals.SaveJsonFile(CurrentPlatform.SettingsFile, Instance);
 
         // Variables
         [JsonProperty("FolderPath", Order = 1)] private string _folderPath = "";

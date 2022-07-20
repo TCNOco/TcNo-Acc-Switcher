@@ -24,6 +24,7 @@ using Microsoft.Extensions.Hosting;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Data.Settings;
+using TcNo_Acc_Switcher_Server.State;
 
 namespace TcNo_Acc_Switcher_Server
 {
@@ -50,7 +51,12 @@ namespace TcNo_Acc_Switcher_Server
 
             _ = services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
+            // Proper singletons. This is after much more practice.
+            _ = services.AddSingleton<WindowSettings>();
+
+
             // Persistent settings:
+            // The below list will eventually be replaced completely, hopefully.
             _ = services.AddSingleton<AppSettings>();
             _ = services.AddSingleton<AppStats>();
             _ = services.AddSingleton<AppData>();
@@ -66,6 +72,8 @@ namespace TcNo_Acc_Switcher_Server
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // This will remain temporarily, until NewLang has replaced all it's calls.
+            // This will be a LONG time, unfortunately.
             Lang.LoadLocalized();
 
             _ = env.IsDevelopment() ? app.UseDeveloperExceptionPage() : app.UseExceptionHandler("/Error");
