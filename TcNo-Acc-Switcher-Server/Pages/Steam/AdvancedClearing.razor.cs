@@ -13,181 +13,299 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Win32;
 using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
-using SteamSettings = TcNo_Acc_Switcher_Server.Data.Settings.Steam;
+using TcNo_Acc_Switcher_Server.State;
+using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
     public partial class AdvancedClearing
     {
-        private static readonly Lang Lang = Lang.Instance;
-        [Inject]
-        protected AppData AppData { get; set; }
+        [Inject] private SteamSettings SteamSettings { get; set; }
+        [Inject] private IAppState AppState { get; set; }
 
         protected override void OnInitialized()
         {
-            Globals.DebugWriteLine(@"[Auto:Steam\AdvancedClearing.razor.cs.OnInitialisedAsync]");
-            AppData.WindowTitle = Lang["Title_Steam_Cleaning"];
+            Globals.DebugWriteLine(@"[Auto:Steam\AdvancedClearing.razor.cs.OnInitializedAsync]");
+            AppState.WindowState.WindowTitle = Lang["Title_Steam_Cleaning"];
         }
 
 
-        public static readonly string SteamReturn = "steamAdvancedClearingAddLine";
-
-        private static async Task WriteLine(string text)
+        private void WriteLine(string text, bool followWithNewline = true)
         {
             Globals.DebugWriteLine($@"[Auto:Steam\AdvancedClearing.razor.cs.WriteLine] Line: {text}");
-            await AppData.InvokeVoidAsync(SteamReturn, text);
-        }
-
-        private static async Task NewLine()
-        {
-            await AppData.InvokeVoidAsync(SteamReturn, "<br />");
+            Lines.Add(text);
+            if (followWithNewline) Lines.Add("");
         }
 
         // BUTTON: Kill Steam process
         public async Task Steam_Close()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Close]");
-            await WriteLine(await GeneralFuncs.CloseProcesses(SteamSettings.Processes, SteamSettings.ClosingMethod) ? "Closed Steam." : "ERROR: COULD NOT CLOSE STEAM!");
-            await NewLine();
+            WriteLine(await GeneralFuncs.CloseProcesses(SteamSettings.Processes, SteamSettings.ClosingMethod) ? "Closed Steam." : "ERROR: COULD NOT CLOSE STEAM!");
         }
 
         // BUTTON: ..\Steam\Logs
-        public async Task Steam_Clear_Logs()
+        public void Steam_Clear_Logs()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_Logs]");
-            await GeneralFuncs.ClearFolder(Path.Join(SteamSettings.FolderPath, "logs\\"), SteamReturn);
-            await WriteLine("Cleared logs folder.");
-            await NewLine();
+            ClearFolder(Path.Join(SteamSettings.FolderPath, "logs\\"));
+            WriteLine("Cleared logs folder.");
         }
 
         // BUTTON:..\Steam\*.log
-        public async Task Steam_Clear_Dumps()
+        public void Steam_Clear_Dumps()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_Dumps]");
-            await GeneralFuncs.ClearFolder(Path.Join(SteamSettings.FolderPath, "dumps\\"), SteamReturn);
-            await WriteLine("Cleared dumps folder.");
-            await NewLine();
+            ClearFolder(Path.Join(SteamSettings.FolderPath, "dumps\\"));
+            WriteLine("Cleared dumps folder.");
         }
 
         // BUTTON: %Local%\Steam\htmlcache
-        public async Task Steam_Clear_HtmlCache()
+        public void Steam_Clear_HtmlCache()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_HtmlCache]");
             // HTML Cache - %USERPROFILE%\AppData\Local\Steam\htmlcache
-            await GeneralFuncs.ClearFolder(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Steam\\htmlcache"), SteamReturn);
-            await WriteLine("Cleared HTMLCache.");
-            await NewLine();
+            ClearFolder(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Steam\\htmlcache"));
+            WriteLine("Cleared HTMLCache.");
         }
 
         // BUTTON: ..\Steam\*.log
-        public async Task Steam_Clear_UiLogs()
+        public void Steam_Clear_UiLogs()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_UiLogs]");
             // Overlay UI logs -
             //   Steam\GameOverlayUI.exe.log
             //   Steam\GameOverlayRenderer.log
-            await GeneralFuncs.ClearFilesOfType(SteamSettings.FolderPath, "*.log|*.last", SearchOption.TopDirectoryOnly, SteamReturn);
-            await WriteLine("Cleared UI Logs.");
-            await NewLine();
+            ClearFilesOfType(SteamSettings.FolderPath, "*.log|*.last", SearchOption.TopDirectoryOnly);
+            WriteLine("Cleared UI Logs.");
         }
 
         // BUTTON: ..\Steam\appcache
-        public async Task Steam_Clear_AppCache()
+        public void Steam_Clear_AppCache()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_AppCache]");
             // App Cache - Steam\appcache
-            await GeneralFuncs.ClearFilesOfType(Path.Join(SteamSettings.FolderPath, "appcache"), "*.*", SearchOption.TopDirectoryOnly, SteamReturn);
-            await WriteLine("Cleared AppCache.");
-            await NewLine();
+            ClearFilesOfType(Path.Join(SteamSettings.FolderPath, "appcache"), "*.*", SearchOption.TopDirectoryOnly);
+            WriteLine("Cleared AppCache.");
         }
 
         // BUTTON: ..\Steam\appcache\httpcache
-        public async Task Steam_Clear_HttpCache()
+        public void Steam_Clear_HttpCache()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_HttpCache]");
-            await GeneralFuncs.ClearFilesOfType(Path.Join(SteamSettings.FolderPath, "appcache\\httpcache"), "*.*", SearchOption.AllDirectories, SteamReturn);
-            await WriteLine("Cleared HTTPCache.");
-            await NewLine();
+            ClearFilesOfType(Path.Join(SteamSettings.FolderPath, "appcache\\httpcache"), "*.*", SearchOption.AllDirectories);
+            WriteLine("Cleared HTTPCache.");
         }
 
         // BUTTON: ..\Steam\depotcache
-        public async Task Steam_Clear_DepotCache()
+        public void Steam_Clear_DepotCache()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_DepotCache]");
-            await GeneralFuncs.ClearFilesOfType(Path.Join(SteamSettings.FolderPath, "depotcache"), "*.*", SearchOption.TopDirectoryOnly, SteamReturn);
-            await WriteLine("Cleared DepotCache.");
-            await NewLine();
+            ClearFilesOfType(Path.Join(SteamSettings.FolderPath, "depotcache"), "*.*", SearchOption.TopDirectoryOnly);
+            WriteLine("Cleared DepotCache.");
         }
 
         // BUTTON: ..\Steam\config\config.vdf
-        public async Task Steam_Clear_Config()
+        public void Steam_Clear_Config()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_Config]");
-            await GeneralFuncs.DeleteFile(Path.Join(SteamSettings.FolderPath, "config\\config.vdf"), SteamReturn);
-            await WriteLine("Cleared config\\config.vdf");
-            await NewLine();
+            DeleteFile(Path.Join(SteamSettings.FolderPath, "config\\config.vdf"));
+            WriteLine("Cleared config\\config.vdf");
         }
 
         // BUTTON: ..\Steam\config\loginusers.vdf
-        public async Task Steam_Clear_LoginUsers()
+        public void Steam_Clear_LoginUsers()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_LoginUsers]");
-            await GeneralFuncs.DeleteFile(Path.Join(SteamSettings.FolderPath, "config\\loginusers.vdf"), SteamReturn);
-            await WriteLine("Cleared config\\loginusers.vdf");
-            await NewLine();
+            DeleteFile(Path.Join(SteamSettings.FolderPath, "config\\loginusers.vdf"));
+            WriteLine("Cleared config\\loginusers.vdf");
         }
 
         // BUTTON: ..\Steam\ssfn*
-        public async Task Steam_Clear_Ssfn()
+        public void Steam_Clear_Ssfn()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_Ssfn]");
             var d = new DirectoryInfo(SteamSettings.FolderPath);
             var i = 0;
             foreach (var f in d.GetFiles("ssfn*"))
             {
-                await GeneralFuncs.DeleteFile(f, SteamReturn);
+                DeleteFile(f);
                 i++;
             }
 
-            await WriteLine(i == 0 ? "No SSFN files found." : "Cleared SSFN files.");
-            await NewLine();
+            WriteLine(i == 0 ? "No SSFN files found." : "Cleared SSFN files.");
         }
 
         // BUTTON: HKCU\..\AutoLoginUser
         [SupportedOSPlatform("windows")]
-        public async Task Steam_Clear_AutoLoginUser()
+        public void Steam_Clear_AutoLoginUser()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_AutoLoginUser]");
-            await GeneralFuncs.DeleteRegKey(@"Software\Valve\Steam", "AutoLoginuser", SteamReturn);
+            DeleteRegKey(@"Software\Valve\Steam", "AutoLoginuser");
         }
         // BUTTON: HKCU\..\LastGameNameUsed
         [SupportedOSPlatform("windows")]
-        public async Task Steam_Clear_LastGameNameUsed()
+        public void Steam_Clear_LastGameNameUsed()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_LastGameNameUsed]");
-            await GeneralFuncs.DeleteRegKey(@"Software\Valve\Steam", "LastGameNameUsed", SteamReturn);
+            DeleteRegKey(@"Software\Valve\Steam", "LastGameNameUsed");
         }
 
         // BUTTON: HKCU\..\PseudoUUID
         [SupportedOSPlatform("windows")]
-        public async Task Steam_Clear_PseudoUUID()
+        public void Steam_Clear_PseudoUUID()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_PseudoUUID]");
-            await GeneralFuncs.DeleteRegKey(@"Software\Valve\Steam", "PseudoUUID", SteamReturn);
+            DeleteRegKey(@"Software\Valve\Steam", "PseudoUUID");
         }
         // BUTTON: HKCU\..\RememberPassword
         [SupportedOSPlatform("windows")]
-        public async Task Steam_Clear_RememberPassword()
+        public void Steam_Clear_RememberPassword()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_RememberPassword]");
-            await GeneralFuncs.DeleteRegKey(@"Software\Valve\Steam", "RememberPassword", SteamReturn);
+            DeleteRegKey(@"Software\Valve\Steam", "RememberPassword");
+        }
+
+        // Overload for below
+        public void DeleteFile(string file) => DeleteFile(new FileInfo(file));
+
+        /// <summary>
+        /// Deletes a single file
+        /// </summary>
+        /// <param name="f">(Optional) FileInfo of file to delete</param>
+        public void DeleteFile(FileInfo f)
+        {
+            Globals.DebugWriteLine($@"[AdvancedCleaning\DeleteFile] file={f?.FullName ?? ""}");
+            try
+            {
+                if (f is { Exists: false })
+                    WriteLine(Lang["FileNotFound", new { file = f.FullName }], false);
+                else
+                {
+                    if (f == null) return;
+                    f.IsReadOnly = false;
+                    f.Delete();
+                    WriteLine(Lang["DeletedFile", new { file = f.FullName }], false);
+                }
+            }
+            catch (Exception e)
+            {
+                WriteLine(f is null ? Lang["CouldntDeleteUndefined"] : Lang["CouldntDeleteX", new {x = f.FullName}]);
+                WriteLine(e.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Shorter RecursiveDelete (Sets keep folders to true)
+        /// </summary>
+        public void ClearFolder(string folder)
+        {
+            Globals.DebugWriteLine($@"[AdvancedCleaning\ClearFolder] folder={folder}");
+            RecursiveDelete(new DirectoryInfo(folder), true);
+        }
+
+        /// <summary>
+        /// Recursively delete files in folders (Choose to keep or delete folders too)
+        /// </summary>
+        /// <param name="baseDir">Folder to start working inwards from (as DirectoryInfo)</param>
+        /// <param name="keepFolders">Set to False to delete folders as well as files</param>1
+        public void RecursiveDelete(DirectoryInfo baseDir, bool keepFolders)
+        {
+            Globals.DebugWriteLine($@"[AdvancedCleaning\RecursiveDelete] baseDir={baseDir.Name}");
+            if (!baseDir.Exists)
+                return;
+
+            foreach (var dir in baseDir.EnumerateDirectories())
+            {
+                RecursiveDelete(dir, keepFolders);
+            }
+            var files = baseDir.GetFiles();
+            foreach (var file in files)
+            {
+                DeleteFile(file);
+            }
+
+            if (keepFolders) return;
+            baseDir.Delete();
+
+            WriteLine(Lang["DeletingFolder"] + baseDir.FullName);
+        }
+
+        /// <summary>
+        /// Deletes registry keys
+        /// </summary>
+        /// <param name="subKey">Subkey to delete</param>
+        /// <param name="val">Value to delete</param>
+        [SupportedOSPlatform("windows")]
+        public void DeleteRegKey(string subKey, string val)
+        {
+            Globals.DebugWriteLine($@"[AdvancedCleaning\DeleteRegKey] subKey={subKey}, val={val}");
+            using var key = Registry.CurrentUser.OpenSubKey(subKey, true);
+            if (key == null)
+                WriteLine(Lang["Reg_DoesntExist", new { subKey }]);
+            else if (key.GetValue(val) == null)
+                WriteLine(Lang["Reg_DoesntContain", new { subKey, val }]);
+            else
+            {
+                WriteLine(Lang["Reg_Removing", new { subKey, val }]);
+                key.DeleteValue(val);
+            }
+        }
+
+        /// <summary>
+        /// Returns a string array of files in a folder, based on a SearchOption.
+        /// </summary>
+        /// <param name="sourceFolder">Folder to search for files in</param>
+        /// <param name="filter">Filter for files in folder</param>
+        /// <param name="searchOption">Option: ie: Sub-folders, TopLevel only etc.</param>
+        private static IEnumerable<string> GetFiles(string sourceFolder, string filter, SearchOption searchOption)
+        {
+            Globals.DebugWriteLine($@"[AdvancedCleaning\GetFiles] sourceFolder={sourceFolder}, filter={filter}");
+            var alFiles = new ArrayList();
+            var multipleFilters = filter.Split('|');
+            foreach (var fileFilter in multipleFilters)
+                alFiles.AddRange(Directory.GetFiles(sourceFolder, fileFilter, searchOption));
+
+            return (string[])alFiles.ToArray(typeof(string));
+        }
+
+        /// <summary>
+        /// Deletes all files of a specific type in a directory.
+        /// </summary>
+        /// <param name="folder">Folder to search for files in</param>
+        /// <param name="extensions">Extensions of files to delete</param>
+        /// <param name="so">SearchOption of where to look for files</param>
+        public void ClearFilesOfType(string folder, string extensions, SearchOption so)
+        {
+            Globals.DebugWriteLine($@"[AdvancedCleaning\ClearFilesOfType] folder={folder}, extensions={extensions}");
+            if (!Directory.Exists(folder))
+            {
+                WriteLine(Lang["DirectoryNotFound", new { folder }]);
+                return;
+            }
+            foreach (var file in GetFiles(folder, extensions, so))
+            {
+                WriteLine(Lang["DeletingFile", new { file }], false);
+                try
+                {
+                    Globals.DeleteFile(file);
+                }
+                catch (Exception ex)
+                {
+                    WriteLine(Lang["ErrorDetails", new { ex = Globals.MessageFromHResult(ex.HResult) }]);
+                }
+            }
+
+            WriteLine("");
         }
     }
 }

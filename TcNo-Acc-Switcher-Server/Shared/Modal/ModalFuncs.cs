@@ -15,9 +15,6 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using System.Web;
-using Microsoft.AspNetCore.Components;
-using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.Basic;

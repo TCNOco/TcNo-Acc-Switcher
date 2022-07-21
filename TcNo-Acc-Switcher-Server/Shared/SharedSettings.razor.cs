@@ -1,10 +1,4 @@
-﻿using System;
-using System.IO;
-using Microsoft.Win32;
-using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server.Data;
-using TcNo_Acc_Switcher_Server.Pages.General.Classes;
-using TcNo_Acc_Switcher_Server.Shared.Toast;
+﻿using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
 
 namespace TcNo_Acc_Switcher_Server.Shared
@@ -28,21 +22,6 @@ namespace TcNo_Acc_Switcher_Server.Shared
                 default:
                     AppState.Toasts.ShowToastLang(ToastType.Error, "Toast_TrayFail");
                     break;
-            }
-        }
-
-        /// <summary>
-        /// Toggle using the Windows highlight as in-app highlight
-        /// </summary>
-        public static void WindowsAccent_Toggle()
-        {
-            if (!OperatingSystem.IsWindows()) return;
-            if (!AppSettings.WindowsAccent)
-                AppSettings.SetAccentColor(true);
-            else
-            {
-                AppSettings.WindowsAccentColor = "";
-                AppData.ReloadPage();
             }
         }
 

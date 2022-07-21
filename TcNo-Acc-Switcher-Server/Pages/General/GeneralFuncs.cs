@@ -13,7 +13,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -24,20 +23,16 @@ using System.Net.Http;
 using System.Reflection;
 using System.Runtime.Versioning;
 using System.Security.Cryptography;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
-using TcNo_Acc_Switcher_Server.Shared.Modal;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General
 {
@@ -320,157 +315,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             {
                 return false;
             }
-        }
-
-        public static async Task JsDestNewline(string jsDest)
-        {
-            if (string.IsNullOrEmpty(jsDest)) return;
-            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.JsDestNewline] jsDest={jsDest}");
-            await AppData.InvokeVoidAsync(jsDest, "<br />"); //Newline
-        }
-
-        // Overload for below
-        public static async Task DeleteFile(string file, string jsDest) => await DeleteFile(new FileInfo(file), jsDest);
-
-        /// <summary>
-        /// Deletes a single file
-        /// </summary>
-        /// <param name="f">(Optional) FileInfo of file to delete</param>
-        /// <param name="jsDest">Place to send responses (if any)</param>
-        public static async Task DeleteFile(FileInfo f, string jsDest)
-        {
-            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.DeleteFile] file={f?.FullName ?? ""}{(jsDest != "" ? ", jsDest=" + jsDest : "")}");
-            try
-            {
-                if (f is { Exists: false } && !string.IsNullOrEmpty(jsDest)) await AppData.InvokeVoidAsync(jsDest, "File not found: " + f.FullName);
-                else
-                {
-                    if (f == null) return;
-                    f.IsReadOnly = false;
-                    f.Delete();
-                    if (!string.IsNullOrEmpty(jsDest))
-                        await AppData.InvokeVoidAsync(jsDest, "Deleted: " + f.FullName);
-                }
-            }
-            catch (Exception e)
-            {
-                if (string.IsNullOrEmpty(jsDest)) return;
-                await AppData.InvokeVoidAsync(jsDest,
-                    f != null ? Lang["CouldntDeleteX", new {x = f.FullName}] : Lang["CouldntDeleteUndefined"]);
-                await AppData.InvokeVoidAsync(jsDest, e.ToString());
-                await JsDestNewline(jsDest);
-            }
-        }
-
-        // Overload for below
-        public static async Task ClearFolder(string folder) => await ClearFolder(folder, "");
-
-        /// <summary>
-        /// Shorter RecursiveDelete (Sets keep folders to true)
-        /// </summary>
-        public static async Task ClearFolder(string folder, string jsDest)
-        {
-            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.ClearFolder] folder={folder}, jsDest={jsDest}");
-            await RecursiveDelete(new DirectoryInfo(folder), true, jsDest);
-        }
-
-        /// <summary>
-        /// Recursively delete files in folders (Choose to keep or delete folders too)
-        /// </summary>
-        /// <param name="baseDir">Folder to start working inwards from (as DirectoryInfo)</param>
-        /// <param name="keepFolders">Set to False to delete folders as well as files</param>
-        /// <param name="jsDest">Place to send responses (if any)</param>
-        public static async Task RecursiveDelete(DirectoryInfo baseDir, bool keepFolders, string jsDest)
-        {
-            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.RecursiveDelete] baseDir={baseDir.Name}, jsDest={jsDest}");
-            if (!baseDir.Exists)
-                return;
-
-            foreach (var dir in baseDir.EnumerateDirectories())
-            {
-                await RecursiveDelete(dir, keepFolders, jsDest);
-            }
-            var files = baseDir.GetFiles();
-            foreach (var file in files)
-            {
-                await DeleteFile(file, jsDest);
-            }
-
-            if (keepFolders) return;
-            baseDir.Delete();
-            if (!string.IsNullOrEmpty(jsDest)) await  AppData.InvokeVoidAsync(jsDest, Lang["DeletingFolder"] + baseDir.FullName);
-            await JsDestNewline(jsDest);
-        }
-
-        /// <summary>
-        /// Deletes registry keys
-        /// </summary>
-        /// <param name="subKey">Subkey to delete</param>
-        /// <param name="val">Value to delete</param>
-        /// <param name="jsDest">Place to send responses (if any)</param>
-        [SupportedOSPlatform("windows")]
-        public static async Task DeleteRegKey(string subKey, string val, string jsDest)
-        {
-            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.DeleteRegKey] subKey={subKey}, val={val}, jsDest={jsDest}");
-            using var key = Registry.CurrentUser.OpenSubKey(subKey, true);
-            if (key == null)
-                await AppData.InvokeVoidAsync(jsDest, Lang["Reg_DoesntExist", new { subKey }]);
-            else if (key.GetValue(val) == null)
-                await AppData.InvokeVoidAsync(jsDest, Lang["Reg_DoesntContain", new { subKey, val }]);
-            else
-            {
-                await AppData.InvokeVoidAsync(jsDest, Lang["Reg_Removing", new { subKey, val }]);
-                key.DeleteValue(val);
-            }
-            await JsDestNewline(jsDest);
-        }
-
-        /// <summary>
-        /// Returns a string array of files in a folder, based on a SearchOption.
-        /// </summary>
-        /// <param name="sourceFolder">Folder to search for files in</param>
-        /// <param name="filter">Filter for files in folder</param>
-        /// <param name="searchOption">Option: ie: Sub-folders, TopLevel only etc.</param>
-        private static IEnumerable<string> GetFiles(string sourceFolder, string filter, SearchOption searchOption)
-        {
-            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.GetFiles] sourceFolder={sourceFolder}, filter={filter}");
-            var alFiles = new ArrayList();
-            var multipleFilters = filter.Split('|');
-            foreach (var fileFilter in multipleFilters)
-                alFiles.AddRange(Directory.GetFiles(sourceFolder, fileFilter, searchOption));
-
-            return (string[])alFiles.ToArray(typeof(string));
-        }
-
-        /// <summary>
-        /// Deletes all files of a specific type in a directory.
-        /// </summary>
-        /// <param name="folder">Folder to search for files in</param>
-        /// <param name="extensions">Extensions of files to delete</param>
-        /// <param name="so">SearchOption of where to look for files</param>
-        /// <param name="jsDest">Place to send responses (if any)</param>
-        public static async Task ClearFilesOfType(string folder, string extensions, SearchOption so, string jsDest)
-        {
-            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.ClearFilesOfType] folder={folder}, extensions={extensions}, jsDest={jsDest}");
-            if (!Directory.Exists(folder))
-            {
-                await AppData.InvokeVoidAsync(jsDest, Lang["DirectoryNotFound", new { folder }]);
-                await JsDestNewline(jsDest);
-                return;
-            }
-            foreach (var file in GetFiles(folder, extensions, so))
-            {
-                await AppData.InvokeVoidAsync(jsDest, Lang["DeletingFile", new { file }]);
-                try
-                {
-                    Globals.DeleteFile(file);
-                }
-                catch (Exception ex)
-                {
-                    await AppData.InvokeVoidAsync(jsDest, Lang["ErrorDetails", new { ex = Globals.MessageFromHResult(ex.HResult) }]);
-                }
-            }
-            await JsDestNewline(jsDest);
         }
 
         /// <summary>

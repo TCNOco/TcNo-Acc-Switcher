@@ -13,22 +13,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Reflection;
-using System.Runtime.Versioning;
 using System.Threading.Tasks;
-using System.Web;
-using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
-using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
 using BasicSettings = TcNo_Acc_Switcher_Server.Data.Settings.Basic;

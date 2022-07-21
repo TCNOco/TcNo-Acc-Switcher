@@ -13,18 +13,19 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.Threading.Tasks;
+using System.IO;
+using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server.Data;
-using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Shared.Modal;
-using TcNo_Acc_Switcher_Server.Shared.Toast;
+using TcNo_Acc_Switcher_Server.State;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
     public partial class Settings
     {
+        [Inject] private Toasts Toasts { get; set; }
+
         protected override void OnInitialized()
         {
             AppState.WindowState.WindowTitle = Lang["Title_Steam_Settings"];
@@ -58,10 +59,20 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
 
         // BUTTON: Reset images
-        public static async Task ClearImages()
+        /// <summary>
+        /// Clears images folder of contents, to re-download them on next load.
+        /// </summary>
+        public void ClearImages()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearImages]");
-            await SteamSwitcherFuncs.ClearImages();
+            if (!Directory.Exists(SteamSettings.SteamImagePath))
+            {
+                Toasts.ShowToastLang(ToastType.Error, "Error", "Toast_CantClearImages");
+            }
+            Globals.DeleteFiles(SteamSettings.SteamImagePath);
+
+            // Reload page, then display notification using a new thread.
+            AppState.Navigation.ReloadWithToast("success", Uri.EscapeDataString(Lang["Success"]), Uri.EscapeDataString(Lang["Toast_ClearedImages"]));
         }
         #endregion
     }

@@ -14,21 +14,19 @@
 
 @page "/"
 @using TcNo_Acc_Switcher_Server.Data
-@using TcNo_Acc_Switcher_Server.Pages.General
 @using System.Globalization
 @using System.IO
 @using TcNo_Acc_Switcher_Globals
 @using TcNo_Acc_Switcher_Server.Shared.ContextMenu
-@using TcNo_Acc_Switcher_Server.Shared.Toast
 @using System.Collections.ObjectModel
-@using TcNo_Acc_Switcher_Server.Pages.General.Classes
 @using TcNo_Acc_Switcher_Server.State
+@using TcNo_Acc_Switcher_Server.State.Classes
+@using TcNo_Acc_Switcher_Server.State.Interfaces
 @inject IJSRuntime JsRuntime
-@{ AppData.SetActiveIJsRuntime(JsRuntime); }
 @inject NavigationManager NavManager
-@{ AppData.SetActiveNavMan(NavManager); }
-@inject AppData AData
+@inject IWindowSettings WindowSettings
 @inject AppState AppState
+@inject Modals Modals
 
 @inject Lang Locale
 
@@ -42,7 +40,7 @@
 
 @code
 {
-    private static string _imagePath(AppSettings.PlatformItem platform) => Path.Join(Globals.UserDataFolder, $"wwwroot\\img\\platform\\{platform.SafeName}.svg");
+    private static string _imagePath(PlatformItem platform) => Path.Join(Globals.UserDataFolder, $"wwwroot\\img\\platform\\{platform.SafeName}.svg");
 
     private ObservableCollection<MenuItem> _platformContextMenuItems;
 }
@@ -50,7 +48,7 @@
 <ContextMenu MenuItems="@_platformContextMenuItems" ContextMenuId="AccOrPlatList" />
 <div class="platformTable">
     <div class="platform_list">
-        @foreach (var platform in AppSettings.Platforms.OrderBy(x => x.DisplayIndex).Where(x => x.Enabled))
+        @foreach (var platform in WindowSettings.Platforms.OrderBy(x => x.DisplayIndex).Where(x => x.Enabled))
         {
             <div class="platform_list_item" id="@(platform.Identifier)" safeName="@platform.SafeName" @onclick="() => Check(platform.Name)" @onmouseup="(e) => PlatformRightClick(e, platform.Name)" oncontextmenu="return false;">
                 <div class="fgText @(!File.Exists(_imagePath(platform)) ? "noImageCenterText" : "") @(platform.Name.Length < 7 ? "shortText" : platform.Name.Length > 12 ? "longText" : "")"><p>@platform.Name.ToUpper(CultureInfo.InvariantCulture)</p></div>
@@ -75,19 +73,15 @@
         @*<button id="btnTextEditor" onclick="location = 'TextEditor'">
             <i class="fas fa-cog footerIcoSettings"></i>
         </button>*@
-        <button id="btnPlatforms" @onclick='() => AppData.NavigateTo("/Platforms/")' data-toggle="tooltip" title="@(Locale["Tooltip_ManagePlatforms"])">
+        <button id="btnPlatforms" @onclick='() => NavManager.NavigateTo("/Platforms/")' data-toggle="tooltip" title="@(Locale["Tooltip_ManagePlatforms"])">
             <i class="fas fa-plus footerIcoInline"></i>
             @Lang["Button_ManagePlatforms"]
         </button>
-        <button class="btnSettings" @onclick='() => AppData.NavigateTo("/Settings/")' data-toggle="tooltip" title="@(Locale["Tooltip_Settings"])">
+        <button class="btnSettings" @onclick='() => NavManager.NavigateTo("/Settings/")' data-toggle="tooltip" title="@(Locale["Tooltip_Settings"])">
             <i class="fas fa-cog footerIcoSettings"></i>
         </button>
-        <button class="btnHelp" @onclick='() => ModalData.ShowModal("info")' data-toggle="tooltip" title="@(Locale["Tooltip_Info"])">
+        <button class="btnHelp" @onclick='() => Modals.ShowModal("info")' data-toggle="tooltip" title="@(Locale["Tooltip_Info"])">
             <i class="fas fa-question footerIcoQuestion"></i>
         </button>
     </div>
 </div>
-
-@code
-{
-}

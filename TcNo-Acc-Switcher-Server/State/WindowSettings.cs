@@ -12,25 +12,51 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
 using System.Drawing;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using Newtonsoft.Json;
+using System.Runtime.CompilerServices;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.State.Classes;
+using TcNo_Acc_Switcher_Server.State.DataTypes;
 using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.State
 {
-    public class WindowSettings : IWindowSettings
+    public class WindowSettings : IWindowSettings, INotifyPropertyChanged
     {
-        public string Language { get; set; } = "";
-        public bool Rtl { get; set; } = CultureInfo.CurrentCulture.TextInfo.IsRightToLeft;
-        public bool StreamerModeEnabled { get; set; } = true;
+        public event PropertyChangedEventHandler? PropertyChanged;
+        protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+
+
+        public string Language
+        {
+            get => _language;
+            set => SetField(ref _language, value);
+        }
+
+        public bool Rtl
+        {
+            get => _rtl;
+            set => SetField(ref _rtl, value);
+        }
+
+        public bool StreamerModeEnabled
+        {
+            get => _streamerModeEnabled;
+            set => SetField(ref _streamerModeEnabled, value);
+        }
+
         public int ServerPort { get; set; } = 0;
         public Point WindowSize { get; set; } = new() { X = 800, Y = 450 };
         public bool AllowTransparency { get; set; } = true;
@@ -39,18 +65,29 @@ namespace TcNo_Acc_Switcher_Server.State
         public bool TrayMinimizeNotExit { get; set; } = false;
         public bool ShownMinimizedNotification { get; set; } = false;
         public bool StartCentered { get; set; } = false;
-        public string ActiveTheme { get; set; } = "Dracula_Cyan";
+
+        public string ActiveTheme
+        {
+            get => _activeTheme;
+            set => SetField(ref _activeTheme, value);
+        }
+
         public string ActiveBrowser { get; set; } = "WebView";
-        public string Background { get; set; } = "";
+
+        public string Background
+        {
+            get => _background;
+            set => SetField(ref _background, value);
+        }
+
         public List<string> EnabledBasicPlatforms { get; } = new();
-        private bool _collectStats = true;
 
         public bool CollectStats
         {
             get => _collectStats;
             set
             {
-                _collectStats = value;
+                SetField(ref _collectStats, value);
                 if (!value) ShareAnonymousStats = false;
             }
         }
@@ -58,13 +95,19 @@ namespace TcNo_Acc_Switcher_Server.State
         public bool ShareAnonymousStats { get; set; } = true;
         public bool MinimizeOnSwitch { get; set; } = false;
         private bool _discordRpcEnabled = true;
+        private string _language = "";
+        private bool _rtl = CultureInfo.CurrentCulture.TextInfo.IsRightToLeft;
+        private bool _streamerModeEnabled = true;
+        private string _activeTheme = "Dracula_Cyan";
+        private string _background = "";
+        private bool _collectStats = true;
 
         public bool DiscordRpcEnabled
         {
             get => _discordRpcEnabled;
             set
             {
-                _discordRpcEnabled = value;
+                SetField(ref _discordRpcEnabled, value);
                 if (!value) DiscordRpcShareTotalSwitches = false;
             }
         }
@@ -99,8 +142,34 @@ namespace TcNo_Acc_Switcher_Server.State
         {
             Globals.LoadSettings(Filename, this, false);
 
+            // TODO: Load from file? See commented at the bottom of this class. They were leftover from the Data\AppSettings file.
             Platforms.CollectionChanged += (_, _) => Platforms.Sort();
         }
         public void Save() => Globals.SaveJsonFile(Filename, this, false);
+
+
+        /// <summary>
+        /// Get platform details from an identifier, or the name.
+        /// </summary>
+        public PlatformItem GetPlatform(string nameOrId) => Platforms.FirstOrDefault(x => x.Name == nameOrId || x.PossibleIdentifiers.Contains(nameOrId));
+
+
+        //private static void InitPlatformsList()
+        //{
+        //    // Add platforms, if none there.
+        //    if (_platforms.Count == 0)
+        //        _platforms = DefaultPlatforms;
+
+        //    _platforms.First(x => x.Name == "Steam").SetFromPlatformItem(new PlatformItem("Steam", new List<string> { "s", "steam" }, "steam.exe", true));
+
+        //    // Load other platforms by initializing BasicPlatforms
+        //    _ = BasicPlatforms.Instance;
+        //}
+
+        //public class GameSetting
+        //{
+        //    public string SettingId { get; set; } = "";
+        //    public bool Checked { get; set; }
+        //}
     }
 }

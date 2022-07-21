@@ -1,22 +1,27 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿// TcNo Account Switcher - A Super fast account switcher
+// Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using DiscordRPC;
-using Microsoft.Win32;
-using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server.Data;
-using TcNo_Acc_Switcher_Server.Pages.General.Classes;
-using TcNo_Acc_Switcher_Server.Shared.Toast;
 using TcNo_Acc_Switcher_Server.State.Classes;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
 using TcNo_Acc_Switcher_Server.State.Interfaces;
-using TcNo_Acc_Switcher_Server.StateFuncs;
 
 namespace TcNo_Acc_Switcher_Server.State
 {
-    public class AppState : IAppState
+    public class AppState : IAppState, INotifyPropertyChanged
     {
         public string PasswordCurrent { get; set; }
 
@@ -28,13 +33,17 @@ namespace TcNo_Acc_Switcher_Server.State
 
         public Updates Updates { get; set; } = new();
 
-        public Stylesheet Stylesheet { get; set; }
+        public Stylesheet Stylesheet { get; set; } = new();
 
         public Navigation Navigation { get; set; }
 
         public Switcher Switcher { get; set; }
 
-        public WindowState WindowState { get; set; }
+        public WindowState WindowState { get; set; } = new();
+
+        // Property change notifications
+        public event PropertyChangedEventHandler? PropertyChanged;
+        protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         /// <summary>
         /// Is running with the official window, or just the server in a browser.
@@ -44,6 +53,10 @@ namespace TcNo_Acc_Switcher_Server.State
         {
             // Discord integration
             Discord.RefreshDiscordPresenceAsync(true);
+
+            // Forward state changes.
+            Stylesheet.PropertyChanged += (s, e) => PropertyChanged?.Invoke(s, e);
+            WindowState.PropertyChanged += (s, e) => PropertyChanged?.Invoke(s, e);
 
         }
 

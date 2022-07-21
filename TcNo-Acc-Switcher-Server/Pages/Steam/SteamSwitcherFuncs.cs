@@ -14,18 +14,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml;
-using Gameloop.Vdf;
 using Gameloop.Vdf.JsonConverter;
 using Microsoft.Win32;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Converters;
@@ -33,7 +28,6 @@ using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Shared.Accounts;
 using TcNo_Acc_Switcher_Server.State;
-using TcNo_Acc_Switcher_Server.State.Classes;
 
 
 namespace TcNo_Acc_Switcher_Server.Pages.Steam
@@ -320,23 +314,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 Globals.WriteToLog("Failed to swap Steam users! Could not create temp loginusers.vdf file, and replace original using workaround! Contact TechNobo.", ex);
                 await GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new { x = tempFile }]);
             }
-        }
-
-        /// <summary>
-        /// Clears images folder of contents, to re-download them on next load.
-        /// </summary>
-        /// <returns>Whether files were deleted or not</returns>
-        public static async Task ClearImages()
-        {
-            Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.ClearImages] Clearing images.");
-            if (!Directory.Exists(SteamSettings.SteamImagePath))
-            {
-                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_CantClearImages"], Lang["Error"], "toastarea");
-            }
-            Globals.DeleteFiles(SteamSettings.SteamImagePath);
-            // Reload page, then display notification using a new thread.
-            AppData.ActiveNavMan?.NavigateTo(
-                $"/steam/?cacheReload&toast_type=success&toast_title={Uri.EscapeDataString(Lang["Success"])}&toast_message={Uri.EscapeDataString(Lang["Toast_ClearedImages"])}", true);
         }
 
         /// <summary>

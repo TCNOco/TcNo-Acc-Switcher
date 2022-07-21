@@ -1,13 +1,24 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Win32;
 using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server.Pages.General;
+// TcNo Account Switcher - A Super fast account switcher
+// Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
-using TcNo_Acc_Switcher_Server.Pages.Steam;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
 using TcNo_Acc_Switcher_Server.State.Interfaces;
 
@@ -18,6 +29,7 @@ namespace TcNo_Acc_Switcher_Server.State.Classes
         [Inject] private Modals Modals { get; set; }
         [Inject] private IAppState AppState { get; set; }
         [Inject] private Toasts Toasts { get; set; }
+
 
         private readonly string _startMenuFolder = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Programs), @"TcNo Account Switcher\");
 

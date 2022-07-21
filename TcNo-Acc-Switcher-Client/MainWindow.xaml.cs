@@ -26,7 +26,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Interop;
 using CefSharp;
 using CefSharp.Wpf;
@@ -35,7 +34,6 @@ using Microsoft.Web.WebView2.Wpf;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server;
-using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.State;
 using Point = System.Drawing.Point;
 

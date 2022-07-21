@@ -18,6 +18,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
@@ -25,16 +26,18 @@ using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
 using TcNo_Acc_Switcher_Server.Shared.ContextMenu;
 using TcNo_Acc_Switcher_Server.Shared.Modal;
-using TcNo_Acc_Switcher_Server.Shared.Toast;
-using BasicSettings = TcNo_Acc_Switcher_Server.Data.Settings.Basic;
-using SteamSettings = TcNo_Acc_Switcher_Server.Data.Settings.Steam;
+using TcNo_Acc_Switcher_Server.State;
+using TcNo_Acc_Switcher_Server.State.DataTypes;
 
 namespace TcNo_Acc_Switcher_Server.Pages
 {
     public partial class Index
     {
-        private static readonly Lang Lang = Lang.Instance;
-        [Inject] private AppSettings ASettings { get; set; }
+        [Inject] private Toasts Toasts { get; set; }
+        [Inject] private NewLang Lang { get; set; }
+        [Inject] private BasicSettings BasicSettings { get; set; }
+        [Inject] private SteamSettings SteamSettings { get; set; }
+        [Inject] private NavigationManager NavigationManager { get; set; }
 
         protected override void OnInitialized()
         {
@@ -49,33 +52,31 @@ namespace TcNo_Acc_Switcher_Server.Pages
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            AppData.WindowTitle = "TcNo Account Switcher";
-            AppSettings.Platforms.CollectionChanged += (_, _) => InvokeAsync(StateHasChanged);
+            AppState.WindowState.WindowTitle = "TcNo Account Switcher";
+            WindowSettings.Platforms.CollectionChanged += (_, _) => InvokeAsync(StateHasChanged);
 
             // If no platforms are showing:
-            if (AppSettings.Platforms.All(x => !x.Enabled))
+            if (WindowSettings.Platforms.All(x => !x.Enabled))
             {
                 NavManager.NavigateTo("Platforms");
             }
 
             // If just 1 platform is showing, and first launch: Nav into:
-            if (AppData.FirstMainMenuVisit && AppSettings.Platforms.Count(x => x.Enabled) == 1)
+            if (AppState.WindowState.FirstMainMenuVisit && WindowSettings.Platforms.Count(x => x.Enabled) == 1)
             {
-                AppData.FirstMainMenuVisit = false;
-                var onlyPlatform = AppSettings.Platforms.First(x => x.Enabled);
+                AppState.WindowState.FirstMainMenuVisit = false;
+                var onlyPlatform = WindowSettings.Platforms.First(x => x.Enabled);
                 await Check(onlyPlatform.Name);
             }
-            AppData.FirstMainMenuVisit = false;
+            AppState.WindowState.FirstMainMenuVisit = false;
 
             if (firstRender)
             {
                 await GeneralFuncs.HandleQueries();
                 //await AppData.InvokeVoidAsync("initContextMenu");
-                await AppData.InvokeVoidAsync("initPlatformListSortable");
+                await JsRuntime.InvokeVoidAsync("initPlatformListSortable");
                 //await AData.InvokeVoidAsync("initAccListSortable");
             }
-
-            AppData.FirstLaunchCheck();
 
             AppStats.NewNavigation("/");
         }
@@ -84,29 +85,31 @@ namespace TcNo_Acc_Switcher_Server.Pages
         /// <summary>
         /// Check can enter platform, before navigating to page.
         /// </summary>
-        public async Task Check(string platform)
+        public void Check(string platform)
         {
             Globals.DebugWriteLine($@"[Func:Index.Check] platform={platform}");
             if (platform == "Steam")
             {
                 if (!GeneralFuncs.CanKillProcess(SteamSettings.Processes, SteamSettings.ClosingMethod)) return;
-                if (!Directory.Exists(SteamSettings.FolderPath) || !File.Exists(SteamSettings.Exe()))
+                if (!Directory.Exists(SteamSettings.FolderPath) || !File.Exists(SteamSettings.Exe))
                 {
-                    AppData.CurrentSwitcher = "Steam";
+                    AppState.Switcher.CurrentSwitcher = "Steam";
                     ModalFuncs.ShowUpdatePlatformFolderModal();
                     return;
                 }
-                if (SteamSwitcherFuncs.SteamSettingsValid()) AppData.NavigateTo("/Steam/");
-                else AData.ShowToastLang(ToastType.Error, "Toast_Steam_CantLocateLoginusers");
+                if (File.Exists(SteamSettings.LoginUsersVdf))
+                    NavigationManager.NavigateTo("/Steam/");
+                else
+                    Toasts.ShowToastLang(ToastType.Error, "Toast_Steam_CantLocateLoginusers");
                 return;
             }
 
-            AppData.CurrentSwitcher = platform;
+            AppState.Switcher.CurrentSwitcher = platform;
             BasicPlatforms.SetCurrentPlatform(platform);
             if (!GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd, BasicSettings.ClosingMethod)) return;
 
-            if (Directory.Exists(BasicSettings.FolderPath) && File.Exists(BasicSettings.Exe()))
-                AppData.NavigateTo("/Basic/");
+            if (Directory.Exists(BasicSettings.FolderPath) && File.Exists(BasicSettings.Exe))
+                NavManager.NavigateTo("/Basic/");
             else
                 ModalFuncs.ShowUpdatePlatformFolderModal();
         }
@@ -117,10 +120,10 @@ namespace TcNo_Acc_Switcher_Server.Pages
         /// </summary>
         public void CreatePlatformShortcut()
         {
-            var platform = AppSettings.GetPlatform(AppData.SelectedPlatform);
+            var platform = WindowSettingsFuncs.GetPlatform(AppData.SelectedPlatform);
             Shortcut.PlatformDesktopShortcut(Shortcut.Desktop, platform.Name, platform.Identifier, true);
 
-            AData.ShowToastLang(ToastType.Success, "Success", "Toast_ShortcutCreated");
+            Toasts.ShowToastLang(ToastType.Success, "Success", "Toast_ShortcutCreated");
         }
 
         /// <summary>
@@ -128,17 +131,17 @@ namespace TcNo_Acc_Switcher_Server.Pages
         /// </summary>
         public async Task ExportAllAccounts()
         {
-            if (AppData.IsCurrentlyExportingAccounts)
+            if (AppState.Switcher.IsCurrentlyExportingAccounts)
             {
-                AData.ShowToastLang(ToastType.Error, "Error", "Toast_AlreadyProcessing");
+                Toasts.ShowToastLang(ToastType.Error, "Error", "Toast_AlreadyProcessing");
                 return;
             }
 
-            AppData.IsCurrentlyExportingAccounts = true;
+            AppState.Switcher.IsCurrentlyExportingAccounts = true;
 
             var exportPath = await GeneralFuncs.ExportAccountList();
-            await AppData.InvokeVoidAsync("saveFile", exportPath.Split('\\').Last(), exportPath);
-            AppData.IsCurrentlyExportingAccounts = false;
+            await JsRuntime.InvokeVoidAsync("saveFile", exportPath.Split('\\').Last(), exportPath);
+            AppState.Switcher.IsCurrentlyExportingAccounts = false;
         }
 
         /// <summary>
@@ -146,18 +149,18 @@ namespace TcNo_Acc_Switcher_Server.Pages
         /// </summary>
         public void HidePlatform(string item = null)
         {
-            var platform = item ?? AppData.SelectedPlatform;
-            AppSettings.Platforms.First(x => x.Name == platform).SetEnabled(false);
+            var platform = item ?? AppState.Switcher.SelectedPlatform;
+            WindowSettings.Platforms.First(x => x.Name == platform).SetEnabled(false);
         }
 
         /// <summary>
         /// Shows the context menu for the requested platform
         /// </summary>
-        public static async void PlatformRightClick(MouseEventArgs e, string plat)
+        public async void PlatformRightClick(MouseEventArgs e, string plat)
         {
             if (e.Button != 2) return;
-            AppData.SelectedPlatform = plat;
-            await AppData.InvokeVoidAsync("positionAndShowMenu", e, "#AccOrPlatList");
+            AppState.Switcher.SelectedPlatform = plat;
+            await JsRuntime.InvokeVoidAsync("positionAndShowMenu", e, "#AccOrPlatList");
         }
         #endregion
     }

@@ -451,12 +451,14 @@ Refresh: Refresh
 Working: Working...
 ForName: "For: {name}"
 DeletedFiles: Deleted files
+DeletedFile: "Deleted: {file}"
 FileFoldersToClear: "List of files/folders to clear:"
 CouldNotFindX: Could not find {x}
 CouldNotCloseX: Could not close {x}!
 CouldNotReadFile: Could not read {file}!
 DirectoryNotFound: Directory not found
 DirectoryNotFoundFolder: "Directory not found: {folder}"
+FileNotFound: "File not found: {file}"
 DeletingFile: "Deleting: {file}"
 DeletingFolder: "Deleting Folder: "
 CouldntDeleteX: "ERROR: COULDN'T DELETE: {x}"

@@ -1,48 +1,93 @@
-﻿using System;
+﻿// TcNo Account Switcher - A Super fast account switcher
+// Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using SharpScss;
 using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
 namespace TcNo_Acc_Switcher_Server.State.Classes
 {
-    public class Stylesheet
+    public class Stylesheet : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler? PropertyChanged;
+        protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+
         [Inject] private Toasts Toasts { get; set; }
         [Inject] private NewLang Lang { get; set; }
         [Inject] private NavigationManager NavigationManager { get; set; }
         [Inject] private WindowSettings WindowSettings { get; set; }
 
+        public Stylesheet()
+        {
+            LoadStylesheetFromFile();
+            WindowSettings.PropertyChanged += (s, p) => PropertyChanged?.Invoke(s, p);
+        }
+
         public string StylesheetCss { get; set; }
-        public bool WindowsAccent { get; set; }
+
+        public bool WindowsAccent
+        {
+            get => _windowsAccent;
+            set
+            {
+                if (!OperatingSystem.IsWindows()) return;
+                if (value) SetAccentColor(true);
+                else WindowsAccentColor = "";
+
+                SetField(ref _windowsAccent, value);
+            }
+        }
+
         public string WindowsAccentColor { get; set; } = "";
         public (float, float, float) WindowsAccentColorHsl { get; set; } = (0, 0, 0);
-        public static Dictionary<string, string> StylesheetInfo { get; set; }
+        public Dictionary<string, string> StylesheetInfo { get; set; }
 
         private string StylesheetFile => Path.Join("themes", WindowSettings.ActiveTheme, "style.css");
         private string StylesheetInfoFile => Path.Join("themes", WindowSettings.ActiveTheme, "info.yaml");
 
-        public bool StreamerModeTriggered { get; set; }
+        public bool StreamerModeTriggered
+        {
+            get => _streamerModeTriggered;
+            set => SetField(ref _streamerModeTriggered, value);
+        }
+        private bool _streamerModeTriggered;
+        private bool _windowsAccent;
 
         // Constants
         public static readonly string SettingsFile = "WindowSettings.json";
 
         [SupportedOSPlatform("windows")]
         public (int, int, int) WindowsAccentColorInt => GetAccentColor();
-
-        public Stylesheet()
-        {
-            LoadStylesheetFromFile();
-        }
 
         /// <summary>
         /// Check if any streaming software is running. Do let me know if you have a program name that you'd like to expand this list with!
@@ -230,7 +275,7 @@ namespace TcNo_Acc_Switcher_Server.State.Classes
         /// <summary>
         /// Returns a list of Stylesheets in the Stylesheet folder.
         /// </summary>
-        public static string[] GetStyleList()
+        public string[] GetStyleList()
         {
             var themeList = Directory.GetDirectories("themes");
             for (var i = 0; i < themeList.Length; i++)

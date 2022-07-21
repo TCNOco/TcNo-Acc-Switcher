@@ -16,7 +16,9 @@
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 @namespace TcNo_Acc_Switcher_Server.Shared
 @inject IWindowSettings WindowSettings;
+@inject SteamSettings SteamSettings;
 @inject AppState AppState;
+
 <style>
     @_markup
 </style>
@@ -48,12 +50,20 @@
 
         // Add streamer mode censor.
         style += ".streamerCensor { display: " + (WindowSettings.StreamerModeEnabled && AppState.Stylesheet.StreamerModeTriggered ? "none!important" : "block") + "}";
+        style += ".steamId { display: " + (SteamSettings.ShowSteamId ? "block" : "none") + " } .lastLogin { display: " + (SteamSettings.ShowLastLogin ? "block" : "none") + " }";;
 
         return style;
     }
 
     protected override void OnInitialized()
     {
+        AppState.Stylesheet.PropertyChanged += (_, _) => OnChange();
+        OnChange();
+    }
+
+    private void OnChange()
+    {
         _markup = new MarkupString(GetStylesheetMarkupString());
+        InvokeAsync(StateHasChanged);
     }
 }

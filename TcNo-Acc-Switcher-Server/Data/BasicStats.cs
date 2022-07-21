@@ -5,12 +5,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General;
-using TcNo_Acc_Switcher_Server.Shared.Toast;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {

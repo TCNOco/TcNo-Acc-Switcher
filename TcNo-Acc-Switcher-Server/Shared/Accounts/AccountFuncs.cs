@@ -12,13 +12,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using TcNo_Acc_Switcher_Server.Data;
-using TcNo_Acc_Switcher_Server.Data.Settings;
-using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.State.Classes;
 
 namespace TcNo_Acc_Switcher_Server.Shared.Accounts

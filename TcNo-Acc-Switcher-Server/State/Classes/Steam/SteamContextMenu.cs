@@ -1,6 +1,21 @@
-﻿using System;
+﻿// TcNo Account Switcher - A Super fast account switcher
+// Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,6 +31,7 @@ using TcNo_Acc_Switcher_Server.Pages.Steam;
 using TcNo_Acc_Switcher_Server.Shared;
 using TcNo_Acc_Switcher_Server.Shared.ContextMenu;
 using TcNo_Acc_Switcher_Server.Shared.Modal;
+using TcNo_Acc_Switcher_Server.State.DataTypes;
 using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.State.Classes.Steam
@@ -26,6 +42,7 @@ namespace TcNo_Acc_Switcher_Server.State.Classes.Steam
         [Inject] private Modals Modals { get; set; }
         [Inject] private SteamSettings SteamSettings { get; set; }
         [Inject] IAppState AppState { get; set; }
+        [Inject] Toasts Toasts { get; set; }
 
         public List<string> InstalledGames { get; set; }
         public Dictionary<string, string> AppIds { get; set; }
@@ -170,12 +187,21 @@ namespace TcNo_Acc_Switcher_Server.State.Classes.Steam
                             new Action(Modals.ShowGameStatsSelectorModal))
                         : null,
                     new("Context_ChangeImage", new Action(ModalFuncs.ShowChangeAccImageModal)),
-                    new("Context_Steam_OpenUserdata", new Action(SteamSwitcherBase.SteamOpenUserdata)),
+                    new("Context_Steam_OpenUserdata", new Action(SteamOpenUserdata)),
                     new("Context_ChangeName", new Action(ModalFuncs.ShowChangeUsernameModal))
                 })
             });
 
             Menu.AddRange(menuBuilder.Result());
+        }
+        public void SteamOpenUserdata()
+        {
+            var steamId32 = new SteamIdConvert(AppState.Switcher.SelectedAccountId);
+            var folder = Path.Join(SteamSettings.FolderPath, $"userdata\\{steamId32.Id32}");
+            if (Directory.Exists(folder))
+                _ = Process.Start("explorer.exe", folder);
+            else
+                Toasts.ShowToastLang(ToastType.Error, "Failed", "Toast_NoFindSteamUserdata");
         }
         public void LoadInstalledGames()
         {

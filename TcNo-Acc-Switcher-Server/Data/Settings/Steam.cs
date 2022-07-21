@@ -12,24 +12,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server.Converters;
-using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.General;
-using TcNo_Acc_Switcher_Server.Pages.General.Classes;
-using TcNo_Acc_Switcher_Server.Pages.Steam;
-using TcNo_Acc_Switcher_Server.Shared;
-using TcNo_Acc_Switcher_Server.Shared.Accounts;
-using TcNo_Acc_Switcher_Server.Shared.ContextMenu;
-using TcNo_Acc_Switcher_Server.Shared.Modal;
 
 namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
