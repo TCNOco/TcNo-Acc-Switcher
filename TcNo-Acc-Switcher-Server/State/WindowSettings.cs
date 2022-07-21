@@ -13,11 +13,16 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.Drawing;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.State.Classes;
+using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.State
 {
@@ -25,49 +30,56 @@ namespace TcNo_Acc_Switcher_Server.State
     {
         public string Language { get; set; } = "";
         public bool Rtl { get; set; } = CultureInfo.CurrentCulture.TextInfo.IsRightToLeft;
-        public bool StreamerModeEnabled { get; set; }
+        public bool StreamerModeEnabled { get; set; } = true;
         public int ServerPort { get; set; } = 0;
-        public string WindowSize { get; set; } = "";
-        public string Version { get; set; } = "";
+        public Point WindowSize { get; set; } = new() { X = 800, Y = 450 };
+        public bool AllowTransparency { get; set; } = true;
+        public string Version { get; set; } = Globals.Version;
         public List<object> DisabledPlatforms { get; } = new();
-        public bool TrayMinimizeNotExit { get; set; }
-        public bool ShownMinimizedNotification { get; set; }
-        public bool StartCentered { get; set; }
-        public string ActiveTheme { get; set; } = "";
-        public string ActiveBrowser { get; set; } = "";
+        public bool TrayMinimizeNotExit { get; set; } = false;
+        public bool ShownMinimizedNotification { get; set; } = false;
+        public bool StartCentered { get; set; } = false;
+        public string ActiveTheme { get; set; } = "Dracula_Cyan";
+        public string ActiveBrowser { get; set; } = "WebView";
         public string Background { get; set; } = "";
         public List<string> EnabledBasicPlatforms { get; } = new();
-        public bool CollectStats { get; set; }
-        public bool ShareAnonymousStats { get; set; }
-        public bool MinimizeOnSwitch { get; set; }
-        public bool DiscordRpcEnabled { get; set; }
-        public bool DiscordRpcShareTotalSwitches { get; set; }
+        public bool CollectStats { get; set; } = true;
+        public bool ShareAnonymousStats { get; set; } = true;
+        public bool MinimizeOnSwitch { get; set; } = false;
+        public bool DiscordRpcEnabled { get; set; } = true;
+        public bool DiscordRpcShareTotalSwitches { get; set; } = true;
+        public string PasswordHash { get; set; } = "";
+        public Dictionary<string, MetricHidden> GloballyHiddenMetrics = new();
+        public bool AlwaysAdmin = false;
+
+
+        public ObservableCollection<PlatformItem> Platforms { get; set; } = new()
+        {
+            new PlatformItem("Discord", true),
+            new PlatformItem("Epic Games", true),
+            new PlatformItem("Origin", true),
+            new PlatformItem("Riot Games", true),
+            new PlatformItem("Steam", true),
+            new PlatformItem("Ubisoft", true),
+        };
 
         private static string Filename = "WindowSettings.json";
         /// <summary>
         /// Loads WindowSettings from file, if exists. Otherwise default.
+        /// A toast for errors can not be displayed here as this needs to be loaded before the language instance.
         /// </summary>
         public WindowSettings()
         {
-            // Load from file, if it exists.
-            if (File.Exists(Filename))
-                JsonConvert.PopulateObject(File.ReadAllText(Filename), this);
-        }
+            Globals.LoadSettings(Filename, this, false);
 
-        public void Save()
-        {
-            try
-            {
-                // Create folder if it doesn't exist:
-                var folder = Path.GetDirectoryName(Filename);
-                if (folder != "") _ = Directory.CreateDirectory(folder ?? string.Empty);
-
-                File.WriteAllText(Filename, JsonConvert.SerializeObject(this, Formatting.Indented));
-            }
-            catch (Exception ex)
-            {
-                Globals.WriteToLog(ex.ToString());
-            }
+            Platforms.CollectionChanged += (_, _) => Platforms.Sort();
         }
+        public void Save() => Globals.SaveJsonFile(Filename, this, false);
+    }
+
+    public class MetricHidden
+    {
+        public string MetricName { get; set; } = "";
+        public bool Hidden { get; set; } = false;
     }
 }

@@ -1,11 +1,11 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace TcNo_Acc_Switcher_Server.Shared.Toast
+namespace TcNo_Acc_Switcher_Server.State.DataTypes
 {
     public class Toast
     {
-        public ToastType Type { get; set; }
+        public ToastType Type { get; set ; }
         public string Title { get; set; }
         public string Message { get; set; }
         public int DuplicateCount { get; set; }

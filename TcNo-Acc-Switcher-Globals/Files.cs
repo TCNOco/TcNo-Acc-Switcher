@@ -13,6 +13,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.IconLib;
@@ -52,9 +53,9 @@ namespace TcNo_Acc_Switcher_Globals
             return true;
         }
 
-        public static void SaveJsonFile<T>(string file, T jSettings)
+        public static bool SaveJsonFile<T>(string file, T jSettings, bool throwError = true)
         {
-            if (file is null) return;
+            if (file is null) return false;
 
             try
             {
@@ -64,10 +65,39 @@ namespace TcNo_Acc_Switcher_Globals
                 if (folder != "") _ = Directory.CreateDirectory(folder ?? string.Empty);
 
                 File.WriteAllText(file, JsonConvert.SerializeObject(jSettings, Formatting.Indented));
+                return true;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Globals.WriteToLog(ex.ToString());
+                WriteToLog($"Failed to save '{file}", e);
+                if (!throwError) return false;
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Load settings. Exceptions must be caught where this was called.
+        /// </summary>
+        public static bool LoadSettings<T>(string file, T settings, bool throwError = true)
+        {
+            if (string.IsNullOrEmpty(file)) return false;
+            try
+            {
+                // Try load settings and edit referenced class.
+                if (File.Exists(file))
+                {
+                    JsonConvert.PopulateObject(File.ReadAllText(file), settings);
+                    return true;
+                }
+                // Failed to load: Move file.
+                CopyFile(file, file.Replace(".json", ".old.json"));
+                return false;
+            }
+            catch (Exception e)
+            {
+                WriteToLog($"Failed to load '{file}'", e);
+                if (!throwError) return false;
+                throw;
             }
         }
 

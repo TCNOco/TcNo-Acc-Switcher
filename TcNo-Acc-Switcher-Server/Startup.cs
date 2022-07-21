@@ -25,6 +25,7 @@ using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.State;
+using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server
 {
@@ -52,7 +53,9 @@ namespace TcNo_Acc_Switcher_Server
             _ = services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             // Proper singletons. This is after much more practice.
-            _ = services.AddSingleton<WindowSettings>();
+            _ = services.AddSingleton<IWindowSettings, WindowSettings>();
+            _ = services.AddSingleton<NewLang>();
+            _ = services.AddSingleton<AppState>();
 
 
             // Persistent settings:

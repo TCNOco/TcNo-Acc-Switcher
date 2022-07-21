@@ -92,17 +92,6 @@ namespace TcNo_Acc_Switcher_Server.Shared
         }
 
         /// <summary>
-        /// Toggle the main Desktop shortcut
-        /// </summary>
-        public void DesktopShortcut_Toggle()
-        {
-            Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.DesktopShortcut_Toggle]");
-            var s = new Shortcut();
-            _ = s.Shortcut_Switcher(Shortcut.Desktop);
-            s.ToggleShortcut(!AppSettings.StartMenu);
-        }
-
-        /// <summary>
         /// Toggle using the Windows highlight as in-app highlight
         /// </summary>
         public static void WindowsAccent_Toggle()

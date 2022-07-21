@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.State.Interfaces;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -34,7 +35,7 @@ namespace TcNo_Acc_Switcher_Server.State
     /// This should be much better when it's set up and replaced everything.
     /// For now, having 2 loaded in memory should not be an issue.
     /// </summary>
-    public class NewLang
+    public class NewLang : INewLang
     {
         [Inject] private WindowSettings WindowSettings { get; set; }
 
@@ -177,5 +178,16 @@ namespace TcNo_Acc_Switcher_Server.State
             }
         }
         #endregion
+    }
+    public class LangSub
+    {
+        public string LangKey { get; set; }
+        public object Variable { get; set; }
+
+        public LangSub(string key, object var)
+        {
+            LangKey = key;
+            Variable = var;
+        }
     }
 }

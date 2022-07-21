@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Drawing;
+using TcNo_Acc_Switcher_Server.State.Classes;
 
-namespace TcNo_Acc_Switcher_Server.State;
+namespace TcNo_Acc_Switcher_Server.State.Interfaces;
 
 public interface IWindowSettings
 {
@@ -8,7 +11,8 @@ public interface IWindowSettings
     bool Rtl { get; set; }
     bool StreamerModeEnabled { get; set; }
     int ServerPort { get; set; }
-    string WindowSize { get; set; }
+    Point WindowSize { get; set; }
+    bool AllowTransparency { get; set; }
     string Version { get; set; }
     List<object> DisabledPlatforms { get; }
     bool TrayMinimizeNotExit { get; set; }
@@ -23,5 +27,7 @@ public interface IWindowSettings
     bool MinimizeOnSwitch { get; set; }
     bool DiscordRpcEnabled { get; set; }
     bool DiscordRpcShareTotalSwitches { get; set; }
+    string PasswordHash { get; set; }
+    ObservableCollection<PlatformItem> Platforms { get; set; }
     void Save();
 }

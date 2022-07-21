@@ -76,71 +76,12 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (AppSettings.StatsEnabled && AppSettings.StatsShare)
                 new Thread(AppStats.UploadStats).Start();
 
-            // Discord integration
-            RefreshDiscordPresenceAsync(true);
 
             // Unused. Idk if I will use these, but they are here just in-case.
             //DiscordClient.OnReady += (sender, e) => { Console.WriteLine("Received Ready from user {0}", e.User.Username); };
             //DiscordClient.OnPresenceUpdate += (sender, e) => { Console.WriteLine("Received Update! {0}", e.Presence); };
         }
 
-        public static void RefreshDiscordPresenceAsync(bool firstLaunch)
-        {
-            if (!firstLaunch && DiscordClient.CurrentUser is null) return;
-            var dThread = new Thread(RefreshDiscordPresence);
-            dThread.Start();
-        }
-
-        public static void RefreshDiscordPresence()
-        {
-            Thread.Sleep(1000);
-
-            if (!AppSettings.DiscordRpc)
-            {
-                if (DiscordClient != null)
-                {
-                    if (!DiscordClient.IsInitialized) return;
-                    DiscordClient.Deinitialize();
-                    DiscordClient = null;
-                }
-
-                return;
-            }
-
-            var timestamp = Timestamps.Now;
-
-            DiscordClient ??= new DiscordRpcClient("973188269405765682")
-            {
-                Logger = new ConsoleLogger { Level = LogLevel.None },
-            };
-            if (!DiscordClient.IsInitialized) DiscordClient.Initialize();
-            else timestamp = DiscordClient.CurrentPresence.Timestamps;
-
-            var state = "";
-            if (AppSettings.StatsEnabled && AppSettings.DiscordRpcShare)
-            {
-                AppStats.GenerateTotals();
-                state = Lang["Discord_StatusDetails", new { number = AppStats.SwitcherStats["_Total"].Switches }];
-            }
-
-
-            DiscordClient.SetPresence(new RichPresence
-            {
-                Details = Lang["Discord_Status"],
-                State = state,
-                Timestamps = timestamp,
-                Buttons = new Button[]
-                { new() {
-                    Url = "https://github.com/TcNobo/TcNo-Acc-Switcher/",
-                    Label = Lang["Website"]
-                }},
-                Assets = new Assets
-                {
-                    LargeImageKey = "switcher",
-                    LargeImageText = "TcNo Account Switcher"
-                }
-            });
-        }
         #endregion
 
         #region Accounts
@@ -219,9 +160,6 @@ namespace TcNo_Acc_Switcher_Server.Data
         private InitializedClasses _initializedClasses = new();
         [JsonIgnore] public static InitializedClasses InitializedClasses { get => Instance._initializedClasses; set => Instance._initializedClasses = value; }
 
-
-        private DiscordRpcClient _discordClient;
-        [JsonIgnore] public static DiscordRpcClient DiscordClient { get => Instance._discordClient; set => Instance._discordClient = value; }
 
         /// <summary>
         /// Contains whether the Client app is running, and the server is it's child.
@@ -313,63 +251,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonIgnore] private bool _isCurrentlyExportingAccounts;
         public static bool IsCurrentlyExportingAccounts { get => Instance._isCurrentlyExportingAccounts; set => Instance._isCurrentlyExportingAccounts = value; }
 
-
-
-
-        // Toast stuff - This is the first attempt at properly using AppData as a Blazor DI Singleton.
-        public ObservableCollection<Toast> ToastQueue = new();
-        public void ShowToast(ToastType type, string title = "", string message = "", int duration = 5000)
-        {
-            var toastItem = new Toast(type, title, message);
-            Toast existing;
-            // If already exists, increment counter and re-add (Cancelling the task).
-            if ((existing = ToastQueue.FirstOrDefault(x => x is not null && x.Type == type && x.Title == title && x.Message == message)) is not null)
-            {
-                // Cancel existing and remove
-                existing.CancellationSource.Cancel();
-                ToastQueue.Remove(existing);
-                // Then add new, with duplicate counter and fresh timer.
-                toastItem.DuplicateCount += 1;
-            }
-            ToastQueue.Add(toastItem);
-            toastItem.RemoveSelf = Task.Run(() =>
-            {
-                Thread.Sleep(duration);
-                if (toastItem.Cancellation.IsCancellationRequested) return;
-                try
-                {
-                    ToastQueue.Remove(toastItem);
-                }
-                catch (Exception)
-                {
-                    //
-                }
-            }, toastItem.Cancellation);
-        }
-
-        public void ShowToast(ToastType type, string message, int duration = 5000) =>
-            ShowToast(type, "", message, duration);
-        public void ShowToastLang(ToastType type, string titleVar, string messageVar, int duration = 5000) =>
-            ShowToast(type, Lang.Instance[titleVar], Lang.Instance[messageVar], duration);
-        public void ShowToastLang(ToastType type, string messageVar, int duration = 5000) =>
-            ShowToast(type, "", Lang.Instance[messageVar], duration);
-        public void ShowToastLang(ToastType type, string titleVar, LangSub message, int duration = 5000) =>
-            ShowToast(type, Lang.Instance[titleVar], Lang.Instance[message.LangKey, message.Variable], duration);
-        public void ShowToastLang(ToastType type, LangSub message, int duration = 5000) =>
-            ShowToast(type, "", Lang.Instance[message.LangKey, message.Variable], duration);
     }
 
-    public class LangSub
-    {
-        public string LangKey { get; set; }
-        public object Variable { get; set; }
-
-        public LangSub(string key, object var)
-        {
-            LangKey = key;
-            Variable = var;
-        }
-    }
 
     public class InitializedClasses
     {

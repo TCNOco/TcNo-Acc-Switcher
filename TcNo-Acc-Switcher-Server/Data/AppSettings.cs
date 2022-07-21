@@ -42,84 +42,6 @@ namespace TcNo_Acc_Switcher_Server.Data
 {
     public class AppSettings
     {
-        [Inject] private AppData AData { get; set; }
-
-        private static AppSettings _instance = new();
-
-        private static readonly object LockObj = new();
-        public static AppSettings Instance
-        {
-            get
-            {
-                lock (LockObj)
-                {
-                    // Load settings if have changed, or not set
-                    if (_instance is {_currentlyModifying: true}) return _instance;
-                    if (_instance._lastHash != "") return _instance;
-
-                    _instance = new AppSettings { _currentlyModifying = true };
-
-                    if (File.Exists(SettingsFile))
-                    {
-                        if (File.Exists(SettingsFile)) JsonConvert.PopulateObject(File.ReadAllText(SettingsFile), _instance);
-                        if (_instance == null)
-                        {
-                            _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedLoadSettings"]);
-                            if (File.Exists(SettingsFile))
-                                Globals.CopyFile(SettingsFile, SettingsFile.Replace(".json", ".old.json"));
-                            _instance = new AppSettings { _currentlyModifying = true };
-                        }
-                        _instance._lastHash = Globals.GetFileMd5(SettingsFile);
-                    }else
-                    {
-                        SaveSettings();
-                    }
-
-                    Instance.LoadStylesheetFromFile();
-                    CheckShortcuts();
-                    InitPlatformsList();
-
-                    _instance._currentlyModifying = false;
-
-                    return _instance;
-                }
-            }
-            set
-            {
-                lock (LockObj)
-                {
-                    _instance = value;
-                }
-            }
-        }
-
-        private static readonly Lang Lang = Lang.Instance;
-        private string _lastHash = "";
-        private bool _currentlyModifying;
-        public static void SaveSettings() => Globals.SaveJsonFile(SettingsFile, Instance);
-
-        // Variables
-        [JsonProperty("Language", Order = 0)] private string _lang = "";
-        [JsonProperty("Rtl", Order = 1)] private bool _rtl = CultureInfo.CurrentCulture.TextInfo.IsRightToLeft;
-        [JsonProperty("StreamerModeEnabled", Order = 2)] private bool _streamerModeEnabled = true;
-        [JsonProperty("ServerPort", Order = 3)] private int _serverPort = 1337;
-        [JsonProperty("WindowSize", Order = 4)] private Point _windowSize = new() { X = 800, Y = 450 };
-        [JsonProperty("AllowTransparency", Order = 5)] private bool _allowTransparency = true;
-        [JsonProperty("Version", Order = 6)] private readonly string _version = Globals.Version;
-        [JsonProperty("TrayMinimizeNotExit", Order = 8)] private bool _trayMinimizeNotExit;
-        [JsonProperty("ShownMinimizedNotification", Order = 9)] private bool _shownMinimizedNotification;
-        [JsonProperty("StartCentered", Order = 10)] private bool _startCentered;
-        [JsonProperty("ActiveTheme", Order = 11)] private string _activeTheme = "Dracula_Cyan";
-        [JsonProperty("ActiveBrowser", Order = 12)] private string _activeBrowser = "WebView";
-        [JsonProperty("Background", Order = 13)] private string _background = "";
-        [JsonProperty("CollectStats", Order = 14)] private bool _statsEnabled = true;
-        [JsonProperty("ShareAnonymousStats", Order = 15)] private bool _statsShare = true;
-        [JsonProperty("MinimizeOnSwitch", Order = 16)] private bool _minimizeOnSwitch;
-        [JsonProperty("DiscordRpcEnabled", Order = 17)] private bool _discordRpc = true;
-        [JsonProperty("DiscordRpcShareTotalSwitches", Order = 18)] private bool _discordRpcShare = true;
-        [JsonProperty("PasswordHash", Order = 19)] private string _passwordHash = "";
-        [JsonProperty("GloballyHiddenMetrics", Order = 20)] private Dictionary<string, Dictionary<string, bool>> _globallyHiddenMetrics = new();
-        [JsonProperty("AlwaysAdmin", Order = 21)] private bool _alwaysAdmin;
         [JsonIgnore] private bool _desktopShortcut;
         [JsonIgnore] private bool _startMenu;
         [JsonIgnore] private bool _startMenuPlatforms;
@@ -127,154 +49,58 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonIgnore] private bool _trayStartup;
         [JsonIgnore] private bool _updateCheckRan;
         [JsonIgnore] private bool _preRenderUpdate;
-        [JsonIgnore] private string _passwordCurrent;
 
 
-        public class PlatformItem : IComparable
-        {
-            public string Name = "";
-            [JsonIgnore] public string SafeName = "";
-            [JsonIgnore] public string NameNoSpace = "";
-            [JsonIgnore] public string Identifier = "";
-            [JsonIgnore] public string ExeName = "";
-            [JsonIgnore] public List<string> PossibleIdentifiers = new(); // Other identifiers that can refer to this platform. (b, bnet, battlenet, etc)
-            public bool Enabled;
-            public int DisplayIndex = 99;
-            public int CompareTo(object o)
-            {
-                var a = this;
-                var b = (PlatformItem)o;
-                return string.CompareOrdinal(a.Name, b.Name);
-            }
-
-            // Needed for JSON serialization/deserialization
-            public PlatformItem() { }
-
-            // Used for first init. The rest of the info is added by BasicPlatforms.
-            public PlatformItem(string name, bool enabled)
-            {
-                Name = name;
-                SafeName = Globals.GetCleanFilePath(name);
-                NameNoSpace = SafeName.Replace(" ", "");
-                Enabled = enabled;
-            }
-            public PlatformItem(string name, List<string> identifiers, string exeName, bool enabled)
-            {
-                Name = name;
-                SafeName = Globals.GetCleanFilePath(name);
-                NameNoSpace = SafeName.Replace(" ", "");
-                Enabled = enabled;
-                Identifier = identifiers[0];
-                PossibleIdentifiers = identifiers;
-                ExeName = exeName;
-            }
-
-            /// <summary>
-            /// Set from a new PlatformItem - Not including Enabled.
-            /// </summary>
-            public void SetFromPlatformItem(PlatformItem inItem)
-            {
-                Name = inItem.Name;
-                SafeName = Globals.GetCleanFilePath(Name);
-                NameNoSpace = SafeName.Replace(" ", "");
-                Identifier = inItem.Identifier;
-                ExeName = inItem.ExeName;
-            }
-
-            public void SetEnabled(bool enabled)
-            {
-                Enabled = enabled;
-                Platforms.Sort();
-            }
-        }
-
-        private static readonly ObservableCollection<PlatformItem> DefaultPlatforms = new()
-        {
-            new PlatformItem("Discord", true),
-            new PlatformItem("Epic Games", true),
-            new PlatformItem("Origin", true),
-            new PlatformItem("Riot Games", true),
-            new PlatformItem("Steam", true),
-            new PlatformItem("Ubisoft", true),
-        };
-
-        [JsonProperty("Platforms", Order = 7)] private ObservableCollection<PlatformItem> _platforms = new();
-
-        public static ObservableCollection<PlatformItem> Platforms
-        {
-            get => Instance._platforms;
-            set
-            {
-                Instance._platforms = value;
-                Instance._platforms.Sort();
-            }
-        }
-        /// <summary>
-        /// Get platform details from an identifier, or the name.
-        /// </summary>
-        public static PlatformItem GetPlatform(string nameOrId) => Platforms.FirstOrDefault(x => x.Name == nameOrId || x.PossibleIdentifiers.Contains(nameOrId));
         private static void InitPlatformsList()
         {
             // Add platforms, if none there.
-            if (Instance._platforms.Count == 0)
-                Instance._platforms = DefaultPlatforms;
+            if (_platforms.Count == 0)
+                _platforms = DefaultPlatforms;
 
-            Instance._platforms.First(x => x.Name == "Steam").SetFromPlatformItem(new PlatformItem("Steam", new List<string> { "s", "steam" }, "steam.exe", true));
+            _platforms.First(x => x.Name == "Steam").SetFromPlatformItem(new PlatformItem("Steam", new List<string> { "s", "steam" }, "steam.exe", true));
 
             // Load other platforms by initializing BasicPlatforms
             _ = BasicPlatforms.Instance;
         }
 
-        public static string Language { get => Instance._lang; set => Instance._lang = value; }
-        public static bool Rtl { get => Instance._rtl; set => Instance._rtl = value; }
-        public static bool StreamerModeEnabled { get => Instance._streamerModeEnabled; set => Instance._streamerModeEnabled = value; }
-        public static int ServerPort { get => Instance._serverPort; set => Instance._serverPort = value; }
-        public static Point WindowSize { get => Instance._windowSize; set => Instance._windowSize = value; }
-        public static bool AllowTransparency { get => Instance._allowTransparency; set => Instance._allowTransparency = value; }
-        public static string Version => Instance._version;
-        public static bool TrayMinimizeNotExit { get => Instance._trayMinimizeNotExit; set => Instance._trayMinimizeNotExit = value; }
-        public static bool ShownMinimizedNotification { get => Instance._shownMinimizedNotification; set => Instance._shownMinimizedNotification = value; }
-        public static bool StartCentered { get => Instance._startCentered; set => Instance._startCentered = value; }
-        public static string ActiveTheme { get => Instance._activeTheme; set => Instance._activeTheme = value; }
-        public static string ActiveBrowser { get => Instance._activeBrowser; set => Instance._activeBrowser = value; }
-        public static string Background { get => Instance._background; set => Instance._background = value; }
-        public static bool DiscordRpc { get => Instance._discordRpc; set
-        {
-            if (!value) Instance._discordRpcShare = false;
-            Instance._discordRpc = value;
-        }
-    }
-        public static bool DiscordRpcShare { get => Instance._discordRpcShare; set => Instance._discordRpcShare = value; }
-        public static string PasswordHash { get => Instance._passwordHash; set => Instance._passwordHash = value; } // SET should hash password.
-        public static string PasswordCurrent { get => Instance._passwordCurrent; set => Instance._passwordCurrent = value; } // SET should hash password.
-
-        public static bool StatsEnabled
-        {
-            get => Instance._statsEnabled;
+        public static bool DiscordRpc {
+            get => _discordRpc;
             set
             {
-                if (!value) Instance._statsShare = false;
-                Instance._statsEnabled = value;
+                if (!value) _discordRpcShare = false;
+                _discordRpc = value;
             }
         }
 
-        public static bool StatsShare { get => Instance._statsShare; set => Instance._statsShare = value; }
-        public static bool MinimizeOnSwitch { get => Instance._minimizeOnSwitch; set => Instance._minimizeOnSwitch = value; }
-        public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
+        public static bool StatsEnabled
+        {
+            get => _statsEnabled;
+            set
+            {
+                if (!value) _statsShare = false;
+                _statsEnabled = value;
+            }
+        }
 
-        public static bool StartMenu { get => Instance._startMenu; set => Instance._startMenu = value; }
+        public static bool StatsShare { get => _statsShare; set => _statsShare = value; }
+        public static bool MinimizeOnSwitch { get => _minimizeOnSwitch; set => _minimizeOnSwitch = value; }
+        
+        public static bool DesktopShortcut { get => _desktopShortcut; set => _desktopShortcut = value; }
 
-        public static bool StartMenuPlatforms { get => Instance._startMenuPlatforms; set => Instance._startMenuPlatforms = value; }
+        public static bool StartMenu { get => _startMenu; set => _startMenu = value; }
 
-        public static bool ProtocolEnabled { get => Instance._protocolEnabled; set => Instance._protocolEnabled = value; }
-        public static bool TrayStartup { get => Instance._trayStartup; set => Instance._trayStartup = value; }
-        private static bool UpdateCheckRan { get =>Instance._updateCheckRan; set => Instance._updateCheckRan = value; }
-        public static bool PreRenderUpdate { get =>Instance._preRenderUpdate; set => Instance._preRenderUpdate = value; }
+        public static bool StartMenuPlatforms { get => _startMenuPlatforms; set => _startMenuPlatforms = value; }
 
+        public static bool ProtocolEnabled { get => _protocolEnabled; set => _protocolEnabled = value; }
+        public static bool TrayStartup { get => _trayStartup; set => _trayStartup = value; }
+        private static bool UpdateCheckRan { get =>_updateCheckRan; set => _updateCheckRan = value; }
+        public static bool PreRenderUpdate { get =>_preRenderUpdate; set => _preRenderUpdate = value; }
+
+        
         public static bool AlwaysAdmin
         {
-            get =>Instance._alwaysAdmin;
-            set => Instance._alwaysAdmin = value;
+            get =>_alwaysAdmin;
+            set => _alwaysAdmin = value;
         }
         public class GameSetting
         {
@@ -287,19 +113,19 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// Keys for metrics on this list are not shown for any account.
         /// List of all games:[Settings:Hidden metric] metric keys.
         /// </summary>
-        public static Dictionary<string, Dictionary<string, bool>> GloballyHiddenMetrics { get => Instance._globallyHiddenMetrics; set => Instance._globallyHiddenMetrics = value; }
+        public static Dictionary<string, Dictionary<string, bool>> GloballyHiddenMetrics { get => _globallyHiddenMetrics; set => _globallyHiddenMetrics = value; }
 
         private string _stylesheet;
-        public static string Stylesheet { get => Instance._stylesheet; set => Instance._stylesheet = value; }
+        public static string Stylesheet { get => _stylesheet; set => _stylesheet = value; }
 
         private bool _windowsAccent;
-        public static bool WindowsAccent { get => Instance._windowsAccent; set => Instance._windowsAccent = value; }
+        public static bool WindowsAccent { get => _windowsAccent; set => _windowsAccent = value; }
 
         private string _windowsAccentColor = "";
-        public static string WindowsAccentColor { get => Instance._windowsAccentColor; set => Instance._windowsAccentColor = value; }
+        public static string WindowsAccentColor { get => _windowsAccentColor; set => _windowsAccentColor = value; }
 
         private (float, float, float) _windowsAccentColorHsl = (0, 0, 0);
-        public static (float, float, float) WindowsAccentColorHsl { get => Instance._windowsAccentColorHsl; set => Instance._windowsAccentColorHsl = value; }
+        public static (float, float, float) WindowsAccentColorHsl { get => _windowsAccentColorHsl; set => _windowsAccentColorHsl = value; }
 
         [SupportedOSPlatform("windows")]
         public static (int, int, int) WindowsAccentColorInt => GetAccentColor();
@@ -309,7 +135,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         private static string StylesheetFile => Path.Join("themes", ActiveTheme, "style.css");
         private static string StylesheetInfoFile => Path.Join("themes", ActiveTheme, "info.yaml");
         private Dictionary<string, string> _stylesheetInfo;
-        public static Dictionary<string, string> StylesheetInfo { get => Instance._stylesheetInfo; set => Instance._stylesheetInfo = value; }
+        public static Dictionary<string, string> StylesheetInfo { get => _stylesheetInfo; set => _stylesheetInfo = value; }
 
         public static bool StreamerModeTriggered;
 
@@ -396,10 +222,10 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <param name="swapTo">Stylesheet name (without .json) to copy and load</param>
         public void SwapStylesheet(string swapTo)
         {
-            Instance._activeTheme = swapTo.Replace(" ", "_");
+            _activeTheme = swapTo.Replace(" ", "_");
             try
             {
-                if (Instance.LoadStylesheetFromFile())
+                if (LoadStylesheetFromFile())
                 {
                     AppData.ReloadPage();
                     return;
@@ -564,17 +390,6 @@ namespace TcNo_Acc_Switcher_Server.Data
         #endregion
 
         #region SHORTCUTS
-        public static void CheckShortcuts()
-        {
-            Globals.DebugWriteLine(@"[Func:Data\AppSettings.CheckShortcuts]");
-            DesktopShortcut = File.Exists(Path.Join(Shortcut.Desktop, "TcNo Account Switcher.lnk"));
-            StartMenu = File.Exists(Path.Join(Shortcut.StartMenu, "TcNo Account Switcher.lnk"));
-            StartMenuPlatforms = Directory.Exists(Path.Join(Shortcut.StartMenu, "Platforms"));
-            TrayStartup = Shortcut.StartWithWindows_Enabled();
-
-            if (OperatingSystem.IsWindows())
-                ProtocolEnabled = SharedStaticFuncs.Protocol_IsEnabled();
-        }
 
         #region WindowsAccent
 
