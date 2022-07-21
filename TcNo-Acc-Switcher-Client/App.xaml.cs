@@ -30,6 +30,7 @@ using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
+using TcNo_Acc_Switcher_Server.State;
 using static TcNo_Acc_Switcher_Client.MainWindow;
 
 namespace TcNo_Acc_Switcher_Client
@@ -39,6 +40,9 @@ namespace TcNo_Acc_Switcher_Client
     /// </summary>
     public partial class App
     {
+        // Create WindowSettings instance. This loads from saved file if available.
+        WindowSettings windowSettings = new();
+
 #pragma warning disable CA2211 // Non-constant fields should not be visible - Accessed from App.xaml.cs
         public static string StartPage = "";
 #pragma warning restore CA2211 // Non-constant fields should not be visible
@@ -74,7 +78,7 @@ namespace TcNo_Acc_Switcher_Client
 
             Directory.SetCurrentDirectory(Globals.UserDataFolder);
 
-            if (AppSettings.AlwaysAdmin && !Globals.IsAdministrator) GeneralFuncs.RestartAsAdmin();
+            if (windowSettings.AlwaysAdmin && !Globals.IsAdministrator) GeneralFuncs.RestartAsAdmin();
 
             // Crash handler
             AppDomain.CurrentDomain.UnhandledException += Globals.CurrentDomain_UnhandledException;
@@ -175,14 +179,14 @@ namespace TcNo_Acc_Switcher_Client
             // Show window (Because no command line commands were parsed)
             try
             {
-                var mainWindow = new MainWindow();
+                var mainWindow = new MainWindow(windowSettings);
                 mainWindow.Show();
             }
             catch (FileNotFoundException ex)
             {
                 // Check if CEF issue, and download if missing.
                 if (!ex.ToString().Contains("CefSharp")) throw;
-                AppSettings.AutoStartUpdaterAsAdmin("downloadCEF");
+                TcNo_Acc_Switcher_Server.State.Classes.Updates.AutoStartUpdaterAsAdmin("downloadCEF");
                 Environment.Exit(1);
                 throw;
             }
@@ -275,7 +279,7 @@ namespace TcNo_Acc_Switcher_Client
         /// <summary>
         /// Shows error and exits program is program is already running
         /// </summary>
-        private static void IsRunningAlready()
+        private void IsRunningAlready()
         {
             try
             {
@@ -284,7 +288,7 @@ namespace TcNo_Acc_Switcher_Client
 
                 // The program is running at this point.
                 // If set to minimize to tray, try open it.
-                if (AppSettings.TrayMinimizeNotExit)
+                if (windowSettings.TrayMinimizeNotExit)
                 {
                     if (NativeFuncs.BringToFront())
                         Environment.Exit(1056); // 1056	An instance of the service is already running.
@@ -315,7 +319,7 @@ release = true;
                 }
                 else
                 {
-	                if (!AppSettings.ShownMinimizedNotification)
+	                if (!windowSettings.ShownMinimizedNotification)
 	                {
 		                text = "TcNo Account Switcher was running." + Environment.NewLine +
 		                       "I've brought it to the top." + Environment.NewLine +
@@ -328,8 +332,8 @@ release = true;
 			                MessageBoxImage.Information,
 			                MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
 
-		                AppSettings.ShownMinimizedNotification = true;
-		                AppSettings.SaveSettings();
+                        windowSettings.ShownMinimizedNotification = true;
+                        windowSettings.Save();
 	                }
 
 	                Environment.Exit(1056); // 1056	An instance of the service is already running.

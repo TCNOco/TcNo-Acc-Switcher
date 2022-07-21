@@ -11,6 +11,6 @@ public interface IAppState
 {
     string PasswordCurrent { get; set; }
     ShortcutsState Shortcuts { get; set; }
-    Notifications Notifications { get; set; }
+    Toasts Toasts { get; set; }
     Discord Discord { get; set; }
 }

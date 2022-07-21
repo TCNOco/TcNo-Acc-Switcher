@@ -43,14 +43,41 @@ namespace TcNo_Acc_Switcher_Server.State
         public string ActiveBrowser { get; set; } = "WebView";
         public string Background { get; set; } = "";
         public List<string> EnabledBasicPlatforms { get; } = new();
-        public bool CollectStats { get; set; } = true;
+        private bool _collectStats = true;
+
+        public bool CollectStats
+        {
+            get => _collectStats;
+            set
+            {
+                _collectStats = value;
+                if (!value) ShareAnonymousStats = false;
+            }
+        }
+
         public bool ShareAnonymousStats { get; set; } = true;
         public bool MinimizeOnSwitch { get; set; } = false;
-        public bool DiscordRpcEnabled { get; set; } = true;
+        private bool _discordRpcEnabled = true;
+
+        public bool DiscordRpcEnabled
+        {
+            get => _discordRpcEnabled;
+            set
+            {
+                _discordRpcEnabled = value;
+                if (!value) DiscordRpcShareTotalSwitches = false;
+            }
+        }
+
         public bool DiscordRpcShareTotalSwitches { get; set; } = true;
         public string PasswordHash { get; set; } = "";
-        public Dictionary<string, MetricHidden> GloballyHiddenMetrics = new();
-        public bool AlwaysAdmin = false;
+        /// <summary>
+        /// For BasicStats // Game statistics collection and showing
+        /// Keys for metrics on this list are not shown for any account.
+        /// List of all games:[Settings:Hidden metric] metric keys.
+        /// </summary>
+        public Dictionary<string, MetricHidden> GloballyHiddenMetrics { get; set; } = new();
+        public bool AlwaysAdmin { get; set; } = false;
 
 
         public ObservableCollection<PlatformItem> Platforms { get; set; } = new()

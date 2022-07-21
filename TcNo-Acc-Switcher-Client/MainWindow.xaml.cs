@@ -36,6 +36,7 @@ using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server;
 using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.State;
 using Point = System.Drawing.Point;
 
 namespace TcNo_Acc_Switcher_Client
@@ -47,11 +48,13 @@ namespace TcNo_Acc_Switcher_Client
     // This is reported as "never used" by JetBrains Inspector... what?
     public partial class MainWindow
     {
-        private static readonly Thread Server = new(RunServer);
-        private static string _address = "";
-        private readonly string _mainBrowser = AppSettings.ActiveBrowser; // <CEF/WebView>
+        private readonly WindowSettings windowSettings;
 
-        private static void RunServer()
+        private readonly Thread Server;
+        private static string _address = "";
+        private readonly string _mainBrowser; // <CEF/WebView>
+
+        private void RunServer()
         {
             const string serverPath = "TcNo-Acc-Switcher-Server_main.exe";
             if (Process.GetProcessesByName(Path.GetFileNameWithoutExtension(serverPath)).Length > 0)
@@ -63,8 +66,8 @@ namespace TcNo_Acc_Switcher_Client
             var attempts = 0;
             while (!Program.MainProgram(new[] { _address, "nobrowser" }) && attempts < 10)
             {
-                Program.NewPort();
-                _address = "--urls=http://localhost:" + AppSettings.ServerPort + "/";
+                windowSettings.ServerPort = Program.FindOpenPort(windowSettings.ServerPort);
+                _address = "--urls=http://localhost:" + windowSettings.ServerPort + "/";
                 attempts++;
             }
             if (attempts == 10)
@@ -78,8 +81,11 @@ namespace TcNo_Acc_Switcher_Client
             return securityIdentifier is not null && securityIdentifier.IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid);
         }
 
-        public MainWindow()
+        public MainWindow(WindowSettings wSettings)
         {
+            windowSettings = wSettings;
+            _mainBrowser = windowSettings.ActiveBrowser;
+
             // Set working directory to documents folder
             Directory.SetCurrentDirectory(Globals.UserDataFolder);
 
@@ -91,13 +97,13 @@ namespace TcNo_Acc_Switcher_Client
                 Directory.Move(Path.Join(Globals.AppDataFolder, "wwwroot"), Globals.OriginalWwwroot);
             }
 
-            Program.FindOpenPort();
-            _address = "--urls=http://localhost:" + AppSettings.ServerPort + "/";
-
             AppData.TcNoClientApp = true;
 
             // Start web server
-            Server.IsBackground = true;
+            Server = new Thread(RunServer)
+            {
+                IsBackground = true
+            };
             Server.Start();
 
             // Initialize correct browser
@@ -118,19 +124,19 @@ namespace TcNo_Acc_Switcher_Client
             {
                 _cefView.BrowserSettings.WindowlessFrameRate = 60;
                 _cefView.Visibility = Visibility.Visible;
-                _cefView.Load("http://localhost:" + AppSettings.ServerPort + "/");
+                _cefView.Load("http://localhost:" + windowSettings.ServerPort + "/");
             }
 
             MainBackground.Background = App.GetStylesheetColor("headerbarBackground", "#253340");
 
-            Width = AppSettings.WindowSize.X;
-            Height = AppSettings.WindowSize.Y;
-            AllowsTransparency = AppSettings.AllowTransparency;
+            Width = windowSettings.WindowSize.X;
+            Height = windowSettings.WindowSize.Y;
+            AllowsTransparency = windowSettings.AllowTransparency;
             StateChanged += WindowStateChange;
             // Each window in the program would have its own size. IE Resize for Steam, and more.
 
             // Center:
-            if (!AppSettings.StartCentered) return;
+            if (!windowSettings.StartCentered) return;
             Left = (SystemParameters.PrimaryScreenWidth / 2) - (Width / 2);
             Top = (SystemParameters.PrimaryScreenHeight / 2) - (Height / 2);
         }
@@ -218,7 +224,7 @@ namespace TcNo_Acc_Switcher_Client
         /// <summary>
         /// Check if all CEF Files are available. If not > Close and download, or revert to WebView.
         /// </summary>
-        private static void CheckCefFiles()
+        private void CheckCefFiles()
         {
             string[] cefFiles = { "libcef.dll", "icudtl.dat", "resources.pak", "libGLESv2.dll", "d3dcompiler_47.dll", "vk_swiftshader.dll", "chrome_elf.dll", "CefSharp.BrowserSubprocess.Core.dll" };
             foreach (var cefFile in cefFiles)
@@ -229,13 +235,13 @@ namespace TcNo_Acc_Switcher_Client
                 var result = MessageBox.Show("CEF files not found. Download? (No reverts to WebView2, which requires WebView2 Runtime to be installed)", "Required runtime not found!", MessageBoxButton.YesNo, MessageBoxImage.Error);
                 if (result == MessageBoxResult.Yes)
                 {
-                    AppSettings.AutoStartUpdaterAsAdmin("downloadCEF");
+                    TcNo_Acc_Switcher_Server.State.Classes.Updates.AutoStartUpdaterAsAdmin("downloadCEF");
                     Environment.Exit(1);
                 }
                 else
                 {
-                    AppSettings.ActiveBrowser = "WebView";
-                    AppSettings.SaveSettings();
+                    windowSettings.ActiveBrowser = "WebView";
+                    windowSettings.Save();
                     Restart();
                 }
             }
@@ -352,7 +358,7 @@ namespace TcNo_Acc_Switcher_Client
                 await _mView2.EnsureCoreWebView2Async(env);
                 _mView2.CoreWebView2.Settings.UserAgent = "TcNo 1.0";
 
-                _mView2.Source = new Uri($"http://localhost:{AppSettings.ServerPort}/{App.StartPage}");
+                _mView2.Source = new Uri($"http://localhost:{windowSettings.ServerPort}/{App.StartPage}");
                 MViewAddForwarders();
                 _mView2.NavigationStarting += MViewUrlChanged;
                 _mView2.CoreWebView2.ProcessFailed += CoreWebView2OnProcessFailed;
@@ -381,12 +387,12 @@ namespace TcNo_Acc_Switcher_Client
                     if (await File.ReadAllTextAsync(failFile) == "1") await File.WriteAllTextAsync(failFile, "2");
                     else
                     {
-                        AppSettings.ActiveBrowser = "CEF";
-                        AppSettings.SaveSettings();
+                        windowSettings.ActiveBrowser = "CEF";
+                        windowSettings.Save();
                         _ = MessageBox.Show(
                             "WebView2 Runtime is not installed. The program will now download and use the fallback CEF browser. (Less performance, more compatibility)",
                             "Required runtime not found! Using fallback.", MessageBoxButton.OK, MessageBoxImage.Error);
-                        AppSettings.AutoStartUpdaterAsAdmin("downloadCEF");
+                        TcNo_Acc_Switcher_Server.State.Classes.Updates.AutoStartUpdaterAsAdmin("downloadCEF");
                         Globals.DeleteFile(failFile);
                         Environment.Exit(1);
                     }
@@ -536,8 +542,8 @@ namespace TcNo_Acc_Switcher_Client
         protected override void OnClosing(CancelEventArgs e)
         {
             Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.OnClosing]");
-            AppSettings.WindowSize = new Point { X = Convert.ToInt32(Width), Y = Convert.ToInt32(Height) };
-            AppSettings.SaveSettings();
+            windowSettings.WindowSize = new Point { X = Convert.ToInt32(Width), Y = Convert.ToInt32(Height) };
+            windowSettings.Save();
         }
 
         public static void Restart(string args = "", bool admin = false)

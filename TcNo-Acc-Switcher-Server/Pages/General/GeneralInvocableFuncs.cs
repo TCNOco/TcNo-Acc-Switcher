@@ -137,7 +137,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// Creates a shortcut to start the Account Switcher, and swap to the account related.
         /// </summary>
         /// <param name="args">(Optional) arguments for shortcut</param>
-        [JSInvokable]
         public static async Task CreateShortcut(string args = "")
         {
             if (!OperatingSystem.IsWindows()) return;

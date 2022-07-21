@@ -1,0 +1,18 @@
+﻿@using TcNo_Acc_Switcher_Server.State
+@inject NewLang Lang
+@inject AppState AppState
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+    private bool _manuallyHidden = false;
+}
+
+@if (!_manuallyHidden && AppState.Updates.ShowUpdate)
+{
+    <div class="updateBar" @onclick="AppState.Updates.UpdateNow"><span>@Lang["Update"]</span><i class="fas fa-times-circle" id="closeUpdateBar" @onclick="() => _manuallyHidden = false"></i></div>
+}

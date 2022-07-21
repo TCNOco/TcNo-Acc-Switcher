@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
 
-namespace TcNo_Acc_Switcher_Server.State.Classes
+namespace TcNo_Acc_Switcher_Server.State
 {
-    public class Notifications
+    public class Toasts
     {
         [Inject] private NewLang Lang { get; set; }
+
+        public Toasts() { }
 
         // Toast stuff - This is the first attempt at properly using AppData as a Blazor DI Singleton.
         public ObservableCollection<Toast> ToastQueue { get; set; } = new();

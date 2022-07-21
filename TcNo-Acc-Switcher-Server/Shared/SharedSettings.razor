@@ -5,6 +5,8 @@
 @using TcNo_Acc_Switcher_Globals
 @using TcNo_Acc_Switcher_Server.Shared.Modal
 @using TcNo_Acc_Switcher_Server.Shared.Toast
+@using TcNo_Acc_Switcher_Server.State.DataTypes
+@using TcNo_Acc_Switcher_Server.State.Interfaces
 @*TcNo Account Switcher - A Super fast account switcher
     Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
     This program is free software: you can redistribute it and/or modify
@@ -25,6 +27,9 @@
 @inject AppSettings ASettings
 @{ AppData.SetActiveNavMan(NavManager); }
 
+@inject IWindowSettings WindowSettings
+@inject IAppState AppState
+
 <h1 class="SettingsHeader">@Locale["Settings_Header_AppWide"]</h1>
 
 
@@ -34,7 +39,7 @@
 </div>
 <div class="rowSetting">
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="RTL" @bind="AppSettings.Rtl" @onclick="AppData.ReloadPage"><label class="form-check-label" for="RTL"></label>
+        <input class="form-check-input" type="checkbox" id="RTL" @bind="WindowSettings.Rtl" @onclick="AppData.ReloadPage"><label class="form-check-label" for="RTL"></label>
     </div>
     <label for="RTL">
         @Locale["Settings_RTL"]<br>
@@ -85,13 +90,13 @@
 
 <div class="rowSetting">
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AlwaysAdmin_Settings" @bind="AppSettings.AlwaysAdmin"><label class="form-check-label" for="AlwaysAdmin_Settings"></label>
+        <input class="form-check-input" type="checkbox" id="AlwaysAdmin_Settings" @bind="WindowSettings.AlwaysAdmin"><label class="form-check-label" for="AlwaysAdmin_Settings"></label>
     </div>
     <label for="AlwaysAdmin_Settings">@Lang.Instance["Settings_AlwaysAdmin"]<br></label>
 </div>
 <div class="rowSetting">
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_DesktopShortcut" @bind="AppSettings.DesktopShortcut" @onclick="DesktopShortcut_Toggle"><label class="form-check-label" for="AppSett_DesktopShortcut"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_DesktopShortcut" @bind="AppState.Shortcuts.DesktopShortcut"><label class="form-check-label" for="AppSett_DesktopShortcut"></label>
     </div>
     <label for="AppSett_DesktopShortcut">
         @Locale["Settings_DesktopShortcut"]<br>
@@ -100,13 +105,13 @@
 <div class="rowSetting">
     <span>@Locale["Cleaning_Header_StartMenuShortcuts"]</span>
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_StartMenu" @bind="AppSettings.StartMenu" @onclick="() => StartMenu_Toggle(false)"><label class="form-check-label" for="AppSett_StartMenu"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_StartMenu" @bind="AppState.Shortcuts.StartMenu"><label class="form-check-label" for="AppSett_StartMenu"></label>
     </div>
     <label for="AppSett_StartMenu">
         @Locale["Settings_StartMenu_ProgramTray"]<br>
     </label>
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_StartMenuPlatform" @bind="AppSettings.StartMenuPlatforms" @onclick="() => StartMenu_Toggle(true)"><label class="form-check-label" for="AppSett_StartMenuPlatform"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_StartMenuPlatform" @bind="AppState.Shortcuts.StartMenuPlatforms"><label class="form-check-label" for="AppSett_StartMenuPlatform"></label>
     </div>
     <label for="AppSett_StartMenuPlatform">
         @Locale["Settings_StartMenu_Platform"]<br>
@@ -114,7 +119,7 @@
 </div>
 <div class="rowSetting">
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_TrayStartup" @bind="AppSettings.TrayStartup" @onclick="AutoStart_Toggle"><label class="form-check-label" for="AppSett_TrayStartup"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_TrayStartup" @bind="AppState.Shortcuts.TrayStartup"><label class="form-check-label" for="AppSett_TrayStartup"></label>
     </div>
     <label for="AppSett_TrayStartup">
         @Locale["Settings_Tray_StartWindows"]<br>
@@ -123,7 +128,7 @@
 
 <div class="rowSetting">
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_Protocol" @bind="AppSettings.ProtocolEnabled" @onclick="Button_ToggleProtocol"><label class="form-check-label" for="AppSett_Protocol"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_Protocol" @bind="AppState.Shortcuts.ProtocolEnabled"><label class="form-check-label" for="AppSett_Protocol"></label>
     </div>
     <label for="AppSett_Protocol">
         @Locale["Settings_Protocol"]<br>
@@ -134,7 +139,7 @@
 {
     <div class="rowSetting">
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="AppSett_StartCentered" @bind="AppSettings.StartCentered"><label class="form-check-label" for="AppSett_StartCentered"></label>
+            <input class="form-check-input" type="checkbox" id="AppSett_StartCentered" @bind="WindowSettings.StartCentered"><label class="form-check-label" for="AppSett_StartCentered"></label>
         </div>
         <label for="AppSett_StartCentered">
             @Locale["Settings_StartCentered"]<br>
@@ -165,14 +170,14 @@
                 <li class="custom-dropdown-item dropdown-item" @onclick='() => SetActiveBrowser("CEF")'>CEF</li>
             </ul>
             <button class="dropdown-toggle" type="button" data-toggle="dropdown">
-                @AppSettings.ActiveBrowser
+                @WindowSettings.ActiveBrowser
                 <span class="caret"></span>
             </button>
         </div>
     </div>
     <div class="rowSetting">
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="TrayMinimizeNotExit" @bind="AppSettings.TrayMinimizeNotExit" @onclick="TrayMinimizeNotExit_Toggle"><label class="form-check-label" for="TrayMinimizeNotExit"></label>
+            <input class="form-check-input" type="checkbox" id="TrayMinimizeNotExit" @bind="WindowSettings.TrayMinimizeNotExit" @onclick="TrayMinimizeNotExit_Toggle"><label class="form-check-label" for="TrayMinimizeNotExit"></label>
         </div>
         <label for="TrayMinimizeNotExit">
             @Locale["Settings_ExitToTray"]<br>
@@ -180,7 +185,7 @@
     </div>
     <div class="rowSetting">
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="AppSett_MinimizeOnSwitch" @bind="AppSettings.MinimizeOnSwitch"><label class="form-check-label" for="AppSett_MinimizeOnSwitch"></label>
+            <input class="form-check-input" type="checkbox" id="AppSett_MinimizeOnSwitch" @bind="WindowSettings.MinimizeOnSwitch"><label class="form-check-label" for="AppSett_MinimizeOnSwitch"></label>
         </div>
         <label for="AppSett_MinimizeOnSwitch">
             @Locale["Settings_MinimizeOnSwitch"]<br>
@@ -189,7 +194,7 @@
 }
 <div class="rowSetting">
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="StreamerMode" @bind="AppSettings.StreamerModeEnabled"><label class="form-check-label" for="StreamerMode"></label>
+        <input class="form-check-input" type="checkbox" id="StreamerMode" @bind="WindowSettings.StreamerModeEnabled"><label class="form-check-label" for="StreamerMode"></label>
     </div>
     <label for="StreamerMode">
         @Locale["Settings_StreamerMode"]<br>
@@ -200,14 +205,14 @@
 <h2 class="SettingsHeader">@Locale["Settings_Header_StatsSharing"]</h2>
 <div class="rowSetting">
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_CollectStats" @bind="AppSettings.StatsEnabled" @onclick="() => AppData.RefreshDiscordPresenceAsync(false)"><label class="form-check-label" for="AppSett_CollectStats"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_CollectStats" @bind="WindowSettings.CollectStats" @onclick="() => AppState.Discord.RefreshDiscordPresenceAsync(false)"><label class="form-check-label" for="AppSett_CollectStats"></label>
     </div>
     <label for="AppSett_CollectStats">
         @Locale["Settings_CollectStats"]<br>
     </label>
 
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_ShareStats" @bind="AppSettings.StatsShare"><label class="form-check-label" for="AppSett_ShareStats"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_ShareStats" @bind="WindowSettings.ShareAnonymousStats"><label class="form-check-label" for="AppSett_ShareStats"></label>
     </div>
     <label for="AppSett_ShareStats">
         @Locale["Settings_ShareStats"]<br>
@@ -218,14 +223,14 @@
 </div>
 <div class="rowSetting">
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_DiscordRpc" @bind="AppSettings.DiscordRpc" @onclick="() => AppData.RefreshDiscordPresenceAsync(false)"><label class="form-check-label" for="AppSett_DiscordRpc"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_DiscordRpc" @bind="WindowSettings.DiscordRpcEnabled" @onclick="() => AppState.Discord.RefreshDiscordPresenceAsync(false)"><label class="form-check-label" for="AppSett_DiscordRpc"></label>
     </div>
     <label for="AppSett_DiscordRpc">
         @Locale["Settings_DiscordRpc"]<br>
     </label>
 
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_DiscordRpcSwitches" @bind="AppSettings.DiscordRpcShare" @onclick="() => AppData.RefreshDiscordPresenceAsync(false)"><label class="form-check-label" for="AppSett_DiscordRpcSwitches"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_DiscordRpcSwitches" @bind="WindowSettings.DiscordRpcShareTotalSwitches" @onclick="() => AppState.Discord.RefreshDiscordPresenceAsync(false)"><label class="form-check-label" for="AppSett_DiscordRpcSwitches"></label>
     </div>
     <label for="AppSett_DiscordRpcSwitches">
         @Locale["Settings_DiscordRpcShare"]<br>
@@ -256,7 +261,7 @@
         }
         catch (Exception)
         {
-            AData.ShowToastLang(ToastType.Info, "Notice", "Toast_RestartRequired");
+            AppState.Toasts.ShowToastLang(ToastType.Info, "Notice", "Toast_RestartRequired");
         }
     }
 }

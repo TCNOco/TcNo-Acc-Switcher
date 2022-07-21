@@ -43,9 +43,50 @@ function hideWindow() {
     else chrome.webview.hostObjects.sync.eventForwarder.HideWindow();
 }
 
+
+function windowControls_Min() {
+    if (navigator.appVersion.indexOf("TcNo") === -1) return;
+    if (navigator.appVersion.indexOf("TcNo-CEF") !== -1)
+        CefSharp.PostMessage({ "action": "WindowAction", "value": SysCommandSize.ScMinimise });
+    else
+        chrome.webview.hostObjects.sync.eventForwarder.WindowAction(SysCommandSize.ScMinimise);
+}
+
+function windowControls_Max() {
+    if (navigator.appVersion.indexOf("TcNo") === -1) return;
+    if (navigator.appVersion.indexOf("TcNo-CEF") !== -1)
+        CefSharp.PostMessage({ "action": "WindowAction", "value": SysCommandSize.ScMaximise });
+    else
+        chrome.webview.hostObjects.sync.eventForwarder.WindowAction(SysCommandSize.ScMaximise);
+}
+
+function windowControls_hideToTray() {
+    if (navigator.appVersion.indexOf("TcNo") === -1) return;
+    if (navigator.appVersion.indexOf("TcNo-CEF") !== -1)
+        CefSharp.PostMessage({ "action": "HideWindow" });
+    else
+        chrome.webview.hostObjects.sync.eventForwarder.HideWindow();
+
+}
+
+function windowControls_Exit() {
+    if (navigator.appVersion.indexOf("TcNo") === -1) return;
+    if (navigator.appVersion.indexOf("TcNo-CEF") !== -1)
+        CefSharp.PostMessage({ "action": "WindowAction", "value": WindowNotifications.WmClose });
+    else
+        chrome.webview.hostObjects.sync.eventForwarder.WindowAction(WindowNotifications.WmClose);
+}
+
+function windowControls_Restore() {
+    if (navigator.appVersion.indexOf("TcNo") === -1) return;
+    if (navigator.appVersion.indexOf("TcNo-CEF") !== -1)
+        CefSharp.PostMessage({ "action": "WindowAction", "value": SysCommandSize.ScRestore });
+    else
+        chrome.webview.hostObjects.sync.eventForwarder.WindowAction(SysCommandSize.ScRestore);
+}
+
 function handleWindowControls() {
     if (navigator.appVersion.indexOf("TcNo") === -1) return;
-
     if (navigator.appVersion.indexOf("TcNo-CEF") !== -1) {
         if (CefSharp === undefined) {
             window.notification.new({
@@ -57,52 +98,6 @@ function handleWindowControls() {
             });
             CefSharp = null;
         }
-        document.getElementById("btnMin").addEventListener("click", () => {
-            CefSharp.PostMessage({ "action": "WindowAction", "value": SysCommandSize.ScMinimise });
-        });
-
-        document.getElementById("btnMax").addEventListener("click", () => {
-            CefSharp.PostMessage({ "action": "WindowAction", "value": SysCommandSize.ScMaximise });
-        });
-
-        document.getElementById("btnRestore").addEventListener("click", () => {
-            CefSharp.PostMessage({ "action": "WindowAction", "value": SysCommandSize.ScRestore });
-        });
-
-        document.getElementById("btnClose").addEventListener("click", () => {
-            DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetTrayMinimizeNotExit").then((r) => {
-                if (r && !event.ctrlKey) { // If enabled, and NOT control held
-                    CefSharp.PostMessage({ "action": "HideWindow" });
-                } else {
-                    CefSharp.PostMessage({ "action": "WindowAction", "value": WindowNotifications.WmClose });
-                }
-            });
-        });
-
-    }
-    else // The normal WebView browser
-    {
-        document.getElementById("btnMin").addEventListener("click", () => {
-            chrome.webview.hostObjects.sync.eventForwarder.WindowAction(SysCommandSize.ScMinimise);
-        });
-
-        document.getElementById("btnMax").addEventListener("click", () => {
-            chrome.webview.hostObjects.sync.eventForwarder.WindowAction(SysCommandSize.ScMaximise);
-        });
-
-        document.getElementById("btnRestore").addEventListener("click", () => {
-            chrome.webview.hostObjects.sync.eventForwarder.WindowAction(SysCommandSize.ScRestore);
-        });
-
-        document.getElementById("btnClose").addEventListener("click", () => {
-            DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetTrayMinimizeNotExit").then((r) => {
-                if (r && !event.ctrlKey) { // If enabled, and NOT control held
-                    chrome.webview.hostObjects.sync.eventForwarder.HideWindow();
-                } else {
-                    chrome.webview.hostObjects.sync.eventForwarder.WindowAction(WindowNotifications.WmClose);
-                }
-            });
-        });
     }
 
     // For draggable regions:

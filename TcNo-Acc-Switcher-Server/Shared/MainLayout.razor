@@ -18,6 +18,7 @@
 @using TcNo_Acc_Switcher_Server.Shared.Modal
 @using Newtonsoft.Json
 @using TcNo_Acc_Switcher_Server.Shared.Toast
+@using TcNo_Acc_Switcher_Server.Shared.Modal
 @inject IJSRuntime JsRuntime
 @{ AppData.SetActiveIJsRuntime(JsRuntime); }
 @inject NavigationManager NavManager
@@ -33,7 +34,8 @@
     <div class="resizeBottomRight"></div>
     <div class="resizeBottomLeft"></div>
     <div class="programMain">
-        <ModalPopup />
+        <UpdateBar />
+        <ModalPopup/>
         @Body
     </div>
     <DynamicStylesheet />

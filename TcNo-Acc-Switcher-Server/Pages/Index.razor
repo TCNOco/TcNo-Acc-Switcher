@@ -22,15 +22,17 @@
 @using TcNo_Acc_Switcher_Server.Shared.Toast
 @using System.Collections.ObjectModel
 @using TcNo_Acc_Switcher_Server.Pages.General.Classes
+@using TcNo_Acc_Switcher_Server.State
 @inject IJSRuntime JsRuntime
 @{ AppData.SetActiveIJsRuntime(JsRuntime); }
 @inject NavigationManager NavManager
 @{ AppData.SetActiveNavMan(NavManager); }
 @inject AppData AData
+@inject AppState AppState
 
 @inject Lang Locale
 
-@if (AppSettings.PreRenderUpdate)
+@if (AppState.Updates.PreRenderUpdate)
 {
     <div class="updateBar">
         <span>@Locale["Update"]</span>

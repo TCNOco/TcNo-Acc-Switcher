@@ -20,9 +20,13 @@ namespace TcNo_Acc_Switcher_Server.State
 
         public ShortcutsState Shortcuts { get; set; } = new();
 
-        public Notifications Notifications { get; set; } = new();
+        public Toasts Toasts { get; set; } = new();
 
         public Discord Discord { get; set; } = new();
+
+        public Updates Updates { get; set; } = new();
+
+        public Stylesheet Stylesheet { get; set; }
 
         public AppState()
         {

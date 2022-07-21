@@ -173,8 +173,6 @@ async function shortcut(action) {
     if (action === "hide") $(selectedElem).remove();
 }
 
-updateBarClick = async () => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "UpdateNow");
-
 async function initSavingHotKey() {
     hotkeys("ctrl+s", async function (event) {
         event.preventDefault();

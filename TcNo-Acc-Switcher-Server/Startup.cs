@@ -56,6 +56,7 @@ namespace TcNo_Acc_Switcher_Server
             _ = services.AddSingleton<IWindowSettings, WindowSettings>();
             _ = services.AddSingleton<NewLang>();
             _ = services.AddSingleton<AppState>();
+            _ = services.AddSingleton<Toasts>();
 
 
             // Persistent settings:

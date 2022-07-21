@@ -134,7 +134,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// </summary>
         /// <param name="location"></param>
         /// <returns></returns>
-        public Shortcut Shortcut_Switcher(string location)
+        public void Shortcut_Switcher(string location)
         {
             Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.Shortcut_Switcher] location={location}");
             // Starts the main picker, with the Steam argument.
@@ -144,7 +144,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             ShortcutPath = Path.Join(location, "TcNo Account Switcher.lnk");
             Desc = "TcNo Account Switcher";
             Args = "";
-            return this;
         }
 
         /// <summary>
@@ -152,7 +151,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// </summary>
         /// <param name="location">Place to put shortcut</param>
         /// <returns></returns>
-        public Shortcut Shortcut_Tray(string location)
+        public void Shortcut_Tray(string location)
         {
             Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.Shortcut_Tray] location={location}");
             Exe = Path.Join(ParentDirectory(GetSelfPath()), "TcNo-Acc-Switcher-Tray.exe");
@@ -161,7 +160,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             ShortcutPath = Path.Join(location, "TcNo Account Switcher - Tray.lnk");
             Desc = "TcNo Account Switcher - Tray";
             Args = "";
-            return this;
         }
 
         /// <summary>

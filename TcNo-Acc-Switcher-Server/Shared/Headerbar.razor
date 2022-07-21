@@ -1,6 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Http
 @using TcNo_Acc_Switcher_Server.Data
 @using System.Threading
+@using TcNo_Acc_Switcher_Server.State
+@using TcNo_Acc_Switcher_Server.State.Interfaces
 @*TcNo Account Switcher - A Super fast account switcher
     Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
     This program is free software: you can redistribute it and/or modify
@@ -15,6 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
+@inject IWindowSettings WindowSettings
 @inject IJSRuntime JsRuntime
 @inject IHttpContextAccessor HttpContextAccessor
 
@@ -33,22 +36,22 @@
     @if (HttpContextAccessor.HttpContext?.Request.Headers["User-Agent"][0].Contains("TcNo") == true)
     {
         <div id="window-controls">
-            <button id="btnMin">
+            <button id="btnMin" @onclick='async () => await JsRuntime.InvokeVoidAsync("windowControls_Min")'>
                 <div class="resizeTop"></div>
                 <img class="icon" srcset="img/icons/min-w-10.png 1x, img/icons/min-w-12.png 1.25x, img/icons/min-w-15.png 1.5x, img/icons/min-w-15.png 1.75x, img/icons/min-w-20.png 2x, img/icons/min-w-20.png 2.25x, img/icons/min-w-24.png 2.5x, img/icons/min-w-30.png 3x, img/icons/min-w-30.png 3.5x" draggable="false" alt="-" />
             </button>
 
-            <button id="btnMax">
+            <button id="btnMax" @onclick='async () => await JsRuntime.InvokeVoidAsync("windowControls_Max")'>
                 <div class="resizeTop"></div>
                 <img class="icon" srcset="img/icons/max-w-10.png 1x, img/icons/max-w-12.png 1.25x, img/icons/max-w-15.png 1.5x, img/icons/max-w-15.png 1.75x, img/icons/max-w-20.png 2x, img/icons/max-w-20.png 2.25x, img/icons/max-w-24.png 2.5x, img/icons/max-w-30.png 3x, img/icons/max-w-30.png 3.5x" draggable="false" alt="M" />
             </button>
 
-            <button id="btnRestore">
+            <button id="btnRestore @onclick='async () => await JsRuntime.InvokeVoidAsync("windowControls_Restore")'>
                 <div class="resizeTop"></div>
                 <img class="icon" srcset="img/icons/restore-w-10.png 1x, img/icons/restore-w-12.png 1.25x, img/icons/restore-w-15.png 1.5x, img/icons/restore-w-15.png 1.75x, img/icons/restore-w-20.png 2x, img/icons/restore-w-20.png 2.25x, img/icons/restore-w-24.png 2.5x, img/icons/restore-w-30.png 3x, img/icons/restore-w-30.png 3.5x" draggable="false" alt="R" />
             </button>
 
-            <button id="btnClose">
+            <button id="btnClose" @onclick="CloseButtonClick">
                 <div class="resizeTop"></div>
                 <div class="resizeTopRight"></div>
                 <div class="resizeRight"></div>
@@ -59,6 +62,18 @@
 </div>
 
 @code {
+
+    private async Task CloseButtonClick(MouseEventArgs e)
+    {
+        if (e.CtrlKey || !WindowSettings.TrayMinimizeNotExit)
+            await JsRuntime.InvokeVoidAsync("windowControls_Exit");
+        else
+            await JsRuntime.InvokeVoidAsync("windowControls_hideToTray");
+
+    }
+
+
+
     private string _animatedBackCss = "transition: transform 0 ease-in-out";
     private static string[] _possibleAnimations = {"X", "Y", "Z"};
     protected override void OnInitialized()
@@ -96,6 +111,7 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        // Init dragging, resizing and more -- Assuming it's a TcNo window and not a browser.
         if (firstRender)
             await JsRuntime.InvokeVoidAsync("handleWindowControls");
     }
