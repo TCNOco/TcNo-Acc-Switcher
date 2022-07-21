@@ -28,6 +28,7 @@ using TcNo_Acc_Switcher_Server.Shared;
 using TcNo_Acc_Switcher_Server.Shared.Accounts;
 using TcNo_Acc_Switcher_Server.Shared.ContextMenu;
 using TcNo_Acc_Switcher_Server.Shared.Modal;
+using TcNo_Acc_Switcher_Server.State;
 
 namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
@@ -71,7 +72,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     BuildContextMenu();
 
                     _instance._desktopShortcut = Shortcut.CheckShortcuts(CurrentPlatform.FullName);
-                    AppData.InitializedClasses.Basic = true;
 
                     _instance._currentlyModifying = false;
 
@@ -215,12 +215,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         {
             StartingMethod = method;
             SaveSettings();
-        }
-        public static async Task OpenFolder(string folder)
-        {
-            Directory.CreateDirectory(folder); // Create if doesn't exist
-            Process.Start("explorer.exe", folder);
-            await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_PlaceShortcutFiles"], renderTo: "toastarea");
         }
 
         public static void RunPlatform(string exePath, bool admin, string args, string platName, string startingMethod = "Default")

@@ -76,7 +76,7 @@ namespace TcNo_Acc_Switcher_Server.State
         /// Keys for metrics on this list are not shown for any account.
         /// List of all games:[Settings:Hidden metric] metric keys.
         /// </summary>
-        public Dictionary<string, MetricHidden> GloballyHiddenMetrics { get; set; } = new();
+        public Dictionary<string, Dictionary<string, bool>> GloballyHiddenMetrics { get; set; } = new();
         public bool AlwaysAdmin { get; set; } = false;
 
 
@@ -102,11 +102,5 @@ namespace TcNo_Acc_Switcher_Server.State
             Platforms.CollectionChanged += (_, _) => Platforms.Sort();
         }
         public void Save() => Globals.SaveJsonFile(Filename, this, false);
-    }
-
-    public class MetricHidden
-    {
-        public string MetricName { get; set; } = "";
-        public bool Hidden { get; set; } = false;
     }
 }

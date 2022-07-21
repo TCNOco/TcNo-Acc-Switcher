@@ -19,16 +19,15 @@ using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Shared.Modal;
 using TcNo_Acc_Switcher_Server.Shared.Toast;
+using TcNo_Acc_Switcher_Server.State.DataTypes;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
     public partial class Settings
     {
-        private static readonly Lang Lang = Lang.Instance;
-
         protected override void OnInitialized()
         {
-            AppData.WindowTitle = Lang["Title_Steam_Settings"];
+            AppState.WindowState.WindowTitle = Lang["Title_Steam_Settings"];
             Globals.DebugWriteLine(@"[Auto:Steam\Settings.razor.cs.OnInitializedAsync]");
         }
 
@@ -44,18 +43,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public void ClearVacStatus()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearVacStatus]");
-            if (Globals.DeleteFile(Data.Settings.Steam.VacCacheFile))
-                AData.ShowToastLang(ToastType.Success, "Toast_Steam_VacCleared");
+            if (Globals.DeleteFile(SteamSettings.VacCacheFile))
+                AppState.Toasts.ShowToastLang(ToastType.Success, "Toast_Steam_VacCleared");
             else
-                AData.ShowToastLang(ToastType.Error, "Error", "Toast_Steam_CantDeleteVacCache");
+                AppState.Toasts.ShowToastLang(ToastType.Error, "Error", "Toast_Steam_CantDeleteVacCache");
         }
 
         // BUTTON: Reset settings
-        public static void ClearSettings()
+        public void ClearSettings()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearSettings]");
-            Data.Settings.Steam.ResetSettings();
-            AppData.NavigateToWithToast("/Steam", "success", Lang["Success"], Lang["Toast_ClearedPlatformSettings", new { platform = "Steam" }]);
+            SteamSettings.Reset();
+            AppState.Navigation.NavigateToWithToast("/Steam", "success", Lang["Success"], Lang["Toast_ClearedPlatformSettings", new { platform = "Steam" }]);
         }
 
         // BUTTON: Reset images

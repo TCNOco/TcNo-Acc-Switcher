@@ -12,16 +12,23 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
-@using TcNo_Acc_Switcher_Server.Data
 @using System.Collections.ObjectModel
 @using TcNo_Acc_Switcher_Globals
+@using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Data.Settings
 @using TcNo_Acc_Switcher_Server.Pages.General
+@using TcNo_Acc_Switcher_Server.State
+@using TcNo_Acc_Switcher_Server.State.Classes
+@using TcNo_Acc_Switcher_Server.State.Interfaces
 @inherits AccountFuncs
 
 @code {
     [Parameter]
     public Account Acc { get; set; }
+
+    [Inject] SteamSettings SteamSettings { get; set; }
+    [Inject] IAppState AppState { get; set; }
+    [Inject] IWindowSettings WindowSettings { get; set; }
 
     protected override void OnInitialized()
     {
@@ -46,11 +53,11 @@
         {
             <p class="@Acc.Classes.Line0">@Acc.Line0</p>
         }
-        @if (AppData.CurrentSwitcher == "Steam"
-             && Steam.CustomAccNames != null
-             && Steam.CustomAccNames.ContainsKey(Acc.AccountId))
+        @if (AppState.Switcher.CurrentSwitcher == "Steam"
+             && SteamSettings.CustomAccountNames != null
+             && SteamSettings.CustomAccountNames.ContainsKey(Acc.AccountId))
         {
-            <h6 class="displayName">@Steam.CustomAccNames[Acc.AccountId]</h6>
+            <h6 class="displayName">@SteamSettings.CustomAccountNames[Acc.AccountId]</h6>
         }
         else
         {
@@ -76,7 +83,7 @@
                 var gameStats = game.Value;
                 foreach (var gameStat in gameStats)
                 {
-                    @if (!AppSettings.GloballyHiddenMetrics[gameName][gameStat.Key])
+                    @if (!WindowSettings.GloballyHiddenMetrics[gameName][gameStat.Key])
                     {
                         <h6 class="acc_stat">@(new MarkupString(gameStat.Value.IndicatorMarkup + gameStat.Value.StatValue))</h6>
                     }

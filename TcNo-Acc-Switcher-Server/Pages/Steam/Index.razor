@@ -17,15 +17,15 @@
 @using TcNo_Acc_Switcher_Server.Data.Settings
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using System.IO
+@using Microsoft.AspNetCore.Components
 @using TcNo_Acc_Switcher_Server.Shared.Accounts
 @using TcNo_Acc_Switcher_Server.Shared.ContextMenu
-@inject AppData AData
+@using TcNo_Acc_Switcher_Server.State.Interfaces
+@inject IAppState AppState
 @inject IJSRuntime JsRuntime
-@{ AppData.SetActiveIJsRuntime(JsRuntime); }
 @inject NavigationManager NavManager
-@{ AppData.SetActiveNavMan(NavManager); }
 
-<style>@(AppSettings.GetCssBlock())</style>
+<style>@(AppState.Stylesheet.GetCssBlock())</style>
 <style>@(Steam.GetSteamIdCssBlock())</style>
 @inject Lang Locale
 <ContextMenu MenuItems="@Steam.Menu" ContextMenuId="AccOrPlatList" @ref="SteamContextMenu" />
@@ -40,12 +40,12 @@
             @if (i >= 0)
             {
                 <button class="HasContextMenu" id="@(shortcut)" @onclick='() => Basic.RunShortcut(shortcut, "LoginCache\\Steam\\Shortcuts", platform: "Steam")' data-toggle="tooltip" title="@(PlatformFuncs.RemoveShortcutExt(shortcut))">
-                    <img src="@(Steam.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
+                    <img src="@(GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
                 </button>
             }
         }
     </div>
-    <button id="btnOpenShortcutFolder" @onclick="() => Basic.OpenFolder(Path.GetFullPath(Steam.ShortcutFolder))" data-toggle="tooltip" title="@(Locale["Tooltip_ShortcutFolder"])" data-placement="right"><i class="fas fa-plus"></i></button>
+    <button id="btnOpenShortcutFolder" @onclick='() => AppState.OpenFolder(Path.GetFullPath("LoginCache\\Steam\\Shortcuts\\"))' data-toggle="tooltip" title="@(Locale["Tooltip_ShortcutFolder"])" data-placement="right"><i class="fas fa-plus"></i></button>
 </div>
 
 <div class="acc_list_actionbar">
@@ -57,7 +57,7 @@
                 @if (i < 0)
                 {
                     <button class="HasContextMenu" id="@(shortcut)" @onclick='() => Basic.RunShortcut(shortcut, "LoginCache\\Steam\\Shortcuts", platform: "Steam")' data-toggle="tooltip" title="@(PlatformFuncs.RemoveShortcutExt(shortcut))">
-                        <img src="@(Steam.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
+                        <img src="@(GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
                     </button>
                 }
             }
@@ -65,7 +65,7 @@
         <button id="shortcutDropdownBtn" onclick="shortcutDropdownBtnClick()" data-toggle="tooltip" title="@(Locale["Tooltip_ExpandShortcuts"])" data-placement="right"><i class="fas fa-chevron-up"></i></button>
 
         <button id="btnStartPlat" @onclick='() => Basic.RunPlatform(Steam.Exe(), Steam.Admin, "", "Steam", Steam.StartingMethod)' data-toggle="tooltip" title="Steam">
-            <img src="@(Steam.GetShortcutImagePath("Steam"))" alt="Start platform"/>
+            <img src="@(GetShortcutImagePath("Steam"))" alt="Start platform"/>
         </button>
 
         <button id="btnAddNew" @onclick="() => AppFuncs.SwapToNewAccount()">
@@ -93,6 +93,9 @@
     public static AccountList SteamAccountList;
 
     public static ContextMenu SteamContextMenu;
+
+    public static string GetShortcutImagePath(string gameShortcutName) =>
+        Path.Join("img\\shortcuts\\Steam\\", PlatformFuncs.RemoveShortcutExt(gameShortcutName) + ".png");
 
     protected override void OnInitialized()
     {

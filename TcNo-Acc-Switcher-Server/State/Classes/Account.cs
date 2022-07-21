@@ -14,11 +14,10 @@
 
 using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
 
-namespace TcNo_Acc_Switcher_Server.Shared.Accounts;
+namespace TcNo_Acc_Switcher_Server.State.Classes;
 
 public class Account
 {

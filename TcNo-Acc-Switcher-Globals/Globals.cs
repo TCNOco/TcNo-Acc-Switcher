@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -271,6 +272,18 @@ namespace TcNo_Acc_Switcher_Globals
             }
 
             return $"{operatingSystem} ({vs.Major}.{vs.Minor}.{vs.Build}) {(Environment.Is64BitOperatingSystem ? "x64" : "x86")}";
+        }
+
+        /// <summary>
+        /// Converts Unix Timestamp string to DateTime
+        /// </summary>
+        public static string UnixTimeStampToDateTime(string stringUnixTimeStamp)
+        {
+            if (!double.TryParse(stringUnixTimeStamp, out var unixTimeStamp)) return "";
+            // Unix timestamp is seconds past epoch
+            var dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+            return dtDateTime.ToString(CultureInfo.InvariantCulture);
         }
 
     }

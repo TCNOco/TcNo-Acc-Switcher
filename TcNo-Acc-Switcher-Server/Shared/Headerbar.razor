@@ -17,13 +17,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
+@inject AppState AppState
 @inject IWindowSettings WindowSettings
 @inject IJSRuntime JsRuntime
 @inject IHttpContextAccessor HttpContextAccessor
 
 <div id="window-title">
     <div class="resizeTop"></div>
-    <button id="btnBack" @onclick="AppData.NavigateUpOne">
+    <button id="btnBack" @onclick="AppState.Navigation.NavigateUpOne">
         <div class="resizeTop"></div>
         <div class="resizeTopLeft"></div>
         <div class="resizeLeft"></div>
@@ -69,18 +70,15 @@
             await JsRuntime.InvokeVoidAsync("windowControls_Exit");
         else
             await JsRuntime.InvokeVoidAsync("windowControls_hideToTray");
-
     }
-
-
 
     private string _animatedBackCss = "transition: transform 0 ease-in-out";
     private static string[] _possibleAnimations = {"X", "Y", "Z"};
     protected override void OnInitialized()
     {
         AppData.Instance.OnChange += OnMyChangeHandler;
-        AppData.Instance.OnBackButtonClick += BackButtonClicked;
-        AppData.Instance.OnBackButtonReset += BackButtonReset;
+        AppState.Navigation.OnBackButtonClick += BackButtonClicked;
+        AppState.Navigation.OnBackButtonReset += BackButtonReset;
     }
 
     // Animate the back button, and sleep 500ms to stop animation.
@@ -89,10 +87,12 @@
         var randomAni = _possibleAnimations[new Random().Next(0, _possibleAnimations.Length - 1)];
         _animatedBackCss = $"transform: rotate{randomAni}(360deg); transition: transform 500ms ease-in-out";
         await InvokeAsync(StateHasChanged);
-        var task = Task.Run(() =>
+
+        // Run in a background thread:
+        _ = Task.Run(() =>
         {
             Thread.Sleep(500);
-            AppData.Instance.ResetBackButton();
+            AppState.Navigation.ResetBackButton();
         });
     }
 

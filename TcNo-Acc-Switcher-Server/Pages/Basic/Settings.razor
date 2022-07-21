@@ -16,8 +16,12 @@
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Data.Settings
 @using TcNo_Acc_Switcher_Server.Pages.General.Classes
+@using TcNo_Acc_Switcher_Server.State.Interfaces
+@using Microsoft.AspNetCore.Components
 @namespace TcNo_Acc_Switcher_Server.Pages.Basic
 @inject NavigationManager NavManager
+@inject IAppState AppState
+
 @{ AppData.SetActiveNavMan(NavManager); }
 @inject IJSRuntime JsRuntime
 @{ AppData.SetActiveIJsRuntime(JsRuntime); }
@@ -90,7 +94,7 @@
 
             <h2 class="SettingsHeader">@Locale["Settings_Header_GeneralTools"]</h2>
             <p>@Locale["Settings_CurrentLocation", new { path = Basic.FolderPath }]</p>
-            <div class="buttoncol"><button id="PickFolder" type="button" @onclick="PickFolder"><span>@Locale["Settings_PickFolder", new { platform = CurrentPlatform.FullName }]</span></button><button id="OpenFolder" type="button" @onclick="() => Basic.OpenFolder(Basic.FolderPath)"><span>@Locale["Settings_OpenFolder", new { platform = CurrentPlatform.FullName }]</span></button></div>
+            <div class="buttoncol"><button id="PickFolder" type="button" @onclick="PickFolder"><span>@Locale["Settings_PickFolder", new { platform = CurrentPlatform.FullName }]</span></button><button id="OpenFolder" type="button" @onclick="() => AppState.OpenFolder(Basic.FolderPath)"><span>@Locale["Settings_OpenFolder", new { platform = CurrentPlatform.FullName }]</span></button></div>
             <div class="buttoncol"><button id="ResetSettings" type="button" @onclick="ClearSettings"><span>@Locale["Button_ResetSettings"]</span></button>
                 @if (CurrentPlatform.CachePaths != null)
                 {

@@ -25,6 +25,7 @@ using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.State;
+using TcNo_Acc_Switcher_Server.State.Classes;
 using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server
@@ -53,18 +54,20 @@ namespace TcNo_Acc_Switcher_Server
             _ = services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             // Proper singletons. This is after much more practice.
-            _ = services.AddSingleton<IWindowSettings, WindowSettings>();
-            _ = services.AddSingleton<NewLang>();
+            _ = services.AddSingleton<IWindowSettings, WindowSettings>(); // #1
+            _ = services.AddSingleton<NewLang>(); // #2
+            _ = services.AddSingleton<Toasts>(); // #3
+            _ = services.AddSingleton<Modals>(); // #4 ?
+
             _ = services.AddSingleton<AppState>();
-            _ = services.AddSingleton<Toasts>();
+            _ = services.AddSingleton<SteamState>();
+            _ = services.AddSingleton<SteamSettings>();
 
 
             // Persistent settings:
             // The below list will eventually be replaced completely, hopefully.
             _ = services.AddSingleton<AppSettings>();
             _ = services.AddSingleton<AppStats>();
-            _ = services.AddSingleton<AppData>();
-            _ = services.AddSingleton<ModalData>();
             _ = services.AddSingleton<BasicPlatforms>();
             _ = services.AddSingleton<BasicStats>();
             _ = services.AddSingleton<CurrentPlatform>();

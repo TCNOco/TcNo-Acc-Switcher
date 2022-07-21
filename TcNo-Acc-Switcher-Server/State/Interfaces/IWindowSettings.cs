@@ -28,7 +28,7 @@ public interface IWindowSettings
     bool DiscordRpcEnabled { get; set; }
     bool DiscordRpcShareTotalSwitches { get; set; }
     string PasswordHash { get; set; }
-    Dictionary<string, MetricHidden> GloballyHiddenMetrics { get; set; }
+    Dictionary<string, Dictionary<string, bool>> GloballyHiddenMetrics { get; set; }
     bool AlwaysAdmin { get; set; }
     ObservableCollection<PlatformItem> Platforms { get; set; }
     void Save();

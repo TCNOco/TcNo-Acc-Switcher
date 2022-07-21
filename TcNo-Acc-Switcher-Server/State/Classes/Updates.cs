@@ -6,24 +6,43 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Threading;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
+using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.State.Classes
 {
     public class Updates
     {
         [Inject] private Toasts Toasts { get; set; }
+        [Inject] private Modals Modals { get; set; }
+        [Inject] private NavigationManager NavigationManager { get; set; }
+        [Inject] private IWindowSettings WindowSettings { get; set; }
 
         private bool UpdateCheckRan { get; set; }
         public bool PreRenderUpdate { get; set; }
         public bool ShowUpdate { get; set; }
+        private bool FirstLaunch { get; set; }
+
+        /// <summary>
+        /// (Initializes one time) Checks for update, and submits statistics if enabled.
+        /// </summary>
+        public Updates()
+        {
+            if (!FirstLaunch) return;
+            FirstLaunch = false;
+            // Check for update in another thread
+            // Also submit statistics, if enabled
+            new Thread(CheckForUpdate).Start();
+            if (WindowSettings.CollectStats && WindowSettings.ShareAnonymousStats)
+                new Thread(AppStats.UploadStats).Start();
+        }
 
         /// <summary>
         /// Checks for an update
@@ -110,7 +129,7 @@ namespace TcNo_Acc_Switcher_Server.State.Classes
                 switch (UpdateNowNoToasts())
                 {
                     case UpdateResponse.RestartAsAdmin:
-                        ModalData.ShowModal("confirm", ModalData.ExtraArg.RestartAsAdmin);
+                        Modals.ShowModal("confirm", ExtraArg.RestartAsAdmin);
                         break;
                     case UpdateResponse.VerifyFail:
                         Toasts.ShowToastLang(ToastType.Error, "Toast_UpdateVerifyFail");
@@ -137,7 +156,7 @@ namespace TcNo_Acc_Switcher_Server.State.Classes
         /// <summary>
         /// Verify updater files and start update
         /// </summary>
-        public static UpdateResponse UpdateNowNoToasts()
+        public UpdateResponse UpdateNowNoToasts()
         {
             if (Globals.InstalledToProgramFiles() && !Globals.IsAdministrator || !Globals.HasFolderAccess(Globals.AppDataFolder))
                 return UpdateResponse.RestartAsAdmin;
@@ -180,14 +199,7 @@ namespace TcNo_Acc_Switcher_Server.State.Classes
             else
             {
                 _ = Process.Start(new ProcessStartInfo(Path.Join(Globals.AppDataFolder, @"updater\\TcNo-Acc-Switcher-Updater.exe")) { UseShellExecute = true, Arguments = args });
-                try
-                {
-                    AppData.NavigateTo("EXIT_APP", true);
-                }
-                catch (NullReferenceException)
-                {
-                    Environment.Exit(0);
-                }
+                Environment.Exit(1);
             }
         }
 
@@ -208,20 +220,12 @@ namespace TcNo_Acc_Switcher_Server.State.Classes
             try
             {
                 _ = Process.Start(proc);
-                AppData.NavigateTo("EXIT_APP", true);
+                Environment.Exit(1);
             }
             catch (Exception ex)
             {
                 Globals.WriteToLog(@"This program must be run as an administrator!" + Environment.NewLine + ex);
-                try
-                {
-                    AppData.NavigateTo("EXIT_APP", true);
-                }
-                catch (Exception e)
-                {
-                    Globals.WriteToLog("Could not close application... Just ending the server." + Environment.NewLine + e);
-                    Environment.Exit(0);
-                }
+                Environment.Exit(1);
             }
         }
     }

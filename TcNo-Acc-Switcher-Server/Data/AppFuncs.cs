@@ -34,7 +34,6 @@ namespace TcNo_Acc_Switcher_Server.Data
 {
     public class AppFuncs
     {
-        [Inject] private AppData AData { get; set; }
 
         #region Account Management
         /// <summary>

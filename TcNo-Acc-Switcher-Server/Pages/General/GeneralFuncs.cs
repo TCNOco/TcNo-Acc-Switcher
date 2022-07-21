@@ -865,7 +865,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                                          su.Name + s +
                                          su.SteamId + s +
                                          banInfo + s +
-                                         SteamSwitcherFuncs.UnixTimeStampToDateTime(su.LastLogin) + s +
+                                         Globals.UnixTimeStampToDateTime(su.LastLogin) + s +
                                          (File.Exists(imagePath) ? imagePath : "Missing from disk") + s +
                                          BasicStats.GetGameStatsString(su.SteamId, s));
                 }

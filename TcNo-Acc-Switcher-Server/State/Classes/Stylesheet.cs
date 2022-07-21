@@ -19,7 +19,9 @@ namespace TcNo_Acc_Switcher_Server.State.Classes
     {
         [Inject] private Toasts Toasts { get; set; }
         [Inject] private NewLang Lang { get; set; }
+        [Inject] private NavigationManager NavigationManager { get; set; }
         [Inject] private WindowSettings WindowSettings { get; set; }
+
         public string StylesheetCss { get; set; }
         public bool WindowsAccent { get; set; }
         public string WindowsAccentColor { get; set; } = "";
@@ -36,6 +38,11 @@ namespace TcNo_Acc_Switcher_Server.State.Classes
 
         [SupportedOSPlatform("windows")]
         public (int, int, int) WindowsAccentColorInt => GetAccentColor();
+
+        public Stylesheet()
+        {
+            LoadStylesheetFromFile();
+        }
 
         /// <summary>
         /// Check if any streaming software is running. Do let me know if you have a program name that you'd like to expand this list with!
@@ -100,11 +107,6 @@ namespace TcNo_Acc_Switcher_Server.State.Classes
         }
 
         /// <summary>
-        /// Returns a block of CSS text to be used on the page. Used to hide or show certain things in certain ways, in components that aren't being added through Blazor.
-        /// </summary>
-        public string GetCssBlock() => ".streamerCensor { display: " + (WindowSettings.StreamerModeEnabled && StreamerModeTriggered ? "none!important" : "block") + "}";
-
-        /// <summary>
         /// Swaps in a requested stylesheet, and loads styles from file.
         /// </summary>
         /// <param name="swapTo">Stylesheet name (without .json) to copy and load</param>
@@ -116,7 +118,7 @@ namespace TcNo_Acc_Switcher_Server.State.Classes
                 if (LoadStylesheetFromFile())
                 {
                     WindowSettings.Save();
-                    AppData.ReloadPage();
+                    NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
                     return;
                 }
             }
@@ -288,7 +290,7 @@ namespace TcNo_Acc_Switcher_Server.State.Classes
             WindowsAccentColorHsl = FromRgb(r, g, b);
 
             if (userInvoked)
-                AppData.ReloadPage();
+                NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
         }
 
         [SupportedOSPlatform("windows")]

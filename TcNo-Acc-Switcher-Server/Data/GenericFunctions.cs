@@ -26,6 +26,7 @@ using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Shared.Toast;
+using TcNo_Acc_Switcher_Server.State.Classes;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
@@ -141,7 +142,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             foreach (var element in accList)
             {
-                var account = new Shared.Accounts.Account
+                var account = new Account
                 {
                     Platform = CurrentPlatform.SafeName
                 };

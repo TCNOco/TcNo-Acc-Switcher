@@ -15,6 +15,8 @@ namespace TcNo_Acc_Switcher_Server.State.Classes
 {
     public class ShortcutsState
     {
+        [Inject] private Modals Modals { get; set; }
+        [Inject] private IAppState AppState { get; set; }
         [Inject] private Toasts Toasts { get; set; }
 
         private readonly string _startMenuFolder = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Programs), @"TcNo Account Switcher\");
@@ -120,7 +122,7 @@ namespace TcNo_Acc_Switcher_Server.State.Classes
                 catch (Exception e)
                 {
                     Toasts.ShowToastLang(ToastType.Error, "Failed", "Toast_RestartAsAdmin");
-                    ModalData.ShowModal("confirm", ModalData.ExtraArg.RestartAsAdmin);
+                    Modals.ShowModal("confirm", ExtraArg.RestartAsAdmin);
                 }
             }
         }

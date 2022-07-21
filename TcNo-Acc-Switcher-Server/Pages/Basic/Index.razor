@@ -19,9 +19,14 @@
 @using TcNo_Acc_Switcher_Server.Shared.ContextMenu
 @using TcNo_Acc_Switcher_Server.Shared.Accounts
 @using System.IO
+@using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.WebUtilities
 @using TcNo_Acc_Switcher_Server.Shared.Modal
+@using TcNo_Acc_Switcher_Server.State.Interfaces
 @inject IJSRuntime JsRuntime
+@inject IAppState AppState
+
+
 @{ AppData.SetActiveIJsRuntime(JsRuntime); }
 @inject NavigationManager NavManager
 @{ AppData.SetActiveNavMan(NavManager); }
@@ -47,7 +52,7 @@
             }
         }
     </div>
-    <button id="btnOpenShortcutFolder" @onclick="() => Basic.OpenFolder(Path.GetFullPath(CurrentPlatform.ShortcutFolder))" data-toggle="tooltip" title="@(Locale["Tooltip_ShortcutFolder"])" data-placement="right">
+    <button id="btnOpenShortcutFolder" @onclick="() => AppState.OpenFolder(Path.GetFullPath(CurrentPlatform.ShortcutFolder))" data-toggle="tooltip" title="@(Locale["Tooltip_ShortcutFolder"])" data-placement="right">
         <i class="fas fa-plus"></i>
     </button>
 </div>
