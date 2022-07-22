@@ -1,457 +1,443 @@
-{
-  "Platforms": {
-    "Escape from Tarkov": {
-      "Identifiers": [ "eft", "bsg", "tarkov" ],
-      "ExeLocationDefault": "C:\\Battlestate Games\\BsgLauncher\\BsgLauncher.exe",
-      "ExesToEnd": [ "EscapeFromTarkov.exe", "BsgLauncher.exe" ],
-      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
-      "LoginFiles": {
-        "%AppData%\\Battlestate Games\\BsgLauncher\\settings": "settings"
-      },
-      "UniqueIdFile": "settings",
-      "UniqueIdRegex": "EMAIL_REGEX"
+[
+  {
+    "Name": "Escape from Tarkov",
+    "Identifiers": [ "eft", "bsg", "tarkov" ],
+    "ExeLocationDefault": "C:\\Battlestate Games\\BsgLauncher\\BsgLauncher.exe",
+    "ExesToEnd": [ "EscapeFromTarkov.exe", "BsgLauncher.exe" ],
+    "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+    "LoginFiles": {
+      "%AppData%\\Battlestate Games\\BsgLauncher\\settings": "settings"
     },
-    "OBS Studio": {
-      "Identifiers": [ "obs" ],
-      "ExeLocationDefault": "%ProgramFiles%\\obs-studio\\bin\\64bit\\obs64.exe",
-      "ExesToEnd": [ "obs64.exe" ],
-      "PathListToClear": [],
-      "LoginFiles": {
-        "%AppData%\\obs-studio\\global.ini": "global.ini",
-        "%AppData%\\obs-studio\\basic\\*": "basic\\",
-        "%AppData%\\obs-studio\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
-      },
-      "UniqueIdFile": "%AppData%\\obs-studio\\TcNoAccSwitcher-ID.instance",
-      "UniqueIdMethod": "CREATE_ID_FILE"
-    },
-    "Epic Games": {
-      "Identifiers": [ "e", "epg", "epic", "epicgames" ],
-      "ExeLocationDefault": "C:\\Program Files (x86)\\Epic Games\\Launcher\\Portal\\Binaries\\Win32\\EpicGamesLauncher.exe",
-      "ExesToEnd": [ "EpicGamesLauncher.exe" ],
-      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
-      "LoginFiles": {
-        "%LocalAppData%\\EpicGamesLauncher\\Saved\\Config\\Windows\\GameUserSettings.ini": "GameUserSettings.ini",
-        "REG:HKCU\\Software\\Epic Games\\Unreal Engine\\Identifiers:AccountId": "UNIQUE_ID"
-      },
-      "Extras": {
-        "CachePaths": [
-          "%LocalAppData%\\Epic Games\\Epic Online Services\\UI Helper\\Cache\\Cache",
-          "%LocalAppData%\\Epic Games\\Epic Online Services\\UI Helper\\Cache\\GPUCache",
-          "%LocalAppData%\\Epic Games\\EOSOverlay\\BrowserCache\\Cache"
-        ],
-        "BackupFolders": {
-          "%LocalAppData%\\EpicGamesLauncher\\Saved\\Config\\": "Config"
-        }
-      },
-      "UniqueIdFile": "HKCU\\Software\\Epic Games\\Unreal Engine\\Identifiers:AccountId",
-      "UniqueIdMethod": "REGKEY"
-    },
-    "Discord": {
-      "Identifiers": [ "d", "discord" ],
-      "ExeLocationDefault": "%LocalAppData%\\Discord\\Update.exe",
-      "ExeExtraArgs": "--processStart Discord.exe",
-      "ExesToEnd": [ "Discord.exe" ],
-      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
-      "LoginFiles": {
-        "%AppData%\\discord\\settings.json": "settings.json",
-        "%AppData%\\discord\\Cookies": "Cookies",
-        "%AppData%\\discord\\Network Persistent State": "Network Persistent State",
-        "%AppData%\\discord\\Preferences": "Preferences",
-        "%AppData%\\discord\\TransportSecurity": "TransportSecurity",
-        "%AppData%\\discord\\Cache\\index": "Cache\\index",
-        "%AppData%\\discord\\Cache\\data_*": "Cache\\",
-        "%AppData%\\discord\\Code Cache\\js\\index-dir\\the-real-index": "Code Cache\\js\\index-dir\\the-real-index",
-        "%AppData%\\discord\\GPUCache\\index": "GPUCache\\index",
-        "%AppData%\\discord\\Local Storage\\leveldb": "Local Storage\\leveldb\\",
-        "%AppData%\\discord\\Session Storage\\*.log": "Session Storage\\",
-        "%AppData%\\discord\\Session Storage\\*.ldb": "Session Storage\\",
-        "%AppData%\\discord\\blob_storage": "blob_storage\\",
-        "%AppData%\\discord\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
-      },
-      "ExitBeforeInteract": true,
-      "Extras": {
-        "CachePaths": [
-          "%AppData%\\discord\\Cache\\f_*"
-        ],
-        "UsernameModalExtraButtons": "Platforms\\Discord\\Username.html",
-        "UsernameModalCopyText": "Platforms\\Discord\\Username.js",
-        "UsernameModalHintText": "Platform_DiscordPasteHint",
-        "SearchStartMenuForIcon": true
-      },
-      "UniqueIdFile": "%AppData%\\discord\\TcNoAccSwitcher-ID.instance",
-      "UniqueIdMethod": "CREATE_ID_FILE"
-    },
-    "Discord Canary": {
-      "Identifiers": [
-        "dc",
-        "discordcanary",
-        "canary"
-      ],
-      "ExeLocationDefault": "%LocalAppData%\\DiscordCanary\\Update.exe",
-      "ExeExtraArgs": "--processStart DiscordCanary.exe",
-      "ExesToEnd": [ "DiscordCanary.exe" ],
-      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
-      "LoginFiles": {
-        "%AppData%\\discordcanary\\settings.json": "settings.json",
-        "%AppData%\\discordcanary\\Cookies": "Cookies",
-        "%AppData%\\discordcanary\\Network Persistent State": "Network Persistent State",
-        "%AppData%\\discordcanary\\Preferences": "Preferences",
-        "%AppData%\\discordcanary\\TransportSecurity": "TransportSecurity",
-        "%AppData%\\discordcanary\\Cache\\index": "Cache\\index",
-        "%AppData%\\discordcanary\\Cache\\data_*": "Cache\\",
-        "%AppData%\\discordcanary\\Code Cache\\js\\index-dir\\the-real-index": "Code Cache\\js\\index-dir\\the-real-index",
-        "%AppData%\\discordcanary\\GPUCache\\index": "GPUCache\\index",
-        "%AppData%\\discordcanary\\Local Storage\\leveldb": "Local Storage\\leveldb\\",
-        "%AppData%\\discordcanary\\Session Storage\\*.log": "Session Storage\\",
-        "%AppData%\\discordcanary\\Session Storage\\*.ldb": "Session Storage\\",
-        "%AppData%\\discordcanary\\blob_storage": "blob_storage\\",
-        "%AppData%\\discordcanary\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
-      },
-      "ExitBeforeInteract": true,
-      "Extras": {
-        "CachePaths": [
-          "%AppData%\\discordcanary\\Cache\\f_*"
-        ],
-        "UsernameModalExtraButtons": "Platforms\\Discord\\Username.html",
-        "UsernameModalCopyText": "Platforms\\Discord\\Username.js",
-        "UsernameModalHintText": "Platform_DiscordPasteHint",
-        "SearchStartMenuForIcon": true
-      },
-      "UniqueIdFile": "%AppData%\\discordcanary\\TcNoAccSwitcher-ID.instance",
-      "UniqueIdMethod": "CREATE_ID_FILE"
-    },
-    "Discord PTB": {
-      "Identifiers": [
-        "dp",
-        "discordptb",
-        "ptb"
-      ],
-      "ExeLocationDefault": "%LocalAppData%\\DiscordPTB\\Update.exe",
-      "ExeExtraArgs": "--processStart DiscordPTB.exe",
-      "ExesToEnd": [ "DiscordPTB.exe" ],
-      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
-      "LoginFiles": {
-        "%AppData%\\discordptb\\settings.json": "settings.json",
-        "%AppData%\\discordptb\\Cookies": "Cookies",
-        "%AppData%\\discordptb\\Network Persistent State": "Network Persistent State",
-        "%AppData%\\discordptb\\Preferences": "Preferences",
-        "%AppData%\\discordptb\\TransportSecurity": "TransportSecurity",
-        "%AppData%\\discordptb\\Cache\\index": "Cache\\index",
-        "%AppData%\\discordptb\\Cache\\data_*": "Cache\\",
-        "%AppData%\\discordptb\\Code Cache\\js\\index-dir\\the-real-index": "Code Cache\\js\\index-dir\\the-real-index",
-        "%AppData%\\discordptb\\GPUCache\\index": "GPUCache\\index",
-        "%AppData%\\discordptb\\Local Storage\\leveldb\\": "Local Storage\\leveldb\\",
-        "%AppData%\\discordptb\\Session Storage\\*.log": "Session Storage\\",
-        "%AppData%\\discordptb\\Session Storage\\*.ldb": "Session Storage\\",
-        "%AppData%\\discordptb\\blob_storage": "blob_storage\\",
-        "%AppData%\\discordptb\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
-      },
-      "ExitBeforeInteract": true,
-      "Extras": {
-        "CachePaths": [
-          "%AppData%\\discordptb\\Cache\\f_*"
-        ],
-        "UsernameModalExtraButtons": "Platforms\\Discord\\Username.html",
-        "UsernameModalCopyText": "Platforms\\Discord\\Username.js",
-        "UsernameModalHintText": "Platform_DiscordPasteHint",
-        "SearchStartMenuForIcon": true
-      },
-      "UniqueIdFile": "%AppData%\\discordptb\\TcNoAccSwitcher-ID.instance",
-      "UniqueIdMethod": "CREATE_ID_FILE"
-    },
-    "Riot Games": {
-      "Identifiers": [ "r", "riot", "riotgames" ],
-      "ExeLocationDefault": "C:\\Riot Games\\Riot Client\\RiotClientServices.exe",
-      "ExesToEnd": [
-        "LeagueClient.exe",
-        "LoR.exe",
-        "VALORANT.exe",
-        "RiotClientServices.exe",
-        "RiotClientUx.exe",
-        "RiotClientUxRender.exe"
-      ],
-      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
-      "LoginFiles": {
-        "%LocalAppData%\\Riot Games\\Riot Client\\Data\\Cookies\\": "Cookies",
-        "%LocalAppData%\\Riot Games\\Riot Client\\Data": "RiotClientPrivateSettings.yaml",
-        "%LocalAppData%\\Riot Games\\Riot Client\\Config": "RiotClientSettings.yaml",
-        "%LocalAppData%\\Riot Games\\Riot Client\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
-      },
-      "Extras": {
-        "ShortcutFolders": [
-          "%StartMenuProgramData%\\Riot Games\\"
-        ],
-        "ShortcutIgnore": [ "Riot Client" ],
-        "ShortcutIncludeMainExe": false
-      },
-      "UniqueIdFile": "%LocalAppData%\\Riot Games\\Riot Client\\TcNoAccSwitcher-ID.instance",
-      "UniqueIdMethod": "CREATE_ID_FILE"
-    },
-    "Origin": {
-      "Identifiers": [ "o", "origin" ],
-      "ExeLocationDefault": "%ProgramFiles(x86)%\\Origin\\Origin.exe",
-      "ExesToEnd": [ "Origin.exe", "OriginWebHelperService.exe" ],
-      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
-      "LoginFiles": {
-        "%AppData%\\Origin\\ConsolidatedCache\\": "AppData\\ConsolidatedCache",
-        "%AppData%\\Origin\\Logs\\": "AppData\\Logs",
-        "%AppData%\\Origin\\NucleusCache\\": "AppData\\NucleusCache",
-        "%AppData%\\Origin\\*.xml": "AppData\\",
-        "%AppData%\\Origin\\Logs\\dserrors.data": "AppData\\Logs\\dserrors.data",
-        "%ProgramData%\\Origin\\AchievementCache\\": "ProgramData\\AchievementCache",
-        "%ProgramData%\\Origin\\Subscription\\": "ProgramData\\Subscription",
-        "%ProgramData%\\Origin\\local.xml": "ProgramData\\local.xml",
-        "%ProgramData%\\Origin\\*.olc": "ProgramData\\",
-        "%ProgramData%\\Origin\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
-      },
-      "ExitBeforeInteract": true,
-      "Extras": {
-        "CachePaths": [
-          "%ProgramData%\\Origin\\DownloadCache",
-          "%LocalAppData%\\Origin\\Origin\\cache\\QtWebEngine\\Default\\Cache",
-          "%LocalAppData%\\Origin\\Origin\\QtWebEngine\\Default\\Application Cache\\Cache"
-        ],
-        "ProfilePicFromFile": "%AppData%\\Origin\\local*",
-        "ProfilePicRegex": "WIN_FILEPATH_REGEX",
-        "BackupFolders": {
-          "%ProgramData%\\Origin\\LocalContent\\": "LocalContent",
-          "%ProgramData%\\Origin\\local.xml": "local.xml"
-        }
-      },
-      "UniqueIdFile": "%ProgramData%\\Origin\\TcNoAccSwitcher-ID.instance",
-      "UniqueIdMethod": "CREATE_ID_FILE"
-    },
-    "EA Desktop": {
-      "Identifiers": [ "ea", "eadesktop" ],
-      "ExeLocationDefault": "%ProgramFiles%\\Electronic Arts\\EA Desktop\\EA Desktop\\EADesktop.exe",
-      "ExesToEnd": [ "EADesktop.exe", "EABackgroundService.exe" ],
-      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
-      "LoginFiles": {
-        "%LocalAppData%\\Electronic Arts\\EA Desktop\\": "LocalAppData\\"
-      },
-      "Extras": {
-        "CachePaths": [
-          "%LocalAppData%\\EADesktop\\QtWebEngine\\Default\\GPUCache",
-          "%LocalAppData%\\EADesktop\\cache\\QtWebEngine\\Default\\Cache",
-          "%LocalAppData%\\EADesktop\\cache\\qmlcache"
-        ],
-        "BackupFolders": {
-          "%LocalAppData%\\Electronic Arts\\EA Desktop\\": "LocalAppData"
-        },
-        "BackupFileTypesIgnore": [
-          ".log"
-        ]
-      },
-      "ExitBeforeInteract": true,
-      "UniqueIdFile": "%LocalAppData%\\Electronic Arts\\EA Desktop\\telemetry.ini",
-      "UniqueIdRegex": "(?<=\\=).*"
-    },
-    "GeForce Now": {
-      "Identifiers": [ "gn", "geforce", "geforcenow" ],
-      "ExeLocationDefault": "%LocalAppData%\\NVIDIA Corporation\\GeForceNOW\\CEF\\GeForceNOW.exe",
-      "ExesToEnd": [ "GeForceNOW.exe", "GeForceNOWContainer.exe", "GeForceNOWReliabilityMonitor.exe" ],
-      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
-      "LoginFiles": {
-        "%LocalAppData%\\NVIDIA Corporation\\GeForceNOW\\sharedstorage.json": "LocalAppData\\sharedstorage.json",
-        "%LocalAppData%\\NVIDIA Corporation\\GeForceNOW\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
-      },
-      "Extras": {
-        "CachePaths": [
-          "%LocalAppData%\\NVIDIA Corporation\\GeForceNOW\\CefCache\\Cache",
-          "%LocalAppData%\\NVIDIA Corporation\\GeForceNOW\\CefCache\\GPUCache"
-        ]
-      },
-      "ExitBeforeInteract": true,
-      "UniqueIdFile": "%LocalAppData%\\NVIDIA Corporation\\GeForceNOW\\TcNoAccSwitcher-ID.instance",
-      "UniqueIdMethod": "CREATE_ID_FILE"
-    },
-    "Ubisoft": {
-      "Identifiers": [ "u", "ubi", "uplay", "ubisoft" ],
-      "ExeLocationDefault": "%ProgramFiles(x86)%\\Ubisoft\\Ubisoft Game launcher\\upc.exe",
-      "ExesToEnd": [ "upc.exe", "UplayService.exe", "UplayWebCore.exe" ],
-      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
-      "LoginFiles": {
-        "%Platform_Folder%\\logs\\launcher_log.txt": "logs\\launcher_log.txt",
-        "%LocalAppData%\\Ubisoft Game Launcher\\settings.yaml": "settings.yaml",
-        "%LocalAppData%\\Ubisoft Game Launcher\\user.dat": "user.dat"
-      },
-      "Extras": {
-        "ProfilePicPath": "%Platform_Folder%\\cache\\avatars\\%UniqueId%_256.png",
-        "CachePaths": [
-          "%Platform_Folder%\\cache\\achievements",
-          "%Platform_Folder%\\cache\\assets",
-          "%Platform_Folder%\\cache\\download",
-          "%Platform_Folder%\\cache\\http2"
-        ],
-        "BackupFolders": {
-          "%LocalAppData%\\Ubisoft Game Launcher\\settings.yaml": "settings.yaml",
-          "%Platform_Folder%\\savegames\\": "savegames\\"
-        }
-      },
-      "ExitBeforeInteract": true,
-      "UniqueIdFile": "%Platform_Folder%\\logs\\launcher_log.txt",
-      "UniqueIdRegex": "(?<=User: ).*"
-    },
-    "Oculus": {
-      "Identifiers": [ "oc", "oculus" ],
-      "ExeLocationDefault": "%ProgramFiles%\\Oculus\\Support\\oculus-client\\OculusClient.exe",
-      "ExesToEnd": [
-        "OculusClient.exe",
-        "OculusDash.exe",
-        "OVRRedit.exe",
-        "OVRServer_x64.exe",
-        "OVRServiceLauncher.exe"
-      ],
-      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
-      "LoginFiles": {
-        "%AppData%\\Oculus\\sessions\\": "AppData-OculusSessions\\",
-        "%AppData%\\OculusClient\\Cache\\index": "Cache\\index",
-        "%AppData%\\OculusClient\\Cache\\data_*": "Cache\\",
-        "%AppData%\\OculusClient\\Local Storage\\leveldb\\": "Local Storage\\leveldb\\",
-        "%AppData%\\OculusClient\\GPUCache\\index": "GPUCache\\index",
-        "%AppData%\\OculusClient\\Cookies": "Cookies",
-        "%AppData%\\OculusClient\\Network Persistent State": "Network Persistent State",
-        "%AppData%\\OculusClient\\blob_storage": "blob_storage\\",
-        "%AppData%\\Oculus\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
-      },
-      "Extras": {
-        "CachePaths": [
-          "%AppData%\\OculusClient\\Cache\\f_*"
-        ]
-      },
-      "ExitBeforeInteract": true,
-      "UniqueIdFile": "%AppData%\\Oculus\\TcNoAccSwitcher-ID.instance",
-      "UniqueIdMethod": "CREATE_ID_FILE"
-    },
-    "Genshin Impact": {
-      "Identifiers": [ "gi", "genshin", "genshinimpact" ],
-      "ExeLocationDefault": "%ProgramFiles%\\Genshin Impact\\Genshin Impact Game\\GenshinImpact.exe",
-      "ExesToEnd": [ "GenshinImpact.exe" ],
-      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
-      "LoginFiles": {
-        "REG:HKCU\\Software\\miHoYo\\Genshin Impact:MIHOYOSDK_ADL_PROD_OVERSEA_h1158948810": "UNIQUE_ID"
-      },
-      "ExitBeforeInteract": true,
-      "UniqueIdFile": "HKCU\\SOFTWARE\\miHoYo\\Genshin Impact:MIHOYOSDK_ADL_PROD_OVERSEA_h1158948810",
-      "UniqueIdMethod": "REGKEY"
-    },
-    "Magic Arena": {
-      "Identifiers": [ "mtga", "magicarena" ],
-      "ExeLocationDefault": "%ProgramFiles%\\Wizards of the Coast\\MTGA\\MTGALauncher\\MTGALauncher.exe",
-      "ExesToEnd": [ "MTGA.exe" ],
-      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
-      "LoginFiles": {
-        "REG:HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:LastLoginString_h2517025721": "UNIQUE_ID",
-        "REG:HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:LastLoginDate_h202577560": "",
-        "REG:HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:RefreshToken_h992839947": "",
-        "REG:HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:RememberMe_h1678977314": "",
-        "REG:HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:WAS-RememberMe_h1678977314": "",
-        "REG:HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:WAS-RefreshToken_h992839947": ""
-      },
-      "RegDeleteOnClear": true,
-      "ExitBeforeInteract": true,
-      "UniqueIdFile": "HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:LastLoginString_h2517025721",
-      "UniqueIdMethod": "REGKEY"
-    },
-    "PS Remote Play": {
-      "Identifiers": [ "psr", "psrp", "psremote" ],
-      "ExeLocationDefault": "%ProgramFiles(x86)%\\Sony\\PS Remote Play\\RemotePlay.exe",
-      "ExesToEnd": [ "RemotePlay.exe" ],
-      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
-      "LoginFiles": {
-        "%LocalAppData%\\Sony Corporation\\PS Remote Play\\setting.cache": "setting.cache",
-        "%LocalAppData%\\Sony Corporation\\PS Remote Play\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
-      },
-      "ExitBeforeInteract": true,
-      "UniqueIdFile": "%LocalAppData%\\Sony Corporation\\PS Remote Play\\TcNoAccSwitcher-ID.instance",
-      "UniqueIdMethod": "CREATE_ID_FILE"
-    },
-    "Albion Online": {
-      "Identifiers": [ "ao", "albion", "albiononline" ],
-      "ExeLocationDefault": "%ProgramFiles(x86)%\\AlbionOnline\\launcher\\AlbionLauncher.exe",
-      "ExesToEnd": [ "AlbionLauncher.exe", "Albion-Online.exe" ],
-      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
-      "LoginFiles": {
-        "REG:HKCU\\Software\\Sandbox Interactive GmbH\\Albion Online Client:LastUsedAccountId_h136571812": "UNIQUE_ID",
-        "REG:HKCU\\Software\\Sandbox Interactive GmbH\\Albion Online Client:login.last_h1502067074": "",
-        "REG:HKCU\\Software\\Sandbox Interactive GmbH\\Albion Online Client:login.hash_h1501923354": "",
-        "REG:HKCU\\Software\\Sandbox Interactive GmbH\\Albion Online Client:login.accountname_h1930415854": ""
-      },
-      "ExitBeforeInteract": true,
-      "UniqueIdFile": "HKCU\\Software\\Sandbox Interactive GmbH\\Albion Online Client:LastUsedAccountId_h136571812",
-      "UniqueIdMethod": "REGKEY"
-    },
-    "Rockstar": {
-      "Identifiers": [ "rs", "rockstar", "socialclub" ],
-      "ExeLocationDefault": "%ProgramFiles%\\Rockstar Games\\Launcher\\LauncherPatcher.exe",
-      "ExesToEnd": [
-        "LauncherPatcher.exe",
-        "Launcher.exe",
-        "RockstarErrorHandler.exe",
-        "RockstarService.exe",
-        "SocialClubHelper.exe"
-      ],
-      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
-      "LoginFiles": {
-        "%LocalAppData%\\Rockstar Games\\Launcher\\settings_user.dat": "settings_user.dat",
-        "%ProgramData%\\Rockstar Games\\Launcher\\settings_machine.dat": "settings_machine.dat",
-        "%Documents%\\Rockstar Games\\Social Club\\Profiles\\*": "Profiles\\",
-        "%ProgramData%\\Rockstar Games\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
-      },
-      "Extras": {
-        "CachePaths": [
-          "%Documents%\\Rockstar Games\\Social Club\\Launcher\\Renderer\\Cache\\f_*"
-        ],
-        "ShortcutFolders": [
-          "%StartMenuProgramData%\\Rockstar Games\\"
-        ],
-        "ShortcutIgnore": [ "Rockstar Games Launcher" ]
-      },
-      "ExitBeforeInteract": true,
-      "UniqueIdFile": "%ProgramData%\\Rockstar Games\\TcNoAccSwitcher-ID.instance",
-      "UniqueIdMethod": "CREATE_ID_FILE"
-    },
-    "BattleNet": {
-      "Identifiers": [ "b", "bnet", "battlenet", "blizzard" ],
-      "ExeLocationDefault": "%ProgramFiles(x86)%\\Battle.net\\Battle.net.exe",
-      "ExesToEnd": [ "Battle.net" ],
-      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
-      "LoginFiles": {
-        "JSON_SELECT_FIRST,::%AppData%\\Battle.net\\Battle.net.config::$.Client.SavedAccountNames": "email.json"
-      },
-      "ExitBeforeInteract": true,
-      "UniqueIdFile": "%AppData%\\Battle.net\\Battle.net.config::$.Client.SavedAccountNames",
-      "UniqueIdMethod": "JSON_SELECT_FIRST,"
-    }
+    "UniqueIdFile": "settings",
+    "UniqueIdRegex": "EMAIL_REGEX"
   },
-  "Platform-WIP": {
+  {
+    "Name": "OBS Studio",
+    "Identifiers": [ "obs" ],
+    "ExeLocationDefault": "%ProgramFiles%\\obs-studio\\bin\\64bit\\obs64.exe",
+    "ExesToEnd": [ "obs64.exe" ],
+    "PathListToClear": [],
+    "LoginFiles": {
+      "%AppData%\\obs-studio\\global.ini": "global.ini",
+      "%AppData%\\obs-studio\\basic\\*": "basic\\",
+      "%AppData%\\obs-studio\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
+    },
+    "UniqueIdFile": "%AppData%\\obs-studio\\TcNoAccSwitcher-ID.instance",
+    "UniqueIdMethod": "CREATE_ID_FILE"
   },
-  "Reference": {
-    "Steam": {
-      "NOTE": "This isn't used anywhere. It's just here for reference.",
-      "Extras": {
-        "BackupFolders": {
-          "%Platform_Folder%\\config": "config",
-          "%Platform_Folder%\\userdata": "userdata"
-        },
-        "BackupFileTypesInclude": [
-          ".cfg",
-          ".ini",
-          ".dat",
-          ".db",
-          ".json",
-          ".ProfileData",
-          ".sav",
-          ".save",
-          ".nfo",
-          ".txt",
-          ".vcfg",
-          ".vdf",
-          ".vdf_last",
-          ".vrmanifest",
-          ".xml"
-        ]
+  {
+    "Name": "Epic Games",
+    "Identifiers": [ "e", "epg", "epic", "epicgames" ],
+    "ExeLocationDefault": "C:\\Program Files (x86)\\Epic Games\\Launcher\\Portal\\Binaries\\Win32\\EpicGamesLauncher.exe",
+    "ExesToEnd": [ "EpicGamesLauncher.exe" ],
+    "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+    "LoginFiles": {
+      "%LocalAppData%\\EpicGamesLauncher\\Saved\\Config\\Windows\\GameUserSettings.ini": "GameUserSettings.ini",
+      "REG:HKCU\\Software\\Epic Games\\Unreal Engine\\Identifiers:AccountId": "UNIQUE_ID"
+    },
+    "Extras": {
+      "CachePaths": [
+        "%LocalAppData%\\Epic Games\\Epic Online Services\\UI Helper\\Cache\\Cache",
+        "%LocalAppData%\\Epic Games\\Epic Online Services\\UI Helper\\Cache\\GPUCache",
+        "%LocalAppData%\\Epic Games\\EOSOverlay\\BrowserCache\\Cache"
+      ],
+      "BackupFolders": {
+        "%LocalAppData%\\EpicGamesLauncher\\Saved\\Config\\": "Config"
       }
-    }
+    },
+    "UniqueIdFile": "HKCU\\Software\\Epic Games\\Unreal Engine\\Identifiers:AccountId",
+    "UniqueIdMethod": "REGKEY"
+  },
+  {
+    "Name": "Discord",
+    "Identifiers": [ "d", "discord" ],
+    "ExeLocationDefault": "%LocalAppData%\\Discord\\Update.exe",
+    "ExeExtraArgs": "--processStart Discord.exe",
+    "ExesToEnd": [ "Discord.exe" ],
+    "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+    "LoginFiles": {
+      "%AppData%\\discord\\settings.json": "settings.json",
+      "%AppData%\\discord\\Cookies": "Cookies",
+      "%AppData%\\discord\\Network Persistent State": "Network Persistent State",
+      "%AppData%\\discord\\Preferences": "Preferences",
+      "%AppData%\\discord\\TransportSecurity": "TransportSecurity",
+      "%AppData%\\discord\\Cache\\index": "Cache\\index",
+      "%AppData%\\discord\\Cache\\data_*": "Cache\\",
+      "%AppData%\\discord\\Code Cache\\js\\index-dir\\the-real-index": "Code Cache\\js\\index-dir\\the-real-index",
+      "%AppData%\\discord\\GPUCache\\index": "GPUCache\\index",
+      "%AppData%\\discord\\Local Storage\\leveldb": "Local Storage\\leveldb\\",
+      "%AppData%\\discord\\Session Storage\\*.log": "Session Storage\\",
+      "%AppData%\\discord\\Session Storage\\*.ldb": "Session Storage\\",
+      "%AppData%\\discord\\blob_storage": "blob_storage\\",
+      "%AppData%\\discord\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
+    },
+    "ExitBeforeInteract": true,
+    "Extras": {
+      "CachePaths": [
+        "%AppData%\\discord\\Cache\\f_*"
+      ],
+      "UsernameModalExtraButtons": "Platforms\\Discord\\Username.html",
+      "UsernameModalCopyText": "Platforms\\Discord\\Username.js",
+      "UsernameModalHintText": "Platform_DiscordPasteHint",
+      "SearchStartMenuForIcon": true
+    },
+    "UniqueIdFile": "%AppData%\\discord\\TcNoAccSwitcher-ID.instance",
+    "UniqueIdMethod": "CREATE_ID_FILE"
+  },
+  {
+    "Name": "Discord Canary",
+    "Identifiers": [
+      "dc",
+      "discordcanary",
+      "canary"
+    ],
+    "ExeLocationDefault": "%LocalAppData%\\DiscordCanary\\Update.exe",
+    "ExeExtraArgs": "--processStart DiscordCanary.exe",
+    "ExesToEnd": [ "DiscordCanary.exe" ],
+    "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+    "LoginFiles": {
+      "%AppData%\\discordcanary\\settings.json": "settings.json",
+      "%AppData%\\discordcanary\\Cookies": "Cookies",
+      "%AppData%\\discordcanary\\Network Persistent State": "Network Persistent State",
+      "%AppData%\\discordcanary\\Preferences": "Preferences",
+      "%AppData%\\discordcanary\\TransportSecurity": "TransportSecurity",
+      "%AppData%\\discordcanary\\Cache\\index": "Cache\\index",
+      "%AppData%\\discordcanary\\Cache\\data_*": "Cache\\",
+      "%AppData%\\discordcanary\\Code Cache\\js\\index-dir\\the-real-index": "Code Cache\\js\\index-dir\\the-real-index",
+      "%AppData%\\discordcanary\\GPUCache\\index": "GPUCache\\index",
+      "%AppData%\\discordcanary\\Local Storage\\leveldb": "Local Storage\\leveldb\\",
+      "%AppData%\\discordcanary\\Session Storage\\*.log": "Session Storage\\",
+      "%AppData%\\discordcanary\\Session Storage\\*.ldb": "Session Storage\\",
+      "%AppData%\\discordcanary\\blob_storage": "blob_storage\\",
+      "%AppData%\\discordcanary\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
+    },
+    "ExitBeforeInteract": true,
+    "Extras": {
+      "CachePaths": [
+        "%AppData%\\discordcanary\\Cache\\f_*"
+      ],
+      "UsernameModalExtraButtons": "Platforms\\Discord\\Username.html",
+      "UsernameModalCopyText": "Platforms\\Discord\\Username.js",
+      "UsernameModalHintText": "Platform_DiscordPasteHint",
+      "SearchStartMenuForIcon": true
+    },
+    "UniqueIdFile": "%AppData%\\discordcanary\\TcNoAccSwitcher-ID.instance",
+    "UniqueIdMethod": "CREATE_ID_FILE"
+  },
+  {
+    "Name": "Discord PTB",
+    "Identifiers": [
+      "dp",
+      "discordptb",
+      "ptb"
+    ],
+    "ExeLocationDefault": "%LocalAppData%\\DiscordPTB\\Update.exe",
+    "ExeExtraArgs": "--processStart DiscordPTB.exe",
+    "ExesToEnd": [ "DiscordPTB.exe" ],
+    "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+    "LoginFiles": {
+      "%AppData%\\discordptb\\settings.json": "settings.json",
+      "%AppData%\\discordptb\\Cookies": "Cookies",
+      "%AppData%\\discordptb\\Network Persistent State": "Network Persistent State",
+      "%AppData%\\discordptb\\Preferences": "Preferences",
+      "%AppData%\\discordptb\\TransportSecurity": "TransportSecurity",
+      "%AppData%\\discordptb\\Cache\\index": "Cache\\index",
+      "%AppData%\\discordptb\\Cache\\data_*": "Cache\\",
+      "%AppData%\\discordptb\\Code Cache\\js\\index-dir\\the-real-index": "Code Cache\\js\\index-dir\\the-real-index",
+      "%AppData%\\discordptb\\GPUCache\\index": "GPUCache\\index",
+      "%AppData%\\discordptb\\Local Storage\\leveldb\\": "Local Storage\\leveldb\\",
+      "%AppData%\\discordptb\\Session Storage\\*.log": "Session Storage\\",
+      "%AppData%\\discordptb\\Session Storage\\*.ldb": "Session Storage\\",
+      "%AppData%\\discordptb\\blob_storage": "blob_storage\\",
+      "%AppData%\\discordptb\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
+    },
+    "ExitBeforeInteract": true,
+    "Extras": {
+      "CachePaths": [
+        "%AppData%\\discordptb\\Cache\\f_*"
+      ],
+      "UsernameModalExtraButtons": "Platforms\\Discord\\Username.html",
+      "UsernameModalCopyText": "Platforms\\Discord\\Username.js",
+      "UsernameModalHintText": "Platform_DiscordPasteHint",
+      "SearchStartMenuForIcon": true
+    },
+    "UniqueIdFile": "%AppData%\\discordptb\\TcNoAccSwitcher-ID.instance",
+    "UniqueIdMethod": "CREATE_ID_FILE"
+  },
+  {
+    "Name": "Riot Games",
+    "Identifiers": [ "r", "riot", "riotgames" ],
+    "ExeLocationDefault": "C:\\Riot Games\\Riot Client\\RiotClientServices.exe",
+    "ExesToEnd": [
+      "LeagueClient.exe",
+      "LoR.exe",
+      "VALORANT.exe",
+      "RiotClientServices.exe",
+      "RiotClientUx.exe",
+      "RiotClientUxRender.exe"
+    ],
+    "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+    "LoginFiles": {
+      "%LocalAppData%\\Riot Games\\Riot Client\\Data\\Cookies\\": "Cookies",
+      "%LocalAppData%\\Riot Games\\Riot Client\\Data": "RiotClientPrivateSettings.yaml",
+      "%LocalAppData%\\Riot Games\\Riot Client\\Config": "RiotClientSettings.yaml",
+      "%LocalAppData%\\Riot Games\\Riot Client\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
+    },
+    "Extras": {
+      "ShortcutFolders": [
+        "%StartMenuProgramData%\\Riot Games\\"
+      ],
+      "ShortcutIgnore": [ "Riot Client" ],
+      "ShortcutIncludeMainExe": false
+    },
+    "UniqueIdFile": "%LocalAppData%\\Riot Games\\Riot Client\\TcNoAccSwitcher-ID.instance",
+    "UniqueIdMethod": "CREATE_ID_FILE"
+  },
+  {
+    "Name": "Origin",
+    "Identifiers": [ "o", "origin" ],
+    "ExeLocationDefault": "%ProgramFiles(x86)%\\Origin\\Origin.exe",
+    "ExesToEnd": [ "Origin.exe", "OriginWebHelperService.exe" ],
+    "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+    "LoginFiles": {
+      "%AppData%\\Origin\\ConsolidatedCache\\": "AppData\\ConsolidatedCache",
+      "%AppData%\\Origin\\Logs\\": "AppData\\Logs",
+      "%AppData%\\Origin\\NucleusCache\\": "AppData\\NucleusCache",
+      "%AppData%\\Origin\\*.xml": "AppData\\",
+      "%AppData%\\Origin\\Logs\\dserrors.data": "AppData\\Logs\\dserrors.data",
+      "%ProgramData%\\Origin\\AchievementCache\\": "ProgramData\\AchievementCache",
+      "%ProgramData%\\Origin\\Subscription\\": "ProgramData\\Subscription",
+      "%ProgramData%\\Origin\\local.xml": "ProgramData\\local.xml",
+      "%ProgramData%\\Origin\\*.olc": "ProgramData\\",
+      "%ProgramData%\\Origin\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
+    },
+    "ExitBeforeInteract": true,
+    "Extras": {
+      "CachePaths": [
+        "%ProgramData%\\Origin\\DownloadCache",
+        "%LocalAppData%\\Origin\\Origin\\cache\\QtWebEngine\\Default\\Cache",
+        "%LocalAppData%\\Origin\\Origin\\QtWebEngine\\Default\\Application Cache\\Cache"
+      ],
+      "ProfilePicFromFile": "%AppData%\\Origin\\local*",
+      "ProfilePicRegex": "WIN_FILEPATH_REGEX",
+      "BackupFolders": {
+        "%ProgramData%\\Origin\\LocalContent\\": "LocalContent",
+        "%ProgramData%\\Origin\\local.xml": "local.xml"
+      }
+    },
+    "UniqueIdFile": "%ProgramData%\\Origin\\TcNoAccSwitcher-ID.instance",
+    "UniqueIdMethod": "CREATE_ID_FILE"
+  },
+  {
+    "Name": "EA Desktop",
+    "Identifiers": [ "ea", "eadesktop" ],
+    "ExeLocationDefault": "%ProgramFiles%\\Electronic Arts\\EA Desktop\\EA Desktop\\EADesktop.exe",
+    "ExesToEnd": [ "EADesktop.exe", "EABackgroundService.exe" ],
+    "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+    "LoginFiles": {
+      "%LocalAppData%\\Electronic Arts\\EA Desktop\\": "LocalAppData\\"
+    },
+    "Extras": {
+      "CachePaths": [
+        "%LocalAppData%\\EADesktop\\QtWebEngine\\Default\\GPUCache",
+        "%LocalAppData%\\EADesktop\\cache\\QtWebEngine\\Default\\Cache",
+        "%LocalAppData%\\EADesktop\\cache\\qmlcache"
+      ],
+      "BackupFolders": {
+        "%LocalAppData%\\Electronic Arts\\EA Desktop\\": "LocalAppData"
+      },
+      "BackupFileTypesIgnore": [
+        ".log"
+      ]
+    },
+    "ExitBeforeInteract": true,
+    "UniqueIdFile": "%LocalAppData%\\Electronic Arts\\EA Desktop\\telemetry.ini",
+    "UniqueIdRegex": "(?<=\\=).*"
+  },
+  {
+    "Name": "GeForce Now",
+    "Identifiers": [ "gn", "geforce", "geforcenow" ],
+    "ExeLocationDefault": "%LocalAppData%\\NVIDIA Corporation\\GeForceNOW\\CEF\\GeForceNOW.exe",
+    "ExesToEnd": [ "GeForceNOW.exe", "GeForceNOWContainer.exe", "GeForceNOWReliabilityMonitor.exe" ],
+    "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+    "LoginFiles": {
+      "%LocalAppData%\\NVIDIA Corporation\\GeForceNOW\\sharedstorage.json": "LocalAppData\\sharedstorage.json",
+      "%LocalAppData%\\NVIDIA Corporation\\GeForceNOW\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
+    },
+    "Extras": {
+      "CachePaths": [
+        "%LocalAppData%\\NVIDIA Corporation\\GeForceNOW\\CefCache\\Cache",
+        "%LocalAppData%\\NVIDIA Corporation\\GeForceNOW\\CefCache\\GPUCache"
+      ]
+    },
+    "ExitBeforeInteract": true,
+    "UniqueIdFile": "%LocalAppData%\\NVIDIA Corporation\\GeForceNOW\\TcNoAccSwitcher-ID.instance",
+    "UniqueIdMethod": "CREATE_ID_FILE"
+  },
+  {
+    "Name": "Ubisoft",
+    "Identifiers": [ "u", "ubi", "uplay", "ubisoft" ],
+    "ExeLocationDefault": "%ProgramFiles(x86)%\\Ubisoft\\Ubisoft Game launcher\\upc.exe",
+    "ExesToEnd": [ "upc.exe", "UplayService.exe", "UplayWebCore.exe" ],
+    "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+    "LoginFiles": {
+      "%Platform_Folder%\\logs\\launcher_log.txt": "logs\\launcher_log.txt",
+      "%LocalAppData%\\Ubisoft Game Launcher\\settings.yaml": "settings.yaml",
+      "%LocalAppData%\\Ubisoft Game Launcher\\user.dat": "user.dat"
+    },
+    "Extras": {
+      "ProfilePicPath": "%Platform_Folder%\\cache\\avatars\\%UniqueId%_256.png",
+      "CachePaths": [
+        "%Platform_Folder%\\cache\\achievements",
+        "%Platform_Folder%\\cache\\assets",
+        "%Platform_Folder%\\cache\\download",
+        "%Platform_Folder%\\cache\\http2"
+      ],
+      "BackupFolders": {
+        "%LocalAppData%\\Ubisoft Game Launcher\\settings.yaml": "settings.yaml",
+        "%Platform_Folder%\\savegames\\": "savegames\\"
+      }
+    },
+    "ExitBeforeInteract": true,
+    "UniqueIdFile": "%Platform_Folder%\\logs\\launcher_log.txt",
+    "UniqueIdRegex": "(?<=User: ).*"
+  },
+  {
+    "Name": "Oculus",
+    "Identifiers": [ "oc", "oculus" ],
+    "ExeLocationDefault": "%ProgramFiles%\\Oculus\\Support\\oculus-client\\OculusClient.exe",
+    "ExesToEnd": [
+      "OculusClient.exe",
+      "OculusDash.exe",
+      "OVRRedit.exe",
+      "OVRServer_x64.exe",
+      "OVRServiceLauncher.exe"
+    ],
+    "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+    "LoginFiles": {
+      "%AppData%\\Oculus\\sessions\\": "AppData-OculusSessions\\",
+      "%AppData%\\OculusClient\\Cache\\index": "Cache\\index",
+      "%AppData%\\OculusClient\\Cache\\data_*": "Cache\\",
+      "%AppData%\\OculusClient\\Local Storage\\leveldb\\": "Local Storage\\leveldb\\",
+      "%AppData%\\OculusClient\\GPUCache\\index": "GPUCache\\index",
+      "%AppData%\\OculusClient\\Cookies": "Cookies",
+      "%AppData%\\OculusClient\\Network Persistent State": "Network Persistent State",
+      "%AppData%\\OculusClient\\blob_storage": "blob_storage\\",
+      "%AppData%\\Oculus\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
+    },
+    "Extras": {
+      "CachePaths": [
+        "%AppData%\\OculusClient\\Cache\\f_*"
+      ]
+    },
+    "ExitBeforeInteract": true,
+    "UniqueIdFile": "%AppData%\\Oculus\\TcNoAccSwitcher-ID.instance",
+    "UniqueIdMethod": "CREATE_ID_FILE"
+  },
+  {
+    "Name": "Genshin Impact",
+    "Identifiers": [ "gi", "genshin", "genshinimpact" ],
+    "ExeLocationDefault": "%ProgramFiles%\\Genshin Impact\\Genshin Impact Game\\GenshinImpact.exe",
+    "ExesToEnd": [ "GenshinImpact.exe" ],
+    "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+    "LoginFiles": {
+      "REG:HKCU\\Software\\miHoYo\\Genshin Impact:MIHOYOSDK_ADL_PROD_OVERSEA_h1158948810": "UNIQUE_ID"
+    },
+    "ExitBeforeInteract": true,
+    "UniqueIdFile": "HKCU\\SOFTWARE\\miHoYo\\Genshin Impact:MIHOYOSDK_ADL_PROD_OVERSEA_h1158948810",
+    "UniqueIdMethod": "REGKEY"
+  },
+  {
+    "Name": "Magic Arena",
+    "Identifiers": [ "mtga", "magicarena" ],
+    "ExeLocationDefault": "%ProgramFiles%\\Wizards of the Coast\\MTGA\\MTGALauncher\\MTGALauncher.exe",
+    "ExesToEnd": [ "MTGA.exe" ],
+    "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+    "LoginFiles": {
+      "REG:HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:LastLoginString_h2517025721": "UNIQUE_ID",
+      "REG:HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:LastLoginDate_h202577560": "",
+      "REG:HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:RefreshToken_h992839947": "",
+      "REG:HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:RememberMe_h1678977314": "",
+      "REG:HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:WAS-RememberMe_h1678977314": "",
+      "REG:HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:WAS-RefreshToken_h992839947": ""
+    },
+    "RegDeleteOnClear": true,
+    "ExitBeforeInteract": true,
+    "UniqueIdFile": "HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:LastLoginString_h2517025721",
+    "UniqueIdMethod": "REGKEY"
+  },
+  {
+    "Name": "PS Remote Play",
+    "Identifiers": [ "psr", "psrp", "psremote" ],
+    "ExeLocationDefault": "%ProgramFiles(x86)%\\Sony\\PS Remote Play\\RemotePlay.exe",
+    "ExesToEnd": [ "RemotePlay.exe" ],
+    "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+    "LoginFiles": {
+      "%LocalAppData%\\Sony Corporation\\PS Remote Play\\setting.cache": "setting.cache",
+      "%LocalAppData%\\Sony Corporation\\PS Remote Play\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
+    },
+    "ExitBeforeInteract": true,
+    "UniqueIdFile": "%LocalAppData%\\Sony Corporation\\PS Remote Play\\TcNoAccSwitcher-ID.instance",
+    "UniqueIdMethod": "CREATE_ID_FILE"
+  },
+  {
+    "Name": "Albion Online",
+    "Identifiers": [ "ao", "albion", "albiononline" ],
+    "ExeLocationDefault": "%ProgramFiles(x86)%\\AlbionOnline\\launcher\\AlbionLauncher.exe",
+    "ExesToEnd": [ "AlbionLauncher.exe", "Albion-Online.exe" ],
+    "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+    "LoginFiles": {
+      "REG:HKCU\\Software\\Sandbox Interactive GmbH\\Albion Online Client:LastUsedAccountId_h136571812": "UNIQUE_ID",
+      "REG:HKCU\\Software\\Sandbox Interactive GmbH\\Albion Online Client:login.last_h1502067074": "",
+      "REG:HKCU\\Software\\Sandbox Interactive GmbH\\Albion Online Client:login.hash_h1501923354": "",
+      "REG:HKCU\\Software\\Sandbox Interactive GmbH\\Albion Online Client:login.accountname_h1930415854": ""
+    },
+    "ExitBeforeInteract": true,
+    "UniqueIdFile": "HKCU\\Software\\Sandbox Interactive GmbH\\Albion Online Client:LastUsedAccountId_h136571812",
+    "UniqueIdMethod": "REGKEY"
+  },
+  {
+    "Name": "Rockstar",
+    "Identifiers": [ "rs", "rockstar", "socialclub" ],
+    "ExeLocationDefault": "%ProgramFiles%\\Rockstar Games\\Launcher\\LauncherPatcher.exe",
+    "ExesToEnd": [
+      "LauncherPatcher.exe",
+      "Launcher.exe",
+      "RockstarErrorHandler.exe",
+      "RockstarService.exe",
+      "SocialClubHelper.exe"
+    ],
+    "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+    "LoginFiles": {
+      "%LocalAppData%\\Rockstar Games\\Launcher\\settings_user.dat": "settings_user.dat",
+      "%ProgramData%\\Rockstar Games\\Launcher\\settings_machine.dat": "settings_machine.dat",
+      "%Documents%\\Rockstar Games\\Social Club\\Profiles\\*": "Profiles\\",
+      "%ProgramData%\\Rockstar Games\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
+    },
+    "Extras": {
+      "CachePaths": [
+        "%Documents%\\Rockstar Games\\Social Club\\Launcher\\Renderer\\Cache\\f_*"
+      ],
+      "ShortcutFolders": [
+        "%StartMenuProgramData%\\Rockstar Games\\"
+      ],
+      "ShortcutIgnore": [ "Rockstar Games Launcher" ]
+    },
+    "ExitBeforeInteract": true,
+    "UniqueIdFile": "%ProgramData%\\Rockstar Games\\TcNoAccSwitcher-ID.instance",
+    "UniqueIdMethod": "CREATE_ID_FILE"
+  },
+  {
+    "Name": "BattleNet",
+    "Identifiers": [ "b", "bnet", "battlenet", "blizzard" ],
+    "ExeLocationDefault": "%ProgramFiles(x86)%\\Battle.net\\Battle.net.exe",
+    "ExesToEnd": [ "Battle.net" ],
+    "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+    "LoginFiles": {
+      "JSON_SELECT_FIRST,::%AppData%\\Battle.net\\Battle.net.config::$.Client.SavedAccountNames": "email.json"
+    },
+    "ExitBeforeInteract": true,
+    "UniqueIdFile": "%AppData%\\Battle.net\\Battle.net.config::$.Client.SavedAccountNames",
+    "UniqueIdMethod": "JSON_SELECT_FIRST,"
   }
-}
+]

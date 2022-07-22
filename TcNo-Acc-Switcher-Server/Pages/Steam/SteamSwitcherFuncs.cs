@@ -126,16 +126,56 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             return "";
         }
 
-        public void ChangeUsername()
-        {
-            SteamSettings.CustomAccountNames[AppState.Switcher.SelectedAccountId] = Modals.TextInput.LastString;
-            SteamSettings.Save();
 
-            AppState.Switcher.SelectedAccount.NotifyDataChanged();
-            Modals.TextInputNotifyDataChanged();
-            Toasts.ShowToastLang(ToastType.Success, "Toast_ChangedUsername");
+        /// <summary>
+        /// Swap to the current AppData.SelectedAccountId.
+        /// </summary>
+        /// <param name="state">Optional profile state for Steam accounts</param>
+        public async Task SwapToAccount(int state = -1)
+        {
+            if (state == -1) state = SteamSettings.OverrideState;
+            await SwapSteamAccounts(AppState.Switcher.SelectedAccountId, state);
         }
 
+        /// <summary>
+        /// Swaps to an empty account, allowing the user to sign in.
+        /// </summary>
+        /// <param name="state">Optional profile state for Steam accounts</param>
+        public async Task SwapToNewAccount(int state = -1)
+        {
+            if (state == -1) state = SteamSettings.OverrideState;
+            await SwapSteamAccounts("", state);
+        }
+
+        public async Task ForgetAccount()
+        {
+            if (!SteamSettings.ForgetAccountEnabled)
+                Modals.ShowModal("confirm", ExtraArg.ForgetAccount);
+            else
+            {
+                var trayAcc = AppState.Switcher.SelectedAccountId;
+                SetForgetAcc(true);
+
+                // Load and remove account that matches SteamID above.
+                var userAccounts = GetSteamUsers(SteamSettings.LoginUsersVdf);
+                _ = userAccounts.RemoveAll(x => x.SteamId == AppState.Switcher.SelectedAccountId);
+
+                // Save updated loginusers.vdf file
+                await SaveSteamUsersIntoVdf(userAccounts);
+                trayAcc = "+s:" + AppState.Switcher.SelectedAccountId;
+
+                // Remove from Steam accounts list
+                AppState.Switcher.SteamAccounts.Remove(AppState.Switcher.SteamAccounts.First(x => x.AccountId == AppState.Switcher.SelectedAccountId));
+
+                // Remove from Tray
+                Globals.RemoveTrayUserByArg(AppState.Switcher.CurrentSwitcher, trayAcc);
+
+                // Remove image
+                Globals.DeleteFile(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{AppState.Switcher.CurrentSwitcher}\\{Globals.GetCleanFilePath(AppState.Switcher.SelectedAccountId)}.jpg"));
+
+                Toasts.ShowToastLang(ToastType.Success, "Success");
+            }
+        }
 
         /// <summary>
         /// Restart Steam with a new account selected. Leave args empty to log into a new account.

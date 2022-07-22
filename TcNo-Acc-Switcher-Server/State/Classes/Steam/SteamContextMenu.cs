@@ -40,6 +40,7 @@ namespace TcNo_Acc_Switcher_Server.State.Classes.Steam
     {
         [Inject] private NewLang Lang { get; set; }
         [Inject] private Modals Modals { get; set; }
+        [Inject] private SteamState SteamState { get; set; }
         [Inject] private SteamSettings SteamSettings { get; set; }
         [Inject] IAppState AppState { get; set; }
         [Inject] Toasts Toasts { get; set; }
@@ -54,6 +55,16 @@ namespace TcNo_Acc_Switcher_Server.State.Classes.Steam
             Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\AppIdsUser.json");
 
         public readonly ObservableCollection<MenuItem> Menu = new();
+        public readonly ObservableCollection<MenuItem> ShortcutItems = new MenuBuilder(
+            new Tuple<string, object>[]
+            {
+                new ("Context_RunAdmin", "shortcut('admin')"),
+                new ("Context_Hide", "shortcut('hide')"),
+            }).Result();
+
+        public readonly ObservableCollection<MenuItem> PlatformItems = new MenuBuilder(
+            new Tuple<string, object>("Context_RunAdmin", "shortcut('admin')")
+        ).Result();
 
         public SteamContextMenu()
         {
@@ -106,17 +117,17 @@ namespace TcNo_Acc_Switcher_Server.State.Classes.Steam
             // Prepare menu
             var menuBuilder = new MenuBuilder(new Tuple<string, object>[]
             {
-                new("Context_SwapTo", new Action(async () => await AppFuncs.SwapToAccount())),
+                new("Context_SwapTo", new Action(async () => await SteamState.SwapToAccount())),
                 new("Context_LoginAsSubmenu", new Tuple<string, object>[]
                     {
-                        new("Invisible", new Action(async () => await AppFuncs.SwapToAccount(7))),
-                        new("Offline", new Action(async () => await AppFuncs.SwapToAccount(0))),
-                        new("Online", new Action(async () => await AppFuncs.SwapToAccount(1))),
-                        new("Busy", new Action(async () => await AppFuncs.SwapToAccount(2))),
-                        new("Away", new Action(async () => await AppFuncs.SwapToAccount(3))),
-                        new("Snooze", new Action(async () => await AppFuncs.SwapToAccount(4))),
-                        new("LookingToTrade", new Action(async () => await AppFuncs.SwapToAccount(5))),
-                        new("LookingToPlay", new Action(async () => await AppFuncs.SwapToAccount(6))),
+                        new("Invisible", new Action(async () => await SteamState.SwapToAccount(7))),
+                        new("Offline", new Action(async () => await SteamState.SwapToAccount(0))),
+                        new("Online", new Action(async () => await SteamState.SwapToAccount(1))),
+                        new("Busy", new Action(async () => await SteamState.SwapToAccount(2))),
+                        new("Away", new Action(async () => await SteamState.SwapToAccount(3))),
+                        new("Snooze", new Action(async () => await SteamState.SwapToAccount(4))),
+                        new("LookingToTrade", new Action(async () => await SteamState.SwapToAccount(5))),
+                        new("LookingToPlay", new Action(async () => await SteamState.SwapToAccount(6))),
                     }
                 ),
                 new("Context_CopySubmenu", new Tuple<string, object>[]
@@ -175,7 +186,7 @@ namespace TcNo_Acc_Switcher_Server.State.Classes.Steam
                     new("LookingToTrade", new Action(async () => await GeneralInvocableFuncs.CreateShortcut(":5"))),
                     new("LookingToPlay", new Action(async () => await GeneralInvocableFuncs.CreateShortcut(":6"))),
                 }),
-                new("Forget", new Action(async () => await AppFuncs.ForgetAccount())),
+                new("Forget", new Action(async () => await SteamState.ForgetAccount())),
                 new("Notes", new Action(() => Modals.ShowModal("notes"))),
                 new("Context_ManageSubmenu", new[]
                 {

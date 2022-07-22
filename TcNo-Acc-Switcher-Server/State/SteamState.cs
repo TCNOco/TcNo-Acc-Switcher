@@ -25,9 +25,9 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using State;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
-using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
@@ -40,10 +40,14 @@ namespace TcNo_Acc_Switcher_Server.State
 {
     public class SteamState
     {
+        [Inject] private JSRuntime JsRuntime { get; set; }
         [Inject] private NewLang Lang { get; set; }
         [Inject] private Toasts Toasts { get; set; }
         [Inject] private IAppState AppState { get; set; }
         [Inject] private SteamSettings SteamSettings { get; set; }
+        [Inject] private Modals Modals { get; set; }
+        [Inject] private Statistics Statistics { get; set; }
+        [Inject] private SharedFunctions SharedFunctions { get; set; }
 
         public List<SteamUser> SteamUsers { get; set; } = new();
         public bool SteamLoadingProfiles { get; set; }
@@ -135,13 +139,14 @@ namespace TcNo_Acc_Switcher_Server.State
                 }
 
                 SaveVacInfo();
+                LoadBasicCompat();
             }
 
             // Load notes
-            AppFuncs.LoadNotes();
+            LoadNotes();
 
-            GenericFunctions.FinaliseAccountList().RunSynchronously();
-            AppStats.SetAccountCount("Steam", SteamUsers.Count);
+            SharedFunctions.FinaliseAccountList().RunSynchronously();
+            Statistics.SetAccountCount("Steam", SteamUsers.Count);
             SteamLoadingProfiles = false;
 
             Task.Run(() =>
@@ -628,7 +633,6 @@ namespace TcNo_Acc_Switcher_Server.State
         #endregion
 
         #region Basic Compatability
-
         private void LoadBasicCompat()
         {
             if (OperatingSystem.IsWindows())
@@ -661,12 +665,12 @@ namespace TcNo_Acc_Switcher_Server.State
                     foreach (var shortcut in new DirectoryInfo(desktopShortcutFolder).GetFiles())
                     {
                         var fName = shortcut.Name;
-                        if (PlatformFuncs.RemoveShortcutExt(fName) == "Steam") continue; // Ignore self
+                        if (Globals.RemoveShortcutExt(fName) == "Steam") continue; // Ignore self
 
                         // Check if in saved shortcuts and If ignored
                         if (File.Exists(Path.Join(ShortcutFolder, fName.Replace(".lnk", "_ignored.lnk").Replace(".url", "_ignored.url"))))
                         {
-                            imagePath = Path.Join(shortcutImagePath, PlatformFuncs.RemoveShortcutExt(fName) + ".png");
+                            imagePath = Path.Join(shortcutImagePath, Globals.RemoveShortcutExt(fName) + ".png");
                             if (File.Exists(imagePath)) File.Delete(imagePath);
                             fName = fName.Replace("_ignored", "");
                             if (SteamSettings.Shortcuts.ContainsValue(fName))
@@ -689,7 +693,7 @@ namespace TcNo_Acc_Switcher_Server.State
                     foreach (var f in new DirectoryInfo(ShortcutFolder).GetFiles())
                     {
                         if (f.Name.Contains("_ignored")) continue;
-                        var imageName = PlatformFuncs.RemoveShortcutExt(f.Name) + ".png";
+                        var imageName = Globals.RemoveShortcutExt(f.Name) + ".png";
                         imagePath = Path.Join(shortcutImagePath, imageName);
                         existingShortcuts.Add(f.Name);
                         if (!SteamSettings.Shortcuts.ContainsValue(f.Name))
@@ -716,16 +720,16 @@ namespace TcNo_Acc_Switcher_Server.State
                 }
             }
 
-            AppStats.SetGameShortcutCount("Steam", SteamSettings.Shortcuts);
+            Statistics.SetGameShortcutCount("Steam", SteamSettings.Shortcuts);
             SteamSettings.Save();
         }
 
         [JSInvokable]
-        public async Task HandleShortcutActionSteam(string shortcut, string action)
+        public void HandleShortcutActionSteam(string shortcut, string action)
         {
             if (shortcut == "btnStartPlat") // Start platform requested
             {
-                Basic.RunPlatform(SteamSettings.Exe, action == "admin", "", "Steam", SteamSettings.StartingMethod);
+                RunSteam(action == "admin", "");
                 return;
             }
 
@@ -745,11 +749,39 @@ namespace TcNo_Acc_Switcher_Server.State
                         break;
                     }
                 case "admin":
-                    await Basic.RunShortcut(shortcut, ShortcutFolder, true, "Steam");
+                    SharedFunctions.RunShortcut(shortcut, ShortcutFolder, "Steam", true);
                     break;
             }
         }
 
+
+        public void RunSteam(bool admin, string args)
+        {
+            if (Globals.StartProgram(SteamSettings.Exe, admin, args, SteamSettings.StartingMethod))
+                Toasts.ShowToastLang(ToastType.Info, new LangSub("Status_StartingPlatform", new { platform = "Steam" }));
+            else
+                Toasts.ShowToastLang(ToastType.Error, new LangSub("Toast_StartingPlatformFailed", new { platform = "Steam" }));
+        }
+        #endregion
+
+        #region Steam Funcs
+        public void LoadNotes()
+        {
+            const string filePath = "LoginCache\\Steam\\AccountNotes.json";
+            if (!File.Exists(filePath)) return;
+
+            var loaded = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(filePath));
+            if (loaded is null) return;
+
+            foreach (var (key, val) in loaded)
+            {
+                var acc = AppState.Switcher.SteamAccounts.FirstOrDefault(x => x.AccountId == key);
+                if (acc is null) return;
+                acc.Note = val;
+            }
+
+            Modals.IsShown = false;
+        }
         #endregion
     }
 }

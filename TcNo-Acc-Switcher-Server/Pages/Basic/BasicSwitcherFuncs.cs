@@ -19,46 +19,23 @@ using System.Linq;
 using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Shared.Accounts;
+using TcNo_Acc_Switcher_Server.State;
 using BasicSettings = TcNo_Acc_Switcher_Server.Data.Settings.Basic;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Basic
 {
     public class BasicSwitcherFuncs
     {
-        private static readonly Lang Lang = Lang.Instance;
+        [Inject] private NewLang Lang { get; set; }
+        [Inject] private TemplatedPlatformState BasicPlatformState { get; set; }
 
-        /// <summary>
-        /// Main function for Basic Account Switcher. Run on load.
-        /// Collects accounts from cache folder
-        /// Prepares HTML Elements string for insertion into the account switcher GUI.
-        /// </summary>
-        /// <returns>Whether account loading is successful, or a path reset is needed (invalid dir saved)</returns>
-        public static async Task LoadProfiles()
-        {
-            Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.LoadProfiles] Loading Basic profiles for: " + CurrentPlatform.FullName);
-            await GenericFunctions.GenericLoadAccounts(CurrentPlatform.FullName, true);
-        }
-
-        #region Account IDs
-
-        public static Dictionary<string, string> AccountIds;
-        public static void LoadAccountIds() => AccountIds = GeneralFuncs.ReadDict(CurrentPlatform.IdsJsonPath);
-        //public static void LoadAccountIds()
-        //{
-        //    var p = Path.GetFullPath(CurrentPlatform.IdsJsonPath);
-        //    AccountIds = GeneralFuncs.ReadDict(p);
-        //    return;
-        //}
-        private static void SaveAccountIds() =>
-            File.WriteAllText(CurrentPlatform.IdsJsonPath, JsonConvert.SerializeObject(AccountIds));
-        public static string GetNameFromId(string accId) => AccountIds.ContainsKey(accId) ? AccountIds[accId] : accId;
-        #endregion
 
         /// <summary>
         /// Restart Basic with a new account selected. Leave args empty to log into a new account.
@@ -122,7 +99,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             }
 
             if (BasicSettings.AutoStart)
-                BasicSettings.RunPlatform(BasicSettings.Exe(), BasicSettings.Admin, args, CurrentPlatform.FullName, CurrentPlatform.StartingMethod);
+                BasicPlatformState.RunBasicPlatform(BasicSettings.Admin, args);
 
             if (accName != "" && BasicSettings.AutoStart && AppSettings.MinimizeOnSwitch) await AppData.InvokeVoidAsync("hideWindow");
 
@@ -418,7 +395,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             // Get unique ID from IDs file if unique ID is a registry key. Set if exists.
             if (OperatingSystem.IsWindows() && CurrentPlatform.UniqueIdMethod is "REGKEY" && !string.IsNullOrEmpty(CurrentPlatform.UniqueIdFile))
             {
-                var uniqueId = GeneralFuncs.ReadDict(CurrentPlatform.SafeName).FirstOrDefault(x => x.Value == accName).Key;
+                var uniqueId = Globals.ReadDict(CurrentPlatform.SafeName).FirstOrDefault(x => x.Value == accName).Key;
 
                 if (!string.IsNullOrEmpty(uniqueId) && !Globals.SetRegistryKey(CurrentPlatform.UniqueIdFile, uniqueId)) // Remove "REG:" and read data
                 {
@@ -609,7 +586,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
             CurrentPlatform.SaveRegJson(regJson, accName);
 
-            var allIds = GeneralFuncs.ReadDict(CurrentPlatform.IdsJsonPath);
+            var allIds = Globals.ReadDict(CurrentPlatform.IdsJsonPath);
             allIds[uniqueId] = accName;
             await File.WriteAllTextAsync(CurrentPlatform.IdsJsonPath, JsonConvert.SerializeObject(allIds));
 
@@ -877,43 +854,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             return true;
         }
 
-        public static async Task ChangeUsername(string accId, string newName, bool reload = true)
-        {
-            LoadAccountIds();
-            var oldName = GetNameFromId(accId);
-
-            try
-            {
-                // No need to rename image as accId. That step is skipped here.
-                Directory.Move($"LoginCache\\{CurrentPlatform.SafeName}\\{oldName}\\", $"LoginCache\\{CurrentPlatform.SafeName}\\{newName}\\"); // Rename login cache folder
-            }
-            catch (IOException e)
-            {
-                Globals.WriteToLog("Failed to write to file: " + e);
-                await GeneralInvocableFuncs.ShowToast("error", Lang["Error_FileAccessDenied", new { logPath = Globals.GetLogPath() }], Lang["Error"], renderTo: "toastarea");
-                return;
-            }
-
-            try
-            {
-                AccountIds[accId] = newName;
-                SaveAccountIds();
-            }
-            catch (Exception e)
-            {
-                Globals.WriteToLog("Failed to change username: " + e);
-                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_CantChangeUsername"], Lang["Error"], renderTo: "toastarea");
-                return;
-            }
-
-            if (AppData.SelectedAccount is not null)
-            {
-                AppData.SelectedAccount.DisplayName = ModalData.TextInput.LastString;
-                AppData.SelectedAccount.NotifyDataChanged();
-            }
-
-            await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_ChangedUsername"], renderTo: "toastarea");
-        }
 
         public static Dictionary<string, string> ReadAllIds(string path = null)
         {

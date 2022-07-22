@@ -34,72 +34,42 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Swap to the current AppData.SelectedAccountId.
         /// </summary>
-        /// <param name="state">Optional profile state for Steam accounts</param>
-        public static async Task SwapToAccount(int state = -1)
+        public void SwapToAccount()
         {
-            if (!OperatingSystem.IsWindows()) return;
-
-            if (AppData.CurrentSwitcher != "Steam") BasicSwitcherFuncs.SwapBasicAccounts(AppData.SelectedAccountId);
-
-            if (state == -1) state = Steam.OverrideState;
-            await SteamSwitcherFuncs.SwapSteamAccounts(AppData.SelectedAccountId, state);
+            BasicSwitcherFuncs.SwapBasicAccounts(AppData.SelectedAccountId);
         }
 
         /// <summary>
         /// Swaps to an empty account, allowing the user to sign in.
         /// </summary>
-        /// <param name="state">Optional profile state for Steam accounts</param>
-        public static async Task SwapToNewAccount(int state = -1)
+        public void SwapToNewAccount()
         {
             if (!OperatingSystem.IsWindows()) return;
-
-            if (AppData.CurrentSwitcher == "Steam") BasicSwitcherFuncs.SwapBasicAccounts("");
-
-            if (state == -1) state = Steam.OverrideState;
-            await SteamSwitcherFuncs.SwapSteamAccounts("", state);
+            BasicSwitcherFuncs.SwapBasicAccounts("");
         }
 
-        public static async Task ForgetAccount()
+        public async Task ForgetAccount()
         {
-            var skipConfirm = AppData.CurrentSwitcher == "Steam" ? Steam.ForgetAccountEnabled : Basic.ForgetAccountEnabled;
-            if (!skipConfirm)
+            if (!Basic.ForgetAccountEnabled)
                 ModalData.ShowModal("confirm", ModalData.ExtraArg.ForgetAccount);
             else
             {
                 var trayAcc = AppData.SelectedAccountId;
-                if (AppData.CurrentSwitcher == "Steam")
+                Basic.SetForgetAcc(true);
+
+                // Remove ID from list of ids
+                var idsFile = $"LoginCache\\{AppData.CurrentSwitcher}\\ids.json";
+                if (File.Exists(idsFile))
                 {
-                    Steam.SetForgetAcc(true);
-
-                    // Load and remove account that matches SteamID above.
-                    var userAccounts = await SteamSwitcherFuncs.GetSteamUsers(Steam.LoginUsersVdf());
-                    _ = userAccounts.RemoveAll(x => x.SteamId == AppData.SelectedAccountId);
-
-                    // Save updated loginusers.vdf file
-                    await SteamSwitcherFuncs.SaveSteamUsersIntoVdf(userAccounts);
-                    trayAcc = "+s:" + AppData.SelectedAccountId;
-
-                    // Remove from Steam accounts list
-                    AppData.SteamAccounts.Remove(AppData.SteamAccounts.First(x => x.AccountId == AppData.SelectedAccountId));
+                    var allIds = Globals.ReadDict(idsFile).Remove(AppData.SelectedAccountId);
+                    await File.WriteAllTextAsync(idsFile, JsonConvert.SerializeObject(allIds));
                 }
-                else
-                {
-                    Basic.SetForgetAcc(true);
 
-                    // Remove ID from list of ids
-                    var idsFile = $"LoginCache\\{AppData.CurrentSwitcher}\\ids.json";
-                    if (File.Exists(idsFile))
-                    {
-                        var allIds = GeneralFuncs.ReadDict(idsFile).Remove(AppData.SelectedAccountId);
-                        await File.WriteAllTextAsync(idsFile, JsonConvert.SerializeObject(allIds));
-                    }
+                // Remove cached files
+                Globals.RecursiveDelete($"LoginCache\\{AppData.CurrentSwitcher}\\{AppData.SelectedAccountId}", false);
 
-                    // Remove cached files
-                    Globals.RecursiveDelete($"LoginCache\\{AppData.CurrentSwitcher}\\{AppData.SelectedAccountId}", false);
-
-                    // Remove from Steam accounts list
-                    AppData.BasicAccounts.Remove(AppData.BasicAccounts.First(x => x.AccountId == AppData.SelectedAccountId));
-                }
+                // Remove from Steam accounts list
+                AppData.BasicAccounts.Remove(AppData.BasicAccounts.First(x => x.AccountId == AppData.SelectedAccountId));
 
                 // Remove from Tray
                 Globals.RemoveTrayUserByArg(AppData.CurrentSwitcher, trayAcc);
@@ -115,28 +85,18 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public static void LoadNotes()
         {
-            var filePath = AppData.CurrentSwitcher == "Steam"
-                ? "LoginCache\\Steam\\AccountNotes.json"
-                : $"LoginCache\\{AppData.CurrentSwitcherSafe}\\AccountNotes.json";
+            const string filePath = $"LoginCache\\{AppData.CurrentSwitcherSafe}\\AccountNotes.json";
             if (!File.Exists(filePath)) return;
 
             var loaded = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(filePath));
             if (loaded is null) return;
 
-            if (AppData.CurrentSwitcher == "Steam")
-                foreach (var (key, val) in loaded)
-                {
-                    var acc = AppData.SteamAccounts.FirstOrDefault(x => x.AccountId == key);
-                    if (acc is null) return;
-                    acc.Note = val;
-                }
-            else
-                foreach (var (key, val) in loaded)
-                {
-                    var acc = AppData.BasicAccounts.FirstOrDefault(x => x.AccountId == key);
-                    if (acc is null) return;
-                    acc.Note = val;
-                }
+            foreach (var (key, val) in loaded)
+            {
+                var acc = AppData.BasicAccounts.FirstOrDefault(x => x.AccountId == key);
+                if (acc is null) return;
+                acc.Note = val;
+            }
 
             ModalData.IsShown = false;
         }

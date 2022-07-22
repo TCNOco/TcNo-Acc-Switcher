@@ -12,14 +12,29 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Globals;
 
 namespace TcNo_Acc_Switcher_Server.State.Classes
 {
-    public class Switcher
+    public class Switcher : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+
         [Inject] private NewLang Lang { get; set; }
 
         public Switcher()
@@ -29,22 +44,39 @@ namespace TcNo_Acc_Switcher_Server.State.Classes
         public string CurrentSwitcherSafe { get; set; } = "";
 
         private string _currentSwitcher = "";
+        private Account _selectedAccount;
+        private string _currentStatus;
+
         public string CurrentSwitcher
         {
             get => _currentSwitcher;
             set
             {
-                _currentSwitcher = value;
+                SetField(ref _currentSwitcher, value);
                 CurrentSwitcherSafe = Globals.GetCleanFilePath(CurrentSwitcher);
             }
         }
 
-        public string CurrentStatus { get; set; }
+        public string CurrentStatus
+        {
+            get => _currentStatus;
+            set => SetField(ref _currentStatus, value);
+        }
+
         public string SelectedPlatform { get; set; } = "";
         public bool IsCurrentlyExportingAccounts { get; set; }
         public ObservableCollection<Account> SteamAccounts { get; set; } = new();
-        public ObservableCollection<Account> BasicAccounts { get; set; } = new();
-        public string SelectedAccountId => SelectedAccount?.AccountId ?? "";
-        public Account SelectedAccount { get; set; }
+        public ObservableCollection<Account> TemplatedAccounts { get; set; } = new();
+        public string SelectedAccountId { get; set; }
+
+        public Account SelectedAccount
+        {
+            get => _selectedAccount;
+            set
+            {
+                SetField(ref _selectedAccount, value);
+                SelectedAccountId = value?.AccountId ?? "";
+            }
+        }
     }
 }

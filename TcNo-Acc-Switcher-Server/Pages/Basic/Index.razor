@@ -19,11 +19,17 @@
 @using TcNo_Acc_Switcher_Server.Shared.ContextMenu
 @using TcNo_Acc_Switcher_Server.Shared.Accounts
 @using System.IO
+@using global::State
 @using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.WebUtilities
 @using TcNo_Acc_Switcher_Server.Shared.Modal
 @using TcNo_Acc_Switcher_Server.State
 @using TcNo_Acc_Switcher_Server.State.Interfaces
+@inject SharedFunctions SharedFunctions
+@inject TemplatedPlatformState BasicPlatformState
+
+
+
 @inject IJSRuntime JsRuntime
 @inject IAppState AppState
 @inject NavigationManager NavManager
@@ -41,7 +47,7 @@
         {
             @if (i >= 0)
             {
-                <button class="HasContextMenu" id="@(shortcut)" @onclick="() => Basic.RunShortcut(shortcut, platform: CurrentPlatform.SafeName)" data-toggle="tooltip" title="@(RemoveShortcutExt(shortcut))">
+                <button class="HasContextMenu" id="@(shortcut)" @onclick="() => SharedFunctions.RunShortcut(shortcut, CurrentPlatform.ShortcutFolder, CurrentPlatform.SafeName)" data-toggle="tooltip" title="@(RemoveShortcutExt(shortcut))">
                     <img src="@(CurrentPlatform.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
                 </button>
             }
@@ -62,7 +68,7 @@
             {
                 @if (i < 0)
                 {
-                    <button class="HasContextMenu" id="@(shortcut)" @onclick="() => Basic.RunShortcut(shortcut, platform: CurrentPlatform.SafeName)" data-toggle="tooltip" title="@(RemoveShortcutExt(shortcut))">
+                    <button class="HasContextMenu" id="@(shortcut)" @onclick="() => SharedFunctions.RunShortcut(shortcut, CurrentPlatform.ShortcutFolder, CurrentPlatform.SafeName)" data-toggle="tooltip" title="@(RemoveShortcutExt(shortcut))">
                         <img src="@(CurrentPlatform.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
                     </button>
                 }
@@ -74,7 +80,7 @@
 
         @if (CurrentPlatform.ShortcutIncludeMainExe)
         {
-            <button id="btnStartPlat" @onclick="Basic.RunPlatform" data-toggle="tooltip" title="@(CurrentPlatform.SafeName)">
+            <button id="btnStartPlat" @onclick="BasicPlatformState.RunBasicPlatform" data-toggle="tooltip" title="@(CurrentPlatform.SafeName)">
                 <img src="@(CurrentPlatform.GetShortcutImagePath(CurrentPlatform.SafeName))" alt="Start platform"/>
             </button>
         }

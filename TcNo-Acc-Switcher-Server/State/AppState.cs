@@ -25,21 +25,21 @@ namespace TcNo_Acc_Switcher_Server.State
     {
         public string PasswordCurrent { get; set; }
 
-        public ShortcutsState Shortcuts { get; set; } = new();
+        public ShortcutsState Shortcuts { get; set; }
 
-        public Toasts Toasts { get; set; } = new();
+        public Toasts Toasts { get; set; }
 
-        public Discord Discord { get; set; } = new();
+        public Discord Discord { get; set; }
 
-        public Updates Updates { get; set; } = new();
+        public Updates Updates { get; set; }
 
-        public Stylesheet Stylesheet { get; set; } = new();
+        public Stylesheet Stylesheet { get; set; }
 
         public Navigation Navigation { get; set; }
 
         public Switcher Switcher { get; set; }
 
-        public WindowState WindowState { get; set; } = new();
+        public WindowState WindowState { get; set; }
 
         // Property change notifications
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -51,13 +51,22 @@ namespace TcNo_Acc_Switcher_Server.State
         public bool IsTcNoClientApp { get; set; }
         public AppState()
         {
+            PasswordCurrent = "";
+            Shortcuts = new ShortcutsState();
+            Toasts = new Toasts();
+            Discord = new Discord();
+            Updates = new Updates();
+            Stylesheet = new Stylesheet();
+            Navigation = new Navigation();
+            Switcher = new Switcher();
+            WindowState = new WindowState();
+
             // Discord integration
             Discord.RefreshDiscordPresenceAsync(true);
 
             // Forward state changes.
             Stylesheet.PropertyChanged += (s, e) => PropertyChanged?.Invoke(s, e);
             WindowState.PropertyChanged += (s, e) => PropertyChanged?.Invoke(s, e);
-
         }
 
 

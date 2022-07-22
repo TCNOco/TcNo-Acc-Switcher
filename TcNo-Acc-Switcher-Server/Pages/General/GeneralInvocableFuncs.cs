@@ -22,15 +22,11 @@ using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
-using BasicSettings = TcNo_Acc_Switcher_Server.Data.Settings.Basic;
-using SteamSettings = TcNo_Acc_Switcher_Server.Data.Settings.Steam;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General
 {
     public class GeneralInvocableFuncs
     {
-        private static readonly Lang Lang = Lang.Instance;
-
         /// <summary>
         /// JS function handler for saving settings from Settings GUI page into [Platform]Settings.json file
         /// </summary>

@@ -32,16 +32,11 @@
 
     protected override void OnInitialized()
     {
-        Acc.OnChange += OnChangeHandler;
+        Acc.PropertyChanged += (_, _) => OnChangeHandler();
     }
     private async void OnChangeHandler()
     {
         await InvokeAsync(StateHasChanged);
-    }
-
-    public void Dispose()
-    {
-        Acc.OnChange -= OnChangeHandler;
     }
 }
 

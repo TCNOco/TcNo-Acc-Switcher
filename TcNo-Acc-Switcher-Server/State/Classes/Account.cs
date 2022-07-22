@@ -81,7 +81,11 @@ public class Account : INotifyPropertyChanged
     public string DisplayName
     {
         get => _displayName;
-        set => SetField(ref _displayName, value);
+        set
+        {
+            SetField(ref _displayName, value);
+            SafeDisplayName = GeneralFuncs.EscapeText(value);
+        }
     }
 
     public string LoginUsername
@@ -90,7 +94,7 @@ public class Account : INotifyPropertyChanged
         set => SetField(ref _loginUsername, value);
     }
 
-    public string SafeDisplayName => GeneralFuncs.EscapeText(DisplayName);
+    public string SafeDisplayName { get; set; }
 
     public string AccountId
     {

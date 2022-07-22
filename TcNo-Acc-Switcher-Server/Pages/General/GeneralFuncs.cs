@@ -38,7 +38,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 {
     public class GeneralFuncs
     {
-        private static readonly Lang Lang = Lang.Instance;
 
         #region PROCESS_OPERATIONS
 
@@ -198,47 +197,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         #endregion
 
         #region FILE_OPERATIONS
-
-        /// <summary>
-        /// Read all ids from requested platform file
-        /// </summary>
-        /// <param name="dictPath">Full *.json file path (file safe)</param>
-        /// <param name="isBasic"></param>
-        public static Dictionary<string, string> ReadDict(string dictPath, bool isBasic = false)
-        {
-            Globals.DebugWriteLine(@"[Func:General\GeneralSwitcherFuncs.ReadDict]");
-            var s = JsonConvert.SerializeObject(new Dictionary<string, string>());
-            if (!File.Exists(dictPath))
-            {
-                if (isBasic && !Globals.IsDirectoryEmpty(Path.GetDirectoryName(dictPath)))
-                {
-                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RegSaveMissing"], Lang["Error"], "toastarea");
-                }
-                return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
-            }
-            try
-            {
-                s = Globals.ReadAllText(dictPath);
-            }
-            catch (Exception)
-            {
-                //
-            }
-
-            return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
-        }
-
-        public static void SaveDict(Dictionary<string, string> dict, string path, bool deleteIfEmpty = false)
-        {
-            Globals.DebugWriteLine(@"[Func:General\GeneralSwitcherFuncs.SaveDict]");
-            if (path == null) return;
-            var outText = JsonConvert.SerializeObject(dict);
-            if (outText.Length < 4 && File.Exists(path))
-                Globals.DeleteFile(path);
-            else
-                File.WriteAllText(path, outText);
-        }
-
 
         public static string WwwRoot()
         {

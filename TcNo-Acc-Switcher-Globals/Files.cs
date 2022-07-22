@@ -139,6 +139,15 @@ namespace TcNo_Acc_Switcher_Globals
 
 
         #region FILES
+        /// <summary>
+        /// Read all elements from serialized dictionary JSON file
+        /// </summary>
+        public static Dictionary<string, string> ReadDict(string dictPath, bool isBasic = false) =>
+            JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(dictPath));
+        /// <summary>
+        /// Removes lnk and url from shortcut path
+        /// </summary>
+        public static string RemoveShortcutExt(string s) => !string.IsNullOrWhiteSpace(s) ? s.Replace(".lnk", "").Replace(".url", "") : "";
 
         /// <summary>
         /// Expands custom environment variables.

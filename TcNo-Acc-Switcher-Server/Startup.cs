@@ -21,6 +21,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using State;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Data.Settings;
@@ -53,26 +54,32 @@ namespace TcNo_Acc_Switcher_Server
             _ = services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             // Proper singletons. This is after much more practice.
-            _ = services.AddSingleton<IWindowSettings, WindowSettings>(); // #1
-            _ = services.AddSingleton<NewLang>(); // #2
-            _ = services.AddSingleton<Toasts>(); // #3
-            _ = services.AddSingleton<Modals>(); // #4 ?
+            _ = services.AddSingleton<IWindowSettings, WindowSettings>(); // #1 (No depends)
+            _ = services.AddSingleton<NewLang>(); // After WindowSettings
+            _ = services.AddSingleton<Toasts>(); // After NewLang
+            _ = services.AddSingleton<Modals>(); // (No depends)
+            _ = services.AddSingleton<AppState>(); // (No depends - But does store a LOT of info)
+            _ = services.AddSingleton<IStatistics, Statistics>(); // After AppState & WindowSettings
 
-            _ = services.AddSingleton<AppState>();
-            _ = services.AddSingleton<SteamState>();
-            _ = services.AddSingleton<SteamSettings>();
+            // Only load when needed.
+            _ = services.AddSingleton<SteamSettings>(); // (No depends)
+            _ = services.AddSingleton<SteamState>(); // After NewLang, Toasts, AppState, SteamSettings
+
+            // _ = services.AddSingleton<BasicPlatformSettings>();
+            _ = services.AddSingleton<TemplatedPlatformState>(); // THIS MUST BE LOADED TO SEE APPS ON THE MAIN MENU LIST
+
+            _ = services.AddSingleton<SharedFunctions>();
+
+
+
+
+
 
 
             // Persistent settings:
             // The below list will eventually be replaced completely, hopefully.
-            _ = services.AddSingleton<AppSettings>();
-            _ = services.AddSingleton<AppStats>();
-            _ = services.AddSingleton<BasicPlatforms>();
             _ = services.AddSingleton<BasicStats>();
-            _ = services.AddSingleton<CurrentPlatform>();
             _ = services.AddSingleton<Basic>();
-            _ = services.AddSingleton<Steam>();
-            _ = services.AddSingleton<Lang>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
