@@ -23,8 +23,6 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using State;
 using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server.Data;
-using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.State;
 using TcNo_Acc_Switcher_Server.State.Interfaces;
 
@@ -45,7 +43,6 @@ namespace TcNo_Acc_Switcher_Server
         {
             // Crash handler
             AppDomain.CurrentDomain.UnhandledException += Globals.CurrentDomain_UnhandledException;
-            AppDomain.CurrentDomain.ProcessExit += CurrentDomain_OnProcessExit;
             _ = services.AddControllers();
 
             _ = services.AddRazorPages();
@@ -69,35 +66,19 @@ namespace TcNo_Acc_Switcher_Server
             _ = services.AddSingleton<TemplatedPlatformState>(); // THIS MUST BE LOADED TO SEE APPS ON THE MAIN MENU LIST
 
             _ = services.AddSingleton<SharedFunctions>();
-
-
-
-
-
-
-
-            // Persistent settings:
-            // The below list will eventually be replaced completely, hopefully.
-            _ = services.AddSingleton<BasicStats>();
-            _ = services.AddSingleton<Basic>();
+            _ = services.AddSingleton<GameStats>();
+            _ = services.AddSingleton<GameStatsRoot>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            // This will remain temporarily, until NewLang has replaced all it's calls.
-            // This will be a LONG time, unfortunately.
-            Lang.LoadLocalized();
-
             _ = env.IsDevelopment() ? app.UseDeveloperExceptionPage() : app.UseExceptionHandler("/Error");
 
-            // Moves any old files from previous installs.
-            foreach (var p in AppSettings.Platforms) // Copy across all platform files
-            {
-                MoveIfFileExists(p.SafeName + "Settings.json");
-            }
-            MoveIfFileExists("Tray_Users.json");
-            MoveIfFileExists("WindowSettings.json");
+            // Previously settings files for previous platforms, as well as Tray_Users.json and WindowSettings.json
+            // were moved from the app directory, to the userdata directory.
+            // It has been a long time since these files were saved here and it's probably time to sunset this compatibility feature.
+            // Also prevents me having to load a list of all games here, as well as in the app itself.
 
             // Copy LoginCache
             if (Directory.Exists(Path.Join(Globals.AppDataFolder, "LoginCache\\")))
@@ -131,27 +112,6 @@ namespace TcNo_Acc_Switcher_Server
                   _ = endpoints.MapBlazorHub();
                   _ = endpoints.MapFallbackToPage("/_Host");
               });
-
-            // Increment launch count. I don't know if this should be here, but it is.
-            AppStats.LaunchCount++;
-        }
-
-        public static void CurrentDomain_OnProcessExit(object sender, EventArgs e)
-        {
-            try
-            {
-                AppStats.SaveSettings();
-            }
-            catch (Exception)
-            {
-                // Do nothing, just close.
-            }
-        }
-
-        private static void MoveIfFileExists(string f)
-        {
-            Globals.CopyFile(Path.Join(Globals.AppDataFolder, f), Path.Join(Globals.UserDataFolder, f));
-            Globals.DeleteFile(Path.Join(Globals.AppDataFolder, f));
         }
     }
 }

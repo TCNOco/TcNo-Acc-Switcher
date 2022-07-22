@@ -261,6 +261,11 @@ namespace TcNo_Acc_Switcher_Server.State
         public Statistics()
         {
             Globals.LoadSettings(Filename, this, false);
+            // Increment launch count. This is only loaded once, so this is a good spot to put it.
+            LaunchCount++;
+            
+            // Todo?: Never thought about placing these in a few places, but may be useful to put elsewhere.
+            AppDomain.CurrentDomain.ProcessExit += (_, _) => Save();
         }
 
         public void Save()
