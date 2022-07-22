@@ -18,12 +18,12 @@
 @using TcNo_Acc_Switcher_Server.State
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @inject NavigationManager NavigationManager
-@inject Lang Locale
 @inject IWindowSettings WindowSettings
+@inject NewLang Lang
 
 @if (_cultures != null)
 {
-	<span>@Locale["Header_ChooseLanguage"]</span>
+	<span>@Lang["Header_ChooseLanguage"]</span>
 	<div class="dropdown">
 		<ul class="custom-dropdown-menu dropdown-menu">
 			@foreach (var (key, value) in _cultures)
@@ -35,8 +35,8 @@
 			@_selectedCulture
 			<span class="caret"></span>
 		</button>
-		&nbsp;<a class="fancyLink" @onclick='() => { GeneralInvocableFuncs.OpenLinkInBrowser("https://crowdin.com/project/tcno-account-switcher"); }'>@Locale["Settings_HelpTranslate"]</a>
-		&nbsp;<a class="fancyLink" @onclick='() => ModalData.ShowModal("crowdin")'>@Locale["Settings_ViewTranslators"]</a>
+		&nbsp;<a class="fancyLink" @onclick='() => { GeneralInvocableFuncs.OpenLinkInBrowser("https://crowdin.com/project/tcno-account-switcher"); }'>@Lang["Settings_HelpTranslate"]</a>
+		&nbsp;<a class="fancyLink" @onclick='() => Modals.ShowModal("crowdin")'>@Lang["Settings_ViewTranslators"]</a>
 	</div>
 }
 
@@ -54,6 +54,6 @@
 		if (string.IsNullOrWhiteSpace(key)) return;
 	    Lang.LoadLang(key);
 	    AppSettings.Rtl = new CultureInfo(Lang.Current).TextInfo.IsRightToLeft;
-		AppData.ReloadPage();
+	    NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
 	}
 }

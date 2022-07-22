@@ -19,7 +19,7 @@
 @code {
     protected override void OnInitialized()
     {
-        ModalData.Title = Lang.Instance["Modal_Crowdin_Header"];
+        Modals.Title = Lang["Modal_Crowdin_Header"];
     }
 
     private GeneralFuncs.CrowdinResponse _crowdinList;
@@ -29,30 +29,30 @@
         StateHasChanged();
     }
 
-    readonly MarkupString _modalCrowdinInfo = new(Lang.Instance["Modal_Crowdin_Info"]);
+    readonly MarkupString _modalCrowdinInfo = new(Lang["Modal_Crowdin_Info"]);
 }
 
 <div class="infoWindow">
     <div class="fullWidthContent crowdin">
-        <h2>@ModalData.Title<i class="fas fa-heart heart"></i></h2>
+        <h2>@Modals.Title<i class="fas fa-heart heart"></i></h2>
         <p>@_modalCrowdinInfo</p>
 
         @if (_crowdinList is null)
         {
             <div class="loadingSpinnerText fa-3x">
-                <i class="fas fa-circle-notch fa-spin"></i><h2>@Lang.Instance["Loading"]</h2>
+                <i class="fas fa-circle-notch fa-spin"></i><h2>@Lang["Loading"]</h2>
             </div>
         }
         else
         {
             <ul class="linksList crowdInList">
-                <li>@Lang.Instance["Crowdin_Proofreaders", new {number = _crowdinList.ProofReaders.Count}]</li>
+                <li>@Lang["Crowdin_Proofreaders", new {number = _crowdinList.ProofReaders.Count}]</li>
                 @foreach (var (username, languages) in _crowdinList.ProofReaders)
                 {
                     <li><a @onclick='() => GeneralInvocableFuncs.OpenLinkInBrowser("https://crowdin.com/profile/" + username)' href="">@username</a> - @languages</li>
                 }
 
-                <li><br />@Lang.Instance["Crowdin_Translators", new {number = _crowdinList.Translators.Count}]</li>
+                <li><br />@Lang["Crowdin_Translators", new {number = _crowdinList.Translators.Count}]</li>
                 <li class="text-wrap">
                     @foreach (var username in _crowdinList.Translators)
                     {

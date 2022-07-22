@@ -48,7 +48,7 @@ namespace TcNo_Acc_Switcher_Server.State.Classes.Templated
                     new ("Forget", new Action(async () => await AppFuncs.ForgetAccount())),
                     new ("Notes", new Action(() => Modals.ShowModal("notes"))),
                     BasicStats.PlatformHasAnyGames(CurrentPlatform.SafeName) ?
-                        new Tuple<string, object>("Context_ManageGameStats", new Action(ModalData.ShowGameStatsSelectorModal)) : null,
+                        new Tuple<string, object>("Context_ManageGameStats", new Action(Modals.ShowGameStatsSelectorModal)) : null,
                 }).Result());
         }
 

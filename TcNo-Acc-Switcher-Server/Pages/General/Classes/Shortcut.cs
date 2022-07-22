@@ -18,13 +18,17 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.Versioning;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.State;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
 {
     public class Shortcut
     {
+        [Inject] private NewLang Lang { get; set; }
+
         public string Exe { get; set; }
         public string WorkingDir { get; set; }
         public string IconDir { get; set; }
@@ -174,13 +178,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.CreateCombinedIcon] bgImg={bgImg}, fgImg={fgImg.Substring(fgImg.Length - 6, 6)}, iconName=hidden");
             try
             {
-                IconFactory.CreateIcon(bgImg, fgImg, ref iconName);
+                var iconFactory = new IconFactory();
+                iconFactory.CreateIcon(bgImg, fgImg, ref iconName);
                 IconDir = Path.GetFullPath(iconName);
             }
             catch (Exception e)
             {
                 Globals.WriteToLog($"Failed to CreateIcon! '{bgImg}', '{fgImg}, '{iconName}'", e);
-                await GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_FailedCreateIcon"]);
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedCreateIcon"]);
             }
         }
         #endregion
@@ -221,8 +226,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             return File.Exists(Path.Join(Desktop, $"{platform} - TcNo Account Switcher.lnk"));
         }
 
-        public static void DesktopShortcut_Toggle(string platform, bool desktopShortcut) =>
-            PlatformDesktopShortcut(Desktop, platform, AppSettings.GetPlatform(platform).Identifier, !desktopShortcut);
+        public void DesktopShortcut_Toggle(string platform, bool desktopShortcut, string identifier) =>
+            PlatformDesktopShortcut(Desktop, platform, identifier, !desktopShortcut);
 
         public static void PlatformDesktopShortcut(string location, string platform, string args, bool shouldExist, bool folderShouldExist = true)
         {

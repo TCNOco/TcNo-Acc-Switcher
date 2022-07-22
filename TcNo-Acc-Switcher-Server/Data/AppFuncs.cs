@@ -51,7 +51,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public async Task ForgetAccount()
         {
             if (!Basic.ForgetAccountEnabled)
-                ModalData.ShowModal("confirm", ModalData.ExtraArg.ForgetAccount);
+                Modals.ShowModal("confirm", Modals.ExtraArg.ForgetAccount);
             else
             {
                 var trayAcc = AppData.SelectedAccountId;
@@ -83,25 +83,9 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
         }
 
-        public static void LoadNotes()
-        {
-            const string filePath = $"LoginCache\\{AppData.CurrentSwitcherSafe}\\AccountNotes.json";
-            if (!File.Exists(filePath)) return;
-
-            var loaded = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(filePath));
-            if (loaded is null) return;
-
-            foreach (var (key, val) in loaded)
-            {
-                var acc = AppData.BasicAccounts.FirstOrDefault(x => x.AccountId == key);
-                if (acc is null) return;
-                acc.Note = val;
-            }
-
-            ModalData.IsShown = false;
-        }
         #endregion
 
+        
         #region Clipboard
         [JSInvokable]
         public static async Task CopyText(string text) => await ClipboardService.SetTextAsync(text);

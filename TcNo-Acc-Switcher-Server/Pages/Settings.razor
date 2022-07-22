@@ -29,7 +29,7 @@
             <div class="toastarea"></div>
             <SharedSettings />
 
-            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Locale["Button_Close"]</span></button></div>
+            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Lang["Button_Close"]</span></button></div>
         </div>
     </div>
 </div>
@@ -55,7 +55,7 @@
 
     protected override void OnInitialized()
     {
-        AppData.WindowTitle = Lang.Instance["Title_Settings"];
+        AppData.WindowTitle = Lang["Title_Settings"];
         Globals.DebugWriteLine(@"[Auto:Settings.razor.cs.OnInitializedAsync]");
     }
 

@@ -30,6 +30,7 @@ namespace TcNo_Acc_Switcher_Server.State
         [Inject] IWindowSettings WindowSettings { get; set; }
         [Inject] JSRuntime JsRuntime { get; set; }
         [Inject] SteamSettings SteamSettings { get; set; }
+        [Inject] NavigationManager NavigationManager { get; set; }
 
         public event Action OnChange;
         public void NotifyDataChanged() => OnChange?.Invoke();
@@ -166,7 +167,8 @@ namespace TcNo_Acc_Switcher_Server.State
                 WindowSettings.Background = $"img/custom/background{Path.GetExtension(path)}";
                 WindowSettings.Save();
             }
-            AppData.ReloadPage();
+
+            NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
         }
 
         /// <summary>
@@ -241,7 +243,7 @@ namespace TcNo_Acc_Switcher_Server.State
             File.SetLastWriteTime(Path.Join(imageDest, AppState.Switcher.SelectedAccountId + ".jpg"), DateTime.Now);
 
             // Reload page.
-            AppData.ReloadPage();
+            NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
             Toasts.ShowToastLang(ToastType.Success, "Toast_UpdatedImage");
         }
 
@@ -347,7 +349,7 @@ namespace TcNo_Acc_Switcher_Server.State
 
             if (AppData.SelectedAccount is not null)
             {
-                AppData.SelectedAccount.DisplayName = ModalData.TextInput.LastString;
+                AppData.SelectedAccount.DisplayName = Modals.TextInput.LastString;
                 AppData.SelectedAccount.NotifyDataChanged();
             }
 

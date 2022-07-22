@@ -23,21 +23,21 @@
 @code {
     protected override void OnInitialized()
     {
-        ModalData.Instance.TextInputOnChange += OnChangeHandler;
+        Modals.Instance.TextInputOnChange += OnChangeHandler;
         OnChangeHandler(); // Run once just to set vars
     }
 
     private async void OnChangeHandler()
     {
-        ModalData.Title = ModalData.TextInput.ModalHeader;
-        var t = ModalData.TextInput.ExtraButtons;
-        _extraButtonSet = ModalData.TextInput.ExtraButtons.Value != new MarkupString().Value;
+        Modals.Title = Modals.TextInput.ModalHeader;
+        var t = Modals.TextInput.ExtraButtons;
+        _extraButtonSet = Modals.TextInput.ExtraButtons.Value != new MarkupString().Value;
         await InvokeAsync(StateHasChanged);
     }
 
     public void Dispose()
     {
-        ModalData.Instance.TextInputOnChange -= OnChangeHandler;
+        Modals.Instance.TextInputOnChange -= OnChangeHandler;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -48,32 +48,32 @@
     private bool _extraButtonSet;
 }
 
-@if (ModalData.TextInput.ModalSubheading.Value != new MarkupString().Value)
+@if (Modals.TextInput.ModalSubheading.Value != new MarkupString().Value)
 {
-    <h3>@ModalData.TextInput.ModalSubheading</h3>
+    <h3>@Modals.TextInput.ModalSubheading</h3>
 }
 <div>
-    <span class="modal-text">@ModalData.TextInput.ModalText</span>
+    <span class="modal-text">@Modals.TextInput.ModalText</span>
 </div>
 <div class="inputAndButton">
-    <input type="text" id="textInput" autocomplete="off" style="width: 100%;padding: 8px;" @onkeyup="KeyPress" value="@ModalData.TextInput.LastString" @oninput="OnInput">
+    <input type="text" id="textInput" autocomplete="off" style="width: 100%;padding: 8px;" @onkeyup="KeyPress" value="@Modals.TextInput.LastString" @oninput="OnInput">
 </div>
 <div class="settingsCol inputAndButton">
     @if (_extraButtonSet)
     {
-        @ModalData.TextInput.ExtraButtons
+        @Modals.TextInput.ExtraButtons
     }
-    <button class="modalOK" type="button" id="set_account_name" @onclick="Confirm"><span>@ModalData.TextInput.ModalButtonText</span></button>
+    <button class="modalOK" type="button" id="set_account_name" @onclick="Confirm"><span>@Modals.TextInput.ModalButtonText</span></button>
 </div>
 
 @code
 {
     private void OnInput(ChangeEventArgs args)
     {
-        if (ModalData.TextInput.LastString.Contains("TCNO:")) // The request can contain/contains special, pasted chars for extra actions
-            ModalData.TextInput.LastString = args.Value?.ToString();
+        if (Modals.TextInput.LastString.Contains("TCNO:")) // The request can contain/contains special, pasted chars for extra actions
+            Modals.TextInput.LastString = args.Value?.ToString();
         else
-            ModalData.TextInput.LastString = Globals.GetCleanFilePath(args.Value?.ToString());
+            Modals.TextInput.LastString = Globals.GetCleanFilePath(args.Value?.ToString());
         Update();
     }
 
@@ -88,18 +88,18 @@
     }
 
     // Update dynamically as the user types.
-    private static void Update() => ModalData.TextInputNotifyDataChanged();
+    private static void Update() => Modals.TextInputNotifyDataChanged();
 
 
     private static async Task Confirm()
     {
-        ModalData.IsShown = false;
+        Modals.IsShown = false;
 
-        if (ModalData.TextInput.Goal == ModalData.TextInputRequest.TextInputGoal.AppPassword)
+        if (Modals.TextInput.Goal == Modals.TextInputRequest.TextInputGoal.AppPassword)
             await ModalFuncs.SetAppPassword();
-        else if (ModalData.TextInput.Goal is
-                ModalData.TextInputRequest.TextInputGoal.AccString
-                or ModalData.TextInputRequest.TextInputGoal.ChangeUsername)
+        else if (Modals.TextInput.Goal is
+                Modals.TextInputRequest.TextInputGoal.AccString
+                or Modals.TextInputRequest.TextInputGoal.ChangeUsername)
             await ModalFuncs.SetAccountString();
 
 

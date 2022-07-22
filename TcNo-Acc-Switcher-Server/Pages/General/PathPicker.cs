@@ -21,7 +21,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 catch (Exception e)
                 {
                     Globals.WriteToLog("Could not list Logical Drives.", e);
-                    _ = GeneralInvocableFuncs.ShowToast("error", Lang.Instance["PathPicker_NoLogicalDrives"], renderTo: "toastarea");
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["PathPicker_NoLogicalDrives"], renderTo: "toastarea");
                     return new List<string>();
                 }
             }
@@ -50,7 +50,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     {
                         Globals.WriteToLog($"PathPicker: Failed to crawl path or drive: \"{FullPath}\"", e);
                         if (Depth != 0)
-                            _ = GeneralInvocableFuncs.ShowToast("error", Lang.Instance["PathPicker_FailedGetFolders", new { path = FolderName }], renderTo: "toastarea");
+                            _ = GeneralInvocableFuncs.ShowToast("error", Lang["PathPicker_FailedGetFolders", new { path = FolderName }], renderTo: "toastarea");
                         return new List<FolderFileList>();
                     }
                 });

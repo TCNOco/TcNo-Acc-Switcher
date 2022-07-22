@@ -64,7 +64,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             // Restart self as if can't close admin.
             if (Globals.CanKillProcess(processName)) return true;
             if (showModal)
-                ModalData.ShowModal("confirm", ModalData.ExtraArg.RestartAsAdmin);
+                Modals.ShowModal("confirm", Modals.ExtraArg.RestartAsAdmin);
             return false;
         }
 

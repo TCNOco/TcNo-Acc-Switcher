@@ -102,7 +102,7 @@
             <i class="fas fa-cog footerIcoSettings"></i>
         </button>
 
-        <button class="btnHelp" @onclick='() => ModalData.ShowModal("info")' data-toggle="tooltip" title="@(Lang["Tooltip_Info"])">
+        <button class="btnHelp" @onclick='() => Modals.ShowModal("info")' data-toggle="tooltip" title="@(Lang["Tooltip_Info"])">
             <i class="fas fa-question footerIcoQuestion"></i>
         </button>
     </div>
@@ -172,7 +172,7 @@
     {
         if (_navBack)
         {
-            AppData.ReloadWithToast("error", Lang["Error"], Lang.Instance["Toast_FailedLoad", new {platform = CurrentPlatform.FullName}]);
+            AppData.ReloadWithToast("error", Lang["Error"], Lang["Toast_FailedLoad", new {platform = CurrentPlatform.FullName}]);
             return;
         }
         await GeneralFuncs.HandleFirstRender(firstRender, CurrentPlatform.FullName);

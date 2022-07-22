@@ -27,7 +27,7 @@
     protected override void OnInitialized()
     {
         _currentFileList = new Pages.General.PathPicker.FolderFileList(CurrentPath, Depth);
-        ModalData.Instance.PathPickerOnChange += OnChangeHandler;
+        Modals.Instance.PathPickerOnChange += OnChangeHandler;
     }
 
     private async void OnChangeHandler()
@@ -37,7 +37,7 @@
 
     public void Dispose()
     {
-        ModalData.Instance.PathPickerOnChange -= OnChangeHandler;
+        Modals.Instance.PathPickerOnChange -= OnChangeHandler;
     }
 
     // This must be a cascading variable and a check to see if it is included somewhere in the list. This could get confusing.
@@ -45,7 +45,7 @@
     private string _selectedFile = "";
 }
 
-@if (!ModalData.PathPicker.LastPath.ToLowerInvariant().Contains(_currentFileList.FullPath.ToLowerInvariant()))
+@if (!Modals.PathPicker.LastPath.ToLowerInvariant().Contains(_currentFileList.FullPath.ToLowerInvariant()))
 {
     <span class="folder" @onclick="ExpandFolder">@_currentFileList.FolderName</span>
 }
@@ -58,11 +58,11 @@ else
             <PathPickerChildren CurrentPath="@folder.FullPath" Depth="Depth + 1"/>
         }
 
-        @if (ModalData.PathPicker.ShowFiles)
+        @if (Modals.PathPicker.ShowFiles)
         {
             @foreach (var file in _currentFileList.Files.Value)
             {
-                <span class="@(file.Contains(ModalData.PathPicker.RequestedFile) ? "suggested" : "") @(_selectedFile == file ? "selected-path" : "")" @onclick="() => SelectFile(file)">@Path.GetFileName(file)</span>
+                <span class="@(file.Contains(Modals.PathPicker.RequestedFile) ? "suggested" : "") @(_selectedFile == file ? "selected-path" : "")" @onclick="() => SelectFile(file)">@Path.GetFileName(file)</span>
             }
         }
     </div>
@@ -72,9 +72,9 @@ else
 {
     private void ExpandFolder()
     {
-        ModalData.PathPicker.LastPath = _currentFileList.FullPath;
-        ModalData.PathPicker.LastElement = ModalData.PathPickerRequest.PathPickerElement.Folder;
-        ModalData.PathPickerNotifyDataChanged();
+        Modals.PathPicker.LastPath = _currentFileList.FullPath;
+        Modals.PathPicker.LastElement = Modals.PathPickerRequest.PathPickerElement.Folder;
+        Modals.PathPickerNotifyDataChanged();
     }
 
     private void CloseFolder()
@@ -82,9 +82,9 @@ else
         try
         {
             var parent = Path.GetDirectoryName(_currentFileList.FullPath) ?? "";
-            ModalData.PathPicker.LastPath = parent;
-            ModalData.PathPicker.LastElement = ModalData.PathPickerRequest.PathPickerElement.Folder;
-            ModalData.PathPickerNotifyDataChanged();
+            Modals.PathPicker.LastPath = parent;
+            Modals.PathPicker.LastElement = Modals.PathPickerRequest.PathPickerElement.Folder;
+            Modals.PathPickerNotifyDataChanged();
         }
         catch (Exception)
         {
@@ -95,8 +95,8 @@ else
     private void SelectFile(string file)
     {
         _selectedFile = file;
-        ModalData.PathPicker.LastPath = file;
-        ModalData.PathPicker.LastElement = ModalData.PathPickerRequest.PathPickerElement.File;
-        ModalData.PathPickerNotifyDataChanged();
+        Modals.PathPicker.LastPath = file;
+        Modals.PathPicker.LastElement = Modals.PathPickerRequest.PathPickerElement.File;
+        Modals.PathPickerNotifyDataChanged();
     }
 }

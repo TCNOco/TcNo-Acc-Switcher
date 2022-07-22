@@ -12,29 +12,22 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server.Data;
-using TcNo_Acc_Switcher_Server.Pages.General;
-using TcNo_Acc_Switcher_Server.Shared.Accounts;
-using TcNo_Acc_Switcher_Server.State;
-using BasicSettings = TcNo_Acc_Switcher_Server.Data.Settings.Basic;
 
-namespace TcNo_Acc_Switcher_Server.Pages.Basic
+namespace TcNo_Acc_Switcher_Server.State
 {
-    public class BasicSwitcherFuncs
+    public class TemplatedPlatformFuncs
     {
         [Inject] private NewLang Lang { get; set; }
-        [Inject] private TemplatedPlatformState BasicPlatformState { get; set; }
+        [Inject] private TemplatedPlatformState TemplatedPlatformState { get; set; }
 
 
         /// <summary>
@@ -76,8 +69,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                             {
                                 _ = Globals.StartProgram(BasicSettings.Exe(), BasicSettings.Admin, args,
                                     CurrentPlatform.StartingMethod)
-                                    ? GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new {platform = CurrentPlatform.SafeName}], renderTo: "toastarea")
-                                    : GeneralInvocableFuncs.ShowToast("error", Lang["Toast_StartingPlatformFailed", new {platform = CurrentPlatform.SafeName}], renderTo: "toastarea");
+                                    ? GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea")
+                                    : GeneralInvocableFuncs.ShowToast("error", Lang["Toast_StartingPlatformFailed", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea");
                             }
                             await AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
 
@@ -461,7 +454,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             else
             {
                 await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RestartAsAdmin"], Lang["Failed"], "toastarea");
-                ModalData.ShowModal("confirm", ModalData.ExtraArg.RestartAsAdmin);
+                Modals.ShowModal("confirm", Modals.ExtraArg.RestartAsAdmin);
             }
             return false;
 
@@ -565,7 +558,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                         firstResult = false;
                     }
 
-                    var originalValueString = (string) originalValue;
+                    var originalValueString = (string)originalValue;
                     originalValueString = Globals.GetCleanFilePath(firstResult ? originalValueString.Split(delimiter).First() : originalValueString.Split(delimiter).Last());
 
                     Globals.SaveJsonFile(Path.Join(localCachePath, savedFile), originalValueString);
@@ -638,7 +631,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             }
 
             AppData.ActiveNavMan?.NavigateTo(
-                $"/Basic/?cacheReload&toast_type=success&toast_title={Uri.EscapeDataString(Lang["Success"])}&toast_message={Uri.EscapeDataString(Lang["Toast_SavedItem", new {item = accName}])}", true);
+                $"/Basic/?cacheReload&toast_type=success&toast_title={Uri.EscapeDataString(Lang["Success"])}&toast_message={Uri.EscapeDataString(Lang["Toast_SavedItem", new { item = accName }])}", true);
             return true;
         }
 

@@ -23,39 +23,39 @@
 @code {
     protected override void OnInitialized()
     {
-        ModalData.Instance.PathPickerOnChange += OnChangeHandler;
+        Modals.Instance.PathPickerOnChange += OnChangeHandler;
         OnChangeHandler(); // Run once just to set vars
     }
 
     private async void OnChangeHandler()
     {
-        ModalData.Title = ModalData.PathPicker.ModalHeader;
+        Modals.Title = Modals.PathPicker.ModalHeader;
 
         _found = false;
-        var pp = ModalData.PathPicker;
+        var pp = Modals.PathPicker;
         var r = pp.RequestedFile;
 
         // Show/Hide indicator
         if (r != "AnyFile" && r != "AnyFolder") _showIndicator = true;
 
-        if (r == "AnyFile" && pp.LastElement == ModalData.PathPickerRequest.PathPickerElement.File) // Any file requested and one was clicked.
+        if (r == "AnyFile" && pp.LastElement == Modals.PathPickerRequest.PathPickerElement.File) // Any file requested and one was clicked.
             _found = true;
-        else if (r == "AnyFolder" && pp.LastElement == ModalData.PathPickerRequest.PathPickerElement.Folder) // Any folder requested and one was clicked.
+        else if (r == "AnyFolder" && pp.LastElement == Modals.PathPickerRequest.PathPickerElement.Folder) // Any folder requested and one was clicked.
             _found = true;
         else if (pp.LastPath.EndsWith(r)) // Specific file or folder requested and one was clicked.
             _found = true;
-        else if (ModalData.PathPicker.Goal == ModalData.PathPickerRequest.PathPickerGoal.FindPlatformExe
-                 && !string.IsNullOrEmpty(ModalData.PathPicker.LastPath)
-                 && !Globals.IsFile(ModalData.PathPicker.LastPath) // The path doesn't end with <app.exe>, so check to see if the folder contains it. This is accepted for FindPlatformExe.
-                 && Directory.Exists(ModalData.PathPicker.LastPath)
-                 && Directory.GetFiles(ModalData.PathPicker.LastPath).ToList().Contains(ModalData.PathPicker.RequestedFile))
+        else if (Modals.PathPicker.Goal == Modals.PathPickerRequest.PathPickerGoal.FindPlatformExe
+                 && !string.IsNullOrEmpty(Modals.PathPicker.LastPath)
+                 && !Globals.IsFile(Modals.PathPicker.LastPath) // The path doesn't end with <app.exe>, so check to see if the folder contains it. This is accepted for FindPlatformExe.
+                 && Directory.Exists(Modals.PathPicker.LastPath)
+                 && Directory.GetFiles(Modals.PathPicker.LastPath).ToList().Contains(Modals.PathPicker.RequestedFile))
             _found = true;
         await InvokeAsync(StateHasChanged);
     }
 
     public void Dispose()
     {
-        ModalData.Instance.PathPickerOnChange -= OnChangeHandler;
+        Modals.Instance.PathPickerOnChange -= OnChangeHandler;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -68,10 +68,10 @@
 }
 
 <div>
-    <p class="modal-text">@ModalData.PathPicker.ModalText</p>
+    <p class="modal-text">@Modals.PathPicker.ModalText</p>
 </div>
 <div class="inputAndButton">
-    <input type="text" id="path" autocomplete="off" style="width: 100%;padding: 8px;" @onkeyup="KeyPress" value="@ModalData.PathPicker.LastPath" @oninput="OnInput">
+    <input type="text" id="path" autocomplete="off" style="width: 100%;padding: 8px;" @onkeyup="KeyPress" value="@Modals.PathPicker.LastPath" @oninput="OnInput">
 </div>
 <div class="settingsCol inputAndButton">
     @if (_showIndicator)
@@ -79,9 +79,9 @@
         <div class="folder_indicator @(_found ? "found" : "notfound")">
             <div id="folder_indicator_text"></div>
         </div>
-        <div class="folder_indicator_bg @(_found ? "found" : "notfound")"><span>@ModalData.PathPicker.RequestedFile</span></div>
+        <div class="folder_indicator_bg @(_found ? "found" : "notfound")"><span>@Modals.PathPicker.RequestedFile</span></div>
     }
-    <button class="modalOK" type="button" id="set_background" @onclick="Confirm"><span>@ModalData.PathPicker.ModalButtonText</span></button>
+    <button class="modalOK" type="button" id="set_background" @onclick="Confirm"><span>@Modals.PathPicker.ModalButtonText</span></button>
 </div>
 <PathPicker />
 
@@ -89,7 +89,7 @@
 {
     private async Task OnInput(ChangeEventArgs args)
     {
-        ModalData.PathPicker.LastPath = args.Value?.ToString();
+        Modals.PathPicker.LastPath = args.Value?.ToString();
         Update();
         await AppData.InvokeVoidAsync("pathPickerScrollToElement");
     }
@@ -105,20 +105,20 @@
     }
 
     // Update dynamically as the user types.
-    private void Update() => ModalData.PathPickerNotifyDataChanged();
+    private void Update() => Modals.PathPickerNotifyDataChanged();
 
 
     private async Task Confirm()
     {
-        ModalData.IsShown = false;
+        Modals.IsShown = false;
 
-        if (ModalData.PathPicker.Goal == ModalData.PathPickerRequest.PathPickerGoal.FindPlatformExe)
+        if (Modals.PathPicker.Goal == Modals.PathPickerRequest.PathPickerGoal.FindPlatformExe)
             ModalFuncs.UpdatePlatformFolder();
-        else if (ModalData.PathPicker.Goal == ModalData.PathPickerRequest.PathPickerGoal.SetBackground)
+        else if (Modals.PathPicker.Goal == Modals.PathPickerRequest.PathPickerGoal.SetBackground)
             ModalFuncs.SetBackground();
-        else if (ModalData.PathPicker.Goal == ModalData.PathPickerRequest.PathPickerGoal.SetUserdata)
+        else if (Modals.PathPicker.Goal == Modals.PathPickerRequest.PathPickerGoal.SetUserdata)
             await ModalFuncs.ChangeUserdataFolder();
-        else if (ModalData.PathPicker.Goal == ModalData.PathPickerRequest.PathPickerGoal.SetAccountImage)
+        else if (Modals.PathPicker.Goal == Modals.PathPickerRequest.PathPickerGoal.SetAccountImage)
             await ModalFuncs.ChangeAccImage();
 
 

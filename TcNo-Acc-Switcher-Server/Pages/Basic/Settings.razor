@@ -39,22 +39,22 @@
             <toastarea class="toastarea" />
 
 
-            <h2 class="SettingsHeader">@Locale["Settings_Header_GeneralSettings"]</h2>
+            <h2 class="SettingsHeader">@Lang["Settings_Header_GeneralSettings"]</h2>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="Basic.DesktopShortcut" @onclick="() => Shortcut.DesktopShortcut_Toggle(CurrentPlatform.FullName, Basic.DesktopShortcut)"><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">
-		            @Locale["Settings_Shortcut", new { platform = CurrentPlatform.FullName }]<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="Basic.DesktopShortcut" @onclick="() => Shortcut.DesktopShortcut_Toggle(CurrentPlatform.FullName, Basic.DesktopShortcut, CurrentPlatform.identifier)"><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">
+		            @Lang["Settings_Shortcut", new { platform = CurrentPlatform.FullName }]<br></label>
             </div>
             <div>
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="Basic.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">
-		            @Locale["Settings_Admin", new { platform = CurrentPlatform.FullName }]<br></label>
+		            @Lang["Settings_Admin", new { platform = CurrentPlatform.FullName }]<br></label>
             </div>
             <div>
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="AutoStart" @bind="Basic.AutoStart"><label class="form-check-label" for="AutoStart"></label></div><label for="AutoStart">
-		            @Locale["Settings_AutoStart", new { platform = CurrentPlatform.FullName }]<br></label>
+		            @Lang["Settings_AutoStart", new { platform = CurrentPlatform.FullName }]<br></label>
             </div>
             <div class="rowSetting rowDropdown">
-                <span>@Locale["Settings_Header_ClosingMethod", new { platform = CurrentPlatform.FullName }]</span>
-                <div class="dropdown" data-toggle="tooltip" title="@(Locale["Tooltip_ClosingMethod"])" data-placement="right">
+                <span>@Lang["Settings_Header_ClosingMethod", new { platform = CurrentPlatform.FullName }]</span>
+                <div class="dropdown" data-toggle="tooltip" title="@(Lang["Tooltip_ClosingMethod"])" data-placement="right">
                     <ul class="custom-dropdown-menu dropdown-menu">
                         <li class="custom-dropdown-item dropdown-item" @onclick='() => Basic.SetClosingMethod("Combined")'>Combined (Best)</li>
                         <li class="custom-dropdown-item dropdown-item" @onclick='() => Basic.SetClosingMethod("Close")'>Close</li>
@@ -67,8 +67,8 @@
                 </div>
             </div>
             <div class="rowSetting rowDropdown">
-                <span>@Locale["Settings_Header_StartingMethod", new { platform = CurrentPlatform.FullName }]</span>
-                <div class="dropdown" data-toggle="tooltip" title="@(Locale["Tooltip_StartingMethod"])" data-placement="right">
+                <span>@Lang["Settings_Header_StartingMethod", new { platform = CurrentPlatform.FullName }]</span>
+                <div class="dropdown" data-toggle="tooltip" title="@(Lang["Tooltip_StartingMethod"])" data-placement="right">
                     <ul class="custom-dropdown-menu dropdown-menu">
                         <li class="custom-dropdown-item dropdown-item" @onclick='() => Basic.SetStartingMethod("Default")'>Default (Best)</li>
                         <li class="custom-dropdown-item dropdown-item" @onclick='() => Basic.SetStartingMethod("Direct")'>Direct</li>
@@ -80,62 +80,62 @@
                 </div>
             </div>
 
-            <h2 class="SettingsHeader">@Locale["Settings_Header_AccountDisplay"]</h2>
+            <h2 class="SettingsHeader">@Lang["Settings_Header_AccountDisplay"]</h2>
             <div class="rowSetting">
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="ShowShortNotes" @bind="Basic.ShowShortNotes"><label class="form-check-label" for="ShowShortNotes"></label></div><label for="ShowShortNotes">
-                    @Locale["Settings_ShowShortNotes"]<br></label>
+                    @Lang["Settings_ShowShortNotes"]<br></label>
             </div>
 
 
 
-            <h2 class="SettingsHeader">@Locale["Settings_Header_TraySettings"]</h2>
-            <div class="form-text"><span>@Locale["Settings_TrayMax"]</span><input type="number" id="TrayAccNumber" min="0" max="365" @bind="Basic.TrayAccNumber"></div>
+            <h2 class="SettingsHeader">@Lang["Settings_Header_TraySettings"]</h2>
+            <div class="form-text"><span>@Lang["Settings_TrayMax"]</span><input type="number" id="TrayAccNumber" min="0" max="365" @bind="Basic.TrayAccNumber"></div>
 
 
-            <h2 class="SettingsHeader">@Locale["Settings_Header_GeneralTools"]</h2>
-            <p>@Locale["Settings_CurrentLocation", new { path = Basic.FolderPath }]</p>
-            <div class="buttoncol"><button id="PickFolder" type="button" @onclick="PickFolder"><span>@Locale["Settings_PickFolder", new { platform = CurrentPlatform.FullName }]</span></button><button id="OpenFolder" type="button" @onclick="() => AppState.OpenFolder(Basic.FolderPath)"><span>@Locale["Settings_OpenFolder", new { platform = CurrentPlatform.FullName }]</span></button></div>
-            <div class="buttoncol"><button id="ResetSettings" type="button" @onclick="ClearSettings"><span>@Locale["Button_ResetSettings"]</span></button>
+            <h2 class="SettingsHeader">@Lang["Settings_Header_GeneralTools"]</h2>
+            <p>@Lang["Settings_CurrentLocation", new { path = Basic.FolderPath }]</p>
+            <div class="buttoncol"><button id="PickFolder" type="button" @onclick="PickFolder"><span>@Lang["Settings_PickFolder", new { platform = CurrentPlatform.FullName }]</span></button><button id="OpenFolder" type="button" @onclick="() => AppState.OpenFolder(Basic.FolderPath)"><span>@Lang["Settings_OpenFolder", new { platform = CurrentPlatform.FullName }]</span></button></div>
+            <div class="buttoncol"><button id="ResetSettings" type="button" @onclick="ClearSettings"><span>@Lang["Button_ResetSettings"]</span></button>
                 @if (CurrentPlatform.CachePaths != null)
                 {
-                    <button id="ClearCache" type="button" @onclick="BasicSwitcherFuncs.ClearCache" data-toggle="tooltip" title="@(GetCacheList())" data-html="true"><span>@Locale["Platform_ClearCache"]</span></button>
+                    <button id="ClearCache" type="button" @onclick="BasicSwitcherFuncs.ClearCache" data-toggle="tooltip" title="@(GetCacheList())" data-html="true"><span>@Lang["Platform_ClearCache"]</span></button>
                 }
             </div>
 
             @if (CurrentPlatform.BackupPaths.Count > 0)
             {
-                <h2 class="SettingsHeader">@Locale["Settings_Header_BackupRestore"]</h2>
+                <h2 class="SettingsHeader">@Lang["Settings_Header_BackupRestore"]</h2>
 
                 <div class="buttoncol">
                     @if (CurrentPlatform.BackupFileTypesInclude.Count != 0 || CurrentPlatform.BackupFileTypesIgnore.Count != 0){
-                        <button id="Backup" type="button" @onclick="() => BackupButton()" data-toggle="tooltip" title="@(Locale["Tooltip_Backup"])" data-placement="bottom"><span>@Locale["Button_Backup"]</span></button>
+                        <button id="Backup" type="button" @onclick="() => BackupButton()" data-toggle="tooltip" title="@(Lang["Tooltip_Backup"])" data-placement="bottom"><span>@Lang["Button_Backup"]</span></button>
                     }
 
-                    <button id="BackupEverything" type="button" @onclick="() => BackupButton(true)" data-toggle="tooltip" title="@(Locale["Tooltip_BackupAll"])" data-placement="bottom"><span>@Locale["Button_BackupAll"]</span></button>
+                    <button id="BackupEverything" type="button" @onclick="() => BackupButton(true)" data-toggle="tooltip" title="@(Lang["Tooltip_BackupAll"])" data-placement="bottom"><span>@Lang["Button_BackupAll"]</span></button>
 
                     @if (CurrentPlatform.BackupFileTypesInclude.Count == 0 && CurrentPlatform.BackupFileTypesIgnore.Count == 0) {
-                        <button id="OpenBackupFolder" type="button" @onclick="OpenBackupFolder"><span>@Locale["Button_OpenBackup"]</span></button>
+                        <button id="OpenBackupFolder" type="button" @onclick="OpenBackupFolder"><span>@Lang["Button_OpenBackup"]</span></button>
                     }
                 </div>
                 <div class="buttoncol">
 
                     @if (CurrentPlatform.BackupFileTypesInclude.Count != 0 || CurrentPlatform.BackupFileTypesIgnore.Count != 0) {
-                        <button id="OpenBackupFolder" type="button" @onclick="OpenBackupFolder"><span>@Locale["Button_OpenBackup"]</span></button>
+                        <button id="OpenBackupFolder" type="button" @onclick="OpenBackupFolder"><span>@Lang["Button_OpenBackup"]</span></button>
                     }
 
-                    <div class="button" id="Restore" type="button" data-toggle="tooltip" title="@(Locale["Tooltip_Restore"])" data-placement="bottom">
+                    <div class="button" id="Restore" type="button" data-toggle="tooltip" title="@(Lang["Tooltip_Restore"])" data-placement="bottom">
                         <InputFile OnChange="@RestoreFile"/>
-                        <span>@Locale["Button_Restore"]</span>
+                        <span>@Lang["Button_Restore"]</span>
                     </div>
                 </div>
             }
 
-            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Locale["Button_Close"]</span></button></div>
+            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Lang["Button_Close"]</span></button></div>
 
             @if (_gamesAndSettings.Count > 0)
             {
-                <h2 class="SettingsHeader">@Locale["Settings_Header_GameStats"]</h2>
-                <p>@Locale["Settings_GameStats"]</p>
+                <h2 class="SettingsHeader">@Lang["Settings_Header_GameStats"]</h2>
+                <p>@Lang["Settings_GameStats"]</p>
                 @foreach (var (game, settings) in _gamesAndSettings)
                 {
                     <h3 class="SettingsHeader">@game</h3>
@@ -148,11 +148,11 @@
                         </div>
                     }
                 }
-                <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Locale["Button_Close"]</span></button></div>
+                <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Lang["Button_Close"]</span></button></div>
             }
 
             <SharedSettings />
-            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Locale["Button_Close"]</span></button></div>
+            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Lang["Button_Close"]</span></button></div>
         </div>
     </div>
 </div>

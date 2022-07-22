@@ -188,10 +188,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         public static string PlatformHintText() => CurrentPlatform.GetUserModalHintText();
 
         [JSInvokable]
-        public static string GiLocale(string k) => Lang.Instance[k];
+        public static string GiLocale(string k) => Lang[k];
 
         [JSInvokable]
-        public static string GiLocaleObj(string k, object obj) => Lang.Instance[k, obj];
+        public static string GiLocaleObj(string k, object obj) => Lang[k, obj];
 
         [JSInvokable]
         public static string GiGetCleanFilePath(string f) => Globals.GetCleanFilePath(f);

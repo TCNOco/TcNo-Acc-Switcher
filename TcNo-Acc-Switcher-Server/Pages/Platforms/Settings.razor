@@ -28,21 +28,21 @@
 
             @if (AppSettings.Platforms.All(x => !x.Enabled))
             {
-                <span>@Locale["Settings_NoPlatforms"]</span>
+                <span>@Lang["Settings_NoPlatforms"]</span>
 
                 <div class="SettingsHeader mt-4"> <!-- I couldn't just include the opening tag here, so copy/paste everything... -->
-                    <hr><span>@Locale["Settings_Header_ExtraPlatforms"]</span>
+                    <hr><span>@Lang["Settings_Header_ExtraPlatforms"]</span>
                     <hr>
                 </div>
             }
             else
             {
-                <h2 class="SettingsHeader">@Locale["Settings_Header_ExtraPlatforms"]</h2>
+                <h2 class="SettingsHeader">@Lang["Settings_Header_ExtraPlatforms"]</h2>
             }
 
             @if (AppSettings.Platforms.Any(x => !x.Enabled))
             {
-                <h2 class="SettingsHeader">@Locale["Settings_ExtraPlatformsDisabled"]</h2>
+                <h2 class="SettingsHeader">@Lang["Settings_ExtraPlatformsDisabled"]</h2>
 
                 <div class="rowSetting">
                     @foreach (var item in AppSettings.Platforms.Where(x => !x.Enabled))
@@ -58,7 +58,7 @@
 
             @if (AppSettings.Platforms.Any(x => x.Enabled)) {
                 <div class="SettingsHeader mt-2">
-                    <p>@Locale["Settings_ExtraPlatformsEnabled"]</p>
+                    <p>@Lang["Settings_ExtraPlatformsEnabled"]</p>
                 </div>
 
                 <div class="rowSetting">
@@ -72,7 +72,7 @@
                     }
                 </div>
 
-                <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Locale["Button_Close"]</span></button></div>
+                <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Lang["Button_Close"]</span></button></div>
             }
         </div>
     </div>

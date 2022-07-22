@@ -392,7 +392,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             if (ToCollect != null)
                 foreach (var collectInstruction in ToCollect.Where(collectInstruction => collectInstruction.Key == "%PROFILEIMAGE%"))
-                    collectInstruction.Value.ToggleText = Lang.Instance["ProfileImage_ToggleText"];
+                    collectInstruction.Value.ToggleText = Lang["ProfileImage_ToggleText"];
 
             //foreach (var (k, v) in jGame["Collect"]?.ToObject<Dictionary<string, CollectInstruction>>()!)
             //{

@@ -20,21 +20,22 @@ using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 using Gameloop.Vdf.JsonConverter;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Converters;
-using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Shared.Accounts;
-using TcNo_Acc_Switcher_Server.State;
+using TcNo_Acc_Switcher_Server.State.DataTypes;
 
-
-namespace TcNo_Acc_Switcher_Server.Pages.Steam
+namespace TcNo_Acc_Switcher_Server.State
 {
-    public class SteamSwitcherFuncs
+    public class SteamFuncs
     {
-        private static readonly Lang Lang = Lang.Instance;
+        [Inject] private NewLang Lang { get; set; }
+        [Inject] private SteamSettings SteamSettings { get; set; }
+
 
         #region True Static
         public static bool BackupGameDataFolder(string folder)
@@ -64,7 +65,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// Returns string representation of Steam ePersonaState int
         /// </summary>
         /// <param name="ePersonaState">integer state to return string for</param>
-        public static string PersonaStateToString(int ePersonaState)
+        public string PersonaStateToString(int ePersonaState)
         {
             return ePersonaState switch
             {
@@ -97,7 +98,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             try
             {
                 // Refreshing the list of SteamUsers doesn't help here when switching, as the account list is not updated by Steam just yet.
-                Index.Steamuser mostRecent = null;
+                SteamUser mostRecent = null;
                 foreach (var su in AppData.SteamUsers)
                 {
                     int.TryParse(su.LastLogin, out var last);
@@ -191,7 +192,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 return;
             }
 
-            await AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform  = "Steam" }]);
+            await AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = "Steam" }]);
             if (!await GeneralFuncs.CloseProcesses(SteamSettings.Processes, SteamSettings.ClosingMethod))
             {
                 if (Globals.IsAdministrator)
@@ -199,7 +200,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 else
                 {
                     await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RestartAsAdmin"], Lang["Failed"], "toastarea");
-                    ModalData.ShowModal("confirm", ModalData.ExtraArg.RestartAsAdmin);
+                    Modals.ShowModal("confirm", Modals.ExtraArg.RestartAsAdmin);
                 }
                 return;
             }
@@ -213,10 +214,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
                 if (Globals.StartProgram(SteamSettings.Exe(), SteamSettings.Admin, args, SteamSettings.StartingMethod))
                     await GeneralInvocableFuncs.ShowToast("info",
-                        Lang["Status_StartingPlatform", new {platform = "Steam"}], renderTo: "toastarea");
+                        Lang["Status_StartingPlatform", new { platform = "Steam" }], renderTo: "toastarea");
                 else
                     await GeneralInvocableFuncs.ShowToast("error",
-                        Lang["Toast_StartingPlatformFailed", new {platform = "Steam"}], renderTo: "toastarea");
+                        Lang["Toast_StartingPlatformFailed", new { platform = "Steam" }], renderTo: "toastarea");
             }
 
             if (SteamSettings.AutoStart && AppSettings.MinimizeOnSwitch) await AppData.InvokeVoidAsync("hideWindow");
@@ -284,7 +285,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             // -----------------------------------
             if (pS != -1) SetPersonaState(selectedSteamId, pS); // Update persona state, if defined above.
 
-            Index.Steamuser user = new() { AccName = "" };
+            SteamUser user = new() { AccName = "" };
             try
             {
                 if (selectedSteamId != "")
@@ -319,7 +320,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// Save updated list of Steamuser into loginusers.vdf, in vdf format.
         /// </summary>
         /// <param name="userAccounts">List of Steamuser to save into loginusers.vdf</param>
-        public static async Task SaveSteamUsersIntoVdf(List<Index.Steamuser> userAccounts)
+        public static async Task SaveSteamUsersIntoVdf(List<SteamUser> userAccounts)
         {
             Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.SaveSteamUsersIntoVdf] Saving updated loginusers.vdf. Count: {userAccounts.Count}");
             // Convert list to JObject list, ready to save into vdf.

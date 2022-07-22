@@ -20,10 +20,13 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
 using ImageMagick;
+using Microsoft.AspNetCore.Components;
 using SkiaSharp;
 using Svg.Skia;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.State;
+using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
 {
@@ -32,7 +35,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
     /// </summary>
     public class IconFactory
     {
-        private static readonly Lang Lang = Lang.Instance;
+        [Inject] private IAppState AppState { get; set; }
+        [Inject] private NewLang Lang { get; set; }
 
         #region FACTORY
         // https://stackoverflow.com/a/32530019/5165437
@@ -56,7 +60,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// <param name="images">The bitmaps to save as an icon.</param>
         /// <param name="stream">The output stream.</param>
         [SupportedOSPlatform("windows")]
-        public static void SavePngsAsIcon(IEnumerable<Bitmap> images, Stream stream)
+        public void SavePngsAsIcon(IEnumerable<Bitmap> images, Stream stream)
         {
             Globals.DebugWriteLine(@"[Func:General\Classes\Shortcut.SavePngsAsIcon]");
             if (!OperatingSystem.IsWindows()) return;
@@ -99,7 +103,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             }
         }
 
-        private static void ThrowForInvalidPng(IEnumerable<Bitmap> images)
+        private void ThrowForInvalidPng(IEnumerable<Bitmap> images)
         {
             Globals.DebugWriteLine(@"[Func:General\Classes\Shortcut.ThrowForInvalidPng]");
             if (!OperatingSystem.IsWindows()) return;
@@ -162,7 +166,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// <param name="sFgImg">User's profile image, for the foreground</param>
         /// <param name="icoOutput">Output filename</param>
         [SupportedOSPlatform("windows")]
-        public static void CreateIcon(string sBgImg, string sFgImg, ref string icoOutput)
+        public void CreateIcon(string sBgImg, string sFgImg, ref string icoOutput)
         {
             var ms = new MemoryStream();
             // If input is SVG, create PNG
@@ -190,7 +194,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
                 if (svgContent.Contains("id=\"FG\""))
                 {
                     // Set color of foreground content, and insert background image
-                    svgContent = svgContent.Replace("<path id=\"FG\"", $"<rect fill=\"{AppSettings.TryGetStyle("platformLogoBackground")}\" width=\"500\" height=\"500\"></rect>\"<path id=\"FG\" fill=\"{AppSettings.TryGetStyle("platformLogoForeground")}\"");
+                    svgContent = svgContent.Replace("<path id=\"FG\"", $"<rect fill=\"{AppState.Stylesheet.TryGetStyle("platformLogoBackground")}\" width=\"500\" height=\"500\"></rect>\"<path id=\"FG\" fill=\"{AppState.Stylesheet.TryGetStyle("platformLogoForeground")}\"");
                     // Add the glass effect
                     svgContent = svgContent.Replace("/></svg>", "/><path d=\"M500, 0L0, 0L0, 500L500, 0Z\" fill=\"#FFFFFF\" fill-opacity=\"0.02\"/></svg>");
                 }
