@@ -43,7 +43,7 @@ namespace TcNo_Acc_Switcher_Server.State.Classes
         }
 
         [Inject] private Toasts Toasts { get; set; }
-        [Inject] private NewLang Lang { get; set; }
+        [Inject] private Lang Lang { get; set; }
         [Inject] private NavigationManager NavigationManager { get; set; }
         [Inject] private WindowSettings WindowSettings { get; set; }
 

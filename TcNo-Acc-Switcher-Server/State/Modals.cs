@@ -29,7 +29,6 @@ namespace TcNo_Acc_Switcher_Server.State
         [Inject] Toasts Toasts { get; set; }
         [Inject] IWindowSettings WindowSettings { get; set; }
         [Inject] JSRuntime JsRuntime { get; set; }
-        [Inject] SteamSettings SteamSettings { get; set; }
         [Inject] NavigationManager NavigationManager { get; set; }
 
         public event Action OnChange;

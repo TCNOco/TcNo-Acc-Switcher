@@ -19,7 +19,7 @@ namespace TcNo_Acc_Switcher_Server.State.DataTypes
 {
     public class PathPickerRequest
     {
-        [Inject] private NewLang Lang { get; set; }
+        [Inject] private Lang Lang { get; set; }
         [Inject] private IAppState AppState { get; set; }
 
 

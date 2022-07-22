@@ -20,14 +20,13 @@ using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.State;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
 {
     public class Shortcut
     {
-        [Inject] private NewLang Lang { get; set; }
+        [Inject] private Lang Lang { get; set; }
 
         public string Exe { get; set; }
         public string WorkingDir { get; set; }

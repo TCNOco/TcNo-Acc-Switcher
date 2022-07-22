@@ -52,22 +52,23 @@ namespace TcNo_Acc_Switcher_Server
 
             // Proper singletons. This is after much more practice.
             _ = services.AddSingleton<IWindowSettings, WindowSettings>(); // #1 (No depends)
-            _ = services.AddSingleton<NewLang>(); // After WindowSettings
-            _ = services.AddSingleton<Toasts>(); // After NewLang
-            _ = services.AddSingleton<Modals>(); // (No depends)
+            _ = services.AddSingleton<Lang>(); // After WindowSettings
+            _ = services.AddSingleton<Toasts>(); // After Lang
             _ = services.AddSingleton<AppState>(); // (No depends - But does store a LOT of info)
+            _ = services.AddSingleton<Modals>(); // Toasts, WindowSettings, AppState
             _ = services.AddSingleton<IStatistics, Statistics>(); // After AppState & WindowSettings
+            _ = services.AddSingleton<SharedFunctions>(); // Statistics, Toasts
 
             // Only load when needed.
             _ = services.AddSingleton<SteamSettings>(); // (No depends)
-            _ = services.AddSingleton<SteamState>(); // After NewLang, Toasts, AppState, SteamSettings
 
-            // _ = services.AddSingleton<BasicPlatformSettings>();
-            _ = services.AddSingleton<TemplatedPlatformState>(); // THIS MUST BE LOADED TO SEE APPS ON THE MAIN MENU LIST
+            _ = services.AddSingleton<SteamState>(); // Lang, Toasts, AppState, SteamSettings, Modals, Statistics, SharedFunctions
 
-            _ = services.AddSingleton<SharedFunctions>();
-            _ = services.AddSingleton<GameStats>();
-            _ = services.AddSingleton<GameStatsRoot>();
+            // THIS MUST BE LOADED TO SEE APPS ON THE MAIN MENU LIST
+            _ = services.AddSingleton<TemplatedPlatformState>(); //SharedFunctions, WindowSettings, Statistics, Modals, AppState, Toasts
+
+            _ = services.AddSingleton<GameStatsRoot>(); // Toasts, WindowSettings
+            _ = services.AddSingleton<GameStats>(); // AppState, GameStatsRoot
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

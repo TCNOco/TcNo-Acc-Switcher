@@ -13,14 +13,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.AspNetCore.Components;
-using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.State.DataTypes
 {
     public class TextInputRequest
     {
-        [Inject] private NewLang Lang { get; set; }
+        [Inject] private Lang Lang { get; set; }
         [Inject] private IAppState AppState { get; set; }
 
         public enum TextInputGoal

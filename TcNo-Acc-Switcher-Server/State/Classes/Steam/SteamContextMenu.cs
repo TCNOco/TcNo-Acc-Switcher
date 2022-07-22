@@ -27,10 +27,8 @@ using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Converters;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
-using TcNo_Acc_Switcher_Server.Pages.Steam;
 using TcNo_Acc_Switcher_Server.Shared;
 using TcNo_Acc_Switcher_Server.Shared.ContextMenu;
-using TcNo_Acc_Switcher_Server.Shared.Modal;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
 using TcNo_Acc_Switcher_Server.State.Interfaces;
 
@@ -38,7 +36,7 @@ namespace TcNo_Acc_Switcher_Server.State.Classes.Steam
 {
     public class SteamContextMenu
     {
-        [Inject] private NewLang Lang { get; set; }
+        [Inject] private Lang Lang { get; set; }
         [Inject] private Modals Modals { get; set; }
         [Inject] private SteamState SteamState { get; set; }
         [Inject] private SteamSettings SteamSettings { get; set; }

@@ -5,11 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server.Data;
-using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.State;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
-using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace State
 {
@@ -20,7 +17,6 @@ namespace State
     public class SharedFunctions
     {
         [Inject] private JSRuntime JsRuntime { get; set; }
-        [Inject] private IAppState AppState { get; set; }
         [Inject] private IStatistics Statistics { get; set; }
         [Inject] private Toasts Toasts { get; set; }
 

@@ -20,12 +20,9 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
-using TcNo_Acc_Switcher_Server.Pages.Steam;
 using TcNo_Acc_Switcher_Server.Shared.ContextMenu;
-using TcNo_Acc_Switcher_Server.Shared.Modal;
 using TcNo_Acc_Switcher_Server.State;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
 
@@ -34,7 +31,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
     public partial class Index
     {
         [Inject] private Toasts Toasts { get; set; }
-        [Inject] private NewLang Lang { get; set; }
+        [Inject] private Lang Lang { get; set; }
         [Inject] private BasicSettings BasicSettings { get; set; }
         [Inject] private SteamSettings SteamSettings { get; set; }
         [Inject] private NavigationManager NavigationManager { get; set; }

@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.State.Classes.GameStats;
-using TcNo_Acc_Switcher_Server.State.DataTypes;
 using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.State
@@ -17,8 +11,6 @@ namespace TcNo_Acc_Switcher_Server.State
     public class GameStats
     {
         [Inject] private IAppState AppState { get; set; }
-        [Inject] private IWindowSettings WindowSettings { get; set; }
-        [Inject] private Toasts Toasts { get; set; }
 
         [Inject] private GameStatsRoot GameStatsRoot { get; set; }
 

@@ -26,7 +26,7 @@ namespace TcNo_Acc_Switcher_Server.State
 {
     public class TemplatedPlatformFuncs
     {
-        [Inject] private NewLang Lang { get; set; }
+        [Inject] private Lang Lang { get; set; }
         [Inject] private TemplatedPlatformState TemplatedPlatformState { get; set; }
 
 

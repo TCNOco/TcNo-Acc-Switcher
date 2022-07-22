@@ -19,9 +19,7 @@ using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.State.Classes.Templated
 {
@@ -32,7 +30,7 @@ namespace TcNo_Acc_Switcher_Server.State.Classes.Templated
     public class Platform
     {
         [Inject] private IStatistics Statistics { get; set; }
-        [Inject] private NewLang Lang { get; set; }
+        [Inject] private Lang Lang { get; set; }
 
         [JsonProperty(Required = Required.Always)] public string Name { get; set; }
         [JsonProperty(Required = Required.Always)] public List<string> Identifiers { get; set; }

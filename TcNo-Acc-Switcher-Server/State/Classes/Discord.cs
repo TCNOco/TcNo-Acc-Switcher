@@ -22,7 +22,7 @@ namespace TcNo_Acc_Switcher_Server.State.Classes
 {
     public class Discord
     {
-        [Inject] public INewLang Lang { get; set; }
+        [Inject] public ILang Lang { get; set; }
         [Inject] public IWindowSettings WindowSettings { get; set; }
 
         public DiscordRpcClient DiscordClient { get; set; }

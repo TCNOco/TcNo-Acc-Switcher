@@ -16,7 +16,7 @@ using System.Collections.Generic;
 
 namespace TcNo_Acc_Switcher_Server.State.Interfaces;
 
-public interface INewLang
+public interface ILang
 {
     Dictionary<string, string> Strings { get; set; }
     string Current { get; set; }

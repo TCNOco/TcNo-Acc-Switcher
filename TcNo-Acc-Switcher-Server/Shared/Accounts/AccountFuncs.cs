@@ -15,7 +15,6 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.State.Classes;
 
 namespace TcNo_Acc_Switcher_Server.Shared.Accounts

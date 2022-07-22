@@ -26,7 +26,7 @@ namespace TcNo_Acc_Switcher_Server.State.Classes.Templated
 {
     public class TemplatedPlatformContextMenu
     {
-        [Inject] private NewLang Lang { get; set; }
+        [Inject] private Lang Lang { get; set; }
         [Inject] private Modals Modals { get; set; }
         [Inject] IAppState AppState { get; set; }
         [Inject] Toasts Toasts { get; set; }

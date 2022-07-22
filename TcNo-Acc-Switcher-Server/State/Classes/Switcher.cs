@@ -35,7 +35,7 @@ namespace TcNo_Acc_Switcher_Server.State.Classes
             return true;
         }
 
-        [Inject] private NewLang Lang { get; set; }
+        [Inject] private Lang Lang { get; set; }
 
         public Switcher()
         {

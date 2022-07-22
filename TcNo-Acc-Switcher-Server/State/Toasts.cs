@@ -24,7 +24,7 @@ namespace TcNo_Acc_Switcher_Server.State
 {
     public class Toasts
     {
-        [Inject] private NewLang Lang { get; set; }
+        [Inject] private Lang Lang { get; set; }
 
         public Toasts() { }
 

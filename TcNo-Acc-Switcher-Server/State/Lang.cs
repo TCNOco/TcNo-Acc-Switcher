@@ -30,12 +30,12 @@ using YamlDotNet.Serialization.NamingConventions;
 namespace TcNo_Acc_Switcher_Server.State
 {
     /// <summary>
-    /// NOTE: This "NewLang" is temporary, and will replace the old Lang later.
+    /// NOTE: This "Lang" is temporary, and will replace the old Lang later.
     /// The old method does not use Singleton instances properly -- Or even at all!
     /// This should be much better when it's set up and replaced everything.
     /// For now, having 2 loaded in memory should not be an issue.
     /// </summary>
-    public class NewLang : INewLang
+    public class Lang : ILang
     {
         [Inject] private WindowSettings WindowSettings { get; set; }
 
@@ -86,7 +86,7 @@ namespace TcNo_Acc_Switcher_Server.State
         /// Loads the default en-US language on creation.
         /// Any strings missing from other languages will use the en-US fallback.
         /// </summary>
-        public NewLang()
+        public Lang()
         {
             Load("en-US");
 
