@@ -38,18 +38,17 @@ public class SteamIdConvert
     public SteamIdConvert(string anySteamId)
     {
         Globals.DebugWriteLine($@"[Func:Converters\SteamIdConvert.SteamIdConvert] anySteamId={anySteamId.Substring(anySteamId.Length - 4, 4)}");
-        try
+
+        if (!GetIdType(anySteamId))
         {
-            GetIdType(anySteamId);
-            ConvertAll();
+            Globals.DebugWriteLine($@"[Exception:Converters\SteamIdConvert.SteamIdConvertException] Input SteamID was not recognized!");
+            return;
         }
-        catch (SteamIdConvertException e)
-        {
-            Globals.WriteToLog(e.Message);
-        }
+        
+        ConvertAll();
     }
 
-    private void GetIdType(string sInput)
+    private bool GetIdType(string sInput)
     {
         _input = sInput;
         if (_input[0] == 'S')
@@ -70,9 +69,9 @@ public class SteamIdConvert
             };
         }
         else
-        {
-            throw new SteamIdConvertException("Input SteamID was not recognised!");
-        }
+            return false;
+
+        return true;
     }
 
     private static string GetOddity(string input)
@@ -155,13 +154,5 @@ public class SteamIdConvert
         CalcSteamId3();
         _ = CalcSteamId32();
         CalcSteamId64();
-    }
-
-    public class SteamIdConvertException : Exception
-    {
-        public SteamIdConvertException(string message) : base(message)
-        {
-            Globals.DebugWriteLine($@"[Exception:Converters\SteamIdConvert.SteamIdConvertException] {message}");
-        }
     }
 }

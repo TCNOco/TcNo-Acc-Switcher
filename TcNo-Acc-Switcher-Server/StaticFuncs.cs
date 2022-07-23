@@ -2,7 +2,10 @@
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
+using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
+using TextCopy;
 
 namespace TcNo_Acc_Switcher_Server;
 
@@ -55,5 +58,11 @@ public class StaticFuncs
     #region FILE_OPERATIONS
     public static string WwwRoot => Path.Join(Globals.UserDataFolder, "\\wwwroot");
 
+    #endregion
+
+    #region Clipboard
+
+    [JSInvokable]
+    public static async Task CopyText(string text) => await ClipboardService.SetTextAsync(text);
     #endregion
 }

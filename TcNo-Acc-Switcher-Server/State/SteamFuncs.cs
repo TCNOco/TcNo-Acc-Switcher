@@ -28,6 +28,7 @@ using TcNo_Acc_Switcher_Server.Converters;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Shared.Accounts;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
+using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.State;
 
@@ -35,6 +36,7 @@ public class SteamFuncs
 {
     [Inject] private Lang Lang { get; set; }
     [Inject] private SteamSettings SteamSettings { get; set; }
+    [Inject] private IAppState AppState { get; set; }
 
 
     #region True Static

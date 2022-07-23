@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
@@ -864,5 +865,57 @@ public class TemplatedPlatformFuncs
         }
 
         return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
+    }
+
+    /// <summary>
+    /// Swap to the current AppData.SelectedAccountId.
+    /// </summary>
+    public void SwapToAccount()
+    {
+        BasicSwitcherFuncs.SwapBasicAccounts(AppData.SelectedAccountId);
+    }
+
+    /// <summary>
+    /// Swaps to an empty account, allowing the user to sign in.
+    /// </summary>
+    public void SwapToNewAccount()
+    {
+        if (!OperatingSystem.IsWindows()) return;
+        BasicSwitcherFuncs.SwapBasicAccounts("");
+    }
+
+    public async Task ForgetAccount()
+    {
+        if (!Basic.ForgetAccountEnabled)
+            Modals.ShowModal("confirm", Modals.ExtraArg.ForgetAccount);
+        else
+        {
+            var trayAcc = AppData.SelectedAccountId;
+            Basic.SetForgetAcc(true);
+
+            // Remove ID from list of ids
+            var idsFile = $"LoginCache\\{AppData.CurrentSwitcher}\\ids.json";
+            if (File.Exists(idsFile))
+            {
+                var allIds = Globals.ReadDict(idsFile).Remove(AppData.SelectedAccountId);
+                await File.WriteAllTextAsync(idsFile, JsonConvert.SerializeObject(allIds));
+            }
+
+            // Remove cached files
+            Globals.RecursiveDelete($"LoginCache\\{AppData.CurrentSwitcher}\\{AppData.SelectedAccountId}", false);
+
+            // Remove from Steam accounts list
+            AppData.BasicAccounts.Remove(AppData.BasicAccounts.First(x => x.AccountId == AppData.SelectedAccountId));
+
+            // Remove from Tray
+            Globals.RemoveTrayUserByArg(AppData.CurrentSwitcher, trayAcc);
+
+            // Remove image
+            Globals.DeleteFile(Path.Join(Globals.WwwRoot, $"\\img\\profiles\\{AppData.CurrentSwitcher}\\{Globals.GetCleanFilePath(AppData.SelectedAccountId)}.jpg"));
+
+            AppData.Instance.NotifyDataChanged();
+
+            AppData.Instance.ShowToastLang(ToastType.Success, "Success");
+        }
     }
 }
