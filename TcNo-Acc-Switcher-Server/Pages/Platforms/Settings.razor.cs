@@ -15,17 +15,16 @@
 using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Globals;
 
-namespace TcNo_Acc_Switcher_Server.Pages.Platforms
+namespace TcNo_Acc_Switcher_Server.Pages.Platforms;
+
+public partial class Settings
 {
-    public partial class Settings
+    private static readonly Lang Lang = Lang.Instance;
+    [Inject]
+    public AppData AppData { get; set; }
+    protected override void OnInitialized()
     {
-        private static readonly Lang Lang = Lang.Instance;
-        [Inject]
-        public AppData AppData { get; set; }
-        protected override void OnInitialized()
-        {
-            AppData.WindowTitle = Lang["Title_Platforms_Settings"];
-            Globals.DebugWriteLine(@"[Auto:Platforms\Settings.razor.cs.OnInitializedAsync]");
-        }
+        AppData.WindowTitle = Lang["Title_Platforms_Settings"];
+        Globals.DebugWriteLine(@"[Auto:Platforms\Settings.razor.cs.OnInitializedAsync]");
     }
 }

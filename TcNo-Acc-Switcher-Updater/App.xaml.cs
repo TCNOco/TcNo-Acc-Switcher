@@ -20,142 +20,141 @@ using System.Threading;
 using System.Windows;
 using Newtonsoft.Json.Linq;
 
-namespace TcNo_Acc_Switcher_Updater
+namespace TcNo_Acc_Switcher_Updater;
+
+/// <summary>
+/// Interaction logic for App.xaml
+/// </summary>
+public partial class App
 {
+    private static readonly Mutex Mutex = new(true, "{1523A82D-9AD3-4B01-B970-4F06633AD41C}");
+
     /// <summary>
-    /// Interaction logic for App.xaml
+    /// Shows error and exits program is program is already running
     /// </summary>
-    public partial class App
+    private static void IsRunningAlready()
     {
-        private static readonly Mutex Mutex = new(true, "{1523A82D-9AD3-4B01-B970-4F06633AD41C}");
-
-        /// <summary>
-        /// Shows error and exits program is program is already running
-        /// </summary>
-        private static void IsRunningAlready()
+        try
         {
-            try
-            {
-                if (Mutex.WaitOne(TimeSpan.Zero, true)) return;
+            if (Mutex.WaitOne(TimeSpan.Zero, true)) return;
 
-                // Otherwise: It has probably just closed. Wait a few and try again
-                Thread.Sleep(2000); // 2 seconds before just making sure -- Might be an admin restart
+            // Otherwise: It has probably just closed. Wait a few and try again
+            Thread.Sleep(2000); // 2 seconds before just making sure -- Might be an admin restart
 
-                if (Mutex.WaitOne(TimeSpan.Zero, true)) return;
-                // Try to show from tray, as user may not know it's hidden there.
-                _ = MessageBox.Show("Another TcNo Account Switcher Updater instance has been detected.");
-                Environment.Exit(1056); // An instance of the service is already running.
-            }
-            catch (AbandonedMutexException)
+            if (Mutex.WaitOne(TimeSpan.Zero, true)) return;
+            // Try to show from tray, as user may not know it's hidden there.
+            _ = MessageBox.Show("Another TcNo Account Switcher Updater instance has been detected.");
+            Environment.Exit(1056); // An instance of the service is already running.
+        }
+        catch (AbandonedMutexException)
+        {
+            // Just restarted
+        }
+    }
+
+    [STAThread]
+    protected override void OnStartup(StartupEventArgs e)
+    {
+        // Crash handler
+        AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+        // Single instance:
+        IsRunningAlready();
+
+        base.OnStartup(e);
+        for (var i = 0; i != e.Args.Length; ++i)
+        {
+            switch (e.Args[i])
             {
-                // Just restarted
+                case "downloadCEF":
+                    TcNo_Acc_Switcher_Updater.MainWindow.DownloadCef = true;
+                    break;
+                case "verify":
+                    TcNo_Acc_Switcher_Updater.MainWindow.VerifyAndClose = true;
+                    break;
+                case "hashlist":
+                    TcNo_Acc_Switcher_Updater.MainWindow.QueueHashList = true;
+                    break;
+                case "createupdate":
+                    TcNo_Acc_Switcher_Updater.MainWindow.QueueCreateUpdate = true;
+                    break;
+                default:
+                    Console.WriteLine($@"Unknown argument: ""{e.Args[i]}""");
+                    break;
             }
         }
+    }
 
-        [STAThread]
-        protected override void OnStartup(StartupEventArgs e)
+    public static string AppDataFolder =>
+        Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty)?.FullName;
+
+    public static void LogToErrorFile(string log)
+    {
+        // Log Unhandled Exception
+        _ = Directory.CreateDirectory("UpdaterErrorLogs");
+        var filePath = $"UpdaterErrorLogs\\AccSwitcher-Updater-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt";
+        using var sw = File.AppendText(filePath);
+        sw.WriteLine($"{DateTime.Now.ToString(CultureInfo.InvariantCulture)}({GetVersion()}){Environment.NewLine}{log}");
+    }
+
+    private static string GetVersion()
+    {
+        try
         {
-            // Crash handler
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            // Single instance:
-            IsRunningAlready();
-
-            base.OnStartup(e);
-            for (var i = 0; i != e.Args.Length; ++i)
+            if (File.Exists("WindowSettings.json"))
             {
-                switch (e.Args[i])
-                {
-                    case "downloadCEF":
-                        TcNo_Acc_Switcher_Updater.MainWindow.DownloadCef = true;
-                        break;
-                    case "verify":
-                        TcNo_Acc_Switcher_Updater.MainWindow.VerifyAndClose = true;
-                        break;
-                    case "hashlist":
-                        TcNo_Acc_Switcher_Updater.MainWindow.QueueHashList = true;
-                        break;
-                    case "createupdate":
-                        TcNo_Acc_Switcher_Updater.MainWindow.QueueCreateUpdate = true;
-                        break;
-                    default:
-                        Console.WriteLine($@"Unknown argument: ""{e.Args[i]}""");
-                        break;
-                }
+                var o = JObject.Parse(UGlobals.ReadAllText("WindowSettings.json"));
+                return o["Version"]?.ToString();
             }
         }
-
-        public static string AppDataFolder =>
-            Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty)?.FullName;
-
-        public static void LogToErrorFile(string log)
+        catch (Exception)
         {
-            // Log Unhandled Exception
-            _ = Directory.CreateDirectory("UpdaterErrorLogs");
-            var filePath = $"UpdaterErrorLogs\\AccSwitcher-Updater-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt";
-            using var sw = File.AppendText(filePath);
-            sw.WriteLine($"{DateTime.Now.ToString(CultureInfo.InvariantCulture)}({GetVersion()}){Environment.NewLine}{log}");
+            //
         }
+        return "unknown";
+    }
 
-        private static string GetVersion()
+    /// <summary>
+    /// Exception handling for all programs
+    /// </summary>
+    public static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+    {
+        // Set working directory to parent
+        Directory.SetCurrentDirectory(File.Exists(Path.Join(AppDataFolder, "userdata_path.txt"))
+            ? UGlobals.ReadAllLines(Path.Join(AppDataFolder, "userdata_path.txt"))[0].Trim()
+            : Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TcNo Account Switcher\\"));
+
+        // Log Unhandled Exception
+        var exceptionStr = e.ExceptionObject.ToString();
+        _ = Directory.CreateDirectory("CrashLogs");
+        var filePath = $"CrashLogs\\AccSwitcher-Updater-Crashlog-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt";
+        using var sw = File.AppendText(filePath);
+        sw.WriteLine($"{DateTime.Now.ToString(CultureInfo.InvariantCulture)}({GetVersion()})\tUNHANDLED CRASH: {exceptionStr}{Environment.NewLine}{Environment.NewLine}");
+
+        if (e.ExceptionObject is FileNotFoundException && (exceptionStr?.Contains("SevenZipExtractor") ?? false))
         {
-            try
-            {
-                if (File.Exists("WindowSettings.json"))
-                {
-                    var o = JObject.Parse(UGlobals.ReadAllText("WindowSettings.json"));
-                    return o["Version"]?.ToString();
-                }
-            }
-            catch (Exception)
-            {
-                //
-            }
-            return "unknown";
+            _ = MessageBox.Show($"A fatal error was hit. A required file was not found. Please make sure the x64 and x86 folders exist in the install directory AND the updater folder. If one has files, and the other not: Copy so they are the same and try again.{Environment.NewLine}Currently installed to: {AppDataFolder}", "Fatal error occurred!", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
         }
-
-        /// <summary>
-        /// Exception handling for all programs
-        /// </summary>
-        public static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            // Set working directory to parent
-            Directory.SetCurrentDirectory(File.Exists(Path.Join(AppDataFolder, "userdata_path.txt"))
-                ? UGlobals.ReadAllLines(Path.Join(AppDataFolder, "userdata_path.txt"))[0].Trim()
-                : Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TcNo Account Switcher\\"));
-
-            // Log Unhandled Exception
-            var exceptionStr = e.ExceptionObject.ToString();
-            _ = Directory.CreateDirectory("CrashLogs");
-            var filePath = $"CrashLogs\\AccSwitcher-Updater-Crashlog-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt";
-            using var sw = File.AppendText(filePath);
-            sw.WriteLine($"{DateTime.Now.ToString(CultureInfo.InvariantCulture)}({GetVersion()})\tUNHANDLED CRASH: {exceptionStr}{Environment.NewLine}{Environment.NewLine}");
-
-            if (e.ExceptionObject is FileNotFoundException && (exceptionStr?.Contains("SevenZipExtractor") ?? false))
-            {
-                _ = MessageBox.Show($"A fatal error was hit. A required file was not found. Please make sure the x64 and x86 folders exist in the install directory AND the updater folder. If one has files, and the other not: Copy so they are the same and try again.{Environment.NewLine}Currently installed to: {AppDataFolder}", "Fatal error occurred!", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
-            }
-            else
-                _ = MessageBox.Show("This crashlog will be automatically submitted next launch." + Environment.NewLine + Environment.NewLine + "Error: " + e.ExceptionObject, "Fatal error occurred!", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
+        else
+            _ = MessageBox.Show("This crashlog will be automatically submitted next launch." + Environment.NewLine + Environment.NewLine + "Error: " + e.ExceptionObject, "Fatal error occurred!", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
 
 
-            // Throw for bad image errors (bad dlls in computer):
-            if (e.ExceptionObject is BadImageFormatException exception) throw exception;
+        // Throw for bad image errors (bad dlls in computer):
+        if (e.ExceptionObject is BadImageFormatException exception) throw exception;
 
-            //if (e.ExceptionObject.)
-            //{
-            // if (e.HResult == -2147024671)
-            //  MessageBox.Show(
-            //   "Error: Windows has 'detected a virus or potentially unwanted software'. This is a false positive, and can be safely ignored. User action is required." +
-            //   Environment.NewLine +
-            //   "1. Please whitelist the program's directory." + Environment.NewLine +
-            //   "2. Run the Updater in the programs folder, in the 'updater' folder." + Environment.NewLine +
-            //   "OR download a fresh installer/copy from GitHub." + Environment.NewLine +
-            //   Environment.NewLine +
-            //   "I am aware of these and work as fast as possible to report false positives, and stop them being detected.",
-            //   "Windows error", MessageBoxButton.OK, MessageBoxImage.Error);
-            // else
-            //  throw;
-            //})
-        }
+        //if (e.ExceptionObject.)
+        //{
+        // if (e.HResult == -2147024671)
+        //  MessageBox.Show(
+        //   "Error: Windows has 'detected a virus or potentially unwanted software'. This is a false positive, and can be safely ignored. User action is required." +
+        //   Environment.NewLine +
+        //   "1. Please whitelist the program's directory." + Environment.NewLine +
+        //   "2. Run the Updater in the programs folder, in the 'updater' folder." + Environment.NewLine +
+        //   "OR download a fresh installer/copy from GitHub." + Environment.NewLine +
+        //   Environment.NewLine +
+        //   "I am aware of these and work as fast as possible to report false positives, and stop them being detected.",
+        //   "Windows error", MessageBoxButton.OK, MessageBoxImage.Error);
+        // else
+        //  throw;
+        //})
     }
 }

@@ -14,28 +14,27 @@
 
 using System;
 
-namespace TcNo_Acc_Switcher_Server.State.Classes.Stats
+namespace TcNo_Acc_Switcher_Server.State.Classes.Stats;
+
+public class SwitcherStat
 {
-    public class SwitcherStat
+    public SwitcherStat()
     {
-        public SwitcherStat()
-        {
-            Accounts = 0;
-            Switches = 0;
-            UniqueDays = 1; // First day is init day
-            GameShortcuts = 0;
-            GameShortcutsHotbar = 0;
-            GamesLaunched = 0;
-            FirstActive = DateTime.Now;
-            LastActive = DateTime.Now;
-        }
-        public int Accounts { get; set; }
-        public int Switches { get; set; }
-        public int UniqueDays { get; set; }
-        public int GameShortcuts { get; set; }
-        public int GameShortcutsHotbar { get; set; }
-        public int GamesLaunched { get; set; }
-        public DateTime FirstActive { get; set; }
-        public DateTime LastActive { get; set; }
+        Accounts = 0;
+        Switches = 0;
+        UniqueDays = 1; // First day is init day
+        GameShortcuts = 0;
+        GameShortcutsHotbar = 0;
+        GamesLaunched = 0;
+        FirstActive = DateTime.Now;
+        LastActive = DateTime.Now;
     }
+    public int Accounts { get; set; }
+    public int Switches { get; set; }
+    public int UniqueDays { get; set; }
+    public int GameShortcuts { get; set; }
+    public int GameShortcutsHotbar { get; set; }
+    public int GamesLaunched { get; set; }
+    public DateTime FirstActive { get; set; }
+    public DateTime LastActive { get; set; }
 }

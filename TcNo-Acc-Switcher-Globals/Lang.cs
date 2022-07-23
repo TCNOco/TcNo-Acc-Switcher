@@ -27,221 +27,220 @@ using Newtonsoft.Json.Linq;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace TcNo_Acc_Switcher_Globals
+namespace TcNo_Acc_Switcher_Globals;
+
+public class GLang
 {
-    public class GLang
+    private static GLang _instance;
+
+    private static readonly object LockObj = new();
+
+    public static GLang Instance
     {
-        private static GLang _instance;
-
-        private static readonly object LockObj = new();
-
-        public static GLang Instance
+        get
         {
-            get
+            lock (LockObj)
             {
-                lock (LockObj)
+                if (_instance is { _currentlyModifying: true }) return _instance;
+                if (_instance == null)
                 {
-                    if (_instance is { _currentlyModifying: true }) return _instance;
-                    if (_instance == null)
-                    {
-                        _instance = new GLang { _currentlyModifying = true };
-                        LoadLocalised();
-                        _instance._currentlyModifying = false;
-                    }
-                    return _instance;
+                    _instance = new GLang { _currentlyModifying = true };
+                    LoadLocalised();
+                    _instance._currentlyModifying = false;
                 }
-            }
-            set
-            {
-                lock (LockObj)
-                {
-                    _instance = value;
-                }
+                return _instance;
             }
         }
-
-        private Dictionary<string, string> _strings = new();
-        private string _current = "";
-        private bool _currentlyModifying;
-
-        public static Dictionary<string, string> Strings { get => Instance._strings; set => Instance._strings = value; }
-        public static string Current { get => Instance._current; set => Instance._current = value; }
-
-        /// <summary>
-        /// Get a string
-        /// </summary>
-        public string this[string key] => Strings.ContainsKey(key) ? Strings[key] : key;
-
-        /// <summary>
-        /// Get a string, and replace variables
-        /// </summary>
-        /// <param name="key">String to look up</param>
-        /// <param name="obj">Object of variables to replace</param>
-        public string this[string key, object obj]
+        set
         {
-            get
+            lock (LockObj)
             {
-                try
-                {
-                    if (!Strings.ContainsKey(key)) return key;
-                    var s = Strings[key];
-                    if (obj is JsonElement)
-                        foreach (var (k, v) in JObject.FromObject(JsonConvert.DeserializeObject(obj.ToString()!)!))
-                        {
-                            if (v != null) s = s.Replace($"{{{k}}}", v.Value<string>());
-                        }
-                    else
-                        foreach (var pi in obj.GetType().GetProperties())
-                        {
-                            dynamic val = pi.GetValue(obj, null);
-                            if (val is int) val = val.ToString();
-                            s = s.Replace($"{{{pi.Name}}}", (string)val);
-                        }
-                    return s;
-                }
-                catch (NullReferenceException e)
-                {
-                    Globals.WriteToLog(e);
-                    return "[Failed to get text: missing parameter] " + key;
-                }
+                _instance = value;
             }
         }
+    }
 
+    private Dictionary<string, string> _strings = new();
+    private string _current = "";
+    private bool _currentlyModifying;
 
-        #region FILE_HANDLING
-        /// <summary>
-        /// Loads the programs default language: English.
-        /// </summary>
-        public static void LoadDefault()
-        {
-            _ = Load("en-US");
-        }
+    public static Dictionary<string, string> Strings { get => Instance._strings; set => Instance._strings = value; }
+    public static string Current { get => Instance._current; set => Instance._current = value; }
 
-        /// <summary>
-        /// Loads the system's language, or the user's saved language
-        /// </summary>
-        public static void LoadLocalised()
-        {
-            LoadDefault();
-            // If setting does not exist in settings file then load the system default
-            _ = Load(GLangAppSettings.Language == ""
-                ? CultureInfo.CurrentCulture.Name
-                : GLangAppSettings.Language);
-        }
+    /// <summary>
+    /// Get a string
+    /// </summary>
+    public string this[string key] => Strings.ContainsKey(key) ? Strings[key] : key;
 
-        /// <summary>
-        /// Get list of files in Resources folder
-        /// </summary>
-        public static List<string> GetAvailableLanguages() => Directory.GetFiles(Path.Join(Globals.AppDataFolder, "Resources")).Select(f => Path.GetFileName(f).Split(".yml")[0]).ToList();
-
-        public static bool Load(string filename, bool save = false)
+    /// <summary>
+    /// Get a string, and replace variables
+    /// </summary>
+    /// <param name="key">String to look up</param>
+    /// <param name="obj">Object of variables to replace</param>
+    public string this[string key, object obj]
+    {
+        get
         {
             try
             {
-                var path = Path.Join(Globals.AppDataFolder, "Resources", filename + ".yml");
-                Current = filename;
-
-                if (!File.Exists(path))
-                {
-                    // Get list of files in Resources folder
-                    var availableLang = GetAvailableLanguages();
-
-                    // Get closest available language
-                    var langGroup = filename.Split('-')[0];
-                    var foundClose = false;
-                    foreach (var l in availableLang.Where(l => l.StartsWith(langGroup)))
+                if (!Strings.ContainsKey(key)) return key;
+                var s = Strings[key];
+                if (obj is JsonElement)
+                    foreach (var (k, v) in JObject.FromObject(JsonConvert.DeserializeObject(obj.ToString()!)!))
                     {
-                        path = Path.Join(Globals.AppDataFolder, "Resources", l + ".yml");
-                        foundClose = true;
-                        Current = l;
-                        if (save && Current == l)
-                        {
-                            GLangAppSettings.Language = l;
-                        }
-                        break;
+                        if (v != null) s = s.Replace($"{{{k}}}", v.Value<string>());
                     }
-
-                    // If could not find a language close to requested
-                    if (!foundClose)
-                        return false;
-                }
-
-                // Load from en-EN file into Strings
-                var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
-                var text = Globals.ReadAllText(path);
-                var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(text)));
-                Debug.Assert(dict != null, nameof(dict) + " != null"); // These files have to exist, or the program will break in many ways
-                foreach (var (k, v) in dict)
-                {
-                    Strings[k] = v;
-                }
-
-                return true;
+                else
+                    foreach (var pi in obj.GetType().GetProperties())
+                    {
+                        dynamic val = pi.GetValue(obj, null);
+                        if (val is int) val = val.ToString();
+                        s = s.Replace($"{{{pi.Name}}}", (string)val);
+                    }
+                return s;
             }
-            catch (Exception e)
+            catch (NullReferenceException e)
             {
-                Globals.WriteToLog("Globals-Lang: Could not load language information!", e);
-                return false;
+                Globals.WriteToLog(e);
+                return "[Failed to get text: missing parameter] " + key;
             }
         }
-
-        #endregion
     }
 
-    class GLangAppSettings
+
+    #region FILE_HANDLING
+    /// <summary>
+    /// Loads the programs default language: English.
+    /// </summary>
+    public static void LoadDefault()
     {
-        private static GLangAppSettings _instance = new();
+        _ = Load("en-US");
+    }
 
-        private static readonly object LockObj = new();
-        public static GLangAppSettings Instance
+    /// <summary>
+    /// Loads the system's language, or the user's saved language
+    /// </summary>
+    public static void LoadLocalised()
+    {
+        LoadDefault();
+        // If setting does not exist in settings file then load the system default
+        _ = Load(GLangAppSettings.Language == ""
+            ? CultureInfo.CurrentCulture.Name
+            : GLangAppSettings.Language);
+    }
+
+    /// <summary>
+    /// Get list of files in Resources folder
+    /// </summary>
+    public static List<string> GetAvailableLanguages() => Directory.GetFiles(Path.Join(Globals.AppDataFolder, "Resources")).Select(f => Path.GetFileName(f).Split(".yml")[0]).ToList();
+
+    public static bool Load(string filename, bool save = false)
+    {
+        try
         {
-            get
+            var path = Path.Join(Globals.AppDataFolder, "Resources", filename + ".yml");
+            Current = filename;
+
+            if (!File.Exists(path))
             {
-                lock (LockObj)
+                // Get list of files in Resources folder
+                var availableLang = GetAvailableLanguages();
+
+                // Get closest available language
+                var langGroup = filename.Split('-')[0];
+                var foundClose = false;
+                foreach (var l in availableLang.Where(l => l.StartsWith(langGroup)))
                 {
-                    // Load settings if have changed, or not set
-                    if (_instance is { _currentlyModifying: true }) return _instance;
-                    if (_instance._lastHash != "") return _instance;
-
-                    _instance = new GLangAppSettings { _currentlyModifying = true };
-
-                    if (File.Exists(SettingsFile))
+                    path = Path.Join(Globals.AppDataFolder, "Resources", l + ".yml");
+                    foundClose = true;
+                    Current = l;
+                    if (save && Current == l)
                     {
-                        _instance = JsonConvert.DeserializeObject<GLangAppSettings>(File.ReadAllText(SettingsFile), new JsonSerializerSettings());
-                        if (_instance == null)
-                        {
-                            Globals.WriteToLog("Globals-Lang: Failed to load settings. Loading defaults.");
-                            _instance = new GLangAppSettings { _currentlyModifying = true };
-                        }
-                        _instance._lastHash = Globals.GetFileMd5(SettingsFile);
+                        GLangAppSettings.Language = l;
                     }
-
-                    _instance._currentlyModifying = false;
-
-                    return _instance;
+                    break;
                 }
+
+                // If could not find a language close to requested
+                if (!foundClose)
+                    return false;
             }
-            set
+
+            // Load from en-EN file into Strings
+            var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
+            var text = Globals.ReadAllText(path);
+            var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(text)));
+            Debug.Assert(dict != null, nameof(dict) + " != null"); // These files have to exist, or the program will break in many ways
+            foreach (var (k, v) in dict)
             {
-                lock (LockObj)
+                Strings[k] = v;
+            }
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            Globals.WriteToLog("Globals-Lang: Could not load language information!", e);
+            return false;
+        }
+    }
+
+    #endregion
+}
+
+class GLangAppSettings
+{
+    private static GLangAppSettings _instance = new();
+
+    private static readonly object LockObj = new();
+    public static GLangAppSettings Instance
+    {
+        get
+        {
+            lock (LockObj)
+            {
+                // Load settings if have changed, or not set
+                if (_instance is { _currentlyModifying: true }) return _instance;
+                if (_instance._lastHash != "") return _instance;
+
+                _instance = new GLangAppSettings { _currentlyModifying = true };
+
+                if (File.Exists(SettingsFile))
                 {
-                    _instance = value;
+                    _instance = JsonConvert.DeserializeObject<GLangAppSettings>(File.ReadAllText(SettingsFile), new JsonSerializerSettings());
+                    if (_instance == null)
+                    {
+                        Globals.WriteToLog("Globals-Lang: Failed to load settings. Loading defaults.");
+                        _instance = new GLangAppSettings { _currentlyModifying = true };
+                    }
+                    _instance._lastHash = Globals.GetFileMd5(SettingsFile);
                 }
+
+                _instance._currentlyModifying = false;
+
+                return _instance;
             }
         }
-
-        private string _lastHash = "";
-        private bool _currentlyModifying;
-
-        // Constants
-        public static readonly string SettingsFile = "WindowSettings.json";
-        [JsonProperty("Language", Order = 0)] private string _lang = "";
-        public static string Language {
-            get => Instance._lang;
-            set => Instance._lang = value;
-
+        set
+        {
+            lock (LockObj)
+            {
+                _instance = value;
+            }
         }
+    }
 
+    private string _lastHash = "";
+    private bool _currentlyModifying;
+
+    // Constants
+    public static readonly string SettingsFile = "WindowSettings.json";
+    [JsonProperty("Language", Order = 0)] private string _lang = "";
+    public static string Language {
+        get => Instance._lang;
+        set => Instance._lang = value;
 
     }
+
+
 }

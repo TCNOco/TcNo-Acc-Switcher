@@ -19,60 +19,59 @@ using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.State;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
 
-namespace TcNo_Acc_Switcher_Server.Pages.Steam
+namespace TcNo_Acc_Switcher_Server.Pages.Steam;
+
+public partial class Settings
 {
-    public partial class Settings
+    [Inject] private Toasts Toasts { get; set; }
+
+    protected override void OnInitialized()
     {
-        [Inject] private Toasts Toasts { get; set; }
-
-        protected override void OnInitialized()
-        {
-            AppState.WindowState.WindowTitle = Lang["Title_Steam_Settings"];
-            Globals.DebugWriteLine(@"[Auto:Steam\Settings.razor.cs.OnInitializedAsync]");
-        }
-
-        #region SETTINGS_GENERAL
-        // BUTTON: Pick folder
-        public void PickFolder()
-        {
-            Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.PickFolder]");
-            ModalFuncs.ShowUpdatePlatformFolderModal();
-        }
-
-        // BUTTON: Check account VAC status
-        public void ClearVacStatus()
-        {
-            Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearVacStatus]");
-            if (Globals.DeleteFile(SteamSettings.VacCacheFile))
-                AppState.Toasts.ShowToastLang(ToastType.Success, "Toast_Steam_VacCleared");
-            else
-                AppState.Toasts.ShowToastLang(ToastType.Error, "Error", "Toast_Steam_CantDeleteVacCache");
-        }
-
-        // BUTTON: Reset settings
-        public void ClearSettings()
-        {
-            Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearSettings]");
-            SteamSettings.Reset();
-            AppState.Navigation.NavigateToWithToast("/Steam", "success", Lang["Success"], Lang["Toast_ClearedPlatformSettings", new { platform = "Steam" }]);
-        }
-
-        // BUTTON: Reset images
-        /// <summary>
-        /// Clears images folder of contents, to re-download them on next load.
-        /// </summary>
-        public void ClearImages()
-        {
-            Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearImages]");
-            if (!Directory.Exists(SteamSettings.SteamImagePath))
-            {
-                Toasts.ShowToastLang(ToastType.Error, "Error", "Toast_CantClearImages");
-            }
-            Globals.DeleteFiles(SteamSettings.SteamImagePath);
-
-            // Reload page, then display notification using a new thread.
-            AppState.Navigation.ReloadWithToast("success", Uri.EscapeDataString(Lang["Success"]), Uri.EscapeDataString(Lang["Toast_ClearedImages"]));
-        }
-        #endregion
+        AppState.WindowState.WindowTitle = Lang["Title_Steam_Settings"];
+        Globals.DebugWriteLine(@"[Auto:Steam\Settings.razor.cs.OnInitializedAsync]");
     }
+
+    #region SETTINGS_GENERAL
+    // BUTTON: Pick folder
+    public void PickFolder()
+    {
+        Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.PickFolder]");
+        ModalFuncs.ShowUpdatePlatformFolderModal();
+    }
+
+    // BUTTON: Check account VAC status
+    public void ClearVacStatus()
+    {
+        Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearVacStatus]");
+        if (Globals.DeleteFile(SteamSettings.VacCacheFile))
+            AppState.Toasts.ShowToastLang(ToastType.Success, "Toast_Steam_VacCleared");
+        else
+            AppState.Toasts.ShowToastLang(ToastType.Error, "Error", "Toast_Steam_CantDeleteVacCache");
+    }
+
+    // BUTTON: Reset settings
+    public void ClearSettings()
+    {
+        Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearSettings]");
+        SteamSettings.Reset();
+        AppState.Navigation.NavigateToWithToast("/Steam", "success", Lang["Success"], Lang["Toast_ClearedPlatformSettings", new { platform = "Steam" }]);
+    }
+
+    // BUTTON: Reset images
+    /// <summary>
+    /// Clears images folder of contents, to re-download them on next load.
+    /// </summary>
+    public void ClearImages()
+    {
+        Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearImages]");
+        if (!Directory.Exists(SteamSettings.SteamImagePath))
+        {
+            Toasts.ShowToastLang(ToastType.Error, "Error", "Toast_CantClearImages");
+        }
+        Globals.DeleteFiles(SteamSettings.SteamImagePath);
+
+        // Reload page, then display notification using a new thread.
+        AppState.Navigation.ReloadWithToast("success", Uri.EscapeDataString(Lang["Success"]), Uri.EscapeDataString(Lang["Toast_ClearedImages"]));
+    }
+    #endregion
 }

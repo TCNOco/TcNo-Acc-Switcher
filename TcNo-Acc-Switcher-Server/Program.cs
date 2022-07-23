@@ -23,98 +23,97 @@ using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.State;
 
-namespace TcNo_Acc_Switcher_Server
+namespace TcNo_Acc_Switcher_Server;
+
+public class Program
 {
-    public class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
+        // Empty
+        _ = MainProgram(args);
+    }
+    public static bool MainProgram(string[] args)
+    {
+        // Set working directory to documents folder
+        Globals.CreateDataFolder(false);
+        Directory.SetCurrentDirectory(Globals.UserDataFolder);
+
+        try
         {
-            // Empty
-            _ = MainProgram(args);
+            CreateHostBuilder(args).Build().Run();
         }
-        public static bool MainProgram(string[] args)
+        catch (IOException ioe)
         {
-            // Set working directory to documents folder
-            Globals.CreateDataFolder(false);
-            Directory.SetCurrentDirectory(Globals.UserDataFolder);
-
-            try
-            {
-                CreateHostBuilder(args).Build().Run();
-            }
-            catch (IOException ioe)
-            {
-                // Failed to bind to port
-                if (ioe.HResult != -2146232800) throw;
-                Globals.WriteToLog(ioe);
-                return false;
-            }
-
-            return true;
+            // Failed to bind to port
+            if (ioe.HResult != -2146232800) throw;
+            Globals.WriteToLog(ioe);
+            return false;
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args)
+        return true;
+    }
+
+    public static IHostBuilder CreateHostBuilder(string[] args)
+    {
+        // Create WindowSettings instance. This loads from saved file if available.
+        WindowSettings windowSettings = new();
+        var savedPort = windowSettings.ServerPort;
+
+        var port = "";
+        foreach (var arg in args)
         {
-            // Create WindowSettings instance. This loads from saved file if available.
-            WindowSettings windowSettings = new();
-            var savedPort = windowSettings.ServerPort;
-
-            var port = "";
-            foreach (var arg in args)
-            {
-                if (!arg.Contains("--url")) continue;
-                port = Regex.Match(arg, @"[\d]+", RegexOptions.IgnoreCase).Value;
-                Console.WriteLine(@"Using port (from --url arg): " + port);
-            }
-
-            if (string.IsNullOrEmpty(port))
-            {
-                // The server was launched without the client, or a specified port
-                windowSettings.ServerPort = FindOpenPort(windowSettings.ServerPort);
-                Console.WriteLine(@"Using saved/random port: " + windowSettings.ServerPort);
-            }
-
-            // Save new port, if different.
-            if (savedPort.ToString() != port)
-                windowSettings.Save();
-
-            // Start browser - if not started with nobrowser
-            if (!args.Contains("nobrowser")) GeneralInvocableFuncs.OpenLinkInBrowser($"http://localhost:{windowSettings.ServerPort}");
-
-            return Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    _ = webBuilder.UseStartup<Startup>()
-                        .UseUrls($"http://localhost:{windowSettings.ServerPort}");
-                });
+            if (!arg.Contains("--url")) continue;
+            port = Regex.Match(arg, @"[\d]+", RegexOptions.IgnoreCase).Value;
+            Console.WriteLine(@"Using port (from --url arg): " + port);
         }
 
-        /// <summary>
-        /// Find first available port. Returns open port to use.
-        /// May return same as input, if it was open.
-        /// </summary>
-        public static int FindOpenPort(int port = 0)
+        if (string.IsNullOrEmpty(port))
         {
-            Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.FindOpenPort]");
-            // Pick random port if none assigned.
-            if (port == 0) port = NewPort();
+            // The server was launched without the client, or a specified port
+            windowSettings.ServerPort = FindOpenPort(windowSettings.ServerPort);
+            Console.WriteLine(@"Using saved/random port: " + windowSettings.ServerPort);
+        }
 
-            // Check if port available:
-            var ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
-            var tcpConnInfoArray = ipGlobalProperties.GetActiveTcpConnections();
-            while (true)
+        // Save new port, if different.
+        if (savedPort.ToString() != port)
+            windowSettings.Save();
+
+        // Start browser - if not started with nobrowser
+        if (!args.Contains("nobrowser")) GeneralInvocableFuncs.OpenLinkInBrowser($"http://localhost:{windowSettings.ServerPort}");
+
+        return Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder =>
             {
-                if (tcpConnInfoArray.All(x => x.LocalEndPoint.Port != port)) break;
-                port = NewPort();
-            }
+                _ = webBuilder.UseStartup<Startup>()
+                    .UseUrls($"http://localhost:{windowSettings.ServerPort}");
+            });
+    }
 
-            return port;
-        }
+    /// <summary>
+    /// Find first available port. Returns open port to use.
+    /// May return same as input, if it was open.
+    /// </summary>
+    public static int FindOpenPort(int port = 0)
+    {
+        Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.FindOpenPort]");
+        // Pick random port if none assigned.
+        if (port == 0) port = NewPort();
 
-        private static int NewPort()
+        // Check if port available:
+        var ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
+        var tcpConnInfoArray = ipGlobalProperties.GetActiveTcpConnections();
+        while (true)
         {
-            var r = new Random();
-            return r.Next(20000, 40000); // Random int [Why this range? See: https://www.sciencedirect.com/topics/computer-science/registered-port & netsh interface ipv4 show excludedportrange protocol=tcp]
+            if (tcpConnInfoArray.All(x => x.LocalEndPoint.Port != port)) break;
+            port = NewPort();
         }
+
+        return port;
+    }
+
+    private static int NewPort()
+    {
+        var r = new Random();
+        return r.Next(20000, 40000); // Random int [Why this range? See: https://www.sciencedirect.com/topics/computer-science/registered-port & netsh interface ipv4 show excludedportrange protocol=tcp]
     }
 }

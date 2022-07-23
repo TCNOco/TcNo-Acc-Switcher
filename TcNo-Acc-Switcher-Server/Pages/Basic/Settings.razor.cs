@@ -22,213 +22,212 @@ using Microsoft.AspNetCore.Components.Forms;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General;
 
-namespace TcNo_Acc_Switcher_Server.Pages.Basic
+namespace TcNo_Acc_Switcher_Server.Pages.Basic;
+
+public partial class Settings
 {
-    public partial class Settings
+    private static readonly Lang Lang = Lang.Instance;
+    [Inject]
+    public AppData AppData { get; set; }
+    protected override void OnInitialized()
     {
-        private static readonly Lang Lang = Lang.Instance;
-        [Inject]
-        public AppData AppData { get; set; }
-        protected override void OnInitialized()
+        AppData.WindowTitle = Lang["Title_Template_Settings", new { platformName = CurrentPlatform.FullName }];
+        Globals.DebugWriteLine(@"[Auto:Basic\Settings.razor.cs.OnInitializedAsync]");
+    }
+
+    #region SETTINGS_GENERAL
+    // BUTTON: Pick folder
+    public void PickFolder()
+    {
+        Globals.DebugWriteLine(@"[ButtonClicked:Basic\Settings.razor.cs.PickFolder]");
+        ModalFuncs.ShowUpdatePlatformFolderModal();
+    }
+
+    // BUTTON: Reset settings
+    public static void ClearSettings()
+    {
+        Globals.DebugWriteLine(@"[ButtonClicked:Basic\Settings.razor.cs.ClearSettings]");
+        Data.Settings.Basic.ResetSettings();
+        AppData.NavigateToWithToast("/Basic/", "success", Lang["Success"], Lang["Toast_ClearedPlatformSettings", new { platform = "Basic" }]);
+    }
+    #endregion
+
+    private static bool _currentlyBackingUp;
+    private static bool _currentlyRestoring;
+    private async void RestoreFile(InputFileChangeEventArgs e)
+    {
+        if (!_currentlyRestoring)
+            _currentlyRestoring = true;
+        else
         {
-            AppData.WindowTitle = Lang["Title_Template_Settings", new { platformName = CurrentPlatform.FullName }];
-            Globals.DebugWriteLine(@"[Auto:Basic\Settings.razor.cs.OnInitializedAsync]");
+            await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RestoreBusy"], renderTo: "toastarea");
+            return;
         }
 
-        #region SETTINGS_GENERAL
-        // BUTTON: Pick folder
-        public void PickFolder()
+        foreach (var file in e.GetMultipleFiles(1))
         {
-            Globals.DebugWriteLine(@"[ButtonClicked:Basic\Settings.razor.cs.PickFolder]");
-            ModalFuncs.ShowUpdatePlatformFolderModal();
-        }
-
-        // BUTTON: Reset settings
-        public static void ClearSettings()
-        {
-            Globals.DebugWriteLine(@"[ButtonClicked:Basic\Settings.razor.cs.ClearSettings]");
-            Data.Settings.Basic.ResetSettings();
-            AppData.NavigateToWithToast("/Basic/", "success", Lang["Success"], Lang["Toast_ClearedPlatformSettings", new { platform = "Basic" }]);
-        }
-        #endregion
-
-        private static bool _currentlyBackingUp;
-        private static bool _currentlyRestoring;
-        private async void RestoreFile(InputFileChangeEventArgs e)
-        {
-            if (!_currentlyRestoring)
-                _currentlyRestoring = true;
-            else
-            {
-                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RestoreBusy"], renderTo: "toastarea");
-                return;
-            }
-
-            foreach (var file in e.GetMultipleFiles(1))
-            {
-                try
-                {
-                    if (!file.Name.EndsWith("7z")) continue;
-
-                    await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_RestoreExt"], renderTo: "toastarea");
-
-                    var outputFolder = Path.Join("Restore", Path.GetFileNameWithoutExtension(file.Name));
-                    Directory.CreateDirectory(outputFolder);
-                    var tempFile = Path.Join("Restore", file.Name);
-
-                    // Import 7z
-                    var s = file.OpenReadStream(4294967296); // 4 GB as bytes
-                    var fs = File.Create(tempFile);
-                    await s.CopyToAsync(fs);
-                    fs.Close();
-
-                    // Decompress and remove temp file
-                    Globals.DecompressZip(tempFile, outputFolder);
-                    File.Delete(tempFile);
-
-                    await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_RestoreCopying"], renderTo: "toastarea");
-
-                    // Move files and folders back
-                    foreach (var (toPath, fromPath) in CurrentPlatform.BackupPaths)
-                    {
-                        var fullFromPath = Path.Join(outputFolder, fromPath);
-                        if (Globals.IsFile(fullFromPath))
-                            Globals.CopyFile(fullFromPath, toPath);
-                        else if (Globals.IsFolder(fullFromPath))
-                        {
-                            if (!Globals.CopyFilesRecursive(fullFromPath, toPath))
-                                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
-                        }
-                    }
-
-                    await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_RestoreDeleting"], renderTo: "toastarea");
-
-                    // Remove temp files
-                    Globals.RecursiveDelete(outputFolder, false);
-
-                    await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_RestoreComplete"], renderTo: "toastarea");
-                }
-                catch (Exception ex)
-                {
-                    Globals.WriteToLog("Failed to restore from file: " + file.Name, ex);
-                    await GeneralInvocableFuncs.ShowToast("error", Lang["Status_FailedLog"], renderTo: "toastarea");
-
-                }
-                _currentlyRestoring = false;
-            }
-        }
-
-        /// <summary>
-        /// Backs up platform folders, settings, etc - as defined in the platform settings json
-        /// </summary>
-        private async Task BackupButton(bool everything = false)
-        {
-            if (!_currentlyBackingUp)
-                _currentlyBackingUp = true;
-            else
-            {
-                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BackupBusy"], renderTo: "toastarea");
-                return;
-            }
-            // Let user know it's copying files to a temp location
-            await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_BackupCopy"], renderTo: "toastarea");
-
-            // Generate temporary folder:
-            var tempFolder = $"BackupTemp\\Backup_{CurrentPlatform.FullName}_{DateTime.Now:dd-MM-yyyy_hh-mm-ss}";
-            Directory.CreateDirectory("Backups\\BackupTemp");
-
-            if (!everything)
-                foreach (var (f, t) in CurrentPlatform.BackupPaths)
-                {
-                    var fExpanded = BasicSwitcherFuncs.ExpandEnvironmentVariables(f);
-                    var dest = Path.Join(tempFolder, t);
-
-                    // Handle file entry
-                    if (Globals.IsFile(f))
-                    {
-                        Globals.CopyFile(f, dest);
-                        continue;
-                    }
-                    if (!Directory.Exists(fExpanded)) continue;
-
-                    // Handle folder entry
-                    if (CurrentPlatform.BackupFileTypesInclude.Count > 0)
-                        Globals.CopyFilesRecursive(fExpanded, dest, true, CurrentPlatform.BackupFileTypesInclude, true);
-                    else if (CurrentPlatform.BackupFileTypesIgnore.Count > 0)
-                        Globals.CopyFilesRecursive(fExpanded, dest, true, CurrentPlatform.BackupFileTypesIgnore, false);
-                }
-            else
-                foreach (var (f, t) in CurrentPlatform.BackupPaths)
-                {
-                    var fExpanded = BasicSwitcherFuncs.ExpandEnvironmentVariables(f);
-                    var dest = Path.Join(tempFolder, t);
-
-                    // Handle file entry
-                    if (Globals.IsFile(f))
-                    {
-                        Globals.CopyFile(f, dest);
-                        continue;
-                    }
-                    if (!Directory.Exists(fExpanded)) continue;
-
-                    // Handle folder entry
-                    if (!Globals.CopyFilesRecursive(fExpanded, dest))
-                        await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
-                }
-
-            var backupThread = new Thread(FinishBackup(tempFolder).RunSynchronously);
-            backupThread.Start();
-        }
-
-        /// <summary>
-        /// Runs async so the previous function can return, and an error isn't thrown with the Blazor function timeout
-        /// </summary>
-        private static async Task FinishBackup(string tempFolder)
-        {
-
-            var folderSize = Globals.FolderSizeString(tempFolder);
-            await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_BackupCompress", new { size = folderSize }], duration: 3000, renderTo: "toastarea");
-
-            var zipFile = Path.Join("Backups", (tempFolder.Contains("\\") ? tempFolder.Split("\\")[1] : tempFolder) + ".7z");
-
-            var backupWatcher = new Thread(CompressionUpdater(zipFile).RunSynchronously);
-            backupWatcher.Start();
             try
             {
-                Globals.CompressFolder(tempFolder, zipFile);
-            }
-            catch (Exception e)
-            {
-                if (e is FileNotFoundException && e.ToString().Contains("7z.dll"))
+                if (!file.Name.EndsWith("7z")) continue;
+
+                await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_RestoreExt"], renderTo: "toastarea");
+
+                var outputFolder = Path.Join("Restore", Path.GetFileNameWithoutExtension(file.Name));
+                Directory.CreateDirectory(outputFolder);
+                var tempFile = Path.Join("Restore", file.Name);
+
+                // Import 7z
+                var s = file.OpenReadStream(4294967296); // 4 GB as bytes
+                var fs = File.Create(tempFile);
+                await s.CopyToAsync(fs);
+                fs.Close();
+
+                // Decompress and remove temp file
+                Globals.DecompressZip(tempFile, outputFolder);
+                File.Delete(tempFile);
+
+                await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_RestoreCopying"], renderTo: "toastarea");
+
+                // Move files and folders back
+                foreach (var (toPath, fromPath) in CurrentPlatform.BackupPaths)
                 {
-                    await GeneralInvocableFuncs.ShowToast("error", Lang["Error_RequiredFileVerify"],
-                        "Stylesheet error", "toastarea");
+                    var fullFromPath = Path.Join(outputFolder, fromPath);
+                    if (Globals.IsFile(fullFromPath))
+                        Globals.CopyFile(fullFromPath, toPath);
+                    else if (Globals.IsFolder(fullFromPath))
+                    {
+                        if (!Globals.CopyFilesRecursive(fullFromPath, toPath))
+                            await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
+                    }
                 }
+
+                await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_RestoreDeleting"], renderTo: "toastarea");
+
+                // Remove temp files
+                Globals.RecursiveDelete(outputFolder, false);
+
+                await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_RestoreComplete"], renderTo: "toastarea");
             }
-
-            Globals.RecursiveDelete(tempFolder, false);
-            await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_BackupComplete", new { size = folderSize, compressedSize = Globals.FileSizeString(zipFile) }], renderTo: "toastarea");
-
-            _currentlyBackingUp = false;
-        }
-
-        /// <summary>
-        /// Keeps the user updated with compression progress
-        /// </summary>
-        private static async Task CompressionUpdater(string zipFile)
-        {
-            Thread.Sleep(3500);
-            while (_currentlyBackingUp)
+            catch (Exception ex)
             {
-                await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_BackupProgress", new { compressedSize = Globals.FileSizeString(zipFile) }], duration: 1000, renderTo: "toastarea");
-                Thread.Sleep(2000);
+                Globals.WriteToLog("Failed to restore from file: " + file.Name, ex);
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Status_FailedLog"], renderTo: "toastarea");
+
+            }
+            _currentlyRestoring = false;
+        }
+    }
+
+    /// <summary>
+    /// Backs up platform folders, settings, etc - as defined in the platform settings json
+    /// </summary>
+    private async Task BackupButton(bool everything = false)
+    {
+        if (!_currentlyBackingUp)
+            _currentlyBackingUp = true;
+        else
+        {
+            await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BackupBusy"], renderTo: "toastarea");
+            return;
+        }
+        // Let user know it's copying files to a temp location
+        await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_BackupCopy"], renderTo: "toastarea");
+
+        // Generate temporary folder:
+        var tempFolder = $"BackupTemp\\Backup_{CurrentPlatform.FullName}_{DateTime.Now:dd-MM-yyyy_hh-mm-ss}";
+        Directory.CreateDirectory("Backups\\BackupTemp");
+
+        if (!everything)
+            foreach (var (f, t) in CurrentPlatform.BackupPaths)
+            {
+                var fExpanded = BasicSwitcherFuncs.ExpandEnvironmentVariables(f);
+                var dest = Path.Join(tempFolder, t);
+
+                // Handle file entry
+                if (Globals.IsFile(f))
+                {
+                    Globals.CopyFile(f, dest);
+                    continue;
+                }
+                if (!Directory.Exists(fExpanded)) continue;
+
+                // Handle folder entry
+                if (CurrentPlatform.BackupFileTypesInclude.Count > 0)
+                    Globals.CopyFilesRecursive(fExpanded, dest, true, CurrentPlatform.BackupFileTypesInclude, true);
+                else if (CurrentPlatform.BackupFileTypesIgnore.Count > 0)
+                    Globals.CopyFilesRecursive(fExpanded, dest, true, CurrentPlatform.BackupFileTypesIgnore, false);
+            }
+        else
+            foreach (var (f, t) in CurrentPlatform.BackupPaths)
+            {
+                var fExpanded = BasicSwitcherFuncs.ExpandEnvironmentVariables(f);
+                var dest = Path.Join(tempFolder, t);
+
+                // Handle file entry
+                if (Globals.IsFile(f))
+                {
+                    Globals.CopyFile(f, dest);
+                    continue;
+                }
+                if (!Directory.Exists(fExpanded)) continue;
+
+                // Handle folder entry
+                if (!Globals.CopyFilesRecursive(fExpanded, dest))
+                    await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
+            }
+
+        var backupThread = new Thread(FinishBackup(tempFolder).RunSynchronously);
+        backupThread.Start();
+    }
+
+    /// <summary>
+    /// Runs async so the previous function can return, and an error isn't thrown with the Blazor function timeout
+    /// </summary>
+    private static async Task FinishBackup(string tempFolder)
+    {
+
+        var folderSize = Globals.FolderSizeString(tempFolder);
+        await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_BackupCompress", new { size = folderSize }], duration: 3000, renderTo: "toastarea");
+
+        var zipFile = Path.Join("Backups", (tempFolder.Contains("\\") ? tempFolder.Split("\\")[1] : tempFolder) + ".7z");
+
+        var backupWatcher = new Thread(CompressionUpdater(zipFile).RunSynchronously);
+        backupWatcher.Start();
+        try
+        {
+            Globals.CompressFolder(tempFolder, zipFile);
+        }
+        catch (Exception e)
+        {
+            if (e is FileNotFoundException && e.ToString().Contains("7z.dll"))
+            {
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Error_RequiredFileVerify"],
+                    "Stylesheet error", "toastarea");
             }
         }
 
-        private void OpenBackupFolder()
+        Globals.RecursiveDelete(tempFolder, false);
+        await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_BackupComplete", new { size = folderSize, compressedSize = Globals.FileSizeString(zipFile) }], renderTo: "toastarea");
+
+        _currentlyBackingUp = false;
+    }
+
+    /// <summary>
+    /// Keeps the user updated with compression progress
+    /// </summary>
+    private static async Task CompressionUpdater(string zipFile)
+    {
+        Thread.Sleep(3500);
+        while (_currentlyBackingUp)
         {
-            if (Directory.Exists("Backups"))
-                Process.Start("explorer.exe", Path.GetFullPath("Backups"));
+            await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_BackupProgress", new { compressedSize = Globals.FileSizeString(zipFile) }], duration: 1000, renderTo: "toastarea");
+            Thread.Sleep(2000);
         }
+    }
+
+    private void OpenBackupFolder()
+    {
+        if (Directory.Exists("Backups"))
+            Process.Start("explorer.exe", Path.GetFullPath("Backups"));
     }
 }

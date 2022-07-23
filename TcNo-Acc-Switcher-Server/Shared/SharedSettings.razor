@@ -142,7 +142,7 @@
     </label>
 </div>
 
-@if (AppState.IsTcNoClientApp)
+@if (StaticFuncs.IsTcNoClientApp)
 {
     <div class="rowSetting">
         <div class="form-check">
@@ -167,7 +167,7 @@
         <a class="fancyLink" @onclick="TrySetUserData">@Lang["Settings_SetDataLocation"]</a>
     </p>
 </div>
-@if (AppState.IsTcNoClientApp)
+@if (StaticFuncs.IsTcNoClientApp)
 {
     <div class="rowSetting rowDropdown">
         <span>@Lang["Settings_Header_ActiveBrowser"]</span>

@@ -27,167 +27,166 @@ using TcNo_Acc_Switcher_Server.State.Interfaces;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace TcNo_Acc_Switcher_Server.State
+namespace TcNo_Acc_Switcher_Server.State;
+
+/// <summary>
+/// NOTE: This "Lang" is temporary, and will replace the old Lang later.
+/// The old method does not use Singleton instances properly -- Or even at all!
+/// This should be much better when it's set up and replaced everything.
+/// For now, having 2 loaded in memory should not be an issue.
+/// </summary>
+public class Lang : ILang
 {
+    [Inject] private WindowSettings WindowSettings { get; set; }
+
+    public Dictionary<string, string> Strings { get; set; } = new();
+    public string Current { get; set; } = "";
+
     /// <summary>
-    /// NOTE: This "Lang" is temporary, and will replace the old Lang later.
-    /// The old method does not use Singleton instances properly -- Or even at all!
-    /// This should be much better when it's set up and replaced everything.
-    /// For now, having 2 loaded in memory should not be an issue.
+    /// Get a string
     /// </summary>
-    public class Lang : ILang
+    public string this[string key] => Strings.ContainsKey(key) ? Strings[key] : key;
+
+    /// <summary>
+    /// Get a string, and replace variables
+    /// </summary>
+    /// <param name="key">String to look up</param>
+    /// <param name="obj">Object of variables to replace</param>
+    public string this[string key, object obj]
     {
-        [Inject] private WindowSettings WindowSettings { get; set; }
-
-        public Dictionary<string, string> Strings { get; set; } = new();
-        public string Current { get; set; } = "";
-
-        /// <summary>
-        /// Get a string
-        /// </summary>
-        public string this[string key] => Strings.ContainsKey(key) ? Strings[key] : key;
-
-        /// <summary>
-        /// Get a string, and replace variables
-        /// </summary>
-        /// <param name="key">String to look up</param>
-        /// <param name="obj">Object of variables to replace</param>
-        public string this[string key, object obj]
-        {
-            get
-            {
-                try
-                {
-                    if (!Strings.ContainsKey(key)) return key;
-                    var s = Strings[key];
-                    if (obj is JsonElement)
-                        foreach (var (k, v) in JObject.FromObject(JsonConvert.DeserializeObject(obj.ToString()!)!))
-                        {
-                            if (v != null) s = s.Replace($"{{{k}}}", v.Value<string>());
-                        }
-                    else
-                        foreach (var pi in obj.GetType().GetProperties())
-                        {
-                            dynamic val = pi.GetValue(obj, null);
-                            if (val is int) val = val.ToString();
-                            s = s.Replace($"{{{pi.Name}}}", (string)val);
-                        }
-                    return s;
-                }
-                catch (NullReferenceException e)
-                {
-                    Globals.WriteToLog(e);
-                    return "[Failed to get text: missing parameter] " + key;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Loads the default en-US language on creation.
-        /// Any strings missing from other languages will use the en-US fallback.
-        /// </summary>
-        public Lang()
-        {
-            Load("en-US");
-
-            // If language is not set, try and load from the user's language.
-            // Or load the user's language
-            Load(WindowSettings.Language == "" ? CultureInfo.CurrentCulture.Name : WindowSettings.Language);
-        }
-
-        #region FILE_HANDLING
-        /// <summary>
-        /// Tries to load a requested language
-        /// </summary>
-        /// <param name="lang">Formatted language, example: "en-US"</param>
-        public bool LoadLang(string lang)
-        {
-            Load("en-US");
-            return Load(lang);
-        }
-
-        /// <summary>
-        /// Get list of files in Resources folder
-        /// </summary>
-        public readonly List<string> AvailableLanguages = Directory.GetFiles(Path.Join(Globals.AppDataFolder, "Resources")).Select(f => Path.GetFileName(f).Split(".yml")[0]).ToList();
-        public Dictionary<string, string> GetAvailableLanguagesDict()
-        {
-            var dict = AvailableLanguages.ToDictionary(l => new CultureInfo(l).DisplayName);
-            dict.Remove("English (Portugal)");
-            dict["English (Pirate)"] = "en-PT";
-            return dict;
-        }
-
-        public KeyValuePair<string, string> GetCurrentLanguage()
-        {
-            if (Current == "en-PT") return new KeyValuePair<string, string>("English (Pirate)", Current);
-            return new KeyValuePair<string, string>(new CultureInfo(Current).DisplayName, Current);
-        }
-
-        public bool Load(string filename)
+        get
         {
             try
             {
-                var path = Path.Join(Globals.AppDataFolder, "Resources", filename + ".yml");
-
-                // If the path doesn't exist: Find the closest available language.
-                if (!File.Exists(path))
-                {
-                    // Get closest available language
-                    var langGroup = filename.Split('-')[0];
-                    var foundClose = false;
-                    foreach (var l in AvailableLanguages.Where(l => l.StartsWith(langGroup)))
+                if (!Strings.ContainsKey(key)) return key;
+                var s = Strings[key];
+                if (obj is JsonElement)
+                    foreach (var (k, v) in JObject.FromObject(JsonConvert.DeserializeObject(obj.ToString()!)!))
                     {
-                        // A close language was found, and was set.
-                        path = Path.Join(Globals.AppDataFolder, "Resources", l + ".yml");
-                        foundClose = true;
-                        Current = l;
-                        WindowSettings.Language = filename;
-                        WindowSettings.Save();
-                        break;
+                        if (v != null) s = s.Replace($"{{{k}}}", v.Value<string>());
                     }
-
-                    // If could not find a language close to requested.
-                    // The current language will remain English
-                    if (!foundClose)
-                        return false;
-                }
-
-                // Load from en-EN file into Strings
-                var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
-                var text = Globals.ReadAllText(path);
-                var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(text)));
-                Debug.Assert(dict != null, nameof(dict) + " != null"); // These files have to exist, or the program will break in many ways
-                foreach (var (k, v) in dict)
-                {
-                    Strings[k] = v;
-                }
-
-                Current = filename;
-
-                // Save the language if it has changed.
-                if (WindowSettings.Language == filename) return true;
-                WindowSettings.Language = filename;
-                WindowSettings.Save();
-                return true;
+                else
+                    foreach (var pi in obj.GetType().GetProperties())
+                    {
+                        dynamic val = pi.GetValue(obj, null);
+                        if (val is int) val = val.ToString();
+                        s = s.Replace($"{{{pi.Name}}}", (string)val);
+                    }
+                return s;
             }
-            catch (Exception e)
+            catch (NullReferenceException e)
             {
-                Globals.WriteToLog("Can not load language information! See log for more info!", e);
-                return false;
+                Globals.WriteToLog(e);
+                return "[Failed to get text: missing parameter] " + key;
             }
         }
-        #endregion
     }
-    public class LangSub
-    {
-        public string LangKey { get; set; }
-        public object Variable { get; set; }
 
-        public LangSub(string key, object var)
+    /// <summary>
+    /// Loads the default en-US language on creation.
+    /// Any strings missing from other languages will use the en-US fallback.
+    /// </summary>
+    public Lang()
+    {
+        Load("en-US");
+
+        // If language is not set, try and load from the user's language.
+        // Or load the user's language
+        Load(WindowSettings.Language == "" ? CultureInfo.CurrentCulture.Name : WindowSettings.Language);
+    }
+
+    #region FILE_HANDLING
+    /// <summary>
+    /// Tries to load a requested language
+    /// </summary>
+    /// <param name="lang">Formatted language, example: "en-US"</param>
+    public bool LoadLang(string lang)
+    {
+        Load("en-US");
+        return Load(lang);
+    }
+
+    /// <summary>
+    /// Get list of files in Resources folder
+    /// </summary>
+    public readonly List<string> AvailableLanguages = Directory.GetFiles(Path.Join(Globals.AppDataFolder, "Resources")).Select(f => Path.GetFileName(f).Split(".yml")[0]).ToList();
+    public Dictionary<string, string> GetAvailableLanguagesDict()
+    {
+        var dict = AvailableLanguages.ToDictionary(l => new CultureInfo(l).DisplayName);
+        dict.Remove("English (Portugal)");
+        dict["English (Pirate)"] = "en-PT";
+        return dict;
+    }
+
+    public KeyValuePair<string, string> GetCurrentLanguage()
+    {
+        if (Current == "en-PT") return new KeyValuePair<string, string>("English (Pirate)", Current);
+        return new KeyValuePair<string, string>(new CultureInfo(Current).DisplayName, Current);
+    }
+
+    public bool Load(string filename)
+    {
+        try
         {
-            LangKey = key;
-            Variable = var;
+            var path = Path.Join(Globals.AppDataFolder, "Resources", filename + ".yml");
+
+            // If the path doesn't exist: Find the closest available language.
+            if (!File.Exists(path))
+            {
+                // Get closest available language
+                var langGroup = filename.Split('-')[0];
+                var foundClose = false;
+                foreach (var l in AvailableLanguages.Where(l => l.StartsWith(langGroup)))
+                {
+                    // A close language was found, and was set.
+                    path = Path.Join(Globals.AppDataFolder, "Resources", l + ".yml");
+                    foundClose = true;
+                    Current = l;
+                    WindowSettings.Language = filename;
+                    WindowSettings.Save();
+                    break;
+                }
+
+                // If could not find a language close to requested.
+                // The current language will remain English
+                if (!foundClose)
+                    return false;
+            }
+
+            // Load from en-EN file into Strings
+            var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
+            var text = Globals.ReadAllText(path);
+            var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(text)));
+            Debug.Assert(dict != null, nameof(dict) + " != null"); // These files have to exist, or the program will break in many ways
+            foreach (var (k, v) in dict)
+            {
+                Strings[k] = v;
+            }
+
+            Current = filename;
+
+            // Save the language if it has changed.
+            if (WindowSettings.Language == filename) return true;
+            WindowSettings.Language = filename;
+            WindowSettings.Save();
+            return true;
         }
+        catch (Exception e)
+        {
+            Globals.WriteToLog("Can not load language information! See log for more info!", e);
+            return false;
+        }
+    }
+    #endregion
+}
+public class LangSub
+{
+    public string LangKey { get; set; }
+    public object Variable { get; set; }
+
+    public LangSub(string key, object var)
+    {
+        LangKey = key;
+        Variable = var;
     }
 }

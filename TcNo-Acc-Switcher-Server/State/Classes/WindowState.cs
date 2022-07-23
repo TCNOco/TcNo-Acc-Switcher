@@ -18,34 +18,33 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using TcNo_Acc_Switcher_Globals;
 
-namespace TcNo_Acc_Switcher_Server.State.Classes
+namespace TcNo_Acc_Switcher_Server.State.Classes;
+
+public class WindowState : INotifyPropertyChanged
 {
-    public class WindowState : INotifyPropertyChanged
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+    protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
-        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
-
-        // Window stuff
-        private string _windowTitle = "TcNo Account Switcher";
-        public string WindowTitle
-        {
-            get => _windowTitle;
-            set
-            {
-                SetField(ref _windowTitle, value);
-                Globals.WriteToLog($"{Environment.NewLine}Window Title changed to: {value}");
-            }
-        }
-
-        public bool FirstMainMenuVisit { get; set; }
+        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+        field = value;
+        OnPropertyChanged(propertyName);
+        return true;
     }
+
+    // Window stuff
+    private string _windowTitle = "TcNo Account Switcher";
+    public string WindowTitle
+    {
+        get => _windowTitle;
+        set
+        {
+            SetField(ref _windowTitle, value);
+            Globals.WriteToLog($"{Environment.NewLine}Window Title changed to: {value}");
+        }
+    }
+
+    public bool FirstMainMenuVisit { get; set; }
 }

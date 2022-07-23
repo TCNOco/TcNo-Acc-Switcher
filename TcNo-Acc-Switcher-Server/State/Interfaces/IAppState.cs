@@ -29,11 +29,6 @@ public interface IAppState
     Switcher Switcher { get; set; }
     WindowState WindowState { get; set; }
 
-    /// <summary>
-    /// Is running with the official window, or just the server in a browser.
-    /// </summary>
-    bool IsTcNoClientApp { get; set; }
-
     event PropertyChangedEventHandler PropertyChanged;
     void OpenFolder(string folder);
 }

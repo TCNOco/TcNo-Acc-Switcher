@@ -14,27 +14,26 @@
 
 using Microsoft.JSInterop;
 
-namespace TcNo_Acc_Switcher_Server.Data
+namespace TcNo_Acc_Switcher_Server.Data;
+
+public class GenericFunctions
 {
-    public class GenericFunctions
+    /// <summary>
+    /// Save settings with Ctrl+S Hot key
+    /// </summary>
+    [JSInvokable]
+    public void GiCtrlS(string platform)
     {
-        /// <summary>
-        /// Save settings with Ctrl+S Hot key
-        /// </summary>
-        [JSInvokable]
-        public void GiCtrlS(string platform)
+        AppSettings.SaveSettings();
+        switch (platform)
         {
-            AppSettings.SaveSettings();
-            switch (platform)
-            {
-                case "Steam":
-                    Steam.SaveSettings();
-                    break;
-                case "Basic":
-                    Basic.SaveSettings();
-                    break;
-            }
-            AData.ShowToastLang(ToastType.Success, "Saved");
+            case "Steam":
+                Steam.SaveSettings();
+                break;
+            case "Basic":
+                Basic.SaveSettings();
+                break;
         }
+        AData.ShowToastLang(ToastType.Success, "Saved");
     }
 }

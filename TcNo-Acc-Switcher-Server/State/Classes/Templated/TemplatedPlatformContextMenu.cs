@@ -22,47 +22,46 @@ using TcNo_Acc_Switcher_Server.Shared;
 using TcNo_Acc_Switcher_Server.Shared.ContextMenu;
 using TcNo_Acc_Switcher_Server.State.Interfaces;
 
-namespace TcNo_Acc_Switcher_Server.State.Classes.Templated
+namespace TcNo_Acc_Switcher_Server.State.Classes.Templated;
+
+public class TemplatedPlatformContextMenu
 {
-    public class TemplatedPlatformContextMenu
+    [Inject] private Lang Lang { get; set; }
+    [Inject] private Modals Modals { get; set; }
+    [Inject] IAppState AppState { get; set; }
+    [Inject] Toasts Toasts { get; set; }
+    [Inject] TemplatedPlatformState TemplatedPlatformState { get; set; }
+
+
+    public readonly ObservableCollection<MenuItem> ContextMenuItems = new();
+    private void BuildContextMenu()
     {
-        [Inject] private Lang Lang { get; set; }
-        [Inject] private Modals Modals { get; set; }
-        [Inject] IAppState AppState { get; set; }
-        [Inject] Toasts Toasts { get; set; }
-        [Inject] TemplatedPlatformState TemplatedPlatformState { get; set; }
-
-
-        public readonly ObservableCollection<MenuItem> ContextMenuItems = new();
-        private void BuildContextMenu()
-        {
-            ContextMenuItems.Clear();
-            ContextMenuItems.AddRange(new MenuBuilder(
-                new[]
-                {
-                    new ("Context_SwapTo", new Action(async () => await TemplatedPlatformState.SwapToAccount())),
-                    new ("Context_CopyUsername", new Action(async () => await AppFuncs.CopyText(AppState.Switcher.SelectedAccount.DisplayName))),
-                    new ("Context_ChangeName", new Action(Modals.ShowChangeUsernameModal)),
-                    new ("Context_CreateShortcut", new Action(async () => await GeneralInvocableFuncs.CreateShortcut())),
-                    new ("Context_ChangeImage", new Action(Modals.ShowChangeAccImageModal)),
-                    new ("Forget", new Action(async () => await AppFuncs.ForgetAccount())),
-                    new ("Notes", new Action(() => Modals.ShowModal("notes"))),
-                    BasicStats.PlatformHasAnyGames(CurrentPlatform.SafeName) ?
-                        new Tuple<string, object>("Context_ManageGameStats", new Action(Modals.ShowGameStatsSelectorModal)) : null,
-                }).Result());
-        }
-
-        public readonly ObservableCollection<MenuItem> ContextMenuShortcutItems = new MenuBuilder(
-            new Tuple<string, object>[]
+        ContextMenuItems.Clear();
+        ContextMenuItems.AddRange(new MenuBuilder(
+            new[]
             {
-                new ("Context_RunAdmin", "shortcut('admin')"),
-                new ("Context_Hide", "shortcut('hide')"),
-            }).Result();
-
-        public readonly ObservableCollection<MenuItem> ContextMenuPlatformItems = new MenuBuilder(
-            new Tuple<string, object>("Context_RunAdmin", "shortcut('admin')")
-        ).Result();
-
-
+                new ("Context_SwapTo", new Action(async () => await TemplatedPlatformState.SwapToAccount())),
+                new ("Context_CopyUsername", new Action(async () => await AppFuncs.CopyText(AppState.Switcher.SelectedAccount.DisplayName))),
+                new ("Context_ChangeName", new Action(Modals.ShowChangeUsernameModal)),
+                new ("Context_CreateShortcut", new Action(async () => await GeneralInvocableFuncs.CreateShortcut())),
+                new ("Context_ChangeImage", new Action(Modals.ShowChangeAccImageModal)),
+                new ("Forget", new Action(async () => await AppFuncs.ForgetAccount())),
+                new ("Notes", new Action(() => Modals.ShowModal("notes"))),
+                BasicStats.PlatformHasAnyGames(CurrentPlatform.SafeName) ?
+                    new Tuple<string, object>("Context_ManageGameStats", new Action(Modals.ShowGameStatsSelectorModal)) : null,
+            }).Result());
     }
+
+    public readonly ObservableCollection<MenuItem> ContextMenuShortcutItems = new MenuBuilder(
+        new Tuple<string, object>[]
+        {
+            new ("Context_RunAdmin", "shortcut('admin')"),
+            new ("Context_Hide", "shortcut('hide')"),
+        }).Result();
+
+    public readonly ObservableCollection<MenuItem> ContextMenuPlatformItems = new MenuBuilder(
+        new Tuple<string, object>("Context_RunAdmin", "shortcut('admin')")
+    ).Result();
+
+
 }

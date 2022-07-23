@@ -37,147 +37,145 @@ using TcNo_Acc_Switcher_Server;
 using TcNo_Acc_Switcher_Server.State;
 using Point = System.Drawing.Point;
 
-namespace TcNo_Acc_Switcher_Client
+namespace TcNo_Acc_Switcher_Client;
+
+/// <summary>
+/// Interaction logic for MainWindow.xaml
+/// </summary>
+
+// This is reported as "never used" by JetBrains Inspector... what?
+public partial class MainWindow
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+    private readonly WindowSettings windowSettings;
 
-    // This is reported as "never used" by JetBrains Inspector... what?
-    public partial class MainWindow
+    private readonly Thread Server;
+    private static string _address = "";
+    private readonly string _mainBrowser; // <CEF/WebView>
+
+    private void RunServer()
     {
-        private readonly WindowSettings windowSettings;
-
-        private readonly Thread Server;
-        private static string _address = "";
-        private readonly string _mainBrowser; // <CEF/WebView>
-
-        private void RunServer()
+        const string serverPath = "TcNo-Acc-Switcher-Server_main.exe";
+        if (Process.GetProcessesByName(Path.GetFileNameWithoutExtension(serverPath)).Length > 0)
         {
-            const string serverPath = "TcNo-Acc-Switcher-Server_main.exe";
-            if (Process.GetProcessesByName(Path.GetFileNameWithoutExtension(serverPath)).Length > 0)
-            {
-                Globals.WriteToLog("Server was already running. Killing process.");
-                Globals.KillProcess(serverPath); // Kill server if already running
-            }
-
-            var attempts = 0;
-            while (!Program.MainProgram(new[] { _address, "nobrowser" }) && attempts < 10)
-            {
-                windowSettings.ServerPort = Program.FindOpenPort(windowSettings.ServerPort);
-                _address = "--urls=http://localhost:" + windowSettings.ServerPort + "/";
-                attempts++;
-            }
-            if (attempts == 10)
-                MessageBox.Show("The TcNo-Acc-Switcher-Server.exe attempted to launch 10 times and failed every time. Every attempted port is taken, or another issue occurred. Check the log file for more info.", "Server start failed!", MessageBoxButton.OK, MessageBoxImage.Error);
+            Globals.WriteToLog("Server was already running. Killing process.");
+            Globals.KillProcess(serverPath); // Kill server if already running
         }
 
-        private static bool IsAdmin()
+        var attempts = 0;
+        while (!Program.MainProgram(new[] { _address, "nobrowser" }) && attempts < 10)
         {
-            // Checks whether program is running as Admin or not
-            var securityIdentifier = WindowsIdentity.GetCurrent().Owner;
-            return securityIdentifier is not null && securityIdentifier.IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid);
+            windowSettings.ServerPort = Program.FindOpenPort(windowSettings.ServerPort);
+            _address = "--urls=http://localhost:" + windowSettings.ServerPort + "/";
+            attempts++;
+        }
+        if (attempts == 10)
+            MessageBox.Show("The TcNo-Acc-Switcher-Server.exe attempted to launch 10 times and failed every time. Every attempted port is taken, or another issue occurred. Check the log file for more info.", "Server start failed!", MessageBoxButton.OK, MessageBoxImage.Error);
+    }
+
+    private static bool IsAdmin()
+    {
+        // Checks whether program is running as Admin or not
+        var securityIdentifier = WindowsIdentity.GetCurrent().Owner;
+        return securityIdentifier is not null && securityIdentifier.IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid);
+    }
+
+    public MainWindow(WindowSettings wSettings)
+    {
+        windowSettings = wSettings;
+        _mainBrowser = windowSettings.ActiveBrowser;
+
+        // Set working directory to documents folder
+        Directory.SetCurrentDirectory(Globals.UserDataFolder);
+
+        if (Directory.Exists(Path.Join(Globals.AppDataFolder, "wwwroot")))
+        {
+            if (Globals.InstalledToProgramFiles() && !IsAdmin() || !Globals.HasFolderAccess(Globals.AppDataFolder))
+                Restart("", true);
+            Globals.RecursiveDelete(Globals.OriginalWwwroot, false);
+            Directory.Move(Path.Join(Globals.AppDataFolder, "wwwroot"), Globals.OriginalWwwroot);
         }
 
-        public MainWindow(WindowSettings wSettings)
+        // Start web server
+        Server = new Thread(RunServer)
         {
-            windowSettings = wSettings;
-            _mainBrowser = windowSettings.ActiveBrowser;
+            IsBackground = true
+        };
+        Server.Start();
 
-            // Set working directory to documents folder
-            Directory.SetCurrentDirectory(Globals.UserDataFolder);
+        // Initialize correct browser
+        BrowserInit();
 
-            if (Directory.Exists(Path.Join(Globals.AppDataFolder, "wwwroot")))
-            {
-                if (Globals.InstalledToProgramFiles() && !IsAdmin() || !Globals.HasFolderAccess(Globals.AppDataFolder))
-                    Restart("", true);
-                Globals.RecursiveDelete(Globals.OriginalWwwroot, false);
-                Directory.Move(Path.Join(Globals.AppDataFolder, "wwwroot"), Globals.OriginalWwwroot);
-            }
+        // Initialise and connect to web server above
+        InitializeComponent();
+        AddBrowser();
 
-            AppData.TcNoClientApp = true;
+        if (_mainBrowser == "WebView")
+        {
+            // Attempt to fix window showing as blank.
+            // See https://github.com/MicrosoftEdge/WebView2Feedback/issues/1077#issuecomment-856222593593
+            _mView2.Visibility = Visibility.Hidden;
+            _mView2.Visibility = Visibility.Visible;
+        }
+        else
+        {
+            _cefView.BrowserSettings.WindowlessFrameRate = 60;
+            _cefView.Visibility = Visibility.Visible;
+            _cefView.Load("http://localhost:" + windowSettings.ServerPort + "/");
+        }
 
-            // Start web server
-            Server = new Thread(RunServer)
-            {
-                IsBackground = true
-            };
-            Server.Start();
+        MainBackground.Background = App.GetStylesheetColor("headerbarBackground", "#253340");
 
-            // Initialize correct browser
-            BrowserInit();
+        Width = windowSettings.WindowSize.X;
+        Height = windowSettings.WindowSize.Y;
+        AllowsTransparency = windowSettings.AllowTransparency;
+        StateChanged += WindowStateChange;
+        // Each window in the program would have its own size. IE Resize for Steam, and more.
 
-            // Initialise and connect to web server above
-            InitializeComponent();
-            AddBrowser();
+        // Center:
+        if (!windowSettings.StartCentered) return;
+        Left = (SystemParameters.PrimaryScreenWidth / 2) - (Width / 2);
+        Top = (SystemParameters.PrimaryScreenHeight / 2) - (Height / 2);
+    }
 
-            if (_mainBrowser == "WebView")
-            {
-                // Attempt to fix window showing as blank.
-                // See https://github.com/MicrosoftEdge/WebView2Feedback/issues/1077#issuecomment-856222593593
-                _mView2.Visibility = Visibility.Hidden;
-                _mView2.Visibility = Visibility.Visible;
-            }
+    private ChromiumWebBrowser _cefView;
+    private WebView2 _mView2;
+    private void BrowserInit()
+    {
+        switch (_mainBrowser)
+        {
+            case "WebView":
+                _mView2 = new WebView2();
+                _mView2.Initialized += MView2_OnInitialised;
+                _mView2.NavigationCompleted += MView2_OnNavigationCompleted;
+                break;
+            case "CEF":
+                CheckCefFiles();
+
+                InitializeChromium();
+                _cefView = new ChromiumWebBrowser();
+                _cefView.JavascriptMessageReceived += CefView_OnJavascriptMessageReceived;
+                _cefView.AddressChanged += CefViewOnAddressChanged;
+                _cefView.ConsoleMessage += CefViewOnConsoleMessage;
+                _cefView.KeyboardHandler = new CefKeyboardHandler();
+                _cefView.MenuHandler = new CefMenuHandler();
+                break;
+        }
+    }
+
+    private void CefViewOnConsoleMessage(object? sender, ConsoleMessageEventArgs e)
+    {
+        if (e.Level == LogSeverity.Error)
+        {
+            Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - CEF EXCEPTION (Handled: refreshed): {e.Message + Environment.NewLine}LINE: {e.Line + Environment.NewLine}SOURCE: {e.Source}");
+            _refreshFixAttempts++;
+            if (_refreshFixAttempts < 5)
+                _cefView.Reload();
             else
-            {
-                _cefView.BrowserSettings.WindowlessFrameRate = 60;
-                _cefView.Visibility = Visibility.Visible;
-                _cefView.Load("http://localhost:" + windowSettings.ServerPort + "/");
-            }
-
-            MainBackground.Background = App.GetStylesheetColor("headerbarBackground", "#253340");
-
-            Width = windowSettings.WindowSize.X;
-            Height = windowSettings.WindowSize.Y;
-            AllowsTransparency = windowSettings.AllowTransparency;
-            StateChanged += WindowStateChange;
-            // Each window in the program would have its own size. IE Resize for Steam, and more.
-
-            // Center:
-            if (!windowSettings.StartCentered) return;
-            Left = (SystemParameters.PrimaryScreenWidth / 2) - (Width / 2);
-            Top = (SystemParameters.PrimaryScreenHeight / 2) - (Height / 2);
+                throw new Exception(
+                    $"Refreshed too many times in attempt to fix issue. Error: {e.Message}");
         }
-
-        private ChromiumWebBrowser _cefView;
-        private WebView2 _mView2;
-        private void BrowserInit()
+        else
         {
-            switch (_mainBrowser)
-            {
-                case "WebView":
-                    _mView2 = new WebView2();
-                    _mView2.Initialized += MView2_OnInitialised;
-                    _mView2.NavigationCompleted += MView2_OnNavigationCompleted;
-                    break;
-                case "CEF":
-                    CheckCefFiles();
-
-                    InitializeChromium();
-                    _cefView = new ChromiumWebBrowser();
-                    _cefView.JavascriptMessageReceived += CefView_OnJavascriptMessageReceived;
-                    _cefView.AddressChanged += CefViewOnAddressChanged;
-                    _cefView.ConsoleMessage += CefViewOnConsoleMessage;
-                    _cefView.KeyboardHandler = new CefKeyboardHandler();
-                    _cefView.MenuHandler = new CefMenuHandler();
-                    break;
-            }
-        }
-
-        private void CefViewOnConsoleMessage(object? sender, ConsoleMessageEventArgs e)
-        {
-            if (e.Level == LogSeverity.Error)
-            {
-                Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - CEF EXCEPTION (Handled: refreshed): {e.Message + Environment.NewLine}LINE: {e.Line + Environment.NewLine}SOURCE: {e.Source}");
-                _refreshFixAttempts++;
-                if (_refreshFixAttempts < 5)
-                    _cefView.Reload();
-                else
-                    throw new Exception(
-                        $"Refreshed too many times in attempt to fix issue. Error: {e.Message}");
-            }
-            else
-            {
 #if RELEASE
                 try
                 {
@@ -189,317 +187,317 @@ namespace TcNo_Acc_Switcher_Client
                     Globals.WriteToLog(ex);
                 }
 #endif
-            }
         }
+    }
 
-        private void AddBrowser()
-        {
-            if (_mainBrowser == "WebView") MainBackground.Children.Add(_mView2);
-            else if (_mainBrowser == "CEF") MainBackground.Children.Add(_cefView);
-        }
+    private void AddBrowser()
+    {
+        if (_mainBrowser == "WebView") MainBackground.Children.Add(_mView2);
+        else if (_mainBrowser == "CEF") MainBackground.Children.Add(_cefView);
+    }
 
-        #region CEF
-        private static void InitializeChromium()
+    #region CEF
+    private static void InitializeChromium()
+    {
+        Globals.DebugWriteLine(@"[Func:(Client-CEF)MainWindow.xaml.cs.InitializeChromium]");
+        var settings = new CefSettings
         {
-            Globals.DebugWriteLine(@"[Func:(Client-CEF)MainWindow.xaml.cs.InitializeChromium]");
-            var settings = new CefSettings
+            CachePath = Path.Join(Globals.UserDataFolder, "CEF\\Cache"),
+            UserAgent = "TcNo-CEF 1.0",
+            UserDataPath = Path.Join(Globals.UserDataFolder, "CEF\\Data"),
+            WindowlessRenderingEnabled = true
+        };
+        settings.CefCommandLineArgs.Add("-off-screen-rendering-enabled", "0");
+        settings.CefCommandLineArgs.Add("--off-screen-frame-rate", "60");
+        settings.SetOffScreenRenderingBestPerformanceArgs();
+
+        Cef.Initialize(settings);
+        //CefView.DragHandler = new DragDropHandler();
+        //CefView.IsBrowserInitializedChanged += CefView_IsBrowserInitializedChanged;
+        //CefView.FrameLoadEnd += OnFrameLoadEnd;
+    }
+
+    /// <summary>
+    /// Check if all CEF Files are available. If not > Close and download, or revert to WebView.
+    /// </summary>
+    private void CheckCefFiles()
+    {
+        string[] cefFiles = { "libcef.dll", "icudtl.dat", "resources.pak", "libGLESv2.dll", "d3dcompiler_47.dll", "vk_swiftshader.dll", "chrome_elf.dll", "CefSharp.BrowserSubprocess.Core.dll" };
+        foreach (var cefFile in cefFiles)
+        {
+            var path = Path.Join(Globals.AppDataFolder, "runtimes\\win-x64\\native\\", cefFile);
+            if (File.Exists(path) && new FileInfo(path).Length > 10) continue;
+
+            var result = MessageBox.Show("CEF files not found. Download? (No reverts to WebView2, which requires WebView2 Runtime to be installed)", "Required runtime not found!", MessageBoxButton.YesNo, MessageBoxImage.Error);
+            if (result == MessageBoxResult.Yes)
             {
-                CachePath = Path.Join(Globals.UserDataFolder, "CEF\\Cache"),
-                UserAgent = "TcNo-CEF 1.0",
-                UserDataPath = Path.Join(Globals.UserDataFolder, "CEF\\Data"),
-                WindowlessRenderingEnabled = true
-            };
-            settings.CefCommandLineArgs.Add("-off-screen-rendering-enabled", "0");
-            settings.CefCommandLineArgs.Add("--off-screen-frame-rate", "60");
-            settings.SetOffScreenRenderingBestPerformanceArgs();
-
-            Cef.Initialize(settings);
-            //CefView.DragHandler = new DragDropHandler();
-            //CefView.IsBrowserInitializedChanged += CefView_IsBrowserInitializedChanged;
-            //CefView.FrameLoadEnd += OnFrameLoadEnd;
-        }
-
-        /// <summary>
-        /// Check if all CEF Files are available. If not > Close and download, or revert to WebView.
-        /// </summary>
-        private void CheckCefFiles()
-        {
-            string[] cefFiles = { "libcef.dll", "icudtl.dat", "resources.pak", "libGLESv2.dll", "d3dcompiler_47.dll", "vk_swiftshader.dll", "chrome_elf.dll", "CefSharp.BrowserSubprocess.Core.dll" };
-            foreach (var cefFile in cefFiles)
-            {
-                var path = Path.Join(Globals.AppDataFolder, "runtimes\\win-x64\\native\\", cefFile);
-                if (File.Exists(path) && new FileInfo(path).Length > 10) continue;
-
-                var result = MessageBox.Show("CEF files not found. Download? (No reverts to WebView2, which requires WebView2 Runtime to be installed)", "Required runtime not found!", MessageBoxButton.YesNo, MessageBoxImage.Error);
-                if (result == MessageBoxResult.Yes)
-                {
-                    TcNo_Acc_Switcher_Server.State.Classes.Updates.AutoStartUpdaterAsAdmin("downloadCEF");
-                    Environment.Exit(1);
-                }
-                else
-                {
-                    windowSettings.ActiveBrowser = "WebView";
-                    windowSettings.Save();
-                    Restart();
-                }
-            }
-        }
-
-        private void CefView_OnJavascriptMessageReceived(object? sender, JavascriptMessageReceivedEventArgs e)
-        {
-            _ = Dispatcher.BeginInvoke(new Action(() =>
-            {
-                var actionValue = (IDictionary<string, object>)e.Message;
-                var eventForwarder = new EventForwarder(new WindowInteropHelper(this).Handle);
-                switch (actionValue["action"].ToString())
-                {
-                    case "WindowAction":
-                        eventForwarder.WindowAction((int)actionValue["value"]);
-                        break;
-                    case "HideWindow":
-                        eventForwarder.HideWindow();
-                        break;
-                    case "MouseResizeDrag":
-                        eventForwarder.MouseResizeDrag((int)actionValue["value"]);
-                        break;
-                    case "MouseDownDrag":
-                        eventForwarder.MouseDownDrag();
-                        break;
-                }
-            }));
-        }
-        #endregion
-
-        #region BROWSER_SHARED
-        private void CefViewOnAddressChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.UrlChanged]");
-            UrlChanged(e.NewValue.ToString() ?? string.Empty);
-        }
-        private void MViewUrlChanged(object sender, CoreWebView2NavigationStartingEventArgs args)
-        {
-            Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.UrlChanged]");
-            UrlChanged(args.Uri);
-        }
-        /// <summary>
-        /// Rungs on URI change in the WebView.
-        /// </summary>
-        private void UrlChanged(string uri)
-        {
-            Globals.WriteToLog(uri);
-
-            // Currently just for testing!
-            // This is used with Steam/SteamKeys.cs for future functionality!
-            if (uri.Contains("store.steampowered.com"))
-                _ = RunCookieCheck("steampowered.com");
-
-            if (uri.Contains("EXIT_APP")) Environment.Exit(0);
-        }
-
-        /// <summary>
-        /// Gets all cookies, with optional filter.
-        /// </summary>
-        /// <returns>Cookies string "Key=Val; ..."</returns>
-        private async Task<string> RunCookieCheck(string filter)
-        {
-            // Currently only used for Steam, but the filter is implemented for future possible functionality.
-
-            var cookies = await _mView2.CoreWebView2.CookieManager.GetCookiesAsync(null);
-            var cookiesTxt = "";
-            var failedCookies = new List<string>();
-            foreach (var c in cookies.Where(c => c.Domain.Contains(filter)))
-            {
-                if (string.IsNullOrWhiteSpace(c.Value))
-                    failedCookies.Add(c.Name);
-                else
-                    cookiesTxt += $"{c.Name}={c.Value}; ";
-            }
-
-            // Reiterate over cookies with no values (They have values, just sometimes one or two are missed for some reason.
-            foreach (var failedCookie in failedCookies)
-            {
-                if (cookiesTxt.Contains($"{failedCookie}=")) continue;
-                var attempts = 0;
-                while (attempts < 5)
-                {
-                    attempts++;
-                    cookies = await _mView2.CoreWebView2.CookieManager.GetCookiesAsync(null);
-                    if (!cookies.Any(c => c.Name == failedCookie && !string.IsNullOrWhiteSpace(c.Value))) continue;
-                    cookiesTxt += $"{failedCookie}={cookies.First(c => c.Name == failedCookie).Value}; ";
-                    break;
-                }
-            }
-
-            // "sessionid" cookie not found? (for Steam only)
-            if (filter == "steampowered.com")
-            {
-
-            }
-            if (!cookiesTxt.Contains("sessionid="))
-            {
-                var docCookies = await _mView2.CoreWebView2.ExecuteScriptAsync("document.cookie");
-                var sid = docCookies.Split("sessionid=")[1].Split(";")[0];
-                if (sid[^1] == '"') sid = sid[..^1]; // If last char is quotation mark: remove
-                cookiesTxt += $"sessionid={sid};";
-            }
-            Console.WriteLine(cookiesTxt);
-            return cookiesTxt;
-        }
-        #endregion
-
-        #region WebView
-        private async void MView2_OnInitialised(object sender, EventArgs e)
-        {
-            try
-            {
-                var env = await CoreWebView2Environment.CreateAsync(null, Globals.UserDataFolder);
-                await _mView2.EnsureCoreWebView2Async(env);
-                _mView2.CoreWebView2.Settings.UserAgent = "TcNo 1.0";
-
-                _mView2.Source = new Uri($"http://localhost:{windowSettings.ServerPort}/{App.StartPage}");
-                MViewAddForwarders();
-                _mView2.NavigationStarting += MViewUrlChanged;
-                _mView2.CoreWebView2.ProcessFailed += CoreWebView2OnProcessFailed;
-
-                _mView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.consoleAPICalled")
-                    .DevToolsProtocolEventReceived += ConsoleMessage;
-                _mView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.exceptionThrown")
-                    .DevToolsProtocolEventReceived += ConsoleMessage;
-                _ = await _mView2.CoreWebView2.CallDevToolsProtocolMethodAsync("Runtime.enable", "{}");
-            }
-            catch (Exception ex) when (ex is BadImageFormatException or WebView2RuntimeNotFoundException or COMException)
-            {
-                if (ex is COMException && !ex.ToString().Contains("WebView2"))
-                {
-                    // Is not a WebView2 exception
-                    throw;
-                }
-
-                // WebView2 is not installed!
-                // Create counter for WebView failed checks
-                var failFile = Path.Join(Globals.UserDataFolder, "WebViewNotInstalled");
-                if (!File.Exists(failFile))
-                    await File.WriteAllTextAsync(failFile, "1");
-                else
-                {
-                    if (await File.ReadAllTextAsync(failFile) == "1") await File.WriteAllTextAsync(failFile, "2");
-                    else
-                    {
-                        windowSettings.ActiveBrowser = "CEF";
-                        windowSettings.Save();
-                        _ = MessageBox.Show(
-                            "WebView2 Runtime is not installed. The program will now download and use the fallback CEF browser. (Less performance, more compatibility)",
-                            "Required runtime not found! Using fallback.", MessageBoxButton.OK, MessageBoxImage.Error);
-                        TcNo_Acc_Switcher_Server.State.Classes.Updates.AutoStartUpdaterAsAdmin("downloadCEF");
-                        Globals.DeleteFile(failFile);
-                        Environment.Exit(1);
-                    }
-                }
-
-                var result =
-                    MessageBox.Show(
-                        "WebView2 Runtime is not installed. I've opened the website you need to download it from.",
-                        "Required runtime not found!", MessageBoxButton.OKCancel, MessageBoxImage.Error);
-                if (result == MessageBoxResult.OK)
-                {
-                    _ = Process.Start(new ProcessStartInfo("https://go.microsoft.com/fwlink/p/?LinkId=2124703")
-                    {
-                        UseShellExecute = true,
-                        Verb = "open"
-                    });
-                }
-                else Environment.Exit(1);
-            }
-
-            //MView2.CoreWebView2.OpenDevToolsWindow();
-        }
-
-        // For draggable regions:
-        // https://github.com/MicrosoftEdge/WebView2Feedback/issues/200
-        private void MViewAddForwarders()
-        {
-            if (_mainBrowser != "WebView") return;
-            Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.MViewAddForwarders]");
-            var eventForwarder = new EventForwarder(new WindowInteropHelper(this).Handle);
-
-            try
-            {
-                _mView2.CoreWebView2.AddHostObjectToScript("eventForwarder", eventForwarder);
-            }
-            catch (NullReferenceException)
-            {
-                // To mitigate: Object reference not set to an instance of an object - Was getting a few of these a day with CrashLog reports
-                if (_mView2.IsInitialized)
-                    _mView2.Reload();
-                else throw;
-            }
-            _ = _mView2.Focus();
-        }
-        private void CoreWebView2OnProcessFailed(object? sender, CoreWebView2ProcessFailedEventArgs e)
-        {
-            _ = MessageBox.Show("The WebView browser process has crashed! The program will now exit.", "Fatal error", MessageBoxButton.OK,
-                MessageBoxImage.Error,
-                MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
-            Environment.Exit(1);
-        }
-
-        private static bool _firstLoad = true;
-        private void MView2_OnNavigationCompleted(object? sender, CoreWebView2NavigationCompletedEventArgs e)
-        {
-            if (!_firstLoad) return;
-            _mView2.Visibility = Visibility.Hidden;
-            _mView2.Visibility = Visibility.Visible;
-            _firstLoad = false;
-        }
-        #endregion
-
-        private int _refreshFixAttempts;
-
-        /// <summary>
-        /// Handles console messages, and logs them to a file
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ConsoleMessage(object sender, CoreWebView2DevToolsProtocolEventReceivedEventArgs e)
-        {
-            if (_mainBrowser != "WebView") return;
-            if (e?.ParameterObjectAsJson == null) return;
-            var message = JObject.Parse(e.ParameterObjectAsJson);
-            if (message.ContainsKey("exceptionDetails"))
-            {
-                var expandedError = "";
-                var details = message["exceptionDetails"];
-                if (details != null)
-                {
-                    var ex = details.Value<JObject>("exception");
-                    if (ex != null)
-                    {
-                        expandedError = $"{Environment.NewLine}{Regex.Replace((string)details["url"] ?? string.Empty, "\\?[0-9]{10}", "")}:{(string)details["lineNumber"]}:{(string)details["columnNumber"]} - {(string)ex["description"]}{Environment.NewLine}{Environment.NewLine}Stack Trace:{Environment.NewLine}";
-                    }
-
-                    var stackTrace = details.Value<JObject>("stackTrace");
-                    var callFrames = stackTrace?["callFrames"]?.ToObject<JArray>();
-                    if (callFrames != null)
-                    {
-                        foreach (var callFrame in callFrames)
-                        {
-                            expandedError += $"    at {(string)callFrame["functionName"]} in {Regex.Replace((string)details["url"] ?? string.Empty, "\\?[0-9]{10}", "")}:line {(string)callFrame["lineNumber"]}:{(string)callFrame["columnNumber"]}{Environment.NewLine}";
-                        }
-                    }
-                }
-
-
-
-
-                Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - WebView2 EXCEPTION (Handled: refreshed): {message.SelectToken("exceptionDetails.exception.description")}{Environment.NewLine}{expandedError}{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}FULL ERROR: {e.ParameterObjectAsJson}");
-                // Load json from string e.ParameterObjectAsJson
-                _refreshFixAttempts++;
-                if (_refreshFixAttempts < 5)
-                    _mView2.Reload();
-                else throw new Exception($"Refreshed too many times in attempt to fix issue. Error: {message.SelectToken("exceptionDetails.exception.description")}");
+                TcNo_Acc_Switcher_Server.State.Classes.Updates.AutoStartUpdaterAsAdmin("downloadCEF");
+                Environment.Exit(1);
             }
             else
             {
+                windowSettings.ActiveBrowser = "WebView";
+                windowSettings.Save();
+                Restart();
+            }
+        }
+    }
+
+    private void CefView_OnJavascriptMessageReceived(object? sender, JavascriptMessageReceivedEventArgs e)
+    {
+        _ = Dispatcher.BeginInvoke(new Action(() =>
+        {
+            var actionValue = (IDictionary<string, object>)e.Message;
+            var eventForwarder = new EventForwarder(new WindowInteropHelper(this).Handle);
+            switch (actionValue["action"].ToString())
+            {
+                case "WindowAction":
+                    eventForwarder.WindowAction((int)actionValue["value"]);
+                    break;
+                case "HideWindow":
+                    eventForwarder.HideWindow();
+                    break;
+                case "MouseResizeDrag":
+                    eventForwarder.MouseResizeDrag((int)actionValue["value"]);
+                    break;
+                case "MouseDownDrag":
+                    eventForwarder.MouseDownDrag();
+                    break;
+            }
+        }));
+    }
+    #endregion
+
+    #region BROWSER_SHARED
+    private void CefViewOnAddressChanged(object sender, DependencyPropertyChangedEventArgs e)
+    {
+        Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.UrlChanged]");
+        UrlChanged(e.NewValue.ToString() ?? string.Empty);
+    }
+    private void MViewUrlChanged(object sender, CoreWebView2NavigationStartingEventArgs args)
+    {
+        Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.UrlChanged]");
+        UrlChanged(args.Uri);
+    }
+    /// <summary>
+    /// Rungs on URI change in the WebView.
+    /// </summary>
+    private void UrlChanged(string uri)
+    {
+        Globals.WriteToLog(uri);
+
+        // Currently just for testing!
+        // This is used with Steam/SteamKeys.cs for future functionality!
+        if (uri.Contains("store.steampowered.com"))
+            _ = RunCookieCheck("steampowered.com");
+
+        if (uri.Contains("EXIT_APP")) Environment.Exit(0);
+    }
+
+    /// <summary>
+    /// Gets all cookies, with optional filter.
+    /// </summary>
+    /// <returns>Cookies string "Key=Val; ..."</returns>
+    private async Task<string> RunCookieCheck(string filter)
+    {
+        // Currently only used for Steam, but the filter is implemented for future possible functionality.
+
+        var cookies = await _mView2.CoreWebView2.CookieManager.GetCookiesAsync(null);
+        var cookiesTxt = "";
+        var failedCookies = new List<string>();
+        foreach (var c in cookies.Where(c => c.Domain.Contains(filter)))
+        {
+            if (string.IsNullOrWhiteSpace(c.Value))
+                failedCookies.Add(c.Name);
+            else
+                cookiesTxt += $"{c.Name}={c.Value}; ";
+        }
+
+        // Reiterate over cookies with no values (They have values, just sometimes one or two are missed for some reason.
+        foreach (var failedCookie in failedCookies)
+        {
+            if (cookiesTxt.Contains($"{failedCookie}=")) continue;
+            var attempts = 0;
+            while (attempts < 5)
+            {
+                attempts++;
+                cookies = await _mView2.CoreWebView2.CookieManager.GetCookiesAsync(null);
+                if (!cookies.Any(c => c.Name == failedCookie && !string.IsNullOrWhiteSpace(c.Value))) continue;
+                cookiesTxt += $"{failedCookie}={cookies.First(c => c.Name == failedCookie).Value}; ";
+                break;
+            }
+        }
+
+        // "sessionid" cookie not found? (for Steam only)
+        if (filter == "steampowered.com")
+        {
+
+        }
+        if (!cookiesTxt.Contains("sessionid="))
+        {
+            var docCookies = await _mView2.CoreWebView2.ExecuteScriptAsync("document.cookie");
+            var sid = docCookies.Split("sessionid=")[1].Split(";")[0];
+            if (sid[^1] == '"') sid = sid[..^1]; // If last char is quotation mark: remove
+            cookiesTxt += $"sessionid={sid};";
+        }
+        Console.WriteLine(cookiesTxt);
+        return cookiesTxt;
+    }
+    #endregion
+
+    #region WebView
+    private async void MView2_OnInitialised(object sender, EventArgs e)
+    {
+        try
+        {
+            var env = await CoreWebView2Environment.CreateAsync(null, Globals.UserDataFolder);
+            await _mView2.EnsureCoreWebView2Async(env);
+            _mView2.CoreWebView2.Settings.UserAgent = "TcNo 1.0";
+
+            _mView2.Source = new Uri($"http://localhost:{windowSettings.ServerPort}/{App.StartPage}");
+            MViewAddForwarders();
+            _mView2.NavigationStarting += MViewUrlChanged;
+            _mView2.CoreWebView2.ProcessFailed += CoreWebView2OnProcessFailed;
+
+            _mView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.consoleAPICalled")
+                .DevToolsProtocolEventReceived += ConsoleMessage;
+            _mView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.exceptionThrown")
+                .DevToolsProtocolEventReceived += ConsoleMessage;
+            _ = await _mView2.CoreWebView2.CallDevToolsProtocolMethodAsync("Runtime.enable", "{}");
+        }
+        catch (Exception ex) when (ex is BadImageFormatException or WebView2RuntimeNotFoundException or COMException)
+        {
+            if (ex is COMException && !ex.ToString().Contains("WebView2"))
+            {
+                // Is not a WebView2 exception
+                throw;
+            }
+
+            // WebView2 is not installed!
+            // Create counter for WebView failed checks
+            var failFile = Path.Join(Globals.UserDataFolder, "WebViewNotInstalled");
+            if (!File.Exists(failFile))
+                await File.WriteAllTextAsync(failFile, "1");
+            else
+            {
+                if (await File.ReadAllTextAsync(failFile) == "1") await File.WriteAllTextAsync(failFile, "2");
+                else
+                {
+                    windowSettings.ActiveBrowser = "CEF";
+                    windowSettings.Save();
+                    _ = MessageBox.Show(
+                        "WebView2 Runtime is not installed. The program will now download and use the fallback CEF browser. (Less performance, more compatibility)",
+                        "Required runtime not found! Using fallback.", MessageBoxButton.OK, MessageBoxImage.Error);
+                    TcNo_Acc_Switcher_Server.State.Classes.Updates.AutoStartUpdaterAsAdmin("downloadCEF");
+                    Globals.DeleteFile(failFile);
+                    Environment.Exit(1);
+                }
+            }
+
+            var result =
+                MessageBox.Show(
+                    "WebView2 Runtime is not installed. I've opened the website you need to download it from.",
+                    "Required runtime not found!", MessageBoxButton.OKCancel, MessageBoxImage.Error);
+            if (result == MessageBoxResult.OK)
+            {
+                _ = Process.Start(new ProcessStartInfo("https://go.microsoft.com/fwlink/p/?LinkId=2124703")
+                {
+                    UseShellExecute = true,
+                    Verb = "open"
+                });
+            }
+            else Environment.Exit(1);
+        }
+
+        //MView2.CoreWebView2.OpenDevToolsWindow();
+    }
+
+    // For draggable regions:
+    // https://github.com/MicrosoftEdge/WebView2Feedback/issues/200
+    private void MViewAddForwarders()
+    {
+        if (_mainBrowser != "WebView") return;
+        Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.MViewAddForwarders]");
+        var eventForwarder = new EventForwarder(new WindowInteropHelper(this).Handle);
+
+        try
+        {
+            _mView2.CoreWebView2.AddHostObjectToScript("eventForwarder", eventForwarder);
+        }
+        catch (NullReferenceException)
+        {
+            // To mitigate: Object reference not set to an instance of an object - Was getting a few of these a day with CrashLog reports
+            if (_mView2.IsInitialized)
+                _mView2.Reload();
+            else throw;
+        }
+        _ = _mView2.Focus();
+    }
+    private void CoreWebView2OnProcessFailed(object? sender, CoreWebView2ProcessFailedEventArgs e)
+    {
+        _ = MessageBox.Show("The WebView browser process has crashed! The program will now exit.", "Fatal error", MessageBoxButton.OK,
+            MessageBoxImage.Error,
+            MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
+        Environment.Exit(1);
+    }
+
+    private static bool _firstLoad = true;
+    private void MView2_OnNavigationCompleted(object? sender, CoreWebView2NavigationCompletedEventArgs e)
+    {
+        if (!_firstLoad) return;
+        _mView2.Visibility = Visibility.Hidden;
+        _mView2.Visibility = Visibility.Visible;
+        _firstLoad = false;
+    }
+    #endregion
+
+    private int _refreshFixAttempts;
+
+    /// <summary>
+    /// Handles console messages, and logs them to a file
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void ConsoleMessage(object sender, CoreWebView2DevToolsProtocolEventReceivedEventArgs e)
+    {
+        if (_mainBrowser != "WebView") return;
+        if (e?.ParameterObjectAsJson == null) return;
+        var message = JObject.Parse(e.ParameterObjectAsJson);
+        if (message.ContainsKey("exceptionDetails"))
+        {
+            var expandedError = "";
+            var details = message["exceptionDetails"];
+            if (details != null)
+            {
+                var ex = details.Value<JObject>("exception");
+                if (ex != null)
+                {
+                    expandedError = $"{Environment.NewLine}{Regex.Replace((string)details["url"] ?? string.Empty, "\\?[0-9]{10}", "")}:{(string)details["lineNumber"]}:{(string)details["columnNumber"]} - {(string)ex["description"]}{Environment.NewLine}{Environment.NewLine}Stack Trace:{Environment.NewLine}";
+                }
+
+                var stackTrace = details.Value<JObject>("stackTrace");
+                var callFrames = stackTrace?["callFrames"]?.ToObject<JArray>();
+                if (callFrames != null)
+                {
+                    foreach (var callFrame in callFrames)
+                    {
+                        expandedError += $"    at {(string)callFrame["functionName"]} in {Regex.Replace((string)details["url"] ?? string.Empty, "\\?[0-9]{10}", "")}:line {(string)callFrame["lineNumber"]}:{(string)callFrame["columnNumber"]}{Environment.NewLine}";
+                    }
+                }
+            }
+
+
+
+
+            Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - WebView2 EXCEPTION (Handled: refreshed): {message.SelectToken("exceptionDetails.exception.description")}{Environment.NewLine}{expandedError}{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}FULL ERROR: {e.ParameterObjectAsJson}");
+            // Load json from string e.ParameterObjectAsJson
+            _refreshFixAttempts++;
+            if (_refreshFixAttempts < 5)
+                _mView2.Reload();
+            else throw new Exception($"Refreshed too many times in attempt to fix issue. Error: {message.SelectToken("exceptionDetails.exception.description")}");
+        }
+        else
+        {
 #if RELEASE
                 try
                 {
@@ -514,56 +512,55 @@ namespace TcNo_Acc_Switcher_Client
                     Globals.WriteToLog(ex);
                 }
 #endif
-            }
         }
+    }
 
-        /// <summary>
-        /// Rungs on WindowStateChange, to update window controls in the WebView2.
-        /// </summary>
-        private void WindowStateChange(object sender, EventArgs e)
+    /// <summary>
+    /// Rungs on WindowStateChange, to update window controls in the WebView2.
+    /// </summary>
+    private void WindowStateChange(object sender, EventArgs e)
+    {
+        Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.WindowStateChange]");
+
+        var state = WindowState switch
         {
-            Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.WindowStateChange]");
+            WindowState.Maximized => "add",
+            WindowState.Normal => "remove",
+            _ => ""
+        };
+        if (_mainBrowser == "WebView") _ = _mView2.ExecuteScriptAsync("document.body.classList." + state + "('maximised')");
+        else if (_mainBrowser == "CEF") _cefView.ExecuteScriptAsync("document.body.classList." + state + "('maximised')");
+    }
 
-            var state = WindowState switch
-            {
-                WindowState.Maximized => "add",
-                WindowState.Normal => "remove",
-                _ => ""
-            };
-            if (_mainBrowser == "WebView") _ = _mView2.ExecuteScriptAsync("document.body.classList." + state + "('maximised')");
-            else if (_mainBrowser == "CEF") _cefView.ExecuteScriptAsync("document.body.classList." + state + "('maximised')");
+    /// <summary>
+    /// Saves window size when closing.
+    /// </summary>
+    protected override void OnClosing(CancelEventArgs e)
+    {
+        Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.OnClosing]");
+        windowSettings.WindowSize = new Point { X = Convert.ToInt32(Width), Y = Convert.ToInt32(Height) };
+        windowSettings.Save();
+    }
+
+    public static void Restart(string args = "", bool admin = false)
+    {
+        var proc = new ProcessStartInfo
+        {
+            WorkingDirectory = Environment.CurrentDirectory,
+            FileName = Assembly.GetEntryAssembly()?.Location.Replace(".dll", ".exe") ?? "TcNo-Acc-Switcher_main.exe",
+            UseShellExecute = true,
+            Arguments = args,
+            Verb = admin ? "runas" : ""
+        };
+        try
+        {
+            _ = Process.Start(proc);
+            Environment.Exit(0);
         }
-
-        /// <summary>
-        /// Saves window size when closing.
-        /// </summary>
-        protected override void OnClosing(CancelEventArgs e)
+        catch (Exception ex)
         {
-            Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.OnClosing]");
-            windowSettings.WindowSize = new Point { X = Convert.ToInt32(Width), Y = Convert.ToInt32(Height) };
-            windowSettings.Save();
-        }
-
-        public static void Restart(string args = "", bool admin = false)
-        {
-            var proc = new ProcessStartInfo
-            {
-                WorkingDirectory = Environment.CurrentDirectory,
-                FileName = Assembly.GetEntryAssembly()?.Location.Replace(".dll", ".exe") ?? "TcNo-Acc-Switcher_main.exe",
-                UseShellExecute = true,
-                Arguments = args,
-                Verb = admin ? "runas" : ""
-            };
-            try
-            {
-                _ = Process.Start(proc);
-                Environment.Exit(0);
-            }
-            catch (Exception ex)
-            {
-                Globals.WriteToLog(@"This program must be run as an administrator!" + Environment.NewLine + ex);
-                Environment.Exit(0);
-            }
+            Globals.WriteToLog(@"This program must be run as an administrator!" + Environment.NewLine + ex);
+            Environment.Exit(0);
         }
     }
 }

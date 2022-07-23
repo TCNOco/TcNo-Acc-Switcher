@@ -12,16 +12,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace TcNo_Acc_Switcher_Server.State.Classes.Stats
+namespace TcNo_Acc_Switcher_Server.State.Classes.Stats;
+
+public class PageStat
 {
-    public class PageStat
+    public PageStat()
     {
-        public PageStat()
-        {
-            TotalTime = 0;
-            Visits = 0;
-        }
-        public int TotalTime { get; set; }
-        public int Visits { get; set; }
+        TotalTime = 0;
+        Visits = 0;
     }
+    public int TotalTime { get; set; }
+    public int Visits { get; set; }
 }

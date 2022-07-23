@@ -21,71 +21,70 @@ using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TextCopy;
 
-namespace TcNo_Acc_Switcher_Server.Data
+namespace TcNo_Acc_Switcher_Server.Data;
+
+public class AppFuncs
 {
-    public class AppFuncs
+
+    #region Account Management
+    /// <summary>
+    /// Swap to the current AppData.SelectedAccountId.
+    /// </summary>
+    public void SwapToAccount()
     {
+        BasicSwitcherFuncs.SwapBasicAccounts(AppData.SelectedAccountId);
+    }
 
-        #region Account Management
-        /// <summary>
-        /// Swap to the current AppData.SelectedAccountId.
-        /// </summary>
-        public void SwapToAccount()
-        {
-            BasicSwitcherFuncs.SwapBasicAccounts(AppData.SelectedAccountId);
-        }
+    /// <summary>
+    /// Swaps to an empty account, allowing the user to sign in.
+    /// </summary>
+    public void SwapToNewAccount()
+    {
+        if (!OperatingSystem.IsWindows()) return;
+        BasicSwitcherFuncs.SwapBasicAccounts("");
+    }
 
-        /// <summary>
-        /// Swaps to an empty account, allowing the user to sign in.
-        /// </summary>
-        public void SwapToNewAccount()
+    public async Task ForgetAccount()
+    {
+        if (!Basic.ForgetAccountEnabled)
+            Modals.ShowModal("confirm", Modals.ExtraArg.ForgetAccount);
+        else
         {
-            if (!OperatingSystem.IsWindows()) return;
-            BasicSwitcherFuncs.SwapBasicAccounts("");
-        }
+            var trayAcc = AppData.SelectedAccountId;
+            Basic.SetForgetAcc(true);
 
-        public async Task ForgetAccount()
-        {
-            if (!Basic.ForgetAccountEnabled)
-                Modals.ShowModal("confirm", Modals.ExtraArg.ForgetAccount);
-            else
+            // Remove ID from list of ids
+            var idsFile = $"LoginCache\\{AppData.CurrentSwitcher}\\ids.json";
+            if (File.Exists(idsFile))
             {
-                var trayAcc = AppData.SelectedAccountId;
-                Basic.SetForgetAcc(true);
-
-                // Remove ID from list of ids
-                var idsFile = $"LoginCache\\{AppData.CurrentSwitcher}\\ids.json";
-                if (File.Exists(idsFile))
-                {
-                    var allIds = Globals.ReadDict(idsFile).Remove(AppData.SelectedAccountId);
-                    await File.WriteAllTextAsync(idsFile, JsonConvert.SerializeObject(allIds));
-                }
-
-                // Remove cached files
-                Globals.RecursiveDelete($"LoginCache\\{AppData.CurrentSwitcher}\\{AppData.SelectedAccountId}", false);
-
-                // Remove from Steam accounts list
-                AppData.BasicAccounts.Remove(AppData.BasicAccounts.First(x => x.AccountId == AppData.SelectedAccountId));
-
-                // Remove from Tray
-                Globals.RemoveTrayUserByArg(AppData.CurrentSwitcher, trayAcc);
-
-                // Remove image
-                Globals.DeleteFile(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{AppData.CurrentSwitcher}\\{Globals.GetCleanFilePath(AppData.SelectedAccountId)}.jpg"));
-
-                AppData.Instance.NotifyDataChanged();
-
-                AppData.Instance.ShowToastLang(ToastType.Success, "Success");
+                var allIds = Globals.ReadDict(idsFile).Remove(AppData.SelectedAccountId);
+                await File.WriteAllTextAsync(idsFile, JsonConvert.SerializeObject(allIds));
             }
-        }
 
-        #endregion
+            // Remove cached files
+            Globals.RecursiveDelete($"LoginCache\\{AppData.CurrentSwitcher}\\{AppData.SelectedAccountId}", false);
+
+            // Remove from Steam accounts list
+            AppData.BasicAccounts.Remove(AppData.BasicAccounts.First(x => x.AccountId == AppData.SelectedAccountId));
+
+            // Remove from Tray
+            Globals.RemoveTrayUserByArg(AppData.CurrentSwitcher, trayAcc);
+
+            // Remove image
+            Globals.DeleteFile(Path.Join(Globals.WwwRoot, $"\\img\\profiles\\{AppData.CurrentSwitcher}\\{Globals.GetCleanFilePath(AppData.SelectedAccountId)}.jpg"));
+
+            AppData.Instance.NotifyDataChanged();
+
+            AppData.Instance.ShowToastLang(ToastType.Success, "Success");
+        }
+    }
+
+    #endregion
 
         
-        #region Clipboard
-        [JSInvokable]
-        public static async Task CopyText(string text) => await ClipboardService.SetTextAsync(text);
+    #region Clipboard
+    [JSInvokable]
+    public static async Task CopyText(string text) => await ClipboardService.SetTextAsync(text);
 
-        #endregion
-    }
+    #endregion
 }
