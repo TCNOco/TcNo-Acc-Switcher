@@ -17,12 +17,14 @@
 @using System.IO
 @using global::State
 @using Microsoft.AspNetCore.Components
+@using TcNo_Acc_Switcher_Globals
 @using TcNo_Acc_Switcher_Server.Shared.Accounts
 @using TcNo_Acc_Switcher_Server.Shared.ContextMenu
 @using TcNo_Acc_Switcher_Server.State
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @inject IAppState AppState
 @inject SteamState SteamState
+@inject SteamFuncs SteamFuncs
 @inject SteamSettings SteamSettings
 @inject Modals Modals
 @inject IJSRuntime JsRuntime
@@ -30,6 +32,8 @@
 @inject Lang Lang
 @inject IStatistics Statistics
 @inject SharedFunctions SharedFunctions
+@inject GameStats GameStats
+@inject AccountFuncs AccountFuncs
 
 <ContextMenu MenuItems="@SteamState.ContextMenu.Menu" ContextMenuId="AccOrPlatList" @ref="SteamContextMenu" />
 <ContextMenu MenuItems="@SteamState.ContextMenu.ShortcutItems" ContextMenuId="Shortcuts" />
@@ -71,11 +75,11 @@
             <img src="@(GetShortcutImagePath("Steam"))" alt="Start platform"/>
         </button>
 
-        <button id="btnAddNew" @onclick="() => SteamState.SwapToNewAccount()">
+        <button id="btnAddNew" @onclick="() => SteamFuncs.SwapToNewAccount()">
             <i class="fas fa-plus footerIcoInline"></i>
             <span>@Lang["Button_AddNew"]</span>
         </button>
-        <button class="btn_login" id="btnLogin" @onclick="() => SteamState.SwapToAccount()">
+        <button class="btn_login" id="btnLogin" @onclick="() => SteamFuncs.SwapToAccount()">
             <span>@Lang["Button_Login"]</span>
             <i class="fas fa-caret-right footerIcoInline"></i>
         </button>
@@ -119,8 +123,8 @@
     protected override async Task OnParametersSetAsync()
     {
         AppState.Stylesheet.StreamerModeCheck();
-        await BasicStats.SetCurrentPlatform("Steam");
-        //var f = AppSettings.UsingTcNoBrowser;
+        await GameStats.SetCurrentPlatform("Steam");
+        //var f = WindowSettings.UsingTcNoBrowser;
     }
 
     //protected override async Task OnAfterRenderAsync(bool firstRender) => await GeneralFuncs.HandleFirstRender(firstRender, "Steam");
@@ -132,7 +136,7 @@
         await JsRuntime.InvokeVoidAsync("initCopyHotKey");
         await JsRuntime.InvokeVoidAsync("showNoteTooltips");
 
-        var curAcc = SteamSwitcherFuncs.GetCurrentAccountId(true);
+        var curAcc = SteamFuncs.GetCurrentAccountId(true);
         if (curAcc != "") await AccountFuncs.SetCurrentAccount(curAcc);
     }
 }

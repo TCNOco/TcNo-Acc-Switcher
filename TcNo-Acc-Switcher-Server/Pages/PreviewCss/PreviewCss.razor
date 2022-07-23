@@ -14,13 +14,17 @@
 
 @page "/Settings/PreviewCss/"
 @using TcNo_Acc_Switcher_Server.Shared.ContextMenu
+@using TcNo_Acc_Switcher_Server.State
+@using TcNo_Acc_Switcher_Server.State.DataTypes
+@using TcNo_Acc_Switcher_Server.State.Interfaces
 @namespace TcNo_Acc_Switcher_Server.Pages.PreviewCss
 @inject NavigationManager NavManager
-@{ AppData.SetActiveNavMan(NavManager); }
 @inject IJSRuntime JsRuntime
-@{ AppData.SetActiveIJsRuntime(JsRuntime); }
-@inject Lang Locale
-@inject AppData AData
+@inject ILang Lang
+@inject IAppState AppState
+@inject IWindowSettings WindowSettings
+@inject Modals Modals
+@inject IStatistics Statistics
 
 <div class="container mainblock">
     <div class="row">
@@ -31,18 +35,18 @@
                 <span>@Lang["Settings_CurrentStyle"]</span>
                 <div class="dropdown">
                     <button class="dropdown-toggle" type="button" data-toggle="dropdown">
-                        @AppSettings.StylesheetInfo["name"]
+                        @AppState.Stylesheet.StylesheetInfo["name"]
                         <span class="caret"></span>
                     </button>
                     <ul class="custom-dropdown-menu dropdown-menu">
-                        @foreach (var item in AppSettings.GetStyleList())
+                        @foreach (var item in AppState.Stylesheet.GetStyleList())
                         {
-                            <li class="custom-dropdown-item dropdown-item" @onclick="() => AppSettings.Instance.SwapStylesheet(item)">@item</li>
+                            <li class="custom-dropdown-item dropdown-item" @onclick="() => AppState.Stylesheet.SwapStylesheet(item)">@item</li>
                         }
                     </ul>
                 </div>
             </div>
-            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="AppData.NavigateUpOne"><span>@Lang["Button_Back"]</span></button></div>
+            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="AppState.Navigation.NavigateUpOne"><span>@Lang["Button_Back"]</span></button></div>
         </div>
     </div>
 
@@ -73,8 +77,8 @@
             </div>
             <div class="acc_list_actionbar">
                 <div>
-                    <button id="btnPlatforms" @onclick='() => AppData.NavigateTo("/Platforms/")' data-toggle="tooltip" title="" data-original-title="Show or Hide other platforms"><i class="fas fa-plus footerIcoInline"></i>Manage Platforms</button>
-                    <button class="btnSettings" @onclick='() => AppData.NavigateTo("/Settings/")' data-toggle="tooltip" title="" data-original-title="Settings"><i class="fas fa-cog footerIcoSettings"></i></button>
+                    <button id="btnPlatforms" @onclick='() => AppState.Navigation.NavigateTo("/Platforms/")' data-toggle="tooltip" title="" data-original-title="Show or Hide other platforms"><i class="fas fa-plus footerIcoInline"></i>Manage Platforms</button>
+                    <button class="btnSettings" @onclick='() => AppState.Navigation.NavigateTo("/Settings/")' data-toggle="tooltip" title="" data-original-title="Settings"><i class="fas fa-cog footerIcoSettings"></i></button>
                     <button class="btnHelp"@onclick='() => Modals.ShowModal("info")' data-toggle="tooltip" title="" data-original-title="Info"><i class="fas fa-question footerIcoQuestion"></i></button>
                 </div>
             </div>
@@ -148,7 +152,7 @@
                     <span>Login</span>
                     <i class="fas fa-caret-right footerIcoInline"></i>
                 </button>
-                <button class="btnSettings" @onclick='() => AppData.NavigateTo("/Steam/Settings/")' data-toggle="tooltip" title="" data-original-title="Settings">
+                <button class="btnSettings" @onclick='() => AppState.Navigation.NavigateTo("/Steam/Settings/")' data-toggle="tooltip" title="" data-original-title="Settings">
                     <i class="fas fa-cog footerIcoSettings"></i>
                 </button>
                 <button class="btnHelp" @onclick='() => Modals.ShowModal("info")' data-toggle="tooltip" title="" data-original-title="Info">
@@ -202,19 +206,19 @@
         <div class="row">
             <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
                 <div class="buttoncol">
-                    <button id="Steam_PickFolder" type="button" @onclick="ModalFuncs.ShowUpdatePlatformFolderModal"><span>@Lang["Settings_PickFolder", new {platform = "Steam"}]</span></button>
-                    <button id="RestartAsAdmin" type="button" @onclick='() => Modals.ShowModal("confirm", Modals.ExtraArg.RestartAsAdmin)'><span>@Lang["Button_RestartAdmin"]</span></button>
+                    <button id="Steam_PickFolder" type="button" @onclick="Modals.ShowUpdatePlatformFolderModal"><span>@Lang["Settings_PickFolder", new {platform = "Steam"}]</span></button>
+                    <button id="RestartAsAdmin" type="button" @onclick='() => Modals.ShowModal("confirm", ExtraArg.RestartAsAdmin)'><span>@Lang["Button_RestartAdmin"]</span></button>
                 </div>
                 <div class="buttoncol">
                     <button id="Info" type="button" @onclick='() => Modals.ShowModal("info")'><span>@Lang["Tooltip_Info"]</span></button>
                     <button id="crowdin" type="button" @onclick='() => Modals.ShowModal("crowdin")'><span>@Lang["Modal_Crowdin_Header"]</span></button>
                 </div>
                 <div class="buttoncol">
-                    <button id="SetBackground" type="button" @onclick="ModalFuncs.ShowSetBackgroundModal"><span>@Lang["Modal_SetBackground_Button"]</span></button>
+                    <button id="SetBackground" type="button" @onclick="Modals.ShowSetBackgroundModal"><span>@Lang["Modal_SetBackground_Button"]</span></button>
                     <button id="ShowStats" type="button" @onclick='() => Modals.ShowModal("showStats")'><span>@Lang["Settings_ViewStats"]</span></button>
                 </div>
                 <div class="buttoncol">
-                    <button id="changeUsername" type="button" @onclick="ModalFuncs.ShowChangeUsernameModal"><span>@Lang["Context_ChangeName"]</span></button>
+                    <button id="changeUsername" type="button" @onclick="Modals.ShowChangeUsernameModal"><span>@Lang["Context_ChangeName"]</span></button>
                 </div>
             </div>
         </div>
@@ -243,7 +247,7 @@
                                 <li class="custom-dropdown-item dropdown-item">WebView</li>
                                 <li class="custom-dropdown-item dropdown-item">CEF</li>
                             </ul>
-                            <button class="dropdown-toggle" type="button" data-toggle="dropdown">@AppSettings.ActiveBrowser
+                            <button class="dropdown-toggle" type="button" data-toggle="dropdown">@WindowSettings.ActiveBrowser
                                 <span class="caret"></span>
                             </button>
                         </div>
@@ -288,9 +292,9 @@
 {
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        AppStats.NewNavigation("/Settings/PreviewCss");
-        await AppData.InvokeVoidAsync("initContextMenu");
-        await AppData.InvokeVoidAsync("initAccListSortable");
-        await AppData.InvokeVoidAsync("initPlatformListSortable");
+        Statistics.NewNavigation("/Settings/PreviewCss");
+        await JsRuntime.InvokeVoidAsync("initContextMenu");
+        await JsRuntime.InvokeVoidAsync("initAccListSortable");
+        await JsRuntime.InvokeVoidAsync("initPlatformListSortable");
     }
 }

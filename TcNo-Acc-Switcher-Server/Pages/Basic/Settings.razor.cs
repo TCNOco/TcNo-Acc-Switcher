@@ -26,7 +26,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic;
 
 public partial class Settings
 {
-    private static readonly Lang Lang = Lang.Instance;
+    
     [Inject]
     public AppData AppData { get; set; }
     protected override void OnInitialized()
@@ -40,7 +40,7 @@ public partial class Settings
     public void PickFolder()
     {
         Globals.DebugWriteLine(@"[ButtonClicked:Basic\Settings.razor.cs.PickFolder]");
-        ModalFuncs.ShowUpdatePlatformFolderModal();
+        Modals.ShowUpdatePlatformFolderModal();
     }
 
     // BUTTON: Reset settings

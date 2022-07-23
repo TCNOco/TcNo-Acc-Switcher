@@ -23,21 +23,6 @@ public class PathPickerRequest
     [Inject] private IAppState AppState { get; set; }
 
 
-    public enum PathPickerElement
-    {
-        None,
-        File,
-        Folder
-    }
-
-    public enum PathPickerGoal
-    {
-        FindPlatformExe,
-        SetBackground,
-        SetUserdata,
-        SetAccountImage
-    }
-
     /// <summary>
     /// This can be a filename, a folder name, or: AnyFile, AnyFolder
     /// </summary>

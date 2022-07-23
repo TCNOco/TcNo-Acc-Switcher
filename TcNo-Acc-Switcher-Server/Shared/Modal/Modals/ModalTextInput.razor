@@ -15,15 +15,19 @@
 @using TcNo_Acc_Switcher_Server.Shared.Modal
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Globals
-@using TcNo_Acc_Switcher_Server.Data.Settings
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using TcNo_Acc_Switcher_Server.Shared.Modal.Components
 @using Newtonsoft.Json
 @using System.IO
+@using TcNo_Acc_Switcher_Server.State
+@using TcNo_Acc_Switcher_Server.State.DataTypes
+@inject Modals Modals
+@inject IJSRuntime JsRuntime
+
 @code {
     protected override void OnInitialized()
     {
-        Modals.Instance.TextInputOnChange += OnChangeHandler;
+        Modals.TextInputOnChange += OnChangeHandler;
         OnChangeHandler(); // Run once just to set vars
     }
 
@@ -35,14 +39,9 @@
         await InvokeAsync(StateHasChanged);
     }
 
-    public void Dispose()
-    {
-        Modals.Instance.TextInputOnChange -= OnChangeHandler;
-    }
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await AppData.InvokeVoidAsync("focusOn", "#textInput");
+        await JsRuntime.InvokeVoidAsync("focusOn", "#textInput");
     }
 
     private bool _extraButtonSet;
@@ -88,19 +87,17 @@
     }
 
     // Update dynamically as the user types.
-    private static void Update() => Modals.TextInputNotifyDataChanged();
+    private void Update() => Modals.TextInputNotifyDataChanged();
 
 
-    private static async Task Confirm()
+    private async Task Confirm()
     {
         Modals.IsShown = false;
 
-        if (Modals.TextInput.Goal == Modals.TextInputRequest.TextInputGoal.AppPassword)
-            await ModalFuncs.SetAppPassword();
-        else if (Modals.TextInput.Goal is
-                Modals.TextInputRequest.TextInputGoal.AccString
-                or Modals.TextInputRequest.TextInputGoal.ChangeUsername)
-            await ModalFuncs.SetAccountString();
+        if (Modals.TextInput.Goal == TextInputGoal.AppPassword)
+            await Modals.SetAppPassword();
+        else if (Modals.TextInput.Goal is TextInputGoal.AccString or TextInputGoal.ChangeUsername)
+            await Modals.SetAccountString();
 
 
     }

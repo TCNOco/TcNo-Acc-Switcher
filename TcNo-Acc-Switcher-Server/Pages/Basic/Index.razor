@@ -22,22 +22,26 @@
 @using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.WebUtilities
 @using TcNo_Acc_Switcher_Server.State
+@using TcNo_Acc_Switcher_Server.State.DataTypes
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @inject SharedFunctions SharedFunctions
-@inject TemplatedPlatformState BasicPlatformState
-
-
-
-@inject IJSRuntime JsRuntime
+@inject TemplatedPlatformState TemplatedPlatformState
+@inject TemplatedPlatformFuncs TemplatedPlatformFuncs
 @inject IAppState AppState
+@inject IJSRuntime JsRuntime
 @inject NavigationManager NavManager
-@inject Lang Lang
+@inject ILang Lang
+@inject Modals Modals
+@inject GameStats GameStats
+@inject Toasts Toasts
+@inject IStatistics Statistics
+@inject AccountFuncs AccountFuncs
 
 <ContextMenu MenuItems="@Basic.ContextMenuItems" ContextMenuId="AccOrPlatList"/>
 <ContextMenu MenuItems="@Basic.ContextMenuShortcutItems" ContextMenuId="Shortcuts"/>
 <ContextMenu MenuItems="@Basic.ContextMenuPlatformItems" ContextMenuId="Platform"/>
 
-<AccountList AccountItems="@AppData.BasicAccounts" @ref="BasicAccountList" />
+<AccountList AccountItems="@AppState.Switcher.TemplatedAccounts" @ref="BasicAccountList" />
 
 <div class="shortcutDropdown gameShortcuts" id="shortcutDropdown" style="display: none">
     <div class="shortcutDropdownItems">
@@ -45,20 +49,20 @@
         {
             @if (i >= 0)
             {
-                <button class="HasContextMenu" id="@(shortcut)" @onclick="() => SharedFunctions.RunShortcut(shortcut, CurrentPlatform.ShortcutFolder, CurrentPlatform.SafeName)" data-toggle="tooltip" title="@(RemoveShortcutExt(shortcut))">
-                    <img src="@(CurrentPlatform.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
+                <button class="HasContextMenu" id="@(shortcut)" @onclick="() => SharedFunctions.RunShortcut(shortcut, TemplatedPlatformState.CurrentPlatform.ShortcutFolder, TemplatedPlatformState.CurrentPlatform.SafeName)" data-toggle="tooltip" title="@(RemoveShortcutExt(shortcut))">
+                    <img src="@(TemplatedPlatformState.CurrentPlatform.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
                 </button>
             }
         }
     </div>
-    <button id="btnOpenShortcutFolder" @onclick="() => AppState.OpenFolder(Path.GetFullPath(CurrentPlatform.ShortcutFolder))" data-toggle="tooltip" title="@(Lang["Tooltip_ShortcutFolder"])" data-placement="right">
+    <button id="btnOpenShortcutFolder" @onclick="() => AppState.OpenFolder(Path.GetFullPath(TemplatedPlatformState.CurrentPlatform.ShortcutFolder))" data-toggle="tooltip" title="@(Lang["Tooltip_ShortcutFolder"])" data-placement="right">
         <i class="fas fa-plus"></i>
     </button>
 </div>
 
 <div class="acc_list_actionbar">
     <div class="statusBar">
-        <div></div><input id="CurrentStatus" @bind="AppData.CurrentStatus" spellcheck="false" disabled>
+        <div></div><input id="CurrentStatus" @bind="AppState.Switcher.CurrentStatus" spellcheck="false" disabled>
     </div>
     <div class="gameShortcuts">
         <div class="shortcuts">
@@ -66,8 +70,8 @@
             {
                 @if (i < 0)
                 {
-                    <button class="HasContextMenu" id="@(shortcut)" @onclick="() => SharedFunctions.RunShortcut(shortcut, CurrentPlatform.ShortcutFolder, CurrentPlatform.SafeName)" data-toggle="tooltip" title="@(RemoveShortcutExt(shortcut))">
-                        <img src="@(CurrentPlatform.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
+                    <button class="HasContextMenu" id="@(shortcut)" @onclick="() => SharedFunctions.RunShortcut(shortcut, TemplatedPlatformState.CurrentPlatform.ShortcutFolder, TemplatedPlatformState.CurrentPlatform.SafeName)" data-toggle="tooltip" title="@(RemoveShortcutExt(shortcut))">
+                        <img src="@(TemplatedPlatformState.CurrentPlatform.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
                     </button>
                 }
             }
@@ -76,27 +80,27 @@
             <i class="fas fa-chevron-up"></i>
         </button>
 
-        @if (CurrentPlatform.ShortcutIncludeMainExe)
+        @if (TemplatedPlatformState.CurrentPlatform.Extras.ShortcutIncludeMainExe)
         {
-            <button id="btnStartPlat" @onclick="BasicPlatformState.RunBasicPlatform" data-toggle="tooltip" title="@(CurrentPlatform.SafeName)">
-                <img src="@(CurrentPlatform.GetShortcutImagePath(CurrentPlatform.SafeName))" alt="Start platform"/>
+            <button id="btnStartPlat" @onclick="BasicPlatformState.RunBasicPlatform" data-toggle="tooltip" title="@(TemplatedPlatformState.CurrentPlatform.SafeName)">
+                <img src="@(TemplatedPlatformState.CurrentPlatform.GetShortcutImagePath(TemplatedPlatformState.CurrentPlatform.SafeName))" alt="Start platform"/>
             </button>
         }
 
-        <button id="btnAddNew" @onclick="() => AppFuncs.SwapToNewAccount()">
+        <button id="btnAddNew" @onclick="() => TemplatedPlatformFuncs.SwapToNewAccount()">
             <i class="fas fa-plus footerIcoInline"></i>
             <span>@Lang["Button_AddNew"]</span>
         </button>
-        <button id="btnAddCurrent" @onclick="ModalFuncs.ShowSetAccountStringModal">
+        <button id="btnAddCurrent" @onclick="Modals.ShowSetAccountStringModal">
             <i class="fas fa-save footerIcoInline"></i>
             <span>@Lang["Button_SaveCurrent"]</span>
         </button>
-        <button class="btn_login" id="btnLogin" @onclick="() => AppFuncs.SwapToAccount()">
+        <button class="btn_login" id="btnLogin" @onclick="() => TemplatedPlatformFuncs.SwapToAccount()">
             <span>@Lang["Button_Login"]</span>
             <i class="fas fa-caret-right footerIcoInline"></i>
         </button>
 
-        <button class="btnSettings" @onclick='() => AppData.NavigateTo("/Basic/Settings/")' data-toggle="tooltip" title="@(Lang["Tooltip_Settings"])">
+        <button class="btnSettings" @onclick='() => AppState.Navigation.NavigateTo("/Basic/Settings/")' data-toggle="tooltip" title="@(Lang["Tooltip_Settings"])">
             <i class="fas fa-cog footerIcoSettings"></i>
         </button>
 
@@ -119,11 +123,6 @@
     private async void OnChangeHandler()
     {
         await InvokeAsync(StateHasChanged);
-    }
-
-    public void Dispose()
-    {
-        AppData.Instance.OnChange -= OnChangeHandler;
     }
 
     private string RemoveShortcutExt(string s)
@@ -150,19 +149,19 @@
 
         // Get platform name from URI if not set.
         if (!string.IsNullOrEmpty(requestPlat))
-            BasicPlatforms.SetCurrentPlatform(requestPlat);
+            TemplatedPlatformState.SetCurrentPlatform(requestPlat);
 
         // If current platform is NOT valid -> Go back
-        if (!CurrentPlatform.IsInit)
+        if (!TemplatedPlatformState.CurrentPlatform.IsInit)
         {
             _navBack = true;
             return;
         }
-
-        await BasicStats.SetCurrentPlatform(CurrentPlatform.SafeName);
+        
+        await GameStats.SetCurrentPlatform(TemplatedPlatformState.CurrentPlatform.SafeName);
 
     // Verify that the platform's EXE exists, otherwise go back. For shortcuts and direct navigation.
-        if (File.Exists(Basic.Exe())) return;
+        if (File.Exists(TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.Exe)) return;
         _navBack = true;
     }
 
@@ -170,14 +169,14 @@
     {
         if (_navBack)
         {
-            AppData.ReloadWithToast("error", Lang["Error"], Lang["Toast_FailedLoad", new {platform = CurrentPlatform.FullName}]);
+            Toasts.ShowToastLang(ToastType.Error, "Error", new LangSub	("Toast_FailedLoad", new {platform = TemplatedPlatformState.CurrentPlatform.Name}));
             return;
         }
-        await GeneralFuncs.HandleFirstRender(firstRender, CurrentPlatform.FullName);
-        AppStats.NewNavigation($"/[{CurrentPlatform.SafeName}]");
+        await GeneralFuncs.HandleFirstRender(firstRender, TemplatedPlatformState.CurrentPlatform.Name);
+        Statistics.NewNavigation($"/[{TemplatedPlatformState.CurrentPlatform.SafeName}]");
         if (!firstRender) return;
-        await AppData.InvokeVoidAsync("initCopyHotKey");
-        await AppData.InvokeVoidAsync("showNoteTooltips");
+        await JsRuntime.InvokeVoidAsync("initCopyHotKey");
+        await JsRuntime.InvokeVoidAsync("showNoteTooltips");
 
         var curAcc = await BasicSwitcherFuncs.GetCurrentAccountId();
         if (curAcc != "") await AccountFuncs.SetCurrentAccount(curAcc);

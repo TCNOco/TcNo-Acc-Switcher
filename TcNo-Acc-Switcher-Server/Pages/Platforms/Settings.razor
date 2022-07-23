@@ -13,19 +13,22 @@
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
 @page "/Platforms/"
+@using TcNo_Acc_Switcher_Server.State.Interfaces
+@using TcNo_Acc_Switcher_Server.State
+@using TcNo_Acc_Switcher_Server.State.Classes
 @namespace TcNo_Acc_Switcher_Server.Pages.Platforms
 @inject NavigationManager NavManager
-@{ AppData.SetActiveNavMan(NavManager); }
 @inject IJSRuntime JsRuntime
-@{ AppData.SetActiveIJsRuntime(JsRuntime); }
-@inject Lang Locale
+@inject ILang Lang
+@inject IWindowSettings WindowSettings
+@inject IStatistics Statistics
 
 <div class="container mainblock">
     <div class="row">
         <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
             <toastarea class="toastarea" />
 
-            @if (AppSettings.Platforms.All(x => !x.Enabled))
+            @if (WindowSettings.Platforms.All(x => !x.Enabled))
             {
                 <span>@Lang["Settings_NoPlatforms"]</span>
 
@@ -39,12 +42,12 @@
                 <h2 class="SettingsHeader">@Lang["Settings_Header_ExtraPlatforms"]</h2>
             }
 
-            @if (AppSettings.Platforms.Any(x => !x.Enabled))
+            @if (WindowSettings.Platforms.Any(x => !x.Enabled))
             {
                 <h2 class="SettingsHeader">@Lang["Settings_ExtraPlatformsDisabled"]</h2>
 
                 <div class="rowSetting">
-                    @foreach (var item in AppSettings.Platforms.Where(x => !x.Enabled))
+                    @foreach (var item in WindowSettings.Platforms.Where(x => !x.Enabled))
                     {
                         <div class="form-check mb-2" @onclick="() => ToggleItem(item, true)">
                             <input class="form-check-input" type="checkbox" id="@item.NameNoSpace" @bind="item.Enabled">
@@ -55,13 +58,13 @@
                 </div>
             }
 
-            @if (AppSettings.Platforms.Any(x => x.Enabled)) {
+            @if (WindowSettings.Platforms.Any(x => x.Enabled)) {
                 <div class="SettingsHeader mt-2">
                     <p>@Lang["Settings_ExtraPlatformsEnabled"]</p>
                 </div>
 
                 <div class="rowSetting">
-                    @foreach (var item in AppSettings.Platforms.Where(x => x.Enabled))
+                    @foreach (var item in WindowSettings.Platforms.Where(x => x.Enabled))
                     {
                         <div class="form-check mb-2" @onclick="() => ToggleItem(item, false)">
                             <input class="form-check-input" type="checkbox" id="@item.NameNoSpace" @bind="item.Enabled">
@@ -89,20 +92,20 @@
 
 @code
 {
-    private static void ToggleItem(AppSettings.PlatformItem item, bool enabled)
+    private void ToggleItem(PlatformItem item, bool enabled)
     {
-        AppSettings.Platforms.First(x => x.NameNoSpace == item.NameNoSpace).SetEnabled(enabled);
+        WindowSettings.Platforms.First(x => x.NameNoSpace == item.NameNoSpace).SetEnabled(enabled);
     }
 
     protected override void OnAfterRender(bool firstRender)
     {
-        AppStats.NewNavigation("/Platforms/");
-        AppSettings.Platforms.CollectionChanged += (_, _) => InvokeAsync(StateHasChanged);
+        Statistics.NewNavigation("/Platforms/");
+        WindowSettings.Platforms.CollectionChanged += (_, _) => InvokeAsync(StateHasChanged);
     }
 
     public void SaveAndClose()
     {
-        AppSettings.SaveSettings();
+        WindowSettings.Save();
         NavManager.NavigateTo("/");
     }
 
@@ -111,5 +114,5 @@
     /// <summary>
     /// Show a platform. This is only called from the platforms list.
     /// </summary>
-    public static void ShowPlatform(string platform) => AppSettings.Platforms.First(x => x.Name == platform).SetEnabled(true);
+    public void ShowPlatform(string platform) => WindowSettings.Platforms.First(x => x.Name == platform).SetEnabled(true);
 }

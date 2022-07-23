@@ -46,4 +46,5 @@ public interface IWindowSettings
     bool AlwaysAdmin { get; set; }
     ObservableCollection<PlatformItem> Platforms { get; set; }
     void Save();
+    PlatformItem GetPlatform(string nameOrId);
 }

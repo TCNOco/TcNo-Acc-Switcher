@@ -121,7 +121,7 @@ public class Modals
     public void UpdatePlatformFolder()
     {
         var path = PathPicker.LastPath;
-        Globals.DebugWriteLine($@"[ModalFuncs.UpdatePlatformFolder] file={AppState.Switcher.CurrentSwitcher}, path={path}");
+        Globals.DebugWriteLine($@"[Modals.UpdatePlatformFolder] file={AppState.Switcher.CurrentSwitcher}, path={path}");
         var settingsFile = AppState.Switcher.CurrentSwitcher == "Steam"
             ? SteamSettings.SettingsFile
             : CurrentPlatform.SettingsFile;
@@ -346,27 +346,13 @@ public class Modals
             return;
         }
 
-        if (AppData.SelectedAccount is not null)
+        if (AppState.Switcher.SelectedAccount is not null)
         {
-            AppData.SelectedAccount.DisplayName = Modals.TextInput.LastString;
-            AppData.SelectedAccount.NotifyDataChanged();
+            AppState.Switcher.SelectedAccount.DisplayName = Modals.TextInput.LastString;
+            AppState.Switcher.SelectedAccount.NotifyDataChanged();
         }
 
         await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_ChangedUsername"], renderTo: "toastarea");
     }
     #endregion
-}
-
-public enum ExtraArg
-{
-    None,
-    RestartAsAdmin,
-    ClearStats,
-    ForgetAccount
-}
-
-public enum StatsSelectorState
-{
-    GamesList,
-    VarsList
 }

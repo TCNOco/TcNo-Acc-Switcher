@@ -19,7 +19,8 @@
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @inject NavigationManager NavigationManager
 @inject IWindowSettings WindowSettings
-@inject Lang Lang
+@inject ILang Lang
+@inject Modals Modals
 
 @if (_cultures != null)
 {
@@ -41,19 +42,26 @@
 }
 
 @code {
-	private readonly string _selectedCulture = Lang.GetCurrentLanguage().Key;
-	private Dictionary<string, string> _cultures = Lang.GetAvailableLanguagesDict();
+	private string _selectedCulture;
+	private Dictionary<string, string> _cultures;
 
 	protected override void OnInitialized()
 	{
-
+	    OnChange();
 	}
 
 	private void RequestCultureChange(string key)
 	{
 		if (string.IsNullOrWhiteSpace(key)) return;
 	    Lang.LoadLang(key);
-	    AppSettings.Rtl = new CultureInfo(Lang.Current).TextInfo.IsRightToLeft;
+	    WindowSettings.Rtl = new CultureInfo(Lang.Current).TextInfo.IsRightToLeft;
 	    NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+	    OnChange();
 	}
+    
+    private void OnChange() {
+        _selectedCulture = Lang.GetCurrentLanguage().Key;
+        _cultures = Lang.GetAvailableLanguagesDict();
+
+    }
 }

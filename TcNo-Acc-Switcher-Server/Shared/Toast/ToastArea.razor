@@ -20,13 +20,14 @@
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.State
 @using TcNo_Acc_Switcher_Server.State.DataTypes
-@inject AppData AppData
-@inject AppState AState
+@using TcNo_Acc_Switcher_Server.State.Interfaces
+@inject IAppState AppState
+@inject Toasts Toasts
 @code {
 
     protected override void OnInitialized()
     {
-        AState.Notifications.ToastQueue.CollectionChanged += (_, _) => InvokeAsync(StateHasChanged);
+        Toasts.ToastQueue.CollectionChanged += (_, _) => InvokeAsync(StateHasChanged);
     }
 
     private async void OnChangeHandler()
@@ -37,7 +38,7 @@
 }
 
 <div class="notification-container bottom-right">
-    @foreach (var toast in AState.Notifications.ToastQueue)
+    @foreach (var toast in Toasts.ToastQueue)
     {
         @if (toast is null) continue;
         <div class="notification top-border @(toast.Type.ToString().ToLowerInvariant())" style="opacity: 1;">

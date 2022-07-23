@@ -94,7 +94,7 @@ public class SteamFuncs
     /// This relies on Steam updating loginusers.vdf. It could go out of sync assuming it's not updated reliably. There is likely a better way to do this.
     /// I am avoiding using the Steam API because it's another DLL to include, but is the next best thing - I assume.
     /// </summary>
-    public static string GetCurrentAccountId(bool getNumericId = false)
+    public string GetCurrentAccountId(bool getNumericId = false)
     {
         Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.GetCurrentAccountId]");
         try
@@ -131,7 +131,7 @@ public class SteamFuncs
 
 
     /// <summary>
-    /// Swap to the current AppData.SelectedAccountId.
+    /// Swap to the current AppState.Switcher.SelectedAccountId.
     /// </summary>
     /// <param name="state">Optional profile state for Steam accounts</param>
     public async Task SwapToAccount(int state = -1)
@@ -194,22 +194,22 @@ public class SteamFuncs
             return;
         }
 
-        await AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = "Steam" }]);
+        await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = "Steam" }]);
         if (!await GeneralFuncs.CloseProcesses(SteamSettings.Processes, SteamSettings.ClosingMethod))
         {
             if (Globals.IsAdministrator)
-                await AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = "Steam" }]);
+                await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = "Steam" }]);
             else
             {
                 await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RestartAsAdmin"], Lang["Failed"], "toastarea");
-                Modals.ShowModal("confirm", Modals.ExtraArg.RestartAsAdmin);
+                Modals.ShowModal("confirm", ExtraArg.RestartAsAdmin);
             }
             return;
         }
 
         if (OperatingSystem.IsWindows()) await UpdateLoginUsers(steamId, ePersonaState);
 
-        await AppData.InvokeVoidAsync("updateStatus", Lang["Status_StartingPlatform", new { platform = "Steam" }]);
+        await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Status_StartingPlatform", new { platform = "Steam" }]);
         if (SteamSettings.AutoStart)
         {
             if (SteamSettings.StartSilent) args += " -silent";
@@ -222,11 +222,11 @@ public class SteamFuncs
                     Lang["Toast_StartingPlatformFailed", new { platform = "Steam" }], renderTo: "toastarea");
         }
 
-        if (SteamSettings.AutoStart && AppSettings.MinimizeOnSwitch) await AppData.InvokeVoidAsync("hideWindow");
+        if (SteamSettings.AutoStart && WindowSettings.MinimizeOnSwitch) await JsRuntime.InvokeVoidAsync("hideWindow");
 
         NativeFuncs.RefreshTrayArea();
-        await AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
-        AppStats.IncrementSwitches("Steam");
+        await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Done"]);
+        Statistics.IncrementSwitches("Steam");
 
         try
         {
@@ -256,7 +256,7 @@ public class SteamFuncs
         // -----------------------------------
         // ----- Manage "loginusers.vdf" -----
         // -----------------------------------
-        await AppData.InvokeVoidAsync("updateStatus", Lang["Status_UpdatingFile", new { file = "loginusers.vdf" }]);
+        await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Status_UpdatingFile", new { file = "loginusers.vdf" }]);
         var tempFile = SteamSettings.LoginUsersVdf() + "_temp";
         Globals.DeleteFile(tempFile);
 
@@ -306,7 +306,7 @@ public class SteamFuncs
             --> AutoLoginUser = username
             --> RememberPassword = 1
         */
-        await AppData.InvokeVoidAsync("updateStatus", Lang["Status_UpdatingRegistry"]);
+        await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Status_UpdatingRegistry"]);
         using var key = Registry.CurrentUser.CreateSubKey(@"Software\Valve\Steam");
         key?.SetValue("AutoLoginUser", user.AccName); // Account name is not set when changing user accounts from launch arguments (part of the viewmodel). -- Can be "" if no account
         key?.SetValue("RememberPassword", 1);
@@ -398,20 +398,20 @@ public class SteamFuncs
     public static async Task CopySettingsFrom(string gameId)
     {
         var destSteamId = GetCurrentAccountId(true);
-        if (!VerifySteamId(AppData.SelectedAccountId) || !VerifySteamId(destSteamId))
+        if (!VerifySteamId(AppState.Switcher.SelectedAccountId) || !VerifySteamId(destSteamId))
         {
             await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoValidSteamId"], Lang["Failed"],
                 "toastarea");
             return;
         }
-        if (destSteamId == AppData.SelectedAccountId)
+        if (destSteamId == AppState.Switcher.SelectedAccountId)
         {
             await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_SameAccount"], Lang["Failed"],
                 "toastarea");
             return;
         }
 
-        var sourceSteamId32 = new SteamIdConvert(AppData.SelectedAccountId).Id32;
+        var sourceSteamId32 = new SteamIdConvert(AppState.Switcher.SelectedAccountId).Id32;
         var destSteamId32 = new SteamIdConvert(destSteamId).Id32;
         var sourceFolder = Path.Join(SteamSettings.FolderPath, $"userdata\\{sourceSteamId32}\\{gameId}");
         var destFolder = Path.Join(SteamSettings.FolderPath, $"userdata\\{destSteamId32}\\{gameId}");
@@ -437,8 +437,8 @@ public class SteamFuncs
 
     public static async Task RestoreSettingsTo(string gameId)
     {
-        if (!VerifySteamId(AppData.SelectedAccountId)) return;
-        var steamId32 = new SteamIdConvert(AppData.SelectedAccountId).Id32;
+        if (!VerifySteamId(AppState.Switcher.SelectedAccountId)) return;
+        var steamId32 = new SteamIdConvert(AppState.Switcher.SelectedAccountId).Id32;
         var backupFolder = Path.Join(Globals.UserDataFolder, $"Backups\\Steam\\{steamId32}\\{gameId}");
 
         var folder = Path.Join(SteamSettings.FolderPath, $"userdata\\{steamId32}\\{gameId}");
@@ -455,9 +455,9 @@ public class SteamFuncs
 
     public static async Task BackupGameData(string gameId)
     {
-        var steamId32 = new SteamIdConvert(AppData.SelectedAccountId).Id32;
+        var steamId32 = new SteamIdConvert(AppState.Switcher.SelectedAccountId).Id32;
         var sourceFolder = Path.Join(SteamSettings.FolderPath, $"userdata\\{steamId32}\\{gameId}");
-        if (!VerifySteamId(AppData.SelectedAccountId) || !Directory.Exists(sourceFolder))
+        if (!VerifySteamId(AppState.Switcher.SelectedAccountId) || !Directory.Exists(sourceFolder))
         {
             await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoFindGameData"], Lang["Failed"],
                 "toastarea");

@@ -33,21 +33,21 @@
     <svg class="header_icon" draggable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 768 264" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2">
         <use href="img/TcNo_Logo_Flat.svg#logo"></use>
     </svg>
-    <span>@AppData.WindowTitle</span>
+    <span>@AppState.WindowState.WindowTitle</span>
     @if (HttpContextAccessor.HttpContext?.Request.Headers["User-Agent"][0].Contains("TcNo") == true)
     {
         <div id="window-controls">
-            <button id="btnMin" @onclick='async () => await JsRuntime.InvokeVoidAsync("windowControls_Min")'>
+            <button id="btnMin" @onclick='MinClick'>
                 <div class="resizeTop"></div>
                 <img class="icon" srcset="img/icons/min-w-10.png 1x, img/icons/min-w-12.png 1.25x, img/icons/min-w-15.png 1.5x, img/icons/min-w-15.png 1.75x, img/icons/min-w-20.png 2x, img/icons/min-w-20.png 2.25x, img/icons/min-w-24.png 2.5x, img/icons/min-w-30.png 3x, img/icons/min-w-30.png 3.5x" draggable="false" alt="-" />
             </button>
 
-            <button id="btnMax" @onclick='async () => await JsRuntime.InvokeVoidAsync("windowControls_Max")'>
+            <button id="btnMax" @onclick='MaxClick'>
                 <div class="resizeTop"></div>
                 <img class="icon" srcset="img/icons/max-w-10.png 1x, img/icons/max-w-12.png 1.25x, img/icons/max-w-15.png 1.5x, img/icons/max-w-15.png 1.75x, img/icons/max-w-20.png 2x, img/icons/max-w-20.png 2.25x, img/icons/max-w-24.png 2.5x, img/icons/max-w-30.png 3x, img/icons/max-w-30.png 3.5x" draggable="false" alt="M" />
             </button>
 
-            <button id="btnRestore @onclick='async () => await JsRuntime.InvokeVoidAsync("windowControls_Restore")'>
+            <button id="btnRestore" @onclick="RestoreClick">
                 <div class="resizeTop"></div>
                 <img class="icon" srcset="img/icons/restore-w-10.png 1x, img/icons/restore-w-12.png 1.25x, img/icons/restore-w-15.png 1.5x, img/icons/restore-w-15.png 1.75x, img/icons/restore-w-20.png 2x, img/icons/restore-w-20.png 2.25x, img/icons/restore-w-24.png 2.5x, img/icons/restore-w-30.png 3x, img/icons/restore-w-30.png 3.5x" draggable="false" alt="R" />
             </button>
@@ -64,6 +64,11 @@
 
 @code {
 
+    private async Task MinClick() => await JsRuntime.InvokeVoidAsync("windowControls_Min");
+    private async Task MaxClick() => await JsRuntime.InvokeVoidAsync("windowControls_Max");
+    private async Task RestoreClick() => await JsRuntime.InvokeVoidAsync("windowControls_Restore");
+
+    
     private async Task CloseButtonClick(MouseEventArgs e)
     {
         if (e.CtrlKey || !WindowSettings.TrayMinimizeNotExit)
@@ -76,7 +81,6 @@
     private static string[] _possibleAnimations = {"X", "Y", "Z"};
     protected override void OnInitialized()
     {
-        AppData.Instance.OnChange += OnMyChangeHandler;
         AppState.Navigation.OnBackButtonClick += BackButtonClicked;
         AppState.Navigation.OnBackButtonReset += BackButtonReset;
     }

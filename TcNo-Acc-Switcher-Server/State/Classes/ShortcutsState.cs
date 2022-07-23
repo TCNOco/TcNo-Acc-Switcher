@@ -77,7 +77,7 @@ public class ShortcutsState
             // TODO: Else: Create shortcuts.
             // foreach platform
 
-            //foreach (var platform in AppSettings.Platforms)
+            //foreach (var platform in WindowSettings.Platforms)
             //{
             //    Shortcut.PlatformDesktopShortcut(_startMenuFolder, platform.Name, platform.Identifier, true);
             //}

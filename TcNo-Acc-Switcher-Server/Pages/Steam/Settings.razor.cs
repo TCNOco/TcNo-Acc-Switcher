@@ -13,8 +13,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.State;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
@@ -24,6 +30,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam;
 public partial class Settings
 {
     [Inject] private Toasts Toasts { get; set; }
+    [Inject] private Modals Modals { get; set; }
 
     protected override void OnInitialized()
     {
@@ -31,12 +38,206 @@ public partial class Settings
         Globals.DebugWriteLine(@"[Auto:Steam\Settings.razor.cs.OnInitializedAsync]");
     }
 
+    public void SaveAndClose()
+    {
+        WindowSettings.Save();
+        SteamSettings.Save();
+
+        NavManager.NavigateTo("/Steam");
+    }
+
+    private string _selectedState;
+    private Task DefaultState(int state)
+    {
+        SteamSettings.OverrideState = state;
+        _selectedState = StateToString(state);
+        return Task.CompletedTask;
+    }
+
+    private void OpenBackupFolder()
+    {
+        if (Directory.Exists("Backups"))
+            Process.Start("explorer.exe", Path.GetFullPath("Backups"));
+    }
+
+    private readonly Dictionary<string, string> _backupPaths = new()
+    {
+        { "%Platform_Folder%\\config", "config" },
+        { "%Platform_Folder%\\userdata", "userdata" }
+    };
+
+    private readonly List<string> _backupFileTypesInclude = new()
+    {
+        ".cfg", ".ini", ".dat", ".db", ".json", ".ProfileData", ".sav", ".save", ".nfo",".txt", ".vcfg", ".vdf", ".vdf_last", ".vrmanifest", ".xml"
+    };
+
+    private static bool _currentlyBackingUp;
+
+    /// <summary>
+    /// Backs up platform folders, settings, etc - as defined in the platform settings json
+    /// </summary>
+    private void BackupButton(bool everything = false)
+    {
+        if (!_currentlyBackingUp)
+            _currentlyBackingUp = true;
+        else
+            AppState.Toasts.ShowToastLang(ToastType.Error, "Toast_BackupBusy");
+
+        // Let user know it's copying files to a temp location
+        AppState.Toasts.ShowToastLang(ToastType.Info, "Toast_BackupCopy");
+
+        // Generate temporary folder:
+        var tempFolder = $"BackupTemp\\Backup_Steam_{DateTime.Now:dd-MM-yyyy_hh-mm-ss}";
+        Directory.CreateDirectory("BackupTemp");
+        Directory.CreateDirectory("Backups");
+        Directory.CreateDirectory(tempFolder);
+
+        if (!everything)
+            foreach (var (f, t) in _backupPaths)
+            {
+                var fExpanded = f.Replace("%Platform_Folder%", SteamSettings.FolderPath);
+                if (!Directory.Exists(fExpanded)) continue;
+                Globals.CopyFilesRecursive(fExpanded, Path.Join(tempFolder, t), true, _backupFileTypesInclude, true);
+            }
+        else
+            foreach (var (f, t) in _backupPaths)
+            {
+                var fExpanded = f.Replace("%Platform_Folder%", SteamSettings.FolderPath);
+                if (!Directory.Exists(fExpanded)) continue;
+                if (!Globals.CopyFilesRecursive(fExpanded, Path.Join(tempFolder, t)))
+                    AppState.Toasts.ShowToastLang(ToastType.Error, "Toast_FileCopyFail");
+            }
+
+        var backupThread = new Thread(() => FinishBackup(tempFolder));
+        backupThread.Start();
+    }
+
+    /// <summary>
+    /// Runs async so the previous function can return, and an error isn't thrown with the Blazor function timeout
+    /// </summary>
+    private void FinishBackup(string tempFolder)
+    {
+        var folderSize = Globals.FolderSizeString(tempFolder);
+        AppState.Toasts.ShowToastLang(ToastType.Info, new LangSub("Toast_BackupCompress", new { size = folderSize }), 3000);
+
+        var zipFile = Path.Join("Backups", tempFolder.Split(Path.DirectorySeparatorChar).Last() + ".7z");
+        Directory.CreateDirectory("Backups");
+
+        var backupWatcher = new Thread(() => CompressionUpdater(zipFile));
+        backupWatcher.Start();
+
+        Globals.CompressFolder(tempFolder, zipFile);
+
+        Globals.RecursiveDelete(tempFolder, false);
+        if (File.Exists(zipFile))
+            AppState.Toasts.ShowToastLang(ToastType.Success, new LangSub("Toast_BackupComplete", new { size = folderSize, compressedSize = Globals.FileSizeString(zipFile) }));
+        else
+        {
+            Globals.WriteToLog($"ERROR: Could not find compressed backup file! Expected path: {zipFile}");
+            AppState.Toasts.ShowToastLang(ToastType.Error, "Toast_BackupFail");
+        }
+
+        _currentlyBackingUp = false;
+    }
+
+    /// <summary>
+    /// Keeps the user updated with compression progress
+    /// </summary>
+    private void CompressionUpdater(string zipFile)
+    {
+        Thread.Sleep(3500);
+        while (_currentlyBackingUp)
+        {
+            AppState.Toasts.ShowToastLang(ToastType.Info, new LangSub("Toast_BackupProgress", new { compressedSize = Globals.FileSizeString(zipFile) }), 1000);
+            Thread.Sleep(2000);
+        }
+    }
+
+    public string StateToString(int state)
+    {
+        return state switch
+        {
+            -1 => Lang["NoDefault"],
+            0 => Lang["Offline"],
+            1 => Lang["Online"],
+            2 => Lang["Busy"],
+            3 => Lang["Away"],
+            4 => Lang["Snooze"],
+            5 => Lang["LookingToTrade"],
+            6 => Lang["LookingToPlay"],
+            7 => Lang["Invisible"],
+            _ => ""
+        };
+    }
+
+    private static bool _currentlyRestoring;
+    private void RestoreFile(InputFileChangeEventArgs e)
+    {
+        if (!_currentlyRestoring)
+            _currentlyRestoring = true;
+        else
+        {
+            AppState.Toasts.ShowToastLang(ToastType.Error, "Toast_RestoreBusy");
+            return;
+        }
+
+        foreach (var file in e.GetMultipleFiles(1))
+        {
+            try
+            {
+                if (!file.Name.EndsWith("7z")) continue;
+
+                AppState.Toasts.ShowToastLang(ToastType.Info, "Toast_RestoreExt");
+
+                var outputFolder = Path.Join("Restore", Path.GetFileNameWithoutExtension(file.Name));
+                Directory.CreateDirectory(outputFolder);
+                var tempFile = Path.Join("Restore", file.Name);
+
+                // Import 7z
+                var s = file.OpenReadStream(4294967296); // 4 GB as bytes
+                var fs = File.Create(tempFile);
+                s.CopyTo(fs);
+                fs.Close();
+
+                // Decompress and remove temp file
+                Globals.DecompressZip(tempFile, outputFolder);
+                File.Delete(tempFile);
+
+                AppState.Toasts.ShowToastLang(ToastType.Info, "Toast_RestoreCopying");
+
+                // Move files and folders back
+                foreach (var (toPath, fromPath) in _backupPaths)
+                {
+                    var fullFromPath = Path.Join(outputFolder, fromPath);
+                    if (Globals.IsFile(fullFromPath))
+                        Globals.CopyFile(fullFromPath, toPath);
+                    else if (Globals.IsFolder(fullFromPath) && !Globals.CopyFilesRecursive(fullFromPath, toPath))
+                        AppState.Toasts.ShowToastLang(ToastType.Error, "Toast_FileCopyFail");
+                }
+
+                AppState.Toasts.ShowToastLang(ToastType.Info, "Toast_RestoreDeleting");
+
+                // Remove temp files
+                Globals.RecursiveDelete(outputFolder, false);
+
+                AppState.Toasts.ShowToastLang(ToastType.Success, "Toast_RestoreComplete");
+            }
+            catch (Exception ex)
+            {
+                Globals.WriteToLog("Failed to restore from file: " + file.Name, ex);
+                AppState.Toasts.ShowToastLang(ToastType.Error, "Status_FailedLog");
+
+            }
+            _currentlyRestoring = false;
+        }
+    }
+
     #region SETTINGS_GENERAL
     // BUTTON: Pick folder
     public void PickFolder()
     {
         Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.PickFolder]");
-        ModalFuncs.ShowUpdatePlatformFolderModal();
+        Modals.ShowUpdatePlatformFolderModal();
     }
 
     // BUTTON: Check account VAC status

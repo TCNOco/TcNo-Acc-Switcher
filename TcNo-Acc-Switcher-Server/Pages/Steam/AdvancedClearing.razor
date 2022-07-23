@@ -19,6 +19,7 @@
 @namespace TcNo_Acc_Switcher_Server.Pages.Steam
 @inject NavigationManager NavManager
 @inject Lang Lang
+@inject IStatistics Statistics
 
 <div class="container mainblock">
     <div class="row">
@@ -107,7 +108,7 @@
 
     protected override void OnAfterRender(bool firstRender)
     {
-        AppStats.NewNavigation("/Steam/AdvancedClearing/");
+        Statistics.NewNavigation("/Steam/AdvancedClearing/");
         Lines.CollectionChanged += (_, _) => InvokeAsync(StateHasChanged);
     }
 

@@ -12,40 +12,47 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.JSInterop;
+using TcNo_Acc_Switcher_Server.State;
 using TcNo_Acc_Switcher_Server.State.Classes;
+using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.Shared.Accounts;
 
 public class AccountFuncs : ComponentBase
 {
+    [Inject] private JSRuntime JsRuntime { get; set; }
+    [Inject] private AppState AppState { get; set; }
+    [Inject] private ILang Lang { get; set; }
+
     #region Selecting accounts
     /// <summary>
     /// Highlights the specified account
     /// </summary>
-    public static void SetSelectedAccount(Account acc)
+    public void SetSelectedAccount(Account acc)
     {
-        AppData.CurrentStatus = Lang["Status_SelectedAccount", new { name = acc.DisplayName }];
-        AppData.SelectedAccount = acc;
+        AppState.Switcher.CurrentStatus = Lang["Status_SelectedAccount", new { name = acc.DisplayName }];
+        AppState.Switcher.SelectedAccount = acc;
         UnselectAllAccounts();
         acc.IsChecked = true;
-        AppData.Instance.NotifyDataChanged();
     }
 
     /// <summary>
     /// Removes highlight from all accounts
     /// </summary>
-    public static void UnselectAllAccounts()
+    public void UnselectAllAccounts()
     {
-        if (AppData.CurrentSwitcher == "Steam")
-            foreach (var account in AppData.SteamAccounts)
+        if (AppState.Switcher.CurrentSwitcher == "Steam")
+            foreach (var account in AppState.Switcher.SteamAccounts)
             {
                 account.IsChecked = false;
             }
         else
-            foreach (var account in AppData.BasicAccounts)
+            foreach (var account in AppState.Switcher.TemplatedAccounts)
             {
                 account.IsChecked = false;
             }
@@ -58,11 +65,11 @@ public class AccountFuncs : ComponentBase
     /// </summary>
     /// <param name="e"></param>
     /// <param name="acc"></param>
-    public static async void AccountRightClick(MouseEventArgs e, Account acc)
+    public async void AccountRightClick(MouseEventArgs e, Account acc)
     {
         if (e.Button != 2) return;
         SetSelectedAccount(acc);
-        await AppData.InvokeVoidAsync("positionAndShowMenu", e, "#AccOrPlatList");
+        await JsRuntime.InvokeVoidAsync("positionAndShowMenu", e, "#AccOrPlatList");
     }
     #endregion
 
@@ -70,39 +77,38 @@ public class AccountFuncs : ComponentBase
     /// <summary>
     /// Highlights the specified account
     /// </summary>
-    public static async Task SetCurrentAccount(Account acc)
+    public async Task SetCurrentAccount(Account acc)
     {
         await UnCurrentAllAccounts();
         acc.IsCurrent = true;
         acc.TitleText = $"{Lang["Tooltip_CurrentAccount"]}";
-        AppData.Instance.NotifyDataChanged();
 
         // getBestOffset
-        await AppData.InvokeVoidAsync("setBestOffset", acc.AccountId);
+        await JsRuntime.InvokeVoidAsync("setBestOffset", acc.AccountId);
         // then initTooltips
-        await AppData.InvokeVoidAsync("initTooltips");
+        await JsRuntime.InvokeVoidAsync("initTooltips");
     }
-    public static async Task SetCurrentAccount(string accId) =>
-        await SetCurrentAccount(AppData.CurrentSwitcher == "Steam" ? AppData.SteamAccounts.First(x => x.AccountId == accId) : AppData.BasicAccounts.First(x => x.AccountId == accId));
+    public async Task SetCurrentAccount(string accId) =>
+        await SetCurrentAccount(AppState.Switcher.CurrentSwitcher == "Steam" ? AppState.Switcher.SteamAccounts.First(x => x.AccountId == accId) : AppState.Switcher.TemplatedAccounts.First(x => x.AccountId == accId));
 
     /// <summary>
     /// Removes "currently logged in" border from all accounts
     /// </summary>
-    public static async Task UnCurrentAllAccounts()
+    public async Task UnCurrentAllAccounts()
     {
-        if (AppData.CurrentSwitcher == "Steam")
-            foreach (var account in AppData.SteamAccounts)
+        if (AppState.Switcher.CurrentSwitcher == "Steam")
+            foreach (var account in AppState.Switcher.SteamAccounts)
             {
                 account.IsCurrent = false;
             }
         else
-            foreach (var account in AppData.BasicAccounts)
+            foreach (var account in AppState.Switcher.TemplatedAccounts)
             {
                 account.IsCurrent = false;
             }
 
         // Clear the hover text
-        await AppData.InvokeVoidAsync("clearAccountTooltips");
+        await JsRuntime.InvokeVoidAsync("clearAccountTooltips");
     }
     #endregion
 }

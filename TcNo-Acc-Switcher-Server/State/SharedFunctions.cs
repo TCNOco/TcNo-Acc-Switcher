@@ -25,7 +25,7 @@ public class SharedFunctions
     /// </summary>
     public async Task FinaliseAccountList()
     {
-        //await AppData.InvokeVoidAsync("jQueryProcessAccListSize");
+        //await JsRuntime.InvokeVoidAsync("jQueryProcessAccListSize");
         await JsRuntime.InvokeVoidAsync("initContextMenu");
         await JsRuntime.InvokeVoidAsync("initAccListSortable");
     }

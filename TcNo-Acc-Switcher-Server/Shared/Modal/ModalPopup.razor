@@ -16,16 +16,20 @@
 @using TcNo_Acc_Switcher_Server.Shared.Modal.Modals
 @using TcNo_Acc_Switcher_Server.Data
 @using System.Collections.ObjectModel
+@using TcNo_Acc_Switcher_Server.State.Interfaces
+@using TcNo_Acc_Switcher_Server.State
+@using TcNo_Acc_Switcher_Server.State.DataTypes
 
 @inject IJSRuntime JsRuntime
-@inject AppData AData
-@inject Lang Locale
+@inject IAppState AppState
+@inject ILang Lang
+@inject State.Modals Modals
 
 <div class="modalBG" onclick="if (event.target === this)$('.modalBG').fadeOut();" style="display: none;">
 @*<div class="modalBG" onclick="if (event.target === this)$('.modalBG').fadeOut();" style="display: none;">*@
     <div class="modalFG">
         <div id="window-title-modal">
-            @if (Modals.Type == "gameStatsSelector" && Modals.CurrentStatsSelectorState == Modals.StatsSelectorState.VarsList)
+            @if (Modals.Type == "gameStatsSelector" && Modals.CurrentStatsSelectorState == StatsSelectorState.VarsList)
             {
                 <button id="modalBtnBack" @onclick="ModalBack">
                     <i class="fas fa-chevron-left icon" style="transition: transform 500ms ease-in-out" draggable="false" alt="-"></i>
@@ -90,24 +94,19 @@
 {
     protected override void OnInitialized()
     {
-        Modals.Instance.OnChange += OnChangeHandler;
+        Modals.OnChange += OnChangeHandler;
     }
     private async void OnChangeHandler()
     {
         await InvokeAsync(StateHasChanged);
     }
 
-    public void Dispose()
-    {
-        Modals.Instance.OnChange -= OnChangeHandler;
-    }
-
     // Modal back button clicked
     private void ModalBack()
     {
-        if (Modals.Type == "gameStatsSelector" && Modals.CurrentStatsSelectorState == Modals.StatsSelectorState.VarsList)
+        if (Modals.Type == "gameStatsSelector" && Modals.CurrentStatsSelectorState == StatsSelectorState.VarsList)
         {
-            Modals.CurrentStatsSelectorState = Modals.StatsSelectorState.GamesList;
+            Modals.CurrentStatsSelectorState = StatsSelectorState.GamesList;
             Modals.GameStatsModalOnChangeChanged();
         }
     }

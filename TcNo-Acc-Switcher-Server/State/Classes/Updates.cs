@@ -54,7 +54,7 @@ public class Updates
         // Also submit statistics, if enabled
         new Thread(CheckForUpdate).Start();
         if (WindowSettings.CollectStats && WindowSettings.ShareAnonymousStats)
-            new Thread(AppStats.UploadStats).Start();
+            new Thread(Statistics.UploadStats).Start();
     }
 
     /// <summary>

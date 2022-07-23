@@ -14,6 +14,14 @@
 
 @using System.IO
 @using TcNo_Acc_Switcher_Server.Data
+@using TcNo_Acc_Switcher_Server.Pages.Basic
+@using TcNo_Acc_Switcher_Server.Pages.Steam
+@using TcNo_Acc_Switcher_Server.State
+@using TcNo_Acc_Switcher_Server.State.DataTypes
+@using TcNo_Acc_Switcher_Server.State.Interfaces
+@inject Modals Modals
+@inject ILang Lang
+@inject IJSRuntime JsRuntime
 
 @code {
     [Parameter]
@@ -27,7 +35,7 @@
     protected override void OnInitialized()
     {
         _currentFileList = new Pages.General.PathPicker.FolderFileList(CurrentPath, Depth);
-        Modals.Instance.PathPickerOnChange += OnChangeHandler;
+        Modals.PathPickerOnChange += OnChangeHandler;
     }
 
     private async void OnChangeHandler()
@@ -37,7 +45,7 @@
 
     public void Dispose()
     {
-        Modals.Instance.PathPickerOnChange -= OnChangeHandler;
+        Modals.PathPickerOnChange -= OnChangeHandler;
     }
 
     // This must be a cascading variable and a check to see if it is included somewhere in the list. This could get confusing.
@@ -73,7 +81,7 @@ else
     private void ExpandFolder()
     {
         Modals.PathPicker.LastPath = _currentFileList.FullPath;
-        Modals.PathPicker.LastElement = Modals.PathPickerRequest.PathPickerElement.Folder;
+        Modals.PathPicker.LastElement = PathPickerElement.Folder;
         Modals.PathPickerNotifyDataChanged();
     }
 
@@ -83,7 +91,7 @@ else
         {
             var parent = Path.GetDirectoryName(_currentFileList.FullPath) ?? "";
             Modals.PathPicker.LastPath = parent;
-            Modals.PathPicker.LastElement = Modals.PathPickerRequest.PathPickerElement.Folder;
+            Modals.PathPicker.LastElement = PathPickerElement.Folder;
             Modals.PathPickerNotifyDataChanged();
         }
         catch (Exception)
@@ -96,7 +104,7 @@ else
     {
         _selectedFile = file;
         Modals.PathPicker.LastPath = file;
-        Modals.PathPicker.LastElement = Modals.PathPickerRequest.PathPickerElement.File;
+        Modals.PathPicker.LastElement = PathPickerElement.File;
         Modals.PathPickerNotifyDataChanged();
     }
 }

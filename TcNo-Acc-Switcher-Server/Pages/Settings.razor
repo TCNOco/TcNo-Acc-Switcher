@@ -14,13 +14,15 @@
 
 @page "/Settings"
 @using TcNo_Acc_Switcher_Globals
+@using TcNo_Acc_Switcher_Server.State
+@using TcNo_Acc_Switcher_Server.State.Interfaces
 @namespace TcNo_Acc_Switcher_Server.Pages
 @inject NavigationManager NavManager
-@inject AppData AData
-@{ AppData.SetActiveNavMan(NavManager); }
+@inject IAppState AppState
 @inject IJSRuntime JsRuntime
-@{ AppData.SetActiveIJsRuntime(JsRuntime); }
-@inject Lang Locale
+@inject IWindowSettings WindowSettings
+@inject ILang Lang
+@inject IStatistics Statistics
 
 <div class="container mainblock">
     <div class="row">
@@ -47,21 +49,21 @@
 {
     public void SaveAndClose()
     {
-        AppSettings.SaveSettings();
+        WindowSettings.Save();
 
         NavManager.NavigateTo("/");
     }
 
     protected override void OnInitialized()
     {
-        AppData.WindowTitle = Lang["Title_Settings"];
+        AppState.WindowState.WindowTitle = Lang["Title_Settings"];
         Globals.DebugWriteLine(@"[Auto:Settings.razor.cs.OnInitializedAsync]");
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        AppStats.NewNavigation("/Settings/");
+        Statistics.NewNavigation("/Settings/");
         if (!firstRender) return;
-        await AppData.InvokeVoidAsync("initSavingHotKey");
+        await JsRuntime.InvokeVoidAsync("initSavingHotKey");
     }
 }

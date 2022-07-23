@@ -75,7 +75,7 @@
 <div class="rowSetting listWithBars">
     <ul>
         <li>
-            <a class="fancyLink" @onclick="ModalFuncs.ShowSetBackgroundModal">@Lang["Settings_ThemeBackground"]</a>
+            <a class="fancyLink" @onclick="Modals.ShowSetBackgroundModal">@Lang["Settings_ThemeBackground"]</a>
         </li>
         <li>
             <a class="fancyLink" @onclick='() => Process.Start("explorer.exe", Path.Join(Globals.UserDataFolder, "themes"))'>@Lang["Settings_ThemeOpenFolder"]</a>
@@ -249,7 +249,7 @@
     public void SetPassword()
     {
         Globals.DebugWriteLine(@"[ButtonClicked:SharedSettings.razor/SetPassword]");
-        ModalFuncs.ShowSetAppPasswordModal();
+        Modals.ShowSetAppPasswordModal();
     }
 
     private void TrySetUserData()
@@ -264,7 +264,7 @@
             File.WriteAllText(userDataFile, "");
             File.Delete(userDataFile);
 
-            ModalFuncs.ShowChangeUserdataFolderModal();
+            Modals.ShowChangeUserdataFolderModal();
         }
         catch (Exception)
         {

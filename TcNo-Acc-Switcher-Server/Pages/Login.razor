@@ -15,13 +15,15 @@
 @page "/login"
 @attribute [AllowAnonymous]
 @using TcNo_Acc_Switcher_Globals
+@using TcNo_Acc_Switcher_Server.State
+@using TcNo_Acc_Switcher_Server.State.DataTypes
+@using TcNo_Acc_Switcher_Server.State.Interfaces
 @inject IJSRuntime JsRuntime
-@{ AppData.SetActiveIJsRuntime(JsRuntime); }
 @inject NavigationManager NavManager
-@{ AppData.SetActiveNavMan(NavManager); }
-@inject AppData AData
-
-@inject Lang Locale
+@inject IAppState AppState
+@inject IWindowSettings WindowSettings
+@inject ILang Lang
+@inject Toasts Toasts
 
 <div class="container mainblock">
     <div class="row">
@@ -71,11 +73,11 @@
 
     private void CheckPassword()
     {
-        AppSettings.PasswordCurrent = Globals.GetSha256HashString(_password);
-        if (AppSettings.PasswordCurrent == AppSettings.PasswordHash)
+        AppState.PasswordCurrent = Globals.GetSha256HashString(_password);
+        if (AppState.PasswordCurrent == WindowSettings.PasswordHash)
             NavManager.NavigateTo(ReturnUrl); // Success! Redirect user back.
         else
-            AData.ShowToastLang(ToastType.Error, "Fast Message", "Auth_PassIncorrect");
+            Toasts.ShowToastLang(ToastType.Error, "Fast Message", "Auth_PassIncorrect");
     }
 
 	// This is run before everything is painted on, so that it can get the correct values for the CSS Block.
@@ -85,6 +87,6 @@
 
 	protected override void OnAfterRender(bool firstRender)
 	{
-		AppData.WindowTitle = Lang["Title_Login"];
+		AppState.WindowState.WindowTitle = Lang["Title_Login"];
 	}
 }

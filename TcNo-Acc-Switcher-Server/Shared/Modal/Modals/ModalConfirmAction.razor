@@ -15,7 +15,6 @@
 @using TcNo_Acc_Switcher_Server.Shared.Modal
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Globals
-@using TcNo_Acc_Switcher_Server.Data.Settings
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using Newtonsoft.Json
 @using System.IO
@@ -24,7 +23,22 @@
 @using TcNo_Acc_Switcher_Server.Pages.Steam
 @using System.Configuration
 @using TcNo_Acc_Switcher_Server.Shared.Toast
-@inject AppData AData
+@using TcNo_Acc_Switcher_Server.State
+@using TcNo_Acc_Switcher_Server.State.DataTypes
+@using TcNo_Acc_Switcher_Server.State.Interfaces
+@inject Modals Modals
+@inject ILang Lang
+@inject GameStats GameStats
+@inject IAppState AppState
+@inject IWindowSettings WindowSettings
+@inject IJSRuntime JsRuntime
+@inject SteamSettings SteamSettings
+@inject SteamFuncs SteamFuncs
+@inject TemplatedPlatformState TemplatedPlatformState
+@inject TemplatedPlatformFuncs TemplatedPlatformFuncs
+@inject IStatistics Statistics
+@inject Toasts Toasts
+
 @code {
     private MarkupString _message = new();
     protected override void OnInitialized()
@@ -33,30 +47,30 @@
 
         _message = Modals.ExtraArgs switch
         {
-            Modals.ExtraArg.ForgetAccount => AppData.CurrentSwitcher == "Steam"
+            ExtraArg.ForgetAccount => AppState.Switcher.CurrentSwitcher == "Steam"
                 ? new MarkupString(Lang["Prompt_ForgetSteam"])
                 : new MarkupString(Lang["Prompt_ForgetAccount"]),
-            Modals.ExtraArg.ClearStats => new MarkupString(Lang["Prompt_ClearStats"]),
-            Modals.ExtraArg.RestartAsAdmin => new MarkupString(Lang["Prompt_RestartAsAdmin"]),
+            ExtraArg.ClearStats => new MarkupString(Lang["Prompt_ClearStats"]),
+            ExtraArg.RestartAsAdmin => new MarkupString(Lang["Prompt_RestartAsAdmin"]),
             _ => _message
             };
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await AppData.InvokeVoidAsync("focusOn", "#modal_false");
+        await JsRuntime.InvokeVoidAsync("focusOn", "#modal_false");
     }
 }
 
 <div class="infoWindow">
     <div class="fullWidthContent"><h3>@Lang["Modal_ConfirmAction"]:</h3> @_message
         <div class="YesNo">
-            @if (Modals.ExtraArgs == Modals.ExtraArg.RestartAsAdmin)
+            @if (Modals.ExtraArgs == ExtraArg.RestartAsAdmin)
             {
                 <button type="button" id="modal_true" @onclick="ButtonOk"><span>@Lang["Ok"]</span></button>
                 <br />
                 <br />
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="AlwaysAdmin" @bind="AppSettings.AlwaysAdmin" @onclick="AlwaysAdminClicked"><label class="form-check-label" for="AlwaysAdmin"></label></div><label for="AlwaysAdmin">@Lang["Settings_AlwaysAdmin"]<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="AlwaysAdmin" @bind="WindowSettings.AlwaysAdmin" @onclick="AlwaysAdminClicked"><label class="form-check-label" for="AlwaysAdmin"></label></div><label for="AlwaysAdmin">@Lang["Settings_AlwaysAdmin"]<br></label>
             }
             else
             {
@@ -71,56 +85,57 @@
 {
     private void AlwaysAdminClicked()
     {
-        AppSettings.AlwaysAdmin = !AppSettings.AlwaysAdmin;
-        AppSettings.SaveSettings();
+        WindowSettings.AlwaysAdmin = !WindowSettings.AlwaysAdmin;
+        WindowSettings.Save();
     }
 
     private async Task ButtonYes()
     {
         switch (Modals.ExtraArgs)
         {
-            case Modals.ExtraArg.ForgetAccount:
+            case ExtraArg.ForgetAccount:
             {
-                if (AppData.CurrentSwitcher == "Steam")
+                if (AppState.Switcher.CurrentSwitcher == "Steam")
                 {
-                    Steam.ForgetAccountEnabled = true;
-                    Steam.SaveSettings();
+                    SteamSettings.ForgetAccountEnabled = true;
+                    SteamSettings.Save();
+                    await SteamFuncs.ForgetAccount();
                 }
                 else
                 {
-                    Basic.ForgetAccountEnabled = true;
-                    Basic.SaveSettings();
+                    TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.ForgetAccountEnabled = true;
+                    TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.Save();
+                    await TemplatedPlatformFuncs.ForgetAccount();
                 }
-
-                await AppFuncs.ForgetAccount();
+                
                 break;
             }
-            case Modals.ExtraArg.ClearStats:
-                AppStats.ClearStats();
+            case ExtraArg.ClearStats:
+                Statistics.ClearStats();
                 break;
         }
 
-        AData.ShowToastLang(ToastType.Success, "Success");
+        Toasts.ShowToastLang(ToastType.Success, "Success");
         //AppData.Instance.NotifyDataChanged();
         Modals.IsShown = false;
-        Modals.ExtraArgs = Modals.ExtraArg.None;
+        Modals.ExtraArgs = ExtraArg.None;
     }
 
     private void ButtonOk()
     {
-        if (Modals.ExtraArgs == Modals.ExtraArg.RestartAsAdmin)
+        if (Modals.ExtraArgs == ExtraArg.RestartAsAdmin)
         {
             StaticFuncs.RestartAsAdmin();
         }
 
 
         Modals.IsShown = false;
-        Modals.ExtraArgs = Modals.ExtraArg.None;
+        Modals.ExtraArgs = ExtraArg.None;
     }
 
     private void ButtonNo()
     {
         Modals.IsShown = false;
-        Modals.ExtraArgs = Modals.ExtraArg.None;
+        Modals.ExtraArgs = ExtraArg.None;
     }
 }

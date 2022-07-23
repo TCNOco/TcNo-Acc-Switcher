@@ -124,9 +124,9 @@ public class GLang
     {
         LoadDefault();
         // If setting does not exist in settings file then load the system default
-        _ = Load(GLangAppSettings.Language == ""
+        _ = Load(GLangWindowSettings.Language == ""
             ? CultureInfo.CurrentCulture.Name
-            : GLangAppSettings.Language);
+            : GLangWindowSettings.Language);
     }
 
     /// <summary>
@@ -156,7 +156,7 @@ public class GLang
                     Current = l;
                     if (save && Current == l)
                     {
-                        GLangAppSettings.Language = l;
+                        GLangWindowSettings.Language = l;
                     }
                     break;
                 }

@@ -28,7 +28,7 @@ public class GameStats
 
         
     /// <summary>
-    /// Read BasicStats.json and collect game definitions, as well as platform-game relations.
+    /// Read GameStats.json and collect game definitions, as well as platform-game relations.
     /// </summary>
     public GameStats()
     {

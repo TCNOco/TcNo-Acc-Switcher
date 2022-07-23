@@ -23,6 +23,7 @@ namespace TcNo_Acc_Switcher_Server.State.Classes;
 public class Discord
 {
     [Inject] public ILang Lang { get; set; }
+    [Inject] public IStatistics Statistics { get; set; }
     [Inject] public IWindowSettings WindowSettings { get; set; }
 
     public DiscordRpcClient DiscordClient { get; set; }
@@ -62,8 +63,8 @@ public class Discord
         var state = "";
         if (WindowSettings.CollectStats && WindowSettings.DiscordRpcEnabled)
         {
-            AppStats.GenerateTotals();
-            state = Lang["Discord_StatusDetails", new { number = AppStats.SwitcherStats["_Total"].Switches }];
+            Statistics.GenerateTotals();
+            state = Lang["Discord_StatusDetails", new { number = Statistics.SwitcherStats["_Total"].Switches }];
         }
 
 

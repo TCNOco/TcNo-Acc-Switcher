@@ -15,7 +15,6 @@
 @using System.Collections.ObjectModel
 @using TcNo_Acc_Switcher_Globals
 @using TcNo_Acc_Switcher_Server.Data
-@using TcNo_Acc_Switcher_Server.Data.Settings
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using TcNo_Acc_Switcher_Server.State
 @using TcNo_Acc_Switcher_Server.State.Classes
@@ -26,7 +25,9 @@
     [Parameter]
     public Account Acc { get; set; }
 
+    [Inject] SteamFuncs SteamFuncs { get; set; }
     [Inject] SteamSettings SteamSettings { get; set; }
+    [Inject] TemplatedPlatformFuncs TemplatedPlatformFuncs { get; set; }
     [Inject] IAppState AppState { get; set; }
     [Inject] IWindowSettings WindowSettings { get; set; }
 
@@ -37,10 +38,16 @@
     private async void OnChangeHandler()
     {
         await InvokeAsync(StateHasChanged);
+        if (AppState.Switcher.CurrentSwitcher == "Steam")
+            _swapAction = async () => await SteamFuncs.SwapToAccount();
+        else
+            _swapAction = () => TemplatedPlatformFuncs.SwapToAccount();
     }
+
+    private Action _swapAction;
 }
 
-<div class="acc_list_item" title="@Acc.TitleText" data-toggle="tooltip" @onclick="() => SetSelectedAccount(Acc)" oncontextmenu="return false;" @onmouseup="(e) => AccountRightClick(e, Acc)" @ondblclick="() => AppFuncs.SwapToAccount()">
+<div class="acc_list_item" title="@Acc.TitleText" data-toggle="tooltip" @onclick="() => SetSelectedAccount(Acc)" oncontextmenu="return false;" @onmouseup="(e) => AccountRightClick(e, Acc)" @ondblclick="() => _swapAction()">
     <input type="radio" id="@Acc.AccountId" DisplayName="@Acc.SafeDisplayName" class="acc @(Acc.IsChecked ? "acc_selected" : "")" name="accounts" role="checkbox">
     <label for="@Acc.AccountId" class="acc @Acc.Classes.Label @(Acc.IsCurrent ? "currentAcc" : "")">
         <img class="@Acc.Classes.Image" src="@Acc.ImagePath?@Globals.GetUnixTime()" draggable="false" alt=""/>

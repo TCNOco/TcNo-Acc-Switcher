@@ -2,32 +2,18 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General;
 
 public class PathPicker
 {
-    public static List<string> LogicalDrivesList
-    {
-        get
-        {
-            try
-            {
-                return Directory.GetLogicalDrives().ToList();
-            }
-            catch (Exception e)
-            {
-                Globals.WriteToLog("Could not list Logical Drives.", e);
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang["PathPicker_NoLogicalDrives"], renderTo: "toastarea");
-                return new List<string>();
-            }
-        }
-    }
-
-
     public class FolderFileList
     {
+        [Inject] private ILang Lang { get; set; }
+
         public int Depth { get; set; }
         public string FullPath { get; set; }
         public string FolderName { get; set; }

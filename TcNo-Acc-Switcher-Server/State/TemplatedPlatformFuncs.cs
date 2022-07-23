@@ -37,9 +37,9 @@ public class TemplatedPlatformFuncs
     /// <param name="accId">(Optional) User's unique account ID</param>
     /// <param name="args">Starting arguments</param>
     [SupportedOSPlatform("windows")]
-    public static async void SwapBasicAccounts(string accId = "", string args = "")
+    public static async void SwapTemplatedAccounts(string accId = "", string args = "")
     {
-        Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.SwapBasicAccounts] Swapping to: hidden.");
+        Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.SwapTemplatedAccounts] Swapping to: hidden.");
         // Handle args:
         if (CurrentPlatform.ExeExtraArgs != "")
         {
@@ -73,7 +73,7 @@ public class TemplatedPlatformFuncs
                                 ? GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea")
                                 : GeneralInvocableFuncs.ShowToast("error", Lang["Toast_StartingPlatformFailed", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea");
                         }
-                        await AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
+                        await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Done"]);
 
                         return;
                     }
@@ -95,11 +95,11 @@ public class TemplatedPlatformFuncs
         if (BasicSettings.AutoStart)
             BasicPlatformState.RunBasicPlatform(BasicSettings.Admin, args);
 
-        if (accName != "" && BasicSettings.AutoStart && AppSettings.MinimizeOnSwitch) await AppData.InvokeVoidAsync("hideWindow");
+        if (accName != "" && BasicSettings.AutoStart && WindowSettings.MinimizeOnSwitch) await JsRuntime.InvokeVoidAsync("hideWindow");
 
         NativeFuncs.RefreshTrayArea();
-        await AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
-        AppStats.IncrementSwitches(CurrentPlatform.SafeName);
+        await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Done"]);
+        Statistics.IncrementSwitches(CurrentPlatform.SafeName);
 
         try
         {
@@ -447,15 +447,15 @@ public class TemplatedPlatformFuncs
     private static async Task<bool> KillGameProcesses()
     {
         // Kill game processes
-        await AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = CurrentPlatform.FullName }]);
+        await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = CurrentPlatform.FullName }]);
         if (await GeneralFuncs.CloseProcesses(CurrentPlatform.ExesToEnd, BasicSettings.ClosingMethod)) return true;
 
         if (Globals.IsAdministrator)
-            await AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = CurrentPlatform.FullName }]);
+            await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = CurrentPlatform.FullName }]);
         else
         {
             await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RestartAsAdmin"], Lang["Failed"], "toastarea");
-            Modals.ShowModal("confirm", Modals.ExtraArg.RestartAsAdmin);
+            Modals.ShowModal("confirm", ExtraArg.RestartAsAdmin);
         }
         return false;
 
@@ -490,7 +490,7 @@ public class TemplatedPlatformFuncs
         if (CurrentPlatform.LoginFiles == null) throw new Exception("No data in basic platform: " + CurrentPlatform.FullName);
 
         // Handle unique ID
-        await AppData.InvokeVoidAsync("updateStatus", Lang["Status_GetUniqueId"]);
+        await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Status_GetUniqueId"]);
 
         var uniqueId = await GetUniqueId();
 
@@ -507,7 +507,7 @@ public class TemplatedPlatformFuncs
 
         var regJson = CurrentPlatform.HasRegistryFiles ? CurrentPlatform.ReadRegJson(accName) : new Dictionary<string, string>();
 
-        await AppData.InvokeVoidAsync("updateStatus", Lang["Status_CopyingFiles"]);
+        await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Status_CopyingFiles"]);
         foreach (var (accFile, savedFile) in CurrentPlatform.LoginFiles)
         {
             // HANDLE REGISTRY KEY
@@ -588,7 +588,7 @@ public class TemplatedPlatformFuncs
         // Or if has ProfilePicFromFile and ProfilePicRegex.
         if (!hadSpecialProperties.Contains("IMAGE|"))
         {
-            await AppData.InvokeVoidAsync("updateStatus", Lang["Status_HandlingImage"]);
+            await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Status_HandlingImage"]);
 
             _ = Directory.CreateDirectory(Path.Join(Globals.WwwRoot, $"\\img\\profiles\\{CurrentPlatform.SafeName}"));
             var profileImg = Path.Join(Globals.WwwRoot, $"\\img\\profiles\\{CurrentPlatform.SafeName}\\{Globals.GetCleanFilePath(uniqueId)}.jpg");
@@ -868,11 +868,11 @@ public class TemplatedPlatformFuncs
     }
 
     /// <summary>
-    /// Swap to the current AppData.SelectedAccountId.
+    /// Swap to the current AppState.Switcher.SelectedAccountId.
     /// </summary>
     public void SwapToAccount()
     {
-        BasicSwitcherFuncs.SwapBasicAccounts(AppData.SelectedAccountId);
+        BasicSwitcherFuncs.SwapTemplatedAccounts(AppState.Switcher.SelectedAccountId);
     }
 
     /// <summary>
@@ -881,37 +881,37 @@ public class TemplatedPlatformFuncs
     public void SwapToNewAccount()
     {
         if (!OperatingSystem.IsWindows()) return;
-        BasicSwitcherFuncs.SwapBasicAccounts("");
+        BasicSwitcherFuncs.SwapTemplatedAccounts("");
     }
 
     public async Task ForgetAccount()
     {
         if (!Basic.ForgetAccountEnabled)
-            Modals.ShowModal("confirm", Modals.ExtraArg.ForgetAccount);
+            Modals.ShowModal("confirm", ExtraArg.ForgetAccount);
         else
         {
-            var trayAcc = AppData.SelectedAccountId;
+            var trayAcc = AppState.Switcher.SelectedAccountId;
             Basic.SetForgetAcc(true);
 
             // Remove ID from list of ids
-            var idsFile = $"LoginCache\\{AppData.CurrentSwitcher}\\ids.json";
+            var idsFile = $"LoginCache\\{AppState.Switcher.CurrentSwitcher}\\ids.json";
             if (File.Exists(idsFile))
             {
-                var allIds = Globals.ReadDict(idsFile).Remove(AppData.SelectedAccountId);
+                var allIds = Globals.ReadDict(idsFile).Remove(AppState.Switcher.SelectedAccountId);
                 await File.WriteAllTextAsync(idsFile, JsonConvert.SerializeObject(allIds));
             }
 
             // Remove cached files
-            Globals.RecursiveDelete($"LoginCache\\{AppData.CurrentSwitcher}\\{AppData.SelectedAccountId}", false);
+            Globals.RecursiveDelete($"LoginCache\\{AppState.Switcher.CurrentSwitcher}\\{AppState.Switcher.SelectedAccountId}", false);
 
             // Remove from Steam accounts list
-            AppData.BasicAccounts.Remove(AppData.BasicAccounts.First(x => x.AccountId == AppData.SelectedAccountId));
+            AppState.Switcher.TemplatedAccounts.Remove(AppState.Switcher.TemplatedAccounts.First(x => x.AccountId == AppState.Switcher.SelectedAccountId));
 
             // Remove from Tray
-            Globals.RemoveTrayUserByArg(AppData.CurrentSwitcher, trayAcc);
+            Globals.RemoveTrayUserByArg(AppState.Switcher.CurrentSwitcher, trayAcc);
 
             // Remove image
-            Globals.DeleteFile(Path.Join(Globals.WwwRoot, $"\\img\\profiles\\{AppData.CurrentSwitcher}\\{Globals.GetCleanFilePath(AppData.SelectedAccountId)}.jpg"));
+            Globals.DeleteFile(Path.Join(Globals.WwwRoot, $"\\img\\profiles\\{AppState.Switcher.CurrentSwitcher}\\{Globals.GetCleanFilePath(AppState.Switcher.SelectedAccountId)}.jpg"));
 
             AppData.Instance.NotifyDataChanged();
 

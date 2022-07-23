@@ -24,7 +24,7 @@ public class GenericFunctions
     [JSInvokable]
     public void GiCtrlS(string platform)
     {
-        AppSettings.SaveSettings();
+        WindowSettings.SaveSettings();
         switch (platform)
         {
             case "Steam":

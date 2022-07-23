@@ -169,7 +169,7 @@ public class SteamState
                 Line3 = "lastLogin"
             },
             LoginUsername = su.AccName,
-            UserStats = BasicStats.GetUserStatsAllGamesMarkup(su.SteamId),
+            UserStats = GameStats.GetUserStatsAllGamesMarkup(su.SteamId),
             ImagePath = su.ImgUrl,
             Line0 = SteamSettings.ShowAccUsername ? su.AccName : "",
             Line2 = su.SteamId,
@@ -451,7 +451,7 @@ public class SteamState
     }
 
     /// <summary>
-    /// Checks for SteamVACCache.json, and assuming all info is there: Updates AppSettings.SteamUsers.
+    /// Checks for SteamVACCache.json, and assuming all info is there: Updates WindowSettings.SteamUsers.
     /// Otherwise it updates all VAC/Limited info from Web API.
     /// </summary>
     private async Task WebApiPrepareBans()

@@ -14,17 +14,18 @@
 
 using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.State;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Platforms;
 
 public partial class Settings
 {
-    private static readonly Lang Lang = Lang.Instance;
+    
     [Inject]
-    public AppData AppData { get; set; }
+    public AppState AppState { get; set; }
     protected override void OnInitialized()
     {
-        AppData.WindowTitle = Lang["Title_Platforms_Settings"];
+        AppState.WindowState.WindowTitle = Lang["Title_Platforms_Settings"];
         Globals.DebugWriteLine(@"[Auto:Platforms\Settings.razor.cs.OnInitializedAsync]");
     }
 }

@@ -22,13 +22,6 @@ public class TextInputRequest
     [Inject] private Lang Lang { get; set; }
     [Inject] private IAppState AppState { get; set; }
 
-    public enum TextInputGoal
-    {
-        AppPassword,
-        AccString,
-        ChangeUsername
-    }
-
     public string LastString = "";
     public TextInputGoal Goal;
 

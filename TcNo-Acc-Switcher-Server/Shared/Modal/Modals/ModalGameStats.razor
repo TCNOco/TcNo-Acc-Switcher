@@ -15,30 +15,37 @@
 @using TcNo_Acc_Switcher_Server.Shared.Modal
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Globals
-@using TcNo_Acc_Switcher_Server.Data.Settings
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using TcNo_Acc_Switcher_Server.Shared.Modal.Components
 @using Newtonsoft.Json
 @using System.IO
 @using SteamKit2.GC.Dota.Internal
+@using TcNo_Acc_Switcher_Server.State
+@using TcNo_Acc_Switcher_Server.State.DataTypes
+@using TcNo_Acc_Switcher_Server.State.Interfaces
+@inject Modals Modals
+@inject ILang Lang
+@inject GameStats GameStats
+@inject IAppState AppState
+@inject IWindowSettings WindowSettings
 
 @code {
     protected override void OnInitialized()
     {
-        Modals.Instance.GameStatsModalOnChange += OnChangeHandler;
+        Modals.GameStatsModalOnChange += OnChangeHandler;
         OnChangeHandler(); // Run once just to set vars
     }
 
     private async void OnChangeHandler()
     {
-        if (Modals.CurrentStatsSelectorState == Modals.StatsSelectorState.GamesList)
+        if (Modals.CurrentStatsSelectorState == StatsSelectorState.GamesList)
         {
             Modals.Title = Lang["Modal_Title_GameStats"];
             _editButtonText = Lang["Edit"];
             _refreshButtonText = Lang["Refresh"];
 
         }
-        else if (Modals.CurrentStatsSelectorState == Modals.StatsSelectorState.VarsList)
+        else if (Modals.CurrentStatsSelectorState == StatsSelectorState.VarsList)
         {
             Modals.Title = Lang["Modal_Title_GameVars", new { game = _currentGame }];
             CalcGameVars();
@@ -49,21 +56,21 @@
 
     private void Dispose()
     {
-        Modals.Instance.GameStatsModalOnChange -= OnChangeHandler;
+        Modals.GameStatsModalOnChange -= OnChangeHandler;
     }
 
 
 
     // List of games from X platform, with Y accountId associated.
-    private Dictionary<string, string> GetEnabledGames => BasicStats.GetAvailableGames.Where(game => BasicStats.GameStats[game].CachedStats.ContainsKey(AppData.SelectedAccountId)).ToList().ToDictionary(game => game, Globals.GetCleanFilePath);
+    private Dictionary<string, string> GetEnabledGames => GameStats.GetAvailableGames.Where(game => GameStats.SavedStats[game].CachedStats.ContainsKey(AppState.Switcher.SelectedAccountId)).ToList().ToDictionary(game => game, Globals.GetCleanFilePath);
     //private Dictionary<string, string> GetEnabledGames
     //{
     //    get
     //    {
     //        var val = new Dictionary<string, string>();
-    //        foreach (var availableGame in BasicStats.GetAvailableGames)
+    //        foreach (var availableGame in GameStats.GetAvailableGames)
     //        {
-    //            if (BasicStats.GameStats.ContainsKey(availableGame) && BasicStats.GameStats[availableGame].CachedStats.ContainsKey(AppData.SelectedAccountId))
+    //            if (GameStats.SavedStats.ContainsKey(availableGame) && GameStats.SavedStats[availableGame].CachedStats.ContainsKey(AppState.Switcher.SelectedAccountId))
     //            {
     //                val.Add(availableGame, Globals.GetCleanFilePath(Globals.GetCleanFilePath(availableGame)));
     //            }
@@ -74,15 +81,15 @@
 
 
     // List of games from X platform, NOT with Y accountId associated.
-    private Dictionary<string, string> GetDisabledGames => BasicStats.GetAvailableGames.Where(game => !BasicStats.GameStats[game].CachedStats.ContainsKey(AppData.SelectedAccountId)).ToList().ToDictionary(game => game, Globals.GetCleanFilePath);
+    private Dictionary<string, string> GetDisabledGames => GameStats.GetAvailableGames.Where(game => !GameStats.SavedStats[game].CachedStats.ContainsKey(AppState.Switcher.SelectedAccountId)).ToList().ToDictionary(game => game, Globals.GetCleanFilePath);
 
     // Disables specific games
     private void DisableGame(string game)
     {
-        if (!BasicStats.GameStats.ContainsKey(game) || !BasicStats.GameStats[game].CachedStats.ContainsKey(AppData.SelectedAccountId)) return;
+        if (!GameStats.SavedStats.ContainsKey(game) || !GameStats.SavedStats[game].CachedStats.ContainsKey(AppState.Switcher.SelectedAccountId)) return;
 
-        BasicStats.GameStats[game].CachedStats.Remove(AppData.SelectedAccountId);
-        BasicStats.GameStats[game].SaveStats();
+        GameStats.SavedStats[game].CachedStats.Remove(AppState.Switcher.SelectedAccountId);
+        GameStats.SavedStats[game].SaveStats();
 
         InvokeAsync(StateHasChanged);
         UpdateAccountList();
@@ -92,15 +99,15 @@
     #region Game Vars
     private string _currentGame = "";
 
-    private Dictionary<string, string> GetRequiredVars => BasicStats.GameStats.ContainsKey(_currentGame) ? BasicStats.GameStats[_currentGame].RequiredVars : new Dictionary<string, string>();
+    private Dictionary<string, string> GetRequiredVars => GameStats.SavedStats.ContainsKey(_currentGame) ? GameStats.SavedStats[_currentGame].RequiredVars : new Dictionary<string, string>();
 
     private Dictionary<string, string> GetExistingVars
     {
         get
         {
-            if (!BasicStats.GameStats.ContainsKey(_currentGame)) return new Dictionary<string, string>();
-            if (BasicStats.GameStats[_currentGame].CachedStats.ContainsKey(AppData.SelectedAccountId))
-                return BasicStats.GameStats[_currentGame].CachedStats[AppData.SelectedAccountId].Vars;
+            if (!GameStats.SavedStats.ContainsKey(_currentGame)) return new Dictionary<string, string>();
+            if (GameStats.SavedStats[_currentGame].CachedStats.ContainsKey(AppState.Switcher.SelectedAccountId))
+                return GameStats.SavedStats[_currentGame].CachedStats[AppState.Switcher.SelectedAccountId].Vars;
             return new Dictionary<string, string>();
         }
     }
@@ -110,11 +117,11 @@
     {
         var returnDict = new Dictionary<string, Tuple<bool, string>>();
         if (_currentGame == "") return returnDict;
-        foreach (var (key, _) in BasicStats.GameStats[_currentGame].ToCollect)
+        foreach (var (key, _) in GameStats.SavedStats[_currentGame].ToCollect)
         {
-            var hidden = BasicStats.GameStats[_currentGame].CachedStats.ContainsKey(AppData.SelectedAccountId)
-                         && BasicStats.GameStats[_currentGame].CachedStats[AppData.SelectedAccountId].HiddenMetrics.Contains(key);
-            var text = BasicStats.GameStats[_currentGame].ToCollect[key].ToggleText;
+            var hidden = GameStats.SavedStats[_currentGame].CachedStats.ContainsKey(AppState.Switcher.SelectedAccountId)
+                         && GameStats.SavedStats[_currentGame].CachedStats[AppState.Switcher.SelectedAccountId].HiddenMetrics.Contains(key);
+            var text = GameStats.SavedStats[_currentGame].ToCollect[key].ToggleText;
             returnDict.Add(key, new Tuple<bool, string>(hidden, text));
         }
 
@@ -123,7 +130,7 @@
 
     // Get list of metrics that are set to hidden from the settings menu. This overrides individual account settings.
     private List<string> GetGloballyHiddenMetrics =>
-        (from metric in AppSettings.GloballyHiddenMetrics[_currentGame] where metric.Value select metric.Key).ToList();
+        (from metric in WindowSettings.GloballyHiddenMetrics[_currentGame] where metric.Value select metric.Key).ToList();
 
     private class VarTextInput
     {
@@ -163,7 +170,7 @@
             {
                 text = Lang["Stats_AccountId"];
                 if (existingValue == "")
-                    existingValue = AppData.SelectedAccountId;
+                    existingValue = AppState.Switcher.SelectedAccountId;
             }
 
             _varTextInputs.Add(varName, new VarTextInput { Text = text, Placeholder = placeholder, Value = existingValue });
@@ -181,10 +188,10 @@
     private string _refreshButtonText;
 }
 
-@if (Modals.CurrentStatsSelectorState == Modals.StatsSelectorState.GamesList)
+@if (Modals.CurrentStatsSelectorState == StatsSelectorState.GamesList)
 {
     <div class="gameStatsWindow">
-        <p>@Lang["Modal_GameStats_Header", new { accountName = AppData.SelectedAccount.DisplayName }]</p>
+        <p>@Lang["Modal_GameStats_Header", new { accountName = AppState.Switcher.SelectedAccount.DisplayName }]</p>
         <div class="modalScrollSection">
             @foreach (var (game, safeGame) in GetEnabledGames)
             {
@@ -207,10 +214,10 @@
         </div>
     </div>
 }
-@if (Modals.CurrentStatsSelectorState == Modals.StatsSelectorState.VarsList)
+@if (Modals.CurrentStatsSelectorState == StatsSelectorState.VarsList)
 {
     <div class="gameStatsWindow">
-        <p>@Lang["Modal_GameVars_Header", new { game = _currentGame, username = AppData.SelectedAccount.DisplayName, platform = AppData.CurrentSwitcher }]</p>
+        <p>@Lang["Modal_GameVars_Header", new { game = _currentGame, username = AppState.Switcher.SelectedAccount.DisplayName, platform = AppState.Switcher.CurrentSwitcher }]</p>
         <div class="modalScrollSection centeredContainer">
             <div class="centeredSection">
                 @foreach (var (id, textInput) in _varTextInputs)
@@ -257,19 +264,18 @@
     private void ShowVarsList(string game)
     {
         _currentGame = game;
-        Modals.CurrentStatsSelectorState = Modals.StatsSelectorState.VarsList;
+        Modals.CurrentStatsSelectorState = StatsSelectorState.VarsList;
         OnChangeHandler();
     }
     private async Task RefreshAccount(string game)
     {
-        await BasicStats.GameStats[game].LoadStatsFromWeb(AppData.SelectedAccountId, AppData.CurrentSwitcher);
-        BasicStats.GameStats[game].SaveStats();
+        await GameStats.SavedStats[game].LoadStatsFromWeb(AppState.Switcher.SelectedAccountId, AppState.Switcher.CurrentSwitcher);
+        GameStats.SavedStats[game].SaveStats();
         UpdateAccountList();
     }
 
     private void UpdateAccountList(){
-        AppData.SelectedAccount.SetUserStats();
-        AppData.SelectedAccount.NotifyDataChanged();
+        AppState.Switcher.SelectedAccount.SetUserStats();
         Modals.IsShown = false;
 
     }
@@ -288,9 +294,9 @@
             hiddenMetrics.Add(id);
         }
 
-        await BasicStats.GameStats[_currentGame].SetAccount(vars, hiddenMetrics);
+        await GameStats.SavedStats[_currentGame].SetAccount(vars, hiddenMetrics);
 
-        Modals.CurrentStatsSelectorState = Modals.StatsSelectorState.GamesList;
+        Modals.CurrentStatsSelectorState = StatsSelectorState.GamesList;
         UpdateAccountList();
     }
 }

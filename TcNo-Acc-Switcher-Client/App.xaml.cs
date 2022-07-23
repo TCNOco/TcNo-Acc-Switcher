@@ -199,8 +199,8 @@ public partial class App
         MessageBox.Show("Last error message:" + Environment.NewLine + string.Join(Environment.NewLine, lastError), "Error from last crash", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
         Globals.DeleteFile("LastError.txt");
 
-        AppStats.CrashCount++;
-        AppStats.SaveSettings();
+        Statistics.CrashCount++;
+        Statistics.SaveSettings();
     }
 
     /// <summary>
@@ -251,9 +251,9 @@ public partial class App
         string color;
         try
         {
-            var start = AppSettings.Stylesheet.IndexOf(key + ":", StringComparison.Ordinal) + key.Length + 1;
-            var end = AppSettings.Stylesheet.IndexOf(";", start, StringComparison.Ordinal);
-            color = AppSettings.Stylesheet[start..end];
+            var start = WindowSettings.Stylesheet.IndexOf(key + ":", StringComparison.Ordinal) + key.Length + 1;
+            var end = WindowSettings.Stylesheet.IndexOf(";", start, StringComparison.Ordinal);
+            color = WindowSettings.Stylesheet[start..end];
             color = color.Trim(); // Remove whitespace around variable
         }
         catch (Exception)
@@ -481,11 +481,11 @@ release = true;
             return;
         }
 
-        if (AppSettings.GetPlatform(platform) is null) return;
+        if (WindowSettings.GetPlatform(platform) is null) return;
         BasicPlatforms.SetCurrentPlatform(platform);
         Globals.WriteToLog(CurrentPlatform.FullName + " switch requested");
         if (!GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd)) Restart(combinedArgs, true);
-        BasicSwitcherFuncs.SwapBasicAccounts(account, string.Join(' ', remainingArguments));
+        BasicSwitcherFuncs.SwapTemplatedAccounts(account, string.Join(' ', remainingArguments));
     }
 
     /// <summary>
@@ -501,17 +501,17 @@ release = true;
             case "s":
             case "steam":
                 Globals.WriteToLog("Steam logout requested");
-                AppData.CurrentSwitcher = "Steam";
+                AppState.Switcher.CurrentSwitcher = "Steam";
                 await AppFuncs.SwapToNewAccount();
                 break;
 
             // BASIC ACCOUNT PLATFORM
             default:
-                if (AppSettings.GetPlatform(platform) is null) break;
+                if (WindowSettings.GetPlatform(platform) is null) break;
                 // Is a basic platform!
                 BasicPlatforms.SetCurrentPlatform(platform);
                 Globals.WriteToLog(CurrentPlatform.FullName + " logout requested");
-                AppData.CurrentSwitcher = platform;
+                AppState.Switcher.CurrentSwitcher = platform;
                 await AppFuncs.SwapToNewAccount();
                 break;
         }

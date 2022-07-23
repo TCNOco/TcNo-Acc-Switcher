@@ -14,11 +14,11 @@
 
 @page "/TextEditor/"
 @inject IJSRuntime JsRuntime
-@{ AppData.SetActiveIJsRuntime(JsRuntime); }
+
 @inject NavigationManager NavManager
 @{ AppData.SetActiveNavMan(NavManager); }
 
-@inject Lang Locale
+@inject ILang Lang
 
 <div class="text-editor d-flex flex-column">
     <div class="flex-grow-1 editor-container">
@@ -40,18 +40,18 @@ Actions will show here
 
 @code
 {
-	private static readonly Lang Lang = Lang.Instance;
+	
     // This has to be here for NavManager.
     // This is run before everything is painted on, so that it can get the correct values for the CSS Block.
     protected override void OnParametersSet()
     {
-        AppSettings.StreamerModeCheck();
+        WindowSettings.StreamerModeCheck();
     }
 
     protected override async Task OnInitializedAsync()
     {
         AppData.WindowTitle = Lang["Title_TextEditor"];
-        await AppData.InvokeVoidAsync("initEditor");
+        await JsRuntime.InvokeVoidAsync("initEditor");
     }
 
     public void SaveFile()

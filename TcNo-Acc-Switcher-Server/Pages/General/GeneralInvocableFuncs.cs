@@ -44,12 +44,12 @@ public class GeneralInvocableFuncs
         var arr = JArray.Parse(jsonString);
         for (var i = 0; i < arr.Count; i++)
         {
-            var plat = AppSettings.Platforms.FirstOrDefault(x => x.SafeName == arr[i].ToString());
+            var plat = WindowSettings.Platforms.FirstOrDefault(x => x.SafeName == arr[i].ToString());
             if (plat is null) continue;
             plat.DisplayIndex = i;
         }
 
-        AppSettings.SaveSettings();
+        WindowSettings.SaveSettings();
     }
 
     /// <summary>
@@ -100,7 +100,7 @@ public class GeneralInvocableFuncs
     public static async Task<bool> ShowModal(string args)
     {
         Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ShowModal] args={args}");
-        return await AppData.InvokeVoidAsync("showModal", args);
+        return await JsRuntime.InvokeVoidAsync("showModal", args);
     }
 
     /// <summary>
@@ -115,7 +115,7 @@ public class GeneralInvocableFuncs
     public static async Task<bool> ShowToast(string toastType, string toastMessage, string toastTitle = "", string renderTo = "body", int duration = 5000)
     {
         Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ShowToast] type={toastType}, message={toastMessage}, title={toastTitle}, renderTo={renderTo}, duration={duration}");
-        return await AppData.InvokeVoidAsync("window.notification.new", new { type = toastType, title = toastTitle, message = toastMessage, renderTo, duration });
+        return await JsRuntime.InvokeVoidAsync("window.notification.new", new { type = toastType, title = toastTitle, message = toastMessage, renderTo, duration });
     }
 
     /// <summary>
@@ -128,23 +128,23 @@ public class GeneralInvocableFuncs
         Globals.DebugWriteLine(@"[JSInvoke:General\GeneralInvocableFuncs.CreateShortcut]");
         if (args.Length > 0 && args[0] != ':') args = $" {args}"; // Add a space before arguments if doesn't start with ':'
         string platformName;
-        var primaryPlatformId = "" + AppData.CurrentSwitcher[0];
-        var bgImg = Path.Join(Globals.WwwRoot, $"\\img\\platform\\{AppData.CurrentSwitcherSafe}.svg");
+        var primaryPlatformId = "" + AppState.Switcher.CurrentSwitcher[0];
+        var bgImg = Path.Join(Globals.WwwRoot, $"\\img\\platform\\{AppState.Switcher.CurrentSwitcherSafe}.svg");
         string currentPlatformImgPath, currentPlatformImgPathOverride;
-        switch (AppData.CurrentSwitcher)
+        switch (AppState.Switcher.CurrentSwitcher)
         {
             case "Steam":
                 currentPlatformImgPath = Path.Join(Globals.WwwRoot, "\\img\\platform\\Steam.svg");
                 currentPlatformImgPathOverride = Path.Join(Globals.WwwRoot, "\\img\\platform\\Steam.png");
                 var ePersonaState = -1;
                 if (args.Length == 2) _ = int.TryParse(args[1].ToString(), out ePersonaState);
-                platformName = $"Switch to {AppData.SelectedAccount.DisplayName} {(args.Length > 0 ? $"({SteamSwitcherFuncs.PersonaStateToString(ePersonaState)})" : "")} [{AppData.CurrentSwitcher}]";
+                platformName = $"Switch to {AppState.Switcher.SelectedAccount.DisplayName} {(args.Length > 0 ? $"({SteamSwitcherFuncs.PersonaStateToString(ePersonaState)})" : "")} [{AppState.Switcher.CurrentSwitcher}]";
                 break;
             default:
                 currentPlatformImgPath = Path.Join(Globals.WwwRoot, $"\\img\\platform\\{CurrentPlatform.SafeName}.svg");
                 currentPlatformImgPathOverride = Path.Join(Globals.WwwRoot, $"\\img\\platform\\{CurrentPlatform.SafeName}.png");
                 primaryPlatformId = CurrentPlatform.PrimaryId;
-                platformName = $"Switch to {AppData.SelectedAccount.DisplayName} [{AppData.CurrentSwitcher}]";
+                platformName = $"Switch to {AppState.Switcher.SelectedAccount.DisplayName} [{AppState.Switcher.CurrentSwitcher}]";
                 break;
         }
 
@@ -156,8 +156,8 @@ public class GeneralInvocableFuncs
             bgImg = Path.Join(Globals.WwwRoot, "\\img\\BasicDefault.png");
 
 
-        var fgImg = Path.Join(Globals.WwwRoot, $"\\img\\profiles\\{AppData.CurrentSwitcherSafe}\\{AppData.SelectedAccountId}.jpg");
-        if (!File.Exists(fgImg)) fgImg = Path.Join(Globals.WwwRoot, $"\\img\\profiles\\{AppData.CurrentSwitcherSafe}\\{AppData.SelectedAccountId}.png");
+        var fgImg = Path.Join(Globals.WwwRoot, $"\\img\\profiles\\{AppState.Switcher.CurrentSwitcherSafe}\\{AppState.Switcher.SelectedAccountId}.jpg");
+        if (!File.Exists(fgImg)) fgImg = Path.Join(Globals.WwwRoot, $"\\img\\profiles\\{AppState.Switcher.CurrentSwitcherSafe}\\{AppState.Switcher.SelectedAccountId}.png");
         if (!File.Exists(fgImg))
         {
             await ShowToast("error", Lang["Toast_CantFindImage"], Lang["Toast_CantCreateShortcut"], "toastarea");
@@ -168,16 +168,16 @@ public class GeneralInvocableFuncs
         _ = s.Shortcut_Platform(
             Shortcut.Desktop,
             platformName,
-            $"+{primaryPlatformId}:{AppData.SelectedAccountId}{args}",
-            $"Switch to {AppData.SelectedAccount.DisplayName} [{AppData.CurrentSwitcher}] in TcNo Account Switcher",
+            $"+{primaryPlatformId}:{AppState.Switcher.SelectedAccountId}{args}",
+            $"Switch to {AppState.Switcher.SelectedAccount.DisplayName} [{AppState.Switcher.CurrentSwitcher}] in TcNo Account Switcher",
             true);
-        await s.CreateCombinedIcon(bgImg, fgImg, $"{AppData.SelectedAccountId}.ico");
+        await s.CreateCombinedIcon(bgImg, fgImg, $"{AppState.Switcher.SelectedAccountId}.ico");
         s.TryWrite();
 
-        if (AppSettings.StreamerModeTriggered)
+        if (WindowSettings.StreamerModeTriggered)
             await ShowToast("success", Lang["Toast_ShortcutCreated"], Lang["Success"], "toastarea");
         else
-            await ShowToast("success", Lang["ForName", new { name = AppData.SelectedAccount.DisplayName }], Lang["Toast_ShortcutCreated"], "toastarea");
+            await ShowToast("success", Lang["ForName", new { name = AppState.Switcher.SelectedAccount.DisplayName }], Lang["Toast_ShortcutCreated"], "toastarea");
     }
 
     [JSInvokable]

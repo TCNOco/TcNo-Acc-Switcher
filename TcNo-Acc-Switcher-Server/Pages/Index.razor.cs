@@ -30,9 +30,9 @@ namespace TcNo_Acc_Switcher_Server.Pages;
 
 public partial class Index
 {
+    [Inject] private IStatistics Statistics { get; set; }
     [Inject] private Toasts Toasts { get; set; }
-    [Inject] private Lang Lang { get; set; }
-    [Inject] private BasicSettings BasicSettings { get; set; }
+    [Inject] private TemplatedPlatformState TemplatedPlatformState { get; set; }
     [Inject] private SteamSettings SteamSettings { get; set; }
     [Inject] private NavigationManager NavigationManager { get; set; }
 
@@ -63,19 +63,19 @@ public partial class Index
         {
             AppState.WindowState.FirstMainMenuVisit = false;
             var onlyPlatform = WindowSettings.Platforms.First(x => x.Enabled);
-            await Check(onlyPlatform.Name);
+            Check(onlyPlatform.Name);
         }
         AppState.WindowState.FirstMainMenuVisit = false;
 
         if (firstRender)
         {
             await GeneralFuncs.HandleQueries();
-            //await AppData.InvokeVoidAsync("initContextMenu");
+            //await JsRuntime.InvokeVoidAsync("initContextMenu");
             await JsRuntime.InvokeVoidAsync("initPlatformListSortable");
             //await AData.InvokeVoidAsync("initAccListSortable");
         }
 
-        AppStats.NewNavigation("/");
+        Statistics.NewNavigation("/");
     }
 
 
@@ -91,7 +91,7 @@ public partial class Index
             if (!Directory.Exists(SteamSettings.FolderPath) || !File.Exists(SteamSettings.Exe))
             {
                 AppState.Switcher.CurrentSwitcher = "Steam";
-                ModalFuncs.ShowUpdatePlatformFolderModal();
+                Modals.ShowUpdatePlatformFolderModal();
                 return;
             }
             if (File.Exists(SteamSettings.LoginUsersVdf))
@@ -102,13 +102,13 @@ public partial class Index
         }
 
         AppState.Switcher.CurrentSwitcher = platform;
-        BasicPlatforms.SetCurrentPlatform(platform);
-        if (!GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd, BasicSettings.ClosingMethod)) return;
+        TemplatedPlatformState.SetCurrentPlatform(platform);
+        if (!GeneralFuncs.CanKillProcess(TemplatedPlatformState.CurrentPlatform.ExesToEnd, TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.ClosingMethod)) return;
 
-        if (Directory.Exists(BasicSettings.FolderPath) && File.Exists(BasicSettings.Exe))
+        if (Directory.Exists(TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.FolderPath) && File.Exists(TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.Exe))
             NavManager.NavigateTo("/Basic/");
         else
-            ModalFuncs.ShowUpdatePlatformFolderModal();
+            Modals.ShowUpdatePlatformFolderModal();
     }
 
     #region Platform context menu
@@ -117,7 +117,7 @@ public partial class Index
     /// </summary>
     public void CreatePlatformShortcut()
     {
-        var platform = WindowSettingsFuncs.GetPlatform(AppData.SelectedPlatform);
+        var platform = WindowSettings.GetPlatform(AppState.Switcher.SelectedPlatform);
         Shortcut.PlatformDesktopShortcut(Shortcut.Desktop, platform.Name, platform.Identifier, true);
 
         Toasts.ShowToastLang(ToastType.Success, "Success", "Toast_ShortcutCreated");

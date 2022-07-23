@@ -132,7 +132,7 @@ public partial class Globals
         InitFolder("themes", overwrite);
 
         // Create logging level file
-        CopyFile(Path.Join(AppDataFolder, "appsettings.json"), Path.Join(UserDataFolder, "appsettings.json"));
+        CopyFile(Path.Join(AppDataFolder, "WindowSettings.json"), Path.Join(UserDataFolder, "WindowSettings.json"));
     }
 
     public static void ClearWebCache()

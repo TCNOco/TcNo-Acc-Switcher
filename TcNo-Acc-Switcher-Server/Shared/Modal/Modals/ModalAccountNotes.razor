@@ -18,23 +18,33 @@
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using Newtonsoft.Json
 @using System.IO
+@using TcNo_Acc_Switcher_Server.State
+@using TcNo_Acc_Switcher_Server.State.DataTypes
+@using TcNo_Acc_Switcher_Server.State.Interfaces
+@inject Modals Modals
+@inject ILang Lang
+@inject GameStats GameStats
+@inject IAppState AppState
+@inject IWindowSettings WindowSettings
+@inject IJSRuntime JsRuntime
+
 @code {
 
     protected override void OnInitialized()
     {
-        Modals.Title = Lang["Modal_Title_AccountNotes", new { accountName = AppData.SelectedAccount.DisplayName }];
+        Modals.Title = Lang["Modal_Title_AccountNotes", new { accountName = AppState.Switcher.SelectedAccount.DisplayName }];
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await AppData.InvokeVoidAsync("focusOn", "#accNotes");
+        await JsRuntime.InvokeVoidAsync("focusOn", "#accNotes");
     }
 }
 
 <div class="infoWindow">
     <div class="fullWidthContent">
         <div class="accNotesContainer">
-            <textarea id="accNotes" @bind="AppData.SelectedAccount.Note"></textarea>
+            <textarea id="accNotes" @bind="AppState.Switcher.SelectedAccount.Note"></textarea>
         </div>
         <div class="YesNo">
             <button type="button" id="modal_true" @onclick="SaveNotes"><span>@Lang["Save"]</span></button>
@@ -47,20 +57,18 @@
 {
     private void SaveNotes()
     {
-        AppData.SelectedAccount.NotifyDataChanged();
-
         string path;
         Dictionary<string, string> data;
 
-        if (AppData.CurrentSwitcher == "Steam")
+        if (AppState.Switcher.CurrentSwitcher == "Steam")
         {
             path = "LoginCache\\Steam\\AccountNotes.json";
-            data = AppData.SteamAccounts.ToDictionary(s => s.AccountId, s => s.Note);
+            data = AppState.Switcher.SteamAccounts.ToDictionary(s => s.AccountId, s => s.Note);
         }
         else
         {
-            path = $"LoginCache\\{AppData.CurrentSwitcherSafe}\\AccountNotes.json";
-            data = AppData.BasicAccounts.ToDictionary(s => s.AccountId, s => s.Note);
+            path = $"LoginCache\\{AppState.Switcher.CurrentSwitcherSafe}\\AccountNotes.json";
+            data = AppState.Switcher.TemplatedAccounts.ToDictionary(s => s.AccountId, s => s.Note);
         }
 
         File.WriteAllText(path, JsonConvert.SerializeObject(data, Formatting.None));

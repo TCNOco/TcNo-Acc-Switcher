@@ -61,7 +61,7 @@ public class Startup
 
         // Only load when needed.
         _ = services.AddSingleton<SteamSettings>(); // (No depends)
-
+        _ = services.AddSingleton<SteamFuncs>();
         _ = services.AddSingleton<SteamState>(); // Lang, Toasts, AppState, SteamSettings, Modals, Statistics, SharedFunctions
 
         // THIS MUST BE LOADED TO SEE APPS ON THE MAIN MENU LIST

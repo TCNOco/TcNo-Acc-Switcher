@@ -61,7 +61,7 @@ public class GeneralFuncs
         // Restart self as if can't close admin.
         if (Globals.CanKillProcess(processName)) return true;
         if (showModal)
-            Modals.ShowModal("confirm", Modals.ExtraArg.RestartAsAdmin);
+            Modals.ShowModal("confirm", ExtraArg.RestartAsAdmin);
         return false;
     }
 
@@ -96,7 +96,7 @@ public class GeneralFuncs
         while (Globals.ProcessHelper.IsProcessRunning(procName) && timeout < 10)
         {
             timeout++;
-            await AppData.InvokeVoidAsync("updateStatus", Lang["Status_WaitingForClose", new { processName = procName, timeout, timeLimit = "10" }]);
+            await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Status_WaitingForClose", new { processName = procName, timeout, timeLimit = "10" }]);
             Thread.Sleep(1000);
         }
 
@@ -141,7 +141,7 @@ public class GeneralFuncs
                 procToClose.Remove(p);
 
             if (procToClose.Count > 0)
-                await AppData.InvokeVoidAsync("updateStatus", Lang["Status_WaitingForMultipleClose", new { processName = procToClose[0], count = appCount, timeout, timeLimit = "10" }]);
+                await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Status_WaitingForMultipleClose", new { processName = procToClose[0], count = appCount, timeout, timeLimit = "10" }]);
             if (areAnyRunning)
                 Thread.Sleep(1000);
             else
@@ -529,7 +529,7 @@ public class GeneralFuncs
         {
             AppData.WindowTitle = Lang["Title_AccountsList", new { platform }];
             // Handle Streamer Mode notification
-            if (AppSettings.StreamerModeEnabled && AppSettings.StreamerModeTriggered)
+            if (WindowSettings.StreamerModeEnabled && WindowSettings.StreamerModeTriggered)
                 await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_StreamerModeHint"], Lang["Toast_StreamerModeTitle"], "toastarea");
 
             // Handle loading accounts for specific platforms
@@ -552,7 +552,7 @@ public class GeneralFuncs
 
             // Handle queries and invoke status "Ready"
             await HandleQueries();
-            await AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
+            await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Done"]);
         }
     }
 
@@ -576,7 +576,7 @@ public class GeneralFuncs
             try
             {
                 await GeneralInvocableFuncs.ShowToast(toastType[i], toastMessage[i], toastTitle[i], "toastarea");
-                await AppData.InvokeVoidAsync("removeUrlArgs", "toast_type,toast_title,toast_message");
+                await JsRuntime.InvokeVoidAsync("removeUrlArgs", "toast_type,toast_title,toast_message");
             }
             catch (TaskCanceledException e)
             {
@@ -590,7 +590,7 @@ public class GeneralFuncs
 
     public static async Task<string> ExportAccountList()
     {
-        var platform = AppSettings.GetPlatform(AppData.SelectedPlatform);
+        var platform = WindowSettings.GetPlatform(AppData.SelectedPlatform);
         Globals.DebugWriteLine(@$"[Func:Pages\General\GeneralInvocableFuncs.GiExportAccountList] platform={platform}");
         if (!Directory.Exists(Path.Join("LoginCache", platform.SafeName)))
         {
@@ -600,7 +600,7 @@ public class GeneralFuncs
 
         var s = CultureInfo.CurrentCulture.TextInfo.ListSeparator; // Different regions use different separators in csv files.
 
-        await BasicStats.SetCurrentPlatform(platform.Name);
+        await GameStats.SetCurrentPlatform(platform.Name);
 
         List<string> allAccountsTable = new();
         if (platform.Name == "Steam")
@@ -627,7 +627,7 @@ public class GeneralFuncs
                                      banInfo + s +
                                      Globals.UnixTimeStampToDateTime(su.LastLogin) + s +
                                      (File.Exists(imagePath) ? imagePath : "Missing from disk") + s +
-                                     BasicStats.GetGameStatsString(su.SteamId, s));
+                                     GameStats.GetGameStatsString(su.SteamId, s));
             }
         }
         else
@@ -639,7 +639,7 @@ public class GeneralFuncs
             foreach (var accDirectory in Directory.GetDirectories(Path.Join("LoginCache", platform.SafeName)))
             {
                 allAccountsTable.Add(Path.GetFileName(accDirectory) + s +
-                                     BasicStats.GetGameStatsString(accDirectory, s, true));
+                                     GameStats.GetGameStatsString(accDirectory, s, true));
             }
         }
 

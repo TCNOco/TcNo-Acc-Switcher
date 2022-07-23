@@ -22,13 +22,13 @@
 
 @{ AppData.SetActiveNavMan(NavManager); }
 @inject IJSRuntime JsRuntime
-@{ AppData.SetActiveIJsRuntime(JsRuntime); }
 
-@inject Lang Locale
+
+@inject ILang Lang
 
 @code
 {
-    private readonly Dictionary<string, Dictionary<string, string>> _gamesAndSettings = BasicStats.GetAllCurrentlyEnabledGames().ToDictionary(game => game, BasicStats.GetAllMetrics);
+    private readonly Dictionary<string, Dictionary<string, string>> _gamesAndSettings = GameStats.GetAllCurrentlyEnabledGames().ToDictionary(game => game, GameStats.GetAllMetrics);
 }
 
 <div class="container mainblock">
@@ -141,8 +141,8 @@
                     @foreach (var (metricId, metricText) in settings)
                     {
                         <div class="form-check mb-2">
-                            @*<input class="form-check-input @BasicStats.Instance.GetGameIdFromName(game)_Checkboxes" @bind="AppSettings.GloballyHiddenMetrics[game]." type="checkbox" id="@metricId" checked="@hidden"><label class="form-check-label" for="@metricId"></label><label for="@metricId">@metricText<br></label>*@
-                            <input class="form-check-input" @bind="AppSettings.GloballyHiddenMetrics[game][metricId]" type="checkbox" id="@metricId"><label class="form-check-label" for="@metricId"></label><label for="@metricId">@metricText<br></label>
+                            @*<input class="form-check-input @GameStats.Instance.GetGameIdFromName(game)_Checkboxes" @bind="WindowSettings.GloballyHiddenMetrics[game]." type="checkbox" id="@metricId" checked="@hidden"><label class="form-check-label" for="@metricId"></label><label for="@metricId">@metricText<br></label>*@
+                            <input class="form-check-input" @bind="WindowSettings.GloballyHiddenMetrics[game][metricId]" type="checkbox" id="@metricId"><label class="form-check-label" for="@metricId"></label><label for="@metricId">@metricText<br></label>
                         </div>
                     }
                 }
@@ -169,18 +169,18 @@
 {
     protected override async Task OnParametersSetAsync()
     {
-        await BasicStats.SetCurrentPlatform(CurrentPlatform.SafeName);
+        await GameStats.SetCurrentPlatform(CurrentPlatform.SafeName);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        AppStats.NewNavigation($"/[{CurrentPlatform.SafeName}]/Settings");
-        if (firstRender) await AppData.InvokeVoidAsync("initSavingHotKey");
+        Statistics.NewNavigation($"/[{CurrentPlatform.SafeName}]/Settings");
+        if (firstRender) await JsRuntime.InvokeVoidAsync("initSavingHotKey");
     }
 
     public void SaveAndClose()
     {
-        AppSettings.SaveSettings();
+        WindowSettings.SaveSettings();
         Basic.SaveSettings();
 
         NavManager.NavigateTo("/Basic");

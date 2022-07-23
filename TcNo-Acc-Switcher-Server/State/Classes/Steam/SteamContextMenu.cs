@@ -191,13 +191,13 @@ public class SteamContextMenu
                 gameData is not null
                     ? new Tuple<string, object>("Context_GameDataSubmenu", gameData)
                     : null,
-                BasicStats.PlatformHasAnyGames("Steam")
+                GameStats.PlatformHasAnyGames("Steam")
                     ? new Tuple<string, object>("Context_ManageGameStats",
                         new Action(Modals.ShowGameStatsSelectorModal))
                     : null,
-                new("Context_ChangeImage", new Action(ModalFuncs.ShowChangeAccImageModal)),
+                new("Context_ChangeImage", new Action(Modals.ShowChangeAccImageModal)),
                 new("Context_Steam_OpenUserdata", new Action(SteamOpenUserdata)),
-                new("Context_ChangeName", new Action(ModalFuncs.ShowChangeUsernameModal))
+                new("Context_ChangeName", new Action(Modals.ShowChangeUsernameModal))
             })
         });
 

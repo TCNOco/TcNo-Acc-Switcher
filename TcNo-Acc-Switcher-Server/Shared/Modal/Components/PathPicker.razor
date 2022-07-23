@@ -15,13 +15,20 @@
 @using TcNo_Acc_Switcher_Server.Shared.Modal
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Globals
-@using TcNo_Acc_Switcher_Server.Data.Settings
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using Newtonsoft.Json
 @using System.IO
 @using System.Text.RegularExpressions
 @using TcNo_Acc_Switcher_Server.Pages.Basic
 @using TcNo_Acc_Switcher_Server.Pages.Steam
+@using TcNo_Acc_Switcher_Server.State
+@using TcNo_Acc_Switcher_Server.State.DataTypes
+@using TcNo_Acc_Switcher_Server.State.Interfaces
+@inject Modals Modals
+@inject ILang Lang
+@inject IJSRuntime JsRuntime
+@inject Toasts Toasts
+
 @code {
 
     [Parameter]
@@ -34,7 +41,7 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await AppData.InvokeVoidAsync("focusOn", "#NewAccountName");
+        await JsRuntime.InvokeVoidAsync("focusOn", "#NewAccountName");
     }
 
     private string _lastSelectedPath = "NONE"; // This MUST be set to something, or it will crawl EVERYTHING.
@@ -43,7 +50,7 @@
 <div class="pathPicker">
     <div>
         <CascadingValue Value="@_lastSelectedPath">
-            @foreach (var drive in Pages.General.PathPicker.LogicalDrivesList)
+            @foreach (var drive in LogicalDrivesList())
             {
                 <PathPickerChildren CurrentPath="@drive" Depth="0"/>
             }
@@ -53,6 +60,21 @@
 
 @code
 {
+
+    private List<string> LogicalDrivesList()
+    {
+        try
+        {
+            return Directory.GetLogicalDrives().ToList();
+        }
+        catch (Exception e)
+        {
+            Globals.WriteToLog("Could not list Logical Drives.", e);
+            Toasts.ShowToastLang(ToastType.Error, "PathPicker_NoLogicalDrives");
+            return new List<string>();
+        }
+    }
+
     //// Pressed Enter on the input
     //private async Task KeyPress(KeyboardEventArgs k)
     //{
@@ -62,7 +84,7 @@
     //// Clicked the Change Username button
     //private async Task FinaliseAccNameChange()
     //{
-    //    AppData.SelectedAccount.NotifyDataChanged();
+    //    AppState.Switcher.SelectedAccount.NotifyDataChanged();
 
     //}
 }

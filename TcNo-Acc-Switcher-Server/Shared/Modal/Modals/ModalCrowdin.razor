@@ -16,10 +16,21 @@
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Globals
 @using TcNo_Acc_Switcher_Server.Pages.General
+@using TcNo_Acc_Switcher_Server.State
+@using TcNo_Acc_Switcher_Server.State.DataTypes
+@using TcNo_Acc_Switcher_Server.State.Interfaces
+@inject Modals Modals
+@inject ILang Lang
+@inject GameStats GameStats
+@inject IAppState AppState
+@inject IWindowSettings WindowSettings
+
+
 @code {
     protected override void OnInitialized()
     {
         Modals.Title = Lang["Modal_Crowdin_Header"];
+        _modalCrowdinInfo = new MarkupString(Lang["Modal_Crowdin_Info"]);
     }
 
     private GeneralFuncs.CrowdinResponse _crowdinList;
@@ -29,7 +40,7 @@
         StateHasChanged();
     }
 
-    readonly MarkupString _modalCrowdinInfo = new(Lang["Modal_Crowdin_Info"]);
+    private MarkupString _modalCrowdinInfo;
 }
 
 <div class="infoWindow">
