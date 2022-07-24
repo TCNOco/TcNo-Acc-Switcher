@@ -91,18 +91,7 @@ public class GeneralInvocableFuncs
         };
         _ = Process.Start(ps);
     }
-
-    /// <summary>
-    /// JS function handler for running showModal JS function, with input arguments.
-    /// </summary>
-    /// <param name="args">Argument string, containing a command to be handled later by modal</param>
-    /// <returns></returns>
-    public static async Task<bool> ShowModal(string args)
-    {
-        Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ShowModal] args={args}");
-        return await JsRuntime.InvokeVoidAsync("showModal", args);
-    }
-
+    
     /// <summary>
     /// JS function handler for showing Toast message.
     /// </summary>

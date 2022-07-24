@@ -21,6 +21,7 @@ using System.Runtime.Versioning;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 
 namespace TcNo_Acc_Switcher_Server.State.Classes.Templated;
 
@@ -35,7 +36,13 @@ public class PlatformSavedSettings
     [JsonProperty(Order = 5)] public Dictionary<int, string> Shortcuts { get; set; } = new();
     [JsonProperty(Order = 8)] public bool AutoStart { get; set; } = true;
     [JsonProperty(Order = 9)] public bool ShowShortNotes { get; set; } = true;
-    [JsonIgnore] public bool DesktopShortcut { get; set; }
+    [JsonIgnore]
+    public bool DesktopShortcut
+    {
+        get => Shortcut.CheckShortcuts(TemplatedPlatformState.CurrentPlatform.Name);
+        set => Shortcut.PlatformDesktopShortcut(Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+            TemplatedPlatformState.CurrentPlatform.Name, TemplatedPlatformState.CurrentPlatform.Identifiers[0], value);
+    }
     [JsonIgnore] public int LastAccTimestamp { get; set; }
     [JsonIgnore] public string LastAccName { get; set; } = "";
     [JsonIgnore] public string Exe { get; set; }

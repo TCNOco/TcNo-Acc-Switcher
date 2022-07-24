@@ -5,10 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server.State;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
 
-namespace State;
+namespace TcNo_Acc_Switcher_Server.State;
 
 /// <summary>
 /// I did want to avoid something like this, but this seems like the best compromise to having duplicate code.

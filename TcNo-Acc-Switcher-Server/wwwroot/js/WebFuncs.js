@@ -176,7 +176,8 @@ async function shortcut(action) {
 async function initSavingHotKey() {
     hotkeys("ctrl+s", async function (event) {
         event.preventDefault();
-        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCtrlS", getCurrentPage());
+        if (getCurrentPage() === "Steam") await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCtrlSSteam");
+        else await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCtrlSTemplated");
     });
 }
 

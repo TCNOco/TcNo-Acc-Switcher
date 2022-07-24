@@ -37,6 +37,7 @@ public class SteamFuncs
     [Inject] private Lang Lang { get; set; }
     [Inject] private SteamSettings SteamSettings { get; set; }
     [Inject] private IAppState AppState { get; set; }
+    [Inject] private Toasts Toasts { get; set; }
 
 
     #region True Static
@@ -186,7 +187,7 @@ public class SteamFuncs
     /// <param name="steamId">(Optional) User's SteamID</param>
     /// <param name="ePersonaState">(Optional) Persona state for user [0: Offline, 1: Online...]</param>
     /// <param name="args">Starting arguments</param>
-    public static async Task SwapSteamAccounts(string steamId = "", int ePersonaState = -1, string args = "")
+    public async Task SwapSteamAccounts(string steamId = "", int ePersonaState = -1, string args = "")
     {
         Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.SwapSteamAccounts] Swapping to: hidden. ePersonaState={ePersonaState}");
         if (steamId != "" && !VerifySteamId(steamId))
@@ -201,7 +202,7 @@ public class SteamFuncs
                 await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = "Steam" }]);
             else
             {
-                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RestartAsAdmin"], Lang["Failed"], "toastarea");
+                Toasts.ShowToastLang(ToastType.Error, "Failed", "Toast_RestartAsAdmin");
                 Modals.ShowModal("confirm", ExtraArg.RestartAsAdmin);
             }
             return;
@@ -215,11 +216,9 @@ public class SteamFuncs
             if (SteamSettings.StartSilent) args += " -silent";
 
             if (Globals.StartProgram(SteamSettings.Exe(), SteamSettings.Admin, args, SteamSettings.StartingMethod))
-                await GeneralInvocableFuncs.ShowToast("info",
-                    Lang["Status_StartingPlatform", new { platform = "Steam" }], renderTo: "toastarea");
+                Toasts.ShowToastLang(ToastType.Info, new LangSub("Status_StartingPlatform", new { platform = "Steam" }));
             else
-                await GeneralInvocableFuncs.ShowToast("error",
-                    Lang["Toast_StartingPlatformFailed", new { platform = "Steam" }], renderTo: "toastarea");
+                Toasts.ShowToastLang(ToastType.Error, new LangSub("Toast_StartingPlatformFailed", new { platform = "Steam" }));
         }
 
         if (SteamSettings.AutoStart && WindowSettings.MinimizeOnSwitch) await JsRuntime.InvokeVoidAsync("hideWindow");
@@ -249,7 +248,7 @@ public class SteamFuncs
     /// <param name="selectedSteamId">Steam ID64 to switch to</param>
     /// <param name="pS">[PersonaState]0-7 custom persona state [0: Offline, 1: Online...]</param>
     [SupportedOSPlatform("windows")]
-    public static async Task UpdateLoginUsers(string selectedSteamId, int pS)
+    public async Task UpdateLoginUsers(string selectedSteamId, int pS)
     {
         Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.UpdateLoginUsers] Updating loginusers: selectedSteamId={(selectedSteamId.Length > 0 ? selectedSteamId.Substring(selectedSteamId.Length - 4, 4) : "")}, pS={pS}");
         var userAccounts = await GetSteamUsers(SteamSettings.LoginUsersVdf());
@@ -275,7 +274,7 @@ public class SteamFuncs
         }
         catch (InvalidOperationException)
         {
-            await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_MissingUserId"]);
+            Toasts.ShowToastLang(ToastType.Error, "Toast_MissingUserId");
         }
         //userAccounts.Single(x => x.SteamId == selectedSteamId).MostRec = "1";
 
@@ -295,7 +294,7 @@ public class SteamFuncs
         }
         catch (InvalidOperationException)
         {
-            await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_MissingUserId"]);
+            Toasts.ShowToastLang(ToastType.Error, "Toast_MissingUserId");
         }
         // -----------------------------------
         // --------- Manage registry ---------
@@ -322,7 +321,7 @@ public class SteamFuncs
     /// Save updated list of Steamuser into loginusers.vdf, in vdf format.
     /// </summary>
     /// <param name="userAccounts">List of Steamuser to save into loginusers.vdf</param>
-    public static async Task SaveSteamUsersIntoVdf(List<SteamUser> userAccounts)
+    public async Task SaveSteamUsersIntoVdf(List<SteamUser> userAccounts)
     {
         Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.SaveSteamUsersIntoVdf] Saving updated loginusers.vdf. Count: {userAccounts.Count}");
         // Convert list to JObject list, ready to save into vdf.
@@ -355,7 +354,7 @@ public class SteamFuncs
         catch (Exception ex)
         {
             Globals.WriteToLog("Failed to swap Steam users! Could not create temp loginusers.vdf file, and replace original using workaround! Contact TechNobo.", ex);
-            await GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new { x = tempFile }]);
+            Toasts.ShowToastLang(ToastType.Error, new LangSub("CouldNotFindX", new { x = tempFile }));
         }
     }
 
@@ -395,19 +394,17 @@ public class SteamFuncs
     /// <summary>
     /// Copy settings from currently logged in account to selected game and account
     /// </summary>
-    public static async Task CopySettingsFrom(string gameId)
+    public void CopySettingsFrom(string gameId)
     {
         var destSteamId = GetCurrentAccountId(true);
         if (!VerifySteamId(AppState.Switcher.SelectedAccountId) || !VerifySteamId(destSteamId))
         {
-            await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoValidSteamId"], Lang["Failed"],
-                "toastarea");
+            Toasts.ShowToastLang(ToastType.Error, "Failed", "Toast_NoValidSteamId");
             return;
         }
         if (destSteamId == AppState.Switcher.SelectedAccountId)
         {
-            await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_SameAccount"], Lang["Failed"],
-                "toastarea");
+            Toasts.ShowToastLang(ToastType.Info, "Failed", "Toast_SameAccount");
             return;
         }
 
@@ -417,8 +414,7 @@ public class SteamFuncs
         var destFolder = Path.Join(SteamSettings.FolderPath, $"userdata\\{destSteamId32}\\{gameId}");
         if (!Directory.Exists(sourceFolder))
         {
-            await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoFindSteamUserdata"], Lang["Failed"],
-                "toastarea");
+            Toasts.ShowToastLang(ToastType.Error, "Failed", "Toast_NoFindSteamUserdata");
             return;
         }
 
@@ -431,11 +427,11 @@ public class SteamFuncs
             Directory.Delete(destFolder, true);
         }
         Globals.CopyDirectory(sourceFolder, destFolder, true);
-        await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_SettingsCopied"], Lang["Success"], "toastarea");
+        Toasts.ShowToastLang(ToastType.Success, "Success", "Toast_SettingsCopied");
     }
 
 
-    public static async Task RestoreSettingsTo(string gameId)
+    public void RestoreSettingsTo(string gameId)
     {
         if (!VerifySteamId(AppState.Switcher.SelectedAccountId)) return;
         var steamId32 = new SteamIdConvert(AppState.Switcher.SelectedAccountId).Id32;
@@ -444,23 +440,21 @@ public class SteamFuncs
         var folder = Path.Join(SteamSettings.FolderPath, $"userdata\\{steamId32}\\{gameId}");
         if (!Directory.Exists(backupFolder))
         {
-            await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoFindGameBackup"], Lang["Failed"],
-                "toastarea");
+            Toasts.ShowToastLang(ToastType.Error, "Failed", "Toast_NoFindGameBackup");
             return;
         }
         if (Directory.Exists(folder)) Directory.Delete(folder, true);
         Globals.CopyDirectory(backupFolder, folder, true);
-        await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_GameDataRestored"], Lang["Success"], "toastarea");
+        Toasts.ShowToastLang(ToastType.Success, "Success", "Toast_GameDataRestored");
     }
 
-    public static async Task BackupGameData(string gameId)
+    public void BackupGameData(string gameId)
     {
         var steamId32 = new SteamIdConvert(AppState.Switcher.SelectedAccountId).Id32;
         var sourceFolder = Path.Join(SteamSettings.FolderPath, $"userdata\\{steamId32}\\{gameId}");
         if (!VerifySteamId(AppState.Switcher.SelectedAccountId) || !Directory.Exists(sourceFolder))
         {
-            await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoFindGameData"], Lang["Failed"],
-                "toastarea");
+            Toasts.ShowToastLang(ToastType.Error, "Failed", "Toast_NoFindGameData");
             return;
         }
 
@@ -468,7 +462,7 @@ public class SteamFuncs
         if (Directory.Exists(destFolder)) Directory.Delete(destFolder, true);
 
         Globals.CopyDirectory(sourceFolder, destFolder, true);
-        await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_GameBackupDone", new { folderLocation = destFolder }], Lang["Success"], "toastarea");
+        Toasts.ShowToastLang(ToastType.Success, "Success", new LangSub("Toast_GameBackupDone", new { folderLocation = destFolder }));
     }
     #endregion
 }

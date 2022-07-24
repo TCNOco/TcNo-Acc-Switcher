@@ -25,7 +25,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using State;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
@@ -409,20 +408,17 @@ public class SteamState
         }
         catch (FileNotFoundException)
         {
-            _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Steam_FailedLoginusers"], Lang["NotFound"],
-                "toastarea");
+            Toasts.ShowToastLang(ToastType.Error, "NotFound", "Toast_Steam_FailedLoginusers");
             return false;
         }
         catch (AggregateException)
         {
-            _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Steam_FailedLoginusers"], Lang["Error"],
-                "toastarea");
+            Toasts.ShowToastLang(ToastType.Error, "Error", "Toast_Steam_FailedLoginusers");
             return false;
         }
         catch (Exception)
         {
-            _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Steam_FailedLoginusers"], Lang["Error"],
-                "toastarea");
+            Toasts.ShowToastLang(ToastType.Error, "Error", "Toast_Steam_FailedLoginusers");
             return false;
         }
 
@@ -476,7 +472,7 @@ public class SteamState
         }
 
         // File doesn't exist, has an error or has a different number of users > Refresh all vac info.
-        await WebApiGetBans();
+        WebApiGetBans();
     }
 
     /// <summary>
@@ -501,8 +497,8 @@ public class SteamState
         // Either return if queue is empty, or download queued images and then continue.
         if (queue.Count != 0)
         {
-            await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_DownloadingProfileData"], renderTo: "toastarea");
-            await Globals.MultiThreadParallelDownloads(await WebApiGetImageList(queue)).ConfigureAwait(true);
+            Toasts.ShowToastLang(ToastType.Info, "Toast_DownloadingProfileData");
+            await Globals.MultiThreadParallelDownloads(WebApiGetImageList(queue)).ConfigureAwait(true);
         }
 
         // Set the correct path
@@ -517,7 +513,7 @@ public class SteamState
     /// Then updates with ban info
     /// Saves VAC info into SteamVACCache.json as well for caching
     /// </summary>
-    private async Task WebApiGetBans()
+    private void WebApiGetBans()
     {
         // Web API can take up to 100 items at once.
         for (var i = 0; i < SteamUsers.Count; i += 100)
@@ -529,7 +525,7 @@ public class SteamState
             try
             {
                 Globals.ReadWebUrl(uri, out var jsonString);
-                if (!await IsSteamApiKeyValid(jsonString)) return;
+                if (!IsSteamApiKeyValid(jsonString)) return;
                 var json = JObject.Parse(jsonString);
 
                 if (!json!.ContainsKey("players")) return;
@@ -562,13 +558,12 @@ public class SteamState
     /// After querying Steam API, check the response here to see if the Web API key is valid
     /// </summary>
     /// <returns>True if key is valid. False if not, and action should be cancelled</returns>
-    private async Task<bool> IsSteamApiKeyValid(string jsResponse)
+    private bool IsSteamApiKeyValid(string jsResponse)
     {
         if (!jsResponse.StartsWith("<html>")) return true;
 
         // Error: Key was likely invalid.
-        await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_SteamWebKeyInvalid"],
-            renderTo: "toastarea");
+        Toasts.ShowToastLang(ToastType.Error, "Toast_SteamWebKeyInvalid");
 
         SteamSettings.SteamWebApiKey = "";
         SteamSettings.Save();
@@ -598,7 +593,7 @@ public class SteamState
     /// This replaces GetUserImageUrl, and does it for every SteamId at once
     /// </summary>
     /// <returns>Dictionary of [Profile image URL] = Destination file path</returns>
-    private async Task<Dictionary<string, string>> WebApiGetImageList(IReadOnlyCollection<SteamUser> steamUsers)
+    private Dictionary<string, string> WebApiGetImageList(IReadOnlyCollection<SteamUser> steamUsers)
     {
         var images = new Dictionary<string, string>();
         // Web API can take up to 100 items at once.
@@ -609,7 +604,7 @@ public class SteamState
             var uri =
                 $"https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={SteamSettings.SteamWebApiKey}&steamids={string.Join(',', steamIds)}";
             Globals.ReadWebUrl(uri, out var jsonString);
-            if (!await IsSteamApiKeyValid(jsonString)) return images;
+            if (!IsSteamApiKeyValid(jsonString)) return images;
             var json = JObject.Parse(jsonString);
 
             if (!json.ContainsKey("response")) return images;

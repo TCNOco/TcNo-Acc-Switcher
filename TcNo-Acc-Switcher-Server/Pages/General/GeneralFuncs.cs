@@ -422,20 +422,6 @@ public class GeneralFuncs
         return fileSettings;
     }
 
-    /// <summary>
-    /// Read a JSON file from provided path. Returns JObject
-    /// </summary>
-    public static async Task<JToken> ReadJsonFile(string path)
-    {
-        Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.ReadJsonFile] path={path}");
-        JToken jToken             = null;
-
-        if (Globals.TryReadJsonFile(path, ref jToken)) return jToken;
-
-        await GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotReadFile", new { file = path }], renderTo: "toastarea");
-        return new JObject();
-
-    }
 
     //public static JObject SortJObject(JObject joIn)
     //{
@@ -472,52 +458,6 @@ public class GeneralFuncs
             .Replace("\"", "&#34;")
             .Replace("'", "&#39;")
             .Replace("/", "&#47;");
-    }
-
-    public class CrowdinResponse
-    {
-        [JsonProperty("ProofReaders")]
-        public SortedDictionary<string, string> ProofReaders { get; set; }
-
-        [JsonProperty("Translators")]
-        public List<string> Translators { get; set; }
-    }
-
-
-    /// <summary>
-    /// Returns an object with a list of all translators, and proofreaders with their languages.
-    /// </summary>
-    public static CrowdinResponse CrowdinList()
-    {
-        try
-        {
-            var html = new HttpClient().GetStringAsync(
-                "https://tcno.co/Projects/AccSwitcher/api/crowdinNew/").Result;
-            var resp = JsonConvert.DeserializeObject<CrowdinResponse>(html);
-            if (resp is null)
-                return new CrowdinResponse();
-
-            resp.Translators.Sort();
-
-            var expandedProofreaders = new SortedDictionary<string, string>();
-            foreach (var proofReader in resp?.ProofReaders)
-            {
-                expandedProofreaders.Add(proofReader.Key,
-                    string.Join(", ",
-                        proofReader.Value.Split(',').Select(lang => new CultureInfo(lang).DisplayName)
-                            .ToList()));
-            }
-
-            resp.ProofReaders = expandedProofreaders;
-            return resp;
-        }
-        catch (Exception e)
-        {
-            // Handle website not loading or JObject not loading properly
-            Globals.WriteToLog("Failed to load Crowdin users", e);
-            _ = GeneralInvocableFuncs.ShowToast("error", Lang["Crowdin_Fail"], renderTo: "toastarea");
-            return new CrowdinResponse();
-        }
     }
     #endregion
 
@@ -588,68 +528,6 @@ public class GeneralFuncs
     }
 
 
-    public static async Task<string> ExportAccountList()
-    {
-        var platform = WindowSettings.GetPlatform(AppData.SelectedPlatform);
-        Globals.DebugWriteLine(@$"[Func:Pages\General\GeneralInvocableFuncs.GiExportAccountList] platform={platform}");
-        if (!Directory.Exists(Path.Join("LoginCache", platform.SafeName)))
-        {
-            await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_AddAccountsFirst"], Lang["Toast_AddAccountsFirstTitle"], "toastarea");
-            return "";
-        }
-
-        var s = CultureInfo.CurrentCulture.TextInfo.ListSeparator; // Different regions use different separators in csv files.
-
-        await GameStats.SetCurrentPlatform(platform.Name);
-
-        List<string> allAccountsTable = new();
-        if (platform.Name == "Steam")
-        {
-            // Add headings and separator for programs like Excel
-            allAccountsTable.Add($"SEP={s}");
-            allAccountsTable.Add($"Account name:{s}Community name:{s}SteamID:{s}VAC status:{s}Last login:{s}Saved profile image:{s}Stats game:{s}Stat name:{s}Stat value:");
-
-            AppData.SteamUsers = await SteamSwitcherFuncs.GetSteamUsers(Data.Settings.Steam.LoginUsersVdf());
-            // Load cached ban info
-            SteamSwitcherFuncs.LoadCachedBanInfo();
-
-            foreach (var su in AppData.SteamUsers)
-            {
-                var banInfo = "";
-                if (su.Vac && su.Limited) banInfo += "VAC + Limited";
-                else banInfo += (su.Vac ? "VAC" : "") + (su.Limited ? "Limited" : "");
-
-                var imagePath = Path.GetFullPath($"{Data.Settings.Steam.SteamImagePath + su.SteamId}.jpg");
-
-                allAccountsTable.Add(su.AccName + s +
-                                     su.Name + s +
-                                     su.SteamId + s +
-                                     banInfo + s +
-                                     Globals.UnixTimeStampToDateTime(su.LastLogin) + s +
-                                     (File.Exists(imagePath) ? imagePath : "Missing from disk") + s +
-                                     GameStats.GetGameStatsString(su.SteamId, s));
-            }
-        }
-        else
-        {
-            // Add headings and separator for programs like Excel
-            allAccountsTable.Add($"SEP={s}");
-            // Platform does not have specific details other than usernames saved.
-            allAccountsTable.Add($"Account name:{s}Stats game:{s}Stat name:{s}Stat value:");
-            foreach (var accDirectory in Directory.GetDirectories(Path.Join("LoginCache", platform.SafeName)))
-            {
-                allAccountsTable.Add(Path.GetFileName(accDirectory) + s +
-                                     GameStats.GetGameStatsString(accDirectory, s, true));
-            }
-        }
-
-        var outputFolder = Path.Join("wwwroot", "Exported");
-        _ = Directory.CreateDirectory(outputFolder);
-
-        var outputFile = Path.Join(outputFolder, platform + ".csv");
-        await File.WriteAllLinesAsync(outputFile, allAccountsTable).ConfigureAwait(false);
-        return Path.Join("Exported", platform + ".csv");
-    }
 
     #endregion
 }

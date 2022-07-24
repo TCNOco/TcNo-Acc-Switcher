@@ -22,6 +22,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.State.DataTypes;
 
 namespace TcNo_Acc_Switcher_Server.State;
 
@@ -365,12 +366,12 @@ public class TemplatedPlatformFuncs
     /// <param name="path"></param>
     /// <param name="noIncludeBasicCheck">Whether to skip initializing BasicSettings - Useful for Steam and other hardcoded platforms</param>
     /// <returns></returns>
-    public static string ExpandEnvironmentVariables(string path, bool noIncludeBasicCheck = false)
+    public string ExpandEnvironmentVariables(string path, bool noIncludeBasicCheck = false)
     {
         path = Globals.ExpandEnvironmentVariables(path);
 
         if (!noIncludeBasicCheck)
-            path = path.Replace("%Platform_Folder%", BasicSettings.FolderPath ?? "");
+            path = path.Replace("%Platform_Folder%", TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.FolderPath ?? "");
 
         return Environment.ExpandEnvironmentVariables(path);
     }
@@ -424,7 +425,7 @@ public class TemplatedPlatformFuncs
             // The "file" is a JSON value
             if (accFile.StartsWith("JSON"))
             {
-                var jToken = GeneralFuncs.ReadJsonFile(Path.Join(localCachePath, savedFile));
+                var jToken = ReadJsonFile(Path.Join(localCachePath, savedFile));
 
                 var path = accFile.Split("::")[1];
                 var selector = accFile.Split("::")[2];
@@ -539,7 +540,7 @@ public class TemplatedPlatformFuncs
             {
                 var path = accFile.Split("::")[1];
                 var selector = accFile.Split("::")[2];
-                var js = await GeneralFuncs.ReadJsonFile(path);
+                var js = await ReadJsonFile(path);
                 var originalValue = js.SelectToken(selector);
 
                 // Save if it's JUST getting the value
@@ -636,6 +637,21 @@ public class TemplatedPlatformFuncs
         return true;
     }
 
+    /// <summary>
+    /// Read a JSON file from provided path. Returns JObject
+    /// </summary>
+    public async Task<JToken> ReadJsonFile(string path)
+    {
+        Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.ReadJsonFile] path={path}");
+        JToken jToken = null;
+
+        if (Globals.TryReadJsonFile(path, ref jToken)) return jToken;
+
+        Toasts.ShowToastLang(ToastType.Error, new LangSub("CouldNotReadFile", new { file = path }));
+        return new JObject();
+
+    }
+    
     /// <summary>
     /// Handles copying files or folders around
     /// </summary>
@@ -785,7 +801,7 @@ public class TemplatedPlatformFuncs
             string searchFor;
             if (uniqueId == "" && CurrentPlatform.UniqueIdMethod == "JSON_SELECT")
             {
-                js = await GeneralFuncs.ReadJsonFile(CurrentPlatform.GetUniqueFilePath().Split("::")[0]);
+                js = await ReadJsonFile(CurrentPlatform.GetUniqueFilePath().Split("::")[0]);
                 searchFor = CurrentPlatform.GetUniqueFilePath().Split("::")[1];
                 uniqueId = Globals.GetCleanFilePath((string)js.SelectToken(searchFor));
                 return uniqueId;
@@ -803,7 +819,7 @@ public class TemplatedPlatformFuncs
                 firstResult = false;
             }
 
-            js = await GeneralFuncs.ReadJsonFile(CurrentPlatform.GetUniqueFilePath().Split("::")[0]);
+            js = await ReadJsonFile(CurrentPlatform.GetUniqueFilePath().Split("::")[0]);
             searchFor = CurrentPlatform.GetUniqueFilePath().Split("::")[1];
             var res = (string)js.SelectToken(searchFor);
             if (res is null)

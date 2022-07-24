@@ -16,19 +16,23 @@
 @using TcNo_Acc_Switcher_Server.Pages.General.Classes
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @using Microsoft.AspNetCore.Components
+@using TcNo_Acc_Switcher_Server.State
+@using TcNo_Acc_Switcher_Server.State.DataTypes
 @namespace TcNo_Acc_Switcher_Server.Pages.Basic
 @inject NavigationManager NavManager
 @inject IAppState AppState
-
-@{ AppData.SetActiveNavMan(NavManager); }
 @inject IJSRuntime JsRuntime
-
-
 @inject ILang Lang
+@inject GameStats GameStats
+@inject TemplatedPlatformState TemplatedPlatformState
+@inject TemplatedPlatformFuncs TemplatedPlatformFuncs
+@inject IWindowSettings WindowSettings
+@inject IStatistics Statistics
+@inject Toasts Toasts
 
 @code
 {
-    private readonly Dictionary<string, Dictionary<string, string>> _gamesAndSettings = GameStats.GetAllCurrentlyEnabledGames().ToDictionary(game => game, GameStats.GetAllMetrics);
+    private Dictionary<string, Dictionary<string, string>> _gamesAndSettings;
 }
 
 <div class="container mainblock">
@@ -39,40 +43,41 @@
 
             <h2 class="SettingsHeader">@Lang["Settings_Header_GeneralSettings"]</h2>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="Basic.DesktopShortcut" @onclick="() => Shortcut.DesktopShortcut_Toggle(CurrentPlatform.FullName, Basic.DesktopShortcut, CurrentPlatform.identifier)"><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">
-		            @Lang["Settings_Shortcut", new { platform = CurrentPlatform.FullName }]<br></label>
+                @*<div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.DesktopShortcut" @onclick="() => Shortcut.DesktopShortcut_Toggle(TemplatedPlatformState.CurrentPlatform.Name, TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.DesktopShortcut, TemplatedPlatformState.CurrentPlatform.Identifiers[0])"><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">*@
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.DesktopShortcut"><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">
+		            @Lang["Settings_Shortcut", new { platform = TemplatedPlatformState.CurrentPlatform.Name }]<br></label>
             </div>
             <div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="Basic.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">
-		            @Lang["Settings_Admin", new { platform = CurrentPlatform.FullName }]<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">
+		            @Lang["Settings_Admin", new { platform = TemplatedPlatformState.CurrentPlatform.Name }]<br></label>
             </div>
             <div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="AutoStart" @bind="Basic.AutoStart"><label class="form-check-label" for="AutoStart"></label></div><label for="AutoStart">
-		            @Lang["Settings_AutoStart", new { platform = CurrentPlatform.FullName }]<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="AutoStart" @bind="TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.AutoStart"><label class="form-check-label" for="AutoStart"></label></div><label for="AutoStart">
+		            @Lang["Settings_AutoStart", new { platform = TemplatedPlatformState.CurrentPlatform.Name }]<br></label>
             </div>
             <div class="rowSetting rowDropdown">
-                <span>@Lang["Settings_Header_ClosingMethod", new { platform = CurrentPlatform.FullName }]</span>
+                <span>@Lang["Settings_Header_ClosingMethod", new { platform = TemplatedPlatformState.CurrentPlatform.Name }]</span>
                 <div class="dropdown" data-toggle="tooltip" title="@(Lang["Tooltip_ClosingMethod"])" data-placement="right">
                     <ul class="custom-dropdown-menu dropdown-menu">
-                        <li class="custom-dropdown-item dropdown-item" @onclick='() => Basic.SetClosingMethod("Combined")'>Combined (Best)</li>
-                        <li class="custom-dropdown-item dropdown-item" @onclick='() => Basic.SetClosingMethod("Close")'>Close</li>
-                        <li class="custom-dropdown-item dropdown-item" @onclick='() => Basic.SetClosingMethod("TaskKill")'>TaskKill (Old)</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.SetClosingMethod("Combined")'>Combined (Best)</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.SetClosingMethod("Close")'>Close</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.SetClosingMethod("TaskKill")'>TaskKill (Old)</li>
                     </ul>
                     <button class="dropdown-toggle" type="button" data-toggle="dropdown">
-                        @Basic.ClosingMethod
+                        @TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.ClosingMethod
                         <span class="caret"></span>
                     </button>
                 </div>
             </div>
             <div class="rowSetting rowDropdown">
-                <span>@Lang["Settings_Header_StartingMethod", new { platform = CurrentPlatform.FullName }]</span>
+                <span>@Lang["Settings_Header_StartingMethod", new { platform = TemplatedPlatformState.CurrentPlatform.Name }]</span>
                 <div class="dropdown" data-toggle="tooltip" title="@(Lang["Tooltip_StartingMethod"])" data-placement="right">
                     <ul class="custom-dropdown-menu dropdown-menu">
-                        <li class="custom-dropdown-item dropdown-item" @onclick='() => Basic.SetStartingMethod("Default")'>Default (Best)</li>
-                        <li class="custom-dropdown-item dropdown-item" @onclick='() => Basic.SetStartingMethod("Direct")'>Direct</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.SetStartingMethod("Default")'>Default (Best)</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.SetStartingMethod("Direct")'>Direct</li>
                     </ul>
                     <button class="dropdown-toggle" type="button" data-toggle="dropdown">
-                        @Basic.StartingMethod
+                        @TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.StartingMethod
                         <span class="caret"></span>
                     </button>
                 </div>
@@ -80,44 +85,44 @@
 
             <h2 class="SettingsHeader">@Lang["Settings_Header_AccountDisplay"]</h2>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="ShowShortNotes" @bind="Basic.ShowShortNotes"><label class="form-check-label" for="ShowShortNotes"></label></div><label for="ShowShortNotes">
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="ShowShortNotes" @bind="TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.ShowShortNotes"><label class="form-check-label" for="ShowShortNotes"></label></div><label for="ShowShortNotes">
                     @Lang["Settings_ShowShortNotes"]<br></label>
             </div>
 
 
 
             <h2 class="SettingsHeader">@Lang["Settings_Header_TraySettings"]</h2>
-            <div class="form-text"><span>@Lang["Settings_TrayMax"]</span><input type="number" id="TrayAccNumber" min="0" max="365" @bind="Basic.TrayAccNumber"></div>
+            <div class="form-text"><span>@Lang["Settings_TrayMax"]</span><input type="number" id="TrayAccNumber" min="0" max="365" @bind="TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.TrayAccNumber"></div>
 
 
             <h2 class="SettingsHeader">@Lang["Settings_Header_GeneralTools"]</h2>
-            <p>@Lang["Settings_CurrentLocation", new { path = Basic.FolderPath }]</p>
-            <div class="buttoncol"><button id="PickFolder" type="button" @onclick="PickFolder"><span>@Lang["Settings_PickFolder", new { platform = CurrentPlatform.FullName }]</span></button><button id="OpenFolder" type="button" @onclick="() => AppState.OpenFolder(Basic.FolderPath)"><span>@Lang["Settings_OpenFolder", new { platform = CurrentPlatform.FullName }]</span></button></div>
+            <p>@Lang["Settings_CurrentLocation", new { path = TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.FolderPath }]</p>
+            <div class="buttoncol"><button id="PickFolder" type="button" @onclick="PickFolder"><span>@Lang["Settings_PickFolder", new { platform = TemplatedPlatformState.CurrentPlatform.Name }]</span></button><button id="OpenFolder" type="button" @onclick="() => AppState.OpenFolder(TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.FolderPath)"><span>@Lang["Settings_OpenFolder", new { platform = TemplatedPlatformState.CurrentPlatform.Name }]</span></button></div>
             <div class="buttoncol"><button id="ResetSettings" type="button" @onclick="ClearSettings"><span>@Lang["Button_ResetSettings"]</span></button>
-                @if (CurrentPlatform.CachePaths != null)
+                @if (TemplatedPlatformState.CurrentPlatform.Extras.CachePaths != null)
                 {
-                    <button id="ClearCache" type="button" @onclick="BasicSwitcherFuncs.ClearCache" data-toggle="tooltip" title="@(GetCacheList())" data-html="true"><span>@Lang["Platform_ClearCache"]</span></button>
+                    <button id="ClearCache" type="button" @onclick="TemplatedPlatformFuncs.ClearCache" data-toggle="tooltip" title="@(GetCacheList())" data-html="true"><span>@Lang["Platform_ClearCache"]</span></button>
                 }
             </div>
 
-            @if (CurrentPlatform.BackupPaths.Count > 0)
+            @if (TemplatedPlatformState.CurrentPlatform.Extras.BackupPaths.Count > 0)
             {
                 <h2 class="SettingsHeader">@Lang["Settings_Header_BackupRestore"]</h2>
 
                 <div class="buttoncol">
-                    @if (CurrentPlatform.BackupFileTypesInclude.Count != 0 || CurrentPlatform.BackupFileTypesIgnore.Count != 0){
+                    @if (TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesInclude.Count != 0 || TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesIgnore.Count != 0){
                         <button id="Backup" type="button" @onclick="() => BackupButton()" data-toggle="tooltip" title="@(Lang["Tooltip_Backup"])" data-placement="bottom"><span>@Lang["Button_Backup"]</span></button>
                     }
 
                     <button id="BackupEverything" type="button" @onclick="() => BackupButton(true)" data-toggle="tooltip" title="@(Lang["Tooltip_BackupAll"])" data-placement="bottom"><span>@Lang["Button_BackupAll"]</span></button>
 
-                    @if (CurrentPlatform.BackupFileTypesInclude.Count == 0 && CurrentPlatform.BackupFileTypesIgnore.Count == 0) {
+                    @if (TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesInclude.Count == 0 && TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesIgnore.Count == 0) {
                         <button id="OpenBackupFolder" type="button" @onclick="OpenBackupFolder"><span>@Lang["Button_OpenBackup"]</span></button>
                     }
                 </div>
                 <div class="buttoncol">
 
-                    @if (CurrentPlatform.BackupFileTypesInclude.Count != 0 || CurrentPlatform.BackupFileTypesIgnore.Count != 0) {
+                    @if (TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesInclude.Count != 0 || TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesIgnore.Count != 0) {
                         <button id="OpenBackupFolder" type="button" @onclick="OpenBackupFolder"><span>@Lang["Button_OpenBackup"]</span></button>
                     }
 
@@ -167,28 +172,40 @@
 
 @code
 {
+    /// <summary>
+    /// Save settings with Ctrl+S Hot key
+    /// </summary>
+    [JSInvokable]
+    public void GiCtrlSTemplated()
+    {
+        WindowSettings.Save();
+        TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.Save();
+        Toasts.ShowToastLang(ToastType.Success, "Saved");
+    }
+    
     protected override async Task OnParametersSetAsync()
     {
-        await GameStats.SetCurrentPlatform(CurrentPlatform.SafeName);
+        await GameStats.SetCurrentPlatform(TemplatedPlatformState.CurrentPlatform.SafeName);
+        _gamesAndSettings = GameStats.GetAllCurrentlyEnabledGames().ToDictionary(game => game, GameStats.GetAllMetrics);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        Statistics.NewNavigation($"/[{CurrentPlatform.SafeName}]/Settings");
+        Statistics.NewNavigation($"/[{TemplatedPlatformState.CurrentPlatform.SafeName}]/Settings");
         if (firstRender) await JsRuntime.InvokeVoidAsync("initSavingHotKey");
     }
 
     public void SaveAndClose()
     {
-        WindowSettings.SaveSettings();
-        Basic.SaveSettings();
+        WindowSettings.Save();
+        TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.Save();
 
         NavManager.NavigateTo("/Basic");
     }
 
-    private static string GetCacheList()
+    private string GetCacheList()
     {
-        var listOfFiles = new List<string>(CurrentPlatform.CachePaths);
-        return Lang["FileFoldersToClear"] + "<br>" + string.Join("<br>", listOfFiles.Select(x => x.Replace("Platform_Folder", CurrentPlatform.FullName)).ToList());
+        var listOfFiles = new List<string>(TemplatedPlatformState.CurrentPlatform.Extras.CachePaths);
+        return Lang["FileFoldersToClear"] + "<br>" + string.Join("<br>", listOfFiles.Select(x => x.Replace("Platform_Folder", TemplatedPlatformState.CurrentPlatform.Name)).ToList());
     }
 }

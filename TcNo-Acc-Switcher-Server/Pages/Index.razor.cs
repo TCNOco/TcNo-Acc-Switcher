@@ -13,6 +13,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,6 +37,9 @@ public partial class Index
     [Inject] private TemplatedPlatformState TemplatedPlatformState { get; set; }
     [Inject] private SteamSettings SteamSettings { get; set; }
     [Inject] private NavigationManager NavigationManager { get; set; }
+    [Inject] private GameStats GameStats { get; set; }
+    [Inject] private SteamState SteamState { get; set; }
+    [Inject] private SteamFuncs SteamFuncs { get; set; }
 
     protected override void OnInitialized()
     {
@@ -136,9 +141,71 @@ public partial class Index
 
         AppState.Switcher.IsCurrentlyExportingAccounts = true;
 
-        var exportPath = await GeneralFuncs.ExportAccountList();
+        var exportPath = await ExportAccountList();
         await JsRuntime.InvokeVoidAsync("saveFile", exportPath.Split('\\').Last(), exportPath);
         AppState.Switcher.IsCurrentlyExportingAccounts = false;
+    }
+    public async Task<string> ExportAccountList()
+    {
+        var platform = WindowSettings.GetPlatform(AppState.Switcher.SelectedPlatform);
+        Globals.DebugWriteLine(@$"[Func:Pages\General\GeneralInvocableFuncs.GiExportAccountList] platform={platform}");
+        if (!Directory.Exists(Path.Join("LoginCache", platform.SafeName)))
+        {
+            Toasts.ShowToastLang(ToastType.Error, "Toast_AddAccountsFirstTitle", "Toast_AddAccountsFirst");
+            return "";
+        }
+
+        var s = CultureInfo.CurrentCulture.TextInfo.ListSeparator; // Different regions use different separators in csv files.
+
+        await GameStats.SetCurrentPlatform(platform.Name);
+
+        List<string> allAccountsTable = new();
+        if (platform.Name == "Steam")
+        {
+            // Add headings and separator for programs like Excel
+            allAccountsTable.Add($"SEP={s}");
+            allAccountsTable.Add($"Account name:{s}Community name:{s}SteamID:{s}VAC status:{s}Last login:{s}Saved profile image:{s}Stats game:{s}Stat name:{s}Stat value:");
+
+            SteamState.SteamUsers = SteamState.GetSteamUsers(SteamSettings.LoginUsersVdf);
+            // Load cached ban info
+            SteamState.LoadCachedBanInfo();
+
+            foreach (var su in SteamState.SteamUsers)
+            {
+                var banInfo = "";
+                if (su.Vac && su.Limited) banInfo += "VAC + Limited";
+                else banInfo += (su.Vac ? "VAC" : "") + (su.Limited ? "Limited" : "");
+
+                var imagePath = Path.GetFullPath($"{SteamSettings.SteamImagePath + su.SteamId}.jpg");
+
+                allAccountsTable.Add(su.AccName + s +
+                                     su.Name + s +
+                                     su.SteamId + s +
+                                     banInfo + s +
+                                     Globals.UnixTimeStampToDateTime(su.LastLogin) + s +
+                                     (File.Exists(imagePath) ? imagePath : "Missing from disk") + s +
+                                     GameStats.GetSavedStatsString(su.SteamId, s));
+            }
+        }
+        else
+        {
+            // Add headings and separator for programs like Excel
+            allAccountsTable.Add($"SEP={s}");
+            // Platform does not have specific details other than usernames saved.
+            allAccountsTable.Add($"Account name:{s}Stats game:{s}Stat name:{s}Stat value:");
+            foreach (var accDirectory in Directory.GetDirectories(Path.Join("LoginCache", platform.SafeName)))
+            {
+                allAccountsTable.Add(Path.GetFileName(accDirectory) + s +
+                                     GameStats.GetSavedStatsString(accDirectory, s, true));
+            }
+        }
+
+        var outputFolder = Path.Join("wwwroot", "Exported");
+        _ = Directory.CreateDirectory(outputFolder);
+
+        var outputFile = Path.Join(outputFolder, platform + ".csv");
+        await File.WriteAllLinesAsync(outputFile, allAccountsTable).ConfigureAwait(false);
+        return Path.Join("Exported", platform + ".csv");
     }
 
     /// <summary>

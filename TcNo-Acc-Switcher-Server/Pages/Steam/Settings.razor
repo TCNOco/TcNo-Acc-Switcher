@@ -200,6 +200,17 @@
 
 @code
 {
+    /// <summary>
+    /// Save settings with Ctrl+S Hot key
+    /// </summary>
+    [JSInvokable]
+    public void GiCtrlSSteam()
+    {
+        WindowSettings.Save();
+        SteamSettings.Save();
+        Toasts.ShowToastLang(ToastType.Success, "Saved");
+    }
+    
     protected override async Task OnParametersSetAsync()
     {
         await GameStats.SetCurrentPlatform("Steam");

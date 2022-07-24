@@ -18,12 +18,12 @@
 @using TcNo_Acc_Switcher_Server.Shared.ContextMenu
 @using TcNo_Acc_Switcher_Server.Shared.Accounts
 @using System.IO
-@using global::State
 @using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.WebUtilities
 @using TcNo_Acc_Switcher_Server.State
 @using TcNo_Acc_Switcher_Server.State.DataTypes
 @using TcNo_Acc_Switcher_Server.State.Interfaces
+@using System.ComponentModel
 @inject SharedFunctions SharedFunctions
 @inject TemplatedPlatformState TemplatedPlatformState
 @inject TemplatedPlatformFuncs TemplatedPlatformFuncs
@@ -45,7 +45,7 @@
 
 <div class="shortcutDropdown gameShortcuts" id="shortcutDropdown" style="display: none">
     <div class="shortcutDropdownItems">
-        @foreach (var (i, shortcut) in Basic.Shortcuts)
+        @foreach (var (i, shortcut) in TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.Shortcuts)
         {
             @if (i >= 0)
             {
@@ -66,7 +66,7 @@
     </div>
     <div class="gameShortcuts">
         <div class="shortcuts">
-            @foreach (var (i, shortcut) in Basic.Shortcuts)
+            @foreach (var (i, shortcut) in TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.Shortcuts)
             {
                 @if (i < 0)
                 {
@@ -118,9 +118,9 @@
 
     protected override void OnInitialized()
     {
-        AppData.Instance.OnChange += OnChangeHandler;
+        AppState.Switcher.PropertyChanged += OnChangeHandler;
     }
-    private async void OnChangeHandler()
+    private async void OnChangeHandler(object? o, PropertyChangedEventArgs e)
     {
         await InvokeAsync(StateHasChanged);
     }
@@ -178,7 +178,7 @@
         await JsRuntime.InvokeVoidAsync("initCopyHotKey");
         await JsRuntime.InvokeVoidAsync("showNoteTooltips");
 
-        var curAcc = await BasicSwitcherFuncs.GetCurrentAccountId();
+        var curAcc = await TemplatedPlatformFuncs.GetCurrentAccountId();
         if (curAcc != "") await AccountFuncs.SetCurrentAccount(curAcc);
     }
 }

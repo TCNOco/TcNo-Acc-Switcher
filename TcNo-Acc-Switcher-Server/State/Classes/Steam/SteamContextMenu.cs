@@ -306,7 +306,7 @@ public class SteamContextMenu
     }
     public async Task DownloadSteamAppsData()
     {
-        await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_Steam_DownloadingAppIds"], renderTo: "toastarea");
+        Toasts.ShowToastLang(ToastType.Info, "Toast_Steam_DownloadingAppIds");
 
         try
         {
@@ -323,7 +323,7 @@ public class SteamContextMenu
             Globals.DebugWriteLine($@"Error downloading Steam app list: {e}");
         }
 
-        await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_Steam_DownloadingAppIdsComplete"], renderTo: "toastarea");
+        Toasts.ShowToastLang(ToastType.Info, "Toast_Steam_DownloadingAppIdsComplete");
     }
 
     /// <summary>
