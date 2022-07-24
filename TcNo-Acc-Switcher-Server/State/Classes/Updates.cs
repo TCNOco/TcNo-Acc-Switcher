@@ -37,6 +37,7 @@ public class Updates
     [Inject] private Modals Modals { get; set; }
     [Inject] private NavigationManager NavigationManager { get; set; }
     [Inject] private IWindowSettings WindowSettings { get; set; }
+    [Inject] private IStatistics Statistics { get; set; }
 
     private bool UpdateCheckRan { get; set; }
     public bool PreRenderUpdate { get; set; }
@@ -191,7 +192,7 @@ public class Updates
         foreach (var (key, value) in updaterDict)
         {
             if (key == null) continue;
-            if (File.Exists(key) && value == GeneralFuncs.GetFileMd5(key))
+            if (File.Exists(key) && value == Globals.GetFileMd5(key))
                 continue;
             Globals.DownloadFile("https://tcno.co/Projects/AccSwitcher/latest/" + key.Replace('\\', '/'), key);
         }

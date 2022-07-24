@@ -13,12 +13,12 @@
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
 @page "/TextEditor/"
+@using TcNo_Acc_Switcher_Server.State.Interfaces
+@using TcNo_Acc_Switcher_Server.State
 @inject IJSRuntime JsRuntime
-
 @inject NavigationManager NavManager
-@{ AppData.SetActiveNavMan(NavManager); }
-
 @inject ILang Lang
+@inject AppState AppState
 
 <div class="text-editor d-flex flex-column">
     <div class="flex-grow-1 editor-container">
@@ -29,7 +29,7 @@ Actions will show here
         </pre>
     </div>
     <div class="d-flex justify-content-end">
-        <button id="btnCancel" @onclick="AppData.NavigateUpOne">
+        <button id="btnCancel" @onclick="AppState.Navigation.NavigateUpOne">
             <span>@Lang["Button_Cancel"]</span>
         </button>
         <button id="btnSave" @onclick="SaveFile">
@@ -40,17 +40,17 @@ Actions will show here
 
 @code
 {
-	
+
     // This has to be here for NavManager.
     // This is run before everything is painted on, so that it can get the correct values for the CSS Block.
     protected override void OnParametersSet()
     {
-        WindowSettings.StreamerModeCheck();
+        AppState.Stylesheet.StreamerModeCheck();
     }
 
     protected override async Task OnInitializedAsync()
     {
-        AppData.WindowTitle = Lang["Title_TextEditor"];
+        AppState.WindowState.WindowTitle = Lang["Title_TextEditor"];
         await JsRuntime.InvokeVoidAsync("initEditor");
     }
 

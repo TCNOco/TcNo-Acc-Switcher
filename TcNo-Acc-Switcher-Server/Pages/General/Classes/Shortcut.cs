@@ -21,12 +21,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.State;
+using TcNo_Acc_Switcher_Server.State.DataTypes;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General.Classes;
 
 public class Shortcut
 {
     [Inject] private Lang Lang { get; set; }
+    [Inject] private Toasts Toasts { get; set; }
 
     public string Exe { get; set; }
     public string WorkingDir { get; set; }
@@ -172,19 +174,25 @@ public class Shortcut
     /// <param name="fgImg">Foreground image, user image</param>
     /// <param name="iconName">Filename, unique so stored without being overwritten</param>
     [SupportedOSPlatform("windows")]
-    public async Task CreateCombinedIcon(string bgImg, string fgImg, string iconName)
+    public bool CreateCombinedIcon(string bgImg, string fgImg, string iconName)
     {
         Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.CreateCombinedIcon] bgImg={bgImg}, fgImg={fgImg.Substring(fgImg.Length - 6, 6)}, iconName=hidden");
         try
         {
             var iconFactory = new IconFactory();
-            iconFactory.CreateIcon(bgImg, fgImg, ref iconName);
-            IconDir = Path.GetFullPath(iconName);
+            if (iconFactory.CreateIcon(bgImg, fgImg, ref iconName))
+            {
+                IconDir = Path.GetFullPath(iconName);
+                return true;
+            }
+
+            Toasts.ShowToastLang(ToastType.Error, "Toast_FailedCreateIcon");
+            return false;
         }
         catch (Exception e)
         {
             Globals.WriteToLog($"Failed to CreateIcon! '{bgImg}', '{fgImg}, '{iconName}'", e);
-            await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedCreateIcon"]);
+            return false;
         }
     }
     #endregion

@@ -30,7 +30,7 @@ public class SteamSettings
     public bool ShowLimited { get; set; } = true;
     public bool ShowLastLogin { get; set; } = true;
     public bool ShowAccUsername { get; set; } = true;
-    public string TrayAccountName { get; set; }
+    public bool TrayAccountName { get; set; }
     public int ImageExpiryTime { get; set; } = 7;
     public int TrayAccNumber { get; set; } = 3;
     public int OverrideState { get; set; } = -1;

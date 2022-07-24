@@ -21,6 +21,7 @@ public class PathPickerRequest
 {
     [Inject] private Lang Lang { get; set; }
     [Inject] private IAppState AppState { get; set; }
+    [Inject] private TemplatedPlatformState TemplatedPlatformState { get; set; }
 
 
     /// <summary>
@@ -48,7 +49,7 @@ public class PathPickerRequest
         if (Goal == PathPickerGoal.FindPlatformExe)
         {
             string platformName = AppState.Switcher.CurrentSwitcher;
-            RequestedFile = AppState.Switcher.CurrentSwitcher == "Steam" ? "steam.exe" : CurrentPlatform.ExeName;
+            RequestedFile = AppState.Switcher.CurrentSwitcher == "Steam" ? "steam.exe" : TemplatedPlatformState.CurrentPlatform.ExeName;
 
             ModalHeader = Lang["Modal_Title_LocatePlatform", new { platform = platformName }];
             ModalText = new MarkupString(Lang["Modal_EnterDirectory", new { platform = platformName }]);
@@ -75,7 +76,5 @@ public class PathPickerRequest
             ModalButtonText = Lang["Modal_SetImage"];
             RequestedFile = "AnyFile";
         }
-
-        AppState.Modal.PathPickerNotifyDataChanged();
     }
 }

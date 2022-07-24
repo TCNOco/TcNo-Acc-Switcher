@@ -15,16 +15,26 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
+using TcNo_Acc_Switcher_Server.State;
+using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General;
 
 public class GeneralInvocableFuncs
 {
+    [Inject] private IWindowSettings WindowSettings { get; set; }
+    [Inject] private IJSRuntime JsRuntime { get; set; }
+    [Inject] private AppState AppState { get; set; }
+    [Inject] private ILang Lang { get; set; }
+    [Inject] private TemplatedPlatformState TemplatedPlatformState { get; set; }
+
     /// <summary>
     /// JS function handler for saving settings from Settings GUI page into [Platform]Settings.json file
     /// </summary>
@@ -38,7 +48,7 @@ public class GeneralInvocableFuncs
     }
 
     [JSInvokable]
-    public static void GiSaveOrder(string jsonString)
+    public void GiSaveOrder(string jsonString)
     {
         Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.GiSaveOrder]  jsonString.length={jsonString.Length}");
         var arr = JArray.Parse(jsonString);
@@ -49,7 +59,7 @@ public class GeneralInvocableFuncs
             plat.DisplayIndex = i;
         }
 
-        WindowSettings.SaveSettings();
+        WindowSettings.Save();
     }
 
     /// <summary>
@@ -91,94 +101,12 @@ public class GeneralInvocableFuncs
         };
         _ = Process.Start(ps);
     }
-    
-    /// <summary>
-    /// JS function handler for showing Toast message.
-    /// </summary>
-    /// <param name="toastType">success, info, warning, error</param>
-    /// <param name="toastMessage">Message to be shown in toast</param>
-    /// <param name="toastTitle">(Optional) Title to be shown in toast (Empty doesn't show any title)</param>
-    /// <param name="renderTo">(Optional) Part of the document to append the toast to (Empty = Default, document.body)</param>
-    /// <param name="duration">(Optional) Duration to show the toast before fading</param>
-    /// <returns></returns>
-    public static async Task<bool> ShowToast(string toastType, string toastMessage, string toastTitle = "", string renderTo = "body", int duration = 5000)
-    {
-        Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ShowToast] type={toastType}, message={toastMessage}, title={toastTitle}, renderTo={renderTo}, duration={duration}");
-        return await JsRuntime.InvokeVoidAsync("window.notification.new", new { type = toastType, title = toastTitle, message = toastMessage, renderTo, duration });
-    }
-
-    /// <summary>
-    /// Creates a shortcut to start the Account Switcher, and swap to the account related.
-    /// </summary>
-    /// <param name="args">(Optional) arguments for shortcut</param>
-    public static async Task CreateShortcut(string args = "")
-    {
-        if (!OperatingSystem.IsWindows()) return;
-        Globals.DebugWriteLine(@"[JSInvoke:General\GeneralInvocableFuncs.CreateShortcut]");
-        if (args.Length > 0 && args[0] != ':') args = $" {args}"; // Add a space before arguments if doesn't start with ':'
-        string platformName;
-        var primaryPlatformId = "" + AppState.Switcher.CurrentSwitcher[0];
-        var bgImg = Path.Join(Globals.WwwRoot, $"\\img\\platform\\{AppState.Switcher.CurrentSwitcherSafe}.svg");
-        string currentPlatformImgPath, currentPlatformImgPathOverride;
-        switch (AppState.Switcher.CurrentSwitcher)
-        {
-            case "Steam":
-                currentPlatformImgPath = Path.Join(Globals.WwwRoot, "\\img\\platform\\Steam.svg");
-                currentPlatformImgPathOverride = Path.Join(Globals.WwwRoot, "\\img\\platform\\Steam.png");
-                var ePersonaState = -1;
-                if (args.Length == 2) _ = int.TryParse(args[1].ToString(), out ePersonaState);
-                platformName = $"Switch to {AppState.Switcher.SelectedAccount.DisplayName} {(args.Length > 0 ? $"({SteamSwitcherFuncs.PersonaStateToString(ePersonaState)})" : "")} [{AppState.Switcher.CurrentSwitcher}]";
-                break;
-            default:
-                currentPlatformImgPath = Path.Join(Globals.WwwRoot, $"\\img\\platform\\{CurrentPlatform.SafeName}.svg");
-                currentPlatformImgPathOverride = Path.Join(Globals.WwwRoot, $"\\img\\platform\\{CurrentPlatform.SafeName}.png");
-                primaryPlatformId = CurrentPlatform.PrimaryId;
-                platformName = $"Switch to {AppState.Switcher.SelectedAccount.DisplayName} [{AppState.Switcher.CurrentSwitcher}]";
-                break;
-        }
-
-        if (File.Exists(currentPlatformImgPathOverride))
-            bgImg = currentPlatformImgPathOverride;
-        else if (File.Exists(currentPlatformImgPath))
-            bgImg = currentPlatformImgPath;
-        else if (File.Exists(Path.Join(Globals.WwwRoot, "\\img\\BasicDefault.png")))
-            bgImg = Path.Join(Globals.WwwRoot, "\\img\\BasicDefault.png");
-
-
-        var fgImg = Path.Join(Globals.WwwRoot, $"\\img\\profiles\\{AppState.Switcher.CurrentSwitcherSafe}\\{AppState.Switcher.SelectedAccountId}.jpg");
-        if (!File.Exists(fgImg)) fgImg = Path.Join(Globals.WwwRoot, $"\\img\\profiles\\{AppState.Switcher.CurrentSwitcherSafe}\\{AppState.Switcher.SelectedAccountId}.png");
-        if (!File.Exists(fgImg))
-        {
-            await ShowToast("error", Lang["Toast_CantFindImage"], Lang["Toast_CantCreateShortcut"], "toastarea");
-            return;
-        }
-
-        var s = new Shortcut();
-        _ = s.Shortcut_Platform(
-            Shortcut.Desktop,
-            platformName,
-            $"+{primaryPlatformId}:{AppState.Switcher.SelectedAccountId}{args}",
-            $"Switch to {AppState.Switcher.SelectedAccount.DisplayName} [{AppState.Switcher.CurrentSwitcher}] in TcNo Account Switcher",
-            true);
-        await s.CreateCombinedIcon(bgImg, fgImg, $"{AppState.Switcher.SelectedAccountId}.ico");
-        s.TryWrite();
-
-        if (WindowSettings.StreamerModeTriggered)
-            await ShowToast("success", Lang["Toast_ShortcutCreated"], Lang["Success"], "toastarea");
-        else
-            await ShowToast("success", Lang["ForName", new { name = AppState.Switcher.SelectedAccount.DisplayName }], Lang["Toast_ShortcutCreated"], "toastarea");
-    }
 
     [JSInvokable]
-    public static string PlatformUserModalCopyText() => CurrentPlatform.GetUserModalCopyText;
-    [JSInvokable]
-    public static string PlatformHintText() => CurrentPlatform.GetUserModalHintText();
+    public string GiLocale(string k) => Lang[k];
 
     [JSInvokable]
-    public static string GiLocale(string k) => Lang[k];
-
-    [JSInvokable]
-    public static string GiLocaleObj(string k, object obj) => Lang[k, obj];
+    public string GiLocaleObj(string k, object obj) => Lang[k, obj];
 
     [JSInvokable]
     public static string GiGetCleanFilePath(string f) => Globals.GetCleanFilePath(f);

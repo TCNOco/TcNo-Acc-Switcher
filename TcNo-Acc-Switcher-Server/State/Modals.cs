@@ -17,6 +17,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
 using TcNo_Acc_Switcher_Server.State.Interfaces;
@@ -30,6 +31,10 @@ public class Modals
     [Inject] IWindowSettings WindowSettings { get; set; }
     [Inject] JSRuntime JsRuntime { get; set; }
     [Inject] NavigationManager NavigationManager { get; set; }
+    [Inject] SteamSettings SteamSettings { get; set; }
+    [Inject] TemplatedPlatformSettings TemplatedPlatformSettings { get; set; }
+    [Inject] TemplatedPlatformFuncs TemplatedPlatformFuncs { get; set; }
+    [Inject] TemplatedPlatformState TemplatedPlatformState { get; set; }
 
     public event Action OnChange;
     public void NotifyDataChanged() => OnChange?.Invoke();
@@ -111,7 +116,7 @@ public class Modals
     public void ShowUpdatePlatformFolderModal()
     {
         PathPicker =
-            new PathPickerRequest(PathPickerRequest.PathPickerGoal.FindPlatformExe);
+            new PathPickerRequest(PathPickerGoal.FindPlatformExe);
         ShowModal("find");
     }
 
@@ -122,13 +127,6 @@ public class Modals
     {
         var path = PathPicker.LastPath;
         Globals.DebugWriteLine($@"[Modals.UpdatePlatformFolder] file={AppState.Switcher.CurrentSwitcher}, path={path}");
-        var settingsFile = AppState.Switcher.CurrentSwitcher == "Steam"
-            ? SteamSettings.SettingsFile
-            : CurrentPlatform.SettingsFile;
-
-        var settings = GeneralFuncs.LoadSettings(settingsFile);
-        settings["FolderPath"] = path;
-        GeneralFuncs.SaveSettings(settingsFile, settings);
         if (!Globals.IsFolder(path))
             path = Path.GetDirectoryName(path); // Remove .exe
         if (!string.IsNullOrWhiteSpace(path) && path.EndsWith(".exe"))
@@ -137,7 +135,7 @@ public class Modals
         if (AppState.Switcher.CurrentSwitcher == "Steam")
             SteamSettings.FolderPath = path;
         else
-            BasicSettings.FolderPath = path;
+            TemplatedPlatformSettings.FolderPath = path;
     }
 
     /// <summary>
@@ -146,7 +144,7 @@ public class Modals
     public void ShowSetBackgroundModal()
     {
         PathPicker =
-            new PathPickerRequest(PathPickerRequest.PathPickerGoal.SetBackground);
+            new PathPickerRequest(PathPickerGoal.SetBackground);
         ShowModal("find");
     }
 
@@ -176,7 +174,7 @@ public class Modals
     public void ShowChangeUserdataFolderModal()
     {
         PathPicker =
-            new PathPickerRequest(PathPickerRequest.PathPickerGoal.SetUserdata);
+            new PathPickerRequest(PathPickerGoal.SetUserdata);
         ShowModal("find");
     }
 
@@ -224,7 +222,7 @@ public class Modals
     public void ShowChangeAccImageModal()
     {
         PathPicker =
-            new PathPickerRequest(PathPickerRequest.PathPickerGoal.SetAccountImage);
+            new PathPickerRequest(PathPickerGoal.SetAccountImage);
         ShowModal("find");
     }
 
@@ -258,7 +256,7 @@ public class Modals
     public void ShowSetAppPasswordModal()
     {
         TextInput =
-            new TextInputRequest(TextInputRequest.TextInputGoal.AppPassword);
+            new TextInputRequest(TextInputGoal.AppPassword);
         ShowModal("getText");
     }
 
@@ -278,7 +276,7 @@ public class Modals
     public void ShowSetAccountStringModal()
     {
         TextInput =
-            new TextInputRequest(TextInputRequest.TextInputGoal.AccString);
+            new TextInputRequest(TextInputGoal.AccString);
         ShowModal("getText");
     }
 
@@ -288,7 +286,7 @@ public class Modals
     public void ShowChangeUsernameModal()
     {
         TextInput =
-            new TextInputRequest(TextInputRequest.TextInputGoal.ChangeUsername);
+            new TextInputRequest(TextInputGoal.ChangeUsername);
         ShowModal("getText");
     }
 
@@ -298,7 +296,7 @@ public class Modals
 
         if (AppState.Switcher.CurrentSwitcher == "Steam")
         {
-            if (TextInput.Goal is TextInputRequest.TextInputGoal.ChangeUsername)
+            if (TextInput.Goal is TextInputGoal.ChangeUsername)
             {
                 SteamSettings.CustomAccountNames[AppState.Switcher.SelectedAccountId] = TextInput.LastString;
                 AppState.Switcher.SelectedAccount.DisplayName = TextInput.LastString;
@@ -310,49 +308,48 @@ public class Modals
         }
         else
         {
-            if (TextInput.Goal is TextInputRequest.TextInputGoal.ChangeUsername)
-                await TemplatedChangeUsername(AppState.Switcher.SelectedAccountId, TextInput.LastString);
+            if (TextInput.Goal is TextInputGoal.ChangeUsername)
+                TemplatedChangeUsername(AppState.Switcher.SelectedAccountId, TextInput.LastString);
             else
-                await BasicSwitcherFuncs.BasicAddCurrent(TextInput.LastString);
+                await TemplatedPlatformFuncs.TemplatedAddCurrent(TextInput.LastString);
         }
     }
 
-    public static async Task TemplatedChangeUsername(string accId, string newName, bool reload = true)
+    public void TemplatedChangeUsername(string accId, string newName, bool reload = true)
     {
-        LoadAccountIds();
-        var oldName = GetNameFromId(accId);
+        TemplatedPlatformState.LoadAccountIds();
+        var oldName = TemplatedPlatformState.GetNameFromId(accId);
 
         try
         {
             // No need to rename image as accId. That step is skipped here.
-            Directory.Move($"LoginCache\\{CurrentPlatform.SafeName}\\{oldName}\\", $"LoginCache\\{CurrentPlatform.SafeName}\\{newName}\\"); // Rename login cache folder
+            Directory.Move($"LoginCache\\{TemplatedPlatformState.CurrentPlatform.SafeName}\\{oldName}\\", $"LoginCache\\{TemplatedPlatformState.CurrentPlatform.SafeName}\\{newName}\\"); // Rename login cache folder
         }
         catch (IOException e)
         {
             Globals.WriteToLog("Failed to write to file: " + e);
-            await GeneralInvocableFuncs.ShowToast("error", Lang["Error_FileAccessDenied", new { logPath = Globals.GetLogPath() }], Lang["Error"], renderTo: "toastarea");
+            Toasts.ShowToastLang(ToastType.Error, "Error", new LangSub("Error_FileAccessDenied", new { logPath = Globals.GetLogPath() }));
             return;
         }
 
         try
         {
-            AccountIds[accId] = newName;
-            SaveAccountIds();
+            TemplatedPlatformState.AccountIds[accId] = newName;
+            TemplatedPlatformState.SaveAccountIds();
         }
         catch (Exception e)
         {
             Globals.WriteToLog("Failed to change username: " + e);
-            await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_CantChangeUsername"], Lang["Error"], renderTo: "toastarea");
+            Toasts.ShowToastLang(ToastType.Error, "Error", "Toast_CantChangeUsername");
             return;
         }
 
         if (AppState.Switcher.SelectedAccount is not null)
         {
-            AppState.Switcher.SelectedAccount.DisplayName = Modals.TextInput.LastString;
-            AppState.Switcher.SelectedAccount.NotifyDataChanged();
+            AppState.Switcher.SelectedAccount.DisplayName = TextInput.LastString;
         }
 
-        await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_ChangedUsername"], renderTo: "toastarea");
+        Toasts.ShowToastLang(ToastType.Success, "Toast_ChangedUsername");
     }
     #endregion
 }

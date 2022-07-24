@@ -25,6 +25,7 @@ using Newtonsoft.Json;
 using SharpScss;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
+using TcNo_Acc_Switcher_Server.State.Interfaces;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -43,9 +44,9 @@ public class Stylesheet : INotifyPropertyChanged
     }
 
     [Inject] private Toasts Toasts { get; set; }
-    [Inject] private Lang Lang { get; set; }
+    [Inject] private ILang Lang { get; set; }
     [Inject] private NavigationManager NavigationManager { get; set; }
-    [Inject] private WindowSettings WindowSettings { get; set; }
+    [Inject] private IWindowSettings WindowSettings { get; set; }
 
     public Stylesheet()
     {

@@ -13,7 +13,6 @@
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
 @page "/Basic/"
-@using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using TcNo_Acc_Switcher_Server.Shared.ContextMenu
 @using TcNo_Acc_Switcher_Server.Shared.Accounts
@@ -24,28 +23,30 @@
 @using TcNo_Acc_Switcher_Server.State.DataTypes
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @using System.ComponentModel
+@using TcNo_Acc_Switcher_Globals
 @inject SharedFunctions SharedFunctions
 @inject TemplatedPlatformState TemplatedPlatformState
 @inject TemplatedPlatformFuncs TemplatedPlatformFuncs
+@inject TemplatedPlatformSettings TemplatedPlatformSettings
 @inject IAppState AppState
 @inject IJSRuntime JsRuntime
-@inject NavigationManager NavManager
+@inject NavigationManager NavigationManager
 @inject ILang Lang
 @inject Modals Modals
 @inject GameStats GameStats
 @inject Toasts Toasts
 @inject IStatistics Statistics
-@inject AccountFuncs AccountFuncs
+@inject IWindowSettings WindowSettings
 
-<ContextMenu MenuItems="@Basic.ContextMenuItems" ContextMenuId="AccOrPlatList"/>
-<ContextMenu MenuItems="@Basic.ContextMenuShortcutItems" ContextMenuId="Shortcuts"/>
-<ContextMenu MenuItems="@Basic.ContextMenuPlatformItems" ContextMenuId="Platform"/>
+<ContextMenu MenuItems="@TemplatedPlatformState.ContextMenu.ContextMenuItems" ContextMenuId="AccOrPlatList"/>
+<ContextMenu MenuItems="@TemplatedPlatformState.ContextMenu.ContextMenuShortcutItems" ContextMenuId="Shortcuts"/>
+<ContextMenu MenuItems="@TemplatedPlatformState.ContextMenu.ContextMenuPlatformItems" ContextMenuId="Platform"/>
 
 <AccountList AccountItems="@AppState.Switcher.TemplatedAccounts" @ref="BasicAccountList" />
 
 <div class="shortcutDropdown gameShortcuts" id="shortcutDropdown" style="display: none">
     <div class="shortcutDropdownItems">
-        @foreach (var (i, shortcut) in TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.Shortcuts)
+        @foreach (var (i, shortcut) in TemplatedPlatformSettings.Shortcuts)
         {
             @if (i >= 0)
             {
@@ -66,7 +67,7 @@
     </div>
     <div class="gameShortcuts">
         <div class="shortcuts">
-            @foreach (var (i, shortcut) in TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.Shortcuts)
+            @foreach (var (i, shortcut) in TemplatedPlatformSettings.Shortcuts)
             {
                 @if (i < 0)
                 {
@@ -82,7 +83,7 @@
 
         @if (TemplatedPlatformState.CurrentPlatform.Extras.ShortcutIncludeMainExe)
         {
-            <button id="btnStartPlat" @onclick="BasicPlatformState.RunBasicPlatform" data-toggle="tooltip" title="@(TemplatedPlatformState.CurrentPlatform.SafeName)">
+            <button id="btnStartPlat" @onclick="TemplatedPlatformState.RunPlatform" data-toggle="tooltip" title="@(TemplatedPlatformState.CurrentPlatform.SafeName)">
                 <img src="@(TemplatedPlatformState.CurrentPlatform.GetShortcutImagePath(TemplatedPlatformState.CurrentPlatform.SafeName))" alt="Start platform"/>
             </button>
         }
@@ -141,7 +142,7 @@
         AppState.Stylesheet.StreamerModeCheck();
 
         var requestPlat = "";
-        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
         if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("plat", out var param))
         {
             requestPlat = param.First();
@@ -157,11 +158,11 @@
             _navBack = true;
             return;
         }
-        
+
         await GameStats.SetCurrentPlatform(TemplatedPlatformState.CurrentPlatform.SafeName);
 
     // Verify that the platform's EXE exists, otherwise go back. For shortcuts and direct navigation.
-        if (File.Exists(TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.Exe)) return;
+        if (File.Exists(TemplatedPlatformSettings.Exe)) return;
         _navBack = true;
     }
 
@@ -172,13 +173,61 @@
             Toasts.ShowToastLang(ToastType.Error, "Error", new LangSub	("Toast_FailedLoad", new {platform = TemplatedPlatformState.CurrentPlatform.Name}));
             return;
         }
-        await GeneralFuncs.HandleFirstRender(firstRender, TemplatedPlatformState.CurrentPlatform.Name);
+        await HandleFirstRender(firstRender);
         Statistics.NewNavigation($"/[{TemplatedPlatformState.CurrentPlatform.SafeName}]");
         if (!firstRender) return;
         await JsRuntime.InvokeVoidAsync("initCopyHotKey");
         await JsRuntime.InvokeVoidAsync("showNoteTooltips");
 
         var curAcc = await TemplatedPlatformFuncs.GetCurrentAccountId();
-        if (curAcc != "") await AccountFuncs.SetCurrentAccount(curAcc);
+        if (curAcc != "") await TemplatedPlatformFuncs.SetCurrentAccount(curAcc);
+    }
+
+
+    public async Task HandleFirstRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            AppState.WindowState.WindowTitle = Lang["Title_AccountsList", new { platform = TemplatedPlatformState.CurrentPlatform.Name }];
+            // Handle Streamer Mode notification
+            if (WindowSettings.StreamerModeEnabled && AppState.Stylesheet.StreamerModeTriggered)
+                Toasts.ShowToastLang(ToastType.Info, "Toast_StreamerModeTitle", "Toast_StreamerModeHint");
+
+            // Handle queries and invoke status "Ready"
+            await HandleQueries();
+            await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Done"]);
+        }
+    }
+
+    /// <summary>
+    /// For handling queries in URI
+    /// </summary>
+    public async Task<bool> HandleQueries()
+    {
+        Globals.DebugWriteLine(@"[JSInvoke:General\GeneralFuncs.HandleQueries]");
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        // Clear cache reload
+        var queries = QueryHelpers.ParseQuery(uri.Query);
+        // cacheReload handled in JS
+
+        // Toast
+        if (!queries.TryGetValue("toast_type", out var toastType) ||
+            !queries.TryGetValue("toast_title", out var toastTitle) ||
+            !queries.TryGetValue("toast_message", out var toastMessage)) return true;
+        for (var i = 0; i < toastType.Count; i++)
+        {
+            try
+            {
+                var type = (ToastType)Enum.Parse(typeof(ToastType), toastType[i]);
+                Toasts.ShowToastLang(type, toastTitle[i], toastMessage[i]);
+                await JsRuntime.InvokeVoidAsync("removeUrlArgs", "toast_type,toast_title,toast_message");
+            }
+            catch (TaskCanceledException e)
+            {
+                Globals.WriteToLog(e.ToString());
+            }
+        }
+
+        return true;
     }
 }

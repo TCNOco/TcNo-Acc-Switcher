@@ -25,8 +25,8 @@ using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Converters;
-using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
+using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Shared;
 using TcNo_Acc_Switcher_Server.Shared.ContextMenu;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
@@ -42,6 +42,9 @@ public class SteamContextMenu
     [Inject] private SteamSettings SteamSettings { get; set; }
     [Inject] IAppState AppState { get; set; }
     [Inject] Toasts Toasts { get; set; }
+    [Inject] SteamFuncs SteamFuncs { get; set; }
+    [Inject] State.GameStats GameStats { get; set; }
+    [Inject] IWindowSettings WindowSettings { get; set; }
 
     public List<string> InstalledGames { get; set; }
     public Dictionary<string, string> AppIds { get; set; }
@@ -89,17 +92,17 @@ public class SteamContextMenu
                         new()
                         {
                             Text = Lang["Context_Game_CopySettingsFrom"],
-                            MenuAction = async () => await SteamSwitcherFuncs.CopySettingsFrom(gameId)
+                            MenuAction = () => SteamFuncs.CopySettingsFrom(gameId)
                         },
                         new()
                         {
                             Text = Lang["Context_Game_RestoreSettingsTo"],
-                            MenuAction = async () => await SteamSwitcherFuncs.RestoreSettingsTo(gameId)
+                            MenuAction = () => SteamFuncs.RestoreSettingsTo(gameId)
                         },
                         new()
                         {
                             Text = Lang["Context_Game_BackupData"],
-                            MenuAction = async () => await SteamSwitcherFuncs.BackupGameData(gameId)
+                            MenuAction = () => SteamFuncs.BackupGameData(gameId)
                         }
                     }
                 });
@@ -115,17 +118,17 @@ public class SteamContextMenu
         // Prepare menu
         var menuBuilder = new MenuBuilder(new Tuple<string, object>[]
         {
-            new("Context_SwapTo", new Action(async () => await SteamState.SwapToAccount())),
+            new("Context_SwapTo", new Action(async () => await SteamFuncs.SwapToAccount())),
             new("Context_LoginAsSubmenu", new Tuple<string, object>[]
                 {
-                    new("Invisible", new Action(async () => await SteamState.SwapToAccount(7))),
-                    new("Offline", new Action(async () => await SteamState.SwapToAccount(0))),
-                    new("Online", new Action(async () => await SteamState.SwapToAccount(1))),
-                    new("Busy", new Action(async () => await SteamState.SwapToAccount(2))),
-                    new("Away", new Action(async () => await SteamState.SwapToAccount(3))),
-                    new("Snooze", new Action(async () => await SteamState.SwapToAccount(4))),
-                    new("LookingToTrade", new Action(async () => await SteamState.SwapToAccount(5))),
-                    new("LookingToPlay", new Action(async () => await SteamState.SwapToAccount(6))),
+                    new("Invisible", new Action(async () => await SteamFuncs.SwapToAccount(7))),
+                    new("Offline", new Action(async () => await SteamFuncs.SwapToAccount(0))),
+                    new("Online", new Action(async () => await SteamFuncs.SwapToAccount(1))),
+                    new("Busy", new Action(async () => await SteamFuncs.SwapToAccount(2))),
+                    new("Away", new Action(async () => await SteamFuncs.SwapToAccount(3))),
+                    new("Snooze", new Action(async () => await SteamFuncs.SwapToAccount(4))),
+                    new("LookingToTrade", new Action(async () => await SteamFuncs.SwapToAccount(5))),
+                    new("LookingToPlay", new Action(async () => await SteamFuncs.SwapToAccount(6))),
                 }
             ),
             new("Context_CopySubmenu", new Tuple<string, object>[]
@@ -134,57 +137,57 @@ public class SteamContextMenu
                 {
                     new("Context_CommunityUrl",
                         new Action(async () =>
-                            await AppFuncs.CopyText(
+                            await StaticFuncs.CopyText(
                                 $"https://steamcommunity.com/profiles/{AppState.Switcher.SelectedAccountId}"))),
                     new("Context_CommunityUsername",
-                        new Action(async () => await AppFuncs.CopyText(AppState.Switcher.SelectedAccount.DisplayName))),
+                        new Action(async () => await StaticFuncs.CopyText(AppState.Switcher.SelectedAccount.DisplayName))),
                     new("Context_LoginUsername",
-                        new Action(async () => await AppFuncs.CopyText(AppState.Switcher.SelectedAccount.LoginUsername))),
+                        new Action(async () => await StaticFuncs.CopyText(AppState.Switcher.SelectedAccount.LoginUsername))),
                 }),
                 new("Context_CopySteamIdSubmenu", new Tuple<string, object>[]
                 {
                     new("Context_Steam_Id",
                         new Action(async () =>
-                            await AppFuncs.CopyText(new SteamIdConvert(AppState.Switcher.SelectedAccountId).Id))),
+                            await StaticFuncs.CopyText(new SteamIdConvert(AppState.Switcher.SelectedAccountId).Id))),
                     new("Context_Steam_Id3",
                         new Action(async () =>
-                            await AppFuncs.CopyText(new SteamIdConvert(AppState.Switcher.SelectedAccountId).Id3))),
+                            await StaticFuncs.CopyText(new SteamIdConvert(AppState.Switcher.SelectedAccountId).Id3))),
                     new("Context_Steam_Id32",
                         new Action(async () =>
-                            await AppFuncs.CopyText(new SteamIdConvert(AppState.Switcher.SelectedAccountId).Id32))),
+                            await StaticFuncs.CopyText(new SteamIdConvert(AppState.Switcher.SelectedAccountId).Id32))),
                     new("Context_Steam_Id64",
                         new Action(async () =>
-                            await AppFuncs.CopyText(new SteamIdConvert(AppState.Switcher.SelectedAccountId).Id64))),
+                            await StaticFuncs.CopyText(new SteamIdConvert(AppState.Switcher.SelectedAccountId).Id64))),
                 }),
                 new("Context_CopyOtherSubmenu", new Tuple<string, object>[]
                 {
                     new("SteamRep",
                         new Action(async () =>
-                            await AppFuncs.CopyText($"https://steamrep.com/search?q={AppState.Switcher.SelectedAccountId}"))),
+                            await StaticFuncs.CopyText($"https://steamrep.com/search?q={AppState.Switcher.SelectedAccountId}"))),
                     new("SteamID.uk",
                         new Action(async () =>
-                            await AppFuncs.CopyText($"https://steamid.uk/profile/{AppState.Switcher.SelectedAccountId}"))),
+                            await StaticFuncs.CopyText($"https://steamid.uk/profile/{AppState.Switcher.SelectedAccountId}"))),
                     new("SteamID.io",
                         new Action(async () =>
-                            await AppFuncs.CopyText($"https://steamid.io/lookup/{AppState.Switcher.SelectedAccountId}"))),
+                            await StaticFuncs.CopyText($"https://steamid.io/lookup/{AppState.Switcher.SelectedAccountId}"))),
                     new("SteamIDFinder.com",
                         new Action(async () =>
-                            await AppFuncs.CopyText(
+                            await StaticFuncs.CopyText(
                                 $"https://steamidfinder.com/lookup/{AppState.Switcher.SelectedAccountId}"))),
                 }),
             }),
             new("Context_CreateShortcut", new Tuple<string, object>[]
             {
-                new("OnlineDefault", new Action(async () => await GeneralInvocableFuncs.CreateShortcut())),
-                new("Invisible", new Action(async () => await GeneralInvocableFuncs.CreateShortcut(":7"))),
-                new("Offline", new Action(async () => await GeneralInvocableFuncs.CreateShortcut(":0"))),
-                new("Busy", new Action(async () => await GeneralInvocableFuncs.CreateShortcut(":2"))),
-                new("Away", new Action(async () => await GeneralInvocableFuncs.CreateShortcut(":3"))),
-                new("Snooze", new Action(async () => await GeneralInvocableFuncs.CreateShortcut(":4"))),
-                new("LookingToTrade", new Action(async () => await GeneralInvocableFuncs.CreateShortcut(":5"))),
-                new("LookingToPlay", new Action(async () => await GeneralInvocableFuncs.CreateShortcut(":6"))),
+                new("OnlineDefault", new Action(() => CreateShortcut())),
+                new("Invisible", new Action(() => CreateShortcut(":7"))),
+                new("Offline", new Action(() => CreateShortcut(":0"))),
+                new("Busy", new Action(() => CreateShortcut(":2"))),
+                new("Away", new Action(() => CreateShortcut(":3"))),
+                new("Snooze", new Action(() => CreateShortcut(":4"))),
+                new("LookingToTrade", new Action(() => CreateShortcut(":5"))),
+                new("LookingToPlay", new Action(() => CreateShortcut(":6"))),
             }),
-            new("Forget", new Action(async () => await SteamState.ForgetAccount())),
+            new("Forget", new Action(async () => await SteamFuncs.ForgetAccount())),
             new("Notes", new Action(() => Modals.ShowModal("notes"))),
             new("Context_ManageSubmenu", new[]
             {
@@ -203,6 +206,60 @@ public class SteamContextMenu
 
         Menu.AddRange(menuBuilder.Result());
     }
+
+    /// <summary>
+    /// Creates a shortcut to start the Account Switcher, and swap to the account related.
+    /// </summary>
+    /// <param name="args">(Optional) arguments for shortcut</param>
+    public void CreateShortcut(string args = "")
+    {
+        if (!OperatingSystem.IsWindows()) return;
+        Globals.DebugWriteLine(@"[JSInvoke:General\GeneralInvocableFuncs.CreateShortcut]");
+        if (args.Length > 0 && args[0] != ':') args = $" {args}"; // Add a space before arguments if doesn't start with ':'
+        var primaryPlatformId = "" + AppState.Switcher.CurrentSwitcher[0];
+        var bgImg = Path.Join(Globals.WwwRoot, $"\\img\\platform\\{AppState.Switcher.CurrentSwitcherSafe}.svg");
+        var currentPlatformImgPath = Path.Join(Globals.WwwRoot, "\\img\\platform\\Steam.svg");
+        var currentPlatformImgPathOverride = Path.Join(Globals.WwwRoot, "\\img\\platform\\Steam.png");
+        var ePersonaState = -1;
+        if (args.Length == 2) _ = int.TryParse(args[1].ToString(), out ePersonaState);
+        var platformName = $"Switch to {AppState.Switcher.SelectedAccount.DisplayName} {(args.Length > 0 ? $"({SteamFuncs.PersonaStateToString(ePersonaState)})" : "")} [{AppState.Switcher.CurrentSwitcher}]";
+
+        if (File.Exists(currentPlatformImgPathOverride))
+            bgImg = currentPlatformImgPathOverride;
+        else if (File.Exists(currentPlatformImgPath))
+            bgImg = currentPlatformImgPath;
+        else if (File.Exists(Path.Join(Globals.WwwRoot, "\\img\\BasicDefault.png")))
+            bgImg = Path.Join(Globals.WwwRoot, "\\img\\BasicDefault.png");
+
+
+        var fgImg = Path.Join(Globals.WwwRoot, $"\\img\\profiles\\{AppState.Switcher.CurrentSwitcherSafe}\\{AppState.Switcher.SelectedAccountId}.jpg");
+        if (!File.Exists(fgImg)) fgImg = Path.Join(Globals.WwwRoot, $"\\img\\profiles\\{AppState.Switcher.CurrentSwitcherSafe}\\{AppState.Switcher.SelectedAccountId}.png");
+        if (!File.Exists(fgImg))
+        {
+            Toasts.ShowToastLang(ToastType.Error, "Toast_CantCreateShortcut", "Toast_CantFindImage");
+            return;
+        }
+
+        var s = new Shortcut();
+        _ = s.Shortcut_Platform(
+            Shortcut.Desktop,
+            platformName,
+            $"+{primaryPlatformId}:{AppState.Switcher.SelectedAccountId}{args}",
+            $"Switch to {AppState.Switcher.SelectedAccount.DisplayName} [{AppState.Switcher.CurrentSwitcher}] in TcNo Account Switcher",
+            true);
+        if (s.CreateCombinedIcon(bgImg, fgImg, $"{AppState.Switcher.SelectedAccountId}.ico"))
+        {
+            s.TryWrite();
+
+            if (AppState.Stylesheet.StreamerModeTriggered)
+                Toasts.ShowToastLang(ToastType.Success, "Success", "Toast_ShortcutCreated");
+            else
+                Toasts.ShowToastLang(ToastType.Success, "Toast_ShortcutCreated", new LangSub("ForName", new { name = AppState.Switcher.SelectedAccount.DisplayName }));
+        }
+        else
+            Toasts.ShowToastLang(ToastType.Error, "Toast_FailedCreateIcon");
+    }
+
     public void SteamOpenUserdata()
     {
         var steamId32 = new SteamIdConvert(AppState.Switcher.SelectedAccountId);

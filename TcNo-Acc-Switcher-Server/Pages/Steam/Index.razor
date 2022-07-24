@@ -16,10 +16,12 @@
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using System.IO
 @using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.WebUtilities
 @using TcNo_Acc_Switcher_Globals
 @using TcNo_Acc_Switcher_Server.Shared.Accounts
 @using TcNo_Acc_Switcher_Server.Shared.ContextMenu
 @using TcNo_Acc_Switcher_Server.State
+@using TcNo_Acc_Switcher_Server.State.DataTypes
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @inject IAppState AppState
 @inject SteamState SteamState
@@ -32,7 +34,9 @@
 @inject IStatistics Statistics
 @inject SharedFunctions SharedFunctions
 @inject GameStats GameStats
-@inject AccountFuncs AccountFuncs
+@inject Toasts Toasts
+@inject IWindowSettings WindowSettings
+@inject NavigationManager NavigationManager
 
 <ContextMenu MenuItems="@SteamState.ContextMenu.Menu" ContextMenuId="AccOrPlatList" @ref="SteamContextMenu" />
 <ContextMenu MenuItems="@SteamState.ContextMenu.ShortcutItems" ContextMenuId="Shortcuts" />
@@ -129,13 +133,60 @@
     //protected override async Task OnAfterRenderAsync(bool firstRender) => await GeneralFuncs.HandleFirstRender(firstRender, "Steam");
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await GeneralFuncs.HandleFirstRender(firstRender, "Steam");
+        await HandleFirstRender(firstRender);
         Statistics.NewNavigation("/Steam/");
         if (!firstRender) return;
         await JsRuntime.InvokeVoidAsync("initCopyHotKey");
         await JsRuntime.InvokeVoidAsync("showNoteTooltips");
 
         var curAcc = SteamFuncs.GetCurrentAccountId(true);
-        if (curAcc != "") await AccountFuncs.SetCurrentAccount(curAcc);
+        if (curAcc != "") await SteamFuncs.SetCurrentAccount(curAcc);
+    }
+
+    public async Task HandleFirstRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            AppState.WindowState.WindowTitle = Lang["Title_AccountsList", new { platform = "Steam" }];
+            // Handle Streamer Mode notification
+            if (WindowSettings.StreamerModeEnabled && AppState.Stylesheet.StreamerModeTriggered)
+                Toasts.ShowToastLang(ToastType.Info, "Toast_StreamerModeTitle", "Toast_StreamerModeHint");
+
+            // Handle queries and invoke status "Ready"
+            await HandleQueries();
+            await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Done"]);
+        }
+    }
+
+    /// <summary>
+    /// For handling queries in URI
+    /// </summary>
+    public async Task<bool> HandleQueries()
+    {
+        Globals.DebugWriteLine(@"[JSInvoke:General\GeneralFuncs.HandleQueries]");
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        // Clear cache reload
+        var queries = QueryHelpers.ParseQuery(uri.Query);
+        // cacheReload handled in JS
+
+        // Toast
+        if (!queries.TryGetValue("toast_type", out var toastType) ||
+            !queries.TryGetValue("toast_title", out var toastTitle) ||
+            !queries.TryGetValue("toast_message", out var toastMessage)) return true;
+        for (var i = 0; i < toastType.Count; i++)
+        {
+            try
+            {
+                var type = (ToastType)Enum.Parse(typeof(ToastType), toastType[i]);
+                Toasts.ShowToastLang(type, toastTitle[i], toastMessage[i]);
+                await JsRuntime.InvokeVoidAsync("removeUrlArgs", "toast_type,toast_title,toast_message");
+            }
+            catch (TaskCanceledException e)
+            {
+                Globals.WriteToLog(e.ToString());
+            }
+        }
+
+        return true;
     }
 }

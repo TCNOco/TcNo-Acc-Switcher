@@ -31,6 +31,7 @@ public partial class AdvancedClearing
 {
     [Inject] private SteamSettings SteamSettings { get; set; }
     [Inject] private IAppState AppState { get; set; }
+    [Inject] private SharedFunctions SharedFunctions { get; set; }
 
     protected override void OnInitialized()
     {
@@ -50,7 +51,7 @@ public partial class AdvancedClearing
     public async Task Steam_Close()
     {
         Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Close]");
-        WriteLine(await GeneralFuncs.CloseProcesses(SteamSettings.Processes, SteamSettings.ClosingMethod) ? "Closed Steam." : "ERROR: COULD NOT CLOSE STEAM!");
+        WriteLine(await SharedFunctions.CloseProcesses(SteamSettings.Processes, SteamSettings.ClosingMethod) ? "Closed Steam." : "ERROR: COULD NOT CLOSE STEAM!");
     }
 
     // BUTTON: ..\Steam\Logs

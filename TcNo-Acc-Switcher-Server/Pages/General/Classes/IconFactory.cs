@@ -165,7 +165,7 @@ public class IconFactory
     /// <param name="sFgImg">User's profile image, for the foreground</param>
     /// <param name="icoOutput">Output filename</param>
     [SupportedOSPlatform("windows")]
-    public void CreateIcon(string sBgImg, string sFgImg, ref string icoOutput)
+    public bool CreateIcon(string sBgImg, string sFgImg, ref string icoOutput)
     {
         var ms = new MemoryStream();
         // If input is SVG, create PNG
@@ -180,12 +180,11 @@ public class IconFactory
                 if (!File.Exists(fallbackBg) || fallbackBg == sBgImg)
                 {
                     Globals.WriteToLog($"Failed to CreateIcon! File does not exist: '{sBgImg}'. Other requested file: '{sFgImg}'");
-                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedCreateIcon"]);
-                    return;
+                    return false;
                 }
                 // Else:
                 sBgImg = fallbackBg;
-                CreateIcon(sBgImg, sFgImg, ref icoOutput);
+                if (!CreateIcon(sBgImg, sFgImg, ref icoOutput)) return false;
             }
 
             // Load SVG into memory.
@@ -231,6 +230,7 @@ public class IconFactory
         icoOutput = Path.Join("IconCache", icoOutput);
         using var stream = new FileStream(icoOutput, FileMode.Create);
         SavePngsAsIcon(new[] { new Bitmap(ms16), new Bitmap(ms32), new Bitmap(ms48), new Bitmap(ms256) }, stream);
+        return true;
     }
 
     /// <summary>

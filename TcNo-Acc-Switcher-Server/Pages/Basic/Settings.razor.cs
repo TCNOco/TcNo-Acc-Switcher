@@ -27,6 +27,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic;
 public partial class Settings
 {
     [Inject] private Modals Modals { get; set; }
+    [Inject] private TemplatedPlatformSettings TemplatedPlatformSettings { get; set; }
 
     protected override void OnInitialized()
     {
@@ -46,7 +47,7 @@ public partial class Settings
     public void ClearSettings()
     {
         Globals.DebugWriteLine(@"[ButtonClicked:Basic\Settings.razor.cs.ClearSettings]");
-        TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.Reset();
+        TemplatedPlatformSettings.Reset();
         AppState.Navigation.NavigateToWithToast("/Basic/", "success", Lang["Success"], Lang["Toast_ClearedPlatformSettings", new { platform = "Basic" }]);
     }
     #endregion

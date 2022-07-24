@@ -21,6 +21,8 @@ public class TextInputRequest
 {
     [Inject] private Lang Lang { get; set; }
     [Inject] private IAppState AppState { get; set; }
+    [Inject] private TemplatedPlatformState TemplatedPlatformState { get; set; }
+    [Inject] private Modals Modals { get; set; }
 
     public string LastString = "";
     public TextInputGoal Goal;
@@ -46,7 +48,7 @@ public class TextInputRequest
             ModalHeader = Lang["Modal_Title_AddNew", new { platform = AppState.Switcher.CurrentSwitcher }];
             ModalText = new MarkupString(Lang["Modal_AddNew", new { platform = AppState.Switcher.CurrentSwitcher }]);
             ModalButtonText = Lang["Modal_AddCurrentAccount", new { platform = AppState.Switcher.CurrentSwitcher }];
-            ExtraButtons = AppState.Switcher.CurrentSwitcher == "Steam" ? new MarkupString() : CurrentPlatform.GetUserModalExtraButtons;
+            ExtraButtons = AppState.Switcher.CurrentSwitcher == "Steam" ? new MarkupString() : TemplatedPlatformState.CurrentPlatform.UserModalExtraButtons;
         }
         else if (Goal == TextInputGoal.AppPassword)
         {
@@ -64,9 +66,9 @@ public class TextInputRequest
             ModalHeader = Lang["Modal_Title_ChangeUsername"];
             ModalText = new MarkupString(Lang["Modal_ChangeUsername", new { link = AppState.Switcher.CurrentSwitcher }]);
             ModalButtonText = Lang["Toast_SetUsername"];
-            ExtraButtons = AppState.Switcher.CurrentSwitcher == "Steam" ? new MarkupString() : CurrentPlatform.GetUserModalExtraButtons;
+            ExtraButtons = AppState.Switcher.CurrentSwitcher == "Steam" ? new MarkupString() : TemplatedPlatformState.CurrentPlatform.UserModalExtraButtons;
         }
 
-        AppState.Modal.TextInputNotifyDataChanged();
+        Modals.TextInputNotifyDataChanged();
     }
 }

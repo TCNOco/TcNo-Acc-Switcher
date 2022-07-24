@@ -27,7 +27,6 @@ using System.Windows.Media;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server;
-using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.State;
 using static TcNo_Acc_Switcher_Client.MainWindow;
@@ -40,7 +39,7 @@ namespace TcNo_Acc_Switcher_Client;
 public partial class App
 {
     // Create WindowSettings instance. This loads from saved file if available.
-    WindowSettings windowSettings = new();
+    readonly WindowSettings _windowSettings = new();
 
 #pragma warning disable CA2211 // Non-constant fields should not be visible - Accessed from App.xaml.cs
     public static string StartPage = "";
@@ -77,7 +76,7 @@ public partial class App
 
         Directory.SetCurrentDirectory(Globals.UserDataFolder);
 
-        if (windowSettings.AlwaysAdmin && !Globals.IsAdministrator) StaticFuncs.RestartAsAdmin();
+        if (_windowSettings.AlwaysAdmin && !Globals.IsAdministrator) StaticFuncs.RestartAsAdmin();
 
         // Crash handler
         AppDomain.CurrentDomain.UnhandledException += Globals.CurrentDomain_UnhandledException;
@@ -178,7 +177,7 @@ public partial class App
         // Show window (Because no command line commands were parsed)
         try
         {
-            var mainWindow = new MainWindow(windowSettings);
+            var mainWindow = new MainWindow(_windowSettings);
             mainWindow.Show();
         }
         catch (FileNotFoundException ex)
@@ -287,7 +286,7 @@ public partial class App
 
             // The program is running at this point.
             // If set to minimize to tray, try open it.
-            if (windowSettings.TrayMinimizeNotExit)
+            if (_windowSettings.TrayMinimizeNotExit)
             {
                 if (NativeFuncs.BringToFront())
                     Environment.Exit(1056); // 1056	An instance of the service is already running.
@@ -318,7 +317,7 @@ release = true;
             }
             else
             {
-                if (!windowSettings.ShownMinimizedNotification)
+                if (!_windowSettings.ShownMinimizedNotification)
                 {
                     text = "TcNo Account Switcher was running." + Environment.NewLine +
                            "I've brought it to the top." + Environment.NewLine +
@@ -331,8 +330,8 @@ release = true;
                         MessageBoxImage.Information,
                         MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
 
-                    windowSettings.ShownMinimizedNotification = true;
-                    windowSettings.Save();
+                    _windowSettings.ShownMinimizedNotification = true;
+                    _windowSettings.Save();
                 }
 
                 Environment.Exit(1056); // 1056	An instance of the service is already running.

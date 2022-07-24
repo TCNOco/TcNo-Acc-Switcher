@@ -22,6 +22,7 @@ using Microsoft.Extensions.Hosting;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.State;
+using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server;
 
@@ -56,7 +57,8 @@ public class Program
     public static IHostBuilder CreateHostBuilder(string[] args)
     {
         // Create WindowSettings instance. This loads from saved file if available.
-        WindowSettings windowSettings = new();
+        IWindowSettings windowSettings = new WindowSettings();
+
         var savedPort = windowSettings.ServerPort;
 
         var port = "";

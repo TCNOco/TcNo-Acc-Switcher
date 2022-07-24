@@ -51,29 +51,32 @@ public class Startup
 
         // Proper singletons. This is after much more practice.
         _ = services.AddSingleton<IWindowSettings, WindowSettings>(); // #1 (No depends)
-        _ = services.AddSingleton<Lang>(); // After WindowSettings
-        _ = services.AddSingleton<Toasts>(); // After Lang
-        _ = services.AddSingleton<AppState>(); // (No depends - But does store a LOT of info)
-        _ = services.AddSingleton<Modals>(); // Toasts, WindowSettings, AppState
+        _ = services.AddSingleton<ILang, Lang>(); // After WindowSettings
+        _ = services.AddSingleton<IToasts, Toasts>(); // After Lang
+        _ = services.AddSingleton<IAppState, AppState>(); // (No depends - But does store a LOT of info)
+        _ = services.AddSingleton<IModals, Modals>(); // Toasts, WindowSettings, AppState
         _ = services.AddSingleton<IStatistics, Statistics>(); // After AppState & WindowSettings
-        _ = services.AddSingleton<SharedFunctions>(); // Statistics, Toasts
+        _ = services.AddSingleton<ISharedFunctions, SharedFunctions>(); // Statistics, Toasts
 
         // Only load when needed.
-        _ = services.AddSingleton<SteamSettings>(); // (No depends)
-        _ = services.AddSingleton<SteamFuncs>();
-        _ = services.AddSingleton<SteamState>(); // Lang, Toasts, AppState, SteamSettings, Modals, Statistics, SharedFunctions
+        _ = services.AddSingleton<ISteamSettings, SteamSettings>(); // (No depends)
+        _ = services.AddSingleton<ISteamFuncs, SteamFuncs>();
+        _ = services.AddSingleton<ISteamState, SteamState>(); // Lang, Toasts, AppState, SteamSettings, Modals, Statistics, SharedFunctions
 
         // THIS MUST BE LOADED TO SEE APPS ON THE MAIN MENU LIST
-        _ = services.AddSingleton<TemplatedPlatformState>(); //SharedFunctions, WindowSettings, Statistics, Modals, AppState, Toasts
+        _ = services.AddSingleton<ITemplatedPlatformState, TemplatedPlatformState>();
+        _ = services.AddSingleton<ITemplatedPlatformSettings, TemplatedPlatformSettings>();
+        _ = services.AddSingleton<ITemplatedPlatformFuncs, TemplatedPlatformFuncs>();
 
-        _ = services.AddSingleton<GameStatsRoot>(); // Toasts, WindowSettings
-        _ = services.AddSingleton<GameStats>(); // AppState, GameStatsRoot
+        _ = services.AddSingleton<IGameStatsRoot, GameStatsRoot>(); // Toasts, WindowSettings
+        _ = services.AddSingleton<IGameStats, GameStats>(); // AppState, GameStatsRoot
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
         _ = env.IsDevelopment() ? app.UseDeveloperExceptionPage() : app.UseExceptionHandler("/Error");
+        // This is to make sure the services are loaded.
 
         // Previously settings files for previous platforms, as well as Tray_Users.json and WindowSettings.json
         // were moved from the app directory, to the userdata directory.

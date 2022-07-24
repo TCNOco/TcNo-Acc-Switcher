@@ -13,7 +13,6 @@
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
 @using TcNo_Acc_Switcher_Server.Shared.Modal
-@using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Globals
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using Newtonsoft.Json
@@ -36,6 +35,7 @@
 @inject SteamFuncs SteamFuncs
 @inject TemplatedPlatformState TemplatedPlatformState
 @inject TemplatedPlatformFuncs TemplatedPlatformFuncs
+@inject TemplatedPlatformSettings TemplatedPlatformSettings
 @inject IStatistics Statistics
 @inject Toasts Toasts
 
@@ -103,11 +103,11 @@
                 }
                 else
                 {
-                    TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.ForgetAccountEnabled = true;
-                    TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.Save();
+                    TemplatedPlatformSettings.ForgetAccountEnabled = true;
+                    TemplatedPlatformSettings.Save();
                     await TemplatedPlatformFuncs.ForgetAccount();
                 }
-                
+
                 break;
             }
             case ExtraArg.ClearStats:

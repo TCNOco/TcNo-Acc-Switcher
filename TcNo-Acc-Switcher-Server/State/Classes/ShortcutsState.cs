@@ -27,7 +27,6 @@ namespace TcNo_Acc_Switcher_Server.State.Classes;
 public class ShortcutsState
 {
     [Inject] private Modals Modals { get; set; }
-    [Inject] private IAppState AppState { get; set; }
     [Inject] private Toasts Toasts { get; set; }
 
 

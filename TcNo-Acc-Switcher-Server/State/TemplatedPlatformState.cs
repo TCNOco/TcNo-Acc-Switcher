@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
@@ -23,8 +24,13 @@ public class TemplatedPlatformState
     [Inject] private Modals Modals { get; set; }
     [Inject] private IAppState AppState { get; set; }
     [Inject] private Toasts Toasts { get; set; }
+    [Inject] private TemplatedPlatformSettings TemplatedPlatformSettings { get; set; }
+    [Inject] private NavigationManager NavigationManager { get; set; }
+    [Inject] private ILang Lang { get; set; }
+    [Inject] private GameStats GameStats { get; set; }
 
     public List<string> AvailablePlatforms { get; set; }
+    public TemplatedPlatformContextMenu ContextMenu { get; set; }
 
     public Platform CurrentPlatform { get; set; }
     public List<Platform> Platforms { get; set; }
@@ -60,17 +66,21 @@ public class TemplatedPlatformState
             }
         }
 
+        Task.Run(() =>
+        {
+            ContextMenu = new TemplatedPlatformContextMenu();
+        });
     }
 
-    public void SetCurrentPlatform(string platformName)
+    public async Task SetCurrentPlatform(string platformName)
     {
         CurrentPlatform = Platforms.First(x => x.Name == platformName || x.Identifiers.Contains(platformName));
         CurrentPlatform.InitAfterDeserialization();
-        CurrentPlatform.PlatformSavedSettings = new PlatformSavedSettings(); // Load saved settings
+        TemplatedPlatformSettings = new TemplatedPlatformSettings(); // Load saved settings
 
         AppState.Switcher.CurrentSwitcher = CurrentPlatform.Name;
         AppState.Switcher.TemplatedAccounts.Clear();
-        LoadAccounts();
+        await LoadAccounts();
     }
 
     #region Loading
@@ -190,7 +200,7 @@ public class TemplatedPlatformState
             }
 
             // Handle game stats (if any enabled and collected.)
-            account.UserStats = GetUserStatsAllGamesMarkup(str);
+            account.UserStats = GameStats.GetUserStatsAllGamesMarkup(str);
 
             AppState.Switcher.TemplatedAccounts.Add(account);
         }
@@ -216,14 +226,14 @@ public class TemplatedPlatformState
     #region Account IDs
     public Dictionary<string, string> AccountIds;
     public void LoadAccountIds() => AccountIds = Globals.ReadDict(CurrentPlatform.IdsJsonPath);
-    private void SaveAccountIds() =>
+    public void SaveAccountIds() =>
         File.WriteAllText(CurrentPlatform.IdsJsonPath, JsonConvert.SerializeObject(AccountIds));
     public string GetNameFromId(string accId) => AccountIds.ContainsKey(accId) ? AccountIds[accId] : accId;
     #endregion
 
     public void RunPlatform(bool admin, string args = "")
     {
-        if (Globals.StartProgram(CurrentPlatform.PlatformSavedSettings.Exe, admin, args, CurrentPlatform.Extras.StartingMethod))
+        if (Globals.StartProgram(TemplatedPlatformSettings.Exe, admin, args, CurrentPlatform.Extras.StartingMethod))
             Toasts.ShowToastLang(ToastType.Info, new LangSub("Status_StartingPlatform", new { platform = CurrentPlatform.Name }));
         else
             Toasts.ShowToastLang(ToastType.Error, new LangSub("Toast_StartingPlatformFailed", new { platform = CurrentPlatform.Name }));
@@ -231,8 +241,9 @@ public class TemplatedPlatformState
 
     // This seemed to not be used, so I have omitted it here.
     // public void RunPlatform(bool admin)
-    public void RunPlatform() => RunPlatform(CurrentPlatform.PlatformSavedSettings.Admin, CurrentPlatform.ExeExtraArgs);
+    public void RunPlatform() => RunPlatform(TemplatedPlatformSettings.Admin, CurrentPlatform.ExeExtraArgs);
 
+    [JSInvokable]
     public void HandleShortcutAction(string shortcut, string action)
     {
         if (shortcut == "btnStartPlat") // Start platform requested
@@ -241,19 +252,19 @@ public class TemplatedPlatformState
             return;
         }
 
-        if (!CurrentPlatform.PlatformSavedSettings.Shortcuts.ContainsValue(shortcut)) return;
+        if (!TemplatedPlatformSettings.Shortcuts.ContainsValue(shortcut)) return;
 
         switch (action)
         {
             case "hide":
             {
                 // Remove shortcut from folder, and list.
-                CurrentPlatform.PlatformSavedSettings.Shortcuts.Remove(CurrentPlatform.PlatformSavedSettings.Shortcuts.First(e => e.Value == shortcut).Key);
+                TemplatedPlatformSettings.Shortcuts.Remove(TemplatedPlatformSettings.Shortcuts.First(e => e.Value == shortcut).Key);
                 var f = Path.Join(CurrentPlatform.ShortcutFolder, shortcut);
                 if (File.Exists(f)) File.Move(f, f.Replace(".lnk", "_ignored.lnk").Replace(".url", "_ignored.url"));
 
                 // Save.
-                CurrentPlatform.PlatformSavedSettings.Save();
+                TemplatedPlatformSettings.Save();
                 break;
             }
             case "admin":

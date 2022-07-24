@@ -77,8 +77,8 @@ public class AppCont : ApplicationContext
     {
         if (!File.Exists("Tray_Users.json"))
         {
-            _ = MessageBox.Show(GLang["Tray_NoAccs"],
-                GLang["Tray_Error"], MessageBoxButtons.OK, MessageBoxIcon.Error);
+            _ = MessageBox.Show(GLang.Instance["Tray_NoAccs"],
+                GLang.Instance["Tray_Error"], MessageBoxButtons.OK, MessageBoxIcon.Error);
             Environment.Exit(0);
         }
         if (string.Equals(Program.LastHash, Globals.GetFileMd5("Tray_Users.json"), StringComparison.Ordinal)) return; // Don't init again
@@ -105,7 +105,7 @@ public class AppCont : ApplicationContext
                 _ = tsi.DropDownItems.Add(new ToolStripMenuItem
                 {
                     Name = trayUsers.Arg,
-                    Text = GLang["Tray_Switch", new { account = trayUsers.Name}],
+                    Text = GLang.Instance["Tray_Switch", new { account = trayUsers.Name}],
                     ForeColor = Color.White,
                     BackColor = Color.FromArgb(255, 34, 34, 34)
                 });
@@ -209,7 +209,7 @@ public class AppCont : ApplicationContext
                 }
             }
             else
-                _ = MessageBox.Show(@$"{GLang["Tray_CantOpenExe"]} {_mainProgram}", GLang["Tray_LaunchFail"]);
+                _ = MessageBox.Show(@$"{GLang.Instance["Tray_CantOpenExe"]} {_mainProgram}", GLang.Instance["Tray_LaunchFail"]);
         }
     }
 

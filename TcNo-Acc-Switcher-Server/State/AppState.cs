@@ -16,6 +16,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Server.State.Classes;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
 using TcNo_Acc_Switcher_Server.State.Interfaces;
@@ -46,7 +47,7 @@ public class AppState : IAppState, INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
     protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-    public AppState()
+    public AppState(IWindowSettings www)
     {
         PasswordCurrent = "";
         Shortcuts = new ShortcutsState();

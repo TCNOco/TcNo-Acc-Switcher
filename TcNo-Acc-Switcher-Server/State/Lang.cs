@@ -37,7 +37,22 @@ namespace TcNo_Acc_Switcher_Server.State;
 /// </summary>
 public class Lang : ILang
 {
-    [Inject] private WindowSettings WindowSettings { get; set; }
+    private readonly IWindowSettings _windowSettings;
+
+    /// <summary>
+    /// Loads the default en-US language on creation.
+    /// Any strings missing from other languages will use the en-US fallback.
+    /// </summary>
+    public Lang(IWindowSettings windowSettings)
+    {
+        _windowSettings = windowSettings;
+
+        Load("en-US");
+
+        // If language is not set, try and load from the user's language.
+        // Or load the user's language
+        Load(_windowSettings.Language == "" ? CultureInfo.CurrentCulture.Name : _windowSettings.Language);
+    }
 
     public Dictionary<string, string> Strings { get; set; } = new();
     public string Current { get; set; } = "";
@@ -80,19 +95,6 @@ public class Lang : ILang
                 return "[Failed to get text: missing parameter] " + key;
             }
         }
-    }
-
-    /// <summary>
-    /// Loads the default en-US language on creation.
-    /// Any strings missing from other languages will use the en-US fallback.
-    /// </summary>
-    public Lang()
-    {
-        Load("en-US");
-
-        // If language is not set, try and load from the user's language.
-        // Or load the user's language
-        Load(WindowSettings.Language == "" ? CultureInfo.CurrentCulture.Name : WindowSettings.Language);
     }
 
     #region FILE_HANDLING
@@ -142,8 +144,8 @@ public class Lang : ILang
                     path = Path.Join(Globals.AppDataFolder, "Resources", l + ".yml");
                     foundClose = true;
                     Current = l;
-                    WindowSettings.Language = filename;
-                    WindowSettings.Save();
+                    _windowSettings.Language = filename;
+                    _windowSettings.Save();
                     break;
                 }
 
@@ -166,9 +168,9 @@ public class Lang : ILang
             Current = filename;
 
             // Save the language if it has changed.
-            if (WindowSettings.Language == filename) return true;
-            WindowSettings.Language = filename;
-            WindowSettings.Save();
+            if (_windowSettings.Language == filename) return true;
+            _windowSettings.Language = filename;
+            _windowSettings.Save();
             return true;
         }
         catch (Exception e)

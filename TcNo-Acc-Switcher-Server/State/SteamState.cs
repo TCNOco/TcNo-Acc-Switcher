@@ -22,6 +22,7 @@ using System.Xml;
 using Gameloop.Vdf;
 using Gameloop.Vdf.JsonConverter;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -45,6 +46,8 @@ public class SteamState
     [Inject] private Modals Modals { get; set; }
     [Inject] private Statistics Statistics { get; set; }
     [Inject] private SharedFunctions SharedFunctions { get; set; }
+    [Inject] private GameStats GameStats { get; set; }
+    [Inject] private NavigationManager NavigationManager { get; set; }
 
     public List<SteamUser> SteamUsers { get; set; } = new();
     public bool SteamLoadingProfiles { get; set; }
@@ -103,7 +106,7 @@ public class SteamState
         {
             // Handle all image downloads
             WebApiPrepareImages().RunSynchronously();
-            WebApiPrepareBans().RunSynchronously();
+            WebApiPrepareBans();
 
             // Key was fine? Continue. If not, the non-api method will be used.
             if (!SteamWebApiWasReset)
@@ -152,7 +155,7 @@ public class SteamState
         });
     }
 
-    private static string GetName(SteamUser su) => string.IsNullOrWhiteSpace(su.Name) ? su.AccName : su.Name;
+    public static string GetName(SteamUser su) => string.IsNullOrWhiteSpace(su.Name) ? su.AccName : su.Name;
     private void InsertAccount(SteamUser su)
     {
         var account = new Account
@@ -450,7 +453,7 @@ public class SteamState
     /// Checks for SteamVACCache.json, and assuming all info is there: Updates WindowSettings.SteamUsers.
     /// Otherwise it updates all VAC/Limited info from Web API.
     /// </summary>
-    private async Task WebApiPrepareBans()
+    private void WebApiPrepareBans()
     {
         _ = GeneralFuncs.DeletedOutdatedFile(SteamSettings.VacCacheFile, SteamSettings.ImageExpiryTime);
         if (File.Exists(SteamSettings.VacCacheFile))
@@ -653,7 +656,7 @@ public class SteamState
             {
                 if (sFolder == "") continue;
                 // Foreach file in folder
-                var desktopShortcutFolder = BasicSwitcherFuncs.ExpandEnvironmentVariables(sFolder, true);
+                var desktopShortcutFolder = Globals.ExpandEnvironmentVariables(sFolder);
                 if (!Directory.Exists(desktopShortcutFolder)) continue;
                 foreach (var shortcut in new DirectoryInfo(desktopShortcutFolder).GetFiles())
                 {

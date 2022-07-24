@@ -13,7 +13,7 @@ namespace TcNo_Acc_Switcher_Server.State;
 /// <summary>
 /// This file stores all the instructions and information from GameStats.json
 /// </summary>
-public class GameStatsRoot
+public class GameStatsRoot : IGameStatsRoot
 {
     [Inject] private Toasts Toasts { get; set; }
     [Inject] private IWindowSettings WindowSettings { get; set; }
@@ -43,7 +43,7 @@ public class GameStatsRoot
             IsInit = false;
             return;
         }
-            
+
         JsonConvert.PopulateObject(File.ReadAllText(BasicStatsPath), this);
 
         // Populate the List of all Games with stats

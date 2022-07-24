@@ -4,15 +4,17 @@ using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.State;
+using TcNo_Acc_Switcher_Server.State.DataTypes;
 using TcNo_Acc_Switcher_Server.State.Interfaces;
 
-namespace TcNo_Acc_Switcher_Server.Pages.General;
+namespace TcNo_Acc_Switcher_Server.Shared.Modal.Components;
 
-public class PathPicker
+public partial class PathPicker
 {
     public class FolderFileList
     {
-        [Inject] private ILang Lang { get; set; }
+        [Inject] private Toasts Toasts { get; set; }
 
         public int Depth { get; set; }
         public string FullPath { get; set; }
@@ -34,7 +36,7 @@ public class PathPicker
                 {
                     Globals.WriteToLog($"PathPicker: Failed to crawl path or drive: \"{FullPath}\"", e);
                     if (Depth != 0)
-                        _ = GeneralInvocableFuncs.ShowToast("error", Lang["PathPicker_FailedGetFolders", new { path = FolderName }], renderTo: "toastarea");
+                        Toasts.ShowToastLang(ToastType.Error, new LangSub("PathPicker_FailedGetFolders", new { path = FolderName }));
                     return new List<FolderFileList>();
                 }
             });

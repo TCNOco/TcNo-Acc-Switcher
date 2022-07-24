@@ -13,7 +13,6 @@
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
 @using System.IO
-@using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Pages.Basic
 @using TcNo_Acc_Switcher_Server.Pages.Steam
 @using TcNo_Acc_Switcher_Server.State
@@ -30,11 +29,11 @@
     [Parameter]
     public int Depth { get; set; }
 
-    private Pages.General.PathPicker.FolderFileList _currentFileList;
+    private PathPicker.FolderFileList _currentFileList;
 
     protected override void OnInitialized()
     {
-        _currentFileList = new Pages.General.PathPicker.FolderFileList(CurrentPath, Depth);
+        _currentFileList = new PathPicker.FolderFileList(CurrentPath, Depth);
         Modals.PathPickerOnChange += OnChangeHandler;
     }
 

@@ -20,6 +20,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General;
@@ -40,6 +41,8 @@ public partial class Index
     [Inject] private GameStats GameStats { get; set; }
     [Inject] private SteamState SteamState { get; set; }
     [Inject] private SteamFuncs SteamFuncs { get; set; }
+    [Inject] private TemplatedPlatformSettings TemplatedPlatformSettings { get; set; }
+    [Inject] private SharedFunctions SharedFunctions { get; set; }
 
     protected override void OnInitialized()
     {
@@ -74,7 +77,7 @@ public partial class Index
 
         if (firstRender)
         {
-            await GeneralFuncs.HandleQueries();
+            await HandleQueries();
             //await JsRuntime.InvokeVoidAsync("initContextMenu");
             await JsRuntime.InvokeVoidAsync("initPlatformListSortable");
             //await AData.InvokeVoidAsync("initAccListSortable");
@@ -83,6 +86,37 @@ public partial class Index
         Statistics.NewNavigation("/");
     }
 
+    /// <summary>
+    /// For handling queries in URI
+    /// </summary>
+    public async Task<bool> HandleQueries()
+    {
+        Globals.DebugWriteLine(@"[JSInvoke:General\GeneralFuncs.HandleQueries]");
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        // Clear cache reload
+        var queries = QueryHelpers.ParseQuery(uri.Query);
+        // cacheReload handled in JS
+
+        // Toast
+        if (!queries.TryGetValue("toast_type", out var toastType) ||
+            !queries.TryGetValue("toast_title", out var toastTitle) ||
+            !queries.TryGetValue("toast_message", out var toastMessage)) return true;
+        for (var i = 0; i < toastType.Count; i++)
+        {
+            try
+            {
+                var type = (ToastType)Enum.Parse(typeof(ToastType), toastType[i]);
+                Toasts.ShowToastLang(type, toastTitle[i], toastMessage[i]);
+                await JsRuntime.InvokeVoidAsync("removeUrlArgs", "toast_type,toast_title,toast_message");
+            }
+            catch (TaskCanceledException e)
+            {
+                Globals.WriteToLog(e.ToString());
+            }
+        }
+
+        return true;
+    }
 
     /// <summary>
     /// Check can enter platform, before navigating to page.
@@ -92,7 +126,7 @@ public partial class Index
         Globals.DebugWriteLine($@"[Func:Index.Check] platform={platform}");
         if (platform == "Steam")
         {
-            if (!GeneralFuncs.CanKillProcess(SteamSettings.Processes, SteamSettings.ClosingMethod)) return;
+            if (!SharedFunctions.CanKillProcess(SteamSettings.Processes, SteamSettings.ClosingMethod)) return;
             if (!Directory.Exists(SteamSettings.FolderPath) || !File.Exists(SteamSettings.Exe))
             {
                 AppState.Switcher.CurrentSwitcher = "Steam";
@@ -108,9 +142,9 @@ public partial class Index
 
         AppState.Switcher.CurrentSwitcher = platform;
         TemplatedPlatformState.SetCurrentPlatform(platform);
-        if (!GeneralFuncs.CanKillProcess(TemplatedPlatformState.CurrentPlatform.ExesToEnd, TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.ClosingMethod)) return;
+        if (!SharedFunctions.CanKillProcess(TemplatedPlatformState.CurrentPlatform.ExesToEnd, TemplatedPlatformSettings.ClosingMethod)) return;
 
-        if (Directory.Exists(TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.FolderPath) && File.Exists(TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.Exe))
+        if (Directory.Exists(TemplatedPlatformSettings.FolderPath) && File.Exists(TemplatedPlatformSettings.Exe))
             NavManager.NavigateTo("/Basic/");
         else
             Modals.ShowUpdatePlatformFolderModal();

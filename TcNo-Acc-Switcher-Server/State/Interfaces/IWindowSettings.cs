@@ -14,6 +14,7 @@
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Drawing;
 using TcNo_Acc_Switcher_Server.State.Classes;
 
@@ -21,6 +22,7 @@ namespace TcNo_Acc_Switcher_Server.State.Interfaces;
 
 public interface IWindowSettings
 {
+    event PropertyChangedEventHandler PropertyChanged;
     string Language { get; set; }
     bool Rtl { get; set; }
     bool StreamerModeEnabled { get; set; }
@@ -42,9 +44,20 @@ public interface IWindowSettings
     bool DiscordRpcEnabled { get; set; }
     bool DiscordRpcShareTotalSwitches { get; set; }
     string PasswordHash { get; set; }
+
+    /// <summary>
+    /// For BasicStats // Game statistics collection and showing
+    /// Keys for metrics on this list are not shown for any account.
+    /// List of all games:[Settings:Hidden metric] metric keys.
+    /// </summary>
     Dictionary<string, Dictionary<string, bool>> GloballyHiddenMetrics { get; set; }
+
     bool AlwaysAdmin { get; set; }
     ObservableCollection<PlatformItem> Platforms { get; set; }
     void Save();
+
+    /// <summary>
+    /// Get platform details from an identifier, or the name.
+    /// </summary>
     PlatformItem GetPlatform(string nameOrId);
 }

@@ -21,6 +21,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Gameloop.Vdf.JsonConverter;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
@@ -38,6 +39,12 @@ public class SteamFuncs
     [Inject] private SteamSettings SteamSettings { get; set; }
     [Inject] private IAppState AppState { get; set; }
     [Inject] private Toasts Toasts { get; set; }
+    [Inject] private SteamState SteamState { get; set; }
+    [Inject] private Modals Modals { get; set; }
+    [Inject] private IJSRuntime JsRuntime { get; set; }
+    [Inject] private IStatistics Statistics { get; set; }
+    [Inject] private IWindowSettings WindowSettings { get; set; }
+    [Inject] private SharedFunctions SharedFunctions { get; set; }
 
 
     #region True Static
@@ -102,7 +109,7 @@ public class SteamFuncs
         {
             // Refreshing the list of SteamUsers doesn't help here when switching, as the account list is not updated by Steam just yet.
             SteamUser mostRecent = null;
-            foreach (var su in AppData.SteamUsers)
+            foreach (var su in SteamState.SteamUsers)
             {
                 int.TryParse(su.LastLogin, out var last);
 
@@ -114,9 +121,9 @@ public class SteamFuncs
 
             int.TryParse(mostRecent?.LastLogin, out var mrTimestamp);
 
-            if (SteamSettings.LastAccTimestamp > mrTimestamp)
+            if (SteamState.LastAccTimestamp > mrTimestamp)
             {
-                return SteamSettings.LastAccSteamId;
+                return SteamState.LastAccSteamId;
             }
 
             if (getNumericId) return mostRecent?.SteamId ?? "";
@@ -158,10 +165,10 @@ public class SteamFuncs
         else
         {
             var trayAcc = AppState.Switcher.SelectedAccountId;
-            SetForgetAcc(true);
+            SteamSettings.SetForgetAcc(true);
 
             // Load and remove account that matches SteamID above.
-            var userAccounts = GetSteamUsers(SteamSettings.LoginUsersVdf);
+            var userAccounts = SteamState.GetSteamUsers(SteamSettings.LoginUsersVdf);
             _ = userAccounts.RemoveAll(x => x.SteamId == AppState.Switcher.SelectedAccountId);
 
             // Save updated loginusers.vdf file
@@ -196,7 +203,7 @@ public class SteamFuncs
         }
 
         await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = "Steam" }]);
-        if (!await GeneralFuncs.CloseProcesses(SteamSettings.Processes, SteamSettings.ClosingMethod))
+        if (!await SharedFunctions.CloseProcesses(SteamSettings.Processes, SteamSettings.ClosingMethod))
         {
             if (Globals.IsAdministrator)
                 await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = "Steam" }]);
@@ -215,7 +222,7 @@ public class SteamFuncs
         {
             if (SteamSettings.StartSilent) args += " -silent";
 
-            if (Globals.StartProgram(SteamSettings.Exe(), SteamSettings.Admin, args, SteamSettings.StartingMethod))
+            if (Globals.StartProgram(SteamSettings.Exe, SteamSettings.Admin, args, SteamSettings.StartingMethod))
                 Toasts.ShowToastLang(ToastType.Info, new LangSub("Status_StartingPlatform", new { platform = "Steam" }));
             else
                 Toasts.ShowToastLang(ToastType.Error, new LangSub("Toast_StartingPlatformFailed", new { platform = "Steam" }));
@@ -229,15 +236,47 @@ public class SteamFuncs
 
         try
         {
-            SteamSettings.LastAccSteamId = AppData.SteamUsers.Where(x => x.SteamId == steamId).ToList()[0].SteamId;
-            SteamSettings.LastAccTimestamp = Globals.GetUnixTimeInt();
-            if (SteamSettings.LastAccSteamId != "")
-                await AccountFuncs.SetCurrentAccount(SteamSettings.LastAccSteamId);
+            SteamState.LastAccSteamId = SteamState.SteamUsers.Where(x => x.SteamId == steamId).ToList()[0].SteamId;
+            SteamState.LastAccTimestamp = Globals.GetUnixTimeInt();
+            if (SteamState.LastAccSteamId != "")
+                await SetCurrentAccount(SteamState.LastAccSteamId);
         }
         catch (Exception)
         {
             //
         }
+    }
+
+
+    /// <summary>
+    /// Highlights the specified account
+    /// </summary>
+    public async Task SetCurrentAccount(string accId)
+    {
+        var acc = AppState.Switcher.SteamAccounts.First(x => x.AccountId == accId);
+        await UnCurrentAllAccounts();
+        acc.IsCurrent = true;
+        acc.TitleText = $"{Lang["Tooltip_CurrentAccount"]}";
+
+        // getBestOffset
+        await JsRuntime.InvokeVoidAsync("setBestOffset", acc.AccountId);
+        // then initTooltips
+        await JsRuntime.InvokeVoidAsync("initTooltips");
+    }
+
+
+    /// <summary>
+    /// Removes "currently logged in" border from all accounts
+    /// </summary>
+    public async Task UnCurrentAllAccounts()
+    {
+        foreach (var account in AppState.Switcher.SteamAccounts)
+        {
+            account.IsCurrent = false;
+        }
+
+        // Clear the hover text
+        await JsRuntime.InvokeVoidAsync("clearAccountTooltips");
     }
     #endregion
 
@@ -251,12 +290,12 @@ public class SteamFuncs
     public async Task UpdateLoginUsers(string selectedSteamId, int pS)
     {
         Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.UpdateLoginUsers] Updating loginusers: selectedSteamId={(selectedSteamId.Length > 0 ? selectedSteamId.Substring(selectedSteamId.Length - 4, 4) : "")}, pS={pS}");
-        var userAccounts = await GetSteamUsers(SteamSettings.LoginUsersVdf());
+        var userAccounts = SteamState.GetSteamUsers(SteamSettings.LoginUsersVdf);
         // -----------------------------------
         // ----- Manage "loginusers.vdf" -----
         // -----------------------------------
         await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Status_UpdatingFile", new { file = "loginusers.vdf" }]);
-        var tempFile = SteamSettings.LoginUsersVdf() + "_temp";
+        var tempFile = SteamSettings.LoginUsersVdf + "_temp";
         Globals.DeleteFile(tempFile);
 
         // MostRec is "00" by default, just update the one that matches SteamID.
@@ -314,7 +353,7 @@ public class SteamFuncs
         // ------Update Tray users list ------
         // -----------------------------------
         if (selectedSteamId != "")
-            Globals.AddTrayUser("Steam", "+s:" + user.SteamId, SteamSettings.TrayAccName ? user.AccName : GetName(user), SteamSettings.TrayAccNumber);
+            Globals.AddTrayUser("Steam", "+s:" + user.SteamId, SteamSettings.TrayAccountName ? user.AccName : SteamState.GetName(user), SteamSettings.TrayAccNumber);
     }
 
     /// <summary>
@@ -332,24 +371,24 @@ public class SteamFuncs
         }
 
         // Write changes to files.
-        var tempFile = SteamSettings.LoginUsersVdf() + "_temp";
+        var tempFile = SteamSettings.LoginUsersVdf + "_temp";
         await File.WriteAllTextAsync(tempFile, @"""users""" + Environment.NewLine + outJObject.ToVdf());
         if (!File.Exists(tempFile))
         {
-            File.Replace(tempFile, SteamSettings.LoginUsersVdf(), SteamSettings.LoginUsersVdf() + "_last");
+            File.Replace(tempFile, SteamSettings.LoginUsersVdf, SteamSettings.LoginUsersVdf + "_last");
             return;
         }
         try
         {
             // Let's try break this down, as some users are having issues with the above function.
             // Step 1: Backup
-            if (File.Exists(SteamSettings.LoginUsersVdf()))
+            if (File.Exists(SteamSettings.LoginUsersVdf))
             {
-                File.Copy(SteamSettings.LoginUsersVdf(), SteamSettings.LoginUsersVdf() + "_last", true);
+                File.Copy(SteamSettings.LoginUsersVdf, SteamSettings.LoginUsersVdf + "_last", true);
             }
 
             // Step 2: Write new info
-            await File.WriteAllTextAsync(SteamSettings.LoginUsersVdf(), @"""users""" + Environment.NewLine + outJObject.ToVdf());
+            await File.WriteAllTextAsync(SteamSettings.LoginUsersVdf, @"""users""" + Environment.NewLine + outJObject.ToVdf());
         }
         catch (Exception ex)
         {
@@ -363,7 +402,7 @@ public class SteamFuncs
     /// </summary>
     /// <param name="steamId">SteamID of user to update</param>
     /// <param name="ePersonaState">Persona state enum for user (0-7)</param>
-    public static void SetPersonaState(string steamId, int ePersonaState)
+    public void SetPersonaState(string steamId, int ePersonaState)
     {
         Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.SetPersonaState] Setting persona state for: {steamId.Substring(steamId.Length - 4, 4)}, To: {ePersonaState}");
         // Values:

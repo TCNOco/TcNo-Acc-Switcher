@@ -22,10 +22,11 @@ using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
+using TcNo_Acc_Switcher_Server.State.Classes.Templated;
 
-namespace TcNo_Acc_Switcher_Server.State.Classes.Templated;
+namespace TcNo_Acc_Switcher_Server.State;
 
-public class PlatformSavedSettings
+public class TemplatedPlatformSettings
 {
     [Inject] private IStatistics Statistics { get; set; }
     [Inject] private TemplatedPlatformState TemplatedPlatformState { get; set; }
@@ -80,7 +81,7 @@ public class PlatformSavedSettings
 
     private readonly Platform _currentPlatform;
 
-    public PlatformSavedSettings()
+    public TemplatedPlatformSettings()
     {
         _currentPlatform = TemplatedPlatformState.CurrentPlatform;
         if (File.Exists(_currentPlatform.SettingsFile))

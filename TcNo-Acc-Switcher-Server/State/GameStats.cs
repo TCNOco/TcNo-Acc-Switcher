@@ -8,7 +8,7 @@ using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.State;
 
-public class GameStats
+public class GameStats : IGameStats
 {
     [Inject] private IAppState AppState { get; set; }
 
@@ -26,7 +26,7 @@ public class GameStats
     /// </summary>
     public Dictionary<string, GameStatSaved> SavedStats { get; set; }
 
-        
+
     /// <summary>
     /// Read GameStats.json and collect game definitions, as well as platform-game relations.
     /// </summary>
@@ -42,10 +42,10 @@ public class GameStats
     public async Task<bool> SetCurrentPlatform(string platform)
     {
         if (!GameStatsRoot.IsInit) return false;
-            
+
         AppState.Switcher.CurrentSwitcher = platform;
         if (!GameStatsRoot.PlatformCompatibilities.ContainsKey(platform)) return false;
-            
+
         // TODO: Verify this works as intended when more games are added.
         foreach (var game in GameStatsRoot.PlatformCompatibilities[platform])
         {

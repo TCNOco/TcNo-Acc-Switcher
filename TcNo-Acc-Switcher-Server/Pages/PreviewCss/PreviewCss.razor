@@ -25,6 +25,7 @@
 @inject IWindowSettings WindowSettings
 @inject Modals Modals
 @inject IStatistics Statistics
+@inject TemplatedPlatformState TemplatedPlatformState
 
 <div class="container mainblock">
     <div class="row">
@@ -53,9 +54,9 @@
 
     <h2 class="SettingsHeader">@Lang["Preview_Platforms"]</h2>
     <div class="preview_element">
-        <ContextMenu MenuItems="@Data.Settings.Basic.ContextMenuItems" ContextMenuId="AccOrPlatList" />
-        <ContextMenu MenuItems="@Data.Settings.Basic.ContextMenuShortcutItems" ContextMenuId="Shortcuts" />
-        <ContextMenu MenuItems="@Data.Settings.Basic.ContextMenuPlatformItems" ContextMenuId="Platform" />
+        <ContextMenu MenuItems="@TemplatedPlatformState.ContextMenu.ContextMenuItems" ContextMenuId="AccOrPlatList" />
+        <ContextMenu MenuItems="@TemplatedPlatformState.ContextMenu.ContextMenuShortcutItems" ContextMenuId="Shortcuts" />
+        <ContextMenu MenuItems="@TemplatedPlatformState.ContextMenu.ContextMenuPlatformItems" ContextMenuId="Platform" />
         <div class="programMain previewMain">
             <div class="platformTable">
                 <div class="platform_list" aria-dropeffect="move">

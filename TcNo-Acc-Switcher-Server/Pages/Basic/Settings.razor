@@ -44,27 +44,27 @@
             <h2 class="SettingsHeader">@Lang["Settings_Header_GeneralSettings"]</h2>
             <div class="rowSetting">
                 @*<div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.DesktopShortcut" @onclick="() => Shortcut.DesktopShortcut_Toggle(TemplatedPlatformState.CurrentPlatform.Name, TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.DesktopShortcut, TemplatedPlatformState.CurrentPlatform.Identifiers[0])"><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">*@
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.DesktopShortcut"><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="TemplatedPlatformSettings.DesktopShortcut"><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">
 		            @Lang["Settings_Shortcut", new { platform = TemplatedPlatformState.CurrentPlatform.Name }]<br></label>
             </div>
             <div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="TemplatedPlatformSettings.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">
 		            @Lang["Settings_Admin", new { platform = TemplatedPlatformState.CurrentPlatform.Name }]<br></label>
             </div>
             <div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="AutoStart" @bind="TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.AutoStart"><label class="form-check-label" for="AutoStart"></label></div><label for="AutoStart">
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="AutoStart" @bind="TemplatedPlatformSettings.AutoStart"><label class="form-check-label" for="AutoStart"></label></div><label for="AutoStart">
 		            @Lang["Settings_AutoStart", new { platform = TemplatedPlatformState.CurrentPlatform.Name }]<br></label>
             </div>
             <div class="rowSetting rowDropdown">
                 <span>@Lang["Settings_Header_ClosingMethod", new { platform = TemplatedPlatformState.CurrentPlatform.Name }]</span>
                 <div class="dropdown" data-toggle="tooltip" title="@(Lang["Tooltip_ClosingMethod"])" data-placement="right">
                     <ul class="custom-dropdown-menu dropdown-menu">
-                        <li class="custom-dropdown-item dropdown-item" @onclick='() => TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.SetClosingMethod("Combined")'>Combined (Best)</li>
-                        <li class="custom-dropdown-item dropdown-item" @onclick='() => TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.SetClosingMethod("Close")'>Close</li>
-                        <li class="custom-dropdown-item dropdown-item" @onclick='() => TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.SetClosingMethod("TaskKill")'>TaskKill (Old)</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => TemplatedPlatformSettings.SetClosingMethod("Combined")'>Combined (Best)</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => TemplatedPlatformSettings.SetClosingMethod("Close")'>Close</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => TemplatedPlatformSettings.SetClosingMethod("TaskKill")'>TaskKill (Old)</li>
                     </ul>
                     <button class="dropdown-toggle" type="button" data-toggle="dropdown">
-                        @TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.ClosingMethod
+                        @TemplatedPlatformSettings.ClosingMethod
                         <span class="caret"></span>
                     </button>
                 </div>
@@ -73,11 +73,11 @@
                 <span>@Lang["Settings_Header_StartingMethod", new { platform = TemplatedPlatformState.CurrentPlatform.Name }]</span>
                 <div class="dropdown" data-toggle="tooltip" title="@(Lang["Tooltip_StartingMethod"])" data-placement="right">
                     <ul class="custom-dropdown-menu dropdown-menu">
-                        <li class="custom-dropdown-item dropdown-item" @onclick='() => TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.SetStartingMethod("Default")'>Default (Best)</li>
-                        <li class="custom-dropdown-item dropdown-item" @onclick='() => TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.SetStartingMethod("Direct")'>Direct</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => TemplatedPlatformSettings.SetStartingMethod("Default")'>Default (Best)</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => TemplatedPlatformSettings.SetStartingMethod("Direct")'>Direct</li>
                     </ul>
                     <button class="dropdown-toggle" type="button" data-toggle="dropdown">
-                        @TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.StartingMethod
+                        @TemplatedPlatformSettings.StartingMethod
                         <span class="caret"></span>
                     </button>
                 </div>
@@ -85,19 +85,19 @@
 
             <h2 class="SettingsHeader">@Lang["Settings_Header_AccountDisplay"]</h2>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="ShowShortNotes" @bind="TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.ShowShortNotes"><label class="form-check-label" for="ShowShortNotes"></label></div><label for="ShowShortNotes">
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="ShowShortNotes" @bind="TemplatedPlatformSettings.ShowShortNotes"><label class="form-check-label" for="ShowShortNotes"></label></div><label for="ShowShortNotes">
                     @Lang["Settings_ShowShortNotes"]<br></label>
             </div>
 
 
 
             <h2 class="SettingsHeader">@Lang["Settings_Header_TraySettings"]</h2>
-            <div class="form-text"><span>@Lang["Settings_TrayMax"]</span><input type="number" id="TrayAccNumber" min="0" max="365" @bind="TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.TrayAccNumber"></div>
+            <div class="form-text"><span>@Lang["Settings_TrayMax"]</span><input type="number" id="TrayAccNumber" min="0" max="365" @bind="TemplatedPlatformSettings.TrayAccNumber"></div>
 
 
             <h2 class="SettingsHeader">@Lang["Settings_Header_GeneralTools"]</h2>
-            <p>@Lang["Settings_CurrentLocation", new { path = TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.FolderPath }]</p>
-            <div class="buttoncol"><button id="PickFolder" type="button" @onclick="PickFolder"><span>@Lang["Settings_PickFolder", new { platform = TemplatedPlatformState.CurrentPlatform.Name }]</span></button><button id="OpenFolder" type="button" @onclick="() => AppState.OpenFolder(TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.FolderPath)"><span>@Lang["Settings_OpenFolder", new { platform = TemplatedPlatformState.CurrentPlatform.Name }]</span></button></div>
+            <p>@Lang["Settings_CurrentLocation", new { path = TemplatedPlatformSettings.FolderPath }]</p>
+            <div class="buttoncol"><button id="PickFolder" type="button" @onclick="PickFolder"><span>@Lang["Settings_PickFolder", new { platform = TemplatedPlatformState.CurrentPlatform.Name }]</span></button><button id="OpenFolder" type="button" @onclick="() => AppState.OpenFolder(TemplatedPlatformSettings.FolderPath)"><span>@Lang["Settings_OpenFolder", new { platform = TemplatedPlatformState.CurrentPlatform.Name }]</span></button></div>
             <div class="buttoncol"><button id="ResetSettings" type="button" @onclick="ClearSettings"><span>@Lang["Button_ResetSettings"]</span></button>
                 @if (TemplatedPlatformState.CurrentPlatform.Extras.CachePaths != null)
                 {
@@ -179,10 +179,10 @@
     public void GiCtrlSTemplated()
     {
         WindowSettings.Save();
-        TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.Save();
+        TemplatedPlatformSettings.Save();
         Toasts.ShowToastLang(ToastType.Success, "Saved");
     }
-    
+
     protected override async Task OnParametersSetAsync()
     {
         await GameStats.SetCurrentPlatform(TemplatedPlatformState.CurrentPlatform.SafeName);
@@ -198,7 +198,7 @@
     public void SaveAndClose()
     {
         WindowSettings.Save();
-        TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.Save();
+        TemplatedPlatformSettings.Save();
 
         NavManager.NavigateTo("/Basic");
     }

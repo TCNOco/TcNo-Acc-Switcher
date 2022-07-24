@@ -45,6 +45,12 @@ public class GLang
                 if (_instance == null)
                 {
                     _instance = new GLang { _currentlyModifying = true };
+                    if (File.Exists("WindowSettings.json"))
+                    {
+                        var o = JObject.Parse(File.ReadAllText("WindowSettings.json"));
+                        _instance._language = o["Language"]?.ToString();
+                    }
+
                     LoadLocalised();
                     _instance._currentlyModifying = false;
                 }
@@ -66,6 +72,9 @@ public class GLang
 
     public static Dictionary<string, string> Strings { get => Instance._strings; set => Instance._strings = value; }
     public static string Current { get => Instance._current; set => Instance._current = value; }
+
+    private string _language = "";
+    public static string Language { get => Instance._language; set => Instance._language = value; }
 
     /// <summary>
     /// Get a string
@@ -124,9 +133,9 @@ public class GLang
     {
         LoadDefault();
         // If setting does not exist in settings file then load the system default
-        _ = Load(GLangWindowSettings.Language == ""
+        _ = Load(Language == ""
             ? CultureInfo.CurrentCulture.Name
-            : GLangWindowSettings.Language);
+            : Language);
     }
 
     /// <summary>
@@ -156,7 +165,7 @@ public class GLang
                     Current = l;
                     if (save && Current == l)
                     {
-                        GLangWindowSettings.Language = l;
+                        Language = l;
                     }
                     break;
                 }

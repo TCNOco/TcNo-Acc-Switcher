@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
 
@@ -67,9 +68,6 @@ public class Platform
     [JsonIgnore] public bool IsInit { get; set; }
     [JsonIgnore] public MarkupString UserModalExtraButtons { get; set; }
     [JsonIgnore] public string UserModalCopyText { get; set; }
-
-    // The platform settings are loaded later.
-    [JsonIgnore] public PlatformSavedSettings PlatformSavedSettings { get; set; } = null;
 
     public void InitAfterDeserialization()
     {
@@ -152,6 +150,12 @@ public class Platform
         path = path.Replace("%Platform_Folder%", ExeLocationDefault ?? "");
         return path;
     }
+
+    [JSInvokable]
+    public string PlatformUserModalCopyText() => UserModalCopyText;
+
+    [JSInvokable]
+    public string PlatformHintText() => GetUserModalHintText();
 }
 
 public class Extras

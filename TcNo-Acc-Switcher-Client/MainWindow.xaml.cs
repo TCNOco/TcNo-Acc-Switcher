@@ -35,6 +35,7 @@ using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server;
 using TcNo_Acc_Switcher_Server.State;
+using TcNo_Acc_Switcher_Server.State.Interfaces;
 using Point = System.Drawing.Point;
 
 namespace TcNo_Acc_Switcher_Client;
@@ -46,7 +47,7 @@ namespace TcNo_Acc_Switcher_Client;
 // This is reported as "never used" by JetBrains Inspector... what?
 public partial class MainWindow
 {
-    private readonly WindowSettings windowSettings;
+    private readonly IWindowSettings windowSettings;
 
     private readonly Thread Server;
     private static string _address = "";
