@@ -15,6 +15,7 @@
 using System.Drawing;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
@@ -37,6 +38,28 @@ public class WindowSettings : IWindowSettings, INotifyPropertyChanged
         return true;
     }
 
+    /// <summary>
+    /// Loads WindowSettings from file, if exists. Otherwise default.
+    /// A toast for errors can not be displayed here as this needs to be loaded before the language instance.
+    /// </summary>
+    public WindowSettings()
+    {
+        Globals.LoadSettings(Filename, this, false);
+
+        // Remove duplicate platforms (possible):
+        Platforms = new ObservableCollection<PlatformItem>(Platforms.GroupBy(x => x.Name).Select(x => x.First()).ToList());
+
+        // TODO: Load from file? See commented at the bottom of this class. They were leftover from the Data\AppSettings file.
+        Platforms.CollectionChanged += SortPlatforms;
+    }
+
+    private void SortPlatforms(object? o, NotifyCollectionChangedEventArgs e)
+    {
+        // Simply sorting on update caused an infinite loop. This should solve it.
+        Platforms.CollectionChanged -= SortPlatforms;
+        Platforms.Sort();
+        Platforms.CollectionChanged += SortPlatforms;
+    }
 
     public string Language
     {
@@ -133,17 +156,6 @@ public class WindowSettings : IWindowSettings, INotifyPropertyChanged
     };
 
     private static string Filename = "WindowSettings.json";
-    /// <summary>
-    /// Loads WindowSettings from file, if exists. Otherwise default.
-    /// A toast for errors can not be displayed here as this needs to be loaded before the language instance.
-    /// </summary>
-    public WindowSettings()
-    {
-        Globals.LoadSettings(Filename, this, false);
-
-        // TODO: Load from file? See commented at the bottom of this class. They were leftover from the Data\AppSettings file.
-        Platforms.CollectionChanged += (_, _) => Platforms.Sort();
-    }
     public void Save() => Globals.SaveJsonFile(Filename, this, false);
 
 

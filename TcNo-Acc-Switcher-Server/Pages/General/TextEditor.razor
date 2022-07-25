@@ -16,9 +16,9 @@
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @using TcNo_Acc_Switcher_Server.State
 @inject IJSRuntime JsRuntime
-@inject NavigationManager NavManager
+@inject NavigationManager NavigationManager
 @inject ILang Lang
-@inject AppState AppState
+@inject IAppState AppState
 
 <div class="text-editor d-flex flex-column">
     <div class="flex-grow-1 editor-container">
@@ -29,7 +29,7 @@ Actions will show here
         </pre>
     </div>
     <div class="d-flex justify-content-end">
-        <button id="btnCancel" @onclick="AppState.Navigation.NavigateUpOne">
+        <button id="btnCancel" @onclick="() => AppState.Navigation.NavigateUpOne(NavigationManager)">
             <span>@Lang["Button_Cancel"]</span>
         </button>
         <button id="btnSave" @onclick="SaveFile">
@@ -58,7 +58,7 @@ Actions will show here
     {
         //
 
-        NavManager.NavigateTo("/Steam");
+        NavigationManager.NavigateTo("/Steam");
     }
 
     public void Cancel()

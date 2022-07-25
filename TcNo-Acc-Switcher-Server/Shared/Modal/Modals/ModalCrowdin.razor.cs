@@ -8,12 +8,13 @@ using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.State;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
+using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.Shared.Modal.Modals
 {
     public partial class ModalCrowdin
     {
-        [Inject] private Toasts Toasts { get; set; }
+        [Inject] private IToasts Toasts { get; set; }
 
         public class CrowdinResponse
         {

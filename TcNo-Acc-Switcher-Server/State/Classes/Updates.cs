@@ -33,11 +33,8 @@ namespace TcNo_Acc_Switcher_Server.State.Classes;
 
 public class Updates
 {
-    [Inject] private Toasts Toasts { get; set; }
-    [Inject] private Modals Modals { get; set; }
-    [Inject] private NavigationManager NavigationManager { get; set; }
-    [Inject] private IWindowSettings WindowSettings { get; set; }
-    [Inject] private IStatistics Statistics { get; set; }
+    private readonly IToasts _toasts;
+    private readonly IModals _modals;
 
     private bool UpdateCheckRan { get; set; }
     public bool PreRenderUpdate { get; set; }
@@ -47,15 +44,19 @@ public class Updates
     /// <summary>
     /// (Initializes one time) Checks for update, and submits statistics if enabled.
     /// </summary>
-    public Updates()
+    public Updates(IToasts toasts, IModals modals, IWindowSettings windowSettings, IStatistics statistics)
     {
+        _toasts = toasts;
+        _modals = modals;
+        var windowSettings1 = windowSettings;
+
         if (!FirstLaunch) return;
         FirstLaunch = false;
         // Check for update in another thread
         // Also submit statistics, if enabled
         new Thread(CheckForUpdate).Start();
-        if (WindowSettings.CollectStats && WindowSettings.ShareAnonymousStats)
-            new Thread(Statistics.UploadStats).Start();
+        if (windowSettings1.CollectStats && windowSettings1.ShareAnonymousStats)
+            new Thread(statistics.UploadStats).Start();
     }
 
     /// <summary>
@@ -99,14 +100,14 @@ public class Updates
                     }
 
                     // Has not shown error today
-                    Toasts.ShowToastLang(ToastType.Error, "Toast_UpdateCheckFail", 15000);
+                    _toasts.ShowToastLang(ToastType.Error, "Toast_UpdateCheckFail", 15000);
                     o["LastUpdateCheckFail"] = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
                     await File.WriteAllTextAsync("WindowSettings.json", o.ToString());
                 }
                 catch (JsonException je)
                 {
                     Globals.WriteToLog("Could not interpret <User Data>\\WindowSettings.json.", je);
-                    Toasts.ShowToastLang(ToastType.Error, "Toast_UserDataLoadFail", 15000);
+                    _toasts.ShowToastLang(ToastType.Error, "Toast_UserDataLoadFail", 15000);
                     File.Move("WindowSettings.json", "WindowSettings.bak.json", true);
                 }
             }
@@ -143,10 +144,10 @@ public class Updates
             switch (UpdateNowNoToasts())
             {
                 case UpdateResponse.RestartAsAdmin:
-                    Modals.ShowModal("confirm", ExtraArg.RestartAsAdmin);
+                    _modals.ShowModal("confirm", ExtraArg.RestartAsAdmin);
                     break;
                 case UpdateResponse.VerifyFail:
-                    Toasts.ShowToastLang(ToastType.Error, "Toast_UpdateVerifyFail");
+                    _toasts.ShowToastLang(ToastType.Error, "Toast_UpdateVerifyFail");
                     break;
                 case UpdateResponse.Success:
                     break;
@@ -154,7 +155,7 @@ public class Updates
         }
         catch (Exception e)
         {
-            Toasts.ShowToastLang(ToastType.Error, "Toast_FailedUpdateCheck");
+            _toasts.ShowToastLang(ToastType.Error, "Toast_FailedUpdateCheck");
             Globals.WriteToLog("Failed to check for updates:" + e);
         }
         Directory.SetCurrentDirectory(Globals.UserDataFolder);

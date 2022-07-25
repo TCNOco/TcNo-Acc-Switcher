@@ -21,9 +21,6 @@ namespace TcNo_Acc_Switcher_Server.State.Classes;
 
 public class Navigation
 {
-    [Inject] private IJSRuntime JsRuntime { get; set; }
-    [Inject] private NavigationManager NavigationManager { get; set; }
-
     public event Action OnBackButtonClick;
     public event Action OnBackButtonReset;
     public void ClickBackButton() => OnBackButtonClick?.Invoke();
@@ -31,15 +28,15 @@ public class Navigation
 
     // Rather just use the reload code directly, for this to not be a circular DI (AppState -> Navigation -> Discord (or anything) -> AppState)
     //public void ReloadPage() => NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
-    public void ReloadWithToast(string type, string title, string message) =>
-        NavigationManager.NavigateTo($"{NavigationManager.BaseUri}?toast_type={type}&toast_title={Uri.EscapeDataString(title)}&toast_message={Uri.EscapeDataString(message)}");
-    public void NavigateToWithToast(string uri, string type, string title, string message) =>
-        NavigationManager.NavigateTo($"{uri}?toast_type={type}&toast_title={Uri.EscapeDataString(title)}&toast_message={Uri.EscapeDataString(message)}");
-    public void NavigateTo(string uri, bool forceLoad = false) => NavigationManager.NavigateTo(uri, forceLoad);
+    public void ReloadWithToast(NavigationManager navigationManager, string type, string title, string message) =>
+        navigationManager.NavigateTo($"{navigationManager.BaseUri}?toast_type={type}&toast_title={Uri.EscapeDataString(title)}&toast_message={Uri.EscapeDataString(message)}");
+    public void NavigateToWithToast(NavigationManager navigationManager, string uri, string type, string title, string message) =>
+        navigationManager.NavigateTo($"{uri}?toast_type={type}&toast_title={Uri.EscapeDataString(title)}&toast_message={Uri.EscapeDataString(message)}");
+    public void NavigateTo(NavigationManager navigationManager, string uri, bool forceLoad = false) => navigationManager.NavigateTo(uri, forceLoad);
 
-    public void NavigateUpOne()
+    public void NavigateUpOne(NavigationManager navigationManager)
     {
-        var uri = NavigationManager.Uri;
+        var uri = navigationManager.Uri;
         if (uri.EndsWith('/')) uri = uri[..^1];
         uri = uri.Replace("http://", "").Replace("https://", "");
 
@@ -48,7 +45,7 @@ public class Navigation
         {
             var split = uri.Split('/');
             var newUri = "http://" + string.Join("/", split.Take(split.Length - 1));
-            NavigationManager.NavigateTo(newUri);
+            navigationManager.NavigateTo(newUri);
         }
         else
         {

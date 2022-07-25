@@ -15,19 +15,15 @@ using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.State;
 
-public class TemplatedPlatformState
+public class TemplatedPlatformState : ITemplatedPlatformState
 {
-    [Inject] private SharedFunctions SharedFunctions { get; set; }
-    [Inject] private JSRuntime JsRuntime { get; set; }
-    [Inject] private IWindowSettings WindowSettings { get; set; }
-    [Inject] private IStatistics Statistics { get; set; }
-    [Inject] private Modals Modals { get; set; }
-    [Inject] private IAppState AppState { get; set; }
-    [Inject] private Toasts Toasts { get; set; }
-    [Inject] private TemplatedPlatformSettings TemplatedPlatformSettings { get; set; }
-    [Inject] private NavigationManager NavigationManager { get; set; }
-    [Inject] private ILang Lang { get; set; }
-    [Inject] private GameStats GameStats { get; set; }
+    private readonly IAppState _appState;
+    private readonly IGameStats _gameStats;
+    private readonly IModals _modals;
+    private readonly ISharedFunctions _sharedFunctions;
+    private readonly IStatistics _statistics;
+    private readonly IToasts _toasts;
+    private readonly IWindowSettings _windowSettings;
 
     public List<string> AvailablePlatforms { get; set; }
     public TemplatedPlatformContextMenu ContextMenu { get; set; }
@@ -39,16 +35,30 @@ public class TemplatedPlatformState
     // Just have this load all the names and identifiers as well.
 
     private readonly string _platformJsonPath = Path.Join(Globals.AppDataFolder, "Platforms.json");
-    public TemplatedPlatformState()
+    public TemplatedPlatformState(IAppState appState, IGameStats gameStats, IModals modals,
+        ISharedFunctions sharedFunctions, IStatistics statistics,
+        IToasts toasts, IWindowSettings windowSettings)
     {
+        _appState = appState;
+        _gameStats = gameStats;
+        _modals = modals;
+        _sharedFunctions = sharedFunctions;
+        _statistics = statistics;
+        _toasts = toasts;
+        _windowSettings = windowSettings;
+    }
+
+    public void LoadTemplatedPlatformState(ITemplatedPlatformFuncs templatedPlatformFuncs)
+    {
+
         if (!File.Exists(_platformJsonPath))
         {
-            Toasts.ShowToastLang(ToastType.Error, "Toast_FailedPlatformsLoad");
+            _toasts.ShowToastLang(ToastType.Error, "Toast_FailedPlatformsLoad");
             Globals.WriteToLog("Failed to locate Platforms.json! This will cause a lot of features to break.");
             return;
         }
 
-        Platforms = JsonConvert.DeserializeObject<List<Platform>>(_platformJsonPath);
+        Platforms = JsonConvert.DeserializeObject<List<Platform>>(File.ReadAllText(_platformJsonPath));
         if (Platforms is null) return;
         AvailablePlatforms = Platforms.Select(x => x.Name).ToList();
 
@@ -56,30 +66,31 @@ public class TemplatedPlatformState
         foreach (var plat in Platforms)
         {
             // Add to master platform list
-            if (WindowSettings.Platforms.Count(y => y.Name == plat.Name) == 0)
-                WindowSettings.Platforms.Add(new PlatformItem(plat.Name, plat.Identifiers, plat.ExeName, false));
+            if (_windowSettings.Platforms.Count(y => y.Name == plat.Name) == 0)
+                _windowSettings.Platforms.Add(new PlatformItem(plat.Name, plat.Identifiers, plat.ExeName, false));
             else
             {
                 // Make sure that everything is set up properly.
-                var platform = WindowSettings.Platforms.First(y => y.Name == plat.Name);
+                var platform = _windowSettings.Platforms.First(y => y.Name == plat.Name);
                 platform.SetFromPlatformItem(new PlatformItem(plat.Name, plat.Identifiers, plat.ExeName, false));
             }
         }
 
         Task.Run(() =>
         {
-            ContextMenu = new TemplatedPlatformContextMenu();
+            ContextMenu = new TemplatedPlatformContextMenu(_appState, _gameStats, _modals, templatedPlatformFuncs, this, _toasts);
         });
     }
 
-    public async Task SetCurrentPlatform(string platformName)
+    public async Task SetCurrentPlatform(ITemplatedPlatformSettings templatedPlatformSettings, string platformName)
     {
         CurrentPlatform = Platforms.First(x => x.Name == platformName || x.Identifiers.Contains(platformName));
         CurrentPlatform.InitAfterDeserialization();
-        TemplatedPlatformSettings = new TemplatedPlatformSettings(); // Load saved settings
+        //_templatedPlatformSettings = new TemplatedPlatformSettings(); // Load saved settings
+        templatedPlatformSettings.LoadTemplatedPlatformSettings();
 
-        AppState.Switcher.CurrentSwitcher = CurrentPlatform.Name;
-        AppState.Switcher.TemplatedAccounts.Clear();
+        _appState.Switcher.CurrentSwitcher = CurrentPlatform.Name;
+        _appState.Switcher.TemplatedAccounts.Clear();
         await LoadAccounts();
     }
 
@@ -94,7 +105,7 @@ public class TemplatedPlatformState
         accList = OrderAccounts(accList, $"{localCachePath}\\order.json");
 
         await InsertAccounts(accList);
-        Statistics.SetAccountCount(CurrentPlatform.SafeName, accList.Count);
+        _statistics.SetAccountCount(CurrentPlatform.SafeName, accList.Count);
 
         // Load notes
         LoadNotes();
@@ -156,12 +167,12 @@ public class TemplatedPlatformState
 
         foreach (var (key, val) in loaded)
         {
-            var acc = AppState.Switcher.TemplatedAccounts.FirstOrDefault(x => x.AccountId == key);
+            var acc = _appState.Switcher.TemplatedAccounts.FirstOrDefault(x => x.AccountId == key);
             if (acc is null) return;
             acc.Note = val;
         }
 
-        Modals.IsShown = false;
+        _modals.IsShown = false;
     }
 
 
@@ -173,7 +184,7 @@ public class TemplatedPlatformState
     {
         LoadAccountIds();
 
-        AppState.Switcher.TemplatedAccounts.Clear();
+        _appState.Switcher.TemplatedAccounts.Clear();
 
         foreach (var str in accList)
         {
@@ -200,11 +211,11 @@ public class TemplatedPlatformState
             }
 
             // Handle game stats (if any enabled and collected.)
-            account.UserStats = GameStats.GetUserStatsAllGamesMarkup(str);
+            account.UserStats = _gameStats.GetUserStatsAllGamesMarkup(str);
 
-            AppState.Switcher.TemplatedAccounts.Add(account);
+            _appState.Switcher.TemplatedAccounts.Add(account);
         }
-        await SharedFunctions.FinaliseAccountList(); // Init context menu & Sorting
+        await _sharedFunctions.FinaliseAccountList(); // Init context menu & Sorting
     }
 
     /// <summary>
@@ -224,52 +235,10 @@ public class TemplatedPlatformState
 
 
     #region Account IDs
-    public Dictionary<string, string> AccountIds;
+    public Dictionary<string, string> AccountIds { get; set; }
     public void LoadAccountIds() => AccountIds = Globals.ReadDict(CurrentPlatform.IdsJsonPath);
     public void SaveAccountIds() =>
         File.WriteAllText(CurrentPlatform.IdsJsonPath, JsonConvert.SerializeObject(AccountIds));
     public string GetNameFromId(string accId) => AccountIds.ContainsKey(accId) ? AccountIds[accId] : accId;
     #endregion
-
-    public void RunPlatform(bool admin, string args = "")
-    {
-        if (Globals.StartProgram(TemplatedPlatformSettings.Exe, admin, args, CurrentPlatform.Extras.StartingMethod))
-            Toasts.ShowToastLang(ToastType.Info, new LangSub("Status_StartingPlatform", new { platform = CurrentPlatform.Name }));
-        else
-            Toasts.ShowToastLang(ToastType.Error, new LangSub("Toast_StartingPlatformFailed", new { platform = CurrentPlatform.Name }));
-    }
-
-    // This seemed to not be used, so I have omitted it here.
-    // public void RunPlatform(bool admin)
-    public void RunPlatform() => RunPlatform(TemplatedPlatformSettings.Admin, CurrentPlatform.ExeExtraArgs);
-
-    [JSInvokable]
-    public void HandleShortcutAction(string shortcut, string action)
-    {
-        if (shortcut == "btnStartPlat") // Start platform requested
-        {
-            RunPlatform(action == "admin");
-            return;
-        }
-
-        if (!TemplatedPlatformSettings.Shortcuts.ContainsValue(shortcut)) return;
-
-        switch (action)
-        {
-            case "hide":
-            {
-                // Remove shortcut from folder, and list.
-                TemplatedPlatformSettings.Shortcuts.Remove(TemplatedPlatformSettings.Shortcuts.First(e => e.Value == shortcut).Key);
-                var f = Path.Join(CurrentPlatform.ShortcutFolder, shortcut);
-                if (File.Exists(f)) File.Move(f, f.Replace(".lnk", "_ignored.lnk").Replace(".url", "_ignored.url"));
-
-                // Save.
-                TemplatedPlatformSettings.Save();
-                break;
-            }
-            case "admin":
-                SharedFunctions.RunShortcut(shortcut, CurrentPlatform.ShortcutFolder, admin: true);
-                break;
-        }
-    }
 }

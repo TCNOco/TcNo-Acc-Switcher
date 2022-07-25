@@ -18,6 +18,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.State.Classes;
 
@@ -35,11 +36,9 @@ public class Switcher : INotifyPropertyChanged
         return true;
     }
 
-    [Inject] private Lang Lang { get; set; }
-
-    public Switcher()
+    public Switcher(ILang lang)
     {
-        CurrentStatus = Lang["Status_Init"];
+        CurrentStatus = lang["Status_Init"];
     }
     public string CurrentSwitcherSafe { get; set; } = "";
 

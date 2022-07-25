@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-namespace TcNo_Acc_Switcher_Server.State;
+namespace TcNo_Acc_Switcher_Server.State.Interfaces;
 
 public interface ITemplatedPlatformFuncs
 {
@@ -55,4 +55,7 @@ public interface ITemplatedPlatformFuncs
     void SwapToNewAccount();
 
     Task ForgetAccount();
+    void RunPlatform(bool admin, string args = "");
+    void RunPlatform();
+    void HandleShortcutAction(string shortcut, string action);
 }

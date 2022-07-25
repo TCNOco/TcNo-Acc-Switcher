@@ -19,10 +19,10 @@ namespace TcNo_Acc_Switcher_Server.State.DataTypes;
 
 public class TextInputRequest
 {
-    [Inject] private Lang Lang { get; set; }
+    [Inject] private ILang Lang { get; set; }
     [Inject] private IAppState AppState { get; set; }
-    [Inject] private TemplatedPlatformState TemplatedPlatformState { get; set; }
-    [Inject] private Modals Modals { get; set; }
+    [Inject] private ITemplatedPlatformState TemplatedPlatformState { get; set; }
+    [Inject] private IModals Modals { get; set; }
 
     public string LastString = "";
     public TextInputGoal Goal;

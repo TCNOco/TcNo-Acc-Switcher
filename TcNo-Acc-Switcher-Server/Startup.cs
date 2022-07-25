@@ -49,27 +49,25 @@ public class Startup
 
         _ = services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-        // Proper singletons. This is after much more practice.
-        _ = services.AddSingleton<IWindowSettings, WindowSettings>(); // #1 (No depends)
+        // Proper singletons. This is the correct load order.
+        _ = services.AddSingleton<IWindowSettings, WindowSettings>(); // #1 - NONE
+        _ = services.AddSingleton<IModals, Modals>(); // NONE
         _ = services.AddSingleton<ILang, Lang>(); // After WindowSettings
         _ = services.AddSingleton<IToasts, Toasts>(); // After Lang
-        _ = services.AddSingleton<IAppState, AppState>(); // (No depends - But does store a LOT of info)
-        _ = services.AddSingleton<IModals, Modals>(); // Toasts, WindowSettings, AppState
-        _ = services.AddSingleton<IStatistics, Statistics>(); // After AppState & WindowSettings
-        _ = services.AddSingleton<ISharedFunctions, SharedFunctions>(); // Statistics, Toasts
-
-        // Only load when needed.
-        _ = services.AddSingleton<ISteamSettings, SteamSettings>(); // (No depends)
-        _ = services.AddSingleton<ISteamFuncs, SteamFuncs>();
-        _ = services.AddSingleton<ISteamState, SteamState>(); // Lang, Toasts, AppState, SteamSettings, Modals, Statistics, SharedFunctions
-
-        // THIS MUST BE LOADED TO SEE APPS ON THE MAIN MENU LIST
-        _ = services.AddSingleton<ITemplatedPlatformState, TemplatedPlatformState>();
-        _ = services.AddSingleton<ITemplatedPlatformSettings, TemplatedPlatformSettings>();
-        _ = services.AddSingleton<ITemplatedPlatformFuncs, TemplatedPlatformFuncs>();
+        _ = services.AddSingleton<IStatistics, Statistics>(); // After WindowSettings
+        _ = services.AddSingleton<IAppState, AppState>(); // Lang, Modals, Statistics, Toasts, WindowSettings
+        _ = services.AddSingleton<ISharedFunctions, SharedFunctions>(); // Lang, Modals, Statistics, Toasts (+JsRuntime)
 
         _ = services.AddSingleton<IGameStatsRoot, GameStatsRoot>(); // Toasts, WindowSettings
         _ = services.AddSingleton<IGameStats, GameStats>(); // AppState, GameStatsRoot
+
+        _ = services.AddSingleton<ISteamSettings, SteamSettings>(); // (No depends)
+        _ = services.AddSingleton<ISteamState, SteamState>(); // AppState, GameStats, Lang, Modals, SharedFunctions, Statistics, SteamSettings, Toasts
+        _ = services.AddSingleton<ISteamFuncs, SteamFuncs>(); // AppState, Lang, Modals, SharedFunctions, Statistics, SteamSettings, SteamState, Toasts, WindowSettings (+JSRuntime)
+
+        _ = services.AddSingleton<ITemplatedPlatformState, TemplatedPlatformState>(); // AppState, GameStats, Modals, SharedFunctions, Statistics, Toasts
+        _ = services.AddSingleton<ITemplatedPlatformSettings, TemplatedPlatformSettings>(); // Statistics, TemplatedPlatformState
+        _ = services.AddSingleton<ITemplatedPlatformFuncs, TemplatedPlatformFuncs>(); // AppState, Lang, Modals, SharedFunctions, Statistics, TemplatedPlatformState, TemplatedPlatformSettings, Toasts, WindowSettings (+JSRuntime, NavigationManager)
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

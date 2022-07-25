@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using TcNo_Acc_Switcher_Server.State.Classes.GameStats;
 
-namespace TcNo_Acc_Switcher_Server.State;
+namespace TcNo_Acc_Switcher_Server.State.Interfaces;
 
 public interface IGameStatsRoot
 {

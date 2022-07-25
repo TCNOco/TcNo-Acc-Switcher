@@ -22,14 +22,14 @@
 @using TcNo_Acc_Switcher_Server.State.DataTypes
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @namespace TcNo_Acc_Switcher_Server.Pages.Steam
-@inject NavigationManager NavManager
-@inject SteamSettings SteamSettings
-@inject SteamState SteamState
-@inject IWindowSettings WindowSettings
+@inject NavigationManager NavigationManager
 @inject IJSRuntime JsRuntime
+@inject ISteamSettings SteamSettings
+@inject ISteamState SteamState
+@inject IWindowSettings WindowSettings
 @inject IAppState AppState
-@inject Lang Lang
-@inject GameStats GameStats
+@inject ILang Lang
+@inject IGameStats GameStats
 @inject IStatistics Statistics
 
 
@@ -160,7 +160,7 @@
 
 
             <h2 class="SettingsHeader">@Lang["Settings_Header_OtherTools"]</h2>
-            <div class="buttoncol"><button id="OpenFolder" type="button" @onclick="() => AppState.OpenFolder(SteamSettings.FolderPath)"><span>@Lang["Settings_OpenFolder", new { platform = Platform }]</span></button><button id="Steam_AdvancedClearing" type="button" @onclick='() => NavManager.NavigateTo("/Steam/AdvancedClearing")'><span>@Lang["Button_AdvancedCleaning"]</span></button></div>
+            <div class="buttoncol"><button id="OpenFolder" type="button" @onclick="() => AppState.OpenFolder(SteamSettings.FolderPath)"><span>@Lang["Settings_OpenFolder", new { platform = Platform }]</span></button><button id="Steam_AdvancedClearing" type="button" @onclick='() => NavigationManager.NavigateTo("/Steam/AdvancedClearing")'><span>@Lang["Button_AdvancedCleaning"]</span></button></div>
             <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Lang["Button_Close"]</span></button></div>
 
             @if (_gamesAndSettings.Count > 0)
@@ -210,7 +210,7 @@
         SteamSettings.Save();
         Toasts.ShowToastLang(ToastType.Success, "Saved");
     }
-    
+
     protected override async Task OnParametersSetAsync()
     {
         await GameStats.SetCurrentPlatform("Steam");

@@ -22,9 +22,16 @@ namespace TcNo_Acc_Switcher_Server.State.Classes;
 
 public class Discord
 {
-    [Inject] public ILang Lang { get; set; }
-    [Inject] public IStatistics Statistics { get; set; }
-    [Inject] public IWindowSettings WindowSettings { get; set; }
+    private readonly ILang _lang;
+    private readonly IStatistics _statistics;
+    private readonly IWindowSettings _windowSettings;
+
+    public Discord(ILang lang, IStatistics statistics, IWindowSettings windowSettings)
+    {
+        _lang = lang;
+        _statistics = statistics;
+        _windowSettings = windowSettings;
+    }
 
     public DiscordRpcClient DiscordClient { get; set; }
 
@@ -39,7 +46,7 @@ public class Discord
     {
         Thread.Sleep(1000);
 
-        if (!WindowSettings.DiscordRpcEnabled)
+        if (!_windowSettings.DiscordRpcEnabled)
         {
             if (DiscordClient != null)
             {
@@ -61,22 +68,22 @@ public class Discord
         else timestamp = DiscordClient.CurrentPresence.Timestamps;
 
         var state = "";
-        if (WindowSettings.CollectStats && WindowSettings.DiscordRpcEnabled)
+        if (_windowSettings.CollectStats && _windowSettings.DiscordRpcEnabled)
         {
-            Statistics.GenerateTotals();
-            state = Lang["Discord_StatusDetails", new { number = Statistics.SwitcherStats["_Total"].Switches }];
+            _statistics.GenerateTotals();
+            state = _lang["Discord_StatusDetails", new { number = _statistics.SwitcherStats["_Total"].Switches }];
         }
 
 
         DiscordClient.SetPresence(new RichPresence
         {
-            Details = Lang["Discord_Status"],
+            Details = _lang["Discord_Status"],
             State = state,
             Timestamps = timestamp,
             Buttons = new Button[]
             { new() {
                 Url = "https://github.com/TcNobo/TcNo-Acc-Switcher/",
-                Label = Lang["Website"]
+                Label = _lang["Website"]
             }},
             Assets = new Assets
             {
@@ -84,5 +91,8 @@ public class Discord
                 LargeImageText = "TcNo Account Switcher"
             }
         });
+
+        Thread.Sleep(10000);
+        RefreshDiscordPresence();
     }
 }

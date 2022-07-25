@@ -18,11 +18,11 @@ namespace TcNo_Acc_Switcher_Server.State.Classes.GameStats;
 /// </summary>
 public class GameStatSaved
 {
-    [Inject] private Lang Lang { get; set; }
-    [Inject] private GameStatsRoot GameStatsRoot { get; set; }
+    [Inject] private ILang Lang { get; set; }
+    [Inject] private IGameStatsRoot GameStatsRoot { get; set; }
     [Inject] private IAppState AppState { get; set; }
-    [Inject] private Toasts Toasts { get; set; }
-        
+    [Inject] private IToasts Toasts { get; set; }
+
     public SortedDictionary<string, UserGameStat> Stats { get; set; }
 
 
@@ -45,7 +45,7 @@ public class GameStatSaved
     /// Dictionary of StatName:CollectInstructions for collecting stats from web and info from user
     /// </summary>
     public Dictionary<string, CollectInstruction> ToCollect = new();
-        
+
 
     private readonly string _cacheFileFolder = Path.Join(Globals.UserDataFolder, "StatsCache");
     private string CacheFilePath => Path.Join(_cacheFileFolder, Globals.GetCleanFilePath($"{Game}.json"));

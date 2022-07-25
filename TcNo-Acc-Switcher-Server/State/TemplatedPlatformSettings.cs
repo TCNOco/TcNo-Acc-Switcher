@@ -23,13 +23,14 @@ using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.State.Classes.Templated;
+using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.State;
 
-public class TemplatedPlatformSettings
+public class TemplatedPlatformSettings : ITemplatedPlatformSettings
 {
-    [Inject] private IStatistics Statistics { get; set; }
-    [Inject] private TemplatedPlatformState TemplatedPlatformState { get; set; }
+    private readonly IStatistics _statistics;
+    private readonly ITemplatedPlatformState _templatedPlatformState;
 
     [JsonProperty(Order = 2)] public bool Admin { get; set; }
     [JsonProperty(Order = 3)] public int TrayAccNumber { get; set; } = 3;
@@ -40,9 +41,9 @@ public class TemplatedPlatformSettings
     [JsonIgnore]
     public bool DesktopShortcut
     {
-        get => Shortcut.CheckShortcuts(TemplatedPlatformState.CurrentPlatform.Name);
+        get => Shortcut.CheckShortcuts(_templatedPlatformState.CurrentPlatform.Name);
         set => Shortcut.PlatformDesktopShortcut(Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
-            TemplatedPlatformState.CurrentPlatform.Name, TemplatedPlatformState.CurrentPlatform.Identifiers[0], value);
+            _templatedPlatformState.CurrentPlatform.Name, _templatedPlatformState.CurrentPlatform.Identifiers[0], value);
     }
     [JsonIgnore] public int LastAccTimestamp { get; set; }
     [JsonIgnore] public string LastAccName { get; set; } = "";
@@ -52,7 +53,7 @@ public class TemplatedPlatformSettings
         get
         {
             if (!string.IsNullOrWhiteSpace(_closingMethod)) return _closingMethod;
-            _closingMethod = TemplatedPlatformState.CurrentPlatform.Extras.ClosingMethod;
+            _closingMethod = _templatedPlatformState.CurrentPlatform.Extras.ClosingMethod;
             return _closingMethod;
         }
         set => _closingMethod = value;
@@ -63,7 +64,7 @@ public class TemplatedPlatformSettings
         get
         {
             if (!string.IsNullOrWhiteSpace(_startingMethod)) return _startingMethod;
-            _startingMethod = TemplatedPlatformState.CurrentPlatform.Extras.StartingMethod;
+            _startingMethod = _templatedPlatformState.CurrentPlatform.Extras.StartingMethod;
             return _startingMethod;
         }
         set => _startingMethod = value;
@@ -73,17 +74,23 @@ public class TemplatedPlatformSettings
         get
         {
             if (!string.IsNullOrWhiteSpace(_folderPath)) return _folderPath;
-            _folderPath = TemplatedPlatformState.CurrentPlatform.ExeLocationDefault;
+            _folderPath = _templatedPlatformState.CurrentPlatform.ExeLocationDefault;
             return _folderPath;
         }
         set => _folderPath = value;
     }
 
-    private readonly Platform _currentPlatform;
+    private Platform _currentPlatform;
 
-    public TemplatedPlatformSettings()
+    public TemplatedPlatformSettings(IStatistics statistics, ITemplatedPlatformState templatedPlatformState)
     {
-        _currentPlatform = TemplatedPlatformState.CurrentPlatform;
+        _statistics = statistics;
+        _templatedPlatformState = templatedPlatformState;
+    }
+
+    public void LoadTemplatedPlatformSettings()
+    {
+        _currentPlatform = _templatedPlatformState.CurrentPlatform;
         if (File.Exists(_currentPlatform.SettingsFile))
         {
             Globals.LoadSettings(_currentPlatform.SettingsFile, this, false);
@@ -104,14 +111,14 @@ public class TemplatedPlatformSettings
             CollectShortcutImages();
         }
 
-        Statistics.SetGameShortcutCount(TemplatedPlatformState.CurrentPlatform.SafeName, Shortcuts);
+        _statistics.SetGameShortcutCount(_templatedPlatformState.CurrentPlatform.SafeName, Shortcuts);
         Save();
     }
 
 
     public void Save()
     {
-        Globals.SaveJsonFile(TemplatedPlatformState.CurrentPlatform.SettingsFile, this, false);
+        Globals.SaveJsonFile(_templatedPlatformState.CurrentPlatform.SettingsFile, this, false);
     }
 
     public void Reset()

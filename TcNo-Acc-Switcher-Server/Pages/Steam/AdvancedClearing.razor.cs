@@ -29,9 +29,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam;
 
 public partial class AdvancedClearing
 {
-    [Inject] private SteamSettings SteamSettings { get; set; }
+    [Inject] private ISteamSettings SteamSettings { get; set; }
     [Inject] private IAppState AppState { get; set; }
-    [Inject] private SharedFunctions SharedFunctions { get; set; }
+    [Inject] private ISharedFunctions SharedFunctions { get; set; }
 
     protected override void OnInitialized()
     {

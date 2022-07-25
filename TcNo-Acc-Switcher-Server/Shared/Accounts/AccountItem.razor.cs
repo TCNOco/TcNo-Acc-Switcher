@@ -9,7 +9,7 @@ namespace TcNo_Acc_Switcher_Server.Shared.Accounts
 {
     public partial class AccountItem
     {
-        [Inject] private JSRuntime JsRuntime { get; set; }
+        [Inject] private IJSRuntime JsRuntime { get; set; }
         [Inject] private ILang Lang { get; set; }
 
         #region Selecting accounts

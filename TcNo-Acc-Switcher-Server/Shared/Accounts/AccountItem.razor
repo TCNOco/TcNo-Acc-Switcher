@@ -23,9 +23,9 @@
     [Parameter]
     public Account Acc { get; set; }
 
-    [Inject] SteamFuncs SteamFuncs { get; set; }
-    [Inject] SteamSettings SteamSettings { get; set; }
-    [Inject] TemplatedPlatformFuncs TemplatedPlatformFuncs { get; set; }
+    [Inject] ISteamFuncs SteamFuncs { get; set; }
+    [Inject] ISteamSettings SteamSettings { get; set; }
+    [Inject] ITemplatedPlatformFuncs TemplatedPlatformFuncs { get; set; }
     [Inject] IAppState AppState { get; set; }
     [Inject] IWindowSettings WindowSettings { get; set; }
 

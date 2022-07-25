@@ -57,8 +57,7 @@ namespace TcNo_Acc_Switcher_Server.State;
 // - First and Last active days
 public class Statistics : IStatistics
 {
-    [Inject] private IWindowSettings WindowSettings { get; set; }
-    [Inject] private IAppState AppState { get; set; }
+    private readonly IWindowSettings _windowSettings;
 
     #region System stats
     public DateTime LastUpload { get; set; } = DateTime.MinValue;
@@ -87,7 +86,7 @@ public class Statistics : IStatistics
 
     public void NewNavigation(string newPage)
     {
-        if (!WindowSettings.CollectStats) return;
+        if (!_windowSettings.CollectStats) return;
 
         // First page loaded, so just save current page and time.
         if (LastActivePage == "")
@@ -121,7 +120,7 @@ public class Statistics : IStatistics
 
     private void IncrementSwitcherLastActive(string platform)
     {
-        if (!WindowSettings.CollectStats) return;
+        if (!_windowSettings.CollectStats) return;
         // Increment unique days if day is not the same (Compares year, month, day - As we're not looking for 24 hours)
         if (SwitcherStats[platform].LastActive.Date == DateTime.Now.Date) return;
         SwitcherStats[platform].UniqueDays += 1;
@@ -130,24 +129,23 @@ public class Statistics : IStatistics
 
     public void IncrementSwitches(string platform)
     {
-        if (!WindowSettings.CollectStats) return;
+        if (!_windowSettings.CollectStats) return;
         AddPlatformIfNotExist(platform);
         SwitcherStats[platform].Switches++;
 
         IncrementSwitcherLastActive(platform);
-        AppState.Discord.RefreshDiscordPresenceAsync(false);
     }
 
     public void SetAccountCount(string platform, int count)
     {
-        if (!WindowSettings.CollectStats) return;
+        if (!_windowSettings.CollectStats) return;
         AddPlatformIfNotExist(platform);
         SwitcherStats[platform].Accounts = count;
     }
 
     public void IncrementGameLaunches(string platform)
     {
-        if (!WindowSettings.CollectStats) return;
+        if (!_windowSettings.CollectStats) return;
         AddPlatformIfNotExist(platform);
         SwitcherStats[platform].GamesLaunched++;
 
@@ -156,7 +154,7 @@ public class Statistics : IStatistics
 
     public void SetGameShortcutCount(string platform, Dictionary<int, string> shortcuts)
     {
-        if (!WindowSettings.CollectStats) return;
+        if (!_windowSettings.CollectStats) return;
         AddPlatformIfNotExist(platform);
         SwitcherStats[platform].GameShortcuts = shortcuts.Count;
 
@@ -222,7 +220,7 @@ public class Statistics : IStatistics
         try
         {
             // Upload stats file if enabled.
-            if (!WindowSettings.CollectStats || !WindowSettings.ShareAnonymousStats) return;
+            if (!_windowSettings.CollectStats || !_windowSettings.ShareAnonymousStats) return;
 
             // If not a new day
             if (LastUpload.Date == DateTime.Now.Date) return;
@@ -257,12 +255,13 @@ public class Statistics : IStatistics
 
     private const string Filename = "Statistics.json";
 
-    public Statistics()
+    public Statistics(IWindowSettings windowSettings)
     {
+        _windowSettings = windowSettings;
         Globals.LoadSettings(Filename, this, false);
         // Increment launch count. This is only loaded once, so this is a good spot to put it.
         LaunchCount++;
-            
+
         // Todo?: Never thought about placing these in a few places, but may be useful to put elsewhere.
         AppDomain.CurrentDomain.ProcessExit += (_, _) => Save();
     }

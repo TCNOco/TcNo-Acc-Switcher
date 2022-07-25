@@ -43,15 +43,34 @@ public class Stylesheet : INotifyPropertyChanged
         return true;
     }
 
-    [Inject] private Toasts Toasts { get; set; }
-    [Inject] private ILang Lang { get; set; }
-    [Inject] private NavigationManager NavigationManager { get; set; }
-    [Inject] private IWindowSettings WindowSettings { get; set; }
+    private readonly IToasts _toasts;
+    private readonly ILang _lang;
+    private readonly IWindowSettings _windowSettings;
 
-    public Stylesheet()
+    public Stylesheet(IToasts toasts, ILang lang, IWindowSettings windowSettings)
     {
+        _toasts = toasts;
+        _lang = lang;
+        _windowSettings = windowSettings;
+
+        StylesheetFile = Path.Join("themes", _windowSettings.ActiveTheme, "style.css");
+        StylesheetInfoFile = Path.Join("themes", _windowSettings.ActiveTheme, "info.yaml");
+
         LoadStylesheetFromFile();
-        WindowSettings.PropertyChanged += (s, p) => PropertyChanged?.Invoke(s, p);
+        _windowSettings.PropertyChanged += WindowSettingsPropertyChange;
+    }
+
+    private void WindowSettingsPropertyChange(object s, PropertyChangedEventArgs p)
+    {
+        // While technically updating a few others should also cause a stylesheet update, these are the only important ones as it's ont he Settings page.
+        // Others include: StreamerModeEnabled, ShowStreamId, ShowLastLogin
+        if (p.PropertyName is "ActiveTheme" or "Rtl" or "Background")
+        {
+            StylesheetFile = Path.Join("themes", _windowSettings.ActiveTheme, "style.css");
+            StylesheetInfoFile = Path.Join("themes", _windowSettings.ActiveTheme, "info.yaml");
+            LoadStylesheet();
+            PropertyChanged?.Invoke(s, p);
+        }
     }
 
     public string StylesheetCss { get; set; }
@@ -73,8 +92,8 @@ public class Stylesheet : INotifyPropertyChanged
     public (float, float, float) WindowsAccentColorHsl { get; set; } = (0, 0, 0);
     public Dictionary<string, string> StylesheetInfo { get; set; }
 
-    private string StylesheetFile => Path.Join("themes", WindowSettings.ActiveTheme, "style.css");
-    private string StylesheetInfoFile => Path.Join("themes", WindowSettings.ActiveTheme, "info.yaml");
+    private string StylesheetFile { get; set; }
+    private string StylesheetInfoFile { get; set; }
 
     public bool StreamerModeTriggered
     {
@@ -98,7 +117,7 @@ public class Stylesheet : INotifyPropertyChanged
     public bool StreamerModeCheck()
     {
         Globals.DebugWriteLine(@"[StreamerModeCheck]");
-        if (!WindowSettings.StreamerModeEnabled) return false; // Don't hide anything if disabled.
+        if (!_windowSettings.StreamerModeEnabled) return false; // Don't hide anything if disabled.
         StreamerModeTriggered = false;
         foreach (var p in Process.GetProcesses())
         {
@@ -158,13 +177,13 @@ public class Stylesheet : INotifyPropertyChanged
     /// <param name="swapTo">Stylesheet name (without .json) to copy and load</param>
     public void SwapStylesheet(string swapTo)
     {
-        WindowSettings.ActiveTheme = swapTo.Replace(" ", "_");
         try
         {
-            if (LoadStylesheetFromFile())
+            if (LoadStylesheetFromFile(swapTo.Replace(" ", "_")))
             {
-                WindowSettings.Save();
-                NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+                _windowSettings.ActiveTheme = swapTo.Replace(" ", "_");
+                _windowSettings.Save();
+                //navigationManager.NavigateTo(navigationManager.Uri, forceLoad: true);
                 return;
             }
         }
@@ -173,13 +192,13 @@ public class Stylesheet : INotifyPropertyChanged
             //
         }
 
-        Toasts.ShowToastLang(ToastType.Error, "Error", "Toast_LoadStylesheetFailed");
+        _toasts.ShowToastLang(ToastType.Error, "Error", "Toast_LoadStylesheetFailed");
     }
 
     /// <summary>
     /// Load stylesheet settings from stylesheet file.
     /// </summary>
-    public bool LoadStylesheetFromFile()
+    public bool LoadStylesheetFromFile(string styleSheetName = "")
     {
         // This is the first function that's called, and sometimes fails if this is not reset after being changed previously.
         Directory.SetCurrentDirectory(Globals.UserDataFolder);
@@ -194,13 +213,13 @@ public class Stylesheet : INotifyPropertyChanged
             if (File.Exists(scss)) GenCssFromScss(scss);
             else
             {
-                WindowSettings.ActiveTheme = "Dracula_Cyan";
+                _windowSettings.ActiveTheme = "Dracula_Cyan";
 
                 if (!File.Exists(StylesheetFile))
                 {
                     scss = StylesheetFile.Replace("css", "scss");
                     if (File.Exists(scss)) GenCssFromScss(scss);
-                    else throw new Exception(Lang["ThemesNotFound"]);
+                    else throw new Exception(_lang["ThemesNotFound"]);
                 }
             }
         }
@@ -249,7 +268,7 @@ public class Stylesheet : INotifyPropertyChanged
         catch (Exception ex)
         {
             // Catches generic errors, as well as not being able to overwrite file errors, etc.
-            Toasts.ShowToastLang(ToastType.Error, "Error", "Toast_LoadStylesheetFailed");
+            _toasts.ShowToastLang(ToastType.Error, "Error", "Toast_LoadStylesheetFailed");
             Globals.WriteToLog($"Could not delete stylesheet file: {StylesheetFile}. Could not refresh stylesheet from scss.", ex);
         }
 
@@ -335,8 +354,8 @@ public class Stylesheet : INotifyPropertyChanged
         var (r, g, b) = GetAccentColor();
         WindowsAccentColorHsl = FromRgb(r, g, b);
 
-        if (userInvoked)
-            NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+        //if (userInvoked)
+        //    NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
     }
 
     [SupportedOSPlatform("windows")]

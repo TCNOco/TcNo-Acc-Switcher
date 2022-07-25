@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
 
-namespace TcNo_Acc_Switcher_Server.State;
+namespace TcNo_Acc_Switcher_Server.State.Interfaces;
 
 public interface ISteamFuncs
 {

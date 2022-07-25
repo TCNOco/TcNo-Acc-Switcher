@@ -20,8 +20,15 @@
 @using System.IO
 @using TcNo_Acc_Switcher_Server.State
 @using TcNo_Acc_Switcher_Server.State.DataTypes
-@inject Modals Modals
+@using TcNo_Acc_Switcher_Server.State.Interfaces
+@inject IModals Modals
 @inject IJSRuntime JsRuntime
+@inject IAppState AppState
+@inject ISteamSettings SteamSettings
+@inject ITemplatedPlatformSettings TemplatedPlatformSettings
+@inject IToasts Toasts
+@inject NavigationManager NavigationManager
+@inject IWindowSettings WindowSettings
 
 
 @code {
@@ -112,14 +119,107 @@
         Modals.IsShown = false;
 
         if (Modals.PathPicker.Goal == PathPickerGoal.FindPlatformExe)
-            Modals.UpdatePlatformFolder();
+            UpdatePlatformFolder();
         else if (Modals.PathPicker.Goal == PathPickerGoal.SetBackground)
-            Modals.SetBackground();
+            SetBackground();
         else if (Modals.PathPicker.Goal == PathPickerGoal.SetUserdata)
-            await Modals.ChangeUserdataFolder();
+            await ChangeUserdataFolder();
         else if (Modals.PathPicker.Goal == PathPickerGoal.SetAccountImage)
-            await Modals.ChangeAccImage();
+            ChangeAccImage();
+    }
+
+    /// <summary>
+    /// Import image to use as the app background
+    /// </summary>
+    public void SetBackground()
+    {
+        var path = Modals.PathPicker.LastPath;
+
+        WindowSettings.Background = $"{path}";
+
+        if (File.Exists(path) && path != "")
+        {
+            Directory.CreateDirectory(Path.Join(Globals.UserDataFolder, "wwwroot\\img\\custom\\"));
+            Globals.CopyFile(path, Path.Join(Globals.UserDataFolder, "wwwroot\\img\\custom\\background" + Path.GetExtension(path)));
+            WindowSettings.Background = $"img/custom/background{Path.GetExtension(path)}";
+            WindowSettings.Save();
+        }
+
+        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+    }
+
+    /// <summary>
+    /// Moves all Userdata files to a new folder, and set it as default.
+    /// </summary>
+    public async Task ChangeUserdataFolder()
+    {
+        var path = Modals.PathPicker.LastPath;
+        // Verify this is different.
+        var diOriginal = new DirectoryInfo(Globals.UserDataFolder);
+        var diNew = new DirectoryInfo(path);
+        if (diOriginal.FullName == diNew.FullName) return;
+
+        if (Directory.Exists(path) && path != "")
+        {
+            await File.WriteAllTextAsync(Path.Join(Globals.AppDataFolder, "userdata_path.txt"), path);
+        }
+
+        bool folderEmpty;
+        if (Directory.Exists(path))
+            folderEmpty = Globals.IsDirectoryEmpty(path);
+        else
+        {
+            folderEmpty = true;
+            Directory.CreateDirectory(path);
+        }
 
 
+        if (folderEmpty)
+        {
+            Toasts.ShowToastLang(ToastType.Info, "Toast_DataLocationCopying");
+            if (!Globals.CopyFilesRecursive(Globals.UserDataFolder, path))
+                Toasts.ShowToastLang(ToastType.Error, "Toast_FileCopyFail");
+        }
+        else
+            Toasts.ShowToastLang(ToastType.Info, "Toast_DataLocationNotCopying");
+
+        Toasts.ShowToastLang(ToastType.Info, "Toast_DataLocationSet");
+    }
+
+    /// <summary>
+    /// Update an accounts username
+    /// </summary>
+    public void ChangeAccImage()
+    {
+    // Verify path exists and copy image in.
+        if (!File.Exists(Modals.PathPicker.LastPath)) return;
+        var imageDest = Path.Join(Globals.UserDataFolder, "wwwroot\\img\\profiles\\", AppState.Switcher.CurrentSwitcherSafe);
+        Globals.CopyFile(Modals.PathPicker.LastPath, Path.Join(imageDest, AppState.Switcher.SelectedAccountId + ".jpg"));
+
+    // Update file last write time, so it's not deleted and updated.
+        File.SetLastWriteTime(Path.Join(imageDest, AppState.Switcher.SelectedAccountId + ".jpg"), DateTime.Now);
+
+    // Reload page.
+        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+        Toasts.ShowToastLang(ToastType.Success, "Toast_UpdatedImage");
+    }
+
+
+    /// <summary>
+    /// Change the selected platform's EXE folder to another and save changes
+    /// </summary>
+    public void UpdatePlatformFolder()
+    {
+        var path = Modals.PathPicker.LastPath;
+        Globals.DebugWriteLine($@"[Modals.UpdatePlatformFolder] file={AppState.Switcher.CurrentSwitcher}, path={path}");
+        if (!Globals.IsFolder(path))
+            path = Path.GetDirectoryName(path); // Remove .exe
+        if (!string.IsNullOrWhiteSpace(path) && path.EndsWith(".exe"))
+            path = Path.GetDirectoryName(path) ?? string.Join("\\", path.Split("\\")[..^1]);
+
+        if (AppState.Switcher.CurrentSwitcher == "Steam")
+            SteamSettings.FolderPath = path;
+        else
+            TemplatedPlatformSettings.FolderPath = path;
     }
 }

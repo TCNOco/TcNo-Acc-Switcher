@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TcNo_Acc_Switcher_Server.State;
+namespace TcNo_Acc_Switcher_Server.State.Interfaces;
 
 public interface ITemplatedPlatformSettings
 {
@@ -17,6 +17,7 @@ public interface ITemplatedPlatformSettings
     string ClosingMethod { get; set; }
     string StartingMethod { get; set; }
     string FolderPath { get; set; }
+    void LoadTemplatedPlatformSettings();
     void Save();
     void Reset();
 

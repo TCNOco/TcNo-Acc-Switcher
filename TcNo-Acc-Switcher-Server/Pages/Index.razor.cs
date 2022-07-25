@@ -28,21 +28,22 @@ using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Shared.ContextMenu;
 using TcNo_Acc_Switcher_Server.State;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
+using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.Pages;
 
 public partial class Index
 {
     [Inject] private IStatistics Statistics { get; set; }
-    [Inject] private Toasts Toasts { get; set; }
-    [Inject] private TemplatedPlatformState TemplatedPlatformState { get; set; }
-    [Inject] private SteamSettings SteamSettings { get; set; }
+    [Inject] private IToasts Toasts { get; set; }
+    [Inject] private ITemplatedPlatformState TemplatedPlatformState { get; set; }
+    [Inject] private ISteamSettings SteamSettings { get; set; }
     [Inject] private NavigationManager NavigationManager { get; set; }
-    [Inject] private GameStats GameStats { get; set; }
-    [Inject] private SteamState SteamState { get; set; }
-    [Inject] private SteamFuncs SteamFuncs { get; set; }
-    [Inject] private TemplatedPlatformSettings TemplatedPlatformSettings { get; set; }
-    [Inject] private SharedFunctions SharedFunctions { get; set; }
+    [Inject] private IGameStats GameStats { get; set; }
+    [Inject] private ISteamState SteamState { get; set; }
+    [Inject] private ITemplatedPlatformSettings TemplatedPlatformSettings { get; set; }
+    [Inject] private ITemplatedPlatformFuncs TemplatedPlatformFuncs { get; set; }
+    [Inject] private ISharedFunctions SharedFunctions { get; set; }
 
     protected override void OnInitialized()
     {
@@ -141,7 +142,8 @@ public partial class Index
         }
 
         AppState.Switcher.CurrentSwitcher = platform;
-        TemplatedPlatformState.SetCurrentPlatform(platform);
+        TemplatedPlatformState.LoadTemplatedPlatformState(TemplatedPlatformFuncs);
+        TemplatedPlatformState.SetCurrentPlatform(TemplatedPlatformSettings, platform);
         if (!SharedFunctions.CanKillProcess(TemplatedPlatformState.CurrentPlatform.ExesToEnd, TemplatedPlatformSettings.ClosingMethod)) return;
 
         if (Directory.Exists(TemplatedPlatformSettings.FolderPath) && File.Exists(TemplatedPlatformSettings.Exe))

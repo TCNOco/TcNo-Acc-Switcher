@@ -35,7 +35,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes;
 public class IconFactory
 {
     [Inject] private IAppState AppState { get; set; }
-    [Inject] private Lang Lang { get; set; }
+    [Inject] private ILang Lang { get; set; }
 
     #region FACTORY
     // https://stackoverflow.com/a/32530019/5165437

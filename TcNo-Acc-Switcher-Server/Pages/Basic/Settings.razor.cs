@@ -21,13 +21,14 @@ using Microsoft.AspNetCore.Components.Forms;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.State;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
+using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Basic;
 
 public partial class Settings
 {
-    [Inject] private Modals Modals { get; set; }
-    [Inject] private TemplatedPlatformSettings TemplatedPlatformSettings { get; set; }
+    [Inject] private IModals Modals { get; set; }
+    [Inject] private ITemplatedPlatformSettings TemplatedPlatformSettings { get; set; }
 
     protected override void OnInitialized()
     {
@@ -48,7 +49,7 @@ public partial class Settings
     {
         Globals.DebugWriteLine(@"[ButtonClicked:Basic\Settings.razor.cs.ClearSettings]");
         TemplatedPlatformSettings.Reset();
-        AppState.Navigation.NavigateToWithToast("/Basic/", "success", Lang["Success"], Lang["Toast_ClearedPlatformSettings", new { platform = "Basic" }]);
+        AppState.Navigation.NavigateToWithToast(NavigationManager, "/Basic/", "success", Lang["Success"], Lang["Toast_ClearedPlatformSettings", new { platform = "Basic" }]);
     }
     #endregion
 

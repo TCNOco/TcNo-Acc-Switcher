@@ -14,7 +14,7 @@ public partial class PathPicker
 {
     public class FolderFileList
     {
-        [Inject] private Toasts Toasts { get; set; }
+        [Inject] private IToasts Toasts { get; set; }
 
         public int Depth { get; set; }
         public string FullPath { get; set; }

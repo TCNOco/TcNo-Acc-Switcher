@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
+using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.State;
 
@@ -16,19 +17,28 @@ namespace TcNo_Acc_Switcher_Server.State;
 /// I did want to avoid something like this, but this seems like the best compromise to having duplicate code.
 /// This can be included by both Steam and the BasicPlatform system -- While not relying on them, or injecting them via DI.
 /// </summary>
-public class SharedFunctions
+public class SharedFunctions : ISharedFunctions
 {
-    [Inject] private JSRuntime JsRuntime { get; set; }
-    [Inject] private IStatistics Statistics { get; set; }
-    [Inject] private Toasts Toasts { get; set; }
-    [Inject] private Modals Modals { get; set; }
-    [Inject] private Lang Lang { get; set; }
+    [Inject] private IJSRuntime JsRuntime { get; set; }
+    private readonly ILang _lang;
+    private readonly IModals _modals;
+    private readonly IStatistics _statistics;
+    private readonly IToasts _toasts;
+
+    public SharedFunctions(ILang lang, IModals modals, IStatistics statistics, IToasts toasts)
+    {
+        _lang = lang;
+        _modals = modals;
+        _statistics = statistics;
+        _toasts = toasts;
+    }
 
     /// <summary>
     /// Runs jQueryProcessAccListSize, initContextMenu and initAccListSortable - Final init needed for account switcher to work.
     /// </summary>
     public async Task FinaliseAccountList()
     {
+        if (JsRuntime is null) return;
         //await JsRuntime.InvokeVoidAsync("jQueryProcessAccListSize");
         await JsRuntime.InvokeVoidAsync("initContextMenu");
         await JsRuntime.InvokeVoidAsync("initAccListSortable");
@@ -36,7 +46,7 @@ public class SharedFunctions
 
     public void RunShortcut(string s, string shortcutFolder, string platform = "", bool admin = false)
     {
-        Statistics.IncrementGameLaunches(platform);
+        _statistics.IncrementGameLaunches(platform);
 
         var proc = new Process();
         proc.StartInfo = new ProcessStartInfo
@@ -57,7 +67,7 @@ public class SharedFunctions
             proc.StartInfo.RedirectStandardInput = true;
             proc.StartInfo.RedirectStandardOutput = true;
             if (admin)
-                Toasts.ShowToastLang(ToastType.Warning, "Toast_UrlAdminErr", 15000);
+                _toasts.ShowToastLang(ToastType.Warning, "Toast_UrlAdminErr", 15000);
         }
         else if (Globals.IsAdministrator && !admin)
         {
@@ -68,13 +78,13 @@ public class SharedFunctions
         try
         {
             proc.Start();
-            Toasts.ShowToastLang(ToastType.Info, new LangSub("Status_StartingPlatform", new { platform = Globals.RemoveShortcutExt(s) }));
+            _toasts.ShowToastLang(ToastType.Info, new LangSub("Status_StartingPlatform", new { platform = Globals.RemoveShortcutExt(s) }));
         }
         catch (Exception e)
         {
             // Cancelled by user, or another error.
             Globals.WriteToLog($"Tried to start \"{s}\" but failed.", e);
-            Toasts.ShowToastLang(ToastType.Error, "Status_FailedLog", duration: 15000);
+            _toasts.ShowToastLang(ToastType.Error, "Status_FailedLog", duration: 15000);
         }
     }
 
@@ -104,7 +114,7 @@ public class SharedFunctions
         // Restart self as if can't close admin.
         if (Globals.CanKillProcess(processName)) return true;
         if (showModal)
-            Modals.ShowModal("confirm", ExtraArg.RestartAsAdmin);
+            _modals.ShowModal("confirm", ExtraArg.RestartAsAdmin);
         return false;
     }
 
@@ -139,12 +149,12 @@ public class SharedFunctions
         while (Globals.ProcessHelper.IsProcessRunning(procName) && timeout < 10)
         {
             timeout++;
-            await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Status_WaitingForClose", new { processName = procName, timeout, timeLimit = "10" }]);
+            await JsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_WaitingForClose", new { processName = procName, timeout, timeLimit = "10" }]);
             Thread.Sleep(1000);
         }
 
         if (timeout == 10)
-            Toasts.ShowToastLang(ToastType.Error, "Error", new LangSub("CouldNotCloseX", new { x = procName }));
+            _toasts.ShowToastLang(ToastType.Error, "Error", new LangSub("CouldNotCloseX", new { x = procName }));
 
         return timeout != 10; // Returns true if timeout wasn't reached.
     }
@@ -184,7 +194,7 @@ public class SharedFunctions
                 procToClose.Remove(p);
 
             if (procToClose.Count > 0)
-                await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Status_WaitingForMultipleClose", new { processName = procToClose[0], count = appCount, timeout, timeLimit = "10" }]);
+                await JsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_WaitingForMultipleClose", new { processName = procToClose[0], count = appCount, timeout, timeLimit = "10" }]);
             if (areAnyRunning)
                 Thread.Sleep(1000);
             else
@@ -196,7 +206,7 @@ public class SharedFunctions
 #pragma warning disable CA1416 // Validate platform compatibility
         var leftOvers = procNames.Where(x => !Globals.ProcessHelper.IsProcessRunning(x));
 #pragma warning restore CA1416 // Validate platform compatibility
-        Toasts.ShowToastLang(ToastType.Error, "Error", new LangSub("CouldNotCloseX", new { x = string.Join(", ", leftOvers.ToArray()) }));
+        _toasts.ShowToastLang(ToastType.Error, "Error", new LangSub("CouldNotCloseX", new { x = string.Join(", ", leftOvers.ToArray()) }));
         return false; // Returns true if timeout wasn't reached.
     }
 

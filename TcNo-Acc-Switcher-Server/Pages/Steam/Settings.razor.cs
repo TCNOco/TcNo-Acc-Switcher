@@ -24,13 +24,14 @@ using Microsoft.AspNetCore.Components.Forms;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.State;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
+using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Steam;
 
 public partial class Settings
 {
-    [Inject] private Toasts Toasts { get; set; }
-    [Inject] private Modals Modals { get; set; }
+    [Inject] private IToasts Toasts { get; set; }
+    [Inject] private IModals Modals { get; set; }
 
     protected override void OnInitialized()
     {
@@ -43,7 +44,7 @@ public partial class Settings
         WindowSettings.Save();
         SteamSettings.Save();
 
-        NavManager.NavigateTo("/Steam");
+        NavigationManager.NavigateTo("/Steam");
     }
 
     private string _selectedState;
@@ -81,10 +82,10 @@ public partial class Settings
         if (!_currentlyBackingUp)
             _currentlyBackingUp = true;
         else
-            AppState.Toasts.ShowToastLang(ToastType.Error, "Toast_BackupBusy");
+            Toasts.ShowToastLang(ToastType.Error, "Toast_BackupBusy");
 
         // Let user know it's copying files to a temp location
-        AppState.Toasts.ShowToastLang(ToastType.Info, "Toast_BackupCopy");
+        Toasts.ShowToastLang(ToastType.Info, "Toast_BackupCopy");
 
         // Generate temporary folder:
         var tempFolder = $"BackupTemp\\Backup_Steam_{DateTime.Now:dd-MM-yyyy_hh-mm-ss}";
@@ -105,7 +106,7 @@ public partial class Settings
                 var fExpanded = f.Replace("%Platform_Folder%", SteamSettings.FolderPath);
                 if (!Directory.Exists(fExpanded)) continue;
                 if (!Globals.CopyFilesRecursive(fExpanded, Path.Join(tempFolder, t)))
-                    AppState.Toasts.ShowToastLang(ToastType.Error, "Toast_FileCopyFail");
+                    Toasts.ShowToastLang(ToastType.Error, "Toast_FileCopyFail");
             }
 
         var backupThread = new Thread(() => FinishBackup(tempFolder));
@@ -118,7 +119,7 @@ public partial class Settings
     private void FinishBackup(string tempFolder)
     {
         var folderSize = Globals.FolderSizeString(tempFolder);
-        AppState.Toasts.ShowToastLang(ToastType.Info, new LangSub("Toast_BackupCompress", new { size = folderSize }), 3000);
+        Toasts.ShowToastLang(ToastType.Info, new LangSub("Toast_BackupCompress", new { size = folderSize }), 3000);
 
         var zipFile = Path.Join("Backups", tempFolder.Split(Path.DirectorySeparatorChar).Last() + ".7z");
         Directory.CreateDirectory("Backups");
@@ -130,11 +131,11 @@ public partial class Settings
 
         Globals.RecursiveDelete(tempFolder, false);
         if (File.Exists(zipFile))
-            AppState.Toasts.ShowToastLang(ToastType.Success, new LangSub("Toast_BackupComplete", new { size = folderSize, compressedSize = Globals.FileSizeString(zipFile) }));
+            Toasts.ShowToastLang(ToastType.Success, new LangSub("Toast_BackupComplete", new { size = folderSize, compressedSize = Globals.FileSizeString(zipFile) }));
         else
         {
             Globals.WriteToLog($"ERROR: Could not find compressed backup file! Expected path: {zipFile}");
-            AppState.Toasts.ShowToastLang(ToastType.Error, "Toast_BackupFail");
+            Toasts.ShowToastLang(ToastType.Error, "Toast_BackupFail");
         }
 
         _currentlyBackingUp = false;
@@ -148,7 +149,7 @@ public partial class Settings
         Thread.Sleep(3500);
         while (_currentlyBackingUp)
         {
-            AppState.Toasts.ShowToastLang(ToastType.Info, new LangSub("Toast_BackupProgress", new { compressedSize = Globals.FileSizeString(zipFile) }), 1000);
+            Toasts.ShowToastLang(ToastType.Info, new LangSub("Toast_BackupProgress", new { compressedSize = Globals.FileSizeString(zipFile) }), 1000);
             Thread.Sleep(2000);
         }
     }
@@ -177,7 +178,7 @@ public partial class Settings
             _currentlyRestoring = true;
         else
         {
-            AppState.Toasts.ShowToastLang(ToastType.Error, "Toast_RestoreBusy");
+            Toasts.ShowToastLang(ToastType.Error, "Toast_RestoreBusy");
             return;
         }
 
@@ -187,7 +188,7 @@ public partial class Settings
             {
                 if (!file.Name.EndsWith("7z")) continue;
 
-                AppState.Toasts.ShowToastLang(ToastType.Info, "Toast_RestoreExt");
+                Toasts.ShowToastLang(ToastType.Info, "Toast_RestoreExt");
 
                 var outputFolder = Path.Join("Restore", Path.GetFileNameWithoutExtension(file.Name));
                 Directory.CreateDirectory(outputFolder);
@@ -203,7 +204,7 @@ public partial class Settings
                 Globals.DecompressZip(tempFile, outputFolder);
                 File.Delete(tempFile);
 
-                AppState.Toasts.ShowToastLang(ToastType.Info, "Toast_RestoreCopying");
+                Toasts.ShowToastLang(ToastType.Info, "Toast_RestoreCopying");
 
                 // Move files and folders back
                 foreach (var (toPath, fromPath) in _backupPaths)
@@ -212,20 +213,20 @@ public partial class Settings
                     if (Globals.IsFile(fullFromPath))
                         Globals.CopyFile(fullFromPath, toPath);
                     else if (Globals.IsFolder(fullFromPath) && !Globals.CopyFilesRecursive(fullFromPath, toPath))
-                        AppState.Toasts.ShowToastLang(ToastType.Error, "Toast_FileCopyFail");
+                        Toasts.ShowToastLang(ToastType.Error, "Toast_FileCopyFail");
                 }
 
-                AppState.Toasts.ShowToastLang(ToastType.Info, "Toast_RestoreDeleting");
+                Toasts.ShowToastLang(ToastType.Info, "Toast_RestoreDeleting");
 
                 // Remove temp files
                 Globals.RecursiveDelete(outputFolder, false);
 
-                AppState.Toasts.ShowToastLang(ToastType.Success, "Toast_RestoreComplete");
+                Toasts.ShowToastLang(ToastType.Success, "Toast_RestoreComplete");
             }
             catch (Exception ex)
             {
                 Globals.WriteToLog("Failed to restore from file: " + file.Name, ex);
-                AppState.Toasts.ShowToastLang(ToastType.Error, "Status_FailedLog");
+                Toasts.ShowToastLang(ToastType.Error, "Status_FailedLog");
 
             }
             _currentlyRestoring = false;
@@ -245,9 +246,9 @@ public partial class Settings
     {
         Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearVacStatus]");
         if (Globals.DeleteFile(SteamSettings.VacCacheFile))
-            AppState.Toasts.ShowToastLang(ToastType.Success, "Toast_Steam_VacCleared");
+            Toasts.ShowToastLang(ToastType.Success, "Toast_Steam_VacCleared");
         else
-            AppState.Toasts.ShowToastLang(ToastType.Error, "Error", "Toast_Steam_CantDeleteVacCache");
+            Toasts.ShowToastLang(ToastType.Error, "Error", "Toast_Steam_CantDeleteVacCache");
     }
 
     // BUTTON: Reset settings
@@ -255,7 +256,7 @@ public partial class Settings
     {
         Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearSettings]");
         SteamSettings.Reset();
-        AppState.Navigation.NavigateToWithToast("/Steam", "success", Lang["Success"], Lang["Toast_ClearedPlatformSettings", new { platform = "Steam" }]);
+        AppState.Navigation.NavigateToWithToast(NavigationManager, "/Steam", "success", Lang["Success"], Lang["Toast_ClearedPlatformSettings", new { platform = "Steam" }]);
     }
 
     // BUTTON: Reset images
@@ -272,7 +273,7 @@ public partial class Settings
         Globals.DeleteFiles(SteamSettings.SteamImagePath);
 
         // Reload page, then display notification using a new thread.
-        AppState.Navigation.ReloadWithToast("success", Uri.EscapeDataString(Lang["Success"]), Uri.EscapeDataString(Lang["Toast_ClearedImages"]));
+        AppState.Navigation.ReloadWithToast(NavigationManager, "success", Uri.EscapeDataString(Lang["Success"]), Uri.EscapeDataString(Lang["Toast_ClearedImages"]));
     }
     #endregion
 }

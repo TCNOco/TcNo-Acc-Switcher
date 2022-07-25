@@ -2,7 +2,7 @@
 using TcNo_Acc_Switcher_Server.State.Classes.Steam;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
 
-namespace TcNo_Acc_Switcher_Server.State;
+namespace TcNo_Acc_Switcher_Server.State.Interfaces;
 
 public interface ISteamState
 {
@@ -13,6 +13,8 @@ public interface ISteamState
     int LastAccTimestamp { get; set; }
     string LastAccSteamId { get; set; }
     bool SteamWebApiWasReset { get; set; }
+    void LoadSteamState(ISteamFuncs steamFuncs);
+    string GetName(SteamUser su);
 
     /// <summary>
     /// Loads ban info from cache file

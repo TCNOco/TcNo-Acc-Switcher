@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TcNo_Acc_Switcher_Server.State;
+namespace TcNo_Acc_Switcher_Server.State.Interfaces;
 
 public interface ISteamSettings
 {
@@ -24,6 +24,11 @@ public interface ISteamSettings
     bool ShowShortNotes { get; set; }
     bool StartSilent { get; set; }
     Dictionary<string, string> CustomAccountNames { get; set; }
+    string LoginUsersVdf { get; set; }
+    string SteamImagePath { get; init; }
+    string SteamImagePathHtml { get; init; }
+    List<string> Processes { get; init; }
+    string VacCacheFile { get; init; }
 
     /// <summary>
     /// Get Steam.exe path from SteamSettings.json

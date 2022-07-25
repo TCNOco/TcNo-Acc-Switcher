@@ -30,15 +30,22 @@ namespace TcNo_Acc_Switcher_Server.State.Classes.Templated;
 
 public class TemplatedPlatformContextMenu
 {
-    [Inject] private Lang Lang { get; set; }
-    [Inject] private Modals Modals { get; set; }
-    [Inject] IAppState AppState { get; set; }
-    [Inject] Toasts Toasts { get; set; }
-    [Inject] TemplatedPlatformState TemplatedPlatformState { get; set; }
-    [Inject] TemplatedPlatformFuncs TemplatedPlatformFuncs { get; set; }
-    [Inject] State.GameStats GameStats { get; set; }
-    [Inject] IWindowSettings WindowSettings { get; set; }
+    private readonly IAppState _appState;
+    private readonly IGameStats _gameStats;
+    private readonly IModals _modals;
+    private readonly ITemplatedPlatformState _templatedPlatformState;
+    private readonly ITemplatedPlatformFuncs _templatedPlatformFuncs;
+    private readonly IToasts _toasts;
 
+    public TemplatedPlatformContextMenu(IAppState appState, IGameStats gameStats, IModals modals, ITemplatedPlatformFuncs templatedPlatformFuncs, ITemplatedPlatformState templatedPlatformState, IToasts toasts)
+    {
+        _appState = appState;
+        _gameStats = gameStats;
+        _modals = modals;
+        _templatedPlatformFuncs = templatedPlatformFuncs;
+        _templatedPlatformState = templatedPlatformState;
+        _toasts = toasts;
+    }
 
     public readonly ObservableCollection<MenuItem> ContextMenuItems = new();
     private void BuildContextMenu()
@@ -47,15 +54,15 @@ public class TemplatedPlatformContextMenu
         ContextMenuItems.AddRange(new MenuBuilder(
             new[]
             {
-                new ("Context_SwapTo", new Action(() => TemplatedPlatformFuncs.SwapToAccount())),
-                new ("Context_CopyUsername", new Action(async () => await StaticFuncs.CopyText(AppState.Switcher.SelectedAccount.DisplayName))),
-                new ("Context_ChangeName", new Action(Modals.ShowChangeUsernameModal)),
+                new ("Context_SwapTo", new Action(() => _templatedPlatformFuncs.SwapToAccount())),
+                new ("Context_CopyUsername", new Action(async () => await StaticFuncs.CopyText(_appState.Switcher.SelectedAccount.DisplayName))),
+                new ("Context_ChangeName", new Action(_modals.ShowChangeUsernameModal)),
                 new ("Context_CreateShortcut", new Action(() => CreateShortcut())),
-                new ("Context_ChangeImage", new Action(Modals.ShowChangeAccImageModal)),
-                new ("Forget", new Action(async () => await TemplatedPlatformFuncs.ForgetAccount())),
-                new ("Notes", new Action(() => Modals.ShowModal("notes"))),
-                GameStats.PlatformHasAnyGames(TemplatedPlatformState.CurrentPlatform.SafeName) ?
-                    new Tuple<string, object>("Context_ManageGameStats", new Action(Modals.ShowGameStatsSelectorModal)) : null,
+                new ("Context_ChangeImage", new Action(_modals.ShowChangeAccImageModal)),
+                new ("Forget", new Action(async () => await _templatedPlatformFuncs.ForgetAccount())),
+                new ("Notes", new Action(() => _modals.ShowModal("notes"))),
+                _gameStats.PlatformHasAnyGames(_templatedPlatformState.CurrentPlatform.SafeName) ?
+                    new Tuple<string, object>("Context_ManageGameStats", new Action(_modals.ShowGameStatsSelectorModal)) : null,
             }).Result());
     }
 
@@ -81,11 +88,11 @@ public class TemplatedPlatformContextMenu
         if (!OperatingSystem.IsWindows()) return;
         Globals.DebugWriteLine(@"[JSInvoke:General\GeneralInvocableFuncs.CreateShortcut]");
         if (args.Length > 0 && args[0] != ':') args = $" {args}"; // Add a space before arguments if doesn't start with ':'
-        var bgImg = Path.Join(Globals.WwwRoot, $"\\img\\platform\\{AppState.Switcher.CurrentSwitcherSafe}.svg");
-        var currentPlatformImgPath = Path.Join(Globals.WwwRoot, $"\\img\\platform\\{TemplatedPlatformState.CurrentPlatform.SafeName}.svg");
-        var currentPlatformImgPathOverride = Path.Join(Globals.WwwRoot, $"\\img\\platform\\{TemplatedPlatformState.CurrentPlatform.SafeName}.png");
-        var primaryPlatformId = TemplatedPlatformState.CurrentPlatform.PrimaryId;
-        var platformName = $"Switch to {AppState.Switcher.SelectedAccount.DisplayName} [{AppState.Switcher.CurrentSwitcher}]";
+        var bgImg = Path.Join(Globals.WwwRoot, $"\\img\\platform\\{_appState.Switcher.CurrentSwitcherSafe}.svg");
+        var currentPlatformImgPath = Path.Join(Globals.WwwRoot, $"\\img\\platform\\{_templatedPlatformState.CurrentPlatform.SafeName}.svg");
+        var currentPlatformImgPathOverride = Path.Join(Globals.WwwRoot, $"\\img\\platform\\{_templatedPlatformState.CurrentPlatform.SafeName}.png");
+        var primaryPlatformId = _templatedPlatformState.CurrentPlatform.PrimaryId;
+        var platformName = $"Switch to {_appState.Switcher.SelectedAccount.DisplayName} [{_appState.Switcher.CurrentSwitcher}]";
 
         if (File.Exists(currentPlatformImgPathOverride))
             bgImg = currentPlatformImgPathOverride;
@@ -95,11 +102,11 @@ public class TemplatedPlatformContextMenu
             bgImg = Path.Join(Globals.WwwRoot, "\\img\\BasicDefault.png");
 
 
-        var fgImg = Path.Join(Globals.WwwRoot, $"\\img\\profiles\\{AppState.Switcher.CurrentSwitcherSafe}\\{AppState.Switcher.SelectedAccountId}.jpg");
-        if (!File.Exists(fgImg)) fgImg = Path.Join(Globals.WwwRoot, $"\\img\\profiles\\{AppState.Switcher.CurrentSwitcherSafe}\\{AppState.Switcher.SelectedAccountId}.png");
+        var fgImg = Path.Join(Globals.WwwRoot, $"\\img\\profiles\\{_appState.Switcher.CurrentSwitcherSafe}\\{_appState.Switcher.SelectedAccountId}.jpg");
+        if (!File.Exists(fgImg)) fgImg = Path.Join(Globals.WwwRoot, $"\\img\\profiles\\{_appState.Switcher.CurrentSwitcherSafe}\\{_appState.Switcher.SelectedAccountId}.png");
         if (!File.Exists(fgImg))
         {
-            Toasts.ShowToastLang(ToastType.Error, "Toast_CantCreateShortcut", "Toast_CantFindImage");
+            _toasts.ShowToastLang(ToastType.Error, "Toast_CantCreateShortcut", "Toast_CantFindImage");
             return;
         }
 
@@ -107,19 +114,19 @@ public class TemplatedPlatformContextMenu
         _ = s.Shortcut_Platform(
             Shortcut.Desktop,
             platformName,
-            $"+{primaryPlatformId}:{AppState.Switcher.SelectedAccountId}{args}",
-            $"Switch to {AppState.Switcher.SelectedAccount.DisplayName} [{AppState.Switcher.CurrentSwitcher}] in TcNo Account Switcher",
+            $"+{primaryPlatformId}:{_appState.Switcher.SelectedAccountId}{args}",
+            $"Switch to {_appState.Switcher.SelectedAccount.DisplayName} [{_appState.Switcher.CurrentSwitcher}] in TcNo Account Switcher",
             true);
-        if (s.CreateCombinedIcon(bgImg, fgImg, $"{AppState.Switcher.SelectedAccountId}.ico"))
+        if (s.CreateCombinedIcon(bgImg, fgImg, $"{_appState.Switcher.SelectedAccountId}.ico"))
         {
             s.TryWrite();
 
-            if (AppState.Stylesheet.StreamerModeTriggered)
-                Toasts.ShowToastLang(ToastType.Success, "Success", "Toast_ShortcutCreated");
+            if (_appState.Stylesheet.StreamerModeTriggered)
+                _toasts.ShowToastLang(ToastType.Success, "Success", "Toast_ShortcutCreated");
             else
-                Toasts.ShowToastLang(ToastType.Success, "Toast_ShortcutCreated", new LangSub("ForName", new { name = AppState.Switcher.SelectedAccount.DisplayName }));
+                _toasts.ShowToastLang(ToastType.Success, "Toast_ShortcutCreated", new LangSub("ForName", new { name = _appState.Switcher.SelectedAccount.DisplayName }));
         }
         else
-            Toasts.ShowToastLang(ToastType.Error, "Toast_FailedCreateIcon");
+            _toasts.ShowToastLang(ToastType.Error, "Toast_FailedCreateIcon");
     }
 }

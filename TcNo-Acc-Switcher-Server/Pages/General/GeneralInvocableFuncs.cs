@@ -30,10 +30,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General;
 public class GeneralInvocableFuncs
 {
     [Inject] private IWindowSettings WindowSettings { get; set; }
-    [Inject] private IJSRuntime JsRuntime { get; set; }
-    [Inject] private AppState AppState { get; set; }
     [Inject] private ILang Lang { get; set; }
-    [Inject] private TemplatedPlatformState TemplatedPlatformState { get; set; }
 
     /// <summary>
     /// JS function handler for saving settings from Settings GUI page into [Platform]Settings.json file

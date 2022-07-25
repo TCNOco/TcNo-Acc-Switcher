@@ -25,19 +25,19 @@
 @using TcNo_Acc_Switcher_Server.State
 @using TcNo_Acc_Switcher_Server.State.DataTypes
 @using TcNo_Acc_Switcher_Server.State.Interfaces
-@inject Modals Modals
+@inject IModals Modals
 @inject ILang Lang
-@inject GameStats GameStats
+@inject IGameStats GameStats
 @inject IAppState AppState
 @inject IWindowSettings WindowSettings
 @inject IJSRuntime JsRuntime
-@inject SteamSettings SteamSettings
-@inject SteamFuncs SteamFuncs
-@inject TemplatedPlatformState TemplatedPlatformState
-@inject TemplatedPlatformFuncs TemplatedPlatformFuncs
-@inject TemplatedPlatformSettings TemplatedPlatformSettings
+@inject ISteamSettings SteamSettings
+@inject ISteamFuncs SteamFuncs
+@inject ITemplatedPlatformState TemplatedPlatformState
+@inject ITemplatedPlatformFuncs TemplatedPlatformFuncs
+@inject ITemplatedPlatformSettings TemplatedPlatformSettings
 @inject IStatistics Statistics
-@inject Toasts Toasts
+@inject IToasts Toasts
 
 @code {
     private MarkupString _message = new();

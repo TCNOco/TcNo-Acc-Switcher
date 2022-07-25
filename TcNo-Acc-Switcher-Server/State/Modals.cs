@@ -24,17 +24,12 @@ using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.State;
 
-public class Modals
+public class Modals : IModals
 {
-    [Inject] IAppState AppState { get; set; }
-    [Inject] Toasts Toasts { get; set; }
-    [Inject] IWindowSettings WindowSettings { get; set; }
-    [Inject] JSRuntime JsRuntime { get; set; }
-    [Inject] NavigationManager NavigationManager { get; set; }
-    [Inject] SteamSettings SteamSettings { get; set; }
-    [Inject] TemplatedPlatformSettings TemplatedPlatformSettings { get; set; }
-    [Inject] TemplatedPlatformFuncs TemplatedPlatformFuncs { get; set; }
-    [Inject] TemplatedPlatformState TemplatedPlatformState { get; set; }
+    [Inject] private IJSRuntime JsRuntime { get; set; }
+
+    public Modals() { }
+
 
     public event Action OnChange;
     public void NotifyDataChanged() => OnChange?.Invoke();
@@ -121,24 +116,6 @@ public class Modals
     }
 
     /// <summary>
-    /// Change the selected platform's EXE folder to another and save changes
-    /// </summary>
-    public void UpdatePlatformFolder()
-    {
-        var path = PathPicker.LastPath;
-        Globals.DebugWriteLine($@"[Modals.UpdatePlatformFolder] file={AppState.Switcher.CurrentSwitcher}, path={path}");
-        if (!Globals.IsFolder(path))
-            path = Path.GetDirectoryName(path); // Remove .exe
-        if (!string.IsNullOrWhiteSpace(path) && path.EndsWith(".exe"))
-            path = Path.GetDirectoryName(path) ?? string.Join("\\", path.Split("\\")[..^1]);
-
-        if (AppState.Switcher.CurrentSwitcher == "Steam")
-            SteamSettings.FolderPath = path;
-        else
-            TemplatedPlatformSettings.FolderPath = path;
-    }
-
-    /// <summary>
     /// Show the PathPicker modal to find an image to import and use as the app background
     /// </summary>
     public void ShowSetBackgroundModal()
@@ -146,74 +123,6 @@ public class Modals
         PathPicker =
             new PathPickerRequest(PathPickerGoal.SetBackground);
         ShowModal("find");
-    }
-
-    /// <summary>
-    /// Import image to use as the app background
-    /// </summary>
-    public void SetBackground()
-    {
-        var path = PathPicker.LastPath;
-
-        WindowSettings.Background = $"{path}";
-
-        if (File.Exists(path) && path != "")
-        {
-            Directory.CreateDirectory(Path.Join(Globals.UserDataFolder, "wwwroot\\img\\custom\\"));
-            Globals.CopyFile(path, Path.Join(Globals.UserDataFolder, "wwwroot\\img\\custom\\background" + Path.GetExtension(path)));
-            WindowSettings.Background = $"img/custom/background{Path.GetExtension(path)}";
-            WindowSettings.Save();
-        }
-
-        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
-    }
-
-    /// <summary>
-    /// Show the PathPicker modal to move all Userdata files to a new folder, and set it as default.
-    /// </summary>
-    public void ShowChangeUserdataFolderModal()
-    {
-        PathPicker =
-            new PathPickerRequest(PathPickerGoal.SetUserdata);
-        ShowModal("find");
-    }
-
-    /// <summary>
-    /// Moves all Userdata files to a new folder, and set it as default.
-    /// </summary>
-    public async Task ChangeUserdataFolder()
-    {
-        var path = PathPicker.LastPath;
-        // Verify this is different.
-        var diOriginal = new DirectoryInfo(Globals.UserDataFolder);
-        var diNew = new DirectoryInfo(path);
-        if (diOriginal.FullName == diNew.FullName) return;
-
-        if (Directory.Exists(path) && path != "")
-        {
-            await File.WriteAllTextAsync(Path.Join(Globals.AppDataFolder, "userdata_path.txt"), path);
-        }
-
-        bool folderEmpty;
-        if (Directory.Exists(path))
-            folderEmpty = Globals.IsDirectoryEmpty(path);
-        else
-        {
-            folderEmpty = true;
-            Directory.CreateDirectory(path);
-        }
-
-
-        if (folderEmpty)
-        {
-            Toasts.ShowToastLang(ToastType.Info, "Toast_DataLocationCopying");
-            if (!Globals.CopyFilesRecursive(Globals.UserDataFolder, path))
-                Toasts.ShowToastLang(ToastType.Error, "Toast_FileCopyFail");
-        }
-        else
-            Toasts.ShowToastLang(ToastType.Info, "Toast_DataLocationNotCopying");
-
-        Toasts.ShowToastLang(ToastType.Info, "Toast_DataLocationSet");
     }
 
     /// <summary>
@@ -225,61 +134,10 @@ public class Modals
             new PathPickerRequest(PathPickerGoal.SetAccountImage);
         ShowModal("find");
     }
-
-    /// <summary>
-    /// Update an accounts username
-    /// </summary>
-    public async Task ChangeAccImage()
-    {
-        // Verify path exists and copy image in.
-        if (!File.Exists(PathPicker.LastPath)) return;
-        var imageDest = Path.Join(Globals.UserDataFolder, "wwwroot\\img\\profiles\\", AppState.Switcher.CurrentSwitcherSafe);
-        Globals.CopyFile(PathPicker.LastPath, Path.Join(imageDest, AppState.Switcher.SelectedAccountId + ".jpg"));
-
-        // Update file last write time, so it's not deleted and updated.
-        File.SetLastWriteTime(Path.Join(imageDest, AppState.Switcher.SelectedAccountId + ".jpg"), DateTime.Now);
-
-        // Reload page.
-        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
-        Toasts.ShowToastLang(ToastType.Success, "Toast_UpdatedImage");
-    }
-
     #endregion
 
 
-
     #region TEXT INPUT MODALS
-
-    /// <summary>
-    /// Show the Set App Password modal
-    /// </summary>
-    public void ShowSetAppPasswordModal()
-    {
-        TextInput =
-            new TextInputRequest(TextInputGoal.AppPassword);
-        ShowModal("getText");
-    }
-
-    /// <summary>
-    /// Sets the App Password, to stop simple eyes from snooping
-    /// </summary>
-    public async Task SetAppPassword()
-    {
-        WindowSettings.PasswordHash = Globals.GetSha256HashString(TextInput.LastString);
-        WindowSettings.Save();
-        Toasts.ShowToastLang(ToastType.Success, "Toast_PasswordChanged");
-    }
-
-    /// <summary>
-    /// Show the Set App Password modal
-    /// </summary>
-    public void ShowSetAccountStringModal()
-    {
-        TextInput =
-            new TextInputRequest(TextInputGoal.AccString);
-        ShowModal("getText");
-    }
-
     /// <summary>
     /// Show the Set App Password modal
     /// </summary>
@@ -288,68 +146,6 @@ public class Modals
         TextInput =
             new TextInputRequest(TextInputGoal.ChangeUsername);
         ShowModal("getText");
-    }
-
-    public async Task SetAccountString()
-    {
-        IsShown = false;
-
-        if (AppState.Switcher.CurrentSwitcher == "Steam")
-        {
-            if (TextInput.Goal is TextInputGoal.ChangeUsername)
-            {
-                SteamSettings.CustomAccountNames[AppState.Switcher.SelectedAccountId] = TextInput.LastString;
-                AppState.Switcher.SelectedAccount.DisplayName = TextInput.LastString;
-                SteamSettings.Save();
-
-                TextInputNotifyDataChanged();
-                Toasts.ShowToastLang(ToastType.Success, "Toast_ChangedUsername");
-            }
-        }
-        else
-        {
-            if (TextInput.Goal is TextInputGoal.ChangeUsername)
-                TemplatedChangeUsername(AppState.Switcher.SelectedAccountId, TextInput.LastString);
-            else
-                await TemplatedPlatformFuncs.TemplatedAddCurrent(TextInput.LastString);
-        }
-    }
-
-    public void TemplatedChangeUsername(string accId, string newName, bool reload = true)
-    {
-        TemplatedPlatformState.LoadAccountIds();
-        var oldName = TemplatedPlatformState.GetNameFromId(accId);
-
-        try
-        {
-            // No need to rename image as accId. That step is skipped here.
-            Directory.Move($"LoginCache\\{TemplatedPlatformState.CurrentPlatform.SafeName}\\{oldName}\\", $"LoginCache\\{TemplatedPlatformState.CurrentPlatform.SafeName}\\{newName}\\"); // Rename login cache folder
-        }
-        catch (IOException e)
-        {
-            Globals.WriteToLog("Failed to write to file: " + e);
-            Toasts.ShowToastLang(ToastType.Error, "Error", new LangSub("Error_FileAccessDenied", new { logPath = Globals.GetLogPath() }));
-            return;
-        }
-
-        try
-        {
-            TemplatedPlatformState.AccountIds[accId] = newName;
-            TemplatedPlatformState.SaveAccountIds();
-        }
-        catch (Exception e)
-        {
-            Globals.WriteToLog("Failed to change username: " + e);
-            Toasts.ShowToastLang(ToastType.Error, "Error", "Toast_CantChangeUsername");
-            return;
-        }
-
-        if (AppState.Switcher.SelectedAccount is not null)
-        {
-            AppState.Switcher.SelectedAccount.DisplayName = TextInput.LastString;
-        }
-
-        Toasts.ShowToastLang(ToastType.Success, "Toast_ChangedUsername");
     }
     #endregion
 }

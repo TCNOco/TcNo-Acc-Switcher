@@ -23,20 +23,19 @@
 @using TcNo_Acc_Switcher_Server.State
 @using TcNo_Acc_Switcher_Server.State.DataTypes
 @using TcNo_Acc_Switcher_Server.State.Interfaces
-@inject IAppState AppState
-@inject SteamState SteamState
-@inject SteamFuncs SteamFuncs
-@inject SteamSettings SteamSettings
-@inject Modals Modals
-@inject IJSRuntime JsRuntime
-@inject NavigationManager NavManager
-@inject Lang Lang
-@inject IStatistics Statistics
-@inject SharedFunctions SharedFunctions
-@inject GameStats GameStats
-@inject Toasts Toasts
-@inject IWindowSettings WindowSettings
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
+@inject IAppState AppState
+@inject ISteamState SteamState
+@inject ISteamFuncs SteamFuncs
+@inject ISteamSettings SteamSettings
+@inject IModals Modals
+@inject ILang Lang
+@inject IStatistics Statistics
+@inject ISharedFunctions SharedFunctions
+@inject IGameStats GameStats
+@inject IToasts Toasts
+@inject IWindowSettings WindowSettings
 
 <ContextMenu MenuItems="@SteamState.ContextMenu.Menu" ContextMenuId="AccOrPlatList" @ref="SteamContextMenu" />
 <ContextMenu MenuItems="@SteamState.ContextMenu.ShortcutItems" ContextMenuId="Shortcuts" />
@@ -87,7 +86,7 @@
             <i class="fas fa-caret-right footerIcoInline"></i>
         </button>
 
-        <button class="btnSettings" @onclick='() => NavManager.NavigateTo("/Steam/Settings/")' data-toggle="tooltip" title="@(Lang["Tooltip_Settings"])">
+        <button class="btnSettings" @onclick='() => NavigationManager.NavigateTo("/Steam/Settings/")' data-toggle="tooltip" title="@(Lang["Tooltip_Settings"])">
             <i class="fas fa-cog footerIcoSettings"></i>
         </button>
         <button class="btnHelp" @onclick='() => Modals.ShowModal("info")' data-toggle="tooltip" title="@(Lang["Tooltip_Info"])">
@@ -110,6 +109,7 @@
     protected override void OnInitialized()
     {
         //AppData.Instance.OnChange += OnChangeHandler;
+        SteamState.LoadSteamState(SteamFuncs);
     }
     private async void OnChangeHandler()
     {

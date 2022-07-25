@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using TcNo_Acc_Switcher_Server.State.Classes.GameStats;
+using TcNo_Acc_Switcher_Server.State.DataTypes;
 
-namespace TcNo_Acc_Switcher_Server.State;
+namespace TcNo_Acc_Switcher_Server.State.Interfaces;
 
 public interface IGameStats
 {
@@ -34,7 +35,7 @@ public interface IGameStats
     /// <summary>
     /// Returns list Dictionary of Game Names:[Dictionary of statistic names and StatValueAndIcon (values and indicator text for HTML)]
     /// </summary>
-    Dictionary<string, Dictionary<string, GameStats.StatValueAndIcon>> GetUserStatsAllGamesMarkup(string account = "");
+    Dictionary<string, Dictionary<string, StatValueAndIcon>> GetUserStatsAllGamesMarkup(string account = "");
 
     /// <summary>
     /// Gets list of all metric names to collect, as well as whether each is hidden or not, and the text to display in the UI checkbox.

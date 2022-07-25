@@ -4,15 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Server.State.Classes.GameStats;
+using TcNo_Acc_Switcher_Server.State.DataTypes;
 using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.State;
 
 public class GameStats : IGameStats
 {
-    [Inject] private IAppState AppState { get; set; }
-
-    [Inject] private GameStatsRoot GameStatsRoot { get; set; }
+    private readonly IAppState _appState;
+    private readonly IGameStatsRoot _gameStatsRoot;
 
     // TEMP NOTES:
     // - PlatformGames is now GameStatsRoot.PlatformCompatibilities
@@ -30,9 +30,10 @@ public class GameStats : IGameStats
     /// <summary>
     /// Read GameStats.json and collect game definitions, as well as platform-game relations.
     /// </summary>
-    public GameStats()
+    public GameStats(IAppState appState, IGameStatsRoot gameStatsRoot)
     {
-        GameStatsRoot = new GameStatsRoot();
+        _appState = appState;
+        _gameStatsRoot = gameStatsRoot;
     }
 
     /// <summary>
@@ -41,13 +42,13 @@ public class GameStats : IGameStats
     /// <returns>If successfully loaded platform</returns>
     public async Task<bool> SetCurrentPlatform(string platform)
     {
-        if (!GameStatsRoot.IsInit) return false;
+        if (!_gameStatsRoot.IsInit) return false;
 
-        AppState.Switcher.CurrentSwitcher = platform;
-        if (!GameStatsRoot.PlatformCompatibilities.ContainsKey(platform)) return false;
+        _appState.Switcher.CurrentSwitcher = platform;
+        if (!_gameStatsRoot.PlatformCompatibilities.ContainsKey(platform)) return false;
 
         // TODO: Verify this works as intended when more games are added.
-        foreach (var game in GameStatsRoot.PlatformCompatibilities[platform])
+        foreach (var game in _gameStatsRoot.PlatformCompatibilities[platform])
         {
             var gs = new GameStatSaved();
             await gs.SetGameStat(game);
@@ -82,21 +83,15 @@ public class GameStats : IGameStats
     /// </summary>
     public string GetIcon(string game, string statName) => SavedStats[game].ToCollect[statName].Icon;
 
-    public class StatValueAndIcon
-    {
-        public string StatValue { get; set; }
-        public string IndicatorMarkup { get; set; }
-    }
-
     // List of possible games on X platform
-    public List<string> GetAvailableGames => GameStatsRoot.PlatformCompatibilities.ContainsKey(AppState.Switcher.CurrentSwitcher) ? GameStatsRoot.PlatformCompatibilities[AppState.Switcher.CurrentSwitcher] : new List<string>();
+    public List<string> GetAvailableGames => _gameStatsRoot.PlatformCompatibilities.ContainsKey(_appState.Switcher.CurrentSwitcher) ? _gameStatsRoot.PlatformCompatibilities[_appState.Switcher.CurrentSwitcher] : new List<string>();
 
     /// <summary>
     /// Returns list Dictionary of Game Names:[Dictionary of statistic names and StatValueAndIcon (values and indicator text for HTML)]
     /// </summary>
     public Dictionary<string, Dictionary<string, StatValueAndIcon>> GetUserStatsAllGamesMarkup(string account = "")
     {
-        if (account == "") account = AppState.Switcher.SelectedAccountId;
+        if (account == "") account = _appState.Switcher.SelectedAccountId;
 
         var returnDict = new Dictionary<string, Dictionary<string, StatValueAndIcon>>();
         // Foreach available game
@@ -160,7 +155,7 @@ public class GameStats : IGameStats
         return allMetrics;
     }
 
-    public bool PlatformHasAnyGames(string platform) => platform is not null && (GameStatsRoot.PlatformCompatibilities.ContainsKey(platform) && GameStatsRoot.PlatformCompatibilities[platform].Count > 0);
+    public bool PlatformHasAnyGames(string platform) => platform is not null && (_gameStatsRoot.PlatformCompatibilities.ContainsKey(platform) && _gameStatsRoot.PlatformCompatibilities[platform].Count > 0);
     //public JObject GetGame(string game) => (JObject)StatsDefinitions![game];
 
 
@@ -184,7 +179,7 @@ public class GameStats : IGameStats
             SavedStats[game].SaveStats();
     }
 
-    public List<string> PlatformCompatibilitiesWithStats(string platform) => GameStatsRoot.PlatformCompatibilities.ContainsKey(platform) ? GetAvailableGames : new List<string>();
+    public List<string> PlatformCompatibilitiesWithStats(string platform) => _gameStatsRoot.PlatformCompatibilities.ContainsKey(platform) ? GetAvailableGames : new List<string>();
 
 
     /// <summary>

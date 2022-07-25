@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using TcNo_Acc_Switcher_Server.State.Classes.Stats;
 
-namespace TcNo_Acc_Switcher_Server.State;
+namespace TcNo_Acc_Switcher_Server.State.Interfaces;
 
 public interface IStatistics
 {

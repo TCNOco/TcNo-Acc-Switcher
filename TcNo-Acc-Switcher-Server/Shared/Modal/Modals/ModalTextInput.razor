@@ -20,8 +20,15 @@
 @using System.IO
 @using TcNo_Acc_Switcher_Server.State
 @using TcNo_Acc_Switcher_Server.State.DataTypes
-@inject Modals Modals
+@using TcNo_Acc_Switcher_Server.State.Interfaces
+@inject IModals Modals
 @inject IJSRuntime JsRuntime
+@inject IAppState AppState
+@inject IToasts Toasts
+@inject ITemplatedPlatformState TemplatedPlatformState
+@inject ITemplatedPlatformFuncs TemplatedPlatformFuncs
+@inject ISteamSettings SteamSettings
+@inject IWindowSettings WindowSettings
 
 @code {
     protected override void OnInitialized()
@@ -94,10 +101,81 @@
         Modals.IsShown = false;
 
         if (Modals.TextInput.Goal == TextInputGoal.AppPassword)
-            await Modals.SetAppPassword();
+            SetAppPassword();
         else if (Modals.TextInput.Goal is TextInputGoal.AccString or TextInputGoal.ChangeUsername)
-            await Modals.SetAccountString();
+            await SetAccountString();
+    }
 
 
+    /// <summary>
+    /// Sets the App Password, to stop simple eyes from snooping
+    /// </summary>
+    public void SetAppPassword()
+    {
+        WindowSettings.PasswordHash = Globals.GetSha256HashString(Modals.TextInput.LastString);
+        WindowSettings.Save();
+        Toasts.ShowToastLang(ToastType.Success, "Toast_PasswordChanged");
+    }
+
+    public async Task SetAccountString()
+    {
+        Modals.IsShown = false;
+
+        if (AppState.Switcher.CurrentSwitcher == "Steam")
+        {
+            if (Modals.TextInput.Goal is TextInputGoal.ChangeUsername)
+            {
+                SteamSettings.CustomAccountNames[AppState.Switcher.SelectedAccountId] = Modals.TextInput.LastString;
+                AppState.Switcher.SelectedAccount.DisplayName = Modals.TextInput.LastString;
+                SteamSettings.Save();
+
+                Modals.TextInputNotifyDataChanged();
+                Toasts.ShowToastLang(ToastType.Success, "Toast_ChangedUsername");
+            }
+        }
+        else
+        {
+            if (Modals.TextInput.Goal is TextInputGoal.ChangeUsername)
+                TemplatedChangeUsername(AppState.Switcher.SelectedAccountId, Modals.TextInput.LastString);
+            else
+                await TemplatedPlatformFuncs.TemplatedAddCurrent(Modals.TextInput.LastString);
+        }
+    }
+
+    public void TemplatedChangeUsername(string accId, string newName, bool reload = true)
+    {
+        TemplatedPlatformState.LoadAccountIds();
+        var oldName = TemplatedPlatformState.GetNameFromId(accId);
+
+        try
+        {
+            // No need to rename image as accId. That step is skipped here.
+            Directory.Move($"LoginCache\\{TemplatedPlatformState.CurrentPlatform.SafeName}\\{oldName}\\", $"LoginCache\\{TemplatedPlatformState.CurrentPlatform.SafeName}\\{newName}\\"); // Rename login cache folder
+        }
+        catch (IOException e)
+        {
+            Globals.WriteToLog("Failed to write to file: " + e);
+            Toasts.ShowToastLang(ToastType.Error, "Error", new LangSub("Error_FileAccessDenied", new { logPath = Globals.GetLogPath() }));
+            return;
+        }
+
+        try
+        {
+            TemplatedPlatformState.AccountIds[accId] = newName;
+            TemplatedPlatformState.SaveAccountIds();
+        }
+        catch (Exception e)
+        {
+            Globals.WriteToLog("Failed to change username: " + e);
+            Toasts.ShowToastLang(ToastType.Error, "Error", "Toast_CantChangeUsername");
+            return;
+        }
+
+        if (AppState.Switcher.SelectedAccount is not null)
+        {
+            AppState.Switcher.SelectedAccount.DisplayName = Modals.TextInput.LastString;
+        }
+
+        Toasts.ShowToastLang(ToastType.Success, "Toast_ChangedUsername");
     }
 }

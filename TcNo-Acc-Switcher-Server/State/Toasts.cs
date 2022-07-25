@@ -19,14 +19,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
+using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.State;
 
-public class Toasts
+public class Toasts : IToasts
 {
-    [Inject] private Lang Lang { get; set; }
-
-    public Toasts() { }
+    private readonly ILang _lang;
+    public Toasts(ILang lang)
+    {
+        _lang = lang;
+    }
 
     // Toast stuff - This is the first attempt at properly using AppData as a Blazor DI Singleton.
     public ObservableCollection<Toast> ToastQueue { get; set; } = new();
@@ -63,11 +66,11 @@ public class Toasts
     public void ShowToast(ToastType type, string message, int duration = 5000) =>
         ShowToast(type, "", message, duration);
     public void ShowToastLang(ToastType type, string titleVar, string messageVar, int duration = 5000) =>
-        ShowToast(type, Lang[titleVar], Lang[messageVar], duration);
+        ShowToast(type, _lang[titleVar], _lang[messageVar], duration);
     public void ShowToastLang(ToastType type, string messageVar, int duration = 5000) =>
-        ShowToast(type, "", Lang[messageVar], duration);
+        ShowToast(type, "", _lang[messageVar], duration);
     public void ShowToastLang(ToastType type, string titleVar, LangSub message, int duration = 5000) =>
-        ShowToast(type, Lang[titleVar], Lang[message.LangKey, message.Variable], duration);
+        ShowToast(type, _lang[titleVar], _lang[message.LangKey, message.Variable], duration);
     public void ShowToastLang(ToastType type, LangSub message, int duration = 5000) =>
-        ShowToast(type, "", Lang[message.LangKey, message.Variable], duration);
+        ShowToast(type, "", _lang[message.LangKey, message.Variable], duration);
 }

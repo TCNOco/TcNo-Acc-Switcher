@@ -18,14 +18,14 @@
 @using TcNo_Acc_Switcher_Server.State.DataTypes
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @namespace TcNo_Acc_Switcher_Server.Pages.PreviewCss
-@inject NavigationManager NavManager
+@inject NavigationManager NavigationManager
 @inject IJSRuntime JsRuntime
 @inject ILang Lang
 @inject IAppState AppState
 @inject IWindowSettings WindowSettings
-@inject Modals Modals
+@inject IModals Modals
 @inject IStatistics Statistics
-@inject TemplatedPlatformState TemplatedPlatformState
+@inject ITemplatedPlatformState TemplatedPlatformState
 
 <div class="container mainblock">
     <div class="row">
@@ -47,7 +47,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="AppState.Navigation.NavigateUpOne"><span>@Lang["Button_Back"]</span></button></div>
+            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="() => AppState.Navigation.NavigateUpOne(NavigationManager)"><span>@Lang["Button_Back"]</span></button></div>
         </div>
     </div>
 
@@ -78,8 +78,8 @@
             </div>
             <div class="acc_list_actionbar">
                 <div>
-                    <button id="btnPlatforms" @onclick='() => AppState.Navigation.NavigateTo("/Platforms/")' data-toggle="tooltip" title="" data-original-title="Show or Hide other platforms"><i class="fas fa-plus footerIcoInline"></i>Manage Platforms</button>
-                    <button class="btnSettings" @onclick='() => AppState.Navigation.NavigateTo("/Settings/")' data-toggle="tooltip" title="" data-original-title="Settings"><i class="fas fa-cog footerIcoSettings"></i></button>
+                    <button id="btnPlatforms" @onclick='() => AppState.Navigation.NavigateTo(NavigationManager, "/Platforms/")' data-toggle="tooltip" title="" data-original-title="Show or Hide other platforms"><i class="fas fa-plus footerIcoInline"></i>Manage Platforms</button>
+                    <button class="btnSettings" @onclick='() => AppState.Navigation.NavigateTo(NavigationManager, "/Settings/")' data-toggle="tooltip" title="" data-original-title="Settings"><i class="fas fa-cog footerIcoSettings"></i></button>
                     <button class="btnHelp"@onclick='() => Modals.ShowModal("info")' data-toggle="tooltip" title="" data-original-title="Info"><i class="fas fa-question footerIcoQuestion"></i></button>
                 </div>
             </div>
@@ -153,7 +153,7 @@
                     <span>Login</span>
                     <i class="fas fa-caret-right footerIcoInline"></i>
                 </button>
-                <button class="btnSettings" @onclick='() => AppState.Navigation.NavigateTo("/Steam/Settings/")' data-toggle="tooltip" title="" data-original-title="Settings">
+                <button class="btnSettings" @onclick='() => AppState.Navigation.NavigateTo(NavigationManager, "/Steam/Settings/")' data-toggle="tooltip" title="" data-original-title="Settings">
                     <i class="fas fa-cog footerIcoSettings"></i>
                 </button>
                 <button class="btnHelp" @onclick='() => Modals.ShowModal("info")' data-toggle="tooltip" title="" data-original-title="Info">

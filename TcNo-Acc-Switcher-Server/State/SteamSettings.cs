@@ -17,10 +17,11 @@ using System.IO;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.State;
 
-public class SteamSettings
+public class SteamSettings : ISteamSettings
 {
     public bool ForgetAccountEnabled { get; set; }
     public string FolderPath { get; set; } = "C:\\Program Files (x86)\\Steam\\";
@@ -43,11 +44,11 @@ public class SteamSettings
     public bool StartSilent { get; set; }
     public Dictionary<string, string> CustomAccountNames { get; set; } = new();
 
-    [JsonIgnore] public string LoginUsersVdf;
-    public const string SteamImagePath = "wwwroot/img/profiles/steam/";
-    public const string SteamImagePathHtml = "img/profiles/steam/";
-    public readonly List<string> Processes = new (){ "steam.exe", "SERVICE:steamservice.exe", "steamwebhelper.exe", "GameOverlayUI.exe" };
-    public readonly string VacCacheFile = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\VACCache\\SteamVACCache.json");
+    [JsonIgnore] public string LoginUsersVdf { get; set; }
+    public string SteamImagePath { get; init; } = "wwwroot/img/profiles/steam/";
+    public string SteamImagePathHtml { get; init; } = "img/profiles/steam/";
+    public List<string> Processes { get; init; } = new (){ "steam.exe", "SERVICE:steamservice.exe", "steamwebhelper.exe", "GameOverlayUI.exe" };
+    public string VacCacheFile { get; init; } = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\VACCache\\SteamVACCache.json");
 
 
     public static readonly string Filename = "SteamSettings.json";

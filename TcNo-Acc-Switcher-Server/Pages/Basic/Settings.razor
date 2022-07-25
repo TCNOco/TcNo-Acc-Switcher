@@ -19,16 +19,16 @@
 @using TcNo_Acc_Switcher_Server.State
 @using TcNo_Acc_Switcher_Server.State.DataTypes
 @namespace TcNo_Acc_Switcher_Server.Pages.Basic
-@inject NavigationManager NavManager
+@inject NavigationManager NavigationManager
 @inject IAppState AppState
 @inject IJSRuntime JsRuntime
 @inject ILang Lang
-@inject GameStats GameStats
-@inject TemplatedPlatformState TemplatedPlatformState
-@inject TemplatedPlatformFuncs TemplatedPlatformFuncs
+@inject IGameStats GameStats
+@inject ITemplatedPlatformState TemplatedPlatformState
+@inject ITemplatedPlatformFuncs TemplatedPlatformFuncs
 @inject IWindowSettings WindowSettings
 @inject IStatistics Statistics
-@inject Toasts Toasts
+@inject IToasts Toasts
 
 @code
 {
@@ -200,7 +200,7 @@
         WindowSettings.Save();
         TemplatedPlatformSettings.Save();
 
-        NavManager.NavigateTo("/Basic");
+        NavigationManager.NavigateTo("/Basic");
     }
 
     private string GetCacheList()

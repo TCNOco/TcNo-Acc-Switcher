@@ -33,23 +33,39 @@ using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.State;
 
-public class SteamFuncs
+public class SteamFuncs : ISteamFuncs
 {
-    [Inject] private Lang Lang { get; set; }
-    [Inject] private SteamSettings SteamSettings { get; set; }
-    [Inject] private IAppState AppState { get; set; }
-    [Inject] private Toasts Toasts { get; set; }
-    [Inject] private SteamState SteamState { get; set; }
-    [Inject] private Modals Modals { get; set; }
     [Inject] private IJSRuntime JsRuntime { get; set; }
-    [Inject] private IStatistics Statistics { get; set; }
-    [Inject] private IWindowSettings WindowSettings { get; set; }
-    [Inject] private SharedFunctions SharedFunctions { get; set; }
 
+    private readonly IAppState _appState;
+    private readonly ILang _lang;
+    private readonly IModals _modals;
+    private readonly ISharedFunctions _sharedFunctions;
+    private readonly IStatistics _statistics;
+    private readonly ISteamSettings _steamSettings;
+    private readonly ISteamState _steamState;
+    private readonly IToasts _toasts;
+    private readonly IWindowSettings _windowSettings;
+
+    public SteamFuncs(IAppState appState, ILang lang, IModals modals, ISharedFunctions sharedFunctions,
+        IStatistics statistics, ISteamSettings steamSettings, ISteamState steamState, IToasts toasts,
+        IWindowSettings windowSettings)
+    {
+        _lang = lang;
+        _steamSettings = steamSettings;
+        _steamState = steamState;
+        _appState = appState;
+        _toasts = toasts;
+        _modals = modals;
+        _statistics = statistics;
+        _windowSettings = windowSettings;
+        _sharedFunctions = sharedFunctions;
+    }
 
     #region True Static
     public static bool BackupGameDataFolder(string folder)
     {
+        // TODO: Where was this used?
         var backupFolder = folder + "_switcher_backup";
         if (!Directory.Exists(folder) || Directory.Exists(backupFolder)) return false;
         Globals.CopyDirectory(folder, backupFolder, true);
@@ -80,15 +96,15 @@ public class SteamFuncs
         return ePersonaState switch
         {
             -1 => "",
-            0 => Lang["Offline"],
-            1 => Lang["Online"],
-            2 => Lang["Busy"],
-            3 => Lang["Away"],
-            4 => Lang["Snooze"],
-            5 => Lang["LookingToTrade"],
-            6 => Lang["LookingToPlay"],
-            7 => Lang["Invisible"],
-            _ => Lang["Unrecognized_EPersonaState"]
+            0 => _lang["Offline"],
+            1 => _lang["Online"],
+            2 => _lang["Busy"],
+            3 => _lang["Away"],
+            4 => _lang["Snooze"],
+            5 => _lang["LookingToTrade"],
+            6 => _lang["LookingToPlay"],
+            7 => _lang["Invisible"],
+            _ => _lang["Unrecognized_EPersonaState"]
         };
     }
     #endregion
@@ -109,7 +125,7 @@ public class SteamFuncs
         {
             // Refreshing the list of SteamUsers doesn't help here when switching, as the account list is not updated by Steam just yet.
             SteamUser mostRecent = null;
-            foreach (var su in SteamState.SteamUsers)
+            foreach (var su in _steamState.SteamUsers)
             {
                 int.TryParse(su.LastLogin, out var last);
 
@@ -121,9 +137,9 @@ public class SteamFuncs
 
             int.TryParse(mostRecent?.LastLogin, out var mrTimestamp);
 
-            if (SteamState.LastAccTimestamp > mrTimestamp)
+            if (_steamState.LastAccTimestamp > mrTimestamp)
             {
-                return SteamState.LastAccSteamId;
+                return _steamState.LastAccSteamId;
             }
 
             if (getNumericId) return mostRecent?.SteamId ?? "";
@@ -144,8 +160,8 @@ public class SteamFuncs
     /// <param name="state">Optional profile state for Steam accounts</param>
     public async Task SwapToAccount(int state = -1)
     {
-        if (state == -1) state = SteamSettings.OverrideState;
-        await SwapSteamAccounts(AppState.Switcher.SelectedAccountId, state);
+        if (state == -1) state = _steamSettings.OverrideState;
+        await SwapSteamAccounts(_appState.Switcher.SelectedAccountId, state);
     }
 
     /// <summary>
@@ -154,37 +170,37 @@ public class SteamFuncs
     /// <param name="state">Optional profile state for Steam accounts</param>
     public async Task SwapToNewAccount(int state = -1)
     {
-        if (state == -1) state = SteamSettings.OverrideState;
+        if (state == -1) state = _steamSettings.OverrideState;
         await SwapSteamAccounts("", state);
     }
 
     public async Task ForgetAccount()
     {
-        if (!SteamSettings.ForgetAccountEnabled)
-            Modals.ShowModal("confirm", ExtraArg.ForgetAccount);
+        if (!_steamSettings.ForgetAccountEnabled)
+            _modals.ShowModal("confirm", ExtraArg.ForgetAccount);
         else
         {
-            var trayAcc = AppState.Switcher.SelectedAccountId;
-            SteamSettings.SetForgetAcc(true);
+            var trayAcc = _appState.Switcher.SelectedAccountId;
+            _steamSettings.SetForgetAcc(true);
 
             // Load and remove account that matches SteamID above.
-            var userAccounts = SteamState.GetSteamUsers(SteamSettings.LoginUsersVdf);
-            _ = userAccounts.RemoveAll(x => x.SteamId == AppState.Switcher.SelectedAccountId);
+            var userAccounts = _steamState.GetSteamUsers(_steamSettings.LoginUsersVdf);
+            _ = userAccounts.RemoveAll(x => x.SteamId == _appState.Switcher.SelectedAccountId);
 
             // Save updated loginusers.vdf file
             await SaveSteamUsersIntoVdf(userAccounts);
-            trayAcc = "+s:" + AppState.Switcher.SelectedAccountId;
+            trayAcc = "+s:" + _appState.Switcher.SelectedAccountId;
 
             // Remove from Steam accounts list
-            AppState.Switcher.SteamAccounts.Remove(AppState.Switcher.SteamAccounts.First(x => x.AccountId == AppState.Switcher.SelectedAccountId));
+            _appState.Switcher.SteamAccounts.Remove(_appState.Switcher.SteamAccounts.First(x => x.AccountId == _appState.Switcher.SelectedAccountId));
 
             // Remove from Tray
-            Globals.RemoveTrayUserByArg(AppState.Switcher.CurrentSwitcher, trayAcc);
+            Globals.RemoveTrayUserByArg(_appState.Switcher.CurrentSwitcher, trayAcc);
 
             // Remove image
-            Globals.DeleteFile(Path.Join(Globals.WwwRoot, $"\\img\\profiles\\{AppState.Switcher.CurrentSwitcher}\\{Globals.GetCleanFilePath(AppState.Switcher.SelectedAccountId)}.jpg"));
+            Globals.DeleteFile(Path.Join(Globals.WwwRoot, $"\\img\\profiles\\{_appState.Switcher.CurrentSwitcher}\\{Globals.GetCleanFilePath(_appState.Switcher.SelectedAccountId)}.jpg"));
 
-            Toasts.ShowToastLang(ToastType.Success, "Success");
+            _toasts.ShowToastLang(ToastType.Success, "Success");
         }
     }
 
@@ -202,44 +218,44 @@ public class SteamFuncs
             return;
         }
 
-        await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = "Steam" }]);
-        if (!await SharedFunctions.CloseProcesses(SteamSettings.Processes, SteamSettings.ClosingMethod))
+        await JsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_ClosingPlatform", new { platform = "Steam" }]);
+        if (!await _sharedFunctions.CloseProcesses(_steamSettings.Processes, _steamSettings.ClosingMethod))
         {
             if (Globals.IsAdministrator)
-                await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = "Steam" }]);
+                await JsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_ClosingPlatformFailed", new { platform = "Steam" }]);
             else
             {
-                Toasts.ShowToastLang(ToastType.Error, "Failed", "Toast_RestartAsAdmin");
-                Modals.ShowModal("confirm", ExtraArg.RestartAsAdmin);
+                _toasts.ShowToastLang(ToastType.Error, "Failed", "Toast_RestartAsAdmin");
+                _modals.ShowModal("confirm", ExtraArg.RestartAsAdmin);
             }
             return;
         }
 
         if (OperatingSystem.IsWindows()) await UpdateLoginUsers(steamId, ePersonaState);
 
-        await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Status_StartingPlatform", new { platform = "Steam" }]);
-        if (SteamSettings.AutoStart)
+        await JsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_StartingPlatform", new { platform = "Steam" }]);
+        if (_steamSettings.AutoStart)
         {
-            if (SteamSettings.StartSilent) args += " -silent";
+            if (_steamSettings.StartSilent) args += " -silent";
 
-            if (Globals.StartProgram(SteamSettings.Exe, SteamSettings.Admin, args, SteamSettings.StartingMethod))
-                Toasts.ShowToastLang(ToastType.Info, new LangSub("Status_StartingPlatform", new { platform = "Steam" }));
+            if (Globals.StartProgram(_steamSettings.Exe, _steamSettings.Admin, args, _steamSettings.StartingMethod))
+                _toasts.ShowToastLang(ToastType.Info, new LangSub("Status_StartingPlatform", new { platform = "Steam" }));
             else
-                Toasts.ShowToastLang(ToastType.Error, new LangSub("Toast_StartingPlatformFailed", new { platform = "Steam" }));
+                _toasts.ShowToastLang(ToastType.Error, new LangSub("Toast_StartingPlatformFailed", new { platform = "Steam" }));
         }
 
-        if (SteamSettings.AutoStart && WindowSettings.MinimizeOnSwitch) await JsRuntime.InvokeVoidAsync("hideWindow");
+        if (_steamSettings.AutoStart && _windowSettings.MinimizeOnSwitch) await JsRuntime.InvokeVoidAsync("hideWindow");
 
         NativeFuncs.RefreshTrayArea();
-        await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Done"]);
-        Statistics.IncrementSwitches("Steam");
+        await JsRuntime.InvokeVoidAsync("updateStatus", _lang["Done"]);
+        _statistics.IncrementSwitches("Steam");
 
         try
         {
-            SteamState.LastAccSteamId = SteamState.SteamUsers.Where(x => x.SteamId == steamId).ToList()[0].SteamId;
-            SteamState.LastAccTimestamp = Globals.GetUnixTimeInt();
-            if (SteamState.LastAccSteamId != "")
-                await SetCurrentAccount(SteamState.LastAccSteamId);
+            _steamState.LastAccSteamId = _steamState.SteamUsers.Where(x => x.SteamId == steamId).ToList()[0].SteamId;
+            _steamState.LastAccTimestamp = Globals.GetUnixTimeInt();
+            if (_steamState.LastAccSteamId != "")
+                await SetCurrentAccount(_steamState.LastAccSteamId);
         }
         catch (Exception)
         {
@@ -253,10 +269,10 @@ public class SteamFuncs
     /// </summary>
     public async Task SetCurrentAccount(string accId)
     {
-        var acc = AppState.Switcher.SteamAccounts.First(x => x.AccountId == accId);
+        var acc = _appState.Switcher.SteamAccounts.First(x => x.AccountId == accId);
         await UnCurrentAllAccounts();
         acc.IsCurrent = true;
-        acc.TitleText = $"{Lang["Tooltip_CurrentAccount"]}";
+        acc.TitleText = $"{_lang["Tooltip_CurrentAccount"]}";
 
         // getBestOffset
         await JsRuntime.InvokeVoidAsync("setBestOffset", acc.AccountId);
@@ -270,7 +286,7 @@ public class SteamFuncs
     /// </summary>
     public async Task UnCurrentAllAccounts()
     {
-        foreach (var account in AppState.Switcher.SteamAccounts)
+        foreach (var account in _appState.Switcher.SteamAccounts)
         {
             account.IsCurrent = false;
         }
@@ -290,12 +306,12 @@ public class SteamFuncs
     public async Task UpdateLoginUsers(string selectedSteamId, int pS)
     {
         Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.UpdateLoginUsers] Updating loginusers: selectedSteamId={(selectedSteamId.Length > 0 ? selectedSteamId.Substring(selectedSteamId.Length - 4, 4) : "")}, pS={pS}");
-        var userAccounts = SteamState.GetSteamUsers(SteamSettings.LoginUsersVdf);
+        var userAccounts = _steamState.GetSteamUsers(_steamSettings.LoginUsersVdf);
         // -----------------------------------
         // ----- Manage "loginusers.vdf" -----
         // -----------------------------------
-        await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Status_UpdatingFile", new { file = "loginusers.vdf" }]);
-        var tempFile = SteamSettings.LoginUsersVdf + "_temp";
+        await JsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_UpdatingFile", new { file = "loginusers.vdf" }]);
+        var tempFile = _steamSettings.LoginUsersVdf + "_temp";
         Globals.DeleteFile(tempFile);
 
         // MostRec is "00" by default, just update the one that matches SteamID.
@@ -313,7 +329,7 @@ public class SteamFuncs
         }
         catch (InvalidOperationException)
         {
-            Toasts.ShowToastLang(ToastType.Error, "Toast_MissingUserId");
+            _toasts.ShowToastLang(ToastType.Error, "Toast_MissingUserId");
         }
         //userAccounts.Single(x => x.SteamId == selectedSteamId).MostRec = "1";
 
@@ -333,7 +349,7 @@ public class SteamFuncs
         }
         catch (InvalidOperationException)
         {
-            Toasts.ShowToastLang(ToastType.Error, "Toast_MissingUserId");
+            _toasts.ShowToastLang(ToastType.Error, "Toast_MissingUserId");
         }
         // -----------------------------------
         // --------- Manage registry ---------
@@ -344,7 +360,7 @@ public class SteamFuncs
             --> AutoLoginUser = username
             --> RememberPassword = 1
         */
-        await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Status_UpdatingRegistry"]);
+        await JsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_UpdatingRegistry"]);
         using var key = Registry.CurrentUser.CreateSubKey(@"Software\Valve\Steam");
         key?.SetValue("AutoLoginUser", user.AccName); // Account name is not set when changing user accounts from launch arguments (part of the viewmodel). -- Can be "" if no account
         key?.SetValue("RememberPassword", 1);
@@ -353,7 +369,7 @@ public class SteamFuncs
         // ------Update Tray users list ------
         // -----------------------------------
         if (selectedSteamId != "")
-            Globals.AddTrayUser("Steam", "+s:" + user.SteamId, SteamSettings.TrayAccountName ? user.AccName : SteamState.GetName(user), SteamSettings.TrayAccNumber);
+            Globals.AddTrayUser("Steam", "+s:" + user.SteamId, _steamSettings.TrayAccountName ? user.AccName : _steamState.GetName(user), _steamSettings.TrayAccNumber);
     }
 
     /// <summary>
@@ -371,29 +387,29 @@ public class SteamFuncs
         }
 
         // Write changes to files.
-        var tempFile = SteamSettings.LoginUsersVdf + "_temp";
+        var tempFile = _steamSettings.LoginUsersVdf + "_temp";
         await File.WriteAllTextAsync(tempFile, @"""users""" + Environment.NewLine + outJObject.ToVdf());
         if (!File.Exists(tempFile))
         {
-            File.Replace(tempFile, SteamSettings.LoginUsersVdf, SteamSettings.LoginUsersVdf + "_last");
+            File.Replace(tempFile, _steamSettings.LoginUsersVdf, _steamSettings.LoginUsersVdf + "_last");
             return;
         }
         try
         {
             // Let's try break this down, as some users are having issues with the above function.
             // Step 1: Backup
-            if (File.Exists(SteamSettings.LoginUsersVdf))
+            if (File.Exists(_steamSettings.LoginUsersVdf))
             {
-                File.Copy(SteamSettings.LoginUsersVdf, SteamSettings.LoginUsersVdf + "_last", true);
+                File.Copy(_steamSettings.LoginUsersVdf, _steamSettings.LoginUsersVdf + "_last", true);
             }
 
             // Step 2: Write new info
-            await File.WriteAllTextAsync(SteamSettings.LoginUsersVdf, @"""users""" + Environment.NewLine + outJObject.ToVdf());
+            await File.WriteAllTextAsync(_steamSettings.LoginUsersVdf, @"""users""" + Environment.NewLine + outJObject.ToVdf());
         }
         catch (Exception ex)
         {
             Globals.WriteToLog("Failed to swap Steam users! Could not create temp loginusers.vdf file, and replace original using workaround! Contact TechNobo.", ex);
-            Toasts.ShowToastLang(ToastType.Error, new LangSub("CouldNotFindX", new { x = tempFile }));
+            _toasts.ShowToastLang(ToastType.Error, new LangSub("CouldNotFindX", new { x = tempFile }));
         }
     }
 
@@ -408,7 +424,7 @@ public class SteamFuncs
         // Values:
         // 0: Offline, 1: Online, 2: Busy, 3: Away, 4: Snooze, 5: Looking to Trade, 6: Looking to Play, 7: Invisible
         var id32 = new SteamIdConvert(steamId).Id32; // Get SteamID
-        var localConfigFilePath = Path.Join(SteamSettings.FolderPath, "userdata", id32, "config", "localconfig.vdf");
+        var localConfigFilePath = Path.Join(_steamSettings.FolderPath, "userdata", id32, "config", "localconfig.vdf");
         if (!File.Exists(localConfigFilePath)) return;
         var localConfigText = Globals.ReadAllText(localConfigFilePath); // Read relevant localconfig.vdf
 
@@ -436,24 +452,24 @@ public class SteamFuncs
     public void CopySettingsFrom(string gameId)
     {
         var destSteamId = GetCurrentAccountId(true);
-        if (!VerifySteamId(AppState.Switcher.SelectedAccountId) || !VerifySteamId(destSteamId))
+        if (!VerifySteamId(_appState.Switcher.SelectedAccountId) || !VerifySteamId(destSteamId))
         {
-            Toasts.ShowToastLang(ToastType.Error, "Failed", "Toast_NoValidSteamId");
+            _toasts.ShowToastLang(ToastType.Error, "Failed", "Toast_NoValidSteamId");
             return;
         }
-        if (destSteamId == AppState.Switcher.SelectedAccountId)
+        if (destSteamId == _appState.Switcher.SelectedAccountId)
         {
-            Toasts.ShowToastLang(ToastType.Info, "Failed", "Toast_SameAccount");
+            _toasts.ShowToastLang(ToastType.Info, "Failed", "Toast_SameAccount");
             return;
         }
 
-        var sourceSteamId32 = new SteamIdConvert(AppState.Switcher.SelectedAccountId).Id32;
+        var sourceSteamId32 = new SteamIdConvert(_appState.Switcher.SelectedAccountId).Id32;
         var destSteamId32 = new SteamIdConvert(destSteamId).Id32;
-        var sourceFolder = Path.Join(SteamSettings.FolderPath, $"userdata\\{sourceSteamId32}\\{gameId}");
-        var destFolder = Path.Join(SteamSettings.FolderPath, $"userdata\\{destSteamId32}\\{gameId}");
+        var sourceFolder = Path.Join(_steamSettings.FolderPath, $"userdata\\{sourceSteamId32}\\{gameId}");
+        var destFolder = Path.Join(_steamSettings.FolderPath, $"userdata\\{destSteamId32}\\{gameId}");
         if (!Directory.Exists(sourceFolder))
         {
-            Toasts.ShowToastLang(ToastType.Error, "Failed", "Toast_NoFindSteamUserdata");
+            _toasts.ShowToastLang(ToastType.Error, "Failed", "Toast_NoFindSteamUserdata");
             return;
         }
 
@@ -466,34 +482,34 @@ public class SteamFuncs
             Directory.Delete(destFolder, true);
         }
         Globals.CopyDirectory(sourceFolder, destFolder, true);
-        Toasts.ShowToastLang(ToastType.Success, "Success", "Toast_SettingsCopied");
+        _toasts.ShowToastLang(ToastType.Success, "Success", "Toast_SettingsCopied");
     }
 
 
     public void RestoreSettingsTo(string gameId)
     {
-        if (!VerifySteamId(AppState.Switcher.SelectedAccountId)) return;
-        var steamId32 = new SteamIdConvert(AppState.Switcher.SelectedAccountId).Id32;
+        if (!VerifySteamId(_appState.Switcher.SelectedAccountId)) return;
+        var steamId32 = new SteamIdConvert(_appState.Switcher.SelectedAccountId).Id32;
         var backupFolder = Path.Join(Globals.UserDataFolder, $"Backups\\Steam\\{steamId32}\\{gameId}");
 
-        var folder = Path.Join(SteamSettings.FolderPath, $"userdata\\{steamId32}\\{gameId}");
+        var folder = Path.Join(_steamSettings.FolderPath, $"userdata\\{steamId32}\\{gameId}");
         if (!Directory.Exists(backupFolder))
         {
-            Toasts.ShowToastLang(ToastType.Error, "Failed", "Toast_NoFindGameBackup");
+            _toasts.ShowToastLang(ToastType.Error, "Failed", "Toast_NoFindGameBackup");
             return;
         }
         if (Directory.Exists(folder)) Directory.Delete(folder, true);
         Globals.CopyDirectory(backupFolder, folder, true);
-        Toasts.ShowToastLang(ToastType.Success, "Success", "Toast_GameDataRestored");
+        _toasts.ShowToastLang(ToastType.Success, "Success", "Toast_GameDataRestored");
     }
 
     public void BackupGameData(string gameId)
     {
-        var steamId32 = new SteamIdConvert(AppState.Switcher.SelectedAccountId).Id32;
-        var sourceFolder = Path.Join(SteamSettings.FolderPath, $"userdata\\{steamId32}\\{gameId}");
-        if (!VerifySteamId(AppState.Switcher.SelectedAccountId) || !Directory.Exists(sourceFolder))
+        var steamId32 = new SteamIdConvert(_appState.Switcher.SelectedAccountId).Id32;
+        var sourceFolder = Path.Join(_steamSettings.FolderPath, $"userdata\\{steamId32}\\{gameId}");
+        if (!VerifySteamId(_appState.Switcher.SelectedAccountId) || !Directory.Exists(sourceFolder))
         {
-            Toasts.ShowToastLang(ToastType.Error, "Failed", "Toast_NoFindGameData");
+            _toasts.ShowToastLang(ToastType.Error, "Failed", "Toast_NoFindGameData");
             return;
         }
 
@@ -501,7 +517,7 @@ public class SteamFuncs
         if (Directory.Exists(destFolder)) Directory.Delete(destFolder, true);
 
         Globals.CopyDirectory(sourceFolder, destFolder, true);
-        Toasts.ShowToastLang(ToastType.Success, "Success", new LangSub("Toast_GameBackupDone", new { folderLocation = destFolder }));
+        _toasts.ShowToastLang(ToastType.Success, "Success", new LangSub("Toast_GameBackupDone", new { folderLocation = destFolder }));
     }
     #endregion
 }

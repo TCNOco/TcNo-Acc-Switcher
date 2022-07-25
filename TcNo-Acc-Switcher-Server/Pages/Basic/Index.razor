@@ -24,17 +24,17 @@
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @using System.ComponentModel
 @using TcNo_Acc_Switcher_Globals
-@inject SharedFunctions SharedFunctions
-@inject TemplatedPlatformState TemplatedPlatformState
-@inject TemplatedPlatformFuncs TemplatedPlatformFuncs
-@inject TemplatedPlatformSettings TemplatedPlatformSettings
-@inject IAppState AppState
 @inject IJSRuntime JsRuntime
 @inject NavigationManager NavigationManager
+@inject ISharedFunctions SharedFunctions
+@inject ITemplatedPlatformState TemplatedPlatformState
+@inject ITemplatedPlatformFuncs TemplatedPlatformFuncs
+@inject ITemplatedPlatformSettings TemplatedPlatformSettings
+@inject IAppState AppState
 @inject ILang Lang
-@inject Modals Modals
-@inject GameStats GameStats
-@inject Toasts Toasts
+@inject IModals Modals
+@inject IGameStats GameStats
+@inject IToasts Toasts
 @inject IStatistics Statistics
 @inject IWindowSettings WindowSettings
 
@@ -83,7 +83,7 @@
 
         @if (TemplatedPlatformState.CurrentPlatform.Extras.ShortcutIncludeMainExe)
         {
-            <button id="btnStartPlat" @onclick="TemplatedPlatformState.RunPlatform" data-toggle="tooltip" title="@(TemplatedPlatformState.CurrentPlatform.SafeName)">
+            <button id="btnStartPlat" @onclick="TemplatedPlatformFuncs.RunPlatform" data-toggle="tooltip" title="@(TemplatedPlatformState.CurrentPlatform.SafeName)">
                 <img src="@(TemplatedPlatformState.CurrentPlatform.GetShortcutImagePath(TemplatedPlatformState.CurrentPlatform.SafeName))" alt="Start platform"/>
             </button>
         }
@@ -92,7 +92,7 @@
             <i class="fas fa-plus footerIcoInline"></i>
             <span>@Lang["Button_AddNew"]</span>
         </button>
-        <button id="btnAddCurrent" @onclick="Modals.ShowSetAccountStringModal">
+        <button id="btnAddCurrent" @onclick="ShowSetAccountStringModal">
             <i class="fas fa-save footerIcoInline"></i>
             <span>@Lang["Button_SaveCurrent"]</span>
         </button>
@@ -101,7 +101,7 @@
             <i class="fas fa-caret-right footerIcoInline"></i>
         </button>
 
-        <button class="btnSettings" @onclick='() => AppState.Navigation.NavigateTo("/Basic/Settings/")' data-toggle="tooltip" title="@(Lang["Tooltip_Settings"])">
+        <button class="btnSettings" @onclick='() => AppState.Navigation.NavigateTo(NavigationManager, "/Basic/Settings/")' data-toggle="tooltip" title="@(Lang["Tooltip_Settings"])">
             <i class="fas fa-cog footerIcoSettings"></i>
         </button>
 
@@ -119,6 +119,7 @@
 
     protected override void OnInitialized()
     {
+        //TemplatedPlatformState.LoadTemplatedPlatformState(TemplatedPlatformFuncs);
         AppState.Switcher.PropertyChanged += OnChangeHandler;
     }
     private async void OnChangeHandler(object? o, PropertyChangedEventArgs e)
@@ -134,6 +135,15 @@
     // https://github.com/dotnet/aspnetcore/issues/13582
     private bool _navBack;
 
+    /// <summary>
+    /// Show the Set App Password modal
+    /// </summary>
+    public void ShowSetAccountStringModal()
+    {
+        Modals.TextInput =
+            new TextInputRequest(TextInputGoal.AccString);
+        Modals.ShowModal("getText");
+    }
 
     // This has to be here for NavManager.
     // This is run before everything is painted on, so that it can get the correct values for the CSS Block.
@@ -150,7 +160,7 @@
 
         // Get platform name from URI if not set.
         if (!string.IsNullOrEmpty(requestPlat))
-            TemplatedPlatformState.SetCurrentPlatform(requestPlat);
+            await TemplatedPlatformState.SetCurrentPlatform(TemplatedPlatformSettings, requestPlat);
 
         // If current platform is NOT valid -> Go back
         if (!TemplatedPlatformState.CurrentPlatform.IsInit)

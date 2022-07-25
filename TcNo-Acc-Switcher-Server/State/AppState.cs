@@ -25,11 +25,31 @@ namespace TcNo_Acc_Switcher_Server.State;
 
 public class AppState : IAppState, INotifyPropertyChanged
 {
+    private readonly IToasts _toasts;
+    public AppState(ILang lang, IModals modals, IStatistics statistics, IToasts toasts, IWindowSettings windowSettings)
+    {
+        PasswordCurrent = "";
+        _toasts = toasts;
+        Shortcuts = new ShortcutsState(modals, toasts);
+        Discord = new Discord(lang, statistics, windowSettings);
+        Updates = new Updates(toasts, modals, windowSettings, statistics);
+        Stylesheet = new Stylesheet(toasts, lang, windowSettings);
+        Navigation = new Navigation();
+        Switcher = new Switcher(lang);
+        WindowState = new WindowState();
+
+        // Discord integration
+        Discord.RefreshDiscordPresenceAsync(true);
+
+        // Forward state changes.
+        Stylesheet.PropertyChanged += (s, e) => PropertyChanged?.Invoke(s, e);
+        WindowState.PropertyChanged += (s, e) => PropertyChanged?.Invoke(s, e);
+    }
+
+
     public string PasswordCurrent { get; set; }
 
     public ShortcutsState Shortcuts { get; set; }
-
-    public Toasts Toasts { get; set; }
 
     public Discord Discord { get; set; }
 
@@ -47,31 +67,10 @@ public class AppState : IAppState, INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
     protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-    public AppState(IWindowSettings www)
-    {
-        PasswordCurrent = "";
-        Shortcuts = new ShortcutsState();
-        Toasts = new Toasts();
-        Discord = new Discord();
-        Updates = new Updates();
-        Stylesheet = new Stylesheet();
-        Navigation = new Navigation();
-        Switcher = new Switcher();
-        WindowState = new WindowState();
-
-        // Discord integration
-        Discord.RefreshDiscordPresenceAsync(true);
-
-        // Forward state changes.
-        Stylesheet.PropertyChanged += (s, e) => PropertyChanged?.Invoke(s, e);
-        WindowState.PropertyChanged += (s, e) => PropertyChanged?.Invoke(s, e);
-    }
-
-
     public void OpenFolder(string folder)
     {
         Directory.CreateDirectory(folder); // Create if doesn't exist
         Process.Start("explorer.exe", folder);
-        Toasts.ShowToastLang(ToastType.Info, "Toast_PlaceShortcutFiles");
+        _toasts.ShowToastLang(ToastType.Info, "Toast_PlaceShortcutFiles");
     }
 }

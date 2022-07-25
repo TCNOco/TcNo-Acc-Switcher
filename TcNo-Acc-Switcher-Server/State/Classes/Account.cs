@@ -17,12 +17,14 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Server.Pages.General;
+using TcNo_Acc_Switcher_Server.State.DataTypes;
+using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.State.Classes;
 
 public class Account : INotifyPropertyChanged
 {
-    [Inject] private State.GameStats GameStats { get; set; }
+    [Inject] private IGameStats GameStats { get; set; }
 
     private bool _isChecked = false;
     private bool _isCurrent = false;
@@ -36,7 +38,7 @@ public class Account : INotifyPropertyChanged
     private string _line2 = "";
     private string _line3 = "";
     private string _note = "";
-    private Dictionary<string, Dictionary<string, State.GameStats.StatValueAndIcon>> _userStats;
+    private Dictionary<string, Dictionary<string, StatValueAndIcon>> _userStats;
     private ClassCollection _classes = new();
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -128,7 +130,7 @@ public class Account : INotifyPropertyChanged
         set => SetField(ref _note, value);
     }
 
-    public Dictionary<string, Dictionary<string, State.GameStats.StatValueAndIcon>> UserStats
+    public Dictionary<string, Dictionary<string, StatValueAndIcon>> UserStats
     {
         get => _userStats;
         set => SetField(ref _userStats, value);

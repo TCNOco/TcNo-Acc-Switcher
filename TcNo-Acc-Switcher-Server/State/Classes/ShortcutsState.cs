@@ -26,8 +26,14 @@ namespace TcNo_Acc_Switcher_Server.State.Classes;
 
 public class ShortcutsState
 {
-    [Inject] private Modals Modals { get; set; }
-    [Inject] private Toasts Toasts { get; set; }
+    private readonly IModals _modals;
+    private readonly IToasts _toasts;
+
+    public ShortcutsState(IModals modals, IToasts toasts)
+    {
+        _modals = modals;
+        _toasts = toasts;
+    }
 
 
     private readonly string _startMenuFolder = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Programs), @"TcNo Account Switcher\");
@@ -121,22 +127,20 @@ public class ShortcutsState
                     key?.SetValue("URL Protocol", "", RegistryValueKind.String);
                     using var defaultKey = Registry.ClassesRoot.CreateSubKey(@"tcno\Shell\Open\Command");
                     defaultKey?.SetValue("", $"\"{Path.Join(Globals.AppDataFolder, "TcNo-Acc-Switcher.exe")}\" \"%1\"", RegistryValueKind.String);
-                    Toasts.ShowToastLang(ToastType.Success, "Toast_ProtocolEnabledTitle", "Toast_ProtocolEnabled");
+                    _toasts.ShowToastLang(ToastType.Success, "Toast_ProtocolEnabledTitle", "Toast_ProtocolEnabled");
                 }
                 else
                 {
                     // Remove
                     Registry.ClassesRoot.DeleteSubKeyTree("tcno");
-                    Toasts.ShowToastLang(ToastType.Success, "Toast_ProtocolDisabledTitle", "Toast_ProtocolDisabled");
+                    _toasts.ShowToastLang(ToastType.Success, "Toast_ProtocolDisabledTitle", "Toast_ProtocolDisabled");
                 }
             }
             catch (Exception e)
             {
-                Toasts.ShowToastLang(ToastType.Error, "Failed", "Toast_RestartAsAdmin");
-                Modals.ShowModal("confirm", ExtraArg.RestartAsAdmin);
+                _toasts.ShowToastLang(ToastType.Error, "Failed", "Toast_RestartAsAdmin");
+                _modals.ShowModal("confirm", ExtraArg.RestartAsAdmin);
             }
         }
     }
-
-    public ShortcutsState() { }
 }

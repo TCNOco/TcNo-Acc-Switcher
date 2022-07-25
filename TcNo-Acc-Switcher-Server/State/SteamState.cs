@@ -36,18 +36,16 @@ using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.State;
 
-public class SteamState
+public class SteamState : ISteamState
 {
-    [Inject] private JSRuntime JsRuntime { get; set; }
-    [Inject] private Lang Lang { get; set; }
-    [Inject] private Toasts Toasts { get; set; }
-    [Inject] private IAppState AppState { get; set; }
-    [Inject] private SteamSettings SteamSettings { get; set; }
-    [Inject] private Modals Modals { get; set; }
-    [Inject] private Statistics Statistics { get; set; }
-    [Inject] private SharedFunctions SharedFunctions { get; set; }
-    [Inject] private GameStats GameStats { get; set; }
-    [Inject] private NavigationManager NavigationManager { get; set; }
+    private readonly IAppState _appState;
+    private readonly IGameStats _gameStats;
+    private readonly ILang _lang;
+    private readonly IModals _modals;
+    private readonly ISharedFunctions _sharedFunctions;
+    private readonly IStatistics _statistics;
+    private readonly ISteamSettings _steamSettings;
+    private readonly IToasts _toasts;
 
     public List<SteamUser> SteamUsers { get; set; } = new();
     public bool SteamLoadingProfiles { get; set; }
@@ -67,19 +65,33 @@ public class SteamState
     private static readonly string[] ShortcutFolders = new[] { "%StartMenuAppData%\\Steam\\" };
 
     #region LOADING
+
     /// <summary>
     /// Main function for Steam Account Switcher. Run on load.
     /// Collects accounts from Steam's loginusers.vdf
     /// Prepares images and VAC/Limited status
     /// Prepares HTML Elements string for insertion into the account switcher GUI.
     /// </summary>
-    public SteamState()
+    public SteamState(IAppState appState, IGameStats gameStats, ILang lang, ISteamSettings steamSettings, IModals modals, IStatistics statistics, ISharedFunctions sharedFunctions, IToasts toasts)
     {
+        _toasts = toasts;
+        _appState = appState;
+        _lang = lang;
+        _steamSettings = steamSettings;
+        _modals = modals;
+        _statistics = statistics;
+        _sharedFunctions = sharedFunctions;
+        _gameStats = gameStats;
+    }
+
+    public void LoadSteamState(ISteamFuncs steamFuncs)
+    {
+
         if (SteamLoadingProfiles) return;
         Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.LoadProfiles] Loading Steam profiles");
         SteamLoadingProfiles = true;
 
-        SteamUsers = GetSteamUsers(SteamSettings.LoginUsersVdf);
+        SteamUsers = GetSteamUsers(_steamSettings.LoginUsersVdf);
 
         // Order
         if (File.Exists("LoginCache\\Steam\\order.json"))
@@ -89,10 +101,10 @@ public class SteamState
             if (savedOrder != null)
             {
                 var index = 0;
-                if (savedOrder is {Count: > 0})
+                if (savedOrder is { Count: > 0 })
                     foreach (var acc in from i in savedOrder
-                             where SteamUsers.Any(x => x.SteamId == i)
-                             select SteamUsers.Single(x => x.SteamId == i))
+                                        where SteamUsers.Any(x => x.SteamId == i)
+                                        select SteamUsers.Single(x => x.SteamId == i))
                     {
                         SteamUsers.Remove(acc);
                         SteamUsers.Insert(Math.Min(index, SteamUsers.Count), acc);
@@ -102,7 +114,7 @@ public class SteamState
         }
 
         // If Steam Web API key to be used instead
-        if (SteamSettings.SteamWebApiKey != "")
+        if (_steamSettings.SteamWebApiKey != "")
         {
             // Handle all image downloads
             WebApiPrepareImages().RunSynchronously();
@@ -111,7 +123,7 @@ public class SteamState
             // Key was fine? Continue. If not, the non-api method will be used.
             if (!SteamWebApiWasReset)
             {
-                AppState.Switcher.SteamAccounts.Clear();
+                _appState.Switcher.SteamAccounts.Clear();
                 foreach (var su in SteamUsers)
                 {
                     InsertAccount(su);
@@ -120,13 +132,13 @@ public class SteamState
         }
 
         // If Steam Web API key was not used, or was reset (encountered an error)
-        if (SteamSettings.SteamWebApiKey == "" || SteamWebApiWasReset)
+        if (_steamSettings.SteamWebApiKey == "" || SteamWebApiWasReset)
         {
             SteamWebApiWasReset = false;
 
             // Load cached ban info
             LoadCachedBanInfo();
-            AppState.Switcher.SteamAccounts.Clear();
+            _appState.Switcher.SteamAccounts.Clear();
 
             foreach (var su in SteamUsers)
             {
@@ -145,17 +157,19 @@ public class SteamState
         // Load notes
         LoadNotes();
 
-        SharedFunctions.FinaliseAccountList().RunSynchronously();
-        Statistics.SetAccountCount("Steam", SteamUsers.Count);
+        var task = new Task(() => _sharedFunctions.FinaliseAccountList());
+        task.RunSynchronously();
+
+        _statistics.SetAccountCount("Steam", SteamUsers.Count);
         SteamLoadingProfiles = false;
 
         Task.Run(() =>
         {
-            ContextMenu = new SteamContextMenu();
+            ContextMenu = new SteamContextMenu(_appState, _gameStats, _lang, _modals, steamFuncs, _steamSettings, _toasts);
         });
     }
 
-    public static string GetName(SteamUser su) => string.IsNullOrWhiteSpace(su.Name) ? su.AccName : su.Name;
+    public string GetName(SteamUser su) => string.IsNullOrWhiteSpace(su.Name) ? su.AccName : su.Name;
     private void InsertAccount(SteamUser su)
     {
         var account = new Account
@@ -165,19 +179,19 @@ public class SteamState
             DisplayName = GeneralFuncs.EscapeText(GetName(su)),
             Classes = new Account.ClassCollection()
             {
-                Image = (SteamSettings.ShowVac && su.Vac ? " status_vac" : "") + (SteamSettings.ShowLimited && su.Limited ? " status_limited" : ""),
+                Image = (_steamSettings.ShowVac && su.Vac ? " status_vac" : "") + (_steamSettings.ShowLimited && su.Limited ? " status_limited" : ""),
                 Line0 = "streamerCensor",
                 Line2 = "streamerCensor steamId",
                 Line3 = "lastLogin"
             },
             LoginUsername = su.AccName,
-            UserStats = GameStats.GetUserStatsAllGamesMarkup(su.SteamId),
+            UserStats = _gameStats.GetUserStatsAllGamesMarkup(su.SteamId),
             ImagePath = su.ImgUrl,
-            Line0 = SteamSettings.ShowAccUsername ? su.AccName : "",
+            Line0 = _steamSettings.ShowAccUsername ? su.AccName : "",
             Line2 = su.SteamId,
             Line3 = Globals.UnixTimeStampToDateTime(su.LastLogin)
         };
-        AppState.Switcher.SteamAccounts.Add(account);
+        _appState.Switcher.SteamAccounts.Add(account);
     }
 
 
@@ -188,11 +202,11 @@ public class SteamState
     public void LoadCachedBanInfo()
     {
         Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.LoadCachedBanInfo]");
-        _ = GeneralFuncs.DeletedOutdatedFile(SteamSettings.VacCacheFile, SteamSettings.ImageExpiryTime);
-        if (!File.Exists(SteamSettings.VacCacheFile)) return;
+        _ = GeneralFuncs.DeletedOutdatedFile(_steamSettings.VacCacheFile, _steamSettings.ImageExpiryTime);
+        if (!File.Exists(_steamSettings.VacCacheFile)) return;
 
         // Load list of banStatus
-        var banInfoList = JsonConvert.DeserializeObject<List<VacStatus>>(Globals.ReadAllText(SteamSettings.VacCacheFile));
+        var banInfoList = JsonConvert.DeserializeObject<List<VacStatus>>(Globals.ReadAllText(_steamSettings.VacCacheFile));
 
         if (banInfoList == null) return;
         foreach (var su in SteamUsers)
@@ -219,9 +233,9 @@ public class SteamState
         if (su == null) return;
         Globals.DebugWriteLine(
             $@"[Func:Steam\SteamSwitcherFuncs.PrepareProfile] Preparing image and ban info for: {su.SteamId.Substring(su.SteamId.Length - 4, 4)}");
-        _ = Directory.CreateDirectory(SteamSettings.SteamImagePath);
+        _ = Directory.CreateDirectory(_steamSettings.SteamImagePath);
 
-        var dlDir = $"{SteamSettings.SteamImagePath}{su.SteamId}.jpg";
+        var dlDir = $"{_steamSettings.SteamImagePath}{su.SteamId}.jpg";
         var cachedFile = $"LoginCache/Steam/VACCache/{su.SteamId}.xml";
 
         if (noCache)
@@ -233,7 +247,7 @@ public class SteamState
         else
         {
             // 1.1 Clear old images
-            _ = GeneralFuncs.DeletedOutdatedFile(dlDir, SteamSettings.ImageExpiryTime);
+            _ = GeneralFuncs.DeletedOutdatedFile(dlDir, _steamSettings.ImageExpiryTime);
             _ = GeneralFuncs.DeletedInvalidImage(dlDir);
 
             // 1.2 Clear old cached profile data
@@ -276,7 +290,7 @@ public class SteamState
             try
             {
                 Globals.DownloadFile(su.ImageDownloadUrl, dlDir);
-                su.ImgUrl = $"{SteamSettings.SteamImagePathHtml}{su.SteamId}.jpg";
+                su.ImgUrl = $"{_steamSettings.SteamImagePathHtml}{su.SteamId}.jpg";
                 return;
             }
             catch (WebException ex)
@@ -289,7 +303,7 @@ public class SteamState
         }
 
         su.ImgUrl = File.Exists(dlDir)
-            ? $"{SteamSettings.SteamImagePathHtml}{su.SteamId}.jpg"
+            ? $"{_steamSettings.SteamImagePathHtml}{su.SteamId}.jpg"
             : "img/QuestionMark.jpg";
     }
 
@@ -331,10 +345,10 @@ public class SteamState
     public string CheckLoginUsersVdfPath()
     {
         Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.LoginUsersVdf]");
-        if (File.Exists(SteamSettings.LoginUsersVdf)) return SteamSettings.LoginUsersVdf;
+        if (File.Exists(_steamSettings.LoginUsersVdf)) return _steamSettings.LoginUsersVdf;
 
-        SteamSettings.FolderPath = "";
-        SteamSettings.Save();
+        _steamSettings.FolderPath = "";
+        _steamSettings.Save();
         return "RESET_PATH";
     }
 
@@ -357,7 +371,7 @@ public class SteamState
         var lastVdf = loginUserPath.Replace(".vdf", ".vdf_last");
         if (!File.Exists(lastVdf) || !LoadFromVdf(lastVdf, out userAccounts)) return new List<SteamUser>();
 
-        Toasts.ShowToastLang(ToastType.Info, "Toast_PartiallyFixed", "Toast_Steam_VdfLast", 10000);
+        _toasts.ShowToastLang(ToastType.Info, "Toast_PartiallyFixed", "Toast_Steam_VdfLast", 10000);
         return userAccounts;
     }
 
@@ -411,17 +425,17 @@ public class SteamState
         }
         catch (FileNotFoundException)
         {
-            Toasts.ShowToastLang(ToastType.Error, "NotFound", "Toast_Steam_FailedLoginusers");
+            _toasts.ShowToastLang(ToastType.Error, "NotFound", "Toast_Steam_FailedLoginusers");
             return false;
         }
         catch (AggregateException)
         {
-            Toasts.ShowToastLang(ToastType.Error, "Error", "Toast_Steam_FailedLoginusers");
+            _toasts.ShowToastLang(ToastType.Error, "Error", "Toast_Steam_FailedLoginusers");
             return false;
         }
         catch (Exception)
         {
-            Toasts.ShowToastLang(ToastType.Error, "Error", "Toast_Steam_FailedLoginusers");
+            _toasts.ShowToastLang(ToastType.Error, "Error", "Toast_Steam_FailedLoginusers");
             return false;
         }
 
@@ -455,10 +469,10 @@ public class SteamState
     /// </summary>
     private void WebApiPrepareBans()
     {
-        _ = GeneralFuncs.DeletedOutdatedFile(SteamSettings.VacCacheFile, SteamSettings.ImageExpiryTime);
-        if (File.Exists(SteamSettings.VacCacheFile))
+        _ = GeneralFuncs.DeletedOutdatedFile(_steamSettings.VacCacheFile, _steamSettings.ImageExpiryTime);
+        if (File.Exists(_steamSettings.VacCacheFile))
         {
-            var vsList = JsonConvert.DeserializeObject<List<VacStatus>>(Globals.ReadAllText(SteamSettings.VacCacheFile));
+            var vsList = JsonConvert.DeserializeObject<List<VacStatus>>(Globals.ReadAllText(_steamSettings.VacCacheFile));
             if (vsList != null && vsList.Count == SteamUsers.Count)
             {
                 foreach (var vs in vsList)
@@ -488,9 +502,9 @@ public class SteamState
 
         foreach (var su in SteamUsers)
         {
-            var dlDir = $"{SteamSettings.SteamImagePath}{su.SteamId}.jpg";
+            var dlDir = $"{_steamSettings.SteamImagePath}{su.SteamId}.jpg";
             // Delete outdated file, if it exists
-            var wasDeleted = GeneralFuncs.DeletedOutdatedFile(dlDir, SteamSettings.ImageExpiryTime);
+            var wasDeleted = GeneralFuncs.DeletedOutdatedFile(dlDir, _steamSettings.ImageExpiryTime);
             // ... & invalid files
             wasDeleted = wasDeleted || GeneralFuncs.DeletedInvalidImage(dlDir);
 
@@ -500,14 +514,14 @@ public class SteamState
         // Either return if queue is empty, or download queued images and then continue.
         if (queue.Count != 0)
         {
-            Toasts.ShowToastLang(ToastType.Info, "Toast_DownloadingProfileData");
+            _toasts.ShowToastLang(ToastType.Info, "Toast_DownloadingProfileData");
             await Globals.MultiThreadParallelDownloads(WebApiGetImageList(queue)).ConfigureAwait(true);
         }
 
         // Set the correct path
         foreach (var su in SteamUsers)
         {
-            su.ImgUrl = $"{SteamSettings.SteamImagePathHtml}{su.SteamId}.jpg";
+            su.ImgUrl = $"{_steamSettings.SteamImagePathHtml}{su.SteamId}.jpg";
         }
     }
 
@@ -524,7 +538,7 @@ public class SteamState
             var steamUsersGroup = SteamUsers.Skip(i).Take(100);
             var steamIds = steamUsersGroup.Select(su => su.SteamId).ToList();
             var uri =
-                $"https://api.steampowered.com/ISteamUser/GetPlayerBans/v0001/?key={SteamSettings.SteamWebApiKey}&steamids={string.Join(',', steamIds)}";
+                $"https://api.steampowered.com/ISteamUser/GetPlayerBans/v0001/?key={_steamSettings.SteamWebApiKey}&steamids={string.Join(',', steamIds)}";
             try
             {
                 Globals.ReadWebUrl(uri, out var jsonString);
@@ -566,10 +580,10 @@ public class SteamState
         if (!jsResponse.StartsWith("<html>")) return true;
 
         // Error: Key was likely invalid.
-        Toasts.ShowToastLang(ToastType.Error, "Toast_SteamWebKeyInvalid");
+        _toasts.ShowToastLang(ToastType.Error, "Toast_SteamWebKeyInvalid");
 
-        SteamSettings.SteamWebApiKey = "";
-        SteamSettings.Save();
+        _steamSettings.SteamWebApiKey = "";
+        _steamSettings.Save();
         SteamWebApiWasReset = true;
         return false;
     }
@@ -587,8 +601,8 @@ public class SteamState
             })
             .ToList();
 
-        _ = Directory.CreateDirectory(Path.GetDirectoryName(SteamSettings.VacCacheFile) ?? string.Empty);
-        File.WriteAllText(SteamSettings.VacCacheFile, JsonConvert.SerializeObject(vsList));
+        _ = Directory.CreateDirectory(Path.GetDirectoryName(_steamSettings.VacCacheFile) ?? string.Empty);
+        File.WriteAllText(_steamSettings.VacCacheFile, JsonConvert.SerializeObject(vsList));
     }
 
     /// <summary>
@@ -605,7 +619,7 @@ public class SteamState
             var steamUsersGroup = steamUsers.Skip(i).Take(100);
             var steamIds = steamUsersGroup.Select(su => su.SteamId).ToList();
             var uri =
-                $"https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={SteamSettings.SteamWebApiKey}&steamids={string.Join(',', steamIds)}";
+                $"https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={_steamSettings.SteamWebApiKey}&steamids={string.Join(',', steamIds)}";
             Globals.ReadWebUrl(uri, out var jsonString);
             if (!IsSteamApiKeyValid(jsonString)) return images;
             var json = JObject.Parse(jsonString);
@@ -619,7 +633,7 @@ public class SteamState
             {
                 var steamId = player["steamid"]!.Value<string>();
                 var imageUrl = player["avatarfull"]!.Value<string>();
-                if (steamId != null && imageUrl != null) images.Add(imageUrl, $"{SteamSettings.SteamImagePath}/{steamId}.jpg");
+                if (steamId != null && imageUrl != null) images.Add(imageUrl, $"{_steamSettings.SteamImagePath}/{steamId}.jpg");
             }
         }
 
@@ -648,7 +662,7 @@ public class SteamState
                 else if (commonStartMenuFiles.Length > 0)
                     Globals.SaveIconFromFile(commonStartMenuFiles[0], imagePath);
                 else
-                    Globals.SaveIconFromFile(SteamSettings.Exe, imagePath);
+                    Globals.SaveIconFromFile(_steamSettings.Exe, imagePath);
             }
 
 
@@ -669,8 +683,8 @@ public class SteamState
                         imagePath = Path.Join(shortcutImagePath, Globals.RemoveShortcutExt(fName) + ".png");
                         if (File.Exists(imagePath)) File.Delete(imagePath);
                         fName = fName.Replace("_ignored", "");
-                        if (SteamSettings.Shortcuts.ContainsValue(fName))
-                            SteamSettings.Shortcuts.Remove(SteamSettings.Shortcuts.First(e => e.Value == fName).Key);
+                        if (_steamSettings.Shortcuts.ContainsValue(fName))
+                            _steamSettings.Shortcuts.Remove(_steamSettings.Shortcuts.First(e => e.Value == fName).Key);
                         continue;
                     }
 
@@ -692,14 +706,14 @@ public class SteamState
                     var imageName = Globals.RemoveShortcutExt(f.Name) + ".png";
                     imagePath = Path.Join(shortcutImagePath, imageName);
                     existingShortcuts.Add(f.Name);
-                    if (!SteamSettings.Shortcuts.ContainsValue(f.Name))
+                    if (!_steamSettings.Shortcuts.ContainsValue(f.Name))
                     {
                         // Not found in list, so add!
                         var last = 0;
-                        foreach (var (k, _) in SteamSettings.Shortcuts)
+                        foreach (var (k, _) in _steamSettings.Shortcuts)
                             if (k > last) last = k;
                         last += 1;
-                        SteamSettings.Shortcuts.Add(last, f.Name); // Organization added later
+                        _steamSettings.Shortcuts.Add(last, f.Name); // Organization added later
                     }
 
                     // Extract image and place in wwwroot (Only if not already there):
@@ -709,15 +723,15 @@ public class SteamState
                     }
                 }
 
-            foreach (var (i, s) in SteamSettings.Shortcuts)
+            foreach (var (i, s) in _steamSettings.Shortcuts)
             {
                 if (!existingShortcuts.Contains(s))
-                    SteamSettings.Shortcuts.Remove(i);
+                    _steamSettings.Shortcuts.Remove(i);
             }
         }
 
-        Statistics.SetGameShortcutCount("Steam", SteamSettings.Shortcuts);
-        SteamSettings.Save();
+        _statistics.SetGameShortcutCount("Steam", _steamSettings.Shortcuts);
+        _steamSettings.Save();
     }
 
     [JSInvokable]
@@ -729,23 +743,23 @@ public class SteamState
             return;
         }
 
-        if (!SteamSettings.Shortcuts.ContainsValue(shortcut)) return;
+        if (!_steamSettings.Shortcuts.ContainsValue(shortcut)) return;
 
         switch (action)
         {
             case "hide":
             {
                 // Remove shortcut from folder, and list.
-                SteamSettings.Shortcuts.Remove(SteamSettings.Shortcuts.First(e => e.Value == shortcut).Key);
+                _steamSettings.Shortcuts.Remove(_steamSettings.Shortcuts.First(e => e.Value == shortcut).Key);
                 var f = Path.Join(ShortcutFolder, shortcut);
                 if (File.Exists(f)) File.Move(f, f.Replace(".lnk", "_ignored.lnk").Replace(".url", "_ignored.url"));
 
                 // Save.
-                SteamSettings.Save();
+                _steamSettings.Save();
                 break;
             }
             case "admin":
-                SharedFunctions.RunShortcut(shortcut, ShortcutFolder, "Steam", true);
+                _sharedFunctions.RunShortcut(shortcut, ShortcutFolder, "Steam", true);
                 break;
         }
     }
@@ -753,10 +767,10 @@ public class SteamState
 
     public void RunSteam(bool admin, string args)
     {
-        if (Globals.StartProgram(SteamSettings.Exe, admin, args, SteamSettings.StartingMethod))
-            Toasts.ShowToastLang(ToastType.Info, new LangSub("Status_StartingPlatform", new { platform = "Steam" }));
+        if (Globals.StartProgram(_steamSettings.Exe, admin, args, _steamSettings.StartingMethod))
+            _toasts.ShowToastLang(ToastType.Info, new LangSub("Status_StartingPlatform", new { platform = "Steam" }));
         else
-            Toasts.ShowToastLang(ToastType.Error, new LangSub("Toast_StartingPlatformFailed", new { platform = "Steam" }));
+            _toasts.ShowToastLang(ToastType.Error, new LangSub("Toast_StartingPlatformFailed", new { platform = "Steam" }));
     }
     #endregion
 
@@ -771,12 +785,12 @@ public class SteamState
 
         foreach (var (key, val) in loaded)
         {
-            var acc = AppState.Switcher.SteamAccounts.FirstOrDefault(x => x.AccountId == key);
+            var acc = _appState.Switcher.SteamAccounts.FirstOrDefault(x => x.AccountId == key);
             if (acc is null) return;
             acc.Note = val;
         }
 
-        Modals.IsShown = false;
+        _modals.IsShown = false;
     }
     #endregion
 }

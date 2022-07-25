@@ -13,6 +13,10 @@
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
 @using System.Collections.ObjectModel
+@using TcNo_Acc_Switcher_Server.State
+@using TcNo_Acc_Switcher_Server.State.Interfaces
+@inject ILang Lang
+
 @code {
     [Parameter]
     public MenuItem Item { get; set; }
@@ -83,7 +87,7 @@ else
 {
     @if (@Item.MenuAction is not null)
     {
-        <li><a @onclick="() => Item.MenuAction()">@Item.Text</a></li>
+        <li><a @onclick="() => Item.MenuAction()">@Lang[Item.Text]</a></li>
     }
     else
     {

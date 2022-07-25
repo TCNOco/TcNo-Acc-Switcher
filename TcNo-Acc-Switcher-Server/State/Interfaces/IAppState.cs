@@ -21,14 +21,12 @@ public interface IAppState
 {
     string PasswordCurrent { get; set; }
     ShortcutsState Shortcuts { get; set; }
-    Toasts Toasts { get; set; }
     Discord Discord { get; set; }
     Updates Updates { get; set; }
     Stylesheet Stylesheet { get; set; }
     Navigation Navigation { get; set; }
     Switcher Switcher { get; set; }
     WindowState WindowState { get; set; }
-
     event PropertyChangedEventHandler PropertyChanged;
     void OpenFolder(string folder);
 }

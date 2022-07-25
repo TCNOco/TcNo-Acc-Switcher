@@ -22,11 +22,11 @@
 @using TcNo_Acc_Switcher_Server.State
 @using TcNo_Acc_Switcher_Server.State.DataTypes
 @using TcNo_Acc_Switcher_Server.State.Interfaces
-@inject Lang Lang
+@inject ILang Lang
 @inject NavigationManager NavigationManager
 @inject IWindowSettings WindowSettings
 @inject IAppState AppState
-@inject Modals Modals
+@inject IModals Modals
 
 @code
 {
@@ -248,7 +248,16 @@
     public void SetPassword()
     {
         Globals.DebugWriteLine(@"[ButtonClicked:SharedSettings.razor/SetPassword]");
-        Modals.ShowSetAppPasswordModal();
+        ShowSetAppPasswordModal();
+    }
+
+    /// <summary>
+    /// Show the Set App Password modal
+    /// </summary>
+    public void ShowSetAppPasswordModal()
+    {
+        Modals.TextInput = new TextInputRequest(TextInputGoal.AppPassword);
+        Modals.ShowModal("getText");
     }
 
     private void TrySetUserData()
@@ -263,11 +272,21 @@
             File.WriteAllText(userDataFile, "");
             File.Delete(userDataFile);
 
-            Modals.ShowChangeUserdataFolderModal();
+            ShowChangeUserdataFolderModal();
         }
         catch (Exception)
         {
-            AppState.Toasts.ShowToastLang(ToastType.Info, "Notice", "Toast_RestartRequired");
+            Toasts.ShowToastLang(ToastType.Info, "Notice", "Toast_RestartRequired");
         }
+    }
+
+    /// <summary>
+    /// Show the PathPicker modal to move all Userdata files to a new folder, and set it as default.
+    /// </summary>
+    public void ShowChangeUserdataFolderModal()
+    {
+        Modals.PathPicker =
+            new PathPickerRequest(PathPickerGoal.SetUserdata);
+        Modals.ShowModal("find");
     }
 }

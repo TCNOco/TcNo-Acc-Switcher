@@ -15,8 +15,6 @@ namespace TcNo_Acc_Switcher_Server.State;
 /// </summary>
 public class GameStatsRoot : IGameStatsRoot
 {
-    [Inject] private Toasts Toasts { get; set; }
-    [Inject] private IWindowSettings WindowSettings { get; set; }
     public bool IsInit { get; set; }
 
 
@@ -31,14 +29,14 @@ public class GameStatsRoot : IGameStatsRoot
     /// </summary>
     public List<string> GameList { get; set; }
 
-    public GameStatsRoot()
+    public GameStatsRoot(IToasts toasts, IWindowSettings windowSettings)
     {
         // Check if Platforms.json exists.
         // If it doesnt: Copy it from the programs' folder to the user data folder.
         if (!File.Exists(BasicStatsPath))
         {
             // Once again verify the file exists. If it doesn't throw an error here.
-            Toasts.ShowToastLang(ToastType.Error, "Toast_FailedStatsLoad");
+            toasts.ShowToastLang(ToastType.Error, "Toast_FailedStatsLoad");
             Globals.WriteToLog("Failed to locate GameStats.json! This will cause a lot of stats to break.");
             IsInit = false;
             return;
@@ -53,13 +51,13 @@ public class GameStatsRoot : IGameStatsRoot
         foreach (var game in GameList)
         {
             // If game not on global settings list, add it to the list.
-            if (!WindowSettings.GloballyHiddenMetrics.ContainsKey(game))
-                WindowSettings.GloballyHiddenMetrics.Add(game, new Dictionary<string, bool>());
+            if (!windowSettings.GloballyHiddenMetrics.ContainsKey(game))
+                windowSettings.GloballyHiddenMetrics.Add(game, new Dictionary<string, bool>());
 
             // Add to list if not there already.
             foreach (var key in StatsDefinitions[game].Collect.Keys)
-                if (!WindowSettings.GloballyHiddenMetrics[game].ContainsKey(key))
-                    WindowSettings.GloballyHiddenMetrics[game].Add(key, false);
+                if (!windowSettings.GloballyHiddenMetrics[game].ContainsKey(key))
+                    windowSettings.GloballyHiddenMetrics[game].Add(key, false);
         }
 
         IsInit = true;

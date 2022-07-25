@@ -16,14 +16,15 @@
 @using System.Threading
 @using TcNo_Acc_Switcher_Server.State
 @using TcNo_Acc_Switcher_Server.State.Interfaces
-@inject AppState AppState
-@inject IWindowSettings WindowSettings
 @inject IJSRuntime JsRuntime
 @inject IHttpContextAccessor HttpContextAccessor
+@inject IAppState AppState
+@inject IWindowSettings WindowSettings
+@inject NavigationManager NavigationManager
 
 <div id="window-title">
     <div class="resizeTop"></div>
-    <button id="btnBack" @onclick="AppState.Navigation.NavigateUpOne">
+    <button id="btnBack" @onclick="() => AppState.Navigation.NavigateUpOne(NavigationManager)">
         <div class="resizeTop"></div>
         <div class="resizeTopLeft"></div>
         <div class="resizeLeft"></div>
