@@ -37,15 +37,4 @@ public partial class SharedSettings
         WindowSettings.ActiveBrowser = browser;
         Toasts.ShowToastLang(ToastType.Info, "Notice", "Toast_RestartRequired");
     }
-
-    /// <summary>
-    /// Toggle whether the program minimizes to the start menu on exit
-    /// </summary>
-    public void TrayMinimizeNotExit_Toggle()
-    {
-        Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.TrayMinimizeNotExit_Toggle]");
-        if (WindowSettings.TrayMinimizeNotExit) return;
-        Toasts.ShowToastLang(ToastType.Info, "Toast_TrayPosition", 15000);
-        Toasts.ShowToastLang(ToastType.Info, "Toast_TrayHint", 15000);
-    }
 }

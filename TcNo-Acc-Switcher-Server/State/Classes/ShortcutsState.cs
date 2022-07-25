@@ -1,10 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using Microsoft.AspNetCore.Components;
-using Microsoft.Win32;
-using TcNo_Acc_Switcher_Globals;
-// TcNo Account Switcher - A Super fast account switcher
+﻿// TcNo Account Switcher - A Super fast account switcher
 // Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,6 +12,11 @@ using TcNo_Acc_Switcher_Globals;
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System;
+using System.IO;
+using System.Linq;
+using Microsoft.Win32;
+using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
 using TcNo_Acc_Switcher_Server.State.Interfaces;
@@ -26,17 +25,20 @@ namespace TcNo_Acc_Switcher_Server.State.Classes;
 
 public class ShortcutsState
 {
+    private readonly IWindowSettings _windowSettings;
     private readonly IModals _modals;
     private readonly IToasts _toasts;
 
-    public ShortcutsState(IModals modals, IToasts toasts)
+    public ShortcutsState(IWindowSettings windowSettings, IModals modals, IToasts toasts)
     {
+        _windowSettings = windowSettings;
         _modals = modals;
         _toasts = toasts;
     }
 
 
     private readonly string _startMenuFolder = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Programs), @"TcNo Account Switcher\");
+    private readonly string _startMenuPlatformsFolder = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Programs), @"TcNo Account Switcher\Platforms\");
 
     public bool DesktopShortcut
     {
@@ -59,12 +61,14 @@ public class ShortcutsState
             var s = new Shortcut();
             s.Shortcut_Switcher(_startMenuFolder);
             s.ToggleShortcut(value);
+            s.Shortcut_Tray(_startMenuFolder);
+            s.ToggleShortcut(value);
         }
     }
 
     public bool StartMenuPlatforms
     {
-        get => Directory.Exists(Path.Join(Shortcut.StartMenu, "Platforms"));
+        get => Directory.Exists(_startMenuPlatformsFolder);
         set
         {
             if (!OperatingSystem.IsWindows()) return;
@@ -73,19 +77,15 @@ public class ShortcutsState
             // If off, and folder exists: Remove shortcuts.
             if (!value)
             {
-                if (!Directory.Exists(_startMenuFolder)) return;
-                foreach (var f in Directory.GetFiles(_startMenuFolder))
-                    if (!f.EndsWith("TcNo Account Switcher.lnk")) Globals.DeleteFile(f); // Delete everything but main shortcut
+                if (Directory.Exists(_startMenuPlatformsFolder)) Directory.Delete(_startMenuPlatformsFolder, true);
                 return;
             }
 
-            // TODO: Else: Create shortcuts.
-            // foreach platform
-
-            //foreach (var platform in WindowSettings.Platforms)
-            //{
-            //    Shortcut.PlatformDesktopShortcut(_startMenuFolder, platform.Name, platform.Identifier, true);
-            //}
+            // Enable shortcuts
+            foreach (var platform in _windowSettings.Platforms.Where(x => x.Enabled))
+            {
+                Shortcut.PlatformDesktopShortcut(_startMenuPlatformsFolder, platform.SafeName, platform.Identifier, true);
+            }
         }
     }
 

@@ -21,6 +21,7 @@
 @inject IModals Modals
 @inject ILang Lang
 @inject IJSRuntime JsRuntime
+@inject IToasts Toasts
 
 @code {
     [Parameter]
@@ -29,11 +30,11 @@
     [Parameter]
     public int Depth { get; set; }
 
-    private PathPicker.FolderFileList _currentFileList;
+    private FolderFileList _currentFileList;
 
     protected override void OnInitialized()
     {
-        _currentFileList = new PathPicker.FolderFileList(CurrentPath, Depth);
+        _currentFileList = new FolderFileList(Toasts, CurrentPath, Depth);
         Modals.PathPickerOnChange += OnChangeHandler;
     }
 

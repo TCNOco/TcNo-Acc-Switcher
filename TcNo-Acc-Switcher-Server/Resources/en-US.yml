@@ -187,6 +187,9 @@ Toast_AddAccountsFirstTitle: No saved accounts
 Toast_CantFindImage: Failed to find users' image.
 Toast_CantCreateShortcut: Can not create shortcut
 Toast_ShortcutCreated: Shortcut created!
+Toast_ShortcutRemoved: Shortcut removed.
+Toast_TrayStartupTrue: Tray will start with Windows.
+Toast_TrayStartupFalse: Tray will no longer start with Windows.
 Toast_SettingsCopied: Settings successfully copied to current account.
 Toast_GameDataRestored: Successfully restored game data for this account.
 Toast_NoValidSteamId: Unable to find a valid Steam ID.

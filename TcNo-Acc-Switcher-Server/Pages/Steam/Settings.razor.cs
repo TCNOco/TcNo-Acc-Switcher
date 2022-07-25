@@ -32,6 +32,7 @@ public partial class Settings
 {
     [Inject] private IToasts Toasts { get; set; }
     [Inject] private IModals Modals { get; set; }
+    [Inject] private ITemplatedPlatformState TemplatedPlatformState { get; set; }
 
     protected override void OnInitialized()
     {

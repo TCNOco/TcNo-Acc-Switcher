@@ -17,7 +17,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
 using TcNo_Acc_Switcher_Server.State.Interfaces;
 
@@ -54,7 +53,7 @@ public class Toasts : IToasts
             if (toastItem.Cancellation.IsCancellationRequested) return;
             try
             {
-                ToastQueue.Remove(toastItem);
+                if (ToastQueue.Contains(toastItem)) ToastQueue.Remove(toastItem);
             }
             catch (Exception)
             {

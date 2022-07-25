@@ -16,10 +16,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Shared;
 using TcNo_Acc_Switcher_Server.Shared.ContextMenu;

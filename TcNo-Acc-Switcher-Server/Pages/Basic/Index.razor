@@ -13,7 +13,6 @@
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
 @page "/Basic/"
-@using TcNo_Acc_Switcher_Server.Pages.General
 @using TcNo_Acc_Switcher_Server.Shared.ContextMenu
 @using TcNo_Acc_Switcher_Server.Shared.Accounts
 @using System.IO
@@ -140,8 +139,7 @@
     /// </summary>
     public void ShowSetAccountStringModal()
     {
-        Modals.TextInput =
-            new TextInputRequest(TextInputGoal.AccString);
+        Modals.TextInput = new TextInputRequest(TextInputGoal.AccString);
         Modals.ShowModal("getText");
     }
 

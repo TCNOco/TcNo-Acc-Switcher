@@ -15,8 +15,6 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
-using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Server.State.Classes;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
 using TcNo_Acc_Switcher_Server.State.Interfaces;
@@ -30,7 +28,7 @@ public class AppState : IAppState, INotifyPropertyChanged
     {
         PasswordCurrent = "";
         _toasts = toasts;
-        Shortcuts = new ShortcutsState(modals, toasts);
+        Shortcuts = new ShortcutsState(windowSettings, modals, toasts);
         Discord = new Discord(lang, statistics, windowSettings);
         Updates = new Updates(toasts, modals, windowSettings, statistics);
         Stylesheet = new Stylesheet(toasts, lang, windowSettings);

@@ -15,6 +15,7 @@
 @using TcNo_Acc_Switcher_Server.Shared.Modal
 @using TcNo_Acc_Switcher_Server.Shared.Modal.Modals
 @using System.Collections.ObjectModel
+@using System.ComponentModel
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @using TcNo_Acc_Switcher_Server.State
 @using TcNo_Acc_Switcher_Server.State.DataTypes
@@ -24,9 +25,9 @@
 @inject ILang Lang
 @inject IModals Modals
 
-<div class="modalBG" onclick="if (event.target === this)$('.modalBG').fadeOut();" style="display: none;">
+<div class="modalBG @(!Modals.IsShown ? "modalHidden" : "modalShown")" @onclick="HideModal">
 @*<div class="modalBG" onclick="if (event.target === this)$('.modalBG').fadeOut();" style="display: none;">*@
-    <div class="modalFG">
+    <div class="modalFG" @onclick:stopPropagation>
         <div id="window-title-modal">
             @if (Modals.Type == "gameStatsSelector" && Modals.CurrentStatsSelectorState == StatsSelectorState.VarsList)
             {
@@ -91,11 +92,13 @@
 
 @code
 {
+    private void HideModal() => Modals.IsShown = false;
+
     protected override void OnInitialized()
     {
-        Modals.OnChange += OnChangeHandler;
+        Modals.PropertyChanged += OnChangeHandler;
     }
-    private async void OnChangeHandler()
+    private async void OnChangeHandler(object s, PropertyChangedEventArgs e)
     {
         await InvokeAsync(StateHasChanged);
     }

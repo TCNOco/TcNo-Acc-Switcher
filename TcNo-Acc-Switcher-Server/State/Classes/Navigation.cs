@@ -15,7 +15,6 @@
 using System;
 using System.Linq;
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 
 namespace TcNo_Acc_Switcher_Server.State.Classes;
 

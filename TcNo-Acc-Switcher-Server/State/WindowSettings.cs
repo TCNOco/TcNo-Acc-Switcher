@@ -48,6 +48,8 @@ public class WindowSettings : IWindowSettings, INotifyPropertyChanged
 
         // Remove duplicate platforms (possible):
         Platforms = new ObservableCollection<PlatformItem>(Platforms.GroupBy(x => x.Name).Select(x => x.First()).ToList());
+        if (Platforms.All(y => y.Name != "Steam")) Platforms.Add(new PlatformItem("Steam", true));
+        Platforms.First(y => y.Name == "Steam").SetFromPlatformItem(new PlatformItem("Steam", new List<string> { "s", "steam" }, "steam.exe", true));
 
         // TODO: Load from file? See commented at the bottom of this class. They were leftover from the Data\AppSettings file.
         Platforms.CollectionChanged += SortPlatforms;
@@ -164,22 +166,4 @@ public class WindowSettings : IWindowSettings, INotifyPropertyChanged
     /// </summary>
     public PlatformItem GetPlatform(string nameOrId) => Platforms.FirstOrDefault(x => x.Name == nameOrId || x.PossibleIdentifiers.Contains(nameOrId));
 
-
-    //private static void InitPlatformsList()
-    //{
-    //    // Add platforms, if none there.
-    //    if (_platforms.Count == 0)
-    //        _platforms = DefaultPlatforms;
-
-    //    _platforms.First(x => x.Name == "Steam").SetFromPlatformItem(new PlatformItem("Steam", new List<string> { "s", "steam" }, "steam.exe", true));
-
-    //    // Load other platforms by initializing BasicPlatforms
-    //    _ = BasicPlatforms.Instance;
-    //}
-
-    //public class GameSetting
-    //{
-    //    public string SettingId { get; set; } = "";
-    //    public bool Checked { get; set; }
-    //}
 }

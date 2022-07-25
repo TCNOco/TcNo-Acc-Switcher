@@ -256,10 +256,6 @@ function getBestOffset(el) {
 
 // --------- FROM NEW SYSTEM ----------
 
-// Show and Hide modal popup window -- This allows animations.
-showModal = async () => $(".modalBG").fadeIn();
-hideModal = async () => $(".modalBG").fadeOut();
-
 // Focus on a specific element, like an input or button
 focusOn = async (element) => $(element).focus();
 

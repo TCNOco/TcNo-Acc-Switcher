@@ -48,7 +48,7 @@
             style = "@import url(css/rtl.min.css);\n" + style;
 
         if (WindowSettings.Background != "")
-            style += ".programMain {background: url(" + WindowSettings.Background + ")!important;background-size:cover!important;}";
+            style += $".programMain {{background: url({WindowSettings.Background}?{DateTimeOffset.Now.ToUnixTimeSeconds()})!important;background-size:cover!important;}}";
 
         // Add streamer mode censor.
         style += ".streamerCensor { display: " + (WindowSettings.StreamerModeEnabled && AppState.Stylesheet.StreamerModeTriggered ? "none!important" : "block") + "}";

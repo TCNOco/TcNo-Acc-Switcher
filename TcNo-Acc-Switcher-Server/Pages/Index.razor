@@ -18,7 +18,6 @@
 @using TcNo_Acc_Switcher_Globals
 @using TcNo_Acc_Switcher_Server.Shared.ContextMenu
 @using System.Collections.ObjectModel
-@using TcNo_Acc_Switcher_Server.State
 @using TcNo_Acc_Switcher_Server.State.Classes
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @inject IJSRuntime JsRuntime
@@ -42,6 +41,11 @@
     private static string _imagePath(PlatformItem platform) => Path.Join(Globals.UserDataFolder, $"wwwroot\\img\\platform\\{platform.SafeName}.svg");
 
     private ObservableCollection<MenuItem> _platformContextMenuItems;
+
+    protected override void OnParametersSet()
+    {
+        TemplatedPlatformState.LoadTemplatedPlatformState(TemplatedPlatformFuncs);
+    }
 }
 
 <ContextMenu MenuItems="@_platformContextMenuItems" ContextMenuId="AccOrPlatList" />

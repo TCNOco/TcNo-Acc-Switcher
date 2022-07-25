@@ -18,6 +18,7 @@
 @using TcNo_Acc_Switcher_Server.Shared.Modal.Components
 @using Newtonsoft.Json
 @using System.IO
+@using System.Web
 @using TcNo_Acc_Switcher_Server.State
 @using TcNo_Acc_Switcher_Server.State.DataTypes
 @using TcNo_Acc_Switcher_Server.State.Interfaces
@@ -29,37 +30,95 @@
 @inject IToasts Toasts
 @inject NavigationManager NavigationManager
 @inject IWindowSettings WindowSettings
+@inject ILang Lang
+@inject ITemplatedPlatformState TemplatedPlatformState
 
 
 @code {
+    public void UpdateType()
+    {
+        if (CurrentRequest.Goal == PathPickerGoal.None)
+            return;
+
+        if (CurrentRequest.Goal == PathPickerGoal.FindPlatformExe)
+        {
+            var platformName = AppState.Switcher.CurrentSwitcher;
+            CurrentRequest.RequestedFile = AppState.Switcher.CurrentSwitcher == "Steam" ? "steam.exe" : TemplatedPlatformState.CurrentPlatform.ExeName;
+
+            CurrentRequest.ModalHeader = Lang["Modal_Title_LocatePlatform", new { platform = platformName }];
+            CurrentRequest.ModalText = new MarkupString(Lang["Modal_EnterDirectory", new { platform = platformName }]);
+            CurrentRequest.ModalButtonText = Lang["Modal_LocatePlatformFolder", new { platform = platformName }];
+
+            ConfirmTask = UpdatePlatformFolder;
+        }
+        else if (CurrentRequest.Goal == PathPickerGoal.SetBackground)
+        {
+            CurrentRequest.ModalHeader = Lang["Modal_Title_Background"];
+            CurrentRequest.ModalText = new MarkupString(Lang["Modal_SetBackground"]);
+            CurrentRequest.ModalButtonText = Lang["Modal_SetBackground_Button"];
+            CurrentRequest.RequestedFile = "AnyFile";
+
+            ConfirmTask = SetBackground;
+        }
+        else if (CurrentRequest.Goal == PathPickerGoal.SetUserdata)
+        {
+            CurrentRequest.ModalHeader = Lang["Modal_Title_Userdata"];
+            CurrentRequest.ModalText = new MarkupString(Lang["Modal_SetUserdata"]);
+            CurrentRequest.ModalButtonText = Lang["Modal_SetUserdata_Button"];
+            CurrentRequest.RequestedFile = "AnyFolder";
+
+            ConfirmTask = async () => await ChangeUserdataFolder();
+        }
+        else if (CurrentRequest.Goal == PathPickerGoal.SetAccountImage)
+        {
+            CurrentRequest.ModalHeader = Lang["Modal_Title_Userdata"];
+            CurrentRequest.ModalText = new MarkupString(Lang["Modal_SetImageHeader"]);
+            CurrentRequest.ModalButtonText = Lang["Modal_SetImage"];
+            CurrentRequest.RequestedFile = "AnyFile";
+
+            ConfirmTask = ChangeAccImage;
+        }
+
+        OnChangeHandler(); // Run once just to set vars
+    }
+
+    private Action ConfirmTask { get; set; }
+
+    private async Task Confirm()
+    {
+        Modals.IsShown = false;
+        await Task.Run(ConfirmTask);
+        CurrentRequest.Goal = PathPickerGoal.None;
+    }
+
     protected override void OnInitialized()
     {
-        Modals.PathPickerOnChange += OnChangeHandler;
-        OnChangeHandler(); // Run once just to set vars
+        Modals.PathPickerOnChange += UpdateType;
+        CurrentRequest.PropertyChanged += (_, _) => UpdateType();
+        UpdateType();
     }
 
     private async void OnChangeHandler()
     {
-        Modals.Title = Modals.PathPicker.ModalHeader;
+        Modals.Title = CurrentRequest.ModalHeader;
 
         _found = false;
-        var pp = Modals.PathPicker;
-        var r = pp.RequestedFile;
+        var r = CurrentRequest.RequestedFile;
 
         // Show/Hide indicator
         if (r != "AnyFile" && r != "AnyFolder") _showIndicator = true;
 
-        if (r == "AnyFile" && pp.LastElement == PathPickerElement.File) // Any file requested and one was clicked.
+        if (r == "AnyFile" && CurrentRequest.LastElement == PathPickerElement.File) // Any file requested and one was clicked.
             _found = true;
-        else if (r == "AnyFolder" && pp.LastElement == PathPickerElement.Folder) // Any folder requested and one was clicked.
+        else if (r == "AnyFolder" && CurrentRequest.LastElement == PathPickerElement.Folder) // Any folder requested and one was clicked.
             _found = true;
-        else if (pp.LastPath.EndsWith(r)) // Specific file or folder requested and one was clicked.
+        else if (CurrentRequest.LastPath.EndsWith(r)) // Specific file or folder requested and one was clicked.
             _found = true;
-        else if (Modals.PathPicker.Goal == PathPickerGoal.FindPlatformExe
-                 && !string.IsNullOrEmpty(Modals.PathPicker.LastPath)
-                 && !Globals.IsFile(Modals.PathPicker.LastPath) // The path doesn't end with <app.exe>, so check to see if the folder contains it. This is accepted for FindPlatformExe.
-                 && Directory.Exists(Modals.PathPicker.LastPath)
-                 && Directory.GetFiles(Modals.PathPicker.LastPath).ToList().Contains(Modals.PathPicker.RequestedFile))
+        else if (CurrentRequest.Goal == PathPickerGoal.FindPlatformExe
+                 && !string.IsNullOrEmpty(CurrentRequest.LastPath)
+                 && !Globals.IsFile(CurrentRequest.LastPath) // The path doesn't end with <app.exe>, so check to see if the folder contains it. This is accepted for FindPlatformExe.
+                 && Directory.Exists(CurrentRequest.LastPath)
+                 && Directory.GetFiles(CurrentRequest.LastPath).ToList().Contains(CurrentRequest.RequestedFile))
             _found = true;
         await InvokeAsync(StateHasChanged);
     }
@@ -71,13 +130,62 @@
 
     private bool _showIndicator = false;
     private bool _found;
+
+    private PathPickerRequest CurrentRequest => Modals.PathPicker;
+
+    private static readonly List<string> SupportedImageTypes = new() { "apng", "avif", "bmp", "cur", "ico", "gif", "jpg", "jfif", "pjpeg", "pjp", "png", "svg", "tif", "tiff", "webp" };
+    private bool IsImage => SupportedImageTypes.Any(CurrentRequest.LastPath.ToLowerInvariant().EndsWith);
+
+    private string _imageBase64 = "";
+
+    private string ImageBase64
+    {
+        get => _imageBase64;
+        set
+        {
+            _imageBase64 = value;
+            InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private bool TryGetBase64()
+    {
+        // Read image file in background
+        Task.Run(() =>
+        {
+            try
+            {
+                ImageBase64 = Convert.ToBase64String(File.ReadAllBytes(CurrentRequest.LastPath));
+            }
+            catch (Exception)
+            {
+                ImageBase64 = "";
+            }
+        });
+
+        return true;
+    }
+
+    private string ImageBase64Type()
+    {
+        var fileType = CurrentRequest.LastPath.ToLowerInvariant().Split(".").Last();
+        return fileType == "svg" ? "svg+xml" : fileType;
+    }
 }
 
-<div>
-    <p class="modal-text">@Modals.PathPicker.ModalText</p>
-</div>
+@if (IsImage && TryGetBase64())
+{
+    <div class="text_and_image">
+        <p class="modal-text">@CurrentRequest.ModalText</p>
+        <img src="data:image/@(ImageBase64Type());base64,@(ImageBase64)" alt="PreviewImage"/>
+    </div>
+}else{
+    <div>
+        <p class="modal-text">@CurrentRequest.ModalText</p>
+    </div>
+}
 <div class="inputAndButton">
-    <input type="text" id="path" autocomplete="off" style="width: 100%;padding: 8px;" @onkeyup="KeyPress" value="@Modals.PathPicker.LastPath" @oninput="OnInput">
+    <input type="text" id="path" autocomplete="off" style="width: 100%;padding: 8px;" @onkeyup="KeyPress" value="@CurrentRequest.LastPath" @oninput="OnInput">
 </div>
 <div class="settingsCol inputAndButton">
     @if (_showIndicator)
@@ -85,9 +193,9 @@
         <div class="folder_indicator @(_found ? "found" : "notfound")">
             <div id="folder_indicator_text"></div>
         </div>
-        <div class="folder_indicator_bg @(_found ? "found" : "notfound")"><span>@Modals.PathPicker.RequestedFile</span></div>
+        <div class="folder_indicator_bg @(_found ? "found" : "notfound")"><span>@CurrentRequest.RequestedFile</span></div>
     }
-    <button class="modalOK" type="button" id="set_background" @onclick="Confirm"><span>@Modals.PathPicker.ModalButtonText</span></button>
+    <button class="modalOK" type="button" id="set_background" @onclick="Confirm"><span>@CurrentRequest.ModalButtonText</span></button>
 </div>
 <PathPicker />
 
@@ -95,7 +203,7 @@
 {
     private async Task OnInput(ChangeEventArgs args)
     {
-        Modals.PathPicker.LastPath = args.Value?.ToString();
+        CurrentRequest.LastPath = args.Value?.ToString();
         Update();
         await JsRuntime.InvokeVoidAsync("pathPickerScrollToElement");
     }
@@ -113,27 +221,12 @@
     // Update dynamically as the user types.
     private void Update() => Modals.PathPickerNotifyDataChanged();
 
-
-    private async Task Confirm()
-    {
-        Modals.IsShown = false;
-
-        if (Modals.PathPicker.Goal == PathPickerGoal.FindPlatformExe)
-            UpdatePlatformFolder();
-        else if (Modals.PathPicker.Goal == PathPickerGoal.SetBackground)
-            SetBackground();
-        else if (Modals.PathPicker.Goal == PathPickerGoal.SetUserdata)
-            await ChangeUserdataFolder();
-        else if (Modals.PathPicker.Goal == PathPickerGoal.SetAccountImage)
-            ChangeAccImage();
-    }
-
     /// <summary>
     /// Import image to use as the app background
     /// </summary>
     public void SetBackground()
     {
-        var path = Modals.PathPicker.LastPath;
+        var path = CurrentRequest.LastPath;
 
         WindowSettings.Background = $"{path}";
 
@@ -144,8 +237,6 @@
             WindowSettings.Background = $"img/custom/background{Path.GetExtension(path)}";
             WindowSettings.Save();
         }
-
-        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
     }
 
     /// <summary>
@@ -153,7 +244,7 @@
     /// </summary>
     public async Task ChangeUserdataFolder()
     {
-        var path = Modals.PathPicker.LastPath;
+        var path = CurrentRequest.LastPath;
         // Verify this is different.
         var diOriginal = new DirectoryInfo(Globals.UserDataFolder);
         var diNew = new DirectoryInfo(path);
@@ -191,15 +282,15 @@
     /// </summary>
     public void ChangeAccImage()
     {
-    // Verify path exists and copy image in.
-        if (!File.Exists(Modals.PathPicker.LastPath)) return;
+        // Verify path exists and copy image in.
+        if (!File.Exists(CurrentRequest.LastPath)) return;
         var imageDest = Path.Join(Globals.UserDataFolder, "wwwroot\\img\\profiles\\", AppState.Switcher.CurrentSwitcherSafe);
-        Globals.CopyFile(Modals.PathPicker.LastPath, Path.Join(imageDest, AppState.Switcher.SelectedAccountId + ".jpg"));
+        Globals.CopyFile(CurrentRequest.LastPath, Path.Join(imageDest, AppState.Switcher.SelectedAccountId + ".jpg"));
 
-    // Update file last write time, so it's not deleted and updated.
+        // Update file last write time, so it's not deleted and updated.
         File.SetLastWriteTime(Path.Join(imageDest, AppState.Switcher.SelectedAccountId + ".jpg"), DateTime.Now);
 
-    // Reload page.
+        // Reload page.
         NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
         Toasts.ShowToastLang(ToastType.Success, "Toast_UpdatedImage");
     }
@@ -210,7 +301,7 @@
     /// </summary>
     public void UpdatePlatformFolder()
     {
-        var path = Modals.PathPicker.LastPath;
+        var path = CurrentRequest.LastPath;
         Globals.DebugWriteLine($@"[Modals.UpdatePlatformFolder] file={AppState.Switcher.CurrentSwitcher}, path={path}");
         if (!Globals.IsFolder(path))
             path = Path.GetDirectoryName(path); // Remove .exe

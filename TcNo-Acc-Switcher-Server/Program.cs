@@ -59,6 +59,9 @@ public class Program
         // Create WindowSettings instance. This loads from saved file if available.
         IWindowSettings windowSettings = new WindowSettings();
 
+        // Check if is admin, and if needs to be restarted as admin.
+        if (windowSettings.AlwaysAdmin && !Globals.IsAdministrator) StaticFuncs.RestartAsAdmin();
+
         var savedPort = windowSettings.ServerPort;
 
         var port = "";

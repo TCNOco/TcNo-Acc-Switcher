@@ -1,37 +1,52 @@
-﻿namespace TcNo_Acc_Switcher_Server.State.DataTypes
+﻿// TcNo Account Switcher - A Super fast account switcher
+// Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+namespace TcNo_Acc_Switcher_Server.State.DataTypes;
+
+public enum ExtraArg
 {
-    public enum ExtraArg
-    {
-        None,
-        RestartAsAdmin,
-        ClearStats,
-        ForgetAccount
-    }
+    None,
+    RestartAsAdmin,
+    ClearStats,
+    ForgetAccount
+}
 
-    public enum StatsSelectorState
-    {
-        GamesList,
-        VarsList
-    }
-    public enum TextInputGoal
-    {
-        AppPassword,
-        AccString,
-        ChangeUsername
-    }
+public enum StatsSelectorState
+{
+    GamesList,
+    VarsList
+}
+public enum TextInputGoal
+{
+    None,
+    AppPassword,
+    AccString,
+    ChangeUsername
+}
 
-    public enum PathPickerElement
-    {
-        None,
-        File,
-        Folder
-    }
+public enum PathPickerElement
+{
+    None,
+    File,
+    Folder
+}
 
-    public enum PathPickerGoal
-    {
-        FindPlatformExe,
-        SetBackground,
-        SetUserdata,
-        SetAccountImage
-    }
+public enum PathPickerGoal
+{
+    None,
+    FindPlatformExe,
+    SetBackground,
+    SetUserdata,
+    SetAccountImage
 }

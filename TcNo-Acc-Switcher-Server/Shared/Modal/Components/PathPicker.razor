@@ -33,11 +33,6 @@
     [Parameter]
     public string RequestedPathType { get; set; } = "AnyFile";
 
-    protected override void OnInitialized()
-    {
-        Modals.Title = Lang["Modal_Title_ChangeUsername"];
-    }
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await JsRuntime.InvokeVoidAsync("focusOn", "#NewAccountName");

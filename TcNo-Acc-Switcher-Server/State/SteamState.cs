@@ -21,8 +21,6 @@ using System.Threading.Tasks;
 using System.Xml;
 using Gameloop.Vdf;
 using Gameloop.Vdf.JsonConverter;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -46,6 +44,7 @@ public class SteamState : ISteamState
     private readonly IStatistics _statistics;
     private readonly ISteamSettings _steamSettings;
     private readonly IToasts _toasts;
+    private readonly ITemplatedPlatformState _templatedPlatformState;
 
     public List<SteamUser> SteamUsers { get; set; } = new();
     public bool SteamLoadingProfiles { get; set; }
@@ -72,7 +71,9 @@ public class SteamState : ISteamState
     /// Prepares images and VAC/Limited status
     /// Prepares HTML Elements string for insertion into the account switcher GUI.
     /// </summary>
-    public SteamState(IAppState appState, IGameStats gameStats, ILang lang, ISteamSettings steamSettings, IModals modals, IStatistics statistics, ISharedFunctions sharedFunctions, IToasts toasts)
+    public SteamState(IAppState appState, IGameStats gameStats, ILang lang, ISteamSettings steamSettings,
+        IModals modals, IStatistics statistics, ISharedFunctions sharedFunctions, IToasts toasts,
+        ITemplatedPlatformState templatedPlatformState)
     {
         _toasts = toasts;
         _appState = appState;
@@ -82,6 +83,7 @@ public class SteamState : ISteamState
         _statistics = statistics;
         _sharedFunctions = sharedFunctions;
         _gameStats = gameStats;
+        _templatedPlatformState = templatedPlatformState;
     }
 
     public void LoadSteamState(ISteamFuncs steamFuncs)

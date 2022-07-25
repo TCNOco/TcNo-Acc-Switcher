@@ -27,7 +27,13 @@ public class StaticFuncs
     public static void RestartAsAdmin(string args = "")
     {
         var fileName = "TcNo-Acc-Switcher_main.exe";
-        if (!IsTcNoClientApp) fileName = "TcNo-Acc-Switcher-Server_main.exe";
+        if (!IsTcNoClientApp)
+        {
+            fileName = "TcNo-Acc-Switcher-Server.exe_main";
+            // Is server app, but could be developing >> No _main just yet.
+            if (!File.Exists(Path.Join(Globals.AppDataFolder, fileName)) && File.Exists(Path.Join(Globals.AppDataFolder, "TcNo-Acc-Switcher-Server.exe")))
+                fileName = Path.Combine(Globals.AppDataFolder, "TcNo-Acc-Switcher-Server.exe");
+        }
         else
         {
             // Is client app, but could be developing >> No _main just yet.

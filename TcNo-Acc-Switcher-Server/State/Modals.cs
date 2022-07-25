@@ -13,58 +13,47 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
-using Newtonsoft.Json.Linq;
-using TcNo_Acc_Switcher_Globals;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
 using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.State;
 
-public class Modals : IModals
+public class Modals : IModals, INotifyPropertyChanged
 {
-    [Inject] private IJSRuntime JsRuntime { get; set; }
+    public event PropertyChangedEventHandler? PropertyChanged;
+    protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
+    {
+        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+        field = value;
+        OnPropertyChanged(propertyName);
+        return true;
+    }
 
     public Modals() { }
 
-
-    public event Action OnChange;
-    public void NotifyDataChanged() => OnChange?.Invoke();
 
     private bool _isShown;
     public bool IsShown
     {
         get => _isShown;
-        set
-        {
-            _isShown = value;
-            JsRuntime.InvokeVoidAsync(value ? "showModal" : "hideModal");
-            NotifyDataChanged();
-        }
+        set => SetField(ref _isShown, value);
     }
     private string _type;
     public string Type
     {
         get => _type;
-        set
-        {
-            _type = value;
-            NotifyDataChanged();
-        }
+        set => SetField(ref _type, value);
     }
 
     private string _title;
     public string Title
     {
         get => _title;
-        set
-        {
-            _title = value;
-            NotifyDataChanged();
-        }
+        set => SetField(ref _title, value);
     }
 
     public ExtraArg ExtraArgs { get; set; }
@@ -120,8 +109,7 @@ public class Modals : IModals
     /// </summary>
     public void ShowSetBackgroundModal()
     {
-        PathPicker =
-            new PathPickerRequest(PathPickerGoal.SetBackground);
+        PathPicker = new PathPickerRequest(PathPickerGoal.SetBackground);
         ShowModal("find");
     }
 
@@ -143,8 +131,7 @@ public class Modals : IModals
     /// </summary>
     public void ShowChangeUsernameModal()
     {
-        TextInput =
-            new TextInputRequest(TextInputGoal.ChangeUsername);
+        TextInput = new TextInputRequest(TextInputGoal.ChangeUsername);
         ShowModal("getText");
     }
     #endregion

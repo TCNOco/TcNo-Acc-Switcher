@@ -6,6 +6,16 @@
     position: fixed;
     cursor: pointer;
     z-index: 100;
+    transition: all 150ms ease-in;
+
+    &.modalHidden {
+        pointer-events: none;
+        opacity: 0;
+    }
+
+    &.modalShown {
+        opacity: 1;
+    }
 }
 
 .modalFG {
@@ -180,6 +190,17 @@
     padding: 2em;
     background: #0E1419;
     overflow: hidden auto;
+
+    .text_and_image {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        img{
+            max-height: 5em;
+            max-width: 10em;
+        }
+    }
 
     .modal_button_close {
         right: 0 !important;

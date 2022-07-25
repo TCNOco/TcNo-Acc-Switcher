@@ -1,11 +1,22 @@
-﻿using System;
+﻿// TcNo Account Switcher - A Super fast account switcher
+// Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.State.Classes;
@@ -31,6 +42,8 @@ public class TemplatedPlatformState : ITemplatedPlatformState
     public Platform CurrentPlatform { get; set; }
     public List<Platform> Platforms { get; set; }
 
+    private bool _isInit;
+
     // Replace the other PlatformItem.cs here
     // Just have this load all the names and identifiers as well.
 
@@ -50,6 +63,8 @@ public class TemplatedPlatformState : ITemplatedPlatformState
 
     public void LoadTemplatedPlatformState(ITemplatedPlatformFuncs templatedPlatformFuncs)
     {
+        if (_isInit) return;
+        _isInit = true;
 
         if (!File.Exists(_platformJsonPath))
         {

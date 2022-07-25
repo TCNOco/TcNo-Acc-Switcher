@@ -29,12 +29,65 @@
 @inject ITemplatedPlatformFuncs TemplatedPlatformFuncs
 @inject ISteamSettings SteamSettings
 @inject IWindowSettings WindowSettings
+@inject ILang Lang
 
 @code {
+    private void UpdateType(){
+        if (CurrentRequest.Goal == TextInputGoal.None)
+            return;
+
+        if (CurrentRequest.Goal == TextInputGoal.AccString)
+        {
+            // Adding a new account, but need a DisplayName before.
+            CurrentRequest.ModalSubheading = new MarkupString();
+
+            CurrentRequest.ModalHeader = Lang["Modal_Title_AddNew", new { platform = AppState.Switcher.CurrentSwitcher }];
+            CurrentRequest.ModalText = new MarkupString(Lang["Modal_AddNew", new { platform = AppState.Switcher.CurrentSwitcher }]);
+            CurrentRequest.ModalButtonText = Lang["Modal_AddCurrentAccount", new { platform = AppState.Switcher.CurrentSwitcher }];
+            CurrentRequest.ExtraButtons = AppState.Switcher.CurrentSwitcher == "Steam" ? new MarkupString() : TemplatedPlatformState.CurrentPlatform.UserModalExtraButtons;
+
+            ConfirmTask = async () => await SetAccountString();
+        }
+        else if (CurrentRequest.Goal == TextInputGoal.AppPassword)
+        {
+            CurrentRequest.ExtraButtons = new MarkupString();
+
+            CurrentRequest.ModalHeader = Lang["Modal_Title_SetPassword"];
+            CurrentRequest.ModalSubheading = new MarkupString(Lang["Modal_SetPassword"]);
+            CurrentRequest.ModalText = new MarkupString(Lang["Modal_SetPassword_Info", new { link = "https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/FAQ---More-Info#can-i-put-this-program-on-a-usb-portable" }]);
+            CurrentRequest.ModalButtonText = Lang["Modal_SetPassword_Button"];
+
+            ConfirmTask = SetAppPassword;
+        }
+        else if (CurrentRequest.Goal == TextInputGoal.ChangeUsername)
+        {
+            CurrentRequest.ModalSubheading = new MarkupString();
+
+            CurrentRequest.ModalHeader = Lang["Modal_Title_ChangeUsername"];
+            CurrentRequest.ModalText = new MarkupString(Lang["Modal_ChangeUsername", new { link = AppState.Switcher.CurrentSwitcher }]);
+            CurrentRequest.ModalButtonText = Lang["Toast_SetUsername"];
+            CurrentRequest.ExtraButtons = AppState.Switcher.CurrentSwitcher == "Steam" ? new MarkupString() : TemplatedPlatformState.CurrentPlatform.UserModalExtraButtons;
+
+            ConfirmTask = async () => await SetAccountString();
+        }
+
+        OnChangeHandler(); // Run once just to set vars
+    }
+
+    private Action ConfirmTask { get; set; }
+
+    private async Task Confirm()
+    {
+        Modals.IsShown = false;
+        await Task.Run(ConfirmTask);
+        CurrentRequest.Goal = TextInputGoal.None;
+    }
+
     protected override void OnInitialized()
     {
-        Modals.TextInputOnChange += OnChangeHandler;
-        OnChangeHandler(); // Run once just to set vars
+        Modals.TextInputOnChange += UpdateType;
+        CurrentRequest.PropertyChanged += (_, _) => UpdateType();
+        UpdateType();
     }
 
     private async void OnChangeHandler()
@@ -51,6 +104,8 @@
     }
 
     private bool _extraButtonSet;
+
+    private TextInputRequest CurrentRequest => Modals.TextInput;
 }
 
 @if (Modals.TextInput.ModalSubheading.Value != new MarkupString().Value)
@@ -94,17 +149,6 @@
 
     // Update dynamically as the user types.
     private void Update() => Modals.TextInputNotifyDataChanged();
-
-
-    private async Task Confirm()
-    {
-        Modals.IsShown = false;
-
-        if (Modals.TextInput.Goal == TextInputGoal.AppPassword)
-            SetAppPassword();
-        else if (Modals.TextInput.Goal is TextInputGoal.AccString or TextInputGoal.ChangeUsername)
-            await SetAccountString();
-    }
 
 
     /// <summary>

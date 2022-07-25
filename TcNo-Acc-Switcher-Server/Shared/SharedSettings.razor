@@ -27,6 +27,7 @@
 @inject IWindowSettings WindowSettings
 @inject IAppState AppState
 @inject IModals Modals
+@inject ITemplatedPlatformState TemplatedPlatformState
 
 @code
 {
@@ -102,7 +103,7 @@
 </div>
 <div class="rowSetting">
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_DesktopShortcut" @bind="AppState.Shortcuts.DesktopShortcut"><label class="form-check-label" for="AppSett_DesktopShortcut"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_DesktopShortcut" @bind="DesktopShortcut"><label class="form-check-label" for="AppSett_DesktopShortcut"></label>
     </div>
     <label for="AppSett_DesktopShortcut">
         @Lang["Settings_DesktopShortcut"]<br>
@@ -111,13 +112,13 @@
 <div class="rowSetting">
     <span>@Lang["Cleaning_Header_StartMenuShortcuts"]</span>
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_StartMenu" @bind="AppState.Shortcuts.StartMenu"><label class="form-check-label" for="AppSett_StartMenu"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_StartMenu" @bind="StartMenu"><label class="form-check-label" for="AppSett_StartMenu"></label>
     </div>
     <label for="AppSett_StartMenu">
         @Lang["Settings_StartMenu_ProgramTray"]<br>
     </label>
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_StartMenuPlatform" @bind="AppState.Shortcuts.StartMenuPlatforms"><label class="form-check-label" for="AppSett_StartMenuPlatform"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_StartMenuPlatform" @bind="StartMenuPlatforms"><label class="form-check-label" for="AppSett_StartMenuPlatform"></label>
     </div>
     <label for="AppSett_StartMenuPlatform">
         @Lang["Settings_StartMenu_Platform"]<br>
@@ -125,7 +126,7 @@
 </div>
 <div class="rowSetting">
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_TrayStartup" @bind="AppState.Shortcuts.TrayStartup"><label class="form-check-label" for="AppSett_TrayStartup"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_TrayStartup" @bind="StartTrayWithWindows"><label class="form-check-label" for="AppSett_TrayStartup"></label>
     </div>
     <label for="AppSett_TrayStartup">
         @Lang["Settings_Tray_StartWindows"]<br>
@@ -183,7 +184,7 @@
     </div>
     <div class="rowSetting">
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="TrayMinimizeNotExit" @bind="WindowSettings.TrayMinimizeNotExit" @onclick="TrayMinimizeNotExit_Toggle"><label class="form-check-label" for="TrayMinimizeNotExit"></label>
+            <input class="form-check-input" type="checkbox" id="TrayMinimizeNotExit" @bind="TrayMinimizeNotExit"><label class="form-check-label" for="TrayMinimizeNotExit"></label>
         </div>
         <label for="TrayMinimizeNotExit">
             @Lang["Settings_ExitToTray"]<br>
@@ -285,8 +286,63 @@
     /// </summary>
     public void ShowChangeUserdataFolderModal()
     {
-        Modals.PathPicker =
-            new PathPickerRequest(PathPickerGoal.SetUserdata);
+        Modals.PathPicker = new PathPickerRequest(PathPickerGoal.SetUserdata);
         Modals.ShowModal("find");
+    }
+
+    private bool DesktopShortcut
+    {
+        get => AppState.Shortcuts.DesktopShortcut;
+        set
+        {
+            AppState.Shortcuts.DesktopShortcut = value;
+            Toasts.ShowToastLang(ToastType.Success, value ? "Toast_ShortcutCreated" : "Toast_ShortcutRemoved");
+        }
+    }
+
+    private bool StartMenu
+    {
+        get => AppState.Shortcuts.StartMenu;
+        set
+        {
+            AppState.Shortcuts.StartMenu = value;
+            Toasts.ShowToastLang(ToastType.Success, value ? "Toast_ShortcutCreated" : "Toast_ShortcutRemoved");
+        }
+    }
+
+    private bool StartMenuPlatforms
+    {
+        get => AppState.Shortcuts.StartMenuPlatforms;
+        set
+        {
+            AppState.Shortcuts.StartMenuPlatforms = value;
+            Toasts.ShowToastLang(ToastType.Success, value ? "Toast_ShortcutCreated" : "Toast_ShortcutRemoved");
+        }
+    }
+
+    private bool StartTrayWithWindows
+    {
+        get => AppState.Shortcuts.TrayStartup;
+        set
+        {
+            AppState.Shortcuts.TrayStartup = value;
+            Toasts.ShowToastLang(ToastType.Success, value ? "Toast_TrayStartupTrue" : "Toast_TrayStartupFalse");
+        }
+    }
+
+    /// <summary>
+    /// Toggle whether the program minimizes to the start menu on exit
+    /// </summary>
+    private bool TrayMinimizeNotExit
+    {
+        get => WindowSettings.TrayMinimizeNotExit;
+        set
+        {
+            WindowSettings.TrayMinimizeNotExit = value;
+
+            if (!value) return;
+            Toasts.ShowToastLang(ToastType.Info, "Toast_TrayPosition", 15000);
+            Toasts.ShowToastLang(ToastType.Info, "Toast_TrayHint", 15000);
+        }
     }
 }

@@ -21,11 +21,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Gameloop.Vdf;
 using Gameloop.Vdf.JsonConverter;
-using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Converters;
-using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Shared;
 using TcNo_Acc_Switcher_Server.Shared.ContextMenu;
@@ -43,6 +41,7 @@ public class SteamContextMenu
     private readonly ISteamFuncs _steamFuncs;
     private readonly ISteamSettings _steamSettings;
     private readonly IToasts _toasts;
+
     public SteamContextMenu(IAppState appState, IGameStats gameStats, ILang lang, IModals modals,
         ISteamFuncs steamFuncs, ISteamSettings steamSettings, IToasts toasts)
     {
@@ -207,7 +206,7 @@ public class SteamContextMenu
                     : null,
                 new("Context_ChangeImage", new Action(_modals.ShowChangeAccImageModal)),
                 new("Context_Steam_OpenUserdata", new Action(SteamOpenUserdata)),
-                new("Context_ChangeName", new Action(_modals.ShowChangeUsernameModal))
+                new("Context_ChangeName", new Action(_modals.ShowChangeUsernameModal)),
             })
         });
 

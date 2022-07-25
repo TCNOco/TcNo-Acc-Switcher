@@ -12,17 +12,24 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Components;
-using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.State.DataTypes;
 
-public class PathPickerRequest
+public class PathPickerRequest : INotifyPropertyChanged
 {
-    [Inject] private ILang Lang { get; set; }
-    [Inject] private IAppState AppState { get; set; }
-    [Inject] private ITemplatedPlatformState TemplatedPlatformState { get; set; }
-
+    public event PropertyChangedEventHandler? PropertyChanged;
+    protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
+    {
+        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+        field = value;
+        OnPropertyChanged(propertyName);
+        return true;
+    }
 
     /// <summary>
     /// This can be a filename, a folder name, or: AnyFile, AnyFolder
@@ -31,7 +38,12 @@ public class PathPickerRequest
     public string LastPath = "";
     public bool ShowFiles;
     public PathPickerElement LastElement = PathPickerElement.None;
-    public PathPickerGoal Goal;
+    public PathPickerGoal Goal
+    {
+        get => _goal;
+        set => SetField(ref _goal, value);
+    }
+    private PathPickerGoal _goal;
 
     public string ModalHeader;
     public MarkupString ModalText;
@@ -45,36 +57,5 @@ public class PathPickerRequest
         ShowFiles = showFiles;
         Goal = goal;
         LastPath = "";
-
-        if (Goal == PathPickerGoal.FindPlatformExe)
-        {
-            string platformName = AppState.Switcher.CurrentSwitcher;
-            RequestedFile = AppState.Switcher.CurrentSwitcher == "Steam" ? "steam.exe" : TemplatedPlatformState.CurrentPlatform.ExeName;
-
-            ModalHeader = Lang["Modal_Title_LocatePlatform", new { platform = platformName }];
-            ModalText = new MarkupString(Lang["Modal_EnterDirectory", new { platform = platformName }]);
-            ModalButtonText = Lang["Modal_LocatePlatformFolder", new { platform = platformName }];
-        }
-        else if (Goal == PathPickerGoal.SetBackground)
-        {
-            ModalHeader = Lang["Modal_Title_Background"];
-            ModalText = new MarkupString(Lang["Modal_SetBackground"]);
-            ModalButtonText = Lang["Modal_SetBackground_Button"];
-            RequestedFile = "AnyFile";
-        }
-        else if (Goal == PathPickerGoal.SetUserdata)
-        {
-            ModalHeader = Lang["Modal_Title_Userdata"];
-            ModalText = new MarkupString(Lang["Modal_SetUserdata"]);
-            ModalButtonText = Lang["Modal_SetUserdata_Button"];
-            RequestedFile = "AnyFolder";
-        }
-        else if (Goal == PathPickerGoal.SetAccountImage)
-        {
-            ModalHeader = Lang["Modal_Title_Userdata"];
-            ModalText = new MarkupString(Lang["Modal_SetImageHeader"]);
-            ModalButtonText = Lang["Modal_SetImage"];
-            RequestedFile = "AnyFile";
-        }
     }
 }

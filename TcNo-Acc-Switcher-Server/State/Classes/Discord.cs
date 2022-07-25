@@ -15,7 +15,6 @@
 using System.Threading;
 using DiscordRPC;
 using DiscordRPC.Logging;
-using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.State.Classes;

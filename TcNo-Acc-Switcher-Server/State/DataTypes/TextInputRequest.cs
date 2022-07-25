@@ -12,20 +12,32 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Components;
-using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.State.DataTypes;
 
-public class TextInputRequest
+public class TextInputRequest : INotifyPropertyChanged
 {
-    [Inject] private ILang Lang { get; set; }
-    [Inject] private IAppState AppState { get; set; }
-    [Inject] private ITemplatedPlatformState TemplatedPlatformState { get; set; }
-    [Inject] private IModals Modals { get; set; }
+    public event PropertyChangedEventHandler? PropertyChanged;
+    protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
+    {
+        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+        field = value;
+        OnPropertyChanged(propertyName);
+        return true;
+    }
 
     public string LastString = "";
-    public TextInputGoal Goal;
+    public TextInputGoal Goal
+    {
+        get => _goal;
+        set => SetField(ref _goal, value);
+    }
+    private TextInputGoal _goal;
 
     public string ModalHeader;
     public MarkupString ModalText;
@@ -33,42 +45,11 @@ public class TextInputRequest
     public string ModalButtonText;
     public MarkupString ExtraButtons = new();
 
-    public TextInputRequest() { }
+    public TextInputRequest() {}
     public TextInputRequest(TextInputGoal goal)
     {
         // Clear existing data, if any.
         LastString = "";
         Goal = goal;
-
-        if (Goal == TextInputGoal.AccString)
-        {
-            // Adding a new account, but need a DisplayName before.
-            ModalSubheading = new MarkupString();
-
-            ModalHeader = Lang["Modal_Title_AddNew", new { platform = AppState.Switcher.CurrentSwitcher }];
-            ModalText = new MarkupString(Lang["Modal_AddNew", new { platform = AppState.Switcher.CurrentSwitcher }]);
-            ModalButtonText = Lang["Modal_AddCurrentAccount", new { platform = AppState.Switcher.CurrentSwitcher }];
-            ExtraButtons = AppState.Switcher.CurrentSwitcher == "Steam" ? new MarkupString() : TemplatedPlatformState.CurrentPlatform.UserModalExtraButtons;
-        }
-        else if (Goal == TextInputGoal.AppPassword)
-        {
-            ExtraButtons = new MarkupString();
-
-            ModalHeader = Lang["Modal_Title_SetPassword"];
-            ModalSubheading = new MarkupString(Lang["Modal_SetPassword"]);
-            ModalText = new MarkupString(Lang["Modal_SetPassword_Info", new { link = "https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/FAQ---More-Info#can-i-put-this-program-on-a-usb-portable" }]);
-            ModalButtonText = Lang["Modal_SetPassword_Button"];
-        }
-        else if (Goal == TextInputGoal.ChangeUsername)
-        {
-            ModalSubheading = new MarkupString();
-
-            ModalHeader = Lang["Modal_Title_ChangeUsername"];
-            ModalText = new MarkupString(Lang["Modal_ChangeUsername", new { link = AppState.Switcher.CurrentSwitcher }]);
-            ModalButtonText = Lang["Toast_SetUsername"];
-            ExtraButtons = AppState.Switcher.CurrentSwitcher == "Steam" ? new MarkupString() : TemplatedPlatformState.CurrentPlatform.UserModalExtraButtons;
-        }
-
-        Modals.TextInputNotifyDataChanged();
     }
 }
