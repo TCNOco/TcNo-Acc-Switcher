@@ -33,8 +33,9 @@ public class TemplatedPlatformContextMenu
     private readonly ITemplatedPlatformState _templatedPlatformState;
     private readonly ITemplatedPlatformFuncs _templatedPlatformFuncs;
     private readonly IToasts _toasts;
+    private readonly ILang _lang;
 
-    public TemplatedPlatformContextMenu(IAppState appState, IGameStats gameStats, IModals modals, ITemplatedPlatformFuncs templatedPlatformFuncs, ITemplatedPlatformState templatedPlatformState, IToasts toasts)
+    public TemplatedPlatformContextMenu(IAppState appState, IGameStats gameStats, ILang lang, IModals modals, ITemplatedPlatformFuncs templatedPlatformFuncs, ITemplatedPlatformState templatedPlatformState, IToasts toasts)
     {
         _appState = appState;
         _gameStats = gameStats;
@@ -42,13 +43,10 @@ public class TemplatedPlatformContextMenu
         _templatedPlatformFuncs = templatedPlatformFuncs;
         _templatedPlatformState = templatedPlatformState;
         _toasts = toasts;
-    }
+        _lang = lang;
 
-    public readonly ObservableCollection<MenuItem> ContextMenuItems = new();
-    private void BuildContextMenu()
-    {
         ContextMenuItems.Clear();
-        ContextMenuItems.AddRange(new MenuBuilder(
+        ContextMenuItems.AddRange(new MenuBuilder(_lang,
             new[]
             {
                 new ("Context_SwapTo", new Action(() => _templatedPlatformFuncs.SwapToAccount())),
@@ -61,18 +59,22 @@ public class TemplatedPlatformContextMenu
                 _gameStats.PlatformHasAnyGames(_templatedPlatformState.CurrentPlatform.SafeName) ?
                     new Tuple<string, object>("Context_ManageGameStats", new Action(_modals.ShowGameStatsSelectorModal)) : null,
             }).Result());
+
+        ContextMenuShortcutItems = new MenuBuilder(_lang,
+            new Tuple<string, object>[]
+            {
+                new ("Context_RunAdmin", "shortcut('admin')"),
+                new ("Context_Hide", "shortcut('hide')"),
+            }).Result();
+
+        ContextMenuPlatformItems = new MenuBuilder(_lang,
+            new Tuple<string, object>("Context_RunAdmin", "shortcut('admin')")
+        ).Result();
     }
 
-    public readonly ObservableCollection<MenuItem> ContextMenuShortcutItems = new MenuBuilder(
-        new Tuple<string, object>[]
-        {
-            new ("Context_RunAdmin", "shortcut('admin')"),
-            new ("Context_Hide", "shortcut('hide')"),
-        }).Result();
-
-    public readonly ObservableCollection<MenuItem> ContextMenuPlatformItems = new MenuBuilder(
-        new Tuple<string, object>("Context_RunAdmin", "shortcut('admin')")
-    ).Result();
+    public readonly ObservableCollection<MenuItem> ContextMenuItems = new();
+    public readonly ObservableCollection<MenuItem> ContextMenuShortcutItems;
+    public readonly ObservableCollection<MenuItem> ContextMenuPlatformItems;
 
 
 

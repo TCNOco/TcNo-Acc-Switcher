@@ -67,8 +67,6 @@ public class StaticFuncs
     #endregion
 
     #region Clipboard
-
-    [JSInvokable]
     public static async Task CopyText(string text) => await ClipboardService.SetTextAsync(text);
     #endregion
 }

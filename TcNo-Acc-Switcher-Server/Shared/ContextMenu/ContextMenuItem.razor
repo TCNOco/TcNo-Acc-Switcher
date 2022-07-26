@@ -42,7 +42,7 @@
 @if (Item.Children.Any())
 {
     <li class="hasSubmenu">
-        <a onclick="event.preventDefault();">@Item.Text</a>
+        <a class="contextIgnoreClick" onclick="event.preventDefault();">@Item.Text</a>
         <ul class="submenu submenu@(Depth + 1)">
             @if (PageCount > 1)
             {

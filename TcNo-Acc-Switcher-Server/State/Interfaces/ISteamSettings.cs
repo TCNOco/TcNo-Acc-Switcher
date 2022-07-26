@@ -39,6 +39,7 @@ public interface ISteamSettings
     bool StartSilent { get; set; }
     Dictionary<string, string> CustomAccountNames { get; set; }
     string LoginUsersVdf { get; set; }
+    string LibraryVdf { get; set; }
     string SteamImagePath { get; init; }
     string SteamImagePathHtml { get; init; }
     List<string> Processes { get; init; }

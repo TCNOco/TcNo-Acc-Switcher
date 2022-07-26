@@ -13,9 +13,19 @@ function positionAndShowMenu(event, contextMenuId) {
     //Get window size:
     const winWidth = $(document).width();
     const winHeight = $(document).height();
-    //Get pointer position:
-    const posX = event.pageX - 14;
-    const posY = event.pageY - 42; // Offset for header bar
+
+    let posX = 0, posY = 0;
+    if (typeof event !== "string") {
+        //Get pointer position:
+        posX = event.pageX - 14;
+        posY = event.pageY - 42; // Offset for header bar
+    } else {
+        const el = $(event).parent();
+        // Was called by a scripted or keyboard event:
+        posX = el.offset().left + (el.width() / 2);
+        posY = el.offset().top + (el.height() / 2);
+    }
+
     //Get contextmenu size:
     const menuWidth = jQueryContextMenu.width();
     const menuHeight = jQueryContextMenu.height();
@@ -95,7 +105,7 @@ function hideContextMenus() {
 }
 document.querySelector("body").addEventListener("click", (e) => {
     const excluded = Array.from(document.querySelectorAll(
-        ".contextmenu, .contextmenu *:not(li,a:not(.paginationButton))"));
+        ".contextmenu, .contextmenu *:not(li,a:not(.paginationButton)), .contextIgnoreClick"));
     if (!excluded.includes(e.target)) {
         hideContextMenus();
     }

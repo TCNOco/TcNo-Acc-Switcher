@@ -273,9 +273,9 @@ public class SteamFuncs : ISteamFuncs
         acc.TitleText = $"{_lang["Tooltip_CurrentAccount"]}";
 
         // getBestOffset
-        await JsRuntime.InvokeVoidAsync("setBestOffset", acc.AccountId);
+        // TODO: Remove with new tooltips: await JsRuntime.InvokeVoidAsync("setBestOffset", acc.AccountId);
         // then initTooltips
-        await JsRuntime.InvokeVoidAsync("initTooltips");
+        // TODO: Remove with new tooltips: await JsRuntime.InvokeVoidAsync("initTooltips");
     }
 
 
@@ -290,7 +290,7 @@ public class SteamFuncs : ISteamFuncs
         }
 
         // Clear the hover text
-        await JsRuntime.InvokeVoidAsync("clearAccountTooltips");
+        // TODO: Remove with new tooltips: await JsRuntime.InvokeVoidAsync("clearAccountTooltips");
     }
     #endregion
 

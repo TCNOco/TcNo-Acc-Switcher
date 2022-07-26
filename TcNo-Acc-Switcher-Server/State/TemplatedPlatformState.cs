@@ -30,6 +30,7 @@ public class TemplatedPlatformState : ITemplatedPlatformState
 {
     private readonly IAppState _appState;
     private readonly IGameStats _gameStats;
+    private readonly ILang _lang;
     private readonly IModals _modals;
     private readonly ISharedFunctions _sharedFunctions;
     private readonly IStatistics _statistics;
@@ -48,12 +49,13 @@ public class TemplatedPlatformState : ITemplatedPlatformState
     // Just have this load all the names and identifiers as well.
 
     private readonly string _platformJsonPath = Path.Join(Globals.AppDataFolder, "Platforms.json");
-    public TemplatedPlatformState(IAppState appState, IGameStats gameStats, IModals modals,
+    public TemplatedPlatformState(IAppState appState, IGameStats gameStats, ILang lang, IModals modals,
         ISharedFunctions sharedFunctions, IStatistics statistics,
         IToasts toasts, IWindowSettings windowSettings)
     {
         _appState = appState;
         _gameStats = gameStats;
+        _lang = lang;
         _modals = modals;
         _sharedFunctions = sharedFunctions;
         _statistics = statistics;
@@ -93,7 +95,7 @@ public class TemplatedPlatformState : ITemplatedPlatformState
 
         Task.Run(() =>
         {
-            ContextMenu = new TemplatedPlatformContextMenu(_appState, _gameStats, _modals, templatedPlatformFuncs, this, _toasts);
+            ContextMenu = new TemplatedPlatformContextMenu(_appState, _gameStats, _lang, _modals, templatedPlatformFuncs, this, _toasts);
         });
     }
 

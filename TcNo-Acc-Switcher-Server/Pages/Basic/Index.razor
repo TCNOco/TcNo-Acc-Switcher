@@ -184,7 +184,6 @@
         await HandleFirstRender(firstRender);
         Statistics.NewNavigation($"/[{TemplatedPlatformState.CurrentPlatform.SafeName}]");
         if (!firstRender) return;
-        await JsRuntime.InvokeVoidAsync("initCopyHotKey");
         await JsRuntime.InvokeVoidAsync("showNoteTooltips");
 
         var curAcc = await TemplatedPlatformFuncs.GetCurrentAccountId();

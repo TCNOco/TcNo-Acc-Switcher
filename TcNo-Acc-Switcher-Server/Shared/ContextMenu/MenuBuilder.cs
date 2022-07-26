@@ -16,11 +16,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.Shared.ContextMenu;
 
 public class MenuBuilder
 {
+    private readonly ILang _lang;
     private readonly ObservableCollection<MenuItem> _menu;
     public ObservableCollection<MenuItem> Result() => _menu;
     public MenuBuilder()
@@ -28,12 +30,22 @@ public class MenuBuilder
         _menu = new ObservableCollection<MenuItem>();
     }
 
-    public MenuBuilder(Tuple<string, object> item):this()
+    /// <summary>
+    /// The new, preferred MenuBuilder (with lang support)
+    /// </summary>
+    public MenuBuilder(ILang lang)
     {
+        _lang = lang;
+        _menu = new ObservableCollection<MenuItem>();
+    }
+    public MenuBuilder(ILang lang, Tuple<string, object> item):this()
+    {
+        _lang = lang;
         AddItem(item);
     }
-    public MenuBuilder(IEnumerable<Tuple<string, object>> items):this()
+    public MenuBuilder(ILang lang, IEnumerable<Tuple<string, object>> items):this()
     {
+        _lang = lang;
         AddItems(items);
     }
 
@@ -54,7 +66,7 @@ public class MenuBuilder
         if (item is null) return;
         MenuItem menuItem = new()
         {
-            Text = item.Item1
+            Text = _lang?[item.Item1] ?? item.Item1
         };
         switch (item.Item2)
         {
@@ -65,7 +77,7 @@ public class MenuBuilder
             }
             case IEnumerable<Tuple<string, object>> subItems:
             {
-                var builder = new MenuBuilder();
+                var builder = new MenuBuilder(_lang);
                 foreach(var subItem in subItems) {
                     builder.AddItem(subItem);
                 }

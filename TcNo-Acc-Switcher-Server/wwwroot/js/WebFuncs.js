@@ -181,36 +181,6 @@ async function initSavingHotKey() {
     });
 }
 
-getDisplayName = () => $(selectedElem).siblings("label").find(".displayName").text();
-
-async function initCopyHotKey() {
-    const toastCopied = await GetLang("Toast_Copied");
-    hotkeys("ctrl+c,ctrl+shift+c,alt+c", async function (event, handler) {
-        // Doesn't prevent default!
-        switch (handler.key) {
-        case "ctrl+shift+c":
-        case "alt+c":
-            await copyToClipboard($(selectedElem).prop("id"));
-            break;
-        case "ctrl+c":
-                await copyToClipboard(getDisplayName());
-            break;
-        }
-
-        window.notification.new({
-            type: "info",
-            title: "",
-            message: toastCopied,
-            renderTo: "toastarea",
-            duration: 2000
-        });
-    });
-}
-
-
-
-
-
 
 
 
@@ -219,8 +189,6 @@ async function initCopyHotKey() {
 
 
 // ---------- KEEPING FROM OLD ----------
-
-copyToClipboard = async (str) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CopyToClipboard", str);
 
 window.addEventListener("load",
     () => {

@@ -45,7 +45,7 @@ public partial class Index
 
     protected override void OnInitialized()
     {
-        _platformContextMenuItems = new MenuBuilder(
+        _platformContextMenuItems = new MenuBuilder(Lang,
             new Tuple<string, object>[]
             {
                 new ("Context_HidePlatform", new Action(() => HidePlatform())),

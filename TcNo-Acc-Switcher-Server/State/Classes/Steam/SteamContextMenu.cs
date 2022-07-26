@@ -53,9 +53,20 @@ public class SteamContextMenu
         _steamSettings = steamSettings;
         _toasts = toasts;
 
-
         LoadInstalledGames();
         AppIds = LoadAppNames();
+        BuildContextMenu();
+
+        ShortcutItems = new MenuBuilder(_lang,
+            new Tuple<string, object>[]
+            {
+                new ("Context_RunAdmin", "shortcut('admin')"),
+                new ("Context_Hide", "shortcut('hide')"),
+            }).Result();
+
+        PlatformItems = new MenuBuilder(_lang,
+            new Tuple<string, object>("Context_RunAdmin", "shortcut('admin')")
+        ).Result();
     }
 
     public List<string> InstalledGames { get; set; }
@@ -68,16 +79,8 @@ public class SteamContextMenu
         Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\AppIdsUser.json");
 
     public readonly ObservableCollection<MenuItem> Menu = new();
-    public readonly ObservableCollection<MenuItem> ShortcutItems = new MenuBuilder(
-        new Tuple<string, object>[]
-        {
-            new ("Context_RunAdmin", "shortcut('admin')"),
-            new ("Context_Hide", "shortcut('hide')"),
-        }).Result();
-
-    public readonly ObservableCollection<MenuItem> PlatformItems = new MenuBuilder(
-        new Tuple<string, object>("Context_RunAdmin", "shortcut('admin')")
-    ).Result();
+    public readonly ObservableCollection<MenuItem> ShortcutItems;
+    public readonly ObservableCollection<MenuItem> PlatformItems;
 
     public void BuildContextMenu()
     {
@@ -114,15 +117,15 @@ public class SteamContextMenu
                 });
             }
 
-            gameData = new MenuItem()
+            gameData = new MenuItem
             {
-                Text = "Context_GameDataSubmenu",
+                Text = _lang["Context_GameDataSubmenu"],
                 Children = menuItems
             };
         }
 
         // Prepare menu
-        var menuBuilder = new MenuBuilder(new Tuple<string, object>[]
+        var menuBuilder = new MenuBuilder(_lang, new Tuple<string, object>[]
         {
             new("Context_SwapTo", new Action(async () => await _steamFuncs.SwapToAccount())),
             new("Context_LoginAsSubmenu", new Tuple<string, object>[]
@@ -280,7 +283,7 @@ public class SteamContextMenu
         List<string> gameIds;
         try
         {
-            var libraryVdf = VdfConvert.Deserialize(File.ReadAllText(_steamSettings.LoginUsersVdf));
+            var libraryVdf = VdfConvert.Deserialize(File.ReadAllText(_steamSettings.LibraryVdf));
             var library = new JObject { libraryVdf.ToJson() };
             gameIds = library["libraryfolders"]!
                 .SelectMany(folder => ((JObject)folder.First?["apps"])?.Properties()
@@ -315,7 +318,6 @@ public class SteamContextMenu
                         Console.WriteLine(e.ToString());
                     }
                 }
-                BuildContextMenu();
             });
             return new Dictionary<string, string>();
         }

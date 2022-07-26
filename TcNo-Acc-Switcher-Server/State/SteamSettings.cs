@@ -45,6 +45,7 @@ public class SteamSettings : ISteamSettings
     public Dictionary<string, string> CustomAccountNames { get; set; } = new();
 
     [JsonIgnore] public string LoginUsersVdf { get; set; }
+    [JsonIgnore] public string LibraryVdf { get; set; }
     public string SteamImagePath { get; init; } = "wwwroot/img/profiles/steam/";
     public string SteamImagePathHtml { get; init; } = "img/profiles/steam/";
     public List<string> Processes { get; init; } = new (){ "steam.exe", "SERVICE:steamservice.exe", "steamwebhelper.exe", "GameOverlayUI.exe" };
@@ -56,6 +57,7 @@ public class SteamSettings : ISteamSettings
     {
         Globals.LoadSettings(Filename, this, false);
         LoginUsersVdf = Path.Join(FolderPath, "config\\loginusers.vdf");
+        LibraryVdf = Path.Join(FolderPath, "config\\libraryfolders.vdf");
     }
     public void Save() => Globals.SaveJsonFile(Filename, this, false);
 

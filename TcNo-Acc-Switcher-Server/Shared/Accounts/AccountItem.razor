@@ -17,15 +17,19 @@
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using TcNo_Acc_Switcher_Server.State
 @using TcNo_Acc_Switcher_Server.State.Classes
+@using TcNo_Acc_Switcher_Server.State.DataTypes
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 
 @code {
     [Parameter]
     public Account Acc { get; set; }
+    [Parameter]
+    public Action SwapAction { get; set; }
+    [Parameter]
+    public Action UnselectAllAccounts { get; set; }
 
-    [Inject] ISteamFuncs SteamFuncs { get; set; }
+    [Inject] IToasts Toasts { get; set; }
     [Inject] ISteamSettings SteamSettings { get; set; }
-    [Inject] ITemplatedPlatformFuncs TemplatedPlatformFuncs { get; set; }
     [Inject] IAppState AppState { get; set; }
     [Inject] IWindowSettings WindowSettings { get; set; }
 
@@ -36,16 +40,21 @@
     private async void OnChangeHandler()
     {
         await InvokeAsync(StateHasChanged);
-        if (AppState.Switcher.CurrentSwitcher == "Steam")
-            _swapAction = async () => await SteamFuncs.SwapToAccount();
-        else
-            _swapAction = () => TemplatedPlatformFuncs.SwapToAccount();
     }
 
-    private Action _swapAction;
+    /// <summary>
+    /// Highlights the specified account
+    /// </summary>
+    public void SetSelectedAccount(Account acc)
+    {
+        AppState.Switcher.CurrentStatus = Lang["Status_SelectedAccount", new { name = acc.DisplayName }];
+        AppState.Switcher.SelectedAccount = acc;
+        UnselectAllAccounts();
+        acc.IsChecked = true;
+    }
 }
 
-<div class="acc_list_item" title="@Acc.TitleText" data-toggle="tooltip" @onclick="() => SetSelectedAccount(Acc)" oncontextmenu="return false;" @onmouseup="(e) => AccountRightClick(e, Acc)" @ondblclick="() => _swapAction()">
+<div class="acc_list_item" @onfocus="() => SetSelectedAccount(Acc)" title="@Acc.TitleText" data-toggle="tooltip" @onclick="() => SetSelectedAccount(Acc)" oncontextmenu="return false;" @onmouseup="(e) => AccountRightClick(e, Acc)" @ondblclick="() => SwapAction()">
     <input type="radio" id="@Acc.AccountId" DisplayName="@Acc.SafeDisplayName" class="acc @(Acc.IsChecked ? "acc_selected" : "")" name="accounts" role="checkbox">
     <label for="@Acc.AccountId" class="acc @Acc.Classes.Label @(Acc.IsCurrent ? "currentAcc" : "")">
         <img class="@Acc.Classes.Image" src="@Acc.ImagePath?@Globals.GetUnixTime()" draggable="false" alt=""/>

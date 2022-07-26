@@ -17,7 +17,14 @@
 @using System.Collections.ObjectModel
 @using TcNo_Acc_Switcher_Server.Shared.Accounts
 @using TcNo_Acc_Switcher_Server.State.Classes
-@inject IJSRuntime Js
+@using TcNo_Acc_Switcher_Server.State.DataTypes
+@using TcNo_Acc_Switcher_Server.State.Interfaces
+@inject IJSRuntime JsRuntime
+@inject IAppState AppState
+@inject ILang Lang
+@inject IToasts Toasts
+@inject ISteamFuncs SteamFuncs
+@inject ITemplatedPlatformFuncs TemplatedPlatformFuncs
 
 @code {
     [Parameter]
@@ -25,13 +32,104 @@
 
     protected override void OnInitialized()
     {
-        AccountItems.CollectionChanged += ((_, _) => InvokeAsync(StateHasChanged));
+        AccountItems.CollectionChanged += ((_, _) => OnChangeHandler());
     }
-}
-<div id="acc_list" class="acc_list">
-    <toastarea class="toastarea"/>
-    @foreach (var item in AccountItems)
+    private async void OnChangeHandler()
     {
-        <AccountItem Acc="@item" />
+        await InvokeAsync(StateHasChanged);
+        if (AppState.Switcher.CurrentSwitcher == "Steam")
+            _swapAction = async () => await SteamFuncs.SwapToAccount();
+        else
+            _swapAction = () => TemplatedPlatformFuncs.SwapToAccount();
     }
+
+    private Action _swapAction;
+}
+<div id="acc_list" class="acc_list" tabindex="1" @onkeydown="AccountKeyDown">
+    <toastarea class="toastarea"/>
+    <CascadingValue Value="@AccountItems">
+        @foreach (var acc in AccountItems)
+        {
+            <AccountItem Acc="acc" SwapAction="_swapAction" UnselectAllAccounts="UnselectAllAccounts"/>
+        }
+    </CascadingValue>
 </div>
+
+@code
+{
+    private async Task AccountKeyDown(KeyboardEventArgs args)
+    {
+        // Handle contextmenu key
+        if (args.Key == "ContextMenu")
+        {
+            await JsRuntime.InvokeVoidAsync("positionAndShowMenu", "#" + AppState.Switcher.SelectedAccount.AccountId, "#AccOrPlatList");
+            return;
+        }
+
+        // Handle navigation via arrow keys
+        if (args.Key is "ArrowLeft" or "ArrowUp") // If left key pressed
+        {
+            if (AppState.Switcher.SelectedAccount is not null)
+            {
+                var reversed = AccountItems.Reverse();
+                var previous = reversed.SkipWhile(item => item.AccountId != AppState.Switcher.SelectedAccount.AccountId).Skip(1).FirstOrDefault();
+                if (previous is not null) SetSelectedAccount(previous);
+                return;
+            }
+
+            SetSelectedAccount(AccountItems.First());
+        }
+        else if (args.Key is "ArrowRight" or "ArrowDown")
+        {
+            if (AppState.Switcher.SelectedAccount is not null)
+            {
+                var next = AccountItems.SkipWhile(item => item.AccountId != AppState.Switcher.SelectedAccount.AccountId).Skip(1).FirstOrDefault();
+                if (next is not null) SetSelectedAccount(next);
+                return;
+            }
+
+            SetSelectedAccount(AccountItems.First());
+        }
+
+        // Everything else requires an account selected
+        if (AppState.Switcher.SelectedAccount is null) return;
+
+        // Copy and Switch commands
+        switch (args.Key)
+        {
+            case "Enter":
+                _swapAction();
+                break;
+            case "c" when (args.CtrlKey && args.ShiftKey) || args.AltKey: // Ctrl+Shift+C or Alt+C copy ID
+                Toasts.ShowToastLang(ToastType.Info, "Toast_Copied");
+                await StaticFuncs.CopyText(AppState.Switcher.SelectedAccount.AccountId); // Copy: Acc.AccountId
+                break;
+            case "c" when (args.CtrlKey): // Ctrl+C copy account name
+                Toasts.ShowToastLang(ToastType.Info, "Toast_Copied");
+                await StaticFuncs.CopyText(AppState.Switcher.SelectedAccount.DisplayName); // Copy: Acc.DisplayName
+                break;
+        }
+    }
+
+    #region Selecting accounts
+    /// <summary>
+    /// Highlights the specified account
+    /// </summary>
+    public void SetSelectedAccount(Account acc)
+    {
+        AppState.Switcher.CurrentStatus = Lang["Status_SelectedAccount", new { name = acc.DisplayName }];
+        AppState.Switcher.SelectedAccount = acc;
+        UnselectAllAccounts();
+        acc.IsChecked = true;
+    }
+
+    /// <summary>
+    /// Removes highlight from all accounts
+    /// </summary>
+    public void UnselectAllAccounts()
+    {
+        foreach (var acc in AccountItems)
+            acc.IsChecked = false;
+    }
+    #endregion
+}

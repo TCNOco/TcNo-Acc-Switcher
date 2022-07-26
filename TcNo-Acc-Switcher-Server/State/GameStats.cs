@@ -26,6 +26,19 @@ public class GameStats : IGameStats
 {
     private readonly IAppState _appState;
     private readonly IGameStatsRoot _gameStatsRoot;
+    private readonly ILang _lang;
+    private readonly IToasts _toasts;
+
+    /// <summary>
+    /// Read GameStats.json and collect game definitions, as well as platform-game relations.
+    /// </summary>
+    public GameStats(IAppState appState, IGameStatsRoot gameStatsRoot, ILang lang, IToasts toasts)
+    {
+        _appState = appState;
+        _gameStatsRoot = gameStatsRoot;
+        _lang = lang;
+        _toasts = toasts;
+    }
 
     // TEMP NOTES:
     // - PlatformGames is now GameStatsRoot.PlatformCompatibilities
@@ -37,17 +50,8 @@ public class GameStats : IGameStats
     /// <summary>
     /// Dictionary of Game Name:Available user game statistics
     /// </summary>
-    public Dictionary<string, GameStatSaved> SavedStats { get; set; }
+    public Dictionary<string, GameStatSaved> SavedStats { get; set; } = new();
 
-
-    /// <summary>
-    /// Read GameStats.json and collect game definitions, as well as platform-game relations.
-    /// </summary>
-    public GameStats(IAppState appState, IGameStatsRoot gameStatsRoot)
-    {
-        _appState = appState;
-        _gameStatsRoot = gameStatsRoot;
-    }
 
     /// <summary>
     /// Loads games and stats for requested platform
@@ -63,7 +67,7 @@ public class GameStats : IGameStats
         // TODO: Verify this works as intended when more games are added.
         foreach (var game in _gameStatsRoot.PlatformCompatibilities[platform])
         {
-            var gs = new GameStatSaved();
+            var gs = new GameStatSaved(_lang, _gameStatsRoot, _appState, _toasts);
             await gs.SetGameStat(game);
             SavedStats.Add(game, gs);
         }

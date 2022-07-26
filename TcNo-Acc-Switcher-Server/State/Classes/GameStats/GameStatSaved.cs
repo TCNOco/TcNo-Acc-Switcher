@@ -32,10 +32,18 @@ namespace TcNo_Acc_Switcher_Server.State.Classes.GameStats;
 /// </summary>
 public class GameStatSaved
 {
-    [Inject] private ILang Lang { get; set; }
-    [Inject] private IGameStatsRoot GameStatsRoot { get; set; }
-    [Inject] private IAppState AppState { get; set; }
-    [Inject] private IToasts Toasts { get; set; }
+    private readonly IAppState _appState;
+    private readonly IGameStatsRoot _gameStatsRoot;
+    private readonly ILang _lang;
+    private readonly IToasts _toasts;
+
+    public GameStatSaved(ILang lang, IGameStatsRoot gameStatsRoot, IAppState appState, IToasts toasts)
+    {
+        _lang = lang;
+        _gameStatsRoot = gameStatsRoot;
+        _appState = appState;
+        _toasts = toasts;
+    }
 
     public SortedDictionary<string, UserGameStat> Stats { get; set; }
 
@@ -73,22 +81,22 @@ public class GameStatSaved
     public async Task SetGameStat(string game)
     {
         Game = game;
-        UniqueId = GameStatsRoot.StatsDefinitions[game].UniqueId;
-        Indicator = GameStatsRoot.StatsDefinitions[game].Indicator;
-        Url = GameStatsRoot.StatsDefinitions[game].Url;
-        Cookies = GameStatsRoot.StatsDefinitions[game].RequestCookies;
+        UniqueId = _gameStatsRoot.StatsDefinitions[game].UniqueId;
+        Indicator = _gameStatsRoot.StatsDefinitions[game].Indicator;
+        Url = _gameStatsRoot.StatsDefinitions[game].Url;
+        Cookies = _gameStatsRoot.StatsDefinitions[game].RequestCookies;
 
-        RequiredVars = GameStatsRoot.StatsDefinitions[game].Vars;
+        RequiredVars = _gameStatsRoot.StatsDefinitions[game].Vars;
         //foreach (var (k, v) in jGame["Vars"]?.ToObject<Dictionary<string, string>>()!)
         //{
         //    Vars.Add(k, v);
         //}
 
-        ToCollect = GameStatsRoot.StatsDefinitions[game].Collect;
+        ToCollect = _gameStatsRoot.StatsDefinitions[game].Collect;
 
         if (ToCollect != null)
             foreach (var collectInstruction in ToCollect.Where(collectInstruction => collectInstruction.Key == "%PROFILEIMAGE%"))
-                collectInstruction.Value.ToggleText = Lang["ProfileImage_ToggleText"];
+                collectInstruction.Value.ToggleText = _lang["ProfileImage_ToggleText"];
 
         //foreach (var (k, v) in jGame["Collect"]?.ToObject<Dictionary<string, CollectInstruction>>()!)
         //{
@@ -105,19 +113,19 @@ public class GameStatSaved
     /// </summary>
     public async Task<bool> SetAccount(Dictionary<string, string> vars, List<string> hiddenMetrics)
     {
-        if (CachedStats.ContainsKey(AppState.Switcher.SelectedAccountId))
+        if (CachedStats.ContainsKey(_appState.Switcher.SelectedAccountId))
         {
-            CachedStats[AppState.Switcher.SelectedAccountId].Vars = vars;
-            CachedStats[AppState.Switcher.SelectedAccountId].HiddenMetrics = hiddenMetrics;
+            CachedStats[_appState.Switcher.SelectedAccountId].Vars = vars;
+            CachedStats[_appState.Switcher.SelectedAccountId].HiddenMetrics = hiddenMetrics;
         }
         else
-            CachedStats[AppState.Switcher.SelectedAccountId] = new UserGameStat() { Vars = vars, HiddenMetrics = hiddenMetrics };
+            CachedStats[_appState.Switcher.SelectedAccountId] = new UserGameStat() { Vars = vars, HiddenMetrics = hiddenMetrics };
 
-        if (CachedStats[AppState.Switcher.SelectedAccountId].Collected.Count == 0 || DateTime.Now.Subtract(CachedStats[AppState.Switcher.SelectedAccountId].LastUpdated).Days >= 1)
+        if (CachedStats[_appState.Switcher.SelectedAccountId].Collected.Count == 0 || DateTime.Now.Subtract(CachedStats[_appState.Switcher.SelectedAccountId].LastUpdated).Days >= 1)
         {
-            Toasts.ShowToastLang(ToastType.Info, "Toast_LoadingStats");
+            _toasts.ShowToastLang(ToastType.Info, "Toast_LoadingStats");
             _lastLoadingNotification = DateTime.Now;
-            return await LoadStatsFromWeb(AppState.Switcher.SelectedAccountId, AppState.Switcher.CurrentSwitcher);
+            return await LoadStatsFromWeb(_appState.Switcher.SelectedAccountId, _appState.Switcher.CurrentSwitcher);
         }
         else
             SaveStats();
@@ -154,7 +162,7 @@ public class GameStatSaved
         // Notify user than an account is being loaded - >5 seconds apart.
         if (DateTime.Now.Subtract(_lastLoadingNotification).Seconds >= 5)
         {
-            Toasts.ShowToastLang(ToastType.Info, "Toast_LoadingStats");
+            _toasts.ShowToastLang(ToastType.Info, "Toast_LoadingStats");
             _lastLoadingNotification = DateTime.Now;
         }
 
@@ -162,7 +170,7 @@ public class GameStatSaved
         HtmlDocument doc = new();
         if (!Globals.GetWebHtmlDocument(ref doc, UrlSubbed(userStat), out var responseText, Cookies))
         {
-            Toasts.ShowToastLang(ToastType.Error, new LangSub("Toast_GameStatsLoadFail", new { Game }));
+            _toasts.ShowToastLang(ToastType.Error, new LangSub("Toast_GameStatsLoadFail", new { Game }));
             return false;
         }
 
@@ -227,7 +235,7 @@ public class GameStatSaved
         {
             Directory.CreateDirectory(Path.Join(Globals.UserDataFolder, "temp"));
             await File.WriteAllTextAsync(Path.Join(Globals.UserDataFolder, "temp", $"download-{Globals.GetCleanFilePath(accountId)}-{Globals.GetCleanFilePath(Game)}.html"), responseText);
-            Toasts.ShowToastLang(ToastType.Error, new LangSub("Toast_GameStatsEmpty", new { AccoundId = Globals.GetCleanFilePath(accountId), Game = Globals.GetCleanFilePath(Game) }));
+            _toasts.ShowToastLang(ToastType.Error, new LangSub("Toast_GameStatsEmpty", new { AccoundId = Globals.GetCleanFilePath(accountId), Game = Globals.GetCleanFilePath(Game) }));
             if (CachedStats.ContainsKey(accountId))
                 CachedStats.Remove(accountId);
             return false;

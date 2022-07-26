@@ -134,7 +134,6 @@
         await HandleFirstRender(firstRender);
         Statistics.NewNavigation("/Steam/");
         if (!firstRender) return;
-        await JsRuntime.InvokeVoidAsync("initCopyHotKey");
         await JsRuntime.InvokeVoidAsync("showNoteTooltips");
 
         var curAcc = SteamFuncs.GetCurrentAccountId(true);
