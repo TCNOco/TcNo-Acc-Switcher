@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.State.Classes;
@@ -63,7 +64,7 @@ public class TemplatedPlatformState : ITemplatedPlatformState
         _windowSettings = windowSettings;
     }
 
-    public void LoadTemplatedPlatformState(ITemplatedPlatformFuncs templatedPlatformFuncs)
+    public void LoadTemplatedPlatformState(IJSRuntime jsRuntime, ITemplatedPlatformSettings templatedPlatformSettings, ITemplatedPlatformFuncs templatedPlatformFuncs)
     {
         if (_isInit) return;
         _isInit = true;
@@ -93,13 +94,10 @@ public class TemplatedPlatformState : ITemplatedPlatformState
             }
         }
 
-        Task.Run(() =>
-        {
-            ContextMenu = new TemplatedPlatformContextMenu(_appState, _gameStats, _lang, _modals, templatedPlatformFuncs, this, _toasts);
-        });
+        ContextMenu = new TemplatedPlatformContextMenu(jsRuntime, _appState, _gameStats, _lang, _modals, _sharedFunctions, templatedPlatformSettings, templatedPlatformFuncs, this, _toasts);
     }
 
-    public async Task SetCurrentPlatform(ITemplatedPlatformSettings templatedPlatformSettings, string platformName)
+    public async Task SetCurrentPlatform(IJSRuntime jsRuntime, ITemplatedPlatformSettings templatedPlatformSettings, string platformName)
     {
         CurrentPlatform = Platforms.First(x => x.Name == platformName || x.Identifiers.Contains(platformName));
         CurrentPlatform.InitAfterDeserialization();
@@ -108,11 +106,11 @@ public class TemplatedPlatformState : ITemplatedPlatformState
 
         _appState.Switcher.CurrentSwitcher = CurrentPlatform.Name;
         _appState.Switcher.TemplatedAccounts.Clear();
-        await LoadAccounts();
+        await LoadAccounts(jsRuntime);
     }
 
     #region Loading
-    private async Task<bool> LoadAccounts()
+    private async Task<bool> LoadAccounts(IJSRuntime jsRuntime)
     {
         var localCachePath = Path.Join(Globals.UserDataFolder, $"LoginCache\\{CurrentPlatform.SafeName}\\");
         if (!Directory.Exists(localCachePath)) return false;
@@ -121,7 +119,7 @@ public class TemplatedPlatformState : ITemplatedPlatformState
         // Order
         accList = OrderAccounts(accList, $"{localCachePath}\\order.json");
 
-        await InsertAccounts(accList);
+        await InsertAccounts(jsRuntime, accList);
         _statistics.SetAccountCount(CurrentPlatform.SafeName, accList.Count);
 
         // Load notes
@@ -196,8 +194,9 @@ public class TemplatedPlatformState : ITemplatedPlatformState
     /// <summary>
     /// Iterate through account list and insert into platforms account screen
     /// </summary>
+    /// <param name="jsRuntime"></param>
     /// <param name="accList">Account list</param>
-    private async Task InsertAccounts(List<string> accList)
+    private async Task InsertAccounts(IJSRuntime jsRuntime, List<string> accList)
     {
         LoadAccountIds();
 
@@ -232,7 +231,7 @@ public class TemplatedPlatformState : ITemplatedPlatformState
 
             _appState.Switcher.TemplatedAccounts.Add(account);
         }
-        await _sharedFunctions.FinaliseAccountList(); // Init context menu & Sorting
+        await _sharedFunctions.FinaliseAccountList(jsRuntime); // Init context menu & Sorting
     }
 
     /// <summary>

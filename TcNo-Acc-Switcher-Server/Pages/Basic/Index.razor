@@ -49,7 +49,7 @@
         {
             @if (i >= 0)
             {
-                <button class="HasContextMenu" id="@(shortcut)" @onclick="() => SharedFunctions.RunShortcut(shortcut, TemplatedPlatformState.CurrentPlatform.ShortcutFolder, TemplatedPlatformState.CurrentPlatform.SafeName)" data-toggle="tooltip" title="@(RemoveShortcutExt(shortcut))">
+                <button class="HasContextMenu" id="@(shortcut)" @onmousedown="(e) => ShortcutClick(e, shortcut)" data-toggle="tooltip" title="@(RemoveShortcutExt(shortcut))">
                     <img src="@(TemplatedPlatformState.CurrentPlatform.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
                 </button>
             }
@@ -82,12 +82,12 @@
 
         @if (TemplatedPlatformState.CurrentPlatform.Extras.ShortcutIncludeMainExe)
         {
-            <button id="btnStartPlat" @onclick="TemplatedPlatformFuncs.RunPlatform" data-toggle="tooltip" title="@(TemplatedPlatformState.CurrentPlatform.SafeName)">
+            <button id="btnStartPlat" @onmousedown="RunPlatform" oncontextmenu="return false;" data-toggle="tooltip" title="@(TemplatedPlatformState.CurrentPlatform.SafeName)">
                 <img src="@(TemplatedPlatformState.CurrentPlatform.GetShortcutImagePath(TemplatedPlatformState.CurrentPlatform.SafeName))" alt="Start platform"/>
             </button>
         }
 
-        <button id="btnAddNew" @onclick="() => TemplatedPlatformFuncs.SwapToNewAccount()">
+        <button id="btnAddNew" @onclick="() => TemplatedPlatformFuncs.SwapToNewAccount(JsRuntime)">
             <i class="fas fa-plus footerIcoInline"></i>
             <span>@Lang["Button_AddNew"]</span>
         </button>
@@ -95,7 +95,7 @@
             <i class="fas fa-save footerIcoInline"></i>
             <span>@Lang["Button_SaveCurrent"]</span>
         </button>
-        <button class="btn_login" id="btnLogin" @onclick="() => TemplatedPlatformFuncs.SwapToAccount()">
+        <button class="btn_login" id="btnLogin" @onclick="() => TemplatedPlatformFuncs.SwapToAccount(JsRuntime)">
             <span>@Lang["Button_Login"]</span>
             <i class="fas fa-caret-right footerIcoInline"></i>
         </button>
@@ -118,7 +118,6 @@
 
     protected override void OnInitialized()
     {
-        //TemplatedPlatformState.LoadTemplatedPlatformState(TemplatedPlatformFuncs);
         AppState.Switcher.PropertyChanged += OnChangeHandler;
     }
     private async void OnChangeHandler(object? o, PropertyChangedEventArgs e)
@@ -158,7 +157,7 @@
 
         // Get platform name from URI if not set.
         if (!string.IsNullOrEmpty(requestPlat))
-            await TemplatedPlatformState.SetCurrentPlatform(TemplatedPlatformSettings, requestPlat);
+            await TemplatedPlatformState.SetCurrentPlatform(JsRuntime, TemplatedPlatformSettings, requestPlat);
 
         // If current platform is NOT valid -> Go back
         if (!TemplatedPlatformState.CurrentPlatform.IsInit)
@@ -184,10 +183,14 @@
         await HandleFirstRender(firstRender);
         Statistics.NewNavigation($"/[{TemplatedPlatformState.CurrentPlatform.SafeName}]");
         if (!firstRender) return;
+
+        TemplatedPlatformState.LoadTemplatedPlatformState(JsRuntime, TemplatedPlatformSettings, TemplatedPlatformFuncs);
+
+
         await JsRuntime.InvokeVoidAsync("showNoteTooltips");
 
         var curAcc = await TemplatedPlatformFuncs.GetCurrentAccountId();
-        if (curAcc != "") await TemplatedPlatformFuncs.SetCurrentAccount(curAcc);
+        if (curAcc != "") await TemplatedPlatformFuncs.SetCurrentAccount(JsRuntime, curAcc);
     }
 
 
@@ -236,5 +239,36 @@
         }
 
         return true;
+    }
+
+    private async Task ShortcutClick(MouseEventArgs e, string shortcut)
+    {
+        switch (e.Button)
+        {
+            case 0:
+                // Left click
+                SharedFunctions.RunShortcut(shortcut, TemplatedPlatformState.CurrentPlatform.ShortcutFolder, TemplatedPlatformState.CurrentPlatform.SafeName);
+                break;
+            case 2:
+                // Right click
+                AppState.Switcher.CurrentShortcut = shortcut;
+                await JsRuntime.InvokeVoidAsync("positionAndShowMenu", e, "#Shortcuts");
+                break;
+        }
+    }
+
+    private async Task RunPlatform(MouseEventArgs e)
+    {
+        switch (e.Button)
+        {
+            case 0:
+                // Left click
+                TemplatedPlatformFuncs.RunPlatform();
+                break;
+            case 2:
+                // Right click
+                await JsRuntime.InvokeVoidAsync("positionAndShowMenu", e, "#Platform");
+                break;
+        }
     }
 }

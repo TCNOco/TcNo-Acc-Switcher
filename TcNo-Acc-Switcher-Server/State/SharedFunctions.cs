@@ -33,7 +33,6 @@ namespace TcNo_Acc_Switcher_Server.State;
 /// </summary>
 public class SharedFunctions : ISharedFunctions
 {
-    [Inject] private IJSRuntime JsRuntime { get; set; }
     private readonly ILang _lang;
     private readonly IModals _modals;
     private readonly IStatistics _statistics;
@@ -48,14 +47,12 @@ public class SharedFunctions : ISharedFunctions
     }
 
     /// <summary>
-    /// Runs jQueryProcessAccListSize, initContextMenu and initAccListSortable - Final init needed for account switcher to work.
+    /// Runs initAccListSortable - Final init needed for account switcher to work.
     /// </summary>
-    public async Task FinaliseAccountList()
+    public async Task FinaliseAccountList(IJSRuntime jsRuntime)
     {
-        if (JsRuntime is null) return;
-        //await JsRuntime.InvokeVoidAsync("jQueryProcessAccListSize");
-        await JsRuntime.InvokeVoidAsync("initContextMenu");
-        await JsRuntime.InvokeVoidAsync("initAccListSortable");
+        if (jsRuntime is null) return;
+        await jsRuntime.InvokeVoidAsync("initAccListSortable");
     }
 
     public void RunShortcut(string s, string shortcutFolder, string platform = "", bool admin = false)
@@ -132,23 +129,23 @@ public class SharedFunctions : ISharedFunctions
         return false;
     }
 
-    public async Task<bool> CloseProcesses(string procName, string closingMethod)
+    public async Task<bool> CloseProcesses(IJSRuntime jsRuntime, string procName, string closingMethod)
     {
         if (!OperatingSystem.IsWindows()) return false;
         Globals.DebugWriteLine(@"Closing: " + procName);
         if (!CanKillProcess(procName, closingMethod)) return false;
         Globals.KillProcess(procName, closingMethod);
 
-        return await WaitForClose(procName);
+        return await WaitForClose(jsRuntime, procName);
     }
-    public async Task<bool> CloseProcesses(List<string> procNames, string closingMethod)
+    public async Task<bool> CloseProcesses(IJSRuntime jsRuntime, List<string> procNames, string closingMethod)
     {
         if (!OperatingSystem.IsWindows()) return false;
         Globals.DebugWriteLine(@"Closing: " + string.Join(", ", procNames));
         if (!CanKillProcess(procNames, closingMethod)) return false;
         Globals.KillProcess(procNames, closingMethod);
 
-        return await WaitForClose(procNames, closingMethod);
+        return await WaitForClose(jsRuntime, procNames, closingMethod);
     }
 
     /// <summary>
@@ -156,14 +153,14 @@ public class SharedFunctions : ISharedFunctions
     /// </summary>
     /// <param name="procName">Name of process to lookup</param>
     /// <returns>Whether it was closed before this function returns or not.</returns>
-    public async Task<bool> WaitForClose(string procName)
+    public async Task<bool> WaitForClose(IJSRuntime jsRuntime, string procName)
     {
         if (!OperatingSystem.IsWindows()) return false;
         var timeout = 0;
         while (Globals.ProcessHelper.IsProcessRunning(procName) && timeout < 10)
         {
             timeout++;
-            await JsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_WaitingForClose", new { processName = procName, timeout, timeLimit = "10" }]);
+            await jsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_WaitingForClose", new { processName = procName, timeout, timeLimit = "10" }]);
             Thread.Sleep(1000);
         }
 
@@ -172,7 +169,7 @@ public class SharedFunctions : ISharedFunctions
 
         return timeout != 10; // Returns true if timeout wasn't reached.
     }
-    public async Task<bool> WaitForClose(List<string> procNames, string closingMethod)
+    public async Task<bool> WaitForClose(IJSRuntime jsRuntime, List<string> procNames, string closingMethod)
     {
         if (!OperatingSystem.IsWindows()) return false;
         var procToClose = new List<string>(); // Make a copy to edit
@@ -208,7 +205,7 @@ public class SharedFunctions : ISharedFunctions
                 procToClose.Remove(p);
 
             if (procToClose.Count > 0)
-                await JsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_WaitingForMultipleClose", new { processName = procToClose[0], count = appCount, timeout, timeLimit = "10" }]);
+                await jsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_WaitingForMultipleClose", new { processName = procToClose[0], count = appCount, timeout, timeLimit = "10" }]);
             if (areAnyRunning)
                 Thread.Sleep(1000);
             else

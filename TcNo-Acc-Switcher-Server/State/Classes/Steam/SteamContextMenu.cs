@@ -21,6 +21,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Gameloop.Vdf;
 using Gameloop.Vdf.JsonConverter;
+using Microsoft.JSInterop;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Converters;
@@ -34,22 +35,27 @@ namespace TcNo_Acc_Switcher_Server.State.Classes.Steam;
 
 public class SteamContextMenu
 {
+    private readonly IJSRuntime _jsRuntime;
+
     private readonly IAppState _appState;
     private readonly IGameStats _gameStats;
     private readonly ILang _lang;
     private readonly IModals _modals;
+    private readonly ISharedFunctions _sharedFunctions;
     private readonly ISteamFuncs _steamFuncs;
     private readonly ISteamSettings _steamSettings;
     private readonly IToasts _toasts;
 
     public SteamContextMenu() {}
-    public SteamContextMenu(IAppState appState, IGameStats gameStats, ILang lang, IModals modals,
-        ISteamFuncs steamFuncs, ISteamSettings steamSettings, IToasts toasts)
+    public SteamContextMenu(IJSRuntime jsRuntime, IAppState appState, IGameStats gameStats, ILang lang, IModals modals, ISharedFunctions sharedFunctions,
+        ISteamFuncs steamFuncs, ISteamSettings steamSettings, ISteamState steamState, IToasts toasts)
     {
+        _jsRuntime = jsRuntime;
         _appState = appState;
         _gameStats = gameStats;
         _lang = lang;
         _modals = modals;
+        _sharedFunctions = sharedFunctions;
         _steamFuncs = steamFuncs;
         _steamSettings = steamSettings;
         _toasts = toasts;
@@ -61,13 +67,27 @@ public class SteamContextMenu
         ShortcutItems = new MenuBuilder(_lang,
             new Tuple<string, object>[]
             {
-                new ("Context_RunAdmin", "shortcut('admin')"),
-                new ("Context_Hide", "shortcut('hide')"),
+                new ("Context_RunAdmin", ShortcutStartSteamAdmin),
+                new ("Context_Hide", HideShortcutSteam),
             }).Result();
 
         PlatformItems = new MenuBuilder(_lang,
-            new Tuple<string, object>("Context_RunAdmin", "shortcut('admin')")
+            new Tuple<string, object>("Context_RunAdmin", () => steamState.RunSteam(true, ""))
         ).Result();
+    }
+
+    private const string ShortcutFolder = "LoginCache\\Steam\\Shortcuts\\";
+    private void ShortcutStartSteamAdmin() =>
+        _sharedFunctions.RunShortcut(_appState.Switcher.CurrentShortcut, ShortcutFolder, "Steam", true);
+    private void HideShortcutSteam()
+    {
+        // Remove shortcut from folder, and list.
+        _steamSettings.Shortcuts.Remove(_steamSettings.Shortcuts.First(e => e.Value == _appState.Switcher.CurrentShortcut).Key);
+        var f = Path.Join(ShortcutFolder, _appState.Switcher.CurrentShortcut);
+        if (File.Exists(f)) File.Move(f, f.Replace(".lnk", "_ignored.lnk").Replace(".url", "_ignored.url"));
+
+        // Save.
+        _steamSettings.Save();
     }
 
     public List<string> InstalledGames { get; set; }
@@ -79,9 +99,9 @@ public class SteamContextMenu
     public static readonly string SteamAppsUserCache =
         Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\AppIdsUser.json");
 
-    public readonly ObservableCollection<MenuItem> Menu = new();
-    public readonly ObservableCollection<MenuItem> ShortcutItems = new();
-    public readonly ObservableCollection<MenuItem> PlatformItems = new();
+    public ObservableCollection<MenuItem> Menu = new();
+    public ObservableCollection<MenuItem> ShortcutItems = new();
+    public ObservableCollection<MenuItem> PlatformItems = new();
 
     public void BuildContextMenu()
     {
@@ -128,17 +148,17 @@ public class SteamContextMenu
         // Prepare menu
         var menuBuilder = new MenuBuilder(_lang, new Tuple<string, object>[]
         {
-            new("Context_SwapTo", new Action(async () => await _steamFuncs.SwapToAccount())),
+            new("Context_SwapTo", new Action(async () => await _steamFuncs.SwapToAccount(_jsRuntime))),
             new("Context_LoginAsSubmenu", new Tuple<string, object>[]
                 {
-                    new("Invisible", new Action(async () => await _steamFuncs.SwapToAccount(7))),
-                    new("Offline", new Action(async () => await _steamFuncs.SwapToAccount(0))),
-                    new("Online", new Action(async () => await _steamFuncs.SwapToAccount(1))),
-                    new("Busy", new Action(async () => await _steamFuncs.SwapToAccount(2))),
-                    new("Away", new Action(async () => await _steamFuncs.SwapToAccount(3))),
-                    new("Snooze", new Action(async () => await _steamFuncs.SwapToAccount(4))),
-                    new("LookingToTrade", new Action(async () => await _steamFuncs.SwapToAccount(5))),
-                    new("LookingToPlay", new Action(async () => await _steamFuncs.SwapToAccount(6))),
+                    new("Invisible", new Action(async () => await _steamFuncs.SwapToAccount(_jsRuntime, 7))),
+                    new("Offline", new Action(async () => await _steamFuncs.SwapToAccount(_jsRuntime, 0))),
+                    new("Online", new Action(async () => await _steamFuncs.SwapToAccount(_jsRuntime, 1))),
+                    new("Busy", new Action(async () => await _steamFuncs.SwapToAccount(_jsRuntime, 2))),
+                    new("Away", new Action(async () => await _steamFuncs.SwapToAccount(_jsRuntime, 3))),
+                    new("Snooze", new Action(async () => await _steamFuncs.SwapToAccount(_jsRuntime, 4))),
+                    new("LookingToTrade", new Action(async () => await _steamFuncs.SwapToAccount(_jsRuntime, 5))),
+                    new("LookingToPlay", new Action(async () => await _steamFuncs.SwapToAccount(_jsRuntime, 6))),
                 }
             ),
             new("Context_CopySubmenu", new Tuple<string, object>[]

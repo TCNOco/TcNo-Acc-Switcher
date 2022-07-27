@@ -293,7 +293,6 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         Statistics.NewNavigation("/Settings/PreviewCss");
-        await JsRuntime.InvokeVoidAsync("initContextMenu");
         await JsRuntime.InvokeVoidAsync("initAccListSortable");
         await JsRuntime.InvokeVoidAsync("initPlatformListSortable");
     }

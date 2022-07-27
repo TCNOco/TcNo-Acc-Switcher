@@ -86,7 +86,7 @@ public class SteamState : ISteamState
         _templatedPlatformState = templatedPlatformState;
     }
 
-    public void LoadSteamState(ISteamFuncs steamFuncs)
+    public async Task LoadSteamState(ISteamFuncs steamFuncs, IJSRuntime jsRuntime)
     {
 
         if (SteamLoadingProfiles) return;
@@ -99,7 +99,7 @@ public class SteamState : ISteamState
         if (File.Exists("LoginCache\\Steam\\order.json"))
         {
             var savedOrder =
-                JsonConvert.DeserializeObject<List<string>>(File.ReadAllText("LoginCache\\Steam\\order.json"));
+                JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync("LoginCache\\Steam\\order.json"));
             if (savedOrder != null)
             {
                 var index = 0;
@@ -119,7 +119,7 @@ public class SteamState : ISteamState
         if (_steamSettings.SteamWebApiKey != "")
         {
             // Handle all image downloads
-            WebApiPrepareImages().RunSynchronously();
+            await WebApiPrepareImages();
             WebApiPrepareBans();
 
             // Key was fine? Continue. If not, the non-api method will be used.
@@ -159,16 +159,12 @@ public class SteamState : ISteamState
         // Load notes
         LoadNotes();
 
-        var task = new Task(() => _sharedFunctions.FinaliseAccountList());
-        task.RunSynchronously();
+        await _sharedFunctions.FinaliseAccountList(jsRuntime);
 
         _statistics.SetAccountCount("Steam", SteamUsers.Count);
         SteamLoadingProfiles = false;
 
-        Task.Run(() =>
-        {
-        });
-        ContextMenu = new SteamContextMenu(_appState, _gameStats, _lang, _modals, steamFuncs, _steamSettings, _toasts);
+        ContextMenu = new SteamContextMenu(jsRuntime, _appState, _gameStats, _lang, _modals, _sharedFunctions, steamFuncs, _steamSettings, this, _toasts);
     }
 
     public string GetName(SteamUser su) => string.IsNullOrWhiteSpace(su.Name) ? su.AccName : su.Name;
@@ -735,37 +731,6 @@ public class SteamState : ISteamState
         _statistics.SetGameShortcutCount("Steam", _steamSettings.Shortcuts);
         _steamSettings.Save();
     }
-
-    [JSInvokable]
-    public void HandleShortcutActionSteam(string shortcut, string action)
-    {
-        if (shortcut == "btnStartPlat") // Start platform requested
-        {
-            RunSteam(action == "admin", "");
-            return;
-        }
-
-        if (!_steamSettings.Shortcuts.ContainsValue(shortcut)) return;
-
-        switch (action)
-        {
-            case "hide":
-            {
-                // Remove shortcut from folder, and list.
-                _steamSettings.Shortcuts.Remove(_steamSettings.Shortcuts.First(e => e.Value == shortcut).Key);
-                var f = Path.Join(ShortcutFolder, shortcut);
-                if (File.Exists(f)) File.Move(f, f.Replace(".lnk", "_ignored.lnk").Replace(".url", "_ignored.url"));
-
-                // Save.
-                _steamSettings.Save();
-                break;
-            }
-            case "admin":
-                _sharedFunctions.RunShortcut(shortcut, ShortcutFolder, "Steam", true);
-                break;
-        }
-    }
-
 
     public void RunSteam(bool admin, string args)
     {

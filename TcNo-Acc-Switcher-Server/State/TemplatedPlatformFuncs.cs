@@ -31,9 +31,6 @@ namespace TcNo_Acc_Switcher_Server.State;
 
 public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
 {
-    [Inject] private IJSRuntime JsRuntime { get; set; }
-    [Inject] private NavigationManager NavigationManager { get; set; }
-
     private readonly IAppState _appState;
     private readonly ILang _lang;
     private readonly IModals _modals;
@@ -62,10 +59,11 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
     /// <summary>
     /// Restart Basic with a new account selected. Leave args empty to log into a new account.
     /// </summary>
+    /// <param name="jsRuntime"></param>
     /// <param name="accId">(Optional) User's unique account ID</param>
     /// <param name="args">Starting arguments</param>
     [SupportedOSPlatform("windows")]
-    public async void SwapTemplatedAccounts(string accId = "", string args = "")
+    public async void SwapTemplatedAccounts(IJSRuntime jsRuntime, string accId = "", string args = "")
     {
         Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.SwapTemplatedAccounts] Swapping to: hidden.");
         // Handle args:
@@ -77,7 +75,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
         _templatedPlatformState.LoadAccountIds();
         var accName = _templatedPlatformState.GetNameFromId(accId);
 
-        if (!await KillGameProcesses())
+        if (!await KillGameProcesses(jsRuntime))
             return;
 
         // Add currently logged in account if there is a way of checking unique ID.
@@ -103,11 +101,11 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
                             else
                                 _toasts.ShowToastLang(ToastType.Error, new LangSub("Toast_StartingPlatformFailed", new { platform = _templatedPlatformState.CurrentPlatform.SafeName }));
                         }
-                        await JsRuntime.InvokeVoidAsync("updateStatus", _lang["Done"]);
+                        await jsRuntime.InvokeVoidAsync("updateStatus", _lang["Done"]);
 
                         return;
                     }
-                    await TemplatedAddCurrent(_templatedPlatformState.AccountIds[uniqueId]);
+                    await TemplatedAddCurrent(jsRuntime, _templatedPlatformState.AccountIds[uniqueId]);
                 }
             }
         }
@@ -125,10 +123,10 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
         if (_templatedPlatformSettings.AutoStart)
             RunPlatform(_templatedPlatformSettings.Admin, args);
 
-        if (accName != "" && _templatedPlatformSettings.AutoStart && _windowSettings.MinimizeOnSwitch) await JsRuntime.InvokeVoidAsync("hideWindow");
+        if (accName != "" && _templatedPlatformSettings.AutoStart && _windowSettings.MinimizeOnSwitch) await jsRuntime.InvokeVoidAsync("hideWindow");
 
         NativeFuncs.RefreshTrayArea();
-        await JsRuntime.InvokeVoidAsync("updateStatus", _lang["Done"]);
+        await jsRuntime.InvokeVoidAsync("updateStatus", _lang["Done"]);
         _statistics.IncrementSwitches(_templatedPlatformState.CurrentPlatform.SafeName);
 
         try
@@ -136,7 +134,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
             _templatedPlatformSettings.LastAccName = accId;
             _templatedPlatformSettings.LastAccTimestamp = Globals.GetUnixTimeInt();
             if (_templatedPlatformSettings.LastAccName != "")
-                await SetCurrentAccount(_templatedPlatformSettings.LastAccName);
+                await SetCurrentAccount(jsRuntime, _templatedPlatformSettings.LastAccName);
         }
         catch (Exception)
         {
@@ -147,10 +145,10 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
     /// <summary>
     /// Highlights the specified account
     /// </summary>
-    public async Task SetCurrentAccount(string accId)
+    public async Task SetCurrentAccount(IJSRuntime jsRuntime, string accId)
     {
         var acc = _appState.Switcher.TemplatedAccounts.First(x => x.AccountId == accId);
-        await UnCurrentAllAccounts();
+        await UnCurrentAllAccounts(jsRuntime);
         acc.IsCurrent = true;
         acc.TitleText = $"{_lang["Tooltip_CurrentAccount"]}";
 
@@ -164,7 +162,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
     /// <summary>
     /// Removes "currently logged in" border from all accounts
     /// </summary>
-    public async Task UnCurrentAllAccounts()
+    public async Task UnCurrentAllAccounts(IJSRuntime jsRuntime)
     {
         foreach (var account in _appState.Switcher.TemplatedAccounts)
         {
@@ -172,7 +170,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
         }
 
         // Clear the hover text
-        await JsRuntime.InvokeVoidAsync("clearAccountTooltips");
+        await jsRuntime.InvokeVoidAsync("clearAccountTooltips");
     }
 
     public async Task<string> GetCurrentAccountId()
@@ -505,14 +503,14 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
         return true;
     }
 
-    private async Task<bool> KillGameProcesses()
+    private async Task<bool> KillGameProcesses(IJSRuntime jsRuntime)
     {
         // Kill game processes
-        await JsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_ClosingPlatform", new { platform = _templatedPlatformState.CurrentPlatform.Name }]);
-        if (await _sharedFunctions.CloseProcesses(_templatedPlatformState.CurrentPlatform.ExesToEnd, _templatedPlatformSettings.ClosingMethod)) return true;
+        await jsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_ClosingPlatform", new { platform = _templatedPlatformState.CurrentPlatform.Name }]);
+        if (await _sharedFunctions.CloseProcesses(jsRuntime, _templatedPlatformState.CurrentPlatform.ExesToEnd, _templatedPlatformSettings.ClosingMethod)) return true;
 
         if (Globals.IsAdministrator)
-            await JsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_ClosingPlatformFailed", new { platform = _templatedPlatformState.CurrentPlatform.Name }]);
+            await jsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_ClosingPlatformFailed", new { platform = _templatedPlatformState.CurrentPlatform.Name }]);
         else
         {
             _toasts.ShowToastLang(ToastType.Error, "Failed", "Toast_RestartAsAdmin");
@@ -522,11 +520,11 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
 
     }
 
-    public async Task<bool> TemplatedAddCurrent(string accName)
+    public async Task<bool> TemplatedAddCurrent(IJSRuntime jsRuntime, string accName)
     {
         Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.TemplatedAddCurrent]");
         if (_templatedPlatformState.CurrentPlatform.ExitBeforeInteract)
-            if (!await KillGameProcesses())
+            if (!await KillGameProcesses(jsRuntime))
                 return false;
 
         // If set to clear LoginCache for account before adding (Enabled by default):
@@ -550,7 +548,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
         if (_templatedPlatformState.CurrentPlatform.LoginFiles == null) throw new Exception("No data in basic platform: " + _templatedPlatformState.CurrentPlatform.Name);
 
         // Handle unique ID
-        await JsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_GetUniqueId"]);
+        await jsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_GetUniqueId"]);
 
         var uniqueId = await GetUniqueId();
 
@@ -567,7 +565,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
 
         var regJson = _templatedPlatformState.CurrentPlatform.HasRegistryFiles ? _templatedPlatformState.CurrentPlatform.ReadRegJson(accName) : new Dictionary<string, string>();
 
-        await JsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_CopyingFiles"]);
+        await jsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_CopyingFiles"]);
         foreach (var (accFile, savedFile) in _templatedPlatformState.CurrentPlatform.LoginFiles)
         {
             // HANDLE REGISTRY KEY
@@ -649,7 +647,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
         // Or if has ProfilePicFromFile and ProfilePicRegex.
         if (!hadSpecialProperties.Contains("IMAGE|"))
         {
-            await JsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_HandlingImage"]);
+            await jsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_HandlingImage"]);
 
             _ = Directory.CreateDirectory(Path.Join(Globals.WwwRoot, $"\\img\\profiles\\{_templatedPlatformState.CurrentPlatform.SafeName}"));
             var profileImg = Path.Join(Globals.WwwRoot, $"\\img\\profiles\\{_templatedPlatformState.CurrentPlatform.SafeName}\\{Globals.GetCleanFilePath(uniqueId)}.jpg");
@@ -692,8 +690,8 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
             }
         }
 
-        NavigationManager.NavigateTo(
-            $"/Basic/?cacheReload&toast_type=success&toast_title={Uri.EscapeDataString(_lang["Success"])}&toast_message={Uri.EscapeDataString(_lang["Toast_SavedItem", new { item = accName }])}", true);
+        // TODO: This shouldn't be nessecary:
+        // NavigationManager.NavigateTo($"/Basic/?cacheReload&toast_type=success&toast_title={Uri.EscapeDataString(_lang["Success"])}&toast_message={Uri.EscapeDataString(_lang["Toast_SavedItem", new { item = accName }])}", true);
         return true;
     }
 
@@ -946,18 +944,18 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
     /// <summary>
     /// Swap to the current AppState.Switcher.SelectedAccountId.
     /// </summary>
-    public void SwapToAccount()
+    public void SwapToAccount(IJSRuntime jsRuntime)
     {
-        SwapTemplatedAccounts(_appState.Switcher.SelectedAccountId);
+        SwapTemplatedAccounts(jsRuntime, _appState.Switcher.SelectedAccountId);
     }
 
     /// <summary>
     /// Swaps to an empty account, allowing the user to sign in.
     /// </summary>
-    public void SwapToNewAccount()
+    public void SwapToNewAccount(IJSRuntime jsRuntime)
     {
         if (!OperatingSystem.IsWindows()) return;
-        SwapTemplatedAccounts("");
+        SwapTemplatedAccounts(jsRuntime, "");
     }
 
     public async Task ForgetAccount()
@@ -1006,34 +1004,4 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
     // This seemed to not be used, so I have omitted it here.
     // public void RunPlatform(bool admin)
     public void RunPlatform() => RunPlatform(_templatedPlatformSettings.Admin, _templatedPlatformState.CurrentPlatform.ExeExtraArgs);
-
-    [JSInvokable]
-    public void HandleShortcutAction(string shortcut, string action)
-    {
-        if (shortcut == "btnStartPlat") // Start platform requested
-        {
-            RunPlatform(action == "admin");
-            return;
-        }
-
-        if (!_templatedPlatformSettings.Shortcuts.ContainsValue(shortcut)) return;
-
-        switch (action)
-        {
-            case "hide":
-            {
-                // Remove shortcut from folder, and list.
-                _templatedPlatformSettings.Shortcuts.Remove(_templatedPlatformSettings.Shortcuts.First(e => e.Value == shortcut).Key);
-                var f = Path.Join(_templatedPlatformState.CurrentPlatform.ShortcutFolder, shortcut);
-                if (File.Exists(f)) File.Move(f, f.Replace(".lnk", "_ignored.lnk").Replace(".url", "_ignored.url"));
-
-                // Save.
-                _templatedPlatformSettings.Save();
-                break;
-            }
-            case "admin":
-                _sharedFunctions.RunShortcut(shortcut, _templatedPlatformState.CurrentPlatform.ShortcutFolder, admin: true);
-                break;
-        }
-    }
 }

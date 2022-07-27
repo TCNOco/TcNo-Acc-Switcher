@@ -46,7 +46,7 @@
         {
             @if (i >= 0)
             {
-                <button class="HasContextMenu" id="@(shortcut)" @onclick='() => SharedFunctions.RunShortcut(shortcut, "LoginCache\\Steam\\Shortcuts", "Steam")' data-toggle="tooltip" title="@(Globals.RemoveShortcutExt(shortcut))">
+                <button class="HasContextMenu" id="@(shortcut)" @onmousedown="(e) => ShortcutClick(e, shortcut)" oncontextmenu="return false;" data-toggle="tooltip" title="@(Globals.RemoveShortcutExt(shortcut))">
                     <img src="@(GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
                 </button>
             }
@@ -63,7 +63,7 @@
             {
                 @if (i < 0)
                 {
-                    <button class="HasContextMenu" id="@(shortcut)" @onclick='() => SharedFunctions.RunShortcut(shortcut, "LoginCache\\Steam\\Shortcuts", "Steam")' data-toggle="tooltip" title="@(Globals.RemoveShortcutExt(shortcut))">
+                    <button class="HasContextMenu" id="@(shortcut)" @onmousedown="(e) => ShortcutClick(e, shortcut)" data-toggle="tooltip" title="@(Globals.RemoveShortcutExt(shortcut))">
                         <img src="@(GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
                     </button>
                 }
@@ -71,15 +71,15 @@
         </div>
         <button id="shortcutDropdownBtn" onclick="shortcutDropdownBtnClick()" data-toggle="tooltip" title="@(Lang["Tooltip_ExpandShortcuts"])" data-placement="right"><i class="fas fa-chevron-up"></i></button>
 
-        <button id="btnStartPlat" @onclick='() => SteamState.RunSteam(SteamSettings.Admin, "")' data-toggle="tooltip" title="Steam">
+        <button id="btnStartPlat" @onmousedown="RunSteam" oncontextmenu="return false;" data-toggle="tooltip" title="Steam">
             <img src="@(GetShortcutImagePath("Steam"))" alt="Start platform"/>
         </button>
 
-        <button id="btnAddNew" @onclick="() => SteamFuncs.SwapToNewAccount()">
+        <button id="btnAddNew" @onclick="() => SteamFuncs.SwapToNewAccount(JsRuntime)">
             <i class="fas fa-plus footerIcoInline"></i>
             <span>@Lang["Button_AddNew"]</span>
         </button>
-        <button class="btn_login" id="btnLogin" @onclick="() => SteamFuncs.SwapToAccount()">
+        <button class="btn_login" id="btnLogin" @onclick="() => SteamFuncs.SwapToAccount(JsRuntime)">
             <span>@Lang["Button_Login"]</span>
             <i class="fas fa-caret-right footerIcoInline"></i>
         </button>
@@ -126,7 +126,7 @@
         Statistics.NewNavigation("/Steam/");
         if (!firstRender) return;
 
-        SteamState.LoadSteamState(SteamFuncs);
+        await SteamState.LoadSteamState(SteamFuncs, JsRuntime);
         await InvokeAsync(StateHasChanged);
 
         await JsRuntime.InvokeVoidAsync("showNoteTooltips");
@@ -180,5 +180,36 @@
         }
 
         return true;
+    }
+
+    private async Task ShortcutClick(MouseEventArgs e, string shortcut)
+    {
+        switch (e.Button)
+        {
+            case 0:
+                // Left click
+                SharedFunctions.RunShortcut(shortcut, "LoginCache\\Steam\\Shortcuts", "Steam");
+                break;
+            case 2:
+                // Right click
+                AppState.Switcher.CurrentShortcut = shortcut;
+                await JsRuntime.InvokeVoidAsync("positionAndShowMenu", e, "#Shortcuts");
+                break;
+        }
+    }
+
+    private async Task RunSteam(MouseEventArgs e)
+    {
+        switch (e.Button)
+        {
+            case 0:
+                // Left click
+                SteamState.RunSteam(SteamSettings.Admin, "");
+                break;
+            case 2:
+                // Right click
+                await JsRuntime.InvokeVoidAsync("positionAndShowMenu", e, "#Platform");
+                break;
+        }
     }
 }

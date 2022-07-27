@@ -38,9 +38,9 @@
     {
         await InvokeAsync(StateHasChanged);
         if (AppState.Switcher.CurrentSwitcher == "Steam")
-            _swapAction = async () => await SteamFuncs.SwapToAccount();
+            _swapAction = async () => await SteamFuncs.SwapToAccount(JsRuntime);
         else
-            _swapAction = () => TemplatedPlatformFuncs.SwapToAccount();
+            _swapAction = () => TemplatedPlatformFuncs.SwapToAccount(JsRuntime);
     }
 
     private Action _swapAction;

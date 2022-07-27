@@ -13,6 +13,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Server.State.Classes.Steam;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
 
@@ -27,7 +29,7 @@ public interface ISteamState
     int LastAccTimestamp { get; set; }
     string LastAccSteamId { get; set; }
     bool SteamWebApiWasReset { get; set; }
-    void LoadSteamState(ISteamFuncs steamFuncs);
+    Task LoadSteamState(ISteamFuncs steamFuncs, IJSRuntime jsRuntime);
     string GetName(SteamUser su);
 
     /// <summary>
@@ -65,7 +67,6 @@ public interface ISteamState
     /// </summary>
     void SaveVacInfo();
 
-    void HandleShortcutActionSteam(string shortcut, string action);
     void RunSteam(bool admin, string args);
     void LoadNotes();
 }

@@ -14,13 +14,6 @@ function jQueryAppend(jQuerySelector, strToInsert) {
 	$(jQuerySelector).append(strToInsert);
 }
 
-//function jQueryProcessAccListSize() {
-//    let maxHeight = 0;
-//    $(".acc_list_item label").each((_, e) => { maxHeight = Math.max(maxHeight, e.offsetHeight); });
-//    if (document.getElementById("acc_list"))
-//	    document.getElementById("acc_list").setAttribute("style", `grid-template-rows: repeat(auto-fill, ${maxHeight}px)`);
-//}
-
 // Removes arguments like "?toast_type, &toast_title, &toast_message" from the URL.
 function removeUrlArgs(argString) {
     const toRemove = argString.split(",");

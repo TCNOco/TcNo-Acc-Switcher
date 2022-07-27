@@ -59,7 +59,7 @@ public class GameStats : IGameStats
     /// <returns>If successfully loaded platform</returns>
     public async Task<bool> SetCurrentPlatform(string platform)
     {
-        if (!_gameStatsRoot.IsInit) return false;
+        if (!_gameStatsRoot.IsInit || _appState.Switcher.CurrentSwitcher == platform) return false;
 
         _appState.Switcher.CurrentSwitcher = platform;
         if (!_gameStatsRoot.PlatformCompatibilities.ContainsKey(platform)) return false;

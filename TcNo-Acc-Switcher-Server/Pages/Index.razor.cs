@@ -25,6 +25,7 @@ using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Shared.ContextMenu;
+using TcNo_Acc_Switcher_Server.State;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
 using TcNo_Acc_Switcher_Server.State.Interfaces;
 
@@ -77,7 +78,6 @@ public partial class Index
         if (firstRender)
         {
             await HandleQueries();
-            //await JsRuntime.InvokeVoidAsync("initContextMenu");
             await JsRuntime.InvokeVoidAsync("initPlatformListSortable");
             //await AData.InvokeVoidAsync("initAccListSortable");
         }
@@ -140,8 +140,8 @@ public partial class Index
         }
 
         AppState.Switcher.CurrentSwitcher = platform;
-        TemplatedPlatformState.LoadTemplatedPlatformState(TemplatedPlatformFuncs);
-        TemplatedPlatformState.SetCurrentPlatform(TemplatedPlatformSettings, platform);
+        TemplatedPlatformState.LoadTemplatedPlatformState(JsRuntime, TemplatedPlatformSettings, TemplatedPlatformFuncs);
+        TemplatedPlatformState.SetCurrentPlatform(JsRuntime, TemplatedPlatformSettings, platform);
         if (!SharedFunctions.CanKillProcess(TemplatedPlatformState.CurrentPlatform.ExesToEnd, TemplatedPlatformSettings.ClosingMethod)) return;
 
         if (Directory.Exists(TemplatedPlatformSettings.FolderPath) && File.Exists(TemplatedPlatformSettings.Exe))
@@ -249,16 +249,6 @@ public partial class Index
     {
         var platform = item ?? AppState.Switcher.SelectedPlatform;
         WindowSettings.Platforms.First(x => x.Name == platform).SetEnabled(false);
-    }
-
-    /// <summary>
-    /// Shows the context menu for the requested platform
-    /// </summary>
-    public async void PlatformRightClick(MouseEventArgs e, string plat)
-    {
-        if (e.Button != 2) return;
-        AppState.Switcher.SelectedPlatform = plat;
-        await JsRuntime.InvokeVoidAsync("positionAndShowMenu", e, "#AccOrPlatList");
     }
     #endregion
 }

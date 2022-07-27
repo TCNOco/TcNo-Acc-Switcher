@@ -61,6 +61,14 @@ public class Switcher : INotifyPropertyChanged
         set => SetField(ref _currentStatus, value);
     }
 
+    public string CurrentShortcut
+    {
+        get => _currentShortcut;
+        set => SetField(ref _currentShortcut, value);
+    }
+
+    private string _currentShortcut = "";
+
     public string SelectedPlatform { get; set; } = "";
     public bool IsCurrentlyExportingAccounts { get; set; }
     public ObservableCollection<Account> SteamAccounts { get; set; } = new();

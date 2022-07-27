@@ -19,6 +19,7 @@ using System.IO;
 using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using Microsoft.Win32;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.State.Interfaces;
@@ -27,6 +28,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam;
 
 public partial class AdvancedClearing
 {
+    [Inject] private IJSRuntime JsRuntime { get; set; }
     [Inject] private ISteamSettings SteamSettings { get; set; }
     [Inject] private IAppState AppState { get; set; }
     [Inject] private ISharedFunctions SharedFunctions { get; set; }
@@ -49,7 +51,7 @@ public partial class AdvancedClearing
     public async Task Steam_Close()
     {
         Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Close]");
-        WriteLine(await SharedFunctions.CloseProcesses(SteamSettings.Processes, SteamSettings.ClosingMethod) ? "Closed Steam." : "ERROR: COULD NOT CLOSE STEAM!");
+        WriteLine(await SharedFunctions.CloseProcesses(JsRuntime, SteamSettings.Processes, SteamSettings.ClosingMethod) ? "Closed Steam." : "ERROR: COULD NOT CLOSE STEAM!");
     }
 
     // BUTTON: ..\Steam\Logs

@@ -33,8 +33,6 @@ namespace TcNo_Acc_Switcher_Server.State;
 
 public class SteamFuncs : ISteamFuncs
 {
-    [Inject] private IJSRuntime JsRuntime { get; set; }
-
     private readonly IAppState _appState;
     private readonly ILang _lang;
     private readonly IModals _modals;
@@ -155,21 +153,23 @@ public class SteamFuncs : ISteamFuncs
     /// <summary>
     /// Swap to the current AppState.Switcher.SelectedAccountId.
     /// </summary>
+    /// <param name="jsRuntime"></param>
     /// <param name="state">Optional profile state for Steam accounts</param>
-    public async Task SwapToAccount(int state = -1)
+    public async Task SwapToAccount(IJSRuntime jsRuntime, int state = -1)
     {
         if (state == -1) state = _steamSettings.OverrideState;
-        await SwapSteamAccounts(_appState.Switcher.SelectedAccountId, state);
+        await SwapSteamAccounts(jsRuntime, _appState.Switcher.SelectedAccountId, state);
     }
 
     /// <summary>
     /// Swaps to an empty account, allowing the user to sign in.
     /// </summary>
+    /// <param name="jsRuntime"></param>
     /// <param name="state">Optional profile state for Steam accounts</param>
-    public async Task SwapToNewAccount(int state = -1)
+    public async Task SwapToNewAccount(IJSRuntime jsRuntime, int state = -1)
     {
         if (state == -1) state = _steamSettings.OverrideState;
-        await SwapSteamAccounts("", state);
+        await SwapSteamAccounts(jsRuntime, "", state);
     }
 
     public async Task ForgetAccount()
@@ -205,10 +205,11 @@ public class SteamFuncs : ISteamFuncs
     /// <summary>
     /// Restart Steam with a new account selected. Leave args empty to log into a new account.
     /// </summary>
+    /// <param name="jsRuntime"></param>
     /// <param name="steamId">(Optional) User's SteamID</param>
     /// <param name="ePersonaState">(Optional) Persona state for user [0: Offline, 1: Online...]</param>
     /// <param name="args">Starting arguments</param>
-    public async Task SwapSteamAccounts(string steamId = "", int ePersonaState = -1, string args = "")
+    public async Task SwapSteamAccounts(IJSRuntime jsRuntime, string steamId = "", int ePersonaState = -1, string args = "")
     {
         Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.SwapSteamAccounts] Swapping to: hidden. ePersonaState={ePersonaState}");
         if (steamId != "" && !VerifySteamId(steamId))
@@ -216,11 +217,11 @@ public class SteamFuncs : ISteamFuncs
             return;
         }
 
-        await JsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_ClosingPlatform", new { platform = "Steam" }]);
-        if (!await _sharedFunctions.CloseProcesses(_steamSettings.Processes, _steamSettings.ClosingMethod))
+        await jsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_ClosingPlatform", new { platform = "Steam" }]);
+        if (!await _sharedFunctions.CloseProcesses(jsRuntime, _steamSettings.Processes, _steamSettings.ClosingMethod))
         {
             if (Globals.IsAdministrator)
-                await JsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_ClosingPlatformFailed", new { platform = "Steam" }]);
+                await jsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_ClosingPlatformFailed", new { platform = "Steam" }]);
             else
             {
                 _toasts.ShowToastLang(ToastType.Error, "Failed", "Toast_RestartAsAdmin");
@@ -229,9 +230,9 @@ public class SteamFuncs : ISteamFuncs
             return;
         }
 
-        if (OperatingSystem.IsWindows()) await UpdateLoginUsers(steamId, ePersonaState);
+        if (OperatingSystem.IsWindows()) await UpdateLoginUsers(jsRuntime, steamId, ePersonaState);
 
-        await JsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_StartingPlatform", new { platform = "Steam" }]);
+        await jsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_StartingPlatform", new { platform = "Steam" }]);
         if (_steamSettings.AutoStart)
         {
             if (_steamSettings.StartSilent) args += " -silent";
@@ -242,10 +243,10 @@ public class SteamFuncs : ISteamFuncs
                 _toasts.ShowToastLang(ToastType.Error, new LangSub("Toast_StartingPlatformFailed", new { platform = "Steam" }));
         }
 
-        if (_steamSettings.AutoStart && _windowSettings.MinimizeOnSwitch) await JsRuntime.InvokeVoidAsync("hideWindow");
+        if (_steamSettings.AutoStart && _windowSettings.MinimizeOnSwitch) await jsRuntime.InvokeVoidAsync("hideWindow");
 
         NativeFuncs.RefreshTrayArea();
-        await JsRuntime.InvokeVoidAsync("updateStatus", _lang["Done"]);
+        await jsRuntime.InvokeVoidAsync("updateStatus", _lang["Done"]);
         _statistics.IncrementSwitches("Steam");
 
         try
@@ -295,20 +296,22 @@ public class SteamFuncs : ISteamFuncs
     #endregion
 
     #region STEAM_MANAGEMENT
+
     /// <summary>
     /// Updates loginusers and registry to select an account as "most recent"
     /// </summary>
+    /// <param name="jsRuntime"></param>
     /// <param name="selectedSteamId">Steam ID64 to switch to</param>
     /// <param name="pS">[PersonaState]0-7 custom persona state [0: Offline, 1: Online...]</param>
     [SupportedOSPlatform("windows")]
-    public async Task UpdateLoginUsers(string selectedSteamId, int pS)
+    public async Task UpdateLoginUsers(IJSRuntime jsRuntime, string selectedSteamId, int pS)
     {
         Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.UpdateLoginUsers] Updating loginusers: selectedSteamId={(selectedSteamId.Length > 0 ? selectedSteamId.Substring(selectedSteamId.Length - 4, 4) : "")}, pS={pS}");
         var userAccounts = _steamState.GetSteamUsers(_steamSettings.LoginUsersVdf);
         // -----------------------------------
         // ----- Manage "loginusers.vdf" -----
         // -----------------------------------
-        await JsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_UpdatingFile", new { file = "loginusers.vdf" }]);
+        await jsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_UpdatingFile", new { file = "loginusers.vdf" }]);
         var tempFile = _steamSettings.LoginUsersVdf + "_temp";
         Globals.DeleteFile(tempFile);
 
@@ -358,7 +361,7 @@ public class SteamFuncs : ISteamFuncs
             --> AutoLoginUser = username
             --> RememberPassword = 1
         */
-        await JsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_UpdatingRegistry"]);
+        await jsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_UpdatingRegistry"]);
         using var key = Registry.CurrentUser.CreateSubKey(@"Software\Valve\Steam");
         key?.SetValue("AutoLoginUser", user.AccName); // Account name is not set when changing user accounts from launch arguments (part of the viewmodel). -- Can be "" if no account
         key?.SetValue("RememberPassword", 1);

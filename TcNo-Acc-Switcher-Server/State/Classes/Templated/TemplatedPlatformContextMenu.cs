@@ -16,6 +16,8 @@
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
+using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Shared;
@@ -28,48 +30,57 @@ namespace TcNo_Acc_Switcher_Server.State.Classes.Templated;
 public class TemplatedPlatformContextMenu
 {
     private readonly IAppState _appState;
-    private readonly IGameStats _gameStats;
-    private readonly IModals _modals;
+    private readonly ITemplatedPlatformSettings _templatedPlatformSettings;
     private readonly ITemplatedPlatformState _templatedPlatformState;
-    private readonly ITemplatedPlatformFuncs _templatedPlatformFuncs;
+    private readonly ISharedFunctions _sharedFunctions;
     private readonly IToasts _toasts;
-    private readonly ILang _lang;
 
-    public TemplatedPlatformContextMenu(IAppState appState, IGameStats gameStats, ILang lang, IModals modals, ITemplatedPlatformFuncs templatedPlatformFuncs, ITemplatedPlatformState templatedPlatformState, IToasts toasts)
+    public TemplatedPlatformContextMenu(IJSRuntime jsRuntime, IAppState appState, IGameStats gameStats, ILang lang, IModals modals, ISharedFunctions sharedFunctions, ITemplatedPlatformSettings templatedPlatformSettings, ITemplatedPlatformFuncs templatedPlatformFuncs, ITemplatedPlatformState templatedPlatformState, IToasts toasts)
     {
         _appState = appState;
-        _gameStats = gameStats;
-        _modals = modals;
-        _templatedPlatformFuncs = templatedPlatformFuncs;
         _templatedPlatformState = templatedPlatformState;
+        _sharedFunctions = sharedFunctions;
+        _templatedPlatformSettings = templatedPlatformSettings;
         _toasts = toasts;
-        _lang = lang;
 
         ContextMenuItems.Clear();
-        ContextMenuItems.AddRange(new MenuBuilder(_lang,
+        ContextMenuItems.AddRange(new MenuBuilder(lang,
             new[]
             {
-                new ("Context_SwapTo", new Action(() => _templatedPlatformFuncs.SwapToAccount())),
+                new ("Context_SwapTo", new Action(() => templatedPlatformFuncs.SwapToAccount(jsRuntime))),
                 new ("Context_CopyUsername", new Action(async () => await StaticFuncs.CopyText(_appState.Switcher.SelectedAccount.DisplayName))),
-                new ("Context_ChangeName", new Action(_modals.ShowChangeUsernameModal)),
+                new ("Context_ChangeName", new Action(modals.ShowChangeUsernameModal)),
                 new ("Context_CreateShortcut", new Action(() => CreateShortcut())),
-                new ("Context_ChangeImage", new Action(_modals.ShowChangeAccImageModal)),
-                new ("Forget", new Action(async () => await _templatedPlatformFuncs.ForgetAccount())),
-                new ("Notes", new Action(() => _modals.ShowModal("notes"))),
-                _gameStats.PlatformHasAnyGames(_templatedPlatformState.CurrentPlatform.SafeName) ?
-                    new Tuple<string, object>("Context_ManageGameStats", new Action(_modals.ShowGameStatsSelectorModal)) : null,
+                new ("Context_ChangeImage", new Action(modals.ShowChangeAccImageModal)),
+                new ("Forget", new Action(async () => await templatedPlatformFuncs.ForgetAccount())),
+                new ("Notes", new Action(() => modals.ShowModal("notes"))),
+                gameStats.PlatformHasAnyGames(_templatedPlatformState.CurrentPlatform.SafeName) ?
+                    new Tuple<string, object>("Context_ManageGameStats", new Action(modals.ShowGameStatsSelectorModal)) : null,
             }).Result());
 
-        ContextMenuShortcutItems = new MenuBuilder(_lang,
+        ContextMenuShortcutItems = new MenuBuilder(lang,
             new Tuple<string, object>[]
             {
-                new ("Context_RunAdmin", "shortcut('admin')"),
-                new ("Context_Hide", "shortcut('hide')"),
+                new ("Context_RunAdmin", ShortcutStartAdmin),
+                new ("Context_Hide", HideShortcutSteam),
             }).Result();
 
-        ContextMenuPlatformItems = new MenuBuilder(_lang,
-            new Tuple<string, object>("Context_RunAdmin", "shortcut('admin')")
+        ContextMenuPlatformItems = new MenuBuilder(lang,
+            new Tuple<string, object>("Context_RunAdmin", () => templatedPlatformFuncs.RunPlatform(true, ""))
         ).Result();
+    }
+
+    private void ShortcutStartAdmin() =>
+        _sharedFunctions.RunShortcut(_appState.Switcher.CurrentShortcut, _templatedPlatformState.CurrentPlatform.ShortcutFolder, _templatedPlatformState.CurrentPlatform.SafeName, true);
+    private void HideShortcutSteam()
+    {
+        // Remove shortcut from folder, and list.
+        _templatedPlatformSettings.Shortcuts.Remove(_templatedPlatformSettings.Shortcuts.First(e => e.Value == _appState.Switcher.CurrentShortcut).Key);
+        var f = Path.Join(_templatedPlatformState.CurrentPlatform.ShortcutFolder, _appState.Switcher.CurrentShortcut);
+        if (File.Exists(f)) File.Move(f, f.Replace(".lnk", "_ignored.lnk").Replace(".url", "_ignored.url"));
+
+        // Save.
+        _templatedPlatformSettings.Save();
     }
 
     public readonly ObservableCollection<MenuItem> ContextMenuItems = new();

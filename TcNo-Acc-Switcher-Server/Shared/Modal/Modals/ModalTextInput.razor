@@ -182,10 +182,10 @@
             if (Modals.TextInput.Goal is TextInputGoal.ChangeUsername)
                 TemplatedChangeUsername(AppState.Switcher.SelectedAccountId, Modals.TextInput.LastString);
             else
-                await TemplatedPlatformFuncs.TemplatedAddCurrent(Modals.TextInput.LastString);
+                await TemplatedPlatformFuncs.TemplatedAddCurrent(JsRuntime, Modals.TextInput.LastString);
         }
     }
-
+    
     public void TemplatedChangeUsername(string accId, string newName, bool reload = true)
     {
         TemplatedPlatformState.LoadAccountIds();

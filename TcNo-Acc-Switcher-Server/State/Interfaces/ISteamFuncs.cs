@@ -1,19 +1,6 @@
-﻿// TcNo Account Switcher - A Super fast account switcher
-// Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
 
 namespace TcNo_Acc_Switcher_Server.State.Interfaces;
@@ -35,24 +22,27 @@ public interface ISteamFuncs
     /// <summary>
     /// Swap to the current AppState.Switcher.SelectedAccountId.
     /// </summary>
+    /// <param name="jsRuntime"></param>
     /// <param name="state">Optional profile state for Steam accounts</param>
-    Task SwapToAccount(int state = -1);
+    Task SwapToAccount(IJSRuntime jsRuntime, int state = -1);
 
     /// <summary>
     /// Swaps to an empty account, allowing the user to sign in.
     /// </summary>
+    /// <param name="jsRuntime"></param>
     /// <param name="state">Optional profile state for Steam accounts</param>
-    Task SwapToNewAccount(int state = -1);
+    Task SwapToNewAccount(IJSRuntime jsRuntime, int state = -1);
 
     Task ForgetAccount();
 
     /// <summary>
     /// Restart Steam with a new account selected. Leave args empty to log into a new account.
     /// </summary>
+    /// <param name="jsRuntime"></param>
     /// <param name="steamId">(Optional) User's SteamID</param>
     /// <param name="ePersonaState">(Optional) Persona state for user [0: Offline, 1: Online...]</param>
     /// <param name="args">Starting arguments</param>
-    Task SwapSteamAccounts(string steamId = "", int ePersonaState = -1, string args = "");
+    Task SwapSteamAccounts(IJSRuntime jsRuntime, string steamId = "", int ePersonaState = -1, string args = "");
 
     /// <summary>
     /// Highlights the specified account
@@ -67,9 +57,10 @@ public interface ISteamFuncs
     /// <summary>
     /// Updates loginusers and registry to select an account as "most recent"
     /// </summary>
+    /// <param name="jsRuntime"></param>
     /// <param name="selectedSteamId">Steam ID64 to switch to</param>
     /// <param name="pS">[PersonaState]0-7 custom persona state [0: Offline, 1: Online...]</param>
-    Task UpdateLoginUsers(string selectedSteamId, int pS);
+    Task UpdateLoginUsers(IJSRuntime jsRuntime, string selectedSteamId, int pS);
 
     /// <summary>
     /// Save updated list of Steamuser into loginusers.vdf, in vdf format.

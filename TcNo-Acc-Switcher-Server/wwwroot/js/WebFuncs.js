@@ -162,17 +162,6 @@ async function serializeShortcuts() {
         await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SaveShortcutOrder", output);
 }
 
-// Context menu buttons
-async function shortcut(action) {
-    const reqId = $(selectedElem).prop("id");
-    console.log(reqId);
-    if (getCurrentPage() === "Steam")
-        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HandleShortcutActionSteam", reqId, action);
-    else
-        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HandleShortcutAction", reqId, action);
-    if (action === "hide") $(selectedElem).remove();
-}
-
 async function initSavingHotKey() {
     hotkeys("ctrl+s", async function (event) {
         event.preventDefault();

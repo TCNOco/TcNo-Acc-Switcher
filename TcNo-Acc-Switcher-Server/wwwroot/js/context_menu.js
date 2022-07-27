@@ -43,30 +43,7 @@ function positionAndShowMenu(event, contextMenuId) {
         "top": posTop
     }).show();
 
-    //Prevent browser default contextmenu.
-    return false;
-}
-
-async function initContextMenu() {
-    let group = "acc";
-    if (getCurrentPage() === "") {
-        group = "platform";
-    }
-    if (getCurrentPage() === "Settings") {
-        group = "preview";
-    }
-
-    // Show shortcut contextmenu on Right-Click
-    $(`.HasContextMenu`).contextmenu((e) => positionAndShowMenu(e, "#Shortcuts"));
-
-    //Show platform/account contextmenu on Right-Click:
-    //$(`.${group}_list_item`).contextmenu((e) => positionAndShowMenu(e, "#AccOrPlatList"));
-
-    //Show contextmenu on Right-Click (platform shortcut):
-    $(`#btnStartPlat`).contextmenu((e) => positionAndShowMenu(e, "#Platform"));
-
-    // Check element fits on page, and move if it doesn't
-    // This function moves the element to the left if it doesn't fit.
+    // Resize observer
     var contextMenu = document.getElementsByClassName("contextmenu")[0];
     var rightSpace = 0, bottomSpace = 0;
 
@@ -90,11 +67,15 @@ async function initContextMenu() {
         }
     });
     for (let item of document.getElementsByClassName("submenu1")) {
-	    resizeObserver.observe(item);
-	} for (let item of document.getElementsByClassName("submenu2")) {
-	    resizeObserver.observe(item);
+        resizeObserver.observe(item);
+    } for (let item of document.getElementsByClassName("submenu2")) {
+        resizeObserver.observe(item);
     }
-};
+
+
+    //Prevent browser default contextmenu.
+    return false;
+}
 
 //Hide contextmenu
 function hideContextMenus() {
