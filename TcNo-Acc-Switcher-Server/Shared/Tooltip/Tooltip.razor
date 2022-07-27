@@ -1,6 +1,6 @@
 ﻿@inject IJSRuntime JsRuntime
 
-<div class="tooltip-wrapper @Class" id="@Id">
+<div class="tooltip-wrapper @Class" id="@Id" @onmouseover="TooltipHover">
     @if (!string.IsNullOrEmpty(Text))
     {
         <span id="@_randomGuid">@Text</span>
@@ -20,8 +20,8 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && !string.IsNullOrEmpty(Text))
-            await JsRuntime.InvokeVoidAsync("repositionTooltip", _randomGuid);
+        //if (firstRender && !string.IsNullOrEmpty(Text))
+        //    await JsRuntime.InvokeVoidAsync("repositionTooltip", _randomGuid);
     }
 
     // Removed onmouseout, as once something is repositioned, the odds of needing another reposition is low.
@@ -31,4 +31,10 @@
     //    JsRuntime.InvokeVoidAsync("repositionTooltipRemove", _randomGuid);
     //    Console.WriteLine("Exit");
     //}
+    private async Task TooltipHover(MouseEventArgs obj)
+    {
+        if (!string.IsNullOrEmpty(Text))
+            await JsRuntime.InvokeVoidAsync("repositionTooltip", _randomGuid);
+    }
+
 }

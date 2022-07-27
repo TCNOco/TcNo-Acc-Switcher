@@ -283,18 +283,53 @@ function saveFile(fileName, urlFile) {
     a.remove();
 }
 
+
+var windowDimensionsFound = false;
+let windowBorderWidth = 7;
+let windowHeaderbarHeight = 32;
+
+
+function repositionFindBorders() {
+    if (windowDimensionsFound) return;
+    windowBorderWidth = $(".resizeLeft")[0].getBoundingClientRect().width;
+    windowHeaderbarHeight = $(".headerbar")[0].getBoundingClientRect().height;
+    windowDimensionsFound = true;
+}
+
 function repositionTooltip(id) {
-    const windowBorderWidth = 7;
-
+    console.log("Moving", id);
+    repositionFindBorders();
     const tooltipSpan = $("#" + id);
+    tooltipSpan.css("transform", "");
+    tooltipSpan.removeClass("hideAfter");
     const bounds = tooltipSpan[0].getBoundingClientRect();
-    const right = window.innerWidth - (bounds.x + bounds.width) - windowBorderWidth;
-    const left = (bounds.x - bounds.width) - windowBorderWidth;
-    const overflowR = right < 0;
-    const overflowL = left < 0;
+    const bRight = window.innerWidth - (bounds.x + bounds.width) - windowBorderWidth;
+    const bLeft = bounds.left - windowBorderWidth;
+    const bTop = bounds.top - windowHeaderbarHeight;
+    console.log(bTop, bounds.y, windowHeaderbarHeight);
+    const bBottom = window.innerHeight - (bounds.y + bounds.height) - windowBorderWidth; // This is not tested, but should work.
+    const overflowR = bRight < 0;
+    const overflowL = bLeft < 0;
+    const overflowT = bTop < 0;
+    const overflowB = bBottom < 0;
 
+    let transX = "0";
     if (overflowR) {
-        tooltipSpan.css("transform", `translateX(${right}px)`);
+        transX = `${bRight}px`;
+    } else if (overflowL) {
+        transX = `${-1 * bLeft}px`;
+    }
+
+    let transY = "0";
+    if (overflowT) {
+        transY = `${-1 * bTop}px`;
+    } else if (overflowB) {
+        transY = `${bBottom}px`;
+    }
+
+    if (transX !== "0" || transY !== "0") {
+        console.warn($(tooltipSpan), transX + transY);
+        tooltipSpan.css("transform", `translate(${transX},${transY})`);
         tooltipSpan.addClass("hideAfter");
     }
 }
