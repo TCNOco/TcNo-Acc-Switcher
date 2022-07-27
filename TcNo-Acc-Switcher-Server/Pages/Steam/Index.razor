@@ -35,10 +35,10 @@
 @inject IToasts Toasts
 @inject IWindowSettings WindowSettings
 
-<ContextMenu MenuItems="@SteamState.ContextMenu.Menu" ContextMenuId="AccOrPlatList" @ref="SteamContextMenu" />
+<ContextMenu MenuItems="@SteamState.ContextMenu.Menu" ContextMenuId="AccOrPlatList" />
 <ContextMenu MenuItems="@SteamState.ContextMenu.ShortcutItems" ContextMenuId="Shortcuts" />
 <ContextMenu MenuItems="@SteamState.ContextMenu.PlatformItems" ContextMenuId="Platform" />
-<AccountList AccountItems="@AppState.Switcher.SteamAccounts" @ref="SteamAccountList" />
+<AccountList AccountItems="@AppState.Switcher.SteamAccounts" />
 
 <div class="shortcutDropdown gameShortcuts" id="shortcutDropdown" style="display: none">
     <div class="shortcutDropdownItems">
@@ -97,18 +97,9 @@
 
 @code
 {
-    public static AccountList SteamAccountList;
-
-    public static ContextMenu SteamContextMenu;
-
     public static string GetShortcutImagePath(string gameShortcutName) =>
         Path.Join("img\\shortcuts\\Steam\\", Globals.RemoveShortcutExt(gameShortcutName) + ".png");
 
-    protected override void OnInitialized()
-    {
-        //AppData.Instance.OnChange += OnChangeHandler;
-        SteamState.LoadSteamState(SteamFuncs);
-    }
     private async void OnChangeHandler()
     {
         await InvokeAsync(StateHasChanged);
@@ -134,6 +125,10 @@
         await HandleFirstRender(firstRender);
         Statistics.NewNavigation("/Steam/");
         if (!firstRender) return;
+
+        SteamState.LoadSteamState(SteamFuncs);
+        await InvokeAsync(StateHasChanged);
+
         await JsRuntime.InvokeVoidAsync("showNoteTooltips");
 
         var curAcc = SteamFuncs.GetCurrentAccountId(true);

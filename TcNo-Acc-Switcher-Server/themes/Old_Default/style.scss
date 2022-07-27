@@ -99,6 +99,7 @@ a:not([href]):not([class]):hover {
     -webkit-text-stroke: 1px #00A5F8;
     color: transparent;
     text-shadow: none;
+    overflow: visible;
 
     .icoFG {
         fill: #00A5F8;

@@ -524,6 +524,7 @@ div.advancedClearingButtonCol .buttoncol {
   /*color: transparent;*/
   color: #00a5f8;
   text-shadow: 2px 2px 10px #00000099;
+  overflow: visible;
 }
 .platform_list_item .fgText {
   position: absolute;
@@ -629,8 +630,13 @@ div.advancedClearingButtonCol .buttoncol {
 }
 
 /* Footer icons */
+.btnPlatforms {
+  height: 100%;
+}
+
 .btnSettings,
 .btnHelp {
+  height: 36px;
   width: 36px;
   display: flex;
   align-items: center;

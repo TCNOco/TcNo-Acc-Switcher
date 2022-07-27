@@ -20,6 +20,8 @@
 @using System.Collections.ObjectModel
 @using TcNo_Acc_Switcher_Server.State.Classes
 @using TcNo_Acc_Switcher_Server.State.Interfaces
+@using TcNo_Acc_Switcher_Server.Shared.Tooltip
+
 @inject IJSRuntime JsRuntime
 @inject NavigationManager NavManager
 @inject IWindowSettings WindowSettings
@@ -77,15 +79,21 @@
         @*<button id="btnTextEditor" onclick="location = 'TextEditor'">
             <i class="fas fa-cog footerIcoSettings"></i>
         </button>*@
-        <button id="btnPlatforms" @onclick='() => NavManager.NavigateTo("/Platforms/")' data-toggle="tooltip" title="@(Lang["Tooltip_ManagePlatforms"])">
-            <i class="fas fa-plus footerIcoInline"></i>
-            @Lang["Button_ManagePlatforms"]
-        </button>
-        <button class="btnSettings" @onclick='() => NavManager.NavigateTo("/Settings/")' data-toggle="tooltip" title="@(Lang["Tooltip_Settings"])">
-            <i class="fas fa-cog footerIcoSettings"></i>
-        </button>
-        <button class="btnHelp" @onclick='() => Modals.ShowModal("info")' data-toggle="tooltip" title="@(Lang["Tooltip_Info"])">
-            <i class="fas fa-question footerIcoQuestion"></i>
-        </button>
+        <Tooltip Text="@Lang["Tooltip_ManagePlatforms"]">
+            <button class="btnPlatforms" @onclick='() => NavManager.NavigateTo("/Platforms/")'>
+                <i class="fas fa-plus footerIcoInline"></i>
+                @Lang["Button_ManagePlatforms"]
+            </button>
+        </Tooltip>
+        <Tooltip Text="@Lang["Tooltip_Settings"]">
+            <button class="btnSettings" @onclick='() => NavManager.NavigateTo("/Settings/")'>
+                <i class="fas fa-cog footerIcoSettings"></i>
+            </button>
+        </Tooltip>
+        <Tooltip Text="@Lang["Tooltip_Info"]">
+            <button class="btnHelp" @onclick='() => Modals.ShowModal("info")'>
+                <i class="fas fa-question footerIcoQuestion"></i>
+            </button>
+        </Tooltip>
     </div>
 </div>

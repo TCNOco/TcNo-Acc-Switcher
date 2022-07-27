@@ -15,6 +15,7 @@
 @using Newtonsoft.Json.Linq
 @using TcNo_Acc_Switcher_Globals
 @using System.Collections.ObjectModel
+@using System.Collections.Specialized
 @inject IJSRuntime Js
 
 @code {
@@ -25,8 +26,15 @@
 
     protected override void OnInitialized()
     {
-        MenuItems.CollectionChanged += ((_, _) => InvokeAsync(StateHasChanged));
+        MenuItems.CollectionChanged += MenuItemsOnCollectionChanged;;
     }
+
+    private void MenuItemsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+
 }
 
 <ul class="contextmenu" id="@ContextMenuId">

@@ -512,3 +512,55 @@ button .caret, .button .caret {
 .tooltip {
   pointer-events: none;
 }
+
+.hideAfter::after {
+  display: none;
+}
+
+button * {
+  pointer-events: none;
+}
+
+/* New tooltip */
+.tooltip-wrapper {
+  position: relative;
+  cursor: help;
+  overflow: visible;
+}
+.tooltip-wrapper:hover span {
+  visibility: visible;
+}
+.tooltip-wrapper span {
+  pointer-events: none;
+  visibility: hidden;
+  position: absolute;
+  margin-left: -60px;
+  background-color: #363636;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  z-index: 5000;
+  width: 120px;
+  bottom: 100%;
+  left: 50%;
+}
+.tooltip-wrapper span::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+.tooltip-wrapper-left span {
+  bottom: 0;
+  left: -50%;
+}
+.tooltip-wrapper-left span::after {
+  top: 50%;
+  left: 100%;
+  border-color: transparent transparent transparent #555;
+}

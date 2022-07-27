@@ -42,6 +42,7 @@ public class SteamContextMenu
     private readonly ISteamSettings _steamSettings;
     private readonly IToasts _toasts;
 
+    public SteamContextMenu() {}
     public SteamContextMenu(IAppState appState, IGameStats gameStats, ILang lang, IModals modals,
         ISteamFuncs steamFuncs, ISteamSettings steamSettings, IToasts toasts)
     {
@@ -79,8 +80,8 @@ public class SteamContextMenu
         Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\AppIdsUser.json");
 
     public readonly ObservableCollection<MenuItem> Menu = new();
-    public readonly ObservableCollection<MenuItem> ShortcutItems;
-    public readonly ObservableCollection<MenuItem> PlatformItems;
+    public readonly ObservableCollection<MenuItem> ShortcutItems = new();
+    public readonly ObservableCollection<MenuItem> PlatformItems = new();
 
     public void BuildContextMenu()
     {

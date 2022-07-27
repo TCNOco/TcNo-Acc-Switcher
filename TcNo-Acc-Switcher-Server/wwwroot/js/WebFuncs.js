@@ -284,3 +284,23 @@ function saveFile(fileName, urlFile) {
     a.click();
     a.remove();
 }
+
+function repositionTooltip(id) {
+    const windowBorderWidth = 7;
+
+    const tooltipSpan = $("#" + id);
+    const bounds = tooltipSpan[0].getBoundingClientRect();
+    const right = window.innerWidth - (bounds.x + bounds.width) - windowBorderWidth;
+    const left = (bounds.x - bounds.width) - windowBorderWidth;
+    const overflowR = right < 0;
+    const overflowL = left < 0;
+
+    if (overflowR) {
+        tooltipSpan.css("transform", `translateX(${right}px)`);
+        tooltipSpan.addClass("hideAfter");
+    }
+}
+
+//function repositionTooltipRemove(id) {
+//    $("#" + id).removeClass("hideAfter");
+//}

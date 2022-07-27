@@ -48,7 +48,7 @@ public class SteamState : ISteamState
 
     public List<SteamUser> SteamUsers { get; set; } = new();
     public bool SteamLoadingProfiles { get; set; }
-    public SteamContextMenu ContextMenu { get; set; }
+    public SteamContextMenu ContextMenu { get; set; } = new();
 
     public bool DesktopShortcut
     {
@@ -167,8 +167,8 @@ public class SteamState : ISteamState
 
         Task.Run(() =>
         {
-            ContextMenu = new SteamContextMenu(_appState, _gameStats, _lang, _modals, steamFuncs, _steamSettings, _toasts);
         });
+        ContextMenu = new SteamContextMenu(_appState, _gameStats, _lang, _modals, steamFuncs, _steamSettings, _toasts);
     }
 
     public string GetName(SteamUser su) => string.IsNullOrWhiteSpace(su.Name) ? su.AccName : su.Name;
