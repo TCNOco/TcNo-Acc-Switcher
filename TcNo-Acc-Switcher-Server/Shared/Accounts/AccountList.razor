@@ -16,6 +16,7 @@
 @using TcNo_Acc_Switcher_Globals
 @using System.Collections.ObjectModel
 @using TcNo_Acc_Switcher_Server.Shared.Accounts
+@using TcNo_Acc_Switcher_Server.Shared.Tooltip
 @using TcNo_Acc_Switcher_Server.State.Classes
 @using TcNo_Acc_Switcher_Server.State.DataTypes
 @using TcNo_Acc_Switcher_Server.State.Interfaces
@@ -47,12 +48,10 @@
 }
 <div id="acc_list" class="acc_list" tabindex="1" @onkeydown="AccountKeyDown">
     <toastarea class="toastarea"/>
-    <CascadingValue Value="@AccountItems">
-        @foreach (var acc in AccountItems)
-        {
-            <AccountItem Acc="acc" SwapAction="_swapAction" UnselectAllAccounts="UnselectAllAccounts"/>
-        }
-    </CascadingValue>
+    @foreach (var acc in AccountItems)
+    {
+        <AccountItem Acc="acc" SwapAction="_swapAction" UnselectAllAccounts="UnselectAllAccounts"/>
+    }
 </div>
 
 @code

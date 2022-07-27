@@ -515,14 +515,14 @@ button#LocateProgramExe,
   box-shadow: none;
 }
 
-.accountHover > label.acc {
+.acc_list_item:hover > label.acc {
     background-color: $nordDark3 !important;
     border: $nordFrost3 1px solid;
     border-radius: 0.35rem;
     border-bottom: solid 2px $nordFrost2;
 }
 
-.accountHover {
+.acc_list_item:hover {
     label.acc.currentAcc {
         border-style: solid;
         border-color: $nordAuora3;

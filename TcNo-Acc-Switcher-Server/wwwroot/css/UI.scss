@@ -432,7 +432,7 @@ button .caret, .button .caret {
 }
 .shortcuts {
     height: 100%;
-    overflow: hidden;
+    overflow: visible;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
@@ -467,6 +467,7 @@ button .caret, .button .caret {
         overflow-y: auto;
         max-height: inherit;
         min-height: 32px;
+        overflow: visible;
 
         img {
             pointer-events: none;
@@ -613,10 +614,10 @@ button * {
 /* New tooltip */
 .tooltip-wrapper {
     position: relative;
-    cursor: help;
+    /*cursor: help;*/
     overflow: visible;
 
-    &:hover span {
+    &:not(:active):hover span {
         visibility: visible;
     }
 

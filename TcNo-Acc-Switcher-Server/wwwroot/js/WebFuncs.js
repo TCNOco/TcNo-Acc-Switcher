@@ -95,19 +95,28 @@ function sDropdownInit() {
         connectWith: "shortcutJoined",
         forcePlaceholderSize: true,
         placeholderClass: "shortcutPlaceholder",
-        items: ":not(#btnOpenShortcutFolder)"
+        items: ":not(#btnOpenShortcutFolder)",
+        customDragImage: (draggedElement, elementOffset, event) => {
+            // Set the dragged element to the button, not the tooltip.
+            return {
+                element: draggedElement.getElementsByTagName("button")[0],
+                posX: event.pageX - elementOffset.left,
+                posY: event.pageY - elementOffset.top
+            }
+        }
     });
 
     $(".shortcuts, .shortcutDropdownItems").toArray().forEach(el => {
 // ReSharper disable once Html.EventNotResolved
-        el.addEventListener("sortstart", function () {
+        el.addEventListener("sortstart", function (e) {
             $(".shortcuts").addClass("expandShortcuts");
         });
 // ReSharper disable once Html.EventNotResolved
-        el.addEventListener("sortstop", function () {
+        el.addEventListener("sortstop", function (e) {
             $(".shortcuts").removeClass("expandShortcuts");
             sDropdownReposition();
             serializeShortcuts();
+            $(e.detail.item).show(); // Sometimes items just randomly disappear? what?
         });
     });
 }

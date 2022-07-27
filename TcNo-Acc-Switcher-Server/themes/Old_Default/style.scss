@@ -110,7 +110,7 @@ a:not([href]):not([class]):hover {
     }
 }
 
-.accountHover > label.acc {
+.acc_list_item:hover > label.acc {
     border: 0.1 em solid #2777A4;
     background: #28374E;
 }

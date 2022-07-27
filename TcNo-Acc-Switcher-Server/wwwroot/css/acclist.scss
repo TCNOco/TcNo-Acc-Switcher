@@ -28,6 +28,13 @@
 
 .acc_list_item {
     border: 0.1em solid transparent;
+    height: 100%;
+
+    &:hover > label.acc {
+        border: 0.1em solid #039CBF;
+        /* Seperate because added by sortable */
+        background: #13222f;
+    }
 
     * {
         pointer-events: none;
@@ -71,12 +78,6 @@
     display: inline-block;
     margin: 10px;
     vertical-align: middle;
-}
-
-.accountHover > label.acc {
-  border: 0.1em solid #039CBF;
-  /* Seperate because added by sortable */
-  background: #13222f;
 }
 
 input.acc {

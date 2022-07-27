@@ -374,7 +374,7 @@ button#LocateProgramExe,
   box-shadow: none;
 }
 
-.accountHover > label.acc {
+.acc_list_item:hover > label.acc {
     background-color: #1b1b1b;
     border: var(--accent) 0.1em solid;
     border-radius: 0.9rem;

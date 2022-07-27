@@ -21,6 +21,7 @@
 @using TcNo_Acc_Switcher_Server.State
 @using TcNo_Acc_Switcher_Server.State.DataTypes
 @using TcNo_Acc_Switcher_Server.State.Interfaces
+@using TcNo_Acc_Switcher_Server.Shared.Tooltip
 @using System.ComponentModel
 @using TcNo_Acc_Switcher_Globals
 @inject IJSRuntime JsRuntime
@@ -49,15 +50,19 @@
         {
             @if (i >= 0)
             {
-                <button class="HasContextMenu" id="@(shortcut)" @onmousedown="(e) => ShortcutClick(e, shortcut)" data-toggle="tooltip" title="@(RemoveShortcutExt(shortcut))">
-                    <img src="@(TemplatedPlatformState.CurrentPlatform.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
-                </button>
+                <Tooltip Text="@Globals.RemoveShortcutExt(shortcut)">
+                    <button class="HasContextMenu" id="@(shortcut)" @onclick="(e) => ShortcutClick(e, shortcut)" @onmouseup="(e) => ShortcutClick(e, shortcut)">
+                        <img src="@(TemplatedPlatformState.CurrentPlatform.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
+                    </button>
+                </Tooltip>
             }
         }
     </div>
-    <button id="btnOpenShortcutFolder" @onclick="() => AppState.OpenFolder(Path.GetFullPath(TemplatedPlatformState.CurrentPlatform.ShortcutFolder))" data-toggle="tooltip" title="@(Lang["Tooltip_ShortcutFolder"])" data-placement="right">
-        <i class="fas fa-plus"></i>
-    </button>
+    <Tooltip Text="@(Lang["Tooltip_ShortcutFolder"])" Id="btnOpenShortcutFolder">
+        <button @onclick="() => AppState.OpenFolder(Path.GetFullPath(TemplatedPlatformState.CurrentPlatform.ShortcutFolder))">
+            <i class="fas fa-plus"></i>
+        </button>
+    </Tooltip>
 </div>
 
 <div class="acc_list_actionbar">
@@ -70,21 +75,25 @@
             {
                 @if (i < 0)
                 {
-                    <button class="HasContextMenu" id="@(shortcut)" @onclick="() => SharedFunctions.RunShortcut(shortcut, TemplatedPlatformState.CurrentPlatform.ShortcutFolder, TemplatedPlatformState.CurrentPlatform.SafeName)" data-toggle="tooltip" title="@(RemoveShortcutExt(shortcut))">
-                        <img src="@(TemplatedPlatformState.CurrentPlatform.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
-                    </button>
+                    <Tooltip Text="@Globals.RemoveShortcutExt(shortcut)">
+                        <button class="HasContextMenu" id="@(shortcut)" @onclick="(e) => ShortcutClick(e, shortcut)" @onmouseup="(e) => ShortcutClick(e, shortcut)">
+                            <img src="@(TemplatedPlatformState.CurrentPlatform.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
+                        </button>
+                    </Tooltip>
                 }
             }
         </div>
-        <button id="shortcutDropdownBtn" onclick="shortcutDropdownBtnClick()" data-toggle="tooltip" title="@(Lang["Tooltip_ExpandShortcuts"])" data-placement="right">
-            <i class="fas fa-chevron-up"></i>
-        </button>
+        <Tooltip Text="@(Lang["Tooltip_ExpandShortcuts"])">
+            <button id="shortcutDropdownBtn" onclick="shortcutDropdownBtnClick()"><i class="fas fa-chevron-up"></i></button>
+        </Tooltip>
 
         @if (TemplatedPlatformState.CurrentPlatform.Extras.ShortcutIncludeMainExe)
         {
-            <button id="btnStartPlat" @onmousedown="RunPlatform" oncontextmenu="return false;" data-toggle="tooltip" title="@(TemplatedPlatformState.CurrentPlatform.SafeName)">
-                <img src="@(TemplatedPlatformState.CurrentPlatform.GetShortcutImagePath(TemplatedPlatformState.CurrentPlatform.SafeName))" alt="Start platform"/>
-            </button>
+            <Tooltip Text="@(TemplatedPlatformState.CurrentPlatform.SafeName)">
+                <button id="btnStartPlat" @onmousedown="RunPlatform" oncontextmenu="return false;">
+                    <img src="@(TemplatedPlatformState.CurrentPlatform.GetShortcutImagePath(TemplatedPlatformState.CurrentPlatform.SafeName))" alt="RUN"/>
+                </button>
+            </Tooltip>
         }
 
         <button id="btnAddNew" @onclick="() => TemplatedPlatformFuncs.SwapToNewAccount(JsRuntime)">
@@ -100,13 +109,17 @@
             <i class="fas fa-caret-right footerIcoInline"></i>
         </button>
 
-        <button class="btnSettings" @onclick='() => AppState.Navigation.NavigateTo(NavigationManager, "/Basic/Settings/")' data-toggle="tooltip" title="@(Lang["Tooltip_Settings"])">
-            <i class="fas fa-cog footerIcoSettings"></i>
-        </button>
+        <Tooltip Text="@(Lang["Tooltip_Settings"])">
+            <button class="btnSettings" @onclick='() => AppState.Navigation.NavigateTo(NavigationManager, "/Basic/Settings/")'>
+                <i class="fas fa-cog footerIcoSettings"></i>
+            </button>
+        </Tooltip>
 
-        <button class="btnHelp" @onclick='() => Modals.ShowModal("info")' data-toggle="tooltip" title="@(Lang["Tooltip_Info"])">
-            <i class="fas fa-question footerIcoQuestion"></i>
-        </button>
+        <Tooltip Text="@(Lang["Tooltip_Info"])">
+            <button class="btnHelp" @onclick='() => Modals.ShowModal("info")'>
+                <i class="fas fa-question footerIcoQuestion"></i>
+            </button>
+        </Tooltip>
     </div>
 
 </div>
@@ -245,7 +258,7 @@
     {
         switch (e.Button)
         {
-            case 0:
+            case 0 when e.Type == "click":
                 // Left click
                 SharedFunctions.RunShortcut(shortcut, TemplatedPlatformState.CurrentPlatform.ShortcutFolder, TemplatedPlatformState.CurrentPlatform.SafeName);
                 break;

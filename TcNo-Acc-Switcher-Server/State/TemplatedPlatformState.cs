@@ -185,6 +185,7 @@ public class TemplatedPlatformState : ITemplatedPlatformState
             var acc = _appState.Switcher.TemplatedAccounts.FirstOrDefault(x => x.AccountId == key);
             if (acc is null) return;
             acc.Note = val;
+            acc.TitleText = val;
         }
 
         _modals.IsShown = false;

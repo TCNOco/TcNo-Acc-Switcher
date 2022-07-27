@@ -50,7 +50,6 @@ async function initPlatformListSortable() {
     sortable(".platform_list", {
         forcePlaceholderSize: true,
         placeholderClass: "placeHolderPlat",
-        hoverClass: "accountHover",
         items: ":not(toastarea)"
     });
 
@@ -61,6 +60,11 @@ async function initPlatformListSortable() {
 
         DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiSaveOrder", JSON.stringify(order));
     });
+
+    // On drag end
+    sortable(".platform_list")[0].addEventListener("sortstop", (e) => {
+        $(e.detail.item).show(); // Sometimes items just randomly disappear? what?
+    });
 }
 
 async function initAccListSortable() {
@@ -69,7 +73,6 @@ async function initAccListSortable() {
     sortable(".acc_list", {
         forcePlaceholderSize: true,
         placeholderClass: "placeHolderAcc",
-        hoverClass: "accountHover",
         items: ":not(toastarea)"
     });
     // On drag start, un-select all items.
@@ -88,6 +91,11 @@ async function initAccListSortable() {
         });
 
         DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiSaveOrder", JSON.stringify(order));
+    });
+
+    // On drag end
+    sortable(".acc_list")[0].addEventListener("sortstop", (e) => {
+        $(e.detail.item).show(); // Sometimes items just randomly disappear? what?
     });
 }
 

@@ -755,6 +755,7 @@ public class SteamState : ISteamState
             var acc = _appState.Switcher.SteamAccounts.FirstOrDefault(x => x.AccountId == key);
             if (acc is null) return;
             acc.Note = val;
+            acc.TitleText = val;
         }
 
         _modals.IsShown = false;
