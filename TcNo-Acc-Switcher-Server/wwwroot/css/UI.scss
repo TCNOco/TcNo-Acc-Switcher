@@ -603,7 +603,7 @@ button .caret, .button .caret {
     pointer-events: none;
 }
 
-.hideAfter::after{
+.hideAfter::before{
     display: none;
 }
 
@@ -626,17 +626,19 @@ button * {
         visibility: hidden;
         position: absolute;
         margin-left: -60px;
-        background-color: #363636;
+        background-color: #6272a4;
         color: #fff;
         text-align: center;
-        padding: 5px 0;
+        padding: 5px;
         border-radius: 6px;
         z-index: 5000;
         width: 120px;
+        max-width: 120px;
+        max-height: 120px;
         bottom: 100%;
         left: 50%;
 
-        &::after {
+        &::before {
             content: "";
             position: absolute;
             top: 100%;
@@ -644,21 +646,26 @@ button * {
             margin-left: -5px;
             border-width: 5px;
             border-style: solid;
-            border-color: #555 transparent transparent transparent;
+            border-color: #6272a4 transparent transparent transparent;
         }
     }
 
 
-    &-left {
-        span {
-            bottom: 0;
-            left: -50%;
+    span.tooltip-wrapper-left::before {
+        top: calc(50% - 5px);
+        left: calc(100% + 5px);
+        border-color: transparent transparent transparent #6272a4;
+    }
 
-            &::after {
-                top: 50%;
-                left: 100%;
-                border-color: transparent transparent transparent #555;
-            }
-        }
+    span.tooltip-wrapper-right::before {
+        top: calc(50% - 5px);
+        left: -5px;
+        border-color: transparent #6272a4 transparent transparent;
+    }
+
+    span.tooltip-wrapper-bottom::before {
+        top: -10px;
+        left: 50%;
+        border-color: transparent transparent #6272a4 transparent;
     }
 }

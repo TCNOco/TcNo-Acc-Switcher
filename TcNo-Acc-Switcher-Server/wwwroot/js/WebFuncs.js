@@ -297,43 +297,37 @@ function repositionFindBorders() {
 }
 
 function repositionTooltip(id) {
-    console.log("Moving", id);
-    repositionFindBorders();
     const tooltipSpan = $("#" + id);
-    tooltipSpan.css("transform", "");
-    tooltipSpan.removeClass("hideAfter");
+    // Only reposition once
+    console.log("Moving", id);
+    // Get window size and remove modified position (if any)
+    repositionFindBorders();
+    tooltipSpan.removeClass().css("left", "").css("bottom", "").css("transform", "");
     const bounds = tooltipSpan[0].getBoundingClientRect();
-    const bRight = window.innerWidth - (bounds.x + bounds.width) - windowBorderWidth;
-    const bLeft = bounds.left - windowBorderWidth;
-    const bTop = bounds.top - windowHeaderbarHeight;
-    console.log(bTop, bounds.y, windowHeaderbarHeight);
-    const bBottom = window.innerHeight - (bounds.y + bounds.height) - windowBorderWidth; // This is not tested, but should work.
-    const overflowR = bRight < 0;
-    const overflowL = bLeft < 0;
-    const overflowT = bTop < 0;
-    const overflowB = bBottom < 0;
-
-    let transX = "0";
-    if (overflowR) {
-        transX = `${bRight}px`;
-    } else if (overflowL) {
-        transX = `${-1 * bLeft}px`;
-    }
-
-    let transY = "0";
-    if (overflowT) {
-        transY = `${-1 * bTop}px`;
-    } else if (overflowB) {
-        transY = `${bBottom}px`;
-    }
-
-    if (transX !== "0" || transY !== "0") {
-        console.warn($(tooltipSpan), transX + transY);
-        tooltipSpan.css("transform", `translate(${transX},${transY})`);
-        tooltipSpan.addClass("hideAfter");
+    const parentBounds = tooltipSpan.parent()[0].getBoundingClientRect();
+    // Show on top by default.
+    // There is probably a MUCH better and easier algorithm.
+    // Unfortunately, CSS can only correct the orientation of the arrow. As it doesn't know the tooltip size, it can't move relatively.
+    const leftSpace = bounds.left - windowBorderWidth;
+    const rightSpace = (window.innerWidth - (bounds.x + bounds.width)) - windowBorderWidth;
+    const topSpace = bounds.top - windowHeaderbarHeight;
+    const bottomSpace = (window.innerHeight - (bounds.y + bounds.height)) - windowBorderWidth;
+    if (topSpace < 0 || leftSpace < 0 || bottomSpace < 0 || rightSpace < 0) {
+        // Is overflowing somewhere.
+        if (leftSpace > 0 && rightSpace > 0 && bottomSpace > 0) {
+            // left, right and bottom space available
+            tooltipSpan.css("left", "unset").css("bottom", "unset").css("transform", `translate(${parentBounds.width / 2}px,${parentBounds.height}px)`);
+            tooltipSpan.removeClass().addClass("tooltip-wrapper-bottom");
+        }
+        else if (rightSpace > 0) {
+            // right space available
+            tooltipSpan.css("left", "unset").css("bottom", "unset").css("transform", `translate(${parentBounds.width + (bounds.width / 2)}px,${(parentBounds.height / 2 - bounds.height / 2)}px)`);
+            tooltipSpan.removeClass().addClass("tooltip-wrapper-right");
+        } else if (leftSpace > 0) {
+            // left space available.
+            tooltipSpan.css("left", "unset").css("bottom", "unset").css("transform",
+                `translate(${-bounds.width / 2}px,${(parentBounds.height / 2 - bounds.height / 2)}px)`);
+            tooltipSpan.removeClass().addClass("tooltip-wrapper-left");
+        }
     }
 }
-
-//function repositionTooltipRemove(id) {
-//    $("#" + id).removeClass("hideAfter");
-//}
