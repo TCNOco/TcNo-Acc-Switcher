@@ -139,11 +139,6 @@ public class TemplatedPlatformSettings : ITemplatedPlatformSettings
         ForgetAccountEnabled = enabled;
         Save();
     }
-    public void SaveShortcutOrder(Dictionary<int, string> o)
-    {
-        Shortcuts = o;
-        Save();
-    }
 
     public void SetClosingMethod(string method)
     {

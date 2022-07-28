@@ -41,7 +41,6 @@ public interface ITemplatedPlatformSettings
     /// <param name="enabled">Whether will NOT prompt user if they're sure or not</param>
     void SetForgetAcc(bool enabled);
 
-    void SaveShortcutOrder(Dictionary<int, string> o);
     void SetClosingMethod(string method);
     void SetStartingMethod(string method);
 }

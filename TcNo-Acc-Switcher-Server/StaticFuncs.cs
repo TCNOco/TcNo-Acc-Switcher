@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -13,7 +14,7 @@ namespace TcNo_Acc_Switcher_Server;
 /// A file containing a ton of static functions that are used everywhere.
 /// This file shouldn't require anything else to be loaded in order to work properly.
 /// </summary>
-public class StaticFuncs
+public static class StaticFuncs
 {
     /// <summary>
     /// Is running with the official window, or just the server in a browser.
@@ -69,4 +70,57 @@ public class StaticFuncs
     #region Clipboard
     public static async Task CopyText(string text) => await ClipboardService.SetTextAsync(text);
     #endregion
+
+
+
+    /// <summary>
+    /// Saves shortcut order.
+    /// </summary>
+    public static Action<Dictionary<int, string>> SaveShortcuts;
+    [JSInvokable]
+    public static void JsSaveShortcuts(Dictionary<int, string> o)
+    {
+        SaveShortcuts.Invoke(o);
+    }
+
+    /// <summary>
+    /// Saves platform settings.
+    /// </summary>
+    public static Action SaveSettings;
+    [JSInvokable]
+    public static void JsSaveSettings()
+    {
+        SaveSettings.Invoke();
+    }
+
+
+    /// <summary>
+    /// Saves either the platform order, or account order, depending on what this is set to in the page's initializer.
+    /// </summary>
+    public static Action<string> SaveOrderAction;
+    [JSInvokable]
+    public static void GiSaveOrder(string s)
+    {
+        SaveOrderAction.Invoke(s);
+    }
+
+    /// <summary>
+    /// Opens a link in user's browser through Shell
+    /// </summary>
+    /// <param name="link">URL string</param>
+    [JSInvokable]
+    public static void OpenLinkInBrowser(string link)
+    {
+        Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.OpenLinkInBrowser] link={link}");
+        var ps = new ProcessStartInfo(link)
+        {
+            UseShellExecute = true,
+            Verb = "open"
+        };
+        _ = Process.Start(ps);
+    }
+
+
+    [JSInvokable]
+    public static string GiGetCleanFilePath(string f) => Globals.GetCleanFilePath(f);
 }

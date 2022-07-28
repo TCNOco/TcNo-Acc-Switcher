@@ -20,6 +20,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.State.Classes;
 using TcNo_Acc_Switcher_Server.State.Interfaces;
@@ -46,8 +47,8 @@ public class WindowSettings : IWindowSettings, INotifyPropertyChanged
     {
         Globals.LoadSettings(Filename, this, false);
 
-        // Remove duplicate platforms (possible):
-        Platforms = new ObservableCollection<PlatformItem>(Platforms.GroupBy(x => x.Name).Select(x => x.First()).ToList());
+        // Remove duplicate platforms (possible) - Last occurrence was loaded, first was default list.:
+        Platforms = new ObservableCollection<PlatformItem>(Platforms.GroupBy(x => x.Name).Select(x => x.Last()).ToList());
         if (Platforms.All(y => y.Name != "Steam")) Platforms.Add(new PlatformItem("Steam", true));
         Platforms.First(y => y.Name == "Steam").SetFromPlatformItem(new PlatformItem("Steam", new List<string> { "s", "steam" }, "steam.exe", true));
 
@@ -156,6 +157,19 @@ public class WindowSettings : IWindowSettings, INotifyPropertyChanged
         new PlatformItem("Steam", true),
         new PlatformItem("Ubisoft", true),
     };
+
+    public void SavePlatformOrder(string jsonString)
+    {
+        var arr = JArray.Parse(jsonString);
+        for (var i = 0; i < arr.Count; i++)
+        {
+            var plat = Platforms.FirstOrDefault(x => x.SafeName == arr[i].ToString());
+            if (plat is null) continue;
+            plat.DisplayIndex = i;
+        }
+
+        Save();
+    }
 
     private static string Filename = "WindowSettings.json";
     public void Save() => Globals.SaveJsonFile(Filename, this, false);

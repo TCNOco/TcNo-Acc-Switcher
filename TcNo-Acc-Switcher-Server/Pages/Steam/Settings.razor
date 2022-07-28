@@ -195,17 +195,6 @@
 
 @code
 {
-    /// <summary>
-    /// Save settings with Ctrl+S Hot key
-    /// </summary>
-    [JSInvokable]
-    public void GiCtrlSSteam()
-    {
-        WindowSettings.Save();
-        SteamSettings.Save();
-        Toasts.ShowToastLang(ToastType.Success, "Saved");
-    }
-
     protected override async Task OnParametersSetAsync()
     {
         await GameStats.SetCurrentPlatform("Steam");
@@ -218,5 +207,16 @@
         if (!firstRender) return;
         _selectedState = StateToString(SteamSettings.OverrideState);
         await JsRuntime.InvokeVoidAsync("initSavingHotKey");
+        StaticFuncs.SaveSettings = SaveSettings;
+    }
+
+    // Allow saving of shortcut position.
+    // This has to be done as only Static funcs can be invoked by JS.
+    // Save settings with Ctrl+S Hot key
+    private void SaveSettings()
+    {
+        WindowSettings.Save();
+        SteamSettings.Save();
+        Toasts.ShowToastLang(ToastType.Success, "Saved");
     }
 }

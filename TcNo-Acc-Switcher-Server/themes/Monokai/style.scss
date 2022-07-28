@@ -104,6 +104,10 @@ button:active,
     border: .1em solid var(--accent);
 }
 
+.shortcuts.expandShortcuts {
+    padding-left: 45px;
+}
+
 .custom-dropdown-menu {
     background: #202020 !important;
     border-radius: 0.8rem;

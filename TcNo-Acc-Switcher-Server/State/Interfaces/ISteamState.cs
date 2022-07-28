@@ -30,6 +30,7 @@ public interface ISteamState
     string LastAccSteamId { get; set; }
     bool SteamWebApiWasReset { get; set; }
     Task LoadSteamState(ISteamFuncs steamFuncs, IJSRuntime jsRuntime);
+    void SaveAccountOrder(string jsonString);
     string GetName(SteamUser su);
 
     /// <summary>

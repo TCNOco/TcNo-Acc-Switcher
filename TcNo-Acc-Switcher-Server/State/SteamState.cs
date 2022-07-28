@@ -167,6 +167,15 @@ public class SteamState : ISteamState
         ContextMenu = new SteamContextMenu(jsRuntime, _appState, _gameStats, _lang, _modals, _sharedFunctions, steamFuncs, _steamSettings, this, _toasts);
     }
 
+    public void SaveAccountOrder(string jsonString)
+    {
+        var file = "LoginCache\\Steam\\order.json";
+        // Create folder if it doesn't exist:
+        var folder = Path.GetDirectoryName(file);
+        if (folder != "") _ = Directory.CreateDirectory(folder ?? string.Empty);
+        File.WriteAllText(file, jsonString);
+    }
+
     public string GetName(SteamUser su) => string.IsNullOrWhiteSpace(su.Name) ? su.AccName : su.Name;
     private void InsertAccount(SteamUser su)
     {

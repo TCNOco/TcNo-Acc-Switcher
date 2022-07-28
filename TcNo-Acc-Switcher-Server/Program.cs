@@ -84,7 +84,7 @@ public class Program
             windowSettings.Save();
 
         // Start browser - if not started with nobrowser
-        if (!args.Contains("nobrowser")) GeneralInvocableFuncs.OpenLinkInBrowser($"http://localhost:{windowSettings.ServerPort}");
+        if (!args.Contains("nobrowser")) StaticFuncs.OpenLinkInBrowser($"http://localhost:{windowSettings.ServerPort}");
 
         return Host.CreateDefaultBuilder(args)
             .ConfigureWebHostDefaults(webBuilder =>

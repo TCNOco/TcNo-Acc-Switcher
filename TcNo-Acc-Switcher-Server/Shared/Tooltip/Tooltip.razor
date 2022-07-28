@@ -3,7 +3,7 @@
 <div class="tooltip-wrapper @Class" id="@Id" @onmouseover="TooltipHover">
     @if (!string.IsNullOrEmpty(Text))
     {
-        <span id="@_randomGuid">@Text</span>
+        <span id="@_randomGuid" style="@SpanStyle">@Text</span>
     }
     @ChildContent
 </div>
@@ -11,6 +11,7 @@
 @code {
     [Parameter] public RenderFragment ChildContent { get; set; }
     [Parameter] public string Text { get; set; }
+    [Parameter] public string SpanStyle { get; set; }
     [Parameter]
     public string Id { get; set; } = "";
     [Parameter]

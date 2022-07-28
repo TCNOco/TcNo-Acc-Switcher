@@ -17,6 +17,7 @@
 @using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.WebUtilities
 @using TcNo_Acc_Switcher_Globals
+@using TcNo_Acc_Switcher_Server.Pages.General
 @using TcNo_Acc_Switcher_Server.Shared.Accounts
 @using TcNo_Acc_Switcher_Server.Shared.ContextMenu
 @using TcNo_Acc_Switcher_Server.State.DataTypes
@@ -43,15 +44,13 @@
 
 <div class="shortcutDropdown gameShortcuts" id="shortcutDropdown" style="display: none">
     <div class="shortcutDropdownItems">
-        @foreach (var (i, shortcut) in SteamSettings.Shortcuts)
+        @foreach (var (i, shortcut) in _shortcuts)
         {
             @if (i >= 0)
             {
-                <Tooltip Text="@Globals.RemoveShortcutExt(shortcut)">
-                    <button class="HasContextMenu" id="@(shortcut)" @onclick="(e) => ShortcutClick(e, shortcut)" @onmouseup="(e) => ShortcutClick(e, shortcut)" oncontextmenu="return false;">
-                        <img src="@(GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
-                    </button>
-                </Tooltip>
+                <button class="HasContextMenu" id="@(shortcut)" @onclick="(e) => ShortcutClick(e, shortcut)" @onmouseup="(e) => ShortcutClick(e, shortcut)" @onmouseover="() => AppState.Switcher.CurrentStatus = Globals.RemoveShortcutExt(shortcut)">
+                    <img src="@(GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
+                </button>
             }
         }
     </div>
@@ -64,7 +63,7 @@
     <div class="statusBar"><div></div><input id="CurrentStatus" @bind="AppState.Switcher.CurrentStatus" spellcheck="false" disabled></div>
     <div class="gameShortcuts">
         <div class="shortcuts">
-            @foreach (var (i, shortcut) in SteamSettings.Shortcuts)
+            @foreach (var (i, shortcut) in _shortcuts)
             {
                 @if (i < 0)
                 {
@@ -113,6 +112,8 @@
 
 @code
 {
+    private Dictionary<int, string> _shortcuts = new();
+
     public static string GetShortcutImagePath(string gameShortcutName) =>
         Path.Join("img\\shortcuts\\Steam\\", Globals.RemoveShortcutExt(gameShortcutName) + ".png");
 
@@ -141,6 +142,10 @@
         await HandleFirstRender(firstRender);
         Statistics.NewNavigation("/Steam/");
         if (!firstRender) return;
+
+        StaticFuncs.SaveShortcuts = SaveShortcuts;
+        _shortcuts = SteamSettings.Shortcuts;
+        StaticFuncs.SaveOrderAction = SteamState.SaveAccountOrder;
 
         await SteamState.LoadSteamState(SteamFuncs, JsRuntime);
         await InvokeAsync(StateHasChanged);
@@ -227,5 +232,14 @@
                 await JsRuntime.InvokeVoidAsync("positionAndShowMenu", e, "#Platform");
                 break;
         }
+    }
+
+    // Allow saving of shortcut position.
+    // This has to be done as only Static funcs can be invoked by JS.
+    // Do not update the list used on the page. It gets a little confused.
+    private void SaveShortcuts(Dictionary<int, string> o)
+    {
+        SteamSettings.Shortcuts = o;
+        SteamSettings.Save();
     }
 }

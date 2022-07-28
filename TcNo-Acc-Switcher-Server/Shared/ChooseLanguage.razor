@@ -35,7 +35,7 @@
 			@_selectedCulture
 			<span class="caret"></span>
 		</button>
-		&nbsp;<a class="fancyLink" @onclick='() => { GeneralInvocableFuncs.OpenLinkInBrowser("https://crowdin.com/project/tcno-account-switcher"); }'>@Lang["Settings_HelpTranslate"]</a>
+		&nbsp;<a class="fancyLink" @onclick='() => { StaticFuncs.OpenLinkInBrowser("https://crowdin.com/project/tcno-account-switcher"); }'>@Lang["Settings_HelpTranslate"]</a>
 		&nbsp;<a class="fancyLink" @onclick='() => Modals.ShowModal("crowdin")'>@Lang["Settings_ViewTranslators"]</a>
 	</div>
 }

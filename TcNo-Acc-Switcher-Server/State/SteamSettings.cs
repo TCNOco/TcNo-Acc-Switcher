@@ -77,13 +77,6 @@ public class SteamSettings : ISteamSettings
     /// <returns>Steam.exe's path string</returns>
     public string Exe => Path.Join(FolderPath, "Steam.exe");
 
-    [JSInvokable]
-    public void SaveShortcutOrderSteam(Dictionary<int, string> o)
-    {
-        Shortcuts = o;
-        Save();
-    }
-
     public void SetClosingMethod(string method)
     {
         ClosingMethod = method;

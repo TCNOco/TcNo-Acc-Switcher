@@ -158,6 +158,11 @@ button:active,
     border: .1em solid $nordFrost3;
 }
 
+
+.shortcuts.expandShortcuts {
+    padding-left: 45px;
+}
+
 .custom-dropdown-menu {
     background: $nordDark0 !important;
     border-radius: 0.5rem;

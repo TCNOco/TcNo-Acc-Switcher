@@ -53,7 +53,6 @@ public interface ISteamSettings
 
     void Save();
     void Reset();
-    void SaveShortcutOrderSteam(Dictionary<int, string> o);
     void SetClosingMethod(string method);
     void SetStartingMethod(string method);
 

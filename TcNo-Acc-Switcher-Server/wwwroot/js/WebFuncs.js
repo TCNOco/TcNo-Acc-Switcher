@@ -14,10 +14,6 @@ if (winUrl.length > 1 && winUrl[1].indexOf("cacheReload") !== -1) {
     location.reload(true);
 }
 
-GetLang = async(k) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiLocale", k);
-GetLangSub = async(key, obj) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiLocaleObj", key, obj);
-
-
 // Take a string that is HTML escaped, and return a normal string back.
 unEscapeString = (s) => s.replace("&lt;", "<").replace("&gt;", ">").replace("&#34;", "\"").replace("&#39;", "'").replace("&#47;", "/");
 
@@ -56,128 +52,6 @@ function flushJQueryAppendQueue() {
     $(".clearingRight")[0].scrollTop = $(".clearingRight")[0].scrollHeight;
 }
 
-
-// Basic account switcher: Shortcut dropdown
-var sDropdownInitialized = false;
-function sDropdownReposition() {
-    const dropDownContainer = $("#shortcutDropdown");
-    const btn = $("#shortcutDropdownBtn");
-    const dropDownItemsContainer = $(".shortcutDropdownItems")[0];
-    const btnPos = btn[0].getBoundingClientRect();
-    dropDownContainer.css({ top: btnPos.top - dropDownContainer.height() - btn.height() - 16, left: btnPos.left + 16 - (dropDownContainer.width() / 2) });
-
-    // If overflowing - Widen by scrollbar width to prevent weird overflow gap on side
-    if (checkOverflow(dropDownItemsContainer) && dropDownContainer[0].style.minWidth === "") {
-        const scrollbarWidth = (dropDownItemsContainer.offsetWidth - dropDownItemsContainer.clientWidth);
-        const hasContextMenu = $(".HasContextMenu");
-        if (hasContextMenu.length > 0) {
-            const computedStyle = window.getComputedStyle($(".HasContextMenu")[0]);
-            const computedStyleContainer = window.getComputedStyle($("#shortcutDropdown")[0]);
-            const marginX = parseInt(computedStyle.marginLeft) + parseInt(computedStyle.marginRight);
-            const marginY = parseInt(computedStyle.marginBottom) + parseInt(computedStyle.marginTop);
-            const paddingX = parseInt(computedStyleContainer.paddingLeft) + parseInt(computedStyleContainer.paddingRight);
-            const paddingY = parseInt(computedStyleContainer.paddingTop) + parseInt(computedStyleContainer.paddingBottom);
-            dropDownContainer.css({
-                minWidth: $(dropDownItemsContainer).width() + scrollbarWidth + marginX + paddingX
-            });
-            $(dropDownItemsContainer).css({
-                maxHeight: dropDownContainer.height() - paddingY + marginY
-            });
-        }
-    }
-}
-
-function sDropdownInit() {
-    if (sDropdownInitialized) return;
-    sDropdownInitialized = true;
-    // Create sortable list
-    sortable(".shortcuts, .shortcutDropdownItems", {
-        connectWith: "shortcutJoined",
-        forcePlaceholderSize: true,
-        placeholderClass: "shortcutPlaceholder",
-        items: ":not(#btnOpenShortcutFolder)",
-        customDragImage: (draggedElement, elementOffset, event) => {
-            // Set the dragged element to the button, not the tooltip.
-            return {
-                element: draggedElement.getElementsByTagName("button")[0],
-                posX: event.pageX - elementOffset.left,
-                posY: event.pageY - elementOffset.top
-            }
-        }
-    });
-
-    $(".shortcuts, .shortcutDropdownItems").toArray().forEach(el => {
-// ReSharper disable once Html.EventNotResolved
-        el.addEventListener("sortstart", function (e) {
-            $(".shortcuts").addClass("expandShortcuts");
-        });
-// ReSharper disable once Html.EventNotResolved
-        el.addEventListener("sortstop", function (e) {
-            $(".shortcuts").removeClass("expandShortcuts");
-            sDropdownReposition();
-            serializeShortcuts();
-            $(e.detail.item).show(); // Sometimes items just randomly disappear? what?
-        });
-    });
-}
-
-// https://stackoverflow.com/a/143889
-function checkOverflow(el) {
-    const curOverflow = el.style.overflow;
-
-    if (!curOverflow || curOverflow === "visible")
-        el.style.overflow = "hidden";
-
-    const isOverflowing = el.clientWidth < el.scrollWidth
-        || el.clientHeight < el.scrollHeight;
-
-    el.style.overflow = curOverflow;
-
-    return isOverflowing;
-}
-
-function shortcutDropdownBtnClick() {
-    if (!$("#shortcutDropdown").is(":visible")) {
-        sDropdownInit();
-        $("#shortcutDropdown").show();
-        sDropdownReposition();
-        $("#shortcutDropdownBtn").addClass("flip");
-        // If has no children in main list, add the expandShortcuts CSS to show users they can drag.
-        if ($(".shortcuts button").length === 0) {
-            $(".shortcuts").addClass("expandShortcuts");
-        }
-    } else {
-        $("#shortcutDropdown").hide();
-        $("#shortcutDropdownBtn").removeClass("flip");
-        $(".shortcuts").removeClass("expandShortcuts");
-    }
-}
-
-async function serializeShortcuts() {
-    var output = {};
-    // Serialize highlighted items
-    var numHighlightedShortcuts = $(".shortcuts button").children().length;
-    $(".shortcuts button").each((i, e) => output[i - numHighlightedShortcuts] = $(e).attr("id"));
-
-    // Serialize dropdown items
-    $(".shortcutDropdownItems button").each((i, e) => {
-        if ($(e).attr("id") === "btnOpenShortcutFolder") return;
-        output[i] = $(e).attr("id");
-    });
-
-    if (getCurrentPage() === "Steam")
-        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SaveShortcutOrderSteam", output);
-    else
-        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SaveShortcutOrder", output);
-}
-
-async function initSavingHotKey() {
-    hotkeys("ctrl+s", async function (event) {
-        event.preventDefault();
-        if (getCurrentPage() === "Steam") await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCtrlSSteam");
-        else await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCtrlSTemplated");
-    });
-}
 
 
 
@@ -330,4 +204,136 @@ function repositionTooltip(id) {
             tooltipSpan.removeClass().addClass("tooltip-wrapper-left");
         }
     }
+}
+
+
+// Basic account switcher: Shortcut dropdown
+function sDropdownReposition() {
+    const dropDownContainer = $("#shortcutDropdown");
+    const btn = $("#shortcutDropdownBtn");
+    const dropDownItemsContainer = $(".shortcutDropdownItems")[0];
+    const btnPos = btn[0].getBoundingClientRect();
+    dropDownContainer.css({ top: btnPos.top - dropDownContainer.height() - btn.height() - 16, left: btnPos.left + 16 - (dropDownContainer.width() / 2) });
+
+    // If overflowing - Widen by scrollbar width to prevent weird overflow gap on side
+    if (checkOverflow(dropDownItemsContainer) && dropDownContainer[0].style.minWidth === "") {
+        const scrollbarWidth = (dropDownItemsContainer.offsetWidth - dropDownItemsContainer.clientWidth);
+        const hasContextMenu = $(".HasContextMenu");
+        if (hasContextMenu.length > 0) {
+            const computedStyle = window.getComputedStyle($(".HasContextMenu")[0]);
+            const computedStyleContainer = window.getComputedStyle($("#shortcutDropdown")[0]);
+            const marginX = parseInt(computedStyle.marginLeft) + parseInt(computedStyle.marginRight);
+            const marginY = parseInt(computedStyle.marginBottom) + parseInt(computedStyle.marginTop);
+            const paddingX = parseInt(computedStyleContainer.paddingLeft) + parseInt(computedStyleContainer.paddingRight);
+            const paddingY = parseInt(computedStyleContainer.paddingTop) + parseInt(computedStyleContainer.paddingBottom);
+            dropDownContainer.css({
+                minWidth: $(dropDownItemsContainer).width() + scrollbarWidth + marginX + paddingX
+            });
+            $(dropDownItemsContainer).css({
+                maxHeight: dropDownContainer.height() - paddingY + marginY
+            });
+        }
+    }
+}
+
+// Try init shortcut dropdown & sortable.
+function sDropdownInit() {
+    // Create sortable list
+    try {
+        // Check if init
+        sortable(".shortcuts, .shortcutDropdownItems", "enable");
+    } catch (e) {
+        // Else: init.
+        sortable(".shortcuts, .shortcutDropdownItems", {
+            connectWith: "shortcutJoined",
+            forcePlaceholderSize: true,
+            placeholderClass: "shortcutPlaceholder",
+            items: ":not(#btnOpenShortcutFolder)",
+            customDragImage: (draggedElement, elementOffset, event) => {
+                // Set the dragged element to the button, not the tooltip.
+                return {
+                    element: draggedElement.getElementsByTagName("button")[0] ?? draggedElement,
+                    posX: event.pageX - elementOffset.left,
+                    posY: event.pageY - elementOffset.top
+                }
+            }
+        });
+
+        // Add event handlers
+        $(".shortcuts, .shortcutDropdownItems").toArray().forEach(el => {
+            // ReSharper disable once Html.EventNotResolved
+            el.addEventListener("sortstart", function () {
+                $(".shortcuts").addClass("expandShortcuts");
+            });
+            // ReSharper disable once Html.EventNotResolved
+            el.addEventListener("sortstop", function (e) {
+                $(".shortcuts").removeClass("expandShortcuts");
+                sDropdownReposition();
+                $(e.detail.item).show(); // Sometimes items just randomly disappear? what?
+                shortcutsChanged = true;
+            });
+        });
+    }
+}
+
+// Returns true if element passed in has a scrollbar or is overflowing.
+// https://stackoverflow.com/a/143889
+function checkOverflow(el) {
+    const curOverflow = el.style.overflow;
+
+    if (!curOverflow || curOverflow === "visible")
+        el.style.overflow = "hidden";
+
+    const isOverflowing = el.clientWidth < el.scrollWidth
+        || el.clientHeight < el.scrollHeight;
+
+    el.style.overflow = curOverflow;
+
+    return isOverflowing;
+}
+
+// Shows/Hides shortcut dropdown element, also initializes sortable.
+function shortcutDropdownBtnClick() {
+    if (!$("#shortcutDropdown").is(":visible")) {
+        sDropdownInit();
+        $("#shortcutDropdown").show();
+        sDropdownReposition();
+        $("#shortcutDropdownBtn").addClass("flip");
+        // If has no children in main list, add the expandShortcuts CSS to show users they can drag.
+        if ($(".shortcuts button").length === 0) {
+            $(".shortcuts").addClass("expandShortcuts");
+        }
+    } else {
+        serializeShortcuts();
+        $("#shortcutDropdown").hide();
+        $("#shortcutDropdownBtn").removeClass("flip");
+        $(".shortcuts").removeClass("expandShortcuts");
+    }
+}
+
+// Saves order of all shortcuts.
+let shortcutsChanged = false;
+async function serializeShortcuts() {
+    var output = {};
+    // Serialize highlighted items
+    var numHighlightedShortcuts = $(".shortcuts button").children().length;
+    $(".shortcuts button").each((i, e) => output[i - numHighlightedShortcuts] = $(e).attr("id"));
+
+    // Serialize dropdown items
+    $(".shortcutDropdownItems button").each((i, e) => {
+        if ($(e).attr("id") === "btnOpenShortcutFolder") return;
+        output[i] = $(e).attr("id");
+    });
+
+    if (!shortcutsChanged) return;
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "JsSaveShortcuts", output);
+    shortcutsChanged = false;
+}
+
+// Adds save hotkey to settings page.
+async function initSavingHotKey() {
+    hotkeys("ctrl+s", async function (event) {
+        event.preventDefault();
+        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "JsSaveSettings");
+    });
 }

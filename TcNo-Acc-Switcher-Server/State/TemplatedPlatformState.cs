@@ -127,6 +127,15 @@ public class TemplatedPlatformState : ITemplatedPlatformState
         return true;
     }
 
+    public void SaveAccountOrder(string jsonString)
+    {
+        var file = $"{Path.Join(Globals.UserDataFolder, $"LoginCache\\{CurrentPlatform.SafeName}\\")}\\order.json";
+        // Create folder if it doesn't exist:
+        var folder = Path.GetDirectoryName(file);
+        if (folder != "") _ = Directory.CreateDirectory(folder ?? string.Empty);
+        File.WriteAllText(file, jsonString);
+    }
+
     /// <summary>
     /// Gets a list of 'account names' from cache folder provided
     /// </summary>

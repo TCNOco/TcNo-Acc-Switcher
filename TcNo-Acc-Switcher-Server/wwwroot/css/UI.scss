@@ -412,6 +412,8 @@ button .caret, .button .caret {
 
     &.flip {
         border-color: var(--accent) !important;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
 
         i {
             transform: rotate(180deg);
@@ -450,6 +452,8 @@ button .caret, .button .caret {
     &.expandShortcuts {
         padding-left: 33px;
         border: 1px solid #274560;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
     }
 }
 .shortcutDropdown {
@@ -467,7 +471,6 @@ button .caret, .button .caret {
         overflow-y: auto;
         max-height: inherit;
         min-height: 32px;
-        overflow: visible;
 
         img {
             pointer-events: none;

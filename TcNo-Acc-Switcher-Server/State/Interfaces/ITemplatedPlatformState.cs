@@ -14,6 +14,7 @@ public interface ITemplatedPlatformState
     Dictionary<string, string> AccountIds { get; set; }
     void LoadTemplatedPlatformState(IJSRuntime jsRuntime, ITemplatedPlatformSettings templatedPlatformSettings, ITemplatedPlatformFuncs templatedPlatformFuncs);
     Task SetCurrentPlatform(IJSRuntime jsRuntime, ITemplatedPlatformSettings templatedPlatformSettings, string platformName);
+    void SaveAccountOrder(string jsonString);
     void LoadAccountIds();
     void SaveAccountIds();
     string GetNameFromId(string accId);

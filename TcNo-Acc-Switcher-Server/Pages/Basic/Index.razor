@@ -46,15 +46,13 @@
 
 <div class="shortcutDropdown gameShortcuts" id="shortcutDropdown" style="display: none">
     <div class="shortcutDropdownItems">
-        @foreach (var (i, shortcut) in TemplatedPlatformSettings.Shortcuts)
+        @foreach (var (i, shortcut) in _shortcuts)
         {
             @if (i >= 0)
             {
-                <Tooltip Text="@Globals.RemoveShortcutExt(shortcut)">
-                    <button class="HasContextMenu" id="@(shortcut)" @onclick="(e) => ShortcutClick(e, shortcut)" @onmouseup="(e) => ShortcutClick(e, shortcut)">
-                        <img src="@(TemplatedPlatformState.CurrentPlatform.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
-                    </button>
-                </Tooltip>
+                <button class="HasContextMenu" id="@(shortcut)" @onclick="(e) => ShortcutClick(e, shortcut)" @onmouseup="(e) => ShortcutClick(e, shortcut)" @onmouseover="() => AppState.Switcher.CurrentStatus = Globals.RemoveShortcutExt(shortcut)">
+                    <img src="@(TemplatedPlatformState.CurrentPlatform.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
+                </button>
             }
         }
     </div>
@@ -71,7 +69,7 @@
     </div>
     <div class="gameShortcuts">
         <div class="shortcuts">
-            @foreach (var (i, shortcut) in TemplatedPlatformSettings.Shortcuts)
+            @foreach (var (i, shortcut) in _shortcuts)
             {
                 @if (i < 0)
                 {
@@ -127,6 +125,8 @@
 
 @code
 {
+    private Dictionary<int, string> _shortcuts = new();
+
     public static AccountList BasicAccountList;
 
     protected override void OnInitialized()
@@ -197,8 +197,11 @@
         Statistics.NewNavigation($"/[{TemplatedPlatformState.CurrentPlatform.SafeName}]");
         if (!firstRender) return;
 
-        TemplatedPlatformState.LoadTemplatedPlatformState(JsRuntime, TemplatedPlatformSettings, TemplatedPlatformFuncs);
+        StaticFuncs.SaveShortcuts = SaveShortcuts;
+        _shortcuts = TemplatedPlatformSettings.Shortcuts;
+        StaticFuncs.SaveOrderAction = TemplatedPlatformState.SaveAccountOrder;
 
+        TemplatedPlatformState.LoadTemplatedPlatformState(JsRuntime, TemplatedPlatformSettings, TemplatedPlatformFuncs);
 
         await JsRuntime.InvokeVoidAsync("showNoteTooltips");
 
@@ -283,5 +286,14 @@
                 await JsRuntime.InvokeVoidAsync("positionAndShowMenu", e, "#Platform");
                 break;
         }
+    }
+
+    // Allow saving of shortcut position.
+    // This has to be done as only Static funcs can be invoked by JS.
+    // Do not update the list used on the page. It gets a little confused.
+    private void SaveShortcuts(Dictionary<int, string> o)
+    {
+        TemplatedPlatformSettings.Shortcuts = o;
+        TemplatedPlatformSettings.Save();
     }
 }

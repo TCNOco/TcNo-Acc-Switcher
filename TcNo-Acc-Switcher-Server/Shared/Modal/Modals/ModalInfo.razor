@@ -29,16 +29,16 @@
 
 <div class="infoWindow">
     <div class="imgDiv">
-        <img width="100" margin="5" src="img/TcNo500.png" draggable="false" @onclick='() => GeneralInvocableFuncs.OpenLinkInBrowser("https://tcno.co")' alt="TcNo Logo">
+        <img width="100" margin="5" src="img/TcNo500.png" draggable="false" @onclick='() => StaticFuncs.OpenLinkInBrowser("https://tcno.co")' alt="TcNo Logo">
     </div>
     <div class="rightContent">
         <h2>TcNo Account Switcher</h2>
         <p>@Lang["Modal_Info_Creator"]</p>
         <div class="linksList">
-            <a @onclick='() => GeneralInvocableFuncs.OpenLinkInBrowser("https://github.com/TcNobo/TcNo-Acc-Switcher")' href=""><svg viewBox="0 0 24 24" draggable="false" alt="GitHub" class="modalIcoGitHub"><use href="img/icons/ico_github.svg#icoGitHub"></use></svg>@Lang["Modal_Info_ViewGitHub"]</a>
-            <a @onclick='() => GeneralInvocableFuncs.OpenLinkInBrowser("https://s.tcno.co/AccSwitcherDiscord")' href=""><svg viewBox="0 0 24 24" draggable="false" alt="Discord" class="modalIcoDiscord"><use href="img/icons/ico_discord.svg#icoDiscord"></use></svg>@Lang["Modal_Info_BugReport"]</a>
-            <a @onclick='() => GeneralInvocableFuncs.OpenLinkInBrowser("https://tcno.co")' href=""><svg viewBox="0 0 24 24" draggable="false" alt="Website" class="modalIcoNetworking"><use href="img/icons/ico_networking.svg#icoNetworking"></use></svg>@Lang["Modal_Info_VisitSite"]</a>
-            <a @onclick='() => GeneralInvocableFuncs.OpenLinkInBrowser("https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/DISCLAIMER.md")' href=""><svg viewBox="0 0 2084 2084" draggable="false" alt="GitHub" class="modalIcoDoc"><use href="img/icons/ico_doc.svg#icoDoc"></use></svg>@Lang["Modal_Info_Disclaimer"]</a>
+            <a @onclick='() => StaticFuncs.OpenLinkInBrowser("https://github.com/TcNobo/TcNo-Acc-Switcher")' href=""><svg viewBox="0 0 24 24" draggable="false" alt="GitHub" class="modalIcoGitHub"><use href="img/icons/ico_github.svg#icoGitHub"></use></svg>@Lang["Modal_Info_ViewGitHub"]</a>
+            <a @onclick='() => StaticFuncs.OpenLinkInBrowser("https://s.tcno.co/AccSwitcherDiscord")' href=""><svg viewBox="0 0 24 24" draggable="false" alt="Discord" class="modalIcoDiscord"><use href="img/icons/ico_discord.svg#icoDiscord"></use></svg>@Lang["Modal_Info_BugReport"]</a>
+            <a @onclick='() => StaticFuncs.OpenLinkInBrowser("https://tcno.co")' href=""><svg viewBox="0 0 24 24" draggable="false" alt="Website" class="modalIcoNetworking"><use href="img/icons/ico_networking.svg#icoNetworking"></use></svg>@Lang["Modal_Info_VisitSite"]</a>
+            <a @onclick='() => StaticFuncs.OpenLinkInBrowser("https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/DISCLAIMER.md")' href=""><svg viewBox="0 0 2084 2084" draggable="false" alt="GitHub" class="modalIcoDoc"><use href="img/icons/ico_doc.svg#icoDoc"></use></svg>@Lang["Modal_Info_Disclaimer"]</a>
         </div>
     </div>
 </div><div class="versionIdentifier"><span>@Lang["Modal_Info_Version"]: @Globals.Version</span></div>
