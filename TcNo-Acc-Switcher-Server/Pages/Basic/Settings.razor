@@ -16,6 +16,7 @@
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @using Microsoft.AspNetCore.Components
 @using TcNo_Acc_Switcher_Server.State.DataTypes
+@using TcNo_Acc_Switcher_Server.Shared.Tooltip
 @namespace TcNo_Acc_Switcher_Server.Pages.Basic
 @inject NavigationManager NavigationManager
 @inject IAppState AppState
@@ -55,7 +56,7 @@
             </div>
             <div class="rowSetting rowDropdown">
                 <span>@Lang["Settings_Header_ClosingMethod", new { platform = TemplatedPlatformState.CurrentPlatform.Name }]</span>
-                <div class="dropdown" data-toggle="tooltip" title="@(Lang["Tooltip_ClosingMethod"])" data-placement="right">
+                <Tooltip Text="@(Lang["Tooltip_ClosingMethod"])" Class="dropdown">
                     <ul class="custom-dropdown-menu dropdown-menu">
                         <li class="custom-dropdown-item dropdown-item" @onclick='() => TemplatedPlatformSettings.SetClosingMethod("Combined")'>Combined (Best)</li>
                         <li class="custom-dropdown-item dropdown-item" @onclick='() => TemplatedPlatformSettings.SetClosingMethod("Close")'>Close</li>
@@ -65,11 +66,11 @@
                         @TemplatedPlatformSettings.ClosingMethod
                         <span class="caret"></span>
                     </button>
-                </div>
+                </Tooltip>
             </div>
             <div class="rowSetting rowDropdown">
                 <span>@Lang["Settings_Header_StartingMethod", new { platform = TemplatedPlatformState.CurrentPlatform.Name }]</span>
-                <div class="dropdown" data-toggle="tooltip" title="@(Lang["Tooltip_StartingMethod"])" data-placement="right">
+                <Tooltip Text="@(Lang["Tooltip_StartingMethod"])" Class="dropdown">
                     <ul class="custom-dropdown-menu dropdown-menu">
                         <li class="custom-dropdown-item dropdown-item" @onclick='() => TemplatedPlatformSettings.SetStartingMethod("Default")'>Default (Best)</li>
                         <li class="custom-dropdown-item dropdown-item" @onclick='() => TemplatedPlatformSettings.SetStartingMethod("Direct")'>Direct</li>
@@ -78,7 +79,7 @@
                         @TemplatedPlatformSettings.StartingMethod
                         <span class="caret"></span>
                     </button>
-                </div>
+                </Tooltip>
             </div>
 
             <h2 class="SettingsHeader">@Lang["Settings_Header_AccountDisplay"]</h2>
@@ -99,7 +100,9 @@
             <div class="buttoncol"><button id="ResetSettings" type="button" @onclick="ClearSettings"><span>@Lang["Button_ResetSettings"]</span></button>
                 @if (TemplatedPlatformState.CurrentPlatform.Extras.CachePaths != null)
                 {
-                    <button id="ClearCache" type="button" @onclick="TemplatedPlatformFuncs.ClearCache" data-toggle="tooltip" title="@(GetCacheList())" data-html="true"><span>@Lang["Platform_ClearCache"]</span></button>
+                <Tooltip Text="@(GetCacheList())">
+                    <button id="ClearCache" type="button" @onclick="TemplatedPlatformFuncs.ClearCache"><span>@Lang["Platform_ClearCache"]</span></button>
+                </Tooltip>
                 }
             </div>
 
@@ -109,10 +112,14 @@
 
                 <div class="buttoncol">
                     @if (TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesInclude.Count != 0 || TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesIgnore.Count != 0){
-                        <button id="Backup" type="button" @onclick="() => BackupButton()" data-toggle="tooltip" title="@(Lang["Tooltip_Backup"])" data-placement="bottom"><span>@Lang["Button_Backup"]</span></button>
+                        <Tooltip Text="@Lang["Tooltip_Backup"]">
+                            <button id="Backup" type="button" @onclick="() => BackupButton()"><span>@Lang["Button_Backup"]</span></button>
+                        </Tooltip>
                     }
 
-                    <button id="BackupEverything" type="button" @onclick="() => BackupButton(true)" data-toggle="tooltip" title="@(Lang["Tooltip_BackupAll"])" data-placement="bottom"><span>@Lang["Button_BackupAll"]</span></button>
+                    <Tooltip Text="@Lang["Tooltip_BackupAll"]">
+                        <button id="BackupEverything" type="button" @onclick="() => BackupButton(true)"><span>@Lang["Button_BackupAll"]</span></button>
+                    </Tooltip>
 
                     @if (TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesInclude.Count == 0 && TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesIgnore.Count == 0) {
                         <button id="OpenBackupFolder" type="button" @onclick="OpenBackupFolder"><span>@Lang["Button_OpenBackup"]</span></button>
@@ -124,10 +131,12 @@
                         <button id="OpenBackupFolder" type="button" @onclick="OpenBackupFolder"><span>@Lang["Button_OpenBackup"]</span></button>
                     }
 
-                    <div class="button" id="Restore" type="button" data-toggle="tooltip" title="@(Lang["Tooltip_Restore"])" data-placement="bottom">
-                        <InputFile OnChange="@RestoreFile"/>
-                        <span>@Lang["Button_Restore"]</span>
-                    </div>
+                    <Tooltip Text="@Lang["Tooltip_Restore"]">
+                        <div class="button" id="Restore" type="button">
+                            <InputFile OnChange="@RestoreFile"/>
+                            <span>@Lang["Button_Restore"]</span>
+                        </div>
+                    </Tooltip>
                 </div>
             }
 
@@ -194,7 +203,7 @@
     private string GetCacheList()
     {
         var listOfFiles = new List<string>(TemplatedPlatformState.CurrentPlatform.Extras.CachePaths);
-        return Lang["FileFoldersToClear"] + "<br>" + string.Join("<br>", listOfFiles.Select(x => x.Replace("Platform_Folder", TemplatedPlatformState.CurrentPlatform.Name)).ToList());
+        return Lang["FileFoldersToClear"] + Environment.NewLine + string.Join(Environment.NewLine, listOfFiles.Select(x => x.Replace("Platform_Folder", TemplatedPlatformState.CurrentPlatform.Name)).ToList());
     }
 
     // Allow saving of shortcut position.

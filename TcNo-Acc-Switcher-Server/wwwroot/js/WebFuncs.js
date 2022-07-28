@@ -179,30 +179,50 @@ function repositionTooltip(id) {
     tooltipSpan.removeClass().css("left", "").css("bottom", "").css("transform", "");
     const bounds = tooltipSpan[0].getBoundingClientRect();
     const parentBounds = tooltipSpan.parent()[0].getBoundingClientRect();
-    // Show on top by default.
-    // There is probably a MUCH better and easier algorithm.
-    // Unfortunately, CSS can only correct the orientation of the arrow. As it doesn't know the tooltip size, it can't move relatively.
-    const leftSpace = bounds.left - windowBorderWidth;
-    const rightSpace = (window.innerWidth - (bounds.x + bounds.width)) - windowBorderWidth;
-    const topSpace = bounds.top - windowHeaderbarHeight;
-    const bottomSpace = (window.innerHeight - (bounds.y + bounds.height)) - windowBorderWidth;
-    if (topSpace < 0 || leftSpace < 0 || bottomSpace < 0 || rightSpace < 0) {
-        // Is overflowing somewhere.
-        if (leftSpace > 0 && rightSpace > 0 && bottomSpace > 0) {
-            // left, right and bottom space available
-            tooltipSpan.css("left", "unset").css("bottom", "unset").css("transform", `translate(${parentBounds.width / 2}px,${parentBounds.height}px)`);
+
+    // The tooltip is in the top-left of its parent.
+    const xToCenter = (parentBounds.width - bounds.width) / 2;
+
+    // Space above?
+    const spaceT = parentBounds.top - bounds.height > windowHeaderbarHeight;
+    // And space when centered?
+    const middleParentX = parentBounds.x + (parentBounds.width / 2);
+    const middleParentY = parentBounds.y + (parentBounds.height / 2);
+    const spaceLCentered = middleParentX - (bounds.width / 2) > windowBorderWidth;
+    const spaceRCentered = middleParentX + (bounds.width / 2) < innerWidth - windowBorderWidth;
+    if (spaceLCentered && spaceRCentered) {
+        // Space on both sides when centered.
+        if (spaceT) {
+            // Space is available above for the full tooltip, and space on sides.
+            // Therefore: Place centered above.
+            tooltipSpan.css("transform", `translate(${xToCenter}px, -100%)`);
+            return;
+        }
+
+        const spaceB = parentBounds.top + parentBounds.height + bounds.height < innerHeight - 60;
+        if (spaceB) {
+            // Space is available below for the full tooltip, and space on sides.
+            // Therefore: Place centered below.
+            tooltipSpan.css("transform", `translate(${xToCenter}px, ${parentBounds.height}px)`);
             tooltipSpan.removeClass().addClass("tooltip-wrapper-bottom");
+            return;
         }
-        else if (rightSpace > 0) {
-            // right space available
-            tooltipSpan.css("left", "unset").css("bottom", "unset").css("transform", `translate(${parentBounds.width + (bounds.width / 2)}px,${(parentBounds.height / 2 - bounds.height / 2)}px)`);
-            tooltipSpan.removeClass().addClass("tooltip-wrapper-right");
-        } else if (leftSpace > 0) {
-            // left space available.
-            tooltipSpan.css("left", "unset").css("bottom", "unset").css("transform",
-                `translate(${-bounds.width / 2}px,${(parentBounds.height / 2 - bounds.height / 2)}px)`);
-            tooltipSpan.removeClass().addClass("tooltip-wrapper-left");
-        }
+    }
+
+    // Space not available to have centered above or below.
+    // Therefore: Pick a side.
+    const middleParentHeight = (parentBounds.height / 2) - (bounds.height / 2);
+    const spaceR = parentBounds.x + parentBounds.width + bounds.width < innerWidth - windowBorderWidth;
+    if (spaceR) {
+        tooltipSpan.css("transform", `translate(${parentBounds.width}px, ${middleParentHeight}px)`);
+        tooltipSpan.removeClass().addClass("tooltip-wrapper-right");
+        return;
+    }
+
+    const spaceL = parentBounds.x - bounds.width > windowBorderWidth;
+    if (spaceL) {
+        tooltipSpan.css("transform", `translate(${-bounds.width}px, ${middleParentHeight}px)`);
+        tooltipSpan.removeClass().addClass("tooltip-wrapper-left");
     }
 }
 

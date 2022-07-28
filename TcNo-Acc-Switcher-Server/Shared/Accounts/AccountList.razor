@@ -127,8 +127,10 @@
     /// </summary>
     public void UnselectAllAccounts()
     {
-        foreach (var acc in AccountItems)
+        foreach (var acc in AccountItems){
             acc.IsChecked = false;
+            acc.TitleText = acc.Note;
+        }
     }
     #endregion
 }

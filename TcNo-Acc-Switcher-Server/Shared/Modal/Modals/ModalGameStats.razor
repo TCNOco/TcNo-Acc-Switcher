@@ -16,6 +16,7 @@
 @using TcNo_Acc_Switcher_Globals
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using TcNo_Acc_Switcher_Server.Shared.Modal.Components
+@using TcNo_Acc_Switcher_Server.Shared.Tooltip
 @using Newtonsoft.Json
 @using System.IO
 @using SteamKit2.GC.Dota.Internal
@@ -234,11 +235,11 @@
             {
                 @if (hiddenMetric.GloballyHidden)
                 {
-                    <div class="form-check mb-2" data-toggle="tooltip" title="@Lang["Tooltip_DisabledGlobally"]">
+                    <Tooltip Text="@Lang["Tooltip_DisabledGlobally"]" Class="form-check mb-2">
                         <input class="form-check-input" type="checkbox" id="@id" @bind="hiddenMetric.IsChecked" disabled>
                         <label class="form-check-label" for="@id"></label>
                         <label for="@id">@hiddenMetric.Text<br></label>
-                    </div>
+                    </Tooltip>
                 } else {
                     <div class="form-check mb-2">
                         <input class="form-check-input" type="checkbox" id="@id" @bind="hiddenMetric.IsChecked">

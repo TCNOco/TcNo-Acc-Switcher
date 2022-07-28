@@ -16,6 +16,7 @@
 @using TcNo_Acc_Switcher_Server.Shared.ContextMenu
 @using TcNo_Acc_Switcher_Server.State.DataTypes
 @using TcNo_Acc_Switcher_Server.State.Interfaces
+@using TcNo_Acc_Switcher_Server.Shared.Tooltip
 @namespace TcNo_Acc_Switcher_Server.Pages.PreviewCss
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JsRuntime
@@ -77,9 +78,15 @@
             </div>
             <div class="acc_list_actionbar">
                 <div>
-                    <button id="btnPlatforms" @onclick='() => AppState.Navigation.NavigateTo(NavigationManager, "/Platforms/")' data-toggle="tooltip" title="" data-original-title="Show or Hide other platforms"><i class="fas fa-plus footerIcoInline"></i>Manage Platforms</button>
-                    <button class="btnSettings" @onclick='() => AppState.Navigation.NavigateTo(NavigationManager, "/Settings/")' data-toggle="tooltip" title="" data-original-title="Settings"><i class="fas fa-cog footerIcoSettings"></i></button>
-                    <button class="btnHelp"@onclick='() => Modals.ShowModal("info")' data-toggle="tooltip" title="" data-original-title="Info"><i class="fas fa-question footerIcoQuestion"></i></button>
+                    <Tooltip Text="@Lang["Tooltip_ManagePlatforms"]">
+                        <button id="btnPlatforms" @onclick='() => AppState.Navigation.NavigateTo(NavigationManager, "/Platforms/")'><i class="fas fa-plus footerIcoInline"></i>@Lang["Button_ManagePlatforms"]</button>
+                    </Tooltip>
+                    <Tooltip Text="@Lang["Settings"]">
+                        <button class="btnSettings" @onclick='() => AppState.Navigation.NavigateTo(NavigationManager, "/Settings/")'><i class="fas fa-cog footerIcoSettings"></i></button>
+                    </Tooltip>
+                    <Tooltip Text="@Lang["Info"]">
+                        <button class="btnHelp"@onclick='() => Modals.ShowModal("info")'><i class="fas fa-question footerIcoQuestion"></i></button>
+                    </Tooltip>
                 </div>
             </div>
         </div>
@@ -89,7 +96,7 @@
     <h2 class="SettingsHeader">@Lang["Preview_Accounts"]</h2>
     <div class="preview_element previewMain">
         <div id="acc_list" class="acc_list" style="grid-template-rows: repeat(auto-fill, 135px)" aria-dropeffect="move">
-            <div class="acc_list_item preview_list_item" data-toggle="tooltip" draggable="true" role="option" aria-grabbed="false" title="" data-placement="right" data-original-title="You are currently logged into this account.">
+            <Tooltip Text="@Lang["Info"]" Class="acc_list_item preview_list_item">
                 <input type="radio" id="1234" displayname="Current Account" class="acc">
                 <label for="1234" class="acc status_vac currentAcc">
                     <img class="" src="img/BasicDefault.png" draggable="false">
@@ -97,8 +104,8 @@
                     <p class="streamerCensor steamId">1234</p>
                     <p>07/03/2022 17:33:29</p>
                 </label>
-            </div>
-            <div class="acc_list_item preview_list_item" data-toggle="tooltip" draggable="true" role="option" aria-grabbed="false" data-original-title="" title="">
+            </Tooltip>
+            <div class="acc_list_item preview_list_item" data-toggle="tooltip" draggable="true" role="option" aria-grabbed="false">
                 <input type="radio" id="4321" displayname="Account 2" class="acc">
                 <label for="4321" class="acc ">
                     <img class="" src="img/BattleNetDefault.png" draggable="false">
@@ -107,7 +114,7 @@
                     <p>07/03/2022 12:06:40</p>
                 </label>
             </div>
-            <div class="acc_list_item preview_list_item" data-toggle="tooltip" draggable="true" role="option" aria-grabbed="false" data-original-title="" title="">
+            <div class="acc_list_item preview_list_item" data-toggle="tooltip" draggable="true" role="option" aria-grabbed="false">
                 <input type="radio" id="12345" displayname="Banned Account" class="acc" name="accounts">
                 <label for="12345" class="acc ">
                     <img class="status_vac" src="img/QuestionMark.jpg" draggable="false">
@@ -116,7 +123,7 @@
                     <p>07/03/2022 9:20:00</p>
                 </label>
             </div>
-            <div class="acc_list_item preview_list_item" data-toggle="tooltip" draggable="true" role="option" aria-grabbed="false" data-original-title="" title="">
+            <div class="acc_list_item preview_list_item" data-toggle="tooltip" draggable="true" role="option" aria-grabbed="false">
                 <input type="radio" id="54321" displayname="Limited Account" class="acc" name="accounts">
                 <label for="54321" class="acc ">
                     <img class="status_limited" src="img/TcNo500.png" draggable="false">
@@ -134,16 +141,22 @@
             </div>
             <div class="gameShortcuts">
                 <div class="shortcuts" aria-dropeffect="move">
-                    <button class="HasContextMenu" id="TcNo Account Switcher.lnk" data-toggle="tooltip" title="" draggable="true" role="option" aria-grabbed="false" data-original-title="TcNo Account Switcher">
-                        <img src="img\BasicDefault.png" alt="T">
-                    </button>
+                    <Tooltip Text="TcNo Account Switcher">
+                        <button class="HasContextMenu" id="TcNo Account Switcher.lnk" draggable="true" role="option" aria-grabbed="false">
+                            <img src="img\BasicDefault.png" alt="T">
+                        </button>
+                    </Tooltip>
                 </div>
-                <button id="shortcutDropdownBtn" onclick="shortcutDropdownBtnClick()" data-toggle="tooltip" title="" data-placement="right" class="" data-original-title="Expand Game &amp; Shortcut selection">
-                    <i class="fas fa-chevron-up"></i>
-                </button>
-                <button id="btnStartPlat" data-toggle="tooltip" title="" data-original-title="Steam">
-                    <img src="img\platform\Steam.svg" alt="Start platform">
-                </button>
+                <Tooltip Text="@Lang["Tooltip_ExpandShortcuts"]">
+                    <button id="shortcutDropdownBtn" onclick="shortcutDropdownBtnClick()">
+                        <i class="fas fa-chevron-up"></i>
+                    </button>
+                </Tooltip>
+                <Tooltip Text="Steam">
+                    <button id="btnStartPlat">
+                        <img src="img\platform\Steam.svg" alt="Start platform">
+                    </button>
+                </Tooltip>
                 <button id="btnAddNew">
                     <i class="fas fa-plus footerIcoInline"></i>
                     <span>Add New</span>
@@ -152,12 +165,16 @@
                     <span>Login</span>
                     <i class="fas fa-caret-right footerIcoInline"></i>
                 </button>
-                <button class="btnSettings" @onclick='() => AppState.Navigation.NavigateTo(NavigationManager, "/Steam/Settings/")' data-toggle="tooltip" title="" data-original-title="Settings">
-                    <i class="fas fa-cog footerIcoSettings"></i>
-                </button>
-                <button class="btnHelp" @onclick='() => Modals.ShowModal("info")' data-toggle="tooltip" title="" data-original-title="Info">
-                    <i class="fas fa-question footerIcoQuestion"></i>
-                </button>
+                <Tooltip Text="@Lang["Settings"]">
+                    <button class="btnSettings" @onclick='() => AppState.Navigation.NavigateTo(NavigationManager, "/Steam/Settings/")'>
+                        <i class="fas fa-cog footerIcoSettings"></i>
+                    </button>
+                </Tooltip>
+                <Tooltip Text="@Lang["Info"]">
+                    <button class="btnHelp" @onclick='() => Modals.ShowModal("info")'>
+                        <i class="fas fa-question footerIcoQuestion"></i>
+                    </button>
+                </Tooltip>
             </div>
         </div>
     </div>
@@ -201,29 +218,29 @@
 
 
     <h2 class="SettingsHeader">@Lang["Preview_Modals"]</h2>
-<div class="preview_element">
-    <div class="container mainblock">
-        <div class="row">
-            <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
-                <div class="buttoncol">
-                    <button id="Steam_PickFolder" type="button" @onclick="Modals.ShowUpdatePlatformFolderModal"><span>@Lang["Settings_PickFolder", new {platform = "Steam"}]</span></button>
-                    <button id="RestartAsAdmin" type="button" @onclick='() => Modals.ShowModal("confirm", ExtraArg.RestartAsAdmin)'><span>@Lang["Button_RestartAdmin"]</span></button>
-                </div>
-                <div class="buttoncol">
-                    <button id="Info" type="button" @onclick='() => Modals.ShowModal("info")'><span>@Lang["Tooltip_Info"]</span></button>
-                    <button id="crowdin" type="button" @onclick='() => Modals.ShowModal("crowdin")'><span>@Lang["Modal_Crowdin_Header"]</span></button>
-                </div>
-                <div class="buttoncol">
-                    <button id="SetBackground" type="button" @onclick="Modals.ShowSetBackgroundModal"><span>@Lang["Modal_SetBackground_Button"]</span></button>
-                    <button id="ShowStats" type="button" @onclick='() => Modals.ShowModal("showStats")'><span>@Lang["Settings_ViewStats"]</span></button>
-                </div>
-                <div class="buttoncol">
-                    <button id="changeUsername" type="button" @onclick="Modals.ShowChangeUsernameModal"><span>@Lang["Context_ChangeName"]</span></button>
+    <div class="preview_element">
+        <div class="container mainblock">
+            <div class="row">
+                <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
+                    <div class="buttoncol">
+                        <button id="Steam_PickFolder" type="button" @onclick="Modals.ShowUpdatePlatformFolderModal"><span>@Lang["Settings_PickFolder", new {platform = "Steam"}]</span></button>
+                        <button id="RestartAsAdmin" type="button" @onclick='() => Modals.ShowModal("confirm", ExtraArg.RestartAsAdmin)'><span>@Lang["Button_RestartAdmin"]</span></button>
+                    </div>
+                    <div class="buttoncol">
+                        <button id="Info" type="button" @onclick='() => Modals.ShowModal("info")'><span>@Lang["Tooltip_Info"]</span></button>
+                        <button id="crowdin" type="button" @onclick='() => Modals.ShowModal("crowdin")'><span>@Lang["Modal_Crowdin_Header"]</span></button>
+                    </div>
+                    <div class="buttoncol">
+                        <button id="SetBackground" type="button" @onclick="Modals.ShowSetBackgroundModal"><span>@Lang["Modal_SetBackground_Button"]</span></button>
+                        <button id="ShowStats" type="button" @onclick='() => Modals.ShowModal("showStats")'><span>@Lang["Settings_ViewStats"]</span></button>
+                    </div>
+                    <div class="buttoncol">
+                        <button id="changeUsername" type="button" @onclick="Modals.ShowChangeUsernameModal"><span>@Lang["Context_ChangeName"]</span></button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
     <h2 class="SettingsHeader">@Lang["Preview_Settings"]</h2>
     <div class="preview_element">
@@ -271,7 +288,6 @@
 		</div>
     </div>
 </div>
-
 
 
 

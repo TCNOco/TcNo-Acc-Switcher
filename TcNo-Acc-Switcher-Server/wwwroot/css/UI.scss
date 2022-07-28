@@ -571,11 +571,6 @@ button .caret, .button .caret {
     }
 }
 
-
-.tooltip-inner {
-    white-space: pre-wrap;
-}
-
 .toastarea {
     display: flex;
     flex-flow: column;
@@ -602,10 +597,6 @@ button .caret, .button .caret {
     }*/
 }
 
-.tooltip {
-    pointer-events: none;
-}
-
 .hideAfter::before{
     display: none;
 }
@@ -624,22 +615,19 @@ button * {
         visibility: visible;
     }
 
-    span {
+    > span {
         pointer-events: none;
         visibility: hidden;
-        position: absolute;
-        margin-left: -60px;
+        position: fixed;
         background-color: var(--tooltipBackground);
         color: #fff;
         text-align: center;
         padding: 5px;
         border-radius: 6px;
         z-index: 5000;
-        width: 120px;
-        max-width: 120px;
-        max-height: 120px;
-        bottom: 100%;
-        left: 50%;
+        min-width: 80px;
+        max-width: 180px;
+        max-height: 180px;
 
         &::before {
             content: "";

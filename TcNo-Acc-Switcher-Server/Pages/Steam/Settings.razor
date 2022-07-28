@@ -16,6 +16,7 @@
 @using Microsoft.AspNetCore.Components
 @using TcNo_Acc_Switcher_Server.State.DataTypes
 @using TcNo_Acc_Switcher_Server.State.Interfaces
+@using TcNo_Acc_Switcher_Server.Shared.Tooltip
 @namespace TcNo_Acc_Switcher_Server.Pages.Steam
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JsRuntime
@@ -60,7 +61,7 @@
             </div>
             <div class="rowSetting rowDropdown">
                 <span>@Lang["Settings_Header_ClosingMethod", new { platform = "Steam" }]</span>
-                <div class="dropdown" data-toggle="tooltip" title="@(Lang["Tooltip_ClosingMethod"])" data-placement="right">
+                <Tooltip Text="@Lang["Tooltip_ClosingMethod"]" Class="dropdown">
                     <ul class="custom-dropdown-menu dropdown-menu">
                         <li class="custom-dropdown-item dropdown-item" @onclick='() => SteamSettings.SetClosingMethod("Combined")'>Combined (Best)</li>
                         <li class="custom-dropdown-item dropdown-item" @onclick='() => SteamSettings.SetClosingMethod("Close")'>Close</li>
@@ -70,11 +71,11 @@
                         @SteamSettings.ClosingMethod
                         <span class="caret"></span>
                     </button>
-                </div>
+                </Tooltip>
             </div>
             <div class="rowSetting rowDropdown">
                 <span>@Lang["Settings_Header_StartingMethod", new { platform = "Steam" }]</span>
-                <div class="dropdown" data-toggle="tooltip" title="@(Lang["Tooltip_StartingMethod"])" data-placement="right">
+                <Tooltip Text="@Lang["Tooltip_StartingMethod"]" Class="dropdown">
                     <ul class="custom-dropdown-menu dropdown-menu">
                         <li class="custom-dropdown-item dropdown-item" @onclick='() => SteamSettings.SetStartingMethod("Default")'>Default (Best)</li>
                         <li class="custom-dropdown-item dropdown-item" @onclick='() => SteamSettings.SetStartingMethod("Direct")'>Direct</li>
@@ -83,7 +84,7 @@
                         @SteamSettings.StartingMethod
                         <span class="caret"></span>
                     </button>
-                </div>
+                </Tooltip>
             </div>
 
             <div>
@@ -142,15 +143,21 @@
             <h2 class="SettingsHeader">@Lang["Settings_Header_BackupRestore"]</h2>
 
             <div class="buttoncol">
-                <button id="Steam_Backup" type="button" @onclick="() => BackupButton()" data-toggle="tooltip" title="@(Lang["Tooltip_Backup"])" data-placement="bottom"><span>@Lang["Button_Backup"]</span></button>
-                <button id="Steam_BackupEverything" type="button" @onclick="() => BackupButton(true)" data-toggle="tooltip" title="@(Lang["Tooltip_BackupAll"])" data-placement="bottom"><span>@Lang["Button_BackupAll"]</span></button>
+                <Tooltip Text="@Lang["Tooltip_Backup"]">
+                    <button id="Steam_Backup" type="button" @onclick="() => BackupButton()"><span>@Lang["Button_Backup"]</span></button>
+                </Tooltip>
+                <Tooltip Text="@Lang["Tooltip_BackupAll"]">
+                    <button id="Steam_BackupEverything" type="button" @onclick="() => BackupButton(true)"><span>@Lang["Button_BackupAll"]</span></button>
+                </Tooltip>
             </div>
             <div class="buttoncol">
                 <button id="Steam_OpenBackupFolder" type="button" @onclick="OpenBackupFolder"><span>@Lang["Button_OpenBackup"]</span></button>
-                <div class="button" id="Restore" type="button" data-toggle="tooltip" title="@(Lang["Tooltip_Restore"])" data-placement="bottom">
-                    <InputFile OnChange="@RestoreFile"/>
-                    <span>@Lang["Button_Restore"]</span>
-                </div>
+                <Tooltip Text="@Lang["Tooltip_Restore"]">
+                    <div class="button" id="Restore" type="button">
+                        <InputFile OnChange="@RestoreFile"/>
+                        <span>@Lang["Button_Restore"]</span>
+                    </div>
+                </Tooltip>
             </div>
 
 
