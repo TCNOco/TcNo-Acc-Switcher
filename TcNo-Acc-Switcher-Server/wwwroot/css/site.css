@@ -15,6 +15,7 @@
   --accentHS: 40, 100%;
   --accentL: 50%;
   --accentInt: 255, 153, 0;
+  --tooltipBackground: #6272a4;
 }
 
 html,
@@ -513,7 +514,7 @@ div.advancedClearingButtonCol .buttoncol {
   display: inline-block;
   cursor: pointer;
   /* ReSharper disable once InvalidValue */
-  border: #8BE9FD 1px solid;
+  border: #8BE9FD 1.1px solid;
   margin: 10px;
   transition: all 100ms ease-in-out;
   transform: scale(1);

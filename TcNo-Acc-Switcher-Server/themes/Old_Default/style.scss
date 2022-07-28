@@ -10,6 +10,7 @@
     --accentL: 60%; // "L" from accent HSL
     --accentInt: 255, 170, 0; // accent as "r, g, b"
     --notification-main-bg: #333;
+    --tooltipBackground: #364E6E;
 }
 
 // Main UI
@@ -96,7 +97,7 @@ a:not([href]):not([class]):hover {
 // Platform list
 .platform_list_item {
     border: #FFAA00 1px solid;
-    -webkit-text-stroke: 1px #00A5F8;
+    -webkit-text-stroke: 1.1px #00A5F8;
     color: transparent;
     text-shadow: none;
     overflow: visible;

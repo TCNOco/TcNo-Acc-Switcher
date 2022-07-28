@@ -626,7 +626,7 @@ button * {
         visibility: hidden;
         position: absolute;
         margin-left: -60px;
-        background-color: #6272a4;
+        background-color: var(--tooltipBackground);
         color: #fff;
         text-align: center;
         padding: 5px;
@@ -646,7 +646,7 @@ button * {
             margin-left: -5px;
             border-width: 5px;
             border-style: solid;
-            border-color: #6272a4 transparent transparent transparent;
+            border-color: var(--tooltipBackground) transparent transparent transparent;
         }
     }
 
@@ -654,18 +654,18 @@ button * {
     span.tooltip-wrapper-left::before {
         top: calc(50% - 5px);
         left: calc(100% + 5px);
-        border-color: transparent transparent transparent #6272a4;
+        border-color: transparent transparent transparent var(--tooltipBackground);
     }
 
     span.tooltip-wrapper-right::before {
         top: calc(50% - 5px);
         left: -5px;
-        border-color: transparent #6272a4 transparent transparent;
+        border-color: transparent var(--tooltipBackground) transparent transparent;
     }
 
     span.tooltip-wrapper-bottom::before {
         top: -10px;
         left: 50%;
-        border-color: transparent transparent #6272a4 transparent;
+        border-color: transparent transparent var(--tooltipBackground) transparent;
     }
 }

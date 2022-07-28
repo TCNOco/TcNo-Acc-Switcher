@@ -9,6 +9,7 @@
   --accentL: 69%;
   --accentInt: 252, 229, 102;
   --notification-main-bg: #131313;
+  --tooltipBackground: #202020;
 }
 
 @import url("https://fonts.googleapis.com/css2?family=Anton&family=Tajawal&display=swap");
@@ -47,6 +48,12 @@ button:active,
 .show > .dropdown-toggle {
   background: #202020 !important;
   border-color: var(--accent) !important;
+}
+
+.btnSettings,
+.btnHelp {
+    height: 48px;
+    width: 48px;
 }
 
 #btnStartPlat, #shortcutDropdownBtn,

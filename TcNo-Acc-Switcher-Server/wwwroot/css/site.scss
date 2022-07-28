@@ -19,6 +19,7 @@
     --accentHS: 40, 100%; // "H, S%" from accent as HSL
     --accentL: 50%; // "L" from accent HSL
     --accentInt: 255, 153, 0; // accent as "r, g, b"
+    --tooltipBackground: #6272a4;
 }
 
 html,
@@ -568,7 +569,7 @@ div.advancedClearingButtonCol .buttoncol {
     display: inline-block;
     cursor: pointer;
     /* ReSharper disable once InvalidValue */
-    border: #8BE9FD 1px solid;
+    border: #8BE9FD 1.1px solid; // The .1 prevents the bottom border dissapearing randomly after hover.
     margin: 10px;
     transition: all 100ms ease-in-out;
     transform: scale(1);
