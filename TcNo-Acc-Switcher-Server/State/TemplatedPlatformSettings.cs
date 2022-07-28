@@ -31,12 +31,12 @@ public class TemplatedPlatformSettings : ITemplatedPlatformSettings
     private readonly IStatistics _statistics;
     private readonly ITemplatedPlatformState _templatedPlatformState;
 
-    [JsonProperty(Order = 2)] public bool Admin { get; set; }
-    [JsonProperty(Order = 3)] public int TrayAccNumber { get; set; } = 3;
-    [JsonProperty(Order = 4)] public bool ForgetAccountEnabled { get; set; }
-    [JsonProperty(Order = 5)] public Dictionary<int, string> Shortcuts { get; set; } = new();
-    [JsonProperty(Order = 8)] public bool AutoStart { get; set; } = true;
-    [JsonProperty(Order = 9)] public bool ShowShortNotes { get; set; } = true;
+    [JsonProperty] public bool Admin { get; set; }
+    [JsonProperty] public int TrayAccNumber { get; set; } = 3;
+    [JsonProperty] public bool ForgetAccountEnabled { get; set; }
+    [JsonProperty] public Dictionary<int, string> Shortcuts { get; set; } = new();
+    [JsonProperty] public bool AutoStart { get; set; } = true;
+    [JsonProperty] public bool ShowShortNotes { get; set; } = true;
     [JsonIgnore]
     public bool DesktopShortcut
     {

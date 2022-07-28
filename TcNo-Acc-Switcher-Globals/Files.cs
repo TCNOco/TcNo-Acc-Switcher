@@ -85,7 +85,7 @@ public partial class Globals
             // Try load settings and edit referenced class.
             if (File.Exists(file))
             {
-                JsonConvert.PopulateObject(File.ReadAllText(file), settings);
+                JsonConvert.PopulateObject(File.ReadAllText(file), settings, new JsonSerializerSettings(){ ObjectCreationHandling = ObjectCreationHandling.Replace });
                 return true;
             }
             // Failed to load: Move file.

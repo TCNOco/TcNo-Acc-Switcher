@@ -46,10 +46,10 @@ public class SteamSettings : ISteamSettings
 
     [JsonIgnore] public string LoginUsersVdf { get; set; }
     [JsonIgnore] public string LibraryVdf { get; set; }
-    public string SteamImagePath { get; init; } = "wwwroot/img/profiles/steam/";
-    public string SteamImagePathHtml { get; init; } = "img/profiles/steam/";
-    public List<string> Processes { get; init; } = new (){ "steam.exe", "SERVICE:steamservice.exe", "steamwebhelper.exe", "GameOverlayUI.exe" };
-    public string VacCacheFile { get; init; } = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\VACCache\\SteamVACCache.json");
+    [JsonIgnore] public string SteamImagePath { get; init; } = "wwwroot/img/profiles/steam/";
+    [JsonIgnore] public string SteamImagePathHtml { get; init; } = "img/profiles/steam/";
+    [JsonIgnore] public List<string> Processes { get; init; } = new (){ "steam.exe", "SERVICE:steamservice.exe", "steamwebhelper.exe", "GameOverlayUI.exe" };
+    [JsonIgnore] public string VacCacheFile { get; init; } = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\VACCache\\SteamVACCache.json");
 
 
     public static readonly string Filename = "SteamSettings.json";
@@ -75,7 +75,7 @@ public class SteamSettings : ISteamSettings
     /// Get Steam.exe path from SteamSettings.json
     /// </summary>
     /// <returns>Steam.exe's path string</returns>
-    public string Exe => Path.Join(FolderPath, "Steam.exe");
+    [JsonIgnore] public string Exe => Path.Join(FolderPath, "Steam.exe");
 
     public void SetClosingMethod(string method)
     {

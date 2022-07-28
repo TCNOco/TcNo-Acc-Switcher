@@ -57,7 +57,7 @@
     <div class="platform_list">
         @foreach (var platform in WindowSettings.Platforms.OrderBy(x => x.DisplayIndex).Where(x => x.Enabled))
         {
-            <div class="platform_list_item" id="@(platform.Identifier)" safeName="@platform.SafeName" @onmouseup="(e) => PlatformRightClick(e, platform.Name)" oncontextmenu="return false;">
+            <div class="platform_list_item" id="@(platform.Identifier)" safeName="@platform.SafeName" @onmouseup="(e) => PlatformClick(e, platform.Name)" oncontextmenu="return false;">
                 <div class="fgText @(!File.Exists(_imagePath(platform)) ? "noImageCenterText" : "") @(platform.Name.Length < 7 ? "shortText" : platform.Name.Length > 12 ? "longText" : "")"><p>@platform.Name.ToUpper(CultureInfo.InvariantCulture)</p></div>
                 <div class="fgImg">
                     @if(File.Exists(_imagePath(platform)))
@@ -104,7 +104,7 @@
     /// <summary>
     /// Shows the context menu for the requested platform
     /// </summary>
-    public async void PlatformRightClick(MouseEventArgs e, string plat)
+    public async void PlatformClick(MouseEventArgs e, string plat)
     {
         switch (e.Button)
         {
