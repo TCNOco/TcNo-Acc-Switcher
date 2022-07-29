@@ -22,6 +22,7 @@
   overflow-y: auto;
   background: var(--accountListBackground);
   outline: none;
+  justify-content: center;
 }
 
 .acc_list_item {
@@ -191,16 +192,13 @@ label.acc.currentAcc {
 .statusBar {
   position: relative;
 }
-.statusBar div, .statusBar input {
-  position: absolute;
+.statusBar span {
+  padding-left: 1em;
   width: 100%;
-  height: 100%;
-}
-.statusBar input {
-  z-index: 1;
-}
-.statusBar div {
-  z-index: 5;
+  max-height: 100%;
+  align-self: center;
+  overflow-wrap: break-word;
+  text-overflow: ellipsis;
 }
 
 label h6 svg {

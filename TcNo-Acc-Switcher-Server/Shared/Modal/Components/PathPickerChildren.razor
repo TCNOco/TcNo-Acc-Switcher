@@ -35,17 +35,12 @@
     protected override void OnInitialized()
     {
         _currentFileList = new FolderFileList(Toasts, CurrentPath, Depth);
-        Modals.PathPickerOnChange += OnChangeHandler;
+        Modals.PathPickerOnChange += async () => await OnChangeHandler();
     }
 
-    private async void OnChangeHandler()
+    private async Task OnChangeHandler()
     {
         await InvokeAsync(StateHasChanged);
-    }
-
-    public void Dispose()
-    {
-        Modals.PathPickerOnChange -= OnChangeHandler;
     }
 
     // This must be a cascading variable and a check to see if it is included somewhere in the list. This could get confusing.

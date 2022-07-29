@@ -51,25 +51,32 @@
   min-height: 100%;
   list-style: none;
   box-shadow: 10px 10px 5px -3px rgba(0, 0, 0, 0.3);
+  flex-direction: column;
+  overflow: hidden;
 }
 .contextmenu .submenu li {
   color: #FFFFFF;
   list-style: none;
+  width: 15em;
 }
 .contextmenu .submenu li a {
   color: #FFFFFF !important;
+  overflow-wrap: anywhere;
+  text-overflow: ellipsis;
 }
 .contextmenu .submenu .paginationContainer {
-  position: absolute;
-  bottom: 0;
   width: 100%;
   border-left: none;
+  flex: 1;
+  display: flex;
+  flex-direction: column-reverse;
 }
 .contextmenu .submenu .paginationContainer .pagination {
   display: flex;
   justify-content: space-between;
   align-items: center;
   color: #fff;
+  height: 38px;
 }
 .contextmenu .submenu .paginationContainer .pagination a {
   width: 38px;
@@ -121,7 +128,7 @@
   color: #FFFFFF;
 }
 .contextmenu li:hover > .submenu {
-  display: block;
+  display: flex;
   position: absolute;
   top: 0;
   right: -15em;

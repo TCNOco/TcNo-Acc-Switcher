@@ -14,15 +14,22 @@
 
 @page "/Steam/"
 @using System.IO
+@using Gameloop.Vdf
+@using Gameloop.Vdf.JsonConverter
 @using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.WebUtilities
+@using Newtonsoft.Json.Linq
 @using TcNo_Acc_Switcher_Globals
+@using TcNo_Acc_Switcher_Server.Converters
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using TcNo_Acc_Switcher_Server.Shared.Accounts
 @using TcNo_Acc_Switcher_Server.Shared.ContextMenu
 @using TcNo_Acc_Switcher_Server.State.DataTypes
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @using TcNo_Acc_Switcher_Server.Shared.Tooltip
+@using TcNo_Acc_Switcher_Server.State.Classes
+@using TcNo_Acc_Switcher_Server.Shared.SwitcherUI
+@using System.ComponentModel
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JsRuntime
 @inject IAppState AppState
@@ -40,7 +47,7 @@
 <ContextMenu MenuItems="@SteamState.ContextMenu.Menu" ContextMenuId="AccOrPlatList" />
 <ContextMenu MenuItems="@SteamState.ContextMenu.ShortcutItems" ContextMenuId="Shortcuts" />
 <ContextMenu MenuItems="@SteamState.ContextMenu.PlatformItems" ContextMenuId="Platform" />
-<AccountList AccountItems="@AppState.Switcher.SteamAccounts" />
+<AccountList AccountItems="@AppState.Switcher.SteamAccounts" AccountActions="_accountActions" />
 
 <div class="shortcutDropdown gameShortcuts" id="shortcutDropdown" style="display: none">
     <div class="shortcutDropdownItems">
@@ -60,7 +67,7 @@
 </div>
 
 <div class="acc_list_actionbar">
-    <div class="statusBar"><div></div><input id="CurrentStatus" @bind="AppState.Switcher.CurrentStatus" spellcheck="false" disabled></div>
+    <StatusBar />
     <div class="gameShortcuts">
         <div class="shortcuts">
             @foreach (var (i, shortcut) in _shortcuts)
@@ -112,15 +119,11 @@
 
 @code
 {
+    private readonly AccountActions _accountActions = new();
     private Dictionary<int, string> _shortcuts = new();
 
     public static string GetShortcutImagePath(string gameShortcutName) =>
         Path.Join("img\\shortcuts\\Steam\\", Globals.RemoveShortcutExt(gameShortcutName) + ".png");
-
-    private async void OnChangeHandler()
-    {
-        await InvokeAsync(StateHasChanged);
-    }
 
     public void Dispose()
     {
@@ -139,12 +142,12 @@
     //protected override async Task OnAfterRenderAsync(bool firstRender) => await GeneralFuncs.HandleFirstRender(firstRender, "Steam");
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        AppState.Switcher.CurrentStatus = Lang["Loading"];
-
         await HandleFirstRender(firstRender);
-        Statistics.NewNavigation("/Steam/");
         if (firstRender)
         {
+            AppState.Switcher.CurrentStatus = Lang["Loading"];
+            Statistics.NewNavigation("/Steam/");
+
             StaticFuncs.SaveShortcuts = SaveShortcuts;
             _shortcuts = SteamSettings.Shortcuts;
             StaticFuncs.SaveOrderAction = SteamState.SaveAccountOrder;
@@ -152,11 +155,16 @@
             await SteamState.LoadSteamState(SteamFuncs, JsRuntime);
             await InvokeAsync(StateHasChanged);
 
-            var curAcc = SteamFuncs.GetCurrentAccountId(true);
-            if (curAcc != "") SteamFuncs.SetCurrentAccount(curAcc);
-        }
+            // Get logged in user from Steam loginusers.vdf. This is only set once, on launch.
+            var curAcc = SteamState.SteamUsers.FirstOrDefault(x => x.MostRec == "1");
+            if (curAcc is not null) SteamFuncs.SetCurrentAccount(curAcc.SteamId);
 
-        AppState.Switcher.CurrentStatus = Lang["Done"];
+            // Load games for the Right-click menu
+            LoadGamesForAccounts();
+            _accountActions.AfterAccountSelect = async (acc) => await OnAccountSelect(acc);
+
+            AppState.Switcher.CurrentStatus = Lang["Done"];
+        }
     }
 
     public async Task HandleFirstRender(bool firstRender)
@@ -245,4 +253,95 @@
         SteamSettings.Shortcuts = o;
         SteamSettings.Save();
     }
+
+
+    #region Switch and Play
+    /// <summary>
+    /// Iterates through each folder in Steam\\userdata, to collect a list of all of their game Ids.
+    /// </summary>
+    public void LoadGamesForAccounts()
+    {
+        var userDataFolder = Path.Join(SteamSettings.FolderPath, $"userdata\\");
+        if (!Directory.Exists(userDataFolder)) return;
+        foreach (var dir in Directory.GetDirectories(userDataFolder))
+        {
+            LoadGamesListForAccount(Path.GetFileName(dir));
+        }
+    }
+
+    /// <summary>
+    /// Loads list of AppIds and AppNames for games installed on X account.
+    /// These are then placed in as: _appState.Switcher.SteamAccounts.Games
+    /// This should ONLY be run AFTER the contextmenu was init. This is because the list of AppIds is useless without names for each.
+    /// </summary>
+    public void LoadGamesListForAccount(string steamId)
+    {
+        try
+        {
+            var steamIdConverter = new SteamIdConvert(steamId);
+            var steamId64 = steamIdConverter.Id64;
+
+            // Check if user is loaded.
+            var user = SteamState.SteamUsers.FirstOrDefault(x => x.SteamId == steamId64);
+            if (user is null) return;
+
+            // Check if config file exists
+            var configVdfPath = Path.Join(SteamSettings.FolderPath, $"userdata\\{steamIdConverter.Id32}\\config\\localconfig.vdf");
+            if (!File.Exists(configVdfPath)) return;
+
+            // Load games into memory for account.
+            var configVdf = VdfConvert.Deserialize(File.ReadAllText(configVdfPath), new VdfSerializerSettings() { UsesEscapeSequences = true, MaximumTokenSize = 5000 });
+            var config = new JObject { configVdf.ToJson() };
+            var appsArray = config.SelectToken("UserLocalConfigStore.Software.valve.steam.apps");
+            if (appsArray == null) return;
+
+            var menuItems = new List<MenuItem>();
+
+            foreach (var appJToken in appsArray)
+            {
+                var appId = ((JProperty)appJToken).Name;
+                var appName = SteamState.AppIds.ContainsKey(appId) ? SteamState.AppIds[appId] : appId;
+                if (!SteamState.InstalledGames.Contains(appId)) continue;
+
+                user.AppIds.Add(appId, appName);
+
+                menuItems.Add(new MenuItem
+                {
+                    Text = appName,
+                    MenuAction = async () => await SteamFuncs.SwitchAndLaunch(JsRuntime, appId)
+                });
+            }
+
+            // Sort alphabetically
+            menuItems.Sort((x, y) => string.Compare(x.Text, y.Text, StringComparison.Ordinal));
+
+            if (menuItems.Count > 0)
+                user.SwitchAndLaunch = new MenuItem()
+                {
+                    Text = Lang["Context_SwitchAndLaunch"],
+                    Id = "SwitchAndLaunch",
+                    Children = menuItems
+                };
+            else user.SwitchAndLaunch = null;
+        }
+        catch (Exception e)
+        {
+            Globals.WriteToLog("ERROR: Could not fetch list of Steam games for account.", e);
+        }
+    }
+
+    /// <summary>
+    /// Add switch and launch functionality
+    /// </summary>
+    /// <param name="acc"></param>
+    public async Task OnAccountSelect(Account acc)
+    {
+        // Remove section from contextmenu
+        SteamState.ContextMenu.Menu.Remove(SteamState.ContextMenu.Menu.FirstOrDefault(x => x.Id == "SwitchAndLaunch")); // This can be null.
+        var switchAndLaunch = SteamState.SteamUsers.FirstOrDefault(x => x.SteamId == acc.AccountId)?.SwitchAndLaunch;
+        if (switchAndLaunch is not null) SteamState.ContextMenu.Menu.Add(switchAndLaunch);
+        await InvokeAsync(StateHasChanged);
+    }
+    #endregion
+
 }

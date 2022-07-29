@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.State.Interfaces;
 
@@ -59,6 +60,15 @@ public class Switcher : INotifyPropertyChanged
     {
         get => _currentStatus;
         set => SetField(ref _currentStatus, value);
+    }
+
+    /// <summary>
+    /// Update status, with a tiny delay to allow UI to update.
+    /// </summary>
+    public async Task UpdateStatusAsync(string status)
+    {
+        CurrentStatus = status;
+        await Task.Delay(1);
     }
 
     public string CurrentShortcut

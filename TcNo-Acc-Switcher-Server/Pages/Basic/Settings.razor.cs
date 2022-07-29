@@ -16,6 +16,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using TcNo_Acc_Switcher_Globals;
@@ -55,7 +56,7 @@ public partial class Settings
 
     private static bool _currentlyBackingUp;
     private static bool _currentlyRestoring;
-    private async void RestoreFile(InputFileChangeEventArgs e)
+    private async Task RestoreFile(InputFileChangeEventArgs e)
     {
         if (!_currentlyRestoring)
             _currentlyRestoring = true;

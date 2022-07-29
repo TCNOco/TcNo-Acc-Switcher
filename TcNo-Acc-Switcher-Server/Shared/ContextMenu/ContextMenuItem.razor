@@ -27,10 +27,11 @@
     private const int ItemsPerPage = 5;
     private int _currentPage;
     private string _searchText = "";
-    private List<MenuItem> Unfiltered => Item.Children.
+    private List<MenuItem> Filtered => Item.Children.
         Where(item => item is not null && item.Text.ToLower().Contains(_searchText.ToLower())).ToList();
-    private List<MenuItem> Visible => Unfiltered.Skip(_currentPage * ItemsPerPage).Take(ItemsPerPage).ToList();
-    private int PageCount => ((Unfiltered.Count - 1) / ItemsPerPage) + 1;
+    private List<MenuItem> Visible => Filtered.Skip(_currentPage * ItemsPerPage).Take(ItemsPerPage).ToList();
+    private int PageCount => ((Filtered.Count - 1) / ItemsPerPage) + 1;
+    private bool HasPagesWhenUnfiltered => ((Item.Children.Count - 1) / ItemsPerPage) + 1 > 1;
 
     private void OnSearchInputChanged(ChangeEventArgs e)
     {
@@ -44,7 +45,7 @@
     <li class="hasSubmenu">
         <a class="contextIgnoreClick" onclick="event.preventDefault();">@Item.Text</a>
         <ul class="submenu submenu@(Depth + 1)">
-            @if (PageCount > 1)
+            @if (HasPagesWhenUnfiltered)
             {
                 <li class="contextSearch">
                     <input type='text' placeholder='Search' onclick="event.stopPropagation();"

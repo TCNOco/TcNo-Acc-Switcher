@@ -131,9 +131,9 @@
 
     protected override void OnInitialized()
     {
-        AppState.Switcher.PropertyChanged += OnChangeHandler;
+        AppState.Switcher.PropertyChanged += async (o, e) => await OnChangeHandler(o, e);
     }
-    private async void OnChangeHandler(object? o, PropertyChangedEventArgs e)
+    private async Task OnChangeHandler(object? o, PropertyChangedEventArgs e)
     {
         await InvokeAsync(StateHasChanged);
     }

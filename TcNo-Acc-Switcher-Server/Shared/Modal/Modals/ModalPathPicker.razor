@@ -35,7 +35,7 @@
 
 
 @code {
-    public void UpdateType()
+    public async Task UpdateType()
     {
         if (CurrentRequest.Goal == PathPickerGoal.None)
             return;
@@ -79,7 +79,7 @@
             ConfirmTask = ChangeAccImage;
         }
 
-        OnChangeHandler(); // Run once just to set vars
+        await OnChangeHandler(); // Run once just to set vars
     }
 
     private Action ConfirmTask { get; set; }
@@ -91,14 +91,14 @@
         CurrentRequest.Goal = PathPickerGoal.None;
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        Modals.PathPickerOnChange += UpdateType;
-        CurrentRequest.PropertyChanged += (_, _) => UpdateType();
-        UpdateType();
+        Modals.PathPickerOnChange += async () => await UpdateType();
+        CurrentRequest.PropertyChanged += async (_, _) => await UpdateType();
+        await UpdateType();
     }
 
-    private async void OnChangeHandler()
+    private async Task OnChangeHandler()
     {
         Modals.Title = CurrentRequest.ModalHeader;
 

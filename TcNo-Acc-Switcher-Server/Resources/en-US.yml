@@ -332,6 +332,7 @@ Context_HidePlatform: Hide platform
 Context_ExportAccList: Export account list
 Context_RunAdmin: Run as Admin
 Context_Hide: Hide
+Context_SwitchAndLaunch: Switch & Launch
 ProfileImage_ToggleText: Use image as account image
 Title_Platforms_Settings: TcNo Account Switcher - Platform Settings
 Title_Settings_TestCss: TcNo Account Switcher - Test CSS Styling

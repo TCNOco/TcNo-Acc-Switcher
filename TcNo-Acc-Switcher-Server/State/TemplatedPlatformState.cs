@@ -99,7 +99,7 @@ public class TemplatedPlatformState : ITemplatedPlatformState
 
     public async Task SetCurrentPlatform(IJSRuntime jsRuntime, ITemplatedPlatformSettings templatedPlatformSettings, string platformName)
     {
-        _appState.Switcher.CurrentStatus = _lang["Loading"];
+        await _appState.Switcher.UpdateStatusAsync(_lang["Loading"]);
         CurrentPlatform = Platforms.First(x => x.Name == platformName || x.Identifiers.Contains(platformName));
         CurrentPlatform.InitAfterDeserialization();
         //_templatedPlatformSettings = new TemplatedPlatformSettings(); // Load saved settings
@@ -107,8 +107,8 @@ public class TemplatedPlatformState : ITemplatedPlatformState
 
         _appState.Switcher.CurrentSwitcher = CurrentPlatform.Name;
         _appState.Switcher.TemplatedAccounts.Clear();
-        if (await LoadAccounts(jsRuntime)) _appState.Switcher.CurrentStatus = _lang["Done"];
-        else _appState.Switcher.CurrentStatus = _lang["FailedLoadAccounts"];
+        if (await LoadAccounts(jsRuntime)) await _appState.Switcher.UpdateStatusAsync(_lang["Done"]);
+        else await _appState.Switcher.UpdateStatusAsync(_lang["FailedLoadAccounts"]);
     }
 
     #region Loading

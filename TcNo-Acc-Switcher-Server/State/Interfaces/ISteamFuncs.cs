@@ -14,10 +14,15 @@ public interface ISteamFuncs
     string PersonaStateToString(int ePersonaState);
 
     /// <summary>
-    /// This relies on Steam updating loginusers.vdf. It could go out of sync assuming it's not updated reliably. There is likely a better way to do this.
-    /// I am avoiding using the Steam API because it's another DLL to include, but is the next best thing - I assume.
+    /// Switch to an account, and launch a game - instead of starting Steam.
     /// </summary>
-    string GetCurrentAccountId(bool getNumericId = false);
+    Task SwitchAndLaunch(IJSRuntime jsRuntime, string appId);
+
+    /// <summary>
+    /// Switch to a specified account, and launch a game - instead of starting Steam.
+    /// This is to be used with the CLI.
+    /// </summary>
+    Task SwitchAndLaunch(IJSRuntime jsRuntime, string appId, string steamId);
 
     /// <summary>
     /// Swap to the current AppState.Switcher.SelectedAccountId.
@@ -42,7 +47,8 @@ public interface ISteamFuncs
     /// <param name="steamId">(Optional) User's SteamID</param>
     /// <param name="ePersonaState">(Optional) Persona state for user [0: Offline, 1: Online...]</param>
     /// <param name="args">Starting arguments</param>
-    Task SwapSteamAccounts(IJSRuntime jsRuntime, string steamId = "", int ePersonaState = -1, string args = "");
+    /// <param name="canStartSteam">Whether steam should be allowed to launch (ignores settings)</param>
+    Task SwapSteamAccounts(IJSRuntime jsRuntime, string steamId = "", int ePersonaState = -1, string args = "", bool canStartSteam = true);
 
     /// <summary>
     /// Highlights the specified account
@@ -57,9 +63,9 @@ public interface ISteamFuncs
     void UpdateLoginUsers(string selectedSteamId, int pS);
 
     /// <summary>
-    /// Save updated list of Steamuser into loginusers.vdf, in vdf format.
+    /// Save updated list of SteamUser into loginusers.vdf, in vdf format.
     /// </summary>
-    /// <param name="userAccounts">List of Steamuser to save into loginusers.vdf</param>
+    /// <param name="userAccounts">List of SteamUser to save into loginusers.vdf</param>
     void SaveSteamUsersIntoVdf(List<SteamUser> userAccounts);
 
     /// <summary>

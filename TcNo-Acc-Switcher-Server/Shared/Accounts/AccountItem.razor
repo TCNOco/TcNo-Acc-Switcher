@@ -29,6 +29,8 @@
     public Action SwapAction { get; set; }
     [Parameter]
     public Action UnselectAllAccounts { get; set; }
+    [Parameter]
+    public AccountActions AccountActions { get; set; }
 
     [Inject] IToasts Toasts { get; set; }
     [Inject] ISteamSettings SteamSettings { get; set; }
@@ -54,6 +56,7 @@
         AppState.Switcher.SelectedAccount = acc;
         UnselectAllAccounts();
         acc.IsChecked = true;
+        AccountActions.AfterAccountSelect?.Invoke(acc);
     }
 
     private readonly string _randomGuid = Guid.NewGuid().ToString();

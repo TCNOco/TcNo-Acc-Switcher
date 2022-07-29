@@ -18,10 +18,12 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using Gameloop.Vdf;
 using Gameloop.Vdf.JsonConverter;
 using Microsoft.JSInterop;
+using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Converters;
@@ -44,6 +46,7 @@ public class SteamContextMenu
     private readonly ISharedFunctions _sharedFunctions;
     private readonly ISteamFuncs _steamFuncs;
     private readonly ISteamSettings _steamSettings;
+    private readonly ISteamState _steamState;
     private readonly IToasts _toasts;
 
     public SteamContextMenu() {}
@@ -58,10 +61,19 @@ public class SteamContextMenu
         _sharedFunctions = sharedFunctions;
         _steamFuncs = steamFuncs;
         _steamSettings = steamSettings;
+        _steamState = steamState;
         _toasts = toasts;
 
-        LoadInstalledGames();
-        AppIds = LoadAppNames();
+        // Check registry for games list if Windows, whether installed, and their names
+        // Else if it fails, or is not windows:
+        //   Future cross-platform compatibility, or fallback:
+        //   Download a list of all apps on Steam, and cross-check with Steam\\config\\libraryfolders.vdf
+        if (!OperatingSystem.IsWindows() || !LoadGamesFromRegistry())
+        {
+            LoadInstalledGames();
+            _steamState.AppIds = LoadAppNames();
+        }
+
         BuildContextMenu();
 
         ShortcutItems = new MenuBuilder(_lang,
@@ -74,6 +86,54 @@ public class SteamContextMenu
         PlatformItems = new MenuBuilder(_lang,
             new Tuple<string, object>("Context_RunAdmin", () => steamState.RunSteam(true, ""))
         ).Result();
+    }
+
+    [SupportedOSPlatform("windows")]
+    private bool LoadGamesFromRegistry()
+    {
+        try
+        {
+            _steamState.InstalledGames = new List<string>(); // List of AppIds
+            _steamState.AppIds = new Dictionary<string, string>(); // Dictionary of AppIDs and their name.
+
+            // Open Key
+            using var hkcu = Registry.CurrentUser.OpenSubKey(@"Software\Valve\Steam\Apps\", true);
+            if (hkcu is null) return false;
+            foreach (var appKeyString in hkcu.GetSubKeyNames())
+            {
+                // Foreach subkey (AppID) in Steam Apps
+                try
+                {
+                    // Open the key, and look for components.
+                    // These keys will have Name if they are NOT DLC.
+                    // These also have an Installed value.
+                    using var subkey = hkcu.OpenSubKey(appKeyString);
+                    if (subkey is null) continue;
+
+                    var name = subkey.GetValue("Name");
+                    if (name is null) continue; // Has no name >> DLC.
+
+                    var installed = subkey.GetValue("Installed");
+                    if (installed is null || (int)installed != 1) continue; // Has no installed value (never installed), or is not installed.
+
+                    // At this point: it is a game and it is installed. Add it to the lists.
+                    var appId = subkey.ToString().Split("\\").Last();
+                    _steamState.InstalledGames.Add(appId);
+                    _steamState.AppIds.Add(appId, name.ToString());
+                }
+                catch
+                {
+                    continue;
+                }
+            }
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            Globals.WriteToLog("Failed to read Steam games from registry", e);
+            return false;
+        }
     }
 
     private const string ShortcutFolder = "LoginCache\\Steam\\Shortcuts\\";
@@ -89,9 +149,6 @@ public class SteamContextMenu
         // Save.
         _steamSettings.Save();
     }
-
-    public List<string> InstalledGames { get; set; }
-    public Dictionary<string, string> AppIds { get; set; }
 
     public static readonly string SteamAppsListPath =
         Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\AppIdsFullListCache.json");
@@ -109,14 +166,14 @@ public class SteamContextMenu
 
         /* Games submenu, or Game data item */
         MenuItem gameData = null;
-        if (File.Exists(SteamAppsUserCache) && AppIds.Count > 0)
+        if (File.Exists(SteamAppsUserCache) && _steamState.AppIds.Count > 0)
         {
             var menuItems = new List<MenuItem>();
-            foreach (var gameId in InstalledGames)
+            foreach (var gameId in _steamState.InstalledGames)
             {
                 menuItems.Add(new MenuItem
                 {
-                    Text = AppIds.ContainsKey(gameId) ? AppIds[gameId] : gameId,
+                    Text = _steamState.AppIds.ContainsKey(gameId) ? _steamState.AppIds[gameId] : gameId,
                     Children = new List<MenuItem>
                     {
                         new()
@@ -316,7 +373,7 @@ public class SteamContextMenu
             Globals.WriteToLog("ERROR: Could not fetch Steam game library.\nDetails: " + e);
             gameIds = new List<string>();
         }
-        InstalledGames = gameIds;
+        _steamState.InstalledGames = gameIds;
     }
     public Dictionary<string, string> LoadAppNames()
     {
@@ -332,7 +389,7 @@ public class SteamContextMenu
                 {
                     try
                     {
-                        AppIds.Add(kv.Key, kv.Value);
+                        _steamState.AppIds.Add(kv.Key, kv.Value);
                     }
                     catch (Exception e)
                     {
@@ -351,7 +408,7 @@ public class SteamContextMenu
             if (File.Exists(cacheFilePath))
             {
                 var cachedAppIds = ParseSteamAppsText(File.ReadAllText(cacheFilePath));
-                if (InstalledGames.All(id => cachedAppIds.ContainsKey(id)))
+                if (_steamState.InstalledGames.All(id => cachedAppIds.ContainsKey(id)))
                 {
                     return cachedAppIds;
                 }
@@ -360,7 +417,7 @@ public class SteamContextMenu
             // If the cache is missing or incomplete, fetch app Ids from Steam's API
             appIds =
                 (from game in ParseSteamAppsText(FetchSteamAppsData())
-                    where InstalledGames.Contains(game.Key)
+                    where _steamState.InstalledGames.Contains(game.Key)
                     select game)
                 .ToDictionary(game => game.Key, game => game.Value);
 
@@ -368,9 +425,9 @@ public class SteamContextMenu
             if (appIds.Count == 0) return appIds;
 
             // Add any missing games as just the appid. These can include games/apps not on steam (developer Steam accounts), or otherwise removed games from Steam.
-            if (appIds.Count != InstalledGames.Count)
+            if (appIds.Count != _steamState.InstalledGames.Count)
             {
-                foreach (var g in (from game in InstalledGames where !appIds.ContainsKey(game) select game))
+                foreach (var g in (from game in _steamState.InstalledGames where !appIds.ContainsKey(game) select game))
                 {
                     appIds.Add(g, g);
                 }

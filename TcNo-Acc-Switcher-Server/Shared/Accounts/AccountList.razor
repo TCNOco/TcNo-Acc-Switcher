@@ -30,12 +30,14 @@
 @code {
     [Parameter]
     public ObservableCollection<Account> AccountItems { get; set; }
+    [Parameter]
+    public AccountActions AccountActions { get; set; }
 
     protected override void OnInitialized()
     {
-        AccountItems.CollectionChanged += ((_, _) => OnChangeHandler());
+        AccountItems.CollectionChanged += async (_, _) => await OnChangeHandler();
     }
-    private async void OnChangeHandler()
+    private async Task OnChangeHandler()
     {
         await InvokeAsync(StateHasChanged);
         if (AppState.Switcher.CurrentSwitcher == "Steam")
@@ -50,7 +52,7 @@
     <toastarea class="toastarea"/>
     @foreach (var acc in AccountItems)
     {
-        <AccountItem Acc="acc" SwapAction="_swapAction" UnselectAllAccounts="UnselectAllAccounts"/>
+        <AccountItem Acc="acc" SwapAction="_swapAction" UnselectAllAccounts="UnselectAllAccounts" AccountActions="AccountActions"/>
     }
 </div>
 

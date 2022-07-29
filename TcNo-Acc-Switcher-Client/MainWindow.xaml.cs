@@ -146,7 +146,7 @@ public partial class MainWindow
         {
             case "WebView":
                 _mView2 = new WebView2();
-                _mView2.Initialized += MView2_OnInitialised;
+                _mView2.Initialized += async (s, e) => await MView2_OnInitialized(s, e);
                 _mView2.NavigationCompleted += MView2_OnNavigationCompleted;
                 break;
             case "CEF":
@@ -347,7 +347,7 @@ public partial class MainWindow
     #endregion
 
     #region WebView
-    private async void MView2_OnInitialised(object sender, EventArgs e)
+    private async Task MView2_OnInitialized(object sender, EventArgs e)
     {
         try
         {

@@ -25,8 +25,10 @@ using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Converters;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
+using TcNo_Acc_Switcher_Server.Shared.ContextMenu;
 using TcNo_Acc_Switcher_Server.State.Classes;
 using TcNo_Acc_Switcher_Server.State.Classes.Steam;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
@@ -57,8 +59,6 @@ public class SteamState : ISteamState
             "Steam", "s", value);
     }
 
-    public int LastAccTimestamp { get; set; }
-    public string LastAccSteamId { get; set; } = "";
     public bool SteamWebApiWasReset { get; set; }
     private const string ShortcutFolder = "LoginCache\\Steam\\Shortcuts\\";
     private static readonly string[] ShortcutFolders = new[] { "%StartMenuAppData%\\Steam\\" };
@@ -166,6 +166,16 @@ public class SteamState : ISteamState
 
         ContextMenu = new SteamContextMenu(jsRuntime, _appState, _gameStats, _lang, _modals, _sharedFunctions, steamFuncs, _steamSettings, this, _toasts);
     }
+
+
+    /// <summary>
+    /// Installed games on this computer
+    /// </summary>
+    public List<string> InstalledGames { get; set; }
+    /// <summary>
+    /// List of AppIds and AppNames on this computer
+    /// </summary>
+    public Dictionary<string, string> AppIds { get; set; }
 
     public void SaveAccountOrder(string jsonString)
     {
@@ -382,6 +392,22 @@ public class SteamState : ISteamState
         return userAccounts;
     }
 
+
+    private class LoginUsersFile
+    {
+        public Dictionary<string, LoginUserAccount> Users { get; set; }
+    }
+    private class LoginUserAccount
+    {
+        public string AccountName { get; set; } = "";
+        public string PersonaName { get; set; } = "";
+        public string RememberPassword { get; set; } = "";
+        [JsonProperty("mostrecent")] public string MostRecent { get; set; } = "";
+        public string Timestamp { get; set; } = "";
+        public string WantsOfflineMode { get; set; } = "";
+    }
+
+
     private bool LoadFromVdf(string vdf, out List<SteamUser> userAccounts)
     {
         userAccounts = new List<SteamUser>();
@@ -391,44 +417,20 @@ public class SteamState : ISteamState
             var vdfText = VerifyVdfText(vdf);
 
             var loginUsersVToken = VdfConvert.Deserialize(vdfText);
-            var loginUsers = new JObject {loginUsersVToken.ToJson()};
+            var jLoginUsers = new JObject {loginUsersVToken.ToJson()};
 
-            if (loginUsers["users"] != null)
-            {
-                foreach (var jUsr in loginUsers["users"])
+            var loginUsers = jLoginUsers.ToObject<LoginUsersFile>();
+            userAccounts.AddRange(from u in loginUsers?.Users
+                let details = u.Value
+                select new SteamUser
                 {
-                    try
-                    {
-                        var jOUsr = (JObject) jUsr.First();
-                        var steamId = jUsr.ToObject<JProperty>()?.Name;
-                        if (string.IsNullOrWhiteSpace(steamId) && string.IsNullOrWhiteSpace(jOUsr
-                                .GetValue("AccountName", StringComparison.OrdinalIgnoreCase)?.Value<string>()))
-                            continue;
-
-                        userAccounts.Add(new SteamUser
-                        {
-                            Name = jOUsr.GetValue("PersonaName", StringComparison.OrdinalIgnoreCase)
-                                ?.Value<string>() ?? "PersonaNotFound",
-                            AccName = jOUsr.GetValue("AccountName", StringComparison.OrdinalIgnoreCase)
-                                ?.Value<string>() ?? "NameNotFound",
-                            SteamId = steamId,
-                            ImgUrl = "img/QuestionMark.jpg",
-                            LastLogin = jOUsr.GetValue("Timestamp", StringComparison.OrdinalIgnoreCase)
-                                ?.Value<string>() ?? "0",
-                            OfflineMode = !string.IsNullOrWhiteSpace(jOUsr
-                                .GetValue("WantsOfflineMode", StringComparison.OrdinalIgnoreCase)?.Value<string>())
-                                ? jOUsr.GetValue("WantsOfflineMode", StringComparison.OrdinalIgnoreCase)
-                                    ?.Value<string>()
-                                : "0"
-                        });
-                    }
-                    catch (Exception)
-                    {
-                        Globals.WriteToLog(
-                            "Could not import Steam user. Please send your loginusers.vdf file to TechNobo for analysis.");
-                    }
-                }
-            }
+                    SteamId = u.Key,
+                    Name = details.PersonaName,
+                    AccName = details.AccountName,
+                    MostRec = details.MostRecent,
+                    LastLogin = details.Timestamp,
+                    OfflineMode = details.WantsOfflineMode,
+                });
         }
         catch (FileNotFoundException)
         {

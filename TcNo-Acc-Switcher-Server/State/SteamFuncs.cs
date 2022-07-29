@@ -19,6 +19,7 @@ using System.Linq;
 using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
+using Gameloop.Vdf;
 using Gameloop.Vdf.JsonConverter;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -26,6 +27,7 @@ using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Converters;
+using TcNo_Acc_Switcher_Server.Shared.ContextMenu;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
 using TcNo_Acc_Switcher_Server.State.Interfaces;
 
@@ -108,48 +110,23 @@ public class SteamFuncs : ISteamFuncs
 
 
     #region STEAM_SWITCHER_MAIN
-
-
     /// <summary>
-    /// This relies on Steam updating loginusers.vdf. It could go out of sync assuming it's not updated reliably. There is likely a better way to do this.
-    /// I am avoiding using the Steam API because it's another DLL to include, but is the next best thing - I assume.
+    /// Switch to an account, and launch a game - instead of starting Steam.
     /// </summary>
-    public string GetCurrentAccountId(bool getNumericId = false)
+    public async Task SwitchAndLaunch(IJSRuntime jsRuntime, string appId)
     {
-        Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.GetCurrentAccountId]");
-        try
-        {
-            // Refreshing the list of SteamUsers doesn't help here when switching, as the account list is not updated by Steam just yet.
-            SteamUser mostRecent = null;
-            foreach (var su in _steamState.SteamUsers)
-            {
-                int.TryParse(su.LastLogin, out var last);
-
-                int.TryParse(mostRecent?.LastLogin, out var recent);
-
-                if (mostRecent == null || last > recent)
-                    mostRecent = su;
-            }
-
-            int.TryParse(mostRecent?.LastLogin, out var mrTimestamp);
-
-            if (_steamState.LastAccTimestamp > mrTimestamp)
-            {
-                return _steamState.LastAccSteamId;
-            }
-
-            if (getNumericId) return mostRecent?.SteamId ?? "";
-            return mostRecent?.AccName ?? "";
-        }
-        catch (Exception)
-        {
-            //
-        }
-
-        return "";
+        await SwapSteamAccounts(jsRuntime, _appState.Switcher.SelectedAccountId, _steamSettings.OverrideState, canStartSteam: false);
+        _steamState.RunSteam(_steamSettings.Admin, $"-applaunch {appId}");
     }
-
-
+    /// <summary>
+    /// Switch to a specified account, and launch a game - instead of starting Steam.
+    /// This is to be used with the CLI.
+    /// </summary>
+    public async Task SwitchAndLaunch(IJSRuntime jsRuntime, string appId, string steamId)
+    {
+        await SwapSteamAccounts(jsRuntime, steamId, _steamSettings.OverrideState, canStartSteam: false);
+        _steamState.RunSteam(_steamSettings.Admin, $"-applaunch {appId}");
+    }
     /// <summary>
     /// Swap to the current AppState.Switcher.SelectedAccountId.
     /// </summary>
@@ -209,7 +186,8 @@ public class SteamFuncs : ISteamFuncs
     /// <param name="steamId">(Optional) User's SteamID</param>
     /// <param name="ePersonaState">(Optional) Persona state for user [0: Offline, 1: Online...]</param>
     /// <param name="args">Starting arguments</param>
-    public async Task SwapSteamAccounts(IJSRuntime jsRuntime, string steamId = "", int ePersonaState = -1, string args = "")
+    /// <param name="canStartSteam">Whether steam should be allowed to launch (ignores settings)</param>
+    public async Task SwapSteamAccounts(IJSRuntime jsRuntime, string steamId = "", int ePersonaState = -1, string args = "", bool canStartSteam = true)
     {
         Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.SwapSteamAccounts] Swapping to: hidden. ePersonaState={ePersonaState}");
         if (steamId != "" && !VerifySteamId(steamId))
@@ -217,11 +195,11 @@ public class SteamFuncs : ISteamFuncs
             return;
         }
 
-        _appState.Switcher.CurrentStatus = _lang["Status_ClosingPlatform", new { platform = "Steam" }];
+        await _appState.Switcher.UpdateStatusAsync(_lang["Status_ClosingPlatform", new { platform = "Steam" }]);
         if (!_sharedFunctions.CloseProcesses(_steamSettings.Processes, _steamSettings.ClosingMethod))
         {
             if (Globals.IsAdministrator)
-                _appState.Switcher.CurrentStatus = _lang["Status_ClosingPlatformFailed", new { platform = "Steam" }];
+                await _appState.Switcher.UpdateStatusAsync(_lang["Status_ClosingPlatformFailed", new { platform = "Steam" }]);
             else
             {
                 _toasts.ShowToastLang(ToastType.Error, "Failed", "Toast_RestartAsAdmin");
@@ -232,8 +210,8 @@ public class SteamFuncs : ISteamFuncs
 
         if (OperatingSystem.IsWindows()) UpdateLoginUsers(steamId, ePersonaState);
 
-        _appState.Switcher.CurrentStatus = _lang["Status_StartingPlatform", new { platform = "Steam" }];
-        if (_steamSettings.AutoStart)
+        await _appState.Switcher.UpdateStatusAsync(_lang["Status_StartingPlatform", new { platform = "Steam" }]);
+        if (_steamSettings.AutoStart && canStartSteam)
         {
             if (_steamSettings.StartSilent) args += " -silent";
 
@@ -246,15 +224,23 @@ public class SteamFuncs : ISteamFuncs
         if (_steamSettings.AutoStart && _windowSettings.MinimizeOnSwitch) await jsRuntime.InvokeVoidAsync("hideWindow");
 
         NativeFuncs.RefreshTrayArea();
-        _appState.Switcher.CurrentStatus = _lang["Done"];
+        await _appState.Switcher.UpdateStatusAsync(_lang["Done"]);
         _statistics.IncrementSwitches("Steam");
 
         try
         {
-            _steamState.LastAccSteamId = _steamState.SteamUsers.Where(x => x.SteamId == steamId).ToList()[0].SteamId;
-            _steamState.LastAccTimestamp = Globals.GetUnixTimeInt();
-            if (_steamState.LastAccSteamId != "")
-                SetCurrentAccount(_steamState.LastAccSteamId);
+            if (steamId == "")
+            {
+                foreach (var account in _appState.Switcher.SteamAccounts)
+                {
+                    account.IsCurrent = false;
+                    account.TitleText = account.Note;
+                }
+            }
+            else
+            {
+                SetCurrentAccount(steamId);
+            }
         }
         catch (Exception)
         {
@@ -324,7 +310,7 @@ public class SteamFuncs : ISteamFuncs
         // -----------------------------------
         // - Update localconfig.vdf for user -
         // -----------------------------------
-        if (pS != -1) SetPersonaState(selectedSteamId, pS); // Update persona state, if defined above.
+        if (selectedSteamId != "" && pS != -1) SetPersonaState(selectedSteamId, pS); // Update persona state, if defined above.
 
         SteamUser user = new() { AccName = "" };
         try
@@ -436,7 +422,7 @@ public class SteamFuncs : ISteamFuncs
     /// </summary>
     public void CopySettingsFrom(string gameId)
     {
-        var destSteamId = GetCurrentAccountId(true);
+        var destSteamId = _appState.Switcher.SteamAccounts.First(x => x.IsCurrent).AccountId;
         if (!VerifySteamId(_appState.Switcher.SelectedAccountId) || !VerifySteamId(destSteamId))
         {
             _toasts.ShowToastLang(ToastType.Error, "Failed", "Toast_NoValidSteamId");

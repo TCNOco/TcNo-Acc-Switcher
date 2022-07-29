@@ -22,19 +22,6 @@
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @inject IAppState AppState
 @inject IToasts Toasts
-@code {
-
-    protected override void OnInitialized()
-    {
-        Toasts.ToastQueue.CollectionChanged += (_, _) => InvokeAsync(StateHasChanged);
-    }
-
-    private async void OnChangeHandler()
-    {
-        //
-    }
-
-}
 
 <div class="notification-container bottom-right">
     @foreach (var toast in Toasts.ToastQueue)

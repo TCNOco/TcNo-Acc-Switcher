@@ -37,14 +37,15 @@ public class SteamIdConvert
 
     public SteamIdConvert(string anySteamId)
     {
-        Globals.DebugWriteLine($@"[Func:Converters\SteamIdConvert.SteamIdConvert] anySteamId={anySteamId.Substring(anySteamId.Length - 4, 4)}");
+        var privacySteamId = anySteamId.Length > 4 ? anySteamId.Substring(anySteamId.Length - 4, 4) : anySteamId;
+        Globals.DebugWriteLine($@"[Func:Converters\SteamIdConvert.SteamIdConvert] anySteamId={privacySteamId}");
 
         if (!GetIdType(anySteamId))
         {
             Globals.DebugWriteLine($@"[Exception:Converters\SteamIdConvert.SteamIdConvertException] Input SteamID was not recognized!");
             return;
         }
-        
+
         ConvertAll();
     }
 

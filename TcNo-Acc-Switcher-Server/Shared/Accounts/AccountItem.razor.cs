@@ -12,6 +12,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
@@ -32,7 +33,7 @@ namespace TcNo_Acc_Switcher_Server.Shared.Accounts
         /// </summary>
         /// <param name="e"></param>
         /// <param name="acc"></param>
-        public async void AccountRightClick(MouseEventArgs e, Account acc)
+        public async Task AccountRightClick(MouseEventArgs e, Account acc)
         {
             if (e.Button != 2) return;
             SetSelectedAccount(acc);

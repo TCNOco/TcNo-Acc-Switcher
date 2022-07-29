@@ -1,0 +1,21 @@
+﻿@using TcNo_Acc_Switcher_Server.State
+@using Microsoft.AspNetCore.Components
+@using TcNo_Acc_Switcher_Server.State.Interfaces
+@using System.ComponentModel
+@inject IAppState AppState
+
+<div class="statusBar"><span>@AppState.Switcher.CurrentStatus</span></div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        AppState.Switcher.PropertyChanged += async (s, e) => await OnPropertyChanged(s, e);
+    }
+
+    private async Task OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is not "CurrentStatus") return;
+        await InvokeAsync(StateHasChanged);
+        Console.WriteLine("Status set to: " + AppState.Switcher.CurrentStatus);
+    }
+}

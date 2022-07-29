@@ -30,13 +30,13 @@
 @inject IWindowSettings WindowSettings
 
 @code {
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        Modals.GameStatsModalOnChange += OnChangeHandler;
-        OnChangeHandler(); // Run once just to set vars
+        Modals.GameStatsModalOnChange += async () => await OnChangeHandler();
+        await OnChangeHandler(); // Run once just to set vars
     }
 
-    private async void OnChangeHandler()
+    private async Task OnChangeHandler()
     {
         if (Modals.CurrentStatsSelectorState == StatsSelectorState.GamesList)
         {
@@ -53,12 +53,6 @@
 
         await InvokeAsync(StateHasChanged);
     }
-
-    private void Dispose()
-    {
-        Modals.GameStatsModalOnChange -= OnChangeHandler;
-    }
-
 
 
     // List of games from X platform, with Y accountId associated.

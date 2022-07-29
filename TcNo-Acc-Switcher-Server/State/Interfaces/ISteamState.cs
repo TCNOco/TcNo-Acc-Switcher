@@ -26,9 +26,18 @@ public interface ISteamState
     bool SteamLoadingProfiles { get; set; }
     SteamContextMenu ContextMenu { get; set; }
     bool DesktopShortcut { get; set; }
-    int LastAccTimestamp { get; set; }
-    string LastAccSteamId { get; set; }
     bool SteamWebApiWasReset { get; set; }
+
+    /// <summary>
+    /// Installed games on this computer
+    /// </summary>
+    List<string> InstalledGames { get; set; }
+
+    /// <summary>
+    /// List of AppIds and AppNames on this computer
+    /// </summary>
+    Dictionary<string, string> AppIds { get; set; }
+
     Task LoadSteamState(ISteamFuncs steamFuncs, IJSRuntime jsRuntime);
     void SaveAccountOrder(string jsonString);
     string GetName(SteamUser su);

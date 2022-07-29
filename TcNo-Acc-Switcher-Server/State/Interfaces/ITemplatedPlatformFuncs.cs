@@ -13,7 +13,7 @@ public interface ITemplatedPlatformFuncs
     /// <param name="jsRuntime"></param>
     /// <param name="accId">(Optional) User's unique account ID</param>
     /// <param name="args">Starting arguments</param>
-    void SwapTemplatedAccounts(IJSRuntime jsRuntime, string accId = "", string args = "");
+    Task SwapTemplatedAccounts(IJSRuntime jsRuntime, string accId = "", string args = "");
 
     /// <summary>
     /// Highlights the specified account

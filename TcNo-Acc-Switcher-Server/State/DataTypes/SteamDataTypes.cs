@@ -12,7 +12,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
 using Newtonsoft.Json;
+using TcNo_Acc_Switcher_Server.Shared.ContextMenu;
 
 namespace TcNo_Acc_Switcher_Server.State.DataTypes;
 
@@ -29,11 +31,13 @@ public class SteamUser
     [JsonProperty("Timestamp", Order = 4)] public string LastLogin { get; set; }
     [JsonProperty("WantsOfflineMode", Order = 5)] public string OfflineMode = "0";
     [JsonIgnore] public string ImageDownloadUrl { get; set; }
-    [JsonIgnore] public string ImgUrl { get; set; }
+    [JsonIgnore] public string ImgUrl { get; set; } = "img/QuestionMark.jpg";
     [JsonIgnore] public bool BanInfoLoaded { get; set; }
     [JsonIgnore] public bool Vac { get; set; }
     // Either Limited or Community banned status (when using Steam Web API)
     [JsonIgnore] public bool Limited { get; set; }
+    [JsonIgnore] public Dictionary<string, string> AppIds { get; set; } = new();
+    [JsonIgnore] public MenuItem SwitchAndLaunch { get; set; } // This MUST remain null to not be added to context menu.
 }
 
 /// <summary>

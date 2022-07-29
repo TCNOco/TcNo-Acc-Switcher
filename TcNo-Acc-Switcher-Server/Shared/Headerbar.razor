@@ -81,12 +81,12 @@
     private static string[] _possibleAnimations = {"X", "Y", "Z"};
     protected override void OnInitialized()
     {
-        AppState.Navigation.OnBackButtonClick += BackButtonClicked;
-        AppState.Navigation.OnBackButtonReset += BackButtonReset;
+        AppState.Navigation.OnBackButtonClick += async () => await BackButtonClicked();
+        AppState.Navigation.OnBackButtonReset += async () => await BackButtonReset();
     }
 
     // Animate the back button, and sleep 500ms to stop animation.
-    private async void BackButtonClicked()
+    private async Task BackButtonClicked()
     {
         var randomAni = _possibleAnimations[new Random().Next(0, _possibleAnimations.Length - 1)];
         _animatedBackCss = $"transform: rotate{randomAni}(360deg); transition: transform 500ms ease-in-out";
@@ -101,13 +101,13 @@
     }
 
     // Reset the back button to it's original position
-    private async void BackButtonReset()
+    private async Task BackButtonReset()
     {
         _animatedBackCss = "transition: transform 0 ease-in-out";
         await InvokeAsync(StateHasChanged);
     }
 
-    private async void OnMyChangeHandler()
+    private async Task OnMyChangeHandler()
     {
         // InvokeAsync is inherited, it syncs the call back to the render thread
         await InvokeAsync(StateHasChanged);

@@ -21,6 +21,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
@@ -52,7 +53,7 @@ public class Updates
         FirstLaunch = false;
         // Check for update in another thread
         // Also submit statistics, if enabled
-        new Thread(CheckForUpdate).Start();
+        new Thread(async () => await CheckForUpdate()).Start();
         if (windowSettings1.CollectStats && windowSettings1.ShareAnonymousStats)
             new Thread(statistics.UploadStats).Start();
     }
@@ -60,7 +61,7 @@ public class Updates
     /// <summary>
     /// Checks for an update
     /// </summary>
-    public async void CheckForUpdate()
+    public async Task CheckForUpdate()
     {
         if (UpdateCheckRan) return;
         UpdateCheckRan = true;

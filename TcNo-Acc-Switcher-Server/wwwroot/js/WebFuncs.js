@@ -127,8 +127,6 @@ function repositionFindBorders() {
 
 function repositionTooltip(id) {
     const tooltipSpan = $("#" + id);
-    // Only reposition once
-    console.log("Moving", id);
     // Get window size and remove modified position (if any)
     repositionFindBorders();
     tooltipSpan.removeClass().css("left", "").css("bottom", "").css("transform", "");

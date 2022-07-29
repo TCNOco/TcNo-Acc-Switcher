@@ -32,7 +32,7 @@
 @inject ILang Lang
 
 @code {
-    private void UpdateType(){
+    private async Task UpdateType(){
         if (CurrentRequest.Goal == TextInputGoal.None)
             return;
 
@@ -71,7 +71,7 @@
             ConfirmTask = SetAccountString;
         }
 
-        OnChangeHandler(); // Run once just to set vars
+        await OnChangeHandler(); // Run once just to set vars
     }
 
     private Action ConfirmTask { get; set; }
@@ -83,14 +83,14 @@
         CurrentRequest.Goal = TextInputGoal.None;
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        Modals.TextInputOnChange += UpdateType;
-        CurrentRequest.PropertyChanged += (_, _) => UpdateType();
-        UpdateType();
+        Modals.TextInputOnChange += async () => await UpdateType();
+        CurrentRequest.PropertyChanged += async (_, _) => await UpdateType();
+        await UpdateType();
     }
 
-    private async void OnChangeHandler()
+    private async Task OnChangeHandler()
     {
         Modals.Title = Modals.TextInput.ModalHeader;
         var t = Modals.TextInput.ExtraButtons;

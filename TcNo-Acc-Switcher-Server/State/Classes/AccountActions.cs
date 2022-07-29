@@ -13,23 +13,17 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using TcNo_Acc_Switcher_Server.State.Interfaces;
 
-namespace TcNo_Acc_Switcher_Server.Shared.ContextMenu;
-
-public class MenuItem
+namespace TcNo_Acc_Switcher_Server.State.Classes
 {
-    public string Text { get; set; }
-
-    public string Content { get; set; }
-    public Action MenuAction;
-    public List<MenuItem> Children = new();
-
     /// <summary>
-    /// Optional unique ID to remove this section.
+    /// Contains Actions to be used in with Account/s interactions.
     /// </summary>
-    public string Id { get; set; }
-
-    public MenuItem() { }
+    public class AccountActions
+    {
+        /// <summary>
+        /// Used in adding to or modifying the context menu before showing on account right-click
+        /// </summary>
+        public Action<Account> AfterAccountSelect { get; set; }
+    }
 }

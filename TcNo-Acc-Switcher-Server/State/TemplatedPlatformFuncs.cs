@@ -63,7 +63,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
     /// <param name="accId">(Optional) User's unique account ID</param>
     /// <param name="args">Starting arguments</param>
     [SupportedOSPlatform("windows")]
-    public async void SwapTemplatedAccounts(IJSRuntime jsRuntime, string accId = "", string args = "")
+    public async Task SwapTemplatedAccounts(IJSRuntime jsRuntime, string accId = "", string args = "")
     {
         Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.SwapTemplatedAccounts] Swapping to: hidden.");
         // Handle args:
@@ -101,7 +101,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
                             else
                                 _toasts.ShowToastLang(ToastType.Error, new LangSub("Toast_StartingPlatformFailed", new { platform = _templatedPlatformState.CurrentPlatform.SafeName }));
                         }
-                        _appState.Switcher.CurrentStatus = _lang["Done"];
+                        await _appState.Switcher.UpdateStatusAsync(_lang["Done"]);
 
                         return;
                     }
@@ -126,7 +126,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
         if (accName != "" && _templatedPlatformSettings.AutoStart && _windowSettings.MinimizeOnSwitch) await jsRuntime.InvokeVoidAsync("hideWindow");
 
         NativeFuncs.RefreshTrayArea();
-        _appState.Switcher.CurrentStatus = _lang["Done"];
+        await _appState.Switcher.UpdateStatusAsync(_lang["Done"]);
         _statistics.IncrementSwitches(_templatedPlatformState.CurrentPlatform.SafeName);
 
         try

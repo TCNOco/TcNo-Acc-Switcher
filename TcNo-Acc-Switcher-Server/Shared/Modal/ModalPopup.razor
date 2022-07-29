@@ -96,9 +96,9 @@
 
     protected override void OnInitialized()
     {
-        Modals.PropertyChanged += OnChangeHandler;
+        Modals.PropertyChanged += async (s, e) => await OnChangeHandler(s, e);
     }
-    private async void OnChangeHandler(object s, PropertyChangedEventArgs e)
+    private async Task OnChangeHandler(object s, PropertyChangedEventArgs e)
     {
         await InvokeAsync(StateHasChanged);
     }

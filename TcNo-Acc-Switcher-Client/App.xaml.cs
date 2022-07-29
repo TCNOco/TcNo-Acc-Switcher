@@ -146,7 +146,7 @@ public partial class App
             (Keyboard.GetKeyStates(Key.Scroll) & KeyStates.Down) != 0)
         {
             // This can be improved. Somehow ignore self, and make sure all processes are killed before self.
-            if (GeneralFuncs.CanKillProcess("TcNo"))
+            if (Globals.CanKillProcess("TcNo"))
                 Globals.KillProcess("TcNo");
         }
 
