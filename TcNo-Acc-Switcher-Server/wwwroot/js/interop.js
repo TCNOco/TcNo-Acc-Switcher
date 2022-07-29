@@ -41,10 +41,6 @@ function removeUrlArgs(argString) {
     history.pushState({}, null, url);
 }
 
-function updateStatus(status) {
-    $("#CurrentStatus").val(status);
-}
-
 async function initPlatformListSortable() {
     // Create sortable list
     sortable(".platform_list", {

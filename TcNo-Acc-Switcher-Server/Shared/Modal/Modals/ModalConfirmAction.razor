@@ -89,7 +89,7 @@
         WindowSettings.Save();
     }
 
-    private async Task ButtonYes()
+    private void ButtonYes()
     {
         switch (Modals.ExtraArgs)
         {
@@ -99,13 +99,13 @@
                 {
                     SteamSettings.ForgetAccountEnabled = true;
                     SteamSettings.Save();
-                    await SteamFuncs.ForgetAccount();
+                    SteamFuncs.ForgetAccount();
                 }
                 else
                 {
                     TemplatedPlatformSettings.ForgetAccountEnabled = true;
                     TemplatedPlatformSettings.Save();
-                    await TemplatedPlatformFuncs.ForgetAccount();
+                    TemplatedPlatformFuncs.ForgetAccount();
                 }
 
                 break;

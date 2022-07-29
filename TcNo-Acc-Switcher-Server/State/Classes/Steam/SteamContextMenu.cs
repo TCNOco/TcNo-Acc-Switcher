@@ -166,43 +166,43 @@ public class SteamContextMenu
                 new("Context_CopyProfileSubmenu", new Tuple<string, object>[]
                 {
                     new("Context_CommunityUrl",
-                        new Action(async () =>
-                            await StaticFuncs.CopyText(
+                        new Action(() =>
+                            StaticFuncs.CopyText(
                                 $"https://steamcommunity.com/profiles/{_appState.Switcher.SelectedAccountId}"))),
                     new("Context_CommunityUsername",
-                        new Action(async () => await StaticFuncs.CopyText(_appState.Switcher.SelectedAccount.DisplayName))),
+                        new Action(() => StaticFuncs.CopyText(_appState.Switcher.SelectedAccount.DisplayName))),
                     new("Context_LoginUsername",
-                        new Action(async () => await StaticFuncs.CopyText(_appState.Switcher.SelectedAccount.LoginUsername))),
+                        new Action(() => StaticFuncs.CopyText(_appState.Switcher.SelectedAccount.LoginUsername))),
                 }),
                 new("Context_CopySteamIdSubmenu", new Tuple<string, object>[]
                 {
                     new("Context_Steam_Id",
-                        new Action(async () =>
-                            await StaticFuncs.CopyText(new SteamIdConvert(_appState.Switcher.SelectedAccountId).Id))),
+                        new Action(() =>
+                            StaticFuncs.CopyText(new SteamIdConvert(_appState.Switcher.SelectedAccountId).Id))),
                     new("Context_Steam_Id3",
-                        new Action(async () =>
-                            await StaticFuncs.CopyText(new SteamIdConvert(_appState.Switcher.SelectedAccountId).Id3))),
+                        new Action(() =>
+                            StaticFuncs.CopyText(new SteamIdConvert(_appState.Switcher.SelectedAccountId).Id3))),
                     new("Context_Steam_Id32",
-                        new Action(async () =>
-                            await StaticFuncs.CopyText(new SteamIdConvert(_appState.Switcher.SelectedAccountId).Id32))),
+                        new Action(() =>
+                            StaticFuncs.CopyText(new SteamIdConvert(_appState.Switcher.SelectedAccountId).Id32))),
                     new("Context_Steam_Id64",
-                        new Action(async () =>
-                            await StaticFuncs.CopyText(new SteamIdConvert(_appState.Switcher.SelectedAccountId).Id64))),
+                        new Action(() =>
+                            StaticFuncs.CopyText(new SteamIdConvert(_appState.Switcher.SelectedAccountId).Id64))),
                 }),
                 new("Context_CopyOtherSubmenu", new Tuple<string, object>[]
                 {
                     new("SteamRep",
-                        new Action(async () =>
-                            await StaticFuncs.CopyText($"https://steamrep.com/search?q={_appState.Switcher.SelectedAccountId}"))),
+                        new Action(() =>
+                            StaticFuncs.CopyText($"https://steamrep.com/search?q={_appState.Switcher.SelectedAccountId}"))),
                     new("SteamID.uk",
-                        new Action(async () =>
-                            await StaticFuncs.CopyText($"https://steamid.uk/profile/{_appState.Switcher.SelectedAccountId}"))),
+                        new Action(() =>
+                            StaticFuncs.CopyText($"https://steamid.uk/profile/{_appState.Switcher.SelectedAccountId}"))),
                     new("SteamID.io",
-                        new Action(async () =>
-                            await StaticFuncs.CopyText($"https://steamid.io/lookup/{_appState.Switcher.SelectedAccountId}"))),
+                        new Action(() =>
+                            StaticFuncs.CopyText($"https://steamid.io/lookup/{_appState.Switcher.SelectedAccountId}"))),
                     new("SteamIDFinder.com",
-                        new Action(async () =>
-                            await StaticFuncs.CopyText(
+                        new Action(() =>
+                            StaticFuncs.CopyText(
                                 $"https://steamidfinder.com/lookup/{_appState.Switcher.SelectedAccountId}"))),
                 }),
             }),
@@ -217,7 +217,7 @@ public class SteamContextMenu
                 new("LookingToTrade", new Action(() => CreateShortcut(":5"))),
                 new("LookingToPlay", new Action(() => CreateShortcut(":6"))),
             }),
-            new("Forget", new Action(async () => await _steamFuncs.ForgetAccount())),
+            new("Forget", new Action(() => _steamFuncs.ForgetAccount())),
             new("Notes", new Action(() => _modals.ShowModal("notes"))),
             new("Context_ManageSubmenu", new[]
             {

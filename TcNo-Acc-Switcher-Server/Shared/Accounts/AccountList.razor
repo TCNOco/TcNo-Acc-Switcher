@@ -101,11 +101,11 @@
                 break;
             case "c" when (args.CtrlKey && args.ShiftKey) || args.AltKey: // Ctrl+Shift+C or Alt+C copy ID
                 Toasts.ShowToastLang(ToastType.Info, "Toast_Copied");
-                await StaticFuncs.CopyText(AppState.Switcher.SelectedAccount.AccountId); // Copy: Acc.AccountId
+                StaticFuncs.CopyText(AppState.Switcher.SelectedAccount.AccountId); // Copy: Acc.AccountId
                 break;
             case "c" when (args.CtrlKey): // Ctrl+C copy account name
                 Toasts.ShowToastLang(ToastType.Info, "Toast_Copied");
-                await StaticFuncs.CopyText(AppState.Switcher.SelectedAccount.DisplayName); // Copy: Acc.DisplayName
+                StaticFuncs.CopyText(AppState.Switcher.SelectedAccount.DisplayName); // Copy: Acc.DisplayName
                 break;
         }
     }
@@ -127,9 +127,9 @@
     /// </summary>
     public void UnselectAllAccounts()
     {
-        foreach (var acc in AccountItems){
+        foreach (var acc in AccountItems)
+        {
             acc.IsChecked = false;
-            acc.TitleText = acc.Note;
         }
     }
     #endregion

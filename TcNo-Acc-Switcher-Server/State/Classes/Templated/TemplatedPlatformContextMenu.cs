@@ -48,11 +48,11 @@ public class TemplatedPlatformContextMenu
             new[]
             {
                 new ("Context_SwapTo", new Action(() => templatedPlatformFuncs.SwapToAccount(jsRuntime))),
-                new ("Context_CopyUsername", new Action(async () => await StaticFuncs.CopyText(_appState.Switcher.SelectedAccount.DisplayName))),
+                new ("Context_CopyUsername", new Action(() => StaticFuncs.CopyText(_appState.Switcher.SelectedAccount.DisplayName))),
                 new ("Context_ChangeName", new Action(modals.ShowChangeUsernameModal)),
                 new ("Context_CreateShortcut", new Action(() => CreateShortcut())),
                 new ("Context_ChangeImage", new Action(modals.ShowChangeAccImageModal)),
-                new ("Forget", new Action(async () => await templatedPlatformFuncs.ForgetAccount())),
+                new ("Forget", new Action(() => templatedPlatformFuncs.ForgetAccount())),
                 new ("Notes", new Action(() => modals.ShowModal("notes"))),
                 gameStats.PlatformHasAnyGames(_templatedPlatformState.CurrentPlatform.SafeName) ?
                     new Tuple<string, object>("Context_ManageGameStats", new Action(modals.ShowGameStatsSelectorModal)) : null,

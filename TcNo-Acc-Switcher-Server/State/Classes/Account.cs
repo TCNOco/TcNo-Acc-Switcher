@@ -26,8 +26,8 @@ public class Account : INotifyPropertyChanged
 {
     [Inject] private IGameStats GameStats { get; set; }
 
-    private bool _isChecked = false;
-    private bool _isCurrent = false;
+    private bool _isChecked;
+    private bool _isCurrent;
     private string _titleText = "";
     private string _platform = "";
     private string _imagePath = "";

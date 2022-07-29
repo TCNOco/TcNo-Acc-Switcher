@@ -139,21 +139,24 @@
     //protected override async Task OnAfterRenderAsync(bool firstRender) => await GeneralFuncs.HandleFirstRender(firstRender, "Steam");
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        AppState.Switcher.CurrentStatus = Lang["Loading"];
+
         await HandleFirstRender(firstRender);
         Statistics.NewNavigation("/Steam/");
-        if (!firstRender) return;
+        if (firstRender)
+        {
+            StaticFuncs.SaveShortcuts = SaveShortcuts;
+            _shortcuts = SteamSettings.Shortcuts;
+            StaticFuncs.SaveOrderAction = SteamState.SaveAccountOrder;
 
-        StaticFuncs.SaveShortcuts = SaveShortcuts;
-        _shortcuts = SteamSettings.Shortcuts;
-        StaticFuncs.SaveOrderAction = SteamState.SaveAccountOrder;
+            await SteamState.LoadSteamState(SteamFuncs, JsRuntime);
+            await InvokeAsync(StateHasChanged);
 
-        await SteamState.LoadSteamState(SteamFuncs, JsRuntime);
-        await InvokeAsync(StateHasChanged);
+            var curAcc = SteamFuncs.GetCurrentAccountId(true);
+            if (curAcc != "") SteamFuncs.SetCurrentAccount(curAcc);
+        }
 
-        await JsRuntime.InvokeVoidAsync("showNoteTooltips");
-
-        var curAcc = SteamFuncs.GetCurrentAccountId(true);
-        if (curAcc != "") await SteamFuncs.SetCurrentAccount(curAcc);
+        AppState.Switcher.CurrentStatus = Lang["Done"];
     }
 
     public async Task HandleFirstRender(bool firstRender)
@@ -167,7 +170,7 @@
 
             // Handle queries and invoke status "Ready"
             await HandleQueries();
-            await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Done"]);
+            AppState.Switcher.CurrentStatus = Lang["Done"];
         }
     }
 

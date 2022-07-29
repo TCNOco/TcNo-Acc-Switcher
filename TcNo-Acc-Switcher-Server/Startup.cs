@@ -56,7 +56,7 @@ public class Startup
         _ = services.AddSingleton<IModals, Modals>(); // After Lang
         _ = services.AddSingleton<IStatistics, Statistics>(); // After WindowSettings
         _ = services.AddSingleton<IAppState, AppState>(); // Lang, Modals, Statistics, Toasts, WindowSettings
-        _ = services.AddSingleton<ISharedFunctions, SharedFunctions>(); // Lang, Modals, Statistics, Toasts (+JsRuntime)
+        _ = services.AddSingleton<ISharedFunctions, SharedFunctions>(); // AppState, Lang, Modals, Statistics, Toasts (+JsRuntime)
 
         _ = services.AddSingleton<IGameStatsRoot, GameStatsRoot>(); // Toasts, WindowSettings
         _ = services.AddSingleton<IGameStats, GameStats>(); // AppState, GameStatsRoot

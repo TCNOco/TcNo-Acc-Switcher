@@ -68,7 +68,7 @@ public static class StaticFuncs
     #endregion
 
     #region Clipboard
-    public static async Task CopyText(string text) => await ClipboardService.SetTextAsync(text);
+    public static void CopyText(string text) => ClipboardService.SetText(text);
     #endregion
 
 

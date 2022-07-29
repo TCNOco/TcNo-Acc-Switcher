@@ -34,7 +34,7 @@ public class Discord
 
     public DiscordRpcClient DiscordClient { get; set; }
 
-    public void RefreshDiscordPresenceAsync(bool firstLaunch)
+    public void RefreshDiscordPresenceBackground(bool firstLaunch)
     {
         if (!firstLaunch && DiscordClient.CurrentUser is null) return;
         var dThread = new Thread(RefreshDiscordPresence);

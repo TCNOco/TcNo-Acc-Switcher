@@ -172,7 +172,7 @@ public class SteamFuncs : ISteamFuncs
         await SwapSteamAccounts(jsRuntime, "", state);
     }
 
-    public async Task ForgetAccount()
+    public void ForgetAccount()
     {
         if (!_steamSettings.ForgetAccountEnabled)
             _modals.ShowModal("confirm", ExtraArg.ForgetAccount);
@@ -186,7 +186,7 @@ public class SteamFuncs : ISteamFuncs
             _ = userAccounts.RemoveAll(x => x.SteamId == _appState.Switcher.SelectedAccountId);
 
             // Save updated loginusers.vdf file
-            await SaveSteamUsersIntoVdf(userAccounts);
+            SaveSteamUsersIntoVdf(userAccounts);
             trayAcc = "+s:" + _appState.Switcher.SelectedAccountId;
 
             // Remove from Steam accounts list
@@ -217,11 +217,11 @@ public class SteamFuncs : ISteamFuncs
             return;
         }
 
-        await jsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_ClosingPlatform", new { platform = "Steam" }]);
-        if (!await _sharedFunctions.CloseProcesses(jsRuntime, _steamSettings.Processes, _steamSettings.ClosingMethod))
+        _appState.Switcher.CurrentStatus = _lang["Status_ClosingPlatform", new { platform = "Steam" }];
+        if (!_sharedFunctions.CloseProcesses(_steamSettings.Processes, _steamSettings.ClosingMethod))
         {
             if (Globals.IsAdministrator)
-                await jsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_ClosingPlatformFailed", new { platform = "Steam" }]);
+                _appState.Switcher.CurrentStatus = _lang["Status_ClosingPlatformFailed", new { platform = "Steam" }];
             else
             {
                 _toasts.ShowToastLang(ToastType.Error, "Failed", "Toast_RestartAsAdmin");
@@ -230,9 +230,9 @@ public class SteamFuncs : ISteamFuncs
             return;
         }
 
-        if (OperatingSystem.IsWindows()) await UpdateLoginUsers(jsRuntime, steamId, ePersonaState);
+        if (OperatingSystem.IsWindows()) UpdateLoginUsers(steamId, ePersonaState);
 
-        await jsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_StartingPlatform", new { platform = "Steam" }]);
+        _appState.Switcher.CurrentStatus = _lang["Status_StartingPlatform", new { platform = "Steam" }];
         if (_steamSettings.AutoStart)
         {
             if (_steamSettings.StartSilent) args += " -silent";
@@ -246,7 +246,7 @@ public class SteamFuncs : ISteamFuncs
         if (_steamSettings.AutoStart && _windowSettings.MinimizeOnSwitch) await jsRuntime.InvokeVoidAsync("hideWindow");
 
         NativeFuncs.RefreshTrayArea();
-        await jsRuntime.InvokeVoidAsync("updateStatus", _lang["Done"]);
+        _appState.Switcher.CurrentStatus = _lang["Done"];
         _statistics.IncrementSwitches("Steam");
 
         try
@@ -254,7 +254,7 @@ public class SteamFuncs : ISteamFuncs
             _steamState.LastAccSteamId = _steamState.SteamUsers.Where(x => x.SteamId == steamId).ToList()[0].SteamId;
             _steamState.LastAccTimestamp = Globals.GetUnixTimeInt();
             if (_steamState.LastAccSteamId != "")
-                await SetCurrentAccount(_steamState.LastAccSteamId);
+                SetCurrentAccount(_steamState.LastAccSteamId);
         }
         catch (Exception)
         {
@@ -266,32 +266,17 @@ public class SteamFuncs : ISteamFuncs
     /// <summary>
     /// Highlights the specified account
     /// </summary>
-    public async Task SetCurrentAccount(string accId)
+    public void SetCurrentAccount(string accId)
     {
         var acc = _appState.Switcher.SteamAccounts.First(x => x.AccountId == accId);
-        await UnCurrentAllAccounts();
-        acc.IsCurrent = true;
-        acc.TitleText = $"{_lang["Tooltip_CurrentAccount"]}";
-
-        // getBestOffset
-        // TODO: Remove with new tooltips: await JsRuntime.InvokeVoidAsync("setBestOffset", acc.AccountId);
-        // then initTooltips
-        // TODO: Remove with new tooltips: await JsRuntime.InvokeVoidAsync("initTooltips");
-    }
-
-
-    /// <summary>
-    /// Removes "currently logged in" border from all accounts
-    /// </summary>
-    public async Task UnCurrentAllAccounts()
-    {
         foreach (var account in _appState.Switcher.SteamAccounts)
         {
+            if (account == acc) continue;
             account.IsCurrent = false;
+            account.TitleText = account.Note;
         }
-
-        // Clear the hover text
-        // TODO: Remove with new tooltips: await JsRuntime.InvokeVoidAsync("clearAccountTooltips");
+        acc.IsCurrent = true;
+        acc.TitleText = $"{_lang["Tooltip_CurrentAccount"]}";
     }
     #endregion
 
@@ -300,18 +285,17 @@ public class SteamFuncs : ISteamFuncs
     /// <summary>
     /// Updates loginusers and registry to select an account as "most recent"
     /// </summary>
-    /// <param name="jsRuntime"></param>
     /// <param name="selectedSteamId">Steam ID64 to switch to</param>
     /// <param name="pS">[PersonaState]0-7 custom persona state [0: Offline, 1: Online...]</param>
     [SupportedOSPlatform("windows")]
-    public async Task UpdateLoginUsers(IJSRuntime jsRuntime, string selectedSteamId, int pS)
+    public void UpdateLoginUsers(string selectedSteamId, int pS)
     {
         Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.UpdateLoginUsers] Updating loginusers: selectedSteamId={(selectedSteamId.Length > 0 ? selectedSteamId.Substring(selectedSteamId.Length - 4, 4) : "")}, pS={pS}");
         var userAccounts = _steamState.GetSteamUsers(_steamSettings.LoginUsersVdf);
         // -----------------------------------
         // ----- Manage "loginusers.vdf" -----
         // -----------------------------------
-        await jsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_UpdatingFile", new { file = "loginusers.vdf" }]);
+        _appState.Switcher.CurrentStatus = _lang["Status_UpdatingFile", new { file = "loginusers.vdf" }];
         var tempFile = _steamSettings.LoginUsersVdf + "_temp";
         Globals.DeleteFile(tempFile);
 
@@ -335,7 +319,7 @@ public class SteamFuncs : ISteamFuncs
         //userAccounts.Single(x => x.SteamId == selectedSteamId).MostRec = "1";
 
         // Save updated loginusers.vdf
-        await SaveSteamUsersIntoVdf(userAccounts);
+        SaveSteamUsersIntoVdf(userAccounts);
 
         // -----------------------------------
         // - Update localconfig.vdf for user -
@@ -361,7 +345,7 @@ public class SteamFuncs : ISteamFuncs
             --> AutoLoginUser = username
             --> RememberPassword = 1
         */
-        await jsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_UpdatingRegistry"]);
+        _appState.Switcher.CurrentStatus = _lang["Status_UpdatingRegistry"];
         using var key = Registry.CurrentUser.CreateSubKey(@"Software\Valve\Steam");
         key?.SetValue("AutoLoginUser", user.AccName); // Account name is not set when changing user accounts from launch arguments (part of the viewmodel). -- Can be "" if no account
         key?.SetValue("RememberPassword", 1);
@@ -374,10 +358,10 @@ public class SteamFuncs : ISteamFuncs
     }
 
     /// <summary>
-    /// Save updated list of Steamuser into loginusers.vdf, in vdf format.
+    /// Save updated list of SteamUser into loginusers.vdf, in vdf format.
     /// </summary>
-    /// <param name="userAccounts">List of Steamuser to save into loginusers.vdf</param>
-    public async Task SaveSteamUsersIntoVdf(List<SteamUser> userAccounts)
+    /// <param name="userAccounts">List of SteamUser to save into loginusers.vdf</param>
+    public void SaveSteamUsersIntoVdf(List<SteamUser> userAccounts)
     {
         Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.SaveSteamUsersIntoVdf] Saving updated loginusers.vdf. Count: {userAccounts.Count}");
         // Convert list to JObject list, ready to save into vdf.
@@ -389,7 +373,7 @@ public class SteamFuncs : ISteamFuncs
 
         // Write changes to files.
         var tempFile = _steamSettings.LoginUsersVdf + "_temp";
-        await File.WriteAllTextAsync(tempFile, @"""users""" + Environment.NewLine + outJObject.ToVdf());
+        File.WriteAllText(tempFile, @"""users""" + Environment.NewLine + outJObject.ToVdf());
         if (!File.Exists(tempFile))
         {
             File.Replace(tempFile, _steamSettings.LoginUsersVdf, _steamSettings.LoginUsersVdf + "_last");
@@ -405,7 +389,7 @@ public class SteamFuncs : ISteamFuncs
             }
 
             // Step 2: Write new info
-            await File.WriteAllTextAsync(_steamSettings.LoginUsersVdf, @"""users""" + Environment.NewLine + outJObject.ToVdf());
+            File.WriteAllText(_steamSettings.LoginUsersVdf, @"""users""" + Environment.NewLine + outJObject.ToVdf());
         }
         catch (Exception ex)
         {

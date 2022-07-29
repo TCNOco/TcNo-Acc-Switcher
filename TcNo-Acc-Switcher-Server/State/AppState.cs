@@ -37,7 +37,7 @@ public class AppState : IAppState, INotifyPropertyChanged
         WindowState = new WindowState();
 
         // Discord integration
-        Discord.RefreshDiscordPresenceAsync(true);
+        Discord.RefreshDiscordPresenceBackground(true);
 
         // Forward state changes.
         Stylesheet.PropertyChanged += (s, e) => PropertyChanged?.Invoke(s, e);

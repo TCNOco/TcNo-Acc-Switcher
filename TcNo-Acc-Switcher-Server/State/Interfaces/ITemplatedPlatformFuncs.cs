@@ -18,15 +18,10 @@ public interface ITemplatedPlatformFuncs
     /// <summary>
     /// Highlights the specified account
     /// </summary>
-    Task SetCurrentAccount(IJSRuntime jsRuntime, string accId);
+    void SetCurrentAccount(string accId);
 
-    /// <summary>
-    /// Removes "currently logged in" border from all accounts
-    /// </summary>
-    Task UnCurrentAllAccounts(IJSRuntime jsRuntime);
-
-    Task<string> GetCurrentAccountId();
-    Task ClearCache();
+    string GetCurrentAccountId();
+    void ClearCache();
 
     /// <summary>
     /// Expands custom environment variables.
@@ -36,14 +31,14 @@ public interface ITemplatedPlatformFuncs
     /// <returns></returns>
     string ExpandEnvironmentVariables(string path, bool noIncludeBasicCheck = false);
 
-    Task<bool> TemplatedAddCurrent(IJSRuntime jsRuntime, string accName);
+    bool TemplatedAddCurrent(string accName);
 
     /// <summary>
     /// Read a JSON file from provided path. Returns JObject
     /// </summary>
-    Task<JToken> ReadJsonFile(string path);
+    JToken ReadJsonFile(string path);
 
-    Task<string> GetUniqueId();
+    string GetUniqueId();
     Dictionary<string, string> ReadAllIds(string path = null);
 
     /// <summary>
@@ -56,7 +51,7 @@ public interface ITemplatedPlatformFuncs
     /// </summary>
     void SwapToNewAccount(IJSRuntime jsRuntime);
 
-    Task ForgetAccount();
+    void ForgetAccount();
     void RunPlatform(bool admin, string args = "");
     void RunPlatform();
 }

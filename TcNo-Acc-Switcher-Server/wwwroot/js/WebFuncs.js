@@ -62,20 +62,6 @@ function flushJQueryAppendQueue() {
 
 // ---------- KEEPING FROM OLD ----------
 
-window.addEventListener("load",
-    () => {
-        initTooltips();
-    });
-
-// Convert title="" into a hover tooltip.
-function initTooltips() {
-    // I don't know of an easier way to do this.
-    $('[data-toggle="tooltip"]').tooltip();
-    setTimeout(() => $('[data-toggle="tooltip"]').tooltip(), 1000);
-    setTimeout(() => $('[data-toggle="tooltip"]').tooltip(), 2000);
-    setTimeout(() => $('[data-toggle="tooltip"]').tooltip(), 4000);
-}
-
 // Figures out the best place for a tooltip and returns that location
 // el MUST BE A JS VARIABLE
 function getBestOffset(el) {
@@ -98,37 +84,6 @@ function getBestOffset(el) {
 
 // Focus on a specific element, like an input or button
 focusOn = async (element) => $(element).focus();
-
-// Remove existing highlighted elements, if any.
-function clearAccountTooltips() {
-    $(".currentAcc").each((_, e) => {
-        var j = $(e);
-        j.removeClass("currentAcc");
-        j.parent().removeAttr("title").removeAttr("data-original-title").removeAttr("data-placement");
-    });
-}
-
-// Sets the best data-placement attribute for the requested account
-function setBestOffset(element) {
-    const parentEl = $(`[for='${element}']`).parent();
-    parentEl.attr("data-placement", getBestOffset(parentEl));
-}
-
-// Show hover tooltips for account notes.
-async function showNoteTooltips() {
-    const noteArr = $(".acc_note").toArray();
-    if (noteArr.length === 0) return;
-
-    await noteArr.forEach((e) => {
-        var j = $(e);
-        var note = j.text();
-        var parentEl = j.parent().parent();
-        parentEl.removeAttr("title").removeAttr("data-original-title").removeAttr("data-placement");
-        parentEl.attr("title", note);
-        parentEl.attr("data-placement", getBestOffset(parentEl));
-    });
-    initTooltips();
-}
 
 // Scrolls the path picker modal window to the last selected element - For pasting in paths, etc.
 var lastPickerText = "";
@@ -187,7 +142,6 @@ function repositionTooltip(id) {
     const spaceT = parentBounds.top - bounds.height > windowHeaderbarHeight;
     // And space when centered?
     const middleParentX = parentBounds.x + (parentBounds.width / 2);
-    const middleParentY = parentBounds.y + (parentBounds.height / 2);
     const spaceLCentered = middleParentX - (bounds.width / 2) > windowBorderWidth;
     const spaceRCentered = middleParentX + (bounds.width / 2) < innerWidth - windowBorderWidth;
     if (spaceLCentered && spaceRCentered) {

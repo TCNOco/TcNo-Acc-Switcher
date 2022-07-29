@@ -33,7 +33,7 @@ public interface ISteamFuncs
     /// <param name="state">Optional profile state for Steam accounts</param>
     Task SwapToNewAccount(IJSRuntime jsRuntime, int state = -1);
 
-    Task ForgetAccount();
+    void ForgetAccount();
 
     /// <summary>
     /// Restart Steam with a new account selected. Leave args empty to log into a new account.
@@ -47,26 +47,20 @@ public interface ISteamFuncs
     /// <summary>
     /// Highlights the specified account
     /// </summary>
-    Task SetCurrentAccount(string accId);
-
-    /// <summary>
-    /// Removes "currently logged in" border from all accounts
-    /// </summary>
-    Task UnCurrentAllAccounts();
+    void SetCurrentAccount(string accId);
 
     /// <summary>
     /// Updates loginusers and registry to select an account as "most recent"
     /// </summary>
-    /// <param name="jsRuntime"></param>
     /// <param name="selectedSteamId">Steam ID64 to switch to</param>
     /// <param name="pS">[PersonaState]0-7 custom persona state [0: Offline, 1: Online...]</param>
-    Task UpdateLoginUsers(IJSRuntime jsRuntime, string selectedSteamId, int pS);
+    void UpdateLoginUsers(string selectedSteamId, int pS);
 
     /// <summary>
     /// Save updated list of Steamuser into loginusers.vdf, in vdf format.
     /// </summary>
     /// <param name="userAccounts">List of Steamuser to save into loginusers.vdf</param>
-    Task SaveSteamUsersIntoVdf(List<SteamUser> userAccounts);
+    void SaveSteamUsersIntoVdf(List<SteamUser> userAccounts);
 
     /// <summary>
     /// Sets whether the user is invisible or not

@@ -212,7 +212,7 @@
 <h2 class="SettingsHeader">@Lang["Settings_Header_StatsSharing"]</h2>
 <div class="rowSetting">
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_CollectStats" @bind="WindowSettings.CollectStats" @onclick="() => AppState.Discord.RefreshDiscordPresenceAsync(false)"><label class="form-check-label" for="AppSett_CollectStats"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_CollectStats" @bind="WindowSettings.CollectStats" @onclick="() => AppState.Discord.RefreshDiscordPresenceBackground(false)"><label class="form-check-label" for="AppSett_CollectStats"></label>
     </div>
     <label for="AppSett_CollectStats">
         @Lang["Settings_CollectStats"]<br>
@@ -230,14 +230,14 @@
 </div>
 <div class="rowSetting">
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_DiscordRpc" @bind="WindowSettings.DiscordRpcEnabled" @onclick="() => AppState.Discord.RefreshDiscordPresenceAsync(false)"><label class="form-check-label" for="AppSett_DiscordRpc"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_DiscordRpc" @bind="WindowSettings.DiscordRpcEnabled" @onclick="() => AppState.Discord.RefreshDiscordPresenceBackground(false)"><label class="form-check-label" for="AppSett_DiscordRpc"></label>
     </div>
     <label for="AppSett_DiscordRpc">
         @Lang["Settings_DiscordRpc"]<br>
     </label>
 
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_DiscordRpcSwitches" @bind="WindowSettings.DiscordRpcShareTotalSwitches" @onclick="() => AppState.Discord.RefreshDiscordPresenceAsync(false)"><label class="form-check-label" for="AppSett_DiscordRpcSwitches"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_DiscordRpcSwitches" @bind="WindowSettings.DiscordRpcShareTotalSwitches" @onclick="() => AppState.Discord.RefreshDiscordPresenceBackground(false)"><label class="form-check-label" for="AppSett_DiscordRpcSwitches"></label>
     </div>
     <label for="AppSett_DiscordRpcSwitches">
         @Lang["Settings_DiscordRpcShare"]<br>

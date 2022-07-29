@@ -46,7 +46,7 @@
             CurrentRequest.ModalButtonText = Lang["Modal_AddCurrentAccount", new { platform = AppState.Switcher.CurrentSwitcher }];
             CurrentRequest.ExtraButtons = AppState.Switcher.CurrentSwitcher == "Steam" ? new MarkupString() : TemplatedPlatformState.CurrentPlatform.UserModalExtraButtons;
 
-            ConfirmTask = async () => await SetAccountString();
+            ConfirmTask = SetAccountString;
         }
         else if (CurrentRequest.Goal == TextInputGoal.AppPassword)
         {
@@ -68,7 +68,7 @@
             CurrentRequest.ModalButtonText = Lang["Toast_SetUsername"];
             CurrentRequest.ExtraButtons = AppState.Switcher.CurrentSwitcher == "Steam" ? new MarkupString() : TemplatedPlatformState.CurrentPlatform.UserModalExtraButtons;
 
-            ConfirmTask = async () => await SetAccountString();
+            ConfirmTask = SetAccountString;
         }
 
         OnChangeHandler(); // Run once just to set vars
@@ -161,7 +161,7 @@
         Toasts.ShowToastLang(ToastType.Success, "Toast_PasswordChanged");
     }
 
-    public async Task SetAccountString()
+    public void SetAccountString()
     {
         Modals.IsShown = false;
 
@@ -182,10 +182,10 @@
             if (Modals.TextInput.Goal is TextInputGoal.ChangeUsername)
                 TemplatedChangeUsername(AppState.Switcher.SelectedAccountId, Modals.TextInput.LastString);
             else
-                await TemplatedPlatformFuncs.TemplatedAddCurrent(JsRuntime, Modals.TextInput.LastString);
+                TemplatedPlatformFuncs.TemplatedAddCurrent(Modals.TextInput.LastString);
         }
     }
-    
+
     public void TemplatedChangeUsername(string accId, string newName, bool reload = true)
     {
         TemplatedPlatformState.LoadAccountIds();

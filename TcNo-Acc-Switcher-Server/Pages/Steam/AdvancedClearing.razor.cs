@@ -48,10 +48,10 @@ public partial class AdvancedClearing
     }
 
     // BUTTON: Kill Steam process
-    public async Task Steam_Close()
+    public void Steam_Close()
     {
         Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Close]");
-        WriteLine(await SharedFunctions.CloseProcesses(JsRuntime, SteamSettings.Processes, SteamSettings.ClosingMethod) ? "Closed Steam." : "ERROR: COULD NOT CLOSE STEAM!");
+        WriteLine(SharedFunctions.CloseProcesses(SteamSettings.Processes, SteamSettings.ClosingMethod) ? "Closed Steam." : "ERROR: COULD NOT CLOSE STEAM!");
     }
 
     // BUTTON: ..\Steam\Logs

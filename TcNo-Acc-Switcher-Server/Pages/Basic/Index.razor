@@ -188,6 +188,8 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        AppState.Switcher.CurrentStatus = Lang["Loading"];
+
         if (_navBack)
         {
             Toasts.ShowToastLang(ToastType.Error, "Error", new LangSub	("Toast_FailedLoad", new {platform = TemplatedPlatformState.CurrentPlatform.Name}));
@@ -195,18 +197,20 @@
         }
         await HandleFirstRender(firstRender);
         Statistics.NewNavigation($"/[{TemplatedPlatformState.CurrentPlatform.SafeName}]");
-        if (!firstRender) return;
+        if (firstRender)
+        {
 
-        StaticFuncs.SaveShortcuts = SaveShortcuts;
-        _shortcuts = TemplatedPlatformSettings.Shortcuts;
-        StaticFuncs.SaveOrderAction = TemplatedPlatformState.SaveAccountOrder;
+            StaticFuncs.SaveShortcuts = SaveShortcuts;
+            _shortcuts = TemplatedPlatformSettings.Shortcuts;
+            StaticFuncs.SaveOrderAction = TemplatedPlatformState.SaveAccountOrder;
 
-        TemplatedPlatformState.LoadTemplatedPlatformState(JsRuntime, TemplatedPlatformSettings, TemplatedPlatformFuncs);
+            TemplatedPlatformState.LoadTemplatedPlatformState(JsRuntime, TemplatedPlatformSettings, TemplatedPlatformFuncs);
 
-        await JsRuntime.InvokeVoidAsync("showNoteTooltips");
+            var curAcc = TemplatedPlatformFuncs.GetCurrentAccountId();
+            if (curAcc != "") TemplatedPlatformFuncs.SetCurrentAccount(curAcc);
+        }
 
-        var curAcc = await TemplatedPlatformFuncs.GetCurrentAccountId();
-        if (curAcc != "") await TemplatedPlatformFuncs.SetCurrentAccount(JsRuntime, curAcc);
+        AppState.Switcher.CurrentStatus = Lang["Done"];
     }
 
 
@@ -221,7 +225,6 @@
 
             // Handle queries and invoke status "Ready"
             await HandleQueries();
-            await JsRuntime.InvokeVoidAsync("updateStatus", Lang["Done"]);
         }
     }
 

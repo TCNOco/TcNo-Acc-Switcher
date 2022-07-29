@@ -75,14 +75,14 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
         _templatedPlatformState.LoadAccountIds();
         var accName = _templatedPlatformState.GetNameFromId(accId);
 
-        if (!await KillGameProcesses(jsRuntime))
+        if (!KillGameProcesses())
             return;
 
         // Add currently logged in account if there is a way of checking unique ID.
         // If saved, and has unique key: Update
         if (_templatedPlatformState.CurrentPlatform.UniqueIdFile is not null)
         {
-            var uniqueId = await GetUniqueId();
+            var uniqueId = GetUniqueId();
 
             // UniqueId Found >> Save!
             if (File.Exists(_templatedPlatformState.CurrentPlatform.IdsJsonPath))
@@ -101,11 +101,11 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
                             else
                                 _toasts.ShowToastLang(ToastType.Error, new LangSub("Toast_StartingPlatformFailed", new { platform = _templatedPlatformState.CurrentPlatform.SafeName }));
                         }
-                        await jsRuntime.InvokeVoidAsync("updateStatus", _lang["Done"]);
+                        _appState.Switcher.CurrentStatus = _lang["Done"];
 
                         return;
                     }
-                    await TemplatedAddCurrent(jsRuntime, _templatedPlatformState.AccountIds[uniqueId]);
+                    TemplatedAddCurrent(_templatedPlatformState.AccountIds[uniqueId]);
                 }
             }
         }
@@ -116,7 +116,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
         // Copy saved files in
         if (accName != "")
         {
-            if (!await BasicCopyInAccount(accId)) return;
+            if (!BasicCopyInAccount(accId)) return;
             Globals.AddTrayUser(_templatedPlatformState.CurrentPlatform.SafeName, $"+{_templatedPlatformState.CurrentPlatform.PrimaryId}:" + accId, accName, _templatedPlatformSettings.TrayAccNumber); // Add to Tray list, using first Identifier
         }
 
@@ -126,7 +126,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
         if (accName != "" && _templatedPlatformSettings.AutoStart && _windowSettings.MinimizeOnSwitch) await jsRuntime.InvokeVoidAsync("hideWindow");
 
         NativeFuncs.RefreshTrayArea();
-        await jsRuntime.InvokeVoidAsync("updateStatus", _lang["Done"]);
+        _appState.Switcher.CurrentStatus = _lang["Done"];
         _statistics.IncrementSwitches(_templatedPlatformState.CurrentPlatform.SafeName);
 
         try
@@ -134,7 +134,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
             _templatedPlatformSettings.LastAccName = accId;
             _templatedPlatformSettings.LastAccTimestamp = Globals.GetUnixTimeInt();
             if (_templatedPlatformSettings.LastAccName != "")
-                await SetCurrentAccount(jsRuntime, _templatedPlatformSettings.LastAccName);
+                SetCurrentAccount(_templatedPlatformSettings.LastAccName);
         }
         catch (Exception)
         {
@@ -145,35 +145,20 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
     /// <summary>
     /// Highlights the specified account
     /// </summary>
-    public async Task SetCurrentAccount(IJSRuntime jsRuntime, string accId)
+    public void SetCurrentAccount(string accId)
     {
         var acc = _appState.Switcher.TemplatedAccounts.First(x => x.AccountId == accId);
-        await UnCurrentAllAccounts(jsRuntime);
-        acc.IsCurrent = true;
-        acc.TitleText = $"{_lang["Tooltip_CurrentAccount"]}";
-
-        // getBestOffset
-        // TODO: Remove with new tooltips: await JsRuntime.InvokeVoidAsync("setBestOffset", acc.AccountId);
-        // then initTooltips
-        // TODO: Remove with new tooltips: await JsRuntime.InvokeVoidAsync("initTooltips");
-    }
-
-
-    /// <summary>
-    /// Removes "currently logged in" border from all accounts
-    /// </summary>
-    public async Task UnCurrentAllAccounts(IJSRuntime jsRuntime)
-    {
         foreach (var account in _appState.Switcher.TemplatedAccounts)
         {
+            if (account == acc) continue;
             account.IsCurrent = false;
+            account.TitleText = account.Note;
         }
-
-        // Clear the hover text
-        await jsRuntime.InvokeVoidAsync("clearAccountTooltips");
+        acc.IsCurrent = true;
+        acc.TitleText = $"{_lang["Tooltip_CurrentAccount"]}";
     }
 
-    public async Task<string> GetCurrentAccountId()
+    public string GetCurrentAccountId()
     {
         // 30 second window - For when changing accounts
         if (_templatedPlatformSettings.LastAccName != "" && _templatedPlatformSettings.LastAccTimestamp - Globals.GetUnixTimeInt() < 30)
@@ -181,7 +166,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
 
         try
         {
-            var uniqueId = await GetUniqueId();
+            var uniqueId = GetUniqueId();
 
             // UniqueId Found in saved file >> return value
             if (File.Exists(_templatedPlatformState.CurrentPlatform.IdsJsonPath) && !string.IsNullOrEmpty(uniqueId) && _templatedPlatformState.AccountIds.ContainsKey(uniqueId))
@@ -202,7 +187,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
         Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.ClearCurrentLoginBasic]");
 
         // Foreach file/folder/reg in Platform.PathListToClear
-        if (_templatedPlatformState.CurrentPlatform.PathListToClear.Any(accFile => !DeleteFileOrFolder(accFile).Result)) return;
+        if (_templatedPlatformState.CurrentPlatform.PathListToClear.Any(accFile => !DeleteFileOrFolder(accFile))) return;
 
         if (_templatedPlatformState.CurrentPlatform.UniqueIdMethod.StartsWith("JSON_SELECT"))
         {
@@ -218,7 +203,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
         Globals.DeleteFile(uniqueIdFile);
     }
 
-    public async Task ClearCache()
+    public void ClearCache()
     {
 
         Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.ClearCache]");
@@ -227,7 +212,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
         _toasts.ShowToastLang(ToastType.Info, "Working", new LangSub("Platform_ClearCacheTotal", new { totalFileCount = totalFiles, totalSizeMB = totalSize }));
 
         // Foreach file/folder/reg in Platform.PathListToClear
-        foreach (var f in _templatedPlatformState.CurrentPlatform.Extras.CachePaths.Where(f => !DeleteFileOrFolder(f).Result))
+        foreach (var f in _templatedPlatformState.CurrentPlatform.Extras.CachePaths.Where(f => !DeleteFileOrFolder(f)))
         {
             _toasts.ShowToastLang(ToastType.Error, "Working", new LangSub("Platform_CouldNotDeleteLog", new { logPath = Globals.GetLogPath() }));
             Globals.WriteToLog("Could not delete: " + f);
@@ -292,7 +277,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
         return new FileInfo(fullPath).Length;
     }
 
-    private async Task<bool> DeleteFileOrFolder(string accFile)
+    private bool DeleteFileOrFolder(string accFile)
     {
         // The "file" is a registry key
         if (OperatingSystem.IsWindows() && accFile.StartsWith("REG:"))
@@ -434,7 +419,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
         return Environment.ExpandEnvironmentVariables(path);
     }
 
-    private async Task<bool> BasicCopyInAccount(string accId)
+    private bool BasicCopyInAccount(string accId)
     {
         Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.BasicCopyInAccount]");
         _templatedPlatformState.LoadAccountIds();
@@ -497,20 +482,20 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
 
 
             // FILE OR FOLDER
-            await HandleFileOrFolder(accFile, savedFile, localCachePath, true);
+            HandleFileOrFolder(accFile, savedFile, localCachePath, true);
         }
 
         return true;
     }
 
-    private async Task<bool> KillGameProcesses(IJSRuntime jsRuntime)
+    private bool KillGameProcesses()
     {
         // Kill game processes
-        await jsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_ClosingPlatform", new { platform = _templatedPlatformState.CurrentPlatform.Name }]);
-        if (await _sharedFunctions.CloseProcesses(jsRuntime, _templatedPlatformState.CurrentPlatform.ExesToEnd, _templatedPlatformSettings.ClosingMethod)) return true;
+        _appState.Switcher.CurrentStatus = _lang["Status_ClosingPlatform", new { platform = _templatedPlatformState.CurrentPlatform.Name }];
+        if (_sharedFunctions.CloseProcesses(_templatedPlatformState.CurrentPlatform.ExesToEnd, _templatedPlatformSettings.ClosingMethod)) return true;
 
         if (Globals.IsAdministrator)
-            await jsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_ClosingPlatformFailed", new { platform = _templatedPlatformState.CurrentPlatform.Name }]);
+            _appState.Switcher.CurrentStatus = _lang["Status_ClosingPlatformFailed", new { platform = _templatedPlatformState.CurrentPlatform.Name }];
         else
         {
             _toasts.ShowToastLang(ToastType.Error, "Failed", "Toast_RestartAsAdmin");
@@ -520,11 +505,11 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
 
     }
 
-    public async Task<bool> TemplatedAddCurrent(IJSRuntime jsRuntime, string accName)
+    public bool TemplatedAddCurrent(string accName)
     {
         Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.TemplatedAddCurrent]");
         if (_templatedPlatformState.CurrentPlatform.ExitBeforeInteract)
-            if (!await KillGameProcesses(jsRuntime))
+            if (!KillGameProcesses())
                 return false;
 
         // If set to clear LoginCache for account before adding (Enabled by default):
@@ -548,16 +533,16 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
         if (_templatedPlatformState.CurrentPlatform.LoginFiles == null) throw new Exception("No data in basic platform: " + _templatedPlatformState.CurrentPlatform.Name);
 
         // Handle unique ID
-        await jsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_GetUniqueId"]);
+        _appState.Switcher.CurrentStatus = _lang["Status_GetUniqueId"];
 
-        var uniqueId = await GetUniqueId();
+        var uniqueId = GetUniqueId();
 
         if (uniqueId == "" && _templatedPlatformState.CurrentPlatform.UniqueIdMethod == "CREATE_ID_FILE")
         {
             // Unique ID file, and does not already exist: Therefore create!
             var uniqueIdFile = _templatedPlatformState.CurrentPlatform.UniqueFilePath;
             uniqueId = Globals.RandomString(16);
-            await File.WriteAllTextAsync(uniqueIdFile, uniqueId);
+            File.WriteAllText(uniqueIdFile, uniqueId);
         }
 
         // Handle special args in username
@@ -565,7 +550,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
 
         var regJson = _templatedPlatformState.CurrentPlatform.HasRegistryFiles ? _templatedPlatformState.CurrentPlatform.ReadRegJson(accName) : new Dictionary<string, string>();
 
-        await jsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_CopyingFiles"]);
+        _appState.Switcher.CurrentStatus = _lang["Status_CopyingFiles"];
         foreach (var (accFile, savedFile) in _templatedPlatformState.CurrentPlatform.LoginFiles)
         {
             // HANDLE REGISTRY KEY
@@ -598,7 +583,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
             {
                 var path = accFile.Split("::")[1];
                 var selector = accFile.Split("::")[2];
-                var js = await ReadJsonFile(path);
+                var js = ReadJsonFile(path);
                 var originalValue = js.SelectToken(selector);
 
                 // Save if it's JUST getting the value
@@ -626,7 +611,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
             }
 
             // FILE OR FOLDER
-            if (await HandleFileOrFolder(accFile, savedFile, localCachePath, false)) continue;
+            if (HandleFileOrFolder(accFile, savedFile, localCachePath, false)) continue;
 
             // Could not find file/folder
             _toasts.ShowToastLang(ToastType.Error, "DirectoryNotFound", new LangSub("CouldNotFindX", new { x = accFile }));
@@ -641,13 +626,13 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
 
         var allIds = Globals.ReadDict(_templatedPlatformState.CurrentPlatform.IdsJsonPath);
         allIds[uniqueId] = accName;
-        await File.WriteAllTextAsync(_templatedPlatformState.CurrentPlatform.IdsJsonPath, JsonConvert.SerializeObject(allIds));
+        File.WriteAllText(_templatedPlatformState.CurrentPlatform.IdsJsonPath, JsonConvert.SerializeObject(allIds));
 
         // Copy in profile image from default -- As long as not already handled by special arguments
         // Or if has ProfilePicFromFile and ProfilePicRegex.
         if (!hadSpecialProperties.Contains("IMAGE|"))
         {
-            await jsRuntime.InvokeVoidAsync("updateStatus", _lang["Status_HandlingImage"]);
+            _appState.Switcher.CurrentStatus = _lang["Status_HandlingImage"];
 
             _ = Directory.CreateDirectory(Path.Join(Globals.WwwRoot, $"\\img\\profiles\\{_templatedPlatformState.CurrentPlatform.SafeName}"));
             var profileImg = Path.Join(Globals.WwwRoot, $"\\img\\profiles\\{_templatedPlatformState.CurrentPlatform.SafeName}\\{Globals.GetCleanFilePath(uniqueId)}.jpg");
@@ -698,7 +683,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
     /// <summary>
     /// Read a JSON file from provided path. Returns JObject
     /// </summary>
-    public async Task<JToken> ReadJsonFile(string path)
+    public JToken ReadJsonFile(string path)
     {
         Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.ReadJsonFile] path={path}");
         JToken jToken = null;
@@ -717,7 +702,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
     /// <param name="toPath"></param>
     /// <param name="localCachePath"></param>
     /// <param name="reverse">FALSE: Platform -> LoginCache. TRUE: LoginCache -> J••Platform</param>
-    private async Task<bool> HandleFileOrFolder(string fromPath, string toPath, string localCachePath, bool reverse)
+    private bool HandleFileOrFolder(string fromPath, string toPath, string localCachePath, bool reverse)
     {
         // Expand, or join localCachePath
         var toFullPath = toPath.Contains('%')
@@ -826,7 +811,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
         return hadSpecialProperties;
     }
 
-    public async Task<string> GetUniqueId()
+    public string GetUniqueId()
     {
         if (OperatingSystem.IsWindows() && _templatedPlatformState.CurrentPlatform.UniqueIdMethod is "REGKEY" && !string.IsNullOrEmpty(_templatedPlatformState.CurrentPlatform.UniqueIdFile))
         {
@@ -850,7 +835,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
 
         if (_templatedPlatformState.CurrentPlatform.UniqueIdMethod is "CREATE_ID_FILE")
         {
-            return File.Exists(fileToRead) ? await File.ReadAllTextAsync(fileToRead) : uniqueId;
+            return File.Exists(fileToRead) ? File.ReadAllText(fileToRead) : uniqueId;
         }
 
         if (uniqueId == "" && _templatedPlatformState.CurrentPlatform.UniqueIdMethod.StartsWith("JSON_SELECT"))
@@ -859,7 +844,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
             string searchFor;
             if (uniqueId == "" && _templatedPlatformState.CurrentPlatform.UniqueIdMethod == "JSON_SELECT")
             {
-                js = await ReadJsonFile(_templatedPlatformState.CurrentPlatform.UniqueFilePath.Split("::")[0]);
+                js = ReadJsonFile(_templatedPlatformState.CurrentPlatform.UniqueFilePath.Split("::")[0]);
                 searchFor = _templatedPlatformState.CurrentPlatform.UniqueFilePath.Split("::")[1];
                 uniqueId = Globals.GetCleanFilePath((string)js.SelectToken(searchFor));
                 return uniqueId;
@@ -877,7 +862,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
                 firstResult = false;
             }
 
-            js = await ReadJsonFile(_templatedPlatformState.CurrentPlatform.UniqueFilePath.Split("::")[0]);
+            js = ReadJsonFile(_templatedPlatformState.CurrentPlatform.UniqueFilePath.Split("::")[0]);
             searchFor = _templatedPlatformState.CurrentPlatform.UniqueFilePath.Split("::")[1];
             var res = (string)js.SelectToken(searchFor);
             if (res is null)
@@ -958,7 +943,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
         SwapTemplatedAccounts(jsRuntime, "");
     }
 
-    public async Task ForgetAccount()
+    public void ForgetAccount()
     {
         if (!_templatedPlatformSettings.ForgetAccountEnabled)
             _modals.ShowModal("confirm", ExtraArg.ForgetAccount);
@@ -972,7 +957,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
             if (File.Exists(idsFile))
             {
                 var allIds = Globals.ReadDict(idsFile).Remove(_appState.Switcher.SelectedAccountId);
-                await File.WriteAllTextAsync(idsFile, JsonConvert.SerializeObject(allIds));
+                File.WriteAllText(idsFile, JsonConvert.SerializeObject(allIds));
             }
 
             // Remove cached files
