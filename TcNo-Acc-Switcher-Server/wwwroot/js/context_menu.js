@@ -8,48 +8,7 @@ function getCurrentPage() {
         window.location.pathname.split("/")[1]);
 }
 
-var observerAccOrPlatList, observerAccOShortcuts, observerShortcuts;
-
-// Initialize context menus on navigation.
-function onNavigateRefreshContextMenu() {
-    console.log("onNavigate");
-    // Disconnect existing observers, if any:
-    if (observerAccOrPlatList != null) observerAccOrPlatList.disconnect();
-    if (observerAccOShortcuts != null) observerAccOShortcuts.disconnect();
-    if (observerShortcuts != null) observerShortcuts.disconnect();
-
-    console.log("Reconnecting");
-    // Reconnect
-    observerAccOrPlatList = prepareObserver("#AccOrPlatList");
-    observerAccOShortcuts = prepareObserver("#Shortcuts");
-    observerShortcuts = prepareObserver("#Platform");
-    console.log("Done!");
-}
-
-// Prepares and returns a new mutation observer for the requested element.
-function prepareObserver(element) {
-    console.log("Preparing observer for: ", element);
-    const mut = new MutationObserver(function (mutations) {
-        mutations.forEach(function (mutationRecord) {
-            onContextShowReposition(element);
-        });
-    });
-    const el = $(element)[0];
-    if (el == null) return null;
-    mut.observe(el, { attributes: true, attributeFilter: ["data-shown"] });
-    return mut;
-}
-
-// On context mutate (show/hide) -> Reposition.
-function onContextShowReposition(el) {
-    const jq = $(el);
-    if (jq.attr("data-shown") === "false") return;
-    console.log("Shown, and repositioned!", el);
-    //console.warn(mutationRecord);
-    //console.trace();
-
-}
-
+// Position and show the context menu. As much as I would like this to be handled entirely in C#, it's better to just do it here.
 function positionAndShowMenu(event, contextMenuId) {
     const jQueryContextMenu = $(contextMenuId);
     //Get window size:
