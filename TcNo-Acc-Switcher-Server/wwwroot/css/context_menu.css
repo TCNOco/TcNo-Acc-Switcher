@@ -12,7 +12,6 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  display: none;
   position: absolute;
   width: 15em;
   max-height: 29em;
@@ -22,6 +21,12 @@
   list-style: none;
   z-index: 999999;
   /* Only second submenu has shortenable names - for now (Game names). Evertyhing else wrap. */
+}
+.contextmenu[data-shown=false] {
+  display: none;
+}
+.contextmenu[data-shown=true] {
+  display: block;
 }
 .contextmenu li {
   border-left: 1em solid transparent;
@@ -52,7 +57,6 @@
   list-style: none;
   box-shadow: 10px 10px 5px -3px rgba(0, 0, 0, 0.3);
   flex-direction: column;
-  overflow: hidden;
 }
 .contextmenu .submenu li {
   color: #FFFFFF;

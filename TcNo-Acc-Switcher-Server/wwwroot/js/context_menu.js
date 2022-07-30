@@ -8,6 +8,48 @@ function getCurrentPage() {
         window.location.pathname.split("/")[1]);
 }
 
+var observerAccOrPlatList, observerAccOShortcuts, observerShortcuts;
+
+// Initialize context menus on navigation.
+function onNavigateRefreshContextMenu() {
+    console.log("onNavigate");
+    // Disconnect existing observers, if any:
+    if (observerAccOrPlatList != null) observerAccOrPlatList.disconnect();
+    if (observerAccOShortcuts != null) observerAccOShortcuts.disconnect();
+    if (observerShortcuts != null) observerShortcuts.disconnect();
+
+    console.log("Reconnecting");
+    // Reconnect
+    observerAccOrPlatList = prepareObserver("#AccOrPlatList");
+    observerAccOShortcuts = prepareObserver("#Shortcuts");
+    observerShortcuts = prepareObserver("#Platform");
+    console.log("Done!");
+}
+
+// Prepares and returns a new mutation observer for the requested element.
+function prepareObserver(element) {
+    console.log("Preparing observer for: ", element);
+    const mut = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutationRecord) {
+            onContextShowReposition(element);
+        });
+    });
+    const el = $(element)[0];
+    if (el == null) return null;
+    mut.observe(el, { attributes: true, attributeFilter: ["data-shown"] });
+    return mut;
+}
+
+// On context mutate (show/hide) -> Reposition.
+function onContextShowReposition(el) {
+    const jq = $(el);
+    if (jq.attr("data-shown") === "false") return;
+    console.log("Shown, and repositioned!", el);
+    //console.warn(mutationRecord);
+    //console.trace();
+
+}
+
 function positionAndShowMenu(event, contextMenuId) {
     const jQueryContextMenu = $(contextMenuId);
     //Get window size:
@@ -41,7 +83,8 @@ function positionAndShowMenu(event, contextMenuId) {
     jQueryContextMenu.css({
         "left": posLeft,
         "top": posTop
-    }).show();
+    });
+    jQueryContextMenu.attr("data-shown", true);
 
     // Resize observer
     var contextMenu = document.getElementsByClassName("contextmenu")[0];
@@ -80,10 +123,12 @@ function positionAndShowMenu(event, contextMenuId) {
 //Hide contextmenu
 function hideContextMenus() {
     document.querySelectorAll(".contextmenu").forEach(menu => {
-        if (menu == null) return;
-        menu.style["display"] = "none";
+        const jq = $(menu);
+        if (menu == null || jq.attr("data-shown") === "false") return;
+        jq.attr("data-shown", false);
     });
 }
+
 document.querySelector("body").addEventListener("click", (e) => {
     const excluded = Array.from(document.querySelectorAll(
         ".contextmenu, .contextmenu *:not(li,a:not(.paginationButton)), .contextIgnoreClick"));

@@ -55,7 +55,7 @@
         {
             @if (i >= 0)
             {
-                <button class="HasContextMenu" id="@(shortcut)" @onclick="(e) => ShortcutClick(e, shortcut)" @onmouseup="(e) => ShortcutClick(e, shortcut)" @onmouseover="() => AppState.Switcher.CurrentStatus = Globals.RemoveShortcutExt(shortcut)">
+                <button class="HasContextMenu" id="@(shortcut)" @onclick="(e) => ShortcutClick(e, shortcut)" @onmouseup="(e) => ShortcutClick(e, shortcut)" @onmouseover="() => AppState.Switcher.CurrentStatus = Globals.RemoveShortcutExt(shortcut)" oncontextmenu="return false;">
                     <img src="@(GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
                 </button>
             }

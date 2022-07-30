@@ -30,7 +30,7 @@
 {
     protected override void OnInitialized()
     {
-    // Subscribe to the event
+        // Subscribe to the event
         NavigationManager.LocationChanged += LocationChanged;
         base.OnInitialized();
     }
@@ -38,7 +38,7 @@
     static void LocationChanged(object sender, LocationChangedEventArgs e)
     {
         var navigationMethod = e.IsNavigationIntercepted ? "HTML" : "code";
-        System.Diagnostics.Debug.WriteLine($"Notified of navigation via {navigationMethod} to {e.Location}");
+        Console.WriteLine($"Notified of navigation via {navigationMethod} to {e.Location}");
     }
 
     void IDisposable.Dispose()

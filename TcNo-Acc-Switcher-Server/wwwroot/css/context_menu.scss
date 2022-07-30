@@ -12,7 +12,6 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    display: none;
     position: absolute;
     width: 15em;
     max-height: 29em;
@@ -21,6 +20,14 @@
     border-radius: 0.2em;
     list-style: none;
     z-index: 999999;
+
+    &[data-shown=false] {
+        display: none;
+    }
+
+    &[data-shown=true] {
+        display: block;
+    }
 
     li {
         border-left: 1em solid transparent;
@@ -54,7 +61,6 @@
         list-style: none;
         box-shadow: 10px 10px 5px -3px rgba(0, 0, 0, .3);
         flex-direction: column;
-        overflow: hidden;
 
         li {
             color: #FFFFFF;
