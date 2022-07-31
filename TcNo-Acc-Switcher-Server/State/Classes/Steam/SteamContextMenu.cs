@@ -334,7 +334,7 @@ public class SteamContextMenu
             $"+{primaryPlatformId}:{_appState.Switcher.SelectedAccountId}{args}",
             $"Switch to {_appState.Switcher.SelectedAccount.DisplayName} [{_appState.Switcher.CurrentSwitcher}] in TcNo Account Switcher",
             true);
-        if (s.CreateCombinedIcon(bgImg, fgImg, $"{_appState.Switcher.SelectedAccountId}.ico"))
+        if (s.CreateCombinedIcon(_appState, _lang, _toasts, bgImg, fgImg, $"{_appState.Switcher.SelectedAccountId}.ico"))
         {
             s.TryWrite();
 

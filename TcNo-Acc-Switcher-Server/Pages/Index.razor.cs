@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -55,10 +56,12 @@ public partial class Index
             }).Result();
     }
 
+    private NotifyCollectionChangedEventHandler _collectionChanged;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         AppState.WindowState.WindowTitle = "TcNo Account Switcher";
-        WindowSettings.Platforms.CollectionChanged += (_, _) => InvokeAsync(StateHasChanged);
+        _collectionChanged = async (_, _) => await InvokeAsync(StateHasChanged);
+        WindowSettings.Platforms.CollectionChanged += _collectionChanged;
 
         // If no platforms are showing:
         if (WindowSettings.Platforms.All(x => !x.Enabled))
@@ -71,13 +74,12 @@ public partial class Index
         {
             AppState.WindowState.FirstMainMenuVisit = false;
             var onlyPlatform = WindowSettings.Platforms.First(x => x.Enabled);
-            Check(onlyPlatform.Name);
+            await Check(onlyPlatform.Name);
         }
         AppState.WindowState.FirstMainMenuVisit = false;
 
         if (firstRender)
         {
-            await HandleQueries();
             await JsRuntime.InvokeVoidAsync("initPlatformListSortable");
             //await AData.InvokeVoidAsync("initAccListSortable");
         }
@@ -85,42 +87,15 @@ public partial class Index
         Statistics.NewNavigation("/");
     }
 
-    /// <summary>
-    /// For handling queries in URI
-    /// </summary>
-    public async Task<bool> HandleQueries()
+    void IDisposable.Dispose()
     {
-        Globals.DebugWriteLine(@"[JSInvoke:General\GeneralFuncs.HandleQueries]");
-        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
-        // Clear cache reload
-        var queries = QueryHelpers.ParseQuery(uri.Query);
-        // cacheReload handled in JS
-
-        // Toast
-        if (!queries.TryGetValue("toast_type", out var toastType) ||
-            !queries.TryGetValue("toast_title", out var toastTitle) ||
-            !queries.TryGetValue("toast_message", out var toastMessage)) return true;
-        for (var i = 0; i < toastType.Count; i++)
-        {
-            try
-            {
-                var type = (ToastType)Enum.Parse(typeof(ToastType), toastType[i]);
-                Toasts.ShowToastLang(type, toastTitle[i], toastMessage[i]);
-                await JsRuntime.InvokeVoidAsync("removeUrlArgs", "toast_type,toast_title,toast_message");
-            }
-            catch (TaskCanceledException e)
-            {
-                Globals.WriteToLog(e.ToString());
-            }
-        }
-
-        return true;
+        WindowSettings.Platforms.CollectionChanged -= _collectionChanged;
     }
 
     /// <summary>
     /// Check can enter platform, before navigating to page.
     /// </summary>
-    public void Check(string platform)
+    public async Task Check(string platform)
     {
         Globals.DebugWriteLine($@"[Func:Index.Check] platform={platform}");
         if (platform == "Steam")
@@ -140,8 +115,8 @@ public partial class Index
         }
 
         AppState.Switcher.CurrentSwitcher = platform;
-        TemplatedPlatformState.LoadTemplatedPlatformState(JsRuntime, TemplatedPlatformSettings, TemplatedPlatformFuncs);
-        TemplatedPlatformState.SetCurrentPlatform(JsRuntime, TemplatedPlatformSettings, platform);
+        TemplatedPlatformState.LoadTemplatedPlatformState(JsRuntime, TemplatedPlatformSettings);
+        await TemplatedPlatformState.SetCurrentPlatform(JsRuntime, TemplatedPlatformSettings, TemplatedPlatformFuncs, platform);
         if (!SharedFunctions.CanKillProcess(TemplatedPlatformState.CurrentPlatform.ExesToEnd, TemplatedPlatformSettings.ClosingMethod)) return;
 
         if (Directory.Exists(TemplatedPlatformSettings.FolderPath) && File.Exists(TemplatedPlatformSettings.Exe))

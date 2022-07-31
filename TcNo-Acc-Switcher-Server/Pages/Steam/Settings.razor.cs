@@ -257,7 +257,7 @@ public partial class Settings
     {
         Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearSettings]");
         SteamSettings.Reset();
-        AppState.Navigation.NavigateToWithToast(NavigationManager, "/Steam", "success", Lang["Success"], Lang["Toast_ClearedPlatformSettings", new { platform = "Steam" }]);
+        AppState.Navigation.NavigateToWithToast(NavigationManager, "/Steam", "Success", Lang["Success"], Lang["Toast_ClearedPlatformSettings", new { platform = "Steam" }]);
     }
 
     // BUTTON: Reset images

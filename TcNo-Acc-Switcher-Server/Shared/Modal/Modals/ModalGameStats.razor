@@ -28,12 +28,20 @@
 @inject IGameStats GameStats
 @inject IAppState AppState
 @inject IWindowSettings WindowSettings
+@implements IDisposable
 
 @code {
+    private Action _onChangeHandler;
     protected override async Task OnInitializedAsync()
     {
-        Modals.GameStatsModalOnChange += async () => await OnChangeHandler();
+        _onChangeHandler = async () => await OnChangeHandler();;
+        Modals.GameStatsModalOnChange += _onChangeHandler;
         await OnChangeHandler(); // Run once just to set vars
+    }
+
+    void IDisposable.Dispose()
+    {
+        Modals.GameStatsModalOnChange -= _onChangeHandler;
     }
 
     private async Task OnChangeHandler()
@@ -269,7 +277,7 @@
     }
 
     private void UpdateAccountList(){
-        AppState.Switcher.SelectedAccount.SetUserStats();
+        AppState.Switcher.SelectedAccount.SetUserStats(GameStats);
         Modals.IsShown = false;
 
     }

@@ -22,6 +22,7 @@
 @inject ILang Lang
 @inject IJSRuntime JsRuntime
 @inject IToasts Toasts
+@implements IDisposable
 
 @code {
     [Parameter]
@@ -32,10 +33,17 @@
 
     private FolderFileList _currentFileList;
 
+    private Action _onChange;
     protected override void OnInitialized()
     {
         _currentFileList = new FolderFileList(Toasts, CurrentPath, Depth);
-        Modals.PathPickerOnChange += async () => await OnChangeHandler();
+        _onChange = async () => await OnChangeHandler();
+        Modals.PathPickerOnChange += _onChange;
+    }
+
+    void IDisposable.Dispose()
+    {
+        Modals.PathPickerOnChange -= _onChange;
     }
 
     private async Task OnChangeHandler()

@@ -30,14 +30,16 @@ namespace TcNo_Acc_Switcher_Server.State.Classes.Templated;
 public class TemplatedPlatformContextMenu
 {
     private readonly IAppState _appState;
+    private readonly ILang _lang;
     private readonly ITemplatedPlatformSettings _templatedPlatformSettings;
     private readonly ITemplatedPlatformState _templatedPlatformState;
     private readonly ISharedFunctions _sharedFunctions;
     private readonly IToasts _toasts;
 
-    public TemplatedPlatformContextMenu(IJSRuntime jsRuntime, IAppState appState, IGameStats gameStats, ILang lang, IModals modals, ISharedFunctions sharedFunctions, ITemplatedPlatformSettings templatedPlatformSettings, ITemplatedPlatformFuncs templatedPlatformFuncs, ITemplatedPlatformState templatedPlatformState, IToasts toasts)
+    public TemplatedPlatformContextMenu(IJSRuntime jsRuntime, IAppState appState, ILang lang, IGameStats gameStats, IModals modals, ISharedFunctions sharedFunctions, ITemplatedPlatformSettings templatedPlatformSettings, ITemplatedPlatformFuncs templatedPlatformFuncs, ITemplatedPlatformState templatedPlatformState, IToasts toasts)
     {
         _appState = appState;
+        _lang = lang;
         _templatedPlatformState = templatedPlatformState;
         _sharedFunctions = sharedFunctions;
         _templatedPlatformSettings = templatedPlatformSettings;
@@ -47,12 +49,12 @@ public class TemplatedPlatformContextMenu
         ContextMenuItems.AddRange(new MenuBuilder(lang,
             new[]
             {
-                new ("Context_SwapTo", new Action(() => templatedPlatformFuncs.SwapToAccount(jsRuntime))),
-                new ("Context_CopyUsername", new Action(() => StaticFuncs.CopyText(_appState.Switcher.SelectedAccount.DisplayName))),
+                new ("Context_SwapTo", new Action(async () => await templatedPlatformFuncs.SwapToAccount(jsRuntime))),
+                new ("Context_CopyUsername", new Action(CopyUsername)),
                 new ("Context_ChangeName", new Action(modals.ShowChangeUsernameModal)),
                 new ("Context_CreateShortcut", new Action(() => CreateShortcut())),
                 new ("Context_ChangeImage", new Action(modals.ShowChangeAccImageModal)),
-                new ("Forget", new Action(() => templatedPlatformFuncs.ForgetAccount())),
+                new ("Forget", new Action(templatedPlatformFuncs.ForgetAccount)),
                 new ("Notes", new Action(() => modals.ShowModal("notes"))),
                 gameStats.PlatformHasAnyGames(_templatedPlatformState.CurrentPlatform.SafeName) ?
                     new Tuple<string, object>("Context_ManageGameStats", new Action(modals.ShowGameStatsSelectorModal)) : null,
@@ -69,6 +71,8 @@ public class TemplatedPlatformContextMenu
             new Tuple<string, object>("Context_RunAdmin", () => templatedPlatformFuncs.RunPlatform(true, ""))
         ).Result();
     }
+
+    private void CopyUsername() => StaticFuncs.CopyText(_appState.Switcher.SelectedAccount.DisplayName);
 
     private void ShortcutStartAdmin() =>
         _sharedFunctions.RunShortcut(_appState.Switcher.CurrentShortcut, _templatedPlatformState.CurrentPlatform.ShortcutFolder, _templatedPlatformState.CurrentPlatform.SafeName, true);
@@ -127,7 +131,7 @@ public class TemplatedPlatformContextMenu
             $"+{primaryPlatformId}:{_appState.Switcher.SelectedAccountId}{args}",
             $"Switch to {_appState.Switcher.SelectedAccount.DisplayName} [{_appState.Switcher.CurrentSwitcher}] in TcNo Account Switcher",
             true);
-        if (s.CreateCombinedIcon(bgImg, fgImg, $"{_appState.Switcher.SelectedAccountId}.ico"))
+        if (s.CreateCombinedIcon(_appState, _lang, _toasts, bgImg, fgImg, $"{_appState.Switcher.SelectedAccountId}.ico"))
         {
             s.TryWrite();
 

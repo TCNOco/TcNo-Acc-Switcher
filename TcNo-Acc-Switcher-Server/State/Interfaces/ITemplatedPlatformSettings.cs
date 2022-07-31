@@ -13,11 +13,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace TcNo_Acc_Switcher_Server.State.Interfaces;
 
 public interface ITemplatedPlatformSettings
 {
+    event PropertyChangedEventHandler PropertyChanged;
     bool Admin { get; set; }
     int TrayAccNumber { get; set; }
     bool ForgetAccountEnabled { get; set; }

@@ -52,16 +52,7 @@ public class WindowSettings : IWindowSettings, INotifyPropertyChanged
         if (Platforms.All(y => y.Name != "Steam")) Platforms.Add(new PlatformItem("Steam", true));
         Platforms.First(y => y.Name == "Steam").SetFromPlatformItem(new PlatformItem("Steam", new List<string> { "s", "steam" }, "steam.exe", true));
 
-        // TODO: Load from file? See commented at the bottom of this class. They were leftover from the Data\AppSettings file.
-        Platforms.CollectionChanged += SortPlatforms;
-    }
-
-    private void SortPlatforms(object? o, NotifyCollectionChangedEventArgs e)
-    {
-        // Simply sorting on update caused an infinite loop. This should solve it.
-        Platforms.CollectionChanged -= SortPlatforms;
         Platforms.Sort();
-        Platforms.CollectionChanged += SortPlatforms;
     }
 
     public string Language

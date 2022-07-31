@@ -27,8 +27,8 @@
 @inject IWindowSettings WindowSettings
 @inject IAppState AppState
 @inject IModals Modals
-
 @inject ILang Lang
+@implements IDisposable
 
 @if (AppState.Updates.PreRenderUpdate)
 {
@@ -46,8 +46,7 @@
 
     protected override void OnParametersSet()
     {
-        // TODO: Why was this here?
-        //TemplatedPlatformState.LoadTemplatedPlatformState(TemplatedPlatformFuncs);
+        TemplatedPlatformState.LoadTemplatedPlatformState(JsRuntime, TemplatedPlatformSettings);
         StaticFuncs.SaveOrderAction = WindowSettings.SavePlatformOrder;
     }
 }
@@ -110,7 +109,7 @@
         {
             case 0:
                 // Left click
-                Check(plat);
+                await Check(plat);
                 break;
             case 2:
                 // Right click

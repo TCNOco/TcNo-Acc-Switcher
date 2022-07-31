@@ -44,12 +44,12 @@ public interface ITemplatedPlatformFuncs
     /// <summary>
     /// Swap to the current AppState.Switcher.SelectedAccountId.
     /// </summary>
-    void SwapToAccount(IJSRuntime jsRuntime);
+    Task SwapToAccount(IJSRuntime jsRuntime);
 
     /// <summary>
     /// Swaps to an empty account, allowing the user to sign in.
     /// </summary>
-    void SwapToNewAccount(IJSRuntime jsRuntime);
+    Task SwapToNewAccount(IJSRuntime jsRuntime);
 
     void ForgetAccount();
     void RunPlatform(bool admin, string args = "");

@@ -24,6 +24,7 @@
 @using TcNo_Acc_Switcher_Server.Shared.Tooltip
 @using System.ComponentModel
 @using TcNo_Acc_Switcher_Globals
+@using TcNo_Acc_Switcher_Server.State.Classes
 @inject IJSRuntime JsRuntime
 @inject NavigationManager NavigationManager
 @inject ISharedFunctions SharedFunctions
@@ -37,12 +38,13 @@
 @inject IToasts Toasts
 @inject IStatistics Statistics
 @inject IWindowSettings WindowSettings
+@implements IDisposable
 
 <ContextMenu MenuItems="@TemplatedPlatformState.ContextMenu.ContextMenuItems" ContextMenuId="AccOrPlatList"/>
 <ContextMenu MenuItems="@TemplatedPlatformState.ContextMenu.ContextMenuShortcutItems" ContextMenuId="Shortcuts"/>
 <ContextMenu MenuItems="@TemplatedPlatformState.ContextMenu.ContextMenuPlatformItems" ContextMenuId="Platform"/>
 
-<AccountList AccountItems="@AppState.Switcher.TemplatedAccounts" @ref="BasicAccountList" />
+<AccountList AccountItems="@AppState.Switcher.TemplatedAccounts" AccountActions="_accountActions" />
 
 <div class="shortcutDropdown gameShortcuts" id="shortcutDropdown" style="display: none">
     <div class="shortcutDropdownItems">
@@ -87,14 +89,14 @@
 
         @if (TemplatedPlatformState.CurrentPlatform.Extras.ShortcutIncludeMainExe)
         {
-            <Tooltip Text="@(TemplatedPlatformState.CurrentPlatform.SafeName)">
+            <Tooltip Text="@(TemplatedPlatformState.CurrentPlatform.Name)">
                 <button id="btnStartPlat" @onmousedown="RunPlatform" oncontextmenu="return false;">
                     <img src="@(TemplatedPlatformState.CurrentPlatform.GetShortcutImagePath(TemplatedPlatformState.CurrentPlatform.SafeName))" alt="RUN"/>
                 </button>
             </Tooltip>
         }
 
-        <button id="btnAddNew" @onclick="() => TemplatedPlatformFuncs.SwapToNewAccount(JsRuntime)">
+        <button id="btnAddNew" @onclick="async () => await TemplatedPlatformFuncs.SwapToNewAccount(JsRuntime)">
             <i class="fas fa-plus footerIcoInline"></i>
             <span>@Lang["Button_AddNew"]</span>
         </button>
@@ -102,7 +104,7 @@
             <i class="fas fa-save footerIcoInline"></i>
             <span>@Lang["Button_SaveCurrent"]</span>
         </button>
-        <button class="btn_login" id="btnLogin" @onclick="() => TemplatedPlatformFuncs.SwapToAccount(JsRuntime)">
+        <button class="btn_login" id="btnLogin" @onclick="async () => await TemplatedPlatformFuncs.SwapToAccount(JsRuntime)">
             <span>@Lang["Button_Login"]</span>
             <i class="fas fa-caret-right footerIcoInline"></i>
         </button>
@@ -125,26 +127,38 @@
 
 @code
 {
+    private readonly AccountActions _accountActions = new();
     private Dictionary<int, string> _shortcuts = new();
 
-    public static AccountList BasicAccountList;
-
+    private PropertyChangedEventHandler _propChanged;
     protected override void OnInitialized()
     {
-        AppState.Switcher.PropertyChanged += async (o, e) => await OnChangeHandler(o, e);
+        _propChanged = async (o, e) => await OnChangeHandler(o, e);
+        AppState.Switcher.PropertyChanged += _propChanged;
+        TemplatedPlatformSettings.PropertyChanged += _propChanged;
     }
-    private async Task OnChangeHandler(object? o, PropertyChangedEventArgs e)
+
+    void IDisposable.Dispose()
     {
-        await InvokeAsync(StateHasChanged);
+        AppState.Switcher.PropertyChanged -= _propChanged;
+        TemplatedPlatformSettings.PropertyChanged -= _propChanged;
+    }
+
+
+    private static readonly string[] RefreshProperties = {"TemplatedAccounts", "CurrentStatus", "Shortcuts" };
+    private async Task OnChangeHandler(object o, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == "Shortcuts")
+            _shortcuts = TemplatedPlatformSettings.Shortcuts;
+
+        if (RefreshProperties.Contains(e.PropertyName))
+            await InvokeAsync(StateHasChanged);
     }
 
     private string RemoveShortcutExt(string s)
     {
         return s.Replace(".lnk", "").Replace(".url", "");
     }
-
-    // https://github.com/dotnet/aspnetcore/issues/13582
-    private bool _navBack;
 
     /// <summary>
     /// Show the Set App Password modal
@@ -155,9 +169,7 @@
         Modals.ShowModal("getText");
     }
 
-    // This has to be here for NavManager.
-    // This is run before everything is painted on, so that it can get the correct values for the CSS Block.
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
         AppState.Stylesheet.StreamerModeCheck();
 
@@ -168,53 +180,51 @@
             requestPlat = param.First();
         }
 
-        // Get platform name from URI if not set.
+    // Get platform name from URI if not set.
         if (!string.IsNullOrEmpty(requestPlat))
-            await TemplatedPlatformState.SetCurrentPlatform(JsRuntime, TemplatedPlatformSettings, requestPlat);
-
-        // If current platform is NOT valid -> Go back
-        if (!TemplatedPlatformState.CurrentPlatform.IsInit)
         {
-            _navBack = true;
+            AppState.Switcher.CurrentSwitcher = requestPlat;
+            TemplatedPlatformState.LoadTemplatedPlatformState(JsRuntime, TemplatedPlatformSettings);
+            await TemplatedPlatformState.SetCurrentPlatform(JsRuntime, TemplatedPlatformSettings, TemplatedPlatformFuncs, requestPlat);
+        }
+
+    // If current platform is NOT valid -> Go back
+        if (TemplatedPlatformState.CurrentPlatform is null || !TemplatedPlatformState.CurrentPlatform.IsInit)
+        {
+            NavigateBack();
             return;
         }
 
         await GameStats.SetCurrentPlatform(TemplatedPlatformState.CurrentPlatform.SafeName);
 
     // Verify that the platform's EXE exists, otherwise go back. For shortcuts and direct navigation.
-        if (File.Exists(TemplatedPlatformSettings.Exe)) return;
-        _navBack = true;
+        if (!File.Exists(TemplatedPlatformSettings.Exe)){
+            NavigateBack();
+        }
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    private void NavigateBack() =>
+        AppState.Navigation.NavigateToWithToast(NavigationManager, "/", "Error", "", Lang["Toast_FailedLoad", new {platform = TemplatedPlatformState?.CurrentPlatform?.Name ?? ""}]);
+
+    protected override void OnAfterRender(bool firstRender)
     {
+        HandleFirstRender(firstRender);
+        if (!firstRender) return;
         AppState.Switcher.CurrentStatus = Lang["Loading"];
-
-        if (_navBack)
-        {
-            Toasts.ShowToastLang(ToastType.Error, "Error", new LangSub	("Toast_FailedLoad", new {platform = TemplatedPlatformState.CurrentPlatform.Name}));
-            return;
-        }
-        await HandleFirstRender(firstRender);
         Statistics.NewNavigation($"/[{TemplatedPlatformState.CurrentPlatform.SafeName}]");
-        if (firstRender)
-        {
+        StaticFuncs.SaveShortcuts = SaveShortcuts;
+        _shortcuts = TemplatedPlatformSettings.Shortcuts;
+        StaticFuncs.SaveOrderAction = TemplatedPlatformState.SaveAccountOrder;
 
-            StaticFuncs.SaveShortcuts = SaveShortcuts;
-            _shortcuts = TemplatedPlatformSettings.Shortcuts;
-            StaticFuncs.SaveOrderAction = TemplatedPlatformState.SaveAccountOrder;
+        TemplatedPlatformState.LoadTemplatedPlatformState(JsRuntime, TemplatedPlatformSettings);
 
-            TemplatedPlatformState.LoadTemplatedPlatformState(JsRuntime, TemplatedPlatformSettings, TemplatedPlatformFuncs);
-
-            var curAcc = TemplatedPlatformFuncs.GetCurrentAccountId();
-            if (curAcc != "") TemplatedPlatformFuncs.SetCurrentAccount(curAcc);
-        }
-
+        var curAcc = TemplatedPlatformFuncs.GetCurrentAccountId();
+        if (curAcc != "") TemplatedPlatformFuncs.SetCurrentAccount(curAcc);
         AppState.Switcher.CurrentStatus = Lang["Done"];
     }
 
 
-    public async Task HandleFirstRender(bool firstRender)
+    public void HandleFirstRender(bool firstRender)
     {
         if (firstRender)
         {
@@ -224,40 +234,8 @@
                 Toasts.ShowToastLang(ToastType.Info, "Toast_StreamerModeTitle", "Toast_StreamerModeHint");
 
             // Handle queries and invoke status "Ready"
-            await HandleQueries();
+            AppState.Switcher.CurrentStatus = Lang["Done"];
         }
-    }
-
-    /// <summary>
-    /// For handling queries in URI
-    /// </summary>
-    public async Task<bool> HandleQueries()
-    {
-        Globals.DebugWriteLine(@"[JSInvoke:General\GeneralFuncs.HandleQueries]");
-        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
-        // Clear cache reload
-        var queries = QueryHelpers.ParseQuery(uri.Query);
-        // cacheReload handled in JS
-
-        // Toast
-        if (!queries.TryGetValue("toast_type", out var toastType) ||
-            !queries.TryGetValue("toast_title", out var toastTitle) ||
-            !queries.TryGetValue("toast_message", out var toastMessage)) return true;
-        for (var i = 0; i < toastType.Count; i++)
-        {
-            try
-            {
-                var type = (ToastType)Enum.Parse(typeof(ToastType), toastType[i]);
-                Toasts.ShowToastLang(type, toastTitle[i], toastMessage[i]);
-                await JsRuntime.InvokeVoidAsync("removeUrlArgs", "toast_type,toast_title,toast_message");
-            }
-            catch (TaskCanceledException e)
-            {
-                Globals.WriteToLog(e.ToString());
-            }
-        }
-
-        return true;
     }
 
     private async Task ShortcutClick(MouseEventArgs e, string shortcut)

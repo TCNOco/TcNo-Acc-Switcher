@@ -3,19 +3,27 @@
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @using System.ComponentModel
 @inject IAppState AppState
+@implements IDisposable
 
 <div class="statusBar"><span>@AppState.Switcher.CurrentStatus</span></div>
 
 @code {
+    private PropertyChangedEventHandler _propChanged;
     protected override void OnInitialized()
     {
-        AppState.Switcher.PropertyChanged += async (s, e) => await OnPropertyChanged(s, e);
+        _propChanged = async (s, o) => await OnPropertyChanged(s, o);
+        AppState.Switcher.PropertyChanged += _propChanged;
+    }
+
+    void IDisposable.Dispose()
+    {
+        AppState.PropertyChanged -= _propChanged;
     }
 
     private async Task OnPropertyChanged(object sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName is not "CurrentStatus") return;
         await InvokeAsync(StateHasChanged);
-        Console.WriteLine("Status set to: " + AppState.Switcher.CurrentStatus);
+        Console.WriteLine(@"Status set to: " + AppState.Switcher.CurrentStatus);
     }
 }

@@ -17,6 +17,7 @@
 @using System.Collections.ObjectModel
 @using System.Collections.Specialized
 @inject IJSRuntime Js
+@implements IDisposable
 
 @code {
     [Parameter]
@@ -24,14 +25,16 @@
     [Parameter]
     public ObservableCollection<MenuItem> MenuItems { get; set; }
 
+    private NotifyCollectionChangedEventHandler _menuItemsOnCollectionChanged;
     protected override void OnInitialized()
     {
-        MenuItems.CollectionChanged += MenuItemsOnCollectionChanged;;
+        _menuItemsOnCollectionChanged = async (_, _) => await InvokeAsync(StateHasChanged);
+        MenuItems.CollectionChanged += _menuItemsOnCollectionChanged;
     }
 
-    private void MenuItemsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    void IDisposable.Dispose()
     {
-        InvokeAsync(StateHasChanged);
+        MenuItems.CollectionChanged += _menuItemsOnCollectionChanged;
     }
 
 

@@ -85,7 +85,11 @@ public partial class Globals
             // Try load settings and edit referenced class.
             if (File.Exists(file))
             {
-                JsonConvert.PopulateObject(File.ReadAllText(file), settings, new JsonSerializerSettings(){ ObjectCreationHandling = ObjectCreationHandling.Replace });
+                JsonConvert.PopulateObject(File.ReadAllText(file), settings, new JsonSerializerSettings
+                {
+                    ObjectCreationHandling = ObjectCreationHandling.Replace,
+                    NullValueHandling = NullValueHandling.Ignore
+                });
                 return true;
             }
             // Failed to load: Move file.
@@ -139,11 +143,29 @@ public partial class Globals
 
 
     #region FILES
+
     /// <summary>
     /// Read all elements from serialized dictionary JSON file
     /// </summary>
-    public static Dictionary<string, string> ReadDict(string dictPath, bool isBasic = false) =>
-        JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(dictPath));
+    public static Dictionary<string, string> ReadDict(string dictPath, bool isBasic = false)
+    {
+        if (!File.Exists(dictPath)) return new Dictionary<string, string>();
+        try
+        {
+            return JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(dictPath));
+        }
+        catch (JsonSerializationException e)
+        {
+            Console.WriteLine(e);
+            return new Dictionary<string, string>();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return new Dictionary<string, string>();
+        }
+    }
+
     /// <summary>
     /// Removes lnk and url from shortcut path
     /// </summary>

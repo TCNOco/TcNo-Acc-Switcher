@@ -482,6 +482,9 @@ button .caret, .button .caret {
         right: -38px;
         top: 50%;
         transform: translateY(calc(-50% - 1px));
+    }
+
+    #btnOpenShortcutFolder, button {
         min-width: 36px;
         min-height: 36px;
         max-width: 36px;
@@ -616,9 +619,9 @@ button * {
     }
 
     > span {
+        position: fixed;
         pointer-events: none;
         visibility: hidden;
-        position: fixed;
         background-color: var(--tooltipBackground);
         color: #fff;
         text-align: center;

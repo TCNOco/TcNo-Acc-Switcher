@@ -33,8 +33,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes;
 /// </summary>
 public class IconFactory
 {
-    [Inject] private IAppState AppState { get; set; }
-    [Inject] private ILang Lang { get; set; }
+    private readonly IAppState _appState;
+    private readonly ILang _lang;
+
+    public IconFactory(IAppState appState, ILang lang)
+    {
+        _appState = appState;
+        _lang = lang;
+    }
 
     #region FACTORY
     // https://stackoverflow.com/a/32530019/5165437
@@ -111,18 +117,18 @@ public class IconFactory
             if (image.PixelFormat != PixelFormat.Format32bppArgb)
             {
                 throw new InvalidOperationException
-                    (Lang["PngInvalid_Format", new { x = PixelFormat.Format32bppArgb }]);
+                    (_lang["PngInvalid_Format", new { x = PixelFormat.Format32bppArgb }]);
             }
             if (image.RawFormat.Guid != ImageFormat.Png.Guid)
             {
                 throw new InvalidOperationException
-                    (Lang["PngRequired"]);
+                    (_lang["PngRequired"]);
             }
             if (image.Width > MaxIconWidth ||
                 image.Height > MaxIconHeight)
             {
                 throw new InvalidOperationException
-                    (Lang["PngDimensions", new { MaxIconWidth, MaxIconHeight }]); // VS/JetBrains suggested to remove X=X, Y=Y and 'simplify'. Idk if this broke something before.
+                    (_lang["PngDimensions", new { MaxIconWidth, MaxIconHeight }]); // VS/JetBrains suggested to remove X=X, Y=Y and 'simplify'. Idk if this broke something before.
             }
         }
     }
@@ -191,7 +197,7 @@ public class IconFactory
             if (svgContent.Contains("id=\"FG\""))
             {
                 // Set color of foreground content, and insert background image
-                svgContent = svgContent.Replace("<path id=\"FG\"", $"<rect fill=\"{AppState.Stylesheet.TryGetStyle("platformLogoBackground")}\" width=\"500\" height=\"500\"></rect>\"<path id=\"FG\" fill=\"{AppState.Stylesheet.TryGetStyle("platformLogoForeground")}\"");
+                svgContent = svgContent.Replace("<path id=\"FG\"", $"<rect fill=\"{_appState.Stylesheet.TryGetStyle("platformLogoBackground")}\" width=\"500\" height=\"500\"></rect>\"<path id=\"FG\" fill=\"{_appState.Stylesheet.TryGetStyle("platformLogoForeground")}\"");
                 // Add the glass effect
                 svgContent = svgContent.Replace("/></svg>", "/><path d=\"M500, 0L0, 0L0, 500L500, 0Z\" fill=\"#FFFFFF\" fill-opacity=\"0.02\"/></svg>");
             }

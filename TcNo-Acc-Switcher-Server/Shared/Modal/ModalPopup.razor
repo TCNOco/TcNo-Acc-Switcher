@@ -24,8 +24,9 @@
 @inject IAppState AppState
 @inject ILang Lang
 @inject IModals Modals
+@implements IDisposable
 
-<div class="modalBG @(!Modals.IsShown ? "modalHidden" : "modalShown")" @onclick="HideModal">
+<div class="modalBG @(!Modals.IsShown ? "modalHidden" : "modalShown")" @onclick="Modals.CloseModal">
 @*<div class="modalBG" onclick="if (event.target === this)$('.modalBG').fadeOut();" style="display: none;">*@
     <div class="modalFG" @onclick:stopPropagation>
         <div id="window-title-modal">
@@ -44,7 +45,7 @@
             </svg>
             <span id="modalTitle">@Modals.Title</span>
             <div id="window-controls-modal">
-                <button id="btnClose-modal" @onclick="() => Modals.IsShown = false">
+                <button id="btnClose-modal" @onclick="Modals.CloseModal">
                     <i class="fas fa-times" draggable="false"></i>
                 </button>
             </div>
@@ -92,15 +93,22 @@
 
 @code
 {
-    private void HideModal() => Modals.IsShown = false;
-
+    private PropertyChangedEventHandler _propChanged;
     protected override void OnInitialized()
     {
-        Modals.PropertyChanged += async (s, e) => await OnChangeHandler(s, e);
+        _propChanged = async (s, e) => await OnChangeHandler(s, e);
+        Modals.PropertyChanged += _propChanged;
     }
+
+    void IDisposable.Dispose()
+    {
+        Modals.PropertyChanged -= _propChanged;
+    }
+
+    private static readonly string[] RefreshProperties = {"IsShown", "Type", "CurrentStatsSelectorState", "Title", };
     private async Task OnChangeHandler(object s, PropertyChangedEventArgs e)
     {
-        await InvokeAsync(StateHasChanged);
+        if (RefreshProperties.Contains(e.PropertyName)) await InvokeAsync(StateHasChanged);
     }
 
     // Modal back button clicked

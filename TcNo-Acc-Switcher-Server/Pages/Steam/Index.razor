@@ -142,7 +142,7 @@
     //protected override async Task OnAfterRenderAsync(bool firstRender) => await GeneralFuncs.HandleFirstRender(firstRender, "Steam");
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await HandleFirstRender(firstRender);
+        HandleFirstRender(firstRender);
         if (firstRender)
         {
             AppState.Switcher.CurrentStatus = Lang["Loading"];
@@ -161,13 +161,14 @@
 
             // Load games for the Right-click menu
             LoadGamesForAccounts();
-            _accountActions.AfterAccountSelect = async (acc) => await OnAccountSelect(acc);
+            _accountActions.AfterAccountSelect = OnAccountSelect;
+            await InvokeAsync(StateHasChanged);
 
             AppState.Switcher.CurrentStatus = Lang["Done"];
         }
     }
 
-    public async Task HandleFirstRender(bool firstRender)
+    public void HandleFirstRender(bool firstRender)
     {
         if (firstRender)
         {
@@ -177,41 +178,8 @@
                 Toasts.ShowToastLang(ToastType.Info, "Toast_StreamerModeTitle", "Toast_StreamerModeHint");
 
             // Handle queries and invoke status "Ready"
-            await HandleQueries();
             AppState.Switcher.CurrentStatus = Lang["Done"];
         }
-    }
-
-    /// <summary>
-    /// For handling queries in URI
-    /// </summary>
-    public async Task<bool> HandleQueries()
-    {
-        Globals.DebugWriteLine(@"[JSInvoke:General\GeneralFuncs.HandleQueries]");
-        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
-        // Clear cache reload
-        var queries = QueryHelpers.ParseQuery(uri.Query);
-        // cacheReload handled in JS
-
-        // Toast
-        if (!queries.TryGetValue("toast_type", out var toastType) ||
-            !queries.TryGetValue("toast_title", out var toastTitle) ||
-            !queries.TryGetValue("toast_message", out var toastMessage)) return true;
-        for (var i = 0; i < toastType.Count; i++)
-        {
-            try
-            {
-                var type = (ToastType)Enum.Parse(typeof(ToastType), toastType[i]);
-                Toasts.ShowToastLang(type, toastTitle[i], toastMessage[i]);
-                await JsRuntime.InvokeVoidAsync("removeUrlArgs", "toast_type,toast_title,toast_message");
-            }
-            catch (TaskCanceledException e)
-            {
-                Globals.WriteToLog(e.ToString());
-            }
-        }
-
-        return true;
     }
 
     private async Task ShortcutClick(MouseEventArgs e, string shortcut)
@@ -334,13 +302,12 @@
     /// Add switch and launch functionality
     /// </summary>
     /// <param name="acc"></param>
-    public async Task OnAccountSelect(Account acc)
+    public void OnAccountSelect(Account acc)
     {
         // Remove section from contextmenu
         SteamState.ContextMenu.Menu.Remove(SteamState.ContextMenu.Menu.FirstOrDefault(x => x.Id == "SwitchAndLaunch")); // This can be null.
         var switchAndLaunch = SteamState.SteamUsers.FirstOrDefault(x => x.SteamId == acc.AccountId)?.SwitchAndLaunch;
         if (switchAndLaunch is not null) SteamState.ContextMenu.Menu.Add(switchAndLaunch);
-        await InvokeAsync(StateHasChanged);
     }
     #endregion
 

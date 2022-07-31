@@ -50,7 +50,7 @@ public partial class Settings
     {
         Globals.DebugWriteLine(@"[ButtonClicked:Basic\Settings.razor.cs.ClearSettings]");
         TemplatedPlatformSettings.Reset();
-        AppState.Navigation.NavigateToWithToast(NavigationManager, "/Basic/", "success", Lang["Success"], Lang["Toast_ClearedPlatformSettings", new { platform = "Basic" }]);
+        AppState.Navigation.NavigateToWithToast(NavigationManager, "/Basic/", "Success", Lang["Success"], Lang["Toast_ClearedPlatformSettings", new { platform = "Basic" }]);
     }
     #endregion
 

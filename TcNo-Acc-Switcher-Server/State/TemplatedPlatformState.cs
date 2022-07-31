@@ -64,7 +64,7 @@ public class TemplatedPlatformState : ITemplatedPlatformState
         _windowSettings = windowSettings;
     }
 
-    public void LoadTemplatedPlatformState(IJSRuntime jsRuntime, ITemplatedPlatformSettings templatedPlatformSettings, ITemplatedPlatformFuncs templatedPlatformFuncs)
+    public void LoadTemplatedPlatformState(IJSRuntime jsRuntime, ITemplatedPlatformSettings templatedPlatformSettings)
     {
         if (_isInit) return;
         _isInit = true;
@@ -94,13 +94,13 @@ public class TemplatedPlatformState : ITemplatedPlatformState
             }
         }
 
-        ContextMenu = new TemplatedPlatformContextMenu(jsRuntime, _appState, _gameStats, _lang, _modals, _sharedFunctions, templatedPlatformSettings, templatedPlatformFuncs, this, _toasts);
+        _windowSettings.Platforms.Sort();
     }
 
-    public async Task SetCurrentPlatform(IJSRuntime jsRuntime, ITemplatedPlatformSettings templatedPlatformSettings, string platformName)
+    public async Task SetCurrentPlatform(IJSRuntime jsRuntime, ITemplatedPlatformSettings templatedPlatformSettings, ITemplatedPlatformFuncs templatedPlatformFuncs, string platformName)
     {
-        await _appState.Switcher.UpdateStatusAsync(_lang["Loading"]);
         CurrentPlatform = Platforms.First(x => x.Name == platformName || x.Identifiers.Contains(platformName));
+        await _appState.Switcher.UpdateStatusAsync(_lang["Loading"]);
         CurrentPlatform.InitAfterDeserialization();
         //_templatedPlatformSettings = new TemplatedPlatformSettings(); // Load saved settings
         templatedPlatformSettings.LoadTemplatedPlatformSettings();
@@ -109,6 +109,8 @@ public class TemplatedPlatformState : ITemplatedPlatformState
         _appState.Switcher.TemplatedAccounts.Clear();
         if (await LoadAccounts(jsRuntime)) await _appState.Switcher.UpdateStatusAsync(_lang["Done"]);
         else await _appState.Switcher.UpdateStatusAsync(_lang["FailedLoadAccounts"]);
+
+        ContextMenu = new TemplatedPlatformContextMenu(jsRuntime, _appState, _lang, _gameStats, _modals, _sharedFunctions, templatedPlatformSettings, templatedPlatformFuncs, this, _toasts);
     }
 
     #region Loading
@@ -144,18 +146,24 @@ public class TemplatedPlatformState : ITemplatedPlatformState
     /// <param name="folder">Cache folder containing accounts</param>
     /// <param name="accList">List of account strings</param>
     /// <returns>Whether the directory exists and successfully added listed names</returns>
-    private bool ListAccountsFromFolder(string folder, out List<string> accList)
+    private static bool ListAccountsFromFolder(string folder, out List<string> accList)
     {
         accList = new List<string>();
 
         if (!Directory.Exists(folder)) return false;
         var idsFile = Path.Join(folder, "ids.json");
-        accList = File.Exists(idsFile)
-            ? Globals.ReadDict(idsFile).Keys.ToList()
-            : (from f in Directory.GetDirectories(folder)
+        if (!File.Exists(idsFile))
+        {
+            accList = (from f in Directory.GetDirectories(folder)
                 where !f.EndsWith("Shortcuts")
                 let lastSlash = f.LastIndexOf("\\", StringComparison.Ordinal) + 1
                 select f[lastSlash..]).ToList();
+        }
+        else
+        {
+            var allIds = Globals.ReadDict(idsFile);
+            accList = allIds is not null ? allIds.Keys.ToList() : new List<string>();
+        }
 
         return true;
     }
@@ -222,28 +230,31 @@ public class TemplatedPlatformState : ITemplatedPlatformState
                 AccountId = str,
                 DisplayName = GetNameFromId(str),
                 // Handle account image
-                ImagePath = GetImgPath(CurrentPlatform.SafeName, str).Replace("%", "%25")
+                ImagePath = GetImgPath(CurrentPlatform.SafeName, str).Replace("%", "%25"),
+                UserStats = _gameStats.GetUserStatsAllGamesMarkup(str) // Handle game stats (if any enabled and collected.)
             };
 
-            var actualImagePath = Path.Join("wwwroot\\", GetImgPath(CurrentPlatform.SafeName, str));
-            if (!File.Exists(actualImagePath))
-            {
-                // Make sure the directory exists
-                Directory.CreateDirectory(Path.GetDirectoryName(actualImagePath)!);
-                var defaultPng = $"wwwroot\\img\\platform\\{CurrentPlatform.SafeName}Default.png";
-                const string defaultFallback = "wwwroot\\img\\BasicDefault.png";
-                if (File.Exists(defaultPng))
-                    Globals.CopyFile(defaultPng, actualImagePath);
-                else if (File.Exists(defaultFallback))
-                    Globals.CopyFile(defaultFallback, actualImagePath);
-            }
-
-            // Handle game stats (if any enabled and collected.)
-            account.UserStats = _gameStats.GetUserStatsAllGamesMarkup(str);
+            ImportAccountImage(str);
 
             _appState.Switcher.TemplatedAccounts.Add(account);
         }
         await _sharedFunctions.FinaliseAccountList(jsRuntime); // Init context menu & Sorting
+    }
+
+    public void ImportAccountImage(string uniqueId)
+    {
+        var actualImagePath = Path.Join("wwwroot\\", GetImgPath(CurrentPlatform.SafeName, uniqueId));
+        if (!File.Exists(actualImagePath))
+        {
+            // Make sure the directory exists
+            Directory.CreateDirectory(Path.GetDirectoryName(actualImagePath)!);
+            var defaultPng = $"wwwroot\\img\\platform\\{CurrentPlatform.SafeName}Default.png";
+            const string defaultFallback = "wwwroot\\img\\BasicDefault.png";
+            if (File.Exists(defaultPng))
+                Globals.CopyFile(defaultPng, actualImagePath);
+            else if (File.Exists(defaultFallback))
+                Globals.CopyFile(defaultFallback, actualImagePath);
+        }
     }
 
     /// <summary>
@@ -263,7 +274,8 @@ public class TemplatedPlatformState : ITemplatedPlatformState
 
 
     #region Account IDs
-    public Dictionary<string, string> AccountIds { get; set; }
+
+    public Dictionary<string, string> AccountIds { get; set; } = new();
     public void LoadAccountIds() => AccountIds = Globals.ReadDict(CurrentPlatform.IdsJsonPath);
     public void SaveAccountIds() =>
         File.WriteAllText(CurrentPlatform.IdsJsonPath, JsonConvert.SerializeObject(AccountIds));

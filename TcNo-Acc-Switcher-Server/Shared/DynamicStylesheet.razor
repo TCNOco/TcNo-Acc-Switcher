@@ -20,6 +20,7 @@
 @inject IWindowSettings WindowSettings;
 @inject ISteamSettings SteamSettings;
 @inject IAppState AppState;
+@implements IDisposable
 
 <style>
     @_markup
@@ -59,8 +60,13 @@
 
     protected override void OnInitialized()
     {
-        AppState.Stylesheet.PropertyChanged += (o, p) => OnChange(o, p);
+        AppState.Stylesheet.PropertyChanged += OnChange;
         OnChange();
+    }
+
+    void IDisposable.Dispose()
+    {
+        AppState.Stylesheet.PropertyChanged -= OnChange;
     }
 
     private void OnChange(object o = null, PropertyChangedEventArgs p = null)

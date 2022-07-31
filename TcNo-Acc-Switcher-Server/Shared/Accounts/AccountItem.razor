@@ -21,46 +21,7 @@
 @using TcNo_Acc_Switcher_Server.State.DataTypes
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @using TcNo_Acc_Switcher_Server.Shared.Tooltip
-
-@code {
-    [Parameter]
-    public Account Acc { get; set; }
-    [Parameter]
-    public Action SwapAction { get; set; }
-    [Parameter]
-    public Action UnselectAllAccounts { get; set; }
-    [Parameter]
-    public AccountActions AccountActions { get; set; }
-
-    [Inject] IToasts Toasts { get; set; }
-    [Inject] ISteamSettings SteamSettings { get; set; }
-    [Inject] IAppState AppState { get; set; }
-    [Inject] IWindowSettings WindowSettings { get; set; }
-
-    protected override void OnInitialized()
-    {
-        Acc.PropertyChanged += async (s, e) => await AccOnPropertyChanged(s, e);
-    }
-
-    private async Task AccOnPropertyChanged(object sender, PropertyChangedEventArgs e)
-    {
-        await InvokeAsync(StateHasChanged);
-    }
-
-    /// <summary>
-    /// Highlights the specified account
-    /// </summary>
-    public void SetSelectedAccount(Account acc)
-    {
-        AppState.Switcher.CurrentStatus = Lang["Status_SelectedAccount", new { name = acc.DisplayName }];
-        AppState.Switcher.SelectedAccount = acc;
-        UnselectAllAccounts();
-        acc.IsChecked = true;
-        AccountActions.AfterAccountSelect?.Invoke(acc);
-    }
-
-    private readonly string _randomGuid = Guid.NewGuid().ToString();
-}
+@implements IDisposable
 
 <Tooltip Text="@Acc.TitleText.Substring(0, Math.Min(Acc.TitleText.Length, 50))">
     <div class="acc_list_item" @onfocus="() => SetSelectedAccount(Acc)" @onclick="() => SetSelectedAccount(Acc)" oncontextmenu="return false;" @onmouseup="(e) => AccountRightClick(e, Acc)" @ondblclick="() => SwapAction()">
@@ -111,3 +72,51 @@
         </label>
     </div>
 </Tooltip>
+
+@code {
+    [Parameter]
+    public Account Acc { get; set; }
+    [Parameter]
+    public Action SwapAction { get; set; }
+    [Parameter]
+    public Action UnselectAllAccounts { get; set; }
+
+    [Parameter]
+    public AccountActions AccountActions { get; set; }
+
+    [Inject] IToasts Toasts { get; set; }
+    [Inject] ISteamSettings SteamSettings { get; set; }
+    [Inject] IAppState AppState { get; set; }
+    [Inject] IWindowSettings WindowSettings { get; set; }
+
+    private PropertyChangedEventHandler _propChanged;
+    protected override void OnInitialized()
+    {
+        _propChanged = async (s, e) => await AccOnPropertyChanged(s, e);
+        Acc.PropertyChanged += _propChanged;
+    }
+
+    void IDisposable.Dispose()
+    {
+        Acc.PropertyChanged -= _propChanged;
+    }
+
+    private async Task AccOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    /// <summary>
+    /// Highlights the specified account
+    /// </summary>
+    public void SetSelectedAccount(Account acc)
+    {
+        AppState.Switcher.CurrentStatus = Lang["Status_SelectedAccount", new { name = acc.DisplayName }];
+        AppState.Switcher.SelectedAccount = acc;
+        UnselectAllAccounts();
+        acc.IsChecked = true;
+        AccountActions.AfterAccountSelect?.Invoke(acc);
+    }
+
+    private readonly string _randomGuid = Guid.NewGuid().ToString();
+}

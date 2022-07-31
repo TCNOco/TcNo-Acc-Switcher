@@ -15,6 +15,8 @@
 @using Newtonsoft.Json.Linq
 @using TcNo_Acc_Switcher_Globals
 @using System.Collections.ObjectModel
+@using System.Collections.Specialized
+@using System.ComponentModel
 @using TcNo_Acc_Switcher_Server.Shared.Accounts
 @using TcNo_Acc_Switcher_Server.Shared.Tooltip
 @using TcNo_Acc_Switcher_Server.State.Classes
@@ -26,6 +28,7 @@
 @inject IToasts Toasts
 @inject ISteamFuncs SteamFuncs
 @inject ITemplatedPlatformFuncs TemplatedPlatformFuncs
+@implements IDisposable
 
 @code {
     [Parameter]
@@ -33,17 +36,26 @@
     [Parameter]
     public AccountActions AccountActions { get; set; }
 
-    protected override void OnInitialized()
+    private NotifyCollectionChangedEventHandler _collectionChanged;
+    protected override async Task OnInitializedAsync()
     {
-        AccountItems.CollectionChanged += async (_, _) => await OnChangeHandler();
+        _collectionChanged =  async (_, _) => await OnChangeHandler();
+        AccountItems.CollectionChanged += _collectionChanged;
+        await OnChangeHandler();
     }
+
+    void IDisposable.Dispose()
+    {
+        AccountItems.CollectionChanged -= _collectionChanged;
+    }
+
     private async Task OnChangeHandler()
     {
         await InvokeAsync(StateHasChanged);
         if (AppState.Switcher.CurrentSwitcher == "Steam")
             _swapAction = async () => await SteamFuncs.SwapToAccount(JsRuntime);
         else
-            _swapAction = () => TemplatedPlatformFuncs.SwapToAccount(JsRuntime);
+            _swapAction = async () => await TemplatedPlatformFuncs.SwapToAccount(JsRuntime);
     }
 
     private Action _swapAction;

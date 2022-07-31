@@ -15,11 +15,14 @@
 @page "/Platforms/"
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @using TcNo_Acc_Switcher_Server.State.Classes
+@using TcNo_Acc_Switcher_Globals
+@using System.Collections.Specialized
 @namespace TcNo_Acc_Switcher_Server.Pages.Platforms
 @inject NavigationManager NavManager
 @inject ILang Lang
 @inject IWindowSettings WindowSettings
 @inject IStatistics Statistics
+@implements IDisposable
 
 <div class="container mainblock">
     <div class="row">
@@ -92,13 +95,22 @@
 {
     private void ToggleItem(PlatformItem item, bool enabled)
     {
-        WindowSettings.Platforms.First(x => x.NameNoSpace == item.NameNoSpace).SetEnabled(enabled);
+        WindowSettings.Platforms.First(x => x == item).SetEnabled(enabled);
+        WindowSettings.Platforms.Sort();
     }
+
+    private NotifyCollectionChangedEventHandler _collectionChanged;
 
     protected override void OnAfterRender(bool firstRender)
     {
         Statistics.NewNavigation("/Platforms/");
-        WindowSettings.Platforms.CollectionChanged += (_, _) => InvokeAsync(StateHasChanged);
+        _collectionChanged = async (_, _) => await InvokeAsync(StateHasChanged);
+        WindowSettings.Platforms.CollectionChanged += _collectionChanged;
+    }
+
+    void IDisposable.Dispose()
+    {
+        WindowSettings.Platforms.CollectionChanged -= _collectionChanged;
     }
 
     public void SaveAndClose()
@@ -107,10 +119,12 @@
         NavManager.NavigateTo("/");
     }
 
-
-
     /// <summary>
     /// Show a platform. This is only called from the platforms list.
     /// </summary>
-    public void ShowPlatform(string platform) => WindowSettings.Platforms.First(x => x.Name == platform).SetEnabled(true);
+    public void ShowPlatform(string platform)
+    {
+        WindowSettings.Platforms.First(x => x.Name == platform).SetEnabled(true);
+        WindowSettings.Platforms.Sort();
+    }
 }

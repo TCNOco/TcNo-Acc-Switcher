@@ -31,20 +31,22 @@ namespace TcNo_Acc_Switcher_Server.State.Classes.Templated;
 // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
 public class Platform
 {
-    [Inject] private IStatistics Statistics { get; set; }
-    [Inject] private ILang Lang { get; set; }
+    [JsonProperty(Required = Required.Always)]
+    public string Name { get; set; } = "";
+    [JsonProperty(Required = Required.Always)]
+    public List<string> Identifiers { get; set; } = new();
 
-    [JsonProperty(Required = Required.Always)] public string Name { get; set; }
-    [JsonProperty(Required = Required.Always)] public List<string> Identifiers { get; set; }
-    [JsonProperty(Required = Required.Always)] public string ExeLocationDefault { get; set; }
-    [JsonProperty(Required = Required.Always)] public Dictionary<string, string> LoginFiles { get; set; }
+    [JsonProperty(Required = Required.Always)]
+    public string ExeLocationDefault { get; set; } = "";
+    [JsonProperty(Required = Required.Always)]
+    public Dictionary<string, string> LoginFiles { get; set; } = new();
     public List<string> ExesToEnd { get; set; } = new();
-    public List<string> PathListToClear { get; set; }
+    public List<string> PathListToClear { get; set; } = new();
     public string UniqueIdFile { get; set; } = "";
     public string UniqueIdFolder { get; set; } = "";
     public string UniqueIdRegex { get; set; } = "";
     public string UniqueIdMethod { get; set; } = "";
-    public Extras Extras { get; set; }
+    public Extras Extras { get; set; } = new();
     public string ExeExtraArgs { get; set; } = "";
     public bool ExitBeforeInteract { get; set; }
     public bool RegDeleteOnClear { get; set; }
@@ -74,7 +76,7 @@ public class Platform
     {
         // Generate some vars
         PrimaryId = Identifiers.First();
-        SafeName = Globals.GetCleanFilePath(Name).Replace(" ", "");
+        SafeName = Globals.GetCleanFilePath(Name);
         ExeName = Path.GetFileName(ExeLocationDefault);
         SettingsFile = Path.Join("Settings\\", SafeName + ".json");
         PlatformLoginCache = $"LoginCache\\{SafeName}\\";
@@ -84,7 +86,7 @@ public class Platform
         ShortcutImagePath = Path.Join(Globals.UserDataFolder, "wwwroot\\", ShortcutImageFolder);
         UniqueFilePath = ExpandEnvironmentVariables(UniqueIdFile);
 
-        if (Extras.UsernameModalExtraButtons != "")
+        if (Extras is not null && Extras.UsernameModalExtraButtons != "")
             UserModalExtraButtons = new MarkupString(Globals.ReadAllText(Path.Join(Globals.AppDataFolder, Extras.UsernameModalExtraButtons)));
         if (UserModalCopyText != "")
             UserModalCopyText = Globals.ReadAllText(Path.Join(Globals.AppDataFolder, UserModalCopyText));
@@ -95,7 +97,7 @@ public class Platform
         foreach (var f in loginFilesKeys)
         {
             LoginFiles[f] = ExpandEnvironmentVariables(LoginFiles[f]);
-            if (LoginFiles[f].Contains("REG:")) HasRegistryFiles = true;
+            if (f.Contains("REG:")) HasRegistryFiles = true;
         }
         if (PathListToClear is not null && PathListToClear.Contains("SAME_AS_LOGIN_FILES"))
             PathListToClear = LoginFiles.Keys.ToList();
@@ -128,11 +130,11 @@ public class Platform
             File.WriteAllText(path, outText);
     }
 
-    public string GetUserModalHintText()
+    public string GetUserModalHintText(ILang lang)
     {
         try
         {
-            return Lang[Extras.UsernameModalHintText];
+            return lang[Extras.UsernameModalHintText];
         }
         catch (Exception)
         {
@@ -151,12 +153,6 @@ public class Platform
         path = path.Replace("%Platform_Folder%", ExeLocationDefault ?? "");
         return path;
     }
-
-    [JSInvokable]
-    public string PlatformUserModalCopyText() => UserModalCopyText;
-
-    [JSInvokable]
-    public string PlatformHintText() => GetUserModalHintText();
 }
 
 public class Extras

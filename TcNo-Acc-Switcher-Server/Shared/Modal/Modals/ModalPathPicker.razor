@@ -22,6 +22,7 @@
 @using TcNo_Acc_Switcher_Server.State
 @using TcNo_Acc_Switcher_Server.State.DataTypes
 @using TcNo_Acc_Switcher_Server.State.Interfaces
+@using System.ComponentModel
 @inject IModals Modals
 @inject IJSRuntime JsRuntime
 @inject IAppState AppState
@@ -32,7 +33,7 @@
 @inject IWindowSettings WindowSettings
 @inject ILang Lang
 @inject ITemplatedPlatformState TemplatedPlatformState
-
+@implements IDisposable
 
 @code {
     public async Task UpdateType()
@@ -88,14 +89,22 @@
     {
         Modals.IsShown = false;
         await Task.Run(ConfirmTask);
-        CurrentRequest.Goal = PathPickerGoal.None;
+        Modals.CloseModal();
     }
 
+    private Action _updateType;
     protected override async Task OnInitializedAsync()
     {
-        Modals.PathPickerOnChange += async () => await UpdateType();
-        CurrentRequest.PropertyChanged += async (_, _) => await UpdateType();
+        _updateType = async () => await UpdateType();
+
+        Modals.PathPickerOnChange += _updateType;
+        CurrentRequest.PropertyChanged += async (_, _) => await UpdateType(); // CurrentRequest is cleared on close.
         await UpdateType();
+    }
+
+    void IDisposable.Dispose()
+    {
+        Modals.PathPickerOnChange -= _updateType;
     }
 
     private async Task OnChangeHandler()
@@ -118,7 +127,7 @@
                  && !string.IsNullOrEmpty(CurrentRequest.LastPath)
                  && !Globals.IsFile(CurrentRequest.LastPath) // The path doesn't end with <app.exe>, so check to see if the folder contains it. This is accepted for FindPlatformExe.
                  && Directory.Exists(CurrentRequest.LastPath)
-                 && Directory.GetFiles(CurrentRequest.LastPath).ToList().Contains(CurrentRequest.RequestedFile))
+                 && Directory.GetFiles(CurrentRequest.LastPath).ToList().Any(x => x.Contains(CurrentRequest.RequestedFile)))
             _found = true;
         await InvokeAsync(StateHasChanged);
     }
@@ -312,5 +321,7 @@
             SteamSettings.FolderPath = path;
         else
             TemplatedPlatformSettings.FolderPath = path;
+        TemplatedPlatformSettings.Save();
+
     }
 }

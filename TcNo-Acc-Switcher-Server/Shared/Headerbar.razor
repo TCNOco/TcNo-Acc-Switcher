@@ -21,6 +21,7 @@
 @inject IAppState AppState
 @inject IWindowSettings WindowSettings
 @inject NavigationManager NavigationManager
+@implements IDisposable
 
 <div id="window-title">
     <div class="resizeTop"></div>
@@ -79,10 +80,20 @@
 
     private string _animatedBackCss = "transition: transform 0 ease-in-out";
     private static string[] _possibleAnimations = {"X", "Y", "Z"};
+    private Action _backButtonClick;
+    private Action _backButtonReset;
     protected override void OnInitialized()
     {
-        AppState.Navigation.OnBackButtonClick += async () => await BackButtonClicked();
-        AppState.Navigation.OnBackButtonReset += async () => await BackButtonReset();
+        _backButtonClick = async () => await BackButtonClicked();
+        _backButtonReset = async () => await BackButtonReset();
+        AppState.Navigation.OnBackButtonClick += _backButtonClick;
+        AppState.Navigation.OnBackButtonReset += _backButtonReset;
+    }
+
+    void IDisposable.Dispose()
+    {
+        AppState.Navigation.OnBackButtonClick -= _backButtonClick;
+        AppState.Navigation.OnBackButtonReset -= _backButtonReset;
     }
 
     // Animate the back button, and sleep 500ms to stop animation.

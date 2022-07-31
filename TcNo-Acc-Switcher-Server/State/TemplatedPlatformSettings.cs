@@ -15,8 +15,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
@@ -26,15 +28,37 @@ using TcNo_Acc_Switcher_Server.State.Interfaces;
 
 namespace TcNo_Acc_Switcher_Server.State;
 
-public class TemplatedPlatformSettings : ITemplatedPlatformSettings
+public class TemplatedPlatformSettings : ITemplatedPlatformSettings, INotifyPropertyChanged
 {
+    // Property change notifications
+    public event PropertyChangedEventHandler? PropertyChanged;
+    protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
     private readonly IStatistics _statistics;
     private readonly ITemplatedPlatformState _templatedPlatformState;
 
+    public TemplatedPlatformSettings(IStatistics statistics, ITemplatedPlatformState templatedPlatformState)
+    {
+        _statistics = statistics;
+        _templatedPlatformState = templatedPlatformState;
+    }
+    protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
+    {
+        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+        field = value;
+        OnPropertyChanged(propertyName);
+        return true;
+    }
     [JsonProperty] public bool Admin { get; set; }
     [JsonProperty] public int TrayAccNumber { get; set; } = 3;
     [JsonProperty] public bool ForgetAccountEnabled { get; set; }
-    [JsonProperty] public Dictionary<int, string> Shortcuts { get; set; } = new();
+    [JsonProperty] public Dictionary<int, string> Shortcuts {
+        get => _shortcuts;
+        set => SetField(ref _shortcuts, value);
+    }
+
+    private Dictionary<int, string> _shortcuts = new();
+
     [JsonProperty] public bool AutoStart { get; set; } = true;
     [JsonProperty] public bool ShowShortNotes { get; set; } = true;
     [JsonIgnore]
@@ -47,6 +71,11 @@ public class TemplatedPlatformSettings : ITemplatedPlatformSettings
     [JsonIgnore] public int LastAccTimestamp { get; set; }
     [JsonIgnore] public string LastAccName { get; set; } = "";
     [JsonIgnore] public string Exe { get; set; }
+
+    [JsonProperty("FolderPath", Order = 1)] private string _folderPath = "";
+    [JsonProperty("ClosingMethod", Order = 6)] private string _closingMethod = "";
+    [JsonProperty("StartingMethod", Order = 7)] private string _startingMethod = "";
+    [JsonIgnore]
     public string ClosingMethod
     {
         get
@@ -58,6 +87,7 @@ public class TemplatedPlatformSettings : ITemplatedPlatformSettings
         set => _closingMethod = value;
     }
 
+    [JsonIgnore]
     public string StartingMethod
     {
         get
@@ -68,6 +98,7 @@ public class TemplatedPlatformSettings : ITemplatedPlatformSettings
         }
         set => _startingMethod = value;
     }
+    [JsonIgnore]
     public string FolderPath
     {
         get
@@ -81,19 +112,12 @@ public class TemplatedPlatformSettings : ITemplatedPlatformSettings
 
     private Platform _currentPlatform;
 
-    public TemplatedPlatformSettings(IStatistics statistics, ITemplatedPlatformState templatedPlatformState)
-    {
-        _statistics = statistics;
-        _templatedPlatformState = templatedPlatformState;
-    }
-
     public void LoadTemplatedPlatformSettings()
     {
         _currentPlatform = _templatedPlatformState.CurrentPlatform;
         if (File.Exists(_currentPlatform.SettingsFile))
         {
             Globals.LoadSettings(_currentPlatform.SettingsFile, this, false);
-
             Exe = Path.Join(FolderPath, _currentPlatform.ExeName);
         }
         else
@@ -108,10 +132,53 @@ public class TemplatedPlatformSettings : ITemplatedPlatformSettings
             ImportShortcuts();
             // Extract images from said shortcuts
             CollectShortcutImages();
+            // Watch the shortcuts folder for changes.
+            WatchShortcutFolder();
         }
 
         _statistics.SetGameShortcutCount(_templatedPlatformState.CurrentPlatform.SafeName, Shortcuts);
         Save();
+    }
+
+    private FileSystemWatcher _shortcutFolderWatcher = null;
+    /// <summary>
+    /// Watch the LoginCache\[platform]\Shortcuts folder for changes, and reflect them in-app
+    /// </summary>
+    private void WatchShortcutFolder()
+    {
+        // Stop listening to shortcut folders (if any).
+        StopWatchingShortcutFolder();
+
+        if (!Directory.Exists(_currentPlatform.ShortcutFolder)) return;
+        _shortcutFolderWatcher = new FileSystemWatcher(_currentPlatform.ShortcutFolder);
+        _shortcutFolderWatcher.Created += ShortcutFolderWatcherOnCreated;
+        _shortcutFolderWatcher.Deleted += ShortcutFolderWatcherOnDeleted;
+        _shortcutFolderWatcher.EnableRaisingEvents = true;
+    }
+
+    /// <summary>
+    /// On deletion of shortcut > Remove from Shortcuts to hide from in-app
+    /// </summary>
+    private void ShortcutFolderWatcherOnDeleted(object sender, FileSystemEventArgs f)
+    {
+        if (f.Name is not null && Shortcuts.ContainsValue(f.Name))
+            Shortcuts.Remove(Shortcuts.First(e => e.Value == f.Name).Key);
+    }
+
+    /// <summary>
+    /// On shortcut creation: Import image and add shortcut to Shortcuts list (If not "_ignored")
+    /// </summary>
+    private void ShortcutFolderWatcherOnCreated(object sender, FileSystemEventArgs f) =>
+        ImportShortcutImage(new FileInfo(f.FullPath));
+
+    /// <summary>
+    /// Remove folder watchers. This NEEDS to be run on platform switch.
+    /// </summary>
+    private void StopWatchingShortcutFolder()
+    {
+        if (_shortcutFolderWatcher is null) return;
+        _shortcutFolderWatcher.Created -= ShortcutFolderWatcherOnCreated;
+        _shortcutFolderWatcher.Deleted -= ShortcutFolderWatcherOnDeleted;
     }
 
 
@@ -150,11 +217,6 @@ public class TemplatedPlatformSettings : ITemplatedPlatformSettings
         StartingMethod = method;
         Save();
     }
-
-    [JsonProperty("FolderPath", Order = 1)] private string _folderPath = "";
-    [JsonProperty("ClosingMethod", Order = 6)] private string _closingMethod = "";
-    [JsonProperty("StartingMethod", Order = 7)] private string _startingMethod = "";
-
 
     /// <summary>
     /// Search start menu in AppData and ProgramData for requested platform shortcut, and get the image from it.
@@ -223,41 +285,61 @@ public class TemplatedPlatformSettings : ITemplatedPlatformSettings
 
 
     /// <summary>
-    /// Extract images from shortcuts, and make them accessible to the program.
+    /// Iterate through shortcuts in the LoginCache\[platform]\Shortcuts folder, and make them accessible in-app.
     /// </summary>
-    [SupportedOSPlatform("windows")]
     private void CollectShortcutImages()
     {
         // Now get images for all the shortcuts in the folder, as long as they don't already exist:
-        List<string> existingShortcuts = new();
-        if (Directory.Exists(_currentPlatform.ShortcutFolder))
-            foreach (var f in new DirectoryInfo(_currentPlatform.ShortcutFolder).GetFiles())
-            {
-                if (f.Name.Contains("_ignored")) continue;
-                var imageName = Globals.RemoveShortcutExt(f.Name) + ".png";
-                var imagePath = Path.Join(_currentPlatform.ShortcutImagePath, imageName);
-                existingShortcuts.Add(f.Name);
-                if (!Shortcuts.ContainsValue(f.Name))
-                {
-                    // Not found in list, so add!
-                    var last = 0;
-                    foreach (var (k, _) in Shortcuts)
-                        if (k > last) last = k;
-                    last += 1;
-                    Shortcuts.Add(last, f.Name); // Organization added later
-                }
-
-                // Extract image and place in wwwroot (Only if not already there):
-                if (!File.Exists(imagePath))
-                {
-                    Globals.SaveIconFromFile(f.FullName, imagePath);
-                }
-            }
-
-        foreach (var (i, s) in Shortcuts)
+        if (!Directory.Exists(_currentPlatform.ShortcutFolder))
         {
-            if (!existingShortcuts.Contains(s))
-                Shortcuts.Remove(i);
+            Shortcuts = new Dictionary<int, string>();
+            return;
         }
+
+        // Get list of all shortcut files in folder
+        var filesInFolder = new DirectoryInfo(_currentPlatform.ShortcutFolder).GetFiles();
+
+        // Remove items from Shortcuts that do not exist in the shortcut folder
+        foreach (var s in Shortcuts)
+        {
+            if (filesInFolder.Any(x => x.Name.Contains(s.Value))) continue;
+            Shortcuts.Remove(s.Key);
+        }
+
+        // Import images for existing shortcuts
+        foreach (var f in filesInFolder)
+        {
+            ImportShortcutImage(f);
+        }
+    }
+
+    /// <summary>
+    /// Extracts an image from a shortcut, and makes it accessible to the program
+    /// If it has "_ignored": Make sure it isn't displayed in-app (remove from Shortcuts)
+    /// </summary>
+    /// <param name="f"></param>
+    private void ImportShortcutImage(FileSystemInfo f){
+        if (f.Name.Contains("_ignored"))
+        {
+            // If shortcut is ignored, remove it from the existing Shortcuts list, if it's in there.
+            if (Shortcuts.ContainsValue(f.Name))
+                Shortcuts.Remove(Shortcuts.First(e => e.Value == f.Name).Key);
+            return;
+        }
+        var imageName = Globals.RemoveShortcutExt(f.Name) + ".png";
+        var imagePath = Path.Join(_currentPlatform.ShortcutImagePath, imageName);
+        if (!Shortcuts.ContainsValue(f.Name))
+        {
+            // Not found in list, so add!
+            var last = 0;
+            foreach (var (k, _) in Shortcuts)
+                if (k > last) last = k;
+            last += 1;
+            Shortcuts.Add(last, f.Name); // Organization added later
+        }
+
+        // Extract image and place in wwwroot (Only if not already there):
+        if (!File.Exists(imagePath) && OperatingSystem.IsWindows())
+            Globals.SaveIconFromFile(f.FullName, imagePath);
     }
 }

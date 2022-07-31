@@ -24,8 +24,6 @@ namespace TcNo_Acc_Switcher_Server.State.Classes;
 
 public class Account : INotifyPropertyChanged
 {
-    [Inject] private IGameStats GameStats { get; set; }
-
     private bool _isChecked;
     private bool _isCurrent;
     private string _titleText = "";
@@ -136,9 +134,9 @@ public class Account : INotifyPropertyChanged
         set => SetField(ref _userStats, value);
     }
 
-    public void SetUserStats()
+    public void SetUserStats(IGameStats gameStats)
     {
-        UserStats = GameStats.GetUserStatsAllGamesMarkup(AccountId);
+        UserStats = gameStats.GetUserStatsAllGamesMarkup(AccountId);
         OnPropertyChanged(nameof(UserStats));
     }
 

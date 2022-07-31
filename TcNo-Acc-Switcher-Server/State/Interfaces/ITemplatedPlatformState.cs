@@ -12,9 +12,10 @@ public interface ITemplatedPlatformState
     Platform CurrentPlatform { get; set; }
     List<Platform> Platforms { get; set; }
     Dictionary<string, string> AccountIds { get; set; }
-    void LoadTemplatedPlatformState(IJSRuntime jsRuntime, ITemplatedPlatformSettings templatedPlatformSettings, ITemplatedPlatformFuncs templatedPlatformFuncs);
-    Task SetCurrentPlatform(IJSRuntime jsRuntime, ITemplatedPlatformSettings templatedPlatformSettings, string platformName);
+    void LoadTemplatedPlatformState(IJSRuntime jsRuntime, ITemplatedPlatformSettings templatedPlatformSettings);
+    Task SetCurrentPlatform(IJSRuntime jsRuntime, ITemplatedPlatformSettings templatedPlatformSettings, ITemplatedPlatformFuncs templatedPlatformFuncs, string platformName);
     void SaveAccountOrder(string jsonString);
+    void ImportAccountImage(string uniqueId);
     void LoadAccountIds();
     void SaveAccountIds();
     string GetNameFromId(string accId);

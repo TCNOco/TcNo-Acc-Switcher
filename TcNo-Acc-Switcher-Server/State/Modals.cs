@@ -88,6 +88,20 @@ public class Modals : IModals, INotifyPropertyChanged
         IsShown = true;
     }
 
+    /// <summary>
+    /// This can be called to close the modal, and unload everything.
+    /// </summary>
+    public void CloseModal()
+    {
+        IsShown = false;
+        Title = null;
+        Type = null;
+        ExtraArgs = ExtraArg.None;
+        CurrentStatsSelectorState = StatsSelectorState.None;
+        PathPicker = null;
+        TextInput = null;
+    }
+
     public void ShowGameStatsSelectorModal()
     {
         CurrentStatsSelectorState = StatsSelectorState.GamesList;

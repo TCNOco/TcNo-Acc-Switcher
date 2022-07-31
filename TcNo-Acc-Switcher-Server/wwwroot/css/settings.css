@@ -186,6 +186,7 @@ input[type=checkbox]:checked + label {
 .col_close {
   margin-top: 2em;
   margin-bottom: 4em;
+  flex-direction: row-reverse;
 }
 
 .preview_element {

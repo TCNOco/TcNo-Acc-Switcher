@@ -22,20 +22,14 @@
 @using TcNo_Acc_Switcher_Server.State
 @using TcNo_Acc_Switcher_Server.State.DataTypes
 @using TcNo_Acc_Switcher_Server.State.Interfaces
+@using System.ComponentModel
 @inject ILang Lang
 @inject NavigationManager NavigationManager
 @inject IWindowSettings WindowSettings
 @inject IAppState AppState
 @inject IModals Modals
 @inject ITemplatedPlatformState TemplatedPlatformState
-
-@code
-{
-    protected override void OnInitialized()
-    {
-        AppState.PropertyChanged += (_, _) => InvokeAsync(StateHasChanged);
-    }
-}
+@implements IDisposable
 
 <h1 class="SettingsHeader">@Lang["Settings_Header_AppWide"]</h1>
 
@@ -246,6 +240,18 @@
 
 @code
 {
+    private PropertyChangedEventHandler _propChanged;
+    protected override void OnInitialized()
+    {
+        _propChanged += (_, _) => InvokeAsync(StateHasChanged);
+        AppState.PropertyChanged += _propChanged;
+    }
+
+    void IDisposable.Dispose()
+    {
+        AppState.PropertyChanged -= _propChanged;
+    }
+
     public void SetPassword()
     {
         Globals.DebugWriteLine(@"[ButtonClicked:SharedSettings.razor/SetPassword]");

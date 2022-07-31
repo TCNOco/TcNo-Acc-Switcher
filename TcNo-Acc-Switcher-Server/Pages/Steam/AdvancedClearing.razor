@@ -15,11 +15,14 @@
 @page "/Steam/AdvancedClearing"
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using System.Collections.ObjectModel
+@using System.Collections.Specialized
+@using TcNo_Acc_Switcher_Server.State
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @namespace TcNo_Acc_Switcher_Server.Pages.Steam
 @inject NavigationManager NavManager
 @inject ILang Lang
 @inject IStatistics Statistics
+@implements IDisposable
 
 <div class="container mainblock">
     <div class="row">
@@ -106,10 +109,17 @@
 {
     private ObservableCollection<string> Lines = new();
 
+    private NotifyCollectionChangedEventHandler _collectionChanged;
     protected override void OnAfterRender(bool firstRender)
     {
         Statistics.NewNavigation("/Steam/AdvancedClearing/");
-        Lines.CollectionChanged += (_, _) => InvokeAsync(StateHasChanged);
+        _collectionChanged = async (_, _) => await InvokeAsync(StateHasChanged);
+        Lines.CollectionChanged += _collectionChanged;
+    }
+
+    void IDisposable.Dispose()
+    {
+        Lines.CollectionChanged -= _collectionChanged;
     }
 
     private bool _notAccepted;

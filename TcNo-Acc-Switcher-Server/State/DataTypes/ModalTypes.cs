@@ -24,6 +24,7 @@ public enum ExtraArg
 
 public enum StatsSelectorState
 {
+    None,
     GamesList,
     VarsList
 }

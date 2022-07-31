@@ -20,6 +20,7 @@
 @using TcNo_Acc_Switcher_Server.State
 @using TcNo_Acc_Switcher_Server.State.DataTypes
 @using TcNo_Acc_Switcher_Server.State.Interfaces
+@using System.Collections.Specialized
 @inject IAppState AppState
 @inject IToasts Toasts
 
@@ -66,4 +67,15 @@
     }
 </div>
 
+@code
+{
+    protected override void OnInitialized()
+    {
+        Toasts.ToastQueue.CollectionChanged += async (s, e) => await ToastQueueOnCollectionChanged(s, e);
+    }
 
+    private async Task ToastQueueOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+}

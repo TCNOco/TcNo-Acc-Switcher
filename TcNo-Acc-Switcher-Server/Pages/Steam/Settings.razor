@@ -213,6 +213,8 @@
         _gamesAndSettings = GameStats.GetAllCurrentlyEnabledGames().ToDictionary(game => game, GameStats.GetAllMetrics);
         if (!firstRender) return;
         _selectedState = StateToString(SteamSettings.OverrideState);
+        await InvokeAsync(StateHasChanged);
+
         await JsRuntime.InvokeVoidAsync("initSavingHotKey");
         StaticFuncs.SaveSettings = SaveSettings;
     }

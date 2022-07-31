@@ -30,6 +30,7 @@
 @inject ISteamSettings SteamSettings
 @inject IWindowSettings WindowSettings
 @inject ILang Lang
+@implements IDisposable
 
 @code {
     private async Task UpdateType(){
@@ -80,14 +81,22 @@
     {
         Modals.IsShown = false;
         await Task.Run(ConfirmTask);
-        CurrentRequest.Goal = TextInputGoal.None;
+        Modals.CloseModal();
     }
 
+    private Action _updateType;
     protected override async Task OnInitializedAsync()
     {
-        Modals.TextInputOnChange += async () => await UpdateType();
-        CurrentRequest.PropertyChanged += async (_, _) => await UpdateType();
+        _updateType = async () => await UpdateType();
+
+        Modals.TextInputOnChange += _updateType;
+        CurrentRequest.PropertyChanged += async (_, _) => await UpdateType(); // CurrentRequest is cleared on close.
         await UpdateType();
+    }
+
+    void IDisposable.Dispose()
+    {
+        Modals.TextInputOnChange -= _updateType;
     }
 
     private async Task OnChangeHandler()

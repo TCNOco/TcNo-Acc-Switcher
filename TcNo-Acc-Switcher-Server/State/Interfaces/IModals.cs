@@ -35,6 +35,12 @@ public interface IModals
     event Action GameStatsModalOnChange;
     void GameStatsModalOnChangeChanged();
     void ShowModal(string type, ExtraArg arg = ExtraArg.None);
+
+    /// <summary>
+    /// This can be called to close the modal, and unload everything.
+    /// </summary>
+    void CloseModal();
+
     void ShowGameStatsSelectorModal();
     void ShowUpdatePlatformFolderModal();
 

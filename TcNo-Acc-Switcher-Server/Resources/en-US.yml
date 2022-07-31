@@ -288,6 +288,7 @@ Modal_SetImageHeader: Set profile image
 Modal_SetImage: Set Image
 Status_SelectedAccount: "Selected: {name}"
 Status_Init: "Status: Initialising"
+Status_AccountSaved: Account saved.
 Status_ClosingPlatform: Closing {platform}
 Status_ClosingPlatformFailed: Failed to close {platform}
 Status_StartingPlatform: Starting {platform}
