@@ -166,9 +166,12 @@ public class Shortcut
     /// <summary>
     /// Creates an icon file with multiple sizes, and combines the BG and FG images.
     /// </summary>
+    /// <param name="toasts"></param>
     /// <param name="bgImg">Background image, platform</param>
     /// <param name="fgImg">Foreground image, user image</param>
     /// <param name="iconName">Filename, unique so stored without being overwritten</param>
+    /// <param name="appState"></param>
+    /// <param name="lang"></param>
     [SupportedOSPlatform("windows")]
     public bool CreateCombinedIcon(IAppState appState, ILang lang, IToasts toasts, string bgImg, string fgImg, string iconName)
     {

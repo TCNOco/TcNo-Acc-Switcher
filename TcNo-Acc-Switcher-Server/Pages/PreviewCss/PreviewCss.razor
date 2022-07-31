@@ -308,6 +308,9 @@
 {
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (!firstRender) return;
+
+        AppState.WindowState.WindowTitle = Lang["Title_Settings_TestCss"];
         Statistics.NewNavigation("/Settings/PreviewCss");
         await JsRuntime.InvokeVoidAsync("initAccListSortable");
         await JsRuntime.InvokeVoidAsync("initPlatformListSortable");

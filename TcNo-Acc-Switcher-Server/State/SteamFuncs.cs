@@ -202,7 +202,7 @@ public class SteamFuncs : ISteamFuncs
                 await _appState.Switcher.UpdateStatusAsync(_lang["Status_ClosingPlatformFailed", new { platform = "Steam" }]);
             else
             {
-                _toasts.ShowToastLang(ToastType.Error, "Failed", "Toast_RestartAsAdmin");
+                await _toasts.ShowToastLangAsync(ToastType.Error, "Failed", "Toast_RestartAsAdmin");
                 _modals.ShowModal("confirm", ExtraArg.RestartAsAdmin);
             }
             return;
@@ -216,9 +216,9 @@ public class SteamFuncs : ISteamFuncs
             if (_steamSettings.StartSilent) args += " -silent";
 
             if (Globals.StartProgram(_steamSettings.Exe, _steamSettings.Admin, args, _steamSettings.StartingMethod))
-                _toasts.ShowToastLang(ToastType.Info, new LangSub("Status_StartingPlatform", new { platform = "Steam" }));
+                await _toasts.ShowToastLangAsync(ToastType.Info, new LangSub("Status_StartingPlatform", new { platform = "Steam" }));
             else
-                _toasts.ShowToastLang(ToastType.Error, new LangSub("Toast_StartingPlatformFailed", new { platform = "Steam" }));
+                await _toasts.ShowToastLangAsync(ToastType.Error, new LangSub("Toast_StartingPlatformFailed", new { platform = "Steam" }));
         }
 
         if (_steamSettings.AutoStart && _windowSettings.MinimizeOnSwitch) await jsRuntime.InvokeVoidAsync("hideWindow");

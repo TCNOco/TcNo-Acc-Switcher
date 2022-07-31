@@ -53,19 +53,28 @@ public class Account : INotifyPropertyChanged
     public bool IsChecked
     {
         get => _isChecked;
-        set => SetField(ref _isChecked, value);
+        set
+        {
+            if (_isChecked != value) SetField(ref _isChecked, value);
+        }
     }
 
     public bool IsCurrent
     {
         get => _isCurrent;
-        set => SetField(ref _isCurrent, value);
+        set
+        {
+            if (_isCurrent != value) SetField(ref _isCurrent, value);
+        }
     }
 
     public string TitleText
     {
         get => _titleText;
-        set => SetField(ref _titleText, value);
+        set
+        {
+            if (_titleText != value) SetField(ref _titleText, value);
+        }
     }
 
     public string Platform
@@ -85,8 +94,8 @@ public class Account : INotifyPropertyChanged
         get => _displayName;
         set
         {
-            SetField(ref _displayName, value);
             SafeDisplayName = GeneralFuncs.EscapeText(value);
+            SetField(ref _displayName, value);
         }
     }
 
@@ -125,7 +134,10 @@ public class Account : INotifyPropertyChanged
     public string Note
     {
         get => _note;
-        set => SetField(ref _note, value);
+        set
+        {
+            if (_note != value) SetField(ref _note, value);
+        }
     }
 
     public Dictionary<string, Dictionary<string, StatValueAndIcon>> UserStats

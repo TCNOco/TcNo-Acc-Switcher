@@ -134,6 +134,8 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (!firstRender) return;
+
         await JsRuntime.InvokeVoidAsync("focusOn", "#path");
     }
 
@@ -276,14 +278,14 @@
 
         if (folderEmpty)
         {
-            Toasts.ShowToastLang(ToastType.Info, "Toast_DataLocationCopying");
+            await Toasts.ShowToastLangAsync(ToastType.Info, "Toast_DataLocationCopying");
             if (!Globals.CopyFilesRecursive(Globals.UserDataFolder, path))
-                Toasts.ShowToastLang(ToastType.Error, "Toast_FileCopyFail");
+                await Toasts.ShowToastLangAsync(ToastType.Error, "Toast_FileCopyFail");
         }
         else
-            Toasts.ShowToastLang(ToastType.Info, "Toast_DataLocationNotCopying");
+            await Toasts.ShowToastLangAsync(ToastType.Info, "Toast_DataLocationNotCopying");
 
-        Toasts.ShowToastLang(ToastType.Info, "Toast_DataLocationSet");
+        await Toasts.ShowToastLangAsync(ToastType.Info, "Toast_DataLocationSet");
     }
 
     /// <summary>

@@ -47,8 +47,10 @@ Actions will show here
         AppState.Stylesheet.StreamerModeCheck();
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (!firstRender) return;
+
         AppState.WindowState.WindowTitle = Lang["Title_TextEditor"];
         await JsRuntime.InvokeVoidAsync("initEditor");
     }

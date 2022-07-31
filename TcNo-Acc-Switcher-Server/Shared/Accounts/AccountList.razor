@@ -114,11 +114,11 @@
                 _swapAction();
                 break;
             case "c" when (args.CtrlKey && args.ShiftKey) || args.AltKey: // Ctrl+Shift+C or Alt+C copy ID
-                Toasts.ShowToastLang(ToastType.Info, "Toast_Copied");
+                await Toasts.ShowToastLangAsync(ToastType.Info, "Toast_Copied");
                 StaticFuncs.CopyText(AppState.Switcher.SelectedAccount.AccountId); // Copy: Acc.AccountId
                 break;
             case "c" when (args.CtrlKey): // Ctrl+C copy account name
-                Toasts.ShowToastLang(ToastType.Info, "Toast_Copied");
+                await Toasts.ShowToastLangAsync(ToastType.Info, "Toast_Copied");
                 StaticFuncs.CopyText(AppState.Switcher.SelectedAccount.DisplayName); // Copy: Acc.DisplayName
                 break;
         }

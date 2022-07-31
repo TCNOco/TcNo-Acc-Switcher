@@ -19,6 +19,7 @@
 @using System.Collections.Specialized
 @namespace TcNo_Acc_Switcher_Server.Pages.Platforms
 @inject NavigationManager NavManager
+@inject IAppState AppState
 @inject ILang Lang
 @inject IWindowSettings WindowSettings
 @inject IStatistics Statistics
@@ -100,9 +101,10 @@
     }
 
     private NotifyCollectionChangedEventHandler _collectionChanged;
-
-    protected override void OnAfterRender(bool firstRender)
+    protected override void OnInitialized()
     {
+        AppState.WindowState.WindowTitle = Lang["Title_Platforms_Settings"];
+
         Statistics.NewNavigation("/Platforms/");
         _collectionChanged = async (_, _) => await InvokeAsync(StateHasChanged);
         WindowSettings.Platforms.CollectionChanged += _collectionChanged;

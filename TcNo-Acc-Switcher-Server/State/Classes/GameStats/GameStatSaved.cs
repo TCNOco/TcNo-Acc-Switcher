@@ -123,7 +123,7 @@ public class GameStatSaved
 
         if (CachedStats[_appState.Switcher.SelectedAccountId].Collected.Count == 0 || DateTime.Now.Subtract(CachedStats[_appState.Switcher.SelectedAccountId].LastUpdated).Days >= 1)
         {
-            _toasts.ShowToastLang(ToastType.Info, "Toast_LoadingStats");
+            await _toasts.ShowToastLangAsync(ToastType.Info, "Toast_LoadingStats");
             _lastLoadingNotification = DateTime.Now;
             return await LoadStatsFromWeb(_appState.Switcher.SelectedAccountId, _appState.Switcher.CurrentSwitcher);
         }
@@ -162,7 +162,7 @@ public class GameStatSaved
         // Notify user than an account is being loaded - >5 seconds apart.
         if (DateTime.Now.Subtract(_lastLoadingNotification).Seconds >= 5)
         {
-            _toasts.ShowToastLang(ToastType.Info, "Toast_LoadingStats");
+            await _toasts.ShowToastLangAsync(ToastType.Info, "Toast_LoadingStats");
             _lastLoadingNotification = DateTime.Now;
         }
 
@@ -170,7 +170,7 @@ public class GameStatSaved
         HtmlDocument doc = new();
         if (!Globals.GetWebHtmlDocument(ref doc, UrlSubbed(userStat), out var responseText, Cookies))
         {
-            _toasts.ShowToastLang(ToastType.Error, new LangSub("Toast_GameStatsLoadFail", new { Game }));
+            await _toasts.ShowToastLangAsync(ToastType.Error, new LangSub("Toast_GameStatsLoadFail", new { Game }));
             return false;
         }
 
@@ -235,7 +235,7 @@ public class GameStatSaved
         {
             Directory.CreateDirectory(Path.Join(Globals.UserDataFolder, "temp"));
             await File.WriteAllTextAsync(Path.Join(Globals.UserDataFolder, "temp", $"download-{Globals.GetCleanFilePath(accountId)}-{Globals.GetCleanFilePath(Game)}.html"), responseText);
-            _toasts.ShowToastLang(ToastType.Error, new LangSub("Toast_GameStatsEmpty", new { AccoundId = Globals.GetCleanFilePath(accountId), Game = Globals.GetCleanFilePath(Game) }));
+            await _toasts.ShowToastLangAsync(ToastType.Error, new LangSub("Toast_GameStatsEmpty", new { AccoundId = Globals.GetCleanFilePath(accountId), Game = Globals.GetCleanFilePath(Game) }));
             if (CachedStats.ContainsKey(accountId))
                 CachedStats.Remove(accountId);
             return false;

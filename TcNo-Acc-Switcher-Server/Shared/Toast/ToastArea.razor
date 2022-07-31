@@ -58,7 +58,7 @@
                     <h6></h6>
                 }
                 <p>@toast.Message</p></div>
-            <div class="close">✖</div>
+            <div class="close" @onclick="() => CloseToast(toast)">✖</div>
             @if (toast.DuplicateCount > 0)
             {
                 <div class="counter">@(toast.DuplicateCount + 1)</div>
@@ -77,5 +77,11 @@
     private async Task ToastQueueOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
         await InvokeAsync(StateHasChanged);
+    }
+
+    private void CloseToast(Toast toast)
+    {
+        toast.CancellationSource.Cancel();
+        toast.RemoveSelfAction.Invoke();
     }
 }

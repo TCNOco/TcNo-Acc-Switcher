@@ -523,7 +523,7 @@ public class SteamState : ISteamState
         // Either return if queue is empty, or download queued images and then continue.
         if (queue.Count != 0)
         {
-            _toasts.ShowToastLang(ToastType.Info, "Toast_DownloadingProfileData");
+            await _toasts.ShowToastLangAsync(ToastType.Info, "Toast_DownloadingProfileData");
             await Globals.MultiThreadParallelDownloads(WebApiGetImageList(queue)).ConfigureAwait(true);
         }
 

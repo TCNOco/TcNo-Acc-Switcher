@@ -37,14 +37,12 @@
     <DynamicStylesheet />
 </app>
 <ToastArea />
+
 @code{
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await base.OnInitializedAsync();
-        if (WindowSettings.PasswordHash != "" && AppState.PasswordCurrent != WindowSettings.PasswordHash)
-        {
-            if (!NavigationManager.Uri.Contains("/login")) NavigationManager.NavigateTo($"/login?returnUrl={Uri.EscapeDataString(NavigationManager.Uri)}");
-        }
+        if (WindowSettings.PasswordHash == "" || AppState.PasswordCurrent == WindowSettings.PasswordHash) return;
+        if (!NavigationManager.Uri.Contains("/login")) NavigationManager.NavigateTo($"/login?returnUrl={Uri.EscapeDataString(NavigationManager.Uri)}");
     }
 
     private void MouseUp(MouseEventArgs args)

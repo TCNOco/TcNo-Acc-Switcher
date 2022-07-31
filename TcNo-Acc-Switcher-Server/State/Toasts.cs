@@ -44,13 +44,11 @@ public class Toasts : IToasts
             existing.CancellationSource.Cancel();
             ToastQueue.Remove(existing);
             // Then add new, with duplicate counter and fresh timer.
-            toastItem.DuplicateCount += 1;
+            toastItem.DuplicateCount = existing.DuplicateCount + 1;
         }
-        ToastQueue.Add(toastItem);
-        toastItem.RemoveSelf = Task.Run(() =>
+
+        toastItem.RemoveSelfAction = () =>
         {
-            Thread.Sleep(duration);
-            if (toastItem.Cancellation.IsCancellationRequested) return;
             try
             {
                 if (ToastQueue.Contains(toastItem)) ToastQueue.Remove(toastItem);
@@ -59,7 +57,17 @@ public class Toasts : IToasts
             {
                 //
             }
+        };
+
+        toastItem.RemoveSelfTimer = Task.Run(() =>
+        {
+            Thread.Sleep(duration);
+            if (toastItem.Cancellation.IsCancellationRequested) return;
+
+            toastItem.RemoveSelfAction.Invoke();
         }, toastItem.Cancellation);
+
+        ToastQueue.Add(toastItem);
     }
 
     public void ShowToast(ToastType type, string message, int duration = 5000) =>
@@ -72,4 +80,49 @@ public class Toasts : IToasts
         ShowToast(type, _lang[titleVar], _lang[message.LangKey, message.Variable], duration);
     public void ShowToastLang(ToastType type, LangSub message, int duration = 5000) =>
         ShowToast(type, "", _lang[message.LangKey, message.Variable], duration);
+
+    /// <summary>
+    /// Update toasts, with a tiny delay to allow UI to update.
+    /// </summary>
+    public async Task ShowToastAsync(ToastType type, string message, int duration = 5000)
+    {
+        ShowToast(type, "", message, duration);
+        await Task.Delay(1);
+    }
+
+    /// <summary>
+    /// Update toasts, with a tiny delay to allow UI to update.
+    /// </summary>
+    public async Task ShowToastLangAsync(ToastType type, string titleVar, string messageVar, int duration = 5000)
+    {
+        ShowToast(type, _lang[titleVar], _lang[messageVar], duration);
+        await Task.Delay(1);
+    }
+
+    /// <summary>
+    /// Update toasts, with a tiny delay to allow UI to update.
+    /// </summary>
+    public async Task ShowToastLangAsync(ToastType type, string messageVar, int duration = 5000)
+    {
+        ShowToast(type, "", _lang[messageVar], duration);
+        await Task.Delay(1);
+    }
+
+    /// <summary>
+    /// Update toasts, with a tiny delay to allow UI to update.
+    /// </summary>
+    public async Task ShowToastLangAsync(ToastType type, string titleVar, LangSub message, int duration = 5000)
+    {
+        ShowToast(type, _lang[titleVar], _lang[message.LangKey, message.Variable], duration);
+        await Task.Delay(1);
+    }
+
+    /// <summary>
+    /// Update toasts, with a tiny delay to allow UI to update.
+    /// </summary>
+    public async Task ShowToastLangAsync(ToastType type, LangSub message, int duration = 5000)
+    {
+        ShowToast(type, "", _lang[message.LangKey, message.Variable], duration);
+        await Task.Delay(1);
+    }
 }

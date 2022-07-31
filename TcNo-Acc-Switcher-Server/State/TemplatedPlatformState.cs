@@ -107,6 +107,9 @@ public class TemplatedPlatformState : ITemplatedPlatformState
 
         _appState.Switcher.CurrentSwitcher = CurrentPlatform.Name;
         _appState.Switcher.TemplatedAccounts.Clear();
+
+        await _gameStats.SetCurrentPlatform(CurrentPlatform.SafeName);
+
         if (await LoadAccounts(jsRuntime)) await _appState.Switcher.UpdateStatusAsync(_lang["Done"]);
         else await _appState.Switcher.UpdateStatusAsync(_lang["FailedLoadAccounts"]);
 

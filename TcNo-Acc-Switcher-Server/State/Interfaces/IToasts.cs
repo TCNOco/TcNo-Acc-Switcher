@@ -13,6 +13,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
 
 namespace TcNo_Acc_Switcher_Server.State.Interfaces;
@@ -26,4 +27,29 @@ public interface IToasts
     void ShowToastLang(ToastType type, string messageVar, int duration = 5000);
     void ShowToastLang(ToastType type, string titleVar, LangSub message, int duration = 5000);
     void ShowToastLang(ToastType type, LangSub message, int duration = 5000);
+
+    /// <summary>
+    /// Update toasts, with a tiny delay to allow UI to update.
+    /// </summary>
+    Task ShowToastAsync(ToastType type, string message, int duration = 5000);
+
+    /// <summary>
+    /// Update toasts, with a tiny delay to allow UI to update.
+    /// </summary>
+    Task ShowToastLangAsync(ToastType type, string titleVar, string messageVar, int duration = 5000);
+
+    /// <summary>
+    /// Update toasts, with a tiny delay to allow UI to update.
+    /// </summary>
+    Task ShowToastLangAsync(ToastType type, string messageVar, int duration = 5000);
+
+    /// <summary>
+    /// Update toasts, with a tiny delay to allow UI to update.
+    /// </summary>
+    Task ShowToastLangAsync(ToastType type, string titleVar, LangSub message, int duration = 5000);
+
+    /// <summary>
+    /// Update toasts, with a tiny delay to allow UI to update.
+    /// </summary>
+    Task ShowToastLangAsync(ToastType type, LangSub message, int duration = 5000);
 }

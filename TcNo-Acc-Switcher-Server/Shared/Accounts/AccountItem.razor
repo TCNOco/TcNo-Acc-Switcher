@@ -103,6 +103,7 @@
 
     private async Task AccOnPropertyChanged(object sender, PropertyChangedEventArgs e)
     {
+        var s = Acc.UserStats;
         await InvokeAsync(StateHasChanged);
     }
 

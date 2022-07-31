@@ -19,6 +19,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.WebUtilities;
@@ -59,6 +60,8 @@ public partial class Index
     private NotifyCollectionChangedEventHandler _collectionChanged;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (!firstRender) return;
+
         AppState.WindowState.WindowTitle = "TcNo Account Switcher";
         _collectionChanged = async (_, _) => await InvokeAsync(StateHasChanged);
         WindowSettings.Platforms.CollectionChanged += _collectionChanged;
@@ -78,11 +81,8 @@ public partial class Index
         }
         AppState.WindowState.FirstMainMenuVisit = false;
 
-        if (firstRender)
-        {
-            await JsRuntime.InvokeVoidAsync("initPlatformListSortable");
-            //await AData.InvokeVoidAsync("initAccListSortable");
-        }
+        await JsRuntime.InvokeVoidAsync("initPlatformListSortable");
+        //await AData.InvokeVoidAsync("initAccListSortable");
 
         Statistics.NewNavigation("/");
     }
@@ -110,7 +110,7 @@ public partial class Index
             if (File.Exists(SteamSettings.LoginUsersVdf))
                 NavigationManager.NavigateTo("/Steam/");
             else
-                Toasts.ShowToastLang(ToastType.Error, "Toast_Steam_CantLocateLoginusers");
+                await Toasts.ShowToastLangAsync(ToastType.Error, "Toast_Steam_CantLocateLoginusers");
             return;
         }
 
@@ -144,7 +144,7 @@ public partial class Index
     {
         if (AppState.Switcher.IsCurrentlyExportingAccounts)
         {
-            Toasts.ShowToastLang(ToastType.Error, "Error", "Toast_AlreadyProcessing");
+            await Toasts.ShowToastLangAsync(ToastType.Error, "Error", "Toast_AlreadyProcessing");
             return;
         }
 
@@ -160,7 +160,7 @@ public partial class Index
         Globals.DebugWriteLine(@$"[Func:Pages\General\GeneralInvocableFuncs.GiExportAccountList] platform={platform}");
         if (!Directory.Exists(Path.Join("LoginCache", platform.SafeName)))
         {
-            Toasts.ShowToastLang(ToastType.Error, "Toast_AddAccountsFirstTitle", "Toast_AddAccountsFirst");
+            await Toasts.ShowToastLangAsync(ToastType.Error, "Toast_AddAccountsFirstTitle", "Toast_AddAccountsFirst");
             return "";
         }
 

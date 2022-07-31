@@ -12,6 +12,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,7 +24,8 @@ public class Toast
     public string Title { get; set; }
     public string Message { get; set; }
     public int DuplicateCount { get; set; }
-    public Task RemoveSelf { get; set; }
+    public Task RemoveSelfTimer { get; set; }
+    public Action RemoveSelfAction { get; set; }
     public CancellationTokenSource CancellationSource { get; set; } = new CancellationTokenSource();
     public CancellationToken Cancellation { get; set; }
 

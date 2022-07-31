@@ -35,6 +35,7 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (!firstRender) return;
         await JsRuntime.InvokeVoidAsync("focusOn", "#NewAccountName");
     }
 

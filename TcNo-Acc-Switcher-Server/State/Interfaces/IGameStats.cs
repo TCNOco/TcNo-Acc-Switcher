@@ -21,6 +21,8 @@ namespace TcNo_Acc_Switcher_Server.State.Interfaces;
 
 public interface IGameStats
 {
+    Task RefreshSelectedAccount(string game);
+
     /// <summary>
     /// Dictionary of Game Name:Available user game statistics
     /// </summary>

@@ -33,13 +33,6 @@ public partial class AdvancedClearing
     [Inject] private IAppState AppState { get; set; }
     [Inject] private ISharedFunctions SharedFunctions { get; set; }
 
-    protected override void OnInitialized()
-    {
-        Globals.DebugWriteLine(@"[Auto:Steam\AdvancedClearing.razor.cs.OnInitializedAsync]");
-        AppState.WindowState.WindowTitle = Lang["Title_Steam_Cleaning"];
-    }
-
-
     private void WriteLine(string text, bool followWithNewline = true)
     {
         Globals.DebugWriteLine($@"[Auto:Steam\AdvancedClearing.razor.cs.WriteLine] Line: {text}");

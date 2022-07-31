@@ -37,7 +37,6 @@ public partial class Settings
     protected override void OnInitialized()
     {
         AppState.WindowState.WindowTitle = Lang["Title_Steam_Settings"];
-        Globals.DebugWriteLine(@"[Auto:Steam\Settings.razor.cs.OnInitializedAsync]");
     }
 
     public void SaveAndClose()

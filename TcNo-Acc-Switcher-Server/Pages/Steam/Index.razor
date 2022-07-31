@@ -139,47 +139,34 @@
         //var f = WindowSettings.UsingTcNoBrowser;
     }
 
-    //protected override async Task OnAfterRenderAsync(bool firstRender) => await GeneralFuncs.HandleFirstRender(firstRender, "Steam");
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        HandleFirstRender(firstRender);
-        if (firstRender)
-        {
-            AppState.Switcher.CurrentStatus = Lang["Loading"];
-            Statistics.NewNavigation("/Steam/");
+        if (!firstRender) return;
+        AppState.WindowState.WindowTitle = Lang["Title_AccountsList", new { platform = "Steam" }];
+        AppState.Switcher.CurrentStatus = Lang["Loading"];
+        // Handle Streamer Mode notification
+        if (WindowSettings.StreamerModeEnabled && AppState.Stylesheet.StreamerModeTriggered)
+            await Toasts.ShowToastLangAsync(ToastType.Info, "Toast_StreamerModeTitle", "Toast_StreamerModeHint");
 
-            StaticFuncs.SaveShortcuts = SaveShortcuts;
-            _shortcuts = SteamSettings.Shortcuts;
-            StaticFuncs.SaveOrderAction = SteamState.SaveAccountOrder;
+        Statistics.NewNavigation("/Steam/");
 
-            await SteamState.LoadSteamState(SteamFuncs, JsRuntime);
-            await InvokeAsync(StateHasChanged);
+        StaticFuncs.SaveShortcuts = SaveShortcuts;
+        _shortcuts = SteamSettings.Shortcuts;
+        StaticFuncs.SaveOrderAction = SteamState.SaveAccountOrder;
 
-            // Get logged in user from Steam loginusers.vdf. This is only set once, on launch.
-            var curAcc = SteamState.SteamUsers.FirstOrDefault(x => x.MostRec == "1");
-            if (curAcc is not null) SteamFuncs.SetCurrentAccount(curAcc.SteamId);
+        await SteamState.LoadSteamState(SteamFuncs, JsRuntime);
+        await InvokeAsync(StateHasChanged);
 
-            // Load games for the Right-click menu
-            LoadGamesForAccounts();
-            _accountActions.AfterAccountSelect = OnAccountSelect;
-            await InvokeAsync(StateHasChanged);
+        // Get logged in user from Steam loginusers.vdf. This is only set once, on launch.
+        var curAcc = SteamState.SteamUsers.FirstOrDefault(x => x.MostRec == "1");
+        if (curAcc is not null) SteamFuncs.SetCurrentAccount(curAcc.SteamId);
 
-            AppState.Switcher.CurrentStatus = Lang["Done"];
-        }
-    }
+        // Load games for the Right-click menu
+        LoadGamesForAccounts();
+        _accountActions.AfterAccountSelect = OnAccountSelect;
+        await InvokeAsync(StateHasChanged);
 
-    public void HandleFirstRender(bool firstRender)
-    {
-        if (firstRender)
-        {
-            AppState.WindowState.WindowTitle = Lang["Title_AccountsList", new { platform = "Steam" }];
-            // Handle Streamer Mode notification
-            if (WindowSettings.StreamerModeEnabled && AppState.Stylesheet.StreamerModeTriggered)
-                Toasts.ShowToastLang(ToastType.Info, "Toast_StreamerModeTitle", "Toast_StreamerModeHint");
-
-            // Handle queries and invoke status "Ready"
-            AppState.Switcher.CurrentStatus = Lang["Done"];
-        }
+        AppState.Switcher.CurrentStatus = Lang["Done"];
     }
 
     private async Task ShortcutClick(MouseEventArgs e, string shortcut)

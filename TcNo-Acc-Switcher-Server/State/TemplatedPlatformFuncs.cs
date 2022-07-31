@@ -94,15 +94,15 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
             {
                 if (accId == uniqueId)
                 {
-                    _toasts.ShowToastLang(ToastType.Info, "Toast_AlreadyLoggedIn");
+                    await _toasts.ShowToastLangAsync(ToastType.Info, "Toast_AlreadyLoggedIn");
                     if (_templatedPlatformSettings.AutoStart)
                     {
                         if (Globals.StartProgram(_templatedPlatformSettings.Exe,
                                 _templatedPlatformSettings.Admin, args,
                                 _templatedPlatformState.CurrentPlatform.Extras.StartingMethod))
-                            _toasts.ShowToastLang(ToastType.Info, new LangSub("Status_StartingPlatform", new { platform = _templatedPlatformState.CurrentPlatform.SafeName }));
+                            await _toasts.ShowToastLangAsync(ToastType.Info, new LangSub("Status_StartingPlatform", new { platform = _templatedPlatformState.CurrentPlatform.SafeName }));
                         else
-                            _toasts.ShowToastLang(ToastType.Error, new LangSub("Toast_StartingPlatformFailed", new { platform = _templatedPlatformState.CurrentPlatform.SafeName }));
+                            await _toasts.ShowToastLangAsync(ToastType.Error, new LangSub("Toast_StartingPlatformFailed", new { platform = _templatedPlatformState.CurrentPlatform.SafeName }));
                     }
 
                     await _appState.Switcher.UpdateStatusAsync(_lang["Done"]);
@@ -308,9 +308,10 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
         {
             if (accFile.StartsWith("JSON_SELECT"))
             {
-                var path = accFile.Split("::")[1];
+                var path = ExpandEnvironmentVariables(accFile.Split("::")[1]);
                 var selector = accFile.Split("::")[2];
                 Globals.ReplaceVarInJsonFile(path, selector, "");
+                return true;
             }
         }
 
@@ -484,7 +485,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
             {
                 var jToken = ReadJsonFile(Path.Join(localCachePath, savedFile));
 
-                var path = accFile.Split("::")[1];
+                var path = ExpandEnvironmentVariables(accFile.Split("::")[1]);
                 var selector = accFile.Split("::")[2];
                 if (!Globals.ReplaceVarInJsonFile(path, selector, jToken))
                 {
@@ -601,7 +602,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
             // HANDLE JSON VALUE
             if (accFile.StartsWith("JSON"))
             {
-                var path = accFile.Split("::")[1];
+                var path = ExpandEnvironmentVariables(accFile.Split("::")[1]);
                 var selector = accFile.Split("::")[2];
                 var js = ReadJsonFile(path);
                 var originalValue = js.SelectToken(selector);
@@ -745,7 +746,9 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
         var toFullPath = ExpandEnvironmentVariables(toPath);
         var fromFullPath = ExpandEnvironmentVariables(fromPath);
 
-        // Handle wildcards
+        // Handle wildcards (Usually filters for copying into the account switcher)
+        // From: C:\...\*.log
+        // To: LoginCache\<platform>\
         if (fromPath.Contains('*'))
         {
             var folder = Path.GetDirectoryName(fromFullPath) ?? "";
@@ -769,6 +772,38 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
                 if (toFullPath == null) return false;
                 if (toFullPath.Contains('*')) toFullPath = Path.GetDirectoryName(toFullPath);
                 var fullOutputPath = Path.Join(toFullPath, Path.GetFileName(f));
+                Globals.CopyFile(f, fullOutputPath);
+            }
+
+            return true;
+        }
+
+        // Handle wildcards in destination (Usually filters for copying out of account switcher)
+        // From: LoginCache\<platform>\
+        // To: C:\...\*.log
+        if (toPath.Contains('*'))
+        {
+            var toFolder = Path.GetDirectoryName(toFullPath) ?? "";
+            var toFile = Path.GetFileName(toFullPath); // Filename that includes wildcard (*, *.log, f_*)
+
+            // Handle "...\\*" folder.
+            Directory.CreateDirectory(toFolder);
+            if (toFile == "*")
+            {
+                if (toFolder == "" || !Directory.Exists(fromFullPath)) return false;
+                if (Globals.CopyFilesRecursive(fromFullPath, toFolder)) return true;
+
+                _toasts.ShowToastLang(ToastType.Error, "Toast_FileCopyFail");
+                return false;
+            }
+
+            // Handle "...\\*.log" or "...\\file_*", etc.
+            // This is NOT recursive - Specify folders manually in JSON
+            foreach (var f in Directory.GetFiles(fromFullPath, toFile))
+            {
+                if (fromFullPath == null) return false;
+                if (fromFullPath.Contains('*')) fromFullPath = Path.GetDirectoryName(fromFullPath);
+                var fullOutputPath = Path.Join(fromFullPath, Path.GetFileName(f));
                 Globals.CopyFile(f, fullOutputPath);
             }
 

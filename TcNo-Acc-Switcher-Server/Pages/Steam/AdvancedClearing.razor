@@ -16,6 +16,7 @@
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using System.Collections.ObjectModel
 @using System.Collections.Specialized
+@using TcNo_Acc_Switcher_Globals
 @using TcNo_Acc_Switcher_Server.State
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @namespace TcNo_Acc_Switcher_Server.Pages.Steam
@@ -110,8 +111,10 @@
     private ObservableCollection<string> Lines = new();
 
     private NotifyCollectionChangedEventHandler _collectionChanged;
-    protected override void OnAfterRender(bool firstRender)
+    protected override void OnInitialized()
     {
+        AppState.WindowState.WindowTitle = Lang["Title_Steam_Cleaning"];
+
         Statistics.NewNavigation("/Steam/AdvancedClearing/");
         _collectionChanged = async (_, _) => await InvokeAsync(StateHasChanged);
         Lines.CollectionChanged += _collectionChanged;

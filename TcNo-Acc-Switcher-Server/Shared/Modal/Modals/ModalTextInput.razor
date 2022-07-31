@@ -75,13 +75,13 @@
         await OnChangeHandler(); // Run once just to set vars
     }
 
-    private Action ConfirmTask { get; set; }
+    private Func<bool> ConfirmTask { get; set; }
 
-    private async Task Confirm()
+    private void Confirm()
     {
-        Modals.IsShown = false;
-        await Task.Run(ConfirmTask);
-        Modals.CloseModal();
+        var shouldClose = ConfirmTask.Invoke();
+        if (shouldClose) Modals.CloseModal();
+        else Toasts.ShowToastLang(ToastType.Info, "Toast_VerifyInput");
     }
 
     private Action _updateType;
@@ -109,6 +109,8 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (!firstRender) return;
+
         await JsRuntime.InvokeVoidAsync("focusOn", "#textInput");
     }
 
@@ -152,7 +154,7 @@
         // If enter was pressed
         if (k.Key == "Enter")
         {
-             await Confirm();
+            Confirm();
         }
     }
 
@@ -162,37 +164,53 @@
 
     /// <summary>
     /// Sets the App Password, to stop simple eyes from snooping
+    /// Returns should hide/close modal
     /// </summary>
-    public void SetAppPassword()
+    public bool SetAppPassword()
     {
+        Modals.IsShown = false;
         WindowSettings.PasswordHash = Globals.GetSha256HashString(Modals.TextInput.LastString);
         WindowSettings.Save();
         Toasts.ShowToastLang(ToastType.Success, "Toast_PasswordChanged");
+        return true;
     }
 
-    public void SetAccountString()
+    /// <summary>
+    /// Returns should hide/close modal
+    /// </summary>
+    public bool SetAccountString()
     {
-        Modals.IsShown = false;
-
         if (AppState.Switcher.CurrentSwitcher == "Steam")
         {
-            if (Modals.TextInput.Goal is TextInputGoal.ChangeUsername)
+            Modals.IsShown = false;
+            if (string.IsNullOrEmpty(Modals.TextInput.LastString))
             {
-                SteamSettings.CustomAccountNames[AppState.Switcher.SelectedAccountId] = Modals.TextInput.LastString;
-                AppState.Switcher.SelectedAccount.DisplayName = Modals.TextInput.LastString;
-                SteamSettings.Save();
+                var acc = AppState.Switcher.SteamAccounts.FirstOrDefault(x => x.AccountId == AppState.Switcher.SelectedAccountId);
+                if (acc is null) return true;
 
-                Modals.TextInputNotifyDataChanged();
-                Toasts.ShowToastLang(ToastType.Success, "Toast_ChangedUsername");
+                Modals.TextInput.LastString = acc.DisplayName;
             }
+
+            SteamSettings.CustomAccountNames[AppState.Switcher.SelectedAccountId] = Modals.TextInput.LastString;
+            AppState.Switcher.SelectedAccount.DisplayName = Modals.TextInput.LastString;
+            SteamSettings.Save();
+
+            Modals.TextInputNotifyDataChanged();
+            Toasts.ShowToastLang(ToastType.Success, "Toast_ChangedUsername");
         }
         else
         {
+            if (string.IsNullOrEmpty(Modals.TextInput.LastString)) return false;
+
+            Modals.IsShown = false;
+
             if (Modals.TextInput.Goal is TextInputGoal.ChangeUsername)
                 TemplatedChangeUsername(AppState.Switcher.SelectedAccountId, Modals.TextInput.LastString);
             else
                 TemplatedPlatformFuncs.TemplatedAddCurrent(Modals.TextInput.LastString);
         }
+
+        return true;
     }
 
     public void TemplatedChangeUsername(string accId, string newName, bool reload = true)

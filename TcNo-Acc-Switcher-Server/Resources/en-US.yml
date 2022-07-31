@@ -245,6 +245,8 @@ Toast_SteamWebKeyInvalid: Steam Web API key seems to be invalid. Please set a ne
 Toast_DownloadingProfileData: Downloading profile data
 Toast_PasswordChanged: Password changed
 Toast_JsonFailModify: Failed to modify JSON file. See log.
+Toast_VerifyInput: Please double-check your input
+Toast_UpdatingStats: Updating game stats
 Modal_Crowdin_Header: Crowdin translators
 Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
 Modal_Info_Creator: Created by TechNobo [Wesley Pyburn]

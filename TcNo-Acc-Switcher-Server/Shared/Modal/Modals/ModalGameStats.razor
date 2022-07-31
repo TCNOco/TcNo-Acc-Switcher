@@ -23,10 +23,11 @@
 @using TcNo_Acc_Switcher_Server.State
 @using TcNo_Acc_Switcher_Server.State.DataTypes
 @using TcNo_Acc_Switcher_Server.State.Interfaces
+@inject IAppState AppState
 @inject IModals Modals
 @inject ILang Lang
 @inject IGameStats GameStats
-@inject IAppState AppState
+@inject IToasts Toasts
 @inject IWindowSettings WindowSettings
 @implements IDisposable
 
@@ -64,7 +65,21 @@
 
 
     // List of games from X platform, with Y accountId associated.
-    private Dictionary<string, string> GetEnabledGames => GameStats.GetAvailableGames.Where(game => GameStats.SavedStats[game].CachedStats.ContainsKey(AppState.Switcher.SelectedAccountId)).ToList().ToDictionary(game => game, Globals.GetCleanFilePath);
+    private Dictionary<string, string> GetEnabledGames {
+        get
+        {
+            Dictionary<string, string> enabledGames = new();
+            foreach (var game in GameStats.GetAvailableGames)
+            {
+                if (!GameStats.SavedStats.ContainsKey(game)) continue;
+                if (GameStats.SavedStats[game].CachedStats.ContainsKey(AppState.Switcher.SelectedAccountId))
+                {
+                    enabledGames.Add(game, Globals.GetCleanFilePath(game));
+                }
+            }
+            return enabledGames;
+        }
+    }
     //private Dictionary<string, string> GetEnabledGames
     //{
     //    get
@@ -83,7 +98,20 @@
 
 
     // List of games from X platform, NOT with Y accountId associated.
-    private Dictionary<string, string> GetDisabledGames => GameStats.GetAvailableGames.Where(game => !GameStats.SavedStats[game].CachedStats.ContainsKey(AppState.Switcher.SelectedAccountId)).ToList().ToDictionary(game => game, Globals.GetCleanFilePath);
+    private Dictionary<string, string> GetDisabledGames {
+        get
+        {
+            Dictionary<string, string> disabledGames = new();
+            foreach (var game in GameStats.GetAvailableGames)
+            {
+                if (!GameStats.SavedStats.ContainsKey(game) || !GameStats.SavedStats[game].CachedStats.ContainsKey(AppState.Switcher.SelectedAccountId))
+                {
+                    disabledGames.Add(game, Globals.GetCleanFilePath(game));
+                }
+            }
+            return disabledGames;
+        }
+    }
 
     // Disables specific games
     private void DisableGame(string game)
@@ -201,8 +229,8 @@
                     <div class="form-check mb-2">
                         <input class="form-check-input" type="checkbox" id="@safeGame" @onclick="() => DisableGame(game)" checked><label class="form-check-label" for="@safeGame"></label><label for="@safeGame">@game<br></label></div>
                     <div>
-                        <button type="button" @onclick="() => ShowVarsList(game)"><span>@_editButtonText</span></button>
-                        <button type="button" @onclick="() => RefreshAccount(game)"><span>@_refreshButtonText</span></button>
+                        <button type="button" @onclick="async () => await ShowVarsList(game)"><span>@_editButtonText</span></button>
+                        <button type="button" @onclick="async () => await RefreshAccount(game)"><span>@_refreshButtonText</span></button>
                     </div>
                 </div>
             }
@@ -263,27 +291,28 @@
 
 @code
 {
-    private void ShowVarsList(string game)
+    private async Task ShowVarsList(string game)
     {
         _currentGame = game;
         Modals.CurrentStatsSelectorState = StatsSelectorState.VarsList;
-        OnChangeHandler();
+        await OnChangeHandler();
     }
+
+    List<string> _currentlyRefreshing = new();
     private async Task RefreshAccount(string game)
     {
-        await GameStats.SavedStats[game].LoadStatsFromWeb(AppState.Switcher.SelectedAccountId, AppState.Switcher.CurrentSwitcher);
-        GameStats.SavedStats[game].SaveStats();
+        await GameStats.RefreshSelectedAccount(game);
         UpdateAccountList();
     }
 
     private void UpdateAccountList(){
         AppState.Switcher.SelectedAccount.SetUserStats(GameStats);
-        Modals.IsShown = false;
 
     }
 
     private async Task SaveGameVars()
     {
+        Modals.IsShown = false;
         var vars = new Dictionary<string, string>();
         foreach (var (id, textInput) in _varTextInputs)
         {
@@ -291,14 +320,19 @@
         }
 
         var hiddenMetrics = new List<string>();
-        foreach (var (id, hiddenMetric) in _hiddenMetrics.Where(x => !x.Value.IsChecked))
+        foreach (var (id, _) in _hiddenMetrics.Where(x => !x.Value.IsChecked))
         {
             hiddenMetrics.Add(id);
         }
 
         await GameStats.SavedStats[_currentGame].SetAccount(vars, hiddenMetrics);
 
+        // If profile image is ticked, update:
+        if (_hiddenMetrics.ContainsKey("%PROFILEIMAGE%") && _hiddenMetrics["%PROFILEIMAGE%"].IsChecked)
+            await GameStats.RefreshSelectedAccount(_currentGame);
+
         Modals.CurrentStatsSelectorState = StatsSelectorState.GamesList;
         UpdateAccountList();
+        Modals.CloseModal();
     }
 }

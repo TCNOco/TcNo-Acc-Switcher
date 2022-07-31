@@ -179,17 +179,20 @@
 
 @code
 {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        AppState.WindowState.WindowTitle = Lang["Title_Template_Settings", new { platformName = TemplatedPlatformState.CurrentPlatform.Name }];
+        Statistics.NewNavigation($"/[{TemplatedPlatformState.CurrentPlatform.SafeName}]/Settings");
+        await JsRuntime.InvokeVoidAsync("initSavingHotKey");
+        StaticFuncs.SaveSettings = SaveSettings;
+    }
+
     protected override async Task OnParametersSetAsync()
     {
         await GameStats.SetCurrentPlatform(TemplatedPlatformState.CurrentPlatform.SafeName);
         _gamesAndSettings = GameStats.GetAllCurrentlyEnabledGames().ToDictionary(game => game, GameStats.GetAllMetrics);
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        Statistics.NewNavigation($"/[{TemplatedPlatformState.CurrentPlatform.SafeName}]/Settings");
-        if (firstRender) await JsRuntime.InvokeVoidAsync("initSavingHotKey");
-        StaticFuncs.SaveSettings = SaveSettings;
     }
 
     public void SaveAndClose()

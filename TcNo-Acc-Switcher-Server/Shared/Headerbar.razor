@@ -16,6 +16,7 @@
 @using System.Threading
 @using TcNo_Acc_Switcher_Server.State
 @using TcNo_Acc_Switcher_Server.State.Interfaces
+@using System.ComponentModel
 @inject IJSRuntime JsRuntime
 @inject IHttpContextAccessor HttpContextAccessor
 @inject IAppState AppState
@@ -82,18 +83,28 @@
     private static string[] _possibleAnimations = {"X", "Y", "Z"};
     private Action _backButtonClick;
     private Action _backButtonReset;
+    private PropertyChangedEventHandler _propChanged;
     protected override void OnInitialized()
     {
         _backButtonClick = async () => await BackButtonClicked();
         _backButtonReset = async () => await BackButtonReset();
+        _propChanged = async (o, e) => await OnChangeHandler(o, e);
         AppState.Navigation.OnBackButtonClick += _backButtonClick;
         AppState.Navigation.OnBackButtonReset += _backButtonReset;
+        AppState.PropertyChanged += _propChanged;
     }
 
     void IDisposable.Dispose()
     {
         AppState.Navigation.OnBackButtonClick -= _backButtonClick;
         AppState.Navigation.OnBackButtonReset -= _backButtonReset;
+        AppState.PropertyChanged -= _propChanged;
+    }
+
+    private async Task OnChangeHandler(object o, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == "WindowTitle")
+            await InvokeAsync(StateHasChanged);
     }
 
     // Animate the back button, and sleep 500ms to stop animation.
@@ -126,9 +137,10 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (!firstRender) return;
+
         // Init dragging, resizing and more -- Assuming it's a TcNo window and not a browser.
-        if (firstRender)
-            await JsRuntime.InvokeVoidAsync("handleWindowControls");
+        await JsRuntime.InvokeVoidAsync("handleWindowControls");
     }
 
     // For draggable regions:

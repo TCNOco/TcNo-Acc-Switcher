@@ -63,11 +63,11 @@
     {
         Globals.DebugWriteLine(@"[JSInvoke:General\GeneralFuncs.HandleQueries]");
         var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
-    // Clear cache reload
+        // Clear cache reload
         var queries = QueryHelpers.ParseQuery(uri.Query);
-    // cacheReload handled in JS
+        // cacheReload handled in JS
 
-    // Toast
+        // Toast
         if (!queries.TryGetValue("toast_type", out var toastType) ||
             !queries.TryGetValue("toast_title", out var toastTitle) ||
             !queries.TryGetValue("toast_message", out var toastMessage)) return true;
@@ -76,7 +76,7 @@
             try
             {
                 var type = (ToastType)Enum.Parse(typeof(ToastType), toastType[i], true);
-                Toasts.ShowToastLang(type, toastTitle[i], toastMessage[i]);
+                await Toasts.ShowToastLangAsync(type, toastTitle[i], toastMessage[i]);
                 await JsRuntime.InvokeVoidAsync("removeUrlArgs", "toast_type,toast_title,toast_message");
             }
             catch (TaskCanceledException e)

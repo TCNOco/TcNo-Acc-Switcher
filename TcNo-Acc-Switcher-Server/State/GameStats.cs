@@ -47,6 +47,17 @@ public class GameStats : IGameStats
 
     #region Load games
 
+
+    private readonly List<string> _currentlyRefreshing = new();
+    public async Task RefreshSelectedAccount(string game)
+    {
+        if (_currentlyRefreshing.Contains(game)) return;
+        _currentlyRefreshing.Add(game);
+        await SavedStats[game].LoadStatsFromWeb(_appState.Switcher.SelectedAccountId, _appState.Switcher.CurrentSwitcher);
+        SavedStats[game].SaveStats();
+        _currentlyRefreshing.Remove(game);
+    }
+
     /// <summary>
     /// Dictionary of Game Name:Available user game statistics
     /// </summary>
@@ -59,12 +70,13 @@ public class GameStats : IGameStats
     /// <returns>If successfully loaded platform</returns>
     public async Task<bool> SetCurrentPlatform(string platform)
     {
-        if (!_gameStatsRoot.IsInit || _appState.Switcher.CurrentSwitcher == platform) return false;
+        if (!_gameStatsRoot.IsInit) return false;
 
         _appState.Switcher.CurrentSwitcher = platform;
         if (!_gameStatsRoot.PlatformCompatibilities.ContainsKey(platform)) return false;
 
         // TODO: Verify this works as intended when more games are added.
+        SavedStats = new Dictionary<string, GameStatSaved>();
         foreach (var game in _gameStatsRoot.PlatformCompatibilities[platform])
         {
             var gs = new GameStatSaved(_lang, _gameStatsRoot, _appState, _toasts);

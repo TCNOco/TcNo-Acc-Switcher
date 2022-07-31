@@ -66,7 +66,6 @@
   color: white;
   font-size: 1em;
   box-shadow: 0 0 var(--notification-margin) rgba(0, 0, 0, 0.2);
-  cursor: pointer;
   opacity: 0;
   transition: opacity 1s ease 0.5s;
   z-index: 999;

@@ -31,12 +31,6 @@ public partial class Settings
     [Inject] private IModals Modals { get; set; }
     [Inject] private ITemplatedPlatformSettings TemplatedPlatformSettings { get; set; }
 
-    protected override void OnInitialized()
-    {
-        AppState.WindowState.WindowTitle = Lang["Title_Template_Settings", new { platformName = TemplatedPlatformState.CurrentPlatform.Name }];
-        Globals.DebugWriteLine(@"[Auto:Basic\Settings.razor.cs.OnInitializedAsync]");
-    }
-
     #region SETTINGS_GENERAL
     // BUTTON: Pick folder
     public void PickFolder()
@@ -62,7 +56,7 @@ public partial class Settings
             _currentlyRestoring = true;
         else
         {
-            Toasts.ShowToastLang(ToastType.Error, "Toast_RestoreBusy");
+            await Toasts.ShowToastLangAsync(ToastType.Error, "Toast_RestoreBusy");
             return;
         }
 
@@ -72,7 +66,7 @@ public partial class Settings
             {
                 if (!file.Name.EndsWith("7z")) continue;
 
-                Toasts.ShowToastLang(ToastType.Info, "Toast_RestoreExt");
+                await Toasts.ShowToastLangAsync(ToastType.Info, "Toast_RestoreExt");
 
                 var outputFolder = Path.Join("Restore", Path.GetFileNameWithoutExtension(file.Name));
                 Directory.CreateDirectory(outputFolder);
@@ -88,7 +82,7 @@ public partial class Settings
                 Globals.DecompressZip(tempFile, outputFolder);
                 File.Delete(tempFile);
 
-                Toasts.ShowToastLang(ToastType.Info, "Toast_RestoreCopying");
+                await Toasts.ShowToastLangAsync(ToastType.Info, "Toast_RestoreCopying");
 
                 // Move files and folders back
                 foreach (var (toPath, fromPath) in TemplatedPlatformState.CurrentPlatform.Extras.BackupPaths)
@@ -99,21 +93,21 @@ public partial class Settings
                     else if (Globals.IsFolder(fullFromPath))
                     {
                         if (!Globals.CopyFilesRecursive(fullFromPath, toPath))
-                            Toasts.ShowToastLang(ToastType.Error, "Toast_FileCopyFail");
+                            await Toasts.ShowToastLangAsync(ToastType.Error, "Toast_FileCopyFail");
                     }
                 }
 
-                Toasts.ShowToastLang(ToastType.Info, "Toast_RestoreDeleting");
+                await Toasts.ShowToastLangAsync(ToastType.Info, "Toast_RestoreDeleting");
 
                 // Remove temp files
                 Globals.RecursiveDelete(outputFolder, false);
 
-                Toasts.ShowToastLang(ToastType.Success, "Toast_RestoreComplete");
+                await Toasts.ShowToastLangAsync(ToastType.Success, "Toast_RestoreComplete");
             }
             catch (Exception ex)
             {
                 Globals.WriteToLog("Failed to restore from file: " + file.Name, ex);
-                Toasts.ShowToastLang(ToastType.Error, "Status_FailedLog");
+                await Toasts.ShowToastLangAsync(ToastType.Error, "Status_FailedLog");
 
             }
             _currentlyRestoring = false;

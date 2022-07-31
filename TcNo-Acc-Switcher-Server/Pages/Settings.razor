@@ -53,16 +53,12 @@
         NavManager.NavigateTo("/");
     }
 
-    protected override void OnInitialized()
-    {
-        AppState.WindowState.WindowTitle = Lang["Title_Settings"];
-        Globals.DebugWriteLine(@"[Auto:Settings.razor.cs.OnInitializedAsync]");
-    }
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        Statistics.NewNavigation("/Settings/");
         if (!firstRender) return;
+
+        AppState.WindowState.WindowTitle = Lang["Title_Settings"];
+        Statistics.NewNavigation("/Settings/");
         await JsRuntime.InvokeVoidAsync("initSavingHotKey");
     }
 }

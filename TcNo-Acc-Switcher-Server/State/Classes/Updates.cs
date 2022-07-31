@@ -99,14 +99,14 @@ public class Updates
                     }
 
                     // Has not shown error today
-                    _toasts.ShowToastLang(ToastType.Error, "Toast_UpdateCheckFail", 15000);
+                    await _toasts.ShowToastLangAsync(ToastType.Error, "Toast_UpdateCheckFail", 15000);
                     o["LastUpdateCheckFail"] = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
                     await File.WriteAllTextAsync("WindowSettings.json", o.ToString());
                 }
                 catch (JsonException je)
                 {
                     Globals.WriteToLog("Could not interpret <User Data>\\WindowSettings.json.", je);
-                    _toasts.ShowToastLang(ToastType.Error, "Toast_UserDataLoadFail", 15000);
+                    await _toasts.ShowToastLangAsync(ToastType.Error, "Toast_UserDataLoadFail", 15000);
                     File.Move("WindowSettings.json", "WindowSettings.bak.json", true);
                 }
             }
