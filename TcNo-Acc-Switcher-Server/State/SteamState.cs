@@ -159,7 +159,7 @@ public class SteamState : ISteamState
         // Load notes
         LoadNotes();
 
-        await _sharedFunctions.FinaliseAccountList(jsRuntime);
+        await jsRuntime.InvokeVoidAsync("initAccListSortable");
 
         _statistics.SetAccountCount("Steam", SteamUsers.Count);
         SteamLoadingProfiles = false;
@@ -768,8 +768,6 @@ public class SteamState : ISteamState
             acc.Note = val;
             acc.TitleText = val;
         }
-
-        _modals.IsShown = false;
     }
     #endregion
 }

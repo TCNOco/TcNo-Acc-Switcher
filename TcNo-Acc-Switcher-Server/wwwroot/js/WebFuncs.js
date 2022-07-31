@@ -309,3 +309,39 @@ async function initSavingHotKey() {
         DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "JsSaveSettings");
     });
 }
+
+// Dragging modal
+// From: https://www.w3schools.com/HOWTO/howto_js_draggable.asp
+var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+var mouseDragEvent;
+var modalFg, modalBg;
+// Modal drag mouse down
+function dragModalInit() {
+    modalFg = $(".modalFG")[0];
+    modalBg = $(".modalBG")[0];
+    const e = window.event;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = dragModalStop;
+    document.onmousemove = dragModal;
+}
+
+// Modal drag move
+function dragModal() {
+    const e = window.event;
+    // calculate the new cursor position:
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    // set the element's new position:
+    modalFg.style.top = Math.min(modalBg.offsetHeight - modalFg.offsetHeight / 2, Math.max(modalFg.offsetHeight / 2, (modalFg.offsetTop - pos2))) + "px";
+    modalFg.style.left = Math.min(modalBg.offsetWidth - modalFg.offsetWidth / 2, Math.max(modalFg.offsetWidth / 2, (modalFg.offsetLeft - pos1))) + "px";
+}
+
+// Modal drag stop
+function dragModalStop() {
+    // stop moving when mouse button is released:
+    document.onmouseup = null;
+    document.onmousemove = null;
+}

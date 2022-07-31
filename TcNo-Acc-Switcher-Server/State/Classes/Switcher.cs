@@ -15,8 +15,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.State.Interfaces;
 
@@ -93,5 +96,28 @@ public class Switcher : INotifyPropertyChanged
             SetField(ref _selectedAccount, value);
             SelectedAccountId = value?.AccountId ?? "";
         }
+    }
+
+    public void SaveNotes()
+    {
+        string path;
+        Dictionary<string, string> data;
+
+        if (CurrentSwitcher == "Steam")
+        {
+            path = "LoginCache\\Steam\\AccountNotes.json";
+            data = SteamAccounts.ToDictionary(s => s.AccountId, s => s.Note);
+        }
+        else
+        {
+            path = $"LoginCache\\{CurrentSwitcherSafe}\\AccountNotes.json";
+            data = TemplatedAccounts.ToDictionary(s => s.AccountId, s => s.Note);
+        }
+
+        // Update text for UI - if not indicating currently logged in account
+        if (!SelectedAccount.IsCurrent)
+            SelectedAccount.TitleText = SelectedAccount.Note;
+
+        File.WriteAllText(path, JsonConvert.SerializeObject(data, Formatting.None));
     }
 }

@@ -51,7 +51,7 @@ public partial class Index
         _platformContextMenuItems = new MenuBuilder(Lang,
             new Tuple<string, object>[]
             {
-                new ("Context_HidePlatform", new Action(() => HidePlatform())),
+                new ("Context_HidePlatform", new Action(async () => await HidePlatform())),
                 new ("Context_CreateShortcut", new Action(CreatePlatformShortcut)),
                 new ("Context_ExportAccList", new Action(async () => await ExportAllAccounts())),
             }).Result();
@@ -63,7 +63,7 @@ public partial class Index
         if (!firstRender) return;
 
         AppState.WindowState.WindowTitle = "TcNo Account Switcher";
-        _collectionChanged = async (_, _) => await InvokeAsync(StateHasChanged);
+        _collectionChanged = async (_, _) => await OnChangeHandler();
         WindowSettings.Platforms.CollectionChanged += _collectionChanged;
 
         // If no platforms are showing:
@@ -82,9 +82,12 @@ public partial class Index
         AppState.WindowState.FirstMainMenuVisit = false;
 
         await JsRuntime.InvokeVoidAsync("initPlatformListSortable");
-        //await AData.InvokeVoidAsync("initAccListSortable");
 
         Statistics.NewNavigation("/");
+    }
+    private async Task OnChangeHandler()
+    {
+        await InvokeAsync(StateHasChanged);
     }
 
     void IDisposable.Dispose()
@@ -151,6 +154,11 @@ public partial class Index
         AppState.Switcher.IsCurrentlyExportingAccounts = true;
 
         var exportPath = await ExportAccountList();
+        if (exportPath == "failed")
+        {
+            await Toasts.ShowToastLangAsync(ToastType.Error, "Toast_FailedLoadAccounts");
+            return;
+        }
         await JsRuntime.InvokeVoidAsync("saveFile", exportPath.Split('\\').Last(), exportPath);
         AppState.Switcher.IsCurrentlyExportingAccounts = false;
     }
@@ -202,10 +210,16 @@ public partial class Index
             allAccountsTable.Add($"SEP={s}");
             // Platform does not have specific details other than usernames saved.
             allAccountsTable.Add($"Account name:{s}Stats game:{s}Stat name:{s}Stat value:");
-            foreach (var accDirectory in Directory.GetDirectories(Path.Join("LoginCache", platform.SafeName)))
+
+            var idsFile = Path.Join(Path.Join(Globals.UserDataFolder, $"LoginCache\\{platform.SafeName}\\"), "ids.json");
+            if (!File.Exists(idsFile)) return "failed";
+            var allIds = Globals.ReadDict(idsFile);
+            if (allIds is null) return "failed";
+            var accList = allIds.Keys.ToList();
+
+            foreach (var acc in accList)
             {
-                allAccountsTable.Add(Path.GetFileName(accDirectory) + s +
-                                     GameStats.GetSavedStatsString(accDirectory, s, true));
+                allAccountsTable.Add(allIds[acc] + s + GameStats.GetSavedStatsString(acc, s, true));
             }
         }
 
@@ -220,10 +234,11 @@ public partial class Index
     /// <summary>
     /// Hide a platform from the platforms list. Not giving an item input will use the AppData.SelectedPlatform.
     /// </summary>
-    public void HidePlatform(string item = null)
+    public async Task HidePlatform(string item = null)
     {
         var platform = item ?? AppState.Switcher.SelectedPlatform;
         WindowSettings.Platforms.First(x => x.Name == platform).SetEnabled(false);
+        await InvokeAsync(StateHasChanged);
     }
     #endregion
 }

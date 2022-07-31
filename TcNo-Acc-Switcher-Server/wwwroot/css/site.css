@@ -364,7 +364,6 @@ label {
   overflow: hidden;
   font-family: "Segoe UI", sans-serif;
   font-size: 12px;
-  pointer-events: none;
 }
 
 #window-title #window-controls,

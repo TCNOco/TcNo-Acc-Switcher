@@ -26,17 +26,13 @@
 @inject IModals Modals
 @implements IDisposable
 
-<div class="modalBG @(!Modals.IsShown ? "modalHidden" : "modalShown")" @onclick="Modals.CloseModal">
+<div class="modalBG @(!Modals.IsShown ? "modalHidden" : "modalShown")" @onmousedown="Modals.CloseModal">
 @*<div class="modalBG" onclick="if (event.target === this)$('.modalBG').fadeOut();" style="display: none;">*@
-    <div class="modalFG" @onclick:stopPropagation>
-        <div id="window-title-modal">
+    <div class="modalFG" @onmousedown:stopPropagation>
+        <div id="window-title-modal" @onmousedown='() => JsRuntime.InvokeVoidAsync("dragModalInit")'>
             @if (Modals.Type == "gameStatsSelector" && Modals.CurrentStatsSelectorState == StatsSelectorState.VarsList)
             {
-                <button id="modalBtnBack" @onclick="ModalBack">
-                    <i class="fas fa-chevron-left icon" style="transition: transform 500ms ease-in-out" draggable="false" alt="-"></i>
-                </button>
-            }else{
-                <button id="modalBtnBack" style="display: none" @onclick="ModalBack">
+                <button id="modalBtnBack" @onclick="ModalBack" @onmousedown:stopPropagation>
                     <i class="fas fa-chevron-left icon" style="transition: transform 500ms ease-in-out" draggable="false" alt="-"></i>
                 </button>
             }
@@ -44,7 +40,7 @@
                 <use href="img/TcNo_Logo_Flat.svg#logo"></use>
             </svg>
             <span id="modalTitle">@Modals.Title</span>
-            <div id="window-controls-modal">
+            <div id="window-controls-modal" @onmousedown:stopPropagation>
                 <button id="btnClose-modal" @onclick="Modals.CloseModal">
                     <i class="fas fa-times" draggable="false"></i>
                 </button>

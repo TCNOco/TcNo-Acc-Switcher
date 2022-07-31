@@ -48,15 +48,6 @@ public class SharedFunctions : ISharedFunctions
         _toasts = toasts;
     }
 
-    /// <summary>
-    /// Runs initAccListSortable - Final init needed for account switcher to work.
-    /// </summary>
-    public async Task FinaliseAccountList(IJSRuntime jsRuntime)
-    {
-        if (jsRuntime is null) return;
-        await jsRuntime.InvokeVoidAsync("initAccListSortable");
-    }
-
     public void RunShortcut(string s, string shortcutFolder, string platform = "", bool admin = false)
     {
         _statistics.IncrementGameLaunches(platform);

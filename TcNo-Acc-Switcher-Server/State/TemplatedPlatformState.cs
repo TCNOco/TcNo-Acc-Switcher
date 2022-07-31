@@ -126,11 +126,13 @@ public class TemplatedPlatformState : ITemplatedPlatformState
         // Order
         accList = OrderAccounts(accList, $"{localCachePath}\\order.json");
 
-        await InsertAccounts(jsRuntime, accList);
+        InsertAccounts(accList);
         _statistics.SetAccountCount(CurrentPlatform.SafeName, accList.Count);
 
         // Load notes
         LoadNotes();
+
+        await jsRuntime.InvokeVoidAsync("initAccListSortable");
         return true;
     }
 
@@ -209,17 +211,14 @@ public class TemplatedPlatformState : ITemplatedPlatformState
             acc.Note = val;
             acc.TitleText = val;
         }
-
-        _modals.IsShown = false;
     }
 
 
     /// <summary>
     /// Iterate through account list and insert into platforms account screen
     /// </summary>
-    /// <param name="jsRuntime"></param>
     /// <param name="accList">Account list</param>
-    private async Task InsertAccounts(IJSRuntime jsRuntime, List<string> accList)
+    private void InsertAccounts(List<string> accList)
     {
         LoadAccountIds();
 
@@ -241,7 +240,6 @@ public class TemplatedPlatformState : ITemplatedPlatformState
 
             _appState.Switcher.TemplatedAccounts.Add(account);
         }
-        await _sharedFunctions.FinaliseAccountList(jsRuntime); // Init context menu & Sorting
     }
 
     public void ImportAccountImage(string uniqueId)

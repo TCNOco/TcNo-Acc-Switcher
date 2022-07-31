@@ -118,9 +118,7 @@
         }
 
         Toasts.ShowToastLang(ToastType.Success, "Success");
-        //AppData.Instance.NotifyDataChanged();
-        Modals.IsShown = false;
-        Modals.ExtraArgs = ExtraArg.None;
+        Modals.CloseModal();
     }
 
     private void ButtonOk()
@@ -131,13 +129,11 @@
         }
 
 
-        Modals.IsShown = false;
-        Modals.ExtraArgs = ExtraArg.None;
+        Modals.CloseModal();
     }
 
     private void ButtonNo()
     {
-        Modals.IsShown = false;
-        Modals.ExtraArgs = ExtraArg.None;
+        Modals.CloseModal();
     }
 }

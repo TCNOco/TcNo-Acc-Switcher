@@ -207,7 +207,12 @@
             if (Modals.TextInput.Goal is TextInputGoal.ChangeUsername)
                 TemplatedChangeUsername(AppState.Switcher.SelectedAccountId, Modals.TextInput.LastString);
             else
+            {
+                // Is adding account, not changing name
                 TemplatedPlatformFuncs.TemplatedAddCurrent(Modals.TextInput.LastString);
+
+                JsRuntime.InvokeVoidAsync("initAccListSortableDelayed"); // Fire and forget. Async/Await is difficult to use here. This also needs to be delayed as it's not on the list yet.
+            }
         }
 
         return true;

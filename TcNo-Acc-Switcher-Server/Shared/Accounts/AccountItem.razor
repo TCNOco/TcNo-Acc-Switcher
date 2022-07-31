@@ -23,7 +23,7 @@
 @using TcNo_Acc_Switcher_Server.Shared.Tooltip
 @implements IDisposable
 
-<Tooltip Text="@Acc.TitleText.Substring(0, Math.Min(Acc.TitleText.Length, 50))">
+<Tooltip Text="@Acc.TitleText.Substring(0, Math.Min(Acc.TitleText.Length, 100))">
     <div class="acc_list_item" @onfocus="() => SetSelectedAccount(Acc)" @onclick="() => SetSelectedAccount(Acc)" oncontextmenu="return false;" @onmouseup="(e) => AccountRightClick(e, Acc)" @ondblclick="() => SwapAction()">
         <input type="radio" id="@Acc.AccountId" DisplayName="@Acc.SafeDisplayName" class="acc @(Acc.IsChecked ? "acc_selected" : "")" name="accounts" role="checkbox">
         <label for="@Acc.AccountId" class="acc @Acc.Classes.Label @(Acc.IsCurrent ? "currentAcc" : "")">

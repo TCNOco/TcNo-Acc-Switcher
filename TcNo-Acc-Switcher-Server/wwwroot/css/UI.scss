@@ -631,6 +631,7 @@ button * {
         min-width: 80px;
         max-width: 180px;
         max-height: 180px;
+        overflow-wrap: break-word;
 
         &::before {
             content: "";

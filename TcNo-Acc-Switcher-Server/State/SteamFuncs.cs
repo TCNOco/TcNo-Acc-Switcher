@@ -175,6 +175,7 @@ public class SteamFuncs : ISteamFuncs
             // Remove image
             Globals.DeleteFile(Path.Join(Globals.WwwRoot, $"\\img\\profiles\\{_appState.Switcher.CurrentSwitcher}\\{Globals.GetCleanFilePath(_appState.Switcher.SelectedAccountId)}.jpg"));
 
+            _appState.Switcher.SaveNotes();
             _toasts.ShowToastLang(ToastType.Success, "Success");
         }
     }

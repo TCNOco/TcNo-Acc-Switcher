@@ -6,11 +6,6 @@ namespace TcNo_Acc_Switcher_Server.State.Interfaces;
 
 public interface ISharedFunctions
 {
-    /// <summary>
-    /// Runs initAccListSortable - Final init needed for account switcher to work.
-    /// </summary>
-    Task FinaliseAccountList(IJSRuntime jsRuntime);
-
     void RunShortcut(string s, string shortcutFolder, string platform = "", bool admin = false);
     bool CanKillProcess(List<string> procNames, string closingMethod = "Combined", bool showModal = true);
     bool CanKillProcess(string processName, string closingMethod = "Combined", bool showModal = true);

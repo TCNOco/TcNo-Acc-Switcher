@@ -1031,6 +1031,7 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
             _toasts.ShowToastLang(ToastType.Success, "Success");
         }
 
+        _appState.Switcher.SaveNotes();
         _appState.Switcher.CurrentStatus = _lang["Done"];
     }
 

@@ -63,7 +63,13 @@ async function initPlatformListSortable() {
     });
 }
 
-async function initAccListSortable() {
+async function initAccListSortableDelayed() {
+    setTimeout(() => {
+        initAccListSortable();
+    }, 1000);
+}
+
+    async function initAccListSortable() {
 	if (document.getElementsByClassName("acc_list").length === 0) return;
     // Create sortable list
     sortable(".acc_list", {
