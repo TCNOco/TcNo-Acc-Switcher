@@ -159,8 +159,6 @@ public class SteamState : ISteamState
         // Load notes
         LoadNotes();
 
-        await jsRuntime.InvokeVoidAsync("initAccListSortable");
-
         _statistics.SetAccountCount("Steam", SteamUsers.Count);
         SteamLoadingProfiles = false;
 

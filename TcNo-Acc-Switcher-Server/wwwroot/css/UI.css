@@ -523,6 +523,9 @@ button * {
 .tooltip-wrapper {
   position: relative;
   /*cursor: help;*/
+  overflow: hidden;
+}
+.tooltip-wrapper:hover {
   overflow: visible;
 }
 .tooltip-wrapper:not(:active):hover span {

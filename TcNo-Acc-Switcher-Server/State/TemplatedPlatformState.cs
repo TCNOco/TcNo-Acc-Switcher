@@ -131,8 +131,6 @@ public class TemplatedPlatformState : ITemplatedPlatformState
 
         // Load notes
         LoadNotes();
-
-        await jsRuntime.InvokeVoidAsync("initAccListSortable");
         return true;
     }
 

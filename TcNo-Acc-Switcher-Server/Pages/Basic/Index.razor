@@ -180,6 +180,7 @@
 
         var curAcc = TemplatedPlatformFuncs.GetCurrentAccountId();
         if (curAcc != "") TemplatedPlatformFuncs.SetCurrentAccount(curAcc);
+
         AppState.Switcher.CurrentStatus = Lang["Done"];
     }
 
@@ -187,6 +188,11 @@
     {
         AppState.Switcher.PropertyChanged -= _propChanged;
         TemplatedPlatformSettings.PropertyChanged -= _propChanged;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JsRuntime.InvokeVoidAsync("initAccListSortable");
     }
 
 

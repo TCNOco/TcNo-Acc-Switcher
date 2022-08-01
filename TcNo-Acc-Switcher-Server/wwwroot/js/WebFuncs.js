@@ -82,6 +82,20 @@ function getBestOffset(el) {
 
 // --------- FROM NEW SYSTEM ----------
 
+// Timeout so window resize is only run after 100ms passes -- Stops constant running while resizing
+var windowResizedTimeout;
+window.onresize = function () {
+    clearTimeout(windowResizedTimeout);
+    windowResizedTimeout = setTimeout(function () {
+        resizedWindow();
+    }, 100);
+};
+
+// Run when the window is finished being resized.
+function resizedWindow() {
+    if ($("#shortcutDropdown").is(":visible")) sDropdownReposition();
+}
+
 // Focus on a specific element, like an input or button
 focusOn = async (element) => $(element).focus();
 
@@ -183,29 +197,33 @@ function repositionTooltip(id) {
 function sDropdownReposition() {
     const dropDownContainer = $("#shortcutDropdown");
     const btn = $("#shortcutDropdownBtn");
-    const dropDownItemsContainer = $(".shortcutDropdownItems")[0];
+    sDropdownResize(dropDownContainer);
+
     const btnPos = btn[0].getBoundingClientRect();
     dropDownContainer.css({ top: btnPos.top - dropDownContainer.height() - btn.height() - 16, left: btnPos.left + 16 - (dropDownContainer.width() / 2) });
 
-    // If overflowing - Widen by scrollbar width to prevent weird overflow gap on side
-    if (checkOverflow(dropDownItemsContainer) && dropDownContainer[0].style.minWidth === "") {
-        const scrollbarWidth = (dropDownItemsContainer.offsetWidth - dropDownItemsContainer.clientWidth);
-        const hasContextMenu = $(".HasContextMenu");
-        if (hasContextMenu.length > 0) {
-            const computedStyle = window.getComputedStyle($(".HasContextMenu")[0]);
-            const computedStyleContainer = window.getComputedStyle($("#shortcutDropdown")[0]);
-            const marginX = parseInt(computedStyle.marginLeft) + parseInt(computedStyle.marginRight);
-            const marginY = parseInt(computedStyle.marginBottom) + parseInt(computedStyle.marginTop);
-            const paddingX = parseInt(computedStyleContainer.paddingLeft) + parseInt(computedStyleContainer.paddingRight);
-            const paddingY = parseInt(computedStyleContainer.paddingTop) + parseInt(computedStyleContainer.paddingBottom);
-            dropDownContainer.css({
-                minWidth: $(dropDownItemsContainer).width() + scrollbarWidth + marginX + paddingX
-            });
-            $(dropDownItemsContainer).css({
-                maxHeight: dropDownContainer.height() - paddingY + marginY
-            });
-        }
-    }
+}
+
+// Resize the dropdown if needed, before repositioning.
+function sDropdownResize(dropDownContainer) {
+    const dropDownItemsContainer = $(".shortcutDropdownItems");
+
+    // Check if correct size.
+    const containerScrollbarWidth = (dropDownItemsContainer[0].offsetWidth - dropDownItemsContainer[0].clientWidth);
+    if (containerScrollbarWidth === 0) return; // No scrollbar. No resize needed.
+
+    const containerInnerWidth = dropDownItemsContainer.innerWidth();
+    const shortcutOuterWidth = $(".HasContextMenu").outerWidth(true);
+
+    // px to shrink by to get perfect size (no gap)
+    const pxBiggerThanPerfect = containerInnerWidth % shortcutOuterWidth - containerScrollbarWidth;
+    if (pxBiggerThanPerfect === 0) return; // Perfect. No resize needed.
+
+    // While this used to fit one more in, that may remove scrollbar if width grows. Therefore: Shrink to perfect size.
+    var newSize = dropDownItemsContainer.outerWidth(true) - pxBiggerThanPerfect;
+    // If bigger than default max size for parent, go down to next perfect size.
+    if (newSize > parseInt(getComputedStyle(dropDownContainer[0]).maxWidth)) newSize -= shortcutOuterWidth;
+    dropDownItemsContainer.css("max-width", `${newSize}px`).css("min-width", `${newSize}px`).css("max-height", `${dropDownContainer.height()}px`);
 }
 
 // Try init shortcut dropdown & sortable.

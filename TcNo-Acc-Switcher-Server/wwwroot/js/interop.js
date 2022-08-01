@@ -69,13 +69,23 @@ async function initAccListSortableDelayed() {
     }, 1000);
 }
 
-    async function initAccListSortable() {
+async function initAccListSortable() {
+    accountListCenterCheck();
+
 	if (document.getElementsByClassName("acc_list").length === 0) return;
     // Create sortable list
     sortable(".acc_list", {
         forcePlaceholderSize: true,
         placeholderClass: "placeHolderAcc",
-        items: ":not(toastarea)"
+        items: ":not(toastarea)",
+        customDragImage: (draggedElement, elementOffset, event) => {
+            // Set the dragged element to the button, not the tooltip.
+            return {
+                element: draggedElement.getElementsByTagName("div")[0] ?? draggedElement,
+                posX: event.pageX - elementOffset.left,
+                posY: event.pageY - elementOffset.top
+            }
+        }
     });
     // On drag start, un-select all items.
     sortable(".acc_list")[0].addEventListener("sortstart", () => {
@@ -101,9 +111,29 @@ async function initAccListSortableDelayed() {
     });
 }
 
-function steamAdvancedClearingAddLine(text) {
-    queuedJQueryAppend("#lines", `<p>${text}</p>`);
+// If number of rows in accounts grid is > 1, justify items center to prevent odd spacing on right.
+function accountListCenterCheck() {
+    if (window.getComputedStyle($(".acc_list")[0]).getPropertyValue("grid-template-rows").split(" ").length > 1)
+        $(".acc_list").css("justify-content", "center");
+    else
+        $(".acc_list").css("justify-content", "");
 }
+
+// Timeout so window resize is only run after 100ms passes -- Stops constant running while resizing
+var windowResizedTimeout;
+window.onresize = function () {
+    clearTimeout(windowResizedTimeout);
+    windowResizedTimeout = setTimeout(function () {
+        resizedWindow();
+    }, 100);
+};
+
+// Run when the window is finished being resized.
+function resizedWindow() {
+    accountListCenterCheck();
+}
+
+
 
 
 function initEditor() {
