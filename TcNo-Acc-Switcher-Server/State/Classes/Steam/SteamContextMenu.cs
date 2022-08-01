@@ -80,8 +80,13 @@ public class SteamContextMenu
             new Tuple<string, object>[]
             {
                 new ("Context_RunAdmin", ShortcutStartSteamAdmin),
-                new ("Context_Hide", HideShortcutSteam),
+                new ("Context_Hide", HideShortcutSteam)
             }).Result();
+        ShortcutItems.Add(new MenuItem
+        {
+            Text = "Context_SwitchAndLaunch",
+            MenuAction = async () => await _steamFuncs.SwitchAndLaunchShortcut(jsRuntime)
+        });
 
         PlatformItems = new MenuBuilder(_lang,
             new Tuple<string, object>("Context_RunAdmin", () => steamState.RunSteam(true, ""))

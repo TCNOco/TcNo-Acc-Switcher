@@ -139,6 +139,21 @@ public class SteamFuncs : ISteamFuncs
     }
 
     /// <summary>
+    /// Switch to an account, and launch a game via the selected shortcut
+    /// Launches Steam, but does not wait for it to start fully.
+    /// </summary>
+    public async Task SwitchAndLaunchShortcut(IJSRuntime jsRuntime)
+    {
+        if (_appState.Switcher.SelectedAccount is null)
+        {
+            await _toasts.ShowToastLangAsync(ToastType.Error, "Toast_SelectAccount");
+            return;
+        }
+        await SwapSteamAccounts(jsRuntime, _appState.Switcher.SelectedAccountId, _steamSettings.OverrideState);
+        _sharedFunctions.RunShortcut(_appState.Switcher.CurrentShortcut, "LoginCache\\Steam\\Shortcuts", "Steam");
+    }
+
+    /// <summary>
     /// Swaps to an empty account, allowing the user to sign in.
     /// </summary>
     /// <param name="jsRuntime"></param>

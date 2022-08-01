@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Newtonsoft.Json.Linq;
@@ -31,6 +32,12 @@ public interface ITemplatedPlatformFuncs
     /// <returns></returns>
     string ExpandEnvironmentVariables(string path, bool noIncludeBasicCheck = false);
 
+    /// <summary>
+    /// Copy account files (Platform -> Switcher)
+    /// </summary>
+    /// <param name="accName"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     bool TemplatedAddCurrent(string accName);
 
     /// <summary>
@@ -50,6 +57,12 @@ public interface ITemplatedPlatformFuncs
     /// Swaps to an empty account, allowing the user to sign in.
     /// </summary>
     Task SwapToNewAccount(IJSRuntime jsRuntime);
+
+    /// <summary>
+    /// Switch to an account, and launch a game via the selected shortcut
+    /// Launches the platform, but does not wait for it to start fully.
+    /// </summary>
+    Task SwitchAndLaunchShortcut(IJSRuntime jsRuntime);
 
     void ForgetAccount();
     void RunPlatform(bool admin, string args = "");

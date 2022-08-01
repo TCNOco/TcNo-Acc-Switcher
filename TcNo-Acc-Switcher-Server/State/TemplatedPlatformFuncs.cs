@@ -998,6 +998,21 @@ public class TemplatedPlatformFuncs : ITemplatedPlatformFuncs
         await SwapTemplatedAccounts(jsRuntime, "");
     }
 
+    /// <summary>
+    /// Switch to an account, and launch a game via the selected shortcut
+    /// Launches the platform, but does not wait for it to start fully.
+    /// </summary>
+    public async Task SwitchAndLaunchShortcut(IJSRuntime jsRuntime)
+    {
+        if (_appState.Switcher.SelectedAccount is null)
+        {
+            await _toasts.ShowToastLangAsync(ToastType.Error, "Toast_SelectAccount");
+            return;
+        }
+        await SwapToAccount(jsRuntime);
+        _sharedFunctions.RunShortcut(_appState.Switcher.CurrentShortcut, _templatedPlatformState.CurrentPlatform.ShortcutFolder, _templatedPlatformState.CurrentPlatform.SafeName);
+    }
+
     public void ForgetAccount()
     {
         if (!_templatedPlatformSettings.ForgetAccountEnabled)

@@ -17,6 +17,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
@@ -64,8 +65,13 @@ public class TemplatedPlatformContextMenu
             new Tuple<string, object>[]
             {
                 new ("Context_RunAdmin", ShortcutStartAdmin),
-                new ("Context_Hide", HideShortcutSteam),
+                new ("Context_Hide", HideShortcutSteam)
             }).Result();
+        ContextMenuShortcutItems.Add(new MenuItem
+        {
+            Text = "Context_SwitchAndLaunch",
+            MenuAction = async () => await templatedPlatformFuncs.SwitchAndLaunchShortcut(jsRuntime)
+        });
 
         ContextMenuPlatformItems = new MenuBuilder(lang,
             new Tuple<string, object>("Context_RunAdmin", () => templatedPlatformFuncs.RunPlatform(true, ""))

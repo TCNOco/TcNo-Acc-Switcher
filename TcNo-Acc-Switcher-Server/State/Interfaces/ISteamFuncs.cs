@@ -32,6 +32,12 @@ public interface ISteamFuncs
     Task SwapToAccount(IJSRuntime jsRuntime, int state = -1);
 
     /// <summary>
+    /// Switch to an account, and launch a game via the selected shortcut
+    /// Launches Steam, but does not wait for it to start fully.
+    /// </summary>
+    Task SwitchAndLaunchShortcut(IJSRuntime jsRuntime);
+
+    /// <summary>
     /// Swaps to an empty account, allowing the user to sign in.
     /// </summary>
     /// <param name="jsRuntime"></param>
