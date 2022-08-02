@@ -72,10 +72,10 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="SharpScss" Version="2.0.0" />
     <PackageReference Include="SteamKit2" Version="2.4.1" />
-    <PackageReference Include="Svg.Skia" Version="0.5.14" />
+    <PackageReference Include="Svg.Skia" Version="0.5.16" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
     <PackageReference Include="TextCopy" Version="6.1.0" />
-    <PackageReference Include="YamlDotNet" Version="11.2.1" />
+    <PackageReference Include="YamlDotNet" Version="12.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TcNo-Acc-Switcher-Globals\TcNo-Acc-Switcher-Globals.csproj" />

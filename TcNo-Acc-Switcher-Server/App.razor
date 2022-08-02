@@ -21,6 +21,7 @@
 @implements IDisposable
 @inject IJSRuntime JsRuntime
 @inject IToasts Toasts
+@inject IStatistics Statistics
 
 <Router AppAssembly="@typeof(Program).Assembly">
     <Found Context="routeData">
@@ -54,6 +55,8 @@
         var navigationMethod = e.IsNavigationIntercepted ? "HTML" : "code";
         Console.WriteLine($@"Notified of navigation via {navigationMethod} to {e.Location}");
         await HandleQueries();
+
+        Statistics.NewNavigation(e.Location);
     }
 
     /// <summary>

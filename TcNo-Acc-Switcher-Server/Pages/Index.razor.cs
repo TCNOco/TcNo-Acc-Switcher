@@ -123,7 +123,7 @@ public partial class Index
         if (!SharedFunctions.CanKillProcess(TemplatedPlatformState.CurrentPlatform.ExesToEnd, TemplatedPlatformSettings.ClosingMethod)) return;
 
         if (Directory.Exists(TemplatedPlatformSettings.FolderPath) && File.Exists(TemplatedPlatformSettings.Exe))
-            NavManager.NavigateTo("/Basic/");
+            NavManager.NavigateTo(TemplatedPlatformState.CurrentPlatform.Identifiers.FirstOrDefault() ?? "/");
         else
             Modals.ShowUpdatePlatformFolderModal();
     }

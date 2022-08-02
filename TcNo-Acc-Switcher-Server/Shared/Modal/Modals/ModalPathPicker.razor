@@ -246,8 +246,12 @@
             Directory.CreateDirectory(Path.Join(Globals.UserDataFolder, "wwwroot\\img\\custom\\"));
             Globals.CopyFile(path, Path.Join(Globals.UserDataFolder, "wwwroot\\img\\custom\\background" + Path.GetExtension(path)));
             WindowSettings.Background = $"img/custom/background{Path.GetExtension(path)}";
-            WindowSettings.Save();
         }
+        else
+        {
+            WindowSettings.Background = "";
+        }
+        WindowSettings.Save();
     }
 
     /// <summary>
