@@ -116,8 +116,7 @@ public partial class Index
                 await Toasts.ShowToastLangAsync(ToastType.Error, "Toast_Steam_CantLocateLoginusers");
             return;
         }
-
-        AppState.Switcher.CurrentSwitcher = platform;
+        
         TemplatedPlatformState.LoadTemplatedPlatformState(JsRuntime, TemplatedPlatformSettings);
         await TemplatedPlatformState.SetCurrentPlatform(JsRuntime, TemplatedPlatformSettings, TemplatedPlatformFuncs, platform);
         if (!SharedFunctions.CanKillProcess(TemplatedPlatformState.CurrentPlatform.ExesToEnd, TemplatedPlatformSettings.ClosingMethod)) return;

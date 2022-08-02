@@ -20,6 +20,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Remove="compilerconfig.json" />
+    <Content Remove="Pages\Templated\Settings.razor" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Platforms\Discord\Username.js" />
@@ -32,6 +33,7 @@
     <None Remove="themes\Old_Default\style.scss" />
   </ItemGroup>
   <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\Templated\Settings.razor" />
     <_ContentIncludedByDefault Remove="wwwroot\css\site.css" />
   </ItemGroup>
   <ItemGroup>
@@ -202,6 +204,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="compilerconfig.json" />
+    <None Include="Pages\Templated\Settings.razor" />
     <None Include="wwwroot\js\ace\ace.js" />
     <None Include="wwwroot\js\ace\ext-beautify.js" />
     <None Include="wwwroot\js\ace\ext-code_lens.js" />
@@ -262,4 +265,7 @@
     <TypeScriptMapRoot />
     <TypeScriptSourceRoot />
   </PropertyGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\Templated\Settings.razor" />
+  </ItemGroup>
 </Project>

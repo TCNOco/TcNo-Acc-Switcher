@@ -48,7 +48,7 @@ public class SteamSettings : ISteamSettings
     [JsonIgnore] public string LibraryVdf { get; set; }
     [JsonIgnore] public string SteamImagePath { get; init; } = "wwwroot/img/profiles/steam/";
     [JsonIgnore] public string SteamImagePathHtml { get; init; } = "img/profiles/steam/";
-    [JsonIgnore] public List<string> Processes { get; init; } = new (){ "steam.exe", "SERVICE:steamservice.exe", "steamwebhelper.exe", "GameOverlayUI.exe" };
+    [JsonIgnore] public List<string> Processes { get; init; } = new (){ "steam.exe", "steamservice.exe", "steamwebhelper.exe", "GameOverlayUI.exe" };
     [JsonIgnore] public string VacCacheFile { get; init; } = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\VACCache\\SteamVACCache.json");
 
 

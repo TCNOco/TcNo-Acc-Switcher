@@ -64,6 +64,11 @@ public class TemplatedPlatformState : ITemplatedPlatformState
         _windowSettings = windowSettings;
     }
 
+    /// <summary>
+    /// Initialize the platforms list/data (runs only once)
+    /// </summary>
+    /// <param name="jsRuntime"></param>
+    /// <param name="templatedPlatformSettings"></param>
     public void LoadTemplatedPlatformState(IJSRuntime jsRuntime, ITemplatedPlatformSettings templatedPlatformSettings)
     {
         if (_isInit) return;
@@ -97,9 +102,17 @@ public class TemplatedPlatformState : ITemplatedPlatformState
         _windowSettings.Platforms.Sort();
     }
 
+    /// <summary>
+    /// Set the current platform by taking in either a string identifier, or string name of a platform.
+    /// </summary>
+    /// <param name="jsRuntime"></param>
+    /// <param name="templatedPlatformSettings"></param>
+    /// <param name="templatedPlatformFuncs"></param>
+    /// <param name="platformName">Platform identifier, or name</param>
+    /// <returns></returns>
     public async Task SetCurrentPlatform(IJSRuntime jsRuntime, ITemplatedPlatformSettings templatedPlatformSettings, ITemplatedPlatformFuncs templatedPlatformFuncs, string platformName)
     {
-        CurrentPlatform = Platforms.First(x => x.Name == platformName || x.Identifiers.Contains(platformName));
+        CurrentPlatform = Platforms.First(x => x.Name == platformName || x.Identifiers.Contains(platformName, StringComparer.OrdinalIgnoreCase));
         await _appState.Switcher.UpdateStatusAsync(_lang["Loading"]);
         CurrentPlatform.InitAfterDeserialization();
         //_templatedPlatformSettings = new TemplatedPlatformSettings(); // Load saved settings

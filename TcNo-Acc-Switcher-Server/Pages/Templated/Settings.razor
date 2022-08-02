@@ -12,12 +12,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
-@page "/Basic/Settings"
+@page "/{Platform}/Settings"
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @using Microsoft.AspNetCore.Components
 @using TcNo_Acc_Switcher_Server.State.DataTypes
 @using TcNo_Acc_Switcher_Server.Shared.Tooltip
-@namespace TcNo_Acc_Switcher_Server.Pages.Basic
+@using System.IO
+@namespace TcNo_Acc_Switcher_Server.Pages.Templated
 @inject NavigationManager NavigationManager
 @inject IAppState AppState
 @inject IJSRuntime JsRuntime
@@ -179,6 +180,32 @@
 
 @code
 {
+    [Parameter]
+    public string Platform { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        AppState.Stylesheet.StreamerModeCheck();
+
+        // Requested platform from URL: Platform.
+        // 1. Check if platform from URL is currentPlatform.
+        var requestedPlatform = TemplatedPlatformState.Platforms.FirstOrDefault(x => x.Name == Platform || x.Identifiers.Contains(Platform, StringComparer.OrdinalIgnoreCase));
+        if (requestedPlatform is not null && requestedPlatform.Name != TemplatedPlatformState.CurrentPlatform.Name)
+        {
+            // 2. If not, set currentPlatform to platform from URL.
+            TemplatedPlatformState.LoadTemplatedPlatformState(JsRuntime, TemplatedPlatformSettings);
+            await TemplatedPlatformState.SetCurrentPlatform(JsRuntime, TemplatedPlatformSettings, TemplatedPlatformFuncs, Platform);
+        }
+
+        // Verify that the platform's EXE exists, otherwise go back. For shortcuts and direct navigation.
+        if (!File.Exists(TemplatedPlatformSettings.Exe)){
+            NavigateBack();
+        }
+    }
+
+    private void NavigateBack() =>
+        AppState.Navigation.NavigateToWithToast(NavigationManager, "/", "Error", "", Lang["Toast_FailedLoad", new {platform = TemplatedPlatformState?.CurrentPlatform?.Name ?? ""}]);
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
@@ -200,7 +227,7 @@
         WindowSettings.Save();
         TemplatedPlatformSettings.Save();
 
-        NavigationManager.NavigateTo("/Basic");
+        NavigationManager.NavigateTo($"/{Platform}");
     }
 
     private string GetCacheList()

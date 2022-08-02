@@ -1,18 +1,4 @@
-﻿// TcNo Account Switcher - A Super fast account switcher
-// Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -24,7 +10,7 @@ using TcNo_Acc_Switcher_Server.State;
 using TcNo_Acc_Switcher_Server.State.DataTypes;
 using TcNo_Acc_Switcher_Server.State.Interfaces;
 
-namespace TcNo_Acc_Switcher_Server.Pages.Basic;
+namespace TcNo_Acc_Switcher_Server.Pages.Templated;
 
 public partial class Settings
 {
@@ -44,7 +30,7 @@ public partial class Settings
     {
         Globals.DebugWriteLine(@"[ButtonClicked:Basic\Settings.razor.cs.ClearSettings]");
         TemplatedPlatformSettings.Reset();
-        AppState.Navigation.NavigateToWithToast(NavigationManager, "/Basic/", "Success", Lang["Success"], Lang["Toast_ClearedPlatformSettings", new { platform = "Basic" }]);
+        AppState.Navigation.NavigateToWithToast(NavigationManager, $"/{Platform}/", "Success", Lang["Success"], Lang["Toast_ClearedPlatformSettings", new { platform = "Basic" }]);
     }
     #endregion
 
@@ -169,7 +155,7 @@ public partial class Settings
 
                 // Handle folder entry
                 if (!Globals.CopyFilesRecursive(fExpanded, dest))
-                    Toasts.ShowToastLang(ToastType.Error,"Toast_FileCopyFail");
+                    Toasts.ShowToastLang(ToastType.Error, "Toast_FileCopyFail");
             }
 
         var backupThread = new Thread(() => FinishBackup(tempFolder));
