@@ -20,7 +20,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Remove="compilerconfig.json" />
-    <Content Remove="Pages\Templated\Settings.razor" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Platforms\Discord\Username.js" />
@@ -31,10 +30,6 @@
     <None Remove="themes\Monokai\style.scss" />
     <None Remove="themes\Old_Default\info.yaml" />
     <None Remove="themes\Old_Default\style.scss" />
-  </ItemGroup>
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="Pages\Templated\Settings.razor" />
-    <_ContentIncludedByDefault Remove="wwwroot\css\site.css" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="themes\Dracula_Cyan\info.yaml">
@@ -265,7 +260,4 @@
     <TypeScriptMapRoot />
     <TypeScriptSourceRoot />
   </PropertyGroup>
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Pages\Templated\Settings.razor" />
-  </ItemGroup>
 </Project>

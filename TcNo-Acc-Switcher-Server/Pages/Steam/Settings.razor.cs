@@ -149,7 +149,7 @@ public partial class Settings
         Thread.Sleep(3500);
         while (_currentlyBackingUp)
         {
-            Toasts.ShowToastLang(ToastType.Info, new LangSub("Toast_BackupProgress", new { compressedSize = Globals.FileSizeString(zipFile) }), 1000);
+            Toasts.ShowToastLang(ToastType.Info, new LangSub("Toast_BackupProgress", new { compressedSize = Globals.FileSizeString(zipFile) }), 2000);
             Thread.Sleep(2000);
         }
     }

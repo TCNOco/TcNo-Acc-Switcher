@@ -71,6 +71,8 @@ button .caret, .button .caret {
   position: absolute;
   width: 100%;
   height: 100%;
+  top: 0;
+  left: 0;
   opacity: 0;
   cursor: pointer;
 }
@@ -532,7 +534,7 @@ button * {
   visibility: visible;
 }
 .tooltip-wrapper > span {
-  position: fixed;
+  position: absolute;
   pointer-events: none;
   visibility: hidden;
   background-color: var(--tooltipBackground);
@@ -570,4 +572,9 @@ button * {
   top: -10px;
   left: 50%;
   border-color: transparent transparent var(--tooltipBackground) transparent;
+}
+
+.rowSetting {
+  display: flex;
+  align-items: center;
 }

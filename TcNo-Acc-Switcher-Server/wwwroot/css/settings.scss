@@ -29,8 +29,9 @@ h2.SettingsHeader {
     width: fit-content;
 }
 
-.acc_list_actionbar > div .btn_login,
-.btn_close span { padding: 0.25em 5em; }
+.acc_list_actionbar > div .btn_login {
+    padding: 0.25em 5em;
+}
 
 .settingsCol .buttoncol button.btn_app_login {
     width: 250px;
@@ -145,17 +146,34 @@ input[type='checkbox']:checked + label {
     }
 
     .buttoncol {
-        position: relative;
-        width: 100%;
-        height: 3.6em;
         display: flex;
-        flex-wrap: nowrap;
+        flex-direction: row;
+        align-items: center;
         justify-content: space-between;
+        flex-wrap: nowrap;
         margin-bottom: 0.25em;
+
+        &.col_close, &.col_cache {
+            margin-top: 2em;
+            margin-bottom: 4em;
+
+            button {
+                width: 35%;
+            }
+        }
+
+        &.col_close {
+            justify-content: flex-end;
+        }
+
+        &.col_cache {
+            justify-content: flex-start;
+        }
 
         > button,
         > .button,
         > .tooltip-wrapper {
+            height: 3.6em;
             width: 49%;
             margin: 0 0.25em;
 
@@ -176,19 +194,6 @@ input[type='checkbox']:checked + label {
             cursor: default;
         }
     }
-}
-
-
-.btn_close {
-    right: 0 !important;
-    left: unset !important;
-    width: 35% !important;
-}
-
-.col_close {
-    margin-top: 2em;
-    margin-bottom: 4em;
-    flex-direction: row-reverse;
 }
 
 

@@ -56,7 +56,13 @@ public class Modals : IModals, INotifyPropertyChanged
         set => SetField(ref _title, value);
     }
 
-    public ExtraArg ExtraArgs { get; set; }
+    private ExtraArg _extraArgs;
+    public ExtraArg ExtraArgs
+    {
+        get => _extraArgs;
+        set => SetField(ref _extraArgs, value);
+    }
+
     public StatsSelectorState CurrentStatsSelectorState { get; set; }
 
 

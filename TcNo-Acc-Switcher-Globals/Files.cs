@@ -327,7 +327,7 @@ public partial class Globals
             i++;
         }
 
-        return string.Format("{{0:n" + decimalPlaces + "}} {1}", dValue, SizeSuffixes[i]);
+        return string.Format("{0:n" + decimalPlaces + "} {1}", dValue, SizeSuffixes[i]);
     }
 
     public static bool IsDirectoryEmpty(string path)

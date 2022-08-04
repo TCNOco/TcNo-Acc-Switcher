@@ -11,7 +11,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
-    
+
 @page "/{Platform}"
 @using TcNo_Acc_Switcher_Server.Shared.ContextMenu
 @using TcNo_Acc_Switcher_Server.Shared.Accounts
@@ -130,6 +130,9 @@
     [Parameter]
     public string Platform { get; set; }
 
+    [Parameter]
+    public string Settings { get; set; }
+
     private readonly AccountActions _accountActions = new();
     private Dictionary<int, string> _shortcuts = new();
 
@@ -137,7 +140,7 @@
     protected override async Task OnInitializedAsync()
     {
         AppState.Stylesheet.StreamerModeCheck();
-        
+
         // Requested platform from URL: Platform.
         // 1. Check if platform from URL is currentPlatform.
         var requestedPlatform = TemplatedPlatformState.Platforms.FirstOrDefault(x => x.Name == Platform || x.Identifiers.Contains(Platform, StringComparer.OrdinalIgnoreCase));

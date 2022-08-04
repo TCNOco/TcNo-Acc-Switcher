@@ -29,8 +29,7 @@ h2.SettingsHeader {
   width: fit-content;
 }
 
-.acc_list_actionbar > div .btn_login,
-.btn_close span {
+.acc_list_actionbar > div .btn_login {
   padding: 0.25em 5em;
 }
 
@@ -145,17 +144,30 @@ input[type=checkbox]:checked + label {
   z-index: 5000;
 }
 .settingsCol .buttoncol {
-  position: relative;
-  width: 100%;
-  height: 3.6em;
   display: flex;
-  flex-wrap: nowrap;
+  flex-direction: row;
+  align-items: center;
   justify-content: space-between;
+  flex-wrap: nowrap;
   margin-bottom: 0.25em;
+}
+.settingsCol .buttoncol.col_close, .settingsCol .buttoncol.col_cache {
+  margin-top: 2em;
+  margin-bottom: 4em;
+}
+.settingsCol .buttoncol.col_close button, .settingsCol .buttoncol.col_cache button {
+  width: 35%;
+}
+.settingsCol .buttoncol.col_close {
+  justify-content: flex-end;
+}
+.settingsCol .buttoncol.col_cache {
+  justify-content: flex-start;
 }
 .settingsCol .buttoncol > button,
 .settingsCol .buttoncol > .button,
 .settingsCol .buttoncol > .tooltip-wrapper {
+  height: 3.6em;
   width: 49%;
   margin: 0 0.25em;
 }
@@ -175,18 +187,6 @@ input[type=checkbox]:checked + label {
 .settingsCol .buttoncol button:disabled, .settingsCol .buttoncol button[disabled] {
   opacity: 0.5;
   cursor: default;
-}
-
-.btn_close {
-  right: 0 !important;
-  left: unset !important;
-  width: 35% !important;
-}
-
-.col_close {
-  margin-top: 2em;
-  margin-bottom: 4em;
-  flex-direction: row-reverse;
 }
 
 .preview_element {

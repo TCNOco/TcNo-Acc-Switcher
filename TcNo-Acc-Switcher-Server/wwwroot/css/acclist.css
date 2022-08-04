@@ -183,8 +183,7 @@ label.acc.currentAcc {
   height: 3em;
 }
 
-.acc_list_actionbar div .btn_login,
-.btn_close span {
+.acc_list_actionbar div .btn_login {
   padding: 0.25em 5em;
 }
 

@@ -12,7 +12,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
-@page "/{Platform}/Settings"
+@page "/{Platform}/Settings/"
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @using Microsoft.AspNetCore.Components
 @using TcNo_Acc_Switcher_Server.State.DataTypes
@@ -103,18 +103,53 @@
             <h2 class="SettingsHeader">@Lang["Settings_Header_GeneralTools"]</h2>
             <p>@Lang["Settings_CurrentLocation", new { path = TemplatedPlatformSettings.FolderPath }]</p>
             <div class="buttoncol"><button id="PickFolder" type="button" @onclick="PickFolder"><span>@Lang["Settings_PickFolder", new { platform = TemplatedPlatformState.CurrentPlatform.Name }]</span></button><button id="OpenFolder" type="button" @onclick="() => AppState.OpenFolder(TemplatedPlatformSettings.FolderPath)"><span>@Lang["Settings_OpenFolder", new { platform = TemplatedPlatformState.CurrentPlatform.Name }]</span></button></div>
-            <div class="buttoncol"><button id="ResetSettings" type="button" @onclick="ClearSettings"><span>@Lang["Button_ResetSettings"]</span></button>
-                @if (TemplatedPlatformState.CurrentPlatform.Extras.CachePaths != null)
-                {
-                <Tooltip Text="@(GetCacheList())">
+            <div class="buttoncol"><button id="ResetSettings" type="button" @onclick="ClearSettings"><span>@Lang["Button_ResetSettings"]</span></button></div>
+
+            @if (TemplatedPlatformState.CurrentPlatform.Extras.CachePaths != null)
+            {
+                <h2 class="SettingsHeader">@Lang["Platform_ClearCache"]</h2>
+
+                <div>
+                    <p>@Lang["FileFoldersToClear"]</p>
+                    <ul>
+                        @foreach (var cachePath in TemplatedPlatformState.CurrentPlatform.Extras.CachePaths)
+                        {
+                            <li>@TemplatedPlatformFuncs.ExpandEnvironmentVariables(cachePath)</li>
+                        }
+                    </ul>
+                </div>
+
+                <div class="buttoncol col_cache">
                     <button id="ClearCache" type="button" @onclick="TemplatedPlatformFuncs.ClearCache"><span>@Lang["Platform_ClearCache"]</span></button>
-                </Tooltip>
-                }
-            </div>
+                </div>
+            }
 
             @if (TemplatedPlatformState.CurrentPlatform.Extras.BackupPaths.Count > 0)
             {
                 <h2 class="SettingsHeader">@Lang["Settings_Header_BackupRestore"]</h2>
+
+                <div>
+                    <p>@Lang["Settings_BackupFolders"]</p>
+                    <ul>
+                        @foreach (var (backupPath, _) in TemplatedPlatformState.CurrentPlatform.Extras.BackupPaths)
+                        {
+                            <li>@TemplatedPlatformFuncs.ExpandEnvironmentVariables(backupPath)</li>
+                        }
+                    </ul>
+                    @if (TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesIgnore.Count > 0)
+                    {
+                        <p>@Lang["Settings_BackupIgnores"]</p>
+                        <p>@string.Join(", ", TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesIgnore)</p>
+                    }
+
+                    @if (TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesIgnore.Count > 0)
+                    {
+                        <p>@Lang["Settings_BackupIgnores"]</p>
+                        <p>@string.Join(", ", TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesIgnore)</p>
+                    }
+                    <p>@Lang["Settings_BackupIncludes"]</p>
+                    <p>@string.Join(", ", TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesInclude)</p>
+                </div>
 
                 <div class="buttoncol">
                     @if (TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesInclude.Count != 0 || TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesIgnore.Count != 0){
@@ -148,7 +183,7 @@
 
             <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Lang["Button_Close"]</span></button></div>
 
-            @if (_gamesAndSettings.Count > 0)
+            @if (_gamesAndSettings is not null && _gamesAndSettings.Count > 0)
             {
                 <h2 class="SettingsHeader">@Lang["Settings_Header_GameStats"]</h2>
                 <p>@Lang["Settings_GameStats"]</p>
@@ -203,9 +238,11 @@
         }
 
         // Verify that the platform's EXE exists, otherwise go back. For shortcuts and direct navigation.
-        if (!File.Exists(TemplatedPlatformSettings.Exe)){
+        if (requestedPlatform is null || !File.Exists(TemplatedPlatformSettings.Exe)){
             NavigateBack();
         }
+
+        _gamesAndSettings = GameStats.GetAllCurrentlyEnabledGames().ToDictionary(game => game, GameStats.GetAllMetrics);
     }
 
     private void NavigateBack() =>
@@ -221,24 +258,12 @@
         StaticFuncs.SaveSettings = SaveSettings;
     }
 
-    protected override async Task OnParametersSetAsync()
-    {
-        await GameStats.SetCurrentPlatform(TemplatedPlatformState.CurrentPlatform.SafeName);
-        _gamesAndSettings = GameStats.GetAllCurrentlyEnabledGames().ToDictionary(game => game, GameStats.GetAllMetrics);
-    }
-
     public void SaveAndClose()
     {
         WindowSettings.Save();
         TemplatedPlatformSettings.Save();
 
         NavigationManager.NavigateTo($"/{Platform}");
-    }
-
-    private string GetCacheList()
-    {
-        var listOfFiles = new List<string>(TemplatedPlatformState.CurrentPlatform.Extras.CachePaths);
-        return Lang["FileFoldersToClear"] + Environment.NewLine + string.Join(Environment.NewLine, listOfFiles.Select(x => x.Replace("Platform_Folder", TemplatedPlatformState.CurrentPlatform.Name)).ToList());
     }
 
     // Allow saving of shortcut position.

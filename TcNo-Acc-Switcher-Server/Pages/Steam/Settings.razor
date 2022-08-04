@@ -14,6 +14,7 @@
 
 @page "/Steam/Settings"
 @using Microsoft.AspNetCore.Components
+@using TcNo_Acc_Switcher_Globals
 @using TcNo_Acc_Switcher_Server.State.DataTypes
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @using TcNo_Acc_Switcher_Server.Shared.Tooltip
@@ -52,7 +53,7 @@
             <div class="rowSetting">
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_Admin" @bind="SteamSettings.Admin"><label class="form-check-label" for="Steam_Admin"></label></div><label for="Steam_Admin">@Lang["Settings_Admin", new { platform = Platform }]<br></label>
             </div>
-            <div>
+            <div class="rowSetting">
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="AutoStart" @bind="SteamSettings.AutoStart"><label class="form-check-label" for="AutoStart"></label></div><label for="AutoStart">
                     @Lang["Settings_AutoStart", new { platform = "Steam" }]<br></label>
             </div>
@@ -87,26 +88,24 @@
                 </Tooltip>
             </div>
 
-            <div>
-                <div class="rowSetting rowDropdown">
-                    <span>@Lang["Steam_OverrideDefaultState"]</span>
-                    <div class="dropdown">
-                        <ul class="custom-dropdown-menu dropdown-menu">
-                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(-1)">@Lang["NoDefault"]</li>
-                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(1)">@Lang["Online"]</li>
-                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(7)">@Lang["Invisible"]</li>
-                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(0)">@Lang["Offline"]</li>
-                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(2)">@Lang["Busy"]</li>
-                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(3)">@Lang["Away"]</li>
-                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(4)">@Lang["Snooze"]</li>
-                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(5)">@Lang["LookingToTrade"]</li>
-                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(6)">@Lang["LookingToPlay"]</li>
-                        </ul>
-                        <button class="dropdown-toggle" type="button" data-toggle="dropdown">
-                            @_selectedState
-                            <span class="caret"></span>
-                        </button>
-                    </div>
+            <div class="rowSetting rowDropdown">
+                <span>@Lang["Steam_OverrideDefaultState"]</span>
+                <div class="dropdown">
+                    <ul class="custom-dropdown-menu dropdown-menu">
+                        <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(-1)">@Lang["NoDefault"]</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(1)">@Lang["Online"]</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(7)">@Lang["Invisible"]</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(0)">@Lang["Offline"]</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(2)">@Lang["Busy"]</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(3)">@Lang["Away"]</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(4)">@Lang["Snooze"]</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(5)">@Lang["LookingToTrade"]</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(6)">@Lang["LookingToPlay"]</li>
+                    </ul>
+                    <button class="dropdown-toggle" type="button" data-toggle="dropdown">
+                        @_selectedState
+                        <span class="caret"></span>
+                    </button>
                 </div>
             </div>
             <div class="form-text"><span>@Lang["Settings_ImageExpiry"]</span><input type="number" id="Steam_ImageExpiryTime" min="0" max="365" @bind="SteamSettings.ImageExpiryTime"></div>
@@ -141,6 +140,18 @@
 
 
             <h2 class="SettingsHeader">@Lang["Settings_Header_BackupRestore"]</h2>
+
+            <div>
+                <p>@Lang["Settings_BackupFolders"]</p>
+                <ul>
+                    @foreach (var (backupPath, _) in _backupPaths)
+                    {
+                        <li>@Globals.ExpandEnvironmentVariables(backupPath.Replace("%Platform_Folder%", SteamSettings.FolderPath))</li>
+                    }
+                </ul>
+                <p>@Lang["Settings_BackupIgnores"]</p>
+                <p>@string.Join(", ", _backupFileTypesInclude)</p>
+            </div>
 
             <div class="buttoncol">
                 <Tooltip Text="@Lang["Tooltip_Backup"]">

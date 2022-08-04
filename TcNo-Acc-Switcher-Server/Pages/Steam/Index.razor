@@ -163,7 +163,7 @@
 
         // Load games for the Right-click menu
         LoadGamesForAccounts();
-        _accountActions.AfterAccountSelect = OnAccountSelect;
+        _accountActions.AfterAccountSelect = async (acc) => await OnAccountSelect(acc);
         await InvokeAsync(StateHasChanged);
 
         await JsRuntime.InvokeVoidAsync("initAccListSortable");
@@ -290,12 +290,13 @@
     /// Add switch and launch functionality
     /// </summary>
     /// <param name="acc"></param>
-    public void OnAccountSelect(Account acc)
+    public async Task OnAccountSelect(Account acc)
     {
         // Remove section from contextmenu
         SteamState.ContextMenu.Menu.Remove(SteamState.ContextMenu.Menu.FirstOrDefault(x => x.Id == "SwitchAndLaunch")); // This can be null.
         var switchAndLaunch = SteamState.SteamUsers.FirstOrDefault(x => x.SteamId == acc.AccountId)?.SwitchAndLaunch;
         if (switchAndLaunch is not null) SteamState.ContextMenu.Menu.Add(switchAndLaunch);
+        await InvokeAsync(StateHasChanged);
     }
     #endregion
 

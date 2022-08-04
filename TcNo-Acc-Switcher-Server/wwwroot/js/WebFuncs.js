@@ -144,6 +144,11 @@ function repositionTooltip(id) {
     // Get window size and remove modified position (if any)
     repositionFindBorders();
     tooltipSpan.removeClass().css("left", "").css("bottom", "").css("transform", "");
+
+    // If text is long, make it a little bigger
+    if (tooltipSpan.text().length > 50)
+        tooltipSpan.css("min-width", "180px");
+
     const bounds = tooltipSpan[0].getBoundingClientRect();
     const parentBounds = tooltipSpan.parent()[0].getBoundingClientRect();
 
