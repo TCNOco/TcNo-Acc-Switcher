@@ -216,7 +216,7 @@
 {
     protected override async Task OnParametersSetAsync()
     {
-        await GameStats.SetCurrentPlatform(Statistics, "Steam");
+        await GameStats.SetCurrentPlatform("Steam");
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

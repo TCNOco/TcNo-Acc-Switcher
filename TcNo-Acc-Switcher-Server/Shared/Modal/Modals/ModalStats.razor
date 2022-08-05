@@ -23,7 +23,6 @@
     protected override void OnInitialized()
     {
         Modals.Title = Lang["Modal_Title_Stats"];
-        Statistics.GenerateTotals();
         Statistics.Save();
     }
 }
@@ -52,10 +51,10 @@
                     <span><b>@Lang["Stats_LaunchCount"]</b>@Statistics.LaunchCount</span>
                     <span><b>@Lang["Stats_CrashCount"]</b>@Statistics.CrashCount</span>
                     <span><b>@Lang["Stats_MostUsedPlatform"]</b>@Statistics.MostUsedPlatform</span>
-                    <span><b>@Lang["Stats_TotalTime"]</b>@TimeSpan.FromSeconds(Statistics.PageStats["_Total"].TotalTime).ToString("hh\\:mm\\:ss")</span>
-                    <span><b>@Lang["Stats_TotalSwitches"]</b>@Statistics.SwitcherStats["_Total"].Switches</span>
-                    <span><b>@Lang["Stats_TotalGamesLaunched"]</b>@Statistics.SwitcherStats["_Total"].GamesLaunched</span>
-                    <span><b>@Lang["Stats_UniqueDaysLong"]</b>@Statistics.SwitcherStats["_Total"].UniqueDays</span>
+                    <span><b>@Lang["Stats_TotalTime"]</b>@TimeSpan.FromSeconds(Statistics.PageStats.Sum(item => item.Value.TotalTime)).ToString("hh\\:mm\\:ss")</span>
+                    <span><b>@Lang["Stats_TotalSwitches"]</b>@Statistics.SwitcherStats.Sum(item => item.Value.Switches)</span>
+                    <span><b>@Lang["Stats_TotalGamesLaunched"]</b>@Statistics.SwitcherStats.Sum(item => item.Value.GamesLaunched)</span>
+                    <span><b>@Lang["Stats_UniqueDaysLong"]</b>@Statistics.SwitcherStats.Sum(item => item.Value.UniqueDays)</span>
                 </div>
                 <h4>@Lang["Stats_InDepth"]</h4>
                 <div class="statSection">
@@ -66,7 +65,7 @@
                         <span><b>@Lang["Stats_SwitcherStats"]</b></span>
                     }
 
-                    @foreach (var switcherStat in Statistics.SwitcherStats.Where(switcherStat => switcherStat.Key != "_Total"))
+                    @foreach (var switcherStat in Statistics.SwitcherStats)
                     {
                         <b>- @switcherStat.Key: </b>
                         <div class="statIndent">
@@ -81,14 +80,23 @@
                         </div>
                     }
                     @if (Statistics.PageStats.Count > 1){
-                        <b>@Lang["Stats_PageStats"]</b><br />
+                        <b>@Lang["Stats_PageStats"]</b>
+                        <div class="statIndent">
+                            @foreach (var pageStat in Statistics.PageStats)
+                            {
+                                <span><b>- @pageStat.Key: </b>@Lang["Stats_VisitsTotalTime", new { visits = pageStat.Value.Visits, hours = TimeSpan.FromSeconds(pageStat.Value.TotalTime).ToString("hh\\:mm\\:ss")}]</span>
+                            }
+                        </div>
                     }
-                    <div class="statIndent">
-                        @foreach (var pageStat in Statistics.PageStats.Where(pageStat => pageStat.Key != "_Total"))
-                        {
-                            <span><b>- @pageStat.Key: </b>@Lang["Stats_VisitsTotalTime", new { visits = pageStat.Value.Visits, hours = TimeSpan.FromSeconds(pageStat.Value.TotalTime).ToString("hh\\:mm\\:ss")}]</span>
-                        }
-                    </div>
+                    @if (Statistics.AllGameStats.Count > 1){
+                        <b>@Lang["Stats_GameStats"]</b>
+                        <div class="statIndent">
+                            @foreach (var pageStat in Statistics.AllGameStats)
+                            {
+                                <span><b>- @pageStat.Key: </b>@Lang["Stats_GameStatsTotal", new { numAccounts = pageStat.Value.NumAccounts, listOfStats = pageStat.Value.HiddenMetrics.ToString()}]</span>
+                            }
+                        </div>
+                    }
                 </div>
             }
         </p></div>

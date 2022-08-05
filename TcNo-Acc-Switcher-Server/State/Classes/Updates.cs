@@ -49,6 +49,7 @@ public class Updates
         _modals = modals;
         var windowSettings1 = windowSettings;
 
+        // TODO: TEST: new Thread(statistics.UploadStats).Start();
         if (!FirstLaunch) return;
         FirstLaunch = false;
         // Check for update in another thread

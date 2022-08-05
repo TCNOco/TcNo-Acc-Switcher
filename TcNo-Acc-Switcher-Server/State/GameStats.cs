@@ -68,7 +68,7 @@ public class GameStats : IGameStats
     /// Loads games and stats for requested platform
     /// </summary>
     /// <returns>If successfully loaded platform</returns>
-    public async Task<bool> SetCurrentPlatform(IStatistics statistics, string platform)
+    public async Task<bool> SetCurrentPlatform(string platform)
     {
         if (!_gameStatsRoot.IsInit) return false;
 
@@ -83,8 +83,6 @@ public class GameStats : IGameStats
             await gs.SetGameStat(game);
             SavedStats.Add(game, gs);
         }
-
-        statistics.UpdateGameStats(platform, SavedStats);
 
         return true;
     }

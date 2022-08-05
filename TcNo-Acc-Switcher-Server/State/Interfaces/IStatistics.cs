@@ -32,13 +32,22 @@ public interface IStatistics
     string LastActivePage { get; set; }
     DateTime LastActivePageTime { get; set; }
     Dictionary<string, SwitcherStat> SwitcherStats { get; set; }
+    Dictionary<string, BasicGameStats> AllGameStats { get; set; }
     void NewNavigation(string newPage);
     void SetAccountCount(string platform, int count);
     void IncrementSwitches(string platform);
     void IncrementGameLaunches(string platform);
-    void UpdateGameStats(string platform, Dictionary<string, GameStatSaved> savedStats);
     void SetGameShortcutCount(string platform, Dictionary<int, string> shortcuts);
-    void GenerateTotals();
+
+    /// <summary>
+    /// Stores number of accounts and list of hidden metrics for each game
+    /// </summary>
+    class BasicGameStats
+    {
+        public int NumAccounts = 0;
+        public Dictionary<string, int> HiddenMetrics = new();
+    }
+
     void UploadStats();
     void Save();
     void ClearStats();

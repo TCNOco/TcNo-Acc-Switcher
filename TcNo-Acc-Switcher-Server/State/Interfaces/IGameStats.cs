@@ -34,7 +34,7 @@ public interface IGameStats
     /// Loads games and stats for requested platform
     /// </summary>
     /// <returns>If successfully loaded platform</returns>
-    Task<bool> SetCurrentPlatform(IStatistics statistics, string platform);
+    Task<bool> SetCurrentPlatform(string platform);
 
     UserGameStat GetUserGameStat(string game, string accountId);
 

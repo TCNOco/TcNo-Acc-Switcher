@@ -167,7 +167,7 @@ public partial class Index
 
         var s = CultureInfo.CurrentCulture.TextInfo.ListSeparator; // Different regions use different separators in csv files.
 
-        await GameStats.SetCurrentPlatform(Statistics, platform.Name);
+        await GameStats.SetCurrentPlatform(platform.Name);
 
         List<string> allAccountsTable = new();
         if (platform.Name == "Steam")

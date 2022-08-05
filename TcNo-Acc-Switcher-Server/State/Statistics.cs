@@ -14,11 +14,12 @@
 
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
@@ -77,7 +78,7 @@ public class Statistics : IStatistics
     // EXAMPLE:
     // "Steam": {TotalTime: 3600, TotalVisits: 10}
     // "SteamSettings": {TotalTime: 300, TotalVisits: 6}
-    public Dictionary<string, PageStat> PageStats { get; set; } = new() { { "_Total", new PageStat() } };
+    public Dictionary<string, PageStat> PageStats { get; set; } = new();
 
     // Total time is incremented on navigating to a new page.
     // -> Check last page, and compare times. Then add seconds.
@@ -116,7 +117,7 @@ public class Statistics : IStatistics
 
     // EXAMPLE:
     // "Steam": {Accounts: 0, Switches: 0, Days: 0, LastActive: 2022-05-01}
-    public Dictionary<string, SwitcherStat> SwitcherStats { get; set; } = new() { { "_Total", new SwitcherStat() } };
+    public Dictionary<string, SwitcherStat> SwitcherStats { get; set; } = new();
 
     private void AddPlatformIfNotExist(string platform)
     {
@@ -159,21 +160,6 @@ public class Statistics : IStatistics
         Save();
     }
 
-    public void UpdateGameStats(string platform, Dictionary<string, GameStatSaved> savedStats)
-    {
-        Console.WriteLine(savedStats);
-
-        // TODO:
-        // Save list of games, as well as the number of accounts on the enabled platform.
-        // Eg. Steam > Apex Legends: 2
-        // On a list of games, save the number of each statistic is shown.
-        // Eg. Apex Legends > Rank: 2, Level: 4, Arena Rank: 3
-        // This way the the number of and list of which games can be tracked per platform, as well as the number of accounts with stats on each platform
-        // As well as which specific stats are being collected and shown.
-
-
-    }
-
     public void SetGameShortcutCount(string platform, Dictionary<int, string> shortcuts)
     {
         if (!_windowSettings.CollectStats) return;
@@ -189,58 +175,69 @@ public class Statistics : IStatistics
         SwitcherStats[platform].GameShortcutsHotbar = tHShortcuts;
     }
 
-    public void GenerateTotals()
+    #endregion
+
+    #region Game Stats
+    /// <summary>
+    /// Collect game stats from StatsCache\ folder, and prepare to upload info about it.
+    /// </summary>
+    private void CollectGameStats()
     {
-        // Account stat totals
-        var totalAccounts = 0;
-        var totalSwitches = 0;
-        var totalGameShortcuts = 0;
-        var totalGamesLaunched = 0;
-        var mostUsedPlatform = "";
-        var mostUsedCount = 0;
-        foreach (var (k, v) in SwitcherStats)
-        {
-            if (k == "_Total") continue;
-            totalAccounts += v.Accounts;
-            totalSwitches += v.Switches;
-            totalGameShortcuts += v.GameShortcuts;
-            totalGamesLaunched += v.GamesLaunched;
+        var path = Path.Join(Globals.UserDataFolder, "StatsCache");
+        if (!Directory.Exists(path)) return;
 
-            if (v.Switches <= mostUsedCount) continue;
-            mostUsedCount = v.Switches;
-            mostUsedPlatform = k;
+        var files = Directory.GetFiles(path);
+        foreach (var f in files)
+        {
+            // Read file as JSON
+            try
+            {
+                var gameDict = JsonConvert.DeserializeObject<Dictionary<string, BasicGameStatJs>>(File.ReadAllText(f));
+                if (gameDict is null) continue;
+                var hiddenMetricsTotal = new ConcurrentDictionary<string, int>();
+
+                foreach (var acc in gameDict)
+                {
+                    foreach (var hiddenMetricName in acc.Value.HiddenMetrics)
+                    {
+                        hiddenMetricsTotal.AddOrUpdate(hiddenMetricName, 1, (id, count) => count + 1);
+                    }
+                }
+
+                var gameName = Path.GetFileName(f).Replace(".json", "");
+
+                AllGameStats[gameName] = new IStatistics.BasicGameStats
+                {
+                    NumAccounts = gameDict.Count,
+                    HiddenMetrics = hiddenMetricsTotal.ToDictionary(x => x.Key, x => x.Value)
+                };
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
-
-        var totStat = new SwitcherStat
-        {
-            Accounts = totalAccounts,
-            Switches = totalSwitches,
-            GameShortcuts = totalGameShortcuts,
-            GamesLaunched = totalGamesLaunched
-        };
-        SwitcherStats["_Total"] = totStat;
-
-        // Program totals
-        var totalTime = 0;
-        var totalVisits = 0;
-        foreach (var (k, v) in PageStats)
-        {
-            if (k == "_Total") continue;
-            totalTime += v.TotalTime;
-            totalVisits += v.Visits;
-        }
-
-        var totPageStat = new PageStat { TotalTime = totalTime, Visits = totalVisits };
-        PageStats["_Total"] = totPageStat;
-        MostUsedPlatform = mostUsedPlatform;
     }
 
+    /// <summary>
+    /// Used in deserializing cached stats
+    /// </summary>
+    private struct BasicGameStatJs
+    {
+        public List<string> HiddenMetrics;
+    }
+
+    public Dictionary<string, IStatistics.BasicGameStats> AllGameStats { get; set; } = new();
     #endregion
 
     public void UploadStats()
     {
         try
         {
+            // Collect game stats
+            CollectGameStats();
+
             // Upload stats file if enabled.
             if (!_windowSettings.CollectStats || !_windowSettings.ShareAnonymousStats) return;
 
@@ -288,11 +285,7 @@ public class Statistics : IStatistics
         AppDomain.CurrentDomain.ProcessExit += (_, _) => Save();
     }
 
-    public void Save()
-    {
-        GenerateTotals();
-        Globals.SaveJsonFile(Filename, this, false);
-    }
+    public void Save() => Globals.SaveJsonFile(Filename, this, false);
 
     public void ClearStats()
     {
