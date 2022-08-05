@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using TcNo_Acc_Switcher_Server.State.Classes.GameStats;
 using TcNo_Acc_Switcher_Server.State.Classes.Stats;
 
 namespace TcNo_Acc_Switcher_Server.State.Interfaces;
@@ -32,9 +33,10 @@ public interface IStatistics
     DateTime LastActivePageTime { get; set; }
     Dictionary<string, SwitcherStat> SwitcherStats { get; set; }
     void NewNavigation(string newPage);
-    void IncrementSwitches(string platform);
     void SetAccountCount(string platform, int count);
+    void IncrementSwitches(string platform);
     void IncrementGameLaunches(string platform);
+    void UpdateGameStats(string platform, Dictionary<string, GameStatSaved> savedStats);
     void SetGameShortcutCount(string platform, Dictionary<int, string> shortcuts);
     void GenerateTotals();
     void UploadStats();

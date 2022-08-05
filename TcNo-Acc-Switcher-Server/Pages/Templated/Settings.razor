@@ -234,7 +234,7 @@
         {
             // 2. If not, set currentPlatform to platform from URL.
             TemplatedPlatformState.LoadTemplatedPlatformState(JsRuntime, TemplatedPlatformSettings);
-            await TemplatedPlatformState.SetCurrentPlatform(JsRuntime, TemplatedPlatformSettings, TemplatedPlatformFuncs, Platform);
+            await TemplatedPlatformState.SetCurrentPlatform(JsRuntime, TemplatedPlatformSettings, TemplatedPlatformFuncs, Statistics, Platform);
         }
 
         // Verify that the platform's EXE exists, otherwise go back. For shortcuts and direct navigation.
@@ -253,7 +253,6 @@
         if (!firstRender) return;
 
         AppState.WindowState.WindowTitle = Lang["Title_Template_Settings", new { platformName = TemplatedPlatformState.CurrentPlatform.Name }];
-        Statistics.NewNavigation($"/[{TemplatedPlatformState.CurrentPlatform.SafeName}]/Settings");
         await JsRuntime.InvokeVoidAsync("initSavingHotKey");
         StaticFuncs.SaveSettings = SaveSettings;
     }

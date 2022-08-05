@@ -108,9 +108,10 @@ public class TemplatedPlatformState : ITemplatedPlatformState
     /// <param name="jsRuntime"></param>
     /// <param name="templatedPlatformSettings"></param>
     /// <param name="templatedPlatformFuncs"></param>
+    /// <param name="statistics"></param>
     /// <param name="platformName">Platform identifier, or name</param>
     /// <returns></returns>
-    public async Task SetCurrentPlatform(IJSRuntime jsRuntime, ITemplatedPlatformSettings templatedPlatformSettings, ITemplatedPlatformFuncs templatedPlatformFuncs, string platformName)
+    public async Task SetCurrentPlatform(IJSRuntime jsRuntime, ITemplatedPlatformSettings templatedPlatformSettings, ITemplatedPlatformFuncs templatedPlatformFuncs, IStatistics statistics, string platformName)
     {
         CurrentPlatform = Platforms.First(x => x.Name == platformName || x.Identifiers.Contains(platformName, StringComparer.OrdinalIgnoreCase));
         await _appState.Switcher.UpdateStatusAsync(_lang["Loading"]);
@@ -121,16 +122,16 @@ public class TemplatedPlatformState : ITemplatedPlatformState
         _appState.Switcher.CurrentSwitcher = CurrentPlatform.Name;
         _appState.Switcher.TemplatedAccounts.Clear();
 
-        await _gameStats.SetCurrentPlatform(CurrentPlatform.SafeName);
+        await _gameStats.SetCurrentPlatform(statistics, CurrentPlatform.SafeName);
 
-        if (await LoadAccounts(jsRuntime)) await _appState.Switcher.UpdateStatusAsync(_lang["Done"]);
+        if (LoadAccounts()) await _appState.Switcher.UpdateStatusAsync(_lang["Done"]);
         else await _appState.Switcher.UpdateStatusAsync(_lang["FailedLoadAccounts"]);
 
         ContextMenu = new TemplatedPlatformContextMenu(jsRuntime, _appState, _lang, _gameStats, _modals, _sharedFunctions, templatedPlatformSettings, templatedPlatformFuncs, this, _toasts);
     }
 
     #region Loading
-    private async Task<bool> LoadAccounts(IJSRuntime jsRuntime)
+    private bool LoadAccounts()
     {
         var localCachePath = Path.Join(Globals.UserDataFolder, $"LoginCache\\{CurrentPlatform.SafeName}\\");
         if (!Directory.Exists(localCachePath)) return false;

@@ -20,7 +20,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
 using ImageMagick;
-using Microsoft.AspNetCore.Components;
 using SkiaSharp;
 using Svg.Skia;
 using TcNo_Acc_Switcher_Globals;

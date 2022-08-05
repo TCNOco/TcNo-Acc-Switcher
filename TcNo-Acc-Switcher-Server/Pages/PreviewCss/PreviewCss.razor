@@ -24,7 +24,6 @@
 @inject IAppState AppState
 @inject IWindowSettings WindowSettings
 @inject IModals Modals
-@inject IStatistics Statistics
 @inject ITemplatedPlatformState TemplatedPlatformState
 
 <div class="container mainblock">
@@ -311,7 +310,6 @@
         if (!firstRender) return;
 
         AppState.WindowState.WindowTitle = Lang["Title_Settings_TestCss"];
-        Statistics.NewNavigation("/Settings/PreviewCss");
         await JsRuntime.InvokeVoidAsync("initAccListSortable");
         await JsRuntime.InvokeVoidAsync("initPlatformListSortable");
     }

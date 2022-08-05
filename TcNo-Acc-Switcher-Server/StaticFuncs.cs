@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
 using TextCopy;

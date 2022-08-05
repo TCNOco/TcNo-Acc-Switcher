@@ -16,12 +16,9 @@
 @using System.IO
 @using Gameloop.Vdf
 @using Gameloop.Vdf.JsonConverter
-@using Microsoft.AspNetCore.Components
-@using Microsoft.AspNetCore.WebUtilities
 @using Newtonsoft.Json.Linq
 @using TcNo_Acc_Switcher_Globals
 @using TcNo_Acc_Switcher_Server.Converters
-@using TcNo_Acc_Switcher_Server.Pages.General
 @using TcNo_Acc_Switcher_Server.Shared.Accounts
 @using TcNo_Acc_Switcher_Server.Shared.ContextMenu
 @using TcNo_Acc_Switcher_Server.State.DataTypes
@@ -29,7 +26,7 @@
 @using TcNo_Acc_Switcher_Server.Shared.Tooltip
 @using TcNo_Acc_Switcher_Server.State.Classes
 @using TcNo_Acc_Switcher_Server.Shared.SwitcherUI
-@using System.ComponentModel
+@using TcNo_Acc_Switcher_Server.State
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JsRuntime
 @inject IAppState AppState
@@ -38,10 +35,10 @@
 @inject ISteamSettings SteamSettings
 @inject IModals Modals
 @inject ILang Lang
-@inject IStatistics Statistics
 @inject ISharedFunctions SharedFunctions
 @inject IGameStats GameStats
 @inject IToasts Toasts
+@inject IStatistics Statistics
 @inject IWindowSettings WindowSettings
 
 <ContextMenu MenuItems="@SteamState.ContextMenu.Menu" ContextMenuId="AccOrPlatList" />
@@ -135,7 +132,7 @@
     protected override async Task OnParametersSetAsync()
     {
         AppState.Stylesheet.StreamerModeCheck();
-        await GameStats.SetCurrentPlatform("Steam");
+        await GameStats.SetCurrentPlatform(Statistics, "Steam");
         //var f = WindowSettings.UsingTcNoBrowser;
     }
 
@@ -147,8 +144,6 @@
         // Handle Streamer Mode notification
         if (WindowSettings.StreamerModeEnabled && AppState.Stylesheet.StreamerModeTriggered)
             await Toasts.ShowToastLangAsync(ToastType.Info, "Toast_StreamerModeTitle", "Toast_StreamerModeHint");
-
-        Statistics.NewNavigation("/Steam/");
 
         StaticFuncs.SaveShortcuts = SaveShortcuts;
         _shortcuts = SteamSettings.Shortcuts;

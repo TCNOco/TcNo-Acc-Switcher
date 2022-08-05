@@ -18,9 +18,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.State.Classes.GameStats;
 using TcNo_Acc_Switcher_Server.State.Classes.Stats;
 using TcNo_Acc_Switcher_Server.State.Interfaces;
 
@@ -86,6 +88,7 @@ public class Statistics : IStatistics
     public void NewNavigation(string newPage)
     {
         if (!_windowSettings.CollectStats) return;
+        Console.WriteLine($@"Stat navigation to: {newPage}");
 
         // First page loaded, so just save current page and time.
         if (LastActivePage == "")
@@ -103,6 +106,9 @@ public class Statistics : IStatistics
         // Also, add to the visit count.
         if (!PageStats.ContainsKey(newPage)) PageStats.Add(newPage, new PageStat());
         PageStats[newPage].Visits++;
+
+        // Having a save here works well enough, as this is called after the platform is initialized.
+        Save();
     }
     #endregion
 
@@ -117,13 +123,11 @@ public class Statistics : IStatistics
         if (!SwitcherStats.ContainsKey(platform)) SwitcherStats.Add(platform, new SwitcherStat());
     }
 
-    private void IncrementSwitcherLastActive(string platform)
+    public void SetAccountCount(string platform, int count)
     {
         if (!_windowSettings.CollectStats) return;
-        // Increment unique days if day is not the same (Compares year, month, day - As we're not looking for 24 hours)
-        if (SwitcherStats[platform].LastActive.Date == DateTime.Now.Date) return;
-        SwitcherStats[platform].UniqueDays += 1;
-        SwitcherStats[platform].LastActive = DateTime.Now;
+        AddPlatformIfNotExist(platform);
+        SwitcherStats[platform].Accounts = count;
     }
 
     public void IncrementSwitches(string platform)
@@ -135,13 +139,6 @@ public class Statistics : IStatistics
         IncrementSwitcherLastActive(platform);
     }
 
-    public void SetAccountCount(string platform, int count)
-    {
-        if (!_windowSettings.CollectStats) return;
-        AddPlatformIfNotExist(platform);
-        SwitcherStats[platform].Accounts = count;
-    }
-
     public void IncrementGameLaunches(string platform)
     {
         if (!_windowSettings.CollectStats) return;
@@ -149,6 +146,32 @@ public class Statistics : IStatistics
         SwitcherStats[platform].GamesLaunched++;
 
         IncrementSwitcherLastActive(platform);
+    }
+
+    private void IncrementSwitcherLastActive(string platform)
+    {
+        if (!_windowSettings.CollectStats) return;
+        // Increment unique days if day is not the same (Compares year, month, day - As we're not looking for 24 hours)
+        if (SwitcherStats[platform].LastActive.Date == DateTime.Now.Date) return;
+        SwitcherStats[platform].UniqueDays += 1;
+        SwitcherStats[platform].LastActive = DateTime.Now;
+
+        Save();
+    }
+
+    public void UpdateGameStats(string platform, Dictionary<string, GameStatSaved> savedStats)
+    {
+        Console.WriteLine(savedStats);
+
+        // TODO:
+        // Save list of games, as well as the number of accounts on the enabled platform.
+        // Eg. Steam > Apex Legends: 2
+        // On a list of games, save the number of each statistic is shown.
+        // Eg. Apex Legends > Rank: 2, Level: 4, Arena Rank: 3
+        // This way the the number of and list of which games can be tracked per platform, as well as the number of accounts with stats on each platform
+        // As well as which specific stats are being collected and shown.
+
+
     }
 
     public void SetGameShortcutCount(string platform, Dictionary<int, string> shortcuts)

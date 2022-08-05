@@ -16,12 +16,12 @@
 @using TcNo_Acc_Switcher_Globals
 @using Microsoft.AspNetCore.WebUtilities
 @using TcNo_Acc_Switcher_Server.State.DataTypes
-@using TcNo_Acc_Switcher_Server.State
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @implements IDisposable
 @inject IJSRuntime JsRuntime
 @inject IToasts Toasts
 @inject IStatistics Statistics
+@inject ITemplatedPlatformState TemplatedPlatformState
 
 <Router AppAssembly="@typeof(Program).Assembly">
     <Found Context="routeData">
@@ -43,6 +43,8 @@
         // Subscribe to the event
         NavigationManager.LocationChanged += _locationChanged;
         base.OnInitialized();
+
+        NewNavigation(NavigationManager.Uri);
     }
 
     void IDisposable.Dispose()
@@ -56,7 +58,31 @@
         Console.WriteLine($@"Notified of navigation via {navigationMethod} to {e.Location}");
         await HandleQueries();
 
-        Statistics.NewNavigation(e.Location);
+        NewNavigation(e.Location);
+    }
+
+    private void NewNavigation(string uri)
+    {
+        uri = uri.Replace(NavigationManager.BaseUri, "");
+        if (string.IsNullOrEmpty(uri)) uri = "/";
+        else
+        {
+            // If not the root, try substituting "d" with "Discord" for example.
+            // Substitute platform with full platform name
+            var platformStrings = uri.Split("/");
+            var possiblePlatform = TemplatedPlatformState.Platforms.FirstOrDefault(x => x.Identifiers.Contains(platformStrings[0]) || x.Name == platformStrings[0]);
+            if (possiblePlatform is not null)
+            {
+                // Replace entire string if no "/"
+                if (platformStrings.Length == 1)
+                    uri = possiblePlatform.Name;
+                else
+                    uri = uri.Replace(platformStrings[0] + "/", possiblePlatform.Name);
+            }
+        }
+
+
+        Statistics.NewNavigation(uri);
     }
 
     /// <summary>

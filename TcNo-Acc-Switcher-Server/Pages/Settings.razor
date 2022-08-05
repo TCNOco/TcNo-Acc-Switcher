@@ -13,7 +13,6 @@
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
 @page "/Settings"
-@using TcNo_Acc_Switcher_Globals
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @namespace TcNo_Acc_Switcher_Server.Pages
 @inject NavigationManager NavManager
@@ -21,7 +20,6 @@
 @inject IJSRuntime JsRuntime
 @inject IWindowSettings WindowSettings
 @inject ILang Lang
-@inject IStatistics Statistics
 
 <div class="container mainblock">
     <div class="row">
@@ -58,7 +56,6 @@
         if (!firstRender) return;
 
         AppState.WindowState.WindowTitle = Lang["Title_Settings"];
-        Statistics.NewNavigation("/Settings/");
         await JsRuntime.InvokeVoidAsync("initSavingHotKey");
     }
 }

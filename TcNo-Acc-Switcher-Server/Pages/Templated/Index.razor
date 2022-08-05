@@ -17,8 +17,6 @@
 @using TcNo_Acc_Switcher_Server.Shared.Accounts
 @using System.IO
 @using Microsoft.AspNetCore.Components
-@using Microsoft.AspNetCore.WebUtilities
-@using TcNo_Acc_Switcher_Server.State
 @using TcNo_Acc_Switcher_Server.State.DataTypes
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @using TcNo_Acc_Switcher_Server.Shared.Tooltip
@@ -148,7 +146,7 @@
         {
             // 2. If not, set currentPlatform to platform from URL.
             TemplatedPlatformState.LoadTemplatedPlatformState(JsRuntime, TemplatedPlatformSettings);
-            await TemplatedPlatformState.SetCurrentPlatform(JsRuntime, TemplatedPlatformSettings, TemplatedPlatformFuncs, Platform);
+            await TemplatedPlatformState.SetCurrentPlatform(JsRuntime, TemplatedPlatformSettings, TemplatedPlatformFuncs, Statistics, Platform);
         }
 
         // Verify that the platform's EXE exists, otherwise go back. For shortcuts and direct navigation.
@@ -176,7 +174,6 @@
             await Toasts.ShowToastLangAsync(ToastType.Info, "Toast_StreamerModeTitle", "Toast_StreamerModeHint");
 
         AppState.Switcher.CurrentStatus = Lang["Loading"];
-        Statistics.NewNavigation($"/[{TemplatedPlatformState.CurrentPlatform.SafeName}]");
         StaticFuncs.SaveShortcuts = SaveShortcuts;
         _shortcuts = TemplatedPlatformSettings.Shortcuts;
         StaticFuncs.SaveOrderAction = TemplatedPlatformState.SaveAccountOrder;

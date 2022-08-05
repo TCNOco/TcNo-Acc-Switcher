@@ -22,7 +22,6 @@
 @inject IAppState AppState
 @inject ILang Lang
 @inject IWindowSettings WindowSettings
-@inject IStatistics Statistics
 @implements IDisposable
 
 <div class="container mainblock">
@@ -104,8 +103,6 @@
     protected override void OnInitialized()
     {
         AppState.WindowState.WindowTitle = Lang["Title_Platforms_Settings"];
-
-        Statistics.NewNavigation("/Platforms/");
         _collectionChanged = async (_, _) => await InvokeAsync(StateHasChanged);
         WindowSettings.Platforms.CollectionChanged += _collectionChanged;
     }

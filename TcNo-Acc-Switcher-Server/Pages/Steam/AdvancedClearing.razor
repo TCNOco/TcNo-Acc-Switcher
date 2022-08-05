@@ -13,16 +13,12 @@
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
 @page "/Steam/AdvancedClearing"
-@using TcNo_Acc_Switcher_Server.Pages.General
 @using System.Collections.ObjectModel
 @using System.Collections.Specialized
-@using TcNo_Acc_Switcher_Globals
-@using TcNo_Acc_Switcher_Server.State
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @namespace TcNo_Acc_Switcher_Server.Pages.Steam
 @inject NavigationManager NavManager
 @inject ILang Lang
-@inject IStatistics Statistics
 @implements IDisposable
 
 <div class="container mainblock">
@@ -115,7 +111,6 @@
     {
         AppState.WindowState.WindowTitle = Lang["Title_Steam_Cleaning"];
 
-        Statistics.NewNavigation("/Steam/AdvancedClearing/");
         _collectionChanged = async (_, _) => await InvokeAsync(StateHasChanged);
         Lines.CollectionChanged += _collectionChanged;
     }
