@@ -28,8 +28,8 @@ public sealed class UserGameStat
     /// </summary>
     public Dictionary<string, string> Collected = new();
     /// <summary>
-    /// Keys on this list should NOT be displayed under accounts.
+    /// Keys on this list should be displayed under accounts.
     /// </summary>
-    public List<string> HiddenMetrics = new();
+    public List<string> Metrics = new();
     public DateTime LastUpdated;
 }

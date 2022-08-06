@@ -578,3 +578,6 @@ button * {
   display: flex;
   align-items: center;
 }
+.rowSetting span {
+  margin-right: 0.5em;
+}

@@ -67,7 +67,7 @@ public class Statistics : IStatistics
     #endregion
 
     #region User stats
-    public string Uuid { get; set; } = Guid.NewGuid().ToString();
+    [JsonProperty("_id")] public string Uuid { get; set; } = Guid.NewGuid().ToString();
     public int LaunchCount { get; set; }
     public int CrashCount { get; set; }
     public DateTime FirstLaunch { get; set; } = DateTime.Now;
@@ -194,13 +194,14 @@ public class Statistics : IStatistics
             {
                 var gameDict = JsonConvert.DeserializeObject<Dictionary<string, BasicGameStatJs>>(File.ReadAllText(f));
                 if (gameDict is null) continue;
-                var hiddenMetricsTotal = new ConcurrentDictionary<string, int>();
+                var metricsTotal = new ConcurrentDictionary<string, int>();
 
                 foreach (var acc in gameDict)
                 {
-                    foreach (var hiddenMetricName in acc.Value.HiddenMetrics)
+                    if (acc.Value.Metrics is null) continue;
+                    foreach (var metricName in acc.Value.Metrics)
                     {
-                        hiddenMetricsTotal.AddOrUpdate(hiddenMetricName, 1, (id, count) => count + 1);
+                        metricsTotal.AddOrUpdate(metricName, 1, (id, count) => count + 1);
                     }
                 }
 
@@ -209,7 +210,7 @@ public class Statistics : IStatistics
                 AllGameStats[gameName] = new IStatistics.BasicGameStats
                 {
                     NumAccounts = gameDict.Count,
-                    HiddenMetrics = hiddenMetricsTotal.ToDictionary(x => x.Key, x => x.Value)
+                    Metrics = metricsTotal.ToDictionary(x => x.Key, x => x.Value)
                 };
             }
             catch (Exception e)
@@ -225,7 +226,7 @@ public class Statistics : IStatistics
     /// </summary>
     private struct BasicGameStatJs
     {
-        public List<string> HiddenMetrics;
+        public List<string> Metrics;
     }
 
     public Dictionary<string, IStatistics.BasicGameStats> AllGameStats { get; set; } = new();

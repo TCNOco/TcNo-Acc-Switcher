@@ -110,15 +110,15 @@ public class GameStatSaved
     /// <summary>
     /// Set up new accounts. Set game name if you want all accounts to save after setting values (Recommended).
     /// </summary>
-    public async Task<bool> SetAccount(Dictionary<string, string> vars, List<string> hiddenMetrics)
+    public async Task<bool> SetAccount(Dictionary<string, string> vars, List<string> metrics)
     {
         if (CachedStats.ContainsKey(_appState.Switcher.SelectedAccountId))
         {
             CachedStats[_appState.Switcher.SelectedAccountId].Vars = vars;
-            CachedStats[_appState.Switcher.SelectedAccountId].HiddenMetrics = hiddenMetrics;
+            CachedStats[_appState.Switcher.SelectedAccountId].Metrics = metrics;
         }
         else
-            CachedStats[_appState.Switcher.SelectedAccountId] = new UserGameStat() { Vars = vars, HiddenMetrics = hiddenMetrics };
+            CachedStats[_appState.Switcher.SelectedAccountId] = new UserGameStat() { Vars = vars, Metrics = metrics };
 
         if (CachedStats[_appState.Switcher.SelectedAccountId].Collected.Count == 0 || DateTime.Now.Subtract(CachedStats[_appState.Switcher.SelectedAccountId].LastUpdated).Days >= 1)
         {

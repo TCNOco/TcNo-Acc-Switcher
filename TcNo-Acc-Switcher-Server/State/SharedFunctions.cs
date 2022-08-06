@@ -95,14 +95,7 @@ public class SharedFunctions : ISharedFunctions
     //public static bool CanKillProcess(List<string> procNames) => procNames.Aggregate(true, (current, s) => current & CanKillProcess(s));
     public bool CanKillProcess(List<string> procNames, string closingMethod = "Combined", bool showModal = true)
     {
-        var canKillAll = true;
-        foreach (var procName in procNames)
-        {
-            if (procName.StartsWith("SERVICE:") && closingMethod == "TaskKill") continue; // Ignore explicit services when using TaskKill - Admin isn't ALWAYS needed. Eg: Steam.
-            canKillAll = canKillAll && CanKillProcess(procName, closingMethod);
-        }
-
-        return canKillAll;
+        return procNames.Where(procName => !procName.StartsWith("SERVICE:") || closingMethod != "TaskKill").All(procName => CanKillProcess(procName, closingMethod));
     }
 
     public bool CanKillProcess(string processName, string closingMethod = "Combined", bool showModal = true)

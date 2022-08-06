@@ -138,7 +138,7 @@ public class GameStats : IGameStats
             // Add icon or identifier to stat pair for displaying
             foreach (var (statName, statValue) in SavedStats[availableGame].CachedStats[account].Collected)
             {
-                if (SavedStats[availableGame].CachedStats[account].HiddenMetrics.Contains(statName)) continue;
+                if (!SavedStats[availableGame].CachedStats[account].Metrics.Contains(statName)) continue;
 
                 // Foreach stat
                 // Check if has icon, otherwise use just indicator string

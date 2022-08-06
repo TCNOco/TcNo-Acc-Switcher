@@ -45,7 +45,7 @@ public interface IStatistics
     class BasicGameStats
     {
         public int NumAccounts = 0;
-        public Dictionary<string, int> HiddenMetrics = new();
+        public Dictionary<string, int> Metrics = new();
     }
 
     void UploadStats();

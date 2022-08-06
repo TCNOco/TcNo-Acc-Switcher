@@ -193,6 +193,10 @@ input[type='checkbox']:checked + label {
             opacity: 0.5;
             cursor: default;
         }
+
+        .btn_close {
+            margin-left: 1em;
+        }
     }
 }
 

@@ -188,6 +188,9 @@ input[type=checkbox]:checked + label {
   opacity: 0.5;
   cursor: default;
 }
+.settingsCol .buttoncol .btn_close {
+  margin-left: 1em;
+}
 
 .preview_element {
   margin: 1em 2.5%;

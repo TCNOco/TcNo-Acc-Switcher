@@ -143,16 +143,17 @@
     }
 
     // Gets list of all metric names to collect for the provided account, as well as whether each is hidden or not, and the text to display in the UI checkbox.
-    private Dictionary<string, Tuple<bool, string>> GetHiddenMetrics()
+    private Dictionary<string, Tuple<bool, string>> GetMetrics()
     {
         var returnDict = new Dictionary<string, Tuple<bool, string>>();
         if (_currentGame == "") return returnDict;
         foreach (var (key, _) in GameStats.SavedStats[_currentGame].ToCollect)
         {
-            var hidden = GameStats.SavedStats[_currentGame].CachedStats.ContainsKey(AppState.Switcher.SelectedAccountId)
-                         && GameStats.SavedStats[_currentGame].CachedStats[AppState.Switcher.SelectedAccountId].HiddenMetrics.Contains(key);
+            // Shown is set to saved value, otherwise if not set for current account: True.
+            var shown = !GameStats.SavedStats[_currentGame].CachedStats.ContainsKey(AppState.Switcher.SelectedAccountId) || GameStats.SavedStats[_currentGame].CachedStats[AppState.Switcher.SelectedAccountId].Metrics.Contains(key);
+
             var text = GameStats.SavedStats[_currentGame].ToCollect[key].ToggleText;
-            returnDict.Add(key, new Tuple<bool, string>(hidden, text));
+            returnDict.Add(key, new Tuple<bool, string>(shown, text));
         }
 
         return returnDict;
@@ -169,7 +170,7 @@
         public string Value;
     }
 
-    private class HiddenMetrics
+    private class Metric
     {
         public string Text;
         public bool IsChecked;
@@ -177,12 +178,12 @@
     }
 
     private Dictionary<string, VarTextInput> _varTextInputs = new();
-    private Dictionary<string, HiddenMetrics> _hiddenMetrics = new();
+    private Dictionary<string, Metric> _metrics = new();
 
     private void CalcGameVars()
     {
         _varTextInputs = new Dictionary<string, VarTextInput>();
-        _hiddenMetrics = new Dictionary<string, HiddenMetrics>();
+        _metrics = new Dictionary<string, Metric>();
 
         foreach (var (varName, v) in GetRequiredVars)
         {
@@ -207,9 +208,9 @@
         }
 
 
-        foreach (var (metricId, (metricHidden, checkboxText)) in GetHiddenMetrics())
+        foreach (var (metricId, (metricShown, checkboxText)) in GetMetrics())
         {
-            _hiddenMetrics.Add(metricId, new HiddenMetrics { Text = checkboxText, IsChecked = !metricHidden, GloballyHidden = GetGloballyHiddenMetrics.Contains(metricId) });
+            _metrics.Add(metricId, new Metric { Text = checkboxText, IsChecked = metricShown, GloballyHidden = GetGloballyHiddenMetrics.Contains(metricId) });
         }
     }
     #endregion
@@ -261,20 +262,20 @@
         </div>
         <div>
             <p>@Lang["Stats_MetricsToShow"]</p>
-            @foreach (var (id, hiddenMetric) in _hiddenMetrics)
+            @foreach (var (id, metric) in _metrics)
             {
-                @if (hiddenMetric.GloballyHidden)
+                @if (metric.GloballyHidden)
                 {
                     <Tooltip Text="@Lang["Tooltip_DisabledGlobally"]" Class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="@id" @bind="hiddenMetric.IsChecked" disabled>
+                        <input class="form-check-input" type="checkbox" id="@id" @bind="metric.IsChecked" disabled>
                         <label class="form-check-label" for="@id"></label>
-                        <label for="@id">@hiddenMetric.Text<br></label>
+                        <label for="@id">@metric.Text<br></label>
                     </Tooltip>
                 } else {
                     <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="@id" @bind="hiddenMetric.IsChecked">
+                        <input class="form-check-input" type="checkbox" id="@id" @bind="metric.IsChecked">
                         <label class="form-check-label" for="@id"></label>
-                        <label for="@id">@hiddenMetric.Text<br></label>
+                        <label for="@id">@metric.Text<br></label>
                     </div>
                 }
             }
@@ -319,16 +320,16 @@
             vars.Add(id, textInput.Value);
         }
 
-        var hiddenMetrics = new List<string>();
-        foreach (var (id, _) in _hiddenMetrics.Where(x => !x.Value.IsChecked))
+        var metrics = new List<string>();
+        foreach (var (id, _) in _metrics.Where(x => x.Value.IsChecked))
         {
-            hiddenMetrics.Add(id);
+            metrics.Add(id);
         }
 
-        await GameStats.SavedStats[_currentGame].SetAccount(vars, hiddenMetrics);
+        await GameStats.SavedStats[_currentGame].SetAccount(vars, metrics);
 
         // If profile image is ticked, update:
-        if (_hiddenMetrics.ContainsKey("%PROFILEIMAGE%") && _hiddenMetrics["%PROFILEIMAGE%"].IsChecked)
+        if (_metrics.ContainsKey("%PROFILEIMAGE%") && _metrics["%PROFILEIMAGE%"].IsChecked)
             await GameStats.RefreshSelectedAccount(_currentGame);
 
         Modals.CurrentStatsSelectorState = StatsSelectorState.GamesList;

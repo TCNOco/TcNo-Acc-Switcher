@@ -91,9 +91,9 @@
                     @if (Statistics.AllGameStats.Count > 1){
                         <b>@Lang["Stats_GameStats"]</b>
                         <div class="statIndent">
-                            @foreach (var pageStat in Statistics.AllGameStats)
+                            @foreach (var gameStat in Statistics.AllGameStats)
                             {
-                                <span><b>- @pageStat.Key: </b>@Lang["Stats_GameStatsTotal", new { numAccounts = pageStat.Value.NumAccounts, listOfStats = pageStat.Value.HiddenMetrics.ToString()}]</span>
+                                <span><b>- @gameStat.Key: </b>@Lang["Stats_GameStatsTotal", new { numAccounts = gameStat.Value.NumAccounts, listOfStats = GetGameMetricString(gameStat.Key)}]</span>
                             }
                         </div>
                     }
@@ -102,3 +102,18 @@
         </p></div>
     </div>
 </div>
+
+@code
+{
+    private string GetGameMetricString(string game)
+    {
+        var str = "";
+
+        foreach (var (stat, count) in Statistics.AllGameStats[game].Metrics)
+        {
+            str += str.Length > 0 ? ", " : "" + $"{stat} ({count})";
+        }
+
+        return str;
+    }
+}

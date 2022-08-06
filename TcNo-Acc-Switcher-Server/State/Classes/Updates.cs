@@ -50,6 +50,7 @@ public class Updates
         var windowSettings1 = windowSettings;
 
         // TODO: TEST: new Thread(statistics.UploadStats).Start();
+        new Thread(statistics.UploadStats).Start();
         if (!FirstLaunch) return;
         FirstLaunch = false;
         // Check for update in another thread
