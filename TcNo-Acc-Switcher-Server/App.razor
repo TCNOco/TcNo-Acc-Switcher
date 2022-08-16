@@ -61,9 +61,14 @@
         NewNavigation(e.Location);
     }
 
+    private string _lastPage = "";
+    private string _lastPlatform = "";
+
     private void NewNavigation(string uri)
     {
-        uri = uri.Replace(NavigationManager.BaseUri, "");
+        uri = uri.Replace(NavigationManager.BaseUri, "").Split("?")[0];
+
+        var platformString = "";
         if (string.IsNullOrEmpty(uri)) uri = "/";
         else
         {
@@ -77,12 +82,17 @@
                 if (platformStrings.Length == 1)
                     uri = possiblePlatform.Name;
                 else
-                    uri = uri.Replace(platformStrings[0] + "/", possiblePlatform.Name);
+                {
+                    platformString = platformStrings[0];
+                    uri = uri.Replace(platformString, possiblePlatform.Name);
+                }
             }
         }
 
+        if (_lastPage != "") Statistics.NewNavigation(_lastPage, _lastPlatform);
 
-        Statistics.NewNavigation(uri);
+        _lastPage = uri;
+        _lastPlatform = uri.Contains("Steam") ? "Steam" : platformString;
     }
 
     /// <summary>

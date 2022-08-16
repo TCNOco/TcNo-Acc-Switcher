@@ -24,3 +24,10 @@ public class PageStat
     public int TotalTime { get; set; }
     public int Visits { get; set; }
 }
+
+public class OtherPageStats
+{
+    public PageStat Home { get; set; } = new();
+    public PageStat Settings { get; set; } = new();
+    public PageStat Platforms { get; set; } = new();
+}

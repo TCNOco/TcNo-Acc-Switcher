@@ -95,7 +95,6 @@ Stats_TotalGamesLaunched: "Tổng số ứng dụng / trò chơi được khởi
 Stats_UniqueDaysLong: "Những ngày duy nhất có tài khoản được chuyển đổi: "
 Stats_LastUpload: "Tải lên lần cuối: "
 Stats_SwitcherStats: "Số liệu thống kê về bộ chuyển mạch: "
-Stats_PageStats: "Thống kê trang: "
 Stats_VisitsTotalTime: "Tổng số lượt truy cập là {visits} , tổng thời gian là {hours} lượt"
 Stats_Accounts: "Tài khoản: "
 Stats_Switches: "Công tắc: "

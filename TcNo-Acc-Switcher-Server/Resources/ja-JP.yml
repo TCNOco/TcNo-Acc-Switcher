@@ -95,7 +95,6 @@ Stats_TotalGamesLaunched: "スイッチャーを介して起動されたアプ�
 Stats_UniqueDaysLong: "アカウントが切り替えられたユニークな日： "
 Stats_LastUpload: "最終アップロード： "
 Stats_SwitcherStats: "スイッチャーの統計： "
-Stats_PageStats: "ページ統計： "
 Stats_VisitsTotalTime: "合計{visits} 回の訪問、合計 {hours} 回"
 Stats_Accounts: "アカウント： "
 Stats_Switches: "スイッチ： "

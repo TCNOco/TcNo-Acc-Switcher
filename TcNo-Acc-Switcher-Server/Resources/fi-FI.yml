@@ -95,7 +95,6 @@ Stats_TotalGamesLaunched: "Vaihtimen kautta käynnistetyt sovellukset/pelit yhte
 Stats_UniqueDaysLong: "Ainutlaatuiset päivät tilien vaihdolla: "
 Stats_LastUpload: "Viimeisin lataus: "
 Stats_SwitcherStats: "Vaihtimen tilastot: "
-Stats_PageStats: "Sivun tilastot: "
 Stats_VisitsTotalTime: "Yhteensä {visits} käyntiä, yhteensä {hours} kerta"
 Stats_Accounts: "Tilit: "
 Stats_Switches: "Kytkimet: "

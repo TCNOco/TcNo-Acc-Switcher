@@ -95,7 +95,6 @@ Stats_TotalGamesLaunched: "Total de aplicaciones/juegos lanzados a través del c
 Stats_UniqueDaysLong: "Días únicos con cuentas cambiadas: "
 Stats_LastUpload: "Última carga: "
 Stats_SwitcherStats: "Estadísticas del conmutador: "
-Stats_PageStats: "Estadísticas de la página: "
 Stats_VisitsTotalTime: "{visits} visitas totales, {hours} tiempo total"
 Stats_Accounts: "Cuentas: "
 Stats_Switches: "Interruptores: "

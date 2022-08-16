@@ -51,7 +51,7 @@
                     <span><b>@Lang["Stats_LaunchCount"]</b>@Statistics.LaunchCount</span>
                     <span><b>@Lang["Stats_CrashCount"]</b>@Statistics.CrashCount</span>
                     <span><b>@Lang["Stats_MostUsedPlatform"]</b>@Statistics.MostUsedPlatform</span>
-                    <span><b>@Lang["Stats_TotalTime"]</b>@TimeSpan.FromSeconds(Statistics.PageStats.Sum(item => item.Value.TotalTime)).ToString("hh\\:mm\\:ss")</span>
+                    <span><b>@Lang["Stats_TotalTime"]</b>@TimeSpan.FromSeconds(Statistics.SwitcherStats.Sum(item => item.Value.TotalTime)).ToString("hh\\:mm\\:ss")</span>
                     <span><b>@Lang["Stats_TotalSwitches"]</b>@Statistics.SwitcherStats.Sum(item => item.Value.Switches)</span>
                     <span><b>@Lang["Stats_TotalGamesLaunched"]</b>@Statistics.SwitcherStats.Sum(item => item.Value.GamesLaunched)</span>
                     <span><b>@Lang["Stats_UniqueDaysLong"]</b>@Statistics.SwitcherStats.Sum(item => item.Value.UniqueDays)</span>
@@ -77,17 +77,10 @@
                             <span><b>- @Lang["Stats_GameShortcuts"]</b>@switcherStat.Value.GameShortcuts</span>
                             <span><b>- @Lang["Stats_GameShortcutsHotbar"]</b>@switcherStat.Value.GameShortcutsHotbar</span>
                             <span><b>- @Lang["Stats_GamesLaunched"]</b>@switcherStat.Value.GamesLaunched</span>
+                            <span>- @Lang["Stats_VisitsTotalTime", new { visits = switcherStat.Value.Visits, hours = TimeSpan.FromSeconds(switcherStat.Value.TotalTime).ToString("hh\\:mm\\:ss")}]</span>
                         </div>
                     }
-                    @if (Statistics.PageStats.Count > 1){
-                        <b>@Lang["Stats_PageStats"]</b>
-                        <div class="statIndent">
-                            @foreach (var pageStat in Statistics.PageStats)
-                            {
-                                <span><b>- @pageStat.Key: </b>@Lang["Stats_VisitsTotalTime", new { visits = pageStat.Value.Visits, hours = TimeSpan.FromSeconds(pageStat.Value.TotalTime).ToString("hh\\:mm\\:ss")}]</span>
-                            }
-                        </div>
-                    }
+
                     @if (Statistics.AllGameStats.Count > 1){
                         <b>@Lang["Stats_GameStats"]</b>
                         <div class="statIndent">

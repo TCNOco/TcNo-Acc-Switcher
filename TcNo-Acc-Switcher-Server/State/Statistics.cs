@@ -20,12 +20,15 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.State.Classes.GameStats;
 using TcNo_Acc_Switcher_Server.State.Classes.Stats;
+using TcNo_Acc_Switcher_Server.State.DataTypes;
 using TcNo_Acc_Switcher_Server.State.Interfaces;
+using static SteamKit2.GC.Dota.Internal.CMsgDetailedGameStats;
 
 namespace TcNo_Acc_Switcher_Server.State;
 // --------------------
@@ -75,42 +78,76 @@ public class Statistics : IStatistics
     #endregion
 
     #region Page stats
+    // DEPRECATED
+    // TODO: This is here just for now, to translate into the new stats system. A few months from now this will be removed entirely.
+
     // EXAMPLE:
     // "Steam": {TotalTime: 3600, TotalVisits: 10}
     // "SteamSettings": {TotalTime: 300, TotalVisits: 6}
-    public Dictionary<string, PageStat> PageStats { get; set; } = new();
+    [JsonProperty("PageStats")] public Dictionary<string, PageStat> OldPageStats { get; set; } = null; // TODO: When reading, set new values, and delete self.
+
+    public OtherPageStats OtherPageStats { get; set; } = new();
 
     // Total time is incremented on navigating to a new page.
     // -> Check last page, and compare times. Then add seconds.
     // This won't save, and will be lost on app restart.
-    [JsonIgnore] public string LastActivePage { get; set; } = "";
     [JsonIgnore] public DateTime LastActivePageTime { get; set; } = DateTime.Now;
 
-    public void NewNavigation(string newPage)
+    /// <summary>
+    /// After navigation, call this. Increments the last page visits, as well as the time spent on the last page
+    /// </summary>
+    public void NewNavigation(string lastPage, string lastPlatform)
     {
         if (!_windowSettings.CollectStats) return;
-        Console.WriteLine($@"Stat navigation to: {newPage}");
+        lastPage = lastPage.Split("?")[0]; // Remove any arguments
 
         // First page loaded, so just save current page and time.
-        if (LastActivePage == "")
+        if (lastPage != "")
         {
-            LastActivePage = newPage;
-            LastActivePageTime = DateTime.Now;
+            if (lastPage == "/")
+            {
+                // Is home/landing page
+                OtherPageStats.Home.TotalTime += (int)(DateTime.Now - LastActivePageTime).TotalSeconds;
+                OtherPageStats.Home.Visits++;
+            }
+            else if (lastPage.Contains("Platforms"))
+            {
+                OtherPageStats.Platforms.TotalTime += (int)(DateTime.Now - LastActivePageTime).TotalSeconds;
+                OtherPageStats.Platforms.Visits++;
+            }
+            else if (lastPage.Contains("Settings"))
+            {
+                // Is settings page.
+                var stripped = lastPage.Replace("/", "").Replace("Settings", "");
+                if (stripped.Length == 0)
+                {
+                    // Is program's main settings
+                    OtherPageStats.Settings.TotalTime += (int)(DateTime.Now - LastActivePageTime).TotalSeconds;
+                    OtherPageStats.Settings.Visits++;
+                }
+                else
+                {
+                    // Is platform's settings
+                    if (!SwitcherStats.ContainsKey(lastPlatform)) SwitcherStats.Add(lastPlatform, new SwitcherStat());
+                    SwitcherStats[lastPlatform].SettingsTotalTime += (int)(DateTime.Now - LastActivePageTime).TotalSeconds;
+                    SwitcherStats[lastPlatform].SettingsVisits++;
+                }
+            }
+            else
+            {
+                // Is platform
+                if (!SwitcherStats.ContainsKey(lastPlatform)) SwitcherStats.Add(lastPlatform, new SwitcherStat());
+                SwitcherStats[lastPlatform].TotalTime += (int)(DateTime.Now - LastActivePageTime).TotalSeconds;
+                SwitcherStats[lastPlatform].Visits++;
+            }
         }
 
-        // Else, compare and add
-        if (!PageStats.ContainsKey(LastActivePage)) PageStats.Add(LastActivePage, new PageStat());
-        PageStats[LastActivePage].TotalTime += (int)(DateTime.Now - LastActivePageTime).TotalSeconds;
-        LastActivePage = newPage;
+        // Having a save here works well enough, as this is called after the platform is initialized.
         LastActivePageTime = DateTime.Now;
 
-        // Also, add to the visit count.
-        if (!PageStats.ContainsKey(newPage)) PageStats.Add(newPage, new PageStat());
-        PageStats[newPage].Visits++;
-
-        // Having a save here works well enough, as this is called after the platform is initialized.
         Save();
     }
+
     #endregion
 
     #region Switcher stats
@@ -207,7 +244,7 @@ public class Statistics : IStatistics
 
                 var gameName = Path.GetFileName(f).Replace(".json", "");
 
-                AllGameStats[gameName] = new IStatistics.BasicGameStats
+                AllGameStats[gameName] = new BasicGameStats
                 {
                     NumAccounts = gameDict.Count,
                     Metrics = metricsTotal.ToDictionary(x => x.Key, x => x.Value)
@@ -229,7 +266,7 @@ public class Statistics : IStatistics
         public List<string> Metrics;
     }
 
-    public Dictionary<string, IStatistics.BasicGameStats> AllGameStats { get; set; } = new();
+    public Dictionary<string, BasicGameStats> AllGameStats { get; set; } = new();
     #endregion
 
     public void UploadStats()
@@ -249,6 +286,7 @@ public class Statistics : IStatistics
             var tempFile = Path.GetTempFileName();
             var statsJson = JsonConvert.SerializeObject(JObject.FromObject(this), Formatting.None);
             File.WriteAllText(tempFile, statsJson);
+            Console.WriteLine(tempFile);
 
             // Upload using HTTPClient
             var httpClient = new HttpClient();
@@ -282,8 +320,63 @@ public class Statistics : IStatistics
         // Increment launch count. This is only loaded once, so this is a good spot to put it.
         LaunchCount++;
 
+        MoveToNewStats();
+
         // Todo?: Never thought about placing these in a few places, but may be useful to put elsewhere.
         AppDomain.CurrentDomain.ProcessExit += (_, _) => Save();
+    }
+
+    private void MoveToNewStats()
+    {
+        if (OldPageStats is null) return; // Already moved
+        foreach (var (key, value) in OldPageStats)
+        {
+            if (key == "_Total") continue;
+            if (key == "/")
+            {
+                OtherPageStats.Home.TotalTime = value.TotalTime;
+                OtherPageStats.Home.Visits = value.Visits;
+                continue;
+            }
+
+            if (key == "/Platforms/")
+            {
+                OtherPageStats.Platforms.TotalTime = value.TotalTime;
+                OtherPageStats.Platforms.Visits = value.Visits;
+                continue;
+            }
+
+            // Replace slashes and brackets.
+            var newKey = Regex.Replace(key, @"/[\[\/\]]/g", "");
+
+            if (newKey == "Settings")
+            {
+                // Is app settings
+                OtherPageStats.Settings.TotalTime = value.TotalTime;
+                OtherPageStats.Settings.Visits = value.Visits;
+                continue;
+            }
+
+            var platform = newKey.Replace("Settings", "");
+
+            if (newKey.Contains("Settings"))
+            {
+                // Is platform's settings
+                if (!SwitcherStats.ContainsKey(platform)) SwitcherStats.Add(platform, new SwitcherStat());
+                SwitcherStats[platform].SettingsTotalTime += (int)(DateTime.Now - LastActivePageTime).TotalSeconds;
+                SwitcherStats[platform].SettingsVisits++;
+            }
+            else
+            {
+                // Is platform
+                if (!SwitcherStats.ContainsKey(platform)) SwitcherStats.Add(platform, new SwitcherStat());
+                SwitcherStats[platform].TotalTime += (int)(DateTime.Now - LastActivePageTime).TotalSeconds;
+                SwitcherStats[platform].Visits++;
+            }
+        }
+
+        OldPageStats = null;
+        Save();
     }
 
     public void Save() => Globals.SaveJsonFile(Filename, this, false);

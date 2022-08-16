@@ -28,6 +28,11 @@ public class SwitcherStat
         GamesLaunched = 0;
         FirstActive = DateTime.Now;
         LastActive = DateTime.Now;
+        TotalTime = 0;
+        Visits = 0;
+        SettingsTotalTime = 0;
+        SettingsVisits = 0;
+
     }
     public int Accounts { get; set; }
     public int Switches { get; set; }
@@ -37,4 +42,8 @@ public class SwitcherStat
     public int GamesLaunched { get; set; }
     public DateTime FirstActive { get; set; }
     public DateTime LastActive { get; set; }
+    public int TotalTime { get; set; }
+    public int Visits { get; set; }
+    public int SettingsTotalTime { get; set; }
+    public int SettingsVisits { get; set; }
 }

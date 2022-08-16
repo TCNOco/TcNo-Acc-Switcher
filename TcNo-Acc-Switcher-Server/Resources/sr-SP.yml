@@ -95,7 +95,6 @@ Stats_TotalGamesLaunched: "Укупан број апликација/игара
 Stats_UniqueDaysLong: "Јединствени дани са промењеним налозима: "
 Stats_LastUpload: "Последње отпремање: "
 Stats_SwitcherStats: "Статистика пребацивача: "
-Stats_PageStats: "Статистика странице: "
 Stats_VisitsTotalTime: "Укупно {visits} посета, {hours} укупно време"
 Stats_Accounts: "Налози: "
 Stats_Switches: "Прекидачи: "

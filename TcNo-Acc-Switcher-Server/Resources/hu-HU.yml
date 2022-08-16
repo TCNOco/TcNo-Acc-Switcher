@@ -95,7 +95,6 @@ Stats_TotalGamesLaunched: "A váltón keresztül elindított összes alkalmazás
 Stats_UniqueDaysLong: "Egyedi napok fiókváltással: "
 Stats_LastUpload: "Utolsó feltöltés: "
 Stats_SwitcherStats: "Váltó statisztika: "
-Stats_PageStats: "Oldalstatisztikák: "
 Stats_VisitsTotalTime: "Összesen {visits} látogatás, összesen {hours} alkalommal"
 Stats_Accounts: "Fiókok: "
 Stats_Switches: "Kapcsolók: "

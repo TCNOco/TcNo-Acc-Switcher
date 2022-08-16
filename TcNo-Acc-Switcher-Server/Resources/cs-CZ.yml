@@ -95,7 +95,6 @@ Stats_TotalGamesLaunched: "Celkový počet aplikací/her spuštěných pomocí p
 Stats_UniqueDaysLong: "Jedinečné dny se změněnými účty: "
 Stats_LastUpload: "Poslední nahrání: "
 Stats_SwitcherStats: "Statistika přepínače: "
-Stats_PageStats: "Statistiky stránky: "
 Stats_VisitsTotalTime: "{visits} návštěv celkem, celkem {hours} čas"
 Stats_Accounts: "účty: "
 Stats_Switches: "Přepínače: "

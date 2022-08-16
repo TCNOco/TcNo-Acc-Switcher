@@ -95,7 +95,6 @@ Stats_TotalGamesLaunched: "Switcher aracılığıyla başlatılan toplam uygulam
 Stats_UniqueDaysLong: "Hesapların değiştirildiği benzersiz günler: "
 Stats_LastUpload: "Son Yükleme: "
 Stats_SwitcherStats: "Anahtarlayıcı istatistikleri: "
-Stats_PageStats: "Sayfa istatistikleri: "
 Stats_VisitsTotalTime: "{visits} toplam ziyaret, {hours} toplam süre"
 Stats_Accounts: "Hesaplar: "
 Stats_Switches: "Anahtarlar: "

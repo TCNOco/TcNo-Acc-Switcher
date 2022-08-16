@@ -95,7 +95,6 @@ Stats_TotalGamesLaunched: "Całkowita liczba aplikacji/gier uruchomionych za pom
 Stats_UniqueDaysLong: "Unikalne dni z przełączonymi kontami: "
 Stats_LastUpload: "Ostatnie przesłanie: "
 Stats_SwitcherStats: "Statystyki przełączników: "
-Stats_PageStats: "Statystyki strony: "
 Stats_VisitsTotalTime: "{visits} wszystkich wizyt, {hours} całkowity czas"
 Stats_Accounts: "Konta: "
 Stats_Switches: "Przełączniki: "

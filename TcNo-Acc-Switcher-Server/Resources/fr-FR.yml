@@ -95,7 +95,6 @@ Stats_TotalGamesLaunched: "Nombre total d'applications/jeux lancés via le séle
 Stats_UniqueDaysLong: "Jours uniques avec changement de compte : "
 Stats_LastUpload: "Dernière mise en ligne : "
 Stats_SwitcherStats: "Statistiques du mélangeur : "
-Stats_PageStats: "Statistiques des pages : "
 Stats_VisitsTotalTime: "{visits} visites au total, {hours} temps au total"
 Stats_Accounts: "Comptes: "
 Stats_Switches: "Commutateurs : "

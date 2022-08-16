@@ -44,7 +44,7 @@ Settings_Header_StatsSharing: 통계 및 공유
 Settings_Header_Platform: "{platformName} 설정"
 Settings_TrayMax: '기억할 최대 계정 수:'
 Settings_ExtraPlatformsDisabled: 비활성화된 플랫폼. 활성화하려면 클릭하세요.
-Settings_ExtraPlatformsEnabled: 보여질 플랫폼. 비활성화하려면 클릭하세요. 
+Settings_ExtraPlatformsEnabled: 보여질 플랫폼. 비활성화하려면 클릭하세요.
 Settings_RTL: 텍스트를 오른쪽에서 왼쪽으로 표시
 Settings_CollectStats: 통계 수집
 Settings_ShareStats: 익명으로 통계 공유하기 (권장)
@@ -95,7 +95,6 @@ Stats_TotalGamesLaunched: "스위쳐를 통해 실행된 총 앱/게임: "
 Stats_UniqueDaysLong: "계정이 전환된 고유 일수: "
 Stats_LastUpload: "마지막 업로드: "
 Stats_SwitcherStats: "스위쳐 통계: "
-Stats_PageStats: "페이지 통계: "
 Stats_VisitsTotalTime: "총 방문 {visits} 회, 총 시간 {hours}"
 Stats_Accounts: "계정: "
 Stats_Switches: "스위치 횟수: "

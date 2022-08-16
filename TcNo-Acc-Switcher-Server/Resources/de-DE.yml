@@ -95,7 +95,6 @@ Stats_TotalGamesLaunched: "Gesamtzahl der über den Switcher gestarteten Apps/Sp
 Stats_UniqueDaysLong: "Einmalige Tage mit Kontenwechsel: "
 Stats_LastUpload: "Letzter Upload: "
 Stats_SwitcherStats: "Switcher-Statistiken: "
-Stats_PageStats: "Seitenstatistik: "
 Stats_VisitsTotalTime: "{visits} Besuche insgesamt, {hours} Gesamtzeit"
 Stats_Accounts: "Konten: "
 Stats_Switches: "Schalter: "

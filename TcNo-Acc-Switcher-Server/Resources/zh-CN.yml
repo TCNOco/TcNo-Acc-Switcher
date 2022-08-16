@@ -78,7 +78,7 @@ Settings_Header_ActiveBrowser: "（高级）设置渲染引擎："
 Settings_Header_ClosingMethod: "（高级）设置方法关闭 {platform}"
 Settings_Header_StartingMethod: "（高级）设置方法启动 {platform}"
 Settings_AutoStart: "帐户切换时自动启动 {platform}"
-Settings_NoPlatforms: 当前未启用任何平台。请勾选下方的可选平台来启用，或者取消勾选来禁用。      
+Settings_NoPlatforms: 当前未启用任何平台。请勾选下方的可选平台来启用，或者取消勾选来禁用。
 Settings_MinimizeOnSwitch: 最小化帐户切换时的切换器
 Stats_Disabled: "统计信息收集被禁用。"
 Stats_InDepth: 深入的统计细分
@@ -95,7 +95,6 @@ Stats_TotalGamesLaunched: "通过切换器启动的应用程序/游戏总数： 
 Stats_UniqueDaysLong: "帐户切换的特殊日子： "
 Stats_LastUpload: "最后上传： "
 Stats_SwitcherStats: "切换器统计： "
-Stats_PageStats: "页面统计： "
 Stats_VisitsTotalTime: "{visits} 总访问， {hours} 总时间"
 Stats_Accounts: "账户： "
 Stats_Switches: "开关： "
@@ -212,7 +211,7 @@ Toast_FileCopyFail: 复制文件失败！请查看日志了解详情。
 Toast_UserDataLoadFail: 加载用户数据 {UserData}\\WindowSettings.json 失败。请备份并重置！错误信息已保存到日志。
 Toast_UpdateCheckFail: 无法访问 https://tcno.co/ 以检查更新。此消息将每天显示一次。
 Toast_FailedCreateIcon: 创建图标失败。请查看日志了解详情。
-Tooltip_Restore: 点击选择一个 7z 文件，或者将它拖动到此按钮上。     
+Tooltip_Restore: 点击选择一个 7z 文件，或者将它拖动到此按钮上。
 Modal_Crowdin_Header: Crowdin 译者
 Modal_Crowdin_Info: "这是帮助翻译此软件的所有人。<br>名字旁边有语言的用户在翻译方面提供了很多帮助（审核员身份）。"
 Modal_Info_Creator: 由 TechNobo [Wesley Pyburn] 创作

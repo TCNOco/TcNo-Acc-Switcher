@@ -95,7 +95,6 @@ Stats_TotalGamesLaunched: "Σύνολο εφαρμογών/παιχνιδιών 
 Stats_UniqueDaysLong: "Μοναδικές ημέρες με αλλαγή λογαριασμών: "
 Stats_LastUpload: "Τελευταία μεταφόρτωση: "
 Stats_SwitcherStats: "Στατιστικά εναλλάκτη: "
-Stats_PageStats: "Στατιστικά σελίδας: "
 Stats_VisitsTotalTime: "{visits} συνολικά επισκέψεις, {hours} συνολικός χρόνος"
 Stats_Accounts: "Λογαριασμοί: "
 Stats_Switches: "Διακόπτες: "

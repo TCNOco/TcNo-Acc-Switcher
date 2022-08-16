@@ -95,7 +95,6 @@ Stats_TotalGamesLaunched: "Total d'aplicacions/jocs llançats mitjançant el com
 Stats_UniqueDaysLong: "Dies únics amb els comptes canviats: "
 Stats_LastUpload: "Última càrrega: "
 Stats_SwitcherStats: "Estadístiques del commutador: "
-Stats_PageStats: "estadístiques de la pàgina: "
 Stats_VisitsTotalTime: "{visits} visites totals, {hours} temps total"
 Stats_Accounts: "Comptes: "
 Stats_Switches: "Interruptors: "

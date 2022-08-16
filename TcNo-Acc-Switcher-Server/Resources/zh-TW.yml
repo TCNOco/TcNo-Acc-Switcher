@@ -95,7 +95,6 @@ Stats_TotalGamesLaunched: "通過切換器啟動的應用程序/遊戲總數： 
 Stats_UniqueDaysLong: "帳戶切換的特殊日子： "
 Stats_LastUpload: "最後上傳： "
 Stats_SwitcherStats: "切換器統計： "
-Stats_PageStats: "頁面統計： "
 Stats_VisitsTotalTime: "{visits} 總訪問， {hours} 總時間"
 Stats_Accounts: "賬戶： "
 Stats_Switches: "開關： "
