@@ -563,7 +563,7 @@ release = true;
         try
         {
             HttpContent content = new FormUrlEncodedContent(postData);
-            _ = Client.PostAsync("https://tcno.co/Projects/AccSwitcher/api/crash/index.php", content);
+            _ = Client.PostAsync("https://api.tcno.co/sw/crash/", content);
         }
         catch (Exception e)
         {

@@ -71,9 +71,9 @@ public class Updates
         try
         {
 #if DEBUG
-            var latestVersion = Globals.DownloadString("https://tcno.co/Projects/AccSwitcher/api?debug&v=" + Globals.Version);
+            var latestVersion = Globals.DownloadString("https://api.tcno.co/?debug&v=" + Globals.Version);
 #else
-                var latestVersion = Globals.DownloadString("https://tcno.co/Projects/AccSwitcher/api?v=" + Globals.Version);
+            var latestVersion = Globals.DownloadString("https://api.tcno.co/?v=" + Globals.Version);
 #endif
             if (CheckLatest(latestVersion)) return;
             // Show notification

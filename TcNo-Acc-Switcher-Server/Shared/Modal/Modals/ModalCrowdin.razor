@@ -56,13 +56,13 @@
         else
         {
             <ul class="linksList crowdInList">
-                <li>@Lang["Crowdin_Proofreaders", new {number = _crowdinList.ProofReaders.Count}]</li>
+                <li><b>@Lang["Crowdin_Proofreaders", new {number = _crowdinList.ProofReaders.Count}]</b></li>
                 @foreach (var (username, languages) in _crowdinList.ProofReaders)
                 {
                     <li><a @onclick='() => StaticFuncs.OpenLinkInBrowser("https://crowdin.com/profile/" + username)' href="">@username</a> - @languages</li>
                 }
 
-                <li><br />@Lang["Crowdin_Translators", new {number = _crowdinList.Translators.Count}]</li>
+                <li><br /><b>@Lang["Crowdin_Translators", new {number = _crowdinList.Translators.Count}]</b></li>
                 <li class="text-wrap">
                     @foreach (var username in _crowdinList.Translators)
                     {

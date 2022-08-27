@@ -20,6 +20,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -957,13 +958,13 @@ public partial class MainWindow
 
         var client = new WebClient();
         client.Headers.Add("Cache-Control", "no-cache");
+        client.Headers.Add("User-Agent", "TcNo Account Switcher");
 #if DEBUG
         var versions =
-            client.DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api/update?debug&v=" +
-                                          _currentVersion));
+            client.DownloadString(new Uri("https://api.tcno.co/sw/update/?debug&v=" + _currentVersion));
 #else
-            var versions =
- client.DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api/update?v=" + _currentVersion));
+        var versions =
+            client.DownloadString(new Uri("https://api.tcno.co/sw/update/?v=" + _currentVersion));
 #endif
         try
         {

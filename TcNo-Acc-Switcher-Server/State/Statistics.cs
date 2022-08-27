@@ -20,6 +20,9 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text.Json.Nodes;
+using System.Text;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -70,7 +73,7 @@ public class Statistics : IStatistics
     #endregion
 
     #region User stats
-    [JsonProperty("_id")] public string Uuid { get; set; } = Guid.NewGuid().ToString();
+    public string Uuid { get; set; } = Guid.NewGuid().ToString();
     public int LaunchCount { get; set; }
     public int CrashCount { get; set; }
     public DateTime FirstLaunch { get; set; } = DateTime.Now;
@@ -291,12 +294,7 @@ public class Statistics : IStatistics
             // Upload using HTTPClient
             var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Add("User-Agent", "TcNo Account Switcher");
-            var response = httpClient.PostAsync("https://tcno.co/Projects/AccSwitcher/api/stats/",
-                new FormUrlEncodedContent(new Dictionary<string, string>
-                {
-                    ["uuid"] = Uuid,
-                    ["statsData"] = statsJson
-                })).Result;
+            var response = httpClient.PostAsync($"https://api.tcno.co/sw/stats/{Uuid}", new StringContent(statsJson, Encoding.UTF8, "application/json")).Result;
 
             if (response.StatusCode != HttpStatusCode.OK)
                 Globals.WriteToLog("Failed to upload stats file. Status code: " + response.StatusCode);
