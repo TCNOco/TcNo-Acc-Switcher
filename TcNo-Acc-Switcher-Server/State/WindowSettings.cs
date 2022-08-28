@@ -49,11 +49,19 @@ public class WindowSettings : IWindowSettings, INotifyPropertyChanged
         // Remove duplicate platforms (possible) - Last occurrence was loaded, first was default list.:
         Platforms = new ObservableCollection<PlatformItem>(Platforms.GroupBy(x => x.Name).Select(x => x.Last()).ToList());
         if (Platforms.All(y => y.Name != "Steam")) Platforms.Add(new PlatformItem("Steam", true));
-        Platforms.First(y => y.Name == "Steam").SetFromPlatformItem(new PlatformItem("Steam", new List<string> { "s", "steam" }, "steam.exe", true));
-
+        AddStaticPlatforms();
+        
         Platforms.Sort();
     }
 
+    /// <summary>
+    /// Add hard-coded platforms to the list, like Steam.
+    /// </summary>
+    public void AddStaticPlatforms()
+    {
+        Platforms.First(y => y.Name == "Steam").SetFromPlatformItem(new PlatformItem("Steam", new List<string> { "s", "steam" }, "steam.exe", true));
+    }
+    
     public string Language
     {
         get => _language;

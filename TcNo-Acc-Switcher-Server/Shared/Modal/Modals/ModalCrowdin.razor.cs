@@ -46,7 +46,7 @@ namespace TcNo_Acc_Switcher_Server.Shared.Modal.Modals
         {
             try
             {
-                var html = new HttpClient().GetStringAsync(
+                var html = Globals.Client.GetStringAsync(
                     "https://api.tcno.co/sw/crowdin/").Result;
                 var resp = JsonConvert.DeserializeObject<CrowdinResponse>(html);
                 if (resp is null)

@@ -22,6 +22,8 @@
 @inject IToasts Toasts
 @inject IStatistics Statistics
 @inject ITemplatedPlatformState TemplatedPlatformState
+@inject ITemplatedPlatformSettings TemplatedPlatformSettings
+@inject IWindowSettings WindowSettings
 
 <Router AppAssembly="@typeof(Program).Assembly">
     <Found Context="routeData">
@@ -75,7 +77,9 @@
             // If not the root, try substituting "d" with "Discord" for example.
             // Substitute platform with full platform name
             var platformStrings = uri.Split("/");
-            var possiblePlatform = TemplatedPlatformState.Platforms.FirstOrDefault(x => x.Identifiers.Contains(platformStrings[0]) || x.Name == platformStrings[0]);
+            TemplatedPlatformState.LoadTemplatedPlatformState(JsRuntime, TemplatedPlatformSettings);
+            var possiblePlatform = WindowSettings.Platforms.FirstOrDefault(x => x.PossibleIdentifiers.Contains(platformStrings[0]) || x.Name == platformStrings[0]);
+            
             if (possiblePlatform is not null)
             {
                 // Replace entire string if no "/"

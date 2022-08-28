@@ -292,9 +292,7 @@ public class Statistics : IStatistics
             Console.WriteLine(tempFile);
 
             // Upload using HTTPClient
-            var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Add("User-Agent", "TcNo Account Switcher");
-            var response = httpClient.PostAsync($"https://api.tcno.co/sw/stats/{Uuid}", new StringContent(statsJson, Encoding.UTF8, "application/json")).Result;
+            var response = Globals.Client.PostAsync($"https://api.tcno.co/sw/stats/{Uuid}", new StringContent(statsJson, Encoding.UTF8, "application/json")).Result;
 
             if (response.StatusCode != HttpStatusCode.OK)
                 Globals.WriteToLog("Failed to upload stats file. Status code: " + response.StatusCode);

@@ -54,6 +54,12 @@ public interface IWindowSettings
 
     bool AlwaysAdmin { get; set; }
     ObservableCollection<PlatformItem> Platforms { get; set; }
+
+    /// <summary>
+    /// Add hard-coded platforms to the list, like Steam.
+    /// </summary>
+    void AddStaticPlatforms();
+
     void SavePlatformOrder(string jsonString);
     void Save();
 

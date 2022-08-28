@@ -335,13 +335,11 @@ public partial class Globals
         return !Directory.EnumerateFileSystemEntries(path).Any();
     }
 
-    private static readonly HttpClient HClient = new();
-
     public static string DownloadString(string uri)
     {
         try
         {
-            return HClient.GetStringAsync(uri).Result;
+            return Client.GetStringAsync(uri).Result;
         }
         catch (Exception e)
         {
@@ -353,12 +351,10 @@ public partial class Globals
     {
         try
         {
-            HClient.DefaultRequestHeaders.Add("User-Agent", "TcNo Account Switcher");
-
             if (!Uri.TryCreate(url, UriKind.Absolute, out _))
                 throw new InvalidOperationException("URI is invalid.");
 
-            var fileBytes = HClient.GetByteArrayAsync(url).Result;
+            var fileBytes = Client.GetByteArrayAsync(url).Result;
             if (path.Contains('\\')) Directory.CreateDirectory(Path.GetDirectoryName(path)!);
             File.WriteAllBytes(path, fileBytes);
         }
@@ -372,12 +368,10 @@ public partial class Globals
     {
         try
         {
-            HClient.DefaultRequestHeaders.Add("User-Agent", "TcNo Account Switcher");
-
             if (!Uri.TryCreate(url, UriKind.Absolute, out _))
                 throw new InvalidOperationException("URI is invalid.");
 
-            var fileBytes = HClient.GetByteArrayAsync(url).Result;
+            var fileBytes = Client.GetByteArrayAsync(url).Result;
             if (path.Contains('\\')) Directory.CreateDirectory(Path.GetDirectoryName(path)!);
             await File.WriteAllBytesAsync(path, fileBytes);
         }

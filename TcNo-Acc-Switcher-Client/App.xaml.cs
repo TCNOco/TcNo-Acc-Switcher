@@ -41,11 +41,6 @@ public partial class App
     // Create WindowSettings instance. This loads from saved file if available.
     readonly WindowSettings _windowSettings = new();
 
-#pragma warning disable CA2211 // Non-constant fields should not be visible - Accessed from App.xaml.cs
-    public static string StartPage = "";
-#pragma warning restore CA2211 // Non-constant fields should not be visible
-    private static readonly HttpClient Client = new();
-
     protected override void OnExit(ExitEventArgs e)
     {
         _ = NativeFuncs.FreeConsole();
@@ -80,49 +75,6 @@ public partial class App
 
         // Crash handler
         AppDomain.CurrentDomain.UnhandledException += Globals.CurrentDomain_UnhandledException;
-        // Upload crash logs if any, before starting program
-        UploadLogs();
-
-        if (e.Args.Length != 0) // An argument was passed
-        {
-            // Iterate through arguments
-            foreach (var eArg in e.Args)
-            {
-                // Check if argument was Steam
-                if (eArg.ToLowerInvariant() == "s")
-                {
-                    StartPage = "/Steam/";
-                    break;
-                }
-
-                if (eArg is not "v" or "vv" or "verbose") StartPage = "Basic?plat=" + eArg;
-
-                // Check if it was verbose mode.
-                Globals.VerboseMode = Globals.VerboseMode || eArg is "v" or "vv" or "verbose";
-            }
-
-
-            // Was not asked to open a platform screen, or was NOT just the verbose mode argument
-            // - Therefore: It was a CLI command
-            // - But, do check if the tcno:\\ cli command was issued, and only that - If it was: start the program.
-            if (StartPage == "" && !(Globals.VerboseMode && e.Args.Length == 1) && !(e.Args.Length == 1 && (e.Args[0] == @"tcno:\\" || e.Args[0] == "tcno:\\")))
-            {
-                if (!NativeFuncs.AttachToConsole(-1)) // Attach to a parent process console (ATTACH_PARENT_PROCESS)
-                    _ = NativeFuncs.AllocConsole();
-                Console.WriteLine(Environment.NewLine);
-                var shouldClose = await ConsoleMain(e).ConfigureAwait(false);
-                if (shouldClose)
-                {
-                    Console.WriteLine(Environment.NewLine + @"Press any key to close this window...");
-                    _ = NativeFuncs.FreeConsole();
-                    Environment.Exit(0);
-                    return;
-                }
-
-                _ = NativeFuncs.FreeConsole();
-            }
-
-        }
 
 #if DEBUG
         _ = NativeFuncs.AllocConsole();
@@ -213,46 +165,17 @@ public partial class App
         if (Directory.Exists(restoreTemp)) Globals.RecursiveDelete(restoreTemp, false);
     }
 
-/*
-        private static void ShowErrorMessage(string title, string text)
-        {
-            var cmb = new CustomMessageBox(title, text)
-            {
-                Topmost = true,
-                Resources =
-                {
-                    ["HeaderbarBackground"] = GetStylesheetColor("headerbarBackground", "#14151E"),
-                    ["HeaderbarBackground"] = GetStylesheetColor("windowTitleColor", "#FFFFFF"),
-                    ["MainBackground"] = GetStylesheetColor("mainBackground", "#28293A"),
-                    ["MessageForeground"] = GetStylesheetColor("defaultTextColor", "#FFFFFF"),
-                    ["IconFill"] = GetStylesheetColor("popupIconErrorFill", "red"),
-                    ["BtnBackground"] = GetStylesheetColor("buttonBackground", "#333333"),
-                    ["BtnBackgroundHover"] = GetStylesheetColor("buttonBackground-hover", "#888888"),
-                    ["BtnBackgroundActive"] = GetStylesheetColor("buttonBackground-active", "#888888"),
-                    ["BtnForeground"] = GetStylesheetColor("buttonColor", "#FFFFFF"),
-                    ["BtnBorder"] = GetStylesheetColor("buttonBorderMessageForeground", "#888888"),
-                    ["BtnBorderHover"] = GetStylesheetColor("buttonBorder-hover", "#888888"),
-                    ["BtnBorderActive"] = GetStylesheetColor("buttonBorder-active", "#FFAA00"),
-                    ["MinBackground"] = GetStylesheetColor("windowControlsBackground", "#14151E"),
-                    ["MinBackgroundHover"] = GetStylesheetColor("windowControlsBackground-hover", "#181924"),
-                    ["MinBackgroundActive"] = GetStylesheetColor("windowControlsBackground-active", "#1f202e"),
-                    ["CloseBackgroundHover"] = GetStylesheetColor("windowControlsCloseBackground", "#E81123"),
-                    ["CloseBackgroundActive"] = GetStylesheetColor("windowControlsCloseBackground-active", "#F1707A")
-                }
-            };
-
-            _ = cmb.ShowDialog();
-        }
-*/
-
-    public static SolidColorBrush GetStylesheetColor(string key, string fallback)
+    public SolidColorBrush GetStylesheetColor(string key, string fallback)
     {
+        var stylesheetFile = Path.Join(Globals.UserDataFolder, "themes", _windowSettings.ActiveTheme, "style.css");
+        var stylesheet = File.ReadAllText(stylesheetFile);
+        
         string color;
         try
         {
-            var start = WindowSettings.Stylesheet.IndexOf(key + ":", StringComparison.Ordinal) + key.Length + 1;
-            var end = WindowSettings.Stylesheet.IndexOf(";", start, StringComparison.Ordinal);
-            color = WindowSettings.Stylesheet[start..end];
+            var start = stylesheet.IndexOf(key + ":", StringComparison.Ordinal) + key.Length + 1;
+            var end = stylesheet.IndexOf(";", start, StringComparison.Ordinal);
+            color = stylesheet[start..end];
             color = color.Trim(); // Remove whitespace around variable
         }
         catch (Exception)
@@ -342,253 +265,7 @@ release = true;
             // Just restarted
         }
     }
-
-    /// <summary>
-    /// CLI specific interface for TcNo Account Switcher
-    /// (Only help commands at this moment)
-    /// </summary>
-    /// <param name="e">StartupEventArgs for the program</param>
-    /// <returns>True if handled and should close. False if launch GUI.</returns>
-    private static async Task<bool> ConsoleMain(StartupEventArgs e)
-    {
-        Console.WriteLine(@"Welcome to the TcNo Account Switcher - Command Line Interface!");
-        Console.WriteLine(@"Use -h (or --help) for more info." + Environment.NewLine);
-
-        for (var i = 0; i != e.Args.Length; ++i)
-        {
-            // --- Switching to accounts ---
-            if (e.Args[i]?[0] == '+')
-            {
-                await CliSwitch(e.Args, i);
-                continue;
-            }
-
-            // --- Switching to accounts via protocol ---
-            if (e.Args[i].ToLowerInvariant().StartsWith(@"tcno:\\"))
-            {
-                await CliSwitch(e.Args, i);
-                continue;
-            }
-
-            // --- Log out of accounts ---
-            if (e.Args[i].StartsWith("logout"))
-            {
-                await CliLogout(e.Args[i]);
-                continue;
-            }
-
-            switch (e.Args[i])
-            {
-                case "h":
-                case "-h":
-                case "help":
-                case "--help":
-                    var availableList = new List<string>();
-                    var switchList = new List<string>();
-                    foreach (var jToken in BasicPlatforms.GetPlatforms)
-                    {
-                        var line = "";
-                        var x = (JProperty)jToken;
-                        var identifiers = BasicPlatforms.GetPlatforms[x.Name]?["Identifiers"]?.ToObject<List<string>>();
-
-                        if (identifiers != null)
-                        {
-                            switchList.Add($" -   {x.Name}: {identifiers[0]}:<identifier>");
-
-                            foreach (var platformShort in identifiers)
-                            {
-                                if (line == "")
-                                    line = $" -   {x.Name}: {platformShort}";
-                                else
-                                    line += $", {platformShort}";
-                            }
-                        }
-
-                        availableList.Add(line);
-                    }
-
-                    availableList.Sort();
-                    switchList.Sort();
-
-                    var helpLines = new List<string>
-                    {
-                        "This is the command line interface. You are able to use any of the following arguments with this program:",
-                        "--- Switching to accounts ---",
-                        "Usage (don't include spaces): + <PlatformLetter> : <...details>",
-                        " -   Steam format: +s:<steamId>[:<PersonaState (0-7)>]"
-                    };
-                    helpLines.AddRange(switchList);
-
-                    helpLines.AddRange(new List<string>
-                    {
-                        " --- Other platforms: +<2-3 letter code>:<unique identifiers>",
-                        "--- Log out of accounts ---",
-                        "logout:<platform> = Logout of a specific platform (Allowing you to sign into and add a new account)",
-                        "Available platforms:",
-                        " -   Steam: s, steam",
-                    });
-                    helpLines.AddRange(availableList);
-                    helpLines.AddRange(new List<string>
-                    {
-                        " --- Other platforms via custom commands: <unique identifiers>",
-                        "--- Other arguments ---",
-                        "v, vv, verbose = Verbose mode (Shows a lot of details, somewhat useful for debugging)"
-                    });
-
-                    Console.WriteLine(string.Join(Environment.NewLine, helpLines));
-                    return true;
-                case "v":
-                case "vv":
-                case "verbose":
-                    Globals.VerboseMode = true;
-                    break;
-                default:
-                    Globals.WriteToLog($"Unknown argument: \"{e.Args[i]}\"");
-                    break;
-            }
-        }
-
-        return true;
-    }
-
-    /// <summary>
-    /// Handle account switch requests given as arguments to the CLI
-    /// </summary>
-    /// <param name="args">Arguments</param>
-    /// <param name="i">Index of argument to process</param>
-    private static async Task CliSwitch(string[] args, int i)
-    {
-        if (args.Length < i) return;
-        if (args[i].StartsWith(@"tcno:\\")) // Launched through Protocol
-            args[i] = '+' + args[i][7..];
-
-        var command = args[i][1..].Split(':'); // Drop '+' and split
-        var platform = command[0];
-        var account = command[1];
-        var remainingArguments = args[1..];
-        var combinedArgs = string.Join(' ', args);
-
-        if (platform == "s")
-        {
-            // Steam format: +s:<steamId>[:<PersonaState (0-7)>]
-            Globals.WriteToLog("Steam switch requested");
-            if (!GeneralFuncs.CanKillProcess(TcNo_Acc_Switcher_Server.Data.Settings.Steam.Processes)) Restart(combinedArgs, true);
-            await SteamSwitcherFuncs.SwapSteamAccounts(account.Split(":")[0],
-                ePersonaState: command.Length > 2
-                    ? int.Parse(command[2])
-                    : -1, args: string.Join(' ', remainingArguments)); // Request has a PersonaState in it
-            return;
-        }
-
-        if (WindowSettings.GetPlatform(platform) is null) return;
-        BasicPlatforms.SetCurrentPlatform(platform);
-        Globals.WriteToLog(CurrentPlatform.FullName + " switch requested");
-        if (!GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd)) Restart(combinedArgs, true);
-        BasicSwitcherFuncs.SwapTemplatedAccounts(account, string.Join(' ', remainingArguments));
-    }
-
-    /// <summary>
-    /// Handle logout given as arguments to the CLI
-    /// </summary>
-    /// <param name="arg">Argument to process</param>
-    private static async Task CliLogout(string arg)
-    {
-        var platform = arg.Split(':')[1];
-        switch (platform.ToLowerInvariant())
-        {
-            // Steam
-            case "s":
-            case "steam":
-                Globals.WriteToLog("Steam logout requested");
-                AppState.Switcher.CurrentSwitcher = "Steam";
-                await AppFuncs.SwapToNewAccount();
-                break;
-
-            // BASIC ACCOUNT PLATFORM
-            default:
-                if (WindowSettings.GetPlatform(platform) is null) break;
-                // Is a basic platform!
-                BasicPlatforms.SetCurrentPlatform(platform);
-                Globals.WriteToLog(CurrentPlatform.FullName + " logout requested");
-                AppState.Switcher.CurrentSwitcher = platform;
-                await AppFuncs.SwapToNewAccount();
-                break;
-        }
-    }
-
-    /// <summary>
-    /// Uploads CrashLogs and log.txt if crashed.
-    /// </summary>
-    public static void UploadLogs()
-    {
-        if (!Directory.Exists("CrashLogs")) return;
-        if (!Directory.Exists("CrashLogs\\Submitted")) _ = Directory.CreateDirectory("CrashLogs\\Submitted");
-
-        // Collect all logs into one string to compress
-        var postData = new Dictionary<string, string>();
-        var combinedCrashLogs = "";
-        foreach (var file in Directory.EnumerateFiles("CrashLogs", "*.txt"))
-        {
-            try
-            {
-                combinedCrashLogs += Globals.ReadAllText(file);
-                File.Move(file, $"CrashLogs\\Submitted\\{Path.GetFileName(file)}");
-            }
-            catch (Exception e)
-            {
-                Globals.WriteToLog(@"[Caught - UploadLogs()]" + e);
-            }
-        }
-
-        // If no logs collected, return.
-        if (combinedCrashLogs == "") return;
-
-        // Else: send log file as well.
-        if (File.Exists("log.txt"))
-        {
-            try
-            {
-                postData.Add("logs", Compress(Globals.ReadAllText("log.txt")));
-            }
-            catch (Exception e)
-            {
-                Globals.WriteToLog(@"[Caught - UploadLogs()]" + e);
-            }
-        }
-
-        // Send report to server
-        postData.Add("crashLogs", Compress(combinedCrashLogs));
-        if (postData.Count == 0) return;
-
-        try
-        {
-            HttpContent content = new FormUrlEncodedContent(postData);
-            _ = Client.PostAsync("https://api.tcno.co/sw/crash/", content);
-        }
-        catch (Exception e)
-        {
-            File.WriteAllText($"CrashLogs\\CrashLogUploadErr-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt", Globals.GetEnglishError(e));
-        }
-    }
-
-    public static string Compress(string text)
-    {
-        //https://www.neowin.net/forum/topic/994146-c-help-php-compatible-string-gzip/
-        var buffer = Encoding.UTF8.GetBytes(text);
-
-        var memoryStream = new MemoryStream();
-        using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Compress, true))
-        {
-            gZipStream.Write(buffer, 0, buffer.Length);
-        }
-
-        memoryStream.Position = 0;
-
-        var compressedData = new byte[memoryStream.Length];
-        _ = memoryStream.Read(compressedData, 0, compressedData.Length);
-
-        return Convert.ToBase64String(compressedData);
-    }
+    
 
     #region ResizeWindows
     /*

@@ -1,26 +1,5 @@
 {
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iis": {
-      "applicationUrl": "http://localhost/TcNo-Acc-Switcher",
-      "sslPort": 0
-    },
-    "iisExpress": {
-      "applicationUrl": "http://localhost:62455",
-      "sslPort": 0
-    }
-  },
   "profiles": {
-    "Electron.NET App": {
-      "commandName": "Executable",
-      "executablePath": "electronize",
-      "commandLineArgs": "start",
-      "workingDirectory": ".",
-      "environmentVariables": {
-        "IS_ELECTRON ": "true"
-      }
-    },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
@@ -33,7 +12,19 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:1337"
+      "commandLineArgs": "-p s"
+    }
+  },
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost/TcNo-Acc-Switcher",
+      "sslPort": 0
+    },
+    "iisExpress": {
+      "applicationUrl": "http://localhost:62455",
+      "sslPort": 0
     }
   }
 }

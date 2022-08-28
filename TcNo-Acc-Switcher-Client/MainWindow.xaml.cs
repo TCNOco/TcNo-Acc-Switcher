@@ -66,7 +66,7 @@ public partial class MainWindow
         while (!Program.MainProgram(new[] { _address, "nobrowser" }) && attempts < 10)
         {
             windowSettings.ServerPort = Program.FindOpenPort(windowSettings.ServerPort);
-            _address = "--urls=http://localhost:" + windowSettings.ServerPort + "/";
+            _address = "http://localhost:" + windowSettings.ServerPort + "/";
             attempts++;
         }
         if (attempts == 10)

@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
@@ -12,23 +15,105 @@ namespace TcNo_Acc_Switcher_Globals;
 
 public partial class Globals
 {
+    // Set "user-agent"= "TcNo Account Switcher"
+    public static readonly HttpClient Client = GetNewClient();
+
+    private static HttpClient GetNewClient()
+    {
+        var client = new HttpClient();
+        client.DefaultRequestHeaders.Add("user-agent", "TcNo Account Switcher");
+        client.DefaultRequestHeaders.Add("dnt", "1");
+        client.DefaultRequestHeaders.Add("cache-control", "max-age=0");
+        client.DefaultRequestHeaders.Add("accept-language", "en-US,en;q=0.9");
+
+        return client;
+    }
+    
+    /// <summary>
+    /// Uploads CrashLogs and log.txt if crashed.
+    /// </summary>
+    public static void UploadLogs()
+    {
+        if (!Directory.Exists("CrashLogs")) return;
+        if (!Directory.Exists("CrashLogs\\Submitted")) _ = Directory.CreateDirectory("CrashLogs\\Submitted");
+
+        // Collect all logs into one string to compress
+        var postData = new Dictionary<string, string>();
+        var combinedCrashLogs = "";
+        foreach (var file in Directory.EnumerateFiles("CrashLogs", "*.txt"))
+        {
+            try
+            {
+                combinedCrashLogs += Globals.ReadAllText(file);
+                File.Move(file, $"CrashLogs\\Submitted\\{Path.GetFileName(file)}");
+            }
+            catch (Exception e)
+            {
+                Globals.WriteToLog(@"[Caught - UploadLogs()]" + e);
+            }
+        }
+
+        // If no logs collected, return.
+        if (combinedCrashLogs == "") return;
+
+        // Else: send log file as well.
+        if (File.Exists("log.txt"))
+        {
+            try
+            {
+                postData.Add("logs", Compress(Globals.ReadAllText("log.txt")));
+            }
+            catch (Exception e)
+            {
+                Globals.WriteToLog(@"[Caught - UploadLogs()]" + e);
+            }
+        }
+
+        // Send report to server
+        postData.Add("crashLogs", Compress(combinedCrashLogs));
+        if (postData.Count == 0) return;
+
+        try
+        {
+            HttpContent content = new FormUrlEncodedContent(postData);
+            _ = Client.PostAsync("https://api.tcno.co/sw/crash/", content);
+        }
+        catch (Exception e)
+        {
+            File.WriteAllText($"CrashLogs\\CrashLogUploadErr-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt", Globals.GetEnglishError(e));
+        }
+    }
+
+    private static string Compress(string text)
+    {
+        //https://www.neowin.net/forum/topic/994146-c-help-php-compatible-string-gzip/
+        var buffer = Encoding.UTF8.GetBytes(text);
+
+        var memoryStream = new MemoryStream();
+        using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Compress, true))
+        {
+            gZipStream.Write(buffer, 0, buffer.Length);
+        }
+
+        memoryStream.Position = 0;
+
+        var compressedData = new byte[memoryStream.Length];
+        _ = memoryStream.Read(compressedData, 0, compressedData.Length);
+
+        return Convert.ToBase64String(compressedData);
+    }
+    
+    
     /// <summary>
     /// Reads website as out webText. Returns true if successful.
     /// </summary>
     public static bool ReadWebUrl(string requestUri, out string webText, string cookies = "")
     {
-        using var client = new HttpClient();
-
-        client.DefaultRequestHeaders.Add("user-agent", "TcNo Account Switcher");
+        var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
         if (!string.IsNullOrEmpty(cookies))
-        {
-            client.DefaultRequestHeaders.Add("cookie", cookies);
-        }
-        client.DefaultRequestHeaders.Add("dnt", "1");
-        client.DefaultRequestHeaders.Add("cache-control", "max-age=0");
-        client.DefaultRequestHeaders.Add("accept-language", "en-US,en;q=0.9");
-
-        var response = client.Send(new HttpRequestMessage(HttpMethod.Get, requestUri));
+            request.Headers.Add("cookie", cookies);
+        
+        var response = Client.Send(request);
         var responseReader = new StreamReader(response.Content.ReadAsStream());
         webText = responseReader.ReadToEnd();
 
