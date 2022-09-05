@@ -1,59 +1,33 @@
-name: Public GitHub build
-
-on:
-  workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'     
-        required: true
-        default: 'warning'
-      tags:
-        description: "Description:"
-        default: "Manual build from source"
-
-jobs:
-
-  build:
-    runs-on: windows-latest
-    steps:
-    
-    - name: Get current date
-      id: date
-      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
-      
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-
-    # Install the .NET Core workload
-    - name: Install .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
-
-    # Restore the application to populate the obj folder with RuntimeIdentifiers
-    - name: Restore the application
-      run: dotnet restore
-
-    # Build Debug
-    - name: Build Debug
-      run: dotnet build TcNo-Acc-Switcher-Client\TcNo-Acc-Switcher-Client.csproj --configuration Debug
-        
-    # Build Debug
-    - name: Build Release
-      run: dotnet build TcNo-Acc-Switcher-Client\TcNo-Acc-Switcher-Client.csproj --configuration Release
-
-    # Debug
-    - name: Upload Debug
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ steps.date.outputs.date }} Debug
-        path: TcNo-Acc-Switcher-Client\bin\Debug\net5.0-windows
-        
-    # Release
-    - name: Upload Release
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ steps.date.outputs.date }} Release
-        path: TcNo-Acc-Switcher-Client\bin\Release\net5.0-windows
+- name: Setup Java JDK
+  uses: actions/setup-java@v3.4.1
+  with:
+    # The Java version to set up. Takes a whole or semver Java version. See examples of supported syntax in README file
+    java-version: 
+    # Java distribution. See the list of supported distributions in README file
+    distribution: 
+    # The package type (jdk, jre, jdk+fx, jre+fx)
+    java-package: # optional, default is jdk
+    # The architecture of the package
+    architecture: # optional, default is x64
+    # Path to where the compressed JDK is located
+    jdkFile: # optional
+    # Set this option if you want the action to check for the latest available version that satisfies the version spec
+    check-latest: # optional
+    # ID of the distributionManagement repository in the pom.xml file. Default is `github`
+    server-id: # optional, default is github
+    # Environment variable name for the username for authentication to the Apache Maven repository. Default is $GITHUB_ACTOR
+    server-username: # optional, default is GITHUB_ACTOR
+    # Environment variable name for password or token for authentication to the Apache Maven repository. Default is $GITHUB_TOKEN
+    server-password: # optional, default is GITHUB_TOKEN
+    # Path to where the settings.xml file will be written. Default is ~/.m2.
+    settings-path: # optional
+    # Overwrite the settings.xml file if it exists. Default is "true".
+    overwrite-settings: # optional, default is true
+    # GPG private key to import. Default is empty string.
+    gpg-private-key: # optional
+    # Environment variable name for the GPG private key passphrase. Default is $GPG_PASSPHRASE.
+    gpg-passphrase: # optional
+    # Name of the build platform to cache dependencies. It can be "maven", "gradle" or "sbt".
+    cache: # optional
+    # Workaround to pass job status to post job step. This variable is not intended for manual setting
+    job-status: # optional, default is ${{ job.status }}
