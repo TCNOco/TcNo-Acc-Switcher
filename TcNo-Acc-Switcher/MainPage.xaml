@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:TcNo_Acc_Switcher"
+             x:Class="TcNo_Acc_Switcher.MainPage"
+             BackgroundColor="{DynamicResource PageBackgroundColor}" AnchorX="0" AnchorY="0">
+
+    <BlazorWebView x:Name="Test" HostPage="wwwroot/index.html" AnchorX="0" AnchorY="0" UrlLoading="BlazorWebView_OnUrlLoading">
+        <BlazorWebView.RootComponents>
+            <RootComponent Selector="#app" ComponentType="{x:Type local:Main}" />
+        </BlazorWebView.RootComponents>
+    </BlazorWebView>
+
+</ContentPage>
