@@ -16,5 +16,10 @@ namespace TcNo_Acc_Switcher
             //var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
             //coreTitleBar.IsVisible = false;
         }
+
+        protected override void ChangeVisualState()
+        {
+            base.ChangeVisualState();
+        }
     }
 }

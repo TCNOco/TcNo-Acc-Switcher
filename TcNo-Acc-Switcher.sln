@@ -26,7 +26,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "runas", "runas\runas.csproj
 EndProject
 Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "TcNo-Acc-Switcher.Packager", "TcNo Account Switcher\TcNo-Acc-Switcher.Packager.wapproj", "{120E00D7-701B-4141-BB63-CA42AAE395EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcNo-Acc-Switcher", "TcNo-Acc-Switcher\TcNo-Acc-Switcher.csproj", "{10FCE805-F4B1-4888-AAA8-5771933DFD6A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcNo-Acc-Switcher", "TcNo-Acc-Switcher\TcNo-Acc-Switcher.csproj", "{10FCE805-F4B1-4888-AAA8-5771933DFD6A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -188,9 +188,9 @@ Global
 		{10FCE805-F4B1-4888-AAA8-5771933DFD6A}.Release|ARM64.ActiveCfg = Release|Any CPU
 		{10FCE805-F4B1-4888-AAA8-5771933DFD6A}.Release|ARM64.Build.0 = Release|Any CPU
 		{10FCE805-F4B1-4888-AAA8-5771933DFD6A}.Release|ARM64.Deploy.0 = Release|Any CPU
-		{10FCE805-F4B1-4888-AAA8-5771933DFD6A}.Release|x64.ActiveCfg = Release|Any CPU
-		{10FCE805-F4B1-4888-AAA8-5771933DFD6A}.Release|x64.Build.0 = Release|Any CPU
-		{10FCE805-F4B1-4888-AAA8-5771933DFD6A}.Release|x64.Deploy.0 = Release|Any CPU
+		{10FCE805-F4B1-4888-AAA8-5771933DFD6A}.Release|x64.ActiveCfg = Release|x64
+		{10FCE805-F4B1-4888-AAA8-5771933DFD6A}.Release|x64.Build.0 = Release|x64
+		{10FCE805-F4B1-4888-AAA8-5771933DFD6A}.Release|x64.Deploy.0 = Release|x64
 		{10FCE805-F4B1-4888-AAA8-5771933DFD6A}.Release|x86.ActiveCfg = Release|Any CPU
 		{10FCE805-F4B1-4888-AAA8-5771933DFD6A}.Release|x86.Build.0 = Release|Any CPU
 		{10FCE805-F4B1-4888-AAA8-5771933DFD6A}.Release|x86.Deploy.0 = Release|Any CPU
