@@ -1,0 +1,305 @@
+:root {
+  --notification-font-size: 14px;
+  --notification-line-spacing: calc(var(--notification-font-size) * 1.4);
+  --notification-border-radius: 2px;
+  --notification-border-thickness: 1px;
+  --notification-max-width: 345px;
+  --notification-min-width: 200px;
+  --notification-icon: 25px;
+  --notification-counter-size: 18px;
+  --notification-padding: 12px;
+  --notification-margin: 10px;
+  --notification-border-thick: 3px;
+  --notification-border-std: 1px;
+}
+
+.notification-container {
+  display: flex;
+  position: fixed;
+  flex-direction: column;
+  align-items: flex-end;
+  width: auto;
+  height: auto;
+  font-family: Helvetica, sans-serif;
+  font-size: var(--notification-font-size);
+  line-height: var(--notification-line-spacing);
+  z-index: 999;
+}
+
+  .notification-container.top-left {
+    top: 0;
+    left: 0;
+  }
+
+  .notification-container.top-right {
+    top: 0;
+    right: 0;
+  }
+
+  .notification-container.bottom-left {
+    bottom: 0;
+    left: 0;
+  }
+
+  .notification-container.bottom-right {
+    right: 0;
+    bottom: 0;
+  }
+
+.notification {
+  -webkit-box-shadow: 0 0 var(--notification-margin) rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 0 var(--notification-margin) rgba(0, 0, 0, 0.2);
+  -webkit-transition: opacity 1s ease 0.5s;
+  -moz-transition: opacity 1s ease 0.5s;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  display: flex;
+  position: relative;
+  align-items: center;
+  width: fit-content;
+  min-width: var(--notification-min-width);
+  height: auto;
+  margin: var(--notification-margin);
+  padding: var(--notification-padding);
+  border-radius: var(--notification-border-radius);
+  color: white;
+  font-size: 1em;
+  box-shadow: 0 0 var(--notification-margin) rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transition: opacity 1s ease 0.5s;
+  z-index: 999;
+}
+
+  .notification:nth-child(n+2) {
+    margin-top: var(--notification-padding);
+  }
+
+  .notification div,
+  .notification span,
+  .notification h1,
+  .notification h2,
+  .notification h3,
+  .notification h4,
+  .notification h5,
+  .notification h6,
+  .notification p {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font: inherit;
+    font-size: 100%;
+    vertical-align: baseline;
+  }
+
+  .notification h1,
+  .notification h2,
+  .notification h3,
+  .notification h4,
+  .notification h5,
+  .notification h6 {
+    color: white;
+    font-weight: bold;
+  }
+
+  .notification .vector-container {
+    align-self: baseline;
+    width: var(--notification-icon);
+    height: var(--notification-icon);
+    margin: 0;
+  }
+
+    .notification .vector-container svg {
+      width: var(--notification-icon);
+      height: var(--notification-icon);
+    }
+
+  .notification .text-container {
+    margin-right: var(--notification-margin);
+    padding: 0 var(--notification-padding);
+    text-align: initial;
+  }
+
+    .notification .text-container h6,
+    .notification .text-container p {
+      word-wrap: break-word;
+      max-width: calc(var(--notification-max-width) - (2 * var(--notification-margin)) - (4 * var(--notification-padding)) - var(--notification-icon) - (2 * var(--notification-border-thickness)));
+      margin-bottom: calc(var(--notification-padding) / 2);
+    }
+
+    .notification .text-container p {
+      margin: 0;
+      margin-bottom: calc(var(--notification-padding) / 2);
+      font-size: 0.9em;
+      line-height: 1.4em;
+    }
+
+      .notification .text-container p.iconless-width {
+        max-width: calc(var(--notification-max-width) - (2 * var(--notification-margin)) - (4 * var(--notification-padding)) - (2 * var(--notification-border-thickness)));
+      }
+
+    .notification .text-container button {
+      margin-bottom: 0;
+      padding: calc(var(--notification-padding) / 2) var(--notification-padding);
+      border: var(--notification-border-thickness) solid rgb(20, 20, 20);
+      border-radius: var(--notification-border-radius);
+      background-color: transparent;
+      font-size: 0.9em;
+      cursor: pointer;
+    }
+
+  .notification.left-border h6,
+  .notification.left-border p,
+  .notification.right-border h6,
+  .notification.right-border p {
+    max-width: calc(var(--notification-max-width) - (2 * var(--notification-margin)) - (4 * var(--notification-padding)) - var(--notification-icon) - (var(--notification-border-thickness) + var(--notification-border-thickness)));
+  }
+
+    .notification.left-border h6.iconless-width,
+    .notification.left-border p.iconless-width,
+    .notification.right-border h6.iconless-width,
+    .notification.right-border p.iconless-width {
+      max-width: calc(var(--notification-max-width) - (2 * var(--notification-margin)) - (4 * var(--notification-padding)) - (var(--notification-border-thickness) + var(--notification-border-thickness)));
+    }
+
+  .notification .counter {
+    display: flex;
+    position: absolute;
+    top: -5px;
+    left: -7px;
+    align-items: center;
+    justify-content: center;
+    width: var(--notification-counter-size);
+    height: var(--notification-counter-size);
+    border-radius: 50%;
+    color: white;
+    font-size: 0.85em;
+    line-height: 100%;
+  }
+
+  .notification .close {
+    position: absolute;
+    top: calc(var(--notification-margin) / 2);
+    right: var(--notification-margin);
+    cursor: pointer;
+  }
+
+    .notification.info {
+        border: solid var(--notification-border-std) var(--notification-info-border);
+        background: var(--notification-main-bg);
+    }
+
+        .notification.info > .close {
+            color: var(--notification-info-highlight);
+        }
+
+        .notification.info > .counter {
+            border: solid var(--notification-border-std) var(--notification-info-highlight);
+            background: var(--notification-info-highlight);
+        }
+
+        .notification.info.top-border {
+            border-top: solid var(--notification-border-thick) var(--notification-info-highlight);
+        }
+
+        .notification.info.bottom-border {
+            border-bottom: solid var(--notification-border-thick) var(--notification-info-highlight);
+        }
+
+        .notification.info.left-border {
+            border-left: solid var(--notification-border-thick) var(--notification-info-highlight);
+        }
+
+        .notification.info.right-border {
+            border-right: solid var(--notification-border-thick) var(--notification-info-highlight);
+        }
+
+    .notification.success {
+        border: solid var(--notification-border-std) var(--notification-success-border);
+        background: var(--notification-main-bg);
+    }
+
+        .notification.success > .close {
+            color: var(--notification-success-highlight);
+        }
+
+        .notification.success > .counter {
+            border: solid var(--notification-border-std) var(--notification-success-highlight);
+            background: var(--notification-main-bg);
+        }
+
+        .notification.success.top-border {
+            border-top: solid var(--notification-border-thick) var(--notification-success-highlight);
+        }
+
+        .notification.success.bottom-border {
+            border-bottom: solid var(--notification-border-thick) var(--notification-success-highlight);
+        }
+
+        .notification.success.left-border {
+            border-left: solid var(--notification-border-thick) var(--notification-success-highlight);
+        }
+
+        .notification.success.right-border {
+            border-right: solid var(--notification-border-thick) var(--notification-success-highlight);
+        }
+
+    .notification.warning {
+        border: solid var(--notification-border-std) var(--notification-warning-border);
+        background: var(--notification-main-bg);
+    }
+
+        .notification.warning > .close {
+            color: var(--notification-warning-highlight);
+        }
+
+        .notification.warning > .counter {
+            border: solid var(--notification-border-std) var(--notification-warning-highlight);
+            background: var(--notification-main-bg);
+        }
+
+        .notification.warning.top-border {
+            border-top: solid var(--notification-border-thick) var(--notification-warning-highlight);
+        }
+
+        .notification.warning.bottom-border {
+            border-bottom: solid var(--notification-border-thick) var(--notification-warning-highlight);
+        }
+
+        .notification.warning.left-border {
+            border-left: solid var(--notification-border-thick) var(--notification-warning-highlight);
+        }
+
+        .notification.warning.right-border {
+            border-right: solid var(--notification-border-thick) var(--notification-warning-highlight);
+        }
+
+    .notification.error {
+        border: solid var(--notification-border-std) var(--notification-error-border);
+        background: var(--notification-main-bg);
+    }
+
+        .notification.error > .close {
+            color: var(--notification-error-highlight);
+        }
+
+        .notification.error > .counter {
+            border: solid var(--notification-border-std) var(--notification-error-highlight);
+            background: var(--notification-main-bg);
+        }
+
+        .notification.error.top-border {
+            border-top: solid var(--notification-border-thick) var(--notification-error-highlight);
+        }
+
+        .notification.error.bottom-border {
+            border-bottom: solid var(--notification-border-thick) var(--notification-error-highlight);
+        }
+
+        .notification.error.left-border {
+            border-left: solid var(--notification-border-thick) var(--notification-error-highlight);
+        }
+
+        .notification.error.right-border {
+            border-right: solid var(--notification-border-thick) var(--notification-error-highlight);
+        }

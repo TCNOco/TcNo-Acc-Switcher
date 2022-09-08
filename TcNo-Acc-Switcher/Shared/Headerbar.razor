@@ -1,0 +1,159 @@
+﻿@*TcNo Account Switcher - A Super fast account switcher
+    Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses />.*@
+
+@using System.Threading
+@using TcNo_Acc_Switcher.State
+@using TcNo_Acc_Switcher.State.Interfaces
+@using System.ComponentModel
+@inject IJSRuntime JsRuntime
+@inject IAppState AppState
+@inject IWindowSettings WindowSettings
+@inject NavigationManager NavigationManager
+@implements IDisposable
+
+<div id="window-title">
+    <div class="resizeTop"></div>
+    <button id="btnBack" @onclick="() => AppState.Navigation.NavigateUpOne(NavigationManager)">
+        <div class="resizeTop"></div>
+        <div class="resizeTopLeft"></div>
+        <div class="resizeLeft"></div>
+        <i class="fas fa-chevron-left icon" style="@_animatedBackCss" draggable="false" alt="-"></i>
+    </button>
+    <svg class="header_icon" draggable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 768 264" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2">
+        <use href="img/TcNo_Logo_Flat.svg#logo"></use>
+    </svg>
+    <span>@AppState.WindowState.WindowTitle</span>
+@*    @if (HttpContextAccessor.HttpContext?.Request.Headers["User-Agent"][0].Contains("TcNo") == true)
+    {*@
+        <div id="window-controls">
+            <button id="btnMin" @onclick='MinClick'>
+                <div class="resizeTop"></div>
+                <img class="icon" srcset="img/icons/min-w-10.png 1x, img/icons/min-w-12.png 1.25x, img/icons/min-w-15.png 1.5x, img/icons/min-w-15.png 1.75x, img/icons/min-w-20.png 2x, img/icons/min-w-20.png 2.25x, img/icons/min-w-24.png 2.5x, img/icons/min-w-30.png 3x, img/icons/min-w-30.png 3.5x" draggable="false" alt="-" />
+            </button>
+
+            <button id="btnMax" @onclick='MaxClick'>
+                <div class="resizeTop"></div>
+                <img class="icon" srcset="img/icons/max-w-10.png 1x, img/icons/max-w-12.png 1.25x, img/icons/max-w-15.png 1.5x, img/icons/max-w-15.png 1.75x, img/icons/max-w-20.png 2x, img/icons/max-w-20.png 2.25x, img/icons/max-w-24.png 2.5x, img/icons/max-w-30.png 3x, img/icons/max-w-30.png 3.5x" draggable="false" alt="M" />
+            </button>
+
+            <button id="btnRestore" @onclick="RestoreClick">
+                <div class="resizeTop"></div>
+                <img class="icon" srcset="img/icons/restore-w-10.png 1x, img/icons/restore-w-12.png 1.25x, img/icons/restore-w-15.png 1.5x, img/icons/restore-w-15.png 1.75x, img/icons/restore-w-20.png 2x, img/icons/restore-w-20.png 2.25x, img/icons/restore-w-24.png 2.5x, img/icons/restore-w-30.png 3x, img/icons/restore-w-30.png 3.5x" draggable="false" alt="R" />
+            </button>
+
+            <button id="btnClose" @onclick="CloseButtonClick">
+                <div class="resizeTop"></div>
+                <div class="resizeTopRight"></div>
+                <div class="resizeRight"></div>
+                <i class="fas fa-times" draggable="false"></i>
+            </button>
+        </div>
+    @*}*@
+</div>
+
+@code {
+
+    private async Task MinClick() => await JsRuntime.InvokeVoidAsync("windowControls_Min");
+    private async Task MaxClick() => await JsRuntime.InvokeVoidAsync("windowControls_Max");
+    private async Task RestoreClick() => await JsRuntime.InvokeVoidAsync("windowControls_Restore");
+
+
+    private async Task CloseButtonClick(MouseEventArgs e)
+    {
+        if (e.CtrlKey || !WindowSettings.TrayMinimizeNotExit)
+            await JsRuntime.InvokeVoidAsync("windowControls_Exit");
+        else
+            await JsRuntime.InvokeVoidAsync("windowControls_hideToTray");
+    }
+
+    private string _animatedBackCss = "transition: transform 0 ease-in-out";
+    private static string[] _possibleAnimations = {"X", "Y", "Z"};
+    private Action _backButtonClick;
+    private Action _backButtonReset;
+    private PropertyChangedEventHandler _propChanged;
+    protected override void OnInitialized()
+    {
+        _backButtonClick = async () => await BackButtonClicked();
+        _backButtonReset = async () => await BackButtonReset();
+        _propChanged = async (o, e) => await OnChangeHandler(o, e);
+        AppState.Navigation.OnBackButtonClick += _backButtonClick;
+        AppState.Navigation.OnBackButtonReset += _backButtonReset;
+        AppState.PropertyChanged += _propChanged;
+    }
+
+    void IDisposable.Dispose()
+    {
+        AppState.Navigation.OnBackButtonClick -= _backButtonClick;
+        AppState.Navigation.OnBackButtonReset -= _backButtonReset;
+        AppState.PropertyChanged -= _propChanged;
+    }
+
+    private async Task OnChangeHandler(object o, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == "WindowTitle")
+            await InvokeAsync(StateHasChanged);
+    }
+
+    // Animate the back button, and sleep 500ms to stop animation.
+    private async Task BackButtonClicked()
+    {
+        var randomAni = _possibleAnimations[new Random().Next(0, _possibleAnimations.Length - 1)];
+        _animatedBackCss = $"transform: rotate{randomAni}(360deg); transition: transform 500ms ease-in-out";
+        await InvokeAsync(StateHasChanged);
+
+        // Run in a background thread:
+        _ = Task.Run(() =>
+        {
+            Thread.Sleep(500);
+            AppState.Navigation.ResetBackButton();
+        });
+    }
+
+    // Reset the back button to it's original position
+    private async Task BackButtonReset()
+    {
+        _animatedBackCss = "transition: transform 0 ease-in-out";
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OnMyChangeHandler()
+    {
+        // InvokeAsync is inherited, it syncs the call back to the render thread
+        await InvokeAsync(StateHasChanged);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        // Init dragging, resizing and more -- Assuming it's a TcNo window and not a browser.
+        await JsRuntime.InvokeVoidAsync("handleWindowControls");
+    }
+
+    // For draggable regions:
+    // https://github.com/MicrosoftEdge/WebView2Feedback/issues/200
+    // This is not used here, but these values are used in js for MouseResizeDrag.
+    // Checking once through everything is better than comparing things multiple times.
+    public enum SysCommandSize
+    {
+        ScSizeHtLeft = 0xA, // 1 + 9
+        ScSizeHtRight = 0xB,
+        ScSizeHtTop = 0xC,
+        ScSizeHtTopLeft = 0xD,
+        ScSizeHtTopRight = 0xE,
+        ScSizeHtBottom = 0xF,
+        ScSizeHtBottomLeft = 0x10,
+        ScSizeHtBottomRight = 0x11
+    }
+}

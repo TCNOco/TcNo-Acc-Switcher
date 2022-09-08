@@ -1,0 +1,25 @@
+# This theme's name (Shows in-app, can be different to folder name)
+name: Dracula Cyan (Default)
+accent: "#8BE9FD"
+
+# Required colors for updater & main UI (not HTML/CSS):
+# - Not including these will cause the updater to use default color scheme (Dracula Cyan)
+linkColor: "#8BE9FD" # Accent color
+headerbarBackground: "#253340"
+mainBackground: "#0E1419"
+modalInputBackground: "#070A0D"
+borderedItemBorderColor: "#888888"
+buttonBackground: "#274560"
+buttonBackground-hover: "#28374E"
+buttonBackground-active: "#28374E"
+buttonColor: "#FFFFFF"
+buttonBorder: "#274560"
+buttonBorder-hover: "#274560"
+buttonBorder-active: "#8BE9FD"
+windowControlsBackground: "#253340"
+windowControlsBackground-active: "#3B4853"
+windowControlsCloseBackground: "#D51426"
+windowControlsCloseBackground-active: "#D51426"
+# For platform shortcuts on desktop (For consistency make sure these match your CSS)
+platformLogoForeground: "#00a5f8"
+platformLogoBackground: "#202224"

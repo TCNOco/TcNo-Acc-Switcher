@@ -1,0 +1,69 @@
+﻿@*TcNo Account Switcher - A Super fast account switcher
+    Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses />.*@
+
+@page "/TextEditor/"
+@using TcNo_Acc_Switcher.State.Interfaces
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+@inject ILang Lang
+@inject IAppState AppState
+
+<div class="text-editor d-flex flex-column">
+    <div class="flex-grow-1 editor-container">
+        <pre id="editor">
+@@echo off
+REM This is a sample file.
+Actions will show here
+        </pre>
+    </div>
+    <div class="d-flex justify-content-end">
+        <button id="btnCancel" @onclick="() => AppState.Navigation.NavigateUpOne(NavigationManager)">
+            <span>@Lang["Button_Cancel"]</span>
+        </button>
+        <button id="btnSave" @onclick="SaveFile">
+            <span>@Lang["Button_SaveFile"]</span>
+        </button>
+    </div>
+</div>
+
+@code
+{
+
+    // This has to be here for NavManager.
+    // This is run before everything is painted on, so that it can get the correct values for the CSS Block.
+    protected override void OnParametersSet()
+    {
+        AppState.Stylesheet.StreamerModeCheck();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        AppState.WindowState.WindowTitle = Lang["Title_TextEditor"];
+        await JsRuntime.InvokeVoidAsync("initEditor");
+    }
+
+    public void SaveFile()
+    {
+        //
+
+        NavigationManager.NavigateTo("/Steam");
+    }
+
+    public void Cancel()
+    {
+        //
+    }
+}

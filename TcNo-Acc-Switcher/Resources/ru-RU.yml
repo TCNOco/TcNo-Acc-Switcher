@@ -1,0 +1,440 @@
+---
+Update: Доступно обновление! Нажмите здесь, чтобы установить его.
+Header_ChooseLanguage: 'Выберите язык:'
+BattleNet_ShowSR: Показывать Overwatch SR и использовать изображение профиля Overwatch.
+Steam_ShowSteamID: Показывать SteamID
+Steam_ShowVac: Показывать VAC статус
+Steam_CheckVac: Проверить VAC статус
+Steam_ShowLimited: Показывать ограниченный статус
+Steam_ShowAccUsername: Показывать логин аккаунта
+Steam_Tray_AccountName: Показывать имя аккаунта [не имя друга]
+Steam_OverrideDefaultState: "Установить статус по умолчанию при входе:"
+Button_AddNew: Добавить аккаунт
+Button_SaveCurrent: Сохранить текущий
+Button_SaveFile: Сохранить файл
+Button_Cancel: Отмена
+Button_Login: Войти
+Button_Close: Закрыть
+Button_RefreshImages: Обновить изображения
+Button_ResetSettings: Сбросить настройки
+Button_AdvancedCleaning: Расширенная очистка
+Button_ClearLog: Очистить журнал
+Button_WikiInfo: Больше информации (Wiki)
+Button_ManagePlatforms: Управление платформами
+Button_Backup: Резервное копирование
+Button_BackupAll: Полное резервное копирование
+Button_Restore: Восстановить
+Button_OpenBackup: Открыть папку резервного копирования
+Settings_Shortcut: 'Создать ярлык {platform} на рабочем столе'
+Settings_Admin: Запускать {platform} от имени администратора
+Settings_ImageExpiry: 'Дней до исчезновения изображений профиля:'
+Settings_Header_AppWide: Основные настройки
+Settings_Header_GeneralSettings: Общие настройки
+Settings_Header_ExtraPlatforms: Настройки платформ
+Settings_Header_GeneralTools: Основные инструменты
+Settings_Header_OtherTools: Другие инструменты
+Settings_Header_TraySettings: Настройки трея
+Settings_Header_OpenGameFolders: Открыть папку с игрой
+Settings_Header_BackupRestore: Резервное копирование и восстановление настроек платформы
+Settings_Header_Language: Язык
+Settings_Header_System: Система
+Settings_Header_Theme: Тема
+Settings_Header_Program: Программа
+Settings_Header_StatsSharing: Статистика и обмен
+Settings_Header_Platform: "{platformName} настроек"
+Settings_TrayMax: 'Максимальное количество учетных записей, которое нужно запомнить:'
+Settings_ExtraPlatformsDisabled: Скрытые платформы. Нажмите, чтобы включить их.
+Settings_ExtraPlatformsEnabled: Отображаемые платформы. Нажмите, чтобы отключить их.
+Settings_RTL: Показывать текст справа налево
+Settings_CollectStats: Собирать статистику
+Settings_ShareStats: Ненавязчиво делиться статистикой (рекомендуется)
+Settings_DiscordRpc: Богатое присутствие Discord (RPC)
+Settings_DiscordRpcShare: Поделиться общим количеством коммутаторов
+Settings_ViewStats: Посмотреть статистику
+Settings_ClearStats: Перезагрузить
+Settings_CurrentLocation: 'Текущее расположение: {path}'
+Settings_CurrentDataLocation: 'Расположение пользовательских данных: {path}'
+Settings_SetDataLocation: "[Изменить расположение пользовательских данных]"
+Settings_PickFolder: Выбрать папку {platform}
+Settings_OpenFolder: Открыть папку {platform}
+Settings_ClearForgotten: Очистить забытые
+Settings_ClearAccounts: Очистить аккаунты
+Settings_StreamerMode: Включить режим стримера
+Settings_ExitToTray: Свернуть в трей при закрытии
+Settings_DesktopShortcut: Создать ярлык на рабочем столе
+Settings_StartMenu_ProgramTray: Программа и трей
+Settings_StartMenu_Platform: Платформа
+Settings_Tray_StartWindows: Запускать свернутым вместе с Windows
+Settings_Tray_StartNow: '[Запустить свернутым сейчас]'
+Settings_CurrentStyle: Текущий стиль
+Settings_ThemeBackground: '[Установить фон]'
+Settings_ThemeOpenFolder: '[Открыть папку с темами]'
+Settings_Protocol: 'Включить протокол tcno:\\ (Рекомендуется)'
+Settings_StartCentered: Центрировать окно при запуске
+Settings_WindowsAccent: Использовать цвет Windows
+Settings_HelpTranslate: "[Помочь с переводом]"
+Settings_ViewTranslators: "[Авторы]"
+Settings_Header_ActiveBrowser: "(Дополнительно) Выбрать режим рендеринга:"
+Settings_Header_ClosingMethod: "(Дополнительно) Выбрать метод закрытия {platform}"
+Settings_Header_StartingMethod: "(Дополнительно) Выбрать метод запуска {platform}"
+Settings_AutoStart: "Автоматически запускать {platform} при переключении аккаунта"
+Settings_NoPlatforms: В настоящее время нет активных платформ. Пожалуйста, выберите платформу(ы).
+Settings_MinimizeOnSwitch: Свернуть переключатель при переключении аккаунта
+Stats_Disabled: "Сбор статистики отключен."
+Stats_InDepth: Подробная разбивка статистики
+Stats_ShareEnabled: "Эти статистические данные передаются анонимно и добавляются к общему количеству <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">здесь</a>."
+Stats_ShareDisabled: "Эти статистические данные НЕ передаются анонимно и НЕ добавляются к общему количеству <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">здесь</a>."
+Stats_OperatingSystem: "Операционная система: "
+Stats_FirstLaunch: "Первый запуск: "
+Stats_LaunchCount: "Количество запусков: "
+Stats_CrashCount: "Количество сбоев: "
+Stats_MostUsedPlatform: "Наиболее используемая платформа: "
+Stats_TotalTime: "Общее время, проведенное в приложении: "
+Stats_TotalSwitches: "Всего переключений аккаунта: "
+Stats_TotalGamesLaunched: "Всего приложений/игр, запущенных через переключатель: "
+Stats_UniqueDaysLong: "Уникальные дни с переключением аккаунтов: "
+Stats_LastUpload: "Последняя загрузка: "
+Stats_SwitcherStats: "Статистика коммутатора: "
+Stats_VisitsTotalTime: "{visits} посещений, {hours} общее время"
+Stats_Accounts: "Счета: "
+Stats_Switches: "Переключатели: "
+Stats_FirstActive: "Первый активный: "
+Stats_LastActive: "Последнее посещение: "
+Stats_UniqueDays: "Уникальные дни: "
+Stats_GameShortcuts: "Ярлыки игры: "
+Stats_GameShortcutsHotbar: "Ярлыки игры (на панели быстрого доступа): "
+Stats_GamesLaunched: "Запущены игры: "
+Cleaning_Header_StartMenuShortcuts: 'Создать ярлык в меню Пуск:'
+Cleaning_Header_General: Общая очистка
+Cleaning_Header_LoginHistory: Очистить историю входов
+Cleaning_Header_PlatformCleaning: 'Переключатель {platform}'
+Cleaning_ImportantInfoHeader: 'Важная информация:'
+Cleaning_ImportantInfo: >
+  Нажатие на кнопку удалит связанный файл (файлы) из вашего Steam.<br /> Удаление "loginusers.vdf" приведет к потере всех текущих аккаунтов.<br /> Вам нужно будет войти в них с помощью Steam заново, чтобы вернуть их.
+Cleaning_Button_KillProcess: Убить процесс {platform}
+Cleaning_Button_ForgottenBackups: Резервные копии забытых аккаунтов
+Cleaning_Understand: Я понимаю, что делают эти кнопки.
+Restore_Info: >
+  Если вы ранее «забыли» аккаунт, вы можете восстановить их здесь.<br /> Это добавляет их обратно в файл loginusers.vdf, позволяя вам переключиться между ними.
+Restore_Button_Restore: Восстановить выбранные
+Ignored_RemoveAccounts: Удалить аккаунты из скрытых
+Ignored_Description: Если ранее вы «скрыли» аккаунт, можете показать его снова здесь
+Ignored_Stop: Перестать игнорировать выбранные
+Toast_DataLocationCopying: (1/2) Копирование существующих файлов в новую папку данных пользователя!
+Toast_DataLocationNotCopying: (1/2) В папке уже есть файлы! Данные пользователя не будут перенесены.
+Toast_DataLocationSet: (2/2) Перезапустите Account Switcher, чтобы использовать новую папку!
+Toast_PlaceShortcutFiles: Папка открывается. Поместите ярлыки игр в эту папку и перезапустите Account Switcher.
+Toast_TrayStarted: Трей запущен!
+Toast_TrayRunning: Трей уже открыт
+Toast_TrayUsersMissing: Нет сохраненных пользователей в Трее
+Toast_TrayFail: Не удалось запустить приложение Трея!
+Toast_TrayPosition: "При нажатии на кнопку выхода: я буду сворачиваться в трей! (Справа от начальной панели)"
+Toast_TrayHint: "Подсказка: Ctrl+X, чтобы полностью закрыть меня, или через трей > 'Выйти'"
+Toast_Copied: Скопировано
+Toast_AlreadyProcessing: Аккаунты уже обрабатываются...
+Toast_FailedRestore: Не удалось восстановить аккаунты (смотрите консоль)
+Toast_Restored: Аккаунты восстановлены!
+Toast_ProtocolEnabled: Программа теперь будет отвечать на tcno:\\ в Windows
+Toast_ProtocolEnabledTitle: Протокол добавлен
+Toast_ProtocolDisabled: Программа больше не будет отвечать на tcno:\\
+Toast_ProtocolDisabledTitle: Протокол удален
+Toast_RestartAsAdmin: Пожалуйста, запустите от имени Администратора и повторите попытку.
+Toast_RestartAfterClose: Пожалуйста, перезапустите программу.
+Toast_RestartAfterCloseTitle: Цвет Windows выключен
+Toast_RestartRequired: Перезапустите, чтобы применить изменения
+Toast_LoadStylesheetFailed: Не удалось загрузить таблицу стилей! Подробнее см. в папке данных пользователя.
+Toast_BNet_Private: "Профиль {BTag} приватный"
+Toast_BNet_StatsFail: "Ошибка попытки получения статистики для {BTag}"
+Toast_BNet_CantSwapAccounts: Не удалось переключить аккаунт (Файл "Battle.net.config" повреждён)
+Toast_BNet_CantLoadNotFound: Не удалось найти "Battle.net.config"
+Toast_BNet_CantLoadEmpty: Не удалось загрузить файл аккаунтов Blizzard (Аккаунты не найдены)
+Toast_BNet_CantLoadConfigCorrupt: Не удалось загрузить файл с аккаунтами Blizzard (Файл "Battle.net.config" поврежден)
+Toast_BNet_NamePolicy: BattleTag не соответствует политике именования.
+Toast_ItemNotFound: "{item} не найден"
+Toast_DeletedTotal: "{files} из {totalFiles} удалён. Всего: {totalSize}"
+Toast_CantChangeUsername: Не удалось изменить имя пользователя
+Toast_CantClearLoginFiles: Не удалось удалить старые файлы входа
+Toast_AccountIdReg: Не удалось получить идентификатор аккаунта из реестра!
+Toast_RegFailWrite: Не удалось записать в реестр Windows!
+Toast_RegFailRead: Не удалось прочитать из реестра Windows!
+Toast_RegFailReadSaved: Не удалось прочитать сохраненную запись реестра. В случае неудачи попробуйте удалить и добавить учетную запись снова.
+Toast_RegSaveMissing: Не удалось найти или прочитать данные из сохраненных файлов реестра!
+Toast_DuplicateNames: Не удалось переключить. Дублировать аккаунты с одинаковым именем пользователя?
+Toast_MissingUserId: "Не смог поменяться. Идентификатор пользователя отсутствует. Проверьте Wiki «Распространенные ошибки»."
+Toast_CouldNotLocate: Не удалось найти активного пользователя
+Toast_StreamerModeHint: Личная информация скрыта! - Смотрите настройки
+Toast_StreamerModeTitle: Режим "Стримера"
+Toast_AddAccountsFirst: Откройте платформу из списка и сначала добавьте несколько аккаунтов
+Toast_AddAccountsFirstTitle: Нет сохраненных аккаунтов
+Toast_CantFindImage: Не удалось найти изображение пользователя.
+Toast_CantCreateShortcut: Не удалось создать ярлык
+Toast_ShortcutCreated: Ярлык создан!
+Toast_FailedUpdateCheck: Не удалось проверить наличие обновлений
+Toast_UpdateVerifyFail: Не удалось проверить файлы обновления. Загрузите последнюю версию и замените файлы в вашем каталоге.
+Toast_StartedGame: Запущено {program}
+Toast_Steam_VacCleared: Статус VAC для аккаунтов очищен
+Toast_Steam_CantDeleteVacCache: Не удалось удалить 'LoginCache/Steam/VACCache/SteamVACCache.json'
+Toast_NoFindSteamUserdata: Не удалось найти папку Steam\\userdata
+Toast_Steam_VdfLast: Не удалось загрузить из vdf_last. Возможно, некоторые аккаунты отсутствуют.
+Toast_PartiallyFixed: Частично исправлено
+Toast_Steam_FailedLoginusers: Не удалось загрузить Steam/config/loginusers.vdf
+Toast_Steam_CantLocateLoginusers: Не удалось найти '.../Steam/config/loginusers.vdf'. Попробуйте сначала войти в аккаунт.
+Toast_CantClearImages: Не удалось очистить изображения
+Toast_RefreshedImages: Обновленные изображения
+Toast_ClearForgottenCheck: Вы уверены, что хотите очистить резервные копии забытых аккаунтов?
+Toast_BattleNet_ChangedBTag: BattleTag изменен
+Toast_BattleNet_DeletedBTag: BattleTag удален
+Toast_FetchedRank: Полученный ранг
+Toast_ForgotAccount: Забыли аккаунт
+Toast_ClearedPlatformSettings: "Очищены настройки {platform} в Switcher"
+Toast_ClearedImages: "Очищенные изображения"
+Toast_SavedItem: "Сохранено: {item}"
+Toast_ChangedUsername: Имя пользователя изменено
+Toast_SetUsername: Установить имя пользователя
+Toast_AlreadyLoggedIn: Уже вошли в систему с этой учетной записью! (Изменения не производились)
+Toast_BackupCopy: (1/3) Копирование файлов во временную папку...
+Toast_BackupCompress: (2/3) Сжатие файлов ({size}). Это займет некоторое время...
+Toast_BackupComplete: (3/3) Сжатие завершено! (от{size} до {compressedSize})
+Toast_BackupProgress: "Выполняется резервное копирование (Размер в сжатом виде: {compressedSize})"
+Toast_BackupFail: Сбой резервного копирования - см. журнал!
+Toast_BackupBusy: Резервное копирование уже выполняется!
+Toast_RestoreBusy: Восстановление уже идет!
+Toast_RestoreExt: Распаковка архива.
+Toast_RestoreCopying: Перемещение файлов обратно на платформу
+Toast_RestoreDeleting: Удаление временных файлов
+Toast_RestoreComplete: Восстановление завершено!
+Toast_FailedLoad: Не удалось загрузить {platform}! Нажмите на платформу, чтобы увидеть ошибку.
+Toast_FailedPlatformsLoad: Не удалось загрузить Platforms.json! Убедитесь, что этот файл существует.
+Toast_FailedLoadSettings: "Не удалось загрузить настройки! Загрузка настроек по умолчанию. Добавление \"old\" к имени файла настроек."
+Toast_FailedLoadStats: "Не удалось загрузить статистику! Начиная с чистого листа."
+Toast_FileCopyFail: Не удалось скопировать файлы! Смотрите журнал для более подробной информации.
+Toast_UserDataLoadFail: Не удалось загрузить пользовательские данные {UserData}\\WindowSettings.json. Резервное копирование и сброс! Сохранил ошибку в лог.
+Toast_UpdateCheckFail: Не удалось получить доступ к https://tcno.co/ для проверки обновлений. Это сообщение будет отображаться один раз в день.
+Toast_FailedCreateIcon: Не удалось создать ярлык. Подробности см. в лог файле.
+Tooltip_Restore: Нажмите, чтобы выбрать файл 7z, или перетащите его на эту кнопку.
+Modal_Crowdin_Header: Переводчики Crowdin
+Modal_Crowdin_Info: "Вот все, кто помог перевести эту программу.<br>Пользователи, которые очень помогли в переводе (роль корректировщика)."
+Modal_Info_Creator: Создано TechNobo [Wesley Pyburn]
+Modal_Info_Version: Версия
+Modal_Info_ViewGitHub: Посмотреть на GitHub
+Modal_Info_BugReport: Сообщить о проблеме/предложить улучшение
+Modal_Info_VisitSite: Посетить tcno.co
+Modal_Info_Disclaimer: Отказ от ответственности
+Modal_Title_Info: Информация о TcNo Account Switcher
+Modal_Title_ChangeUsername: Изменить имя пользователя
+Modal_Title_ConfirmAction: TcNo Account Switcher подтвердите действие
+Modal_Title_LocatePlatform: Выбрать папку {platform}
+Modal_Title_AddNew: Добавить новый аккаунт {platform}
+Modal_Title_Background: Установить фоновое изображение
+Modal_Title_Userdata: Изменение расположения пользовательских данных
+Modal_Title_Stats: Ваша статистика
+Modal_SetBackground: 'Выберите изображение или вставьте URL картинки.<br>Оставьте поле пустым, чтобы удалить фон.<br>(Для подробностей см. Темы в Wiki):'
+Modal_SetBackground_Button: Сохранить
+Modal_SetBackground_ChooseImage: Выберите локальное изображение
+Modal_SetUserdata: Выберите путь к папке и нажмите "Сохранить".
+Modal_SetUserdata_ChooseFolder: Выберите папку
+Modal_SetUserdata_Button: Сохранить
+Modal_ChangeUsername: Пожалуйста, введите новое имя пользователя для вашего аккаунта
+Modal_ChangeUsernameType: Изменить {platform} имя пользователя
+Modal_EnterDirectory: "Пожалуйста, выберите папку {platform} (Пример: C:\\Program Files\\{platform})"
+Modal_LocatePlatform: Найти {platformExe}
+Modal_LocatePlatformFolder: Выбрать папку {platform}
+Modal_ConfirmAction: Подтвердите действие
+Modal_AddNew: Пожалуйста, введите имя аккаунта {platform}, в который вы вошли.
+Modal_AddCurrentAccount: Добавить текущий аккаунт {platform}
+Modal_SetImageHeader: Выберите изображение профиля
+Modal_SetImage: Сохранить
+Status_SelectedAccount: "Выбрано: {name}"
+Status_Init: "Статус: инициализация"
+Status_ClosingPlatform: Закрытие {platform}
+Status_ClosingPlatformFailed: Не удалось закрыть {platform}
+Status_StartingPlatform: Запуск {platform}
+Toast_StartingPlatformFailed: Не удалось запустить {platform}! Смотрите журнал для более подробной информации.
+Toast_UrlAdminErr: Вы не можете запускать файлы .url от имени администратора. Попробуйте другой тип ярлыка. Запуск от имени пользователя.
+Status_UpdatingFile: "Обновление {file}"
+Status_UpdatingRegistry: Обновление реестра Windows
+Status_FailedLog: Действие не выполнено. Подробности смотрите в журнале.
+Status_WaitingForClose: "Ожидание закрытия {processName} ({timeout}{timeLimit})"
+Status_WaitingForMultipleClose: "Ожидание закрытия {processName} и {count} других ({timeout}/{timeLimit} секунд)"
+Status_GetUniqueId: Сбор уникального идентификатора пользователя
+Status_CopyingFiles: Копирование пользовательских файлов...
+Status_HandlingImage: Обработка изображения профиля учетной записи
+Context_SwapTo: Перейти на аккаунт
+Context_CreateShortcut: Создать ярлык на рабочем столе
+Context_CreateShortcutSubmenu: Создать ярлык на рабочем столе...
+Context_ChangeImage: Изменить изображение
+Context_BNet_SetBTag: Установить BattleTag
+Context_BNet_DelBTag: Удалить BattleTag
+Context_BNet_GetRAnk: Обновить рейтинг
+Context_ChangeName: Изменить имя программы
+Context_LoginAsSubmenu: Войти как...
+Context_UsernameSubmenu: Имя пользователя...
+Context_RefreshName: Обновить имя
+Context_CopySubmenu: Копировать...
+Context_CopyProfileSubmenu: Копировать профиль...
+Context_CommunityUrl: Ссылка профиля
+Context_CommunityUsername: Имя профиля
+Context_LoginUsername: Логин
+Context_CopySteamIdSubmenu: Копировать SteamID...
+Context_Steam_Id: SteamID [STEAM0:~]
+Context_Steam_Id3: SteamID3 [U:1:~]
+Context_Steam_Id32: SteamID32
+Context_Steam_Id64: SteamID64 7656~
+Context_Steam_OpenUserdata: Открыть папку пользователя
+Context_CopyOtherSubmenu: Копировать другое...
+Context_HidePlatform: Скрыть платформу
+Context_ExportAccList: Экспорт списка аккаунтов
+Context_RunAdmin: Запуск от имени администратора
+Context_Hide: Скрыть
+Title_BNet_Settings: TcNo Account Switcher - Настройки BattleNet
+Title_BNet_ManageIgnored: TcNo Account Switcher - Управление игнорируемыми аккаунтами BattleNet
+Title_Platforms_Settings: TcNo Account Switcher - Настройки платформ
+Title_AccountsList: TcNo Account Switcher - {platform}
+Title_TextEditor: TcNo Account Switcher - текстовый редактор
+Title_Settings: TcNo Account Switcher - Настройки
+Title_Steam_Cleaning: TcNo Account Switcher - Очистка Steam
+Title_Steam_Settings: TcNo Account Switcher - Настройки Steam
+Title_Template_Settings: TcNo Account Switcher - Настройки {platformName}
+Installer_Downloading: Загрузка {file}
+Installer_DownloadFinished: Загрузка {file} завершена
+Installer_Installing: "Установка: {runtime}"
+Installer_RuntimeTitle: TcNo Account Switcher - установщик библиотек
+Installer_Welcome: Добро пожаловать в TcNo Account Switcher - Установщик библиотек
+Installer_InstalledRuntimes: "Установленные библиотеки:"
+Installer_ErrorRuntime: "Одна или несколько библиотек не установлены:"
+Installer_RuntimeNote: "[~{size1} МБ + ~{size2} МБ во время установки]"
+Installer_TotalSize: "Общий размер загрузки: ~{size} МБ"
+Installer_AnyKeyStart: Нажмите любую клавишу, чтобы начать загрузку...
+Runtime_WebView2: Microsoft WebView2 Runtime
+Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} Среда выполнения
+Installer_FailedFolder: "Не удалось создать папку:"
+Installer_FailedWV: "Не удалось загрузить и установить Microsoft WebView2 Runtime. Чтобы загрузить: 1. Щелкните по ссылке ниже: {link} 2. Нажмите 'Download Hosting Bundle' в разделе Run server apps."
+Installer_FailedDR: "Не удалось загрузить и установить .NET 5 Desktop Runtime. Скачайте его здесь:"
+Installed_FailedASP: "Не удалось загрузить и установить ASP.NET Core {version} Runtime. Чтобы загрузить: 1. Перейдите по ссылке ниже: {link} 2. Нажмите «Download x64» в разделе «Run Desktop apps»."
+Installer_Ready: "Одна или несколько готовы к установке. Если появится запрос о необходимости установки, нажмите \"Да\"."
+Installer_PressStart: Нажмите любую клавишу, чтобы начать установку...
+Installer_VerifyMin: "Проверьте соответствие минимальным рекомендованным требованиям:"
+Installer_VerifyAlready: "Похоже, что все установлено. Проверьте соответствие минимальным рекомендуемым требованиям:"
+Installer_Complete: Это должно быть все. Основная программа, TcNo-Acc-Switcher.exe, запустится автоматически.
+Installer_Complete2: "Если не сработало, пожалуйста, обратитесь к инструкции по установке, здесь: {link}"
+Global_FatalNext: "Произошла фатальная ошибка! Этот журнал ошибок будет автоматически передан при следующем запуске."
+Tray_Error: Ошибка отображения в панеле задач
+Tray_NoAccs: "Не найдено ни одного аккаунта.\nПопробуйте сначала переключить аккаунты или найдите файл 'Tray_Users.json'"
+Tray_Switch: "Переключиться на {account}"
+Tray_CantOpenExe: "Не удалось открыть main.exe. Убедитесь, что он существует.\n\nЯ попытался открыть:"
+Tray_LaunchFail: "TcNo Account Switcher - Сбой запуска из панели задач"
+Updater_Duplicate: Обнаружен еще один экземпляр TcNo Account Switcher Updater.
+Updater_Unknown: "Неизвестный аргумент: {arg}"
+Updater_NeedsAdmin: Эта программа должна быть запущена от администратора!
+Updater_StatusChecking: Проверка версии
+Updater_FailedVersionCheck: "Не удалось получить версию. Нажмите \"Проверить\" для обновления и проверки файлов"
+Updater_PressBelow: Нажмите кнопку ниже!
+Updater_PressBelowStart: Нажмите на кнопку ниже, чтобы начать обновление.
+Updater_PatchApplied: Патч применен!
+Updater_UpdatingAppData: Обновление файлов в AppData!
+Updater_Complete: Все обновления завершены!
+Updater_Checking: Проверка обновлений
+Updater_UpdateToVerify: Для проверки файлов необходимо обновиться.
+Updater_ClosingTcNo: Закрытие экземпляров TcNo Account Switcher (если таковые имеются).
+Updater_Downloading: "Загрузка обновления: {version}"
+Updater_Downloaded: Загрузка завершена.
+Updater_CantExtract: Не удалось извлечь обновление.
+Updater_Verify: Проверить файлы
+Updater_Verifying: Проверка...
+Updater_VerifySkip: Проверка файлов для пропуска всех мелких обновлений и перехода к последней версии.
+Updater_NoConnection: "Не удалось подключиться к tcno.co для проверки файлов. Вы можете вручную скачать установщик с GitHub и переустановить программу для обновления.\n\nОшибка:"
+Updater_NoServer: Не удалось связаться с сервером обновлений
+Updater_Hashlist: Загрузка последнего списка хэшей...
+Updater_CantCheck: Не удается проверить обновления
+Updater_Failed: "ОШИБКА: Некоторые файлы используются и не могут быть обновлены.\n\n1. Убедитесь, что все процессы TcNo полностью закрыты\n(или перезагрузите ПК)\n\n2. Затем нажмите Проверить ниже, или если вы перезагрузились:\n- Откройте программу обновления и проверьте файлы\n    (находятся в папке 'updater' в каталоге установки)"
+Updater_Missing: "ОТСУТСТВУЕТ ФАЙЛ: {file}"
+Updater_FileMismatch: "Файл: {file} имеет MD5: {md5} ОЖИДАЕТСЯ: {value}"
+Updater_DownloadingWeb: Загрузка файла с сайта...
+Updater_UnpackingAppData: Копирование файлов в %AppData%/TcNo Account Switcher... (если не установлено иное)
+Updater_VerifyComplete: Файлы проверены!
+Updater_UpdateFound: "Найдено обновление: {name} [{updateSize}]"
+Updater_TotalFound: "Всего обновлений найдено: {x}"
+Updater_TotalSize: "Общий размер: {size}"
+Updater_AwaitingUser: Ожидание ввода пользователя...
+Updater_UpToDate: "Вы используете последнюю версию.\n:)"
+Updater_FailedDecode: Скорее всего, это связано с тем, что я (TechNobo) выпустил обновление и допустил опечатку, которая нарушила файл обновления .json. Дайте мне знать :)
+Updater_FailedDecodeTitle: Не удалось декодировать список обновлений
+Updater_Extracting: Извлечение патча
+Updater_Applying: Применение патча...
+Updater_Moving: Перемещение файлов...
+Updater_Title: TcNo Account Switcher Updater
+Updater_Started: Начато
+Updater_Start: Запустить TcNo Account Switcher
+Updater_Begin: Начать обновление
+Updater_Exit: Выход
+FatalError: Произошла фатальная ошибка!
+Online: В сети
+OnlineDefault: В сети (По умолчанию)
+Offline: Не в сети
+Invisible: Невидимка
+Busy: Не беспокоить
+Away: Нет на месте
+Snooze: Не беспокоить
+LookingToTrade: Хочет обменяться
+LookingToPlay: Хочет играть
+Unrecognized_EPersonaState: Нераспознанный ePersonaState
+Reg_DoesntExist: "{subKey} не существует."
+Reg_DoesntContain: "{subKey} не содержит {val}"
+Reg_Removing: Удаление {subKey}\\{val}
+PngInvalid_Format: Требуемый формат пикселя - пиксельный формат.{x}.
+PngRequired: Требуемый формат изображения - png.
+PngDimensions: Размер должен быть меньше или равен {MaxIconWidth}x{MaxIconHeight}
+ThemeSyntaxAnd: "Возникла синтаксическая ошибка (подробнее ниже)! И:"
+ThemesNotFound: "Не удалось найти папку \"themes\" в каталоге TcNo Account Switcher. Она (особенно папка «Dracula_Cyan») требуется для запуска программы.\nВы можете запустить Updater в папке «Updater», чтобы проверить файлы и восстановить их."
+Yes: "Да"
+No: "Нет"
+NoDefault: Нет (по умолчанию)
+Ok: "ОК"
+Forget: Забыть
+Notice: Уведомление
+Error: Ошибка
+ErrorDetails: "ОШИБКА: {ex}"
+Failed: Неудачный
+Success: Успешно
+NotFound: Не найдено
+Done: Готово
+Working: Работающий...
+ForName: "Для: {name}"
+DeletedFiles: Удаленные файлы
+FileFoldersToClear: "Список файлов/папок для очистки:"
+CouldNotFindX: Не удалось найти {x}
+CouldNotCloseX: Не удалось закрыть {x}!
+DirectoryNotFound: Каталог не найден
+DirectoryNotFoundFolder: "Каталог не найден: {folder}"
+DeletingFile: "Удаление: {file}"
+DeletingFolder: "Удаление папки: "
+CouldntDeleteX: "ОШИБКА: НЕ УДАЛОСЬ УДАЛИТЬ: {x}"
+CouldntDeleteUndefined: "ОШИБКА: НЕ УДАЛОСЬ УДАЛИТЬ НЕОПРЕДЕЛЕННЫЙ ФАЙЛ"
+Prompt_RestartAsAdmin: "<h3><bold>Программа будет перезапущена от имени администратора</bold></h3><p>Выберите \"Да\" в контроле учетных записей.</p>"
+Prompt_ForgetSteam: >
+  <h3 style='color:red'>Вы собираетесь забыть аккаунт!</h3> <h4>Что это значит?</h4> <p> — Steam больше не будет показывать аккаунт в режиме Big Picture и не будет запоминать пароль.<br/> — TcNo Account Switcher также больше не будет показывать аккаунт, пока вы снова не войдете в него через Steam.</p> <p>Ваш аккаунт останется нетронутым. Он просто будет забыт на этом компьютере.</p><h4>Вы поняли?</h4>
+Prompt_ForgetAccount: >
+  <h3 style='color:red'>Вы собираетесь забыть аккаунт!</h3> <h4>Что это значит?</h4> <p>TcNo Account Switcher больше не будет показывать аккаунт,<br/> пока вы снова не войдете в него через {platform}.</p> <p>Ваш аккаунт останется нетронутым. Он просто будет забыт на этом компьютере.</p> <h4>Вы поняли?</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>Вы собираетесь очистить свою статистику!</h3> <p>Это действие нельзя отменить.</p>
+Platform_DiscordPasteHint: Вставьте в консоль Discord, а затем вставьте результат в поле ввода!
+Platform_ClearCache: Очистить кэш
+Platform_ClearCacheTotal: Удаление {totalFileCount} файлов ({totalSizeMB})
+Platform_DeleteFail: Не удалось удалить некоторые файлы (Возможно запущена программа?)
+Platform_CouldNotDeleteLog: Невозможно удалить файл! Проверьте {logPath}
+Error_FileAccessDenied: Ошибка доступа к файлу! Проверьте {logPath}
+Error_RequiredFileVerify: Требуемый файл не найден. Убедитесь, что папки x64 и x86 существуют в корневой папке. Если их нет, запустите TcNo-Acc-Switcher-Updater.exe и проверьте файлы.
+Tooltip_Settings: Настройки
+Tooltip_Info: Информация
+Tooltip_ManagePlatforms: Показать или скрыть платформы
+Tooltip_ExpandShortcuts: Выбор игр и ярлыков
+Tooltip_ShortcutFolder: Открыть папку быстрого доступа. Скопируйте в неё ярлыки, чтобы добавить их для быстрого доступа.
+Tooltip_Backup: Резервное копирование файлов/папок конфигурации, как указано в настройках платформы.
+Tooltip_BackupAll: Резервное копирование ВСЕХ файлов/папок конфигурации, включая изображения и другие большие файлы.
+Tooltip_ClosingMethod: "Combined лучше всего. Close пытается закрыться напрямую через функцию закрытия, а TaskKill использует CMD (Лучше всего, если Combined не работает)"
+Tooltip_StartingMethod: "Default лучше. Direct не имеет контроля над уровнем администратора или UAC. Он работает с того же уровня (или выше, но не ниже), что и программа"
+Tooltip_CurrentAccount: В настоящее время вы вошли в эту учетную запись.
+Discord_Status: В настоящее время переключение аккаунтов.
+Discord_StatusDetails: "Аккаунтов переключено: {number}"
+Website: Интернет сайт

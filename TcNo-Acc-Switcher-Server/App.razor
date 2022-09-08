@@ -14,7 +14,6 @@
 
 @inject NavigationManager NavigationManager
 @using TcNo_Acc_Switcher_Globals
-@using Microsoft.AspNetCore.WebUtilities
 @using TcNo_Acc_Switcher_Server.State.DataTypes
 @using TcNo_Acc_Switcher_Server.State.Interfaces
 @implements IDisposable
@@ -79,7 +78,7 @@
             var platformStrings = uri.Split("/");
             TemplatedPlatformState.LoadTemplatedPlatformState(JsRuntime, TemplatedPlatformSettings);
             var possiblePlatform = WindowSettings.Platforms.FirstOrDefault(x => x.PossibleIdentifiers.Contains(platformStrings[0]) || x.Name == platformStrings[0]);
-            
+
             if (possiblePlatform is not null)
             {
                 // Replace entire string if no "/"

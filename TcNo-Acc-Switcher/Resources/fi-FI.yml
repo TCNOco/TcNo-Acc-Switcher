@@ -1,0 +1,440 @@
+---
+Update: Päivitys saatavilla! Klikkaa tästä aloittaaksesi sen.
+Header_ChooseLanguage: 'Valitse kieli:'
+BattleNet_ShowSR: Näytä Overwatchin SR ja käytä Overwatch-profiilikuvaa.
+Steam_ShowSteamID: Näytä SteamID
+Steam_ShowVac: Näytä VAC-tila
+Steam_CheckVac: Tarkista tilin VAC tila
+Steam_ShowLimited: Näytä Rajoitettu Tila
+Steam_ShowAccUsername: Näytä tilin käyttäjätunnus
+Steam_Tray_AccountName: Näytä tilin nimi [ei kaverin nimi]
+Steam_OverrideDefaultState: "Ohita oletuskirjautumistila:"
+Button_AddNew: Lisää Uusi
+Button_SaveCurrent: Tallenna Nykyinen
+Button_SaveFile: Tallenna Tiedosto
+Button_Cancel: Peruuta
+Button_Login: Kirjaudu
+Button_Close: Sulje
+Button_RefreshImages: Päivitä kuvat
+Button_ResetSettings: Nollaa asetukset
+Button_AdvancedCleaning: Edistynyt siivoaminen...
+Button_ClearLog: Tyhjennä loki
+Button_WikiInfo: Lisää Tietoja (Wiki)
+Button_ManagePlatforms: Hallinnoi alustoja
+Button_Backup: Varmuuskopioida
+Button_BackupAll: Varmuuskopioi kaikki
+Button_Restore: Palauttaa
+Button_OpenBackup: Avaa varmuuskopiokansio
+Settings_Shortcut: ' {platform} Switcher Desktop pikakuvake'
+Settings_Admin: Suorita {platform} ylläpitäjänä
+Settings_ImageExpiry: 'Päivää ennen profiilikuvien vanhenemista:'
+Settings_Header_AppWide: Sovelluksen laajuiset asetukset
+Settings_Header_GeneralSettings: Yleiset asetukset
+Settings_Header_ExtraPlatforms: Alustan asetukset
+Settings_Header_GeneralTools: Yleiset Työkalut
+Settings_Header_OtherTools: Muut Työkalut
+Settings_Header_TraySettings: Kaukalon asetukset
+Settings_Header_OpenGameFolders: Avaa pelikansiot
+Settings_Header_BackupRestore: Varmuuskopioi ja palauta alustan asetukset
+Settings_Header_Language: Kieli
+Settings_Header_System: Järjestelmä
+Settings_Header_Theme: Teema
+Settings_Header_Program: Ohjelmoida
+Settings_Header_StatsSharing: Tilastot ja jakaminen
+Settings_Header_Platform: "{platformName} asetusta"
+Settings_TrayMax: 'Suurin muistettavien tilien määrä:'
+Settings_ExtraPlatformsDisabled: Käytöstä poistetut alustat. Ota ne käyttöön napsauttamalla.
+Settings_ExtraPlatformsEnabled: Näkyvät alustat. Napsauta poistaaksesi ne käytöstä.
+Settings_RTL: Näytä teksti oikealta vasemmalle
+Settings_CollectStats: Kerää tilastoja
+Settings_ShareStats: Jaa tilastot ärsyttävästi (suositus)
+Settings_DiscordRpc: Discord Rich Presence (RPC)
+Settings_DiscordRpcShare: Jaa kaikki kytkimet
+Settings_ViewStats: Näytä tilastot
+Settings_ClearStats: Nollaa
+Settings_CurrentLocation: 'Nykyinen asennuspaikka: {path}'
+Settings_CurrentDataLocation: 'Nykyinen käyttäjätietojen sijainti: {path}'
+Settings_SetDataLocation: "[Aseta mukautettu käyttäjätietojen sijainti]"
+Settings_PickFolder: Valitse {platform} kansio
+Settings_OpenFolder: Avaa {platform} kansio
+Settings_ClearForgotten: Tyhjennä Unohtunut
+Settings_ClearAccounts: Tyhjennä Tilit
+Settings_StreamerMode: Ota suoratoistotila käyttöön
+Settings_ExitToTray: Poistuminen minimoi tarjotin
+Settings_DesktopShortcut: Työpöydän pikakuvake
+Settings_StartMenu_ProgramTray: Ohjelma Ja Kaukalo
+Settings_StartMenu_Platform: Alusta
+Settings_Tray_StartWindows: Aloita kaukalo Windowsilla
+Settings_Tray_StartNow: '[Aloita ilmoitusalue nyt]'
+Settings_CurrentStyle: Nykyinen Tyyli
+Settings_ThemeBackground: '[Aseta tausta]'
+Settings_ThemeOpenFolder: '[Avaa teemakansio]'
+Settings_Protocol: 'Ota tcno:\\ protokolla käyttöön (Suositeltu)'
+Settings_StartCentered: Käynnistä keskitetty ohjelma
+Settings_WindowsAccent: Käytä Windows-hehkutuksen väriä
+Settings_HelpTranslate: "[Auta kääntämään]"
+Settings_ViewTranslators: "[Credits]"
+Settings_Header_ActiveBrowser: "(Lisäasetukset) Aseta renderöintimoottori:"
+Settings_Header_ClosingMethod: "(Lisäasetukset) Aseta menetelmä sulkemaan {platform}"
+Settings_Header_StartingMethod: "(Lisäasetukset) Aseta aloitustapa {platform}"
+Settings_AutoStart: "Käynnistä {platform} automaattisesti tilikytkimessä"
+Settings_NoPlatforms: Tällä hetkellä ei ole käytössä alustoja. Ota ne käyttöön valitsemalla valinnaiset alustat alta tai poista käytöstä poistettujen alustojen valinta.
+Settings_MinimizeOnSwitch: Minimoi vaihtaja tilikytkimessä
+Stats_Disabled: "Tilastojen kerääminen on poistettu käytöstä."
+Stats_InDepth: Yksityiskohtainen tilastojen erittely
+Stats_ShareEnabled: "Nämä tilastot jaetaan anonyymisti ja ne lisäävät <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">:aan täällä</a>."
+Stats_ShareDisabled: "Näitä tilastoja EI jaeta anonyymisti, eivätkä ne lisää kokonaismäärään <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">tässä</a>."
+Stats_OperatingSystem: "Käyttöjärjestelmä: "
+Stats_FirstLaunch: "Ensimmäinen käynnistys: "
+Stats_LaunchCount: "Käynnistysten määrä: "
+Stats_CrashCount: "Kaatumismäärä: "
+Stats_MostUsedPlatform: "Eniten käytetty alusta: "
+Stats_TotalTime: "Sovelluksessa vietetty aika yhteensä: "
+Stats_TotalSwitches: "Tilivaihdot yhteensä: "
+Stats_TotalGamesLaunched: "Vaihtimen kautta käynnistetyt sovellukset/pelit yhteensä: "
+Stats_UniqueDaysLong: "Ainutlaatuiset päivät tilien vaihdolla: "
+Stats_LastUpload: "Viimeisin lataus: "
+Stats_SwitcherStats: "Vaihtimen tilastot: "
+Stats_VisitsTotalTime: "Yhteensä {visits} käyntiä, yhteensä {hours} kerta"
+Stats_Accounts: "Tilit: "
+Stats_Switches: "Kytkimet: "
+Stats_FirstActive: "Ensimmäinen aktiivinen: "
+Stats_LastActive: "Viimeksi aktiivinen: "
+Stats_UniqueDays: "Ainutlaatuisia päiviä: "
+Stats_GameShortcuts: "Pelin pikakuvakkeet: "
+Stats_GameShortcutsHotbar: "Pelin pikakuvakkeet (hotbarissa): "
+Stats_GamesLaunched: "Pelit julkaistu: "
+Cleaning_Header_StartMenuShortcuts: 'Käynnistysvalikon pikakuvakkeet:'
+Cleaning_Header_General: Yleinen Puhdistus
+Cleaning_Header_LoginHistory: Puhdista kirjautumishistoriani
+Cleaning_Header_PlatformCleaning: '{platform} Vaihtaja'
+Cleaning_ImportantInfoHeader: 'Tärkeää tietoa:'
+Cleaning_ImportantInfo: >
+  Painikkeen napsauttaminen poistaa siihen liittyvät tiedostot Steam-asennuksestasi.<br /> Poistetaan käyttäjät. df johtaa siihen, että tämä tilin vaihtaja ei näy tilejä.<br /> Sinun täytyy kirjautua niihin Steamin avulla saadaksesi ne takaisin.
+Cleaning_Button_KillProcess: Tapa {platform} prosessi
+Cleaning_Button_ForgottenBackups: Unohtuneiden tilien varmuuskopiointi
+Cleaning_Understand: Ymmärrän, mitä nämä painikkeet tekevät.
+Restore_Info: >
+  Jos olet aiemmin "unohtanut" tili, voit palauttaa ne tänne.<br /> Tämä lisää ne takaisin loginusers.vdf-tiedostoon, jonka avulla voit vaihtaa niihin.
+Restore_Button_Restore: Palauta valitut
+Ignored_RemoveAccounts: Poista tilit ohituslistalta
+Ignored_Description: Jos olet aiemmin "ohittanut" tili, voit näyttää ne uudelleen täällä
+Ignored_Stop: Lopeta ohittaminen valituista
+Toast_DataLocationCopying: (1/2) Kopioidaan olemassa olevia tiedostoja uuteen käyttäjätietokansioon!
+Toast_DataLocationNotCopying: (1/2) Kansiolla on jo tiedostoja! Ei siirrä käyttäjätietoja.
+Toast_DataLocationSet: (2/2) Käynnistä tilin vaihtaja uudelleen käyttääksesi uutta kansiota!
+Toast_PlaceShortcutFiles: Kansio avautuu. Aseta pelin pikakuvakkeet kyseiseen kansioon ja käynnistä tilin vaihtaja uudelleen.
+Toast_TrayStarted: Kaukalo alkoi!
+Toast_TrayRunning: Kaukalo on jo auki
+Toast_TrayUsersMissing: Yhtään tarjotin käyttäjää ei tallennettu
+Toast_TrayFail: Ei voitu käynnistää tarjotinsovellusta!
+Toast_TrayPosition: "Kun napsautan poistumispainiketta: Minä olen Windows Tray! (oikeassa aloituspalkissa)"
+Toast_TrayHint: "Vihje: Ctrl+Napsauta 'X' sulkeaksesi minut kokonaan, tai kaukosäädin > 'Poistu' -painiketta"
+Toast_Copied: Kopioitu
+Toast_AlreadyProcessing: Käsittely jo tilejä...
+Toast_FailedRestore: Tilien palauttaminen epäonnistui (Katso konsoli)
+Toast_Restored: Palautetut tilit!
+Toast_ProtocolEnabled: Tämä ohjelma vastaa nyt tcno:\\ Windowsissa
+Toast_ProtocolEnabledTitle: Protokolla lisätty
+Toast_ProtocolDisabled: Tämä ohjelma ei enää vastaa tcno:\\
+Toast_ProtocolDisabledTitle: Protokolla poistettu
+Toast_RestartAsAdmin: Käynnistä järjestelmänvalvojana ja yritä uudelleen.
+Toast_RestartAfterClose: Käynnistä ohjelma uudelleen suljettujen klikkausten jälkeen.
+Toast_RestartAfterCloseTitle: Korostusväri pois käytöstä
+Toast_RestartRequired: Ota muutokset käyttöön käynnistämällä se uudelleen
+Toast_LoadStylesheetFailed: Tyylitaulukon lataaminen epäonnistui! Katso lisätietoja käyttäjätietokansiosta.
+Toast_BNet_Private: "{BTag}profiili on yksityinen"
+Toast_BNet_StatsFail: "Virhe yritettäessä saada tilastoja {BTag}"
+Toast_BNet_CantSwapAccounts: Ei voitu vaihtaa tilejä (Battle.net.config-tiedosto vioittunut)
+Toast_BNet_CantLoadNotFound: Battle.net.configia ei löytynyt
+Toast_BNet_CantLoadEmpty: Ei voitu ladata tilejä Blizzardille (tilejä ei löytynyt)
+Toast_BNet_CantLoadConfigCorrupt: Blizzardin tilejä ei voitu ladata (Battle.net.config tiedostolle vioittunut)
+Toast_BNet_NamePolicy: BattleTag ei vastannut nimeämiskäytäntöä.
+Toast_ItemNotFound: "{item} ei löytynyt"
+Toast_DeletedTotal: "{files} / {totalFiles} poistettu. Yhteensä: {totalSize}"
+Toast_CantChangeUsername: Käyttäjänimeä ei voitu muuttaa
+Toast_CantClearLoginFiles: Vanhojen kirjautumistiedostojen tyhjentäminen epäonnistui
+Toast_AccountIdReg: Tilitunnuksen saaminen rekisteristä epäonnistui!
+Toast_RegFailWrite: Kirjoittaminen Windows Regsitryyn epäonnistui!
+Toast_RegFailRead: Lukeminen Windows Regsitrystä epäonnistui!
+Toast_RegFailReadSaved: Tallennetun rekisterimerkinnän lukeminen epäonnistui. Yritä poistaa ja lisätä tili uudelleen, jos se ei onnistu.
+Toast_RegSaveMissing: Tallennettujen rekisteritiedostojen tietojen etsiminen tai lukeminen epäonnistui!
+Toast_DuplicateNames: Ei voitu vaihtaa. Monista tilit samalla käyttäjätunnuksella?
+Toast_MissingUserId: "Ei voitu vaihtaa. Käyttäjätunnus puuttuu. Tarkista Wikin 'Yleiset virheet'."
+Toast_CouldNotLocate: Kirjautunut käyttäjä ei löytänyt
+Toast_StreamerModeHint: Yksityinen tieto on piilotettu! - Katso asetukset
+Toast_StreamerModeTitle: Lähetystila
+Toast_AddAccountsFirst: Avaa alustan listalta ja lisää muutama tili ensin
+Toast_AddAccountsFirstTitle: Ei tallennettuja tilejä
+Toast_CantFindImage: Käyttäjien kuvan löytäminen epäonnistui.
+Toast_CantCreateShortcut: Pikakuvaketta ei voi luoda
+Toast_ShortcutCreated: Pikakuvake luotu!
+Toast_FailedUpdateCheck: Päivitysten tarkistus epäonnistui
+Toast_UpdateVerifyFail: Päivittäjätiedostoja ei voida todentaa. Lataa uusin versio ja korvaa tiedostot hakemistoon.
+Toast_StartedGame: Aloitettu {program}
+Toast_Steam_VacCleared: Tilien VAC tila tarkastettu ja hyväksytty
+Toast_Steam_CantDeleteVacCache: Ei voitu poistaa 'LoginCache/Steam/VACCache/SteamVACCache.json'
+Toast_NoFindSteamUserdata: Steami\\\ userdata kansiota ei löytynyt
+Toast_Steam_VdfLast: Pystyi lataamaan vdf_lastista. Joitakin tilejä saattaa puuttua.
+Toast_PartiallyFixed: Osittain kiinteä
+Toast_Steam_FailedLoginusers: Steam/config/loginusers.vdf lataaminen epäonnistui
+Toast_Steam_CantLocateLoginusers: Ei löydy '.../Steam/config/loginusers.vdf'. Yritä kirjautua ensin tilille.
+Toast_CantClearImages: Kuvia ei voitu tyhjentää
+Toast_RefreshedImages: Päivitetyt kuvat
+Toast_ClearForgottenCheck: Oletko varma, että haluat tyhjentää unohdettujen tilien varmuuskopiot?
+Toast_BattleNet_ChangedBTag: BattleTag vaihdettu
+Toast_BattleNet_DeletedBTag: BattleTag poistettu
+Toast_FetchedRank: Haettu sijoitus
+Toast_ForgotAccount: Unohtunut tili
+Toast_ClearedPlatformSettings: "Tyhjennetty {platform} Switcher-asetuksia"
+Toast_ClearedImages: "Poistetut kuvat"
+Toast_SavedItem: "Tallennettu: {item}"
+Toast_ChangedUsername: Käyttäjänimi vaihdettu
+Toast_SetUsername: Aseta käyttäjätunnus
+Toast_AlreadyLoggedIn: Olet jo kirjautunut sisään tällä tilillä! (Ei muutoksia tehty)
+Toast_BackupCopy: (1/3) Kopioidaan tiedostoja väliaikaiseen sijaintiin...
+Toast_BackupCompress: (2/3) Tiedostojen pakkaaminen ({size}). Tämä kestää jonkin aikaa...
+Toast_BackupComplete: (3/3) Pakkaaminen valmis! ({size} - {compressedSize})
+Toast_BackupProgress: "Varmuuskopiointi käynnissä (pakattu koko: {compressedSize})"
+Toast_BackupFail: Varmuuskopiointi epäonnistui – katso loki!
+Toast_BackupBusy: Varmuuskopiointi on jo käynnissä!
+Toast_RestoreBusy: Palautus on jo käynnissä!
+Toast_RestoreExt: Puretaan arkistoa.
+Toast_RestoreCopying: Tiedostojen siirtäminen takaisin alustalle
+Toast_RestoreDeleting: Väliaikaisten tiedostojen poistaminen
+Toast_RestoreComplete: Palautus valmis!
+Toast_FailedLoad: '{platform}:n lataus epäonnistui! Napsauta alustaa nähdäksesi virheen.'
+Toast_FailedPlatformsLoad: Platforms.jsonin lataaminen epäonnistui! Varmista, että tämä tiedosto on olemassa.
+Toast_FailedLoadSettings: "Asetusten lataaminen epäonnistui! Ladataan sen sijaan oletusasetuksia. Lisätään \"vanha\" olemassa olevaan asetustiedoston nimeen."
+Toast_FailedLoadStats: "Tilastojen lataaminen epäonnistui! Alkaen tuoreesta."
+Toast_FileCopyFail: Tiedostojen kopioiminen epäonnistui! Katso lisätiedot lokista.
+Toast_UserDataLoadFail: Käyttäjätietojen {UserData}\\WindowSettings.json lataaminen epäonnistui. Varmuuskopiointi ja nollaus! Virhe tallennettuun lokiin.
+Toast_UpdateCheckFail: Ei saatu yhteyttä osoitteeseen https://tcno.co/ päivitysten tarkistamiseksi. Tämä viesti näkyy kerran päivässä.
+Toast_FailedCreateIcon: Kuvakkeen luominen epäonnistui. Katso lisätietoja lokista.
+Tooltip_Restore: Valitse 7z-tiedosto napsauttamalla tai vedä se tähän painikkeeseen.
+Modal_Crowdin_Header: Crowdinin kääntäjät
+Modal_Crowdin_Info: "Tässä ovat kaikki, jotka auttoivat kääntämään tämän ohjelmiston.<br>Käyttäjät, joiden kieli on vieressä, auttoivat paljon kääntämisessä (oikolukijan rooli)."
+Modal_Info_Creator: TechNobon luoma [Wesley Pyburn]
+Modal_Info_Version: Versio
+Modal_Info_ViewGitHub: Näytä GitHubissa
+Modal_Info_BugReport: Virheraportti/ominaisuuspyyntö
+Modal_Info_VisitSite: Vieraile tcno.co
+Modal_Info_Disclaimer: Vastuuvapauslauseke
+Modal_Title_Info: TcNo Tilin Vaihtajan Tietoja
+Modal_Title_ChangeUsername: Vaihda käyttäjänimi
+Modal_Title_ConfirmAction: TcNo Tilin Vaihtaja Vahvista Toiminta
+Modal_Title_LocatePlatform: Ole hyvä ja etsi {platform} kansio
+Modal_Title_AddNew: Lisää uusi {platform} tili
+Modal_Title_Background: Aseta taustakuva
+Modal_Title_Userdata: Aseta käyttäjätietokansio
+Modal_Title_Stats: Sinun tilastosi
+Modal_SetBackground: 'Valitse kuva tai kirjoita URL-osoite alle.<br>Jätä tyhjäksi ja aseta palautus.<br>(Katso lisäohjausta Wikin teemasta):'
+Modal_SetBackground_Button: Aseta tausta
+Modal_SetBackground_ChooseImage: Valitse paikallinen kuva
+Modal_SetUserdata: Kirjoita kansion polku alle ja napsauta Aseta.
+Modal_SetUserdata_ChooseFolder: Valitse kansio
+Modal_SetUserdata_Button: Aseta käyttäjätiedot
+Modal_ChangeUsername: Anna tilillesi uusi käyttäjätunnus
+Modal_ChangeUsernameType: Muuta {platform} käyttäjätunnusta
+Modal_EnterDirectory: "Syötä {platform}hakemisto sellaisenaan: C:\\ Program Files\\{platform}"
+Modal_LocatePlatform: Paikanna {platformExe}
+Modal_LocatePlatformFolder: Valitse {platform} kansio
+Modal_ConfirmAction: Vahvista toiminto
+Modal_AddNew: Anna nimi käyttäjälle {platform} tilille, johon olet kirjautunut.
+Modal_AddCurrentAccount: Lisää nykyinen {platform} tili
+Modal_SetImageHeader: Aseta profiilikuva
+Modal_SetImage: Aseta kuva
+Status_SelectedAccount: "Valittu: {name}"
+Status_Init: "Tila: alustetaan"
+Status_ClosingPlatform: Sulkeminen {platform}
+Status_ClosingPlatformFailed: '{platform}sulkeminen epäonnistui'
+Status_StartingPlatform: Alkaen {platform}
+Toast_StartingPlatformFailed: Ei käynnistynyt {platform}! Katso lisätiedot lokista.
+Toast_UrlAdminErr: Et voi käyttää .url-tiedostoja järjestelmänvalvojana. Kokeile toista pikakuvaketyyppiä. Käynnistetään tavallisena käyttäjänä.
+Status_UpdatingFile: "Päivitetään {file}"
+Status_UpdatingRegistry: Windowsin rekisterin päivittäminen
+Status_FailedLog: Toiminto epäonnistui. Katso lisätietoja lokista.
+Status_WaitingForClose: "Odotetaan {processName} :n sulkemista ({timeout}{timeLimit})"
+Status_WaitingForMultipleClose: "Odotetaan, että {processName} ja {count} muu sulkeutuvat ({timeout}sekuntia{timeLimit}"
+Status_GetUniqueId: Kerää yksilöllistä käyttäjätunnusta
+Status_CopyingFiles: Kopioidaan käyttäjätiedostoja...
+Status_HandlingImage: Tilin profiilikuvan käsittely
+Context_SwapTo: Vaihda tiliin
+Context_CreateShortcut: Luo Pikakuvake Työpöydälle
+Context_CreateShortcutSubmenu: Luo Pikakuvake...
+Context_ChangeImage: Vaihda kuva
+Context_BNet_SetBTag: Aseta Taistelutagi
+Context_BNet_DelBTag: Poista Taistelutagi
+Context_BNet_GetRAnk: Tyhjennä Sijoitus
+Context_ChangeName: Vaihda vaihtajan nimeä
+Context_LoginAsSubmenu: Kirjaudu nimellä...
+Context_UsernameSubmenu: Käyttäjänimi...
+Context_RefreshName: Päivitä nimi
+Context_CopySubmenu: Kopioi...
+Context_CopyProfileSubmenu: Kopioi Profiili...
+Context_CommunityUrl: Yhteisön URL
+Context_CommunityUsername: Yhteisön Käyttäjätunnus
+Context_LoginUsername: Kirjaudu käyttäjätunnus
+Context_CopySteamIdSubmenu: Kopioi SteamID...
+Context_Steam_Id: SteamID [STEAM0:~]
+Context_Steam_Id3: SteamID3 [U:1:~]
+Context_Steam_Id32: SteamID32
+Context_Steam_Id64: SteamID64 7656~
+Context_Steam_OpenUserdata: Avaa käyttäjätiedot
+Context_CopyOtherSubmenu: Kopioi muu...
+Context_HidePlatform: Piilota alusta
+Context_ExportAccList: Vie tililuettelo
+Context_RunAdmin: Suorita järjestelmänvalvojana
+Context_Hide: Piilottaa
+Title_BNet_Settings: TcNo Tilin Vaihtaja - BattleNet Asetukset
+Title_BNet_ManageIgnored: TcNo Account Switcher - Hallitse ohitettuja BattleNet-tilejä
+Title_Platforms_Settings: TcNo Account Switcher – alustan asetukset
+Title_AccountsList: TcEi Tilin vaihtajaa - {platform}
+Title_TextEditor: TcNo Tilin Vaihtaja - Tekstieditori
+Title_Settings: TcNo Tilin Vaihtaja - Asetukset
+Title_Steam_Cleaning: TcNo Tilin Vaihtaja - Steam Cleaning
+Title_Steam_Settings: TcNo Account Switcher - Steam-asetukset
+Title_Template_Settings: TcNo Account Switcher - {platformName} asetusta
+Installer_Downloading: Ladataan {file}
+Installer_DownloadFinished: Lataaminen valmis {file}
+Installer_Installing: "Asennus: {runtime}"
+Installer_RuntimeTitle: TcNo Account Switcher - Runtime installer
+Installer_Welcome: Tervetuloa TcNo Account Switcher - Runtime installer
+Installer_InstalledRuntimes: "Tällä hetkellä asennetut ajat:"
+Installer_ErrorRuntime: "Yhtä tai useampaa ajokertaa ei ole asennettu:"
+Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB asennuksen aikana]"
+Installer_TotalSize: "Latauksen koko yhteensä: ~{size} MB"
+Installer_AnyKeyStart: Paina mitä tahansa näppäintä aloittaaksesi lataamisen...
+Runtime_WebView2: Microsoft WebView2 Runtime
+Runtime_Desktop: Microsoft .NET 5 Työpöytä Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} Runtime
+Installer_FailedFolder: "Kansion luonti epäonnistui:"
+Installer_FailedWV: "Microsoft WebView2 suorituksen lataaminen ja asentaminen epäonnistui. Lataa: 1. Klikkaa alla olevaa linkkiä: {link} 2. Napsauta 'Download Hosting Bundle' Suorita palvelinsovelluksissa."
+Installer_FailedDR: ".NET 5 -työpöydän lataus ja asennus epäonnistui. Lataa se täältä:"
+Installed_FailedASP: "{version} Runtimen lataaminen ja asentaminen epäonnistui. Lataaminen: 1. Napsauta alla olevaa linkkiä: {link} 2. Napsauta \"Download x64\" kohdassa Run Desktop Apps."
+Installer_Ready: "Yksi tai useampi on valmis asennettavaksi. Jos ja kun kehotetaan, jos haluat asentaa, paina 'Kyllä'."
+Installer_PressStart: Paina mitä tahansa näppäintä aloittaaksesi asennuksen...
+Installer_VerifyMin: "Varmista, että täytät suositellut vähimmäisvaatimukset:"
+Installer_VerifyAlready: "Näyttää siltä, että kaikki on asennettu. Varmista, että täytät suositellut vähimmäisvaatimukset:"
+Installer_Complete: Siinä pitäisi olla kaikki. Pääohjelma, TcNo-Acc-Switcher.exe, käynnistyy automaattisesti.
+Installer_Complete2: "Jos se ei toimi, katso asennusohjeita, tässä: {link}"
+Global_FatalNext: "Vakava virhe tapahtui! Tämä kaatumisloki lähetetään automaattisesti seuraavan käynnistyksen."
+Tray_Error: Virhe Kaukalossa
+Tray_NoAccs: "Tilejä ei löytynyt.\nYritä vaihtaa tilejä ensin tai paikanna 'Tray_Users.json'"
+Tray_Switch: "Siirrytään: {account}"
+Tray_CantOpenExe: "Päätiedostoa .exe ei voitu avata. Varmista, että se on olemassa.\n\nyritin avata:"
+Tray_LaunchFail: "TcNo Account Switcher - Tarinan käynnistys epäonnistuu"
+Updater_Duplicate: Toinen TcNo Tilin vaihtaja Updater instanssi on havaittu.
+Updater_Unknown: "Tuntematon argumentti: {arg}"
+Updater_NeedsAdmin: Tämä ohjelma täytyy suorittaa järjestelmänvalvojana!
+Updater_StatusChecking: Tarkistetaan versiota
+Updater_FailedVersionCheck: "Versiota ei voitu hakea. Paina \"Vahvistus\" päivittääksesi ja varmistaaksesi tiedostot"
+Updater_PressBelow: Paina alla olevaa painiketta!
+Updater_PressBelowStart: Napsauta alla olevaa painiketta aloittaaksesi päivityksen.
+Updater_PatchApplied: Paikkaus asetettu!
+Updater_UpdatingAppData: Päivitetään tiedostoja AppDatassa!
+Updater_Complete: Kaikki päivitykset valmis!
+Updater_Checking: Tarkistetaan päivityksiä
+Updater_UpdateToVerify: Vahvistaaksesi tiedostot sinun täytyy päivittää ensin.
+Updater_ClosingTcNo: Suljetaan TcNo Account Switcher instansseja (jos sellaisia on).
+Updater_Downloading: "Ladataan päivitystä: {version}"
+Updater_Downloaded: Lataus valmis.
+Updater_CantExtract: Päivityksen purku epäonnistui.
+Updater_Verify: Vahvista tiedostot
+Updater_Verifying: Tarkistetaan...
+Updater_VerifySkip: Tarkistetaan tiedostot ohittamaan kaikki pienet päivitykset, ja vain hyppää viimeisimpää.
+Updater_NoConnection: "Tiedostoja tcno.co ei saatu yhteen. Voit yrittää ladata asentajan manuaalisesti GitHub-sivulta ja asentaa uudelleen päivitykseen.\n\nVirhe:"
+Updater_NoServer: Päivityspalvelimeen ei saatu yhteyttä
+Updater_Hashlist: Ladataan viimeisintä tiivistelmäluetteloa...
+Updater_CantCheck: Päivityksiä ei voi tarkistaa
+Updater_Failed: "VIRHE: Jotkin tiedostot ovat käytössä eikä niitä voi päivittää.\n\n1. Varmista, että kaikki TcNo prosessit ovat täysin suljettuja\n(tai käynnistä PC)\n\n2. Klikkaa sitten Vahvista alla. tai jos käynnistät uudelleen:\n- Avaa tämä päivitys ja vahvista tiedostot\n    (sijaitsee 'updater' kansiossa asennushakemistossa)"
+Updater_Missing: "TIEDONANNOS: {file}"
+Updater_FileMismatch: "Tiedosto: {file} on MD5: {md5} EXPECTED: {value}"
+Updater_DownloadingWeb: Ladataan tiedostoa sivustolta...
+Updater_UnpackingAppData: Kopioidaan tiedostoja %AppData%/TcNo Account Switcher... (ellei toisin aseteta)
+Updater_VerifyComplete: Vahvistetut tiedostot!
+Updater_UpdateFound: "Päivitys löytyi: {name} [{updateSize}]"
+Updater_TotalFound: "Päivityksiä löytyi yhteensä: {x}"
+Updater_TotalSize: "Koko yhteensä: {size}"
+Updater_AwaitingUser: Odotetaan käyttäjän tuloa...
+Updater_UpToDate: "Olet ajan tasalla.\n:)"
+Updater_FailedDecode: Tämä johtuu todennäköisesti minulle (TechNobo) työntää päivitystä, ja tehdä typo, joka rikkoi . pojan päivitystiedosto. Anna minun tietää :)
+Updater_FailedDecodeTitle: Päivityslistan purkaminen epäonnistui
+Updater_Extracting: Puretaan korjaustiedostoja
+Updater_Applying: Asetetaan laastaria...
+Updater_Moving: Siirretään tiedostoa...
+Updater_Title: TcNo Tilin Vaihtajan Päivitys
+Updater_Started: Aloitettu
+Updater_Start: Käynnistä TcNo Tilin Vaihtaja
+Updater_Begin: Aloita päivitys
+Updater_Exit: Poistu
+FatalError: Vakava virhe tapahtui!
+Online: Paikalla
+OnlineDefault: Online (Default)
+Offline: Offline-tilassa
+Invisible: Näkymätön
+Busy: Varattu
+Away: Poissa
+Snooze: Torkku
+LookingToTrade: Kauppaan katsominen
+LookingToPlay: Haetaan pelaamista
+Unrecognized_EPersonaState: Tuntematon ePersonaState
+Reg_DoesntExist: "{subKey} ei ole olemassa."
+Reg_DoesntContain: "{subKey} ei sisällä {val}"
+Reg_Removing: Poistetaan {subKey}\\{val}
+PngInvalid_Format: Vaadittu pikselin muoto on PixelFormat.{x}.
+PngRequired: Vaadittu kuvamuoto on kannettava verkkograafinen (png).
+PngDimensions: Mitat on oltava pienempi tai yhtä suuri kuin {MaxIconWidth}x{MaxIconHeight}
+ThemeSyntaxAnd: "Syntaksivirhe kohdattiin (lisätietoja alla)! AND:"
+ThemesNotFound: "\"Themes\"-kansiota ei löytynyt TcNo Account Switcherin hakemistosta. Tämä (etenkin 'Dracula_Cyan'-kansio) tarvitaan tämän ohjelmiston suorittamiseen.\nVoit suorittaa Updaterin \"päivitys\"-kansiossa tarkistaaksesi tiedostot ja palauttaaksesi nämä puuttuvat tiedostot."
+Yes: "Kyllä"
+No: "Ei"
+NoDefault: Ei (Oletus)
+Ok: "Ok"
+Forget: Unohda
+Notice: Huomautus
+Error: Virhe
+ErrorDetails: "VIRHE: {ex}"
+Failed: Epäonnistui
+Success: Onnistui
+NotFound: Ei löydy
+Done: Valmis
+Working: Työskentelee...
+ForName: "Vastaanottaja: {name}"
+DeletedFiles: Poistetut tiedostot
+FileFoldersToClear: "Luettelo tyhjennettävistä tiedostoista/kansioista:"
+CouldNotFindX: Kohdetta {x} ei löytynyt
+CouldNotCloseX: Ei voitu sulkea {x}!
+DirectoryNotFound: Hakemistoa ei löytynyt
+DirectoryNotFoundFolder: "Hakemistoa ei löydy: {folder}"
+DeletingFile: "Poistetaan: {file}"
+DeletingFolder: "Poistetaan Kansiota: "
+CouldntDeleteX: "VIRHE: VÄHINTÄÄN POISTA {x}"
+CouldntDeleteUndefined: "VIRHE: VÄHINTÄÄN POISTA TIEDOSTOLLE"
+Prompt_RestartAsAdmin: "<h3><bold>Tämä ohjelma käynnistyy uudelleen ylläpitäjänä</bold></h3><p>Hit \"Kyllä\" UAC:ssa, kun sitä pyydetään ylläpitäjälle.</p>"
+Prompt_ForgetSteam: >
+  <h3 style='color:red'>Olet unohtamassa tilin!</h3> <h4>Mitä tämä tarkoittaa?</h4> <p>- Steamilla ei ole enää Big Picture Mode -tilassa olevaa tiliä, eikä se muista salasanaa.<br/> - TcNo Account Switcher ei myöskään enää näytä tiliä, ennen kuin se kirjataan uudelleen sisään Steamin kautta.</p> <p>Tilisi pysyy ennallaan. Se on vain unohdettu tälle tietokoneelle.</p><h4>Ymmärrätkö?</h4>
+Prompt_ForgetAccount: >
+  <h3 style='color:red'>Olet aikeissa unohtaa tilin!</h3> <h4>Mitä tämä tarkoittaa?</h4> <p>TcEi Tilin vaihtaja ei myöskään enää näytä tiliä,<br/> kunnes se on kirjautunut uudelleen {platform}kautta ja lisätty luetteloon.</p> <p>Tilisi pysyy koskemattomana. Se on juuri unohdettu tällä tietokoneella.</p> <h4>Ymmärrätkö sen?</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>Olet tyhjentämässä tilastojasi!</h3> <p>Tätä toimintoa ei voi kumota.</p>
+Platform_DiscordPasteHint: Liitä Discord-konsoliin ja liitä tulos syötteeseen!
+Platform_ClearCache: Tyhjennä välimuisti
+Platform_ClearCacheTotal: Tyhjennetään {totalFileCount} tiedostoa ({totalSizeMB})
+Platform_DeleteFail: Joitakin tiedostoja ei voitu poistaa (Ohjelma saattaa olla käynnissä?)
+Platform_CouldNotDeleteLog: Tiedostoa ei voitu poistaa! Tarkista {logPath}
+Error_FileAccessDenied: Tiedoston käyttö epäonnistui! Tarkista {logPath}
+Error_RequiredFileVerify: Vaadittua tiedostoa ei löytynyt. Varmista, että x64- ja x86-kansiot ovat asennushakemistossa. Jos ei, suorita TcNo-Acc-Switcher-Updater.exe ja tarkista tiedostot.
+Tooltip_Settings: asetukset
+Tooltip_Info: Tiedot
+Tooltip_ManagePlatforms: Näytä tai piilota muut alustat
+Tooltip_ExpandShortcuts: Laajenna Peli- ja pikanäppäinvalikoima
+Tooltip_ShortcutFolder: Avaa pikakuvakekansio. Aseta pikakuvakkeet sinne ja TcNo Account Switcher nähdäksesi ne.
+Tooltip_Backup: Varmuuskopioi konfiguraatiotiedostot/kansiot alustan asetuksissa määritetyllä tavalla.
+Tooltip_BackupAll: Varmuuskopioi KAIKKI asetustiedostot/kansiot, mukaan lukien kuvat ja muut suuret tiedostot.
+Tooltip_ClosingMethod: "Yhdistetty on paras. Sulje yrittää sulkea suoraan sulkemistoiminnon kautta ja TaskKill käyttää CMD:tä (Paras yhdistettynä ei toimi)"
+Tooltip_StartingMethod: "Oletus on paras. Direct ei hallitse järjestelmänvalvojatasoa tai UAC:tä. Se alkaa samalla tasolla (tai korkeammalta – mutta ei alempana) kuin tämä tilin vaihtaja"
+Tooltip_CurrentAccount: Olet tällä hetkellä kirjautuneena tälle tilille.
+Discord_Status: Tiliä vaihdetaan parhaillaan.
+Discord_StatusDetails: "Vaihdettu tili: {number}"
+Website: Verkkosivusto

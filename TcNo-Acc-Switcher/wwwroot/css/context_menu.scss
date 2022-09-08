@@ -1,0 +1,187 @@
+﻿/* ReSharper disable CssNotResolved */
+/* Text selection styling */
+::selection {
+    color: #402B00;
+    background: var(--accent);
+}
+
+.contextmenu {
+    background: #253340;
+    box-shadow: 10px 10px 5px -3px rgba(0, 0, 0, .3);
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    position: absolute;
+    width: 15em;
+    max-height: 29em;
+    margin: 0;
+    padding: 0;
+    border-radius: 0.2em;
+    list-style: none;
+    z-index: 999999;
+
+    &[data-shown=false] {
+        display: none;
+    }
+
+    &[data-shown=true] {
+        display: block;
+    }
+
+    li {
+        border-left: 1em solid transparent;
+        transition: ease 0.2s;
+
+        &.hasSubmenu::after {
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            font-size: 0.9em;
+            margin-right: 0.3em;
+            content: "\f105";
+            color: #fff;
+            position: absolute;
+            right: 6px;
+            transform: translateY(-165%);
+        }
+
+        a {
+            color: #FFFFFF !important;
+            display: block;
+            padding: 10px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: ease 0.2s;
+        }
+    }
+
+    .submenu {
+        display: none;
+        min-height: 100%;
+        list-style: none;
+        box-shadow: 10px 10px 5px -3px rgba(0, 0, 0, .3);
+        flex-direction: column;
+
+        li {
+            color: #FFFFFF;
+            list-style: none;
+            width: 15em;
+
+            a {
+                color: #FFFFFF !important;
+                overflow-wrap: anywhere;
+                text-overflow: ellipsis;
+            }
+        }
+
+        .paginationContainer {
+            width: 100%;
+            border-left: none;
+            flex: 1;
+            display: flex;
+            flex-direction: column-reverse;
+
+            .pagination {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                color: #fff;
+                height: 38px;
+
+                a {
+                    width: 38px;
+                    text-align: center;
+
+                    &:hover {
+                        background: #1B2737;
+
+                        i {
+                            color: var(--accent);
+                        }
+                    }
+
+                    border-left: 0px solid var(--accent);
+                    transition: ease 0.075s;
+
+                    &:first-of-type:hover {
+                        transition: ease 0.075s;
+                        border-left: 2px solid var(--accent);
+                    }
+
+                    &:last-of-type:hover {
+                        transition: ease 0.075s;
+                        border-right: 2px solid var(--accent);
+                    }
+                }
+
+                span {
+                    border-bottom: 2px solid var(--accent);
+                }
+            }
+        }
+
+        .contextSearch {
+            border-left: 2px solid transparent;
+
+            &:hover {
+                border-left: 2px solid var(--accent);
+            }
+
+            input {
+                margin: 0;
+                padding: 9px;
+                width: 100%;
+
+                &:placeholder-shown {
+                    opacity: 0.8;
+                }
+            }
+        }
+    }
+    /* Only second submenu has shortenable names - for now (Game names). Evertyhing else wrap. */
+    .submenu2 > li > a {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    li:hover {
+        border-left: 2px solid #8BE9FD;
+        background: #1B2737;
+
+        a {
+            color: #FFFFFF;
+        }
+
+        > .submenu {
+            display: flex;
+            position: absolute;
+            top: 0;
+            right: -15em;
+            width: 15em;
+            padding: 0;
+            font-size: 1em;
+            animation: expand 0.3s;
+            opacity: 1;
+            background: #253340;
+        }
+    }
+}
+
+@keyframes expand {
+  from {
+    width: 13em;
+    margin-right: 2em;
+    font-size: 1em;
+  }
+
+  to {
+    width: 15em;
+    margin-right: 0;
+    font-size: 1em;
+  }
+}
+
+.filteredItem, .pagedOutItem {
+    display: none !important;
+}

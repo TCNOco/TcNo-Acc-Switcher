@@ -33,9 +33,9 @@ using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server;
-using TcNo_Acc_Switcher_Server.State;
-using TcNo_Acc_Switcher_Server.State.Interfaces;
+using TcNo_Acc_Switcher;
+using TcNo_Acc_Switcher.State;
+using TcNo_Acc_Switcher.State.Interfaces;
 using Point = System.Drawing.Point;
 
 namespace TcNo_Acc_Switcher_Client;
@@ -232,7 +232,7 @@ public partial class MainWindow
             var result = MessageBox.Show("CEF files not found. Download? (No reverts to WebView2, which requires WebView2 Runtime to be installed)", "Required runtime not found!", MessageBoxButton.YesNo, MessageBoxImage.Error);
             if (result == MessageBoxResult.Yes)
             {
-                TcNo_Acc_Switcher_Server.State.Classes.Updates.AutoStartUpdaterAsAdmin("downloadCEF");
+                TcNo_Acc_Switcher.State.Classes.Updates.AutoStartUpdaterAsAdmin("downloadCEF");
                 Environment.Exit(1);
             }
             else
@@ -389,7 +389,7 @@ public partial class MainWindow
                     _ = MessageBox.Show(
                         "WebView2 Runtime is not installed. The program will now download and use the fallback CEF browser. (Less performance, more compatibility)",
                         "Required runtime not found! Using fallback.", MessageBoxButton.OK, MessageBoxImage.Error);
-                    TcNo_Acc_Switcher_Server.State.Classes.Updates.AutoStartUpdaterAsAdmin("downloadCEF");
+                    TcNo_Acc_Switcher.State.Classes.Updates.AutoStartUpdaterAsAdmin("downloadCEF");
                     Globals.DeleteFile(failFile);
                     Environment.Exit(1);
                 }

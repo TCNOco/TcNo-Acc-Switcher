@@ -1,0 +1,243 @@
+﻿@*TcNo Account Switcher - A Super fast account switcher
+    Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses />.*@
+
+@page "/Steam/Settings"
+@using Microsoft.AspNetCore.Components
+@using TcNo_Acc_Switcher_Globals
+@using TcNo_Acc_Switcher.State.DataTypes
+@using TcNo_Acc_Switcher.State.Interfaces
+@using TcNo_Acc_Switcher.Shared.Tooltip
+@using TcNo_Acc_Switcher.State
+@namespace TcNo_Acc_Switcher.Pages.Steam
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
+@inject ISteamSettings SteamSettings
+@inject ISteamState SteamState
+@inject IWindowSettings WindowSettings
+@inject IAppState AppState
+@inject ILang Lang
+@inject IGameStats GameStats
+@inject IStatistics Statistics
+
+
+@code
+{
+    private const string Platform = "Steam";
+    //private readonly Dictionary<string, Dictionary<string, Tuple<bool, string>>> _gamesAndSettings = GameStats.GetAllCurrentlyEnabledGames().ToDictionary(game => game, GameStats.GetAllMetrics);
+    private Dictionary<string, Dictionary<string, string>> _gamesAndSettings = new();
+}
+
+<div class="container mainblock">
+    <div class="row">
+        <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
+            <toastarea class="toastarea" />
+            <h1 class="SettingsHeader">@Lang["Settings_Header_Platform", new{ platformName = "Steam"}]</h1>
+
+            <h2 class="SettingsHeader">@Lang["Settings_Header_GeneralSettings"]</h2>
+            <div class="rowSetting">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="Steam_DesktopShortcut" @bind="SteamState.DesktopShortcut"><label class="form-check-label" for="Steam_DesktopShortcut"></label>
+                </div>
+                <label for="Steam_DesktopShortcut">@Lang["Settings_Shortcut", new { platform = Platform }]<br></label>
+            </div>
+            <div class="rowSetting">
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_Admin" @bind="SteamSettings.Admin"><label class="form-check-label" for="Steam_Admin"></label></div><label for="Steam_Admin">@Lang["Settings_Admin", new { platform = Platform }]<br></label>
+            </div>
+            <div class="rowSetting">
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="AutoStart" @bind="SteamSettings.AutoStart"><label class="form-check-label" for="AutoStart"></label></div><label for="AutoStart">
+                    @Lang["Settings_AutoStart", new { platform = "Steam" }]<br></label>
+            </div>
+            <div class="rowSetting">
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="StartSilent" disabled="@(!SteamSettings.AutoStart)" @bind="SteamSettings.StartSilent"><label class="form-check-label" for="StartSilent"></label></div><label for="StartSilent">@Lang["Steam_StartSilent"]<br></label>
+            </div>
+            <div class="rowSetting rowDropdown">
+                <span>@Lang["Settings_Header_ClosingMethod", new { platform = "Steam" }]</span>
+                <Tooltip Text="@Lang["Tooltip_ClosingMethod"]" Class="dropdown">
+                    <ul class="custom-dropdown-menu dropdown-menu">
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => SteamSettings.SetClosingMethod("Combined")'>Combined (Best)</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => SteamSettings.SetClosingMethod("Close")'>Close</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => SteamSettings.SetClosingMethod("TaskKill")'>TaskKill (Old)</li>
+                    </ul>
+                    <button class="dropdown-toggle" type="button" data-toggle="dropdown">
+                        @SteamSettings.ClosingMethod
+                        <span class="caret"></span>
+                    </button>
+                </Tooltip>
+            </div>
+            <div class="rowSetting rowDropdown">
+                <span>@Lang["Settings_Header_StartingMethod", new { platform = "Steam" }]</span>
+                <Tooltip Text="@Lang["Tooltip_StartingMethod"]" Class="dropdown">
+                    <ul class="custom-dropdown-menu dropdown-menu">
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => SteamSettings.SetStartingMethod("Default")'>Default (Best)</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => SteamSettings.SetStartingMethod("Direct")'>Direct</li>
+                    </ul>
+                    <button class="dropdown-toggle" type="button" data-toggle="dropdown">
+                        @SteamSettings.StartingMethod
+                        <span class="caret"></span>
+                    </button>
+                </Tooltip>
+            </div>
+
+            <div class="rowSetting rowDropdown">
+                <span>@Lang["Steam_OverrideDefaultState"]</span>
+                <div class="dropdown">
+                    <ul class="custom-dropdown-menu dropdown-menu">
+                        <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(-1)">@Lang["NoDefault"]</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(1)">@Lang["Online"]</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(7)">@Lang["Invisible"]</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(0)">@Lang["Offline"]</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(2)">@Lang["Busy"]</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(3)">@Lang["Away"]</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(4)">@Lang["Snooze"]</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(5)">@Lang["LookingToTrade"]</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(6)">@Lang["LookingToPlay"]</li>
+                    </ul>
+                    <button class="dropdown-toggle" type="button" data-toggle="dropdown">
+                        @_selectedState
+                        <span class="caret"></span>
+                    </button>
+                </div>
+            </div>
+            <div class="form-text"><span>@Lang["Settings_ImageExpiry"]</span><input type="number" id="Steam_ImageExpiryTime" min="0" max="365" @bind="SteamSettings.ImageExpiryTime"></div>
+            <div class="form-text"><span>@Lang["Settings_SteamAPIKey"]</span><input type="text" id="Steam_SteamAPIKey" @bind="SteamSettings.SteamWebApiKey" spellcheck="false"><p class="subtext">@Lang["Settings_SteamAPIKey_Note"]</p></div>
+
+            <h2 class="SettingsHeader">@Lang["Settings_Header_AccountDisplay"]</h2>
+            <div>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowAccUsername" @bind="SteamSettings.ShowAccUsername"><label class="form-check-label" for="Steam_ShowAccUsername"></label></div><label for="Steam_ShowAccUsername">@Lang["Steam_ShowAccUsername"]<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowSteamID" @bind="SteamSettings.ShowSteamId"><label class="form-check-label" for="Steam_ShowSteamID"></label></div><label for="Steam_ShowSteamID">@Lang["Steam_ShowSteamID"]<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowLastLogin" @bind="SteamSettings.ShowLastLogin"><label class="form-check-label" for="Steam_ShowLastLogin"></label></div><label for="Steam_ShowLastLogin">@Lang["Steam_ShowLastLogin"]<br></label>
+            </div>
+            <div>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowVAC" @bind="SteamSettings.ShowVac"><label class="form-check-label" for="Steam_ShowVAC"></label></div><label for="Steam_ShowVAC">@Lang["Steam_ShowVac"]<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowLimited" @bind="SteamSettings.ShowLimited"><label class="form-check-label" for="Steam_ShowLimited"></label></div><label for="Steam_ShowLimited">@Lang["Steam_ShowLimited"]<br></label>
+            </div>
+            <div class="rowSetting">
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="ShowShortNotes" @bind="SteamSettings.ShowShortNotes"><label class="form-check-label" for="ShowShortNotes"></label></div><label for="ShowShortNotes">@Lang["Settings_ShowShortNotes"]<br></label>
+            </div>
+
+
+            <h2 class="SettingsHeader">@Lang["Settings_Header_TraySettings"]</h2>
+            <div class="rowSetting">
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_TrayAccountName" @bind="SteamSettings.TrayAccountName"><label class="form-check-label" for="Steam_TrayAccountName"></label></div><label for="Steam_TrayAccountName">@Lang["Steam_Tray_AccountName"]<br></label>
+            </div>
+            <div class="form-text"><span>@Lang["Settings_TrayMax"]</span><input type="number" id="Steam_TrayAccNumber" min="0" max="365" @bind="SteamSettings.TrayAccNumber"></div>
+
+
+            <h2 class="SettingsHeader">@Lang["Settings_Header_GeneralTools"]</h2>
+            <p>@Lang["Settings_CurrentLocation", new { path = SteamSettings.FolderPath }]</p>
+            <div class="buttoncol"><button id="Steam_PickFolder" type="button" @onclick="PickFolder"><span>@Lang["Settings_PickFolder", new { platform = Platform }]</span></button><button id="Steam_CheckVAC" type="button" @onclick="ClearVacStatus"><span>@Lang["Steam_CheckVac"]</span></button></div>
+            <div class="buttoncol"><button id="Steam_ResetSettings" type="button" @onclick="ClearSettings"><span>@Lang["Button_ResetSettings"]</span></button><button id="Steam_ResetImages" type="button" @onclick="ClearImages"><span>@Lang["Button_RefreshImages"]</span></button></div>
+
+
+            <h2 class="SettingsHeader">@Lang["Settings_Header_BackupRestore"]</h2>
+
+            <div>
+                <p>@Lang["Settings_BackupFolders"]</p>
+                <ul>
+                    @foreach (var (backupPath, _) in _backupPaths)
+                    {
+                        <li>@Globals.ExpandEnvironmentVariables(backupPath.Replace("%Platform_Folder%", SteamSettings.FolderPath))</li>
+                    }
+                </ul>
+                <p>@Lang["Settings_BackupIgnores"]</p>
+                <p>@string.Join(", ", _backupFileTypesInclude)</p>
+            </div>
+
+            <div class="buttoncol">
+                <Tooltip Text="@Lang["Tooltip_Backup"]">
+                    <button id="Steam_Backup" type="button" @onclick="() => BackupButton()"><span>@Lang["Button_Backup"]</span></button>
+                </Tooltip>
+                <Tooltip Text="@Lang["Tooltip_BackupAll"]">
+                    <button id="Steam_BackupEverything" type="button" @onclick="() => BackupButton(true)"><span>@Lang["Button_BackupAll"]</span></button>
+                </Tooltip>
+            </div>
+            <div class="buttoncol">
+                <button id="Steam_OpenBackupFolder" type="button" @onclick="OpenBackupFolder"><span>@Lang["Button_OpenBackup"]</span></button>
+                <Tooltip Text="@Lang["Tooltip_Restore"]">
+                    <div class="button" id="Restore" type="button">
+                        <InputFile OnChange="@RestoreFile"/>
+                        <span>@Lang["Button_Restore"]</span>
+                    </div>
+                </Tooltip>
+            </div>
+
+
+            <h2 class="SettingsHeader">@Lang["Settings_Header_OtherTools"]</h2>
+            <div class="buttoncol"><button id="OpenFolder" type="button" @onclick="() => AppState.OpenFolder(SteamSettings.FolderPath)"><span>@Lang["Settings_OpenFolder", new { platform = Platform }]</span></button><button id="Steam_AdvancedClearing" type="button" @onclick='() => NavigationManager.NavigateTo("/Steam/AdvancedClearing")'><span>@Lang["Button_AdvancedCleaning"]</span></button></div>
+            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Lang["Button_Close"]</span></button></div>
+
+            @if (_gamesAndSettings.Count > 0)
+            {
+                <h2 class="SettingsHeader">@Lang["Settings_Header_GameStats"]</h2>
+                <p>@Lang["Settings_GameStats"]</p>
+                @foreach (var (game, settings) in _gamesAndSettings)
+                {
+                    <h3 class="SettingsHeader">@game</h3>
+                @*@foreach (var (metricId, (hidden, metricText)) in settings)*@
+                    @foreach (var (metricId, metricText) in settings)
+                    {
+                        <div class="form-check mb-2">
+                            @*<input class="form-check-input @GameStats.Instance.GetGameIdFromName(game)_Checkboxes" @bind="WindowSettings.GloballyHiddenMetrics[game]." type="checkbox" id="@metricId" checked="@hidden"><label class="form-check-label" for="@metricId"></label><label for="@metricId">@metricText<br></label>*@
+                            <input class="form-check-input" @bind="WindowSettings.GloballyHiddenMetrics[game][metricId]" type="checkbox" id="@metricId"><label class="form-check-label" for="@metricId"></label><label for="@metricId">@metricText<br></label>
+                        </div>
+                    }
+                }
+                <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Lang["Button_Close"]</span></button></div>
+            }
+
+            <SharedSettings />
+            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Lang["Button_Close"]</span></button></div>
+        </div>
+    </div>
+</div>
+<div id="blazor-error-ui">
+    <environment include="Staging,Production">
+        An error has occurred. This application may no longer respond until reloaded.
+    </environment>
+    <environment include="Development">
+        An unhandled exception has occurred. See browser dev tools for details.
+    </environment>
+    <a href="">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+@code
+{
+    protected override async Task OnParametersSetAsync()
+    {
+        await GameStats.SetCurrentPlatform("Steam");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        _gamesAndSettings = GameStats.GetAllCurrentlyEnabledGames().ToDictionary(game => game, GameStats.GetAllMetrics);
+        _selectedState = StateToString(SteamSettings.OverrideState);
+        await InvokeAsync(StateHasChanged);
+
+        await JsRuntime.InvokeVoidAsync("initSavingHotKey");
+        StaticFuncs.SaveSettings = SaveSettings;
+    }
+
+    // Allow saving of shortcut position.
+    // This has to be done as only Static funcs can be invoked by JS.
+    // Save settings with Ctrl+S Hot key
+    private void SaveSettings()
+    {
+        WindowSettings.Save();
+        SteamSettings.Save();
+        Toasts.ShowToastLang(ToastType.Success, "Saved");
+    }
+}

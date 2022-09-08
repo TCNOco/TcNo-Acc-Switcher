@@ -30,9 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TcNo-Acc-Switcher-Server\TcNo-Acc-Switcher-Server.csproj">
-      <EmbedInteropTypes>false</EmbedInteropTypes>
-    </ProjectReference>
     <ProjectReference Include="..\TcNo-Acc-Switcher-Tray\TcNo-Acc-Switcher-Tray.csproj" />
     <ProjectReference Include="..\TcNo-Acc-Switcher-Updater\TcNo-Acc-Switcher-Updater.csproj">
       <Private>true</Private>

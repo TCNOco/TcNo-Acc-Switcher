@@ -1,0 +1,388 @@
+/* ReSharper disable CssNotResolved */
+.modalBG {
+    width: calc(100% - (var(--resizeBarSize) * 2));
+    height: calc(100% - var(--resizeBarSize) - 32px);
+    background: var(--modalBackground);
+    position: fixed;
+    cursor: pointer;
+    z-index: 100;
+    transition: all 150ms ease-in;
+
+    &.modalHidden {
+        pointer-events: none;
+        opacity: 0;
+    }
+
+    &.modalShown {
+        opacity: 1;
+    }
+}
+
+.modalFG {
+  background: #253340;
+  -webkit-box-shadow: 0 0 15px 3px #000;
+  -webkit-box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.84);
+  -moz-box-shadow: 0 0 15px 3px #000;
+  -moz-box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.84);
+  position: absolute;
+  top: calc(50% - 18px);
+  left: 50%;
+  width: fit-content;
+  min-width: 200px;
+  max-width: 90%;
+  min-height: 100px;
+  max-height: 90%;
+  padding: 6px;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 15px 3px #000;
+  box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.84);
+  cursor: default;
+  display: flex;
+  flex-direction: column;
+}
+.versionIdentifier {
+    text-align: right;
+
+    span {
+        color: white;
+    }
+
+}
+
+.modal_header_icon {
+    fill: white;
+    display: block;
+    height: 10px;
+    margin: 12px;
+}
+
+/* Info window */
+
+.infoWindow {
+    display: flex;
+    position: relative;
+    align-items: center;
+    width: fit-content;
+    text-align: center;
+    white-space: nowrap;
+
+    .imgDiv {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        transform: none;
+        transition: all 50ms ease;
+
+        &:hover {
+            transform: scale(1.025);
+        }
+
+        &:active {
+            transform: scale(0.975);
+        }
+    }
+
+    .fullWidthContent {
+        overflow: auto;
+        display: block;
+        width: 100%;
+        color: white;
+
+        .YesNo button {
+            padding: 0.25em 3em !important;
+        }
+    }
+
+    .crowdin {
+        text-align: initial;
+
+        ul {
+            list-style-type: none;
+            padding-left: 1rem;
+            overflow: auto;
+            max-height: 40vh;
+        }
+
+        .heart {
+            color: red;
+            height: 1em;
+            width: 1.1em;
+            margin: 0 2px 2px 2px;
+        }
+
+        .crowdInList {
+            background: #070a0d;
+        }
+    }
+}
+.infoWindow .rightContent {
+    margin-left: 1em;
+    color: white;
+    text-align: left;
+
+    h2 {
+        font-weight: bold;
+    }
+}
+
+#modal_contents .gameStatsWindow {
+    min-width: 400px;
+    color: white;
+
+    .modalScrollSection {
+        width: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        &.centeredContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            .centeredSection {
+                width: fit-content;
+
+                input[type=text] {
+                    margin-left: 2em;
+                }
+            }
+        }
+
+        .rowSetting {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5em;
+        }
+    }
+
+    .rowSetting button, .inputAndButton #set_password {
+        min-width: 6em;
+    }
+
+    .form-text span {
+        margin-right: 1em;
+    }
+}
+
+.linksList {
+    display: flex;
+    flex-direction: column;
+
+    a svg {
+        display: inline-block;
+        width: 2em;
+        margin-right: 0.5em;
+        vertical-align: bottom;
+        padding: 1px;
+    }
+}
+
+#modal_false {
+    color: #8BE9FD !important;
+}
+
+#modal_contents {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 2em;
+    background: #0E1419;
+    overflow: hidden auto;
+
+    .text_and_image {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        img{
+            max-height: 5em;
+            max-width: 10em;
+        }
+    }
+
+    .modal_button_close {
+        right: 0 !important;
+        left: unset !important;
+        width: 35% !important;
+    }
+
+    input[type=text],
+    input[type=password] {
+        margin: 0;
+        height: 43px;
+        padding-bottom: 2px;
+        padding-bottom: 0;
+        border-bottom: 2px solid #888;
+        background: #070A0D;
+    }
+
+    input[type=text],
+    input[type=password]:focus {
+        border-bottom: 2px solid var(--accent);
+    }
+
+    #accNotes {
+        min-width: 497px;
+        min-height: 108px;
+    }
+
+    .inputAndButton {
+        display: flex;
+        margin: 1em 0.5em 1em 0.5em;
+
+        button {
+            margin-left: 0.5em;
+        }
+    }
+
+    .inputWithTitle {
+        display: flex;
+        flex-direction: column;
+        margin: 1em 0.5em 1em 0.5em;
+    }
+
+    .modal-text {
+        margin: 0 0.5em 2px 0.5em;
+        color: white;
+        font-size: 12px !important;
+        display: inline-block
+    }
+
+    h3 {
+        color: white;
+    }
+
+    button {
+        user-select: none;
+        width: auto;
+        margin: 0 0.25em;
+        padding: 0.25em 0.6em;
+        border-width: 0.1em;
+        border-style: solid;
+        border-radius: 0 !important;
+        border-color: #274560;
+        background: #274560;
+        color: white;
+        cursor: pointer;
+        transition: ease-in-out 60ms;
+
+        span {
+            line-height: 2.5em;
+        }
+
+        &.extra {
+            margin: 0 7px 0 0 !important;
+            padding: 3px 10px;
+        }
+
+        &:hover {
+            border-color: #274560;
+            background: #28374E;
+        }
+
+        &:active {
+            border-color: var(--accent);
+            background: #28374E !important;
+        }
+
+        &:focus {
+            box-shadow: none;
+        }
+    }
+}
+
+#FolderLocation {
+  flex-grow: 1;
+}
+
+.modalOK {
+  margin-left: auto !important;
+  padding: 0 2em;
+}
+
+.folder_indicator {
+    width: 6px;
+    margin-right: 0.5em;
+
+    &.found {
+        background: lime;
+    }
+
+    &.notfound {
+        background: red;
+    }
+}
+
+.folder_indicator_bg {
+    padding: 0.35em 0.6em;
+
+    span {
+        padding: 1em 0;
+        color: white;
+        line-height: 2.5em;
+    }
+
+    &.found {
+        background: green;
+
+        span::after {
+            content: " found!";
+        }
+    }
+
+    &.notfound {
+        background: darkred;
+
+        span::after {
+            content: " not found!";
+        }
+    }
+}
+
+.clearLogDiv {
+    margin-top: 0.5em;
+    text-align: right;
+
+    button {
+        width: 40% !important;
+    }
+}
+
+
+.loadingSpinnerText {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+
+    i {
+        margin: 0.5em;
+    }
+
+    h2 {
+        margin-bottom: 0;
+    }
+}
+
+.stat {
+    &Section {
+        display: flex;
+        flex-direction: column;
+        margin-top: 0;
+        margin-bottom: 1rem;
+        overflow: auto;
+        font-size: .875em;
+        font-family: var(--bs-font-monospace);
+        direction: ltr;
+        unicode-bidi: bidi-override;
+        margin: 1em 0px;
+
+        .statIndent {
+            display: flex;
+            flex-direction: column;
+            margin-left: 2em;
+        }
+    }
+}
