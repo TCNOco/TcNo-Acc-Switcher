@@ -5,7 +5,7 @@
              x:Class="TcNo_Acc_Switcher.MainPage"
              BackgroundColor="{DynamicResource PageBackgroundColor}" AnchorX="0" AnchorY="0">
 
-    <BlazorWebView x:Name="Test" HostPage="wwwroot/index.html" Margin="0,-30,0,0" UrlLoading="BlazorWebView_OnUrlLoading">
+    <BlazorWebView x:Name="Test" HostPage="wwwroot/index.html" UrlLoading="BlazorWebView_OnUrlLoading">
         <BlazorWebView.RootComponents>
             <RootComponent Selector="#app" ComponentType="{x:Type local:Main}" />
         </BlazorWebView.RootComponents>
