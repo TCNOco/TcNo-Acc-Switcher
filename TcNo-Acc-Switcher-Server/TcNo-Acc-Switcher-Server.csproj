@@ -20,7 +20,6 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Platforms\Discord\Username.js" />
     <None Remove="TcNoAccSw-Icon-100x100.png" />
   </ItemGroup>
   <ItemGroup>
@@ -46,12 +45,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="TcNoAccSw-Icon-100x100.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Platforms\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <DeploymentContent>true</DeploymentContent>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Update="Resources\af-ZA.yml">

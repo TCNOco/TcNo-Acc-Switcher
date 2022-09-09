@@ -76,8 +76,8 @@
       "CachePaths": [
         "%AppData%\\discord\\Cache\\f_*"
       ],
-      "UsernameModalExtraButtons": "Platforms\\Discord\\Username.html",
-      "UsernameModalCopyText": "Platforms\\Discord\\Username.js",
+      "UsernameModalExtraButtons": "ExtraInfo\\Discord\\Username.html",
+      "UsernameModalCopyText": "ExtraInfo\\Discord\\Username.js",
       "UsernameModalHintText": "Platform_DiscordPasteHint",
       "SearchStartMenuForIcon": true
     },
@@ -116,8 +116,8 @@
       "CachePaths": [
         "%AppData%\\discordcanary\\Cache\\f_*"
       ],
-      "UsernameModalExtraButtons": "Platforms\\Discord\\Username.html",
-      "UsernameModalCopyText": "Platforms\\Discord\\Username.js",
+      "UsernameModalExtraButtons": "ExtraInfo\\Discord\\Username.html",
+      "UsernameModalCopyText": "ExtraInfo\\Discord\\Username.js",
       "UsernameModalHintText": "Platform_DiscordPasteHint",
       "SearchStartMenuForIcon": true
     },
@@ -156,8 +156,8 @@
       "CachePaths": [
         "%AppData%\\discordptb\\Cache\\f_*"
       ],
-      "UsernameModalExtraButtons": "Platforms\\Discord\\Username.html",
-      "UsernameModalCopyText": "Platforms\\Discord\\Username.js",
+      "UsernameModalExtraButtons": "ExtraInfo\\Discord\\Username.html",
+      "UsernameModalCopyText": "ExtraInfo\\Discord\\Username.js",
       "UsernameModalHintText": "Platform_DiscordPasteHint",
       "SearchStartMenuForIcon": true
     },

@@ -72,6 +72,22 @@
 			<DeploymentContent>true</DeploymentContent>
 		</Content>
 	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="ExtraInfo\Discord\Username.html" />
+	  <None Remove="ExtraInfo\Discord\Username.js" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="ExtraInfo\Discord\Username.html">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	    <DeploymentContent>true</DeploymentContent>
+	  </Content>
+	  <Content Include="ExtraInfo\Discord\Username.js">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	    <DeploymentContent>true</DeploymentContent>
+	  </Content>
+	</ItemGroup>
 	<ItemGroup>
 		<None Include="compilerconfig.json" />
 		<None Include="Pages\Templated\Settings.razor" />
