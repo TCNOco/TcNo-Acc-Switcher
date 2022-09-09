@@ -22,6 +22,8 @@ using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
@@ -37,15 +39,15 @@ public class Program
     public static void Main(string[] args)
     {
         // TODO: Add crash handler.
-
+        
         // Create WindowSettings instance. This loads from saved file if available.
         _windowSettings = new WindowSettings();
         LoadPlatforms();
-
+        
         // TODO: Convert "+s:<steamId>[:<PersonaState (0-7)>]", "+s", "+<2-3 letter code>:<unique identifiers>", etc to arguments and process. Then use that below instead of the original args. (If any contain "+")
         // TODO: "logout:<platform>"
         // TODO: "tcno:\\"
-
+        
         #region region Server settings
         var url = new Option<string>(
             new[] {"-u", "--url"},
@@ -61,11 +63,11 @@ public class Program
             new[] { "-nb", "--nobrowser" },
             () => false,
             "When set the system browser window will not open to the TcNo Account Switcher GUI.");
-
+        
         var listPlatforms = new Option<bool>(
             new [] { "--list", "--list-platforms" },
             "List all platforms available, as below.");
-
+        
         var verbose = new Option<bool>(
             new [] { "-vv", "--verbose" },
             "Display lots of extra information in console for debugging.");
@@ -83,14 +85,14 @@ public class Program
             "--state",
             () => ConfigSettingsDefaults.AccountState,
             "Set the profile state for the requested account. Specific platforms only (Only Steam).");
-
+        
         var logout = new Option<bool>(
             new[] {"-l", "--logout"},
             "Log out of the account. Needs `-p` or `--platform` to be set.");
         #endregion
         var rootCommand = new RootCommand(
-            "The TcNo Account Switcher is a Super-fast account switcher for Steam, Battle.net, Epic Games, Origin, Riot, Ubisoft and many others! https://github.com/TcNobo/TcNo-Acc-Switcher/" + Environment.NewLine +
-            "Welcome to the TcNo Account Switcher - Command Line Interface!" + Environment.NewLine +
+            "The TcNo Account Switcher is a Super-fast account switcher for Steam, Battle.net, Epic Games, Origin, Riot, Ubisoft and many others! https://github.com/TcNobo/TcNo-Acc-Switcher/" + Environment.NewLine + 
+            "Welcome to the TcNo Account Switcher - Command Line Interface!" + Environment.NewLine + 
             "Use -h (or --help) for more info.")
         {
             url,
@@ -111,11 +113,11 @@ public class Program
         {
             if (!NativeFuncs.AttachToConsole(-1)) // Attach to a parent process console (ATTACH_PARENT_PROCESS)
                 _ = NativeFuncs.AllocConsole();
-
+            
             // If necessary, use _ = NativeFuncs.FreeConsole(); to remove the console later.
             // TODO: This needs to be tested, but can't until the main Client is compatible.
         }
-
+        
         var commandLineBuilder = new CommandLineBuilder(rootCommand).UseDefaults();
         var parser = commandLineBuilder.Build();
         parser.Invoke(args);
@@ -146,21 +148,21 @@ public class Program
             // TODO: Logout of platform here.
             return;
         }
-
+        
         if (Config.HasPlatform && Config.HasAccountId)
         {
             // TODO: Switch to another account here.
             // Also check Config.HasAccountState
             return;
         }
-
-
+        
+        
         // Set first page
         Config.SetLandingPage();
-
+        
         // Upload crash logs if any, before starting program
         Globals.UploadLogs();
-
+        
         // Run the main server
         MainProgram();
     }
@@ -170,7 +172,7 @@ public class Program
         var platforms = Path.Join(Globals.AppDataFolder, "Platforms.json");
         var platformsJson = File.ReadAllText(platforms);
         _platformsArray = JsonConvert.DeserializeObject<JArray>(platformsJson);
-
+            
         if (_platformsArray == null) return;
         Console.WriteLine("Available platforms: ");
         if (_platformsArray.All(x => x["Name"]?.ToString() != "Steam"))
@@ -203,21 +205,21 @@ public class Program
         private string _platform;
         public string Platform { get => _platform; set => _platform = ExpandStaticPlatforms(value); }
         public bool HasPlatform => string.IsNullOrEmpty(Platform);
-
+        
         public string AccountId;
         public bool HasAccountId => string.IsNullOrEmpty(AccountId);
-
+        
         public int AccountState;
         public bool HasAccountState => AccountState != ConfigSettingsDefaults.AccountState;
 
         public string LandingPage = ConfigSettingsDefaults.LandingPage;
         public bool Logout;
-
+        
         public string GetRootUrl => $"{Url}:{Port}";
         public string GetCompleteUrl => $"{GetRootUrl}{LandingPage}";
         public bool IsLandingPageDefault => LandingPage == ConfigSettingsDefaults.LandingPage;
         public void ResetLandingPage() => LandingPage = ConfigSettingsDefaults.LandingPage;
-
+        
         /// <summary>
         /// When Platform is set, but not AccountId (No action to be performed) -> Redirect user from the landing page to the platform page.
         /// </summary>
@@ -232,7 +234,7 @@ public class Program
                 LandingPage = "/Steam";
                 return;
             }
-
+            
             if (platform is null) return;
             var platformName = platform["Identifiers"]?[0]?.ToString();
             if (string.IsNullOrEmpty(platformName)) return;
@@ -247,7 +249,7 @@ public class Program
         }
     }
     public static readonly ConfigSettings Config = new();
-
+    
 
     private static void LoadConfig(string url, int port, bool noBrowser, bool verbose, string platform, string accountId, int accountState, bool logout)
     {
@@ -263,7 +265,7 @@ public class Program
 
 
     /*
-
+    
     /// <summary>
     /// Handle logout given as arguments to the CLI
     /// </summary>
@@ -292,8 +294,8 @@ public class Program
                 break;
         }
     }
-
-
+    
+    
 
     /// <summary>
     /// Handle account switch requests given as arguments to the CLI
@@ -330,7 +332,7 @@ public class Program
         if (!GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd)) Restart(combinedArgs, true);
         BasicSwitcherFuncs.SwapTemplatedAccounts(account, string.Join(' ', remainingArguments));
     }
-
+    
     */
 
     public static void MainProgram()
