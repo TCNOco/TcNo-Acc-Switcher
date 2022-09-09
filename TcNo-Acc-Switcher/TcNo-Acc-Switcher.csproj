@@ -58,4 +58,36 @@
       <PackageReference Include="YamlDotNet" Version="12.0.0" />
     </ItemGroup>
 
+	<ItemGroup>
+		<Content Update="wwwroot\**\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<DeploymentContent>true</DeploymentContent>
+		</Content>
+		<Content Update="themes\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<DeploymentContent>true</DeploymentContent>
+		</Content>
+		<Content Include="Platforms\**">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<DeploymentContent>true</DeploymentContent>
+		</Content>
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="compilerconfig.json" />
+		<None Include="Pages\Templated\Settings.razor" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Content Update="GameStats.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <Content Update="Platforms.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
+	<ItemGroup>
+	  <None Update="Additional Licenses.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
 </Project>

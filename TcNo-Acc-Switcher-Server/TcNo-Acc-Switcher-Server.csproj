@@ -20,43 +20,8 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Content Remove="compilerconfig.json" />
-  </ItemGroup>
-  <ItemGroup>
     <None Remove="Platforms\Discord\Username.js" />
     <None Remove="TcNoAccSw-Icon-100x100.png" />
-    <None Remove="themes\Dracula_Cyan\info.yaml" />
-    <None Remove="themes\Dracula_Cyan\style.scss" />
-    <None Remove="themes\Monokai\info.yaml" />
-    <None Remove="themes\Monokai\style.scss" />
-    <None Remove="themes\Old_Default\info.yaml" />
-    <None Remove="themes\Old_Default\style.scss" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="themes\Dracula_Cyan\info.yaml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="themes\Dracula_Cyan\style.scss">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="themes\Monokai\info.yaml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="themes\Monokai\style.scss">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="themes\Old_Default\info.yaml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="themes\Old_Default\style.scss">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="themes\Nord\info.yaml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="themes\Nord\style.scss">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BuildWebCompiler2022" Version="1.14.8" />
@@ -81,26 +46,14 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="TcNoAccSw-Icon-100x100.png" />
-    <Resource Include="wwwroot\img\TcNo_Logo_Flat.svg" />
   </ItemGroup>
   <ItemGroup>
-    <Content Update="wwwroot\**\*.*">
-		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        <DeploymentContent>true</DeploymentContent>
-    </Content>
-    <Content Update="themes\*.*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <DeploymentContent>true</DeploymentContent>
-    </Content>
     <Content Include="Platforms\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <DeploymentContent>true</DeploymentContent>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Update="Additional Licenses.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="Resources\af-ZA.yml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -197,55 +150,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Pages\Platforms\" />
-    <Folder Include="wwwroot\css\font\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="compilerconfig.json" />
     <None Include="Pages\Templated\Settings.razor" />
-    <None Include="wwwroot\js\ace\ace.js" />
-    <None Include="wwwroot\js\ace\ext-beautify.js" />
-    <None Include="wwwroot\js\ace\ext-code_lens.js" />
-    <None Include="wwwroot\js\ace\ext-elastic_tabstops_lite.js" />
-    <None Include="wwwroot\js\ace\ext-emmet.js" />
-    <None Include="wwwroot\js\ace\ext-error_marker.js" />
-    <None Include="wwwroot\js\ace\ext-keybinding_menu.js" />
-    <None Include="wwwroot\js\ace\ext-language_tools.js" />
-    <None Include="wwwroot\js\ace\ext-linking.js" />
-    <None Include="wwwroot\js\ace\ext-modelist.js" />
-    <None Include="wwwroot\js\ace\ext-options.js" />
-    <None Include="wwwroot\js\ace\ext-prompt.js" />
-    <None Include="wwwroot\js\ace\ext-rtl.js" />
-    <None Include="wwwroot\js\ace\ext-searchbox.js" />
-    <None Include="wwwroot\js\ace\ext-settings_menu.js" />
-    <None Include="wwwroot\js\ace\ext-spellcheck.js" />
-    <None Include="wwwroot\js\ace\ext-split.js" />
-    <None Include="wwwroot\js\ace\ext-static_highlight.js" />
-    <None Include="wwwroot\js\ace\ext-statusbar.js" />
-    <None Include="wwwroot\js\ace\ext-textarea.js" />
-    <None Include="wwwroot\js\ace\ext-themelist.js" />
-    <None Include="wwwroot\js\ace\ext-whitespace.js" />
-    <None Include="wwwroot\js\ace\keybinding-emacs.js" />
-    <None Include="wwwroot\js\ace\keybinding-sublime.js" />
-    <None Include="wwwroot\js\ace\keybinding-vim.js" />
-    <None Include="wwwroot\js\ace\keybinding-vscode.js" />
-    <None Include="wwwroot\js\ace\mode-autohotkey.js" />
-    <None Include="wwwroot\js\ace\mode-batchfile.js" />
-	<None Include="wwwroot\js\ace\mode-json.js" />
-    <None Include="wwwroot\js\ace\mode-text.js" />
-    <None Include="wwwroot\js\ace\snippets\autohotkey.js" />
-    <None Include="wwwroot\js\ace\snippets\batchfile.js" />
-    <None Include="wwwroot\js\ace\snippets\json.js" />
-    <None Include="wwwroot\js\ace\snippets\text.js" />
-    <None Include="wwwroot\js\ace\snippets\yaml.js" />
-    <None Include="wwwroot\js\ace\worker-json.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Update="GameStats.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Update="Platforms.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptTarget>ES11</TypeScriptTarget>
