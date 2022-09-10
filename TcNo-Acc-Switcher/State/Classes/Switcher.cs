@@ -1,0 +1,123 @@
+﻿// TcNo Account Switcher - A Super fast account switcher
+// Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher.State.Interfaces;
+
+namespace TcNo_Acc_Switcher.State.Classes;
+
+public class Switcher : INotifyPropertyChanged
+{
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+    protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
+    {
+        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+        field = value;
+        OnPropertyChanged(propertyName);
+        return true;
+    }
+
+    public Switcher(ILang lang)
+    {
+        CurrentStatus = lang["Status_Init"];
+    }
+    public string CurrentSwitcherSafe { get; set; } = "";
+
+    private string _currentSwitcher = "";
+    private Account _selectedAccount;
+    private string _currentStatus;
+
+    public string CurrentSwitcher
+    {
+        get => _currentSwitcher;
+        set
+        {
+            SetField(ref _currentSwitcher, value);
+            CurrentSwitcherSafe = Globals.GetCleanFilePath(CurrentSwitcher);
+        }
+    }
+
+    public string CurrentStatus
+    {
+        get => _currentStatus;
+        set => SetField(ref _currentStatus, value);
+    }
+
+    /// <summary>
+    /// Update status, with a tiny delay to allow UI to update.
+    /// </summary>
+    public async Task UpdateStatusAsync(string status)
+    {
+        CurrentStatus = status;
+        await Task.Delay(1);
+    }
+
+    public string CurrentShortcut
+    {
+        get => _currentShortcut;
+        set => SetField(ref _currentShortcut, value);
+    }
+
+    private string _currentShortcut = "";
+
+    public string SelectedPlatform { get; set; } = "";
+    public bool IsCurrentlyExportingAccounts { get; set; }
+    public ObservableCollection<Account> SteamAccounts { get; set; } = new();
+    public ObservableCollection<Account> TemplatedAccounts { get; set; } = new();
+    public string SelectedAccountId { get; set; }
+
+    public Account SelectedAccount
+    {
+        get => _selectedAccount;
+        set
+        {
+            SetField(ref _selectedAccount, value);
+            SelectedAccountId = value?.AccountId ?? "";
+        }
+    }
+
+    public void SaveNotes()
+    {
+        string path;
+        Dictionary<string, string> data;
+
+        if (CurrentSwitcher == "Steam")
+        {
+            path = "LoginCache\\Steam\\AccountNotes.json";
+            data = SteamAccounts.ToDictionary(s => s.AccountId, s => s.Note);
+        }
+        else
+        {
+            path = $"LoginCache\\{CurrentSwitcherSafe}\\AccountNotes.json";
+            data = TemplatedAccounts.ToDictionary(s => s.AccountId, s => s.Note);
+        }
+
+        // Update text for UI - if not indicating currently logged in account
+        if (!SelectedAccount.IsCurrent)
+            SelectedAccount.TitleText = SelectedAccount.Note;
+
+        File.WriteAllText(path, JsonConvert.SerializeObject(data, Formatting.None));
+    }
+}

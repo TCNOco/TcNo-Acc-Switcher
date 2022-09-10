@@ -1,8 +1,10 @@
-﻿@inherits LayoutComponentBase
+﻿@using TcNo_Acc_Switcher_Globals
+@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
 
 <div class="page">
 	<div class="sidebar">
-		<NavMenu />
+        <NavMenu />
 	</div>
 
 	<main>
@@ -15,3 +17,95 @@
 		</article>
 	</main>
 </div>
+
+@code {
+    // TODO: Uncomment after moving singletons
+    //private EventHandler<LocationChangedEventArgs> _locationChanged;
+
+    //protected override void OnInitialized()
+    //{
+    //    _locationChanged = async (s, e) => await LocationChanged(s, e);
+    //// Subscribe to the event
+    //    NavigationManager.LocationChanged += _locationChanged;
+    //    base.OnInitialized();
+
+    //    NewNavigation(NavigationManager.Uri);
+    //}
+
+    //private async Task LocationChanged(object sender, LocationChangedEventArgs e)
+    //{
+    //    var navigationMethod = e.IsNavigationIntercepted ? "HTML" : "code";
+    //    Console.WriteLine($@"Notified of navigation via {navigationMethod} to {e.Location}");
+    //    await HandleQueries();
+
+    //    NewNavigation(e.Location);
+    //}
+
+    //private string _lastPage = "";
+    //private string _lastPlatform = "";
+
+    //private void NewNavigation(string uri)
+    //{
+    //    uri = uri.Replace(NavigationManager.BaseUri, "").Split("?")[0];
+
+    //    var platformString = "";
+    //    if (string.IsNullOrEmpty(uri)) uri = "/";
+    //    else
+    //    {
+    //// If not the root, try substituting "d" with "Discord" for example.
+    //// Substitute platform with full platform name
+    //        var platformStrings = uri.Split("/");
+    //        TemplatedPlatformState.LoadTemplatedPlatformState(JsRuntime, TemplatedPlatformSettings);
+    //        var possiblePlatform = WindowSettings.Platforms.FirstOrDefault(x => x.PossibleIdentifiers.Contains(platformStrings[0]) || x.Name == platformStrings[0]);
+
+    //        if (possiblePlatform is not null)
+    //        {
+    //// Replace entire string if no "/"
+    //            if (platformStrings.Length == 1)
+    //                uri = possiblePlatform.Name;
+    //            else
+    //            {
+    //                platformString = platformStrings[0];
+    //                uri = uri.Replace(platformString, possiblePlatform.Name);
+    //            }
+    //        }
+    //    }
+
+    //    if (_lastPage != "") Statistics.NewNavigation(_lastPage, _lastPlatform);
+
+    //    _lastPage = uri;
+    //    _lastPlatform = uri.Contains("Steam") ? "Steam" : platformString;
+    //}
+
+    ///// <summary>
+    ///// For handling queries in URI
+    ///// </summary>
+    //public async Task<bool> HandleQueries()
+    //{
+    //    Globals.DebugWriteLine(@"[JSInvoke:General\GeneralFuncs.HandleQueries]");
+    //    var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+    //// Clear cache reload
+    //    var queries = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
+    //// cacheReload handled in JS
+
+    //// Toast
+    //    if (!queries.TryGetValue("toast_type", out var toastType) ||
+    //        !queries.TryGetValue("toast_title", out var toastTitle) ||
+    //        !queries.TryGetValue("toast_message", out var toastMessage)) return true;
+    //    for (var i = 0; i < toastType.Count; i++)
+    //    {
+    //        try
+    //        {
+    //            var type = (ToastType)Enum.Parse(typeof(ToastType), toastType[i], true);
+    //            await Toasts.ShowToastLangAsync(type, toastTitle[i], toastMessage[i]);
+    //            await JsRuntime.InvokeVoidAsync("removeUrlArgs", "toast_type,toast_title,toast_message");
+    //        }
+    //        catch (TaskCanceledException e)
+    //        {
+    //            Globals.WriteToLog(e.ToString());
+    //        }
+    //    }
+
+    //    return true;
+    //}
+}
