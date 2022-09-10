@@ -1,0 +1,130 @@
+﻿@*TcNo Account Switcher - A Super fast account switcher
+    Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses />.*@
+
+@page "/Steam/AdvancedClearing"
+@using System.Collections.ObjectModel
+@using System.Collections.Specialized
+@using TcNo_Acc_Switcher.State.Interfaces
+@namespace TcNo_Acc_Switcher.Pages.Steam
+@inject NavigationManager NavManager
+@inject ILang Lang
+@implements IDisposable
+
+<div class="container mainblock">
+    <div class="row">
+        <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol clearingPage">
+            <toastarea class="toastarea" />
+            <h2 class="SettingsHeader">@Lang["Cleaning_ImportantInfoHeader"]</h2>
+            <div>
+                <p>
+                    @(new MarkupString(Lang["Cleaning_ImportantInfo"]))
+                </p>
+            </div>
+            <div id="restoreUnderstand">
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_Clearing_Understand" @bind="_notAccepted"><label class="form-check-label" for="Steam_Clearing_Understand"></label></div><label for="Steam_Clearing_Understand">@Lang["Cleaning_Understand"]<br></label>
+            </div>
+            <button id="Steam_Close" type="button" @onclick="Steam_Close" disabled="@Accepted"><span>@Lang["Cleaning_Button_KillProcess", new { platform = "Steam" }]</span></button>
+
+            <div class="clearingRow">
+                <div class="clearingLeft advancedClearingButtonCol">
+                    <h2 class="SettingsHeader">@Lang["Cleaning_Header_General"]</h2>
+                    <div class="buttoncol">
+                        <button id="Steam_Clear_Logs" type="button" @onclick="Steam_Clear_Logs" disabled="@Accepted"><span>..\Steam\Logs</span></button>
+                        <button id="Steam_Clear_Dumps" type="button" @onclick="Steam_Clear_Dumps" disabled="@Accepted"><span>..\Steam\Dumps</span></button>
+                    </div>
+                    <div class="buttoncol">
+                        <button id="Steam_Clear_HtmlCache" type="button" @onclick="Steam_Clear_HtmlCache" disabled="@Accepted"><span>%Local%\Steam\htmlcache</span></button>
+                        <button id="Steam_Clear_UiLSteam_Clear_Dumpsogs" type="button" @onclick="Steam_Clear_UiLogs" disabled="@Accepted"><span>..\Steam\*.log</span></button>
+                    </div>
+                    <div class="buttoncol">
+                        <button id="Steam_Clear_AppCache" type="button" @onclick="Steam_Clear_AppCache" disabled="@Accepted"><span>..\Steam\appcache</span></button>
+                        <button id="Steam_Clear_HttpCache" type="button" @onclick="Steam_Clear_HttpCache" disabled="@Accepted"><span>..\Steam\appcache\httpcache</span></button>
+                    </div>
+                    <div class="buttoncol">
+                        <button id="Steam_Clear_DepotCache" type="button" @onclick="Steam_Clear_DepotCache" disabled="@Accepted"><span>..\Steam\depotcache</span></button>
+                    </div>
+
+                    <h2 class="SettingsHeader">@Lang["Cleaning_Header_LoginHistory"]</h2>
+                    <div class="buttoncol">
+                        <button id="Steam_Clear_LoginUsers" type="button" @onclick="Steam_Clear_LoginUsers" disabled="@Accepted"><span>..\Steam\config\loginusers.vdf</span></button>
+                        <button id="Steam_Clear_Ssfn" type="button" @onclick="Steam_Clear_Ssfn" disabled="@Accepted"><span>..\Steam\ssfn*</span></button>
+                    </div>
+                    <div class="buttoncol">
+                        <button id="Steam_Clear_Config" type="button" @onclick="Steam_Clear_Config" disabled="@Accepted"><span>..\Steam\config\config.vdf</span></button>
+                        <button id="Steam_Clear_AutoLoginUser" type="button" @onclick="Steam_Clear_AutoLoginUser" disabled="@Accepted"><span>HKCU\..\AutoLoginUser</span></button>
+                    </div>
+                    <div class="buttoncol">
+                        <button id="Steam_Clear_LastGameNameUsed" type="button" @onclick="Steam_Clear_LastGameNameUsed" disabled="@Accepted"><span>HKCU\..\LastGameNameUsed</span></button>
+                        <button id="Steam_Clear_PseudoUUID" type="button" @onclick="Steam_Clear_PseudoUUID" disabled="@Accepted"><span>HKCU\..\PseudoUUID</span></button>
+                    </div>
+                    <div class="buttoncol">
+                        <button id="Steam_Clear_RememberPassword" type="button" @onclick="Steam_Clear_RememberPassword" disabled="@Accepted"><span>HKCU\..\RememberPassword</span></button>
+                    </div>
+                </div>
+                <div class="clearingRight">
+                    <div id="lines">
+                        @foreach (var line in Lines)
+                        {
+                            <p>@line</p>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="clearLogDiv"><button onclick="document.getElementById('lines').innerHTML = ''"><span>@Lang["Button_ClearLog"]</span></button></div>
+
+
+            <div class="buttoncol col_close">
+                <a @onclick='() => StaticFuncs.OpenLinkInBrowser("https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Steam#steam-cleaning")' class="fancyLink">@Lang["Button_WikiInfo"]</a>
+                <button class="btn_close" type="button" @onclick='() => NavManager.NavigateTo("/Steam/Settings")'><span>@Lang["Button_Close"]</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="blazor-error-ui">
+    <environment include="Staging,Production">
+        An error has occurred. This application may no longer respond until reloaded.
+    </environment>
+    <environment include="Development">
+        An unhandled exception has occurred. See browser dev tools for details.
+    </environment>
+    <a href="">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+@code
+{
+    private ObservableCollection<string> Lines = new();
+
+    private NotifyCollectionChangedEventHandler _collectionChanged;
+    protected override void OnInitialized()
+    {
+        AppState.WindowState.WindowTitle = Lang["Title_Steam_Cleaning"];
+
+        _collectionChanged = async (_, _) => await InvokeAsync(StateHasChanged);
+        Lines.CollectionChanged += _collectionChanged;
+    }
+
+    void IDisposable.Dispose()
+    {
+        Lines.CollectionChanged -= _collectionChanged;
+    }
+
+    private bool _notAccepted;
+
+    public bool Accepted
+    {
+        get => !_notAccepted;
+        set => _notAccepted = !value;
+    }
+}

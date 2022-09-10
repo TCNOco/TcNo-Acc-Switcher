@@ -1,0 +1,260 @@
+﻿@*TcNo Account Switcher - A Super fast account switcher
+    Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses />.*@
+
+@page "/{Platform}"
+@using TcNo_Acc_Switcher.Shared.ContextMenu
+@using TcNo_Acc_Switcher.Shared.Accounts
+@using System.IO
+@using Microsoft.AspNetCore.Components
+@using TcNo_Acc_Switcher.State.DataTypes
+@using TcNo_Acc_Switcher.State.Interfaces
+@using TcNo_Acc_Switcher.Shared.Tooltip
+@using System.ComponentModel
+@using TcNo_Acc_Switcher_Globals
+@using TcNo_Acc_Switcher.State.Classes
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+@inject ISharedFunctions SharedFunctions
+@inject ITemplatedPlatformState TemplatedPlatformState
+@inject ITemplatedPlatformFuncs TemplatedPlatformFuncs
+@inject ITemplatedPlatformSettings TemplatedPlatformSettings
+@inject IAppState AppState
+@inject ILang Lang
+@inject IModals Modals
+@inject IGameStats GameStats
+@inject IToasts Toasts
+@inject IStatistics Statistics
+@inject IWindowSettings WindowSettings
+@implements IDisposable
+
+<ContextMenu MenuItems="@TemplatedPlatformState.ContextMenu.ContextMenuItems" ContextMenuId="AccOrPlatList"/>
+<ContextMenu MenuItems="@TemplatedPlatformState.ContextMenu.ContextMenuShortcutItems" ContextMenuId="Shortcuts"/>
+<ContextMenu MenuItems="@TemplatedPlatformState.ContextMenu.ContextMenuPlatformItems" ContextMenuId="Platform"/>
+
+<AccountList AccountItems="@AppState.Switcher.TemplatedAccounts" AccountActions="_accountActions" />
+
+<div class="shortcutDropdown gameShortcuts" id="shortcutDropdown" style="display: none">
+    <div class="shortcutDropdownItems">
+        @foreach (var (i, shortcut) in _shortcuts)
+        {
+            @if (i >= 0)
+            {
+                <button class="HasContextMenu" id="@(shortcut)" @onclick="(e) => ShortcutClick(e, shortcut)" @onmouseup="(e) => ShortcutClick(e, shortcut)" @onmouseover="() => AppState.Switcher.CurrentStatus = Globals.RemoveShortcutExt(shortcut)" oncontextmenu="return false;">
+                    <img src="@(TemplatedPlatformState.CurrentPlatform.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
+                </button>
+            }
+        }
+    </div>
+    <Tooltip Text="@(Lang["Tooltip_ShortcutFolder"])" Id="btnOpenShortcutFolder">
+        <button @onclick="() => AppState.OpenFolder(Path.GetFullPath(TemplatedPlatformState.CurrentPlatform.ShortcutFolder))">
+            <i class="fas fa-plus"></i>
+        </button>
+    </Tooltip>
+</div>
+
+<div class="acc_list_actionbar">
+    <div class="statusBar">
+        <div></div><input id="CurrentStatus" @bind="AppState.Switcher.CurrentStatus" spellcheck="false" disabled>
+    </div>
+    <div class="gameShortcuts">
+        <div class="shortcuts">
+            @foreach (var (i, shortcut) in _shortcuts)
+            {
+                @if (i < 0)
+                {
+                    <Tooltip Text="@Globals.RemoveShortcutExt(shortcut)">
+                        <button class="HasContextMenu" id="@(shortcut)" @onclick="(e) => ShortcutClick(e, shortcut)" @onmouseup="(e) => ShortcutClick(e, shortcut)" oncontextmenu="return false;">
+                            <img src="@(TemplatedPlatformState.CurrentPlatform.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
+                        </button>
+                    </Tooltip>
+                }
+            }
+        </div>
+        <Tooltip Text="@(Lang["Tooltip_ExpandShortcuts"])">
+            <button id="shortcutDropdownBtn" onclick="shortcutDropdownBtnClick()"><i class="fas fa-chevron-up"></i></button>
+        </Tooltip>
+
+        @if (TemplatedPlatformState.CurrentPlatform.Extras.ShortcutIncludeMainExe)
+        {
+            <Tooltip Text="@(TemplatedPlatformState.CurrentPlatform.Name)">
+                <button id="btnStartPlat" @onmousedown="RunPlatform" oncontextmenu="return false;">
+                    <img src="@(TemplatedPlatformState.CurrentPlatform.GetShortcutImagePath(TemplatedPlatformState.CurrentPlatform.SafeName))" alt="RUN"/>
+                </button>
+            </Tooltip>
+        }
+
+        <button id="btnAddNew" @onclick="async () => await TemplatedPlatformFuncs.SwapToNewAccount(JsRuntime)">
+            <i class="fas fa-plus footerIcoInline"></i>
+            <span>@Lang["Button_AddNew"]</span>
+        </button>
+        <button id="btnAddCurrent" @onclick="ShowSetAccountStringModal">
+            <i class="fas fa-save footerIcoInline"></i>
+            <span>@Lang["Button_SaveCurrent"]</span>
+        </button>
+        <button class="btn_login" id="btnLogin" @onclick="async () => await TemplatedPlatformFuncs.SwapToAccount(JsRuntime)">
+            <span>@Lang["Button_Login"]</span>
+            <i class="fas fa-caret-right footerIcoInline"></i>
+        </button>
+
+        <Tooltip Text="@(Lang["Tooltip_Settings"])">
+            <button class="btnSettings" @onclick='() => AppState.Navigation.NavigateTo(NavigationManager, $"/{Platform}/Settings/")'>
+                <i class="fas fa-cog footerIcoSettings"></i>
+            </button>
+        </Tooltip>
+
+        <Tooltip Text="@(Lang["Tooltip_Info"])">
+            <button class="btnHelp" @onclick='() => Modals.ShowModal("info")'>
+                <i class="fas fa-question footerIcoQuestion"></i>
+            </button>
+        </Tooltip>
+    </div>
+
+</div>
+
+
+@code
+{
+    [Parameter]
+    public string Platform { get; set; }
+
+    [Parameter]
+    public string Settings { get; set; }
+
+    private readonly AccountActions _accountActions = new();
+    private Dictionary<int, string> _shortcuts = new();
+
+    private PropertyChangedEventHandler _propChanged;
+    protected override async Task OnInitializedAsync()
+    {
+        AppState.Stylesheet.StreamerModeCheck();
+
+        // Requested platform from URL: Platform.
+        // 1. Check if platform from URL is currentPlatform.
+        var requestedPlatform = TemplatedPlatformState.Platforms.FirstOrDefault(x => x.Name == Platform || x.Identifiers.Contains(Platform, StringComparer.OrdinalIgnoreCase));
+        if (requestedPlatform is not null && requestedPlatform.Name != TemplatedPlatformState.CurrentPlatform.Name)
+        {
+            // 2. If not, set currentPlatform to platform from URL.
+            TemplatedPlatformState.LoadTemplatedPlatformState(JsRuntime, TemplatedPlatformSettings);
+            await TemplatedPlatformState.SetCurrentPlatform(JsRuntime, TemplatedPlatformSettings, TemplatedPlatformFuncs, Statistics, Platform);
+        }
+
+        // Verify that the platform's EXE exists, otherwise go back. For shortcuts and direct navigation.
+        if (!File.Exists(TemplatedPlatformSettings.Exe)){
+            NavigateBack();
+        }
+
+        // Verify all the processes can be closed
+        if (!SharedFunctions.CanKillProcess(TemplatedPlatformState.CurrentPlatform.ExesToEnd, TemplatedPlatformSettings.ClosingMethod))
+        {
+            // If not: restart as admin
+            Modals.ShowModal("confirm", ExtraArg.RestartAsAdmin);
+            // This intentionally does not prevent closing and using this as expected.
+        }
+
+
+        _propChanged = async (o, e) => await OnChangeHandler(o, e);
+        AppState.Switcher.PropertyChanged += _propChanged;
+        TemplatedPlatformSettings.PropertyChanged += _propChanged;
+
+
+        AppState.WindowState.WindowTitle = Lang["Title_AccountsList", new { platform = TemplatedPlatformState.CurrentPlatform.Name }];
+        // Handle Streamer Mode notification
+        if (WindowSettings.StreamerModeEnabled && AppState.Stylesheet.StreamerModeTriggered)
+            await Toasts.ShowToastLangAsync(ToastType.Info, "Toast_StreamerModeTitle", "Toast_StreamerModeHint");
+
+        AppState.Switcher.CurrentStatus = Lang["Loading"];
+        StaticFuncs.SaveShortcuts = SaveShortcuts;
+        _shortcuts = TemplatedPlatformSettings.Shortcuts;
+        StaticFuncs.SaveOrderAction = TemplatedPlatformState.SaveAccountOrder;
+
+        var curAcc = TemplatedPlatformFuncs.GetCurrentAccountId();
+        if (curAcc != "") TemplatedPlatformFuncs.SetCurrentAccount(curAcc);
+
+        AppState.Switcher.CurrentStatus = Lang["Done"];
+    }
+
+    void IDisposable.Dispose()
+    {
+        AppState.Switcher.PropertyChanged -= _propChanged;
+        TemplatedPlatformSettings.PropertyChanged -= _propChanged;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JsRuntime.InvokeVoidAsync("initAccListSortable");
+    }
+
+
+    private static readonly string[] RefreshProperties = {"TemplatedAccounts", "CurrentStatus", "Shortcuts" };
+    private async Task OnChangeHandler(object o, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == "Shortcuts")
+            _shortcuts = TemplatedPlatformSettings.Shortcuts;
+
+        if (RefreshProperties.Contains(e.PropertyName))
+            await InvokeAsync(StateHasChanged);
+    }
+
+    /// <summary>
+    /// Show the Set App Password modal
+    /// </summary>
+    public void ShowSetAccountStringModal()
+    {
+        Modals.TextInput = new TextInputRequest(TextInputGoal.AccString);
+        Modals.ShowModal("getText");
+    }
+
+    private void NavigateBack() =>
+        AppState.Navigation.NavigateToWithToast(NavigationManager, "/", "Error", "", Lang["Toast_FailedLoad", new {platform = TemplatedPlatformState?.CurrentPlatform?.Name ?? ""}]);
+
+    private async Task ShortcutClick(MouseEventArgs e, string shortcut)
+    {
+        switch (e.Button)
+        {
+            case 0 when e.Type == "click":
+                // Left click
+                SharedFunctions.RunShortcut(shortcut, TemplatedPlatformState.CurrentPlatform.ShortcutFolder, TemplatedPlatformState.CurrentPlatform.SafeName);
+                break;
+            case 2:
+                // Right click
+                AppState.Switcher.CurrentShortcut = shortcut;
+                await JsRuntime.InvokeVoidAsync("positionAndShowMenu", e, "#Shortcuts");
+                break;
+        }
+    }
+
+    private async Task RunPlatform(MouseEventArgs e)
+    {
+        switch (e.Button)
+        {
+            case 0:
+                // Left click
+                TemplatedPlatformFuncs.RunPlatform();
+                break;
+            case 2:
+                // Right click
+                await JsRuntime.InvokeVoidAsync("positionAndShowMenu", e, "#Platform");
+                break;
+        }
+    }
+
+    // Allow saving of shortcut position.
+    // This has to be done as only Static funcs can be invoked by JS.
+    // Do not update the list used on the page. It gets a little confused.
+    private void SaveShortcuts(Dictionary<int, string> o)
+    {
+        TemplatedPlatformSettings.Shortcuts = o;
+        TemplatedPlatformSettings.Save();
+    }
+}

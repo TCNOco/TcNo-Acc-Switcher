@@ -27,7 +27,7 @@ public interface IWindowSettings
     bool Rtl { get; set; }
     bool StreamerModeEnabled { get; set; }
     int ServerPort { get; set; }
-    Point WindowSize { get; set; }
+    System.Drawing.Point WindowSize { get; set; }
     bool AllowTransparency { get; set; }
     string Version { get; set; }
     List<object> DisabledPlatforms { get; }

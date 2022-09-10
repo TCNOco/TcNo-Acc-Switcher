@@ -37,7 +37,7 @@ public class SteamUser
     // Either Limited or Community banned status (when using Steam Web API)
     [JsonIgnore] public bool Limited { get; set; }
     [JsonIgnore] public Dictionary<string, string> AppIds { get; set; } = new();
-    [JsonIgnore] public MenuItem SwitchAndLaunch { get; set; } // This MUST remain null to not be added to context menu.
+    [JsonIgnore] public Shared.ContextMenu.MenuItem SwitchAndLaunch { get; set; } // This MUST remain null to not be added to context menu.
 }
 
 /// <summary>

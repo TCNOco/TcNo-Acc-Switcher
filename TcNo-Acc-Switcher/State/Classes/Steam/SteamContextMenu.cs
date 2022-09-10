@@ -82,7 +82,7 @@ public class SteamContextMenu
                 new ("Context_RunAdmin", ShortcutStartSteamAdmin),
                 new ("Context_Hide", HideShortcutSteam)
             }).Result();
-        ShortcutItems.Add(new MenuItem
+        ShortcutItems.Add(new Shared.ContextMenu.MenuItem
         {
             Text = "Context_SwitchAndLaunch",
             MenuAction = async () => await _steamFuncs.SwitchAndLaunchShortcut(jsRuntime)
@@ -161,25 +161,25 @@ public class SteamContextMenu
     public static readonly string SteamAppsUserCache =
         Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\AppIdsUser.json");
 
-    public ObservableCollection<MenuItem> Menu = new();
-    public ObservableCollection<MenuItem> ShortcutItems = new();
-    public ObservableCollection<MenuItem> PlatformItems = new();
+    public ObservableCollection<Shared.ContextMenu.MenuItem> Menu = new();
+    public ObservableCollection<Shared.ContextMenu.MenuItem> ShortcutItems = new();
+    public ObservableCollection<Shared.ContextMenu.MenuItem> PlatformItems = new();
 
     public void BuildContextMenu()
     {
         Menu.Clear();
 
         /* Games submenu, or Game data item */
-        MenuItem gameData = null;
+        Shared.ContextMenu.MenuItem gameData = null;
         if (File.Exists(SteamAppsUserCache) && _steamState.AppIds.Count > 0)
         {
-            var menuItems = new List<MenuItem>();
+            var menuItems = new List<Shared.ContextMenu.MenuItem>();
             foreach (var gameId in _steamState.InstalledGames)
             {
-                menuItems.Add(new MenuItem
+                menuItems.Add(new Shared.ContextMenu.MenuItem
                 {
                     Text = _steamState.AppIds.ContainsKey(gameId) ? _steamState.AppIds[gameId] : gameId,
-                    Children = new List<MenuItem>
+                    Children = new List<Shared.ContextMenu.MenuItem>
                     {
                         new()
                         {
@@ -200,7 +200,7 @@ public class SteamContextMenu
                 });
             }
 
-            gameData = new MenuItem
+            gameData = new Shared.ContextMenu.MenuItem
             {
                 Text = _lang["Context_GameDataSubmenu"],
                 Children = menuItems

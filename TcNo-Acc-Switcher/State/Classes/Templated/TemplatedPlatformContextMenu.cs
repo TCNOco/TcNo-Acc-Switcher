@@ -66,7 +66,7 @@ public class TemplatedPlatformContextMenu
                 new ("Context_RunAdmin", ShortcutStartAdmin),
                 new ("Context_Hide", HideShortcutSteam)
             }).Result();
-        ContextMenuShortcutItems.Add(new MenuItem
+        ContextMenuShortcutItems.Add(new Shared.ContextMenu.MenuItem
         {
             Text = "Context_SwitchAndLaunch",
             MenuAction = async () => await templatedPlatformFuncs.SwitchAndLaunchShortcut(jsRuntime)
@@ -92,9 +92,9 @@ public class TemplatedPlatformContextMenu
         _templatedPlatformSettings.Save();
     }
 
-    public readonly ObservableCollection<MenuItem> ContextMenuItems = new();
-    public readonly ObservableCollection<MenuItem> ContextMenuShortcutItems;
-    public readonly ObservableCollection<MenuItem> ContextMenuPlatformItems;
+    public readonly ObservableCollection<Shared.ContextMenu.MenuItem> ContextMenuItems = new();
+    public readonly ObservableCollection<Shared.ContextMenu.MenuItem> ContextMenuShortcutItems;
+    public readonly ObservableCollection<Shared.ContextMenu.MenuItem> ContextMenuPlatformItems;
 
 
 

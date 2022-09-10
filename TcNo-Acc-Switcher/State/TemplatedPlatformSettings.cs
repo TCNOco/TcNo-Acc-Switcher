@@ -110,7 +110,7 @@ public class TemplatedPlatformSettings : ITemplatedPlatformSettings, INotifyProp
         set => _folderPath = value;
     }
 
-    private Platform _currentPlatform;
+    private Classes.Templated.Platform _currentPlatform;
 
     public void LoadTemplatedPlatformSettings()
     {

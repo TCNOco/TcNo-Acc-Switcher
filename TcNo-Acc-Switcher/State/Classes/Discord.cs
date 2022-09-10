@@ -79,7 +79,7 @@ public class Discord
             Details = _lang["Discord_Status"],
             State = state,
             Timestamps = timestamp,
-            Buttons = new Button[]
+            Buttons = new DiscordRPC.Button[]
             { new() {
                 Url = "https://github.com/TcNobo/TcNo-Acc-Switcher/",
                 Label = _lang["Website"]

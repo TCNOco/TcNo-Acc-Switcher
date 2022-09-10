@@ -50,7 +50,7 @@ public class WindowSettings : IWindowSettings, INotifyPropertyChanged
         Platforms = new ObservableCollection<PlatformItem>(Platforms.GroupBy(x => x.Name).Select(x => x.Last()).ToList());
         if (Platforms.All(y => y.Name != "Steam")) Platforms.Add(new PlatformItem("Steam", true));
         AddStaticPlatforms();
-        
+
         Platforms.Sort();
     }
 
@@ -61,7 +61,7 @@ public class WindowSettings : IWindowSettings, INotifyPropertyChanged
     {
         Platforms.First(y => y.Name == "Steam").SetFromPlatformItem(new PlatformItem("Steam", new List<string> { "s", "steam" }, "steam.exe", true));
     }
-    
+
     public string Language
     {
         get => _language;
@@ -81,7 +81,7 @@ public class WindowSettings : IWindowSettings, INotifyPropertyChanged
     }
 
     public int ServerPort { get; set; } = 0;
-    public Point WindowSize { get; set; } = new() { X = 800, Y = 450 };
+    public System.Drawing.Point WindowSize { get; set; } = new() { X = 800, Y = 450 };
     public bool AllowTransparency { get; set; } = true;
     public string Version { get; set; } = Globals.Version;
     public List<object> DisabledPlatforms { get; } = new();

@@ -46,12 +46,6 @@
   <ItemGroup>
     <Resource Include="TcNoAccSw-Icon-100x100.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Pages\Platforms\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Pages\Templated\Settings.razor" />
-  </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptTarget>ES11</TypeScriptTarget>
     <TypeScriptJSXEmit>React</TypeScriptJSXEmit>

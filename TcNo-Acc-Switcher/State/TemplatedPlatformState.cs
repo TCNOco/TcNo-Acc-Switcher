@@ -41,8 +41,8 @@ public class TemplatedPlatformState : ITemplatedPlatformState
     public List<string> AvailablePlatforms { get; set; }
     public TemplatedPlatformContextMenu ContextMenu { get; set; }
 
-    public Platform CurrentPlatform { get; set; }
-    public List<Platform> Platforms { get; set; }
+    public Classes.Templated.Platform CurrentPlatform { get; set; }
+    public List<Classes.Templated.Platform> Platforms { get; set; }
 
     private bool _isInit;
 
@@ -81,7 +81,7 @@ public class TemplatedPlatformState : ITemplatedPlatformState
             return;
         }
 
-        Platforms = JsonConvert.DeserializeObject<List<Platform>>(File.ReadAllText(_platformJsonPath));
+        Platforms = JsonConvert.DeserializeObject<List<Classes.Templated.Platform>>(File.ReadAllText(_platformJsonPath));
         if (Platforms is null) return;
         AvailablePlatforms = Platforms.Select(x => x.Name).ToList();
 

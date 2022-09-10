@@ -9,8 +9,8 @@ public interface ITemplatedPlatformState
 {
     List<string> AvailablePlatforms { get; set; }
     TemplatedPlatformContextMenu ContextMenu { get; set; }
-    Platform CurrentPlatform { get; set; }
-    List<Platform> Platforms { get; set; }
+    Classes.Templated.Platform CurrentPlatform { get; set; }
+    List<Classes.Templated.Platform> Platforms { get; set; }
     Dictionary<string, string> AccountIds { get; set; }
     void LoadTemplatedPlatformState(IJSRuntime jsRuntime, ITemplatedPlatformSettings templatedPlatformSettings);
     Task SetCurrentPlatform(IJSRuntime jsRuntime, ITemplatedPlatformSettings templatedPlatformSettings, ITemplatedPlatformFuncs templatedPlatformFuncs, IStatistics statistics, string platformName);
