@@ -24,6 +24,11 @@
     <div class="headerbar">
         <Headerbar />
     </div>
+    @*<div class="resizeLeft" @onmousedown="() => WindowActions.OnResizeBorderMouseDown(SysCommandSize.ScSizeHtLeft)" @onmousedown:stopPropagation></div>
+    <div class="resizeRight" @onmousedown="() => WindowActions.OnResizeBorderMouseDown(SysCommandSize.ScSizeHtRight)" @onmousedown:stopPropagation></div>
+    <div class="resizeBottom" @onmousedown="() => WindowActions.OnResizeBorderMouseDown(SysCommandSize.ScSizeHtBottom)" @onmousedown:stopPropagation></div>
+    <div class="resizeBottomRight" @onmousedown="() => WindowActions.OnResizeBorderMouseDown(SysCommandSize.ScSizeHtBottomRight)" @onmousedown:stopPropagation></div>
+    <div class="resizeBottomLeft" @onmousedown="() => WindowActions.OnResizeBorderMouseDown(SysCommandSize.ScSizeHtBottomLeft)" @onmousedown:stopPropagation></div>*@
     <div class="resizeLeft"></div>
     <div class="resizeRight"></div>
     <div class="resizeBottom"></div>

@@ -44,13 +44,14 @@ public partial class Index
 
     protected override void OnInitialized()
     {
-        // Redirect if necessary (First launch of browser that is not controlled by software)
-        if (!Program.Config.IsLandingPageDefault)
-        {
-            var navTo = Program.Config.LandingPage;
-            Program.Config.ResetLandingPage();
-            NavigationManager.NavigateTo(navTo);
-        }
+        // TODO:
+        //// Redirect if necessary (First launch of browser that is not controlled by software)
+        //if (!Program.Config.IsLandingPageDefault)
+        //{
+        //    var navTo = Program.Config.LandingPage;
+        //    Program.Config.ResetLandingPage();
+        //    NavigationManager.NavigateTo(navTo);
+        //}
 
         _platformContextMenuItems = new MenuBuilder(Lang,
             new Tuple<string, object>[]

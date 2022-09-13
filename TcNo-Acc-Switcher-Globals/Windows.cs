@@ -276,6 +276,10 @@ internal static class NativeMethods
     [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
     [SuppressUnmanagedCodeSecurity]
     public static extern bool EnumResourceNames(IntPtr hModule, IntPtr lpszType, EnumResNameProc lpEnumFunc, IntPtr lParam);
+
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool GetWindowPlacement(IntPtr hWnd, ref NativeFuncs.WindowPlacement lpwndpl);
 }
 
 public static class WindowsClipboard
@@ -381,6 +385,21 @@ public class EventForwarder
 
 public static class NativeFuncs
 {
+    public struct WindowPlacement
+    {
+        public int length;
+        public int flags;
+        public int showCmd;
+        public System.Drawing.Point ptMinPosition;
+        public System.Drawing.Point ptMaxPosition;
+        public System.Drawing.Rectangle rcNormalPosition;
+    }
+    public static WindowPlacement GetWindowPlacement(IntPtr hWnd)
+    {
+        var wp = new WindowPlacement();
+        NativeMethods.GetWindowPlacement(hWnd, ref wp);
+        return wp;
+    }
     public static int AllocConsole() => NativeMethods.AllocConsole();
     public static int FreeConsole() => NativeMethods.FreeConsole();
     public static void SetWindowText(string text)

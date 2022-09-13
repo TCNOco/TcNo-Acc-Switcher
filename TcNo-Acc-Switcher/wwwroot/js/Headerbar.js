@@ -35,71 +35,7 @@ const WindowNotifications = {
     WmClose: 0x0010
 };
 
-
-function hideWindow() {
-    // Used in hide window on account switch
-    if (navigator.appVersion.indexOf("TcNo") === -1) return;
-    if (navigator.appVersion.indexOf("TcNo-CEF") !== -1) CefSharp.PostMessage({ "action": "HideWindow" });
-    else chrome.webview.hostObjects.sync.eventForwarder.HideWindow();
-}
-
-
-function windowControls_Min() {
-    if (navigator.appVersion.indexOf("TcNo") === -1) return;
-    if (navigator.appVersion.indexOf("TcNo-CEF") !== -1)
-        CefSharp.PostMessage({ "action": "WindowAction", "value": SysCommandSize.ScMinimise });
-    else
-        chrome.webview.hostObjects.sync.eventForwarder.WindowAction(SysCommandSize.ScMinimise);
-}
-
-function windowControls_Max() {
-    if (navigator.appVersion.indexOf("TcNo") === -1) return;
-    if (navigator.appVersion.indexOf("TcNo-CEF") !== -1)
-        CefSharp.PostMessage({ "action": "WindowAction", "value": SysCommandSize.ScMaximise });
-    else
-        chrome.webview.hostObjects.sync.eventForwarder.WindowAction(SysCommandSize.ScMaximise);
-}
-
-function windowControls_hideToTray() {
-    if (navigator.appVersion.indexOf("TcNo") === -1) return;
-    if (navigator.appVersion.indexOf("TcNo-CEF") !== -1)
-        CefSharp.PostMessage({ "action": "HideWindow" });
-    else
-        chrome.webview.hostObjects.sync.eventForwarder.HideWindow();
-
-}
-
-function windowControls_Exit() {
-    if (navigator.appVersion.indexOf("TcNo") === -1) return;
-    if (navigator.appVersion.indexOf("TcNo-CEF") !== -1)
-        CefSharp.PostMessage({ "action": "WindowAction", "value": WindowNotifications.WmClose });
-    else
-        chrome.webview.hostObjects.sync.eventForwarder.WindowAction(WindowNotifications.WmClose);
-}
-
-function windowControls_Restore() {
-    if (navigator.appVersion.indexOf("TcNo") === -1) return;
-    if (navigator.appVersion.indexOf("TcNo-CEF") !== -1)
-        CefSharp.PostMessage({ "action": "WindowAction", "value": SysCommandSize.ScRestore });
-    else
-        chrome.webview.hostObjects.sync.eventForwarder.WindowAction(SysCommandSize.ScRestore);
-}
-
 function handleWindowControls() {
-    if (navigator.appVersion.indexOf("TcNo") === -1) return;
-    if (navigator.appVersion.indexOf("TcNo-CEF") !== -1) {
-        if (CefSharp === undefined) {
-            window.notification.new({
-                type: "error",
-                title: "",
-                message: "A critical component could not be loaded (CefSharp). Please restart the application!",
-                renderTo: "toastarea",
-                duration: 10000
-            });
-            CefSharp = null;
-        }
-    }
-
     // For draggable regions:
     // https://github.com/MicrosoftEdge/WebView2Feedback/issues/200
     document.body.addEventListener("mousedown", (evt) => {
@@ -111,13 +47,6 @@ function handleWindowControls() {
         if (evt.button === 0 && appRegion === "drag") {
             if (target.classList.length !== 0) {
                 const c = target.classList[0];
-                if (c === "headerbar" && navigator.appVersion.indexOf("TcNo-CEF") !== -1) {
-                    // User is dragging the title bar, and is on the CEF browser.
-                    CefSharp.PostMessage({ "action": "MouseDownDrag" });
-                    evt.preventDefault();
-                    evt.stopPropagation();
-                    return;
-                }
                 const value = (c === "resizeTopLeft" ? SysCommandSize.ScSizeHtTopLeft : (
                     c === "resizeTop" ? SysCommandSize.ScSizeHtTop : (
                         c === "resizeTopRight" ? SysCommandSize.ScSizeHtTopRight : (
@@ -128,13 +57,13 @@ function handleWindowControls() {
                                             c === "resizeLeft" ? SysCommandSize.ScSizeHtLeft : 0))))))));
 
 
-                if (navigator.appVersion.indexOf("TcNo-CEF") !== -1) {
-                     CefSharp.PostMessage({ "action": "MouseResizeDrag", "value": value });
-                }
-                else chrome.webview.hostObjects.sync.eventForwarder.MouseResizeDrag(value);
+       
+                DotNet.invokeMethodAsync("TcNo-Acc-Switcher", "MouseResizeDrag", value);
+            }else{
+                DotNet.invokeMethodAsync("TcNo-Acc-Switcher", "MouseDownDrag");
             }
 
-            if (navigator.appVersion.indexOf("TcNo-CEF") === -1) chrome.webview.hostObjects.sync.eventForwarder.MouseDownDrag(); // This breaks resize on CEFSharp for some reason (Drags window instead of resizing - VERY ANNOYING)
+            ///if (navigator.appVersion.indexOf("TcNo-CEF") === -1) chrome.webview.hostObjects.sync.eventForwarder.MouseDownDrag(); // This breaks resize on CEFSharp for some reason (Drags window instead of resizing - VERY ANNOYING)
 
             evt.preventDefault();
             evt.stopPropagation();

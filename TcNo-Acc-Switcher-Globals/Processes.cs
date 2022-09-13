@@ -28,6 +28,36 @@ namespace TcNo_Acc_Switcher_Globals;
 public partial class Globals
 {
     #region PROCESSES
+    public static string StartTrayIfNotRunning()
+    {
+        if (Process.GetProcessesByName("TcNo-Acc-Switcher-Tray_main").Length > 0) return "Already running";
+        if (!File.Exists("Tray_Users.json")) return "Tray users not found";
+        var startInfo = new ProcessStartInfo { FileName = Path.Join(Globals.AppDataFolder, "TcNo-Acc-Switcher-Tray.exe"), CreateNoWindow = false, UseShellExecute = false, WorkingDirectory = Globals.AppDataFolder };
+        try
+        {
+            _ = Process.Start(startInfo);
+            return "Started Tray";
+        }
+        catch (Win32Exception win32Exception)
+        {
+            if (win32Exception.HResult != -2147467259) throw; // Throw is error is not: Requires elevation
+            try
+            {
+                startInfo.UseShellExecute = true;
+                startInfo.Verb = "runas";
+                _ = Process.Start(startInfo);
+                return "Started Tray";
+            }
+
+            catch (Win32Exception win32Exception2)
+            {
+                if (win32Exception2.HResult != -2147467259) throw; // Throw is error is not: cancelled by user
+            }
+        }
+
+        return "Could not start tray";
+    }
+
     public static bool IsAdministrator => OperatingSystem.IsWindows() && new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
     public static void StartProgram(string path, bool elevated) => StartProgram(path, elevated, "");
 

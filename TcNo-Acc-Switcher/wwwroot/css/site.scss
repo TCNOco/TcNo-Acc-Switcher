@@ -392,10 +392,6 @@ label {
   filter: invert(1);
 }
 
-#btnRestore {
-  display: none !important;
-}
-
 #titlebar #drag-region {
   display: grid;
   grid-template-columns: auto 138px;
@@ -434,23 +430,6 @@ label {
   white-space: nowrap;
   line-height: 1.5;
   text-align: center;
-}
-
-.maximised #titlebar {
-  width: 100%;
-  padding: 0;
-}
-
-.maximised #window-title {
-  margin-left: 12px;
-}
-
-.maximised #btnRestore {
-  display: flex !important;
-}
-
-.maximised #btnMax {
-  display: none;
 }
 
 .mainWindow {

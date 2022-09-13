@@ -22,40 +22,46 @@
 @inject NavigationManager NavigationManager
 @implements IDisposable
 
-<div id="window-title">
-    <div class="resizeTop"></div>
-    <button id="btnBack" @onclick="() => AppState.Navigation.NavigateUpOne(NavigationManager)">
-        <div class="resizeTop"></div>
-        <div class="resizeTopLeft"></div>
-        <div class="resizeLeft"></div>
+<div id="window-title" @onmousedown="WindowActions.MouseDownDrag">
+    <div class="resizeTop" @onmousedown="() => WindowActions.OnResizeBorderMouseDown(SysCommandSize.ScSizeHtTop)" @onmousedown:stopPropagation></div>
+    <button id="btnBack" @onclick="() => AppState.Navigation.NavigateUpOne(NavigationManager)" @onmousedown:stopPropagation>
+        <div class="resizeTop" @onmousedown="() => WindowActions.OnResizeBorderMouseDown(SysCommandSize.ScSizeHtTop)"></div>
+        <div class="resizeTopLeft" @onmousedown="() => WindowActions.OnResizeBorderMouseDown(SysCommandSize.ScSizeHtTopLeft)"></div>
+        <div class="resizeLeft" @onmousedown="() => WindowActions.OnResizeBorderMouseDown(SysCommandSize.ScSizeHtTop)"></div>
         <i class="fas fa-chevron-left icon" style="@_animatedBackCss" draggable="false" alt="-"></i>
     </button>
     <svg class="header_icon" draggable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 768 264" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2">
         <use href="img/TcNo_Logo_Flat.svg#logo"></use>
     </svg>
     <span>@AppState.WindowState.WindowTitle</span>
-@*    @if (HttpContextAccessor.HttpContext?.Request.Headers["User-Agent"][0].Contains("TcNo") == true)
+    @*    @if (HttpContextAccessor.HttpContext?.Request.Headers["User-Agent"][0].Contains("TcNo") == true)
     {*@
-        <div id="window-controls">
-            <button id="btnMin" @onclick='MinClick'>
-                <div class="resizeTop"></div>
+
+    <!-- TODO: Remove .minimized from css, and replace here. Then use onmouseup for the parent of this to update the icon. That handles dragging and size changes. Idk about arrow keys etc? Maybe there's a better way of watching. -->
+    <div id="window-controls" @onmousedown:stopPropagation>
+            <button id="btnMin" @onclick="WindowActions.Minimize">
+                <div class="resizeTop" @onmousedown="() => WindowActions.OnResizeBorderMouseDown(SysCommandSize.ScSizeHtTop)"></div>
                 <img class="icon" srcset="img/icons/min-w-10.png 1x, img/icons/min-w-12.png 1.25x, img/icons/min-w-15.png 1.5x, img/icons/min-w-15.png 1.75x, img/icons/min-w-20.png 2x, img/icons/min-w-20.png 2.25x, img/icons/min-w-24.png 2.5x, img/icons/min-w-30.png 3x, img/icons/min-w-30.png 3.5x" draggable="false" alt="-" />
             </button>
 
-            <button id="btnMax" @onclick='MaxClick'>
-                <div class="resizeTop"></div>
-                <img class="icon" srcset="img/icons/max-w-10.png 1x, img/icons/max-w-12.png 1.25x, img/icons/max-w-15.png 1.5x, img/icons/max-w-15.png 1.75x, img/icons/max-w-20.png 2x, img/icons/max-w-20.png 2.25x, img/icons/max-w-24.png 2.5x, img/icons/max-w-30.png 3x, img/icons/max-w-30.png 3.5x" draggable="false" alt="M" />
-            </button>
-
-            <button id="btnRestore" @onclick="RestoreClick">
-                <div class="resizeTop"></div>
+        @if (WindowActions.GetCurrentState() == 3)
+        {
+            <button id="btnRestore" @onclick="WindowActions.Restore">
+                <div class="resizeTop" @onmousedown="() => WindowActions.OnResizeBorderMouseDown(SysCommandSize.ScSizeHtTop)"></div>
                 <img class="icon" srcset="img/icons/restore-w-10.png 1x, img/icons/restore-w-12.png 1.25x, img/icons/restore-w-15.png 1.5x, img/icons/restore-w-15.png 1.75x, img/icons/restore-w-20.png 2x, img/icons/restore-w-20.png 2.25x, img/icons/restore-w-24.png 2.5x, img/icons/restore-w-30.png 3x, img/icons/restore-w-30.png 3.5x" draggable="false" alt="R" />
             </button>
-
+        }
+        else
+        {
+            <button id="btnMax" @onclick="WindowActions.Maximize">
+                <div class="resizeTop" @onmousedown="() => WindowActions.OnResizeBorderMouseDown(SysCommandSize.ScSizeHtTop)"></div>
+                <img class="icon" srcset="img/icons/max-w-10.png 1x, img/icons/max-w-12.png 1.25x, img/icons/max-w-15.png 1.5x, img/icons/max-w-15.png 1.75x, img/icons/max-w-20.png 2x, img/icons/max-w-20.png 2.25x, img/icons/max-w-24.png 2.5x, img/icons/max-w-30.png 3x, img/icons/max-w-30.png 3.5x" draggable="false" alt="M" />
+            </button>
+        }
             <button id="btnClose" @onclick="CloseButtonClick">
-                <div class="resizeTop"></div>
-                <div class="resizeTopRight"></div>
-                <div class="resizeRight"></div>
+                <div class="resizeTop" @onmousedown="() => WindowActions.OnResizeBorderMouseDown(SysCommandSize.ScSizeHtTop)"></div>
+                <div class="resizeTopRight" @onmousedown="() => WindowActions.OnResizeBorderMouseDown(SysCommandSize.ScSizeHtTopRight)"></div>
+                <div class="resizeRight" @onmousedown="() => WindowActions.OnResizeBorderMouseDown(SysCommandSize.ScSizeHtRight)"></div>
                 <i class="fas fa-times" draggable="false"></i>
             </button>
         </div>
@@ -63,18 +69,13 @@
 </div>
 
 @code {
-
-    private async Task MinClick() => await JsRuntime.InvokeVoidAsync("windowControls_Min");
-    private async Task MaxClick() => await JsRuntime.InvokeVoidAsync("windowControls_Max");
-    private async Task RestoreClick() => await JsRuntime.InvokeVoidAsync("windowControls_Restore");
-
-
-    private async Task CloseButtonClick(MouseEventArgs e)
+    
+    private void CloseButtonClick(MouseEventArgs e)
     {
         if (e.CtrlKey || !WindowSettings.TrayMinimizeNotExit)
-            await JsRuntime.InvokeVoidAsync("windowControls_Exit");
+            WindowActions.Exit();
         else
-            await JsRuntime.InvokeVoidAsync("windowControls_hideToTray");
+            WindowActions.Hide();
     }
 
     private string _animatedBackCss = "transition: transform 0 ease-in-out";
@@ -141,19 +142,4 @@
         await JsRuntime.InvokeVoidAsync("handleWindowControls");
     }
 
-    // For draggable regions:
-    // https://github.com/MicrosoftEdge/WebView2Feedback/issues/200
-    // This is not used here, but these values are used in js for MouseResizeDrag.
-    // Checking once through everything is better than comparing things multiple times.
-    public enum SysCommandSize
-    {
-        ScSizeHtLeft = 0xA, // 1 + 9
-        ScSizeHtRight = 0xB,
-        ScSizeHtTop = 0xC,
-        ScSizeHtTopLeft = 0xD,
-        ScSizeHtTopRight = 0xE,
-        ScSizeHtBottom = 0xF,
-        ScSizeHtBottomLeft = 0x10,
-        ScSizeHtBottomRight = 0x11
-    }
 }
