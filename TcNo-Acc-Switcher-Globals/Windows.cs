@@ -341,6 +341,18 @@ public static class WindowsClipboard
     }
 }
 
+[ComImport]
+[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+[Guid("912b34a7-d10b-49c4-af18-7cb7e604e01a")]
+public interface ICoreWebView2Interop
+{
+    void AddHostObjectToScript([In] string name, [In] ref object obj);
+}
+
+#pragma warning disable CS0618
+[ClassInterface(ClassInterfaceType.AutoDual)]
+#pragma warning restore CS0618
+[ComVisible(true)]
 public class EventForwarder
 {
     public const int WmNclButtonDown = 0xA1;
@@ -365,6 +377,10 @@ public class EventForwarder
         if (wParam == 0) return;
         NativeMethods.ReleaseCapture();
         NativeMethods.SendMessage(_target, WmNclButtonDown, wParam, 0);
+    }
+    public void MouseResizeDragLeft()
+    {
+        MouseResizeDrag(0xA);
     }
 
     public void WindowAction(int action)

@@ -61,7 +61,6 @@
 		<PackageReference Include="HtmlAgilityPack" Version="1.11.43" />
 		<PackageReference Include="Magick.NET-Q8-AnyCPU" Version="11.3.0" />
 		<PackageReference Include="Microsoft.Extensions.Localization" Version="6.0.7" />
-		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Include="PInvoke.User32" Version="0.7.124" />
 		<PackageReference Include="SharpScss" Version="2.0.0" />

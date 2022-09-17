@@ -246,6 +246,9 @@ label {
     background: #3B4853;
 }
 
+#window-title {
+  -webkit-app-region: drag;
+}
 /* Resize bars and corners */
 .resize {
     &TopLeft,

@@ -63,15 +63,17 @@ namespace TcNo_Acc_Switcher
         [JSInvokable]
         public static void MouseDownDrag()
         {
-            ReleaseCapture();
             Console.WriteLine("MouseDownDrag STarted");
-            PostMessage(HWnd, WindowMessage.WM_NCLBUTTONDOWN, (IntPtr)0x2, (IntPtr)0); // HtCaption == 0x2
+            //EventForwarder.MouseDownDrag(HWnd);
+            //HWnd = GetParent(HWnd);
+            var b = PostMessage(HWnd, WindowMessage.WM_NCLBUTTONDOWN, (IntPtr)0x2, (IntPtr)0); // HtCaption == 0x2
+            var a = ReleaseCapture();
             Console.WriteLine("MouseDownDrag");
         }
 
         [JSInvokable]
         public static void MouseResizeDrag(int wParam) => MouseResizeDrag((IntPtr) wParam);
-        
+
         private static void MouseResizeDrag(IntPtr wParam)
         {
             ReleaseCapture();
@@ -84,7 +86,7 @@ namespace TcNo_Acc_Switcher
         {
             WindowActions.MouseResizeDrag((IntPtr)pos);
         }
-        
+
         public static void Hide()
         {
             // This should be changed? Need a way to show this from the tray.

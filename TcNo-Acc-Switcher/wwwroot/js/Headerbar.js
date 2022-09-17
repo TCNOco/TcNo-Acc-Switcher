@@ -35,6 +35,31 @@ const WindowNotifications = {
     WmClose: 0x0010
 };
 
+//function hideWindow() {
+//    chrome.webview.hostObjects.sync.eventForwarder.HideWindow();
+//}
+
+//function windowControls_Min() {
+//    chrome.webview.hostObjects.sync.eventForwarder.WindowAction(SysCommandSize.ScMinimise);
+//}
+
+//function windowControls_Max() {
+//    chrome.webview.hostObjects.sync.eventForwarder.WindowAction(SysCommandSize.ScMaximise);
+//}
+
+//function windowControls_hideToTray() {
+//    chrome.webview.hostObjects.sync.eventForwarder.HideWindow();
+
+//}
+
+//function windowControls_Exit() {
+//    chrome.webview.hostObjects.sync.eventForwarder.WindowAction(WindowNotifications.WmClose);
+//}
+
+//function windowControls_Restore() {
+//    chrome.webview.hostObjects.sync.eventForwarder.WindowAction(SysCommandSize.ScRestore);
+//}
+
 function handleWindowControls() {
     // For draggable regions:
     // https://github.com/MicrosoftEdge/WebView2Feedback/issues/200
@@ -57,16 +82,22 @@ function handleWindowControls() {
                                             c === "resizeLeft" ? SysCommandSize.ScSizeHtLeft : 0))))))));
 
 
-       
-                DotNet.invokeMethodAsync("TcNo-Acc-Switcher", "MouseResizeDrag", value);
-            }else{
-                DotNet.invokeMethodAsync("TcNo-Acc-Switcher", "MouseDownDrag");
+
+                //DotNet.invokeMethodAsync("TcNo-Acc-Switcher", "MouseResizeDrag", value);
+                console.log(chrome.webview.hostObjects.sync);
+                console.log(chrome.webview.hostObjects.sync.eventForwarder);
+                //chrome.webview.hostObjects.sync.eventForwarder.MouseResizeDrag(value);
+                chrome.webview.hostObjects.sync.eventForwarder.MouseResizeDragLeft();
+            } else {
+                //DotNet.invokeMethodAsync("TcNo-Acc-Switcher", "MouseDownDrag");
+                console.log("Dragging top!");
+                chrome.webview.hostObjects.sync.eventForwarder.MouseDownDrag();
             }
 
             ///if (navigator.appVersion.indexOf("TcNo-CEF") === -1) chrome.webview.hostObjects.sync.eventForwarder.MouseDownDrag(); // This breaks resize on CEFSharp for some reason (Drags window instead of resizing - VERY ANNOYING)
 
-            evt.preventDefault();
-            evt.stopPropagation();
+            //evt.preventDefault();
+            //evt.stopPropagation();
         }
     });
 }
