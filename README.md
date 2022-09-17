@@ -37,6 +37,8 @@ Simple. It swaps out files and registry values, pointing to your last logged in 
 
 ### Things not working? See the [FAQ](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Frequently-Asked-Questions)
 
+## DEVELOPMENT HAS NOT STOPPED
+This is undergoing massive improvements, but have not yet been completed. See new commits to [here](https://github.com/TcNobo/TcNo-Acc-Switcher/tree/JsToRazor-DI) and more recently [here](https://github.com/TcNobo/TcNo-Acc-Switcher/tree/JsToRazor-DI-MAUI) - Currently ~90 commits ahead.
 
 <h2><img alt="Youtube" src="/other/img/youtube.svg" height=18"> List of all platforms (Click for video guides):</h2>
 
