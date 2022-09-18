@@ -60,6 +60,7 @@ public class Platform
 
     // Data used elsewhere
     [JsonIgnore] public string SafeName { get; set; }
+    [JsonIgnore] public string SafeNameNoSpace { get; set; }
     [JsonIgnore] public string SettingsFile { get; set; }
     [JsonIgnore] public string PlatformLoginCache { get; set; }
     [JsonIgnore] public string ShortcutFolder { get; set; }
@@ -76,6 +77,7 @@ public class Platform
         // Generate some vars
         PrimaryId = Identifiers.First();
         SafeName = Globals.GetCleanFilePath(Name);
+        SafeNameNoSpace = SafeName.Replace(" ", "_");
         ExeName = Path.GetFileName(ExeLocationDefault);
         SettingsFile = Path.Join("Settings\\", SafeName + ".json");
         PlatformLoginCache = $"LoginCache\\{SafeName}\\";

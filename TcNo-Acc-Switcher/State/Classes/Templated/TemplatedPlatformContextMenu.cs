@@ -107,9 +107,9 @@ public class TemplatedPlatformContextMenu
         if (!OperatingSystem.IsWindows()) return;
         Globals.DebugWriteLine(@"[JSInvoke:General\GeneralInvocableFuncs.CreateShortcut]");
         if (args.Length > 0 && args[0] != ':') args = $" {args}"; // Add a space before arguments if doesn't start with ':'
-        var bgImg = Path.Join(Globals.WwwRoot, $"\\img\\platform\\{_appState.Switcher.CurrentSwitcherSafe}.svg");
-        var currentPlatformImgPath = Path.Join(Globals.WwwRoot, $"\\img\\platform\\{_templatedPlatformState.CurrentPlatform.SafeName}.svg");
-        var currentPlatformImgPathOverride = Path.Join(Globals.WwwRoot, $"\\img\\platform\\{_templatedPlatformState.CurrentPlatform.SafeName}.png");
+        var bgImg = Path.Join(Globals.WwwRoot, $"\\img\\platform\\{_appState.Switcher.CurrentSwitcherSafe.Replace(' ', '_')}.svg");
+        var currentPlatformImgPath = Path.Join(Globals.WwwRoot, $"\\img\\platform\\{_templatedPlatformState.CurrentPlatform.SafeNameNoSpace}.svg");
+        var currentPlatformImgPathOverride = Path.Join(Globals.WwwRoot, $"\\img\\platform\\{_templatedPlatformState.CurrentPlatform.SafeNameNoSpace}.png");
         var primaryPlatformId = _templatedPlatformState.CurrentPlatform.PrimaryId;
         var platformName = $"Switch to {_appState.Switcher.SelectedAccount.DisplayName} [{_appState.Switcher.CurrentSwitcher}]";
 

@@ -25,6 +25,7 @@ public class PlatformItem : IComparable
     public bool Enabled;
     public int DisplayIndex = 99;
     [JsonIgnore] public string SafeName = "";
+    [JsonIgnore] public string SafeNameNoSpace => SafeName.Replace(' ', '_');
     [JsonIgnore] public string NameNoSpace = "";
     [JsonIgnore] public string Identifier = "";
     [JsonIgnore] public string ExeName = "";

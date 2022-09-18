@@ -40,7 +40,7 @@
 
 @code
 {
-    private static string _imagePath(PlatformItem platform) => Path.Join(Globals.UserDataFolder, $"wwwroot\\img\\platform\\{platform.SafeName}.svg");
+    private static string _imagePath(PlatformItem platform) => Path.Join(Globals.UserDataFolder, $"wwwroot\\img\\platform\\{platform.SafeNameNoSpace}.svg");
 
     private ObservableCollection<MenuItem> _platformContextMenuItems;
 
@@ -62,7 +62,7 @@
                     @if(File.Exists(_imagePath(platform)))
                     {
                         <svg viewBox="0 0 500 500" draggable="false" alt="@(platform.SafeName)">
-                            <use href="@($"img/platform/{platform.SafeName}.svg#FG")" class="@("icoFG")"></use>
+                            <use href="@($"img/platform/{platform.SafeNameNoSpace}.svg#FG")" class="@("icoFG")"></use>
                         </svg>
                     }
                 </div>

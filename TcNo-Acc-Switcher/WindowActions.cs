@@ -19,15 +19,14 @@ namespace TcNo_Acc_Switcher
         public static void OnWindowCreated(Microsoft.UI.Xaml.Window window)
         {
             window.ExtendsContentIntoTitleBar = false;
-            var nativeWindowHandle = WindowNative.GetWindowHandle(window);
-            var win32WindowsId = Win32Interop.GetWindowIdFromWindow(nativeWindowHandle);
+            HWnd = WindowNative.GetWindowHandle(window);
+            var win32WindowsId = Win32Interop.GetWindowIdFromWindow(HWnd);
             WinUiAppWindow = AppWindow.GetFromWindowId(win32WindowsId);
             if (WinUiAppWindow.Presenter is OverlappedPresenter p)
             {
                 p.SetBorderAndTitleBar(false, false);
             }
 
-            HWnd = WindowNative.GetWindowHandle(window);
             var style = GetWindowLong(HWnd, WindowLongIndexFlags.GWL_STYLE);
             style &= ~(int)(SetWindowLongFlags.WS_CAPTION |
                             SetWindowLongFlags.WS_SYSMENU |

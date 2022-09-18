@@ -19,7 +19,7 @@
         <ApplicationTitle>TcNo-Acc-Switcher</ApplicationTitle>
 
         <!-- App Identifier -->
-        <ApplicationId>com.companyname.tcno_acc_switcher</ApplicationId>
+        <ApplicationId>co.tcno.tcno_acc_switcher</ApplicationId>
         <ApplicationIdGuid>7C15D393-DD47-486E-BE03-41B321BB2DDF</ApplicationIdGuid>
 
         <!-- Versions -->

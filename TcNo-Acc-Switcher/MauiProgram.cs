@@ -5,7 +5,6 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI;
 using PInvoke;
 using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher.Data;
 using TcNo_Acc_Switcher.State;
 using TcNo_Acc_Switcher.State.Interfaces;
 using WinRT.Interop;
