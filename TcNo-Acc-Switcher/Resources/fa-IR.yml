@@ -1,440 +1,0 @@
----
-Update: به روز رسانی در دسترس است! برای شروع اینجا کلیک کنید.
-Header_ChooseLanguage: 'زبان را انتخاب کنید:'
-BattleNet_ShowSR: Overwatch SR را نشان دهید و از تصویر نمایه Overwatch استفاده کنید.
-Steam_ShowSteamID: نمایش SteamID
-Steam_ShowVac: نمایش وضعیت VAC
-Steam_CheckVac: وضعیت VAC حساب را بررسی کنید
-Steam_ShowLimited: نمایش وضعیت محدود
-Steam_ShowAccUsername: نمایش نام کاربری حساب
-Steam_Tray_AccountName: نمایش نام حساب [نه نام دوست]
-Steam_OverrideDefaultState: "لغو وضعیت ورود پیش فرض:"
-Button_AddNew: جدید اضافه کن
-Button_SaveCurrent: ذخیره فعلی
-Button_SaveFile: ذخیره فایل
-Button_Cancel: لغو کنید
-Button_Login: وارد شدن
-Button_Close: نزدیک
-Button_RefreshImages: بازخوانی تصاویر
-Button_ResetSettings: تنظیمات را بازنشانی کنید
-Button_AdvancedCleaning: نظافت پیشرفته ...
-Button_ClearLog: پاک کردن گزارش
-Button_WikiInfo: اطلاعات بیشتر (ویکی)
-Button_ManagePlatforms: مدیریت پلتفرم ها
-Button_Backup: پشتیبان گیری
-Button_BackupAll: از همه چیز بک آپ بگیرید
-Button_Restore: بازگرداندن
-Button_OpenBackup: پوشه پشتیبان را باز کنید
-Settings_Shortcut: ' {platform} میانبر دسکتاپ Switcher'
-Settings_Admin: '{platform} به عنوان Admin اجرا کنید'
-Settings_ImageExpiry: 'چند روز قبل از انقضای تصاویر نمایه:'
-Settings_Header_AppWide: تنظیمات در سطح برنامه
-Settings_Header_GeneralSettings: تنظیمات عمومی
-Settings_Header_ExtraPlatforms: تنظیمات پلتفرم
-Settings_Header_GeneralTools: ابزارهای عمومی
-Settings_Header_OtherTools: ابزارهای دیگر
-Settings_Header_TraySettings: تنظیمات سینی
-Settings_Header_OpenGameFolders: پوشه های بازی را باز کنید
-Settings_Header_BackupRestore: پشتیبان گیری و بازیابی تنظیمات پلت فرم
-Settings_Header_Language: زبان
-Settings_Header_System: سیستم
-Settings_Header_Theme: موضوع
-Settings_Header_Program: برنامه
-Settings_Header_StatsSharing: آمار و اشتراک گذاری
-Settings_Header_Platform: "{platformName} تنظیمات"
-Settings_TrayMax: 'حداکثر تعداد حساب هایی که باید به خاطر بسپارید:'
-Settings_ExtraPlatformsDisabled: پلتفرم های غیر فعال برای فعال کردن آنها کلیک کنید.
-Settings_ExtraPlatformsEnabled: پلتفرم های قابل مشاهده برای غیرفعال کردن آنها کلیک کنید.
-Settings_RTL: نمایش متن به صورت راست به چپ
-Settings_CollectStats: جمع آوری آمار
-Settings_ShareStats: به اشتراک گذاری آمار به صورت آزاردهنده (توصیه می شود)
-Settings_DiscordRpc: Discord Rich Presence (RPC)
-Settings_DiscordRpcShare: کل سوئیچ ها را به اشتراک بگذارید
-Settings_ViewStats: مشاهده آمار
-Settings_ClearStats: بازنشانی کنید
-Settings_CurrentLocation: 'محل نصب فعلی: {path}'
-Settings_CurrentDataLocation: 'مکان اطلاعات کاربر فعلی: {path}'
-Settings_SetDataLocation: "[تنظیم مکان داده های کاربر سفارشی]"
-Settings_PickFolder: '{platform} پوشه را انتخاب کنید'
-Settings_OpenFolder: پوشه {platform} باز کنید
-Settings_ClearForgotten: پاک کردن فراموش شده
-Settings_ClearAccounts: پاک کردن حساب ها
-Settings_StreamerMode: حالت پخش کننده را فعال کنید
-Settings_ExitToTray: خروج به سینی به حداقل می رسد
-Settings_DesktopShortcut: میانبر دسکتاپ
-Settings_StartMenu_ProgramTray: برنامه و سینی
-Settings_StartMenu_Platform: سکو
-Settings_Tray_StartWindows: Tray را با ویندوز راه اندازی کنید
-Settings_Tray_StartNow: '[اکنون سینی را شروع کنید]'
-Settings_CurrentStyle: سبک فعلی
-Settings_ThemeBackground: '[تنظیم پس زمینه]'
-Settings_ThemeOpenFolder: '[باز کردن پوشه تم]'
-Settings_Protocol: 'پروتکل tcno:\\ را فعال کنید (توصیه می شود)'
-Settings_StartCentered: برنامه را متمرکز شروع کنید
-Settings_WindowsAccent: از Windows Accent Color استفاده کنید
-Settings_HelpTranslate: "[کمک به ترجمه]"
-Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "(پیشرفته) تنظیم موتور رندر:"
-Settings_Header_ClosingMethod: "(پیشرفته) روش را روی {platform}تنظیم کنید"
-Settings_Header_StartingMethod: "(پیشرفته) روش را روی {platform}تنظیم کنید"
-Settings_AutoStart: "شروع خودکار {platform} در سوئیچ حساب"
-Settings_NoPlatforms: در حال حاضر هیچ پلتفرمی فعال نیست. لطفاً پلتفرم‌های اختیاری را در زیر علامت بزنید تا فعال شوند، یا علامت پلتفرم‌های غیرفعال را بردارید.
-Settings_MinimizeOnSwitch: سوئیچ در حساب کاربری را به حداقل برسانید
-Stats_Disabled: "جمع آوری آمار غیرفعال است."
-Stats_InDepth: تجزیه آماری عمیق
-Stats_ShareEnabled: "این آمار به صورت ناشناس به اشتراک گذاشته شده است و به کل <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">در اینجا</a>اضافه می شود."
-Stats_ShareDisabled: "این آمار به صورت ناشناس به اشتراک گذاشته نمی شود و به کل <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">در اینجا اضافه نخواهد شد</a>."
-Stats_OperatingSystem: "سیستم عامل: "
-Stats_FirstLaunch: "اولین راه اندازی: "
-Stats_LaunchCount: "تعداد راه اندازی: "
-Stats_CrashCount: "تعداد خرابی ها: "
-Stats_MostUsedPlatform: "پر استفاده ترین پلت فرم: "
-Stats_TotalTime: "کل زمان صرف شده در برنامه: "
-Stats_TotalSwitches: "کل سوئیچ های حساب: "
-Stats_TotalGamesLaunched: "مجموع برنامه ها/بازی های راه اندازی شده از طریق سوئیچر: "
-Stats_UniqueDaysLong: "روزهای منحصر به فرد با تغییر حساب: "
-Stats_LastUpload: "آخرین بارگذاری: "
-Stats_SwitcherStats: "آمار سوئیچر: "
-Stats_VisitsTotalTime: "{visits} بازدید کل، {hours} کل زمان"
-Stats_Accounts: "حساب ها: "
-Stats_Switches: "سوئیچ ها: "
-Stats_FirstActive: "اولین فعال: "
-Stats_LastActive: "آخرین فعالیت: "
-Stats_UniqueDays: "روزهای بی نظیر: "
-Stats_GameShortcuts: "میانبرهای بازی: "
-Stats_GameShortcutsHotbar: "میانبرهای بازی (در هاتبار): "
-Stats_GamesLaunched: "بازی های راه اندازی شده: "
-Cleaning_Header_StartMenuShortcuts: 'میانبرهای منوی استارت:'
-Cleaning_Header_General: نظافت عمومی
-Cleaning_Header_LoginHistory: تاریخچه ورود من را پاک کنید
-Cleaning_Header_PlatformCleaning: '{platform} سوئیچر'
-Cleaning_ImportantInfoHeader: 'اطلاعات مهم:'
-Cleaning_ImportantInfo: >
-  با کلیک بر روی یک دکمه، فایل(های) مرتبط از نصب Steam شما حذف می شود.<br /> حذف loginusers.vdf باعث می‌شود که این تعویض‌کننده حساب هیچ حسابی را نشان ندهد.<br /> برای بازگرداندن آنها باید با استفاده از Steam وارد آنها شوید.
-Cleaning_Button_KillProcess: کشتن {platform} فرآیند
-Cleaning_Button_ForgottenBackups: بک آپ های حساب فراموش شده
-Cleaning_Understand: من درک می کنم که این دکمه ها چه کار می کنند.
-Restore_Info: >
-  اگر قبلاً یک حساب کاربری را "فراموش کرده اید"، می توانید آنها را در اینجا بازیابی کنید.<br /> این کار آنها را دوباره به فایل loginusers.vdf شما اضافه می کند و به شما امکان می دهد به آنها سوئیچ کنید.
-Restore_Button_Restore: بازیابی انتخاب شده
-Ignored_RemoveAccounts: حساب ها را از لیست نادیده گرفتن حذف کنید
-Ignored_Description: اگر قبلاً حسابی را «نادیده‌گرفته‌اید»، می‌توانید آن‌ها را دوباره در اینجا نشان دهید
-Ignored_Stop: نادیده گرفتن انتخاب شده را متوقف کنید
-Toast_DataLocationCopying: (1/2) کپی کردن فایل های موجود در پوشه اطلاعات کاربر جدید!
-Toast_DataLocationNotCopying: (1/2) پوشه از قبل دارای فایل است! داده های کاربر را منتقل نمی کند.
-Toast_DataLocationSet: (2/2) برای استفاده از پوشه جدید اکانت سوییچر را راه اندازی مجدد کنید!
-Toast_PlaceShortcutFiles: یک پوشه در حال باز شدن است. میانبرهای بازی را در آن پوشه قرار دهید و تغییر دهنده حساب را مجددا راه اندازی کنید.
-Toast_TrayStarted: سینی شروع شد!
-Toast_TrayRunning: سینی در حال حاضر باز است
-Toast_TrayUsersMissing: هیچ کاربر سینی ذخیره نشد
-Toast_TrayFail: برنامه سینی شروع نشد!
-Toast_TrayPosition: "با کلیک بر روی دکمه خروج: من در سینی ویندوز خواهم بود! (نوار شروع سمت راست)"
-Toast_TrayHint: "نکته: Ctrl+ روی \"X\" کلیک کنید تا من کاملا بسته شوم یا از طریق سینی > \"خروج\""
-Toast_Copied: کپی شد
-Toast_AlreadyProcessing: در حال حاضر در حال پردازش حساب‌ها...
-Toast_FailedRestore: بازیابی حساب ها انجام نشد (به کنسول مراجعه کنید)
-Toast_Restored: حساب های بازیابی شده!
-Toast_ProtocolEnabled: این برنامه اکنون به tcno:\\ در ویندوز پاسخ می دهد
-Toast_ProtocolEnabledTitle: پروتکل اضافه شد
-Toast_ProtocolDisabled: این برنامه دیگر به tcno پاسخ نمی دهد:\\
-Toast_ProtocolDisabledTitle: پروتکل حذف شد
-Toast_RestartAsAdmin: لطفاً به عنوان مدیر شروع کنید و دوباره امتحان کنید.
-Toast_RestartAfterClose: لطفا پس از کلیک بر روی Close برنامه را مجددا راه اندازی کنید.
-Toast_RestartAfterCloseTitle: رنگ لهجه غیرفعال است
-Toast_RestartRequired: برای اعمال تغییرات، راه اندازی مجدد کنید
-Toast_LoadStylesheetFailed: برگه سبک بارگیری نشد! برای جزئیات بیشتر به پوشه اطلاعات کاربر مراجعه کنید.
-Toast_BNet_Private: "{BTag}خصوصی است"
-Toast_BNet_StatsFail: "خطا در تلاش برای دریافت آمار برای {BTag}"
-Toast_BNet_CantSwapAccounts: امکان تعویض حساب ها وجود ندارد (فایل Battle.net.config خراب است)
-Toast_BNet_CantLoadNotFound: Battle.net.config را پیدا نکردم
-Toast_BNet_CantLoadEmpty: فایل حساب برای Blizzard بارگیری نشد (هیچ حسابی یافت نشد)
-Toast_BNet_CantLoadConfigCorrupt: فایل حساب برای بلیزارد بارگیری نشد (فایل Battle.net.config خراب است)
-Toast_BNet_NamePolicy: BattleTag با خط مشی نامگذاری مطابقت نداشت.
-Toast_ItemNotFound: "{item} پیدا نشد"
-Toast_DeletedTotal: "{files} از {totalFiles} حذف شد. مجموع: {totalSize}"
-Toast_CantChangeUsername: نام کاربری تغییر نکرد
-Toast_CantClearLoginFiles: فایل های لاگین قدیمی پاک نشد
-Toast_AccountIdReg: شناسه حساب از رجیستری دریافت نشد!
-Toast_RegFailWrite: نوشتن در رجیستری ویندوز ناموفق بود!
-Toast_RegFailRead: خواندن از رجیستری ویندوز انجام نشد!
-Toast_RegFailReadSaved: خواندن ورودی رجیستری ذخیره شده انجام نشد. در صورت ناموفق بودن، سعی کنید حساب را حذف کرده و دوباره اضافه کنید.
-Toast_RegSaveMissing: یافتن یا خواندن داده ها از فایل های ذخیره شده رجیستری ناموفق بود!
-Toast_DuplicateNames: امکان تعویض وجود ندارد. حساب های تکراری با نام کاربری مشابه؟
-Toast_MissingUserId: "امکان تعویض وجود ندارد. شناسه کاربری وجود ندارد. \"خطاهای رایج\" ویکی را بررسی کنید."
-Toast_CouldNotLocate: کاربر وارد شده را پیدا نکرد
-Toast_StreamerModeHint: اطلاعات خصوصی پنهان است! - تنظیمات را ببینید
-Toast_StreamerModeTitle: حالت استریمر
-Toast_AddAccountsFirst: پلتفرم را از لیست باز کنید و ابتدا چند حساب اضافه کنید
-Toast_AddAccountsFirstTitle: هیچ حساب ذخیره شده ای وجود ندارد
-Toast_CantFindImage: تصویر کاربران پیدا نشد.
-Toast_CantCreateShortcut: نمی توان میانبر ایجاد کرد
-Toast_ShortcutCreated: میانبر ایجاد شد!
-Toast_FailedUpdateCheck: بررسی به‌روزرسانی‌ها انجام نشد
-Toast_UpdateVerifyFail: نمی توان فایل های به روز کننده را تأیید کرد. آخرین نسخه را دانلود کنید و فایل ها را در دایرکتوری خود جایگزین کنید.
-Toast_StartedGame: '{program}شروع شد'
-Toast_Steam_VacCleared: وضعیت VAC برای حساب ها پاک شد
-Toast_Steam_CantDeleteVacCache: '"LoginCache/Steam/VACCache/SteamVACCache.json" نمی تواند حذف شود'
-Toast_NoFindSteamUserdata: پوشه Steam\\userdata پیدا نشد
-Toast_Steam_VdfLast: توانست از vdf_last بارگیری کند. ممکن است برخی از حساب ها گم شده باشند.
-Toast_PartiallyFixed: تا حدی ثابت شده است
-Toast_Steam_FailedLoginusers: steam/config/loginusers.vdf بارگیری نشد
-Toast_Steam_CantLocateLoginusers: نمی توان ".../Steam/config/loginusers.vdf" را پیدا کرد. سعی کنید ابتدا وارد یک حساب کاربری شوید.
-Toast_CantClearImages: تصاویر پاک نشد
-Toast_RefreshedImages: تصاویر به روز شده
-Toast_ClearForgottenCheck: آیا مطمئن هستید که می خواهید نسخه پشتیبان حساب های فراموش شده را پاک کنید؟
-Toast_BattleNet_ChangedBTag: BattleTag را تغییر داد
-Toast_BattleNet_DeletedBTag: BattleTag حذف شد
-Toast_FetchedRank: رتبه واکشی شد
-Toast_ForgotAccount: حساب را فراموش کرده اید
-Toast_ClearedPlatformSettings: "تنظیمات {platform} Switcher پاک شد"
-Toast_ClearedImages: "تصاویر پاک شده"
-Toast_SavedItem: "ذخیره شده: {item}"
-Toast_ChangedUsername: نام کاربری تغییر کرد
-Toast_SetUsername: نام کاربری را تنظیم کنید
-Toast_AlreadyLoggedIn: قبلاً با این حساب وارد شده اید! (هیچ تغییری انجام نشد)
-Toast_BackupCopy: (1/3) کپی کردن فایل ها در یک مکان موقت...
-Toast_BackupCompress: (2/3) فشرده سازی فایل ها ({size}). این زمان خواهد برد...
-Toast_BackupComplete: (3/3) فشرده سازی به پایان رسید! ({size} تا {compressedSize})
-Toast_BackupProgress: "پشتیبان گیری در حال انجام است (اندازه فشرده: {compressedSize})"
-Toast_BackupFail: پشتیبان گیری انجام نشد - به گزارش مراجعه کنید!
-Toast_BackupBusy: پشتیبان گیری از قبل در حال انجام است!
-Toast_RestoreBusy: بازیابی از قبل در حال انجام است!
-Toast_RestoreExt: استخراج آرشیو
-Toast_RestoreCopying: انتقال فایل ها به پلتفرم
-Toast_RestoreDeleting: حذف فایل های موقت
-Toast_RestoreComplete: بازیابی به پایان رسید!
-Toast_FailedLoad: '{platform}بارگیری نشد! برای مشاهده خطا روی پلتفرم کلیک کنید.'
-Toast_FailedPlatformsLoad: Platforms.json بارگیری نشد! لطفاً بررسی کنید که این فایل وجود دارد.
-Toast_FailedLoadSettings: "تنظیمات بارگیری نشد! به جای آن تنظیمات پیش فرض بارگیری می شود. افزودن «قدیمی» به نام فایل تنظیمات موجود."
-Toast_FailedLoadStats: "آمار بارگیری نشد! شروع تازه"
-Toast_FileCopyFail: فایل ها کپی نشد! برای جزئیات بیشتر به گزارش مراجعه کنید.
-Toast_UserDataLoadFail: داده های کاربر {UserData}\\WindowSettings.json بارگیری نشد. پشتیبان گیری و بازنشانی! خطا برای ورود ذخیره شد.
-Toast_UpdateCheckFail: دسترسی به https://tcno.co/ برای بررسی به‌روزرسانی‌ها امکان‌پذیر نیست. این پیام یک بار در روز نمایش داده می شود.
-Toast_FailedCreateIcon: نماد ایجاد نشد. برای جزئیات بیشتر به گزارش مراجعه کنید.
-Tooltip_Restore: برای انتخاب یک فایل 7z کلیک کنید یا آن را روی این دکمه بکشید.
-Modal_Crowdin_Header: مترجمان کرودین
-Modal_Crowdin_Info: "در اینجا همه کسانی هستند که در ترجمه این نرم افزار کمک کردند.<br>کاربرانی که زبان های کناری داشتند در ترجمه کمک زیادی کردند (نقش تصحیح کننده)."
-Modal_Info_Creator: ایجاد شده توسط TechNobo [Wesley Pyburn]
-Modal_Info_Version: نسخه
-Modal_Info_ViewGitHub: در GitHub مشاهده کنید
-Modal_Info_BugReport: گزارش اشکال/درخواست ویژگی
-Modal_Info_VisitSite: از tcno.co دیدن کنید
-Modal_Info_Disclaimer: سلب مسئولیت
-Modal_Title_Info: اطلاعات تعویض حساب TcNo
-Modal_Title_ChangeUsername: تغییر نام کاربری
-Modal_Title_ConfirmAction: TcNo Account Switcher تایید اقدام
-Modal_Title_LocatePlatform: لطفا دایرکتوری {platform} را پیدا کنید
-Modal_Title_AddNew: اضافه کردن {platform} حساب جدید
-Modal_Title_Background: یک تصویر پس زمینه تنظیم کنید
-Modal_Title_Userdata: پوشه اطلاعات کاربر را تنظیم کنید
-Modal_Title_Stats: آمار شما
-Modal_SetBackground: 'یک تصویر را انتخاب کنید یا یک URL در زیر وارد کنید.<br>خالی بگذارید و تنظیم مجدد کنید.<br>(برای کنترل پیشرفته تر به Theming در ویکی مراجعه کنید):'
-Modal_SetBackground_Button: تنظیم پس زمینه
-Modal_SetBackground_ChooseImage: تصویر محلی را انتخاب کنید
-Modal_SetUserdata: یک مسیر پوشه را در زیر وارد کرده و روی set کلیک کنید.
-Modal_SetUserdata_ChooseFolder: یک پوشه را انتخاب کنید
-Modal_SetUserdata_Button: تنظیم داده های کاربر
-Modal_ChangeUsername: لطفا یک نام کاربری جدید برای حساب خود وارد کنید
-Modal_ChangeUsernameType: '{platform} نام کاربری را تغییر دهید'
-Modal_EnterDirectory: "لطفاً {platform}را به این ترتیب وارد کنید: C:\\Program Files\\{platform}"
-Modal_LocatePlatform: '{platformExe}بیابید'
-Modal_LocatePlatformFolder: پوشه {platform} انتخاب کنید
-Modal_ConfirmAction: اقدام را تایید کنید
-Modal_AddNew: لطفاً یک نام برای {platform} که وارد آن شده اید وارد کنید.
-Modal_AddCurrentAccount: اضافه کردن {platform} حساب فعلی
-Modal_SetImageHeader: تنظیم تصویر نمایه
-Modal_SetImage: تنظیم تصویر
-Status_SelectedAccount: "انتخاب شده: {name}"
-Status_Init: "وضعیت: اولیه"
-Status_ClosingPlatform: بستن {platform}
-Status_ClosingPlatformFailed: '{platform}بسته نشد'
-Status_StartingPlatform: شروع {platform}
-Toast_StartingPlatformFailed: شروع نشد {platform}! برای جزئیات بیشتر به گزارش مراجعه کنید.
-Toast_UrlAdminErr: شما نمی توانید فایل های .url را به عنوان مدیر اجرا کنید. نوع میانبر دیگری را امتحان کنید. راه اندازی به عنوان کاربر عادی
-Status_UpdatingFile: "به روز رسانی {file}"
-Status_UpdatingRegistry: به روز رسانی رجیستری ویندوز
-Status_FailedLog: اقدام ناموفق بود. برای جزئیات بیشتر به گزارش مراجعه کنید.
-Status_WaitingForClose: "در انتظار بسته شدن {processName}{timeLimit} {timeout}ثانیه)"
-Status_WaitingForMultipleClose: "در انتظار بسته شدن {processName} و {count} نفر دیگر{timeLimit} {timeout}ثانیه)"
-Status_GetUniqueId: جمع آوری شناسه کاربری منحصر به فرد
-Status_CopyingFiles: در حال کپی کردن فایل های کاربر...
-Status_HandlingImage: مدیریت تصویر نمایه حساب
-Context_SwapTo: تعویض به حساب کاربری
-Context_CreateShortcut: ایجاد میانبر در دسکتاپ
-Context_CreateShortcutSubmenu: ایجاد میانبر در دسکتاپ...
-Context_ChangeImage: تغییر تصویر
-Context_BNet_SetBTag: BattleTag را تنظیم کنید
-Context_BNet_DelBTag: BattleTag را حذف کنید
-Context_BNet_GetRAnk: بازیابی رتبه
-Context_ChangeName: تغییر نام سوئیچر
-Context_LoginAsSubmenu: ورود به عنوان...
-Context_UsernameSubmenu: نام کاربری...
-Context_RefreshName: نام را بازخوانی کنید
-Context_CopySubmenu: کپی 🀄...
-Context_CopyProfileSubmenu: کپی نمایه...
-Context_CommunityUrl: URL انجمن
-Context_CommunityUsername: نام کاربری انجمن
-Context_LoginUsername: نام کاربری وارد شوید
-Context_CopySteamIdSubmenu: کپی SteamID...
-Context_Steam_Id: SteamID [STEAM0:~]
-Context_Steam_Id3: SteamID3 [U:1:~]
-Context_Steam_Id32: SteamID32
-Context_Steam_Id64: SteamID64 7656~
-Context_Steam_OpenUserdata: داده های کاربر را باز کنید
-Context_CopyOtherSubmenu: کپی دیگر...
-Context_HidePlatform: پنهان کردن پلت فرم
-Context_ExportAccList: لیست حساب های صادراتی
-Context_RunAdmin: به عنوان Admin اجرا شود
-Context_Hide: پنهان شدن
-Title_BNet_Settings: TcNo Account Switcher - تنظیمات BattleNet
-Title_BNet_ManageIgnored: TcNo Account Switcher - حساب های BattleNet نادیده گرفته شده را مدیریت کنید
-Title_Platforms_Settings: TcNo Account Switcher - تنظیمات پلتفرم
-Title_AccountsList: TcNo Account Switcher - {platform}
-Title_TextEditor: TcNo Account Switcher - ویرایشگر متن
-Title_Settings: TcNo Account Switcher - تنظیمات
-Title_Steam_Cleaning: TcNo Account Switcher - Steam Cleaning
-Title_Steam_Settings: TcNo Account Switcher - تنظیمات Steam
-Title_Template_Settings: TcNo Account Switcher - {platformName} تنظیمات
-Installer_Downloading: دانلود {file}
-Installer_DownloadFinished: '{file}به پایان رسید'
-Installer_Installing: "در حال نصب: {runtime}"
-Installer_RuntimeTitle: TcNo Account Switcher - نصب کننده زمان اجرا
-Installer_Welcome: به TcNo Account Switcher - نصب کننده زمان اجرا خوش آمدید
-Installer_InstalledRuntimes: "زمان های اجرا نصب شده در حال حاضر:"
-Installer_ErrorRuntime: "یک یا چند زمان اجرا نصب نشده است:"
-Installer_RuntimeNote: "[~{size1} مگابایت + ~{size2} مگابایت هنگام نصب]"
-Installer_TotalSize: "حجم کل دانلود: ~{size} مگابایت"
-Installer_AnyKeyStart: برای شروع دانلود هر کلیدی را فشار دهید...
-Runtime_WebView2: Microsoft WebView2 Runtime
-Runtime_Desktop: زمان اجرای دسکتاپ دات نت 5 مایکروسافت
-Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} Runtime
-Installer_FailedFolder: "پوشه ایجاد نشد:"
-Installer_FailedWV: "دانلود و نصب Microsoft WebView2 Runtime انجام نشد. برای دانلود: 1. روی لینک زیر کلیک کنید: {link} 2. روی «دانلود بسته نرم افزاری میزبانی» در بخش اجرای برنامه های سرور کلیک کنید."
-Installer_FailedDR: "دانلود و نصب .NET 5 Desktop Runtime انجام نشد. لطفا آن را از اینجا دانلود کنید:"
-Installed_FailedASP: "دانلود و نصب ASP.NET Core {version} Runtime انجام نشد. برای دانلود:: 1. لینک زیر کلیک کنید {link} 2. کلیک کنید 'دانلود X64، تحت برنامه های اجرا دسکتاپ."
-Installer_Ready: "یک یا چند مورد برای نصب آماده است. اگر و زمانی که از شما خواسته شد اگر می‌خواهید نصب کنید، روی «بله» کلیک کنید."
-Installer_PressStart: برای شروع نصب، هر کلیدی را فشار دهید...
-Installer_VerifyMin: "بررسی کنید که حداقل شرایط توصیه شده را برآورده می کنید:"
-Installer_VerifyAlready: "به نظر می رسد همه چیز نصب شده است. بررسی کنید که حداقل شرایط توصیه شده را برآورده می کنید:"
-Installer_Complete: این باید همه چیز باشد. برنامه اصلی، TcNo-Acc-Switcher.exe، به طور خودکار اجرا می شود.
-Installer_Complete2: "اگر کار نمی کند، لطفاً به دستورالعمل نصب مراجعه کنید، اینجا: {link}"
-Global_FatalNext: "خطای مرگبار رخ داد! این خرابی به طور خودکار در راه اندازی بعدی ارسال می شود."
-Tray_Error: خطای سینی
-Tray_NoAccs: "هیچ حساب کاربری پیدا نشد\nابتدا حساب را تغییر دهید یا «Tray_Users.json» را پیدا کنید"
-Tray_Switch: "تغییر به: {account}"
-Tray_CantOpenExe: "exe اصلی باز نشد. مطمئن شوید که وجود دارد.\n\nمن سعی کردم باز کنم:"
-Tray_LaunchFail: "TcNo Account Switcher - راه اندازی سینی با شکست مواجه شد"
-Updater_Duplicate: نمونه دیگری از TcNo Account Switcher Updater شناسایی شده است.
-Updater_Unknown: "آرگومان ناشناخته: {arg}"
-Updater_NeedsAdmin: این برنامه باید به صورت ادمین اجرا شود!
-Updater_StatusChecking: در حال بررسی نسخه
-Updater_FailedVersionCheck: "نسخه دریافت نشد. برای به‌روزرسانی و تأیید فایل‌ها روی «تأیید» کلیک کنید"
-Updater_PressBelow: دکمه زیر را فشار دهید!
-Updater_PressBelowStart: برای شروع به روز رسانی روی دکمه زیر کلیک کنید.
-Updater_PatchApplied: پچ اعمال شد!
-Updater_UpdatingAppData: به روز رسانی فایل ها در AppData!
-Updater_Complete: تمام به روز رسانی ها کامل شد!
-Updater_Checking: بررسی به روز رسانی
-Updater_UpdateToVerify: برای تایید فایل ها باید ابتدا به روز رسانی کنید.
-Updater_ClosingTcNo: بستن موارد TcNo Account Switcher (در صورت وجود).
-Updater_Downloading: "در حال دانلود به روز رسانی: {version}"
-Updater_Downloaded: دانلود کامل شد.
-Updater_CantExtract: به روز رسانی استخراج نشد.
-Updater_Verify: تایید فایل ها
-Updater_Verifying: در حال تأیید...
-Updater_VerifySkip: تأیید فایل ها برای رد شدن از همه به روز رسانی های کوچک، و فقط پرش به آخرین.
-Updater_NoConnection: "برای تأیید فایل‌ها نمی‌توان به tcno.co متصل شد. می‌توانید نصب‌کننده را به‌صورت دستی از صفحه GitHub دانلود کنید و برای به‌روزرسانی مجدد آن را نصب کنید.\n\nخطا:"
-Updater_NoServer: دسترسی به سرور به روز رسانی امکان پذیر نیست
-Updater_Hashlist: در حال دانلود آخرین لیست هش...
-Updater_CantCheck: امکان بررسی به‌روزرسانی‌ها وجود ندارد
-Updater_Failed: "خطا: برخی از فایل ها در حال استفاده هستند و نمی توان آنها را به روز کرد.\n\n1. مطمئن شوید که تمام فرآیندهای TcNo به طور کامل بسته\n(یا راه اندازی مجدد کامپیوتر شما)\n\n2. سپس روی تأیید کلیک زیر، و یا اگر شما دوباره راه اندازی:\n- باز کردن این به روز رسانی و تأیید فایل\n    (واقع شده در 'به روز رسانی' پوشه در دایرکتوری نصب)"
-Updater_Missing: "فایل گم شده: {file}"
-Updater_FileMismatch: "فایل: {file} دارای MD5 است: {md5} انتظار: {value}"
-Updater_DownloadingWeb: دانلود فایل از سایت ...
-Updater_UnpackingAppData: در حال کپی کردن فایل ها در %AppData%/TcNo Account Switcher... (مگر اینکه طور دیگری تنظیم شده باشد)
-Updater_VerifyComplete: فایل ها تایید شد!
-Updater_UpdateFound: "به روز رسانی پیدا شد: {name} [{updateSize}]"
-Updater_TotalFound: "مجموع به روز رسانی های یافت شده: {x}"
-Updater_TotalSize: "اندازه کل: {size}"
-Updater_AwaitingUser: منتظر ورودی کاربر...
-Updater_UpToDate: "شما به روز هستید.\n:)"
-Updater_FailedDecode: این به احتمال زیاد به این دلیل است که من (TechNobo) به‌روزرسانی را فشار داده‌ام، و یک اشتباه تایپی انجام داده‌ایم که فایل به‌روزرسانی .json را خراب کرده است. خبرم کن :)
-Updater_FailedDecodeTitle: رمزگشایی لیست به‌روزرسانی ناموفق بود
-Updater_Extracting: استخراج فایل های پچ
-Updater_Applying: در حال اعمال پچ...
-Updater_Moving: انتقال فایل ها...
-Updater_Title: TcNo Account Switcher Updater
-Updater_Started: آغاز شده
-Updater_Start: TcNo Account Switcher را راه اندازی کنید
-Updater_Begin: شروع به روزرسانی
-Updater_Exit: خروج
-FatalError: خطای مرگبار رخ داد!
-Online: برخط
-OnlineDefault: آنلاین (پیش فرض)
-Offline: آفلاین
-Invisible: نامرئی
-Busy: مشغول
-Away: دور
-Snooze: به تعویق انداختن
-LookingToTrade: به دنبال تجارت
-LookingToPlay: به دنبال بازی
-Unrecognized_EPersonaState: ePersonaState ناشناخته
-Reg_DoesntExist: "{subKey} وجود ندارد."
-Reg_DoesntContain: "{subKey} شامل {val}"
-Reg_Removing: حذف {subKey}\\{val}
-PngInvalid_Format: فرمت پیکسل مورد نیاز PixelFormat است.{x}.
-PngRequired: فرمت تصویر مورد نیاز یک گرافیک شبکه قابل حمل (png) است.
-PngDimensions: ابعاد باید کمتر یا مساوی {MaxIconWidth}*{MaxIconHeight}
-ThemeSyntaxAnd: "یک خطای نحوی روی داد (جزئیات بیشتر در زیر)! و:"
-ThemesNotFound: "پوشه \"themes\" در فهرست راهنمای TcNo Account Switcher یافت نشد. این (به خصوص پوشه 'Dracula_Cyan') برای اجرای این نرم افزار مورد نیاز است.\nمی توانید Updater را در پوشه \"updater\" اجرا کنید تا فایل ها را تأیید کنید و این فایل های از دست رفته را بازیابی کنید."
-Yes: "آره"
-No: "خیر"
-NoDefault: خیر (پیش‌فرض)
-Ok: "خوب"
-Forget: فراموش کردن
-Notice: اطلاع
-Error: خطا
-ErrorDetails: "خطا: {ex}"
-Failed: ناموفق
-Success: موفقیت
-NotFound: پیدا نشد
-Done: انجام شده
-Working: کار کردن...
-ForName: "برای: {name}"
-DeletedFiles: فایل های حذف شده
-FileFoldersToClear: "لیست فایل ها/پوشه ها برای پاک کردن:"
-CouldNotFindX: '{x}پیدا نشد'
-CouldNotCloseX: '{x}بسته نشد!'
-DirectoryNotFound: دایرکتوری پیدا نشد
-DirectoryNotFoundFolder: "دایرکتوری یافت نشد: {folder}"
-DeletingFile: "حذف: {file}"
-DeletingFolder: "حذف پوشه: "
-CouldntDeleteX: "خطا: حذف نشد: {x}"
-CouldntDeleteUndefined: "خطا: فایل تعریف نشده حذف نشد"
-Prompt_RestartAsAdmin: "<h3><bold>این برنامه به عنوان مدیر راه اندازی مجدد می شود</bold></h3><p>هنگامی که از شما برای مدیر خواسته شد، \"بله\" را در UAC بزنید.</p>"
-Prompt_ForgetSteam: >
-  <h3 style='color:red'>شما در حال فراموش کردن یک حساب کاربری هستید!</h3> <h4>این به چه معناست؟</h4> <p>- Steam دیگر حسابی را در حالت Big Picture Mode نخواهد داشت و رمز عبور را به خاطر نمی آورد.<br/> - TcNo Account Switcher نیز دیگر اکانت را نشان نمی دهد، تا زمانی که دوباره از طریق Steam وارد سیستم شوید.</p> <p>حساب شما دست نخورده باقی خواهد ماند. فقط در این کامپیوتر فراموش شده است.</p><h4>آیا متوجه شدید؟</h4>
-Prompt_ForgetAccount: >
-  <h3 style='color:red'>شما در حال فراموش کردن یک حساب کاربری هستید!</h3> <h4>این به چه معناست؟</h4> <p>TcNo Account Switcher نیز دیگر حساب را نشان نمی‌دهد،<br/> تا زمانی که مجدداً از طریق {platform}شده و به لیست اضافه شود.</p> <p>حساب شما دست نخورده باقی خواهد ماند. فقط در این کامپیوتر فراموش شده است.</p> <h4>می فهمی؟</h4>
-Prompt_ClearStats: >
-  <h3 style='color:red'>شما در شرف پاک کردن آمار خود هستید!</h3> <p>نمی توانید این عمل را واگرد کنید.</p>
-Platform_DiscordPasteHint: در کنسول Discord جای‌گذاری کنید و سپس نتیجه را در ورودی قرار دهید!
-Platform_ClearCache: پاک کردن حافظه پنهان
-Platform_ClearCacheTotal: پاک کردن {totalFileCount} فایل ({totalSizeMB})
-Platform_DeleteFail: برخی از فایل ها را نمی توان حذف کرد (ممکن است برنامه در حال اجرا باشد؟)
-Platform_CouldNotDeleteLog: فایل حذف نشد! {logPath}را بررسی کنید
-Error_FileAccessDenied: دسترسی به فایل ناموفق بود! {logPath}را بررسی کنید
-Error_RequiredFileVerify: فایل مورد نیاز پیدا نشد. لطفاً مطمئن شوید که پوشه‌های x64 و x86 در پوشه نصب وجود دارند. در غیر این صورت، TcNo-Acc-Switcher-Updater.exe را اجرا کرده و فایل ها را تایید کنید.
-Tooltip_Settings: تنظیمات
-Tooltip_Info: اطلاعات
-Tooltip_ManagePlatforms: نمایش یا پنهان کردن سایر سیستم عامل ها
-Tooltip_ExpandShortcuts: گزینش بازی و میانبر را بزرگ کنید
-Tooltip_ShortcutFolder: پوشه میانبر را باز کنید میانبرها و TcNo Account Switcher را در آنجا قرار دهید تا آنها را ببینید.
-Tooltip_Backup: از فایل‌ها/پوشه‌های پیکربندی پشتیبان تهیه کنید، همانطور که در تنظیمات پلت فرم تعریف شده است.
-Tooltip_BackupAll: از همه فایل‌ها/پوشه‌های پیکربندی، از جمله تصاویر و سایر فایل‌های بزرگ پشتیبان‌گیری کنید.
-Tooltip_ClosingMethod: "ترکیبی بهترین است. Close سعی می‌کند مستقیماً از طریق یک تابع بسته ببندد و TaskKill از CMD استفاده می‌کند (بهترین اگر ترکیب شود کار نمی‌کند)"
-Tooltip_StartingMethod: "پیش فرض بهترین است. Direct هیچ کنترلی بر سطح مدیریت یا UAC ندارد. در همان سطح (یا بالاتر - اما نه پایین تر) از این تغییر حساب شروع می شود"
-Tooltip_CurrentAccount: شما در حال حاضر به این حساب وارد شده اید.
-Discord_Status: در حال حاضر تغییر حساب
-Discord_StatusDetails: "تغییر حساب ها: {number}"
-Website: سایت اینترنتی

@@ -1,57 +1,17 @@
-﻿@*TcNo Account Switcher - A Super fast account switcher
-    Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+﻿@inherits LayoutComponentBase
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses />.*@
+<div class="page">
+	<div class="sidebar">
+		<NavMenu />
+	</div>
 
-@inherits LayoutComponentBase
-@using TcNo_Acc_Switcher.Shared.Modal
-@using TcNo_Acc_Switcher.Shared.Toast
-@using TcNo_Acc_Switcher.State.Interfaces
-@inject NavigationManager NavigationManager
-@inject IAppState AppState
-@inject IWindowSettings WindowSettings
+	<main>
+		<div class="top-row px-4">
+			<a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+		</div>
 
-<app @onmouseup="MouseUp">
-    <div class="headerbar">
-        <Headerbar />
-    </div>
-    <div class="resizeLeft"></div>
-    <div class="resizeRight"></div>
-    <div class="resizeBottom"></div>
-    <div class="resizeBottomRight"></div>
-    <div class="resizeBottomLeft"></div>
-    <div class="programMain">
-        <UpdateBar />
-        <ModalPopup/>
-        @Body
-    </div>
-    <DynamicStylesheet />
-</app>
-<ToastArea />
-
-@code{
-    protected override void OnInitialized()
-    {
-        if (WindowSettings.PasswordHash == "" || AppState.PasswordCurrent == WindowSettings.PasswordHash) return;
-        if (!NavigationManager.Uri.Contains("/login")) NavigationManager.NavigateTo($"/login?returnUrl={Uri.EscapeDataString(NavigationManager.Uri)}");
-    }
-
-    private void MouseUp(MouseEventArgs args)
-    {
-        // User pressed mouse back
-        //Console.WriteLine(JsonConvert.SerializeObject(args));
-        if (args.Button == 3)
-            AppState.Navigation.NavigateUpOne(NavigationManager);
-        //if (args.Buttons == 4 || args.Buttons == 5)
-        //    // Prevent default. This seems to be something that can only be done from js?
-    }
-}
+		<article class="content px-4">
+			@Body
+		</article>
+	</main>
+</div>

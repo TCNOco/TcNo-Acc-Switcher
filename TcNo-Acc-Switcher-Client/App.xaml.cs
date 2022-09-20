@@ -26,9 +26,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher;
-using TcNo_Acc_Switcher.Pages.General;
-using TcNo_Acc_Switcher.State;
+using TcNo_Acc_Switcher_Server;
+using TcNo_Acc_Switcher_Server.Pages.General;
+using TcNo_Acc_Switcher_Server.State;
 using static TcNo_Acc_Switcher_Client.MainWindow;
 
 namespace TcNo_Acc_Switcher_Client;
@@ -136,7 +136,7 @@ public partial class App
         {
             // Check if CEF issue, and download if missing.
             if (!ex.ToString().Contains("CefSharp")) throw;
-            TcNo_Acc_Switcher.State.Classes.Updates.AutoStartUpdaterAsAdmin("downloadCEF");
+            TcNo_Acc_Switcher_Server.State.Classes.Updates.AutoStartUpdaterAsAdmin("downloadCEF");
             Environment.Exit(1);
             throw;
         }
