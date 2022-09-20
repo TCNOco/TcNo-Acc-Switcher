@@ -1,0 +1,74 @@
+﻿@*TcNo Account Switcher - A Super fast account switcher
+    Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses />.*@
+
+@using TcNo_Acc_Switcher.Shared.Modal
+@using TcNo_Acc_Switcher_Globals
+@using TcNo_Acc_Switcher.Pages.General
+@using TcNo_Acc_Switcher.State
+@using TcNo_Acc_Switcher.State.DataTypes
+@using TcNo_Acc_Switcher.State.Interfaces
+@inject IModals Modals
+@inject ILang Lang
+@inject IGameStats GameStats
+@inject IAppState AppState
+@inject IWindowSettings WindowSettings
+
+
+@code {
+    protected override void OnInitialized()
+    {
+        Modals.Title = Lang["Modal_Crowdin_Header"];
+        _modalCrowdinInfo = new MarkupString(Lang["Modal_Crowdin_Info"]);
+    }
+
+    private CrowdinResponse _crowdinList;
+    protected override void OnAfterRender(bool firstRender)
+    {
+        _crowdinList = CrowdinList();
+        StateHasChanged();
+    }
+
+    private MarkupString _modalCrowdinInfo;
+}
+
+<div class="infoWindow">
+    <div class="fullWidthContent crowdin">
+        <h2>@Modals.Title<i class="fas fa-heart heart"></i></h2>
+        <p>@_modalCrowdinInfo</p>
+
+        @if (_crowdinList is null)
+        {
+            <div class="loadingSpinnerText fa-3x">
+                <i class="fas fa-circle-notch fa-spin"></i><h2>@Lang["Loading"]</h2>
+            </div>
+        }
+        else
+        {
+            <ul class="linksList crowdInList">
+                <li><b>@Lang["Crowdin_Proofreaders", new {number = _crowdinList.ProofReaders.Count}]</b></li>
+                @foreach (var (username, languages) in _crowdinList.ProofReaders)
+                {
+                    <li><a @onclick='() => StaticFuncs.OpenLinkInBrowser("https://crowdin.com/profile/" + username)' href="">@username</a> - @languages</li>
+                }
+
+                <li><br /><b>@Lang["Crowdin_Translators", new {number = _crowdinList.Translators.Count}]</b></li>
+                <li class="text-wrap">
+                    @foreach (var username in _crowdinList.Translators)
+                    {
+                        <span><a @onclick='() => StaticFuncs.OpenLinkInBrowser("https://crowdin.com/profile/" + username)' href="">@username</a>, </span>
+                    }
+                </li>
+            </ul>
+        }
+    </div></div>

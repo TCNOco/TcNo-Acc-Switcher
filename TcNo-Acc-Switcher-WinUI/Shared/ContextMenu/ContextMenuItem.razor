@@ -1,0 +1,97 @@
+﻿@*TcNo Account Switcher - A Super fast account switcher
+    Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses />.*@
+
+@using System.Collections.ObjectModel
+@using TcNo_Acc_Switcher.State
+@using TcNo_Acc_Switcher.State.Interfaces
+@inject ILang Lang
+
+@code {
+    [Parameter]
+    public MenuItem Item { get; set; }
+    [Parameter]
+    public int Depth { get; set; }
+
+    /* For handling pagination */
+    private const int ItemsPerPage = 5;
+    private int _currentPage;
+    private string _searchText = "";
+    private List<MenuItem> Filtered => Item.Children.
+        Where(item => item is not null && item.Text.ToLower().Contains(_searchText.ToLower())).ToList();
+    private List<MenuItem> Visible => Filtered.Skip(_currentPage * ItemsPerPage).Take(ItemsPerPage).ToList();
+    private int PageCount => ((Filtered.Count - 1) / ItemsPerPage) + 1;
+    private bool HasPagesWhenUnfiltered => ((Item.Children.Count - 1) / ItemsPerPage) + 1 > 1;
+
+    private void OnSearchInputChanged(ChangeEventArgs e)
+    {
+        _searchText = e?.Value?.ToString();
+        _currentPage = 0;
+    }
+}
+
+@if (Item.Children.Any())
+{
+    <li class="hasSubmenu">
+        <a class="contextIgnoreClick" onclick="event.preventDefault();">@Item.Text</a>
+        <ul class="submenu submenu@(Depth + 1)">
+            @if (HasPagesWhenUnfiltered)
+            {
+                <li class="contextSearch">
+                    <input type='text' placeholder='Search' onclick="event.stopPropagation();"
+                           @oninput="OnSearchInputChanged" />
+                </li>
+            }
+            @foreach (var item in Visible)
+            {
+                <ContextMenuItem Item="@item" Depth="@(Depth + 1)"/>
+            }
+            @if (PageCount > 1)
+            {
+                <div class="paginationContainer">
+                    <div class="pagination">
+                        @if (_currentPage >= 1)
+                        {
+                            <a class='paginationButton' @onclick="() => _currentPage--"><i class="fas fa-arrow-left"></i></a>
+                        }
+                        else
+                        {
+                            <a class='paginationButton' style="visibility: hidden"><i class="fas fa-arrow-left"></i></a>
+                        }
+                        <span>@(_currentPage + 1) / @PageCount</span>
+                        @if (_currentPage < PageCount - 1)
+                        {
+                            <a class='paginationButton' @onclick="() => _currentPage++"><i class="fas fa-arrow-right"></i></a>
+                        }
+                        else
+                        {
+                            <a class='paginationButton' style="visibility: hidden"><i class="fas fa-arrow-right"></i></a>
+                        }
+                    </div>
+                </div>
+            }
+
+        </ul>
+    </li>
+}
+else
+{
+    @if (@Item.MenuAction is not null)
+    {
+        <li><a @onclick="() => Item.MenuAction()">@Lang[Item.Text]</a></li>
+    }
+    else
+    {
+        <li><a onclick="@Item.Content">@Item.Text</a></li>
+    }
+}

@@ -1,0 +1,480 @@
+﻿@*TcNo Account Switcher - A Super fast account switcher
+    Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses />.*@
+
+@page "/{Platform}/Settings/"
+@using TcNo_Acc_Switcher.State.Interfaces
+@using Microsoft.AspNetCore.Components
+@using TcNo_Acc_Switcher.State.DataTypes
+@using TcNo_Acc_Switcher.Shared.Tooltip
+@using System.IO
+@using System.Threading
+@using TcNo_Acc_Switcher_Globals
+@using System.Diagnostics
+@namespace TcNo_Acc_Switcher.Pages.Templated
+@inject NavigationManager NavigationManager
+@inject IAppState AppState
+@inject IJSRuntime JsRuntime
+@inject ILang Lang
+@inject IGameStats GameStats
+@inject ITemplatedPlatformState TemplatedPlatformState
+@inject ITemplatedPlatformFuncs TemplatedPlatformFuncs
+@inject IWindowSettings WindowSettings
+@inject IStatistics Statistics
+@inject IToasts Toasts
+@inject IModals Modals
+@inject ITemplatedPlatformSettings TemplatedPlatformSettings
+
+@code
+{
+    private Dictionary<string, Dictionary<string, string>> _gamesAndSettings;
+}
+
+<div class="container mainblock">
+    <div class="row">
+        <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
+            <toastarea class="toastarea" />
+
+
+            <h2 class="SettingsHeader">@Lang["Settings_Header_GeneralSettings"]</h2>
+            <div class="rowSetting">
+                @*<div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.DesktopShortcut" @onclick="() => Shortcut.DesktopShortcut_Toggle(TemplatedPlatformState.CurrentPlatform.Name, TemplatedPlatformState.CurrentPlatform.PlatformSavedSettings.DesktopShortcut, TemplatedPlatformState.CurrentPlatform.Identifiers[0])"><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">*@
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="TemplatedPlatformSettings.DesktopShortcut"><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">
+		            @Lang["Settings_Shortcut", new { platform = TemplatedPlatformState.CurrentPlatform.Name }]<br></label>
+            </div>
+            <div>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="TemplatedPlatformSettings.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">
+		            @Lang["Settings_Admin", new { platform = TemplatedPlatformState.CurrentPlatform.Name }]<br></label>
+            </div>
+            <div>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="AutoStart" @bind="TemplatedPlatformSettings.AutoStart"><label class="form-check-label" for="AutoStart"></label></div><label for="AutoStart">
+		            @Lang["Settings_AutoStart", new { platform = TemplatedPlatformState.CurrentPlatform.Name }]<br></label>
+            </div>
+            <div class="rowSetting rowDropdown">
+                <span>@Lang["Settings_Header_ClosingMethod", new { platform = TemplatedPlatformState.CurrentPlatform.Name }]</span>
+                <Tooltip Text="@(Lang["Tooltip_ClosingMethod"])" Class="dropdown">
+                    <ul class="custom-dropdown-menu dropdown-menu">
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => TemplatedPlatformSettings.SetClosingMethod("Combined")'>Combined (Best)</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => TemplatedPlatformSettings.SetClosingMethod("Close")'>Close</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => TemplatedPlatformSettings.SetClosingMethod("TaskKill")'>TaskKill (Old)</li>
+                    </ul>
+                    <button class="dropdown-toggle" type="button" data-toggle="dropdown">
+                        @TemplatedPlatformSettings.ClosingMethod
+                        <span class="caret"></span>
+                    </button>
+                </Tooltip>
+            </div>
+            <div class="rowSetting rowDropdown">
+                <span>@Lang["Settings_Header_StartingMethod", new { platform = TemplatedPlatformState.CurrentPlatform.Name }]</span>
+                <Tooltip Text="@(Lang["Tooltip_StartingMethod"])" Class="dropdown">
+                    <ul class="custom-dropdown-menu dropdown-menu">
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => TemplatedPlatformSettings.SetStartingMethod("Default")'>Default (Best)</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => TemplatedPlatformSettings.SetStartingMethod("Direct")'>Direct</li>
+                    </ul>
+                    <button class="dropdown-toggle" type="button" data-toggle="dropdown">
+                        @TemplatedPlatformSettings.StartingMethod
+                        <span class="caret"></span>
+                    </button>
+                </Tooltip>
+            </div>
+
+            <h2 class="SettingsHeader">@Lang["Settings_Header_AccountDisplay"]</h2>
+            <div class="rowSetting">
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="ShowShortNotes" @bind="TemplatedPlatformSettings.ShowShortNotes"><label class="form-check-label" for="ShowShortNotes"></label></div><label for="ShowShortNotes">
+                    @Lang["Settings_ShowShortNotes"]<br></label>
+            </div>
+
+
+
+            <h2 class="SettingsHeader">@Lang["Settings_Header_TraySettings"]</h2>
+            <div class="form-text"><span>@Lang["Settings_TrayMax"]</span><input type="number" id="TrayAccNumber" min="0" max="365" @bind="TemplatedPlatformSettings.TrayAccNumber"></div>
+
+
+            <h2 class="SettingsHeader">@Lang["Settings_Header_GeneralTools"]</h2>
+            <p>@Lang["Settings_CurrentLocation", new { path = TemplatedPlatformSettings.FolderPath }]</p>
+            <div class="buttoncol"><button id="PickFolder" type="button" @onclick="PickFolder"><span>@Lang["Settings_PickFolder", new { platform = TemplatedPlatformState.CurrentPlatform.Name }]</span></button><button id="OpenFolder" type="button" @onclick="() => AppState.OpenFolder(TemplatedPlatformSettings.FolderPath)"><span>@Lang["Settings_OpenFolder", new { platform = TemplatedPlatformState.CurrentPlatform.Name }]</span></button></div>
+            <div class="buttoncol"><button id="ResetSettings" type="button" @onclick="ClearSettings"><span>@Lang["Button_ResetSettings"]</span></button></div>
+
+            @if (TemplatedPlatformState.CurrentPlatform.Extras.CachePaths != null)
+            {
+                <h2 class="SettingsHeader">@Lang["Platform_ClearCache"]</h2>
+
+                <div>
+                    <p>@Lang["FileFoldersToClear"]</p>
+                    <ul>
+                        @foreach (var cachePath in TemplatedPlatformState.CurrentPlatform.Extras.CachePaths)
+                        {
+                            <li>@TemplatedPlatformFuncs.ExpandEnvironmentVariables(cachePath)</li>
+                        }
+                    </ul>
+                </div>
+
+                <div class="buttoncol col_cache">
+                    <button id="ClearCache" type="button" @onclick="TemplatedPlatformFuncs.ClearCache"><span>@Lang["Platform_ClearCache"]</span></button>
+                </div>
+            }
+
+            @if (TemplatedPlatformState.CurrentPlatform.Extras.BackupPaths.Count > 0)
+            {
+                <h2 class="SettingsHeader">@Lang["Settings_Header_BackupRestore"]</h2>
+
+                <div>
+                    <p>@Lang["Settings_BackupFolders"]</p>
+                    <ul>
+                        @foreach (var (backupPath, _) in TemplatedPlatformState.CurrentPlatform.Extras.BackupPaths)
+                        {
+                            <li>@TemplatedPlatformFuncs.ExpandEnvironmentVariables(backupPath)</li>
+                        }
+                    </ul>
+                    @if (TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesIgnore.Count > 0)
+                    {
+                        <p>@Lang["Settings_BackupIgnores"]</p>
+                        <p>@string.Join(", ", TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesIgnore)</p>
+                    }
+
+                    @if (TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesIgnore.Count > 0)
+                    {
+                        <p>@Lang["Settings_BackupIgnores"]</p>
+                        <p>@string.Join(", ", TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesIgnore)</p>
+                    }
+                    <p>@Lang["Settings_BackupIncludes"]</p>
+                    <p>@string.Join(", ", TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesInclude)</p>
+                </div>
+
+                <div class="buttoncol">
+                    @if (TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesInclude.Count != 0 || TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesIgnore.Count != 0){
+                        <Tooltip Text="@Lang["Tooltip_Backup"]">
+                            <button id="Backup" type="button" @onclick="() => BackupButton()"><span>@Lang["Button_Backup"]</span></button>
+                        </Tooltip>
+                    }
+
+                    <Tooltip Text="@Lang["Tooltip_BackupAll"]">
+                        <button id="BackupEverything" type="button" @onclick="() => BackupButton(true)"><span>@Lang["Button_BackupAll"]</span></button>
+                    </Tooltip>
+
+                    @if (TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesInclude.Count == 0 && TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesIgnore.Count == 0) {
+                        <button id="OpenBackupFolder" type="button" @onclick="OpenBackupFolder"><span>@Lang["Button_OpenBackup"]</span></button>
+                    }
+                </div>
+                <div class="buttoncol">
+
+                    @if (TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesInclude.Count != 0 || TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesIgnore.Count != 0) {
+                        <button id="OpenBackupFolder" type="button" @onclick="OpenBackupFolder"><span>@Lang["Button_OpenBackup"]</span></button>
+                    }
+
+                    <Tooltip Text="@Lang["Tooltip_Restore"]">
+                        <div class="button" id="Restore" type="button">
+                            <InputFile OnChange="@RestoreFile"/>
+                            <span>@Lang["Button_Restore"]</span>
+                        </div>
+                    </Tooltip>
+                </div>
+            }
+
+            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Lang["Button_Close"]</span></button></div>
+
+            @if (_gamesAndSettings is not null && _gamesAndSettings.Count > 0)
+            {
+                <h2 class="SettingsHeader">@Lang["Settings_Header_GameStats"]</h2>
+                <p>@Lang["Settings_GameStats"]</p>
+                @foreach (var (game, settings) in _gamesAndSettings)
+                {
+                    <h3 class="SettingsHeader">@game</h3>
+                @*@foreach (var (metricId, (hidden, metricText)) in settings)*@
+                    @foreach (var (metricId, metricText) in settings)
+                    {
+                        <div class="form-check mb-2">
+                            @*<input class="form-check-input @GameStats.Instance.GetGameIdFromName(game)_Checkboxes" @bind="WindowSettings.GloballyHiddenMetrics[game]." type="checkbox" id="@metricId" checked="@hidden"><label class="form-check-label" for="@metricId"></label><label for="@metricId">@metricText<br></label>*@
+                            <input class="form-check-input" @bind="WindowSettings.GloballyHiddenMetrics[game][metricId]" type="checkbox" id="@metricId"><label class="form-check-label" for="@metricId"></label><label for="@metricId">@metricText<br></label>
+                        </div>
+                    }
+                }
+                <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Lang["Button_Close"]</span></button></div>
+            }
+
+            <SharedSettings />
+            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Lang["Button_Close"]</span></button></div>
+        </div>
+    </div>
+</div>
+<div id="blazor-error-ui">
+    <environment include="Staging,Production">
+        An error has occurred. This application may no longer respond until reloaded.
+    </environment>
+    <environment include="Development">
+        An unhandled exception has occurred. See browser dev tools for details.
+    </environment>
+    <a href="">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+@code
+{
+    [Parameter]
+    public string Platform { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        AppState.Stylesheet.StreamerModeCheck();
+
+        // Requested platform from URL: Platform.
+        // 1. Check if platform from URL is currentPlatform.
+        var requestedPlatform = TemplatedPlatformState.Platforms.FirstOrDefault(x => x.Name == Platform || x.Identifiers.Contains(Platform, StringComparer.OrdinalIgnoreCase));
+        if (requestedPlatform is not null && requestedPlatform.Name != TemplatedPlatformState.CurrentPlatform.Name)
+        {
+            // 2. If not, set currentPlatform to platform from URL.
+            TemplatedPlatformState.LoadTemplatedPlatformState(JsRuntime, TemplatedPlatformSettings);
+            await TemplatedPlatformState.SetCurrentPlatform(JsRuntime, TemplatedPlatformSettings, TemplatedPlatformFuncs, Statistics, Platform);
+        }
+
+        // Verify that the platform's EXE exists, otherwise go back. For shortcuts and direct navigation.
+        if (requestedPlatform is null || !File.Exists(TemplatedPlatformSettings.Exe)){
+            NavigateBack();
+        }
+
+        _gamesAndSettings = GameStats.GetAllCurrentlyEnabledGames().ToDictionary(game => game, GameStats.GetAllMetrics);
+    }
+
+    private void NavigateBack() =>
+        AppState.Navigation.NavigateToWithToast(NavigationManager, "/", "Error", "", Lang["Toast_FailedLoad", new {platform = TemplatedPlatformState?.CurrentPlatform?.Name ?? ""}]);
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        AppState.WindowState.WindowTitle = Lang["Title_Template_Settings", new { platformName = TemplatedPlatformState.CurrentPlatform.Name }];
+        await JsRuntime.InvokeVoidAsync("initSavingHotKey");
+        StaticFuncs.SaveSettings = SaveSettings;
+    }
+
+    public void SaveAndClose()
+    {
+        WindowSettings.Save();
+        TemplatedPlatformSettings.Save();
+
+        NavigationManager.NavigateTo($"/{Platform}");
+    }
+
+    // Allow saving of shortcut position.
+    // This has to be done as only Static funcs can be invoked by JS.
+    // Save settings with Ctrl+S Hot key
+    private void SaveSettings()
+    {
+        WindowSettings.Save();
+        TemplatedPlatformSettings.Save();
+        Toasts.ShowToastLang(ToastType.Success, "Saved");
+    }
+
+
+
+    // Everything beyond this point is here because:
+    // This code refuses to work unless it's placed here in this file.
+    // It does not work in Settings.razor.cs for some reason.
+    // If anyone knows why, please enlighten me :)
+
+
+    #region SETTINGS_GENERAL
+    // BUTTON: Pick folder
+    public void PickFolder()
+    {
+        Globals.DebugWriteLine(@"[ButtonClicked:Basic\Settings.razor.cs.PickFolder]");
+        Modals.ShowUpdatePlatformFolderModal();
+    }
+
+    // BUTTON: Reset settings
+    public void ClearSettings()
+    {
+        Globals.DebugWriteLine(@"[ButtonClicked:Basic\Settings.razor.cs.ClearSettings]");
+        TemplatedPlatformSettings.Reset();
+        AppState.Navigation.NavigateToWithToast(NavigationManager, $"/{Platform}/", "Success", Lang["Success"], Lang["Toast_ClearedPlatformSettings", new { platform = "Basic" }]);
+    }
+    #endregion
+
+    private static bool _currentlyBackingUp;
+    private static bool _currentlyRestoring;
+    private async Task RestoreFile(InputFileChangeEventArgs e)
+    {
+        if (!_currentlyRestoring)
+            _currentlyRestoring = true;
+        else
+        {
+            await Toasts.ShowToastLangAsync(ToastType.Error, "Toast_RestoreBusy");
+            return;
+        }
+
+        foreach (var file in e.GetMultipleFiles(1))
+        {
+            try
+            {
+                if (!file.Name.EndsWith("7z")) continue;
+
+                await Toasts.ShowToastLangAsync(ToastType.Info, "Toast_RestoreExt");
+
+                var outputFolder = Path.Join("Restore", Path.GetFileNameWithoutExtension(file.Name));
+                Directory.CreateDirectory(outputFolder);
+                var tempFile = Path.Join("Restore", file.Name);
+
+                // Import 7z
+                var s = file.OpenReadStream(4294967296); // 4 GB as bytes
+                var fs = File.Create(tempFile);
+                await s.CopyToAsync(fs);
+                fs.Close();
+
+                // Decompress and remove temp file
+                Globals.DecompressZip(tempFile, outputFolder);
+                File.Delete(tempFile);
+
+                await Toasts.ShowToastLangAsync(ToastType.Info, "Toast_RestoreCopying");
+
+                // Move files and folders back
+                foreach (var (toPath, fromPath) in TemplatedPlatformState.CurrentPlatform.Extras.BackupPaths)
+                {
+                    var fullFromPath = Path.Join(outputFolder, fromPath);
+                    if (Globals.IsFile(fullFromPath))
+                        Globals.CopyFile(fullFromPath, toPath);
+                    else if (Globals.IsFolder(fullFromPath))
+                    {
+                        if (!Globals.CopyFilesRecursive(fullFromPath, toPath))
+                            await Toasts.ShowToastLangAsync(ToastType.Error, "Toast_FileCopyFail");
+                    }
+                }
+
+                await Toasts.ShowToastLangAsync(ToastType.Info, "Toast_RestoreDeleting");
+
+                // Remove temp files
+                Globals.RecursiveDelete(outputFolder, false);
+
+                await Toasts.ShowToastLangAsync(ToastType.Success, "Toast_RestoreComplete");
+            }
+            catch (Exception ex)
+            {
+                Globals.WriteToLog("Failed to restore from file: " + file.Name, ex);
+                await Toasts.ShowToastLangAsync(ToastType.Error, "Status_FailedLog");
+
+            }
+            _currentlyRestoring = false;
+        }
+    }
+
+    /// <summary>
+    /// Backs up platform folders, settings, etc - as defined in the platform settings json
+    /// </summary>
+    private void BackupButton(bool everything = false)
+    {
+        if (!_currentlyBackingUp)
+            _currentlyBackingUp = true;
+        else
+        {
+            Toasts.ShowToastLang(ToastType.Error, "Toast_BackupBusy");
+            return;
+        }
+        // Let user know it's copying files to a temp location
+        Toasts.ShowToastLang(ToastType.Info, "Toast_BackupCopy");
+
+        // Generate temporary folder:
+        var tempFolder = $"BackupTemp\\Backup_{TemplatedPlatformState.CurrentPlatform.Name}_{DateTime.Now:dd-MM-yyyy_hh-mm-ss}";
+        Directory.CreateDirectory("Backups\\BackupTemp");
+
+        if (!everything)
+            foreach (var (f, t) in TemplatedPlatformState.CurrentPlatform.Extras.BackupPaths)
+            {
+                var fExpanded = TemplatedPlatformFuncs.ExpandEnvironmentVariables(f);
+                var dest = Path.Join(tempFolder, t);
+
+                // Handle file entry
+                if (Globals.IsFile(f))
+                {
+                    Globals.CopyFile(f, dest);
+                    continue;
+                }
+                if (!Directory.Exists(fExpanded)) continue;
+
+                // Handle folder entry
+                if (TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesInclude.Count > 0)
+                    Globals.CopyFilesRecursive(fExpanded, dest, true, TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesInclude, true);
+                else if (TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesIgnore.Count > 0)
+                    Globals.CopyFilesRecursive(fExpanded, dest, true, TemplatedPlatformState.CurrentPlatform.Extras.BackupFileTypesIgnore, false);
+            }
+        else
+            foreach (var (f, t) in TemplatedPlatformState.CurrentPlatform.Extras.BackupPaths)
+            {
+                var fExpanded = TemplatedPlatformFuncs.ExpandEnvironmentVariables(f);
+                var dest = Path.Join(tempFolder, t);
+
+                // Handle file entry
+                if (Globals.IsFile(f))
+                {
+                    Globals.CopyFile(f, dest);
+                    continue;
+                }
+                if (!Directory.Exists(fExpanded)) continue;
+
+                // Handle folder entry
+                if (!Globals.CopyFilesRecursive(fExpanded, dest))
+                    Toasts.ShowToastLang(ToastType.Error, "Toast_FileCopyFail");
+            }
+
+        var backupThread = new Thread(() => FinishBackup(tempFolder));
+        backupThread.Start();
+    }
+
+    /// <summary>
+    /// Runs async so the previous function can return, and an error isn't thrown with the Blazor function timeout
+    /// </summary>
+    private void FinishBackup(string tempFolder)
+    {
+
+        var folderSize = Globals.FolderSizeString(tempFolder);
+        Toasts.ShowToastLang(ToastType.Info, new LangSub("Toast_BackupCompress", new { size = folderSize }), 3000);
+
+        var zipFile = Path.Join("Backups", (tempFolder.Contains("\\") ? tempFolder.Split("\\")[1] : tempFolder) + ".7z");
+
+        var backupWatcher = new Thread(() => CompressionUpdater(zipFile));
+        backupWatcher.Start();
+        try
+        {
+            Globals.CompressFolder(tempFolder, zipFile);
+        }
+        catch (Exception e)
+        {
+            if (e is FileNotFoundException && e.ToString().Contains("7z.dll"))
+            {
+                Toasts.ShowToastLang(ToastType.Error, "Stylesheet error", "Error_RequiredFileVerify");
+            }
+        }
+
+        Globals.RecursiveDelete(tempFolder, false);
+        Toasts.ShowToastLang(ToastType.Success, new LangSub("Toast_BackupComplete", new { size = folderSize, compressedSize = Globals.FileSizeString(zipFile) }));
+
+        _currentlyBackingUp = false;
+    }
+
+    /// <summary>
+    /// Keeps the user updated with compression progress
+    /// </summary>
+    private void CompressionUpdater(string zipFile)
+    {
+        Thread.Sleep(3500);
+        while (_currentlyBackingUp)
+        {
+            Toasts.ShowToastLang(ToastType.Info, new LangSub("Toast_BackupProgress", new { compressedSize = Globals.FileSizeString(zipFile) }), 1000);
+            Thread.Sleep(2000);
+        }
+    }
+
+    private void OpenBackupFolder()
+    {
+        if (Directory.Exists("Backups"))
+            Process.Start("explorer.exe", Path.GetFullPath("Backups"));
+    }
+}

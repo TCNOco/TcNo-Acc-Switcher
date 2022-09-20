@@ -1,0 +1,440 @@
+---
+Update: Διαθέσιμη ενημέρωση! Κάντε κλικ εδώ για να ξεκινήσετε.
+Header_ChooseLanguage: 'Επιλέξτε γλώσσα:'
+BattleNet_ShowSR: Εμφάνιση Overwatch SR και χρήση της εικόνας προφίλ Overwatch
+Steam_ShowSteamID: Εμφάνιση SteamID
+Steam_ShowVac: Εμφάνιση κατάστασης VAC
+Steam_CheckVac: Έλεγχος κατάστασης VAC λογαριασμού
+Steam_ShowLimited: Εμφάνιση Περιορισμένης Κατάστασης
+Steam_ShowAccUsername: Εμφάνιση ονόματος χρήστη λογαριασμού
+Steam_Tray_AccountName: Εμφάνιση ονόματος λογαριασμού [όχι όνομα φίλου]
+Steam_OverrideDefaultState: "Παράκαμψη προεπιλεγμένης κατάστασης σύνδεσης:"
+Button_AddNew: Προσθήκη Νέου
+Button_SaveCurrent: Αποθήκευση Τρέχοντος
+Button_SaveFile: Αποθήκευση Αρχείου
+Button_Cancel: Ακύρωση
+Button_Login: Είσοδος
+Button_Close: Κλείσιμο
+Button_RefreshImages: Ανανέωση εικόνων
+Button_ResetSettings: Επαναφορά ρυθμίσεων
+Button_AdvancedCleaning: Προηγμένος καθαρισμός...
+Button_ClearLog: Εκκαθάριση καταγραφής
+Button_WikiInfo: Περισσότερες Πληροφορίες (Wiki)
+Button_ManagePlatforms: Διαχείριση πλατφορμών
+Button_Backup: Αντίγραφο ασφαλείας
+Button_BackupAll: Δημιουργία αντιγράφων ασφαλείας όλων
+Button_Restore: Επαναφορά
+Button_OpenBackup: Ανοίξτε τον φάκελο δημιουργίας αντιγράφων ασφαλείας
+Settings_Shortcut: ' Συντόμευση {platform} Switcher Επιφάνεια εργασίας'
+Settings_Admin: Εκτέλεση {platform} ως Διαχειριστής
+Settings_ImageExpiry: 'Ημέρες πριν λήξουν οι εικόνες του προφίλ:'
+Settings_Header_AppWide: Ρυθμίσεις για όλες τις εφαρμογές
+Settings_Header_GeneralSettings: Γενικές ρυθμίσεις
+Settings_Header_ExtraPlatforms: Ρυθμίσεις πλατφόρμας
+Settings_Header_GeneralTools: Γενικά Εργαλεία
+Settings_Header_OtherTools: Άλλα Εργαλεία
+Settings_Header_TraySettings: Ρυθμίσεις συστήματος ειδοποιήσεων
+Settings_Header_OpenGameFolders: Άνοιγμα φακέλων παιχνιδιών
+Settings_Header_BackupRestore: Δημιουργία αντιγράφων ασφαλείας και επαναφορά ρυθμίσεων πλατφόρμας
+Settings_Header_Language: Γλώσσα
+Settings_Header_System: Σύστημα
+Settings_Header_Theme: Θέμα
+Settings_Header_Program: Πρόγραμμα
+Settings_Header_StatsSharing: Στατιστικά & Κοινή χρήση
+Settings_Header_Platform: "{platformName} ρυθμίσεις"
+Settings_TrayMax: 'Μέγιστος αριθμός λογαριασμών που πρέπει να θυμάστε:'
+Settings_ExtraPlatformsDisabled: Πλατφόρμες με ειδικές ανάγκες. Κάντε κλικ για να τα ενεργοποιήσετε.
+Settings_ExtraPlatformsEnabled: Ορατές πλατφόρμες. Κάντε κλικ για να τα απενεργοποιήσετε.
+Settings_RTL: Εμφάνιση κειμένου ως από τα δεξιά προς τα αριστερά
+Settings_CollectStats: Συλλέξτε στατιστικά στοιχεία
+Settings_ShareStats: Μοιραστείτε τα στατιστικά ενοχλητικά (συνιστάται)
+Settings_DiscordRpc: Discord Rich Presence (RPC)
+Settings_DiscordRpcShare: Κοινή χρήση συνολικών διακοπτών
+Settings_ViewStats: Δείτε στατιστικά
+Settings_ClearStats: Επαναφορά
+Settings_CurrentLocation: 'Τρέχουσα τοποθεσία εγκατάστασης: {path}'
+Settings_CurrentDataLocation: 'Τρέχουσα τοποθεσία δεδομένων χρήστη: {path}'
+Settings_SetDataLocation: "[Ορισμός προσαρμοσμένης τοποθεσίας δεδομένων χρήστη]"
+Settings_PickFolder: Επιλέξτε {platform} φάκελο
+Settings_OpenFolder: Άνοιγμα φακέλου {platform}
+Settings_ClearForgotten: Εκκαθάριση Ξεχασμένων
+Settings_ClearAccounts: Εκκαθάριση Λογαριασμών
+Settings_StreamerMode: Ενεργοποίηση λειτουργίας streamer
+Settings_ExitToTray: Η έξοδος ελαχιστοποιείται στο δίσκο
+Settings_DesktopShortcut: Συντόμευση επιφάνειας εργασίας
+Settings_StartMenu_ProgramTray: '& Τροφοδότης Χαρτιού'
+Settings_StartMenu_Platform: Πλατφόρμα
+Settings_Tray_StartWindows: Έναρξη πλαισίου με τα Windows
+Settings_Tray_StartNow: '[Έναρξη Τροφοδοσίας τώρα]'
+Settings_CurrentStyle: Τρέχον Στυλ
+Settings_ThemeBackground: '[Ορισμός φόντου]'
+Settings_ThemeOpenFolder: '[Άνοιγμα φακέλου θέματος]'
+Settings_Protocol: 'Ενεργοποίηση πρωτοκόλλου tcno:\\ (συνιστάται)'
+Settings_StartCentered: Εκκίνηση προγράμματος στο κέντρο
+Settings_WindowsAccent: Χρησιμοποιήστε το χρώμα έμφασης των Windows
+Settings_HelpTranslate: "[Βοηθήστε στη μετάφραση]"
+Settings_ViewTranslators: "[Credits]"
+Settings_Header_ActiveBrowser: "(Για προχωρημένους) Σετ μηχανής απόδοσης:"
+Settings_Header_ClosingMethod: "(Για προχωρημένους) Ορίστε τη μέθοδο στο κλείσιμο {platform}"
+Settings_Header_StartingMethod: "(Για προχωρημένους) Ρυθμίστε τη μέθοδο για έναρξη {platform}"
+Settings_AutoStart: "Αυτόματη εκκίνηση {platform} στον διακόπτη λογαριασμού"
+Settings_NoPlatforms: Αυτήν τη στιγμή δεν υπάρχουν ενεργοποιημένες πλατφόρμες. Επιλέξτε τις προαιρετικές πλατφόρμες παρακάτω για να τις ενεργοποιήσετε ή αποεπιλέξτε τις απενεργοποιημένες πλατφόρμες.
+Settings_MinimizeOnSwitch: Ελαχιστοποίηση διακόπτη εναλλαγής λογαριασμού
+Stats_Disabled: "Η συλλογή στατιστικών στοιχείων είναι απενεργοποιημένη."
+Stats_InDepth: Αναλυτική ανάλυση στατιστικών στοιχείων
+Stats_ShareEnabled: "Αυτά τα στατιστικά στοιχεία κοινοποιούνται ανώνυμα και θα προστεθούν στο σύνολο <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">εδώ</a>."
+Stats_ShareDisabled: "Αυτά τα στατιστικά ΔΕΝ κοινοποιούνται ανώνυμα και ΔΕΝ θα προστεθούν στο σύνολο <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">εδώ</a>."
+Stats_OperatingSystem: "Λειτουργικό σύστημα: "
+Stats_FirstLaunch: "Πρώτη εκκίνηση: "
+Stats_LaunchCount: "Αριθμός εκκίνησης: "
+Stats_CrashCount: "Αριθμός σφαλμάτων: "
+Stats_MostUsedPlatform: "Πλατφόρμα που χρησιμοποιείται περισσότερο: "
+Stats_TotalTime: "Συνολικός χρόνος που δαπανήθηκε εντός εφαρμογής: "
+Stats_TotalSwitches: "Συνολικοί διακόπτες λογαριασμού: "
+Stats_TotalGamesLaunched: "Σύνολο εφαρμογών/παιχνιδιών που κυκλοφόρησαν μέσω του switcher: "
+Stats_UniqueDaysLong: "Μοναδικές ημέρες με αλλαγή λογαριασμών: "
+Stats_LastUpload: "Τελευταία μεταφόρτωση: "
+Stats_SwitcherStats: "Στατιστικά εναλλάκτη: "
+Stats_VisitsTotalTime: "{visits} συνολικά επισκέψεις, {hours} συνολικός χρόνος"
+Stats_Accounts: "Λογαριασμοί: "
+Stats_Switches: "Διακόπτες: "
+Stats_FirstActive: "Πρώτη ενεργή: "
+Stats_LastActive: "Τελευταίο Ενεργό: "
+Stats_UniqueDays: "Μοναδικές μέρες: "
+Stats_GameShortcuts: "Συντομεύσεις παιχνιδιού: "
+Stats_GameShortcutsHotbar: "Συντομεύσεις παιχνιδιού (στο hotbar): "
+Stats_GamesLaunched: "Παιχνίδια που κυκλοφόρησαν: "
+Cleaning_Header_StartMenuShortcuts: 'Συντομεύσεις για το μενού έναρξης:'
+Cleaning_Header_General: Γενικός Καθαρισμός
+Cleaning_Header_LoginHistory: Καθαρίστε το ιστορικό συνδέσεών μου
+Cleaning_Header_PlatformCleaning: 'Εναλλαγή {platform}'
+Cleaning_ImportantInfoHeader: 'Σημαντικές πληροφορίες:'
+Cleaning_ImportantInfo: >
+  Κάνοντας κλικ σε ένα κουμπί θα διαγράψετε τα σχετικά αρχεία από την εγκατάσταση του Steam.<br /> Διαγράφοντας τους χρήστες σύνδεσης. df θα οδηγήσει σε αυτήν την αλλαγή λογαριασμού που δεν εμφανίζει λογαριασμούς.<br /> Θα πρέπει να συνδεθείτε σε αυτούς χρησιμοποιώντας το Steam για να τους πάρει πίσω.
+Cleaning_Button_KillProcess: Τερματισμός {platform} διεργασίας
+Cleaning_Button_ForgottenBackups: Ξεχάσατε τα αντίγραφα ασφαλείας λογαριασμού
+Cleaning_Understand: Καταλαβαίνω τι κάνουν αυτά τα κουμπιά.
+Restore_Info: >
+  Αν προηγουμένως "ξεχάσατε" έναν λογαριασμό, μπορείτε να τον επαναφέρετε εδώ.<br /> Αυτό τους προσθέτει πίσω στο αρχείο loginusers.vdf σας, επιτρέποντάς σας να μεταβείτε σε αυτούς.
+Restore_Button_Restore: Επαναφορά επιλεγμένων
+Ignored_RemoveAccounts: Αφαίρεση λογαριασμών από τη λίστα αγνόησης
+Ignored_Description: Αν προηγουμένως "αγνοήθηκε" έναν λογαριασμό, μπορείτε να τον εμφανίσετε ξανά εδώ
+Ignored_Stop: Διακοπή αγνόησης επιλεγμένων
+Toast_DataLocationCopying: (1/2) Αντιγραφή υπαρχόντων αρχείων στον νέο φάκελο δεδομένων χρήστη!
+Toast_DataLocationNotCopying: (1/2) Ο φάκελος έχει ήδη αρχεία! Δεν θα γίνει μετεγκατάσταση δεδομένων χρήστη.
+Toast_DataLocationSet: (2/2) Κάντε επανεκκίνηση του εναλλάκτη λογαριασμού για να χρησιμοποιήσετε τον νέο φάκελο!
+Toast_PlaceShortcutFiles: Ανοίγει ένας φάκελος. Τοποθετήστε τις συντομεύσεις παιχνιδιού σε αυτόν τον φάκελο και επανεκκινήστε το πρόγραμμα εναλλαγής λογαριασμού.
+Toast_TrayStarted: Ο Τροφοδότης Χαρτιού ξεκίνησε!
+Toast_TrayRunning: Τροφοδότης χαρτιού ήδη ανοικτό
+Toast_TrayUsersMissing: Δεν έχουν αποθηκευτεί χρήστες στο πλαίσιο
+Toast_TrayFail: Αδυναμία εκκίνησης εφαρμογής στο δίσκο!
+Toast_TrayPosition: "Κάνοντας κλικ στο κουμπί Έξοδος: Θα είμαι στο Windows Tray! (Right of Start Bar)"
+Toast_TrayHint: "Υπόδειξη: Ctrl+Κάντε κλικ στο 'X' για να με κλείσετε εντελώς, ή μέσω του δίσκου > 'Έξοδος'"
+Toast_Copied: Αντιγράφηκε
+Toast_AlreadyProcessing: Ήδη επεξεργασία λογαριασμών...
+Toast_FailedRestore: Αποτυχία επαναφοράς λογαριασμών (δείτε την κονσόλα)
+Toast_Restored: Επαναφορά λογαριασμών!
+Toast_ProtocolEnabled: Αυτό το πρόγραμμα θα ανταποκριθεί τώρα στο tcno:\\ στα Windows
+Toast_ProtocolEnabledTitle: Το πρωτόκολλο προστέθηκε
+Toast_ProtocolDisabled: Αυτό το πρόγραμμα δεν θα ανταποκρίνεται πλέον στο tcno:\\
+Toast_ProtocolDisabledTitle: Το πρωτόκολλο αφαιρέθηκε
+Toast_RestartAsAdmin: Παρακαλώ ξεκινήστε ως Διαχειριστής και προσπαθήστε ξανά.
+Toast_RestartAfterClose: Παρακαλούμε επανεκκινήστε το πρόγραμμα αφού κάνετε κλικ στο Κλείσιμο.
+Toast_RestartAfterCloseTitle: Χρώμα έμφασης απενεργοποιημένο
+Toast_RestartRequired: Κάντε επανεκκίνηση για να εφαρμόσετε αλλαγές
+Toast_LoadStylesheetFailed: Η φόρτωση του φύλλου στυλ απέτυχε! Δείτε το φάκελο δεδομένων χρήστη για λεπτομέρειες.
+Toast_BNet_Private: "{BTag}προφίλ είναι ιδιωτικό"
+Toast_BNet_StatsFail: "Σφάλμα κατά την λήψη στατιστικών για το {BTag}"
+Toast_BNet_CantSwapAccounts: Αδυναμία ανταλλαγής λογαριασμών (Battle.net.config αρχείο κατεστραμμένο)
+Toast_BNet_CantLoadNotFound: Αδυναμία εύρεσης του Battle.net.config
+Toast_BNet_CantLoadEmpty: Αδυναμία φόρτωσης του αρχείου λογαριασμών για το Blizzard (Δε βρέθηκαν λογαριασμοί)
+Toast_BNet_CantLoadConfigCorrupt: Αδυναμία φόρτωσης του αρχείου λογαριασμών για το Blizzard (Battle.net.config αρχείο κατεστραμμένο)
+Toast_BNet_NamePolicy: Το BattleTag δεν ταιριάζει με την πολιτική ονομασίας.
+Toast_ItemNotFound: "{item} δεν βρέθηκε"
+Toast_DeletedTotal: "{files} από {totalFiles} διαγράφηκαν. σύνολο: {totalSize}"
+Toast_CantChangeUsername: Αδυναμία αλλαγής ονόματος χρήστη
+Toast_CantClearLoginFiles: Αποτυχία εκκαθάρισης παλιών αρχείων σύνδεσης
+Toast_AccountIdReg: Αποτυχία λήψης αναγνωριστικού λογαριασμού από το Μητρώο!
+Toast_RegFailWrite: Απέτυχε η εγγραφή στο μητρώο των Windows!
+Toast_RegFailRead: Αποτυχία ανάγνωσης από το μητρώο των Windows!
+Toast_RegFailReadSaved: Αποτυχία ανάγνωσης της αποθηκευμένης καταχώρισης μητρώου. Δοκιμάστε να αφαιρέσετε και να προσθέσετε ξανά τον λογαριασμό εάν δεν είναι επιτυχής.
+Toast_RegSaveMissing: Αποτυχία εύρεσης ή ανάγνωσης δεδομένων από αποθηκευμένα αρχεία μητρώου!
+Toast_DuplicateNames: Αδυναμία ανταλλαγής. Αντιγραφή λογαριασμών με το ίδιο όνομα χρήστη?
+Toast_MissingUserId: "Δεν ήταν δυνατή η ανταλλαγή. Το αναγνωριστικό χρήστη λείπει. Ελέγξτε το Wiki «Κοινά σφάλματα»."
+Toast_CouldNotLocate: Αδυναμία εντοπισμού του συνδεδεμένου χρήστη
+Toast_StreamerModeHint: Οι ιδιωτικές πληροφορίες είναι κρυμμένες! - Δείτε τις ρυθμίσεις
+Toast_StreamerModeTitle: Λειτουργία μετάδοσης
+Toast_AddAccountsFirst: Ανοίξτε την πλατφόρμα από τη λίστα και προσθέστε μερικούς λογαριασμούς πρώτα
+Toast_AddAccountsFirstTitle: Δεν υπάρχουν αποθηκευμένοι λογαριασμοί
+Toast_CantFindImage: Αποτυχία εύρεσης εικόνας των χρηστών.
+Toast_CantCreateShortcut: Δεν είναι δυνατή η δημιουργία συντόμευσης
+Toast_ShortcutCreated: Δημιουργήθηκε συντόμευση!
+Toast_FailedUpdateCheck: Αποτυχία ελέγχου για ενημερώσεις
+Toast_UpdateVerifyFail: Δεν είναι δυνατή η επαλήθευση αρχείων ενημέρωσης. Κατεβάστε την τελευταία έκδοση και αντικαταστήστε τα αρχεία στον κατάλογό σας.
+Toast_StartedGame: Ξεκίνησε {program}
+Toast_Steam_VacCleared: Εκκαθαρίστηκε η κατάσταση VAC για λογαριασμούς
+Toast_Steam_CantDeleteVacCache: Αδυναμία διαγραφής 'LoginCache/Steam/VACCache/SteamVACCache.json'
+Toast_NoFindSteamUserdata: Αδυναμία εύρεσης του φακέλου Steam\\userdata
+Toast_Steam_VdfLast: Ήταν σε θέση να φορτώσει από vdf_last. Ορισμένοι λογαριασμοί μπορεί να λείπουν.
+Toast_PartiallyFixed: Μερικώς σταθερό
+Toast_Steam_FailedLoginusers: Αποτυχία φόρτωσης steam/config/loginusers.vdf
+Toast_Steam_CantLocateLoginusers: Αδυναμία εντοπισμού '.../Steam/config/loginusers.vdf'. Δοκιμάστε πρώτα να συνδεθείτε σε λογαριασμό.
+Toast_CantClearImages: Αδυναμία καθαρισμού εικόνων
+Toast_RefreshedImages: Ανανεωμένες εικόνες
+Toast_ClearForgottenCheck: Είστε βέβαιοι ότι θέλετε να καθαρίσετε τα αντίγραφα ασφαλείας των ξεχασμένων λογαριασμών?
+Toast_BattleNet_ChangedBTag: Άλλαξε το BattleTag
+Toast_BattleNet_DeletedBTag: Διαγράφηκε το BattleTag
+Toast_FetchedRank: Λήφθηκε η κατάταξη
+Toast_ForgotAccount: Ξέχασα τον λογαριασμό
+Toast_ClearedPlatformSettings: "Διαγράφηκαν {platform} ρυθμίσεις εναλλαγής"
+Toast_ClearedImages: "Καθαρισμένες εικόνες"
+Toast_SavedItem: "Αποθηκεύτηκε: {item}"
+Toast_ChangedUsername: Άλλαξε όνομα χρήστη
+Toast_SetUsername: Ορισμός ονόματος χρήστη
+Toast_AlreadyLoggedIn: Έχετε ήδη συνδεθεί με αυτόν τον λογαριασμό! (Δεν έγιναν αλλαγές)
+Toast_BackupCopy: (1/3) Αντιγραφή αρχείων σε προσωρινή τοποθεσία...
+Toast_BackupCompress: (2/3) Συμπίεση αρχείων ({size}). Αυτό θα πάρει λίγο χρόνο...
+Toast_BackupComplete: (3/3) Ολοκληρώθηκε η συμπίεση! ({size} προς {compressedSize})
+Toast_BackupProgress: "Δημιουργία αντιγράφων ασφαλείας σε εξέλιξη (συμπιεσμένο μέγεθος: {compressedSize})"
+Toast_BackupFail: Η δημιουργία αντιγράφων ασφαλείας απέτυχε - Δείτε το αρχείο καταγραφής!
+Toast_BackupBusy: Η δημιουργία αντιγράφων ασφαλείας βρίσκεται ήδη σε εξέλιξη!
+Toast_RestoreBusy: Η επαναφορά βρίσκεται ήδη σε εξέλιξη!
+Toast_RestoreExt: Εξαγωγή αρχείου.
+Toast_RestoreCopying: Μετακίνηση αρχείων πίσω στην πλατφόρμα
+Toast_RestoreDeleting: Διαγραφή προσωρινών αρχείων
+Toast_RestoreComplete: Η επαναφορά ολοκληρώθηκε!
+Toast_FailedLoad: Αποτυχία φόρτωσης {platform}! Κάντε κλικ στην πλατφόρμα για να δείτε το σφάλμα.
+Toast_FailedPlatformsLoad: Η φόρτωση του Platforms.json απέτυχε! Επαληθεύστε ότι αυτό το αρχείο υπάρχει.
+Toast_FailedLoadSettings: "Αποτυχία φόρτωσης ρυθμίσεων! Αντ' αυτού, γίνεται φόρτωση προεπιλεγμένων ρυθμίσεων. Προσθήκη \"παλιού\" στο όνομα αρχείου υπάρχοντος ρυθμίσεων."
+Toast_FailedLoadStats: "Αποτυχία φόρτωσης στατιστικών! Ξεκινώντας φρέσκο."
+Toast_FileCopyFail: Αποτυχία αντιγραφής αρχείων! Δείτε το αρχείο καταγραφής για περισσότερες λεπτομέρειες.
+Toast_UserDataLoadFail: Απέτυχε η φόρτωση των δεδομένων χρήστη {UserData}\\WindowSettings.json. Δημιουργία αντιγράφων ασφαλείας και επαναφορά! Αποθηκεύτηκε το σφάλμα στην καταγραφή.
+Toast_UpdateCheckFail: Δεν ήταν δυνατή η πρόσβαση στη διεύθυνση https://tcno.co/ για έλεγχο για ενημερώσεις. Αυτό το μήνυμα θα εμφανίζεται μία φορά την ημέρα.
+Toast_FailedCreateIcon: Αποτυχία δημιουργίας εικονιδίου. Δείτε το αρχείο καταγραφής για λεπτομέρειες.
+Tooltip_Restore: Κάντε κλικ για να επιλέξετε ένα αρχείο 7z ή σύρετέ το σε αυτό το κουμπί.
+Modal_Crowdin_Header: Μεταφραστές Crowdin
+Modal_Crowdin_Info: "Εδώ είναι όλοι όσοι βοήθησαν στη μετάφραση αυτού του λογισμικού.<br>Χρήστες με γλώσσες δίπλα τους βοήθησαν πολύ στη μετάφραση (ρόλος διορθωτή)."
+Modal_Info_Creator: Δημιουργήθηκε από TechNobo [Wesley Pyburn]
+Modal_Info_Version: Έκδοση
+Modal_Info_ViewGitHub: Προβολή στο GitHub
+Modal_Info_BugReport: Αναφορά σφαλμάτων/αίτημα χαρακτηριστικών
+Modal_Info_VisitSite: Επισκεφθείτε το tcno.co
+Modal_Info_Disclaimer: Αποποίηση
+Modal_Title_Info: TcNo Πληροφορίες Εναλλαγής Λογαριασμού
+Modal_Title_ChangeUsername: Αλλαγή ονόματος χρήστη
+Modal_Title_ConfirmAction: TcNo Account Switcher Επιβεβαίωση Ενέργειας
+Modal_Title_LocatePlatform: Παρακαλώ εντοπίστε τον κατάλογο {platform}
+Modal_Title_AddNew: Προσθήκη νέου λογαριασμού {platform}
+Modal_Title_Background: Ορίστε μια εικόνα φόντου
+Modal_Title_Userdata: Ορίστε το φάκελο δεδομένων χρήστη
+Modal_Title_Stats: Τα στατιστικά σας
+Modal_SetBackground: 'Επιλέξτε μια εικόνα ή εισαγάγετε μια διεύθυνση URL παρακάτω.<br>Αφήστε το κενό και ρυθμίστε το σε επαναφορά.<br>(Για πιο προηγμένο έλεγχο, ανατρέξτε στο Theming στο Wiki):'
+Modal_SetBackground_Button: Ορίστε φόντο
+Modal_SetBackground_ChooseImage: Επιλέξτε τοπική εικόνα
+Modal_SetUserdata: Εισαγάγετε μια διαδρομή φακέλου παρακάτω και κάντε κλικ στο set.
+Modal_SetUserdata_ChooseFolder: Επιλέξτε ένα φάκελο
+Modal_SetUserdata_Button: Ρύθμιση δεδομένων χρήστη
+Modal_ChangeUsername: Εισαγάγετε ένα νέο όνομα χρήστη για τον λογαριασμό σας
+Modal_ChangeUsernameType: Αλλαγή ονόματος χρήστη {platform}
+Modal_EnterDirectory: "Παρακαλώ εισάγετε τον κατάλογο {platform}ως τέτοιο: C:\\Αρχεία προγράμματος\\{platform}"
+Modal_LocatePlatform: Εντοπισμός {platformExe}
+Modal_LocatePlatformFolder: Επιλέξτε {platform} φάκελο
+Modal_ConfirmAction: Επιβεβαίωση ενέργειας
+Modal_AddNew: Παρακαλώ εισάγετε ένα όνομα για τον λογαριασμό {platform} στον οποίο είστε συνδεδεμένοι.
+Modal_AddCurrentAccount: Προσθήκη τρέχοντος λογαριασμού {platform}
+Modal_SetImageHeader: Ορισμός εικόνας προφίλ
+Modal_SetImage: Ορισμός εικόνας
+Status_SelectedAccount: "Επιλεγμένα: {name}"
+Status_Init: "Κατάσταση: Αρχικοποίηση"
+Status_ClosingPlatform: Κλείσιμο {platform}
+Status_ClosingPlatformFailed: Απέτυχε το κλείσιμο {platform}
+Status_StartingPlatform: Έναρξη {platform}
+Toast_StartingPlatformFailed: Αποτυχία εκκίνησης {platform}! Δείτε το αρχείο καταγραφής για περισσότερες λεπτομέρειες.
+Toast_UrlAdminErr: Δεν μπορείτε να εκτελέσετε αρχεία .url ως διαχειριστής. Δοκιμάστε έναν άλλο τύπο συντόμευσης. Εκκίνηση ως κανονικός χρήστης.
+Status_UpdatingFile: "Ενημέρωση {file}"
+Status_UpdatingRegistry: Ενημέρωση μητρώου των Windows
+Status_FailedLog: Η ενέργεια απέτυχε. Δείτε το αρχείο καταγραφής για λεπτομέρειες.
+Status_WaitingForClose: "Αναμονή για το κλείσιμο του {processName}{timeLimit} {timeout})"
+Status_WaitingForMultipleClose: "Αναμονή για κλείσιμο {processName} και {count} ακόμη ({timeout}{timeLimit})"
+Status_GetUniqueId: Συλλογή μοναδικού αναγνωριστικού χρήστη
+Status_CopyingFiles: Αντιγραφή αρχείων χρήστη...
+Status_HandlingImage: Χειρισμός εικόνας προφίλ λογαριασμού
+Context_SwapTo: Εναλλαγή σε λογαριασμό
+Context_CreateShortcut: Δημιουργία Συντόμευσης Επιφάνειας Εργασίας
+Context_CreateShortcutSubmenu: Δημιουργία Συντόμευσης Επιφάνειας...
+Context_ChangeImage: Αλλαγή εικόνας
+Context_BNet_SetBTag: Ορισμός BattleTag
+Context_BNet_DelBTag: Διαγραφή BattleTag
+Context_BNet_GetRAnk: Επαναφορά Κατάταξης
+Context_ChangeName: Αλλαγή ονόματος διακόπτη
+Context_LoginAsSubmenu: Σύνδεση ως...
+Context_UsernameSubmenu: Όνομα Χρήστη...
+Context_RefreshName: Ανανέωση ονόματος
+Context_CopySubmenu: Αντιγραφή...
+Context_CopyProfileSubmenu: Αντιγραφή Προφίλ...
+Context_CommunityUrl: Διεύθυνση URL Κοινότητας
+Context_CommunityUsername: Όνομα Χρήστη Κοινότητας
+Context_LoginUsername: Όνομα χρήστη σύνδεσης
+Context_CopySteamIdSubmenu: Αντιγραφή SteamID...
+Context_Steam_Id: SteamID [STEAM0:~]
+Context_Steam_Id3: SteamID3 [U:1:~]
+Context_Steam_Id32: SteamID32
+Context_Steam_Id64: SteamID64 7656~
+Context_Steam_OpenUserdata: Άνοιγμα δεδομένων χρήστη
+Context_CopyOtherSubmenu: Αντιγραφή άλλου...
+Context_HidePlatform: Απόκρυψη πλατφόρμας
+Context_ExportAccList: Εξαγωγή λίστας λογαριασμών
+Context_RunAdmin: Εκτέλεση ως Διαχειριστής
+Context_Hide: Κρύβω
+Title_BNet_Settings: TcNo Switcher Λογαριασμού - Ρυθμίσεις BattleNet
+Title_BNet_ManageIgnored: TcNo Account Switcher - Διαχείριση αγνοημένων λογαριασμών BattleNet
+Title_Platforms_Settings: TcNo Account Switcher - Ρυθμίσεις πλατφόρμας
+Title_AccountsList: TcNo Switcher Λογαριασμού - {platform}
+Title_TextEditor: TcNo Account Switcher - Επεξεργαστής Κειμένου
+Title_Settings: Εναλλαγή Λογαριασμού TcNo - Ρυθμίσεις
+Title_Steam_Cleaning: TcNo Switcher Λογαριασμού - Καθαρισμός Ατμού
+Title_Steam_Settings: TcNo Switcher Λογαριασμού - Ρυθμίσεις Steam
+Title_Template_Settings: TcNo Account Switcher - {platformName} Ρυθμίσεις
+Installer_Downloading: Λήψη {file}
+Installer_DownloadFinished: Ολοκληρώθηκε η λήψη {file}
+Installer_Installing: "Εγκατάσταση: {runtime}"
+Installer_RuntimeTitle: Tcno Account Switcher - Εγκατάσταση χρόνου εκτέλεσης
+Installer_Welcome: Καλώς ήρθατε στο TcNo Account Switcher - Εγκατάσταση χρόνου εκτέλεσης
+Installer_InstalledRuntimes: "Τρέχουσες εγκατεστημένες εκτελέσεις:"
+Installer_ErrorRuntime: "Δεν εγκαταστάθηκαν ένας ή περισσότεροι χρόνοι εκτέλεσης:"
+Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB κατά την εγκατάσταση]"
+Installer_TotalSize: "Συνολικό μέγεθος λήψης: ~{size} MB"
+Installer_AnyKeyStart: Πατήστε οποιοδήποτε πλήκτρο για να ξεκινήσετε τη λήψη...
+Runtime_WebView2: Microsoft WebView2 Εκτέλεση
+Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} Runtime
+Installer_FailedFolder: "Αποτυχία δημιουργίας φακέλου:"
+Installer_FailedWV: "Αποτυχία λήψης και εγκατάστασης του Microsoft WebView2 Runtime. Για λήψη: 1. Κάντε κλικ στον παρακάτω σύνδεσμο: {link} 2. Κάντε κλικ στο 'Λήψη Πακέτου Φιλοξενίας' κάτω από τις εφαρμογές Εκτέλεση διακομιστή."
+Installer_FailedDR: "Αποτυχία λήψης και εγκατάστασης .NET 5 Desktop Runtime. Παρακαλώ κατεβάστε το εδώ:"
+Installed_FailedASP: "Αποτυχία λήψης και εγκατάστασης του ASP.NET Core {version} Runtime. Για λήψη: 1. Κάντε κλικ στον παρακάτω σύνδεσμο: {link} 2. Κάντε κλικ στο «Λήψη x64» στην ενότητα Εκτέλεση εφαρμογών επιφάνειας εργασίας."
+Installer_Ready: "Ένα ή περισσότερα είναι έτοιμα για εγκατάσταση. Αν και όταν σας ζητηθεί, αν θέλετε να εγκαταστήσετε, κάντε κλικ στο κουμπί 'Ναι'."
+Installer_PressStart: Πατήστε οποιοδήποτε πλήκτρο για να ξεκινήσετε την εγκατάσταση...
+Installer_VerifyMin: "Επαληθεύστε ότι πληρείτε τις ελάχιστες συνιστώμενες απαιτήσεις:"
+Installer_VerifyAlready: "Φαίνεται ότι όλα έχουν εγκατασταθεί. Βεβαιωθείτε ότι πληροίτε τις ελάχιστες συνιστώμενες απαιτήσεις:"
+Installer_Complete: Αυτό πρέπει να είναι το παν. Το κύριο πρόγραμμα, TcNo-Acc-Switcher.exe, θα εκτελείται αυτόματα.
+Installer_Complete2: "Αν δεν λειτουργεί, παρακαλούμε ανατρέξτε στις οδηγίες εγκατάστασης, εδώ: {link}"
+Global_FatalNext: "Παρουσιάστηκε μοιραίο σφάλμα! Αυτό το crashlog θα υποβληθεί αυτόματα στην επόμενη εκκίνηση."
+Tray_Error: Σφάλμα Τροφοδότη Χαρτιού
+Tray_NoAccs: "Δεν βρέθηκαν λογαριασμοί.\nΔοκιμάστε πρώτα να αλλάξετε λογαριασμούς, ή εντοπίστε το 'Tray_Users.json'"
+Tray_Switch: "Μετάβαση σε: {account}"
+Tray_CantOpenExe: "Αδυναμία ανοίγματος του κύριου .exe. Βεβαιωθείτε ότι υπάρχει.\n\nΠροσπάθησα να ανοίξω:"
+Tray_LaunchFail: "TcNo Switcher λογαριασμού - αποτυχία εκκίνησης στο δίσκο"
+Updater_Duplicate: Έχει εντοπιστεί μια άλλη διεργασία ενημέρωσης του TcNo λογαριασμού Switcher.
+Updater_Unknown: "Άγνωστη παράμετρος: {arg}"
+Updater_NeedsAdmin: Αυτό το πρόγραμμα πρέπει να εκτελεστεί ως διαχειριστής!
+Updater_StatusChecking: Έλεγχος έκδοσης
+Updater_FailedVersionCheck: "Δεν ήταν δυνατή η λήψη της έκδοσης. Κάντε κλικ στο \"Επαλήθευση\" για ενημέρωση & επαλήθευση αρχείων"
+Updater_PressBelow: Πατήστε το κουμπί παρακάτω!
+Updater_PressBelowStart: Κάντε κλικ στο παρακάτω κουμπί για να ξεκινήσετε την ενημέρωση.
+Updater_PatchApplied: Εφαρμογή επιδιόρθωσης!
+Updater_UpdatingAppData: Ενημέρωση αρχείων στα AppData!
+Updater_Complete: Όλες οι ενημερώσεις ολοκληρώθηκαν!
+Updater_Checking: Έλεγχος για ενημερώσεις
+Updater_UpdateToVerify: Για να επαληθεύσετε τα αρχεία πρέπει να ενημερώσετε πρώτα.
+Updater_ClosingTcNo: Κλείσιμο των περιπτώσεων Εναλλαγής Λογαριασμού TcNo (εάν υπάρχουν).
+Updater_Downloading: "Λήψη ενημέρωσης: {version}"
+Updater_Downloaded: Η λήψη ολοκληρώθηκε.
+Updater_CantExtract: Αποτυχία εξαγωγής ενημέρωσης.
+Updater_Verify: Επαλήθευση αρχείων
+Updater_Verifying: Επαλήθευση...
+Updater_VerifySkip: Επαληθεύοντας τα αρχεία για να παραλείψετε όλες τις μικρές ενημερώσεις, και απλά μεταβείτε στο αργότερο.
+Updater_NoConnection: "Δεν ήταν δυνατή η σύνδεση στο tcno.co για να επαληθευτούν τα αρχεία. Μπορείτε να προσπαθήσετε να κατεβάσετε χειροκίνητα τον εγκαταστάτη από τη σελίδα GitHub και να επανεγκαταστήσετε για ενημέρωση.\n\nΣφάλμα:"
+Updater_NoServer: Αδύνατη η πρόσβαση στο διακομιστή ενημέρωσης
+Updater_Hashlist: Λήψη τελευταίας λίστας κατακερμάτων...
+Updater_CantCheck: Δεν είναι δυνατός ο έλεγχος για ενημερώσεις
+Updater_Failed: "ΣΦΑΛΜΑ: Μερικά από τα αρχεία είναι σε χρήση και δεν μπορούν να ενημερωθούν.\n\n1. Βεβαιωθείτε ότι όλες οι διεργασίες TcNo είναι εντελώς κλειστές\n(ή επανεκκινήστε τον υπολογιστή σας)\n\n2. Στη συνέχεια, κάντε κλικ στην επιλογή Επαλήθευση παρακάτω, ή αν κάνετε επανεκκίνηση:\n- Ανοίξτε αυτήν την ενημέρωση και επαληθεύστε τα αρχεία\n    (βρίσκεται στο φάκελο 'updater' στον κατάλογο εγκαταστάσεων)"
+Updater_Missing: "ΑΠΟΣΤΟΛΗ ΑΡΧΕΙΗΣ: {file}"
+Updater_FileMismatch: "Αρχείο: {file} έχει MD5: {md5} EXPECTED: {value}"
+Updater_DownloadingWeb: Λήψη αρχείου από ιστοσελίδα...
+Updater_UnpackingAppData: Αντιγραφή αρχείων στο %AppData%/TcNo Switcher λογαριασμού... (εκτός αν ορίζεται διαφορετικά)
+Updater_VerifyComplete: Τα αρχεία επαληθεύτηκαν!
+Updater_UpdateFound: "Βρέθηκε ενημέρωση: {name} [{updateSize}]"
+Updater_TotalFound: "Βρέθηκαν συνολικές ενημερώσεις: {x}"
+Updater_TotalSize: "Συνολικό μέγεθος: {size}"
+Updater_AwaitingUser: Αναμονή για είσοδο χρήστη...
+Updater_UpToDate: "Είστε ενημερωμένοι.\n:)"
+Updater_FailedDecode: Αυτό πιθανότατα οφείλεται σε μένα (TechNobo) πιέζοντας μια ενημέρωση, και κάνοντας έναν τύπο που έσπασε το . αρχείο ενημέρωσης γιου. Ενημερώστε με :)
+Updater_FailedDecodeTitle: Αποτυχία αποκωδικοποίησης λίστας ενημέρωσης
+Updater_Extracting: Εξαγωγή αρχείων patch
+Updater_Applying: Εφαρμογή διορθώσεων...
+Updater_Moving: Μετακίνηση αρχείων...
+Updater_Title: TcNo Ενημέρωση Switcher Λογαριασμού
+Updater_Started: Ξεκίνησε
+Updater_Start: Εκκίνηση TcNo Switcher Λογαριασμού
+Updater_Begin: Έναρξη ενημέρωσης
+Updater_Exit: Έξοδος
+FatalError: Παρουσιάστηκε μοιραίο σφάλμα!
+Online: Συνδεδεμένος
+OnlineDefault: Online (Default)
+Offline: Αποσυνδεδεμένος
+Invisible: Αόρατο
+Busy: Απασχολημένο
+Away: Μακριά
+Snooze: Αναβολή
+LookingToTrade: Ψάχνετε για Εμπόριο
+LookingToPlay: Κοιτάζοντας για αναπαραγωγή
+Unrecognized_EPersonaState: Μη αναγνωρισμένο ePersonaState
+Reg_DoesntExist: "{subKey} δεν υπάρχει."
+Reg_DoesntContain: "{subKey} δεν περιέχει {val}"
+Reg_Removing: Αφαίρεση {subKey}\\{val}
+PngInvalid_Format: Η απαιτούμενη μορφή εικονοστοιχείων είναι PixelFormat.{x}.
+PngRequired: Η απαιτούμενη μορφή εικόνας είναι ένα γραφικό φορητό δίκτυο (png).
+PngDimensions: Οι διαστάσεις πρέπει να είναι μικρότερες ή ίσες με {MaxIconWidth}x{MaxIconHeight}
+ThemeSyntaxAnd: "Αντιμετωπίστηκε ένα συντακτικό σφάλμα (περισσότερες λεπτομέρειες παρακάτω)!"
+ThemesNotFound: "Δεν ήταν δυνατή η εύρεση του φακέλου \"θέματα\" στον κατάλογο του TcNo Account Switcher. Αυτό (ειδικά ο φάκελος \"Dracula_Cyan\") απαιτείται για την εκτέλεση αυτού του λογισμικού.\nΜπορείτε να εκτελέσετε το Updater στο φάκελο \"updater\" για να επαληθεύσετε τα αρχεία και να επαναφέρετε αυτά τα αρχεία που λείπουν."
+Yes: "Ναι"
+No: "Όχι"
+NoDefault: Όχι (Προεπιλογή)
+Ok: "Εντάξει"
+Forget: Ξεχάστε
+Notice: Σημείωση
+Error: Σφάλμα
+ErrorDetails: "Σφάλμα: {ex}"
+Failed: Απέτυχε
+Success: Επιτυχία
+NotFound: Δε βρέθηκε
+Done: Ολοκληρώθηκε
+Working: Εργαζόμενος...
+ForName: "Για: {name}"
+DeletedFiles: Διαγραμμένα αρχεία
+FileFoldersToClear: "Λίστα αρχείων/φακέλων προς εκκαθάριση:"
+CouldNotFindX: Αδυναμία εύρεσης {x}
+CouldNotCloseX: Αδύνατο το κλείσιμο του {x}!
+DirectoryNotFound: Ο κατάλογος δεν βρέθηκε
+DirectoryNotFoundFolder: "Ο φάκελος δεν βρέθηκε: {folder}"
+DeletingFile: "Διαγραφή: {file}"
+DeletingFolder: "Διαγραφή Φακέλου: "
+CouldntDeleteX: "ΣΦΑΛΜΑ: ΔΙΑΓΡΑΦΗ COULDN'T: {x}"
+CouldntDeleteUndefined: "ΣΦΑΛΜΑ: ΧΡΟΝΟΣ ΚΑΥΣΙΜΟΥ ΧΡΗΜΑΤΟΔΟΤΗΣΗΣ"
+Prompt_RestartAsAdmin: "<h3><bold>Αυτό το πρόγραμμα θα επανεκκινηθεί ως διαχειριστής</bold></h3><p>Πατήστε \"Ναι\" στο UAC όταν σας ζητηθεί διαχειριστής.</p>"
+Prompt_ForgetSteam: >
+  <h3 style='color:red'>Πρόκειται να ξεχάσετε έναν λογαριασμό!</h3> <h4>Τι σημαίνει αυτό;</h4> <p>- Το Steam δεν θα έχει πλέον τον λογαριασμό στη λίστα Big Picture Mode και δεν θα θυμάται τον κωδικό πρόσβασης.<br/> - Το TcNo Account Switcher επίσης δεν θα εμφανίζει πλέον τον λογαριασμό, έως ότου συνδεθεί ξανά μέσω του Steam.</p> <p>Ο λογαριασμός σας θα παραμείνει ανέγγιχτος. Απλώς έχει ξεχαστεί σε αυτόν τον υπολογιστή.</p><h4>Καταλαβαίνεις;</h4>
+Prompt_ForgetAccount: >
+  <h3 style='color:red'>Πρόκειται να ξεχάσετε έναν λογαριασμό!</h3> <h4>Τι σημαίνει αυτό?</h4> <p>Το TcNo Account Switcher επίσης δεν θα εμφανίζει πλέον το λογαριασμό,<br/> μέχρι να συνδεθεί ξανά μέσω {platform}και να προστεθεί στη λίστα.</p> <p>Ο λογαριασμός σας θα παραμείνει ανέγγιχτος. Είναι μόλις ξεχαστεί σε αυτόν τον υπολογιστή.</p> <h4>Καταλαβαίνετε?</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>Πρόκειται να διαγράψετε τα στατιστικά σας!</h3> <p>Δεν μπορείτε να αναιρέσετε αυτήν την ενέργεια.</p>
+Platform_DiscordPasteHint: Επικολλήστε στην κονσόλα Discord και, στη συνέχεια, επικολλήστε το αποτέλεσμα στην είσοδο!
+Platform_ClearCache: Εκκαθάριση προσωρινής μνήμης
+Platform_ClearCacheTotal: Εκκαθάριση {totalFileCount} αρχείων ({totalSizeMB})
+Platform_DeleteFail: Δεν ήταν δυνατή η διαγραφή ορισμένων αρχείων (το πρόγραμμα μπορεί να εκτελείται;)
+Platform_CouldNotDeleteLog: Δεν ήταν δυνατή η διαγραφή του αρχείου! Έλεγχος {logPath}
+Error_FileAccessDenied: Αποτυχία πρόσβασης στο αρχείο! Έλεγχος {logPath}
+Error_RequiredFileVerify: Δεν βρέθηκε το απαιτούμενο αρχείο. Βεβαιωθείτε ότι οι φάκελοι x64 και x86 υπάρχουν στον κατάλογο εγκατάστασης. Εάν όχι, εκτελέστε το TcNo-Acc-Switcher-Updater.exe και επαληθεύστε τα αρχεία.
+Tooltip_Settings: Ρυθμίσεις
+Tooltip_Info: Πληροφορίες
+Tooltip_ManagePlatforms: Εμφάνιση ή Απόκρυψη άλλων πλατφορμών
+Tooltip_ExpandShortcuts: Αναπτύξτε την επιλογή Παιχνίδι & Συντόμευση
+Tooltip_ShortcutFolder: Ανοίξτε το φάκελο συντόμευσης. Τοποθετήστε τις συντομεύσεις εκεί και το TcNo Account Switcher για να τις δείτε.
+Tooltip_Backup: Δημιουργία αντιγράφων ασφαλείας αρχείων/φακέλων διαμόρφωσης, όπως ορίζεται στις ρυθμίσεις πλατφόρμας.
+Tooltip_BackupAll: Δημιουργία αντιγράφων ασφαλείας ΟΛΑ τα αρχεία/φακέλους διαμόρφωσης, συμπεριλαμβανομένων των εικόνων και άλλων μεγάλων αρχείων.
+Tooltip_ClosingMethod: "Το συνδυασμένο είναι το καλύτερο. Το Κλείσιμο επιχειρεί να κλείσει απευθείας μέσω μιας συνάρτησης κλεισίματος και το TaskKill χρησιμοποιεί CMD (Το καλύτερο αν συνδυαστεί δεν λειτουργεί)"
+Tooltip_StartingMethod: "Η προεπιλογή είναι η καλύτερη. Το Direct δεν έχει κανέναν έλεγχο στο επίπεδο διαχειριστή ή στο UAC. Θα ξεκινήσει ως το ίδιο επίπεδο (ή υψηλότερο - αλλά όχι χαμηλότερο) από αυτό το πρόγραμμα εναλλαγής λογαριασμού"
+Tooltip_CurrentAccount: Αυτήν τη στιγμή είστε συνδεδεμένοι σε αυτόν τον λογαριασμό.
+Discord_Status: Αυτήν τη στιγμή αλλάζουν λογαριασμούς.
+Discord_StatusDetails: "Αλλαγή λογαριασμών: {number}"
+Website: Δικτυακός τόπος

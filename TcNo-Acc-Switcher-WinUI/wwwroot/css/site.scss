@@ -1,0 +1,708 @@
+@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+
+@font-face {
+    font-family: 'Catamaran', sans-serif;
+    src: url("/css/font/Catamaran-VariableFont_wght.ttf") format("ttf");
+}
+@font-face {
+    font-family: 'Raleway', sans-serif;
+    src: url("/css/font/Raleway-VariableFont_wght.ttf") format("ttf");
+}
+
+/* v (Nessecary for disabling the red highlight saying vars not found [as they're added dynamically later]) v */
+
+/* ReSharper disable CssNotResolved */
+
+:root {
+    --resizeBarSize: 7px;
+    --accent: HSL(40, 100%, 50%);
+    --accentHS: 40, 100%; // "H, S%" from accent as HSL
+    --accentL: 50%; // "L" from accent HSL
+    --accentInt: 255, 153, 0; // accent as "r, g, b"
+    --tooltipBackground: #6272a4;
+}
+
+html,
+body {
+  font-family: 'Catamaran', sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+
+  /* THIS SCALES EVERYTHING UP AND DOWN */
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+html {
+  background: #253340;
+}
+
+body {
+  background: #0E1419;
+}
+
+.mainblock {
+  width: 100%;
+  min-height: 100%;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+app {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+}
+
+img {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+label {
+  vertical-align: middle;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.programMain {
+  position: relative;
+  width: calc(100% - (var(--resizeBarSize) * 2));
+  height: calc(100% - var(--resizeBarSize));
+  margin: 0 var(--resizeBarSize) var(--resizeBarSize) var(--resizeBarSize);
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 10;
+  background: linear-gradient(90deg, #11181d, #0E1419 100%);
+}
+
+.previewMain .acc_list_actionbar {
+    position: unset;
+}
+
+/* Based on https://github.com/binaryfunt/electron-seamless-titlebar-tutorial */
+.headerbar {
+    z-index: 5;
+    background: #253340;
+    position: relative;
+    height: 32px;
+    width: 100%;
+    -webkit-app-region: drag;
+}
+
+.header_icon {
+  height: 10px;
+  margin: 12px;
+  display: block;
+  fill: white;
+}
+
+.updateBar {
+    position: absolute;
+    z-index: 50;
+    width: 100%;
+    height: 2rem;
+    line-height: 2rem;
+    background: var(--accent);
+    color: black;
+    font-weight: 700;
+    text-align: center;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    #closeUpdateBar {
+        padding: 0 1em;
+        position: absolute;
+        right: 0;
+        height: 24px;
+        line-height: 24px;
+
+        &:hover {
+            background: #00000033;
+        }
+    }
+}
+
+#window-controls {
+    display: grid;
+    grid-template-columns: repeat(3, 46px);
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+}
+
+#window-controls-modal {
+  display: grid;
+  grid-template-columns: repeat(1, 46px);
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+}
+
+#btnBack,
+#modalBtnBack {
+    width: 46px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    pointer-events: all;
+    margin-top: -2px;
+    transition: transform 500ms ease-in-out;
+
+    i {
+        transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+    }
+}
+
+#window-controls,
+#btnBack,
+#modalBtnBack {
+    background: #253340;
+}
+
+#btnBack .resizeTop {
+  width: 46px !important;
+  background: none !important;
+}
+
+#window-controls button,
+#window-controls-modal button {
+  grid-row: 1 / span 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+#btnBack,
+#modalBtnBack,
+#window-controls button,
+#window-controls-modal button {
+    background: none;
+    border: none;
+    margin: 0;
+}
+
+.headerbar {
+  & #btnMin {
+    position: relative;
+    grid-column: 1;
+  }
+
+  & #btnMax,
+  #btnRestore {
+    position: relative;
+    grid-column: 2;
+  }
+
+  & #btnClose {
+    position: relative;
+    grid-column: 3;
+  }
+}
+
+@media (-webkit-device-pixel-ratio: 1.5), (device-pixel-ratio: 1.5), (-webkit-device-pixel-ratio: 2), (device-pixel-ratio: 2), (-webkit-device-pixel-ratio: 3), (device-pixel-ratio: 3) {
+  #window-controls .icon {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+#window-controls {
+  -webkit-app-region: no-drag;
+
+  & button {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+}
+
+#window-controls button:hover,
+#btnBack:hover,
+#modalBtnBack:hover {
+    background: #3B4853;
+}
+
+#window-controls button:active,
+#btnBack:active,
+#modalBtnBack:active {
+    background: #3B4853;
+}
+
+#window-title {
+  -webkit-app-region: drag;
+}
+/* Resize bars and corners */
+.resize {
+    &TopLeft,
+    &Top,
+    &TopRight,
+    &Right,
+    &BottomRight,
+    &Bottom,
+    &BottomLeft,
+    &Left {
+        -webkit-app-region: drag;
+        position: absolute;
+        background: #253340;
+    }
+    /* Positions */
+
+    &Top,
+    &TopLeft,
+    &TopRight {
+        top: 0;
+    }
+
+    &Bottom,
+    &BottomLeft,
+    &BottomRight {
+        bottom: 0;
+    }
+
+    &Left,
+    &TopLeft,
+    &BottomLeft {
+        left: 0;
+    }
+
+    &Right,
+    &TopRight,
+    &BottomRight {
+        right: 0;
+    }
+    /* Corners */
+
+    &TopLeft,
+    &TopRight,
+    &BottomRight,
+    &BottomLeft {
+        width: var(--resizeBarSize);
+        height: var(--resizeBarSize);
+        z-index: 2;
+        /* background-color: pink; */
+    }
+    /* Sides */
+
+    &Top {
+        width: calc(100% - 138px);
+        pointer-events: all;
+        background: none !important;
+    }
+
+    &Bottom {
+        width: 100%;
+    }
+
+    &Top,
+    &Bottom {
+        height: var(--resizeBarSize);
+        z-index: 1;
+        /* background-color: lime; */
+    }
+
+    &Left,
+    &Right {
+        width: var(--resizeBarSize);
+        height: 100%;
+        z-index: 1;
+        /* background-color: lime; */
+    }
+    /* Cursors */
+
+    &TopLeft {
+        cursor: nw-resize;
+    }
+
+    &Top {
+        cursor: n-resize;
+    }
+
+    &TopRight {
+        cursor: ne-resize;
+    }
+
+    &Right {
+        cursor: e-resize;
+    }
+
+    &BottomRight {
+        cursor: se-resize;
+    }
+
+    &Bottom {
+        cursor: s-resize;
+    }
+
+    &BottomLeft {
+        cursor: sw-resize;
+    }
+
+    &Left {
+        cursor: w-resize;
+    }
+}
+
+
+/* Sides in window buttons */
+
+#btnClose .resizeTop,
+#btnMin .resizeTop,
+#btnMax .resizeTop,
+#btnRestore .resizeTop,
+#btnBack .resizeTop {
+  width: 100%;
+  background-color: transparent;
+}
+
+#btnClose .resizeRight,
+#btnClose .resizeTopRight,
+#btnBack .resizeTop,
+#btnBack .resizeLeft,
+#btnBack .resizeTopLeft {
+  background-color: transparent;
+}
+
+#btnClose:hover,
+#btnClose-modal:hover {
+  background: #D51426 !important;
+}
+
+#btnClose:active,
+#btnClose-modal:active {
+  background: #D51426 !important;
+}
+
+#btnClose:active .icon,
+#btnClose-modal:active .icon {
+  filter: invert(1);
+}
+
+#titlebar #drag-region {
+  display: grid;
+  grid-template-columns: auto 138px;
+}
+
+#window-title-modal {
+  position: relative;
+  background: #253340;
+  min-height: 34px;
+}
+
+#window-title,
+#window-title-modal {
+  color: white;
+  grid-column: 1;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 12px;
+}
+
+#window-title #window-controls,
+#window-title-modal #window-controls-modal {
+  cursor: pointer;
+  pointer-events: all;
+}
+
+#window-title span,
+#window-title-modal span {
+  position: absolute;
+  width: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.mainWindow {
+  height: calc(100% - 32px);
+  padding: 0;
+  margin: 32px 0 0 0;
+  width: 100vw;
+}
+
+.content {
+  padding-top: 1.1rem;
+}
+
+#blazor-error-ui {
+  background: lightyellow;
+  bottom: 0;
+  box-shadow: 0 -1px 2px #000;
+  box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+  display: none;
+  left: 0;
+  padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+  position: fixed;
+  width: 100%;
+  z-index: 1000;
+}
+
+#blazor-error-ui .dismiss {
+  cursor: pointer;
+  position: absolute;
+  right: 0.75rem;
+  top: 0.5rem;
+}
+
+/* Steam/Settings/Advanced Clearing screen */
+
+div.clearingRow {
+  display: flex;
+}
+
+div.clearingLeft {
+  float: left;
+  margin-right: 1%;
+  width: 59%;
+}
+
+div.clearingRight {
+  word-break: break-word;
+  overflow: auto;
+  background: #0E1419;
+  width: 40%;
+  border: solid #888 0.1em;
+  padding: 0.5em;
+}
+
+div.advancedClearingButtonCol {
+  font-size: 0.9rem;
+}
+
+div.advancedClearingButtonCol .buttoncol {
+  margin: 0.5em 0 0 0;
+}
+
+#restoreUnderstand {
+  margin-bottom: 1em;
+}
+
+.clearingRight #lines {
+  max-height: 1px;
+}
+
+.clearingRight #lines p {
+  margin: 0;
+}
+
+.btn_RestoreSelected {
+  margin-right: 1em !important;
+  padding: 0.25em 3em !important;
+}
+
+.platformTable {
+    height: 100%;
+    width: 100%;
+    max-height: calc(100% - 42px);
+    position: relative;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.platform_list {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    max-height: 100%;
+    display: block;
+    overflow-y: auto;
+}
+
+
+/* ---------------------------------------- */
+/*          PLATFORM ICONS SECTION          */
+/* ---------------------------------------- */
+
+.platform_list_item {
+    width: 20vw;
+    height: 20vw;
+    max-width: 175px;
+    max-height: 175px;
+    display: inline-block;
+    cursor: pointer;
+    /* ReSharper disable once InvalidValue */
+    border: #8BE9FD 1.1px solid; // The .1 prevents the bottom border dissapearing randomly after hover.
+    margin: 10px;
+    transition: all 100ms ease-in-out;
+    transform: scale(1);
+    box-shadow: none;
+    font-family: Raleway, sans-serif;
+    font-weight: 900;
+    /*-webkit-text-stroke: min(0.1vw, 0.875px) #00a5f8;*/
+    /*color: transparent;*/
+    color: #00a5f8;
+    text-shadow: 2px 2px 10px #00000099;
+    overflow: visible;
+
+    .fgText {
+        position: absolute;
+        height: 6.666666666vw;
+        max-height: 58.33px;
+        width: calc(20vw - 3px);
+        max-width: 172px;
+        bottom: 0;
+        z-index: 10;
+
+        p {
+            font-size: min(2.5vw, 21.875px);
+            line-height: 1em;
+            height: fit-content;
+            padding: 0 !important;
+            bottom: 0px;
+            width: 100%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+        }
+    }
+
+    .noImageCenterText {
+        height: min(20vw, 175px);
+        max-height: 175px;
+    }
+
+    .shortText p {
+        font-size: min(3.5vw, 30px);
+    }
+
+    .longText p {
+        font-size: min(1.9vw, 17.5px);
+    }
+
+    .fgImg {
+        position: absolute;
+        height: 13.3333333vw;
+        max-height: 116.66px;
+        width: 100%;
+        z-index: 10;
+
+        svg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+            max-width: 50%;
+            max-height: 90%;
+        }
+    }
+
+    .icoGlass {
+        transition: 500ms all ease-in;
+    }
+
+    &:hover {
+        &:not(:active) {
+            transform: scale(1.025);
+            filter: brightness(97%) saturate(1.10) contrast(102%);
+            animation: pulse 2s infinite;
+        }
+
+        svg {
+            filter: brightness(97%) saturate(1.05) contrast(102%);
+            z-index: 1;
+
+            .icoGlass {
+                transform: scale(1.05);
+            }
+        }
+    }
+
+    &:active {
+        transform: scale(0.98);
+        filter: brightness(95%) saturate(1.05);
+        box-shadow: none;
+
+        & svg {
+            filter: brightness(95%) saturate(1.05);
+
+            & .icoGlass {
+                transform: scale(0.9);
+            }
+        }
+    }
+}
+
+.ico {
+    /* ALL */
+    &BG {
+        background: linear-gradient(0deg, rgba(37,51,64,1) 0%, rgba(37,51,64,1) 0%, rgba(32,33,35,1) 100%, rgba(0,212,255,1) 202123%);
+    }
+
+    &FG {
+        fill-rule: evenodd;
+        clip-rule: evenodd;
+        stroke-linejoin: round;
+        stroke-miterlimit: 2;
+        fill: #00a5f8;
+    }
+
+    &Glass {
+        fill: rgba(255, 255, 255, 0.02);
+    }
+}
+
+/* Modal icons */
+.modalIco {
+    &GitHub,
+    &Networking,
+    &Doc,
+   &Discord {
+        fill: white;
+    }
+}
+
+/* BattleNet icons */
+.battlenet {
+    &IcoOWTank,
+    &IcoOWDamage,
+    &IcoOWSupport {
+        fill: white;
+    }
+
+    &Level sup {
+        top: -.1em;
+    }
+}
+
+/* Footer icons */
+.btnPlatforms {
+    height: 100%;
+}
+.btnSettings,
+.btnHelp {
+    height: 36px;
+    width: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    i {
+        font-size: 16px;
+    }
+}

@@ -1,0 +1,21 @@
+# This theme's name (Shows in-app, can be different to folder name)
+name: Nord
+accent: "#5E81AC"
+# Required colors for updater & main UI (not HTML/CSS):
+#   - Not including these will cause the updater to use default color scheme (Dracula Cyan)
+linkColor: "#88c0d0" # Accent color
+headerbarBackground: "#2E3440"
+mainBackground: "#2e3440"
+modalInputBackground: "#2E3440"
+borderedItemBorderColor: "#4C566A"
+buttonBackground: "#3B4252"
+buttonBackground-hover: "#434C5E"
+buttonBackground-active: "#4C566A"
+buttonColor: "#D8DEE9"
+buttonBorder: "#81A1C1"
+buttonBorder-hover: "#88C0D0"
+buttonBorder-active: "#8FBCBB"
+windowControlsBackground: "#2E3440"
+windowControlsBackground-active: "#2E3440"
+windowControlsCloseBackground: "#BF616A"
+windowControlsCloseBackground-active: "#BF616A"

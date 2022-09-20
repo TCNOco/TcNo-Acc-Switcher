@@ -1,0 +1,12 @@
+﻿/*
+    Dracula Cyan (Default) theme
+    - Created by TechNobo
+*/
+:root {
+    // All these extra accent steps and redefinitions are required for Windows accent options
+    // Elements that use these will be set by either Windows Accent or Theme
+    --accent: #8BE9FD; /* Must be HEX */
+    --accentHS: 190, 100%; /* "H, S%" from accent as HSL */
+    --accentL: 50%; /* "L" from accent HSL */
+    --accentInt: 0, 212, 255; /* accent as "r, g, b" */
+}

@@ -1,49 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows;
 using Microsoft.JSInterop;
-using Microsoft.UI;
-using Microsoft.UI.Windowing;
+//using Microsoft.UI;
+//using Microsoft.UI.Windowing;
 using PInvoke;
 using TcNo_Acc_Switcher_Globals;
-using WinRT.Interop;
+//using WinRT.Interop;
 using static PInvoke.User32;
 
 namespace TcNo_Acc_Switcher
 {
     public static class WindowActions
     {
-        public static AppWindow WinUiAppWindow;
+        //public static AppWindow WinUiAppWindow;
         public static IntPtr HWnd;
 
-        public static void OnWindowCreated(Microsoft.UI.Xaml.Window window)
+        public static void OnWindowCreated(Window window)
         {
-            window.ExtendsContentIntoTitleBar = false;
-            HWnd = WindowNative.GetWindowHandle(window);
-            var win32WindowsId = Win32Interop.GetWindowIdFromWindow(HWnd);
-            WinUiAppWindow = AppWindow.GetFromWindowId(win32WindowsId);
-            if (WinUiAppWindow.Presenter is OverlappedPresenter p)
-            {
-                p.SetBorderAndTitleBar(false, false);
-            }
+            //window.ExtendsContentIntoTitleBar = false;
+            //HWnd = WindowNative.GetWindowHandle(window);
+            //var win32WindowsId = Win32Interop.GetWindowIdFromWindow(HWnd);
+            //WinUiAppWindow = AppWindow.GetFromWindowId(win32WindowsId);
+            //if (WinUiAppWindow.Presenter is OverlappedPresenter p)
+            //{
+            //    p.SetBorderAndTitleBar(false, false);
+            //}
 
-            var style = GetWindowLong(HWnd, WindowLongIndexFlags.GWL_STYLE);
-            style &= ~(int)(SetWindowLongFlags.WS_CAPTION |
-                            SetWindowLongFlags.WS_SYSMENU |
-                            SetWindowLongFlags.WS_THICKFRAME |
-                            SetWindowLongFlags.WS_MAXIMIZEBOX |
-                            SetWindowLongFlags.WS_MINIMIZEBOX);
-            SetWindowLong(WindowNative.GetWindowHandle(window), WindowLongIndexFlags.GWL_STYLE, (SetWindowLongFlags)style);
-            SetWindowPos(HWnd,
-                new IntPtr(0),
-                0, 0,
-                0, 0,
-                SetWindowPosFlags.SWP_NOMOVE |
-                SetWindowPosFlags.SWP_NOSIZE |
-                SetWindowPosFlags.SWP_FRAMECHANGED);
+            //var style = GetWindowLong(HWnd, WindowLongIndexFlags.GWL_STYLE);
+            //style &= ~(int)(SetWindowLongFlags.WS_CAPTION |
+            //                SetWindowLongFlags.WS_SYSMENU |
+            //                SetWindowLongFlags.WS_THICKFRAME |
+            //                SetWindowLongFlags.WS_MAXIMIZEBOX |
+            //                SetWindowLongFlags.WS_MINIMIZEBOX);
+            //SetWindowLong(WindowNative.GetWindowHandle(window), WindowLongIndexFlags.GWL_STYLE, (SetWindowLongFlags)style);
+            //SetWindowPos(HWnd,
+            //    new IntPtr(0),
+            //    0, 0,
+            //    0, 0,
+            //    SetWindowPosFlags.SWP_NOMOVE |
+            //    SetWindowPosFlags.SWP_NOSIZE |
+            //    SetWindowPosFlags.SWP_FRAMECHANGED);
 
-            //// TODO: Center Window if set to start centered
-            //CenterWindow(winUiAppWindow);
+            ////// TODO: Center Window if set to start centered
+            ////CenterWindow(winUiAppWindow);
         }
 
         enum WParams
@@ -71,7 +72,7 @@ namespace TcNo_Acc_Switcher
         }
 
         [JSInvokable]
-        public static void MouseResizeDrag(int wParam) => MouseResizeDrag((IntPtr) wParam);
+        public static void MouseResizeDrag(int wParam) => MouseResizeDrag((IntPtr)wParam);
 
         private static void MouseResizeDrag(IntPtr wParam)
         {

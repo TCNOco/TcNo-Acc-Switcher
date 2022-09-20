@@ -1,0 +1,239 @@
+/*
+    Old Default theme
+    - Created by TechNobo
+*/
+:root {
+    // All these extra accent steps and redefinitions are required for Windows accent options
+    // Elements that use these will be set by either Windows Accent or Theme
+    --accent: #FFAA00; /* Must be HEX */
+    --accentHS: 40, 100%; // "H, S%" from accent as HSL
+    --accentL: 60%; // "L" from accent HSL
+    --accentInt: 255, 170, 0; // accent as "r, g, b"
+    --notification-main-bg: #333;
+    --tooltipBackground: #364E6E;
+}
+
+// Main UI
+.headerbar,
+.resizeTopLeft,
+.resizeTop,
+.resizeTopRight,
+.resizeRight,
+.resizeBottomRight,
+.resizeBottom,
+.resizeBottomLeft,
+.resizeLeft {
+    background: #14151E;
+}
+
+body,
+.programMain,
+.mainblock {
+    background: url(../img/noise.png), linear-gradient( 90deg, #28293A, #28293A 100%);
+}
+
+#window-controls,
+#btnBack,
+#modalBtnBack {
+    background: #14151E;
+}
+
+#window-controls button:hover,
+#btnBack:hover,
+#modalBtnBack:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.acc_list_actionbar {
+    background: #222;
+}
+
+.shortcuts,
+.shortcutDropdown,
+.shortcuts.expandShortcuts {
+    background: #222;
+    border-color: #888;
+}
+
+.shortcutPlaceholder {
+    background: #222;
+}
+
+::-webkit-scrollbar-track {
+    background: #1F202D;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 0.3em;
+    background: #515164;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+button:active,
+button:target,
+.button:active,
+.button:target {
+    background-color: #222 !important;
+}
+
+.infoWindow .rightContent .linksList a:hover,
+.fancyLink:hover {
+    color: #FFDD00;
+}
+
+.infoWindow .rightContent .linksList a:active,
+.fancyLink:active {
+    color: #CC7700;
+}
+
+a:not([href]):not([class]),
+a:not([href]):not([class]):hover {
+    color: #FFAA00;
+}
+
+// Platform list
+.platform_list_item {
+    border: #FFAA00 1px solid;
+    -webkit-text-stroke: 1.1px #00A5F8;
+    color: transparent;
+    text-shadow: none;
+    overflow: visible;
+
+    .icoFG {
+        fill: #00A5F8;
+    }
+
+    .icoBG {
+        background: linear-gradient(0deg, rgba(31,37,48,1) 0%, rgba(31,37,48,1) 0%, rgba(32,33,35,1) 100%, rgba(0,212,255,1) 202123%);
+    }
+}
+
+.acc_list_item:hover > label.acc {
+    border: 0.1 em solid #2777A4;
+    background: #28374E;
+}
+
+// Modal UI
+.modalFG {
+    background: #14151E;
+}
+
+#modal_contents {
+    background: #28293A;
+}
+
+#modal_contents input[type=text],
+#modal_contents input[type=password] {
+    background: #212529
+}
+
+#window-title-modal {
+    background: #14151E;
+}
+
+#modal_contents button {
+    border-color: #888;
+    background: #333;
+
+    &:hover {
+        border-color: #888;
+        background: #444;
+    }
+
+    &:active {
+        border-color: #FFAA00;
+        background: #222 !important;
+    }
+}
+.pathPicker {
+    background: #212529;
+
+    span.selected-path,
+    spanselected-path::before {
+        background-color: var(--accentDarker);
+    }
+
+    span:not(.c):hover {
+        color: var(--accentDark);
+    }
+}
+
+// Interactive UI
+input[type='checkbox'] + label {
+    border: 1px solid #FFF;
+}
+
+button,
+.button {
+    background: #333;
+    border-color: #888;
+
+    &:active {
+        background: #222;
+        border-color: var(--accent);
+    }
+
+    &:hover {
+        background: #444;
+        border-color: #888;
+    }
+}
+
+.dropdown {
+    color: white;
+
+    &-menu {
+        background: #333;
+        border-color: #888;
+        -webkit-box-shadow: 0 0 15px 3px rgba(0, 0, 0, .50);
+        -moz-box-shadow: 0 0 15px 3px rgba(0,0,0,.50);
+        box-shadow: 0 0 15px 3px rgba(0, 0, 0, .50);
+    }
+
+    &-item:hover {
+        background: #222 !important;
+    }
+}
+
+.show > .dropdown-toggle {
+    background: #222 !important;
+}
+
+input[type=number],
+input[type=text],
+input[type=password],
+textarea {
+    background: #212529;
+}
+
+#modal_contents input[type=text],
+#modal_contents input[type=password] {
+    background: #212529 !important;
+}
+
+div.clearingRight {
+    background: #222;
+}
+
+// Context menu
+.contextmenu {
+    background: #14151E;
+
+    li {
+        &:hover {
+            border-left: 2px solid #364E6E;
+            background: #1B2737;
+
+            .submenu {
+                background: #14151E;
+            }
+        }
+
+        a {
+            color: #B0BEC5;
+        }
+    }
+}

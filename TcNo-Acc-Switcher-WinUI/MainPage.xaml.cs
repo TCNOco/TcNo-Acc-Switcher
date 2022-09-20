@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 using TcNo_Acc_Switcher_Globals;
 using Microsoft.Web.WebView2.Core;
 using WinRT;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace TcNo_Acc_Switcher
 {
@@ -28,8 +29,8 @@ namespace TcNo_Acc_Switcher
             var eventForwarder = new EventForwarder(WindowActions.HWnd);
             var interop = _coreWebView.As<ICoreWebView2Interop>();
             interop.AddHostObjectToScript("eventForwarder", eventForwarder);
-            
-            
+
+
             //_coreWebView.AddHostObjectToScript("eventForwarder", eventForwarder);
             _webView.NavigationCompleted -= WebViewOnNavigationCompleted;
         }
@@ -38,6 +39,10 @@ namespace TcNo_Acc_Switcher
         public MainPage()
         {
             InitializeComponent();
+
+            var serviceCollection = new ServiceCollection();
+            serviceCollection.AddWpfBlazorWebView();
+            Resources.Add("services", serviceCollection.BuildServiceProvider());
         }
 
 

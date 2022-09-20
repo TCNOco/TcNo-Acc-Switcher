@@ -1,0 +1,76 @@
+<!--TcNo Account Switcher - A Super fast account switcher
+Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses />.-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<base href="/" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+	<title>TcNo-Acc-Switcher</title>
+	<script>if (typeof module === 'object') { window.module = module; module = undefined; }</script>
+    <script src="js/jquery.3.6.0.min.js"></script>
+    <script src="js/html5sortable.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <link href="css/accent.css" rel="stylesheet" />
+    <link href="css/site.min.css" rel="stylesheet" />
+    <link href="css/UI.min.css" rel="stylesheet" />
+    <link href="css/acclist.min.css" rel="stylesheet" />
+    <link href="css/context_menu.min.css" rel="stylesheet" />
+    <link href="css/modal.min.css" rel="stylesheet" />
+    <link href="css/scrollbar.css" rel="stylesheet" />
+    <link href="css/settings.min.css" rel="stylesheet" />
+    <link href="css/notification.min.css" rel="stylesheet" />
+    <link href="css/fontawesome.all.min.css" rel="stylesheet">
+    <script src="js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script>if (window.module) module = window.module;</script>
+    <script src="js/interop.js"></script>
+    <script src="js/hotkeys.min.js"></script>
+
+
+
+	<link href="css/app.css" rel="stylesheet" />
+</head>
+
+<body>
+
+    <div class="status-bar-safe-area"></div>
+
+    <div id="app">Loading...</div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <script src="js/context_menu.js"></script>
+    <script src="js/WebFuncs.js"></script>
+    <script src="js/Headerbar.js"></script>
+    <script type="module">
+        import Notification from './js/Notification.min.js';
+        window.notification = new Notification({
+            position: 'bottom-right',
+            thickBorder: 'top',
+            duration: 5000,
+            transition: 200,
+            maxActive: 10,
+            imgPath: './img/'
+        });
+    </script>
+    <script src="_framework/blazor.webview.js" autostart="false"></script>
+
+</body>
+
+</html>
