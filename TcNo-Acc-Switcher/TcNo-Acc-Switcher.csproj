@@ -7,10 +7,12 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <Platforms>x64</Platforms>
+    <PublishReadyToRun>true</PublishReadyToRun>
   </PropertyGroup>
 
   <ItemGroup>
-	  <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Wpf" Version="6.0.540" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebView.Wpf" Version="6.0.540" />
 		<PackageReference Include="BuildWebCompiler2022" Version="1.14.8" />
 		<PackageReference Include="DiscordRichPresence" Version="1.0.175" />
 		<PackageReference Include="Gameloop.Vdf" Version="0.6.2" />
@@ -28,33 +30,42 @@
 		<PackageReference Include="TextCopy" Version="6.1.0" />
 		<PackageReference Include="YamlDotNet" Version="12.0.0" />
 	</ItemGroup>
-
+	
 	<ItemGroup>
-		<Content Update="wwwroot\**\*.*">
+		<Content Include="themes\**">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<DeploymentContent>true</DeploymentContent>
 		</Content>
-		<Content Update="themes\*.*">
+		<Content Include="ExtraInfo\**">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<DeploymentContent>true</DeploymentContent>
 		</Content>
+		<Content Include="Resources\**">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<DeploymentContent>true</DeploymentContent>
+		</Content>
+		<Content Update="wwwroot\**">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<DeploymentContent>true</DeploymentContent>
+		</Content>
+		<None Include="Additional Licenses.txt">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<DeploymentContent>true</DeploymentContent>
+		</None>
+		<None Include="GameStats.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<DeploymentContent>true</DeploymentContent>
+		</None>
+		<None Include="Disclaimer.txt">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<DeploymentContent>true</DeploymentContent>
+		</None>
+		<None Include="Platforms.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<DeploymentContent>true</DeploymentContent>
+		</None>
 	</ItemGroup>
-
-	<ItemGroup>
-		<None Remove="ExtraInfo\Discord\Username.html" />
-		<None Remove="ExtraInfo\Discord\Username.js" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Content Include="ExtraInfo\Discord\Username.html">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-			<DeploymentContent>true</DeploymentContent>
-		</Content>
-		<Content Include="ExtraInfo\Discord\Username.js">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-			<DeploymentContent>true</DeploymentContent>
-		</Content>
-	</ItemGroup>
+	
 	<ItemGroup>
 		<None Include="compilerconfig.json" />
 		<None Include="Pages\Templated\Settings.razor" />
@@ -63,9 +74,6 @@
 		<ProjectReference Include="..\TcNo-Acc-Switcher-Globals\TcNo-Acc-Switcher-Globals.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-		<Content Update="GameStats.json">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
 		<Content Update="Pages\Index.razor">
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 		</Content>
@@ -150,104 +158,6 @@
 		<Content Update="Shared\UpdateBar.razor">
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 		</Content>
-	</ItemGroup>
-	<ItemGroup>
-		<None Update="Additional Licenses.txt">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\af-ZA.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\ar-SA.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\ca-ES.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\cs-CZ.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\da-DK.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\de-DE.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\el-GR.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\en-PT.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\en-US.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\es-ES.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\fi-FI.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\fr-FR.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\he-IL.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\hu-HU.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\it-IT.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\ja-JP.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\ko-KR.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\nl-NL.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\no-NO.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\pl-PL.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\pt-BR.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\pt-PT.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\ro-RO.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\ru-RU.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\sr-SP.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\sv-SE.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\tr-TR.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\uk-UA.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\vi-VN.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\zh-CN.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Resources\zh-TW.yml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
 	</ItemGroup>
 	<ItemGroup>
 		<UpToDateCheckInput Remove="Pages\Platforms\Settings.razor" />

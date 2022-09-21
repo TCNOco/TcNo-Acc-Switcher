@@ -73,35 +73,11 @@ public partial class MainWindow
             MessageBox.Show("The TcNo-Acc-Switcher-Server.exe attempted to launch 10 times and failed every time. Every attempted port is taken, or another issue occurred. Check the log file for more info.", "Server start failed!", MessageBoxButton.OK, MessageBoxImage.Error);
     }
 
-    private static bool IsAdmin()
-    {
-        // Checks whether program is running as Admin or not
-        var securityIdentifier = WindowsIdentity.GetCurrent().Owner;
-        return securityIdentifier is not null && securityIdentifier.IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid);
-    }
-
     public MainWindow(WindowSettings wSettings)
     {
         windowSettings = wSettings;
         _mainBrowser = windowSettings.ActiveBrowser;
 
-        // Set working directory to documents folder
-        Directory.SetCurrentDirectory(Globals.UserDataFolder);
-
-        if (Directory.Exists(Path.Join(Globals.AppDataFolder, "wwwroot")))
-        {
-            if (Globals.InstalledToProgramFiles() && !IsAdmin() || !Globals.HasFolderAccess(Globals.AppDataFolder))
-                Restart("", true);
-            Globals.RecursiveDelete(Globals.OriginalWwwroot, false);
-            Directory.Move(Path.Join(Globals.AppDataFolder, "wwwroot"), Globals.OriginalWwwroot);
-        }
-
-        // Start web server
-        Server = new Thread(RunServer)
-        {
-            IsBackground = true
-        };
-        Server.Start();
 
         // Initialize correct browser
         BrowserInit();
@@ -541,27 +517,5 @@ public partial class MainWindow
         Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.OnClosing]");
         windowSettings.WindowSize = new Point { X = Convert.ToInt32(Width), Y = Convert.ToInt32(Height) };
         windowSettings.Save();
-    }
-
-    public static void Restart(string args = "", bool admin = false)
-    {
-        var proc = new ProcessStartInfo
-        {
-            WorkingDirectory = Environment.CurrentDirectory,
-            FileName = Assembly.GetEntryAssembly()?.Location.Replace(".dll", ".exe") ?? "TcNo-Acc-Switcher_main.exe",
-            UseShellExecute = true,
-            Arguments = args,
-            Verb = admin ? "runas" : ""
-        };
-        try
-        {
-            _ = Process.Start(proc);
-            Environment.Exit(0);
-        }
-        catch (Exception ex)
-        {
-            Globals.WriteToLog(@"This program must be run as an administrator!" + Environment.NewLine + ex);
-            Environment.Exit(0);
-        }
     }
 }

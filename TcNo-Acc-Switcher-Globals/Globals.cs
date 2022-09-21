@@ -33,6 +33,9 @@ public partial class Globals
     #region INITIALISATION
 
     private static string _userDataFolder = "";
+    /// <summary>
+    /// This should be %AppData%\TcNo Account Switcher
+    /// </summary>
     public static string UserDataFolder
     {
         get
@@ -61,13 +64,18 @@ public partial class Globals
             }
         }
     }
+    
+    /// <summary>
+    /// This should be %LocalAppData%\TcNo Account Switcher\wwwroot
+    /// </summary>
 
-    public static string WwwRoot => Path.Join(UserDataFolder, "\\wwwroot");
+    public static string WwwRoot => Path.Join(AppDataFolder, "\\wwwroot");
 
+    /// <summary>
+    /// This should be %LocalAppData%\TcNo Account Switcher
+    /// </summary>
     public static string AppDataFolder =>
         Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty;
-
-    public static string OriginalWwwroot => Path.Join(AppDataFolder, "originalwwwroot");
 
     public static bool InstalledToProgramFiles()
     {

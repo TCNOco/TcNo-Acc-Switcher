@@ -61,43 +61,43 @@ const WindowNotifications = {
 //}
 
 function handleWindowControls() {
-    // For draggable regions:
-    // https://github.com/MicrosoftEdge/WebView2Feedback/issues/200
-    document.body.addEventListener("mousedown", (evt) => {
-        // ES is actually 11, set in project file. This error can be ignored (if you see one about ES5)
-        const {
-            target
-        } = evt;
-        const appRegion = getComputedStyle(target)["-webkit-app-region"];
-        if (evt.button === 0 && appRegion === "drag") {
-            if (target.classList.length !== 0) {
-                const c = target.classList[0];
-                const value = (c === "resizeTopLeft" ? SysCommandSize.ScSizeHtTopLeft : (
-                    c === "resizeTop" ? SysCommandSize.ScSizeHtTop : (
-                        c === "resizeTopRight" ? SysCommandSize.ScSizeHtTopRight : (
-                            c === "resizeRight" ? SysCommandSize.ScSizeHtRight : (
-                                c === "resizeBottomRight" ? SysCommandSize.ScSizeHtBottomRight : (
-                                    c === "resizeBottom" ? SysCommandSize.ScSizeHtBottom : (
-                                        c === "resizeBottomLeft" ? SysCommandSize.ScSizeHtBottomLeft : (
-                                            c === "resizeLeft" ? SysCommandSize.ScSizeHtLeft : 0))))))));
+    //// For draggable regions:
+    //// https://github.com/MicrosoftEdge/WebView2Feedback/issues/200
+    //document.body.addEventListener("mousedown", (evt) => {
+    //    // ES is actually 11, set in project file. This error can be ignored (if you see one about ES5)
+    //    const {
+    //        target
+    //    } = evt;
+    //    const appRegion = getComputedStyle(target)["-webkit-app-region"];
+    //    if (evt.button === 0 && appRegion === "drag") {
+    //        if (target.classList.length !== 0) {
+    //            const c = target.classList[0];
+    //            const value = (c === "resizeTopLeft" ? SysCommandSize.ScSizeHtTopLeft : (
+    //                c === "resizeTop" ? SysCommandSize.ScSizeHtTop : (
+    //                    c === "resizeTopRight" ? SysCommandSize.ScSizeHtTopRight : (
+    //                        c === "resizeRight" ? SysCommandSize.ScSizeHtRight : (
+    //                            c === "resizeBottomRight" ? SysCommandSize.ScSizeHtBottomRight : (
+    //                                c === "resizeBottom" ? SysCommandSize.ScSizeHtBottom : (
+    //                                    c === "resizeBottomLeft" ? SysCommandSize.ScSizeHtBottomLeft : (
+    //                                        c === "resizeLeft" ? SysCommandSize.ScSizeHtLeft : 0))))))));
 
 
 
-                //DotNet.invokeMethodAsync("TcNo-Acc-Switcher", "MouseResizeDrag", value);
-                console.log(chrome.webview.hostObjects.sync);
-                console.log(chrome.webview.hostObjects.sync.eventForwarder);
-                //chrome.webview.hostObjects.sync.eventForwarder.MouseResizeDrag(value);
-                chrome.webview.hostObjects.sync.eventForwarder.MouseResizeDragLeft();
-            } else {
-                //DotNet.invokeMethodAsync("TcNo-Acc-Switcher", "MouseDownDrag");
-                console.log("Dragging top!");
-                chrome.webview.hostObjects.sync.eventForwarder.MouseDownDrag();
-            }
+    //            //DotNet.invokeMethodAsync("TcNo-Acc-Switcher", "MouseResizeDrag", value);
+    //            console.log(chrome.webview.hostObjects.sync);
+    //            console.log(chrome.webview.hostObjects.sync.eventForwarder);
+    //            //chrome.webview.hostObjects.sync.eventForwarder.MouseResizeDrag(value);
+    //            chrome.webview.hostObjects.sync.eventForwarder.MouseResizeDragLeft();
+    //        } else {
+    //            //DotNet.invokeMethodAsync("TcNo-Acc-Switcher", "MouseDownDrag");
+    //            console.log("Dragging top!");
+    //            chrome.webview.hostObjects.sync.eventForwarder.MouseDownDrag();
+    //        }
 
-            ///if (navigator.appVersion.indexOf("TcNo-CEF") === -1) chrome.webview.hostObjects.sync.eventForwarder.MouseDownDrag(); // This breaks resize on CEFSharp for some reason (Drags window instead of resizing - VERY ANNOYING)
+    //        ///if (navigator.appVersion.indexOf("TcNo-CEF") === -1) chrome.webview.hostObjects.sync.eventForwarder.MouseDownDrag(); // This breaks resize on CEFSharp for some reason (Drags window instead of resizing - VERY ANNOYING)
 
-            //evt.preventDefault();
-            //evt.stopPropagation();
-        }
-    });
+    //        //evt.preventDefault();
+    //        //evt.stopPropagation();
+    //    }
+    //});
 }

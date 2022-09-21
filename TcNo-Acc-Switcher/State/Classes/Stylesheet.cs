@@ -194,13 +194,21 @@ public class Stylesheet : INotifyPropertyChanged
         _toasts.ShowToastLang(ToastType.Error, "Error", "Toast_LoadStylesheetFailed");
     }
 
+
     /// <summary>
     /// Load stylesheet settings from stylesheet file.
     /// </summary>
     public bool LoadStylesheetFromFile(string styleSheetName = "")
     {
         // This is the first function that's called, and sometimes fails if this is not reset after being changed previously.
+        Directory.SetCurrentDirectory(Globals.AppDataFolder);
+        var val = _loadStylesheetFromFile(styleSheetName);
         Directory.SetCurrentDirectory(Globals.UserDataFolder);
+        return val;
+    }
+
+    private bool _loadStylesheetFromFile(string styleSheetName = "")
+    {
 #if DEBUG
         if (true) // Always generate file in debug mode.
 #else

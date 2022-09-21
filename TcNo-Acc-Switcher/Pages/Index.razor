@@ -40,7 +40,7 @@
 
 @code
 {
-    private static string _imagePath(PlatformItem platform) => Path.Join(Globals.UserDataFolder, $"wwwroot\\img\\platform\\{platform.SafeNameNoSpace}.svg");
+    private static string _imagePath(PlatformItem platform) => Path.Join(Globals.AppDataFolder, $"wwwroot\\img\\platform\\{platform.SafeNameNoSpace}.svg");
 
     private ObservableCollection<MenuItem> _platformContextMenuItems;
 
