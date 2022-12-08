@@ -69,7 +69,7 @@
     <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="11.1.0" />
     <PackageReference Include="Microsoft.Extensions.Localization" Version="6.0.4" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1185.39" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="SharpScss" Version="2.0.0" />
     <PackageReference Include="SteamKit2" Version="2.4.1" />
     <PackageReference Include="Svg.Skia" Version="0.5.13" />
