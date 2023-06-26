@@ -1,5 +1,5 @@
 ﻿// TcNo Account Switcher - A Super fast account switcher
-// Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+// Copyright (C) 2019-2023 TechNobo (Wesley Pyburn)
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -27,7 +27,7 @@ namespace TcNo_Acc_Switcher_Globals
 #pragma warning disable CA2211 // Non-constant fields should not be visible - This is necessary due to it being a launch parameter.
         public static bool VerboseMode;
 #pragma warning restore CA2211 // Non-constant fields should not be visible
-        public static readonly string Version = "2022-07-03_00";
+        public static readonly string Version = "2023-06-26_00";
 
         #region INITIALISATION
 

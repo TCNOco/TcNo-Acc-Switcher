@@ -122,7 +122,7 @@ label {
   line-height: 24px;
 }
 .updateBar #closeUpdateBar:hover {
-  background: #00000033;
+  background: rgba(0, 0, 0, 0.2);
 }
 
 #window-controls {
@@ -523,7 +523,7 @@ div.advancedClearingButtonCol .buttoncol {
   /*-webkit-text-stroke: min(0.1vw, 0.875px) #00a5f8;*/
   /*color: transparent;*/
   color: #00a5f8;
-  text-shadow: 2px 2px 10px #00000099;
+  text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.6);
 }
 .platform_list_item .fgText {
   position: absolute;
@@ -602,7 +602,7 @@ div.advancedClearingButtonCol .buttoncol {
   /* ALL */
 }
 .icoBG {
-  background: linear-gradient(0deg, #253340 0%, #253340 0%, #202123 100%, #00d4ff 202123%);
+  background: linear-gradient(0deg, rgb(37, 51, 64) 0%, rgb(37, 51, 64) 0%, rgb(32, 33, 35) 100%, rgb(0, 212, 255) 202123%);
 }
 .icoFG {
   fill-rule: evenodd;

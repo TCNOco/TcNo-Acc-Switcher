@@ -8,7 +8,7 @@
     <ApplicationIcon>favicon.ico</ApplicationIcon>
     <Authors>TechNobo (Wesley Pyburn)</Authors>
     <Product>TcNo Account Switcher</Product>
-    <Copyright>Copyright © TechNobo (Wesley Pyburn) 2019-2022</Copyright>
+    <Copyright>Copyright © TechNobo (Wesley Pyburn) 2019-2023</Copyright>
     <PackageProjectUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</PackageProjectUrl>
     <RepositoryUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</RepositoryUrl>
     <PackageIcon>TcNoAccSw-Icon-100x100.png</PackageIcon>
@@ -17,12 +17,12 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutputPath>C:\Users\TCNO\source\repos\TcNo-Acc-Switcher\TcNo-Acc-Switcher-Client\bin\Debug\</OutputPath>
+    <OutputPath>..\..\TcNo-Acc-Switcher-Client\bin\Debug\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="YamlDotNet" Version="11.2.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="YamlDotNet" Version="13.1.1" />
   </ItemGroup>
 
   <ItemGroup>

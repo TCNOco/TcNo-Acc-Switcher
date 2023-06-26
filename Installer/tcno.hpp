@@ -1,5 +1,5 @@
 // TcNo Account Switcher - A Super fast account switcher
-// Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+// Copyright (C) 2019-2023 TechNobo (Wesley Pyburn)
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -245,7 +245,7 @@ inline void download_install_missing_runtimes()
 			if (!download_file(a_runtime.c_str(), a_runtime_local.c_str()))
 			{
 				cout << "Failed to download and install ASP.NET Core 6.0.4 Runtime. To download: 1. Click the link below:" << endl <<
-					"https://dotnet.microsoft.com/download/dotnet/6.0.4/runtime" << endl <<
+					"https://dotnet.microsoft.com/download/dotnet/6.0/runtime" << endl <<
 					"2. Click 'Download x64' under Run Desktop apps." << endl << endl;
 			}
 			else a_runtime_install = true;
@@ -268,9 +268,7 @@ inline void download_install_missing_runtimes()
 		if (w_runtime_install || d_runtime_install || a_runtime_install || c_runtime_install)
 		{
 			cout << "------------------------------------------------------------------------" << endl << endl <<
-				"One or more are ready for install. If and when prompted if you would like to install, click 'Yes'." << endl << endl <<
-				"Press any key to start install..." << endl;
-			wait_for_input();
+				"One or more are ready for install. If and when prompted if you would like to install, click 'Yes'." << endl << endl;
 
 			if (w_runtime_install)
 				install_runtime(w_runtime_local, w_runtime_name, false); // Does not support "/passive"

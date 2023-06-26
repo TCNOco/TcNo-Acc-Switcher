@@ -81,7 +81,7 @@ BEGIN
             VALUE "FileDescription", "TcNo Account Switcher Wrapper"
             VALUE "FileVersion", "1.0.0.0"
             VALUE "InternalName", "_Wrap.exe"
-            VALUE "LegalCopyright", "Copyright © TechNobo (Wesley Pyburn) 2019-2022"
+            VALUE "LegalCopyright", "Copyright © TechNobo (Wesley Pyburn) 2019-2023"
             VALUE "OriginalFilename", "_Wrapper.exe"
             VALUE "ProductName", "TcNo Account Switcher - Wrapper"
             VALUE "ProductVersion", "1.0.0.1"

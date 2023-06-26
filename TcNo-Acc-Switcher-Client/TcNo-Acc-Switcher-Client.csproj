@@ -9,7 +9,7 @@
     <Version>4.1.0</Version>
     <Authors>TechNobo (Wesley Pyburn)</Authors>
     <Product>TcNo Account Switcher</Product>
-    <Copyright>Copyright © TechNobo (Wesley Pyburn) 2019-2022</Copyright>
+    <Copyright>Copyright © TechNobo (Wesley Pyburn) 2019-2023</Copyright>
     <PackageProjectUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</PackageProjectUrl>
     <PackageIcon>TcNoAccSw-Icon-100x100.png</PackageIcon>
     <RepositoryUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</RepositoryUrl>
@@ -24,9 +24,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CefSharp.Common" Version="101.0.150" />
-    <PackageReference Include="CefSharp.Wpf.NETCore" Version="101.0.150" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1185.39" />
+    <PackageReference Include="CefSharp.Common" Version="114.2.100" />
+    <PackageReference Include="CefSharp.Wpf.NETCore" Version="114.2.100" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1823.32" />
+    <PackageReference Include="vcpkg.C.vcpkg" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -66,15 +67,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="chromiumembeddedframework.runtime.win-arm64" Version="101.0.15" />
+    <PackageReference Update="chromiumembeddedframework.runtime.win-arm64" Version="114.2.10" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="chromiumembeddedframework.runtime.win-x64" Version="101.0.15" />
+    <PackageReference Update="chromiumembeddedframework.runtime.win-x64" Version="114.2.10" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="chromiumembeddedframework.runtime.win-x86" Version="101.0.15" />
+    <PackageReference Update="chromiumembeddedframework.runtime.win-x86" Version="114.2.10" />
   </ItemGroup>
 
 </Project>

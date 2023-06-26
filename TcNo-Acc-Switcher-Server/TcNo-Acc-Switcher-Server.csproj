@@ -30,17 +30,25 @@
     <None Remove="themes\Monokai\style.scss" />
     <None Remove="themes\Old_Default\info.yaml" />
     <None Remove="themes\Old_Default\style.scss" />
+    <None Remove="themes\Tokyo_Night\info.yaml" />
+    <None Remove="themes\Tokyo_Night\style.scss" />
   </ItemGroup>
   <ItemGroup>
     <_ContentIncludedByDefault Remove="wwwroot\css\site.css" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="themes\Dracula_Cyan\info.yaml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="themes\Dracula_Cyan\style.scss">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+	  <Content Include="themes\Tokyo_Night\info.yaml">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="themes\Tokyo_Night\style.scss">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="themes\Dracula_Cyan\info.yaml">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="themes\Dracula_Cyan\style.scss">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
     <Content Include="themes\Monokai\info.yaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -50,9 +58,9 @@
     <Content Include="themes\Old_Default\info.yaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="themes\Old_Default\style.scss">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+	  <Content Include="themes\Old_Default\style.scss">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
     <Content Include="themes\Nord\info.yaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -61,20 +69,20 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="BuildWebCompiler2022" Version="1.14.8" />
-    <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
+    <PackageReference Include="BuildWebCompiler2022" Version="1.14.10" />
+    <PackageReference Include="DiscordRichPresence" Version="1.1.3.18" />
     <PackageReference Include="Gameloop.Vdf" Version="0.6.2" />
     <PackageReference Include="Gameloop.Vdf.JsonConverter" Version="0.2.1" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.42" />
-    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="11.1.0" />
-    <PackageReference Include="Microsoft.Extensions.Localization" Version="6.0.4" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1185.39" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.48" />
+    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="13.1.3" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.8" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1823.32" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="SharpScss" Version="2.0.0" />
     <PackageReference Include="SteamKit2" Version="2.4.1" />
-    <PackageReference Include="Svg.Skia" Version="0.5.13" />
-    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
-    <PackageReference Include="YamlDotNet" Version="11.2.1" />
+    <PackageReference Include="Svg.Skia" Version="0.5.18" />
+    <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
+    <PackageReference Include="YamlDotNet" Version="13.1.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TcNo-Acc-Switcher-Globals\TcNo-Acc-Switcher-Globals.csproj" />

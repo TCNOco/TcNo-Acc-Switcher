@@ -187,7 +187,7 @@ button .caret, .button .caret {
 }
 .ace_editor .ace_gutter {
   background: #282a36;
-  color: #909194;
+  color: rgb(144, 145, 148);
 }
 .ace_editor .ace_print-margin {
   width: 1px;
@@ -204,7 +204,7 @@ button .caret, .button .caret {
   background: #44475a;
 }
 .ace_editor .ace_marker-layer .ace_step {
-  background: #c6dbae;
+  background: rgb(198, 219, 174);
 }
 .ace_editor .ace_marker-layer .ace_bracket {
   margin: -1px 0 0 -1px;
@@ -351,9 +351,7 @@ button .caret, .button .caret {
   background: #13222f;
 }
 
-.gameShortcuts {
-  /* Empty to keep compiler quiet */
-}
+.gameShortcuts { /* Empty to keep compiler quiet */ }
 
 .shortcuts {
   height: 100%;

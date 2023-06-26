@@ -3,26 +3,33 @@
     <img src="/other/img/Banner.png"></a>
 </p>
 <p align="center">
-  <img alt="GitHub All Releases" src="https://img.shields.io/github/downloads/TcNobo/TcNo-Acc-Switcher/total?logo=GitHub&style=flat-square">
+  <img alt="GitHub All Releases" src="https://img.shields.io/github/downloads/TCNOco/TcNo-Acc-Switcher/total?logo=GitHub&style=flat-square">
   <a href="https://tcno.co/">
     <img alt="Website" src="/other/img/web.svg" height=20"></a>
   <a href="https://s.tcno.co/AccSwitcherDiscord">
     <img alt="Discord server" src="https://img.shields.io/discord/217649733915770880?label=Discord&logo=discord&style=flat-square"></a>
-  <a href="https://twitter.com/TcNobo">
-    <img alt="Twitter" src="https://img.shields.io/twitter/follow/TcNobo?label=Follow%20%40TcNobo&logo=Twitter&style=flat-square"></a>
-  <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/TcNobo/TcNo-Acc-Switcher?logo=GitHub&style=flat-square">
-  <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/TcNobo/TcNo-Acc-Switcher?logo=GitHub&style=flat-square">
+  <a href="https://twitter.com/TCNOco">
+    <img alt="Twitter" src="https://img.shields.io/twitter/follow/TCNOco?label=Follow%20%40TcNobo&logo=Twitter&style=flat-square"></a>
+  <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/TCNOco/TcNo-Acc-Switcher?logo=GitHub&style=flat-square">
+  <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/TCNOco/TcNo-Acc-Switcher?logo=GitHub&style=flat-square">
 																     <a title="Crowdin" target="_blank" href="https://crowdin.com/project/tcno-account-switcher"><img src="https://img.shields.io/badge/Seeking-localisers-blue.svg?style=flat-square"></a>
 </p>
+<p align="center">
+  Consider supporting development:
+  <a href="https://patreon.com/TroubleChute">
+    <img alt="Patreon" src="https://img.shields.io/badge/Patreon-F96854?style=for-the-badge&logo=patreon&logoColor=white"></a>
+  <a href="https://ko-fi.com/art?=redirect">
+    <img alt="Ko-Fi" src="https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white"></a>
+</p> 
 
-<p align="center"><a target="_blank" href="https://github.com/TcNobo/TcNo-Acc-Switcher/releases/latest">
+<p align="center"><a target="_blank" href="https://github.com/TCNOco/TcNo-Acc-Switcher/releases/latest">
   <img alt="Download latest" src="/other/img/DownloadLatestNEW.png" height=70"></a>
-  <a target="_blank" href="https://github.com/TcNobo/TcNo-Acc-Switcher/wiki">
+  <a target="_blank" href="https://github.com/TCNOco/TcNo-Acc-Switcher/wiki">
   <img alt="More info" src="/other/img/WikiButton.png" height=70"></a>
 </p>
-<p align="center"><a target="_blank" href="https://github.com/TcNobo/TcNo-Acc-Switcher-Themes">
+<p align="center"><a target="_blank" href="https://github.com/TCNOco/TcNo-Acc-Switcher-Themes">
   <img alt="Themes" src="/other/img/Themes.png" height=70"></a>
-  <a target="_blank" href="https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Frequently-Asked-Questions">
+  <a target="_blank" href="https://github.com/TCNOco/TcNo-Acc-Switcher/wiki/Frequently-Asked-Questions">
   <img alt="Themes" src="/other/img/FAQButton.png" height=70"></a>
 </p>
   
@@ -35,10 +42,14 @@
 # How does it work?
 Simple. It swaps out files and registry values, pointing to your last logged in account while the program is closed. Think of it as freezing a platform like Steam in time, and replacing the "account block" with a previously frozen "account block", then unfreezing it. To Steam and your Steam account, it "looks" like you pulled your plug out and put it back in a week or so later, meanwhile you were playing on other accounts. Swapping the account block lets the program: Not interact with passwords, and not interact with 2-factor, so you can "Skip" both of those in the login process.
 
-### Things not working? See the [FAQ](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Frequently-Asked-Questions)
+### Things not working? See the [FAQ](https://github.com/TCNOco/TcNo-Acc-Switcher/wiki/Frequently-Asked-Questions)
 
-## DEVELOPMENT HAS NOT STOPPED
-This is undergoing massive improvements, but have not yet been completed. See new commits to [here](https://github.com/TcNobo/TcNo-Acc-Switcher/tree/JsToRazor-DI) and more recently [here](https://github.com/TcNobo/TcNo-Acc-Switcher/tree/JsToRazor-DI-MAUI) - Currently ~90 commits ahead.
+## Consider supporting
+
+This project is a massive time sink. For something completely open-source and free, I find myself with little time to develop. Consider supporting development on [Patreon](https://www.patreon.com/TroubleChute) or [Ko-Fi](https://ko-fi.com/tcnoco).
+
+## Where I've been
+I was pursuing a complete overhaul of this software, but due to Micrisoft not fixing a breaking bug with drag and drop everything has halted. (https://github.com/TCNOco/TcNo-Acc-Switcher/tree/JsToRazor-DI-MAUI). In the meanwhile I've been putting off this project, but now am back to continuing incremental development here.
 
 <h2><img alt="Youtube" src="/other/img/youtube.svg" height=18"> List of all platforms (Click for video guides):</h2>
 
@@ -52,7 +63,7 @@ This is undergoing massive improvements, but have not yet been completed. See ne
 
 Version 5.0 is released (Jan 2022)! Please report any and all bugs, as well as steps to recreate them into the Issues section, or the `#bug-report` channel under `TCNO ACCOUNT SWITCHER` section on the [Community Discord](https://s.tcno.co/AccSwitcherDiscord).
 
-The new version adds the ability to easily create and maintain platforms by editing a simple text file `Platforms.json`. If you'd like to learn more, see this [Wiki page](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Help-code-a-platform).
+The new version adds the ability to easily create and maintain platforms by editing a simple text file `Platforms.json`. If you'd like to learn more, see this [Wiki page](https://github.com/TCNOco/TcNo-Acc-Switcher/wiki/Help-code-a-platform).
 
 **Featuring**
 -  **Better UI**, with animations. Fully user/community customisable **theme system**. 2 Themes built in (so far).
@@ -61,15 +72,15 @@ The new version adds the ability to easily create and maintain platforms by edit
 -  **Steam: Log in as Invisible, Offline and more!** Copy profile links, SteamID and create quick-switch desktop shortcuts!
 - **Easily add new platforms** since version 5.0 (Jan 2022).
 
-\[For info on how any of these work, see the [Wiki](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki)]
+\[For info on how any of these work, see the [Wiki](https://github.com/TCNOco/TcNo-Acc-Switcher/wiki)]
 
 
 ## Required runtimes:
 **If you use the installer:** The required runtimes will automatically be downloaded and installed.
 **If you are NOT using the installer:** Run `_FIRST_RUN.exe` on a computer to bring up the same window as in the installer, where runtimes are downloaded and installed.
-**For manual runtime download and install**, see the [Wiki on this GitHub](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki#1-installing-required-runtimes)
+**For manual runtime download and install**, see the [Wiki on this GitHub](https://github.com/TCNOco/TcNo-Acc-Switcher/wiki#1-installing-required-runtimes)
 
-### Visit the [Wiki](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki) for more info and steps for your first launch.
+### Visit the [Wiki](https://github.com/TCNOco/TcNo-Acc-Switcher/wiki) for more info and steps for your first launch.
 
 ## Installation:
 #### Install Guide
@@ -83,9 +94,9 @@ The new version adds the ability to easily create and maintain platforms by edit
 2. Run the installer, and the application should launch when done. If not:
 Head into the folder where you installed the program and run `_FIRST_RUN.exe` to make sure required runtimes are installed, and then run `TcNo-Acc-Switcher.exe` to run the main program. The second is what shortcuts to the program should point to.
 
-**For a portable installation (eg. on a USB) see [THIS](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki#portable-eg-for-usb)** for steps on using the `.zip` or `.7z` below.
+**For a portable installation (eg. on a USB) see [THIS](https://github.com/TCNOco/TcNo-Acc-Switcher/wiki#portable-eg-for-usb)** for steps on using the `.zip` or `.7z` below.
 
-[See more info HERE](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki#2-running-the-tcno-account-switcher)
+[See more info HERE](https://github.com/TCNOco/TcNo-Acc-Switcher/wiki#2-running-the-tcno-account-switcher)
 
 ## Screenshots
 
@@ -103,7 +114,7 @@ Head into the folder where you installed the program and run `_FIRST_RUN.exe` to
 </p>
 
 ### Looking for the legacy Steam only version?
-See this Wiki page: [Platform: Steam Legacy](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Steam-Legacy).
+See this Wiki page: [Platform: Steam Legacy](https://github.com/TCNOco/TcNo-Acc-Switcher/wiki/Platform:-Steam-Legacy).
 
 #### Disclaimer
 
@@ -125,7 +136,7 @@ https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/LICENSE - See sections l
 'simplification' at the top of the above website.
 ```
 
-Additional license information for included NuGet packages and other parts of code can be found in: [HERE](https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/TcNo-Acc-Switcher-Server/Additional%20Licenses.txt) `TcNo-Acc-Switcher-Server/Additional Licenses.txt`, and are copied to the build directory, as well as distributed with release versions of this software.
+Additional license information for included NuGet packages and other parts of code can be found in: [HERE](https://github.com/TCNOco/TcNo-Acc-Switcher/blob/master/TcNo-Acc-Switcher-Server/Additional%20Licenses.txt) `TcNo-Acc-Switcher-Server/Additional Licenses.txt`, and are copied to the build directory, as well as distributed with release versions of this software.
 
 <p align="center"><a target="_blank" align="center" href="https://www.jetbrains.com/?from=TcNo-Account-Switcher">
   <img alt="JetBrains Support - Open Source License" src="/other/img/JetBrains_Banner.png" height=70"></a></p>

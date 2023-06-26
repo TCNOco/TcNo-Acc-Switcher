@@ -185,6 +185,11 @@ input[type="checkbox"] + label {
 .platform_list {
   top: 28px;
   max-height: 100%;
+  padding: 100px;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
 }
 
 .platform_list_item {

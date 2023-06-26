@@ -9,7 +9,7 @@
     Write-Host $args
 }
 
-cd "C:\Users\TCNO\Documents\GitHub\TcNo-Acc-Switcher\TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher"
+cd "C:\Users\techn\Documents\GitHub\TcNo-Acc-Switcher\TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher"
 
 $objects = Get-ChildItem TcNo*.exe,TcNo*.dll,runas.exe,_First* -Recurse | ForEach-object {Get-AuthenticodeSignature $_} | Where-Object {$_.status -eq "NotSigned"}
 

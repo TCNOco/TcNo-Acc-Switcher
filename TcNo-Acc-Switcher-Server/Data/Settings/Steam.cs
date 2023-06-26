@@ -1,5 +1,5 @@
 ﻿// TcNo Account Switcher - A Super fast account switcher
-// Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+// Copyright (C) 2019-2023 TechNobo (Wesley Pyburn)
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -270,6 +270,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("AccountNotes", Order = 18)] private Dictionary<string, string> _accountNotes = new();
         [JsonProperty("SteamWebApiKey", Order = 19)] private string _steamWebApiKey = "";
         [JsonProperty("StartSilent", Order = 20)] private bool _startSilent;
+        [JsonProperty("OldUi", Order = 21)] private bool _oldUi;
         [JsonIgnore] private bool _desktopShortcut;
         [JsonIgnore] private int _lastAccTimestamp = 0;
         [JsonIgnore] private string _lastAccName = "";
@@ -309,6 +310,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
         public static string SteamWebApiKey { get => Instance._steamWebApiKey; set => Instance._steamWebApiKey = value; }
         public static bool StartSilent { get => Instance._startSilent; set => Instance._startSilent = value; }
+        public static bool OldUi { get => Instance._oldUi; set => Instance._oldUi = value; }
         public static bool SteamWebApiWasReset { get => Instance._steamWebApiWasReset; set => Instance._steamWebApiWasReset = value; }
         public static ObservableCollection<Account> Accounts { get => Instance._accounts; set => Instance._accounts = value; }
 

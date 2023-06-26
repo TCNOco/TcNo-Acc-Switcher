@@ -1,5 +1,5 @@
 ﻿// TcNo Account Switcher - A Super fast account switcher
-// Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+// Copyright (C) 2019-2023 TechNobo (Wesley Pyburn)
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -272,6 +272,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             // If not, skip. Download is handled in a background task.
             if (!File.Exists(SteamSettings.SteamAppsListPath))
             {
+                // Create the folder if does not exist
+                var folder = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\");
+                Directory.CreateDirectory(folder);
+
                 // Download Steam AppId list if not already.
                 Task.Run(DownloadSteamAppsData).ContinueWith(_ =>
                 {
@@ -352,7 +356,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             List<string> gameIds;
             try
             {
-                var libraryFile = Path.Join(Data.Settings.Steam.FolderPath, "\\steamapps\\libraryfolders.vdf");
+                var libraryFile = Path.Join(SteamSettings.FolderPath, "steamapps\\libraryfolders.vdf");
                 var libraryVdf = VdfConvert.Deserialize(File.ReadAllText(libraryFile));
                 var library = new JObject { libraryVdf.ToJson() };
                 gameIds = library["libraryfolders"]
@@ -828,6 +832,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             if (SteamSettings.AutoStart)
             {
                 if (SteamSettings.StartSilent) args += " -silent";
+                if (SteamSettings.OldUi) args += " -vgui";
 
                 _ = Globals.StartProgram(SteamSettings.Exe(), SteamSettings.Admin, args, SteamSettings.StartingMethod)
                     ? GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new {platform = "Steam"}], renderTo: "toastarea")
@@ -893,7 +898,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 {
                     u.MostRec = "1";
                     u.RememberPass = "1";
-                    u.OfflineMode = pS == -1 ? u.OfflineMode : pS > 1 ? "0" : pS == 1 ? "0" : "1";
+                    u.OfflineMode = pS == -1 ? u.OfflineMode : (pS > 1 ? "0" : pS == 1 ? "0" : "1");
+                    u.SkipOfflineModeWarning = pS == -1 ? u.OfflineMode : (pS > 1 ? "0" : pS == 1 ? "0" : "1");
                     // u.OfflineMode: Set ONLY if defined above
                     // If defined & > 1, it's custom, therefor: Online
                     // Otherwise, invert [0 == Offline => Online, 1 == Online => Offline]

@@ -1,0 +1,254 @@
+/*
+    Tokyo Night theme
+    - Created by Avo
+*/
+
+:root {
+    --accent: #c0caf5;
+    --accentHS: 40, 100%;
+    --accentL: 60%;
+    --accentInt: 255, 170, 0;
+    --notification-main-bg: #1A1B26;
+    --notification-info-border: #c0caf5;
+    --notification-info-highlight: #c0caf5;
+    --notification-success-border: #9ece6a;
+    --notification-success-highlight: #9ece6a;
+    --notification-warning-border: #ff9e64;
+    --notification-warning-highlight: #ff9e64;
+    --notification-error-border: #f7768e;
+    --notification-error-highlight: #f7768e;
+}
+
+/* Main Background Color (Brighter Part) */
+body, .programMain, .mainblock 
+    {
+        background: #1A1B26;
+    } 
+
+/* Header Bar Color (Darker Part) */
+.headerbar, .resizeTopLeft, .resizeTop, .resizeTopRight, .resizeRight, .resizeBottomRight, .resizeBottom, .resizeBottomLeft, .resizeLeft
+    {
+        background: #16161E;
+    }
+
+#window-controls, #btnBack 
+    {
+        background: #16161E; 
+    }
+
+/* Terminal White */
+.header_icon, .container
+    {
+        fill: #c0caf5;
+    }
+
+/* Button Colors */
+button, .button 
+    {
+        background: #1E202E;
+        border-color: #5f648b;
+        color: #c0caf5;
+    }
+
+#window-title, #window-title-modal 
+    {
+        color: #c0caf5;
+    }
+
+.acc_list_actionbar
+    {
+        background: #1E202E;
+    }
+
+.platform_list_item 
+    {
+        border: #5f648b 1px solid;
+        -webkit-text-stroke: 1px #c0caf5;
+        color: transparent;
+        text-shadow: none;
+    }
+
+.platform_list_item .icoFG 
+    {
+        fill: #c0caf5; 
+    }
+
+.icoGlass 
+    {
+        fill: rgb(255 255 255 / 0%);
+    }
+
+.icoBG
+    {
+        background: #1E202E;
+    }
+
+.accountHover
+    {
+        border: 0.1 em solid;
+        border-color: #5f648b;
+        background: #1E202E; 
+    }
+
+#window-controls button:hover, #btnBack:hover
+    {
+        background: #1E202E;
+    }
+
+button:hover, .button:hover
+    {
+        background: #252738;
+        border-color: #c0caf5;
+    }
+
+button:active, button:target, .button:active, .button:target 
+    {
+        background-color: #24283b !important; 
+    }
+
+.shortcuts, .shortcutDropdown, .shortcuts.expandShortcuts 
+    {
+        background: #1E202E;
+        border-color: #5f648b;
+    }
+      
+.shortcutPlaceholder 
+    {
+        background: #1E202E;
+    }
+
+.modalFG 
+    {
+        background: #16161E; 
+    }
+
+#modal_contents 
+    {
+        background: #1A1B26; 
+    }
+
+#window-title-modal 
+    {
+        background: #1E202E; 
+    }
+
+#modal_contents button 
+    {
+        background: #1E202E;
+        border-color: #5f648b;
+        color: #c0caf5;
+    }
+        
+#modal_contents button:hover 
+    {
+        background: #252738;
+        border-color: #c0caf5;
+    }
+
+#modal_contents button:active 
+    {
+        border-color: #c0caf5;
+        background-color: #24283b 
+    }
+
+.pathPicker 
+    {
+        background: #1E202E; 
+    }
+
+.dropdown 
+    {
+        color: #c0caf5; 
+    }
+        
+.dropdown-menu 
+    {
+        background: #1E202E;
+        border-color: #5F638A; 
+    }
+        
+.dropdown-item:hover   
+    {
+        background: #1A1B26 !important; 
+    }
+
+::-webkit-scrollbar-track 
+    {
+        background: #21222e; 
+    }
+      
+::-webkit-scrollbar-thumb 
+    {
+        border-radius: 0.3em;
+        background: #35384e; 
+    }
+      
+::-webkit-scrollbar-thumb:hover 
+    {
+        background: #545876; 
+    }
+
+.show > .dropdown-toggle 
+    {
+        background: #1E202E !important; 
+    }
+
+
+input[type=number], input[type=text], input[type=password] 
+    {
+        background: #1E202E; 
+    }
+      
+#modal_contents input[type=text], #modal_contents input[type=password] 
+    {
+        background: #1E202E !important; 
+    }
+
+
+.contextmenu 
+    {
+        background: #1E202E; 
+    }
+
+.contextmenu li a 
+    {
+        color: #c0caf5; 
+    }
+
+.contextmenu li:hover 
+    {
+        border-left: 2px solid #565f89;
+        background: #1E202E; 
+    }
+
+.contextmenu li:hover .submenu 
+    {
+        background: #1E202E; 
+    }
+
+.contextmenu, .contextmenu .submenu 
+    {
+        box-shadow: none; 
+    }
+
+.platform_list_item:hover:not(:active) 
+    {
+        animation: none;
+    }
+
+.btnClose-modal 
+    {
+        background: #f7768e; 
+    }
+
+input.acc:checked + label.acc 
+    {
+        border-color: #C0C9F3 !important;
+        background: #252737;
+    }
+      
+label.acc.currentAcc 
+    {
+        border-color: #9ece6a;
+        border-style: dashed;
+    }

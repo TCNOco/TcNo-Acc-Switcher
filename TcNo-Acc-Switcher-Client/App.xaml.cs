@@ -1,5 +1,5 @@
 ﻿// TcNo Account Switcher - A Super fast account switcher
-// Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+// Copyright (C) 2019-2023 TechNobo (Wesley Pyburn)
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -348,7 +348,7 @@ release = true;
         /// </summary>
         /// <param name="e">StartupEventArgs for the program</param>
         /// <returns>True if handled and should close. False if launch GUI.</returns>
-        private static async Task<bool> ConsoleMain(StartupEventArgs e)
+        private static Task<bool> ConsoleMain(StartupEventArgs e)
         {
             Console.WriteLine(@"Welcome to the TcNo Account Switcher - Command Line Interface!");
             Console.WriteLine(@"Use -h (or --help) for more info." + Environment.NewLine);
@@ -435,7 +435,7 @@ release = true;
                         });
 
                         Console.WriteLine(string.Join(Environment.NewLine, helpLines));
-                        return true;
+                        return Task.FromResult(true);
                     case "v":
                     case "vv":
                     case "verbose":
@@ -447,7 +447,7 @@ release = true;
                 }
             }
 
-            return true;
+            return Task.FromResult(true);
         }
 
         /// <summary>

@@ -1,5 +1,5 @@
 // TcNo Account Switcher - A Super fast account switcher
-// Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+// Copyright (C) 2019-2023 TechNobo (Wesley Pyburn)
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -90,7 +90,7 @@ inline void find_installed_c_runtimes(bool &min_vc_met)
 	WCHAR version[1024];
 	DWORD dw_v_buffer_size = sizeof(version);
 	const auto subkey = L"SOFTWARE\\Microsoft\\DevDiv\\VC\\Servicing\\14.0\\RuntimeMinimum";
-	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, subkey, 0, KEY_READ, &key) != ERROR_SUCCESS)
+	if (!(RegOpenKeyEx(HKEY_LOCAL_MACHINE, subkey, 0, KEY_READ, &key) == ERROR_SUCCESS || RegOpenKeyEx(HKEY_CURRENT_USER, subkey, 0, KEY_READ, &key) == ERROR_SUCCESS))
 	{
 		RegCloseKey(key);
 		return;
@@ -123,10 +123,16 @@ inline void find_installed_net_runtimes(const bool x32, bool &min_webview_met, b
 	DWORD dw_v_buffer_size = 0;
 
 	//Open the "Uninstall" key.
-	if ((x32 && RegOpenKeyEx(HKEY_LOCAL_MACHINE, s_root1, 0, KEY_READ, &h_uninst_key) != ERROR_SUCCESS) ||
-		RegOpenKeyEx(HKEY_LOCAL_MACHINE, s_root2, 0, KEY_READ, &h_uninst_key) != ERROR_SUCCESS)
+	if (x32)
+	{
+		// If neither key exists, fail:
+		if (!(RegOpenKeyEx(HKEY_LOCAL_MACHINE, s_root1, 0, KEY_READ, &h_uninst_key) == ERROR_SUCCESS ||
+			RegOpenKeyEx(HKEY_CURRENT_USER, s_root1, 0, KEY_READ, &h_uninst_key) == ERROR_SUCCESS))
+			return;
+	} else if (!(RegOpenKeyEx(HKEY_LOCAL_MACHINE, s_root2, 0, KEY_READ, &h_uninst_key) == ERROR_SUCCESS ||
+		RegOpenKeyEx(HKEY_CURRENT_USER, s_root2, 0, KEY_READ, &h_uninst_key) == ERROR_SUCCESS))
 		return;
-
+	
 	for (DWORD dw_index = 0; l_result == ERROR_SUCCESS; dw_index++)
 	{
 		WCHAR s_app_key_name[1024];
@@ -141,7 +147,8 @@ inline void find_installed_net_runtimes(const bool x32, bool &min_webview_met, b
 			//Open the sub key.
 			if (x32) wsprintf(s_sub_key, L"%s\\%s", s_root1, s_app_key_name);
 			else wsprintf(s_sub_key, L"%s\\%s", s_root2, s_app_key_name);
-			if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, s_sub_key, 0, KEY_READ, &h_app_key) != ERROR_SUCCESS)
+			if (!(RegOpenKeyEx(HKEY_LOCAL_MACHINE, s_sub_key, 0, KEY_READ, &h_app_key) == ERROR_SUCCESS ||
+				RegOpenKeyEx(HKEY_CURRENT_USER, s_sub_key, 0, KEY_READ, &h_app_key) == ERROR_SUCCESS))
 			{
 				RegCloseKey(h_app_key);
 				RegCloseKey(h_uninst_key);
@@ -290,7 +297,9 @@ inline std::string dotnet_path()
 	DWORD dw_v_buffer_size = sizeof(path);
 
 	std::string ret;
-	if (const auto sub_key = L"SOFTWARE\\dotnet\\Setup\\InstalledVersions\\x64\\sharedhost"; RegOpenKeyEx(HKEY_LOCAL_MACHINE, sub_key, 0, KEY_READ, &key) != ERROR_SUCCESS)
+	const auto sub_key = L"SOFTWARE\\dotnet\\Setup\\InstalledVersions\\x64\\sharedhost";
+	if (!(RegOpenKeyEx(HKEY_LOCAL_MACHINE, sub_key, 0, KEY_READ, &key) == ERROR_SUCCESS ||
+		RegOpenKeyEx(HKEY_CURRENT_USER, sub_key, 0, KEY_READ, &key) == ERROR_SUCCESS))
 	{
 		RegCloseKey(key);
 		return ret;

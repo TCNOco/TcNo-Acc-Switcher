@@ -1,5 +1,5 @@
 ﻿// TcNo Account Switcher - A Super fast account switcher
-// Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+// Copyright (C) 2019-2023 TechNobo (Wesley Pyburn)
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -405,24 +405,31 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         [JSInvokable]
         public static string GiCrowdinList()
         {
-            var html = new HttpClient().GetStringAsync(
-                "https://tcno.co/Projects/AccSwitcher/api/crowdin/").Result;
-            var persons = html.Split("</li><li>");
-            List<string> proofreaders = new();
-            List<string> normal = new();
-
-            // Loop once for proofreaders.
-            // Then again for those who aren't.
-            foreach (var person in persons)
+            try
             {
-                if (person.Contains(" - ")) proofreaders.Add(GiCrowdinPersonHtml(person));
-                if (!person.Contains(" - ")) normal.Add(GiCrowdinPersonHtml(person));
+                var html = new HttpClient().GetStringAsync(
+                    "https://tcno.co/Projects/AccSwitcher/api/crowdin/").Result;
+                var persons = html.Split("</li><li>");
+                List<string> proofreaders = new();
+                List<string> normal = new();
+
+                // Loop once for proofreaders.
+                // Then again for those who aren't.
+                foreach (var person in persons)
+                {
+                    if (person.Contains(" - ")) proofreaders.Add(GiCrowdinPersonHtml(person));
+                    if (!person.Contains(" - ")) normal.Add(GiCrowdinPersonHtml(person));
+                }
+
+                proofreaders.Sort();
+                normal.Sort();
+
+                return string.Join("", proofreaders) + "<li>----------</li>" + string.Join("", normal);
             }
-
-            proofreaders.Sort();
-            normal.Sort();
-
-            return string.Join("", proofreaders) + "<li>----------</li>" + string.Join("", normal);
+            catch (Exception)
+            {
+                return "<b>Failed to load Crowdin supporters!</b>";
+            }
         }
 
         private static string GiCrowdinPersonHtml(string person)

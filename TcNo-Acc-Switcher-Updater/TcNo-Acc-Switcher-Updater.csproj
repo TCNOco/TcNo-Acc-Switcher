@@ -9,17 +9,17 @@
     <Product>TcNo Account Switcher - Server</Product>
     <Authors>TechNobo (Wesley Pyburn)</Authors>
     <Description>Updater for the TcNo Account Switcher</Description>
-    <Copyright>Copyright © TechNobo (Wesley Pyburn) 2020</Copyright>
+    <Copyright>Copyright © TechNobo (Wesley Pyburn) 2019-2023</Copyright>
     <PackageProjectUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</PackageProjectUrl>
     <RepositoryUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</RepositoryUrl>
     <Platforms>x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="SevenZipExtractor" Version="1.0.17" />
     <PackageReference Include="VCDiff" Version="4.0.1" />
-    <PackageReference Include="YamlDotNet" Version="11.2.1" />
+    <PackageReference Include="YamlDotNet" Version="13.1.1" />
   </ItemGroup>
 
 </Project>
