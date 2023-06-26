@@ -21,9 +21,11 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Runtime.Versioning;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.JSInterop;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
@@ -402,6 +404,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         [JSInvokable]
         public static string GiLocaleObj(string k, object obj) => Lang.Instance[k, obj];
 
+        struct crowdinDataObject
+        {
+            public SortedDictionary<string, string> ProofReaders { get; set; }
+            public List<string> Translators { get; set; }
+        }
+
         [JSInvokable]
         public static string GiCrowdinList()
         {
@@ -409,37 +417,20 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             {
                 var html = new HttpClient().GetStringAsync(
                     "https://tcno.co/Projects/AccSwitcher/api/crowdin/").Result;
-                var persons = html.Split("</li><li>");
-                List<string> proofreaders = new();
-                List<string> normal = new();
+                var crowdinData = JsonConvert.DeserializeObject<crowdinDataObject>(html);
 
-                // Loop once for proofreaders.
-                // Then again for those who aren't.
-                foreach (var person in persons)
-                {
-                    if (person.Contains(" - ")) proofreaders.Add(GiCrowdinPersonHtml(person));
-                    if (!person.Contains(" - ")) normal.Add(GiCrowdinPersonHtml(person));
-                }
-
+                var proofreaders = crowdinData.ProofReaders.Select(crowdinDataProofReader => $"<li>{crowdinDataProofReader.Key} ({crowdinDataProofReader.Value})</li>").ToList();
                 proofreaders.Sort();
-                normal.Sort();
 
-                return string.Join("", proofreaders) + "<li>----------</li>" + string.Join("", normal);
+                crowdinData.Translators.Sort();
+                var translatorsString = string.Join("</li><li>", crowdinData.Translators);
+
+                return string.Join("", proofreaders) + "<li>----------</li>" + translatorsString;
             }
             catch (Exception)
             {
                 return "<b>Failed to load Crowdin supporters!</b>";
             }
-        }
-
-        private static string GiCrowdinPersonHtml(string person)
-        {
-
-            if (person.StartsWith("<li>"))
-                return $"{person}</li>";
-            if (person.EndsWith("</li>"))
-                return $"<li>{person}";
-            return $"<li>{person}</li>";
         }
 
         [JSInvokable]
