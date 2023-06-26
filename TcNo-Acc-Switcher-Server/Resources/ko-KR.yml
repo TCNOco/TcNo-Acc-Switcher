@@ -1,15 +1,15 @@
 ---
-Update: 업데이트를 사용할 수 있습니다! 시작하려면 여기를 클릭하십시오.
+Update: 새로운 업데이트가 가능합니다! 여기를 눌러 시작하세요.
 Header_ChooseLanguage: '언어 선택'
-Steam_ShowSteamID: 스팀ID
+Steam_ShowSteamID: 스팀 ID
 Steam_ShowVac: VAC 상태
 Steam_ShowLastLogin: 마지막 로그인 시간
-Steam_ShowLimited: 제한적 상태
-Steam_ShowAccUsername: 계정 사용자 이름
-Steam_Tray_AccountName: 계정 이름 표시 [NOT FRIEND NAME]
+Steam_ShowLimited: 제한 상태
+Steam_ShowAccUsername: 계정 이름
+Steam_Tray_AccountName: 계정 이름 표시 [친구 이름 X]
 Steam_CheckVac: 계정 VAC 상태 확인
 Steam_OverrideDefaultState: "기본 로그인 상태 덮어쓰기:"
-Steam_StartSilent: "스위치에서 작업 트레이에 스팀 열기 ('-silent' 로 스팀 시작)"
+Steam_StartSilent: "스위치에서 작업 트레이에 Steam 열기 ('-silent' 로 Steam 시작)"
 Button_AddNew: 새 계정 추가
 Button_SaveCurrent: 현재 상태 저장
 Button_SaveFile: 파일 저장
@@ -34,7 +34,7 @@ Settings_Admin: 관리자 권한으로 {platform} 실행
 Settings_ImageExpiry: '다음 날짜가 지나면 프로필 이미지 만료:'
 Settings_SteamAPIKey: "스팀 웹 API 키 (선택 사항)"
 Settings_SteamAPIKey_Note: API 키를 설정하면 제한된 표시기 (노란색 테두리) 가 대신 커뮤니티 금지 계정에 표시됩니다.
-Settings_Header_AppWide: 앱 전체 설정
+Settings_Header_AppWide: 전체 설정
 Settings_Header_GeneralSettings: 일반 설정
 Settings_Header_AccountDisplay: 계정 표시 설정
 Settings_Header_ExtraPlatforms: 플랫폼 설정

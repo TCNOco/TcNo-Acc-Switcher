@@ -4,32 +4,32 @@ Header_ChooseLanguage: 'Elegir idioma:'
 Steam_ShowSteamID: SteamID
 Steam_ShowVac: Estado de VAC
 Steam_ShowLastLogin: Última hora de inicio de sesión
-Steam_ShowLimited: Estatus Limitado
-Steam_ShowAccUsername: Nombre de usuario de la cuenta
-Steam_Tray_AccountName: Mostrar nombre de cuenta [no nombre de amigo]
+Steam_ShowLimited: Estado Limitado
+Steam_ShowAccUsername: Usuario de la cuenta
+Steam_Tray_AccountName: Mostrar nombre de la cuenta [no nombre de amigo]
 Steam_CheckVac: Estado de VAC de cuenta de cheques
-Steam_OverrideDefaultState: "Anular estado de inicio de sesión predeterminado:"
-Steam_StartSilent: "Abra el vapor en la bandeja de tareas en el interruptor (inicie el vapor con '-silencioso')"
+Steam_OverrideDefaultState: "Sobrescribir estado de inicio de sesión predeterminado:"
+Steam_StartSilent: "Abra Steam en la bandeja de tareas al cambiar (Inicia Steam con '-silencio')"
 Button_AddNew: Añadir Nuevo
 Button_SaveCurrent: Guardar actual
 Button_SaveFile: Guardar archivo
 Button_Cancel: Cancelar
 Button_Login: Inicio de sesión
-Button_Close: 'Cerrar @ info: whatsthis'
+Button_Close: Cerrar
 Button_RefreshImages: Actualizar imágenes
 Button_ResetSettings: Restablecer la configuración
 Button_AdvancedCleaning: Limpieza avanzada...
 Button_ClearLog: Borrar registro
 Button_WikiInfo: Más información (Wiki)
-Button_ManagePlatforms: Gestionar plataformas
+Button_ManagePlatforms: Gestión de plataformas
 Button_Backup: Respaldo
-Button_BackupAll: Copia de seguridad de todo
+Button_BackupAll: Copia de seguridad
 Button_Restore: Restaurar
 Button_OpenBackup: Abrir carpeta de copia de seguridad
 Button_Back: Atrás
 Button_RestartAdmin: Reiniciar como administrador
 Button_SetPassword: Establecer contraseña de aplicación
-Settings_Shortcut: ' {platform} Acceso directo a Switcher Desktop'
+Settings_Shortcut: ' {platform} Switcher acceso directo a escritorio'
 Settings_Admin: Ejecutar {platform} como administrador
 Settings_ImageExpiry: 'Días antes de que caduquen las imágenes de perfil:'
 Settings_SteamAPIKey: "Clave API de Steam Web (opcional)"
@@ -40,7 +40,7 @@ Settings_Header_AccountDisplay: Configuración de visualización de cuenta
 Settings_Header_ExtraPlatforms: Configuración de la plataforma
 Settings_Header_GeneralTools: Herramientas generales
 Settings_Header_OtherTools: Otras herramientas
-Settings_Header_TraySettings: Configuración de la bandeja
+Settings_Header_TraySettings: Configuración de bandeja
 Settings_Header_OpenGameFolders: Abrir carpetas de juego
 Settings_Header_BackupRestore: Configuración de la plataforma de copia de seguridad y restauración
 Settings_Header_Language: Lenguaje

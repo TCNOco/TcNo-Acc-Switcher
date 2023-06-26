@@ -3,13 +3,13 @@ Update: Mise à jour disponible ! Cliquez ici pour la démarrer.
 Header_ChooseLanguage: 'Sélectionnez la langue :'
 Steam_ShowSteamID: SteamID
 Steam_ShowVac: Etat VAC
-Steam_ShowLastLogin: Dernière heure de connexion
+Steam_ShowLastLogin: Dernière connexion
 Steam_ShowLimited: Statut limité
 Steam_ShowAccUsername: Nom d'utilisateur du compte
 Steam_Tray_AccountName: Afficher le nom du compte [not friend name]
-Steam_CheckVac: Vérifier le statut du compte VAC
+Steam_CheckVac: Vérifier le statut VAC du compte
 Steam_OverrideDefaultState: "Remplacer l'état de connexion par défaut :"
-Steam_StartSilent: "Ouvrir Steam dans le bac de tâches sur l'interrupteur (Démarrer Steam avec '-silent')"
+Steam_StartSilent: "Ouvrir Steam dans la barre des tâches au changement (Démarrer Steam avec '-silent')"
 Button_AddNew: Ajouter un nouveau
 Button_SaveCurrent: Enregistrer le compte actuel
 Button_SaveFile: Enregistrer le fichier
@@ -29,34 +29,34 @@ Button_OpenBackup: Ouvrir le dossier de sauvegarde
 Button_Back: Retour
 Button_RestartAdmin: Redémarrer en tant qu'administrateur
 Button_SetPassword: Définir le mot de passe de l'application
-Settings_Shortcut: ' {platform} Raccourci du bureau du commutateur'
+Settings_Shortcut: ' {platform} Switcher Raccourci bureau'
 Settings_Admin: Exécuter {platform} en tant qu'administrateur
 Settings_ImageExpiry: 'Jours avant l''expiration des images de profil :'
 Settings_SteamAPIKey: "Clé de l'API Web Steam (facultatif)"
-Settings_SteamAPIKey_Note: La définition d'une clé API fera apparaître l'indicateur Limité (bordure jaune) pour les comptes qui sont interdits par la communauté à la place.
-Settings_Header_AppWide: Paramètres à l'échelle de l'application
+Settings_SteamAPIKey_Note: La définition d'une clé API fera apparaître l'indicateur Limité (bordure jaune) pour les comptes qui sont interdits par la communauté.
+Settings_Header_AppWide: Paramètres de l'application
 Settings_Header_GeneralSettings: Paramètres généraux
 Settings_Header_AccountDisplay: Paramètres d'affichage du compte
 Settings_Header_ExtraPlatforms: Paramètres de la plateforme
 Settings_Header_GeneralTools: Outils généraux
 Settings_Header_OtherTools: Autres outils
-Settings_Header_TraySettings: Paramètres du bac
-Settings_Header_OpenGameFolders: Ouvrir des dossiers de jeu
-Settings_Header_BackupRestore: Paramètres de la plate-forme de sauvegarde et de restauration
+Settings_Header_TraySettings: Paramètres de la zone de notifications
+Settings_Header_OpenGameFolders: Ouvrir les dossiers de jeu
+Settings_Header_BackupRestore: Sauvegarde et Restauration des paramètres de l'application
 Settings_Header_Language: Langue
 Settings_Header_System: Système
 Settings_Header_Theme: Thème
 Settings_Header_Program: Programme
 Settings_Header_StatsSharing: Statistiques et partage
-Settings_Header_Platform: "{platformName} paramètre"
-Settings_Header_GameStats: Paramètres des statistiques globales du jeu
-Settings_GameStats: Tout ce qui est coché ici N'apparaîtra sous votre nom d'utilisateur pour aucun compte. Utilisez ceci si vous cachez souvent des éléments spécifiques de vos statistiques de jeu.
+Settings_Header_Platform: "Paramètres de {platformName}"
+Settings_Header_GameStats: Paramètres des statistiques de jeu
+Settings_GameStats: Tout ce qui est coché ici n'apparaîtra pas sous votre nom d'utilisateur pour tous les comptes. Utilisez ceci si vous cachez souvent des éléments spécifiques de vos statistiques de jeu.
 Settings_TrayMax: 'Nombre maximum de comptes à retenir :'
 Settings_ExtraPlatformsDisabled: Plateformes désactivées. Cliquez pour les activer.
 Settings_ExtraPlatformsEnabled: Plateformes visibles. Cliquez pour les désactiver.
 Settings_RTL: Afficher le texte de droite à gauche
 Settings_CollectStats: Collecter des statistiques
-Settings_ShareStats: Partager les statistiques de manière ennuyeuse (recommandé)
+Settings_ShareStats: Partager les statistiques de manière anonymes (recommandé)
 Settings_DiscordRpc: Présence de Discord Rich (RPC)
 Settings_DiscordRpcShare: Partager le total des commutateurs
 Settings_ViewStats: Voir les statistiques
@@ -64,61 +64,61 @@ Preview: Aperçu
 Settings_ClearStats: Réinitialiser
 Settings_CurrentLocation: 'Emplacement d''installation actuel : {path}'
 Settings_CurrentDataLocation: 'Emplacement actuel des données utilisateur : {path}'
-Settings_SetDataLocation: "[Définir l'emplacement des données utilisateur personnalisées]"
-Settings_PickFolder: Choisissez le dossier {platform}
+Settings_SetDataLocation: "[Définir l'emplacement des données utilisateur]"
+Settings_PickFolder: Choisissez le dossier de {platform}
 Settings_OpenFolder: Ouvrir le dossier {platform}
 Settings_ClearForgotten: Effacer Oublié
 Settings_ClearAccounts: Effacer les comptes
 Settings_StreamerMode: Activer le mode streamer
-Settings_ExitToTray: La sortie minimise sur le plateau
+Settings_ExitToTray: Quitter minimise dans la zone de notification
 Settings_DesktopShortcut: Raccourci du bureau
-Settings_StartMenu_ProgramTray: Programme & Plateau
+Settings_StartMenu_ProgramTray: Programme & Zone de notification
 Settings_StartMenu_Platform: Plateforme
-Settings_Tray_StartWindows: Démarrer le bac avec Windows
-Settings_Tray_StartNow: '[Démarrer le plateau maintenant]'
+Settings_Tray_StartWindows: Démarrer dans la zone de notification avec Windows
+Settings_Tray_StartNow: '[Démarrer la zone de notification maintenant]'
 Settings_CurrentStyle: Style actuel
 Settings_ThemeBackground: '[Définir l''arrière-plan]'
 Settings_ThemeOpenFolder: '[Ouvrir le dossier du thème]'
-Settings_Protocol: 'Activer tcno :\\ protocole (recommandé)'
+Settings_Protocol: 'Activer le protocole tcno :\\ (recommandé)'
 Settings_StartCentered: Démarrer le programme centré
 Settings_WindowsAccent: Utiliser la couleur d'accentuation Windows
-Settings_HelpTranslate: "[Aide traduire]"
+Settings_HelpTranslate: "[Aider à traduire]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "Moteur de rendu (avancé) :"
-Settings_Header_ClosingMethod: "(Avancé) Définir la méthode pour fermer {platform}"
-Settings_Header_StartingMethod: "(Avancé) Définir la méthode pour démarrer {platform}"
+Settings_Header_ClosingMethod: "Définir la méthode pour fermer {platform} (Avancé)"
+Settings_Header_StartingMethod: "Définir la méthode pour démarrer {platform} (Avancé)"
 Settings_AutoStart: "Démarrage automatique de {platform} sur le commutateur de compte"
 Settings_NoPlatforms: Il n'y a actuellement aucune plate-forme activée. Veuillez cocher les plates-formes facultatives ci-dessous pour les activer, ou décochez les plates-formes désactivées.
-Settings_MinimizeOnSwitch: Minimiser le commutateur sur le commutateur de compte
+Settings_MinimizeOnSwitch: Minimiser le commutateur lors du changement de compte
 Settings_ShowShortNotes: Aperçu de la note sous nom d'utilisateur
-Settings_Header_AppPassword: "Arrêtez les autres utilisateurs du commutateur :"
+Settings_Header_AppPassword: "Empêcher les autres utilisateurs d'utiliser le commutateur :"
 PreviewCss: Aperçu du CSS
 Settings_PreviewCss: Ceci est la page d'aperçu CSS. Vous pouvez voir certains éléments qui apparaissent dans le programme et voir à quoi ils ressemblent avec votre thème. Cette page est utile pour ceux qui créent des thèmes !
 Settings_PreviewCssHeader: Page d'aperçu CSS
-Stats_Disabled: "La collection de statistiques est désactivée."
+Stats_Disabled: "La collecte de statistiques est désactivée."
 Stats_InDepth: Ventilation statistique approfondie
 Stats_ShareEnabled: "Ces statistiques sont partagées anonymement et s'ajouteront au total <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">ici</a>."
 Stats_ShareDisabled: "Ces statistiques NE SONT PAS partagées anonymement et NE s'ajouteront PAS au total <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">ici</a>."
 Stats_OperatingSystem: "Système d'exploitation : "
 Stats_FirstLaunch: "Premier lancement : "
 Stats_LaunchCount: "Nombre de lancements : "
-Stats_CrashCount: "Nombre de collisions : "
+Stats_CrashCount: "Nombre de crash : "
 Stats_MostUsedPlatform: "Plateforme la plus utilisée : "
 Stats_TotalTime: "Temps total passé dans l'application : "
 Stats_TotalSwitches: "Total des changements de compte : "
 Stats_TotalGamesLaunched: "Total des applications/jeux lancés via le commutateur : "
 Stats_UniqueDaysLong: "Jours uniques avec changement de compte : "
-Stats_LastUpload: "Dernier téléchargement : "
+Stats_LastUpload: "Dernier envoi : "
 Stats_SwitcherStats: "Statistiques du commutateur : "
-Stats_PageStats: "Statistiques de la page : "
-Stats_VisitsTotalTime: "{visits} total des visites, {hours} temps total"
+Stats_PageStats: "Page de statistiques : "
+Stats_VisitsTotalTime: "{visits} visites en tout, {hours} heures au total"
 Stats_Accounts: "Comptes : "
 Stats_Switches: "Commutateurs : "
-Stats_FirstActive: "Premier actif : "
-Stats_LastActive: "Dernière activité : "
+Stats_FirstActive: "Premier activitée : "
+Stats_LastActive: "Dernière activitée : "
 Stats_UniqueDays: "Jours uniques : "
-Stats_GameShortcuts: "Raccourcis du jeu : "
-Stats_GameShortcutsHotbar: "Raccourcis du jeu (sur la barre de raccourcis) : "
+Stats_GameShortcuts: "Raccourcis de jeux : "
+Stats_GameShortcutsHotbar: "Raccourcis de jeux (sur la barre de raccourcis) : "
 Stats_GamesLaunched: "Lancement des jeux : "
 Stats_MetricsToShow: "Indicateurs affichés :"
 Stats_AccountId: "Identifiant du compte :"
@@ -133,25 +133,25 @@ Cleaning_Header_PlatformCleaning: '{platform} Commutateur'
 Cleaning_ImportantInfoHeader: 'Informations importantes :'
 Cleaning_ImportantInfo: >
   Cliquez sur un bouton pour supprimer le (s) fichier(s) associé (s) de votre installation Steam.<br /> La suppression de loginusers.vdf entraînera l'absence de comptes dans ce sélecteur de compte.<br /> Vous devrez vous connecter à eux à l'aide de Steam pour les récupérer.
-Cleaning_Button_KillProcess: Processus Kill {platform}
+Cleaning_Button_KillProcess: Tuer le processus {platform}
 Cleaning_Button_ForgottenBackups: Sauvegardes de compte oubliées
 Cleaning_Understand: Je comprends ce que font ces boutons.
 Restore_Info: >
   Si vous avez précédemment "oublié" un compte, vous pouvez le restaurer ici.<br /> Cela les ajoute à votre fichier loginusers.vdf, vous permettant de passer à eux.
 Restore_Button_Restore: Restaurer la sélection
-Ignored_RemoveAccounts: Supprimer les comptes de la liste d'ignorer
+Ignored_RemoveAccounts: Supprimer les comptes de la liste à ignorer
 Ignored_Description: Si vous avez précédemment "ignoré" un compte, vous pouvez les afficher à nouveau ici
 Ignored_Stop: Arrêter d'ignorer la sélection
 Toast_DataLocationCopying: (1/2) Copie des fichiers existants dans le nouveau dossier de données utilisateur !
 Toast_DataLocationNotCopying: (1/2) Le dossier contient déjà des fichiers ! Ne migrera pas les données utilisateur.
 Toast_DataLocationSet: (2/2) Redémarrez le sélecteur de compte pour utiliser le nouveau dossier !
 Toast_PlaceShortcutFiles: Un dossier s'ouvre. Placez les raccourcis de jeu dans ce dossier et redémarrez le sélecteur de compte.
-Toast_TrayStarted: Le plateau a commencé !
-Toast_TrayRunning: Bac déjà ouvert
-Toast_TrayUsersMissing: Aucun utilisateur de plateau enregistré
-Toast_TrayFail: Impossible de démarrer l'application de plateau !
-Toast_TrayPosition: "En cliquant sur le bouton Quitter : je serai sur le bac Windows ! (Barre de démarrage à droite)"
-Toast_TrayHint: "Astuce : Ctrl+Cliquez sur le « X » pour me fermer complètement, ou via le bac > « Quitter »"
+Toast_TrayStarted: Zone de notifications lancée !
+Toast_TrayRunning: Zone de notification déjà lancée
+Toast_TrayUsersMissing: Aucun utilisateur de zone de notification enregistré
+Toast_TrayFail: Impossible de démarrer l'application en zone de notification !
+Toast_TrayPosition: "En cliquant sur le bouton Quitter : je serai dans la zone de notification Windows ! (à droite de la barre de démarrage)"
+Toast_TrayHint: "Astuce : Ctrl+Clique sur le « X » pour me fermer complètement, ou via la zone de notification > « Quitter »"
 Toast_Copied: Copié
 Toast_AlreadyProcessing: Traitement des comptes en cours...
 Toast_FailedRestore: Impossible de restaurer les comptes (voir console)

@@ -1,5 +1,5 @@
 ---
-Update: Cập nhật có sẵn! Nhấp vào đây để bắt đầu.
+Update: Cập nhật có sẵn! Hãy nhấp vào để bắt đầu.
 Header_ChooseLanguage: 'Chọn ngôn ngữ:'
 Steam_ShowSteamID: SteamID
 Steam_ShowVac: Trạng thái VAC
@@ -11,14 +11,14 @@ Steam_CheckVac: Kiểm tra trạng thái tài khoản VAC
 Steam_OverrideDefaultState: "Ghi đè trạng thái đăng nhập mặc định:"
 Steam_StartSilent: "Mở Steam đến khay tác vụ trên công tắc (Bắt đầu Steam với '-silent')"
 Button_AddNew: Thêm mới
-Button_SaveCurrent: Lưu Hiện tại
+Button_SaveCurrent: Lưu tài khoản hiện tại
 Button_SaveFile: Lưu tập tin
 Button_Cancel: Huỷ bỏ
 Button_Login: Đăng nhập
-Button_Close: Đo ́ ng
+Button_Close: Đóng
 Button_RefreshImages: Làm mới hình ảnh
-Button_ResetSettings: Đă ̣ t la ̣ i thiê ́ t đă ̣ t
-Button_AdvancedCleaning: Vệ sinh nâng cao...
+Button_ResetSettings: Đặt lại cài đặt gốc
+Button_AdvancedCleaning: Dọ dẹp nâng cao...
 Button_ClearLog: Xóa nhật ký
 Button_WikiInfo: Thông tin thêm (Wiki)
 Button_ManagePlatforms: Quản lý nền tảng
@@ -28,7 +28,7 @@ Button_Restore: Khôi phục
 Button_OpenBackup: Mở thư mục sao lưu
 Button_Back: Quay lại
 Button_RestartAdmin: Khởi động lại với tư cách Quản trị viên
-Button_SetPassword: Đă ̣ t Mâ ̣ t khâ ̉ u Ư ́ ng du ̣ ng
+Button_SetPassword: Đặt mật khẩu ứng dụng
 Settings_Shortcut: ' {platform} Phím tắt trên màn hình'
 Settings_Admin: Chạy {platform} với tư cách Quản trị viên
 Settings_ImageExpiry: 'Số ngày trước khi hình ảnh hồ sơ hết hạn:'
@@ -38,15 +38,15 @@ Settings_Header_AppWide: Cài đặt toàn ứng dụng
 Settings_Header_GeneralSettings: Cài đặt chung
 Settings_Header_AccountDisplay: Cài đặt hiển thị tài khoản
 Settings_Header_ExtraPlatforms: Cài đặt nền tảng
-Settings_Header_GeneralTools: Công cu ̣ Chung
+Settings_Header_GeneralTools: Công cụ Chung
 Settings_Header_OtherTools: Các công cụ khác
 Settings_Header_TraySettings: Cài đặt khay
 Settings_Header_OpenGameFolders: Mở thư mục trò chơi
 Settings_Header_BackupRestore: Sao lưu và khôi phục cài đặt nền tảng
 Settings_Header_Language: Ngôn ngữ
-Settings_Header_System: Hê ̣ thô ́ ng
-Settings_Header_Theme: Chu ̉ đê ̀
-Settings_Header_Program: Chương tri ̀ nh
+Settings_Header_System: Hệ Thống
+Settings_Header_Theme: Chủ Đề
+Settings_Header_Program: Chương trình
 Settings_Header_StatsSharing: Thống kê & Chia sẻ
 Settings_Header_Platform: "{platformName} cài đặt"
 Settings_Header_GameStats: Cài đặt thống kê trò chơi toàn cầu

@@ -1,5 +1,5 @@
 ---
-Update: Güncelleme mevcut! Başlatmak için buraya tıklayın.
+Update: Güncelleme mevcut! Güncellemeyi başlatmak için buraya tıklayın.
 Header_ChooseLanguage: 'Dil Seçin:'
 Steam_ShowSteamID: SteamID
 Steam_ShowVac: VAC durumu
@@ -24,8 +24,8 @@ Button_WikiInfo: Daha Fazla Bilgi (Wiki)
 Button_ManagePlatforms: Platformları Yönet
 Button_Backup: Yedek
 Button_BackupAll: Her şeyi yedekle
-Button_Restore: Eski haline getirmek
-Button_OpenBackup: Yedekleme Klasörünü Aç
+Button_Restore: Eski haline getir
+Button_OpenBackup: Yedek Klasörünü Aç
 Button_Back: Geri
 Button_RestartAdmin: Yönetici olarak yeniden başlat
 Button_SetPassword: Uygulama Parolasını Ayarla
@@ -43,12 +43,12 @@ Settings_Header_OtherTools: Diğer Araçlar
 Settings_Header_TraySettings: Tepsi ayarları
 Settings_Header_OpenGameFolders: Oyun klasörlerini aç
 Settings_Header_BackupRestore: Yedekleme ve Geri Yükleme platformu ayarları
-Settings_Header_Language: Dili
+Settings_Header_Language: Dil
 Settings_Header_System: Sistem
 Settings_Header_Theme: Tema
 Settings_Header_Program: Program
 Settings_Header_StatsSharing: İstatistikler ve Paylaşım
-Settings_Header_Platform: "{platformName} ayarlar"
+Settings_Header_Platform: "{platformName} ayarları"
 Settings_Header_GameStats: Küresel oyun istatistikleri ayarları
 Settings_GameStats: Burada işaretlenen herhangi bir şey, herhangi bir hesap için kullanıcı adınız altında gösterilmeyecektir. Oyun istatistiklerinizdeki belirli öğeleri sık sık gizliyorsanız bunu kullanın.
 Settings_TrayMax: 'Hatırlanacak maksimum hesap sayısı:'
@@ -56,20 +56,20 @@ Settings_ExtraPlatformsDisabled: Devre dışı platformlar. Etkinleştirmek içi
 Settings_ExtraPlatformsEnabled: Görünür platformlar. Devre dışı bırakmak için tıklayın.
 Settings_RTL: Metni Sağdan Sola olarak göster
 Settings_CollectStats: İstatistikleri topla
-Settings_ShareStats: İstatistikleri rahatsız edici bir şekilde paylaşın (önerilir)
-Settings_DiscordRpc: Discord Zengin Varlık (RPC)
+Settings_ShareStats: İstatistikleri anonim olarak paylaşın (önerilir)
+Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Toplam anahtarları paylaş
 Settings_ViewStats: İstatistikleri görüntüle
 Preview: Önizleme
-Settings_ClearStats: RESET
+Settings_ClearStats: Sıfırla
 Settings_CurrentLocation: 'Geçerli yükleme konumu: {path}'
 Settings_CurrentDataLocation: 'Geçerli kullanıcı verileri konumu: {path}'
-Settings_SetDataLocation: "[Özel kullanıcı verileri konumunu ayarla]"
-Settings_PickFolder: '{platform} klasör seç'
+Settings_SetDataLocation: "[Kullanıcı verileri için özel bir yer ayarla]"
+Settings_PickFolder: '{platform} klasörünü seç'
 Settings_OpenFolder: '{platform} Klasörünü Aç'
 Settings_ClearForgotten: Unutulanları Temizle
 Settings_ClearAccounts: Hesapları Temizle
-Settings_StreamerMode: Aktarıcı modunu etkinleştir
+Settings_StreamerMode: Yayıncı modunu etkinleştir
 Settings_ExitToTray: Tepsiye çıkışı en aza indirir
 Settings_DesktopShortcut: Masaüstü kısayolu
 Settings_StartMenu_ProgramTray: Program ve Tepsi
@@ -82,8 +82,8 @@ Settings_ThemeOpenFolder: '[Tema klasörünü aç]'
 Settings_Protocol: 'Tcno''yu etkinleştir:\\ protocol (Önerilen)'
 Settings_StartCentered: Programı merkezde başlat
 Settings_WindowsAccent: Windows Vurgu Rengini Kullan
-Settings_HelpTranslate: "[Help translate]"
-Settings_ViewTranslators: "[Credits]"
+Settings_HelpTranslate: "[Çeviriye yardım et]"
+Settings_ViewTranslators: "[Katkıda Bulunanlar]"
 Settings_Header_ActiveBrowser: "(Gelişmiş) İşleme motorunu ayarlayın:"
 Settings_Header_ClosingMethod: "(Gelişmiş) Yöntemi kapatmak için ayarlayın {platform}"
 Settings_Header_StartingMethod: "(Gelişmiş) Başlangıç yöntemini ayarlayın {platform}"

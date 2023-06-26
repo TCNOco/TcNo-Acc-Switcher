@@ -1,7 +1,7 @@
 ---
 Update: עדכון זמין! לחץ כאן כדי להתקין אותו.
 Header_ChooseLanguage: 'בחר שפה:'
-Steam_ShowSteamID: SteamID
+Steam_ShowSteamID: מזהה Steam
 Steam_ShowVac: סטטוס VAC
 Steam_ShowLastLogin: זמן התחברות אחרון
 Steam_ShowLimited: סטטוס מוגבל
@@ -9,7 +9,7 @@ Steam_ShowAccUsername: שם משתמש של החשבון
 Steam_Tray_AccountName: הצג את שם המשתמש [לא את שם הכינוי]
 Steam_CheckVac: בדוק את מצב ה- VAC של החשבון
 Steam_OverrideDefaultState: "עקוף את דרך ברירת המחדל לכניסה:"
-Steam_StartSilent: "פתח את ה - Steam למגש המשימות על מתג (התחל את ה - Steam עם '- שקט ')"
+Steam_StartSilent: "פתח את Steam למגש המשימות על מתג (התחל את Steam עם '- שקט ')"
 Button_AddNew: הוסף
 Button_SaveCurrent: שמור נוכחי
 Button_SaveFile: שמור קובץ

@@ -1,46 +1,46 @@
 ---
 Update: Opdatering tilgængelig! Klik her for at starte den.
 Header_ChooseLanguage: 'Vælg sprog:'
-Steam_ShowSteamID: DampID
+Steam_ShowSteamID: SteamID
 Steam_ShowVac: VAC-status
-Steam_ShowLastLogin: Sidste login tid
+Steam_ShowLastLogin: Sidst logget ind
 Steam_ShowLimited: Begrænset status
 Steam_ShowAccUsername: Konto brugernavn
-Steam_Tray_AccountName: Vis kontonavn [not friend name]
-Steam_CheckVac: Kontroller kontoens VAC-status
-Steam_OverrideDefaultState: "Tilsidesæt standard login tilstand:"
-Steam_StartSilent: "Åbn damp til procesbakken på kontakten (Start dampen med \"-silent\")"
+Steam_Tray_AccountName: Vis kontonavn [ikke vennenavn]
+Steam_CheckVac: Tjek kontoens VAC-status
+Steam_OverrideDefaultState: "Tilsidesæt standard login-tilstand:"
+Steam_StartSilent: "Åbn Steam til procesbakken ved skift (Start Steam med \"-silent\")"
 Button_AddNew: Tilføj ny
-Button_SaveCurrent: Gem aktuel
+Button_SaveCurrent: Gem nuværende
 Button_SaveFile: Gem fil
-Button_Cancel: Annuller
-Button_Login: Login
+Button_Cancel: Annullér
+Button_Login: Log ind
 Button_Close: Luk
-Button_RefreshImages: Genopfrisk billeder
+Button_RefreshImages: Genindlæs billeder
 Button_ResetSettings: Nulstil indstillinger
 Button_AdvancedCleaning: Avanceret rengøring...
 Button_ClearLog: Ryd log
 Button_WikiInfo: Mere info (Wiki)
 Button_ManagePlatforms: Administrer platforme
-Button_Backup: Backup
+Button_Backup: Sikkerhedskopiér
 Button_BackupAll: Sikkerhedskopier alt
 Button_Restore: Gendan
-Button_OpenBackup: Åbn Backup-mappe
+Button_OpenBackup: Åbn Sikkerhedskopieringsmappen
 Button_Back: Tilbage
 Button_RestartAdmin: Genstart som administrator
 Button_SetPassword: Angiv App-adgangskode
-Settings_Shortcut: ' {platform} Skift skrivebordsgenvej'
+Settings_Shortcut: ' {platform} Switcher skrivebordsgenvej'
 Settings_Admin: Kør {platform} som administrator
 Settings_ImageExpiry: 'Dage før profilbilleder udløber:'
 Settings_SteamAPIKey: "Steam Web API-nøgle (valgfri)"
-Settings_SteamAPIKey_Note: Indstilling af en API-nøgle vil gøre Begrænset indikator (gul kant) vise for konti, der er Community Banned i stedet.
-Settings_Header_AppWide: App-dækkende indstillinger
+Settings_SteamAPIKey_Note: Indstilling af en API-nøgle vil gøre Begrænset indikatoren (gul kant) synlig ved kontier der er Community Banned i stedet.
+Settings_Header_AppWide: Indstillinger for hele appen
 Settings_Header_GeneralSettings: Generelle indstillinger
-Settings_Header_AccountDisplay: Indstillinger for kontodisplay
-Settings_Header_ExtraPlatforms: Platformsindstillinger
+Settings_Header_AccountDisplay: Indstillinger for kontovisning
+Settings_Header_ExtraPlatforms: Platformindstillinger
 Settings_Header_GeneralTools: Generelle værktøjer
 Settings_Header_OtherTools: Andre værktøjer
-Settings_Header_TraySettings: Bakkeindstillinger
+Settings_Header_TraySettings: Indstillinger for bakke
 Settings_Header_OpenGameFolders: Åbn spilmapper
 Settings_Header_BackupRestore: Sikkerhedskopiering og gendannelse af platformsindstillinger
 Settings_Header_Language: Sprog
@@ -56,9 +56,9 @@ Settings_ExtraPlatformsDisabled: Deaktiverede platforme. Klik for at aktivere de
 Settings_ExtraPlatformsEnabled: Synlige platforme. Klik for at deaktivere dem.
 Settings_RTL: Vis tekst som højre mod venstre
 Settings_CollectStats: Indsaml statistikker
-Settings_ShareStats: Del statistikker irriterende (anbefales)
+Settings_ShareStats: Del statistikker anonymt (anbefales)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
-Settings_DiscordRpcShare: Del totale switche
+Settings_DiscordRpcShare: Del totale antal Switches
 Settings_ViewStats: Vis statistik
 Preview: Forhåndsvisning
 Settings_ClearStats: Nulstil
@@ -69,58 +69,58 @@ Settings_PickFolder: Vælg {platform} mappe
 Settings_OpenFolder: Åbn {platform} mappe
 Settings_ClearForgotten: Ryd glemte
 Settings_ClearAccounts: Ryd konti
-Settings_StreamerMode: Aktivér streamertilstand
-Settings_ExitToTray: Afslut minimerer til bakke
+Settings_StreamerMode: Aktiver streamertilstand
+Settings_ExitToTray: Afslut minimerer til proces bakke
 Settings_DesktopShortcut: Skrivebordsgenvej
-Settings_StartMenu_ProgramTray: Programbakke
+Settings_StartMenu_ProgramTray: Program & Bakke
 Settings_StartMenu_Platform: Platform
 Settings_Tray_StartWindows: Start bakke med vinduer
 Settings_Tray_StartNow: '[Start bakken nu]'
 Settings_CurrentStyle: Nuværende stil
 Settings_ThemeBackground: '[Indstil baggrund]'
 Settings_ThemeOpenFolder: '[Åbn temamappe]'
-Settings_Protocol: 'Aktivér tcno:\\ protocol (Anbefalet)'
+Settings_Protocol: 'Aktiver tcno:\\ protokol (Anbefalet)'
 Settings_StartCentered: Start programmet centreret
 Settings_WindowsAccent: Brug Windows accentfarve
 Settings_HelpTranslate: "[Hjælp med at oversætte]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "(Avanceret) Indstil gengivelsesmotor:"
+Settings_Header_ActiveBrowser: "(Avanceret) Indstil Layout-motor:"
 Settings_Header_ClosingMethod: "(Avanceret) Indstil metode til at lukke {platform}"
 Settings_Header_StartingMethod: "(Avanceret) Indstil metode til at starte {platform}"
-Settings_AutoStart: "Start automatisk {platform} på konto switch"
+Settings_AutoStart: "Start automatisk {platform} på konto skift"
 Settings_NoPlatforms: Der er i øjeblikket ingen platforme aktiveret. Sæt kryds ved valgfrie platforme nedenfor for at aktivere dem, eller fjern markeringen af deaktiverede platforme.
-Settings_MinimizeOnSwitch: Minimer switcher på konto switch
+Settings_MinimizeOnSwitch: Minimer switcher på konto skift
 Settings_ShowShortNotes: Bemærk forhåndsvisning under brugernavn
-Settings_Header_AppPassword: "Stop andre med at bruge omskifteren:"
-PreviewCss: Forhåndsvis CSS
-Settings_PreviewCss: Dette er CSS forhåndsvisningssiden. Du kan se nogle elementer, der dukker op i programmet og se, hvordan de ser ud med dit tema. Denne side er nyttig for dem, der opretter temaer!
-Settings_PreviewCssHeader: CSS Eksempelvisningsside
+Settings_Header_AppPassword: "Forhindrer andre i at bruge kontoskifteren:"
+PreviewCss: Forhåndsvisning af CSS
+Settings_PreviewCss: Dette er CSS-eksempelsiden. Du kan se nogle elementer, der dukker op i programmet og se, hvordan de ser ud med dit tema. Denne side er nyttig for dem, der laver temaer!
+Settings_PreviewCssHeader: CSS Eksempelside
 Stats_Disabled: "Statistikindsamling er deaktiveret."
-Stats_InDepth: Opdeling efter dybdegående statistikker
+Stats_InDepth: Dybdegående statistikopdeling
 Stats_ShareEnabled: "Disse statistikker deles anonymt og vil tilføje det samlede antal <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">her</a>."
 Stats_ShareDisabled: "Disse statistikker deles IKKE anonymt og vil IKKE tilføjes til det samlede <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">her</a>."
 Stats_OperatingSystem: "Operativsystem: "
-Stats_FirstLaunch: "Første lancering: "
-Stats_LaunchCount: "Opsendelsesantal: "
-Stats_CrashCount: "Nedbrudstælling: "
-Stats_MostUsedPlatform: "Mest anvendte platform: "
+Stats_FirstLaunch: "Første opstart: "
+Stats_LaunchCount: "Startantal: "
+Stats_CrashCount: "Antal nedbrud: "
+Stats_MostUsedPlatform: "Mest brugte platform: "
 Stats_TotalTime: "Samlet tid brugt i appen: "
 Stats_TotalSwitches: "Kontoafbrydere i alt: "
-Stats_TotalGamesLaunched: "Apps/spil i alt lanceret via switcher: "
-Stats_UniqueDaysLong: "Unikke dage med skiftende konti: "
+Stats_TotalGamesLaunched: "Apps/spil startet i alt via switcher: "
+Stats_UniqueDaysLong: "Unikke dage med konti skift: "
 Stats_LastUpload: "Sidste upload: "
-Stats_SwitcherStats: "Skifterstatistik: "
+Stats_SwitcherStats: "Switcher statistik: "
 Stats_PageStats: "Sidestatistik: "
-Stats_VisitsTotalTime: "{visits} samlede besøg, {hours} samlet tid"
+Stats_VisitsTotalTime: "{visits} besøg i alt, {hours} tid i alt"
 Stats_Accounts: "Konti: "
-Stats_Switches: "Afbrydere: "
-Stats_FirstActive: "Første aktive: "
+Stats_Switches: "Skift: "
+Stats_FirstActive: "Første gang aktiv: "
 Stats_LastActive: "Sidst aktiv: "
 Stats_UniqueDays: "Unikke dage: "
 Stats_GameShortcuts: "Spilgenveje: "
 Stats_GameShortcutsHotbar: "Spilgenveje (på hotbar): "
 Stats_GamesLaunched: "Lancerede spil: "
-Stats_MetricsToShow: "Viste målinger:"
+Stats_MetricsToShow: "Viste informationer:"
 Stats_AccountId: "Konto-id:"
 Auth_LoginRequired: En adgangskode var tidligere indstillet, og er påkrævet. Indtast venligst adgangskoden nedenfor.
 Auth_EnterPassword: "Indtast adgangskode:"
@@ -128,16 +128,16 @@ Auth_PassIncorrect: Adgangskoden er forkert.
 Locked: Låst
 Cleaning_Header_StartMenuShortcuts: 'Genveje til startmenuen:'
 Cleaning_Header_General: Generel rengøring
-Cleaning_Header_LoginHistory: Ryd min loginhistorik
-Cleaning_Header_PlatformCleaning: '{platform} Skifter'
-Cleaning_ImportantInfoHeader: 'Vigtige oplysninger:'
+Cleaning_Header_LoginHistory: Rens min login-historik
+Cleaning_Header_PlatformCleaning: '{platform} Switcher'
+Cleaning_ImportantInfoHeader: 'Vigtig information:'
 Cleaning_ImportantInfo: >
-  Hvis du klikker på en knap, slettes de( n) relaterede fil( er) fra din Steam-installation.<br /> Hvis du sletter loginusers.vdf, vises der ingen konti på denne konto.<br /> Du skal logge ind på dem ved hjælp af Steam for at få dem tilbage.
+  Hvis du klikker på en knap, slettes de(n) relaterede fil(er) fra din Steam-installation.<br /> Sletning af loginusers.vdf vil resultere i, at denne kontoskifter ikke viser nogen konti.<br /> Du skal logge ind på dem ved hjælp af Steam for at få dem tilbage.
 Cleaning_Button_KillProcess: Dræb {platform} proces
 Cleaning_Button_ForgottenBackups: Glemte kontosikkerhedskopier
-Cleaning_Understand: Jeg forstår godt, hvad knapperne gør.
+Cleaning_Understand: Jeg forstår, hvad disse knapper gør.
 Restore_Info: >
-  Hvis du tidligere "glemte" en konto, kan du gendanne dem her.<br /> Dette tilføjer dem tilbage til din loginusers.vdf fil, så du kan skifte til dem.
+  Hvis du tidligere har "glemt" en konto, kan du gendanne den her.<br /> Dette føjer dem tilbage til din loginusers.vdf-fil, så du kan skifte til dem.
 Restore_Button_Restore: Gendan valgte
 Ignored_RemoveAccounts: Fjern konti fra ignoreringslisten
 Ignored_Description: Hvis du tidligere "ignorerede" en konto, kan du vise dem igen her

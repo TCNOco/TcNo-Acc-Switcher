@@ -1,14 +1,14 @@
 ---
-Update: Актуализиране на разположение! Щракнете тук, за да го стартирате.
+Update: Налична актуализация! Щракнете тук, за да я стартирате.
 Header_ChooseLanguage: 'Избор на език:'
 Steam_ShowSteamID: SteamID
-Steam_ShowVac: Състояние на VAC
-Steam_ShowLastLogin: Последен път на влизане
+Steam_ShowVac: VAC състояние
+Steam_ShowLastLogin: Време на последно влизане
 Steam_ShowLimited: Ограничено състояние
-Steam_ShowAccUsername: Потребителско име на акаунта
-Steam_Tray_AccountName: Показване на името на акаунта [не име на приятел]
-Steam_CheckVac: Проверка на състоянието на сметката VAC
-Steam_OverrideDefaultState: "Отмяна на състоянието на вход по подразбиране:"
+Steam_ShowAccUsername: Потребителско име
+Steam_Tray_AccountName: Показване на потребителско име [не име на приятел]
+Steam_CheckVac: Проверка VAC състоянието на акаунта
+Steam_OverrideDefaultState: "Замяна на състоянието на влизане по подразбиране:"
 Steam_StartSilent: "Отворете Steam, за да включите лентата за задачи (Стартирайте Steam с '- Silent ')"
 Button_AddNew: Добавяне на нов
 Button_SaveCurrent: Запазване на текущото

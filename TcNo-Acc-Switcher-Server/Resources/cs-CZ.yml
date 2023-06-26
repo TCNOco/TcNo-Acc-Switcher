@@ -14,9 +14,9 @@ Button_AddNew: Přidat nový
 Button_SaveCurrent: Uložit aktuální
 Button_SaveFile: Uložit soubor
 Button_Cancel: Zrušit
-Button_Login: Přihlášení
+Button_Login: Přihlásit se
 Button_Close: 'Zavřít @ info: whatsthis'
-Button_RefreshImages: Obnovit obrázky
+Button_RefreshImages: Znovu načíst obrázky
 Button_ResetSettings: Obnovit nastavení
 Button_AdvancedCleaning: Pokročilé čištění...
 Button_ClearLog: Vymazat protokol
@@ -40,12 +40,12 @@ Settings_Header_AccountDisplay: Nastavení zobrazení účtu
 Settings_Header_ExtraPlatforms: Nastavení platformy
 Settings_Header_GeneralTools: Obecné nástroje
 Settings_Header_OtherTools: Ostatní nástroje
-Settings_Header_TraySettings: Nastavení zásobníku
+Settings_Header_TraySettings: Nastavení systémové lišty
 Settings_Header_OpenGameFolders: Otevřít složky her
 Settings_Header_BackupRestore: Nastavení zálohování a obnovení platformy
-Settings_Header_Language: 'Jazyk @ title: column'
+Settings_Header_Language: Jazyk
 Settings_Header_System: Systém
-Settings_Header_Theme: Šablona
+Settings_Header_Theme: Vzhled
 Settings_Header_Program: Program
 Settings_Header_StatsSharing: Statistiky a sdílení
 Settings_Header_Platform: "{platformName} nastavení"
@@ -71,18 +71,18 @@ Settings_ClearForgotten: Vymazat zapomenuté
 Settings_ClearAccounts: Vymazat účty
 Settings_StreamerMode: Povolit režim streameru
 Settings_ExitToTray: Tlačítko ukončit minimalizuje do lišty
-Settings_DesktopShortcut: Zkratka na ploše
+Settings_DesktopShortcut: Zástupce na ploše
 Settings_StartMenu_ProgramTray: Programový & zásobník
 Settings_StartMenu_Platform: Služba
 Settings_Tray_StartWindows: Spustit v systémové liště s Windows
 Settings_Tray_StartNow: '[Spustit v systémové liště]'
 Settings_CurrentStyle: Aktuální vzhled
 Settings_ThemeBackground: '[Nastavit pozadí]'
-Settings_ThemeOpenFolder: '[Otevřít složku motivu]'
+Settings_ThemeOpenFolder: '[Otevřít složku vzhledů]'
 Settings_Protocol: 'Povolit tcno:\\ protokol (doporučeno)'
 Settings_StartCentered: Spustit program ve středu obrazovky
 Settings_WindowsAccent: Použí barvu motivu Windows
-Settings_HelpTranslate: "[Nápověda přeložit]"
+Settings_HelpTranslate: "[Pomozte s překladem]"
 Settings_ViewTranslators: "[Titulky]"
 Settings_Header_ActiveBrowser: "(Pokročilé) Nastavení vykreslovacího motoru:"
 Settings_Header_ClosingMethod: "(Pokročilé) Nastavte metodu na zavření {platform}"
@@ -100,12 +100,12 @@ Stats_InDepth: Podrobné členění statistik
 Stats_ShareEnabled: "Tyto statistiky jsou sdíleny anonymně a přidá se k celkové <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">zde</a>."
 Stats_ShareDisabled: "Tyto statistiky NEJSOU sdíleny anonymně a NEBUDOU přidávat k celkové <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">zde</a>."
 Stats_OperatingSystem: "Operační systém: "
-Stats_FirstLaunch: "První start: "
+Stats_FirstLaunch: "První spuštění: "
 Stats_LaunchCount: "Počet spuštění: "
 Stats_CrashCount: "Počet pádů: "
 Stats_MostUsedPlatform: "Nejpoužívanější platforma: "
 Stats_TotalTime: "Celkový čas strávený v aplikaci: "
-Stats_TotalSwitches: "Přepínače účtů celkem: "
+Stats_TotalSwitches: "Celkový počet přepnutí účtů: "
 Stats_TotalGamesLaunched: "Celkový počet aplikací/her spuštěných pomocí přepínač: "
 Stats_UniqueDaysLong: "Unikátní dny se změněnými účty: "
 Stats_LastUpload: "Poslední nahrání: "
@@ -126,7 +126,7 @@ Auth_LoginRequired: Heslo bylo dříve nastaveno a je vyžadováno. Níže pros�
 Auth_EnterPassword: "Zadejte heslo:"
 Auth_PassIncorrect: Nesprávné heslo.
 Locked: Zamčeno
-Cleaning_Header_StartMenuShortcuts: 'Klávesové zkratky pro nabídku Start:'
+Cleaning_Header_StartMenuShortcuts: 'Zástupce v nabídce Start:'
 Cleaning_Header_General: Obecné čištění
 Cleaning_Header_LoginHistory: Vymazat historii přihlášení
 Cleaning_Header_PlatformCleaning: '{platform} Přepínač'
@@ -152,7 +152,7 @@ Toast_TrayUsersMissing: Nebyli uloženi žádní uživatelé zásobníku
 Toast_TrayFail: Nelze spustit aplikaci zásobníku!
 Toast_TrayPosition: "Kliknutím na tlačítko Ukončit: Budu v systémové liště Windows! (Napravo od startovací lišty)"
 Toast_TrayHint: "Tip: Ctrl+Klikni na 'X' pro úplné zavření, nebo přes Tray > 'Ukončit'"
-Toast_Copied: Kopírováno
+Toast_Copied: Zkopírováno
 Toast_AlreadyProcessing: Již zpracovávám účty...
 Toast_FailedRestore: Obnovení účtů se nezdařilo (viz konzole)
 Toast_Restored: Účty obnoveny!
@@ -287,7 +287,7 @@ Status_ClosingPlatformFailed: Nepodařilo se zavřít {platform}
 Status_StartingPlatform: Počínaje {platform}
 Toast_StartingPlatformFailed: Nepodařilo se spustit {platform}! Další podrobnosti naleznete v protokolu.
 Toast_UrlAdminErr: Soubory .url nemůžete spouštět jako správce. Zkuste jiný typ zkratky. Spuštění jako normální uživatel.
-Status_UpdatingFile: "Aktualizace {file}"
+Status_UpdatingFile: "Aktualizuji {file}"
 Status_UpdatingRegistry: Aktualizace registru Windows
 Status_FailedLog: Akce se nezdařila. Podrobnosti naleznete v protokolu.
 Status_WaitingForClose: "Čekání na zavření {processName} ({timeout}{timeLimit})"
@@ -359,11 +359,11 @@ Installer_VerifyAlready: "Vypadá to, že je všechno nainstalované. Ověř, zd
 Installer_Complete: To by mělo být vše. Hlavní program, TcNo-Acc-Switcher.exe, se spustí automaticky.
 Installer_Complete2: "Pokud to nefunguje, postupujte podle pokynů k instalaci, zde: {link}"
 Global_FatalNext: "Došlo k závažné chybě! Tento protokol selhání bude automaticky odeslán při příštím spuštění."
-Tray_Error: Chyba zásobníku
+Tray_Error: Chyba v systémové liště
 Tray_NoAccs: "Nebyly nalezeny žádné účty.\nZkuste nejprve změnit účty, nebo vyhledejte 'Tray_Users.json'"
 Tray_Switch: "Přepnout na: {account}"
 Tray_CantOpenExe: "Nelze otevřít hlavní .exe. Ujistěte se, že existuje.\n\nPokusil jsem se otevřít:"
-Tray_LaunchFail: "TcNo Account Switcher - Spuštění zásobníku se nezdařilo"
+Tray_LaunchFail: "TcNo Account Switcher - Spuštění v systémové liště se nezdařilo"
 Updater_Duplicate: Byla zjištěna jiná instance Tcno přepínače účtů.
 Updater_Unknown: "Neznámý argument: {arg}"
 Updater_NeedsAdmin: Tento program musí být spuštěn jako správce!
@@ -374,10 +374,10 @@ Updater_PressBelowStart: Kliknutím na tlačítko níže zahájíte aktualizaci.
 Updater_PatchApplied: Oprava aplikována!
 Updater_UpdatingAppData: Aktualizuji soubory v AppData!
 Updater_Complete: Všechny aktualizace dokončeny!
-Updater_Checking: Kontrola aktualizací
+Updater_Checking: Vyhledávání aktualizací
 Updater_UpdateToVerify: Chcete-li ověřit soubory, musíte nejprve provést aktualizaci.
 Updater_ClosingTcNo: Uzavření instancí Přepínače účtů TcNo (pokud existuje).
-Updater_Downloading: "Stahuji update: {version}"
+Updater_Downloading: "Stahuji aktualizaci: {version}"
 Updater_Downloaded: Stahování dokončeno.
 Updater_CantExtract: Nepodařilo se extrahovat aktualizaci.
 Updater_Verify: Ověřit soubory
@@ -400,7 +400,7 @@ Updater_AwaitingUser: Čekání na zadání uživatelem...
 Updater_UpToDate: "Aplikace aktuální.\n:)"
 Updater_FailedDecode: To je nejpravděpodobněji způsobeno mnou (TechNobo) vydáváním aktualizace s chybou, která porušila soubor .json aktualizace. Dejte mi vědět :)
 Updater_FailedDecodeTitle: Aktualizace seznamu se nezdařila
-Updater_Extracting: Extrahování opravných souborů
+Updater_Extracting: Extrahování záplatových souborů
 Updater_Applying: Aplikuje se záplata...
 Updater_Moving: Přesouvání souborů...
 Updater_Title: TcNo Account Switcher Updater
@@ -432,8 +432,8 @@ No: "Ne. Ne."
 Save: Uložit
 NoDefault: Ne (výchozí)
 Ok: "OK"
-Submit: Odeslat
-Forget: Zapomeň na to.
+Submit: Potvrdit
+Forget: Zapomenout
 Notice: Upozornění
 Notes: Poznámky
 Error: 'Chyba @ title: window'
@@ -441,10 +441,10 @@ ErrorDetails: "CHYBA: {ex}"
 Failed: Operace selhala
 Success: Operace úspěšná
 NotFound: Nenalezeno
-Done: Hotovo.
+Done: Hotovo
 Edit: 'Upravit @ action: button'
 Refresh: Obnovit
-Working: Pracovní...
+Working: Pracuji...
 ForName: "Pro: {name}"
 DeletedFiles: Smazané soubory
 FileFoldersToClear: "Seznam souborů/složek k vymazání:"
@@ -472,7 +472,7 @@ Platform_CouldNotDeleteLog: Soubor nelze smazat! Zkontrolujte {logPath}
 Error_FileAccessDenied: Nepodařilo se získat přístup k souboru! Zkontrolujte {logPath}
 Error_RequiredFileVerify: Požadovaný soubor nebyl nalezen. Ujistěte se, že složky x64 a x86 existují v instalačním adresáři. Pokud ne, spusťte TcNo-Acc-Switcher-Updater.exe a ověřte soubory.
 Tooltip_Settings: Nastavení
-Tooltip_Info: Info
+Tooltip_Info: Informace
 Tooltip_ManagePlatforms: Zobrazit nebo skrýt další platformy
 Tooltip_ExpandShortcuts: Rozbalte výběr her a zástupců
 Tooltip_ShortcutFolder: Otevřete složku zástupců. Umístěte tam zástupce a přepínač účtů TcNo, abyste je viděli.

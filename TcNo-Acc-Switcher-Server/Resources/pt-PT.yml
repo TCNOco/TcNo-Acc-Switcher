@@ -1,97 +1,97 @@
 ---
-Update: Atualização disponível! Clique aqui para iniciá-la.
-Header_ChooseLanguage: 'Escolha o Idioma:'
+Update: Atualização disponível! Clique aqui para transferir.
+Header_ChooseLanguage: 'Idioma:'
 Steam_ShowSteamID: SteamID
 Steam_ShowVac: Estado do VAC
-Steam_ShowLastLogin: Última hora de início de sessão
-Steam_ShowLimited: Status Limitado
-Steam_ShowAccUsername: Nome de utilizador da conta
+Steam_ShowLastLogin: Última vez online
+Steam_ShowLimited: Estado limitado
+Steam_ShowAccUsername: Nome de utilizador
 Steam_Tray_AccountName: Mostrar nome da conta [not friend name]
-Steam_CheckVac: Verificar o estado do VAC da conta
-Steam_OverrideDefaultState: "Substituir o estado de início de sessão predefinido:"
+Steam_CheckVac: Verificar o estado VAC da conta
+Steam_OverrideDefaultState: "Substituir início de sessão predefinido:"
 Steam_StartSilent: "Abra o Steam para a bandeja de tarefas no interruptor (Inicie o Steam com '-silent')"
 Button_AddNew: Adicionar Novo
-Button_SaveCurrent: Guardar corrente
+Button_SaveCurrent: Guardar atual
 Button_SaveFile: Guardar ficheiro
-Button_Cancel: 'Cancelar @ info: whatsthis'
+Button_Cancel: Cancelar
 Button_Login: Iniciar sessão
 Button_Close: Fechar
-Button_RefreshImages: Actualizar imagens
+Button_RefreshImages: Atualizar imagens
 Button_ResetSettings: Redefinir definições
 Button_AdvancedCleaning: Limpeza avançada...
-Button_ClearLog: Limpar log
+Button_ClearLog: Limpar arquivo de registos
 Button_WikiInfo: Mais informações (Wiki)
 Button_ManagePlatforms: Gerir Plataformas
 Button_Backup: Cópia de segurança
-Button_BackupAll: Fazer backup de tudo
+Button_BackupAll: Fazer cópia de segurança completa
 Button_Restore: Restaurar
-Button_OpenBackup: Abrir pasta de backup
-Button_Back: Atrás
+Button_OpenBackup: Abrir pasta de cópia de segurança
+Button_Back: Voltar
 Button_RestartAdmin: Reiniciar como administrador
 Button_SetPassword: Definir palavra-passe da aplicação
-Settings_Shortcut: ' {platform} Atalho do Switcher Desktop'
-Settings_Admin: Executar {platform} como Admin
-Settings_ImageExpiry: 'Dias antes das imagens de perfil expirarem:'
-Settings_SteamAPIKey: "Chave da API da Web do Steam (opcional)"
-Settings_SteamAPIKey_Note: Definir uma chave de API fará com que o indicador Limitado (borda amarela) seja exibido para contas que são Banidas pela Comunidade.
-Settings_Header_AppWide: Definições para toda a aplicação
+Settings_Shortcut: ' {platform} Atalho Switcher no ambiente de trabalho'
+Settings_Admin: Executar {platform} como Administrador
+Settings_ImageExpiry: 'Dias restantes até as imagens de perfil expirarem:'
+Settings_SteamAPIKey: "Chave API da Steam Web (opcional)"
+Settings_SteamAPIKey_Note: Definir uma chave de API fará com que o indicador Limitado (borda amarela) seja exibido para contas Banidas pela Comunidade.
+Settings_Header_AppWide: Definições gerais da aplicação
 Settings_Header_GeneralSettings: Definições gerais
 Settings_Header_AccountDisplay: Definições de apresentação da conta
 Settings_Header_ExtraPlatforms: Definições da Plataforma
-Settings_Header_GeneralTools: Ferramentas Gerais
+Settings_Header_GeneralTools: Ferramentas
 Settings_Header_OtherTools: Outras Ferramentas
 Settings_Header_TraySettings: Definições da bandeja
-Settings_Header_OpenGameFolders: Abrir pastas de jogo
-Settings_Header_BackupRestore: Configurações da plataforma de backup e restauração
-Settings_Header_Language: Linguagem
+Settings_Header_OpenGameFolders: Abrir pasta do jogo
+Settings_Header_BackupRestore: Configurações da plataforma de cópia de segurança e restauro
+Settings_Header_Language: Lingua
 Settings_Header_System: Sistema
-Settings_Header_Theme: 'Tema @ item: inlistbox'
-Settings_Header_Program: Programação
+Settings_Header_Theme: Tema
+Settings_Header_Program: Programa
 Settings_Header_StatsSharing: Estatísticas e Partilha
-Settings_Header_Platform: "{platformName} definições"
-Settings_Header_GameStats: Definições de estatísticas do jogo global
+Settings_Header_Platform: "{platformName} Definições"
+Settings_Header_GameStats: Definições de estatísticas de jogos
 Settings_GameStats: Qualquer coisa assinalada aqui NÃO será apresentada com o seu nome de utilizador para qualquer conta. Utilize isto se esconder frequentemente itens específicos das suas estatísticas de jogo.
-Settings_TrayMax: 'Número máximo de contas a serem lembradas:'
+Settings_TrayMax: 'Número máximo de contas guardadas:'
 Settings_ExtraPlatformsDisabled: Plataformas desativadas. Clique para habilitá-las.
 Settings_ExtraPlatformsEnabled: Plataformas visíveis. Clique para desativá-las.
 Settings_RTL: Mostrar texto da direita para a esquerda
 Settings_CollectStats: Recolher estatísticas
-Settings_ShareStats: Compartilhar estatísticas de forma anônima (recomendado)
-Settings_DiscordRpc: Presença rica em discórdia (RPC)
+Settings_ShareStats: Compartilhar estatísticas de forma anónima (recomendado)
+Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Partilhar total de interruptores
 Settings_ViewStats: Ver estatísticas
 Preview: Pré-visualizar
-Settings_ClearStats: Reiniciar
+Settings_ClearStats: Redefinir
 Settings_CurrentLocation: 'Local de instalação atual: {path}'
-Settings_CurrentDataLocation: 'Localização atual dos dados do usuário: {path}'
-Settings_SetDataLocation: "[Definir local de dados de usuário personalizado]"
-Settings_PickFolder: Pasta Pick {platform}
-Settings_OpenFolder: Abrir {platform} Pasta
-Settings_ClearForgotten: Limpar Esquecido
-Settings_ClearAccounts: Limpar Contas
+Settings_CurrentDataLocation: 'Localização atual dos dados de utilizador: {path}'
+Settings_SetDataLocation: "[Definir localização personalizada dos dados de utilizador]"
+Settings_PickFolder: Escolher pasta {platform}
+Settings_OpenFolder: Abrir pasta {platform}
+Settings_ClearForgotten: Apagar dados esquecidos
+Settings_ClearAccounts: Limpar lista de contas
 Settings_StreamerMode: Ativar modo streamer
-Settings_ExitToTray: A saída minimiza a bandeja
-Settings_DesktopShortcut: Atalho do ambiente de trabalho
-Settings_StartMenu_ProgramTray: '& Bandeja do Programa'
+Settings_ExitToTray: Fechar o programa minimiza para a bandeja de aplicações
+Settings_DesktopShortcut: Atalho de ambiente de trabalho
+Settings_StartMenu_ProgramTray: Aplicação e Bandeja de Aplicações
 Settings_StartMenu_Platform: Plataforma
-Settings_Tray_StartWindows: Iniciar Bandeja com o Windows
+Settings_Tray_StartWindows: Iniciar a aplicação com o Windows (bandeja de aplicações)
 Settings_Tray_StartNow: '[Iniciar Bandeja agora]'
-Settings_CurrentStyle: Estilo Actual
+Settings_CurrentStyle: Tema Atual
 Settings_ThemeBackground: '[Definir fundo]'
 Settings_ThemeOpenFolder: '[Abrir pasta de temas]'
-Settings_Protocol: 'Ativar tcno:\\ protocol (Recommended)'
+Settings_Protocol: 'Ativar tcno:\\ protocol (Recomendado)'
 Settings_StartCentered: Iniciar programa centrado
 Settings_WindowsAccent: Usar a Cor de Realce do Windows
-Settings_HelpTranslate: "[Ajuda para traduzir]"
+Settings_HelpTranslate: "[Ajudar na tradução]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "(Avançado) Definir mecanismo de renderização:"
+Settings_Header_ActiveBrowser: "Definir mecanismo de renderização (Avançado):"
 Settings_Header_ClosingMethod: "(Avançado) Definir método para fechar {platform}"
 Settings_Header_StartingMethod: "(Avançado) Definir método para iniciar {platform}"
 Settings_AutoStart: "Iniciar automaticamente {platform} na mudança de conta"
 Settings_NoPlatforms: No momento, não há plataformas habilitadas. Marque as plataformas opcionais abaixo para habilitá-las ou desmarque as plataformas desabilitadas.
-Settings_MinimizeOnSwitch: Minimizar o comutador no comutador de conta
-Settings_ShowShortNotes: Pré-visualização da nota sob o nome de utilizador
-Settings_Header_AppPassword: "Pare os outros usando o comutador:"
+Settings_MinimizeOnSwitch: Minimizar a aplicação na alteração de conta
+Settings_ShowShortNotes: Pré-visualização de notas sob o nome de utilizador
+Settings_Header_AppPassword: "Impedir outros de usar a aplicação:"
 PreviewCss: Visualizar CSS
 Settings_PreviewCss: Esta é a página de pré-visualização do CSS. Você pode visualizar alguns elementos que aparecem no programa e ver como eles se parecem com o seu tema. Esta página é útil para aqueles que criam temas!
 Settings_PreviewCssHeader: Página de pré-visualização do CSS
@@ -100,9 +100,9 @@ Stats_InDepth: Desagregação estatística aprofundada
 Stats_ShareEnabled: "Essas estatísticas são compartilhadas anonimamente e adicionarão ao total <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">aqui</a>."
 Stats_ShareDisabled: "Estas estatísticas NÃO são compartilhadas anonimamente e NÃO irão adicionar ao total <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">aqui</a>."
 Stats_OperatingSystem: "Sistema operacional: "
-Stats_FirstLaunch: "Primeiro lançamento: "
-Stats_LaunchCount: "Contagem de lançamento: "
-Stats_CrashCount: "Contagem de falhas: "
+Stats_FirstLaunch: "Primeira inicialização: "
+Stats_LaunchCount: "Número de inicializações: "
+Stats_CrashCount: "Número de falhas: "
 Stats_MostUsedPlatform: "Plataforma mais utilizada: "
 Stats_TotalTime: "Tempo total gasto na aplicação: "
 Stats_TotalSwitches: "Total de trocas de conta: "

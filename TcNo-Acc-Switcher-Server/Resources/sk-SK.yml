@@ -1,0 +1,493 @@
+---
+Update: Aktualizácia je dostupná! Spustite to kliknutím sem.
+Header_ChooseLanguage: 'Vyberte jazyk:'
+Steam_ShowSteamID: SteamID
+Steam_ShowVac: Stav VAC
+Steam_ShowLastLogin: Čas posledného prihlásenia
+Steam_ShowLimited: Obmedzený stav
+Steam_ShowAccUsername: Používateľské meno účtu
+Steam_Tray_AccountName: Zobraziť názov účtu [nie meno priateľa]
+Steam_CheckVac: Skontrolujte stav VAC účtu
+Steam_OverrideDefaultState: "Prepísať predvolený stav prihlásenia:"
+Steam_StartSilent: "Otvorte Steam na paneli úloh na prepínači (Spustite Steam s '-tichý')"
+Button_AddNew: Pridať nové
+Button_SaveCurrent: Uložiť aktuálny
+Button_SaveFile: Uloženie súboru
+Button_Cancel: Zrušiť
+Button_Login: Prihlásiť sa
+Button_Close: Zavrieť
+Button_RefreshImages: Obnoviť obrázky
+Button_ResetSettings: Obnoviť nastavenia
+Button_AdvancedCleaning: Pokročilé čistenie...
+Button_ClearLog: Vymazať denník
+Button_WikiInfo: Viac informácií (Wiki)
+Button_ManagePlatforms: Spravovať platformy
+Button_Backup: Zálohovanie
+Button_BackupAll: Zálohujte všetko
+Button_Restore: Obnoviť
+Button_OpenBackup: Otvorte priečinok zálohy
+Button_Back: späť
+Button_RestartAdmin: Reštartujte ako správca
+Button_SetPassword: Nastavte heslo aplikácie
+Settings_Shortcut: ' {platform} Prepínač Skratka na pracovnej ploche'
+Settings_Admin: Spustite {platform} ako správca
+Settings_ImageExpiry: 'Počet dní pred uplynutím platnosti profilových obrázkov:'
+Settings_SteamAPIKey: "Kľúč webového rozhrania API Steam (voliteľné)"
+Settings_SteamAPIKey_Note: Nastavením kľúča API sa pre účty, ktoré sú zakázané komunitou, zobrazí indikátor Limited (žltý okraj).
+Settings_Header_AppWide: Nastavenia pre celú aplikáciu
+Settings_Header_GeneralSettings: Všeobecné nastavenia
+Settings_Header_AccountDisplay: Nastavenia zobrazenia účtu
+Settings_Header_ExtraPlatforms: Nastavenia platformy
+Settings_Header_GeneralTools: Všeobecné nástroje
+Settings_Header_OtherTools: Iné nástroje
+Settings_Header_TraySettings: Nastavenia zásobníka
+Settings_Header_OpenGameFolders: Otvorte priečinky hry
+Settings_Header_BackupRestore: Zálohovanie a obnovenie nastavení platformy
+Settings_Header_Language: Jazyk
+Settings_Header_System: Systém
+Settings_Header_Theme: Téma
+Settings_Header_Program: Program
+Settings_Header_StatsSharing: Štatistiky a zdieľanie
+Settings_Header_Platform: "{platformName} nastavení"
+Settings_Header_GameStats: Nastavenia globálnych štatistík hry
+Settings_GameStats: Čokoľvek zaškrtnuté tu sa NEZOBRAZÍ pod vaším používateľským menom pre žiadny účet. Použite to, ak často skrývate konkrétne položky z vašich herných štatistík.
+Settings_TrayMax: 'Maximálny počet účtov na zapamätanie:'
+Settings_ExtraPlatformsDisabled: Deaktivované platformy. Kliknutím ich povolíte.
+Settings_ExtraPlatformsEnabled: Viditeľné platformy. Kliknutím ich zakážete.
+Settings_RTL: Zobraziť text ako sprava doľava
+Settings_CollectStats: Zbierajte štatistiky
+Settings_ShareStats: Zdieľajte štatistiky otravne (odporúča sa)
+Settings_DiscordRpc: Discord Rich Presence (RPC)
+Settings_DiscordRpcShare: Zdieľať celkové prepínače
+Settings_ViewStats: Zobraziť štatistiky
+Preview: Náhľad
+Settings_ClearStats: Resetovať
+Settings_CurrentLocation: 'Aktuálne umiestnenie inštalácie: {path}'
+Settings_CurrentDataLocation: 'Aktuálne umiestnenie údajov používateľa: {path}'
+Settings_SetDataLocation: "[Nastaviť vlastné umiestnenie údajov používateľa]"
+Settings_PickFolder: Vyberte {platform} priečinok
+Settings_OpenFolder: Otvorte priečinok {platform}
+Settings_ClearForgotten: Vymazať zabudnuté
+Settings_ClearAccounts: Vymazať účty
+Settings_StreamerMode: Povoliť režim streamovania
+Settings_ExitToTray: Výstup sa minimalizuje do zásobníka
+Settings_DesktopShortcut: Skratka na pracovnej ploche
+Settings_StartMenu_ProgramTray: Program a zásobník
+Settings_StartMenu_Platform: Plošina
+Settings_Tray_StartWindows: Spustite zásobník so systémom Windows
+Settings_Tray_StartNow: '[Spustiť zásobník teraz]'
+Settings_CurrentStyle: Aktuálny štýl
+Settings_ThemeBackground: '[Nastaviť pozadie]'
+Settings_ThemeOpenFolder: '[Otvoriť priečinok témy]'
+Settings_Protocol: 'Povoliť protokol tcno:\\ (odporúča sa)'
+Settings_StartCentered: Spustite program na stred
+Settings_WindowsAccent: Použite farbu Windows Accent Color
+Settings_HelpTranslate: "[Pomoc s prekladom]"
+Settings_ViewTranslators: "[Credits]"
+Settings_Header_ActiveBrowser: "(Pokročilé) Nastaviť vykresľovací mechanizmus:"
+Settings_Header_ClosingMethod: "(Pokročilé) Nastavte metódu na zatvorenie {platform}"
+Settings_Header_StartingMethod: "(Pokročilé) Nastavte metódu na začiatok {platform}"
+Settings_AutoStart: "Automaticky spustiť {platform} pri prepnutí účtu"
+Settings_NoPlatforms: Momentálne nie sú povolené žiadne platformy. Začiarknite prosím nižšie voliteľné platformy, aby ste ich povolili, alebo zrušte začiarknutie zakázaných platforiem.
+Settings_MinimizeOnSwitch: Minimalizovať prepínač na prepínači účtov
+Settings_ShowShortNotes: Ukážka poznámky pod užívateľským menom
+Settings_Header_AppPassword: "Zastavte ostatných pomocou prepínača:"
+PreviewCss: Ukážka CSS
+Settings_PreviewCss: Toto je stránka s ukážkou CSS. Môžete si prezrieť niektoré prvky, ktoré sa objavia v programe, a zistiť, ako vyzerajú s vašou témou. Táto stránka je užitočná pre tých, ktorí vytvárajú témy!
+Settings_PreviewCssHeader: Stránka ukážky CSS
+Stats_Disabled: "Zhromažďovanie štatistík je zakázané."
+Stats_InDepth: Hĺbkový rozpis štatistík
+Stats_ShareEnabled: "Tieto štatistiky sú zdieľané anonymne a pridajú sa k celkovému počtu <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">tu</a>."
+Stats_ShareDisabled: "Tieto štatistiky NIE sú zdieľané anonymne a NEPRÍDAJÚ k celkovému počtu <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">tu</a>."
+Stats_OperatingSystem: "Operačný systém: "
+Stats_FirstLaunch: "Prvé spustenie: "
+Stats_LaunchCount: "Počet spustení: "
+Stats_CrashCount: "Počet zlyhaní: "
+Stats_MostUsedPlatform: "Najpoužívanejšia platforma: "
+Stats_TotalTime: "Celkový čas strávený v aplikácii: "
+Stats_TotalSwitches: "Celkový počet prepnutí účtov: "
+Stats_TotalGamesLaunched: "Celkový počet aplikácií/hier spustených cez prepínač: "
+Stats_UniqueDaysLong: "Jedinečné dni so zmenenými účtami: "
+Stats_LastUpload: "Posledné nahranie: "
+Stats_SwitcherStats: "Štatistika prepínača: "
+Stats_PageStats: "Štatistika stránky: "
+Stats_VisitsTotalTime: "{visits} návštev celkovo, {hours} celkový čas"
+Stats_Accounts: "Účty: "
+Stats_Switches: "Prepínače: "
+Stats_FirstActive: "Prvý aktívny: "
+Stats_LastActive: "Naposledy aktívne: "
+Stats_UniqueDays: "Jedinečné dni: "
+Stats_GameShortcuts: "Herné skratky: "
+Stats_GameShortcutsHotbar: "Herné skratky (na paneli úloh): "
+Stats_GamesLaunched: "Hry spustené: "
+Stats_MetricsToShow: "Zobrazené metriky:"
+Stats_AccountId: "Číslo účtu:"
+Auth_LoginRequired: Heslo bolo predtým nastavené a je povinné. Zadajte heslo nižšie.
+Auth_EnterPassword: "Zadajte heslo:"
+Auth_PassIncorrect: Nesprávne heslo.
+Locked: Zamknuté
+Cleaning_Header_StartMenuShortcuts: 'Skratky pre ponuku Štart:'
+Cleaning_Header_General: Všeobecné upratovanie
+Cleaning_Header_LoginHistory: Vyčistiť moju históriu prihlásení
+Cleaning_Header_PlatformCleaning: '{platform} Prepínač'
+Cleaning_ImportantInfoHeader: 'Dôležité informácie:'
+Cleaning_ImportantInfo: >
+  Kliknutím na tlačidlo odstránite súvisiace súbory z vašej inštalácie Steam.<br /> Odstránenie loginusers.vdf bude mať za následok, že tento prepínač účtov nebude zobrazovať žiadne účty.<br /> Ak ich chcete získať späť, musíte sa k nim prihlásiť pomocou služby Steam.
+Cleaning_Button_KillProcess: Proces zabitia {platform}
+Cleaning_Button_ForgottenBackups: Zabudnuté zálohy účtov
+Cleaning_Understand: Rozumiem, čo tieto tlačidlá robia.
+Restore_Info: >
+  Ak ste predtým "zabudli" účet, môžete ho obnoviť tu.<br /> Týmto ich pridáte späť do súboru loginusers.vdf, čo vám umožní prepnúť na ne.
+Restore_Button_Restore: Obnoviť vybraté
+Ignored_RemoveAccounts: Odstráňte účty zo zoznamu ignorovaných
+Ignored_Description: Ak ste predtým "ignorovali" účet, môžete ho znova zobraziť tu
+Ignored_Stop: Prestať ignorovať vybrané
+Toast_DataLocationCopying: (1/2) Kopírovanie existujúcich súborov do nového priečinka s používateľskými údajmi!
+Toast_DataLocationNotCopying: (1/2) Priečinok už obsahuje súbory! Nebude migrovať používateľské údaje.
+Toast_DataLocationSet: (2/2) Reštartujte prepínač účtov, aby ste mohli použiť nový priečinok!
+Toast_PlaceShortcutFiles: Otvára sa priečinok. Do tohto priečinka umiestnite skratky hier a reštartujte prepínač účtov.
+Toast_TrayStarted: Zásobník sa začal!
+Toast_TrayRunning: Zásobník je už otvorený
+Toast_TrayUsersMissing: Neuložili sa žiadni používatelia zásobníka
+Toast_TrayFail: Aplikáciu zásobníka sa nepodarilo spustiť!
+Toast_TrayPosition: "Po kliknutí na tlačidlo Ukončiť: Budem na paneli Windows! (vpravo od štartovacej lišty)"
+Toast_TrayHint: "Tip: Ctrl+kliknite na 'X', aby ste ma úplne zatvorili, alebo cez Tray > 'Exit'"
+Toast_Copied: Skopírované
+Toast_AlreadyProcessing: Účty sa už spracúvajú...
+Toast_FailedRestore: Obnovenie účtov zlyhalo (pozri konzolu)
+Toast_Restored: Obnovené účty!
+Toast_ProtocolEnabled: Tento program teraz odpovie na tcno:\\ v systéme Windows
+Toast_ProtocolEnabledTitle: Pridaný protokol
+Toast_ProtocolDisabled: Tento program už nebude reagovať na tcno:\\
+Toast_ProtocolDisabledTitle: Protokol bol odstránený
+Toast_RestartAsAdmin: Začnite ako správca a skúste to znova.
+Toast_RestartAfterClose: Po kliknutí na tlačidlo Zavrieť reštartujte program.
+Toast_RestartAfterCloseTitle: Farba zvýraznenia je vypnutá
+Toast_RestartRequired: Ak chcete použiť zmeny, reštartujte
+Toast_LoadStylesheetFailed: Nepodarilo sa načítať šablónu so štýlmi! Podrobnosti nájdete v priečinku s používateľskými údajmi.
+Toast_LoadingStats: Jeden alebo viac profilov sú obnovujúce sa štatistiky. Prosím čakajte.
+Toast_ItemNotFound: "{item} sa nenašlo"
+Toast_DeletedTotal: "{files} z {totalFiles} odstránené. Celkom: {totalSize}"
+Toast_CantChangeUsername: Používateľské meno sa nepodarilo zmeniť
+Toast_CantClearLoginFiles: Nepodarilo sa vymazať staré prihlasovacie súbory
+Toast_AccountIdReg: Nepodarilo sa získať ID účtu z registra!
+Toast_RegFailWrite: Zápis do registra systému Windows zlyhal!
+Toast_RegFailRead: Čítanie z registra Windows zlyhalo!
+Toast_RegFailReadSaved: Nepodarilo sa prečítať uloženú položku databázy Registry. Ak sa to nepodarí, skúste účet odstrániť a znova pridať.
+Toast_RegSaveMissing: Nepodarilo sa nájsť alebo prečítať údaje z uložených súborov databázy Registry!
+Toast_DuplicateNames: Nedá sa vymeniť. Duplicitné účty s rovnakým používateľským menom?
+Toast_MissingUserId: "Nedá sa vymeniť. Chýba ID používateľa. Skontrolujte Wiki 'Bežné chyby'."
+Toast_CouldNotLocate: Nepodarilo sa nájsť prihláseného používateľa
+Toast_StreamerModeHint: Súkromné informácie sú skryté! - Pozri nastavenia
+Toast_StreamerModeTitle: Režim streamera
+Toast_AddAccountsFirst: Otvorte platformu zo zoznamu a pridajte najskôr niekoľko účtov
+Toast_AddAccountsFirstTitle: Žiadne uložené účty
+Toast_CantFindImage: Nepodarilo sa nájsť obrázok používateľov.
+Toast_CantCreateShortcut: Nie je možné vytvoriť skratku
+Toast_ShortcutCreated: Skratka bola vytvorená!
+Toast_SettingsCopied: Nastavenia boli úspešne skopírované do aktuálneho účtu.
+Toast_GameDataRestored: Údaje o hre pre tento účet boli úspešne obnovené.
+Toast_NoValidSteamId: Nepodarilo sa nájsť platné Steam ID.
+Toast_FailedUpdateCheck: Nepodarilo sa skontrolovať aktualizácie
+Toast_UpdateVerifyFail: Nie je možné overiť súbory aktualizátora. Stiahnite si najnovšiu verziu a nahraďte súbory vo svojom adresári.
+Toast_StartedGame: Začalo {program}
+Toast_Steam_VacCleared: Stav VAC pre účty bol vymazaný
+Toast_Steam_CantDeleteVacCache: Nepodarilo sa odstrániť „LoginCache/Steam/VACCache/SteamVACCache.json“
+Toast_NoFindSteamUserdata: Nepodarilo sa nájsť priečinok Steam\\userdata
+Toast_NoFindGameBackup: Pre tento účet sa nepodarilo nájsť priečinok so záložnými hernými údajmi.
+Toast_GameBackupDone: "Priečinok s údajmi o hre bol úspešne zálohovaný: {folderLocation}"
+Toast_Steam_VdfLast: Podarilo sa načítať z vdf_last. Niektoré účty môžu chýbať.
+Toast_PartiallyFixed: Čiastočne opravené
+Toast_Steam_FailedLoginusers: Nepodarilo sa načítať steam/config/loginusers.vdf
+Toast_Steam_CantLocateLoginusers: Nedá sa nájsť '.../Steam/config/loginusers.vdf'. Skúste sa najprv prihlásiť do účtu.
+Toast_CantClearImages: Obrázky sa nepodarilo vyčistiť
+Toast_RefreshedImages: Obnovené obrázky
+Toast_ClearForgottenCheck: Naozaj chcete vymazať zálohy zabudnutých účtov?
+Toast_ForgotAccount: Zabudnutý účet
+Toast_ClearedPlatformSettings: "Vymazané {platform} nastavení prepínača"
+Toast_ClearedImages: "Vymazané obrázky"
+Toast_SavedItem: "Uložené: {item}"
+Toast_ChangedUsername: Používateľské meno bolo zmenené
+Toast_SetUsername: Nastaviť používateľské meno
+Toast_AlreadyLoggedIn: Už ste prihlásený/-á pomocou tohto účtu! (Nevykonali sa žiadne zmeny)
+Toast_BackupCopy: (1/3) Kopírovanie súborov do dočasného umiestnenia...
+Toast_BackupCompress: (2/3) Komprimovanie súborov ({size}). Bude to chvíľu trvať...
+Toast_BackupComplete: (3/3) Stláčanie je dokončené! ({size} až {compressedSize})
+Toast_BackupProgress: "Prebieha zálohovanie (komprimovaná veľkosť: {compressedSize})"
+Toast_BackupFail: Zálohovanie zlyhalo – pozri denník!
+Toast_BackupBusy: Zálohovanie už prebieha!
+Toast_RestoreBusy: Obnova už prebieha!
+Toast_RestoreExt: Rozbalenie archívu.
+Toast_RestoreCopying: Presun súborov späť na platformu
+Toast_RestoreDeleting: Odstránenie dočasných súborov
+Toast_RestoreComplete: Obnovenie dokončené!
+Toast_FailedLoad: Nepodarilo sa načítať {platform}! Kliknutím na platformu zobrazíte chybu.
+Toast_FailedPlatformsLoad: Nepodarilo sa načítať súbor Platforms.json! Skontrolujte, či tento súbor existuje.
+Toast_FailedLoadSettings: "Nepodarilo sa načítať nastavenia! Namiesto toho sa načítavajú predvolené nastavenia. Pridanie „starého“ k názvu existujúceho súboru nastavení."
+Toast_FailedLoadStats: "Nepodarilo sa načítať štatistiky! Začíname nanovo."
+Toast_FailedStatsLoad: Nepodarilo sa načítať súbor GameStats.json! Skontrolujte, či tento súbor existuje.
+Toast_GameStatsLoadFail: "Nepodarilo sa získať herné štatistiky z webu pre {Game}"
+Toast_GameStatsEmpty: "Na webe sa nenašli žiadne herné štatistiky pre {Game}. Myslíte si, že je to chyba? Skontrolujte priečinok s používateľskými údajmi a 'temp\\download-{AccoundId}-{Game}.html', aby ste zistili, či sa na stránke nevyskytla chyba!"
+Toast_FileCopyFail: Súbory sa nepodarilo skopírovať! Ďalšie podrobnosti nájdete v denníku.
+Toast_UserDataLoadFail: Nepodarilo sa načítať používateľské údaje {UserData}\\WindowSettings.json. Zálohovanie a resetovanie! Chyba uložená do denníka.
+Toast_UpdateCheckFail: Nepodarilo sa dostať na stránku https://tcno.co/ a skontrolovať aktualizácie. Táto správa sa zobrazí raz denne.
+Toast_FailedCreateIcon: Ikonu sa nepodarilo vytvoriť. Podrobnosti nájdete v denníku.
+Toast_SameAccount: Nie je možné kopírovať súbory do/z rovnakého účtu. Skúste iný účet alebo si pozrite Wiki, kde nájdete ďalšie informácie.
+Toast_Steam_DownloadingAppIds: Sťahuje sa zoznam Steam AppId...
+Toast_Steam_DownloadingAppIdsComplete: Sťahovanie dokončené. Podponuka herných údajov bola aktualizovaná.
+Toast_SteamWebKeyInvalid: Zdá sa, že kľúč Steam Web API je neplatný. Nastavte nový.
+Toast_DownloadingProfileData: Sťahujú sa údaje profilu
+Toast_PasswordChanged: Heslo zmenené
+Toast_JsonFailModify: Nepodarilo sa upraviť súbor JSON. Pozri denník.
+Modal_Crowdin_Header: Crowdinoví prekladatelia
+Modal_Crowdin_Info: "Tu sú všetci, ktorí pomohli s prekladom tohto softvéru.<br>Pri preklade veľmi pomohli používatelia s jazykmi vedľa nich (rola korektora)."
+Modal_Info_Creator: Vytvoril TechNobo [Wesley Pyburn]
+Modal_Info_Version: Verzia
+Modal_Info_ViewGitHub: Zobraziť na GitHub
+Modal_Info_BugReport: Hlásenie chyby/Žiadosť o funkciu
+Modal_Info_VisitSite: Navštívte tcno.co
+Modal_Info_Disclaimer: Vylúčenie zodpovednosti
+Modal_Title_Info: Informácie o prepínači účtov TcNo
+Modal_Title_ChangeUsername: Zmeniť používateľské meno
+Modal_Title_ConfirmAction: TcNo Account Switcher Potvrďte akciu
+Modal_Title_LocatePlatform: Nájdite adresár {platform}
+Modal_Title_AddNew: Pridať nový {platform} účet
+Modal_Title_Background: Nastavte obrázok na pozadí
+Modal_Title_Userdata: Nastavte priečinok s používateľskými údajmi
+Modal_Title_GameStats: Povoliť/zakázať štatistiky hry
+Modal_GameStats_Header: "Povoliť/zakázať herné štatistiky pre: {accountName}"
+Modal_Title_Stats: Vaše štatistiky
+Modal_Title_GameVars: "Zadajte podrobnosti pre {game}"
+Modal_GameVars_Header: "Zadajte nasledujúce podrobnosti pre váš účet {game} , {username} na {platform}"
+Modal_Title_AccountNotes: "Poznámky k účtu pre: {accountName}"
+Modal_Title_SetPassword: Nastaviť heslo
+Modal_SetBackground: 'Vyberte obrázok alebo nižšie zadajte adresu URL.<br>Nechajte prázdne a nastavte reset.<br>(Pokročilejšie ovládanie nájdete v téme na Wiki):'
+Modal_SetBackground_Button: Nastaviť pozadie
+Modal_SetBackground_ChooseImage: Vyberte lokálny obrázok
+Modal_SetUserdata: Nižšie zadajte cestu k priečinku a kliknite na nastaviť.
+Modal_SetUserdata_ChooseFolder: Vyberte priečinok
+Modal_SetUserdata_Button: Nastaviť údaje používateľa
+Modal_ChangeUsername: Zadajte nové používateľské meno pre svoj účet
+Modal_ChangeUsernameType: Zmeňte {platform} používateľské meno
+Modal_SetPassword: Zadajte heslo pre prepínač účtov TcNo
+Modal_SetPassword_Button: Nastaviť heslo
+Modal_SetPassword_Info: "POZNÁMKA: Toto nešifruje vaše účty. Výmena účtov je taká jednoduchá ako nahradenie súborov alebo zmena používateľského mena v súbore. Heslo je možné obnoviť aj úpravou textu v súbore. Toto je jednoduché zabezpečenie. Zastaví jednoduchý prístup k používateľskému rozhraniu. Túto aplikáciu môžete umiestniť na vymeniteľné USB, nastaviť priečinok UserData na rovnaké USB a fyzicky ho odstrániť pre väčšiu bezpečnosť. <a class=\"fancyLink\" onclick=\"OpenLinkInBrowser('{link}');return false;\" href=\"\">Presun do sprievodcu externou jednotkou</a><br><br>Ak chcete zrušiť, ponechajte vyššie uvedené prázdne a kliknite na tlačidlo Nastaviť."
+Modal_EnterDirectory: "Zadajte adresár {platform}ako taký: C:\\Program Files\\{platform}"
+Modal_LocatePlatform: Nájdite {platformExe}
+Modal_LocatePlatformFolder: Vyberte priečinok {platform}
+Modal_ConfirmAction: Potvrďte akciu
+Modal_AddNew: Zadajte názov účtu {platform} , do ktorého ste prihlásení.
+Modal_AddCurrentAccount: Pridať aktuálny {platform} účet
+Modal_SetImageHeader: Nastaviť profilový obrázok
+Modal_SetImage: Nastaviť obrázok
+Status_SelectedAccount: "Vybrané: {name}"
+Status_Init: "Stav: Inicializuje sa"
+Status_ClosingPlatform: Záver {platform}
+Status_ClosingPlatformFailed: Nepodarilo sa zavrieť {platform}
+Status_StartingPlatform: Začiatok {platform}
+Toast_StartingPlatformFailed: Nepodarilo sa spustiť {platform}! Ďalšie podrobnosti nájdete v denníku.
+Toast_UrlAdminErr: Súbory .url nemôžete spúšťať ako správca. Skúste iný typ skratky. Spustenie ako bežný používateľ.
+Status_UpdatingFile: "Aktualizácia {file}"
+Status_UpdatingRegistry: Aktualizácia registra Windows
+Status_FailedLog: Akcia zlyhala. Podrobnosti nájdete v denníku.
+Status_WaitingForClose: "Čaká sa na zatvorenie {processName} ({timeout}{timeLimit})"
+Status_WaitingForMultipleClose: "{timeLimit} sa na zatvorenie {processName} a {count} ďalšieho ({timeout}sekundy)"
+Status_GetUniqueId: Zhromažďuje sa jedinečné ID používateľa
+Status_CopyingFiles: Kopírujú sa používateľské súbory...
+Status_HandlingImage: Spracovanie profilového obrázka účtu
+Context_SwapTo: Vymeniť na účet
+Context_CreateShortcut: Vytvoriť zástupcu
+Context_ChangeImage: Zmeniť obrázok
+Context_ChangeName: Zmeňte názov prepínača
+Context_LoginAsSubmenu: Prihláste sa ako
+Context_UsernameSubmenu: Používateľské meno
+Context_RefreshName: Obnoviť názov
+Context_CopySubmenu: Kopírovať
+Context_DataSubmenu: Údaje
+Context_CopyProfileSubmenu: Kopírovať profil
+Context_CommunityUrl: URL komunity
+Context_CommunityUsername: Používateľské meno komunity
+Context_LoginUsername: Prihlasovacie meno používateľa
+Context_CopySteamIdSubmenu: Skopírujte SteamID
+Context_Steam_Id: SteamID [STEAM0:~]
+Context_Steam_Id3: SteamID3 [U:1:~]
+Context_Steam_Id32: SteamID32
+Context_Steam_Id64: SteamID64 7656~
+Context_Steam_OpenUserdata: Otvorte používateľské údaje
+Context_ManageSubmenu: Spravovať
+Context_GameDataSubmenu: Herné údaje
+Context_ManageGameStats: Spravujte štatistiky hry
+Context_Game_CopySettingsFrom: Skopírujte nastavenia na aktuálne
+Context_Game_RestoreSettingsTo: Obnovte údaje o hre
+Context_Game_BackupData: Zálohujte dáta hry
+Context_CopyOtherSubmenu: Kopírovať iné
+Context_HidePlatform: Skryť platformu
+Context_ExportAccList: Exportovať zoznam účtov
+Context_RunAdmin: Spustiť ako správca
+Context_Hide: Skryť
+ProfileImage_ToggleText: Použiť obrázok ako obrázok účtu
+Title_Platforms_Settings: Prepínač účtov TcNo – Nastavenia platformy
+Title_Settings_TestCss: Prepínač účtov TcNo – otestujte štýl CSS
+Title_AccountsList: Prepínač účtov TcNo – {platform}
+Title_TextEditor: TcNo Account Switcher - Textový editor
+Title_Settings: Prepínač účtov TcNo – Nastavenia
+Title_Steam_Cleaning: Prepínač účtov TcNo – čistenie parou
+Title_Steam_Settings: TcNo Account Switcher - Steam Settings
+Title_Template_Settings: TcNo Account Switcher - {platformName} Settings
+Title_Login: Prepínač účtov TcNo – prihlásenie
+Installer_Downloading: Sťahovanie {file}
+Installer_DownloadFinished: Sťahovanie dokončené {file}
+Installer_Installing: "Inštalácia: {runtime}"
+Installer_RuntimeTitle: TcNo Account Switcher - Runtime inštalátor
+Installer_Welcome: Vitajte v inštalátore TcNo Account Switcher - Runtime
+Installer_InstalledRuntimes: "Aktuálne nainštalované runtime:"
+Installer_ErrorRuntime: "Nebolo nainštalované jedno alebo viac runtime:"
+Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB počas inštalácie]"
+Installer_TotalSize: "Celková veľkosť sťahovania: ~{size} MB"
+Installer_AnyKeyStart: Stlačením ľubovoľného klávesu spustíte sťahovanie...
+Runtime_WebView2: Microsoft WebView2 Runtime
+Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} Runtime
+Installer_FailedFolder: "Nepodarilo sa vytvoriť priečinok:"
+Installer_FailedWV: "Nepodarilo sa stiahnuť a nainštalovať Microsoft WebView2 Runtime. Pre stiahnutie: 1. Kliknite na nižšie uvedený odkaz: {link} 2. Kliknite na 'Download Hosting Bundle' pod Run server apps."
+Installer_FailedDR: "Nepodarilo sa stiahnuť a nainštalovať .NET 5 Desktop Runtime. Stiahnite si ho tu:"
+Installed_FailedASP: "Nepodarilo sa stiahnuť a nainštalovať ASP.NET Core {version} Runtime. Pre stiahnutie: 1. Kliknite na nižšie uvedený odkaz: {link} 2. Kliknite na 'Download x64' pod Run Desktop apps."
+Installer_Ready: "Jeden alebo viac sú pripravené na inštaláciu. Ak a keď sa zobrazí výzva, či chcete nainštalovať, kliknite na „Áno“."
+Installer_PressStart: Inštaláciu spustíte stlačením ľubovoľného klávesu...
+Installer_VerifyMin: "Skontrolujte, či spĺňate minimálne odporúčané požiadavky:"
+Installer_VerifyAlready: "Zdá sa, že všetko je nainštalované. Skontrolujte, či spĺňate minimálne odporúčané požiadavky:"
+Installer_Complete: To by malo byť všetko. Hlavný program, TcNo-Acc-Switcher.exe, sa spustí automaticky.
+Installer_Complete2: "Ak to nefunguje, pozrite si pokyny na inštaláciu tu: {link}"
+Global_FatalNext: "Vyskytla sa fatálna chyba! Tento crashlog bude automaticky odoslaný pri ďalšom spustení."
+Tray_Error: Chyba zásobníka
+Tray_NoAccs: "Nenašli sa žiadne účty.\nSkúste najskôr prepnúť účty alebo nájdite „Tray_Users.json“"
+Tray_Switch: "Prepnúť na: {account}"
+Tray_CantOpenExe: "Nepodarilo sa otvoriť hlavný súbor .exe. Uistite sa, že existuje.\n\nPokúsil som sa otvoriť:"
+Tray_LaunchFail: "Prepínač účtov TcNo – spustenie zásobníka zlyhalo"
+Updater_Duplicate: Bola zistená ďalšia inštancia nástroja TcNo Account Switcher Updater.
+Updater_Unknown: "Neznámy argument: {arg}"
+Updater_NeedsAdmin: Tento program musí byť spustený ako správca!
+Updater_StatusChecking: Kontrola verzie
+Updater_FailedVersionCheck: "Nepodarilo sa získať verziu. Kliknutím na \"Overiť\" aktualizujte a overte súbory"
+Updater_PressBelow: Stlačte tlačidlo nižšie!
+Updater_PressBelowStart: Kliknutím na tlačidlo nižšie spustíte aktualizáciu.
+Updater_PatchApplied: Oprava bola použitá!
+Updater_UpdatingAppData: Aktualizácia súborov v AppData!
+Updater_Complete: Všetky aktualizácie sú dokončené!
+Updater_Checking: Kontrolujú sa aktualizácie
+Updater_UpdateToVerify: Ak chcete overiť súbory, musíte ich najskôr aktualizovať.
+Updater_ClosingTcNo: Zatvorenie inštancií prepínača účtov TcNo (ak existujú).
+Updater_Downloading: "Sťahovanie aktualizácie: {version}"
+Updater_Downloaded: Sťahovanie dokončené.
+Updater_CantExtract: Aktualizáciu sa nepodarilo extrahovať.
+Updater_Verify: Overte súbory
+Updater_Verifying: Overuje sa...
+Updater_VerifySkip: Overením súborov preskočíte všetky malé aktualizácie a prejdete na najnovšie.
+Updater_NoConnection: "Nepodarilo sa pripojiť k tcno.co na overenie súborov. Môžete skúsiť manuálne stiahnuť inštalačný program zo stránky GitHub a preinštalovať ho na aktualizáciu.\n\nChyba:"
+Updater_NoServer: Nepodarilo sa získať aktualizačný server
+Updater_Hashlist: Sťahuje sa najnovší zoznam hash...
+Updater_CantCheck: Nie je možné skontrolovať aktualizácie
+Updater_Failed: "CHYBA: Niektoré súbory sa používajú a nie je možné ich aktualizovať.\n\n1. Uistite sa, že všetky procesy TcNo sú úplne zatvorené\n(alebo reštartujte počítač)\n\n2. Potom kliknite na Overiť nižšie, alebo ak ste reštartovali:\n- Otvorte tento nástroj na aktualizáciu a overte súbory\n    (umiestnené v priečinku 'updater' v inštalačný adresár)"
+Updater_Missing: "CHYBÍ SÚBOR: {file}"
+Updater_FileMismatch: "Súbor: {file} má MD5: {md5} OČAKÁVANÉ: {value}"
+Updater_DownloadingWeb: Sťahuje sa súbor z webovej stránky...
+Updater_UnpackingAppData: Kopírovanie súborov do %AppData%/TcNo Account Switcher... (ak nie je nastavené inak)
+Updater_VerifyComplete: Súbory overené!
+Updater_UpdateFound: "Nájdená aktualizácia: {name} [{updateSize}]"
+Updater_TotalFound: "Celkovo nájdených aktualizácií: {x}"
+Updater_TotalSize: "Celková veľkosť: {size}"
+Updater_AwaitingUser: Čaká sa na vstup používateľa...
+Updater_UpToDate: "Máte aktuálne informácie.\n:)"
+Updater_FailedDecode: Je to pravdepodobne spôsobené tým, že ja (TechNobo) tlačím aktualizáciu a robím preklep, ktorý porušil súbor aktualizácie .json. Dajte mi vedieť :)
+Updater_FailedDecodeTitle: Nepodarilo sa dekódovať zoznam aktualizácií
+Updater_Extracting: Extrahovanie opravných súborov
+Updater_Applying: Aplikuje sa náplasť...
+Updater_Moving: Presúvanie súborov...
+Updater_Title: TcNo Account Switcher Updater
+Updater_Started: Začaté
+Updater_Start: Spustite prepínač účtov TcNo
+Updater_Begin: Začať aktualizáciu
+Updater_Exit: VÝCHOD
+FatalError: Vyskytla sa fatálna chyba!
+Online: Online
+OnlineDefault: Online (predvolené)
+Offline: Offline
+Invisible: Neviditeľný
+Busy: Zaneprázdnený
+Away: Preč
+Snooze: Odložiť
+LookingToTrade: Pri pohľade na obchod
+LookingToPlay: Hľadáte hrať
+Unrecognized_EPersonaState: Nerozpoznaný ePersonaState
+Reg_DoesntExist: "{subKey} neexistuje."
+Reg_DoesntContain: "{subKey} neobsahuje {val}"
+Reg_Removing: Odstránenie {subKey}\\{val}
+PngInvalid_Format: Požadovaný pixelový formát je PixelFormat.{x}
+PngRequired: Požadovaný formát obrázka je prenosná sieťová grafika (png).
+PngDimensions: Rozmery musia byť menšie alebo rovné {MaxIconWidth}x{MaxIconHeight}
+ThemeSyntaxAnd: "Vyskytla sa chyba syntaxe (viac podrobností nižšie)! A:"
+ThemesNotFound: "V adresári TcNo Account Switcher sa nepodarilo nájsť priečinok „themes“. Toto (najmä priečinok 'Dracula_Cyan') je potrebné na spustenie tohto softvéru.\nMôžete spustiť nástroj Updater v priečinku „updater“, aby ste overili súbory a obnovili tieto chýbajúce súbory."
+Yes: "Áno"
+No: "Nie"
+Save: Uložiť
+NoDefault: Nie (predvolené)
+Ok: "OK"
+Submit: Predložiť
+Forget: Zabudni
+Notice: Všimnite si
+Notes: Poznámky
+Error: Chyba
+ErrorDetails: "CHYBA: {ex}"
+Failed: Nepodarilo sa
+Success: Úspech
+NotFound: Nenájdené
+Done: hotový
+Edit: Upraviť
+Refresh: Obnoviť
+Working: Pracuje sa...
+ForName: "Pre: {name}"
+DeletedFiles: Vymazané súbory
+FileFoldersToClear: "Zoznam súborov/priečinkov na vymazanie:"
+CouldNotFindX: Nepodarilo sa nájsť {x}
+CouldNotCloseX: Nepodarilo sa zatvoriť {x}!
+CouldNotReadFile: Nedalo sa prečítať {file}!
+DirectoryNotFound: Adresár sa nenašiel
+DirectoryNotFoundFolder: "Adresár sa nenašiel: {folder}"
+DeletingFile: "Vymazanie: {file}"
+DeletingFolder: "Odstránenie priečinka: "
+CouldntDeleteX: "CHYBA: NEDÁ SA VYMAZAŤ: {x}"
+CouldntDeleteUndefined: "CHYBA: NEDÁ SA VYMAZAŤ NEDEFINOVANÝ SÚBOR"
+Prompt_RestartAsAdmin: "<h3><bold>Tento program sa reštartuje ako správca</bold></h3><p>Keď sa zobrazí výzva na zadanie správcu, kliknite na „Áno“ v UAC.</p>"
+Prompt_ForgetSteam: >
+  <h3 style='color:red'>Chystáte sa zabudnúť na účet!</h3> <h4>Čo to znamená?</h4> <p>- Steam už nebude mať účet uvedený v režime Big Picture a nebude si pamätať heslo.<br/> - Prepínač účtov TcNo už nebude zobrazovať účet, kým sa znova neprihlásite cez Steam.</p> <p>Váš účet zostane nedotknutý. V tomto počítači je to jednoducho zabudnuté.</p><h4>Rozumieš?</h4>
+Prompt_ForgetAccount: >
+  <h3 style='color:red'>Chystáte sa zabudnúť na účet!</h3> <h4>Čo to znamená?</h4> <p>Prepínač účtov TcNo už nebude zobrazovať účet,<br/> kým sa znova neprihlási cez {platform}a nepridá sa do zoznamu.</p> <p>Váš účet zostane nedotknutý. V tomto počítači je to jednoducho zabudnuté.</p> <h4>Rozumieš?</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>Chystáte sa vymazať svoje štatistiky!</h3> <p>Túto akciu nemôžete vrátiť späť.</p>
+Platform_DiscordPasteHint: Prilepte do konzoly Discord a potom vložte výsledok do vstupu!
+Platform_ClearCache: Vymazať vyrovnávaciu pamäť
+Platform_ClearCacheTotal: Mazanie {totalFileCount} súborov ({totalSizeMB})
+Platform_DeleteFail: Nie je možné odstrániť niektoré súbory (Možno je spustený program?)
+Platform_CouldNotDeleteLog: Súbor sa nepodarilo odstrániť! Skontrolujte {logPath}
+Error_FileAccessDenied: Nepodarilo sa získať prístup k súboru! Skontrolujte {logPath}
+Error_RequiredFileVerify: Požadovaný súbor sa nenašiel. Uistite sa, že priečinky x64 a x86 existujú v inštalačnom adresári. Ak nie, spustite TcNo-Acc-Switcher-Updater.exe a skontrolujte súbory.
+Tooltip_Settings: nastavenie
+Tooltip_Info: Info
+Tooltip_ManagePlatforms: Zobraziť alebo skryť ďalšie platformy
+Tooltip_ExpandShortcuts: Rozbaľte výber hier a skratiek
+Tooltip_ShortcutFolder: Otvorte priečinok so skratkami. Umiestnite tam skratky a prepínač účtov TcNo, aby ste ich videli.
+Tooltip_Backup: Zálohujte konfiguračné súbory/priečinky podľa definície v nastaveniach platformy.
+Tooltip_BackupAll: Zálohujte VŠETKY konfiguračné súbory/priečinky vrátane obrázkov a iných veľkých súborov.
+Tooltip_ClosingMethod: "Kombinovaný je najlepší. Zatvorte pokusy o zatvorenie priamo prostredníctvom funkcie zatvorenia a TaskKill používa CMD (najlepšie, ak kombinácia nefunguje)"
+Tooltip_StartingMethod: "Predvolené je najlepšie. Direct nemá žiadnu kontrolu nad úrovňou správcu alebo UAC. Spustí sa na rovnakej úrovni (alebo vyššej – ale nie nižšej) ako tento prepínač účtov"
+Tooltip_CurrentAccount: Momentálne ste prihlásený/-á do tohto účtu.
+Tooltip_Restore: Kliknutím vyberte súbor 7z alebo ho presuňte na toto tlačidlo.
+Tooltip_DisabledGlobally: Táto položka je skrytá pre všetky účty. Môžete to zmeniť v nastaveniach platformy.
+Discord_Status: Momentálne sa prepínajú účty.
+Discord_StatusDetails: "Premenené účty: {number}"
+Website: webové stránky
+Preview_Platforms: Ukážka platforiem
+Preview_Accounts: Ukážka účtov
+Preview_Notifications: Ukážka upozornení Toast
+Preview_Settings: Ukážka nastavení
+Preview_Modals: Ukážka modálov

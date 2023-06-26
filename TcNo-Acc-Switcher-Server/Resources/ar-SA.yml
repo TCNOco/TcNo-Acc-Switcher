@@ -1,34 +1,34 @@
 ---
 Update: تحديث متوفر! انقر هنا لبدء التحديث.
 Header_ChooseLanguage: 'اختر لغة:'
-Steam_ShowSteamID: معرّف البخار
+Steam_ShowSteamID: معرّف Steam
 Steam_ShowVac: حالة VAC
-Steam_ShowLastLogin: آخر وقت لتسجيل الدخول
+Steam_ShowLastLogin: آخر تسجيل الدخول للحساب
 Steam_ShowLimited: حالة محدودة
-Steam_ShowAccUsername: اسم مستخدم الحساب
+Steam_ShowAccUsername: اسم المستخدم
 Steam_Tray_AccountName: عرض اسم الحساب [الاسم المستخدم اثناء تسجيل الدخول]
 Steam_CheckVac: تحقق من حالة VAC لحساب ستيم
 Steam_OverrideDefaultState: "حالة الحساب الافتراضية:"
-Steam_StartSilent: "افتح Steam (البخار) لدرج المهام على المفتاح (ابدأ تشغيل البخار باستخدام '- silent ')"
+Steam_StartSilent: "افتح Steam في مدير المهام على المفتاح (ابدأ تشغيل Steam عن طريق '- silent ')"
 Button_AddNew: اضف حساب
-Button_SaveCurrent: حفظ الحالي
-Button_SaveFile: حِفْظُ المِلَفِّ
-Button_Cancel: إِلْغاءٌ
-Button_Login: تَسْجيلُ الدُّخولِ
+Button_SaveCurrent: حفظ ملف الحساب الحالي
+Button_SaveFile: حفظ الملف
+Button_Cancel: إلغاء
+Button_Login: تسجيل الدخول
 Button_Close: غلق
 Button_RefreshImages: تحديث الأفاتار
 Button_ResetSettings: إعادة تعيين الإعدادات الافتراضية
-Button_AdvancedCleaning: تنظيف متقدم...
-Button_ClearLog: مسح السجل
+Button_AdvancedCleaning: تنظيف متقدم ...
+Button_ClearLog: ازاله السجل
 Button_WikiInfo: مزيد من المعلومات
 Button_ManagePlatforms: إدارة المنصات
 Button_Backup: النسخ الاحتياطي
 Button_BackupAll: النسخ الاحتياطي لكل شيء
 Button_Restore: استعادة
 Button_OpenBackup: فتح مجلد النسخ الاحتياطي
-Button_Back: رجوع
+Button_Back: عوده
 Button_RestartAdmin: إعادة التشغيل كمسؤول
-Button_SetPassword: تعيين كلمة مرور التطبيق
+Button_SetPassword: وضع كلمة مرور للتطبيق
 Settings_Shortcut: 'إنشاء اختصار لـ{platform} على سطح المكتب'
 Settings_Admin: تشغيل {platform} كمسؤول
 Settings_ImageExpiry: 'عدد الايام قبل تحديث صور البروفايل:'
@@ -36,7 +36,7 @@ Settings_SteamAPIKey: "مفتاح Steam Web API ‏ (اختياري)"
 Settings_SteamAPIKey_Note: سيؤدي تعيين مفتاح واجهة برمجة التطبيقات إلى إظهار المؤشر المحدود (الحد الأصفر) للحسابات المحظورة في المجتمع بدلاً من ذلك.
 Settings_Header_AppWide: إعدادات التطبيق
 Settings_Header_GeneralSettings: إعدادات عامة
-Settings_Header_AccountDisplay: إعدادات عرض الحساب
+Settings_Header_AccountDisplay: إعدادات العرض للحساب
 Settings_Header_ExtraPlatforms: إعدادات المنصة
 Settings_Header_GeneralTools: أدوات عامة
 Settings_Header_OtherTools: أخرى
@@ -49,7 +49,7 @@ Settings_Header_Theme: ثيم
 Settings_Header_Program: برنامـج
 Settings_Header_StatsSharing: الإحصائيات والمشاركة
 Settings_Header_Platform: "{platformName} إعدادات"
-Settings_Header_GameStats: إعدادات إحصائيات اللعبة العالمية
+Settings_Header_GameStats: إعدادات الإحصائيات العالمية للعبة
 Settings_GameStats: لن يظهر أي شيء محدد هنا تحت اسم المستخدم الخاص بك لأي حساب. استخدم هذا إذا كنت غالبًا ما تخفي عناصر محددة من إحصائيات اللعبة الخاصة بك.
 Settings_TrayMax: 'عدد الحسابات الظاهرة في قائمة:'
 Settings_ExtraPlatformsDisabled: تم تعطيل المنصات. انقر لتمكينها.

@@ -3,7 +3,7 @@ Update: Aggiornamento disponibile! Clicca qui per avviarlo.
 Header_ChooseLanguage: 'Scegli Lingua:'
 Steam_ShowSteamID: SteamID
 Steam_ShowVac: Stato del VAC
-Steam_ShowLastLogin: Ora dell'ultimo accesso
+Steam_ShowLastLogin: Orario Ultimo accesso
 Steam_ShowLimited: Stato Limitato
 Steam_ShowAccUsername: Nome utente dell'account
 Steam_Tray_AccountName: Mostra il nome del profilo [non il nome amico]
@@ -44,25 +44,25 @@ Settings_Header_TraySettings: Impostazioni area di notifica
 Settings_Header_OpenGameFolders: Apri cartelle del gioco
 Settings_Header_BackupRestore: Backup e ripristino delle impostazioni della piattaforma
 Settings_Header_Language: Lingua
-Settings_Header_System: Impianto
+Settings_Header_System: Sistema
 Settings_Header_Theme: Tema
 Settings_Header_Program: Programma
-Settings_Header_StatsSharing: Statistiche e condivisione
+Settings_Header_StatsSharing: Statistiche e Condivisione
 Settings_Header_Platform: "{platformName} impostazioni"
 Settings_Header_GameStats: Impostazioni statistiche di gioco globali
 Settings_GameStats: Qualsiasi cosa marcata qui NON verrà mostrata sotto il tuo nome utente per nessun account. Utilizzalo se nascondi spesso oggetti specifici dalle tue statistiche di gioco.
 Settings_TrayMax: 'Numero massimo di profili da ricordare:'
-Settings_ExtraPlatformsDisabled: Piattaforme disabilitate. Fare clic per abilitarle.
-Settings_ExtraPlatformsEnabled: Piattaforme visibili. Fai clic per disabilitarle.
-Settings_RTL: Mostra il testo come da destra a sinistra
+Settings_ExtraPlatformsDisabled: Piattaforme nascoste. Clicca per abilitarle.
+Settings_ExtraPlatformsEnabled: Piattaforme visibili. Clicca per disabilitarle.
+Settings_RTL: Allineamento testo a Destra
 Settings_CollectStats: Raccogli statistiche
-Settings_ShareStats: Condividi le statistiche in modo fastidioso (consigliato)
+Settings_ShareStats: Condividi le statistiche in modo anonimo (consigliato)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
-Settings_DiscordRpcShare: Condividi il totale degli switch
+Settings_DiscordRpcShare: Condividi numero totale di cambi di account
 Settings_ViewStats: Visualizza statistiche
 Preview: Anteprima
 Settings_ClearStats: Reset
-Settings_CurrentLocation: 'Posizione di installazione corrente: {path}'
+Settings_CurrentLocation: 'Posizione di installazione: {path}'
 Settings_CurrentDataLocation: 'Posizione attuale dei dati dell''utente: {path}'
 Settings_SetDataLocation: "[Imposta posizione dati utente personalizzata]"
 Settings_PickFolder: Seleziona la cartella di {platform}
@@ -85,31 +85,31 @@ Settings_WindowsAccent: Usa il Colore Secondario di Windows
 Settings_HelpTranslate: "[Aiuta a tradurre]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "(Avanzato) Imposta motore di rendering:"
-Settings_Header_ClosingMethod: "(Avanzato) Imposta il metodo su Close {platform}"
+Settings_Header_ClosingMethod: "(Avanzato) Seleziona il metodo per chiudere {platform}"
 Settings_Header_StartingMethod: "(Avanzato) Imposta il metodo su Start {platform}"
-Settings_AutoStart: "Avvia automaticamente {platform} all'interruttore dell'account"
-Settings_NoPlatforms: Al momento non ci sono piattaforme abilitate. Spunta le piattaforme opzionali di seguito per abilitarle o deseleziona le piattaforme disabilitate.
-Settings_MinimizeOnSwitch: Riduci a icona il commutatore sull'interruttore dell'account
+Settings_AutoStart: "Avvia automaticamente {platform} al cambio di account"
+Settings_NoPlatforms: Al momento non ci sono piattaforme visibili. Spunta le piattaforme opzionali di seguito per renderle visibili o deseleziona le piattaforme nascoste.
+Settings_MinimizeOnSwitch: Riduci a icona il lo switcher quando cambi account
 Settings_ShowShortNotes: Anteprima delle note sotto il nome utente
 Settings_Header_AppPassword: "Interrompere l'utilizzo dello switcher da parte di altri:"
 PreviewCss: Anteprima CSS
-Settings_PreviewCss: Questa è la pagina di anteprima del CSS. È possibile visualizzare alcuni elementi che compaiono nel programma e vedere che aspetto hanno con il tema. Questa pagina è utile per coloro che creano temi!
+Settings_PreviewCss: Questa è la pagina di anteprima CSS. È possibile visualizzare alcuni elementi che compaiono nel programma per vedere che aspetto hanno con il tema. Questa pagina è utile per coloro che creano temi!
 Settings_PreviewCssHeader: Pagina Anteprima CSS
 Stats_Disabled: "La raccolta delle statistiche è disabilitata."
 Stats_InDepth: Disaggregazione statistica approfondita
 Stats_ShareEnabled: "Queste statistiche sono condivise in modo anonimo e si aggiungeranno al totale <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">qui</a>."
 Stats_ShareDisabled: "Queste statistiche NON sono condivise in modo anonimo e NON si aggiungeranno al totale <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">qui</a>."
 Stats_OperatingSystem: "Sistema operativo: "
-Stats_FirstLaunch: "Primo lancio: "
+Stats_FirstLaunch: "Primo avvio: "
 Stats_LaunchCount: "Conteggio lanci: "
 Stats_CrashCount: "Conteggio crash: "
 Stats_MostUsedPlatform: "Piattaforma più utilizzata: "
 Stats_TotalTime: "Tempo totale trascorso nell'app: "
-Stats_TotalSwitches: "Totale switch account: "
+Stats_TotalSwitches: "Totale cambi di account: "
 Stats_TotalGamesLaunched: "Totale app/giochi lanciati tramite switcher: "
 Stats_UniqueDaysLong: "Giorni unici con account scambiati: "
 Stats_LastUpload: "Ultimo caricamento: "
-Stats_SwitcherStats: "Statistiche del commutatore: "
+Stats_SwitcherStats: "Statistiche dello Switcher: "
 Stats_PageStats: "Statistiche della pagina: "
 Stats_VisitsTotalTime: "{visits} visite totali, {hours} tempo totale"
 Stats_Accounts: "Account: "
