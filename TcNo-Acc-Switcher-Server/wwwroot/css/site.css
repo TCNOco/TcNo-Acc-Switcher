@@ -617,7 +617,7 @@ div.advancedClearingButtonCol .buttoncol {
 
 /* Modal icons */
 .modalIcoGitHub, .modalIcoNetworking, .modalIcoDoc, .modalIcoDiscord, .modalIcoPatreon, .modalIcoKofi {
-    fill: white;
+  fill: white;
 }
 
 /* BattleNet icons */
