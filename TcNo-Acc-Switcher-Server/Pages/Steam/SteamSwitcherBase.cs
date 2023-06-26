@@ -89,7 +89,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         [JSInvokable]
         public static void CopySettingsFrom(string sourceSteamId, string gameId)
         {
-            var destSteamId = SteamSwitcherFuncs.GetCurrentAccountId(true);
+            var destSteamId = SteamSwitcherFuncs.GetCurrentAccountId();
             if (!SteamSwitcherFuncs.VerifySteamId(sourceSteamId) || !SteamSwitcherFuncs.VerifySteamId(destSteamId))
             {
                 GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoValidSteamId"], Lang["Failed"],

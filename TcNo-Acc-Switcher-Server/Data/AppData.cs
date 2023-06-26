@@ -208,8 +208,9 @@ namespace TcNo_Acc_Switcher_Server.Data
             disabled.Sort(StringComparer.InvariantCultureIgnoreCase);
             return disabled;
         }
-
-        public bool AnyPlatformsShowing() => Instance.PlatformList.Count > AppSettings.DisabledPlatforms.Count;
+        
+        // Check if any items in the PlatformList are not hidden
+        public bool AnyPlatformsShowing() => !Instance.PlatformList.All(item => AppSettings.DisabledPlatforms.Contains(item));
         #endregion
 
         public event Action OnChange;

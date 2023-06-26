@@ -359,8 +359,9 @@ namespace TcNo_Acc_Switcher_Server.Data
                 else _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_LoadStylesheetFailed"],
                     "Stylesheet error", "toastarea");
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Globals.WriteToLog("Failed to load stylesheet.", e);
                 _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_LoadStylesheetFailed"],
                     "Stylesheet error", "toastarea");
             }

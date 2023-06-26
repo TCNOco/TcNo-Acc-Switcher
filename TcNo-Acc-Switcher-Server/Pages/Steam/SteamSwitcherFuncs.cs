@@ -154,7 +154,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// This relies on Steam updating loginusers.vdf. It could go out of sync assuming it's not updated reliably. There is likely a better way to do this.
         /// I am avoiding using the Steam API because it's another DLL to include, but is the next best thing - I assume.
         /// </summary>
-        public static string GetCurrentAccountId(bool getNumericId = false)
+        public static string GetCurrentAccountId()
         {
             Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.GetCurrentAccountId]");
             try
@@ -178,8 +178,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                     return SteamSettings.LastAccName;
                 }
 
-                if (getNumericId) return mostRecent.SteamId ?? "";
-                return mostRecent.AccName ?? "";
+                return mostRecent.SteamId ?? "";
             }
             catch (Exception)
             {
@@ -847,7 +846,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
             try
             {
-                SteamSettings.LastAccName = AppData.SteamUsers.Where(x => x.SteamId == steamId).ToList()[0].AccName;
+                SteamSettings.LastAccName = steamId;
                 SteamSettings.LastAccTimestamp = Globals.GetUnixTimeInt();
                 if (SteamSettings.LastAccName != "") _ = AppData.InvokeVoidAsync("highlightCurrentAccount", SteamSettings.LastAccName);
             }
