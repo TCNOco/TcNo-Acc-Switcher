@@ -245,6 +245,8 @@ Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>User
 Modal_Info_Creator: Created by TechNobo [Wesley Pyburn]
 Modal_Info_Version: Version
 Modal_Info_ViewGitHub: View on GitHub
+Modal_Info_ViewPatreon: Support via Patreon
+Modal_Info_ViewKofi: Support via Ko-Fi
 Modal_Info_BugReport: Bug report/Feature request
 Modal_Info_VisitSite: Visit tcno.co
 Modal_Info_Disclaimer: Disclaimer

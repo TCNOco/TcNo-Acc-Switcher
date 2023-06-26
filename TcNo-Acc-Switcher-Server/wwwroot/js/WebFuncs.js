@@ -511,6 +511,8 @@ async function showModal(modaltype) {
             modalInfoDisclaimer = await GetLang("Modal_Info_Disclaimer"),
             modalInfoVisitSite = await GetLang("Modal_Info_VisitSite"),
             modalInfoBugReport = await GetLang("Modal_Info_BugReport"),
+            modalInfoViewPatreon = await GetLang("Modal_Info_ViewPatreon"),
+            modalInfoViewKofi = await GetLang("Modal_Info_ViewKofi"),
             modalInfoViewGitHub = await GetLang("Modal_Info_ViewGitHub"),
             modalTitleInfo = await GetLang("Modal_Title_Info");
 
@@ -524,6 +526,8 @@ async function showModal(modaltype) {
                     <h2>TcNo Account Switcher</h2>
                     <p>${modalInfoCreator}</p>
                     <div class="linksList">
+                        <a onclick="OpenLinkInBrowser('https://patreon.com/TroubleChute');return false;" href=""><svg viewBox="0 0 24 24" draggable="false" alt="GitHub" class="modalIcoPatreon"><use href="img/icons/ico_patreon.svg#icoPatreon"></use></svg>${modalInfoViewPatreon}</a>
+                        <a onclick="OpenLinkInBrowser('https://ko-fi.com/tcnoco');return false;" href=""><svg viewBox="0 0 24 24" draggable="false" alt="GitHub" class="modalIcoKofi"><use href="img/icons/ico_kofi.svg#icoKofi"></use></svg>${modalInfoViewKofi}</a>
                         <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher');return false;" href=""><svg viewBox="0 0 24 24" draggable="false" alt="GitHub" class="modalIcoGitHub"><use href="img/icons/ico_github.svg#icoGitHub"></use></svg>${modalInfoViewGitHub}</a>
                         <a onclick="OpenLinkInBrowser('https://s.tcno.co/AccSwitcherDiscord');return false;" href=""><svg viewBox="0 0 24 24" draggable="false" alt="Discord" class="modalIcoDiscord"><use href="img/icons/ico_discord.svg#icoDiscord"></use></svg>${modalInfoBugReport}</a>
                         <a onclick="OpenLinkInBrowser('https://tcno.co');return false;" href=""><svg viewBox="0 0 24 24" draggable="false" alt="Website" class="modalIcoNetworking"><use href="img/icons/ico_networking.svg#icoNetworking"></use></svg>${modalInfoVisitSite}</a>
