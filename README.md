@@ -15,7 +15,6 @@
 																     <a title="Crowdin" target="_blank" href="https://crowdin.com/project/tcno-account-switcher"><img src="https://img.shields.io/badge/Seeking-localisers-blue.svg?style=flat-square"></a>
 </p>
 <p align="center">
-  Consider supporting development:
   <a href="https://patreon.com/TroubleChute">
     <img alt="Patreon" src="https://img.shields.io/badge/Patreon-F96854?style=for-the-badge&logo=patreon&logoColor=white"></a>
   <a href="https://ko-fi.com/art?=redirect">
