@@ -192,6 +192,7 @@ Toast_NoValidSteamId: Unable to find a valid Steam ID.
 Toast_FailedUpdateCheck: Failed to check for updates
 Toast_UpdateVerifyFail: Can't verify updater files. Download latest version and replace files in your directory.
 Toast_StartedGame: Started {program}
+Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
 Toast_Steam_VacCleared: VAC status for accounts was cleared
 Toast_Steam_CantDeleteVacCache: Could not delete 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: Could not find Steam\\userdata folder

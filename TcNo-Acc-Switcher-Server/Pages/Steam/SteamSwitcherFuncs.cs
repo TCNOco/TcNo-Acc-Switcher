@@ -561,11 +561,27 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             {
                 Globals.WriteToLog("Failed to load Steam account XML. ", e);
                 // Issue was caused by web. Throw.
-                if (!File.Exists(cachedFile)) throw;
+                if (!File.Exists(cachedFile))
+                {
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_SteamCantLoadXml", new { steamId = su.SteamId }],
+                        renderTo: "toastarea");
+                    return;
+                }
+
                 Globals.DeleteFile(cachedFile);
                 Globals.WriteToLog("The issue was the local XML file. It has been deleted and re-downloaded.");
+
                 // Issue was caused by cached fil. Delete, and re-download.
-                profileXml.Load($"https://steamcommunity.com/profiles/{su.SteamId}?xml=1");
+                try
+                {
+                    profileXml.Load($"https://steamcommunity.com/profiles/{su.SteamId}?xml=1");
+                }
+                catch (Exception ex)
+                {
+                    Globals.WriteToLog("Failed to download profile XML info", ex);
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_SteamCantLoadXml", new { steamId = su.SteamId }],
+                        renderTo: "toastarea");
+                }
             }
 
             if (!File.Exists(cachedFile)) profileXml.Save(cachedFile);
