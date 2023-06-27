@@ -10,6 +10,7 @@ Steam_Tray_AccountName: عرض اسم الحساب [الاسم المستخدم 
 Steam_CheckVac: تحقق من حالة VAC لحساب ستيم
 Steam_OverrideDefaultState: "حالة الحساب الافتراضية:"
 Steam_StartSilent: "افتح Steam في مدير المهام على المفتاح (ابدأ تشغيل Steam عن طريق '- silent ')"
+Steam_OldUi: "Use Old UI in Steam (-vgui)"
 Button_AddNew: اضف حساب
 Button_SaveCurrent: حفظ ملف الحساب الحالي
 Button_SaveFile: حفظ الملف
@@ -191,6 +192,7 @@ Toast_NoValidSteamId: تعذر العثور على معرف بخار صالح.
 Toast_FailedUpdateCheck: فشل التحقق من وجود تحديثات
 Toast_UpdateVerifyFail: لا يمكن التحقق من الملفات. قم بتنزيل أحدث إصدار واستبدال الملفات في الدليل الخاص بك.
 Toast_StartedGame: بدأ {program}
+Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
 Toast_Steam_VacCleared: تم مسح حالة VAC للحسابات
 Toast_Steam_CantDeleteVacCache: تعذر حذف 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: تعذر العثور على مجلد Steam \\ userdata
@@ -244,6 +246,8 @@ Modal_Crowdin_Info: "هنا كل من ساعد في ترجمة هذا البرن
 Modal_Info_Creator: تم إنشاؤه بواسطة TechNobo [Wesley Pyburn]
 Modal_Info_Version: الإصدار
 Modal_Info_ViewGitHub: عرض على GitHub
+Modal_Info_ViewPatreon: Support via Patreon
+Modal_Info_ViewKofi: Support via Ko-Fi
 Modal_Info_BugReport: تقرير الأخطاء/طلب الميزة
 Modal_Info_VisitSite: قم بزيارة tcno.co
 Modal_Info_Disclaimer: إخلاء المسؤولية
