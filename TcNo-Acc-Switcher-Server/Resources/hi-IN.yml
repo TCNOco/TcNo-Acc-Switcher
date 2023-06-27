@@ -10,6 +10,7 @@ Steam_Tray_AccountName: खाता नाम दिखाएँ [not friend na
 Steam_CheckVac: अकाउंट VAC स्टेटस चेक करें
 Steam_OverrideDefaultState: "डिफ़ॉल्ट लॉगिन स्थिति ओवरराइड करें:"
 Steam_StartSilent: "स्विच पर कार्य ट्रे पर स्टीम खोलें ('- silent 'के साथ स्टीम प्रारंभ करें)"
+Steam_OldUi: "Use Old UI in Steam (-vgui)"
 Button_AddNew: 'नया जोड़ें @ action: inmenu'
 Button_SaveCurrent: वर्तमान सहेजें
 Button_SaveFile: फ़ाइल सहेजें
@@ -191,6 +192,7 @@ Toast_NoValidSteamId: एक मान्य स्टीम आईडी खो
 Toast_FailedUpdateCheck: अपडेट की जांच करने में विफल
 Toast_UpdateVerifyFail: अद्यतनकर्ता फ़ाइलों को सत्यापित नहीं कर सकता है. नवीनतम संस्करण डाउनलोड करें और अपनी निर्देशिका में फ़ाइलों को बदलें।
 Toast_StartedGame: प्रारंभ {program}
+Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
 Toast_Steam_VacCleared: खातों के लिए VAC स्थिति साफ कर दी गई
 Toast_Steam_CantDeleteVacCache: '''LoginCache/Steam/VACCache/SteamVACCache.json'' को हटा नहीं सका'
 Toast_NoFindSteamUserdata: स्टीम\\ userdata फ़ोल्डर नहीं मिला
@@ -244,6 +246,8 @@ Modal_Crowdin_Info: "यहाँ हर कोई है जो मदद क�
 Modal_Info_Creator: TechNobo [वेस्ले पाइबर्न] द्वारा बनाया गया
 Modal_Info_Version: संस्करण (v)
 Modal_Info_ViewGitHub: GitHub पर देखें
+Modal_Info_ViewPatreon: Support via Patreon
+Modal_Info_ViewKofi: Support via Ko-Fi
 Modal_Info_BugReport: बग रिपोर्ट/फ़ीचर अनुरोध
 Modal_Info_VisitSite: Tcno.co पर जाएं
 Modal_Info_Disclaimer: अस्वीकरण (डिस्क्लेमर)
