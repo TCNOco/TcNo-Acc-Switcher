@@ -10,6 +10,7 @@ Steam_Tray_AccountName: 계정 이름 표시 [친구 이름 X]
 Steam_CheckVac: 계정 VAC 상태 확인
 Steam_OverrideDefaultState: "기본 로그인 상태 덮어쓰기:"
 Steam_StartSilent: "스위치에서 작업 트레이에 Steam 열기 ('-silent' 로 Steam 시작)"
+Steam_OldUi: "Use Old UI in Steam (-vgui)"
 Button_AddNew: 새 계정 추가
 Button_SaveCurrent: 현재 상태 저장
 Button_SaveFile: 파일 저장
@@ -191,6 +192,7 @@ Toast_NoValidSteamId: 유효한 Steam ID를 찾을 수 없습니다.
 Toast_FailedUpdateCheck: 업데이트 확인 실패
 Toast_UpdateVerifyFail: 최신 업데이트 된 파일을 확인할 수 없습니다. 최신 버전을 다운로드하고 디렉토리의 파일을 교체하십시오.
 Toast_StartedGame: '{program} 시작됨'
+Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
 Toast_Steam_VacCleared: 계정의 VAC 상태 항목이 지워졌습니다.
 Toast_Steam_CantDeleteVacCache: '''LoginCache/Steam/VACCache/SteamVACCache.json'' 을 삭제할 수 없습니다.'
 Toast_NoFindSteamUserdata: Steam\\ userdata 폴더를 찾을 수 없습니다
@@ -244,6 +246,8 @@ Modal_Crowdin_Info: "이 소프트웨어를 번역하는 데 도움을 준 모�
 Modal_Info_Creator: 테크노보 지음 [웨슬리 파이번]
 Modal_Info_Version: 버전
 Modal_Info_ViewGitHub: GitHub에서 보기
+Modal_Info_ViewPatreon: Support via Patreon
+Modal_Info_ViewKofi: Support via Ko-Fi
 Modal_Info_BugReport: 버그 보고서/기능 요청
 Modal_Info_VisitSite: tcno.co 방문하기
 Modal_Info_Disclaimer: 면책 조항
