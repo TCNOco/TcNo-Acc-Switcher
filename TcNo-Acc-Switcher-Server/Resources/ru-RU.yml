@@ -10,6 +10,7 @@ Steam_Tray_AccountName: Показывать имя аккаунта [не им�
 Steam_CheckVac: Проверить VAC статус
 Steam_OverrideDefaultState: "Установить статус по умолчанию при входе:"
 Steam_StartSilent: "Откройте Steam для включения лотка задач (запустите Steam с помощью '-silent')"
+Steam_OldUi: "Use Old UI in Steam (-vgui)"
 Button_AddNew: Добавить аккаунт
 Button_SaveCurrent: Сохранить текущий
 Button_SaveFile: Сохранить файл
@@ -191,6 +192,7 @@ Toast_NoValidSteamId: Не удалось найти действительны�
 Toast_FailedUpdateCheck: Не удалось проверить наличие обновлений
 Toast_UpdateVerifyFail: Не удалось проверить файлы обновления. Загрузите последнюю версию и замените файлы в вашем каталоге.
 Toast_StartedGame: Запущено {program}
+Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
 Toast_Steam_VacCleared: Статус VAC для аккаунтов очищен
 Toast_Steam_CantDeleteVacCache: Не удалось удалить 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: Не удалось найти папку Steam\\userdata
@@ -244,6 +246,8 @@ Modal_Crowdin_Info: "Вот все, кто помог перевести эту 
 Modal_Info_Creator: Создано TechNobo [Wesley Pyburn]
 Modal_Info_Version: Версия
 Modal_Info_ViewGitHub: Просмотреть на GitHub
+Modal_Info_ViewPatreon: Support via Patreon
+Modal_Info_ViewKofi: Support via Ko-Fi
 Modal_Info_BugReport: Сообщить о проблеме/предложить улучшение
 Modal_Info_VisitSite: Посетить tcno.co
 Modal_Info_Disclaimer: Отказ от ответственности
