@@ -10,6 +10,7 @@ Steam_Tray_AccountName: Show account name [nah yer matey name]
 Steam_CheckVac: Check yer VAC status
 Steam_OverrideDefaultState: "Override default boardin' state:"
 Steam_StartSilent: "Open Steam t' task tray on switch (Start Steam wit' '-silent')"
+Steam_OldUi: "Use Old UI in Steam (-vgui)"
 Button_AddNew: Add New Cap'n
 Button_SaveCurrent: Save Cap'n
 Button_SaveFile: Save File
@@ -191,6 +192,7 @@ Toast_NoValidSteamId: Unable t' find a valid Steam ID.
 Toast_FailedUpdateCheck: Failed t' check fer updates
 Toast_UpdateVerifyFail: Can nah verify updater files. Download latest version 'n replace files in yer directory.
 Toast_StartedGame: Started {program}
+Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
 Toast_Steam_VacCleared: VAC status fer accounts was cleared
 Toast_Steam_CantDeleteVacCache: Could nah scuttle 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: Could nah find Steam\\userdata folder
@@ -244,6 +246,8 @@ Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>User
 Modal_Info_Creator: Created by TechNobo [Wesley Pyburn]
 Modal_Info_Version: Version
 Modal_Info_ViewGitHub: View on GitHub
+Modal_Info_ViewPatreon: Support via Patreon
+Modal_Info_ViewKofi: Support via Ko-Fi
 Modal_Info_BugReport: Bug report/Feature request
 Modal_Info_VisitSite: Visit tcno.co
 Modal_Info_Disclaimer: Disclaimer
