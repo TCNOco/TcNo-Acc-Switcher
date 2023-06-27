@@ -10,6 +10,7 @@ Steam_Tray_AccountName: Vis kontonavn [ikke vennens navn]
 Steam_CheckVac: Sjekk kontoens VAC-status
 Steam_OverrideDefaultState: "Overstyr standard påloggingstilstand:"
 Steam_StartSilent: "Åpne Steam til oppgaveskuffen på bryteren (start Steam med '-silent')"
+Steam_OldUi: "Use Old UI in Steam (-vgui)"
 Button_AddNew: Legg til ny
 Button_SaveCurrent: Lagre gjeldende
 Button_SaveFile: Lagre filen
@@ -191,6 +192,7 @@ Toast_NoValidSteamId: Kan ikke finne en gyldig Steam-ID.
 Toast_FailedUpdateCheck: Kunne ikke se etter oppdateringer
 Toast_UpdateVerifyFail: Kan ikke bekrefte oppdateringsfiler. Last ned siste versjon og erstatt filer i katalogen din.
 Toast_StartedGame: Startet {program}
+Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
 Toast_Steam_VacCleared: VAC-status for kontoer ble slettet
 Toast_Steam_CantDeleteVacCache: Kunne ikke slette "LoginCache/Steam/VACCache/SteamVACCache.json"
 Toast_NoFindSteamUserdata: Fant ikke Steam\\userdata-mappen
@@ -244,6 +246,8 @@ Modal_Crowdin_Info: "Her er alle som hjalp til med å oversette denne programvar
 Modal_Info_Creator: Laget av TechNobo [Wesley Pyburn]
 Modal_Info_Version: Versjon
 Modal_Info_ViewGitHub: Se på GitHub
+Modal_Info_ViewPatreon: Support via Patreon
+Modal_Info_ViewKofi: Support via Ko-Fi
 Modal_Info_BugReport: Feilrapport/funksjonsforespørsel
 Modal_Info_VisitSite: Besøk tcno.co
 Modal_Info_Disclaimer: Ansvarsfraskrivelse

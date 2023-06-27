@@ -10,6 +10,7 @@ Steam_Tray_AccountName: Εμφάνιση ονόματος λογαριασμού
 Steam_CheckVac: Έλεγχος κατάστασης VAC λογαριασμού
 Steam_OverrideDefaultState: "Παράκαμψη προεπιλεγμένης κατάστασης σύνδεσης:"
 Steam_StartSilent: "Άνοιγμα του πλαισίου εργασίας Steam στον διακόπτη (Εκκίνηση του Steam με '-silent')"
+Steam_OldUi: "Use Old UI in Steam (-vgui)"
 Button_AddNew: Προσθήκη Νέου
 Button_SaveCurrent: Αποθήκευση τρέχοντος
 Button_SaveFile: Αποθήκευση αρχείου
@@ -191,6 +192,7 @@ Toast_NoValidSteamId: Δεν είναι δυνατή η εύρεση έγκυρ�
 Toast_FailedUpdateCheck: Αποτυχία ελέγχου για ενημερώσεις
 Toast_UpdateVerifyFail: Δεν είναι δυνατή η επαλήθευση των αρχείων ενημέρωσης. Κατεβάστε την τελευταία έκδοση και αντικαταστήστε τα αρχεία στον κατάλογό σας.
 Toast_StartedGame: Ξεκίνησε {program}
+Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
 Toast_Steam_VacCleared: Η κατάσταση VAC για λογαριασμούς διαγράφηκε
 Toast_Steam_CantDeleteVacCache: Αδυναμία διαγραφής 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: Αδυναμία εύρεσης φακέλου Steam\\ userdata
@@ -244,6 +246,8 @@ Modal_Crowdin_Info: "Εδώ είναι όλοι όσοι βοήθησαν στη
 Modal_Info_Creator: Δημιουργήθηκε από την TechNobo [Wesley Pyburn]
 Modal_Info_Version: Έκδοση
 Modal_Info_ViewGitHub: Προβολή στο GitHub
+Modal_Info_ViewPatreon: Support via Patreon
+Modal_Info_ViewKofi: Support via Ko-Fi
 Modal_Info_BugReport: Αναφορά σφάλματος/Αίτημα λειτουργίας
 Modal_Info_VisitSite: Επισκεφθείτε το tcno.co
 Modal_Info_Disclaimer: ΑΠΟΠΟΙΗΣΗ ΕΥΘΥΝΗΣ

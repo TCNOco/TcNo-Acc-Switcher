@@ -10,6 +10,7 @@ Steam_Tray_AccountName: Accountnaam tonen [not friend name]
 Steam_CheckVac: Controleer de VAC-status van de rekening
 Steam_OverrideDefaultState: "Standaard aanmeldstatus overschrijven:"
 Steam_StartSilent: "Open Stoom naar taakvak op schakelaar (Start Stoom met '-silent')"
+Steam_OldUi: "Use Old UI in Steam (-vgui)"
 Button_AddNew: Nieuwe toevoegen
 Button_SaveCurrent: Huidige opslaan
 Button_SaveFile: Bestand opslaan
@@ -191,6 +192,7 @@ Toast_NoValidSteamId: Kan geen geldige Steam-ID vinden.
 Toast_FailedUpdateCheck: Controleren op updates mislukt
 Toast_UpdateVerifyFail: Kan updatebestand niet verifiëren. Download de nieuwste versie en vervang bestanden in uw map.
 Toast_StartedGame: Gestart {program}
+Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
 Toast_Steam_VacCleared: VAC-status voor accounts is gewist
 Toast_Steam_CantDeleteVacCache: Kon 'LoginCache/Steam/VACCache/SteamVACCache.json' niet verwijderen
 Toast_NoFindSteamUserdata: Kon de map Steam\\userdata niet vinden
@@ -244,6 +246,8 @@ Modal_Crowdin_Info: "Hier is iedereen die heeft geholpen met het vertalen van de
 Modal_Info_Creator: Gemaakt door TechNobo [Wesley Pyburn]
 Modal_Info_Version: Versie
 Modal_Info_ViewGitHub: Bekijk op GitHub
+Modal_Info_ViewPatreon: Support via Patreon
+Modal_Info_ViewKofi: Support via Ko-Fi
 Modal_Info_BugReport: Bugrapport/Feature request
 Modal_Info_VisitSite: Bezoek tcno.co
 Modal_Info_Disclaimer: Disclaimer

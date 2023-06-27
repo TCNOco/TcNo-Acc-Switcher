@@ -10,6 +10,7 @@ Steam_Tray_AccountName: Hiển thị tên tài khoản [not friend name]
 Steam_CheckVac: Kiểm tra trạng thái tài khoản VAC
 Steam_OverrideDefaultState: "Ghi đè trạng thái đăng nhập mặc định:"
 Steam_StartSilent: "Mở Steam đến khay tác vụ trên công tắc (Bắt đầu Steam với '-silent')"
+Steam_OldUi: "Use Old UI in Steam (-vgui)"
 Button_AddNew: Thêm mới
 Button_SaveCurrent: Lưu tài khoản hiện tại
 Button_SaveFile: Lưu tập tin
@@ -191,6 +192,7 @@ Toast_NoValidSteamId: Không thể tìm thấy ID Hơi nước hợp lệ.
 Toast_FailedUpdateCheck: Không thê ̉ kiê ̉ m tra câ ̣ p nhâ ̣ t
 Toast_UpdateVerifyFail: Không thê ̉ xa ́ c minh tê ̣ p cu ̉ a ngươ ̀ i kiê ̉ m duyê ̣ t. Ta ̉ i xuô ́ ng phiên ba ̉ n mơ ́ i nhâ ́ t va ̀ thay thê ́ ca ́ c tê ̣ p trong thư mu ̣ c cu ̉ a ba ̣ n.
 Toast_StartedGame: Bắt đầu {program}
+Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
 Toast_Steam_VacCleared: Trạng thái VAC cho các tài khoản đã bị xóa
 Toast_Steam_CantDeleteVacCache: Không thể xóa 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: Không thể tìm thấy thư mục Steam\\ userdata
@@ -244,6 +246,8 @@ Modal_Crowdin_Info: "Đây là tất cả những người đã giúp dịch ph�
 Modal_Info_Creator: Được tạo bởi TechNobo [Wesley Pyburn]
 Modal_Info_Version: Phiên ba ̉ n
 Modal_Info_ViewGitHub: Xem trên GitHub
+Modal_Info_ViewPatreon: Support via Patreon
+Modal_Info_ViewKofi: Support via Ko-Fi
 Modal_Info_BugReport: Báo cáo lỗi/Yêu cầu tính năng
 Modal_Info_VisitSite: Truy cập tcno.co
 Modal_Info_Disclaimer: Tuyên bố miễn trừ trách nhiệm

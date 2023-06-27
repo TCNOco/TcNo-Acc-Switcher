@@ -10,6 +10,7 @@ Steam_Tray_AccountName: Hesap adını göster [arkadaş adı değil]
 Steam_CheckVac: Hesap VAC durumunu kontrol et
 Steam_OverrideDefaultState: "Varsayılan oturum açma durumunu geçersiz kıl:"
 Steam_StartSilent: "Anahtar üzerindeki görev tepsisine buharı açın (Buharı '- sessiz 'ile başlatın)"
+Steam_OldUi: "Use Old UI in Steam (-vgui)"
 Button_AddNew: Yeni Ekle
 Button_SaveCurrent: Mevcut Oturumu Kaydet
 Button_SaveFile: Dosyayı Kaydet
@@ -191,6 +192,7 @@ Toast_NoValidSteamId: Geçerli bir Steam Kimliği bulunamıyor.
 Toast_FailedUpdateCheck: Güncellemeler denetlenemedi
 Toast_UpdateVerifyFail: Güncelleyici dosyaları doğrulanamıyor. En son sürümü indirin ve dizininizdeki dosyaları değiştirin.
 Toast_StartedGame: '{program} başlatıldı'
+Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
 Toast_Steam_VacCleared: Hesaplar için VAC durumu temizlendi
 Toast_Steam_CantDeleteVacCache: '''LoginCache/Steam/VACCache/SteamVACCache.json'' silinemedi'
 Toast_NoFindSteamUserdata: Steam\\userdata klasörü bulunamadı
@@ -244,6 +246,8 @@ Modal_Crowdin_Info: "İşte bu yazılımı çevirmeye yardım eden herkes.<br>Di
 Modal_Info_Creator: TechNobo [Wesley Pyburn] tarafından oluşturuldu
 Modal_Info_Version: Versiyon
 Modal_Info_ViewGitHub: GitHub'da Görüntüle
+Modal_Info_ViewPatreon: Support via Patreon
+Modal_Info_ViewKofi: Support via Ko-Fi
 Modal_Info_BugReport: Hata raporu/Özellik isteği
 Modal_Info_VisitSite: Tcno.co adresini ziyaret edin
 Modal_Info_Disclaimer: Sorumluluk Reddi
