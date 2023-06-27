@@ -10,6 +10,7 @@ Steam_Tray_AccountName: 显示帐户名称 [非好友名称]
 Steam_CheckVac: 检查帐户 VAC 状态
 Steam_OverrideDefaultState: "覆盖默认登录状态："
 Steam_StartSilent: "在切换时缩小 Steam 到任务栏托盘（以 '-silent' 参数启动 Steam）"
+Steam_OldUi: "Use Old UI in Steam (-vgui)"
 Button_AddNew: 新增
 Button_SaveCurrent: 保存当前
 Button_SaveFile: 保存文件
@@ -191,6 +192,7 @@ Toast_NoValidSteamId: 找不到有效的 Steam ID。
 Toast_FailedUpdateCheck: 检查更新失败
 Toast_UpdateVerifyFail: 无法验证更新程序文件。请下载最新版本并替换目录中的文件。
 Toast_StartedGame: 已启动 {program}
+Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
 Toast_Steam_VacCleared: 已清除帐户 VAC 状态
 Toast_Steam_CantDeleteVacCache: 无法删除 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: 无法找到 Steam\\userdata 文件夹
@@ -244,6 +246,8 @@ Modal_Crowdin_Info: "这是帮助翻译此软件的所有人。<br>名字旁边�
 Modal_Info_Creator: 由 TechNobo [Wesley Pyburn] 创作
 Modal_Info_Version: 版本
 Modal_Info_ViewGitHub: 在 GitHub 上查看
+Modal_Info_ViewPatreon: Support via Patreon
+Modal_Info_ViewKofi: Support via Ko-Fi
 Modal_Info_BugReport: 错误报告/功能请求
 Modal_Info_VisitSite: 访问 tcno.co
 Modal_Info_Disclaimer: 免责声明
