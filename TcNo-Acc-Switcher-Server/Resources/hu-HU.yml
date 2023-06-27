@@ -10,6 +10,7 @@ Steam_Tray_AccountName: '[not friend name] fióknév megjelenítése'
 Steam_CheckVac: Fiók VAC állapotának ellenőrzése
 Steam_OverrideDefaultState: "Alapértelmezett bejelentkezési állapot felülbírálása:"
 Steam_StartSilent: "Nyissa ki a Gőzt a tálcára kapcsoláskor (indítsa el a Gőzt a '-silent' gombbal)"
+Steam_OldUi: "Use Old UI in Steam (-vgui)"
 Button_AddNew: Új hozzáadása
 Button_SaveCurrent: Aktuális mentése
 Button_SaveFile: Fájl mentése
@@ -191,6 +192,7 @@ Toast_NoValidSteamId: Nem található érvényes Steam azonosító.
 Toast_FailedUpdateCheck: Frissítések keresése sikertelen
 Toast_UpdateVerifyFail: Nem lehet ellenőrizni a frissítőfájlokat. Töltse le a legújabb verziót, és cserélje ki a fájlokat a könyvtárban.
 Toast_StartedGame: Elkezdődött {program}
+Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
 Toast_Steam_VacCleared: Fiókok VAC állapota törölve
 Toast_Steam_CantDeleteVacCache: A 'LoginCache/Steam/VACCache/SteamVACCache.json' nem törölhető
 Toast_NoFindSteamUserdata: Nem található a Steam\\userdata mappa
@@ -244,6 +246,8 @@ Modal_Crowdin_Info: "Itt van mindenki, aki segített lefordítani ezt a szoftver
 Modal_Info_Creator: 'Készítette: TechNobo [Wesley Pyburn]'
 Modal_Info_Version: Verzió
 Modal_Info_ViewGitHub: Megtekintés a GitHubon
+Modal_Info_ViewPatreon: Support via Patreon
+Modal_Info_ViewKofi: Support via Ko-Fi
 Modal_Info_BugReport: Hibajelentés/Funkciókérés
 Modal_Info_VisitSite: Látogasson el a tcno.co oldalra
 Modal_Info_Disclaimer: Jogi nyilatkozat
