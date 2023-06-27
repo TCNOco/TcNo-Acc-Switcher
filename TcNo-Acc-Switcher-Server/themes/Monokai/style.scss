@@ -350,7 +350,7 @@ button#LocateProgramExe,
 #modalBtnBack:hover,
 #btnRestore:hover,
 #btnMax:hover {
-    background: var(--accent);
+    background: rgba(var(--accentInt), 50%);
 }
 
 .clearingRight {

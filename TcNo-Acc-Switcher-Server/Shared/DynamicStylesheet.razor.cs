@@ -34,7 +34,7 @@ namespace TcNo_Acc_Switcher_Server.Shared
 
                 var (h, s, l) = AppSettings.WindowsAccentColorHsl;
                 var (r, g, b) = AppSettings.WindowsAccentColorInt;
-                style = $":root {{ --accentHS: {h}, {s}%; --accentL: {l}%; --accent: {AppSettings.WindowsAccentColor}}}\n\n; --accentInt: {r}, {g}, {b}" + style;
+                style = $":root {{ --accentHS: {h}, {s}%; --accentL: {l}%; --accent: {AppSettings.WindowsAccentColor}; --accentInt: {r}, {g}, {b}}}\n\n; " + style;
             }
 
             if (AppSettings.Rtl)

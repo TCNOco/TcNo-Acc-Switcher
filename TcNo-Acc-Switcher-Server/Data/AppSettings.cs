@@ -117,6 +117,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonProperty("DiscordRpcShareTotalSwitches", Order = 19)] private bool _discordRpcShare = true;
         [JsonProperty("PasswordHash", Order = 20)] private string _passwordHash = "";
         [JsonProperty("GloballyHiddenMetrics", Order = 21)] private Dictionary<string, Dictionary<string, bool>> _globallyHiddenMetrics = new();
+        [JsonProperty("WindowsAccent", Order = 21)] private bool _windowsAccent;
         [JsonIgnore] private bool _desktopShortcut;
         [JsonIgnore] private bool _startMenu;
         [JsonIgnore] private bool _startMenuPlatforms;
@@ -238,8 +239,6 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         private string _stylesheet;
         public static string Stylesheet { get => Instance._stylesheet; set => Instance._stylesheet = value; }
-
-        private bool _windowsAccent;
         public static bool WindowsAccent { get => Instance._windowsAccent; set => Instance._windowsAccent = value; }
 
         private string _windowsAccentColor = "";
@@ -659,6 +658,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 WindowsAccentColor = "";
                 _ = AppData.ReloadPage();
             }
+            SaveSettings();
         }
 
         [SupportedOSPlatform("windows")]
@@ -669,7 +669,8 @@ namespace TcNo_Acc_Switcher_Server.Data
             WindowsAccentColor = GetAccentColorHexString();
             var (r, g, b) = GetAccentColor();
             WindowsAccentColorHsl = FromRgb(r, g, b);
-
+            
+            SaveSettings();
             if (userInvoked)
                 _ = AppData.ReloadPage();
         }
