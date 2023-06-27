@@ -10,6 +10,7 @@ Steam_Tray_AccountName: Mostra el nom del compte [not friend name]
 Steam_CheckVac: Comprova l'estat del compte de VAC
 Steam_OverrideDefaultState: "Substitueix l'estat d'inici de sessió per defecte:"
 Steam_StartSilent: "Obriu el vapor a la safata de tasques al commutador (inicieu el vapor amb «-silenciós»)"
+Steam_OldUi: "Use Old UI in Steam (-vgui)"
 Button_AddNew: Afegeix nou
 Button_SaveCurrent: Desa l'actual
 Button_SaveFile: Desa el fitxer
@@ -191,6 +192,7 @@ Toast_NoValidSteamId: No s'ha pogut trobar un identificador de Steam vàlid.
 Toast_FailedUpdateCheck: No s'han pogut comprovar les actualitzacions
 Toast_UpdateVerifyFail: No es poden verificar els fitxers d'actualització. Descarrega la versió més recent i reemplaça els fitxers del directori.
 Toast_StartedGame: S'ha iniciat {program}
+Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
 Toast_Steam_VacCleared: S'ha netejat l'estat del VAC per als comptes
 Toast_Steam_CantDeleteVacCache: No s'ha pogut suprimir 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: No s'ha pogut trobar la carpeta Steam\\ userdata
@@ -244,6 +246,8 @@ Modal_Crowdin_Info: "Aquí teniu tots els que han ajudat a traduir aquest progra
 Modal_Info_Creator: Creat per TechNobo [Wesley Pyburn]
 Modal_Info_Version: Versió
 Modal_Info_ViewGitHub: Visualitza a GitHub
+Modal_Info_ViewPatreon: Support via Patreon
+Modal_Info_ViewKofi: Support via Ko-Fi
 Modal_Info_BugReport: Informe d'errors/sol·licitud de funció
 Modal_Info_VisitSite: Visita tcno.co
 Modal_Info_Disclaimer: Renuncia de responsabilitat
