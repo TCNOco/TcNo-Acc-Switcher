@@ -10,6 +10,7 @@ Steam_Tray_AccountName: Mostrar nombre de la cuenta [no nombre de amigo]
 Steam_CheckVac: Estado de VAC de cuenta de cheques
 Steam_OverrideDefaultState: "Sobrescribir estado de inicio de sesión predeterminado:"
 Steam_StartSilent: "Abra Steam en la bandeja de tareas al cambiar (Inicia Steam con '-silencio')"
+Steam_OldUi: "Use Old UI in Steam (-vgui)"
 Button_AddNew: Añadir Nuevo
 Button_SaveCurrent: Guardar actual
 Button_SaveFile: Guardar archivo
@@ -191,6 +192,7 @@ Toast_NoValidSteamId: No se ha podido encontrar un ID de Steam válido.
 Toast_FailedUpdateCheck: No se han podido comprobar las actualizaciones
 Toast_UpdateVerifyFail: No se pueden verificar los archivos de actualización. Descargue la última versión y reemplace los archivos de su directorio.
 Toast_StartedGame: Iniciado {program}
+Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
 Toast_Steam_VacCleared: El estado del VAC para las cuentas se ha compensado
 Toast_Steam_CantDeleteVacCache: No se pudo eliminar 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: No se ha podido encontrar la carpeta de datos de usuario de Steam\\
@@ -244,6 +246,8 @@ Modal_Crowdin_Info: "Aquí están todos los que ayudaron a traducir este softwar
 Modal_Info_Creator: Creado por TechNobo [Wesley Pyburn]
 Modal_Info_Version: Versión
 Modal_Info_ViewGitHub: Ver en GitHub
+Modal_Info_ViewPatreon: Support via Patreon
+Modal_Info_ViewKofi: Support via Ko-Fi
 Modal_Info_BugReport: Informe de errores/solicitud de características
 Modal_Info_VisitSite: Visite tcno.co
 Modal_Info_Disclaimer: Descargo de responsabilidad

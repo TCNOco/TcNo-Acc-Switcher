@@ -10,6 +10,7 @@ Steam_Tray_AccountName: نمایش نام حساب [نه نام دوست]
 Steam_CheckVac: وضعیت VAC حساب را بررسی کنید
 Steam_OverrideDefaultState: "لغو وضعیت ورود پیش فرض:"
 Steam_StartSilent: "باز کردن Steam به سینی وظیفه روی سوئیچ (Steam را با \"-silent\" شروع کنید)"
+Steam_OldUi: "Use Old UI in Steam (-vgui)"
 Button_AddNew: جدید اضافه کن
 Button_SaveCurrent: ذخیره جریان
 Button_SaveFile: ذخیره فایل
@@ -191,6 +192,7 @@ Toast_NoValidSteamId: شناسه Steam معتبر پیدا نشد.
 Toast_FailedUpdateCheck: بررسی به‌روزرسانی‌ها انجام نشد
 Toast_UpdateVerifyFail: نمی‌توان فایل‌های به‌روزرسانی را تأیید کرد. آخرین نسخه را دانلود کنید و فایل ها را در دایرکتوری خود جایگزین کنید.
 Toast_StartedGame: '{program}شروع شد'
+Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
 Toast_Steam_VacCleared: وضعیت VAC برای حساب ها پاک شد
 Toast_Steam_CantDeleteVacCache: '"LoginCache/Steam/VACCache/SteamVACCache.json" نمی تواند حذف شود'
 Toast_NoFindSteamUserdata: پوشه Steam\\userdata پیدا نشد
@@ -244,6 +246,8 @@ Modal_Crowdin_Info: "در اینجا همه کسانی هستند که در تر
 Modal_Info_Creator: ایجاد شده توسط TechNobo [Wesley Pyburn]
 Modal_Info_Version: نسخه
 Modal_Info_ViewGitHub: در GitHub مشاهده کنید
+Modal_Info_ViewPatreon: Support via Patreon
+Modal_Info_ViewKofi: Support via Ko-Fi
 Modal_Info_BugReport: گزارش اشکال/درخواست ویژگی
 Modal_Info_VisitSite: به tcno.co مراجعه کنید
 Modal_Info_Disclaimer: سلب مسئولیت

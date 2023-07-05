@@ -10,6 +10,7 @@ Steam_Tray_AccountName: Zobraziť názov účtu [nie meno priateľa]
 Steam_CheckVac: Skontrolujte stav VAC účtu
 Steam_OverrideDefaultState: "Prepísať predvolený stav prihlásenia:"
 Steam_StartSilent: "Otvorte Steam na paneli úloh na prepínači (Spustite Steam s '-tichý')"
+Steam_OldUi: "Use Old UI in Steam (-vgui)"
 Button_AddNew: Pridať nové
 Button_SaveCurrent: Uložiť aktuálny
 Button_SaveFile: Uloženie súboru
@@ -191,6 +192,7 @@ Toast_NoValidSteamId: Nepodarilo sa nájsť platné Steam ID.
 Toast_FailedUpdateCheck: Nepodarilo sa skontrolovať aktualizácie
 Toast_UpdateVerifyFail: Nie je možné overiť súbory aktualizátora. Stiahnite si najnovšiu verziu a nahraďte súbory vo svojom adresári.
 Toast_StartedGame: Začalo {program}
+Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
 Toast_Steam_VacCleared: Stav VAC pre účty bol vymazaný
 Toast_Steam_CantDeleteVacCache: Nepodarilo sa odstrániť „LoginCache/Steam/VACCache/SteamVACCache.json“
 Toast_NoFindSteamUserdata: Nepodarilo sa nájsť priečinok Steam\\userdata
@@ -244,6 +246,8 @@ Modal_Crowdin_Info: "Tu sú všetci, ktorí pomohli s prekladom tohto softvéru.
 Modal_Info_Creator: Vytvoril TechNobo [Wesley Pyburn]
 Modal_Info_Version: Verzia
 Modal_Info_ViewGitHub: Zobraziť na GitHub
+Modal_Info_ViewPatreon: Support via Patreon
+Modal_Info_ViewKofi: Support via Ko-Fi
 Modal_Info_BugReport: Hlásenie chyby/Žiadosť o funkciu
 Modal_Info_VisitSite: Navštívte tcno.co
 Modal_Info_Disclaimer: Vylúčenie zodpovednosti
