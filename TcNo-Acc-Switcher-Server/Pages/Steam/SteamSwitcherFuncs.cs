@@ -163,20 +163,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 Index.Steamuser mostRecent = null;
                 foreach (var su in AppData.SteamUsers)
                 {
-                    int.TryParse(su.LastLogin, out var last);
+                    _ = int.TryParse(su.LastLogin, out int last);
 
-                    int.TryParse(mostRecent?.LastLogin, out var recent);
+                    _ = int.TryParse(mostRecent?.LastLogin, out int recent);
 
                     if (mostRecent == null || last > recent)
                         mostRecent = su;
                 }
 
-                int.TryParse(mostRecent.LastLogin, out var mrTimestamp);
+                if (mostRecent is null) return "";
 
-                if (SteamSettings.LastAccTimestamp > mrTimestamp)
-                {
+                if (int.TryParse(mostRecent?.LastLogin, out var mrTimestamp) && SteamSettings.LastAccTimestamp > mrTimestamp)
                     return SteamSettings.LastAccName;
-                }
 
                 return mostRecent.SteamId ?? "";
             }
@@ -434,8 +432,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         {
             var original = Globals.ReadAllText(loginUserPath);
             var vdf = original;
-            // Replaces double quotes, sometimes added by mistake (?) with single, as they should be.
-            vdf = vdf.Replace("\"\"", "\"");
+            //// Replaces double quotes, sometimes added by mistake (?) with single, as they should be.
+            //vdf = vdf.Replace("\"\"", "\"");
+
+            // Logic can be improved here. Currently the above causes issues, whereas before this was nessecary... Very flaky.
+
             if (original == vdf) return vdf;
 
             // Save original file if different.

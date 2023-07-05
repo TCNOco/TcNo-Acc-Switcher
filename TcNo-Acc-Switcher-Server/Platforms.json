@@ -421,7 +421,10 @@
       },
       "ExitBeforeInteract": true,
       "UniqueIdFile": "%AppData%\\Battle.net\\Battle.net.config::$.Client.SavedAccountNames",
-      "UniqueIdMethod": "JSON_SELECT_FIRST,"
+      "UniqueIdMethod": "JSON_SELECT_FIRST,",
+      "Extras": {
+        "ClosingMethod": "TaskKill"
+      }
     }
   },
   "Platform-WIP": {

@@ -5,12 +5,14 @@ using System.Linq;
 using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components.RenderTree;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
+using static SteamKit2.Internal.CMsgClientAMGetPersonaNameHistory;
 using BasicSettings = TcNo_Acc_Switcher_Server.Data.Settings.Basic;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Basic
@@ -481,6 +483,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         private static bool KillGameProcesses()
         {
             // Kill game processes
+            if (BasicSettings.ClosingMethod != CurrentPlatform.ClosingMethod)
+            {
+                _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_DifferentClosingMethod",
+                    new { defaultMethod = CurrentPlatform.ClosingMethod, currentMethod = BasicSettings.ClosingMethod }], renderTo: "toastarea", duration: 15000);
+            }
+
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = CurrentPlatform.FullName }]);
             if (!GeneralFuncs.CloseProcesses(CurrentPlatform.ExesToEnd, BasicSettings.ClosingMethod))
             {
@@ -535,6 +543,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 // Unique ID file, and does not already exist: Therefore create!
                 var uniqueIdFile = CurrentPlatform.GetUniqueFilePath();
                 uniqueId = Globals.RandomString(16);
+
+                var uniqueIdDir = Path.GetDirectoryName(uniqueIdFile);
+                if (!Directory.Exists(uniqueIdDir))
+                {
+                    Directory.CreateDirectory(uniqueIdDir);
+                }
+
                 File.WriteAllText(uniqueIdFile, uniqueId);
             }
 

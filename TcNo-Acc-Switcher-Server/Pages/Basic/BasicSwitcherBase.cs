@@ -1,6 +1,8 @@
 ﻿using System.Runtime.Versioning;
 using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Basic
 {
@@ -34,7 +36,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         public static void BasicAddCurrent(string accName)
         {
             Globals.DebugWriteLine(@"[JSInvoke:Basic\BasicSwitcherBase.BasicAddCurrent] accName:hidden");
-            _ = BasicSwitcherFuncs.BasicAddCurrent(accName);
+            try
+            {
+                _ = BasicSwitcherFuncs.BasicAddCurrent(accName);
+            }
+            catch (System.IO.DirectoryNotFoundException io)
+            {
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_RestartAsAdmin"], Lang.Instance["Failed"], "toastarea");
+                Globals.WriteToLog($"Failed to BasicAddCurrent. DirectoryNotFoundException", io);
+            }
         }
     }
 }

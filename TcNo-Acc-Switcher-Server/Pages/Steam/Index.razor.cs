@@ -30,7 +30,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             [JsonProperty("mostrecent", Order = 3)] public string MostRec = "0";
             [JsonProperty("Timestamp", Order = 4)] public string LastLogin { get; set; }
             [JsonProperty("WantsOfflineMode", Order = 5)] public string OfflineMode = "0";
-            [JsonProperty("SkipOfflineModeWarning", Order = 6)] public string SkipOfflineModeWarning { get; set; }
+            [JsonProperty("SkipOfflineModeWarning", Order = 6)] public string SkipOfflineModeWarning { get; set; } = "0";
 
             [JsonIgnore] public string ImageDownloadUrl { get; set; }
             [JsonIgnore] public string ImgUrl { get; set; }
