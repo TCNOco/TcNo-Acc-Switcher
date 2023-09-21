@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -24,7 +24,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CefSharp.Common" Version="114.2.100" />
+    <PackageReference Include="CefSharp.Common" Version="116.0.230" />
     <PackageReference Include="CefSharp.Wpf.NETCore" Version="114.2.100" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1823.32" />
     <PackageReference Include="vcpkg.C.vcpkg" Version="1.0.0" />
