@@ -455,7 +455,7 @@ async function createShortcut(args = '') {
         "CreateShortcut",
         getCurrentPage(),
         accId,
-        selected.attr("Username"),
+        getDisplayName(),
         args);
 }
 
