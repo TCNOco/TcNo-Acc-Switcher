@@ -65,10 +65,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
             AppData.SteamUsers = GetSteamUsers(SteamSettings.LoginUsersVdf());
 
+            var orderFilePath = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\order.json");
+
             // Order
-            if (File.Exists("LoginCache\\Steam\\order.json"))
+            if (File.Exists(orderFilePath))
             {
-                var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync("LoginCache\\Steam\\order.json").ConfigureAwait(false));
+                var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync(orderFilePath).ConfigureAwait(false));
                 if (savedOrder != null)
                 {
                     var index = 0;
