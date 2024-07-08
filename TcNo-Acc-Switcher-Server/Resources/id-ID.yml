@@ -10,7 +10,7 @@ Steam_Tray_AccountName: Tampilkan nama akun [bukan nama teman]
 Steam_CheckVac: Periksa status VAC akun
 Steam_OverrideDefaultState: "Mengganti keadaan login default:"
 Steam_StartSilent: "Buka Steam untuk mengaktifkan task tray (Mulai Steam dengan '- silent ')"
-Steam_OldUi: "Use Old UI in Steam (-vgui)"
+Steam_OldUi: "Gunakan UI Lama di Steam (-vgui)"
 Button_AddNew: Tambah Baru
 Button_SaveCurrent: Simpan Saat Ini
 Button_SaveFile: Simpan Berkas
@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Menonaktifkan platform. Klik untuk mengaktifkan
 Settings_ExtraPlatformsEnabled: Platform yang terlihat. Klik untuk menonaktifkannya.
 Settings_RTL: Tampilkan teks sebagai Kanan - ke - Kiri
 Settings_CollectStats: Kumpulkan statistik
-Settings_ShareStats: Bagikan statistik dengan kesal (disarankan)
+Settings_ShareStats: Share stats anonymously (recommended)
 Settings_DiscordRpc: Kehadiran Kaya Perselisihan (RPC)
 Settings_DiscordRpcShare: Bagikan total sakelar
 Settings_ViewStats: Lihat statistik
@@ -192,7 +192,7 @@ Toast_NoValidSteamId: Tidak dapat menemukan ID Steam yang valid.
 Toast_FailedUpdateCheck: Gagal memeriksa pembaruan
 Toast_UpdateVerifyFail: Tidak dapat memverifikasi file updater. Unduh versi terbaru dan ganti file di direktori Anda.
 Toast_StartedGame: Dimulai {program}
-Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
+Toast_SteamCantLoadXml: Tidak bisa mendapatkan info XML untuk {steamId}. Lihat log untuk detail lebih lanjut.
 Toast_Steam_VacCleared: Status VAC untuk akun telah dihapus
 Toast_Steam_CantDeleteVacCache: Tidak dapat menghapus 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: Tidak dapat menemukan folder data Steam\\ userdata
@@ -241,13 +241,14 @@ Toast_SteamWebKeyInvalid: Kunci api Web Steam tampaknya tidak valid. Harap atur 
 Toast_DownloadingProfileData: Mengunduh data profil
 Toast_PasswordChanged: Kata sandi berubah
 Toast_JsonFailModify: Gagal memodifikasi berkas JSON. Lihat log.
+Toast_DifferentClosingMethod: "'Metode Penutupan' berbeda dengan default. Jika permainan ditutup dan lainnya, periksa apakah mengubah opsi ini membantu. Bawaan: {defaultMethod}, Saat ini: {currentMethod}"
 Modal_Crowdin_Header: Penerjemah Crowdin
 Modal_Crowdin_Info: "Berikut adalah semua orang yang membantu menerjemahkan perangkat lunak ini.<br>Pengguna dengan bahasa di samping mereka banyak membantu dalam penerjemahan (peran proofreader)."
 Modal_Info_Creator: Dibuat oleh TechNobo [Wesley Pyburn]
 Modal_Info_Version: Versi
 Modal_Info_ViewGitHub: Lihat di GitHub
-Modal_Info_ViewPatreon: Support via Patreon
-Modal_Info_ViewKofi: Support via Ko-Fi
+Modal_Info_ViewPatreon: Dukungan melalui Patreon
+Modal_Info_ViewKofi: Dukungan melalui Ko-Fi
 Modal_Info_BugReport: Laporan kutu/Permintaan fitur
 Modal_Info_VisitSite: Kunjungi tcno.co
 Modal_Info_Disclaimer: Penafian
