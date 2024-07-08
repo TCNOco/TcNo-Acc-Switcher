@@ -10,7 +10,7 @@ Steam_Tray_AccountName: 显示帐户名称 [非好友名称]
 Steam_CheckVac: 检查帐户 VAC 状态
 Steam_OverrideDefaultState: "覆盖默认登录状态："
 Steam_StartSilent: "在切换时缩小 Steam 到任务栏托盘（以 '-silent' 参数启动 Steam）"
-Steam_OldUi: "Use Old UI in Steam (-vgui)"
+Steam_OldUi: "在 Steam 中使用旧版 UI（-vgui）"
 Button_AddNew: 新增
 Button_SaveCurrent: 保存当前
 Button_SaveFile: 保存文件
@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: 已禁用的平台。点击以启用它们。
 Settings_ExtraPlatformsEnabled: 可见的平台。点击以禁用它们。
 Settings_RTL: 从右到左显示文本
 Settings_CollectStats: 收集统计数据
-Settings_ShareStats: 分享匿名统计信息（推荐）
+Settings_ShareStats: Share stats anonymously (recommended)
 Settings_DiscordRpc: Discord 丰富状态（RPC）
 Settings_DiscordRpcShare: 共享总切换数
 Settings_ViewStats: 查看统计
@@ -192,7 +192,7 @@ Toast_NoValidSteamId: 找不到有效的 Steam ID。
 Toast_FailedUpdateCheck: 检查更新失败
 Toast_UpdateVerifyFail: 无法验证更新程序文件。请下载最新版本并替换目录中的文件。
 Toast_StartedGame: 已启动 {program}
-Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
+Toast_SteamCantLoadXml: 无法获取 {steamId} 的 XML 信息。请查看日志了解详情。
 Toast_Steam_VacCleared: 已清除帐户 VAC 状态
 Toast_Steam_CantDeleteVacCache: 无法删除 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: 无法找到 Steam\\userdata 文件夹
@@ -241,13 +241,14 @@ Toast_SteamWebKeyInvalid: Steam Web API 密钥似乎无效。请设置一个新�
 Toast_DownloadingProfileData: 正在下载个人资料数据
 Toast_PasswordChanged: 密码已更改
 Toast_JsonFailModify: 修改 JSON 文件失败。请查看日志。
+Toast_DifferentClosingMethod: "“关闭方式”与默认值不同。如果游戏不能正常关闭，请尝试修改此选项。默认：{defaultMethod}，当前：{currentMethod}"
 Modal_Crowdin_Header: Crowdin 译者
 Modal_Crowdin_Info: "这是帮助翻译此软件的所有人。<br>名字旁边有语言的用户在翻译方面提供了很多帮助（审核员身份）。"
 Modal_Info_Creator: 由 TechNobo [Wesley Pyburn] 创作
 Modal_Info_Version: 版本
 Modal_Info_ViewGitHub: 在 GitHub 上查看
-Modal_Info_ViewPatreon: Support via Patreon
-Modal_Info_ViewKofi: Support via Ko-Fi
+Modal_Info_ViewPatreon: 通过 Patreon 支持
+Modal_Info_ViewKofi: 通过 Ko-Fi 支持
 Modal_Info_BugReport: 错误报告/功能请求
 Modal_Info_VisitSite: 访问 tcno.co
 Modal_Info_Disclaimer: 免责声明
