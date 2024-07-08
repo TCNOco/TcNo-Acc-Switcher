@@ -173,10 +173,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             Globals.DebugWriteLine(@"[Func:General\GeneralSwitcherFuncs.ForgetAccount_Generic] Forgetting account: hidden, Platform: " + platform);
 
             // Remove ID from list of ids
-            var idsFile = $"LoginCache\\{platform}\\ids.json";
+            var idsFile = Path.Join(Globals.UserDataFolder, $"LoginCache\\{platform}\\ids.json");
+            var orderFile = Path.Join(Globals.UserDataFolder, $"LoginCache\\{platform}\\order.json");
+            var ogAccName = accName;
+
             if (File.Exists(idsFile))
             {
                 var allIds = ReadDict(idsFile);
+                
                 if (accNameIsId)
                 {
                     var accId = accName;
@@ -185,14 +189,26 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 }
                 else
                     _ = allIds.Remove(allIds.Single(x => x.Value == accName).Key);
+
                 File.WriteAllText(idsFile, JsonConvert.SerializeObject(allIds));
             }
 
+            if (File.Exists(orderFile))
+            {
+
+                Task.Run(async () =>
+                {
+                    var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync(orderFile).ConfigureAwait(false));
+                    savedOrder.Remove(ogAccName);
+                    File.WriteAllText(orderFile, JsonConvert.SerializeObject(savedOrder));
+                }).Wait();
+            }
+
             // Remove cached files
-            Globals.RecursiveDelete($"LoginCache\\{platform}\\{accName}", false);
+            Globals.RecursiveDelete(Path.Join(Globals.UserDataFolder, $"LoginCache\\{platform}\\{accName}"), false);
 
             // Remove image
-            Globals.DeleteFile(Path.Join(WwwRoot(), $"\\img\\profiles\\{platform}\\{Globals.GetCleanFilePath(accName)}.jpg"));
+            Globals.DeleteFile(Path.Join(WwwRoot(), $"\\img\\profiles\\{platform}\\{Globals.GetCleanFilePath(ogAccName)}.jpg"));
 
             // Remove from Tray
             Globals.RemoveTrayUser(platform, accName); // Add to Tray list
@@ -242,7 +258,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
         public static string WwwRoot()
         {
-            return Path.Join(Globals.UserDataFolder, "\\wwwroot");
+            return Path.Join(Globals.UserDataFolder, "wwwroot");
         }
 
         // Overload for below

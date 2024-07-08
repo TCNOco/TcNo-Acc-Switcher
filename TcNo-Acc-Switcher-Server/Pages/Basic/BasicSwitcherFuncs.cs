@@ -647,7 +647,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                         {
                             // The regex result should be considered a filename.
                             // Sub in %FileName% from res, and %UniqueId% from uniqueId
-                            sourcePath = ExpandEnvironmentVariables(CurrentPlatform.ProfilePicPath.Replace("%FileName%", res).Replace("%UniqueId", uniqueId));
+                            sourcePath = ExpandEnvironmentVariables(CurrentPlatform.ProfilePicPath.Replace("%FileName%", res).Replace("%UniqueId%", uniqueId));
                         }
 
                         if (res != "" && File.Exists(sourcePath))
@@ -656,7 +656,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     }
                     else if (CurrentPlatform.ProfilePicPath != "")
                     {
-                        var sourcePath = ExpandEnvironmentVariables(Globals.GetCleanFilePath(CurrentPlatform.ProfilePicPath.Replace("%UniqueId", uniqueId))) ?? "";
+                        var sourcePath = ExpandEnvironmentVariables(CurrentPlatform.ProfilePicPath.Replace("%UniqueId%", uniqueId)) ?? "";
                         if (sourcePath != "" && File.Exists(sourcePath))
                             if (!Globals.CopyFile(sourcePath, profileImg))
                                 Globals.WriteToLog("Tried to save profile picture from path (ProfilePicPath method)");
