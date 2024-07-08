@@ -10,7 +10,7 @@ Steam_Tray_AccountName: הצג את שם המשתמש [לא את שם הכינו
 Steam_CheckVac: בדוק את מצב ה- VAC של החשבון
 Steam_OverrideDefaultState: "עקוף את דרך ברירת המחדל לכניסה:"
 Steam_StartSilent: "פתח את Steam למגש המשימות על מתג (התחל את Steam עם '- שקט ')"
-Steam_OldUi: "Use Old UI in Steam (-vgui)"
+Steam_OldUi: "השתמש בממשק המשתמש הישן ב-Steam (-vgui)"
 Button_AddNew: הוסף
 Button_SaveCurrent: שמור נוכחי
 Button_SaveFile: שמור קובץ
@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: פלטפורמות מושבתות. לחץ כד�
 Settings_ExtraPlatformsEnabled: פלטפורמות גלויות. לחץ כדי להשבית אותן.
 Settings_RTL: הצג טקסט בתור מימין לשמאל
 Settings_CollectStats: איסוף נתונים סטטיסטיים
-Settings_ShareStats: שתף נתונים סטטיסטיים בצורה מעצבנת (מומלץ)
+Settings_ShareStats: Share stats anonymously (recommended)
 Settings_DiscordRpc: נוכחות עשירה בדיסקורד (RPC)
 Settings_DiscordRpcShare: שתף את סך המתגים
 Settings_ViewStats: הצג נתונים סטטיסטיים
@@ -192,7 +192,7 @@ Toast_NoValidSteamId: לא ניתן למצוא מזהה קיטור חוקי.
 Toast_FailedUpdateCheck: בדיקת העדכונים נכשלה
 Toast_UpdateVerifyFail: לא ניתן לאמת קבצי עדכון. הורד את הגירסה האחרונה והחלף קבצים בספריה שלך.
 Toast_StartedGame: התחיל {program}
-Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
+Toast_SteamCantLoadXml: לא ניתן היה לקבל מידע XML עבור {steamId}. ראה יומן לפרטים נוספים.
 Toast_Steam_VacCleared: סטטוס VAC עבור חשבונות נוקה
 Toast_Steam_CantDeleteVacCache: לא ניתן למחוק את 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: לא ניתן למצוא תיקיית Steam\\ userdata
@@ -241,13 +241,14 @@ Toast_SteamWebKeyInvalid: מפתח ה - API של Steam Web לא חוקי. אנא
 Toast_DownloadingProfileData: מוריד נתוני פרופיל
 Toast_PasswordChanged: הסיסמה שונתה
 Toast_JsonFailModify: שינוי קובץ JSON נכשל. ראה יומן רישום.
+Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Modal_Crowdin_Header: מתרגמי Crowdin
 Modal_Crowdin_Info: "הנה כל מי שעזר לתרגם את התוכנה הזו.<br>משתמשים עם שפות לידם עזרו רבות בתרגום (תפקיד הגהה)."
 Modal_Info_Creator: נוצר על ידי TechNobo [ווסלי Pyburn]
 Modal_Info_Version: גרסה
 Modal_Info_ViewGitHub: הצג ב - GitHub
-Modal_Info_ViewPatreon: Support via Patreon
-Modal_Info_ViewKofi: Support via Ko-Fi
+Modal_Info_ViewPatreon: תמיכה באמצעות Patreon
+Modal_Info_ViewKofi: תמיכה באמצעות Ko-Fi
 Modal_Info_BugReport: דיווח באגים/בקשה לתכונה
 Modal_Info_VisitSite: בקר בכתובת tcno.co
 Modal_Info_Disclaimer: כתב ויתור
