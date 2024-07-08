@@ -10,7 +10,7 @@ Steam_Tray_AccountName: Vis kontonavn [ikke vennens navn]
 Steam_CheckVac: Sjekk kontoens VAC-status
 Steam_OverrideDefaultState: "Overstyr standard påloggingstilstand:"
 Steam_StartSilent: "Åpne Steam til oppgaveskuffen på bryteren (start Steam med '-silent')"
-Steam_OldUi: "Use Old UI in Steam (-vgui)"
+Steam_OldUi: "Bruk gammelt brukergrensesnitt i Steam (-vgui)"
 Button_AddNew: Legg til ny
 Button_SaveCurrent: Lagre gjeldende
 Button_SaveFile: Lagre filen
@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Deaktiverte plattformer. Klikk for å aktivere 
 Settings_ExtraPlatformsEnabled: Synlige plattformer. Klikk for å deaktivere dem.
 Settings_RTL: Vis tekst som høyre-til-venstre
 Settings_CollectStats: Samle statistikk
-Settings_ShareStats: Del statistikk irritert (anbefalt)
+Settings_ShareStats: Share stats anonymously (recommended)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Del totalt brytere
 Settings_ViewStats: Se statistikk
@@ -192,7 +192,7 @@ Toast_NoValidSteamId: Kan ikke finne en gyldig Steam-ID.
 Toast_FailedUpdateCheck: Kunne ikke se etter oppdateringer
 Toast_UpdateVerifyFail: Kan ikke bekrefte oppdateringsfiler. Last ned siste versjon og erstatt filer i katalogen din.
 Toast_StartedGame: Startet {program}
-Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
+Toast_SteamCantLoadXml: Kunne ikke hente XML-informasjon for {steamId}. Se logg for flere detaljer.
 Toast_Steam_VacCleared: VAC-status for kontoer ble slettet
 Toast_Steam_CantDeleteVacCache: Kunne ikke slette "LoginCache/Steam/VACCache/SteamVACCache.json"
 Toast_NoFindSteamUserdata: Fant ikke Steam\\userdata-mappen
@@ -241,13 +241,14 @@ Toast_SteamWebKeyInvalid: Steam Web API-nøkkel ser ut til å være ugyldig. Ven
 Toast_DownloadingProfileData: Laster ned profildata
 Toast_PasswordChanged: passord endret
 Toast_JsonFailModify: Kunne ikke endre JSON-filen. Se logg.
+Toast_DifferentClosingMethod: "'Closing Method' er forskjellig fra standardverdien. Hvis spillene lukker og sjekker om du endrer dette alternativet hjelper. Standard: {defaultMethod}, Nåværende: {currentMethod}"
 Modal_Crowdin_Header: Crowdin-oversettere
 Modal_Crowdin_Info: "Her er alle som hjalp til med å oversette denne programvaren.<br>Brukere med språk ved siden av hjalp mye med oversettelse (korrekturleserrolle)."
 Modal_Info_Creator: Laget av TechNobo [Wesley Pyburn]
 Modal_Info_Version: Versjon
 Modal_Info_ViewGitHub: Se på GitHub
-Modal_Info_ViewPatreon: Support via Patreon
-Modal_Info_ViewKofi: Support via Ko-Fi
+Modal_Info_ViewPatreon: Støtte via Patreon
+Modal_Info_ViewKofi: Støtte via Ko-Fi
 Modal_Info_BugReport: Feilrapport/funksjonsforespørsel
 Modal_Info_VisitSite: Besøk tcno.co
 Modal_Info_Disclaimer: Ansvarsfraskrivelse
