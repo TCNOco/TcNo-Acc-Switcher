@@ -49,6 +49,8 @@ copy /B /Y "..\..\..\runas\x64\Release\net6.0\runas.dll" "runas.dll"
 copy /B /Y "..\..\..\runas\x64\Release\net6.0\runas.runtimeconfig.json" "runas.runtimeconfig.json"
 
 REM Signing
+REM Currently disabled as I do not have the funds to renew my certificate.
+GOTO POSTSIGN
 IF EXIST A:\AccountSwitcherConfig\sign.txt (
 	ECHO Signing binaries
 	echo %time%
@@ -68,7 +70,7 @@ IF EXIST A:\AccountSwitcherConfig\sign.txt (
 		start call ../../../../sign.bat "TcNo-Acc-Switcher-Updater.dll"
 	) | set /P "="
 ) ELSE ECHO ----- SKIPPING SIGN -----
-
+:POSTSIGN
 
 REN "TcNo-Acc-Switcher.exe" "TcNo-Acc-Switcher_main.exe"
 REN "TcNo-Acc-Switcher-Server.exe" "TcNo-Acc-Switcher-Server_main.exe"
@@ -139,10 +141,12 @@ break > TcNo-Acc-Switcher\runtimes\win-x64\native\chrome_elf.dll
 break > TcNo-Acc-Switcher\runtimes\win-x64\native\CefSharp.BrowserSubprocess.Core.dll
 
 REM Verify signatures
+GOTO POSTVERIFY
 IF EXIST A:\AccountSwitcherConfig\sign.txt (
 	ECHO Verifying signatures of binaries
 	powershell -ExecutionPolicy Unrestricted ../../../VerifySignatures.ps1
 ) ELSE ECHO ----- SKIPPING SIGNATURE VERIFICATION -----
+:POSTVERIFY
 
 REM Compress files
 echo Creating .7z CEF archive
