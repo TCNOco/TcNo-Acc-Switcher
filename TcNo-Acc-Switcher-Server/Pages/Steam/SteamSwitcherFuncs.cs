@@ -1,5 +1,5 @@
 ﻿// TcNo Account Switcher - A Super fast account switcher
-// Copyright (C) 2019-2023 TechNobo (Wesley Pyburn)
+// Copyright (C) 2019-2024 TroubleChute (Wesley Pyburn)
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -405,7 +405,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                         }
                         catch (Exception)
                         {
-                            Globals.WriteToLog("Could not import Steam user. Please send your loginusers.vdf file to TechNobo for analysis.");
+                            Globals.WriteToLog("Could not import Steam user. Please send your loginusers.vdf file to TroubleChute for analysis.");
                         }
                     }
                 }
@@ -1004,7 +1004,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             }
             catch (Exception ex)
             {
-                Globals.WriteToLog("Failed to swap Steam users! Could not create temp loginusers.vdf file, and replace original using workaround! Contact TechNobo.", ex);
+                Globals.WriteToLog("Failed to swap Steam users! Could not create temp loginusers.vdf file, and replace original using workaround! Contact TroubleChute.", ex);
                 GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new { x = tempFile }]);
             }
         }

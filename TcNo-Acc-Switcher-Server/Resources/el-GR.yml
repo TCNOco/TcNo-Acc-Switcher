@@ -244,7 +244,7 @@ Toast_JsonFailModify: Αποτυχία τροποποίησης αρχείου J
 Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Modal_Crowdin_Header: Μεταφραστές Crowdin
 Modal_Crowdin_Info: "Εδώ είναι όλοι όσοι βοήθησαν στη μετάφραση αυτού του λογισμικού.<br>Χρήστες με γλώσσες δίπλα τους βοήθησαν πολύ στη μετάφραση (ρόλος διορθωτή)."
-Modal_Info_Creator: Δημιουργήθηκε από την TechNobo [Wesley Pyburn]
+Modal_Info_Creator: Δημιουργήθηκε από την TroubleChute [Wesley Pyburn]
 Modal_Info_Version: Έκδοση
 Modal_Info_ViewGitHub: Προβολή στο GitHub
 Modal_Info_ViewPatreon: Υποστήριξη μέσω Patreon
@@ -403,7 +403,7 @@ Updater_TotalFound: "Σύνολο ενημερώσεων που βρέθηκαν
 Updater_TotalSize: "Συνολικό μέγεθος: {size}"
 Updater_AwaitingUser: Αναμονή για εισαγωγή από το χρήστη...
 Updater_UpToDate: "Είστε ενημερωμένοι.\n:)"
-Updater_FailedDecode: Αυτό είναι πιο πιθανό να οφείλεται σε μένα (TechNobo) πιέζοντας μια ενημέρωση, και κάνοντας ένα τυπογραφικό λάθος που έσπασε το αρχείο ενημέρωσης .json. Ενημερώστε με:)
+Updater_FailedDecode: Αυτό είναι πιο πιθανό να οφείλεται σε μένα (TroubleChute) πιέζοντας μια ενημέρωση, και κάνοντας ένα τυπογραφικό λάθος που έσπασε το αρχείο ενημέρωσης .json. Ενημερώστε με:)
 Updater_FailedDecodeTitle: Αποτυχία αποκωδικοποίησης λίστας ενημερώσεων
 Updater_Extracting: Εξαγωγή αρχείων patch
 Updater_Applying: Εφαρμογή διόρθωσης...

@@ -244,7 +244,7 @@ Toast_JsonFailModify: Nie można zmodyfikować pliku JSON. Patrz dziennik.
 Toast_DifferentClosingMethod: "\"Metoda zamykania\" różni się od domyślnej. Jeśli gra zamyka się, sprawdź, czy zmiana tej opcji pomoże. Domyślna: {defaultMethod}, Obecna: {currentMethod}"
 Modal_Crowdin_Header: Tłumacze Crowdin
 Modal_Crowdin_Info: "Oto wszyscy, którzy pomogli przetłumaczyć to oprogramowanie.<br>Użytkownicy którzy znają te języki bardzo pomogli w tłumaczeniu (rola korektora)."
-Modal_Info_Creator: Stworzony przez TechNobo [Wesley Pyburn]
+Modal_Info_Creator: Stworzony przez TroubleChute [Wesley Pyburn]
 Modal_Info_Version: Wersja
 Modal_Info_ViewGitHub: Zobacz na GitHub
 Modal_Info_ViewPatreon: Wsparcie przez Patreon
@@ -403,7 +403,7 @@ Updater_TotalFound: "Znaleziono łącznie aktualizacji: {x}"
 Updater_TotalSize: "Całkowity rozmiar: {size}"
 Updater_AwaitingUser: Oczekiwanie na sygnał użytkownika...
 Updater_UpToDate: "Masz najnowszą wersję.\n:)"
-Updater_FailedDecode: Jest to najprawdopodobniej spowodowane tym, że ja (TechNobo) wypuściłem aktualizację i zrobiłem literówkę, która zepsuła plik aktualizacji .json. Daj mi znać :)
+Updater_FailedDecode: Jest to najprawdopodobniej spowodowane tym, że ja (TroubleChute) wypuściłem aktualizację i zrobiłem literówkę, która zepsuła plik aktualizacji .json. Daj mi znać :)
 Updater_FailedDecodeTitle: Nie udało się zdekodować listy aktualizacji
 Updater_Extracting: Rozpakowywanie plików poprawek
 Updater_Applying: Nakładanie poprawek...

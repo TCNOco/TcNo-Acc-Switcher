@@ -244,7 +244,7 @@ Toast_JsonFailModify: Nem sikerült módosítani a JSON-fájlt. Lásd a Naplót.
 Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Modal_Crowdin_Header: Crowdin fordítók
 Modal_Crowdin_Info: "Itt van mindenki, aki segített lefordítani ezt a szoftvert.<br>A mellettük lévő nyelvű felhasználók sokat segítettek a fordításban (lektori szerep)."
-Modal_Info_Creator: 'Készítette: TechNobo [Wesley Pyburn]'
+Modal_Info_Creator: 'Készítette: TroubleChute [Wesley Pyburn]'
 Modal_Info_Version: Verzió
 Modal_Info_ViewGitHub: Megtekintés a GitHubon
 Modal_Info_ViewPatreon: Támogatás a Patreonon keresztül
@@ -403,7 +403,7 @@ Updater_TotalFound: "Talált frissítések összesen: {x}"
 Updater_TotalSize: "Teljes méret: {size}"
 Updater_AwaitingUser: Várakozás a felhasználói bevitelre...
 Updater_UpToDate: "Ön naprakész.\n:)"
-Updater_FailedDecode: Ez valószínűleg nekem (TechNobo) nyomja meg a frissítést, és hogy egy elírás, hogy megszakadt a .json frissítési fájl. Tudasd velem:)
+Updater_FailedDecode: Ez valószínűleg nekem (TroubleChute) nyomja meg a frissítést, és hogy egy elírás, hogy megszakadt a .json frissítési fájl. Tudasd velem:)
 Updater_FailedDecodeTitle: Nem sikerült dekódolni a frissítési listát
 Updater_Extracting: Foltfájlok kibontása
 Updater_Applying: Javítás alkalmazása...

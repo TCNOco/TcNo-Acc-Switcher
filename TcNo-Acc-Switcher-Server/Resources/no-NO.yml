@@ -244,7 +244,7 @@ Toast_JsonFailModify: Kunne ikke endre JSON-filen. Se logg.
 Toast_DifferentClosingMethod: "'Closing Method' er forskjellig fra standardverdien. Hvis spillene lukker og sjekker om du endrer dette alternativet hjelper. Standard: {defaultMethod}, Nåværende: {currentMethod}"
 Modal_Crowdin_Header: Crowdin-oversettere
 Modal_Crowdin_Info: "Her er alle som hjalp til med å oversette denne programvaren.<br>Brukere med språk ved siden av hjalp mye med oversettelse (korrekturleserrolle)."
-Modal_Info_Creator: Laget av TechNobo [Wesley Pyburn]
+Modal_Info_Creator: Laget av TroubleChute [Wesley Pyburn]
 Modal_Info_Version: Versjon
 Modal_Info_ViewGitHub: Se på GitHub
 Modal_Info_ViewPatreon: Støtte via Patreon
@@ -403,7 +403,7 @@ Updater_TotalFound: "Totalt funnet oppdateringer: {x}"
 Updater_TotalSize: "Total størrelse: {size}"
 Updater_AwaitingUser: Venter på brukerinndata...
 Updater_UpToDate: "Du er oppdatert.\n:)"
-Updater_FailedDecode: Dette skyldes mest sannsynlig at jeg (TechNobo) pushet en oppdatering, og gjorde en skrivefeil som ødela .json-oppdateringsfilen. Gi meg beskjed :)
+Updater_FailedDecode: Dette skyldes mest sannsynlig at jeg (TroubleChute) pushet en oppdatering, og gjorde en skrivefeil som ødela .json-oppdateringsfilen. Gi meg beskjed :)
 Updater_FailedDecodeTitle: Kunne ikke dekode oppdateringslisten
 Updater_Extracting: Pakk ut patch-filer
 Updater_Applying: Bruker oppdatering...

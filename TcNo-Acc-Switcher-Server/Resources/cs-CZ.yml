@@ -244,7 +244,7 @@ Toast_JsonFailModify: Nepodařilo se upravit soubor JSON. Viz protokol.
 Toast_DifferentClosingMethod: "'Uzavírací metoda' se liší od výchozího nastavení. Pokud jsou hry zavírány a více zkontrolujte, zda změna této volby pomůže. Výchozí: {defaultMethod}, Aktuální: {currentMethod}"
 Modal_Crowdin_Header: Crowdinští překladatelé
 Modal_Crowdin_Info: "Zde jsou všichni, kteří pomohli přeložit tento software.<br>překladu hodně pomohli uživatelé s jazyky vedle sebe (role korektora)."
-Modal_Info_Creator: Vytvořeno společností TechNobo [Wesley Pyburn]
+Modal_Info_Creator: Vytvořeno společností TroubleChute [Wesley Pyburn]
 Modal_Info_Version: Verze
 Modal_Info_ViewGitHub: Zobrazit na GitHubu
 Modal_Info_ViewPatreon: Podpora přes Patreon
@@ -403,7 +403,7 @@ Updater_TotalFound: "Celkem aktualizací nalezeno: {x}"
 Updater_TotalSize: "Celková velikost: {size}"
 Updater_AwaitingUser: Čekání na zadání uživatelem...
 Updater_UpToDate: "Aplikace aktuální.\n:)"
-Updater_FailedDecode: To je nejpravděpodobněji způsobeno mnou (TechNobo) vydáváním aktualizace s chybou, která porušila soubor .json aktualizace. Dejte mi vědět :)
+Updater_FailedDecode: To je nejpravděpodobněji způsobeno mnou (TroubleChute) vydáváním aktualizace s chybou, která porušila soubor .json aktualizace. Dejte mi vědět :)
 Updater_FailedDecodeTitle: Aktualizace seznamu se nezdařila
 Updater_Extracting: Extrahování záplatových souborů
 Updater_Applying: Aplikuje se záplata...

@@ -244,7 +244,7 @@ Toast_JsonFailModify: JSONファイルの変更に失敗しました。ログを
 Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Modal_Crowdin_Header: Crowdinの翻訳者
 Modal_Crowdin_Info: "このソフトウェアの翻訳を手伝ってくれた皆さんです。<br>隣に言語があるユーザーは、翻訳に大いに役立ちました（校正者の役割）。"
-Modal_Info_Creator: TechNoboによって作成されました [Wesley Pyburn]
+Modal_Info_Creator: TroubleChuteによって作成されました [Wesley Pyburn]
 Modal_Info_Version: バージョン
 Modal_Info_ViewGitHub: GitHubで見る
 Modal_Info_ViewPatreon: Patreonによるサポート
@@ -403,7 +403,7 @@ Updater_TotalFound: "合計更新が見つかりました: {x}"
 Updater_TotalSize: "合計サイズ： {size}"
 Updater_AwaitingUser: ユーザーの入力を待っています...
 Updater_UpToDate: "最新の状態です。\n:)"
-Updater_FailedDecode: これは、私(TechNobo)がアップデートをプッシュし、.jsonアップデートファイルを破損したタイプを作成したことが原因である可能性が高いです。お知らせください:)
+Updater_FailedDecode: これは、私(TroubleChute)がアップデートをプッシュし、.jsonアップデートファイルを破損したタイプを作成したことが原因である可能性が高いです。お知らせください:)
 Updater_FailedDecodeTitle: 更新リストのデコードに失敗しました
 Updater_Extracting: パッチファイルの抽出
 Updater_Applying: パッチを適用しています...

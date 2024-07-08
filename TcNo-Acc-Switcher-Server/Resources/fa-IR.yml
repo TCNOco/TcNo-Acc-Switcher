@@ -244,7 +244,7 @@ Toast_JsonFailModify: فایل JSON اصلاح نشد. رجوع به ثبت شو
 Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Modal_Crowdin_Header: مترجمان کرودین
 Modal_Crowdin_Info: "در اینجا همه کسانی هستند که در ترجمه این نرم افزار کمک کردند.<br>کاربرانی که زبان های کناری داشتند در ترجمه کمک زیادی کردند (نقش تصحیح کننده)."
-Modal_Info_Creator: ایجاد شده توسط TechNobo [Wesley Pyburn]
+Modal_Info_Creator: ایجاد شده توسط TroubleChute [Wesley Pyburn]
 Modal_Info_Version: نسخه
 Modal_Info_ViewGitHub: در GitHub مشاهده کنید
 Modal_Info_ViewPatreon: پشتیبانی از طریق Patreon
@@ -403,7 +403,7 @@ Updater_TotalFound: "مجموع به روز رسانی های یافت شده: {
 Updater_TotalSize: "اندازه کل: {size}"
 Updater_AwaitingUser: منتظر ورودی کاربر...
 Updater_UpToDate: "شما به روز هستید.\n:)"
-Updater_FailedDecode: این به احتمال زیاد به این دلیل است که من (TechNobo) به‌روزرسانی را فشار داده‌ام، و یک اشتباه تایپی انجام داده‌ایم که فایل به‌روزرسانی .json را خراب کرده است. خبرم کن :)
+Updater_FailedDecode: این به احتمال زیاد به این دلیل است که من (TroubleChute) به‌روزرسانی را فشار داده‌ام، و یک اشتباه تایپی انجام داده‌ایم که فایل به‌روزرسانی .json را خراب کرده است. خبرم کن :)
 Updater_FailedDecodeTitle: رمزگشایی لیست به‌روزرسانی ناموفق بود
 Updater_Extracting: استخراج فایل های پچ
 Updater_Applying: در حال اعمال پچ...

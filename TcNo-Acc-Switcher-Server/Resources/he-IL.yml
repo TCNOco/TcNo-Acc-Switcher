@@ -244,7 +244,7 @@ Toast_JsonFailModify: שינוי קובץ JSON נכשל. ראה יומן ריש�
 Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Modal_Crowdin_Header: מתרגמי Crowdin
 Modal_Crowdin_Info: "הנה כל מי שעזר לתרגם את התוכנה הזו.<br>משתמשים עם שפות לידם עזרו רבות בתרגום (תפקיד הגהה)."
-Modal_Info_Creator: נוצר על ידי TechNobo [ווסלי Pyburn]
+Modal_Info_Creator: נוצר על ידי TroubleChute [ווסלי Pyburn]
 Modal_Info_Version: גרסה
 Modal_Info_ViewGitHub: הצג ב - GitHub
 Modal_Info_ViewPatreon: תמיכה באמצעות Patreon
@@ -403,7 +403,7 @@ Updater_TotalFound: "סך כל העדכונים שנמצאו: {x}"
 Updater_TotalSize: "גודל כולל: {size}"
 Updater_AwaitingUser: ממתין לקלט המשתמש...
 Updater_UpToDate: "אתה מעודכן.\n:)"
-Updater_FailedDecode: סביר להניח שזה נובע מכך שאני (TechNobo) דחפתי עדכון, וביצעתי שגיאת הקלדה ששברה את קובץ העדכון של json. תודיע לי:)
+Updater_FailedDecode: סביר להניח שזה נובע מכך שאני (TroubleChute) דחפתי עדכון, וביצעתי שגיאת הקלדה ששברה את קובץ העדכון של json. תודיע לי:)
 Updater_FailedDecodeTitle: פענוח רשימת העדכונים נכשל
 Updater_Extracting: מחלץ קבצי תיקון
 Updater_Applying: מחיל טלאי...

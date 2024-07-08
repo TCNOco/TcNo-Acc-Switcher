@@ -4,13 +4,13 @@
     <RootNamespace>TcNo_Acc_Switcher_Server</RootNamespace>
     <ApplicationIcon>wwwroot\favicon.ico</ApplicationIcon>
     <Version>4.0.0</Version>
-    <Authors>TechNobo (Wesley Pyburn)</Authors>
+    <Authors>TroubleChute (Wesley Pyburn)</Authors>
     <Product>TcNo Account Switcher - Server</Product>
-    <Copyright>Copyright © TechNobo (Wesley Pyburn) 2022</Copyright>
+    <Copyright>Copyright © TroubleChute (Wesley Pyburn) 2022</Copyright>
     <PackageProjectUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</PackageProjectUrl>
     <RepositoryUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</RepositoryUrl>
     <AssemblyName>TcNo-Acc-Switcher-Server</AssemblyName>
-    <Company>TechNobo (Wesley Pyburn)</Company>
+    <Company>TroubleChute (Wesley Pyburn)</Company>
     <Description>Server for the TcNo Account Switcher (Blazor backend)</Description>
     <Platforms>x64</Platforms>
   </PropertyGroup>

@@ -1,5 +1,5 @@
 ﻿// TcNo Account Switcher - A Super fast account switcher
-// Copyright (C) 2019-2023 TechNobo (Wesley Pyburn)
+// Copyright (C) 2019-2024 TroubleChute (Wesley Pyburn)
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -1013,7 +1013,7 @@ namespace TcNo_Acc_Switcher_Updater
             catch (JsonReaderException)
             {
                 MessageBox.Show(
-                    "This is most likely due to me (TechNobo) pushing an update, and making a typo that broke the .json update file. Do let me know :)",
+                    "This is most likely due to me (TroubleChute) pushing an update, and making a typo that broke the .json update file. Do let me know :)",
                     "Failed to decode update list", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -1048,7 +1048,7 @@ namespace TcNo_Acc_Switcher_Updater
         }
 
         /// <summary>
-        /// Used by TechNobo to create updates for the program.
+        /// Used by TroubleChute to create updates for the program.
         /// </summary>
         private static void CreateUpdate()
         {

@@ -244,7 +244,7 @@ Toast_JsonFailModify: No s'ha pogut modificar el fitxer JSON. Vegeu el registre.
 Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Modal_Crowdin_Header: Traductors crowdin
 Modal_Crowdin_Info: "Aquí teniu tots els que han ajudat a traduir aquest programari.<br>Els usuaris amb idiomes al costat van ajudar molt en la traducció (rol de corrector)."
-Modal_Info_Creator: Creat per TechNobo [Wesley Pyburn]
+Modal_Info_Creator: Creat per TroubleChute [Wesley Pyburn]
 Modal_Info_Version: Versió
 Modal_Info_ViewGitHub: Visualitza a GitHub
 Modal_Info_ViewPatreon: Suport a través de Patreon
@@ -403,7 +403,7 @@ Updater_TotalFound: "Actualitzacions totals trobades: {x}"
 Updater_TotalSize: "Mida total: {size}"
 Updater_AwaitingUser: S'està esperant l'entrada de l'usuari...
 Updater_UpToDate: "Estàs al dia.:\n)"
-Updater_FailedDecode: És molt probable que això es degui a que jo (TechNobo) vaig introduir una actualització i vaig fer un error tipogràfic que va trencar el fitxer d'actualització .json. No m'ho facis saber :)
+Updater_FailedDecode: És molt probable que això es degui a que jo (TroubleChute) vaig introduir una actualització i vaig fer un error tipogràfic que va trencar el fitxer d'actualització .json. No m'ho facis saber :)
 Updater_FailedDecodeTitle: No s'ha pogut descodificar la llista d'actualitzacions
 Updater_Extracting: S'estan extraient els fitxers de parxís
 Updater_Applying: S'està aplicant el pedaç...

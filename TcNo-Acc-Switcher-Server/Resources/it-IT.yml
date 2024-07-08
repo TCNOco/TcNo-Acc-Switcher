@@ -244,7 +244,7 @@ Toast_JsonFailModify: Impossibile modificare il file JSON. Vedere il log.
 Toast_DifferentClosingMethod: "'Metodo di chiusura' è diverso da quello predefinito. Se le partite si stanno chiudendo e controlla se cambiare questa opzione aiuta. Predefinito: {defaultMethod}, Corrente: {currentMethod}"
 Modal_Crowdin_Header: Crowdin traduttori
 Modal_Crowdin_Info: "Ecco tutti coloro che hanno contribuito a tradurre questo software.<br>Gli utenti con lingue accanto hanno aiutato molto nella traduzione (ruolo di correttore di bozze)."
-Modal_Info_Creator: Creato da TechNobo [Wesley Pyburn]
+Modal_Info_Creator: Creato da TroubleChute [Wesley Pyburn]
 Modal_Info_Version: Versione
 Modal_Info_ViewGitHub: Visualizza su GitHub
 Modal_Info_ViewPatreon: Supporto tramite Patreon
@@ -403,7 +403,7 @@ Updater_TotalFound: "Aggiornamenti totali trovati: {x}"
 Updater_TotalSize: "Dimensione totale: {size}"
 Updater_AwaitingUser: In attesa dell'input dell'utente...
 Updater_UpToDate: "Sei aggiornato.\n:)"
-Updater_FailedDecode: Questo è molto probabilmente dovuto a me (TechNobo) spingendo un aggiornamento, e facendo un errore di battitura che ha rotto il file di aggiornamento .json. Fammi sapere :)
+Updater_FailedDecode: Questo è molto probabilmente dovuto a me (TroubleChute) spingendo un aggiornamento, e facendo un errore di battitura che ha rotto il file di aggiornamento .json. Fammi sapere :)
 Updater_FailedDecodeTitle: Impossibile decodificare l'elenco degli aggiornamenti
 Updater_Extracting: Estrazione dei file di patch
 Updater_Applying: Applicazione patch in corso...

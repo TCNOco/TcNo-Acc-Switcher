@@ -244,7 +244,7 @@ Toast_JsonFailModify: Failed t' modify JSON file. See Cap'n's log.
 Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Modal_Crowdin_Header: Crowdin translators
 Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users wit' languages next t' 'em helped a lot in translation (proofreader role)."
-Modal_Info_Creator: Created by TechNobo [Wesley Pyburn]
+Modal_Info_Creator: Created by TroubleChute [Wesley Pyburn]
 Modal_Info_Version: Version
 Modal_Info_ViewGitHub: View on GitHub
 Modal_Info_ViewPatreon: Support via Patreon
@@ -403,7 +403,7 @@ Updater_TotalFound: "Total updates found: {x}"
 Updater_TotalSize: "Total size: {size}"
 Updater_AwaitingUser: Waitin' fer yer mark...
 Updater_UpToDate: "Ye're up t' date.\n:)"
-Updater_FailedDecode: '''tis most likely due t'' me (TechNobo) pushin'' an update, ''n makin'' a typo that broke the .json update file. Do let me know :)'
+Updater_FailedDecode: '''tis most likely due t'' me (TroubleChute) pushin'' an update, ''n makin'' a typo that broke the .json update file. Do let me know :)'
 Updater_FailedDecodeTitle: Failed t' decode update list
 Updater_Extracting: Extractin' patch files
 Updater_Applying: Applyin' patch...

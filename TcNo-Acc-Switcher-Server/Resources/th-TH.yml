@@ -403,7 +403,7 @@ Updater_TotalFound: "พบการอัปเดตทั้งหมด: {x}
 Updater_TotalSize: "ขนาดทั้งหมด: {size}"
 Updater_AwaitingUser: กำลังรอการป้อนข้อมูลของผู้ใช้...
 Updater_UpToDate: "อัพเดทได้แล้วนะครับ:\n)"
-Updater_FailedDecode: ซึ่งน่าจะเป็นเพราะฉัน (TechNobo) ผลักดันการอัปเดตและพิมพ์ผิดที่ทำให้ไฟล์อัปเดต .json แตกรบกวนแจ้งด้วยนะคะ:)
+Updater_FailedDecode: ซึ่งน่าจะเป็นเพราะฉัน (TroubleChute) ผลักดันการอัปเดตและพิมพ์ผิดที่ทำให้ไฟล์อัปเดต .json แตกรบกวนแจ้งด้วยนะคะ:)
 Updater_FailedDecodeTitle: การถอดรหัสรายการอัปเดตล้มเหลว
 Updater_Extracting: กำลังแยกไฟล์แพทช์
 Updater_Applying: กำลังปรับใช้แพทช์...

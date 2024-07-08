@@ -244,7 +244,7 @@ Toast_JsonFailModify: Kon nie JSON-lêer wysig nie. Sien log.
 Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Modal_Crowdin_Header: Crowdin-vertalers
 Modal_Crowdin_Info: "Hier is almal wat gehelp het om hierdie sagteware te vertaal.<br>Gebruikers met tale langs hulle het baie gehelp met vertaling (proefleserrol)."
-Modal_Info_Creator: Geskep deur TechNobo [Wesley Pyburn]
+Modal_Info_Creator: Geskep deur TroubleChute [Wesley Pyburn]
 Modal_Info_Version: Weergawe
 Modal_Info_ViewGitHub: Kyk op GitHub
 Modal_Info_ViewPatreon: Ondersteuning via Patreon
@@ -403,7 +403,7 @@ Updater_TotalFound: "Totale opdaterings gevind: {x}"
 Updater_TotalSize: "Totale grootte: {size}"
 Updater_AwaitingUser: Wag tans vir gebruikerinvoer …
 Updater_UpToDate: "Jy is op datum.\n:)"
-Updater_FailedDecode: Dit is heel waarskynlik te wyte daaraan dat ek (TechNobo) 'n opdatering gedruk het, en 'n tikfout gemaak het wat die .json-opdateringlêer gebreek het. Laat weet my :)
+Updater_FailedDecode: Dit is heel waarskynlik te wyte daaraan dat ek (TroubleChute) 'n opdatering gedruk het, en 'n tikfout gemaak het wat die .json-opdateringlêer gebreek het. Laat weet my :)
 Updater_FailedDecodeTitle: Kon nie opdateringslys dekodeer nie
 Updater_Extracting: Onttrek pleisterlêers
 Updater_Applying: Pas tans pleister toe...

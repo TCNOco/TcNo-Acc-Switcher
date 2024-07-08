@@ -244,7 +244,7 @@ Toast_JsonFailModify: Die JSON-Datei konnte nicht geändert werden. Siehe Protok
 Toast_DifferentClosingMethod: "'Closing Method' unterscheidet sich von der Standardeinstellung. Wenn Spiele geschlossen werden und mehr überprüfen, ob das Ändern dieser Option hilft. Standard: {defaultMethod}, Aktuell: {currentMethod}"
 Modal_Crowdin_Header: Crowdin-Übersetzer
 Modal_Crowdin_Info: "Hier sind alle, die geholfen haben, diese Software zu übersetzen.<br>Benutzer mit Sprachen neben ihnen haben bei der Übersetzung sehr geholfen (Rolle des Korrekturlesers)."
-Modal_Info_Creator: Erstellt von TechNobo [Wesley Pyburn]
+Modal_Info_Creator: Erstellt von TroubleChute [Wesley Pyburn]
 Modal_Info_Version: Version
 Modal_Info_ViewGitHub: Auf GitHub anzeigen
 Modal_Info_ViewPatreon: Unterstützung via Patreon
@@ -403,7 +403,7 @@ Updater_TotalFound: "Insgesamt gefundene Updates: {x}"
 Updater_TotalSize: "Gesamtgröße: {size}"
 Updater_AwaitingUser: Warten auf Benutzereingabe...
 Updater_UpToDate: "Du bist auf dem Laufenden.\n:)"
-Updater_FailedDecode: Dies liegt höchstwahrscheinlich daran, dass ich (TechNobo) ein Update hochgeladen habe und einen Tippfehler machte, der die .json-Aktualisierungsdatei brach. Lassen Sie es mich wissen :)
+Updater_FailedDecode: Dies liegt höchstwahrscheinlich daran, dass ich (TroubleChute) ein Update hochgeladen habe und einen Tippfehler machte, der die .json-Aktualisierungsdatei brach. Lassen Sie es mich wissen :)
 Updater_FailedDecodeTitle: Fehler beim Entschlüsseln der Aktualisierungsliste
 Updater_Extracting: Extrahieren von Patchdateien
 Updater_Applying: Patch wird angewendet...

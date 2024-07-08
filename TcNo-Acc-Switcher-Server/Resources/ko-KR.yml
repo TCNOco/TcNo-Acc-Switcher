@@ -403,7 +403,7 @@ Updater_TotalFound: "발견된 총 업데이트 수: {x}"
 Updater_TotalSize: "총 크기: {size}"
 Updater_AwaitingUser: 사용자 입력을 기다리는 중...
 Updater_UpToDate: "최신 버전입니다.\n:)"
-Updater_FailedDecode: 이것은 제가(TechNobo) 업데이트를 푸시하고 .json 업데이트 파일을 손상시킬만한 오타를 냈기 때문일 가능성이 큽니다. 저에게 알려주세요 :)
+Updater_FailedDecode: 이것은 제가(TroubleChute) 업데이트를 푸시하고 .json 업데이트 파일을 손상시킬만한 오타를 냈기 때문일 가능성이 큽니다. 저에게 알려주세요 :)
 Updater_FailedDecodeTitle: 업데이트 목록을 디코딩하지 못했습니다
 Updater_Extracting: 패치 파일 압축 해제 중
 Updater_Applying: 패치 적용 중...

@@ -30,4 +30,4 @@ A dark theme replicate my favorite Vs-code theme [Monokai](https://monokai.pro/v
 
 Created by [MajorAmari](https://github.com/Majoramari).
 
-Note from TechNobo: Thanks again for your work translating, and helping with RTL support @Majoramari!
+Note from TroubleChute: Thanks again for your work translating, and helping with RTL support @Majoramari!

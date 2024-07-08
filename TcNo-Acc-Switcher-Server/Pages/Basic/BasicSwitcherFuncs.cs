@@ -367,7 +367,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                         return Globals.GetSha256HashString(bytes);
                     default:
                         Globals.WriteToLog($"REG was read, and was returned something that is not a string or byte array! {accFile}.");
-                        Globals.WriteToLog("Check to see what is expected here and report to TechNobo.");
+                        Globals.WriteToLog("Check to see what is expected here and report to TroubleChute.");
                         return res;
                 }
             }
@@ -571,7 +571,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                         // Write registry value to provided file
                         if (response is string s) regJson[accFile] = s;
                         else if (response is byte[] ba) regJson[accFile] = "(hex) " + Globals.ByteArrayToString(ba);
-                        else Globals.WriteToLog($"Unexpected registry type encountered (2)! Report to TechNobo. {response.GetType()}");
+                        else Globals.WriteToLog($"Unexpected registry type encountered (2)! Report to TroubleChute. {response.GetType()}");
                     }
                     continue;
                 }
@@ -808,7 +808,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     case byte[]:
                         return Globals.GetSha256HashString(r);
                     default:
-                        Globals.WriteToLog($"Unexpected registry type encountered (1)! Report to TechNobo. {r.GetType()}");
+                        Globals.WriteToLog($"Unexpected registry type encountered (1)! Report to TroubleChute. {r.GetType()}");
                         return "";
                 }
             }

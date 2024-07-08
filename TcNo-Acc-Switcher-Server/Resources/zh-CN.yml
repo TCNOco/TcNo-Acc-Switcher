@@ -244,7 +244,7 @@ Toast_JsonFailModify: 修改 JSON 文件失败。请查看日志。
 Toast_DifferentClosingMethod: "“关闭方式”与默认值不同。如果游戏不能正常关闭，请尝试修改此选项。默认：{defaultMethod}，当前：{currentMethod}"
 Modal_Crowdin_Header: Crowdin 译者
 Modal_Crowdin_Info: "这是帮助翻译此软件的所有人。<br>名字旁边有语言的用户在翻译方面提供了很多帮助（审核员身份）。"
-Modal_Info_Creator: 由 TechNobo [Wesley Pyburn] 创作
+Modal_Info_Creator: 由 TroubleChute [Wesley Pyburn] 创作
 Modal_Info_Version: 版本
 Modal_Info_ViewGitHub: 在 GitHub 上查看
 Modal_Info_ViewPatreon: 通过 Patreon 支持
@@ -403,7 +403,7 @@ Updater_TotalFound: "发现更新总数：{x}"
 Updater_TotalSize: "总大小：{size}"
 Updater_AwaitingUser: 正在等待用户输入…
 Updater_UpToDate: "您使用的已经是最新版。\n:)"
-Updater_FailedDecode: 这很可能是因为我（TechNobo）推送了一个更新，并且打错字损坏了 .json 更新文件。请向我反馈此问题 :)
+Updater_FailedDecode: 这很可能是因为我（TroubleChute）推送了一个更新，并且打错字损坏了 .json 更新文件。请向我反馈此问题 :)
 Updater_FailedDecodeTitle: 解码更新列表失败
 Updater_Extracting: 正在解压补丁文件
 Updater_Applying: 正在应用补丁…

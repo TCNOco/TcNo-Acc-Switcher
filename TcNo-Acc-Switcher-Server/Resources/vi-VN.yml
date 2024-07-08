@@ -244,7 +244,7 @@ Toast_JsonFailModify: Không thể sửa đổi tệp JSON. Xem nhật ký.
 Toast_DifferentClosingMethod: "'Phương thức đóng' khác với mặc định. Nếu các trò chơi đang đóng và kiểm tra thêm xem việc thay đổi tùy chọn này có hữu ích hay không. Mặc định: {defaultMethod}, Hiện tại: {currentMethod}"
 Modal_Crowdin_Header: Người dịch Crowdin
 Modal_Crowdin_Info: "Đây là tất cả những người đã giúp dịch phần mềm này.<br>Người dùng có ngôn ngữ bên cạnh họ đã giúp rất nhiều trong việc dịch thuật (vai trò người hiệu đính)."
-Modal_Info_Creator: Được tạo bởi TechNobo [Wesley Pyburn]
+Modal_Info_Creator: Được tạo bởi TroubleChute [Wesley Pyburn]
 Modal_Info_Version: Phiên ba ̉ n
 Modal_Info_ViewGitHub: Xem trên GitHub
 Modal_Info_ViewPatreon: Hỗ trợ qua Patreon
@@ -403,7 +403,7 @@ Updater_TotalFound: "Tổng số cập nhật được tìm thấy: {x}"
 Updater_TotalSize: "Tổng kích thước: {size}"
 Updater_AwaitingUser: Đang chờ người dùng nhập dữ liệu...
 Updater_UpToDate: "Bạn đã cập nhật.\n:)"
-Updater_FailedDecode: Điều này rất có thể là do tôi (TechNobo) đã đẩy một bản cập nhật và tạo lỗi đánh máy làm hỏng tệp .json cập nhật. Vui lòng cho tôi biết :)
+Updater_FailedDecode: Điều này rất có thể là do tôi (TroubleChute) đã đẩy một bản cập nhật và tạo lỗi đánh máy làm hỏng tệp .json cập nhật. Vui lòng cho tôi biết :)
 Updater_FailedDecodeTitle: Không thể giải mã danh sách cập nhật
 Updater_Extracting: Trích xuất các tập tin bản vá lỗi
 Updater_Applying: Đang áp dụng bản vá...

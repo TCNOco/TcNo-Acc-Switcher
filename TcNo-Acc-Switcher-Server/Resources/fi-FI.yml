@@ -244,7 +244,7 @@ Toast_JsonFailModify: JSON-tiedoston muokkaaminen epäonnistui. Katso lokia.
 Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Modal_Crowdin_Header: Crowdinin kääntäjät
 Modal_Crowdin_Info: "Tässä ovat kaikki, jotka auttoivat kääntämään tämän ohjelmiston.<br>Käyttäjät, joiden kieli on vieressä, auttoivat paljon kääntämisessä (oikolukijan rooli)."
-Modal_Info_Creator: Luonut TechNobo [Wesley Pyburn]
+Modal_Info_Creator: Luonut TroubleChute [Wesley Pyburn]
 Modal_Info_Version: Versio
 Modal_Info_ViewGitHub: Näytä GitHubissa
 Modal_Info_ViewPatreon: Tuki Patreonin kautta
@@ -403,7 +403,7 @@ Updater_TotalFound: "Löytyneitä päivityksiä: {x}"
 Updater_TotalSize: "Kokonaiskoko: {size}"
 Updater_AwaitingUser: Odotetaan käyttäjän syöttöä...
 Updater_UpToDate: "Olet ajan tasalla.\n:)"
-Updater_FailedDecode: Tämä johtuu todennäköisesti siitä, että minä (TechNobo) työntää päivityksen, ja tehdä kirjoitusvirhe, joka rikkoi .json päivitystiedoston. Ilmoitathan minulle:)
+Updater_FailedDecode: Tämä johtuu todennäköisesti siitä, että minä (TroubleChute) työntää päivityksen, ja tehdä kirjoitusvirhe, joka rikkoi .json päivitystiedoston. Ilmoitathan minulle:)
 Updater_FailedDecodeTitle: Päivitysluettelon purkaminen epäonnistui
 Updater_Extracting: Puretaan Patch-tiedostoja
 Updater_Applying: Asennetaan korjausta...

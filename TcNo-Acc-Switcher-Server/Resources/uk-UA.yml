@@ -244,7 +244,7 @@ Toast_JsonFailModify: Не вдалося змінити файл JSON. Див. 
 Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Modal_Crowdin_Header: Перекладачі Crowdin
 Modal_Crowdin_Info: "Ось усі, хто допоміг перекласти це програмне забезпечення.<br>Користувачі з мовами поруч дуже допомогли в перекладі (роль коректора)."
-Modal_Info_Creator: Створено TechNobo [Wesley Pyburn]
+Modal_Info_Creator: Створено TroubleChute [Wesley Pyburn]
 Modal_Info_Version: Версія
 Modal_Info_ViewGitHub: Переглянути на GitHub
 Modal_Info_ViewPatreon: Підтримка через Patreon
@@ -403,7 +403,7 @@ Updater_TotalFound: "Загальна кількість знайдених он
 Updater_TotalSize: "Загальний розмір: {size}"
 Updater_AwaitingUser: Очікування введення користувача...
 Updater_UpToDate: "Ви в курсі.\n:)"
-Updater_FailedDecode: Найімовірніше, це пов 'язано з тим, що я (TechNobo) штовхаю оновлення і роблю помилку, яка зламала файл оновлення .json. Дай мені знати :)
+Updater_FailedDecode: Найімовірніше, це пов 'язано з тим, що я (TroubleChute) штовхаю оновлення і роблю помилку, яка зламала файл оновлення .json. Дай мені знати :)
 Updater_FailedDecodeTitle: Не вдалося розшифрувати список оновлень
 Updater_Extracting: Видобування файлів патчів
 Updater_Applying: Застосування латки...

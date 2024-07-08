@@ -244,7 +244,7 @@ Toast_JsonFailModify: Gagal memodifikasi berkas JSON. Lihat log.
 Toast_DifferentClosingMethod: "'Metode Penutupan' berbeda dengan default. Jika permainan ditutup dan lainnya, periksa apakah mengubah opsi ini membantu. Bawaan: {defaultMethod}, Saat ini: {currentMethod}"
 Modal_Crowdin_Header: Penerjemah Crowdin
 Modal_Crowdin_Info: "Berikut adalah semua orang yang membantu menerjemahkan perangkat lunak ini.<br>Pengguna dengan bahasa di samping mereka banyak membantu dalam penerjemahan (peran proofreader)."
-Modal_Info_Creator: Dibuat oleh TechNobo [Wesley Pyburn]
+Modal_Info_Creator: Dibuat oleh TroubleChute [Wesley Pyburn]
 Modal_Info_Version: Versi
 Modal_Info_ViewGitHub: Lihat di GitHub
 Modal_Info_ViewPatreon: Dukungan melalui Patreon
@@ -403,7 +403,7 @@ Updater_TotalFound: "Total pembaruan yang ditemukan: {x}"
 Updater_TotalSize: "Ukuran total: {size}"
 Updater_AwaitingUser: Menunggu masukan pengguna...
 Updater_UpToDate: "Anda sudah diperbarui.\n:)"
-Updater_FailedDecode: Ini kemungkinan besar karena saya (TechNobo) mendorong pembaruan, dan membuat kesalahan ketik yang merusak file pembaruan .json. Do let me know :)
+Updater_FailedDecode: Ini kemungkinan besar karena saya (TroubleChute) mendorong pembaruan, dan membuat kesalahan ketik yang merusak file pembaruan .json. Do let me know :)
 Updater_FailedDecodeTitle: Gagal mendekode daftar pembaruan
 Updater_Extracting: Mengekstrak file patch
 Updater_Applying: Menerapkan patch...

@@ -244,7 +244,7 @@ Toast_JsonFailModify: Kan JSON-bestand niet wijzigen. Zie logboek.
 Toast_DifferentClosingMethod: "'Afsluitingsmethode' is anders dan de standaard. Als je een partij sluit en meer controle dan het wijzigen van deze optie helpt. Standaard: {defaultMethod}, Huidig: {currentMethod}"
 Modal_Crowdin_Header: Crowdin-vertalers
 Modal_Crowdin_Info: "Hier is iedereen die heeft geholpen met het vertalen van deze software.<br>Gebruikers met talen naast zich hebben veel geholpen bij het vertalen (rol van proeflezer)."
-Modal_Info_Creator: Gemaakt door TechNobo [Wesley Pyburn]
+Modal_Info_Creator: Gemaakt door TroubleChute [Wesley Pyburn]
 Modal_Info_Version: Versie
 Modal_Info_ViewGitHub: Bekijk op GitHub
 Modal_Info_ViewPatreon: Ondersteuning via Patreon
@@ -403,7 +403,7 @@ Updater_TotalFound: "Totaal aantal gevonden updates: {x}"
 Updater_TotalSize: "Totale grootte: {size}"
 Updater_AwaitingUser: Wachten op invoer van gebruiker...
 Updater_UpToDate: "Je bent up-to-date.\n:)"
-Updater_FailedDecode: Dit is waarschijnlijk te wijten aan mij (TechNobo) duwen van een update, en het maken van een typfout dat de .json update-bestand brak. Laat het me weten :)
+Updater_FailedDecode: Dit is waarschijnlijk te wijten aan mij (TroubleChute) duwen van een update, en het maken van een typfout dat de .json update-bestand brak. Laat het me weten :)
 Updater_FailedDecodeTitle: Kon update lijst niet decoderen
 Updater_Extracting: Patchbestanden uitpakken
 Updater_Applying: Patch wordt toegepast...

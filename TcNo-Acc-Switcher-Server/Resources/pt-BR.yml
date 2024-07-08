@@ -244,7 +244,7 @@ Toast_JsonFailModify: Falha ao modificar o arquivo JSON. Veja o log.
 Toast_DifferentClosingMethod: "'Método de fechamento' é diferente do padrão. Se os jogos estão fechando e etc, olha se alterar a opção ajuda. Padrão: {defaultMethod}, Atual: {currentMethod}"
 Modal_Crowdin_Header: Tradutores Crowdin
 Modal_Crowdin_Info: "Aqui estão todos que ajudaram a traduzir este software.<br>Usuários com idiomas próximos a eles ajudaram muito na tradução (função de revisor)."
-Modal_Info_Creator: Criado por TechNobo [Wesley Pyburn]
+Modal_Info_Creator: Criado por TroubleChute [Wesley Pyburn]
 Modal_Info_Version: Versão
 Modal_Info_ViewGitHub: Ver no GitHub
 Modal_Info_ViewPatreon: Suporte via Patreon
@@ -403,7 +403,7 @@ Updater_TotalFound: "Total de atualizações encontradas: {x}"
 Updater_TotalSize: "Tamanho total: {size}"
 Updater_AwaitingUser: Aguardando a entrada do usuário...
 Updater_UpToDate: "Você está atualizado.\n:)"
-Updater_FailedDecode: Isto é provavelmente devido a mim (TechNobo) empurrando uma atualização, e fazendo um erro de digitação que quebrou o arquivo de atualização .json. Avise-me :)
+Updater_FailedDecode: Isto é provavelmente devido a mim (TroubleChute) empurrando uma atualização, e fazendo um erro de digitação que quebrou o arquivo de atualização .json. Avise-me :)
 Updater_FailedDecodeTitle: Falha ao decodificar a lista de atualizações
 Updater_Extracting: Extraindo arquivos patch
 Updater_Applying: Aplicando patch...

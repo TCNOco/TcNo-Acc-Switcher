@@ -244,7 +244,7 @@ Toast_JsonFailModify: Modificarea fișierului JSON a eșuat. Consultați jurnalu
 Toast_DifferentClosingMethod: "'Metoda de închidere' este diferită de cea implicită. Dacă jocurile se închid și mai multe verifică dacă schimbarea acestei opțiuni ajută. Implicit: {defaultMethod}, Curent: {currentMethod}"
 Modal_Crowdin_Header: Crowdin traducători
 Modal_Crowdin_Info: "Iată toți cei care au ajutat la traducerea acestui software.<br>Utilizatorii cu limbi lângă ei au ajutat foarte mult la traducere (rol de corector)."
-Modal_Info_Creator: Creat de TechNobo [Wesley Pyburn]
+Modal_Info_Creator: Creat de TroubleChute [Wesley Pyburn]
 Modal_Info_Version: Versiune
 Modal_Info_ViewGitHub: Vizualizare pe GitHub
 Modal_Info_ViewPatreon: Suport prin Patreon
@@ -403,7 +403,7 @@ Updater_TotalFound: "Total actualizări găsite: {x}"
 Updater_TotalSize: "Dimensiune totală: {size}"
 Updater_AwaitingUser: Se așteaptă introducerea de către utilizator...
 Updater_UpToDate: "Ești la zi.\n:)"
-Updater_FailedDecode: Acest lucru se datorează cel mai probabil faptului că eu (TechNobo) am apăsat pe o actualizare și am făcut o greșeală de scriere care a stricat fișierul de actualizare .json. Anunță-mă :)
+Updater_FailedDecode: Acest lucru se datorează cel mai probabil faptului că eu (TroubleChute) am apăsat pe o actualizare și am făcut o greșeală de scriere care a stricat fișierul de actualizare .json. Anunță-mă :)
 Updater_FailedDecodeTitle: Nu s-a reușit decodificarea listei de actualizări
 Updater_Extracting: Extragerea fișierelor patch
 Updater_Applying: Se aplică peticul...

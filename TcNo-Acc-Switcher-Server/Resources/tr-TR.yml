@@ -244,7 +244,7 @@ Toast_JsonFailModify: JSON dosyası değiştirilemedi. Günlüğe bakın.
 Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Modal_Crowdin_Header: Crowdin çevirmenleri
 Modal_Crowdin_Info: "İşte bu yazılımı çevirmeye yardım eden herkes.<br>Dilleri yanlarında olan kullanıcılar çeviride çok yardımcı oldular (düzeltici rolü)."
-Modal_Info_Creator: TechNobo [Wesley Pyburn] tarafından oluşturuldu
+Modal_Info_Creator: TroubleChute [Wesley Pyburn] tarafından oluşturuldu
 Modal_Info_Version: Versiyon
 Modal_Info_ViewGitHub: GitHub'da Görüntüle
 Modal_Info_ViewPatreon: Patreon üzerinden destek
@@ -403,7 +403,7 @@ Updater_TotalFound: "Bulunan toplam güncelleme: {x}"
 Updater_TotalSize: "Toplam boyut: {size}"
 Updater_AwaitingUser: Kullanıcı girişi bekleniyor...
 Updater_UpToDate: "Güncelsiniz.\n:)"
-Updater_FailedDecode: Bu büyük olasılıkla benim (TechNobo) bir güncellemeye basmamdan ve .json güncelleme dosyasını kıran bir yazım hatası yapmamdan kaynaklanıyor. Lütfen bana bildirin :)
+Updater_FailedDecode: Bu büyük olasılıkla benim (TroubleChute) bir güncellemeye basmamdan ve .json güncelleme dosyasını kıran bir yazım hatası yapmamdan kaynaklanıyor. Lütfen bana bildirin :)
 Updater_FailedDecodeTitle: Güncelleme listesi kodu çözülemedi
 Updater_Extracting: Yama dosyaları ayıklanıyor
 Updater_Applying: Yama uygulanıyor...

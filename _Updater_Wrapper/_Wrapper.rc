@@ -77,11 +77,11 @@ BEGIN
     BEGIN
         BLOCK "040004b0"
         BEGIN
-            VALUE "CompanyName", "TechNobo (Wesley Pyburn)"
+            VALUE "CompanyName", "TroubleChute (Wesley Pyburn)"
             VALUE "FileDescription", "TcNo Account Switcher Wrapper"
             VALUE "FileVersion", "1.0.0.0"
             VALUE "InternalName", "_Wrap.exe"
-            VALUE "LegalCopyright", "Copyright © TechNobo (Wesley Pyburn) 2019-2023"
+            VALUE "LegalCopyright", "Copyright © TroubleChute (Wesley Pyburn) 2019-2024"
             VALUE "OriginalFilename", "_Wrapper.exe"
             VALUE "ProductName", "TcNo Account Switcher - Wrapper"
             VALUE "ProductVersion", "1.0.0.1"

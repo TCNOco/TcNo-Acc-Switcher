@@ -7,9 +7,9 @@
     <UseWPF>true</UseWPF>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
     <Product>TcNo Account Switcher - Server</Product>
-    <Authors>TechNobo (Wesley Pyburn)</Authors>
+    <Authors>TroubleChute (Wesley Pyburn)</Authors>
     <Description>Updater for the TcNo Account Switcher</Description>
-    <Copyright>Copyright © TechNobo (Wesley Pyburn) 2019-2023</Copyright>
+    <Copyright>Copyright © TroubleChute (Wesley Pyburn) 2019-2024</Copyright>
     <PackageProjectUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</PackageProjectUrl>
     <RepositoryUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</RepositoryUrl>
     <Platforms>x64</Platforms>
