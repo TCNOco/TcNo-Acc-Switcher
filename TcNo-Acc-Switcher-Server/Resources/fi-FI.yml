@@ -10,7 +10,7 @@ Steam_Tray_AccountName: Näytä tilin nimi [ei ystävän nimi]
 Steam_CheckVac: Tarkista tilin VAC-tila
 Steam_OverrideDefaultState: "Ohita oletuskirjautumistila:"
 Steam_StartSilent: "Avaa Steam to Task -alusta kytkimellä (Käynnistä Steam '-hiljaisella')"
-Steam_OldUi: "Use Old UI in Steam (-vgui)"
+Steam_OldUi: "Käytä vanhaa käyttöliittymää Steamissä (-vgui)"
 Button_AddNew: Lisää uusi
 Button_SaveCurrent: Tallenna nykyinen
 Button_SaveFile: Tallenna tiedosto
@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Käytöstä poistetut alustat. Ota ne käyttö�
 Settings_ExtraPlatformsEnabled: Näkyvät alustat. Poista ne käytöstä napsauttamalla.
 Settings_RTL: Näytä teksti oikealta vasemmalle
 Settings_CollectStats: Kerää tilastoja
-Settings_ShareStats: Jaa tilastot ärsyttävästi (suositus)
+Settings_ShareStats: Share stats anonymously (recommended)
 Settings_DiscordRpc: Poikkeamarikas läsnäolo (RPC)
 Settings_DiscordRpcShare: Jaa kokonaiskytkimet
 Settings_ViewStats: Näytä tilastot
@@ -192,7 +192,7 @@ Toast_NoValidSteamId: Voimassa olevaa Steam-tunnusta ei löydy.
 Toast_FailedUpdateCheck: Päivitysten tarkistaminen epäonnistui
 Toast_UpdateVerifyFail: Päivitystiedostoja ei voida vahvistaa. Lataa uusin versio ja korvaa hakemistosi tiedostot.
 Toast_StartedGame: Aloitettu {program}
-Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
+Toast_SteamCantLoadXml: Ei saatu XML-tietoja kohteelle {steamId}. Katso lisätiedot lokista.
 Toast_Steam_VacCleared: Tilien VAC-tila tyhjennettiin
 Toast_Steam_CantDeleteVacCache: '''LoginCache/Steam/VACCache/SteamVACCache.json'' ei voitu poistaa'
 Toast_NoFindSteamUserdata: Steam\\ userdata -kansiota ei löytynyt
@@ -241,13 +241,14 @@ Toast_SteamWebKeyInvalid: Steam Web API avain näyttää olevan virheellinen. Ol
 Toast_DownloadingProfileData: Profiilitietojen lataaminen
 Toast_PasswordChanged: Salasana vaihdettu
 Toast_JsonFailModify: JSON-tiedoston muokkaaminen epäonnistui. Katso lokia.
+Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Modal_Crowdin_Header: Crowdinin kääntäjät
 Modal_Crowdin_Info: "Tässä ovat kaikki, jotka auttoivat kääntämään tämän ohjelmiston.<br>Käyttäjät, joiden kieli on vieressä, auttoivat paljon kääntämisessä (oikolukijan rooli)."
 Modal_Info_Creator: Luonut TechNobo [Wesley Pyburn]
 Modal_Info_Version: Versio
 Modal_Info_ViewGitHub: Näytä GitHubissa
-Modal_Info_ViewPatreon: Support via Patreon
-Modal_Info_ViewKofi: Support via Ko-Fi
+Modal_Info_ViewPatreon: Tuki Patreonin kautta
+Modal_Info_ViewKofi: Tuki Ko-Fin kautta
 Modal_Info_BugReport: Vikailmoitus/Ominaisuuspyyntö
 Modal_Info_VisitSite: Käy osoitteessa tcno.co
 Modal_Info_Disclaimer: Vastuuvapauslauseke
