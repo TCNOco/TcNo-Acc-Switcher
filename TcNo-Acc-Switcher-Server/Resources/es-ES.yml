@@ -7,10 +7,10 @@ Steam_ShowLastLogin: Última hora de inicio de sesión
 Steam_ShowLimited: Estado Limitado
 Steam_ShowAccUsername: Usuario de la cuenta
 Steam_Tray_AccountName: Mostrar nombre de la cuenta [no nombre de amigo]
-Steam_CheckVac: Estado de VAC de cuenta de cheques
+Steam_CheckVac: Compruebe el estado VAC de la cuenta
 Steam_OverrideDefaultState: "Sobrescribir estado de inicio de sesión predeterminado:"
 Steam_StartSilent: "Abra Steam en la bandeja de tareas al cambiar (Inicia Steam con '-silencio')"
-Steam_OldUi: "Use Old UI in Steam (-vgui)"
+Steam_OldUi: "Usar la interfaz de usuario antigua en Steam (-vgui)"
 Button_AddNew: Añadir Nuevo
 Button_SaveCurrent: Guardar actual
 Button_SaveFile: Guardar archivo
@@ -47,7 +47,7 @@ Settings_Header_BackupRestore: Configuración de la plataforma de copia de segur
 Settings_Header_Language: Lenguaje
 Settings_Header_System: Sistema
 Settings_Header_Theme: Tema
-Settings_Header_Program: Programar
+Settings_Header_Program: Programa
 Settings_Header_StatsSharing: Estadísticas y uso compartido
 Settings_Header_Platform: "{platformName} ajustes"
 Settings_Header_GameStats: Configuración de estadísticas globales del juego
@@ -57,8 +57,8 @@ Settings_ExtraPlatformsDisabled: Plataformas desactivadas. Haga clic para habili
 Settings_ExtraPlatformsEnabled: Plataformas visibles. Haga clic para desactivarlas.
 Settings_RTL: Mostrar texto de derecha a izquierda
 Settings_CollectStats: Recopilar estadísticas
-Settings_ShareStats: Comparte las estadísticas de forma molesta (recomendado)
-Settings_DiscordRpc: Presencia rica en discordia (RPC)
+Settings_ShareStats: Share stats anonymously (recommended)
+Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Compartir interruptores totales
 Settings_ViewStats: Ver estadísticas
 Preview: Vista previa
@@ -71,7 +71,7 @@ Settings_OpenFolder: Abrir carpeta {platform}
 Settings_ClearForgotten: Borrar olvidado
 Settings_ClearAccounts: Borrar cuentas
 Settings_StreamerMode: Habilitar modo streamer
-Settings_ExitToTray: La salida minimiza la bandeja
+Settings_ExitToTray: Cerrar minimiza a la bandeja
 Settings_DesktopShortcut: Atajo de escritorio
 Settings_StartMenu_ProgramTray: Programa y bandeja
 Settings_StartMenu_Platform: Plataforma
@@ -192,7 +192,7 @@ Toast_NoValidSteamId: No se ha podido encontrar un ID de Steam válido.
 Toast_FailedUpdateCheck: No se han podido comprobar las actualizaciones
 Toast_UpdateVerifyFail: No se pueden verificar los archivos de actualización. Descargue la última versión y reemplace los archivos de su directorio.
 Toast_StartedGame: Iniciado {program}
-Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
+Toast_SteamCantLoadXml: No se pudo obtener información XML para {steamId}. Ver registro para más detalles.
 Toast_Steam_VacCleared: El estado del VAC para las cuentas se ha compensado
 Toast_Steam_CantDeleteVacCache: No se pudo eliminar 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: No se ha podido encontrar la carpeta de datos de usuario de Steam\\
@@ -241,13 +241,14 @@ Toast_SteamWebKeyInvalid: La clave de la API de Steam Web parece no ser válida.
 Toast_DownloadingProfileData: Descarga de datos de perfil
 Toast_PasswordChanged: Contraseña cambiada
 Toast_JsonFailModify: Error al modificar el archivo JSON. Consulte el registro.
+Toast_DifferentClosingMethod: "El 'Método de cierre' es diferente al predeterminado. Si se están cerrando juegos y más, verifique si cambiar esta opción ayuda. Predeterminado: {defaultMethod}, Actual: {currentMethod}"
 Modal_Crowdin_Header: Traductores de Crowdin
 Modal_Crowdin_Info: "Aquí están todos los que ayudaron a traducir este software.<br>Los usuarios con idiomas a su lado ayudaron mucho en la traducción (función de corrector de pruebas)."
 Modal_Info_Creator: Creado por TechNobo [Wesley Pyburn]
 Modal_Info_Version: Versión
 Modal_Info_ViewGitHub: Ver en GitHub
-Modal_Info_ViewPatreon: Support via Patreon
-Modal_Info_ViewKofi: Support via Ko-Fi
+Modal_Info_ViewPatreon: Soporte a través de Patreon
+Modal_Info_ViewKofi: Soporte a través de Ko-Fi
 Modal_Info_BugReport: Informe de errores/solicitud de características
 Modal_Info_VisitSite: Visite tcno.co
 Modal_Info_Disclaimer: Descargo de responsabilidad
