@@ -10,7 +10,7 @@ Steam_Tray_AccountName: Visa kontonamn [not friend name]
 Steam_CheckVac: Kontrollera VAC status för kontot
 Steam_OverrideDefaultState: "Åsidosätt standardinloggningstillstånd:"
 Steam_StartSilent: "Öppna Ånga till aktivitetsfacket på strömbrytaren (Starta Ånga med \"-silent\")"
-Steam_OldUi: "Use Old UI in Steam (-vgui)"
+Steam_OldUi: "Använd det gamla användargränssnittet i Steam (-vgui)"
 Button_AddNew: Lägg till ny
 Button_SaveCurrent: Spara aktuell
 Button_SaveFile: Spara fil
@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Inaktiverade plattformar. Klicka för att aktiv
 Settings_ExtraPlatformsEnabled: Synliga plattformar. Klicka för att inaktivera dem.
 Settings_RTL: Visa text som höger till vänster
 Settings_CollectStats: Samla in statistik
-Settings_ShareStats: Dela statistik irriterande (rekommenderas)
+Settings_ShareStats: Share stats anonymously (recommended)
 Settings_DiscordRpc: Diskordrik närvaro (RPC)
 Settings_DiscordRpcShare: Andel totalswitchar
 Settings_ViewStats: Visa statistik
@@ -192,7 +192,7 @@ Toast_NoValidSteamId: Det gick inte att hitta ett giltigt ång-ID.
 Toast_FailedUpdateCheck: Det gick inte att söka efter uppdateringar
 Toast_UpdateVerifyFail: Kan inte verifiera uppdateringsfiler. Ladda ner den senaste versionen och ersätt filer i din katalog.
 Toast_StartedGame: Startade {program}
-Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
+Toast_SteamCantLoadXml: Det gick inte att hämta XML-information för {steamId}. Se logg för mer information.
 Toast_Steam_VacCleared: VAC-status för konton har rensats
 Toast_Steam_CantDeleteVacCache: Kunde inte ta bort 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: Kunde inte hitta mappen Steam\\ userdata
@@ -241,6 +241,7 @@ Toast_SteamWebKeyInvalid: Steam Web API-nyckel verkar vara ogiltig. Ställ in en
 Toast_DownloadingProfileData: Hämtar profildata
 Toast_PasswordChanged: Lösenordet har ändrats
 Toast_JsonFailModify: Det gick inte att ändra JSON-filen. Se logg.
+Toast_DifferentClosingMethod: "'Avslutningsmetod' är annorlunda än standard. Om spelen stängs och fler kontrollera om ändringen av detta alternativ hjälper. Standard: {defaultMethod}, Aktuellt: {currentMethod}"
 Modal_Crowdin_Header: Crowdin-översättare
 Modal_Crowdin_Info: "Här är alla som hjälpte till att översätta denna programvara.<br>Användare med språk bredvid sig hjälpte mycket vid översättningen (korrekturläsarroll)."
 Modal_Info_Creator: Skapad av TechNobo [Wesley Pyburn]
