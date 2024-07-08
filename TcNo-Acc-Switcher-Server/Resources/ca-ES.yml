@@ -10,7 +10,7 @@ Steam_Tray_AccountName: Mostra el nom del compte [not friend name]
 Steam_CheckVac: Comprova l'estat del compte de VAC
 Steam_OverrideDefaultState: "Substitueix l'estat d'inici de sessió per defecte:"
 Steam_StartSilent: "Obriu el vapor a la safata de tasques al commutador (inicieu el vapor amb «-silenciós»)"
-Steam_OldUi: "Use Old UI in Steam (-vgui)"
+Steam_OldUi: "Utilitza la interfície d'usuari antiga a Steam (-vgui)"
 Button_AddNew: Afegeix nou
 Button_SaveCurrent: Desa l'actual
 Button_SaveFile: Desa el fitxer
@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Plataformes desactivades. Feu clic per habilita
 Settings_ExtraPlatformsEnabled: Plataformes visibles. Feu clic per desactivar-les.
 Settings_RTL: Mostra el text com a de dreta a esquerra
 Settings_CollectStats: Recull estadístiques
-Settings_ShareStats: Comparteix les estadístiques amb molèsties (recomanat)
+Settings_ShareStats: Share stats anonymously (recommended)
 Settings_DiscordRpc: Presència rica en discòrdies (RPC)
 Settings_DiscordRpcShare: Comparteix els commutadors totals
 Settings_ViewStats: Mostra les estadístiques
@@ -192,7 +192,7 @@ Toast_NoValidSteamId: No s'ha pogut trobar un identificador de Steam vàlid.
 Toast_FailedUpdateCheck: No s'han pogut comprovar les actualitzacions
 Toast_UpdateVerifyFail: No es poden verificar els fitxers d'actualització. Descarrega la versió més recent i reemplaça els fitxers del directori.
 Toast_StartedGame: S'ha iniciat {program}
-Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
+Toast_SteamCantLoadXml: No s'ha pogut obtenir la informació XML per a {steamId}. Consulteu el registre per a més detalls.
 Toast_Steam_VacCleared: S'ha netejat l'estat del VAC per als comptes
 Toast_Steam_CantDeleteVacCache: No s'ha pogut suprimir 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: No s'ha pogut trobar la carpeta Steam\\ userdata
@@ -241,13 +241,14 @@ Toast_SteamWebKeyInvalid: Sembla que la clau de l'API web de Steam no és vàlid
 Toast_DownloadingProfileData: S'estan baixant les dades del perfil
 Toast_PasswordChanged: S'ha canviat la contrasenya
 Toast_JsonFailModify: No s'ha pogut modificar el fitxer JSON. Vegeu el registre.
+Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Modal_Crowdin_Header: Traductors crowdin
 Modal_Crowdin_Info: "Aquí teniu tots els que han ajudat a traduir aquest programari.<br>Els usuaris amb idiomes al costat van ajudar molt en la traducció (rol de corrector)."
 Modal_Info_Creator: Creat per TechNobo [Wesley Pyburn]
 Modal_Info_Version: Versió
 Modal_Info_ViewGitHub: Visualitza a GitHub
-Modal_Info_ViewPatreon: Support via Patreon
-Modal_Info_ViewKofi: Support via Ko-Fi
+Modal_Info_ViewPatreon: Suport a través de Patreon
+Modal_Info_ViewKofi: Suport mitjançant Ko-Fi
 Modal_Info_BugReport: Informe d'errors/sol·licitud de funció
 Modal_Info_VisitSite: Visita tcno.co
 Modal_Info_Disclaimer: Renuncia de responsabilitat
