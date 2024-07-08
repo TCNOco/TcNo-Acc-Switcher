@@ -10,7 +10,7 @@ Steam_Tray_AccountName: Accountnamen anzeigen [kein Freundesname]
 Steam_CheckVac: Kontostatus VAC prüfen
 Steam_OverrideDefaultState: "Überschreibe Standard-Login-Status:"
 Steam_StartSilent: "Öffnen Sie Steam in der Taskleiste beim Umschalten (Starten Sie Steam mit '-silent')"
-Steam_OldUi: "Use Old UI in Steam (-vgui)"
+Steam_OldUi: "Alte Benutzeroberfläche in Steam verwenden (-vgui)"
 Button_AddNew: Hinzufügen
 Button_SaveCurrent: Aktuellen speichern
 Button_SaveFile: Datei speichern
@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Deaktivierte Plattformen. Klicken Sie, um sie z
 Settings_ExtraPlatformsEnabled: Sichtbare Plattformen. Klicken Sie, um sie zu deaktivieren.
 Settings_RTL: Text von rechts nach links anzeigen
 Settings_CollectStats: Statistiken sammeln
-Settings_ShareStats: Statistiken annonym teilen (empfohlen)
+Settings_ShareStats: Share stats anonymously (recommended)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Gesamtswitches teilen
 Settings_ViewStats: Statistiken anzeigen
@@ -192,7 +192,7 @@ Toast_NoValidSteamId: Eine gültige Steam-ID kann nicht gefunden werden.
 Toast_FailedUpdateCheck: Fehler bei der Suche nach Updates
 Toast_UpdateVerifyFail: Updater-Dateien können nicht verifiziert werden. Lade die neueste Version herunter und ersetze die Dateien in Ihrem Verzeichnis.
 Toast_StartedGame: '{program} gestartet'
-Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
+Toast_SteamCantLoadXml: Für {steamId}konnten keine XML-Informationen abgerufen werden. Weitere Details finden Sie im Protokoll.
 Toast_Steam_VacCleared: VAC-Status für Accounts wurde gelöscht
 Toast_Steam_CantDeleteVacCache: '''LoginCache/Steam/VACCache/SteamVACCache.json'' konnte nicht gelöscht werden'
 Toast_NoFindSteamUserdata: Ordner Steam\\userdata konnte nicht gefunden werden
@@ -241,13 +241,14 @@ Toast_SteamWebKeyInvalid: Der Steam-Web-API-Schlüssel scheint ungültig zu sein
 Toast_DownloadingProfileData: Herunterladen von Profildaten
 Toast_PasswordChanged: Passwort geändert
 Toast_JsonFailModify: Die JSON-Datei konnte nicht geändert werden. Siehe Protokoll.
+Toast_DifferentClosingMethod: "'Closing Method' unterscheidet sich von der Standardeinstellung. Wenn Spiele geschlossen werden und mehr überprüfen, ob das Ändern dieser Option hilft. Standard: {defaultMethod}, Aktuell: {currentMethod}"
 Modal_Crowdin_Header: Crowdin-Übersetzer
 Modal_Crowdin_Info: "Hier sind alle, die geholfen haben, diese Software zu übersetzen.<br>Benutzer mit Sprachen neben ihnen haben bei der Übersetzung sehr geholfen (Rolle des Korrekturlesers)."
 Modal_Info_Creator: Erstellt von TechNobo [Wesley Pyburn]
 Modal_Info_Version: Version
 Modal_Info_ViewGitHub: Auf GitHub anzeigen
-Modal_Info_ViewPatreon: Support via Patreon
-Modal_Info_ViewKofi: Support via Ko-Fi
+Modal_Info_ViewPatreon: Unterstützung über Patreon
+Modal_Info_ViewKofi: Unterstützung über Ko-Fi
 Modal_Info_BugReport: Fehlerbericht/Feature-Anfrage
 Modal_Info_VisitSite: Öffne tcno.co
 Modal_Info_Disclaimer: Haftungsausschluss
