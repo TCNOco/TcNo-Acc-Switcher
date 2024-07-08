@@ -210,7 +210,6 @@ namespace TcNo_Acc_Switcher_Client
             {
                 CachePath = Path.Join(Globals.UserDataFolder, "CEF\\Cache"),
                 UserAgent = "TcNo-CEF 1.0",
-                UserDataPath = Path.Join(Globals.UserDataFolder, "CEF\\Data"),
                 WindowlessRenderingEnabled = true
             };
             settings.CefCommandLineArgs.Add("-off-screen-rendering-enabled", "0");
