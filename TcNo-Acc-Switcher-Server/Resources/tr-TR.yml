@@ -10,7 +10,7 @@ Steam_Tray_AccountName: Hesap adını göster [arkadaş adı değil]
 Steam_CheckVac: Hesap VAC durumunu kontrol et
 Steam_OverrideDefaultState: "Varsayılan oturum açma durumunu geçersiz kıl:"
 Steam_StartSilent: "Anahtar üzerindeki görev tepsisine buharı açın (Buharı '- sessiz 'ile başlatın)"
-Steam_OldUi: "Use Old UI in Steam (-vgui)"
+Steam_OldUi: "Steam'de Eski Kullanıcı Arayüzünü Kullanın (-vgui)"
 Button_AddNew: Yeni Ekle
 Button_SaveCurrent: Mevcut Oturumu Kaydet
 Button_SaveFile: Dosyayı Kaydet
@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Devre dışı platformlar. Etkinleştirmek içi
 Settings_ExtraPlatformsEnabled: Görünür platformlar. Devre dışı bırakmak için tıklayın.
 Settings_RTL: Metni Sağdan Sola olarak göster
 Settings_CollectStats: İstatistikleri topla
-Settings_ShareStats: İstatistikleri anonim olarak paylaşın (önerilir)
+Settings_ShareStats: Share stats anonymously (recommended)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Toplam anahtarları paylaş
 Settings_ViewStats: İstatistikleri görüntüle
@@ -192,7 +192,7 @@ Toast_NoValidSteamId: Geçerli bir Steam Kimliği bulunamıyor.
 Toast_FailedUpdateCheck: Güncellemeler denetlenemedi
 Toast_UpdateVerifyFail: Güncelleyici dosyaları doğrulanamıyor. En son sürümü indirin ve dizininizdeki dosyaları değiştirin.
 Toast_StartedGame: '{program} başlatıldı'
-Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
+Toast_SteamCantLoadXml: '{steamId}için XML bilgisi alınamadı. Daha fazla ayrıntı için günlüğe bakın.'
 Toast_Steam_VacCleared: Hesaplar için VAC durumu temizlendi
 Toast_Steam_CantDeleteVacCache: '''LoginCache/Steam/VACCache/SteamVACCache.json'' silinemedi'
 Toast_NoFindSteamUserdata: Steam\\userdata klasörü bulunamadı
@@ -241,13 +241,14 @@ Toast_SteamWebKeyInvalid: Steam Web API anahtarı geçersiz görünüyor. Lütfe
 Toast_DownloadingProfileData: Profil verileri indiriliyor
 Toast_PasswordChanged: Şifre değiştirildi
 Toast_JsonFailModify: JSON dosyası değiştirilemedi. Günlüğe bakın.
+Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Modal_Crowdin_Header: Crowdin çevirmenleri
 Modal_Crowdin_Info: "İşte bu yazılımı çevirmeye yardım eden herkes.<br>Dilleri yanlarında olan kullanıcılar çeviride çok yardımcı oldular (düzeltici rolü)."
 Modal_Info_Creator: TechNobo [Wesley Pyburn] tarafından oluşturuldu
 Modal_Info_Version: Versiyon
 Modal_Info_ViewGitHub: GitHub'da Görüntüle
-Modal_Info_ViewPatreon: Support via Patreon
-Modal_Info_ViewKofi: Support via Ko-Fi
+Modal_Info_ViewPatreon: Patreon üzerinden destek
+Modal_Info_ViewKofi: Ko-Fi üzerinden destek
 Modal_Info_BugReport: Hata raporu/Özellik isteği
 Modal_Info_VisitSite: Tcno.co adresini ziyaret edin
 Modal_Info_Disclaimer: Sorumluluk Reddi
