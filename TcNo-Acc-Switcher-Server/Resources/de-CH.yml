@@ -10,7 +10,7 @@ Steam_Tray_AccountName: Accountnamä azeigä [nöt fründesname]
 Steam_CheckVac: Kontostatus VAC prüfen
 Steam_OverrideDefaultState: "Überschreibe Standard-Login-Status:"
 Steam_StartSilent: "Öffnen Sie Steam in der Taskleiste beim Umschalten (Starten Sie Steam mit '-silent')"
-Steam_OldUi: "Use Old UI in Steam (-vgui)"
+Steam_OldUi: "Altes UI in Steam verwenden (-vgui)"
 Button_AddNew: Hinzufügen
 Button_SaveCurrent: Aktuellen speichern
 Button_SaveFile: Datei speichern
@@ -46,7 +46,7 @@ Settings_Header_OpenGameFolders: Spielordner öffnen
 Settings_Header_BackupRestore: Plattformeinstellungen sichern und wiederherstellen
 Settings_Header_Language: Sprache (Language)
 Settings_Header_System: System
-Settings_Header_Theme: Theme
+Settings_Header_Theme: Thema
 Settings_Header_Program: Programm
 Settings_Header_StatsSharing: Statistiken & Sharing
 Settings_Header_Platform: "{platformName} Einstellungen"
@@ -57,8 +57,8 @@ Settings_ExtraPlatformsDisabled: Deaktivierte Plattformen. Klicken Sie, um sie z
 Settings_ExtraPlatformsEnabled: Sichtbare Plattformen. Klicken Sie, um sie zu deaktivieren.
 Settings_RTL: Text von rechts nach links anzeigen
 Settings_CollectStats: Statistiken sammeln
-Settings_ShareStats: Statistiken annonym teilen (empfohlen)
-Settings_DiscordRpc: Discord Rich Presence (RPC)
+Settings_ShareStats: Share stats anonymously (recommended)
+Settings_DiscordRpc: Discord Reiche Präsenz (RPC)
 Settings_DiscordRpcShare: Gesamtswitches teilen
 Settings_ViewStats: Statistiken anzeigen
 Preview: Vorschau
@@ -130,7 +130,7 @@ Locked: Gesperrt
 Cleaning_Header_StartMenuShortcuts: 'Tastenkombinationen für das Startmenü:'
 Cleaning_Header_General: Allgemeine Reinigung
 Cleaning_Header_LoginHistory: Login-Verlauf löschen
-Cleaning_Header_PlatformCleaning: '{platform} Switcher'
+Cleaning_Header_PlatformCleaning: '{platform} Umschalter'
 Cleaning_ImportantInfoHeader: 'Wichtige Informationen:'
 Cleaning_ImportantInfo: >
   Wenn du auf einen Button klickst, werden die zugehörigen Datei(en) von deiner Steam-Installation gelöscht.<br /> Das löschen von loginusers.vdf sorgt dafür, dass der Account-Switcher keine Konten anzeigt.<br /> Sie müssen sich mit Steam anmelden, um sie wieder zurückzuholen.
@@ -192,7 +192,7 @@ Toast_NoValidSteamId: Eine gültige Steam-ID kann nicht gefunden werden.
 Toast_FailedUpdateCheck: Fehler bei der Suche nach Updates
 Toast_UpdateVerifyFail: Updater-Dateien können nicht verifiziert werden. Lade die neueste Version herunter und ersetze die Dateien in Ihrem Verzeichnis.
 Toast_StartedGame: '{program} gestartet'
-Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
+Toast_SteamCantLoadXml: XML-Informationen für {steamId}konnten nicht abgerufen werden. Siehe Protokoll für weitere Details.
 Toast_Steam_VacCleared: VAC-Status für Accounts wurde gelöscht
 Toast_Steam_CantDeleteVacCache: '''LoginCache/Steam/VACCache/SteamVACCache.json'' konnte nicht gelöscht werden'
 Toast_NoFindSteamUserdata: Ordner Steam\\userdata konnte nicht gefunden werden
@@ -241,13 +241,14 @@ Toast_SteamWebKeyInvalid: Der Steam-Web-API-Schlüssel scheint ungültig zu sein
 Toast_DownloadingProfileData: Herunterladen von Profildaten
 Toast_PasswordChanged: Passwort geändert
 Toast_JsonFailModify: Die JSON-Datei konnte nicht geändert werden. Siehe Protokoll.
+Toast_DifferentClosingMethod: "'Closing Method' unterscheidet sich von der Standardeinstellung. Wenn Spiele geschlossen werden und mehr überprüfen, ob das Ändern dieser Option hilft. Standard: {defaultMethod}, Aktuell: {currentMethod}"
 Modal_Crowdin_Header: Crowdin-Übersetzer
 Modal_Crowdin_Info: "Hier sind alle, die geholfen haben, diese Software zu übersetzen.<br>Benutzer mit Sprachen neben ihnen haben bei der Übersetzung sehr geholfen (Rolle des Korrekturlesers)."
 Modal_Info_Creator: Erstellt von TechNobo [Wesley Pyburn]
 Modal_Info_Version: Version
 Modal_Info_ViewGitHub: Auf GitHub anzeigen
-Modal_Info_ViewPatreon: Support via Patreon
-Modal_Info_ViewKofi: Support via Ko-Fi
+Modal_Info_ViewPatreon: Unterstützung via Patreon
+Modal_Info_ViewKofi: Unterstützung über Ko-Fi
 Modal_Info_BugReport: Fehlerbericht/Feature-Anfrage
 Modal_Info_VisitSite: Öffne tcno.co
 Modal_Info_Disclaimer: Haftungsausschluss
@@ -351,7 +352,7 @@ Installer_TotalSize: "Gesamt-Downloadgröße: ~{size} MB"
 Installer_AnyKeyStart: Drücken Sie eine beliebige Taste, um den Download zu starten...
 Runtime_WebView2: Microsoft WebView2-Runtime
 Runtime_Desktop: Microsoft .NET 5 Desktop-Runtime
-Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} Laufzeit
 Installer_FailedFolder: "Fehler beim Erstellen des Ordners:"
 Installer_FailedWV: "Herunterladen und Installieren von Microsoft WebView2 Runtime fehlgeschlagen. Um herunterzuladen: 1. Klicken Sie auf den untenstehenden Link: {link} 2. Klicken Sie unter Server-Apps ausführen auf „Hosting-Paket herunterladen“."
 Installer_FailedDR: "Fehler beim Herunterladen und Installieren von .NET 5 Desktop Runtime. Bitte laden Sie es hier herunter:"
@@ -489,7 +490,7 @@ Tooltip_Restore: Klicken, um eine 7z-Datei auszuwählen, oder ziehe eine auf die
 Tooltip_DisabledGlobally: Dieses Element ist für alle Konten ausgeblendet. Sie können dies in den Plattformeinstellungen ändern.
 Discord_Status: Wechselt derzeit die Konten.
 Discord_StatusDetails: "Konten gewechselt: {number}"
-Website: Website
+Website: Webseite
 Preview_Platforms: Plattform-Vorschau
 Preview_Accounts: Kontenvorschau
 Preview_Notifications: Toast-Benachrichtigungen Vorschau
