@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Disabled platforms. Click to enable them.
 Settings_ExtraPlatformsEnabled: Visible platforms. Click to disable them.
 Settings_RTL: Show text as Right-to-Left
 Settings_CollectStats: Collect statistics
-Settings_ShareStats: Share stats annoymously (recommended)
+Settings_ShareStats: Share stats anonymously (recommended)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Share total switches
 Settings_ViewStats: View stats

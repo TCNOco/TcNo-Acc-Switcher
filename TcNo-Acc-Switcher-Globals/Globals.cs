@@ -27,7 +27,7 @@ namespace TcNo_Acc_Switcher_Globals
 #pragma warning disable CA2211 // Non-constant fields should not be visible - This is necessary due to it being a launch parameter.
         public static bool VerboseMode;
 #pragma warning restore CA2211 // Non-constant fields should not be visible
-        public static readonly string Version = "2023-07-05_00";
+        public static readonly string Version = "2024-07-08_00";
 
         #region INITIALISATION
 
@@ -252,7 +252,9 @@ namespace TcNo_Acc_Switcher_Globals
                             < 19043 => "Windows 10 20H2",
                             < 19044 => "Windows 10 21H1",
                             < 22000 => "Windows 10 21H2",
-                            >= 22000 => "Windows 11 21H2"
+                            < 22621 => "Windows 11 22H2",
+                            < 22631 => "Windows 11 23H2",
+                            >= 22631 => "Windows 11 23H2"
                         }
                     };
 
