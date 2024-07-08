@@ -272,6 +272,7 @@
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
         "%Platform_Folder%\\logs\\launcher_log.txt": "logs\\launcher_log.txt",
+        "%LocalAppData%\\Ubisoft Game Launcher\\ConnectSecureStorage.dat": "ConnectSecureStorage.dat",
         "%LocalAppData%\\Ubisoft Game Launcher\\settings.yaml": "settings.yaml",
         "%LocalAppData%\\Ubisoft Game Launcher\\user.dat": "user.dat"
       },
