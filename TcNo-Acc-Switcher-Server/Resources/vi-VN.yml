@@ -5,12 +5,12 @@ Steam_ShowSteamID: SteamID
 Steam_ShowVac: Trạng thái VAC
 Steam_ShowLastLogin: Thời gian đăng nhập lần cuối
 Steam_ShowLimited: Trạng thái giới hạn
-Steam_ShowAccUsername: Tên người dùng tài khoản
-Steam_Tray_AccountName: Hiển thị tên tài khoản [not friend name]
-Steam_CheckVac: Kiểm tra trạng thái tài khoản VAC
+Steam_ShowAccUsername: Tên người dùng
+Steam_Tray_AccountName: Hiển thị tên tài khoản [không phải tên của bạn bè]
+Steam_CheckVac: Kiểm tra trạng thái VAC của tài khoản
 Steam_OverrideDefaultState: "Ghi đè trạng thái đăng nhập mặc định:"
-Steam_StartSilent: "Mở Steam đến khay tác vụ trên công tắc (Bắt đầu Steam với '-silent')"
-Steam_OldUi: "Use Old UI in Steam (-vgui)"
+Steam_StartSilent: "Mở Steam đến khay tác vụ trên công tắc (khởi động Steam với '-silent')"
+Steam_OldUi: "Sử dụng giao diện cũ trong Steam (-vgui)"
 Button_AddNew: Thêm mới
 Button_SaveCurrent: Lưu tài khoản hiện tại
 Button_SaveFile: Lưu tập tin
@@ -28,20 +28,20 @@ Button_BackupAll: Sao lưu mọi thứ
 Button_Restore: Khôi phục
 Button_OpenBackup: Mở thư mục sao lưu
 Button_Back: Quay lại
-Button_RestartAdmin: Khởi động lại với tư cách Quản trị viên
+Button_RestartAdmin: Khởi động lại với quyền Quản trị viên
 Button_SetPassword: Đặt mật khẩu ứng dụng
-Settings_Shortcut: ' {platform} Phím tắt trên màn hình'
-Settings_Admin: Chạy {platform} với tư cách Quản trị viên
+Settings_Shortcut: ' Phím tắt chuyển đổi {platform} trên màn hình chính'
+Settings_Admin: Chạy {platform} với quyền Quản trị viên
 Settings_ImageExpiry: 'Số ngày trước khi hình ảnh hồ sơ hết hạn:'
 Settings_SteamAPIKey: "Khóa API Web Steam (tùy chọn)"
 Settings_SteamAPIKey_Note: Đặt khóa API sẽ làm cho chỉ báo Giới hạn (viền vàng) hiển thị cho các tài khoản bị Cấm Cộng đồng thay vào đó.
-Settings_Header_AppWide: Cài đặt toàn ứng dụng
+Settings_Header_AppWide: Cài đặt ứng dụng
 Settings_Header_GeneralSettings: Cài đặt chung
 Settings_Header_AccountDisplay: Cài đặt hiển thị tài khoản
 Settings_Header_ExtraPlatforms: Cài đặt nền tảng
-Settings_Header_GeneralTools: Công cụ Chung
+Settings_Header_GeneralTools: Công cụ chung
 Settings_Header_OtherTools: Các công cụ khác
-Settings_Header_TraySettings: Cài đặt khay
+Settings_Header_TraySettings: Cài đặt khay hệ thống
 Settings_Header_OpenGameFolders: Mở thư mục trò chơi
 Settings_Header_BackupRestore: Sao lưu và khôi phục cài đặt nền tảng
 Settings_Header_Language: Ngôn ngữ
@@ -49,7 +49,7 @@ Settings_Header_System: Hệ Thống
 Settings_Header_Theme: Chủ Đề
 Settings_Header_Program: Chương trình
 Settings_Header_StatsSharing: Thống kê & Chia sẻ
-Settings_Header_Platform: "{platformName} cài đặt"
+Settings_Header_Platform: "Cài đặt {platformName}"
 Settings_Header_GameStats: Cài đặt thống kê trò chơi toàn cầu
 Settings_GameStats: Bất kỳ thông tin nào được đánh dấu ở đây sẽ KHÔNG hiển thị dưới tên người dùng của bạn cho bất kỳ tài khoản nào. Sử dụng tính năng này nếu bạn thường ẩn các mục cụ thể khỏi thống kê trò chơi của mình.
 Settings_TrayMax: 'Số lượng tài khoản tối đa cần nhớ:'
@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Các nền tảng bị vô hiệu hóa. Nhấp 
 Settings_ExtraPlatformsEnabled: Nền tảng hiển thị. Nhấp để vô hiệu hóa chúng.
 Settings_RTL: Hiển thị văn bản dưới dạng từ phải sang trái
 Settings_CollectStats: Thu thập số liệu thống kê
-Settings_ShareStats: Chia sẻ số liệu thống kê một cách phiền toái (được đề xuất)
+Settings_ShareStats: Share stats anonymously (recommended)
 Settings_DiscordRpc: Sự hiện diện phong phú của đĩa (RPC)
 Settings_DiscordRpcShare: Chia sẻ tổng số khóa điện
 Settings_ViewStats: Xem số liệu thống kê
@@ -192,7 +192,7 @@ Toast_NoValidSteamId: Không thể tìm thấy ID Hơi nước hợp lệ.
 Toast_FailedUpdateCheck: Không thê ̉ kiê ̉ m tra câ ̣ p nhâ ̣ t
 Toast_UpdateVerifyFail: Không thê ̉ xa ́ c minh tê ̣ p cu ̉ a ngươ ̀ i kiê ̉ m duyê ̣ t. Ta ̉ i xuô ́ ng phiên ba ̉ n mơ ́ i nhâ ́ t va ̀ thay thê ́ ca ́ c tê ̣ p trong thư mu ̣ c cu ̉ a ba ̣ n.
 Toast_StartedGame: Bắt đầu {program}
-Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
+Toast_SteamCantLoadXml: Không thể lấy thông tin XML cho {steamId}. Xem nhật ký để biết thêm chi tiết.
 Toast_Steam_VacCleared: Trạng thái VAC cho các tài khoản đã bị xóa
 Toast_Steam_CantDeleteVacCache: Không thể xóa 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: Không thể tìm thấy thư mục Steam\\ userdata
@@ -241,13 +241,14 @@ Toast_SteamWebKeyInvalid: Khóa API Web Steam dường như không hợp lệ. V
 Toast_DownloadingProfileData: Đang tải xuống dữ liệu hồ sơ
 Toast_PasswordChanged: Mật khẩu đã thay đổi
 Toast_JsonFailModify: Không thể sửa đổi tệp JSON. Xem nhật ký.
+Toast_DifferentClosingMethod: "'Phương thức đóng' khác với mặc định. Nếu các trò chơi đang đóng và kiểm tra thêm xem việc thay đổi tùy chọn này có hữu ích hay không. Mặc định: {defaultMethod}, Hiện tại: {currentMethod}"
 Modal_Crowdin_Header: Người dịch Crowdin
 Modal_Crowdin_Info: "Đây là tất cả những người đã giúp dịch phần mềm này.<br>Người dùng có ngôn ngữ bên cạnh họ đã giúp rất nhiều trong việc dịch thuật (vai trò người hiệu đính)."
 Modal_Info_Creator: Được tạo bởi TechNobo [Wesley Pyburn]
 Modal_Info_Version: Phiên ba ̉ n
 Modal_Info_ViewGitHub: Xem trên GitHub
-Modal_Info_ViewPatreon: Support via Patreon
-Modal_Info_ViewKofi: Support via Ko-Fi
+Modal_Info_ViewPatreon: Hỗ trợ qua Patreon
+Modal_Info_ViewKofi: Hỗ trợ qua Ko-Fi
 Modal_Info_BugReport: Báo cáo lỗi/Yêu cầu tính năng
 Modal_Info_VisitSite: Truy cập tcno.co
 Modal_Info_Disclaimer: Tuyên bố miễn trừ trách nhiệm

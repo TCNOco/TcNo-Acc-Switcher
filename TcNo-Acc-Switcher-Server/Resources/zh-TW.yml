@@ -2,15 +2,15 @@
 Update: 有可用的更新！請按此開啟。
 Header_ChooseLanguage: '選擇語言：'
 Steam_ShowSteamID: SteamID
-Steam_ShowVac: VAC狀態
-Steam_ShowLastLogin: 上次登錄時間
-Steam_ShowLimited: 限定狀態
-Steam_ShowAccUsername: 帳戶用戶名稱
+Steam_ShowVac: VAC 狀態
+Steam_ShowLastLogin: 最後登入時間
+Steam_ShowLimited: 受限狀態
+Steam_ShowAccUsername: 帳號使用者名稱
 Steam_Tray_AccountName: 顯示帳號名稱 [非好友名稱]
 Steam_CheckVac: 確認帳號的 VAC 狀態
 Steam_OverrideDefaultState: "預設登入狀態："
 Steam_StartSilent: "開啟Steam到任務盤開關（使用'-silent'開始Steam ）"
-Steam_OldUi: "Use Old UI in Steam (-vgui)"
+Steam_OldUi: "在 Steam 中使用舊版 UI (-vgui)"
 Button_AddNew: 新增
 Button_SaveCurrent: 儲存目前內容
 Button_SaveFile: 儲存檔案
@@ -20,21 +20,21 @@ Button_Close: 關閉
 Button_RefreshImages: 重新載入圖片
 Button_ResetSettings: 恢復預設值
 Button_AdvancedCleaning: 進階清理…
-Button_ClearLog: 清除日志
+Button_ClearLog: 清除日誌
 Button_WikiInfo: 更多資訊（維基）
-Button_ManagePlatforms: 管理平臺
+Button_ManagePlatforms: 管理平台
 Button_Backup: 備份
 Button_BackupAll: 備份全部
 Button_Restore: 復原
 Button_OpenBackup: 開啟備份資料夾
-Button_Back: 後退
-Button_RestartAdmin: 以管理員身份重新啓動
+Button_Back: 返回
+Button_RestartAdmin: 以管理員身份重新啟動
 Button_SetPassword: 設定應用程式密碼
 Settings_Shortcut: ' {platform} 切換器桌面捷徑'
 Settings_Admin: 以管理員身分執行 {platform}
-Settings_ImageExpiry: '個人資料圖片過期前的天數：'
+Settings_ImageExpiry: '距離個人資料頭像過期的天數：'
 Settings_SteamAPIKey: "Steam Web API key （可選）"
-Settings_SteamAPIKey_Note: 設定API鑰匙會讓「有限」指示器（黃色邊框）顯示為社區禁用的帳戶。
+Settings_SteamAPIKey_Note: 設定API鑰匙會讓受限指示器 (黃色邊框) 顯示為被社區封禁的帳戶。
 Settings_Header_AppWide: 應用程式設定
 Settings_Header_GeneralSettings: 一般設定
 Settings_Header_AccountDisplay: 帳戶顯示設定
@@ -44,25 +44,25 @@ Settings_Header_OtherTools: 其他工具
 Settings_Header_TraySettings: 通知列設定
 Settings_Header_OpenGameFolders: 開啟遊戲資料夾
 Settings_Header_BackupRestore: 備份和復原平台設定
-Settings_Header_Language: LANGUAGE
+Settings_Header_Language: 語言
 Settings_Header_System: 系統
-Settings_Header_Theme: 佈景主題
-Settings_Header_Program: 程序(P)
-Settings_Header_StatsSharing: 統計與分享
-Settings_Header_Platform: "{platformName} 個設置"
+Settings_Header_Theme: 主題
+Settings_Header_Program: 程序
+Settings_Header_StatsSharing: 統計和分享
+Settings_Header_Platform: "{platformName} 設定"
 Settings_Header_GameStats: 全局遊戲統計設定
-Settings_GameStats: 任何勾選此處的內容都不會在任何帳戶的用戶名稱下顯示。如果您經常從遊戲統計中隱藏特定項目，請使用此功能。
+Settings_GameStats: 勾選的任何內容都不會在任何帳戶的用戶名稱下顯示。如果您經常從遊戲統計中隱藏項目，請啟用此功能。
 Settings_TrayMax: '帳號上限：'
 Settings_ExtraPlatformsDisabled: 停用的平台（按一下啟用）
 Settings_ExtraPlatformsEnabled: 啟用中平台（按一下停用）
 Settings_RTL: 由右至左顯示文字
-Settings_CollectStats: 收集統計資料
-Settings_ShareStats: 不安地分享數據（建議）
-Settings_DiscordRpc: Discord Rich Presence (RPC)
+Settings_CollectStats: 收集統計數據
+Settings_ShareStats: Share stats anonymously (recommended)
+Settings_DiscordRpc: Discord 遊戲狀態 (RPC)
 Settings_DiscordRpcShare: 分享總切換
 Settings_ViewStats: 查看統計資料
 Preview: 預覽
-Settings_ClearStats: 重置
+Settings_ClearStats: 重設
 Settings_CurrentLocation: '目前安裝路徑： {path}'
 Settings_CurrentDataLocation: '目前使用者資料路徑： {path}'
 Settings_SetDataLocation: "[自訂使用者資料路徑]"
@@ -74,7 +74,7 @@ Settings_StreamerMode: 啟用串流模式
 Settings_ExitToTray: 退出時最小化至通知列
 Settings_DesktopShortcut: 桌面捷徑
 Settings_StartMenu_ProgramTray: 程式與通知列
-Settings_StartMenu_Platform: 平臺
+Settings_StartMenu_Platform: 平台
 Settings_Tray_StartWindows: 啟用 Windows 通知列圖示
 Settings_Tray_StartNow: '[立即啟用通知列圖示]'
 Settings_CurrentStyle: 目前主題
@@ -90,39 +90,39 @@ Settings_Header_ClosingMethod: "（進階）設定 {platform} 的關閉方式"
 Settings_Header_StartingMethod: "（進階）設定 {platform} 的開啟方式"
 Settings_AutoStart: "切換帳號後自動啟動 {platform}"
 Settings_NoPlatforms: 目前未啟用任何平台。請勾選以下平台來啟用/停用。
-Settings_MinimizeOnSwitch: 帳戶切換時最小化切換器
+Settings_MinimizeOnSwitch: 切換帳戶時最小化切換器
 Settings_ShowShortNotes: 用戶名下的備註預覽
-Settings_Header_AppPassword: "停止其他人使用切換器："
+Settings_Header_AppPassword: "阻止其他人使用切換器："
 PreviewCss: 預覽CSS
-Settings_PreviewCss: 這是CSS預覽頁面。您可以檢視計劃中彈出的部分元素，並查看佈景主題的外觀。此頁面對於創建主題非常有用！
+Settings_PreviewCss: 這是CSS預覽頁面。您可以檢視程式中彈出的部分元素，並查看在您的主題下的外觀。此頁面對於創建主題非常有用！
 Settings_PreviewCssHeader: CSS預覽頁面
-Stats_Disabled: "統計資料收集已停用。"
-Stats_InDepth: 深入統計明細
-Stats_ShareEnabled: "這些統計資料會以匿名方式分享，並會加到此處的總計 <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">中</a>。"
-Stats_ShareDisabled: "這些統計數據不會以匿名方式分享，也不會加到此處的總計 <a onclick=\"{WebsiteLink}\" class=\"fancyLink\"></a>。"
-Stats_OperatingSystem: "操作系統： "
-Stats_FirstLaunch: "首次推出： "
-Stats_LaunchCount: "啟動次數： "
-Stats_CrashCount: "碰撞次數： "
-Stats_MostUsedPlatform: "最常用的平臺： "
-Stats_TotalTime: "應用內花費的總時間： "
-Stats_TotalSwitches: "帳戶切換總額： "
+Stats_Disabled: "已停止收集統計資料。"
+Stats_InDepth: 更多統計分析
+Stats_ShareEnabled: "這些統計資料會以匿名分享，並會加到此處 <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">中</a> 的總計。"
+Stats_ShareDisabled: "這些統計數據不會以匿名分享，也不會加到此處 <a onclick=\"{WebsiteLink}\" class=\"fancyLink\"></a> 的總計。"
+Stats_OperatingSystem: "作業系統： "
+Stats_FirstLaunch: "首次執行： "
+Stats_LaunchCount: "執行次數： "
+Stats_CrashCount: "崩潰次數： "
+Stats_MostUsedPlatform: "最常用的平台： "
+Stats_TotalTime: "應用程式開啟總時間： "
+Stats_TotalSwitches: "帳戶切換次數： "
 Stats_TotalGamesLaunched: "通過切換器啟動的應用程式/遊戲總數： "
 Stats_UniqueDaysLong: "帳戶已切換的獨特日期： "
-Stats_LastUpload: "上次上傳： "
-Stats_SwitcherStats: "切換器統計： "
+Stats_LastUpload: "最後上傳： "
+Stats_SwitcherStats: "切換統計： "
 Stats_PageStats: "頁面統計： "
-Stats_VisitsTotalTime: "總訪問次數為{visits} 次，總時間為 {hours} 次"
+Stats_VisitsTotalTime: "總訪問次數: {visits} ，總時間: {hours}"
 Stats_Accounts: "帳戶： "
-Stats_Switches: "開關： "
-Stats_FirstActive: "第一次激活： "
+Stats_Switches: "切換次數： "
+Stats_FirstActive: "首次激活： "
 Stats_LastActive: "上次激活： "
 Stats_UniqueDays: "特殊天數： "
 Stats_GameShortcuts: "遊戲快捷鍵： "
-Stats_GameShortcutsHotbar: "遊戲快捷鍵（在熱欄上） ： "
-Stats_GamesLaunched: "啟動的遊戲： "
+Stats_GameShortcutsHotbar: "遊戲快捷鍵（在任務欄上） ： "
+Stats_GamesLaunched: "啟動遊戲次數： "
 Stats_MetricsToShow: "顯示的指標："
-Stats_AccountId: "帳戶編號："
+Stats_AccountId: "賬戶ID："
 Auth_LoginRequired: 先前已設定密碼，並且必須填寫密碼。請在下方輸入密碼。
 Auth_EnterPassword: "輸入密碼："
 Auth_PassIncorrect: 密碼不正確。
@@ -192,7 +192,7 @@ Toast_NoValidSteamId: 找不到有效的Steam ID。
 Toast_FailedUpdateCheck: 檢查更新失敗
 Toast_UpdateVerifyFail: 無法驗證更新檔案。請下載最新版來取代目錄中的檔案。
 Toast_StartedGame: 已啟動 {program}
-Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
+Toast_SteamCantLoadXml: 無法獲取 {steamId}的 XML 信息。請參閱日誌了解更多詳細信息。
 Toast_Steam_VacCleared: 已清除帳號的 VAC 狀態
 Toast_Steam_CantDeleteVacCache: 無法刪除 LoginCache/Steam/VACCache/SteamVACCache.json 檔案
 Toast_NoFindSteamUserdata: 找不到 Steam\\userdata 資料夾
@@ -241,29 +241,30 @@ Toast_SteamWebKeyInvalid: Steam Web API密匙似乎無效。請設定一個新�
 Toast_DownloadingProfileData: 正在下載個人資料資料
 Toast_PasswordChanged: 密碼已更改
 Toast_JsonFailModify: 修改JSON文件失敗。請參閱日誌。
+Toast_DifferentClosingMethod: "「關閉方式」與默認值不同。如果遊戲不能正常關閉，請更改此選項。默認：{defaultMethod}，當前：{currentMethod}"
 Modal_Crowdin_Header: Crowdin 譯者
 Modal_Crowdin_Info: "這是幫助翻譯此軟件的所有人。 <br>名字旁邊有語言的用戶在翻譯方面提供了很多幫助（審核員身份）。"
 Modal_Info_Creator: 由TechNobo [Wesley Pyburn]制作
 Modal_Info_Version: 版本
 Modal_Info_ViewGitHub: 在GitHub上查看
-Modal_Info_ViewPatreon: Support via Patreon
-Modal_Info_ViewKofi: Support via Ko-Fi
+Modal_Info_ViewPatreon: 在 Patreon 上支持我們
+Modal_Info_ViewKofi: 通過 Ko-Fi 支持
 Modal_Info_BugReport: 報告錯誤/功能請求
-Modal_Info_VisitSite: 造訪tcno.co
+Modal_Info_VisitSite: 造訪 tcno.co
 Modal_Info_Disclaimer: 免責聲明
 Modal_Title_Info: TcNo帳戶切換器資訊
 Modal_Title_ChangeUsername: 變更使用者名稱
-Modal_Title_ConfirmAction: TcNo帳戶切換器確認操作
-Modal_Title_LocatePlatform: 請找到 {platform} 目錄
+Modal_Title_ConfirmAction: TcNo帳戶切換器操作確認
+Modal_Title_LocatePlatform: 請定位 {platform} 目錄
 Modal_Title_AddNew: 新增 {platform} 帳戶
 Modal_Title_Background: 設置背景圖片
 Modal_Title_Userdata: 設定使用者資料夾
-Modal_Title_GameStats: 啓用/禁用遊戲統計
-Modal_GameStats_Header: "啟用/禁用遊戲統計： {accountName}"
-Modal_Title_Stats: 您的統計資料
-Modal_Title_GameVars: "輸入 {game}的詳細資訊"
-Modal_GameVars_Header: "請輸入您的 {game} 帳戶的以下詳細資訊， {username} on {platform}"
-Modal_Title_AccountNotes: "帳戶備註： {accountName}"
+Modal_Title_GameStats: 啟用/關閉遊戲統計
+Modal_GameStats_Header: "啟用/關閉遊戲統計： {accountName}"
+Modal_Title_Stats: 你的統計數據
+Modal_Title_GameVars: "輸入 {game} 的詳細資訊"
+Modal_GameVars_Header: "請輸入您的 {platform} {game} 帳戶上的 {username} 的以下詳細信息"
+Modal_Title_AccountNotes: "{accountName} 的帳戶備註"
 Modal_Title_SetPassword: 設定密碼
 Modal_SetBackground: '選擇圖像，或在下方輸入 URL。<br>留空為重置。<br>（有關進階控制，請參閱 Wiki 上的''Theming''）：'
 Modal_SetBackground_Button: 設定背景為
@@ -273,9 +274,9 @@ Modal_SetUserdata_ChooseFolder: 選擇資料夾
 Modal_SetUserdata_Button: 設定使用者資料
 Modal_ChangeUsername: 請為您的帳戶輸入新的使用者名稱
 Modal_ChangeUsernameType: 更改 {platform} 使用者名稱
-Modal_SetPassword: 輸入TcNo帳戶切換器的密碼
+Modal_SetPassword: 輸入 TcNo 帳戶切換器的密碼
 Modal_SetPassword_Button: 設定密碼
-Modal_SetPassword_Info: "注意：這不會加密您的帳戶。交換帳戶就像替換文件或更改文件中的用戶名一樣簡單。密碼也可以通過編輯文件中的文本來重置。這是簡單的安全性。它停止簡單的 UI 訪問。您可以將此應用程序放在可移動 USB 上，將 UserData 文件夾設置為相同的 USB，然後將其物理刪除以提高安全性。 <a class=\"fancyLink\" onclick=\"OpenLinkInBrowser('{link}');return false;\" href=\"\">移動到外部驅動器指南</a><br><br>要清除，請將以上內容留空並單擊設置。"
+Modal_SetPassword_Info: "注意：這不會加密您的帳戶。交換帳戶就像替換文件或更改文件中的用戶名一樣簡單。也可以通過編輯文件中的文本來重置密碼。這是簡易的安全措施。它可以阻止簡單的用戶訪問界面。您可以將此應用程序放在隨身碟上，將 UserData 文件夾設置到同一個隨身碟，然後將其拔除，以提高安全性。 <a class=\"fancyLink\" onclick=\"OpenLinkInBrowser('{link}');return false;\" href=\"\">移動到外部磁盤指南</a><br><br>要清除，請將其留空，然後點擊“設定”。"
 Modal_EnterDirectory: "請輸入 {platform} 的路徑，例如：C:\\Program Files\\{platform}"
 Modal_LocatePlatform: 定位 {platformExe}
 Modal_LocatePlatformFolder: 選擇 {platform} 資料夾
@@ -283,7 +284,7 @@ Modal_ConfirmAction: 請確認是否執行目前的操作
 Modal_AddNew: 請輸入您登錄 {platform} 帳戶的名稱。
 Modal_AddCurrentAccount: 新增目前的 {platform} 帳號
 Modal_SetImageHeader: 設置個人資料相片
-Modal_SetImage: 設置頭像
+Modal_SetImage: 設定頭像
 Status_SelectedAccount: "已選取： {name}"
 Status_Init: "狀態：正在初始化"
 Status_ClosingPlatform: 正在關閉 {platform}
@@ -300,45 +301,45 @@ Status_GetUniqueId: 正在收集唯一的用戶 ID
 Status_CopyingFiles: 正在複製使用者資料…
 Status_HandlingImage: 正在處理帳戶資料圖片
 Context_SwapTo: 切換至帳號
-Context_CreateShortcut: 新建快捷方式
-Context_ChangeImage: 變更圖片
+Context_CreateShortcut: 建立捷徑
+Context_ChangeImage: 更改頭像
 Context_ChangeName: 更改切換器名稱
 Context_LoginAsSubmenu: 登錄爲
-Context_UsernameSubmenu: 用戶名
+Context_UsernameSubmenu: 用戶名稱
 Context_RefreshName: 刷新使用者名稱
-Context_CopySubmenu: 復制
+Context_CopySubmenu: 複製
 Context_DataSubmenu: 數據
-Context_CopyProfileSubmenu: 復制配置文件
-Context_CommunityUrl: 社區網址
+Context_CopyProfileSubmenu: 複製配置文件
+Context_CommunityUrl: 社群 URL
 Context_CommunityUsername: 社區使用者名稱
 Context_LoginUsername: 登錄使用者名稱
-Context_CopySteamIdSubmenu: 復制SteamID
+Context_CopySteamIdSubmenu: 複製 Steam ID
 Context_Steam_Id: 'SteamID [STEAM0: ~]'
 Context_Steam_Id3: 'SteamID3 [U: 1: ~]'
 Context_Steam_Id32: SteamID32
 Context_Steam_Id64: SteamID64 7656 ~
 Context_Steam_OpenUserdata: 開啟使用者資料
-Context_ManageSubmenu: 管理(M)
-Context_GameDataSubmenu: 遊戲資料
-Context_ManageGameStats: 管理遊戲統計
+Context_ManageSubmenu: 管理
+Context_GameDataSubmenu: 遊戲數據
+Context_ManageGameStats: 管理遊戲統計訊息
 Context_Game_CopySettingsFrom: 將設定複製到目前
-Context_Game_RestoreSettingsTo: 還原遊戲資料
+Context_Game_RestoreSettingsTo: 還原遊戲數據
 Context_Game_BackupData: 備份遊戲數據
-Context_CopyOtherSubmenu: 復制其他
-Context_HidePlatform: 隱藏平臺
+Context_CopyOtherSubmenu: 複製其他
+Context_HidePlatform: 隱藏此平台
 Context_ExportAccList: 匯出帳號列表
 Context_RunAdmin: 以管理員身分執行
 Context_Hide: 隱藏
-ProfileImage_ToggleText: 使用圖片作為帳戶圖片
+ProfileImage_ToggleText: 使用圖片作為帳戶頭像
 Title_Platforms_Settings: TcNo 帳號切換器 - 平台設定
-Title_Settings_TestCss: TcNo帳戶切換器-測試CSS造型
+Title_Settings_TestCss: TcNo 帳戶切換器 - 測試 CSS 樣式
 Title_AccountsList: TcNo 帳號切換器 - {platform}
 Title_TextEditor: TcNo 帳號切換器 - 文字編輯器
 Title_Settings: TcNo 帳號切換器 - 設定
 Title_Steam_Cleaning: TcNo 帳戶切換器 - Steam 清理
 Title_Steam_Settings: TcNo 帳號切換器 - Steam 設定
 Title_Template_Settings: TcNo 帳號切換器 - {platformName} 設定
-Title_Login: TcNo帳戶切換器-登入
+Title_Login: TcNo帳戶切換器 - 登入
 Installer_Downloading: 下載 {file} 中
 Installer_DownloadFinished: '{file} 下載完成'
 Installer_Installing: "安裝 {runtime} 中"
@@ -475,7 +476,7 @@ Platform_DeleteFail: 無法刪除部分檔案（程式可能正在執行）
 Platform_CouldNotDeleteLog: 無法刪除文件！檢查 {logPath}
 Error_FileAccessDenied: 無法訪問文件！檢查 {logPath}
 Error_RequiredFileVerify: 找不到必要的檔案。請確認安裝目錄下有 x64 和 x86 資料夾。如果沒有，請執行 TcNo-Acc-Switcher-Updater.exe 來驗證檔案。
-Tooltip_Settings: 設置
+Tooltip_Settings: 設定
 Tooltip_Info: 資訊
 Tooltip_ManagePlatforms: 顯示或隱藏其他平台
 Tooltip_ExpandShortcuts: 展開遊戲和捷徑選擇
@@ -494,4 +495,4 @@ Preview_Platforms: 平臺預覽
 Preview_Accounts: 帳戶預覽
 Preview_Notifications: 吐司通知預覽
 Preview_Settings: 設定預覽
-Preview_Modals: 模式預覽
+Preview_Modals: 模態預覽

@@ -10,7 +10,7 @@ Steam_Tray_AccountName: '[not friend name] fióknév megjelenítése'
 Steam_CheckVac: Fiók VAC állapotának ellenőrzése
 Steam_OverrideDefaultState: "Alapértelmezett bejelentkezési állapot felülbírálása:"
 Steam_StartSilent: "Nyissa ki a Gőzt a tálcára kapcsoláskor (indítsa el a Gőzt a '-silent' gombbal)"
-Steam_OldUi: "Use Old UI in Steam (-vgui)"
+Steam_OldUi: "Régi felhasználói felület használata a Steamben (-vgui)"
 Button_AddNew: Új hozzáadása
 Button_SaveCurrent: Aktuális mentése
 Button_SaveFile: Fájl mentése
@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Letiltott platformok. Kattintson az engedélyez
 Settings_ExtraPlatformsEnabled: Látható platformok. Kattintson a letiltásukhoz.
 Settings_RTL: Szöveg megjelenítése jobbról balra haladva
 Settings_CollectStats: Statisztikák gyűjtése
-Settings_ShareStats: Bosszantó módon megoszthatja a statisztikákat (ajánlott)
+Settings_ShareStats: Share stats anonymously (recommended)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Összes kapcsoló megosztása
 Settings_ViewStats: Statisztikák megtekintése
@@ -192,7 +192,7 @@ Toast_NoValidSteamId: Nem található érvényes Steam azonosító.
 Toast_FailedUpdateCheck: Frissítések keresése sikertelen
 Toast_UpdateVerifyFail: Nem lehet ellenőrizni a frissítőfájlokat. Töltse le a legújabb verziót, és cserélje ki a fájlokat a könyvtárban.
 Toast_StartedGame: Elkezdődött {program}
-Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
+Toast_SteamCantLoadXml: Nem sikerült beszerezni a {steamId}XML-információit. További részletekért lásd a naplót.
 Toast_Steam_VacCleared: Fiókok VAC állapota törölve
 Toast_Steam_CantDeleteVacCache: A 'LoginCache/Steam/VACCache/SteamVACCache.json' nem törölhető
 Toast_NoFindSteamUserdata: Nem található a Steam\\userdata mappa
@@ -241,13 +241,14 @@ Toast_SteamWebKeyInvalid: A Steam Web API kulcs érvénytelennek tűnik. Kérjü
 Toast_DownloadingProfileData: Profiladatok letöltése
 Toast_PasswordChanged: A jelszó megváltozott
 Toast_JsonFailModify: Nem sikerült módosítani a JSON-fájlt. Lásd a Naplót.
+Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Modal_Crowdin_Header: Crowdin fordítók
 Modal_Crowdin_Info: "Itt van mindenki, aki segített lefordítani ezt a szoftvert.<br>A mellettük lévő nyelvű felhasználók sokat segítettek a fordításban (lektori szerep)."
 Modal_Info_Creator: 'Készítette: TechNobo [Wesley Pyburn]'
 Modal_Info_Version: Verzió
 Modal_Info_ViewGitHub: Megtekintés a GitHubon
-Modal_Info_ViewPatreon: Support via Patreon
-Modal_Info_ViewKofi: Support via Ko-Fi
+Modal_Info_ViewPatreon: Támogatás a Patreonon keresztül
+Modal_Info_ViewKofi: Támogatás a Ko-Fi-n keresztül
 Modal_Info_BugReport: Hibajelentés/Funkciókérés
 Modal_Info_VisitSite: Látogasson el a tcno.co oldalra
 Modal_Info_Disclaimer: Jogi nyilatkozat

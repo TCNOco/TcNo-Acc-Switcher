@@ -10,7 +10,7 @@ Steam_Tray_AccountName: Vis kontonavn [ikke vennenavn]
 Steam_CheckVac: Tjek kontoens VAC-status
 Steam_OverrideDefaultState: "Tilsidesæt standard login-tilstand:"
 Steam_StartSilent: "Åbn Steam til procesbakken ved skift (Start Steam med \"-silent\")"
-Steam_OldUi: "Use Old UI in Steam (-vgui)"
+Steam_OldUi: "Brug gammel brugergrænseflade i Steam (-vgui)"
 Button_AddNew: Tilføj ny
 Button_SaveCurrent: Gem nuværende
 Button_SaveFile: Gem fil
@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Deaktiverede platforme. Klik for at aktivere de
 Settings_ExtraPlatformsEnabled: Synlige platforme. Klik for at deaktivere dem.
 Settings_RTL: Vis tekst som højre mod venstre
 Settings_CollectStats: Indsaml statistikker
-Settings_ShareStats: Del statistikker anonymt (anbefales)
+Settings_ShareStats: Share stats anonymously (recommended)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Del totale antal Switches
 Settings_ViewStats: Vis statistik
@@ -192,7 +192,7 @@ Toast_NoValidSteamId: Kan ikke finde et gyldigt Steam-id.
 Toast_FailedUpdateCheck: Kunne ikke tjekke for opdateringer
 Toast_UpdateVerifyFail: Kan ikke verificere opdateringsfiler. Download seneste version og erstatte filer i din mappe.
 Toast_StartedGame: Startet {program}
-Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
+Toast_SteamCantLoadXml: Kunne ikke hente XML-oplysninger for {steamId}. Se log for flere detaljer.
 Toast_Steam_VacCleared: VAC-status for konti blev ryddet
 Toast_Steam_CantDeleteVacCache: Kunne ikke slette 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: Kunne ikke finde mappen Steam\\userdata
@@ -241,6 +241,7 @@ Toast_SteamWebKeyInvalid: Steam Web API nøglen synes at være ugyldig. Indstil 
 Toast_DownloadingProfileData: Henter profildata
 Toast_PasswordChanged: Adgangskoden er ændret
 Toast_JsonFailModify: Kunne ikke ændre JSON-fil. Se log.
+Toast_DifferentClosingMethod: "'Lukningsmetode' er forskellig fra standarden. Hvis spil lukker og mere tjekker du om det hjælper at ændre denne indstilling. Standard: {defaultMethod}, Nuværende: {currentMethod}"
 Modal_Crowdin_Header: Crowdin-oversættere
 Modal_Crowdin_Info: "Her er alle, der hjalp med at oversætte denne software.<br>Brugere med sprog ved siden af hjalp meget med oversættelsen (korrekturlæserrolle)."
 Modal_Info_Creator: Oprettet af TechNobo [Wesley Pyburn]

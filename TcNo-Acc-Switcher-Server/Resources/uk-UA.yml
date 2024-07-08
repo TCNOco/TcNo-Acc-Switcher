@@ -10,7 +10,7 @@ Steam_Tray_AccountName: Показати ім'я акаунту [не ім' я �
 Steam_CheckVac: Перевірити стан VAC акаунту
 Steam_OverrideDefaultState: "Перевизначити стан входу за замовчуванням:"
 Steam_StartSilent: "Відкрити Steam у треї під час перемикання акаунтів (Запустити Steam за допомогою '-silent')"
-Steam_OldUi: "Use Old UI in Steam (-vgui)"
+Steam_OldUi: "Використовуйте старий інтерфейс користувача в Steam (-vgui)"
 Button_AddNew: Додати новий
 Button_SaveCurrent: Зберегти поточний
 Button_SaveFile: Зберегти файл
@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Вимкнені платформи. Натис
 Settings_ExtraPlatformsEnabled: Видимі платформи. Натисніть, щоб вимкнути їх.
 Settings_RTL: Показувати текст справа наліво
 Settings_CollectStats: Збирати статистику
-Settings_ShareStats: Ділитися статистикою анонімно (рекомендується)
+Settings_ShareStats: Share stats anonymously (recommended)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Ділитися загальною кількістю перемикань
 Settings_ViewStats: Переглянути статистику
@@ -192,7 +192,7 @@ Toast_NoValidSteamId: Не вдалося знайти дійсний ідент
 Toast_FailedUpdateCheck: Не вдалося перевірити наявність оновлень
 Toast_UpdateVerifyFail: Неможливо перевірити файли оновлення. Завантажте останню версію та замініть файли у своєму каталозі.
 Toast_StartedGame: Розпочато {program}
-Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
+Toast_SteamCantLoadXml: Не вдалося отримати інформацію XML для {steamId}. Перегляньте журнал для отримання додаткової інформації.
 Toast_Steam_VacCleared: Статус VAC для акаунтів очищено
 Toast_Steam_CantDeleteVacCache: Не вдалося видалити «LoginCache/Steam/VACCache/SteamVACCache.json»
 Toast_NoFindSteamUserdata: Не вдалося знайти теку Steam\\userdata
@@ -241,13 +241,14 @@ Toast_SteamWebKeyInvalid: Ключ API Steam Web, здається, недійс
 Toast_DownloadingProfileData: Завантаження даних профілю
 Toast_PasswordChanged: Пароль змінено
 Toast_JsonFailModify: Не вдалося змінити файл JSON. Див. журнал.
+Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Modal_Crowdin_Header: Перекладачі Crowdin
 Modal_Crowdin_Info: "Ось усі, хто допоміг перекласти це програмне забезпечення.<br>Користувачі з мовами поруч дуже допомогли в перекладі (роль коректора)."
 Modal_Info_Creator: Створено TechNobo [Wesley Pyburn]
 Modal_Info_Version: Версія
 Modal_Info_ViewGitHub: Переглянути на GitHub
-Modal_Info_ViewPatreon: Support via Patreon
-Modal_Info_ViewKofi: Support via Ko-Fi
+Modal_Info_ViewPatreon: Підтримка через Patreon
+Modal_Info_ViewKofi: Підтримка через Ko-Fi
 Modal_Info_BugReport: Звіт про ваду/Запит на функцію
 Modal_Info_VisitSite: Відвідати tcno.co
 Modal_Info_Disclaimer: Відмова від відповідальності
@@ -413,7 +414,7 @@ Updater_Start: Запустити перемикач рахунків TcNo
 Updater_Begin: Почати оновлення
 Updater_Exit: Вийти
 FatalError: Сталася фатальна помилка!
-Online: В Інтернеті
+Online: Онлайн
 OnlineDefault: Онлайн (за замовчуванням)
 Offline: Офлайн
 Invisible: Невидимий

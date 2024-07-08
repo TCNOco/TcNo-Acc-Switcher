@@ -10,7 +10,7 @@ Steam_Tray_AccountName: Afficher le nom du compte [not friend name]
 Steam_CheckVac: Vérifier le statut VAC du compte
 Steam_OverrideDefaultState: "Remplacer l'état de connexion par défaut :"
 Steam_StartSilent: "Ouvrir Steam dans la barre des tâches au changement (Démarrer Steam avec '-silent')"
-Steam_OldUi: "Use Old UI in Steam (-vgui)"
+Steam_OldUi: "Utiliser l'ancienne interface utilisateur dans Steam (-vgui)"
 Button_AddNew: Ajouter un nouveau
 Button_SaveCurrent: Enregistrer le compte actuel
 Button_SaveFile: Enregistrer le fichier
@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Plateformes désactivées. Cliquez pour les act
 Settings_ExtraPlatformsEnabled: Plateformes visibles. Cliquez pour les désactiver.
 Settings_RTL: Afficher le texte de droite à gauche
 Settings_CollectStats: Collecter des statistiques
-Settings_ShareStats: Partager les statistiques de manière anonymes (recommandé)
+Settings_ShareStats: Share stats anonymously (recommended)
 Settings_DiscordRpc: Présence de Discord Rich (RPC)
 Settings_DiscordRpcShare: Partager le total des commutateurs
 Settings_ViewStats: Voir les statistiques
@@ -192,7 +192,7 @@ Toast_NoValidSteamId: Impossible de trouver un ID Steam valide.
 Toast_FailedUpdateCheck: Échec de la vérification des mises à jour
 Toast_UpdateVerifyFail: Impossible de vérifier les fichiers de mise à jour. Téléchargez la dernière version et remplacez les fichiers de votre répertoire.
 Toast_StartedGame: Commencé {program}
-Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
+Toast_SteamCantLoadXml: Impossible d'obtenir les informations XML pour {steamId}. Voir le journal pour plus de détails.
 Toast_Steam_VacCleared: Le statut d'ACC pour les comptes a été effacé
 Toast_Steam_CantDeleteVacCache: Impossible de supprimer « LoginCache/Steam/VACCache/SteamVACCache.json »
 Toast_NoFindSteamUserdata: Impossible de trouver le dossier Steam\\userdata
@@ -241,13 +241,14 @@ Toast_SteamWebKeyInvalid: La clé de l'API Web Steam semble être invalide. Veui
 Toast_DownloadingProfileData: Téléchargement des données de profil
 Toast_PasswordChanged: Mot de passe modifié
 Toast_JsonFailModify: Impossible de modifier le fichier JSON. Voir le journal.
+Toast_DifferentClosingMethod: "'Méthode de fermeture' est différente de celle par défaut. Si les jeux se ferment et plus vérifiez si la modification de cette option est utile. Par défaut: {defaultMethod}, Actuel : {currentMethod}"
 Modal_Crowdin_Header: Traducteurs Crowdin
 Modal_Crowdin_Info: "Voici tous ceux qui ont aidé à traduire ce logiciel.<br>Les utilisateurs avec des langues voisines ont beaucoup aidé à la traduction (rôle de correcteur)."
 Modal_Info_Creator: Créé par TechNobo [Wesley Pyburn]
 Modal_Info_Version: Version
 Modal_Info_ViewGitHub: Afficher sur GitHub
-Modal_Info_ViewPatreon: Support via Patreon
-Modal_Info_ViewKofi: Support via Ko-Fi
+Modal_Info_ViewPatreon: Assistance via Patreon
+Modal_Info_ViewKofi: Assistance via Ko-Fi
 Modal_Info_BugReport: Rapport de bogue/Demande de fonctionnalité
 Modal_Info_VisitSite: Visitez tcno.co
 Modal_Info_Disclaimer: Clause de non-responsabilité

@@ -10,7 +10,7 @@ Steam_Tray_AccountName: Wys rekeningnaam [nie vriend se naam nie]
 Steam_CheckVac: Gaan rekening VAC status na
 Steam_OverrideDefaultState: "Ignoreer verstek aanmeldstatus:"
 Steam_StartSilent: "Maak Steam oop na taakbalk op skakelaar (Begin Steam met '-stil')"
-Steam_OldUi: "Use Old UI in Steam (-vgui)"
+Steam_OldUi: "Gebruik Ou UI in Steam (-vgui)"
 Button_AddNew: Voeg nuwe
 Button_SaveCurrent: Stoor huidige
 Button_SaveFile: Stoor die lêer
@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Gedeaktiveerde platforms. Klik om hulle te akti
 Settings_ExtraPlatformsEnabled: Sigbare platforms. Klik om hulle te deaktiveer.
 Settings_RTL: Wys teks as Regs-na-Links
 Settings_CollectStats: Versamel statistieke
-Settings_ShareStats: Deel statistieke irriterend (aanbeveel)
+Settings_ShareStats: Share stats anonymously (recommended)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Deel totale skakelaars
 Settings_ViewStats: Bekyk statistieke
@@ -192,7 +192,7 @@ Toast_NoValidSteamId: Kan nie 'n geldige Steam ID vind nie.
 Toast_FailedUpdateCheck: Kon nie kyk vir opdaterings nie
 Toast_UpdateVerifyFail: Kan nie opdaterlêers verifieer nie. Laai die nuutste weergawe af en vervang lêers in jou gids.
 Toast_StartedGame: Begin {program}
-Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
+Toast_SteamCantLoadXml: Kon nie XML-inligting vir {steamId}kry nie. Sien log vir meer besonderhede.
 Toast_Steam_VacCleared: VAC-status vir rekeninge is uitgevee
 Toast_Steam_CantDeleteVacCache: Kon nie 'LoginCache/Steam/VACCache/SteamVACCache.json' uitvee nie
 Toast_NoFindSteamUserdata: Kon nie Steam\\userdata-lêergids vind nie
@@ -241,13 +241,14 @@ Toast_SteamWebKeyInvalid: Steam Web API-sleutel blyk ongeldig te wees. Stel asse
 Toast_DownloadingProfileData: Laai tans profieldata af
 Toast_PasswordChanged: Wagwoord verander
 Toast_JsonFailModify: Kon nie JSON-lêer wysig nie. Sien log.
+Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Modal_Crowdin_Header: Crowdin-vertalers
 Modal_Crowdin_Info: "Hier is almal wat gehelp het om hierdie sagteware te vertaal.<br>Gebruikers met tale langs hulle het baie gehelp met vertaling (proefleserrol)."
 Modal_Info_Creator: Geskep deur TechNobo [Wesley Pyburn]
 Modal_Info_Version: Weergawe
 Modal_Info_ViewGitHub: Kyk op GitHub
-Modal_Info_ViewPatreon: Support via Patreon
-Modal_Info_ViewKofi: Support via Ko-Fi
+Modal_Info_ViewPatreon: Ondersteuning via Patreon
+Modal_Info_ViewKofi: Ondersteuning via Ko-Fi
 Modal_Info_BugReport: Foutverslag/kenmerkversoek
 Modal_Info_VisitSite: Besoek tcno.co
 Modal_Info_Disclaimer: Vrywaring

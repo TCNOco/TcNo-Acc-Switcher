@@ -2,39 +2,39 @@
 Update: Atualização disponível! Clique aqui para iniciá-la.
 Header_ChooseLanguage: 'Escolha o Idioma:'
 Steam_ShowSteamID: SteamID
-Steam_ShowVac: Status do VAC
+Steam_ShowVac: Status de VAC
 Steam_ShowLastLogin: Última hora de login
 Steam_ShowLimited: Status Limitado
 Steam_ShowAccUsername: Nome de usuário da conta
 Steam_Tray_AccountName: Mostrar nome da conta [not friend name]
 Steam_CheckVac: Verificar status do VAC da conta
-Steam_OverrideDefaultState: "Substituir estado de login padrão:"
+Steam_OverrideDefaultState: "Substituir estado padrão de login:"
 Steam_StartSilent: "Abra o Steam na bandeja de tarefas no interruptor (Inicie o Steam com '-silent')"
-Steam_OldUi: "Use Old UI in Steam (-vgui)"
+Steam_OldUi: "Use a interface antiga da Steam (-vgui)"
 Button_AddNew: Adicionar Novo
-Button_SaveCurrent: Salvar corrente
+Button_SaveCurrent: Salvar atual
 Button_SaveFile: Salvar arquivo
-Button_Cancel: 'Cancelar @ info: whatsthis'
+Button_Cancel: Cancelar
 Button_Login: Login
 Button_Close: Fechar
 Button_RefreshImages: Atualizar imagens
 Button_ResetSettings: Redefinir configurações
 Button_AdvancedCleaning: Limpeza avançada...
-Button_ClearLog: Limpar log
+Button_ClearLog: Limpar registros
 Button_WikiInfo: Mais informações (Wiki)
 Button_ManagePlatforms: Gerenciar Plataformas
 Button_Backup: Cópia de segurança
 Button_BackupAll: Fazer backup de tudo
 Button_Restore: Restaurar
 Button_OpenBackup: Abrir pasta de backup
-Button_Back: Atrás
+Button_Back: Voltar
 Button_RestartAdmin: Reiniciar como administrador
 Button_SetPassword: Definir Senha do Aplicativo
 Settings_Shortcut: ' {platform} Atalho do Switcher Desktop'
 Settings_Admin: Executar {platform} como Admin
-Settings_ImageExpiry: 'Dias antes das imagens de perfil expirarem:'
+Settings_ImageExpiry: 'Dias para as fotos de perfil expirarem:'
 Settings_SteamAPIKey: "Chave da API da Web do Steam (opcional)"
-Settings_SteamAPIKey_Note: Definir uma chave de API fará com que o indicador Limitado (borda amarela) seja exibido para contas que são Banidas pela Comunidade.
+Settings_SteamAPIKey_Note: Definir uma chave de API fará com que o indicador Limitado (borda amarela) seja exibido para contas que são Banidas da Comunidade.
 Settings_Header_AppWide: Configurações em todo o aplicativo
 Settings_Header_GeneralSettings: Configurações gerais
 Settings_Header_AccountDisplay: Configurações de exibição da conta
@@ -46,8 +46,8 @@ Settings_Header_OpenGameFolders: Abrir pastas de jogo
 Settings_Header_BackupRestore: Configurações da plataforma de backup e restauração
 Settings_Header_Language: Linguagem
 Settings_Header_System: Sistema
-Settings_Header_Theme: 'Tema @ item: inlistbox'
-Settings_Header_Program: Programação
+Settings_Header_Theme: Tema
+Settings_Header_Program: Programa
 Settings_Header_StatsSharing: Estatísticas e compartilhamento
 Settings_Header_Platform: "{platformName} configurações"
 Settings_Header_GameStats: Configurações de estatísticas do jogo global
@@ -57,9 +57,9 @@ Settings_ExtraPlatformsDisabled: Plataformas desativadas. Clique para habilitá-
 Settings_ExtraPlatformsEnabled: Plataformas visíveis. Clique para desativá-las.
 Settings_RTL: Mostrar texto da direita para a esquerda
 Settings_CollectStats: Coletar estatísticas
-Settings_ShareStats: Compartilhar estatísticas de forma anônima (recomendado)
-Settings_DiscordRpc: Presença rica em discórdia (RPC)
-Settings_DiscordRpcShare: Compartilhar total de switches
+Settings_ShareStats: Share stats anonymously (recommended)
+Settings_DiscordRpc: Rich Presence do Discord (RPC)
+Settings_DiscordRpcShare: Compartilhar total de mudanças
 Settings_ViewStats: Visualizar estatísticas
 Preview: Pré-visualizar
 Settings_ClearStats: Redefinir
@@ -73,7 +73,7 @@ Settings_ClearAccounts: Limpar Contas
 Settings_StreamerMode: Ativar modo streamer
 Settings_ExitToTray: A saída minimiza a bandeja
 Settings_DesktopShortcut: Atalho da área de trabalho
-Settings_StartMenu_ProgramTray: '& Bandeja do Programa'
+Settings_StartMenu_ProgramTray: Programa e bandeja
 Settings_StartMenu_Platform: Plataforma
 Settings_Tray_StartWindows: Iniciar Bandeja com o Windows
 Settings_Tray_StartNow: '[Iniciar Bandeja agora]'
@@ -81,28 +81,28 @@ Settings_CurrentStyle: Estilo Atual
 Settings_ThemeBackground: '[Definir fundo]'
 Settings_ThemeOpenFolder: '[Abrir pasta de temas]'
 Settings_Protocol: 'Habilitar tcno:\\ protocol (Recomendado)'
-Settings_StartCentered: Iniciar programa centrado
-Settings_WindowsAccent: Usar a Cor de Realce do Windows
-Settings_HelpTranslate: "[Ajuda para traduzir]"
-Settings_ViewTranslators: "[Credits]"
+Settings_StartCentered: Iniciar programa centralizado
+Settings_WindowsAccent: Usar a cor de destaque do Windows
+Settings_HelpTranslate: "[Ajuda a traduzir]"
+Settings_ViewTranslators: "[Créditos]"
 Settings_Header_ActiveBrowser: "(Avançado) Definir mecanismo de renderização:"
 Settings_Header_ClosingMethod: "(Avançado) Definir método para fechar {platform}"
 Settings_Header_StartingMethod: "(Avançado) Definir método para iniciar {platform}"
 Settings_AutoStart: "Iniciar automaticamente {platform} na troca de conta"
 Settings_NoPlatforms: No momento, não há plataformas habilitadas. Marque as plataformas opcionais abaixo para habilitá-las ou desmarque as plataformas desabilitadas.
-Settings_MinimizeOnSwitch: Minimizar o comutador no comutador de conta
+Settings_MinimizeOnSwitch: Minimizar o mudador de conta no mudador de conta
 Settings_ShowShortNotes: Visualização da nota sob o nome de usuário
-Settings_Header_AppPassword: "Pare os outros usando o comutador:"
+Settings_Header_AppPassword: "Pare os outros usando o mudador de conta:"
 PreviewCss: Visualizar CSS
 Settings_PreviewCss: Esta é a página de visualização CSS. Você pode visualizar alguns elementos que aparecem no programa e ver como eles se parecem com o seu tema. Esta página é útil para quem cria temas!
 Settings_PreviewCssHeader: Página de visualização do CSS
 Stats_Disabled: "A coleção de estatísticas está desativada."
-Stats_InDepth: Desagregação estatística aprofundada
+Stats_InDepth: Análise detalhada de estatísticas
 Stats_ShareEnabled: "Essas estatísticas são compartilhadas anonimamente e adicionarão ao total <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">aqui</a>."
 Stats_ShareDisabled: "Essas estatísticas NÃO são compartilhadas anonimamente e NÃO vão adicionar ao total <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">aqui</a>."
 Stats_OperatingSystem: "Sistema operacional: "
 Stats_FirstLaunch: "Primeiro lançamento: "
-Stats_LaunchCount: "Contagem de lançamento: "
+Stats_LaunchCount: "Contagem de inicialização: "
 Stats_CrashCount: "Contagem de falhas: "
 Stats_MostUsedPlatform: "Plataforma mais utilizada: "
 Stats_TotalTime: "Tempo total gasto no aplicativo: "
@@ -110,7 +110,7 @@ Stats_TotalSwitches: "Total de trocas de conta: "
 Stats_TotalGamesLaunched: "Total de aplicativos/jogos lançados via switcher: "
 Stats_UniqueDaysLong: "Dias únicos com contas trocadas: "
 Stats_LastUpload: "Último Upload: "
-Stats_SwitcherStats: "Estatísticas do comutador: "
+Stats_SwitcherStats: "Estatísticas do mudador de conta: "
 Stats_PageStats: "Estatísticas da página: "
 Stats_VisitsTotalTime: "{visits} total de visitas, {hours} tempo total"
 Stats_Accounts: "Contas: "
@@ -130,7 +130,7 @@ Locked: Bloqueado
 Cleaning_Header_StartMenuShortcuts: 'Atalhos para o menu Iniciar:'
 Cleaning_Header_General: Limpeza Geral
 Cleaning_Header_LoginHistory: Limpar meu histórico de login
-Cleaning_Header_PlatformCleaning: '{platform} Comutador'
+Cleaning_Header_PlatformCleaning: '{platform} Mudador'
 Cleaning_ImportantInfoHeader: 'Informações importantes:'
 Cleaning_ImportantInfo: >
   Clicar em um botão excluirá o (s) arquivo(s) relacionado (s) de sua instalação do Steam.<br /> Excluir loginusers.vdf resultará neste alternador de conta não mostrando contas.<br /> Você precisará fazer login neles usando o Steam para recuperá-los.
@@ -192,7 +192,7 @@ Toast_NoValidSteamId: Não foi possível encontrar um Steam ID válido.
 Toast_FailedUpdateCheck: Falha ao verificar se há atualizações
 Toast_UpdateVerifyFail: Não é possível verificar os arquivos do atualizador. Baixe a versão mais recente e substitua os arquivos em seu diretório.
 Toast_StartedGame: Iniciado {program}
-Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
+Toast_SteamCantLoadXml: Não foi possível obter informações XML para {steamId}. Veja o registro para mais detalhes.
 Toast_Steam_VacCleared: O status do VAC para contas foi apagado
 Toast_Steam_CantDeleteVacCache: Não foi possível excluir 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: Não foi possível encontrar a pasta Steam\\userdata
@@ -241,17 +241,18 @@ Toast_SteamWebKeyInvalid: A chave da API da Web do Steam parece ser inválida. P
 Toast_DownloadingProfileData: Baixando dados de perfil
 Toast_PasswordChanged: Senha alterada
 Toast_JsonFailModify: Falha ao modificar o arquivo JSON. Veja o log.
+Toast_DifferentClosingMethod: "'Método de fechamento' é diferente do padrão. Se os jogos estão fechando e etc, olha se alterar a opção ajuda. Padrão: {defaultMethod}, Atual: {currentMethod}"
 Modal_Crowdin_Header: Tradutores Crowdin
 Modal_Crowdin_Info: "Aqui estão todos que ajudaram a traduzir este software.<br>Usuários com idiomas próximos a eles ajudaram muito na tradução (função de revisor)."
 Modal_Info_Creator: Criado por TechNobo [Wesley Pyburn]
-Modal_Info_Version: 'Versão @ item: inlistbox'
+Modal_Info_Version: Versão
 Modal_Info_ViewGitHub: Ver no GitHub
-Modal_Info_ViewPatreon: Support via Patreon
-Modal_Info_ViewKofi: Support via Ko-Fi
+Modal_Info_ViewPatreon: Suporte via Patreon
+Modal_Info_ViewKofi: Suporte via Ko-Fi
 Modal_Info_BugReport: Relatório de erro/solicitação de recurso
 Modal_Info_VisitSite: Visite tcno.co
 Modal_Info_Disclaimer: Isenção de responsabilidade
-Modal_Title_Info: Informações do Comutador de Conta TcNo
+Modal_Title_Info: Informações do Mudador de Conta TcNo
 Modal_Title_ChangeUsername: Alterar nome de usuário
 Modal_Title_ConfirmAction: TcNo Account Switcher Confirmar ação
 Modal_Title_LocatePlatform: Por favor, localize o diretório {platform}
@@ -302,7 +303,7 @@ Status_HandlingImage: Manipulando a imagem do perfil da conta
 Context_SwapTo: Trocar para conta
 Context_CreateShortcut: Criar atalho
 Context_ChangeImage: Alterar imagem
-Context_ChangeName: Alterar o nome do comutador
+Context_ChangeName: Alterar o nome do mudador
 Context_LoginAsSubmenu: Entrar como
 Context_UsernameSubmenu: Nome de Usuário
 Context_RefreshName: Atualizar nome
@@ -332,13 +333,13 @@ Context_Hide: Esconder
 ProfileImage_ToggleText: Usar imagem como imagem da conta
 Title_Platforms_Settings: TcNo Account Switcher - Configurações da plataforma
 Title_Settings_TestCss: TcNo Account Switcher - Testar estilo CSS
-Title_AccountsList: Comutador de conta TcNo - {platform}
-Title_TextEditor: Comutador de Conta TcNo - Editor de Texto
+Title_AccountsList: Mudador de Conta TcNo - {platform}
+Title_TextEditor: Mudador de Conta TcNo - Editor de Texto
 Title_Settings: TcNo Account Switcher - Configurações
 Title_Steam_Cleaning: TcNo Account Switcher - Limpeza a vapor
 Title_Steam_Settings: TcNo Account Switcher - Configurações do Steam
 Title_Template_Settings: Alternador de conta TcNo - {platformName} Configurações
-Title_Login: Comutador de conta TcNo - Login
+Title_Login: Mudador de Conta TcNo - Login
 Installer_Downloading: Baixando {file}
 Installer_DownloadFinished: Concluído o download {file}
 Installer_Installing: "Instalando: {runtime}"
@@ -368,7 +369,7 @@ Tray_NoAccs: "Não foram encontradas contas.\nTente trocar de conta primeiro ou 
 Tray_Switch: "Mudar para: {account}"
 Tray_CantOpenExe: "Não foi possível abrir o .exe principal. Certifique-se de que ele existe.\n\nEu tentei abrir:"
 Tray_LaunchFail: "TcNo Account Switcher - Falha no lançamento da bandeja"
-Updater_Duplicate: Outra instância do Atualizador do Comutador de Conta TcNo foi detectada.
+Updater_Duplicate: Outra instância do Atualizador do Mudador de Conta TcNo foi detectada.
 Updater_Unknown: "Argumento desconhecido: {arg}"
 Updater_NeedsAdmin: Este programa deve ser executado como administrador!
 Updater_StatusChecking: Verificando versão
@@ -407,7 +408,7 @@ Updater_FailedDecodeTitle: Falha ao decodificar a lista de atualizações
 Updater_Extracting: Extraindo arquivos patch
 Updater_Applying: Aplicando patch...
 Updater_Moving: Movendo arquivos...
-Updater_Title: Atualizador do Comutador de Conta TcNo
+Updater_Title: Atualizador do Mudador de Conta TcNo
 Updater_Started: Iniciado
 Updater_Start: Iniciar TcNo Account Switcher
 Updater_Begin: Iniciar atualização

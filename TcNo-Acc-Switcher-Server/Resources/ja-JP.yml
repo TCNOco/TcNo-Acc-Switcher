@@ -10,7 +10,7 @@ Steam_Tray_AccountName: アカウント名を表示 [友達名ではありませ
 Steam_CheckVac: アカウントVACの状態を確認
 Steam_OverrideDefaultState: "デフォルトのログイン状態を上書き:"
 Steam_StartSilent: "スイッチでスチームをタスクトレイに開きます（'- silent 'でスチームを開始します）"
-Steam_OldUi: "Use Old UI in Steam (-vgui)"
+Steam_OldUi: "Steam で古い UI を使用する (-vgui)"
 Button_AddNew: 新規追加
 Button_SaveCurrent: 現在の保存
 Button_SaveFile: ファイルを保存
@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: 無効なプラットフォーム。クリッ�
 Settings_ExtraPlatformsEnabled: 表示されているプラットフォーム。クリックして無効にします。
 Settings_RTL: テキストを右から左に表示
 Settings_CollectStats: 統計を収集する
-Settings_ShareStats: 統計情報を不快に共有する(推奨)
+Settings_ShareStats: Share stats anonymously (recommended)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: 合計スイッチを共有
 Settings_ViewStats: 統計情報を表示
@@ -192,7 +192,7 @@ Toast_NoValidSteamId: 有効なSteam IDが見つかりません。
 Toast_FailedUpdateCheck: 更新の確認に失敗しました
 Toast_UpdateVerifyFail: アップデータファイルを確認できません。最新バージョンをダウンロードし、ディレクトリ内のファイルを置き換えてください。
 Toast_StartedGame: '{program} を開始'
-Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
+Toast_SteamCantLoadXml: '{steamId}の XML 情報を取得できませんでした。詳細についてはログを参照してください。'
 Toast_Steam_VacCleared: アカウントのVACステータスをクリアしました
 Toast_Steam_CantDeleteVacCache: '''LoginCache/Steam/VACCache/SteamVACCache.json'' を削除できませんでした'
 Toast_NoFindSteamUserdata: Steam\\userdata フォルダが見つかりませんでした
@@ -241,13 +241,14 @@ Toast_SteamWebKeyInvalid: Steam Web APIキーが無効なようです。新し�
 Toast_DownloadingProfileData: プロファイルデータをダウンロードしています
 Toast_PasswordChanged: パスワードが変更されました
 Toast_JsonFailModify: JSONファイルの変更に失敗しました。ログを参照してください。
+Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Modal_Crowdin_Header: Crowdinの翻訳者
 Modal_Crowdin_Info: "このソフトウェアの翻訳を手伝ってくれた皆さんです。<br>隣に言語があるユーザーは、翻訳に大いに役立ちました（校正者の役割）。"
 Modal_Info_Creator: TechNoboによって作成されました [Wesley Pyburn]
 Modal_Info_Version: バージョン
 Modal_Info_ViewGitHub: GitHubで見る
-Modal_Info_ViewPatreon: Support via Patreon
-Modal_Info_ViewKofi: Support via Ko-Fi
+Modal_Info_ViewPatreon: Patreonによるサポート
+Modal_Info_ViewKofi: Ko-Fi によるサポート
 Modal_Info_BugReport: バグレポート/機能のリクエスト
 Modal_Info_VisitSite: 訪問tcno.co
 Modal_Info_Disclaimer: 免責事項

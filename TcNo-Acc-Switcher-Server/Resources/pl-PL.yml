@@ -10,7 +10,7 @@ Steam_Tray_AccountName: Pokaż nazwę konta [nie nazwę znajomego]
 Steam_CheckVac: Sprawdź status VAC konta
 Steam_OverrideDefaultState: "Zastąp domyślny stan logowania:"
 Steam_StartSilent: "Otwórz Steam w zasobniku zadań (Uruchom Steam z '-silent')"
-Steam_OldUi: "Use Old UI in Steam (-vgui)"
+Steam_OldUi: "Użyj starego interfejsu użytkownika w Steam (-vgui)"
 Button_AddNew: Dodaj nowe
 Button_SaveCurrent: Zapisz bieżące
 Button_SaveFile: Zapisz plik
@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Wyłączone platformy. Kliknij, aby je włączy
 Settings_ExtraPlatformsEnabled: Widoczne platformy. Kliknij, aby je wyłączyć.
 Settings_RTL: Pokaż tekst od prawej do lewej
 Settings_CollectStats: Zbieranie statystyk
-Settings_ShareStats: Udostępniaj anonimowe statystyki (zalecane)
+Settings_ShareStats: Share stats anonymously (recommended)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Udostępnij łączne przełączenia
 Settings_ViewStats: Wyświetl statystyki
@@ -192,7 +192,7 @@ Toast_NoValidSteamId: Nie można znaleźć prawidłowego Steam ID.
 Toast_FailedUpdateCheck: Nie udało się sprawdzić dostępności aktualizacji
 Toast_UpdateVerifyFail: Nie można zweryfikować plików aktualizacji. Pobierz najnowszą wersję i zamień pliki w katalogu.
 Toast_StartedGame: Rozpoczęto {program}
-Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
+Toast_SteamCantLoadXml: Nie można pobrać informacji XML dla {steamId}. Zobacz dziennik, aby uzyskać więcej informacji.
 Toast_Steam_VacCleared: Status VAC dla kont został wyczyszczony
 Toast_Steam_CantDeleteVacCache: Nie można usunąć pliku „LoginCache/Steam/VACCache/SteamVACCache.json”
 Toast_NoFindSteamUserdata: Nie można znaleźć folderu Steam\\userdata
@@ -241,13 +241,14 @@ Toast_SteamWebKeyInvalid: Klucz API Steam Web wydaje się być nieprawidłowy. P
 Toast_DownloadingProfileData: Pobieranie danych profilu
 Toast_PasswordChanged: Hasło zostało zmienione
 Toast_JsonFailModify: Nie można zmodyfikować pliku JSON. Patrz dziennik.
+Toast_DifferentClosingMethod: "\"Metoda zamykania\" różni się od domyślnej. Jeśli gra zamyka się, sprawdź, czy zmiana tej opcji pomoże. Domyślna: {defaultMethod}, Obecna: {currentMethod}"
 Modal_Crowdin_Header: Tłumacze Crowdin
 Modal_Crowdin_Info: "Oto wszyscy, którzy pomogli przetłumaczyć to oprogramowanie.<br>Użytkownicy którzy znają te języki bardzo pomogli w tłumaczeniu (rola korektora)."
 Modal_Info_Creator: Stworzony przez TechNobo [Wesley Pyburn]
 Modal_Info_Version: Wersja
 Modal_Info_ViewGitHub: Zobacz na GitHub
-Modal_Info_ViewPatreon: Support via Patreon
-Modal_Info_ViewKofi: Support via Ko-Fi
+Modal_Info_ViewPatreon: Wsparcie przez Patreon
+Modal_Info_ViewKofi: Wsparcie przez Ko-Fi
 Modal_Info_BugReport: Zgłaszanie błędów / Prośba o nową funkcję
 Modal_Info_VisitSite: Odwiedź tcno.co
 Modal_Info_Disclaimer: Wyłączenie odpowiedzialności

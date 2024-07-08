@@ -9,8 +9,8 @@ Steam_ShowAccUsername: Nome de utilizador
 Steam_Tray_AccountName: Mostrar nome da conta [not friend name]
 Steam_CheckVac: Verificar o estado VAC da conta
 Steam_OverrideDefaultState: "Substituir início de sessão predefinido:"
-Steam_StartSilent: "Abra o Steam para a bandeja de tarefas no interruptor (Inicie o Steam com '-silent')"
-Steam_OldUi: "Use Old UI in Steam (-vgui)"
+Steam_StartSilent: "Ao alternar abrir a Steam na Área de Notificação (Iniciar a Steam com '-silent')"
+Steam_OldUi: "Utilizar a interface do utilizador antiga no Steam (-vgui)"
 Button_AddNew: Adicionar Novo
 Button_SaveCurrent: Guardar atual
 Button_SaveFile: Guardar ficheiro
@@ -57,9 +57,9 @@ Settings_ExtraPlatformsDisabled: Plataformas desativadas. Clique para habilitá-
 Settings_ExtraPlatformsEnabled: Plataformas visíveis. Clique para desativá-las.
 Settings_RTL: Mostrar texto da direita para a esquerda
 Settings_CollectStats: Recolher estatísticas
-Settings_ShareStats: Compartilhar estatísticas de forma anónima (recomendado)
+Settings_ShareStats: Share stats anonymously (recommended)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
-Settings_DiscordRpcShare: Partilhar total de interruptores
+Settings_DiscordRpcShare: Compartilhar total de trocas
 Settings_ViewStats: Ver estatísticas
 Preview: Pré-visualizar
 Settings_ClearStats: Redefinir
@@ -81,68 +81,68 @@ Settings_CurrentStyle: Tema Atual
 Settings_ThemeBackground: '[Definir fundo]'
 Settings_ThemeOpenFolder: '[Abrir pasta de temas]'
 Settings_Protocol: 'Ativar tcno:\\ protocol (Recomendado)'
-Settings_StartCentered: Iniciar programa centrado
+Settings_StartCentered: Iniciar programa centralizado
 Settings_WindowsAccent: Usar a Cor de Realce do Windows
 Settings_HelpTranslate: "[Ajudar na tradução]"
-Settings_ViewTranslators: "[Credits]"
+Settings_ViewTranslators: "[Créditos]"
 Settings_Header_ActiveBrowser: "Definir mecanismo de renderização (Avançado):"
 Settings_Header_ClosingMethod: "(Avançado) Definir método para fechar {platform}"
 Settings_Header_StartingMethod: "(Avançado) Definir método para iniciar {platform}"
-Settings_AutoStart: "Iniciar automaticamente {platform} na mudança de conta"
+Settings_AutoStart: "Iniciar {platform} automaticamente ao trocar de conta"
 Settings_NoPlatforms: No momento, não há plataformas habilitadas. Marque as plataformas opcionais abaixo para habilitá-las ou desmarque as plataformas desabilitadas.
 Settings_MinimizeOnSwitch: Minimizar a aplicação na alteração de conta
 Settings_ShowShortNotes: Pré-visualização de notas sob o nome de utilizador
 Settings_Header_AppPassword: "Impedir outros de usar a aplicação:"
-PreviewCss: Visualizar CSS
-Settings_PreviewCss: Esta é a página de pré-visualização do CSS. Você pode visualizar alguns elementos que aparecem no programa e ver como eles se parecem com o seu tema. Esta página é útil para aqueles que criam temas!
+PreviewCss: Pré-visualizar CSS
+Settings_PreviewCss: Esta é a página de pré-visualização do CSS. Pode visualizar alguns elementos que aparecem no programa e ver como eles se parecem com o seu tema. Esta página é útil para aqueles que criam temas!
 Settings_PreviewCssHeader: Página de pré-visualização do CSS
-Stats_Disabled: "A colecção de estatísticas está desactivada."
-Stats_InDepth: Desagregação estatística aprofundada
-Stats_ShareEnabled: "Essas estatísticas são compartilhadas anonimamente e adicionarão ao total <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">aqui</a>."
+Stats_Disabled: "Recolha de estatísticas está desativada."
+Stats_InDepth: Análise detalhada das estatísticas
+Stats_ShareEnabled: "Estas estatísticas são compartilhadas anonimamente e serão adicionadas ao total <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">aqui</a>."
 Stats_ShareDisabled: "Estas estatísticas NÃO são compartilhadas anonimamente e NÃO irão adicionar ao total <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">aqui</a>."
-Stats_OperatingSystem: "Sistema operacional: "
+Stats_OperatingSystem: "Sistema operativo: "
 Stats_FirstLaunch: "Primeira inicialização: "
 Stats_LaunchCount: "Número de inicializações: "
 Stats_CrashCount: "Número de falhas: "
 Stats_MostUsedPlatform: "Plataforma mais utilizada: "
 Stats_TotalTime: "Tempo total gasto na aplicação: "
 Stats_TotalSwitches: "Total de trocas de conta: "
-Stats_TotalGamesLaunched: "Total de apps/jogos lançados via switcher: "
-Stats_UniqueDaysLong: "Dias únicos com contas alteradas: "
+Stats_TotalGamesLaunched: "Total de apps/jogos iniciados pelo switcher: "
+Stats_UniqueDaysLong: "Dias únicos com contas trocadas: "
 Stats_LastUpload: "Último Upload: "
-Stats_SwitcherStats: "Estatísticas do comutador: "
+Stats_SwitcherStats: "Estatísticas do switcher: "
 Stats_PageStats: "Estatísticas da página: "
-Stats_VisitsTotalTime: "{visits} total de visitas, {hours} tempo total"
+Stats_VisitsTotalTime: "{visits} visitas totais, {hours} tempo total"
 Stats_Accounts: "Contas: "
-Stats_Switches: "Interruptores: "
-Stats_FirstActive: "Primeiro activo: "
-Stats_LastActive: "Último activo: "
+Stats_Switches: "Trocas: "
+Stats_FirstActive: "Primeira atividade: "
+Stats_LastActive: "Última atividade: "
 Stats_UniqueDays: "Dias únicos: "
 Stats_GameShortcuts: "Atalhos do jogo: "
 Stats_GameShortcutsHotbar: "Atalhos do jogo (na barra de atalho): "
-Stats_GamesLaunched: "Jogos lançados: "
+Stats_GamesLaunched: "Jogos iniciados: "
 Stats_MetricsToShow: "Métricas exibidas:"
 Stats_AccountId: "ID da Conta:"
 Auth_LoginRequired: Uma senha foi previamente definida e é necessária. Introduza a palavra-passe abaixo.
 Auth_EnterPassword: "Introduza a palavra-passe:"
-Auth_PassIncorrect: Senha incorreta.
+Auth_PassIncorrect: Palavra-passe incorreta.
 Locked: Bloqueado
 Cleaning_Header_StartMenuShortcuts: 'Atalhos para o menu Iniciar:'
 Cleaning_Header_General: Limpeza Geral
 Cleaning_Header_LoginHistory: Limpar o meu histórico de início de sessão
-Cleaning_Header_PlatformCleaning: '{platform} Comutador'
+Cleaning_Header_PlatformCleaning: 'Trocador {platform}'
 Cleaning_ImportantInfoHeader: 'Informações importantes:'
 Cleaning_ImportantInfo: >
-  Clicar num botão irá apagar o (s) ficheiro(s) relacionado (s) da sua instalação do Steam.<br /> A eliminação de loginusers.vdf irá resultar na ausência de contas neste comutador de conta.<br /> Terá de iniciar sessão com o Steam para as recuperar.
-Cleaning_Button_KillProcess: Processo Kill {platform}
+  Clicar em um botão irá excluir o(s) arquivo(s) relacionado(s) à sua instalação da Steam.<br /> Apagar o arquivo loginusers.vdf fará com que este trocador de contas não mostre nenhuma conta.<br /> Precisará acessar essas contas através do Steam para recuperá-las.
+Cleaning_Button_KillProcess: Terminar processo {platform}
 Cleaning_Button_ForgottenBackups: Backups de conta esquecidos
 Cleaning_Understand: Eu entendo o que esses botões fazem.
 Restore_Info: >
-  Se você anteriormente "esqueceu" uma conta, você pode restaurá-los aqui.<br /> Isso os adiciona novamente ao seu arquivo loginusers.vdf, permitindo que você mude para eles.
-Restore_Button_Restore: Restaurar seleccionado
+  Se anteriormente "esqueceste" uma conta, pode restaurá-la aqui.<br /> Isto a adiciona novamente ao arquivo loginusers.vdf, permitindo que troques para ela.
+Restore_Button_Restore: Restaurar selecionado
 Ignored_RemoveAccounts: Remover contas da lista de ignorados
-Ignored_Description: Se você "ignorou" anteriormente uma conta, pode mostrá-la novamente aqui
-Ignored_Stop: Parar de ignorar seleccionado
+Ignored_Description: Se anteriormente "ignoraste" uma conta, pode mostrá-la novamente aqui
+Ignored_Stop: Parar de ignorar selecionado
 Toast_DataLocationCopying: (1/2) Copiando arquivos existentes para a nova pasta de dados do usuário!
 Toast_DataLocationNotCopying: (1/2) A pasta já tem arquivos! Não migrará os dados do usuário.
 Toast_DataLocationSet: (2/2) Reinicie o alternador de contas para usar a nova pasta!
@@ -192,7 +192,7 @@ Toast_NoValidSteamId: Não foi possível encontrar um Steam ID válido.
 Toast_FailedUpdateCheck: Falha ao verificar se há atualizações
 Toast_UpdateVerifyFail: Não é possível verificar os ficheiros do actualizador. Baixe a versão mais recente e substitua os arquivos no seu diretório.
 Toast_StartedGame: Iniciado {program}
-Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
+Toast_SteamCantLoadXml: Não foi possível obter informações XML para {steamId}. Veja o registro para mais detalhes.
 Toast_Steam_VacCleared: O status do VAC para contas foi apagado
 Toast_Steam_CantDeleteVacCache: Não foi possível excluir 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: Não foi possível encontrar a pasta Steam\\userdata
@@ -241,13 +241,14 @@ Toast_SteamWebKeyInvalid: A chave da API da Web do Steam parece ser inválida. P
 Toast_DownloadingProfileData: A transferir dados de perfil
 Toast_PasswordChanged: Senha alterada
 Toast_JsonFailModify: Falha ao modificar o ficheiro JSON. Veja o registo.
+Toast_DifferentClosingMethod: "O 'Método de Encerramento' difere do padrão. Se os jogos fecham inesperadamente e mais, verifique se alterar esta opção ajuda. Padrão: {defaultMethod}, Atual: {currentMethod}"
 Modal_Crowdin_Header: Tradutores Crowdin
 Modal_Crowdin_Info: "Aqui estão todos que ajudaram a traduzir este software.<br>Usuários com idiomas próximos a eles ajudaram muito na tradução (função de revisor)."
 Modal_Info_Creator: Criado por TechNobo [Wesley Pyburn]
 Modal_Info_Version: 'Versão @ item: inlistbox'
 Modal_Info_ViewGitHub: Ver no GitHub
-Modal_Info_ViewPatreon: Support via Patreon
-Modal_Info_ViewKofi: Support via Ko-Fi
+Modal_Info_ViewPatreon: Suporte via Patreon
+Modal_Info_ViewKofi: Suporte via Ko-Fi
 Modal_Info_BugReport: Relatório de erros/Solicitação de recursos
 Modal_Info_VisitSite: Visite tcno.co
 Modal_Info_Disclaimer: Isenção de responsabilidade

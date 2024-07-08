@@ -10,7 +10,7 @@ Steam_Tray_AccountName: Arată numele contului [nu numele prietenului]
 Steam_CheckVac: Verifică statusul VAC
 Steam_OverrideDefaultState: "Suprascrie starea implicită de conectare:"
 Steam_StartSilent: "Deschideți Steam în bara de activități pe comutator (Porniți Steam cu „-silent”)"
-Steam_OldUi: "Use Old UI in Steam (-vgui)"
+Steam_OldUi: "Utilizați vechea interfață de utilizare în Steam (-vgui)"
 Button_AddNew: Adăugă
 Button_SaveCurrent: Salvează Actual
 Button_SaveFile: Salvează fișierul
@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Platforme dezactivate. Faceți clic pentru a le
 Settings_ExtraPlatformsEnabled: Platforme vizibile. Faceți clic pentru a le dezactiva.
 Settings_RTL: Afișați textul ca de la dreapta la stânga
 Settings_CollectStats: Colectare statistici
-Settings_ShareStats: Partajați statistici enervant (recomandat)
+Settings_ShareStats: Share stats anonymously (recommended)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Partajați numărul total de comutatoare
 Settings_ViewStats: Vizualizare statistici
@@ -192,7 +192,7 @@ Toast_NoValidSteamId: Imposibil de găsit un ID Steam valid.
 Toast_FailedUpdateCheck: Căutarea actualizărilor a eșuat
 Toast_UpdateVerifyFail: Nu se pot verifica fișierele de actualizare. Descărcați cea mai recentă versiune și înlocuiți fișierele din directorul dvs.
 Toast_StartedGame: Început {program}
-Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
+Toast_SteamCantLoadXml: Nu s-au putut obține informații XML pentru {steamId}. Consultați jurnalul pentru mai multe detalii.
 Toast_Steam_VacCleared: Starea VCA pentru conturi a fost eliminată
 Toast_Steam_CantDeleteVacCache: Nu s-a putut șterge „LoginCache/Steam/VACCache/SteamVACCache.json”
 Toast_NoFindSteamUserdata: Imposibil de găsit dosarul Steam\\ userdata
@@ -241,13 +241,14 @@ Toast_SteamWebKeyInvalid: Cheia API web Steam pare să fie nevalidă. Vă rugăm
 Toast_DownloadingProfileData: Se descarcă datele de profil
 Toast_PasswordChanged: Parola a fost schimbată
 Toast_JsonFailModify: Modificarea fișierului JSON a eșuat. Consultați jurnalul.
+Toast_DifferentClosingMethod: "'Metoda de închidere' este diferită de cea implicită. Dacă jocurile se închid și mai multe verifică dacă schimbarea acestei opțiuni ajută. Implicit: {defaultMethod}, Curent: {currentMethod}"
 Modal_Crowdin_Header: Crowdin traducători
 Modal_Crowdin_Info: "Iată toți cei care au ajutat la traducerea acestui software.<br>Utilizatorii cu limbi lângă ei au ajutat foarte mult la traducere (rol de corector)."
 Modal_Info_Creator: Creat de TechNobo [Wesley Pyburn]
 Modal_Info_Version: Versiune
 Modal_Info_ViewGitHub: Vizualizare pe GitHub
-Modal_Info_ViewPatreon: Support via Patreon
-Modal_Info_ViewKofi: Support via Ko-Fi
+Modal_Info_ViewPatreon: Suport prin Patreon
+Modal_Info_ViewKofi: Suport prin Ko-Fi
 Modal_Info_BugReport: Raport de eroare/Solicitare de caracteristici
 Modal_Info_VisitSite: Vizitați tcno.co
 Modal_Info_Disclaimer: Declinarea responsabilității

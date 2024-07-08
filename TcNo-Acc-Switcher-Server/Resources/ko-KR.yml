@@ -10,7 +10,7 @@ Steam_Tray_AccountName: 계정 이름 표시 [친구 이름 X]
 Steam_CheckVac: 계정 VAC 상태 확인
 Steam_OverrideDefaultState: "기본 로그인 상태 덮어쓰기:"
 Steam_StartSilent: "스위치에서 작업 트레이에 Steam 열기 ('-silent' 로 Steam 시작)"
-Steam_OldUi: "Use Old UI in Steam (-vgui)"
+Steam_OldUi: "Steam에서 이전 UI 사용(-vgui)"
 Button_AddNew: 새 계정 추가
 Button_SaveCurrent: 현재 상태 저장
 Button_SaveFile: 파일 저장
@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: 비활성화된 플랫폼. 활성화하려면 �
 Settings_ExtraPlatformsEnabled: 보여질 플랫폼. 비활성화하려면 클릭하세요. 
 Settings_RTL: 텍스트를 오른쪽에서 왼쪽으로 표시
 Settings_CollectStats: 통계 수집
-Settings_ShareStats: 익명으로 통계 공유하기 (권장)
+Settings_ShareStats: Share stats anonymously (recommended)
 Settings_DiscordRpc: 디스코드 Rich Presence
 Settings_DiscordRpcShare: 총 스위치 횟수 공유
 Settings_ViewStats: 통계 보기
@@ -192,7 +192,7 @@ Toast_NoValidSteamId: 유효한 Steam ID를 찾을 수 없습니다.
 Toast_FailedUpdateCheck: 업데이트 확인 실패
 Toast_UpdateVerifyFail: 최신 업데이트 된 파일을 확인할 수 없습니다. 최신 버전을 다운로드하고 디렉토리의 파일을 교체하십시오.
 Toast_StartedGame: '{program} 시작됨'
-Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
+Toast_SteamCantLoadXml: '{steamId}에 대한 XML 정보를 가져올 수 없습니다. 자세한 내용은 로그를 참조하십시오.'
 Toast_Steam_VacCleared: 계정의 VAC 상태 항목이 지워졌습니다.
 Toast_Steam_CantDeleteVacCache: '''LoginCache/Steam/VACCache/SteamVACCache.json'' 을 삭제할 수 없습니다.'
 Toast_NoFindSteamUserdata: Steam\\ userdata 폴더를 찾을 수 없습니다
@@ -241,13 +241,14 @@ Toast_SteamWebKeyInvalid: 스팀 웹 API 키가 유효하지 않은 것 같습�
 Toast_DownloadingProfileData: 프로필 데이터 다운로드 중
 Toast_PasswordChanged: 비밀번호 변경됨
 Toast_JsonFailModify: JSON 파일을 수정하지 못했습니다. 로그를 참조하십시오.
+Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Modal_Crowdin_Header: Crowdin 번역가
 Modal_Crowdin_Info: "이 소프트웨어를 번역하는 데 도움을 준 모든 사람이 있습니다.<br>옆에 언어가 있는 사용자가 번역에 많은 도움을 주었습니다. (검수자 역할)"
 Modal_Info_Creator: 테크노보 지음 [웨슬리 파이번]
 Modal_Info_Version: 버전
 Modal_Info_ViewGitHub: GitHub에서 보기
-Modal_Info_ViewPatreon: Support via Patreon
-Modal_Info_ViewKofi: Support via Ko-Fi
+Modal_Info_ViewPatreon: Patreon을 통한 지원
+Modal_Info_ViewKofi: Ko-Fi를 통한 지원
 Modal_Info_BugReport: 버그 보고서/기능 요청
 Modal_Info_VisitSite: tcno.co 방문하기
 Modal_Info_Disclaimer: 면책 조항

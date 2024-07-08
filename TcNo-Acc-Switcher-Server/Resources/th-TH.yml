@@ -10,7 +10,7 @@ Steam_Tray_AccountName: แสดงชื่อบัญชี [ไม่ใช
 Steam_CheckVac: ตรวจสอบสถานะบัญชี VAC
 Steam_OverrideDefaultState: "แทนที่สถานะการเข้าสู่ระบบเริ่มต้น:"
 Steam_StartSilent: "เปิด Steam ไปยังถาดงานบนสวิทช์ (เริ่ม Steam ด้วยคำสั่ง '- silent ')"
-Steam_OldUi: "Use Old UI in Steam (-vgui)"
+Steam_OldUi: "ใช้ UI เก่าใน Steam (-vgui)"
 Button_AddNew: เพิ่มใหม่
 Button_SaveCurrent: บันทึกปัจจุบัน
 Button_SaveFile: บันทึกไฟล์
@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: แพลตฟอร์มที่ถูก�
 Settings_ExtraPlatformsEnabled: แพลตฟอร์มที่มองเห็นได้คลิกเพื่อปิดใช้งาน
 Settings_RTL: แสดงข้อความเป็นจากขวาไปซ้าย
 Settings_CollectStats: เก็บสถิติ
-Settings_ShareStats: แบ่งปันสถิติอย่างน่ารำคาญ (แนะนำ)
+Settings_ShareStats: Share stats anonymously (recommended)
 Settings_DiscordRpc: การปรากฏตัวของ Discord Rich (RPC)
 Settings_DiscordRpcShare: แชร์สวิทช์ทั้งหมด
 Settings_ViewStats: ดูสถิติ
@@ -192,7 +192,7 @@ Toast_NoValidSteamId: ไม่พบรหัส Steam ที่ถูกต้
 Toast_FailedUpdateCheck: การตรวจสอบการอัปเดตล้มเหลว
 Toast_UpdateVerifyFail: ไม่สามารถยืนยันไฟล์ผู้ให้ข้อมูลได้ดาวน์โหลดเวอร์ชันล่าสุดและแทนที่ไฟล์ในไดเรกทอรีของคุณ
 Toast_StartedGame: เริ่มต้น {program}
-Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
+Toast_SteamCantLoadXml: ไม่สามารถรับข้อมูล XML สำหรับ {steamId}ดูบันทึกสำหรับรายละเอียดเพิ่มเติม
 Toast_Steam_VacCleared: ล้างสถานะ VAC สำหรับบัญชีแล้ว
 Toast_Steam_CantDeleteVacCache: ไม่สามารถลบ 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: ไม่พบโฟลเดอร์ Steam\\ userdata
@@ -241,13 +241,14 @@ Toast_SteamWebKeyInvalid: คีย์ API ของเว็บ Steam ดูเ
 Toast_DownloadingProfileData: กำลังดาวน์โหลดข้อมูลโปรไฟล์
 Toast_PasswordChanged: เปลี่ยนรหัสผ่านแล้ว
 Toast_JsonFailModify: ไม่สามารถแก้ไขไฟล์ JSON ดูบันทึกการทำงาน
+Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Modal_Crowdin_Header: Crowdin Translators
 Modal_Crowdin_Info: "นี่คือทุกคนที่ช่วยแปลซอฟต์แวร์นี้<br>ผู้ใช้ที่มีภาษาถัดจากพวกเขาช่วยในการแปลมาก (บทพิสูจน์อักษร)"
 Modal_Info_Creator: สร้างสรรค์โดยเทคโนโบ [เวสลีย์ไพเบิร์น]
 Modal_Info_Version: เวอร์ชัน
 Modal_Info_ViewGitHub: ดูบน GitHub
-Modal_Info_ViewPatreon: Support via Patreon
-Modal_Info_ViewKofi: Support via Ko-Fi
+Modal_Info_ViewPatreon: สนับสนุนผ่าน Patreon
+Modal_Info_ViewKofi: รองรับผ่าน Ko-Fi
 Modal_Info_BugReport: รายงานข้อผิดพลาด/คำขอคุณลักษณะ
 Modal_Info_VisitSite: เยี่ยมชม tcno.co
 Modal_Info_Disclaimer: ข้อจำกัดความรับผิดชอบ
