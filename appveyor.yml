@@ -32,7 +32,7 @@ build:
 
 install:
   # Install the required packages
-  - vcpkg install curl:x64-windows-static-release curl[non-http]:x64-windows-static-release curl[schannel]:x64-windows-static-release curl[ssl]:x64-windows-static-release curl[sspi]:x64-windows-static-release
+  - vcpkg install curl:x64-windows-static-release curl[ssl]:x64-windows-static-release
   - vcpkg integrate install
 
 # Build configuration
@@ -46,7 +46,8 @@ build_script:
   - msbuild TcNo-Acc-Switcher-Server/TcNo-Acc-Switcher-Server.csproj /p:Configuration=%CONFIGURATION% /p:Platform=x64
   - msbuild TcNo-Acc-Switcher-Client/TcNo-Acc-Switcher-Client.csproj /p:Configuration=%CONFIGURATION% /p:Platform=x64
 
-#on_finish:
+on_finish:
+  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 #  - ps: TcNo-Acc-Switcher-Client\PostBuild.bat
 
 artifacts:
