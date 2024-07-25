@@ -1,6 +1,6 @@
 version: 1.0.0.{build}
-matrix:
-  fast_finish: true
+#matrix:
+#  fast_finish: true
 
 # https://www.appveyor.com/docs/build-environment/#build-worker-images
 image: Visual Studio 2022
@@ -37,14 +37,14 @@ install:
 
 # Build configuration
 build_script:
-  - msbuild Installer/Installer.vcxproj /p:Configuration=%CONFIGURATION%
-  - msbuild _Updater_Wrapper/_Updater_Wrapper.vcxproj /p:Configuration=%CONFIGURATION%
-  - msbuild runas/runas.csproj /p:Configuration=%CONFIGURATION%
-  - msbuild TcNo-Acc-Switcher-Globals/TcNo-Acc-Switcher-Globals.csproj /p:Configuration=%CONFIGURATION%
-  - msbuild TcNo-Acc-Switcher-Tray/TcNo-Acc-Switcher-Tray.csproj /p:Configuration=%CONFIGURATION%
-  - msbuild TcNo-Acc-Switcher-Updater/TcNo-Acc-Switcher-Updater.csproj /p:Configuration=%CONFIGURATION%
-  - msbuild TcNo-Acc-Switcher-Server/TcNo-Acc-Switcher-Server.csproj /p:Configuration=%CONFIGURATION%
-  - msbuild TcNo-Acc-Switcher-Client/TcNo-Acc-Switcher-Client.csproj /p:Configuration=%CONFIGURATION%
+  - msbuild Installer/Installer.vcxproj /p:Configuration=%CONFIGURATION% /p:Platform=x64
+  - msbuild _Updater_Wrapper/_Updater_Wrapper.vcxproj /p:Configuration=%CONFIGURATION% /p:Platform=x64
+  - msbuild runas/runas.csproj /p:Configuration=%CONFIGURATION% /p:Platform=x64
+  - msbuild TcNo-Acc-Switcher-Globals/TcNo-Acc-Switcher-Globals.csproj /p:Configuration=%CONFIGURATION% /p:Platform=x64
+  - msbuild TcNo-Acc-Switcher-Tray/TcNo-Acc-Switcher-Tray.csproj /p:Configuration=%CONFIGURATION% /p:Platform=x64
+  - msbuild TcNo-Acc-Switcher-Updater/TcNo-Acc-Switcher-Updater.csproj /p:Configuration=%CONFIGURATION% /p:Platform=x64
+  - msbuild TcNo-Acc-Switcher-Server/TcNo-Acc-Switcher-Server.csproj /p:Configuration=%CONFIGURATION% /p:Platform=x64
+  - msbuild TcNo-Acc-Switcher-Client/TcNo-Acc-Switcher-Client.csproj /p:Configuration=%CONFIGURATION% /p:Platform=x64
 
 #on_finish:
 #  - ps: TcNo-Acc-Switcher-Client\PostBuild.bat
