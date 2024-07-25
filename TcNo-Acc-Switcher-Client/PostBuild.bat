@@ -5,16 +5,6 @@ echo Current directory: %cd%
 set origDir=%cd%
 
 REM SET VARIABLES
-REM If SIGNTOOL environment variable is not set then try setting it to a known location
-if "%SIGNTOOL%"=="" set SIGNTOOL=%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.22000.0\x64\signtool.exe
-REM Check to see if the signtool utility is missing
-if exist "%SIGNTOOL%" goto ST
-    REM Give error that SIGNTOOL environment variable needs to be set
-    echo "Must set environment variable SIGNTOOL to full path for signtool.exe code signing utility"
-    echo Location is of the form "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22000.0\x64\bin\signtool.exe"
-    exit -1
-:ST
-
 REM Set NSIS path for building the installer
 if "%NSIS%"=="" set NSIS=%ProgramFiles(x86)%\NSIS\makensis.exe
 if exist "%NSIS%" goto NS

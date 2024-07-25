@@ -1,0 +1,67 @@
+version: 1.0.0.{build}
+matrix:
+  fast_finish: true
+
+# https://www.appveyor.com/docs/build-environment/#build-worker-images
+image: Visual Studio 2022
+
+environment:
+  # Disable the .NET logo in the console output.
+  DOTNET_NOLOGO: true
+  # Disable the .NET first time experience to skip caching NuGet packages and speed up the build.
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  # Use latest version of current used .NET version.  6.0 could use the latest of 6.0.  See .\buildscripts\Update-DotnetVersion.ps1
+  GE_USE_LATEST_DOTNET: true
+  # Only build Release
+  CONFIGURATION: release
+  VCPKG_BUILD_TYPE: release
+
+pull_requests:
+  do_not_increment_build_number: true
+
+init:
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
+# Build settings, not to be confused with "before_build" and "after_build".
+# "project" is relative to the original build directory and not influenced by directory changes in "before_build".
+build:
+  # enable MSBuild parallel builds
+  parallel: true
+  # MSBuild verbosity level
+  verbosity: minimal
+
+install:
+  # Install the required packages
+  - vcpkg install curl:x64-windows-static curl[non-http]:x64-windows-static curl[schannel]:x64-windows-static curl[ssl]:x64-windows-static curl[sspi]:x64-windows-static openssl:x64-windows-static vcpkg-cmake-config:x64-windows vcpkg-cmake-get-vars:x64-windows vcpkg-cmake:x64-windows zlib:x64-windows zlib:x64-windows-static
+  - vcpkg integrate install
+
+  - ps: |
+        if($env:GE_USE_LATEST_DOTNET -eq $true)
+        {
+          .\buildscripts\Update-DotnetVersion.ps1
+        }
+  - ps: |
+        # Install the required .NET SDK
+        Invoke-WebRequest "https://dot.net/v1/dotnet-install.ps1" -OutFile "./dotnet-install.ps1"
+        ./dotnet-install.ps1 -JsonFile global.json -InstallDir 'C:\Program Files\dotnet'
+        # Remove the script so it doesn't "pollute" the build
+        Remove-Item -Path .\dotnet-install.ps1
+
+
+# Build configuration
+build_script:
+  - msbuild Installer/Installer.vcxproj /p:Configuration=%CONFIGURATION%
+  - msbuild _Updater_Wrapper/_Updater_Wrapper.vcxproj /p:Configuration=%CONFIGURATION%
+  - msbuild runas/runas.csproj /p:Configuration=%CONFIGURATION%
+  - msbuild TcNo-Acc-Switcher-Globals/TcNo-Acc-Switcher-Globals.csproj /p:Configuration=%CONFIGURATION%
+  - msbuild TcNo-Acc-Switcher-Tray/TcNo-Acc-Switcher-Tray.csproj /p:Configuration=%CONFIGURATION%
+  - msbuild TcNo-Acc-Switcher-Updater/TcNo-Acc-Switcher-Updater.csproj /p:Configuration=%CONFIGURATION%
+  - msbuild TcNo-Acc-Switcher-Server/TcNo-Acc-Switcher-Server.csproj /p:Configuration=%CONFIGURATION%
+  - msbuild TcNo-Acc-Switcher-Client/TcNo-Acc-Switcher-Client.csproj /p:Configuration=%CONFIGURATION%
+
+on_finish:
+  - ps: TcNo-Acc-Switcher-Client\PostBuild.bat
+
+artifacts:
+  - path: TcNo-Acc-Switcher-Client\bin\x64\Release
+    name: TcNo-Acc-Switcher-Client

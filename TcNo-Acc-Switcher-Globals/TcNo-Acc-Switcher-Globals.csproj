@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>TcNo_Acc_Switcher_Globals</RootNamespace>
     <Copyright>Copyright © TroubleChute (Wesley Pyburn) 2019-2024</Copyright>
     <Authors>TroubleChute (Wesley Pyburn)</Authors>
