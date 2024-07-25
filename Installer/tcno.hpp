@@ -34,7 +34,6 @@
 #include "progress_bar.hpp"
 
 #include <curl/curl.h>
-#include <openssl/ssl.h>
 
 #include "runtime_check.hpp"
 #include "versions.h"

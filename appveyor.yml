@@ -32,21 +32,8 @@ build:
 
 install:
   # Install the required packages
-  - vcpkg install curl:x64-windows-static curl[non-http]:x64-windows-static curl[schannel]:x64-windows-static curl[ssl]:x64-windows-static curl[sspi]:x64-windows-static openssl:x64-windows-static vcpkg-cmake-config:x64-windows vcpkg-cmake-get-vars:x64-windows vcpkg-cmake:x64-windows zlib:x64-windows zlib:x64-windows-static
+  - vcpkg install curl:x64-windows-static-release curl[non-http]:x64-windows-static-release curl[schannel]:x64-windows-static-release curl[ssl]:x64-windows-static-release curl[sspi]:x64-windows-static-release
   - vcpkg integrate install
-
-  - ps: |
-        if($env:GE_USE_LATEST_DOTNET -eq $true)
-        {
-          .\buildscripts\Update-DotnetVersion.ps1
-        }
-  - ps: |
-        # Install the required .NET SDK
-        Invoke-WebRequest "https://dot.net/v1/dotnet-install.ps1" -OutFile "./dotnet-install.ps1"
-        ./dotnet-install.ps1 -JsonFile global.json -InstallDir 'C:\Program Files\dotnet'
-        # Remove the script so it doesn't "pollute" the build
-        Remove-Item -Path .\dotnet-install.ps1
-
 
 # Build configuration
 build_script:
@@ -59,8 +46,8 @@ build_script:
   - msbuild TcNo-Acc-Switcher-Server/TcNo-Acc-Switcher-Server.csproj /p:Configuration=%CONFIGURATION%
   - msbuild TcNo-Acc-Switcher-Client/TcNo-Acc-Switcher-Client.csproj /p:Configuration=%CONFIGURATION%
 
-on_finish:
-  - ps: TcNo-Acc-Switcher-Client\PostBuild.bat
+#on_finish:
+#  - ps: TcNo-Acc-Switcher-Client\PostBuild.bat
 
 artifacts:
   - path: TcNo-Acc-Switcher-Client\bin\x64\Release
