@@ -1,6 +1,6 @@
 version: 1.0.0.{build}
-#matrix:
-#  fast_finish: true
+matrix:
+  fast_finish: true
 
 # https://www.appveyor.com/docs/build-environment/#build-worker-images
 image: Visual Studio 2022
