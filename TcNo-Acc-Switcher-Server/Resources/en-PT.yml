@@ -89,6 +89,7 @@ Settings_Header_ActiveBrowser: "(Advanced) Set renderin' engine:"
 Settings_Header_ClosingMethod: "(Advanced) Set method t' close {platform}"
 Settings_Header_StartingMethod: "(Advanced) Set method t' start {platform}"
 Settings_AutoStart: "Automatically start {platform} on account switch"
+Settings_ShowSteamSwitcher: "Show Steam's account switcher (Do NOT use this or it may break TcNo Account Switcher)"
 Settings_NoPlatforms: Thar are currently no platforms enabled. Please tick optional platforms below t' enable 'em, or uncheck disabled platforms.
 Settings_MinimizeOnSwitch: Banish switcher on Cap'n switch
 Settings_ShowShortNotes: Log under ye' username
@@ -403,7 +404,7 @@ Updater_TotalFound: "Total updates found: {x}"
 Updater_TotalSize: "Total size: {size}"
 Updater_AwaitingUser: Waitin' fer yer mark...
 Updater_UpToDate: "Ye're up t' date.\n:)"
-Updater_FailedDecode: '''tis most likely due t'' me (TroubleChute) pushin'' an update, ''n makin'' a typo that broke the .json update file. Do let me know :)'
+Updater_FailedDecode: This is most likely due to me (TroubleChute) pushing an update, and making a typo that broke the .json update file. Do let me know :)
 Updater_FailedDecodeTitle: Failed t' decode update list
 Updater_Extracting: Extractin' patch files
 Updater_Applying: Applyin' patch...
@@ -462,6 +463,7 @@ DeletingFile: "Scuttlin': {file}"
 DeletingFolder: "Scuttlin' Folder: "
 CouldntDeleteX: "ERROR: COULDN'T SCUTTLE: {x}"
 CouldntDeleteUndefined: "ERROR: COULDN'T SCUTTLE UNDEFINED FILE"
+CouldntModifyX: "Could not modify {file}. File permission error, or file is in use."
 Prompt_RestartAsAdmin: "<h3><bold>This program will restart as Admin</bold></h3><p>Hit \"Aye\" in UAC when prompted fer admin.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Ye be about t' forget a Cap'n!</h3> <h4>Wha' does this mean?</h4> <p>- Steam will no longer 'ave the Cap'n listed in Big Picture Mode 'n will nah Remember Password.<br/> - TcNo Cap'n Switcher will also no longer show the account, 'til it's signed into again through Steam.</p> <p>Yer account will remain untouched. 'tis jus' forgotten on this computer.</p><h4>Do ye understand?</h4>
