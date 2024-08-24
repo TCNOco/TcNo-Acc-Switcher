@@ -89,6 +89,7 @@ Settings_Header_ActiveBrowser: "(Advanced) Aseta renderöintimoottori:"
 Settings_Header_ClosingMethod: "(Advanced) Aseta menetelmä sulkemaan {platform}"
 Settings_Header_StartingMethod: "(Lisäasetukset) Määritä tapa aloittaa {platform}"
 Settings_AutoStart: "Käynnistä {platform} automaattisesti tilikytkimessä"
+Settings_ShowSteamSwitcher: "Show Steam's account switcher (Do NOT use this or it may break TcNo Account Switcher)"
 Settings_NoPlatforms: Tällä hetkellä ei ole käytössä alustoja. Ota ne käyttöön valitsemalla valinnaiset alustat alta tai poista käytöstä poistettujen alustojen valinta.
 Settings_MinimizeOnSwitch: Minimoi tilikytkimen kytkin
 Settings_ShowShortNotes: Muistiinpanon esikatselu käyttäjänimellä
@@ -244,7 +245,7 @@ Toast_JsonFailModify: JSON-tiedoston muokkaaminen epäonnistui. Katso lokia.
 Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Modal_Crowdin_Header: Crowdinin kääntäjät
 Modal_Crowdin_Info: "Tässä ovat kaikki, jotka auttoivat kääntämään tämän ohjelmiston.<br>Käyttäjät, joiden kieli on vieressä, auttoivat paljon kääntämisessä (oikolukijan rooli)."
-Modal_Info_Creator: Luonut TroubleChute [Wesley Pyburn]
+Modal_Info_Creator: Created by TroubleChute [Wesley Pyburn]
 Modal_Info_Version: Versio
 Modal_Info_ViewGitHub: Näytä GitHubissa
 Modal_Info_ViewPatreon: Tuki Patreonin kautta
@@ -403,7 +404,7 @@ Updater_TotalFound: "Löytyneitä päivityksiä: {x}"
 Updater_TotalSize: "Kokonaiskoko: {size}"
 Updater_AwaitingUser: Odotetaan käyttäjän syöttöä...
 Updater_UpToDate: "Olet ajan tasalla.\n:)"
-Updater_FailedDecode: Tämä johtuu todennäköisesti siitä, että minä (TroubleChute) työntää päivityksen, ja tehdä kirjoitusvirhe, joka rikkoi .json päivitystiedoston. Ilmoitathan minulle:)
+Updater_FailedDecode: This is most likely due to me (TroubleChute) pushing an update, and making a typo that broke the .json update file. Do let me know :)
 Updater_FailedDecodeTitle: Päivitysluettelon purkaminen epäonnistui
 Updater_Extracting: Puretaan Patch-tiedostoja
 Updater_Applying: Asennetaan korjausta...
@@ -462,6 +463,7 @@ DeletingFile: "Poistetaan: {file}"
 DeletingFolder: "Poistetaan kansiota: "
 CouldntDeleteX: "VIRHE: EI VOITU POISTAA: {x}"
 CouldntDeleteUndefined: "VIRHE: MÄÄRITTELEMÄTÖNTÄ TIEDOSTOA EI VOITU POISTAA"
+CouldntModifyX: "Could not modify {file}. File permission error, or file is in use."
 Prompt_RestartAsAdmin: "<h3><bold>Tämä ohjelma käynnistyy uudelleen järjestelmänvalvojana</bold></h3><p>Paina \"Yes\" UAC: ssä, kun sitä pyydetään ylläpitäjälle.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Olet unohtamassa tilin!</h3> <h4>Mitä tämä tarkoittaa?</h4> <p>- Steamilla ei ole enää Big Picture Mode -tilassa olevaa tiliä, eikä se muista salasanaa.<br/> - TcNo Account Switcher ei myöskään enää näytä tiliä, ennen kuin se kirjataan uudelleen sisään Steamin kautta.</p> <p>Tilisi pysyy ennallaan. Se on vain unohdettu tälle tietokoneelle.</p><h4>Ymmärrätkö?</h4>
