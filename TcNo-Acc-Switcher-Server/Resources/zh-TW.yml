@@ -89,6 +89,7 @@ Settings_Header_ActiveBrowser: "（進階）設定渲染引擎："
 Settings_Header_ClosingMethod: "（進階）設定 {platform} 的關閉方式"
 Settings_Header_StartingMethod: "（進階）設定 {platform} 的開啟方式"
 Settings_AutoStart: "切換帳號後自動啟動 {platform}"
+Settings_ShowSteamSwitcher: "Show Steam's account switcher (Do NOT use this or it may break TcNo Account Switcher)"
 Settings_NoPlatforms: 目前未啟用任何平台。請勾選以下平台來啟用/停用。
 Settings_MinimizeOnSwitch: 切換帳戶時最小化切換器
 Settings_ShowShortNotes: 用戶名下的備註預覽
@@ -244,7 +245,7 @@ Toast_JsonFailModify: 修改JSON文件失敗。請參閱日誌。
 Toast_DifferentClosingMethod: "「關閉方式」與默認值不同。如果遊戲不能正常關閉，請更改此選項。默認：{defaultMethod}，當前：{currentMethod}"
 Modal_Crowdin_Header: Crowdin 譯者
 Modal_Crowdin_Info: "這是幫助翻譯此軟件的所有人。 <br>名字旁邊有語言的用戶在翻譯方面提供了很多幫助（審核員身份）。"
-Modal_Info_Creator: 由TroubleChute [Wesley Pyburn]制作
+Modal_Info_Creator: Created by TroubleChute [Wesley Pyburn]
 Modal_Info_Version: 版本
 Modal_Info_ViewGitHub: 在GitHub上查看
 Modal_Info_ViewPatreon: 在 Patreon 上支持我們
@@ -403,7 +404,7 @@ Updater_TotalFound: "找到 {x} 個更新檔"
 Updater_TotalSize: "總大小： {size}"
 Updater_AwaitingUser: 正在等待輸入…
 Updater_UpToDate: "您已是最新版本。\n:)"
-Updater_FailedDecode: 很可能是由於本程式 TroubleChute 推送了錯誤的更新，導致 .json 更新檔損壞。請將此問題回報給我 :)
+Updater_FailedDecode: This is most likely due to me (TroubleChute) pushing an update, and making a typo that broke the .json update file. Do let me know :)
 Updater_FailedDecodeTitle: 更新列表無法解碼
 Updater_Extracting: 正在解壓縮修正檔
 Updater_Applying: 正在套用修正檔…
@@ -462,6 +463,7 @@ DeletingFile: "正在刪除： {file}"
 DeletingFolder: "正在刪除資料夾： "
 CouldntDeleteX: "錯誤：無法刪除 {x}"
 CouldntDeleteUndefined: "錯誤：無法刪除未定義檔案"
+CouldntModifyX: "Could not modify {file}. File permission error, or file is in use."
 Prompt_RestartAsAdmin: "<h3><bold>本程式即將以管理員身分重新啟動</bold></h3><p>跳出管理員身分警示時，請於 UAC 畫面中點選「是」。</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>您即將遺忘這個帳號！</h3> <h4>遺忘了會怎麼樣？</h4> <p>- 該帳號將不再顯示於 Steam 的 Big Picture 模式，也不再會記住密碼。<br/> - 該帳號也將不再顯示於 TcNo 帳號切換器，直到您透過 Steam 重新登入該帳號。</p> <p>此變更不會影響您的帳號本身，只會刪除本機的所有紀錄。</p><h4>您瞭解以上說明嗎？</h4>
