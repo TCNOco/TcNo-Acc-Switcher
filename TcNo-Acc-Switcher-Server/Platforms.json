@@ -172,7 +172,7 @@
       ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
-        "%LocalAppData%\\Riot Games\\Riot Client\\Data\\Cookies\\": "Cookies",
+        "%LocalAppData%\\Riot Games\\Riot Client\\Data\\Sessions\\": "Sessions",
         "%LocalAppData%\\Riot Games\\Riot Client\\Data": "RiotClientPrivateSettings.yaml",
         "%LocalAppData%\\Riot Games\\Riot Client\\Config": "RiotClientSettings.yaml",
         "%LocalAppData%\\Riot Games\\Riot Client\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
