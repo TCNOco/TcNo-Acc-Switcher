@@ -89,6 +89,7 @@ Settings_Header_ActiveBrowser: "Moteur de rendu (avancé) :"
 Settings_Header_ClosingMethod: "Définir la méthode pour fermer {platform} (Avancé)"
 Settings_Header_StartingMethod: "Définir la méthode pour démarrer {platform} (Avancé)"
 Settings_AutoStart: "Démarrage automatique de {platform} sur le commutateur de compte"
+Settings_ShowSteamSwitcher: "Show Steam's account switcher (Do NOT use this or it may break TcNo Account Switcher)"
 Settings_NoPlatforms: Il n'y a actuellement aucune plate-forme activée. Veuillez cocher les plates-formes facultatives ci-dessous pour les activer, ou décochez les plates-formes désactivées.
 Settings_MinimizeOnSwitch: Minimiser le commutateur lors du changement de compte
 Settings_ShowShortNotes: Aperçu de la note sous nom d'utilisateur
@@ -244,7 +245,7 @@ Toast_JsonFailModify: Impossible de modifier le fichier JSON. Voir le journal.
 Toast_DifferentClosingMethod: "'Méthode de fermeture' est différente de celle par défaut. Si les jeux se ferment et plus vérifiez si la modification de cette option est utile. Par défaut: {defaultMethod}, Actuel : {currentMethod}"
 Modal_Crowdin_Header: Traducteurs Crowdin
 Modal_Crowdin_Info: "Voici tous ceux qui ont aidé à traduire ce logiciel.<br>Les utilisateurs avec des langues voisines ont beaucoup aidé à la traduction (rôle de correcteur)."
-Modal_Info_Creator: Créé par TroubleChute [Wesley Pyburn]
+Modal_Info_Creator: Created by TroubleChute [Wesley Pyburn]
 Modal_Info_Version: Version
 Modal_Info_ViewGitHub: Afficher sur GitHub
 Modal_Info_ViewPatreon: Assistance via Patreon
@@ -403,7 +404,7 @@ Updater_TotalFound: "Total des mises à jour trouvées : {x}"
 Updater_TotalSize: "Taille totale : {size}"
 Updater_AwaitingUser: En attente de saisie utilisateur...
 Updater_UpToDate: "Vous êtes à jour.\n:)"
-Updater_FailedDecode: Cela est très probablement dû à moi (TroubleChute) poussant une mise à jour, et faisant une typo qui a cassé le fichier de mise à jour .json. N'hésitez pas à me le faire savoir :)
+Updater_FailedDecode: This is most likely due to me (TroubleChute) pushing an update, and making a typo that broke the .json update file. Do let me know :)
 Updater_FailedDecodeTitle: Impossible de décoder la liste de mise à jour
 Updater_Extracting: Extraction des fichiers patch
 Updater_Applying: Application du correctif...
@@ -462,6 +463,7 @@ DeletingFile: "Suppression de : {file}"
 DeletingFolder: "Suppression du dossier : "
 CouldntDeleteX: "ERREUR : IMPOSSIBLE DE SUPPRIMER : {x}"
 CouldntDeleteUndefined: "ERREUR : IMPOSSIBLE DE SUPPRIMER LE FICHIER NON DÉFINI"
+CouldntModifyX: "Could not modify {file}. File permission error, or file is in use."
 Prompt_RestartAsAdmin: "<h3><bold>Ce programme redémarre en tant qu'administrateur</bold></h3><p>Appuyez sur \"Oui\" dans UAC lorsque vous êtes invité à administrer.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Vous êtes sur le point d'oublier un compte !</h3> <h4>Qu'est-ce que cela signifie ?</h4> <p>- Steam n'aura plus le compte répertorié dans le mode Big Picture et ne se souviendra pas du mot de passe.<br/> - TcNo Account Switcher n'affichera plus le compte, jusqu'à ce qu'il soit reconnecté via Steam.</p> <p>Votre compte restera intact. C'est juste oublié sur cet ordinateur.</p><h4>Comprenez-vous?</h4>
