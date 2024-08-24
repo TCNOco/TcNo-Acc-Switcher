@@ -179,7 +179,7 @@ inline void find_installed_net_runtimes(const bool x32, bool &min_webview_met, b
 					if (output) wprintf(L" - %s\n", s_display_name);
 				}
 
-				if (wcsstr(s_display_name, L"ASP.NET Core 6") != nullptr && wcsstr(s_display_name, L"x64") != nullptr)
+				if (wcsstr(s_display_name, L"ASP.NET Core 8") != nullptr && wcsstr(s_display_name, L"x64") != nullptr)
 				{
 					min_aspcore_met = min_aspcore_met || compare_versions(required_min_aspcore, std::string(s_version), '.');
 					if (output) wprintf(L" - %s\n", s_display_name);

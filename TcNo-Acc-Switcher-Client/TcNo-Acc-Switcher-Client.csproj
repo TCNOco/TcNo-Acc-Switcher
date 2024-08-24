@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
     <RootNamespace>TcNo_Acc_Switcher_Client</RootNamespace>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
@@ -56,7 +56,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="if $(ConfigurationName) == Release (&#xD;&#xA; call &quot;$(ProjectDir)\PostBuild.bat&quot;&#xD;&#xA;) else (&#xD;&#xA; call &quot;$(ProjectDir)\PostBuild-Debug.bat&quot;&#xD;&#xA;)" IgnoreExitCode="true" />
+    <Exec Command="if $(ConfigurationName) == Release (&#xD;&#xA; call $(ProjectDir)\PostBuild.bat&#xD;&#xA;) else (&#xD;&#xA; call $(ProjectDir)\PostBuild-Debug.bat&#xD;&#xA;)" IgnoreExitCode="true" />
   </Target>
 
   <ItemGroup>

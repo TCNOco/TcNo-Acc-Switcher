@@ -449,6 +449,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
                     var regValue = regJson[accFile] ?? "";
 
+                    // If not present, but not required: Skip
+                    if (regValue == "" && !CurrentPlatform.AllFilesRequired)
+                    {
+                        Globals.WriteToLog($"Attempted to copy: {accFile}, but no value was set. Skipping. This may cause an error in switching, but may also not be important!");
+                        continue;
+                    }
+
                     if (!Globals.SetRegistryKey(accFile[4..], regValue)) // Remove "REG:" and read data
                     {
                         _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RegFailWrite"], Lang["Error"], "toastarea");
@@ -566,7 +573,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 {
                     var trimmedName = accFile[4..];
 
-                    if (ReadRegistryKeyWithErrors(trimmedName, out var response)) // Remove "REG:                    " and read data
+                    if (ReadRegistryKeyWithErrors(trimmedName, out var response, CurrentPlatform.AllFilesRequired)) // Remove "REG:                    " and read data
                     {
                         // Write registry value to provided file
                         if (response is string s) regJson[accFile] = s;
@@ -612,8 +619,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 if (HandleFileOrFolder(accFile, savedFile, localCachePath, false)) continue;
 
                 // Could not find file/folder
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new { x = accFile }], Lang["DirectoryNotFound"], "toastarea");
-                return false;
+                if (CurrentPlatform.AllFilesRequired)
+                {
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new { x = accFile }], Lang["DirectoryNotFound"], "toastarea");
+                    return false;
+                } else
+                {
+                    Globals.WriteToLog($"[BasicAddCurrent] Attempted to copy ({accFile}, {savedFile}, {localCachePath}), but failed due to file not existing. All files not explicitly required, switching may have worked anyway.");
+                }
 
                 // TODO: Run some action that can be specified in the Platforms.json file
                 // Add for the start, and end of this function -- To allow 'plugins'?
@@ -798,7 +811,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         {
             if (OperatingSystem.IsWindows() && CurrentPlatform.UniqueIdMethod is "REGKEY" && !string.IsNullOrEmpty(CurrentPlatform.UniqueIdFile))
             {
-                if (!ReadRegistryKeyWithErrors(CurrentPlatform.UniqueIdFile, out var r))
+                if (!ReadRegistryKeyWithErrors(CurrentPlatform.UniqueIdFile, out var r, true))
                     return "";
 
                 switch (r)
@@ -874,16 +887,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         }
 
         [SupportedOSPlatform("windows")]
-        private static bool ReadRegistryKeyWithErrors(string key, out dynamic value)
+        private static bool ReadRegistryKeyWithErrors(string key, out dynamic value, bool required = false)
         {
             value = Globals.ReadRegistryKey(key);
             switch (value)
             {
                 case "ERROR-NULL":
-                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_AccountIdReg"], Lang["Error"], "toastarea");
+                    if (required) _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_AccountIdReg"], Lang["Error"], "toastarea");
+                    else Globals.WriteToLog("Error reading registry key (NULL value): " + key + ". This may cause issues switching accounts (but may also not be important)");
                     return false;
                 case "ERROR-READ":
-                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RegFailRead"], Lang["Error"], "toastarea");
+                    if (required) _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RegFailRead"], Lang["Error"], "toastarea");
+                    else Globals.WriteToLog("Error reading registry key: " + key + ". This may cause issues switching accounts (but may also not be important)");
                     return false;
             }
 
