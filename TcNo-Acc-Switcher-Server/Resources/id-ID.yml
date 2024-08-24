@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Menonaktifkan platform. Klik untuk mengaktifkan
 Settings_ExtraPlatformsEnabled: Platform yang terlihat. Klik untuk menonaktifkannya.
 Settings_RTL: Tampilkan teks sebagai Kanan - ke - Kiri
 Settings_CollectStats: Kumpulkan statistik
-Settings_ShareStats: Share stats anonymously (recommended)
+Settings_ShareStats: Bagikan statistik secara anonim (disarankan)
 Settings_DiscordRpc: Kehadiran Kaya Perselisihan (RPC)
 Settings_DiscordRpcShare: Bagikan total sakelar
 Settings_ViewStats: Lihat statistik
@@ -89,7 +89,7 @@ Settings_Header_ActiveBrowser: "(Lanjutan) Setel mesin render:"
 Settings_Header_ClosingMethod: "(Lanjutan) Atur metode untuk menutup {platform}"
 Settings_Header_StartingMethod: "(Lanjutan) Atur metode untuk memulai {platform}"
 Settings_AutoStart: "Otomatis mulai {platform} pada sakelar akun"
-Settings_ShowSteamSwitcher: "Show Steam's account switcher (Do NOT use this or it may break TcNo Account Switcher)"
+Settings_ShowSteamSwitcher: "Tampilkan pengalih akun Steam (JANGAN gunakan ini atau dapat merusak Pengalih Akun TcNo)"
 Settings_NoPlatforms: Saat ini tidak ada platform yang diaktifkan. Centang platform opsional di bawah ini untuk mengaktifkannya, atau hapus centang platform yang dinonaktifkan.
 Settings_MinimizeOnSwitch: Minimalkan pengalih pada pengalih akun
 Settings_ShowShortNotes: Pratinjau catatan di bawah nama pengguna
@@ -245,7 +245,7 @@ Toast_JsonFailModify: Gagal memodifikasi berkas JSON. Lihat log.
 Toast_DifferentClosingMethod: "'Metode Penutupan' berbeda dengan default. Jika permainan ditutup dan lainnya, periksa apakah mengubah opsi ini membantu. Bawaan: {defaultMethod}, Saat ini: {currentMethod}"
 Modal_Crowdin_Header: Penerjemah Crowdin
 Modal_Crowdin_Info: "Berikut adalah semua orang yang membantu menerjemahkan perangkat lunak ini.<br>Pengguna dengan bahasa di samping mereka banyak membantu dalam penerjemahan (peran proofreader)."
-Modal_Info_Creator: Created by TroubleChute [Wesley Pyburn]
+Modal_Info_Creator: Dibuat oleh TroubleChute [Wesley Pyburn]
 Modal_Info_Version: Versi
 Modal_Info_ViewGitHub: Lihat di GitHub
 Modal_Info_ViewPatreon: Dukungan melalui Patreon
@@ -404,7 +404,7 @@ Updater_TotalFound: "Total pembaruan yang ditemukan: {x}"
 Updater_TotalSize: "Ukuran total: {size}"
 Updater_AwaitingUser: Menunggu masukan pengguna...
 Updater_UpToDate: "Anda sudah diperbarui.\n:)"
-Updater_FailedDecode: This is most likely due to me (TroubleChute) pushing an update, and making a typo that broke the .json update file. Do let me know :)
+Updater_FailedDecode: Ini kemungkinan besar karena saya (TroubleChute) mendorong pembaruan, dan membuat kesalahan ketik yang merusak file pembaruan .json. Do let me know :)
 Updater_FailedDecodeTitle: Gagal mendekode daftar pembaruan
 Updater_Extracting: Mengekstrak file patch
 Updater_Applying: Menerapkan patch...
@@ -463,7 +463,7 @@ DeletingFile: "Menghapus: {file}"
 DeletingFolder: "Menghapus Folder: "
 CouldntDeleteX: "GALAT: TIDAK DAPAT MENGHAPUS: {x}"
 CouldntDeleteUndefined: "GALAT: TIDAK DAPAT MENGHAPUS BERKAS YANG TIDAK TERDEFINISI"
-CouldntModifyX: "Could not modify {file}. File permission error, or file is in use."
+CouldntModifyX: "Tidak dapat mengubah {file}. Kesalahan izin berkas, atau berkas sedang digunakan."
 Prompt_RestartAsAdmin: "<h3><bold>Program ini akan dimulai ulang sebagai Admin</bold></h3><p>Tekan \"Ya\" di UAC ketika diminta untuk admin</p>."
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Anda akan melupakan akun!</h3> <h4>Apa artinya ini?</h4> <p>- Steam tidak akan lagi memiliki akun yang terdaftar dalam Mode Gambar Besar dan tidak akan Ingat Kata Sandi.<br/> - TcNo Account Switcher juga tidak akan lagi menampilkan akun, sampai masuk lagi melalui Steam.</p> <p>Akun Anda akan tetap tidak tersentuh. Itu hanya dilupakan di komputer ini.</p><h4>Apakah Anda mengerti?</h4>
