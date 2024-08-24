@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: 비활성화된 플랫폼. 활성화하려면 �
 Settings_ExtraPlatformsEnabled: 보여질 플랫폼. 비활성화하려면 클릭하세요. 
 Settings_RTL: 텍스트를 오른쪽에서 왼쪽으로 표시
 Settings_CollectStats: 통계 수집
-Settings_ShareStats: Share stats anonymously (recommended)
+Settings_ShareStats: 통계를 익명으로 공유(권장)
 Settings_DiscordRpc: 디스코드 Rich Presence
 Settings_DiscordRpcShare: 총 스위치 횟수 공유
 Settings_ViewStats: 통계 보기
@@ -89,7 +89,7 @@ Settings_Header_ActiveBrowser: "(고급) 렌더링 엔진 설정:"
 Settings_Header_ClosingMethod: "(고급) {platform}을 닫는 방법을 다음으로 설정"
 Settings_Header_StartingMethod: "(고급) {platform}을 시작하는 방법을 다음으로 설정"
 Settings_AutoStart: "계정 전환 시 자동으로 {platform} 시작"
-Settings_ShowSteamSwitcher: "Show Steam's account switcher (Do NOT use this or it may break TcNo Account Switcher)"
+Settings_ShowSteamSwitcher: "Steam 계정 전환기를 표시합니다(이 기능을 사용하지 마십시오. 그렇지 않으면 TcNo 계정 전환기가 중단될 수 있습니다)"
 Settings_NoPlatforms: 현재 활성화된 플랫폼이 없습니다. 아래에서 플랫폼을 선택하여 활성화하거나 비활성화된 플랫폼을 선택 취소하십시오.
 Settings_MinimizeOnSwitch: 계정 전환 시 스위쳐 최소화
 Settings_ShowShortNotes: 사용자 이름에서 메모 미리 보기
@@ -242,10 +242,10 @@ Toast_SteamWebKeyInvalid: 스팀 웹 API 키가 유효하지 않은 것 같습�
 Toast_DownloadingProfileData: 프로필 데이터 다운로드 중
 Toast_PasswordChanged: 비밀번호 변경됨
 Toast_JsonFailModify: JSON 파일을 수정하지 못했습니다. 로그를 참조하십시오.
-Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
+Toast_DifferentClosingMethod: "'종료 방법'은 기본값과 다릅니다. 게임이 종료되고 더 많은 경우 이 옵션을 변경하면 도움이 되는지 확인하세요. 기본값: {defaultMethod}, 현재: {currentMethod}"
 Modal_Crowdin_Header: Crowdin 번역가
 Modal_Crowdin_Info: "이 소프트웨어를 번역하는 데 도움을 준 모든 사람이 있습니다.<br>옆에 언어가 있는 사용자가 번역에 많은 도움을 주었습니다. (검수자 역할)"
-Modal_Info_Creator: Created by TroubleChute [Wesley Pyburn]
+Modal_Info_Creator: 테크노보 지음 [웨슬리 파이번]
 Modal_Info_Version: 버전
 Modal_Info_ViewGitHub: GitHub에서 보기
 Modal_Info_ViewPatreon: Patreon을 통한 지원
@@ -404,7 +404,7 @@ Updater_TotalFound: "발견된 총 업데이트 수: {x}"
 Updater_TotalSize: "총 크기: {size}"
 Updater_AwaitingUser: 사용자 입력을 기다리는 중...
 Updater_UpToDate: "최신 버전입니다.\n:)"
-Updater_FailedDecode: This is most likely due to me (TroubleChute) pushing an update, and making a typo that broke the .json update file. Do let me know :)
+Updater_FailedDecode: 이것은 제가(TroubleChute) 업데이트를 푸시하고 .json 업데이트 파일을 손상시킬만한 오타를 냈기 때문일 가능성이 큽니다. 저에게 알려주세요 :)
 Updater_FailedDecodeTitle: 업데이트 목록을 디코딩하지 못했습니다
 Updater_Extracting: 패치 파일 압축 해제 중
 Updater_Applying: 패치 적용 중...
@@ -463,7 +463,7 @@ DeletingFile: "파일 삭제 중: {file}"
 DeletingFolder: "폴더 삭제 중: "
 CouldntDeleteX: "오류: 삭제할 수 없음: {x}"
 CouldntDeleteUndefined: "오류: 정의되지 않은 파일을 삭제할 수 없습니다"
-CouldntModifyX: "Could not modify {file}. File permission error, or file is in use."
+CouldntModifyX: "{file}을(를) 수정할 수 없습니다. 파일 권한 오류이거나 파일이 사용 중입니다."
 Prompt_RestartAsAdmin: "<h3><bold>이 프로그램은 관리자로 다시 시작됩니다.</bold></h3><p>관리자 권한을 묻는 메시지가 표시되면 UAC에서 \"예\"를 누르세요.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>계정을 잊어버리려고 합니다!</h3> <h4>그 결과,</h4> <p>- Steam은 더 이상 Big Picture 모드에서 해당 계정을 표시하지 않으며 비밀번호 또한 기억하지 않게됩니다.<br/>- TcNo Account Switcher는 Steam을 통해 다시 로그인할 때까지 더 이상 계정을 표시하지 않게됩니다.</p> <p>귀하의 계정은 그대로 유지됩니다. 계정이 삭제되는 것이 아니라, 이 프로그램에서 사라집니다.</p><h4>계속하시겠습니까?</h4>
