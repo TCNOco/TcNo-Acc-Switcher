@@ -89,6 +89,7 @@ Settings_Header_ActiveBrowser: "(پیشرفته) تنظیم موتور رندر:
 Settings_Header_ClosingMethod: "(پیشرفته) روش را روی {platform}تنظیم کنید"
 Settings_Header_StartingMethod: "(پیشرفته) روش را روی {platform}تنظیم کنید"
 Settings_AutoStart: "شروع خودکار {platform} در سوئیچ حساب"
+Settings_ShowSteamSwitcher: "Show Steam's account switcher (Do NOT use this or it may break TcNo Account Switcher)"
 Settings_NoPlatforms: در حال حاضر هیچ پلتفرمی فعال نیست. لطفاً پلتفرم‌های اختیاری را در زیر علامت بزنید تا فعال شوند، یا علامت پلتفرم‌های غیرفعال را بردارید.
 Settings_MinimizeOnSwitch: سوئیچ در حساب کاربری را به حداقل برسانید
 Settings_ShowShortNotes: پیش نمایش یادداشت در زیر نام کاربری
@@ -244,7 +245,7 @@ Toast_JsonFailModify: فایل JSON اصلاح نشد. رجوع به ثبت شو
 Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Modal_Crowdin_Header: مترجمان کرودین
 Modal_Crowdin_Info: "در اینجا همه کسانی هستند که در ترجمه این نرم افزار کمک کردند.<br>کاربرانی که زبان های کناری داشتند در ترجمه کمک زیادی کردند (نقش تصحیح کننده)."
-Modal_Info_Creator: ایجاد شده توسط TroubleChute [Wesley Pyburn]
+Modal_Info_Creator: Created by TroubleChute [Wesley Pyburn]
 Modal_Info_Version: نسخه
 Modal_Info_ViewGitHub: در GitHub مشاهده کنید
 Modal_Info_ViewPatreon: پشتیبانی از طریق Patreon
@@ -403,7 +404,7 @@ Updater_TotalFound: "مجموع به روز رسانی های یافت شده: {
 Updater_TotalSize: "اندازه کل: {size}"
 Updater_AwaitingUser: منتظر ورودی کاربر...
 Updater_UpToDate: "شما به روز هستید.\n:)"
-Updater_FailedDecode: این به احتمال زیاد به این دلیل است که من (TroubleChute) به‌روزرسانی را فشار داده‌ام، و یک اشتباه تایپی انجام داده‌ایم که فایل به‌روزرسانی .json را خراب کرده است. خبرم کن :)
+Updater_FailedDecode: This is most likely due to me (TroubleChute) pushing an update, and making a typo that broke the .json update file. Do let me know :)
 Updater_FailedDecodeTitle: رمزگشایی لیست به‌روزرسانی ناموفق بود
 Updater_Extracting: استخراج فایل های پچ
 Updater_Applying: در حال اعمال پچ...
@@ -462,6 +463,7 @@ DeletingFile: "حذف: {file}"
 DeletingFolder: "حذف پوشه: "
 CouldntDeleteX: "خطا: حذف نشد: {x}"
 CouldntDeleteUndefined: "خطا: نمی توان فایل تعریف نشده را حذف کرد"
+CouldntModifyX: "Could not modify {file}. File permission error, or file is in use."
 Prompt_RestartAsAdmin: "<h3><bold>این برنامه به عنوان مدیر راه اندازی مجدد می شود</bold></h3><p>هنگامی که از شما برای مدیر خواسته شد، \"بله\" را در UAC بزنید.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>شما در حال فراموش کردن یک حساب کاربری هستید!</h3> <h4>این به چه معناست؟</h4> <p>- Steam دیگر حسابی را در حالت Big Picture Mode نخواهد داشت و رمز عبور را به خاطر نمی آورد.<br/> - TcNo Account Switcher نیز دیگر اکانت را نشان نمی دهد، تا زمانی که دوباره از طریق Steam وارد سیستم شوید.</p> <p>حساب شما دست نخورده باقی خواهد ماند. فقط در این کامپیوتر فراموش شده است.</p><h4>آیا متوجه شدید؟</h4>
