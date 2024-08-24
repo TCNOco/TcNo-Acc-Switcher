@@ -89,6 +89,7 @@ Settings_Header_ActiveBrowser: "(ขั้นสูง) ตั้งค่าก
 Settings_Header_ClosingMethod: "(ขั้นสูง) ตั้งค่าวิธีการปิด {platform}"
 Settings_Header_StartingMethod: "(ขั้นสูง) ตั้งค่าวิธีการเพื่อเริ่มต้น {platform}"
 Settings_AutoStart: "เริ่ม {platform} โดยอัตโนมัติเมื่อมีการสลับบัญชี"
+Settings_ShowSteamSwitcher: "Show Steam's account switcher (Do NOT use this or it may break TcNo Account Switcher)"
 Settings_NoPlatforms: ขณะนี้ยังไม่มีการเปิดใช้งานแพลตฟอร์มโปรดเลือกแพลตฟอร์มตัวเลือกด้านล่างเพื่อเปิดใช้งานหรือยกเลิกการเลือกแพลตฟอร์มที่ปิดใช้งาน
 Settings_MinimizeOnSwitch: ลดตัวสลับให้เหลือน้อยที่สุดเมื่อมีการสลับบัญชี
 Settings_ShowShortNotes: หมายเหตุแสดงตัวอย่างภายใต้ชื่อผู้ใช้
@@ -244,7 +245,7 @@ Toast_JsonFailModify: ไม่สามารถแก้ไขไฟล์ JSO
 Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Modal_Crowdin_Header: Crowdin Translators
 Modal_Crowdin_Info: "นี่คือทุกคนที่ช่วยแปลซอฟต์แวร์นี้<br>ผู้ใช้ที่มีภาษาถัดจากพวกเขาช่วยในการแปลมาก (บทพิสูจน์อักษร)"
-Modal_Info_Creator: สร้างสรรค์โดยเทคโนโบ [เวสลีย์ไพเบิร์น]
+Modal_Info_Creator: Created by TroubleChute [Wesley Pyburn]
 Modal_Info_Version: เวอร์ชัน
 Modal_Info_ViewGitHub: ดูบน GitHub
 Modal_Info_ViewPatreon: สนับสนุนผ่าน Patreon
@@ -403,7 +404,7 @@ Updater_TotalFound: "พบการอัปเดตทั้งหมด: {x}
 Updater_TotalSize: "ขนาดทั้งหมด: {size}"
 Updater_AwaitingUser: กำลังรอการป้อนข้อมูลของผู้ใช้...
 Updater_UpToDate: "อัพเดทได้แล้วนะครับ:\n)"
-Updater_FailedDecode: ซึ่งน่าจะเป็นเพราะฉัน (TroubleChute) ผลักดันการอัปเดตและพิมพ์ผิดที่ทำให้ไฟล์อัปเดต .json แตกรบกวนแจ้งด้วยนะคะ:)
+Updater_FailedDecode: This is most likely due to me (TroubleChute) pushing an update, and making a typo that broke the .json update file. Do let me know :)
 Updater_FailedDecodeTitle: การถอดรหัสรายการอัปเดตล้มเหลว
 Updater_Extracting: กำลังแยกไฟล์แพทช์
 Updater_Applying: กำลังปรับใช้แพทช์...
@@ -462,6 +463,7 @@ DeletingFile: "การลบ: {file}"
 DeletingFolder: "กำลังลบโฟลเดอร์: "
 CouldntDeleteX: "ข้อผิดพลาด: ลบไม่ได้: {x}"
 CouldntDeleteUndefined: "ข้อผิดพลาด: ไม่สามารถลบไฟล์ที่ไม่ได้กำหนด"
+CouldntModifyX: "Could not modify {file}. File permission error, or file is in use."
 Prompt_RestartAsAdmin: "<h3><bold>This program will restart as Admin</bold></h3><p>Hit \"Yes\" in UAC when prompt for admin</p>."
 Prompt_ForgetSteam: >
   <h3 style='color:red'>คุณกำลังจะลืมบัญชี!</h3> <h4>นี่หมายความว่าอย่างไร?</h4> <p>- Steam จะไม่มีบัญชีที่แสดงในโหมดภาพใหญ่อีกต่อไปและจะจำรหัสผ่านไม่ได้<br/> - TcNo Account Switcher จะไม่แสดงบัญชีอีกต่อไปจนกว่าจะมีการลงชื่อเข้าใช้อีกครั้งผ่าน Steam</p> <p>บัญชีของคุณจะไม่ถูกแตะต้องมันแค่ถูกลืมในคอมพิวเตอร์เครื่องนี้</p><h4>คุณเข้าใจไหม?</h4>
