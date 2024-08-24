@@ -89,6 +89,7 @@ Settings_Header_ActiveBrowser: "(Advanced) Set rendering engine:"
 Settings_Header_ClosingMethod: "(Geavanceerd) Stel methode in op sluiten {platform}"
 Settings_Header_StartingMethod: "(Geavanceerd) Stel methode in op start {platform}"
 Settings_AutoStart: "{platform} automatisch starten bij accountwissel"
+Settings_ShowSteamSwitcher: "Show Steam's account switcher (Do NOT use this or it may break TcNo Account Switcher)"
 Settings_NoPlatforms: Er zijn momenteel geen platforms ingeschakeld. Vink hieronder optionele platforms aan om ze in te schakelen, of schakel uitgeschakelde platforms uit.
 Settings_MinimizeOnSwitch: Minimaliseer switcher op account switch
 Settings_ShowShortNotes: Notitievoorbeeld onder gebruikersnaam
@@ -244,7 +245,7 @@ Toast_JsonFailModify: Kan JSON-bestand niet wijzigen. Zie logboek.
 Toast_DifferentClosingMethod: "'Afsluitingsmethode' is anders dan de standaard. Als je een partij sluit en meer controle dan het wijzigen van deze optie helpt. Standaard: {defaultMethod}, Huidig: {currentMethod}"
 Modal_Crowdin_Header: Crowdin-vertalers
 Modal_Crowdin_Info: "Hier is iedereen die heeft geholpen met het vertalen van deze software.<br>Gebruikers met talen naast zich hebben veel geholpen bij het vertalen (rol van proeflezer)."
-Modal_Info_Creator: Gemaakt door TroubleChute [Wesley Pyburn]
+Modal_Info_Creator: Created by TroubleChute [Wesley Pyburn]
 Modal_Info_Version: Versie
 Modal_Info_ViewGitHub: Bekijk op GitHub
 Modal_Info_ViewPatreon: Ondersteuning via Patreon
@@ -403,7 +404,7 @@ Updater_TotalFound: "Totaal aantal gevonden updates: {x}"
 Updater_TotalSize: "Totale grootte: {size}"
 Updater_AwaitingUser: Wachten op invoer van gebruiker...
 Updater_UpToDate: "Je bent up-to-date.\n:)"
-Updater_FailedDecode: Dit is waarschijnlijk te wijten aan mij (TroubleChute) duwen van een update, en het maken van een typfout dat de .json update-bestand brak. Laat het me weten :)
+Updater_FailedDecode: This is most likely due to me (TroubleChute) pushing an update, and making a typo that broke the .json update file. Do let me know :)
 Updater_FailedDecodeTitle: Kon update lijst niet decoderen
 Updater_Extracting: Patchbestanden uitpakken
 Updater_Applying: Patch wordt toegepast...
@@ -462,6 +463,7 @@ DeletingFile: "Verwijderen: {file}"
 DeletingFolder: "Map verwijderen: "
 CouldntDeleteX: "FOUT: KAN NIET VERWIJDEREN: {x}"
 CouldntDeleteUndefined: "FOUT: KAN ONGEDEFINIEERD BESTAND NIET VERWIJDEREN"
+CouldntModifyX: "Could not modify {file}. File permission error, or file is in use."
 Prompt_RestartAsAdmin: "<h3><bold>Dit programma zal opnieuw starten als Admin</bold></h3><p>Druk op \"Yes\" in UAC wanneer gevraagd voor admin.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Je staat op het punt een account te vergeten!</h3> <h4>Wat betekent dit?</h4> <p>- Steam heeft niet langer het account in de Big Picture-modus en onthoudt het wachtwoord niet.<br/> - TcNo Account Switcher zal het account ook niet langer tonen, totdat het opnieuw is aangemeld via Steam.</p> <p>Uw account blijft ongewijzigd. Het is gewoon vergeten op deze computer.</p><h4>Begrijp je het?</h4>
