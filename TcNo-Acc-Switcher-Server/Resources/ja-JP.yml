@@ -89,6 +89,7 @@ Settings_Header_ActiveBrowser: "(詳細)レンダリングエンジンの設定:
 Settings_Header_ClosingMethod: "(Advanced)メソッドを閉じる {platform}に設定する"
 Settings_Header_StartingMethod: "(Advanced)メソッドを {platform}から始めるように設定します。"
 Settings_AutoStart: "アカウント切り替え時に自動的に {platform} を開始"
+Settings_ShowSteamSwitcher: "Show Steam's account switcher (Do NOT use this or it may break TcNo Account Switcher)"
 Settings_NoPlatforms: 現在、有効になっているプラットフォームはありません。以下のオプションのプラットフォームにチェックマークを付けて有効にするか、無効になっているプラットフォームのチェックを外してください。
 Settings_MinimizeOnSwitch: アカウントスイッチの切り替えを最小限に抑える
 Settings_ShowShortNotes: ユーザー名の下にメモプレビュー
@@ -244,7 +245,7 @@ Toast_JsonFailModify: JSONファイルの変更に失敗しました。ログを
 Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Modal_Crowdin_Header: Crowdinの翻訳者
 Modal_Crowdin_Info: "このソフトウェアの翻訳を手伝ってくれた皆さんです。<br>隣に言語があるユーザーは、翻訳に大いに役立ちました（校正者の役割）。"
-Modal_Info_Creator: TroubleChuteによって作成されました [Wesley Pyburn]
+Modal_Info_Creator: Created by TroubleChute [Wesley Pyburn]
 Modal_Info_Version: バージョン
 Modal_Info_ViewGitHub: GitHubで見る
 Modal_Info_ViewPatreon: Patreonによるサポート
@@ -403,7 +404,7 @@ Updater_TotalFound: "合計更新が見つかりました: {x}"
 Updater_TotalSize: "合計サイズ： {size}"
 Updater_AwaitingUser: ユーザーの入力を待っています...
 Updater_UpToDate: "最新の状態です。\n:)"
-Updater_FailedDecode: これは、私(TroubleChute)がアップデートをプッシュし、.jsonアップデートファイルを破損したタイプを作成したことが原因である可能性が高いです。お知らせください:)
+Updater_FailedDecode: This is most likely due to me (TroubleChute) pushing an update, and making a typo that broke the .json update file. Do let me know :)
 Updater_FailedDecodeTitle: 更新リストのデコードに失敗しました
 Updater_Extracting: パッチファイルの抽出
 Updater_Applying: パッチを適用しています...
@@ -462,6 +463,7 @@ DeletingFile: "削除中: {file}"
 DeletingFolder: "フォルダの削除: "
 CouldntDeleteX: "エラー:削除できませんでした: {x}"
 CouldntDeleteUndefined: "エラー:未定義のファイルを削除できませんでした"
+CouldntModifyX: "Could not modify {file}. File permission error, or file is in use."
 Prompt_RestartAsAdmin: "<h3><bold>このプログラムは管理者として再起動します。</bold></h3><p>管理者にプロンプトが表示されたら、UACで「はい」を押してください。</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>アカウントを忘れようとしています！</h3> <h4>これはどういう意味ですか？</h4> <p>-SteamのアカウントはBigPictureモードで表示されなくなり、パスワードを記憶しなくなります。<br/> -TcNo Account Switcherは、Steamを介して再度サインインするまで、アカウントを表示しなくなります。</p> <p>は変更されません。このコンピューターでは忘れられています。</p><h4>分かりますか？</h4>
