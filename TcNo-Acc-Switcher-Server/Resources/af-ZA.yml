@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Gedeaktiveerde platforms. Klik om hulle te akti
 Settings_ExtraPlatformsEnabled: Sigbare platforms. Klik om hulle te deaktiveer.
 Settings_RTL: Wys teks as Regs-na-Links
 Settings_CollectStats: Versamel statistieke
-Settings_ShareStats: Share stats anonymously (recommended)
+Settings_ShareStats: Deel statistieke anoniem (aanbeveel)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Deel totale skakelaars
 Settings_ViewStats: Bekyk statistieke
@@ -89,7 +89,7 @@ Settings_Header_ActiveBrowser: "(Gevorderd) Stel weergawe-enjin:"
 Settings_Header_ClosingMethod: "(Gevorderd) Stel metode om {platform}te sluit"
 Settings_Header_StartingMethod: "(Gevorderd) Stel metode om {platform}te begin"
 Settings_AutoStart: "Begin outomaties {platform} op rekeningskakelaar"
-Settings_ShowSteamSwitcher: "Show Steam's account switcher (Do NOT use this or it may break TcNo Account Switcher)"
+Settings_ShowSteamSwitcher: "Wys Steam se rekeningwisselaar (Moenie dit gebruik nie of dit kan TcNo Account Switcher breek)"
 Settings_NoPlatforms: Daar is tans geen platforms geaktiveer nie. Merk asseblief opsionele platforms hieronder om hulle te aktiveer, of ontmerk gedeaktiveerde platforms.
 Settings_MinimizeOnSwitch: Minimaliseer skakelaar op rekeningskakelaar
 Settings_ShowShortNotes: Let op voorskou onder gebruikernaam
@@ -242,10 +242,10 @@ Toast_SteamWebKeyInvalid: Steam Web API-sleutel blyk ongeldig te wees. Stel asse
 Toast_DownloadingProfileData: Laai tans profieldata af
 Toast_PasswordChanged: Wagwoord verander
 Toast_JsonFailModify: Kon nie JSON-lêer wysig nie. Sien log.
-Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
+Toast_DifferentClosingMethod: "'Sluitingsmetode' is anders as die verstek. As speletjies sluit en meer, kyk of dit help om hierdie opsie te verander. Verstek: {defaultMethod}, Huidig: {currentMethod}"
 Modal_Crowdin_Header: Crowdin-vertalers
 Modal_Crowdin_Info: "Hier is almal wat gehelp het om hierdie sagteware te vertaal.<br>Gebruikers met tale langs hulle het baie gehelp met vertaling (proefleserrol)."
-Modal_Info_Creator: Created by TroubleChute [Wesley Pyburn]
+Modal_Info_Creator: Geskep deur TroubleChute [Wesley Pyburn]
 Modal_Info_Version: Weergawe
 Modal_Info_ViewGitHub: Kyk op GitHub
 Modal_Info_ViewPatreon: Ondersteuning via Patreon
@@ -404,7 +404,7 @@ Updater_TotalFound: "Totale opdaterings gevind: {x}"
 Updater_TotalSize: "Totale grootte: {size}"
 Updater_AwaitingUser: Wag tans vir gebruikerinvoer …
 Updater_UpToDate: "Jy is op datum.\n:)"
-Updater_FailedDecode: This is most likely due to me (TroubleChute) pushing an update, and making a typo that broke the .json update file. Do let me know :)
+Updater_FailedDecode: Dit is heel waarskynlik te wyte daaraan dat ek (TroubleChute) 'n opdatering gedruk het, en 'n tikfout gemaak het wat die .json-opdateringlêer gebreek het. Laat weet my :)
 Updater_FailedDecodeTitle: Kon nie opdateringslys dekodeer nie
 Updater_Extracting: Onttrek pleisterlêers
 Updater_Applying: Pas tans pleister toe...
@@ -463,7 +463,7 @@ DeletingFile: "Vee uit: {file}"
 DeletingFolder: "Vee vouer uit: "
 CouldntDeleteX: "FOUT: KON NIE UITVEE NIE: {x}"
 CouldntDeleteUndefined: "FOUT: KON NIE ONGEdefinieerde LêER SKEE NIE"
-CouldntModifyX: "Could not modify {file}. File permission error, or file is in use."
+CouldntModifyX: "Kon nie {file}wysig nie. Lêertoestemmingfout, of lêer word gebruik."
 Prompt_RestartAsAdmin: "<h3><bold>Hierdie program sal herbegin as Admin</bold></h3><p>Druk \"Ja\" in UAC wanneer vir admin gevra word.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Jy is op die punt om 'n rekening te vergeet!</h3> <h4>Wat beteken dit?</h4> <p>- Steam sal nie meer die rekening in Big Picture Mode gelys hê nie en sal nie wagwoord onthou nie.<br/> - TcNo Account Switcher sal ook nie meer die rekening wys totdat dit weer deur Steam aangemeld is nie.</p> <p>Jou rekening sal onaangeraak bly. Dit is net vergeet op hierdie rekenaar.</p><h4>Verstaan jy?</h4>
