@@ -218,10 +218,20 @@ if "%SkipCEF%"=="true" goto COMPRESSEDCOMBINED
 :COMPRESSEDCOMBINED
 
 cd %origDir%
+
+if "%SkipSign%"=="true" (
+    ECHO WARNING! Skipped Signing!
+)
+
+if "%SkipCEF%"=="true" (
+    ECHO WARNING! Skipped CEF!
+)
+
+if "%SkipInstaller%"=="true" (
+    ECHO WARNING! Skipped creating Installer!
+)
+endlocal
+
 goto :eof
 
 :end
-
-if "%SkipSign%"=="true" ECHO WARNING! Skipped Signing!
-if "%SkipCEF%"=="true" ECHO WARNING! Skipped CEF!
-if "%SkipInstaller%"=="true" ECHO WARNING! Skipped creating Installer!

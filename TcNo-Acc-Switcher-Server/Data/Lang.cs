@@ -62,7 +62,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Get a string
         /// </summary>
-        public string this[string key] => Strings.ContainsKey(key) ? Strings[key] : key;
+        public string this[string key] => Strings.ContainsKey(key) ? Strings[key].Trim() : key;
 
         /// <summary>
         /// Get a string, and replace variables
@@ -89,7 +89,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                             if (val is int) val = val.ToString();
                             s = s.Replace($"{{{pi.Name}}}", (string)val);
                         }
-                    return s;
+                    return s.Trim();
                 }
                 catch (NullReferenceException e)
                 {

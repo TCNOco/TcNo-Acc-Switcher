@@ -937,6 +937,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             // -----------------------------------
             if (pS != -1) SetPersonaState(selectedSteamId, pS); // Update persona state, if defined above.
 
+            // -----------------------------------
+            // - Update config.vdf for new Steam Switcher
+            // -----------------------------------
+            try
+            {
+                SetShowSteamSwitcher();
+            }
+            catch (Exception e)
+            {
+                GeneralInvocableFuncs.ShowToast("error", Lang["CouldntModifyX", new { file = Path.Join(SteamSettings.FolderPath, "config", "config.vdf") }]);
+            }
+
             Index.Steamuser user = new() { AccName = "" };
             try
             {
@@ -1055,6 +1067,28 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
             // Output
             File.WriteAllText(localConfigFilePath, localConfigText);
+        }
+
+        public static void SetShowSteamSwitcher()
+        {
+            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.SetShowSteamSwitcher] Setting ShowSteamSwitcher to: {SteamSettings.ShowSteamSwitcher}");
+            var localConfigFilePath = Path.Join(SteamSettings.FolderPath, "config", "config.vdf");
+            if (!File.Exists(localConfigFilePath)) return;
+            var localConfigText = Globals.ReadAllText(localConfigFilePath); // Read relevant config.vdf
+
+            // Replace entire line that contains "AlwaysShowUserChooser"
+            var lines = localConfigText.Split('\n');
+            for (var i = 0; i < lines.Length; i++)
+            {
+                if (lines[i].Contains("AlwaysShowUserChooser"))
+                {
+                    lines[i] = $"\"AlwaysShowUserChooser\" \"{(SteamSettings.ShowSteamSwitcher ? "1" : "0")}\"";
+                    break;
+                }
+            }
+
+            // Output
+            File.WriteAllText(localConfigFilePath, string.Join('\n', lines));
         }
 
         /// <summary>
