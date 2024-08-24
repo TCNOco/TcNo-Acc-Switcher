@@ -89,6 +89,7 @@ Settings_Header_ActiveBrowser: "(מתקדם) הגדרת מנוע עיבוד:"
 Settings_Header_ClosingMethod: "(מתקדם) הגדר שיטה לסגירת {platform}"
 Settings_Header_StartingMethod: "(מתקדם) הגדר שיטה להתחלה {platform}"
 Settings_AutoStart: "התחל {platform} באופן אוטומטי במעבר החשבון"
+Settings_ShowSteamSwitcher: "Show Steam's account switcher (Do NOT use this or it may break TcNo Account Switcher)"
 Settings_NoPlatforms: כרגע אין פלטפורמות מופעלות. אנא סמן פלטפורמות אופציונליות למטה כדי להפעיל אותן, או בטל את הסימון של פלטפורמות מושבתות.
 Settings_MinimizeOnSwitch: מזער את המחלף בעת החלפת החשבון
 Settings_ShowShortNotes: 'הערה: תצוגה מקדימה תחת שם משתמש'
@@ -244,7 +245,7 @@ Toast_JsonFailModify: שינוי קובץ JSON נכשל. ראה יומן ריש�
 Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Modal_Crowdin_Header: מתרגמי Crowdin
 Modal_Crowdin_Info: "הנה כל מי שעזר לתרגם את התוכנה הזו.<br>משתמשים עם שפות לידם עזרו רבות בתרגום (תפקיד הגהה)."
-Modal_Info_Creator: נוצר על ידי TroubleChute [ווסלי Pyburn]
+Modal_Info_Creator: Created by TroubleChute [Wesley Pyburn]
 Modal_Info_Version: גרסה
 Modal_Info_ViewGitHub: הצג ב - GitHub
 Modal_Info_ViewPatreon: תמיכה באמצעות Patreon
@@ -403,7 +404,7 @@ Updater_TotalFound: "סך כל העדכונים שנמצאו: {x}"
 Updater_TotalSize: "גודל כולל: {size}"
 Updater_AwaitingUser: ממתין לקלט המשתמש...
 Updater_UpToDate: "אתה מעודכן.\n:)"
-Updater_FailedDecode: סביר להניח שזה נובע מכך שאני (TroubleChute) דחפתי עדכון, וביצעתי שגיאת הקלדה ששברה את קובץ העדכון של json. תודיע לי:)
+Updater_FailedDecode: This is most likely due to me (TroubleChute) pushing an update, and making a typo that broke the .json update file. Do let me know :)
 Updater_FailedDecodeTitle: פענוח רשימת העדכונים נכשל
 Updater_Extracting: מחלץ קבצי תיקון
 Updater_Applying: מחיל טלאי...
@@ -462,6 +463,7 @@ DeletingFile: "מחיקה: {file}"
 DeletingFolder: "מחיקת תיקייה: "
 CouldntDeleteX: "שגיאה: לא ניתן למחוק: {x}"
 CouldntDeleteUndefined: "שגיאה: לא ניתן למחוק קובץ לא מוגדר"
+CouldntModifyX: "Could not modify {file}. File permission error, or file is in use."
 Prompt_RestartAsAdmin: "<h3><bold>תוכנית זו תתחיל מחדש כמנהל מערכת</bold></h3><p>לחץ על \"כן\" ב - UAC כאשר תתבקש לנהל.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>אתה עומד לשכוח חשבון!</h3> <h4>מה זה אומר?</h4> <p>- ל-Steam כבר לא יהיה החשבון הרשום במצב Big Picture ולא יזכור את הסיסמה.<br/> - TcNo Account Switcher גם לא יציג יותר את החשבון, עד שייכנס שוב דרך Steam.</p> <p>החשבון שלך לא ייפגע. זה פשוט נשכח במחשב הזה.</p><h4>אתה מבין?</h4>
