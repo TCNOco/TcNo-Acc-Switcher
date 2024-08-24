@@ -10,7 +10,7 @@ Steam_Tray_AccountName: Show account name [nah yer matey name]
 Steam_CheckVac: Check yer VAC status
 Steam_OverrideDefaultState: "Override default boardin' state:"
 Steam_StartSilent: "Open Steam t' task tray on switch (Start Steam wit' '-silent')"
-Steam_OldUi: "Use Old UI in Steam (-vgui)"
+Steam_OldUi: "Use Ole UI in Steam (-vgui)"
 Button_AddNew: Add New Cap'n
 Button_SaveCurrent: Save Cap'n
 Button_SaveFile: Save File
@@ -89,7 +89,7 @@ Settings_Header_ActiveBrowser: "(Advanced) Set renderin' engine:"
 Settings_Header_ClosingMethod: "(Advanced) Set method t' close {platform}"
 Settings_Header_StartingMethod: "(Advanced) Set method t' start {platform}"
 Settings_AutoStart: "Automatically start {platform} on account switch"
-Settings_ShowSteamSwitcher: "Show Steam's account switcher (Do NOT use this or it may break TcNo Account Switcher)"
+Settings_ShowSteamSwitcher: "Show Steam's account switcher (Do NAH use dis or it may break TcNo Account Switcher)"
 Settings_NoPlatforms: Thar are currently no platforms enabled. Please tick optional platforms below t' enable 'em, or uncheck disabled platforms.
 Settings_MinimizeOnSwitch: Banish switcher on Cap'n switch
 Settings_ShowShortNotes: Log under ye' username
@@ -193,7 +193,7 @@ Toast_NoValidSteamId: Unable t' find a valid Steam ID.
 Toast_FailedUpdateCheck: Failed t' check fer updates
 Toast_UpdateVerifyFail: Can nah verify updater files. Download latest version 'n replace files in yer directory.
 Toast_StartedGame: Started {program}
-Toast_SteamCantLoadXml: Couldn't get XML info for {steamId}. See log for more details.
+Toast_SteamCantLoadXml: Couldn't get XML info fer {steamId}. See log fer more details.
 Toast_Steam_VacCleared: VAC status fer accounts was cleared
 Toast_Steam_CantDeleteVacCache: Could nah scuttle 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: Could nah find Steam\\userdata folder
@@ -242,7 +242,7 @@ Toast_SteamWebKeyInvalid: Steam Web API key seems t' be invalid. Please set a ne
 Toast_DownloadingProfileData: Downloadin' profile data
 Toast_PasswordChanged: Password changed
 Toast_JsonFailModify: Failed t' modify JSON file. See Cap'n's log.
-Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
+Toast_DifferentClosingMethod: "'Closin' Method' be different t' the default. If games be closin' 'n more check if changin' dis option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Modal_Crowdin_Header: Crowdin translators
 Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users wit' languages next t' 'em helped a lot in translation (proofreader role)."
 Modal_Info_Creator: Created by TroubleChute [Wesley Pyburn]
@@ -404,7 +404,7 @@ Updater_TotalFound: "Total updates found: {x}"
 Updater_TotalSize: "Total size: {size}"
 Updater_AwaitingUser: Waitin' fer yer mark...
 Updater_UpToDate: "Ye're up t' date.\n:)"
-Updater_FailedDecode: This is most likely due to me (TroubleChute) pushing an update, and making a typo that broke the .json update file. Do let me know :)
+Updater_FailedDecode: '''tis most likely due t'' me (TroubleChute) pushin'' an update, ''n makin'' a typo that broke the .json update file. Do let me know :)'
 Updater_FailedDecodeTitle: Failed t' decode update list
 Updater_Extracting: Extractin' patch files
 Updater_Applying: Applyin' patch...
@@ -463,7 +463,7 @@ DeletingFile: "Scuttlin': {file}"
 DeletingFolder: "Scuttlin' Folder: "
 CouldntDeleteX: "ERROR: COULDN'T SCUTTLE: {x}"
 CouldntDeleteUndefined: "ERROR: COULDN'T SCUTTLE UNDEFINED FILE"
-CouldntModifyX: "Could not modify {file}. File permission error, or file is in use."
+CouldntModifyX: "Could nah modify {file}. File permission error, or file be in use."
 Prompt_RestartAsAdmin: "<h3><bold>This program will restart as Admin</bold></h3><p>Hit \"Aye\" in UAC when prompted fer admin.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Ye be about t' forget a Cap'n!</h3> <h4>Wha' does this mean?</h4> <p>- Steam will no longer 'ave the Cap'n listed in Big Picture Mode 'n will nah Remember Password.<br/> - TcNo Cap'n Switcher will also no longer show the account, 'til it's signed into again through Steam.</p> <p>Yer account will remain untouched. 'tis jus' forgotten on this computer.</p><h4>Do ye understand?</h4>
