@@ -1,7 +1,7 @@
 REM Move is currently only for build, as moving the files seems to prevent the program from running properly...
 setlocal
 set SkipSign=true
-set SkipCEF=true
+set SkipCEF=false
 set SkipInstaller=false
 
 REM Get current directory:
