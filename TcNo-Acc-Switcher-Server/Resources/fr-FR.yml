@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Plateformes désactivées. Cliquez pour les act
 Settings_ExtraPlatformsEnabled: Plateformes visibles. Cliquez pour les désactiver.
 Settings_RTL: Afficher le texte de droite à gauche
 Settings_CollectStats: Collecter des statistiques
-Settings_ShareStats: Share stats anonymously (recommended)
+Settings_ShareStats: Partager les statistiques de manière anonyme (recommandé)
 Settings_DiscordRpc: Présence de Discord Rich (RPC)
 Settings_DiscordRpcShare: Partager le total des commutateurs
 Settings_ViewStats: Voir les statistiques
@@ -89,6 +89,7 @@ Settings_Header_ActiveBrowser: "Moteur de rendu (avancé) :"
 Settings_Header_ClosingMethod: "Définir la méthode pour fermer {platform} (Avancé)"
 Settings_Header_StartingMethod: "Définir la méthode pour démarrer {platform} (Avancé)"
 Settings_AutoStart: "Démarrage automatique de {platform} sur le commutateur de compte"
+Settings_ShowSteamSwitcher: "Afficher le sélecteur de compte Steam (NE PAS l'utiliser sinon cela pourrait casser le sélecteur de compte TcNo)"
 Settings_NoPlatforms: Il n'y a actuellement aucune plate-forme activée. Veuillez cocher les plates-formes facultatives ci-dessous pour les activer, ou décochez les plates-formes désactivées.
 Settings_MinimizeOnSwitch: Minimiser le commutateur lors du changement de compte
 Settings_ShowShortNotes: Aperçu de la note sous nom d'utilisateur
@@ -462,6 +463,7 @@ DeletingFile: "Suppression de : {file}"
 DeletingFolder: "Suppression du dossier : "
 CouldntDeleteX: "ERREUR : IMPOSSIBLE DE SUPPRIMER : {x}"
 CouldntDeleteUndefined: "ERREUR : IMPOSSIBLE DE SUPPRIMER LE FICHIER NON DÉFINI"
+CouldntModifyX: "Impossible de modifier {file}. Erreur d'autorisation de fichier ou le fichier est en cours d'utilisation."
 Prompt_RestartAsAdmin: "<h3><bold>Ce programme redémarre en tant qu'administrateur</bold></h3><p>Appuyez sur \"Oui\" dans UAC lorsque vous êtes invité à administrer.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Vous êtes sur le point d'oublier un compte !</h3> <h4>Qu'est-ce que cela signifie ?</h4> <p>- Steam n'aura plus le compte répertorié dans le mode Big Picture et ne se souviendra pas du mot de passe.<br/> - TcNo Account Switcher n'affichera plus le compte, jusqu'à ce qu'il soit reconnecté via Steam.</p> <p>Votre compte restera intact. C'est juste oublié sur cet ordinateur.</p><h4>Comprenez-vous?</h4>

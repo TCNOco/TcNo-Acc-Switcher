@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: 無効なプラットフォーム。クリッ�
 Settings_ExtraPlatformsEnabled: 表示されているプラットフォーム。クリックして無効にします。
 Settings_RTL: テキストを右から左に表示
 Settings_CollectStats: 統計を収集する
-Settings_ShareStats: Share stats anonymously (recommended)
+Settings_ShareStats: 統計情報を匿名で共有する（推奨）
 Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: 合計スイッチを共有
 Settings_ViewStats: 統計情報を表示
@@ -89,6 +89,7 @@ Settings_Header_ActiveBrowser: "(詳細)レンダリングエンジンの設定:
 Settings_Header_ClosingMethod: "(Advanced)メソッドを閉じる {platform}に設定する"
 Settings_Header_StartingMethod: "(Advanced)メソッドを {platform}から始めるように設定します。"
 Settings_AutoStart: "アカウント切り替え時に自動的に {platform} を開始"
+Settings_ShowSteamSwitcher: "Steam のアカウントスイッチャーを表示します (これを使用しないでください。そうしないと、TcNo アカウントスイッチャーが壊れる可能性があります)"
 Settings_NoPlatforms: 現在、有効になっているプラットフォームはありません。以下のオプションのプラットフォームにチェックマークを付けて有効にするか、無効になっているプラットフォームのチェックを外してください。
 Settings_MinimizeOnSwitch: アカウントスイッチの切り替えを最小限に抑える
 Settings_ShowShortNotes: ユーザー名の下にメモプレビュー
@@ -462,6 +463,7 @@ DeletingFile: "削除中: {file}"
 DeletingFolder: "フォルダの削除: "
 CouldntDeleteX: "エラー:削除できませんでした: {x}"
 CouldntDeleteUndefined: "エラー:未定義のファイルを削除できませんでした"
+CouldntModifyX: "{file}を変更できませんでした。ファイルの権限エラーか、ファイルが使用中です。"
 Prompt_RestartAsAdmin: "<h3><bold>このプログラムは管理者として再起動します。</bold></h3><p>管理者にプロンプトが表示されたら、UACで「はい」を押してください。</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>アカウントを忘れようとしています！</h3> <h4>これはどういう意味ですか？</h4> <p>-SteamのアカウントはBigPictureモードで表示されなくなり、パスワードを記憶しなくなります。<br/> -TcNo Account Switcherは、Steamを介して再度サインインするまで、アカウントを表示しなくなります。</p> <p>は変更されません。このコンピューターでは忘れられています。</p><h4>分かりますか？</h4>

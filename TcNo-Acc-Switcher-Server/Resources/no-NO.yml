@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Deaktiverte plattformer. Klikk for å aktivere 
 Settings_ExtraPlatformsEnabled: Synlige plattformer. Klikk for å deaktivere dem.
 Settings_RTL: Vis tekst som høyre-til-venstre
 Settings_CollectStats: Samle statistikk
-Settings_ShareStats: Share stats anonymously (recommended)
+Settings_ShareStats: Del statistikk anonymt (anbefalt)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Del totalt brytere
 Settings_ViewStats: Se statistikk
@@ -89,6 +89,7 @@ Settings_Header_ActiveBrowser: "(Avansert) Angi gjengivelsesmotor:"
 Settings_Header_ClosingMethod: "(Avansert) Angi metode for å lukke {platform}"
 Settings_Header_StartingMethod: "(Avansert) Angi metode for å starte {platform}"
 Settings_AutoStart: "Start {platform} automatisk ved kontobytte"
+Settings_ShowSteamSwitcher: "Vis Steams kontobytter (IKKE bruk denne, ellers kan den bryte TcNo Account Switcher)"
 Settings_NoPlatforms: Det er for øyeblikket ingen plattformer aktivert. Merk av for valgfrie plattformer nedenfor for å aktivere dem, eller fjern merket for deaktiverte plattformer.
 Settings_MinimizeOnSwitch: Minimer bytter på kontosvitsj
 Settings_ShowShortNotes: Merk forhåndsvisning under brukernavn
@@ -462,6 +463,7 @@ DeletingFile: "Sletter: {file}"
 DeletingFolder: "Sletter mappe: "
 CouldntDeleteX: "FEIL: KUNNE IKKE SLETTE: {x}"
 CouldntDeleteUndefined: "FEIL: KUNNE IKKE SLETTE UDEFINERET FIL"
+CouldntModifyX: "Kunne ikke endre {file}. Filtillatelsesfeil, eller filen er i bruk."
 Prompt_RestartAsAdmin: "<h3><bold>Dette programmet vil starte på nytt som Admin</bold></h3><p>Trykk \"Yes\" i UAC når du blir bedt om admin.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Du er i ferd med å glemme en konto!</h3> <h4>Hva betyr dette?</h4> <p>- Steam vil ikke lenger ha kontoen oppført i Big Picture Mode og vil ikke huske passord.<br/> - TcNo Account Switcher vil heller ikke lenger vise kontoen før den er logget på igjen via Steam.</p> <p>Kontoen din forblir urørt. Det er bare glemt på denne datamaskinen.</p><h4>Forstår du?</h4>

@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Piattaforme nascoste. Clicca per abilitarle.
 Settings_ExtraPlatformsEnabled: Piattaforme visibili. Clicca per disabilitarle.
 Settings_RTL: Allineamento testo a Destra
 Settings_CollectStats: Raccogli statistiche
-Settings_ShareStats: Share stats anonymously (recommended)
+Settings_ShareStats: Condividi le statistiche in forma anonima (consigliato)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Condividi numero totale di cambi di account
 Settings_ViewStats: Visualizza statistiche
@@ -89,6 +89,7 @@ Settings_Header_ActiveBrowser: "(Avanzato) Imposta motore di rendering:"
 Settings_Header_ClosingMethod: "(Avanzato) Seleziona il metodo per chiudere {platform}"
 Settings_Header_StartingMethod: "(Avanzato) Imposta il metodo su Start {platform}"
 Settings_AutoStart: "Avvia automaticamente {platform} al cambio di account"
+Settings_ShowSteamSwitcher: "Mostra lo switcher dell'account di Steam (NON utilizzarlo altrimenti potrebbe interrompere lo switcher dell'account TcNo)"
 Settings_NoPlatforms: Al momento non ci sono piattaforme visibili. Spunta le piattaforme opzionali di seguito per renderle visibili o deseleziona le piattaforme nascoste.
 Settings_MinimizeOnSwitch: Riduci a icona il lo switcher quando cambi account
 Settings_ShowShortNotes: Anteprima delle note sotto il nome utente
@@ -462,6 +463,7 @@ DeletingFile: "Eliminazione: {file}"
 DeletingFolder: "Eliminazione cartella: "
 CouldntDeleteX: "ERRORE: IMPOSSIBILE ELIMINARE: {x}"
 CouldntDeleteUndefined: "ERRORE: IMPOSSIBILE ELIMINARE FILE INDEFINITO"
+CouldntModifyX: "Impossibile modificare {file}. Errore di autorizzazione del file oppure il file è in uso."
 Prompt_RestartAsAdmin: "<h3><bold>Questo programma sarà riavviato come amministratore</bold></h3><p>Clicca \"Sì\" in UAC quando richiesto per l'amministratore.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Stai per dimenticare un account!</h3> <h4>Cosa significa?</h4> <p>- Steam non avrà più l'account elencato in modalità Big Picture e non ricorderà la password.<br/> - Anche TcNo Account Switcher non mostrerà più l'account, fino a quando non verrà eseguito nuovamente l'accesso tramite Steam.</p> <p>Il tuo account rimarrà intatto. È appena stato dimenticato su questo computer.</p><h4>Capisci?</h4>

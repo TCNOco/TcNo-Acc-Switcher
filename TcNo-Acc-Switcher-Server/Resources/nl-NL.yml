@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Uitgeschakelde platforms. Klik om ze in te scha
 Settings_ExtraPlatformsEnabled: Zichtbare platforms. Klik om ze uit te schakelen.
 Settings_RTL: Toon tekst van rechts naar links
 Settings_CollectStats: Verzamel statistieken
-Settings_ShareStats: Share stats anonymously (recommended)
+Settings_ShareStats: Statistieken anoniem delen (aanbevolen)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Totaal aantal schakelaars delen
 Settings_ViewStats: Bekijk statistieken
@@ -89,6 +89,7 @@ Settings_Header_ActiveBrowser: "(Advanced) Set rendering engine:"
 Settings_Header_ClosingMethod: "(Geavanceerd) Stel methode in op sluiten {platform}"
 Settings_Header_StartingMethod: "(Geavanceerd) Stel methode in op start {platform}"
 Settings_AutoStart: "{platform} automatisch starten bij accountwissel"
+Settings_ShowSteamSwitcher: "Toon de accountswitcher van Steam (Gebruik dit NIET, anders kan de accountswitcher van TcNo kapotgaan)"
 Settings_NoPlatforms: Er zijn momenteel geen platforms ingeschakeld. Vink hieronder optionele platforms aan om ze in te schakelen, of schakel uitgeschakelde platforms uit.
 Settings_MinimizeOnSwitch: Minimaliseer switcher op account switch
 Settings_ShowShortNotes: Notitievoorbeeld onder gebruikersnaam
@@ -462,6 +463,7 @@ DeletingFile: "Verwijderen: {file}"
 DeletingFolder: "Map verwijderen: "
 CouldntDeleteX: "FOUT: KAN NIET VERWIJDEREN: {x}"
 CouldntDeleteUndefined: "FOUT: KAN ONGEDEFINIEERD BESTAND NIET VERWIJDEREN"
+CouldntModifyX: "Kan {file}niet wijzigen. Fout met bestandsmachtiging of het bestand is in gebruik."
 Prompt_RestartAsAdmin: "<h3><bold>Dit programma zal opnieuw starten als Admin</bold></h3><p>Druk op \"Yes\" in UAC wanneer gevraagd voor admin.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Je staat op het punt een account te vergeten!</h3> <h4>Wat betekent dit?</h4> <p>- Steam heeft niet langer het account in de Big Picture-modus en onthoudt het wachtwoord niet.<br/> - TcNo Account Switcher zal het account ook niet langer tonen, totdat het opnieuw is aangemeld via Steam.</p> <p>Uw account blijft ongewijzigd. Het is gewoon vergeten op deze computer.</p><h4>Begrijp je het?</h4>

@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Вимкнені платформи. Натис
 Settings_ExtraPlatformsEnabled: Видимі платформи. Натисніть, щоб вимкнути їх.
 Settings_RTL: Показувати текст справа наліво
 Settings_CollectStats: Збирати статистику
-Settings_ShareStats: Share stats anonymously (recommended)
+Settings_ShareStats: Поділитися статистикою анонімно (рекомендовано)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Ділитися загальною кількістю перемикань
 Settings_ViewStats: Переглянути статистику
@@ -89,6 +89,7 @@ Settings_Header_ActiveBrowser: "(Додатково) Встановити руш
 Settings_Header_ClosingMethod: "(Додатково) Встановити метод закриття {platform}"
 Settings_Header_StartingMethod: "(Додатково) Встановити метод для запуску {platform}"
 Settings_AutoStart: "Автоматично запускати {platform} при перемиканні акаунту"
+Settings_ShowSteamSwitcher: "Показати перемикач облікових записів Steam (НЕ використовуйте це, інакше це може пошкодити перемикач облікових записів TcNo)"
 Settings_NoPlatforms: Наразі не ввімкнено жодну платформу. Будь ласка, поставте прапорці нижче додаткові платформи, щоб увімкнути їх, або зніміть прапорець біля вимкнених платформ.
 Settings_MinimizeOnSwitch: Мінімізувати перемикач після перемкнення акаунта
 Settings_ShowShortNotes: Попередній перегляд нотаток під іменем користувача
@@ -241,7 +242,7 @@ Toast_SteamWebKeyInvalid: Ключ API Steam Web, здається, недійс
 Toast_DownloadingProfileData: Завантаження даних профілю
 Toast_PasswordChanged: Пароль змінено
 Toast_JsonFailModify: Не вдалося змінити файл JSON. Див. журнал.
-Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
+Toast_DifferentClosingMethod: "«Метод закриття» відрізняється від стандартного. Якщо ігри та інше закриваються, перевірте, чи допомагає зміна цього параметра. Типове: {defaultMethod}, поточне: {currentMethod}"
 Modal_Crowdin_Header: Перекладачі Crowdin
 Modal_Crowdin_Info: "Ось усі, хто допоміг перекласти це програмне забезпечення.<br>Користувачі з мовами поруч дуже допомогли в перекладі (роль коректора)."
 Modal_Info_Creator: Створено TroubleChute [Wesley Pyburn]
@@ -462,6 +463,7 @@ DeletingFile: "Видалення: {file}"
 DeletingFolder: "Видалення папки: "
 CouldntDeleteX: "ПОМИЛКА: НЕ ВДАЛОСЯ ВИДАЛИТИ: {x}"
 CouldntDeleteUndefined: "ПОМИЛКА: НЕ ВДАЛОСЯ ВИДАЛИТИ НЕВИЗНАЧЕНИЙ ФАЙЛ"
+CouldntModifyX: "Не вдалося змінити {file}. Помилка доступу до файлу або файл використовується."
 Prompt_RestartAsAdmin: "<h3><bold>Ця програма перезапуститься як Admin (Адміністратор)</bold></h3><p>Натисніть \"Так\" в UAC, коли буде запропоновано admin (Адміністратор).</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Ви збираєтеся забути обліковий запис!</h3> <h4>Що це означає?</h4> <p>- Steam більше не матиме облікового запису, зазначеного в режимі Big Picture Mode, і не запам'ятовуватиме пароль.<br/> - TcNo Account Switcher також більше не показуватиме обліковий запис, доки він не ввійде знову через Steam.</p> <p>Ваш обліковий запис залишиться недоторканим. Це просто забуто на цьому комп’ютері.</p><h4>Ви розумієте?</h4>

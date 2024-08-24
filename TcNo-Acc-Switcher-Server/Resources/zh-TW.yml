@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: 停用的平台（按一下啟用）
 Settings_ExtraPlatformsEnabled: 啟用中平台（按一下停用）
 Settings_RTL: 由右至左顯示文字
 Settings_CollectStats: 收集統計數據
-Settings_ShareStats: Share stats anonymously (recommended)
+Settings_ShareStats: 匿名分享統計數據（建議）
 Settings_DiscordRpc: Discord 遊戲狀態 (RPC)
 Settings_DiscordRpcShare: 分享總切換
 Settings_ViewStats: 查看統計資料
@@ -89,6 +89,7 @@ Settings_Header_ActiveBrowser: "（進階）設定渲染引擎："
 Settings_Header_ClosingMethod: "（進階）設定 {platform} 的關閉方式"
 Settings_Header_StartingMethod: "（進階）設定 {platform} 的開啟方式"
 Settings_AutoStart: "切換帳號後自動啟動 {platform}"
+Settings_ShowSteamSwitcher: "顯示 Steam 的帳戶切換器（請勿使用此選項，否則可能會破壞 TcNo 帳戶切換器）"
 Settings_NoPlatforms: 目前未啟用任何平台。請勾選以下平台來啟用/停用。
 Settings_MinimizeOnSwitch: 切換帳戶時最小化切換器
 Settings_ShowShortNotes: 用戶名下的備註預覽
@@ -462,6 +463,7 @@ DeletingFile: "正在刪除： {file}"
 DeletingFolder: "正在刪除資料夾： "
 CouldntDeleteX: "錯誤：無法刪除 {x}"
 CouldntDeleteUndefined: "錯誤：無法刪除未定義檔案"
+CouldntModifyX: "無法修改 {file}。檔案權限錯誤，或檔案正在使用中。"
 Prompt_RestartAsAdmin: "<h3><bold>本程式即將以管理員身分重新啟動</bold></h3><p>跳出管理員身分警示時，請於 UAC 畫面中點選「是」。</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>您即將遺忘這個帳號！</h3> <h4>遺忘了會怎麼樣？</h4> <p>- 該帳號將不再顯示於 Steam 的 Big Picture 模式，也不再會記住密碼。<br/> - 該帳號也將不再顯示於 TcNo 帳號切換器，直到您透過 Steam 重新登入該帳號。</p> <p>此變更不會影響您的帳號本身，只會刪除本機的所有紀錄。</p><h4>您瞭解以上說明嗎？</h4>

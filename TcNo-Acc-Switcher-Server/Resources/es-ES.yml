@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Plataformas desactivadas. Haga clic para habili
 Settings_ExtraPlatformsEnabled: Plataformas visibles. Haga clic para desactivarlas.
 Settings_RTL: Mostrar texto de derecha a izquierda
 Settings_CollectStats: Recopilar estadísticas
-Settings_ShareStats: Share stats anonymously (recommended)
+Settings_ShareStats: Compartir estadísticas de forma anónima (recomendado)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Compartir interruptores totales
 Settings_ViewStats: Ver estadísticas
@@ -89,6 +89,7 @@ Settings_Header_ActiveBrowser: "(Avanzado) Configurar motor de renderizado:"
 Settings_Header_ClosingMethod: "(Avanzado) Establecer método para cerrar {platform}"
 Settings_Header_StartingMethod: "(Avanzado) Establecer método para iniciar {platform}"
 Settings_AutoStart: "Iniciar automáticamente {platform} en el interruptor de cuenta"
+Settings_ShowSteamSwitcher: "Mostrar el selector de cuentas de Steam (NO use esto o puede dañar el selector de cuentas de TcNo)"
 Settings_NoPlatforms: Actualmente no hay plataformas habilitadas. Marque las plataformas opcionales a continuación para habilitarlas o desmarque las plataformas deshabilitadas.
 Settings_MinimizeOnSwitch: Minimizar el conmutador en el conmutador de cuenta
 Settings_ShowShortNotes: Vista previa de la nota bajo el nombre de usuario
@@ -462,6 +463,7 @@ DeletingFile: "Eliminando: {file}"
 DeletingFolder: "Eliminando carpeta: "
 CouldntDeleteX: "ERROR: NO SE PUDO ELIMINAR: {x}"
 CouldntDeleteUndefined: "ERROR: NO SE PUDO ELIMINAR EL ARCHIVO INDEFINIDO"
+CouldntModifyX: "No se pudo modificar {file}. Error de permiso de archivo o el archivo está en uso."
 Prompt_RestartAsAdmin: "<h3><bold>Este programa se reiniciará como Admin</bold></h3><p>Pulse \"Sí\" en UAC cuando se le solicite admin.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>¡Estás a punto de olvidar una cuenta!</h3> <h4>¿Qué significa esto?</h4> <p>- Steam ya no tendrá la cuenta listada en el modo de imagen grande y no recordará la contraseña.<br/> - TcNo Account Switcher ya no mostrará la cuenta, hasta que se inicie sesión nuevamente a través de Steam.</p> <p>Su cuenta permanecerá intacta. Simplemente está olvidado en esta computadora.</p><h4>¿Entiendes?</h4>

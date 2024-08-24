@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: פלטפורמות מושבתות. לחץ כד�
 Settings_ExtraPlatformsEnabled: פלטפורמות גלויות. לחץ כדי להשבית אותן.
 Settings_RTL: הצג טקסט בתור מימין לשמאל
 Settings_CollectStats: איסוף נתונים סטטיסטיים
-Settings_ShareStats: Share stats anonymously (recommended)
+Settings_ShareStats: שתף נתונים סטטיסטיים באופן אנונימי (מומלץ)
 Settings_DiscordRpc: נוכחות עשירה בדיסקורד (RPC)
 Settings_DiscordRpcShare: שתף את סך המתגים
 Settings_ViewStats: הצג נתונים סטטיסטיים
@@ -89,6 +89,7 @@ Settings_Header_ActiveBrowser: "(מתקדם) הגדרת מנוע עיבוד:"
 Settings_Header_ClosingMethod: "(מתקדם) הגדר שיטה לסגירת {platform}"
 Settings_Header_StartingMethod: "(מתקדם) הגדר שיטה להתחלה {platform}"
 Settings_AutoStart: "התחל {platform} באופן אוטומטי במעבר החשבון"
+Settings_ShowSteamSwitcher: "הצג את מחליף החשבונות של Steam (אל תשתמש בזה או שהוא עלול לשבור את מחליף החשבונות של TcNo)"
 Settings_NoPlatforms: כרגע אין פלטפורמות מופעלות. אנא סמן פלטפורמות אופציונליות למטה כדי להפעיל אותן, או בטל את הסימון של פלטפורמות מושבתות.
 Settings_MinimizeOnSwitch: מזער את המחלף בעת החלפת החשבון
 Settings_ShowShortNotes: 'הערה: תצוגה מקדימה תחת שם משתמש'
@@ -241,7 +242,7 @@ Toast_SteamWebKeyInvalid: מפתח ה - API של Steam Web לא חוקי. אנא
 Toast_DownloadingProfileData: מוריד נתוני פרופיל
 Toast_PasswordChanged: הסיסמה שונתה
 Toast_JsonFailModify: שינוי קובץ JSON נכשל. ראה יומן רישום.
-Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
+Toast_DifferentClosingMethod: "'שיטת סגירה' שונה מברירת המחדל. אם משחקים נסגרים ועוד בדוק אם שינוי אפשרות זו עוזרת. ברירת מחדל: {defaultMethod}, נוכחי: {currentMethod}"
 Modal_Crowdin_Header: מתרגמי Crowdin
 Modal_Crowdin_Info: "הנה כל מי שעזר לתרגם את התוכנה הזו.<br>משתמשים עם שפות לידם עזרו רבות בתרגום (תפקיד הגהה)."
 Modal_Info_Creator: נוצר על ידי TroubleChute [ווסלי Pyburn]
@@ -462,6 +463,7 @@ DeletingFile: "מחיקה: {file}"
 DeletingFolder: "מחיקת תיקייה: "
 CouldntDeleteX: "שגיאה: לא ניתן למחוק: {x}"
 CouldntDeleteUndefined: "שגיאה: לא ניתן למחוק קובץ לא מוגדר"
+CouldntModifyX: "לא ניתן לשנות את {file}. שגיאה בהרשאת קובץ, או שהקובץ נמצא בשימוש."
 Prompt_RestartAsAdmin: "<h3><bold>תוכנית זו תתחיל מחדש כמנהל מערכת</bold></h3><p>לחץ על \"כן\" ב - UAC כאשר תתבקש לנהל.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>אתה עומד לשכוח חשבון!</h3> <h4>מה זה אומר?</h4> <p>- ל-Steam כבר לא יהיה החשבון הרשום במצב Big Picture ולא יזכור את הסיסמה.<br/> - TcNo Account Switcher גם לא יציג יותר את החשבון, עד שייכנס שוב דרך Steam.</p> <p>החשבון שלך לא ייפגע. זה פשוט נשכח במחשב הזה.</p><h4>אתה מבין?</h4>

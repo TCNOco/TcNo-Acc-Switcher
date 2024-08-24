@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Menonaktifkan platform. Klik untuk mengaktifkan
 Settings_ExtraPlatformsEnabled: Platform yang terlihat. Klik untuk menonaktifkannya.
 Settings_RTL: Tampilkan teks sebagai Kanan - ke - Kiri
 Settings_CollectStats: Kumpulkan statistik
-Settings_ShareStats: Share stats anonymously (recommended)
+Settings_ShareStats: Bagikan statistik secara anonim (disarankan)
 Settings_DiscordRpc: Kehadiran Kaya Perselisihan (RPC)
 Settings_DiscordRpcShare: Bagikan total sakelar
 Settings_ViewStats: Lihat statistik
@@ -89,6 +89,7 @@ Settings_Header_ActiveBrowser: "(Lanjutan) Setel mesin render:"
 Settings_Header_ClosingMethod: "(Lanjutan) Atur metode untuk menutup {platform}"
 Settings_Header_StartingMethod: "(Lanjutan) Atur metode untuk memulai {platform}"
 Settings_AutoStart: "Otomatis mulai {platform} pada sakelar akun"
+Settings_ShowSteamSwitcher: "Tampilkan pengalih akun Steam (JANGAN gunakan ini atau dapat merusak Pengalih Akun TcNo)"
 Settings_NoPlatforms: Saat ini tidak ada platform yang diaktifkan. Centang platform opsional di bawah ini untuk mengaktifkannya, atau hapus centang platform yang dinonaktifkan.
 Settings_MinimizeOnSwitch: Minimalkan pengalih pada pengalih akun
 Settings_ShowShortNotes: Pratinjau catatan di bawah nama pengguna
@@ -462,6 +463,7 @@ DeletingFile: "Menghapus: {file}"
 DeletingFolder: "Menghapus Folder: "
 CouldntDeleteX: "GALAT: TIDAK DAPAT MENGHAPUS: {x}"
 CouldntDeleteUndefined: "GALAT: TIDAK DAPAT MENGHAPUS BERKAS YANG TIDAK TERDEFINISI"
+CouldntModifyX: "Tidak dapat mengubah {file}. Kesalahan izin berkas, atau berkas sedang digunakan."
 Prompt_RestartAsAdmin: "<h3><bold>Program ini akan dimulai ulang sebagai Admin</bold></h3><p>Tekan \"Ya\" di UAC ketika diminta untuk admin</p>."
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Anda akan melupakan akun!</h3> <h4>Apa artinya ini?</h4> <p>- Steam tidak akan lagi memiliki akun yang terdaftar dalam Mode Gambar Besar dan tidak akan Ingat Kata Sandi.<br/> - TcNo Account Switcher juga tidak akan lagi menampilkan akun, sampai masuk lagi melalui Steam.</p> <p>Akun Anda akan tetap tidak tersentuh. Itu hanya dilupakan di komputer ini.</p><h4>Apakah Anda mengerti?</h4>

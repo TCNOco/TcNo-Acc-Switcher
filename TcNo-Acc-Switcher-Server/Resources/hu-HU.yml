@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Letiltott platformok. Kattintson az engedélyez
 Settings_ExtraPlatformsEnabled: Látható platformok. Kattintson a letiltásukhoz.
 Settings_RTL: Szöveg megjelenítése jobbról balra haladva
 Settings_CollectStats: Statisztikák gyűjtése
-Settings_ShareStats: Share stats anonymously (recommended)
+Settings_ShareStats: Statisztikák névtelen megosztása (ajánlott)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Összes kapcsoló megosztása
 Settings_ViewStats: Statisztikák megtekintése
@@ -89,6 +89,7 @@ Settings_Header_ActiveBrowser: "(Speciális) Renderelőmotor beállítása:"
 Settings_Header_ClosingMethod: "(Speciális) Módszer beállítása {platform}bezárására"
 Settings_Header_StartingMethod: "(Speciális) Módszer beállítása {platform}indításához"
 Settings_AutoStart: "{platform} automatikus indítása a fiókváltáskor"
+Settings_ShowSteamSwitcher: "A Steam fiókváltójának megjelenítése (NE használja ezt, mert megszakíthatja a TcNo fiókváltót)"
 Settings_NoPlatforms: Jelenleg nincs engedélyezve platform. Kérjük, jelölje be alább az opcionális platformokat az engedélyezésükhöz, vagy törölje a letiltott platformok jelölését.
 Settings_MinimizeOnSwitch: Kapcsoló minimalizálása a fiókkapcsolón
 Settings_ShowShortNotes: Megjegyzés előnézete USERNAME alatt
@@ -241,7 +242,7 @@ Toast_SteamWebKeyInvalid: A Steam Web API kulcs érvénytelennek tűnik. Kérjü
 Toast_DownloadingProfileData: Profiladatok letöltése
 Toast_PasswordChanged: A jelszó megváltozott
 Toast_JsonFailModify: Nem sikerült módosítani a JSON-fájlt. Lásd a Naplót.
-Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
+Toast_DifferentClosingMethod: "A 'Closing Method' eltér az alapértelmezetttől. Ha a játékok bezárulnak, ellenőrizze, hogy segít-e ennek az opciónak a megváltoztatása. Alapértelmezett: {defaultMethod}, Aktuális: {currentMethod}"
 Modal_Crowdin_Header: Crowdin fordítók
 Modal_Crowdin_Info: "Itt van mindenki, aki segített lefordítani ezt a szoftvert.<br>A mellettük lévő nyelvű felhasználók sokat segítettek a fordításban (lektori szerep)."
 Modal_Info_Creator: 'Készítette: TroubleChute [Wesley Pyburn]'
@@ -462,6 +463,7 @@ DeletingFile: "Törlés: {file}"
 DeletingFolder: "Mappa törlése: "
 CouldntDeleteX: "HIBA: NEM SIKERÜLT TÖRÖLNI: {x}"
 CouldntDeleteUndefined: "HIBA: NEM SIKERÜLT TÖRÖLNI EGY DEFINIÁLATLAN FÁJLT"
+CouldntModifyX: "A {file}nem módosítható. Fájlengedély-hiba, vagy a fájl használatban van."
 Prompt_RestartAsAdmin: "<h3><bold>Ez a program rendszergazdaként indul újra.</bold></h3><p>Nyomja meg az \"Igen\" gombot az UAC-ban, amikor a rendszer rendszergazdaként kéri.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Mindjárt elfelejt egy fiókot!</h3> <h4>Mit jelent ez?</h4> <p>- A Steam többé nem rendelkezik a Big Picture módban szereplő fiókkal, és nem emlékszik meg a jelszóra.<br/> – A TcNo Account Switcher szintén nem fogja megjeleníteni a fiókot, amíg újra be nem jelentkezik a Steamen keresztül.</p> <p>Fiókja érintetlen marad. Egyszerűen feledésbe merült ezen a számítógépen.</p><h4>Érted?</h4>

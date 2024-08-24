@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Deaktivované platformy. Kliknutím ich povolí
 Settings_ExtraPlatformsEnabled: Viditeľné platformy. Kliknutím ich zakážete.
 Settings_RTL: Zobraziť text ako sprava doľava
 Settings_CollectStats: Zbierajte štatistiky
-Settings_ShareStats: Share stats anonymously (recommended)
+Settings_ShareStats: Anonymné zdieľanie štatistík (odporúča sa)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Zdieľať celkové prepínače
 Settings_ViewStats: Zobraziť štatistiky
@@ -89,6 +89,7 @@ Settings_Header_ActiveBrowser: "(Pokročilé) Nastaviť vykresľovací mechanizm
 Settings_Header_ClosingMethod: "(Pokročilé) Nastavte metódu na zatvorenie {platform}"
 Settings_Header_StartingMethod: "(Pokročilé) Nastavte metódu na začiatok {platform}"
 Settings_AutoStart: "Automaticky spustiť {platform} pri prepnutí účtu"
+Settings_ShowSteamSwitcher: "Ukážte prepínač účtov Steam (NEPOUŽÍVAJTE to, inak to môže poškodiť prepínač účtov TcNo)"
 Settings_NoPlatforms: Momentálne nie sú povolené žiadne platformy. Začiarknite prosím nižšie voliteľné platformy, aby ste ich povolili, alebo zrušte začiarknutie zakázaných platforiem.
 Settings_MinimizeOnSwitch: Minimalizovať prepínač na prepínači účtov
 Settings_ShowShortNotes: Ukážka poznámky pod užívateľským menom
@@ -462,6 +463,7 @@ DeletingFile: "Vymazanie: {file}"
 DeletingFolder: "Odstránenie priečinka: "
 CouldntDeleteX: "CHYBA: NEDÁ SA VYMAZAŤ: {x}"
 CouldntDeleteUndefined: "CHYBA: NEDÁ SA VYMAZAŤ NEDEFINOVANÝ SÚBOR"
+CouldntModifyX: "Nepodarilo sa upraviť {file}. Chyba povolenia súboru alebo sa súbor používa."
 Prompt_RestartAsAdmin: "<h3><bold>Tento program sa reštartuje ako správca</bold></h3><p>Keď sa zobrazí výzva na zadanie správcu, kliknite na „Áno“ v UAC.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Chystáte sa zabudnúť na účet!</h3> <h4>Čo to znamená?</h4> <p>- Steam už nebude mať účet uvedený v režime Big Picture a nebude si pamätať heslo.<br/> - Prepínač účtov TcNo už nebude zobrazovať účet, kým sa znova neprihlásite cez Steam.</p> <p>Váš účet zostane nedotknutý. V tomto počítači je to jednoducho zabudnuté.</p><h4>Rozumieš?</h4>

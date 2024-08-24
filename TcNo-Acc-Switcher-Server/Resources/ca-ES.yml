@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Plataformes desactivades. Feu clic per habilita
 Settings_ExtraPlatformsEnabled: Plataformes visibles. Feu clic per desactivar-les.
 Settings_RTL: Mostra el text com a de dreta a esquerra
 Settings_CollectStats: Recull estadístiques
-Settings_ShareStats: Share stats anonymously (recommended)
+Settings_ShareStats: Comparteix estadístiques de manera anònima (recomanat)
 Settings_DiscordRpc: Presència rica en discòrdies (RPC)
 Settings_DiscordRpcShare: Comparteix els commutadors totals
 Settings_ViewStats: Mostra les estadístiques
@@ -89,6 +89,7 @@ Settings_Header_ActiveBrowser: "(Avançat) Estableix el motor de representació:
 Settings_Header_ClosingMethod: "(Avançat) Estableix el mètode a {platform}"
 Settings_Header_StartingMethod: "(Avançat) Estableix el mètode a {platform}"
 Settings_AutoStart: "Inicia automàticament {platform} en el canvi de compte"
+Settings_ShowSteamSwitcher: "Mostra el commutador de comptes de Steam (NO ho feu servir o podria trencar el commutador de comptes de TcNo)"
 Settings_NoPlatforms: Actualment no hi ha plataformes habilitades. Marqueu les plataformes opcionals a continuació per activar-les o desmarqueu les plataformes desactivades.
 Settings_MinimizeOnSwitch: Minimitza el commutador en el commutador de compte
 Settings_ShowShortNotes: Previsualització de la nota sota el nom d'usuari
@@ -241,7 +242,7 @@ Toast_SteamWebKeyInvalid: Sembla que la clau de l'API web de Steam no és vàlid
 Toast_DownloadingProfileData: S'estan baixant les dades del perfil
 Toast_PasswordChanged: S'ha canviat la contrasenya
 Toast_JsonFailModify: No s'ha pogut modificar el fitxer JSON. Vegeu el registre.
-Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
+Toast_DifferentClosingMethod: "El 'Mètode de tancament' és diferent al predeterminat. Si els jocs es tanquen i més, comproveu si canviar aquesta opció ajuda. Per defecte: {defaultMethod}, Actual: {currentMethod}"
 Modal_Crowdin_Header: Traductors crowdin
 Modal_Crowdin_Info: "Aquí teniu tots els que han ajudat a traduir aquest programari.<br>Els usuaris amb idiomes al costat van ajudar molt en la traducció (rol de corrector)."
 Modal_Info_Creator: Creat per TroubleChute [Wesley Pyburn]
@@ -462,6 +463,7 @@ DeletingFile: "S'està suprimint: {file}"
 DeletingFolder: "S'està suprimint la carpeta: "
 CouldntDeleteX: "ERROR: NO S'HA POGUT SUPRIMIR: {x}"
 CouldntDeleteUndefined: "S'HA PRODUÏT UN ERROR: NO S'HA POGUT SUPRIMIR EL FITXER NO DEFINIT"
+CouldntModifyX: "No s'ha pogut modificar {file}. Error de permís del fitxer o el fitxer està en ús."
 Prompt_RestartAsAdmin: "<h3><bold>Aquest programa es reiniciarà com a Admin</bold></h3><p>Premeu \"Sí\" a la UAC quan se li demani admin</p>."
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Estàs a punt d'oblidar un compte!</h3> <h4>Què vol dir això?</h4> <p>- Steam ja no tindrà el compte llistat en el mode d'imatge gran i no recordarà la contrasenya.<br/> - TcNo Account Switcher tampoc mostrarà el compte fins que no torni a iniciar la sessió a través de Steam.</p> <p>El vostre compte no es tocarà. Només s'ha oblidat en aquest ordinador.</p><h4>Ho entens?</h4>

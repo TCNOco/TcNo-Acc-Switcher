@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Zakázané platformy. Kliknutím je povolíte.
 Settings_ExtraPlatformsEnabled: Viditelné platformy. Kliknutím je zakážete.
 Settings_RTL: Zobrazit text zprava doleva
 Settings_CollectStats: Shromažďovat statistiky
-Settings_ShareStats: Share stats anonymously (recommended)
+Settings_ShareStats: Anonymní sdílení statistik (doporučeno)
 Settings_DiscordRpc: Přítomnost bohatá na diskord (RPC)
 Settings_DiscordRpcShare: Sdílet celkové přepínače
 Settings_ViewStats: Zobrazit statistiky
@@ -89,6 +89,7 @@ Settings_Header_ActiveBrowser: "(Pokročilé) Nastavení vykreslovacího motoru:
 Settings_Header_ClosingMethod: "(Pokročilé) Nastavte metodu na zavření {platform}"
 Settings_Header_StartingMethod: "(Pokročilé) Nastavte metodu na začátek {platform}"
 Settings_AutoStart: "Automaticky spustit {platform} při přepnutí účtu"
+Settings_ShowSteamSwitcher: "Zobrazit přepínač účtů Steamu (NEPOUŽÍVEJTE jej, jinak by mohl přerušit přepínač účtů TcNo)"
 Settings_NoPlatforms: Momentálně nejsou povoleny žádné platformy. Zaškrtněte prosím níže volitelné platformy, abyste je povolili, nebo zrušte zaškrtnutí zakázaných platforem.
 Settings_MinimizeOnSwitch: Minimalizovat přepínač při přepínání účtu
 Settings_ShowShortNotes: Náhled poznámky pod uživatelským jménem
@@ -462,6 +463,7 @@ DeletingFile: "Odstraňuji: {file}"
 DeletingFolder: "Odstraňování složky: "
 CouldntDeleteX: "CHYBA: NELZE SMAZAT: {x}"
 CouldntDeleteUndefined: "CHYBA: NELZE ODSTRANIT NEDEFINOVANÝ SOUBOR"
+CouldntModifyX: "Nelze upravit {file}. Chyba oprávnění k souboru nebo se soubor používá."
 Prompt_RestartAsAdmin: "<h3><bold>Tento program bude restartován jako Správce</bold></h3><p>stiskněte tlačítko \"Ano\" v UAC při výzvě správce.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Chystáte se zapomenout účet!</h3> <h4>Co to znamená?</h4> <p>- Steam již nebude mít účet uvedený v režimu Big Picture a nebude si pamatovat heslo.<br/> – Přepínač účtů TcNo již také nebude zobrazovat účet, dokud se znovu nepřihlásí prostřednictvím služby Steam.</p> <p>Váš účet zůstane nedotčen. V tomto počítači je to prostě zapomenuto.</p><h4>Rozumíte?</h4>

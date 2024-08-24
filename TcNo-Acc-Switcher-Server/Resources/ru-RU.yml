@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Скрытые платформы. Нажмит
 Settings_ExtraPlatformsEnabled: Отображаемые платформы. Нажмите, чтобы отключить их.
 Settings_RTL: Показывать текст справа налево
 Settings_CollectStats: Собирать статистику
-Settings_ShareStats: Share stats anonymously (recommended)
+Settings_ShareStats: Делитесь статистикой анонимно (рекомендуется)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Поделиться общим количеством переключений
 Settings_ViewStats: Посмотреть статистику
@@ -89,6 +89,7 @@ Settings_Header_ActiveBrowser: "(Дополнительно) Выбрать ре
 Settings_Header_ClosingMethod: "(Дополнительно) Выбрать метод закрытия {platform}"
 Settings_Header_StartingMethod: "(Дополнительно) Выбрать метод запуска {platform}"
 Settings_AutoStart: "Автоматически запускать {platform} при смене аккаунта"
+Settings_ShowSteamSwitcher: "Показать переключатель аккаунтов Steam (НЕ используйте его, иначе он может сломать переключатель аккаунтов TcNo)"
 Settings_NoPlatforms: В настоящее время нет активных платформ. Пожалуйста, выберите платформу(ы).
 Settings_MinimizeOnSwitch: Свернуть программу при смене аккаунта
 Settings_ShowShortNotes: Предварительный просмотр заметки под именем пользователя
@@ -462,6 +463,7 @@ DeletingFile: "Удаление: {file}"
 DeletingFolder: "Удаление папки: "
 CouldntDeleteX: "ОШИБКА: НЕ УДАЛОСЬ УДАЛИТЬ: {x}"
 CouldntDeleteUndefined: "ОШИБКА: НЕ УДАЛОСЬ УДАЛИТЬ НЕОПРЕДЕЛЕННЫЙ ФАЙЛ"
+CouldntModifyX: "Не удалось изменить {file}. Ошибка прав доступа к файлу или файл используется."
 Prompt_RestartAsAdmin: "<h3><bold>Программа будет перезапущена от имени администратора</bold></h3><p>Выберите \"Да\" в контроле учетных записей.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Вы собираетесь забыть аккаунт!</h3> <h4>Что это значит?</h4> <p> — Steam больше не будет показывать аккаунт в режиме Big Picture и не будет запоминать пароль.<br/> — TcNo Account Switcher также больше не будет показывать аккаунт, пока вы снова не войдете в него через Steam.</p> <p>Ваш аккаунт останется нетронутым. Он просто будет забыт на этом компьютере.</p><h4>Вы поняли?</h4>

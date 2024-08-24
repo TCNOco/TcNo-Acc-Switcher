@@ -1,5 +1,5 @@
 ---
-Update: Có bản cập nhật mới! Nhấp vào đây để bắt đầu cập nhật.
+Update: Cập nhật có sẵn! Hãy nhấp vào để bắt đầu.
 Header_ChooseLanguage: 'Chọn ngôn ngữ:'
 Steam_ShowSteamID: SteamID
 Steam_ShowVac: Trạng thái VAC
@@ -9,7 +9,7 @@ Steam_ShowAccUsername: Tên người dùng
 Steam_Tray_AccountName: Hiển thị tên tài khoản [không phải tên của bạn bè]
 Steam_CheckVac: Kiểm tra trạng thái VAC của tài khoản
 Steam_OverrideDefaultState: "Ghi đè trạng thái đăng nhập mặc định:"
-Steam_StartSilent: "Khởi động Steam ở khay hệ thống khi chuyển đổi (Khởi động Steam với tham số '-silent')"
+Steam_StartSilent: "Mở Steam đến khay tác vụ trên công tắc (khởi động Steam với '-silent')"
 Steam_OldUi: "Sử dụng giao diện cũ trong Steam (-vgui)"
 Button_AddNew: Thêm mới
 Button_SaveCurrent: Lưu tài khoản hiện tại
@@ -28,10 +28,10 @@ Button_BackupAll: Sao lưu tất cả
 Button_Restore: Khôi phục
 Button_OpenBackup: Mở thư mục sao lưu
 Button_Back: Quay lại
-Button_RestartAdmin: Khởi động lại với quyền Admin
+Button_RestartAdmin: Khởi động lại với quyền Quản trị viên
 Button_SetPassword: Đặt mật khẩu ứng dụng
-Settings_Shortcut: 'Shortcut Switcher Desktop {platform}'
-Settings_Admin: Khởi động {platform} với quyền Admin
+Settings_Shortcut: ' Phím tắt chuyển đổi {platform} trên màn hình chính'
+Settings_Admin: Chạy {platform} với quyền Quản trị viên
 Settings_ImageExpiry: 'Ngày hết hạn hình ảnh hồ sơ:'
 Settings_SteamAPIKey: "Khóa API Web Steam (không bắt buộc)"
 Settings_SteamAPIKey_Note: Đặt khóa API sẽ làm cho chỉ báo Giới hạn (viền vàng) hiển thị cho các tài khoản bị cấm cộng đồng.
@@ -58,7 +58,7 @@ Settings_ExtraPlatformsEnabled: Nền tảng hiển thị. Nhấp để vô hi�
 Settings_RTL: Hiển thị văn bản dưới dạng từ phải sang trái
 Settings_CollectStats: Thu thập số liệu thống kê
 Settings_ShareStats: Chia sẻ thống kê ẩn danh (được khuyến nghị)
-Settings_DiscordRpc: Discord Rich Presence (RPC)
+Settings_DiscordRpc: Sự hiện diện phong phú của đĩa (RPC)
 Settings_DiscordRpcShare: Chia sẻ tổng số lần chuyển đổi
 Settings_ViewStats: Xem số liệu thống kê
 Preview: Xem trước
@@ -73,7 +73,7 @@ Settings_ClearAccounts: Xóa tài khoản
 Settings_StreamerMode: Bật chế độ Streamer
 Settings_ExitToTray: Thoát và thu nhỏ xuống khay hệ thống
 Settings_DesktopShortcut: Lối tắt Desktop
-Settings_StartMenu_ProgramTray: 'Chương trình & Khay hệ thống'
+Settings_StartMenu_ProgramTray: Chương trình & Khay hệ thống
 Settings_StartMenu_Platform: Nền tảng
 Settings_Tray_StartWindows: Khởi động ở khay hệ thống cùng Windows
 Settings_Tray_StartNow: '[Khởi động ở khay hệ thống ngay]'
@@ -89,6 +89,7 @@ Settings_Header_ActiveBrowser: "(Nâng cao) Đặt công cụ hiển thị:"
 Settings_Header_ClosingMethod: "(Nâng cao) Đặt phương thức đóng {platform}"
 Settings_Header_StartingMethod: "(Nâng cao) Đặt phương thức khởi động {platform}"
 Settings_AutoStart: "Tự động khởi động {platform} khi chuyển đổi tài khoản"
+Settings_ShowSteamSwitcher: "Hiển thị trình chuyển đổi tài khoản Steam (KHÔNG sử dụng trình này vì nó có thể làm hỏng Trình chuyển đổi tài khoản TcNo)"
 Settings_NoPlatforms: Hiện tại không có nền tảng nào được kích hoạt. Vui lòng đánh dấu vào các nền tảng tùy chọn bên dưới để bật chúng hoặc bỏ chọn các nền tảng bị vô hiệu hóa.
 Settings_MinimizeOnSwitch: Thu nhỏ trình chuyển đổi khi chuyển đổi tài khoản
 Settings_ShowShortNotes: Xem trước ghi chú dưới tên người dùng
@@ -157,9 +158,9 @@ Toast_Copied: Đã sao chép
 Toast_AlreadyProcessing: Đang xử lý tài khoản...
 Toast_FailedRestore: Khôi phục tài khoản không thành công (Xem console)
 Toast_Restored: Đã khôi phục tài khoản!
-Toast_ProtocolEnabled: 'Chương trình sẽ bây giờ phản hồi với giao thức tcno:\\ trên Windows'
+Toast_ProtocolEnabled: Chương trình sẽ bây giờ phản hồi với giao thức tcno:\\ trên Windows
 Toast_ProtocolEnabledTitle: Đã thêm giao thức
-Toast_ProtocolDisabled: 'Chương trình này sẽ không còn phản hồi với tcno:\\'
+Toast_ProtocolDisabled: Chương trình này sẽ không còn phản hồi với tcno:\\
 Toast_ProtocolDisabledTitle: Đã xóa giao thức
 Toast_RestartAsAdmin: Vui lòng khởi động lại với quyền Admin và thử lại.
 Toast_RestartAfterClose: Vui lòng khởi động lại chương trình sau khi nhấp vào Đóng.
@@ -294,7 +295,7 @@ Toast_StartingPlatformFailed: Không thể khởi động {platform}! Xem nhật
 Toast_UrlAdminErr: Bạn không thể chạy tệp .url với quyền Admin. Hãy thử loại shortcut khác. Khởi động như người dùng thông thường.
 Status_UpdatingFile: "Đang cập nhật {file}"
 Status_UpdatingRegistry: Đang cập nhật Registry Windows
-Status_FailedLog: 'Thực hiện thất bại. Xem nhật ký để biết chi tiết'
+Status_FailedLog: Thực hiện thất bại. Xem nhật ký để biết chi tiết
 Status_WaitingForClose: "Đang chờ {processName} đóng ({timeout}{timeLimit}) giây"
 Status_WaitingForMultipleClose: "Đang chờ {processName} và {count} ứng dụng khác đóng lại ({timeout}{timeLimit}) giây"
 Status_GetUniqueId: Thu thập ID người dùng duy nhất
@@ -317,7 +318,7 @@ Context_CopySteamIdSubmenu: Sao chép SteamID
 Context_Steam_Id: SteamID [STEAM0:~]
 Context_Steam_Id3: SteamID3 [U:1:~]
 Context_Steam_Id32: SteamID32
-Context_Steam_Id64: SteamID64 7656~
+Context_Steam_Id64: Hơi nướcID64 7656~
 Context_Steam_OpenUserdata: Mở thư mục userdata
 Context_ManageSubmenu: Quản lý
 Context_GameDataSubmenu: Dữ liệu trò chơi
@@ -350,8 +351,8 @@ Installer_ErrorRuntime: "Một hoặc nhiều runtime chưa được cài đặt
 Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB khi cài đặt]"
 Installer_TotalSize: "Tổng kích thước tải xuống: ~{size} MB"
 Installer_AnyKeyStart: Nhấn phím bất kỳ để bắt đầu tải...
-Runtime_WebView2: Microsoft WebView2 Runtime
-Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
+Runtime_WebView2: Thơ ̀ i gian cha ̣ y Microsoft WebView2
+Runtime_Desktop: Thơ ̀ i gian cha ̣ y ma ̀ n hi ̀ nh Microsoft .NET 5
 Runtime_ASP: Microsoft ASP.NET Core {version} Runtime
 Installer_FailedFolder: "Không thể tạo thư mục:"
 Installer_FailedWV: "Không thể tải và cài đặt Microsoft WebView2 Runtime. Để tải: 1. Nhấp vào liên kết bên dưới: {link} 2. Nhấp vào 'Download Hosting Bundle' dưới mục Run server apps."
@@ -436,7 +437,7 @@ Yes: "Có"
 No: "Không"
 Save: Lưu (họ)
 NoDefault: Không (Mặc định)
-Ok: "OK"
+Ok: "Đươ ̣ c rô ̀ i"
 Submit: Gửi
 Forget: Quên đi.
 Notice: Thông báo
@@ -462,6 +463,7 @@ DeletingFile: "Đang xóa: {file}"
 DeletingFolder: "Đang xoá thư mục: "
 CouldntDeleteX: "LỖI: KHÔNG THỂ XÓA: {x}"
 CouldntDeleteUndefined: "LỖI: KHÔNG THỂ XÓA TỆP KHÔNG XÁC ĐỊNH"
+CouldntModifyX: "Không thể sửa đổi {file}. Lỗi quyền tệp hoặc tệp đang được sử dụng."
 Prompt_RestartAsAdmin: "<h3><bold>Chương trình này sẽ khởi động lại với quyền Admin</bold></h3><p>Nhấn \"Yes\" trong UAC khi được yêu cầu quyền Admin.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Bạn sắp quên tài khoản!</h3> <h4>Điều này có nghĩa là gì?</h4> <p>- Steam sẽ không còn liệt kê tài khoản ở Chế độ Big Picture và sẽ không ghi nhớ mật khẩu.<br/> - TcNo Account Switcher cũng sẽ không hiển thị tài khoản nữa, cho đến khi tài khoản đó được đăng nhập lại thông qua Steam.</p> <p>Tài khoản của bạn sẽ không bị ảnh hưởng. Nó chỉ bị quên trên máy tính này.</p><h4>Bạn đã hiểu đúng không?</h4>

@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Wyłączone platformy. Kliknij, aby je włączy
 Settings_ExtraPlatformsEnabled: Widoczne platformy. Kliknij, aby je wyłączyć.
 Settings_RTL: Pokaż tekst od prawej do lewej
 Settings_CollectStats: Zbieranie statystyk
-Settings_ShareStats: Share stats anonymously (recommended)
+Settings_ShareStats: Udostępniaj statystyki anonimowo (zalecane)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Udostępnij łączne przełączenia
 Settings_ViewStats: Wyświetl statystyki
@@ -89,6 +89,7 @@ Settings_Header_ActiveBrowser: "(Zaawansowane) Ustaw silnik renderowania:"
 Settings_Header_ClosingMethod: "(Zaawansowane) Ustaw metodę na zamknięcie {platform}"
 Settings_Header_StartingMethod: "(Zaawansowane) Ustaw metodę na uruchomienie {platform}"
 Settings_AutoStart: "Automatycznie uruchom {platform} przy przełączaniu konta"
+Settings_ShowSteamSwitcher: "Pokaż przełącznik kont Steam (NIE używaj tego, ponieważ może to spowodować uszkodzenie przełącznika kont TcNo)"
 Settings_NoPlatforms: Obecnie nie są włączone żadne platformy. Proszę zaznaczyć opcjonalne platformy poniżej, aby je włączyć, lub odznaczyć nieaktywne platformy.
 Settings_MinimizeOnSwitch: Zminimalizuj przełącznik kont przy zmianie konta
 Settings_ShowShortNotes: Podgląd notatki pod nazwą użytkownika
@@ -462,6 +463,7 @@ DeletingFile: "Usuwanie: {file}"
 DeletingFolder: "Usuwanie folderu: "
 CouldntDeleteX: "BŁĄD: NIE MOŻNA USUNĄĆ: {x}"
 CouldntDeleteUndefined: "ERROR: NIE MOŻNA USUNĄĆ NIEZDEFINIOWANEGO PLIKU"
+CouldntModifyX: "Nie można zmodyfikować {file}. Błąd uprawnień pliku lub plik jest używany."
 Prompt_RestartAsAdmin: "<h3><bold>Ten program uruchomi się ponownie jako Administrator</bold></h3><p>Naciśnij \"Tak\" w UAC, gdy zostaniesz poproszony o prawa administratora.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Zaraz zapomnisz o koncie!</h3> <h4>Co to oznacza?</h4> <p>- Steam nie będzie miał już konta na liście w trybie Big Picture Mode i nie będzie pamiętał hasła.<br/> - Przełącznik kont TcNo również nie będzie już pokazywał konta, dopóki nie zostanie ono ponownie zalogowane przez Steam.</p> <p>Twoje konto pozostanie nietknięte. Jest ono po prostu zapomniane na tym komputerze.</p><h4>Rozumiesz?</h4>
