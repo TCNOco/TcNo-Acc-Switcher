@@ -89,6 +89,7 @@ Settings_Header_ActiveBrowser: "(Avansat) Setați motorul de randare:"
 Settings_Header_ClosingMethod: "(Avansat) Setați metoda de închidere {platform}"
 Settings_Header_StartingMethod: "(Avansat) Setați metoda pentru a porni {platform}"
 Settings_AutoStart: "Porniți automat {platform} la comutarea contului"
+Settings_ShowSteamSwitcher: "Show Steam's account switcher (Do NOT use this or it may break TcNo Account Switcher)"
 Settings_NoPlatforms: În prezent, nu există platforme activate. Vă rugăm să bifați mai jos platformele opționale pentru a le activa sau debifați platformele dezactivate.
 Settings_MinimizeOnSwitch: Minimizați comutatorul la comutarea contului
 Settings_ShowShortNotes: Previzualizare notă sub numele de utilizator
@@ -244,7 +245,7 @@ Toast_JsonFailModify: Modificarea fișierului JSON a eșuat. Consultați jurnalu
 Toast_DifferentClosingMethod: "'Metoda de închidere' este diferită de cea implicită. Dacă jocurile se închid și mai multe verifică dacă schimbarea acestei opțiuni ajută. Implicit: {defaultMethod}, Curent: {currentMethod}"
 Modal_Crowdin_Header: Crowdin traducători
 Modal_Crowdin_Info: "Iată toți cei care au ajutat la traducerea acestui software.<br>Utilizatorii cu limbi lângă ei au ajutat foarte mult la traducere (rol de corector)."
-Modal_Info_Creator: Creat de TroubleChute [Wesley Pyburn]
+Modal_Info_Creator: Created by TroubleChute [Wesley Pyburn]
 Modal_Info_Version: Versiune
 Modal_Info_ViewGitHub: Vizualizare pe GitHub
 Modal_Info_ViewPatreon: Suport prin Patreon
@@ -403,7 +404,7 @@ Updater_TotalFound: "Total actualizări găsite: {x}"
 Updater_TotalSize: "Dimensiune totală: {size}"
 Updater_AwaitingUser: Se așteaptă introducerea de către utilizator...
 Updater_UpToDate: "Ești la zi.\n:)"
-Updater_FailedDecode: Acest lucru se datorează cel mai probabil faptului că eu (TroubleChute) am apăsat pe o actualizare și am făcut o greșeală de scriere care a stricat fișierul de actualizare .json. Anunță-mă :)
+Updater_FailedDecode: This is most likely due to me (TroubleChute) pushing an update, and making a typo that broke the .json update file. Do let me know :)
 Updater_FailedDecodeTitle: Nu s-a reușit decodificarea listei de actualizări
 Updater_Extracting: Extragerea fișierelor patch
 Updater_Applying: Se aplică peticul...
@@ -462,6 +463,7 @@ DeletingFile: "Ștergere: {file}"
 DeletingFolder: "Ștergerea dosarului: "
 CouldntDeleteX: "EROARE: NU S-A PUTUT ȘTERGE: {x}"
 CouldntDeleteUndefined: "EROARE: NU S-A PUTUT ȘTERGE FIȘIERUL NEDEFINIT"
+CouldntModifyX: "Could not modify {file}. File permission error, or file is in use."
 Prompt_RestartAsAdmin: "<h3><bold>Acest program va reporni ca administrator</bold></h3><p>Apăsați „Da” în UAC când vi se solicită administrator.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Ești pe cale să uiți un cont!</h3> <h4>Ce înseamnă asta?</h4> <p>- Steam nu va mai avea contul listat în modul Big Picture și nu va reține parola.<br/> - TcNo Account Switcher nu va mai afișa contul până când nu se va conecta din nou prin Steam.</p> <p>Contul dvs. va rămâne neatins. Este doar uitat pe acest computer.</p><h4>Înțelegi?</h4>
