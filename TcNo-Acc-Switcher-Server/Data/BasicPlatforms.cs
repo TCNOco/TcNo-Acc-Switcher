@@ -148,6 +148,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         private string _settingsFile;
         private string _exeName;
         private Dictionary<string, string> _loginFiles = new();
+        private bool _allFilesRequired = false;
         private List<string> _shortcutFolders = new();
         private List<string> _shortcutIgnore = new();
         private List<string> _pathListToClear;
@@ -190,6 +191,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static string SettingsFile { get => Instance._settingsFile; private set => Instance._settingsFile = value; }
         public static string ExeName { get => Instance._exeName; private set => Instance._exeName = value; }
         public static Dictionary<string, string> LoginFiles => Instance._loginFiles;
+        public static bool AllFilesRequired { get => Instance._allFilesRequired; private set => Instance._allFilesRequired = value; }
         public static List<string> ShortcutFolders { get => Instance._shortcutFolders; private set => Instance._shortcutFolders = value; }
         public static List<string> ShortcutIgnore { get => Instance._shortcutIgnore; private set => Instance._shortcutIgnore = value; }
         public static List<string> PathListToClear { get => Instance._pathListToClear; private set => Instance._pathListToClear = value; }

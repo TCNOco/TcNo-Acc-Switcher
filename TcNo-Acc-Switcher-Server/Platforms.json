@@ -8,6 +8,7 @@
       "LoginFiles": {
         "%AppData%\\Battlestate Games\\BsgLauncher\\settings": "settings"
       },
+      "AllFilesRequired": true,
       "UniqueIdFile": "settings",
       "UniqueIdRegex": "EMAIL_REGEX"
     },
@@ -21,6 +22,7 @@
         "%AppData%\\obs-studio\\basic\\*": "basic\\",
         "%AppData%\\obs-studio\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
       },
+      "AllFilesRequired": true,
       "UniqueIdFile": "%AppData%\\obs-studio\\TcNoAccSwitcher-ID.instance",
       "UniqueIdMethod": "CREATE_ID_FILE"
     },
@@ -33,6 +35,7 @@
         "%LocalAppData%\\EpicGamesLauncher\\Saved\\Config\\Windows\\GameUserSettings.ini": "GameUserSettings.ini",
         "REG:HKCU\\Software\\Epic Games\\Unreal Engine\\Identifiers:AccountId": "UNIQUE_ID"
       },
+      "AllFilesRequired": true,
       "Extras": {
         "CachePaths": [
           "%LocalAppData%\\Epic Games\\Epic Online Services\\UI Helper\\Cache\\Cache",
@@ -420,6 +423,7 @@
       "LoginFiles": {
         "JSON_SELECT_FIRST,::%AppData%\\Battle.net\\Battle.net.config::$.Client.SavedAccountNames": "email.json"
       },
+      "AllFilesRequired": true,
       "ExitBeforeInteract": true,
       "UniqueIdFile": "%AppData%\\Battle.net\\Battle.net.config::$.Client.SavedAccountNames",
       "UniqueIdMethod": "JSON_SELECT_FIRST,",
