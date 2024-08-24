@@ -1,20 +1,20 @@
 ---
-Update: Có bản cập nhật mới! Nhấp vào đây để bắt đầu cập nhật.
+Update: Cập nhật có sẵn! Hãy nhấp vào để bắt đầu.
 Header_ChooseLanguage: 'Chọn ngôn ngữ:'
 Steam_ShowSteamID: SteamID
 Steam_ShowVac: Trạng thái VAC
 Steam_ShowLastLogin: Thời gian đăng nhập lần cuối
-Steam_ShowLimited: Trạng thái hạn chế
+Steam_ShowLimited: Trạng thái giới hạn
 Steam_ShowAccUsername: Tên người dùng
 Steam_Tray_AccountName: Hiển thị tên tài khoản [không phải tên của bạn bè]
 Steam_CheckVac: Kiểm tra trạng thái VAC của tài khoản
 Steam_OverrideDefaultState: "Ghi đè trạng thái đăng nhập mặc định:"
-Steam_StartSilent: "Khởi động Steam ở khay hệ thống khi chuyển đổi (Khởi động Steam với tham số '-silent')"
+Steam_StartSilent: "Mở Steam đến khay tác vụ trên công tắc (khởi động Steam với '-silent')"
 Steam_OldUi: "Sử dụng giao diện cũ trong Steam (-vgui)"
 Button_AddNew: Thêm mới
 Button_SaveCurrent: Lưu tài khoản hiện tại
-Button_SaveFile: Lưu tệp
-Button_Cancel: Huỷ
+Button_SaveFile: Lưu tập tin
+Button_Cancel: Huỷ bỏ
 Button_Login: Đăng nhập
 Button_Close: Đóng
 Button_RefreshImages: Làm mới hình ảnh
@@ -24,17 +24,17 @@ Button_ClearLog: Xóa nhật ký
 Button_WikiInfo: Thông tin thêm (Wiki)
 Button_ManagePlatforms: Quản lý nền tảng
 Button_Backup: Sao lưu
-Button_BackupAll: Sao lưu tất cả
+Button_BackupAll: Sao lưu mọi thứ
 Button_Restore: Khôi phục
 Button_OpenBackup: Mở thư mục sao lưu
 Button_Back: Quay lại
-Button_RestartAdmin: Khởi động lại với quyền Admin
+Button_RestartAdmin: Khởi động lại với quyền Quản trị viên
 Button_SetPassword: Đặt mật khẩu ứng dụng
-Settings_Shortcut: 'Shortcut Switcher Desktop {platform}'
-Settings_Admin: Khởi động {platform} với quyền Admin
-Settings_ImageExpiry: 'Ngày hết hạn hình ảnh hồ sơ:'
-Settings_SteamAPIKey: "Khóa API Web Steam (không bắt buộc)"
-Settings_SteamAPIKey_Note: Đặt khóa API sẽ làm cho chỉ báo Giới hạn (viền vàng) hiển thị cho các tài khoản bị cấm cộng đồng.
+Settings_Shortcut: ' Phím tắt chuyển đổi {platform} trên màn hình chính'
+Settings_Admin: Chạy {platform} với quyền Quản trị viên
+Settings_ImageExpiry: 'Số ngày trước khi hình ảnh hồ sơ hết hạn:'
+Settings_SteamAPIKey: "Khóa API Web Steam (tùy chọn)"
+Settings_SteamAPIKey_Note: Đặt khóa API sẽ làm cho chỉ báo Giới hạn (viền vàng) hiển thị cho các tài khoản bị Cấm Cộng đồng thay vào đó.
 Settings_Header_AppWide: Cài đặt ứng dụng
 Settings_Header_GeneralSettings: Cài đặt chung
 Settings_Header_AccountDisplay: Cài đặt hiển thị tài khoản
@@ -57,12 +57,12 @@ Settings_ExtraPlatformsDisabled: Các nền tảng bị vô hiệu hóa. Nhấp 
 Settings_ExtraPlatformsEnabled: Nền tảng hiển thị. Nhấp để vô hiệu hóa chúng.
 Settings_RTL: Hiển thị văn bản dưới dạng từ phải sang trái
 Settings_CollectStats: Thu thập số liệu thống kê
-Settings_ShareStats: Chia sẻ thống kê ẩn danh (được khuyến nghị)
-Settings_DiscordRpc: Discord Rich Presence (RPC)
-Settings_DiscordRpcShare: Chia sẻ tổng số lần chuyển đổi
+Settings_ShareStats: Share stats anonymously (recommended)
+Settings_DiscordRpc: Sự hiện diện phong phú của đĩa (RPC)
+Settings_DiscordRpcShare: Chia sẻ tổng số khóa điện
 Settings_ViewStats: Xem số liệu thống kê
-Preview: Xem trước
-Settings_ClearStats: Đặt lại
+Preview: Xem trươ ́ c
+Settings_ClearStats: Đă ̣ t la ̣ i
 Settings_CurrentLocation: 'Vị trí cài đặt hiện tại: {path}'
 Settings_CurrentDataLocation: 'Vị trí dữ liệu người dùng hiện tại: {path}'
 Settings_SetDataLocation: "[Đặt vị trí dữ liệu người dùng tùy chỉnh]"
@@ -70,191 +70,192 @@ Settings_PickFolder: Chọn thư mục {platform}
 Settings_OpenFolder: Mở thư mục {platform}
 Settings_ClearForgotten: Xóa mục bị quên
 Settings_ClearAccounts: Xóa tài khoản
-Settings_StreamerMode: Bật chế độ Streamer
-Settings_ExitToTray: Thoát và thu nhỏ xuống khay hệ thống
-Settings_DesktopShortcut: Lối tắt Desktop
-Settings_StartMenu_ProgramTray: 'Chương trình & Khay hệ thống'
+Settings_StreamerMode: Bật chế độ phát trực tuyến
+Settings_ExitToTray: Thoát thu nhỏ vào khay
+Settings_DesktopShortcut: Lô ́ i tă ́ t trên ba ̀ n la ̀ m viê ̣ c
+Settings_StartMenu_ProgramTray: '& Khay chương trình'
 Settings_StartMenu_Platform: Nền tảng
-Settings_Tray_StartWindows: Khởi động ở khay hệ thống cùng Windows
-Settings_Tray_StartNow: '[Khởi động ở khay hệ thống ngay]'
-Settings_CurrentStyle: Kiểu hiện tại
+Settings_Tray_StartWindows: Bă ́ t đâ ̀ u Khay vơ ́ i Cư ̉ a sô ̉
+Settings_Tray_StartNow: '[Bă ́ t đâ ̀ u Khay ngay]'
+Settings_CurrentStyle: Kiê ̉ u Hiê ̣ n ta ̣ i
 Settings_ThemeBackground: '[Chỉnh nền]'
 Settings_ThemeOpenFolder: '[Mở thư mục chủ đề]'
-Settings_Protocol: 'Kích hoạt giao thức tcno:\ (Được khuyến nghị)'
-Settings_StartCentered: Khởi động chương trình ở giữa màn hình
-Settings_WindowsAccent: Sử dụng màu sắc của Windows
-Settings_HelpTranslate: "[Hỗ trợ dịch thuật]"
-Settings_ViewTranslators: "[Tác giả]"
+Settings_Protocol: 'Bật giao thức TcNo: \\ (Được khuyến nghị)'
+Settings_StartCentered: Bă ́ t đâ ̀ u chương tri ̀ nh ơ ̉ giư ̃ a
+Settings_WindowsAccent: Sư ̉ du ̣ ng Ma ̀ u Nhâ ́ n ma ̣ nh cu ̉ a Windows
+Settings_HelpTranslate: "[Trơ ̣ giu ́ p di ̣ ch]"
+Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "(Nâng cao) Đặt công cụ hiển thị:"
 Settings_Header_ClosingMethod: "(Nâng cao) Đặt phương thức đóng {platform}"
-Settings_Header_StartingMethod: "(Nâng cao) Đặt phương thức khởi động {platform}"
-Settings_AutoStart: "Tự động khởi động {platform} khi chuyển đổi tài khoản"
+Settings_Header_StartingMethod: "(Nâng cao) Đặt phương pháp để bắt đầu {platform}"
+Settings_AutoStart: "Tự động bắt đầu {platform} trên chuyển đổi tài khoản"
+Settings_ShowSteamSwitcher: "Show Steam's account switcher (Do NOT use this or it may break TcNo Account Switcher)"
 Settings_NoPlatforms: Hiện tại không có nền tảng nào được kích hoạt. Vui lòng đánh dấu vào các nền tảng tùy chọn bên dưới để bật chúng hoặc bỏ chọn các nền tảng bị vô hiệu hóa.
-Settings_MinimizeOnSwitch: Thu nhỏ trình chuyển đổi khi chuyển đổi tài khoản
-Settings_ShowShortNotes: Xem trước ghi chú dưới tên người dùng
-Settings_Header_AppPassword: "Ngăn chặn người khác sử dụng chương trình:"
+Settings_MinimizeOnSwitch: Giảm thiểu người chuyển đổi trên chuyển đổi tài khoản
+Settings_ShowShortNotes: Ghi chú xem trước dưới tên người dùng
+Settings_Header_AppPassword: "Ngư ̀ ng cho ngươ ̀ i kha ́ c sư ̉ du ̣ ng bô ̣ chuyê ̉ n đô ̉ i:"
 PreviewCss: Xem trước CSS
-Settings_PreviewCss: Đây là trang xem trước CSS. Bạn có thể xem một số yếu tố hiển thị trong chương trình và xem chúng trông như thế nào với chủ đề của bạn. Trang này hữu ích cho những người tạo chủ đề!
+Settings_PreviewCss: Đây là trang xem trước CSS. Bạn có thể xem một số yếu tố xuất hiện trong chương trình và xem chúng trông như thế nào với chủ đề của bạn. Trang này hữu ích cho những người tạo chủ đề!
 Settings_PreviewCssHeader: Trang xem trước CSS
-Stats_Disabled: "Thu thập số liệu thống kê đã vô hiệu hóa."
+Stats_Disabled: "Thu thập số liệu thống kê bị vô hiệu hóa."
 Stats_InDepth: Phân tích thống kê chuyên sâu
 Stats_ShareEnabled: "Những thống kê này được chia sẻ ẩn danh và sẽ thêm vào tổng số <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">ở đây</a>."
 Stats_ShareDisabled: "Những thống kê này KHÔNG được chia sẻ ẩn danh và sẽ KHÔNG thêm vào tổng số <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">ở đây</a>."
 Stats_OperatingSystem: "Hệ điều hành: "
-Stats_FirstLaunch: "Lần khởi động đầu tiên: "
-Stats_LaunchCount: "Số lần khởi động: "
-Stats_CrashCount: "Số lần crash: "
-Stats_MostUsedPlatform: "Nền tảng sử dụng nhiều nhất: "
-Stats_TotalTime: "Tổng thời gian sử dụng ứng dụng: "
-Stats_TotalSwitches: "Tổng số lần chuyển đổi tài khoản: "
-Stats_TotalGamesLaunched: "Tổng số ứng dụng/trò chơi được khởi động qua trình chuyển đổi tài khoản: "
-Stats_UniqueDaysLong: "Số ngày duy nhất có tài khoản chuyển đổi: "
+Stats_FirstLaunch: "Lần ra mắt đầu tiên: "
+Stats_LaunchCount: "Số lần khởi chạy: "
+Stats_CrashCount: "Số lần va chạm: "
+Stats_MostUsedPlatform: "Nền tảng được sử dụng nhiều nhất: "
+Stats_TotalTime: "Tổng thời gian sử dụng trong ứng dụng: "
+Stats_TotalSwitches: "Tổng số chuyển mạch tài khoản: "
+Stats_TotalGamesLaunched: "Tổng số ứng dụng/trò chơi được khởi chạy qua bộ chuyển đổi: "
+Stats_UniqueDaysLong: "Số ngày duy nhất có tài khoản được chuyển: "
 Stats_LastUpload: "Tải lên lần cuối: "
 Stats_SwitcherStats: "Thống kê bộ chuyển đổi: "
 Stats_PageStats: "Thống kê trang: "
 Stats_VisitsTotalTime: "{visits} tổng lượt truy cập, {hours} tổng thời gian"
 Stats_Accounts: "Tài khoản: "
-Stats_Switches: "Chuyển đổi: "
-Stats_FirstActive: "Hoạt động lần đầu: "
+Stats_Switches: "Chuyển mạch: "
+Stats_FirstActive: "Hoạt động đầu tiên: "
 Stats_LastActive: "Hoạt động lần cuối: "
 Stats_UniqueDays: "Số ngày duy nhất: "
-Stats_GameShortcuts: "Lối tắt trò chơi: "
-Stats_GameShortcutsHotbar: "Lối tắt trò chơi (trên thanh công cụ nhanh): "
-Stats_GamesLaunched: "Trò chơi được khởi động: "
+Stats_GameShortcuts: "Phím tắt trò chơi: "
+Stats_GameShortcutsHotbar: "Phím tắt trò chơi (trên thanh nóng): "
+Stats_GamesLaunched: "Các trò chơi đã ra mắt: "
 Stats_MetricsToShow: "Số liệu được hiển thị:"
-Stats_AccountId: "ID Tài khoản:"
+Stats_AccountId: "Số tài khoản:"
 Auth_LoginRequired: Mật khẩu đã được đặt trước đó và bắt buộc phải có. Vui lòng nhập mật khẩu bên dưới.
 Auth_EnterPassword: "Nhập mật khẩu:"
 Auth_PassIncorrect: Mật khẩu không chính xác.
 Locked: Đã khóa
-Cleaning_Header_StartMenuShortcuts: 'Lối tắt cho Start Menu: '
-Cleaning_Header_General: Dọn dẹp chung
-Cleaning_Header_LoginHistory: Xóa lịch sử đăng nhập của tôi
-Cleaning_Header_PlatformCleaning: 'Trình chuyển đổi {platform}'
+Cleaning_Header_StartMenuShortcuts: 'Phím tắt cho Menu Bắt đầu:'
+Cleaning_Header_General: Vệ sinh chung
+Cleaning_Header_LoginHistory: Làm sạch lịch sử đăng nhập của tôi
+Cleaning_Header_PlatformCleaning: '{platform} Bộ chuyển đổi'
 Cleaning_ImportantInfoHeader: 'Thông tin quan trọng:'
 Cleaning_ImportantInfo: >
   Nhấp vào nút sẽ xóa (các) tệp liên quan khỏi cài đặt Steam của bạn.<br /> Xóa loginusers.vdf sẽ dẫn đến trình chuyển đổi tài khoản này hiển thị không có tài khoản nào.<br /> Bạn sẽ cần phải đăng nhập vào chúng bằng cách sử dụng Steam để lấy lại chúng.
-Cleaning_Button_KillProcess: Dừng  quy trình {platform}
-Cleaning_Button_ForgottenBackups: Bản sao lưu tài khoản bị quên
-Cleaning_Understand: Tôi hiểu những nút này làm gì.
+Cleaning_Button_KillProcess: Tiêu diệt quy trình {platform}
+Cleaning_Button_ForgottenBackups: Sao lưu ta ̀ i khoa ̉ n bi ̣ quên
+Cleaning_Understand: Tôi hiểu những cái nút này làm gì.
 Restore_Info: >
-  Nếu trước đây bạn "quên" tài khoản, bạn có thể khôi phục chúng tại đây.<br /> Thao tác này sẽ thêm chúng trở lại vào tệp loginusers.vdf của bạn, cho phép bạn chuyển sang chúng.
-Restore_Button_Restore: Khôi phục đã chọn
+  Nếu trước đây bạn "quên" tài khoản, bạn có thể khôi phục chúng tại đây.<br /> Thao tác này sẽ thêm chúng trở lại vào tệp đăng nhập.vdf của bạn, cho phép bạn chuyển sang chúng.
+Restore_Button_Restore: Khôi phu ̣ c đa ̃ cho ̣ n
 Ignored_RemoveAccounts: Xóa tài khoản khỏi danh sách bỏ qua
 Ignored_Description: Nếu trước đây bạn đã "bỏ qua" một tài khoản, bạn có thể hiển thị lại chúng tại đây
-Ignored_Stop: Ngừng bỏ qua các mục đã chọn
-Toast_DataLocationCopying: (1/2) Đang sao chép các tệp hiện có vào thư mục dữ liệu người dùng mới!
+Ignored_Stop: Ngư ̀ ng bo ̉ qua ca ́ c mu ̣ c đa ̃ cho ̣ n
+Toast_DataLocationCopying: (1/2) Sao chép các tệp hiện có vào thư mục dữ liệu người dùng mới!
 Toast_DataLocationNotCopying: (1/2) Thư mục đã có tệp! Sẽ không di chuyển dữ liệu người dùng.
-Toast_DataLocationSet: (2/2) Khởi động lại chương trình chuyển đổi tài khoản để sử dụng thư mục mới!
-Toast_PlaceShortcutFiles: Một thư mục đang được mở. Đặt lối tắt trò chơi trong thư mục đó và khởi động lại chương trình chuyển đổi tài khoản.
-Toast_TrayStarted: Khay hệ thống đã khởi động!
-Toast_TrayRunning: Khay hệ thống đã hoạt động!
+Toast_DataLocationSet: (2/2) Khởi động lại trình chuyển đổi tài khoản để sử dụng thư mục mới!
+Toast_PlaceShortcutFiles: Một thư mục đang mở. Đặt các phím tắt trò chơi vào thư mục đó và khởi động lại trình chuyển đổi tài khoản.
+Toast_TrayStarted: Khay đã khởi động!
+Toast_TrayRunning: Khay đã mở
 Toast_TrayUsersMissing: Không có người dùng khay nào được lưu
-Toast_TrayFail: Không thể khởi động ứng dụng khay hệ thống!
-Toast_TrayPosition: "Khi nhấp vào nút Thoát: Tôi sẽ xuất hiện trong Khay hệ thống Windows! (Bên phải Thanh Bắt đầu)"
+Toast_TrayFail: Không thể khởi động ứng dụng khay!
+Toast_TrayPosition: "Khi nhấp vào nút Thoát: Tôi sẽ ở trên Khay Windows! (Bên phải Thanh Bắt đầu)"
 Toast_TrayHint: "Gợi ý: Ctrl+Nhấp vào 'X' để đóng tôi hoàn toàn hoặc thông qua Khay > 'Thoát'"
 Toast_Copied: Đã sao chép
 Toast_AlreadyProcessing: Đang xử lý tài khoản...
-Toast_FailedRestore: Khôi phục tài khoản không thành công (Xem console)
+Toast_FailedRestore: Không thể khôi phục tài khoản (Xem bảng điều khiển)
 Toast_Restored: Đã khôi phục tài khoản!
-Toast_ProtocolEnabled: 'Chương trình sẽ bây giờ phản hồi với giao thức tcno:\\ trên Windows'
+Toast_ProtocolEnabled: 'Chương trình này bây giờ sẽ phản hồi với TcNo: \\ trong Windows'
 Toast_ProtocolEnabledTitle: Đã thêm giao thức
-Toast_ProtocolDisabled: 'Chương trình này sẽ không còn phản hồi với tcno:\\'
+Toast_ProtocolDisabled: 'Chương trình này sẽ không còn phản hồi với TcNo: \\'
 Toast_ProtocolDisabledTitle: Đã xóa giao thức
-Toast_RestartAsAdmin: Vui lòng khởi động lại với quyền Admin và thử lại.
+Toast_RestartAsAdmin: Vui lòng bắt đầu với tư cách Quản trị viên và thử lại.
 Toast_RestartAfterClose: Vui lòng khởi động lại chương trình sau khi nhấp vào Đóng.
-Toast_RestartAfterCloseTitle: Màu nhấn đã bị vô hiệu hóa
-Toast_RestartRequired: Khởi động lại để áp dụng các thay đổi
-Toast_LoadStylesheetFailed: Không thể tải stylesheet! Xem thư mục dữ liệu người dùng để biết chi tiết.
+Toast_RestartAfterCloseTitle: Màu nhấn mạnh đã bị vô hiệu hóa
+Toast_RestartRequired: Khơ ̉ i đô ̣ ng la ̣ i đê ̉ a ́ p du ̣ ng thay đô ̉ i
+Toast_LoadStylesheetFailed: Không thể tải tờ kiểu dáng! Xem thư mục dữ liệu người dùng để biết chi tiết.
 Toast_LoadingStats: Một hoặc nhiều hồ sơ đang làm mới số liệu thống kê. Vui lòng chờ.
 Toast_ItemNotFound: "{item} không được tìm thấy"
-Toast_DeletedTotal: "{files} trong số {totalFiles} đã bị xóa. Tổng cộng: {totalSize}"
+Toast_DeletedTotal: "{files} trên {totalFiles} đã xóa. Tổng cộng: {totalSize}"
 Toast_CantChangeUsername: Không thể thay đổi tên người dùng
 Toast_CantClearLoginFiles: Không thể xóa các tệp đăng nhập cũ
 Toast_AccountIdReg: Không lấy được Id tài khoản từ Registry!
 Toast_RegFailWrite: Không thể ghi vào Windows Regsitry!
 Toast_RegFailRead: Không thể đọc từ Windows Regsitry!
-Toast_RegFailReadSaved: Không thể Đọc mục Registry đã lưu. Hãy thử xóa và thêm lại tài khoản nếu không thành công.
-Toast_RegSaveMissing: Không tìm thấy hoặc đọc dữ liệu từ các tệp Registry đã lưu!
-Toast_DuplicateNames: Không thể hoán đổi. Đang có các tài khoản trùng tên nhau?
-Toast_MissingUserId: "Không thể hoán đổi. Thiếu ID người dùng. Kiểm tra Wiki 'Common Errors'."
-Toast_CouldNotLocate: Không thể xác định người dùng đã đăng nhập
+Toast_RegFailReadSaved: Không thê ̉ Đo ̣ c mu ̣ c nhâ ̣ p Registry đa ̃ lưu. Hãy thử xóa và thêm lại tài khoản nếu không thành công.
+Toast_RegSaveMissing: Không tìm thấy hoặc đọc dữ liệu từ các tệp đăng ký đã lưu!
+Toast_DuplicateNames: Không thể thay đổi. Sao chép tài khoản có cùng tên người dùng?
+Toast_MissingUserId: "Không thể thay đổi. ID người dùng bị thiếu. Kiểm tra Wiki 'Lỗi thường gặp'."
+Toast_CouldNotLocate: Không thể định vị người dùng đã đăng nhập
 Toast_StreamerModeHint: Thông tin cá nhân bị ẩn! - Xem cài đặt
-Toast_StreamerModeTitle: Chế độ Streamer
+Toast_StreamerModeTitle: Chế độ phát trực tuyến
 Toast_AddAccountsFirst: Mở nền tảng từ danh sách và thêm một vài tài khoản trước
 Toast_AddAccountsFirstTitle: Không có tài khoản đã lưu
 Toast_CantFindImage: Không thể tìm thấy hình ảnh của người dùng.
-Toast_CantCreateShortcut: Không thể Shortcut
-Toast_ShortcutCreated: Đã tạo Shortcut!
-Toast_SettingsCopied: Cài đặt đã được sao chép thành công sang tài khoản hiện tại.
-Toast_GameDataRestored: Khôi phục dữ liệu trò chơi thành công cho tài khoản này.
-Toast_NoValidSteamId: Không thể tìm thấy Steam ID hợp lệ.
-Toast_FailedUpdateCheck: Không thể kiểm tra cập nhật
-Toast_UpdateVerifyFail: Không thể xác minh các tệp cập nhật. Tải phiên bản mới nhất và thay thế các tệp trong thư mục của bạn.
-Toast_StartedGame: Đã khởi động {program}
+Toast_CantCreateShortcut: Không thê ̉ ta ̣ o lô ́ i tă ́ t
+Toast_ShortcutCreated: Đã tạo lối tắt!
+Toast_SettingsCopied: Đã sao chép thành công cài đặt vào tài khoản hiện tại.
+Toast_GameDataRestored: Khôi phục thành công dữ liệu trò chơi cho tài khoản này.
+Toast_NoValidSteamId: Không thể tìm thấy ID Hơi nước hợp lệ.
+Toast_FailedUpdateCheck: Không thê ̉ kiê ̉ m tra câ ̣ p nhâ ̣ t
+Toast_UpdateVerifyFail: Không thê ̉ xa ́ c minh tê ̣ p cu ̉ a ngươ ̀ i kiê ̉ m duyê ̣ t. Ta ̉ i xuô ́ ng phiên ba ̉ n mơ ́ i nhâ ́ t va ̀ thay thê ́ ca ́ c tê ̣ p trong thư mu ̣ c cu ̉ a ba ̣ n.
+Toast_StartedGame: Bắt đầu {program}
 Toast_SteamCantLoadXml: Không thể lấy thông tin XML cho {steamId}. Xem nhật ký để biết thêm chi tiết.
 Toast_Steam_VacCleared: Trạng thái VAC cho các tài khoản đã bị xóa
 Toast_Steam_CantDeleteVacCache: Không thể xóa 'LoginCache/Steam/VACCache/SteamVACCache.json'
-Toast_NoFindSteamUserdata: Không thể tìm thấy thư mục Steam\\userdata
-Toast_NoFindGameBackup: Không thể tìm thấy thư mục sao lưu dữ liệu trò chơi cho tài khoản này.
+Toast_NoFindSteamUserdata: Không thể tìm thấy thư mục Steam\\ userdata
+Toast_NoFindGameBackup: Không thê ̉ ti ̀ m thâ ́ y thư mu ̣ c dư ̃ liê ̣ u tro ̀ chơi sao lưu cho ta ̀ i khoa ̉ n na ̀ y.
 Toast_GameBackupDone: "Thư mục dữ liệu trò chơi được sao lưu thành công: {folderLocation}"
-Toast_Steam_VdfLast: Đã tải từ vdf_last. Một số tài khoản có thể thiếu.
-Toast_PartiallyFixed: Sửa chữa một phần
+Toast_Steam_VdfLast: Có thể tải từ vdf_last. Một số tài khoản có thể bị thiếu.
+Toast_PartiallyFixed: Cố định một phần
 Toast_Steam_FailedLoginusers: Không thể tải Steam/config/loginusers.vdf
-Toast_Steam_CantLocateLoginusers: Không thể xác định vị trí '.../Steam/config/loginusers.vdf'. Hãy thử đăng nhập vào tài khoản trước.
+Toast_Steam_CantLocateLoginusers: Không thê ̉ đi ̣ nh vi ̣ '.../Steam/config/loginusers.vdf'. Hãy thử đăng nhập vào tài khoản trước.
 Toast_CantClearImages: Không thể xóa hình ảnh
-Toast_RefreshedImages: Đã làm mới hình ảnh
-Toast_ClearForgottenCheck: Bạn có chắc muốn xóa các bản sao lưu của các tài khoản đã quên không?
+Toast_RefreshedImages: Làm mới hình ảnh
+Toast_ClearForgottenCheck: Ba ̣ n co ́ chă ́ c chă ́ n muô ́ n xo ́ a ba ̉ n sao lưu cu ̉ a ca ́ c ta ̀ i khoa ̉ n bi ̣ quên không?
 Toast_ForgotAccount: Quên tài khoản
-Toast_ClearedPlatformSettings: "Đã xóa các cài đặt chuyển đổi {platform}"
+Toast_ClearedPlatformSettings: "Đã xóa {platform} cài đặt Trình chuyển đổi"
 Toast_ClearedImages: "Hình ảnh đã xóa"
 Toast_SavedItem: "Đã lưu: {item}"
 Toast_ChangedUsername: Tên người dùng đã thay đổi
 Toast_SetUsername: Đặt tên người dùng
-Toast_AlreadyLoggedIn: Đã đăng nhập với tài khoản này! (Không có thay đổi nào được thực hiện)
-Toast_BackupCopy: (1/3) Đang sao chép các tệp vào vị trí tạm thời...
-Toast_BackupCompress: (2/3) Đang nén các tệp ({size}). Việc này sẽ mất vài phút...
-Toast_BackupComplete: (3/3) Hoàn tất nén! ({size} thành {compressedSize})
+Toast_AlreadyLoggedIn: Đã đăng nhập bằng tài khoản này! (Không có thay đổi nào được thực hiện)
+Toast_BackupCopy: (1/3) Sao chép tệp vào một vị trí tạm thời ...
+Toast_BackupCompress: (2/3) Nén tệp ({size}). Điều này sẽ mất một thời gian...
+Toast_BackupComplete: (3/3) Nén xong! ({size} đến {compressedSize})
 Toast_BackupProgress: "Đang sao lưu (Kích thước nén: {compressedSize})"
 Toast_BackupFail: Sao lưu thất bại - Xem nhật ký!
-Toast_BackupBusy: Sao lưu đang được thực hiện!
-Toast_RestoreBusy: Khôi phục đang được thực hiện!
-Toast_RestoreExt: Đang giải nén.
+Toast_BackupBusy: Đã tiến hành sao lưu!
+Toast_RestoreBusy: Đang khôi phục!
+Toast_RestoreExt: Đang giải nén kho lưu trữ.
 Toast_RestoreCopying: Di chuyển tệp trở lại nền tảng
 Toast_RestoreDeleting: Xóa các tệp tạm thời
-Toast_RestoreComplete: Khôi phục hoàn tất!
-Toast_FailedLoad: Không thể tải {platform}! Nhấp vào nền tảng để xem lỗi.
-Toast_FailedPlatformsLoad: Không thể tải Platforms.json! Vui lòng kiểm tra xem tệp này có tồn tại không.
-Toast_FailedLoadSettings: "Không thể tải cài đặt! Sẽ tải cài đặt mặc định thay vào đó. Thêm 'old' vào tên tệp cài đặt hiện có."
-Toast_FailedLoadStats: "Không thể tải thống kê! Bắt đầu lại từ đầu."
-Toast_FailedStatsLoad: Không thể tải GameStats.json! Vui lòng kiểm tra xem tệp này có tồn tại không.
+Toast_RestoreComplete: Đã khôi phục xong!
+Toast_FailedLoad: Không tải được {platform}! Nhấp vào nền tảng để xem lỗi.
+Toast_FailedPlatformsLoad: Không tải được Platforms.json! Vui lòng xác minh tệp này tồn tại.
+Toast_FailedLoadSettings: "Không thể tải cài đặt! Thay vào đó, tải cài đặt mặc định. Thêm 'cũ' vào tên tệp cài đặt hiện có."
+Toast_FailedLoadStats: "Không thể tải thống kê! Bắt đầu mới."
+Toast_FailedStatsLoad: Không thể tải GameStats.json! Vui lo ̀ ng xa ́ c minh tê ̣ p na ̀ y tô ̀ n ta ̣ i.
 Toast_GameStatsLoadFail: "Không thể lấy số liệu thống kê trò chơi từ web cho {Game}"
-Toast_GameStatsEmpty: "Không tìm thấy thống kê trò chơi nào trên trang web cho {Game}. Bạn nghĩ rằng đó là một lỗi? Kiểm tra thư mục userdata  và 'temp\\ download-{AccoundId}-{Game}.html' để xem trang có lỗi không!"
-Toast_FileCopyFail: Sao chép tệp thất bại! Xem nhật ký để biết thêm chi tiết.
-Toast_UserDataLoadFail: Không thể tải userdata {UserData}\\WindowSettings.json. Đang sao lưu và thiết lập lại! Đã lưu lỗi vào nhật ký.
-Toast_UpdateCheckFail: Không thể truy cập https://tcno.co/ để kiểm tra cập nhật. Thông báo này sẽ hiển thị mỗi ngày một lần.
+Toast_GameStatsEmpty: "Không tìm thấy thống kê trò chơi nào trên trang web cho {Game}. Bạn nghĩ rằng đó là một lỗi? Kiểm tra thư mục dữ liệu người dùng và 'temp\\ download-{AccoundId}-{Game}.html' để xem trang có lỗi không!"
+Toast_FileCopyFail: Sao chép tập tin thất bại! Xem nhật ký để biết thêm chi tiết.
+Toast_UserDataLoadFail: Không thể tải dữ liệu người dùng {UserData}\\WindowSettings.json. Sao lưu và đặt lại! Đã lưu lỗi vào nhật ký.
+Toast_UpdateCheckFail: Không thể truy cập https://tcno.co/ để kiểm tra cập nhật. Thông ba ́ o na ̀ y se ̃ hiê ̉ n thi ̣ mô ̣ t lâ ̀ n mô ̃ i nga ̀ y.
 Toast_FailedCreateIcon: Không thể tạo biểu tượng. Xem nhật ký để biết chi tiết.
-Toast_SameAccount: Không thể sao chép tệp từ/cùng một tài khoản. Hãy thử một tài khoản khác hoặc xem Wiki để biết thêm thông tin.
-Toast_Steam_DownloadingAppIds: Đang tải danh sách Steam AppId...
-Toast_Steam_DownloadingAppIdsComplete: Hoàn tất tải xuống. Menu dữ liệu trò chơi đã được cập nhật.
-Toast_SteamWebKeyInvalid: Khóa API Web Steam dường như không hợp lệ. Vui lòng đặt một khóa mới.
+Toast_SameAccount: Không thê ̉ sao tê ̣ p va ̀ o/tư ̀ cu ̀ ng ta ̀ i khoa ̉ n. Hãy thử tài khoản khác hoặc xem Wiki để biết thêm thông tin.
+Toast_Steam_DownloadingAppIds: Đang ta ̉ i xuô ́ ng danh sa ́ ch U ̉ y quyê ̀ n du ̀ ng hơi nươ ́ c...
+Toast_Steam_DownloadingAppIdsComplete: Hoàn tất tải xuống. Menu con dữ liệu trò chơi đã được cập nhật.
+Toast_SteamWebKeyInvalid: Khóa API Web Steam dường như không hợp lệ. Vui lo ̀ ng đă ̣ t mô ̣ t ca ́ i mơ ́ i.
 Toast_DownloadingProfileData: Đang tải xuống dữ liệu hồ sơ
-Toast_PasswordChanged: Đã thay đổi mật khẩu
+Toast_PasswordChanged: Mật khẩu đã thay đổi
 Toast_JsonFailModify: Không thể sửa đổi tệp JSON. Xem nhật ký.
 Toast_DifferentClosingMethod: "'Phương thức đóng' khác với mặc định. Nếu các trò chơi đang đóng và kiểm tra thêm xem việc thay đổi tùy chọn này có hữu ích hay không. Mặc định: {defaultMethod}, Hiện tại: {currentMethod}"
-Modal_Crowdin_Header: Dịch giả Crowdin
-Modal_Crowdin_Info: "Đây là danh sách những người đã giúp dịch phần mềm này.<br>Những người có ngôn ngữ bên cạnh tên đã giúp đỡ nhiều trong việc dịch (vai trò người duyệt)."
-Modal_Info_Creator: Được tạo bởi TroubleChute [Wesley Pyburn]
-Modal_Info_Version: Phiên bản
+Modal_Crowdin_Header: Người dịch Crowdin
+Modal_Crowdin_Info: "Đây là tất cả những người đã giúp dịch phần mềm này.<br>Người dùng có ngôn ngữ bên cạnh họ đã giúp rất nhiều trong việc dịch thuật (vai trò người hiệu đính)."
+Modal_Info_Creator: Created by TroubleChute [Wesley Pyburn]
+Modal_Info_Version: Phiên ba ̉ n
 Modal_Info_ViewGitHub: Xem trên GitHub
 Modal_Info_ViewPatreon: Hỗ trợ qua Patreon
 Modal_Info_ViewKofi: Hỗ trợ qua Ko-Fi
 Modal_Info_BugReport: Báo cáo lỗi/Yêu cầu tính năng
 Modal_Info_VisitSite: Truy cập tcno.co
 Modal_Info_Disclaimer: Tuyên bố miễn trừ trách nhiệm
-Modal_Title_Info: Thông tin về TcNo Account Switcher
-Modal_Title_ChangeUsername: Đổi tên người dùng
-Modal_Title_ConfirmAction: TcNo Account Switcher Xác nhận thực hiện
+Modal_Title_Info: TcNo Thông tin Bộ chuyển đổi Tài khoản
+Modal_Title_ChangeUsername: Thay đổi tên người dùng
+Modal_Title_ConfirmAction: TcNo Bộ chuyển đổi tài khoản Xác nhận hành động
 Modal_Title_LocatePlatform: Vui lòng định vị thư mục {platform}
 Modal_Title_AddNew: Thêm tài khoản {platform} mới
 Modal_Title_Background: Đặt hình nền
@@ -262,64 +263,64 @@ Modal_Title_Userdata: Đặt thư mục dữ liệu người dùng
 Modal_Title_GameStats: Bật/Tắt thống kê trò chơi
 Modal_GameStats_Header: "Bật/Tắt thống kê trò chơi cho: {accountName}"
 Modal_Title_Stats: Số liệu thống kê của bạn
-Modal_Title_GameVars: "Nhập thông tin cho {game}"
+Modal_Title_GameVars: "Chi tiết đầu vào cho {game}"
 Modal_GameVars_Header: "Vui lòng nhập các chi tiết sau cho tài khoản {game} của bạn, {username} trên {platform}"
-Modal_Title_AccountNotes: "Ghi chú cho tài khoản: {accountName}"
+Modal_Title_AccountNotes: "Ghi chú tài khoản cho: {accountName}"
 Modal_Title_SetPassword: Đặt mật khẩu
-Modal_SetBackground: 'Chọn hình ảnh hoặc nhập URL dưới đây.<br>Để trống và Đặt để thiết lập lại.<br>(Để biết thêm về kiểm soát sâu hơn, hãy xem mục Theming trên Wiki):'
+Modal_SetBackground: 'Chọn một hình ảnh hoặc nhập một URL bên dưới.<br>Để trống và đặt để đặt lại.<br>(Để kiểm soát nâng cao hơn, hãy xem Chủ đề trên Wiki):'
 Modal_SetBackground_Button: Chỉnh nền
-Modal_SetBackground_ChooseImage: Chọn hình ảnh từ máy tính
-Modal_SetUserdata: Nhập đường dẫn thư mục bên dưới và nhấp vào Đặt.
-Modal_SetUserdata_ChooseFolder: Chọn thư mục
+Modal_SetBackground_ChooseImage: Chọn hình ảnh địa phương
+Modal_SetUserdata: Nhập đường dẫn thư mục bên dưới và nhấp vào đặt.
+Modal_SetUserdata_ChooseFolder: Chọn một thư mục
 Modal_SetUserdata_Button: Đặt dữ liệu người dùng
 Modal_ChangeUsername: Vui lòng nhập tên người dùng mới cho tài khoản của bạn
-Modal_ChangeUsernameType: Thay đổi tên người dùng {platform}
-Modal_SetPassword: Nhập mật khẩu cho TcNo Account Switcher
+Modal_ChangeUsernameType: Thay đổi {platform} tên người dùng
+Modal_SetPassword: Nhập mật khẩu cho Trình chuyển đổi Tài khoản TcNo
 Modal_SetPassword_Button: Đặt mật khẩu
-Modal_SetPassword_Info: "LƯU Ý: Điều này này không mã hóa tài khoản của bạn. Việc đổi tài khoản chỉ đơn giản như thay thế các tệp hoặc thay đổi tên người dùng trong tệp. Mật khẩu có thể đặt lại bằng cách chỉnh sửa văn bản trong tệp. Đây là một biện pháp bảo mật đơn giản. Nó ngăn chặn truy cập UI đơn giản. Bạn có thể đặt ứng dụng này vào một USB, đặt thư mục UserData cùng USB đó và tháo USB vật lý để có thêm bảo mật.. <a class=\"fancyLink\" onclick=\"OpenLinkInBrowser('{link}');return false;\" href=\"\">Chuyển đến hướng dẫn di chuyển sang ổ đĩa bên ngoài</a><br><br>Để xóa, để trống ô trên và nhấn Đặt."
-Modal_EnterDirectory: "Vui lòng nhập thư mục của {platform}, ví dụ: C:\\Program Files\\{platform}"
+Modal_SetPassword_Info: "LƯU Ý: Thao tác này không mã hóa tài khoản của bạn. Việc hoán đổi tài khoản cũng đơn giản như thay thế tệp hoặc thay đổi tên người dùng trong tệp. Mâ ̣ t khâ ̉ u cu ̃ ng co ́ thê ̉ đươ ̣ c đă ̣ t la ̣ i bă ̀ ng ca ́ ch chi ̉ nh sư ̉ a văn ba ̉ n trong tê ̣ p. Đây là cách bảo mật đơn giản. Nó dừng truy cập UI đơn giản. Ba ̣ n co ́ thê ̉ đă ̣ t ư ́ ng du ̣ ng na ̀ y trên USB di đô ̣ ng, đă ̣ t thư mu ̣ c UserData sang cu ̀ ng mô ̣ t USB va ̀ loa ̣ i bo ̉ no ́ đê ̉ ba ̉ o mâ ̣ t hơn. <a class=\"fancyLink\" onclick=\"OpenLinkInBrowser('{link}');return false;\" href=\"\">Chuyê ̉ n đê ́ n hươ ́ ng dâ ̃ n ô ̉ đi ̃ a ngoa ̀ i</a><br><br>Đê ̉ xo ́ a, đê ̉ trô ́ ng ơ ̉ trên va ̀ nhâ ́ p va ̀ o Đă ̣ t."
+Modal_EnterDirectory: "Vui lòng nhập thư mục của {platform}, chẳng hạn như: C:\\Program Files\\{platform}"
 Modal_LocatePlatform: Xác định vị trí {platformExe}
 Modal_LocatePlatformFolder: Chọn thư mục {platform}
-Modal_ConfirmAction: Xác nhận thực hiện
-Modal_AddNew: Vui lòng nhập tên cho tài khoản {platform} mà bạn đang đăng nhập vào.
+Modal_ConfirmAction: Xác nhận hành động
+Modal_AddNew: Vui lòng nhập tên cho tài khoản {platform} bạn đã đăng nhập.
 Modal_AddCurrentAccount: Thêm tài khoản {platform} hiện tại
 Modal_SetImageHeader: Đặt hình ảnh hồ sơ
 Modal_SetImage: Đặt hình ảnh
 Status_SelectedAccount: "Đã chọn: {name}"
 Status_Init: "Trạng thái: Đang khởi tạo"
-Status_ClosingPlatform: Đang đóng {platform}
-Status_ClosingPlatformFailed: Đóng {platform} thất bại
-Status_StartingPlatform: Đang khởi động {platform}
-Toast_StartingPlatformFailed: Không thể khởi động {platform}! Xem nhật ký để biết thêm chi tiết.
-Toast_UrlAdminErr: Bạn không thể chạy tệp .url với quyền Admin. Hãy thử loại shortcut khác. Khởi động như người dùng thông thường.
+Status_ClosingPlatform: Đóng cửa {platform}
+Status_ClosingPlatformFailed: Không đóng được {platform}
+Status_StartingPlatform: Bắt đầu từ {platform}
+Toast_StartingPlatformFailed: Không thể bắt đầu {platform}! Xem nhật ký để biết thêm chi tiết.
+Toast_UrlAdminErr: Bạn không thể chạy tệp .url với tư cách quản trị viên. Hãy thử một kiểu phím tắt khác. Khởi chạy như người dùng bình thường.
 Status_UpdatingFile: "Đang cập nhật {file}"
-Status_UpdatingRegistry: Đang cập nhật Registry Windows
-Status_FailedLog: 'Thực hiện thất bại. Xem nhật ký để biết chi tiết'
-Status_WaitingForClose: "Đang chờ {processName} đóng ({timeout}{timeLimit}) giây"
-Status_WaitingForMultipleClose: "Đang chờ {processName} và {count} ứng dụng khác đóng lại ({timeout}{timeLimit}) giây"
+Status_UpdatingRegistry: Cập nhật sổ đăng ký Windows
+Status_FailedLog: 'Diễn: Đã thất bại. Xem nhật ký để biết chi tiết.'
+Status_WaitingForClose: "Chờ {processName} đóng ({timeout}{timeLimit})"
+Status_WaitingForMultipleClose: "Chờ {processName} & {count} người khác đóng ({timeout}{timeLimit})"
 Status_GetUniqueId: Thu thập ID người dùng duy nhất
-Status_CopyingFiles: Đang sao chép các tệp người dùng...
-Status_HandlingImage: Đang xử lý hình ảnh hồ sơ tài khoản
-Context_SwapTo: Chuyển đến tài khoản
-Context_CreateShortcut: Tạo Shortcut
+Status_CopyingFiles: Đang sao chép tệp người dùng ...
+Status_HandlingImage: Xử lý hình ảnh hồ sơ tài khoản
+Context_SwapTo: Hoán đổi sang tài khoản
+Context_CreateShortcut: Ta ̣ o Lô ́ i tă ́ t
 Context_ChangeImage: Thay đổi hình ảnh
-Context_ChangeName: Thay đổi tên switcher
+Context_ChangeName: Thay đô ̉ i tên bô ̣ chuyê ̉ n đô ̉ i
 Context_LoginAsSubmenu: Đăng nhập dưới dạng
 Context_UsernameSubmenu: Tên đăng nhập
 Context_RefreshName: Làm mới tên
 Context_CopySubmenu: Sao chép
-Context_DataSubmenu: Dữ liệu
+Context_DataSubmenu: Dư ̃ liê ̣ u
 Context_CopyProfileSubmenu: Sao chép hồ sơ
-Context_CommunityUrl: URL Community
-Context_CommunityUsername: Tên người dùng Community
+Context_CommunityUrl: URL cộng đồng
+Context_CommunityUsername: Tên người dùng cộng đồng
 Context_LoginUsername: Tên đăng nhập
 Context_CopySteamIdSubmenu: Sao chép SteamID
 Context_Steam_Id: SteamID [STEAM0:~]
 Context_Steam_Id3: SteamID3 [U:1:~]
 Context_Steam_Id32: SteamID32
-Context_Steam_Id64: SteamID64 7656~
-Context_Steam_OpenUserdata: Mở thư mục userdata
-Context_ManageSubmenu: Quản lý
+Context_Steam_Id64: Hơi nướcID64 7656~
+Context_Steam_OpenUserdata: Mở dữ liệu người dùng
+Context_ManageSubmenu: Qua ̉ n ly ́
 Context_GameDataSubmenu: Dữ liệu trò chơi
 Context_ManageGameStats: Quản lý số liệu thống kê trò chơi
 Context_Game_CopySettingsFrom: Sao chép cài đặt sang hiện tại
@@ -328,115 +329,115 @@ Context_Game_BackupData: Sao lưu dữ liệu trò chơi
 Context_CopyOtherSubmenu: Sao chép khác
 Context_HidePlatform: Ẩn nền tảng
 Context_ExportAccList: Xuất danh sách tài khoản
-Context_RunAdmin: Chạy với tư cách Admin
-Context_Hide: Ẩn
+Context_RunAdmin: Chạy với tư cách quản trị viên
+Context_Hide: Giấu
 ProfileImage_ToggleText: Sử dụng hình ảnh làm hình ảnh tài khoản
 Title_Platforms_Settings: TcNo Account Switcher - Cài đặt nền tảng
 Title_Settings_TestCss: TcNo Account Switcher - Kiểm tra CSS Styling
 Title_AccountsList: TcNo Account Switcher - {platform}
-Title_TextEditor: TcNo Account Switcher - Trình chỉnh sửa văn bản
+Title_TextEditor: Trình chuyển đổi tài khoản TcNo - Trình soạn thảo văn bản
 Title_Settings: TcNo Account Switcher - Cài đặt
-Title_Steam_Cleaning: TcNo Account Switcher - Dọn dẹp Steam
+Title_Steam_Cleaning: TcNo Account Switcher - Vệ sinh bằng hơi nước
 Title_Steam_Settings: TcNo Account Switcher - Cài đặt Steam
-Title_Template_Settings: TcNo Account Switcher - Cài đặt {platformName}
+Title_Template_Settings: TcNo Account Switcher - {platformName} Cài đặt
 Title_Login: TcNo Account Switcher - Đăng nhập
 Installer_Downloading: Đang tải về {file}
-Installer_DownloadFinished: Hoàn thành tải xuống {file}
+Installer_DownloadFinished: Hoàn tất tải xuống {file}
 Installer_Installing: "Đang cài đặt: {runtime}"
-Installer_RuntimeTitle: TcNo Account Switcher - Trình cài đặt Runtime
-Installer_Welcome: Chào mừng đến với trình cài đặt Runtime của TcNo Account Switcher
-Installer_InstalledRuntimes: "Các runtime hiện tại đã được cài đặt:"
-Installer_ErrorRuntime: "Một hoặc nhiều runtime chưa được cài đặt:"
-Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB khi cài đặt]"
+Installer_RuntimeTitle: TcNo Account Switcher - Trình cài đặt thời gian chạy
+Installer_Welcome: Chào mừng bạn đến với TcNo Account Switcher - Trình cài đặt thời gian chạy
+Installer_InstalledRuntimes: "Thời gian chạy được cài đặt hiện tại:"
+Installer_ErrorRuntime: "Một hoặc nhiều thời gian chạy không được cài đặt:"
+Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB trong khi cài đặt]"
 Installer_TotalSize: "Tổng kích thước tải xuống: ~{size} MB"
-Installer_AnyKeyStart: Nhấn phím bất kỳ để bắt đầu tải...
-Runtime_WebView2: Microsoft WebView2 Runtime
-Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
-Runtime_ASP: Microsoft ASP.NET Core {version} Runtime
+Installer_AnyKeyStart: Nhâ ́ n phi ́ m bâ ́ t ky ̀ đê ̉ bă ́ t đâ ̀ u ta ̉ i xuô ́ ng...
+Runtime_WebView2: Thơ ̀ i gian cha ̣ y Microsoft WebView2
+Runtime_Desktop: Thơ ̀ i gian cha ̣ y ma ̀ n hi ̀ nh Microsoft .NET 5
+Runtime_ASP: Microsoft Microsoft Microsoft ASP.NET Core {version} Runtime
 Installer_FailedFolder: "Không thể tạo thư mục:"
-Installer_FailedWV: "Không thể tải và cài đặt Microsoft WebView2 Runtime. Để tải: 1. Nhấp vào liên kết bên dưới: {link} 2. Nhấp vào 'Download Hosting Bundle' dưới mục Run server apps."
-Installer_FailedDR: "Không thể tải và cài đặt .NET 5 Desktop Runtime. Vui lòng tải tại đây:"
-Installed_FailedASP: "Không thể tải và cài đặt ASP.NET Core {version} Runtime. Để tải: 1. Nhấp vào liên kết bên dưới: {link} 2. Nhấp vào 'Download x64' dưới mục Run Desktop apps."
-Installer_Ready: "Một hoặc nhiều đã sẵn sàng để cài đặt. Nếu bạn muốn cài đặt, hãy nhấn 'Có'."
-Installer_PressStart: Nhấn phím bất kỳ để bắt đầu cài đặt...
-Installer_VerifyMin: "Đảm bảo bạn đáp ứng các yêu cầu tối thiểu được đề xuất:"
-Installer_VerifyAlready: "Có vẻ như mọi thứ đã được cài đặt. Đảm bảo bạn đáp ứng các yêu cầu tối thiểu được đề xuất:"
-Installer_Complete: Đã hoàn thành. TcNo-Acc-Switcher.exe sẽ tự động khởi động.
+Installer_FailedWV: "Không thê ̉ ta ̉ i xuô ́ ng va ̀ ca ̀ i đă ̣ t Thơ ̀ i gian cha ̣ y Microsoft WebView2. Để tải về: 1. Nhấp vào liên kết bên dưới: {link} 2. Nhấp vào 'Tải xuống gói lưu trữ' trong Chạy ứng dụng máy chủ."
+Installer_FailedDR: "Không thể tải xuống và cài đặt .NET 5 Desktop Runtime. Vui lòng tải xuống tại đây:"
+Installed_FailedASP: "Không thể tải xuống và cài đặt ASP.NET Core {version} Runtime. Để tải xuống: 1. Nhấp vào liên kết bên dưới: {link} 2. Nhấp vào 'Tải xuống x64' trong Chạy ứng dụng trên máy tính để bàn."
+Installer_Ready: "Mô ̣ t hoă ̣ c nhiê ̀ u đa ̃ să ̃ n sa ̀ ng ca ̀ i đă ̣ t. Nê ́ u va ̀ khi đươ ̣ c nhă ́ c nê ́ u ba ̣ n muô ́ n ca ̀ i đă ̣ t, ha ̃ y nhâ ́ p va ̀ o 'Co ́'."
+Installer_PressStart: Nhâ ́ n phi ́ m bâ ́ t ky ̀ đê ̉ bă ́ t đâ ̀ u ca ̀ i đă ̣ t...
+Installer_VerifyMin: "Xác minh bạn đáp ứng các yêu cầu tối thiểu được đề xuất:"
+Installer_VerifyAlready: "Có vẻ như mọi thứ đã được cài đặt. Xác minh bạn đáp ứng các yêu cầu tối thiểu được đề xuất:"
+Installer_Complete: Đó phải là tất cả mọi thứ. Chương trình chính, TcNo-Acc-Switcher.exe, sẽ tự động chạy.
 Installer_Complete2: "Nếu nó không hoạt động, vui lòng tham khảo hướng dẫn cài đặt, tại đây: {link}"
-Global_FatalNext: "Đã xảy ra lỗi nghiêm trọng! Bản ghi lỗi này sẽ được tự động gửi vào lần khởi động tiếp theo."
+Global_FatalNext: "Đã xảy ra lỗi nghiêm trọng! Bản ghi lỗi này sẽ được tự động gửi vào lần khởi chạy tiếp theo."
 Tray_Error: Lỗi khay
-Tray_NoAccs: "Không tìm thấy tài khoản nào.\nHãy thử chuyển đổi tài khoản trước hoặc tìm 'Tray_Users.json'"
+Tray_NoAccs: "Không tìm thấy tài khoản nào.\nThử chuyển đổi tài khoản trước hoặc tìm 'Tray_Users.json'"
 Tray_Switch: "Chuyển sang: {account}"
-Tray_CantOpenExe: "Không thể mở tệp .exe chính. Đảm bảo nó tồn tại.\n\nTôi đã cố gắng mở:"
-Tray_LaunchFail: "TcNo Account Switcher - Không thể khởi động từ khay"
-Updater_Duplicate: Phát hiện đã có một Trình cập nhật TcNo Account Switcher đang hoạt động
+Tray_CantOpenExe: "Không thê ̉ mơ ̉ .exe chi ́ nh. Đảm bảo nó tồn tại.\n\nTôi đã cố gắng mở:"
+Tray_LaunchFail: "Bộ chuyển đổi tài khoản TcNo - Khởi chạy khay không thành công"
+Updater_Duplicate: Đa ̃ pha ́ t hiê ̣ n mô ̣ t trươ ̀ ng hơ ̣ p Ngươ ̀ i biê ́ t chuyê ̉ n Ta ̀ i khoa ̉ n TcNo kha ́ c.
 Updater_Unknown: "Đối số không xác định: {arg}"
-Updater_NeedsAdmin: Chương trình này phải chạy với quyền Admin
+Updater_NeedsAdmin: Chương tri ̀ nh na ̀ y pha ̉ i đươ ̣ c cha ̣ y vơ ́ i tư ca ́ ch ngươ ̀ i qua ̉ n tri ̣!
 Updater_StatusChecking: Đang kiểm tra phiên bản
 Updater_FailedVersionCheck: "Không thể lấy phiên bản. Nhấp vào \"Xác minh\" để cập nhật và xác minh tệp"
 Updater_PressBelow: Nhấn nút bên dưới!
-Updater_PressBelowStart: Nhấn vào nút dưới đây để bắt đầu cập nhật.
-Updater_PatchApplied: Bản vá đã được áp dụng!
-Updater_UpdatingAppData: Đang cập nhật các tệp trong AppData!
-Updater_Complete: Tất cả cập nhật đã hoàn thành!
-Updater_Checking: Đang kiểm tra cập nhật
-Updater_UpdateToVerify: Bạn cần cập nhật trước khi xác minh các tệp.
-Updater_ClosingTcNo: Đang đóng các phiên hoạt động của TcNo Account Switcher (nếu có).
-Updater_Downloading: "Đang tải bản cập nhật: {version}"
-Updater_Downloaded: Tải về hoàn tất.
+Updater_PressBelowStart: Nhâ ́ p va ̀ o nu ́ t bên dươ ́ i đê ̉ bă ́ t đâ ̀ u câ ̣ p nhâ ̣ t.
+Updater_PatchApplied: Đã áp dụng miếng dán!
+Updater_UpdatingAppData: Đang cập nhật tệp trong AppData!
+Updater_Complete: Tâ ́ t ca ̉ ca ́ c câ ̣ p nhâ ̣ t hoa ̀ n tâ ́ t!
+Updater_Checking: Kiê ̉ m tra câ ̣ p nhâ ̣ t
+Updater_UpdateToVerify: Đê ̉ xa ́ c minh tê ̣ p, ba ̣ n câ ̀ n câ ̣ p nhâ ̣ t trươ ́ c.
+Updater_ClosingTcNo: Đóng các trường hợp TcNo Account Switcher (nếu có).
+Updater_Downloading: "Đang ta ̉ i xuô ́ ng ba ̉ n câ ̣ p nhâ ̣ t: {version}"
+Updater_Downloaded: Ta ̉ i xuô ́ ng hoa ̀ n tâ ́ t.
 Updater_CantExtract: Không thể trích xuất cập nhật.
-Updater_Verify: Xác minh các tệp
+Updater_Verify: Xác minh tệp
 Updater_Verifying: Đang xác minh...
 Updater_VerifySkip: Xác minh tệp để bỏ qua tất cả các cập nhật nhỏ và chỉ cần chuyển sang cập nhật mới nhất.
 Updater_NoConnection: "Không thể kết nối với tcno.co để xác minh tệp. Bạn có thể thử tải xuống trình cài đặt thủ công từ trang GitHub và cài đặt lại để cập nhật.\n\nLỗi:"
-Updater_NoServer: Không thể kết nối đến máy chủ cập nhật
-Updater_Hashlist: Đang tải danh sách hash mới nhất...
-Updater_CantCheck: Không thể kiểm tra cập nhật
-Updater_Failed: "LỖI: Một số tệp đang được sử dụng và không thể cập nhật.\n\n1. Đảm bảo rằng tất cả các tiến trình TcNo đã được đóng hoàn toàn\n(hoặc khởi động lại máy tính của bạn)\n\n2. Sau đó nhấp vào Xác minh bên dưới hoặc nếu bạn đã khởi động lại:\n-   Mở trình cập nhật này và xác minh tệp\n    (nằm trong thư mục 'updater' trong thư mục cài đặt)"
+Updater_NoServer: Không thể truy cập máy chủ cập nhật
+Updater_Hashlist: Đang ta ̉ i xuô ́ ng danh sa ́ ch băm mơ ́ i nhâ ́ t...
+Updater_CantCheck: Không thê ̉ kiê ̉ m tra câ ̣ p nhâ ̣ t
+Updater_Failed: "LỖI: Một số tệp đang được sử dụng và không thể cập nhật.\n\n1. Đa ̉ m ba ̉ o tâ ́ t ca ̉ ca ́ c tiê ́ n tri ̀ nh TcNo đươ ̣ c đo ́ ng hoa ̀ n toa ̀ n\n(hoă ̣ c khơ ̉ i đô ̣ ng la ̣ i PC cu ̉ a ba ̣ n)\n\n2. Sau đó nhấp vào Xác minh bên dưới hoặc nếu bạn đã khởi động lại:\n-   Mở trình cập nhật này và xác minh tệp\n    (nằm trong thư mục 'Trình cập nhật' trong thư mục cài đặt)"
 Updater_Missing: "THIẾU TỆP: {file}"
-Updater_FileMismatch: "Tệp: {file} có MD5: {md5} DỰ KIẾN: {value}"
-Updater_DownloadingWeb: Đang tải tệp từ trang web...
-Updater_UnpackingAppData: Đang sao chép các tệp vào %AppData%/TcNo Account Switcher... (trừ khi được thiết lập khác)
-Updater_VerifyComplete: Tệp đã được xác minh!
+Updater_FileMismatch: "Tập tin: {file} có MD5: {md5} DỰ KIẾN: {value}"
+Updater_DownloadingWeb: Đang ta ̉ i tê ̣ p xuô ́ ng tư ̀ trang web...
+Updater_UnpackingAppData: Đang sao chép các tập tin vào %AppData%/TcNo Account Switcher... (trừ khi có quy định khác)
+Updater_VerifyComplete: Tập tin đã được xác minh!
 Updater_UpdateFound: "Đã tìm thấy cập nhật: {name} [{updateSize}]"
 Updater_TotalFound: "Tổng số cập nhật được tìm thấy: {x}"
 Updater_TotalSize: "Tổng kích thước: {size}"
 Updater_AwaitingUser: Đang chờ người dùng nhập dữ liệu...
-Updater_UpToDate: "Bạn đã cập nhật lên phiên bản mới nhất.\n:)"
-Updater_FailedDecode: Điều này có thể là do tôi (TroubleChute) đã đẩy một bản cập nhật và có một lỗi chính tả đã làm hỏng tệp cập nhật .json. Xin hãy cho tôi biết :)
+Updater_UpToDate: "Bạn đã cập nhật.\n:)"
+Updater_FailedDecode: This is most likely due to me (TroubleChute) pushing an update, and making a typo that broke the .json update file. Do let me know :)
 Updater_FailedDecodeTitle: Không thể giải mã danh sách cập nhật
-Updater_Extracting: Đang giải nén các tệp vá lỗi
+Updater_Extracting: Trích xuất các tập tin bản vá lỗi
 Updater_Applying: Đang áp dụng bản vá...
-Updater_Moving: Đang di chuyển các tệp...
-Updater_Title: Trình cập nhật TcNo Account Switcher
+Updater_Moving: Đang di chuyê ̉ n tê ̣ p...
+Updater_Title: Trình cập nhật chuyển đổi tài khoản TcNo
 Updater_Started: Đã bắt đầu
-Updater_Start: Khởi động TcNo Account Switcher
-Updater_Begin: Bắt đầu cập nhật
-Updater_Exit: Thoát
+Updater_Start: Bắt đầu chuyển đổi tài khoản TcNo
+Updater_Begin: Bă ́ t đâ ̀ u câ ̣ p nhâ ̣ t
+Updater_Exit: Thoa ́ t
 FatalError: Đã xảy ra lỗi nghiêm trọng!
 Online: Trực tuyến
-OnlineDefault: Trực tuyến (Mặc định)
-Offline: Ngoại tuyến
-Invisible: Ẩn danh
-Busy: Bận
-Away: Ngoại tuyến
-Snooze: Tạm nghỉ
-LookingToTrade: Muốn trao đổi
-LookingToPlay: Muốn chơi
-Unrecognized_EPersonaState: Không nhận dạng được ePersonaState
+OnlineDefault: Trư ̣ c tuyê ́ n (Mă ̣ c đi ̣ nh)
+Offline: Ngoa ̣ i tuyê ́ n
+Invisible: Vô hình
+Busy: Bận rộn
+Away: Vắng mặt
+Snooze: Hoãn lại
+LookingToTrade: Bạn muốn giao dịch
+LookingToPlay: Đang tìm cách chơi
+Unrecognized_EPersonaState: EPersonaState không được công nhận
 Reg_DoesntExist: "{subKey} không tồn tại."
 Reg_DoesntContain: "{subKey} không chứa {val}"
-Reg_Removing: Đang loại bỏ {subKey}\\{val}
+Reg_Removing: Đang loa ̣ i bo ̉ {subKey}\\{val}
 PngInvalid_Format: Định dạng pixel bắt buộc là PixelFormat.{x}.
-PngRequired: Định dạng hình ảnh bắt buộc phải có phần mở rộng là png.
+PngRequired: Định dạng hình ảnh bắt buộc là đồ họa mạng di động (png).
 PngDimensions: Kích thước phải nhỏ hơn hoặc bằng {MaxIconWidth}x{MaxIconHeight}
-ThemeSyntaxAnd: "Đã gặp lỗi cú pháp (chi tiết hơn ở dưới)! VÀ:"
-ThemesNotFound: "Không thể tìm thấy thư mục \"themes\" trong thư mục của TcNo Account Switcher. Đây (đặc biệt là thư mục 'Dracula_Cyan') là bắt buộc để phần mềm này chạy.\nBạn có thể chạy Updater trong thư mục \"updater\" để xác minh tệp và khôi phục các tệp bị thiếu này."
+ThemeSyntaxAnd: "Đã xảy ra lỗi cú pháp (chi tiết hơn bên dưới)! VÀ:"
+ThemesNotFound: "Không thể tìm thấy thư mục \"themes\" trong thư mục của TcNo Account Switcher. Điều này (đặc biệt là thư mục 'Dracula_Cyan') là bắt buộc để phần mềm này chạy.\nBạn có thể chạy Trình cập nhật trong thư mục \"Trình cập nhật\" để xác minh tệp và khôi phục các tệp bị thiếu này."
 Yes: "Có"
 No: "Không"
 Save: Lưu (họ)
 NoDefault: Không (Mặc định)
-Ok: "OK"
+Ok: "Đươ ̣ c rô ̀ i"
 Submit: Gửi
 Forget: Quên đi.
 Notice: Thông báo
@@ -447,9 +448,9 @@ Failed: Thất bại
 Success: Thành công
 NotFound: Không tìm thấy
 Done: Xong
-Edit: Chỉnh sửa
+Edit: Chi ̉ nh sư ̉ a
 Refresh: Làm mới
-Working: Đang hoạt động...
+Working: Đang làm việc...
 ForName: "Cho: {name}"
 DeletedFiles: Tệp đã xóa
 FileFoldersToClear: "Danh sách các tệp / thư mục cần xóa:"
@@ -458,41 +459,42 @@ CouldNotCloseX: Không thể đóng {x}!
 CouldNotReadFile: Không thể đọc {file}!
 DirectoryNotFound: Không tìm thấy thư mục
 DirectoryNotFoundFolder: "Không tìm thấy thư mục: {folder}"
-DeletingFile: "Đang xóa: {file}"
-DeletingFolder: "Đang xoá thư mục: "
+DeletingFile: "Xóa: {file}"
+DeletingFolder: "Đang xo ́ a Thư mu ̣ c: "
 CouldntDeleteX: "LỖI: KHÔNG THỂ XÓA: {x}"
 CouldntDeleteUndefined: "LỖI: KHÔNG THỂ XÓA TỆP KHÔNG XÁC ĐỊNH"
-Prompt_RestartAsAdmin: "<h3><bold>Chương trình này sẽ khởi động lại với quyền Admin</bold></h3><p>Nhấn \"Yes\" trong UAC khi được yêu cầu quyền Admin.</p>"
+CouldntModifyX: "Could not modify {file}. File permission error, or file is in use."
+Prompt_RestartAsAdmin: "<h3><bold>Chương trình này sẽ khởi động lại dưới dạng Admin</bold></h3><p>Nhấn \"Yes\" trong UAC khi được nhắc cho admin.</p>"
 Prompt_ForgetSteam: >
-  <h3 style='color:red'>Bạn sắp quên tài khoản!</h3> <h4>Điều này có nghĩa là gì?</h4> <p>- Steam sẽ không còn liệt kê tài khoản ở Chế độ Big Picture và sẽ không ghi nhớ mật khẩu.<br/> - TcNo Account Switcher cũng sẽ không hiển thị tài khoản nữa, cho đến khi tài khoản đó được đăng nhập lại thông qua Steam.</p> <p>Tài khoản của bạn sẽ không bị ảnh hưởng. Nó chỉ bị quên trên máy tính này.</p><h4>Bạn đã hiểu đúng không?</h4>
+  <h3 style='color:red'>Bạn sắp quên tài khoản!</h3> <h4>Điều này có nghĩa là gì?</h4> <p>- Steam sẽ không còn tài khoản được liệt kê ở Chế độ ảnh lớn và sẽ không ghi nhớ mật khẩu.<br/> - TcNo Account Switcher cũng sẽ không hiển thị tài khoản nữa, cho đến khi tài khoản được đăng nhập lại thông qua Steam.</p> <p>Tài khoản của bạn sẽ không bị ảnh hưởng. Nó chỉ bị quên trên máy tính này.</p><h4>Bạn có hiểu không?</h4>
 Prompt_ForgetAccount: >
-  <h3 style='color:red'>Bạn sắp quên một tài khoản!</h3> <h4>Điều này có nghĩa là gì?</h4> <p>TcNo Account Switcher cũng sẽ không hiển thị tài khoản nữa,<br/> cho đến khi tài khoản đó được đăng nhập lại qua {platform}, và được thêm vào danh sách.</p> <p>Tài khoản của bạn sẽ không bị ảnh hưởng. Nó chỉ bị quên trên máy tính này.</p> <h4>Bạn đã hiểu đúng không?</h4>
+  <h3 style='color:red'>Bạn sắp quên một tài khoản!</h3> <h4>Điều này có nghĩa là gì?</h4> <p>Bộ chuyển đổi tài khoản TcNo cũng sẽ không còn hiển thị tài khoản,<br/> cho đến khi nó được đăng nhập lại qua {platform}và được thêm vào danh sách.</p> <p>Tài khoản của bạn sẽ vẫn chưa bị ảnh hưởng. Nó chỉ là quên trên máy tính này.</p> <h4>Bạn có hiểu không?</h4>
 Prompt_ClearStats: >
   <h3 style='color:red'>Bạn sắp xóa số liệu thống kê của mình!</h3> <p>Bạn không thể hoàn tác hành động này.</p>
-Platform_DiscordPasteHint: Dán vào console Discord, sau đó dán kết quả vào ô nhập liệu!
+Platform_DiscordPasteHint: Dán vào bảng điều khiển Discord, rồi dán kết quả vào đầu vào!
 Platform_ClearCache: Xóa bộ nhớ đệm
 Platform_ClearCacheTotal: Xóa {totalFileCount} tệp ({totalSizeMB})
 Platform_DeleteFail: Không thể xóa một số tệp (Chương trình có thể đang chạy?)
 Platform_CouldNotDeleteLog: Không thể xóa tệp! Kiểm tra {logPath}
 Error_FileAccessDenied: Không thể truy cập tệp! Kiểm tra {logPath}
-Error_RequiredFileVerify: Một tệp cần thiết không được tìm thấy. Vui lòng đảm bảo rằng các thư mục x64 và x86 tồn tại trong thư mục cài đặt. Nếu không, hãy chạy TcNo-Acc-Switcher-Updater.exe và xác minh các tệp.
+Error_RequiredFileVerify: Không ti ̀ m thâ ́ y tâ ̣ p tin bă ́ t buô ̣ c. Vui lòng đảm bảo các thư mục x64 và x86 tồn tại trong thư mục cài đặt. Nê ́ u không cha ̣ y TcNo-Acc-Switcher-Updater.exe va ̀ xa ́ c minh tâ ̣ p tin.
 Tooltip_Settings: Cài đặt
 Tooltip_Info: Thông tin
 Tooltip_ManagePlatforms: Hiển thị hoặc Ẩn các nền tảng khác
 Tooltip_ExpandShortcuts: Mở rộng lựa chọn Trò chơi & Lối tắt
-Tooltip_ShortcutFolder: Mở thư mục lối tắt. Đặt các lối tắt vào đó, và TcNo Account Switcher sẽ thấy chúng.
+Tooltip_ShortcutFolder: Mở thư mục lối tắt. Đặt các phím tắt vào đó và Công cụ chuyển đổi tài khoản TcNo để xem chúng.
 Tooltip_Backup: Sao lưu các tệp / thư mục cấu hình, như được xác định trong cài đặt nền tảng.
 Tooltip_BackupAll: Sao lưu TẤT CẢ các tệp / thư mục cấu hình, bao gồm cả hình ảnh và các tệp lớn khác.
-Tooltip_ClosingMethod: "Kết hợp là tốt nhất. Thử đóng trực tiếp thông qua chức năng đóng và sử dụng TaskKill qua CMD (dùng TaskKill nếu kết hợp không hoạt động)"
-Tooltip_StartingMethod: "Mặc định là tốt nhất. Direct không có quyền kiểm soát cấp quản trị hoặc UAC. Nó sẽ khởi động ở cùng cấp độ (hoặc cao hơn - nhưng không thấp hơn) so với công cụ chuyển đổi tài khoản này"
+Tooltip_ClosingMethod: "Kết hợp là tốt nhất. Đóng nỗ lực để đóng trực tiếp thông qua một chức năng đóng và TaskKill sử dụng CMD (Tốt nhất nếu kết hợp không hoạt động)"
+Tooltip_StartingMethod: "Mặc định là tốt nhất. Direct không có quyền kiểm soát cấp quản trị hoặc UAC. Nó sẽ bắt đầu như cùng một cấp (hoặc cao hơn - nhưng không thấp hơn) so với công cụ chuyển đổi tài khoản này"
 Tooltip_CurrentAccount: Bạn hiện đang đăng nhập vào tài khoản này.
 Tooltip_Restore: Nhấp để chọn tệp 7z hoặc kéo tệp đó vào nút này.
 Tooltip_DisabledGlobally: Mục này được ẩn cho tất cả các tài khoản. Bạn có thể thay đổi điều này trong cài đặt nền tảng.
-Discord_Status: Đang chuyển đổi tài khoản.
+Discord_Status: Hiện đang chuyển đổi tài khoản.
 Discord_StatusDetails: "Tài khoản đã chuyển: {number}"
 Website: Trang web
 Preview_Platforms: Xem trước nền tảng
 Preview_Accounts: Xem trước tài khoản
-Preview_Notifications: Xem trước thông báo đẩy
+Preview_Notifications: Xem trước thông báo phát bánh mì
 Preview_Settings: Xem trước cài đặt
-Preview_Modals: Xem trước các Modals
+Preview_Modals: Xem trươ ́ c ca ́ c Modals
