@@ -89,7 +89,7 @@ Settings_Header_ActiveBrowser: "(Erweitert) Rendering-Engine einstellen:"
 Settings_Header_ClosingMethod: "(Erweitert) Methode zum Schließen von {platform} einstellen"
 Settings_Header_StartingMethod: "(Erweitert) Methode auf Start {platform} einstellen"
 Settings_AutoStart: "Automatisch {platform} auf Konto Schalter starten"
-Settings_ShowSteamSwitcher: "Show Steam's account switcher (Do NOT use this or it may break TcNo Account Switcher)"
+Settings_ShowSteamSwitcher: "Zeigen Sie den Kontoumschalter von Steam an (Verwenden Sie dies NICHT, da sonst der TcNo-Kontoumschalter beschädigt werden kann)."
 Settings_NoPlatforms: Derzeit sind keine Plattformen aktiviert. Bitte wähle optionale Plattformen unten aus, um sie zu aktivieren, oder wähle deaktivierte Plattformen ab.
 Settings_MinimizeOnSwitch: Minimieren Sie den Schalter auf dem Konto-Switch
 Settings_ShowShortNotes: Notizvorschau unter Benutzername
@@ -245,7 +245,7 @@ Toast_JsonFailModify: Die JSON-Datei konnte nicht geändert werden. Siehe Protok
 Toast_DifferentClosingMethod: "'Closing Method' unterscheidet sich von der Standardeinstellung. Wenn Spiele geschlossen werden und mehr überprüfen, ob das Ändern dieser Option hilft. Standard: {defaultMethod}, Aktuell: {currentMethod}"
 Modal_Crowdin_Header: Crowdin-Übersetzer
 Modal_Crowdin_Info: "Hier sind alle, die geholfen haben, diese Software zu übersetzen.<br>Benutzer mit Sprachen neben ihnen haben bei der Übersetzung sehr geholfen (Rolle des Korrekturlesers)."
-Modal_Info_Creator: Erstell von TroubleChute [Wesley Pyburn]
+Modal_Info_Creator: Erstellt von TroubleChute [Wesley Pyburn]
 Modal_Info_Version: Version
 Modal_Info_ViewGitHub: Auf GitHub anzeigen
 Modal_Info_ViewPatreon: Unterstützung via Patreon
@@ -404,7 +404,7 @@ Updater_TotalFound: "Insgesamt gefundene Updates: {x}"
 Updater_TotalSize: "Gesamtgröße: {size}"
 Updater_AwaitingUser: Warten auf Benutzereingabe...
 Updater_UpToDate: "Du bist auf dem Laufenden.\n:)"
-Updater_FailedDecode: Dies liegt höchstwahrscheinlich daran, dass ich (TroubleChute) ein Update gepusht habe und dabei einen Tippfehler gemacht habe, der die .json-Updatedatei beschädigt hat. Lass es mich wissen :)
+Updater_FailedDecode: Dies liegt höchstwahrscheinlich daran, dass ich (TroubleChute) ein Update hochgeladen habe und einen Tippfehler machte, der die .json-Aktualisierungsdatei brach. Lassen Sie es mich wissen :)
 Updater_FailedDecodeTitle: Fehler beim Entschlüsseln der Aktualisierungsliste
 Updater_Extracting: Extrahieren von Patchdateien
 Updater_Applying: Patch wird angewendet...
@@ -463,7 +463,7 @@ DeletingFile: "Löschen: {file}"
 DeletingFolder: "Ordner wird gelöscht: "
 CouldntDeleteX: "FEHLER: KONNTE NICHT LÖSCHEN: {x}"
 CouldntDeleteUndefined: "FEHLER: NICHT DEFINIERTE DATEI KONNTE NICHT GELÖSCHT WERDEN"
-CouldntModifyX: "Could not modify {file}. File permission error, or file is in use."
+CouldntModifyX: "{file}konnte nicht geändert werden. Fehler bei der Dateiberechtigung oder die Datei wird verwendet."
 Prompt_RestartAsAdmin: "<h3><bold>Dieses Programm wird als Admin neu gestartet</bold></h3><p>Drücken Sie \"Ja\" in UAC, wenn Sie zur Admin aufgefordert werden.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Du bist dabei ein Konto zu vergessen!</h3> <h4>Was bedeutet das?</h4> <p>- Steam wird das Konto nicht mehr im Big-Picture Modus auflisten und wird das Passwort nicht mehr speichern.<br/> - Auch TcNo Account Switcher wird das Konto nicht mehr anzeigen, bis es erneut über Steam angemeldet wird.</p> <p>Dein Konto bleibt bestehen. Es wird nur auf diesem Computer vergessen.</p><h4>Hast du verstanden?</h4>
