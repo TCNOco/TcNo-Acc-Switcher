@@ -57,7 +57,7 @@ Settings_ExtraPlatformsDisabled: Deaktiverede platforme. Klik for at aktivere de
 Settings_ExtraPlatformsEnabled: Synlige platforme. Klik for at deaktivere dem.
 Settings_RTL: Vis tekst som højre mod venstre
 Settings_CollectStats: Indsaml statistikker
-Settings_ShareStats: Share stats anonymously (recommended)
+Settings_ShareStats: Del statistik anonymt (anbefales)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Del totale antal Switches
 Settings_ViewStats: Vis statistik
@@ -89,7 +89,7 @@ Settings_Header_ActiveBrowser: "(Avanceret) Indstil Layout-motor:"
 Settings_Header_ClosingMethod: "(Avanceret) Indstil metode til at lukke {platform}"
 Settings_Header_StartingMethod: "(Avanceret) Indstil metode til at starte {platform}"
 Settings_AutoStart: "Start automatisk {platform} på konto skift"
-Settings_ShowSteamSwitcher: "Show Steam's account switcher (Do NOT use this or it may break TcNo Account Switcher)"
+Settings_ShowSteamSwitcher: "Vis Steams kontoskifter (brug IKKE dette, da det kan ødelægge TcNo Account Switcher)"
 Settings_NoPlatforms: Der er i øjeblikket ingen platforme aktiveret. Sæt kryds ved valgfrie platforme nedenfor for at aktivere dem, eller fjern markeringen af deaktiverede platforme.
 Settings_MinimizeOnSwitch: Minimer switcher på konto skift
 Settings_ShowShortNotes: Bemærk forhåndsvisning under brugernavn
@@ -245,7 +245,7 @@ Toast_JsonFailModify: Kunne ikke ændre JSON-fil. Se log.
 Toast_DifferentClosingMethod: "'Lukningsmetode' er forskellig fra standarden. Hvis spil lukker og mere tjekker du om det hjælper at ændre denne indstilling. Standard: {defaultMethod}, Nuværende: {currentMethod}"
 Modal_Crowdin_Header: Crowdin-oversættere
 Modal_Crowdin_Info: "Her er alle, der hjalp med at oversætte denne software.<br>Brugere med sprog ved siden af hjalp meget med oversættelsen (korrekturlæserrolle)."
-Modal_Info_Creator: Created by TroubleChute [Wesley Pyburn]
+Modal_Info_Creator: Oprettet af TroubleChute [Wesley Pyburn]
 Modal_Info_Version: Version
 Modal_Info_ViewGitHub: Se på GitHub
 Modal_Info_ViewPatreon: Support via Patreon
@@ -404,7 +404,7 @@ Updater_TotalFound: "Samlede opdateringer fundet: {x}"
 Updater_TotalSize: "Samlet størrelse: {size}"
 Updater_AwaitingUser: Venter på brugerinput...
 Updater_UpToDate: "Du er opdateret.\n:)"
-Updater_FailedDecode: This is most likely due to me (TroubleChute) pushing an update, and making a typo that broke the .json update file. Do let me know :)
+Updater_FailedDecode: Dette skyldes sandsynligvis, at jeg (TroubleChute) skubber en opdatering og laver en tastefejl, der brød .json opdateringsfilen. Lad mig vide :)
 Updater_FailedDecodeTitle: Kunne ikke afkode opdateringsliste
 Updater_Extracting: Udpakning af patchfiler
 Updater_Applying: Anvender programrettelse...
@@ -463,7 +463,7 @@ DeletingFile: "Sletter: {file}"
 DeletingFolder: "Sletning af mappe: "
 CouldntDeleteX: "FEJL: KUNNE IKKE SLETTE: {x}"
 CouldntDeleteUndefined: "FEJL: KUNNE IKKE SLETTE UDEFINERET FIL"
-CouldntModifyX: "Could not modify {file}. File permission error, or file is in use."
+CouldntModifyX: "Kunne ikke ændre {file}. Filtilladelsesfejl, eller filen er i brug."
 Prompt_RestartAsAdmin: "<h3><bold>Dette program vil genstarte som Admin</bold></h3><p>Hit \"Ja\" i UAC, når bedt om admin.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Du er ved at glemme en konto!</h3> <h4>Hvad betyder det?</h4> <p>- Steam vil ikke længere have kontoen angivet i Big Picture Mode og vil ikke huske adgangskoden.<br/> - TcNo Account Switcher vil heller ikke længere vise kontoen, før den er logget ind igen via Steam.</p> <p>Din konto forbliver uberørt. Det er bare glemt på denne computer.</p><h4>Forstår du det?</h4>
