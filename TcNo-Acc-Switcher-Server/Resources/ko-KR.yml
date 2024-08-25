@@ -89,7 +89,7 @@ Settings_Header_ActiveBrowser: "(고급) 렌더링 엔진 설정:"
 Settings_Header_ClosingMethod: "(고급) {platform}을 닫는 방법을 다음으로 설정"
 Settings_Header_StartingMethod: "(고급) {platform}을 시작하는 방법을 다음으로 설정"
 Settings_AutoStart: "계정 전환 시 자동으로 {platform} 시작"
-Settings_ShowSteamSwitcher: "Steam 계정 전환기를 표시합니다(이 기능을 사용하지 마십시오. 그렇지 않으면 TcNo 계정 전환기가 중단될 수 있습니다)"
+Settings_ShowSteamSwitcher: "Steam 계정 전환기를 표시합니다(이 기능을 사용하지 마십시오. 그렇지 않으면 TcNo 계정 전환기가 손상될 수 있습니다)"
 Settings_NoPlatforms: 현재 활성화된 플랫폼이 없습니다. 아래에서 플랫폼을 선택하여 활성화하거나 비활성화된 플랫폼을 선택 취소하십시오.
 Settings_MinimizeOnSwitch: 계정 전환 시 스위쳐 최소화
 Settings_ShowShortNotes: 사용자 이름에서 메모 미리 보기
@@ -243,6 +243,7 @@ Toast_DownloadingProfileData: 프로필 데이터 다운로드 중
 Toast_PasswordChanged: 비밀번호 변경됨
 Toast_JsonFailModify: JSON 파일을 수정하지 못했습니다. 로그를 참조하십시오.
 Toast_DifferentClosingMethod: "'종료 방법'은 기본값과 다릅니다. 게임이 종료되고 더 많은 경우 이 옵션을 변경하면 도움이 되는지 확인하세요. 기본값: {defaultMethod}, 현재: {currentMethod}"
+Toast_NameEmpty: 사용자 이름은 비어 있을 수 없습니다(공백만 포함할 수 없음)
 Modal_Crowdin_Header: Crowdin 번역가
 Modal_Crowdin_Info: "이 소프트웨어를 번역하는 데 도움을 준 모든 사람이 있습니다.<br>옆에 언어가 있는 사용자가 번역에 많은 도움을 주었습니다. (검수자 역할)"
 Modal_Info_Creator: 테크노보 지음 [웨슬리 파이번]
