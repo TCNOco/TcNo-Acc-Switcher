@@ -114,7 +114,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonProperty("ShareAnonymousStats", Order = 16)] private bool _statsShare = true;
         [JsonProperty("MinimizeOnSwitch", Order = 17)] private bool _minimizeOnSwitch;
         [JsonProperty("DiscordRpcEnabled", Order = 18)] private bool _discordRpc = true;
-        [JsonProperty("DiscordRpcShareTotalSwitches", Order = 19)] private bool _discordRpcShare = true;
+        [JsonProperty("DiscordRpcShareTotalSwitches", Order = 19)] private bool _discordRpcShare = false;
         [JsonProperty("PasswordHash", Order = 20)] private string _passwordHash = "";
         [JsonProperty("GloballyHiddenMetrics", Order = 21)] private Dictionary<string, Dictionary<string, bool>> _globallyHiddenMetrics = new();
         [JsonProperty("WindowsAccent", Order = 21)] private bool _windowsAccent;
