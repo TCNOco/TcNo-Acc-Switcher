@@ -14,6 +14,8 @@
 
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -21,6 +23,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Win32;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Data.Settings;
@@ -112,6 +115,9 @@ namespace TcNo_Acc_Switcher_Server
 
             // Increment launch count. I don't know if this should be here, but it is.
             AppStats.LaunchCount++;
+
+            // Update installed version number, if uninstaller preset.
+            if (OperatingSystem.IsWindows()) UpdateRegistryVersion(Globals.Version);
         }
 
         public static void CurrentDomain_OnProcessExit(object sender, EventArgs e)
@@ -130,6 +136,42 @@ namespace TcNo_Acc_Switcher_Server
         {
             Globals.CopyFile(Path.Join(Globals.AppDataFolder, f), Path.Join(Globals.UserDataFolder, f));
             Globals.DeleteFile(Path.Join(Globals.AppDataFolder, f));
+        }
+
+        private static readonly string[] RegistryKeys =
+        [
+            @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\TcNo-Acc-Switcher",
+            @"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\TcNo-Acc-Switcher"
+        ];
+
+        [SupportedOSPlatform("windows")]
+        public static void UpdateRegistryVersion(string version)
+        {
+            version = version.Replace("-", ".").Replace("_", ".");
+
+            string exeDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            string uninstallExePath = Path.Combine(exeDirectory, "Uninstall TcNo Account Switcher.exe");
+
+            // Check if uninstaller exists. If not, this copy isn't installed. Portable, or otherwise.
+            if (!File.Exists(uninstallExePath)) return;
+
+            foreach (var key in RegistryKeys)
+            {
+                try
+                {
+                    using var registryKey = Registry.LocalMachine.OpenSubKey(key, writable: true);
+                    if (registryKey == null) continue;
+
+                    registryKey.SetValue("DisplayVersion", version, RegistryValueKind.String);
+                    registryKey.SetValue("ProductVersion", version, RegistryValueKind.String);
+                    registryKey.SetValue("FileVersion", version, RegistryValueKind.String);
+                    Globals.WriteToLog($"Updated registry key: {key}");
+                }
+                catch (Exception ex)
+                {
+                    Globals.WriteToLog($"Failed to update registry key {key}: {ex.Message}");
+                }
+            }
         }
     }
 }
