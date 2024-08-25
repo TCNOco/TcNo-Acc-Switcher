@@ -243,6 +243,7 @@ Toast_DownloadingProfileData: Mengunduh data profil
 Toast_PasswordChanged: Kata sandi berubah
 Toast_JsonFailModify: Gagal memodifikasi berkas JSON. Lihat log.
 Toast_DifferentClosingMethod: "'Metode Penutupan' berbeda dengan default. Jika permainan ditutup dan lainnya, periksa apakah mengubah opsi ini membantu. Bawaan: {defaultMethod}, Saat ini: {currentMethod}"
+Toast_NameEmpty: Nama pengguna tidak boleh kosong (dan tidak boleh hanya berisi spasi)
 Modal_Crowdin_Header: Penerjemah Crowdin
 Modal_Crowdin_Info: "Berikut adalah semua orang yang membantu menerjemahkan perangkat lunak ini.<br>Pengguna dengan bahasa di samping mereka banyak membantu dalam penerjemahan (peran proofreader)."
 Modal_Info_Creator: Dibuat oleh TroubleChute [Wesley Pyburn]
