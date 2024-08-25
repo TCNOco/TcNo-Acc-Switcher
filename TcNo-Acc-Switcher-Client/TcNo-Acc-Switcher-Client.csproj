@@ -24,9 +24,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CefSharp.Common" Version="126.2.70" />
-    <PackageReference Include="CefSharp.Wpf.NETCore" Version="126.2.70" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2592.51" />
+    <PackageReference Include="CefSharp.Common" Version="127.3.50" />
+    <PackageReference Include="CefSharp.Wpf.NETCore" Version="127.3.50" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2651.64" />
   </ItemGroup>
 
   <ItemGroup>
@@ -66,15 +66,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="chromiumembeddedframework.runtime.win-arm64" Version="126.2.7" />
+    <PackageReference Update="chromiumembeddedframework.runtime.win-arm64" Version="127.3.5" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="chromiumembeddedframework.runtime.win-x64" Version="126.2.7" />
+    <PackageReference Update="chromiumembeddedframework.runtime.win-x64" Version="127.3.5" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="chromiumembeddedframework.runtime.win-x86" Version="126.2.7" />
+    <PackageReference Update="chromiumembeddedframework.runtime.win-x86" Version="127.3.5" />
   </ItemGroup>
 
 </Project>

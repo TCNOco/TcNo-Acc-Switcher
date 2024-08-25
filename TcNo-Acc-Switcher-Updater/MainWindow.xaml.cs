@@ -1050,19 +1050,27 @@ namespace TcNo_Acc_Switcher_Updater
         /// <summary>
         /// Used by TroubleChute to create updates for the program.
         /// </summary>
-        private static void CreateUpdate()
+        private void CreateUpdate()
         {
+            WriteLine("Creating update..." + Environment.NewLine);
             // CREATE UPDATE
             const string oldFolder = "OldVersion";
             const string newFolder = "TcNo-Acc-Switcher";
             const string outputFolder = "UpdateOutput";
+            // Create if doesn't exist
+            _ = Directory.CreateDirectory(outputFolder);
+
             var deleteFileList = Path.Join(outputFolder, "filesToDelete.txt");
             RecursiveDelete(outputFolder, false);
+            WriteLine("RecursiveDelete..." + Environment.NewLine);
             DeleteFile(deleteFileList);
+            WriteLine("deleteFileList..." + Environment.NewLine);
 
             List<string> filesToDelete = new(); // Simply ignore these later
+            WriteLine("CreateFolderPatches..." + Environment.NewLine);
             CreateFolderPatches(oldFolder, newFolder, outputFolder, ref filesToDelete);
             File.WriteAllLines(deleteFileList, filesToDelete);
+            WriteLine("Done!" + Environment.NewLine);
             Environment.Exit(0);
         }
 
@@ -1242,7 +1250,7 @@ namespace TcNo_Acc_Switcher_Updater
         /// <param name="newFolder">Path of reference new version files</param>
         /// <param name="outputFolder">Path to output patch files, new files and list of files to delete</param>
         /// <param name="filesToDelete"></param>
-        private static void CreateFolderPatches(string oldFolder, string newFolder, string outputFolder, ref List<string> filesToDelete)
+        private void CreateFolderPatches(string oldFolder, string newFolder, string outputFolder, ref List<string> filesToDelete)
         {
             _ = Directory.CreateDirectory(outputFolder);
 
@@ -1253,6 +1261,7 @@ namespace TcNo_Acc_Switcher_Updater
             // -----------------------------------
             // SAVE DICT OF NEW FILES & HASHES
             // -----------------------------------
+            WriteLine("SAVE DICT OF NEW FILES & HASHES...");
             File.WriteAllText(Path.Join(outputFolder, "hashes.json"), JsonConvert.SerializeObject(_allNewDict, Formatting.Indented));
 
 
@@ -1281,6 +1290,7 @@ namespace TcNo_Acc_Switcher_Updater
             // -----------------------------------
             // HANDLE NEW FILES
             // -----------------------------------
+            WriteLine("HANDLE NEW FILES...");
             // Copy new files into output\\new
             var outputNewFolder = Path.Join(outputFolder, "new");
             _ = Directory.CreateDirectory(outputNewFolder);
@@ -1297,6 +1307,7 @@ namespace TcNo_Acc_Switcher_Updater
             // -----------------------------------
             // HANDLE DIFFERENT FILES
             // -----------------------------------
+            WriteLine("HANDLE DIFFERENT FILES..." + Environment.NewLine);
             foreach (var differentFile in differentFiles)
             {
                 var oldFileInput = Path.Join(oldFolder, differentFile);
