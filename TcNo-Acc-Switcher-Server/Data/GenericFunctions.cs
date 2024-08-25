@@ -155,7 +155,8 @@ namespace TcNo_Acc_Switcher_Server.Data
 
                     // Handle account image
                     account.ImagePath = GetImgPath(platform, str).Replace("%", "%25");
-                    var actualImagePath = Path.Join("wwwroot\\", GetImgPath(platform, str));
+                    var actualImagePath = Path.Join("wwwroot", GetImgPath(platform, str));
+
                     if (!File.Exists(actualImagePath))
                     {
                         // Make sure the directory exists
@@ -202,9 +203,10 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <returns>Image path</returns>
         private static string GetImgPath(string platform, string user)
         {
-            var imgPath = $"\\img\\profiles\\{platform.ToLowerInvariant()}\\{Globals.GetCleanFilePath(user.Replace("#", "-"))}";
+            var imgPath = $"img\\profiles\\{platform.ToLowerInvariant()}\\{Globals.GetCleanFilePath(user.Replace("#", "-"))}";
             if (File.Exists("wwwroot\\" + imgPath + ".png")) return imgPath + ".png";
-            return imgPath + ".jpg";
+            if (File.Exists("wwwroot\\" + imgPath + ".jpg")) return imgPath + ".jpg";
+            return "\\img\\BasicDefault.png";
         }
         #endregion
     }

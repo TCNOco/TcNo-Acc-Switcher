@@ -36,6 +36,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         public static void BasicAddCurrent(string accName)
         {
             Globals.DebugWriteLine(@"[JSInvoke:Basic\BasicSwitcherBase.BasicAddCurrent] accName:hidden");
+            if (string.IsNullOrWhiteSpace(accName)) // Reject if username is empty.
+            {
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_NameEmpty"], Lang.Instance["Failed"], "toastarea");
+                return;
+            }
+
             try
             {
                 _ = BasicSwitcherFuncs.BasicAddCurrent(accName);

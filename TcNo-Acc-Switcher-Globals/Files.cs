@@ -242,14 +242,15 @@ namespace TcNo_Acc_Switcher_Globals
 
             var i = 0;
             var dValue = (decimal)value;
-            while (Math.Round(dValue, decimalPlaces) >= 1000)
+            while (Math.Round(dValue, decimalPlaces) >= 1000 && i < SizeSuffixes.Length - 1)
             {
                 dValue /= 1024;
                 i++;
             }
 
-            return string.Format("{{0:n" + decimalPlaces + "}} {1}", dValue, SizeSuffixes[i]);
+            return string.Format("{0:n" + decimalPlaces + "} {1}", dValue, SizeSuffixes[i]);
         }
+
 
         public static bool IsDirectoryEmpty(string path)
         {

@@ -755,7 +755,7 @@ async function showModal(modaltype) {
 		        <span class="modal-text">${modalAddNew}</span>
 	        </div>
 	        <div class="inputAndButton">
-		        <input type="text" id="CurrentAccountName" autocomplete="off" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_account_name').click();" onkeypress='return /[^<>:\\.\\"\\/\\\\|?*]/i.test(event.key)'>
+		        <input type="text" minlength="1" id="CurrentAccountName" autocomplete="off" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_account_name').click();" onkeypress='return /[^<>:\\.\\"\\/\\\\|?*]/i.test(event.key)'>
 	        </div>
 	        <div class="settingsCol inputAndButton">
 				${extraButtons}
@@ -991,6 +991,21 @@ async function Modal_FinaliseAccString(platform) {
     // Clean string if not a command string.
     if (raw.indexOf(":{") === -1) {
         name = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiGetCleanFilePath", raw);
+    }
+
+    // If length 0, return with error:
+    if (name.trim().length === 0) {
+        const toastNameEmpty = await GetLang("Toast_NameEmpty"),
+            error = await GetLang("Error");
+
+        window.notification.new({
+            type: "error",
+            title: error,
+            message: toastNameEmpty,
+            renderTo: "toastarea",
+            duration: 5000
+        });
+        return;
     }
 
     await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", platform + "AddCurrent", name);
