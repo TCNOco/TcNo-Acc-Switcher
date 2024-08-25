@@ -89,7 +89,7 @@ Settings_Header_ActiveBrowser: "(Додатково) Встановити руш
 Settings_Header_ClosingMethod: "(Додатково) Встановити метод закриття {platform}"
 Settings_Header_StartingMethod: "(Додатково) Встановити метод для запуску {platform}"
 Settings_AutoStart: "Автоматично запускати {platform} при перемиканні акаунту"
-Settings_ShowSteamSwitcher: "Показати перемикач облікових записів Steam (НЕ використовуйте це, інакше це може пошкодити перемикач облікових записів TcNo)"
+Settings_ShowSteamSwitcher: "Показати перемикач облікових записів Steam (НЕ використовуйте це, інакше це може порушити роботу перемикача облікових записів TcNo)"
 Settings_NoPlatforms: Наразі не ввімкнено жодну платформу. Будь ласка, поставте прапорці нижче додаткові платформи, щоб увімкнути їх, або зніміть прапорець біля вимкнених платформ.
 Settings_MinimizeOnSwitch: Мінімізувати перемикач після перемкнення акаунта
 Settings_ShowShortNotes: Попередній перегляд нотаток під іменем користувача
@@ -243,6 +243,7 @@ Toast_DownloadingProfileData: Завантаження даних профілю
 Toast_PasswordChanged: Пароль змінено
 Toast_JsonFailModify: Не вдалося змінити файл JSON. Див. журнал.
 Toast_DifferentClosingMethod: "«Метод закриття» відрізняється від стандартного. Якщо ігри та інше закриваються, перевірте, чи допомагає зміна цього параметра. Типове: {defaultMethod}, поточне: {currentMethod}"
+Toast_NameEmpty: Ім’я користувача не може бути порожнім (і не може містити лише пробіли)
 Modal_Crowdin_Header: Перекладачі Crowdin
 Modal_Crowdin_Info: "Ось усі, хто допоміг перекласти це програмне забезпечення.<br>Користувачі з мовами поруч дуже допомогли в перекладі (роль коректора)."
 Modal_Info_Creator: Створено TroubleChute [Wesley Pyburn]
