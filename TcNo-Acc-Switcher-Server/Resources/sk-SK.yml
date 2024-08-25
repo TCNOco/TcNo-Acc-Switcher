@@ -243,6 +243,7 @@ Toast_DownloadingProfileData: Sťahujú sa údaje profilu
 Toast_PasswordChanged: Heslo zmenené
 Toast_JsonFailModify: Nepodarilo sa upraviť súbor JSON. Pozri denník.
 Toast_DifferentClosingMethod: "'Metóda zatvárania' sa líši od predvoleného nastavenia. Ak sa hry zatvárajú a ďalšie, skontrolujte, či zmena tejto možnosti nepomôže. Predvolené: {defaultMethod}, aktuálne: {currentMethod}"
+Toast_NameEmpty: Používateľské meno nemôže byť prázdne (a nemôže obsahovať iba medzery)
 Modal_Crowdin_Header: Crowdinoví prekladatelia
 Modal_Crowdin_Info: "Tu sú všetci, ktorí pomohli s prekladom tohto softvéru.<br>Pri preklade veľmi pomohli používatelia s jazykmi vedľa nich (rola korektora)."
 Modal_Info_Creator: Vytvoril TroubleChute [Wesley Pyburn]
