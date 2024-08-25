@@ -1,6 +1,6 @@
 ;TcNo Account Switcher
-;Wesley Pyburn (TechNobo)
-;https://github.com/TcNobo/TcNo-Acc-Switcher
+;Wesley Pyburn (TroubleChute)
+;https://github.com/TcNoco/TcNo-Acc-Switcher
 
 ;--------------------------------
 ;Include Modern UI
@@ -12,10 +12,10 @@
 
 !define APP_NAME "TcNo Account Switcher"
 !define LNK_NAME "TcNo Account Switcher.lnk"
-!define COMP_NAME "TechNobo (Wesley Pyburn)"
+!define COMP_NAME "TroubleChute (Wesley Pyburn)"
 !define WEB_SITE "https://tcno.co"
 !define VERSION "2024.08.25.00"
-!define COPYRIGHT "TechNobo (Wesley Pyburn) (C) 2021"
+!define COPYRIGHT "TroubleChute (Wesley Pyburn) (C) 2024"
 !define DESCRIPTION "TcNo Account Switcher"
 !define LICENSE_TXT "..\..\LICENSE"
 !define MAIN_APP_EXE "TcNo-Acc-Switcher.exe"
