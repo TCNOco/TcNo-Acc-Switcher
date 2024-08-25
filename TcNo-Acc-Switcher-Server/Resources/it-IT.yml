@@ -243,6 +243,7 @@ Toast_DownloadingProfileData: Download dei dati del profilo
 Toast_PasswordChanged: Password modificata
 Toast_JsonFailModify: Impossibile modificare il file JSON. Vedere il log.
 Toast_DifferentClosingMethod: "'Metodo di chiusura' è diverso da quello predefinito. Se le partite si stanno chiudendo e controlla se cambiare questa opzione aiuta. Predefinito: {defaultMethod}, Corrente: {currentMethod}"
+Toast_NameEmpty: Il nome utente non può essere vuoto (e non può contenere solo spazi)
 Modal_Crowdin_Header: Crowdin traduttori
 Modal_Crowdin_Info: "Ecco tutti coloro che hanno contribuito a tradurre questo software.<br>Gli utenti con lingue accanto hanno aiutato molto nella traduzione (ruolo di correttore di bozze)."
 Modal_Info_Creator: Creato da TroubleChute [Wesley Pyburn]
