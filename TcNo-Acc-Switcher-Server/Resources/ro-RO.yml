@@ -89,7 +89,7 @@ Settings_Header_ActiveBrowser: "(Avansat) Setați motorul de randare:"
 Settings_Header_ClosingMethod: "(Avansat) Setați metoda de închidere {platform}"
 Settings_Header_StartingMethod: "(Avansat) Setați metoda pentru a porni {platform}"
 Settings_AutoStart: "Porniți automat {platform} la comutarea contului"
-Settings_ShowSteamSwitcher: "Afișați comutatorul de conturi Steam (NU îl utilizați sau se poate rupe comutatorul de cont TcNo)"
+Settings_ShowSteamSwitcher: "Afișați comutatorul de conturi Steam (NU utilizați acest lucru sau poate rupe comutatorul de cont TcNo)"
 Settings_NoPlatforms: În prezent, nu există platforme activate. Vă rugăm să bifați mai jos platformele opționale pentru a le activa sau debifați platformele dezactivate.
 Settings_MinimizeOnSwitch: Minimizați comutatorul la comutarea contului
 Settings_ShowShortNotes: Previzualizare notă sub numele de utilizator
@@ -243,6 +243,7 @@ Toast_DownloadingProfileData: Se descarcă datele de profil
 Toast_PasswordChanged: Parola a fost schimbată
 Toast_JsonFailModify: Modificarea fișierului JSON a eșuat. Consultați jurnalul.
 Toast_DifferentClosingMethod: "'Metoda de închidere' este diferită de cea implicită. Dacă jocurile se închid și mai multe verifică dacă schimbarea acestei opțiuni ajută. Implicit: {defaultMethod}, Curent: {currentMethod}"
+Toast_NameEmpty: Numele de utilizator nu poate fi gol (și nu poate conține doar spații)
 Modal_Crowdin_Header: Crowdin traducători
 Modal_Crowdin_Info: "Iată toți cei care au ajutat la traducerea acestui software.<br>Utilizatorii cu limbi lângă ei au ajutat foarte mult la traducere (rol de corector)."
 Modal_Info_Creator: Creat de TroubleChute [Wesley Pyburn]
