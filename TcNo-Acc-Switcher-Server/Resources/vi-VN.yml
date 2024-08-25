@@ -1,5 +1,5 @@
 ---
-Update: Cập nhật có sẵn! Hãy nhấp vào để bắt đầu.
+Update: Có bản cập nhật mới! Nhấp vào đây để bắt đầu cập nhật.
 Header_ChooseLanguage: 'Chọn ngôn ngữ:'
 Steam_ShowSteamID: SteamID
 Steam_ShowVac: Trạng thái VAC
@@ -9,7 +9,7 @@ Steam_ShowAccUsername: Tên người dùng
 Steam_Tray_AccountName: Hiển thị tên tài khoản [không phải tên của bạn bè]
 Steam_CheckVac: Kiểm tra trạng thái VAC của tài khoản
 Steam_OverrideDefaultState: "Ghi đè trạng thái đăng nhập mặc định:"
-Steam_StartSilent: "Mở Steam đến khay tác vụ trên công tắc (khởi động Steam với '-silent')"
+Steam_StartSilent: "Khởi động Steam ở khay hệ thống khi chuyển đổi (Khởi động Steam với tham số '-silent')"
 Steam_OldUi: "Sử dụng giao diện cũ trong Steam (-vgui)"
 Button_AddNew: Thêm mới
 Button_SaveCurrent: Lưu tài khoản hiện tại
@@ -28,10 +28,10 @@ Button_BackupAll: Sao lưu tất cả
 Button_Restore: Khôi phục
 Button_OpenBackup: Mở thư mục sao lưu
 Button_Back: Quay lại
-Button_RestartAdmin: Khởi động lại với quyền Quản trị viên
+Button_RestartAdmin: Khởi động lại với quyền Admin
 Button_SetPassword: Đặt mật khẩu ứng dụng
-Settings_Shortcut: ' Phím tắt chuyển đổi {platform} trên màn hình chính'
-Settings_Admin: Chạy {platform} với quyền Quản trị viên
+Settings_Shortcut: 'Shortcut Switcher Desktop {platform}'
+Settings_Admin: Khởi động {platform} với quyền Admin
 Settings_ImageExpiry: 'Ngày hết hạn hình ảnh hồ sơ:'
 Settings_SteamAPIKey: "Khóa API Web Steam (không bắt buộc)"
 Settings_SteamAPIKey_Note: Đặt khóa API sẽ làm cho chỉ báo Giới hạn (viền vàng) hiển thị cho các tài khoản bị cấm cộng đồng.
@@ -243,6 +243,7 @@ Toast_DownloadingProfileData: Đang tải xuống dữ liệu hồ sơ
 Toast_PasswordChanged: Đã thay đổi mật khẩu
 Toast_JsonFailModify: Không thể sửa đổi tệp JSON. Xem nhật ký.
 Toast_DifferentClosingMethod: "'Phương thức đóng' khác với mặc định. Nếu các trò chơi đang đóng và kiểm tra thêm xem việc thay đổi tùy chọn này có hữu ích hay không. Mặc định: {defaultMethod}, Hiện tại: {currentMethod}"
+Toast_NameEmpty: Tên người dùng không được để trống (và chỉ được chứa khoảng trắng)
 Modal_Crowdin_Header: Dịch giả Crowdin
 Modal_Crowdin_Info: "Đây là danh sách những người đã giúp dịch phần mềm này.<br>Những người có ngôn ngữ bên cạnh tên đã giúp đỡ nhiều trong việc dịch (vai trò người duyệt)."
 Modal_Info_Creator: Được tạo bởi TroubleChute [Wesley Pyburn]
