@@ -243,6 +243,7 @@ Toast_DownloadingProfileData: Herunterladen von Profildaten
 Toast_PasswordChanged: Passwort geändert
 Toast_JsonFailModify: Die JSON-Datei konnte nicht geändert werden. Siehe Protokoll.
 Toast_DifferentClosingMethod: "'Closing Method' unterscheidet sich von der Standardeinstellung. Wenn Spiele geschlossen werden prüfe, ob das Ändern dieser Option hilft. Standard: {defaultMethod}, Aktuell: {currentMethod}"
+Toast_NameEmpty: Der Benutzername darf nicht leer sein (und darf nicht nur Leerzeichen enthalten)
 Modal_Crowdin_Header: Crowdin-Übersetzer
 Modal_Crowdin_Info: "Hier sind alle, die geholfen haben, diese Software zu übersetzen.<br>Benutzer mit Sprachen neben ihnen haben bei der Übersetzung sehr geholfen (Rolle des Korrekturlesers)."
 Modal_Info_Creator: Erstell von TroubleChute [Wesley Pyburn]
