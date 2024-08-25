@@ -70,7 +70,7 @@
         "%ProgramData%\\GOG.com\\Galaxy\\webcache\\common\\Cookies": "ProgramData\\Cookies",
         "%ProgramData%\\GOG.com\\Galaxy\\storage\\etags.db": "ProgramData\\storage\\etags.db",
         "%ProgramData%\\GOG.com\\Galaxy\\storage\\galaxy-2.0.db*": "ProgramData\\storage\\",
-        "%ProgramData%\\GOG.com\\Galaxy\\config.json": "ProgramData\\config.json",
+        "%ProgramData%\\GOG.com\\Galaxy\\config.json": "ProgramData\\config.json"
       },
       "Extras": {
         "ProfilePicPath": "%ProgramData%\\GOG.com\\Galaxy\\webcache\\%UniqueId%\\user\\%LARGEST%.jpg",
@@ -464,6 +464,17 @@
       "Extras": {
         "ClosingMethod": "TaskKill"
       }
+    },
+    "Honkai StarRail": {
+      "Identifiers": [ "hsr", "starrail", "honkaistarrail" ],
+      "ExeLocationDefault": "%ProgramFiles%\\Star Rail\\Games\\StarRail.exe",
+      "ExesToEnd": [ "StarRail.exe" ],
+      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+      "LoginFiles": { "REG:HKCU\\Software\\Cognosphere\\Star Rail:MIHOYOSDK_ADL_PROD_OVERSEA_h1158948810": "UNIQUE_ID" },
+      "ExitBeforeInteract": true,
+      "AllFilesRequired": true,
+      "UniqueIdFile": "HKCU\\SOFTWARE\\Cognosphere\\Star Rail:MIHOYOSDK_ADL_PROD_OVERSEA_h1158948810",
+      "UniqueIdMethod": "REGKEY"
     }
   },
   "Platform-WIP": {
