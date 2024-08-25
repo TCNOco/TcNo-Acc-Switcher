@@ -511,6 +511,21 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
             return true;
         }
+        public static string GetLargestFile(string directory, string extension = "")
+        {
+            if (!Directory.Exists(directory))
+                return "";
+
+            var searchPattern = string.IsNullOrEmpty(extension) ? "*" : $"*{extension}";
+
+            var files = Directory.GetFiles(directory, searchPattern)
+                                 .Select(f => new FileInfo(f))
+                                 .OrderByDescending(f => f.Length)
+                                 .FirstOrDefault();
+
+            return files?.FullName ?? "";
+        }
+
 
         [SupportedOSPlatform("windows")]
         public static bool BasicAddCurrent(string accName)
@@ -647,20 +662,46 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
                 _ = Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{CurrentPlatform.SafeName}"));
                 var profileImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{CurrentPlatform.SafeName}\\{Globals.GetCleanFilePath(uniqueId)}.jpg");
+
                 if (!File.Exists(profileImg))
                 {
                     var platformImgPath = "\\img\\platform\\" + CurrentPlatform.SafeName + "Default.png";
 
-                    // Copy in profile picture (if found) from Regex search of files (if defined)
+                    // Handle ProfilePicFromFile and ProfilePicRegex
                     if (CurrentPlatform.ProfilePicFromFile != "" && CurrentPlatform.ProfilePicRegex != "")
                     {
                         var res = Globals.GetCleanFilePath(RegexSearchFileOrFolder(CurrentPlatform.ProfilePicFromFile, CurrentPlatform.ProfilePicRegex));
                         var sourcePath = res;
+
                         if (CurrentPlatform.ProfilePicPath != "")
                         {
-                            // The regex result should be considered a filename.
-                            // Sub in %FileName% from res, and %UniqueId% from uniqueId
-                            sourcePath = ExpandEnvironmentVariables(CurrentPlatform.ProfilePicPath.Replace("%FileName%", res).Replace("%UniqueId%", uniqueId));
+                            // Check if %LARGEST% is followed by an extension
+                            var largestPlaceholder = "%LARGEST%";
+                            var extension = "";
+                            var path = CurrentPlatform.ProfilePicPath;
+
+                            if (path.Contains(largestPlaceholder))
+                            {
+                                var idx = path.IndexOf(largestPlaceholder) + largestPlaceholder.Length;
+
+                                if (idx < path.Length && path[idx] == '.') // Check if there's an extension after %LARGEST%
+                                {
+                                    extension = Path.GetExtension(path.Substring(idx));
+                                }
+
+                                // Find the largest file with the optional extension in the directory
+                                var largestFile = GetLargestFile(Path.GetDirectoryName(path), extension);
+
+                                // Replace placeholders with actual values
+                                sourcePath = ExpandEnvironmentVariables(path.Replace("%FileName%", res)
+                                                                            .Replace("%UniqueId%", uniqueId)
+                                                                            .Replace(largestPlaceholder + extension, Path.GetFileName(largestFile)));
+                            }
+                            else
+                            {
+                                // If %LARGEST% is not present, perform normal placeholder replacement
+                                sourcePath = ExpandEnvironmentVariables(path.Replace("%FileName%", res).Replace("%UniqueId%", uniqueId));
+                            }
                         }
 
                         if (res != "" && File.Exists(sourcePath))
@@ -669,13 +710,38 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     }
                     else if (CurrentPlatform.ProfilePicPath != "")
                     {
-                        var sourcePath = ExpandEnvironmentVariables(CurrentPlatform.ProfilePicPath.Replace("%UniqueId%", uniqueId)) ?? "";
+                        var extension = "";
+                        var path = CurrentPlatform.ProfilePicPath;
+                        var sourcePath = ExpandEnvironmentVariables(path.Replace("%UniqueId%", uniqueId));
+
+                        if (sourcePath.Contains("%LARGEST%"))
+                        {
+                            var largestPlaceholder = "%LARGEST%";
+                            var idx = sourcePath.IndexOf(largestPlaceholder) + largestPlaceholder.Length;
+
+                            // Check if an extension follows %LARGEST%
+                            if (idx < sourcePath.Length && sourcePath[idx] == '.')
+                            {
+                                extension = Path.GetExtension(sourcePath.Substring(idx));
+                            }
+
+                            // Get the directory where to look for the largest file
+                            var directory = Path.GetDirectoryName(sourcePath);
+
+                            // Find the largest file in the directory with the given extension (if any)
+                            var largestFile = GetLargestFile(directory, extension);
+
+                            // Replace %LARGEST% in the source path with the found largest file
+                            sourcePath = sourcePath.Replace(largestPlaceholder + extension, Path.GetFileName(largestFile));
+                        }
+
                         if (sourcePath != "" && File.Exists(sourcePath))
                             if (!Globals.CopyFile(sourcePath, profileImg))
                                 Globals.WriteToLog("Tried to save profile picture from path (ProfilePicPath method)");
                     }
 
-                    // Else (If file couldn't be saved, or not found -> Default.
+
+                    // Fallback to default image if no file was found or copied
                     if (!File.Exists(profileImg))
                     {
                         var currentPlatformImgPath = Path.Join(GeneralFuncs.WwwRoot(), platformImgPath);
@@ -685,6 +751,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     }
                 }
             }
+
+
 
             AppData.ActiveNavMan?.NavigateTo(
                 $"/Basic/?cacheReload&toast_type=success&toast_title={Uri.EscapeDataString(Lang["Success"])}&toast_message={Uri.EscapeDataString(Lang["Toast_SavedItem", new {item = accName}])}", true);

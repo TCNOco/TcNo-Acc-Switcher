@@ -49,6 +49,43 @@
       "UniqueIdFile": "HKCU\\Software\\Epic Games\\Unreal Engine\\Identifiers:AccountId",
       "UniqueIdMethod": "REGKEY"
     },
+    "GOG Galaxy": {
+      "Identifiers": [ "g", "gog", "gog2" ],
+      "ExeLocationDefault": "C:\\Program Files (x86)\\GOG Galaxy\\GalaxyClient.exe",
+      "ExesToEnd": [ "GalaxyClient.exe", "GOG Galaxy Notifications Renderer.exe", "GalaxyClientService.exe", "GalaxyCommunication.exe" ],
+      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+      "LoginFiles": {
+        "%LocalAppData%\\GOG.com\\Galaxy\\Configuration\\config.json": "LocalAppData\\config.json",
+        "REG:HKCU\\Software\\GOG.com\\Galaxy\\settings:username": "userId",
+        "REG:HKCU\\Software\\GOG.com\\Galaxy:refreshToken": "refreshToken",
+        "REG:HKCU\\Software\\GOG.com\\Galaxy\\settings:userId": "UNIQUE_ID",
+        "%ProgramData%\\GOG.com\\Galaxy\\webcache\\common\\Session Storage\\*.log": "ProgramData\\Session Storage\\",
+        "%ProgramData%\\GOG.com\\Galaxy\\webcache\\common\\Cache\\index": "ProgramData\\Cache\\index",
+        "%ProgramData%\\GOG.com\\Galaxy\\webcache\\common\\Cache\\data_*": "ProgramData\\Cache\\",
+        "%ProgramData%\\GOG.com\\Galaxy\\webcache\\common\\Code Cache\\js\\index-dir\\the-real-index": "ProgramData\\Code Cache\\js\\index-dir\\the-real-index",
+        "%ProgramData%\\GOG.com\\Galaxy\\webcache\\common\\GPUCache\\index": "ProgramData\\GPUCache\\index",
+        "%ProgramData%\\GOG.com\\Galaxy\\webcache\\common\\Local Storage\\leveldb": "ProgramData\\Local Storage\\leveldb\\",
+        "%ProgramData%\\GOG.com\\Galaxy\\webcache\\common\\Session Storage\\*.log": "ProgramData\\Session Storage\\",
+        "%ProgramData%\\GOG.com\\Galaxy\\webcache\\common\\Session Storage\\*.ldb": "ProgramData\\Session Storage\\",
+        "%ProgramData%\\GOG.com\\Galaxy\\webcache\\common\\Cookies": "ProgramData\\Cookies",
+        "%ProgramData%\\GOG.com\\Galaxy\\storage\\etags.db": "ProgramData\\storage\\etags.db",
+        "%ProgramData%\\GOG.com\\Galaxy\\storage\\galaxy-2.0.db*": "ProgramData\\storage\\",
+        "%ProgramData%\\GOG.com\\Galaxy\\config.json": "ProgramData\\config.json",
+      },
+      "Extras": {
+        "ProfilePicPath": "%ProgramData%\\GOG.com\\Galaxy\\webcache\\%UniqueId%\\user\\%LARGEST%.jpg",
+        "CachePaths": [
+          "C:\\Program Files (x86)\\GOG Galaxy\\GPUCache",
+          "%ProgramData%\\GOG.com\\Galaxy\\webcache\\common\\Cache",
+          "%ProgramData%\\GOG.com\\Galaxy\\webcache\\common\\GPUCache"
+        ],
+        "BackupFolders": {
+          "%LocalAppData%\\GOG.com\\Galaxy\\Configuration\\": "Configuration"
+        }
+      },
+      "UniqueIdFile": "HKCU\\Software\\GOG.com\\Galaxy\\settings:userId",
+      "UniqueIdMethod": "REGKEY"
+    },
     "Discord": {
       "Identifiers": [ "d", "discord" ],
       "ExeLocationDefault": "%LocalAppData%\\Discord\\Update.exe",
