@@ -89,7 +89,7 @@ Settings_Header_ActiveBrowser: "(Avanzado) Configurar motor de renderizado:"
 Settings_Header_ClosingMethod: "(Avanzado) Establecer método para cerrar {platform}"
 Settings_Header_StartingMethod: "(Avanzado) Establecer método para iniciar {platform}"
 Settings_AutoStart: "Iniciar automáticamente {platform} en el interruptor de cuenta"
-Settings_ShowSteamSwitcher: "Mostrar el selector de cuentas de Steam (NO use esto o puede dañar el selector de cuentas de TcNo)"
+Settings_ShowSteamSwitcher: "Mostrar el selector de cuenta de Steam (NO use esto o puede dañar el selector de cuenta de TcNo)"
 Settings_NoPlatforms: Actualmente no hay plataformas habilitadas. Marque las plataformas opcionales a continuación para habilitarlas o desmarque las plataformas deshabilitadas.
 Settings_MinimizeOnSwitch: Minimizar el conmutador en el conmutador de cuenta
 Settings_ShowShortNotes: Vista previa de la nota bajo el nombre de usuario
@@ -243,6 +243,7 @@ Toast_DownloadingProfileData: Descarga de datos de perfil
 Toast_PasswordChanged: Contraseña cambiada
 Toast_JsonFailModify: Error al modificar el archivo JSON. Consulte el registro.
 Toast_DifferentClosingMethod: "El 'Método de cierre' es diferente al predeterminado. Si se están cerrando juegos y más, verifique si cambiar esta opción ayuda. Predeterminado: {defaultMethod}, Actual: {currentMethod}"
+Toast_NameEmpty: El nombre de usuario no puede estar vacío (y solo puede contener espacios)
 Modal_Crowdin_Header: Traductores de Crowdin
 Modal_Crowdin_Info: "Aquí están todos los que ayudaron a traducir este software.<br>Los usuarios con idiomas a su lado ayudaron mucho en la traducción (función de corrector de pruebas)."
 Modal_Info_Creator: Creado por TroubleChute [Wesley Pyburn]
