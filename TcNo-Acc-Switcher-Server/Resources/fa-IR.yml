@@ -89,7 +89,7 @@ Settings_Header_ActiveBrowser: "(پیشرفته) تنظیم موتور رندر:
 Settings_Header_ClosingMethod: "(پیشرفته) روش را روی {platform}تنظیم کنید"
 Settings_Header_StartingMethod: "(پیشرفته) روش را روی {platform}تنظیم کنید"
 Settings_AutoStart: "شروع خودکار {platform} در سوئیچ حساب"
-Settings_ShowSteamSwitcher: "نمایش تعویض کننده حساب Steam (از این استفاده نکنید وگرنه ممکن است تعویض کننده حساب TcNo را خراب کند)"
+Settings_ShowSteamSwitcher: "نمایش سوئیچر حساب Steam (از این استفاده نکنید یا ممکن است تعویض کننده حساب TcNo را خراب کند)"
 Settings_NoPlatforms: در حال حاضر هیچ پلتفرمی فعال نیست. لطفاً پلتفرم‌های اختیاری را در زیر علامت بزنید تا فعال شوند، یا علامت پلتفرم‌های غیرفعال را بردارید.
 Settings_MinimizeOnSwitch: سوئیچ در حساب کاربری را به حداقل برسانید
 Settings_ShowShortNotes: پیش نمایش یادداشت در زیر نام کاربری
@@ -243,6 +243,7 @@ Toast_DownloadingProfileData: در حال دانلود اطلاعات نمایه
 Toast_PasswordChanged: رمز عبور تغییر کرد
 Toast_JsonFailModify: فایل JSON اصلاح نشد. رجوع به ثبت شود.
 Toast_DifferentClosingMethod: "«روش بستن» با پیش‌فرض متفاوت است. اگر بازی ها در حال بسته شدن هستند و بیشتر بررسی کنید که آیا تغییر این گزینه کمک می کند. پیش‌فرض: {defaultMethod}، فعلی: {currentMethod}"
+Toast_NameEmpty: نام کاربری نمی تواند خالی باشد (و فقط شامل فاصله نیست)
 Modal_Crowdin_Header: مترجمان کرودین
 Modal_Crowdin_Info: "در اینجا همه کسانی هستند که در ترجمه این نرم افزار کمک کردند.<br>کاربرانی که زبان های کناری داشتند در ترجمه کمک زیادی کردند (نقش تصحیح کننده)."
 Modal_Info_Creator: ایجاد شده توسط TroubleChute [Wesley Pyburn]
