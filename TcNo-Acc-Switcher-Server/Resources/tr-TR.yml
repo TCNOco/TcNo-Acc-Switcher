@@ -243,6 +243,7 @@ Toast_DownloadingProfileData: Profil verileri indiriliyor
 Toast_PasswordChanged: Şifre değiştirildi
 Toast_JsonFailModify: JSON dosyası değiştirilemedi. Günlüğe bakın.
 Toast_DifferentClosingMethod: "'Kapanış Yöntemi' varsayılandan farklıdır. Oyunlar kapanıyorsa ve daha fazlası varsa bu seçeneği değiştirmenin yardımcı olup olmadığını kontrol edin. Varsayılan: {defaultMethod}, Mevcut: {currentMethod}"
+Toast_NameEmpty: Kullanıcı adı boş olamaz (ve yalnızca boşluk içeremez)
 Modal_Crowdin_Header: Crowdin çevirmenleri
 Modal_Crowdin_Info: "İşte bu yazılımı çevirmeye yardım eden herkes.<br>Dilleri yanlarında olan kullanıcılar çeviride çok yardımcı oldular (düzeltici rolü)."
 Modal_Info_Creator: TroubleChute [Wesley Pyburn] tarafından oluşturuldu
