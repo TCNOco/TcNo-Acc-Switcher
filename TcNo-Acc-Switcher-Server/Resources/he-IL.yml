@@ -243,6 +243,7 @@ Toast_DownloadingProfileData: מוריד נתוני פרופיל
 Toast_PasswordChanged: הסיסמה שונתה
 Toast_JsonFailModify: שינוי קובץ JSON נכשל. ראה יומן רישום.
 Toast_DifferentClosingMethod: "'שיטת סגירה' שונה מברירת המחדל. אם משחקים נסגרים ועוד בדוק אם שינוי אפשרות זו עוזרת. ברירת מחדל: {defaultMethod}, נוכחי: {currentMethod}"
+Toast_NameEmpty: שם משתמש לא יכול להיות ריק (ולא יכול להכיל רק רווחים)
 Modal_Crowdin_Header: מתרגמי Crowdin
 Modal_Crowdin_Info: "הנה כל מי שעזר לתרגם את התוכנה הזו.<br>משתמשים עם שפות לידם עזרו רבות בתרגום (תפקיד הגהה)."
 Modal_Info_Creator: נוצר על ידי TroubleChute [ווסלי Pyburn]

@@ -89,7 +89,7 @@ Settings_Header_ActiveBrowser: "(Zaawansowane) Ustaw silnik renderowania:"
 Settings_Header_ClosingMethod: "(Zaawansowane) Ustaw metodę na zamknięcie {platform}"
 Settings_Header_StartingMethod: "(Zaawansowane) Ustaw metodę na uruchomienie {platform}"
 Settings_AutoStart: "Automatycznie uruchom {platform} przy przełączaniu konta"
-Settings_ShowSteamSwitcher: "Pokaż przełącznik kont Steam (NIE używaj tego, ponieważ może to spowodować uszkodzenie przełącznika kont TcNo)"
+Settings_ShowSteamSwitcher: "Pokaż przełącznik kont Steam (NIE używaj tego, ponieważ może to uszkodzić przełącznik kont TcNo)"
 Settings_NoPlatforms: Obecnie nie są włączone żadne platformy. Proszę zaznaczyć opcjonalne platformy poniżej, aby je włączyć, lub odznaczyć nieaktywne platformy.
 Settings_MinimizeOnSwitch: Zminimalizuj przełącznik kont przy zmianie konta
 Settings_ShowShortNotes: Podgląd notatki pod nazwą użytkownika
@@ -243,6 +243,7 @@ Toast_DownloadingProfileData: Pobieranie danych profilu
 Toast_PasswordChanged: Hasło zostało zmienione
 Toast_JsonFailModify: Nie można zmodyfikować pliku JSON. Patrz dziennik.
 Toast_DifferentClosingMethod: "\"Metoda zamykania\" różni się od domyślnej. Jeśli gra zamyka się, sprawdź, czy zmiana tej opcji pomoże. Domyślna: {defaultMethod}, Obecna: {currentMethod}"
+Toast_NameEmpty: Nazwa użytkownika nie może być pusta (i nie może zawierać samych spacji)
 Modal_Crowdin_Header: Tłumacze Crowdin
 Modal_Crowdin_Info: "Oto wszyscy, którzy pomogli przetłumaczyć to oprogramowanie.<br>Użytkownicy którzy znają te języki bardzo pomogli w tłumaczeniu (rola korektora)."
 Modal_Info_Creator: Stworzony przez TroubleChute [Wesley Pyburn]

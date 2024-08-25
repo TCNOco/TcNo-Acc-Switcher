@@ -89,7 +89,7 @@ Settings_Header_ActiveBrowser: "(詳細)レンダリングエンジンの設定:
 Settings_Header_ClosingMethod: "(Advanced)メソッドを閉じる {platform}に設定する"
 Settings_Header_StartingMethod: "(Advanced)メソッドを {platform}から始めるように設定します。"
 Settings_AutoStart: "アカウント切り替え時に自動的に {platform} を開始"
-Settings_ShowSteamSwitcher: "Steam のアカウントスイッチャーを表示します (これを使用しないでください。そうしないと、TcNo アカウントスイッチャーが壊れる可能性があります)"
+Settings_ShowSteamSwitcher: "Steam のアカウントスイッチャーを表示します (これを使用しないでください。TcNo アカウントスイッチャーが壊れる可能性があります)"
 Settings_NoPlatforms: 現在、有効になっているプラットフォームはありません。以下のオプションのプラットフォームにチェックマークを付けて有効にするか、無効になっているプラットフォームのチェックを外してください。
 Settings_MinimizeOnSwitch: アカウントスイッチの切り替えを最小限に抑える
 Settings_ShowShortNotes: ユーザー名の下にメモプレビュー
@@ -243,6 +243,7 @@ Toast_DownloadingProfileData: プロファイルデータをダウンロード�
 Toast_PasswordChanged: パスワードが変更されました
 Toast_JsonFailModify: JSONファイルの変更に失敗しました。ログを参照してください。
 Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
+Toast_NameEmpty: ユーザー名は空にできません（スペースのみを含めることはできません）
 Modal_Crowdin_Header: Crowdinの翻訳者
 Modal_Crowdin_Info: "このソフトウェアの翻訳を手伝ってくれた皆さんです。<br>隣に言語があるユーザーは、翻訳に大いに役立ちました（校正者の役割）。"
 Modal_Info_Creator: TroubleChuteによって作成されました [Wesley Pyburn]

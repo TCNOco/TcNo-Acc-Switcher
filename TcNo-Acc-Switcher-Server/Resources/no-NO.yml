@@ -89,7 +89,7 @@ Settings_Header_ActiveBrowser: "(Avansert) Angi gjengivelsesmotor:"
 Settings_Header_ClosingMethod: "(Avansert) Angi metode for å lukke {platform}"
 Settings_Header_StartingMethod: "(Avansert) Angi metode for å starte {platform}"
 Settings_AutoStart: "Start {platform} automatisk ved kontobytte"
-Settings_ShowSteamSwitcher: "Vis Steams kontobytter (IKKE bruk denne, ellers kan den bryte TcNo Account Switcher)"
+Settings_ShowSteamSwitcher: "Vis Steams kontobytter (IKKE bruk dette, ellers kan det ødelegge TcNo Account Switcher)"
 Settings_NoPlatforms: Det er for øyeblikket ingen plattformer aktivert. Merk av for valgfrie plattformer nedenfor for å aktivere dem, eller fjern merket for deaktiverte plattformer.
 Settings_MinimizeOnSwitch: Minimer bytter på kontosvitsj
 Settings_ShowShortNotes: Merk forhåndsvisning under brukernavn
@@ -243,6 +243,7 @@ Toast_DownloadingProfileData: Laster ned profildata
 Toast_PasswordChanged: passord endret
 Toast_JsonFailModify: Kunne ikke endre JSON-filen. Se logg.
 Toast_DifferentClosingMethod: "'Closing Method' er forskjellig fra standardverdien. Hvis spillene lukker og sjekker om du endrer dette alternativet hjelper. Standard: {defaultMethod}, Nåværende: {currentMethod}"
+Toast_NameEmpty: Brukernavnet kan ikke være tomt (og kan ikke bare inneholde mellomrom)
 Modal_Crowdin_Header: Crowdin-oversettere
 Modal_Crowdin_Info: "Her er alle som hjalp til med å oversette denne programvaren.<br>Brukere med språk ved siden av hjalp mye med oversettelse (korrekturleserrolle)."
 Modal_Info_Creator: Laget av TroubleChute [Wesley Pyburn]

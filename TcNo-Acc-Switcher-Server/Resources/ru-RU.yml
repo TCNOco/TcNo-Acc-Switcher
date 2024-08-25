@@ -243,6 +243,7 @@ Toast_DownloadingProfileData: Загрузка данных профиля
 Toast_PasswordChanged: Пароль изменен
 Toast_JsonFailModify: Не удалось изменить файл JSON. См. журнал.
 Toast_DifferentClosingMethod: "'Метод закрытия' отличается от стандартных. Если игры закрываются и больше проверьте, если изменить эту опцию помогает. По умолчанию: {defaultMethod}, текущая: {currentMethod}"
+Toast_NameEmpty: Имя пользователя не может быть пустым (и не может содержать только пробелы)
 Modal_Crowdin_Header: Переводчики Crowdin
 Modal_Crowdin_Info: "Вот все, кто помог перевести эту программу.<br>Пользователи, которые очень помогли в переводе (роль корректировщика)."
 Modal_Info_Creator: Создано TroubleChute [Wesley Pyburn]

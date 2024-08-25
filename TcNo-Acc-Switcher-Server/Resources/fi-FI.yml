@@ -89,7 +89,7 @@ Settings_Header_ActiveBrowser: "(Advanced) Aseta renderöintimoottori:"
 Settings_Header_ClosingMethod: "(Advanced) Aseta menetelmä sulkemaan {platform}"
 Settings_Header_StartingMethod: "(Lisäasetukset) Määritä tapa aloittaa {platform}"
 Settings_AutoStart: "Käynnistä {platform} automaattisesti tilikytkimessä"
-Settings_ShowSteamSwitcher: "Näytä Steamin tilin vaihtaja (ÄLÄ käytä tätä tai se voi rikkoa TcNo Account Switcherin)"
+Settings_ShowSteamSwitcher: "Näytä Steamin tilin vaihtaja (ÄLÄ käytä tätä tai se voi rikkoa TcNo-tilin vaihtajan)"
 Settings_NoPlatforms: Tällä hetkellä ei ole käytössä alustoja. Ota ne käyttöön valitsemalla valinnaiset alustat alta tai poista käytöstä poistettujen alustojen valinta.
 Settings_MinimizeOnSwitch: Minimoi tilikytkimen kytkin
 Settings_ShowShortNotes: Muistiinpanon esikatselu käyttäjänimellä
@@ -243,6 +243,7 @@ Toast_DownloadingProfileData: Profiilitietojen lataaminen
 Toast_PasswordChanged: Salasana vaihdettu
 Toast_JsonFailModify: JSON-tiedoston muokkaaminen epäonnistui. Katso lokia.
 Toast_DifferentClosingMethod: "Sulkemismenetelmä on eri kuin oletusasetus. Jos pelit sulkeutuvat ja lisää, tarkista, auttaako tämän vaihtoehdon muuttaminen. Oletus: {defaultMethod}, Nykyinen: {currentMethod}"
+Toast_NameEmpty: Käyttäjätunnus ei voi olla tyhjä (eikä saa sisältää vain välilyöntejä)
 Modal_Crowdin_Header: Crowdinin kääntäjät
 Modal_Crowdin_Info: "Tässä ovat kaikki, jotka auttoivat kääntämään tämän ohjelmiston.<br>Käyttäjät, joiden kieli on vieressä, auttoivat paljon kääntämisessä (oikolukijan rooli)."
 Modal_Info_Creator: Luonut TroubleChute [Wesley Pyburn]

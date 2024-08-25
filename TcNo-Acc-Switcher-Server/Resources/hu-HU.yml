@@ -89,7 +89,7 @@ Settings_Header_ActiveBrowser: "(Speciális) Renderelőmotor beállítása:"
 Settings_Header_ClosingMethod: "(Speciális) Módszer beállítása {platform}bezárására"
 Settings_Header_StartingMethod: "(Speciális) Módszer beállítása {platform}indításához"
 Settings_AutoStart: "{platform} automatikus indítása a fiókváltáskor"
-Settings_ShowSteamSwitcher: "A Steam fiókváltójának megjelenítése (NE használja ezt, mert megszakíthatja a TcNo fiókváltót)"
+Settings_ShowSteamSwitcher: "A Steam fiókváltójának megjelenítése (NE használja ezt, különben megtörheti a TcNo fiókváltót)"
 Settings_NoPlatforms: Jelenleg nincs engedélyezve platform. Kérjük, jelölje be alább az opcionális platformokat az engedélyezésükhöz, vagy törölje a letiltott platformok jelölését.
 Settings_MinimizeOnSwitch: Kapcsoló minimalizálása a fiókkapcsolón
 Settings_ShowShortNotes: Megjegyzés előnézete USERNAME alatt
@@ -243,6 +243,7 @@ Toast_DownloadingProfileData: Profiladatok letöltése
 Toast_PasswordChanged: A jelszó megváltozott
 Toast_JsonFailModify: Nem sikerült módosítani a JSON-fájlt. Lásd a Naplót.
 Toast_DifferentClosingMethod: "A 'Closing Method' eltér az alapértelmezetttől. Ha a játékok bezárulnak, ellenőrizze, hogy segít-e ennek az opciónak a megváltoztatása. Alapértelmezett: {defaultMethod}, Aktuális: {currentMethod}"
+Toast_NameEmpty: A felhasználónév nem lehet üres (és nem tartalmazhat csak szóközt)
 Modal_Crowdin_Header: Crowdin fordítók
 Modal_Crowdin_Info: "Itt van mindenki, aki segített lefordítani ezt a szoftvert.<br>A mellettük lévő nyelvű felhasználók sokat segítettek a fordításban (lektori szerep)."
 Modal_Info_Creator: 'Készítette: TroubleChute [Wesley Pyburn]'

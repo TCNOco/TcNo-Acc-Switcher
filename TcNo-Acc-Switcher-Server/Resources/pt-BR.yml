@@ -243,6 +243,7 @@ Toast_DownloadingProfileData: Baixando dados de perfil
 Toast_PasswordChanged: Senha alterada
 Toast_JsonFailModify: Falha ao modificar o arquivo JSON. Veja o log.
 Toast_DifferentClosingMethod: "'Método de fechamento' é diferente do padrão. Se os jogos estão fechando e etc, olha se alterar a opção ajuda. Padrão: {defaultMethod}, Atual: {currentMethod}"
+Toast_NameEmpty: O nome de usuário não pode estar vazio (e não pode conter apenas espaços)
 Modal_Crowdin_Header: Tradutores Crowdin
 Modal_Crowdin_Info: "Aqui estão todos que ajudaram a traduzir este software.<br>Usuários com idiomas próximos a eles ajudaram muito na tradução (função de revisor)."
 Modal_Info_Creator: Criado por TroubleChute [Wesley Pyburn]

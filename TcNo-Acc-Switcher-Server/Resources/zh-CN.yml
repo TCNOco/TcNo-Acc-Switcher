@@ -243,6 +243,7 @@ Toast_DownloadingProfileData: 正在下载个人资料数据
 Toast_PasswordChanged: 密码已更改
 Toast_JsonFailModify: 修改 JSON 文件失败。请查看日志。
 Toast_DifferentClosingMethod: "“关闭方式”与默认值不同。如果游戏不能正常关闭，请尝试修改此选项。默认：{defaultMethod}，当前：{currentMethod}"
+Toast_NameEmpty: 用户名不能为空（且不能仅包含空格）
 Modal_Crowdin_Header: Crowdin 译者
 Modal_Crowdin_Info: "这是帮助翻译此软件的所有人。<br>名字旁边有语言的用户在翻译方面提供了很多帮助（审核员身份）。"
 Modal_Info_Creator: 由 TroubleChute [Wesley Pyburn] 创作

@@ -243,6 +243,7 @@ Toast_DownloadingProfileData: Henter profildata
 Toast_PasswordChanged: Adgangskoden er ændret
 Toast_JsonFailModify: Kunne ikke ændre JSON-fil. Se log.
 Toast_DifferentClosingMethod: "'Lukningsmetode' er forskellig fra standarden. Hvis spil lukker og mere tjekker du om det hjælper at ændre denne indstilling. Standard: {defaultMethod}, Nuværende: {currentMethod}"
+Toast_NameEmpty: Brugernavnet må ikke være tomt (og må ikke kun indeholde mellemrum)
 Modal_Crowdin_Header: Crowdin-oversættere
 Modal_Crowdin_Info: "Her er alle, der hjalp med at oversætte denne software.<br>Brugere med sprog ved siden af hjalp meget med oversættelsen (korrekturlæserrolle)."
 Modal_Info_Creator: Oprettet af TroubleChute [Wesley Pyburn]

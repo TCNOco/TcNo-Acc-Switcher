@@ -89,7 +89,7 @@ Settings_Header_ActiveBrowser: "(Σύνθετη) set rendering engine:"
 Settings_Header_ClosingMethod: "(Για προχωρημένους) Ορισμός μεθόδου για το κλείσιμο του {platform}"
 Settings_Header_StartingMethod: "(Για προχωρημένους) Ορισμός μεθόδου για την έναρξη {platform}"
 Settings_AutoStart: "Αυτόματη εκκίνηση του διακόπτη {platform} στον λογαριασμό"
-Settings_ShowSteamSwitcher: "Εμφάνιση του εναλλάκτη λογαριασμών του Steam (ΜΗΝ το χρησιμοποιήσετε διαφορετικά μπορεί να χαλάσει το TcNo Account Switcher)"
+Settings_ShowSteamSwitcher: "Εμφάνιση του εναλλάκτη λογαριασμών του Steam (ΜΗΝ το χρησιμοποιήσετε, διαφορετικά μπορεί να σπάσει το πρόγραμμα εναλλαγής λογαριασμού TcNo)"
 Settings_NoPlatforms: Αυτήν τη στιγμή δεν υπάρχουν ενεργοποιημένες πλατφόρμες. Επιλέξτε τις προαιρετικές πλατφόρμες παρακάτω για να τις ενεργοποιήσετε ή αποεπιλέξτε τις απενεργοποιημένες πλατφόρμες.
 Settings_MinimizeOnSwitch: Ελαχιστοποίηση εναλλαγής σε εναλλαγή λογαριασμού
 Settings_ShowShortNotes: Προεπισκόπηση σημείωσης κάτω από το όνομα χρήστη
@@ -243,6 +243,7 @@ Toast_DownloadingProfileData: Λήψη δεδομένων προφίλ
 Toast_PasswordChanged: Ο κωδικός πρόσβασης άλλαξε
 Toast_JsonFailModify: Αποτυχία τροποποίησης αρχείου JSON. Δείτε το αρχείο καταγραφής.
 Toast_DifferentClosingMethod: "Η \"Μέθοδος κλεισίματος\" είναι διαφορετική από την προεπιλεγμένη. Εάν τα παιχνίδια κλείνουν και άλλα, ελέγξτε αν η αλλαγή αυτής της επιλογής βοηθά. Προεπιλογή: {defaultMethod}, Τρέχον: {currentMethod}"
+Toast_NameEmpty: Το όνομα χρήστη δεν μπορεί να είναι κενό (και δεν μπορεί να περιέχει μόνο κενά)
 Modal_Crowdin_Header: Μεταφραστές Crowdin
 Modal_Crowdin_Info: "Εδώ είναι όλοι όσοι βοήθησαν στη μετάφραση αυτού του λογισμικού.<br>Χρήστες με γλώσσες δίπλα τους βοήθησαν πολύ στη μετάφραση (ρόλος διορθωτή)."
 Modal_Info_Creator: Δημιουργήθηκε από την TroubleChute [Wesley Pyburn]
