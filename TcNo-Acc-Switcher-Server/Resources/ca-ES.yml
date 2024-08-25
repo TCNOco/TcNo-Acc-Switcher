@@ -243,6 +243,7 @@ Toast_DownloadingProfileData: S'estan baixant les dades del perfil
 Toast_PasswordChanged: S'ha canviat la contrasenya
 Toast_JsonFailModify: No s'ha pogut modificar el fitxer JSON. Vegeu el registre.
 Toast_DifferentClosingMethod: "El 'Mètode de tancament' és diferent al predeterminat. Si els jocs es tanquen i més, comproveu si canviar aquesta opció ajuda. Per defecte: {defaultMethod}, Actual: {currentMethod}"
+Toast_NameEmpty: El nom d'usuari no pot estar buit (i només pot contenir espais)
 Modal_Crowdin_Header: Traductors crowdin
 Modal_Crowdin_Info: "Aquí teniu tots els que han ajudat a traduir aquest programari.<br>Els usuaris amb idiomes al costat van ajudar molt en la traducció (rol de corrector)."
 Modal_Info_Creator: Creat per TroubleChute [Wesley Pyburn]
