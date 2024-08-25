@@ -1,8 +1,11 @@
 REM Move is currently only for build, as moving the files seems to prevent the program from running properly...
 setlocal
 set SkipSign=true
-set SkipCEF=true
+set SkipCEF=false
 set SkipInstaller=false
+
+REM SkipSign true while no certificate. SignPath can help, but requires GitHub build action, like AppVeyor. See AppVeyor branch.
+REM SkipFEC and SkipInstaller should be false for full normal build.
 
 REM Get current directory:
 echo -----------------------------------

@@ -20,8 +20,8 @@
 #include <string>
 
 inline std::string required_min_webview = "98.0",
-                   required_min_desktop_runtime = "8.0.0",
-                   required_min_aspcore = "8.0.0",
+                   required_min_desktop_runtime = "8.0.8",
+                   required_min_aspcore = "8.0.8",
                    required_min_vc = "14.30.30704";
 
 const std::string w_runtime_name = "Microsoft WebView2 Runtime",
