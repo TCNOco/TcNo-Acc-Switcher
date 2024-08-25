@@ -14,7 +14,7 @@
 !define LNK_NAME "TcNo Account Switcher.lnk"
 !define COMP_NAME "TechNobo (Wesley Pyburn)"
 !define WEB_SITE "https://tcno.co"
-!define VERSION "4.0.0.0"
+!define VERSION "2024.08.25.00"
 !define COPYRIGHT "TechNobo (Wesley Pyburn) (C) 2021"
 !define DESCRIPTION "TcNo Account Switcher"
 !define LICENSE_TXT "..\..\LICENSE"
@@ -140,7 +140,7 @@ Section "Main files" InstSec
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\${UNINSTALL_EXE}"
   WriteRegStr HKLM "${UNINST_KEY}" "DisplayName" "TcNo Account Switcher"
-  WriteRegStr HKLM "${UNINST_KEY}" "DisplayVersion" "4"
+  WriteRegStr HKLM "${UNINST_KEY}" "DisplayVersion" "${VERSION}"
   WriteRegStr HKLM "${UNINST_KEY}" "UninstallString" "$INSTDIR\${UNINSTALL_EXE}"
   WriteRegStr HKLM "${UNINST_KEY}" "InstallLocation" "$INSTDIR"
   WriteRegStr HKLM "${UNINST_KEY}" "Publisher" "${COMP_NAME}"

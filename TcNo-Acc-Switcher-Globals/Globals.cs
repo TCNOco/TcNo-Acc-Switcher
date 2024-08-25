@@ -1,4 +1,4 @@
-﻿// TcNo Account Switcher - A Super fast account switcher
+// TcNo Account Switcher - A Super fast account switcher
 // Copyright (C) 2019-2024 TroubleChute (Wesley Pyburn)
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
