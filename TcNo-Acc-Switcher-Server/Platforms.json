@@ -57,7 +57,6 @@
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
         "%AppData%\\discord\\settings.json": "settings.json",
-        "%AppData%\\discord\\Cookies": "Cookies",
         "%AppData%\\discord\\Network Persistent State": "Network Persistent State",
         "%AppData%\\discord\\Preferences": "Preferences",
         "%AppData%\\discord\\TransportSecurity": "TransportSecurity",
@@ -96,7 +95,6 @@
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
         "%AppData%\\discordcanary\\settings.json": "settings.json",
-        "%AppData%\\discordcanary\\Cookies": "Cookies",
         "%AppData%\\discordcanary\\Network Persistent State": "Network Persistent State",
         "%AppData%\\discordcanary\\Preferences": "Preferences",
         "%AppData%\\discordcanary\\TransportSecurity": "TransportSecurity",
@@ -135,7 +133,6 @@
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
         "%AppData%\\discordptb\\settings.json": "settings.json",
-        "%AppData%\\discordptb\\Cookies": "Cookies",
         "%AppData%\\discordptb\\Network Persistent State": "Network Persistent State",
         "%AppData%\\discordptb\\Preferences": "Preferences",
         "%AppData%\\discordptb\\TransportSecurity": "TransportSecurity",

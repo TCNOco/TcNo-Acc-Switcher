@@ -649,6 +649,10 @@ async function showModal(modaltype) {
         let header = `<h3>${modalConfirmAction}:</h3>`;
         if (action.startsWith("AcceptForgetSteamAcc")) {
             message = await GetLang("Prompt_ForgetSteam");
+        } else if (action.startsWith("AcceptForget")) {
+            // Split action after AcceptForget and before Acc:
+            const platform = action.split("AcceptForget")[1].split("Acc")[0];
+            message = await GetLangSub("Prompt_ForgetAccount", { platform });
         } else if (action.startsWith("ClearStats")) {
             message = await GetLang("Prompt_ClearStats");
         } else {

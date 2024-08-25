@@ -72,31 +72,49 @@ namespace TcNo_Acc_Switcher_Globals
         public static bool IsProcessService(string processFullPath, out string procName)
         {
             procName = null;
-            if (processFullPath.Contains("\\")) // Is path not name
+
+            try
             {
-                using var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_Service");
-                foreach (var o in searcher.Get())
+                if (processFullPath.Contains("\\")) // Is path not name
                 {
-                    var service = (ManagementObject)o;
-                    if ((string) service["PathName"] != processFullPath &&
-                        (string) service["PathName"] != '"' + processFullPath + '"') continue;
-                    procName = (string)service["Name"];
-                    return true;
+                    using var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_Service");
+                    foreach (var o in searcher.Get())
+                    {
+                        var service = (ManagementObject)o;
+                        if ((string)service["PathName"] != processFullPath &&
+                            (string)service["PathName"] != '"' + processFullPath + '"') continue;
+
+                        procName = (string)service["Name"];
+                        return true;
+                    }
+                }
+                else
+                {
+                    using var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_Service WHERE Name = \"" + processFullPath + "\"");
+                    foreach (var o in searcher.Get())
+                    {
+                        var service = (ManagementObject)o;
+                        procName = (string)service["Name"];
+                        return true;
+                    }
                 }
             }
-            else
+            catch (ManagementException ex) when (ex.ErrorCode == ManagementStatus.ProviderLoadFailure)
             {
-                using var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_Service WHERE Name =" + "\"" + processFullPath + "\"");
-                foreach (var o in searcher.Get())
-                {
-                    var service = (ManagementObject)o;
-                    procName = (string)service["Name"];
-                    return true;
-                }
+                // Handle specific "Provider load failure" error
+                WriteToLog($"WMI Provider load failure when querying process: {processFullPath}. Exception: {ex.Message}");
+                // Optionally, retry the operation or return a specific value
+                // For now, we'll return false and leave procName as null
+            }
+            catch (Exception ex)
+            {
+                // Log any other unexpected exceptions
+                WriteToLog($"Unexpected error when querying process: {processFullPath}. Exception: {ex.Message}");
             }
 
             return false;
         }
+
 
         public static bool CanKillProcess(List<string> procNames) => procNames.Aggregate(true, (current, s) => current & CanKillProcess(s));
 

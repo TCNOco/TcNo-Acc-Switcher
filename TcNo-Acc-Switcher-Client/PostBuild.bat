@@ -1,7 +1,7 @@
 REM Move is currently only for build, as moving the files seems to prevent the program from running properly...
 setlocal
 set SkipSign=true
-set SkipCEF=false
+set SkipCEF=true
 set SkipInstaller=false
 
 REM Get current directory:
@@ -47,7 +47,7 @@ IF EXIST bin\x64\Release\net8.0-windows7.0\updater GOTO end
 cd %origDir%\bin\x64\Release\net8.0-windows7.0\
 ECHO -----------------------------------
 ECHO Moving files for x64 Release in Visual Studio
-ECHO CD: %CD%
+ECHO %CD%
 ECHO -----------------------------------
 mkdir updater
 mkdir updater\x64

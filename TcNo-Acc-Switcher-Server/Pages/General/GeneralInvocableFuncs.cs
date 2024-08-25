@@ -160,17 +160,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             {
                 var accName = split[1];
 
-                if (action.StartsWith("AcceptForgetBasicAcc:"))
-                {
-                    BasicSettings.SetForgetAcc(true);
-                    _ = GeneralFuncs.ForgetAccount_Generic(accName, CurrentPlatform.SafeName, true);
-                    return Task.FromResult("refresh");
-                }
-
                 if (action.StartsWith("AcceptForgetSteamAcc:"))
                 {
                     SteamSettings.SetForgetAcc(true);
                     _ = SteamSwitcherFuncs.ForgetAccount(accName);
+                    return Task.FromResult("refresh");
+                }
+
+                if (action.StartsWith("AcceptForget"))
+                {
+                    BasicSettings.SetForgetAcc(true);
+                    _ = GeneralFuncs.ForgetAccount_Generic(accName, CurrentPlatform.SafeName, true);
                     return Task.FromResult("refresh");
                 }
             }
