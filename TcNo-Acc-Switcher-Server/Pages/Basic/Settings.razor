@@ -37,7 +37,7 @@
 
             <h2 class="SettingsHeader">@Locale["Settings_Header_GeneralSettings"]</h2>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="Basic.DesktopShortcut" @onclick="() => Shortcut.DesktopShortcut_Toggle(CurrentPlatform.FullName, Basic.DesktopShortcut)"><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="Basic.DesktopShortcut" @onclick="() => Shortcut.DesktopShortcut_Toggle(CurrentPlatform.SafeName, Basic.DesktopShortcut)"><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">
 		            @Locale["Settings_Shortcut", new { platform = CurrentPlatform.FullName }]<br></label>
             </div>
             <div>

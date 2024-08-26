@@ -135,7 +135,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_BackupCopy"], renderTo: "toastarea");
 
             // Generate temporary folder:
-            var tempFolder = $"BackupTemp\\Backup_{CurrentPlatform.FullName}_{DateTime.Now:dd-MM-yyyy_hh-mm-ss}";
+            var tempFolder = $"BackupTemp\\Backup_{CurrentPlatform.SafeName}_{DateTime.Now:dd-MM-yyyy_hh-mm-ss}";
             Directory.CreateDirectory("Backups\\BackupTemp");
 
             if (!everything)

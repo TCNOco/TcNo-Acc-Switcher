@@ -30,7 +30,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         public static void LoadProfiles()
         {
             Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.LoadProfiles] Loading Basic profiles for: " + CurrentPlatform.FullName);
-            _ = GenericFunctions.GenericLoadAccounts(CurrentPlatform.FullName, true);
+            _ = GenericFunctions.GenericLoadAccounts(CurrentPlatform.SafeName, true);
         }
 
         /// <summary>

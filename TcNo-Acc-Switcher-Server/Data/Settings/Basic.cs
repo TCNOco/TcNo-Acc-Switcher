@@ -68,7 +68,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
                     BuildContextMenu();
 
-                    _instance._desktopShortcut = Shortcut.CheckShortcuts(CurrentPlatform.FullName);
+                    _instance._desktopShortcut = Shortcut.CheckShortcuts(CurrentPlatform.SafeName);
                     AppData.InitializedClasses.Basic = true;
 
                     _instance._currentlyModifying = false;
@@ -326,7 +326,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             FolderPath = CurrentPlatform.DefaultFolderPath;
             Admin = false;
             TrayAccNumber = 3;
-            DesktopShortcut = Shortcut.CheckShortcuts(CurrentPlatform.FullName);
+            DesktopShortcut = Shortcut.CheckShortcuts(CurrentPlatform.SafeName);
 
             SaveSettings();
         }
