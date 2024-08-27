@@ -97,6 +97,7 @@ Settings_Header_AppPassword: "他のユーザーがスイッチャーを使用�
 PreviewCss: CSSをプレビュー
 Settings_PreviewCss: これはCSSプレビューページです。プログラムに表示されるいくつかの要素を表示して、テーマの外観を確認できます。このページはテーマの作成に便利です。
 Settings_PreviewCssHeader: CSSプレビューページ
+Settings_AutoUpdatePlatforms: プラットフォームリストの自動更新
 Stats_Disabled: "統計収集が無効になっています。"
 Stats_InDepth: 詳細な統計の内訳
 Stats_ShareEnabled: "これらの統計は匿名で共有され、ここでは合計 <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">に加算されます</a>。"
@@ -244,6 +245,8 @@ Toast_PasswordChanged: パスワードが変更されました
 Toast_JsonFailModify: JSONファイルの変更に失敗しました。ログを参照してください。
 Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Toast_NameEmpty: ユーザー名は空にできません（スペースのみを含めることはできません）
+Toast_NewPlatforms: "更新されました! 新しいプラットフォームが追加されました: {listOfNames}。クリックして閉じます。"
+Toast_FoundExeViaShortcut: "スタート メニューのショートカットからインストールされたパスが見つかりました。今すぐ [設定] をクリックして、その場所を確認してください。クリックすると閉じます。"
 Modal_Crowdin_Header: Crowdinの翻訳者
 Modal_Crowdin_Info: "このソフトウェアの翻訳を手伝ってくれた皆さんです。<br>隣に言語があるユーザーは、翻訳に大いに役立ちました（校正者の役割）。"
 Modal_Info_Creator: TroubleChuteによって作成されました [Wesley Pyburn]
