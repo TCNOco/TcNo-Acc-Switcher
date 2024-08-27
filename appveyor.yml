@@ -54,5 +54,26 @@ on_finish:
 #  - ps: TcNo-Acc-Switcher-Client\PostBuild.bat
 
 artifacts:
-  - path: TcNo-Acc-Switcher-Client\bin\x64\Release
-    name: TcNo-Acc-Switcher-Client
+  - path: TcNo-Acc-Switcher-Client\bin\x64\Release\CEF.7z
+    name: CEF.7z
+  - path: TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo Account Switcher - Installer.exe
+    name: TcNo Account Switcher - Installer_$(APPVEYOR_BUILD_VERSION).exe
+  - path: TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher.7z
+    name: TcNo-Acc-Switcher_$(APPVEYOR_BUILD_VERSION).7z
+  - path: TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher.zip
+    name: TcNo-Acc-Switcher_$(APPVEYOR_BUILD_VERSION).zip
+  - path: TcNo-Acc-Switcher-Client\bin\x64\Release\UpdateDiff.7z
+    name: $(APPVEYOR_BUILD_VERSION).7z
+
+deploy:
+  release: Build-v$(APPVEYOR_BUILD_VERSION)
+  description: 'Release description'
+  provider: GitHub
+  auth_token:
+    secure: 4mZ2nTS7qLwiVng07ki64e5M027auJxwDh92GRw9F9Eh4XwMCoBHm2XOqgj/Z5S8
+  artifact: CEF.7z,TcNo Account Switcher - Installer_$(APPVEYOR_BUILD_VERSION).exe,TcNo-Acc-Switcher_$(APPVEYOR_BUILD_VERSION).7z,TcNo-Acc-Switcher_$(APPVEYOR_BUILD_VERSION).zip,$(APPVEYOR_BUILD_VERSION).7z
+  draft: true
+  prerelease: false
+  on:
+    branch: master
+    APPVEYOR_REPO_TAG: true

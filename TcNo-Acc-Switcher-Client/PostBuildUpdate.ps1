@@ -1,5 +1,3 @@
-$accountSwitcherVersion = "2024-08-27_00"
-
 # Define the URL for the GitHub API to get the latest release
 $apiUrl = "https://api.github.com/repos/TCNOco/TcNo-Acc-Switcher/releases/latest"
 
@@ -72,10 +70,18 @@ if (Test-Path $updaterPath) {
 
 # Use 7z to compress the contents of UpdateOutput
 $compressPath = "UpdateOutput"
-$compressOutput = "$accountSwitcherVersion.7z"
+$compressOutput = "UpdateDiff.7z"
 
 if (Test-Path $compressPath) {
     & $sevenZipPath a -r $compressOutput "./$compressPath/*" -mx9
 } else {
     Write-Error "UpdateOutput folder not found at $compressPath"
 }
+
+# -----------------------------------
+# Prepare .zip version of .7z release files.
+# -----------------------------------
+ExtractFile -filePath "TcNo-Acc-Switcher_and_CEF.7z" -outputPath "TcNo-Acc-Switcher_and_CEF"
+
+# Use 7z to compress the contents of TcNo-Acc-Switcher_and_CEF
+Compress-Archive -Path "TcNo-Acc-Switcher_and_CEF\*" -DestinationPath "TcNo-Acc-Switcher_and_CEF.zip"
