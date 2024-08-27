@@ -97,6 +97,7 @@ Settings_Header_AppPassword: "Zabroń innym korzystania z przełącznika kont:"
 PreviewCss: Podgląd CSS
 Settings_PreviewCss: To jest strona podglądu CSS. Możesz zobaczyć niektóre elementy, które pojawiają się w programie i zobaczyć jak wyglądają z twoim motywem. Ta strona jest przydatna dla osób tworzących motywy!
 Settings_PreviewCssHeader: Podgląd strony CSS
+Settings_AutoUpdatePlatforms: Lista platform z automatyczną aktualizacją
 Stats_Disabled: "Zbieranie statystyk jest wyłączone."
 Stats_InDepth: Szczegółowy przegląd statystyk
 Stats_ShareEnabled: "Te statystyki są udostępniane anonimowo i zostaną dodane do zbioru <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">tutaj</a>."
@@ -244,6 +245,8 @@ Toast_PasswordChanged: Hasło zostało zmienione
 Toast_JsonFailModify: Nie można zmodyfikować pliku JSON. Patrz dziennik.
 Toast_DifferentClosingMethod: "\"Metoda zamykania\" różni się od domyślnej. Jeśli gra zamyka się, sprawdź, czy zmiana tej opcji pomoże. Domyślna: {defaultMethod}, Obecna: {currentMethod}"
 Toast_NameEmpty: Nazwa użytkownika nie może być pusta (i nie może zawierać samych spacji)
+Toast_NewPlatforms: "Zaktualizowano! Dodano nowe platformy: {listOfNames}. Kliknij, aby zamknąć."
+Toast_FoundExeViaShortcut: "Znaleźliśmy zainstalowaną ścieżkę ze skrótu menu Start. Sprawdź jej lokalizację, klikając Ustawienia teraz. Kliknij, aby zamknąć."
 Modal_Crowdin_Header: Tłumacze Crowdin
 Modal_Crowdin_Info: "Oto wszyscy, którzy pomogli przetłumaczyć to oprogramowanie.<br>Użytkownicy którzy znają te języki bardzo pomogli w tłumaczeniu (rola korektora)."
 Modal_Info_Creator: Stworzony przez TroubleChute [Wesley Pyburn]
