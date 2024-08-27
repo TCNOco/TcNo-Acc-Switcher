@@ -97,6 +97,7 @@ Settings_Header_AppPassword: "Anahtarlayıcıyı kullanarak diğerlerini durduru
 PreviewCss: Önizleme CSS
 Settings_PreviewCss: Bu CSS önizleme sayfasıdır. Programda açılan bazı öğeleri görüntüleyebilir ve temanızla nasıl göründüklerini görebilirsiniz. Bu sayfa tema oluşturanlar için kullanışlıdır!
 Settings_PreviewCssHeader: CSS Önizleme Sayfası
+Settings_AutoUpdatePlatforms: Platformlar listesini otomatik güncelle
 Stats_Disabled: "İstatistik koleksiyonu devre dışı."
 Stats_InDepth: Derinlemesine istatistik dökümü
 Stats_ShareEnabled: "Bu istatistikler anonim olarak paylaşılır ve buradaki toplam <a onclick=\"{WebsiteLink}\" class=\"fancyLink\"></a>eklenir."
@@ -244,6 +245,8 @@ Toast_PasswordChanged: Şifre değiştirildi
 Toast_JsonFailModify: JSON dosyası değiştirilemedi. Günlüğe bakın.
 Toast_DifferentClosingMethod: "'Kapanış Yöntemi' varsayılandan farklıdır. Oyunlar kapanıyorsa ve daha fazlası varsa bu seçeneği değiştirmenin yardımcı olup olmadığını kontrol edin. Varsayılan: {defaultMethod}, Mevcut: {currentMethod}"
 Toast_NameEmpty: Kullanıcı adı boş olamaz (ve yalnızca boşluk içeremez)
+Toast_NewPlatforms: "Güncellendi! Yeni platformlar eklendi: {listOfNames}. Kapatmak için tıklayın."
+Toast_FoundExeViaShortcut: "Yüklenen yolu bir Başlat Menüsü kısayolundan bulduk. Lütfen şimdi Ayarlar'a tıklayarak konumunu doğrulayın. Kapatmak için tıklayın."
 Modal_Crowdin_Header: Crowdin çevirmenleri
 Modal_Crowdin_Info: "İşte bu yazılımı çevirmeye yardım eden herkes.<br>Dilleri yanlarında olan kullanıcılar çeviride çok yardımcı oldular (düzeltici rolü)."
 Modal_Info_Creator: TroubleChute [Wesley Pyburn] tarafından oluşturuldu
