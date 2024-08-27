@@ -32,7 +32,7 @@ build:
 
 install:
   # Install the required packages
-  - vcpkg install curl:x64-windows-static-release curl[ssl]:x64-windows-static-release
+  - vcpkg install curl:x64-windows-static curl[ssl]:x64-windows-static
   - vcpkg integrate install
 
 # Build configuration
