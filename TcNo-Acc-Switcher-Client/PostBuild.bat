@@ -10,7 +10,14 @@ REM SkipFEC and SkipInstaller should be false for full normal build.
 echo -----------------------------------
 set ConfigurationName=%1
 set ProjectDirClient=%2
-set SolutionDir=%3
+
+REM Navigate up one folder
+for %%I in ("%ProjectDirClient%") do set ProjectDir=%%~dpI
+set SolutionDir=%ProjectDir%..
+pushd "%SolutionDir%" >nul
+set SolutionDir=%CD%\
+popd >nul
+
 echo Running Postbuild!
 echo Configuration: "%ConfigurationName%"
 echo (Client) Project Directory: "%ProjectDirClient%"
