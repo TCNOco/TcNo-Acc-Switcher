@@ -1,3 +1,5 @@
+Write-Host "Starting PostBuildUpdate.ps1 script"
+
 # Define the URL for the GitHub API to get the latest release
 $apiUrl = "https://api.github.com/repos/TCNOco/TcNo-Acc-Switcher/releases/latest"
 
@@ -25,14 +27,14 @@ function ExtractFile {
     )
     try {
         & $sevenZipPath x "$filePath" -o"$outputPath" -y
-        Write-Output "Extracted file to $outputPath"
+        Write-Output "- Extracted file to $outputPath"
     } catch {
         Write-Error "Failed to extract file $filePath. $_"
     }
 }
 
 # -----------------------------------
-# Download and extract the last build (including CEF)
+Write-Host "Downloading and extract the last build (including CEF)..."
 # -----------------------------------
 
 # Fetch the latest release data
@@ -43,6 +45,7 @@ $asset = $response.assets | Where-Object { $_.name -like "*and_CEF*" } | Select-
 
 if ($null -ne $asset) {
     # Download the file
+    Write-Host "- Downloading..."
     Get-Aria2File -Url $asset.browser_download_url -OutputPath $downloadPath
 
     # Create the extraction folder if it doesn't exist
@@ -51,19 +54,19 @@ if ($null -ne $asset) {
     }
 
     # Extract the file
+    Write-Host "- Extracting..."
     ExtractFile -filePath $downloadPath -outputPath $extractPath
 } else {
     Write-Error "No asset with 'and_CEF' found in the latest release."
 }
 
 # -----------------------------------
-# Install requirements for updater:
-# ASP.NET Core, Desktop Runtime and WebView2 Runtime
+Write-Host "Installing requirements for updater: ASP.NET Core, Desktop Runtime and WebView2 Runtime..."
 # -----------------------------------
-choco upgrade dotnet-8.0-aspnetruntime dotnet-8.0-desktopruntime webview2-runtime -y
+choco upgrade dotnet-8.0-aspnetruntime dotnet-8.0-desktopruntime webview2-runtime -y --no-progress
 
 # -----------------------------------
-# Run the updater to create updates based on the differences
+Write-Host "Running the updater to create updates based on the differences..."
 # -----------------------------------
 $updaterPath = "updater\TcNo-Acc-Switcher-Updater.exe"
 $updaterArgs = "createupdate"
@@ -74,7 +77,7 @@ if (Test-Path $updaterPath) {
     Write-Error "Updater not found at $updaterPath"
 }
 
-# Use 7z to compress the contents of UpdateOutput
+Write-Host "- Using 7z to compress the contents of UpdateOutput"
 $compressPath = "UpdateOutput"
 $compressOutput = "UpdateDiff.7z"
 
@@ -85,9 +88,11 @@ if (Test-Path $compressPath) {
 }
 
 # -----------------------------------
-# Prepare .zip version of .7z release files.
+Write-Host "Preparing .zip version of .7z release files..."
 # -----------------------------------
+Write-Host "- Extracting .7z"
 ExtractFile -filePath "TcNo-Acc-Switcher_and_CEF.7z" -outputPath "TcNo-Acc-Switcher_and_CEF"
 
 # Use 7z to compress the contents of TcNo-Acc-Switcher_and_CEF
+Write-Host "- Compressing as .zip"
 Compress-Archive -Path "TcNo-Acc-Switcher_and_CEF\*" -DestinationPath "TcNo-Acc-Switcher_and_CEF.zip"
