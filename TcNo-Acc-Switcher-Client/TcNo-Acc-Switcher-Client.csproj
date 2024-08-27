@@ -56,7 +56,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="PostBuild.bat $(Configuration) $(ProjectDir) $(SolutionDir)" IgnoreExitCode="true" />
+    <Exec Command="PostBuild.bat $(Configuration) $(ProjectDir)" IgnoreExitCode="true" />
   </Target>
 
   <ItemGroup>
