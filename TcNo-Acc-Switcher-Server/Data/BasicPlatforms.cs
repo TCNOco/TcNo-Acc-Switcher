@@ -144,6 +144,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         private string _defaultExePath;
         private string _exeExtraArgs = "";
         private string _defaultFolderPath;
+        private string _getPathFromShortcutNamed = "";
         private string _safeName;
         private string _settingsFile;
         private string _exeName;
@@ -187,6 +188,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static string DefaultExePath { get => Instance._defaultExePath; private set => Instance._defaultExePath = value; }
         public static string ExeExtraArgs { get => Instance._exeExtraArgs; private set => Instance._exeExtraArgs = value; }
         public static string DefaultFolderPath { get => Instance._defaultFolderPath; private set => Instance._defaultFolderPath = value; }
+        public static string GetPathFromShortcutNamed { get => Instance._getPathFromShortcutNamed; private set => Instance._getPathFromShortcutNamed = value; }
         public static string SafeName { get => Instance._safeName; private set => Instance._safeName = value; }
         public static string SettingsFile { get => Instance._settingsFile; private set => Instance._settingsFile = value; }
         public static string ExeName { get => Instance._exeName; private set => Instance._exeName = value; }
@@ -258,6 +260,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
 
             // Variables that may not be set:
+            if (jPlatform.ContainsKey("GetPathFromShortcutNamed")) GetPathFromShortcutNamed = (string)jPlatform["GetPathFromShortcutNamed"];
             if (jPlatform.ContainsKey("UniqueIdFile")) UniqueIdFile = (string)jPlatform["UniqueIdFile"];
             if (jPlatform.ContainsKey("UniqueIdFolder")) UniqueIdFolder = (string)jPlatform["UniqueIdFolder"];
             if (jPlatform.ContainsKey("UniqueIdRegex")) UniqueIdRegex = Globals.ExpandRegex((string)jPlatform["UniqueIdRegex"]);

@@ -375,7 +375,7 @@ namespace TcNo_Acc_Switcher_Globals
         }
 
         /// <summary>
-        /// Recursively copy files and directories - With a filter for file  types
+        /// Recursively copy files and directories - With a filter for file types
         /// </summary>
         /// <param name="inputFolder">Folder to copy files recursively from</param>
         /// <param name="outputFolder">Destination folder</param>
@@ -489,6 +489,11 @@ namespace TcNo_Acc_Switcher_Globals
             return result;
         }
 
+        /// <summary>
+        /// Saves icon from specified shortcut.
+        /// </summary>
+        /// <param name="path">Path to icon file (lnk, url or exe)</param>
+        /// <param name="output">Path to save .ico</param>
         [SupportedOSPlatform("windows")]
         public static bool SaveIconFromFile(string path, string output)
         {
@@ -544,6 +549,37 @@ namespace TcNo_Acc_Switcher_Globals
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Gets and returns shortcut's Target
+        /// </summary>
+        /// <param name="shortcutPath">Path to .lnk shortcut file</param>
+        [SupportedOSPlatform("windows")]
+        public static string GetShortcutTarget(string shortcutPath = null)
+        {
+            if (string.IsNullOrEmpty(shortcutPath) || !File.Exists(shortcutPath))
+                return null;
+
+            if (!shortcutPath.EndsWith(".lnk", StringComparison.OrdinalIgnoreCase))
+                return null;
+
+            try
+            {
+                var shortcutInfo = Shortcut.ReadFromFile(shortcutPath);
+
+                string targetPath = shortcutInfo.LinkTargetIDList.Path;
+
+                if (!string.IsNullOrEmpty(targetPath))
+                    return targetPath;
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error retrieving shortcut target (Path: {shortcutPath}): {ex.Message}");
+                return null;
+            }
         }
 
         // Consider this a fallback for when the image can not be extracted from shortcuts.

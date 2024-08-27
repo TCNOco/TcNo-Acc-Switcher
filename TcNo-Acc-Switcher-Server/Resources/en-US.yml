@@ -245,7 +245,8 @@ Toast_PasswordChanged: Password changed
 Toast_JsonFailModify: Failed to modify JSON file. See log.
 Toast_DifferentClosingMethod: "'Closing Method' is different to the default. If games are closing and more check if changing this option helps. Default: {defaultMethod}, Current: {currentMethod}"
 Toast_NameEmpty: Username cannot be empty (and cannot only contain spaces)
-Toast_NewPlatforms: "Updated! New platforms added: {listOfNames}."
+Toast_NewPlatforms: "Updated! New platforms added: {listOfNames}. Click to dismiss."
+Toast_FoundExeViaShortcut: "We found the installed path from a Start Menu shortcut. Please verify it's location by clicking Settings now. Click to dismiss."
 Modal_Crowdin_Header: Crowdin translators
 Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
 Modal_Info_Creator: Created by TroubleChute [Wesley Pyburn]

@@ -268,7 +268,7 @@ namespace TcNo_Acc_Switcher_Server
 
                 if (newPlatforms.Length != 0)
                 {
-                    _ = GeneralInvocableFuncs.ShowToast("info", Lang.Instance["Toast_NewPlatforms", new { listOfNames = newPlatforms }], renderTo: "toastarea", duration: 15000);
+                    _ = GeneralInvocableFuncs.ShowToast("info", Lang.Instance["Toast_NewPlatforms", new { listOfNames = newPlatforms }], renderTo: "toastarea", duration: 000);
 
                     Globals.WriteToLog($"Updatedd Platforms.json. Added new platforms: {newPlatforms}");
                 }

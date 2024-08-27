@@ -3,6 +3,7 @@
     "Escape from Tarkov": {
       "Identifiers": [ "eft", "bsg", "tarkov" ],
       "ExeLocationDefault": "C:\\Battlestate Games\\BsgLauncher\\BsgLauncher.exe",
+      "GetPathFromShortcutNamed": "Battlestate Games Launcher",
       "ExesToEnd": [ "EscapeFromTarkov.exe", "BsgLauncher.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
@@ -15,6 +16,7 @@
     "OBS Studio": {
       "Identifiers": [ "obs" ],
       "ExeLocationDefault": "%ProgramFiles%\\obs-studio\\bin\\64bit\\obs64.exe",
+      "GetPathFromShortcutNamed": "OBS Studio (64bit)|OBS Studio",
       "ExesToEnd": [ "obs64.exe" ],
       "PathListToClear": [],
       "LoginFiles": {
@@ -29,6 +31,7 @@
     "Epic Games": {
       "Identifiers": [ "e", "epg", "epic", "epicgames" ],
       "ExeLocationDefault": "C:\\Program Files (x86)\\Epic Games\\Launcher\\Portal\\Binaries\\Win32\\EpicGamesLauncher.exe",
+      "GetPathFromShortcutNamed": "Epic Games Launcher",
       "ExesToEnd": [ "EpicGamesLauncher.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
@@ -52,6 +55,7 @@
     "GOG Galaxy": {
       "Identifiers": [ "g", "gog", "gog2" ],
       "ExeLocationDefault": "C:\\Program Files (x86)\\GOG Galaxy\\GalaxyClient.exe",
+      "GetPathFromShortcutNamed": "GOG GALAXY",
       "ExesToEnd": [ "GalaxyClient.exe", "GOG Galaxy Notifications Renderer.exe", "GalaxyClientService.exe", "GalaxyCommunication.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
@@ -89,6 +93,7 @@
     "Discord": {
       "Identifiers": [ "d", "discord" ],
       "ExeLocationDefault": "%LocalAppData%\\Discord\\Update.exe",
+      "GetPathFromShortcutNamed": "Discord",
       "ExeExtraArgs": "--processStart Discord.exe",
       "ExesToEnd": [ "Discord.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
@@ -127,6 +132,7 @@
         "canary"
       ],
       "ExeLocationDefault": "%LocalAppData%\\DiscordCanary\\Update.exe",
+      "GetPathFromShortcutNamed": "Discord Canary",
       "ExeExtraArgs": "--processStart DiscordCanary.exe",
       "ExesToEnd": [ "DiscordCanary.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
@@ -165,6 +171,7 @@
         "ptb"
       ],
       "ExeLocationDefault": "%LocalAppData%\\DiscordPTB\\Update.exe",
+      "GetPathFromShortcutNamed": "Discord PTB",
       "ExeExtraArgs": "--processStart DiscordPTB.exe",
       "ExesToEnd": [ "DiscordPTB.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
@@ -199,6 +206,7 @@
     "Riot Games": {
       "Identifiers": [ "r", "riot", "riotgames" ],
       "ExeLocationDefault": "C:\\Riot Games\\Riot Client\\RiotClientServices.exe",
+      "GetPathFromShortcutNamed": "VALORANT|League of Legends|Legends of Runeterra",
       "ExesToEnd": [
         "LeagueClient.exe",
         "LoR.exe",
@@ -227,6 +235,7 @@
     "Origin": {
       "Identifiers": [ "o", "origin" ],
       "ExeLocationDefault": "%ProgramFiles(x86)%\\Origin\\Origin.exe",
+      "GetPathFromShortcutNamed": "Origin",
       "ExesToEnd": [ "Origin.exe", "OriginWebHelperService.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
@@ -261,6 +270,7 @@
     "EA Desktop": {
       "Identifiers": [ "ea", "eadesktop" ],
       "ExeLocationDefault": "%ProgramFiles%\\Electronic Arts\\EA Desktop\\EA Desktop\\EADesktop.exe",
+      "GetPathFromShortcutNamed": "EA",
       "ExesToEnd": [ "EADesktop.exe", "EABackgroundService.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
@@ -286,6 +296,7 @@
     "GeForce Now": {
       "Identifiers": [ "gn", "geforce", "geforcenow" ],
       "ExeLocationDefault": "%LocalAppData%\\NVIDIA Corporation\\GeForceNOW\\CEF\\GeForceNOW.exe",
+      "GetPathFromShortcutNamed": "GeForce NOW",
       "ExesToEnd": [ "GeForceNOW.exe", "GeForceNOWContainer.exe", "GeForceNOWReliabilityMonitor.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
@@ -305,6 +316,7 @@
     "Ubisoft": {
       "Identifiers": [ "u", "ubi", "uplay", "ubisoft" ],
       "ExeLocationDefault": "%ProgramFiles(x86)%\\Ubisoft\\Ubisoft Game launcher\\upc.exe",
+      "GetPathFromShortcutNamed": "Ubisoft Connect",
       "ExesToEnd": [ "upc.exe", "UplayService.exe", "UplayWebCore.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
@@ -333,6 +345,7 @@
     "Oculus": {
       "Identifiers": [ "oc", "oculus" ],
       "ExeLocationDefault": "%ProgramFiles%\\Oculus\\Support\\oculus-client\\OculusClient.exe",
+      "GetPathFromShortcutNamed": "Meta Quest Link",
       "ExesToEnd": [
         "OculusClient.exe",
         "OculusDash.exe",
@@ -364,6 +377,7 @@
     "Genshin Impact": {
       "Identifiers": [ "gi", "genshin", "genshinimpact" ],
       "ExeLocationDefault": "%ProgramFiles%\\Genshin Impact\\Genshin Impact Game\\GenshinImpact.exe",
+      "GetPathFromShortcutNamed": "Genshin Impact",
       "ExesToEnd": [ "GenshinImpact.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
@@ -376,6 +390,7 @@
     "Magic Arena": {
       "Identifiers": [ "mtga", "magicarena" ],
       "ExeLocationDefault": "%ProgramFiles%\\Wizards of the Coast\\MTGA\\MTGALauncher\\MTGALauncher.exe",
+      "GetPathFromShortcutNamed": "MTG Arena",
       "ExesToEnd": [ "MTGA.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
@@ -394,6 +409,7 @@
     "PS Remote Play": {
       "Identifiers": [ "psr", "psrp", "psremote" ],
       "ExeLocationDefault": "%ProgramFiles(x86)%\\Sony\\PS Remote Play\\RemotePlay.exe",
+      "GetPathFromShortcutNamed": "PS Remote Play",
       "ExesToEnd": [ "RemotePlay.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
@@ -407,6 +423,7 @@
     "Albion Online": {
       "Identifiers": [ "ao", "albion", "albiononline" ],
       "ExeLocationDefault": "%ProgramFiles(x86)%\\AlbionOnline\\launcher\\AlbionLauncher.exe",
+      "GetPathFromShortcutNamed": "AlbionOnline",
       "ExesToEnd": [ "AlbionLauncher.exe", "Albion-Online.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
@@ -452,6 +469,7 @@
     "BattleNet": {
       "Identifiers": [ "b", "bnet", "battlenet", "blizzard" ],
       "ExeLocationDefault": "%ProgramFiles(x86)%\\Battle.net\\Battle.net.exe",
+      "GetPathFromShortcutNamed": "Battle.net",
       "ExesToEnd": [ "Battle.net" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
@@ -468,6 +486,7 @@
     "Honkai StarRail": {
       "Identifiers": [ "hsr", "starrail", "honkaistarrail" ],
       "ExeLocationDefault": "%ProgramFiles%\\Star Rail\\Games\\StarRail.exe",
+      "GetPathFromShortcutNamed": "Honkai Star Rail",
       "ExesToEnd": [ "StarRail.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": { "REG:HKCU\\Software\\Cognosphere\\Star Rail:MIHOYOSDK_ADL_PROD_OVERSEA_h1158948810": "UNIQUE_ID" },
@@ -479,6 +498,7 @@
     "Arena Breakout: Infinite": {
       "Identifiers": [ "abi", "arenabreakout" ],
       "ExeLocationDefault": "C:\\Arena Breakout Infinite\\launcher\\arena_breakout_infinite_launcher.exe",
+      "GetPathFromShortcutNamed": "Arena Breakout Infinite",
       "ExesToEnd": [ "arena_breakout_infinite_launcher.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
@@ -498,6 +518,7 @@
     "Delta Force: Hawk Ops": {
       "Identifiers": [ "dfho", "deltaforce", "hawkops" ],
       "ExeLocationDefault": "C:\\Delta Force Hawk Ops\\launcher\\df_launcher_global.exe",
+      "GetPathFromShortcutNamed": "Delta Force",
       "ExesToEnd": [ "df_launcher_global.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
@@ -545,5 +566,5 @@
       }
     }
   },
-  "Version": "2024-08-26_00"
+  "Version": "2024-08-27_00"
 }
