@@ -7,6 +7,25 @@ set SkipInstaller=false
 REM SkipSign true while no certificate. SignPath can help, but requires GitHub build action, like AppVeyor. See AppVeyor branch.
 REM SkipFEC and SkipInstaller should be false for full normal build.
 
+echo -----------------------------------
+set ConfigurationName=%1
+set ProjectDir=%2
+echo Running Postbuild!
+echo Configuration: "%ConfigurationName%"
+echo Project Directory: "%ProjectDir%"
+echo -----------------------------------
+if /I "%ConfigurationName%" == "Release" (
+	GOTO :release
+) else (
+	GOTO :debug
+)
+
+
+:release
+echo -----------------------------------
+echo BUILDING RELEASE
+echo -----------------------------------
+
 REM Get current directory:
 echo -----------------------------------
 echo Current directory: %cd%
@@ -234,7 +253,29 @@ if "%SkipInstaller%"=="true" (
     ECHO WARNING! Skipped creating Installer!
 )
 endlocal
-
+echo -----------------------------------
+echo DONE BUILDING RELEASE
+echo -----------------------------------
 goto :eof
 
-:end
+
+
+
+:debug
+echo -----------------------------------
+echo BUILDING DEBUG
+echo -----------------------------------
+mkdir updater
+mkdir updater\x64
+mkdir updater\x86
+mkdir updater\ref
+echo %cd%
+copy /B /Y "bin\Installer\_First_Run_Installer.exe" "bin\x64\Debug\net8.0-windows7.0\_First_Run_Installer.exe"
+copy /B /Y "bin\runas\x64\Release\net8.0\runas.exe" "bin\x64\Debug\net8.0-windows7.0\runas.exe"
+copy /B /Y "bin\runas\x64\Release\net8.0\runas.dll" "bin\x64\Debug\net8.0-windows7.0\runas.dll"
+copy /B /Y "bin\runas\x64\Release\net8.0\runas.runtimeconfig.json" "bin\x64\Debug\net8.0-windows7.0\runas.runtimeconfig.json"
+endlocal
+echo -----------------------------------
+echo DONE BUILDING DEBUG
+echo -----------------------------------
+goto :eof
