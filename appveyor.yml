@@ -35,6 +35,7 @@ install:
   # Install the required packages
   - vcpkg install curl:x64-windows-static curl[ssl]:x64-windows-static vcpkg-cmake:x64-windows vcpkg-cmake-config:x64-windows zlib:x64-windows-static --triplet=x64-windows-release
   - vcpkg integrate install
+  - choco upgrade aria2 -y
 
 # Build configuration
 build_script:

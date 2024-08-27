@@ -103,3 +103,15 @@ $globalsFileContent = $globalsFileContent -replace 'public static readonly strin
 $globalsFileContent | Set-Content $globalsFilePath
 
 Write-Host "UPDATED Globals.cs"
+
+# -------------------------------
+# Update the PostBuildUpdate.ps1 file
+# -------------------------------
+
+$postBuildFilePath = "TcNo-Acc-Switcher-Client\PostBuildUpdate.ps1"
+$postBuildFileContent = Get-Content $postBuildFilePath
+$versionReplacement = '$accountSwitcherVersion = "' + $dateVersion + '"'
+$postBuildFileContent = $postBuildFileContent -replace '\$accountSwitcherVersion\s*=\s*".*"', $versionReplacement
+$postBuildFileContent | Set-Content $postBuildFilePath
+
+Write-Host "UPDATED PostBuildUpdate.ps1"

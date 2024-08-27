@@ -158,6 +158,10 @@ ECHO Moving wwwroot and main program folder.
 ECHO -----------------------------------
 REN "wwwroot" "originalwwwroot"
 cd ..\
+ECHO -----------------------------------
+ECHO Changed Directory for final build steps
+ECHO %CD%
+ECHO -----------------------------------
 RMDIR /Q/S %origDir%\bin\x64\Release\TcNo-Acc-Switcher
 REN "net8.0-windows7.0" "TcNo-Acc-Switcher"
 
@@ -252,6 +256,15 @@ if "%SkipCEF%"=="true" (
 if "%SkipInstaller%"=="true" (
     ECHO WARNING! Skipped creating Installer!
 )
+
+
+ECHO -----------------------------------
+ECHO Preparing for update diff creation
+ECHO -----------------------------------
+mkdir OldVersion
+call powershell "& "".\PostBuildUpdate.ps1"""
+
+
 endlocal
 echo -----------------------------------
 echo DONE BUILDING RELEASE
