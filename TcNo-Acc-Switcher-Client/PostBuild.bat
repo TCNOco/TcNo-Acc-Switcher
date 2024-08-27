@@ -139,14 +139,12 @@ ECHO -----------------------------------
 copy /B /Y "VCDiff.dll" "updater\VCDiff.dll"
 copy /B /Y "YamlDotNet.dll" "updater\YamlDotNet.dll"
 move /Y "TcNo-Acc-Switcher-Updater.runtimeconfig.json" "updater\TcNo-Acc-Switcher-Updater.runtimeconfig.json"
-move /Y "TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json" "updater\TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json"
 move /Y "TcNo-Acc-Switcher-Updater.pdb" "updater\TcNo-Acc-Switcher-Updater.pdb"
 copy /B /Y "TcNo-Acc-Switcher-Updater.dll" "updater\TcNo-Acc-Switcher-Updater.dll"
 move /Y "TcNo-Acc-Switcher-Updater.deps.json" "updater\TcNo-Acc-Switcher-Updater.deps.json"
 copy /B /Y "SevenZipExtractor.dll" "updater\SevenZipExtractor.dll"
 copy /Y "x86\7z.dll" "updater\x86\7z.dll"
 copy /Y "x64\7z.dll" "updater\x64\7z.dll"
-copy /B /Y "ref\TcNo-Acc-Switcher-Updater.dll" "updater\ref\TcNo-Acc-Switcher-Updater.dll"
 copy /B /Y "Microsoft.IO.RecyclableMemoryStream.dll" "updater\Microsoft.IO.RecyclableMemoryStream.dll"
 copy /B /Y "Newtonsoft.Json.dll" "updater\Newtonsoft.Json.dll"
 
@@ -154,14 +152,14 @@ copy /B /Y "Newtonsoft.Json.dll" "updater\Newtonsoft.Json.dll"
 ECHO -----------------------------------
 ECHO Removing unused files
 ECHO -----------------------------------
-RMDIR /Q/S "runtimes\linux-arm64"
-RMDIR /Q/S "runtimes\linux-musl-x64"
-RMDIR /Q/S "runtimes\linux-x64"
-RMDIR /Q/S "runtimes\osx"
-RMDIR /Q/S "runtimes\osx-x64"
-RMDIR /Q/S "runtimes\unix"
-RMDIR /Q/S "runtimes\win-arm64"
-RMDIR /Q/S "runtimes\win-x86"
+RMDIR /Q/S "runtimes\linux-arm64" >nul
+RMDIR /Q/S "runtimes\linux-musl-x64" >nul
+RMDIR /Q/S "runtimes\linux-x64" >nul
+RMDIR /Q/S "runtimes\osx" >nul
+RMDIR /Q/S "runtimes\osx-x64" >nul
+RMDIR /Q/S "runtimes\unix" >nul
+RMDIR /Q/S "runtimes\win-arm64" >nul
+RMDIR /Q/S "runtimes\win-x86" >nul
 
 ECHO -----------------------------------
 ECHO Moving wwwroot and main program folder.
@@ -172,7 +170,7 @@ ECHO -----------------------------------
 ECHO Changed Directory to Build Dir (bin\x64\Release\)
 ECHO %CD%
 ECHO -----------------------------------
-RMDIR /Q/S %SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher
+RMDIR /Q/S %SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher >nul
 REN "net8.0-windows7.0" "TcNo-Acc-Switcher"
 
 ECHO -----------------------------------

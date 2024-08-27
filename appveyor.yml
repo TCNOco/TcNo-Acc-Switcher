@@ -40,9 +40,9 @@ install:
 # Build configuration
 build_script:
   - nuget restore TcNo-Acc-Switcher.sln
-  - msbuild Installer/Installer.vcxproj /p:Configuration=%CONFIGURATION% /p:Platform=x64 /p:OutDir=$(APPVEYOR_BUILD_FOLDER)\TcNo-Acc-Switcher-Client\bin\Installer\
-  - msbuild _Updater_Wrapper/_Updater_Wrapper.vcxproj /p:Configuration=%CONFIGURATION% /p:Platform=x64 /p:OutDir=$(APPVEYOR_BUILD_FOLDER)\TcNo-Acc-Switcher-Client\bin\Wrapper\
-  - msbuild runas/runas.csproj /p:Configuration=%CONFIGURATION% /p:Platform=x64 /p:OutDir=$(APPVEYOR_BUILD_FOLDER)\TcNo-Acc-Switcher-Client\bin\runas\
+  - msbuild Installer/Installer.vcxproj /p:Configuration=%CONFIGURATION% /p:Platform=x64 /p:OutDir=%APPVEYOR_BUILD_FOLDER%\TcNo-Acc-Switcher-Client\bin\Installer\
+  - msbuild _Updater_Wrapper/_Updater_Wrapper.vcxproj /p:Configuration=%CONFIGURATION% /p:Platform=x64 /p:OutDir=%APPVEYOR_BUILD_FOLDER%\TcNo-Acc-Switcher-Client\bin\Wrapper\
+  - msbuild runas/runas.csproj /p:Configuration=%CONFIGURATION% /p:Platform=x64 /p:OutputPath=%APPVEYOR_BUILD_FOLDER%\TcNo-Acc-Switcher-Client\bin\runas\
   - msbuild TcNo-Acc-Switcher-Globals/TcNo-Acc-Switcher-Globals.csproj /p:Configuration=%CONFIGURATION% /p:Platform=x64
   - msbuild TcNo-Acc-Switcher-Tray/TcNo-Acc-Switcher-Tray.csproj /p:Configuration=%CONFIGURATION% /p:Platform=x64
   - msbuild TcNo-Acc-Switcher-Updater/TcNo-Acc-Switcher-Updater.csproj /p:Configuration=%CONFIGURATION% /p:Platform=x64
@@ -60,6 +60,8 @@ artifacts:
     name: TcNo Account Switcher - Installer_$(APPVEYOR_BUILD_VERSION).exe
   - path: TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher.7z
     name: TcNo-Acc-Switcher_$(APPVEYOR_BUILD_VERSION).7z
+  - path: TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher_and_CEF.7z
+    name: TcNo-Acc-Switcher_and_CEF_$(APPVEYOR_BUILD_VERSION).7z
   - path: TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher.zip
     name: TcNo-Acc-Switcher_$(APPVEYOR_BUILD_VERSION).zip
   - path: TcNo-Acc-Switcher-Client\bin\x64\Release\UpdateDiff.7z
@@ -71,9 +73,9 @@ deploy:
   provider: GitHub
   auth_token:
     secure: 4mZ2nTS7qLwiVng07ki64e5M027auJxwDh92GRw9F9Eh4XwMCoBHm2XOqgj/Z5S8
-  artifact: CEF.7z,TcNo Account Switcher - Installer_$(APPVEYOR_BUILD_VERSION).exe,TcNo-Acc-Switcher_$(APPVEYOR_BUILD_VERSION).7z,TcNo-Acc-Switcher_$(APPVEYOR_BUILD_VERSION).zip,$(APPVEYOR_BUILD_VERSION).7z
+  artifact: CEF.7z,TcNo Account Switcher - Installer_$(APPVEYOR_BUILD_VERSION).exe,TcNo-Acc-Switcher_$(APPVEYOR_BUILD_VERSION).7z,TcNo-Acc-Switcher_$(APPVEYOR_BUILD_VERSION).zip,TcNo-Acc-Switcher_$(APPVEYOR_BUILD_VERSION).7z
   draft: true
   prerelease: false
   on:
-    branch: master
+    branch: appveyor
     APPVEYOR_REPO_TAG: true
