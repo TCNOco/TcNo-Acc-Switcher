@@ -14,7 +14,8 @@
 !define LNK_NAME "TcNo Account Switcher.lnk"
 !define COMP_NAME "TroubleChute (Wesley Pyburn)"
 !define WEB_SITE "https://tcno.co"
-!define VERSION "2024.08.25.00"
+!define VERSION "2024.08.27.00"
+!define DISPLAY_VERSION "2024-08-27_00"
 !define COPYRIGHT "TroubleChute (Wesley Pyburn) (C) 2024"
 !define DESCRIPTION "TcNo Account Switcher"
 !define LICENSE_TXT "..\..\LICENSE"
@@ -140,7 +141,7 @@ Section "Main files" InstSec
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\${UNINSTALL_EXE}"
   WriteRegStr HKLM "${UNINST_KEY}" "DisplayName" "TcNo Account Switcher"
-  WriteRegStr HKLM "${UNINST_KEY}" "DisplayVersion" "${VERSION}"
+  WriteRegStr HKLM "${UNINST_KEY}" "DisplayVersion" "${DISPLAY_VERSION}"
   WriteRegStr HKLM "${UNINST_KEY}" "UninstallString" "$INSTDIR\${UNINSTALL_EXE}"
   WriteRegStr HKLM "${UNINST_KEY}" "InstallLocation" "$INSTDIR"
   WriteRegStr HKLM "${UNINST_KEY}" "Publisher" "${COMP_NAME}"

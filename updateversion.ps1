@@ -12,6 +12,10 @@ $nsisFilePath = "other\NSIS\nsis-build-x64.nsi"
 $nsisFileContent = Get-Content $nsisFilePath
 $nsisReplacement = '!define VERSION "' + $nsisVersion + '"'
 $nsisFileContent = $nsisFileContent -replace '^!define VERSION\s+".*"$', $nsisReplacement
+
+$nsisReplacement = '!define DISPLAY_VERSION "' + $dateVersion + '"'
+$nsisFileContent = $nsisFileContent -replace '^!define DISPLAY_VERSION\s+".*"$', $nsisReplacement
+
 $nsisFileContent | Set-Content $nsisFilePath
 
 Write-Host "UPDATED NSIS"
@@ -26,8 +30,8 @@ $rcFileContent = Get-Content $rcFilePath
 $rcProductVersionReplacement = ' PRODUCTVERSION ' + $rcVersion
 $rcFileVersionReplacement = ' FILEVERSION ' + $rcVersion
 
-$rcValueProductVersionReplacement = '            VALUE "ProductVersion", "' + $nsisVersion + '"'
-$rcValueFileVersionReplacement = '            VALUE "FileVersion", "' + $nsisVersion + '"'
+$rcValueProductVersionReplacement = '            VALUE "ProductVersion", "' + $dateVersion + '"'
+$rcValueFileVersionReplacement = '            VALUE "FileVersion", "' + $dateVersion + '"'
 
 $rcFileContent = $rcFileContent -replace '^\s*PRODUCTVERSION\s+\d+,\d+,\d+,\d+', $rcProductVersionReplacement
 $rcFileContent = $rcFileContent -replace '^\s*FILEVERSION\s+\d+,\d+,\d+,\d+', $rcFileVersionReplacement
@@ -48,8 +52,8 @@ $rcFileContent = Get-Content $rcFilePath
 $rcProductVersionReplacement = ' PRODUCTVERSION ' + $rcVersion
 $rcFileVersionReplacement = ' FILEVERSION ' + $rcVersion
 
-$rcValueProductVersionReplacement = '            VALUE "ProductVersion", "' + $nsisVersion + '"'
-$rcValueFileVersionReplacement = '            VALUE "FileVersion", "' + $nsisVersion + '"'
+$rcValueProductVersionReplacement = '            VALUE "ProductVersion", "' + $dateVersion + '"'
+$rcValueFileVersionReplacement = '            VALUE "FileVersion", "' + $dateVersion + '"'
 
 $rcFileContent = $rcFileContent -replace '^\s*PRODUCTVERSION\s+\d+,\d+,\d+,\d+', $rcProductVersionReplacement
 $rcFileContent = $rcFileContent -replace '^\s*FILEVERSION\s+\d+,\d+,\d+,\d+', $rcFileVersionReplacement

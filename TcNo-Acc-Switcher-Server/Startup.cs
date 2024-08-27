@@ -153,7 +153,7 @@ namespace TcNo_Acc_Switcher_Server
         [SupportedOSPlatform("windows")]
         public static void UpdateRegistryVersion(string version)
         {
-            version = version.Replace("-", ".").Replace("_", ".");
+            var dotVersion = version.Replace("-", ".").Replace("_", ".");
 
             string exeDirectory = AppDomain.CurrentDomain.BaseDirectory;
             string uninstallExePath = Path.Combine(exeDirectory, "Uninstall TcNo Account Switcher.exe");
@@ -169,8 +169,8 @@ namespace TcNo_Acc_Switcher_Server
                     if (registryKey == null) continue;
 
                     registryKey.SetValue("DisplayVersion", version, RegistryValueKind.String);
-                    registryKey.SetValue("ProductVersion", version, RegistryValueKind.String);
-                    registryKey.SetValue("FileVersion", version, RegistryValueKind.String);
+                    registryKey.SetValue("ProductVersion", dotVersion, RegistryValueKind.String);
+                    registryKey.SetValue("FileVersion", dotVersion, RegistryValueKind.String);
                     Globals.WriteToLog($"Updated registry key: {key}");
                 }
                 catch (Exception ex)
