@@ -1053,6 +1053,9 @@ namespace TcNo_Acc_Switcher_Updater
         /// </summary>
         private void CreateUpdate()
         {
+            // Set working directory as exe directory
+            Directory.SetCurrentDirectory(Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty)!.ToString());
+
             WriteLine("Creating update..." + Environment.NewLine);
             // CREATE UPDATE
             const string oldFolder = "OldVersion";
