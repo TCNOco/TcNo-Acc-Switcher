@@ -57,6 +57,12 @@ if ($null -ne $asset) {
 }
 
 # -----------------------------------
+# Install requirements for updater:
+# ASP.NET Core, Desktop Runtime and WebView2 Runtime
+# -----------------------------------
+choco upgrade dotnet-8.0-aspnetruntime dotnet-8.0-desktopruntime webview2-runtime -y
+
+# -----------------------------------
 # Run the updater to create updates based on the differences
 # -----------------------------------
 $updaterPath = "updater\TcNo-Acc-Switcher-Updater.exe"

@@ -9,10 +9,14 @@ REM SkipFEC and SkipInstaller should be false for full normal build.
 
 echo -----------------------------------
 set ConfigurationName=%1
-set ProjectDir=%2
+set ProjectDirClient=%2
+set SolutionDir=%3
 echo Running Postbuild!
 echo Configuration: "%ConfigurationName%"
-echo Project Directory: "%ProjectDir%"
+echo (Client) Project Directory: "%ProjectDirClient%"
+echo Solution Directory: "%SolutionDir%"
+REM Project Directory should be: TcNo-Acc-Switcher-Client\
+cd %ProjectDirClient%
 echo -----------------------------------
 if /I "%ConfigurationName%" == "Release" (
 	GOTO :release
@@ -29,7 +33,6 @@ echo -----------------------------------
 REM Get current directory:
 echo -----------------------------------
 echo Current directory: %cd%
-set origDir=%cd%
 echo Current time: %time%
 echo -----------------------------------
 
@@ -63,22 +66,22 @@ if exist "%zip%" goto ZJ
     echo Location is of the form "C:\Program Files\7-Zip\7z.exe"
     exit -1
 :ZJ
-echo Original DIR: %origDir%
 
 IF EXIST bin\x64\Release\net8.0-windows7.0\updater GOTO end
-cd %origDir%\bin\x64\Release\net8.0-windows7.0\
+cd %ProjectDirClient%\bin\x64\Release\net8.0-windows7.0\
 ECHO -----------------------------------
 ECHO Moving files for x64 Release in Visual Studio
+ECHO CD into build artifact directory
 ECHO %CD%
 ECHO -----------------------------------
 mkdir updater
 mkdir updater\x64
 mkdir updater\x86
 mkdir updater\ref
-copy /B /Y "..\..\..\Installer\_First_Run_Installer.exe" "_First_Run_Installer.exe"
-copy /B /Y "..\..\..\runas\x64\Release\net8.0\runas.exe" "runas.exe"
-copy /B /Y "..\..\..\runas\x64\Release\net8.0\runas.dll" "runas.dll"
-copy /B /Y "..\..\..\runas\x64\Release\net8.0\runas.runtimeconfig.json" "runas.runtimeconfig.json"
+copy /B /Y "%ProjectDirClient%\bin\Installer\_First_Run_Installer.exe" "_First_Run_Installer.exe"
+copy /B /Y "%ProjectDirClient%\bin\runas\x64\Release\net8.0\runas.exe" "runas.exe"
+copy /B /Y "%ProjectDirClient%\bin\runas\x64\Release\net8.0\runas.dll" "runas.dll"
+copy /B /Y "%ProjectDirClient%\bin\runas\x64\Release\net8.0\runas.runtimeconfig.json" "runas.runtimeconfig.json"
 
 REM Signing
 REM Currently disabled as I do not have the funds to renew my certificate.
@@ -88,19 +91,19 @@ if "%SkipSign%"=="true" goto POSTSIGN
 	ECHO -----------------------------------
 	echo %time%
 	(
-		start call ../../../../sign.bat "..\..\..\Wrapper\_Wrapper.exe"
-		start call ../../../../sign.bat "_First_Run_Installer.exe"
-		start call ../../../../sign.bat "runas.exe"
-		start call ../../../../sign.bat "runas.dll"
-		start call ../../../../sign.bat "TcNo-Acc-Switcher.exe"
-		start call ../../../../sign.bat "TcNo-Acc-Switcher.dll"
-		start call ../../../../sign.bat "TcNo-Acc-Switcher-Server.exe"
-		start call ../../../../sign.bat "TcNo-Acc-Switcher-Server.dll"
-		start call ../../../../sign.bat "TcNo-Acc-Switcher-Tray.exe"
-		start call ../../../../sign.bat "TcNo-Acc-Switcher-Tray.dll"
-		start call ../../../../sign.bat "TcNo-Acc-Switcher-Globals.dll"
-		start call ../../../../sign.bat "TcNo-Acc-Switcher-Updater.exe"
-		start call ../../../../sign.bat "TcNo-Acc-Switcher-Updater.dll"
+		start call %ProjectDirClient%/sign.bat "%ProjectDirClient%\bin\Wrapper\_Wrapper.exe"
+		start call %ProjectDirClient%/sign.bat "_First_Run_Installer.exe"
+		start call %ProjectDirClient%/sign.bat "runas.exe"
+		start call %ProjectDirClient%/sign.bat "runas.dll"
+		start call %ProjectDirClient%/sign.bat "TcNo-Acc-Switcher.exe"
+		start call %ProjectDirClient%/sign.bat "TcNo-Acc-Switcher.dll"
+		start call %ProjectDirClient%/sign.bat "TcNo-Acc-Switcher-Server.exe"
+		start call %ProjectDirClient%/sign.bat "TcNo-Acc-Switcher-Server.dll"
+		start call %ProjectDirClient%/sign.bat "TcNo-Acc-Switcher-Tray.exe"
+		start call %ProjectDirClient%/sign.bat "TcNo-Acc-Switcher-Tray.dll"
+		start call %ProjectDirClient%/sign.bat "TcNo-Acc-Switcher-Globals.dll"
+		start call %ProjectDirClient%/sign.bat "TcNo-Acc-Switcher-Updater.exe"
+		start call %ProjectDirClient%/sign.bat "TcNo-Acc-Switcher-Updater.dll"
 	) | set /P "="
 :POSTSIGN
 
@@ -112,16 +115,16 @@ REN "TcNo-Acc-Switcher-Server.exe" "TcNo-Acc-Switcher-Server_main.exe"
 REN "TcNo-Acc-Switcher-Tray.exe" "TcNo-Acc-Switcher-Tray_main.exe"
 move /Y "TcNo-Acc-Switcher-Updater.exe" "updater\TcNo-Acc-Switcher-Updater_main.exe"
 
-copy /B /Y "..\..\..\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher.exe"
-copy /B /Y "..\..\..\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher-Server.exe"
-copy /B /Y "..\..\..\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher-Tray.exe"
-copy /B /Y "..\..\..\Wrapper\_Wrapper.exe" "updater\TcNo-Acc-Switcher-Updater.exe"
+copy /B /Y "%ProjectDirClient%\bin\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher.exe"
+copy /B /Y "%ProjectDirClient%\bin\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher-Server.exe"
+copy /B /Y "%ProjectDirClient%\bin\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher-Tray.exe"
+copy /B /Y "%ProjectDirClient%\bin\Wrapper\_Wrapper.exe" "updater\TcNo-Acc-Switcher-Updater.exe"
 copy /B /Y "_First_Run_Installer.exe" "updater\_First_Run_Installer.exe"
 
 ECHO -----------------------------------
 ECHO Copy in Server runtimes that are missing for some reason...
 ECHO -----------------------------------
-xcopy ..\..\..\..\..\TcNo-Acc-Switcher-Server\bin\x64\Release\net8.0\runtimes\win\lib\net8.0 runtimes\win\lib\net8.0 /E /H /C /I /Y
+xcopy %SolutionDir%\TcNo-Acc-Switcher-Server\bin\x64\Release\net8.0\runtimes\win\lib\net8.0 runtimes\win\lib\net8.0 /E /H /C /I /Y
 
 ECHO -----------------------------------
 ECHO Copying runtime files to updater
@@ -159,10 +162,10 @@ ECHO -----------------------------------
 REN "wwwroot" "originalwwwroot"
 cd ..\
 ECHO -----------------------------------
-ECHO Changed Directory for final build steps
+ECHO Changed Directory to Build Dir (bin\x64\Release\)
 ECHO %CD%
 ECHO -----------------------------------
-RMDIR /Q/S %origDir%\bin\x64\Release\TcNo-Acc-Switcher
+RMDIR /Q/S %ProjectDirClient%\bin\x64\Release\TcNo-Acc-Switcher
 REN "net8.0-windows7.0" "TcNo-Acc-Switcher"
 
 ECHO -----------------------------------
@@ -198,7 +201,7 @@ break > TcNo-Acc-Switcher\runtimes\win-x64\native\CefSharp.BrowserSubprocess.Cor
 REM Verify signatures
 if "%SkipSign%"=="true" goto POSTVERIFY
 	ECHO Verifying signatures of binaries
-	powershell -ExecutionPolicy Unrestricted ../../../VerifySignatures.ps1
+	powershell -ExecutionPolicy Unrestricted %ProjectDirClient%/VerifySignatures.ps1
 :POSTVERIFY
 
 ECHO -----------------------------------
@@ -216,9 +219,9 @@ if "%SkipInstaller%"=="true" goto NSISSTEP
 	ECHO -----------------------------------
 	ECHO Creating installer
 	ECHO -----------------------------------
-	"%NSIS%" "%origDir%\..\other\NSIS\nsis-build-x64.nsi"
+	"%NSIS%" "%SolutionDir%\other\NSIS\nsis-build-x64.nsi"
 	echo Done. Moving...
-	move /Y "..\..\..\..\other\NSIS\TcNo Account Switcher - Installer.exe" "TcNo Account Switcher - Installer.exe"
+	move /Y "%SolutionDir%\other\NSIS\TcNo Account Switcher - Installer.exe" "TcNo Account Switcher - Installer.exe"
 	if "%SkipSign%"=="false" (
 		"%SIGNTOOL%" sign /tr http://timestamp.sectigo.com?td=sha256 /td SHA256 /fd SHA256 /a "TcNo Account Switcher - Installer.exe"
 	)
@@ -248,7 +251,7 @@ ECHO -----------------------------------
 ECHO Preparing for update diff creation
 ECHO -----------------------------------
 mkdir OldVersion
-call powershell "& ""%origDir%\PostBuildUpdate.ps1"""
+call powershell "& ""%ProjectDirClient%\PostBuildUpdate.ps1"""
 
 
 endlocal
@@ -281,10 +284,10 @@ mkdir updater\x64
 mkdir updater\x86
 mkdir updater\ref
 echo %cd%
-copy /B /Y "bin\Installer\_First_Run_Installer.exe" "bin\x64\Debug\net8.0-windows7.0\_First_Run_Installer.exe"
-copy /B /Y "bin\runas\x64\Release\net8.0\runas.exe" "bin\x64\Debug\net8.0-windows7.0\runas.exe"
-copy /B /Y "bin\runas\x64\Release\net8.0\runas.dll" "bin\x64\Debug\net8.0-windows7.0\runas.dll"
-copy /B /Y "bin\runas\x64\Release\net8.0\runas.runtimeconfig.json" "bin\x64\Debug\net8.0-windows7.0\runas.runtimeconfig.json"
+copy /B /Y "%ProjectDirClient%\bin\Installer\_First_Run_Installer.exe" "%ProjectDirClient%\bin\x64\Debug\net8.0-windows7.0\_First_Run_Installer.exe"
+copy /B /Y "%ProjectDirClient%\bin\runas\x64\Release\net8.0\runas.exe" "%ProjectDirClient%\bin\x64\Debug\net8.0-windows7.0\runas.exe"
+copy /B /Y "%ProjectDirClient%\bin\runas\x64\Release\net8.0\runas.dll" "%ProjectDirClient%\bin\x64\Debug\net8.0-windows7.0\runas.dll"
+copy /B /Y "%ProjectDirClient%\bin\runas\x64\Release\net8.0\runas.runtimeconfig.json" "%ProjectDirClient%\bin\x64\Debug\net8.0-windows7.0\runas.runtimeconfig.json"
 endlocal
 echo -----------------------------------
 echo DONE BUILDING DEBUG
