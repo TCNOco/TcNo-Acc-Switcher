@@ -97,6 +97,7 @@ Settings_Header_AppPassword: "Forhindrer andre i at bruge kontoskifteren:"
 PreviewCss: Forhåndsvisning af CSS
 Settings_PreviewCss: Dette er CSS-eksempelsiden. Du kan se nogle elementer, der dukker op i programmet og se, hvordan de ser ud med dit tema. Denne side er nyttig for dem, der laver temaer!
 Settings_PreviewCssHeader: CSS Eksempelside
+Settings_AutoUpdatePlatforms: Automatisk opdatering af platformsliste
 Stats_Disabled: "Statistikindsamling er deaktiveret."
 Stats_InDepth: Dybdegående statistikopdeling
 Stats_ShareEnabled: "Disse statistikker deles anonymt og vil tilføje det samlede antal <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">her</a>."
@@ -244,6 +245,8 @@ Toast_PasswordChanged: Adgangskoden er ændret
 Toast_JsonFailModify: Kunne ikke ændre JSON-fil. Se log.
 Toast_DifferentClosingMethod: "'Lukningsmetode' er forskellig fra standarden. Hvis spil lukker og mere tjekker du om det hjælper at ændre denne indstilling. Standard: {defaultMethod}, Nuværende: {currentMethod}"
 Toast_NameEmpty: Brugernavnet må ikke være tomt (og må ikke kun indeholde mellemrum)
+Toast_NewPlatforms: "Opdateret! Nye platforme tilføjet: {listOfNames}. Klik for at afvise."
+Toast_FoundExeViaShortcut: "Vi fandt den installerede sti fra en genvej til startmenuen. Bekræft venligst dets placering ved at klikke på Indstillinger nu. Klik for at afvise."
 Modal_Crowdin_Header: Crowdin-oversættere
 Modal_Crowdin_Info: "Her er alle, der hjalp med at oversætte denne software.<br>Brugere med sprog ved siden af hjalp meget med oversættelsen (korrekturlæserrolle)."
 Modal_Info_Creator: Oprettet af TroubleChute [Wesley Pyburn]
