@@ -97,6 +97,7 @@ Settings_Header_AppPassword: "Ngăn chặn người khác sử dụng chương t
 PreviewCss: Xem trước CSS
 Settings_PreviewCss: Đây là trang xem trước CSS. Bạn có thể xem một số yếu tố hiển thị trong chương trình và xem chúng trông như thế nào với chủ đề của bạn. Trang này hữu ích cho những người tạo chủ đề!
 Settings_PreviewCssHeader: Trang xem trước CSS
+Settings_AutoUpdatePlatforms: Tự động cập nhật danh sách Nền tảng
 Stats_Disabled: "Thu thập số liệu thống kê đã vô hiệu hóa."
 Stats_InDepth: Phân tích thống kê chuyên sâu
 Stats_ShareEnabled: "Những thống kê này được chia sẻ ẩn danh và sẽ thêm vào tổng số <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">ở đây</a>."
@@ -244,6 +245,8 @@ Toast_PasswordChanged: Đã thay đổi mật khẩu
 Toast_JsonFailModify: Không thể sửa đổi tệp JSON. Xem nhật ký.
 Toast_DifferentClosingMethod: "'Phương thức đóng' khác với mặc định. Nếu các trò chơi đang đóng và kiểm tra thêm xem việc thay đổi tùy chọn này có hữu ích hay không. Mặc định: {defaultMethod}, Hiện tại: {currentMethod}"
 Toast_NameEmpty: Tên người dùng không được để trống (và chỉ được chứa khoảng trắng)
+Toast_NewPlatforms: "Đã cập nhật! Đã thêm nền tảng mới: {listOfNames}. Nhấp để bỏ qua."
+Toast_FoundExeViaShortcut: "Chúng tôi đã tìm thấy đường dẫn đã cài đặt từ phím tắt của Menu Bắt đầu. Vui lòng xác minh vị trí của nó bằng cách nhấp vào Cài đặt ngay. Nhấp để bỏ qua."
 Modal_Crowdin_Header: Dịch giả Crowdin
 Modal_Crowdin_Info: "Đây là danh sách những người đã giúp dịch phần mềm này.<br>Những người có ngôn ngữ bên cạnh tên đã giúp đỡ nhiều trong việc dịch (vai trò người duyệt)."
 Modal_Info_Creator: Được tạo bởi TroubleChute [Wesley Pyburn]
