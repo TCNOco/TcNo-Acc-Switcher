@@ -97,6 +97,7 @@ Settings_Header_AppPassword: "Opriți alte persoane care utilizează comutatorul
 PreviewCss: Previzualizare CSS
 Settings_PreviewCss: Aceasta este pagina de previzualizare CSS. Puteți vizualiza câteva elemente care apar în program și puteți vedea cum arată cu tema dvs. Această pagină este utilă pentru cei care creează teme!
 Settings_PreviewCssHeader: Pagina de previzualizare CSS
+Settings_AutoUpdatePlatforms: Actualizați automat lista de platforme
 Stats_Disabled: "Colecția de statistici este dezactivată."
 Stats_InDepth: Defalcare în profunzime a statisticilor
 Stats_ShareEnabled: "Aceste statistici sunt distribuite anonim și se vor adăuga la totalul <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">aici</a>."
@@ -244,6 +245,8 @@ Toast_PasswordChanged: Parola a fost schimbată
 Toast_JsonFailModify: Modificarea fișierului JSON a eșuat. Consultați jurnalul.
 Toast_DifferentClosingMethod: "'Metoda de închidere' este diferită de cea implicită. Dacă jocurile se închid și mai multe verifică dacă schimbarea acestei opțiuni ajută. Implicit: {defaultMethod}, Curent: {currentMethod}"
 Toast_NameEmpty: Numele de utilizator nu poate fi gol (și nu poate conține doar spații)
+Toast_NewPlatforms: "Actualizat! Au adăugat noi platforme: {listOfNames}. Faceți clic pentru a respinge."
+Toast_FoundExeViaShortcut: "Am găsit calea instalată dintr-o comandă rapidă din meniul Start. Verificați locația făcând clic pe Setări acum. Faceți clic pentru a respinge."
 Modal_Crowdin_Header: Crowdin traducători
 Modal_Crowdin_Info: "Iată toți cei care au ajutat la traducerea acestui software.<br>Utilizatorii cu limbi lângă ei au ajutat foarte mult la traducere (rol de corector)."
 Modal_Info_Creator: Creat de TroubleChute [Wesley Pyburn]
