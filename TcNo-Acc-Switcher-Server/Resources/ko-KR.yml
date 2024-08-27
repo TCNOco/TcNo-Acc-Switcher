@@ -97,6 +97,7 @@ Settings_Header_AppPassword: "다른 사람이 스위처를 사용하지 못하�
 PreviewCss: CSS 미리보기
 Settings_PreviewCss: 이것은 CSS 미리보기 페이지입니다. 프로그램에서 나타나는 몇 가지 요소를 보고 테마에서 어떤 모양인지 볼 수 있습니다. 이 페이지는 테마를 만드는 데 유용합니다!
 Settings_PreviewCssHeader: CSS 미리보기 페이지
+Settings_AutoUpdatePlatforms: 자동 업데이트 플랫폼 목록
 Stats_Disabled: "통계 수집이 비활성화되었습니다."
 Stats_InDepth: 심층 통계 분석
 Stats_ShareEnabled: "이 통계는 익명으로 공유되며 <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">여기</a>에 추가됩니다."
@@ -244,6 +245,8 @@ Toast_PasswordChanged: 비밀번호 변경됨
 Toast_JsonFailModify: JSON 파일을 수정하지 못했습니다. 로그를 참조하십시오.
 Toast_DifferentClosingMethod: "'종료 방법'은 기본값과 다릅니다. 게임이 종료되고 더 많은 경우 이 옵션을 변경하면 도움이 되는지 확인하세요. 기본값: {defaultMethod}, 현재: {currentMethod}"
 Toast_NameEmpty: 사용자 이름은 비어 있을 수 없습니다(공백만 포함할 수 없음)
+Toast_NewPlatforms: "업데이트됨! 새로운 플랫폼이 추가되었습니다: {listOfNames}. 클릭하여 해제합니다."
+Toast_FoundExeViaShortcut: "시작 메뉴 바로가기에서 설치된 경로를 찾았습니다. 지금 설정을 클릭하여 위치를 확인하세요. 클릭하여 해제합니다."
 Modal_Crowdin_Header: Crowdin 번역가
 Modal_Crowdin_Info: "이 소프트웨어를 번역하는 데 도움을 준 모든 사람이 있습니다.<br>옆에 언어가 있는 사용자가 번역에 많은 도움을 주었습니다. (검수자 역할)"
 Modal_Info_Creator: 테크노보 지음 [웨슬리 파이번]
