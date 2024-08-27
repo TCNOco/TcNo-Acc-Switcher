@@ -97,6 +97,7 @@ Settings_Header_AppPassword: "阻止其他人使用切换器："
 PreviewCss: 预览 CSS
 Settings_PreviewCss: 这是 CSS 预览页面。您可以查看一些在程序中弹出的元素，看看它们在您的主题上表现的样式。 这个页面对创建主题的人非常有用！
 Settings_PreviewCssHeader: CSS 预览页
+Settings_AutoUpdatePlatforms: 自动更新平台列表
 Stats_Disabled: "统计信息收集已禁用。"
 Stats_InDepth: 统计详情
 Stats_ShareEnabled: "这些统计信息是匿名共享的，并将添加到<a onclick=\"{WebsiteLink}\" class=\"fancyLink\">这里</a>的总数。"
@@ -244,6 +245,8 @@ Toast_PasswordChanged: 密码已更改
 Toast_JsonFailModify: 修改 JSON 文件失败。请查看日志。
 Toast_DifferentClosingMethod: "“关闭方式”与默认值不同。如果游戏不能正常关闭，请尝试修改此选项。默认：{defaultMethod}，当前：{currentMethod}"
 Toast_NameEmpty: 用户名不能为空（且不能仅包含空格）
+Toast_NewPlatforms: "已更新！添加了新平台： {listOfNames}。点击关闭。"
+Toast_FoundExeViaShortcut: "我们从“开始”菜单快捷方式中找到了安装路径。请立即单击“设置”来验证其位置。单击以关闭。"
 Modal_Crowdin_Header: Crowdin 译者
 Modal_Crowdin_Info: "这是帮助翻译此软件的所有人。<br>名字旁边有语言的用户在翻译方面提供了很多帮助（审核员身份）。"
 Modal_Info_Creator: 由 TroubleChute [Wesley Pyburn] 创作
