@@ -97,6 +97,7 @@ Settings_Header_AppPassword: "阻止其他人使用切換器："
 PreviewCss: 預覽CSS
 Settings_PreviewCss: 這是CSS預覽頁面。您可以檢視程式中彈出的部分元素，並查看在您的主題下的外觀。此頁面對於創建主題非常有用！
 Settings_PreviewCssHeader: CSS預覽頁面
+Settings_AutoUpdatePlatforms: 自動更新平台列表
 Stats_Disabled: "已停止收集統計資料。"
 Stats_InDepth: 更多統計分析
 Stats_ShareEnabled: "這些統計資料會以匿名分享，並會加到此處 <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">中</a> 的總計。"
@@ -244,6 +245,8 @@ Toast_PasswordChanged: 密碼已更改
 Toast_JsonFailModify: 修改JSON文件失敗。請參閱日誌。
 Toast_DifferentClosingMethod: "「關閉方式」與默認值不同。如果遊戲不能正常關閉，請更改此選項。默認：{defaultMethod}，當前：{currentMethod}"
 Toast_NameEmpty: 使用者名稱不能為空（且不能只包含空格）
+Toast_NewPlatforms: "更新了！新增了新平台： {listOfNames}。點擊以關閉。"
+Toast_FoundExeViaShortcut: "我們從「開始」功能表捷徑找到了安裝路徑。請立即點選“設定”來驗證其位置。點擊以關閉。"
 Modal_Crowdin_Header: Crowdin 譯者
 Modal_Crowdin_Info: "這是幫助翻譯此軟件的所有人。 <br>名字旁邊有語言的用戶在翻譯方面提供了很多幫助（審核員身份）。"
 Modal_Info_Creator: 由TroubleChute [Wesley Pyburn]制作

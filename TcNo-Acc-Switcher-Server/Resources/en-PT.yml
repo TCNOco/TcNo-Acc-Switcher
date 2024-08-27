@@ -89,7 +89,7 @@ Settings_Header_ActiveBrowser: "(Advanced) Set renderin' engine:"
 Settings_Header_ClosingMethod: "(Advanced) Set method t' close {platform}"
 Settings_Header_StartingMethod: "(Advanced) Set method t' start {platform}"
 Settings_AutoStart: "Automatically start {platform} on account switch"
-Settings_ShowSteamSwitcher: "Show Steam's account switcher (Do NOT use this or it may break the TcNo Account Switcher)"
+Settings_ShowSteamSwitcher: "Show Steam's account switcher (Do NAH use dis or it may break the TcNo Account Switcher)"
 Settings_NoPlatforms: Thar are currently no platforms enabled. Please tick optional platforms below t' enable 'em, or uncheck disabled platforms.
 Settings_MinimizeOnSwitch: Banish switcher on Cap'n switch
 Settings_ShowShortNotes: Log under ye' username
@@ -97,6 +97,7 @@ Settings_Header_AppPassword: "Stop scallywags usin' yer switcher:"
 PreviewCss: Preview CSS
 Settings_PreviewCss: '''tis the CSS preview page. Ye can view some elements that elder up in the program ''n see wha'' they look like wit'' yer theme. This page be useful fer those creatin'' new paint!'
 Settings_PreviewCssHeader: CSS Preview Page
+Settings_AutoUpdatePlatforms: Auto-update Platforms list
 Stats_Disabled: "Statistics collection be disabled."
 Stats_InDepth: In-depth statistics breakdown
 Stats_ShareEnabled: "These statistics are shared anonymously 'n will add t' the total <a onclick=\"{WebsiteLink}\" crew=\"fancyLink\">here</a>."
@@ -243,7 +244,9 @@ Toast_DownloadingProfileData: Downloadin' profile data
 Toast_PasswordChanged: Password changed
 Toast_JsonFailModify: Failed t' modify JSON file. See Cap'n's log.
 Toast_DifferentClosingMethod: "'Closin' Method' be different t' the default. If games be closin' 'n more check if changin' dis option helps. Default: {defaultMethod}, Current: {currentMethod}"
-Toast_NameEmpty: Username cannot be empty (and cannot only contain spaces)
+Toast_NameEmpty: Username can nah be empty ('n can nah only contain spaces)
+Toast_NewPlatforms: "Updated! New platforms added: {listOfNames}. Jab t' dismiss."
+Toast_FoundExeViaShortcut: "Avast! We found the installed path from a Start Menu shortcut. Please verify it's location by skewerin' Settings now. Skewer t' dismiss."
 Modal_Crowdin_Header: Crowdin translators
 Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users wit' languages next t' 'em helped a lot in translation (proofreader role)."
 Modal_Info_Creator: Created by TroubleChute [Wesley Pyburn]

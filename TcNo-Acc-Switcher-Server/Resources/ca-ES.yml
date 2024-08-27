@@ -97,6 +97,7 @@ Settings_Header_AppPassword: "Deixa d'utilitzar el commutador:"
 PreviewCss: Previsualitza CSS
 Settings_PreviewCss: Aquesta és la pàgina de previsualització de CSS. Podeu veure alguns elements que apareixen al programa i veure com es veuen amb el tema. Aquesta pàgina és útil per crear temes!
 Settings_PreviewCssHeader: Pàgina de previsualització CSS
+Settings_AutoUpdatePlatforms: Actualització automàtica de la llista de plataformes
 Stats_Disabled: "La recollida d'estadístiques està desactivada."
 Stats_InDepth: Desglossament estadístic en profunditat
 Stats_ShareEnabled: "Aquestes estadístiques es comparteixen de forma anònima i s'afegiran al total de <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">aquí</a>."
@@ -244,6 +245,8 @@ Toast_PasswordChanged: S'ha canviat la contrasenya
 Toast_JsonFailModify: No s'ha pogut modificar el fitxer JSON. Vegeu el registre.
 Toast_DifferentClosingMethod: "El 'Mètode de tancament' és diferent al predeterminat. Si els jocs es tanquen i més, comproveu si canviar aquesta opció ajuda. Per defecte: {defaultMethod}, Actual: {currentMethod}"
 Toast_NameEmpty: El nom d'usuari no pot estar buit (i només pot contenir espais)
+Toast_NewPlatforms: "Actualitzat! S'han afegit noves plataformes: {listOfNames}. Feu clic per ignorar."
+Toast_FoundExeViaShortcut: "Hem trobat la ruta instal·lada des d'una drecera del menú Inici. Si us plau, verifiqueu la seva ubicació fent clic a Configuració ara. Feu clic per ignorar."
 Modal_Crowdin_Header: Traductors crowdin
 Modal_Crowdin_Info: "Aquí teniu tots els que han ajudat a traduir aquest programari.<br>Els usuaris amb idiomes al costat van ajudar molt en la traducció (rol de corrector)."
 Modal_Info_Creator: Creat per TroubleChute [Wesley Pyburn]

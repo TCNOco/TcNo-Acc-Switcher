@@ -97,6 +97,7 @@ Settings_Header_AppPassword: "Stoppa andra från att använda omkopplaren:"
 PreviewCss: Förhandsgranska CSS
 Settings_PreviewCss: Detta är CSS förhandsgranskningssidan. Du kan se några element som dyker upp i programmet och se hur de ser ut med ditt tema. Den här sidan är användbar för dem som skapar teman!
 Settings_PreviewCssHeader: CSS förhandsgranskningssida
+Settings_AutoUpdatePlatforms: Uppdatera plattformslistan automatiskt
 Stats_Disabled: "Statistikinsamlingen är inaktiverad."
 Stats_InDepth: Fördelning av fördjupad statistik
 Stats_ShareEnabled: "Denna statistik delas anonymt och kommer att lägga till den totala <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">här</a>."
@@ -244,6 +245,8 @@ Toast_PasswordChanged: Lösenordet har ändrats
 Toast_JsonFailModify: Det gick inte att ändra JSON-filen. Se logg.
 Toast_DifferentClosingMethod: "'Avslutningsmetod' är annorlunda än standard. Om spelen stängs och fler kontrollera om ändringen av detta alternativ hjälper. Standard: {defaultMethod}, Aktuellt: {currentMethod}"
 Toast_NameEmpty: Användarnamnet får inte vara tomt (och får inte bara innehålla mellanslag)
+Toast_NewPlatforms: "Uppdaterad! Nya plattformar tillagda: {listOfNames}. Klicka för att avvisa."
+Toast_FoundExeViaShortcut: "Vi hittade den installerade sökvägen från en genväg på startmenyn. Vänligen verifiera dess plats genom att klicka på Inställningar nu. Klicka för att avvisa."
 Modal_Crowdin_Header: Crowdin-översättare
 Modal_Crowdin_Info: "Här är alla som hjälpte till att översätta denna programvara.<br>Användare med språk bredvid sig hjälpte mycket vid översättningen (korrekturläsarroll)."
 Modal_Info_Creator: Skapad av TroubleChute [Wesley Pyburn]

@@ -97,6 +97,7 @@ Settings_Header_AppPassword: "Zastavte ostatní uživatele pomocí přepínače:
 PreviewCss: Náhled CSS
 Settings_PreviewCss: Toto je stránka s náhledem CSS. Můžete si prohlédnout některé prvky, které se v programu objeví, a zjistit, jak vypadají s vaším motivem. Tato stránka je užitečná pro ty, kteří vytvářejí témata!
 Settings_PreviewCssHeader: Náhledová Stránka CSS
+Settings_AutoUpdatePlatforms: Automaticky aktualizovat seznam platforem
 Stats_Disabled: "Sběr statistik je zakázán."
 Stats_InDepth: Podrobné členění statistik
 Stats_ShareEnabled: "Tyto statistiky jsou sdíleny anonymně a přidá se k celkové <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">zde</a>."
@@ -244,6 +245,8 @@ Toast_PasswordChanged: Heslo změněno
 Toast_JsonFailModify: Nepodařilo se upravit soubor JSON. Viz protokol.
 Toast_DifferentClosingMethod: "'Uzavírací metoda' se liší od výchozího nastavení. Pokud jsou hry zavírány a více zkontrolujte, zda změna této volby pomůže. Výchozí: {defaultMethod}, Aktuální: {currentMethod}"
 Toast_NameEmpty: Uživatelské jméno nesmí být prázdné (a nemůže obsahovat pouze mezery)
+Toast_NewPlatforms: "Aktualizováno! Přidány nové platformy: {listOfNames}. Kliknutím zavřete."
+Toast_FoundExeViaShortcut: "Našli jsme nainstalovanou cestu ze zástupce nabídky Start. Ověřte prosím jeho umístění kliknutím na Nastavení. Kliknutím zavřete."
 Modal_Crowdin_Header: Crowdinští překladatelé
 Modal_Crowdin_Info: "Zde jsou všichni, kteří pomohli přeložit tento software.<br>překladu hodně pomohli uživatelé s jazyky vedle sebe (role korektora)."
 Modal_Info_Creator: Vytvořeno společností TroubleChute [Wesley Pyburn]

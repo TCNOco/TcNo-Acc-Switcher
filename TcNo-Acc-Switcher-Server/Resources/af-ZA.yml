@@ -97,6 +97,7 @@ Settings_Header_AppPassword: "Stop ander wat die skakelaar gebruik:"
 PreviewCss: Voorskou CSS
 Settings_PreviewCss: Dit is die CSS-voorskoubladsy. Jy kan sommige elemente wat in die program verskyn, sien en sien hoe hulle met jou tema lyk. Hierdie bladsy is nuttig vir diegene wat temas skep!
 Settings_PreviewCssHeader: CSS-voorskoubladsy
+Settings_AutoUpdatePlatforms: Dateer platformlys outomaties op
 Stats_Disabled: "Statistiekversameling is gedeaktiveer."
 Stats_InDepth: In-diepte statistiek uiteensetting
 Stats_ShareEnabled: "Hierdie statistieke word anoniem gedeel en sal by die totale <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">hier</a>voeg."
@@ -244,6 +245,8 @@ Toast_PasswordChanged: Wagwoord verander
 Toast_JsonFailModify: Kon nie JSON-lêer wysig nie. Sien log.
 Toast_DifferentClosingMethod: "'Sluitingsmetode' is anders as die verstek. As speletjies sluit en meer, kyk of dit help om hierdie opsie te verander. Verstek: {defaultMethod}, Huidig: {currentMethod}"
 Toast_NameEmpty: Gebruikersnaam kan nie leeg wees nie (en kan nie net spasies bevat nie)
+Toast_NewPlatforms: "Opgedateer! Nuwe platforms bygevoeg: {listOfNames}. Klik om toe te maak."
+Toast_FoundExeViaShortcut: "Ons het die geïnstalleerde pad gevind vanaf 'n Start Menu-kortpad. Verifieer asseblief die ligging daarvan deur nou op Instellings te klik. Klik om toe te maak."
 Modal_Crowdin_Header: Crowdin-vertalers
 Modal_Crowdin_Info: "Hier is almal wat gehelp het om hierdie sagteware te vertaal.<br>Gebruikers met tale langs hulle het baie gehelp met vertaling (proefleserrol)."
 Modal_Info_Creator: Geskep deur TroubleChute [Wesley Pyburn]

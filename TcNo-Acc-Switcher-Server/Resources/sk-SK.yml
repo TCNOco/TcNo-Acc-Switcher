@@ -97,6 +97,7 @@ Settings_Header_AppPassword: "Zastavte ostatných pomocou prepínača:"
 PreviewCss: Ukážka CSS
 Settings_PreviewCss: Toto je stránka s ukážkou CSS. Môžete si prezrieť niektoré prvky, ktoré sa objavia v programe, a zistiť, ako vyzerajú s vašou témou. Táto stránka je užitočná pre tých, ktorí vytvárajú témy!
 Settings_PreviewCssHeader: Stránka ukážky CSS
+Settings_AutoUpdatePlatforms: Automaticky aktualizovať zoznam platforiem
 Stats_Disabled: "Zhromažďovanie štatistík je zakázané."
 Stats_InDepth: Hĺbkový rozpis štatistík
 Stats_ShareEnabled: "Tieto štatistiky sú zdieľané anonymne a pridajú sa k celkovému počtu <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">tu</a>."
@@ -244,6 +245,8 @@ Toast_PasswordChanged: Heslo zmenené
 Toast_JsonFailModify: Nepodarilo sa upraviť súbor JSON. Pozri denník.
 Toast_DifferentClosingMethod: "'Metóda zatvárania' sa líši od predvoleného nastavenia. Ak sa hry zatvárajú a ďalšie, skontrolujte, či zmena tejto možnosti nepomôže. Predvolené: {defaultMethod}, aktuálne: {currentMethod}"
 Toast_NameEmpty: Používateľské meno nemôže byť prázdne (a nemôže obsahovať iba medzery)
+Toast_NewPlatforms: "Aktualizované! Pridané nové platformy: {listOfNames}. Kliknutím zavriete."
+Toast_FoundExeViaShortcut: "Našli sme nainštalovanú cestu zo skratky ponuky Štart. Overte jeho polohu kliknutím na položku Nastavenia. Kliknutím zavriete."
 Modal_Crowdin_Header: Crowdinoví prekladatelia
 Modal_Crowdin_Info: "Tu sú všetci, ktorí pomohli s prekladom tohto softvéru.<br>Pri preklade veľmi pomohli používatelia s jazykmi vedľa nich (rola korektora)."
 Modal_Info_Creator: Vytvoril TroubleChute [Wesley Pyburn]

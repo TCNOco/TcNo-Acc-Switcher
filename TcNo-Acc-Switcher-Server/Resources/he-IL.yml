@@ -97,6 +97,7 @@ Settings_Header_AppPassword: "הפסק את השימוש באחרים באמצע
 PreviewCss: תצוגה מקדימה של CSS
 Settings_PreviewCss: זהו דף התצוגה המקדימה של CSS. תוכל להציג כמה אלמנטים שצצים בתוכנית ולראות איך הם נראים עם ערכת העיצוב שלך. דף זה שימושי עבור אלה שיוצרים ערכות עיצוב!
 Settings_PreviewCssHeader: דף תצוגה מקדימה של CSS
+Settings_AutoUpdatePlatforms: עדכון אוטומטי של רשימת הפלטפורמות
 Stats_Disabled: "איסוף הנתונים הסטטיסטיים מושבת."
 Stats_InDepth: פירוט סטטיסטיקה מעמיקה
 Stats_ShareEnabled: "נתונים סטטיסטיים אלה משותפים באופן אנונימי ויוסיפו לסכום הכולל <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">כאן</a>."
@@ -244,6 +245,8 @@ Toast_PasswordChanged: הסיסמה שונתה
 Toast_JsonFailModify: שינוי קובץ JSON נכשל. ראה יומן רישום.
 Toast_DifferentClosingMethod: "'שיטת סגירה' שונה מברירת המחדל. אם משחקים נסגרים ועוד בדוק אם שינוי אפשרות זו עוזרת. ברירת מחדל: {defaultMethod}, נוכחי: {currentMethod}"
 Toast_NameEmpty: שם משתמש לא יכול להיות ריק (ולא יכול להכיל רק רווחים)
+Toast_NewPlatforms: "מְעוּדכָּן! פלטפורמות חדשות שנוספו: {listOfNames}. לחץ כדי לסגור."
+Toast_FoundExeViaShortcut: "מצאנו את הנתיב המותקן מקיצור דרך תפריט התחל. אנא אמת את מיקומו על ידי לחיצה על הגדרות כעת. לחץ כדי לסגור."
 Modal_Crowdin_Header: מתרגמי Crowdin
 Modal_Crowdin_Info: "הנה כל מי שעזר לתרגם את התוכנה הזו.<br>משתמשים עם שפות לידם עזרו רבות בתרגום (תפקיד הגהה)."
 Modal_Info_Creator: נוצר על ידי TroubleChute [ווסלי Pyburn]

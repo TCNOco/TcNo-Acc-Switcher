@@ -97,6 +97,7 @@ Settings_Header_AppPassword: "استفاده دیگران از سوئیچر را
 PreviewCss: پیش نمایش CSS
 Settings_PreviewCss: این صفحه پیش نمایش CSS است. می‌توانید برخی از عناصری که در برنامه ظاهر می‌شوند را مشاهده کنید و ببینید که با تم شما چگونه به نظر می‌رسند. این صفحه برای کسانی که تم می سازند مفید است!
 Settings_PreviewCssHeader: صفحه پیش نمایش CSS
+Settings_AutoUpdatePlatforms: به روز رسانی خودکار لیست پلتفرم ها
 Stats_Disabled: "جمع آوری آمار غیرفعال است."
 Stats_InDepth: تجزیه آماری عمیق
 Stats_ShareEnabled: "این آمار به صورت ناشناس به اشتراک گذاشته شده است و به مجموع <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">در اینجا</a>اضافه می شود."
@@ -244,6 +245,8 @@ Toast_PasswordChanged: رمز عبور تغییر کرد
 Toast_JsonFailModify: فایل JSON اصلاح نشد. رجوع به ثبت شود.
 Toast_DifferentClosingMethod: "«روش بستن» با پیش‌فرض متفاوت است. اگر بازی ها در حال بسته شدن هستند و بیشتر بررسی کنید که آیا تغییر این گزینه کمک می کند. پیش‌فرض: {defaultMethod}، فعلی: {currentMethod}"
 Toast_NameEmpty: نام کاربری نمی تواند خالی باشد (و فقط شامل فاصله نیست)
+Toast_NewPlatforms: "به روز شد! پلتفرم های جدید اضافه شده: {listOfNames}. برای رد کردن کلیک کنید."
+Toast_FoundExeViaShortcut: "ما مسیر نصب شده را از میانبر منوی Start پیدا کردیم. لطفاً با کلیک روی تنظیمات اکنون مکان آن را تأیید کنید. برای رد کردن کلیک کنید."
 Modal_Crowdin_Header: مترجمان کرودین
 Modal_Crowdin_Info: "در اینجا همه کسانی هستند که در ترجمه این نرم افزار کمک کردند.<br>کاربرانی که زبان های کناری داشتند در ترجمه کمک زیادی کردند (نقش تصحیح کننده)."
 Modal_Info_Creator: ایجاد شده توسط TroubleChute [Wesley Pyburn]

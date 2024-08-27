@@ -97,6 +97,7 @@ Settings_Header_AppPassword: "Hentikan orang lain menggunakan switcher:"
 PreviewCss: Pratinjau CSS
 Settings_PreviewCss: Ini adalah halaman pratinjau CSS. Anda dapat melihat beberapa elemen yang muncul di program dan melihat tampilannya dengan tema Anda. Halaman ini berguna untuk mereka yang membuat tema!
 Settings_PreviewCssHeader: Halaman Pratinjau CSS
+Settings_AutoUpdatePlatforms: Daftar Platform pembaruan otomatis
 Stats_Disabled: "Pengumpulan statistik dinonaktifkan."
 Stats_InDepth: Perincian statistik mendalam
 Stats_ShareEnabled: "Statistik ini dibagikan secara anonim dan akan ditambahkan ke total <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">di sini</a>."
@@ -244,6 +245,8 @@ Toast_PasswordChanged: Kata sandi berubah
 Toast_JsonFailModify: Gagal memodifikasi berkas JSON. Lihat log.
 Toast_DifferentClosingMethod: "'Metode Penutupan' berbeda dengan default. Jika permainan ditutup dan lainnya, periksa apakah mengubah opsi ini membantu. Bawaan: {defaultMethod}, Saat ini: {currentMethod}"
 Toast_NameEmpty: Nama pengguna tidak boleh kosong (dan tidak boleh hanya berisi spasi)
+Toast_NewPlatforms: "Diperbarui! Platform baru ditambahkan: {listOfNames}. Klik untuk menutup."
+Toast_FoundExeViaShortcut: "Kami menemukan jalur yang terinstal dari pintasan Menu Start. Harap verifikasi lokasinya dengan mengeklik Setelan sekarang. Klik untuk menutup."
 Modal_Crowdin_Header: Penerjemah Crowdin
 Modal_Crowdin_Info: "Berikut adalah semua orang yang membantu menerjemahkan perangkat lunak ini.<br>Pengguna dengan bahasa di samping mereka banyak membantu dalam penerjemahan (peran proofreader)."
 Modal_Info_Creator: Dibuat oleh TroubleChute [Wesley Pyburn]

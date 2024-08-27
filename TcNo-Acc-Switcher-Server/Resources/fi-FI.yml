@@ -97,6 +97,7 @@ Settings_Header_AppPassword: "Estä muita käyttämästä kytkintä:"
 PreviewCss: 'Esikatsele CSS: ää'
 Settings_PreviewCss: Tämä on CSS-esikatselusivu. Voit tarkastella joitakin elementtejä, jotka ponnahtavat ohjelmaan ja nähdä, miltä ne näyttävät teeman kanssa. Tämä sivu on hyödyllinen niille, jotka luovat teemoja!
 Settings_PreviewCssHeader: CSS-esikatselusivu
+Settings_AutoUpdatePlatforms: Päivitä alustaluettelo automaattisesti
 Stats_Disabled: "Tilastojen kerääminen on poistettu käytöstä."
 Stats_InDepth: Perusteellinen tilastoerittely
 Stats_ShareEnabled: "Nämä tilastot jaetaan nimettöminä, ja ne lisätään kokonaissummaan <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">tässä</a>."
@@ -244,6 +245,8 @@ Toast_PasswordChanged: Salasana vaihdettu
 Toast_JsonFailModify: JSON-tiedoston muokkaaminen epäonnistui. Katso lokia.
 Toast_DifferentClosingMethod: "Sulkemismenetelmä on eri kuin oletusasetus. Jos pelit sulkeutuvat ja lisää, tarkista, auttaako tämän vaihtoehdon muuttaminen. Oletus: {defaultMethod}, Nykyinen: {currentMethod}"
 Toast_NameEmpty: Käyttäjätunnus ei voi olla tyhjä (eikä saa sisältää vain välilyöntejä)
+Toast_NewPlatforms: "Päivitetty! Uusia alustoja lisätty: {listOfNames}. Hylkää napsauttamalla."
+Toast_FoundExeViaShortcut: "Löysimme asennetun polun Käynnistä-valikon pikakuvakkeesta. Vahvista sen sijainti napsauttamalla Asetukset nyt. Hylkää napsauttamalla."
 Modal_Crowdin_Header: Crowdinin kääntäjät
 Modal_Crowdin_Info: "Tässä ovat kaikki, jotka auttoivat kääntämään tämän ohjelmiston.<br>Käyttäjät, joiden kieli on vieressä, auttoivat paljon kääntämisessä (oikolukijan rooli)."
 Modal_Info_Creator: Luonut TroubleChute [Wesley Pyburn]

@@ -97,6 +97,7 @@ Settings_Header_AppPassword: "Anderen stoppen met het gebruik van de switcher:"
 PreviewCss: Voorbeeld CSS
 Settings_PreviewCss: Dit is de CSS voorbeeldpagina. U kunt een aantal elementen bekijken die in het programma opduiken en zien hoe ze eruit zien met uw thema. Deze pagina is handig voor degenen die thema 's maken!
 Settings_PreviewCssHeader: CSS Preview Pagina
+Settings_AutoUpdatePlatforms: Lijst met automatisch bijgewerkte platforms
 Stats_Disabled: "Statistiekenverzameling is uitgeschakeld."
 Stats_InDepth: Uitsplitsing naar diepgaande statistiek
 Stats_ShareEnabled: "Deze statistieken worden anoniem gedeeld en worden opgeteld bij het totaal van <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">hier</a>."
@@ -244,6 +245,8 @@ Toast_PasswordChanged: Wachtwoord gewijzigd
 Toast_JsonFailModify: Kan JSON-bestand niet wijzigen. Zie logboek.
 Toast_DifferentClosingMethod: "'Afsluitingsmethode' is anders dan de standaard. Als je een partij sluit en meer controle dan het wijzigen van deze optie helpt. Standaard: {defaultMethod}, Huidig: {currentMethod}"
 Toast_NameEmpty: Gebruikersnaam mag niet leeg zijn (en mag alleen spaties bevatten)
+Toast_NewPlatforms: "Bijgewerkt! Nieuwe platforms toegevoegd: {listOfNames}. Klik om te sluiten."
+Toast_FoundExeViaShortcut: "We hebben het geïnstalleerde pad gevonden via een snelkoppeling in het Startmenu. Controleer de locatie door nu op Instellingen te klikken. Klik om te sluiten."
 Modal_Crowdin_Header: Crowdin-vertalers
 Modal_Crowdin_Info: "Hier is iedereen die heeft geholpen met het vertalen van deze software.<br>Gebruikers met talen naast zich hebben veel geholpen bij het vertalen (rol van proeflezer)."
 Modal_Info_Creator: Gemaakt door TroubleChute [Wesley Pyburn]
