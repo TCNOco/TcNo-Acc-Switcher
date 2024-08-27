@@ -152,14 +152,14 @@ copy /B /Y "Newtonsoft.Json.dll" "updater\Newtonsoft.Json.dll"
 ECHO -----------------------------------
 ECHO Removing unused files
 ECHO -----------------------------------
-RMDIR /Q/S "runtimes\linux-arm64" >nul
-RMDIR /Q/S "runtimes\linux-musl-x64" >nul
-RMDIR /Q/S "runtimes\linux-x64" >nul
-RMDIR /Q/S "runtimes\osx" >nul
-RMDIR /Q/S "runtimes\osx-x64" >nul
-RMDIR /Q/S "runtimes\unix" >nul
-RMDIR /Q/S "runtimes\win-arm64" >nul
-RMDIR /Q/S "runtimes\win-x86" >nul
+if exist "runtimes\linux-arm64" RMDIR /Q/S "runtimes\linux-arm64"
+if exist "runtimes\linux-musl-x64" RMDIR /Q/S "runtimes\linux-musl-x64"
+if exist "runtimes\linux-x64" RMDIR /Q/S "runtimes\linux-x64"
+if exist "runtimes\osx" RMDIR /Q/S "runtimes\osx"
+if exist "runtimes\osx-x64" RMDIR /Q/S "runtimes\osx-x64"
+if exist "runtimes\unix" RMDIR /Q/S "runtimes\unix"
+if exist "runtimes\win-arm64" RMDIR /Q/S "runtimes\win-arm64"
+if exist "runtimes\win-x86" RMDIR /Q/S "runtimes\win-x86"
 
 ECHO -----------------------------------
 ECHO Moving wwwroot and main program folder.
@@ -170,7 +170,9 @@ ECHO -----------------------------------
 ECHO Changed Directory to Build Dir (bin\x64\Release\)
 ECHO %CD%
 ECHO -----------------------------------
-RMDIR /Q/S %SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher >nul
+if exist "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher\" (
+    RMDIR /Q/S "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher"
+)
 REN "net8.0-windows7.0" "TcNo-Acc-Switcher"
 
 ECHO -----------------------------------
