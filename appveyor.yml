@@ -40,9 +40,9 @@ install:
 # Build configuration
 build_script:
   - nuget restore TcNo-Acc-Switcher.sln
-  - msbuild Installer/Installer.vcxproj /p:Configuration=%CONFIGURATION% /p:Platform=x64
-  - msbuild _Updater_Wrapper/_Updater_Wrapper.vcxproj /p:Configuration=%CONFIGURATION% /p:Platform=x64
-  - msbuild runas/runas.csproj /p:Configuration=%CONFIGURATION% /p:Platform=x64
+  - msbuild Installer/Installer.vcxproj /p:Configuration=%CONFIGURATION% /p:Platform=x64 /p:OutDir=$(APPVEYOR_BUILD_FOLDER)\TcNo-Acc-Switcher-Client\bin\Installer\
+  - msbuild _Updater_Wrapper/_Updater_Wrapper.vcxproj /p:Configuration=%CONFIGURATION% /p:Platform=x64 /p:OutDir=$(APPVEYOR_BUILD_FOLDER)\TcNo-Acc-Switcher-Client\bin\Wrapper\
+  - msbuild runas/runas.csproj /p:Configuration=%CONFIGURATION% /p:Platform=x64 /p:OutDir=$(APPVEYOR_BUILD_FOLDER)\TcNo-Acc-Switcher-Client\bin\runas\
   - msbuild TcNo-Acc-Switcher-Globals/TcNo-Acc-Switcher-Globals.csproj /p:Configuration=%CONFIGURATION% /p:Platform=x64
   - msbuild TcNo-Acc-Switcher-Tray/TcNo-Acc-Switcher-Tray.csproj /p:Configuration=%CONFIGURATION% /p:Platform=x64
   - msbuild TcNo-Acc-Switcher-Updater/TcNo-Acc-Switcher-Updater.csproj /p:Configuration=%CONFIGURATION% /p:Platform=x64

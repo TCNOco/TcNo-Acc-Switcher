@@ -243,7 +243,18 @@ if "%SkipCEF%"=="true" goto COMPRESSEDCOMBINED
 	"%zip%" a -t7z -mmt24 -mx9  "TcNo-Acc-Switcher_and_CEF.7z" ".\TcNo-Acc-Switcher\*"
 :COMPRESSEDCOMBINED
 
-cd %origDir%
+
+ECHO -----------------------------------
+ECHO Preparing for update diff creation
+ECHO -----------------------------------
+mkdir OldVersion
+call powershell "& ""%origDir%\PostBuildUpdate.ps1"""
+
+
+endlocal
+echo -----------------------------------
+echo DONE BUILDING RELEASE
+echo -----------------------------------
 
 if "%SkipSign%"=="true" (
     ECHO WARNING! Skipped Signing!
@@ -256,19 +267,6 @@ if "%SkipCEF%"=="true" (
 if "%SkipInstaller%"=="true" (
     ECHO WARNING! Skipped creating Installer!
 )
-
-
-ECHO -----------------------------------
-ECHO Preparing for update diff creation
-ECHO -----------------------------------
-mkdir OldVersion
-call powershell "& "".\PostBuildUpdate.ps1"""
-
-
-endlocal
-echo -----------------------------------
-echo DONE BUILDING RELEASE
-echo -----------------------------------
 goto :eof
 
 
