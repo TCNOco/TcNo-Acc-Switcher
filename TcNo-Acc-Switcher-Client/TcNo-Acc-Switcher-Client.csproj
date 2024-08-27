@@ -56,7 +56,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="if $(ConfigurationName) == Release (&#xD;&#xA; call $(ProjectDir)\PostBuild.bat&#xD;&#xA;) else (&#xD;&#xA; call $(ProjectDir)\PostBuild-Debug.bat&#xD;&#xA;)" IgnoreExitCode="true" />
+    <Exec Command="echo Running Postbuild!&#xD;&#xA;echo Configuration: &quot;$(ConfigurationName)&quot;&#xD;&#xA;echo Project Directory: &quot;$(ProjectDir)&quot;&#xD;&#xA;if &quot;$(ConfigurationName)&quot; == &quot;Release&quot; (&#xD;&#xA; if exist &quot;$(ProjectDir)PostBuild.bat&quot; (&#xD;&#xA;      echo &quot;PostBuild.bat found.&quot;&#xD;&#xA;      call &quot;$(ProjectDir)PostBuild.bat&quot;&#xD;&#xA;   ) else (&#xD;&#xA;      echo &quot;PostBuild.bat not found!&quot;&#xD;&#xA;   )&#xD;&#xA;) else (&#xD;&#xA;   if exist &quot;$(ProjectDir)PostBuild-Debug.bat&quot; (&#xD;&#xA;      echo &quot;PostBuild-Debug.bat found.&quot;&#xD;&#xA;      call &quot;$(ProjectDir)PostBuild-Debug.bat&quot;&#xD;&#xA;   ) else (&#xD;&#xA;      echo &quot;PostBuild-Debug.bat not found!&quot;&#xD;&#xA;   )&#xD;&#xA;)" IgnoreExitCode="true" />
   </Target>
 
   <ItemGroup>
