@@ -61,6 +61,8 @@ namespace TcNo_Acc_Switcher_Updater
             IsRunningAlready();
 
             base.OnStartup(e);
+            LogWriter.WriteLine($"Updater started with: {e.Args}");
+            LogWriter.Flush();
             for (var i = 0; i != e.Args.Length; ++i)
             {
                 switch (e.Args[i])
@@ -86,6 +88,19 @@ namespace TcNo_Acc_Switcher_Updater
 
         public static string AppDataFolder =>
             Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty)?.FullName;
+
+        private StreamWriter _logWriter = null;
+        // public LogWriter - If _logWriter not set, use InitLogWriter()
+        public StreamWriter LogWriter { get => _logWriter ??= InitLogWriter(); }
+        private static StreamWriter InitLogWriter()
+        {
+            var logPath = File.Exists(Path.Join(AppDataFolder, "userdata_path.txt"))
+                ? UGlobals.ReadAllLines(Path.Join(AppDataFolder, "userdata_path.txt"))[0].Trim()
+                : Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TcNo Account Switcher\\");
+            logPath = Path.Join(logPath, "UpdaterLog.txt");
+
+            return new StreamWriter(logPath, true);
+        }
 
         public static void LogToErrorFile(string log)
         {

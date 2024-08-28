@@ -150,8 +150,11 @@ namespace TcNo_Acc_Switcher_Updater
             {
                 LogBox.Text += line + lineBreak;
                 LogBox.ScrollToEnd();
-                Console.WriteLine(line);
             }), DispatcherPriority.Normal);
+
+            Console.WriteLine(line);
+            App.LogWriter.WriteLine(line);
+            App.LogWriter.Flush();
         }
 
         private void SetStatus(string s)
@@ -160,6 +163,9 @@ namespace TcNo_Acc_Switcher_Updater
             {
                 StatusLabel.Content = s;
             }), DispatcherPriority.Normal);
+
+            App.LogWriter.WriteLine($"Status: {s}");
+            App.LogWriter.Flush();
         }
 
         private void SetStatusAndLog(string s, string lineBreak = "\n")
@@ -174,6 +180,9 @@ namespace TcNo_Acc_Switcher_Updater
             {
                 LogBox.ScrollToEnd();
             }), DispatcherPriority.Normal);
+
+            App.LogWriter.WriteLine($"Status & Log: {s}");
+            App.LogWriter.Flush();
         }
 
         private void ButtonHandler(bool enabled, string content)
@@ -699,7 +708,9 @@ namespace TcNo_Acc_Switcher_Updater
             ButtonHandler(false, "Started");
             SetStatusAndLog("Closing TcNo Account Switcher instances (if any).");
             // Check if files are in use
-            CloseIfRunning(Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty)?.FullName);
+            var CheckFolder = Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty)?.FullName;
+            WriteLine($"Exiting all .exe's in {CheckFolder}");
+            CloseIfRunning(CheckFolder);
 
             if (Directory.Exists("wwwroot"))
             {
