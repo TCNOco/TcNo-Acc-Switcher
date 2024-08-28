@@ -102,8 +102,7 @@ Write-Host "- Compressing as .zip"
 Compress-Archive -Path "TcNo-Acc-SwitcherUnzipped\*" -DestinationPath "TcNo-Acc-Switcher.zip"
 
 # Move TcNo-Acc-Switcher.7z to $SolutionDir
-Move-Item -Path "TcNo-Acc-Switcher.7z" -Destination $SolutionDir
-Move-Item -Path "UpdateOutput\hashes.json" -Destination $SolutionDir
-
-# Move TcNo-Acc-Switcher folder to $SolutionDir as "latest-test"
-Move-Item -Path "TcNo-Acc-Switcher" -Destination "$SolutionDir\latest-test"
+$destination = Join-Path -Path $SolutionDir -ChildPath 'TcNo-Acc-Switcher.7z'
+Copy-Item -Path "TcNo-Acc-Switcher.7z" -Destination $destination -Force
+$destination = Join-Path -Path $SolutionDir -ChildPath 'hashes.json'
+Copy-Item -Path "UpdateOutput\hashes.json" -Destination $destination -Force

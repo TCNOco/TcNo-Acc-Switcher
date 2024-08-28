@@ -14,7 +14,7 @@ environment:
   GE_USE_LATEST_DOTNET: true
   CONFIGURATION: release
   VCPKG_BUILD_TYPE: release
-  FTP_PASS:
+  FTP_PASSWORD:
     secure: q67YmNsPhzdJWqWnpYp1of9wO2+Q2rexS+dKrQ5BEi11TvfQR9YvgRJlHY0ePmfk
 
 pull_requests:
@@ -33,7 +33,7 @@ install:
   - vcpkg install curl:x64-windows-static curl[ssl]:x64-windows-static vcpkg-cmake:x64-windows vcpkg-cmake-config:x64-windows zlib:x64-windows-static --triplet=x64-windows-release
   - vcpkg integrate install
   - choco upgrade aria2 -y
-
+ 
 # Build configuration
 build_script:
   - nuget restore TcNo-Acc-Switcher.sln
@@ -47,12 +47,12 @@ build_script:
   - msbuild TcNo-Acc-Switcher-Client/TcNo-Acc-Switcher-Client.csproj /p:Configuration=%CONFIGURATION% /p:Platform=x64
 
 on_finish:
+  - cmd: |
+      cd other
+      npm install
+      cd ..
+  - cmd: node other/upload-to-ftp.js
   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-  - cmd: python upload-to-ftp.py -ftpServer "uk.storage.bunnycdn.com" ^
-                                 -ftpUsername "tcno" ^
-                                 -ftpPassword %FTP_PASSWORD% ^
-                                 -localFolderPath "TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher" ^
-                                 -ftpFolderPath "/tcno/Projects/AccSwitcher/latest-test"
 
 artifacts:
   - path: TcNo-Acc-Switcher-Client\bin\x64\Release\CEF.7z
@@ -101,16 +101,5 @@ deploy:
       secure: q67YmNsPhzdJWqWnpYp1of9wO2+Q2rexS+dKrQ5BEi11TvfQR9YvgRJlHY0ePmfk
     folder: /tcno/Projects/AccSwitcher/latest-test
     artifact: hashes.json
-    on:
-      APPVEYOR_REPO_TAG: true
-
-  - provider: FTP
-    protocol: ftps
-    host: uk.storage.bunnycdn.com
-    username: tcno
-    password:
-      secure: q67YmNsPhzdJWqWnpYp1of9wO2+Q2rexS+dKrQ5BEi11TvfQR9YvgRJlHY0ePmfk
-    folder: /tcno/Projects/AccSwitcher/latest-test
-    artifact: latest-test\*
     on:
       APPVEYOR_REPO_TAG: true
