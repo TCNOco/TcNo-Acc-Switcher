@@ -1,3 +1,7 @@
+param (
+    [string]$SolutionDir
+)
+Write-Output "Solution Directory: $SolutionDir"
 Write-Host "Starting PostBuildUpdate.ps1 script"
 
 # Define the URL for the GitHub API to get the latest release
@@ -96,3 +100,10 @@ ExtractFile -filePath "TcNo-Acc-Switcher.7z" -outputPath "TcNo-Acc-SwitcherUnzip
 # Use 7z to compress the contents of TcNo-Acc-Switcher
 Write-Host "- Compressing as .zip"
 Compress-Archive -Path "TcNo-Acc-SwitcherUnzipped\*" -DestinationPath "TcNo-Acc-Switcher.zip"
+
+# Move TcNo-Acc-Switcher.7z to $SolutionDir
+Move-Item -Path "TcNo-Acc-Switcher.7z" -Destination $SolutionDir
+Move-Item -Path "UpdateOutput\hashes.json" -Destination $SolutionDir
+
+# Move TcNo-Acc-Switcher folder to $SolutionDir as "latest-test"
+Move-Item -Path "TcNo-Acc-Switcher" -Destination "$SolutionDir\latest-test"

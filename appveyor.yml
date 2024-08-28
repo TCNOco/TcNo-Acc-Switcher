@@ -9,15 +9,13 @@ matrix:
 image: Visual Studio 2022
 
 environment:
-  # Disable the .NET logo in the console output.
   DOTNET_NOLOGO: true
-  # Disable the .NET first time experience to skip caching NuGet packages and speed up the build.
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-  # Use latest version of current used .NET version.  6.0 could use the latest of 6.0.  See .\buildscripts\Update-DotnetVersion.ps1
   GE_USE_LATEST_DOTNET: true
-  # Only build Release
   CONFIGURATION: release
   VCPKG_BUILD_TYPE: release
+  FTP_PASS:
+    secure: q67YmNsPhzdJWqWnpYp1of9wO2+Q2rexS+dKrQ5BEi11TvfQR9YvgRJlHY0ePmfk
 
 pull_requests:
   do_not_increment_build_number: true
@@ -27,16 +25,11 @@ init:
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
   - ps: iex (irm https://raw.githubusercontent.com/TCNOco/TcNo-Acc-Switcher/appveyor/other/NSIS/nsis7zplugin.ps1)
 
-# Build settings, not to be confused with "before_build" and "after_build".
-# "project" is relative to the original build directory and not influenced by directory changes in "before_build".
 build:
-  # enable MSBuild parallel builds
   parallel: true
-  # MSBuild verbosity level
   verbosity: minimal
 
 install:
-  # Install the required packages
   - vcpkg install curl:x64-windows-static curl[ssl]:x64-windows-static vcpkg-cmake:x64-windows vcpkg-cmake-config:x64-windows zlib:x64-windows-static --triplet=x64-windows-release
   - vcpkg integrate install
   - choco upgrade aria2 -y
@@ -55,14 +48,18 @@ build_script:
 
 on_finish:
   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-#  - ps: TcNo-Acc-Switcher-Client\PostBuild.bat
+  - cmd: python upload-to-ftp.py -ftpServer "uk.storage.bunnycdn.com" ^
+                                 -ftpUsername "tcno" ^
+                                 -ftpPassword %FTP_PASSWORD% ^
+                                 -localFolderPath "TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher" ^
+                                 -ftpFolderPath "/tcno/Projects/AccSwitcher/latest-test"
 
 artifacts:
   - path: TcNo-Acc-Switcher-Client\bin\x64\Release\CEF.7z
     name: CEF.7z
   - path: TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo Account Switcher - Installer.exe
     name: TcNo Account Switcher - Installer_$(APPVEYOR_REPO_TAG_NAME).exe
-  - path: TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher.7z
+  - path: TcNo-Acc-Switcher.7z
     name: TcNo-Acc-Switcher_$(APPVEYOR_REPO_TAG_NAME).7z
   - path: TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher.zip
     name: TcNo-Acc-Switcher_$(APPVEYOR_REPO_TAG_NAME).zip
@@ -70,7 +67,7 @@ artifacts:
     name: TcNo-Acc-Switcher_and_CEF_$(APPVEYOR_REPO_TAG_NAME).7z
   - path: TcNo-Acc-Switcher-Client\bin\x64\Release\UpdateDiff.7z
     name: $(APPVEYOR_REPO_TAG_NAME).7z
-  - path: TcNo-Acc-Switcher-Client\bin\x64\Release\UpdateOutput\hashes.json
+  - path: hashes.json
     name: hashes.json
 
 deploy:
@@ -114,6 +111,6 @@ deploy:
     password:
       secure: q67YmNsPhzdJWqWnpYp1of9wO2+Q2rexS+dKrQ5BEi11TvfQR9YvgRJlHY0ePmfk
     folder: /tcno/Projects/AccSwitcher/latest-test
-    artifact: TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher\**
+    artifact: latest-test\*
     on:
       APPVEYOR_REPO_TAG: true

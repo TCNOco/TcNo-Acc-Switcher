@@ -258,7 +258,8 @@ ECHO -----------------------------------
 ECHO Preparing for update diff creation
 ECHO -----------------------------------
 mkdir OldVersion
-call powershell "& ""%SolutionDir%\TcNo-Acc-Switcher-Client\PostBuildUpdate.ps1"""
+call powershell -File "%SolutionDir%\TcNo-Acc-Switcher-Client\PostBuildUpdate.ps1" -SolutionDir "%SolutionDir%"
+
 
 
 endlocal
