@@ -15,7 +15,9 @@
 
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.11.64" />
-    <PackageReference Include="IconLib.Unofficial" Version="0.73.0" />
+    <PackageReference Include="IconLib.Unofficial" Version="0.73.0">
+     <NoWarn>NU1701</NoWarn>
+    </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="securifybv.ShellLink" Version="0.1.0" />
     <PackageReference Include="SevenZipExtractor" Version="1.0.17" />

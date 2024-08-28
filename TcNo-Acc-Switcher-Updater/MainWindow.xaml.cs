@@ -150,6 +150,7 @@ namespace TcNo_Acc_Switcher_Updater
             {
                 LogBox.Text += line + lineBreak;
                 LogBox.ScrollToEnd();
+                Console.WriteLine(line);
             }), DispatcherPriority.Normal);
         }
 
@@ -269,6 +270,12 @@ namespace TcNo_Acc_Switcher_Updater
 
         private void Init()
         {
+            if (QueueCreateUpdate)
+            {
+                CreateUpdate();
+                Environment.Exit(0);
+            }
+
             if (!Directory.Exists(UserDataFolder))
             {
                 MessageBox.Show("Please run the main program at least once, with 'TcNo_Acc_Switcher.exe'", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -285,12 +292,6 @@ namespace TcNo_Acc_Switcher_Updater
             if (QueueHashList)
             {
                 GenerateHashes();
-                Environment.Exit(0);
-            }
-
-            if (QueueCreateUpdate)
-            {
-                CreateUpdate();
                 Environment.Exit(0);
             }
 
@@ -858,8 +859,19 @@ namespace TcNo_Acc_Switcher_Updater
                         if (key.StartsWith("updater")) continue; // Ignore own files >> Otherwise IOException
                         if (key.StartsWith("runtimes") && IsCefFile(key))
                         {
-                            if (!File.Exists(key)) File.Create(key).Dispose(); // Create empty file
-                            if (_mainBrowser != "CEF") continue; // Ignore CEF files if not using CEF
+                            if (_mainBrowser != "CEF")
+                            {
+                                if (!File.Exists(key)) File.Create(key).Dispose(); // Create empty file
+                                continue; // Ignore CEF files if not using CEF
+                            }
+
+                            // Using CEF
+                            // Check if filesize is < 1000KB : Delete
+                            if (new FileInfo(key).Length < 1000000)
+                            {
+                                WriteLine("Deleting: " + key);
+                                DeleteFile(key);
+                            }
                         }
                         cur++;
                         UpdateProgress(cur * 100 / verifyDictTotal);
@@ -1052,6 +1064,9 @@ namespace TcNo_Acc_Switcher_Updater
         /// </summary>
         private void CreateUpdate()
         {
+            // Set working directory as exe directory
+            Directory.SetCurrentDirectory(Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty)!.ToString());
+
             WriteLine("Creating update..." + Environment.NewLine);
             // CREATE UPDATE
             const string oldFolder = "OldVersion";

@@ -135,7 +135,7 @@ namespace TcNo_Acc_Switcher_Globals
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 CopyFile(Path.Join(wwwroot, "\\img\\BasicDefault.png"), destination);
             }

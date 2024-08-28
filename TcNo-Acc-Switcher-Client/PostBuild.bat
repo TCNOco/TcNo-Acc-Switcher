@@ -7,10 +7,39 @@ set SkipInstaller=false
 REM SkipSign true while no certificate. SignPath can help, but requires GitHub build action, like AppVeyor. See AppVeyor branch.
 REM SkipFEC and SkipInstaller should be false for full normal build.
 
+echo -----------------------------------
+set ConfigurationName=%1
+set ProjectDirClient=%2
+
+REM Navigate up one folder
+for %%I in ("%ProjectDirClient%") do set ProjectDir=%%~dpI
+set SolutionDir=%ProjectDir%..
+pushd "%SolutionDir%" >nul
+set SolutionDir=%CD%\
+popd >nul
+
+echo Running Postbuild!
+echo Configuration: "%ConfigurationName%"
+echo (Client) Project Directory: "%ProjectDirClient%"
+echo Solution Directory: "%SolutionDir%"
+REM Project Directory should be: TcNo-Acc-Switcher-Client\
+cd %SolutionDir%\TcNo-Acc-Switcher-Client
+echo -----------------------------------
+if /I "%ConfigurationName%" == "Release" (
+	GOTO :release
+) else (
+	GOTO :debug
+)
+
+
+:release
+echo -----------------------------------
+echo BUILDING RELEASE
+echo -----------------------------------
+
 REM Get current directory:
 echo -----------------------------------
 echo Current directory: %cd%
-set origDir=%cd%
 echo Current time: %time%
 echo -----------------------------------
 
@@ -44,22 +73,22 @@ if exist "%zip%" goto ZJ
     echo Location is of the form "C:\Program Files\7-Zip\7z.exe"
     exit -1
 :ZJ
-echo Original DIR: %origDir%
 
 IF EXIST bin\x64\Release\net8.0-windows7.0\updater GOTO end
-cd %origDir%\bin\x64\Release\net8.0-windows7.0\
+cd %SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Release\net8.0-windows7.0\
 ECHO -----------------------------------
 ECHO Moving files for x64 Release in Visual Studio
+ECHO CD into build artifact directory
 ECHO %CD%
 ECHO -----------------------------------
 mkdir updater
 mkdir updater\x64
 mkdir updater\x86
 mkdir updater\ref
-copy /B /Y "..\..\..\Installer\_First_Run_Installer.exe" "_First_Run_Installer.exe"
-copy /B /Y "..\..\..\runas\x64\Release\net8.0\runas.exe" "runas.exe"
-copy /B /Y "..\..\..\runas\x64\Release\net8.0\runas.dll" "runas.dll"
-copy /B /Y "..\..\..\runas\x64\Release\net8.0\runas.runtimeconfig.json" "runas.runtimeconfig.json"
+copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\Installer\_First_Run_Installer.exe" "_First_Run_Installer.exe"
+copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\runas\x64\Release\net8.0\runas.exe" "runas.exe"
+copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\runas\x64\Release\net8.0\runas.dll" "runas.dll"
+copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\runas\x64\Release\net8.0\runas.runtimeconfig.json" "runas.runtimeconfig.json"
 
 REM Signing
 REM Currently disabled as I do not have the funds to renew my certificate.
@@ -69,19 +98,19 @@ if "%SkipSign%"=="true" goto POSTSIGN
 	ECHO -----------------------------------
 	echo %time%
 	(
-		start call ../../../../sign.bat "..\..\..\Wrapper\_Wrapper.exe"
-		start call ../../../../sign.bat "_First_Run_Installer.exe"
-		start call ../../../../sign.bat "runas.exe"
-		start call ../../../../sign.bat "runas.dll"
-		start call ../../../../sign.bat "TcNo-Acc-Switcher.exe"
-		start call ../../../../sign.bat "TcNo-Acc-Switcher.dll"
-		start call ../../../../sign.bat "TcNo-Acc-Switcher-Server.exe"
-		start call ../../../../sign.bat "TcNo-Acc-Switcher-Server.dll"
-		start call ../../../../sign.bat "TcNo-Acc-Switcher-Tray.exe"
-		start call ../../../../sign.bat "TcNo-Acc-Switcher-Tray.dll"
-		start call ../../../../sign.bat "TcNo-Acc-Switcher-Globals.dll"
-		start call ../../../../sign.bat "TcNo-Acc-Switcher-Updater.exe"
-		start call ../../../../sign.bat "TcNo-Acc-Switcher-Updater.dll"
+		start call %SolutionDir%\TcNo-Acc-Switcher-Client/sign.bat "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\Wrapper\_Wrapper.exe"
+		start call %SolutionDir%\TcNo-Acc-Switcher-Client/sign.bat "_First_Run_Installer.exe"
+		start call %SolutionDir%\TcNo-Acc-Switcher-Client/sign.bat "runas.exe"
+		start call %SolutionDir%\TcNo-Acc-Switcher-Client/sign.bat "runas.dll"
+		start call %SolutionDir%\TcNo-Acc-Switcher-Client/sign.bat "TcNo-Acc-Switcher.exe"
+		start call %SolutionDir%\TcNo-Acc-Switcher-Client/sign.bat "TcNo-Acc-Switcher.dll"
+		start call %SolutionDir%\TcNo-Acc-Switcher-Client/sign.bat "TcNo-Acc-Switcher-Server.exe"
+		start call %SolutionDir%\TcNo-Acc-Switcher-Client/sign.bat "TcNo-Acc-Switcher-Server.dll"
+		start call %SolutionDir%\TcNo-Acc-Switcher-Client/sign.bat "TcNo-Acc-Switcher-Tray.exe"
+		start call %SolutionDir%\TcNo-Acc-Switcher-Client/sign.bat "TcNo-Acc-Switcher-Tray.dll"
+		start call %SolutionDir%\TcNo-Acc-Switcher-Client/sign.bat "TcNo-Acc-Switcher-Globals.dll"
+		start call %SolutionDir%\TcNo-Acc-Switcher-Client/sign.bat "TcNo-Acc-Switcher-Updater.exe"
+		start call %SolutionDir%\TcNo-Acc-Switcher-Client/sign.bat "TcNo-Acc-Switcher-Updater.dll"
 	) | set /P "="
 :POSTSIGN
 
@@ -93,16 +122,16 @@ REN "TcNo-Acc-Switcher-Server.exe" "TcNo-Acc-Switcher-Server_main.exe"
 REN "TcNo-Acc-Switcher-Tray.exe" "TcNo-Acc-Switcher-Tray_main.exe"
 move /Y "TcNo-Acc-Switcher-Updater.exe" "updater\TcNo-Acc-Switcher-Updater_main.exe"
 
-copy /B /Y "..\..\..\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher.exe"
-copy /B /Y "..\..\..\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher-Server.exe"
-copy /B /Y "..\..\..\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher-Tray.exe"
-copy /B /Y "..\..\..\Wrapper\_Wrapper.exe" "updater\TcNo-Acc-Switcher-Updater.exe"
+copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher.exe"
+copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher-Server.exe"
+copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher-Tray.exe"
+copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\Wrapper\_Wrapper.exe" "updater\TcNo-Acc-Switcher-Updater.exe"
 copy /B /Y "_First_Run_Installer.exe" "updater\_First_Run_Installer.exe"
 
 ECHO -----------------------------------
 ECHO Copy in Server runtimes that are missing for some reason...
 ECHO -----------------------------------
-xcopy ..\..\..\..\..\TcNo-Acc-Switcher-Server\bin\x64\Release\net8.0\runtimes\win\lib\net8.0 runtimes\win\lib\net8.0 /E /H /C /I /Y
+xcopy %SolutionDir%\TcNo-Acc-Switcher-Server\bin\x64\Release\net8.0\runtimes\win\lib\net8.0 runtimes\win\lib\net8.0 /E /H /C /I /Y
 
 ECHO -----------------------------------
 ECHO Copying runtime files to updater
@@ -110,14 +139,12 @@ ECHO -----------------------------------
 copy /B /Y "VCDiff.dll" "updater\VCDiff.dll"
 copy /B /Y "YamlDotNet.dll" "updater\YamlDotNet.dll"
 move /Y "TcNo-Acc-Switcher-Updater.runtimeconfig.json" "updater\TcNo-Acc-Switcher-Updater.runtimeconfig.json"
-move /Y "TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json" "updater\TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json"
 move /Y "TcNo-Acc-Switcher-Updater.pdb" "updater\TcNo-Acc-Switcher-Updater.pdb"
 copy /B /Y "TcNo-Acc-Switcher-Updater.dll" "updater\TcNo-Acc-Switcher-Updater.dll"
 move /Y "TcNo-Acc-Switcher-Updater.deps.json" "updater\TcNo-Acc-Switcher-Updater.deps.json"
 copy /B /Y "SevenZipExtractor.dll" "updater\SevenZipExtractor.dll"
 copy /Y "x86\7z.dll" "updater\x86\7z.dll"
 copy /Y "x64\7z.dll" "updater\x64\7z.dll"
-copy /B /Y "ref\TcNo-Acc-Switcher-Updater.dll" "updater\ref\TcNo-Acc-Switcher-Updater.dll"
 copy /B /Y "Microsoft.IO.RecyclableMemoryStream.dll" "updater\Microsoft.IO.RecyclableMemoryStream.dll"
 copy /B /Y "Newtonsoft.Json.dll" "updater\Newtonsoft.Json.dll"
 
@@ -125,21 +152,27 @@ copy /B /Y "Newtonsoft.Json.dll" "updater\Newtonsoft.Json.dll"
 ECHO -----------------------------------
 ECHO Removing unused files
 ECHO -----------------------------------
-RMDIR /Q/S "runtimes\linux-arm64"
-RMDIR /Q/S "runtimes\linux-musl-x64"
-RMDIR /Q/S "runtimes\linux-x64"
-RMDIR /Q/S "runtimes\osx"
-RMDIR /Q/S "runtimes\osx-x64"
-RMDIR /Q/S "runtimes\unix"
-RMDIR /Q/S "runtimes\win-arm64"
-RMDIR /Q/S "runtimes\win-x86"
+if exist "runtimes\linux-arm64" RMDIR /Q/S "runtimes\linux-arm64"
+if exist "runtimes\linux-musl-x64" RMDIR /Q/S "runtimes\linux-musl-x64"
+if exist "runtimes\linux-x64" RMDIR /Q/S "runtimes\linux-x64"
+if exist "runtimes\osx" RMDIR /Q/S "runtimes\osx"
+if exist "runtimes\osx-x64" RMDIR /Q/S "runtimes\osx-x64"
+if exist "runtimes\unix" RMDIR /Q/S "runtimes\unix"
+if exist "runtimes\win-arm64" RMDIR /Q/S "runtimes\win-arm64"
+if exist "runtimes\win-x86" RMDIR /Q/S "runtimes\win-x86"
 
 ECHO -----------------------------------
 ECHO Moving wwwroot and main program folder.
 ECHO -----------------------------------
 REN "wwwroot" "originalwwwroot"
 cd ..\
-RMDIR /Q/S %origDir%\bin\x64\Release\TcNo-Acc-Switcher
+ECHO -----------------------------------
+ECHO Changed Directory to Build Dir (bin\x64\Release\)
+ECHO %CD%
+ECHO -----------------------------------
+if exist "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher\" (
+    RMDIR /Q/S "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher"
+)
 REN "net8.0-windows7.0" "TcNo-Acc-Switcher"
 
 ECHO -----------------------------------
@@ -175,7 +208,7 @@ break > TcNo-Acc-Switcher\runtimes\win-x64\native\CefSharp.BrowserSubprocess.Cor
 REM Verify signatures
 if "%SkipSign%"=="true" goto POSTVERIFY
 	ECHO Verifying signatures of binaries
-	powershell -ExecutionPolicy Unrestricted ../../../VerifySignatures.ps1
+	powershell -ExecutionPolicy Unrestricted %SolutionDir%\TcNo-Acc-Switcher-Client/VerifySignatures.ps1
 :POSTVERIFY
 
 ECHO -----------------------------------
@@ -193,9 +226,9 @@ if "%SkipInstaller%"=="true" goto NSISSTEP
 	ECHO -----------------------------------
 	ECHO Creating installer
 	ECHO -----------------------------------
-	"%NSIS%" "%origDir%\..\other\NSIS\nsis-build-x64.nsi"
+	"%NSIS%" "%SolutionDir%\other\NSIS\nsis-build-x64.nsi"
 	echo Done. Moving...
-	move /Y "..\..\..\..\other\NSIS\TcNo Account Switcher - Installer.exe" "TcNo Account Switcher - Installer.exe"
+	move /Y "%SolutionDir%\other\NSIS\TcNo Account Switcher - Installer.exe" "TcNo Account Switcher - Installer.exe"
 	if "%SkipSign%"=="false" (
 		"%SIGNTOOL%" sign /tr http://timestamp.sectigo.com?td=sha256 /td SHA256 /fd SHA256 /a "TcNo Account Switcher - Installer.exe"
 	)
@@ -220,7 +253,19 @@ if "%SkipCEF%"=="true" goto COMPRESSEDCOMBINED
 	"%zip%" a -t7z -mmt24 -mx9  "TcNo-Acc-Switcher_and_CEF.7z" ".\TcNo-Acc-Switcher\*"
 :COMPRESSEDCOMBINED
 
-cd %origDir%
+
+ECHO -----------------------------------
+ECHO Preparing for update diff creation
+ECHO -----------------------------------
+mkdir OldVersion
+call powershell -File "%SolutionDir%\TcNo-Acc-Switcher-Client\PostBuildUpdate.ps1" -SolutionDir "%SolutionDir%"
+
+
+
+endlocal
+echo -----------------------------------
+echo DONE BUILDING RELEASE
+echo -----------------------------------
 
 if "%SkipSign%"=="true" (
     ECHO WARNING! Skipped Signing!
@@ -233,8 +278,26 @@ if "%SkipCEF%"=="true" (
 if "%SkipInstaller%"=="true" (
     ECHO WARNING! Skipped creating Installer!
 )
-endlocal
-
 goto :eof
 
-:end
+
+
+
+:debug
+echo -----------------------------------
+echo BUILDING DEBUG
+echo -----------------------------------
+mkdir updater
+mkdir updater\x64
+mkdir updater\x86
+mkdir updater\ref
+echo %cd%
+copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\Installer\_First_Run_Installer.exe" "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Debug\net8.0-windows7.0\_First_Run_Installer.exe"
+copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\runas\x64\Release\net8.0\runas.exe" "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Debug\net8.0-windows7.0\runas.exe"
+copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\runas\x64\Release\net8.0\runas.dll" "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Debug\net8.0-windows7.0\runas.dll"
+copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\runas\x64\Release\net8.0\runas.runtimeconfig.json" "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Debug\net8.0-windows7.0\runas.runtimeconfig.json"
+endlocal
+echo -----------------------------------
+echo DONE BUILDING DEBUG
+echo -----------------------------------
+goto :eof

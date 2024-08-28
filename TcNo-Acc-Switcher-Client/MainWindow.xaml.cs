@@ -206,20 +206,38 @@ namespace TcNo_Acc_Switcher_Client
         private static void InitializeChromium()
         {
             Globals.DebugWriteLine(@"[Func:(Client-CEF)MainWindow.xaml.cs.InitializeChromium]");
-            var settings = new CefSettings
+            try
             {
-                CachePath = Path.Join(Globals.UserDataFolder, "CEF\\Cache"),
-                UserAgent = "TcNo-CEF 1.0",
-                WindowlessRenderingEnabled = true
-            };
-            settings.CefCommandLineArgs.Add("-off-screen-rendering-enabled", "0");
-            settings.CefCommandLineArgs.Add("--off-screen-frame-rate", "60");
-            settings.SetOffScreenRenderingBestPerformanceArgs();
+                var settings = new CefSettings
+                {
+                    CachePath = Path.Join(Globals.UserDataFolder, "CEF\\Cache"),
+                    UserAgent = "TcNo-CEF 1.0",
+                    WindowlessRenderingEnabled = true
+                };
+                settings.CefCommandLineArgs.Add("-off-screen-rendering-enabled", "0");
+                settings.CefCommandLineArgs.Add("--off-screen-frame-rate", "60");
+                settings.SetOffScreenRenderingBestPerformanceArgs();
 
-            Cef.Initialize(settings);
-            //CefView.DragHandler = new DragDropHandler();
-            //CefView.IsBrowserInitializedChanged += CefView_IsBrowserInitializedChanged;
-            //CefView.FrameLoadEnd += OnFrameLoadEnd;
+                Cef.Initialize(settings);
+                //CefView.DragHandler = new DragDropHandler();
+                //CefView.IsBrowserInitializedChanged += CefView_IsBrowserInitializedChanged;
+                //CefView.FrameLoadEnd += OnFrameLoadEnd;
+            } catch (Exception ex) {
+                Globals.WriteToLog(ex);
+                // Give warning, and open Updater with downloadCef.
+                var result = MessageBox.Show("CEF (Chrome Embedded Framework) failed to load. Do you want to use WebView2 instead? (Less compatibility, more performance)\nChoosing No will verify & update the TcNo Account Switcher.\n\nIf this issue persists, visit https://tcno.co/cef.\r\n", "Missing/Outdated/Broken files!", MessageBoxButton.YesNo, MessageBoxImage.Error);
+                if (result == MessageBoxResult.Yes)
+                {
+                    AppSettings.ActiveBrowser = "WebView";
+                    AppSettings.SaveSettings();
+                    Restart();
+                }
+                else
+                {
+                    AppSettings.AutoStartUpdaterAsAdmin("verify");
+                    Environment.Exit(1);
+                }
+            }
         }
 
         /// <summary>

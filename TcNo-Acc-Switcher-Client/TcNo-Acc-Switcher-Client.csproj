@@ -6,7 +6,7 @@
     <RootNamespace>TcNo_Acc_Switcher_Client</RootNamespace>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
-    <Version>2024.08.27.00</Version>
+    <Version>2024.08.29.00</Version>
     <Authors>TroubleChute (Wesley Pyburn)</Authors>
     <Product>TcNo Account Switcher</Product>
     <Copyright>Copyright © TroubleChute (Wesley Pyburn) 2019-2024</Copyright>
@@ -14,7 +14,7 @@
     <PackageIcon>TcNoAccSw-Icon-100x100.png</PackageIcon>
     <RepositoryUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</RepositoryUrl>
     <AssemblyName>TcNo-Acc-Switcher</AssemblyName>
-    <AssemblyVersion>2024.08.27.00</AssemblyVersion>
+    <AssemblyVersion>2024.08.29.00</AssemblyVersion>
     <Platforms>x64</Platforms>
     <SignAssembly>false</SignAssembly>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -25,7 +25,9 @@
 
   <ItemGroup>
     <PackageReference Include="CefSharp.Common" Version="127.3.50" />
-    <PackageReference Include="CefSharp.Wpf.NETCore" Version="127.3.50" />
+    <PackageReference Include="CefSharp.Wpf.NETCore" Version="127.3.50">
+     <NoWarn>NU1701</NoWarn>
+    </PackageReference>
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2651.64" />
   </ItemGroup>
 
@@ -56,7 +58,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="if $(ConfigurationName) == Release (&#xD;&#xA; call $(ProjectDir)\PostBuild.bat&#xD;&#xA;) else (&#xD;&#xA; call $(ProjectDir)\PostBuild-Debug.bat&#xD;&#xA;)" IgnoreExitCode="true" />
+    <Exec Command="PostBuild.bat $(Configuration) $(ProjectDir)" IgnoreExitCode="true" />
   </Target>
 
   <ItemGroup>

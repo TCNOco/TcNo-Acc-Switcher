@@ -1,0 +1,89 @@
+version: 1.0.0.{build}
+skip_non_tags: true
+skip_branch_with_pr: true
+
+matrix:
+  fast_finish: true
+
+# https://www.appveyor.com/docs/build-environment/#build-worker-images
+image: Visual Studio 2022
+
+environment:
+  DOTNET_NOLOGO: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  GE_USE_LATEST_DOTNET: true
+  CONFIGURATION: release
+  VCPKG_BUILD_TYPE: release
+  FTP_PASSWORD:
+    secure: q67YmNsPhzdJWqWnpYp1of9wO2+Q2rexS+dKrQ5BEi11TvfQR9YvgRJlHY0ePmfk
+  DATEVERSION: $(APPVEYOR_REPO_TAG_NAME)
+  BLOCKRDP: false
+
+pull_requests:
+  do_not_increment_build_number: true
+
+init:
+  - ps: Write-Host "APPVEYOR_REPO_TAG_NAME is $env:APPVEYOR_REPO_TAG_NAME"
+  - ps: Write-Host "DATEVERSION is $env:DATEVERSION"
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+  - ps: iex (irm https://raw.githubusercontent.com/TCNOco/TcNo-Acc-Switcher/appveyor/other/NSIS/nsis7zplugin.ps1)
+
+build:
+  parallel: true
+  verbosity: minimal
+
+install:
+  - vcpkg install curl:x64-windows-static curl[ssl]:x64-windows-static vcpkg-cmake:x64-windows vcpkg-cmake-config:x64-windows zlib:x64-windows-static --triplet=x64-windows-release
+  - vcpkg integrate install
+  - choco upgrade aria2 -y
+ 
+# Build configuration
+build_script:
+  - nuget restore TcNo-Acc-Switcher.sln
+  - msbuild Installer/Installer.vcxproj /p:Configuration=%CONFIGURATION% /p:Platform=x64 /p:OutDir=%APPVEYOR_BUILD_FOLDER%\TcNo-Acc-Switcher-Client\bin\Installer\
+  - msbuild _Updater_Wrapper/_Updater_Wrapper.vcxproj /p:Configuration=%CONFIGURATION% /p:Platform=x64 /p:OutDir=%APPVEYOR_BUILD_FOLDER%\TcNo-Acc-Switcher-Client\bin\Wrapper\
+  - msbuild runas/runas.csproj /p:Configuration=%CONFIGURATION% /p:Platform=x64 /p:OutputPath=%APPVEYOR_BUILD_FOLDER%\TcNo-Acc-Switcher-Client\bin\runas\x64\Release\net8.0\
+  - msbuild TcNo-Acc-Switcher-Globals/TcNo-Acc-Switcher-Globals.csproj /p:Configuration=%CONFIGURATION% /p:Platform=x64
+  - msbuild TcNo-Acc-Switcher-Tray/TcNo-Acc-Switcher-Tray.csproj /p:Configuration=%CONFIGURATION% /p:Platform=x64
+  - msbuild TcNo-Acc-Switcher-Updater/TcNo-Acc-Switcher-Updater.csproj /p:Configuration=%CONFIGURATION% /p:Platform=x64
+  - msbuild TcNo-Acc-Switcher-Server/TcNo-Acc-Switcher-Server.csproj /p:Configuration=%CONFIGURATION% /p:Platform=x64
+  - msbuild TcNo-Acc-Switcher-Client/TcNo-Acc-Switcher-Client.csproj /p:Configuration=%CONFIGURATION% /p:Platform=x64
+  - cmd: |
+      cd other
+      npm install
+      cd ..
+  - cmd: node other/upload-to-ftp.js
+
+on_finish:
+  - ps: $blockRdp = $env:BLOCKRDP; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
+artifacts:
+  - path: TcNo-Acc-Switcher-Client\bin\x64\Release\CEF.7z
+    name: CEF.7z
+
+  - path: TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo Account Switcher - Installer.exe
+    name: TcNo Account Switcher - Installer_$(APPVEYOR_REPO_TAG_NAME).exe
+
+  - path: TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher.7z
+    name: TcNo-Acc-Switcher_$(APPVEYOR_REPO_TAG_NAME).7z
+
+  - path: TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher.zip
+    name: TcNo-Acc-Switcher_$(APPVEYOR_REPO_TAG_NAME).zip
+
+  - path: TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher_and_CEF.7z
+    name: TcNo-Acc-Switcher_and_CEF_$(APPVEYOR_REPO_TAG_NAME).7z
+
+  - path: TcNo-Acc-Switcher-Client\bin\x64\Release\UpdateOutput\hashes.json
+    name: hashes.json
+
+deploy:
+  - release: Build-v$(APPVEYOR_REPO_TAG_NAME)
+    description: 'Release description'
+    provider: GitHub
+    auth_token:
+      secure: Z8dNV9vQVfZfYXD0aPFxbnYz9pPxwOXGdZXI0+/xSH7BLAQt8WjWToqifxXJxd1T
+    artifact: TcNo Account Switcher - Installer_$(APPVEYOR_REPO_TAG_NAME).exe,TcNo-Acc-Switcher_$(APPVEYOR_REPO_TAG_NAME).7z,TcNo-Acc-Switcher_$(APPVEYOR_REPO_TAG_NAME).zip,TcNo-Acc-Switcher_and_CEF_$(APPVEYOR_REPO_TAG_NAME).7z
+    draft: true
+    prerelease: false
+    on:
+      APPVEYOR_REPO_TAG: true
