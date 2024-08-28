@@ -1,4 +1,7 @@
 version: 1.0.0.{build}
+skip_non_tags: true
+skip_branch_with_pr: true
+
 matrix:
   fast_finish: true
 
