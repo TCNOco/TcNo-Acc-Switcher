@@ -52,6 +52,9 @@ namespace TcNo_Acc_Switcher_Updater
                 ? UGlobals.ReadAllLines(Path.Join(AppDataFolder, "userdata_path.txt"))[0].Trim()
                 : Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TcNo Account Switcher\\");
             logPath = Path.Join(logPath, "UpdaterLog.txt");
+
+            if (File.Exists(logPath)) File.WriteAllText(logPath, string.Empty);
+
             return new StreamWriter(logPath, append: true);
         }
     }
