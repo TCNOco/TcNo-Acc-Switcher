@@ -16,12 +16,15 @@ environment:
   VCPKG_BUILD_TYPE: release
   FTP_PASSWORD:
     secure: q67YmNsPhzdJWqWnpYp1of9wO2+Q2rexS+dKrQ5BEi11TvfQR9YvgRJlHY0ePmfk
+  DATEVERSION: $(APPVEYOR_REPO_TAG_NAME)
+  BLOCKRDP: false
 
 pull_requests:
   do_not_increment_build_number: true
 
 init:
   - ps: Write-Host "APPVEYOR_REPO_TAG_NAME is $env:APPVEYOR_REPO_TAG_NAME"
+  - ps: Write-Host "DATEVERSION is $env:DATEVERSION"
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
   - ps: iex (irm https://raw.githubusercontent.com/TCNOco/TcNo-Acc-Switcher/appveyor/other/NSIS/nsis7zplugin.ps1)
 
@@ -52,7 +55,7 @@ build_script:
   - cmd: node other/upload-to-ftp.js
 
 on_finish:
-  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+  - ps: $blockRdp = $env:BLOCKRDP; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 artifacts:
   - path: TcNo-Acc-Switcher-Client\bin\x64\Release\CEF.7z
@@ -85,16 +88,5 @@ deploy:
     artifact: TcNo Account Switcher - Installer_$(APPVEYOR_REPO_TAG_NAME).exe,TcNo-Acc-Switcher_$(APPVEYOR_REPO_TAG_NAME).7z,TcNo-Acc-Switcher_$(APPVEYOR_REPO_TAG_NAME).zip,TcNo-Acc-Switcher_and_CEF_$(APPVEYOR_REPO_TAG_NAME).7z
     draft: true
     prerelease: false
-    on:
-      APPVEYOR_REPO_TAG: true
-
-  - provider: FTP
-    protocol: ftps
-    host: uk.storage.bunnycdn.com
-    username: tcno
-    password:
-      secure: q67YmNsPhzdJWqWnpYp1of9wO2+Q2rexS+dKrQ5BEi11TvfQR9YvgRJlHY0ePmfk
-    folder: /tcno/Projects/AccSwitcher/updates-test
-    artifact: $(APPVEYOR_REPO_TAG_NAME).7z
     on:
       APPVEYOR_REPO_TAG: true
