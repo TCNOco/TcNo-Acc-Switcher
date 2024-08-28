@@ -82,7 +82,7 @@ async function uploadFiles() {
   try {
     await uploadDirectory(
       "TcNo-Acc-Switcher-Client\\bin\\x64\\Release\\TcNo-Acc-Switcher",
-      "Projects/AccSwitcher/latest-test",
+      "Projects/AccSwitcher/latest",
       options
     );
     console.log("All files and folders uploaded successfully.");
@@ -90,20 +90,20 @@ async function uploadFiles() {
     // Upload Hashes
     await uploadFile(
       'TcNo-Acc-Switcher-Client\\bin\\x64\\Release\\UpdateOutput\\hashes.json',
-      'Projects/AccSwitcher/latest-test/hashes.json', 
+      'Projects/AccSwitcher/latest/hashes.json', 
       options
     );
     console.log("hashes.json uploaded.");
 
     await uploadFile(
       'TcNo-Acc-Switcher-Client\\bin\\x64\\Release\\UpdateDiff.7z',
-      `Projects/AccSwitcher/updates-test/${process.env.DATEVERSION}.7z`,
+      `Projects/AccSwitcher/updates/${process.env.DATEVERSION}.7z`,
       options
     );
 
     await uploadFile(
       'TcNo-Acc-Switcher-Client\\bin\\x64\\Release\\CEF.7z',
-      `Projects/AccSwitcher/updates-test/CEF.7z`,
+      `Projects/AccSwitcher/updates/CEF.7z`,
       options
     );
     console.log("UpdateDiff.7z uploaded.");
