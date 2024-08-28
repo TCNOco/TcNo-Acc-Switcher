@@ -31,6 +31,10 @@ build:
   # MSBuild verbosity level
   verbosity: minimal
 
+before_deploy:
+  - ps: Write-Host "APPVEYOR_REPO_TAG is $env:APPVEYOR_REPO_TAG"
+  - ps: Write-Host "APPVEYOR_REPO_TAG_NAME is $env:APPVEYOR_REPO_TAG_NAME"
+
 install:
   # Install the required packages
   - vcpkg install curl:x64-windows-static curl[ssl]:x64-windows-static vcpkg-cmake:x64-windows vcpkg-cmake-config:x64-windows zlib:x64-windows-static --triplet=x64-windows-release
@@ -66,16 +70,54 @@ artifacts:
     name: TcNo-Acc-Switcher_and_CEF_$(APPVEYOR_REPO_TAG_NAME).7z
   - path: TcNo-Acc-Switcher-Client\bin\x64\Release\UpdateDiff.7z
     name: $(APPVEYOR_REPO_TAG_NAME).7z
+  - path: TcNo-Acc-Switcher-Client\bin\x64\Release\UpdateOutput\hashes.json
+    name: hashes.json
 
 deploy:
-  release: Build-v$(APPVEYOR_REPO_TAG_NAME)
-  description: 'Release description'
-  provider: GitHub
-  auth_token:
-    secure: 4mZ2nTS7qLwiVng07ki64e5M027auJxwDh92GRw9F9Eh4XwMCoBHm2XOqgj/Z5S8
-  artifact: CEF.7z,TcNo Account Switcher - Installer_$(APPVEYOR_REPO_TAG_NAME).exe,TcNo-Acc-Switcher_$(APPVEYOR_REPO_TAG_NAME).7z,TcNo-Acc-Switcher_$(APPVEYOR_REPO_TAG_NAME).zip,TcNo-Acc-Switcher_$(APPVEYOR_REPO_TAG_NAME).7z
-  draft: true
-  prerelease: false
-  on:
-    branch: appveyor
-    APPVEYOR_REPO_TAG: true
+  - release: Build-v$(APPVEYOR_REPO_TAG_NAME)
+    description: 'Release description'
+    provider: GitHub
+    auth_token:
+      secure: 4mZ2nTS7qLwiVng07ki64e5M027auJxwDh92GRw9F9Eh4XwMCoBHm2XOqgj/Z5S8
+    artifact: CEF.7z,TcNo Account Switcher - Installer_$(APPVEYOR_REPO_TAG_NAME).exe,TcNo-Acc-Switcher_$(APPVEYOR_REPO_TAG_NAME).7z,TcNo-Acc-Switcher_$(APPVEYOR_REPO_TAG_NAME).zip,TcNo-Acc-Switcher_$(APPVEYOR_REPO_TAG_NAME).7z
+    draft: true
+    prerelease: false
+    on:
+      branch: appveyor
+      APPVEYOR_REPO_TAG: true
+
+  - provider: FTP
+    protocol: ftps
+    host: uk.storage.bunnycdn.com
+    username: tcno
+    password:
+      secure: q67YmNsPhzdJWqWnpYp1of9wO2+Q2rexS+dKrQ5BEi11TvfQR9YvgRJlHY0ePmfk
+    folder: /tcno/Projects/AccSwitcher/updates-test
+    artifact: $(APPVEYOR_REPO_TAG_NAME).7z
+    on:
+      branch: appveyor
+      APPVEYOR_REPO_TAG: true
+
+  - provider: FTP
+    protocol: ftps
+    host: uk.storage.bunnycdn.com
+    username: tcno
+    password:
+      secure: q67YmNsPhzdJWqWnpYp1of9wO2+Q2rexS+dKrQ5BEi11TvfQR9YvgRJlHY0ePmfk
+    folder: /tcno/Projects/AccSwitcher/latest-test
+    artifact: hashes.json
+    on:
+      branch: appveyor
+      APPVEYOR_REPO_TAG: true
+
+  - provider: FTP
+    protocol: ftps
+    host: uk.storage.bunnycdn.com
+    username: tcno
+    password:
+      secure: q67YmNsPhzdJWqWnpYp1of9wO2+Q2rexS+dKrQ5BEi11TvfQR9YvgRJlHY0ePmfk
+    folder: /tcno/Projects/AccSwitcher/latest-test
+    artifact: TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher\**
+    on:
+      branch: appveyor
+      APPVEYOR_REPO_TAG: true
