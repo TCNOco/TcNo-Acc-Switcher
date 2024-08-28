@@ -91,8 +91,8 @@ if (Test-Path $compressPath) {
 Write-Host "Preparing .zip version of .7z release files..."
 # -----------------------------------
 Write-Host "- Extracting .7z"
-ExtractFile -filePath "TcNo-Acc-Switcher_and_CEF.7z" -outputPath "TcNo-Acc-Switcher_and_CEF"
+ExtractFile -filePath "TcNo-Acc-Switcher.7z" -outputPath "TcNo-Acc-SwitcherUnzipped"
 
-# Use 7z to compress the contents of TcNo-Acc-Switcher_and_CEF
+# Use 7z to compress the contents of TcNo-Acc-Switcher
 Write-Host "- Compressing as .zip"
-Compress-Archive -Path "TcNo-Acc-Switcher_and_CEF\*" -DestinationPath "TcNo-Acc-Switcher_and_CEF.zip"
+Compress-Archive -Path "TcNo-Acc-SwitcherUnzipped\*" -DestinationPath "TcNo-Acc-Switcher.zip"
