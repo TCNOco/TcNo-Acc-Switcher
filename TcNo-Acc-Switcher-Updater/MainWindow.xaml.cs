@@ -127,13 +127,20 @@ namespace TcNo_Acc_Switcher_Updater
             }
         }
 
-        private static void ExitProgram(object sender, RoutedEventArgs e) => Environment.Exit(0);
+        private static void ExitProgram(object sender, RoutedEventArgs e) {
+            Logger.WriteLine("ExitProgram");
+            Environment.Exit(0);
+        }
 
         // Window interaction
         private void BtnExit(object sender, RoutedEventArgs e) => WindowHandling.BtnExit(this);
         private void BtnMinimize(object sender, RoutedEventArgs e) => WindowHandling.BtnMinimize(this);
         private void DragWindow(object sender, MouseButtonEventArgs e) => WindowHandling.DragWindow(sender, e, this);
-        private void Window_Closed(object sender, EventArgs e) => Environment.Exit(0);
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            Logger.WriteLine("Window_Closed: Exiting");
+            Environment.Exit(0);
+        }
 
         #endregion
 
@@ -153,8 +160,7 @@ namespace TcNo_Acc_Switcher_Updater
             }), DispatcherPriority.Normal);
 
             Console.WriteLine(line);
-            App.LogWriter.WriteLine(line);
-            App.LogWriter.Flush();
+            Logger.WriteLine(line);
         }
 
         private void SetStatus(string s)
@@ -164,8 +170,7 @@ namespace TcNo_Acc_Switcher_Updater
                 StatusLabel.Content = s;
             }), DispatcherPriority.Normal);
 
-            App.LogWriter.WriteLine($"Status: {s}");
-            App.LogWriter.Flush();
+            Logger.WriteLine($"Status: {s}");
         }
 
         private void SetStatusAndLog(string s, string lineBreak = "\n")
@@ -181,8 +186,7 @@ namespace TcNo_Acc_Switcher_Updater
                 LogBox.ScrollToEnd();
             }), DispatcherPriority.Normal);
 
-            App.LogWriter.WriteLine($"Status & Log: {s}");
-            App.LogWriter.Flush();
+            Logger.WriteLine($"Status & Log: {s}");
         }
 
         private void ButtonHandler(bool enabled, string content)
@@ -255,11 +259,13 @@ namespace TcNo_Acc_Switcher_Updater
             try
             {
                 _ = Process.Start(proc);
+                Logger.WriteLine("RestartAsAdmin: Exiting");
                 Environment.Exit(0);
             }
             catch (Exception ex)
             {
                 _ = MessageBox.Show($"This program must be run as an administrator!{Environment.NewLine}{ex}");
+                Logger.WriteLine("RestartAsAdmin (Failed): Exiting");
                 Environment.Exit(0);
             }
         }
@@ -282,12 +288,14 @@ namespace TcNo_Acc_Switcher_Updater
             if (QueueCreateUpdate)
             {
                 CreateUpdate();
+                Logger.WriteLine("CreateUpdate Done: Exiting");
                 Environment.Exit(0);
             }
 
             if (!Directory.Exists(UserDataFolder))
             {
                 MessageBox.Show("Please run the main program at least once, with 'TcNo_Acc_Switcher.exe'", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                Logger.WriteLine("UserDataFolder doesn't exist: Exiting");
                 Environment.Exit(1);
             }
 
@@ -301,12 +309,14 @@ namespace TcNo_Acc_Switcher_Updater
             if (QueueHashList)
             {
                 GenerateHashes();
+                Logger.WriteLine("GenerateHashes (Done): Exiting");
                 Environment.Exit(0);
             }
 
             if (DownloadCef)
             {
                 DownloadCefNow();
+                Logger.WriteLine("DownloadCefNow (Done): Exiting");
                 Environment.Exit(0);
             }
 
@@ -852,6 +862,7 @@ namespace TcNo_Acc_Switcher_Updater
                     Environment.NewLine + Environment.NewLine + "Error: " + e, "Could not reach update server",
                     MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK,
                     MessageBoxOptions.DefaultDesktopOnly);
+                Logger.WriteLine($"Verify Files failed: Exiting - {e}");
                 Environment.Exit(1);
             }
 
@@ -1064,9 +1075,15 @@ namespace TcNo_Acc_Switcher_Updater
             foreach (var exe in Directory.GetFiles(currentDir, "*.exe", SearchOption.AllDirectories))
             {
                 if (exe.Contains(Path.GetFileNameWithoutExtension(Assembly.GetEntryAssembly()?.Location)!)) continue;
-                var eName = Path.GetFileNameWithoutExtension(exe);
-                if (Process.GetProcessesByName(eName).Length <= 0) continue;
-                KillProcess(eName);
+                try
+                {
+                    if (Process.GetProcessesByName(exe).Length <= 0 || exe == "TcNo-Acc-Switcher-Updater.exe" || exe == "TcNo-Acc-Switcher-Updater_main.exe") continue;
+                    Logger.WriteLine($"Exiting: {exe}");
+                    KillProcess(exe);
+                } catch(Exception e)
+                {
+                    Logger.WriteLine($"Failed to exit: ${exe}\n{e}");
+                }
             }
         }
 
@@ -1097,6 +1114,7 @@ namespace TcNo_Acc_Switcher_Updater
             CreateFolderPatches(oldFolder, newFolder, outputFolder, ref filesToDelete);
             File.WriteAllLines(deleteFileList, filesToDelete);
             WriteLine("Done!" + Environment.NewLine);
+            Logger.WriteLine($"CreateUpdate complete: Exiting");
             Environment.Exit(0);
         }
 
