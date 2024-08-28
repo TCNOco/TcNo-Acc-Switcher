@@ -859,8 +859,19 @@ namespace TcNo_Acc_Switcher_Updater
                         if (key.StartsWith("updater")) continue; // Ignore own files >> Otherwise IOException
                         if (key.StartsWith("runtimes") && IsCefFile(key))
                         {
-                            if (!File.Exists(key)) File.Create(key).Dispose(); // Create empty file
-                            if (_mainBrowser != "CEF") continue; // Ignore CEF files if not using CEF
+                            if (_mainBrowser != "CEF")
+                            {
+                                if (!File.Exists(key)) File.Create(key).Dispose(); // Create empty file
+                                continue; // Ignore CEF files if not using CEF
+                            }
+
+                            // Using CEF
+                            // Check if filesize is < 1000KB : Delete
+                            if (new FileInfo(key).Length < 1000000)
+                            {
+                                WriteLine("Deleting: " + key);
+                                DeleteFile(key);
+                            }
                         }
                         cur++;
                         UpdateProgress(cur * 100 / verifyDictTotal);

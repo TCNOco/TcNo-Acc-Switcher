@@ -76,9 +76,6 @@ artifacts:
   - path: TcNo-Acc-Switcher-Client\bin\x64\Release\UpdateOutput\hashes.json
     name: hashes.json
 
-  - path: UpdateDiff.7z
-    name: $(APPVEYOR_REPO_TAG_NAME).7z
-
 deploy:
   - release: Build-v$(APPVEYOR_REPO_TAG_NAME)
     description: 'Release description'
