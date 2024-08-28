@@ -100,9 +100,3 @@ ExtractFile -filePath "TcNo-Acc-Switcher.7z" -outputPath "TcNo-Acc-SwitcherUnzip
 # Use 7z to compress the contents of TcNo-Acc-Switcher
 Write-Host "- Compressing as .zip"
 Compress-Archive -Path "TcNo-Acc-SwitcherUnzipped\*" -DestinationPath "TcNo-Acc-Switcher.zip"
-
-# Move TcNo-Acc-Switcher.7z to $SolutionDir
-$destination = Join-Path -Path $SolutionDir -ChildPath 'TcNo-Acc-Switcher.7z'
-Copy-Item -Path "TcNo-Acc-Switcher.7z" -Destination $destination -Force
-$destination = Join-Path -Path $SolutionDir -ChildPath 'hashes.json'
-Copy-Item -Path "UpdateOutput\hashes.json" -Destination $destination -Force

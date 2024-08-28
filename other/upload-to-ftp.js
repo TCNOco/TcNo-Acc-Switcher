@@ -6,8 +6,10 @@ import axios from 'axios';
 import pLimit from 'p-limit';
 import { globby } from 'globby';
 
-const localFolderPath = "TcNo-Acc-Switcher-Client\\bin\\x64\\Release\\TcNo-Acc-Switcher";
-const ftpFolderPath = "/Projects/AccSwitcher/latest-test";
+
+const currentDir = process.cwd();
+console.log('Current Directory:', currentDir);
+
 
 // Configure options
 const options = {
@@ -64,9 +66,23 @@ export const uploadDirectory = async (sourceDirectory, targetDirectory, options 
 };
 
 // Start the upload process
-uploadDirectory(localFolderPath, ftpFolderPath, options)
+uploadDirectory("TcNo-Acc-Switcher-Client\\bin\\x64\\Release\\TcNo-Acc-Switcher",
+                "/Projects/AccSwitcher/latest-test",
+                options)
   .then(() => console.log("All files and folders uploaded successfully."))
   .catch(error => {
     console.error('Error during upload:', error);
     process.exit(1);
   });
+
+// Upload Hashes
+uploadFile('TcNo-Acc-Switcher-Client\\bin\\x64\\Release\\UpdateOutput\\hashes.json',
+            '/Projects/AccSwitcher/latest-test/hashes.json', options)
+  .then(() => console.log("hashes.json uploaded."))
+  .catch(error => {
+    console.error('Error during upload:', error);
+    process.exit(1);
+  });
+
+fs.copyFileSync('TcNo-Acc-Switcher-Client\\bin\\x64\\Release\\UpdateDiff.7z',
+                'UpdateDiff.7z');

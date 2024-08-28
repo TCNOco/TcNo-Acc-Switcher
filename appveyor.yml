@@ -45,30 +45,36 @@ build_script:
   - msbuild TcNo-Acc-Switcher-Updater/TcNo-Acc-Switcher-Updater.csproj /p:Configuration=%CONFIGURATION% /p:Platform=x64
   - msbuild TcNo-Acc-Switcher-Server/TcNo-Acc-Switcher-Server.csproj /p:Configuration=%CONFIGURATION% /p:Platform=x64
   - msbuild TcNo-Acc-Switcher-Client/TcNo-Acc-Switcher-Client.csproj /p:Configuration=%CONFIGURATION% /p:Platform=x64
-
-on_finish:
   - cmd: |
       cd other
       npm install
       cd ..
   - cmd: node other/upload-to-ftp.js
+
+on_finish:
   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 artifacts:
   - path: TcNo-Acc-Switcher-Client\bin\x64\Release\CEF.7z
     name: CEF.7z
+
   - path: TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo Account Switcher - Installer.exe
     name: TcNo Account Switcher - Installer_$(APPVEYOR_REPO_TAG_NAME).exe
-  - path: TcNo-Acc-Switcher.7z
+
+  - path: TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher.7z
     name: TcNo-Acc-Switcher_$(APPVEYOR_REPO_TAG_NAME).7z
+
   - path: TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher.zip
     name: TcNo-Acc-Switcher_$(APPVEYOR_REPO_TAG_NAME).zip
+
   - path: TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher_and_CEF.7z
     name: TcNo-Acc-Switcher_and_CEF_$(APPVEYOR_REPO_TAG_NAME).7z
-  - path: TcNo-Acc-Switcher-Client\bin\x64\Release\UpdateDiff.7z
-    name: $(APPVEYOR_REPO_TAG_NAME).7z
-  - path: hashes.json
+
+  - path: TcNo-Acc-Switcher-Client\bin\x64\Release\UpdateOutput\hashes.json
     name: hashes.json
+
+  - path: UpdateDiff.7z
+    name: $(APPVEYOR_REPO_TAG_NAME).7z
 
 deploy:
   - release: Build-v$(APPVEYOR_REPO_TAG_NAME)
@@ -90,16 +96,5 @@ deploy:
       secure: q67YmNsPhzdJWqWnpYp1of9wO2+Q2rexS+dKrQ5BEi11TvfQR9YvgRJlHY0ePmfk
     folder: /tcno/Projects/AccSwitcher/updates-test
     artifact: $(APPVEYOR_REPO_TAG_NAME).7z
-    on:
-      APPVEYOR_REPO_TAG: true
-
-  - provider: FTP
-    protocol: ftps
-    host: uk.storage.bunnycdn.com
-    username: tcno
-    password:
-      secure: q67YmNsPhzdJWqWnpYp1of9wO2+Q2rexS+dKrQ5BEi11TvfQR9YvgRJlHY0ePmfk
-    folder: /tcno/Projects/AccSwitcher/latest-test
-    artifact: hashes.json
     on:
       APPVEYOR_REPO_TAG: true
