@@ -15,6 +15,13 @@
 // Just note that this requires curl to be installed. I used "vcpkg install curl[openssl]:x64-windows-static" in Microsoft's vcpkg to accomplish that.
 
 #include "tcno.hpp"
+#include <iostream>
+#include <filesystem>
+#include <cstdlib>
+#include <chrono>
+#include <thread>
+#include <fstream>
+namespace fs = std::filesystem;
 
 bool args_contain(const char* needle, int argc, char* argv[])
 {
@@ -43,51 +50,80 @@ void launch_tcno_program(const char* arg)
 	             std::wstring(exe_name.begin(), exe_name.end()), L"");
 }
 
-#include <iostream>
-#include <filesystem>
-#include <cstdlib>
+std::ofstream* logFile = nullptr;
+void log(const std::string& message) {
+	if (logFile && logFile->is_open()) {
+		(*logFile) << message << std::endl;
+	}
+	std::cout << message << std::endl;
+}
 
-namespace fs = std::filesystem;
+bool move_file(const fs::path& src, const fs::path& dest) {
+	for (int attempt = 0; attempt < 3; ++attempt) {
+		try {
+			if (fs::exists(dest)) {
+				fs::remove(dest);
+			}
+			fs::copy_file(src, dest, fs::copy_options::overwrite_existing);
+			fs::remove(src);
+			return true;  // Success
+		}
+		catch (const fs::filesystem_error& e) {
+			log("Attempt " + std::to_string(attempt + 1) + " to move " + src.string() + " failed: " + e.what());
+			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		}
+	}
+	return false;  // Failed after retries
+}
 
 void move_recursive(const fs::path& from, const fs::path& to) {
 	try {
-		// Ensure the destination directory exists
 		if (!fs::exists(to)) {
 			fs::create_directories(to);
 		}
 
-		// Iterate through all files and directories in the source directory
 		for (const auto& entry : fs::recursive_directory_iterator(from)) {
 			const auto& path = entry.path();
 			auto relative_path = fs::relative(path, from);
 			auto dest_path = to / relative_path;
 
 			if (fs::is_directory(path)) {
-				// Create directories in the destination
 				if (!fs::exists(dest_path)) {
 					fs::create_directory(dest_path);
 				}
 			}
 			else if (fs::is_regular_file(path)) {
-				fs::rename(path, dest_path);
+				if (!move_file(path, dest_path)) {
+					log("Failed to move " + path.string() + " to " + dest_path.string());
+					std::exit(1);
+				}
 			}
 		}
+
+		// After successful move, remove the source directory
+		fs::remove_all(from);
+
 	}
 	catch (const fs::filesystem_error& e) {
-		std::cerr << "Filesystem error: " << e.what() << std::endl;
+		log("Filesystem error: " + std::string(e.what()));
 		std::exit(1);
 	}
 }
 
 int finalizeUpdate(std::string sfrom, std::string sto) {
-	std::cout << "Finalizing update..." << std::endl;
-	std::cout << "Moving files from temp folder to install folder." << std::endl << std::endl;
-	std::cout << "From: " << sfrom << std::endl << "To: " << sto << std::endl << std::endl;
+	SetConsoleTitle(_T("TcNo Account Switcher - Finalizing Update..."));
+	std::string logFilePath = sto + "\\UpdateFinalizeLog.txt";
+	logFile = new std::ofstream(logFilePath);
+	
+    log("Finalizing update...");
+    log("Moving files from temp folder to install folder.");
+    log("From: " + sfrom);
+    log("To: " + sto);
 	fs::path from(sfrom);
 	fs::path to(sto);
 
 	if (!fs::exists(from) || !fs::is_directory(from)) {
-		std::cerr << "Source path does not exist or is not a directory." << std::endl;
+		log("Source path does not exist or is not a directory.");
 		return 1;
 	}
 
@@ -99,7 +135,7 @@ int finalizeUpdate(std::string sfrom, std::string sto) {
 	if (operating_path.back() != '\\') operating_path += '\\';
 	std::string full_path = operating_path + exe_name;
 
-	std::cout << "Running: " << full_path << std::endl;
+	log("Running: " + full_path);
 
 	exec_process(std::wstring(operating_path.begin(), operating_path.end()),
 		std::wstring(full_path.begin(), full_path.end()), L"");

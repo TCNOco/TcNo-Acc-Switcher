@@ -692,23 +692,38 @@ namespace TcNo_Acc_Switcher_Updater
             if (cef) SetStatusAndLog($"Downloading update: {_latestVersion} + CEF (~110MB)");
             else SetStatusAndLog($"Downloading update: {_latestVersion} (~40MB)");
 
-
-            var downloadUrl = "";
-            if (cef) downloadUrl = $"https://github.com/TCNOco/TcNo-Acc-Switcher/releases/download/{_latestVersion}/TcNo-Acc-Switcher_and_CEF_{_latestVersion}.7z";
-            else downloadUrl = $"https://github.com/TCNOco/TcNo-Acc-Switcher/releases/download/{_latestVersion}/TcNo-Acc-Switcher_{_latestVersion}.7z";
-            WriteLine("Downloading from: " + downloadUrl);
-            var updateFilePath = Path.Join(_updaterDirectory, _latestVersion + ".7z");
-            DownloadFile(new Uri(downloadUrl), updateFilePath);
-            SetStatusAndLog("Download complete.");
-
-            // Apply the update.
-            var currentDir = Directory.GetCurrentDirectory();
-            if (Directory.Exists("temp_update")) Directory.Delete("temp_update", true);
-            _ = Directory.CreateDirectory("temp_update");
-            SetStatusAndLog("Extracting patch files");
-            using (var archiveFile = new ArchiveFile(updateFilePath))
+            var updateFilePath = "";
+            var currentDir = "";
+            try
             {
-                archiveFile.Extract("temp_update", true); // extract all
+                var downloadUrl = "";
+                if (cef) downloadUrl = $"https://github.com/TCNOco/TcNo-Acc-Switcher/releases/download/{_latestVersion}/TcNo-Acc-Switcher_and_CEF_{_latestVersion}.7z";
+                else downloadUrl = $"https://github.com/TCNOco/TcNo-Acc-Switcher/releases/download/{_latestVersion}/TcNo-Acc-Switcher_{_latestVersion}.7z";
+                WriteLine("Downloading from: " + downloadUrl);
+                updateFilePath = Path.Join(_updaterDirectory, _latestVersion + ".7z");
+                if (File.Exists(updateFilePath)) File.Delete(updateFilePath);
+
+                DownloadFile(new Uri(downloadUrl), updateFilePath);
+                SetStatusAndLog("Download complete.");
+
+                // Apply the update.
+                currentDir = Directory.GetCurrentDirectory();
+                if (Directory.Exists("temp_update")) Directory.Delete("temp_update", true);
+
+                _ = Directory.CreateDirectory("temp_update");
+                SetStatusAndLog("Extracting patch files");
+                using (var archiveFile = new ArchiveFile(updateFilePath))
+                {
+                    archiveFile.Extract("temp_update", true); // extract all
+                }
+                if (File.Exists("UpdateFinalizeLog.txt")) File.Delete("UpdateFinalizeLog.txt");
+            } catch (Exception e)
+            {
+                SetStatusAndLog("Error!");
+                WriteLine("There was an error with either downloading the latest version, or extracting.");
+                WriteLine("If the update JUST came out then please wait ~an hour before trying again.");
+                WriteLine("Should issues persist please contact TroubleChute with this info.");
+                return;
             }
 
             SetStatusAndLog("Applying update. Window will close...");
