@@ -100,13 +100,6 @@ async function uploadFiles() {
       `Projects/AccSwitcher/updates/${process.env.DATEVERSION}.7z`,
       options
     );
-
-    await uploadFile(
-      'TcNo-Acc-Switcher-Client\\bin\\x64\\Release\\CEF.7z',
-      `Projects/AccSwitcher/updates/CEF.7z`,
-      options
-    );
-    console.log("UpdateDiff.7z uploaded.");
   } catch (error) {
     console.error('Error during upload:', error);
     process.exit(1);

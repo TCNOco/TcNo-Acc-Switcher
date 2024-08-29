@@ -696,6 +696,7 @@ namespace TcNo_Acc_Switcher_Updater
             var downloadUrl = "";
             if (cef) downloadUrl = $"https://github.com/TCNOco/TcNo-Acc-Switcher/releases/download/{_latestVersion}/TcNo-Acc-Switcher_and_CEF_{_latestVersion}.7z";
             else downloadUrl = $"https://github.com/TCNOco/TcNo-Acc-Switcher/releases/download/{_latestVersion}/TcNo-Acc-Switcher_{_latestVersion}.7z";
+            WriteLine("Downloading from: " + downloadUrl);
             var updateFilePath = Path.Join(_updaterDirectory, _latestVersion + ".7z");
             DownloadFile(new Uri(downloadUrl), updateFilePath);
             SetStatusAndLog("Download complete.");
