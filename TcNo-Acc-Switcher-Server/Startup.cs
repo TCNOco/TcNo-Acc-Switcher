@@ -129,6 +129,11 @@ namespace TcNo_Acc_Switcher_Server
             if (!AppSettings.OfflineMode) UpdatePlatformsJson();
             AppSettings.Version = Globals.Version;
             AppSettings.SaveSettings();
+
+            try
+            {
+                if (Directory.Exists(Path.Join(Globals.AppDataFolder, "temp_update"))) Directory.Delete(Path.Join(Globals.AppDataFolder, "temp_update"), true);
+            } catch (Exception) { /* Do nothing */ }
         }
 
         private static void CheckInstallerOptions()

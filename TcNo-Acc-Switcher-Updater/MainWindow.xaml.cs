@@ -703,6 +703,7 @@ namespace TcNo_Acc_Switcher_Updater
 
             // Apply the update.
             var currentDir = Directory.GetCurrentDirectory();
+            if (Directory.Exists("temp_update")) Directory.Delete("temp_update", true);
             _ = Directory.CreateDirectory("temp_update");
             SetStatusAndLog("Extracting patch files");
             using (var archiveFile = new ArchiveFile(updateFilePath))
@@ -711,6 +712,8 @@ namespace TcNo_Acc_Switcher_Updater
             }
 
             SetStatusAndLog("Applying update. Window will close...");
+
+            File.Delete(updateFilePath);
 
             // Copy _First_Run_Installer.exe to a temporary folder in %temp%.
             var tempFolder = Path.Combine(Path.GetTempPath(), "TcNo-Acc-Switcher");

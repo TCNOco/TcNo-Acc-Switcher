@@ -72,9 +72,6 @@ void move_recursive(const fs::path& from, const fs::path& to) {
 				fs::rename(path, dest_path);
 			}
 		}
-
-		// Remove the source directory if it's empty
-		fs::remove_all(from);
 	}
 	catch (const fs::filesystem_error& e) {
 		std::cerr << "Filesystem error: " << e.what() << std::endl;
@@ -102,10 +99,10 @@ int finalizeUpdate(std::string sfrom, std::string sto) {
 	if (operating_path.back() != '\\') operating_path += '\\';
 	std::string full_path = operating_path + exe_name;
 
-	std::cout << "Running: " << exe_name << std::endl;
+	std::cout << "Running: " << full_path << std::endl;
 
 	exec_process(std::wstring(operating_path.begin(), operating_path.end()),
-		std::wstring(exe_name.begin(), exe_name.end()), L"");
+		std::wstring(full_path.begin(), full_path.end()), L"");
 
 	return 0;
 }
