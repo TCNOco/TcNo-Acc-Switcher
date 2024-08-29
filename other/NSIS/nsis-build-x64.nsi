@@ -19,6 +19,7 @@
 !define COPYRIGHT "TroubleChute (Wesley Pyburn) (C) 2024"
 !define DESCRIPTION "TcNo Account Switcher"
 !define LICENSE_TXT "..\..\LICENSE"
+!define PRIVACY_TXT "..\..\PRIVACY.md"
 !define MAIN_APP_EXE "TcNo-Acc-Switcher.exe"
 !define INSTALL_TYPE "SetShellVarContext current"
 !define REG_ROOT "HKCU"
@@ -89,6 +90,7 @@ InstallDir "${INSTALL_DIR}"
 
   !insertmacro MUI_PAGE_WELCOME
   !insertmacro MUI_PAGE_LICENSE "${LICENSE_TXT}"
+  !insertmacro MUI_PAGE_LICENSE "${PRIVACY_TXT}"
   !insertmacro MUI_PAGE_COMPONENTS
   !insertmacro MUI_PAGE_DIRECTORY
 
@@ -124,10 +126,33 @@ InstallDir "${INSTALL_DIR}"
 
 !include "FileFunc.nsh"
 
+Section "Send anonymous stats" Anonymous_Stats
+  FileOpen $1 "$INSTDIR\SendAnonymousStats.yes" w
+  FileClose $1
+SectionEnd
+
+Section "Start Menu shortcuts" Shortcuts_StartMenu
+  CreateDirectory "$SMPROGRAMS\${SM_Folder}"
+  CreateShortcut "$SMPROGRAMS\${SM_Folder}\${LNK_NAME}" "$INSTDIR\${MAIN_APP_EXE}"
+  CreateShortcut "$SMPROGRAMS\${SM_Folder}\${UNINSTALL_LNK_NAME}" "$INSTDIR\${UNINSTALL_EXE}"
+SectionEnd
+
+Section "Desktop shortcuts" Shortcuts_Desktop
+  CreateShortCut "$DESKTOP\${LNK_NAME}" "$INSTDIR\${MAIN_APP_EXE}"
+SectionEnd
+
+Function CheckAnonymousStats
+  IfFileExists $INSTDIR\SendAnonymousStats.yes +2 0
+  FileOpen $1 "$INSTDIR\SendAnonymousStats.no" w
+  FileClose $1
+FunctionEnd
+
 Section "Main files" InstSec
   SectionIn RO
 
   SetOutPath "$INSTDIR"
+  
+  Call CheckAnonymousStats
   DetailPrint "Extracting package..."
   SetDetailsPrint listonly
   File "${INSTALLER_7Z}"
@@ -137,7 +162,7 @@ Section "Main files" InstSec
   
   ;Store installation folder
   WriteRegStr "${REG_ROOT}" "${REG_APP_PATH}" "" $INSTDIR
-  
+
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\${UNINSTALL_EXE}"
   WriteRegStr HKLM "${UNINST_KEY}" "DisplayName" "TcNo Account Switcher"
@@ -161,16 +186,6 @@ Section "Main files" InstSec
   
   ExecShell "" "$INSTDIR\${FIRST_RUN_EXE}"
 SectionEnd
-
-Section "Start Menu shortcuts" Shortcuts_StartMenu
-  CreateDirectory "$SMPROGRAMS\${SM_Folder}"
-  CreateShortcut "$SMPROGRAMS\${SM_Folder}\${LNK_NAME}" "$INSTDIR\${MAIN_APP_EXE}"
-  CreateShortcut "$SMPROGRAMS\${SM_Folder}\${UNINSTALL_LNK_NAME}" "$INSTDIR\${UNINSTALL_EXE}"
-SectionEnd
-
-Section "Desktop shortcuts" Shortcuts_Desktop
-  CreateShortCut "$DESKTOP\${LNK_NAME}" "$INSTDIR\${MAIN_APP_EXE}"
-SectionEnd
 ;--------------------------------
 ;Descriptions
 
@@ -178,12 +193,14 @@ SectionEnd
   LangString DESC_InstSec ${LANG_ENGLISH} "All the program files"
   LangString DESC_Shortcuts_StartMenu ${LANG_ENGLISH} "Launch & Uninstall shortcuts, placed into your Start Menu."
   LangString DESC_Shortcuts_Desktop ${LANG_ENGLISH} "Shortcut to launch the program, placed onto your Desktop."
+  LangString DESC_Anonymous_Stats ${LANG_ENGLISH} "Send anonymous statistics to help improve the program. As defined on Privacy Policy page."
 
   ;Assign language strings to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
     !insertmacro MUI_DESCRIPTION_TEXT ${InstSec} $(DESC_InstSec)
     !insertmacro MUI_DESCRIPTION_TEXT ${Shortcuts_StartMenu} $(DESC_Shortcuts_StartMenu)
     !insertmacro MUI_DESCRIPTION_TEXT ${Shortcuts_Desktop} $(DESC_Shortcuts_Desktop)
+    !insertmacro MUI_DESCRIPTION_TEXT ${Anonymous_Stats} $(DESC_Anonymous_Stats)
   !insertmacro MUI_FUNCTION_DESCRIPTION_END
  
 ;--------------------------------
