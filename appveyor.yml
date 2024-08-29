@@ -17,7 +17,6 @@ environment:
   FTP_PASSWORD:
     secure: q67YmNsPhzdJWqWnpYp1of9wO2+Q2rexS+dKrQ5BEi11TvfQR9YvgRJlHY0ePmfk
   DATEVERSION: $(APPVEYOR_REPO_TAG_NAME)
-  BLOCKRDP: false
 
 pull_requests:
   do_not_increment_build_number: true
@@ -54,8 +53,8 @@ build_script:
       cd ..
   - cmd: node other/upload-to-ftp.js
 
-on_finish:
-  - ps: $blockRdp = $env:BLOCKRDP; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+# on_finish:
+#   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 artifacts:
   - path: TcNo-Acc-Switcher-Client\bin\x64\Release\CEF.7z
@@ -77,7 +76,7 @@ artifacts:
     name: hashes.json
 
 deploy:
-  - release: Build-v$(APPVEYOR_REPO_TAG_NAME)
+  - release: $(APPVEYOR_REPO_TAG_NAME)
     description: 'Release description'
     provider: GitHub
     auth_token:

@@ -23,7 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.-->
         Background="#28293A" WindowStyle="None" AllowsTransparency="True"
         WindowStartupLocation="CenterScreen"
         ContentRendered="MainWindow_OnContentRendered"
-        Topmost="True">
+        Topmost="False">
     <Window.Resources>
         <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#888" />
         <SolidColorBrush x:Key="GlyphBrush" Color="#444" />
