@@ -122,10 +122,55 @@ namespace TcNo_Acc_Switcher_Server
             // Update installed version number, if uninstaller preset.
             if (OperatingSystem.IsWindows()) UpdateRegistryVersion(Globals.Version);
 
+            // Handle option files from installer
+            CheckInstallerOptions();
+
             // Check for Platforms.json update
             if (!AppSettings.OfflineMode) UpdatePlatformsJson();
         }
 
+        private static void CheckInstallerOptions()
+        {
+            try
+            {
+                if (File.Exists(Path.Join(Globals.UserDataFolder, "SendAnonymousStats.yes")))
+                {
+                    AppSettings.StatsShare = true;
+                    AppSettings.SaveSettings();
+                    File.Delete(Path.Join(Globals.UserDataFolder, "SendAnonymousStats.yes"));
+                }
+                else if (File.Exists(Path.Join(Globals.UserDataFolder, "SendAnonymousStats.no")))
+                {
+                    AppSettings.StatsShare = false;
+                    AppSettings.SaveSettings();
+                    File.Delete(Path.Join(Globals.UserDataFolder, "SendAnonymousStats.no"));
+                }
+            }
+            catch (Exception  e)
+            {
+                Globals.WriteToLog("Failed to delete SendAnonymousStats.yes or SendAnonymousStats.no. This option will continuously be set from this files existance.", e);
+            }
+
+            try
+            {
+                if (File.Exists(Path.Join(Globals.UserDataFolder, "OfflineMode.yes")))
+                {
+                    AppSettings.OfflineMode = true;
+                    AppSettings.SaveSettings();
+                    File.Delete(Path.Join(Globals.UserDataFolder, "OfflineMode.yes"));
+                }
+                else if (File.Exists(Path.Join(Globals.UserDataFolder, "OfflineMode.no")))
+                {
+                    AppSettings.OfflineMode = false;
+                    AppSettings.SaveSettings();
+                    File.Delete(Path.Join(Globals.UserDataFolder, "OfflineMode.no"));
+                }
+            }
+            catch (Exception e)
+            {
+                Globals.WriteToLog("Failed to delete OfflineMode.yes or OfflineMode.no. This option will continuously be set from this files existance.", e);
+            }
+        }
         public static void CurrentDomain_OnProcessExit(object sender, EventArgs e)
         {
             try

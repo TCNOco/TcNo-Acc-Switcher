@@ -426,6 +426,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 {
                     // Copy scss file
                     var offlineScss = Path.Join(Globals.UserDataFolder, $"offline_{scss}");
+                    Directory.CreateDirectory(Path.GetDirectoryName(offlineScss));
                     if (File.Exists(offlineScss)) File.Delete(offlineScss);
                     var text = File.ReadAllText(scss);
                     text = Globals.RemoveHttpImports(text);

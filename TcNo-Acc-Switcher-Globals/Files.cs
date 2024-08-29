@@ -639,7 +639,7 @@ namespace TcNo_Acc_Switcher_Globals
         {
             string pattern = @"^\s*@import\s+url\(""http[^""]*""\);\s*$";
 
-            string result = Regex.Replace(input, pattern, string.Empty, RegexOptions.Multiline | RegexOptions.IgnoreCase);
+            string result = Regex.Replace(input, pattern, "/* import removed in offline mode */", RegexOptions.Multiline | RegexOptions.IgnoreCase);
 
             result = Regex.Replace(result, @"^\s*$\n|\r", string.Empty, RegexOptions.Multiline);
 

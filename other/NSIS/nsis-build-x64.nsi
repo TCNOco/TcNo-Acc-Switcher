@@ -6,6 +6,7 @@
 ;Include Modern UI
 
   !include "MUI2.nsh"
+  !include "nsDialogs.nsh"
 
 ;--------------------------------
 ;Variables
@@ -86,6 +87,50 @@ InstallDir "${INSTALL_DIR}"
   !define UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\TcNo-Acc-Switcher"
 
 ;--------------------------------
+; Custom checkboxes page
+Var CheckStats
+Var CheckStatsState
+Var CheckLaunch
+Var CheckLaunchState
+Var CheckOfflineMode
+Var CheckOfflineModeState
+!define CUSTOM_PAGE_ID 101
+Function PostInstallPageCreate
+  !insertmacro MUI_HEADER_TEXT "Other Options" "Customize behaviour before install."
+
+  nsDialogs::Create 1018
+  Pop $0
+
+  ${NSD_CreateLabel} 0 0 100% 24u "Before launching the program, would you like to send anonymous statistics to help improve the program?"
+  Pop $1
+
+  ${NSD_CreateCheckbox} 0 24u 100% 12u "Send anonymous statistics (As defined in Privacy Policy)"
+  Pop $CheckStats
+  ${NSD_SetState} $CheckStats ${BST_CHECKED}
+
+  ${NSD_CreateCheckbox} 0 36u 100% 12u "Offline Mode"
+  Pop $CheckOfflineMode
+  ${NSD_SetState} $CheckOfflineMode ${BST_UNCHECKED}
+
+  ${NSD_CreateCheckbox} 0 60u 100% 12u "Launch after install"
+  Pop $CheckLaunch
+  ${NSD_SetState} $CheckLaunch ${BST_CHECKED}
+
+
+  
+  nsDialogs::Show
+FunctionEnd
+
+Function PostInstallPageLeave
+  ${NSD_GetState} $CheckStats $CheckStatsState
+  ${NSD_GetState} $CheckOfflineMode $CheckOfflineModeState
+  
+  ${NSD_GetState} $CheckLaunch $CheckLaunchState
+FunctionEnd
+
+
+
+;--------------------------------
 ;Pages
 
   !insertmacro MUI_PAGE_WELCOME
@@ -93,6 +138,8 @@ InstallDir "${INSTALL_DIR}"
   !insertmacro MUI_PAGE_LICENSE "${PRIVACY_TXT}"
   !insertmacro MUI_PAGE_COMPONENTS
   !insertmacro MUI_PAGE_DIRECTORY
+  Page custom PostInstallPageCreate PostInstallPageLeave function
+  
 
    ;Start Menu Folder Page Configuration
   !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU" 
@@ -112,7 +159,15 @@ InstallDir "${INSTALL_DIR}"
   !define MUI_FINISHPAGE_LINK "https://github.com/TcNobo/TcNo-Acc-Switcher"
   !define MUI_FINISHPAGE_LINK_LOCATION "https://github.com/TcNobo/TcNo-Acc-Switcher"
 
+Function Finish
+  ${If} $CheckLaunchState <> 0
+    ExecShell "" "$INSTDIR\${MAIN_APP_EXE}"
+  ${EndIf}
+FunctionEnd
+
+  !define MUI_PAGE_CUSTOMFUNCTION_LEAVE Finish
   !insertmacro MUI_PAGE_FINISH
+
 
 
 
@@ -126,11 +181,6 @@ InstallDir "${INSTALL_DIR}"
 
 !include "FileFunc.nsh"
 
-Section "Send anonymous stats" Anonymous_Stats
-  FileOpen $1 "$INSTDIR\SendAnonymousStats.yes" w
-  FileClose $1
-SectionEnd
-
 Section "Start Menu shortcuts" Shortcuts_StartMenu
   CreateDirectory "$SMPROGRAMS\${SM_Folder}"
   CreateShortcut "$SMPROGRAMS\${SM_Folder}\${LNK_NAME}" "$INSTDIR\${MAIN_APP_EXE}"
@@ -141,18 +191,11 @@ Section "Desktop shortcuts" Shortcuts_Desktop
   CreateShortCut "$DESKTOP\${LNK_NAME}" "$INSTDIR\${MAIN_APP_EXE}"
 SectionEnd
 
-Function CheckAnonymousStats
-  IfFileExists $INSTDIR\SendAnonymousStats.yes +2 0
-  FileOpen $1 "$INSTDIR\SendAnonymousStats.no" w
-  FileClose $1
-FunctionEnd
-
 Section "Main files" InstSec
   SectionIn RO
 
   SetOutPath "$INSTDIR"
   
-  Call CheckAnonymousStats
   DetailPrint "Extracting package..."
   SetDetailsPrint listonly
   File "${INSTALLER_7Z}"
@@ -184,7 +227,28 @@ Section "Main files" InstSec
   WriteRegStr HKCR "tcno" "URL Protocol" ""
   WriteRegStr HKCR "tcno\Shell\Open\Command\" "" `"$INSTDIR\${MAIN_APP_EXE}" "%1"`
   
-  ExecShell "" "$INSTDIR\${FIRST_RUN_EXE}"
+  CreateDirectory "$AppData\${SM_Folder}"
+  Delete "$AppData\${SM_Folder}\SendAnonymousStats.yes"
+  Delete "$AppData\${SM_Folder}\SendAnonymousStats.no"
+  ${If} $CheckStatsState <> 0
+    FileOpen $1 "$AppData\${SM_Folder}\SendAnonymousStats.yes" w
+    FileClose $1
+  ${Else}
+    FileOpen $1 "$AppData\${SM_Folder}\SendAnonymousStats.no" w
+    FileClose $1
+  ${EndIf}
+
+  Delete "$AppData\${SM_Folder}\OfflineMode.yes"
+  Delete "$AppData\${SM_Folder}\OfflineMode.no"
+  ${If} $CheckOfflineModeState <> 0
+    FileOpen $1 "$AppData\${SM_Folder}\OfflineMode.yes" w
+    FileClose $1
+  ${Else}
+    FileOpen $1 "$AppData\${SM_Folder}\OfflineMode.no" w
+    FileClose $1
+  ${EndIf}
+
+  ExecShell "" "$INSTDIR\${FIRST_RUN_EXE}" "nostart"
 SectionEnd
 ;--------------------------------
 ;Descriptions
@@ -193,21 +257,18 @@ SectionEnd
   LangString DESC_InstSec ${LANG_ENGLISH} "All the program files"
   LangString DESC_Shortcuts_StartMenu ${LANG_ENGLISH} "Launch & Uninstall shortcuts, placed into your Start Menu."
   LangString DESC_Shortcuts_Desktop ${LANG_ENGLISH} "Shortcut to launch the program, placed onto your Desktop."
-  LangString DESC_Anonymous_Stats ${LANG_ENGLISH} "Send anonymous statistics to help improve the program. As defined on Privacy Policy page."
 
   ;Assign language strings to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
     !insertmacro MUI_DESCRIPTION_TEXT ${InstSec} $(DESC_InstSec)
     !insertmacro MUI_DESCRIPTION_TEXT ${Shortcuts_StartMenu} $(DESC_Shortcuts_StartMenu)
     !insertmacro MUI_DESCRIPTION_TEXT ${Shortcuts_Desktop} $(DESC_Shortcuts_Desktop)
-    !insertmacro MUI_DESCRIPTION_TEXT ${Anonymous_Stats} $(DESC_Anonymous_Stats)
   !insertmacro MUI_FUNCTION_DESCRIPTION_END
  
 ;--------------------------------
 ;Uninstaller Section
 
 Section "Uninstall"
-
   RMDir /r "$INSTDIR"
   ;Remove start shortcuts
   RMDIR /r "$SMPROGRAMS\${SM_Folder}"

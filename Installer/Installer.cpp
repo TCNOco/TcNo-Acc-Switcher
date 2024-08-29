@@ -73,7 +73,8 @@ int main(int argc, char* argv[])
 			exit(1);
 		}
 
-		launch_tcno_program(argv[argc - 1]);
+		if (!args_contain("nostart", argc, argv))
+			launch_tcno_program(argv[argc - 1]);
 	}
 
 	cout << "Currently installed runtimes:" << endl;
@@ -87,13 +88,10 @@ int main(int argc, char* argv[])
 	download_install_missing_runtimes();
 
 	// Launch main program:
-	string exe_name = "TcNo-Acc-Switcher.exe";
-	//STARTUPINFO si = { sizeof(STARTUPINFO) };
-	//PROCESS_INFORMATION pi;
-	//CreateProcess(s2_ws(main_path).c_str(), nullptr, nullptr,
-	//    nullptr, 0, 0, nullptr, nullptr, &si, &pi);
+	if (!args_contain("nostart", argc, argv)) {
+		string exe_name = "TcNo-Acc-Switcher.exe";
 
-
-	exec_process(std::wstring(operating_path.begin(), operating_path.end()),
-	             std::wstring(exe_name.begin(), exe_name.end()), L"");
+		exec_process(std::wstring(operating_path.begin(), operating_path.end()),
+			std::wstring(exe_name.begin(), exe_name.end()), L"");
+	}
 }
