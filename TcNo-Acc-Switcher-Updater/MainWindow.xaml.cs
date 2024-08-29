@@ -21,6 +21,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Security.Principal;
@@ -207,6 +208,7 @@ namespace TcNo_Acc_Switcher_Updater
         }
 
         private Dictionary<string, string> _updatesAndChanges = new();
+        private string latestAvailable = "";
 
         private readonly string
             _updaterDirectory =
@@ -425,20 +427,14 @@ namespace TcNo_Acc_Switcher_Updater
 
             SetStatus("Checking for updates");
 
+            if (VerifyAndClose) // Verify and close only works if up to date
+            {
+                new Thread(DoVerifyAndExit).Start();
+                return;
+            }
+
             // Get info on updates, and get updates since last:
             GetUpdatesList(ref _updatesAndChanges);
-            if (_updatesAndChanges.Count == 0)
-            {
-                if (VerifyAndClose) // Verify and close only works if up to date
-                {
-                    new Thread(DoVerifyAndExit).Start();
-                    return;
-                }
-
-                CreateVerifyAndExitButton();
-            }
-            else if (VerifyAndClose)
-                WriteLine("To verify files you need to update first.");
 
             _updatesAndChanges = _updatesAndChanges.Reverse().ToDictionary(x => x.Key, x => x.Value);
         }
@@ -540,43 +536,16 @@ namespace TcNo_Acc_Switcher_Updater
 
             // Download CEF files from tcno.co
             SetStatusAndLog("Preparing to install Chrome Embedded Framework");
-            SetStatusAndLog("Downloading CEF (~60MB)");
-            var downloadUrl = "https://tcno.co/Projects/AccSwitcher/updates/CEF.7z";
-            var updateFilePath = Path.Join(_updaterDirectory, "CEF.7z");
-            DownloadFile(new Uri(downloadUrl), updateFilePath);
-            SetStatusAndLog("Download complete.");
-
-            SetStatusAndLog("Extracting...");
-            var tempCef = Path.Join(_updaterDirectory, "../CEF");
-            using var archiveFile = new ArchiveFile(updateFilePath);
-            try
-            {
-                archiveFile.Extract(tempCef, true); // extract all to parent folder (not updater)
-            }
-            catch (Exception e)
-            {
-                SetStatusAndLog("Error extracting CEF files: " + e.Message);
-                try
-                {
-                    File.Delete(updateFilePath);
-                    RecursiveDelete(tempCef, false);
-                }
-                catch (Exception exception)
-                {
-                    SetStatusAndLog("Error deleting CEF files: " + exception.Message);
-                }
-                return;
-            }
-
-            SetStatusAndLog("Moving files...");
-            Directory.CreateDirectory("runtimes//win-x64//native");
-            MoveFilesRecursive(tempCef, "runtimes//win-x64//native");
-            RecursiveDelete(tempCef, false);
-            SetStatusAndLog("Done.");
-
-            SetStatusAndLog("Starting account switcher in 3 seconds.");
-            Thread.Sleep(3000);
-            LaunchAccSwitcher(null, null);
+            SetStatus("Checking latest version number");
+            var client = new WebClient();
+#if DEBUG
+            latestAvailable = client.DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api?debug&v=" +
+                                              _currentVersion));
+#else
+             latestAvailable = client.DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api?v=" +
+                                                          _currentVersion));
+#endif
+            DoUpdate(cef: true);
         }
 
         /// <summary>
@@ -693,30 +662,16 @@ namespace TcNo_Acc_Switcher_Updater
             }
         }
 
+        private void DoUpdate() => DoUpdate(false);
+
         /// <summary>
         /// Starts and does the update process
         /// </summary>
-        private void DoUpdate()
+        private void DoUpdate(bool cef = false)
         {
-            //var updaterDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location); // Where this program is located
-            //Directory.SetCurrentDirectory(Directory.GetParent(updaterDirectory!)!.ToString()); // Set working directory to same as .exe
-            //CreateUpdate();
-
-            // 1. Download update.7z
-            // 2. Extract --> Done, mostly
-            // 3. Delete files that need to be removed. --> Done, mostly
-            // 4. Run patches from working folder and patches --> Done, mostly
-            // 4. Run patches from working folder and patches --> Done, mostly
-            // 5. Copy in new files --> Done
-            // 6. Delete working temp folder, and update --> Done
-            // 7. Download latest hash list and verify
-            // 8. Copy and replace files in Documents folder (New 2021-06-15)
-            // --> Update the updater through the main program with a simple hash check there.
-            // ----> Just re-download the whole thing, or make a copy of it to update itself with,
-            // ----> then get the main program to replace the updater (Most likely).
-
             ButtonHandler(false, "Started");
             SetStatusAndLog("Closing TcNo Account Switcher instances (if any).");
+
             // Check if files are in use
             var CheckFolder = Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty)?.FullName;
             WriteLine($"Exiting all .exe's in {CheckFolder}");
@@ -728,94 +683,50 @@ namespace TcNo_Acc_Switcher_Updater
                 Directory.Move("wwwroot", "originalwwwroot");
             }
 
-            // APPLY UPDATE
             // Cleanup previous updates
             RecursiveDelete("temp_update", false);
 
-            foreach (var (key, _) in _updatesAndChanges)
+            // This updater doesn't download and run the installer, this just updates in-place. This method works properly for both the portable and installed version.
+            // Get latest version from _updatesAndChanges[0]'s key
+            _latestVersion = latestAvailable;
+            if (cef) SetStatusAndLog($"Downloading update: {_latestVersion} + CEF (~110MB)");
+            else SetStatusAndLog($"Downloading update: {_latestVersion} (~40MB)");
+
+
+            var downloadUrl = "";
+            if (cef) downloadUrl = $"https://github.com/TCNOco/TcNo-Acc-Switcher/releases/download/{_latestVersion}/TcNo-Acc-Switcher_and_CEF_{_latestVersion}.7z";
+            else downloadUrl = $"https://github.com/TCNOco/TcNo-Acc-Switcher/releases/download/{_latestVersion}/TcNo-Acc-Switcher_{_latestVersion}.7z";
+            var updateFilePath = Path.Join(_updaterDirectory, _latestVersion + ".7z");
+            DownloadFile(new Uri(downloadUrl), updateFilePath);
+            SetStatusAndLog("Download complete.");
+
+            // Apply the update.
+            var currentDir = Directory.GetCurrentDirectory();
+            _ = Directory.CreateDirectory("temp_update");
+            SetStatusAndLog("Extracting patch files");
+            using (var archiveFile = new ArchiveFile(updateFilePath))
             {
-                // This update .exe exists inside an "update" folder, in the TcNo Account Switcher directory.
-                // Set the working folder as the parent to this one, where the main program files are located.
-                SetStatusAndLog("Downloading update: " + key);
-                var downloadUrl = "https://tcno.co/Projects/AccSwitcher/updates/" + key + ".7z";
-                var updateFilePath = Path.Join(_updaterDirectory, key + ".7z");
-                DownloadFile(new Uri(downloadUrl), updateFilePath);
-                SetStatusAndLog("Download complete.");
-
-                // Apply update
-                try
-                {
-                    ApplyUpdate(updateFilePath);
-                    SetStatusAndLog("Patch applied.");
-                }
-                catch (Exception ex) when (ex is SevenZipException or FormatException)
-                {
-                    // Skip straight to verification
-                    WriteLine("Failed to extract update.");
-                    WriteLine("Verifying files to skip all small updates, and just jump to latest.");
-                    SetStatus("Patch failed.");
-                    break;
-                }
-                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
-                {
-                    // Stop process and add verify button
-                    string[] lines =
-                    {
-                        "ERROR: Some of the files are in use and/or can not be updated.",
-                        "",
-                        "1. Make sure all TcNo processes are completely closed",
-                        "(or restart your PC)",
-                        "",
-                        "2. Then click Verify below, or if you restarted:",
-                        "-   Open this updater and verify files",
-                        "    (located in the 'updater' folder in the install directory)",
-                        "",
-                        "See <Install>/UpdaterErrorLogs/ for details."
-                    };
-                    foreach (var l in lines)
-                        WriteLine(l);
-                    _ = MessageBox.Show(string.Join(Environment.NewLine, lines), "Unable to update",
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-
-                    App.LogToErrorFile($"Failed update due to file error: {ex}");
-
-                    SetStatus("Press button below!");
-                    CreateVerifyAndExitButton();
-                    return;
-                }
-
-                WriteLine("");
-
-                // Cleanup
-                RecursiveDelete("temp_update", false);
-                DeleteFile(updateFilePath);
-                _oldDict = new Dictionary<string, string>();
-                _newDict = new Dictionary<string, string>();
-                _patchList = new List<string>();
+                archiveFile.Extract("temp_update", true); // extract all
             }
 
-            VerifyFiles();
+            SetStatusAndLog("Applying update. Window will close...");
 
-            if (File.Exists(_windowSettings))
+            // Copy _First_Run_Installer.exe to a temporary folder in %temp%.
+            var tempFolder = Path.Combine(Path.GetTempPath(), "TcNo-Acc-Switcher");
+            var tempFolderInstaller = Path.Combine(tempFolder, "_First_Run_Installer.exe");
+            Directory.CreateDirectory(tempFolder);
+            File.Copy(Path.Combine(currentDir, "updater", "_First_Run_Installer.exe"), tempFolderInstaller, true);
+
+            // Run this temp folder with the temp_update full path as arg 1 and the current directory as arg 2
+            Process.Start(new ProcessStartInfo
             {
-                var o = JObject.Parse(UGlobals.ReadAllText(_windowSettings));
-                o["Version"] = _latestVersion;
-                // Save all settings back into file
-                File.WriteAllText(_windowSettings, o.ToString());
-            }
+                FileName = tempFolderInstaller,
+                Arguments = $"finalizeupdate \"{Path.Combine(currentDir, "temp_update")}\" \"{currentDir}\"",
+                UseShellExecute = true
+            });
 
-            SetStatusAndLog("Updating files in AppData!");
-            InitWwwroot(true);
-            InitFolder("themes", true);
-
-            WriteLine("");
-            SetStatusAndLog("All updates complete!");
-            ButtonHandler(true, "Start Acc Switcher");
-            _ = Dispatcher.BeginInvoke(new Action(() =>
-            {
-                StartButton.Click -= StartUpdate_Click;
-                StartButton.Click += LaunchAccSwitcher;
-            }), DispatcherPriority.Normal);
+            // Exit
+            Environment.Exit(1);
         }
 
         /// <summary>
@@ -845,118 +756,40 @@ namespace TcNo_Acc_Switcher_Updater
         /// </summary>
         private void VerifyFiles()
         {
-            // Compare hash list to files, and download any files that don't match
             var client = new WebClient();
-            client.DownloadProgressChanged -= OnClientOnDownloadProgressChanged;
-            SetStatusAndLog("Verifying...");
-            WriteLine("Downloading latest hash list... ");
-            const string hashFilePath = "hashes.json";
-            try
-            {
-                client.DownloadFile(new Uri("https://tcno.co/Projects/AccSwitcher/latest/hashes.json"), hashFilePath);
-            }
-            catch (WebException e)
-            {
-                _ = MessageBox.Show(
-                    "Could not connect to tcno.co to verify files. You can try manually downloading the installer from the GitHub page, and reinstalling to update." +
-                    Environment.NewLine + Environment.NewLine + "Error: " + e, "Could not reach update server",
-                    MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK,
-                    MessageBoxOptions.DefaultDesktopOnly);
-                Logger.WriteLine($"Verify Files failed: Exiting - {e}");
-                Environment.Exit(1);
-            }
+#if DEBUG
+            latestAvailable = client.DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api?debug&v=" +
+                                              _currentVersion));
+#else
+             latestAvailable = client.DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api?v=" +
+                                                          _currentVersion));
+#endif
+            // Find if using CEF from settings file
 
+            var usingCef = usingCEF();
+            DoUpdate(cef: usingCef);
+        }
+        private static bool usingCEF()
+        {
+            var path = File.Exists(Path.Join(AppDataFolder, "userdata_path.txt"))
+                ? UGlobals.ReadAllLines(Path.Join(AppDataFolder, "userdata_path.txt"))[0].Trim()
+                : Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TcNo Account Switcher\\");
+
+            var windowSettingsPath = Path.Join(path, "WindowSettings.json");
             try
             {
-                var verifyDictionary =
-                    JsonConvert.DeserializeObject<Dictionary<string, string>>(UGlobals.ReadAllText(hashFilePath));
-                if (verifyDictionary != null)
+                if (File.Exists(windowSettingsPath))
                 {
-                    var verifyDictTotal = verifyDictionary.Count;
-                    var cur = 0;
-                    UpdateProgress(0);
-                    foreach (var (oKey, value) in verifyDictionary)
-                    {
-                        var key = oKey;
-                        if (key.StartsWith("updater")) continue; // Ignore own files >> Otherwise IOException
-                        if (key.StartsWith("runtimes") && IsCefFile(key))
-                        {
-                            if (_mainBrowser != "CEF")
-                            {
-                                if (!File.Exists(key)) File.Create(key).Dispose(); // Create empty file
-                                continue; // Ignore CEF files if not using CEF
-                            }
-
-                            // Using CEF
-                            // Check if filesize is < 1000KB : Delete
-                            if (new FileInfo(key).Length < 1000000)
-                            {
-                                WriteLine("Deleting: " + key);
-                                DeleteFile(key);
-                            }
-                        }
-                        cur++;
-                        UpdateProgress(cur * 100 / verifyDictTotal);
-                        if (!File.Exists(key))
-                            WriteLine("FILE MISSING: " + key);
-                        else
-                        {
-                            var md5 = GetFileMd5(key);
-                            if (value == md5) continue;
-
-                            WriteLine("File: " + key + " has MD5: " + md5 + " EXPECTED: " + value);
-                            WriteLine("Deleting: " + key);
-                            DeleteFile(key);
-                        }
-
-                        WriteLine("Downloading file from website...");
-                        var uri = new Uri("https://tcno.co/Projects/AccSwitcher/latest/" + oKey.Replace('\\', '/'));
-
-                        var path = Path.GetDirectoryName(key);
-                        if (!string.IsNullOrEmpty(path))
-                            _ = Directory.CreateDirectory(path);
-
-                        client.DownloadFile(uri, key);
-                    }
-
-                    WriteLine(Environment.NewLine +
-                              "Copying files to %AppData%/TcNo Account Switcher... (unless set otherwise)");
-                    InitWwwroot(true); // Overwrite files in Documents
-                    WriteLine("Done.");
+                    var o = JObject.Parse(UGlobals.ReadAllText(windowSettingsPath));
+                    return o["ActiveBrowser"]?.ToString().ToLowerInvariant() != "webview";
                 }
-
-                DeleteFile(hashFilePath);
-                WriteLine("Files verified!");
-                UpdateProgress(100);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                // Stop process and add verify button
-                string[] lines =
-                {
-                    "ERROR: Some of the files are in use and/or can not be verified.",
-                    "",
-                    "1. Make sure all TcNo processes are completely closed",
-                    "(or restart your PC)",
-                    "",
-                    "2. Then click Verify below (to try again), or if you restarted:",
-                    "-   Open this updater and verify files",
-                    "    (located in the 'updater' folder in the install directory)",
-                    "",
-                    "See <Install>/UpdaterErrorLogs/ for details."
-                };
-                foreach (var l in lines)
-                    WriteLine(l);
-                _ = MessageBox.Show(string.Join(Environment.NewLine, lines), "Unable to verify files",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-
-                App.LogToErrorFile($"Failed verify due to file error: {ex}");
-
-                SetStatus("Press button below!");
-                CreateVerifyAndExitButton();
+                return true;
             }
 
-
+            return true;
         }
 
         /// <summary>
@@ -988,17 +821,18 @@ namespace TcNo_Acc_Switcher_Updater
         /// <param name="updatesAndChanges"></param>
         private void GetUpdatesList(ref Dictionary<string, string> updatesAndChanges)
         {
-            double totalFileSize = 0;
-
             var client = new WebClient();
             client.Headers.Add("Cache-Control", "no-cache");
 #if DEBUG
             var versions =
                 client.DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api/update?debug&v=" +
                                               _currentVersion));
+            latestAvailable = client.DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api?debug&v=" +
+                                              _currentVersion));
 #else
-            var versions =
- client.DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api/update?v=" + _currentVersion));
+            var versions = client.DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api/update?v=" + _currentVersion));
+             latestAvailable = client.DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api?v=" +
+                                                          _currentVersion));
 #endif
             try
             {
@@ -1018,11 +852,9 @@ namespace TcNo_Acc_Switcher_Updater
                     }
 
                     var updateDetails = jUpdate.Value[0]!.ToString();
-                    var updateSize = FileSizeString((double) jUpdate.Value[1]);
-                    totalFileSize += (double) jUpdate.Value[1];
 
                     updatesAndChanges.Add(jUpdate.Name, jUpdate.Value.ToString());
-                    WriteLine($"Update found: {jUpdate.Name} [{updateSize}]");
+                    WriteLine($"Update found: {jUpdate.Name}");
                     WriteLine("- " + updateDetails);
                     WriteLine("");
                 }
@@ -1031,7 +863,6 @@ namespace TcNo_Acc_Switcher_Updater
                 WriteLine($"Total updates found: {updatesAndChanges.Count}");
                 if (updatesAndChanges.Count > 0)
                 {
-                    WriteLine($"Total size: {FileSizeString(totalFileSize)}");
                     WriteLine("-------------------------------------------");
                     WriteLine("Click the button below to start the update.");
                     ButtonHandler(true, "Start update");

@@ -43,6 +43,73 @@ void launch_tcno_program(const char* arg)
 	             std::wstring(exe_name.begin(), exe_name.end()), L"");
 }
 
+#include <iostream>
+#include <filesystem>
+#include <cstdlib>
+
+namespace fs = std::filesystem;
+
+void move_recursive(const fs::path& from, const fs::path& to) {
+	try {
+		// Ensure the destination directory exists
+		if (!fs::exists(to)) {
+			fs::create_directories(to);
+		}
+
+		// Iterate through all files and directories in the source directory
+		for (const auto& entry : fs::recursive_directory_iterator(from)) {
+			const auto& path = entry.path();
+			auto relative_path = fs::relative(path, from);
+			auto dest_path = to / relative_path;
+
+			if (fs::is_directory(path)) {
+				// Create directories in the destination
+				if (!fs::exists(dest_path)) {
+					fs::create_directory(dest_path);
+				}
+			}
+			else if (fs::is_regular_file(path)) {
+				fs::rename(path, dest_path);
+			}
+		}
+
+		// Remove the source directory if it's empty
+		fs::remove_all(from);
+	}
+	catch (const fs::filesystem_error& e) {
+		std::cerr << "Filesystem error: " << e.what() << std::endl;
+		std::exit(1);
+	}
+}
+
+int finalizeUpdate(std::string sfrom, std::string sto) {
+	std::cout << "Finalizing update..." << std::endl;
+	std::cout << "Moving files from temp folder to install folder." << std::endl << std::endl;
+	std::cout << "From: " << sfrom << std::endl << "To: " << sto << std::endl << std::endl;
+	fs::path from(sfrom);
+	fs::path to(sto);
+
+	if (!fs::exists(from) || !fs::is_directory(from)) {
+		std::cerr << "Source path does not exist or is not a directory." << std::endl;
+		return 1;
+	}
+
+	move_recursive(from, to);
+
+	// Launch the main program from sto/TcNo-Acc-Switcher.exe in sto
+	std::string exe_name = "TcNo-Acc-Switcher.exe";
+	std::string operating_path = sto;
+	if (operating_path.back() != '\\') operating_path += '\\';
+	std::string full_path = operating_path + exe_name;
+
+	std::cout << "Running: " << exe_name << std::endl;
+
+	exec_process(std::wstring(operating_path.begin(), operating_path.end()),
+		std::wstring(exe_name.begin(), exe_name.end()), L"");
+
+	return 0;
+}
+
 int main(int argc, char* argv[])
 {
 	// Goal of this application:
@@ -58,6 +125,14 @@ int main(int argc, char* argv[])
 	// Otherwise, launch that, assuming it is a program.
 	if (argc > 1)
 	{
+		if (args_contain("finalizeupdate", argc, argv))
+		{
+			std::string from = argv[2];
+			std::string to = argv[3];
+			finalizeUpdate(from, to);
+			exit(1);
+		}
+
 		if (args_contain("vc", argc, argv))
 		{
 			verify_vc();

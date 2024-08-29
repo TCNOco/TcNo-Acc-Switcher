@@ -101,7 +101,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonProperty("ServerPort", Order = 3)] private int _serverPort = 1337;
         [JsonProperty("WindowSize", Order = 4)] private Point _windowSize = new() { X = 800, Y = 450 };
         [JsonProperty("AllowTransparency", Order = 5)] private bool _allowTransparency = true;
-        [JsonProperty("Version", Order = 6)] private readonly string _version = Globals.Version;
+        [JsonProperty("Version", Order = 6)] private string _version = Globals.Version;
         [JsonProperty("DisabledPlatforms", Order = 7)] private SortedSet<string> _disabledPlatforms = new();
         [JsonProperty("TrayMinimizeNotExit", Order = 8)] private bool _trayMinimizeNotExit;
         [JsonProperty("ShownMinimizedNotification", Order = 9)] private bool _shownMinimizedNotification;
@@ -136,7 +136,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static int ServerPort { get => Instance._serverPort; set => Instance._serverPort = value; }
         public static Point WindowSize { get => Instance._windowSize; set => Instance._windowSize = value; }
         public static bool AllowTransparency { get => Instance._allowTransparency; set => Instance._allowTransparency = value; }
-        public static string Version => Instance._version;
+        public static string Version { get => Instance._version; set => Instance._version = value; }
 
         public static SortedSet<string> DisabledPlatforms { get => Instance._disabledPlatforms; set => Instance._disabledPlatforms = value; }
 

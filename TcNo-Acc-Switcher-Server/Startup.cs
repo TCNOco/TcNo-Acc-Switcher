@@ -127,6 +127,8 @@ namespace TcNo_Acc_Switcher_Server
 
             // Check for Platforms.json update
             if (!AppSettings.OfflineMode) UpdatePlatformsJson();
+            AppSettings.Version = Globals.Version;
+            AppSettings.SaveSettings();
         }
 
         private static void CheckInstallerOptions()

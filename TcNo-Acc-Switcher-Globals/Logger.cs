@@ -172,7 +172,6 @@ namespace TcNo_Acc_Switcher_Globals
                 //To display an error notification, the main program needs to be started as that's the Windows client. This is a cross-platform compatible binary. Adding the Presentation DLL causes issues.
                 File.WriteAllText("LastError.txt",
                     "Fatal error occurred!" + Environment.NewLine +
-                    "This crashlog will be automatically submitted next launch." + Environment.NewLine +
                     Environment.NewLine + "Error: " + e.ExceptionObject);
 
                 // Reset language
