@@ -368,7 +368,6 @@ Installer_VerifyMin: "Verificați dacă îndepliniți cerințele minime recomand
 Installer_VerifyAlready: "Se pare că totul este instalat. Verificați dacă îndepliniți cerințele minime recomandate:"
 Installer_Complete: Asta ar trebui să fie totul. Programul principal, TcNo-Acc-Switcher.exe, se va rula automat.
 Installer_Complete2: "Dacă nu funcționează, consultați instrucțiunile de instalare, aici: {link}"
-Global_FatalNext: "A apărut o eroare fatală! Acest jurnal de accidente va fi trimis automat la următoarea lansare."
 Tray_Error: Eroare tavă
 Tray_NoAccs: "Nu au fost găsite conturi.\nÎncercați mai întâi să comutați conturile sau localizați „Tray_Users.json”"
 Tray_Switch: "Comutare la: {account}"

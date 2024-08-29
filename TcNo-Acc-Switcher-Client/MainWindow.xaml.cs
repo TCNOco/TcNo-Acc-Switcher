@@ -234,7 +234,10 @@ namespace TcNo_Acc_Switcher_Client
                 }
                 else
                 {
-                    AppSettings.AutoStartUpdaterAsAdmin("verify");
+                    if (AppSettings.OfflineMode)
+                        _ = MessageBox.Show("You are in offline mode, this feature cannot be used.", "Offline Mode", MessageBoxButton.OK, MessageBoxImage.Error);
+                    else
+                        AppSettings.AutoStartUpdaterAsAdmin("verify");
                     Environment.Exit(1);
                 }
             }
@@ -303,18 +306,21 @@ namespace TcNo_Acc_Switcher_Client
             UrlChanged(args.Uri);
         }
         /// <summary>
-        /// Rungs on URI change in the WebView.
+        /// Runs on URI change in the WebView.
         /// </summary>
         private void UrlChanged(string uri)
         {
-            Globals.WriteToLog(uri);
+            // // Unused:
+            // // This was originally for allowing users to activate keys for specific accounts
+            // // This was never fleshed out fully, and remains just coments for now.
 
-            // Currently just for testing!
-            // This is used with Steam/SteamKeys.cs for future functionality!
-            if (uri.Contains("store.steampowered.com"))
-                _ = RunCookieCheck("steampowered.com");
+            //Globals.WriteToLog(uri);
 
-            if (uri.Contains("EXIT_APP")) Environment.Exit(0);
+            //// This is used with Steam/SteamKeys.cs for future functionality!
+            //if (uri.Contains("store.steampowered.com"))
+            //    _ = RunCookieCheck("steampowered.com");
+
+            //if (uri.Contains("EXIT_APP")) Environment.Exit(0);
         }
 
         /// <summary>

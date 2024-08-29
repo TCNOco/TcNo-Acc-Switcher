@@ -368,7 +368,6 @@ Installer_VerifyMin: "Comprova que compleixes els requisits mínims recomanats:"
 Installer_VerifyAlready: "Sembla que tot està instal·lat. Comprova que compleixes els requisits mínims recomanats:"
 Installer_Complete: Això hauria de ser tot. El programa principal, TcNo-Acc-Switcher.exe, s'executarà automàticament.
 Installer_Complete2: "Si no funciona, consulteu les instruccions d'instal·lació, aquí: {link}"
-Global_FatalNext: "S'ha produït un error fatal! Aquest bloc d'error s'enviarà automàticament el proper inici."
 Tray_Error: Error de safata
 Tray_NoAccs: "No s'han trobat comptes.\nProva de canviar de compte primer, o localitza 'Tray_Users.json'"
 Tray_Switch: "Canvia a: {account}"

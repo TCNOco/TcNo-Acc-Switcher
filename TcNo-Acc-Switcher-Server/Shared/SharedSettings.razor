@@ -81,6 +81,14 @@
 <h2 class="SettingsHeader">@Locale["Settings_Header_System"]</h2>
 <div class="rowSetting">
     <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="AppSett_OfflineMode" @bind="AppSettings.OfflineMode" @onclick="AppData.OfflineMode_Toggle"><label class="form-check-label" for="AppSett_OfflineMode"></label>
+    </div>
+    <label for="AppSett_OfflineMode">
+        @Locale["Settings_OfflineMode"]<br>
+    </label>
+</div>
+<div class="rowSetting">
+    <div class="form-check">
         <input class="form-check-input" type="checkbox" id="AppSett_DesktopShortcut" @bind="AppSettings.DesktopShortcut" @onclick="AppSettings.DesktopShortcut_Toggle"><label class="form-check-label" for="AppSett_DesktopShortcut"></label>
     </div>
     <label for="AppSett_DesktopShortcut">
@@ -186,6 +194,12 @@
     </label>
 </div>
 <div class="rowSetting">
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="AppSett_CheckForUpdates" @bind="AppSettings.CheckForUpdates"><label class="form-check-label" for="AppSett_CheckForUpdates"></label>
+    </div>
+    <label for="AppSett_CheckForUpdates">
+        @Locale["Settings_CheckForUpdates"]<br>
+    </label>
     <div class="form-check">
         <input class="form-check-input" type="checkbox" id="AppSett_AutoUpdatePlatforms" @bind="AppSettings.AutoUpdatePlatforms"><label class="form-check-label" for="AppSett_AutoUpdatePlatforms"></label>
     </div>

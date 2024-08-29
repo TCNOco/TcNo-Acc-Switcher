@@ -272,6 +272,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("StartSilent", Order = 20)] private bool _startSilent;
         [JsonProperty("OldUi", Order = 21)] private bool _oldUi;
         [JsonProperty("ShowSteamSwitcher", Order = 22)] private bool _showSteamSwitcher = false;
+        [JsonProperty("CollectInfo", Order = 23)] private bool _collectInfo = true;
         [JsonIgnore] private bool _desktopShortcut;
         [JsonIgnore] private int _lastAccTimestamp = 0;
         [JsonIgnore] private string _lastAccName = "";
@@ -289,6 +290,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
         public static bool Admin { get => Instance._admin; set => Instance._admin = value; }
         public static bool ShowSteamSwitcher { get => Instance._showSteamSwitcher; set => Instance._showSteamSwitcher = value; }
+        public static bool CollectInfo { get => Instance._collectInfo; set => Instance._collectInfo = value; }
 
         public static bool AutoStart { get => Instance._autoStart; set => Instance._autoStart = value; }
 

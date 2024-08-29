@@ -368,7 +368,6 @@ Installer_VerifyMin: "确认您已满足建议的最低要求："
 Installer_VerifyAlready: "看起来一切都已安装。请确认您已满足建议的最低要求："
 Installer_Complete: 一切应该都已完成。主程序 TcNo-Acc-Switcher.exe 将自动运行。
 Installer_Complete2: "如果不起作用，请参考这里的安装说明：{link}"
-Global_FatalNext: "出现致命错误！此崩溃日志将在下次启动时自动提交。"
 Tray_Error: 托盘错误
 Tray_NoAccs: "未找到帐户。\n先尝试切换帐户，或定位到“Tray_Users.json”"
 Tray_Switch: "切换到：{account}"

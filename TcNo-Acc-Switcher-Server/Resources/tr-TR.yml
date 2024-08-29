@@ -368,7 +368,6 @@ Installer_VerifyMin: "Önerilen minimum gereksinimleri karşıladığınızdan e
 Installer_VerifyAlready: "Her şey kurulu gibi görünüyor. Önerilen minimum gereksinimleri karşıladığınızdan emin olun:"
 Installer_Complete: Her şey bu olmalı. Ana program, TcNo-Acc-Switcher.exe, otomatik olarak çalışacaktır.
 Installer_Complete2: "Çalışmazsa, lütfen kurulum talimatlarına bakın, burada: {link}"
-Global_FatalNext: "Önemli bir hata oluştu! Bu çökme günlüğü bir sonraki lansmanda otomatik olarak gönderilecektir."
 Tray_Error: Tepsi Hatası
 Tray_NoAccs: "Hiçbir hesap bulunamadı.\nÖnce hesap değiştirmeyi deneyin veya 'Tray_Users.json'u bulun"
 Tray_Switch: "Şuraya geç: {account}"

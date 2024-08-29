@@ -85,7 +85,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             }
 
             // If Steam Web API key to be used instead
-            if (SteamSettings.SteamWebApiKey != "")
+            if (!AppSettings.OfflineMode && SteamSettings.SteamWebApiKey != "")
             {
                 // Handle all image downloads
                 await WebApiPrepareImages();
@@ -219,6 +219,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
         public static void DownloadSteamAppsData()
         {
+            if (!AppSettings.OfflineMode) {
+                Globals.DebugWriteLine($@"Error downloading Steam app list: OFFLINE MODE");
+                return;
+            }
+
             _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_Steam_DownloadingAppIds"], renderTo: "toastarea");
 
             try
@@ -532,6 +537,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 $@"[Func:Steam\SteamSwitcherFuncs.PrepareProfile] Preparing image and ban info for: {su.SteamId.Substring(su.SteamId.Length - 4, 4)}");
             _ = Directory.CreateDirectory(SteamSettings.SteamImagePath);
 
+            if (!SteamSettings.CollectInfo) su.ImgUrl = "img/QuestionMark.jpg";
+
             var dlDir = $"{SteamSettings.SteamImagePath}{su.SteamId}.jpg";
             var cachedFile = $"LoginCache/Steam/VACCache/{su.SteamId}.xml";
 
@@ -589,10 +596,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
             if (!File.Exists(cachedFile)) profileXml.Save(cachedFile);
 
-
             if (profileXml.DocumentElement == null ||
                 profileXml.DocumentElement.SelectNodes("/profile/privacyMessage")?.Count != 0) return;
-
 
             // 3. Set ban info in SteamUsers
             ProcessSteamUserXml(profileXml);
@@ -602,8 +607,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             {
                 try
                 {
-                    Globals.DownloadFile(su.ImageDownloadUrl, dlDir);
-                    su.ImgUrl = $"{SteamSettings.SteamImagePathHtml}{su.SteamId}.jpg";
+                    if (AppSettings.OfflineMode)
+                    {
+                        Globals.DownloadFile(su.ImageDownloadUrl, dlDir);
+                        su.ImgUrl = $"{SteamSettings.SteamImagePathHtml}{su.SteamId}.jpg";
+                    }
+                    else
+                        su.ImgUrl = "img/QuestionMark.jpg";
                     return;
                 }
                 catch (WebException ex)
@@ -944,7 +954,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             {
                 SetShowSteamSwitcher();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 GeneralInvocableFuncs.ShowToast("error", Lang["CouldntModifyX", new { file = Path.Join(SteamSettings.FolderPath, "config", "config.vdf") }]);
             }

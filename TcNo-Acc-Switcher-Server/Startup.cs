@@ -123,7 +123,7 @@ namespace TcNo_Acc_Switcher_Server
             if (OperatingSystem.IsWindows()) UpdateRegistryVersion(Globals.Version);
 
             // Check for Platforms.json update
-            UpdatePlatformsJson();
+            if (!AppSettings.OfflineMode) UpdatePlatformsJson();
         }
 
         public static void CurrentDomain_OnProcessExit(object sender, EventArgs e)

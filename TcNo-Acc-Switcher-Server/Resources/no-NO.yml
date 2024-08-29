@@ -368,7 +368,6 @@ Installer_VerifyMin: "Bekreft at du oppfyller minimumskravene:"
 Installer_VerifyAlready: "Det ser ut som alt er installert. Bekreft at du oppfyller minimumskravene:"
 Installer_Complete: Det burde være alt. Hovedprogrammet, TcNo-Acc-Switcher.exe, kjøres automatisk.
 Installer_Complete2: "Hvis det ikke fungerer, se installasjonsinstruksjonene her: {link}"
-Global_FatalNext: "Det oppsto en fatal feil! Denne krasjloggen sendes automatisk neste lansering."
 Tray_Error: Skuffefeil
 Tray_NoAccs: "Det ble ikke funnet noen kontoer.\nPrøv å bytte konto først, eller finn 'Tray_Users.json'"
 Tray_Switch: "Bytt til: {account}"

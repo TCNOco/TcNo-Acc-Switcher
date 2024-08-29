@@ -65,6 +65,11 @@
                     @Locale["Settings_ShowSteamSwitcher"]<br>
                 </label>
             </div>
+            <div>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="CollectInfo" @bind="Steam.CollectInfo"><label class="form-check-label" for="CollectInfo"></label></div><label for="CollectInfo">
+                    @Locale["Settings_CollectInfo"]<br>
+                </label>
+            </div>
             <div class="rowSetting rowDropdown">
                 <span>@Locale["Settings_Header_ClosingMethod", new { platform = "Steam" }]</span>
                 <div class="dropdown" data-toggle="tooltip" title="@(Locale["Tooltip_ClosingMethod"])" data-placement="right">

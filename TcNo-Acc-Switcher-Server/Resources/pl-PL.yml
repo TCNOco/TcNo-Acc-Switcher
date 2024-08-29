@@ -368,7 +368,6 @@ Installer_VerifyMin: "Sprawdź, czy spełniasz minimalne zalecane wymagania:"
 Installer_VerifyAlready: "Wygląda na to, że wszystko jest zainstalowane. Sprawdź, czy spełniasz minimalne zalecane wymagania:"
 Installer_Complete: To powinno być wszystko. Główny program, TcNo-Acc-Switcher.exe, uruchomi się automatycznie.
 Installer_Complete2: "Jeśli nie działa, zapoznaj się z instrukcją instalacji, tutaj: {link}"
-Global_FatalNext: "Wystąpił błąd krytyczny! Ten rejestr błędów zostanie automatycznie przesłany przy następnym uruchomieniu."
 Tray_Error: Błąd zasobnika systemowego
 Tray_NoAccs: "Nie znaleziono kont.\nSpróbuj najpierw przełączyć konta lub znajdź 'Tray_Users.json'"
 Tray_Switch: "Przełącz na: {account}"

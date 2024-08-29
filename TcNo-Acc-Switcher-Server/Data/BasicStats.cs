@@ -489,6 +489,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <returns>Successful or not</returns>
         public bool LoadStatsFromWeb(string accountId, string platform = "")
         {
+            if (AppSettings.OfflineMode) return false;
+
             // Check if init, and list of accounts contains Id
             if (!IsInit || !CachedStats.ContainsKey(accountId)) return false;
             var userStat = CachedStats[accountId];
@@ -544,7 +546,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 {
                     if (platform != "")
                     {
-                        Globals.DownloadProfileImage(platform, accountId, text, GeneralFuncs.WwwRoot());
+                        Globals.DownloadProfileImage(platform, accountId, text, GeneralFuncs.WwwRoot(), AppSettings.OfflineMode);
                     }
                     continue;
                 }

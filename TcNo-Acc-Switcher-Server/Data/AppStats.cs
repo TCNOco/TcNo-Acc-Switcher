@@ -179,7 +179,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             try
             {
                 // Upload stats file if enabled.
-                if (!AppSettings.StatsEnabled || !AppSettings.StatsShare) return;
+                if (!AppSettings.OfflineMode || !AppSettings.StatsEnabled || !AppSettings.StatsShare) return;
                 // If not a new day
                 if (LastUpload.Date == DateTime.Now.Date) return;
 

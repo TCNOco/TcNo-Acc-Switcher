@@ -368,7 +368,6 @@ Installer_VerifyMin: "Kontrollera att du uppfyller de rekommenderade minimikrave
 Installer_VerifyAlready: "Det ser ut som att allt är installerat. Kontrollera att du uppfyller de rekommenderade minimikraven:"
 Installer_Complete: Det borde vara allt. Huvudprogrammet, TcNo-Acc-Switcher.exe, körs automatiskt.
 Installer_Complete2: "Om det inte fungerar, se installationsanvisningarna, här: {link}"
-Global_FatalNext: "Ett fatalt fel uppstod! Denna kraschlogg skickas automatiskt in nästa gång den startas."
 Tray_Error: Brickfel
 Tray_NoAccs: "Inga konton hittades.\nFörsök att byta konton först, eller leta reda på \"Tray_Users.json\""
 Tray_Switch: "Växla till: {account}"

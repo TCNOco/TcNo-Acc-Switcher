@@ -368,7 +368,6 @@ Installer_VerifyMin: "Đảm bảo bạn đáp ứng các yêu cầu tối thi�
 Installer_VerifyAlready: "Có vẻ như mọi thứ đã được cài đặt. Đảm bảo bạn đáp ứng các yêu cầu tối thiểu được đề xuất:"
 Installer_Complete: Đã hoàn thành. TcNo-Acc-Switcher.exe sẽ tự động khởi động.
 Installer_Complete2: "Nếu nó không hoạt động, vui lòng tham khảo hướng dẫn cài đặt, tại đây: {link}"
-Global_FatalNext: "Đã xảy ra lỗi nghiêm trọng! Bản ghi lỗi này sẽ được tự động gửi vào lần khởi động tiếp theo."
 Tray_Error: Lỗi khay
 Tray_NoAccs: "Không tìm thấy tài khoản nào.\nHãy thử chuyển đổi tài khoản trước hoặc tìm 'Tray_Users.json'"
 Tray_Switch: "Chuyển sang: {account}"

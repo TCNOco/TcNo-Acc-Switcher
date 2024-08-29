@@ -368,7 +368,6 @@ Installer_VerifyMin: "Varmista, että täytät suositellut vähimmäisvaatimukse
 Installer_VerifyAlready: "Näyttää siltä, että kaikki on asennettu. Varmista, että täytät suositellut vähimmäisvaatimukset:"
 Installer_Complete: Siinä pitäisi olla kaikki. Pääohjelma, TcNo-Acc-Switcher.exe, käynnistyy automaattisesti.
 Installer_Complete2: "Jos se ei toimi, katso asennusohjeet täältä: {link}"
-Global_FatalNext: "Tapahtui kohtalokas virhe! Tämä kaatumisloki lähetetään automaattisesti seuraavalle käynnistykselle."
 Tray_Error: Pakkausvirhe
 Tray_NoAccs: "Tiliä ei löytynyt.\nYritä vaihtaa tiliä ensin tai etsi 'Tray_Users.json'"
 Tray_Switch: "Vaihda: {account}"

@@ -62,6 +62,7 @@ if ($null -ne $asset) {
     ExtractFile -filePath $downloadPath -outputPath $extractPath
 } else {
     Write-Error "No asset with 'and_CEF' found in the latest release."
+    throw
 }
 
 # -----------------------------------
@@ -79,6 +80,7 @@ if (Test-Path $updaterPath) {
     Start-Process -FilePath $updaterPath -ArgumentList $updaterArgs -Wait
 } else {
     Write-Error "Updater not found at $updaterPath"
+    throw
 }
 
 Write-Host "- Using 7z to compress the contents of UpdateOutput"
@@ -89,6 +91,7 @@ if (Test-Path $compressPath) {
     & $sevenZipPath a -r $compressOutput "./$compressPath/*" -mx9
 } else {
     Write-Error "UpdateOutput folder not found at $compressPath"
+    throw
 }
 
 # -----------------------------------
