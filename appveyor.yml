@@ -54,7 +54,7 @@ build_script:
   - cmd: node other/upload-to-ftp.js
 
 # on_finish:
-#   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 artifacts:
   - path: TcNo-Acc-Switcher-Client\bin\x64\Release\CEF.7z
