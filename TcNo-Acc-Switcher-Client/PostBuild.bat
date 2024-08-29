@@ -214,10 +214,10 @@ if "%SkipSign%"=="true" goto POSTVERIFY
 ECHO -----------------------------------
 ECHO Compressing CEF and program files
 ECHO -----------------------------------
-if "%SkipCEF%"=="true" goto COMPRESSEDCEF
-	echo Creating .7z CEF archive
-	"%zip%" a -t7z -mmt24 -mx9  "CEF.7z" ".\CEF\*"
-:COMPRESSEDCEF
+@REM if "%SkipCEF%"=="true" goto COMPRESSEDCEF
+@REM 	echo Creating .7z CEF archive
+@REM 	"%zip%" a -t7z -mmt24 -mx9  "CEF.7z" ".\CEF\*"
+@REM :COMPRESSEDCEF
 echo Creating .7z archive
 "%zip%" a -t7z -mmt24 -mx9  "TcNo-Acc-Switcher.7z" ".\TcNo-Acc-Switcher\*"
 echo Done!
