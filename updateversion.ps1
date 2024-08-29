@@ -33,10 +33,10 @@ $rcFileVersionReplacement = ' FILEVERSION ' + $rcVersion
 $rcValueProductVersionReplacement = '            VALUE "ProductVersion", "' + $dateVersion + '"'
 $rcValueFileVersionReplacement = '            VALUE "FileVersion", "' + $dateVersion + '"'
 
-$rcFileContent = $rcFileContent -replace '^\s*PRODUCTVERSION\s+\d+,\d+,\d+,\d+', $rcProductVersionReplacement
-$rcFileContent = $rcFileContent -replace '^\s*FILEVERSION\s+\d+,\d+,\d+,\d+', $rcFileVersionReplacement
-$rcFileContent = $rcFileContent -replace '^\s*VALUE "ProductVersion",\s*"\d+\.\d+\.\d+\.\d+"', $rcValueProductVersionReplacement
-$rcFileContent = $rcFileContent -replace '^\s*VALUE "FileVersion",\s*"\d+\.\d+\.\d+\.\d+"', $rcValueFileVersionReplacement
+$rcFileContent = $rcFileContent -replace '^\s*PRODUCTVERSION.*', $rcProductVersionReplacement
+$rcFileContent = $rcFileContent -replace '^\s*FILEVERSION.*', $rcFileVersionReplacement
+$rcFileContent = $rcFileContent -replace '^\s*VALUE "ProductVersion.*', $rcValueProductVersionReplacement
+$rcFileContent = $rcFileContent -replace '^\s*VALUE "FileVersion.*', $rcValueFileVersionReplacement
 
 $rcFileContent | Set-Content $rcFilePath
 
@@ -55,10 +55,10 @@ $rcFileVersionReplacement = ' FILEVERSION ' + $rcVersion
 $rcValueProductVersionReplacement = '            VALUE "ProductVersion", "' + $dateVersion + '"'
 $rcValueFileVersionReplacement = '            VALUE "FileVersion", "' + $dateVersion + '"'
 
-$rcFileContent = $rcFileContent -replace '^\s*PRODUCTVERSION\s+\d+,\d+,\d+,\d+', $rcProductVersionReplacement
-$rcFileContent = $rcFileContent -replace '^\s*FILEVERSION\s+\d+,\d+,\d+,\d+', $rcFileVersionReplacement
-$rcFileContent = $rcFileContent -replace '^\s*VALUE "ProductVersion",\s*"\d+\.\d+\.\d+\.\d+"', $rcValueProductVersionReplacement
-$rcFileContent = $rcFileContent -replace '^\s*VALUE "FileVersion",\s*"\d+\.\d+\.\d+\.\d+"', $rcValueFileVersionReplacement
+$rcFileContent = $rcFileContent -replace '^\s*PRODUCTVERSION.*', $rcProductVersionReplacement
+$rcFileContent = $rcFileContent -replace '^\s*FILEVERSION.*', $rcFileVersionReplacement
+$rcFileContent = $rcFileContent -replace '^\s*VALUE "ProductVersion.*', $rcValueProductVersionReplacement
+$rcFileContent = $rcFileContent -replace '^\s*VALUE "FileVersion.*', $rcValueFileVersionReplacement
 
 $rcFileContent | Set-Content $rcFilePath
 

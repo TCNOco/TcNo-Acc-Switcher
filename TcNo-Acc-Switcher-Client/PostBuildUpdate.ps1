@@ -62,6 +62,7 @@ if ($null -ne $asset) {
     ExtractFile -filePath $downloadPath -outputPath $extractPath
 } else {
     Write-Error "No asset with 'and_CEF' found in the latest release."
+    throw
 }
 
 # -----------------------------------
@@ -79,6 +80,7 @@ if (Test-Path $updaterPath) {
     Start-Process -FilePath $updaterPath -ArgumentList $updaterArgs -Wait
 } else {
     Write-Error "Updater not found at $updaterPath"
+    throw
 }
 
 Write-Host "- Using 7z to compress the contents of UpdateOutput"
@@ -89,6 +91,7 @@ if (Test-Path $compressPath) {
     & $sevenZipPath a -r $compressOutput "./$compressPath/*" -mx9
 } else {
     Write-Error "UpdateOutput folder not found at $compressPath"
+    throw
 }
 
 # -----------------------------------
@@ -100,3 +103,27 @@ ExtractFile -filePath "TcNo-Acc-Switcher.7z" -outputPath "TcNo-Acc-SwitcherUnzip
 # Use 7z to compress the contents of TcNo-Acc-Switcher
 Write-Host "- Compressing as .zip"
 Compress-Archive -Path "TcNo-Acc-SwitcherUnzipped\*" -DestinationPath "TcNo-Acc-Switcher.zip"
+
+
+# -----------------------------------
+Write-Host "Preparing for upload"
+# -----------------------------------
+New-Item -ItemType Directory -Path "upload" -Force
+
+$filesToCopy = @(
+    "TcNo Account Switcher - Installer.exe",
+    "TcNo-Acc-Switcher.7z",
+    "TcNo-Acc-Switcher.zip",
+    "TcNo-Acc-Switcher_and_CEF.7z"
+)
+
+$tagName = $env:APPVEYOR_REPO_TAG_NAME
+
+foreach ($file in $filesToCopy) {
+    $extension = [System.IO.Path]::GetExtension($file)
+    $filenameWithoutExtension = [System.IO.Path]::GetFileNameWithoutExtension($file)
+    $newFilename = "${filenameWithoutExtension}_$tagName$extension"
+    Copy-Item -Path $file -Destination "upload\$newFilename" -Force
+}
+
+Write-Output "Files copied and renamed successfully."

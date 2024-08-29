@@ -15,6 +15,13 @@
 // Just note that this requires curl to be installed. I used "vcpkg install curl[openssl]:x64-windows-static" in Microsoft's vcpkg to accomplish that.
 
 #include "tcno.hpp"
+#include <iostream>
+#include <filesystem>
+#include <cstdlib>
+#include <chrono>
+#include <thread>
+#include <fstream>
+namespace fs = std::filesystem;
 
 bool args_contain(const char* needle, int argc, char* argv[])
 {
@@ -43,6 +50,99 @@ void launch_tcno_program(const char* arg)
 	             std::wstring(exe_name.begin(), exe_name.end()), L"");
 }
 
+std::ofstream* logFile = nullptr;
+void log(const std::string& message) {
+	if (logFile && logFile->is_open()) {
+		(*logFile) << message << std::endl;
+	}
+	std::cout << message << std::endl;
+}
+
+bool move_file(const fs::path& src, const fs::path& dest) {
+	for (int attempt = 0; attempt < 3; ++attempt) {
+		try {
+			if (fs::exists(dest)) {
+				fs::remove(dest);
+			}
+			fs::copy_file(src, dest, fs::copy_options::overwrite_existing);
+			fs::remove(src);
+			return true;  // Success
+		}
+		catch (const fs::filesystem_error& e) {
+			log("Attempt " + std::to_string(attempt + 1) + " to move " + src.string() + " failed: " + e.what());
+			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		}
+	}
+	return false;  // Failed after retries
+}
+
+void move_recursive(const fs::path& from, const fs::path& to) {
+	try {
+		if (!fs::exists(to)) {
+			fs::create_directories(to);
+		}
+
+		for (const auto& entry : fs::recursive_directory_iterator(from)) {
+			const auto& path = entry.path();
+			auto relative_path = fs::relative(path, from);
+			auto dest_path = to / relative_path;
+
+			if (fs::is_directory(path)) {
+				if (!fs::exists(dest_path)) {
+					fs::create_directory(dest_path);
+				}
+			}
+			else if (fs::is_regular_file(path)) {
+				if (!move_file(path, dest_path)) {
+					log("Failed to move " + path.string() + " to " + dest_path.string());
+					std::exit(1);
+				}
+			}
+		}
+
+		// After successful move, remove the source directory
+		fs::remove_all(from);
+
+	}
+	catch (const fs::filesystem_error& e) {
+		log("Filesystem error: " + std::string(e.what()));
+		std::exit(1);
+	}
+}
+
+int finalizeUpdate(std::string sfrom, std::string sto) {
+	SetConsoleTitle(_T("TcNo Account Switcher - Finalizing Update..."));
+	std::string logFilePath = sto + "\\UpdateFinalizeLog.txt";
+	logFile = new std::ofstream(logFilePath);
+	
+    log("Finalizing update...");
+    log("Moving files from temp folder to install folder.");
+    log("From: " + sfrom);
+    log("To: " + sto);
+	fs::path from(sfrom);
+	fs::path to(sto);
+
+	if (!fs::exists(from) || !fs::is_directory(from)) {
+		log("Source path does not exist or is not a directory.");
+		return 1;
+	}
+
+	move_recursive(from, to);
+
+	// Launch the main program from sto/TcNo-Acc-Switcher.exe in sto
+	std::string exe_name = "TcNo-Acc-Switcher.exe";
+	std::string operating_path = sto;
+	if (operating_path.back() != '\\') operating_path += '\\';
+	std::string full_path = operating_path + exe_name;
+
+	log("Running: " + full_path);
+
+	exec_process(std::wstring(operating_path.begin(), operating_path.end()),
+		std::wstring(full_path.begin(), full_path.end()), L"");
+
+	return 0;
+}
+
 int main(int argc, char* argv[])
 {
 	// Goal of this application:
@@ -58,6 +158,14 @@ int main(int argc, char* argv[])
 	// Otherwise, launch that, assuming it is a program.
 	if (argc > 1)
 	{
+		if (args_contain("finalizeupdate", argc, argv))
+		{
+			std::string from = argv[2];
+			std::string to = argv[3];
+			finalizeUpdate(from, to);
+			exit(1);
+		}
+
 		if (args_contain("vc", argc, argv))
 		{
 			verify_vc();
@@ -73,7 +181,8 @@ int main(int argc, char* argv[])
 			exit(1);
 		}
 
-		launch_tcno_program(argv[argc - 1]);
+		if (!args_contain("nostart", argc, argv))
+			launch_tcno_program(argv[argc - 1]);
 	}
 
 	cout << "Currently installed runtimes:" << endl;
@@ -87,13 +196,10 @@ int main(int argc, char* argv[])
 	download_install_missing_runtimes();
 
 	// Launch main program:
-	string exe_name = "TcNo-Acc-Switcher.exe";
-	//STARTUPINFO si = { sizeof(STARTUPINFO) };
-	//PROCESS_INFORMATION pi;
-	//CreateProcess(s2_ws(main_path).c_str(), nullptr, nullptr,
-	//    nullptr, 0, 0, nullptr, nullptr, &si, &pi);
+	if (!args_contain("nostart", argc, argv)) {
+		string exe_name = "TcNo-Acc-Switcher.exe";
 
-
-	exec_process(std::wstring(operating_path.begin(), operating_path.end()),
-	             std::wstring(exe_name.begin(), exe_name.end()), L"");
+		exec_process(std::wstring(operating_path.begin(), operating_path.end()),
+			std::wstring(exe_name.begin(), exe_name.end()), L"");
+	}
 }

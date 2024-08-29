@@ -368,7 +368,6 @@ Installer_VerifyMin: "Verify ye meet the minimum recommended requirements:"
 Installer_VerifyAlready: "It looks like everythin' be installed. Verify ye meet the minimum recommended requirements:"
 Installer_Complete: That best be everythin'. The main program, TcNo-Acc-Switcher.exe, will auto-run.
 Installer_Complete2: "If it doesn't work, please refer t' install instructions, here: {link}"
-Global_FatalNext: "Fatal error occurred! This crashlog will be automatically submitted next launch."
 Tray_Error: Tray Error
 Tray_NoAccs: "Thar we be no Cap'ns found.\nTry switchin' Cap'n first, or locate 'Tray_Users.json'"
 Tray_Switch: "Switch t': {account}"

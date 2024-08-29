@@ -632,6 +632,19 @@ namespace TcNo_Acc_Switcher_Globals
 
             return true;
         }
+        /// <summary>
+        /// Removes @import url("http..."); lines from text. For the Offline Mode.
+        /// </summary>
+        public static string RemoveHttpImports(string input)
+        {
+            string pattern = @"^\s*@import\s+url\(""http[^""]*""\);\s*$";
+
+            string result = Regex.Replace(input, pattern, "/* import removed in offline mode */", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+
+            result = Regex.Replace(result, @"^\s*$\n|\r", string.Empty, RegexOptions.Multiline);
+
+            return result;
+        }
 
         // TODO: Use this newly added library to create shortcuts too
         public static string GetShortcutTargetFile(string shortcut) => Shortcut.ReadFromFile(shortcut).LinkTargetIDList.Path;

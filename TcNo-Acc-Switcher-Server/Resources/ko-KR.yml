@@ -368,7 +368,6 @@ Installer_VerifyMin: "최소 권장 요건을 충족하는지 확인하세요."
 Installer_VerifyAlready: "모두 설치되어 있는 것 같습니다. 최소 권장 요구 사항을 충족하는지 확인합니다."
 Installer_Complete: 그게 끝이여야 합니다. 주 프로그램인 TcNo-Acc-Switcher.exe가 자동으로 실행됩니다.
 Installer_Complete2: "문제가 해결되지 않으면 설치 안내를 참조하세요. {link}"
-Global_FatalNext: "치명적인 오류가 발생했습니다! 이 충돌 로그는 다음 실행 시 자동으로 제출됩니다."
 Tray_Error: 트레이 오류
 Tray_NoAccs: "계정을 찾을 수 없습니다.\n먼저 계정 전환을 시도하거나 'Tray_Users.json'을 찾아보세요."
 Tray_Switch: "다음으로 전환: {account}"

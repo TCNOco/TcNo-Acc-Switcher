@@ -119,9 +119,16 @@ namespace TcNo_Acc_Switcher_Globals
         /// <param name="uniqueId">Unique ID of account</param>
         /// <param name="urlOrPath">URL or filepath to download/copy image from</param>
         /// <param name="wwwroot">Use GeneralFuncs.WwwRoot()</param>
-        public static void DownloadProfileImage(string platformName, string uniqueId, string urlOrPath, string wwwroot)
+        public static void DownloadProfileImage(string platformName, string uniqueId, string urlOrPath, string wwwroot, bool offlineMode = false)
         {
             var destination = $"wwwroot\\img\\profiles\\{GetCleanFilePath(platformName)}\\{uniqueId}.jpg";
+
+            if (offlineMode)
+            {
+                CopyFile(Path.Join(wwwroot, "\\img\\BasicDefault.png"), destination);
+                return;
+            }
+
             try
             {
                 // Is url -> Download

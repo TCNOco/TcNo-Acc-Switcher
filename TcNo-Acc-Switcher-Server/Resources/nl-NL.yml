@@ -368,7 +368,6 @@ Installer_VerifyMin: "Controleer of u voldoet aan de minimaal aanbevolen vereist
 Installer_VerifyAlready: "Het lijkt erop dat alles is geïnstalleerd. Controleer of u voldoet aan de minimaal aanbevolen vereisten:"
 Installer_Complete: Dat zou alles moeten zijn. Het hoofdprogramma, TcNo-Acc-Switcher.exe, wordt automatisch gestart.
 Installer_Complete2: "Als het niet werkt, raadpleeg dan de installatie-instructies, hier: {link}"
-Global_FatalNext: "Fatale fout opgetreden! Deze crashlog wordt automatisch verzonden volgende lancering."
 Tray_Error: Trayfout
 Tray_NoAccs: "Er zijn geen accounts gevonden.\nProbeer eerst van account te wisselen of zoek 'Tray_Users.json'"
 Tray_Switch: "Overschakelen naar: {account}"

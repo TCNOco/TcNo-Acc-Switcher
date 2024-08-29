@@ -368,7 +368,6 @@ Installer_VerifyMin: "Verificare di soddisfare i requisiti minimi consigliati:"
 Installer_VerifyAlready: "Sembra che sia tutto installato. Verificare di soddisfare i requisiti minimi consigliati:"
 Installer_Complete: Dovrebbe essere tutto. Il programma principale, TcNo-Acc-Switcher.exe, verrà eseguito automaticamente.
 Installer_Complete2: "Se non funziona, si prega di fare riferimento alle istruzioni di installazione, qui: {link}"
-Global_FatalNext: "Si è verificato un errore fatale! Questo registro di arresto anomalo del sistema verrà inviato automaticamente al prossimo avvio."
 Tray_Error: Errore vassoio
 Tray_NoAccs: "Non sono stati trovati account.\nProva prima a cambiare account o individua \"Tray_Users.json\""
 Tray_Switch: "Passa a: {account}"

@@ -80,6 +80,11 @@ namespace TcNo_Acc_Switcher_Server.Data
             //DiscordClient.OnPresenceUpdate += (sender, e) => { Console.WriteLine("Received Update! {0}", e.Presence); };
         }
 
+        public static void OfflineMode_Toggle()
+        {
+            RefreshDiscordPresenceAsync();
+        }
+
         public static void RefreshDiscordPresenceAsync()
         {
             var dThread = new Thread(RefreshDiscordPresence);
@@ -90,7 +95,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             Thread.Sleep(1000);
 
-            if (!AppSettings.DiscordRpc)
+            if (AppSettings.OfflineMode || !AppSettings.DiscordRpc)
             {
                 if (DiscordClient != null)
                 {

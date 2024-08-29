@@ -19,6 +19,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
+using System.Security.Permissions;
 using ImageMagick;
 using SkiaSharp;
 using Svg.Skia;
@@ -99,6 +100,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             }
         }
 
+        [SupportedOSPlatform("windows")]
         private static void ThrowForInvalidPng(IEnumerable<Bitmap> images)
         {
             Globals.DebugWriteLine(@"[Func:General\Classes\Shortcut.ThrowForInvalidPng]");

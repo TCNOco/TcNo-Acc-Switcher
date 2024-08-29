@@ -368,7 +368,6 @@ Installer_VerifyMin: "تحقق من استيفاء الحد الأدنى من ا
 Installer_VerifyAlready: "يبدو أن كل شيء مثبت. تحقق من استيفاء الحد الأدنى من المتطلبات الموصى بها:"
 Installer_Complete: يجب أن يكون كل شيء. سيتم تشغيل البرنامج الرئيسي ، TcNo-Acc-Switcher.exe تلقائيًا.
 Installer_Complete2: "إذا لم يعمل ، يرجى الرجوع إلى تعليمات التثبيت ، هنا: {link}"
-Global_FatalNext: "حدث خطأ مميت! سيتم إرسال سجل الأعطال هذا تلقائيًا عند الإطلاق التالي."
 Tray_Error: خطأ في الدرج
 Tray_NoAccs: "لم يتم العثور على حسابات.\nحاول تبديل الحسابات أولاً ، أو حدد موقع \"Tray_Users.json\""
 Tray_Switch: "التبديل إلى: {account}"

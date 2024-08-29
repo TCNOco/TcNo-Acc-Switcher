@@ -73,9 +73,9 @@ namespace TcNo_Acc_Switcher_Updater
             Logger.WriteLine($"Updater started with: {e.Args}");
             for (var i = 0; i != e.Args.Length; ++i)
             {
-                switch (e.Args[i])
+                switch (e.Args[i].ToLowerInvariant())
                 {
-                    case "downloadCEF":
+                    case "downloadcef":
                         TcNo_Acc_Switcher_Updater.MainWindow.DownloadCef = true;
                         break;
                     case "verify":
@@ -107,7 +107,7 @@ namespace TcNo_Acc_Switcher_Updater
 
             Logger.WriteLine($"\nUpdater encountered an error!\n: {DateTime.Now.ToString(CultureInfo.InvariantCulture)}({GetVersion()}){Environment.NewLine}{log}\n\n");
         }
-
+        
         private static string GetVersion()
         {
             try
@@ -148,7 +148,7 @@ namespace TcNo_Acc_Switcher_Updater
                 _ = MessageBox.Show($"A fatal error was hit. A required file was not found. Please make sure the x64 and x86 folders exist in the install directory AND the updater folder. If one has files, and the other not: Copy so they are the same and try again.{Environment.NewLine}Currently installed to: {AppDataFolder}", "Fatal error occurred!", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
             }
             else
-                _ = MessageBox.Show("This crashlog will be automatically submitted next launch." + Environment.NewLine + Environment.NewLine + "Error: " + e.ExceptionObject, "Fatal error occurred!", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
+                _ = MessageBox.Show("Error: " + e.ExceptionObject, "Fatal error occurred!", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
 
 
             // Throw for bad image errors (bad dlls in computer):

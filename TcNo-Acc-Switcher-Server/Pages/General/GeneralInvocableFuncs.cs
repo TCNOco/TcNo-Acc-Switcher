@@ -413,6 +413,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         [JSInvokable]
         public static string GiCrowdinList()
         {
+            if (AppSettings.OfflineMode) return "OFFLINE MODE";
+
             try
             {
                 var html = new HttpClient().GetStringAsync(

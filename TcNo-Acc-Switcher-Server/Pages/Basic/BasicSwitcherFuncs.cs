@@ -861,8 +861,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 if (imageIsUrl)
                 {
                     // Is url -> Download
-                    if (Globals.DownloadFile(specialProperties["image"], profileImg))
-                        hadSpecialProperties = "IMAGE|";
+                    if (AppSettings.OfflineMode)
+                    {
+                        if (Globals.DownloadFile(specialProperties["image"], profileImg))
+                            hadSpecialProperties = "IMAGE|";
+                    }
                 }
                 else
                 {

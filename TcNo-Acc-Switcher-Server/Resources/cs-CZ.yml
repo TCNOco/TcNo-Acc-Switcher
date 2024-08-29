@@ -368,7 +368,6 @@ Installer_VerifyMin: "Ověř, zda splňuješ minimální doporučené požadavky
 Installer_VerifyAlready: "Vypadá to, že je všechno nainstalované. Ověř, zda splňuješ minimální doporučené požadavky:"
 Installer_Complete: To by mělo být vše. Hlavní program, TcNo-Acc-Switcher.exe, se spustí automaticky.
 Installer_Complete2: "Pokud to nefunguje, postupujte podle pokynů k instalaci, zde: {link}"
-Global_FatalNext: "Došlo k závažné chybě! Tento protokol selhání bude automaticky odeslán při příštím spuštění."
 Tray_Error: Chyba v systémové liště
 Tray_NoAccs: "Nebyly nalezeny žádné účty.\nZkuste nejprve změnit účty, nebo vyhledejte 'Tray_Users.json'"
 Tray_Switch: "Přepnout na: {account}"

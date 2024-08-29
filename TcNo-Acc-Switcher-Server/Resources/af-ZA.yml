@@ -368,7 +368,6 @@ Installer_VerifyMin: "Verifieer dat jy aan die minimum aanbevole vereistes voldo
 Installer_VerifyAlready: "Dit lyk of alles geïnstalleer is. Verifieer dat jy aan die minimum aanbevole vereistes voldoen:"
 Installer_Complete: Dit behoort alles te wees. Die hoofprogram, TcNo-Acc-Switcher.exe, sal outomaties loop.
 Installer_Complete2: "As dit nie werk nie, verwys asseblief na die installasie-instruksies, hier: {link}"
-Global_FatalNext: "Noodlottige fout het voorgekom! Hierdie crashlog sal outomaties ingedien word volgende bekendstelling."
 Tray_Error: Skinkbordfout
 Tray_NoAccs: "Daar is geen rekeninge gevind nie.\nProbeer eers om rekeninge te verander, of soek 'Tray_Users.json'"
 Tray_Switch: "Skakel oor na: {account}"

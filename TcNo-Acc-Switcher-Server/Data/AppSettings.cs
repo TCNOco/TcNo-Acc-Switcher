@@ -101,7 +101,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonProperty("ServerPort", Order = 3)] private int _serverPort = 1337;
         [JsonProperty("WindowSize", Order = 4)] private Point _windowSize = new() { X = 800, Y = 450 };
         [JsonProperty("AllowTransparency", Order = 5)] private bool _allowTransparency = true;
-        [JsonProperty("Version", Order = 6)] private readonly string _version = Globals.Version;
+        [JsonProperty("Version", Order = 6)] private string _version = Globals.Version;
         [JsonProperty("DisabledPlatforms", Order = 7)] private SortedSet<string> _disabledPlatforms = new();
         [JsonProperty("TrayMinimizeNotExit", Order = 8)] private bool _trayMinimizeNotExit;
         [JsonProperty("ShownMinimizedNotification", Order = 9)] private bool _shownMinimizedNotification;
@@ -119,6 +119,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonProperty("GloballyHiddenMetrics", Order = 21)] private Dictionary<string, Dictionary<string, bool>> _globallyHiddenMetrics = new();
         [JsonProperty("WindowsAccent", Order = 22)] private bool _windowsAccent;
         [JsonProperty("AutoUpdatePlatforms", Order = 23)] private bool _autoUpdatePlatforms = true;
+        [JsonProperty("CheckForUpdates", Order = 24)] private bool _checkForUpdates = true;
+        [JsonProperty("OfflineMode", Order = 25)] private bool _offlineMode = false;
         [JsonIgnore] private bool _desktopShortcut;
         [JsonIgnore] private bool _startMenu;
         [JsonIgnore] private bool _startMenuPlatforms;
@@ -134,7 +136,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static int ServerPort { get => Instance._serverPort; set => Instance._serverPort = value; }
         public static Point WindowSize { get => Instance._windowSize; set => Instance._windowSize = value; }
         public static bool AllowTransparency { get => Instance._allowTransparency; set => Instance._allowTransparency = value; }
-        public static string Version => Instance._version;
+        public static string Version { get => Instance._version; set => Instance._version = value; }
 
         public static SortedSet<string> DisabledPlatforms { get => Instance._disabledPlatforms; set => Instance._disabledPlatforms = value; }
 
@@ -175,6 +177,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public static bool StatsShare { get => Instance._statsShare; set => Instance._statsShare = value; }
         public static bool MinimizeOnSwitch { get => Instance._minimizeOnSwitch; set => Instance._minimizeOnSwitch = value; }
+        public static bool OfflineMode { get => Instance._offlineMode; set => Instance._offlineMode = value; }
         public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
 
         public static bool StartMenu { get => Instance._startMenu; set => Instance._startMenu = value; }
@@ -242,6 +245,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static string Stylesheet { get => Instance._stylesheet; set => Instance._stylesheet = value; }
         public static bool WindowsAccent { get => Instance._windowsAccent; set => Instance._windowsAccent = value; }
         public static bool AutoUpdatePlatforms { get => Instance._autoUpdatePlatforms; set => Instance._autoUpdatePlatforms = value; }
+        public static bool CheckForUpdates { get => Instance._checkForUpdates; set => Instance._checkForUpdates = value; }
 
         private string _windowsAccentColor = "";
         public static string WindowsAccentColor { get => Instance._windowsAccentColor; set => Instance._windowsAccentColor = value; }
@@ -418,6 +422,18 @@ namespace TcNo_Acc_Switcher_Server.Data
             ScssResult convertedScss;
             try
             {
+                if (AppSettings.OfflineMode)
+                {
+                    // Copy scss file
+                    var offlineScss = Path.Join(Globals.UserDataFolder, $"offline_{scss}");
+                    Directory.CreateDirectory(Path.GetDirectoryName(offlineScss));
+                    if (File.Exists(offlineScss)) File.Delete(offlineScss);
+                    var text = File.ReadAllText(scss);
+                    text = Globals.RemoveHttpImports(text);
+                    File.WriteAllText(offlineScss, text);
+                    scss = offlineScss;
+                }
+
                 convertedScss = Scss.ConvertFileToCss(scss, new ScssOptions { InputFile = scss, OutputFile = StylesheetFile });
             }
             catch (ScssException e)
@@ -777,6 +793,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// </summary>
         public static void CheckForUpdate()
         {
+            if (OfflineMode) return;
             if (UpdateCheckRan) return;
             UpdateCheckRan = true;
 
@@ -834,6 +851,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JSInvokable]
         public static void UpdateNow()
         {
+            if (AppSettings.OfflineMode) return;
             try
             {
                 if (Globals.InstalledToProgramFiles() && !Globals.IsAdministrator || !Globals.HasFolderAccess(Globals.AppDataFolder))

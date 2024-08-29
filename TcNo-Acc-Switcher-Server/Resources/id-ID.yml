@@ -368,7 +368,6 @@ Installer_VerifyMin: "Verifikasi bahwa Anda memenuhi persyaratan minimum yang di
 Installer_VerifyAlready: "Sepertinya semuanya sudah terinstal. Verifikasi bahwa Anda memenuhi persyaratan minimum yang direkomendasikan:"
 Installer_Complete: Itu harus menjadi segalanya. Program utama, TcNo-Acc-Switcher.exe, akan dijalankan secara otomatis.
 Installer_Complete2: "Jika tidak berhasil, silakan lihat petunjuk instalasi, di sini: {link}"
-Global_FatalNext: "Terjadi kesalahan fatal! Crashlog ini akan dikirimkan secara otomatis pada peluncuran berikutnya."
 Tray_Error: Kesalahan Talam
 Tray_NoAccs: "Tidak ada akun yang ditemukan.\nCoba ganti akun terlebih dahulu, atau cari 'Tray_Users.json'"
 Tray_Switch: "Beralih ke: {account}"

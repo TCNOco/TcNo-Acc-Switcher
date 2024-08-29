@@ -368,7 +368,6 @@ Installer_VerifyMin: "Ellenőrizze, hogy megfelel-e az ajánlott minimumkövetel
 Installer_VerifyAlready: "Úgy tűnik, minden be van szerelve. Ellenőrizze, hogy megfelel-e az ajánlott minimumkövetelményeknek:"
 Installer_Complete: Ez legyen minden. A fő program, a TcNo-Acc-Switcher.exe, automatikusan elindul.
 Installer_Complete2: "Ha nem működik, kérjük, olvassa el a telepítési utasításokat, itt: {link}"
-Global_FatalNext: "Végzetes hiba történt! A rendszer automatikusan elküldi a hibajelentést a következő indításkor."
 Tray_Error: Tálcahiba
 Tray_NoAccs: "Nem található fiók.\nElőször próbáljon fiókot váltani, vagy keresse meg a 'Tray_Users.json' -t"
 Tray_Switch: "Váltás erre: {account}"

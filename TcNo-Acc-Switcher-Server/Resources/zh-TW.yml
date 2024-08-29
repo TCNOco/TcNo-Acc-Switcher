@@ -368,7 +368,6 @@ Installer_VerifyMin: "請驗證您是否滿足最低要求："
 Installer_VerifyAlready: "看起來一切都安裝好了。請驗證您是否滿足最低要求："
 Installer_Complete: 一切應該都已完成。主程序 TcNo-Acc-Switcher.exe 將自動運行。
 Installer_Complete2: "如果不起作用，請參閱安裝說明： {link}"
-Global_FatalNext: "發生致命錯誤！崩潰記錄將於下次啟動時自動寫入。"
 Tray_Error: 通知列錯誤
 Tray_NoAccs: "找不到帳號。\n請先切換帳號，或確認 Tray_Users.json 檔案"
 Tray_Switch: "切換為：{account}"

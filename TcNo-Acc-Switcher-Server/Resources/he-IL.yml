@@ -368,7 +368,6 @@ Installer_VerifyMin: "ודא שאתה עומד בדרישות המינימליו
 Installer_VerifyAlready: "זה נראה כאילו הכל מותקן. ודא שאתה עומד בדרישות המינימליות המומלצות:"
 Installer_Complete: זה צריך להיות הכל. התוכנית הראשית, TcNo-Acc-Switcher.exe, תפעל אוטומטית.
 Installer_Complete2: "אם זה לא עובד, אנא עיין בהוראות ההתקנה, כאן: {link}"
-Global_FatalNext: "אירעה שגיאה חמורה! יומן קריסה זה יישלח באופן אוטומטי בהשקה הבאה."
 Tray_Error: שגיאת מגש
 Tray_NoAccs: "לא נמצאו חשבונות.\nנסה קודם להחליף חשבונות, או אתר את 'Tray_Users.json'"
 Tray_Switch: "עבור ל: {account}"

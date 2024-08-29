@@ -368,7 +368,6 @@ Installer_VerifyMin: "Vérifiez que vous répondez aux exigences minimales recom
 Installer_VerifyAlready: "On dirait que tout est installé. Vérifiez que vous répondez aux exigences minimales recommandées :"
 Installer_Complete: Cela devrait être tout. Le programme principal, TcNo-Acc-Switcher.exe, s'exécutera automatiquement.
 Installer_Complete2: "Si cela ne fonctionne pas, veuillez vous référer aux instructions d'installation, ici : {link}"
-Global_FatalNext: "Erreur fatale ! Ce crashlog sera automatiquement soumis au prochain lancement."
 Tray_Error: Erreur de bac
 Tray_NoAccs: "Aucun compte n'a été trouvé.\nEssayez de changer de compte d'abord, ou localisez 'Tray_Users.json'"
 Tray_Switch: "Basculer vers : {account}"
