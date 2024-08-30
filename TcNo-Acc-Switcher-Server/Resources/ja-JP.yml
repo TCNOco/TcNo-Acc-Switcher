@@ -11,7 +11,7 @@ Steam_CheckVac: アカウントVACの状態を確認
 Steam_OverrideDefaultState: "デフォルトのログイン状態を上書き:"
 Steam_StartSilent: "スイッチでスチームをタスクトレイに開きます（'- silent 'でスチームを開始します）"
 Steam_OldUi: "Steam で古い UI を使用する (-vgui)"
-Steam_CollectInfo: Collect profile images and VAC ban status from Steam
+Steam_CollectInfo: Steamからプロフィール画像とVAC禁止ステータスを収集する
 Button_AddNew: 新規追加
 Button_SaveCurrent: 現在の保存
 Button_SaveFile: ファイルを保存
@@ -83,7 +83,7 @@ Settings_ThemeBackground: '【背景設定】'
 Settings_ThemeOpenFolder: '[テーマフォルダを開く]'
 Settings_Protocol: 'tcno:\\プロトコルを有効にする (推奨)'
 Settings_StartCentered: プログラムを中心に開始
-Settings_OfflineMode: Offline Mode (No network activity)
+Settings_OfflineMode: オフラインモード（ネットワークアクティビティなし）
 Settings_WindowsAccent: Windowsアクセントカラーを使用する
 Settings_HelpTranslate: "[ヘルプ翻訳]"
 Settings_ViewTranslators: "[Credits]"
@@ -100,7 +100,7 @@ PreviewCss: CSSをプレビュー
 Settings_PreviewCss: これはCSSプレビューページです。プログラムに表示されるいくつかの要素を表示して、テーマの外観を確認できます。このページはテーマの作成に便利です。
 Settings_PreviewCssHeader: CSSプレビューページ
 Settings_AutoUpdatePlatforms: プラットフォームリストの自動更新
-Settings_CheckForUpdates: Check for updates on launch
+Settings_CheckForUpdates: 起動時にアップデートを確認する
 Stats_Disabled: "統計収集が無効になっています。"
 Stats_InDepth: 詳細な統計の内訳
 Stats_ShareEnabled: "これらの統計は匿名で共有され、ここでは合計 <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">に加算されます</a>。"
@@ -148,8 +148,8 @@ Restore_Button_Restore: 選択したものを復元
 Ignored_RemoveAccounts: 無視リストからアカウントを削除
 Ignored_Description: 以前にアカウントを「無視」した場合は、ここで再度表示することができます
 Ignored_Stop: 選択された無視を停止
-Toast_UpdatesDownloading: Updates are downloading in the background. You can continue to use the program.
-Toast_UpdatesDownloaded: Updates have finished downloading. Close this app to start updating.
+Toast_UpdatesDownloading: アップデートはバックグラウンドでダウンロード中です。プログラムは引き続き使用できます。
+Toast_UpdatesDownloaded: アップデートのダウンロードが完了しました。アップデートを開始するには、このアプリを閉じてください。
 Toast_DataLocationCopying: '（1/2）既存のファイルを新しいユーザーデータフォルダにコピーします！'
 Toast_DataLocationNotCopying: '（1/2）フォルダにはすでにファイルがあります！ユーザーデータを移行しません。'
 Toast_DataLocationSet: '（2/2）アカウントスイッチャーを再起動して、新しいフォルダーを使用します。'
