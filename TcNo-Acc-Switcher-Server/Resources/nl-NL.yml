@@ -31,6 +31,7 @@ Button_OpenBackup: Back-upmap openen
 Button_Back: Terug
 Button_RestartAdmin: Opnieuw opstarten als beheerder
 Button_SetPassword: App-wachtwoord instellen
+Settings_SteamCollectInfo: Verzamel Steam-profielfoto en VAC-status van Steam
 Settings_Shortcut: ' {platform} Switcher Bureaublad snelkoppeling'
 Settings_Admin: '{platform} uitvoeren als Beheerder'
 Settings_ImageExpiry: 'Dagen voordat profielfoto ''s verlopen:'
