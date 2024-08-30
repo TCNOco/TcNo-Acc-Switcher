@@ -3,7 +3,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>TcNo_Acc_Switcher_Server</RootNamespace>
     <ApplicationIcon>wwwroot\favicon.ico</ApplicationIcon>
-    <Version>2024.08.29.02</Version>
+    <Version>2024.08.30.00</Version>
     <Authors>TroubleChute (Wesley Pyburn)</Authors>
     <Product>TcNo Account Switcher - Server</Product>
     <Copyright>Copyright © TroubleChute (Wesley Pyburn) 2022</Copyright>
