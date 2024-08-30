@@ -11,6 +11,7 @@ Steam_CheckVac: Kontrollera VAC status för kontot
 Steam_OverrideDefaultState: "Åsidosätt standardinloggningstillstånd:"
 Steam_StartSilent: "Öppna Ånga till aktivitetsfacket på strömbrytaren (Starta Ånga med \"-silent\")"
 Steam_OldUi: "Använd det gamla användargränssnittet i Steam (-vgui)"
+Steam_CollectInfo: Collect profile images and VAC ban status from Steam
 Button_AddNew: Lägg till ny
 Button_SaveCurrent: Spara aktuell
 Button_SaveFile: Spara fil
@@ -82,6 +83,7 @@ Settings_ThemeBackground: '[Ange bakgrund]'
 Settings_ThemeOpenFolder: '[Öppna temamapp]'
 Settings_Protocol: 'Aktivera tcno:\\ protokoll (rekommenderas)'
 Settings_StartCentered: Starta programmet centrerat
+Settings_OfflineMode: Offline Mode (No network activity)
 Settings_WindowsAccent: Använd Windows accentfärg
 Settings_HelpTranslate: "[Help translate]"
 Settings_ViewTranslators: "[Tack till]"
@@ -98,6 +100,7 @@ PreviewCss: Förhandsgranska CSS
 Settings_PreviewCss: Detta är CSS förhandsgranskningssidan. Du kan se några element som dyker upp i programmet och se hur de ser ut med ditt tema. Den här sidan är användbar för dem som skapar teman!
 Settings_PreviewCssHeader: CSS förhandsgranskningssida
 Settings_AutoUpdatePlatforms: Uppdatera plattformslistan automatiskt
+Settings_CheckForUpdates: Check for updates on launch
 Stats_Disabled: "Statistikinsamlingen är inaktiverad."
 Stats_InDepth: Fördelning av fördjupad statistik
 Stats_ShareEnabled: "Denna statistik delas anonymt och kommer att lägga till den totala <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">här</a>."
@@ -145,6 +148,8 @@ Restore_Button_Restore: Återställ vald
 Ignored_RemoveAccounts: Ta bort konton från ignoreringslistan
 Ignored_Description: Om du tidigare "ignorerat" ett konto kan du visa dem igen här
 Ignored_Stop: Sluta ignorera valda
+Toast_UpdatesDownloading: Updates are downloading in the background. You can continue to use the program.
+Toast_UpdatesDownloaded: Updates have finished downloading. Close this app to start updating.
 Toast_DataLocationCopying: (1/2) Kopierar befintliga filer till den nya användardatamappen!
 Toast_DataLocationNotCopying: (1/2) Mappen har redan filer! Kommer inte att migrera användardata.
 Toast_DataLocationSet: (2/2) Starta om kontoväxlaren för att använda den nya mappen!
