@@ -43,7 +43,7 @@ Crash logs contain useful information for debugging, and improving the program. 
   - What files were deleted (or failed to be deleted) by the program
   - While not intended, things like usernames can enter this file through being the cause of a crash (malformed text), included in filenames by platforms (such as a file named `userid.ext`) and so on
 
-For this reason crash logs are not automatically submitted.
+For this reason crash logs and log files are not automatically submitted.
 
 When creating issues on GitHub, or contacting me through other places you may include these files AFTER you have double-checked for personal information. Redact as much as you see fit. These files will not be kept for longer than needed. If I don't control where they are hosted, for example Discord, it is up to you to remove them from those hosting platforms.
 
