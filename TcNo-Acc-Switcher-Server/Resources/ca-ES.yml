@@ -11,6 +11,7 @@ Steam_CheckVac: Comprova l'estat del compte de VAC
 Steam_OverrideDefaultState: "Substitueix l'estat d'inici de sessió per defecte:"
 Steam_StartSilent: "Obriu el vapor a la safata de tasques al commutador (inicieu el vapor amb «-silenciós»)"
 Steam_OldUi: "Utilitza la interfície d'usuari antiga a Steam (-vgui)"
+Steam_CollectInfo: Collect profile images and VAC ban status from Steam
 Button_AddNew: Afegeix nou
 Button_SaveCurrent: Desa l'actual
 Button_SaveFile: Desa el fitxer
@@ -82,6 +83,7 @@ Settings_ThemeBackground: '[Estableix fons]'
 Settings_ThemeOpenFolder: '[Obre la carpeta del tema]'
 Settings_Protocol: 'Activa el protocol TcNo: \\ (recomanat)'
 Settings_StartCentered: Inicia el programa centrat
+Settings_OfflineMode: Offline Mode (No network activity)
 Settings_WindowsAccent: Utilitza el color accentuat de Windows
 Settings_HelpTranslate: "[Ajuda a traduir]"
 Settings_ViewTranslators: "[Credits]"
@@ -98,6 +100,7 @@ PreviewCss: Previsualitza CSS
 Settings_PreviewCss: Aquesta és la pàgina de previsualització de CSS. Podeu veure alguns elements que apareixen al programa i veure com es veuen amb el tema. Aquesta pàgina és útil per crear temes!
 Settings_PreviewCssHeader: Pàgina de previsualització CSS
 Settings_AutoUpdatePlatforms: Actualització automàtica de la llista de plataformes
+Settings_CheckForUpdates: Check for updates on launch
 Stats_Disabled: "La recollida d'estadístiques està desactivada."
 Stats_InDepth: Desglossament estadístic en profunditat
 Stats_ShareEnabled: "Aquestes estadístiques es comparteixen de forma anònima i s'afegiran al total de <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">aquí</a>."
@@ -145,6 +148,8 @@ Restore_Button_Restore: Restaura la selecció
 Ignored_RemoveAccounts: Elimina els comptes de la llista d'ignorància
 Ignored_Description: Si prèviament heu "ignorat" un compte, podeu tornar-lo a mostrar aquí
 Ignored_Stop: Deixa d'ignorar la selecció
+Toast_UpdatesDownloading: Updates are downloading in the background. You can continue to use the program.
+Toast_UpdatesDownloaded: Updates have finished downloading. Close this app to start updating.
 Toast_DataLocationCopying: (1/2) S'està copiant els fitxers existents a la nova carpeta de dades d'usuari!
 Toast_DataLocationNotCopying: (1/2) La carpeta ja té fitxers! No migrarà les dades d'usuari.
 Toast_DataLocationSet: (2/2) Reinicieu el commutador de comptes per utilitzar la carpeta nova!
