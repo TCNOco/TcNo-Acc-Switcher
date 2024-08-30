@@ -31,6 +31,7 @@ Button_OpenBackup: Yedek Klasörünü Aç
 Button_Back: Geri
 Button_RestartAdmin: Yönetici olarak yeniden başlat
 Button_SetPassword: Uygulama Parolasını Ayarla
+Settings_SteamCollectInfo: Steam Profil Resmini ve VAC Durumunu Steam'den Topla
 Settings_Shortcut: ' {platform} Anahtarlayıcı Masaüstü kısayolu'
 Settings_Admin: '{platform} platformunu Yönetici olarak çalıştır'
 Settings_ImageExpiry: 'Profil resimlerinin süresi dolmadan önceki günler:'

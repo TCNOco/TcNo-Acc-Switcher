@@ -31,6 +31,7 @@ Button_OpenBackup: Отворите фасциклу резервних копи
 Button_Back: Назад
 Button_RestartAdmin: Поново покрени као администратор
 Button_SetPassword: Подесите лозинку за апликацију
+Settings_SteamCollectInfo: Прикупите слику Стеам профила и ВАЦ статус од Стеам-а
 Settings_Shortcut: ' {platform} Пречица "Switcher Desktop"'
 Settings_Admin: Покрени {platform} као администратор
 Settings_ImageExpiry: 'Дани пре истека профила:'

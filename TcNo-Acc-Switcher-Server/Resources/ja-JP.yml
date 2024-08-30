@@ -31,6 +31,7 @@ Button_OpenBackup: バックアップフォルダを開く
 Button_Back: 戻る
 Button_RestartAdmin: 管理者として再起動
 Button_SetPassword: アプリのパスワードを設定
+Settings_SteamCollectInfo: Steam から Steam プロフィール写真と VAC ステータスを収集する
 Settings_Shortcut: ' {platform} スイッチャーデスクトップのショートカット'
 Settings_Admin: '{platform} を管理者として実行'
 Settings_ImageExpiry: 'プロフィール画像が期限切れになるまでの日数:'

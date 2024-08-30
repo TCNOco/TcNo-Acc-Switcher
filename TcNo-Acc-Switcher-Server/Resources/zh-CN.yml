@@ -31,6 +31,7 @@ Button_OpenBackup: 打开备份文件夹
 Button_Back: 返回
 Button_RestartAdmin: 以管理员身份重新启动
 Button_SetPassword: 设置应用密码
+Settings_SteamCollectInfo: 从 Steam 收集 Steam 个人资料图片和 VAC 状态
 Settings_Shortcut: ' {platform} 切换器桌面快捷方式'
 Settings_Admin: 以管理员身份运行 {platform}
 Settings_ImageExpiry: '个人资料头像过期之前的天数：'

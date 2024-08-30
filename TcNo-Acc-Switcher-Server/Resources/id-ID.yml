@@ -31,6 +31,7 @@ Button_OpenBackup: Buka Folder Cadangan
 Button_Back: Kembali
 Button_RestartAdmin: Mulai ulang sebagai Admin
 Button_SetPassword: Atur Kata Sandi Aplikasi
+Settings_SteamCollectInfo: Kumpulkan Gambar Profil Steam & Status VAC dari Steam
 Settings_Shortcut: ' {platform} Pintasan Desktop Switcher'
 Settings_Admin: Jalankan {platform} sebagai Admin
 Settings_ImageExpiry: 'Hari sebelum gambar profil kedaluwarsa:'

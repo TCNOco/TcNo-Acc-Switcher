@@ -31,6 +31,7 @@ Button_OpenBackup: Ouvrir le dossier de sauvegarde
 Button_Back: Retour
 Button_RestartAdmin: Redémarrer en tant qu'administrateur
 Button_SetPassword: Définir le mot de passe de l'application
+Settings_SteamCollectInfo: Récupérez la photo de profil Steam et le statut VAC de Steam
 Settings_Shortcut: ' {platform} Switcher Raccourci bureau'
 Settings_Admin: Exécuter {platform} en tant qu'administrateur
 Settings_ImageExpiry: 'Jours avant l''expiration des images de profil :'

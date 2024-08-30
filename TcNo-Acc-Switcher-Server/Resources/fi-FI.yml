@@ -31,6 +31,7 @@ Button_OpenBackup: Avaa varmuuskopiokansio
 Button_Back: Takaisin
 Button_RestartAdmin: Aloita uudelleen järjestelmänvalvojana
 Button_SetPassword: Aseta sovelluksen salasana
+Settings_SteamCollectInfo: Kerää Steam-profiilikuva ja VAC-tila Steamista
 Settings_Shortcut: ' {platform} Vaihtajan työpöydän pikakuvake'
 Settings_Admin: Suorita {platform} ylläpitäjänä
 Settings_ImageExpiry: 'Päivää ennen profiilikuvien vanhentumista:'

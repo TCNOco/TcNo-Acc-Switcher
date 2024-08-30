@@ -31,6 +31,7 @@ Button_OpenBackup: Otwórz folder kopii zapasowej
 Button_Back: Wstecz
 Button_RestartAdmin: Uruchom ponownie jako Administrator
 Button_SetPassword: Ustaw hasło aplikacji
+Settings_SteamCollectInfo: Zbierz zdjęcie profilowe Steam i status VAC ze Steam
 Settings_Shortcut: ' Skrót do pulpitu switchera kont {platform}'
 Settings_Admin: Uruchom {platform} jako administrator
 Settings_ImageExpiry: 'Dni do wygaśnięcia zdjęć profilowych:'

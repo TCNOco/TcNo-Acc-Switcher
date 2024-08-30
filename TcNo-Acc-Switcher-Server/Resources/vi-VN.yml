@@ -31,6 +31,7 @@ Button_OpenBackup: Mở thư mục sao lưu
 Button_Back: Quay lại
 Button_RestartAdmin: Khởi động lại với quyền Admin
 Button_SetPassword: Đặt mật khẩu ứng dụng
+Settings_SteamCollectInfo: Thu thập Ảnh đại diện Steam & Trạng thái VAC từ Steam
 Settings_Shortcut: 'Shortcut Switcher Desktop {platform}'
 Settings_Admin: Khởi động {platform} với quyền Admin
 Settings_ImageExpiry: 'Ngày hết hạn hình ảnh hồ sơ:'
