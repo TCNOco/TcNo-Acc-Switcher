@@ -11,6 +11,7 @@ Steam_CheckVac: 確認帳號的 VAC 狀態
 Steam_OverrideDefaultState: "預設登入狀態："
 Steam_StartSilent: "開啟Steam到任務盤開關（使用'-silent'開始Steam ）"
 Steam_OldUi: "在 Steam 中使用舊版 UI (-vgui)"
+Steam_CollectInfo: Collect profile images and VAC ban status from Steam
 Button_AddNew: 新增
 Button_SaveCurrent: 儲存目前內容
 Button_SaveFile: 儲存檔案
@@ -82,6 +83,7 @@ Settings_ThemeBackground: '[設定背景]'
 Settings_ThemeOpenFolder: '[開啟背景資料夾]'
 Settings_Protocol: '啟用 tcno:\\ protocol（建議）'
 Settings_StartCentered: 啟動程式時居中
+Settings_OfflineMode: Offline Mode (No network activity)
 Settings_WindowsAccent: 使用 Windows 強調色彩
 Settings_HelpTranslate: "[協助翻譯]"
 Settings_ViewTranslators: "[感謝名單]"
@@ -98,6 +100,7 @@ PreviewCss: 預覽CSS
 Settings_PreviewCss: 這是CSS預覽頁面。您可以檢視程式中彈出的部分元素，並查看在您的主題下的外觀。此頁面對於創建主題非常有用！
 Settings_PreviewCssHeader: CSS預覽頁面
 Settings_AutoUpdatePlatforms: 自動更新平台列表
+Settings_CheckForUpdates: Check for updates on launch
 Stats_Disabled: "已停止收集統計資料。"
 Stats_InDepth: 更多統計分析
 Stats_ShareEnabled: "這些統計資料會以匿名分享，並會加到此處 <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">中</a> 的總計。"
@@ -145,6 +148,8 @@ Restore_Button_Restore: 復原選定的帳號
 Ignored_RemoveAccounts: 移除忽略列表中的帳號
 Ignored_Description: 如果您之前「忽略」過帳號，可以在此將帳號復原
 Ignored_Stop: 取消忽略選定的帳號
+Toast_UpdatesDownloading: Updates are downloading in the background. You can continue to use the program.
+Toast_UpdatesDownloaded: Updates have finished downloading. Close this app to start updating.
 Toast_DataLocationCopying: (1/2) 正在將現有檔案複製到新的使用者資料夾！
 Toast_DataLocationNotCopying: (1/2) 資料夾已有檔案！停止移轉使用者資料。
 Toast_DataLocationSet: (2/2) 重新啟動 TcNo 帳號切換器以使用新的資料夾！
