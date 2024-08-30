@@ -11,6 +11,7 @@ Steam_CheckVac: تحقق من حالة VAC لحساب ستيم
 Steam_OverrideDefaultState: "حالة الحساب الافتراضية:"
 Steam_StartSilent: "افتح Steam في مدير المهام على المفتاح (ابدأ تشغيل Steam عن طريق '- silent ')"
 Steam_OldUi: "استخدم Steam UI القديم (vgui-)"
+Steam_CollectInfo: Collect profile images and VAC ban status from Steam
 Button_AddNew: اضف حساب
 Button_SaveCurrent: حفظ ملف الحساب الحالي
 Button_SaveFile: حفظ الملف
@@ -82,6 +83,7 @@ Settings_ThemeBackground: '[تعيين الخلفية]'
 Settings_ThemeOpenFolder: '[فتح مجلد النَسق]'
 Settings_Protocol: 'تمكين بروتوكول tcno:\\(مفضل)'
 Settings_StartCentered: بدء البرنامج في منتصف الشاشة
+Settings_OfflineMode: Offline Mode (No network activity)
 Settings_WindowsAccent: استخدام لون ثيم ويندوز
 Settings_HelpTranslate: "[ساعد في الترجمة]"
 Settings_ViewTranslators: "[الشكر]"
@@ -98,6 +100,7 @@ PreviewCss: معاينة CSS
 Settings_PreviewCss: هذه هي صفحة معاينة CSS. يمكنك عرض بعض العناصر التي تظهر في البرنامج ورؤية كيف تبدو مع القالب الخاص بك. هذه الصفحة مفيدة لأولئك الذين ينشئون القوالب!
 Settings_PreviewCssHeader: صفحة معاينة CSS
 Settings_AutoUpdatePlatforms: قائمة منصات التحديث التلقائي
+Settings_CheckForUpdates: Check for updates on launch
 Stats_Disabled: "تم تعطيل جمع الإحصاءات."
 Stats_InDepth: تحليل متعمق للإحصاءات
 Stats_ShareEnabled: "تشارك هذه الإحصائيات مع جهل معلوماتك وستضاف إلى المجموع <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">هنا</a>."
@@ -145,6 +148,8 @@ Restore_Button_Restore: استعادة المحدد
 Ignored_RemoveAccounts: إزالة الحسابات من قائمة التجاهل
 Ignored_Description: إذا كنت قد "تجاهلت" حساب ما سابقاً، يمكنك إظهاره هنا مُجدّداً
 Ignored_Stop: إيقاف تجاهل المُحدّد
+Toast_UpdatesDownloading: Updates are downloading in the background. You can continue to use the program.
+Toast_UpdatesDownloaded: Updates have finished downloading. Close this app to start updating.
 Toast_DataLocationCopying: (1/2) نسخ الملفات الموجودة في مجلد بيانات المستخدم الجديد!
 Toast_DataLocationNotCopying: (1/2) يحتوي المجلد بالفعل على ملفات! لن يتم ترحيل بيانات المستخدم.
 Toast_DataLocationSet: (2/2) أعد تشغيل مبدل الحسابات لاستخدام المجلد الجديد!
