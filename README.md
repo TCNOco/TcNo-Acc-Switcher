@@ -42,7 +42,7 @@
 # How does it work?
 Simple. It swaps out files and registry values, pointing to your last logged in account while the program is closed. Think of it as freezing a platform like Steam in time, and replacing the "account block" with a previously frozen "account block", then unfreezing it. To Steam and your Steam account, it "looks" like you pulled your plug out and put it back in a week or so later, meanwhile you were playing on other accounts. Swapping the account block lets the program: Not interact with passwords, and not interact with 2-factor, so you can "Skip" both of those in the login process.
 
-### Things not working? See the [FAQ](https://github.com/TCNOco/TcNo-Acc-Switcher/wiki/Frequently-Asked-Questions)
+You can see (and edit) how account switching works by checking [Platforms.json](https://github.com/TCNOco/TcNo-Acc-Switcher/blob/ad1a0907f09d6a625b11e06bbb4947566e6be6b2/TcNo-Acc-Switcher-Server/Platforms.json).
 
 ## HELP  WANTED
 
@@ -65,7 +65,7 @@ Albion Online, **[Battle.net](https://youtu.be/cvbo_VY05bo?list=PLsSFD61FiOVmAwC
 -  **Better UI**, with animations. Fully user/community customisable **theme system**. 5 Themes built in (so far).
 -   **Streamer mode** to hide SteamIDs and more while Stream software is running (ie OBS, XSplit...)
 -   **Automatic updates** WAY smaller updates, due to using a new Patch system. No more redownloading the entire app. Only a few KB/MB at a time.
--  **Steam: Log in as Invisible, Offline and more!** Copy profile links, SteamID and create quick-switch desktop shortcuts!
+-  **Steam: Log in as Invisible, Offline and more!** Copy profile links, SteamID, VAC info and create quick-switch desktop shortcuts!
 - **Easily add & customize new platforms** since version 5.0 (Jan 2022).
 - **Control via Tray** for quick-switching without keeping it all open.
 - **Protocol support** to easily build access via other tools (`tcno:\\\<command>`) [CLI & Protocol Wiki](https://github.com/TCNOco/TcNo-Acc-Switcher/wiki/CLI-&-Protocol)
@@ -92,7 +92,7 @@ Albion Online, **[Battle.net](https://youtu.be/cvbo_VY05bo?list=PLsSFD61FiOVmAwC
 2. Run the installer, and the application should launch when done. If not:
 Head into the folder where you installed the program and run `_FIRST_RUN.exe` to make sure required runtimes are installed, and then run `TcNo-Acc-Switcher.exe` to run the main program. The second is what shortcuts to the program should point to.
 
-**For a portable installation (eg. on a USB) see [THIS](https://github.com/TCNOco/TcNo-Acc-Switcher/wiki#portable-eg-for-usb)** for steps on using the `.zip` or `.7z` below.
+**For a portable installation (eg. on a USB) see [THIS](https://github.com/TCNOco/TcNo-Acc-Switcher/wiki#portable-eg-for-usb)** for steps on using the `.zip` or `.7z`.
 
 [See more info HERE](https://github.com/TCNOco/TcNo-Acc-Switcher/wiki#2-running-the-tcno-account-switcher)
 
