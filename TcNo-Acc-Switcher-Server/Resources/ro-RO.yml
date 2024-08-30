@@ -11,7 +11,7 @@ Steam_CheckVac: Verifică statusul VAC
 Steam_OverrideDefaultState: "Suprascrie starea implicită de conectare:"
 Steam_StartSilent: "Deschideți Steam în bara de activități pe comutator (Porniți Steam cu „-silent”)"
 Steam_OldUi: "Utilizați vechea interfață de utilizare în Steam (-vgui)"
-Steam_CollectInfo: Collect profile images and VAC ban status from Steam
+Steam_CollectInfo: Colectați imagini de profil și starea interzicerii VAC de la Steam
 Button_AddNew: Adăugă
 Button_SaveCurrent: Salvează Actual
 Button_SaveFile: Salvează fișierul
@@ -83,7 +83,7 @@ Settings_ThemeBackground: '[Setați fundalul]'
 Settings_ThemeOpenFolder: '[Deschide folderul cu teme]'
 Settings_Protocol: 'Activați tcno:\\ protocol (recomandat)'
 Settings_StartCentered: Pornește programul centrat
-Settings_OfflineMode: Offline Mode (No network activity)
+Settings_OfflineMode: Modul offline (fără activitate în rețea)
 Settings_WindowsAccent: Utilizează culoarea de accentuare Windows
 Settings_HelpTranslate: "[Help translate] ([Ajutor la traducere])"
 Settings_ViewTranslators: "[Credits]"
@@ -100,7 +100,7 @@ PreviewCss: Previzualizare CSS
 Settings_PreviewCss: Aceasta este pagina de previzualizare CSS. Puteți vizualiza câteva elemente care apar în program și puteți vedea cum arată cu tema dvs. Această pagină este utilă pentru cei care creează teme!
 Settings_PreviewCssHeader: Pagina de previzualizare CSS
 Settings_AutoUpdatePlatforms: Actualizați automat lista de platforme
-Settings_CheckForUpdates: Check for updates on launch
+Settings_CheckForUpdates: Verificați actualizările la lansare
 Stats_Disabled: "Colecția de statistici este dezactivată."
 Stats_InDepth: Defalcare în profunzime a statisticilor
 Stats_ShareEnabled: "Aceste statistici sunt distribuite anonim și se vor adăuga la totalul <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">aici</a>."
@@ -148,8 +148,8 @@ Restore_Button_Restore: Restabilire selectată
 Ignored_RemoveAccounts: Eliminați conturile din lista de ignorare
 Ignored_Description: Dacă ați „ignorat” anterior un cont, îl puteți afișa din nou aici
 Ignored_Stop: Oprire ignorare selectată
-Toast_UpdatesDownloading: Updates are downloading in the background. You can continue to use the program.
-Toast_UpdatesDownloaded: Updates have finished downloading. Close this app to start updating.
+Toast_UpdatesDownloading: Actualizările se descarcă în fundal. Puteți continua să utilizați programul.
+Toast_UpdatesDownloaded: Descărcarea actualizărilor s-a terminat. Închideți această aplicație pentru a începe actualizarea.
 Toast_DataLocationCopying: (1/2) Copierea fișierelor existente în noul folder de date utilizator!
 Toast_DataLocationNotCopying: (1/2) Folderul are deja fișiere! Nu va migra datele utilizatorului.
 Toast_DataLocationSet: (2/2) Reporniți comutatorul de cont pentru a utiliza noul folder!
