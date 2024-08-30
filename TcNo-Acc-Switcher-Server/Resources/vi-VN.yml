@@ -11,7 +11,7 @@ Steam_CheckVac: Kiểm tra trạng thái VAC của tài khoản
 Steam_OverrideDefaultState: "Ghi đè trạng thái đăng nhập mặc định:"
 Steam_StartSilent: "Khởi động Steam ở khay hệ thống khi chuyển đổi (Khởi động Steam với tham số '-silent')"
 Steam_OldUi: "Sử dụng giao diện cũ trong Steam (-vgui)"
-Steam_CollectInfo: Collect profile images and VAC ban status from Steam
+Steam_CollectInfo: Thu thập ảnh hồ sơ và trạng thái cấm VAC từ Steam
 Button_AddNew: Thêm mới
 Button_SaveCurrent: Lưu tài khoản hiện tại
 Button_SaveFile: Lưu tệp
@@ -83,7 +83,7 @@ Settings_ThemeBackground: '[Chỉnh nền]'
 Settings_ThemeOpenFolder: '[Mở thư mục chủ đề]'
 Settings_Protocol: 'Kích hoạt giao thức tcno:\ (Được khuyến nghị)'
 Settings_StartCentered: Khởi động chương trình ở giữa màn hình
-Settings_OfflineMode: Offline Mode (No network activity)
+Settings_OfflineMode: Chế độ ngoại tuyến (Không có hoạt động mạng)
 Settings_WindowsAccent: Sử dụng màu sắc của Windows
 Settings_HelpTranslate: "[Hỗ trợ dịch thuật]"
 Settings_ViewTranslators: "[Tác giả]"
@@ -100,7 +100,7 @@ PreviewCss: Xem trước CSS
 Settings_PreviewCss: Đây là trang xem trước CSS. Bạn có thể xem một số yếu tố hiển thị trong chương trình và xem chúng trông như thế nào với chủ đề của bạn. Trang này hữu ích cho những người tạo chủ đề!
 Settings_PreviewCssHeader: Trang xem trước CSS
 Settings_AutoUpdatePlatforms: Tự động cập nhật danh sách Nền tảng
-Settings_CheckForUpdates: Check for updates on launch
+Settings_CheckForUpdates: Kiểm tra cập nhật khi ra mắt
 Stats_Disabled: "Thu thập số liệu thống kê đã vô hiệu hóa."
 Stats_InDepth: Phân tích thống kê chuyên sâu
 Stats_ShareEnabled: "Những thống kê này được chia sẻ ẩn danh và sẽ thêm vào tổng số <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">ở đây</a>."
@@ -148,8 +148,8 @@ Restore_Button_Restore: Khôi phục đã chọn
 Ignored_RemoveAccounts: Xóa tài khoản khỏi danh sách bỏ qua
 Ignored_Description: Nếu trước đây bạn đã "bỏ qua" một tài khoản, bạn có thể hiển thị lại chúng tại đây
 Ignored_Stop: Ngừng bỏ qua các mục đã chọn
-Toast_UpdatesDownloading: Updates are downloading in the background. You can continue to use the program.
-Toast_UpdatesDownloaded: Updates have finished downloading. Close this app to start updating.
+Toast_UpdatesDownloading: Các bản cập nhật đang được tải xuống ở chế độ nền. Bạn có thể tiếp tục sử dụng chương trình.
+Toast_UpdatesDownloaded: Đã tải xong bản cập nhật. Đóng ứng dụng này để bắt đầu cập nhật.
 Toast_DataLocationCopying: (1/2) Đang sao chép các tệp hiện có vào thư mục dữ liệu người dùng mới!
 Toast_DataLocationNotCopying: (1/2) Thư mục đã có tệp! Sẽ không di chuyển dữ liệu người dùng.
 Toast_DataLocationSet: (2/2) Khởi động lại chương trình chuyển đổi tài khoản để sử dụng thư mục mới!
