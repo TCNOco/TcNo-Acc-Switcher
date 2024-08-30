@@ -11,7 +11,7 @@ Steam_CheckVac: Fiók VAC állapotának ellenőrzése
 Steam_OverrideDefaultState: "Alapértelmezett bejelentkezési állapot felülbírálása:"
 Steam_StartSilent: "Nyissa ki a Gőzt a tálcára kapcsoláskor (indítsa el a Gőzt a '-silent' gombbal)"
 Steam_OldUi: "Régi felhasználói felület használata a Steamben (-vgui)"
-Steam_CollectInfo: Collect profile images and VAC ban status from Steam
+Steam_CollectInfo: Gyűjtsd össze a profilképeket és a VAC-tiltás állapotát a Steamből
 Button_AddNew: Új hozzáadása
 Button_SaveCurrent: Aktuális mentése
 Button_SaveFile: Fájl mentése
@@ -83,7 +83,7 @@ Settings_ThemeBackground: '[Háttér beállítása]'
 Settings_ThemeOpenFolder: '[Téma mappa megnyitása]'
 Settings_Protocol: 'A TcNo: \\ protokoll engedélyezése (ajánlott)'
 Settings_StartCentered: Program indítása központilag
-Settings_OfflineMode: Offline Mode (No network activity)
+Settings_OfflineMode: Offline mód (nincs hálózati tevékenység)
 Settings_WindowsAccent: A Windows kiemelőszíne
 Settings_HelpTranslate: "[Help translate]"
 Settings_ViewTranslators: "[Credits]"
@@ -100,7 +100,7 @@ PreviewCss: CSS előnézete
 Settings_PreviewCss: Ez a CSS előnézeti oldala. Megtekinthetsz néhány elemet, amely megjelenik a programban, és megnézheted, hogyan néznek ki a témáddal. Ez az oldal hasznos azok számára, akik témákat hoznak létre!
 Settings_PreviewCssHeader: CSS előnézeti oldal
 Settings_AutoUpdatePlatforms: Platformlista automatikus frissítése
-Settings_CheckForUpdates: Check for updates on launch
+Settings_CheckForUpdates: Indításkor ellenőrizze a frissítéseket
 Stats_Disabled: "A statisztikai adatgyűjtés le van tiltva."
 Stats_InDepth: Részletes statisztikai bontás
 Stats_ShareEnabled: "Ezeket a statisztikákat névtelenül osztják meg, és hozzáadják az itt szereplő összes <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">-hoz</a>."
@@ -148,8 +148,8 @@ Restore_Button_Restore: Kijelöltek visszaállítása
 Ignored_RemoveAccounts: Fiókok eltávolítása a mellőzési listáról
 Ignored_Description: Ha korábban "figyelmen kívül hagyott" egy fiókot, itt ismét megjelenítheti azt
 Ignored_Stop: Kijelöltek mellőzésének leállítása
-Toast_UpdatesDownloading: Updates are downloading in the background. You can continue to use the program.
-Toast_UpdatesDownloaded: Updates have finished downloading. Close this app to start updating.
+Toast_UpdatesDownloading: A frissítések letöltése a háttérben történik. Továbbra is használhatja a programot.
+Toast_UpdatesDownloaded: A frissítések letöltése befejeződött. A frissítés megkezdéséhez zárja be ezt az alkalmazást.
 Toast_DataLocationCopying: (1/2) Meglévő fájlok másolása az új felhasználói adatok mappába!
 Toast_DataLocationNotCopying: (1/2) A mappában már vannak fájlok! Nem migrálja a felhasználói adatokat.
 Toast_DataLocationSet: (2/2) Indítsa újra a fiókváltót az új mappa használatához!
