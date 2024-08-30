@@ -31,6 +31,7 @@ Button_OpenBackup: Backup-Ordner anzeigen
 Button_Back: Zurück
 Button_RestartAdmin: Als Admin neu starten
 Button_SetPassword: App-Passwort festlegen
+Settings_SteamCollectInfo: Steam-Profilbild und VAC-Status von Steam erfassen
 Settings_Shortcut: ' {platform} Switcher Desktop-Verknüpfung'
 Settings_Admin: '{platform} als Admin ausführen'
 Settings_ImageExpiry: 'Tage vor Löschung der Profilbilder:'
