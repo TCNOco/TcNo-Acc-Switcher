@@ -11,7 +11,7 @@ Steam_CheckVac: 检查帐户 VAC 状态
 Steam_OverrideDefaultState: "覆盖默认登录状态："
 Steam_StartSilent: "在切换时缩小 Steam 到任务栏托盘（以 '-silent' 参数启动 Steam）"
 Steam_OldUi: "在 Steam 中使用旧版 UI（-vgui）"
-Steam_CollectInfo: Collect profile images and VAC ban status from Steam
+Steam_CollectInfo: 从 Steam 收集个人资料图片和 VAC 禁令状态
 Button_AddNew: 新增
 Button_SaveCurrent: 保存当前
 Button_SaveFile: 保存文件
@@ -83,7 +83,7 @@ Settings_ThemeBackground: '[设置背景]'
 Settings_ThemeOpenFolder: '[打开主题文件夹]'
 Settings_Protocol: '启用 tcno:\\ 协议（推荐）'
 Settings_StartCentered: 启动程序时居中
-Settings_OfflineMode: Offline Mode (No network activity)
+Settings_OfflineMode: 离线模式（无网络活动）
 Settings_WindowsAccent: 使用 Windows 主题色
 Settings_HelpTranslate: "[帮助翻译]"
 Settings_ViewTranslators: "[致谢]"
@@ -100,7 +100,7 @@ PreviewCss: 预览 CSS
 Settings_PreviewCss: 这是 CSS 预览页面。您可以查看一些在程序中弹出的元素，看看它们在您的主题上表现的样式。 这个页面对创建主题的人非常有用！
 Settings_PreviewCssHeader: CSS 预览页
 Settings_AutoUpdatePlatforms: 自动更新平台列表
-Settings_CheckForUpdates: Check for updates on launch
+Settings_CheckForUpdates: 检查启动时的更新
 Stats_Disabled: "统计信息收集已禁用。"
 Stats_InDepth: 统计详情
 Stats_ShareEnabled: "这些统计信息是匿名共享的，并将添加到<a onclick=\"{WebsiteLink}\" class=\"fancyLink\">这里</a>的总数。"
@@ -148,8 +148,8 @@ Restore_Button_Restore: 恢复所选
 Ignored_RemoveAccounts: 从忽略列表中删除帐户
 Ignored_Description: 如果您曾经“忽略”一个帐户，可以在这里再次显示它们
 Ignored_Stop: 停止忽略所选
-Toast_UpdatesDownloading: Updates are downloading in the background. You can continue to use the program.
-Toast_UpdatesDownloaded: Updates have finished downloading. Close this app to start updating.
+Toast_UpdatesDownloading: 正在后台下载更新。您可以继续使用该程序。
+Toast_UpdatesDownloaded: 更新已完成下载。关闭此应用即可开始更新。
 Toast_DataLocationCopying: (1/2) 正在复制现有文件到新用户数据文件夹！
 Toast_DataLocationNotCopying: (1/2) 文件夹已有文件！不会迁移用户数据。
 Toast_DataLocationSet: (2/2) 重新启动帐户切换器使用新文件夹！
