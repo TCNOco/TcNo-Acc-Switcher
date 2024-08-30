@@ -11,6 +11,7 @@ Steam_CheckVac: בדוק את מצב ה- VAC של החשבון
 Steam_OverrideDefaultState: "עקוף את דרך ברירת המחדל לכניסה:"
 Steam_StartSilent: "פתח את Steam למגש המשימות על מתג (התחל את Steam עם '- שקט ')"
 Steam_OldUi: "השתמש בממשק המשתמש הישן ב-Steam (-vgui)"
+Steam_CollectInfo: Collect profile images and VAC ban status from Steam
 Button_AddNew: הוסף
 Button_SaveCurrent: שמור נוכחי
 Button_SaveFile: שמור קובץ
@@ -82,6 +83,7 @@ Settings_ThemeBackground: '[הגדר רקע]'
 Settings_ThemeOpenFolder: '[פתח את תיקיית הנושא]'
 Settings_Protocol: 'אפשר TcNo: \\ פרוטוקול (מומלץ)'
 Settings_StartCentered: התחל תוכנית ממורכזת
+Settings_OfflineMode: Offline Mode (No network activity)
 Settings_WindowsAccent: השתמש בצבע הדגשה של Windows
 Settings_HelpTranslate: "[עזרה לתרגם]"
 Settings_ViewTranslators: "[Credits]"
@@ -98,6 +100,7 @@ PreviewCss: תצוגה מקדימה של CSS
 Settings_PreviewCss: זהו דף התצוגה המקדימה של CSS. תוכל להציג כמה אלמנטים שצצים בתוכנית ולראות איך הם נראים עם ערכת העיצוב שלך. דף זה שימושי עבור אלה שיוצרים ערכות עיצוב!
 Settings_PreviewCssHeader: דף תצוגה מקדימה של CSS
 Settings_AutoUpdatePlatforms: עדכון אוטומטי של רשימת הפלטפורמות
+Settings_CheckForUpdates: Check for updates on launch
 Stats_Disabled: "איסוף הנתונים הסטטיסטיים מושבת."
 Stats_InDepth: פירוט סטטיסטיקה מעמיקה
 Stats_ShareEnabled: "נתונים סטטיסטיים אלה משותפים באופן אנונימי ויוסיפו לסכום הכולל <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">כאן</a>."
@@ -145,6 +148,8 @@ Restore_Button_Restore: שחזר את הנבחר
 Ignored_RemoveAccounts: הסרת חשבונות מרשימת ההתעלמות
 Ignored_Description: אם בעבר "התעלמת" מחשבון, תוכל להציג אותו שוב כאן
 Ignored_Stop: הפסק להתעלם מהבחירה
+Toast_UpdatesDownloading: Updates are downloading in the background. You can continue to use the program.
+Toast_UpdatesDownloaded: Updates have finished downloading. Close this app to start updating.
 Toast_DataLocationCopying: (1/2) העתקת קבצים קיימים לתיקיית נתוני המשתמש החדשה!
 Toast_DataLocationNotCopying: (1/2) בתיקייה כבר יש קבצים! לא יעביר נתוני משתמש.
 Toast_DataLocationSet: (2/2) הפעל מחדש את מחליף החשבונות כדי להשתמש בתיקייה החדשה!
