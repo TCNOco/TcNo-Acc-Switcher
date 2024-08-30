@@ -11,6 +11,7 @@ Steam_CheckVac: Kontostatus VAC prüfen
 Steam_OverrideDefaultState: "Überschreibe Standard-Login-Status:"
 Steam_StartSilent: "Öffnen Sie Steam in der Taskleiste beim Umschalten (Starten Sie Steam mit '-silent')"
 Steam_OldUi: "Alte Benutzeroberfläche in Steam verwenden (-vgui)"
+Steam_CollectInfo: Collect profile images and VAC ban status from Steam
 Button_AddNew: Hinzufügen
 Button_SaveCurrent: Aktuellen speichern
 Button_SaveFile: Datei speichern
@@ -82,6 +83,7 @@ Settings_ThemeBackground: '[Hintergrund einstellen]'
 Settings_ThemeOpenFolder: '[Theme-Ordner öffnen]'
 Settings_Protocol: 'tcno:\\ Protokoll Aktivieren (empfohlen)'
 Settings_StartCentered: Programm zentriert starten
+Settings_OfflineMode: Offline Mode (No network activity)
 Settings_WindowsAccent: Verwende die Windows-Akzentfarbe
 Settings_HelpTranslate: "[Beim Übersetzen helfen]"
 Settings_ViewTranslators: "[Credits]"
@@ -98,6 +100,7 @@ PreviewCss: Vorschau CSS
 Settings_PreviewCss: Dies ist die CSS-Vorschauseite. Sie können einige Elemente anzeigen, die im Programm auftauchen und sehen, wie sie mit Ihrem Theme aussehen. Diese Seite ist nützlich für alle, die Themes erstellen!
 Settings_PreviewCssHeader: CSS-Vorschauseite
 Settings_AutoUpdatePlatforms: Automatische Aktualisierung der Plattformliste
+Settings_CheckForUpdates: Check for updates on launch
 Stats_Disabled: "Die Statistiksammlung ist deaktiviert."
 Stats_InDepth: Detaillierte statistische Aufschlüsselung
 Stats_ShareEnabled: "Diese Statistiken werden anonym geteilt und addieren sich hier zur Gesamtzahl <a onclick=\"{WebsiteLink}\" class=\"fancyLink\"></a>."
@@ -145,6 +148,8 @@ Restore_Button_Restore: Ausgewählte wiederherstellen
 Ignored_RemoveAccounts: Konten aus der Ignorierliste entfernen
 Ignored_Description: Wenn du einen Account zuvor "ignoriert" hast, kannst du es hier erneut anzeigen
 Ignored_Stop: Ausgewählte nicht mehr ignorieren
+Toast_UpdatesDownloading: Updates are downloading in the background. You can continue to use the program.
+Toast_UpdatesDownloaded: Updates have finished downloading. Close this app to start updating.
 Toast_DataLocationCopying: (1/2) Vorhandene Dateien in den neuen Benutzerdatenordner kopieren!
 Toast_DataLocationNotCopying: (1/2) Ordner enthält bereits Dateien! Benutzerdaten werden nicht migriert.
 Toast_DataLocationSet: (2/2) Starten Sie den Kontoumschalter neu, um den neuen Ordner zu verwenden!
