@@ -31,6 +31,7 @@ Button_OpenBackup: فتح مجلد النسخ الاحتياطي
 Button_Back: عوده
 Button_RestartAdmin: إعادة التشغيل كمسؤول
 Button_SetPassword: وضع كلمة مرور للتطبيق
+Settings_SteamCollectInfo: جمع صورة ملف تعريف Steam وحالة VAC من Steam
 Settings_Shortcut: 'إنشاء اختصار لـ{platform} على سطح المكتب'
 Settings_Admin: تشغيل {platform} كمسؤول
 Settings_ImageExpiry: 'عدد الايام قبل تحديث صور البروفايل:'
