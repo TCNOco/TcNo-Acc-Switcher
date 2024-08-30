@@ -31,6 +31,7 @@ Button_OpenBackup: Åbn Sikkerhedskopieringsmappen
 Button_Back: Tilbage
 Button_RestartAdmin: Genstart som administrator
 Button_SetPassword: Angiv App-adgangskode
+Settings_SteamCollectInfo: Indsaml Steam-profilbillede og VAC-status fra Steam
 Settings_Shortcut: ' {platform} Switcher skrivebordsgenvej'
 Settings_Admin: Kør {platform} som administrator
 Settings_ImageExpiry: 'Dage før profilbilleder udløber:'
