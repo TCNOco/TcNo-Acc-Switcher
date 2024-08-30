@@ -11,6 +11,7 @@ Steam_CheckVac: Gaan rekening VAC status na
 Steam_OverrideDefaultState: "Ignoreer verstek aanmeldstatus:"
 Steam_StartSilent: "Maak Steam oop na taakbalk op skakelaar (Begin Steam met '-stil')"
 Steam_OldUi: "Gebruik Ou UI in Steam (-vgui)"
+Steam_CollectInfo: Collect profile images and VAC ban status from Steam
 Button_AddNew: Voeg nuwe
 Button_SaveCurrent: Stoor huidige
 Button_SaveFile: Stoor die lêer
@@ -82,6 +83,7 @@ Settings_ThemeBackground: '[Stel agtergrond]'
 Settings_ThemeOpenFolder: '[Maak tema-lêergids oop]'
 Settings_Protocol: 'Aktiveer TcNo: \\ protokol (aanbeveel)'
 Settings_StartCentered: Begin program gesentreer
+Settings_OfflineMode: Offline Mode (No network activity)
 Settings_WindowsAccent: Gebruik die Windows Accent Color
 Settings_HelpTranslate: "[Help vertaal]"
 Settings_ViewTranslators: "[Credits]"
@@ -98,6 +100,7 @@ PreviewCss: Voorskou CSS
 Settings_PreviewCss: Dit is die CSS-voorskoubladsy. Jy kan sommige elemente wat in die program verskyn, sien en sien hoe hulle met jou tema lyk. Hierdie bladsy is nuttig vir diegene wat temas skep!
 Settings_PreviewCssHeader: CSS-voorskoubladsy
 Settings_AutoUpdatePlatforms: Dateer platformlys outomaties op
+Settings_CheckForUpdates: Check for updates on launch
 Stats_Disabled: "Statistiekversameling is gedeaktiveer."
 Stats_InDepth: In-diepte statistiek uiteensetting
 Stats_ShareEnabled: "Hierdie statistieke word anoniem gedeel en sal by die totale <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">hier</a>voeg."
@@ -145,6 +148,8 @@ Restore_Button_Restore: Herstel geselekteerde
 Ignored_RemoveAccounts: Verwyder rekeninge van ignoreerlys
 Ignored_Description: As jy voorheen 'n rekening "geïgnoreer" het, kan jy dit weer hier wys
 Ignored_Stop: Hou op om geselekteerde te ignoreer
+Toast_UpdatesDownloading: Updates are downloading in the background. You can continue to use the program.
+Toast_UpdatesDownloaded: Updates have finished downloading. Close this app to start updating.
 Toast_DataLocationCopying: (1/2) Kopieer bestaande lêers na die nuwe gebruikersdata-lêergids!
 Toast_DataLocationNotCopying: (1/2) Die gids het reeds lêers! Sal nie gebruikerdata migreer nie.
 Toast_DataLocationSet: (2/2) Herbegin die rekeningwisselaar om die nuwe vouer te gebruik!
