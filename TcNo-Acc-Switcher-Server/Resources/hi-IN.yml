@@ -31,6 +31,7 @@ Button_OpenBackup: बैकअप फ़ोल्डर खोलें
 Button_Back: 'पीछे @ action: button'
 Button_RestartAdmin: व्यवस्थापक के रूप में पुनरारंभ करें
 Button_SetPassword: ऐप पासवर्ड सेट करें
+Settings_SteamCollectInfo: स्टीम से स्टीम प्रोफ़ाइल चित्र और VAC स्थिति एकत्रित करें
 Settings_Shortcut: ' {platform} स्विचर डेस्कटॉप शॉर्टकट'
 Settings_Admin: व्यवस्थापक के रूप में {platform} चलाएं
 Settings_ImageExpiry: 'प्रोफ़ाइल छवियाँ समाप्त होने के कुछ दिन पहले:'
