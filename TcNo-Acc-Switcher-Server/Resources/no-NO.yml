@@ -11,7 +11,7 @@ Steam_CheckVac: Sjekk kontoens VAC-status
 Steam_OverrideDefaultState: "Overstyr standard påloggingstilstand:"
 Steam_StartSilent: "Åpne Steam til oppgaveskuffen på bryteren (start Steam med '-silent')"
 Steam_OldUi: "Bruk gammelt brukergrensesnitt i Steam (-vgui)"
-Steam_CollectInfo: Collect profile images and VAC ban status from Steam
+Steam_CollectInfo: Samle profilbilder og VAC-forbudsstatus fra Steam
 Button_AddNew: Legg til ny
 Button_SaveCurrent: Lagre gjeldende
 Button_SaveFile: Lagre filen
@@ -83,7 +83,7 @@ Settings_ThemeBackground: '[Angi bakgrunn]'
 Settings_ThemeOpenFolder: '[Åpne temamappe]'
 Settings_Protocol: 'Aktiver tcno:\\ protokoll (anbefalt)'
 Settings_StartCentered: Start programmet sentrert
-Settings_OfflineMode: Offline Mode (No network activity)
+Settings_OfflineMode: Frakoblet modus (ingen nettverksaktivitet)
 Settings_WindowsAccent: Bruk Windows Accent Color
 Settings_HelpTranslate: "[Hjelp til å oversette]"
 Settings_ViewTranslators: "[Credits]"
@@ -100,7 +100,7 @@ PreviewCss: Forhåndsvis CSS
 Settings_PreviewCss: Dette er forhåndsvisningssiden for CSS. Du kan se noen elementer som dukker opp i programmet og se hvordan de ser ut med temaet ditt. Denne siden er nyttig for de som lager temaer!
 Settings_PreviewCssHeader: CSS forhåndsvisningsside
 Settings_AutoUpdatePlatforms: Automatisk oppdatering av plattformlisten
-Settings_CheckForUpdates: Check for updates on launch
+Settings_CheckForUpdates: Se etter oppdateringer ved lansering
 Stats_Disabled: "Innsamling av statistikk er deaktivert."
 Stats_InDepth: Inngående statistikkoversikt
 Stats_ShareEnabled: "Denne statistikken deles anonymt og vil legge til den totale <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">her</a>."
@@ -148,8 +148,8 @@ Restore_Button_Restore: Gjenopprett valgt
 Ignored_RemoveAccounts: Fjern kontoer fra ignoreringslisten
 Ignored_Description: Hvis du tidligere har "ignorert" en konto, kan du vise dem igjen her
 Ignored_Stop: Slutt å ignorere valgte
-Toast_UpdatesDownloading: Updates are downloading in the background. You can continue to use the program.
-Toast_UpdatesDownloaded: Updates have finished downloading. Close this app to start updating.
+Toast_UpdatesDownloading: Oppdateringer lastes ned i bakgrunnen. Du kan fortsette å bruke programmet.
+Toast_UpdatesDownloaded: Oppdateringer er fullført. Lukk denne appen for å starte oppdateringen.
 Toast_DataLocationCopying: (1/2) Kopierer eksisterende filer til den nye brukerdatamappen!
 Toast_DataLocationNotCopying: (1/2) Mappen har allerede filer! Vil ikke migrere brukerdata.
 Toast_DataLocationSet: (2/2) Start kontobytteren på nytt for å bruke den nye mappen!
