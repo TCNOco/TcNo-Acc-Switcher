@@ -11,6 +11,7 @@ Steam_CheckVac: Controlla lo stato VAC del profilo
 Steam_OverrideDefaultState: "Sovrascrivi stato di accesso predefinito:"
 Steam_StartSilent: "Aprire il vassoio delle attività dal vapore sull'interruttore (avviare il vapore con '-silent')"
 Steam_OldUi: "Usa la vecchia interfaccia utente in Steam (-vgui)"
+Steam_CollectInfo: Collect profile images and VAC ban status from Steam
 Button_AddNew: Aggiungi Nuovo
 Button_SaveCurrent: Salva corrente
 Button_SaveFile: Salva file
@@ -82,6 +83,7 @@ Settings_ThemeBackground: '[Imposta sfondo]'
 Settings_ThemeOpenFolder: '[Apri cartella tema]'
 Settings_Protocol: 'Abilita il protocollo tcno:\\ (Consigliato)'
 Settings_StartCentered: Avvia programma centrato
+Settings_OfflineMode: Offline Mode (No network activity)
 Settings_WindowsAccent: Usa il Colore Secondario di Windows
 Settings_HelpTranslate: "[Aiuta a tradurre]"
 Settings_ViewTranslators: "[Credits]"
@@ -98,6 +100,7 @@ PreviewCss: Anteprima CSS
 Settings_PreviewCss: Questa è la pagina di anteprima CSS. È possibile visualizzare alcuni elementi che compaiono nel programma per vedere che aspetto hanno con il tema. Questa pagina è utile per coloro che creano temi!
 Settings_PreviewCssHeader: Pagina Anteprima CSS
 Settings_AutoUpdatePlatforms: Elenco delle piattaforme di aggiornamento automatico
+Settings_CheckForUpdates: Check for updates on launch
 Stats_Disabled: "La raccolta delle statistiche è disabilitata."
 Stats_InDepth: Disaggregazione statistica approfondita
 Stats_ShareEnabled: "Queste statistiche sono condivise in modo anonimo e si aggiungeranno al totale <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">qui</a>."
@@ -145,6 +148,8 @@ Restore_Button_Restore: Ripristina selezionato
 Ignored_RemoveAccounts: Rimuovi i profili dall'elenco ignorati
 Ignored_Description: Se precedentemente hai "ignorato" un profilo, puoi mostrarlo nuovamente qui
 Ignored_Stop: Smetti di ignorare selezionato
+Toast_UpdatesDownloading: Updates are downloading in the background. You can continue to use the program.
+Toast_UpdatesDownloaded: Updates have finished downloading. Close this app to start updating.
 Toast_DataLocationCopying: (1/2) Copia di file esistenti nella nuova cartella dei dati utente!
 Toast_DataLocationNotCopying: (1/2) La cartella contiene già dei file! Non eseguirà la migrazione dei dati dell'utente.
 Toast_DataLocationSet: (2/2) Riavvia il selettore di account per utilizzare la nuova cartella!
