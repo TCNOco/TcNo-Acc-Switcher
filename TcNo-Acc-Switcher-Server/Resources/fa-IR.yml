@@ -31,6 +31,7 @@ Button_OpenBackup: پوشه پشتیبان را باز کنید
 Button_Back: بازگشت
 Button_RestartAdmin: Restart به عنوان Admin
 Button_SetPassword: رمز عبور برنامه را تنظیم کنید
+Settings_SteamCollectInfo: تصویر نمایه Steam و وضعیت VAC را از Steam جمع آوری کنید
 Settings_Shortcut: ' {platform} میانبر دسکتاپ Switcher'
 Settings_Admin: '{platform} را به عنوان Admin اجرا کنید'
 Settings_ImageExpiry: 'چند روز قبل از انقضای تصاویر نمایه:'
