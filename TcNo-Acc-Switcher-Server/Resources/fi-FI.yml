@@ -11,7 +11,7 @@ Steam_CheckVac: Tarkista tilin VAC-tila
 Steam_OverrideDefaultState: "Ohita oletuskirjautumistila:"
 Steam_StartSilent: "Avaa Steam to Task -alusta kytkimellä (Käynnistä Steam '-hiljaisella')"
 Steam_OldUi: "Käytä vanhaa käyttöliittymää Steamissä (-vgui)"
-Steam_CollectInfo: Collect profile images and VAC ban status from Steam
+Steam_CollectInfo: Kerää profiilikuvat ja VAC-kieltotila Steamista
 Button_AddNew: Lisää uusi
 Button_SaveCurrent: Tallenna nykyinen
 Button_SaveFile: Tallenna tiedosto
@@ -83,7 +83,7 @@ Settings_ThemeBackground: '[Aseta tausta]'
 Settings_ThemeOpenFolder: '[Avaa teemakansio]'
 Settings_Protocol: 'Ota käyttöön tcno:\\ protocol (Suositeltava)'
 Settings_StartCentered: Käynnistä ohjelma keskitetysti
-Settings_OfflineMode: Offline Mode (No network activity)
+Settings_OfflineMode: Offline-tila (ei verkkotoimintaa)
 Settings_WindowsAccent: Käytä Windowsin korostusväriä
 Settings_HelpTranslate: "[Apua kääntämään]"
 Settings_ViewTranslators: "[Credits]"
@@ -100,7 +100,7 @@ PreviewCss: 'Esikatsele CSS: ää'
 Settings_PreviewCss: Tämä on CSS-esikatselusivu. Voit tarkastella joitakin elementtejä, jotka ponnahtavat ohjelmaan ja nähdä, miltä ne näyttävät teeman kanssa. Tämä sivu on hyödyllinen niille, jotka luovat teemoja!
 Settings_PreviewCssHeader: CSS-esikatselusivu
 Settings_AutoUpdatePlatforms: Päivitä alustaluettelo automaattisesti
-Settings_CheckForUpdates: Check for updates on launch
+Settings_CheckForUpdates: Tarkista päivitykset käynnistyksen yhteydessä
 Stats_Disabled: "Tilastojen kerääminen on poistettu käytöstä."
 Stats_InDepth: Perusteellinen tilastoerittely
 Stats_ShareEnabled: "Nämä tilastot jaetaan nimettöminä, ja ne lisätään kokonaissummaan <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">tässä</a>."
@@ -148,8 +148,8 @@ Restore_Button_Restore: Palauta valitut
 Ignored_RemoveAccounts: Poista tilit ohitusluettelosta
 Ignored_Description: Jos olet aiemmin "ohittanut" tilin, voit näyttää sen uudelleen täällä
 Ignored_Stop: Lopeta valittujen jättäminen huomiotta
-Toast_UpdatesDownloading: Updates are downloading in the background. You can continue to use the program.
-Toast_UpdatesDownloaded: Updates have finished downloading. Close this app to start updating.
+Toast_UpdatesDownloading: Päivitykset latautuvat taustalla. Voit jatkaa ohjelman käyttöä.
+Toast_UpdatesDownloaded: Päivitysten lataus on valmis. Sulje tämä sovellus aloittaaksesi päivityksen.
 Toast_DataLocationCopying: (1/2) Kopioidaan olemassa olevia tiedostoja uuteen käyttäjätietokansioon!
 Toast_DataLocationNotCopying: (1/2) Kansiolla on jo tiedostoja! Ei siirrä käyttäjätietoja.
 Toast_DataLocationSet: (2/2) Käynnistä tilin vaihtaja uudelleen käyttääksesi uutta kansiota!
