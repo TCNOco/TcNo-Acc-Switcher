@@ -31,6 +31,7 @@ Button_OpenBackup: Otevřete složku Záloh
 Button_Back: Zpět
 Button_RestartAdmin: Restartovat jako správce
 Button_SetPassword: Nastavit heslo aplikace
+Settings_SteamCollectInfo: Sbírejte profilový obrázek služby Steam a stav VAC ze služby Steam
 Settings_Shortcut: ' Přidat zástupce {platform} přepínače na plochu'
 Settings_Admin: Spustit {platform} jako správce
 Settings_ImageExpiry: 'Dny před vypršením platnosti profilových obrázků:'
