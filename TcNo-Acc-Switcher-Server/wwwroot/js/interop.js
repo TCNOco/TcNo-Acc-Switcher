@@ -137,9 +137,8 @@ function initEditor() {
 async function showUpdateBar() {
     $(".programMain").prepend(`<div class="updateBar"><span>${await GetLang("Update")}</span><i class="fas fa-times-circle" id="closeUpdateBar"></i></div>`);
     $(document).on("click", ".updateBar", function (event) {
-        if (event.target.id === "closeUpdateBar") {
-            $(".updateBar").fadeOut();
-        } else {
+        $(".updateBar").fadeOut();
+        if (event.target.id !== "closeUpdateBar") {
             updateBarClick();
         }
     });

@@ -247,6 +247,9 @@ namespace TcNo_Acc_Switcher_Server.Data
         private bool _tcNoClientApp;
         [JsonIgnore] public static bool TcNoClientApp { get => Instance._tcNoClientApp; set => Instance._tcNoClientApp = value; }
 
+        private bool _updatePending = false;
+        [JsonIgnore] public static bool UpdatePending { get => Instance._updatePending; set => Instance._updatePending = value; }
+
         #region JS_INTEROP
         public static bool InvokeVoidAsync(string func)
         {

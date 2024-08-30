@@ -183,6 +183,7 @@ namespace TcNo_Acc_Switcher_Server
             try
             {
                 AppStats.SaveSettings();
+                if (AppData.UpdatePending) AppSettings.AutoStartUpdaterAsAdmin();
             }
             catch (Exception)
             {

@@ -860,6 +860,8 @@ namespace TcNo_Acc_Switcher_Server.Data
                     return;
                 }
 
+                _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_UpdatesDownloading"], renderTo: "toastarea");
+
                 Directory.SetCurrentDirectory(Globals.AppDataFolder);
                 // Download latest hash list
                 var hashFilePath = Path.Join(Globals.UserDataFolder, "hashes.json");
@@ -869,7 +871,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 var verifyDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(Globals.ReadAllText(hashFilePath));
                 if (verifyDictionary == null)
                 {
-                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_UpdateVerifyFail"]);
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_UpdateVerifyFail"], renderTo: "toastarea");
                     return;
                 }
 
@@ -885,7 +887,8 @@ namespace TcNo_Acc_Switcher_Server.Data
                     Globals.DownloadFile("https://tcno.co/Projects/AccSwitcher/latest/" + key.Replace('\\', '/'), key);
                 }
 
-                AutoStartUpdaterAsAdmin();
+                _ = GeneralInvocableFuncs.ShowToast("success", Lang["Toast_UpdatesDownloaded"], renderTo: "toastarea");
+                AppData.UpdatePending = true;
             }
             catch (Exception e)
             {
