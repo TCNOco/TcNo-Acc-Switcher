@@ -11,6 +11,7 @@ Steam_CheckVac: Проверка VAC състоянието на акаунта
 Steam_OverrideDefaultState: "Замяна на състоянието на влизане по подразбиране:"
 Steam_StartSilent: "Отворете Steam, за да включите лентата за задачи (Стартирайте Steam с '- Silent ')"
 Steam_OldUi: "Използвайте стар потребителски интерфейс в Steam (-vgui)"
+Steam_CollectInfo: Collect profile images and VAC ban status from Steam
 Button_AddNew: Добавяне на нов
 Button_SaveCurrent: Запазване на текущото
 Button_SaveFile: Запис на файл
@@ -82,6 +83,7 @@ Settings_ThemeBackground: '[Set background]'
 Settings_ThemeOpenFolder: '[Отваряне на папка с теми]'
 Settings_Protocol: 'Активиране на tcno:\\ protocol (препоръчително)'
 Settings_StartCentered: Стартиране на програмата центрирано
+Settings_OfflineMode: Offline Mode (No network activity)
 Settings_WindowsAccent: Използване на цвета на акцента на Windows
 Settings_HelpTranslate: "[Help translate]"
 Settings_ViewTranslators: "[Credits]"
@@ -98,6 +100,7 @@ PreviewCss: Преглед на CSS
 Settings_PreviewCss: Това е страницата за преглед на CSS. Можете да видите някои елементи, които изскачат в програмата и да видите как изглеждат с вашата тема. Тази страница е полезна за тези, които създават теми!
 Settings_PreviewCssHeader: CSS страница за предварителен преглед
 Settings_AutoUpdatePlatforms: Автоматично актуализиране на списъка с платформи
+Settings_CheckForUpdates: Check for updates on launch
 Stats_Disabled: "Събирането на статистически данни е деактивирано."
 Stats_InDepth: Подробна статистическа разбивка
 Stats_ShareEnabled: "Тази статистика се споделя анонимно и ще добави към общата <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">тук</a>."
@@ -145,6 +148,8 @@ Restore_Button_Restore: Възстановяване на избраното
 Ignored_RemoveAccounts: Премахване на профили от списъка за игнориране
 Ignored_Description: Ако преди това сте "игнорирали" акаунт, можете да го покажете отново тук
 Ignored_Stop: Престанете да игнорирате избраните
+Toast_UpdatesDownloading: Updates are downloading in the background. You can continue to use the program.
+Toast_UpdatesDownloaded: Updates have finished downloading. Close this app to start updating.
 Toast_DataLocationCopying: (1/2) Копиране на съществуващите файлове в новата папка с потребителски данни!
 Toast_DataLocationNotCopying: (1/2) Папката вече има файлове! Няма да мигрира потребителски данни.
 Toast_DataLocationSet: (2/2) Рестартирайте превключвателя на акаунти, за да използвате новата папка!
