@@ -11,7 +11,7 @@ Steam_CheckVac: Hesap VAC durumunu kontrol et
 Steam_OverrideDefaultState: "Varsayılan oturum açma durumunu geçersiz kıl:"
 Steam_StartSilent: "Anahtar üzerindeki görev tepsisine buharı açın (Buharı '- sessiz 'ile başlatın)"
 Steam_OldUi: "Steam'de Eski Kullanıcı Arayüzünü Kullanın (-vgui)"
-Steam_CollectInfo: Collect profile images and VAC ban status from Steam
+Steam_CollectInfo: Steam'den profil resimleri ve VAC yasak durumu topla
 Button_AddNew: Yeni Ekle
 Button_SaveCurrent: Mevcut Oturumu Kaydet
 Button_SaveFile: Dosyayı Kaydet
@@ -83,7 +83,7 @@ Settings_ThemeBackground: '[Arka planı ayarla]'
 Settings_ThemeOpenFolder: '[Tema klasörünü aç]'
 Settings_Protocol: 'Tcno''yu etkinleştir:\\ protocol (Önerilen)'
 Settings_StartCentered: Programı merkezde başlat
-Settings_OfflineMode: Offline Mode (No network activity)
+Settings_OfflineMode: Çevrimdışı Mod (Ağ etkinliği yok)
 Settings_WindowsAccent: Windows Vurgu Rengini Kullan
 Settings_HelpTranslate: "[Çeviriye yardım et]"
 Settings_ViewTranslators: "[Katkıda Bulunanlar]"
@@ -100,7 +100,7 @@ PreviewCss: Önizleme CSS
 Settings_PreviewCss: Bu CSS önizleme sayfasıdır. Programda açılan bazı öğeleri görüntüleyebilir ve temanızla nasıl göründüklerini görebilirsiniz. Bu sayfa tema oluşturanlar için kullanışlıdır!
 Settings_PreviewCssHeader: CSS Önizleme Sayfası
 Settings_AutoUpdatePlatforms: Platformlar listesini otomatik güncelle
-Settings_CheckForUpdates: Check for updates on launch
+Settings_CheckForUpdates: Lansman sırasında güncellemeleri kontrol edin
 Stats_Disabled: "İstatistik koleksiyonu devre dışı."
 Stats_InDepth: Derinlemesine istatistik dökümü
 Stats_ShareEnabled: "Bu istatistikler anonim olarak paylaşılır ve buradaki toplam <a onclick=\"{WebsiteLink}\" class=\"fancyLink\"></a>eklenir."
@@ -148,8 +148,8 @@ Restore_Button_Restore: Seçilenleri geri yükle
 Ignored_RemoveAccounts: Hesapları yoksay listesinden kaldır
 Ignored_Description: Daha önce bir hesabı "yoksaydı ", burada tekrar gösterebilirsiniz
 Ignored_Stop: Seçilenleri görmezden gelmeyi bırak
-Toast_UpdatesDownloading: Updates are downloading in the background. You can continue to use the program.
-Toast_UpdatesDownloaded: Updates have finished downloading. Close this app to start updating.
+Toast_UpdatesDownloading: Güncellemeler arka planda indiriliyor. Programı kullanmaya devam edebilirsiniz.
+Toast_UpdatesDownloaded: Güncellemeler indirildi. Güncellemeyi başlatmak için bu uygulamayı kapatın.
 Toast_DataLocationCopying: (1/2) Mevcut dosyaların yeni kullanıcı verileri klasörüne kopyalanması!
 Toast_DataLocationNotCopying: (1/2) Klasörde zaten dosyalar var! Kullanıcı verilerini taşımaz.
 Toast_DataLocationSet: (2/2) Yeni klasörü kullanmak için hesap değiştiriciyi yeniden başlatın!
