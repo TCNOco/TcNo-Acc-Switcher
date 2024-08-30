@@ -11,6 +11,7 @@ Steam_CheckVac: Zkontrolovat stav VAC účtu
 Steam_OverrideDefaultState: "Přepsat výchozí stav přihlášení:"
 Steam_StartSilent: "Otevřete páru na přepínač zásobníku úloh (spusťte páru pomocí „- Silent“ (Tichý))"
 Steam_OldUi: "Použít staré uživatelské rozhraní ve službě Steam (-vgui)"
+Steam_CollectInfo: Sbírejte profilové obrázky a stav zákazu VAC ze služby Steam
 Button_AddNew: Přidat nový
 Button_SaveCurrent: Uložit aktuální
 Button_SaveFile: Uložit soubor
@@ -82,6 +83,7 @@ Settings_ThemeBackground: '[Nastavit pozadí]'
 Settings_ThemeOpenFolder: '[Otevřít složku vzhledů]'
 Settings_Protocol: 'Povolit tcno:\\ protokol (doporučeno)'
 Settings_StartCentered: Spustit program ve středu obrazovky
+Settings_OfflineMode: Režim offline (žádná síťová aktivita)
 Settings_WindowsAccent: Použí barvu motivu Windows
 Settings_HelpTranslate: "[Pomozte s překladem]"
 Settings_ViewTranslators: "[Titulky]"
@@ -98,6 +100,7 @@ PreviewCss: Náhled CSS
 Settings_PreviewCss: Toto je stránka s náhledem CSS. Můžete si prohlédnout některé prvky, které se v programu objeví, a zjistit, jak vypadají s vaším motivem. Tato stránka je užitečná pro ty, kteří vytvářejí témata!
 Settings_PreviewCssHeader: Náhledová Stránka CSS
 Settings_AutoUpdatePlatforms: Automaticky aktualizovat seznam platforem
+Settings_CheckForUpdates: Při spuštění zkontrolujte aktualizace
 Stats_Disabled: "Sběr statistik je zakázán."
 Stats_InDepth: Podrobné členění statistik
 Stats_ShareEnabled: "Tyto statistiky jsou sdíleny anonymně a přidá se k celkové <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">zde</a>."
@@ -145,6 +148,8 @@ Restore_Button_Restore: Obnovit vybrané
 Ignored_RemoveAccounts: Odebrat účty ze seznamu ignorovaných
 Ignored_Description: Pokud jste dříve účet „ignorovali“, můžete je zobrazit znovu zde
 Ignored_Stop: Zastavit ignorování vybraných
+Toast_UpdatesDownloading: Aktualizace se stahují na pozadí. Program můžete nadále používat.
+Toast_UpdatesDownloaded: Stahování aktualizací bylo dokončeno. Chcete-li zahájit aktualizaci, zavřete tuto aplikaci.
 Toast_DataLocationCopying: (1/2) Kopírování stávajících souborů do nové složky uživatelských dat!
 Toast_DataLocationNotCopying: (1/2) Složka již obsahuje soubory! Nebudou migrovat uživatelská data.
 Toast_DataLocationSet: (2/2) Chcete-li použít novou složku, restartujte přepínač účtů!

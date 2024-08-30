@@ -11,6 +11,7 @@ Steam_CheckVac: Έλεγχος κατάστασης VAC λογαριασμού
 Steam_OverrideDefaultState: "Παράκαμψη προεπιλεγμένης κατάστασης σύνδεσης:"
 Steam_StartSilent: "Άνοιγμα του πλαισίου εργασίας Steam στον διακόπτη (Εκκίνηση του Steam με '-silent')"
 Steam_OldUi: "Χρησιμοποιήστε το Old UI στο Steam (-vgui)"
+Steam_CollectInfo: Συλλέξτε εικόνες προφίλ και κατάσταση απαγόρευσης VAC από το Steam
 Button_AddNew: Προσθήκη Νέου
 Button_SaveCurrent: Αποθήκευση τρέχοντος
 Button_SaveFile: Αποθήκευση αρχείου
@@ -82,6 +83,7 @@ Settings_ThemeBackground: '[Ορισμός φόντου]'
 Settings_ThemeOpenFolder: '[Άνοιγμα φακέλου θέματος]'
 Settings_Protocol: 'Ενεργοποίηση tcno:\\ protocol (Συνιστάται)'
 Settings_StartCentered: Έναρξη προγράμματος στο κέντρο
+Settings_OfflineMode: Λειτουργία εκτός σύνδεσης (Χωρίς δραστηριότητα δικτύου)
 Settings_WindowsAccent: Χρήση του χρώματος έμφασης των Windows
 Settings_HelpTranslate: "[Help translate]"
 Settings_ViewTranslators: "[Credits]"
@@ -98,6 +100,7 @@ PreviewCss: Προεπισκόπηση CSS
 Settings_PreviewCss: Αυτή είναι η σελίδα προεπισκόπησης CSS. Μπορείτε να δείτε μερικά στοιχεία που εμφανίζονται στο πρόγραμμα και να δείτε πώς μοιάζουν με το θέμα σας. Αυτή η σελίδα είναι χρήσιμη για όσους δημιουργούν θέματα!
 Settings_PreviewCssHeader: Σελίδα προεπισκόπησης CSS
 Settings_AutoUpdatePlatforms: Αυτόματη ενημέρωση λίστας πλατφορμών
+Settings_CheckForUpdates: Ελέγξτε για ενημερώσεις κατά την εκκίνηση
 Stats_Disabled: "Η συλλογή στατιστικών στοιχείων είναι απενεργοποιημένη."
 Stats_InDepth: Ανάλυση σε βάθος στατιστικών στοιχείων
 Stats_ShareEnabled: "Αυτά τα στατιστικά στοιχεία κοινοποιούνται ανώνυμα και θα προστεθούν στο σύνολο <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">εδώ</a>."
@@ -145,6 +148,8 @@ Restore_Button_Restore: Επαναφορά επιλεγμένων
 Ignored_RemoveAccounts: Αφαίρεση λογαριασμών από τη λίστα αγνόησης
 Ignored_Description: Εάν προηγουμένως "αγνοήσατε" έναν λογαριασμό, μπορείτε να τον εμφανίσετε ξανά εδώ
 Ignored_Stop: Διακοπή παράβλεψης επιλεγμένων
+Toast_UpdatesDownloading: Γίνεται λήψη ενημερώσεων στο παρασκήνιο. Μπορείτε να συνεχίσετε να χρησιμοποιείτε το πρόγραμμα.
+Toast_UpdatesDownloaded: Η λήψη των ενημερώσεων ολοκληρώθηκε. Κλείστε αυτήν την εφαρμογή για να ξεκινήσει η ενημέρωση.
 Toast_DataLocationCopying: (1/2) Αντιγραφή υπαρχόντων αρχείων στον νέο φάκελο δεδομένων χρήστη!
 Toast_DataLocationNotCopying: (1/2) Ο φάκελος έχει ήδη αρχεία! Δεν θα γίνει μετεγκατάσταση δεδομένων χρήστη.
 Toast_DataLocationSet: (2/2) Κάντε επανεκκίνηση του εναλλάκτη λογαριασμού για να χρησιμοποιήσετε τον νέο φάκελο!

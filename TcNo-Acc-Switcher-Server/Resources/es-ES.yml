@@ -11,6 +11,7 @@ Steam_CheckVac: Compruebe el estado VAC de la cuenta
 Steam_OverrideDefaultState: "Sobrescribir estado de inicio de sesión predeterminado:"
 Steam_StartSilent: "Abra Steam en la bandeja de tareas al cambiar (Inicia Steam con '-silencio')"
 Steam_OldUi: "Usar la interfaz de usuario antigua en Steam (-vgui)"
+Steam_CollectInfo: Recopila imágenes de perfil y estados de prohibición de VAC de Steam
 Button_AddNew: Añadir Nuevo
 Button_SaveCurrent: Guardar actual
 Button_SaveFile: Guardar archivo
@@ -82,6 +83,7 @@ Settings_ThemeBackground: '[Definir fondo]'
 Settings_ThemeOpenFolder: '[Abrir carpeta de temas]'
 Settings_Protocol: 'Habilitar tcno:\\ protocol (recomendado)'
 Settings_StartCentered: Iniciar el programa centrado
+Settings_OfflineMode: Modo sin conexión (sin actividad de red)
 Settings_WindowsAccent: Usar el color de acento de Windows
 Settings_HelpTranslate: "[Ayuda a traducir]"
 Settings_ViewTranslators: "[Credits]"
@@ -98,6 +100,7 @@ PreviewCss: Previsualizar CSS
 Settings_PreviewCss: Esta es la página de vista previa de CSS. Puedes ver algunos elementos que aparecen en el programa y ver cómo se ven con tu tema. ¡Esta página es útil para aquellos que crean temas!
 Settings_PreviewCssHeader: Página de vista previa de CSS
 Settings_AutoUpdatePlatforms: Lista de plataformas con actualización automática
+Settings_CheckForUpdates: Comprobar actualizaciones sobre el lanzamiento
 Stats_Disabled: "La recopilación de estadísticas está desactivada."
 Stats_InDepth: Desglose de las estadísticas en profundidad
 Stats_ShareEnabled: "Estas estadísticas se comparten de forma anónima y se sumarán al total de <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">aquí</a>."
@@ -145,6 +148,8 @@ Restore_Button_Restore: Restaurar seleccionado
 Ignored_RemoveAccounts: Eliminar cuentas de la lista de ignorados
 Ignored_Description: Si previamente has "ignorado" una cuenta, puedes volver a mostrarla aquí
 Ignored_Stop: Dejar de ignorar los seleccionados
+Toast_UpdatesDownloading: Las actualizaciones se están descargando en segundo plano. Puedes seguir usando el programa.
+Toast_UpdatesDownloaded: Las actualizaciones terminaron de descargarse. Cierre esta aplicación para comenzar a actualizar.
 Toast_DataLocationCopying: (1/2) ¡Copiando archivos existentes en la nueva carpeta de datos de usuario!
 Toast_DataLocationNotCopying: (1/2) ¡La carpeta ya tiene archivos! No migrará los datos del usuario.
 Toast_DataLocationSet: (2/2) ¡Reinicia el selector de cuentas para usar la nueva carpeta!

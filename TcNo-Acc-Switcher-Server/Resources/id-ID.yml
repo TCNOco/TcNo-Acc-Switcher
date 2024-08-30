@@ -11,6 +11,7 @@ Steam_CheckVac: Periksa status VAC akun
 Steam_OverrideDefaultState: "Mengganti keadaan login default:"
 Steam_StartSilent: "Buka Steam untuk mengaktifkan task tray (Mulai Steam dengan '- silent ')"
 Steam_OldUi: "Gunakan UI Lama di Steam (-vgui)"
+Steam_CollectInfo: Kumpulkan gambar profil dan status larangan VAC dari Steam
 Button_AddNew: Tambah Baru
 Button_SaveCurrent: Simpan Saat Ini
 Button_SaveFile: Simpan Berkas
@@ -82,6 +83,7 @@ Settings_ThemeBackground: '[Atur latar belakang]'
 Settings_ThemeOpenFolder: '[Buka folder tema]'
 Settings_Protocol: 'Aktifkan tcno:\\ protokol (Disarankan)'
 Settings_StartCentered: Mulai program yang dipusatkan
+Settings_OfflineMode: Mode Offline (Tidak ada aktivitas jaringan)
 Settings_WindowsAccent: Gunakan Warna Aksen Windows
 Settings_HelpTranslate: "[Bantuan menerjemahkan]"
 Settings_ViewTranslators: "[Credits]"
@@ -98,6 +100,7 @@ PreviewCss: Pratinjau CSS
 Settings_PreviewCss: Ini adalah halaman pratinjau CSS. Anda dapat melihat beberapa elemen yang muncul di program dan melihat tampilannya dengan tema Anda. Halaman ini berguna untuk mereka yang membuat tema!
 Settings_PreviewCssHeader: Halaman Pratinjau CSS
 Settings_AutoUpdatePlatforms: Daftar Platform pembaruan otomatis
+Settings_CheckForUpdates: Periksa pembaruan saat peluncuran
 Stats_Disabled: "Pengumpulan statistik dinonaktifkan."
 Stats_InDepth: Perincian statistik mendalam
 Stats_ShareEnabled: "Statistik ini dibagikan secara anonim dan akan ditambahkan ke total <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">di sini</a>."
@@ -145,6 +148,8 @@ Restore_Button_Restore: Pulihkan yang dipilih
 Ignored_RemoveAccounts: Hapus akun dari daftar abaikan
 Ignored_Description: Jika sebelumnya Anda "mengabaikan" akun, Anda dapat menunjukkannya lagi di sini
 Ignored_Stop: Berhenti mengabaikan yang dipilih
+Toast_UpdatesDownloading: Pembaruan sedang diunduh di latar belakang. Anda dapat terus menggunakan program tersebut.
+Toast_UpdatesDownloaded: Pembaruan telah selesai diunduh. Tutup aplikasi ini untuk memulai pembaruan.
 Toast_DataLocationCopying: (1/2) Menyalin file yang ada ke dalam folder data pengguna baru!
 Toast_DataLocationNotCopying: (1/2) Folder sudah memiliki file! Tidak akan memigrasikan data pengguna.
 Toast_DataLocationSet: (2/2) Mulai ulang pengalih akun untuk menggunakan folder baru!

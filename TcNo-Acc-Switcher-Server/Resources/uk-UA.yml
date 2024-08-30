@@ -11,6 +11,7 @@ Steam_CheckVac: Перевірити стан VAC акаунту
 Steam_OverrideDefaultState: "Перевизначити стан входу за замовчуванням:"
 Steam_StartSilent: "Відкрити Steam у треї під час перемикання акаунтів (Запустити Steam за допомогою '-silent')"
 Steam_OldUi: "Використовуйте старий інтерфейс користувача в Steam (-vgui)"
+Steam_CollectInfo: Збирайте зображення профілю та статус бану VAC у Steam
 Button_AddNew: Додати новий
 Button_SaveCurrent: Зберегти поточний
 Button_SaveFile: Зберегти файл
@@ -82,6 +83,7 @@ Settings_ThemeBackground: '[Встановити фон]'
 Settings_ThemeOpenFolder: '[Відкрити папку теми]'
 Settings_Protocol: 'Увімкнути tcno:\\ протокол (рекомендовано)'
 Settings_StartCentered: Запуск програми центровано
+Settings_OfflineMode: Автономний режим (без активності в мережі)
 Settings_WindowsAccent: Використовувати акцентний колір Windows
 Settings_HelpTranslate: "[Допомогти з перекладом]"
 Settings_ViewTranslators: "[Автори]"
@@ -98,6 +100,7 @@ PreviewCss: Попередній перегляд CSS
 Settings_PreviewCss: Це сторінка попереднього перегляду CSS. Ви можете переглянути деякі елементи, які спливають у програмі, і побачити, як вони виглядають у вашій темі. Ця сторінка корисна для тих, хто створює теми!
 Settings_PreviewCssHeader: Сторінка попереднього перегляду CSS
 Settings_AutoUpdatePlatforms: Автоматичне оновлення списку платформ
+Settings_CheckForUpdates: Перевірте наявність оновлень під час запуску
 Stats_Disabled: "Збір статистики вимкнено."
 Stats_InDepth: Поглиблена статистична розбивка
 Stats_ShareEnabled: "Ці статистичні дані надаються анонімно і додаються до загальної кількості <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">тут</a>."
@@ -145,6 +148,8 @@ Restore_Button_Restore: Відновити вибране
 Ignored_RemoveAccounts: Вилучити акаунти зі списку ігнорування
 Ignored_Description: Якщо ви раніше "ігнорували" акаунт, ви можете показати його знову тут
 Ignored_Stop: Зупинити ігнорування вибраного
+Toast_UpdatesDownloading: Оновлення завантажуються у фоновому режимі. Ви можете продовжувати користуватися програмою.
+Toast_UpdatesDownloaded: Оновлення завантажено. Закрийте цю програму, щоб почати оновлення.
 Toast_DataLocationCopying: (1/2) Копіювання наявних файлів у нову теку даних користувача!
 Toast_DataLocationNotCopying: (1/2) У теці вже є файли! Не будемо переносити дані користувача.
 Toast_DataLocationSet: (2/2) Перезапустіть перемикач акаунтів, щоб використовувати нову теку!

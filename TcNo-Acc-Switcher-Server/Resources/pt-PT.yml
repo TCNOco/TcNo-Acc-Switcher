@@ -11,6 +11,7 @@ Steam_CheckVac: Verificar o estado VAC da conta
 Steam_OverrideDefaultState: "Substituir início de sessão predefinido:"
 Steam_StartSilent: "Ao alternar abrir a Steam na Área de Notificação (Iniciar a Steam com '-silent')"
 Steam_OldUi: "Utilizar a interface do utilizador antiga no Steam (-vgui)"
+Steam_CollectInfo: Colete imagens de perfil e status de banimento do VAC do Steam
 Button_AddNew: Adicionar Novo
 Button_SaveCurrent: Guardar atual
 Button_SaveFile: Guardar ficheiro
@@ -82,6 +83,7 @@ Settings_ThemeBackground: '[Definir fundo]'
 Settings_ThemeOpenFolder: '[Abrir pasta de temas]'
 Settings_Protocol: 'Ativar tcno:\\ protocol (Recomendado)'
 Settings_StartCentered: Iniciar programa centralizado
+Settings_OfflineMode: Modo offline (sem atividade de rede)
 Settings_WindowsAccent: Usar a Cor de Realce do Windows
 Settings_HelpTranslate: "[Ajudar na tradução]"
 Settings_ViewTranslators: "[Créditos]"
@@ -98,6 +100,7 @@ PreviewCss: Pré-visualizar CSS
 Settings_PreviewCss: Esta é a página de pré-visualização do CSS. Pode visualizar alguns elementos que aparecem no programa e ver como eles se parecem com o seu tema. Esta página é útil para aqueles que criam temas!
 Settings_PreviewCssHeader: Página de pré-visualização do CSS
 Settings_AutoUpdatePlatforms: Lista de plataformas de atualização automática
+Settings_CheckForUpdates: Verifique as atualizações no lançamento
 Stats_Disabled: "Recolha de estatísticas está desativada."
 Stats_InDepth: Análise detalhada das estatísticas
 Stats_ShareEnabled: "Estas estatísticas são compartilhadas anonimamente e serão adicionadas ao total <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">aqui</a>."
@@ -145,6 +148,8 @@ Restore_Button_Restore: Restaurar selecionado
 Ignored_RemoveAccounts: Remover contas da lista de ignorados
 Ignored_Description: Se anteriormente "ignoraste" uma conta, pode mostrá-la novamente aqui
 Ignored_Stop: Parar de ignorar selecionado
+Toast_UpdatesDownloading: As atualizações estão sendo baixadas em segundo plano. Você pode continuar a usar o programa.
+Toast_UpdatesDownloaded: O download das atualizações foi concluído. Feche este aplicativo para iniciar a atualização.
 Toast_DataLocationCopying: (1/2) Copiando arquivos existentes para a nova pasta de dados do usuário!
 Toast_DataLocationNotCopying: (1/2) A pasta já tem arquivos! Não migrará os dados do usuário.
 Toast_DataLocationSet: (2/2) Reinicie o alternador de contas para usar a nova pasta!

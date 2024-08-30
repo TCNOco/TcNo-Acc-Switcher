@@ -11,6 +11,7 @@ Steam_CheckVac: Проверите "VAC" статус налога
 Steam_OverrideDefaultState: "Промени подразумеван статус пријављивања:"
 Steam_StartSilent: "Отворите подлогу за пару на прекидачу за задатке (покрените пару са '-силент')"
 Steam_OldUi: "Користите стари кориснички интерфејс у Стеам-у (-вгуи)"
+Steam_CollectInfo: Прикупите слике профила и статус забране ВАЦ-а са Стеам-а
 Button_AddNew: Додај ново
 Button_SaveCurrent: Сачувај садашњи
 Button_SaveFile: Сачувај документ
@@ -82,6 +83,7 @@ Settings_ThemeBackground: '[Подеси позадину]'
 Settings_ThemeOpenFolder: '[Отвори фолдер теме]'
 Settings_Protocol: 'Омогући тцно:\\ протокол (препоручено)'
 Settings_StartCentered: Покрени програм усредсређен
+Settings_OfflineMode: Офлајн режим (без мрежне активности)
 Settings_WindowsAccent: Користите боју Wиндоwс Аццент
 Settings_HelpTranslate: "[Помоћ превести]"
 Settings_ViewTranslators: "[Credits]"
@@ -98,6 +100,7 @@ PreviewCss: Преглед ЦСС-а
 Settings_PreviewCss: Ово је ЦСС страница за преглед. Можете да видите неке елементе који се појављују у програму и да видите како изгледају са вашом темом. Ова страница је корисна за оне који креирају теме!
 Settings_PreviewCssHeader: ЦСС страница за преглед
 Settings_AutoUpdatePlatforms: Аутоматско ажурирање листе платформи
+Settings_CheckForUpdates: Проверите да ли постоје ажурирања приликом покретања
 Stats_Disabled: "Прикупљање статистике је онемогућено."
 Stats_InDepth: Детаљна статистичка рашчламба
 Stats_ShareEnabled: "Ова статистика се дели анонимно и додаће се укупном броју <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">овде</a>."
@@ -145,6 +148,8 @@ Restore_Button_Restore: Изабрано враћање
 Ignored_RemoveAccounts: Уклоните налоге са листе игнорисања
 Ignored_Description: Ако сте претходно „игнорисали“ налог, можете поново да га прикажете овде
 Ignored_Stop: Престани да игноришеш изабрано
+Toast_UpdatesDownloading: Ажурирања се преузимају у позадини. Можете наставити да користите програм.
+Toast_UpdatesDownloaded: Преузимање ажурирања је завршено. Затворите ову апликацију да бисте започели ажурирање.
 Toast_DataLocationCopying: (1/2) Копирање постојећих датотека у нови фолдер са корисничким подацима!
 Toast_DataLocationNotCopying: (1/2) Фасцикла већ има датотеке! Неће мигрирати корисничке податке.
 Toast_DataLocationSet: (2/2) Поново покрените мењач налога да бисте користили нову фасциклу!

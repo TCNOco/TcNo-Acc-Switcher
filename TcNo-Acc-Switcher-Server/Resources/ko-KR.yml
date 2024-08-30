@@ -11,6 +11,7 @@ Steam_CheckVac: 계정 VAC 상태 확인
 Steam_OverrideDefaultState: "기본 로그인 상태 덮어쓰기:"
 Steam_StartSilent: "스위치에서 작업 트레이에 Steam 열기 ('-silent' 로 Steam 시작)"
 Steam_OldUi: "Steam에서 이전 UI 사용(-vgui)"
+Steam_CollectInfo: Steam에서 프로필 이미지 및 VAC 금지 상태 수집
 Button_AddNew: 새 계정 추가
 Button_SaveCurrent: 현재 상태 저장
 Button_SaveFile: 파일 저장
@@ -82,6 +83,7 @@ Settings_ThemeBackground: '[배경 설정]'
 Settings_ThemeOpenFolder: '[테마 폴더 열기]'
 Settings_Protocol: 'Tcno:\\ 프로토콜 사용 (권장)'
 Settings_StartCentered: 프로그램을 시작할때 화면 중앙에 표시하기
+Settings_OfflineMode: 오프라인 모드(네트워크 활동 없음)
 Settings_WindowsAccent: Windows 강조 색상 사용
 Settings_HelpTranslate: "[도움말 번역]"
 Settings_ViewTranslators: "[Credits]"
@@ -98,6 +100,7 @@ PreviewCss: CSS 미리보기
 Settings_PreviewCss: 이것은 CSS 미리보기 페이지입니다. 프로그램에서 나타나는 몇 가지 요소를 보고 테마에서 어떤 모양인지 볼 수 있습니다. 이 페이지는 테마를 만드는 데 유용합니다!
 Settings_PreviewCssHeader: CSS 미리보기 페이지
 Settings_AutoUpdatePlatforms: 자동 업데이트 플랫폼 목록
+Settings_CheckForUpdates: 출시 시 업데이트 확인
 Stats_Disabled: "통계 수집이 비활성화되었습니다."
 Stats_InDepth: 심층 통계 분석
 Stats_ShareEnabled: "이 통계는 익명으로 공유되며 <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">여기</a>에 추가됩니다."
@@ -145,6 +148,8 @@ Restore_Button_Restore: 선택한 항목 복원
 Ignored_RemoveAccounts: 무시 목록에서 계정 제거
 Ignored_Description: 이전에 계정을 "무시"하도록 한 경우 다시 표시하도록 할 수 있습니다.
 Ignored_Stop: 선택한 항목 무시하기 중지
+Toast_UpdatesDownloading: 백그라운드에서 업데이트가 다운로드 중입니다. 프로그램을 계속 사용할 수 있습니다.
+Toast_UpdatesDownloaded: 업데이트 다운로드가 완료되었습니다. 이 앱을 닫고 업데이트를 시작하세요.
 Toast_DataLocationCopying: (1/2) 기존 파일을 새 사용자 데이터 폴더에 복사 중!
 Toast_DataLocationNotCopying: (1/2) 폴더에 이미 파일이 있습니다! 사용자 데이터를 마이그레이션하지 않습니다.
 Toast_DataLocationSet: (2/2) 새 폴더를 사용하려면 계정 전환기를 재시작하세요!

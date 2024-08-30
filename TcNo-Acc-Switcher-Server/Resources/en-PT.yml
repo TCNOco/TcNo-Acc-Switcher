@@ -11,6 +11,7 @@ Steam_CheckVac: Check yer VAC status
 Steam_OverrideDefaultState: "Override default boardin' state:"
 Steam_StartSilent: "Open Steam t' task tray on switch (Start Steam wit' '-silent')"
 Steam_OldUi: "Use Ole UI in Steam (-vgui)"
+Steam_CollectInfo: Collect profile images and VAC ban status from Steam
 Button_AddNew: Add New Cap'n
 Button_SaveCurrent: Save Cap'n
 Button_SaveFile: Save File
@@ -82,6 +83,7 @@ Settings_ThemeBackground: '[Set background]'
 Settings_ThemeOpenFolder: '[Open paint folder]'
 Settings_Protocol: 'Enable tcno:\\ protocol (Recommended)'
 Settings_StartCentered: Start program centered
+Settings_OfflineMode: Offline Mode (No network activity)
 Settings_WindowsAccent: Use the Windows Accent Colour
 Settings_HelpTranslate: "[Help translate]"
 Settings_ViewTranslators: "[Thanks t']"
@@ -98,6 +100,7 @@ PreviewCss: Preview CSS
 Settings_PreviewCss: '''tis the CSS preview page. Ye can view some elements that elder up in the program ''n see wha'' they look like wit'' yer theme. This page be useful fer those creatin'' new paint!'
 Settings_PreviewCssHeader: CSS Preview Page
 Settings_AutoUpdatePlatforms: Auto-update Platforms list
+Settings_CheckForUpdates: Check for updates on launch
 Stats_Disabled: "Statistics collection be disabled."
 Stats_InDepth: In-depth statistics breakdown
 Stats_ShareEnabled: "These statistics are shared anonymously 'n will add t' the total <a onclick=\"{WebsiteLink}\" crew=\"fancyLink\">here</a>."
@@ -145,6 +148,8 @@ Restore_Button_Restore: Bring back selected
 Ignored_RemoveAccounts: Scuttle Cap'n's from ignore list
 Ignored_Description: If ye previously "ignored" an Cap'n, ye can show 'em again here
 Ignored_Stop: Stop ignorin' selected
+Toast_UpdatesDownloading: Updates are downloading in the background. You can continue to use the program.
+Toast_UpdatesDownloaded: Updates have finished downloading. Close this app to start updating.
 Toast_DataLocationCopying: (1/2) Copyin' existin' files into the new user data folder!
 Toast_DataLocationNotCopying: (1/2) Folder already has files! Will nah migrate ye user data.
 Toast_DataLocationSet: (2/2) Restart the Cap'n switcher t' use the new folder!

@@ -11,6 +11,7 @@ Steam_CheckVac: Vérifier le statut VAC du compte
 Steam_OverrideDefaultState: "Remplacer l'état de connexion par défaut :"
 Steam_StartSilent: "Ouvrir Steam dans la barre des tâches au changement (Démarrer Steam avec '-silent')"
 Steam_OldUi: "Utiliser l'ancienne interface utilisateur dans Steam (-vgui)"
+Steam_CollectInfo: Collectez des images de profil et le statut d'interdiction VAC depuis Steam
 Button_AddNew: Ajouter un nouveau
 Button_SaveCurrent: Enregistrer le compte actuel
 Button_SaveFile: Enregistrer le fichier
@@ -82,6 +83,7 @@ Settings_ThemeBackground: '[Définir l''arrière-plan]'
 Settings_ThemeOpenFolder: '[Ouvrir le dossier du thème]'
 Settings_Protocol: 'Activer le protocole tcno :\\ (recommandé)'
 Settings_StartCentered: Démarrer le programme centré
+Settings_OfflineMode: Mode hors ligne (aucune activité réseau)
 Settings_WindowsAccent: Utiliser la couleur d'accentuation Windows
 Settings_HelpTranslate: "[Aider à traduire]"
 Settings_ViewTranslators: "[Credits]"
@@ -98,6 +100,7 @@ PreviewCss: Aperçu du CSS
 Settings_PreviewCss: Ceci est la page d'aperçu CSS. Vous pouvez voir certains éléments qui apparaissent dans le programme et voir à quoi ils ressemblent avec votre thème. Cette page est utile pour ceux qui créent des thèmes !
 Settings_PreviewCssHeader: Page d'aperçu CSS
 Settings_AutoUpdatePlatforms: Liste des plates-formes de mise à jour automatique
+Settings_CheckForUpdates: Vérifiez les mises à jour au lancement
 Stats_Disabled: "La collecte de statistiques est désactivée."
 Stats_InDepth: Ventilation statistique approfondie
 Stats_ShareEnabled: "Ces statistiques sont partagées anonymement et s'ajouteront au total <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">ici</a>."
@@ -145,6 +148,8 @@ Restore_Button_Restore: Restaurer la sélection
 Ignored_RemoveAccounts: Supprimer les comptes de la liste à ignorer
 Ignored_Description: Si vous avez précédemment "ignoré" un compte, vous pouvez les afficher à nouveau ici
 Ignored_Stop: Arrêter d'ignorer la sélection
+Toast_UpdatesDownloading: Les mises à jour sont en cours de téléchargement en arrière-plan. Vous pouvez continuer à utiliser le programme.
+Toast_UpdatesDownloaded: Le téléchargement des mises à jour est terminé. Fermez cette application pour commencer la mise à jour.
 Toast_DataLocationCopying: (1/2) Copie des fichiers existants dans le nouveau dossier de données utilisateur !
 Toast_DataLocationNotCopying: (1/2) Le dossier contient déjà des fichiers ! Ne migrera pas les données utilisateur.
 Toast_DataLocationSet: (2/2) Redémarrez le sélecteur de compte pour utiliser le nouveau dossier !

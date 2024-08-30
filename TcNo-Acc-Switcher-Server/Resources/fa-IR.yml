@@ -11,6 +11,7 @@ Steam_CheckVac: وضعیت VAC حساب را بررسی کنید
 Steam_OverrideDefaultState: "لغو وضعیت ورود پیش فرض:"
 Steam_StartSilent: "باز کردن Steam به سینی وظیفه روی سوئیچ (Steam را با \"-silent\" شروع کنید)"
 Steam_OldUi: "استفاده از رابط کاربری قدیمی در Steam (-vgui)"
+Steam_CollectInfo: تصاویر پروفایل و وضعیت ممنوعیت VAC را از Steam جمع آوری کنید
 Button_AddNew: جدید اضافه کن
 Button_SaveCurrent: ذخیره جریان
 Button_SaveFile: ذخیره فایل
@@ -82,6 +83,7 @@ Settings_ThemeBackground: '[تنظیم پس زمینه]'
 Settings_ThemeOpenFolder: '[باز کردن پوشه تم]'
 Settings_Protocol: 'پروتکل tcno:\\ را فعال کنید (توصیه می شود)'
 Settings_StartCentered: برنامه را متمرکز شروع کنید
+Settings_OfflineMode: حالت آفلاین (بدون فعالیت شبکه)
 Settings_WindowsAccent: از رنگ لهجه ویندوز استفاده کنید
 Settings_HelpTranslate: "[کمک به ترجمه]"
 Settings_ViewTranslators: "[Credits]"
@@ -98,6 +100,7 @@ PreviewCss: پیش نمایش CSS
 Settings_PreviewCss: این صفحه پیش نمایش CSS است. می‌توانید برخی از عناصری که در برنامه ظاهر می‌شوند را مشاهده کنید و ببینید که با تم شما چگونه به نظر می‌رسند. این صفحه برای کسانی که تم می سازند مفید است!
 Settings_PreviewCssHeader: صفحه پیش نمایش CSS
 Settings_AutoUpdatePlatforms: به روز رسانی خودکار لیست پلتفرم ها
+Settings_CheckForUpdates: به‌روزرسانی‌ها را هنگام راه‌اندازی بررسی کنید
 Stats_Disabled: "جمع آوری آمار غیرفعال است."
 Stats_InDepth: تجزیه آماری عمیق
 Stats_ShareEnabled: "این آمار به صورت ناشناس به اشتراک گذاشته شده است و به مجموع <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">در اینجا</a>اضافه می شود."
@@ -145,6 +148,8 @@ Restore_Button_Restore: بازیابی انتخاب شده
 Ignored_RemoveAccounts: حساب ها را از لیست نادیده گرفتن حذف کنید
 Ignored_Description: اگر قبلاً یک حساب را «نادیده‌گرفته‌اید»، می‌توانید آن‌ها را دوباره در اینجا نشان دهید
 Ignored_Stop: نادیده گرفتن انتخاب شده را متوقف کنید
+Toast_UpdatesDownloading: به‌روزرسانی‌ها در پس‌زمینه دانلود می‌شوند. می توانید به استفاده از برنامه ادامه دهید.
+Toast_UpdatesDownloaded: دانلود به‌روزرسانی‌ها به پایان رسید. برای شروع به‌روزرسانی، این برنامه را ببندید.
 Toast_DataLocationCopying: (1/2) کپی کردن فایل های موجود در پوشه اطلاعات کاربر جدید!
 Toast_DataLocationNotCopying: (1/2) پوشه از قبل دارای فایل است! داده های کاربر را منتقل نمی کند.
 Toast_DataLocationSet: (2/2) برای استفاده از پوشه جدید اکانت سوییچر را راه اندازی مجدد کنید!

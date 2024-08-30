@@ -11,6 +11,7 @@ Steam_CheckVac: Sprawdź status VAC konta
 Steam_OverrideDefaultState: "Zastąp domyślny stan logowania:"
 Steam_StartSilent: "Otwórz Steam w zasobniku zadań (Uruchom Steam z '-silent')"
 Steam_OldUi: "Użyj starego interfejsu użytkownika w Steam (-vgui)"
+Steam_CollectInfo: Zbierz obrazy profilowe i status blokady VAC ze Steam
 Button_AddNew: Dodaj nowe
 Button_SaveCurrent: Zapisz bieżące
 Button_SaveFile: Zapisz plik
@@ -82,6 +83,7 @@ Settings_ThemeBackground: '[Ustaw tło]'
 Settings_ThemeOpenFolder: '[Otwórz folder motywów]'
 Settings_Protocol: 'Włącz protokół tcno:\\ (zalecane)'
 Settings_StartCentered: Uruchom program wyśrodkowany
+Settings_OfflineMode: Tryb offline (brak aktywności sieciowej)
 Settings_WindowsAccent: Używaj kolorów wiodących Windowsa
 Settings_HelpTranslate: "[Pomóż tłumaczyć]"
 Settings_ViewTranslators: "[Credits]"
@@ -98,6 +100,7 @@ PreviewCss: Podgląd CSS
 Settings_PreviewCss: To jest strona podglądu CSS. Możesz zobaczyć niektóre elementy, które pojawiają się w programie i zobaczyć jak wyglądają z twoim motywem. Ta strona jest przydatna dla osób tworzących motywy!
 Settings_PreviewCssHeader: Podgląd strony CSS
 Settings_AutoUpdatePlatforms: Lista platform z automatyczną aktualizacją
+Settings_CheckForUpdates: Sprawdź aktualizacje po uruchomieniu
 Stats_Disabled: "Zbieranie statystyk jest wyłączone."
 Stats_InDepth: Szczegółowy przegląd statystyk
 Stats_ShareEnabled: "Te statystyki są udostępniane anonimowo i zostaną dodane do zbioru <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">tutaj</a>."
@@ -145,6 +148,8 @@ Restore_Button_Restore: Przywróć wybrane
 Ignored_RemoveAccounts: Usuń konta z listy ignorowanych
 Ignored_Description: Jeśli wcześniej "zignorowałeś" konto, możesz pokazać je ponownie tutaj
 Ignored_Stop: Zatrzymaj ignorowanie wybranych
+Toast_UpdatesDownloading: Aktualizacje są pobierane w tle. Możesz kontynuować korzystanie z programu.
+Toast_UpdatesDownloaded: Aktualizacje zostały pobrane. Zamknij tę aplikację, aby rozpocząć aktualizację.
 Toast_DataLocationCopying: (1/2) Kopiowanie istniejących plików do nowego folderu danych użytkownika!
 Toast_DataLocationNotCopying: (1/2) Folder zawiera już pliki! Nie można przeprowadzić migracji danych użytkownika.
 Toast_DataLocationSet: (2/2) Uruchom ponownie switcher kont, aby użyć nowego folderu!

@@ -11,6 +11,7 @@ Steam_CheckVac: Skontrolujte stav VAC účtu
 Steam_OverrideDefaultState: "Prepísať predvolený stav prihlásenia:"
 Steam_StartSilent: "Otvorte Steam na paneli úloh na prepínači (Spustite Steam s '-tichý')"
 Steam_OldUi: "Použiť staré používateľské rozhranie v službe Steam (-vgui)"
+Steam_CollectInfo: Zbierajte profilové obrázky a stav zákazu VAC zo služby Steam
 Button_AddNew: Pridať nové
 Button_SaveCurrent: Uložiť aktuálny
 Button_SaveFile: Uloženie súboru
@@ -82,6 +83,7 @@ Settings_ThemeBackground: '[Nastaviť pozadie]'
 Settings_ThemeOpenFolder: '[Otvoriť priečinok témy]'
 Settings_Protocol: 'Povoliť protokol tcno:\\ (odporúča sa)'
 Settings_StartCentered: Spustite program na stred
+Settings_OfflineMode: Režim offline (žiadna sieťová aktivita)
 Settings_WindowsAccent: Použite farbu Windows Accent Color
 Settings_HelpTranslate: "[Pomoc s prekladom]"
 Settings_ViewTranslators: "[Credits]"
@@ -98,6 +100,7 @@ PreviewCss: Ukážka CSS
 Settings_PreviewCss: Toto je stránka s ukážkou CSS. Môžete si prezrieť niektoré prvky, ktoré sa objavia v programe, a zistiť, ako vyzerajú s vašou témou. Táto stránka je užitočná pre tých, ktorí vytvárajú témy!
 Settings_PreviewCssHeader: Stránka ukážky CSS
 Settings_AutoUpdatePlatforms: Automaticky aktualizovať zoznam platforiem
+Settings_CheckForUpdates: Pri spustení skontrolujte aktualizácie
 Stats_Disabled: "Zhromažďovanie štatistík je zakázané."
 Stats_InDepth: Hĺbkový rozpis štatistík
 Stats_ShareEnabled: "Tieto štatistiky sú zdieľané anonymne a pridajú sa k celkovému počtu <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">tu</a>."
@@ -145,6 +148,8 @@ Restore_Button_Restore: Obnoviť vybraté
 Ignored_RemoveAccounts: Odstráňte účty zo zoznamu ignorovaných
 Ignored_Description: Ak ste predtým "ignorovali" účet, môžete ho znova zobraziť tu
 Ignored_Stop: Prestať ignorovať vybrané
+Toast_UpdatesDownloading: Aktualizácie sa sťahujú na pozadí. Program môžete naďalej používať.
+Toast_UpdatesDownloaded: Sťahovanie aktualizácií bolo dokončené. Ak chcete spustiť aktualizáciu, zatvorte túto aplikáciu.
 Toast_DataLocationCopying: (1/2) Kopírovanie existujúcich súborov do nového priečinka s používateľskými údajmi!
 Toast_DataLocationNotCopying: (1/2) Priečinok už obsahuje súbory! Nebude migrovať používateľské údaje.
 Toast_DataLocationSet: (2/2) Reštartujte prepínač účtov, aby ste mohli použiť nový priečinok!
