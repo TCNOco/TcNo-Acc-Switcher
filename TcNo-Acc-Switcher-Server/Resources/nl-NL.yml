@@ -11,7 +11,7 @@ Steam_CheckVac: Controleer de VAC-status van de rekening
 Steam_OverrideDefaultState: "Standaard aanmeldstatus overschrijven:"
 Steam_StartSilent: "Open Stoom naar taakvak op schakelaar (Start Stoom met '-silent')"
 Steam_OldUi: "Oude gebruikersinterface gebruiken in Steam (-vgui)"
-Steam_CollectInfo: Collect profile images and VAC ban status from Steam
+Steam_CollectInfo: Verzamel profielafbeeldingen en VAC-banstatus van Steam
 Button_AddNew: Nieuwe toevoegen
 Button_SaveCurrent: Huidige opslaan
 Button_SaveFile: Bestand opslaan
@@ -83,7 +83,7 @@ Settings_ThemeBackground: '[Achtergrond instellen]'
 Settings_ThemeOpenFolder: '[Themamap openen]'
 Settings_Protocol: 'tcno:\\ protocol (Aanbevolen) inschakelen'
 Settings_StartCentered: Start programma gecentreerd
-Settings_OfflineMode: Offline Mode (No network activity)
+Settings_OfflineMode: Offline-modus (geen netwerkactiviteit)
 Settings_WindowsAccent: De Windows Accentkleur gebruiken
 Settings_HelpTranslate: "[Help vertalen]"
 Settings_ViewTranslators: "[Credits]"
@@ -100,7 +100,7 @@ PreviewCss: Voorbeeld CSS
 Settings_PreviewCss: Dit is de CSS voorbeeldpagina. U kunt een aantal elementen bekijken die in het programma opduiken en zien hoe ze eruit zien met uw thema. Deze pagina is handig voor degenen die thema 's maken!
 Settings_PreviewCssHeader: CSS Preview Pagina
 Settings_AutoUpdatePlatforms: Lijst met automatisch bijgewerkte platforms
-Settings_CheckForUpdates: Check for updates on launch
+Settings_CheckForUpdates: Controleer op updates bij de lancering
 Stats_Disabled: "Statistiekenverzameling is uitgeschakeld."
 Stats_InDepth: Uitsplitsing naar diepgaande statistiek
 Stats_ShareEnabled: "Deze statistieken worden anoniem gedeeld en worden opgeteld bij het totaal van <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">hier</a>."
@@ -148,8 +148,8 @@ Restore_Button_Restore: Geselecteerde herstellen
 Ignored_RemoveAccounts: Accounts verwijderen uit negeerlijst
 Ignored_Description: Als u eerder een account "negeerde", kunt u deze hier opnieuw weergeven
 Ignored_Stop: Stop met het negeren van geselecteerde
-Toast_UpdatesDownloading: Updates are downloading in the background. You can continue to use the program.
-Toast_UpdatesDownloaded: Updates have finished downloading. Close this app to start updating.
+Toast_UpdatesDownloading: Updates worden op de achtergrond gedownload. U kunt het programma blijven gebruiken.
+Toast_UpdatesDownloaded: Updates zijn gedownload. Sluit deze app om te beginnen met updaten.
 Toast_DataLocationCopying: (1/2) Bestaande bestanden naar de nieuwe gebruikersgegevensmap kopiëren!
 Toast_DataLocationNotCopying: (1/2) Map heeft al bestanden! Migreert geen gebruikersgegevens.
 Toast_DataLocationSet: (2/2) Start de accountwisselaar opnieuw om de nieuwe map te gebruiken!
