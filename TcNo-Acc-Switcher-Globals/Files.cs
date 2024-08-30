@@ -103,6 +103,7 @@ namespace TcNo_Acc_Switcher_Globals
             {
                 { "%TCNO_UserData%", Globals.UserDataFolder },
                 { "%TCNO_AppData%", Globals.AppDataFolder },
+                { "%Desktop%", Environment.GetFolderPath(Environment.SpecialFolder.Desktop) },
                 { "%Documents%", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) },
                 { "%Music%", Environment.GetFolderPath(Environment.SpecialFolder.MyMusic) },
                 { "%Pictures%", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) },

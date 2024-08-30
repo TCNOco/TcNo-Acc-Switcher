@@ -38,6 +38,46 @@ namespace TcNo_Acc_Switcher_Server.Pages
                     if (!GeneralFuncs.CanKillProcess(SteamSettings.Processes, SteamSettings.ClosingMethod)) return;
                     if (!Directory.Exists(SteamSettings.FolderPath) || !File.Exists(SteamSettings.Exe()))
                     {
+                        // Check Start Menu locations for shortcut with this name, and check that location.
+                        if (OperatingSystem.IsWindows())
+                        {
+                            var foundPath = "";
+                            // Handle multiple possible inputs:
+                            var searchFor = "Steam";
+
+                            // Foreach in searchFor, until we find a valid path
+                            var path1 = Globals.ExpandEnvironmentVariables("%StartMenuAppData%");
+                            var path2 = Globals.ExpandEnvironmentVariables("%StartMenuProgramData%");
+                            var path3 = Globals.ExpandEnvironmentVariables("%Desktop%");
+
+
+                            var startMenuFiles = Directory.GetFiles(Globals.ExpandEnvironmentVariables("%StartMenuAppData%"), searchFor + ".lnk", SearchOption.AllDirectories);
+                            var commonStartMenuFiles = Directory.GetFiles(Globals.ExpandEnvironmentVariables("%StartMenuProgramData%"), searchFor + ".lnk", SearchOption.AllDirectories);
+                            // Also check Desktop icons. Non-recursive to not waste too much time if desktop is cluttered.
+                            var desktopFiles = Directory.GetFiles(Globals.ExpandEnvironmentVariables("%Desktop%"), searchFor + ".lnk", SearchOption.TopDirectoryOnly);
+
+                            if (startMenuFiles.Length > 0)
+                                foreach (var file in startMenuFiles)
+                                {
+                                    foundPath = Globals.GetShortcutTarget(file);
+                                    if (!string.IsNullOrEmpty(foundPath) && TryGetPathSteam(foundPath)) return;
+                                }
+
+                            if (commonStartMenuFiles.Length > 0)
+                                foreach (var file in commonStartMenuFiles)
+                                {
+                                    foundPath = Globals.GetShortcutTarget(file);
+                                    if (!string.IsNullOrEmpty(foundPath) && TryGetPathSteam(foundPath)) return;
+                                }
+
+                            if (desktopFiles.Length > 0)
+                                foreach (var file in desktopFiles)
+                                {
+                                    foundPath = Globals.GetShortcutTarget(file);
+                                    if (!string.IsNullOrEmpty(foundPath) && TryGetPathSteam(foundPath)) return;
+                                }
+                        }
+
                         _ = GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
                         return;
                     }
@@ -71,7 +111,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
                                 var startMenuFiles = Directory.GetFiles(BasicSwitcherFuncs.ExpandEnvironmentVariables("%StartMenuAppData%"), searchFor + ".lnk", SearchOption.AllDirectories);
                                 var commonStartMenuFiles = Directory.GetFiles(BasicSwitcherFuncs.ExpandEnvironmentVariables("%StartMenuProgramData%"), searchFor + ".lnk", SearchOption.AllDirectories);
                                 // Also check Desktop icons. Non-recursive to not waste too much time if desktop is cluttered.
-                                var desktopFiles = Directory.GetFiles(BasicSwitcherFuncs.ExpandEnvironmentVariables("%StartMenuProgramData%"), searchFor + ".lnk", SearchOption.TopDirectoryOnly);
+                                var desktopFiles = Directory.GetFiles(BasicSwitcherFuncs.ExpandEnvironmentVariables("%Desktop%"), searchFor + ".lnk", SearchOption.TopDirectoryOnly);
                                 if (startMenuFiles.Length > 0)
                                     foreach (var file in startMenuFiles)
                                     {
@@ -113,6 +153,24 @@ namespace TcNo_Acc_Switcher_Server.Pages
                 BasicSettings.FolderPath = shortcutTargetFolder;
                 BasicSettings.SaveSettings();
                 AppData.ActiveNavMan.NavigateTo("/Basic/");
+                _ = GeneralInvocableFuncs.ShowToast("success", Lang["Toast_FoundExeViaShortcut"], renderTo: "toastarea", duration: 30000);
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool TryGetPathSteam(string path)
+        {
+            // Check if the required EXE is in this path (not just any old exe it's pointing to)
+            var shortcutTargetFolder = Path.GetDirectoryName(path);
+            var shortcutTargetFolderTargetExe = Path.Join(shortcutTargetFolder, "steam.exe");
+            if (File.Exists(shortcutTargetFolderTargetExe))
+            {
+                // Found platform exe we're looking for! Save this location and continue.
+                SteamSettings.FolderPath = shortcutTargetFolder;
+                SteamSettings.SaveSettings();
+                AppData.ActiveNavMan.NavigateTo("/Steam/");
                 _ = GeneralInvocableFuncs.ShowToast("success", Lang["Toast_FoundExeViaShortcut"], renderTo: "toastarea", duration: 30000);
                 return true;
             }

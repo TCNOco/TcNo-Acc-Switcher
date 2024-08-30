@@ -219,7 +219,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
         public static void DownloadSteamAppsData()
         {
-            if (!AppSettings.OfflineMode) {
+            if (AppSettings.OfflineMode) {
                 Globals.DebugWriteLine($@"Error downloading Steam app list: OFFLINE MODE");
                 return;
             }
@@ -607,7 +607,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             {
                 try
                 {
-                    if (AppSettings.OfflineMode)
+                    if (!AppSettings.OfflineMode)
                     {
                         Globals.DownloadFile(su.ImageDownloadUrl, dlDir);
                         su.ImgUrl = $"{SteamSettings.SteamImagePathHtml}{su.SteamId}.jpg";
