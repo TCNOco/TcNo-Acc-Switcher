@@ -11,7 +11,7 @@ Steam_CheckVac: Проверить VAC статус
 Steam_OverrideDefaultState: "Установить статус по умолчанию при входе:"
 Steam_StartSilent: "Откройте Steam для включения лотка задач (запустите Steam с помощью '-silent')"
 Steam_OldUi: "Использовать старый пользовательский интерфейс в Steam (-vgui)"
-Steam_CollectInfo: Collect profile images and VAC ban status from Steam
+Steam_CollectInfo: Собирайте изображения профиля и статус бана VAC из Steam
 Button_AddNew: Добавить аккаунт
 Button_SaveCurrent: Сохранить текущий
 Button_SaveFile: Сохранить файл
@@ -83,7 +83,7 @@ Settings_ThemeBackground: '[Установить фон]'
 Settings_ThemeOpenFolder: '[Открыть папку с темами]'
 Settings_Protocol: 'Включить протокол tcno:\\ (Рекомендуется)'
 Settings_StartCentered: Центрировать окно при запуске
-Settings_OfflineMode: Offline Mode (No network activity)
+Settings_OfflineMode: Автономный режим (нет сетевой активности)
 Settings_WindowsAccent: Использовать цвет Windows
 Settings_HelpTranslate: "[Помочь с переводом]"
 Settings_ViewTranslators: "[Авторы]"
@@ -100,7 +100,7 @@ PreviewCss: Предварительный просмотр CSS
 Settings_PreviewCss: Это страница предварительного просмотра CSS. Вы можете просмотреть некоторые элементы, которые всплывают в программе и посмотреть, как они выглядят с вашей темой. Эта страница полезна для тех, кто создает темы!
 Settings_PreviewCssHeader: Страница предварительного просмотра CSS
 Settings_AutoUpdatePlatforms: Автоматическое обновление списка платформ
-Settings_CheckForUpdates: Check for updates on launch
+Settings_CheckForUpdates: Проверьте наличие обновлений при запуске
 Stats_Disabled: "Сбор статистики отключен."
 Stats_InDepth: Подробная статистика
 Stats_ShareEnabled: "Эта статистика передается анонимно и будет добавлена к общему количеству <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">здесь</a>."
@@ -148,8 +148,8 @@ Restore_Button_Restore: Восстановить выбранное
 Ignored_RemoveAccounts: Удалить аккаунты из скрытых
 Ignored_Description: Если ранее вы «скрыли» аккаунт, можете показать его снова здесь
 Ignored_Stop: Перестать игнорировать выбранные
-Toast_UpdatesDownloading: Updates are downloading in the background. You can continue to use the program.
-Toast_UpdatesDownloaded: Updates have finished downloading. Close this app to start updating.
+Toast_UpdatesDownloading: Обновления скачиваются в фоновом режиме. Вы можете продолжать пользоваться программой.
+Toast_UpdatesDownloaded: Загрузка обновлений завершена. Закройте это приложение, чтобы начать обновление.
 Toast_DataLocationCopying: (1/2) Копирование существующих файлов в новую папку данных пользователя!
 Toast_DataLocationNotCopying: (1/2) В папке уже есть файлы! Данные пользователя не будут перенесены.
 Toast_DataLocationSet: (2/2) Перезапустите Account Switcher, чтобы использовать новую папку!
