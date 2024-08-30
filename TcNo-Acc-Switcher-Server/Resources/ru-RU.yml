@@ -31,6 +31,7 @@ Button_OpenBackup: Открыть папку резервного копиров
 Button_Back: Назад
 Button_RestartAdmin: Перезапустить от имени администратора
 Button_SetPassword: Установить пароль приложения
+Settings_SteamCollectInfo: Соберите изображение профиля Steam и статус VAC из Steam
 Settings_Shortcut: 'Создать ярлык {platform} на рабочем столе'
 Settings_Admin: Запускать {platform} от имени администратора
 Settings_ImageExpiry: 'Дней до исчезновения изображений профиля:'
