@@ -32,7 +32,7 @@ Button_Back: חזרה
 Button_RestartAdmin: התחל מחדש כמנהל המערכת
 Button_SetPassword: הגדר סיסמה לאפליקציה
 Settings_SteamCollectInfo: אסוף תמונת פרופיל Steam וסטטוס VAC מ-Steam
-Settings_Shortcut: ' {platform} מחלף קיצור שולחן עבודה'
+Settings_Shortcut: '{platform} מחלף קיצור שולחן עבודה'
 Settings_Admin: הפעל {platform} כמנהל
 Settings_ImageExpiry: 'ימים לפני פקיעת תוקף תמונות הפרופיל:'
 Settings_SteamAPIKey: "מפתח Steam Web API (אופציונלי)"

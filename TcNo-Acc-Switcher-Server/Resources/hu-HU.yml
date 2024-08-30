@@ -32,7 +32,7 @@ Button_Back: Vissza
 Button_RestartAdmin: Újraindítás rendszergazdaként
 Button_SetPassword: Alkalmazásjelszó beállítása
 Settings_SteamCollectInfo: Gyűjtsd össze a Steam profilképét és a VAC állapotát a Steamből
-Settings_Shortcut: ' {platform} Kapcsoló Asztal parancsikon'
+Settings_Shortcut: '{platform} Kapcsoló Asztal parancsikon'
 Settings_Admin: '{platform} futtatása rendszergazdaként'
 Settings_ImageExpiry: 'A profilképek lejárta előtti napok száma:'
 Settings_SteamAPIKey: "Steam Web API kulcs (opcionális)"

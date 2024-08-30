@@ -32,7 +32,7 @@ Button_Back: ย้อนกลับ
 Button_RestartAdmin: เริ่มต้นใหม่ในฐานะผู้ดูแลระบบ
 Button_SetPassword: ตั้งรหัสผ่านแอพ
 Settings_SteamCollectInfo: รวบรวมภาพโปรไฟล์ Steam และสถานะ VAC จาก Steam
-Settings_Shortcut: ' {platform} ทางลัดไปยังเดสก์ท็อปของ Switcher'
+Settings_Shortcut: '{platform} ทางลัดไปยังเดสก์ท็อปของ Switcher'
 Settings_Admin: เรียกใช้ {platform} ในฐานะผู้ดูแลระบบ
 Settings_ImageExpiry: 'วันก่อนที่ภาพโปรไฟล์จะหมดอายุ:'
 Settings_SteamAPIKey: "คีย์ API ของเว็บ Steam (ไม่บังคับ)"

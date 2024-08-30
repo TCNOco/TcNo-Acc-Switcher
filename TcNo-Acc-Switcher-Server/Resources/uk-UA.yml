@@ -32,7 +32,7 @@ Button_Back: Назад
 Button_RestartAdmin: Перезапустити від імені адміністратора
 Button_SetPassword: Встановити пароль програми
 Settings_SteamCollectInfo: Зберіть зображення профілю Steam і статус VAC із Steam
-Settings_Shortcut: ' {platform} Ярлик Switcher(а) на робочому столі'
+Settings_Shortcut: '{platform} Ярлик Switcher(а) на робочому столі'
 Settings_Admin: Запускати {platform} від імені адміністратора
 Settings_ImageExpiry: 'Дні до закінчення терміну дії зображень профілю:'
 Settings_SteamAPIKey: "Ключ API Steam Web (необов'язково)"

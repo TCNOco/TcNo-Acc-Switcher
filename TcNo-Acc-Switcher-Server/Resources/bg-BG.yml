@@ -32,7 +32,7 @@ Button_Back: Назад
 Button_RestartAdmin: Рестартиране като администратор
 Button_SetPassword: Задаване на парола за приложение
 Settings_SteamCollectInfo: Съберете Steam профилна снимка и VAC статус от Steam
-Settings_Shortcut: ' {platform} Прекъсвач на работния плот'
+Settings_Shortcut: '{platform} Прекъсвач на работния плот'
 Settings_Admin: Стартиране на {platform} като администратор
 Settings_ImageExpiry: 'Дни преди изтичането на профилните изображения:'
 Settings_SteamAPIKey: "Steam Web API ключ (незадължително)"

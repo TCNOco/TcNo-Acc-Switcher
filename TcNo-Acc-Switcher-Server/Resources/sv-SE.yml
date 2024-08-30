@@ -32,7 +32,7 @@ Button_Back: Tillbaka
 Button_RestartAdmin: Starta om som administratör
 Button_SetPassword: Ange applösenord
 Settings_SteamCollectInfo: Samla Steam-profilbild och VAC-status från Steam
-Settings_Shortcut: ' {platform} Kortkommando för switcherskrivbord'
+Settings_Shortcut: '{platform} Kortkommando för switcherskrivbord'
 Settings_Admin: Kör {platform} som administratör
 Settings_ImageExpiry: 'Dagar innan profilbilder löper ut:'
 Settings_SteamAPIKey: "Steam Web API-nyckel (tillval)"

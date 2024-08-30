@@ -32,7 +32,7 @@ Button_Back: Voltar
 Button_RestartAdmin: Reiniciar como administrador
 Button_SetPassword: Definir Senha do Aplicativo
 Settings_SteamCollectInfo: Colete a foto do perfil do Steam e o status do VAC do Steam
-Settings_Shortcut: ' {platform} Atalho do Switcher Desktop'
+Settings_Shortcut: '{platform} Atalho do Switcher Desktop'
 Settings_Admin: Executar {platform} como Admin
 Settings_ImageExpiry: 'Dias para as fotos de perfil expirarem:'
 Settings_SteamAPIKey: "Chave da API da Web do Steam (opcional)"

@@ -32,7 +32,7 @@ Button_Back: späť
 Button_RestartAdmin: Reštartujte ako správca
 Button_SetPassword: Nastavte heslo aplikácie
 Settings_SteamCollectInfo: Zbierajte profilový obrázok Steam a stav VAC zo služby Steam
-Settings_Shortcut: ' {platform} Prepínač Skratka na pracovnej ploche'
+Settings_Shortcut: '{platform} Prepínač Skratka na pracovnej ploche'
 Settings_Admin: Spustite {platform} ako správca
 Settings_ImageExpiry: 'Počet dní pred uplynutím platnosti profilových obrázkov:'
 Settings_SteamAPIKey: "Kľúč webového rozhrania API Steam (voliteľné)"

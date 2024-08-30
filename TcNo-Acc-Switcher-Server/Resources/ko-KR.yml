@@ -32,7 +32,7 @@ Button_Back: 뒤로
 Button_RestartAdmin: 관리자 권한으로 다시 시작
 Button_SetPassword: 앱 비밀번호 설정
 Settings_SteamCollectInfo: Steam에서 Steam 프로필 사진 및 VAC 상태 수집
-Settings_Shortcut: ' {platform} Switcher 바탕화면 바로 가기'
+Settings_Shortcut: '{platform} Switcher 바탕화면 바로 가기'
 Settings_Admin: 관리자 권한으로 {platform} 실행
 Settings_ImageExpiry: '다음 날짜가 지나면 프로필 이미지 만료:'
 Settings_SteamAPIKey: "스팀 웹 API 키 (선택 사항)"

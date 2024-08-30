@@ -32,7 +32,7 @@ Button_Back: Terug
 Button_RestartAdmin: Herbegin as Admin
 Button_SetPassword: Stel programwagwoord in
 Settings_SteamCollectInfo: Versamel Steam-profielfoto en VAC-status van Steam
-Settings_Shortcut: ' {platform} Switcher Desktop kortpad'
+Settings_Shortcut: '{platform} Switcher Desktop kortpad'
 Settings_Admin: Begin {platform} as Admin
 Settings_ImageExpiry: 'Dae voordat profielprente verval:'
 Settings_SteamAPIKey: "Steam Web API-sleutel (opsioneel)"

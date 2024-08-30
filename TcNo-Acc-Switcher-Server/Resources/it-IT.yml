@@ -32,7 +32,7 @@ Button_Back: Indietro
 Button_RestartAdmin: Riavvia come amministratore
 Button_SetPassword: Imposta la password dell'app
 Settings_SteamCollectInfo: Raccogli l'immagine del profilo Steam e lo stato VAC da Steam
-Settings_Shortcut: ' {platform} Collegamento Switcher Desktop'
+Settings_Shortcut: '{platform} Collegamento Switcher Desktop'
 Settings_Admin: Esegui {platform} come Amministratore
 Settings_ImageExpiry: 'Giorni alla scadenza delle immagini del profilo:'
 Settings_SteamAPIKey: "Chiave API Web di Steam (opzionale)"

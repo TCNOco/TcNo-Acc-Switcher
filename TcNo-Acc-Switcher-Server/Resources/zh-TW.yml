@@ -32,7 +32,7 @@ Button_Back: 返回
 Button_RestartAdmin: 以管理員身份重新啟動
 Button_SetPassword: 設定應用程式密碼
 Settings_SteamCollectInfo: 從 Steam 收集 Steam 個人資料圖片和 VAC 狀態
-Settings_Shortcut: ' {platform} 切換器桌面捷徑'
+Settings_Shortcut: '{platform} 切換器桌面捷徑'
 Settings_Admin: 以管理員身分執行 {platform}
 Settings_ImageExpiry: '距離個人資料頭像過期的天數：'
 Settings_SteamAPIKey: "Steam Web API key （可選）"

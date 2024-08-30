@@ -32,7 +32,7 @@ Button_Back: Πίσω όψη
 Button_RestartAdmin: Επανεκκίνηση ως διαχειριστής
 Button_SetPassword: Ορισμός κωδικού πρόσβασης εφαρμογής
 Settings_SteamCollectInfo: Συλλέξτε εικόνα προφίλ Steam και κατάσταση VAC από το Steam
-Settings_Shortcut: ' {platform} Συντόμευση επιφάνειας εργασίας εναλλαγής'
+Settings_Shortcut: '{platform} Συντόμευση επιφάνειας εργασίας εναλλαγής'
 Settings_Admin: Εκτέλεση {platform} ως διαχειριστής
 Settings_ImageExpiry: 'Ημέρες πριν από τη λήξη των εικόνων προφίλ:'
 Settings_SteamAPIKey: "Κλειδί API ιστού Steam (προαιρετικό)"

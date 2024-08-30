@@ -32,7 +32,7 @@ Button_Back: Înapoi
 Button_RestartAdmin: Repornire ca administrator
 Button_SetPassword: Setați parola aplicației
 Settings_SteamCollectInfo: Colectați imaginea de profil Steam și starea VAC de la Steam
-Settings_Shortcut: ' {platform} Switcher scurtătură desktop'
+Settings_Shortcut: '{platform} Switcher scurtătură desktop'
 Settings_Admin: Execută {platform} ca administrator
 Settings_ImageExpiry: 'Zile înainte de expirarea imaginilor de profil:'
 Settings_SteamAPIKey: "Cheie API web Steam (opțional)"
