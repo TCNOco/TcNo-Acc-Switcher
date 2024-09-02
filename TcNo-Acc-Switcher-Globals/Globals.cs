@@ -192,6 +192,13 @@ namespace TcNo_Acc_Switcher_Globals
             return ((int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds).ToString();
         }
 
+        public static int DateStringToInt(string s)
+        {
+            s = s.Replace("-", "").Replace("_", "");
+            bool success = int.TryParse(s, out var i);
+            return success ? i : 0;
+        }
+
         /// <summary>
         /// Replaces the input regex string with an 'expanded' regex, if it's an enum
         /// </summary>
