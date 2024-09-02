@@ -30,7 +30,7 @@
     },
     "Epic Games": {
       "Identifiers": [ "e", "epg", "epic", "epicgames" ],
-      "ExeLocationDefault": "C:\\Program Files (x86)\\Epic Games\\Launcher\\Portal\\Binaries\\Win32\\EpicGamesLauncher.exe",
+      "ExeLocationDefault": "%ProgramFiles(x86)%\\Epic Games\\Launcher\\Portal\\Binaries\\Win32\\EpicGamesLauncher.exe",
       "GetPathFromShortcutNamed": "Epic Games Launcher",
       "ExesToEnd": [ "EpicGamesLauncher.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
@@ -54,7 +54,7 @@
     },
     "GOG Galaxy": {
       "Identifiers": [ "g", "gog", "gog2" ],
-      "ExeLocationDefault": "C:\\Program Files (x86)\\GOG Galaxy\\GalaxyClient.exe",
+      "ExeLocationDefault": "%ProgramFiles(x86)%\\GOG Galaxy\\GalaxyClient.exe",
       "GetPathFromShortcutNamed": "GOG GALAXY",
       "ExesToEnd": [ "GalaxyClient.exe", "GOG Galaxy Notifications Renderer.exe", "GalaxyClientService.exe", "GalaxyCommunication.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
@@ -79,7 +79,7 @@
       "Extras": {
         "ProfilePicPath": "%ProgramData%\\GOG.com\\Galaxy\\webcache\\%UniqueId%\\user\\%LARGEST%.jpg",
         "CachePaths": [
-          "C:\\Program Files (x86)\\GOG Galaxy\\GPUCache",
+          "%ProgramFiles(x86)%\\GOG Galaxy\\GPUCache",
           "%ProgramData%\\GOG.com\\Galaxy\\webcache\\common\\Cache",
           "%ProgramData%\\GOG.com\\Galaxy\\webcache\\common\\GPUCache"
         ],
@@ -535,6 +535,25 @@
       "ExitBeforeInteract": true,
       "UniqueIdFile": "%AppData%\\df_launcher_global_30029601\\TcNoAccSwitcher-ID.instance",
       "UniqueIdMethod": "CREATE_ID_FILE"
+    },
+    "Jagex": {
+      "Identifiers": [ "jagex", "osrs", "runescape" ],
+      "ExeLocationDefault": "%ProgramFiles(x86)%\\jagex launcher\\JagexLauncher.exe",
+      "GetPathFromShortcutNamed": "Jagex Launcher",
+      "ExesToEnd": [ "JagexLauncher.exe" ],
+      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+      "LoginFiles": {
+        "%LocalAppData%\\jagex launcher\\settings.json": "settings.json",
+        "%LocalAppData%\\jagex launcher\\launcher-win.production.json": "launcher-win.production.json",
+        "%LocalAppData%\\jagex launcher\\auth\\*": "auth\\",
+        "%LocalAppData%\\jagex launcher\\cefcache\\*": "cefcache\\",
+        "%LocalAppData%\\jagex launcher\\logs\\*": "logs\\",
+        "%LocalAppData%\\jagex launcher\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance",
+        "%LocalAppData%\\Microsoft\\Credentials\\C5F6B4FF052E05B4F26961945E953169": "LocalAppData\\Microsoft\\Credentials\\C5F6B4FF052E05B4F26961945E953169"
+      },
+      "ExitBeforeInteract": true,
+      "UniqueIdFile": "%LocalAppData%\\jagex launcher\\TcNoAccSwitcher-ID.instance",
+      "UniqueIdMethod": "CREATE_ID_FILE"
     }
   },
   "Platform-WIP": {
@@ -567,5 +586,5 @@
       }
     }
   },
-  "Version": "2024-08-27_00"
+  "Version": "2024-09-02_00"
 }
