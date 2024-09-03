@@ -30,8 +30,11 @@
 }
 
 <ul class="contextmenu" id="@ContextMenuId">
-    @foreach (var item in MenuItems)
-    {
-        <ContextMenuItem Item="@item" Depth="0" />
+    @{
+        var itemsCopy = MenuItems.ToList();
+        @foreach (var item in itemsCopy)
+        {
+            <ContextMenuItem Item="@item" Depth="0" />
+        }
     }
 </ul>
