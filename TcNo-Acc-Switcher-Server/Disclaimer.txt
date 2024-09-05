@@ -1,10 +1,13 @@
-﻿See https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/DISCLAIMER.md for the most up-to-date copy.
-All trademarks and materials are property of their respective owners and their licensors. This project is not affiliated
-with Battle.net or Blizzard Entertainment Inc, Epic Games Inc or the Epic Games Launcher, Origin or Electronic Arts Inc,
-League of Legends or Legends of Runeterra or Valorant or Riot Games Inc, Steam or Valve Corporation, Ubisoft Connect or
-Ubisoft Entertainment, or any other companies or groups that this software may have reference to. This project should
-not be considered "Official" or related to platforms mentioned in any way. All it does is let you move your files around
-on your computer.
+﻿All trademarks and materials are the property of their respective owners and their licensors. This project is not affiliated
+with any companies referenced. This is not "Official" software or related to any companies mentioned. All it does is let you
+move your files around on your computer the same way you can. The use of names, icons and trademarks does not indicate
+endorsement of the trademark holder by this project or its creators, nor vice versa. They are only used to visually indicate
+which programs this project interacts with easily to the end-user.
+
+By enabling optional features that scrape the web for publically available information (such as limited game/profile statistics
+and other data), you understand and accept full responsibility for doing so on your own volition. If you appreciate accurate
+information, support the services providing it directly. The information collected is incredibly limited and is no replacement
+or competitor for sites scraped.
 
 I am not responsible for the contents of external links.
 For the rest of the disclaimer, refer to the License (GNU General Public License v3.0) file:

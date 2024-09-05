@@ -185,6 +185,48 @@ int main(int argc, char* argv[])
 			launch_tcno_program(argv[argc - 1]);
 	}
 
+	cout << "This script will make sure WebView 2, .NET Runtime 8.0, Desktop Runtime 8.0," << endl << 
+			"ASP.NET Core Runtime 8.0, and Visual C++ Redistributable 2015 - 2019 are" << endl << 
+			"installed. If they are missing, they will be downloaded." << endl << endl;
+
+	cout << "Please close all open programs for the duration of the installation. If the" << endl <<
+			"installation fails, please ensure Windows is fully updated, reboot your" << endl <<
+			"computer and try to run this again." << endl << endl;
+	
+	cout << "You can close this window to stop now. Detailed instructions to install these" << endl <<
+			"tools manually are available at:" <<endl << 
+			"https://github.com/TCNOco/TcNo-Acc-Switcher/wiki#1-installing-required-runtimes" << endl << endl;
+
+	cout << "Press any key to continue..." << endl;
+	std::cin.get();
+
+	system("cls");
+
+	cout << "Welcome to the TcNo Account Switcher - Runtime installer" << endl <<
+		"------------------------------------------------------------------------" << endl << endl;
+
+	cout << "This script will download and install packages from Microsoft. By using this" << endl <<
+			"script, you are accepting the license for the application, executable(s)," << endl <<
+			"or other artifacts delivered to your machine as a result of this install." << endl <<
+			"This acceptance occurs whether you know the license terms or not. Read and" << endl <<
+			"understand the license terms of the packages being installed and their" << endl <<
+			"dependencies prior to installation: " << endl <<
+			" - https://developer.microsoft.com/en-us/microsoft-edge/webview2/" << endl <<
+			" - https://dotnet.microsoft.com/en-us/download/dotnet/8.0" << endl <<
+			" - https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist" << endl << endl;
+
+	cout << "This script is provided AS-IS without any warranties of any kind" << endl <<
+			"Please also see the TcNo Account Switcher's Privacy Policy:" << endl << 
+			"https://github.com/TCNOco/TcNo-Acc-Switcher/blob/master/PRIVACY.md" << endl << endl;
+
+	cout << "Press any key to continue..." << endl;
+	std::cin.get();
+
+	system("cls");
+
+	cout << "Welcome to the TcNo Account Switcher - Runtime installer" << endl <<
+		"------------------------------------------------------------------------" << endl << endl;
+
 	cout << "Currently installed runtimes:" << endl;
 
 	/* Find installed runtimes */

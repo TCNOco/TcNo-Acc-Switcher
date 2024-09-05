@@ -93,6 +93,25 @@ namespace TcNo_Acc_Switcher_Globals
         #region FILES
 
         /// <summary>
+        /// Checks if a file is accessable with current permissions
+        /// </summary>
+        public static bool NeedsAdminForFileAccess(string filepath)
+        {
+            try
+            {
+                using FileStream fs = new(filepath, FileMode.Open);
+                return false;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+        /// <summary>
         /// Expands custom environment variables.
         /// </summary>
         /// <param name="path"></param>

@@ -109,6 +109,12 @@
     <None Update="Additional Licenses.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Disclaimer.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Privacy Policy.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\af-ZA.yml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

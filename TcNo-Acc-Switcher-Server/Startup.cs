@@ -125,8 +125,6 @@ namespace TcNo_Acc_Switcher_Server
             // Handle option files from installer
             CheckInstallerOptions();
 
-            // Check for Platforms.json update
-            if (!AppSettings.OfflineMode) UpdatePlatformsJson();
             AppSettings.Version = Globals.Version;
             AppSettings.SaveSettings();
 
@@ -233,103 +231,5 @@ namespace TcNo_Acc_Switcher_Server
             }
         }
 
-        private static int DateStringToInt(string s)
-        {
-            s = s.Replace("-", "").Replace("_", "");
-            bool success = int.TryParse(s, out var i);
-            return success ? i : 0;
-        }
-
-        private async static void UpdatePlatformsJson()
-        {
-            try
-            {
-                if (!AppSettings.AutoUpdatePlatforms) return;
-
-                var basicPlatformsPath = Path.Join(Globals.AppDataFolder, "Platforms.json");
-
-                // Get current version
-                var currentPlatformsVersion = 0;
-                var latestPlatformsVersion = 0;
-                if (File.Exists(basicPlatformsPath))
-                {
-                    using JsonDocument document = JsonDocument.Parse(File.ReadAllText(basicPlatformsPath));
-                    JsonElement root = document.RootElement;
-
-                    if (root.TryGetProperty("Version", out JsonElement versionElement))
-                        currentPlatformsVersion = DateStringToInt(versionElement.GetString());
-                }
-
-                // Get latest version from GitHub
-                using HttpClient client = new();
-                string latestPlatformsString = await client.GetStringAsync("https://raw.githubusercontent.com/TCNOco/TcNo-Acc-Switcher/master/TcNo-Acc-Switcher-Server/Platforms.json");
-
-                using (JsonDocument document = JsonDocument.Parse(latestPlatformsString))
-                {
-                    JsonElement root = document.RootElement;
-
-                    if (root.TryGetProperty("Version", out JsonElement versionElement))
-                        latestPlatformsVersion = DateStringToInt(versionElement.GetString());
-                }
-
-                // Compare and copy if newer
-                if (latestPlatformsVersion > currentPlatformsVersion)
-                {
-                    Globals.DeleteFile(basicPlatformsPath + ".bak");
-                    Globals.CopyFile(basicPlatformsPath, basicPlatformsPath + ".bak");
-                    Globals.WriteToLog("Updated Platforms.json");
-
-                    using StreamWriter sw = new(basicPlatformsPath);
-                    await sw.WriteAsync(latestPlatformsString);
-                }
-
-                // Download missing images
-                var newPlatforms = "";
-                using (JsonDocument document = JsonDocument.Parse(File.ReadAllText(basicPlatformsPath))) {
-                    JsonElement root = document.RootElement;
-
-                    // Iterate over root > "Platforms". Each key is the name we're looking for.
-                    foreach (var platform in root.GetProperty("Platforms").EnumerateObject())
-                    {
-                        string platformName = platform.Name;
-                        string platformImage = Globals.GetCleanFilePath(platformName);
-                        string platformImageUrl = $"https://raw.githubusercontent.com/TCNOco/TcNo-Acc-Switcher/master/TcNo-Acc-Switcher-Server/wwwroot/img/platform/{platformImage}.svg";
-
-                        if (string.IsNullOrEmpty(platformImage)) continue;
-
-                        string imagePath = Path.Join(Globals.UserDataFolder, "wwwroot", "img", "platform", platformImage + ".svg");
-
-                        if (!File.Exists(imagePath))
-                        {
-                            try
-                            {
-                                // Download latest image from GitHub:
-                                byte[] imageBytes = await client.GetByteArrayAsync(platformImageUrl);
-
-                                using FileStream fs = new(imagePath, FileMode.Create);
-                                await fs.WriteAsync(imageBytes);
-
-                                newPlatforms += platformName + ", ";
-                            }
-                            catch (Exception ex)
-                            {
-                                Globals.WriteToLog($"Failed to download image for {platformName}: {ex.Message}");
-                            }
-                        }
-                    }
-                }
-
-                if (newPlatforms.Length != 0)
-                {
-                    _ = GeneralInvocableFuncs.ShowToast("info", Lang.Instance["Toast_NewPlatforms", new { listOfNames = newPlatforms }], renderTo: "toastarea", duration: 000);
-
-                    Globals.WriteToLog($"Updatedd Platforms.json. Added new platforms: {newPlatforms}");
-                }
-            }
-            catch (Exception ex)
-            {
-                Globals.WriteToLog($"Failed to update Platforms.json: {ex.Message}");
-            }
-        }
     }
 }
