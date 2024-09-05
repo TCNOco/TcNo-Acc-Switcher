@@ -136,6 +136,8 @@ https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/LICENSE - See sections l
 'simplification' at the top of the above website.
 ```
 
+#### [Privacy Policy](https://github.com/TCNOco/TcNo-Acc-Switcher/blob/master/PRIVACY.md)
+
 Additional license information for included NuGet packages and other parts of code can be found in: [HERE](https://github.com/TCNOco/TcNo-Acc-Switcher/blob/master/TcNo-Acc-Switcher-Server/Additional%20Licenses.txt) `TcNo-Acc-Switcher-Server/Additional Licenses.txt`, and are copied to the build directory, as well as distributed with release versions of this software.
 
 <p align="center"><a target="_blank" align="center" href="https://www.jetbrains.com/?from=TcNo-Account-Switcher">
