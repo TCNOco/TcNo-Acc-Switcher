@@ -44,6 +44,8 @@ Simple. It swaps out files and registry values, pointing to your last logged in 
 
 You can see (and edit) how account switching works by checking [Platforms.json](https://github.com/TCNOco/TcNo-Acc-Switcher/blob/ad1a0907f09d6a625b11e06bbb4947566e6be6b2/TcNo-Acc-Switcher-Server/Platforms.json).
 
+This software values your privacy. Please see the [Privacy Policy](https://github.com/TCNOco/TcNo-Acc-Switcher/blob/master/PRIVACY.md).
+
 ## HELP  WANTED
 
 This project is a massive time sink. For something completely open-source and free, I find myself with little time to develop. Consider supporting development on [Patreon](https://www.patreon.com/TroubleChute), [Ko-Fi](https://ko-fi.com/tcnoco) or preferrably YouTube as a Member on [TroubleChute](https://youtube.com/TroubleChute).
