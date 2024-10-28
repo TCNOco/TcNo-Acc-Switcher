@@ -51,8 +51,9 @@ build_script:
       cd other
       npm install
       cd ..
+  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
   - ps: |
-      $artifactPath = "TcNo-Acc-Switcher-Client\\bin\\x64\\Release\\TcNo-Acc-Switcher"
+      $artifactPath = "to_sign"
       if (Test-Path $artifactPath) {
           Write-Host "Uploading files from $artifactPath..."
           appveyor PushArtifact $artifactPath/*.exe
@@ -76,19 +77,21 @@ build_script:
           parameters: |
             Version: "$env:APPVEYOR_REPO_TAG_NAME"
             Release_Tag: "$env:APPVEYOR_REPO_TAG_NAME"
-  - ps: |
-      # Define paths
-      $originalPath = "TcNo-Acc-Switcher-Client\\bin\\x64\\Release\\TcNo-Acc-Switcher"
-      $signedPath = "signed_artifacts"
+  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+  - ps: Start-Process -FilePath TcNo-Acc-Switcher-Client\PostBuildFinalize.bat -NoNewWindow -Wait
 
-      if (Test-Path $signedPath) {
-          Write-Host "Replacing original files in $originalPath with signed files from $signedPath..."
-          Remove-Item "$originalPath\*.exe" -Force
-          Copy-Item "$signedPath\*.exe" -Destination $originalPath -Force
-          Write-Host "Done. Signed files are now in $originalPath."
-      } else {
-          Write-Host "Error: Signed artifacts not found in $signedPath."
-      }
+
+
+
+
+
+
+
+
+
+
+
+
 #  - cmd: node other/upload-to-ftp.js
 
 on_finish:
