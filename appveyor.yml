@@ -26,6 +26,7 @@ init:
   - ps: Write-Host "DATEVERSION is $env:DATEVERSION"
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
   - ps: iex (irm https://raw.githubusercontent.com/TCNOco/TcNo-Acc-Switcher/master/other/NSIS/nsis7zplugin.ps1)
+  - ps: Install-Module -Name SignPath -RequiredVersion 4.4.1 -Scope CurrentUser -Force -SkipPublisherCheck
 
 build:
   parallel: true
@@ -70,6 +71,30 @@ build_script:
           parameters: |
             Version: "$env:APPVEYOR_REPO_TAG_NAME"
             Release_Tag: "$env:APPVEYOR_REPO_TAG_NAME"
+  - ps: |
+      if (!(Test-Path "signed_artifacts")) {
+          New-Item -ItemType Directory -Path "signed_artifacts" | Out-Null
+      }
+
+      Get-ChildItem "to_sign\*.exe" | ForEach-Object {
+          $inputFile = $_.FullName
+          $outputFile = Join-Path "signed_artifacts" $_.Name
+          
+          Write-Host "Submitting signing request for $inputFile..."
+
+          Submit-SigningRequest `
+              -InputArtifactPath $inputFile `
+              -ApiToken $env:SIGNPATH_API_TOKEN `
+              -OrganizationId "a2a88c4e-72da-4d2c-925e-91f41aff9d77" `
+              -ProjectSlug "TcNo-Acc-Switcher" `
+              -SigningPolicySlug "test-signing" `
+              -OutputArtifactPath $outputFile `
+              -WaitForCompletion
+
+          Write-Host "Signing complete for $inputFile, signed file saved as $outputFile."
+      }
+
+      Write-Host "All files signed and saved to $outputPath."
   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
   - ps: Start-Process -FilePath TcNo-Acc-Switcher-Client\PostBuildFinalize.bat -NoNewWindow -Wait
 
