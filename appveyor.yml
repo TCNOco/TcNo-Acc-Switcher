@@ -52,14 +52,7 @@ build_script:
       npm install
       cd ..
   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-  - ps: |
-      $artifactPath = "to_sign"
-      if (Test-Path $artifactPath) {
-          Write-Host "Uploading files from $artifactPath..."
-          appveyor PushArtifact $artifactPath/*.exe
-      } else {
-          Write-Host "No files found in $artifactPath to upload."
-      }
+  - ps: Get-ChildItem to_sign\*.* | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
   - ps: |
       Write-Host "Initiating SignPath signing process..."
 
