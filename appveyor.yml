@@ -16,6 +16,8 @@ environment:
   VCPKG_BUILD_TYPE: release
   FTP_PASSWORD:
     secure: q67YmNsPhzdJWqWnpYp1of9wO2+Q2rexS+dKrQ5BEi11TvfQR9YvgRJlHY0ePmfk
+  SIGNPATH_API_TOKEN:
+    secure: RgQENqNMX8mWU/mfLUS6lhoUsproyEDZjTlk2BIq7pIp4NAAU/MAGKn6ii/gJg/x
   DATEVERSION: $(APPVEYOR_REPO_TAG_NAME)
 
 pull_requests:
@@ -26,6 +28,7 @@ init:
   - ps: Write-Host "DATEVERSION is $env:DATEVERSION"
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
   - ps: iex (irm https://raw.githubusercontent.com/TCNOco/TcNo-Acc-Switcher/master/other/NSIS/nsis7zplugin.ps1)
+  - ps: Install-Module -Name SignPath -RequiredVersion 4.4.1 -Scope CurrentUser -Force -SkipPublisherCheck
 
 build:
   parallel: true
@@ -51,25 +54,32 @@ build_script:
       cd other
       npm install
       cd ..
-  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
   - ps: Get-ChildItem to_sign\*.* | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
   - ps: |
       Write-Host "Initiating SignPath signing process..."
+      if (!(Test-Path "signed_artifacts")) {
+          New-Item -ItemType Directory -Path "signed_artifacts" | Out-Null
+      }
 
-      # SignPath GitHub Action YAML snippet to submit signing request
-      - id: sign_artifact_step
-        uses: signpath/github-action-submit-signing-request@v1
-        with:
-          api-token: '$env:SIGNPATH_API_TOKEN'
-          organization-id: 'a2a88c4e-72da-4d2c-925e-91f41aff9d77'
-          project-slug: 'TcNo-Acc-Switcher'
-          signing-policy-slug: 'test-signing'
-          github-artifact-id: '${{steps.upload_artifact_step.outputs.artifact-id}}'
-          wait-for-completion: true
-          output-artifact-directory: 'signed_artifacts'
-          parameters: |
-            Version: "$env:APPVEYOR_REPO_TAG_NAME"
-            Release_Tag: "$env:APPVEYOR_REPO_TAG_NAME"
+      Get-ChildItem "to_sign\*.exe" | ForEach-Object {
+          $inputFile = $_.FullName
+          $outputFile = Join-Path "signed_artifacts" $_.Name
+          
+          Write-Host "Submitting signing request for $inputFile..."
+
+          Submit-SigningRequest `
+              -InputArtifactPath $inputFile `
+              -ApiToken "$env:SIGNPATH_API_TOKEN" `
+              -OrganizationId "a2a88c4e-72da-4d2c-925e-91f41aff9d77" `
+              -ProjectSlug "TcNo-Acc-Switcher" `
+              -SigningPolicySlug "test-signing" `
+              -OutputArtifactPath $outputFile `
+              -WaitForCompletion
+
+          Write-Host "Signing complete for $inputFile, signed file saved as $outputFile."
+      }
+
+      Write-Host "All files signed and saved to $outputPath."
   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
   - ps: Start-Process -FilePath TcNo-Acc-Switcher-Client\PostBuildFinalize.bat -NoNewWindow -Wait
 
