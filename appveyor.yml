@@ -51,10 +51,48 @@ build_script:
       cd other
       npm install
       cd ..
-  - cmd: node other/upload-to-ftp.js
+  - ps: |
+      $artifactPath = "TcNo-Acc-Switcher-Client\\bin\\x64\\Release\\TcNo-Acc-Switcher"
+      if (Test-Path $artifactPath) {
+          Write-Host "Uploading files from $artifactPath..."
+          appveyor PushArtifact $artifactPath/*.exe
+      } else {
+          Write-Host "No files found in $artifactPath to upload."
+      }
+  - ps: |
+      Write-Host "Initiating SignPath signing process..."
 
-# on_finish:
-#   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+      # SignPath GitHub Action YAML snippet to submit signing request
+      - id: sign_artifact_step
+        uses: signpath/github-action-submit-signing-request@v1
+        with:
+          api-token: '$env:SIGNPATH_API_TOKEN'
+          organization-id: 'a2a88c4e-72da-4d2c-925e-91f41aff9d77'
+          project-slug: 'TcNo-Acc-Switcher'
+          signing-policy-slug: 'test-signing'
+          github-artifact-id: '${{steps.upload_artifact_step.outputs.artifact-id}}'
+          wait-for-completion: true
+          output-artifact-directory: 'signed_artifacts'
+          parameters: |
+            Version: "$env:APPVEYOR_REPO_TAG_NAME"
+            Release_Tag: "$env:APPVEYOR_REPO_TAG_NAME"
+  - ps: |
+      # Define paths
+      $originalPath = "TcNo-Acc-Switcher-Client\\bin\\x64\\Release\\TcNo-Acc-Switcher"
+      $signedPath = "signed_artifacts"
+
+      if (Test-Path $signedPath) {
+          Write-Host "Replacing original files in $originalPath with signed files from $signedPath..."
+          Remove-Item "$originalPath\*.exe" -Force
+          Copy-Item "$signedPath\*.exe" -Destination $originalPath -Force
+          Write-Host "Done. Signed files are now in $originalPath."
+      } else {
+          Write-Host "Error: Signed artifacts not found in $signedPath."
+      }
+#  - cmd: node other/upload-to-ftp.js
+
+on_finish:
+  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 artifacts:
   - path: TcNo-Acc-Switcher-Client\bin\x64\Release\upload\*
