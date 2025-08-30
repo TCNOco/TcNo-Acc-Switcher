@@ -130,12 +130,12 @@ and other data), you understand and accept full responsibility for doing so on y
 information, support the services providing it directly. The information collected is incredibly limited and is no replacement
 or competitor for sites scraped.
 
-I am not responsible for the contents of external links.
+I am not responsible for the contents of external links. Nameet
 For the rest of the disclaimer, refer to the License (GNU General Public License v3.0) file:
 https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/LICENSE - See sections like 15, 16 and 17, as well as GitHub's
 'simplification' at the top of the above website.
 ```
-
+Nameet
 #### [Privacy Policy](https://github.com/TCNOco/TcNo-Acc-Switcher/blob/master/PRIVACY.md)
 
 Additional license information for included NuGet packages and other parts of code can be found in: [HERE](https://github.com/TCNOco/TcNo-Acc-Switcher/blob/master/TcNo-Acc-Switcher-Server/Additional%20Licenses.txt) `TcNo-Acc-Switcher-Server/Additional Licenses.txt`, and are copied to the build directory, as well as distributed with release versions of this software.

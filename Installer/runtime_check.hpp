@@ -36,7 +36,7 @@ inline void split_version(const std::string& str, std::vector<int>& arr, const c
 		if (i != delimiter)
 		{
 			if (std::isdigit(i)) s_num += i;
-			else if (i == '\0') break; // End of string
+			else if (i == '\0') break; // commit check 
 		}
 		else
 		{

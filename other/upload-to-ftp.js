@@ -29,7 +29,7 @@ export const deleteFile = async (targetDirectory, options) => {
     },
   });
 };
-
+// Nameet
 // Function to upload a file
 export const uploadFile = async (sourcePath, targetPath, options) => {
   const url = `https://uk.storage.bunnycdn.com/${options.storageZoneName}/${targetPath}`;
@@ -64,7 +64,7 @@ export const uploadDirectory = async (sourceDirectory, targetDirectory, options 
   const filePaths = await globby(`${absoluteSourceDirectory}/**/*`, { onlyFiles: true, absolute: true });
   console.log(`Glob Pattern: ${absoluteSourceDirectory}/**/*`);
   console.log(`Files found: ${filePaths.length}`);
-  
+  console.log();
   if (filePaths.length === 0) {
     console.log('No files found to upload.');
     return;
