@@ -74,7 +74,7 @@
     <PackageReference Include="Gameloop.Vdf" Version="0.6.2" />
     <PackageReference Include="Gameloop.Vdf.JsonConverter" Version="0.2.1" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.64" />
-    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="13.10.0" />
+    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="14.9.0" />
     <PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.8" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2651.64" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
