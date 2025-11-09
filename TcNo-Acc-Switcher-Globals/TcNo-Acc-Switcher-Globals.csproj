@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <RootNamespace>TcNo_Acc_Switcher_Globals</RootNamespace>
-    <Copyright>Copyright © TroubleChute (Wesley Pyburn) 2019-2024</Copyright>
+    <Copyright>Copyright © TroubleChute (Wesley Pyburn) 2019-2025</Copyright>
     <Authors>TroubleChute (Wesley Pyburn)</Authors>
     <Company>TroubleChute (Wesley Pyburn)</Company>
     <PackageProjectUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</PackageProjectUrl>

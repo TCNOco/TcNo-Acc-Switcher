@@ -81,7 +81,7 @@ BEGIN
             VALUE "FileDescription", "TcNo Account Switcher Wrapper"
             VALUE "FileVersion", "2025-11-09_00"
             VALUE "InternalName", "_Wrap.exe"
-            VALUE "LegalCopyright", "Copyright © TroubleChute (Wesley Pyburn) 2019-2024"
+            VALUE "LegalCopyright", "Copyright (c) TroubleChute (Wesley Pyburn) 2019-2025"
             VALUE "OriginalFilename", "_Wrapper.exe"
             VALUE "ProductName", "TcNo Account Switcher - Wrapper"
             VALUE "ProductVersion", "2025-11-09_00"
