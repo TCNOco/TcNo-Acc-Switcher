@@ -20,6 +20,8 @@
 
 #pragma comment(lib, "urlmon.lib")
 #pragma comment (lib, "User32.lib")
+#pragma comment(lib, "iphlpapi.lib")
+#pragma comment(lib, "secur32.lib")
 #define CRT_SECURE_NO_WARNINGS
 #include <algorithm>
 #include <chrono>
@@ -33,7 +35,9 @@
 #include <urlmon.h>
 #include "progress_bar.hpp"
 
+#ifndef CURL_STATICLIB
 #define CURL_STATICLIB
+#endif
 #include <curl/curl.h>
 
 #include "runtime_check.hpp"
@@ -51,7 +55,8 @@ inline void insert_empty_line()
 	CONSOLE_SCREEN_BUFFER_INFO buffer_info;
 	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &buffer_info);
 
-	const std::string s(static_cast<double>(buffer_info.srWindow.Right) - static_cast<double>(buffer_info.srWindow.Left), ' ');
+	const int width = buffer_info.srWindow.Right - buffer_info.srWindow.Left;
+	const std::string s(static_cast<size_t>(width), ' ');
 	std::cout << s << '\r';
 }
 

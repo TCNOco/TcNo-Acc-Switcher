@@ -31,7 +31,7 @@ int ProgressBar::GetConsoleWidth() {
 int ProgressBar::GetBarLength() const
 {
 	// get console width and according adjust the length of the progress bar
-	const int bar_length = static_cast<int>((static_cast<double>(GetConsoleWidth()) - desc_width - CHARACTER_WIDTH_PERCENTAGE) / 2.);
+	const int bar_length = static_cast<int>((static_cast<double>(GetConsoleWidth()) - static_cast<double>(desc_width) - CHARACTER_WIDTH_PERCENTAGE) / 2.);
 	return bar_length;
 }
 void ProgressBar::ClearBarField() const

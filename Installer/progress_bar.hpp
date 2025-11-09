@@ -33,7 +33,7 @@ public:
 	void Progressed(unsigned long idx_);
 private:
 	unsigned long n{};
-	unsigned int desc_width{};
+	size_t desc_width{};
 	unsigned long frequency_update{};
 	std::ostream* out{};
 	const char* description{};

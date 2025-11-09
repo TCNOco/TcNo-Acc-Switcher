@@ -99,8 +99,11 @@ inline void find_installed_c_runtimes(bool &min_vc_met)
 	if (RegQueryValueEx(key, L"Version", nullptr, &dw_type, reinterpret_cast<unsigned char*>(version), &dw_v_buffer_size) == ERROR_SUCCESS)
 	{
 		wprintf(L" - C++ Redistributable 2015-2022 [%s]\n", version);
-		const std::string s_version(std::begin(version), std::end(version));
-		min_vc_met = compare_versions(required_min_vc, std::string(s_version), '.');
+		// convert wide char buffer to std::string up to the first null terminator
+		int requiredSize = WideCharToMultiByte(CP_UTF8, 0, version, -1, nullptr, 0, nullptr, nullptr);
+		std::string s_version(requiredSize - 1, '\0');
+		if (requiredSize > 1) WideCharToMultiByte(CP_UTF8, 0, version, -1, &s_version[0], requiredSize, nullptr, nullptr);
+		min_vc_met = compare_versions(required_min_vc, s_version, '.');
 	}
 	RegCloseKey(key);
 }
@@ -159,31 +162,39 @@ inline void find_installed_net_runtimes(const bool x32, bool &min_webview_met, b
 			dw_buffer_size = sizeof(s_display_name);
 			dw_v_buffer_size = sizeof(version);
 			if (RegQueryValueEx(h_app_key, L"DisplayName", nullptr, &dw_type, reinterpret_cast<unsigned char*>(s_display_name), &dw_buffer_size) == ERROR_SUCCESS &&
-				RegQueryValueEx(h_app_key, L"DisplayVersion", nullptr, &dw_type, reinterpret_cast<unsigned char*>(version), &dw_v_buffer_size) == ERROR_SUCCESS)
+                RegQueryValueEx(h_app_key, L"DisplayVersion", nullptr, &dw_type, reinterpret_cast<unsigned char*>(version), &dw_v_buffer_size) == ERROR_SUCCESS)
 			{
-				const std::string s_version(std::begin(version), std::end(version));
+				// convert wide char buffers to std::string safely
+                int vsize = WideCharToMultiByte(CP_UTF8, 0, version, -1, nullptr, 0, nullptr, nullptr);
+                std::string s_version(vsize - 1, '\0');
+                if (vsize > 1) WideCharToMultiByte(CP_UTF8, 0, version, -1, &s_version[0], vsize, nullptr, nullptr);
 
-				if (wcsstr(s_display_name, L"WebView2") != nullptr)
-				{
-					min_webview_met = min_webview_met || compare_versions(required_min_webview, std::string(s_version), '.');
-					if (output)
-					{
-						wprintf(L" - %s ", s_display_name);
-						printf("[%s]\n", s_version.c_str());
-					}
-				}
+                // convert display name too for possible printf use
+                int nsize = WideCharToMultiByte(CP_UTF8, 0, s_display_name, -1, nullptr, 0, nullptr, nullptr);
+                std::string s_display(nsize - 1, '\0');
+                if (nsize > 1) WideCharToMultiByte(CP_UTF8, 0, s_display_name, -1, &s_display[0], nsize, nullptr, nullptr);
 
-				if (wcsstr(s_display_name, L"Desktop Runtime") != nullptr && wcsstr(s_display_name, L"x64") != nullptr)
-				{
-					min_desktop_runtime_met = min_desktop_runtime_met || compare_versions(required_min_desktop_runtime, std::string(s_version), '.');
-					if (output) wprintf(L" - %s\n", s_display_name);
-				}
+                if (wcsstr(s_display_name, L"WebView2") != nullptr)
+                {
+                    min_webview_met = min_webview_met || compare_versions(required_min_webview, s_version, '.');
+                    if (output)
+                    {
+                        wprintf(L" - %s ", s_display_name);
+                        printf("[%s]\n", s_version.c_str());
+                    }
+                }
 
-				if (wcsstr(s_display_name, L"ASP.NET Core 9") != nullptr && wcsstr(s_display_name, L"x64") != nullptr)
-				{
-					min_aspcore_met = min_aspcore_met || compare_versions(required_min_aspcore, std::string(s_version), '.');
-					if (output) wprintf(L" - %s\n", s_display_name);
-				}
+                if (wcsstr(s_display_name, L"Desktop Runtime") != nullptr && wcsstr(s_display_name, L"x64") != nullptr)
+                {
+                    min_desktop_runtime_met = min_desktop_runtime_met || compare_versions(required_min_desktop_runtime, s_version, '.');
+                    if (output) wprintf(L" - %s\n", s_display_name);
+                }
+
+                if (wcsstr(s_display_name, L"ASP.NET Core 9") != nullptr && wcsstr(s_display_name, L"x64") != nullptr)
+                {
+                    min_aspcore_met = min_aspcore_met || compare_versions(required_min_aspcore, s_version, '.');
+                    if (output) wprintf(L" - %s\n", s_display_name);
+                }
 			}
 			RegCloseKey(h_app_key);
 		}
@@ -284,7 +295,10 @@ inline std::string get_self_location()
 	WCHAR pth[MAX_PATH];
 	GetModuleFileNameW(h_module, pth, MAX_PATH);
 	std::wstring ws(pth);
-	const std::string path(ws.begin(), ws.end());
+	// convert wide string to UTF-8 std::string
+	int size = WideCharToMultiByte(CP_UTF8, 0, ws.c_str(), -1, nullptr, 0, nullptr, nullptr);
+	std::string path(size - 1, '\0');
+	if (size > 1) WideCharToMultiByte(CP_UTF8, 0, ws.c_str(), -1, &path[0], size, nullptr, nullptr);
 	return path;
 }
 
@@ -319,15 +333,15 @@ inline std::string dotnet_path()
 
 	if (RegQueryValueEx(key, L"Path", nullptr, &dw_type, reinterpret_cast<unsigned char*>(path), &dw_v_buffer_size) == ERROR_SUCCESS)
 	{
-		//ret = std::string(std::begin(path), std::end(path));
-		// For some unknown reason, using +, +=, append, push_back etc just DON'T WORK HERE WTF
-		// I have been bashing my head into a wall for over an hour it's 3 AM
-		//errno_t e = wcscat_s(path, L"dotnet.exe");
-		ret = std::string(std::begin(path), std::end(path));
+		// convert wide char buffer to std::string up to the first null terminator
+		int requiredSize = WideCharToMultiByte(CP_UTF8, 0, path, -1, nullptr, 0, nullptr, nullptr);
+		std::string s_path(requiredSize - 1, '\0');
+		if (requiredSize > 1) WideCharToMultiByte(CP_UTF8, 0, path, -1, &s_path[0], requiredSize, nullptr, nullptr);
+		ret = s_path;
 	}
 	RegCloseKey(key);
 
-	ret.resize(strlen(ret.c_str())); // Otherwise this goes for 1024 characters...
+	//ret.resize(strlen(ret.c_str())); // Otherwise this goes for 1024 characters...
 
 	return ret;
 }
