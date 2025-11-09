@@ -150,7 +150,7 @@ copy /B /Y "_First_Run_Installer.exe" "updater\_First_Run_Installer.exe"
 ECHO -----------------------------------
 ECHO Copy in Server runtimes that are missing for some reason...
 ECHO -----------------------------------
-xcopy %SolutionDir%\TcNo-Acc-Switcher-Server\bin\x64\Release\net8.0\runtimes\win\lib\net8.0 runtimes\win\lib\net8.0 /E /H /C /I /Y
+xcopy %SolutionDir%\TcNo-Acc-Switcher-Server\bin\x64\Release\net9.0\runtimes\win\lib\net9.0 runtimes\win\lib\net9.0 /E /H /C /I /Y
 
 ECHO -----------------------------------
 ECHO Copying runtime files to updater
@@ -192,7 +192,7 @@ ECHO -----------------------------------
 if exist "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher\" (
     RMDIR /Q/S "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher"
 )
-REN "net8.0-windows7.0" "TcNo-Acc-Switcher"
+REN "net9.0-windows7.0" "TcNo-Acc-Switcher"
 
 ECHO -----------------------------------
 ECHO Copy out updater for update creation
@@ -311,10 +311,10 @@ mkdir updater\x64
 mkdir updater\x86
 mkdir updater\ref
 echo %cd%
-copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\Installer\_First_Run_Installer.exe" "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Debug\net8.0-windows7.0\_First_Run_Installer.exe"
-copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\runas\x64\Release\net8.0\runas.exe" "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Debug\net8.0-windows7.0\runas.exe"
-copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\runas\x64\Release\net8.0\runas.dll" "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Debug\net8.0-windows7.0\runas.dll"
-copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\runas\x64\Release\net8.0\runas.runtimeconfig.json" "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Debug\net8.0-windows7.0\runas.runtimeconfig.json"
+copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\Installer\_First_Run_Installer.exe" "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Debug\net9.0-windows7.0\_First_Run_Installer.exe"
+copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\runas\x64\Release\net9.0\runas.exe" "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Debug\net9.0-windows7.0\runas.exe"
+copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\runas\x64\Release\net9.0\runas.dll" "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Debug\net9.0-windows7.0\runas.dll"
+copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\runas\x64\Release\net9.0\runas.runtimeconfig.json" "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Debug\net9.0-windows7.0\runas.runtimeconfig.json"
 endlocal
 echo -----------------------------------
 echo DONE BUILDING DEBUG

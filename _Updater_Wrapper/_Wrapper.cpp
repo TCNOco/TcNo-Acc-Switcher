@@ -43,8 +43,7 @@ int main(int argc, char* argv[])
 		// Launch installer to get these!
 		std::string self_path = get_operating_path();
 		std::string s_args("net " + self);
-		exec_process(std::wstring(self_path.begin(), self_path.end()), L"_First_Run_Installer.exe",
-		             std::wstring(s_args.begin(), s_args.end()));
+		exec_process(s2_ws(self_path), s2_ws("_First_Run_Installer.exe"), s2_ws(s_args));
 	}
 	else
 	{
@@ -53,24 +52,34 @@ int main(int argc, char* argv[])
 		//const std::string exe_name = "TcNo-Acc-Switcher_main.exe";
 
 
-		std::string full_path = operating_path,
-		            args;
+		std::string full_path = operating_path;
+		std::wstring wargs;
 		if (full_path.back() != '\\') full_path += '\\';
 		full_path += exe_name;
 
 		std::cout << "Running: " << exe_name << std::endl;
 
-		std::vector<char> buffer_temp;
-
+		// Build a properly quoted wide args string to preserve spaces in individual arguments
 		for (int i = 1; i < argc; ++i)
-			args += " " + static_cast<std::string>(argv[i]);
+		{
+			std::wstring w = s2_ws(std::string(argv[i]));
+			bool needs_quote = w.find(L' ') != std::wstring::npos || w.find(L'\t') != std::wstring::npos;
+			if (i > 1) wargs += L' ';
+			if (needs_quote)
+			{
+				wargs += L'"';
+				wargs += w;
+				wargs += L'"';
+			}
+			else
+			{
+				wargs += w;
+			}
+		}
 
 		std::cout << "FULL PATH: " << full_path << std::endl;
 
-
-		exec_process(std::wstring(operating_path.begin(), operating_path.end()),
-		             std::wstring(exe_name.begin(), exe_name.end()),
-		             std::wstring(args.begin(), args.end()));
+		exec_process(s2_ws(operating_path), s2_ws(exe_name), wargs);
 	}
 
 	exit(1);

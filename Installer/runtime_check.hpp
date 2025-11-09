@@ -179,7 +179,7 @@ inline void find_installed_net_runtimes(const bool x32, bool &min_webview_met, b
 					if (output) wprintf(L" - %s\n", s_display_name);
 				}
 
-				if (wcsstr(s_display_name, L"ASP.NET Core 8") != nullptr && wcsstr(s_display_name, L"x64") != nullptr)
+				if (wcsstr(s_display_name, L"ASP.NET Core 9") != nullptr && wcsstr(s_display_name, L"x64") != nullptr)
 				{
 					min_aspcore_met = min_aspcore_met || compare_versions(required_min_aspcore, std::string(s_version), '.');
 					if (output) wprintf(L" - %s\n", s_display_name);
@@ -227,7 +227,19 @@ inline void exec_process(const std::wstring& path, const std::wstring& exe, cons
 	ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
 	ShExecInfo.hwnd = nullptr;
 	ShExecInfo.lpVerb = _T("open");
-	ShExecInfo.lpFile = exe.c_str();
+	// Construct full executable path if exe is not an absolute path
+	std::wstring exe_full = exe;
+	bool is_absolute = false;
+	if (!exe.empty()) {
+		// Check for drive letter like "C:\" or UNC path \\\\server
+		if ((exe.size() > 1 && exe[1] == L':') || (exe.size() > 1 && exe[0] == L'\\' && exe[1] == L'\\')) is_absolute = true;
+	}
+	if (!is_absolute) {
+		std::wstring dir = path;
+		if (!dir.empty() && dir.back() != L'\\' && dir.back() != L'/') dir.push_back(L'\\');
+		exe_full = dir + exe;
+	}
+	ShExecInfo.lpFile = exe_full.c_str();
 	ShExecInfo.lpParameters = param.c_str();
 	ShExecInfo.lpDirectory = path.c_str();
 	ShExecInfo.nShow = show_window ? SW_SHOW : SW_HIDE;
