@@ -185,8 +185,8 @@ int main(int argc, char* argv[])
 			launch_tcno_program(argv[argc - 1]);
 	}
 
-	cout << "This script will make sure WebView 2, .NET Runtime 8.0, Desktop Runtime 8.0," << endl << 
-			"ASP.NET Core Runtime 8.0, and Visual C++ Redistributable 2015 - 2019 are" << endl << 
+	cout << "This script will make sure WebView 2, .NET Runtime 9.0, Desktop Runtime 9.0," << endl << 
+			"ASP.NET Core Runtime 9.0, and Visual C++ Redistributable 2015 - 2019 are" << endl << 
 			"installed. If they are missing, they will be downloaded." << endl << endl;
 
 	cout << "Please close all open programs for the duration of the installation. If the" << endl <<
@@ -212,7 +212,7 @@ int main(int argc, char* argv[])
 			"understand the license terms of the packages being installed and their" << endl <<
 			"dependencies prior to installation: " << endl <<
 			" - https://developer.microsoft.com/en-us/microsoft-edge/webview2/" << endl <<
-			" - https://dotnet.microsoft.com/en-us/download/dotnet/8.0" << endl <<
+			" - https://dotnet.microsoft.com/en-us/download/dotnet/9.0" << endl <<
 			" - https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist" << endl << endl;
 
 	cout << "This script is provided AS-IS without any warranties of any kind" << endl <<

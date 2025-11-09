@@ -40,10 +40,10 @@ mkdir updater\x64
 mkdir updater\x86
 mkdir updater\ref
 echo %cd%
-copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\Installer\_First_Run_Installer.exe" "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Debug\net8.0-windows7.0\_First_Run_Installer.exe"
-copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\runas\x64\Release\net8.0\runas.exe" "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Debug\net8.0-windows7.0\runas.exe"
-copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\runas\x64\Release\net8.0\runas.dll" "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Debug\net8.0-windows7.0\runas.dll"
-copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\runas\x64\Release\net8.0\runas.runtimeconfig.json" "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Debug\net8.0-windows7.0\runas.runtimeconfig.json"
+copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\Installer\_First_Run_Installer.exe" "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Debug\net9.0-windows7.0\_First_Run_Installer.exe"
+copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\runas\x64\Release\net9.0\runas.exe" "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Debug\net9.0-windows7.0\runas.exe"
+copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\runas\x64\Release\net9.0\runas.dll" "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Debug\net9.0-windows7.0\runas.dll"
+copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\runas\x64\Release\net9.0\runas.runtimeconfig.json" "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Debug\net9.0-windows7.0\runas.runtimeconfig.json"
 endlocal
 echo -----------------------------------
 echo DONE BUILDING DEBUG
@@ -93,8 +93,8 @@ if exist "%zip%" goto ZJ
     exit -1
 :ZJ
 
-IF EXIST bin\x64\Release\net8.0-windows7.0\updater GOTO end
-cd %SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Release\net8.0-windows7.0\
+IF EXIST bin\x64\Release\net9.0-windows7.0\updater GOTO end
+cd %SolutionDir%\TcNo-Acc-Switcher-Client\bin\x64\Release\net9.0-windows7.0\
 ECHO -----------------------------------
 ECHO Moving files for x64 Release in Visual Studio
 ECHO CD into build artifact directory
@@ -105,9 +105,9 @@ mkdir updater\x64
 mkdir updater\x86
 mkdir updater\ref
 copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\Installer\_First_Run_Installer.exe" "_First_Run_Installer.exe"
-copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\runas\x64\Release\net8.0\runas.exe" "runas.exe"
-copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\runas\x64\Release\net8.0\runas.dll" "runas.dll"
-copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\runas\x64\Release\net8.0\runas.runtimeconfig.json" "runas.runtimeconfig.json"
+copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\runas\x64\Release\net9.0\runas.exe" "runas.exe"
+copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\runas\x64\Release\net9.0\runas.dll" "runas.dll"
+copy /B /Y "%SolutionDir%\TcNo-Acc-Switcher-Client\bin\runas\x64\Release\net9.0\runas.runtimeconfig.json" "runas.runtimeconfig.json"
 
 REM Move files to a new directory for signing
 mkdir "%SolutionDir%\to_sign"

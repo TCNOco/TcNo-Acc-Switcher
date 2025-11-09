@@ -58,10 +58,7 @@ build_script:
   - ps: |
       $token = $env:SIGNPATH_API_TOKEN
       $hashedToken = [System.BitConverter]::ToString([System.Security.Cryptography.SHA256]::Create().ComputeHash([System.Text.Encoding]::UTF8.GetBytes($token))).Replace("-", "").ToLower()
-      Write-Host "Hashed token: $hashedToken"
-      $firstFive = $token.Substring(0, 5)
-      $lastFive = $token.Substring($tokens.Length - 5, 5)
-      Write-Host "And: ${firstFive}...${lastFive}"
+      Write-Host "Hashed token: $token.Substring(0, 5) - $hashedToken"
 
   - ps: |
       Write-Host "Initiating SignPath signing process..."

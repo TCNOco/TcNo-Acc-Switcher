@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows7.0</TargetFramework>
+    <TargetFramework>net9.0-windows7.0</TargetFramework>
     <RootNamespace>TcNo_Acc_Switcher_Client</RootNamespace>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
@@ -24,11 +24,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CefSharp.Common" Version="127.3.50" />
-    <PackageReference Include="CefSharp.Wpf.NETCore" Version="127.3.50">
+    <PackageReference Include="CefSharp.Common" Version="141.0.110" />
+    <PackageReference Include="CefSharp.Wpf.NETCore" Version="141.0.110">
      <NoWarn>NU1701</NoWarn>
     </PackageReference>
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2651.64" />
+    <PackageReference Include="chromiumembeddedframework.runtime.win-arm64" />
+    <PackageReference Include="chromiumembeddedframework.runtime.win-x64" />
+    <PackageReference Include="chromiumembeddedframework.runtime.win-x86" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3595.46" />
   </ItemGroup>
 
   <ItemGroup>
@@ -68,15 +71,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="chromiumembeddedframework.runtime.win-arm64" Version="127.3.5" />
+    <PackageReference Update="chromiumembeddedframework.runtime.win-arm64" Version="141.0.11" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="chromiumembeddedframework.runtime.win-x64" Version="127.3.5" />
+    <PackageReference Update="chromiumembeddedframework.runtime.win-x64" Version="141.0.11" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="chromiumembeddedframework.runtime.win-x86" Version="127.3.5" />
+    <PackageReference Update="chromiumembeddedframework.runtime.win-x86" Version="141.0.11" />
   </ItemGroup>
 
 </Project>
