@@ -35,7 +35,7 @@
       "ExesToEnd": [ "EpicGamesLauncher.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
-        "%LocalAppData%\\EpicGamesLauncher\\Saved\\Config\\Windows\\GameUserSettings.ini": "GameUserSettings.ini",
+        "%LocalAppData%\\EpicGamesLauncher\\Saved\\Config\\WindowsEditor\\GameUserSettings.ini": "GameUserSettings.ini",
         "REG:HKCU\\Software\\Epic Games\\Unreal Engine\\Identifiers:AccountId": "UNIQUE_ID"
       },
       "AllFilesRequired": true,
@@ -586,5 +586,5 @@
       }
     }
   },
-  "Version": "2024-09-02_00"
+  "Version": "2025-11-09_00"
 }
