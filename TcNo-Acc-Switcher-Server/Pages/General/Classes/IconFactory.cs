@@ -245,8 +245,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             _ = sBgImg.Seek(0, SeekOrigin.Begin);
             using MagickImage bgImg = new(sBgImg);
             using MagickImage fgImg = new(sFgImg);
-            bgImg.Resize(imgSize.Width, imgSize.Height);
-            fgImg.Resize(imgSize.Width / 2, imgSize.Height / 2);
+            bgImg.Resize((uint)imgSize.Width, (uint)imgSize.Height);
+            fgImg.Resize((uint)(imgSize.Width / 2), (uint)(imgSize.Height / 2));
 
             bgImg.Composite(fgImg, Gravity.Southeast, CompositeOperator.Copy);
             bgImg.Write(output, MagickFormat.Png32);

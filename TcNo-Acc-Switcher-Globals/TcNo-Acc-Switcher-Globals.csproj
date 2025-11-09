@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <RootNamespace>TcNo_Acc_Switcher_Globals</RootNamespace>
     <Copyright>Copyright © TroubleChute (Wesley Pyburn) 2019-2024</Copyright>
     <Authors>TroubleChute (Wesley Pyburn)</Authors>
@@ -14,18 +14,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.64" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
     <PackageReference Include="IconLib.Unofficial" Version="0.73.0">
      <NoWarn>NU1701</NoWarn>
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="securifybv.ShellLink" Version="0.1.0" />
-    <PackageReference Include="SevenZipExtractor" Version="1.0.17" />
+    <PackageReference Include="SevenZipExtractor" Version="1.0.19" />
     <PackageReference Include="Squid-Box.SevenZipSharp" Version="1.6.2.24" />
-    <PackageReference Include="System.Drawing.Common" Version="8.0.8" />
-    <PackageReference Include="System.Management" Version="8.0.0" />
-    <PackageReference Include="System.ServiceProcess.ServiceController" Version="8.0.0" />
-    <PackageReference Include="YamlDotNet" Version="16.0.0" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.10" />
+    <PackageReference Include="System.Management" Version="9.0.10" />
+    <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.10" />
+    <PackageReference Include="YamlDotNet" Version="16.3.0" />
   </ItemGroup>
 
   <ItemGroup>
