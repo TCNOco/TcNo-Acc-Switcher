@@ -23,15 +23,15 @@ async function initContextMenu() {
     });
 
     if (group === "acc" || group === "preview") {
-        // Ready accounts for double-click
+        // Ready accounts for double-click - use event delegation for dynamically added elements
         if (group === "acc") {
-            $(".acc_list_item").dblclick((event) => {
+            $("#acc_list").on("dblclick", ".acc_list_item", (event) => {
                 swapTo(-1, event);
             });
         }
 
-        // Handle Left-clicks:
-        $(".acc_list_item").click((e) => {
+        // Handle Left-clicks - use event delegation for dynamically added elements
+        $("#acc_list").on("click", ".acc_list_item", (e) => {
             $(e.currentTarget).children("input")[0].click();
             hideContextMenus();
             e.stopPropagation();
@@ -72,9 +72,9 @@ async function initContextMenu() {
         return false;
     });
 
-    //Show contextmenu on Right-Click:
-    $(`.${group}_list_item`).contextmenu((e) => {
-        if (group === "acc" || group === "preview") {
+    //Show contextmenu on Right-Click - use event delegation for dynamically added elements
+    if (group === "acc" || group === "preview") {
+        $("#acc_list").on("contextmenu", ".acc_list_item", (e) => {
             // Select item that was right-clicked.
             $(e.currentTarget).children("input").click();
 
@@ -92,37 +92,65 @@ async function initContextMenu() {
             }
             updateStatus(selectedText.replace("XXX", statusText));
 
-        } else if (group === "platform") {
+            //Get window size:
+            const winWidth = $(document).width();
+            const winHeight = $(document).height();
+            //Get pointer position:
+            const posX = e.pageX - 14;
+            const posY = e.pageY - 42; // Offset for header bar
+            //Get contextmenu size:
+            const menuWidth = $("#AccOrPlatList").width();
+            const menuHeight = $("#AccOrPlatList").height();
+
+            // Header offset + 10:
+            const hOffset = 42;
+            // Prevent page overflow:
+            const xOverflow = posX + menuWidth + hOffset - winWidth;
+            const yOverflow = posY + menuHeight + hOffset - winHeight;
+            var posLeft = posX + (xOverflow > 0 ? - menuWidth : 10) + "px";
+            var posTop = posY + (yOverflow > 0 ? - yOverflow : 10) + "px";
+
+            //Display contextmenu:
+            $("#AccOrPlatList").css({
+                "left": posLeft,
+                "top": posTop
+            }).show();
+            //Prevent browser default contextmenu.
+            return false;
+        });
+    } else if (group === "platform") {
+        // Platform list items (not dynamically added, so direct binding is fine)
+        $(`.${group}_list_item`).contextmenu((e) => {
             // Set currently selected element
             selectedElem = $(e.currentTarget).prop("id");
-        }
 
-        //Get window size:
-        const winWidth = $(document).width();
-        const winHeight = $(document).height();
-        //Get pointer position:
-        const posX = e.pageX - 14;
-        const posY = e.pageY - 42; // Offset for header bar
-        //Get contextmenu size:
-        const menuWidth = $("#AccOrPlatList").width();
-        const menuHeight = $("#AccOrPlatList").height();
+            //Get window size:
+            const winWidth = $(document).width();
+            const winHeight = $(document).height();
+            //Get pointer position:
+            const posX = e.pageX - 14;
+            const posY = e.pageY - 42; // Offset for header bar
+            //Get contextmenu size:
+            const menuWidth = $("#AccOrPlatList").width();
+            const menuHeight = $("#AccOrPlatList").height();
 
-        // Header offset + 10:
-        const hOffset = 42;
-        // Prevent page overflow:
-        const xOverflow = posX + menuWidth + hOffset - winWidth;
-        const yOverflow = posY + menuHeight + hOffset - winHeight;
-        var posLeft = posX + (xOverflow > 0 ? - menuWidth : 10) + "px";
-        var posTop = posY + (yOverflow > 0 ? - yOverflow : 10) + "px";
+            // Header offset + 10:
+            const hOffset = 42;
+            // Prevent page overflow:
+            const xOverflow = posX + menuWidth + hOffset - winWidth;
+            const yOverflow = posY + menuHeight + hOffset - winHeight;
+            var posLeft = posX + (xOverflow > 0 ? - menuWidth : 10) + "px";
+            var posTop = posY + (yOverflow > 0 ? - yOverflow : 10) + "px";
 
-        //Display contextmenu:
-        $("#AccOrPlatList").css({
-            "left": posLeft,
-            "top": posTop
-        }).show();
-        //Prevent browser default contextmenu.
-        return false;
-    });
+            //Display contextmenu:
+            $("#AccOrPlatList").css({
+                "left": posLeft,
+                "top": posTop
+            }).show();
+            //Prevent browser default contextmenu.
+            return false;
+        });
+    }
 
     //Show contextmenu on Right-Click (platform shortcut):
     $(`#btnStartPlat`).contextmenu((e) => {

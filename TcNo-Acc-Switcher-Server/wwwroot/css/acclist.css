@@ -25,6 +25,8 @@
 
 .acc_list_item {
   border: 0.1em solid transparent;
+  cursor: pointer;
+  position: relative;
 }
 .acc_list_item > * {
   pointer-events: none;

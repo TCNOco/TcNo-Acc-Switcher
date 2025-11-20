@@ -24,7 +24,7 @@
     public Dictionary<string, string> AccountNotes { get; set; }
 }
 
-<div class="acc_list_item" data-toggle="tooltip">
+<div class="acc_list_item" data-toggle="tooltip" draggable="true" role="option" aria-grabbed="false">
     <input type="radio" id="@Acc.AccountId" DisplayName="@GeneralFuncs.EscapeText(Acc.DisplayName)" class="acc" name="accounts" onchange="selectedItemChanged()">
     <label for="@Acc.AccountId" class="acc @Acc.Classes.Label">
         <img class="@Acc.Classes.Image" src="@Acc.ImagePath?@Globals.GetUnixTime()" draggable="false" alt="" onerror="if (this.src != 'img/BasicDefault.png') this.src = 'img/BasicDefault.png';" />
