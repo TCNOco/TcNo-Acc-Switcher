@@ -61,8 +61,8 @@ IDI_ICON1               ICON                    "..\\TcNo-Acc-Switcher-Tray\\fav
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2025,11,09,01
- PRODUCTVERSION 2025,11,09,01
+ FILEVERSION 2025,11,20,00
+ PRODUCTVERSION 2025,11,20,00
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -79,12 +79,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "TroubleChute (Wesley Pyburn)"
             VALUE "FileDescription", "Easy redistributable installer for the TcNo Account Switcher"
-            VALUE "FileVersion", "2025-11-09_00"
+            VALUE "FileVersion", "2025-11-20_00"
             VALUE "InternalName", "_First_R.exe"
             VALUE "LegalCopyright", "Copyright (c) TroubleChute (Wesley Pyburn) 2019-2025"
             VALUE "OriginalFilename", "_First_Run_Installer.exe"
             VALUE "ProductName", "TcNo Account Switcher - Redistributable Installer"
-            VALUE "ProductVersion", "2025-11-09_00"
+            VALUE "ProductVersion", "2025-11-20_00"
         END
     END
     BLOCK "VarFileInfo"
