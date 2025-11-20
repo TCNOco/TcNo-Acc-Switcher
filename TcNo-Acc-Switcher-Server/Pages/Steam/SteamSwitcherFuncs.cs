@@ -115,7 +115,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 {
                     // If not cached: Get ban status and images
                     // If cached: Just get images
-                    PrepareProfile(su.SteamId, !su.BanInfoLoaded); // Get ban status as well if was not loaded (missing from cache)
+                    await PrepareProfile(su.SteamId, !su.BanInfoLoaded).ConfigureAwait(false); // Get ban status as well if was not loaded (missing from cache)
 
                     InsertAccount(su);
                 }
@@ -531,7 +531,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <param name="steamId"></param>
         /// <param name="noCache">Whether a new copy of XML data should be downloaded</param>
         /// <returns></returns>
-        public static void PrepareProfile(string steamId, bool noCache)
+        public static async Task PrepareProfile(string steamId, bool noCache)
         {
             var su = AppData.SteamUsers.FirstOrDefault(x => x.SteamId == steamId);
             if (su == null) return;
@@ -565,14 +565,64 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             var profileXml = new XmlDocument();
             try
             {
-                profileXml.Load(File.Exists(cachedFile)
-                    ? cachedFile
-                    : $"https://steamcommunity.com/profiles/{su.SteamId}?xml=1");
+                if (File.Exists(cachedFile))
+                    profileXml.Load(cachedFile);
+                else
+                {
+                    using var httpClient = new HttpClient();
+                    httpClient.Timeout = TimeSpan.FromSeconds(10); // 10 second timeout
+                    httpClient.DefaultRequestHeaders.Add("User-Agent", "TcNo Account Switcher");
+                    
+                    var xmlUrl = $"https://steamcommunity.com/profiles/{su.SteamId}?xml=1";
+                    var xmlContent = await httpClient.GetStringAsync(xmlUrl).ConfigureAwait(false);
+                    
+                    profileXml.LoadXml(xmlContent);
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                Globals.WriteToLog($"Timeout loading Steam account XML for {su.SteamId}. Using cached file if available.");
+                if (File.Exists(cachedFile))
+                {
+                    try
+                    {
+                        profileXml.Load(cachedFile);
+                    }
+                    catch (Exception ex)
+                    {
+                        Globals.WriteToLog("Failed to load cached XML file", ex);
+                        return;
+                    }
+                }
+                else
+                {
+                    return; // No cache available, skip this profile
+                }
+            }
+            catch (HttpRequestException e)
+            {
+                Globals.WriteToLog($"HTTP error loading Steam account XML for {su.SteamId}. ", e);
+                if (File.Exists(cachedFile))
+                {
+                    try
+                    {
+                        profileXml.Load(cachedFile);
+                    }
+                    catch (Exception ex)
+                    {
+                        Globals.WriteToLog("Failed to load cached XML file", ex);
+                        return;
+                    }
+                }
+                else
+                {
+                    return; // No cache available, skip this profile
+                }
             }
             catch (Exception e)
             {
                 Globals.WriteToLog("Failed to load Steam account XML. ", e);
-                // Issue was caused by web. Throw.
+                // Issue was caused by web. Display error.
                 if (!File.Exists(cachedFile))
                 {
                     _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_SteamCantLoadXml", new { steamId = su.SteamId }],
