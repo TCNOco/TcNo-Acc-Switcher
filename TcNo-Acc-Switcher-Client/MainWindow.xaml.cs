@@ -164,13 +164,31 @@ namespace TcNo_Acc_Switcher_Client
         {
             if (e.Level == LogSeverity.Error)
             {
-                Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - CEF EXCEPTION (Handled: refreshed): {e.Message + Environment.NewLine}LINE: {e.Line + Environment.NewLine}SOURCE: {e.Source}");
+                // Filter out non-critical errors that shouldn't trigger refreshes
+                var message = e.Message ?? "";
+                var isNonCriticalError = message.Contains("runtime.lastError") || 
+                                        message.Contains("message port closed") ||
+                                        message.Contains("Extension context invalidated");
+
+                if (isNonCriticalError)
+                {
+                    // Log but don't refresh for non-critical errors
+                    Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - CEF WARNING (Non-critical): {message + Environment.NewLine}LINE: {e.Line + Environment.NewLine}SOURCE: {e.Source}");
+                    return;
+                }
+
+                Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - CEF EXCEPTION (Handled: refreshed): {message + Environment.NewLine}LINE: {e.Line + Environment.NewLine}SOURCE: {e.Source}");
                 _refreshFixAttempts++;
                 if (_refreshFixAttempts < 5)
+                {
                     _cefView.Reload();
+                }
                 else
-                    throw new Exception(
-                        $"Refreshed too many times in attempt to fix issue. Error: {e.Message}");
+                {
+                    // Stop refreshing and log the error instead of crashing
+                    Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - CEF EXCEPTION (Stopped refreshing after {_refreshFixAttempts} attempts): {message}");
+                    _refreshFixAttempts = 0; // Reset counter after max attempts
+                }
             }
             else
             {
@@ -299,6 +317,8 @@ namespace TcNo_Acc_Switcher_Client
         {
             Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.UrlChanged]");
             UrlChanged(e.NewValue.ToString() ?? string.Empty);
+            // Reset refresh counter on successful navigation
+            _refreshFixAttempts = 0;
         }
         private void MViewUrlChanged(object sender, CoreWebView2NavigationStartingEventArgs args)
         {
@@ -473,6 +493,10 @@ namespace TcNo_Acc_Switcher_Client
         private static bool _firstLoad = true;
         private void MView2_OnNavigationCompleted(object? sender, CoreWebView2NavigationCompletedEventArgs e)
         {
+            // Reset refresh counter on successful navigation
+            if (e.IsSuccess)
+                _refreshFixAttempts = 0;
+
             if (!_firstLoad) return;
             _mView2.Visibility = Visibility.Hidden;
             _mView2.Visibility = Visibility.Visible;
@@ -518,12 +542,33 @@ namespace TcNo_Acc_Switcher_Client
 
 
 
-                Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - WebView2 EXCEPTION (Handled: refreshed): {message.SelectToken("exceptionDetails.exception.description")}{Environment.NewLine}{expandedError}{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}FULL ERROR: {e.ParameterObjectAsJson}");
+                var errorDescription = message.SelectToken("exceptionDetails.exception.description")?.ToString() ?? "";
+                
+                // Filter out non-critical errors that shouldn't trigger refreshes
+                var isNonCriticalError = errorDescription.Contains("runtime.lastError") || 
+                                        errorDescription.Contains("message port closed") ||
+                                        errorDescription.Contains("Extension context invalidated");
+
+                if (isNonCriticalError)
+                {
+                    // Log but don't refresh for non-critical errors
+                    Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - WebView2 WARNING (Non-critical): {errorDescription}");
+                    return;
+                }
+
+                Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - WebView2 EXCEPTION (Handled: refreshed): {errorDescription}{Environment.NewLine}{expandedError}{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}FULL ERROR: {e.ParameterObjectAsJson}");
                 // Load json from string e.ParameterObjectAsJson
                 _refreshFixAttempts++;
                 if (_refreshFixAttempts < 5)
+                {
                     _mView2.Reload();
-                else throw new Exception($"Refreshed too many times in attempt to fix issue. Error: {message.SelectToken("exceptionDetails.exception.description")}");
+                }
+                else
+                {
+                    // Stop refreshing and log the error instead of crashing
+                    Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - WebView2 EXCEPTION (Stopped refreshing after {_refreshFixAttempts} attempts): {errorDescription}");
+                    _refreshFixAttempts = 0; // Reset counter after max attempts
+                }
             }
             else
             {
