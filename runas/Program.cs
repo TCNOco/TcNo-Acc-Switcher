@@ -44,17 +44,43 @@ if (args.Length > 2)
 
 try
 {
-    var targetDir = Path.GetDirectoryName(args[0]);
-    if (string.IsNullOrEmpty(targetDir))
-        targetDir = Directory.GetCurrentDirectory();
-    else if (!Directory.Exists(targetDir))
-        targetDir = Directory.GetCurrentDirectory();
+    var filePath = args[0].Trim().Trim('"');
+    if (string.IsNullOrWhiteSpace(filePath))
+        Environment.Exit(1);
+
+    string targetDir;
+    
+    if (Directory.Exists(filePath))
+        targetDir = filePath;
+    else if (filePath.EndsWith("\\") || filePath.EndsWith("/"))
+    {
+        targetDir = filePath.TrimEnd('\\', '/');
+
+        if (!Directory.Exists(targetDir))
+            targetDir = Path.GetDirectoryName(targetDir) ?? string.Empty;
+    }
+    else if (File.Exists(filePath))
+        targetDir = Path.GetDirectoryName(filePath) ?? string.Empty;
+    else
+        targetDir = Path.GetDirectoryName(filePath) ?? string.Empty;
+    
+    if (string.IsNullOrWhiteSpace(targetDir) || !Directory.Exists(targetDir))
+    {
+        var exeDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+        if (!string.IsNullOrWhiteSpace(exeDir) && Directory.Exists(exeDir))
+            targetDir = exeDir;
+        else
+            targetDir = Directory.GetCurrentDirectory();
+    }
+
+    if (string.IsNullOrWhiteSpace(targetDir))
+        targetDir = Environment.CurrentDirectory;
 
     Directory.SetCurrentDirectory(targetDir);
 
     Process.Start(new ProcessStartInfo
     {
-        FileName = args[0],
+        FileName = filePath,
         UseShellExecute = true,
         RedirectStandardError = false,
         RedirectStandardOutput = false,
