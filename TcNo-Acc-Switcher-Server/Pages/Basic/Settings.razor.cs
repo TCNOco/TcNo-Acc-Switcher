@@ -78,7 +78,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     var tempFile = Path.Join("Restore", file.Name);
 
                     // Import 7z
-                    var s = file.OpenReadStream(4294967296); // 4 GB as bytes
+                    var s = file.OpenReadStream(21474836480); // 20 GB as bytes (increased from 4 GB to support large backups)
                     var fs = File.Create(tempFile);
                     await s.CopyToAsync(fs);
                     fs.Close();
