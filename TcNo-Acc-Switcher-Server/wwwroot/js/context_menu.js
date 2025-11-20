@@ -243,9 +243,9 @@ function hideContextMenus() {
     });
 }
 document.querySelector("body").addEventListener("click", (e) => {
-    const excluded = Array.from(document.querySelectorAll(
-        ".contextmenu, .contextmenu *:not(li,a:not(.paginationButton))"));
-    if (!excluded.includes(e.target)) {
+    // Check if the click is inside a context menu (including search inputs)
+    const clickedInsideContextMenu = e.target.closest(".contextmenu") !== null;
+    if (!clickedInsideContextMenu) {
         hideContextMenus();
     }
 });

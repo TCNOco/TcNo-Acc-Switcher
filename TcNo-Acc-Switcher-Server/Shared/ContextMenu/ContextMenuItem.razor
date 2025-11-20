@@ -23,29 +23,55 @@
     /* For handling pagination */
     private const int ItemsPerPage = 5;
     private int _currentPage;
-    private string _searchText = "";
-    private List<MenuItem> Unfiltered => Item.Children.
-        Where(item => item is not null && item.Text.ToLower().Contains(_searchText.ToLower())).ToList();
+    private string _searchTextValue = "";
+    
+    private string SearchText
+    {
+        get => _searchTextValue;
+        set
+        {
+            if (_searchTextValue != value)
+            {
+                _searchTextValue = value;
+                _currentPage = 0; // Reset page when search changes
+            }
+        }
+    }
+    
+    private List<MenuItem> AllChildren => Item?.Children ?? new List<MenuItem>();
+    private List<MenuItem> Unfiltered => AllChildren.
+        Where(item => item is not null && item.Text.ToLower().Contains(SearchText.ToLower())).ToList();
     private List<MenuItem> Visible => Unfiltered.Skip(_currentPage * ItemsPerPage).Take(ItemsPerPage).ToList();
     private int PageCount => ((Unfiltered.Count - 1) / ItemsPerPage) + 1;
+    private bool ShowSearch => AllChildren.Count > ItemsPerPage;
 
-    private void OnSearchInputChanged(ChangeEventArgs e)
+    protected override void OnParametersSet()
     {
-        _searchText = e?.Value?.ToString();
-        _currentPage = 0;
+        // Reset search when Item changes
+        if (_lastItem != Item)
+        {
+            SearchText = "";
+            _currentPage = 0;
+            _lastItem = Item;
+        }
     }
+    
+    private MenuItem _lastItem;
 }
 
-@if (Item.Children.Any())
+@if (Item?.Children != null && Item.Children.Any())
 {
     <li class="hasSubmenu">
         <a onclick="event.preventDefault();">@Item.Text</a>
         <ul class="submenu submenu@(Depth + 1)">
-            @if (PageCount > 1)
+            @if (ShowSearch)
             {
                 <li class="contextSearch">
-                    <input type='text' placeholder='Search' onclick="event.stopPropagation();"
-                           @oninput="OnSearchInputChanged" />
+                    <input type='text' placeholder='Search' 
+                           @bind="SearchText"
+                           @bind:event="oninput"
+                           onclick="event.stopPropagation();" 
+                           onfocus="event.stopPropagation();" />
                 </li>
             }
             @foreach (var item in Visible)
