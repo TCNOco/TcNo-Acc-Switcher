@@ -11,9 +11,9 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "axios": "^1.7.5",
-    "dotenv": "^16.4.5",
-    "globby": "^14.0.2",
-    "p-limit": "^6.1.0"
+    "axios": "^1.13.2",
+    "dotenv": "^17.2.3",
+    "globby": "^16.0.0",
+    "p-limit": "^7.2.0"
   }
 }
