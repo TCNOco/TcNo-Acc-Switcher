@@ -111,16 +111,43 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 LoadCachedBanInfo();
                 SteamSettings.Accounts.Clear();
 
+                // Insert accounts immediately with available data (may show "Loading..." for images/ban status)
                 foreach (var su in AppData.SteamUsers)
                 {
-                    // If not cached: Get ban status and images
-                    // If cached: Just get images
-                    await PrepareProfile(su.SteamId, !su.BanInfoLoaded).ConfigureAwait(false); // Get ban status as well if was not loaded (missing from cache)
-
                     InsertAccount(su);
                 }
 
-                SaveVacInfo();
+                // Load profile data in background and update accounts as data loads
+                _ = Task.Run(async () =>
+                {
+                    var semaphore = new SemaphoreSlim(5, 5); // Max 5 concurrent requests
+                    var tasks = AppData.SteamUsers.Select(async su =>
+                    {
+                        await semaphore.WaitAsync().ConfigureAwait(false);
+                        try
+                        {
+                            // If not cached: Get ban status and images
+                            // If cached: Just get images
+                            await PrepareProfile(su.SteamId, !su.BanInfoLoaded).ConfigureAwait(false);
+                            
+                            // Update the account with new data
+                            UpdateAccount(su);
+                        }
+                        catch (Exception ex)
+                        {
+                            Globals.WriteToLog($"Error loading profile for {su.SteamId}", ex);
+                        }
+                        finally
+                        {
+                            semaphore.Release();
+                        }
+                    }).ToList();
+
+                    await Task.WhenAll(tasks).ConfigureAwait(false);
+                    SaveVacInfo();
+                });
+
+                // Don't wait for background tasks - return immediately so UI shows accounts
             }
 
             GenericFunctions.FinaliseAccountList();
@@ -149,6 +176,31 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 Line3 = UnixTimeStampToDateTime(su.LastLogin)
             };
             SteamSettings.Accounts.Add(account);
+        }
+
+        /// <summary>
+        /// Updates an existing account with fresh profile data
+        /// </summary>
+        private static void UpdateAccount(Index.Steamuser su)
+        {
+            var account = SteamSettings.Accounts.FirstOrDefault(a => a.AccountId == su.SteamId);
+            if (account == null) return;
+
+            // Remove and re-add to trigger CollectionChanged event for UI update
+            var index = SteamSettings.Accounts.IndexOf(account);
+            SteamSettings.Accounts.RemoveAt(index);
+
+            // Update account properties
+            account.DisplayName = GeneralFuncs.EscapeText(GetName(su));
+            account.ImagePath = su.ImgUrl;
+            account.Line0 = SteamSettings.ShowAccUsername ? su.AccName : "";
+            account.Line2 = su.SteamId;
+            account.Line3 = UnixTimeStampToDateTime(su.LastLogin);
+            account.Classes.Image = (SteamSettings.ShowVac && su.Vac ? " status_vac" : "") + (SteamSettings.ShowLimited && su.Limited ? " status_limited" : "");
+            account.UserStats = BasicStats.GetUserStatsAllGamesMarkup("Steam", su.SteamId);
+            
+            // Re-insert at same position to maintain order
+            SteamSettings.Accounts.Insert(index, account);
         }
 
 
