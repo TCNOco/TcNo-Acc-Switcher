@@ -6,7 +6,7 @@
     <RootNamespace>TcNo_Acc_Switcher_Client</RootNamespace>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
-    <Version>2025.11.20.00</Version>
+    <Version>2025.11.20.01</Version>
     <Authors>TroubleChute (Wesley Pyburn)</Authors>
     <Product>TcNo Account Switcher</Product>
     <Copyright>Copyright © TroubleChute (Wesley Pyburn) 2019-2025</Copyright>
@@ -14,7 +14,7 @@
     <PackageIcon>TcNoAccSw-Icon-100x100.png</PackageIcon>
     <RepositoryUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</RepositoryUrl>
     <AssemblyName>TcNo-Acc-Switcher</AssemblyName>
-    <AssemblyVersion>2025.11.20.00</AssemblyVersion>
+    <AssemblyVersion>2025.11.20.01</AssemblyVersion>
     <Platforms>x64</Platforms>
     <SignAssembly>false</SignAssembly>
     <PackageReadmeFile>README.md</PackageReadmeFile>
