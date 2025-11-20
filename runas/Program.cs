@@ -44,7 +44,13 @@ if (args.Length > 2)
 
 try
 {
-    Directory.SetCurrentDirectory(Path.GetDirectoryName(args[0]) ?? Directory.GetCurrentDirectory());
+    var targetDir = Path.GetDirectoryName(args[0]);
+    if (string.IsNullOrEmpty(targetDir))
+        targetDir = Directory.GetCurrentDirectory();
+    else if (!Directory.Exists(targetDir))
+        targetDir = Directory.GetCurrentDirectory();
+
+    Directory.SetCurrentDirectory(targetDir);
 
     Process.Start(new ProcessStartInfo
     {
@@ -54,11 +60,16 @@ try
         RedirectStandardOutput = false,
         Arguments = argString,
         Verb = args[1] == "1" ? "runas" : "",
-        WorkingDirectory = Path.GetDirectoryName(args[0]) ?? Directory.GetCurrentDirectory()
+        WorkingDirectory = targetDir
     });
 }
 catch (Win32Exception e)
 {
     if (e.HResult != -2147467259) // Not because it was cancelled by user
         throw;
+}
+catch
+{
+    // Silently handle other exceptions to prevent fail-fast
+    Environment.Exit(1);
 }
