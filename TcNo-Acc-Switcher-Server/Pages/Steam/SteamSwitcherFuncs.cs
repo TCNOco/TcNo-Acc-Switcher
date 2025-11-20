@@ -231,8 +231,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 // Save to file
                 var file = new FileInfo(SteamSettings.SteamAppsListPath);
                 if (file.Exists) file.Delete();
-                if (Globals.ReadWebUrl("https://api.steampowered.com/ISteamApps/GetAppList/v2/", out var appList))
-                    File.WriteAllText(file.FullName, appList);
+                //if (Globals.ReadWebUrl("https://api.steampowered.com/ISteamApps/GetAppList/v2/", out var appList)) // Temporarily disabled while endpoint inactive.
+                // Below is the fix from https://github.com/TCNOco/TcNo-Acc-Switcher/issues/485 - Thanks https://github.com/crapier
+                if (Globals.ReadWebUrl("https://api.tcno.co/sw/SteamAppList", out var appList))
+                        File.WriteAllText(file.FullName, appList);
                 else
                     throw new Exception("Failed to download Steam apps list.");
             }
