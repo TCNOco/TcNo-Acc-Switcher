@@ -15,6 +15,7 @@
 using System;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -70,7 +71,7 @@ namespace TcNo_Acc_Switcher_Updater
             IsRunningAlready();
 
             base.OnStartup(e);
-            Logger.WriteLine($"Updater started with: {e.Args}");
+            Logger.WriteLine($"Updater started with: {(e.Args.Length > 0 ? string.Join(" ", e.Args.Select(arg => $"\"{arg}\"")) : "no arguments")}");
             for (var i = 0; i != e.Args.Length; ++i)
             {
                 switch (e.Args[i].ToLowerInvariant())
