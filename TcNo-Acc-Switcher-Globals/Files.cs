@@ -222,7 +222,14 @@ namespace TcNo_Acc_Switcher_Globals
             }
             catch (Exception e)
             {
-                WriteToLog($"Could not delete ({MessageFromHResult(e.HResult)}): {path}");
+                try
+                {
+                    WriteToLog($"Could not delete ({MessageFromHResult(e.HResult)}): {path}");
+                }
+                catch (IOException)
+                {
+                    // Log file is locked, can't write error - silently ignore
+                }
                 if (throwErr)
                     throw;
                 return false;

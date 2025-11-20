@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -25,11 +26,27 @@ namespace TcNo_Acc_Switcher_Globals
     public partial class Globals
     {
         #region LOGGER
+        private static string _currentLogPath = "";
+        private static readonly object _logPathLock = new object();
+
         public static string MessageFromHResult(int hr)
         {
             return Marshal.GetExceptionForHR(hr)?.Message;
         }
-        public static string GetLogPath() => Path.Join(UserDataFolder, "log.txt");
+        public static string GetLogPath()
+        {
+            lock (_logPathLock)
+            {
+                if (string.IsNullOrEmpty(_currentLogPath))
+                {
+                    var logsFolder = Path.Join(UserDataFolder, "logs");
+                    Directory.CreateDirectory(logsFolder);
+                    var timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm");
+                    _currentLogPath = Path.Join(logsFolder, $"log-{timestamp}.txt");
+                }
+                return _currentLogPath;
+            }
+        }
         public static void DebugWriteLine(string s)
         {
             // Toggle here so it only shows in Verbose mode etc.
@@ -65,14 +82,14 @@ namespace TcNo_Acc_Switcher_Globals
             {
                 try
                 {
-                    File.AppendAllText(Path.Join(UserDataFolder, "log.txt"), s + Environment.NewLine);
+                    File.AppendAllText(GetLogPath(), s + Environment.NewLine);
                     break;
                 }
                 catch (IOException)
                 {
-                    if (attempts == 5)
-                        throw;
                     attempts++;
+                    if (attempts > 30)
+                        break; // Give up after all retries instead of throwing
                     Thread.Sleep(100);
                 }
             }
@@ -96,42 +113,111 @@ namespace TcNo_Acc_Switcher_Globals
         /// </summary>
         public static void ClearLogs()
         {
-            // Clear original log file
-            DeleteFile("log.txt");
-            // Check for other log files. Combine them and delete them.
-            var filepath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
-            if (filepath == null) return;
-            var d = new DirectoryInfo(filepath);
-            var appendText = new List<string>();
-            var oldFilesFound = false;
-            foreach (var file in d.GetFiles("log*.txt"))
+            // Initialize new log file path with timestamp
+            lock (_logPathLock)
             {
-                if (appendText.Count == 0) appendText.Add(Environment.NewLine + "-------- OLD --------");
+                var logsFolder = Path.Join(UserDataFolder, "logs");
+                Directory.CreateDirectory(logsFolder);
+                var timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm");
+                _currentLogPath = Path.Join(logsFolder, $"log-{timestamp}.txt");
+            }
+
+            // Clean up old logs - keep only 5 most recent
+            try
+            {
+                var logsFolder = Path.Join(UserDataFolder, "logs");
+                if (Directory.Exists(logsFolder))
+                {
+                    var logFiles = Directory.GetFiles(logsFolder, "log-*.txt")
+                        .Select(f => new FileInfo(f))
+                        .OrderByDescending(f => f.CreationTime)
+                        .ToList();
+
+                    // Delete all but the 5 most recent
+                    for (var i = 5; i < logFiles.Count; i++)
+                    {
+                        try
+                        {
+                            File.Delete(logFiles[i].FullName);
+                        }
+                        catch (Exception)
+                        {
+                            // Ignore deletion errors
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Ignore cleanup errors
+            }
+
+            // Migrate old log.txt if it exists in UserDataFolder
+            var oldLogPath = Path.Join(UserDataFolder, "log.txt");
+            if (File.Exists(oldLogPath))
+            {
                 try
                 {
-                    appendText.AddRange(ReadAllLines(file.FullName));
-                    File.Delete(file.FullName);
-                    oldFilesFound = true;
+                    var oldLogContent = ReadAllLines(oldLogPath);
+                    if (oldLogContent.Length > 0)
+                    {
+                        var appendText = new List<string> { Environment.NewLine + "-------- OLD LOG (MIGRATED) --------" };
+                        appendText.AddRange(oldLogContent);
+                        appendText.Add(Environment.NewLine + "-------- END OF OLD LOG --------");
+
+                        try
+                        {
+                            File.WriteAllLines(GetLogPath(), appendText);
+                        }
+                        catch (IOException)
+                        {
+                            // Could not write to log file. Probably in use. Just ignore.
+                        }
+                    }
+                    File.Delete(oldLogPath);
                 }
                 catch (Exception)
                 {
-                    //
+                    // Ignore migration errors
                 }
             }
 
-            if (oldFilesFound) appendText.Add(Environment.NewLine + "-------- END OF OLD --------");
+            // Check for other old log files in the old location (executable directory)
+            var filepath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+            if (filepath != null)
+            {
+                var d = new DirectoryInfo(filepath);
+                var appendText = new List<string>();
+                var oldFilesFound = false;
+                foreach (var file in d.GetFiles("log*.txt"))
+                {
+                    if (appendText.Count == 0) appendText.Add(Environment.NewLine + "-------- OLD LOGS (MIGRATED) --------");
+                    try
+                    {
+                        appendText.AddRange(ReadAllLines(file.FullName));
+                        File.Delete(file.FullName);
+                        oldFilesFound = true;
+                    }
+                    catch (Exception)
+                    {
+                        //
+                    }
+                }
 
-            // Insert their contents into the actual log file
-            try
-            {
-                File.WriteAllLines("log.txt", appendText);
-            }
-            catch (IOException)
-            {
-                // Could not write to log file.
-                // Probably in use.
-                // Just ignore. Don't crash.
-                // Crashing happened way too often because of this. Makes no sense to log these elsewhere.
+                if (oldFilesFound)
+                {
+                    appendText.Add(Environment.NewLine + "-------- END OF OLD LOGS --------");
+                    try
+                    {
+                        var existingContent = File.Exists(GetLogPath()) ? ReadAllLines(GetLogPath()).ToList() : new List<string>();
+                        existingContent.AddRange(appendText);
+                        File.WriteAllLines(GetLogPath(), existingContent);
+                    }
+                    catch (IOException)
+                    {
+                        // Could not write to log file. Probably in use. Just ignore.
+                    }
+                }
             }
         }
 

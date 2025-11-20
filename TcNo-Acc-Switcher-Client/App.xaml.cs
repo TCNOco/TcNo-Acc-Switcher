@@ -135,7 +135,7 @@ namespace TcNo_Acc_Switcher_Client
             }
             catch (UnauthorizedAccessException)
             {
-                MessageBox.Show("Can't access log.txt in the TcNo Account Switcher directory!",
+                MessageBox.Show("Can't access logs in the TcNo Account Switcher directory!",
                     "Failed to access files", MessageBoxButton.OK, MessageBoxImage.Error);
                 Environment.Exit(4); // The system cannot open the file.
             }
@@ -523,7 +523,7 @@ release = true;
         }
 
         /// <summary>
-        /// Moves CrashLogs and log.txt if crashed.
+        /// Moves CrashLogs and log files if crashed.
         /// </summary>
         public static void MoveLogs()
         {
@@ -550,7 +550,36 @@ release = true;
             {
                 try
                 {
-                    File.WriteAllText(Path.Join(todayDir, "log.txt"), Globals.ReadAllText("log.txt"));
+                    // Copy all log files from logs folder
+                    var logsFolder = Path.Join(Globals.UserDataFolder, "logs");
+                    if (Directory.Exists(logsFolder))
+                    {
+                        var logFiles = Directory.GetFiles(logsFolder, "log-*.txt");
+                        foreach (var logFile in logFiles)
+                        {
+                            try
+                            {
+                                File.Copy(logFile, Path.Join(todayDir, Path.GetFileName(logFile)), true);
+                            }
+                            catch (Exception e)
+                            {
+                                Globals.WriteToLog(@"[Caught - MoveLogs()] log copy" + e);
+                            }
+                        }
+                    }
+                    // Also try to copy old log.txt if it still exists (migration not completed)
+                    var oldLogPath = Path.Join(Globals.UserDataFolder, "log.txt");
+                    if (File.Exists(oldLogPath))
+                    {
+                        try
+                        {
+                            File.Copy(oldLogPath, Path.Join(todayDir, "log.txt"), true);
+                        }
+                        catch (Exception e)
+                        {
+                            Globals.WriteToLog(@"[Caught - MoveLogs()] old log" + e);
+                        }
+                    }
                 }
                 catch (Exception e)
                 {
