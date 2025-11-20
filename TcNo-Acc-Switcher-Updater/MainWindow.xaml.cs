@@ -714,7 +714,7 @@ namespace TcNo_Acc_Switcher_Updater
                 SetStatusAndLog("Extracting patch files");
                 using (var archiveFile = new ArchiveFile(updateFilePath))
                 {
-                    archiveFile.Extract("temp_update", true); // extract all
+                    archiveFile.Extract("temp_update"); // extract all
                 }
                 if (File.Exists("UpdateFinalizeLog.txt")) File.Delete("UpdateFinalizeLog.txt");
             } catch (Exception e)
@@ -982,7 +982,7 @@ namespace TcNo_Acc_Switcher_Updater
             SetStatusAndLog("Extracting patch files");
             using (var archiveFile = new ArchiveFile(updateFilePath))
             {
-                archiveFile.Extract("temp_update", true); // extract all
+                archiveFile.Extract("temp_update"); // extract all
             }
 
             SetStatusAndLog("Applying patch...");
