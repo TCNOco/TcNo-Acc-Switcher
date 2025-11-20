@@ -109,10 +109,75 @@ inline void find_installed_c_runtimes(bool &min_vc_met)
 }
 
 /// <summary>
+/// Checks EdgeUpdate registry keys for WebView2 Runtime version
+/// Checks both HKCU and HKLM locations as Edge can install to either
+/// </summary>
+inline void check_webview2_edgeupdate_registry(bool &min_webview_met, const bool output = true)
+{
+	const auto webview2_guid = L"{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}";
+	const wchar_t* edgeupdate_paths[] = {
+		L"SOFTWARE\\Microsoft\\EdgeUpdate\\Clients",
+		L"SOFTWARE\\WOW6432Node\\Microsoft\\EdgeUpdate\\Clients"
+	};
+	const int path_count = sizeof(edgeupdate_paths) / sizeof(edgeupdate_paths[0]);
+	
+	for (int i = 0; i < path_count; i++)
+	{
+		const wchar_t* base_path = edgeupdate_paths[i];
+		HKEY h_base_key = nullptr;
+		HKEY h_client_key = nullptr;
+		
+		// Try HKCU first, then HKLM
+		if (RegOpenKeyEx(HKEY_CURRENT_USER, base_path, 0, KEY_READ, &h_base_key) != ERROR_SUCCESS)
+		{
+			if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, base_path, 0, KEY_READ, &h_base_key) != ERROR_SUCCESS)
+			{
+				continue; // Try next path
+			}
+		}
+		
+		// Open the WebView2 client key
+		if (RegOpenKeyEx(h_base_key, webview2_guid, 0, KEY_READ, &h_client_key) == ERROR_SUCCESS)
+		{
+			WCHAR version[1024];
+			DWORD dw_type = REG_SZ;
+			DWORD dw_v_buffer_size = sizeof(version);
+			
+			// Read the "pv" (product version) value
+			if (RegQueryValueEx(h_client_key, L"pv", nullptr, &dw_type, reinterpret_cast<unsigned char*>(version), &dw_v_buffer_size) == ERROR_SUCCESS)
+			{
+				// Convert to string and compare version
+				int vsize = WideCharToMultiByte(CP_UTF8, 0, version, -1, nullptr, 0, nullptr, nullptr);
+				std::string s_version(vsize - 1, '\0');
+				if (vsize > 1) WideCharToMultiByte(CP_UTF8, 0, version, -1, &s_version[0], vsize, nullptr, nullptr);
+				
+				// Compare with required minimum version
+				if (compare_versions(required_min_webview, s_version, '.'))
+				{
+					min_webview_met = true;
+					if (output)
+					{
+						printf(" - Microsoft WebView2 Runtime (EdgeUpdate) [%s]\n", s_version.c_str());
+					}
+				}
+			}
+			RegCloseKey(h_client_key);
+		}
+		RegCloseKey(h_base_key);
+		
+		// If we found a valid version, no need to check other locations
+		if (min_webview_met) break;
+	}
+}
+
+/// <summary>
 /// Finds existing NET runtimes, and sets min_{runtime}_met for aspcore, webview and desktop_runtime
 /// </summary>
 inline void find_installed_net_runtimes(const bool x32, bool &min_webview_met, bool &min_desktop_runtime_met, bool &min_aspcore_met, const bool output = true)
 {
+	// First check EdgeUpdate registry keys for WebView2 (most reliable source)
+	check_webview2_edgeupdate_registry(min_webview_met, output);
+	
 	// Get .NET info
 	// Find installed runtimes, and add them to the list
 	const auto s_root1 = L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall";
@@ -176,7 +241,12 @@ inline void find_installed_net_runtimes(const bool x32, bool &min_webview_met, b
 
                 if (wcsstr(s_display_name, L"WebView2") != nullptr)
                 {
-                    min_webview_met = min_webview_met || compare_versions(required_min_webview, s_version, '.');
+                    // Only check Uninstall registry if EdgeUpdate didn't already find a valid version
+                    // EdgeUpdate is more reliable and updated when Edge updates
+                    if (!min_webview_met)
+                    {
+                        min_webview_met = compare_versions(required_min_webview, s_version, '.');
+                    }
                     if (output)
                     {
                         wprintf(L" - %s ", s_display_name);
