@@ -217,7 +217,8 @@ inline void download_install_missing_runtimes()
 		if (!(CreateDirectoryA(runtime_folder.c_str(), nullptr) || ERROR_ALREADY_EXISTS == GetLastError()))
 		{
 			cout << "Failed to create folder: " << runtime_folder << endl;
-			system("pause");
+			cout << "Press any key to exit..." << endl;
+			_getch();
 			return;
 		}
 
@@ -327,7 +328,8 @@ inline void verify_vc()
 	if (!(CreateDirectoryA(runtime_folder.c_str(), nullptr) || ERROR_ALREADY_EXISTS == GetLastError()))
 	{
 		cout << "Failed to create folder: " << runtime_folder << endl;
-		system("pause");
+		cout << "Press any key to exit..." << endl;
+		_getch();
 		return;
 	}
 

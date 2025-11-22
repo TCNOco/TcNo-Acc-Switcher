@@ -21,6 +21,7 @@
 #include <chrono>
 #include <thread>
 #include <fstream>
+#include <conio.h>
 namespace fs = std::filesystem;
 
 bool args_contain(const char* needle, int argc, char* argv[])
@@ -198,7 +199,7 @@ int main(int argc, char* argv[])
 			"https://github.com/TCNOco/TcNo-Acc-Switcher/wiki#1-installing-required-runtimes" << endl << endl;
 
 	cout << "Press any key to continue..." << endl;
-	std::cin.get();
+	_getch();
 
 	system("cls");
 
@@ -220,7 +221,7 @@ int main(int argc, char* argv[])
 			"https://github.com/TCNOco/TcNo-Acc-Switcher/blob/master/PRIVACY.md" << endl << endl;
 
 	cout << "Press any key to continue..." << endl;
-	std::cin.get();
+	_getch();
 
 	system("cls");
 
