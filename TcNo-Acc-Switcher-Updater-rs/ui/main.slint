@@ -53,13 +53,28 @@ export component MainWindow inherits Window {
                 width: 100%;
                 height: 30px;
                 background: #14151E;
+                // Draggable area - only covers the title area, not the buttons
+                private property <bool> is-dragging: false;
                 header-touch := TouchArea {
-                    width: 100%;
+                    x: 0px;
+                    y: 0px;
+                    width: 463px;
                     height: 100%;
                     mouse-cursor: move;
                     pointer-event(event) => {
-                        if (event.button == PointerEventButton.left && event.kind == PointerEventKind.down) {
-                            drag-window();
+                        if (event.button == PointerEventButton.left) {
+                            if (event.kind == PointerEventKind.down) {
+                                is-dragging = true;
+                                drag-window(); // Record offset only - DO NOT move window
+                            } else if (event.kind == PointerEventKind.up || event.kind == PointerEventKind.cancel) {
+                                is-dragging = false;
+                                drag-window(); // Reset drag state
+                            }
+                        }
+                    }
+                    moved => {
+                        if (is-dragging) {
+                            drag-window(); // Only move window when mouse actually moves
                         }
                     }
                 }
@@ -74,8 +89,8 @@ export component MainWindow inherits Window {
                 color: white;
                 horizontal-alignment: center;
                 vertical-alignment: center;
-                font-size: 12px;
-                font-weight: 500;
+                font-size: 13px;
+                font-weight: 600;
                 font-family: "Segoe UI";
             }
 
@@ -158,8 +173,8 @@ export component MainWindow inherits Window {
                     height: 100%;
                     text: root.app-state.log-text;
                     color: white;
-                    font-size: 11px;
-                    font-weight: 400;
+                    font-size: 12px;
+                    font-weight: 500;
                     font-family: "Segoe UI";
                     wrap: word-wrap;
                     vertical-alignment: top;
@@ -175,8 +190,8 @@ export component MainWindow inherits Window {
                 height: 20px;
                 text: root.app-state.status-text;
                 color: white;
-                font-size: 11px;
-                font-weight: 400;
+                font-size: 13px;
+                font-weight: 600;
                 font-family: "Segoe UI";
                 horizontal-alignment: left;
                 vertical-alignment: center;
