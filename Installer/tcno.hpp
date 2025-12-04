@@ -185,11 +185,11 @@ inline void download_install_missing_runtimes()
 			total += 122;
 		}
 		if (!min_aspcore_met) {
-			cout << " + Microsoft Microsoft ASP.NET Core 9.0 Runtime [~10,1 MB]" << endl;
+			cout << " + Microsoft Microsoft ASP.NET Core 8.0 Runtime [~10,1 MB]" << endl;
 			total += 8;
 		}
 		if (!min_desktop_runtime_met) {
-			cout << " + Microsoft .NET 9.0 Desktop Runtime [~57,9 MB]" << endl;
+			cout << " + Microsoft .NET 8.0 Desktop Runtime [~57,9 MB]" << endl;
 			total += 52;
 		}
 
@@ -239,8 +239,8 @@ inline void download_install_missing_runtimes()
 			current_download = d_runtime_name;
 			if (!download_file(d_runtime.c_str(), d_runtime_local.c_str()))
 			{
-				cout << "Failed to download and install .NET 9.0 Desktop Runtime. Please download it here:" << endl <<
-					"https://dotnet.microsoft.com/download/dotnet/9.0/runtime" << endl << endl;
+				cout << "Failed to download and install .NET 8.0 Desktop Runtime. Please download it here:" << endl <<
+					"https://dotnet.microsoft.com/download/dotnet/8.0/runtime" << endl << endl;
 			}
 			else d_runtime_install = true;
 		}
@@ -250,9 +250,9 @@ inline void download_install_missing_runtimes()
 			current_download = a_runtime_name;
 			if (!download_file(a_runtime.c_str(), a_runtime_local.c_str()))
 			{
-				cout << "Failed to download and install ASP.NET Core 9.0 Runtime. To download: 1. Click the link below:" << endl <<
-					"https://dotnet.microsoft.com/en-us/download/dotnet/9.0" << endl <<
-					"2. Click 'x64' under ASP.NET Core Runtime 9." << endl << endl;
+				cout << "Failed to download and install ASP.NET Core 8.0 Runtime. To download: 1. Click the link below:" << endl <<
+					"https://dotnet.microsoft.com/en-us/download/dotnet/8.0" << endl <<
+					"2. Click 'x64' under ASP.NET Core Runtime 8." << endl << endl;
 			}
 			else a_runtime_install = true;
 		}
@@ -301,8 +301,8 @@ inline void download_install_missing_runtimes()
 		cout << "It looks like everything is installed. Verify you meet the minimum recommended requirements:" << endl;
 	}
 
-	cout << " - Windows Desktop Runtime 9.0+" << endl <<
-		" - ASP.NET Core 9.0+." << endl <<
+	cout << " - Windows Desktop Runtime 8.0+" << endl <<
+		" - ASP.NET Core 8.0+." << endl <<
 		" - Edge WebView2 Runtime 91.0+" << endl <<
 		" - C++ Redistributable 2015-2022 14.30.30704+" << endl <<
 		"------------------------------------------------------------------------" << endl << endl <<

@@ -68,7 +68,7 @@ if ($null -ne $asset) {
 # -----------------------------------
 Write-Host "Installing requirements for updater: ASP.NET Core, Desktop Runtime and WebView2 Runtime..."
 # -----------------------------------
-choco upgrade dotnet-9.0-aspnetruntime dotnet-9.0-desktopruntime webview2-runtime -y --no-progress
+choco upgrade dotnet-8.0-aspnetruntime dotnet-8.0-desktopruntime webview2-runtime -y --no-progress
 
 # -----------------------------------
 Write-Host "Running the updater to create updates based on the differences..."

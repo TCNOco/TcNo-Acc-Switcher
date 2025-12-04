@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>TcNo_Acc_Switcher_Server</RootNamespace>
     <ApplicationIcon>wwwroot\favicon.ico</ApplicationIcon>
     <Version>2025.11.20.03</Version>
@@ -75,13 +75,13 @@
     <PackageReference Include="Gameloop.Vdf.JsonConverter" Version="0.2.1" />
     <PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
     <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="14.9.1" />
-    <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="10.0.0" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3595.46" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="SharpScss" Version="3.0.0" />
     <PackageReference Include="SteamKit2" Version="3.3.1" />
     <PackageReference Include="Svg.Skia" Version="3.2.1" />
-    <PackageReference Include="System.Drawing.Common" Version="9.0.10" />
+    <PackageReference Include="System.Drawing.Common" Version="10.0.0" />
     <PackageReference Include="YamlDotNet" Version="16.3.0" />
   </ItemGroup>
   <ItemGroup>
