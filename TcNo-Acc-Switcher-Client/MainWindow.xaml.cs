@@ -414,15 +414,32 @@ namespace TcNo_Acc_Switcher_Client
                     .DevToolsProtocolEventReceived += ConsoleMessage;
                 _ = await _mView2.CoreWebView2.CallDevToolsProtocolMethodAsync("Runtime.enable", "{}");
             }
-            catch (Exception ex) when (ex is BadImageFormatException or WebView2RuntimeNotFoundException or COMException)
+            catch (Exception ex) when (ex is BadImageFormatException or WebView2RuntimeNotFoundException or COMException or FileNotFoundException)
             {
-                if (ex is COMException && !ex.ToString().Contains("WebView2"))
+                // Check if COMException is related to WebView2
+                if (ex is COMException comEx && !comEx.ToString().Contains("WebView2") && !comEx.Message.Contains("WebView2"))
                 {
                     // Is not a WebView2 exception
                     throw;
                 }
+                
+                // Check if FileNotFoundException is related to WebView2
+                // FileNotFoundException from WebView2 typically occurs during CreateCoreWebView2ControllerAsync
+                // or when runtime DLLs are missing
+                if (ex is FileNotFoundException fileEx)
+                {
+                    var stackTrace = ex.StackTrace ?? "";
+                    var message = ex.Message ?? "";
+                    // Only handle if it's from WebView2 operations
+                    if (!stackTrace.Contains("WebView2") && !stackTrace.Contains("CoreWebView2") && 
+                        !message.Contains("WebView2") && !message.Contains("0x80070002"))
+                    {
+                        // Is not a WebView2 exception
+                        throw;
+                    }
+                }
 
-                // WebView2 is not installed!
+                // WebView2 is not installed or files are missing!
                 // Create counter for WebView failed checks
                 var failFile = Path.Join(Globals.UserDataFolder, "WebViewNotInstalled");
                 if (!File.Exists(failFile))
