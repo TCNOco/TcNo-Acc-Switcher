@@ -68,7 +68,81 @@ if ($null -ne $asset) {
 # -----------------------------------
 Write-Host "Installing requirements for updater: ASP.NET Core, Desktop Runtime and WebView2 Runtime..."
 # -----------------------------------
-choco upgrade dotnet-8.0-aspnetruntime dotnet-8.0-desktopruntime webview2-runtime -y --no-progress
+
+# Function to check if winget is available
+function Test-WingetAvailable {
+    try {
+        $null = winget --version 2>$null
+        return $true
+    } catch {
+        return $false
+    }
+}
+
+# Function to check if a winget package is installed
+function Test-WingetPackageInstalled {
+    param (
+        [string]$PackageId
+    )
+    try {
+        $null = winget list --id $PackageId --accept-source-agreements --accept-package-agreements 2>&1
+        return $LASTEXITCODE -eq 0
+    } catch {
+        return $false
+    }
+}
+
+# Function to install a package using winget
+function Install-WingetPackage {
+    param (
+        [string]$PackageId,
+        [string]$DisplayName
+    )
+    Write-Host "- Installing $DisplayName via winget..."
+    try {
+        winget install $PackageId --accept-source-agreements --accept-package-agreements --silent
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "  Successfully installed $DisplayName"
+            return $true
+        } else {
+            Write-Warning "  Failed to install $DisplayName (exit code: $LASTEXITCODE)"
+            return $false
+        }
+    } catch {
+        $errorMsg = $_.Exception.Message
+        Write-Warning "  Failed to install ${DisplayName}: ${errorMsg}"
+        return $false
+    }
+}
+
+# Try winget first, fall back to choco if not available
+if (Test-WingetAvailable) {
+    Write-Host "- Using winget to install packages..."
+    
+    # Install ASP.NET Core Runtime 8
+    if (-not (Test-WingetPackageInstalled -PackageId "Microsoft.DotNet.AspNetCore.8")) {
+        Install-WingetPackage -PackageId "Microsoft.DotNet.AspNetCore.8" -DisplayName "ASP.NET Core Runtime 8"
+    } else {
+        Write-Host "- ASP.NET Core Runtime 8 is already installed"
+    }
+    
+    # Install Desktop Runtime 8
+    if (-not (Test-WingetPackageInstalled -PackageId "Microsoft.DotNet.DesktopRuntime.8")) {
+        Install-WingetPackage -PackageId "Microsoft.DotNet.DesktopRuntime.8" -DisplayName ".NET Desktop Runtime 8"
+    } else {
+        Write-Host "- .NET Desktop Runtime 8 is already installed"
+    }
+    
+    # Install WebView2 Runtime
+    if (-not (Test-WingetPackageInstalled -PackageId "Microsoft.EdgeWebView2Runtime")) {
+        Install-WingetPackage -PackageId "Microsoft.EdgeWebView2Runtime" -DisplayName "WebView2 Runtime"
+    } else {
+        Write-Host "- WebView2 Runtime is already installed"
+    }
+} else {
+    Write-Host "- winget not available, falling back to Chocolatey..."
+    choco upgrade dotnet-8.0-aspnetruntime dotnet-8.0-desktopruntime webview2-runtime -y --no-progress
+}
 
 # -----------------------------------
 Write-Host "Running the updater to create updates based on the differences..."

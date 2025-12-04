@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <!-- Suppress WindowsBase version conflict warnings (MSB3277) -->
+    <!-- This occurs because WebView2 targets .NET 5.0 (WindowsBase 5.0.0.0) -->
+    <!-- while .NET 8.0 uses WindowsBase 4.0.0.0, but they are compatible -->
+    <NoWarn>$(NoWarn);MSB3277</NoWarn>
+  </PropertyGroup>
+</Project>
+
