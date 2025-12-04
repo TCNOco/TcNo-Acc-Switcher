@@ -17,7 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-    <PackageReference Include="SevenZipExtractor" Version="1.0.19" />
+    <PackageReference Include="SevenZipExtractor" Version="1.0.17" />
     <PackageReference Include="VCDiff" Version="4.0.1">
      <NoWarn>NU1701</NoWarn>
     </PackageReference>
