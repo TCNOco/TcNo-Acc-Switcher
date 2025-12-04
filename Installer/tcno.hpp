@@ -540,7 +540,7 @@ inline void download_install_missing_runtimes()
 		"------------------------------------------------------------------------" << endl << endl <<
 		"That should be everything. The main program, TcNo-Acc-Switcher.exe, will auto-run." << endl << endl <<
 		"If it doesn't work, please refer to install instructions, here:" << endl <<
-		"https://github.com/TcNobo/TcNo-Acc-Switcher#required-runtimes-download-and-install" << endl << endl;
+		"https://github.com/TCNOCo/TcNo-Acc-Switcher#required-runtimes-download-and-install" << endl << endl;
 }
 
 

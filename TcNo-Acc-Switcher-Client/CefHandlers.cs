@@ -23,7 +23,7 @@ namespace TcNo_Acc_Switcher_Client
             else if (key == Keys.I && modifiers == (CefEventFlags.ControlDown | CefEventFlags.ShiftDown)) // Ctrl+Shift+I
                 browser.ShowDevTools();
             else if (key == Keys.F1) // F1 - Opens Wiki page
-                Process.Start(new ProcessStartInfo { FileName = "https://github.com/TcNobo/TcNo-Acc-Switcher/wiki", UseShellExecute = true });
+                Process.Start(new ProcessStartInfo { FileName = "https://github.com/TCNOCo/TcNo-Acc-Switcher/wiki", UseShellExecute = true });
 
             return false;
         }

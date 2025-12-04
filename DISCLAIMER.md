@@ -13,5 +13,5 @@ or competitor for sites scraped.
 
 I am not responsible for the contents of external links.
 For the rest of the disclaimer, refer to the License (GNU General Public License v3.0) file:
-https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/LICENSE - See sections like 15, 16 and 17, as well as GitHub's
+https://github.com/TCNOCo/TcNo-Acc-Switcher/blob/master/LICENSE - See sections like 15, 16 and 17, as well as GitHub's
 'simplification' at the top of the above website.

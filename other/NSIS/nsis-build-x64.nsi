@@ -156,8 +156,8 @@ FunctionEnd
   ; Finish page
   !define MUI_FINISHPAGE_NOAUTOCLOSE
   !define MUI_UNFINISHPAGE_NOAUTOCLOSE
-  !define MUI_FINISHPAGE_LINK "https://github.com/TcNobo/TcNo-Acc-Switcher"
-  !define MUI_FINISHPAGE_LINK_LOCATION "https://github.com/TcNobo/TcNo-Acc-Switcher"
+  !define MUI_FINISHPAGE_LINK "https://github.com/TCNOCo/TcNo-Acc-Switcher"
+  !define MUI_FINISHPAGE_LINK_LOCATION "https://github.com/TCNOCo/TcNo-Acc-Switcher"
 
 Function Finish
   ${If} $CheckLaunchState <> 0

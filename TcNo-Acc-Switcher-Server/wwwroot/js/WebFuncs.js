@@ -528,10 +528,10 @@ async function showModal(modaltype) {
                     <div class="linksList">
                         <a onclick="OpenLinkInBrowser('https://patreon.com/TroubleChute');return false;" href=""><svg viewBox="0 0 24 24" draggable="false" alt="GitHub" class="modalIcoPatreon"><use href="img/icons/ico_patreon.svg#icoPatreon"></use></svg>${modalInfoViewPatreon}</a>
                         <a onclick="OpenLinkInBrowser('https://ko-fi.com/tcnoco');return false;" href=""><svg viewBox="0 0 24 24" draggable="false" alt="GitHub" class="modalIcoKofi"><use href="img/icons/ico_kofi.svg#icoKofi"></use></svg>${modalInfoViewKofi}</a>
-                        <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher');return false;" href=""><svg viewBox="0 0 24 24" draggable="false" alt="GitHub" class="modalIcoGitHub"><use href="img/icons/ico_github.svg#icoGitHub"></use></svg>${modalInfoViewGitHub}</a>
+                        <a onclick="OpenLinkInBrowser('https://github.com/TCNOCo/TcNo-Acc-Switcher');return false;" href=""><svg viewBox="0 0 24 24" draggable="false" alt="GitHub" class="modalIcoGitHub"><use href="img/icons/ico_github.svg#icoGitHub"></use></svg>${modalInfoViewGitHub}</a>
                         <a onclick="OpenLinkInBrowser('https://s.tcno.co/AccSwitcherDiscord');return false;" href=""><svg viewBox="0 0 24 24" draggable="false" alt="Discord" class="modalIcoDiscord"><use href="img/icons/ico_discord.svg#icoDiscord"></use></svg>${modalInfoBugReport}</a>
                         <a onclick="OpenLinkInBrowser('https://tcno.co');return false;" href=""><svg viewBox="0 0 24 24" draggable="false" alt="Website" class="modalIcoNetworking"><use href="img/icons/ico_networking.svg#icoNetworking"></use></svg>${modalInfoVisitSite}</a>
-                        <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/DISCLAIMER.md');return false;" href=""><svg viewBox="0 0 2084 2084" draggable="false" alt="GitHub" class="modalIcoDoc"><use href="img/icons/ico_doc.svg#icoDoc"></use></svg>${modalInfoDisclaimer}</a>
+                        <a onclick="OpenLinkInBrowser('https://github.com/TCNOCo/TcNo-Acc-Switcher/blob/master/DISCLAIMER.md');return false;" href=""><svg viewBox="0 0 2084 2084" draggable="false" alt="GitHub" class="modalIcoDoc"><use href="img/icons/ico_doc.svg#icoDoc"></use></svg>${modalInfoDisclaimer}</a>
                     </div>
                 </div>
                 </div><div class="versionIdentifier"><span>${modalInfoVersion}: ${currentVersion}</span></div>`);
@@ -583,7 +583,7 @@ async function showModal(modaltype) {
         const modalChangeUsername = await GetLang("Modal_SetPassword"),
             modalSetPasswordButton = await GetLang("Modal_SetPassword_Button"),
             modalTitleSetPassword = await GetLang("Modal_Title_SetPassword"),
-            modalSetPasswordInfo = await GetLangSub("Modal_SetPassword_Info", { link: "https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/FAQ---More-Info#can-i-put-this-program-on-a-usb-portable" });
+            modalSetPasswordInfo = await GetLangSub("Modal_SetPassword_Info", { link: "https://github.com/TCNOCo/TcNo-Acc-Switcher/wiki/FAQ---More-Info#can-i-put-this-program-on-a-usb-portable" });
 
         $("#modalTitle").text(modalTitleSetPassword);
         $("#modal_contents").empty();

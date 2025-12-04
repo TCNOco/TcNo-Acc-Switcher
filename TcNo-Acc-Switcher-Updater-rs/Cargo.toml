@@ -5,7 +5,7 @@ edition = "2021"
 authors = ["TroubleChute (Wesley Pyburn)"]
 description = "Updater for the TcNo Account Switcher"
 license = "GPL-3.0"
-repository = "https://github.com/TcNobo/TcNo-Acc-Switcher"
+repository = "https://github.com/TCNOCo/TcNo-Acc-Switcher"
 
 [dependencies]
 # GUI

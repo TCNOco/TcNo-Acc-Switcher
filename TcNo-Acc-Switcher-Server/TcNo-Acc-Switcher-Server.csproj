@@ -7,8 +7,8 @@
     <Authors>TroubleChute (Wesley Pyburn)</Authors>
     <Product>TcNo Account Switcher - Server</Product>
     <Copyright>Copyright © TroubleChute (Wesley Pyburn) 2022</Copyright>
-    <PackageProjectUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/TCNOCo/TcNo-Acc-Switcher</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/TCNOCo/TcNo-Acc-Switcher</RepositoryUrl>
     <AssemblyName>TcNo-Acc-Switcher-Server</AssemblyName>
     <Company>TroubleChute (Wesley Pyburn)</Company>
     <Description>Server for the TcNo Account Switcher (Blazor backend)</Description>

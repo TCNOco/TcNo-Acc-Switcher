@@ -68,7 +68,7 @@ namespace TcNo_Acc_Switcher_Globals {
         /// <summary>
         ///   Looks up a localized string similar to Please submit the crashlog and more information to the Discord, or the GitHub page.
         ///Discord: https://s.tcno.co/AccSwitcherDiscord
-        ///GitHub: https://github.com/TcNobo/TcNo-Acc-Switcher.
+        ///GitHub: https://github.com/TCNOCo/TcNo-Acc-Switcher.
         /// </summary>
         internal static string ErrSubmitCrashlog {
             get {

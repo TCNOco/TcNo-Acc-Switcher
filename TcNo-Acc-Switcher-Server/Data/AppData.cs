@@ -131,7 +131,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 Timestamps = timestamp,
                 Buttons = new Button[]
                 { new() {
-                    Url = "https://github.com/TcNobo/TcNo-Acc-Switcher/",
+                    Url = "https://github.com/TCNOCo/TcNo-Acc-Switcher/",
                     Label = Lang["Website"]
                 }},
                 Assets = new Assets

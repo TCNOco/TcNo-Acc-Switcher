@@ -9,8 +9,8 @@
     <Authors>TroubleChute (Wesley Pyburn)</Authors>
     <Product>TcNo Account Switcher</Product>
     <Copyright>Copyright © TroubleChute (Wesley Pyburn) 2019-2025</Copyright>
-    <PackageProjectUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/TCNOCo/TcNo-Acc-Switcher</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/TCNOCo/TcNo-Acc-Switcher</RepositoryUrl>
     <PackageIcon>TcNoAccSw-Icon-100x100.png</PackageIcon>
     <SignAssembly>false</SignAssembly>
     <Platforms>x64</Platforms>

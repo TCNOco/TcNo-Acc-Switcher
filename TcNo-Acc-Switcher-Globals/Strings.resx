@@ -120,7 +120,7 @@
   <data name="ErrSubmitCrashlog" xml:space="preserve">
     <value>Please submit the crashlog and more information to the Discord, or the GitHub page.
 Discord: https://s.tcno.co/AccSwitcherDiscord
-GitHub: https://github.com/TcNobo/TcNo-Acc-Switcher</value>
+GitHub: https://github.com/TCNOCo/TcNo-Acc-Switcher</value>
   </data>
   <data name="ErrUnhandledCrash" xml:space="preserve">
     <value>UNHANDLED CRASH</value>

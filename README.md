@@ -10,7 +10,7 @@
   <a href="https://s.tcno.co/AccSwitcherDiscord">
     <img alt="Discord server" src="https://img.shields.io/discord/217649733915770880?label=Discord&logo=discord&style=flat-square"></a>
   <a href="https://twitter.com/TCNOco">
-    <img alt="Twitter" src="https://img.shields.io/twitter/follow/TCNOco?label=Follow%20%40TcNobo&logo=Twitter&style=flat-square"></a>
+    <img alt="Twitter" src="https://img.shields.io/twitter/follow/TCNOco?label=Follow%20%40TCNOCo&logo=Twitter&style=flat-square"></a>
   <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/TCNOco/TcNo-Acc-Switcher?logo=GitHub&style=flat-square">
   <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/TCNOco/TcNo-Acc-Switcher?logo=GitHub&style=flat-square">
 																     <a title="Crowdin" target="_blank" href="https://crowdin.com/project/tcno-account-switcher"><img src="https://img.shields.io/badge/Seeking-localisers-blue.svg?style=flat-square"></a>
@@ -132,7 +132,7 @@ or competitor for sites scraped.
 
 I am not responsible for the contents of external links.
 For the rest of the disclaimer, refer to the License (GNU General Public License v3.0) file:
-https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/LICENSE - See sections like 15, 16 and 17, as well as GitHub's
+https://github.com/TCNOCo/TcNo-Acc-Switcher/blob/master/LICENSE - See sections like 15, 16 and 17, as well as GitHub's
 'simplification' at the top of the above website.
 ```
 
