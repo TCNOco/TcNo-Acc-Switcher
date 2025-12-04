@@ -42,7 +42,10 @@ impl Updater {
         
         // Set working directory to main app data folder
         let app_data = utils::get_app_data_folder()?;
-        std::env::set_current_dir(&app_data)?;
+        // Don't fail if we can't set the directory - just log it
+        if let Err(e) = std::env::set_current_dir(&app_data) {
+            log::warn!("Failed to set working directory to {}: {}", app_data.display(), e);
+        }
         
         // Get version from WindowSettings.json (fallback to empty string if not found)
         let current_version = utils::get_version().unwrap_or_default();

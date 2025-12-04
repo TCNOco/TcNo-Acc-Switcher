@@ -27,6 +27,7 @@ use std::thread;
 use std::time::Duration;
 use crate::logger::Logger;
 use crate::updater::Updater;
+use crate::gui::UpdaterApp;
 
 #[derive(Parser, Debug)]
 #[command(name = "TcNo-Acc-Switcher-Updater")]
@@ -120,6 +121,20 @@ fn restart_with_args() {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // Set up panic handler for better error reporting
+    std::panic::set_hook(Box::new(|panic_info| {
+        eprintln!("PANIC: {:?}", panic_info);
+        if let Some(s) = panic_info.payload().downcast_ref::<&str>() {
+            eprintln!("Message: {}", s);
+        }
+        if let Some(s) = panic_info.payload().downcast_ref::<String>() {
+            eprintln!("Message: {}", s);
+        }
+        if let Some(location) = panic_info.location() {
+            eprintln!("Location: {}:{}:{}", location.file(), location.line(), location.column());
+        }
+    }));
+    
     // Check for Visual C++ Runtime before proceeding
     #[cfg(windows)]
     {
@@ -223,14 +238,28 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     Logger::write_line(&format!("Updater started with args: {:?}", args));
     
     // Check admin privileges if needed
-    let app_data = utils::get_app_data_folder()?;
+    let app_data = match utils::get_app_data_folder() {
+        Ok(path) => path,
+        Err(e) => {
+            eprintln!("Failed to get app data folder: {}", e);
+            eprintln!("Please ensure the updater is in the correct location.");
+            process::exit(1);
+        }
+    };
+    
     if crate::windows::installed_to_program_files() && !crate::windows::is_admin() {
-        crate::windows::restart_as_admin("")?;
+        if let Err(e) = crate::windows::restart_as_admin("") {
+            eprintln!("Failed to restart as admin: {}", e);
+            process::exit(1);
+        }
         return Ok(());
     }
     
     if !crate::windows::has_folder_access(&app_data) {
-        crate::windows::restart_as_admin("")?;
+        if let Err(e) = crate::windows::restart_as_admin("") {
+            eprintln!("Failed to restart as admin: {}", e);
+            process::exit(1);
+        }
         return Ok(());
     }
     
@@ -285,21 +314,40 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         process::exit(0);
     }
     
-    // Run GUI mode
-    let options = eframe::NativeOptions {
-        viewport: egui::ViewportBuilder::default()
-            .with_title("TcNo Account Switcher Updater")
-            .with_inner_size([523.0, 397.0])
-            .with_decorations(false)
-            .with_transparent(true),
-        ..Default::default()
+    // Run GUI mode using Slint
+    Logger::write_line("Starting GUI...");
+    eprintln!("Starting GUI window...");
+    
+    // Force software rendering to avoid OpenGL requirement
+    std::env::set_var("SLINT_BACKEND", "software");
+    eprintln!("Set SLINT_BACKEND=software for software rendering");
+    
+    let gui_app = match UpdaterApp::new() {
+        Ok(app) => app,
+        Err(e) => {
+            eprintln!("Failed to create GUI app: {}", e);
+            Logger::write_line(&format!("Failed to create GUI app: {}", e));
+            return Err(e);
+        }
     };
     
-    eframe::run_native(
-        "TcNo Account Switcher Updater",
-        options,
-        Box::new(|_cc| Box::new(gui::UpdaterApp::new())),
-    )?;
+    eprintln!("GUI app created, showing window...");
+    gui_app.show();
+    
+    Logger::write_line("GUI window shown, entering event loop...");
+    eprintln!("Entering event loop...");
+    
+    // Run the Slint event loop (blocks until window is closed)
+    gui_app.run();
+    
+    Logger::write_line("GUI closed normally");
+    eprintln!("GUI closed normally");
+    
+    // Keep console open to see any errors
+    eprintln!("Press Enter to exit...");
+    use std::io;
+    let mut input = String::new();
+    let _ = io::stdin().read_line(&mut input);
     
     Ok(())
 }

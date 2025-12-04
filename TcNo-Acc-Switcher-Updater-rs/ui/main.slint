@@ -1,0 +1,238 @@
+// TcNo Account Switcher - A Super fast account switcher
+// Copyright (C) 2019-2025 TroubleChute (Wesley Pyburn)
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+import { Button } from "std-widgets.slint";
+
+export struct AppState {
+    status-text: string,
+    log-text: string,
+    progress: float,
+    button-text: string,
+    button-enabled: bool,
+}
+
+export component MainWindow inherits Window {
+    in-out property <AppState> app-state: {
+        status-text: "Initializing...",
+        log-text: "",
+        progress: 0.0,
+        button-text: "...",
+        button-enabled: false,
+    };
+
+    callback minimize-window();
+    callback close-window();
+    callback start-button-clicked();
+    callback drag-window();
+
+    width: 523px;
+    height: 397px;
+    background: #28293A;
+    no-frame: true;
+    always-on-top: false;
+
+    Rectangle {
+        width: 100%;
+        height: 100%;
+        background: #28293A;
+
+            // Header bar (30px) - draggable
+            Rectangle {
+                y: 0px;
+                width: 100%;
+                height: 30px;
+                background: #14151E;
+                header-touch := TouchArea {
+                    width: 100%;
+                    height: 100%;
+                    mouse-cursor: move;
+                    pointer-event(event) => {
+                        if (event.button == PointerEventButton.left && event.kind == PointerEventKind.down) {
+                            drag-window();
+                        }
+                    }
+                }
+
+            // Title text
+            Text {
+                x: 0px;
+                y: 0px;
+                width: 100%;
+                height: 30px;
+                text: "TcNo Account Switcher Updater";
+                color: white;
+                horizontal-alignment: center;
+                vertical-alignment: center;
+                font-size: 12px;
+                font-weight: 500;
+                font-family: "Segoe UI";
+            }
+
+            // Minimize button
+            Rectangle {
+                x: 463px;
+                y: 0px;
+                width: 30px;
+                height: 30px;
+                minimize-touch := TouchArea {
+                    width: 100%;
+                    height: 100%;
+                    mouse-cursor: pointer;
+                    clicked => {
+                        minimize-window();
+                    }
+                }
+                background: minimize-touch.has-hover ? #19FFFFFF : transparent;
+                Text {
+                    width: 100%;
+                    height: 100%;
+                    text: "-";
+                    color: white;
+                    font-size: 16px;
+                    font-weight: 700;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+            }
+
+            // Close button
+            Rectangle {
+                x: 493px;
+                y: 0px;
+                width: 30px;
+                height: 30px;
+                close-touch := TouchArea {
+                    width: 100%;
+                    height: 100%;
+                    mouse-cursor: pointer;
+                    clicked => {
+                        close-window();
+                    }
+                }
+                background: close-touch.has-hover ? #E81123 : transparent;
+                Text {
+                    width: 100%;
+                    height: 100%;
+                    text: "X";
+                    color: white;
+                    font-size: 16px;
+                    font-weight: 700;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+            }
+        }
+
+        // Main content area
+        Rectangle {
+            y: 30px;
+            width: 100%;
+            height: 367px;
+            background: #28293A;
+            border-color: #14151E;
+            border-width: 4px;
+
+            // Log box
+            Rectangle {
+                x: 10px;
+                y: 10px;
+                width: 495px;
+                height: 222px;
+                background: #14151E;
+                border-color: #888888;
+                border-width: 1px;
+
+                Text {
+                    width: 100%;
+                    height: 100%;
+                    text: root.app-state.log-text;
+                    color: white;
+                    font-size: 11px;
+                    font-weight: 400;
+                    font-family: "Segoe UI";
+                    wrap: word-wrap;
+                    vertical-alignment: top;
+                    horizontal-alignment: left;
+                }
+            }
+
+            // Status label
+            Text {
+                x: 10px;
+                y: 233px;
+                width: 495px;
+                height: 20px;
+                text: root.app-state.status-text;
+                color: white;
+                font-size: 11px;
+                font-weight: 400;
+                font-family: "Segoe UI";
+                horizontal-alignment: left;
+                vertical-alignment: center;
+            }
+
+            // Progress bar
+            Rectangle {
+                x: 10px;
+                y: 264px;
+                width: 495px;
+                height: 44px;
+                background: #14151E;
+                border-color: #888888;
+                border-width: 1px;
+
+                Rectangle {
+                    x: 0px;
+                    y: 0px;
+                    width: parent.width * root.app-state.progress / 100.0;
+                    height: 100%;
+                    background: #FFAA00;
+                }
+            }
+
+            // Start button
+            Rectangle {
+                x: 329px;
+                y: 313px;
+                width: 176px;
+                height: 40px;
+                background: root.app-state.button-enabled ? #333333 : #222222;
+                border-color: #888888;
+                border-width: 1px;
+                start-touch := TouchArea {
+                    width: 100%;
+                    height: 100%;
+                    mouse-cursor: pointer;
+                    clicked => {
+                        if (root.app-state.button-enabled) {
+                            start-button-clicked();
+                        }
+                    }
+                }
+                Text {
+                    width: 100%;
+                    height: 100%;
+                    text: root.app-state.button-text;
+                    color: white;
+                    font-size: 12px;
+                    font-weight: 500;
+                    font-family: "Segoe UI";
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+            }
+        }
+    }
+}
+

@@ -8,9 +8,8 @@ license = "GPL-3.0"
 repository = "https://github.com/TCNOCo/TcNo-Acc-Switcher"
 
 [dependencies]
-# GUI
-eframe = "0.27"
-egui = "0.27"
+# GUI - Use Slint for modern UI (software rendering support)
+slint = { version = "1.14.1", features = ["backend-winit"] }
 
 # Async runtime
 tokio = { version = "1.40", features = ["full"] }
@@ -62,4 +61,13 @@ env_logger = "0.11"
 
 [target.'cfg(windows)'.dependencies]
 winapi = { version = "0.3", features = ["winuser", "processthreadsapi", "handleapi", "synchapi", "securitybaseapi", "shellapi", "libloaderapi"] }
+
+[build-dependencies]
+winres = "0.1"
+slint-build = "1.14.1"
+
+[package.metadata.manifest]
+name = "TcNo Account Switcher Updater"
+description = "Updater for the TcNo Account Switcher"
+version = "0.1.0"
 
