@@ -148,14 +148,47 @@ namespace TcNo_Acc_Switcher_Client
                 case "CEF":
                     CheckCefFiles();
 
-                    InitializeChromium();
-                    _cefView = new ChromiumWebBrowser();
-                    _cefView.JavascriptMessageReceived += CefView_OnJavascriptMessageReceived;
-                    _cefView.AddressChanged += CefViewOnAddressChanged;
-                    _cefView.PreviewMouseUp += MainBackgroundOnPreviewMouseUp;
-                    _cefView.ConsoleMessage += CefViewOnConsoleMessage;
-                    _cefView.KeyboardHandler = new CefKeyboardHandler();
-                    _cefView.MenuHandler = new CefMenuHandler();
+                    if (!InitializeChromium())
+                    {
+                        // CEF initialization failed, switch to WebView2
+                        AppSettings.ActiveBrowser = "WebView";
+                        AppSettings.SaveSettings();
+                        _mainBrowser = "WebView";
+                        BrowserInit(); // Retry with WebView2
+                        return;
+                    }
+
+                    // Verify CEF is initialized before creating browser
+                    if (!Cef.IsInitialized)
+                    {
+                        Globals.WriteToLog("CEF initialization completed but Cef.IsInitialized is false. Switching to WebView2.");
+                        AppSettings.ActiveBrowser = "WebView";
+                        AppSettings.SaveSettings();
+                        _mainBrowser = "WebView";
+                        BrowserInit(); // Retry with WebView2
+                        return;
+                    }
+
+                    try
+                    {
+                        _cefView = new ChromiumWebBrowser();
+                        _cefView.JavascriptMessageReceived += CefView_OnJavascriptMessageReceived;
+                        _cefView.AddressChanged += CefViewOnAddressChanged;
+                        _cefView.PreviewMouseUp += MainBackgroundOnPreviewMouseUp;
+                        _cefView.ConsoleMessage += CefViewOnConsoleMessage;
+                        _cefView.KeyboardHandler = new CefKeyboardHandler();
+                        _cefView.MenuHandler = new CefMenuHandler();
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        Globals.WriteToLog($"Failed to create ChromiumWebBrowser: {ex.Message}");
+                        // CEF browser creation failed, switch to WebView2
+                        AppSettings.ActiveBrowser = "WebView";
+                        AppSettings.SaveSettings();
+                        _mainBrowser = "WebView";
+                        BrowserInit(); // Retry with WebView2
+                        return;
+                    }
                     break;
             }
         }
@@ -221,9 +254,16 @@ namespace TcNo_Acc_Switcher_Client
         }
 
         #region CEF
-        private static void InitializeChromium()
+        private static bool InitializeChromium()
         {
             Globals.DebugWriteLine(@"[Func:(Client-CEF)MainWindow.xaml.cs.InitializeChromium]");
+            
+            // Check if CEF is already initialized
+            if (Cef.IsInitialized)
+            {
+                return true;
+            }
+            
             try
             {
                 var settings = new CefSettings
@@ -237,10 +277,21 @@ namespace TcNo_Acc_Switcher_Client
                 settings.SetOffScreenRenderingBestPerformanceArgs();
 
                 Cef.Initialize(settings);
+                
+                // Verify initialization succeeded
+                if (!Cef.IsInitialized)
+                {
+                    Globals.WriteToLog("CEF.Initialize() completed but Cef.IsInitialized is false.");
+                    return false;
+                }
+                
+                return true;
                 //CefView.DragHandler = new DragDropHandler();
                 //CefView.IsBrowserInitializedChanged += CefView_IsBrowserInitializedChanged;
                 //CefView.FrameLoadEnd += OnFrameLoadEnd;
-            } catch (Exception ex) {
+            } 
+            catch (Exception ex) 
+            {
                 Globals.WriteToLog(ex);
                 // Give warning, and open Updater with downloadCef.
                 var result = MessageBox.Show("CEF (Chrome Embedded Framework) failed to load. Do you want to use WebView2 instead? (Less compatibility, more performance)\nChoosing No will verify & update the TcNo Account Switcher.\n\nIf this issue persists, visit https://tcno.co/cef.\r\n", "Missing/Outdated/Broken files!", MessageBoxButton.YesNo, MessageBoxImage.Error);
@@ -248,7 +299,8 @@ namespace TcNo_Acc_Switcher_Client
                 {
                     AppSettings.ActiveBrowser = "WebView";
                     AppSettings.SaveSettings();
-                    Restart();
+                    Restart(); // Restart app with WebView2
+                    return false; // Never reached, but satisfies compiler
                 }
                 else
                 {
@@ -257,6 +309,7 @@ namespace TcNo_Acc_Switcher_Client
                     else
                         AppSettings.AutoStartUpdaterAsAdmin("verify");
                     Environment.Exit(1);
+                    return false; // Never reached, but satisfies compiler
                 }
             }
         }
