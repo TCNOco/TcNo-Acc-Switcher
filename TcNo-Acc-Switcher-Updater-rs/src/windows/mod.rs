@@ -4,6 +4,13 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #[cfg(windows)]
 use std::process::Command;
@@ -202,6 +209,133 @@ pub fn is_vc_runtime_installed(_minimum_version: &str) -> bool {
 
 #[cfg(not(windows))]
 pub fn kill_process(_proc_name: &str) -> Result<(), Box<dyn std::error::Error>> {
+    Err("Not supported on this platform".into())
+}
+
+#[cfg(windows)]
+pub fn is_winget_available() -> bool {
+    let output = Command::new("cmd.exe")
+        .args(&["/C", "winget", "--version"])
+        .output();
+    
+    match output {
+        Ok(result) => result.status.success(),
+        Err(_) => false,
+    }
+}
+
+#[cfg(windows)]
+pub fn is_choco_available() -> bool {
+    let output = Command::new("cmd.exe")
+        .args(&["/C", "choco", "--version"])
+        .output();
+    
+    match output {
+        Ok(result) => result.status.success(),
+        Err(_) => false,
+    }
+}
+
+#[cfg(windows)]
+pub fn install_vcruntime_winget() -> std::result::Result<bool, Box<dyn std::error::Error>> {
+    println!("Installing Visual C++ Runtime 2015-2022 via winget...");
+    
+    let output = Command::new("cmd.exe")
+        .args(&["/C", "winget", "install", "Microsoft.VCRedist.2015+.x64", 
+                "--accept-source-agreements", "--accept-package-agreements", "--silent"])
+        .output()?;
+    
+    if output.status.success() {
+        println!("Successfully installed Visual C++ Runtime via winget.");
+        Ok(true)
+    } else {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        println!("Failed to install via winget: {}", stderr);
+        Ok(false)
+    }
+}
+
+#[cfg(windows)]
+pub fn install_vcruntime_choco() -> std::result::Result<bool, Box<dyn std::error::Error>> {
+    println!("Installing Visual C++ Runtime 2015-2022 via Chocolatey...");
+    
+    let output = Command::new("cmd.exe")
+        .args(&["/C", "choco", "install", "vcredist-all", "-y"])
+        .output()?;
+    
+    if output.status.success() {
+        println!("Successfully installed Visual C++ Runtime via Chocolatey.");
+        Ok(true)
+    } else {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        println!("Failed to install via Chocolatey: {}", stderr);
+        Ok(false)
+    }
+}
+
+#[cfg(windows)]
+pub fn download_and_install_vcruntime() -> std::result::Result<bool, Box<dyn std::error::Error>> {
+    use std::fs::File;
+    
+    println!("Downloading Visual C++ Runtime installer...");
+    
+    let temp_dir = std::env::temp_dir();
+    let installer_path = temp_dir.join("vc_redist.x64.exe");
+    
+    // Download the installer
+    let client = reqwest::blocking::Client::new();
+    let mut response = client.get("https://aka.ms/vs/17/release/vc_redist.x64.exe").send()
+        .map_err(|e| format!("Failed to download installer: {}", e))?;
+    
+    let mut file = File::create(&installer_path)
+        .map_err(|e| format!("Failed to create installer file: {}", e))?;
+    std::io::copy(&mut response, &mut file)
+        .map_err(|e| format!("Failed to write installer file: {}", e))?;
+    drop(file);
+    
+    println!("Installing Visual C++ Runtime...");
+    
+    // Run the installer silently
+    let output = Command::new(&installer_path)
+        .args(&["/install", "/passive", "/norestart"])
+        .output()
+        .map_err(|e| format!("Failed to run installer: {}", e))?;
+    
+    // Clean up installer
+    let _ = std::fs::remove_file(&installer_path);
+    
+    if output.status.success() {
+        println!("Successfully installed Visual C++ Runtime.");
+        Ok(true)
+    } else {
+        println!("Installation may have failed. Please install manually from:");
+        println!("https://aka.ms/vs/17/release/vc_redist.x64.exe");
+        Ok(false)
+    }
+}
+
+#[cfg(not(windows))]
+pub fn is_winget_available() -> bool {
+    false
+}
+
+#[cfg(not(windows))]
+pub fn is_choco_available() -> bool {
+    false
+}
+
+#[cfg(not(windows))]
+pub fn install_vcruntime_winget() -> std::result::Result<bool, Box<dyn std::error::Error>> {
+    Err("Not supported on this platform".into())
+}
+
+#[cfg(not(windows))]
+pub fn install_vcruntime_choco() -> std::result::Result<bool, Box<dyn std::error::Error>> {
+    Err("Not supported on this platform".into())
+}
+
+#[cfg(not(windows))]
+pub fn download_and_install_vcruntime() -> std::result::Result<bool, Box<dyn std::error::Error>> {
     Err("Not supported on this platform".into())
 }
 

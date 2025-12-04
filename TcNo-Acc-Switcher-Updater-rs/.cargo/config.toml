@@ -1,0 +1,7 @@
+# Static linking configuration to avoid VCRUNTIME140.dll dependency
+# This links the MSVC runtime statically so VCRUNTIME140.dll is not required
+# Note: This may not work with all dependencies. If issues occur, remove this config
+# and rely on the runtime check in main.rs instead.
+[target.x86_64-pc-windows-msvc]
+rustflags = ["-C", "target-feature=+crt-static"]
+

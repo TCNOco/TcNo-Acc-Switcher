@@ -23,6 +23,8 @@ mod windows;
 use clap::Parser;
 use std::sync::Mutex;
 use std::process;
+use std::thread;
+use std::time::Duration;
 use crate::logger::Logger;
 use crate::updater::Updater;
 
@@ -48,7 +50,164 @@ struct Args {
 
 static SINGLE_INSTANCE: Mutex<()> = Mutex::new(());
 
+#[cfg(windows)]
+fn check_vcruntime_available() -> bool {
+    use std::ffi::OsStr;
+    use std::os::windows::ffi::OsStrExt;
+    use winapi::um::libloaderapi::LoadLibraryW;
+    
+    unsafe {
+        // Try to load VCRUNTIME140.dll to check if it's available
+        let dll_name: Vec<u16> = OsStr::new("VCRUNTIME140.dll")
+            .encode_wide()
+            .chain(std::iter::once(0))
+            .collect();
+        
+        let handle = LoadLibraryW(dll_name.as_ptr());
+        if !handle.is_null() {
+            winapi::um::libloaderapi::FreeLibrary(handle);
+            return true;
+        }
+        
+        // Also check if VC++ Runtime is installed via registry
+        crate::windows::is_vc_runtime_installed("14.30.30704")
+    }
+}
+
+#[cfg(not(windows))]
+fn check_vcruntime_available() -> bool {
+    true // Not applicable on non-Windows
+}
+
+fn restart_with_args() {
+    use std::env;
+    
+    let exe_path = match env::current_exe() {
+        Ok(path) => path,
+        Err(_) => {
+            eprintln!("Failed to get executable path. Please restart manually.");
+            process::exit(1);
+        }
+    };
+    
+    // Get original command-line arguments
+    let args: Vec<String> = env::args().skip(1).collect();
+    
+    eprintln!("\nRestarting application with same arguments...");
+    
+    #[cfg(windows)]
+    {
+        use std::os::windows::process::CommandExt;
+        let mut cmd = process::Command::new(&exe_path);
+        cmd.args(&args);
+        // CREATE_NO_WINDOW flag to hide console window if spawned
+        cmd.creation_flags(0x08000000); // CREATE_NO_WINDOW
+        if let Err(e) = cmd.spawn() {
+            eprintln!("Failed to restart: {}. Please restart manually.", e);
+            process::exit(1);
+        }
+    }
+    
+    #[cfg(not(windows))]
+    {
+        if let Err(e) = process::Command::new(&exe_path).args(&args).spawn() {
+            eprintln!("Failed to restart: {}. Please restart manually.", e);
+            process::exit(1);
+        }
+    }
+    
+    process::exit(0);
+}
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // Check for Visual C++ Runtime before proceeding
+    #[cfg(windows)]
+    {
+        if !check_vcruntime_available() {
+            eprintln!("\nERROR: Visual C++ Runtime 2015-2022 is required but not found.");
+            eprintln!("Attempting to install automatically...\n");
+            
+            let mut installed = false;
+            
+            // Try winget first
+            if crate::windows::is_winget_available() {
+                eprintln!("Detected winget. Installing via winget...");
+                match crate::windows::install_vcruntime_winget() {
+                    Ok(true) => {
+                        installed = true;
+                        eprintln!("\nInstallation successful! Restarting application...");
+                        // Wait a moment for installation to complete
+                        thread::sleep(Duration::from_secs(2));
+                        restart_with_args();
+                    }
+                    Ok(false) => {
+                        eprintln!("winget installation failed. Trying alternatives...\n");
+                    }
+                    Err(e) => {
+                        eprintln!("Error using winget: {}. Trying alternatives...\n", e);
+                    }
+                }
+            }
+            
+            // Try choco if winget failed or isn't available
+            if !installed && crate::windows::is_choco_available() {
+                eprintln!("Detected Chocolatey. Installing via Chocolatey...");
+                match crate::windows::install_vcruntime_choco() {
+                    Ok(true) => {
+                        installed = true;
+                        eprintln!("\nInstallation successful! Restarting application...");
+                        // Wait a moment for installation to complete
+                        thread::sleep(Duration::from_secs(2));
+                        restart_with_args();
+                    }
+                    Ok(false) => {
+                        eprintln!("Chocolatey installation failed. Offering direct download...\n");
+                    }
+                    Err(e) => {
+                        eprintln!("Error using Chocolatey: {}. Offering direct download...\n", e);
+                    }
+                }
+            }
+            
+            // If both failed or aren't available, offer direct download
+            if !installed {
+                eprintln!("Neither winget nor Chocolatey is available, or installation failed.");
+                eprintln!("Would you like to download and install directly? (Y to install, any other key to exit): ");
+                
+                let mut input = String::new();
+                if let Ok(_) = std::io::stdin().read_line(&mut input) {
+                    let trimmed = input.trim().to_lowercase();
+                    if trimmed == "y" || trimmed == "yes" {
+                        eprintln!("\nDownloading and installing Visual C++ Runtime...");
+                        match crate::windows::download_and_install_vcruntime() {
+                            Ok(true) => {
+                                eprintln!("\nInstallation successful! Restarting application...");
+                                // Wait a moment for installation to complete
+                                thread::sleep(Duration::from_secs(2));
+                                restart_with_args();
+                            }
+                            Ok(false) | Err(_) => {
+                                eprintln!("\nAutomatic installation failed.");
+                                eprintln!("Please install manually from:");
+                                eprintln!("https://aka.ms/vs/17/release/vc_redist.x64.exe");
+                                eprintln!("\nPress Enter to exit...");
+                                let mut _buffer = String::new();
+                                let _ = std::io::stdin().read_line(&mut _buffer);
+                                process::exit(1);
+                            }
+                        }
+                    } else {
+                        eprintln!("\nInstallation cancelled. Exiting...");
+                        process::exit(1);
+                    }
+                } else {
+                    eprintln!("\nFailed to read input. Exiting...");
+                    process::exit(1);
+                }
+            }
+        }
+    }
+    
     // Initialize logger
     Logger::init()?;
     
