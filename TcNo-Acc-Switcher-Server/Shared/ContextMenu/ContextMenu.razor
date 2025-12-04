@@ -15,6 +15,8 @@
 @using Newtonsoft.Json.Linq
 @using TcNo_Acc_Switcher_Globals
 @using System.Collections.ObjectModel
+@using System.Collections.Generic
+@using System.Linq
 @inject IJSRuntime Js
 
 @code {
@@ -23,18 +25,61 @@
     [Parameter]
     public ObservableCollection<MenuItem> MenuItems { get; set; }
 
+    private List<MenuItem> _itemsSnapshot = new();
+
     protected override void OnInitialized()
     {
-        MenuItems.CollectionChanged += ((_, _) => InvokeAsync(StateHasChanged));
+        if (MenuItems != null)
+        {
+            MenuItems.CollectionChanged += ((_, _) => 
+            {
+                // Update snapshot when collection changes
+                try
+                {
+                    _itemsSnapshot = MenuItems.ToList();
+                }
+                catch
+                {
+                    // If collection was modified during ToList(), keep previous snapshot
+                }
+                InvokeAsync(StateHasChanged);
+            });
+            // Initialize snapshot
+            try
+            {
+                _itemsSnapshot = MenuItems.ToList();
+            }
+            catch
+            {
+                _itemsSnapshot = new List<MenuItem>();
+            }
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        // Update snapshot when parameters change
+        if (MenuItems != null)
+        {
+            try
+            {
+                _itemsSnapshot = MenuItems.ToList();
+            }
+            catch
+            {
+                _itemsSnapshot = new List<MenuItem>();
+            }
+        }
+        else
+        {
+            _itemsSnapshot = new List<MenuItem>();
+        }
     }
 }
 
 <ul class="contextmenu" id="@ContextMenuId">
-    @{
-        var itemsCopy = MenuItems.ToList();
-        @foreach (var item in itemsCopy)
-        {
-            <ContextMenuItem Item="@item" Depth="0" />
-        }
+    @foreach (var item in _itemsSnapshot)
+    {
+        <ContextMenuItem Item="@item" Depth="0" />
     }
 </ul>
