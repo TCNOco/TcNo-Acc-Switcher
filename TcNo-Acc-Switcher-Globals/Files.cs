@@ -621,23 +621,45 @@ namespace TcNo_Acc_Switcher_Globals
         [SupportedOSPlatform("windows")]
         private static bool SaveImageFromIco(Icon ico, string output)
         {
-            var memoryStream = new MemoryStream();
-            ico.Save(memoryStream);
-            memoryStream.Seek(0, SeekOrigin.Begin);
+            try
+            {
+                if (ico == null) return false;
+                var memoryStream = new MemoryStream();
+                ico.Save(memoryStream);
+                memoryStream.Seek(0, SeekOrigin.Begin);
 
-            var mi = new MultiIcon();
-            mi.Load(memoryStream);
-            return SaveImageFromIco(mi, output);
+                var mi = new MultiIcon();
+                mi.Load(memoryStream);
+                return SaveImageFromIco(mi, output);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         [SupportedOSPlatform("windows")]
         private static bool SaveImageFromIco(string ico, string output)
         {
-            var iconPath = Environment.ExpandEnvironmentVariables(ico);
-            if (!File.Exists(iconPath)) return false;
-            var mi = new MultiIcon();
-            mi.Load(iconPath);
-            return SaveImageFromIco(mi, output);
+            try
+            {
+                if (string.IsNullOrEmpty(ico)) return false;
+                var iconPath = Environment.ExpandEnvironmentVariables(ico);
+                if (!File.Exists(iconPath)) return false;
+                
+                // Check if file is empty or too small to be a valid icon
+                var fileInfo = new FileInfo(iconPath);
+                if (fileInfo.Length == 0 || fileInfo.Length < 22) // Minimum valid ICO file size
+                    return false;
+                
+                var mi = new MultiIcon();
+                mi.Load(iconPath);
+                return SaveImageFromIco(mi, output);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         [SupportedOSPlatform("windows")]

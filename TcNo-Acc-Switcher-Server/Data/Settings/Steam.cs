@@ -112,15 +112,22 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
                 if (!File.Exists(imagePath))
                 {
-                    // Search start menu for Steam.
-                    var startMenuFiles = Directory.GetFiles(BasicSwitcherFuncs.ExpandEnvironmentVariables("%StartMenuAppData%", true), "Steam.lnk", SearchOption.AllDirectories);
-                    var commonStartMenuFiles = Directory.GetFiles(BasicSwitcherFuncs.ExpandEnvironmentVariables("%StartMenuProgramData%", true), "Steam.lnk", SearchOption.AllDirectories);
-                    if (startMenuFiles.Length > 0)
-                        Globals.SaveIconFromFile(startMenuFiles[0], imagePath);
-                    else if (commonStartMenuFiles.Length > 0)
-                        Globals.SaveIconFromFile(commonStartMenuFiles[0], imagePath);
-                    else
-                        Globals.SaveIconFromFile(Exe(), imagePath);
+                    try
+                    {
+                        // Search start menu for Steam.
+                        var startMenuFiles = Directory.GetFiles(BasicSwitcherFuncs.ExpandEnvironmentVariables("%StartMenuAppData%", true), "Steam.lnk", SearchOption.AllDirectories);
+                        var commonStartMenuFiles = Directory.GetFiles(BasicSwitcherFuncs.ExpandEnvironmentVariables("%StartMenuProgramData%", true), "Steam.lnk", SearchOption.AllDirectories);
+                        if (startMenuFiles.Length > 0)
+                            Globals.SaveIconFromFile(startMenuFiles[0], imagePath);
+                        else if (commonStartMenuFiles.Length > 0)
+                            Globals.SaveIconFromFile(commonStartMenuFiles[0], imagePath);
+                        else
+                            Globals.SaveIconFromFile(Exe(), imagePath);
+                    }
+                    catch (Exception)
+                    {
+                        // Failed to load icon, continue without it
+                    }
                 }
 
 
@@ -178,7 +185,14 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                         // Extract image and place in wwwroot (Only if not already there):
                         if (!File.Exists(imagePath))
                         {
-                            Globals.SaveIconFromFile(f.FullName, imagePath);
+                            try
+                            {
+                                Globals.SaveIconFromFile(f.FullName, imagePath);
+                            }
+                            catch (Exception)
+                            {
+                                // Failed to extract icon from shortcut, continue without it
+                            }
                         }
                     }
 
