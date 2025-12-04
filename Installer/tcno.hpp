@@ -155,6 +155,148 @@ inline bool file_exists(const std::string& name) {
 #pragma region Runtime Operations
 
 /// <summary>
+/// Checks if winget is installed and available.
+/// </summary>
+inline bool is_winget_available()
+{
+	STARTUPINFO si = { sizeof(STARTUPINFO) };
+	si.cb = sizeof(STARTUPINFO);
+	si.dwFlags = STARTF_USESTDHANDLES;
+	si.hStdOutput = GetStdHandle(STD_OUTPUT_HANDLE);
+	si.hStdError = GetStdHandle(STD_ERROR_HANDLE);
+	PROCESS_INFORMATION pi;
+	
+	// Use cmd.exe to run winget (winget might not be directly in PATH)
+	wstring cmd_line = L"cmd.exe /c winget --version";
+	wchar_t* cmd_line_writable = new wchar_t[cmd_line.length() + 1];
+	wcscpy_s(cmd_line_writable, cmd_line.length() + 1, cmd_line.c_str());
+	
+	// Create process with CREATE_NO_WINDOW to hide the window
+	bool success = CreateProcessW(nullptr, cmd_line_writable, nullptr, nullptr, FALSE, 
+		CREATE_NO_WINDOW | CREATE_UNICODE_ENVIRONMENT, nullptr, nullptr, &si, &pi);
+	
+	delete[] cmd_line_writable;
+	
+	if (success)
+	{
+		WaitForSingleObject(pi.hProcess, 5000); // Wait up to 5 seconds
+		DWORD exit_code;
+		GetExitCodeProcess(pi.hProcess, &exit_code);
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
+		return exit_code == 0;
+	}
+	return false;
+}
+
+/// <summary>
+/// Checks if a winget package is installed.
+/// </summary>
+inline bool is_winget_package_installed(const string& package_id)
+{
+	STARTUPINFO si = { sizeof(STARTUPINFO) };
+	si.cb = sizeof(STARTUPINFO);
+	si.dwFlags = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
+	si.wShowWindow = SW_HIDE;
+	HANDLE h_read, h_write;
+	SECURITY_ATTRIBUTES sa = { sizeof(SECURITY_ATTRIBUTES), nullptr, TRUE };
+	CreatePipe(&h_read, &h_write, &sa, 0);
+	si.hStdOutput = h_write;
+	si.hStdError = h_write;
+	PROCESS_INFORMATION pi;
+	
+	wstring package_id_w = s2_ws(package_id);
+	wstring cmd_line = L"cmd.exe /c winget list --id \"" + package_id_w + L"\" --accept-source-agreements --accept-package-agreements";
+	wchar_t* cmd_line_writable = new wchar_t[cmd_line.length() + 1];
+	wcscpy_s(cmd_line_writable, cmd_line.length() + 1, cmd_line.c_str());
+	
+	bool installed = false;
+	if (CreateProcessW(nullptr, cmd_line_writable, nullptr, nullptr, TRUE, 
+		CREATE_NO_WINDOW | CREATE_UNICODE_ENVIRONMENT, nullptr, nullptr, &si, &pi))
+	{
+		CloseHandle(h_write);
+		WaitForSingleObject(pi.hProcess, 10000); // Wait up to 10 seconds
+		
+		char buffer[4096];
+		DWORD bytes_read;
+		string output;
+		while (ReadFile(h_read, buffer, sizeof(buffer) - 1, &bytes_read, nullptr) && bytes_read > 0)
+		{
+			buffer[bytes_read] = '\0';
+			output += buffer;
+		}
+		
+		// Check exit code and output
+		// Exit code 0 typically means package was found
+		DWORD exit_code;
+		GetExitCodeProcess(pi.hProcess, &exit_code);
+		
+		// Package is installed if exit code is 0 and output contains the package ID
+		installed = (exit_code == 0) && (output.find(package_id) != string::npos);
+		
+		CloseHandle(h_read);
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
+	}
+	else
+	{
+		CloseHandle(h_read);
+		CloseHandle(h_write);
+	}
+	
+	delete[] cmd_line_writable;
+	return installed;
+}
+
+/// <summary>
+/// Installs a package using winget.
+/// </summary>
+inline bool install_winget_package(const string& package_id, const string& display_name)
+{
+	cout << "Installing " << display_name << " via winget..." << endl;
+	
+	STARTUPINFO si = { sizeof(STARTUPINFO) };
+	si.cb = sizeof(STARTUPINFO);
+	si.dwFlags = STARTF_USESTDHANDLES;
+	si.hStdOutput = GetStdHandle(STD_OUTPUT_HANDLE);
+	si.hStdError = GetStdHandle(STD_ERROR_HANDLE);
+	PROCESS_INFORMATION pi;
+	
+	wstring package_id_w = s2_ws(package_id);
+	wstring cmd_line = L"cmd.exe /c winget install \"" + package_id_w + L"\" --accept-source-agreements --accept-package-agreements --silent";
+	wchar_t* cmd_line_writable = new wchar_t[cmd_line.length() + 1];
+	wcscpy_s(cmd_line_writable, cmd_line.length() + 1, cmd_line.c_str());
+	
+	bool success = CreateProcessW(nullptr, cmd_line_writable, nullptr, nullptr, FALSE, 
+		0, nullptr, nullptr, &si, &pi);
+	
+	delete[] cmd_line_writable;
+	
+	if (success)
+	{
+		WaitForSingleObject(pi.hProcess, INFINITE);
+		DWORD exit_code;
+		GetExitCodeProcess(pi.hProcess, &exit_code);
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
+		
+		if (exit_code == 0)
+		{
+			cout << "Successfully installed " << display_name << " via winget." << endl;
+			return true;
+		}
+		else
+		{
+			cout << "Failed to install " << display_name << " via winget (exit code: " << exit_code << ")." << endl;
+			return false;
+		}
+	}
+	
+	cout << "Failed to launch winget for " << display_name << "." << endl;
+	return false;
+}
+
+/// <summary>
 /// Installs specified runtime.
 /// </summary>
 inline void install_runtime(const string& path, const string& name, const bool& passive)
@@ -203,7 +345,18 @@ inline void download_install_missing_runtimes()
 
 		wait_for_input();
 
-		/* Download runtimes */
+		// Check if winget is available
+		bool use_winget = is_winget_available();
+		if (use_winget)
+		{
+			cout << "winget detected. Using winget to install missing packages..." << endl << endl;
+		}
+		else
+		{
+			cout << "winget not available. Falling back to direct download..." << endl << endl;
+		}
+
+		/* Download/Install runtimes */
 		bool w_runtime_install = false,
 			d_runtime_install = false,
 			a_runtime_install = false,
@@ -214,64 +367,143 @@ inline void download_install_missing_runtimes()
 			a_runtime_local = runtime_folder + a_exe,
 			c_runtime_local = runtime_folder + c_exe;
 
-		if (!(CreateDirectoryA(runtime_folder.c_str(), nullptr) || ERROR_ALREADY_EXISTS == GetLastError()))
+		if (!use_winget)
 		{
-			cout << "Failed to create folder: " << runtime_folder << endl;
-			cout << "Press any key to exit..." << endl;
-			_getch();
-			return;
+			if (!(CreateDirectoryA(runtime_folder.c_str(), nullptr) || ERROR_ALREADY_EXISTS == GetLastError()))
+			{
+				cout << "Failed to create folder: " << runtime_folder << endl;
+				cout << "Press any key to exit..." << endl;
+				_getch();
+				return;
+			}
 		}
 
+		// WebView2 - no winget package, always use download method
 		if (!min_webview_met)
 		{
-			current_download = w_runtime_name;
-			if (!download_file(w_runtime.c_str(), w_runtime_local.c_str()))
+			if (!use_winget)
 			{
-				cout << "Failed to download and install Microsoft WebView2 Runtime. To download: 1. Click the link below:" << endl <<
-					"https://go.microsoft.com/fwlink/p/?LinkId=2124703" << endl <<
-					"2. Click 'Download Hosting Bundle' under Run server apps." << endl << endl;
+				current_download = w_runtime_name;
+				if (!download_file(w_runtime.c_str(), w_runtime_local.c_str()))
+				{
+					cout << "Failed to download and install Microsoft WebView2 Runtime. To download: 1. Click the link below:" << endl <<
+						"https://go.microsoft.com/fwlink/p/?LinkId=2124703" << endl <<
+						"2. Click 'Download Hosting Bundle' under Run server apps." << endl << endl;
+				}
+				else w_runtime_install = true;
 			}
-			else w_runtime_install = true;
 		}
 
+		// Desktop Runtime - use winget if available
 		if (!min_desktop_runtime_met)
 		{
-			current_download = d_runtime_name;
-			if (!download_file(d_runtime.c_str(), d_runtime_local.c_str()))
+			if (use_winget)
 			{
-				cout << "Failed to download and install .NET 8.0 Desktop Runtime. Please download it here:" << endl <<
-					"https://dotnet.microsoft.com/download/dotnet/8.0/runtime" << endl << endl;
+				if (!is_winget_package_installed("Microsoft.DotNet.DesktopRuntime.8"))
+				{
+					d_runtime_install = install_winget_package("Microsoft.DotNet.DesktopRuntime.8", d_runtime_name);
+				}
+				else
+				{
+					cout << d_runtime_name << " is already installed via winget." << endl;
+					d_runtime_install = true;
+				}
 			}
-			else d_runtime_install = true;
+			else
+			{
+				current_download = d_runtime_name;
+				if (!download_file(d_runtime.c_str(), d_runtime_local.c_str()))
+				{
+					cout << "Failed to download and install .NET 8.0 Desktop Runtime. Please download it here:" << endl <<
+						"https://dotnet.microsoft.com/download/dotnet/8.0/runtime" << endl << endl;
+				}
+				else d_runtime_install = true;
+			}
 		}
 
+		// ASP.NET Core Runtime - use winget if available
 		if (!min_aspcore_met)
 		{
-			current_download = a_runtime_name;
-			if (!download_file(a_runtime.c_str(), a_runtime_local.c_str()))
+			if (use_winget)
 			{
-				cout << "Failed to download and install ASP.NET Core 8.0 Runtime. To download: 1. Click the link below:" << endl <<
-					"https://dotnet.microsoft.com/en-us/download/dotnet/8.0" << endl <<
-					"2. Click 'x64' under ASP.NET Core Runtime 8." << endl << endl;
+				if (!is_winget_package_installed("Microsoft.DotNet.AspNetCore.8"))
+				{
+					a_runtime_install = install_winget_package("Microsoft.DotNet.AspNetCore.8", a_runtime_name);
+				}
+				else
+				{
+					cout << a_runtime_name << " is already installed via winget." << endl;
+					a_runtime_install = true;
+				}
 			}
-			else a_runtime_install = true;
+			else
+			{
+				current_download = a_runtime_name;
+				if (!download_file(a_runtime.c_str(), a_runtime_local.c_str()))
+				{
+					cout << "Failed to download and install ASP.NET Core 8.0 Runtime. To download: 1. Click the link below:" << endl <<
+						"https://dotnet.microsoft.com/en-us/download/dotnet/8.0" << endl <<
+						"2. Click 'x64' under ASP.NET Core Runtime 8." << endl << endl;
+				}
+				else a_runtime_install = true;
+			}
 		}
 
+		// VC++ Redistributable - use winget if available (install both x64 and x86)
 		if (!min_vc_met)
 		{
-			current_download = c_runtime_name;
-			if (!download_file(c_runtime.c_str(), c_runtime_local.c_str()))
+			if (use_winget)
 			{
-				cout << "Failed to download and install C++ Redistributable 2015-2022. To download: 1. Click the link below:" << endl <<
-					"https://docs.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170" << endl <<
-					"2. Click the link next to 'X64', under the \"Visual Studio 2015, 2017, 2019, and 2022\" heading." << endl << endl;
+				bool vc_x64_installed = is_winget_package_installed("Microsoft.VCRedist.2015+.x64");
+				bool vc_x86_installed = is_winget_package_installed("Microsoft.VCRedist.2015+.x86");
+				
+				if (!vc_x64_installed)
+				{
+					if (install_winget_package("Microsoft.VCRedist.2015+.x64", "C++ Redistributable 2015-2022 (x64)"))
+					{
+						c_runtime_install = true;
+					}
+				}
+				else
+				{
+					cout << "C++ Redistributable 2015-2022 (x64) is already installed via winget." << endl;
+				}
+				
+				if (!vc_x86_installed)
+				{
+					if (install_winget_package("Microsoft.VCRedist.2015+.x86", "C++ Redistributable 2015-2022 (x86)"))
+					{
+						c_runtime_install = true;
+					}
+				}
+				else
+				{
+					cout << "C++ Redistributable 2015-2022 (x86) is already installed via winget." << endl;
+				}
+				
+				// If either was installed, mark as installed
+				if (vc_x64_installed || vc_x86_installed || c_runtime_install)
+				{
+					c_runtime_install = true;
+				}
 			}
-			else c_runtime_install = true;
+			else
+			{
+				current_download = c_runtime_name;
+				if (!download_file(c_runtime.c_str(), c_runtime_local.c_str()))
+				{
+					cout << "Failed to download and install C++ Redistributable 2015-2022. To download: 1. Click the link below:" << endl <<
+						"https://docs.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170" << endl <<
+						"2. Click the link next to 'X64', under the \"Visual Studio 2015, 2017, 2019, and 2022\" heading." << endl << endl;
+				}
+				else c_runtime_install = true;
+			}
 		}
 
 		cout << endl;
 
-		if (w_runtime_install || d_runtime_install || a_runtime_install || c_runtime_install)
+		// Install downloaded runtimes (only if not using winget)
+		if (!use_winget && (w_runtime_install || d_runtime_install || a_runtime_install || c_runtime_install))
 		{
 			cout << "------------------------------------------------------------------------" << endl << endl <<
 				"One or more are ready for install. If and when prompted if you would like to install, click 'Yes'." << endl << endl;
