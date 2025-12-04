@@ -19,6 +19,7 @@
 #pragma once
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <vector>
 #include <Windows.h>
 
@@ -171,12 +172,121 @@ inline void check_webview2_edgeupdate_registry(bool &min_webview_met, const bool
 }
 
 /// <summary>
+/// Checks for .NET runtimes using dotnet --list-runtimes command
+/// </summary>
+inline void check_dotnet_list_runtimes(bool &min_desktop_runtime_met, bool &min_aspcore_met, const bool output = true)
+{
+	STARTUPINFO si = { sizeof(STARTUPINFO) };
+	si.cb = sizeof(STARTUPINFO);
+	si.dwFlags = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
+	si.wShowWindow = SW_HIDE;
+	HANDLE h_read, h_write;
+	SECURITY_ATTRIBUTES sa = { sizeof(SECURITY_ATTRIBUTES), nullptr, TRUE };
+	CreatePipe(&h_read, &h_write, &sa, 0);
+	si.hStdOutput = h_write;
+	si.hStdError = h_write;
+	PROCESS_INFORMATION pi;
+	
+	std::wstring cmd_line = L"cmd.exe /c dotnet --list-runtimes";
+	wchar_t* cmd_line_writable = new wchar_t[cmd_line.length() + 1];
+	wcscpy_s(cmd_line_writable, cmd_line.length() + 1, cmd_line.c_str());
+	
+	if (CreateProcessW(nullptr, cmd_line_writable, nullptr, nullptr, TRUE, 
+		CREATE_NO_WINDOW | CREATE_UNICODE_ENVIRONMENT, nullptr, nullptr, &si, &pi))
+	{
+		CloseHandle(h_write);
+		WaitForSingleObject(pi.hProcess, 10000); // Wait up to 10 seconds
+		
+		char buffer[8192];
+		DWORD bytes_read;
+		std::string output_text;
+		while (ReadFile(h_read, buffer, sizeof(buffer) - 1, &bytes_read, nullptr) && bytes_read > 0)
+		{
+			buffer[bytes_read] = '\0';
+			output_text += buffer;
+		}
+		
+		// Parse the output line by line
+		std::istringstream iss(output_text);
+		std::string line;
+		while (std::getline(iss, line))
+		{
+			// Look for Microsoft.AspNetCore.App 8.0.x
+			if (line.find("Microsoft.AspNetCore.App 8.") != std::string::npos)
+			{
+				// Extract version (format: "Microsoft.AspNetCore.App 8.0.22 [path]")
+				size_t space_pos = line.find(' ', 0);
+				if (space_pos != std::string::npos)
+				{
+					size_t bracket_pos = line.find(' ', space_pos + 1);
+					if (bracket_pos != std::string::npos)
+					{
+						std::string version = line.substr(space_pos + 1, bracket_pos - space_pos - 1);
+						if (compare_versions(required_min_aspcore, version, '.'))
+						{
+							min_aspcore_met = true;
+							if (output)
+							{
+								printf(" - Microsoft.AspNetCore.App %s\n", version.c_str());
+							}
+						}
+					}
+				}
+			}
+			
+			// Look for Microsoft.WindowsDesktop.App 8.0.x
+			if (line.find("Microsoft.WindowsDesktop.App 8.") != std::string::npos)
+			{
+				// Extract version (format: "Microsoft.WindowsDesktop.App 8.0.22 [path]")
+				size_t space_pos = line.find(' ', 0);
+				if (space_pos != std::string::npos)
+				{
+					size_t bracket_pos = line.find(' ', space_pos + 1);
+					if (bracket_pos != std::string::npos)
+					{
+						std::string version = line.substr(space_pos + 1, bracket_pos - space_pos - 1);
+						if (compare_versions(required_min_desktop_runtime, version, '.'))
+						{
+							min_desktop_runtime_met = true;
+							if (output)
+							{
+								printf(" - Microsoft.WindowsDesktop.App %s\n", version.c_str());
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		CloseHandle(h_read);
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
+	}
+	else
+	{
+		CloseHandle(h_read);
+		CloseHandle(h_write);
+	}
+	
+	delete[] cmd_line_writable;
+}
+
+/// <summary>
 /// Finds existing NET runtimes, and sets min_{runtime}_met for aspcore, webview and desktop_runtime
 /// </summary>
 inline void find_installed_net_runtimes(const bool x32, bool &min_webview_met, bool &min_desktop_runtime_met, bool &min_aspcore_met, const bool output = true)
 {
 	// First check EdgeUpdate registry keys for WebView2 (most reliable source)
 	check_webview2_edgeupdate_registry(min_webview_met, output);
+	
+	// Check .NET runtimes using dotnet --list-runtimes (most reliable for .NET runtimes)
+	check_dotnet_list_runtimes(min_desktop_runtime_met, min_aspcore_met, output);
+	
+	// If we already found both runtimes via dotnet --list-runtimes, skip registry check
+	if (min_desktop_runtime_met && min_aspcore_met)
+	{
+		return;
+	}
 	
 	// Get .NET info
 	// Find installed runtimes, and add them to the list
@@ -260,7 +370,9 @@ inline void find_installed_net_runtimes(const bool x32, bool &min_webview_met, b
                     if (output) wprintf(L" - %s\n", s_display_name);
                 }
 
-                if (wcsstr(s_display_name, L"ASP.NET Core 9") != nullptr && wcsstr(s_display_name, L"x64") != nullptr)
+                if ((wcsstr(s_display_name, L"ASP.NET Core 8") != nullptr || 
+                     (wcsstr(s_display_name, L"ASP.NET Core") != nullptr && wcsstr(s_display_name, L"8.") != nullptr)) && 
+                    wcsstr(s_display_name, L"x64") != nullptr)
                 {
                     min_aspcore_met = min_aspcore_met || compare_versions(required_min_aspcore, s_version, '.');
                     if (output) wprintf(L" - %s\n", s_display_name);
