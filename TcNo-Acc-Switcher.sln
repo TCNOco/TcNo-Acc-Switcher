@@ -24,8 +24,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "_Wrapper", "_Updater_Wrappe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "runas", "runas\runas.csproj", "{2C8D51E2-3B55-4EBF-A6D9-9B824AB2D456}"
 EndProject
-Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "TcNo-Acc-Switcher.Packager", "TcNo Account Switcher\TcNo-Acc-Switcher.Packager.wapproj", "{120E00D7-701B-4141-BB63-CA42AAE395EF}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -146,20 +144,6 @@ Global
 		{2C8D51E2-3B55-4EBF-A6D9-9B824AB2D456}.Release|x64.ActiveCfg = Release|x64
 		{2C8D51E2-3B55-4EBF-A6D9-9B824AB2D456}.Release|x64.Build.0 = Release|x64
 		{2C8D51E2-3B55-4EBF-A6D9-9B824AB2D456}.Release|x86.ActiveCfg = Release|x64
-		{120E00D7-701B-4141-BB63-CA42AAE395EF}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{120E00D7-701B-4141-BB63-CA42AAE395EF}.Debug|ARM.ActiveCfg = Debug|x64
-		{120E00D7-701B-4141-BB63-CA42AAE395EF}.Debug|ARM64.ActiveCfg = Debug|x64
-		{120E00D7-701B-4141-BB63-CA42AAE395EF}.Debug|x64.ActiveCfg = Debug|x64
-		{120E00D7-701B-4141-BB63-CA42AAE395EF}.Debug|x64.Build.0 = Debug|x64
-		{120E00D7-701B-4141-BB63-CA42AAE395EF}.Debug|x64.Deploy.0 = Debug|x64
-		{120E00D7-701B-4141-BB63-CA42AAE395EF}.Debug|x86.ActiveCfg = Debug|x64
-		{120E00D7-701B-4141-BB63-CA42AAE395EF}.Release|Any CPU.ActiveCfg = Release|x64
-		{120E00D7-701B-4141-BB63-CA42AAE395EF}.Release|ARM.ActiveCfg = Release|x64
-		{120E00D7-701B-4141-BB63-CA42AAE395EF}.Release|ARM64.ActiveCfg = Release|x64
-		{120E00D7-701B-4141-BB63-CA42AAE395EF}.Release|x64.ActiveCfg = Release|x64
-		{120E00D7-701B-4141-BB63-CA42AAE395EF}.Release|x64.Build.0 = Release|x64
-		{120E00D7-701B-4141-BB63-CA42AAE395EF}.Release|x64.Deploy.0 = Release|x64
-		{120E00D7-701B-4141-BB63-CA42AAE395EF}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
