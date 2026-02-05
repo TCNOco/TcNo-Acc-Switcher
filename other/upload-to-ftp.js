@@ -82,8 +82,12 @@ async function uploadFiles() {
   try {
     // detect branch / tag and choose target
     const branchName = (process.env.APPVEYOR_REPO_BRANCH || process.env.BRANCH_NAME || process.env.GIT_BRANCH || '').toLowerCase();
-    const isTag = !!(process.env.APPVEYOR_REPO_TAG || process.env.APPVEYOR_REPO_TAG_NAME || process.env.APPVEYOR_REPO_TAG_NAME);
+    // APPVEYOR_REPO_TAG can be the string "false" for non-tag builds - check explicitly for "true"
+    const isTag = (String(process.env.APPVEYOR_REPO_TAG || '').toLowerCase() === 'true') || !!(process.env.APPVEYOR_REPO_TAG_NAME && process.env.APPVEYOR_REPO_TAG_NAME.trim());
     const isBeta = branchName === 'beta' || branchName.includes('beta');
+
+    // Helpful debug output for CI logs
+    console.log(`Env: APPVEYOR_REPO_TAG=${process.env.APPVEYOR_REPO_TAG}, APPVEYOR_REPO_TAG_NAME=${process.env.APPVEYOR_REPO_TAG_NAME}, APPVEYOR_REPO_BRANCH=${process.env.APPVEYOR_REPO_BRANCH}`);
 
     let latestDir;
     if (isTag) {
