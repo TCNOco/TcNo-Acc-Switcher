@@ -24,7 +24,10 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SevenZip;
+using SharpCompress.Archives;
+using SharpCompress.Archives.SevenZip;
+using SharpCompress.Common;
+using SharpCompress.Writers;
 using ShellLink;
 
 namespace TcNo_Acc_Switcher_Globals
@@ -466,34 +469,32 @@ namespace TcNo_Acc_Switcher_Globals
             if (!output.EndsWith(".7z"))
                 output += ".7z";
 
-            // Compress file
-            SevenZipBase.SetLibraryPath(Path.Combine(AppDataFolder, Environment.Is64BitProcess ? "x64" : "x86", "7z.dll"));
-
-            var szc = new SevenZipCompressor
+            // Compress file using SharpCompress
+            if (!output.EndsWith(".7z")) output += ".7z";
+            using (var outStream = File.Open(output, FileMode.Create))
             {
-                CompressionLevel = CompressionLevel.Normal,
-                ArchiveFormat = OutArchiveFormat.SevenZip,
-                CompressionMethod = CompressionMethod.Default,
-                CompressionMode = CompressionMode.Create
-            };
-            szc.CustomParameters.Add("mt", "on"); // Multi-threading ON
-            szc.CustomParameters.Add("s", "off"); // Solid mode OFF
-
-            szc.CompressFileDictionary(files, output);
+                var writerOptions = new SharpCompress.Writers.WriterOptions(CompressionType.LZMA);
+                using var writer = SharpCompress.Writers.WriterFactory.Open(outStream, ArchiveType.SevenZip, writerOptions);
+                foreach (var kv in files)
+                {
+                    var entryName = kv.Key.Replace('\\', '/');
+                    writer.Write(entryName, kv.Value);
+                }
+            }
         }
 
         public static void DecompressZip(string zipPath, string output)
         {
-            SevenZipBase.SetLibraryPath(Path.Combine(AppDataFolder, Environment.Is64BitProcess ? "x64" : "x86", "7z.dll"));
-            using var file = new SevenZip.SevenZipExtractor(zipPath);
-            file.ExtractArchive(output);
+            using var archive = SevenZipArchive.Open(zipPath);
+            foreach (var entry in archive.Entries.Where(e => !e.IsDirectory))
+                entry.WriteToDirectory(output, new ExtractionOptions { ExtractFullPath = true, Overwrite = true });
         }
 /*
         public static void DecompressZip(Stream zipData, string output)
         {
-            SevenZipBase.SetLibraryPath(Path.Combine(AppDataFolder, Environment.Is64BitProcess ? "x64" : "x86", "7z.dll"));
-            using var file = new SevenZip.SevenZipExtractor(zipData);
-            file.ExtractArchive(output);
+            using var archive = SevenZipArchive.Open(zipData);
+            foreach (var entry in archive.Entries.Where(e => !e.IsDirectory))
+                entry.WriteToDirectory(output, new ExtractionOptions { ExtractFullPath = true, Overwrite = true });
         }
 */
 

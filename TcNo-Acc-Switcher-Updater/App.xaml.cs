@@ -144,7 +144,7 @@ namespace TcNo_Acc_Switcher_Updater
             sw.WriteLine($"{DateTime.Now.ToString(CultureInfo.InvariantCulture)}({GetVersion()})\tUNHANDLED CRASH: {exceptionStr}{Environment.NewLine}{Environment.NewLine}");
             Logger.WriteLine($"{DateTime.Now.ToString(CultureInfo.InvariantCulture)}({GetVersion()})\tUNHANDLED CRASH: {exceptionStr}{Environment.NewLine}{Environment.NewLine}");
 
-            if (e.ExceptionObject is FileNotFoundException && (exceptionStr?.Contains("SevenZipExtractor") ?? false))
+            if (e.ExceptionObject is FileNotFoundException)
             {
                 _ = MessageBox.Show($"A fatal error was hit. A required file was not found. Please make sure the x64 and x86 folders exist in the install directory AND the updater folder. If one has files, and the other not: Copy so they are the same and try again.{Environment.NewLine}Currently installed to: {AppDataFolder}", "Fatal error occurred!", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
             }

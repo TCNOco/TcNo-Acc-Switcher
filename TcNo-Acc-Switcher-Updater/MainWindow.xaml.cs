@@ -33,7 +33,9 @@ using System.Windows.Threading;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SevenZipExtractor;
+using SharpCompress.Archives;
+using SharpCompress.Archives.SevenZip;
+using SharpCompress.Common;
 using VCDiff.Decoders;
 using VCDiff.Encoders;
 using VCDiff.Includes;
@@ -712,9 +714,10 @@ namespace TcNo_Acc_Switcher_Updater
 
                 _ = Directory.CreateDirectory("temp_update");
                 SetStatusAndLog("Extracting patch files");
-                using (var archiveFile = new ArchiveFile(updateFilePath))
+                using (var archive = SevenZipArchive.Open(updateFilePath))
                 {
-                    archiveFile.Extract("temp_update"); // extract all
+                    foreach (var entry in archive.Entries.Where(e => !e.IsDirectory))
+                        entry.WriteToDirectory("temp_update", new ExtractionOptions { ExtractFullPath = true, Overwrite = true });
                 }
                 if (File.Exists("UpdateFinalizeLog.txt")) File.Delete("UpdateFinalizeLog.txt");
             } catch (Exception e)
@@ -980,9 +983,10 @@ namespace TcNo_Acc_Switcher_Updater
             // Decompressed to a test area
             _ = Directory.CreateDirectory("temp_update");
             SetStatusAndLog("Extracting patch files");
-            using (var archiveFile = new ArchiveFile(updateFilePath))
+            using (var archive = SevenZipArchive.Open(updateFilePath))
             {
-                archiveFile.Extract("temp_update"); // extract all
+                foreach (var entry in archive.Entries.Where(e => !e.IsDirectory))
+                    entry.WriteToDirectory("temp_update", new ExtractionOptions { ExtractFullPath = true, Overwrite = true });
             }
 
             SetStatusAndLog("Applying patch...");

@@ -161,9 +161,7 @@ move /Y "TcNo-Acc-Switcher-Updater.runtimeconfig.json" "updater\TcNo-Acc-Switche
 move /Y "TcNo-Acc-Switcher-Updater.pdb" "updater\TcNo-Acc-Switcher-Updater.pdb"
 copy /B /Y "TcNo-Acc-Switcher-Updater.dll" "updater\TcNo-Acc-Switcher-Updater.dll"
 move /Y "TcNo-Acc-Switcher-Updater.deps.json" "updater\TcNo-Acc-Switcher-Updater.deps.json"
-copy /B /Y "SevenZipExtractor.dll" "updater\SevenZipExtractor.dll"
-copy /Y "x86\7z.dll" "updater\x86\7z.dll"
-copy /Y "x64\7z.dll" "updater\x64\7z.dll"
+
 copy /B /Y "Microsoft.IO.RecyclableMemoryStream.dll" "updater\Microsoft.IO.RecyclableMemoryStream.dll"
 copy /B /Y "Newtonsoft.Json.dll" "updater\Newtonsoft.Json.dll"
 
