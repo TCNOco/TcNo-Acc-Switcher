@@ -81,6 +81,3 @@ deploy:
     prerelease: false
     on:
       APPVEYOR_REPO_TAG: true
-  - provider: GitHub
-    on:
-      APPVEYOR_REPO_BRANCH: beta
