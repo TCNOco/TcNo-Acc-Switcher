@@ -806,7 +806,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 else
                     latestVersion = Globals.DownloadString("https://tcno.co/Projects/AccSwitcher/api?debug&v=" + Globals.Version);
 #else
-                if (File.Exists(Path.Join(MainAppDataFolder, "beta.txt")))
+                if (File.Exists("beta.txt"))
                     latestVersion = Globals.DownloadString("https://tcno.co/Projects/AccSwitcher/api?beta&v=" + Globals.Version);
                 else
                     latestVersion = Globals.DownloadString("https://tcno.co/Projects/AccSwitcher/api?v=" + Globals.Version);
