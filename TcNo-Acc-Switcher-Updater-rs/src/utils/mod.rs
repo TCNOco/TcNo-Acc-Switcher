@@ -53,15 +53,48 @@ pub fn get_app_data_folder() -> Result<PathBuf, io::Error> {
 }
 
 pub fn get_user_data_folder(app_data: &PathBuf) -> Result<PathBuf, io::Error> {
-    let userdata_path_file = app_data.join("userdata_path.txt");
+    // Check for userdata_path.txt in multiple locations (in order of priority):
+    // 1. Current directory (where exe is running)
+    // 2. Parent directory of exe (../)
+    // 3. App data folder (parent of exe directory)
     
-    if userdata_path_file.exists() {
-        let lines = read_all_lines(&userdata_path_file)?;
-        if let Some(first_line) = lines.first() {
-            return Ok(PathBuf::from(first_line.trim()));
+    // Try current directory first
+    if let Ok(exe_path) = std::env::current_exe() {
+        if let Some(exe_dir) = exe_path.parent() {
+            let current_dir_file = exe_dir.join("userdata_path.txt");
+            if current_dir_file.exists() {
+                if let Ok(lines) = read_all_lines(&current_dir_file) {
+                    if let Some(first_line) = lines.first() {
+                        return Ok(PathBuf::from(first_line.trim()));
+                    }
+                }
+            }
+            
+            // Try parent directory
+            if let Some(parent_dir) = exe_dir.parent() {
+                let parent_dir_file = parent_dir.join("userdata_path.txt");
+                if parent_dir_file.exists() {
+                    if let Ok(lines) = read_all_lines(&parent_dir_file) {
+                        if let Some(first_line) = lines.first() {
+                            return Ok(PathBuf::from(first_line.trim()));
+                        }
+                    }
+                }
+            }
         }
     }
     
+    // Try app data folder (original behavior)
+    let userdata_path_file = app_data.join("userdata_path.txt");
+    if userdata_path_file.exists() {
+        if let Ok(lines) = read_all_lines(&userdata_path_file) {
+            if let Some(first_line) = lines.first() {
+                return Ok(PathBuf::from(first_line.trim()));
+            }
+        }
+    }
+    
+    // Fallback to default AppData location
     let app_data_path = dirs::data_dir()
         .ok_or_else(|| io::Error::new(io::ErrorKind::NotFound, "Cannot get AppData directory"))?;
     
@@ -74,15 +107,74 @@ pub fn get_main_app_data_folder() -> Result<PathBuf, io::Error> {
 }
 
 pub fn get_version() -> Result<String, io::Error> {
-    let window_settings = get_user_data_folder(&get_app_data_folder()?)?
-        .join("WindowSettings.json");
+    // First try: Direct read from %AppData%\TcNo Account Switcher\WindowSettings.json
+    let app_data_path = dirs::data_dir()
+        .ok_or_else(|| io::Error::new(io::ErrorKind::NotFound, "Cannot get AppData directory"))?;
+    let default_window_settings = app_data_path.join("TcNo Account Switcher").join("WindowSettings.json");
     
-    if window_settings.exists() {
-        let content = read_all_text(&window_settings)?;
-        let json: Value = serde_json::from_str(&content)?;
-        
-        if let Some(version) = json.get("Version").and_then(|v| v.as_str()) {
-            return Ok(version.to_string());
+    eprintln!("Checking for WindowSettings.json at: {}", default_window_settings.display());
+    if default_window_settings.exists() {
+        eprintln!("Found WindowSettings.json at default location");
+        if let Ok(content) = read_all_text(&default_window_settings) {
+            if let Ok(json) = serde_json::from_str::<Value>(&content) {
+                if let Some(version) = json.get("Version").and_then(|v| v.as_str()) {
+                    if !version.is_empty() {
+                        eprintln!("Read version from default location: {}", version);
+                        return Ok(version.to_string());
+                    } else {
+                        eprintln!("Version field is empty in default location");
+                    }
+                } else {
+                    eprintln!("Version field not found in default location JSON");
+                }
+            } else {
+                eprintln!("Failed to parse JSON from default location");
+            }
+        } else {
+            eprintln!("Failed to read file from default location");
+        }
+    } else {
+        eprintln!("WindowSettings.json not found at default location");
+    }
+    
+    // Second try: Use get_user_data_folder() to find userdata path, then read WindowSettings.json from there
+    match get_app_data_folder() {
+        Ok(app_data) => {
+            match get_user_data_folder(&app_data) {
+                Ok(user_data) => {
+                    let window_settings = user_data.join("WindowSettings.json");
+                    eprintln!("Checking for WindowSettings.json at: {}", window_settings.display());
+                    if window_settings.exists() {
+                        eprintln!("Found WindowSettings.json at user data location");
+                        if let Ok(content) = read_all_text(&window_settings) {
+                            if let Ok(json) = serde_json::from_str::<Value>(&content) {
+                                if let Some(version) = json.get("Version").and_then(|v| v.as_str()) {
+                                    if !version.is_empty() {
+                                        eprintln!("Read version from user data location: {}", version);
+                                        return Ok(version.to_string());
+                                    } else {
+                                        eprintln!("Version field is empty in user data location");
+                                    }
+                                } else {
+                                    eprintln!("Version field not found in user data location JSON");
+                                }
+                            } else {
+                                eprintln!("Failed to parse JSON from user data location");
+                            }
+                        } else {
+                            eprintln!("Failed to read file from user data location");
+                        }
+                    } else {
+                        eprintln!("WindowSettings.json not found at user data location");
+                    }
+                }
+                Err(e) => {
+                    eprintln!("Failed to get user data folder: {}", e);
+                }
+            }
+        }
+        Err(e) => {
+            eprintln!("Failed to get app data folder: {}", e);
         }
     }
     

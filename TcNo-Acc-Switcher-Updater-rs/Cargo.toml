@@ -30,6 +30,11 @@ sevenz-rust = "0.1.5"
 md5 = "0.7"
 sha2 = "0.10"
 
+# VCDiff for binary patching (matches C# VCDiff 4.0.1)
+# Using pure Rust VCDiff decoder for applying patches
+# Encoding is only needed when creating updates (typically done by C# version)
+vcdiff-decoder = "1.0.0"
+
 # File operations
 walkdir = "2.5"
 

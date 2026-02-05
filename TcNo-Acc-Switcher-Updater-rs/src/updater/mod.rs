@@ -48,7 +48,18 @@ impl Updater {
         }
         
         // Get version from WindowSettings.json (fallback to empty string if not found)
-        let current_version = utils::get_version().unwrap_or_default();
+        // Empty version means we'll need to use verify mode
+        let current_version = match utils::get_version() {
+            Ok(v) => {
+                eprintln!("Read version from WindowSettings.json: {}", v);
+                v
+            }
+            Err(e) => {
+                eprintln!("Failed to read version from WindowSettings.json: {}", e);
+                eprintln!("Will use verify mode");
+                String::new()
+            }
+        };
         
         let window_settings = utils::get_user_data_folder(&app_data)?
             .join("WindowSettings.json");
@@ -444,6 +455,10 @@ impl Updater {
         &self.latest_version
     }
     
+    pub fn set_latest_version(&mut self, version: &str) {
+        self.latest_version = version.to_string();
+    }
+    
     /// Move pre 2021-07-05 Documents userdata folder into AppData.
     pub fn old_documents_to_app_data(&self) -> Result<(), Box<dyn std::error::Error>> {
         let documents_folder = dirs::document_dir()
@@ -526,6 +541,7 @@ impl Updater {
     }
     
     /// Launch the main TcNo Account Switcher application
+    #[allow(dead_code)] // Public API method for 1-to-1 parity with C# version
     pub fn launch_main_app(&self) -> Result<(), Box<dyn std::error::Error>> {
         let app_data = utils::get_app_data_folder()?;
         let main_exe = app_data.join("TcNo-Acc-Switcher.exe");

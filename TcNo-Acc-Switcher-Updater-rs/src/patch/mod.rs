@@ -13,45 +13,43 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 use std::fs::File;
-use std::io;
+use std::io::{self, Read, Cursor};
 use std::path::Path;
 use crate::utils;
 
 // VCDiff implementation
-// NOTE: This requires FFI bindings to the VCDiff C++ library or a Rust implementation
-// The C# version uses VCDiff NuGet package (version 4.0.1)
-// For now, we detect if the patch file is actually a full file copy (when patch == new file size)
-// and handle it accordingly. Proper VCDiff implementation would require:
-// 1. FFI bindings to open-vcdiff C++ library, OR
-// 2. A pure Rust VCDiff implementation
+// The C# version uses VCDiff NuGet package (version 4.0.1) based on open-vcdiff
+// We use vcdiff-decoder (pure Rust) for decoding patches (applying updates)
+// For encoding (creating patches), we use a fallback that copies the new file
+// Encoding is typically done by the C# version when creating updates, so this is acceptable
 
 pub fn do_encode<P: AsRef<Path>, Q: AsRef<Path>, R: AsRef<Path>>(
     old_file: P,
     new_file: Q,
     patch_file_output: R,
 ) -> Result<(), io::Error> {
-    // TODO: Implement proper VCDiff encoding using open-vcdiff library via FFI
-    // For now, if files are very different in size, copy the new file
-    // Otherwise, we'd create a proper VCDiff patch
+    // Read old file (dictionary)
+    let mut dict_data = Vec::new();
+    File::open(&old_file)?.read_to_end(&mut dict_data)?;
     
-    let old_meta = std::fs::metadata(&old_file)?;
-    let new_meta = std::fs::metadata(&new_file)?;
+    // Read new file (target)
+    let mut target_data = Vec::new();
+    File::open(&new_file)?.read_to_end(&mut target_data)?;
     
-    // If files are significantly different, just copy new file
-    // This is a fallback until proper VCDiff is implemented
-    let size_diff = if old_meta.len() > new_meta.len() {
-        old_meta.len() - new_meta.len()
-    } else {
-        new_meta.len() - old_meta.len()
-    };
-    
-    if size_diff > old_meta.len() / 2 {
-        std::fs::copy(new_file, patch_file_output)?;
-    } else {
-        // For similar-sized files, we'd create a VCDiff patch
-        // For now, copy new file as placeholder
-        std::fs::copy(new_file, patch_file_output)?;
-    }
+    // For encoding, we need to create VCDiff patches
+    // The C# version uses: VcEncoder coder = new(dict, target, output);
+    // with Encode(true, ChecksumFormat.SDCH) - encodes with no checksum and not interleaved
+    // 
+    // Since there's no pure Rust VCDiff encoder readily available, we'll use a fallback:
+    // If files are very similar, try to create a simple diff. Otherwise, copy the new file.
+    // In practice, encoding is typically done by the C# version when creating updates.
+    // 
+    // For now, we'll copy the new file as a fallback. A proper encoder would require:
+    // 1. FFI bindings to open-vcdiff C++ library, OR
+    // 2. A pure Rust VCDiff encoder implementation
+    //
+    // This fallback ensures the updater can still function, though patches won't be optimal.
+    std::fs::copy(new_file, patch_file_output)?;
     
     Ok(())
 }
@@ -62,33 +60,53 @@ pub fn do_decode<P: AsRef<Path>, Q: AsRef<Path>, R: AsRef<Path>>(
     patch_file: Q,
     output_new_file: R,
 ) -> Result<(), io::Error> {
-    // TODO: Implement proper VCDiff decoding using open-vcdiff library via FFI
-    // Check if patch file is actually a VCDiff patch or a full file copy
-    // VCDiff patches typically start with specific magic bytes
+    // Read old file (dictionary)
+    let mut dict_data = Vec::new();
+    File::open(&old_file)?.read_to_end(&mut dict_data)?;
     
+    // Read patch file (delta)
+    let mut patch_data = Vec::new();
+    File::open(&patch_file)?.read_to_end(&mut patch_data)?;
+    
+    // Check if this is actually a VCDiff patch or a full file copy
+    // VCDiff format starts with specific magic bytes (0xd6, 0xc3, 0xc4, 0x00)
+    // If patch file is larger than old file * 2, it's likely a full copy
     let patch_meta = std::fs::metadata(&patch_file)?;
     let old_meta = std::fs::metadata(&old_file)?;
     
-    // Try to detect if this is a VCDiff patch or a full file
-    // VCDiff format has specific header structure
-    let mut patch_reader = std::fs::File::open(&patch_file)?;
-    let mut header = [0u8; 4];
-    let _ = std::io::Read::read(&mut patch_reader, &mut header);
-    
-    // If patch file size is similar to old file, it might be a full copy
-    // Otherwise, try to apply as VCDiff (for now, just copy patch as placeholder)
     if patch_meta.len() > old_meta.len() * 2 {
-        // Likely a full file copy, not a patch
+        // Likely a full file copy, not a patch - just copy it
         std::fs::copy(patch_file, output_new_file)?;
-    } else {
-        // Would apply VCDiff patch here
-        // For now, copy patch file as placeholder
-        // Proper implementation would:
-        // 1. Read old_file as dictionary
-        // 2. Read patch_file as delta
-        // 3. Apply delta to dictionary to create output_new_file
-        std::fs::copy(patch_file, output_new_file)?;
+        return Ok(());
     }
+    
+    // Check for VCDiff magic bytes
+    if patch_data.len() >= 4 {
+        let magic = &patch_data[0..4];
+        // VCDiff format magic: 0xd6, 0xc3, 0xc4, 0x00
+        if magic != [0xd6, 0xc3, 0xc4, 0x00] {
+            // Not a VCDiff patch, likely a full file copy
+            std::fs::copy(patch_file, output_new_file)?;
+            return Ok(());
+        }
+    }
+    
+    // Create VCDiff decoder using pure Rust implementation
+    // The C# version uses: VcDecoder decoder = new(dict, target, output);
+    // with Decode(out _) - the header must be available before first call
+    // vcdiff-decoder provides apply_patch(patch, src, sink) where:
+    // - patch: Read+Seek containing patch data
+    // - src: Option<Read+Seek> containing source (dictionary) data
+    // - sink: Write that receives the patched data
+    let mut patch_cursor = Cursor::new(patch_data);
+    let mut source_cursor = Cursor::new(dict_data);
+    let mut output_buffer = Vec::new();
+    
+    vcdiff_decoder::apply_patch(&mut patch_cursor, Some(&mut source_cursor), &mut output_buffer)
+        .map_err(|e| io::Error::new(io::ErrorKind::Other, format!("VCDiff decoding failed: {}", e)))?;
+    
+    // Write decoded file to output
+    std::fs::write(output_new_file, output_buffer)?;
     
     Ok(())
 }
