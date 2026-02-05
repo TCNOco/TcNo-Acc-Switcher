@@ -80,9 +80,27 @@ export const uploadDirectory = async (sourceDirectory, targetDirectory, options 
 
 async function uploadFiles() {
   try {
+    // detect branch / tag and choose target
+    const branchName = (process.env.APPVEYOR_REPO_BRANCH || process.env.BRANCH_NAME || process.env.GIT_BRANCH || '').toLowerCase();
+    const isTag = !!(process.env.APPVEYOR_REPO_TAG || process.env.APPVEYOR_REPO_TAG_NAME || process.env.APPVEYOR_REPO_TAG_NAME);
+    const isBeta = branchName === 'beta' || branchName.includes('beta');
+
+    let latestDir;
+    if (isTag) {
+      latestDir = 'Projects/AccSwitcher/latest';
+    } else if (isBeta) {
+      latestDir = 'Projects/AccSwitcher/latest_beta';
+    } else {
+      console.log(`Skipping upload: branch="${branchName}" and not a tag.`);
+      return;
+    }
+
+    const dateVersion = process.env.DATEVERSION || process.env.APPVEYOR_BUILD_VERSION || new Date().toISOString().replace(/[:.]/g, '-');
+    console.log(`Branch: ${branchName || 'unknown'}, isTag: ${isTag}, uploading to ${latestDir}, dateVersion: ${dateVersion}`);
+
     await uploadDirectory(
       "TcNo-Acc-Switcher-Client\\bin\\x64\\Release\\TcNo-Acc-Switcher",
-      "Projects/AccSwitcher/latest",
+      latestDir,
       options
     );
     console.log("All files and folders uploaded successfully.");
@@ -90,14 +108,14 @@ async function uploadFiles() {
     // Upload Hashes
     await uploadFile(
       'TcNo-Acc-Switcher-Client\\bin\\x64\\Release\\UpdateOutput\\hashes.json',
-      'Projects/AccSwitcher/latest/hashes.json', 
+      `${latestDir}/hashes.json`,
       options
     );
     console.log("hashes.json uploaded.");
 
     await uploadFile(
       'TcNo-Acc-Switcher-Client\\bin\\x64\\Release\\UpdateDiff.7z',
-      `Projects/AccSwitcher/updates/${process.env.DATEVERSION}.7z`,
+      `Projects/AccSwitcher/updates/${dateVersion}.7z`,
       options
     );
   } catch (error) {

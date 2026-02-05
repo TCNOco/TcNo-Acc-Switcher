@@ -1,6 +1,11 @@
 version: 1.0.0.{build}
-skip_non_tags: true
+# allow branch builds for specific branches (beta); keep tag builds intact
+# skip_non_tags: false
 skip_branch_with_pr: true
+
+branches:
+  only:
+    - beta
 
 matrix:
   fast_finish: true
@@ -16,7 +21,6 @@ environment:
   VCPKG_BUILD_TYPE: release
   FTP_PASSWORD:
     secure: q67YmNsPhzdJWqWnpYp1of9wO2+Q2rexS+dKrQ5BEi11TvfQR9YvgRJlHY0ePmfk
-  DATEVERSION: $(APPVEYOR_REPO_TAG_NAME)
 
 pull_requests:
   do_not_increment_build_number: true
@@ -51,7 +55,10 @@ build_script:
       cd other
       npm install
       cd ..
-  - cmd: node other/upload-to-ftp.js
+  - cmd: |
+      set DATEVERSION=%APPVEYOR_REPO_TAG_NAME%
+      if "%DATEVERSION%"=="" set DATEVERSION=%APPVEYOR_BUILD_VERSION%
+      node other/upload-to-ftp.js
 
 # on_finish:
 #   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
