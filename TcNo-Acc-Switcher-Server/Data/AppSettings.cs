@@ -800,9 +800,15 @@ namespace TcNo_Acc_Switcher_Server.Data
             try
             {
 #if DEBUG
-                var latestVersion = Globals.DownloadString("https://tcno.co/Projects/AccSwitcher/api?debug&v=" + Globals.Version);
+                if (File.Exists(Path.Join(MainAppDataFolder, "beta.txt")))
+                    latestAvailable = client.DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api?beta&debug&v=" + Globals.Version));
+                else
+                    var latestVersion = Globals.DownloadString("https://tcno.co/Projects/AccSwitcher/api?debug&v=" + Globals.Version);
 #else
-                var latestVersion = Globals.DownloadString("https://tcno.co/Projects/AccSwitcher/api?v=" + Globals.Version);
+                if (File.Exists(Path.Join(MainAppDataFolder, "beta.txt")))
+                    latestAvailable = client.DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api?beta&v=" + Globals.Version));
+                else
+                    var latestVersion = Globals.DownloadString("https://tcno.co/Projects/AccSwitcher/api?v=" + Globals.Version);
 #endif
                 if (CheckLatest(latestVersion)) return;
                 // Show notification
@@ -865,7 +871,10 @@ namespace TcNo_Acc_Switcher_Server.Data
                 Directory.SetCurrentDirectory(Globals.AppDataFolder);
                 // Download latest hash list
                 var hashFilePath = Path.Join(Globals.UserDataFolder, "hashes.json");
-                Globals.DownloadFile("https://tcno.co/Projects/AccSwitcher/latest/hashes.json", hashFilePath);
+                if (File.Exists(Path.Join(MainAppDataFolder, "beta.txt")))
+                    Globals.DownloadFile("https://tcno.co/Projects/AccSwitcher/latest/hashes_beta.json", hashFilePath);
+                else
+                    Globals.DownloadFile("https://tcno.co/Projects/AccSwitcher/latest/hashes.json", hashFilePath);
 
                 // Verify updater files
                 var verifyDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(Globals.ReadAllText(hashFilePath));
@@ -884,7 +893,10 @@ namespace TcNo_Acc_Switcher_Server.Data
                     if (key == null) continue;
                     if (File.Exists(key) && value == GeneralFuncs.GetFileMd5(key))
                         continue;
-                    Globals.DownloadFile("https://tcno.co/Projects/AccSwitcher/latest/" + key.Replace('\\', '/'), key);
+                    if (File.Exists(Path.Join(MainAppDataFolder, "beta.txt")))
+                        Globals.DownloadFile("https://tcno.co/Projects/AccSwitcher/latest_beta/" + key.Replace('\\', '/'), key);
+                    else
+                        Globals.DownloadFile("https://tcno.co/Projects/AccSwitcher/latest/" + key.Replace('\\', '/'), key);
                 }
 
                 _ = GeneralInvocableFuncs.ShowToast("success", Lang["Toast_UpdatesDownloaded"], renderTo: "toastarea");

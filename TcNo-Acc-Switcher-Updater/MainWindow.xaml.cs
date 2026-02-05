@@ -541,11 +541,19 @@ namespace TcNo_Acc_Switcher_Updater
             SetStatus("Checking latest version number");
             var client = new WebClient();
 #if DEBUG
-            latestAvailable = client.DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api?debug&v=" +
-                                              _currentVersion));
+            if (File.Exists("beta.txt") || File.Exists(Path.Join(MainAppDataFolder, "beta.txt")))
+                latestAvailable = client.DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api?beta&debug&v=" +
+                                                  _currentVersion));
+            else
+                latestAvailable = client.DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api?debug&v=" +
+                                                  _currentVersion));
 #else
-             latestAvailable = client.DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api?v=" +
-                                                          _currentVersion));
+            if (File.Exists("beta.txt") || File.Exists(Path.Join(MainAppDataFolder, "beta.txt")))
+                latestAvailable = client.DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api?beta&v=" +
+                                                  _currentVersion));
+            else
+                latestAvailable = client.DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api?v=" +
+                                                            _currentVersion));
 #endif
             DoUpdate(cef: true);
         }

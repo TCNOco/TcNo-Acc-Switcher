@@ -48,7 +48,7 @@ namespace TcNo_Acc_Switcher_Client
     {
         private static readonly Thread Server = new(RunServer);
         private static string _address = "";
-        private readonly string _mainBrowser = AppSettings.ActiveBrowser; // <CEF/WebView>
+        private string _mainBrowser = AppSettings.ActiveBrowser; // <CEF/WebView>
 
         private static void RunServer()
         {
@@ -159,7 +159,7 @@ namespace TcNo_Acc_Switcher_Client
                     }
 
                     // Verify CEF is initialized before creating browser
-                    if (!Cef.IsInitialized)
+                    if ((bool)!Cef.IsInitialized)
                     {
                         Globals.WriteToLog("CEF initialization completed but Cef.IsInitialized is false. Switching to WebView2.");
                         AppSettings.ActiveBrowser = "WebView";
@@ -259,7 +259,7 @@ namespace TcNo_Acc_Switcher_Client
             Globals.DebugWriteLine(@"[Func:(Client-CEF)MainWindow.xaml.cs.InitializeChromium]");
             
             // Check if CEF is already initialized
-            if (Cef.IsInitialized)
+            if ((bool)Cef.IsInitialized)
             {
                 return true;
             }
@@ -279,7 +279,7 @@ namespace TcNo_Acc_Switcher_Client
                 Cef.Initialize(settings);
                 
                 // Verify initialization succeeded
-                if (!Cef.IsInitialized)
+                if ((bool)!Cef.IsInitialized)
                 {
                     Globals.WriteToLog("CEF.Initialize() completed but Cef.IsInitialized is false.");
                     return false;
