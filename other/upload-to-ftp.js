@@ -122,6 +122,26 @@ async function uploadFiles() {
       `Projects/AccSwitcher/updates/${dateVersion}.7z`,
       options
     );
+
+    // If this is a beta build, also upload the built artifact found under the upload folder
+    if (isBeta) {
+      try {
+        const artifactPattern = `${path.resolve('TcNo-Acc-Switcher-Client\\bin\\x64\\Release\\upload\\*.7z').replace(/\\/g, '/')}`;
+        console.log(`Looking for artifacts with pattern: ${artifactPattern}`);
+        const artifacts = await globby(artifactPattern, { onlyFiles: true, absolute: true });
+        console.log(`Artifacts found: ${artifacts.length}`);
+        if (artifacts.length > 0) {
+          const artifactPath = artifacts[0];
+          console.log(`Uploading beta artifact ${artifactPath} as TcNo-Acc-Switcher_Beta.7z`);
+          await uploadFile(artifactPath, `Projects/AccSwitcher/updates/TcNo-Acc-Switcher_Beta.7z`, options);
+          console.log('Beta artifact uploaded.');
+        } else {
+          console.log('No beta artifact found to upload.');
+        }
+      } catch (err) {
+        console.error('Error while uploading beta artifact:', err);
+      }
+    }
   } catch (error) {
     console.error('Error during upload:', error);
     process.exit(1);
