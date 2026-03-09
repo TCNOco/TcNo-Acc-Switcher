@@ -707,8 +707,15 @@ namespace TcNo_Acc_Switcher_Updater
             try
             {
                 var downloadUrl = "";
-                if (cef) downloadUrl = $"https://github.com/TCNOco/TcNo-Acc-Switcher/releases/download/{_latestVersion}/TcNo-Acc-Switcher_and_CEF_{_latestVersion}.7z";
-                else downloadUrl = $"https://github.com/TCNOco/TcNo-Acc-Switcher/releases/download/{_latestVersion}/TcNo-Acc-Switcher_{_latestVersion}.7z";
+                if (File.Exists("beta.txt") || File.Exists(Path.Join(MainAppDataFolder, "beta.txt")))
+                {
+                    downloadUrl = $"https://cdn.tcno.co/Projects/AccSwitcher/updates/TcNo-Acc-Switcher_Beta.7z";
+                }
+                else
+                {
+                    if (cef) downloadUrl = $"https://github.com/TCNOco/TcNo-Acc-Switcher/releases/download/{_latestVersion}/TcNo-Acc-Switcher_and_CEF_{_latestVersion}.7z";
+                    else downloadUrl = $"https://github.com/TCNOco/TcNo-Acc-Switcher/releases/download/{_latestVersion}/TcNo-Acc-Switcher_{_latestVersion}.7z";
+                }
                 WriteLine("Downloading from: " + downloadUrl);
                 updateFilePath = Path.Join(_updaterDirectory, _latestVersion + ".7z");
                 if (File.Exists(updateFilePath)) File.Delete(updateFilePath);

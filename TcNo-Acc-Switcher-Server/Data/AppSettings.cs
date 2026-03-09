@@ -873,7 +873,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 // Download latest hash list
                 var hashFilePath = Path.Join(Globals.UserDataFolder, "hashes.json");
                 if (File.Exists("beta.txt"))
-                    Globals.DownloadFile("https://tcno.co/Projects/AccSwitcher/latest/hashes_beta.json", hashFilePath);
+                    Globals.DownloadFile("https://tcno.co/Projects/AccSwitcher/latest_beta/hashes.json", hashFilePath);
                 else
                     Globals.DownloadFile("https://tcno.co/Projects/AccSwitcher/latest/hashes.json", hashFilePath);
 
