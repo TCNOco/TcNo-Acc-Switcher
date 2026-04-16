@@ -21,8 +21,8 @@ export interface Size {
 export interface Screen {
     isCurrent: boolean;
     isPrimary: boolean;
-    width: number
-    height: number
+    width : number
+    height : number
 }
 
 // Environment information such as platform, buildtype, ...
@@ -38,22 +38,22 @@ export interface EnvironmentInfo {
 export function EventsEmit(eventName: string, ...data: any): void;
 
 // [EventsOn](https://wails.io/docs/reference/runtime/events#eventson) sets up a listener for the given event name.
-export function EventsOn(eventName: string, callback: (...data: any) => void): void;
+export function EventsOn(eventName: string, callback: (...data: any) => void): () => void;
 
 // [EventsOnMultiple](https://wails.io/docs/reference/runtime/events#eventsonmultiple)
 // sets up a listener for the given event name, but will only trigger a given number times.
-export function EventsOnMultiple(eventName: string, callback: (...data: any) => void, maxCallbacks: number): void;
+export function EventsOnMultiple(eventName: string, callback: (...data: any) => void, maxCallbacks: number): () => void;
 
 // [EventsOnce](https://wails.io/docs/reference/runtime/events#eventsonce)
 // sets up a listener for the given event name, but will only trigger once.
-export function EventsOnce(eventName: string, callback: (...data: any) => void): void;
+export function EventsOnce(eventName: string, callback: (...data: any) => void): () => void;
 
-// [EventsOff](https://wails.io/docs/reference/runtime/events#eventsff)
+// [EventsOff](https://wails.io/docs/reference/runtime/events#eventsoff)
 // unregisters the listener for the given event name.
-export function EventsOff(eventName: string): void;
+export function EventsOff(eventName: string, ...additionalEventNames: string[]): void;
 
 // [EventsOffAll](https://wails.io/docs/reference/runtime/events#eventsoffall)
-// unregisters all event listeners.
+// unregisters all listeners.
 export function EventsOffAll(): void;
 
 // [LogPrint](https://wails.io/docs/reference/runtime/log#logprint)
@@ -128,6 +128,10 @@ export function WindowFullscreen(): void;
 // Restores the previous window dimensions and position prior to full screen.
 export function WindowUnfullscreen(): void;
 
+// [WindowIsFullscreen](https://wails.io/docs/reference/runtime/window#windowisfullscreen)
+// Returns the state of the window, i.e. whether the window is in full screen mode or not.
+export function WindowIsFullscreen(): Promise<boolean>;
+
 // [WindowSetSize](https://wails.io/docs/reference/runtime/window#windowsetsize)
 // Sets the width and height of the window.
 export function WindowSetSize(width: number, height: number): void;
@@ -174,6 +178,10 @@ export function WindowToggleMaximise(): void;
 // Restores the window to the dimensions and position prior to maximising.
 export function WindowUnmaximise(): void;
 
+// [WindowIsMaximised](https://wails.io/docs/reference/runtime/window#windowismaximised)
+// Returns the state of the window, i.e. whether the window is maximised or not.
+export function WindowIsMaximised(): Promise<boolean>;
+
 // [WindowMinimise](https://wails.io/docs/reference/runtime/window#windowminimise)
 // Minimises the window.
 export function WindowMinimise(): void;
@@ -181,6 +189,14 @@ export function WindowMinimise(): void;
 // [WindowUnminimise](https://wails.io/docs/reference/runtime/window#windowunminimise)
 // Restores the window to the dimensions and position prior to minimising.
 export function WindowUnminimise(): void;
+
+// [WindowIsMinimised](https://wails.io/docs/reference/runtime/window#windowisminimised)
+// Returns the state of the window, i.e. whether the window is minimised or not.
+export function WindowIsMinimised(): Promise<boolean>;
+
+// [WindowIsNormal](https://wails.io/docs/reference/runtime/window#windowisnormal)
+// Returns the state of the window, i.e. whether the window is normal or not.
+export function WindowIsNormal(): Promise<boolean>;
 
 // [WindowSetBackgroundColour](https://wails.io/docs/reference/runtime/window#windowsetbackgroundcolour)
 // Sets the background colour of the window to the given RGBA colour definition. This colour will show through for all transparent pixels.
@@ -209,3 +225,106 @@ export function Hide(): void;
 // [Show](https://wails.io/docs/reference/runtime/intro#show)
 // Shows the application.
 export function Show(): void;
+
+// [ClipboardGetText](https://wails.io/docs/reference/runtime/clipboard#clipboardgettext)
+// Returns the current text stored on clipboard
+export function ClipboardGetText(): Promise<string>;
+
+// [ClipboardSetText](https://wails.io/docs/reference/runtime/clipboard#clipboardsettext)
+// Sets a text on the clipboard
+export function ClipboardSetText(text: string): Promise<boolean>;
+
+// [OnFileDrop](https://wails.io/docs/reference/runtime/draganddrop#onfiledrop)
+// OnFileDrop listens to drag and drop events and calls the callback with the coordinates of the drop and an array of path strings.
+export function OnFileDrop(callback: (x: number, y: number ,paths: string[]) => void, useDropTarget: boolean) :void
+
+// [OnFileDropOff](https://wails.io/docs/reference/runtime/draganddrop#dragandddropoff)
+// OnFileDropOff removes the drag and drop listeners and handlers.
+export function OnFileDropOff() :void
+
+// Check if the file path resolver is available
+export function CanResolveFilePaths(): boolean;
+
+// Resolves file paths for an array of files
+export function ResolveFilePaths(files: File[]): void
+
+// Notification types
+export interface NotificationOptions {
+    id: string;
+    title: string;
+    subtitle?: string; // macOS and Linux only
+    body?: string;
+    categoryId?: string;
+    data?: { [key: string]: any };
+}
+
+export interface NotificationAction {
+    id?: string;
+    title?: string;
+    destructive?: boolean; // macOS-specific
+}
+
+export interface NotificationCategory {
+    id?: string;
+    actions?: NotificationAction[];
+    hasReplyField?: boolean;
+    replyPlaceholder?: string;
+    replyButtonTitle?: string;
+}
+
+// [InitializeNotifications](https://wails.io/docs/reference/runtime/notification#initializenotifications)
+// Initializes the notification service for the application.
+// This must be called before sending any notifications.
+export function InitializeNotifications(): Promise<void>;
+
+// [CleanupNotifications](https://wails.io/docs/reference/runtime/notification#cleanupnotifications)
+// Cleans up notification resources and releases any held connections.
+export function CleanupNotifications(): Promise<void>;
+
+// [IsNotificationAvailable](https://wails.io/docs/reference/runtime/notification#isnotificationavailable)
+// Checks if notifications are available on the current platform.
+export function IsNotificationAvailable(): Promise<boolean>;
+
+// [RequestNotificationAuthorization](https://wails.io/docs/reference/runtime/notification#requestnotificationauthorization)
+// Requests notification authorization from the user (macOS only).
+export function RequestNotificationAuthorization(): Promise<boolean>;
+
+// [CheckNotificationAuthorization](https://wails.io/docs/reference/runtime/notification#checknotificationauthorization)
+// Checks the current notification authorization status (macOS only).
+export function CheckNotificationAuthorization(): Promise<boolean>;
+
+// [SendNotification](https://wails.io/docs/reference/runtime/notification#sendnotification)
+// Sends a basic notification with the given options.
+export function SendNotification(options: NotificationOptions): Promise<void>;
+
+// [SendNotificationWithActions](https://wails.io/docs/reference/runtime/notification#sendnotificationwithactions)
+// Sends a notification with action buttons. Requires a registered category.
+export function SendNotificationWithActions(options: NotificationOptions): Promise<void>;
+
+// [RegisterNotificationCategory](https://wails.io/docs/reference/runtime/notification#registernotificationcategory)
+// Registers a notification category that can be used with SendNotificationWithActions.
+export function RegisterNotificationCategory(category: NotificationCategory): Promise<void>;
+
+// [RemoveNotificationCategory](https://wails.io/docs/reference/runtime/notification#removenotificationcategory)
+// Removes a previously registered notification category.
+export function RemoveNotificationCategory(categoryId: string): Promise<void>;
+
+// [RemoveAllPendingNotifications](https://wails.io/docs/reference/runtime/notification#removeallpendingnotifications)
+// Removes all pending notifications from the notification center.
+export function RemoveAllPendingNotifications(): Promise<void>;
+
+// [RemovePendingNotification](https://wails.io/docs/reference/runtime/notification#removependingnotification)
+// Removes a specific pending notification by its identifier.
+export function RemovePendingNotification(identifier: string): Promise<void>;
+
+// [RemoveAllDeliveredNotifications](https://wails.io/docs/reference/runtime/notification#removealldeliverednotifications)
+// Removes all delivered notifications from the notification center.
+export function RemoveAllDeliveredNotifications(): Promise<void>;
+
+// [RemoveDeliveredNotification](https://wails.io/docs/reference/runtime/notification#removedeliverednotification)
+// Removes a specific delivered notification by its identifier.
+export function RemoveDeliveredNotification(identifier: string): Promise<void>;
+
+// [RemoveNotification](https://wails.io/docs/reference/runtime/notification#removenotification)
+// Removes a notification by its identifier (cross-platform convenience function).
+export function RemoveNotification(identifier: string): Promise<void>;
