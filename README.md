@@ -49,6 +49,10 @@ This project started very long ago and through so many rewrites has ended up wit
 
 Yeah. Better performance, compiled instead of JIT and cross-platform compatibility. While C# offers some cross-platform compatability, I'd prefer a MUCH smaller package without a copy of .NET runtime included. While I fear Go might end up a little verbose with the error handling, I would hope this is a good idea for more stable, faster performance.
 
+### AI?
+
+The TcNo Account Switcher started off as one of my first big projects. Back when StackOverflow was the go-to. Vibe coding is great for throw away projects or small tools, but this isn't one of them. The most I'll be using is Ask mode. This project focuses on security, stability and performance.
+
 
 #### Disclaimer
 
