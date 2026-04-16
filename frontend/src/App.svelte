@@ -1,4 +1,5 @@
 <script lang="ts">
+  import TitleBar from './components/TitleBar.svelte'
   import {Events} from "@wailsio/runtime";
   import {GreetService} from "../bindings/changeme";
 
@@ -24,6 +25,7 @@
 </script>
 
 <div class="container">
+  <TitleBar />
   <div>
     <span data-wml-openURL="https://wails.io">
       <img src="/wails.png" class="logo" alt="Wails logo"/>

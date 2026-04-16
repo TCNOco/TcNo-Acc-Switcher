@@ -5,4 +5,11 @@ import wails from "@wailsio/runtime/plugins/vite";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [svelte(), wails("./bindings")],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: "modern", // or "modern-compiler"
+      },
+    },
+  },
 });

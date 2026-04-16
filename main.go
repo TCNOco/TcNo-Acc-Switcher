@@ -35,8 +35,8 @@ func main() {
 	// 'Bind' is a list of Go struct instances. The frontend has access to the methods of these instances.
 	// 'Mac' options tailor the application when running an macOS.
 	app := application.New(application.Options{
-		Name:        "TcNo-Acc-Switcher",
-		Description: "A demo of using raw HTML & CSS",
+		Name:        "TcNo Account Switcher",
+		Description: "A Superfast open-source account switcher",
 		Services: []application.Service{
 			application.NewService(&GreetService{}),
 		},
@@ -62,6 +62,7 @@ func main() {
 		},
 		BackgroundColour: application.NewRGB(27, 38, 54),
 		URL:              "/",
+		Frameless:        true,
 	})
 
 	// Create a goroutine that emits an event containing the current time every second.
