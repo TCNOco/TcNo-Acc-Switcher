@@ -1,55 +1,33 @@
 <script lang="ts">
   import TitleBar from './components/TitleBar.svelte'
-  import {Events} from "@wailsio/runtime";
   import ActionBar from './components/ActionBar.svelte';
-  import {GreetService} from "../bindings/changeme";
 
-  let name: string = '';
-  let result: string = 'Please enter your name below 👇';
-  let time: string = 'Listening for Time event...';
-
-  const doGreet = (): void => {
-    let localName = name;
-    if (!localName) {
-      localName = 'anonymous';
-    }
-    GreetService.Greet(localName).then((resultValue: string) => {
-      result = resultValue;
-    }).catch((err: any) => {
-      console.log(err);
-    });
-  }
-
-  Events.On('time', (timeValue: any) => {
-    time = timeValue.data;
-  });
+  import Home from './pages/Home.svelte'
+  import Settings from './pages/Settings.svelte'
+  import Platform from './pages/Platform.svelte'
+  import PlatformSettings from './pages/PlatformSettings.svelte'
+  import ManagePlatforms from './pages/ManagePlatforms.svelte'
+  import { route } from './stores/nav'
 </script>
 
 <div class="container">
   <TitleBar />
+
   <div class="page">
     <div class="content">
-      <div>
-        <span data-wml-openURL="https://wails.io">
-          <img src="/wails.png" class="logo" alt="Wails logo"/>
-        </span>
-        <span data-wml-openURL="https://svelte.dev">
-          <img src="/svelte.svg" class="logo svelte" alt="Svelte logo"/>
-        </span>
-      </div>
-      <h1>Wails + Svelte</h1>
-      <div aria-label="result" class="result">{result}</div>
-      <div class="card">
-        <div class="input-box">
-          <input aria-label="input" class="input" bind:value={name} type="text" autocomplete="off"/>
-          <button aria-label="greet-btn" class="btn" on:click={doGreet}>Greet</button>
-        </div>
-      </div>
-      <div class="footer">
-        <div><p>Click on the Wails logo to learn more</p></div>
-        <div><p>{time}</p></div>
-      </div>
+      {#if $route.page === 'home'}
+        <Home />
+      {:else if $route.page === 'settings'}
+        <Settings />
+      {:else if $route.page === 'platform'}
+        <Platform name={$route.platformName} />
+      {:else if $route.page === 'platform-settings'}
+        <PlatformSettings name={$route.platformName} />
+      {:else if $route.page === 'manage-platforms'}
+        <ManagePlatforms />
+      {/if}
     </div>
+
     <ActionBar />
   </div>
 </div>
