@@ -1,6 +1,7 @@
 <script lang="ts">
   import TitleBar from './components/TitleBar.svelte'
   import {Events} from "@wailsio/runtime";
+  import ActionBar from './components/ActionBar.svelte';
   import {GreetService} from "../bindings/changeme";
 
   let name: string = '';
@@ -26,28 +27,52 @@
 
 <div class="container">
   <TitleBar />
-  <div>
-    <span data-wml-openURL="https://wails.io">
-      <img src="/wails.png" class="logo" alt="Wails logo"/>
-    </span>
-    <span data-wml-openURL="https://svelte.dev">
-      <img src="/svelte.svg" class="logo svelte" alt="Svelte logo"/>
-    </span>
-  </div>
-  <h1>Wails + Svelte</h1>
-  <div aria-label="result" class="result">{result}</div>
-  <div class="card">
-    <div class="input-box">
-      <input aria-label="input" class="input" bind:value={name} type="text" autocomplete="off"/>
-      <button aria-label="greet-btn" class="btn" on:click={doGreet}>Greet</button>
+  <div class="page">
+    <div class="content">
+      <div>
+        <span data-wml-openURL="https://wails.io">
+          <img src="/wails.png" class="logo" alt="Wails logo"/>
+        </span>
+        <span data-wml-openURL="https://svelte.dev">
+          <img src="/svelte.svg" class="logo svelte" alt="Svelte logo"/>
+        </span>
+      </div>
+      <h1>Wails + Svelte</h1>
+      <div aria-label="result" class="result">{result}</div>
+      <div class="card">
+        <div class="input-box">
+          <input aria-label="input" class="input" bind:value={name} type="text" autocomplete="off"/>
+          <button aria-label="greet-btn" class="btn" on:click={doGreet}>Greet</button>
+        </div>
+      </div>
+      <div class="footer">
+        <div><p>Click on the Wails logo to learn more</p></div>
+        <div><p>{time}</p></div>
+      </div>
     </div>
-  </div>
-  <div class="footer">
-    <div><p>Click on the Wails logo to learn more</p></div>
-    <div><p>{time}</p></div>
+    <ActionBar />
   </div>
 </div>
 
 <style>
-  /* Put your standard CSS here */
+  .container {
+    background: var(--program-bg);
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+  }
+  .page {
+    border-left: var(--border-bar-size) solid var(--border-bar-bg);
+    border-right: var(--border-bar-size) solid var(--border-bar-bg);
+    border-bottom: var(--border-bar-size) solid var(--border-bar-bg);
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .content {
+    overflow: auto;
+    flex: 1;
+  }
 </style>

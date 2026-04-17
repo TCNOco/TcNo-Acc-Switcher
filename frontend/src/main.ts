@@ -1,6 +1,7 @@
 import App from './App.svelte'
-import './style.scss'
-import './theme.scss'
+import './styles/style.scss'
+import './styles/theme.scss'
+import './styles/UI.scss'
 
 const app = new App({
   target: document.getElementById('app'),

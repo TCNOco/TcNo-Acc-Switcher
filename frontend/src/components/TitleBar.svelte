@@ -81,20 +81,20 @@
         </svg>
     </span>
     <span id="title-label" class="title-drag">{$appBarTitle}</span>
-    <span class="window-controls" role="toolbar" aria-label="Window">
-        <button type="button" class="win-btn win-btn-min" title="Minimize" on:click={backClick}>
+    <span class="window-controls" role="toolbar">
+        <button type="button" class="win-btn win-btn-min" aria-label="Minimize" on:click={backClick}>
             <img class="icon" srcset="img/icons/min-w-10.png 1x, img/icons/min-w-12.png 1.25x, img/icons/min-w-15.png 1.5x, img/icons/min-w-15.png 1.75x, img/icons/min-w-20.png 2x, img/icons/min-w-20.png 2.25x, img/icons/min-w-24.png 2.5x, img/icons/min-w-30.png 3x, img/icons/min-w-30.png 3.5x" draggable="false" alt="-">
         </button>
         {#if maximised}
-            <button type="button" class="win-btn win-btn-max" title="Restore" on:click={() => Window.Restore()}>
+            <button type="button" class="win-btn win-btn-max" aria-label="Restore" on:click={() => Window.Restore()}>
                 <img class="icon" srcset="img/icons/restore-w-10.png 1x, img/icons/restore-w-12.png 1.25x, img/icons/restore-w-15.png 1.5x, img/icons/restore-w-15.png 1.75x, img/icons/restore-w-20.png 2x, img/icons/restore-w-20.png 2.25x, img/icons/restore-w-24.png 2.5x, img/icons/restore-w-30.png 3x, img/icons/restore-w-30.png 3.5x" draggable="false" alt="R">
             </button>
         {:else}
-            <button type="button" class="win-btn win-btn-max" title="Restore" on:click={() => Window.Maximise()}>
+            <button type="button" class="win-btn win-btn-max" aria-label="Restore" on:click={() => Window.Maximise()}>
                 <img class="icon" srcset="img/icons/max-w-10.png 1x, img/icons/max-w-12.png 1.25x, img/icons/max-w-15.png 1.5x, img/icons/max-w-15.png 1.75x, img/icons/max-w-20.png 2x, img/icons/max-w-20.png 2.25x, img/icons/max-w-24.png 2.5x, img/icons/max-w-30.png 3x, img/icons/max-w-30.png 3.5x" draggable="false" alt="M">
             </button>
         {/if}
-        <button type="button" class="win-btn win-btn-close" title="Close" on:click={() => Window.Close()}>
+        <button type="button" class="win-btn win-btn-close" aria-label="Close" on:click={() => Window.Close()}>
             <img class="icon" srcset="img/icons/close-w-10.png 1x, img/icons/close-w-12.png 1.25x, img/icons/close-w-15.png 1.5x, img/icons/close-w-15.png 1.75x, img/icons/close-w-20.png 2x, img/icons/close-w-20.png 2.25x, img/icons/close-w-24.png 2.5x, img/icons/close-w-30.png 3x, img/icons/close-w-30.png 3.5x" draggable="false" alt="X">
         </button>
     </span>
@@ -109,9 +109,10 @@
         -webkit-user-select: none;
         user-select: none;
         z-index: 5;
-        background: #253340;
+        background: var(--border-bar-bg);
         position: relative;
         height: 32px;
+        min-height: 32px;
         width: 100%;
         -webkit-app-region: drag;
         color: #fff;
