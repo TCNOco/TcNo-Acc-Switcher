@@ -68,12 +68,6 @@ button,
   }
 }
 
-.show > .dropdown-toggle {
-  background: var(--button-bg-hover);
-  border-color: var(--accent);
-}
-
-
 /* Dropdown */
 button .caret, .button .caret {
     margin-left: 0;
@@ -98,11 +92,23 @@ button .caret, .button .caret {
   display: inline-block;
   padding: 0;
   overflow: visible;
+  position: relative;
 
   &-toggle {
     margin-bottom: 4px;
     position: relative;
     z-index: 9;
+    height: 38px;
+    &::after {
+      display: inline-block;
+      margin-left: .255em;
+      vertical-align: .255em;
+      content: "";
+      border-top: .3em solid;
+      border-right: .3em solid transparent;
+      border-bottom: 0;
+      border-left: .3em solid transparent;
+    }
   }
 
   &-menu {
@@ -121,7 +127,17 @@ button .caret, .button .caret {
 
   &-item {
     padding: 0.5rem 1rem;
+    margin: 0;
     color: white;
+    display: block;
+    width: 100%;
+    clear: both;
+    font-weight: 400;
+    text-align: inherit;
+    text-decoration: none;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;
 
     &.active,
     &:active,
@@ -151,6 +167,11 @@ button .caret, .button .caret {
   z-index: 10;
   max-height: 60vh;
   overflow-y: auto;
+}
+
+.show > .dropdown-toggle {
+  background: var(--button-bg-hover);
+  border-color: var(--accent);
 }
 
 /* Text Editor */
