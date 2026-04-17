@@ -2,9 +2,11 @@ import App from './App.svelte'
 import './styles/style.scss'
 import './styles/theme.scss'
 import './styles/UI.scss'
+import { initI18n } from './stores/i18n'
 
-const app = new App({
-  target: document.getElementById('app'),
-})
+const app = void (async () => {
+  await initI18n()
+  new App({ target: document.getElementById('app')! })
+})()
 
 export default app

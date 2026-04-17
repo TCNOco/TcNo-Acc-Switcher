@@ -75,4 +75,7 @@ body {
     flex: 1 1 auto;
     min-height: 0;
     overflow: auto;
+    padding-top: var(--main-padding, .75rem);
+    padding-right: var(--main-padding, .75rem);
+    padding-left: var(--main-padding, .75rem);
 }
