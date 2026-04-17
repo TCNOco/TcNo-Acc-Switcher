@@ -5,3 +5,7 @@
     previousPage.set({ page: 'home' })
     route.set({ page: 'manage-platforms' })
 </script>
+
+<div class="main-content">
+
+</div>

@@ -5,3 +5,7 @@
     previousPage.set({ page: 'home' })
     route.set({ page: 'settings' })
 </script>
+
+<div class="main-content">
+
+</div>

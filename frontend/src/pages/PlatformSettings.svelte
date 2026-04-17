@@ -7,3 +7,7 @@
     previousPage.set({ page: 'platform', platformName: name })
     route.set({ page: 'platform-settings', platformName: name })
 </script>
+
+<div class="main-content">
+
+</div>

@@ -1,6 +1,5 @@
 <script lang="ts">
   import TitleBar from './components/TitleBar.svelte'
-  import ActionBar from './components/ActionBar.svelte';
 
   import Home from './pages/Home.svelte'
   import Settings from './pages/Settings.svelte'
@@ -14,21 +13,17 @@
   <TitleBar />
 
   <div class="page">
-    <div class="content">
-      {#if $route.page === 'home'}
-        <Home />
-      {:else if $route.page === 'settings'}
-        <Settings />
-      {:else if $route.page === 'platform'}
-        <Platform name={$route.platformName} />
-      {:else if $route.page === 'platform-settings'}
-        <PlatformSettings name={$route.platformName} />
-      {:else if $route.page === 'manage-platforms'}
-        <ManagePlatforms />
-      {/if}
-    </div>
-
-    <ActionBar />
+    {#if $route.page === 'home'}
+      <Home />
+    {:else if $route.page === 'settings'}
+      <Settings />
+    {:else if $route.page === 'platform'}
+      <Platform name={$route.platformName} />
+    {:else if $route.page === 'platform-settings'}
+      <PlatformSettings name={$route.platformName} />
+    {:else if $route.page === 'manage-platforms'}
+      <ManagePlatforms />
+    {/if}
   </div>
 </div>
 
@@ -48,9 +43,5 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-  }
-  .content {
-    overflow: auto;
-    flex: 1;
   }
 </style>

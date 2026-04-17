@@ -130,11 +130,14 @@
         display: flex;
         flex-direction: row;
     }
-    .win-btn-back svg {
-        fill: white;
-        height: 0.8rem;
-        display: block;
-        fill: white;
+    .win-btn-back {
+        --wails-draggable: no-drag;
+        svg {
+            fill: white;
+            height: 0.8rem;
+            display: block;
+            fill: white;
+        }
     }
     .header_icon {
         height: 10px;
