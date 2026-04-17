@@ -1,0 +1,509 @@
+---
+Update: Na располагању је новија верзија! Кликните овде да бисте је покренули.
+Header_ChooseLanguage: 'Изабери језик:'
+Steam_ShowSteamID: Парни ИД
+Steam_ShowVac: ВАЦ статус
+Steam_ShowLastLogin: Последње време пријаве
+Steam_ShowLimited: Ограничени статус
+Steam_ShowAccUsername: Корисничко име налога
+Steam_Tray_AccountName: Прикажи име налога [не име пријатеља]
+Steam_CheckVac: Проверите "VAC" статус налога
+Steam_OverrideDefaultState: "Промени подразумеван статус пријављивања:"
+Steam_StartSilent: "Отворите подлогу за пару на прекидачу за задатке (покрените пару са '-силент')"
+Steam_OldUi: "Користите стари кориснички интерфејс у Стеам-у (-вгуи)"
+Steam_CollectInfo: Прикупите слике профила и статус забране ВАЦ-а са Стеам-а
+Button_AddNew: Додај ново
+Button_SaveCurrent: Сачувај садашњи
+Button_SaveFile: Сачувај документ
+Button_Cancel: Откажи
+Button_Login: Пријава
+Button_Close: Затвори
+Button_RefreshImages: Освежи слике
+Button_ResetSettings: Ресетуј подешавања
+Button_AdvancedCleaning: Напредно чишћење...
+Button_ClearLog: Обриши "log"
+Button_WikiInfo: Више информација (Wiki)
+Button_ManagePlatforms: Управљање платформама
+Button_Backup: Резервна копија
+Button_BackupAll: Направите резервну копију свега
+Button_Restore: Поврати
+Button_OpenBackup: Отворите фасциклу резервних копија
+Button_Back: Назад
+Button_RestartAdmin: Поново покрени као администратор
+Button_SetPassword: Подесите лозинку за апликацију
+Settings_SteamCollectInfo: Прикупите слику Стеам профила и ВАЦ статус од Стеам-а
+Settings_Shortcut: '{platform} Пречица "Switcher Desktop"'
+Settings_Admin: Покрени {platform} као администратор
+Settings_ImageExpiry: 'Дани пре истека профила:'
+Settings_SteamAPIKey: "Парни веб АПИ кључ (опционо)"
+Settings_SteamAPIKey_Note: Подешавање АПИ кључа ће приказати ограничени индикатор (жути обруб) за налоге који су уместо тога забрањени за заједницу.
+Settings_Header_AppWide: Подешавања широм апликације
+Settings_Header_GeneralSettings: Општа подешавања
+Settings_Header_AccountDisplay: Подешавања приказа налога
+Settings_Header_ExtraPlatforms: Подешавања платформе
+Settings_Header_GeneralTools: Опште Алатке
+Settings_Header_OtherTools: Остале алатке
+Settings_Header_TraySettings: '"Tray" подешавања'
+Settings_Header_OpenGameFolders: Отвори фасцикле игара
+Settings_Header_BackupRestore: Подешавања платформе за прављење резервних копија и враћање
+Settings_Header_Language: Језик
+Settings_Header_System: Систем
+Settings_Header_Theme: Тема
+Settings_Header_Program: Програм
+Settings_Header_StatsSharing: Статистика и дељење
+Settings_Header_Platform: "{platformName} подешавања"
+Settings_Header_GameStats: Подешавања глобалне статистике игара
+Settings_GameStats: Све што овде означите НЕЋЕ се приказивати под вашим корисничким именом за било који налог. Користите ово ако често кријете одређене ставке из статистике игара.
+Settings_TrayMax: 'Максималан број налога које треба запамтити:'
+Settings_ExtraPlatformsDisabled: Онемогућене платформе. Кликните да бисте их омогућили.
+Settings_ExtraPlatformsEnabled: Видљиве платформе. Кликните да их онемогућите.
+Settings_RTL: Прикажи текст здесна налево
+Settings_CollectStats: Прикупите статистику
+Settings_ShareStats: Дели статистику анонимно (препоручено)
+Settings_DiscordRpc: Присуство богатог несклада (РПЦ)
+Settings_DiscordRpcShare: Поделите укупан број прекидача
+Settings_ViewStats: Прикажи статистику
+Preview: Преглед
+Settings_ClearStats: Ресетуј
+Settings_CurrentLocation: 'Тренутна локација за инсталацију: {path}'
+Settings_CurrentDataLocation: 'Тренутна локација корисничких података: {path}'
+Settings_SetDataLocation: "[Подеси прилагођену локацију корисничких података]"
+Settings_PickFolder: Изаберите {platform} фасциклу
+Settings_OpenFolder: Отвори фасциклу {platform}
+Settings_ClearForgotten: Очисти заборављено
+Settings_ClearAccounts: Обриши налоге
+Settings_StreamerMode: Омогући режим стримера
+Settings_ExitToTray: Излаз из фиоке је минималан
+Settings_DesktopShortcut: Пречица површи
+Settings_StartMenu_ProgramTray: Програмска & касета
+Settings_StartMenu_Platform: Платформа
+Settings_Tray_StartWindows: Покрени касету са прозорима
+Settings_Tray_StartNow: '[Покрени тацну сада]'
+Settings_CurrentStyle: Тренутни стил
+Settings_ThemeBackground: '[Подеси позадину]'
+Settings_ThemeOpenFolder: '[Отвори фолдер теме]'
+Settings_Protocol: 'Омогући тцно:\\ протокол (препоручено)'
+Settings_StartCentered: Покрени програм усредсређен
+Settings_OfflineMode: Офлајн режим (без мрежне активности)
+Settings_WindowsAccent: Користите боју Wиндоwс Аццент
+Settings_HelpTranslate: "[Помоћ превести]"
+Settings_ViewTranslators: "[Credits]"
+Settings_Header_ActiveBrowser: "(Напредно) Подешавање мотора за рендеровање:"
+Settings_Header_ClosingMethod: "(Напредно) Постави метод на затварање {platform}"
+Settings_Header_StartingMethod: "(Напредно) Подесите метод за покретање {platform}"
+Settings_AutoStart: "Аутоматски покрени {platform} при пребацивању на налог"
+Settings_ShowSteamSwitcher: "Прикажи Стеам-ов преклопник налога (НЕ користите ово или може покварити ТцНо Аццоунт Свитцхер)"
+Settings_NoPlatforms: Тренутно нема омогућених платформи. Означите опционе платформе испод да бисте их омогућили или уклоните ознаку са онемогућених платформи.
+Settings_MinimizeOnSwitch: Смањите прекидач на преклопнику налога
+Settings_ShowShortNotes: Преглед напомена под корисничким именом
+Settings_Header_AppPassword: "Зауставите друге помоћу прекидача:"
+PreviewCss: Преглед ЦСС-а
+Settings_PreviewCss: Ово је ЦСС страница за преглед. Можете да видите неке елементе који се појављују у програму и да видите како изгледају са вашом темом. Ова страница је корисна за оне који креирају теме!
+Settings_PreviewCssHeader: ЦСС страница за преглед
+Settings_AutoUpdatePlatforms: Аутоматско ажурирање листе платформи
+Settings_CheckForUpdates: Проверите да ли постоје ажурирања приликом покретања
+Stats_Disabled: "Прикупљање статистике је онемогућено."
+Stats_InDepth: Детаљна статистичка рашчламба
+Stats_ShareEnabled: "Ова статистика се дели анонимно и додаће се укупном броју <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">овде</a>."
+Stats_ShareDisabled: "Ова статистика се НЕ дели анонимно и НЕЋЕ се додати на укупну <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">овде</a>."
+Stats_OperatingSystem: "Оперативни систем: "
+Stats_FirstLaunch: "Прво лансирање: "
+Stats_LaunchCount: "Број лансирања: "
+Stats_CrashCount: "Број судара: "
+Stats_MostUsedPlatform: "Најчешће коришћена платформа: "
+Stats_TotalTime: "Укупно време проведено у апликацији: "
+Stats_TotalSwitches: "Укупно прелазака на налог: "
+Stats_TotalGamesLaunched: "Укупан број апликација/игара које су покренуте путем прекидача: "
+Stats_UniqueDaysLong: "Јединствени дани са промењеним налозима: "
+Stats_LastUpload: "Последње отпремање: "
+Stats_SwitcherStats: "Статистика прекидача: "
+Stats_PageStats: "Статистика странице: "
+Stats_VisitsTotalTime: "{visits} укупних посета, {hours} укупно време"
+Stats_Accounts: "Рачуни: "
+Stats_Switches: "Прекидачи: "
+Stats_FirstActive: "Први активни: "
+Stats_LastActive: "Последњи активни: "
+Stats_UniqueDays: "Јединствени дани: "
+Stats_GameShortcuts: "Пречице за игру: "
+Stats_GameShortcutsHotbar: "Пречице за игру (на хотбару): "
+Stats_GamesLaunched: "Покренуте игре: "
+Stats_MetricsToShow: "Приказани показатељи:"
+Stats_AccountId: "ИД налога:"
+Auth_LoginRequired: Лозинка је претходно подешена и обавезна је. Унесите лозинку у наставку.
+Auth_EnterPassword: "Унесите лозинку:"
+Auth_PassIncorrect: Лозинка је нетачна.
+Locked: Закључано
+Cleaning_Header_StartMenuShortcuts: 'Пречице за Старт мени:'
+Cleaning_Header_General: Опште чишћење
+Cleaning_Header_LoginHistory: Очисти моју историју пријављивања
+Cleaning_Header_PlatformCleaning: '{platform} Прекидач'
+Cleaning_ImportantInfoHeader: 'Важне информације:'
+Cleaning_ImportantInfo: >
+  Кликом на дугме ће се избрисати повезане датотеке из ваше Стеам инсталације.<br /> Брисање логинусерс.вдф ће довести до тога да овај мењач налога не показује налоге.<br /> Мораћете да се пријавите на њега користећи Стеам да бисте их вратили.
+Cleaning_Button_KillProcess: Убиј {platform} процес
+Cleaning_Button_ForgottenBackups: Заборављене сигурносне копије налога
+Cleaning_Understand: Разумем шта ова дугмад раде.
+Restore_Info: >
+  Ако сте претходно „заборавили“ налог, можете га вратити овде.<br /> Овим се поново додаје у датотеку логинусерс.вдф, што вам омогућава да се пребаците на њу.
+Restore_Button_Restore: Изабрано враћање
+Ignored_RemoveAccounts: Уклоните налоге са листе игнорисања
+Ignored_Description: Ако сте претходно „игнорисали“ налог, можете поново да га прикажете овде
+Ignored_Stop: Престани да игноришеш изабрано
+Toast_UpdatesDownloading: Ажурирања се преузимају у позадини. Можете наставити да користите програм.
+Toast_UpdatesDownloaded: Преузимање ажурирања је завршено. Затворите ову апликацију да бисте започели ажурирање.
+Toast_DataLocationCopying: (1/2) Копирање постојећих датотека у нови фолдер са корисничким подацима!
+Toast_DataLocationNotCopying: (1/2) Фасцикла већ има датотеке! Неће мигрирати корисничке податке.
+Toast_DataLocationSet: (2/2) Поново покрените мењач налога да бисте користили нову фасциклу!
+Toast_PlaceShortcutFiles: Отвара се фасцикла. Поставите пречице за игре у ту фасциклу и поново покрените мењач налога.
+Toast_TrayStarted: Пладањ је почео!
+Toast_TrayRunning: Пладањ је већ отворен
+Toast_TrayUsersMissing: Нема сачуваних корисника касете
+Toast_TrayFail: Не могу да покренем апликацију касете!
+Toast_TrayPosition: "Када кликнете на дугме Излаз: бићу на Wиндоwс Пладњу! (Десно од старта)"
+Toast_TrayHint: "Савет: Цтрл+Кликните на „X“ да бисте ме потпуно затворили или преко Траy > „Еxит“"
+Toast_Copied: Копирано
+Toast_AlreadyProcessing: Већ обрађујем налоге...
+Toast_FailedRestore: Враћање налога није успело (погледајте конзолу)
+Toast_Restored: Обновљени рачуни!
+Toast_ProtocolEnabled: Овај програм ће сада одговорити на тцно:\\ у Wиндоwс-у
+Toast_ProtocolEnabledTitle: Протокол је додат
+Toast_ProtocolDisabled: Овај програм више неће одговарати на тцно:\\
+Toast_ProtocolDisabledTitle: Протокол је уклоњен
+Toast_RestartAsAdmin: Почните као администратор и покушајте поново.
+Toast_RestartAfterClose: Поново покрените програм након што кликнете на Затвори.
+Toast_RestartAfterCloseTitle: Боја акцента је онемогућена
+Toast_RestartRequired: Поново покрените да бисте применили промене
+Toast_LoadStylesheetFailed: Учитавање листа стила није успело! Детаље потражите у фасцикли корисничких података.
+Toast_LoadingStats: Један или више профила освежавајућа је статистика. Сачекајте.
+Toast_ItemNotFound: "{item} није пронађено"
+Toast_DeletedTotal: "{files} од {totalFiles} обрисано. Укупно: {totalSize}"
+Toast_CantChangeUsername: Није могуће променити корисничко име
+Toast_CantClearLoginFiles: Брисање старих датотека за пријављивање није успело
+Toast_AccountIdReg: Није успело преузимање ИД налога из Регистра!
+Toast_RegFailWrite: Уписивање у Виндовс регистар није успело!
+Toast_RegFailRead: Читање из Виндовс регистратора није успело!
+Toast_RegFailReadSaved: Читање сачуване ставке регистра није успело. Ако не успете, покушајте поново да уклоните и додате налог.
+Toast_RegSaveMissing: Проналажење или читање података из сачуваних датотека регистра није успело!
+Toast_DuplicateNames: Замена није успела. Дуплирани налози са истим корисничким именом?
+Toast_MissingUserId: "Замена није успела. Недостаје ИД корисника. Проверите Wики 'Уобичајене грешке'."
+Toast_CouldNotLocate: Није могуће лоцирати пријављеног корисника
+Toast_StreamerModeHint: Приватни подаци су скривени! - Погледајте поставке
+Toast_StreamerModeTitle: Режим стримера
+Toast_AddAccountsFirst: Отворите платформу са листе и прво додајте неколико налога
+Toast_AddAccountsFirstTitle: Нема сачуваних налога
+Toast_CantFindImage: Није успело проналажење слике корисника.
+Toast_CantCreateShortcut: Не могу да направим пречицу
+Toast_ShortcutCreated: Пречица направљена!
+Toast_SettingsCopied: Подешавања су успешно копирана на текући налог.
+Toast_GameDataRestored: Успешно су обновљени подаци о игри за овај налог.
+Toast_NoValidSteamId: Није могуће пронаћи важећи ИД паре.
+Toast_FailedUpdateCheck: Провера ажурирања није успела
+Toast_UpdateVerifyFail: Није могуће верификовати датотеке ажурирања. Преузмите најновију верзију и замените датотеке у директоријуму.
+Toast_StartedGame: Започето {program}
+Toast_SteamCantLoadXml: Није могуће добити КСМЛ информације за {steamId}. Погледајте дневник за више детаља.
+Toast_Steam_VacCleared: ВАЦ статус за налоге је избрисан
+Toast_Steam_CantDeleteVacCache: Није могуће избрисати 'ЛогинЦацхе/Стеам/ВАЦЦацхе/СтеамВАЦЦацхе.јсон'
+Toast_NoFindSteamUserdata: Не могу да нађем фасциклу са парним\\корисничким подацима
+Toast_NoFindGameBackup: Није могуће пронаћи фасциклу са подацима о резервној игри за овај налог.
+Toast_GameBackupDone: "Фасцикла са подацима о игри је успешно резервисана: {folderLocation}"
+Toast_Steam_VdfLast: Учитавање из вдф_ласт је успело. Неки рачуни можда недостају.
+Toast_PartiallyFixed: Делимично фиксно
+Toast_Steam_FailedLoginusers: Учитавање парних/конфиг/логинусерс.вдф није успело
+Toast_Steam_CantLocateLoginusers: Није могуће лоцирати '.../Стеам/цонфиг/логинусерс.вдф'. Прво се пријавите на налог.
+Toast_CantClearImages: Брисање слика није успело
+Toast_RefreshedImages: Освежене слике
+Toast_ClearForgottenCheck: Да ли сте сигурни да желите да избришете резервне копије заборављених налога?
+Toast_ForgotAccount: Заборавили сте налог
+Toast_ClearedPlatformSettings: "Обрисано {platform} подешавања прекидача"
+Toast_ClearedImages: "Обрисане слике"
+Toast_SavedItem: "Сачувано: {item}"
+Toast_ChangedUsername: Промењено корисничко име
+Toast_SetUsername: Подесите корисничко име
+Toast_AlreadyLoggedIn: Већ сте пријављени са овим налогом! (Ниједна промена није извршена)
+Toast_BackupCopy: (1/3) Копирање датотека на привремену локацију...
+Toast_BackupCompress: (2/3) Компресовање датотека ({size}). Ово ће потрајати...
+Toast_BackupComplete: (3/3) Завршено компресовање! ({size} до {compressedSize})
+Toast_BackupProgress: "Резервна копија је у току (компримована величина: {compressedSize})"
+Toast_BackupFail: Сигурносно копирање није успело - Погледајте евиденцију!
+Toast_BackupBusy: Резервна копија је већ у току!
+Toast_RestoreBusy: Обнављање је већ у току!
+Toast_RestoreExt: Екстраховање архиве.
+Toast_RestoreCopying: Померање датотека назад на платформу
+Toast_RestoreDeleting: Брисање привремених датотека
+Toast_RestoreComplete: Обнова је завршена!
+Toast_FailedLoad: Учитавање {platform}није успело! Кликните на платформу да видите грешку.
+Toast_FailedPlatformsLoad: Учитавање Платформс.јсон није успело! Проверите да ли ова датотека постоји.
+Toast_FailedLoadSettings: "Учитавање подешавања није успело! Уместо тога учитавам подразумевана подешавања. Додавање „старог“ у постојећа подешавања имена датотеке."
+Toast_FailedLoadStats: "Учитавање статистике није успело! Почињем испочетка."
+Toast_FailedStatsLoad: Учитавање ГамеСтатс.јсон-а није успело! Потврдите да ова датотека постоји.
+Toast_GameStatsLoadFail: "Неуспешно добијање статистике игара са Веба за {Game}"
+Toast_GameStatsEmpty: "На сајту није пронађена статистика игре за {Game}. Мислите да је грешка? Проверите фолдер корисничких података и 'темп\\довнлоад-{AccoundId}-{Game}.хтмл' да видите да ли је страница имала грешку!"
+Toast_FileCopyFail: Копирање датотека није успело! Више детаља потражите у евиденцији.
+Toast_UserDataLoadFail: Учитавање корисничких података {UserData}\\ WиндоwСеттингс.јсон није успело. Подршка и ресетовање! Сачувана грешка за евиденцију.
+Toast_UpdateCheckFail: Није било могуће ступити у контакт са хттпс://тцно.цо/ да бисте проверили да ли има ажурирања. Ова порука ће се приказивати једном дневно.
+Toast_FailedCreateIcon: Стварање иконе није успело. Детаље потражите у дневнику.
+Toast_SameAccount: Није могуће копирати датотеке на/са истог налога. Покушајте са другим налогом или потражите више информација на Wикију.
+Toast_Steam_DownloadingAppIds: Преузимање листе парних апликација...
+Toast_Steam_DownloadingAppIdsComplete: Преузимање је завршено. Подмени са подацима о игри је ажуриран.
+Toast_SteamWebKeyInvalid: Изгледа да је кључ за АПИ за Стеам веб неважећи. Поставите нови.
+Toast_DownloadingProfileData: Преузимање података профила
+Toast_PasswordChanged: Лозинка је промењена
+Toast_JsonFailModify: Промена ЈСОН датотеке није успела. Погледајте дневник.
+Toast_DifferentClosingMethod: "„Метод затварања“ је другачији од подразумеваног. Ако се игре затварају и више, проверите да ли промена ове опције помаже. Подразумевано: {defaultMethod}, Тренутно: {currentMethod}"
+Toast_NameEmpty: Корисничко име не може бити празно (и не може да садржи само размаке)
+Toast_NewPlatforms: "Ажурирано! Додане су нове платформе: {listOfNames}. Кликните да одбаците."
+Toast_FoundExeViaShortcut: "Пронашли смо инсталирану путању из пречице Старт менија. Потврдите његову локацију кликом на Подешавања сада. Кликните да одбаците."
+Modal_Crowdin_Header: Цровдин преводиоци
+Modal_Crowdin_Info: "Ево свих који су помогли у превођењу овог софтвера.<br>Корисници са језицима поред њих су много помогли у преводу (улога лектора)."
+Modal_Info_Creator: Креирао ТецхНобо [Wеслеy Пyбурн]
+Modal_Info_Version: Верзија
+Modal_Info_ViewGitHub: Прикажи на ГитХуб-у
+Modal_Info_ViewPatreon: Подршка преко Патреона
+Modal_Info_ViewKofi: Подршка преко Ко-Фи
+Modal_Info_BugReport: Извештај о грешкама/захтев за функцијом
+Modal_Info_VisitSite: Посетите тцно.цо
+Modal_Info_Disclaimer: Одрицање од одговорности
+Modal_Title_Info: ТцНо информације о пребацивачу налога
+Modal_Title_ChangeUsername: Промените корисничко име
+Modal_Title_ConfirmAction: ТцНо Аццоунт Сwитцхер Потврди радњу
+Modal_Title_LocatePlatform: Пронађите директоријум {platform}
+Modal_Title_AddNew: Додајте нови налог {platform}
+Modal_Title_Background: Поставите слику за позадину
+Modal_Title_Userdata: Подесите фасциклу са корисничким подацима
+Modal_Title_GameStats: Омогући/онемогући статистику игара
+Modal_GameStats_Header: "Омогући/онемогући статистику игара за: {accountName}"
+Modal_Title_Stats: Ваша статистика
+Modal_Title_GameVars: "Детаљи уноса за {game}"
+Modal_GameVars_Header: "Унесите следеће податке за свој налог {game} , {username} на {platform}"
+Modal_Title_AccountNotes: "Напомене о налогу за: {accountName}"
+Modal_Title_SetPassword: Подесите лозинку
+Modal_SetBackground: 'Изаберите слику или унесите УРЛ испод.<br>Оставите празно и подесите на ресетовање.<br>(За напреднију контролу погледајте Тхеминг на Вики):'
+Modal_SetBackground_Button: Подесите позадину
+Modal_SetBackground_ChooseImage: Изаберите локалну слику
+Modal_SetUserdata: Унесите путању фасцикле испод и кликните на дугме Постави.
+Modal_SetUserdata_ChooseFolder: Изаберите фолдер
+Modal_SetUserdata_Button: Подесите корисничке податке
+Modal_ChangeUsername: Унесите ново корисничко име за свој налог
+Modal_ChangeUsernameType: Промени {platform} корисничко име
+Modal_SetPassword: Унесите лозинку за ТцНо налог сwитцхер
+Modal_SetPassword_Button: Постави лозинку
+Modal_SetPassword_Info: "НАПОМЕНА: Ово не шифрује ваше налоге. Замена налога је једноставна као замена датотека или промена корисничког имена у датотеци. Лозинка се може ресетовати и изменом текста у датотеци. Ово је једноставно обезбеђење. Зауставља једноставан приступ корисничком сучељу. Можете да поставите ову апликацију на уклоњиви УСБ, подесите УсерДата фасциклу на исти УСБ и физички је уклоните ради веће безбедности. <a class=\"fancyLink\" onclick=\"OpenLinkInBrowser('{link}');return false;\" href=\"\">Прелазак на спољни водич за вожњу</a><br><br>Да бисте избрисали, оставите горенаведено празно и кликните на Сет."
+Modal_EnterDirectory: "Унесите директоријум {platform}, као што је: Ц:\\Програм Филес\\{platform}"
+Modal_LocatePlatform: Лоцирај {platformExe}
+Modal_LocatePlatformFolder: Изаберите директоријум {platform}
+Modal_ConfirmAction: Потврдите радњу
+Modal_AddNew: Унесите име за {platform} налог на који сте пријављени.
+Modal_AddCurrentAccount: Додајте текући рачун {platform}
+Modal_SetImageHeader: Подесите слику профила
+Modal_SetImage: Подесите слику
+Status_SelectedAccount: "Изабрано: {name}"
+Status_Init: "Статус: Иницијализација"
+Status_ClosingPlatform: Затварање {platform}
+Status_ClosingPlatformFailed: '{platform}није успело'
+Status_StartingPlatform: Почевши од {platform}
+Toast_StartingPlatformFailed: Неуспешно покретање {platform}! Погледајте дневник за више детаља.
+Toast_UrlAdminErr: Не можете покренути .урл датотеке као администратор. Пробајте другу врсту пречице. Покреће се као обичан корисник.
+Status_UpdatingFile: "Ажурирање {file}"
+Status_UpdatingRegistry: Ажурирање Виндовс регистра
+Status_FailedLog: Радња није успела. Погледајте дневник за детаље.
+Status_WaitingForClose: "Чека се {processName} да се затвори{timeLimit} {timeout})"
+Status_WaitingForMultipleClose: "Чека се да се {processName} и {count} други затворе{timeLimit} {timeout})"
+Status_GetUniqueId: Прикупљање јединственог корисничког ИД-а
+Status_CopyingFiles: Копирање корисничких датотека...
+Status_HandlingImage: Руковање сликом профила налога
+Context_SwapTo: Пребаците се на налог
+Context_CreateShortcut: Креирај пречицу
+Context_ChangeImage: Промени слику
+Context_ChangeName: Промените име прекидача
+Context_LoginAsSubmenu: Пријавите се као
+Context_UsernameSubmenu: Корисничко име
+Context_RefreshName: Освежи назив
+Context_CopySubmenu: Копирај
+Context_DataSubmenu: Подаци
+Context_CopyProfileSubmenu: Копирај профил
+Context_CommunityUrl: УРЛ адреса заједнице
+Context_CommunityUsername: Корисничко име заједнице
+Context_LoginUsername: Корисничко име за пријаву
+Context_CopySteamIdSubmenu: Копирај ИД паре
+Context_Steam_Id: СтеамИД [СТЕАМ0:~]
+Context_Steam_Id3: СтеамИД3 [У:1:~]
+Context_Steam_Id32: СтеамИД32
+Context_Steam_Id64: СтеамИД64 7656~
+Context_Steam_OpenUserdata: Отвори корисничке податке
+Context_ManageSubmenu: Управљање
+Context_GameDataSubmenu: Подаци о игри
+Context_ManageGameStats: Управљање статистиком игара
+Context_Game_CopySettingsFrom: Копирај подешавања у текуће
+Context_Game_RestoreSettingsTo: Обнови податке о игри
+Context_Game_BackupData: Резервни подаци о игри
+Context_CopyOtherSubmenu: Копирај друго
+Context_HidePlatform: Сакриј платформу
+Context_ExportAccList: Извезите листу налога
+Context_RunAdmin: Покрени као администратор
+Context_Hide: Сакрити
+ProfileImage_ToggleText: Користи слику као слику налога
+Title_Platforms_Settings: ТцНо Аццоунт Сwитцхер - Подешавања платформе
+Title_Settings_TestCss: ТцНо Аццоунт Сwитцхер - Тест ЦСС Стyлинг
+Title_AccountsList: ТцНо Аццоунт Сwитцхер - {platform}
+Title_TextEditor: ТцНо Аццоунт Сwитцхер - Уређивач текста
+Title_Settings: ТцНо Аццоунт Сwитцхер - Подешавања
+Title_Steam_Cleaning: ТцНо Аццоунт Сwитцхер - чишћење паром
+Title_Steam_Settings: ТцНо Аццоунт Сwитцхер - Стеам Сеттингс
+Title_Template_Settings: ТцНо Аццоунт Свитцхер - {platformName} подешавања
+Title_Login: ТцНо Аццоунт Сwитцхер - пријава
+Installer_Downloading: Преузимање {file}
+Installer_DownloadFinished: Завршено преузимање {file}
+Installer_Installing: "Инсталирање: {runtime}"
+Installer_RuntimeTitle: ТцНо Аццоунт Сwитцхер - Рунтиме инсталлер
+Installer_Welcome: Добро дошли на ТцНо Аццоунт Сwитцхер - Рунтиме инсталлер
+Installer_InstalledRuntimes: "Тренутно инсталирано време рада:"
+Installer_ErrorRuntime: "Једно или више времена рада није инсталирано:"
+Installer_RuntimeNote: "[~{size1} МБ + ~{size2} МБ током инсталације]"
+Installer_TotalSize: "Укупна величина преузимања: ~{size} МБ"
+Installer_AnyKeyStart: Притисните било који тастер да бисте започели преузимање...
+Runtime_WebView2: Мицрософт WебВиеw2 Рунтиме
+Runtime_Desktop: Мицрософт .НЕТ 5 Режим рада површи
+Runtime_ASP: Мицрософт Мицрософт АСП.НЕТ Цоре {version} Рунтиме
+Installer_FailedFolder: "Не могу да направим фасциклу:"
+Installer_FailedWV: "Преузимање и инсталирање Мицрософт WебВиеw2 Рунтиме-а није успело. За преузимање: 1. Кликните на линк испод: {link} 2. Кликните на „Преузми пакет за угошћавање“ у одељку Покрени серверске апликације."
+Installer_FailedDR: "Није успело преузимање и инсталирање .НЕТ 5 Десктоп Рунтиме. Преузмите га овде:"
+Installed_FailedASP: "Преузимање и инсталирање АСП.НЕТ Цоре {version} Рунтиме није успело. Да бисте преузели: 1. Кликните на везу испод: {link} 2. Кликните на 'Преузми к64' у оквиру Покрени апликације за рачунаре."
+Installer_Ready: "Један или више је спремно за инсталацију. Ако и када желите да инсталирате, кликните на „Да“."
+Installer_PressStart: Притисните било који тастер за почетак инсталације...
+Installer_VerifyMin: "Проверите да ли испуњавате минималне препоручене услове:"
+Installer_VerifyAlready: "Изгледа да је све инсталирано. Проверите да ли испуњавате минималне препоручене услове:"
+Installer_Complete: То би требало да буде све. Главни програм, ТцНо-Ацц-Свитцхер.еке, ће се аутоматски покренути.
+Installer_Complete2: "Ако не ради, погледајте упутства за инсталацију, овде: {link}"
+Tray_Error: Грешка касете
+Tray_NoAccs: "Није пронађен ниједан налог.\nПокушајте прво да промените налог или пронађите „Траy_Усерс.јсон“"
+Tray_Switch: "Пребаци на: {account}"
+Tray_CantOpenExe: "Није могуће отворити главни .еxе. Проверите да ли постоји.\n\nПокушао сам да отворим:"
+Tray_LaunchFail: "ТцНо Аццоунт Сwитцхер - Покретање касете није успело"
+Updater_Duplicate: Откривен је још један случај ажурирања ТцНо налога.
+Updater_Unknown: "Непознати аргумент: {arg}"
+Updater_NeedsAdmin: Овај програм мора бити покренут као администратор!
+Updater_StatusChecking: Провера верзије
+Updater_FailedVersionCheck: "Није могуће добити верзију. Кликните на „Верификуј“ да бисте ажурирали и верификовали датотеке"
+Updater_PressBelow: Притисните дугме испод!
+Updater_PressBelowStart: Кликните на дугме у наставку да бисте започели ажурирање.
+Updater_PatchApplied: Закрпа примењена!
+Updater_UpdatingAppData: Ажурирање датотека у апликацији АппДата!
+Updater_Complete: Све новости завршене!
+Updater_Checking: Провера ажурирања
+Updater_UpdateToVerify: Да бисте верификовали датотеке, прво морате да их ажурирате.
+Updater_ClosingTcNo: Затварање ТцНо Аццоунт Сwитцхер термина (ако их има).
+Updater_Downloading: "Преузимање ажурирања: {version}"
+Updater_Downloaded: Преузимање завршено.
+Updater_CantExtract: Извлачење ажурирања није успело.
+Updater_Verify: Верификуј датотеке
+Updater_Verifying: Верификација...
+Updater_VerifySkip: Провера датотека да бисте прескочили сва мала ажурирања и једноставно прешли на најновије.
+Updater_NoConnection: "Није могуће повезати се на тцно.цо за верификацију датотека. Можете покушати ручно да преузмете програм за инсталацију са ГитХуб странице и поново га инсталирате да бисте га ажурирали.\n\nГрешка:"
+Updater_NoServer: Није могуће доћи до сервера за ажурирање
+Updater_Hashlist: Преузимање најновије хасх листе...
+Updater_CantCheck: Није могуће проверити ажурирања
+Updater_Failed: "ГРЕШКА: Неки фајлови су у употреби и не могу се ажурирати.\n\n1. Проверите да ли су сви ТцНо процеси потпуно затворени\n(или поново покрените ПЦ)\n\n2. Затим кликните на Потврди испод, или ако сте поново покренули:\n-   Отворите овај ажурирач и проверите датотеке\n    (које се налазе у директоријуму 'ажурирача' у директоријуму за инсталацију)"
+Updater_Missing: "НЕДОСТАЈЕ ФАЈЛ: {file}"
+Updater_FileMismatch: "Датотека: {file} има МД5: {md5} ОЧЕКИВАНО: {value}"
+Updater_DownloadingWeb: Преузимање датотеке са веб сајта...
+Updater_UnpackingAppData: Копирање датотека у %AppData%/ТцНо Аццоунт Сwитцхер... (осим ако није другачије одређено)
+Updater_VerifyComplete: Датотеке су потврђене!
+Updater_UpdateFound: "Пронађено ажурирање: {name} [{updateSize}]"
+Updater_TotalFound: "Укупно пронађених ажурирања: {x}"
+Updater_TotalSize: "Укупна величина: {size}"
+Updater_AwaitingUser: Чекање на унос корисника...
+Updater_UpToDate: "Ажуран си.\n:)"
+Updater_FailedDecode: То је највероватније због тога што сам ја (ТецхНобо) гурнуо/ла ажурирање и направио/ла грешку у куцању која је разбила датотеку ажурирања .јсон. Јавите ми:)
+Updater_FailedDecodeTitle: Декодирање листе ажурирања није успело
+Updater_Extracting: Извлачење датотека закрпа
+Updater_Applying: Примена закрпе...
+Updater_Moving: Премештање фајлова...
+Updater_Title: ТцНо Аццоунт Сwитцхер Упдатер
+Updater_Started: Покренуто
+Updater_Start: Покрени пребацивач ТцНо налога
+Updater_Begin: Започните ажурирање
+Updater_Exit: Излаз
+FatalError: Дошло је до кобне грешке!
+Online: Онлајн
+OnlineDefault: Онлајн (подразумевано)
+Offline: Оффлине
+Invisible: Невидљиво
+Busy: Заузето
+Away: Далеко
+Snooze: Одложи
+LookingToTrade: У потрази за трговином
+LookingToPlay: У потрази за игром
+Unrecognized_EPersonaState: Непрепознат еПерсонаСтате
+Reg_DoesntExist: "{subKey} не постоји."
+Reg_DoesntContain: "{subKey} не садржи {val}"
+Reg_Removing: Уклањање {subKey}\\{val}
+PngInvalid_Format: Потребан формат пиксела је ПиxелФормат.{x}.
+PngRequired: Потребан формат слике је преносна мрежна графика (пнг).
+PngDimensions: Димензије морају бити мање или једнаке {MaxIconWidth}x{MaxIconHeight}
+ThemeSyntaxAnd: "Дошло је до грешке у синтакси (више детаља у наставку)! И:"
+ThemesNotFound: "Не могу да нађем директоријум „Теме“ у директоријуму ТцНо Аццоунт Сwитцхер-а. Ово (посебно фасцикла „Дракула_цијан“) је потребна за покретање овог софтвера.\nМожете покренути Ажурирање у фасцикли „Ажурирање“ да бисте верификовали датотеке и обновили ове датотеке које недостају."
+Yes: "- Да."
+No: "Не."
+Save: Сачувај
+NoDefault: Не (подразумевано)
+Ok: "У реду."
+Submit: Пошаљи
+Forget: Заборавите.
+Notice: Обавештење
+Notes: Напомене
+Error: Грешка
+ErrorDetails: "ГРЕШКА: {ex}"
+Failed: Неуспешно
+Success: Успех
+NotFound: Није пронађено
+Done: Готово
+Edit: Уреди
+Refresh: Освежи
+Working: Рад...
+ForName: "За: {name}"
+DeletedFiles: Избрисане датотеке
+FileFoldersToClear: "Листа датотека/директоријума за брисање:"
+CouldNotFindX: Не могу да нађем {x}
+CouldNotCloseX: Није могуће затворити {x}!
+CouldNotReadFile: Не могу да прочитам {file}!
+DirectoryNotFound: Директоријум није пронађен
+DirectoryNotFoundFolder: "Директоријум није пронађен: {folder}"
+DeletingFile: "Брисање: {file}"
+DeletingFolder: "Брисање фасцикле: "
+CouldntDeleteX: "ГРЕШКА: НИЈЕ МОГУЋЕ ИЗБРИСАТИ: {x}"
+CouldntDeleteUndefined: "ГРЕШКА: НИЈЕ МОГУЋЕ ИЗБРИСАТИ НЕДЕФИНИСАНУ ДАТОТЕКУ"
+CouldntModifyX: "Није могуће изменити {file}. Грешка у дозволи датотеке или је датотека у употреби."
+Prompt_RestartAsAdmin: "<h3><bold>Овај програм ће се поново покренути као администратор</bold></h3><p>Притисните „Да“ у УАЦ-у када се то затражи за администратора.</p>"
+Prompt_ForgetSteam: >
+  <h3 style='color:red'>Заборавићете налог!</h3> <h4>Шта ово значи?</h4> <p>– Стеам више неће имати налог наведен у режиму велике слике и неће памтити лозинку.<br/> – ТцНо Аццоунт Свитцхер такође више неће приказивати налог, све док се поново не пријави преко Стеам-а.</p> <p>Ваш налог ће остати нетакнут. Једноставно је заборављено на овом рачунару.</p><h4>Да ли разумете?</h4>
+Prompt_ForgetAccount: >
+  <h3 style='color:red'>Заборавићете налог!</h3> <h4>Шта ово значи?</h4> <p>ТцНо Аццоунт Свитцхер такође више неће приказивати налог,<br/> док се поново не пријави преко {platform}и не дода на листу.</p> <p>Ваш налог ће остати нетакнут. Једноставно је заборављено на овом рачунару.</p> <h4>Да ли разумете?</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>Спремате се да обришете своју статистику!</h3> <p>Ову радњу не можете поништити.</p>
+Platform_DiscordPasteHint: Налепите у Дисцорд конзолу, а затим налепите резултат у унос!
+Platform_ClearCache: Цлеар Цацхе
+Platform_ClearCacheTotal: Брисање {totalFileCount} фајлова ({totalSizeMB})
+Platform_DeleteFail: Није могуће избрисати неке датотеке (програм је можда покренут?)
+Platform_CouldNotDeleteLog: Није могуће избрисати датотеку! Проверите {logPath}
+Error_FileAccessDenied: Приступ фајлу није успео! Проверите {logPath}
+Error_RequiredFileVerify: Обавезни фајл није пронађен. Уверите се да фасцикле x64 и x86 постоје у инсталационом директоријуму. Ако не покренете ТцНо-Ацц-Сwитцхер-Упдатер.еxе и верификујете датотеке.
+Tooltip_Settings: Подешавања
+Tooltip_Info: Инфо
+Tooltip_ManagePlatforms: Прикажи или Сакриј друге платформе
+Tooltip_ExpandShortcuts: Проширите избор игара и пречица
+Tooltip_ShortcutFolder: Отворите фасциклу са пречицама. Поставите пречице тамо и ТцНо Пребацивач налога да бисте их видели.
+Tooltip_Backup: Резервне конфигурационе датотеке/фасцикле, као што је дефинисано у подешавањима платформе.
+Tooltip_BackupAll: Направите резервну копију СВЕ конфигурационе датотеке/фасцикле, укључујући слике и друге велике датотеке.
+Tooltip_ClosingMethod: "Комбиновано је најбоље. Затвори покушаје затварања директно кроз затворену функцију и ТаскКилл користи ЦМД (најбоље ако комбиновано не ради)"
+Tooltip_StartingMethod: "Подразумевано је најбоље. Директно нема контролу над нивоом администрације или УАЦ-ом. Почеће као исти ниво (или виши - али не нижи) од овог пребацивача налога"
+Tooltip_CurrentAccount: Тренутно сте пријављени на овај налог.
+Tooltip_Restore: Кликните да бисте изабрали 7з датотеку или је превуците на ово дугме.
+Tooltip_DisabledGlobally: Ова ставка је скривена за све налоге. То можете да промените у подешавањима платформе.
+Discord_Status: Тренутно замењујем налоге.
+Discord_StatusDetails: "Замењени налози: {number}"
+Website: Веб сајт
+Preview_Platforms: Преглед платформи
+Preview_Accounts: Преглед налога
+Preview_Notifications: Преглед тост обавештења
+Preview_Settings: Преглед подешавања
+Preview_Modals: Преглед модова
