@@ -8,6 +8,7 @@
     --code: #263440;
     --code-background: #131a20;
     --darker-code-background: #0f151a;
+    --even-darker-code-background: rgb(6, 8, 10);
     --shadow: 0 4px 10px -6px #010101;
     --black: #21222c;
     --blackSecondary: #414558;
@@ -55,5 +56,6 @@
     --scrollbar-track-bg: #1E2934;
     --button-bg: #274560;
     --button-bg-hover: #28374E;
+    --tooltip-bg: var(--even-darker-code-background);
     
 }
