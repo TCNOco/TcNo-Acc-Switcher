@@ -3,6 +3,7 @@ import { writable } from 'svelte/store'
 export type Route =
   | { page: 'home' }
   | { page: 'settings' }
+  | { page: 'test' }
   | { page: 'manage-platforms' }
   | { page: 'platform'; platformName: string }
   | { page: 'platform-settings'; platformName: string }

@@ -1,8 +1,10 @@
 <script lang="ts">
   import TitleBar from './components/TitleBar.svelte'
+  import AppModal from './components/AppModal.svelte'
 
   import Home from './pages/Home.svelte'
   import Settings from './pages/Settings.svelte'
+  import Test from './pages/Test.svelte'
   import Platform from './pages/Platform.svelte'
   import PlatformSettings from './pages/PlatformSettings.svelte'
   import ManagePlatforms from './pages/ManagePlatforms.svelte'
@@ -11,12 +13,13 @@
 
 <div class="container">
   <TitleBar />
-
   <div class="page">
     {#if $route.page === 'home'}
       <Home />
     {:else if $route.page === 'settings'}
       <Settings />
+    {:else if $route.page === 'test'}
+      <Test />
     {:else if $route.page === 'platform'}
       <Platform name={$route.platformName} />
     {:else if $route.page === 'platform-settings'}
@@ -24,6 +27,7 @@
     {:else if $route.page === 'manage-platforms'}
       <ManagePlatforms />
     {/if}
+    <AppModal />
   </div>
 </div>
 
@@ -36,10 +40,12 @@
     flex-direction: column;
   }
   .page {
+    position: relative;
     border-left: var(--border-bar-size) solid var(--border-bar-bg);
     border-right: var(--border-bar-size) solid var(--border-bar-bg);
     border-bottom: var(--border-bar-size) solid var(--border-bar-bg);
     flex: 1;
+    min-height: 0;
     overflow: hidden;
     display: flex;
     flex-direction: column;

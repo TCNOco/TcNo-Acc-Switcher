@@ -1,6 +1,5 @@
 <script lang="ts">
     import { route, previousPage, appBarTitle } from '../stores/nav'
-    import { Browser } from "@wailsio/runtime"
     import "../styles/Settings.scss"
 
     $: appBarTitle.set('TcNo Account Switcher - Settings')
@@ -9,6 +8,7 @@
     
     import { t, availableLocales, locale, setUserLanguage } from '../stores/i18n'
     let open = false;
+
     function nameFor(code: string) {
         const dn = new Intl.DisplayNames([$locale.replace(/_/g, "-")], { type: "language" });
         return dn.of(code.replace(/_/g, "-")) ?? code;
@@ -22,6 +22,14 @@
 
 <div class="main-content">
     <h1 class="SettingsHeader">{$t("Settings_Header_AppWide")}</h1>
+
+    <h2 class="SettingsHeader">{$t("Preview_Modals")}</h2>
+    <div class="settingsTestLinkRow">
+        <button type="button" class="btnicontext" on:click={() => route.set({ page: 'test' })}>
+            {$t("Preview_Modals")}…
+        </button>
+    </div>
+
     <h2 class="SettingsHeader">{$t("Settings_Header_Language")}</h2>
     <div class="rowDropdown">
         <span>{$t("Header_ChooseLanguage")}</span>
@@ -44,3 +52,9 @@
         </div>
     </div>
 </div>
+
+<style lang="scss">
+    .settingsTestLinkRow {
+        margin-bottom: 1.25rem;
+    }
+</style>

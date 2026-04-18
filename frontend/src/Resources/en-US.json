@@ -280,6 +280,7 @@
   "Modal_SetBackground_ChooseImage": "Choose local image",
   "Modal_SetUserdata": "Enter a folder path below and click set.",
   "Modal_SetUserdata_ChooseFolder": "Select a folder",
+  "Modal_Button_Select": "Select",
   "Modal_SetUserdata_Button": "Set user data",
   "Modal_ChangeUsername": "Please enter a new username for your account",
   "Modal_ChangeUsernameType": "Change {platform} username",

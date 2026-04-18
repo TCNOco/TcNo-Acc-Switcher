@@ -1,4 +1,4 @@
-﻿/* Buttons */
+/* Buttons */
 button,
 .button {
   text-align: center;
@@ -557,21 +557,6 @@ button .caret, .button .caret {
             color: #b1f2ff
         }
 
-        &::before {
-            font-family: "Font Awesome 5 Free";
-            font-weight: 900;
-            margin-right: 0.3em;
-            content: "\f15b";
-            margin-right: 7px;
-            color: #FFE9A2;
-        }
-
-        &.folder::before {
-            content: "\f07b";
-            margin-right: 5px;
-            color: #FDB900;
-        }
-
         &.head::before {
             content: "\f07c";
             margin-right: 5px;
@@ -580,15 +565,24 @@ button .caret, .button .caret {
         &.head {
             margin-left: -1em;
         }
+    }
 
-        &.suggested {
-            background: #006215;
-        }
+    div {
+      &.selected-path {
+        background-color: var(--code-background);
+      }
 
-        &.selected-path, &selected-path::before {
-            color: var(--accent) !important;
-            background-color: #0E1419;
-        }
+      &.ancestor-of-selected {
+        background-color: var(--slightly-darker-code-background);
+      }
+
+      &.suggested {
+          background: hsl(115, 100%, 15%);
+      }
+
+      &.suggested:not(.selected-path):not(.ancestor-of-selected) {
+          background: hsl(115, 100%, 5%);
+      }
     }
 }
 

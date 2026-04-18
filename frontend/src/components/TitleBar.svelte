@@ -2,6 +2,7 @@
     import { route } from '../stores/nav'
     import { onMount } from 'svelte'
     import { appBarTitle } from '../stores/nav'
+    import { activeModal } from '../stores/modal'
     import { Events, Window } from "@wailsio/runtime";
 
     let minimised = false
@@ -52,6 +53,8 @@
     const possibleAnimations = ['X', 'Y', 'Z']
     let backSpin = ''
     let backTransition = ''
+    $: backDisabled = !!$activeModal
+
     function backClick() {
         if ($route.page === 'home') {
             const axis = possibleAnimations[Math.floor(Math.random() * possibleAnimations.length)]
@@ -69,7 +72,14 @@
 
 <header class="headerbar">
     <span class="title-left">
-        <button type="button" class="win-btn win-btn-back" title="Back" on:click={backClick}>
+        <button
+            type="button"
+            class="win-btn win-btn-back"
+            title="Back"
+            disabled={backDisabled}
+            aria-disabled={backDisabled}
+            on:click={backClick}
+        >
             <svg 
             style:transform={backSpin}
             style:transition={backTransition}
@@ -137,6 +147,10 @@
             height: 0.8rem;
             display: block;
             fill: white;
+        }
+        &:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
         }
     }
     .header_icon {

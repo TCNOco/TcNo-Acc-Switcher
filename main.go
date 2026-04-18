@@ -39,6 +39,7 @@ func main() {
 		Description: "A Superfast open-source account switcher",
 		Services: []application.Service{
 			application.NewService(&GreetService{}),
+			application.NewService(&FilesystemService{}),
 		},
 		Assets: application.AssetOptions{
 			Handler: application.AssetFileServerFS(assets),
