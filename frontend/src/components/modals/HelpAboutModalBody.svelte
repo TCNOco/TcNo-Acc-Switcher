@@ -16,7 +16,7 @@
       href="https://tcno.co"
       on:click={(e) => openExternal("https://tcno.co", e)}
     >
-      <img width="100" src="img/TcNo500.png" draggable="false" alt="" />
+      <img width="100" src="img/TcNo500.webp" draggable="false" alt="" />
     </a>
   </div>
   <div class="rightContent">
