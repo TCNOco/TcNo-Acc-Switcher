@@ -2,7 +2,13 @@
   import { get } from "svelte/store";
   import { route, previousPage, appBarTitle } from "../stores/nav";
   import "../styles/Settings.scss";
-  import { openAlert, openConfirm, openPrompt, openFolderPicker } from "../stores/modal";
+  import {
+    openAlert,
+    openAlertNoButton,
+    openConfirm,
+    openPrompt,
+    openFolderPicker,
+  } from "../stores/modal";
   import { t } from "../stores/i18n";
 
   $: appBarTitle.set("TcNo Account Switcher - Test");
@@ -23,6 +29,15 @@
       body: tt("Modal_ConfirmAction"),
     });
     logModal("openAlert", "resolved");
+  }
+
+  async function testAlertNoButton() {
+    const tt = get(t);
+    await openAlertNoButton({
+      title: tt("Preview_Modals"),
+      body: tt("Modal_ConfirmAction"),
+    });
+    logModal("openAlertNoButton", "resolved");
   }
 
   async function testConfirmYesNo() {
@@ -97,6 +112,7 @@
     <pre class="modalTestOutput" aria-live="polite">{#if modalLog.length === 0}<span class="modalTestPlaceholder">{$t("Preview_Modals")} — run a test below.</span>{:else}{modalLog.join("\n")}{/if}</pre>
     <div class="modalTestButtons">
       <button type="button" class="btnicontext" on:click={() => void testAlert()}>Alert</button>
+      <button type="button" class="btnicontext" on:click={() => void testAlertNoButton()}>Alert (no button)</button>
       <button type="button" class="btnicontext" on:click={() => void testConfirmYesNo()}>Confirm Yes/No</button>
       <button type="button" class="btnicontext" on:click={() => void testConfirmOkCancel()}>Confirm OK/Cancel</button>
       <button type="button" class="btnicontext" on:click={() => void testPromptText()}>Prompt (text)</button>

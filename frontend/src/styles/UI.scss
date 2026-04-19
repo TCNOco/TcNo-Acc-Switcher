@@ -1,3 +1,18 @@
+/* Links */
+a {
+  color: var(--accent);
+  cursor: pointer;
+  margin: 1px 0;
+  text-decoration: none;
+
+  &:hover {
+    color: hsl(var(--accentHS), calc(var(--accentL) - 5%));
+  }
+  &:active {
+    color: hsl(var(--accentHS), calc(var(--accentL) - 10%));
+  }
+}
+
 /* Buttons */
 button,
 .button {

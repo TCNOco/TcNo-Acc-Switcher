@@ -1,37 +1,41 @@
+import type { ComponentType, SvelteComponent } from "svelte";
 import { get, writable } from "svelte/store";
 
 type ModalBase = { id: number };
 
+export type ModalBodyOptions = {
+  body?: string;
+  bodyComponent?: ComponentType<SvelteComponent>;
+  bodyProps?: Record<string, unknown>;
+};
+
 export type ActiveModal =
-  | (ModalBase & { kind: "alert"; title: string; body: string; dismissLabel?: string })
+  | (ModalBase & { kind: "alert"; title: string; dismissLabel?: string } & ModalBodyOptions)
+  | (ModalBase & { kind: "alertNoButton"; title: string } & ModalBodyOptions)
   | (ModalBase & {
       kind: "confirm";
       title: string;
-      body: string;
       style: "yesno" | "okcancel";
       positiveLabel?: string;
       negativeLabel?: string;
-    })
+    } & ModalBodyOptions)
   | (ModalBase & {
       kind: "prompt";
       title: string;
-      body?: string;
       inputType: "text" | "password";
       initialValue?: string;
       positiveLabel?: string;
       negativeLabel?: string;
-    })
+    } & ModalBodyOptions)
   | (ModalBase & {
       kind: "folder";
       title: string;
-      body?: string;
       initialPath?: string;
       positiveLabel?: string;
       negativeLabel?: string;
       dirsOnly?: boolean;
-      /** Shown under the path input; row turns red if the path lacks this substring (case-insensitive). */
       soughtFilename?: string;
-    });
+    } & ModalBodyOptions);
 
 let resolver: ((value: unknown) => void) | null = null;
 let nextModalId = 0;
@@ -50,46 +54,62 @@ export function dismissModal(result?: unknown): void {
   r?.(result);
 }
 
-export function openAlert(opts: {
-  title: string;
-  body: string;
-  dismissLabel?: string;
-}): Promise<void> {
+export function openAlert(
+  opts: {
+    title: string;
+    dismissLabel?: string;
+  } & ModalBodyOptions,
+): Promise<void> {
   return new Promise((resolve) => {
     resolver = () => resolve();
     activeModal.set({ id: bumpId(), kind: "alert", ...opts });
   });
 }
 
-export function openConfirm(opts: {
-  title: string;
-  body: string;
-  style?: "yesno" | "okcancel";
-  positiveLabel?: string;
-  negativeLabel?: string;
-}): Promise<boolean> {
+export function openAlertNoButton(
+  opts: {
+    title: string;
+  } & ModalBodyOptions,
+): Promise<void> {
+  return new Promise((resolve) => {
+    resolver = () => resolve();
+    activeModal.set({ id: bumpId(), kind: "alertNoButton", ...opts });
+  });
+}
+
+export function openConfirm(
+  opts: {
+    title: string;
+    style?: "yesno" | "okcancel";
+    positiveLabel?: string;
+    negativeLabel?: string;
+  } & ModalBodyOptions,
+): Promise<boolean> {
   return new Promise((resolve) => {
     resolver = resolve as (value: unknown) => void;
     activeModal.set({
       id: bumpId(),
       kind: "confirm",
       title: opts.title,
-      body: opts.body,
       style: opts.style ?? "yesno",
       positiveLabel: opts.positiveLabel,
       negativeLabel: opts.negativeLabel,
+      body: opts.body,
+      bodyComponent: opts.bodyComponent,
+      bodyProps: opts.bodyProps,
     });
   });
 }
 
-export function openPrompt(opts: {
-  title: string;
-  body?: string;
-  inputType?: "text" | "password";
-  initialValue?: string;
-  positiveLabel?: string;
-  negativeLabel?: string;
-}): Promise<string | null> {
+export function openPrompt(
+  opts: {
+    title: string;
+    inputType?: "text" | "password";
+    initialValue?: string;
+    positiveLabel?: string;
+    negativeLabel?: string;
+  } & ModalBodyOptions,
+): Promise<string | null> {
   return new Promise((resolve) => {
     resolver = resolve as (value: unknown) => void;
     activeModal.set({
@@ -97,6 +117,8 @@ export function openPrompt(opts: {
       kind: "prompt",
       title: opts.title,
       body: opts.body,
+      bodyComponent: opts.bodyComponent,
+      bodyProps: opts.bodyProps,
       inputType: opts.inputType ?? "text",
       initialValue: opts.initialValue,
       positiveLabel: opts.positiveLabel,
@@ -105,15 +127,16 @@ export function openPrompt(opts: {
   });
 }
 
-export function openFolderPicker(opts: {
-  title: string;
-  body?: string;
-  initialPath?: string;
-  positiveLabel?: string;
-  negativeLabel?: string;
-  dirsOnly?: boolean;
-  soughtFilename?: string;
-}): Promise<string | null> {
+export function openFolderPicker(
+  opts: {
+    title: string;
+    initialPath?: string;
+    positiveLabel?: string;
+    negativeLabel?: string;
+    dirsOnly?: boolean;
+    soughtFilename?: string;
+  } & ModalBodyOptions,
+): Promise<string | null> {
   return new Promise((resolve) => {
     resolver = resolve as (value: unknown) => void;
     activeModal.set({
@@ -121,6 +144,8 @@ export function openFolderPicker(opts: {
       kind: "folder",
       title: opts.title,
       body: opts.body,
+      bodyComponent: opts.bodyComponent,
+      bodyProps: opts.bodyProps,
       initialPath: opts.initialPath,
       positiveLabel: opts.positiveLabel,
       negativeLabel: opts.negativeLabel,
@@ -130,11 +155,10 @@ export function openFolderPicker(opts: {
   });
 }
 
-/** Backdrop / Escape / secondary actions for the current modal. */
 export function cancelActiveModal(): void {
   const m = get(activeModal);
   if (!m) return;
-  if (m.kind === "alert") dismissModal();
+  if (m.kind === "alert" || m.kind === "alertNoButton") dismissModal();
   else if (m.kind === "confirm") dismissModal(false);
   else dismissModal(null);
 }

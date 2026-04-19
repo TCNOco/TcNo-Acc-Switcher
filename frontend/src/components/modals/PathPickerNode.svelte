@@ -1,13 +1,13 @@
 <script lang="ts">
-  import * as FilesystemService from "../../bindings/changeme/filesystemservice.js";
+  import * as FilesystemService from "../../../bindings/changeme/filesystemservice";
   import {
     normalizeDisplayPath,
     sameFsPath,
     isStrictAncestorFolder,
     folderCoversSelected,
     parentDisplayPath,
-  } from "../lib/fsPaths";
-  import { formatUnknownError } from "../lib/formatBindingError";
+  } from "../../lib/fsPaths";
+  import { formatUnknownError } from "../../lib/formatBindingError";
 
   type DirEntry = { name: string; path: string; isDir: boolean };
 
@@ -57,7 +57,7 @@
     loadError = null;
     try {
       const list = await FilesystemService.ListDir(path);
-      children = dirsOnly ? list.filter((c) => c.isDir) : list;
+      children = dirsOnly ? list.filter((c: DirEntry) => c.isDir) : list;
       listAttempted = true;
       if (dirsOnly) {
         hasExpandableChildren = children.some((c) => c.isDir);

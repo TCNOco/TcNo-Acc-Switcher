@@ -3,7 +3,8 @@
   import { get } from "svelte/store";
   import { activeModal, dismissModal, cancelActiveModal } from "../stores/modal";
   import { t } from "../stores/i18n";
-  import PathPickerTree from "./PathPickerTree.svelte";
+  import PathPickerTree from "./modals/PathPickerTree.svelte";
+  import ModalBodyShell from "./modals/ModalBodyShell.svelte";
   import { normalizeDisplayPath } from "../lib/fsPaths";
   import * as FilesystemService from "../../bindings/changeme/filesystemservice";
 
@@ -167,19 +168,29 @@
 
       <div class="modal-scroll">
         {#key m.id}
-          {#if m.kind === "alert"}
+          {#if m.kind === "alert" || m.kind === "alertNoButton"}
             <div class="modal-block">
-              <div class="modal-html modal-text">{@html m.body}</div>
-              <div class="modal-inline-actions settingsCol inputAndButton">
-                <span class="modal-actions-spacer"></span>
-                <button type="button" class="btnicontext" on:click={() => dismissModal()}>
-                  {m.dismissLabel ?? $t("Ok")}
-                </button>
-              </div>
+              <ModalBodyShell
+                html={m.body}
+                component={m.bodyComponent}
+                componentProps={m.bodyProps}
+              />
+              {#if m.kind === "alert"}
+                <div class="modal-inline-actions settingsCol inputAndButton">
+                  <span class="modal-actions-spacer"></span>
+                  <button type="button" class="btnicontext" on:click={() => dismissModal()}>
+                    {m.dismissLabel ?? $t("Ok")}
+                  </button>
+                </div>
+              {/if}
             </div>
           {:else if m.kind === "confirm"}
             <div class="modal-block">
-              <div class="modal-html modal-text">{@html m.body}</div>
+              <ModalBodyShell
+                html={m.body}
+                component={m.bodyComponent}
+                componentProps={m.bodyProps}
+              />
               <div class="modal-inline-actions settingsCol inputAndButton">
                 <span class="modal-actions-spacer"></span>
                 <button type="button" class="btnicontext" on:click={confirmPositive}>
@@ -198,9 +209,11 @@
             </div>
           {:else if m.kind === "prompt"}
             <div class="modal-block">
-              {#if m.body}
-                <div class="modal-html modal-text">{@html m.body}</div>
-              {/if}
+              <ModalBodyShell
+                html={m.body}
+                component={m.bodyComponent}
+                componentProps={m.bodyProps}
+              />
               <div class="modal-input-row">
                 {#if m.inputType === "password"}
                   <input
@@ -231,9 +244,11 @@
             </div>
           {:else if m.kind === "folder"}
             <div class="modal-block">
-              {#if m.body}
-                <div class="modal-html modal-text">{@html m.body}</div>
-              {/if}
+              <ModalBodyShell
+                html={m.body}
+                component={m.bodyComponent}
+                componentProps={m.bodyProps}
+              />
               <div class="modal-input-row">
                 <input
                   bind:value={folderPath}
@@ -384,26 +399,6 @@
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-  }
-
-  .modal-text {
-    margin: 0;
-    color: var(--white, #fff);
-    line-height: 1.45;
-  }
-
-  .modal-html :global(a) {
-    color: var(--accent, #00d4ff);
-    text-decoration: underline;
-    cursor: pointer;
-  }
-
-  .modal-html :global(p) {
-    margin: 0 0 0.5em;
-  }
-
-  .modal-html :global(p:last-child) {
-    margin-bottom: 0;
   }
 
   .modal-input-row {

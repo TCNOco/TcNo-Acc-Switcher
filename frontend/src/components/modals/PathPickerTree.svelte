@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import * as FilesystemService from "../../bindings/changeme/filesystemservice.js";
+  import * as FilesystemService from "../../../bindings/changeme/filesystemservice";
   import PathPickerNode from "./PathPickerNode.svelte";
-  import { normalizeDisplayPath } from "../lib/fsPaths";
+  import { normalizeDisplayPath } from "../../lib/fsPaths";
 
   export let selectedPath: string;
   export let dirsOnly = true;
