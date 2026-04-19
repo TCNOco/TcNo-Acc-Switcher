@@ -1,7 +1,7 @@
 <script lang="ts">
     import ActionBar from '../components/ActionBar.svelte'
     import {Events} from "@wailsio/runtime";
-    import {GreetService} from "../../bindings/changeme";
+    import {GreetService} from "../../bindings/TcNo-Acc-Switcher";
     import { route, appBarTitle } from '../stores/nav'
     $: appBarTitle.set('TcNo Account Switcher')
   

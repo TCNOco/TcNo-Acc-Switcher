@@ -1,4 +1,4 @@
-module changeme
+module TcNo-Acc-Switcher
 
 go 1.25
 

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import * as FilesystemService from "../../../bindings/changeme/filesystemservice";
+  import * as FilesystemService from "../../../bindings/TcNo-Acc-Switcher/filesystemservice";
   import PathPickerNode from "./PathPickerNode.svelte";
   import { normalizeDisplayPath } from "../../lib/fsPaths";
 

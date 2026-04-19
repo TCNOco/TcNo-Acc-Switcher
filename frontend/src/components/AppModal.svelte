@@ -6,7 +6,7 @@
   import PathPickerTree from "./modals/PathPickerTree.svelte";
   import ModalBodyShell from "./modals/ModalBodyShell.svelte";
   import { normalizeDisplayPath } from "../lib/fsPaths";
-  import * as FilesystemService from "../../bindings/changeme/filesystemservice";
+  import * as FilesystemService from "../../bindings/TcNo-Acc-Switcher/filesystemservice";
 
   $: m = $activeModal;
 
