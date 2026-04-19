@@ -69,12 +69,12 @@
 
 <!-- Type icons: edit `ToastTypeIcon.svelte` (per-type {#if} branches + HTML comment there). -->
 <div class="toast-root" aria-live="polite" aria-relevant="additions text">
-  <div class="toastarea">
+  <div class="toast-stack">
     {#each $toastStore as t (t.id)}
       <div
         class="toast {typeClass(t.type)}"
-        in:fly={{ y: 14, duration: 240, opacity: 0, easing: cubicOut }}
-        out:fly={{ y: 10, duration: 200, opacity: 0, easing: cubicOut }}
+        in:fly={{ y: -14, duration: 240, opacity: 0, easing: cubicOut }}
+        out:fly={{ y: -10, duration: 200, opacity: 0, easing: cubicOut }}
         role="status"
       >
         {#if t.count > 1}
@@ -122,10 +122,10 @@
     box-sizing: border-box;
   }
 
-  .toastarea {
+  .toast-stack {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: flex-start;
     align-items: flex-end;
     gap: 0.5rem;
     max-width: 22rem;
