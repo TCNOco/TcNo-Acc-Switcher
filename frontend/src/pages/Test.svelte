@@ -10,6 +10,16 @@
     openFolderPicker,
   } from "../stores/modal";
   import { t } from "../stores/i18n";
+  import { pushToast } from "../stores/toast";
+
+  /** Max delay safe for `setTimeout` in major browsers (~24.85 days). */
+  const toastPermanentDurationMs = 2_147_483_647;
+
+  let toastPermanent = false;
+
+  function toastDuration(normalMs: number): number {
+    return toastPermanent ? toastPermanentDurationMs : normalMs;
+  }
 
   $: appBarTitle.set("TcNo Account Switcher - Test");
   previousPage.set({ page: "settings" });
@@ -103,6 +113,50 @@
     });
     logModal("openFolderPicker (dirsOnly: false)", r === null ? "null (cancel)" : JSON.stringify(r));
   }
+
+  function toastSuccess() {
+    pushToast({
+      type: "success",
+      title: "Saved",
+      message: "Settings were applied (test toast).",
+      duration: toastDuration(6000),
+    });
+  }
+
+  function toastWarning() {
+    pushToast({
+      type: "warning",
+      title: "Heads up",
+      message: "Something may need your attention.",
+      duration: toastDuration(8000),
+    });
+  }
+
+  function toastError() {
+    pushToast({
+      type: "error",
+      title: "",
+      message: "A critical component could not be loaded. Please restart the application! (test)",
+      duration: toastDuration(10000),
+    });
+  }
+
+  function toastInfo() {
+    pushToast({
+      type: "info",
+      title: "FYI",
+      message: "This is an informational toast.",
+      duration: toastDuration(5000),
+    });
+  }
+  function toastViaWindowNotification() {
+    window.notification?.new({
+      type: "success",
+      title: "window.notification",
+      message: "Dispatched via window.notification.new (JS bridge style).",
+      duration: toastDuration(5000),
+    });
+  }
 </script>
 
 <div class="main-content">
@@ -121,9 +175,73 @@
       <button type="button" class="btnicontext" on:click={() => void testFolderPickerWithFiles()}>Folder + files</button>
     </div>
   </div>
+
+  <h2 class="SettingsHeader toastTestHeading">Toasts</h2>
+  <div class="modalTestPanel">
+    <label class="toastPermanentRow">
+      <input type="checkbox" class="toastPermanentCheckbox" bind:checked={toastPermanent} />
+      <span>Permanent</span>
+      <span class="toastPermanentNote">(× to close)</span>
+    </label>
+    <div class="modalTestButtons">
+      <button type="button" class="btnicontext" on:click={toastSuccess}>Toast success</button>
+      <button type="button" class="btnicontext" on:click={toastWarning}>Toast warning</button>
+      <button type="button" class="btnicontext" on:click={toastError}>Toast error</button>
+      <button type="button" class="btnicontext" on:click={toastInfo}>Toast info</button>
+      <button type="button" class="btnicontext" on:click={toastViaWindowNotification}>window.notification</button>
+    </div>
+  </div>
 </div>
 
 <style lang="scss">
+  .toastTestHeading {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+  }
+  .toastTestHint {
+    margin: 0 0 0.65rem;
+    font-size: 0.85rem;
+    color: var(--blackTernary, #a7abbe);
+    code {
+      font-size: 0.8em;
+      color: var(--cyan, #80ffea);
+    }
+  }
+  .toastPermanentRow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.6rem;
+    margin: 0 0 0.75rem;
+    cursor: pointer;
+    user-select: none;
+    font-size: 0.9rem;
+    color: var(--whiteSecondary, #fff);
+  }
+  .toastPermanentCheckbox {
+    opacity: 1;
+    z-index: auto;
+    width: 1.1rem;
+    height: 1.1rem;
+    margin: 0;
+    cursor: pointer;
+    accent-color: var(--accent, #80ffea);
+  }
+  .toastPermanentNote {
+    flex: 1 1 100%;
+    margin-left: 1.5rem;
+    font-size: 0.78rem;
+    color: var(--blackTernary, #a7abbe);
+    font-weight: normal;
+    cursor: pointer;
+  }
+  @media (min-width: 520px) {
+    .toastPermanentNote {
+      flex: 0 1 auto;
+      margin-left: 0;
+    }
+  }
   .modalTestPanel {
     margin-bottom: 1.25rem;
   }

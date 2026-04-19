@@ -58,3 +58,43 @@ export class PathStat {
         return new PathStat($$parsedSource as Partial<PathStat>);
     }
 }
+
+/**
+ * ToastPayload is emitted to the frontend as the "toast" custom event (Wails v3).
+ */
+export class ToastPayload {
+    "type": string;
+    "title": string;
+    "message": string;
+
+    /**
+     * milliseconds; 0 means use default (5000) on the frontend
+     */
+    "duration": number;
+
+    /** Creates a new ToastPayload instance. */
+    constructor($$source: Partial<ToastPayload> = {}) {
+        if (!("type" in $$source)) {
+            this["type"] = "";
+        }
+        if (!("title" in $$source)) {
+            this["title"] = "";
+        }
+        if (!("message" in $$source)) {
+            this["message"] = "";
+        }
+        if (!("duration" in $$source)) {
+            this["duration"] = 0;
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new ToastPayload instance from a string or object.
+     */
+    static createFrom($$source: any = {}): ToastPayload {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new ToastPayload($$parsedSource as Partial<ToastPayload>);
+    }
+}

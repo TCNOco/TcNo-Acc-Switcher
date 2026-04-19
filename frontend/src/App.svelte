@@ -1,6 +1,7 @@
 <script lang="ts">
   import TitleBar from './components/TitleBar.svelte'
   import AppModal from './components/AppModal.svelte'
+  import Toast from './components/Toast.svelte'
 
   import Home from './pages/Home.svelte'
   import Settings from './pages/Settings.svelte'
@@ -28,6 +29,7 @@
       <ManagePlatforms />
     {/if}
     <AppModal />
+    <Toast />
   </div>
 </div>
 

@@ -22,6 +22,7 @@ func init() {
 	// This is not required, but the binding generator will pick up registered events
 	// and provide a strongly typed JS/TS API for them.
 	application.RegisterEvent[string]("time")
+	application.RegisterEvent[ToastPayload](toastEventName)
 }
 
 // main function serves as the application's entry point. It initializes the application, creates a window,
