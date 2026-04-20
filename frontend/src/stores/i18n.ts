@@ -1,4 +1,5 @@
 import { derived, writable, get } from "svelte/store";
+import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
 
 const STORAGE_KEY = "language";
 
@@ -48,12 +49,23 @@ export async function loadLocale(code: string) {
 }
 
 export async function initI18n() {
-  const saved = localStorage.getItem(STORAGE_KEY);
+  let code: string | null = null;
+  try {
+    code = await PlatformService.GetLanguage();
+  } catch {
+    code = null;
+  }
+  const saved = code ?? localStorage.getItem(STORAGE_KEY);
   await loadLocale(resolveLocale(saved));
 }
 
 export async function setUserLanguage(code: string) {
   const next = resolveLocale(code);
+  try {
+    await PlatformService.SetLanguage(next);
+  } catch {
+    /* offline / early boot */
+  }
   localStorage.setItem(STORAGE_KEY, next);
   await loadLocale(next);
 }

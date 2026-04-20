@@ -8,6 +8,6 @@
     route.set({ page: 'platform-settings', platformName: name })
 </script>
 
-<div class="main-content">
+<div class="main-content main-spacing">
 
 </div>

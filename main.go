@@ -6,6 +6,8 @@ import (
 	"log"
 	"time"
 
+	"TcNo-Acc-Switcher/internal/platform"
+
 	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
@@ -41,6 +43,7 @@ func main() {
 		Services: []application.Service{
 			application.NewService(&GreetService{}),
 			application.NewService(&FilesystemService{}),
+			application.NewService(&platform.PlatformService{}),
 		},
 		Assets: application.AssetOptions{
 			Handler: application.AssetFileServerFS(assets),
@@ -56,7 +59,7 @@ func main() {
 	// 'BackgroundColour' is the background colour of the window.
 	// 'URL' is the URL that will be loaded into the webview.
 	app.Window.NewWithOptions(application.WebviewWindowOptions{
-		Title: "Window 1",
+		Title: "TcNo Account Switcher",
 		Mac: application.MacWindow{
 			InvisibleTitleBarHeight: 50,
 			Backdrop:                application.MacBackdropTranslucent,

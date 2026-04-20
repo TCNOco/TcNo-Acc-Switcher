@@ -1,0 +1,187 @@
+.platformTable {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.platform_list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-content: flex-start;
+  justify-content: center;
+  padding: 0.25rem;
+}
+
+.platform_list_item {
+  width: 20vw;
+  height: 20vw;
+  max-width: 175px;
+  max-height: 175px;
+  display: inline-flex;
+  flex-direction: column;
+  cursor: pointer;
+  border: var(--accent) 1px solid;
+  margin: 10px;
+  transition: all 100ms ease-in-out;
+  transform: scale(1);
+  box-shadow: none;
+  font-weight: 900;
+  color: var(--accent);
+  text-shadow: 2px 2px 10px #00000099;
+  text-align: center;
+
+  position: relative;
+  flex: 0 0 auto;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(0, 0, 0, 0.15));
+
+  &:hover {
+    border-color: var(--accent);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+    
+    &:not(:active) {
+        transform: scale(1.025);
+        filter: brightness(97%) saturate(1.10) contrast(102%);
+        animation: pulse 2s infinite;
+    }
+
+    svg {
+        filter: brightness(97%) saturate(1.05) contrast(102%);
+        z-index: 1;
+
+        .icoGlass {
+            transform: scale(1.05);
+        }
+    }
+  }
+
+  &:active {
+    transform: scale(0.98);
+    filter: brightness(95%) saturate(1.05);
+    box-shadow: none;
+
+    & svg {
+        filter: brightness(95%) saturate(1.05);
+
+        & .icoGlass {
+            transform: scale(0.9);
+        }
+    }
+}
+
+  &.platform_list_placeholder {
+    cursor: default;
+    border: 2px dashed var(--accent);
+    background: rgba(0, 0, 0, 0.12);
+    box-shadow: none;
+    flex: 0 0 auto;
+
+    &:hover {
+      transform: none;
+      filter: none;
+      animation: none;
+      box-shadow: none;
+    }
+  }
+
+  .fgText {
+    position: absolute;
+    height: 6.666666666vw;
+    max-height: 58.33px;
+    width: calc(20vw - 3px);
+    max-width: 172px;
+    bottom: 0;
+    z-index: 10;
+  
+    p {
+      font-size: min(2.5vw, 21.875px);
+      line-height: 1em;
+      height: fit-content;
+      padding: 0 !important;
+      bottom: 0px;
+      width: 100%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50%);
+    }
+  
+    &.shortText p {
+      font-size: min(3.5vw, 30px);
+    }
+  
+    &.longText p {
+      font-size: min(1.9vw, 17.5px);
+    }
+  
+    &.noImageCenterText p {
+      font-size: 0.88rem;
+      height: min(20vw, 175px);
+      max-height: 175px;
+    }
+  }
+
+  .fgImg {
+    position: absolute;
+    height: 13.3333333vw;
+    max-height: 116.66px;
+    width: 100%;
+    z-index: 10;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    opacity: 0.92;
+  
+    svg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50%);
+      max-width: 72%;
+      max-height: 72%;
+      filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.45));
+    }
+
+    use.icoFG {
+      fill: var(--accent);
+    }
+  }
+
+  .icoBG {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  .icoGlass {
+      transition: 500ms all ease-in;
+  }
+}
+
+.ico {
+  /* ALL */
+  &BG {
+      background: linear-gradient(0deg, rgba(37,51,64,1) 0%, rgba(37,51,64,1) 0%, rgba(32,33,35,1) 100%, rgba(0,212,255,1) 202123%);
+  }
+
+  &FG {
+      fill-rule: evenodd;
+      clip-rule: evenodd;
+      stroke-linejoin: round;
+      stroke-miterlimit: 2;
+  }
+
+  &Glass {
+      fill: rgba(255, 255, 255, 0.02);
+  }
+}

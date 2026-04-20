@@ -20,7 +20,7 @@
     }
 </script>
 
-<div class="main-content">
+<div class="main-content main-spacing">
     <h1 class="SettingsHeader">{$t("Settings_Header_AppWide")}</h1>
 
     <h2 class="SettingsHeader">{$t("Preview_Modals")}</h2>

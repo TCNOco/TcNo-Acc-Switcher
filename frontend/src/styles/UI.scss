@@ -721,3 +721,46 @@ button .caret, .button .caret {
         -webkit-transform: rotate(-90deg);
     }*/
 }
+
+
+/* ---------------------------------------- */
+/*     PLATFORM-SPECIFIC ICONS SECTION      */
+/* ---------------------------------------- */
+
+/* Modal icons */
+.modalIco {
+  &GitHub,
+  &Networking,
+  &Doc,
+  &Discord,
+  &Patreon,
+  &Kofi {
+      fill: white;
+  }
+}
+
+/* BattleNet icons */
+.battlenet {
+  &IcoOWTank,
+  &IcoOWDamage,
+  &IcoOWSupport {
+      fill: white;
+  }
+
+  &Level sup {
+      top: -.1em;
+  }
+}
+
+/* Footer icons */
+#btnSettings,
+#btnHelp {
+  width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  i {
+      font-size: 16px;
+  }
+}
