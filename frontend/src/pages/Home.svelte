@@ -1,7 +1,8 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
+  import { onMount } from "svelte";
   import { get } from "svelte/store";
   import ActionBar from "../components/ActionBar.svelte";
+  import ReorderPointerGrid from "../components/ReorderPointerGrid.svelte";
   import { route, appBarTitle } from "../stores/nav";
   import { t } from "../stores/i18n";
   import { openConfirm, openFolderPicker } from "../stores/modal";
@@ -11,84 +12,10 @@
   import { platformIconFgHref } from "../lib/platformIcon";
   import "../styles/HomePlatforms.scss";
 
-  const DRAG_THRESHOLD_PX = 8;
-
   let startup: PlatformStartup | null = null;
   let homeOrder: string[] = [];
   let loadError: string | null = null;
-  let dragIndex: number | null = null;
-  let dragOverIndex: number | null = null;
 
-  /** Pointer gesture: pending until movement crosses threshold (HTML5 DnD is unreliable in WebView). */
-  let pendingDrag: {
-    fromIndex: number;
-    name: string;
-    startX: number;
-    startY: number;
-    grabOffsetX: number;
-    grabOffsetY: number;
-    width: number;
-    height: number;
-  } | null = null;
-
-  let ghostX = 0;
-  let ghostY = 0;
-  let ghostW = 0;
-  let ghostH = 0;
-  let draggingName: string | null = null;
-
-  let platformListEl: HTMLDivElement | null = null;
-
-  /** While dragging: order with `null` = empty slot (dotted) so neighbors shift. */
-  function previewSlots(
-    order: string[],
-    from: number,
-    to: number,
-  ): (string | null)[] {
-    const n = order.length;
-    const without = order.filter((_, i) => i !== from);
-    const out: (string | null)[] = [];
-    let wi = 0;
-    for (let i = 0; i < n; i++) {
-      if (i === to) {
-        out.push(null);
-      } else {
-        out.push(without[wi++]!);
-      }
-    }
-    return out;
-  }
-
-  /**
-   * Insertion index into `homeOrder` with `from` removed — same as `splice(to,0,moved)` after `splice(from,1)`.
-   * Left half of a tile: before that item; right half: after that item.
-   */
-  function insertionIndexFromTileHover(
-    slot: string,
-    clientX: number,
-    cell: HTMLElement,
-  ): number {
-    if (dragIndex === null) return homeOrder.indexOf(slot);
-    const short = homeOrder.filter((_, i) => i !== dragIndex);
-    const refInShort = short.indexOf(slot);
-    if (refInShort < 0) return 0;
-    const rect = cell.getBoundingClientRect();
-    const after = clientX >= rect.left + rect.width / 2;
-    let pos = after ? refInShort + 1 : refInShort;
-    return Math.max(0, Math.min(pos, short.length));
-  }
-
-  $: displaySlots =
-    dragIndex === null
-      ? homeOrder.map((name): string | null => name)
-      : previewSlots(
-          homeOrder,
-          dragIndex,
-          dragOverIndex ?? dragIndex,
-        );
-
-  /** After a successful reorder drop, ignore the synthetic click that follows. */
-  let suppressNextClick = false;
   let navigating = false;
 
   $: appBarTitle.set("TcNo Account Switcher");
@@ -98,6 +25,11 @@
     if (n < 7) return "shortText";
     if (n > 12) return "longText";
     return "";
+  }
+
+  /** Slot props are typed loosely; keys are always strings here. */
+  function slotKey(x: string | null | undefined): string {
+    return x ?? "";
   }
 
   async function promptMissingPlatformsFile(): Promise<void> {
@@ -175,158 +107,15 @@
     }
   }
 
-  function hitTestDragOver(clientX: number, clientY: number): void {
-    if (dragIndex === null || !platformListEl) return;
-    const el = document.elementFromPoint(clientX, clientY);
-    const cell = el?.closest("[data-dnd-cell]");
-    if (!cell || !platformListEl.contains(cell)) return;
-    const visual = Number((cell as HTMLElement).dataset.dndVisual);
-    if (Number.isNaN(visual)) return;
-    const isGap = (cell as HTMLElement).dataset.dndGap === "true";
-    if (isGap) {
-      dragOverIndex = visual;
-      return;
-    }
-    const name = (cell as HTMLElement).dataset.dndName ?? "";
-    if (!name) return;
-    dragOverIndex = insertionIndexFromTileHover(
-      name,
-      clientX,
-      cell as HTMLElement,
-    );
-  }
-
-  function beginPointerDrag(
-    e: PointerEvent,
-    pd: NonNullable<typeof pendingDrag>,
+  function onReorder(
+    e: CustomEvent<{ items: string[] }>,
   ): void {
-    dragIndex = pd.fromIndex;
-    dragOverIndex = pd.fromIndex;
-    ghostW = pd.width;
-    ghostH = pd.height;
-    draggingName = pd.name;
-    ghostX = e.clientX - pd.grabOffsetX;
-    ghostY = e.clientY - pd.grabOffsetY;
-    document.body.style.userSelect = "none";
-    hitTestDragOver(e.clientX, e.clientY);
+    homeOrder = e.detail.items;
+    void PlatformService.SaveHomeOrder(e.detail.items).catch(() => {});
   }
-
-  function endPointerDrag(commit: boolean): void {
-    if (pendingDrag && dragIndex === null) {
-      pendingDrag = null;
-      return;
-    }
-    if (dragIndex !== null) {
-      const from = dragIndex;
-      const to = dragOverIndex ?? from;
-      suppressNextClick = true;
-      dragIndex = null;
-      dragOverIndex = null;
-      pendingDrag = null;
-      draggingName = null;
-      document.body.style.userSelect = "";
-      if (commit && from !== to) {
-        const next = [...homeOrder];
-        const [moved] = next.splice(from, 1);
-        next.splice(to, 0, moved);
-        homeOrder = next;
-        void PlatformService.SaveHomeOrder(next).catch(() => {});
-      }
-    } else {
-      pendingDrag = null;
-    }
-  }
-
-  function onWindowPointerMove(e: PointerEvent): void {
-    if (!pendingDrag && dragIndex === null) return;
-
-    if (pendingDrag && dragIndex === null) {
-      const dx = e.clientX - pendingDrag.startX;
-      const dy = e.clientY - pendingDrag.startY;
-      if (dx * dx + dy * dy < DRAG_THRESHOLD_PX * DRAG_THRESHOLD_PX) return;
-      beginPointerDrag(e, pendingDrag);
-    }
-
-    if (dragIndex !== null && pendingDrag) {
-      ghostX = e.clientX - pendingDrag.grabOffsetX;
-      ghostY = e.clientY - pendingDrag.grabOffsetY;
-      hitTestDragOver(e.clientX, e.clientY);
-    }
-  }
-
-  function onWindowPointerUp(_e: PointerEvent): void {
-    if (pendingDrag && dragIndex === null) {
-      pendingDrag = null;
-      return;
-    }
-    endPointerDrag(true);
-  }
-
-  function onWindowPointerCancel(_e: PointerEvent): void {
-    endPointerDrag(false);
-  }
-
-  function onWindowKeyDown(e: KeyboardEvent): void {
-    if (e.key !== "Escape") return;
-    if (dragIndex === null && !pendingDrag) return;
-    e.preventDefault();
-    dragIndex = null;
-    dragOverIndex = null;
-    pendingDrag = null;
-    draggingName = null;
-    document.body.style.userSelect = "";
-    suppressNextClick = true;
-  }
-
-  function onTilePointerDown(e: PointerEvent, name: string): void {
-    if (e.button !== 0) return;
-    const from = homeOrder.indexOf(name);
-    if (from < 0) return;
-    const el = e.currentTarget as HTMLElement;
-    const r = el.getBoundingClientRect();
-    pendingDrag = {
-      fromIndex: from,
-      name,
-      startX: e.clientX,
-      startY: e.clientY,
-      grabOffsetX: e.clientX - r.left,
-      grabOffsetY: e.clientY - r.top,
-      width: r.width,
-      height: r.height,
-    };
-  }
-
-  function onTileClick(name: string): void {
-    if (suppressNextClick) {
-      suppressNextClick = false;
-      return;
-    }
-    void openPlatform(name);
-  }
-
-  let teardownWindowListeners: (() => void) | undefined;
 
   onMount(() => {
     void refreshStartup();
-    const move = (e: PointerEvent) => onWindowPointerMove(e);
-    const up = (e: PointerEvent) => onWindowPointerUp(e);
-    const cancel = (e: PointerEvent) => onWindowPointerCancel(e);
-    const key = (e: KeyboardEvent) => onWindowKeyDown(e);
-    window.addEventListener("pointermove", move);
-    window.addEventListener("pointerup", up);
-    window.addEventListener("pointercancel", cancel);
-    window.addEventListener("keydown", key, true);
-    teardownWindowListeners = () => {
-      window.removeEventListener("pointermove", move);
-      window.removeEventListener("pointerup", up);
-      window.removeEventListener("pointercancel", cancel);
-      window.removeEventListener("keydown", key, true);
-    };
-  });
-
-  onDestroy(() => {
-    teardownWindowListeners?.();
-    document.body.style.userSelect = "";
   });
 </script>
 
@@ -339,82 +128,45 @@
     <p class="home-msg">{$t("Modal_Body_MissingPlatformsJson")}</p>
   {:else}
     <div class="platformTable">
-      <div
-        bind:this={platformListEl}
-        class="platform_list"
-        role="list"
-        aria-label={$t("Preview_Platforms")}
+      <ReorderPointerGrid
+        items={homeOrder}
+        listClass="platform_list"
+        itemClass="platform_list_item platform_list_item--draggable"
+        placeholderClass="platform_list_item platform_list_placeholder"
+        ghostClass="platform_list_item platform_list_item--ghost"
+        ariaLabel={$t("Preview_Platforms")}
+        on:reorder={onReorder}
+        on:itemclick={(e) => void openPlatform(e.detail.id)}
       >
-        {#each displaySlots as slot, i (slot === null ? `gap-${i}` : slot)}
-          {#if slot === null}
-            <div
-              class="platform_list_item platform_list_placeholder"
-              role="presentation"
-              data-dnd-cell
-              data-dnd-visual={i}
-              data-dnd-gap="true"
-            ></div>
-          {:else}
-            <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-            <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-            <div
-              class="platform_list_item platform_list_item--draggable"
-              role="listitem"
-              tabindex="0"
-              data-dnd-cell
-              data-dnd-visual={i}
-              data-dnd-name={slot}
-              on:pointerdown={(e) => onTilePointerDown(e, slot)}
-              on:keydown={(e) => e.key === "Enter" && onTileClick(slot)}
-              on:click={() => onTileClick(slot)}
-            >
-              <div class="fgText {textClass(slot)}">
-                <p>{slot.toUpperCase()}</p>
-              </div>
-              <div class="fgImg" aria-hidden="true">
-                <svg viewBox="0 0 500 500" aria-hidden="true">
-                  <use
-                    href={platformIconFgHref(slot)}
-                    class="icoFG"
-                  />
-                </svg>
-              </div>
-              <svg viewBox="0 0 2084 2084" class="icoBG" aria-hidden="true">
-                <use
-                  href="img/platform/glass.svg#GLASS"
-                  class="icoGlass"
-                ></use>
-              </svg>
-            </div>
-          {/if}
-        {/each}
-      </div>
-    </div>
-  {/if}
-
-  {#if draggingName}
-    <div
-      class="platform_list_item platform_list_item--ghost"
-      style:left="{ghostX}px"
-      style:top="{ghostY}px"
-      style:width="{ghostW}px"
-      style:height="{ghostH}px"
-      aria-hidden="true"
-    >
-      <div class="fgText {textClass(draggingName)}">
-        <p>{draggingName.toUpperCase()}</p>
-      </div>
-      <div class="fgImg" aria-hidden="true">
-        <svg viewBox="0 0 500 500" aria-hidden="true">
-          <use
-            href={platformIconFgHref(draggingName)}
-            class="icoFG"
-          />
-        </svg>
-      </div>
-      <svg viewBox="0 0 2084 2084" class="icoBG" aria-hidden="true">
-        <use href="img/platform/glass.svg#GLASS" class="icoGlass"></use>
-      </svg>
+        <svelte:fragment slot="item" let:rowId>
+          {@const rid = slotKey(rowId)}
+          <div class="fgText {textClass(rid)}">
+            <p>{rid.toUpperCase()}</p>
+          </div>
+          <div class="fgImg" aria-hidden="true">
+            <svg viewBox="0 0 500 500" aria-hidden="true">
+              <use href={platformIconFgHref(rid)} class="icoFG" />
+            </svg>
+          </div>
+          <svg viewBox="0 0 2084 2084" class="icoBG" aria-hidden="true">
+            <use href="img/platform/glass.svg#GLASS" class="icoGlass"></use>
+          </svg>
+        </svelte:fragment>
+        <svelte:fragment slot="ghost" let:rowId>
+          {@const rid = slotKey(rowId)}
+          <div class="fgText {textClass(rid)}">
+            <p>{rid.toUpperCase()}</p>
+          </div>
+          <div class="fgImg" aria-hidden="true">
+            <svg viewBox="0 0 500 500" aria-hidden="true">
+              <use href={platformIconFgHref(rid)} class="icoFG" />
+            </svg>
+          </div>
+          <svg viewBox="0 0 2084 2084" class="icoBG" aria-hidden="true">
+            <use href="img/platform/glass.svg#GLASS" class="icoGlass"></use>
+          </svg>
+        </svelte:fragment>
+      </ReorderPointerGrid>
     </div>
   {/if}
 </div>
