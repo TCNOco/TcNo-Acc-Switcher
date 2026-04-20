@@ -562,12 +562,12 @@
       "ExesToEnd": [ "steam.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
-        "%ProgramFiles(x86)%\\Steam\\config\\loginusers.vdf": "loginusers.vdf"
+        "%Platform_Folder%\\config\\loginusers.vdf": "loginusers.vdf"
       },
       "AllFilesRequired": false,
       "ExitBeforeInteract": false,
-      "UniqueIdFile": "%ProgramFiles(x86)%\\Steam\\TcNoAccSwitcher-ID.instance",
-      "UniqueIdMethod": "CREATE_ID_FILE",
+      "UniqueIdFile": "%Platform_Folder%\\config\\loginusers.vdf",
+      "UniqueIdMethod": "STEAM",
       "Extras": {
         "BackupFolders": {
           "%Platform_Folder%\\config": "config",
