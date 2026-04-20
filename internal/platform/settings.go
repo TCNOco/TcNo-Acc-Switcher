@@ -38,6 +38,16 @@ func settingsPath(exeDir string) string {
 	return filepath.Join(exeDir, settingsFileName)
 }
 
+// LoadAppSettings reads TcNo-Acc-Switcher.settings.json next to the executable.
+func LoadAppSettings(exeDir string) (AppSettings, error) {
+	return loadSettings(exeDir)
+}
+
+// SaveAppSettings writes TcNo-Acc-Switcher.settings.json atomically.
+func SaveAppSettings(exeDir string, s AppSettings) error {
+	return saveSettingsAtomic(exeDir, s)
+}
+
 func loadSettings(exeDir string) (AppSettings, error) {
 	path := settingsPath(exeDir)
 	data, err := os.ReadFile(path)

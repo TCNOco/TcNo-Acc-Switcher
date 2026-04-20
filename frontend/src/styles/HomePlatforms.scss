@@ -19,10 +19,12 @@
 }
 
 .platform_list_item {
-  width: 20vw;
-  height: 20vw;
-  max-width: 175px;
-  max-height: 175px;
+  /* Single formula for tile size — empty drag gaps must match filled cells (flex min-size). */
+  $tile: min(20vw, 175px);
+  width: $tile;
+  height: $tile;
+  min-width: $tile;
+  min-height: $tile;
   display: inline-flex;
   flex-direction: column;
   cursor: pointer;
@@ -37,7 +39,7 @@
   text-align: center;
 
   position: relative;
-  flex: 0 0 auto;
+  flex: 0 0 $tile;
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(0, 0, 0, 0.15));
 
   &:hover {
@@ -76,10 +78,10 @@
 
   &.platform_list_placeholder {
     cursor: default;
-    border: 2px dashed var(--accent);
+    /* Same border width as live tiles so the dashed slot matches picked-up size (was 2px). */
+    border: 1px dashed var(--accent);
     background: rgba(0, 0, 0, 0.12);
     box-shadow: none;
-    flex: 0 0 auto;
 
     &:hover {
       transform: none;

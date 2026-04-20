@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { onMount } from "svelte";
+  import { Events } from "@wailsio/runtime";
   import TitleBar from './components/TitleBar.svelte'
   import AppModal from './components/AppModal.svelte'
   import Toast from './components/Toast.svelte'
@@ -7,9 +9,18 @@
   import Settings from './pages/Settings.svelte'
   import Test from './pages/Test.svelte'
   import Platform from './pages/Platform.svelte'
+  import PlatformSteam from './pages/PlatformSteam.svelte'
   import PlatformSettings from './pages/PlatformSettings.svelte'
   import ManagePlatforms from './pages/ManagePlatforms.svelte'
   import { route } from './stores/nav'
+  import { actionBarStatus } from './stores/actionBarStatus'
+
+  onMount(() => {
+    const off = Events.On("action-bar-status", (ev) => {
+      actionBarStatus.set(typeof ev.data === "string" ? ev.data : "");
+    });
+    return () => off?.();
+  });
 </script>
 
 <div class="container">
@@ -22,7 +33,11 @@
     {:else if $route.page === 'test'}
       <Test />
     {:else if $route.page === 'platform'}
-      <Platform name={$route.platformName} />
+      {#if $route.platformName === 'Steam'}
+        <PlatformSteam name={$route.platformName} />
+      {:else}
+        <Platform name={$route.platformName} />
+      {/if}
     {:else if $route.page === 'platform-settings'}
       <PlatformSettings name={$route.platformName} />
     {:else if $route.page === 'manage-platforms'}

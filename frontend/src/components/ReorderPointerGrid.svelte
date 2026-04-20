@@ -38,7 +38,12 @@
     grabOffsetY: number;
     width: number;
     height: number;
+    /** Live cell element — clone before dragIndex updates, or the node is destroyed by previewSlots. */
+    cellEl: HTMLElement;
   } | null = null;
+
+  /** Deep clone of the dragged cell for the floating ghost (pixel-accurate to the real tile). */
+  let dragVisualClone: HTMLElement | null = null;
 
   let ghostX = 0;
   let ghostY = 0;
@@ -58,6 +63,20 @@
         );
 
   let suppressNextClick = false;
+  /** If no synthetic post-drag click fires, expire suppress so the next real click is not eaten. */
+  let suppressClickExpire: ReturnType<typeof setTimeout> | null = null;
+
+  function armSuppressClickAfterDrag(): void {
+    if (suppressClickExpire) {
+      clearTimeout(suppressClickExpire);
+      suppressClickExpire = null;
+    }
+    suppressNextClick = true;
+    suppressClickExpire = setTimeout(() => {
+      suppressNextClick = false;
+      suppressClickExpire = null;
+    }, 0);
+  }
 
   function hitTestDragOver(clientX: number, clientY: number): void {
     if (dragIndex === null || !listEl) return;
@@ -81,10 +100,35 @@
     );
   }
 
+  function stripCellForGhostClone(el: HTMLElement): void {
+    el.removeAttribute("data-dnd-cell");
+    el.removeAttribute("data-dnd-visual");
+    el.removeAttribute("data-dnd-name");
+    el.removeAttribute("tabindex");
+    el.removeAttribute("role");
+    el.classList.remove("reorder-pointer-grid__cell");
+    el.style.cursor = "grabbing";
+    el.style.width = "100%";
+    el.style.height = "100%";
+    el.style.boxSizing = "border-box";
+    /* Grid layout margins (e.g. .platform_list_item { margin: 10px }) must not apply inside the fixed-size ghost. */
+    el.style.margin = "0";
+    el.style.maxWidth = "none";
+    el.style.maxHeight = "none";
+    // Avoid duplicate ids / radio group side effects in the floating copy
+    el.querySelectorAll("input").forEach((n) => n.remove());
+    el.querySelectorAll("[id]").forEach((n) => n.removeAttribute("id"));
+    el.querySelectorAll("label[for]").forEach((n) => n.removeAttribute("for"));
+  }
+
   function beginPointerDrag(
     e: PointerEvent,
     pd: NonNullable<typeof pendingDrag>,
   ): void {
+    const visual = pd.cellEl.cloneNode(true) as HTMLElement;
+    stripCellForGhostClone(visual);
+    dragVisualClone = visual;
+
     dragIndex = pd.fromIndex;
     dragOverIndex = pd.fromIndex;
     ghostW = pd.width;
@@ -104,11 +148,12 @@
     if (dragIndex !== null) {
       const from = dragIndex;
       const to = dragOverIndex ?? from;
-      suppressNextClick = true;
+      armSuppressClickAfterDrag();
       dragIndex = null;
       dragOverIndex = null;
       pendingDrag = null;
       draggingId = null;
+      dragVisualClone = null;
       document.body.style.userSelect = "";
       if (commit && from !== to) {
         dispatch("reorder", { items: moveItem(itemsSnap, from, to) });
@@ -155,8 +200,9 @@
     dragOverIndex = null;
     pendingDrag = null;
     draggingId = null;
+    dragVisualClone = null;
     document.body.style.userSelect = "";
-    suppressNextClick = true;
+    armSuppressClickAfterDrag();
   }
 
   function onCellPointerDown(e: PointerEvent, id: string): void {
@@ -174,10 +220,32 @@
       grabOffsetY: e.clientY - r.top,
       width: r.width,
       height: r.height,
+      cellEl: e.currentTarget as HTMLElement,
+    };
+  }
+
+  /** Mount cloned tile into the ghost layer (arbitrary DOM from cloneNode). */
+  function ghostCloneMount(node: HTMLElement, clone: HTMLElement | null) {
+    function apply(c: HTMLElement | null) {
+      node.replaceChildren();
+      if (c) node.appendChild(c);
+    }
+    apply(clone);
+    return {
+      update(next: HTMLElement | null) {
+        apply(next);
+      },
+      destroy() {
+        node.replaceChildren();
+      },
     };
   }
 
   function onCellClick(id: string): void {
+    if (suppressClickExpire) {
+      clearTimeout(suppressClickExpire);
+      suppressClickExpire = null;
+    }
     if (suppressNextClick) {
       suppressNextClick = false;
       return;
@@ -207,6 +275,7 @@
   onDestroy(() => {
     teardown?.();
     document.body.style.userSelect = "";
+    if (suppressClickExpire) clearTimeout(suppressClickExpire);
   });
 </script>
 
@@ -245,7 +314,7 @@
   {/each}
 </div>
 
-{#if draggingId}
+{#if draggingId && dragVisualClone}
   <div
     class="reorder-pointer-grid__ghost {ghostClass}"
     style:left="{ghostX}px"
@@ -254,11 +323,32 @@
     style:height="{ghostH}px"
     aria-hidden="true"
   >
-    {#if $$slots.ghost}
-      <slot name="ghost" rowId={draggingId} />
-    {:else}
-      <span class="reorder-pointer-grid__ghost-fallback">{draggingId}</span>
-    {/if}
+    <div
+      class="reorder-pointer-grid__ghost-mirror"
+      use:ghostCloneMount={dragVisualClone}
+    ></div>
+  </div>
+{:else if draggingId && $$slots.ghost}
+  <div
+    class="reorder-pointer-grid__ghost {ghostClass}"
+    style:left="{ghostX}px"
+    style:top="{ghostY}px"
+    style:width="{ghostW}px"
+    style:height="{ghostH}px"
+    aria-hidden="true"
+  >
+    <slot name="ghost" rowId={draggingId} />
+  </div>
+{:else if draggingId}
+  <div
+    class="reorder-pointer-grid__ghost {ghostClass}"
+    style:left="{ghostX}px"
+    style:top="{ghostY}px"
+    style:width="{ghostW}px"
+    style:height="{ghostH}px"
+    aria-hidden="true"
+  >
+    <span class="reorder-pointer-grid__ghost-fallback">{draggingId}</span>
   </div>
 {/if}
 
@@ -279,12 +369,31 @@
     transition: none;
     left: 0;
     top: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    /* Same as .acc_list / list chrome — cloned tiles are often transparent (Steam label.acc). */
+    background: var(--accountListBackground, #11181d);
+    border-radius: 6px;
 
     &:hover {
       transform: none !important;
       animation: none !important;
       filter: none !important;
     }
+  }
+
+  .reorder-pointer-grid__ghost-mirror {
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: transparent;
+    border-radius: inherit;
   }
 
   .reorder-pointer-grid__ghost-fallback {

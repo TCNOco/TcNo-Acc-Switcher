@@ -8,10 +8,15 @@ import type { Events } from "@wailsio/runtime";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: Unused imports
 import type * as main$0 from "../../../../../TcNo-Acc-Switcher/models.js";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore: Unused imports
+import type * as steam$0 from "../../../../../TcNo-Acc-Switcher/internal/steam/models.js";
 
 declare module "@wailsio/runtime" {
     namespace Events {
         interface CustomEvents {
+            "action-bar-status": string;
+            "steam-account-updated": steam$0.AccountPatch;
             "time": string;
             "toast": main$0.ToastPayload;
         }

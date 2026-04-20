@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { get } from "svelte/store";
   import { route, previousPage, appBarTitle } from "../stores/nav";
   import "../styles/Settings.scss";
   import {
@@ -33,48 +32,43 @@
   }
 
   async function testAlert() {
-    const tt = get(t);
     await openAlert({
-      title: tt("Preview_Modals"),
-      body: tt("Modal_ConfirmAction"),
+      title: $t("Preview_Modals"),
+      body: $t("Modal_ConfirmAction"),
     });
     logModal("openAlert", "resolved");
   }
 
   async function testAlertNoButton() {
-    const tt = get(t);
     await openAlertNoButton({
-      title: tt("Preview_Modals"),
-      body: tt("Modal_ConfirmAction"),
+      title: $t("Preview_Modals"),
+      body: $t("Modal_ConfirmAction"),
     });
     logModal("openAlertNoButton", "resolved");
   }
 
   async function testConfirmYesNo() {
-    const tt = get(t);
     const r = await openConfirm({
-      title: tt("Preview_Modals"),
-      body: tt("Modal_ConfirmAction"),
+      title: $t("Preview_Modals"),
+      body: $t("Modal_ConfirmAction"),
       style: "yesno",
     });
     logModal("openConfirm (yes/no)", JSON.stringify(r));
   }
 
   async function testConfirmOkCancel() {
-    const tt = get(t);
     const r = await openConfirm({
-      title: tt("Preview_Modals"),
-      body: tt("Modal_ConfirmAction"),
+      title: $t("Preview_Modals"),
+      body: $t("Modal_ConfirmAction"),
       style: "okcancel",
     });
     logModal("openConfirm (OK/cancel)", JSON.stringify(r));
   }
 
   async function testPromptText() {
-    const tt = get(t);
     const r = await openPrompt({
-      title: tt("Preview_Modals"),
-      body: `${tt("Modal_ChangeUsername")}`,
+      title: $t("Preview_Modals"),
+      body: `${$t("Modal_ChangeUsername")}`,
       inputType: "text",
       initialValue: "demo",
     });
@@ -82,34 +76,31 @@
   }
 
   async function testPromptPassword() {
-    const tt = get(t);
     const r = await openPrompt({
-      title: tt("Preview_Modals"),
-      body: tt("Modal_SetPassword"),
+      title: $t("Preview_Modals"),
+      body: $t("Modal_SetPassword"),
       inputType: "password",
     });
     logModal("openPrompt (password)", r === null ? "null (cancel)" : `(length ${r.length})`);
   }
 
   async function testFolderPicker() {
-    const tt = get(t);
     const r = await openFolderPicker({
-      title: tt("Preview_Modals"),
-      body: tt("Modal_SetUserdata"),
+      title: $t("Preview_Modals"),
+      body: $t("Modal_SetUserdata"),
       initialPath: "",
     });
     logModal("openFolderPicker", r === null ? "null (cancel)" : JSON.stringify(r));
   }
 
   async function testFolderPickerWithFiles() {
-    const tt = get(t);
     const r = await openFolderPicker({
-      title: tt("Preview_Modals"),
-      body: tt("Modal_SetBackground"),
+      title: $t("Preview_Modals"),
+      body: $t("Modal_SetBackground"),
       initialPath: "",
       dirsOnly: false,
       soughtFilename: "package.json",
-      positiveLabel: tt("Modal_SetBackground_ChooseImage"),
+      positiveLabel: $t("Modal_SetBackground_ChooseImage"),
     });
     logModal("openFolderPicker (dirsOnly: false)", r === null ? "null (cancel)" : JSON.stringify(r));
   }
@@ -159,7 +150,7 @@
   }
 </script>
 
-<div class="main-content">
+<div class="main-content main-spacing">
   <h1 class="SettingsHeader">{$t("Preview_Modals")}</h1>
 
   <div class="modalTestPanel">

@@ -8,7 +8,6 @@
 
   export let name: string;
 
-  /** temp */
   function defaultAccounts(platform: string): string[] {
     return [
       `${platform} — Account 1`,
@@ -76,13 +75,6 @@
     flex-direction: column;
     min-height: 0;
     flex: 1;
-  }
-
-  .platform-accounts-hint {
-    margin: 0.75rem 1rem 0;
-    font-size: 0.85rem;
-    color: var(--white, #fff);
-    opacity: 0.85;
   }
 
   .platform-account-label {

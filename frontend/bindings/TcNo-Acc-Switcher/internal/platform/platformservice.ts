@@ -59,6 +59,13 @@ export function SaveHomeOrder(order: string[]): $CancellablePromise<void> {
     return $Call.ByID(1124685899, order);
 }
 
+/**
+ * SetActionBarStatus is bound for the UI and other Go callers that go through services.
+ */
+export function SetActionBarStatus(text: string): $CancellablePromise<void> {
+    return $Call.ByID(85095566, text);
+}
+
 export function SetDisabledPlatforms(disabled: string[]): $CancellablePromise<void> {
     return $Call.ByID(3278316535, disabled);
 }

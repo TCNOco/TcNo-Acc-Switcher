@@ -6,8 +6,7 @@ import (
 	"strings"
 )
 
-// expandWindowsPath expands %Var% placeholders used in Platforms.json (Windows-style env vars).
-func expandWindowsPath(s string) string {
+func ExpandWindowsPath(s string) string {
 	if s == "" {
 		return ""
 	}

@@ -9,6 +9,8 @@ export type TooltipParams =
           text: string
           placement?: TooltipPlacement
           delay?: { show?: number; hide?: number }
+          /** Clamp position inside this element’s rect (e.g. scroll pane), not only the window. */
+          boundary?: HTMLElement | null
       }
 
 type Parsed = {
@@ -16,6 +18,7 @@ type Parsed = {
     placement: TooltipPlacement
     delayShow: number
     delayHide: number
+    boundary?: HTMLElement | null
 }
 
 function parseParam(param: TooltipParams): Parsed | null {
@@ -29,6 +32,7 @@ function parseParam(param: TooltipParams): Parsed | null {
         placement: param.placement ?? 'top',
         delayShow: d?.show ?? 0,
         delayHide: d?.hide ?? 0,
+        boundary: param.boundary,
     }
 }
 
@@ -40,20 +44,66 @@ function clamp(n: number, min: number, max: number) {
     return Math.min(Math.max(n, min), max)
 }
 
+function clampBounds(
+    vw: number,
+    vh: number,
+    w: number,
+    h: number,
+    boundary?: HTMLElement | null
+) {
+    let minL = VIEWPORT_PAD
+    let minT = VIEWPORT_PAD
+    let maxL = vw - w - VIEWPORT_PAD
+    let maxT = vh - h - VIEWPORT_PAD
+    if (boundary) {
+        const br = boundary.getBoundingClientRect()
+        const pad = 4
+        minL = Math.max(minL, br.left + pad)
+        minT = Math.max(minT, br.top + pad)
+        maxL = Math.min(maxL, br.right - w - pad)
+        maxT = Math.min(maxT, br.bottom - h - pad)
+    }
+    if (maxL < minL) {
+        minL = VIEWPORT_PAD
+        maxL = vw - w - VIEWPORT_PAD
+    }
+    if (maxT < minT) {
+        minT = VIEWPORT_PAD
+        maxT = vh - h - VIEWPORT_PAD
+    }
+    return { minL, minT, maxL, maxT }
+}
+
 function placeTooltip(
     node: DOMRect,
     tip: HTMLElement,
-    placement: TooltipPlacement
+    placement: TooltipPlacement,
+    boundary?: HTMLElement | null
 ) {
     const vw = window.innerWidth
     const vh = window.innerHeight
     const w = tip.offsetWidth
     const h = tip.offsetHeight
 
+    const { minL, minT, maxL, maxT } = clampBounds(vw, vh, w, h, boundary)
+
+    let usePlacement: TooltipPlacement = placement
+    if (boundary && (placement === 'right' || placement === 'left')) {
+        const br = boundary.getBoundingClientRect()
+        const pad = 4
+        const canRight = node.right + GAP + w <= br.right - pad
+        const canLeft = node.left - GAP - w >= br.left + pad
+        if (placement === 'right' && !canRight && canLeft) {
+            usePlacement = 'left'
+        } else if (placement === 'left' && !canLeft && canRight) {
+            usePlacement = 'right'
+        }
+    }
+
     let top = 0
     let left = 0
 
-    switch (placement) {
+    switch (usePlacement) {
         case 'top':
             left = node.left + node.width / 2 - w / 2
             top = node.top - h - GAP
@@ -72,12 +122,12 @@ function placeTooltip(
             break
     }
 
-    left = clamp(left, VIEWPORT_PAD, vw - w - VIEWPORT_PAD)
-    top = clamp(top, VIEWPORT_PAD, vh - h - VIEWPORT_PAD)
+    left = clamp(left, minL, maxL)
+    top = clamp(top, minT, maxT)
 
     tip.style.left = `${Math.round(left)}px`
     tip.style.top = `${Math.round(top)}px`
-    tip.dataset.placement = placement
+    tip.dataset.placement = usePlacement
 }
 
 function buildTooltip(text: string, placement: TooltipPlacement) {
@@ -154,7 +204,12 @@ export const tooltip: Action<HTMLElement, TooltipParams> = (node, param) => {
 
         requestAnimationFrame(() => {
             if (!tip || !parsed) return
-            placeTooltip(node.getBoundingClientRect(), tip, parsed.placement)
+            placeTooltip(
+                node.getBoundingClientRect(),
+                tip,
+                parsed.placement,
+                parsed.boundary
+            )
             void tip.offsetWidth
             tip.classList.add('show')
         })
@@ -201,7 +256,13 @@ export const tooltip: Action<HTMLElement, TooltipParams> = (node, param) => {
                 const inner = tip.querySelector('.tooltip-inner')
                 if (inner) inner.textContent = parsed.text
                 requestAnimationFrame(() => {
-                    if (tip && parsed) placeTooltip(node.getBoundingClientRect(), tip, parsed.placement)
+                    if (tip && parsed)
+                        placeTooltip(
+                            node.getBoundingClientRect(),
+                            tip,
+                            parsed.placement,
+                            parsed.boundary
+                        )
                 })
             }
         },

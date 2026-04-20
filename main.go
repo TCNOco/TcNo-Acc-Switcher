@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"TcNo-Acc-Switcher/internal/platform"
+	"TcNo-Acc-Switcher/internal/steam"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 )
@@ -25,6 +26,9 @@ func init() {
 	// and provide a strongly typed JS/TS API for them.
 	application.RegisterEvent[string]("time")
 	application.RegisterEvent[ToastPayload](toastEventName)
+	application.RegisterEvent[steam.AccountPatch](steam.AccountUpdatedEvent)
+	application.RegisterEvent[string](platform.ActionBarStatusEvent)
+	platform.SetSteamLaunchHooks(steam.SaveFolderFromConfirmedExe, steam.ResolveSteamExePath)
 }
 
 // main function serves as the application's entry point. It initializes the application, creates a window,
@@ -40,13 +44,16 @@ func main() {
 	app := application.New(application.Options{
 		Name:        "TcNo Account Switcher",
 		Description: "A Superfast open-source account switcher",
+		// One Wails service per domain: list/settings/HTTP for a platform stay in that package.
+		// Shared outbound HTTP for all platforms lives in internal/appclient.
 		Services: []application.Service{
 			application.NewService(&GreetService{}),
 			application.NewService(&FilesystemService{}),
 			application.NewService(&platform.PlatformService{}),
+			application.NewService(steam.NewSteamService()),
 		},
 		Assets: application.AssetOptions{
-			Handler: application.AssetFileServerFS(assets),
+			Handler: newCompositeAssetHandler(assets),
 		},
 		Mac: application.MacOptions{
 			ApplicationShouldTerminateAfterLastWindowClosed: true,

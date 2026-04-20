@@ -326,7 +326,20 @@ func (p *PlatformService) RestoreDefaultPlatformsJSON() error {
 	return saveSettingsAtomic(exeDir, settings)
 }
 
+// ResolvePlatformsJSONPath returns the absolute path to Platforms.json for the current app settings.
+func ResolvePlatformsJSONPath(exeDir string) (string, error) {
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return "", err
+	}
+	return resolvePlatformsPath(exeDir, s), nil
+}
+
 func (p *PlatformService) resolvePlatformsPath(exeDir string, s AppSettings) string {
+	return resolvePlatformsPath(exeDir, s)
+}
+
+func resolvePlatformsPath(exeDir string, s AppSettings) string {
 	if rel := strings.TrimSpace(s.PlatformsJSONPath); rel != "" {
 		if filepath.IsAbs(rel) {
 			return filepath.Clean(rel)

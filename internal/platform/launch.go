@@ -8,6 +8,18 @@ import (
 	"strings"
 )
 
+// Steam launch hooks are set from main to avoid importing internal/steam here (import cycle).
+var (
+	saveSteamFolderFromExe func(exeFullPath string) error
+	resolveSteamExePath    func() (exePath string, ok bool)
+)
+
+// SetSteamLaunchHooks wires SteamSettings + exe resolution from internal/steam.
+func SetSteamLaunchHooks(saveExe func(exeFullPath string) error, resolve func() (exePath string, ok bool)) {
+	saveSteamFolderFromExe = saveExe
+	resolveSteamExePath = resolve
+}
+
 // ResolvePlatformLaunchResult is returned before navigating to a platform page.
 type ResolvePlatformLaunchResult struct {
 	Ok                bool   `json:"ok"`
@@ -48,7 +60,15 @@ func (p *PlatformService) ResolvePlatformLaunch(platformKey string) (ResolvePlat
 		return ResolvePlatformLaunchResult{}, errors.New("could not determine executable name for platform")
 	}
 
-	defExpanded := expandWindowsPath(strings.TrimSpace(entry.ExeLocationDefault))
+	defExpanded := ExpandWindowsPath(strings.TrimSpace(entry.ExeLocationDefault))
+
+	if strings.EqualFold(platformKey, "Steam") && resolveSteamExePath != nil {
+		if p, ok := resolveSteamExePath(); ok {
+			if st, err := os.Stat(p); err == nil && !st.IsDir() {
+				return ResolvePlatformLaunchResult{Ok: true}, nil
+			}
+		}
+	}
 
 	if saved := strings.TrimSpace(settings.PlatformExePaths[platformKey]); saved != "" {
 		if st, err := os.Stat(saved); err == nil && !st.IsDir() {
@@ -63,6 +83,12 @@ func (p *PlatformService) ResolvePlatformLaunch(platformKey string) (ResolvePlat
 	}
 
 	if found, ok := findExeViaStartMenuShortcuts(entry, exeName); ok {
+		if strings.EqualFold(platformKey, "Steam") && saveSteamFolderFromExe != nil {
+			if err := saveSteamFolderFromExe(found); err != nil {
+				return ResolvePlatformLaunchResult{}, err
+			}
+			return ResolvePlatformLaunchResult{Ok: true, FoundViaShortcut: true}, nil
+		}
 		if settings.PlatformExePaths == nil {
 			settings.PlatformExePaths = map[string]string{}
 		}
@@ -128,6 +154,9 @@ func (p *PlatformService) ConfirmPlatformExePath(platformKey, exeFullPath string
 	}
 	if !strings.EqualFold(filepath.Base(exeFullPath), wantName) {
 		return fmt.Errorf("expected %s, got %s", wantName, filepath.Base(exeFullPath))
+	}
+	if strings.EqualFold(platformKey, "Steam") && saveSteamFolderFromExe != nil {
+		return saveSteamFolderFromExe(exeFullPath)
 	}
 	if settings.PlatformExePaths == nil {
 		settings.PlatformExePaths = map[string]string{}

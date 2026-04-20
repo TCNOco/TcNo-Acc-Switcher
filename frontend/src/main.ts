@@ -3,6 +3,7 @@ import './styles/normalize.scss'
 import './styles/style.scss'
 import './styles/theme.scss'
 import './styles/UI.scss'
+import './styles/acclist.scss'
 import { initI18n } from './stores/i18n'
 
 const app = void (async () => {

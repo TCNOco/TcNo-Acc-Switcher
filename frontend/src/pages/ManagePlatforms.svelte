@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { get } from "svelte/store";
   import { route, previousPage, appBarTitle } from "../stores/nav";
   import { t } from "../stores/i18n";
   import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
@@ -10,7 +9,7 @@
   let disabled: string[] = [];
   let loadError: string | null = null;
 
-  $: appBarTitle.set(get(t)("Title_Platforms_Settings"));
+  $: appBarTitle.set($t("Title_Platforms_Settings"));
   $: disabledSorted = [...disabled].sort((a, b) =>
     a.localeCompare(b, undefined, { sensitivity: "base" }),
   );

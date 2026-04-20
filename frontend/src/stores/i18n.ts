@@ -1,4 +1,4 @@
-import { derived, writable, get } from "svelte/store";
+import { derived, writable } from "svelte/store";
 import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
 
 const STORAGE_KEY = "language";

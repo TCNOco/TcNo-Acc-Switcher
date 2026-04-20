@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { get } from "svelte/store";
   import ActionBar from "../components/ActionBar.svelte";
   import ReorderPointerGrid from "../components/ReorderPointerGrid.svelte";
   import { route, appBarTitle } from "../stores/nav";
@@ -33,13 +32,12 @@
   }
 
   async function promptMissingPlatformsFile(): Promise<void> {
-    const tt = get(t);
     const locate = await openConfirm({
-      title: tt("Modal_Title_MissingPlatformsJson"),
-      body: `<p>${tt("Modal_Body_MissingPlatformsJson")}</p>`,
+      title: $t("Modal_Title_MissingPlatformsJson"),
+      body: `<p>${$t("Modal_Body_MissingPlatformsJson")}</p>`,
       style: "yesno",
-      positiveLabel: tt("Button_LocatePlatformsJson"),
-      negativeLabel: tt("Button_RestoreBundledPlatforms"),
+      positiveLabel: $t("Button_LocatePlatformsJson"),
+      negativeLabel: $t("Button_RestoreBundledPlatforms"),
     });
     if (locate) {
       const path = await PlatformService.PickPlatformsJSON();
@@ -78,7 +76,7 @@
           pushToast({
             type: "success",
             title: "",
-            message: get(t)("Toast_FoundExeViaShortcut"),
+            message: $t("Toast_FoundExeViaShortcut"),
             duration: 30000,
           });
         }
@@ -86,14 +84,13 @@
         return;
       }
       if (r.needsManualLocate) {
-        const tt = get(t);
         const picked = await openFolderPicker({
-          title: tt("Modal_Title_LocatePlatform", { platform: name }),
-          body: `<p>${tt("Modal_LocatePlatform", { platformExe: r.soughtExeName })}</p>`,
+          title: $t("Modal_Title_LocatePlatform", { platform: name }),
+          body: `<p>${$t("Modal_LocatePlatform", { platformExe: r.soughtExeName })}</p>`,
           initialPath: r.initialPath ?? "",
           dirsOnly: false,
           soughtFilename: r.soughtExeName,
-          positiveLabel: tt("Modal_Button_Select"),
+          positiveLabel: $t("Modal_Button_Select"),
         });
         if (picked) {
           await PlatformService.ConfirmPlatformExePath(name, picked);
@@ -139,20 +136,6 @@
         on:itemclick={(e) => void openPlatform(e.detail.id)}
       >
         <svelte:fragment slot="item" let:rowId>
-          {@const rid = slotKey(rowId)}
-          <div class="fgText {textClass(rid)}">
-            <p>{rid.toUpperCase()}</p>
-          </div>
-          <div class="fgImg" aria-hidden="true">
-            <svg viewBox="0 0 500 500" aria-hidden="true">
-              <use href={platformIconFgHref(rid)} class="icoFG" />
-            </svg>
-          </div>
-          <svg viewBox="0 0 2084 2084" class="icoBG" aria-hidden="true">
-            <use href="img/platform/glass.svg#GLASS" class="icoGlass"></use>
-          </svg>
-        </svelte:fragment>
-        <svelte:fragment slot="ghost" let:rowId>
           {@const rid = slotKey(rowId)}
           <div class="fgText {textClass(rid)}">
             <p>{rid.toUpperCase()}</p>

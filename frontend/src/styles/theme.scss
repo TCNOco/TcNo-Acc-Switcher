@@ -53,6 +53,8 @@
     --border-bar-bg: var(--code);
     --border-bar-size: 7px;
     --program-bg: linear-gradient(90deg, #11181d, #0e1419 100%);
+    /* Used by acclist.scss (.acc_list background) */
+    --accountListBackground: #11181d;
     --footer-bg: var(--black);
     --scrollbar-track-bg: #1E2934;
     --button-bg: #274560;
