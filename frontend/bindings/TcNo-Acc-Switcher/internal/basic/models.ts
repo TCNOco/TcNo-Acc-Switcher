@@ -14,6 +14,7 @@ export class AccountDTO {
     "displayName": string;
     "imageUrl": string;
     "note": string;
+    "currentSession": boolean;
 
     /** Creates a new AccountDTO instance. */
     constructor($$source: Partial<AccountDTO> = {}) {
@@ -31,6 +32,9 @@ export class AccountDTO {
         }
         if (!("note" in $$source)) {
             this["note"] = "";
+        }
+        if (!("currentSession" in $$source)) {
+            this["currentSession"] = false;
         }
 
         Object.assign(this, $$source);

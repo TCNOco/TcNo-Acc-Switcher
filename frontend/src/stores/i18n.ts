@@ -38,13 +38,35 @@ function resolveLocale(wanted: string | null) {
     : (availableLocales[0] ?? "en-US");
 }
 
+let enUSMessagesCache: Record<string, string> | null = null;
+
+async function loadEnUSMessages(): Promise<Record<string, string>> {
+  if (enUSMessagesCache) {
+    return enUSMessagesCache;
+  }
+  const enEntry = Object.entries(modules).find(([path]) =>
+    pathKey(path).endsWith("/en-US.json"),
+  );
+  if (!enEntry) {
+    return {};
+  }
+  const enMod = await enEntry[1]();
+  enUSMessagesCache = enMod.default;
+  return enUSMessagesCache;
+}
+
 export async function loadLocale(code: string) {
   const entry = Object.entries(modules).find(([path]) =>
     pathKey(path).endsWith(`/${code}.json`),
   );
   if (!entry) throw new Error(`Missing locale file: ${code}.json`);
   const mod = await entry[1]();
-  messages.set(mod.default);
+  let merged = mod.default;
+  if (code !== "en-US") {
+    const en = await loadEnUSMessages();
+    merged = { ...en, ...mod.default };
+  }
+  messages.set(merged);
   locale.set(code);
 }
 

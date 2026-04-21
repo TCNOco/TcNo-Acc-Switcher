@@ -12,7 +12,6 @@
   import PlatformSteam from './pages/PlatformSteam.svelte'
   import PlatformSettings from './pages/PlatformSettings.svelte'
   import ManagePlatforms from './pages/ManagePlatforms.svelte'
-  import { get } from "svelte/store";
   import { route } from './stores/nav'
   import { actionBarStatus } from './stores/actionBarStatus'
   import { t } from "./stores/i18n";
@@ -24,13 +23,12 @@
         const payload = raw.slice(5);
         const sep = "\u001f";
         const i = payload.indexOf(sep);
-        const translate = get(t);
         if (i >= 0) {
           const key = payload.slice(0, i);
           const platform = payload.slice(i + sep.length);
-          actionBarStatus.set(translate(key, { platform }));
+          actionBarStatus.set($t(key, { platform }));
         } else {
-          actionBarStatus.set(translate(payload));
+          actionBarStatus.set($t(payload));
         }
       } else {
         actionBarStatus.set(raw);

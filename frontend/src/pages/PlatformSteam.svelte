@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { get } from "svelte/store";
   import { onDestroy, onMount } from "svelte";
   import { Events } from "@wailsio/runtime";
   import ActionBar from "../components/ActionBar.svelte";
@@ -135,13 +134,13 @@
       await loadSteamAccounts();
       pushToast({
         type: "success",
-        message: get(t)("Toast_AccountSwitched"),
+        message: $t("Toast_AccountSwitched"),
         duration: 4000,
       });
     } catch (e) {
       pushToast({
         type: "error",
-        message: formatToastWithError(get(t)("Toast_SwitchFailed"), e),
+        message: formatToastWithError($t("Toast_SwitchFailed"), e),
         duration: 8000,
       });
     }
@@ -159,7 +158,7 @@
       } catch (e) {
         pushToast({
           type: "error",
-          message: formatToastWithError(get(t)("Toast_LaunchFailed"), e),
+          message: formatToastWithError($t("Toast_LaunchFailed"), e),
           duration: 8000,
         });
       }
@@ -171,13 +170,13 @@
         await loadSteamAccounts();
         pushToast({
           type: "success",
-          message: get(t)("Toast_AccountSwitched"),
+          message: $t("Toast_AccountSwitched"),
           duration: 4000,
         });
       } catch (e) {
         pushToast({
           type: "error",
-          message: formatToastWithError(get(t)("Toast_SwitchFailed"), e),
+          message: formatToastWithError($t("Toast_SwitchFailed"), e),
           duration: 8000,
         });
       }
@@ -214,6 +213,7 @@
   });
 
   onDestroy(() => {
+    platformAction.set(null);
     offSteamEvent?.();
     offPlatformAction?.();
     platformExeIconUrl.set("");

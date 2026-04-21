@@ -25,11 +25,12 @@ func (b *BasicService) deps() FlowDeps {
 
 // AccountDTO is one row in the generic account list.
 type AccountDTO struct {
-	PlatformKey string `json:"platformKey"`
-	UniqueID    string `json:"uniqueId"`
-	DisplayName string `json:"displayName"`
-	ImageURL    string `json:"imageUrl"`
-	Note        string `json:"note"`
+	PlatformKey    string `json:"platformKey"`
+	UniqueID       string `json:"uniqueId"`
+	DisplayName    string `json:"displayName"`
+	ImageURL       string `json:"imageUrl"`
+	Note           string `json:"note"`
+	CurrentSession bool   `json:"currentSession"`
 }
 
 // GetAccounts returns merged ids.json + order + notes + profile image URLs.
@@ -51,6 +52,14 @@ func (b *BasicService) GetAccounts(platformKey string) ([]AccountDTO, error) {
 	ps, err := platform.LoadPlatformSettings(platformKey)
 	if err != nil {
 		return nil, err
+	}
+
+	liveUID := ""
+	if d, _, derr := readDescriptor(b.deps(), platformKey); derr == nil {
+		folder, _ := resolveExeFolder(b.deps(), platformKey)
+		if u, uerr := ReadUniqueID(d, folder); uerr == nil {
+			liveUID = strings.TrimSpace(u)
+		}
 	}
 
 	seen := map[string]struct{}{}
@@ -79,11 +88,12 @@ func (b *BasicService) GetAccounts(platformKey string) ([]AccountDTO, error) {
 			img = u
 		}
 		out = append(out, AccountDTO{
-			PlatformKey: platformKey,
-			UniqueID:    uid,
-			DisplayName: name,
-			ImageURL:    img,
-			Note:        note,
+			PlatformKey:    platformKey,
+			UniqueID:       uid,
+			DisplayName:    name,
+			ImageURL:       img,
+			Note:           note,
+			CurrentSession: liveUID != "" && strings.EqualFold(liveUID, uid),
 		})
 	}
 	return out, nil

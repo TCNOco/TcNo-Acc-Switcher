@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { get } from "svelte/store";
   import { onDestroy, onMount } from "svelte";
   import ActionBar from "../components/ActionBar.svelte";
   import ReorderPointerGrid from "../components/ReorderPointerGrid.svelte";
@@ -13,10 +12,12 @@
   import { AccountDTO } from "../../bindings/TcNo-Acc-Switcher/internal/basic/models.js";
   import { GetPlatformExeIcon, LaunchPlatform } from "../lib/platformBindings";
   import { formatToastWithError, formatWailsError } from "../lib/formatWailsError";
+  import { tooltip } from "../lib/actions/tooltip";
 
   const PROFILE_FALLBACK = "/img/BasicDefault.webp";
 
-  type BasicRow = InstanceType<typeof AccountDTO>;
+  /** Bindings class typing can lag `currentSession`; keep explicit for the list row. */
+  type BasicRow = InstanceType<typeof AccountDTO> & { currentSession?: boolean };
 
   export let name: string;
 
@@ -26,6 +27,7 @@
   let selectedUniqueId = "";
   let offPlatformAction: (() => void) | undefined;
   let lastHandledActionId = 0;
+  let basicAcclistEl: HTMLDivElement | undefined;
 
   $: appBarTitle.set(name || "TcNo Account Switcher");
   $: if (name) {
@@ -79,13 +81,13 @@
       await loadAccounts();
       pushToast({
         type: "success",
-        message: get(t)("Toast_AccountSwitched"),
+        message: $t("Toast_AccountSwitched"),
         duration: 4000,
       });
     } catch (e) {
       pushToast({
         type: "error",
-        message: formatToastWithError(get(t)("Toast_SwitchFailed"), e),
+        message: formatToastWithError($t("Toast_SwitchFailed"), e),
         duration: 8000,
       });
     }
@@ -93,10 +95,10 @@
 
   async function saveCurrentPrompt(): Promise<void> {
     const displayName = await openPrompt({
-      title: get(t)("Modal_SaveCurrent_Title"),
-      body: get(t)("Modal_SaveCurrent_Body"),
-      positiveLabel: get(t)("Button_SaveCurrent"),
-      negativeLabel: get(t)("Button_Cancel"),
+      title: $t("Modal_SaveCurrent_Title"),
+      body: $t("Modal_SaveCurrent_Body"),
+      positiveLabel: $t("Button_SaveCurrent"),
+      negativeLabel: $t("Button_Cancel"),
       initialValue: "",
     });
     if (displayName === null || !String(displayName).trim()) {
@@ -107,13 +109,13 @@
       await loadAccounts();
       pushToast({
         type: "success",
-        message: get(t)("Toast_AccountSaved"),
+        message: $t("Toast_AccountSaved"),
         duration: 4000,
       });
     } catch (e) {
       pushToast({
         type: "error",
-        message: formatToastWithError(get(t)("Toast_SaveFailed"), e),
+        message: formatToastWithError($t("Toast_SaveFailed"), e),
         duration: 8000,
       });
     }
@@ -128,7 +130,7 @@
       } catch (e) {
         pushToast({
           type: "error",
-          message: formatToastWithError(get(t)("Toast_LaunchFailed"), e),
+          message: formatToastWithError($t("Toast_LaunchFailed"), e),
           duration: 8000,
         });
       }
@@ -140,13 +142,13 @@
         await loadAccounts();
         pushToast({
           type: "success",
-          message: get(t)("Toast_AccountSwitched"),
+          message: $t("Toast_AccountSwitched"),
           duration: 4000,
         });
       } catch (e) {
         pushToast({
           type: "error",
-          message: formatToastWithError(get(t)("Toast_SwitchFailed"), e),
+          message: formatToastWithError($t("Toast_SwitchFailed"), e),
           duration: 8000,
         });
       }
@@ -179,6 +181,7 @@
   });
 
   onDestroy(() => {
+    platformAction.set(null);
     offPlatformAction?.();
     platformExeIconUrl.set("");
     actionBarStatus.set("");
@@ -191,7 +194,7 @@
       {#if loadError}
         <p class="platform-accounts-hint">{loadError}</p>
       {/if}
-      <div class="steam-acclist">
+      <div class="steam-acclist" bind:this={basicAcclistEl}>
         <ReorderPointerGrid
           items={accountIds}
           listClass="acc_list"
@@ -219,6 +222,14 @@
               <label
                 for={radioId}
                 class="acc"
+                class:currentAcc={acc?.currentSession}
+                use:tooltip={acc?.currentSession
+                  ? {
+                      text: $t("Tooltip_CurrentAccount"),
+                      placement: "right",
+                      boundary: basicAcclistEl,
+                    }
+                  : undefined}
                 on:dblclick|preventDefault={() => {
                   selectedUniqueId = rid;
                   touchStatus();
