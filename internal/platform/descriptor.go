@@ -1,0 +1,99 @@
+package platform
+
+import (
+	"encoding/json"
+	"errors"
+	"strings"
+)
+
+const SameAsLoginFiles = "SAME_AS_LOGIN_FILES"
+
+// DescriptorExtras mirrors optional per-platform metadata from Platforms.json "Extras".
+type DescriptorExtras struct {
+	CachePaths                []string          `json:"CachePaths,omitempty"`
+	BackupFolders             map[string]string `json:"BackupFolders,omitempty"`
+	ProfilePicPath            string            `json:"ProfilePicPath,omitempty"`
+	ProfilePicFromFile        string            `json:"ProfilePicFromFile,omitempty"`
+	ProfilePicRegex           string            `json:"ProfilePicRegex,omitempty"`
+	ShortcutFolders           []string          `json:"ShortcutFolders,omitempty"`
+	ShortcutIgnore            []string          `json:"ShortcutIgnore,omitempty"`
+	ShortcutIncludeMainExe    *bool             `json:"ShortcutIncludeMainExe,omitempty"`
+	SearchStartMenuForIcon    bool              `json:"SearchStartMenuForIcon,omitempty"`
+	BackupFileTypesInclude    []string          `json:"BackupFileTypesInclude,omitempty"`
+	BackupFileTypesIgnore     []string          `json:"BackupFileTypesIgnore,omitempty"`
+	ClosingMethod             string            `json:"ClosingMethod,omitempty"`
+	UsernameModalExtraButtons string            `json:"UsernameModalExtraButtons,omitempty"`
+	UsernameModalCopyText     string            `json:"UsernameModalCopyText,omitempty"`
+	UsernameModalHintText     string            `json:"UsernameModalHintText,omitempty"`
+}
+
+// Descriptor is the full platform definition from Platforms.json (BasicPlatforms.cs parity).
+type Descriptor struct {
+	Identifiers              []string          `json:"Identifiers,omitempty"`
+	ExeLocationDefault       string            `json:"ExeLocationDefault,omitempty"`
+	ExeExtraArgs             string            `json:"ExeExtraArgs,omitempty"`
+	GetPathFromShortcutNamed string            `json:"GetPathFromShortcutNamed,omitempty"`
+	ExesToEnd                []string          `json:"ExesToEnd,omitempty"`
+	PathListToClear          []string          `json:"PathListToClear,omitempty"`
+	LoginFiles               map[string]string `json:"LoginFiles,omitempty"`
+	AllFilesRequired         bool              `json:"AllFilesRequired"`
+	ExitBeforeInteract       bool              `json:"ExitBeforeInteract"`
+	RegDeleteOnClear         bool              `json:"RegDeleteOnClear"`
+	UniqueIdFile             string            `json:"UniqueIdFile,omitempty"`
+	UniqueIdMethod           string            `json:"UniqueIdMethod,omitempty"`
+	UniqueIdRegex            string            `json:"UniqueIdRegex,omitempty"`
+	Extras                   DescriptorExtras  `json:"Extras,omitempty"`
+}
+
+// ParseDescriptor loads the full descriptor for platformKey and expands PathListToClear
+// when it contains SAME_AS_LOGIN_FILES (once, using LoginFiles keys).
+func ParseDescriptor(raw []byte, platformKey string) (Descriptor, error) {
+	var top struct {
+		Platforms map[string]json.RawMessage `json:"Platforms"`
+	}
+	if err := json.Unmarshal(raw, &top); err != nil {
+		return Descriptor{}, err
+	}
+	if top.Platforms == nil {
+		return Descriptor{}, errors.New("missing Platforms")
+	}
+	blob, ok := top.Platforms[platformKey]
+	if !ok {
+		return Descriptor{}, errors.New("unknown platform: " + platformKey)
+	}
+	var d Descriptor
+	if err := json.Unmarshal(blob, &d); err != nil {
+		return Descriptor{}, err
+	}
+	d.expandPathListToClear()
+	return d, nil
+}
+
+func (d *Descriptor) expandPathListToClear() {
+	if d.LoginFiles == nil {
+		d.LoginFiles = map[string]string{}
+	}
+	var out []string
+	for _, p := range d.PathListToClear {
+		p = strings.TrimSpace(p)
+		if p == SameAsLoginFiles {
+			for k := range d.LoginFiles {
+				out = append(out, k)
+			}
+			continue
+		}
+		if p != "" {
+			out = append(out, p)
+		}
+	}
+	d.PathListToClear = out
+}
+
+// ToPlatformEntry returns the minimal struct used by launch resolution.
+func (d Descriptor) ToPlatformEntry() PlatformEntry {
+	return PlatformEntry{
+		ExeLocationDefault:       d.ExeLocationDefault,
+		GetPathFromShortcutNamed: d.GetPathFromShortcutNamed,
+		ExesToEnd:                d.ExesToEnd,
+	}
+}

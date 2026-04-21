@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"TcNo-Acc-Switcher/internal/paths"
+	"TcNo-Acc-Switcher/internal/platform"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 )
@@ -19,7 +19,7 @@ func newCompositeAssetHandler(embedded fs.FS) http.Handler {
 			embedHandler.ServeHTTP(w, r)
 			return
 		}
-		wwwroot, err := paths.WwwrootDir()
+		wwwroot, err := platform.WwwrootDir()
 		if err != nil {
 			embedHandler.ServeHTTP(w, r)
 			return

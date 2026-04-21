@@ -12,12 +12,29 @@
   import PlatformSteam from './pages/PlatformSteam.svelte'
   import PlatformSettings from './pages/PlatformSettings.svelte'
   import ManagePlatforms from './pages/ManagePlatforms.svelte'
+  import { get } from "svelte/store";
   import { route } from './stores/nav'
   import { actionBarStatus } from './stores/actionBarStatus'
+  import { t } from "./stores/i18n";
 
   onMount(() => {
     const off = Events.On("action-bar-status", (ev) => {
-      actionBarStatus.set(typeof ev.data === "string" ? ev.data : "");
+      const raw = typeof ev.data === "string" ? ev.data : "";
+      if (raw.startsWith("i18n:")) {
+        const payload = raw.slice(5);
+        const sep = "\u001f";
+        const i = payload.indexOf(sep);
+        const translate = get(t);
+        if (i >= 0) {
+          const key = payload.slice(0, i);
+          const platform = payload.slice(i + sep.length);
+          actionBarStatus.set(translate(key, { platform }));
+        } else {
+          actionBarStatus.set(translate(payload));
+        }
+      } else {
+        actionBarStatus.set(raw);
+      }
     });
     return () => off?.();
   });

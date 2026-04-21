@@ -1,11 +1,22 @@
 <script lang="ts">
   import { get } from "svelte/store";
-  import { route } from "../stores/nav";
+  import { route, type Route } from "../stores/nav";
   import { actionBarStatus } from "../stores/actionBarStatus";
+  import { platformExeIconUrl, triggerPlatformAction } from "../stores/platformPage";
   import { tooltip } from "../lib/actions/tooltip";
   import { t } from "../stores/i18n";
   import { openAlertNoButton } from "../stores/modal";
   import HelpAboutModalBody from "./modals/HelpAboutModalBody.svelte";
+
+  $: r = $route;
+  $: isPlatformPage = r.page === "platform";
+  $: platformName = isPlatformPage ? (r as Extract<Route, { page: "platform" }>).platformName : "";
+  $: showSaveCurrent = !!platformName && platformName !== "Steam";
+
+  let iconBroken = false;
+  $: if (platformName) {
+    iconBroken = false;
+  }
 
   function showHelpModal() {
     void openAlertNoButton({
@@ -18,8 +29,59 @@
 <footer class="actionbar">
   <span class="actionbar__status" title={$actionBarStatus}>{$actionBarStatus}</span>
   <div class="actionbar__actions">
-  <button class="btnicontext" aria-label={$t("Button_ManagePlatforms")} use:tooltip={$t("Tooltip_ManagePlatforms")} on:click={() => route.set({ page: 'manage-platforms'})}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free v5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"/></svg>{$t("Button_ManagePlatforms")}</button>
-  <button class="square" aria-label="Settings" use:tooltip={$t("Tooltip_Settings")} on:click={() => {
+    {#if isPlatformPage}
+        <button
+          type="button"
+          class="actionbar__launch square"
+          aria-label={$t("Button_Launch")}
+          use:tooltip={$t("Tooltip_Launch")}
+          on:click={() => triggerPlatformAction("launch")}
+        >
+          {#if $platformExeIconUrl && !iconBroken}
+            <img class="actionbar__exeicon" src={$platformExeIconUrl} alt="" on:error={() => (iconBroken = true)} />
+          {:else}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true"
+              ><path
+                d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32V274.7l-73.4-73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0l128-128c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L288 274.7V32z"
+              /></svg
+            >
+          {/if}
+        </button>
+        <button class="btnicontext" type="button" aria-label={$t("Button_AddNew")} use:tooltip={$t("Tooltip_AddNew")} on:click={() => triggerPlatformAction("addNew")}
+          ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true"
+            ><path
+              d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"
+            /></svg
+          >{$t("Button_AddNew")}</button
+        >
+        {#if showSaveCurrent}
+          <button
+            class="btnicontext"
+            type="button"
+            aria-label={$t("Button_SaveCurrent")}
+            use:tooltip={$t("Tooltip_SaveCurrent")}
+            on:click={() => triggerPlatformAction("saveCurrent")}
+            ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true"
+              ><path
+                d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V173.3c0-17-6.7-33.3-18.7-45.3L352 69.3c-12-12-28.3-18.7-45.3-18.7H64zm32 64H288v64H96V96zm160 384H96V288H320V480zm64 0V288h32V480H320z"
+              /></svg
+            >{$t("Button_SaveCurrent")}</button
+          >
+        {/if}
+        <button
+          class="btnicontext actionbar__login"
+          type="button"
+          aria-label={$t("Button_Login")}
+          use:tooltip={$t("Tooltip_Login")}
+          on:click={() => triggerPlatformAction("login")}
+          >{$t("Button_Login")}<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
+            <path d="M217.9 105.9L340.7 228.7c7.2 7.2 11.3 17 11.3 27.3s-4.1 20.1-11.3 27.3L217.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9V160c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.5 24 9.9z"/></svg>
+          </button
+        >
+    {:else}
+        <button class="btnicontext" aria-label={$t("Button_ManagePlatforms")} use:tooltip={$t("Tooltip_ManagePlatforms")} on:click={() => route.set({ page: 'manage-platforms'})}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free v5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"/></svg>{$t("Button_ManagePlatforms")}</button>
+    {/if}
+    <button class="square" aria-label="Settings" use:tooltip={$t("Tooltip_Settings")} on:click={() => {
     const r = get(route);
     if (r.page === "platform") {
       route.set({ page: "platform-settings", platformName: r.platformName });
@@ -47,8 +109,26 @@
     color: #fff;
 
     button:not(.btnicontext) {
-      padding: 6px;
+      padding: 4.5px;
     }
+  }
+
+  .actionbar__login {
+    padding: .25em 3em .25em 3.9em;
+  }
+
+  .actionbar__launch {
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+    padding: 4px;
+  }
+
+  .actionbar__exeicon {
+    width: 1.75rem;
+    height: 1.75rem;
+    object-fit: contain;
+    display: block;
+    border-radius: 4px;
   }
 
   .actionbar__status {

@@ -65,6 +65,50 @@ func CachedFilePath(platformKey, accountID string) (string, bool) {
 	return "", false
 }
 
+// CacheLocalFile copies a local image file into wwwroot/img/profiles/<platform>/<accountID>.<ext>.
+// Replaces any existing cached image for that account. ext is taken from src when possible.
+func CacheLocalFile(platformKey, accountID, src string) error {
+	platformKey = strings.TrimSpace(platformKey)
+	accountID = strings.TrimSpace(accountID)
+	src = strings.TrimSpace(src)
+	if platformKey == "" || accountID == "" || src == "" {
+		return nil
+	}
+	data, err := os.ReadFile(src)
+	if err != nil {
+		return err
+	}
+	_ = DeleteCached(platformKey, accountID)
+	ext := strings.TrimPrefix(strings.ToLower(filepath.Ext(src)), ".")
+	switch ext {
+	case "jpg", "jpeg", "png", "webp", "gif":
+	default:
+		ext = "jpg"
+	}
+	dir, err := ProfileDir(platformKey)
+	if err != nil {
+		return err
+	}
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		return err
+	}
+	dest := filepath.Join(dir, accountID+"."+ext)
+	return fsutil.WriteFileAtomic(dest, data, 0o644)
+}
+
+// DeleteCached removes cached profile images for an account (any known extension).
+func DeleteCached(platformKey, accountID string) error {
+	dir, err := ProfileDir(platformKey)
+	if err != nil {
+		return err
+	}
+	for _, ext := range []string{"jpg", "jpeg", "png", "webp", "gif"} {
+		p := filepath.Join(dir, accountID+"."+ext)
+		_ = os.Remove(p)
+	}
+	return nil
+}
+
 // FindCached returns the public URL and true if a cached image exists for this account (any known ext).
 func FindCached(platformKey, accountID string) (publicURL string, ok bool) {
 	dir, err := ProfileDir(platformKey)

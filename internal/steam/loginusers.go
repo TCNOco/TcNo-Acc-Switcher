@@ -19,6 +19,8 @@ type LoginUser struct {
 	WantsOffline string
 	// MostRecent is "1" when Steam marks this row as the active session (when present).
 	MostRecent string
+	RememberPassword   string
+	SkipOfflineWarn    string // SkipOfflineModeWarning
 }
 
 func childStringCI(kv steamvdf.KeyValue, key string) string {
@@ -88,6 +90,14 @@ func ParseLoginUsers(path string) ([]LoginUser, error) {
 			if mr == "" {
 				mr = childStringCI(u, "mostrecent")
 			}
+			rem := childStringCI(u, "RememberPassword")
+			if rem == "" {
+				rem = childStringCI(u, "rememberpassword")
+			}
+			skip := childStringCI(u, "SkipOfflineModeWarning")
+			if skip == "" {
+				skip = childStringCI(u, "skipofflinemodewarning")
+			}
 			out = append(out, LoginUser{
 				SteamID64:    sid,
 				PersonaName:  persona,
@@ -95,6 +105,8 @@ func ParseLoginUsers(path string) ([]LoginUser, error) {
 				Timestamp:    ts,
 				WantsOffline: off,
 				MostRecent:   mr,
+				RememberPassword: rem,
+				SkipOfflineWarn:  skip,
 			})
 		}
 		return out, nil

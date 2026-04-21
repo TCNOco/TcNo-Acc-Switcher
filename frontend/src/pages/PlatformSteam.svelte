@@ -1,11 +1,15 @@
 <script lang="ts">
+  import { get } from "svelte/store";
   import { onDestroy, onMount } from "svelte";
   import { Events } from "@wailsio/runtime";
   import ActionBar from "../components/ActionBar.svelte";
   import ReorderPointerGrid from "../components/ReorderPointerGrid.svelte";
   import { route, previousPage, appBarTitle } from "../stores/nav";
   import { actionBarStatus } from "../stores/actionBarStatus";
+  import { platformExeIconUrl, platformAction } from "../stores/platformPage";
+  import { pushToast } from "../stores/toast";
   import * as SteamService from "../../bindings/TcNo-Acc-Switcher/internal/steam/steamservice.js";
+  import { GetPlatformExeIcon } from "../lib/platformBindings";
   import { AccountDTO, AccountPatch } from "../../bindings/TcNo-Acc-Switcher/internal/steam/models.js";
   import { locale, t } from "../stores/i18n";
   import { formatLastLoginForLocale } from "../lib/formatLastLogin";
@@ -30,6 +34,8 @@
   let steamIds: string[] = [];
   let steamLoadError = "";
   let offSteamEvent: (() => void) | undefined;
+  let offPlatformAction: (() => void) | undefined;
+  let lastHandledActionId = 0;
   /** Selected row for switching (radio group); drives footer status. */
   let selectedSteamId = "";
 
@@ -119,6 +125,68 @@
     SteamService.SaveSteamAccountOrder(e.detail.items).catch(() => {});
   }
 
+  async function steamLoginSelected(): Promise<void> {
+    if (!selectedSteamId) {
+      return;
+    }
+    try {
+      await SteamService.SwapToSteamAccount(selectedSteamId, -1);
+      await loadSteamAccounts();
+      pushToast({
+        type: "success",
+        message: get(t)("Toast_AccountSwitched"),
+        duration: 4000,
+      });
+    } catch (e) {
+      pushToast({
+        type: "error",
+        message: `${get(t)("Toast_SwitchFailed")} ${String(e)}`,
+        duration: 8000,
+      });
+    }
+  }
+
+  async function handlePlatformActionKind(
+    kind: "login" | "addNew" | "launch" | "saveCurrent",
+  ): Promise<void> {
+    if (kind === "saveCurrent") {
+      return;
+    }
+    if (kind === "launch") {
+      try {
+        await SteamService.LaunchSteam();
+      } catch (e) {
+        pushToast({
+          type: "error",
+          message: `${get(t)("Toast_LaunchFailed")} ${String(e)}`,
+          duration: 8000,
+        });
+      }
+      return;
+    }
+    if (kind === "addNew") {
+      try {
+        await SteamService.SteamAddNew();
+        await loadSteamAccounts();
+        pushToast({
+          type: "success",
+          message: get(t)("Toast_AccountSwitched"),
+          duration: 4000,
+        });
+      } catch (e) {
+        pushToast({
+          type: "error",
+          message: `${get(t)("Toast_SwitchFailed")} ${String(e)}`,
+          duration: 8000,
+        });
+      }
+      return;
+    }
+    if (kind === "login") {
+      await steamLoginSelected();
+    }
+  }
+
   function slotKey(x: string | null | undefined): string {
     return x ?? "";
   }
@@ -126,6 +194,7 @@
   onMount(() => {
     previousPage.set({ page: "home" });
     void loadSteamAccounts();
+    void GetPlatformExeIcon(name).then((u: string) => platformExeIconUrl.set(u ?? ""));
     offSteamEvent = Events.On("steam-account-updated", (ev) => {
       const raw = ev.data;
       const p =
@@ -134,10 +203,19 @@
           : AccountPatch.createFrom(raw as Record<string, unknown>);
       applySteamPatch(p);
     });
+    offPlatformAction = platformAction.subscribe((v) => {
+      if (!v || v.id === lastHandledActionId) {
+        return;
+      }
+      lastHandledActionId = v.id;
+      void handlePlatformActionKind(v.kind);
+    });
   });
 
   onDestroy(() => {
     offSteamEvent?.();
+    offPlatformAction?.();
+    platformExeIconUrl.set("");
     actionBarStatus.set("");
   });
 </script>
@@ -186,6 +264,11 @@
                       boundary: steamAcclistEl,
                     }
                   : undefined}
+                on:dblclick|preventDefault={() => {
+                  selectedSteamId = rid;
+                  touchSteamActionBar();
+                  void steamLoginSelected();
+                }}
               >
                 <img
                   class:status_vac={acc?.showVac && acc?.vac}

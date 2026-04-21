@@ -13,6 +13,8 @@ var (
 	saveSteamFolderFromExe func(exeFullPath string) error
 	resolveSteamExePath    func() (exePath string, ok bool)
 	resetSteamSettings     func() error
+	launchSteamExe         func() error
+	launchBasicPlatform    func(platformKey string) error
 )
 
 // SetSteamLaunchHooks wires SteamSettings + exe resolution from internal/steam.
@@ -24,6 +26,12 @@ func SetSteamLaunchHooks(saveExe func(exeFullPath string) error, resolve func() 
 // SetSteamReset wires full Steam settings reset (SteamSettings.json defaults) from internal/steam.
 func SetSteamReset(fn func() error) {
 	resetSteamSettings = fn
+}
+
+// SetPlatformLaunchers wires Steam and Basic launch from main (avoids import cycles).
+func SetPlatformLaunchers(steam func() error, basic func(platformKey string) error) {
+	launchSteamExe = steam
+	launchBasicPlatform = basic
 }
 
 // ResolvePlatformLaunchResult is returned before navigating to a platform page.

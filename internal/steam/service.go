@@ -535,3 +535,59 @@ func (s *SteamService) emit(p AccountPatch) {
 func (s *SteamService) GetSteamIDFormats(id64 string) (SteamIDFormats, error) {
 	return FormatsFromID64(strings.TrimSpace(id64))
 }
+
+// SwapToSteamAccount switches to the given account (-1 uses OverrideState for persona in localconfig).
+func (s *SteamService) SwapToSteamAccount(steamID64 string, personaState int) error {
+	return SwapToAccount(strings.TrimSpace(steamID64), personaState)
+}
+
+// SteamAddNew clears saved login and launches Steam for a new account sign-in.
+func (s *SteamService) SteamAddNew() error {
+	return SwapToAccount("", -1)
+}
+
+// LaunchSteam starts Steam without changing saved accounts.
+func (s *SteamService) LaunchSteam() error {
+	return LaunchSteamOnly()
+}
+
+// ForgetSteamAccount removes an account row from loginusers.vdf and deletes cached avatar files.
+func (s *SteamService) ForgetSteamAccount(steamID64 string) error {
+	steamID64 = strings.TrimSpace(steamID64)
+	if steamID64 == "" {
+		return errors.New("empty steam id")
+	}
+	exeDir, err := platform.ResolveExeDir()
+	if err != nil {
+		return err
+	}
+	app, err := platform.LoadAppSettings(exeDir)
+	if err != nil {
+		return err
+	}
+	st, err := LoadSettings()
+	if err != nil {
+		return err
+	}
+	pj, err := platform.ResolvePlatformsJSONPath(exeDir)
+	if err != nil {
+		return err
+	}
+	raw, err := os.ReadFile(pj)
+	if err != nil {
+		return err
+	}
+	root, err := ResolveInstallFolder(exeDir, st, app, raw)
+	if err != nil {
+		return err
+	}
+	if root == "" {
+		return fmt.Errorf("steam install folder not found")
+	}
+	if err := RemoveSteamAccountFromVDF(root, steamID64); err != nil {
+		return err
+	}
+	_ = profileimage.DeleteCached(PlatformKey, steamID64)
+	s.StartSteamProfileRefresh()
+	return nil
+}

@@ -6,10 +6,17 @@ import (
 	"log"
 	"time"
 
+	"TcNo-Acc-Switcher/internal/basic"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/steam"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
+)
+
+// Shared service instances so BasicService uses the same PlatformService as Wails bindings.
+var (
+	platformSvc = &platform.PlatformService{}
+	basicSvc    = basic.NewBasicService(platformSvc)
 )
 
 // Wails uses Go's `embed` package to embed the frontend files into the binary.
@@ -30,6 +37,9 @@ func init() {
 	application.RegisterEvent[string](platform.ActionBarStatusEvent)
 	platform.SetSteamLaunchHooks(steam.SaveFolderFromConfirmedExe, steam.ResolveSteamExePath)
 	platform.SetSteamReset(steam.ResetToDefaults)
+	platform.SetPlatformLaunchers(steam.LaunchSteamOnly, func(platformKey string) error {
+		return basic.LaunchBasic(basic.FlowDeps{PS: platformSvc}, platformKey)
+	})
 }
 
 // main function serves as the application's entry point. It initializes the application, creates a window,
@@ -50,8 +60,9 @@ func main() {
 		Services: []application.Service{
 			application.NewService(&GreetService{}),
 			application.NewService(&FilesystemService{}),
-			application.NewService(&platform.PlatformService{}),
+			application.NewService(platformSvc),
 			application.NewService(steam.NewSteamService()),
+			application.NewService(basicSvc),
 		},
 		Assets: application.AssetOptions{
 			Handler: newCompositeAssetHandler(assets),

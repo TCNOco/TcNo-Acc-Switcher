@@ -11,6 +11,8 @@ import (
 	"strings"
 	"sync"
 
+	"TcNo-Acc-Switcher/internal/exeicon"
+
 	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
@@ -530,4 +532,92 @@ func (p *PlatformService) getPlatformInstallFolderUnlocked(platformKey string) (
 		}
 	}
 	return "", nil
+}
+
+// ResolvePlatformExeFullPath returns the absolute path to the platform's primary executable, if known.
+func (p *PlatformService) ResolvePlatformExeFullPath(platformKey string) (string, error) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	return p.resolvePlatformExeFullPathUnlocked(platformKey)
+}
+
+func (p *PlatformService) resolvePlatformExeFullPathUnlocked(platformKey string) (string, error) {
+	platformKey = strings.TrimSpace(platformKey)
+	if platformKey == "" {
+		return "", errors.New("empty platform")
+	}
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return "", err
+	}
+	settings, err := loadSettings(exeDir)
+	if err != nil {
+		return "", err
+	}
+	if saved := strings.TrimSpace(settings.PlatformExePaths[platformKey]); saved != "" {
+		if st, err := os.Stat(saved); err == nil && !st.IsDir() {
+			return filepath.Clean(saved), nil
+		}
+	}
+	if strings.EqualFold(platformKey, "Steam") && resolveSteamExePath != nil {
+		if ex, ok := resolveSteamExePath(); ok {
+			return filepath.Clean(ex), nil
+		}
+	}
+	raw, err := os.ReadFile(p.resolvePlatformsPath(exeDir, settings))
+	if err != nil {
+		return "", err
+	}
+	entry, err := parsePlatformEntry(raw, platformKey)
+	if err != nil {
+		return "", err
+	}
+	exeName := primaryExeName(entry)
+	if exeName == "" {
+		return "", errors.New("could not determine executable name")
+	}
+	folder, err := p.getPlatformInstallFolderUnlocked(platformKey)
+	if err != nil {
+		return "", err
+	}
+	if strings.TrimSpace(folder) == "" {
+		return "", errors.New("install folder unknown")
+	}
+	return filepath.Join(folder, exeName), nil
+}
+
+// GetPlatformExeIcon returns a public URL under /img/shortcuts/... for the platform exe icon, or "" on failure.
+func (p *PlatformService) GetPlatformExeIcon(platformKey string) (string, error) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exe, err := p.resolvePlatformExeFullPathUnlocked(platformKey)
+	if err != nil || exe == "" {
+		return "", nil
+	}
+	www, err := WwwrootDir()
+	if err != nil {
+		return "", nil
+	}
+	u, err := exeicon.EnsureCached(platformKey, exe, www)
+	if err != nil {
+		return "", nil
+	}
+	return u, nil
+}
+
+// LaunchPlatform starts the platform executable (no account switch).
+func (p *PlatformService) LaunchPlatform(platformKey string) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	platformKey = strings.TrimSpace(platformKey)
+	if strings.EqualFold(platformKey, "Steam") {
+		if launchSteamExe == nil {
+			return errors.New("steam launcher not configured")
+		}
+		return launchSteamExe()
+	}
+	if launchBasicPlatform == nil {
+		return errors.New("basic launcher not configured")
+	}
+	return launchBasicPlatform(platformKey)
 }
