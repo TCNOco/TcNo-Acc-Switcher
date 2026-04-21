@@ -49,7 +49,7 @@ type AccountDTO struct {
 	SyncError string `json:"syncError"`
 
 	// CurrentSession is true when this row is the active Steam session per loginusers.vdf
-	// (MostRecent, or highest Timestamp when MostRecent is absent/ambiguous).
+	// True when loginusers.vdf has exactly one user with MostRecent=="1" (matches that row).
 	CurrentSession bool `json:"currentSession"`
 }
 

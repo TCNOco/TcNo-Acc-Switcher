@@ -132,8 +132,9 @@ func ParseLoginUsers(path string) ([]LoginUser, error) {
 	return out, nil
 }
 
-// ActiveSessionSteamID64 picks the session Steam treats as current: MostRecent=="1" if
-// exactly one row has it; otherwise the user with the highest Timestamp (last login).
+// ActiveSessionSteamID64 returns the SteamID64 whose row has MostRecent=="1" when exactly
+// one row is marked. If none (e.g. Add New cleared all) or multiple, returns "" so the UI
+// shows no "current session" highlight — do not infer from Timestamp (that mislabels after Add New).
 func ActiveSessionSteamID64(users []LoginUser) string {
 	var mostRecentID string
 	nMost := 0
@@ -146,20 +147,7 @@ func ActiveSessionSteamID64(users []LoginUser) string {
 	if nMost == 1 && mostRecentID != "" {
 		return mostRecentID
 	}
-
-	var bestID string
-	var bestTS int64 = -1
-	for _, u := range users {
-		ts, err := strconv.ParseInt(strings.TrimSpace(u.Timestamp), 10, 64)
-		if err != nil || ts <= 0 {
-			continue
-		}
-		if ts > bestTS {
-			bestTS = ts
-			bestID = u.SteamID64
-		}
-	}
-	return bestID
+	return ""
 }
 
 func looksLikeSteamID64(s string) bool {

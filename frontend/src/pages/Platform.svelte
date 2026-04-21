@@ -12,6 +12,7 @@
   import * as BasicService from "../../bindings/TcNo-Acc-Switcher/internal/basic/basicservice.js";
   import { AccountDTO } from "../../bindings/TcNo-Acc-Switcher/internal/basic/models.js";
   import { GetPlatformExeIcon, LaunchPlatform } from "../lib/platformBindings";
+  import { formatToastWithError, formatWailsError } from "../lib/formatWailsError";
 
   const PROFILE_FALLBACK = "/img/BasicDefault.webp";
 
@@ -51,7 +52,7 @@
       selectedUniqueId = stillValid ? selectedUniqueId : first;
       touchStatus();
     } catch (e) {
-      loadError = String(e);
+      loadError = formatWailsError(e) || String(e);
       accounts = [];
       accountIds = [];
       selectedUniqueId = "";
@@ -84,7 +85,7 @@
     } catch (e) {
       pushToast({
         type: "error",
-        message: `${get(t)("Toast_SwitchFailed")} ${String(e)}`,
+        message: formatToastWithError(get(t)("Toast_SwitchFailed"), e),
         duration: 8000,
       });
     }
@@ -112,7 +113,7 @@
     } catch (e) {
       pushToast({
         type: "error",
-        message: `${get(t)("Toast_SaveFailed")} ${String(e)}`,
+        message: formatToastWithError(get(t)("Toast_SaveFailed"), e),
         duration: 8000,
       });
     }
@@ -127,7 +128,7 @@
       } catch (e) {
         pushToast({
           type: "error",
-          message: `${get(t)("Toast_LaunchFailed")} ${String(e)}`,
+          message: formatToastWithError(get(t)("Toast_LaunchFailed"), e),
           duration: 8000,
         });
       }
@@ -145,7 +146,7 @@
       } catch (e) {
         pushToast({
           type: "error",
-          message: `${get(t)("Toast_SwitchFailed")} ${String(e)}`,
+          message: formatToastWithError(get(t)("Toast_SwitchFailed"), e),
           duration: 8000,
         });
       }

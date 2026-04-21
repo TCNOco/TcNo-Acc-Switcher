@@ -13,6 +13,7 @@
   import { AccountDTO, AccountPatch } from "../../bindings/TcNo-Acc-Switcher/internal/steam/models.js";
   import { locale, t } from "../stores/i18n";
   import { formatLastLoginForLocale } from "../lib/formatLastLogin";
+  import { formatToastWithError, formatWailsError } from "../lib/formatWailsError";
   import { tooltip } from "../lib/actions/tooltip";
 
   /** Bindings row + client-only syncError; `currentSession` is explicit — TS sometimes omits quoted keys on generated classes. */
@@ -112,7 +113,7 @@
       touchSteamActionBar();
       SteamService.StartSteamProfileRefresh();
     } catch (e) {
-      steamLoadError = String(e);
+      steamLoadError = formatWailsError(e) || String(e);
       steamAccounts = [];
       steamIds = [];
       selectedSteamId = "";
@@ -140,7 +141,7 @@
     } catch (e) {
       pushToast({
         type: "error",
-        message: `${get(t)("Toast_SwitchFailed")} ${String(e)}`,
+        message: formatToastWithError(get(t)("Toast_SwitchFailed"), e),
         duration: 8000,
       });
     }
@@ -158,7 +159,7 @@
       } catch (e) {
         pushToast({
           type: "error",
-          message: `${get(t)("Toast_LaunchFailed")} ${String(e)}`,
+          message: formatToastWithError(get(t)("Toast_LaunchFailed"), e),
           duration: 8000,
         });
       }
@@ -176,7 +177,7 @@
       } catch (e) {
         pushToast({
           type: "error",
-          message: `${get(t)("Toast_SwitchFailed")} ${String(e)}`,
+          message: formatToastWithError(get(t)("Toast_SwitchFailed"), e),
           duration: 8000,
         });
       }

@@ -278,6 +278,7 @@
     line-height: 1.35;
     color: var(--blackTernary, #a7abbe);
     word-break: break-word;
+    white-space: pre-line;
   }
 
   .toast--success .toast__message,
