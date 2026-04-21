@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"sort"
@@ -422,4 +423,111 @@ func sortStringsFold(s []string) {
 	sort.Slice(s, func(i, j int) bool {
 		return strings.ToLower(s[i]) < strings.ToLower(s[j])
 	})
+}
+
+// GetPlatformSettings returns shared per-platform settings from Settings/<Platform>Settings.json
+// (Steam: SteamSettings.json, unmarshalling only common keys).
+func (p *PlatformService) GetPlatformSettings(platformKey string) (PlatformSettings, error) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	return LoadPlatformSettings(platformKey)
+}
+
+// SavePlatformSettings merges shared fields into the per-platform JSON without removing other keys.
+func (p *PlatformService) SavePlatformSettings(platformKey string, s PlatformSettings) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	return SavePlatformSettings(platformKey, s)
+}
+
+// ResetPlatformSettings resets the current platform's settings file to defaults.
+func (p *PlatformService) ResetPlatformSettings(platformKey string) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	return resetPlatformJSONToDefaults(platformKey)
+}
+
+// GetPlatformInstallFolder returns the directory containing the platform's primary executable, if known.
+func (p *PlatformService) GetPlatformInstallFolder(platformKey string) (string, error) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	return p.getPlatformInstallFolderUnlocked(platformKey)
+}
+
+// OpenPlatformFolder opens the install folder in the native file manager.
+func (p *PlatformService) OpenPlatformFolder(platformKey string) error {
+	p.mu.Lock()
+	folder, err := p.getPlatformInstallFolderUnlocked(platformKey)
+	p.mu.Unlock()
+	if err != nil {
+		return err
+	}
+	folder = strings.TrimSpace(folder)
+	if folder == "" {
+		return fmt.Errorf("install location unknown for %s", strings.TrimSpace(platformKey))
+	}
+	st, err := os.Stat(folder)
+	if err != nil {
+		return err
+	}
+	if !st.IsDir() {
+		return fmt.Errorf("not a directory: %s", folder)
+	}
+	return openPathInFileManager(folder)
+}
+
+// getPlatformInstallFolderUnlocked mirrors ResolvePlatformLaunch path resolution; caller must hold p.mu.
+func (p *PlatformService) getPlatformInstallFolderUnlocked(platformKey string) (string, error) {
+	platformKey = strings.TrimSpace(platformKey)
+	if platformKey == "" {
+		return "", errors.New("empty platform")
+	}
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return "", err
+	}
+	settings, err := loadSettings(exeDir)
+	if err != nil {
+		return "", err
+	}
+	raw, err := os.ReadFile(p.resolvePlatformsPath(exeDir, settings))
+	if err != nil {
+		return "", err
+	}
+	entry, err := parsePlatformEntry(raw, platformKey)
+	if err != nil {
+		return "", err
+	}
+	exeName := primaryExeName(entry)
+
+	if strings.EqualFold(platformKey, "Steam") && resolveSteamExePath != nil {
+		if ex, ok := resolveSteamExePath(); ok {
+			return filepath.Dir(ex), nil
+		}
+	}
+
+	if saved := strings.TrimSpace(settings.PlatformExePaths[platformKey]); saved != "" {
+		if st, err := os.Stat(saved); err == nil && !st.IsDir() {
+			return filepath.Dir(saved), nil
+		}
+	}
+
+	defExpanded := ExpandWindowsPath(strings.TrimSpace(entry.ExeLocationDefault))
+	if defExpanded != "" {
+		if st, err := os.Stat(defExpanded); err == nil && !st.IsDir() {
+			return filepath.Dir(defExpanded), nil
+		}
+	}
+
+	if found, ok := findExeViaStartMenuShortcuts(entry, exeName); ok {
+		return filepath.Dir(found), nil
+	}
+
+	if defExpanded != "" {
+		d := filepath.Dir(defExpanded)
+		if d != "." && !strings.HasSuffix(d, ":") {
+			return d, nil
+		}
+	}
+	return "", nil
 }

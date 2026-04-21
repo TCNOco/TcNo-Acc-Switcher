@@ -282,6 +282,42 @@ func (s *SteamService) SaveSteamSettings(st Settings) error {
 	return SaveSettings(st)
 }
 
+// RefreshVACStatus clears VAC/profile XML caches and triggers a background profile refresh.
+func (s *SteamService) RefreshVACStatus() error {
+	if err := ClearVACProfileCaches(); err != nil {
+		return err
+	}
+	s.StartSteamProfileRefresh()
+	return nil
+}
+
+// RefreshAllSteamImages deletes cached avatar files for all Steam accounts and triggers a refresh.
+func (s *SteamService) RefreshAllSteamImages() error {
+	dir, err := profileimage.ProfileDir(PlatformKey)
+	if err != nil {
+		return err
+	}
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		if os.IsNotExist(err) {
+			if err := os.MkdirAll(dir, 0o755); err != nil {
+				return err
+			}
+			s.StartSteamProfileRefresh()
+			return nil
+		}
+		return err
+	}
+	for _, e := range entries {
+		if e.IsDir() {
+			continue
+		}
+		_ = os.Remove(filepath.Join(dir, e.Name()))
+	}
+	s.StartSteamProfileRefresh()
+	return nil
+}
+
 // StartSteamProfileRefresh fetches missing avatars and ban info in the background.
 func (s *SteamService) StartSteamProfileRefresh() {
 	go s.runProfileRefresh()

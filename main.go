@@ -29,6 +29,7 @@ func init() {
 	application.RegisterEvent[steam.AccountPatch](steam.AccountUpdatedEvent)
 	application.RegisterEvent[string](platform.ActionBarStatusEvent)
 	platform.SetSteamLaunchHooks(steam.SaveFolderFromConfirmedExe, steam.ResolveSteamExePath)
+	platform.SetSteamReset(steam.ResetToDefaults)
 }
 
 // main function serves as the application's entry point. It initializes the application, creates a window,

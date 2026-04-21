@@ -12,12 +12,18 @@ import (
 var (
 	saveSteamFolderFromExe func(exeFullPath string) error
 	resolveSteamExePath    func() (exePath string, ok bool)
+	resetSteamSettings     func() error
 )
 
 // SetSteamLaunchHooks wires SteamSettings + exe resolution from internal/steam.
 func SetSteamLaunchHooks(saveExe func(exeFullPath string) error, resolve func() (exePath string, ok bool)) {
 	saveSteamFolderFromExe = saveExe
 	resolveSteamExePath = resolve
+}
+
+// SetSteamReset wires full Steam settings reset (SteamSettings.json defaults) from internal/steam.
+func SetSteamReset(fn func() error) {
+	resetSteamSettings = fn
 }
 
 // ResolvePlatformLaunchResult is returned before navigating to a platform page.
@@ -65,20 +71,32 @@ func (p *PlatformService) ResolvePlatformLaunch(platformKey string) (ResolvePlat
 	if strings.EqualFold(platformKey, "Steam") && resolveSteamExePath != nil {
 		if p, ok := resolveSteamExePath(); ok {
 			if st, err := os.Stat(p); err == nil && !st.IsDir() {
-				return ResolvePlatformLaunchResult{Ok: true}, nil
+				return ResolvePlatformLaunchResult{
+					Ok:            true,
+					SoughtExeName: exeName,
+					InitialPath:   filepath.Dir(p),
+				}, nil
 			}
 		}
 	}
 
 	if saved := strings.TrimSpace(settings.PlatformExePaths[platformKey]); saved != "" {
 		if st, err := os.Stat(saved); err == nil && !st.IsDir() {
-			return ResolvePlatformLaunchResult{Ok: true}, nil
+			return ResolvePlatformLaunchResult{
+				Ok:            true,
+				SoughtExeName: exeName,
+				InitialPath:   filepath.Dir(saved),
+			}, nil
 		}
 	}
 
 	if defExpanded != "" {
 		if st, err := os.Stat(defExpanded); err == nil && !st.IsDir() {
-			return ResolvePlatformLaunchResult{Ok: true}, nil
+			return ResolvePlatformLaunchResult{
+				Ok:            true,
+				SoughtExeName: exeName,
+				InitialPath:   filepath.Dir(defExpanded),
+			}, nil
 		}
 	}
 
@@ -87,7 +105,12 @@ func (p *PlatformService) ResolvePlatformLaunch(platformKey string) (ResolvePlat
 			if err := saveSteamFolderFromExe(found); err != nil {
 				return ResolvePlatformLaunchResult{}, err
 			}
-			return ResolvePlatformLaunchResult{Ok: true, FoundViaShortcut: true}, nil
+			return ResolvePlatformLaunchResult{
+				Ok:                true,
+				FoundViaShortcut:  true,
+				SoughtExeName:     exeName,
+				InitialPath:       filepath.Dir(found),
+			}, nil
 		}
 		if settings.PlatformExePaths == nil {
 			settings.PlatformExePaths = map[string]string{}
@@ -96,7 +119,12 @@ func (p *PlatformService) ResolvePlatformLaunch(platformKey string) (ResolvePlat
 		if err := saveSettingsAtomic(exeDir, settings); err != nil {
 			return ResolvePlatformLaunchResult{}, err
 		}
-		return ResolvePlatformLaunchResult{Ok: true, FoundViaShortcut: true}, nil
+		return ResolvePlatformLaunchResult{
+			Ok:               true,
+			FoundViaShortcut: true,
+			SoughtExeName:    exeName,
+			InitialPath:      filepath.Dir(found),
+		}, nil
 	}
 
 	initial := filepath.Dir(defExpanded)

@@ -1,5 +1,6 @@
 <script lang="ts">
-    import { route } from '../stores/nav'
+    import { get } from 'svelte/store'
+    import { route, previousPage } from '../stores/nav'
     import { onMount } from 'svelte'
     import { appBarTitle } from '../stores/nav'
     import { activeModal } from '../stores/modal'
@@ -65,7 +66,12 @@
                 backTransition = 'transform 0ms ease-in-out'
             }, 500)
         } else {
-            route.set({ page: 'home' })
+            const prev = get(previousPage)
+            if (prev) {
+                route.set(prev)
+            } else {
+                route.set({ page: 'home' })
+            }
         }
     }
 </script>

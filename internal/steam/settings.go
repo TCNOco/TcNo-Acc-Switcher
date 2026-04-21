@@ -8,17 +8,17 @@ import (
 
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
+	"TcNo-Acc-Switcher/internal/platform"
 )
 
 const settingsFileName = "SteamSettings.json"
 
-// Settings mirrors legacy SteamSettings.json (C#) field names for compatibility.
+// Settings mirrors legacy SteamSettings.json (C#) field names for compatibility where applicable.
+// Shared fields are embedded from [platform.PlatformSettings].
 type Settings struct {
-	ForgetAccountEnabled bool `json:"ForgetAccountEnabled"`
+	platform.PlatformSettings
 
 	FolderPath string `json:"FolderPath"`
-
-	SteamAdmin bool `json:"Steam_Admin"`
 
 	SteamShowSteamID     bool `json:"Steam_ShowSteamID"`
 	SteamShowVAC         bool `json:"Steam_ShowVAC"`
@@ -28,17 +28,9 @@ type Settings struct {
 	SteamTrayAccountName bool `json:"Steam_TrayAccountName"`
 
 	SteamImageExpiryTime int `json:"Steam_ImageExpiryTime"`
-	SteamTrayAccNumber   int `json:"Steam_TrayAccNumber"`
 	SteamOverrideState   int `json:"Steam_OverrideState"`
 
 	ShortcutsJSON map[string]string `json:"ShortcutsJson"`
-
-	ClosingMethod  string `json:"ClosingMethod"`
-	StartingMethod string `json:"StartingMethod"`
-
-	AutoStart      bool              `json:"AutoStart"`
-	ShowShortNotes bool              `json:"ShowShortNotes"`
-	AccountNotes   map[string]string `json:"AccountNotes"`
 
 	SteamWebAPIKey string `json:"SteamWebApiKey"`
 
@@ -49,21 +41,18 @@ type Settings struct {
 }
 
 func defaultSettings() Settings {
+	ps := platform.DefaultPlatformSettings()
 	return Settings{
+		PlatformSettings:     ps,
 		FolderPath:           `C:\Program Files (x86)\Steam\`,
 		SteamShowVAC:         true,
 		SteamShowLimited:     true,
 		SteamShowLastLogin:   true,
 		SteamShowAccUsername: true,
+		SteamShowSteamID:     false,
 		SteamImageExpiryTime: 7,
-		SteamTrayAccNumber:   3,
 		SteamOverrideState:   -1,
 		ShortcutsJSON:        map[string]string{},
-		ClosingMethod:        "TaskKill",
-		StartingMethod:       "Default",
-		AutoStart:            true,
-		ShowShortNotes:       true,
-		AccountNotes:         map[string]string{},
 		CollectInfo:          true,
 	}
 }
@@ -74,6 +63,11 @@ func settingsPath() (string, error) {
 		return "", err
 	}
 	return filepath.Join(dir, settingsFileName), nil
+}
+
+// ResetToDefaults overwrites SteamSettings.json with defaults (wired from [platform.SetSteamReset]).
+func ResetToDefaults() error {
+	return SaveSettings(defaultSettings())
 }
 
 // LoadSettings reads Settings/SteamSettings.json.
@@ -89,8 +83,31 @@ func LoadSettings() (Settings, error) {
 		}
 		return Settings{}, err
 	}
+
+	// Migrate legacy JSON keys into embedded PlatformSettings before unmarshalling.
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return defaultSettings(), err
+	}
+	if _, has := raw["RunAsAdmin"]; !has {
+		if v, ok := raw["Steam_Admin"]; ok {
+			raw["RunAsAdmin"] = v
+		}
+		delete(raw, "Steam_Admin")
+	}
+	if _, has := raw["TrayAccNumber"]; !has {
+		if v, ok := raw["Steam_TrayAccNumber"]; ok {
+			raw["TrayAccNumber"] = v
+		}
+		delete(raw, "Steam_TrayAccNumber")
+	}
+	data2, err := json.Marshal(raw)
+	if err != nil {
+		return Settings{}, err
+	}
+
 	var s Settings
-	if err := json.Unmarshal(data, &s); err != nil {
+	if err := json.Unmarshal(data2, &s); err != nil {
 		return defaultSettings(), err
 	}
 	s.FolderPath = NormalizeFolderPath(s.FolderPath)
@@ -103,6 +120,15 @@ func LoadSettings() (Settings, error) {
 	if s.SteamImageExpiryTime <= 0 {
 		s.SteamImageExpiryTime = 7
 	}
+	if s.TrayAccNumber <= 0 {
+		s.TrayAccNumber = 3
+	}
+	if strings.TrimSpace(s.ClosingMethod) == "" {
+		s.ClosingMethod = "Combined"
+	}
+	if strings.TrimSpace(s.StartingMethod) == "" {
+		s.StartingMethod = "Default"
+	}
 	return s, nil
 }
 
@@ -114,6 +140,12 @@ func SaveSettings(s Settings) error {
 	}
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		return err
+	}
+	if s.ShortcutsJSON == nil {
+		s.ShortcutsJSON = map[string]string{}
+	}
+	if s.AccountNotes == nil {
+		s.AccountNotes = map[string]string{}
 	}
 	data, err := json.MarshalIndent(s, "", "  ")
 	if err != nil {

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"TcNo-Acc-Switcher/internal/fsutil"
@@ -75,4 +76,28 @@ func vacMap(rows []VacEntry) map[string]VacEntry {
 		m[r.SteamID] = r
 	}
 	return m
+}
+
+// ClearVACProfileCaches removes SteamVACCache.json and all cached profile XML files
+// under LoginCache/Steam/VACCache/ so the next refresh re-fetches community data.
+func ClearVACProfileCaches() error {
+	p, err := vacCachePath()
+	if err != nil {
+		return err
+	}
+	dir := filepath.Dir(p)
+	_ = os.Remove(p)
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil
+		}
+		return err
+	}
+	for _, e := range entries {
+		if strings.EqualFold(filepath.Ext(e.Name()), ".xml") {
+			_ = os.Remove(filepath.Join(dir, e.Name()))
+		}
+	}
+	return nil
 }
