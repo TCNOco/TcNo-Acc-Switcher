@@ -9,6 +9,7 @@ import (
 	"strings"
 	"syscall"
 	"time"
+	"unsafe"
 
 	"golang.org/x/sys/windows"
 	"golang.org/x/sys/windows/svc"
@@ -48,15 +49,73 @@ func KillByName(names []string, method ClosingMethod) error {
 			_ = taskKillIM(base, true)
 		case ClosingClose:
 			_ = taskKillIM(base, false)
-			time.Sleep(2 * time.Second)
+			waitForImageExit(base, 2*time.Second, 100*time.Millisecond)
 			_ = taskKillIM(base, true)
 		default: // Combined
 			_ = taskKillIM(base, false)
-			time.Sleep(1500 * time.Millisecond)
+			waitForImageExit(base, 1500*time.Millisecond, 100*time.Millisecond)
 			_ = taskKillIM(base, true)
 		}
 	}
 	return nil
+}
+
+// waitForImageExit polls until no process uses exeImage (e.g. "steam.exe") or maxWait elapses.
+// Replaces a fixed sleep so we return as soon as the process is gone.
+func waitForImageExit(exeImage string, maxWait, poll time.Duration) {
+	deadline := time.Now().Add(maxWait)
+	for time.Now().Before(deadline) {
+		exists, err := processExistsByImageName(exeImage)
+		if err != nil {
+			time.Sleep(300 * time.Millisecond)
+			return
+		}
+		if !exists {
+			return
+		}
+		time.Sleep(poll)
+	}
+}
+
+func processExistsByImageName(want string) (bool, error) {
+	want = strings.TrimSpace(want)
+	if want == "" {
+		return false, nil
+	}
+	snap, err := windows.CreateToolhelp32Snapshot(windows.TH32CS_SNAPPROCESS, 0)
+	if err != nil {
+		return false, err
+	}
+	defer windows.CloseHandle(snap)
+
+	var pe windows.ProcessEntry32
+	pe.Size = uint32(unsafe.Sizeof(pe))
+	if err := windows.Process32First(snap, &pe); err != nil {
+		if err == windows.ERROR_NO_MORE_FILES {
+			return false, nil
+		}
+		return false, err
+	}
+	for {
+		exe := utf16FixedToString(pe.ExeFile[:])
+		if strings.EqualFold(exe, want) {
+			return true, nil
+		}
+		if err := windows.Process32Next(snap, &pe); err != nil {
+			if err == windows.ERROR_NO_MORE_FILES {
+				return false, nil
+			}
+			return false, err
+		}
+	}
+}
+
+func utf16FixedToString(b []uint16) string {
+	n := 0
+	for n < len(b) && b[n] != 0 {
+		n++
+	}
+	return windows.UTF16ToString(b[:n])
 }
 
 func stopWindowsService(name string) error {
