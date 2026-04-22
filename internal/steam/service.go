@@ -39,12 +39,14 @@ type AccountDTO struct {
 	Vac bool `json:"vac"`
 	Ltd bool `json:"ltd"`
 
-	ShowSteamID     bool `json:"showSteamId"`
-	ShowVAC         bool `json:"showVac"`
-	ShowLimited     bool `json:"showLimited"`
-	ShowLastLogin   bool `json:"showLastLogin"`
-	ShowAccUsername bool `json:"showAccUsername"`
-	CollectInfo     bool `json:"collectInfo"`
+	ShowSteamID     bool   `json:"showSteamId"`
+	ShowVAC         bool   `json:"showVac"`
+	ShowLimited     bool   `json:"showLimited"`
+	ShowLastLogin   bool   `json:"showLastLogin"`
+	ShowAccUsername bool   `json:"showAccUsername"`
+	CollectInfo     bool   `json:"collectInfo"`
+	ShowShortNotes  bool   `json:"showShortNotes"`
+	Note            string `json:"note"`
 
 	// SyncError is set when background profile/avatar fetch fails (shown in UI; also logged).
 	SyncError string `json:"syncError"`
@@ -72,9 +74,9 @@ type AccountPatch struct {
 type SteamService struct {
 	mu sync.Mutex
 
-	refreshMu       sync.Mutex
-	refreshRunning  bool
-	refreshQueued   bool // run again after the current refresh finishes (coalesce overlapping StartSteamProfileRefresh)
+	refreshMu      sync.Mutex
+	refreshRunning bool
+	refreshQueued  bool // run again after the current refresh finishes (coalesce overlapping StartSteamProfileRefresh)
 }
 
 // NewSteamService constructs the service. Outbound HTTP uses [appclient.Shared].
@@ -197,6 +199,11 @@ func (s *SteamService) GetSteamAccounts() ([]AccountDTO, error) {
 		_, vacCached := vacKnown[u.SteamID64]
 		metaPending := st.CollectInfo && !vacCached
 
+		note := ""
+		if st.AccountNotes != nil {
+			note = st.AccountNotes[u.SteamID64]
+		}
+
 		dto := AccountDTO{
 			SteamID64:       u.SteamID64,
 			PersonaName:     displayPersona(u),
@@ -214,6 +221,8 @@ func (s *SteamService) GetSteamAccounts() ([]AccountDTO, error) {
 			ShowLastLogin:   st.SteamShowLastLogin,
 			ShowAccUsername: st.SteamShowAccUsername,
 			CollectInfo:     st.CollectInfo,
+			ShowShortNotes:  st.ShowShortNotes,
+			Note:            note,
 			CurrentSession:  activeSteamID != "" && u.SteamID64 == activeSteamID,
 		}
 		out = append(out, dto)

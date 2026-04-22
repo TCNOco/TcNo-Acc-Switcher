@@ -333,6 +333,7 @@
               positiveLabel: tr("Ok"),
               negativeLabel: tr("Button_Cancel"),
               initialValue: cur ?? "",
+              multiline: true,
             });
             if (note === null) {
               return;

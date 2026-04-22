@@ -29,6 +29,8 @@ export class AccountDTO {
     "showLastLogin": boolean;
     "showAccUsername": boolean;
     "collectInfo": boolean;
+    "showShortNotes": boolean;
+    "note": string;
 
     /**
      * SyncError is set when background profile/avatar fetch fails (shown in UI; also logged).
@@ -90,6 +92,12 @@ export class AccountDTO {
         }
         if (!("collectInfo" in $$source)) {
             this["collectInfo"] = false;
+        }
+        if (!("showShortNotes" in $$source)) {
+            this["showShortNotes"] = false;
+        }
+        if (!("note" in $$source)) {
+            this["note"] = "";
         }
         if (!("syncError" in $$source)) {
             this["syncError"] = "";

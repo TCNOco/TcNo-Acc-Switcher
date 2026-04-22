@@ -23,6 +23,8 @@ export type ActiveModal =
       kind: "prompt";
       title: string;
       inputType: "text" | "password";
+      /** When true (text only), uses a textarea; Enter inserts a newline instead of submitting. */
+      multiline?: boolean;
       initialValue?: string;
       positiveLabel?: string;
       negativeLabel?: string;
@@ -105,6 +107,7 @@ export function openPrompt(
   opts: {
     title: string;
     inputType?: "text" | "password";
+    multiline?: boolean;
     initialValue?: string;
     positiveLabel?: string;
     negativeLabel?: string;
@@ -120,6 +123,7 @@ export function openPrompt(
       bodyComponent: opts.bodyComponent,
       bodyProps: opts.bodyProps,
       inputType: opts.inputType ?? "text",
+      multiline: opts.multiline,
       initialValue: opts.initialValue,
       positiveLabel: opts.positiveLabel,
       negativeLabel: opts.negativeLabel,

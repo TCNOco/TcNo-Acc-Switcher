@@ -42,10 +42,12 @@
     });
   }
 
-  /** Bindings row + client-only syncError; `currentSession` is explicit — TS sometimes omits quoted keys on generated classes. */
+  /** Bindings row + client-only syncError; some JSON fields are explicit — TS sometimes omits quoted keys on generated classes. */
   type SteamAccountRow = InstanceType<typeof AccountDTO> & {
     syncError?: string;
     currentSession: boolean;
+    showShortNotes: boolean;
+    note: string;
   };
 
   /** Vite `public/img/` → served at `/img/`; shown until Steam profile image is ready */
@@ -622,6 +624,7 @@
               positiveLabel: tr("Ok"),
               negativeLabel: tr("Button_Cancel"),
               initialValue: cur ?? "",
+              multiline: true,
             });
             if (note === null) {
               return;
@@ -814,6 +817,9 @@
                   <p class="streamerCensor">{acc.accountName}</p>
                 {/if}
                 <h6 class="displayName">{acc?.personaName ?? rid}</h6>
+                {#if acc?.showShortNotes && acc?.note?.trim()}
+                  <p class="acc_note">{acc.note}</p>
+                {/if}
                 {#if acc?.showSteamId}
                   <p class="streamerCensor steamId">{acc.steamId64}</p>
                 {/if}

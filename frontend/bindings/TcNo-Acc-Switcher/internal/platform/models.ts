@@ -35,7 +35,6 @@ export class GameShortcutEntry {
 
 /**
  * PlatformSettings are shared per-platform fields stored in Settings/<Name>Settings.json
- * (Steam uses SteamSettings.json alongside Steam-specific keys in the same file).
  */
 export class PlatformSettings {
     "RunAsAdmin": boolean;

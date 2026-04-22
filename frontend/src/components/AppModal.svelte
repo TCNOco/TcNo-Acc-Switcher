@@ -73,7 +73,7 @@
   })();
 
   let backdropEl: HTMLDivElement | undefined;
-  let promptEl: HTMLInputElement | undefined;
+  let promptEl: HTMLInputElement | HTMLTextAreaElement | undefined;
 
   function onBackdropDown(e: MouseEvent): void {
     if (e.target === backdropEl) cancelActiveModal();
@@ -224,6 +224,15 @@
                     autocomplete="off"
                     on:keydown={(e) => e.key === "Enter" && promptOk()}
                   />
+                {:else if m.multiline}
+                  <textarea
+                    bind:this={promptEl}
+                    bind:value={promptValue}
+                    class="modal-input modal-input--multiline"
+                    rows="6"
+                    spellcheck="true"
+                    autocomplete="off"
+                  ></textarea>
                 {:else}
                   <input
                     bind:this={promptEl}
@@ -421,6 +430,13 @@
       outline-offset: -1px;
       border-color: var(--accent);
     }
+  }
+
+  .modal-input--multiline {
+    min-height: 7.5rem;
+    resize: vertical;
+    line-height: 1.35;
+    white-space: pre-wrap;
   }
 
   .modal-inline-actions {

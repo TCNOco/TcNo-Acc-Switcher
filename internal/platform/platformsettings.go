@@ -73,14 +73,13 @@ func settingsDirUnderExe() (string, error) {
 }
 
 // PlatformSettings are shared per-platform fields stored in Settings/<Name>Settings.json
-// (Steam uses SteamSettings.json alongside Steam-specific keys in the same file).
 type PlatformSettings struct {
-	RunAsAdmin           bool              `json:"RunAsAdmin"`
-	TrayAccNumber        int               `json:"TrayAccNumber"`
-	ForgetAccountEnabled bool            `json:"ForgetAccountEnabled"`
-	ClosingMethod        string            `json:"ClosingMethod"`
-	StartingMethod       string            `json:"StartingMethod"`
-	AutoStart            bool              `json:"AutoStart"`
+	RunAsAdmin           bool                `json:"RunAsAdmin"`
+	TrayAccNumber        int                 `json:"TrayAccNumber"`
+	ForgetAccountEnabled bool                `json:"ForgetAccountEnabled"`
+	ClosingMethod        string              `json:"ClosingMethod"`
+	StartingMethod       string              `json:"StartingMethod"`
+	AutoStart            bool                `json:"AutoStart"`
 	ShowShortNotes       bool                `json:"ShowShortNotes"`
 	AccountNotes         map[string]string   `json:"AccountNotes"`
 	Shortcuts            []GameShortcutEntry `json:"Shortcuts,omitempty"`
