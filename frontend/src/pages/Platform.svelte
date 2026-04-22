@@ -210,12 +210,12 @@
           },
         },
         {
-          label: tr("Context_ChangeAccountName"),
+          label: tr("Context_ChangeName"),
           action: async () => {
             const next = await openPrompt({
               title: tr("Context_ChangeName"),
               body: "",
-              positiveLabel: tr("Button_OK"),
+              positiveLabel: tr("Ok"),
               negativeLabel: tr("Button_Cancel"),
               initialValue: acc.displayName ?? "",
             });
@@ -269,7 +269,7 @@
             const path = await openPrompt({
               title: tr("Context_ChangeImage"),
               body: "",
-              positiveLabel: tr("Button_OK"),
+              positiveLabel: tr("Ok"),
               negativeLabel: tr("Button_Cancel"),
               initialValue: "",
             });
@@ -322,7 +322,7 @@
           },
         },
         {
-          label: tr("Context_Notes"),
+          label: tr("Notes"),
           action: async () => {
             const cur = await BasicService.GetAccountNote(name, rowId);
             const note = await openPrompt({
@@ -330,7 +330,7 @@
               body: tr("Modal_Title_AccountNotes", {
                 accountName: acc.displayName ?? rowId,
               }),
-              positiveLabel: tr("Button_OK"),
+              positiveLabel: tr("Ok"),
               negativeLabel: tr("Button_Cancel"),
               initialValue: cur ?? "",
             });

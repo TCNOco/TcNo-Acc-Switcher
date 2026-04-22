@@ -619,7 +619,7 @@
               body: tr("Modal_Title_AccountNotes", {
                 accountName: acc.personaName ?? rid,
               }),
-              positiveLabel: tr("Button_OK"),
+              positiveLabel: tr("Ok"),
               negativeLabel: tr("Button_Cancel"),
               initialValue: cur ?? "",
             });
@@ -670,7 +670,7 @@
                 const path = await openPrompt({
                   title: tr("Context_ChangeImage"),
                   body: "",
-                  positiveLabel: tr("Button_OK"),
+                  positiveLabel: tr("Ok"),
                   negativeLabel: tr("Button_Cancel"),
                   initialValue: "",
                 });
