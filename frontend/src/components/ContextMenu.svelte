@@ -91,19 +91,6 @@
 {/if}
 
 <style lang="scss">
-  .ctx-menu-root {
-    position: fixed;
-    z-index: 10000;
-    min-width: 10rem;
-    margin: 0;
-    padding: 0.25rem 0;
-    list-style: none;
-    background: #0e1419;
-    border: 1px solid var(--button-bg, #2a3f52);
-    border-radius: 6px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
-  }
-
   .ctx-menu__btn {
     display: block;
     width: 100%;
@@ -120,35 +107,5 @@
 
   .ctx-menu__btn:hover {
     background: rgba(255, 255, 255, 0.08);
-  }
-
-  .hasSubmenu {
-    position: relative;
-    list-style: none;
-  }
-
-  .ctx-menu__label {
-    display: block;
-    padding: 0.35rem 0.75rem;
-    color: rgba(255, 255, 255, 0.75);
-    font-size: 0.75rem;
-  }
-
-  .submenu {
-    position: absolute;
-    left: 100%;
-    top: 0;
-    margin: 0;
-    padding: 0.25rem 0;
-    min-width: 9rem;
-    list-style: none;
-    background: #0e1419;
-    border: 1px solid var(--button-bg, #2a3f52);
-    border-radius: 6px;
-    display: none;
-  }
-
-  .hasSubmenu:hover .submenu {
-    display: block;
   }
 </style>

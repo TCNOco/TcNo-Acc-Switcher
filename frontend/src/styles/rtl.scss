@@ -1,0 +1,39 @@
+/* Thank you https://github.com/Majoramari */
+.row,
+ul.contextmenu,
+.modalFG,
+#window-title span,
+.rightContent,
+.infoWindow .rightContent {
+    direction: rtl !important;
+    margin-left: 0em;
+    margin-right: 1em;
+}
+
+.linksList {
+    align-items: baseline;
+}
+
+.rowSetting div.form-check {
+    margin: 0 !important;
+}
+
+label {
+    margin-right: 0.5em;
+    margin-left: 0em;
+}
+
+.linksList a svg {
+    margin-right: 0;
+}
+
+.modalIcoGitHub,
+.modalIcoNetworking,
+.modalIcoDoc {
+    margin-left: 0.5rem;
+}
+
+#window-controls-modal {
+    right: unset;
+    left: 0;
+}

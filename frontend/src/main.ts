@@ -1,4 +1,5 @@
 import App from './App.svelte'
+import './styles/context_menu.scss'
 import './styles/normalize.scss'
 import './styles/style.scss'
 import './styles/theme.scss'
