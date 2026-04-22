@@ -19,6 +19,7 @@
   import { locale, t } from "../stores/i18n";
   import { formatLastLoginForLocale } from "../lib/formatLastLogin";
   import { formatToastWithError, formatWailsError } from "../lib/formatWailsError";
+  import { isNeedsAdminError, offerRestartIfNeedsAdmin, preflightAdminForPlatform } from "../lib/adminFlow";
   import { tooltip } from "../lib/actions/tooltip";
   import { contextMenu as ctxMenuAction } from "../lib/actions/contextMenu";
   import type { MenuItemDef } from "../stores/contextMenu";
@@ -224,6 +225,18 @@
     SteamService.SaveSteamAccountOrder(e.detail.items).catch(() => {});
   }
 
+  async function reportSteamSwitchFailure(e: unknown): Promise<void> {
+    await offerRestartIfNeedsAdmin(e, name);
+    if (isNeedsAdminError(e)) {
+      return;
+    }
+    pushToast({
+      type: "error",
+      message: formatToastWithError($t("Toast_SwitchFailed"), e),
+      duration: 8000,
+    });
+  }
+
   async function steamLoginSelected(): Promise<void> {
     if (!selectedSteamId) {
       return;
@@ -237,11 +250,7 @@
         duration: 4000,
       });
     } catch (e) {
-      pushToast({
-        type: "error",
-        message: formatToastWithError($t("Toast_SwitchFailed"), e),
-        duration: 8000,
-      });
+      await reportSteamSwitchFailure(e);
     }
   }
 
@@ -274,11 +283,7 @@
           duration: 4000,
         });
       } catch (e) {
-        pushToast({
-          type: "error",
-          message: formatToastWithError($t("Toast_SwitchFailed"), e),
-          duration: 8000,
-        });
+        await reportSteamSwitchFailure(e);
       }
       return;
     }
@@ -337,11 +342,7 @@
                 duration: 4000,
               });
             } catch (e) {
-              pushToast({
-                type: "error",
-                message: formatToastWithError($t("Toast_SwitchFailed"), e),
-                duration: 8000,
-              });
+              await reportSteamSwitchFailure(e);
             }
           },
         })),
@@ -716,6 +717,7 @@
 
   onMount(() => {
     previousPage.set({ page: "home" });
+    void preflightAdminForPlatform(name);
     void (async () => {
       await loadSteamAccounts();
       try {

@@ -14,6 +14,7 @@ Extra argv for the platform exe (e.g. Steam) after swap/launch from CLI or short
                      (any token that is not a TcNo flag, +swap, logout, or a GUI page name)
 
 Open GUI to page:    <PlatformName>      e.g. Steam
+                     --page=<PlatformName>   (same; useful after restart-as-admin)
 
 Logout:              logout[:<PlatformName>[:<accountId>]]
 

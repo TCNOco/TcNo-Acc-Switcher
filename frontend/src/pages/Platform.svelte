@@ -18,6 +18,7 @@
   import { AccountDTO } from "../../bindings/TcNo-Acc-Switcher/internal/basic/models.js";
   import { GetPlatformExeIcon, LaunchPlatform } from "../lib/platformBindings";
   import { formatToastWithError, formatWailsError } from "../lib/formatWailsError";
+  import { isNeedsAdminError, offerRestartIfNeedsAdmin, preflightAdminForPlatform } from "../lib/adminFlow";
   import { tooltip } from "../lib/actions/tooltip";
   import { contextMenu as ctxMenuAction } from "../lib/actions/contextMenu";
   import type { MenuItemDef } from "../stores/contextMenu";
@@ -106,6 +107,30 @@
     BasicService.SaveAccountOrder(name, e.detail.items).catch(() => {});
   }
 
+  async function reportBasicSwitchFailure(e: unknown): Promise<void> {
+    await offerRestartIfNeedsAdmin(e, name);
+    if (isNeedsAdminError(e)) {
+      return;
+    }
+    pushToast({
+      type: "error",
+      message: formatToastWithError($t("Toast_SwitchFailed"), e),
+      duration: 8000,
+    });
+  }
+
+  async function reportBasicSaveFailure(e: unknown): Promise<void> {
+    await offerRestartIfNeedsAdmin(e, name);
+    if (isNeedsAdminError(e)) {
+      return;
+    }
+    pushToast({
+      type: "error",
+      message: formatToastWithError($t("Toast_SaveFailed"), e),
+      duration: 8000,
+    });
+  }
+
   async function swapToLogin(): Promise<void> {
     if (!selectedUniqueId) {
       return;
@@ -119,11 +144,7 @@
         duration: 4000,
       });
     } catch (e) {
-      pushToast({
-        type: "error",
-        message: formatToastWithError($t("Toast_SwitchFailed"), e),
-        duration: 8000,
-      });
+      await reportBasicSwitchFailure(e);
     }
   }
 
@@ -147,11 +168,7 @@
         duration: 4000,
       });
     } catch (e) {
-      pushToast({
-        type: "error",
-        message: formatToastWithError($t("Toast_SaveFailed"), e),
-        duration: 8000,
-      });
+      await reportBasicSaveFailure(e);
     }
   }
 
@@ -163,11 +180,14 @@
         await LaunchPlatform(name);
         scheduleAccountsRefresh();
       } catch (e) {
-        pushToast({
-          type: "error",
-          message: formatToastWithError($t("Toast_LaunchFailed"), e),
-          duration: 8000,
-        });
+        await offerRestartIfNeedsAdmin(e, name);
+        if (!isNeedsAdminError(e)) {
+          pushToast({
+            type: "error",
+            message: formatToastWithError($t("Toast_LaunchFailed"), e),
+            duration: 8000,
+          });
+        }
       }
       return;
     }
@@ -181,11 +201,7 @@
           duration: 4000,
         });
       } catch (e) {
-        pushToast({
-          type: "error",
-          message: formatToastWithError($t("Toast_SwitchFailed"), e),
-          duration: 8000,
-        });
+        await reportBasicSwitchFailure(e);
       }
       return;
     }
@@ -371,6 +387,7 @@
 
   onMount(() => {
     previousPage.set({ page: "home" });
+    void preflightAdminForPlatform(name);
     void loadAccounts();
     void GetPlatformExeIcon(name).then((u: string) => platformExeIconUrl.set(u ?? ""));
     offPlatformAction = platformAction.subscribe((v) => {

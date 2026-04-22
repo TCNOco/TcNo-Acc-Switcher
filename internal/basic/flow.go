@@ -61,6 +61,9 @@ func SaveCurrent(deps FlowDeps, platformKey, accountName string) error {
 	}
 
 	if d.ExitBeforeInteract {
+		if err := winutil.ErrIfCannotKill(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod)); err != nil {
+			return err
+		}
 		platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatform", platformKey)
 		_ = winutil.KillByName(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod))
 	}
@@ -422,6 +425,9 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 	}
 
 	platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatform", platformKey)
+	if err := winutil.ErrIfCannotKill(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod)); err != nil {
+		return err
+	}
 	_ = winutil.KillByName(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod))
 
 	ids, err := readIDs(platformKey)
@@ -480,6 +486,9 @@ func AddNew(deps FlowDeps, platformKey string) error {
 		return err
 	}
 	platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatform", platformKey)
+	if err := winutil.ErrIfCannotKill(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod)); err != nil {
+		return err
+	}
 	_ = winutil.KillByName(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod))
 	platform.EmitActionBarStatusI18n("Status_ActionBar_ClearingSession")
 	if err := ClearCurrentLogin(deps, platformKey); err != nil {
@@ -527,6 +536,7 @@ func launchBasicNoStatusAs(deps FlowDeps, platformKey string, forceAdmin bool, e
 		Admin:         admin,
 		Method:        winutil.StartingMethod(strings.TrimSpace(ps.StartingMethod)),
 		HideWindow:    false,
+		WorkingDir:    filepath.Dir(exe),
 		AsDesktopUser: winutil.IsProcessElevated() && !admin,
 	}
 	return winutil.Start(exe, args, opts)

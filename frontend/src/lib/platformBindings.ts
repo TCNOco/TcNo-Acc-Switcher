@@ -1,5 +1,6 @@
 /** Re-exports generated Wails platform + Steam service calls via `src/` for stable TS resolution. */
 export {
+  CheckAdminForPlatform,
   ConfirmPlatformExePath,
   GetPlatformExeIcon,
   GetPlatformInstallFolder,
@@ -10,6 +11,7 @@ export {
   OpenPlatformFolder,
   ResetPlatformSettings,
   ResolvePlatformLaunch,
+  RestartAsAdmin,
   SavePlatformSettings,
 } from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
 

@@ -3,6 +3,8 @@
 package winutil
 
 import (
+	"sync"
+
 	"golang.org/x/sys/windows"
 )
 
@@ -25,8 +27,11 @@ func TryAcquireSingleton() (release func(), alreadyRunning bool, err error) {
 		}
 		return nil, false, err
 	}
+	var once sync.Once
 	return func() {
-		_ = windows.ReleaseMutex(h)
-		_ = windows.CloseHandle(h)
+		once.Do(func() {
+			_ = windows.ReleaseMutex(h)
+			_ = windows.CloseHandle(h)
+		})
 	}, false, nil
 }

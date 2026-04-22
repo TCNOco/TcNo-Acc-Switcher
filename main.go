@@ -87,6 +87,7 @@ func main() {
 		os.Exit(0)
 	}
 	defer releaseSingleton()
+	winutil.RegisterSingletonReleaser(releaseSingleton)
 
 	if parsed.NeedsHeadlessMutex() {
 		winutil.AttachParentConsole()

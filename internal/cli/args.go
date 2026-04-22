@@ -105,6 +105,23 @@ func Parse(argv []string, idx *PlatformIndex) (Parsed, error) {
 			continue
 		}
 
+		// Explicit open-page (e.g. elevated restart): --page=Steam, --open-page=Steam
+		if pageVal, ok := parseOpenPageFlag(a); ok {
+			pageVal = strings.TrimSpace(pageVal)
+			if pageVal != "" {
+				canon := pageVal
+				if idx != nil {
+					if c, has := idx.Names[strings.ToLower(pageVal)]; has {
+						canon = c
+					}
+				}
+				if err := mergePrimary(&p, Parsed{Kind: KindOpenPage, OpenPage: canon}); err != nil {
+					return Parsed{}, err
+				}
+			}
+			continue
+		}
+
 		if idx != nil {
 			if canon, ok := idx.Names[strings.ToLower(a)]; ok {
 				pp := Parsed{Kind: KindOpenPage, OpenPage: canon}
@@ -122,6 +139,18 @@ func Parse(argv []string, idx *PlatformIndex) (Parsed, error) {
 	}
 
 	return p, nil
+}
+
+// parseOpenPageFlag returns (value, true) for --page=X, -page=X, --open-page=X (case-insensitive keys).
+func parseOpenPageFlag(a string) (string, bool) {
+	s := strings.TrimSpace(a)
+	lo := strings.ToLower(s)
+	for _, prefix := range []string{"--page=", "-page=", "--open-page=", "-open-page="} {
+		if strings.HasPrefix(lo, strings.ToLower(prefix)) {
+			return strings.TrimSpace(s[len(prefix):]), true
+		}
+	}
+	return "", false
 }
 
 func isLogoutToken(a string) bool {

@@ -54,6 +54,9 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 	}
 
 	platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatform", "Steam")
+	if err := winutil.ErrIfCannotKill(steamKillNames, winutil.ClosingMethod(st.ClosingMethod)); err != nil {
+		return err
+	}
 	if err := winutil.KillByName(steamKillNames, winutil.ClosingMethod(st.ClosingMethod)); err != nil {
 		steamLog.Warn("kill steam processes", slog.Any("err", err))
 	}
@@ -90,6 +93,7 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 		Admin:         st.RunAsAdmin,
 		Method:        winutil.StartingMethod(strings.TrimSpace(st.StartingMethod)),
 		HideWindow:    false,
+		WorkingDir:    root,
 		AsDesktopUser: winutil.IsProcessElevated() && !st.RunAsAdmin,
 	}
 	return winutil.Start(exe, args, opts)
@@ -133,6 +137,7 @@ func LaunchSteamOnly(extraLaunchArgs []string) error {
 		Admin:         st.RunAsAdmin,
 		Method:        winutil.StartingMethod(strings.TrimSpace(st.StartingMethod)),
 		HideWindow:    false,
+		WorkingDir:    root,
 		AsDesktopUser: winutil.IsProcessElevated() && !st.RunAsAdmin,
 	}
 	return winutil.Start(exe, args, opts)
@@ -180,6 +185,7 @@ func LaunchSteamOnlyAs(forceAdmin bool, extraLaunchArgs []string) error {
 		Admin:         admin,
 		Method:        winutil.StartingMethod(strings.TrimSpace(st.StartingMethod)),
 		HideWindow:    false,
+		WorkingDir:    root,
 		AsDesktopUser: winutil.IsProcessElevated() && !admin,
 	}
 	return winutil.Start(exe, args, opts)

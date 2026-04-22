@@ -4,6 +4,7 @@ package winutil
 
 import (
 	"fmt"
+	"log"
 	"os/exec"
 	"path/filepath"
 	"strings"
@@ -222,10 +223,18 @@ func psArgList(args []string) string {
 }
 
 // startAsDesktopUser avoids inheriting admin when the switcher is elevated.
-// Uses cmd /c start "" exe args — may not cover all cases; full WTS token path is a future improvement.
+// Prefer CreateProcessWithTokenW (shell user token); fall back to cmd /c start if that fails.
 func startAsDesktopUser(exe string, args []string, opts StartOpts) error {
+	wd := strings.TrimSpace(opts.WorkingDir)
+	if tryRunAsDesktopUser(exe, args, wd, opts.HideWindow) {
+		return nil
+	}
+	log.Printf("winutil: falling back to cmd start for %s", exe)
 	cmdline := append([]string{"/c", "start", "", exe}, args...)
 	cmd := exec.Command("cmd.exe", cmdline...)
+	if wd != "" {
+		cmd.Dir = wd
+	}
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: opts.HideWindow}
 	return cmd.Start()
 }

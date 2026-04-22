@@ -2,6 +2,7 @@ package cli
 
 import (
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -23,5 +24,22 @@ func TestParsePassthroughLaunchArgs(t *testing.T) {
 	want := []string{"-dev", "-x", "-y"}
 	if !reflect.DeepEqual(p.PassthroughLaunchArgs, want) {
 		t.Fatalf("passthrough: got %#v want %#v", p.PassthroughLaunchArgs, want)
+	}
+}
+
+func TestParseOpenPageFlag(t *testing.T) {
+	idx := &PlatformIndex{
+		Names: map[string]string{"steam": "Steam"},
+	}
+	p, err := Parse([]string{"--page=steam"}, idx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if p.Kind != KindOpenPage || p.OpenPage != "Steam" {
+		t.Fatalf("got %#v", p)
+	}
+	j := p.RouteJSONForOpenPage()
+	if j == "" || !strings.Contains(j, "Steam") {
+		t.Fatalf("route json: %q", j)
 	}
 }

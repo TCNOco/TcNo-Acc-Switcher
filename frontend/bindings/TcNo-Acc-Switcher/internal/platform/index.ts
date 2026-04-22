@@ -7,6 +7,7 @@ export {
 };
 
 export {
+    AdminCheckResult,
     GameShortcutEntry,
     PlatformSettings,
     PlatformStartup,

@@ -6,6 +6,31 @@
 import { Create as $Create } from "@wailsio/runtime";
 
 /**
+ * AdminCheckResult is returned to the UI for proactive elevation prompts.
+ */
+export class AdminCheckResult {
+    "needsAdmin": boolean;
+    "blocker"?: string;
+
+    /** Creates a new AdminCheckResult instance. */
+    constructor($$source: Partial<AdminCheckResult> = {}) {
+        if (!("needsAdmin" in $$source)) {
+            this["needsAdmin"] = false;
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new AdminCheckResult instance from a string or object.
+     */
+    static createFrom($$source: any = {}): AdminCheckResult {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new AdminCheckResult($$parsedSource as Partial<AdminCheckResult>);
+    }
+}
+
+/**
  * GameShortcutEntry is one cached game shortcut (.lnk / .url) in the footer bar or dropdown.
  */
 export class GameShortcutEntry {

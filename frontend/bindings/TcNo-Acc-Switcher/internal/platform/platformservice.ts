@@ -19,6 +19,16 @@ export function ApplyPlatformsJSONFile(sourcePath: string): $CancellablePromise<
 }
 
 /**
+ * CheckAdminForPlatform reports whether the current process can close everything required
+ * to swap accounts on this platform (mirrors C# CanKillProcess pre-flight).
+ */
+export function CheckAdminForPlatform(platformKey: string): $CancellablePromise<$models.AdminCheckResult> {
+    return $Call.ByID(1142940076, platformKey).then(($result: any) => {
+        return $$createType0($result);
+    });
+}
+
+/**
  * ConfirmPlatformExePath validates basename and saves the full path to settings.
  */
 export function ConfirmPlatformExePath(platformKey: string, exeFullPath: string): $CancellablePromise<void> {
@@ -49,7 +59,7 @@ export function GetPlatformInstallFolder(platformKey: string): $CancellablePromi
  */
 export function GetPlatformSettings(platformKey: string): $CancellablePromise<$models.PlatformSettings> {
     return $Call.ByID(1698365991, platformKey).then(($result: any) => {
-        return $$createType0($result);
+        return $$createType1($result);
     });
 }
 
@@ -62,7 +72,7 @@ export function GetProtocolEnabled(): $CancellablePromise<boolean> {
 
 export function GetStartup(): $CancellablePromise<$models.PlatformStartup> {
     return $Call.ByID(133724378).then(($result: any) => {
-        return $$createType1($result);
+        return $$createType2($result);
     });
 }
 
@@ -120,8 +130,16 @@ export function ResolvePlatformExeFullPath(platformKey: string): $CancellablePro
  */
 export function ResolvePlatformLaunch(platformKey: string): $CancellablePromise<$models.ResolvePlatformLaunchResult> {
     return $Call.ByID(176484757, platformKey).then(($result: any) => {
-        return $$createType2($result);
+        return $$createType3($result);
     });
+}
+
+/**
+ * RestartAsAdmin spawns an elevated copy of this executable with the given argv tail, then exits.
+ * Register winutil.RegisterSingletonReleaser from main so the singleton mutex is released first.
+ */
+export function RestartAsAdmin(args: string[]): $CancellablePromise<void> {
+    return $Call.ByID(2717041837, args);
 }
 
 export function RestoreDefaultPlatformsJSON(): $CancellablePromise<void> {
@@ -166,6 +184,7 @@ export function SetProtocolEnabled(enabled: boolean): $CancellablePromise<void> 
 }
 
 // Private type creation functions
-const $$createType0 = $models.PlatformSettings.createFrom;
-const $$createType1 = $models.PlatformStartup.createFrom;
-const $$createType2 = $models.ResolvePlatformLaunchResult.createFrom;
+const $$createType0 = $models.AdminCheckResult.createFrom;
+const $$createType1 = $models.PlatformSettings.createFrom;
+const $$createType2 = $models.PlatformStartup.createFrom;
+const $$createType3 = $models.ResolvePlatformLaunchResult.createFrom;
