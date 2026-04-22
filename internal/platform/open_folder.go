@@ -6,8 +6,8 @@ import (
 	"runtime"
 )
 
-// openPathInFileManager opens a directory in the OS file manager (Explorer, Finder, xdg-open).
-func openPathInFileManager(path string) error {
+// OpenPathInFileManager opens a directory in the OS file manager (Explorer, Finder, xdg-open).
+func OpenPathInFileManager(path string) error {
 	path = filepath.Clean(path)
 	switch runtime.GOOS {
 	case "windows":

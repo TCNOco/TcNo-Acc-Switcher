@@ -6,6 +6,34 @@
 import { Create as $Create } from "@wailsio/runtime";
 
 /**
+ * GameShortcutEntry is one cached game shortcut (.lnk / .url) in the footer bar or dropdown.
+ */
+export class GameShortcutEntry {
+    "fileName": string;
+    "pinned": boolean;
+
+    /** Creates a new GameShortcutEntry instance. */
+    constructor($$source: Partial<GameShortcutEntry> = {}) {
+        if (!("fileName" in $$source)) {
+            this["fileName"] = "";
+        }
+        if (!("pinned" in $$source)) {
+            this["pinned"] = false;
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new GameShortcutEntry instance from a string or object.
+     */
+    static createFrom($$source: any = {}): GameShortcutEntry {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new GameShortcutEntry($$parsedSource as Partial<GameShortcutEntry>);
+    }
+}
+
+/**
  * PlatformSettings are shared per-platform fields stored in Settings/<Name>Settings.json
  * (Steam uses SteamSettings.json alongside Steam-specific keys in the same file).
  */
@@ -18,6 +46,7 @@ export class PlatformSettings {
     "AutoStart": boolean;
     "ShowShortNotes": boolean;
     "AccountNotes": { [_ in string]?: string };
+    "Shortcuts"?: GameShortcutEntry[];
 
     /** Creates a new PlatformSettings instance. */
     constructor($$source: Partial<PlatformSettings> = {}) {
@@ -54,9 +83,13 @@ export class PlatformSettings {
      */
     static createFrom($$source: any = {}): PlatformSettings {
         const $$createField7_0 = $$createType0;
+        const $$createField8_0 = $$createType2;
         let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
         if ("AccountNotes" in $$parsedSource) {
             $$parsedSource["AccountNotes"] = $$createField7_0($$parsedSource["AccountNotes"]);
+        }
+        if ("Shortcuts" in $$parsedSource) {
+            $$parsedSource["Shortcuts"] = $$createField8_0($$parsedSource["Shortcuts"]);
         }
         return new PlatformSettings($$parsedSource as Partial<PlatformSettings>);
     }
@@ -97,9 +130,9 @@ export class PlatformStartup {
      * Creates a new PlatformStartup instance from a string or object.
      */
     static createFrom($$source: any = {}): PlatformStartup {
-        const $$createField0_0 = $$createType1;
-        const $$createField1_0 = $$createType1;
-        const $$createField2_0 = $$createType1;
+        const $$createField0_0 = $$createType3;
+        const $$createField1_0 = $$createType3;
+        const $$createField2_0 = $$createType3;
         let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
         if ("homePlatformOrder" in $$parsedSource) {
             $$parsedSource["homePlatformOrder"] = $$createField0_0($$parsedSource["homePlatformOrder"]);
@@ -156,4 +189,6 @@ export class ResolvePlatformLaunchResult {
 
 // Private type creation functions
 const $$createType0 = $Create.Map($Create.Any, $Create.Any);
-const $$createType1 = $Create.Array($Create.Any);
+const $$createType1 = GameShortcutEntry.createFrom;
+const $$createType2 = $Create.Array($$createType1);
+const $$createType3 = $Create.Array($Create.Any);

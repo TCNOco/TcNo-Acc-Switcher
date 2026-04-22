@@ -60,10 +60,24 @@ export function GetStartup(): $CancellablePromise<$models.PlatformStartup> {
 }
 
 /**
+ * HasShortcutMainExe is true when the footer should show a platform-launch tile (Steam always).
+ */
+export function HasShortcutMainExe(platformKey: string): $CancellablePromise<boolean> {
+    return $Call.ByID(340062970, platformKey);
+}
+
+/**
  * LaunchPlatform starts the platform executable (no account switch).
  */
 export function LaunchPlatform(platformKey: string): $CancellablePromise<void> {
     return $Call.ByID(1880641703, platformKey);
+}
+
+/**
+ * LaunchPlatformAs starts the platform; when admin is true, requests elevation (RunAs) for this launch.
+ */
+export function LaunchPlatformAs(platformKey: string, admin: boolean): $CancellablePromise<void> {
+    return $Call.ByID(2773698227, platformKey, admin);
 }
 
 /**

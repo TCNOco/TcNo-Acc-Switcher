@@ -13,8 +13,10 @@ var (
 	saveSteamFolderFromExe func(exeFullPath string) error
 	resolveSteamExePath    func() (exePath string, ok bool)
 	resetSteamSettings     func() error
-	launchSteamExe         func() error
-	launchBasicPlatform    func(platformKey string) error
+	launchSteamExe          func() error
+	launchBasicPlatform     func(platformKey string) error
+	launchSteamExeAs        func(forceAdmin bool) error
+	launchBasicPlatformAs   func(platformKey string, forceAdmin bool) error
 )
 
 // SetSteamLaunchHooks wires SteamSettings + exe resolution from internal/steam.
@@ -32,6 +34,12 @@ func SetSteamReset(fn func() error) {
 func SetPlatformLaunchers(steam func() error, basic func(platformKey string) error) {
 	launchSteamExe = steam
 	launchBasicPlatform = basic
+}
+
+// SetPlatformLaunchAs wires optional elevated launches (footer context menu).
+func SetPlatformLaunchAs(steamAs func(forceAdmin bool) error, basicAs func(platformKey string, forceAdmin bool) error) {
+	launchSteamExeAs = steamAs
+	launchBasicPlatformAs = basicAs
 }
 
 // ResolvePlatformLaunchResult is returned before navigating to a platform page.

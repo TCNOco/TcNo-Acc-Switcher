@@ -11,17 +11,22 @@ import { Create as $Create } from "@wailsio/runtime";
 import * as main$0 from "../../../../../TcNo-Acc-Switcher/models.js";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: Unused imports
+import * as shortcuts$0 from "../../../../../TcNo-Acc-Switcher/internal/shortcuts/models.js";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore: Unused imports
 import * as steam$0 from "../../../../../TcNo-Acc-Switcher/internal/steam/models.js";
 
 function configure() {
     Object.freeze(Object.assign($Create.Events, {
-        "steam-account-updated": $$createType0,
-        "toast": $$createType1,
+        "shortcuts-updated": $$createType0,
+        "steam-account-updated": $$createType1,
+        "toast": $$createType2,
     }));
 }
 
 // Private type creation functions
-const $$createType0 = steam$0.AccountPatch.createFrom;
-const $$createType1 = main$0.ToastPayload.createFrom;
+const $$createType0 = shortcuts$0.ListPayload.createFrom;
+const $$createType1 = steam$0.AccountPatch.createFrom;
+const $$createType2 = main$0.ToastPayload.createFrom;
 
 configure();

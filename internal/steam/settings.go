@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"sort"
+	"strconv"
 	"strings"
 
 	"TcNo-Acc-Switcher/internal/fsutil"
@@ -30,7 +32,8 @@ type Settings struct {
 	SteamImageExpiryTime int `json:"Steam_ImageExpiryTime"`
 	SteamOverrideState   int `json:"Steam_OverrideState"`
 
-	ShortcutsJSON map[string]string `json:"ShortcutsJson"`
+	// ShortcutsJSON is legacy C# order map (int key as string -> filename); migrated into embedded Shortcuts on load.
+	ShortcutsJSON map[string]string `json:"ShortcutsJson,omitempty"`
 
 	SteamWebAPIKey string `json:"SteamWebApiKey"`
 
@@ -52,7 +55,7 @@ func defaultSettings() Settings {
 		SteamShowSteamID:     false,
 		SteamImageExpiryTime: 7,
 		SteamOverrideState:   -1,
-		ShortcutsJSON:        map[string]string{},
+		ShortcutsJSON:        nil,
 		CollectInfo:          true,
 	}
 }
@@ -101,6 +104,13 @@ func LoadSettings() (Settings, error) {
 		}
 		delete(raw, "Steam_TrayAccNumber")
 	}
+	// Accept lowercase shortcuts key (some exports / hand edits); Go tag is "Shortcuts".
+	if _, has := raw["Shortcuts"]; !has {
+		if v, ok := raw["shortcuts"]; ok {
+			raw["Shortcuts"] = v
+			delete(raw, "shortcuts")
+		}
+	}
 	data2, err := json.Marshal(raw)
 	if err != nil {
 		return Settings{}, err
@@ -111,8 +121,12 @@ func LoadSettings() (Settings, error) {
 		return defaultSettings(), err
 	}
 	s.FolderPath = NormalizeFolderPath(s.FolderPath)
-	if s.ShortcutsJSON == nil {
-		s.ShortcutsJSON = map[string]string{}
+	if len(s.Shortcuts) == 0 && len(s.ShortcutsJSON) > 0 {
+		s.Shortcuts = migrateLegacyShortcutsJSON(s.ShortcutsJSON)
+		s.ShortcutsJSON = nil
+	}
+	if s.Shortcuts == nil {
+		s.Shortcuts = []platform.GameShortcutEntry{}
 	}
 	if s.AccountNotes == nil {
 		s.AccountNotes = map[string]string{}
@@ -141,8 +155,8 @@ func SaveSettings(s Settings) error {
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		return err
 	}
-	if s.ShortcutsJSON == nil {
-		s.ShortcutsJSON = map[string]string{}
+	if s.Shortcuts == nil {
+		s.Shortcuts = []platform.GameShortcutEntry{}
 	}
 	if s.AccountNotes == nil {
 		s.AccountNotes = map[string]string{}
@@ -173,3 +187,36 @@ func NormalizeFolderPath(p string) string {
 // PlatformKey is the folder name under img/profiles.
 const PlatformKey = "Steam"
 const ProfileFolderSlug = "steam"
+
+func migrateLegacyShortcutsJSON(m map[string]string) []platform.GameShortcutEntry {
+	type kv struct {
+		k int
+		v string
+	}
+	var neg, pos []kv
+	for ks, v := range m {
+		ki, err := strconv.Atoi(strings.TrimSpace(ks))
+		if err != nil {
+			continue
+		}
+		v = strings.TrimSpace(v)
+		if v == "" {
+			continue
+		}
+		if ki < 0 {
+			neg = append(neg, kv{ki, v})
+		} else {
+			pos = append(pos, kv{ki, v})
+		}
+	}
+	sort.Slice(neg, func(i, j int) bool { return neg[i].k < neg[j].k })
+	sort.Slice(pos, func(i, j int) bool { return pos[i].k < pos[j].k })
+	out := make([]platform.GameShortcutEntry, 0, len(neg)+len(pos))
+	for _, e := range neg {
+		out = append(out, platform.GameShortcutEntry{FileName: e.v, Pinned: true})
+	}
+	for _, e := range pos {
+		out = append(out, platform.GameShortcutEntry{FileName: e.v, Pinned: false})
+	}
+	return out
+}

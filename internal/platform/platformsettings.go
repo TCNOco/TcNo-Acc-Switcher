@@ -5,11 +5,59 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"unicode"
 
 	"TcNo-Acc-Switcher/internal/fsutil"
 )
+
+// GameShortcutEntry is one cached game shortcut (.lnk / .url) in the footer bar or dropdown.
+type GameShortcutEntry struct {
+	FileName string `json:"fileName"`
+	Pinned   bool   `json:"pinned"`
+}
+
+// UnmarshalJSON accepts legacy / interop casing (e.g. C# FileName, Pinned) so shortcuts are not dropped.
+func (e *GameShortcutEntry) UnmarshalJSON(data []byte) error {
+	if len(data) == 0 || string(data) == "null" {
+		return nil
+	}
+	var m map[string]any
+	if err := json.Unmarshal(data, &m); err != nil {
+		return err
+	}
+	*e = GameShortcutEntry{}
+	for _, k := range []string{"fileName", "FileName", "file_name"} {
+		if v, ok := m[k].(string); ok {
+			e.FileName = strings.TrimSpace(v)
+			if e.FileName != "" {
+				break
+			}
+		}
+	}
+	for _, k := range []string{"pinned", "Pinned"} {
+		switch v := m[k].(type) {
+		case bool:
+			e.Pinned = v
+			return nil
+		case float64:
+			e.Pinned = v != 0
+			return nil
+		case json.Number:
+			if i, err := v.Int64(); err == nil {
+				e.Pinned = i != 0
+				return nil
+			}
+		case string:
+			if b, err := strconv.ParseBool(strings.TrimSpace(v)); err == nil {
+				e.Pinned = b
+				return nil
+			}
+		}
+	}
+	return nil
+}
 
 // dataDirName matches [paths.DataDirName] (cannot import paths: it imports platform).
 const dataDirName = "TcNo Account Switcher"
@@ -31,8 +79,9 @@ type PlatformSettings struct {
 	ClosingMethod        string            `json:"ClosingMethod"`
 	StartingMethod       string            `json:"StartingMethod"`
 	AutoStart            bool              `json:"AutoStart"`
-	ShowShortNotes       bool              `json:"ShowShortNotes"`
-	AccountNotes         map[string]string `json:"AccountNotes"`
+	ShowShortNotes       bool                `json:"ShowShortNotes"`
+	AccountNotes         map[string]string   `json:"AccountNotes"`
+	Shortcuts            []GameShortcutEntry `json:"Shortcuts,omitempty"`
 }
 
 // DefaultPlatformSettings returns defaults for a new platform settings file.
@@ -44,6 +93,7 @@ func DefaultPlatformSettings() PlatformSettings {
 		AutoStart:            true,
 		ShowShortNotes:       true,
 		AccountNotes:         map[string]string{},
+		Shortcuts:            []GameShortcutEntry{},
 		ForgetAccountEnabled: false,
 		RunAsAdmin:           false,
 	}
@@ -109,6 +159,9 @@ func LoadPlatformSettings(platformKey string) (PlatformSettings, error) {
 	}
 	if strings.TrimSpace(s.StartingMethod) == "" {
 		s.StartingMethod = "Default"
+	}
+	if s.Shortcuts == nil {
+		s.Shortcuts = []GameShortcutEntry{}
 	}
 	return s, nil
 }

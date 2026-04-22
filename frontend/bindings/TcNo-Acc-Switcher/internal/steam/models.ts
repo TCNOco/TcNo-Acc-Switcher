@@ -5,6 +5,10 @@
 // @ts-ignore: Unused imports
 import { Create as $Create } from "@wailsio/runtime";
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore: Unused imports
+import * as platform$0 from "../platform/models.js";
+
 /**
  * AccountDTO is the initial snapshot and list row model.
  */
@@ -167,6 +171,7 @@ export class Settings {
     "AutoStart": boolean;
     "ShowShortNotes": boolean;
     "AccountNotes": { [_ in string]?: string };
+    "Shortcuts"?: platform$0.GameShortcutEntry[];
     "FolderPath": string;
     "Steam_ShowSteamID": boolean;
     "Steam_ShowVAC": boolean;
@@ -176,7 +181,11 @@ export class Settings {
     "Steam_TrayAccountName": boolean;
     "Steam_ImageExpiryTime": number;
     "Steam_OverrideState": number;
-    "ShortcutsJson": { [_ in string]?: string };
+
+    /**
+     * ShortcutsJSON is legacy C# order map (int key as string -> filename); migrated into embedded Shortcuts on load.
+     */
+    "ShortcutsJson"?: { [_ in string]?: string };
     "SteamWebApiKey": string;
     "StartSilent": boolean;
     "OldUi": boolean;
@@ -236,9 +245,6 @@ export class Settings {
         if (!("Steam_OverrideState" in $$source)) {
             this["Steam_OverrideState"] = 0;
         }
-        if (!("ShortcutsJson" in $$source)) {
-            this["ShortcutsJson"] = {};
-        }
         if (!("SteamWebApiKey" in $$source)) {
             this["SteamWebApiKey"] = "";
         }
@@ -263,13 +269,17 @@ export class Settings {
      */
     static createFrom($$source: any = {}): Settings {
         const $$createField7_0 = $$createType0;
-        const $$createField17_0 = $$createType0;
+        const $$createField8_0 = $$createType2;
+        const $$createField18_0 = $$createType0;
         let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
         if ("AccountNotes" in $$parsedSource) {
             $$parsedSource["AccountNotes"] = $$createField7_0($$parsedSource["AccountNotes"]);
         }
+        if ("Shortcuts" in $$parsedSource) {
+            $$parsedSource["Shortcuts"] = $$createField8_0($$parsedSource["Shortcuts"]);
+        }
         if ("ShortcutsJson" in $$parsedSource) {
-            $$parsedSource["ShortcutsJson"] = $$createField17_0($$parsedSource["ShortcutsJson"]);
+            $$parsedSource["ShortcutsJson"] = $$createField18_0($$parsedSource["ShortcutsJson"]);
         }
         return new Settings($$parsedSource as Partial<Settings>);
     }
@@ -313,3 +323,5 @@ export class SteamIDFormats {
 
 // Private type creation functions
 const $$createType0 = $Create.Map($Create.Any, $Create.Any);
+const $$createType1 = platform$0.GameShortcutEntry.createFrom;
+const $$createType2 = $Create.Array($$createType1);

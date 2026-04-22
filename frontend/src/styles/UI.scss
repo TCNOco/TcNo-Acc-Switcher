@@ -472,9 +472,11 @@ button .caret, .button .caret {
 .gameShortcuts { /* Empty to keep compiler quiet */}
 .shortcuts {
     height: 100%;
-    overflow: hidden;
+    overflow: visible;
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
+    align-content: center;
     justify-content: flex-end;
     border-right: none;
 
@@ -490,23 +492,30 @@ button .caret, .button .caret {
     &.expandShortcuts {
         padding-left: 33px;
         border: 1px solid var(--button-bg);
+        height: 36px;
     }
 }
 .shortcutDropdown {
     position: absolute;
     z-index: 500;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    min-width: 36px;
     min-height: 36px;
     max-height: 260px;
+    /* Wide enough for several tiles per row; avoid a single 30px-wide column */
+    min-width: 168px;
 
     .shortcutDropdownItems {
         display: flex;
+        flex-direction: row;
         flex-wrap: wrap;
+        align-content: flex-start;
         overflow-x: hidden;
         overflow-y: auto;
         max-height: inherit;
         min-height: 32px;
+        min-width: 156px;
+        width: max-content;
+        max-width: 260px;
 
         img {
             pointer-events: none;

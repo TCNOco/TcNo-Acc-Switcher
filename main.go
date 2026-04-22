@@ -8,6 +8,7 @@ import (
 
 	"TcNo-Acc-Switcher/internal/basic"
 	"TcNo-Acc-Switcher/internal/platform"
+	"TcNo-Acc-Switcher/internal/shortcuts"
 	"TcNo-Acc-Switcher/internal/steam"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
@@ -35,10 +36,14 @@ func init() {
 	application.RegisterEvent[ToastPayload](toastEventName)
 	application.RegisterEvent[steam.AccountPatch](steam.AccountUpdatedEvent)
 	application.RegisterEvent[string](platform.ActionBarStatusEvent)
+	application.RegisterEvent[shortcuts.ListPayload](shortcuts.UpdatedEvent)
 	platform.SetSteamLaunchHooks(steam.SaveFolderFromConfirmedExe, steam.ResolveSteamExePath)
 	platform.SetSteamReset(steam.ResetToDefaults)
 	platform.SetPlatformLaunchers(steam.LaunchSteamOnly, func(platformKey string) error {
 		return basic.LaunchBasic(basic.FlowDeps{PS: platformSvc}, platformKey)
+	})
+	platform.SetPlatformLaunchAs(steam.LaunchSteamOnlyAs, func(platformKey string, forceAdmin bool) error {
+		return basic.LaunchBasicAs(basic.FlowDeps{PS: platformSvc}, platformKey, forceAdmin)
 	})
 }
 
@@ -63,6 +68,7 @@ func main() {
 			application.NewService(platformSvc),
 			application.NewService(steam.NewSteamService()),
 			application.NewService(basicSvc),
+			application.NewService(shortcuts.NewService(platformSvc)),
 		},
 		Assets: application.AssetOptions{
 			Handler: newCompositeAssetHandler(assets),

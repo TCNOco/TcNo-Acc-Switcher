@@ -475,7 +475,7 @@ func (p *PlatformService) OpenPlatformFolder(platformKey string) error {
 	if !st.IsDir() {
 		return fmt.Errorf("not a directory: %s", folder)
 	}
-	return openPathInFileManager(folder)
+	return OpenPathInFileManager(folder)
 }
 
 // getPlatformInstallFolderUnlocked mirrors ResolvePlatformLaunch path resolution; caller must hold p.mu.
@@ -620,4 +620,57 @@ func (p *PlatformService) LaunchPlatform(platformKey string) error {
 		return errors.New("basic launcher not configured")
 	}
 	return launchBasicPlatform(platformKey)
+}
+
+// LaunchPlatformAs starts the platform; when admin is true, requests elevation (RunAs) for this launch.
+func (p *PlatformService) LaunchPlatformAs(platformKey string, admin bool) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	platformKey = strings.TrimSpace(platformKey)
+	if strings.EqualFold(platformKey, "Steam") {
+		if launchSteamExeAs != nil {
+			return launchSteamExeAs(admin)
+		}
+		if launchSteamExe == nil {
+			return errors.New("steam launcher not configured")
+		}
+		return launchSteamExe()
+	}
+	if launchBasicPlatformAs != nil {
+		return launchBasicPlatformAs(platformKey, admin)
+	}
+	if launchBasicPlatform == nil {
+		return errors.New("basic launcher not configured")
+	}
+	return launchBasicPlatform(platformKey)
+}
+
+// HasShortcutMainExe is true when the footer should show a platform-launch tile (Steam always).
+func (p *PlatformService) HasShortcutMainExe(platformKey string) (bool, error) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	platformKey = strings.TrimSpace(platformKey)
+	if strings.EqualFold(platformKey, "Steam") {
+		return true, nil
+	}
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return false, err
+	}
+	settings, err := loadSettings(exeDir)
+	if err != nil {
+		return false, err
+	}
+	raw, err := os.ReadFile(resolvePlatformsPath(exeDir, settings))
+	if err != nil {
+		return false, err
+	}
+	d, err := ParseDescriptor(raw, platformKey)
+	if err != nil {
+		return false, err
+	}
+	if d.Extras.ShortcutIncludeMainExe != nil && *d.Extras.ShortcutIncludeMainExe {
+		return true, nil
+	}
+	return false, nil
 }

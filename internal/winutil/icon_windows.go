@@ -32,6 +32,10 @@ if ($null -eq $ico) { exit 2 }
 $bmp = $ico.ToBitmap()
 $bmp.Save($o, [System.Drawing.Imaging.ImageFormat]::Png)
 `, b64Exe, b64Out)
+	return runDrawingIconPS(ps)
+}
+
+func runDrawingIconPS(ps string) error {
 	cmd := exec.Command("powershell.exe", "-NoProfile", "-NonInteractive", "-STA", "-Command", ps)
 	out, err := cmd.CombinedOutput()
 	if err != nil {

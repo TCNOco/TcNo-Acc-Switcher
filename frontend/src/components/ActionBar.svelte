@@ -1,21 +1,17 @@
 <script lang="ts">
   import { route, type Route } from "../stores/nav";
   import { actionBarStatus } from "../stores/actionBarStatus";
-  import { platformExeIconUrl, triggerPlatformAction } from "../stores/platformPage";
+  import { triggerPlatformAction } from "../stores/platformPage";
   import { tooltip } from "../lib/actions/tooltip";
   import { t } from "../stores/i18n";
   import { openAlertNoButton } from "../stores/modal";
   import HelpAboutModalBody from "./modals/HelpAboutModalBody.svelte";
+  import GameShortcutBar from "./GameShortcutBar.svelte";
 
   $: r = $route;
   $: isPlatformPage = r.page === "platform";
   $: platformName = isPlatformPage ? (r as Extract<Route, { page: "platform" }>).platformName : "";
   $: showSaveCurrent = !!platformName && platformName !== "Steam";
-
-  let iconBroken = false;
-  $: if (platformName) {
-    iconBroken = false;
-  }
 
   function showHelpModal() {
     void openAlertNoButton({
@@ -29,23 +25,9 @@
   <span class="actionbar__status" title={$actionBarStatus}>{$actionBarStatus}</span>
   <div class="actionbar__actions">
     {#if isPlatformPage}
-        <button
-          type="button"
-          class="actionbar__launch square"
-          aria-label={$t("Button_Launch")}
-          use:tooltip={$t("Tooltip_Launch")}
-          on:click={() => triggerPlatformAction("launch")}
-        >
-          {#if $platformExeIconUrl && !iconBroken}
-            <img class="actionbar__exeicon" src={$platformExeIconUrl} alt="" on:error={() => (iconBroken = true)} />
-          {:else}
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true"
-              ><path
-                d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32V274.7l-73.4-73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0l128-128c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L288 274.7V32z"
-              /></svg
-            >
-          {/if}
-        </button>
+        {#key platformName}
+          <GameShortcutBar platformName={platformName} />
+        {/key}
         <button class="btnicontext" type="button" aria-label={$t("Button_AddNew")} use:tooltip={$t("Tooltip_AddNew")} on:click={() => triggerPlatformAction("addNew")}
           ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true"
             ><path
@@ -103,12 +85,12 @@
     height: 3.5em;
     min-height: 3.5em;
     padding: 0.25em 0.25em;
-    overflow: hidden;
+    overflow: visible;
     background: var(--footer-bg);
     color: #fff;
 
     button {
-      height: 32px;
+      height: 36px;
     }
 
     button:not(.btnicontext) {
@@ -118,20 +100,6 @@
 
   .actionbar__login {
     padding: .25em 3em .25em 3.9em;
-  }
-
-  .actionbar__launch {
-    min-width: 2.25rem;
-    min-height: 2.25rem;
-    padding: 4px;
-  }
-
-  .actionbar__exeicon {
-    width: 1.75rem;
-    height: 1.75rem;
-    object-fit: contain;
-    display: block;
-    border-radius: 4px;
   }
 
   .actionbar__status {
@@ -153,5 +121,8 @@
     align-items: center;
     flex-shrink: 0;
     gap: 0;
+    overflow: visible;
+    position: relative;
+    z-index: 20;
   }
 </style>

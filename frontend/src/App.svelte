@@ -4,6 +4,7 @@
   import TitleBar from './components/TitleBar.svelte'
   import AppModal from './components/AppModal.svelte'
   import Toast from './components/Toast.svelte'
+  import ContextMenu from './components/ContextMenu.svelte'
 
   import Home from './pages/Home.svelte'
   import Settings from './pages/Settings.svelte'
@@ -39,6 +40,7 @@
 </script>
 
 <div class="container">
+  <ContextMenu />
   <TitleBar />
   <div class="page">
     {#if $route.page === 'home'}

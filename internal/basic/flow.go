@@ -491,6 +491,11 @@ func AddNew(deps FlowDeps, platformKey string) error {
 
 // launchBasicNoStatus is LaunchBasic without footer status (caller owns messages).
 func launchBasicNoStatus(deps FlowDeps, platformKey string) error {
+	return launchBasicNoStatusAs(deps, platformKey, false)
+}
+
+// launchBasicNoStatusAs starts the platform exe; if forceAdmin is true, always requests elevation.
+func launchBasicNoStatusAs(deps FlowDeps, platformKey string, forceAdmin bool) error {
 	d, _, err := readDescriptor(deps, platformKey)
 	if err != nil {
 		return err
@@ -510,11 +515,22 @@ func launchBasicNoStatus(deps FlowDeps, platformKey string) error {
 	if strings.TrimSpace(d.ExeExtraArgs) != "" {
 		args = append(args, strings.Fields(d.ExeExtraArgs)...)
 	}
+	admin := ps.RunAsAdmin
+	if forceAdmin {
+		admin = true
+	}
 	opts := winutil.StartOpts{
-		Admin:         ps.RunAsAdmin,
+		Admin:         admin,
 		Method:        winutil.StartingMethod(strings.TrimSpace(ps.StartingMethod)),
 		HideWindow:    false,
-		AsDesktopUser: winutil.IsProcessElevated() && !ps.RunAsAdmin,
+		AsDesktopUser: winutil.IsProcessElevated() && !admin,
 	}
 	return winutil.Start(exe, args, opts)
+}
+
+// LaunchBasicAs starts the platform executable; if forceAdmin is true, always requests elevation.
+func LaunchBasicAs(deps FlowDeps, platformKey string, forceAdmin bool) error {
+	defer platform.EmitActionBarStatus("")
+	platform.EmitActionBarStatusI18nPlatform("Status_StartingPlatform", platformKey)
+	return launchBasicNoStatusAs(deps, platformKey, forceAdmin)
 }

@@ -45,3 +45,38 @@ export function insertionIndexFromTileHover(
   let pos = after ? refInShort + 1 : refInShort;
   return Math.max(0, Math.min(pos, short.length));
 }
+
+/**
+ * Insert index when the dragged item is not in `targetList` (cross-list drop).
+ * Uses the same left/right half rule as [insertionIndexFromTileHover].
+ */
+export function insertionIndexExternalDrag(
+  targetList: readonly string[],
+  slotId: string,
+  clientX: number,
+  cell: HTMLElement,
+): number {
+  const ref = targetList.indexOf(slotId);
+  if (ref < 0) {
+    return targetList.length;
+  }
+  const rect = cell.getBoundingClientRect();
+  const after = clientX >= rect.left + rect.width / 2;
+  const pos = after ? ref + 1 : ref;
+  return Math.max(0, Math.min(pos, targetList.length));
+}
+
+/** Preview with a gap at `gapIndex` (0..list.length); item is not in `list` yet. */
+export function previewInsertGap<T>(list: readonly T[], gapIndex: number): (T | null)[] {
+  const g = Math.max(0, Math.min(gapIndex, list.length));
+  const out: (T | null)[] = [];
+  let li = 0;
+  for (let i = 0; i < list.length + 1; i++) {
+    if (i === g) {
+      out.push(null);
+    } else {
+      out.push(list[li++]!);
+    }
+  }
+  return out;
+}

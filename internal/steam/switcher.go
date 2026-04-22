@@ -142,6 +142,53 @@ func LaunchSteamOnly() error {
 	return winutil.Start(exe, args, opts)
 }
 
+// LaunchSteamOnlyAs starts Steam; if forceAdmin is true, always requests elevation (RunAs).
+func LaunchSteamOnlyAs(forceAdmin bool) error {
+	defer platform.EmitActionBarStatus("")
+	platform.EmitActionBarStatusI18nPlatform("Status_StartingPlatform", "Steam")
+
+	st, err := LoadSettings()
+	if err != nil {
+		return err
+	}
+	exeDir, err := platform.ResolveExeDir()
+	if err != nil {
+		return err
+	}
+	app, err := platform.LoadAppSettings(exeDir)
+	if err != nil {
+		return err
+	}
+	pj, err := platform.ResolvePlatformsJSONPath(exeDir)
+	if err != nil {
+		return err
+	}
+	raw, err := os.ReadFile(pj)
+	if err != nil {
+		return err
+	}
+	root, err := ResolveInstallFolder(exeDir, st, app, raw)
+	if err != nil {
+		return err
+	}
+	if root == "" {
+		return fmt.Errorf("steam install folder not found")
+	}
+	args := buildSteamArgs(st)
+	exe := filepath.Join(root, "steam.exe")
+	admin := st.RunAsAdmin
+	if forceAdmin {
+		admin = true
+	}
+	opts := winutil.StartOpts{
+		Admin:         admin,
+		Method:        winutil.StartingMethod(strings.TrimSpace(st.StartingMethod)),
+		HideWindow:    false,
+		AsDesktopUser: winutil.IsProcessElevated() && !admin,
+	}
+	return winutil.Start(exe, args, opts)
+}
+
 func buildSteamArgs(st Settings) []string {
 	var args []string
 	if st.StartSilent {
