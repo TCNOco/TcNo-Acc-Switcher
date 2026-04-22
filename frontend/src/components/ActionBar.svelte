@@ -107,6 +107,10 @@
     background: var(--footer-bg);
     color: #fff;
 
+    button {
+      height: 32px;
+    }
+
     button:not(.btnicontext) {
       padding: 4.5px;
     }
