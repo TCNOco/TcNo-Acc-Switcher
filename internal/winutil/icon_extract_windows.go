@@ -3,12 +3,14 @@
 package winutil
 
 import (
+	"bytes"
 	"encoding/base64"
-	"fmt"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
+
+	"github.com/tc-hib/winres"
 )
 
 // ExtractShortcutIcon writes a PNG for a .lnk or .url shortcut to outPNG.
@@ -63,7 +65,7 @@ func extractLnkIcon(lnkPath, outPNG string) error {
 			ext := strings.ToLower(filepath.Ext(iconPath))
 			switch ext {
 			case ".exe":
-				if iconIdx > 0 {
+				if iconIdx != 0 {
 					if err := extractIconExToPNG(iconPath, iconIdx, outPNG); err == nil {
 						return nil
 					}
@@ -109,6 +111,7 @@ func extractURLIcon(urlPath, outPNG string) error {
 	lines := strings.Split(string(data), "\n")
 	inSection := false
 	var iconFile string
+	iconIdx := pickFirstIconGroup
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
 		if strings.HasPrefix(line, "[") && strings.HasSuffix(line, "]") {
@@ -118,26 +121,32 @@ func extractURLIcon(urlPath, outPNG string) error {
 		if !inSection {
 			continue
 		}
-		if strings.HasPrefix(strings.ToLower(line), "iconfile=") {
-			iconFile = strings.TrimSpace(line[len("IconFile="):])
-			iconFile = normWinPath(iconFile)
-			break
+		lower := strings.ToLower(line)
+		if strings.HasPrefix(lower, "iconfile=") {
+			if eq := strings.IndexByte(line, '='); eq >= 0 {
+				iconFile = normWinPath(strings.TrimSpace(line[eq+1:]))
+			}
+			continue
+		}
+		if strings.HasPrefix(lower, "iconindex=") {
+			if eq := strings.IndexByte(line, '='); eq >= 0 {
+				v := strings.TrimSpace(line[eq+1:])
+				if n, err := strconv.Atoi(v); err == nil {
+					iconIdx = n
+				}
+			}
 		}
 	}
 	if iconFile != "" {
 		if st, err := os.Stat(iconFile); err == nil && !st.IsDir() {
 			ext := strings.ToLower(filepath.Ext(iconFile))
 			switch ext {
-			case ".exe":
-				if err := ExtractExeIcon(iconFile, outPNG); err == nil {
+			case ".exe", ".dll":
+				if err := extractPEIconToPNG(iconFile, iconIdx, outPNG); err == nil {
 					return nil
 				}
 			case ".ico":
 				if err := extractICOToPNG(iconFile, outPNG); err == nil {
-					return nil
-				}
-			case ".dll":
-				if err := extractIconExToPNG(iconFile, 0, outPNG); err == nil {
 					return nil
 				}
 			}
@@ -154,61 +163,41 @@ func extractICOToPNG(icoPath, outPNG string) error {
 	if err := os.MkdirAll(filepath.Dir(outPNG), 0o755); err != nil {
 		return err
 	}
-	b64In := base64.StdEncoding.EncodeToString([]byte(icoPath))
-	b64Out := base64.StdEncoding.EncodeToString([]byte(outPNG))
-	ps := fmt.Sprintf(`
-Add-Type -AssemblyName System.Drawing
-$icopath=[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('%s'))
-$outpath=[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('%s'))
-$icon = New-Object System.Drawing.Icon -ArgumentList $icopath
-$bmp = $icon.ToBitmap()
-$bmp.Save($outpath, [System.Drawing.Imaging.ImageFormat]::Png)
-`, b64In, b64Out)
-	return runDrawingIconPS(ps)
+	f, err := os.Open(icoPath)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	icon, err := winres.LoadICO(f)
+	if err != nil {
+		return err
+	}
+	var buf bytes.Buffer
+	if err := icon.SaveICO(&buf); err != nil {
+		return err
+	}
+	img, err := decodeBestFromICO(buf.Bytes())
+	if err != nil {
+		return err
+	}
+	return writePNG(outPNG, img)
 }
 
 func extractIconExToPNG(filePath string, index int, outPNG string) error {
 	filePath = filepath.Clean(filePath)
-	if index < 0 {
-		index = 0
-	}
 	if st, err := os.Stat(filePath); err != nil || st.IsDir() {
 		return err
 	}
 	if err := os.MkdirAll(filepath.Dir(outPNG), 0o755); err != nil {
 		return err
 	}
-	b64File := base64.StdEncoding.EncodeToString([]byte(filePath))
-	b64Out := base64.StdEncoding.EncodeToString([]byte(outPNG))
-	ps := fmt.Sprintf(`
-Add-Type -AssemblyName System.Drawing
-Add-Type @"
-using System;
-using System.Runtime.InteropServices;
-public static class ShellIcons {
-  [DllImport("shell32.dll", CharSet=CharSet.Unicode)]
-  public static extern int ExtractIconEx(string lpszFile, int nIconIndex, out IntPtr phiconLarge, out IntPtr phiconSmall, int nIcons);
-  [DllImport("user32.dll", SetLastError=true)]
-  public static extern bool DestroyIcon(IntPtr hIcon);
-}
-"@
-$fp=[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('%s'))
-$outpath=[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('%s'))
-$idx=%d
-[IntPtr]$large=[IntPtr]::Zero
-[IntPtr]$small=[IntPtr]::Zero
-$n=[ShellIcons]::ExtractIconEx($fp, $idx, [ref]$large, [ref]$small, 1)
-if ($n -le 0 -or $large -eq [IntPtr]::Zero) { exit 2 }
-try {
-  $icon = [System.Drawing.Icon]::FromHandle($large)
-  $bmp = $icon.ToBitmap()
-  $bmp.Save($outpath, [System.Drawing.Imaging.ImageFormat]::Png)
-} finally {
-  [void][ShellIcons]::DestroyIcon($large)
-  if ($small -ne [IntPtr]::Zero) { [void][ShellIcons]::DestroyIcon($small) }
-}
-`, b64File, b64Out, index)
-	return runDrawingIconPS(ps)
+	idx := index
+	if index < -1 {
+		// ExtractIconExW: negative values other than -1 load icon resource |-index|.
+	} else if index < 0 {
+		idx = pickFirstIconGroup
+	}
+	return extractPEIconToPNG(filePath, idx, outPNG)
 }
 
 // 1x1 transparent PNG

@@ -1,13 +1,13 @@
 package windows
 
 import (
-	"encoding/base64"
 	"fmt"
 	"io/fs"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strings"
+
+	"TcNo-Acc-Switcher/internal/winutil"
 )
 
 // ResolveLnkTarget returns the shortcut target path for a .lnk file.
@@ -15,16 +15,11 @@ func ResolveLnkTarget(lnkPath string) (string, error) {
 	if lnkPath == "" {
 		return "", fmt.Errorf("empty shortcut path")
 	}
-	b64 := base64.StdEncoding.EncodeToString([]byte(lnkPath))
-	ps := fmt.Sprintf(
-		"$p=[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('%s')); (New-Object -ComObject WScript.Shell).CreateShortcut($p).TargetPath",
-		b64,
-	)
-	out, err := exec.Command("powershell", "-NoProfile", "-NonInteractive", "-STA", "-Command", ps).CombinedOutput()
+	target, _, _, err := winutil.ReadLnkShortcut(lnkPath)
 	if err != nil {
-		return "", fmt.Errorf("%w: %s", err, strings.TrimSpace(string(out)))
+		return "", err
 	}
-	return strings.TrimSpace(string(out)), nil
+	return strings.TrimSpace(target), nil
 }
 
 // OrderedLnkPathsForTitle finds Start Menu (user + common) and Desktop shortcuts named "{title}.lnk".

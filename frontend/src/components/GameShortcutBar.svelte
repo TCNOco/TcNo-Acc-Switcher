@@ -994,8 +994,8 @@
   }
 
   .actionbar__launch {
-    min-width: 2.25rem;
-    min-height: 2.25rem;
+    min-width: 36px;
+    min-height: 36px;
     padding: 4px;
   }
 
