@@ -21,7 +21,8 @@ var steamKillNames = []string{
 
 // SwapToAccount switches the active Steam session: kills Steam, rewrites loginusers.vdf + registry, restarts.
 // steamID64 may be "" for Add New (clears AutoLoginUser). personaState -1 means use Steam_OverrideState from settings for localconfig; values < -1 skip persona file edit.
-func SwapToAccount(steamID64 string, personaState int) error {
+// extraLaunchArgs are appended after settings-derived argv (e.g. from desktop shortcuts: +s:... -dev).
+func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string) error {
 	defer platform.EmitActionBarStatus("")
 
 	st, err := LoadSettings()
@@ -83,7 +84,7 @@ func SwapToAccount(steamID64 string, personaState int) error {
 	}
 
 	platform.EmitActionBarStatusI18nPlatform("Status_StartingPlatform", "Steam")
-	args := buildSteamArgs(st)
+	args := buildSteamArgs(st, extraLaunchArgs)
 	exe := filepath.Join(root, "steam.exe")
 	opts := winutil.StartOpts{
 		Admin:         st.RunAsAdmin,
@@ -95,7 +96,7 @@ func SwapToAccount(steamID64 string, personaState int) error {
 }
 
 // LaunchSteamOnly starts Steam without mutating login state.
-func LaunchSteamOnly() error {
+func LaunchSteamOnly(extraLaunchArgs []string) error {
 	defer platform.EmitActionBarStatus("")
 	platform.EmitActionBarStatusI18nPlatform("Status_StartingPlatform", "Steam")
 
@@ -126,7 +127,7 @@ func LaunchSteamOnly() error {
 	if root == "" {
 		return fmt.Errorf("steam install folder not found")
 	}
-	args := buildSteamArgs(st)
+	args := buildSteamArgs(st, extraLaunchArgs)
 	exe := filepath.Join(root, "steam.exe")
 	opts := winutil.StartOpts{
 		Admin:         st.RunAsAdmin,
@@ -138,7 +139,7 @@ func LaunchSteamOnly() error {
 }
 
 // LaunchSteamOnlyAs starts Steam; if forceAdmin is true, always requests elevation (RunAs).
-func LaunchSteamOnlyAs(forceAdmin bool) error {
+func LaunchSteamOnlyAs(forceAdmin bool, extraLaunchArgs []string) error {
 	defer platform.EmitActionBarStatus("")
 	platform.EmitActionBarStatusI18nPlatform("Status_StartingPlatform", "Steam")
 
@@ -169,7 +170,7 @@ func LaunchSteamOnlyAs(forceAdmin bool) error {
 	if root == "" {
 		return fmt.Errorf("steam install folder not found")
 	}
-	args := buildSteamArgs(st)
+	args := buildSteamArgs(st, extraLaunchArgs)
 	exe := filepath.Join(root, "steam.exe")
 	admin := st.RunAsAdmin
 	if forceAdmin {
@@ -184,13 +185,17 @@ func LaunchSteamOnlyAs(forceAdmin bool) error {
 	return winutil.Start(exe, args, opts)
 }
 
-func buildSteamArgs(st Settings) []string {
+func buildSteamArgs(st Settings, extraLaunchArgs []string) []string {
 	var args []string
 	if st.StartSilent {
 		args = append(args, "-silent")
 	}
 	if st.OldUi {
 		args = append(args, "-vgui")
+	}
+	args = append(args, platform.LaunchArgTokens(st.LaunchArguments)...)
+	if len(extraLaunchArgs) > 0 {
+		args = append(args, extraLaunchArgs...)
 	}
 	return args
 }

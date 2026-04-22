@@ -102,7 +102,7 @@
       return;
     }
     try {
-      await BasicService.SwapToAccount(name, selectedUniqueId);
+      await BasicService.SwapToAccount(name, selectedUniqueId, []);
       scheduleAccountsRefresh();
       pushToast({
         type: "success",

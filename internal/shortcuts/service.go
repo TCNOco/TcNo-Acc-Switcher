@@ -109,11 +109,11 @@ func (s *Service) RunShortcut(platformKey, fileName string, admin bool, selected
 		}
 		if ps.AlwaysSwapOnShortcut {
 			if strings.EqualFold(platformKey, "Steam") {
-				if err := steam.SwapToAccount(selectedUniqueID, -1); err != nil {
+				if err := steam.SwapToAccount(selectedUniqueID, -1, nil); err != nil {
 					return err
 				}
 			} else {
-				if err := basic.SwapTo(basic.FlowDeps{PS: s.ps}, platformKey, selectedUniqueID); err != nil {
+				if err := basic.SwapTo(basic.FlowDeps{PS: s.ps}, platformKey, selectedUniqueID, nil); err != nil {
 					return err
 				}
 			}

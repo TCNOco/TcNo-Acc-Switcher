@@ -547,18 +547,18 @@ func (s *SteamService) GetSteamIDFormats(id64 string) (SteamIDFormats, error) {
 }
 
 // SwapToSteamAccount switches to the given account (-1 uses OverrideState for persona in localconfig).
-func (s *SteamService) SwapToSteamAccount(steamID64 string, personaState int) error {
-	return SwapToAccount(strings.TrimSpace(steamID64), personaState)
+func (s *SteamService) SwapToSteamAccount(steamID64 string, personaState int, extraLaunchArgs []string) error {
+	return SwapToAccount(strings.TrimSpace(steamID64), personaState, extraLaunchArgs)
 }
 
 // SteamAddNew clears saved login and launches Steam for a new account sign-in.
 func (s *SteamService) SteamAddNew() error {
-	return SwapToAccount("", -1)
+	return SwapToAccount("", -1, nil)
 }
 
 // LaunchSteam starts Steam without changing saved accounts.
 func (s *SteamService) LaunchSteam() error {
-	return LaunchSteamOnly()
+	return LaunchSteamOnly(nil)
 }
 
 // ForgetSteamAccount removes an account row from loginusers.vdf and deletes cached avatar files.
@@ -662,7 +662,7 @@ func (s *SteamService) LoginAndLaunchGame(steamID64 string, personaState int, ap
 	if appID == "" {
 		return errors.New("empty app id")
 	}
-	if err := SwapToAccount(steamID64, personaState); err != nil {
+	if err := SwapToAccount(steamID64, personaState, nil); err != nil {
 		return err
 	}
 	url := "steam://rungameid/" + appID

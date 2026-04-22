@@ -101,10 +101,10 @@ func (b *BasicService) GetAccounts(platformKey string) ([]AccountDTO, error) {
 }
 
 // SwapToAccount switches to a saved account (non-Steam).
-func (b *BasicService) SwapToAccount(platformKey, uniqueID string) error {
+func (b *BasicService) SwapToAccount(platformKey, uniqueID string, extraLaunchArgs []string) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
-	return SwapTo(b.deps(), strings.TrimSpace(platformKey), strings.TrimSpace(uniqueID))
+	return SwapTo(b.deps(), strings.TrimSpace(platformKey), strings.TrimSpace(uniqueID), extraLaunchArgs)
 }
 
 // SaveCurrent saves the live session to LoginCache under the given display name.
@@ -125,7 +125,7 @@ func (b *BasicService) AddNew(platformKey string) error {
 func (b *BasicService) LaunchPlatform(platformKey string) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
-	return LaunchBasic(b.deps(), strings.TrimSpace(platformKey))
+	return LaunchBasic(b.deps(), strings.TrimSpace(platformKey), nil)
 }
 
 // ForgetAccount removes cached data for an account.

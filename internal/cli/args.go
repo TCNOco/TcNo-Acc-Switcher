@@ -20,16 +20,17 @@ const (
 
 // Parsed is the normalized CLI result.
 type Parsed struct {
-	Kind           Kind
-	Verbose        bool
-	Help           bool
-	SteamID64      string
-	PersonaState   int // steam swap; -1 means default / unchanged
-	PlatformKey    string // canonical platform name from Platforms.json
-	UniqueID       string // basic platforms
-	LogoutPlatform string // optional filter for logout
-	LogoutAccount  string // optional id for logout (reserved)
-	OpenPage       string // platform name for GUI route
+	Kind                  Kind
+	Verbose               bool
+	Help                  bool
+	SteamID64             string
+	PersonaState          int      // steam swap; -1 means default / unchanged
+	PlatformKey           string   // canonical platform name from Platforms.json
+	UniqueID              string   // basic platforms
+	LogoutPlatform        string   // optional filter for logout
+	LogoutAccount         string   // optional id for logout (reserved)
+	OpenPage              string   // platform name for GUI route
+	PassthroughLaunchArgs []string // forwarded to the target platform exe (not TcNo flags)
 }
 
 const steamPlatformName = "Steam"
@@ -113,7 +114,7 @@ func Parse(argv []string, idx *PlatformIndex) (Parsed, error) {
 				continue
 			}
 		}
-		return Parsed{}, fmt.Errorf("unknown argument: %s", a)
+		p.PassthroughLaunchArgs = append(p.PassthroughLaunchArgs, a)
 	}
 
 	if p.Help && p.Kind != KindHelp && p.Kind == KindNone {

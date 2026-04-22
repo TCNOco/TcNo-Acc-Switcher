@@ -48,6 +48,11 @@ export class PlatformSettings {
     "Shortcuts"?: GameShortcutEntry[];
     "AlwaysSwapOnShortcut"?: boolean;
 
+    /**
+     * LaunchArguments is optional extra argv for the platform executable (whitespace-separated when edited as one line).
+     */
+    "LaunchArguments"?: string;
+
     /** Creates a new PlatformSettings instance. */
     constructor($$source: Partial<PlatformSettings> = {}) {
         if (!("RunAsAdmin" in $$source)) {

@@ -9,6 +9,10 @@ Swap (Steam):        +s:<steamId64>[:<personaState>]
 Swap (other):        +<platformShort>:<uniqueId>
                      (platformShort is the first Identifiers entry in Platforms.json)
 
+Extra argv for the platform exe (e.g. Steam) after swap/launch from CLI or shortcuts:
+                     +s:<id> -dev -x
+                     (any token that is not a TcNo flag, +swap, logout, or a GUI page name)
+
 Open GUI to page:    <PlatformName>      e.g. Steam
 
 Logout:              logout[:<PlatformName>[:<accountId>]]

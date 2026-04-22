@@ -67,6 +67,8 @@
   "Settings_Header_StatsSharing": "Statistics & Sharing",
   "Settings_Header_Platform": "{platformName} settings",
   "Settings_Header_LaunchOptions": "Launch options",
+  "Settings_LaunchArgumentsForPlatform": "Launch arguments for {platform}",
+  "Settings_LaunchArguments_Hint": "Optional extra command-line launch options. For example: '-dev' or '-novid'.",
   "Settings_Header_GameStats": "Global game stats settings",
   "Settings_ForgetAccountEnabled": "Forget account",
   "Settings_ResetConfirm": "Reset all settings for {platform} to their defaults?",

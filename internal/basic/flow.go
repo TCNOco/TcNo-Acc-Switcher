@@ -405,7 +405,7 @@ func ClearCurrentLogin(deps FlowDeps, platformKey string) error {
 }
 
 // SwapTo switches to the account identified by uniqueID (must exist in ids.json).
-func SwapTo(deps FlowDeps, platformKey, uniqueID string) error {
+func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []string) error {
 	defer platform.EmitActionBarStatus("")
 
 	d, _, err := readDescriptor(deps, platformKey)
@@ -457,14 +457,14 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string) error {
 		return nil
 	}
 	platform.EmitActionBarStatusI18nPlatform("Status_StartingPlatform", platformKey)
-	return launchBasicNoStatus(deps, platformKey)
+	return launchBasicNoStatus(deps, platformKey, extraLaunchArgs)
 }
 
 // LaunchBasic starts the platform executable with ExeExtraArgs.
-func LaunchBasic(deps FlowDeps, platformKey string) error {
+func LaunchBasic(deps FlowDeps, platformKey string, extraLaunchArgs []string) error {
 	defer platform.EmitActionBarStatus("")
 	platform.EmitActionBarStatusI18nPlatform("Status_StartingPlatform", platformKey)
-	return launchBasicNoStatus(deps, platformKey)
+	return launchBasicNoStatus(deps, platformKey, extraLaunchArgs)
 }
 
 // AddNew clears session and launches without saving (parity with C# Basic).
@@ -486,16 +486,16 @@ func AddNew(deps FlowDeps, platformKey string) error {
 		return err
 	}
 	platform.EmitActionBarStatusI18nPlatform("Status_StartingPlatform", platformKey)
-	return launchBasicNoStatus(deps, platformKey)
+	return launchBasicNoStatus(deps, platformKey, nil)
 }
 
 // launchBasicNoStatus is LaunchBasic without footer status (caller owns messages).
-func launchBasicNoStatus(deps FlowDeps, platformKey string) error {
-	return launchBasicNoStatusAs(deps, platformKey, false)
+func launchBasicNoStatus(deps FlowDeps, platformKey string, extraLaunchArgs []string) error {
+	return launchBasicNoStatusAs(deps, platformKey, false, extraLaunchArgs)
 }
 
 // launchBasicNoStatusAs starts the platform exe; if forceAdmin is true, always requests elevation.
-func launchBasicNoStatusAs(deps FlowDeps, platformKey string, forceAdmin bool) error {
+func launchBasicNoStatusAs(deps FlowDeps, platformKey string, forceAdmin bool, extraLaunchArgs []string) error {
 	d, _, err := readDescriptor(deps, platformKey)
 	if err != nil {
 		return err
@@ -515,6 +515,10 @@ func launchBasicNoStatusAs(deps FlowDeps, platformKey string, forceAdmin bool) e
 	if strings.TrimSpace(d.ExeExtraArgs) != "" {
 		args = append(args, strings.Fields(d.ExeExtraArgs)...)
 	}
+	args = append(args, platform.LaunchArgTokens(ps.LaunchArguments)...)
+	if len(extraLaunchArgs) > 0 {
+		args = append(args, extraLaunchArgs...)
+	}
 	admin := ps.RunAsAdmin
 	if forceAdmin {
 		admin = true
@@ -529,8 +533,8 @@ func launchBasicNoStatusAs(deps FlowDeps, platformKey string, forceAdmin bool) e
 }
 
 // LaunchBasicAs starts the platform executable; if forceAdmin is true, always requests elevation.
-func LaunchBasicAs(deps FlowDeps, platformKey string, forceAdmin bool) error {
+func LaunchBasicAs(deps FlowDeps, platformKey string, forceAdmin bool, extraLaunchArgs []string) error {
 	defer platform.EmitActionBarStatus("")
 	platform.EmitActionBarStatusI18nPlatform("Status_StartingPlatform", platformKey)
-	return launchBasicNoStatusAs(deps, platformKey, forceAdmin)
+	return launchBasicNoStatusAs(deps, platformKey, forceAdmin, extraLaunchArgs)
 }

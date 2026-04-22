@@ -84,6 +84,7 @@ type PlatformSettings struct {
 	AccountNotes         map[string]string   `json:"AccountNotes"`
 	Shortcuts            []GameShortcutEntry `json:"Shortcuts,omitempty"`
 	AlwaysSwapOnShortcut bool                `json:"AlwaysSwapOnShortcut,omitempty"`
+	LaunchArguments      string              `json:"LaunchArguments,omitempty"`
 }
 
 // DefaultPlatformSettings returns defaults for a new platform settings file.
@@ -131,6 +132,11 @@ func platformSettingsJSONPath(platformKey string) (string, error) {
 		return filepath.Join(dir, "SteamSettings.json"), nil
 	}
 	return filepath.Join(dir, sanitizePlatformSettingsFilePrefix(key)+"Settings.json"), nil
+}
+
+// LaunchArgTokens splits a user-entered launch-argument line on whitespace.
+func LaunchArgTokens(line string) []string {
+	return strings.Fields(strings.TrimSpace(line))
 }
 
 // LoadPlatformSettings reads common platform settings from the per-platform JSON file.

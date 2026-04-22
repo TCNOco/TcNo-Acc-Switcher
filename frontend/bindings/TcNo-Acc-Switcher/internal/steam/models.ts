@@ -209,6 +209,11 @@ export class Settings {
     "AccountNotes": { [_ in string]?: string };
     "Shortcuts"?: platform$0.GameShortcutEntry[];
     "AlwaysSwapOnShortcut"?: boolean;
+
+    /**
+     * LaunchArguments is optional extra argv for the platform executable (whitespace-separated when edited as one line).
+     */
+    "LaunchArguments"?: string;
     "FolderPath": string;
     "Steam_ShowSteamID": boolean;
     "Steam_ShowVAC": boolean;
@@ -307,7 +312,7 @@ export class Settings {
     static createFrom($$source: any = {}): Settings {
         const $$createField7_0 = $$createType0;
         const $$createField8_0 = $$createType2;
-        const $$createField19_0 = $$createType0;
+        const $$createField20_0 = $$createType0;
         let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
         if ("AccountNotes" in $$parsedSource) {
             $$parsedSource["AccountNotes"] = $$createField7_0($$parsedSource["AccountNotes"]);
@@ -316,7 +321,7 @@ export class Settings {
             $$parsedSource["Shortcuts"] = $$createField8_0($$parsedSource["Shortcuts"]);
         }
         if ("ShortcutsJson" in $$parsedSource) {
-            $$parsedSource["ShortcutsJson"] = $$createField19_0($$parsedSource["ShortcutsJson"]);
+            $$parsedSource["ShortcutsJson"] = $$createField20_0($$parsedSource["ShortcutsJson"]);
         }
         return new Settings($$parsedSource as Partial<Settings>);
     }

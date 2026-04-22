@@ -45,11 +45,11 @@ func init() {
 
 	platform.SetSteamLaunchHooks(steam.SaveFolderFromConfirmedExe, steam.ResolveSteamExePath)
 	platform.SetSteamReset(steam.ResetToDefaults)
-	platform.SetPlatformLaunchers(steam.LaunchSteamOnly, func(platformKey string) error {
-		return basic.LaunchBasic(basic.FlowDeps{PS: platformSvc}, platformKey)
+	platform.SetPlatformLaunchers(func() error { return steam.LaunchSteamOnly(nil) }, func(platformKey string) error {
+		return basic.LaunchBasic(basic.FlowDeps{PS: platformSvc}, platformKey, nil)
 	})
-	platform.SetPlatformLaunchAs(steam.LaunchSteamOnlyAs, func(platformKey string, forceAdmin bool) error {
-		return basic.LaunchBasicAs(basic.FlowDeps{PS: platformSvc}, platformKey, forceAdmin)
+	platform.SetPlatformLaunchAs(func(forceAdmin bool) error { return steam.LaunchSteamOnlyAs(forceAdmin, nil) }, func(platformKey string, forceAdmin bool) error {
+		return basic.LaunchBasicAs(basic.FlowDeps{PS: platformSvc}, platformKey, forceAdmin, nil)
 	})
 }
 
@@ -101,9 +101,9 @@ func main() {
 func runHeadless(p cli.Parsed) error {
 	switch p.Kind {
 	case cli.KindSwapSteam:
-		return steamSvc.SwapToSteamAccount(p.SteamID64, p.PersonaState)
+		return steamSvc.SwapToSteamAccount(p.SteamID64, p.PersonaState, p.PassthroughLaunchArgs)
 	case cli.KindSwapBasic:
-		return basic.SwapTo(basic.FlowDeps{PS: platformSvc}, p.PlatformKey, p.UniqueID)
+		return basic.SwapTo(basic.FlowDeps{PS: platformSvc}, p.PlatformKey, p.UniqueID, p.PassthroughLaunchArgs)
 	case cli.KindLogout:
 		return runLogoutCLI(p)
 	default:
@@ -215,11 +215,11 @@ func handleForwardedCLI(app *application.App, argv []string) {
 func dispatchCLIInGUI(app *application.App, p cli.Parsed) {
 	switch p.Kind {
 	case cli.KindSwapSteam:
-		if err := steamSvc.SwapToSteamAccount(p.SteamID64, p.PersonaState); err != nil {
+		if err := steamSvc.SwapToSteamAccount(p.SteamID64, p.PersonaState, p.PassthroughLaunchArgs); err != nil {
 			EmitToast("error", "Steam", err.Error(), 0)
 		}
 	case cli.KindSwapBasic:
-		if err := basic.SwapTo(basic.FlowDeps{PS: platformSvc}, p.PlatformKey, p.UniqueID); err != nil {
+		if err := basic.SwapTo(basic.FlowDeps{PS: platformSvc}, p.PlatformKey, p.UniqueID, p.PassthroughLaunchArgs); err != nil {
 			EmitToast("error", "Swap", err.Error(), 0)
 		}
 	case cli.KindLogout:

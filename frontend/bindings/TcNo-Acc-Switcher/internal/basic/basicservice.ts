@@ -89,8 +89,8 @@ export function SetAccountNote(platformKey: string, uniqueID: string, note: stri
 /**
  * SwapToAccount switches to a saved account (non-Steam).
  */
-export function SwapToAccount(platformKey: string, uniqueID: string): $CancellablePromise<void> {
-    return $Call.ByID(471588502, platformKey, uniqueID);
+export function SwapToAccount(platformKey: string, uniqueID: string, extraLaunchArgs: string[]): $CancellablePromise<void> {
+    return $Call.ByID(471588502, platformKey, uniqueID, extraLaunchArgs);
 }
 
 // Private type creation functions

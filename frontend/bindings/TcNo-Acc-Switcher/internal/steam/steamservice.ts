@@ -162,8 +162,8 @@ export function SteamAddNew(): $CancellablePromise<void> {
 /**
  * SwapToSteamAccount switches to the given account (-1 uses OverrideState for persona in localconfig).
  */
-export function SwapToSteamAccount(steamID64: string, personaState: number): $CancellablePromise<void> {
-    return $Call.ByID(1067253876, steamID64, personaState);
+export function SwapToSteamAccount(steamID64: string, personaState: number, extraLaunchArgs: string[]): $CancellablePromise<void> {
+    return $Call.ByID(1067253876, steamID64, personaState, extraLaunchArgs);
 }
 
 // Private type creation functions

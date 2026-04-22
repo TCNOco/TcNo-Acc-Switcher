@@ -220,7 +220,7 @@
       return;
     }
     try {
-      await SteamService.SwapToSteamAccount(selectedSteamId, -1);
+      await SteamService.SwapToSteamAccount(selectedSteamId, -1, []);
       scheduleSteamAccountsRefresh();
       pushToast({
         type: "success",
@@ -320,7 +320,7 @@
           label: x.lab,
           action: async () => {
             try {
-              await SteamService.SwapToSteamAccount(rid, x.st);
+              await SteamService.SwapToSteamAccount(rid, x.st, []);
               scheduleSteamAccountsRefresh();
               pushToast({
                 type: "success",

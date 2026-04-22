@@ -100,11 +100,17 @@
           if (steamSettings.AlwaysSwapOnShortcut === undefined) {
             steamSettings.AlwaysSwapOnShortcut = true;
           }
+          if (steamSettings.LaunchArguments === undefined) {
+            steamSettings.LaunchArguments = "";
+          }
         } else {
           const raw = await Wails.GetPlatformSettings(name);
           genericPS = PlatformSettings.createFrom(raw as Partial<PlatformSettings>);
           if (genericPS.AlwaysSwapOnShortcut === undefined) {
             genericPS.AlwaysSwapOnShortcut = true;
+          }
+          if (genericPS.LaunchArguments === undefined) {
+            genericPS.LaunchArguments = "";
           }
         }
       } catch (e) {
@@ -478,6 +484,19 @@
       </div>
       <label for="ps-oldui">{$t("Steam_OldUi")}</label>
     </div>
+    <div class="rowSetting form-text launch-args-row">
+      <label for="ps-launch-args">{$t("Settings_LaunchArgumentsForPlatform", { platform: name })}</label>
+      <input
+        id="ps-launch-args"
+        type="text"
+        spellcheck="false"
+        autocomplete="off"
+        disabled={!steamSettings.AutoStart}
+        bind:value={steamSettings.LaunchArguments}
+        on:input={debouncedSaveSteam}
+      />
+      <p class="subtext">{$t("Settings_LaunchArguments_Hint")}</p>
+    </div>
     <div class="rowSetting">
       <div class="form-check">
         <input
@@ -682,6 +701,21 @@
       >
     </div>
 
+    <h2 class="SettingsHeader">{$t("Settings_Header_LaunchOptions")}</h2>
+    <div class="rowSetting form-text launch-args-row">
+      <label for="gp-launch-args">{$t("Settings_LaunchArgumentsForPlatform", { platform: name })}</label>
+      <input
+        id="gp-launch-args"
+        type="text"
+        spellcheck="false"
+        autocomplete="off"
+        disabled={!genericPS.AutoStart}
+        bind:value={genericPS.LaunchArguments}
+        on:input={debouncedSaveGeneric}
+      />
+      <p class="subtext">{$t("Settings_LaunchArguments_Hint")}</p>
+    </div>
+
     <h2 class="SettingsHeader">{$t("Settings_Header_TraySettings")}</h2>
     <div class="form-text tray-max-row">
       <span>{$t("Settings_TrayMax")}</span>
@@ -788,5 +822,16 @@
     font-size: 0.8rem;
     opacity: 0.85;
     margin-top: 0.25rem;
+  }
+
+  .launch-args-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.35rem;
+  }
+
+  .launch-args-row input[type="text"] {
+    width: 100%;
+    max-width: 42rem;
   }
 </style>
