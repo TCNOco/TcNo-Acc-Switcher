@@ -10,6 +10,8 @@ import (
 	"unicode"
 
 	"TcNo-Acc-Switcher/internal/fsutil"
+
+	"github.com/tidwall/gjson"
 )
 
 // GameShortcutEntry is one cached game shortcut (.lnk / .url) in the footer bar or dropdown.
@@ -82,6 +84,7 @@ type PlatformSettings struct {
 	ShowShortNotes       bool                `json:"ShowShortNotes"`
 	AccountNotes         map[string]string   `json:"AccountNotes"`
 	Shortcuts            []GameShortcutEntry `json:"Shortcuts,omitempty"`
+	AlwaysSwapOnShortcut bool                `json:"AlwaysSwapOnShortcut,omitempty"`
 }
 
 // DefaultPlatformSettings returns defaults for a new platform settings file.
@@ -96,6 +99,7 @@ func DefaultPlatformSettings() PlatformSettings {
 		Shortcuts:            []GameShortcutEntry{},
 		ForgetAccountEnabled: false,
 		RunAsAdmin:           false,
+		AlwaysSwapOnShortcut: true,
 	}
 }
 
@@ -147,6 +151,11 @@ func LoadPlatformSettings(platformKey string) (PlatformSettings, error) {
 	var s PlatformSettings
 	if err := json.Unmarshal(data, &s); err != nil {
 		return DefaultPlatformSettings(), err
+	}
+	if gjson.GetBytes(data, "AlwaysSwapOnShortcut").Exists() {
+		s.AlwaysSwapOnShortcut = gjson.GetBytes(data, "AlwaysSwapOnShortcut").Bool()
+	} else {
+		s.AlwaysSwapOnShortcut = true
 	}
 	if s.AccountNotes == nil {
 		s.AccountNotes = map[string]string{}

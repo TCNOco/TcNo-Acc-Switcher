@@ -19,6 +19,7 @@ declare module "@wailsio/runtime" {
     namespace Events {
         interface CustomEvents {
             "action-bar-status": string;
+            "navigate": string;
             "shortcuts-updated": shortcuts$0.ListPayload;
             "steam-account-updated": steam$0.AccountPatch;
             "time": string;

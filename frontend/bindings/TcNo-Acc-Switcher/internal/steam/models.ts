@@ -159,6 +159,34 @@ export class AccountPatch {
 }
 
 /**
+ * InstalledGameInfo is one installed Steam app from libraryfolders / appmanifest scan.
+ */
+export class InstalledGameInfo {
+    "appId": string;
+    "name": string;
+
+    /** Creates a new InstalledGameInfo instance. */
+    constructor($$source: Partial<InstalledGameInfo> = {}) {
+        if (!("appId" in $$source)) {
+            this["appId"] = "";
+        }
+        if (!("name" in $$source)) {
+            this["name"] = "";
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new InstalledGameInfo instance from a string or object.
+     */
+    static createFrom($$source: any = {}): InstalledGameInfo {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new InstalledGameInfo($$parsedSource as Partial<InstalledGameInfo>);
+    }
+}
+
+/**
  * Settings mirrors legacy SteamSettings.json (C#) field names for compatibility where applicable.
  * Shared fields are embedded from [platform.PlatformSettings].
  */
@@ -172,6 +200,7 @@ export class Settings {
     "ShowShortNotes": boolean;
     "AccountNotes": { [_ in string]?: string };
     "Shortcuts"?: platform$0.GameShortcutEntry[];
+    "AlwaysSwapOnShortcut"?: boolean;
     "FolderPath": string;
     "Steam_ShowSteamID": boolean;
     "Steam_ShowVAC": boolean;
@@ -270,7 +299,7 @@ export class Settings {
     static createFrom($$source: any = {}): Settings {
         const $$createField7_0 = $$createType0;
         const $$createField8_0 = $$createType2;
-        const $$createField18_0 = $$createType0;
+        const $$createField19_0 = $$createType0;
         let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
         if ("AccountNotes" in $$parsedSource) {
             $$parsedSource["AccountNotes"] = $$createField7_0($$parsedSource["AccountNotes"]);
@@ -279,7 +308,7 @@ export class Settings {
             $$parsedSource["Shortcuts"] = $$createField8_0($$parsedSource["Shortcuts"]);
         }
         if ("ShortcutsJson" in $$parsedSource) {
-            $$parsedSource["ShortcutsJson"] = $$createField18_0($$parsedSource["ShortcutsJson"]);
+            $$parsedSource["ShortcutsJson"] = $$createField19_0($$parsedSource["ShortcutsJson"]);
         }
         return new Settings($$parsedSource as Partial<Settings>);
     }

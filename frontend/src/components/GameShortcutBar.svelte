@@ -4,7 +4,7 @@
   import { Events } from "@wailsio/runtime";
   import * as Shortcuts from "../../bindings/TcNo-Acc-Switcher/internal/shortcuts/service.js";
   import { ListPayload, ShortcutDTO } from "../../bindings/TcNo-Acc-Switcher/internal/shortcuts/models.js";
-  import { platformExeIconUrl, triggerPlatformAction } from "../stores/platformPage";
+  import { platformExeIconUrl, triggerPlatformAction, selectedAccount } from "../stores/platformPage";
   import { tooltip } from "../lib/actions/tooltip";
   import { contextMenu } from "../lib/actions/contextMenu";
   import type { MenuItemDef } from "../stores/contextMenu";
@@ -606,7 +606,10 @@
       a = false;
     }
     try {
-      await Shortcuts.RunShortcut(platformName, row.fileName, a);
+      const sel = get(selectedAccount);
+      const uid =
+        sel.platformKey && sel.platformKey === platformName ? sel.uniqueId : "";
+      await Shortcuts.RunShortcut(platformName, row.fileName, a, uid);
     } catch (e) {
       pushToast({
         type: "error",

@@ -9,6 +9,7 @@ export {
 export {
     AccountDTO,
     AccountPatch,
+    InstalledGameInfo,
     Settings,
     SteamIDFormats
 } from "./models.js";

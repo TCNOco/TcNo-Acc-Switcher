@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
   import { contextMenu, closeContextMenu } from "../stores/contextMenu";
+  import ContextMenuNest from "./ContextMenuNest.svelte";
 
   function onDocPointerDown(ev: MouseEvent): void {
     const t = ev.target as Node | null;
@@ -40,8 +41,8 @@
       return { left: 0, top: 0 };
     }
     const pad = 8;
-    const w = 220;
-    const h = 200;
+    const w = 260;
+    const h = 320;
     const left = clamp(m.x, pad, window.innerWidth - w - pad);
     const top = clamp(m.y, pad, window.innerHeight - h - pad);
     return { left, top };
@@ -55,38 +56,7 @@
     style:top="{pos.top}px"
     role="menu"
   >
-    {#each $contextMenu.items as item}
-      {#if item.children?.length}
-        <li class="hasSubmenu" role="none">
-          <span class="ctx-menu__label">{item.label}</span>
-          <ul class="submenu submenu1" role="menu">
-            {#each item.children as ch}
-              <li role="menuitem">
-                <button
-                  type="button"
-                  class="ctx-menu__btn"
-                  on:click={() => {
-                    ch.action?.();
-                    closeContextMenu();
-                  }}>{ch.label}</button
-                >
-              </li>
-            {/each}
-          </ul>
-        </li>
-      {:else}
-        <li role="menuitem">
-          <button
-            type="button"
-            class="ctx-menu__btn"
-            on:click={() => {
-              item.action?.();
-              closeContextMenu();
-            }}>{item.label}</button
-          >
-        </li>
-      {/if}
-    {/each}
+    <ContextMenuNest items={$contextMenu.items} depth={1} />
   </ul>
 {/if}
 

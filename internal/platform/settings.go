@@ -22,6 +22,9 @@ type AppSettings struct {
 	PlatformExePaths map[string]string `json:"platformExePaths,omitempty"`
 
 	PlatformsJSONPath string `json:"platformsJsonPath,omitempty"`
+
+	// ProtocolEnabled registers the tcno:// URL scheme on Windows when true.
+	ProtocolEnabled bool `json:"protocolEnabled,omitempty"`
 }
 
 func defaultSettings() AppSettings {

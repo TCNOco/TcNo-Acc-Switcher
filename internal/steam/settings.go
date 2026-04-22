@@ -11,6 +11,8 @@ import (
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
+
+	"github.com/tidwall/gjson"
 )
 
 const settingsFileName = "SteamSettings.json"
@@ -119,6 +121,11 @@ func LoadSettings() (Settings, error) {
 	var s Settings
 	if err := json.Unmarshal(data2, &s); err != nil {
 		return defaultSettings(), err
+	}
+	if gjson.GetBytes(data2, "AlwaysSwapOnShortcut").Exists() {
+		s.AlwaysSwapOnShortcut = gjson.GetBytes(data2, "AlwaysSwapOnShortcut").Bool()
+	} else {
+		s.AlwaysSwapOnShortcut = true
 	}
 	s.FolderPath = NormalizeFolderPath(s.FolderPath)
 	if len(s.Shortcuts) == 0 && len(s.ShortcutsJSON) > 0 {

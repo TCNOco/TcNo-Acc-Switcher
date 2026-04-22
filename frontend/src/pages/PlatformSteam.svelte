@@ -5,7 +5,11 @@
   import ReorderPointerGrid from "../components/ReorderPointerGrid.svelte";
   import { route, previousPage, appBarTitle } from "../stores/nav";
   import { actionBarStatus } from "../stores/actionBarStatus";
-  import { platformExeIconUrl, platformAction } from "../stores/platformPage";
+  import {
+    platformExeIconUrl,
+    platformAction,
+    selectedAccount as selectedAccountStore,
+  } from "../stores/platformPage";
   import { pushToast } from "../stores/toast";
   import * as SteamService from "../../bindings/TcNo-Acc-Switcher/internal/steam/steamservice.js";
   import { GetPlatformExeIcon } from "../lib/platformBindings";
@@ -14,6 +18,12 @@
   import { formatLastLoginForLocale } from "../lib/formatLastLogin";
   import { formatToastWithError, formatWailsError } from "../lib/formatWailsError";
   import { tooltip } from "../lib/actions/tooltip";
+  import { contextMenu as ctxMenuAction } from "../lib/actions/contextMenu";
+  import type { MenuItemDef } from "../stores/contextMenu";
+  import * as BasicService from "../../bindings/TcNo-Acc-Switcher/internal/basic/basicservice.js";
+  import * as Shortcuts from "../../bindings/TcNo-Acc-Switcher/internal/shortcuts/service.js";
+  import { get } from "svelte/store";
+  import { openConfirm, openPrompt } from "../stores/modal";
 
   /** Bindings row + client-only syncError; `currentSession` is explicit — TS sometimes omits quoted keys on generated classes. */
   type SteamAccountRow = InstanceType<typeof AccountDTO> & {
@@ -36,13 +46,22 @@
   let offSteamEvent: (() => void) | undefined;
   let offPlatformAction: (() => void) | undefined;
   let lastHandledActionId = 0;
+  /** Cleared on destroy; staggered reloads pick up Steam writing loginusers after swap/launch. */
+  let steamListRefreshTimers: ReturnType<typeof setTimeout>[] = [];
   /** Selected row for switching (radio group); drives footer status. */
   let selectedSteamId = "";
+
+  let installedGames: { appId: string; name: string }[] = [];
 
   $: appBarTitle.set(name || "TcNo Account Switcher");
   $: if (name) {
     route.set({ page: "platform", platformName: name });
   }
+
+  $: selectedAccountStore.set({
+    platformKey: name,
+    uniqueId: selectedSteamId,
+  });
 
   function accountBySteamId(id: string): SteamAccountRow | undefined {
     return steamAccounts.find((a) => a.steamId64 === id);
@@ -93,6 +112,16 @@
     }
   }
 
+  function scheduleSteamAccountsRefresh(): void {
+    for (const t of steamListRefreshTimers) clearTimeout(t);
+    steamListRefreshTimers = [];
+    void loadSteamAccounts();
+    steamListRefreshTimers.push(
+      setTimeout(() => void loadSteamAccounts(), 700),
+      setTimeout(() => void loadSteamAccounts(), 2200),
+    );
+  }
+
   async function loadSteamAccounts(): Promise<void> {
     steamLoadError = "";
     try {
@@ -131,7 +160,7 @@
     }
     try {
       await SteamService.SwapToSteamAccount(selectedSteamId, -1);
-      await loadSteamAccounts();
+      scheduleSteamAccountsRefresh();
       pushToast({
         type: "success",
         message: $t("Toast_AccountSwitched"),
@@ -155,6 +184,7 @@
     if (kind === "launch") {
       try {
         await SteamService.LaunchSteam();
+        scheduleSteamAccountsRefresh();
       } catch (e) {
         pushToast({
           type: "error",
@@ -167,7 +197,7 @@
     if (kind === "addNew") {
       try {
         await SteamService.SteamAddNew();
-        await loadSteamAccounts();
+        scheduleSteamAccountsRefresh();
         pushToast({
           type: "success",
           message: $t("Toast_AccountSwitched"),
@@ -191,9 +221,386 @@
     return x ?? "";
   }
 
+  async function clipboardWrite(text: string): Promise<void> {
+    try {
+      await navigator.clipboard.writeText(text);
+      pushToast({ type: "success", message: $t("Toast_Copied"), duration: 2500 });
+    } catch {
+      pushToast({
+        type: "error",
+        message: $t("Toast_CopyFailed"),
+        duration: 4000,
+      });
+    }
+  }
+
+  function steamCtxMenu(rid: string): () => MenuItemDef[] {
+    return () => {
+      const tr = get(t);
+      const acc = steamAccounts.find((a) => a.steamId64 === rid);
+      if (!acc) {
+        return [];
+      }
+
+      const loginStates: { st: number; lab: string }[] = [
+        { st: 7, lab: tr("Invisible") },
+        { st: 0, lab: tr("Offline") },
+        { st: 1, lab: tr("Online") },
+        { st: 2, lab: tr("Busy") },
+        { st: 3, lab: tr("Away") },
+        { st: 4, lab: tr("Snooze") },
+        { st: 5, lab: tr("LookingToTrade") },
+        { st: 6, lab: tr("LookingToPlay") },
+      ];
+
+      const loginAsChildren: MenuItemDef[] = [
+        { type: "search", label: tr("Context_Search") },
+        ...loginStates.map((x) => ({
+          label: x.lab,
+          action: async () => {
+            try {
+              await SteamService.SwapToSteamAccount(rid, x.st);
+              scheduleSteamAccountsRefresh();
+              pushToast({
+                type: "success",
+                message: $t("Toast_AccountSwitched"),
+                duration: 4000,
+              });
+            } catch (e) {
+              pushToast({
+                type: "error",
+                message: formatToastWithError($t("Toast_SwitchFailed"), e),
+                duration: 8000,
+              });
+            }
+          },
+        })),
+      ];
+
+      const copyChildren: MenuItemDef[] = [
+        {
+          label: tr("Context_CommunityUrl"),
+          action: () =>
+            void clipboardWrite(`https://steamcommunity.com/profiles/${rid}`),
+        },
+        {
+          label: tr("Context_CommunityUsername"),
+          action: () =>
+            void clipboardWrite((acc.accountName ?? "").trim() || rid),
+        },
+        {
+          label: tr("Context_LoginUsername"),
+          action: () =>
+            void clipboardWrite((acc.accountName ?? "").trim() || rid),
+        },
+        {
+          label: tr("Context_CopySteamIdSubmenu"),
+          children: [
+            {
+              label: tr("Context_Steam_Id64"),
+              action: async () => {
+                try {
+                  const f = await SteamService.GetSteamIDFormats(rid);
+                  void clipboardWrite(f["ID64"] ?? rid);
+                } catch {
+                  void clipboardWrite(rid);
+                }
+              },
+            },
+            {
+              label: tr("Context_Steam_Id3"),
+              action: async () => {
+                try {
+                  const f = await SteamService.GetSteamIDFormats(rid);
+                  void clipboardWrite(f["ID3"] ?? "");
+                } catch {
+                  /* ignore */
+                }
+              },
+            },
+            {
+              label: tr("Context_Steam_Id32"),
+              action: async () => {
+                try {
+                  const f = await SteamService.GetSteamIDFormats(rid);
+                  void clipboardWrite(f["ID32"] ?? "");
+                } catch {
+                  /* ignore */
+                }
+              },
+            },
+          ],
+        },
+      ];
+
+      const shortcutChildren: MenuItemDef[] = [
+        { type: "search", label: tr("Context_Search") },
+        {
+          label: tr("Context_CreateShortcut"),
+          action: async () => {
+            try {
+              const p = await Shortcuts.CreateAccountShortcut(
+                "Steam",
+                rid,
+                acc.personaName ?? rid,
+                "",
+              );
+              pushToast({
+                type: "success",
+                message: `${tr("Toast_ShortcutCreated")}\n${p}`,
+                duration: 6000,
+              });
+            } catch (e) {
+              pushToast({
+                type: "error",
+                message: formatToastWithError($t("Toast_SwitchFailed"), e),
+                duration: 8000,
+              });
+            }
+          },
+        },
+        ...loginStates.map((x) => ({
+          label: `${tr("Context_CreateShortcut")} (${x.lab})`,
+          action: async () => {
+            try {
+              const p = await Shortcuts.CreateAccountShortcut(
+                "Steam",
+                rid,
+                acc.personaName ?? rid,
+                String(x.st),
+              );
+              pushToast({
+                type: "success",
+                message: `${tr("Toast_ShortcutCreated")}\n${p}`,
+                duration: 6000,
+              });
+            } catch (e) {
+              pushToast({
+                type: "error",
+                message: formatToastWithError($t("Toast_SwitchFailed"), e),
+                duration: 8000,
+              });
+            }
+          },
+        })),
+      ];
+
+      const gameChildren: MenuItemDef[] = [
+        { type: "search", label: tr("Context_Search") },
+        ...installedGames.map((g) => ({
+          label: g.name,
+          children: [
+            {
+              label: tr("Context_Game_CopySettingsFrom"),
+              action: () =>
+                pushToast({
+                  type: "info",
+                  message: tr("Toast_NotImplemented"),
+                  duration: 4000,
+                }),
+            },
+            {
+              label: tr("Context_Game_RestoreSettingsTo"),
+              action: () =>
+                pushToast({
+                  type: "info",
+                  message: tr("Toast_NotImplemented"),
+                  duration: 4000,
+                }),
+            },
+            {
+              label: tr("Context_Game_BackupData"),
+              action: () =>
+                pushToast({
+                  type: "info",
+                  message: tr("Toast_NotImplemented"),
+                  duration: 4000,
+                }),
+            },
+          ],
+        })),
+      ];
+
+      const launchChildren: MenuItemDef[] = [
+        { type: "search", label: tr("Context_Search") },
+        ...installedGames.map((g) => ({
+          label: g.name,
+          action: async () => {
+            try {
+              await SteamService.LoginAndLaunchGame(rid, -1, g.appId);
+              scheduleSteamAccountsRefresh();
+              pushToast({
+                type: "success",
+                message: $t("Toast_GameLaunchRequested"),
+                duration: 4000,
+              });
+            } catch (e) {
+              pushToast({
+                type: "error",
+                message: formatToastWithError($t("Toast_LaunchFailed"), e),
+                duration: 8000,
+              });
+            }
+          },
+        })),
+      ];
+
+      return [
+        {
+          label: tr("Context_SwapTo"),
+          action: async () => {
+            selectedSteamId = rid;
+            touchSteamActionBar();
+            await steamLoginSelected();
+          },
+        },
+        {
+          label: tr("Context_LoginAsSubmenu"),
+          children: loginAsChildren,
+        },
+        {
+          label: tr("Context_CopySubmenu"),
+          children: copyChildren,
+        },
+        {
+          label: tr("Context_CreateShortcut"),
+          children: shortcutChildren,
+        },
+        {
+          label: tr("Forget"),
+          action: async () => {
+            const ok = await openConfirm({
+              title: tr("Forget"),
+              body: tr("Prompt_ForgetSteam"),
+              style: "yesno",
+            });
+            if (!ok) {
+              return;
+            }
+            try {
+              await SteamService.ForgetSteamAccount(rid);
+              scheduleSteamAccountsRefresh();
+              pushToast({
+                type: "success",
+                message: $t("Toast_AccountSaved"),
+                duration: 4000,
+              });
+            } catch (e) {
+              pushToast({
+                type: "error",
+                message: formatToastWithError($t("Toast_SaveFailed"), e),
+                duration: 8000,
+              });
+            }
+          },
+        },
+        {
+          label: tr("Notes"),
+          action: async () => {
+            const cur = await BasicService.GetAccountNote("Steam", rid);
+            const note = await openPrompt({
+              title: tr("Notes"),
+              body: tr("Modal_Title_AccountNotes", {
+                accountName: acc.personaName ?? rid,
+              }),
+              positiveLabel: tr("Button_OK"),
+              negativeLabel: tr("Button_Cancel"),
+              initialValue: cur ?? "",
+            });
+            if (note === null) {
+              return;
+            }
+            try {
+              await BasicService.SetAccountNote("Steam", rid, String(note));
+              await loadSteamAccounts();
+              pushToast({
+                type: "success",
+                message: $t("Toast_AccountSaved"),
+                duration: 4000,
+              });
+            } catch (e) {
+              pushToast({
+                type: "error",
+                message: formatToastWithError($t("Toast_SaveFailed"), e),
+                duration: 8000,
+              });
+            }
+          },
+        },
+        {
+          label: tr("Context_ManageSubmenu"),
+          children: [
+            {
+              label: tr("Context_GameDataSubmenu"),
+              children: gameChildren,
+            },
+            {
+              label: tr("Context_Steam_OpenUserdata"),
+              action: async () => {
+                try {
+                  await SteamService.OpenUserdataFolder(rid);
+                } catch (e) {
+                  pushToast({
+                    type: "error",
+                    message: formatToastWithError($t("Toast_LaunchFailed"), e),
+                    duration: 8000,
+                  });
+                }
+              },
+            },
+            {
+              label: tr("Context_ChangeImage"),
+              action: async () => {
+                const path = await openPrompt({
+                  title: tr("Context_ChangeImage"),
+                  body: "",
+                  positiveLabel: tr("Button_OK"),
+                  negativeLabel: tr("Button_Cancel"),
+                  initialValue: "",
+                });
+                if (path === null || !String(path).trim()) {
+                  return;
+                }
+                try {
+                  await SteamService.ChangeAccountImage(rid, String(path).trim());
+                  await loadSteamAccounts();
+                  pushToast({
+                    type: "success",
+                    message: $t("Toast_AccountSaved"),
+                    duration: 4000,
+                  });
+                } catch (e) {
+                  pushToast({
+                    type: "error",
+                    message: formatToastWithError($t("Toast_SaveFailed"), e),
+                    duration: 8000,
+                  });
+                }
+              },
+            },
+          ],
+        },
+        {
+          label: tr("Context_Game_LoginAndLaunch"),
+          children: launchChildren,
+        },
+      ];
+    };
+  }
+
   onMount(() => {
     previousPage.set({ page: "home" });
     void loadSteamAccounts();
+    void SteamService.GetInstalledGames()
+      .then((rows) => {
+        installedGames = rows.map((r) => ({
+          appId: r.appId,
+          name: r.name,
+        }));
+      })
+      .catch(() => {
+        installedGames = [];
+      });
     void GetPlatformExeIcon(name).then((u: string) => platformExeIconUrl.set(u ?? ""));
     offSteamEvent = Events.On("steam-account-updated", (ev) => {
       const raw = ev.data;
@@ -213,6 +620,9 @@
   });
 
   onDestroy(() => {
+    for (const t of steamListRefreshTimers) clearTimeout(t);
+    steamListRefreshTimers = [];
+    selectedAccountStore.set({ platformKey: "", uniqueId: "" });
     platformAction.set(null);
     offSteamEvent?.();
     offPlatformAction?.();
@@ -258,6 +668,13 @@
                 for={radioId}
                 class="acc"
                 class:currentAcc={acc?.currentSession}
+                use:ctxMenuAction={{
+                  items: steamCtxMenu(rid),
+                  beforeOpen: () => {
+                    selectedSteamId = rid;
+                    touchSteamActionBar();
+                  },
+                }}
                 use:tooltip={acc?.currentSession
                   ? {
                       text: $t("Tooltip_CurrentAccount"),

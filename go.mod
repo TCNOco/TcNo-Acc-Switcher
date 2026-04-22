@@ -4,6 +4,7 @@ go 1.25.0
 
 require (
 	github.com/Jleagle/steam-go v0.0.0-20260108213202-2dcd07fee7d7
+	github.com/Microsoft/go-winio v0.6.2
 	github.com/tc-hib/winres v0.3.1
 	github.com/tidwall/gjson v1.18.0
 	github.com/tidwall/sjson v1.2.5
@@ -15,7 +16,6 @@ require (
 
 require (
 	dario.cat/mergo v1.0.2 // indirect
-	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/ProtonMail/go-crypto v1.3.0 // indirect
 	github.com/adrg/xdg v0.5.3 // indirect
 	github.com/bep/debounce v1.2.1 // indirect

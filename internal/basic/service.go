@@ -1,6 +1,7 @@
 package basic
 
 import (
+	"fmt"
 	"os"
 	"strings"
 	"sync"
@@ -176,4 +177,62 @@ func (b *BasicService) SetAccountNote(platformKey, uniqueID, note string) error 
 	}
 	ps.AccountNotes[uniqueID] = note
 	return platform.SavePlatformSettings(strings.TrimSpace(platformKey), ps)
+}
+
+// RenameAccount updates the display name in ids.json and renames the cached folder when possible.
+func (b *BasicService) RenameAccount(platformKey, uniqueID, newName string) error {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	platformKey = strings.TrimSpace(platformKey)
+	uniqueID = strings.TrimSpace(uniqueID)
+	newName = strings.TrimSpace(newName)
+	if platformKey == "" || uniqueID == "" || newName == "" {
+		return fmt.Errorf("invalid rename parameters")
+	}
+	ids, err := readIDs(platformKey)
+	if err != nil {
+		return err
+	}
+	oldName, ok := ids[uniqueID]
+	if !ok {
+		return fmt.Errorf("unknown account")
+	}
+	if oldName == newName {
+		return nil
+	}
+	ids[uniqueID] = newName
+	if err := writeIDs(platformKey, ids); err != nil {
+		return err
+	}
+	if strings.TrimSpace(oldName) != "" {
+		oldDir, err := accountCacheDir(platformKey, oldName)
+		if err == nil {
+			newDir, err2 := accountCacheDir(platformKey, newName)
+			if err2 == nil && oldDir != newDir {
+				_ = os.Rename(oldDir, newDir)
+			}
+		}
+	}
+	return nil
+}
+
+// ChangeAccountImage copies an image file into the profile cache for this account.
+func (b *BasicService) ChangeAccountImage(platformKey, uniqueID, sourcePath string) error {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	return profileimage.CacheLocalFile(strings.TrimSpace(platformKey), strings.TrimSpace(uniqueID), strings.TrimSpace(sourcePath))
+}
+
+// GetAccountNote reads AccountNotes from platform settings for one unique id.
+func (b *BasicService) GetAccountNote(platformKey, uniqueID string) (string, error) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	ps, err := platform.LoadPlatformSettings(strings.TrimSpace(platformKey))
+	if err != nil {
+		return "", err
+	}
+	if ps.AccountNotes == nil {
+		return "", nil
+	}
+	return ps.AccountNotes[strings.TrimSpace(uniqueID)], nil
 }

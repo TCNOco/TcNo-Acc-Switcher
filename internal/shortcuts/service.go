@@ -7,8 +7,10 @@ import (
 	"strings"
 	"sync"
 
+	"TcNo-Acc-Switcher/internal/basic"
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
+	"TcNo-Acc-Switcher/internal/steam"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 )
@@ -96,9 +98,33 @@ func (s *Service) ScanShortcuts(platformKey string) error {
 	return nil
 }
 
-// RunShortcut launches a cached .lnk or .url.
-func (s *Service) RunShortcut(platformKey, fileName string, admin bool) error {
+// RunShortcut launches a cached .lnk or .url. When selectedUniqueID is set and AlwaysSwapOnShortcut is enabled for the platform, swaps first (strict on failure).
+func (s *Service) RunShortcut(platformKey, fileName string, admin bool, selectedUniqueID string) error {
+	platformKey = strings.TrimSpace(platformKey)
+	selectedUniqueID = strings.TrimSpace(selectedUniqueID)
+	if selectedUniqueID != "" {
+		ps, err := platform.LoadPlatformSettings(platformKey)
+		if err != nil {
+			return err
+		}
+		if ps.AlwaysSwapOnShortcut {
+			if strings.EqualFold(platformKey, "Steam") {
+				if err := steam.SwapToAccount(selectedUniqueID, -1); err != nil {
+					return err
+				}
+			} else {
+				if err := basic.SwapTo(basic.FlowDeps{PS: s.ps}, platformKey, selectedUniqueID); err != nil {
+					return err
+				}
+			}
+		}
+	}
 	return RunShortcut(platformKey, fileName, admin)
+}
+
+// CreateAccountShortcut writes a desktop shortcut with CLI args for this account.
+func (s *Service) CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix string) (string, error) {
+	return CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix)
 }
 
 // HideShortcut hides a shortcut (rename to _ignored).

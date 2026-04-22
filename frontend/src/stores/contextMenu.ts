@@ -1,7 +1,9 @@
 import { writable } from "svelte/store";
 
 export type MenuItemDef = {
-  label: string;
+  /** Ignored when type is search/separator */
+  label?: string;
+  type?: "item" | "search" | "separator";
   action?: () => void;
   children?: MenuItemDef[];
 };

@@ -47,6 +47,7 @@ export class PlatformSettings {
     "ShowShortNotes": boolean;
     "AccountNotes": { [_ in string]?: string };
     "Shortcuts"?: GameShortcutEntry[];
+    "AlwaysSwapOnShortcut"?: boolean;
 
     /** Creates a new PlatformSettings instance. */
     constructor($$source: Partial<PlatformSettings> = {}) {
@@ -104,6 +105,11 @@ export class PlatformStartup {
     "disabledPlatformNames": string[];
     "platformsFileMissing": boolean;
     "language": string;
+
+    /**
+     * CliNavigateHint is a one-shot JSON route from a prior ProcessCommand line (e.g. "Steam" to open that page).
+     */
+    "cliNavigateHint"?: string;
 
     /** Creates a new PlatformStartup instance. */
     constructor($$source: Partial<PlatformStartup> = {}) {

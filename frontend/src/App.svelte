@@ -13,11 +13,15 @@
   import PlatformSteam from './pages/PlatformSteam.svelte'
   import PlatformSettings from './pages/PlatformSettings.svelte'
   import ManagePlatforms from './pages/ManagePlatforms.svelte'
-  import { route } from './stores/nav'
+  import { route, applyNavigateJSON } from './stores/nav'
   import { actionBarStatus } from './stores/actionBarStatus'
   import { t } from "./stores/i18n";
 
   onMount(() => {
+    const offNav = Events.On("navigate", (ev) => {
+      const raw = typeof ev.data === "string" ? ev.data : "";
+      applyNavigateJSON(raw);
+    });
     const off = Events.On("action-bar-status", (ev) => {
       const raw = typeof ev.data === "string" ? ev.data : "";
       if (raw.startsWith("i18n:")) {
@@ -35,7 +39,10 @@
         actionBarStatus.set(raw);
       }
     });
-    return () => off?.();
+    return () => {
+      off?.();
+      offNav?.();
+    };
   });
 </script>
 

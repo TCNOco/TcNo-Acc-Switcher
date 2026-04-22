@@ -14,6 +14,24 @@ import { Call as $Call, CancellablePromise as $CancellablePromise, Create as $Cr
 // @ts-ignore: Unused imports
 import * as $models from "./models.js";
 
+export function BackupSteamGameData($0: string): $CancellablePromise<void> {
+    return $Call.ByID(3596677579, $0);
+}
+
+/**
+ * ChangeAccountImage copies a local image into the Steam profile cache for this SteamID64.
+ */
+export function ChangeAccountImage(steamID64: string, sourcePath: string): $CancellablePromise<void> {
+    return $Call.ByID(2396375933, steamID64, sourcePath);
+}
+
+/**
+ * SteamGameDataStub operations are reserved for future parity with the legacy app.
+ */
+export function CopySteamGameSettingsFrom($0: string, $1: string): $CancellablePromise<void> {
+    return $Call.ByID(1375488891, $0, $1);
+}
+
 /**
  * ForgetSteamAccount removes an account row from loginusers.vdf and deletes cached avatar files.
  */
@@ -22,11 +40,20 @@ export function ForgetSteamAccount(steamID64: string): $CancellablePromise<void>
 }
 
 /**
+ * GetInstalledGames lists installed titles (from appmanifest + optional Valve app list cache).
+ */
+export function GetInstalledGames(): $CancellablePromise<$models.InstalledGameInfo[]> {
+    return $Call.ByID(1915211510).then(($result: any) => {
+        return $$createType1($result);
+    });
+}
+
+/**
  * GetSteamAccounts returns the ordered account list for first paint.
  */
 export function GetSteamAccounts(): $CancellablePromise<$models.AccountDTO[]> {
     return $Call.ByID(800841281).then(($result: any) => {
-        return $$createType1($result);
+        return $$createType3($result);
     });
 }
 
@@ -35,7 +62,7 @@ export function GetSteamAccounts(): $CancellablePromise<$models.AccountDTO[]> {
  */
 export function GetSteamIDFormats(id64: string): $CancellablePromise<$models.SteamIDFormats> {
     return $Call.ByID(829730036, id64).then(($result: any) => {
-        return $$createType2($result);
+        return $$createType4($result);
     });
 }
 
@@ -44,7 +71,7 @@ export function GetSteamIDFormats(id64: string): $CancellablePromise<$models.Ste
  */
 export function GetSteamSettings(): $CancellablePromise<$models.Settings> {
     return $Call.ByID(2672197668).then(($result: any) => {
-        return $$createType3($result);
+        return $$createType5($result);
     });
 }
 
@@ -53,6 +80,20 @@ export function GetSteamSettings(): $CancellablePromise<$models.Settings> {
  */
 export function LaunchSteam(): $CancellablePromise<void> {
     return $Call.ByID(3753458866);
+}
+
+/**
+ * LoginAndLaunchGame swaps to the account then launches steam://rungameid/<appID>.
+ */
+export function LoginAndLaunchGame(steamID64: string, personaState: number, appID: string): $CancellablePromise<void> {
+    return $Call.ByID(4064692418, steamID64, personaState, appID);
+}
+
+/**
+ * OpenUserdataFolder opens userdata/<accountId> for this SteamID64.
+ */
+export function OpenUserdataFolder(steamID64: string): $CancellablePromise<void> {
+    return $Call.ByID(769697618, steamID64);
 }
 
 /**
@@ -67,6 +108,10 @@ export function RefreshAllSteamImages(): $CancellablePromise<void> {
  */
 export function RefreshVACStatus(): $CancellablePromise<void> {
     return $Call.ByID(860421344);
+}
+
+export function RestoreSteamGameSettingsTo($0: string, $1: string): $CancellablePromise<void> {
+    return $Call.ByID(2682924661, $0, $1);
 }
 
 /**
@@ -105,7 +150,9 @@ export function SwapToSteamAccount(steamID64: string, personaState: number): $Ca
 }
 
 // Private type creation functions
-const $$createType0 = $models.AccountDTO.createFrom;
+const $$createType0 = $models.InstalledGameInfo.createFrom;
 const $$createType1 = $Create.Array($$createType0);
-const $$createType2 = $models.SteamIDFormats.createFrom;
-const $$createType3 = $models.Settings.createFrom;
+const $$createType2 = $models.AccountDTO.createFrom;
+const $$createType3 = $Create.Array($$createType2);
+const $$createType4 = $models.SteamIDFormats.createFrom;
+const $$createType5 = $models.Settings.createFrom;

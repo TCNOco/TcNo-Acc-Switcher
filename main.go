@@ -2,14 +2,20 @@ package main
 
 import (
 	"embed"
-	_ "embed"
+	"fmt"
 	"log"
+	"os"
+	"path/filepath"
+	"strings"
 	"time"
 
 	"TcNo-Acc-Switcher/internal/basic"
+	"TcNo-Acc-Switcher/internal/cli"
+	"TcNo-Acc-Switcher/internal/ipc"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/shortcuts"
 	"TcNo-Acc-Switcher/internal/steam"
+	"TcNo-Acc-Switcher/internal/winutil"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 )
@@ -18,25 +24,25 @@ import (
 var (
 	platformSvc = &platform.PlatformService{}
 	basicSvc    = basic.NewBasicService(platformSvc)
+	steamSvc    = steam.NewSteamService()
 )
 
 // Wails uses Go's `embed` package to embed the frontend files into the binary.
 // Any files in the frontend/dist folder will be embedded into the binary and
 // made available to the frontend.
-// See https://pkg.go.dev/embed for more information.
 
 //go:embed all:frontend/dist
 var assets embed.FS
 
 func init() {
-	// Register a custom event whose associated data type is string.
-	// This is not required, but the binding generator will pick up registered events
-	// and provide a strongly typed JS/TS API for them.
+	application.RegisterEvent[string]("navigate")
+
 	application.RegisterEvent[string]("time")
 	application.RegisterEvent[ToastPayload](toastEventName)
 	application.RegisterEvent[steam.AccountPatch](steam.AccountUpdatedEvent)
 	application.RegisterEvent[string](platform.ActionBarStatusEvent)
 	application.RegisterEvent[shortcuts.ListPayload](shortcuts.UpdatedEvent)
+
 	platform.SetSteamLaunchHooks(steam.SaveFolderFromConfirmedExe, steam.ResolveSteamExePath)
 	platform.SetSteamReset(steam.ResetToDefaults)
 	platform.SetPlatformLaunchers(steam.LaunchSteamOnly, func(platformKey string) error {
@@ -47,26 +53,87 @@ func init() {
 	})
 }
 
-// main function serves as the application's entry point. It initializes the application, creates a window,
-// and starts a goroutine that emits a time-based event every second. It subsequently runs the application and
-// logs any error that might occur.
 func main() {
+	idx, idxErr := cli.LoadPlatformIndex()
+	idxPtr := idx
+	if idxErr != nil {
+		log.Printf("cli platforms index: %v", idxErr)
+		idxPtr = nil
+	}
 
-	// Create a new Wails application by providing the necessary options.
-	// Variables 'Name' and 'Description' are for application metadata.
-	// 'Assets' configures the asset server with the 'FS' variable pointing to the frontend files.
-	// 'Bind' is a list of Go struct instances. The frontend has access to the methods of these instances.
-	// 'Mac' options tailor the application when running an macOS.
+	parsed, err := cli.Parse(os.Args[1:], idxPtr)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(2)
+	}
+
+	if parsed.Kind == cli.KindHelp || parsed.Help {
+		fmt.Print(cli.HelpText())
+		os.Exit(0)
+	}
+
+	releaseSingleton, running, err := winutil.TryAcquireSingleton()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "singleton:", err)
+		os.Exit(1)
+	}
+	if running {
+		if ferr := ipc.ForwardArgs(os.Args[1:]); ferr != nil {
+			fmt.Fprintln(os.Stderr, "another instance is running; IPC forward failed:", ferr)
+			os.Exit(1)
+		}
+		os.Exit(0)
+	}
+	defer releaseSingleton()
+
+	if parsed.NeedsHeadlessMutex() {
+		winutil.AttachParentConsole()
+		if herr := runHeadless(parsed); herr != nil {
+			fmt.Fprintln(os.Stderr, herr)
+			os.Exit(1)
+		}
+		os.Exit(0)
+	}
+
+	runGUI(parsed)
+}
+
+func runHeadless(p cli.Parsed) error {
+	switch p.Kind {
+	case cli.KindSwapSteam:
+		return steamSvc.SwapToSteamAccount(p.SteamID64, p.PersonaState)
+	case cli.KindSwapBasic:
+		return basic.SwapTo(basic.FlowDeps{PS: platformSvc}, p.PlatformKey, p.UniqueID)
+	case cli.KindLogout:
+		return runLogoutCLI(p)
+	default:
+		return nil
+	}
+}
+
+func runLogoutCLI(p cli.Parsed) error {
+	plat := strings.TrimSpace(p.LogoutPlatform)
+	if plat == "" || strings.EqualFold(plat, "Steam") {
+		return steamSvc.SteamAddNew()
+	}
+	return basic.ClearCurrentLogin(basic.FlowDeps{PS: platformSvc}, plat)
+}
+
+func runGUI(parsed cli.Parsed) {
+	if parsed.Kind == cli.KindOpenPage {
+		platform.SetStartupNavigateHint(parsed.RouteJSONForOpenPage())
+	}
+
+	syncProtocolRegistration()
+
 	app := application.New(application.Options{
 		Name:        "TcNo Account Switcher",
 		Description: "A Superfast open-source account switcher",
-		// One Wails service per domain: list/settings/HTTP for a platform stay in that package.
-		// Shared outbound HTTP for all platforms lives in internal/appclient.
 		Services: []application.Service{
 			application.NewService(&GreetService{}),
 			application.NewService(&FilesystemService{}),
 			application.NewService(platformSvc),
-			application.NewService(steam.NewSteamService()),
+			application.NewService(steamSvc),
 			application.NewService(basicSvc),
 			application.NewService(shortcuts.NewService(platformSvc)),
 		},
@@ -78,11 +145,12 @@ func main() {
 		},
 	})
 
-	// Create a new window with the necessary options.
-	// 'Title' is the title of the window.
-	// 'Mac' options tailor the window when running on macOS.
-	// 'BackgroundColour' is the background colour of the window.
-	// 'URL' is the URL that will be loaded into the webview.
+	if err := ipc.StartGUIServer(func(argv []string) {
+		handleForwardedCLI(app, argv)
+	}); err != nil {
+		log.Printf("ipc server: %v", err)
+	}
+
 	app.Window.NewWithOptions(application.WebviewWindowOptions{
 		Title: "TcNo Account Switcher",
 		Mac: application.MacWindow{
@@ -95,8 +163,6 @@ func main() {
 		Frameless:        true,
 	})
 
-	// Create a goroutine that emits an event containing the current time every second.
-	// The frontend can listen to this event and update the UI accordingly.
 	go func() {
 		for {
 			now := time.Now().Format(time.RFC1123)
@@ -105,11 +171,67 @@ func main() {
 		}
 	}()
 
-	// Run the application. This blocks until the application has been exited.
 	err := app.Run()
-
-	// If an error occurred while running the application, log it and exit.
 	if err != nil {
 		log.Fatal(err)
+	}
+}
+
+func syncProtocolRegistration() {
+	exeDir, err := platform.ResolveExeDir()
+	if err != nil {
+		return
+	}
+	s, err := platform.LoadAppSettings(exeDir)
+	if err != nil || !s.ProtocolEnabled {
+		return
+	}
+	self, err := os.Executable()
+	if err != nil {
+		return
+	}
+	_ = winutil.RegisterProtocol(filepath.Clean(self))
+}
+
+func handleForwardedCLI(app *application.App, argv []string) {
+	idx, err := cli.LoadPlatformIndex()
+	idxPtr := idx
+	if err != nil {
+		idxPtr = nil
+	}
+	p, err := cli.Parse(argv, idxPtr)
+	if err != nil {
+		application.InvokeAsync(func() {
+			EmitToast("error", "CLI", err.Error(), 0)
+		})
+		return
+	}
+
+	application.InvokeAsync(func() {
+		dispatchCLIInGUI(app, p)
+	})
+}
+
+func dispatchCLIInGUI(app *application.App, p cli.Parsed) {
+	switch p.Kind {
+	case cli.KindSwapSteam:
+		if err := steamSvc.SwapToSteamAccount(p.SteamID64, p.PersonaState); err != nil {
+			EmitToast("error", "Steam", err.Error(), 0)
+		}
+	case cli.KindSwapBasic:
+		if err := basic.SwapTo(basic.FlowDeps{PS: platformSvc}, p.PlatformKey, p.UniqueID); err != nil {
+			EmitToast("error", "Swap", err.Error(), 0)
+		}
+	case cli.KindLogout:
+		if err := runLogoutCLI(p); err != nil {
+			EmitToast("error", "Logout", err.Error(), 0)
+		}
+	case cli.KindOpenPage:
+		j := p.RouteJSONForOpenPage()
+		if j != "" {
+			app.Event.Emit("navigate", j)
+		}
+	default:
+		// empty argv from second-instance launch — ignore
 	}
 }

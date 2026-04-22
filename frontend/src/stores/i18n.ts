@@ -31,6 +31,41 @@ function pathKey(p: string) {
   return p.replace(/\\/g, "/");
 }
 
+/** BCP 47 language tag, e.g. en-US */
+function syncDocumentLanguageAndDirection(code: string) {
+  if (typeof document === "undefined") {
+    return;
+  }
+  const tag = code.replace(/_/g, "-");
+  const dir = localeIsRtl(code) ? "rtl" : "ltr";
+  document.documentElement.setAttribute("dir", dir);
+  document.documentElement.setAttribute("lang", tag);
+}
+
+/**
+ * Whether the locale uses right-to-left UI (Arabic, Hebrew, Persian, etc.).
+ */
+export function localeIsRtl(code: string): boolean {
+  const normalized = code.trim().replace(/_/g, "-");
+  try {
+    const Locale = Intl.Locale as typeof Intl.Locale & {
+      prototype: { textInfo?: { direction?: string } };
+    };
+    const loc = new Locale(normalized);
+    const d = (loc as { textInfo?: { direction?: string } }).textInfo?.direction;
+    if (d === "rtl") {
+      return true;
+    }
+    if (d === "ltr") {
+      return false;
+    }
+  } catch {
+    /* ignore */
+  }
+  const prim = normalized.split("-")[0]?.toLowerCase() ?? "";
+  return ["ar", "fa", "he", "ur", "yi"].includes(prim);
+}
+
 function resolveLocale(wanted: string | null) {
   if (wanted && availableLocales.includes(wanted)) return wanted;
   return availableLocales.includes("en-US")
@@ -68,6 +103,7 @@ export async function loadLocale(code: string) {
   }
   messages.set(merged);
   locale.set(code);
+  syncDocumentLanguageAndDirection(code);
 }
 
 export async function initI18n() {

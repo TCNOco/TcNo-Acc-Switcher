@@ -12,6 +12,7 @@ import (
 	"sync"
 
 	"TcNo-Acc-Switcher/internal/exeicon"
+	"TcNo-Acc-Switcher/internal/winutil"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 )
@@ -27,6 +28,8 @@ type PlatformStartup struct {
 	DisabledPlatformNames []string `json:"disabledPlatformNames"`
 	PlatformsFileMissing  bool     `json:"platformsFileMissing"`
 	Language              string   `json:"language"`
+	// CliNavigateHint is a one-shot JSON route from a prior ProcessCommand line (e.g. "Steam" to open that page).
+	CliNavigateHint string `json:"cliNavigateHint,omitempty"`
 }
 
 // PlatformService exposes platform list, settings, and launch resolution to the UI.
@@ -53,6 +56,7 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 			return PlatformStartup{
 				Language:             settings.Language,
 				PlatformsFileMissing: true,
+				CliNavigateHint:      ConsumeStartupNavigateHint(),
 			}, nil
 		}
 		return PlatformStartup{}, err
@@ -70,12 +74,14 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 		}
 	}
 	sortStringsFold(disList)
+	nav := ConsumeStartupNavigateHint()
 	return PlatformStartup{
 		HomePlatformOrder:     home,
 		AllPlatformNames:      names,
 		DisabledPlatformNames: disList,
 		PlatformsFileMissing:  false,
 		Language:              settings.Language,
+		CliNavigateHint:       nav,
 	}, nil
 }
 
@@ -673,4 +679,49 @@ func (p *PlatformService) HasShortcutMainExe(platformKey string) (bool, error) {
 		return true, nil
 	}
 	return false, nil
+}
+
+// GetProtocolEnabled returns the stored Windows URL protocol (tcno://) setting.
+func (p *PlatformService) GetProtocolEnabled() (bool, error) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return false, err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return false, err
+	}
+	return s.ProtocolEnabled, nil
+}
+
+// SetProtocolEnabled registers or unregisters tcno:// for this executable (persists AppSettings).
+func (p *PlatformService) SetProtocolEnabled(enabled bool) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return err
+	}
+	self, err := os.Executable()
+	if err != nil {
+		return err
+	}
+	self = filepath.Clean(self)
+
+	if enabled {
+		if err := winutil.RegisterProtocol(self); err != nil {
+			return err
+		}
+	} else {
+		_ = winutil.UnregisterProtocol()
+	}
+
+	s.ProtocolEnabled = enabled
+	return saveSettingsAtomic(exeDir, s)
 }

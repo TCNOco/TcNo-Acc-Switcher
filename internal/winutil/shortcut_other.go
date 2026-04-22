@@ -7,3 +7,8 @@ import "fmt"
 func ReadLnkShortcut(lnkPath string) (target string, arguments string, iconLocation string, err error) {
 	return "", "", "", fmt.Errorf("shortcuts: %w", ErrUnsupported)
 }
+
+// WriteShortcutLnk is unsupported outside Windows.
+func WriteShortcutLnk(shortcutPath, targetExe, arguments, iconLocation string) error {
+	return fmt.Errorf("shortcuts: %w", ErrUnsupported)
+}

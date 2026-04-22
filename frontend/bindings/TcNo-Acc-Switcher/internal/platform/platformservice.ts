@@ -53,6 +53,13 @@ export function GetPlatformSettings(platformKey: string): $CancellablePromise<$m
     });
 }
 
+/**
+ * GetProtocolEnabled returns the stored Windows URL protocol (tcno://) setting.
+ */
+export function GetProtocolEnabled(): $CancellablePromise<boolean> {
+    return $Call.ByID(3867357470);
+}
+
 export function GetStartup(): $CancellablePromise<$models.PlatformStartup> {
     return $Call.ByID(133724378).then(($result: any) => {
         return $$createType1($result);
@@ -149,6 +156,13 @@ export function SetLanguage(code: string): $CancellablePromise<void> {
 
 export function SetPlatformExePath(platformKey: string, exePath: string): $CancellablePromise<void> {
     return $Call.ByID(2853813257, platformKey, exePath);
+}
+
+/**
+ * SetProtocolEnabled registers or unregisters tcno:// for this executable (persists AppSettings).
+ */
+export function SetProtocolEnabled(enabled: boolean): $CancellablePromise<void> {
+    return $Call.ByID(3616914874, enabled);
 }
 
 // Private type creation functions

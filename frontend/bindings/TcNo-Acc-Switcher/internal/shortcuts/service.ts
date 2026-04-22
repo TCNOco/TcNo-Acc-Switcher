@@ -15,6 +15,13 @@ import { Call as $Call, CancellablePromise as $CancellablePromise, Create as $Cr
 import * as $models from "./models.js";
 
 /**
+ * CreateAccountShortcut writes a desktop shortcut with CLI args for this account.
+ */
+export function CreateAccountShortcut(platformKey: string, uniqueID: string, displayName: string, stateSuffix: string): $CancellablePromise<string> {
+    return $Call.ByID(1934603281, platformKey, uniqueID, displayName, stateSuffix);
+}
+
+/**
  * HideShortcut hides a shortcut (rename to _ignored).
  */
 export function HideShortcut(platformKey: string, fileName: string): $CancellablePromise<void> {
@@ -38,10 +45,10 @@ export function OpenShortcutFolder(platformKey: string): $CancellablePromise<voi
 }
 
 /**
- * RunShortcut launches a cached .lnk or .url.
+ * RunShortcut launches a cached .lnk or .url. When selectedUniqueID is set and AlwaysSwapOnShortcut is enabled for the platform, swaps first (strict on failure).
  */
-export function RunShortcut(platformKey: string, fileName: string, admin: boolean): $CancellablePromise<void> {
-    return $Call.ByID(994717451, platformKey, fileName, admin);
+export function RunShortcut(platformKey: string, fileName: string, admin: boolean, selectedUniqueID: string): $CancellablePromise<void> {
+    return $Call.ByID(994717451, platformKey, fileName, admin, selectedUniqueID);
 }
 
 /**

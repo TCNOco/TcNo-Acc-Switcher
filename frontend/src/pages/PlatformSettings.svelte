@@ -97,9 +97,15 @@
         if (isSteam) {
           const raw = await Wails.GetSteamSettings();
           steamSettings = Settings.createFrom(raw as Partial<Settings>);
+          if (steamSettings.AlwaysSwapOnShortcut === undefined) {
+            steamSettings.AlwaysSwapOnShortcut = true;
+          }
         } else {
           const raw = await Wails.GetPlatformSettings(name);
           genericPS = PlatformSettings.createFrom(raw as Partial<PlatformSettings>);
+          if (genericPS.AlwaysSwapOnShortcut === undefined) {
+            genericPS.AlwaysSwapOnShortcut = true;
+          }
         }
       } catch (e) {
         loadError = e instanceof Error ? e.message : String(e);
@@ -343,6 +349,20 @@
         <label class="form-check-label" for="ps-shortnotes"></label>
       </div>
       <label for="ps-shortnotes">{$t("Settings_ShowShortNotes")}</label>
+    </div>
+    <div class="rowSetting">
+      <div class="form-check">
+        <input
+          id="ps-always-swap"
+          type="checkbox"
+          bind:checked={steamSettings.AlwaysSwapOnShortcut}
+          on:change={debouncedSaveSteam}
+        />
+        <label class="form-check-label" for="ps-always-swap"></label>
+      </div>
+      <label for="ps-always-swap" use:tooltip={$t("Tooltip_AlwaysSwapOnShortcut")}
+        >{$t("Settings_AlwaysSwapOnShortcut")}</label
+      >
     </div>
 
     <h2 class="SettingsHeader">{$t("Settings_Header_AccountDisplay")}</h2>
@@ -646,6 +666,20 @@
         <label class="form-check-label" for="gp-shortnotes"></label>
       </div>
       <label for="gp-shortnotes">{$t("Settings_ShowShortNotes")}</label>
+    </div>
+    <div class="rowSetting">
+      <div class="form-check">
+        <input
+          id="gp-always-swap"
+          type="checkbox"
+          bind:checked={genericPS.AlwaysSwapOnShortcut}
+          on:change={debouncedSaveGeneric}
+        />
+        <label class="form-check-label" for="gp-always-swap"></label>
+      </div>
+      <label for="gp-always-swap" use:tooltip={$t("Tooltip_AlwaysSwapOnShortcut")}
+        >{$t("Settings_AlwaysSwapOnShortcut")}</label
+      >
     </div>
 
     <h2 class="SettingsHeader">{$t("Settings_Header_TraySettings")}</h2>

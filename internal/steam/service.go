@@ -15,6 +15,7 @@ import (
 	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/profileimage"
+	"TcNo-Acc-Switcher/internal/winutil"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 	"golang.org/x/sync/semaphore"
@@ -591,3 +592,80 @@ func (s *SteamService) ForgetSteamAccount(steamID64 string) error {
 	s.StartSteamProfileRefresh()
 	return nil
 }
+
+func (s *SteamService) steamInstallRoot() (string, error) {
+	exeDir, err := platform.ResolveExeDir()
+	if err != nil {
+		return "", err
+	}
+	app, err := platform.LoadAppSettings(exeDir)
+	if err != nil {
+		return "", err
+	}
+	st, err := LoadSettings()
+	if err != nil {
+		return "", err
+	}
+	pj, err := platform.ResolvePlatformsJSONPath(exeDir)
+	if err != nil {
+		return "", err
+	}
+	raw, err := os.ReadFile(pj)
+	if err != nil {
+		return "", err
+	}
+	return ResolveInstallFolder(exeDir, st, app, raw)
+}
+
+// GetInstalledGames lists installed titles (from appmanifest + optional Valve app list cache).
+func (s *SteamService) GetInstalledGames() ([]InstalledGameInfo, error) {
+	root, err := s.steamInstallRoot()
+	if err != nil {
+		return nil, err
+	}
+	if strings.TrimSpace(root) == "" {
+		return nil, fmt.Errorf("steam install folder not found")
+	}
+	return BuildInstalledGamesList(context.Background(), root)
+}
+
+// OpenUserdataFolder opens userdata/<accountId> for this SteamID64.
+func (s *SteamService) OpenUserdataFolder(steamID64 string) error {
+	f, err := FormatsFromID64(strings.TrimSpace(steamID64))
+	if err != nil {
+		return err
+	}
+	root, err := s.steamInstallRoot()
+	if err != nil {
+		return err
+	}
+	if strings.TrimSpace(root) == "" {
+		return fmt.Errorf("steam install folder not found")
+	}
+	ud := filepath.Join(root, "userdata", f.ID32)
+	return platform.OpenPathInFileManager(ud)
+}
+
+// LoginAndLaunchGame swaps to the account then launches steam://rungameid/<appID>.
+func (s *SteamService) LoginAndLaunchGame(steamID64 string, personaState int, appID string) error {
+	steamID64 = strings.TrimSpace(steamID64)
+	appID = strings.TrimSpace(appID)
+	if appID == "" {
+		return errors.New("empty app id")
+	}
+	if err := SwapToAccount(steamID64, personaState); err != nil {
+		return err
+	}
+	url := "steam://rungameid/" + appID
+	return winutil.Start("cmd.exe", []string{"/c", "start", "", url}, winutil.StartOpts{})
+}
+
+// ChangeAccountImage copies a local image into the Steam profile cache for this SteamID64.
+func (s *SteamService) ChangeAccountImage(steamID64, sourcePath string) error {
+	return profileimage.CacheLocalFile(PlatformKey, strings.TrimSpace(steamID64), strings.TrimSpace(sourcePath))
+}
+
+// SteamGameDataStub operations are reserved for future parity with the legacy app.
+func (s *SteamService) CopySteamGameSettingsFrom(_ string, _ string) error { return ErrNotImplemented }
+func (s *SteamService) RestoreSteamGameSettingsTo(_ string, _ string) error { return ErrNotImplemented }
+func (s *SteamService) BackupSteamGameData(_ string) error                  { return ErrNotImplemented }

@@ -22,10 +22,24 @@ export function AddNew(platformKey: string): $CancellablePromise<void> {
 }
 
 /**
+ * ChangeAccountImage copies an image file into the profile cache for this account.
+ */
+export function ChangeAccountImage(platformKey: string, uniqueID: string, sourcePath: string): $CancellablePromise<void> {
+    return $Call.ByID(2305033137, platformKey, uniqueID, sourcePath);
+}
+
+/**
  * ForgetAccount removes cached data for an account.
  */
 export function ForgetAccount(platformKey: string, uniqueID: string): $CancellablePromise<void> {
     return $Call.ByID(1278704355, platformKey, uniqueID);
+}
+
+/**
+ * GetAccountNote reads AccountNotes from platform settings for one unique id.
+ */
+export function GetAccountNote(platformKey: string, uniqueID: string): $CancellablePromise<string> {
+    return $Call.ByID(2494848030, platformKey, uniqueID);
 }
 
 /**
@@ -42,6 +56,13 @@ export function GetAccounts(platformKey: string): $CancellablePromise<$models.Ac
  */
 export function LaunchPlatform(platformKey: string): $CancellablePromise<void> {
     return $Call.ByID(3329801989, platformKey);
+}
+
+/**
+ * RenameAccount updates the display name in ids.json and renames the cached folder when possible.
+ */
+export function RenameAccount(platformKey: string, uniqueID: string, newName: string): $CancellablePromise<void> {
+    return $Call.ByID(1761907542, platformKey, uniqueID, newName);
 }
 
 /**
