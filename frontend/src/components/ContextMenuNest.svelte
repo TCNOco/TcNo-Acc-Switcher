@@ -51,6 +51,8 @@
 
   /** Rows under this column after search filter (pagination slices this list). */
   $: filteredTailEntries = (() => {
+    void showSearchRow;
+    void q;
     const out: TailEntry[] = [];
     for (let idx = 0; idx < tail.length; idx++) {
       const item = tail[idx]!;
