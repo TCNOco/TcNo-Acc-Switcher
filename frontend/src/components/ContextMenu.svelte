@@ -1,7 +1,73 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
-  import { contextMenu, closeContextMenu } from "../stores/contextMenu";
+  import { get } from "svelte/store";
+  import { onDestroy, onMount, tick } from "svelte";
+  import {
+    contextMenu,
+    closeContextMenu,
+    submenuOpenPath,
+    submenuExpandEnabled,
+    type ContextMenuState,
+  } from "../stores/contextMenu";
   import ContextMenuNest from "./ContextMenuNest.svelte";
+  import { ctxMenuLog } from "../lib/contextMenuDebug";
+  import {
+    focusFirstNavigable,
+    restoreFocus,
+    handleContextMenuKeydown,
+  } from "../lib/contextMenuKeyboard";
+
+  /** Viewport padding — keep menu fully inside the window. */
+  const PAD = 8;
+
+  let menuEl: HTMLUListElement | null = null;
+  let resizeObs: ResizeObserver | null = null;
+  let mutationObs: MutationObserver | null = null;
+
+  let submenuObserveDebounce: ReturnType<typeof setTimeout> | null = null;
+
+  /**
+   * Run attachObservers + layoutAfterOpen only once per open — the reactive block can fire many
+   * times if `menuEl` / bind:this churns; re-attaching observers retriggers layout and hot-loops.
+   */
+  let menuSetupFor: ContextMenuState | null = null;
+
+  /** Element to restore focus when the menu closes (set when moving focus into the menu). */
+  let priorFocusEl: HTMLElement | null = null;
+
+  function capturePriorFocus(menuRoot: HTMLElement): HTMLElement | null {
+    const a = document.activeElement;
+    if (!(a instanceof HTMLElement)) {
+      return null;
+    }
+    if (menuRoot.contains(a)) {
+      return null;
+    }
+    return a;
+  }
+
+  function expandSubmenuForLi(li: HTMLElement): void {
+    const raw = li.getAttribute("data-submenu-path");
+    if (!raw) {
+      return;
+    }
+    try {
+      submenuOpenPath.set(JSON.parse(raw) as number[]);
+    } catch {
+      /* ignore malformed path */
+    }
+  }
+
+  function onMenuKeydown(ev: KeyboardEvent): void {
+    if (!menuEl) {
+      return;
+    }
+    const handled = handleContextMenuKeydown(ev, menuEl, {
+      expandSubmenuForLi,
+    });
+    if (handled) {
+      ev.stopPropagation();
+    }
+  }
 
   function onDocPointerDown(ev: MouseEvent): void {
     const t = ev.target as Node | null;
@@ -18,64 +84,260 @@
     }
   }
 
+  function clamp(v: number, lo: number, hi: number): number {
+    return Math.max(lo, Math.min(hi, v));
+  }
+
+  /**
+   * Initial placement from pointer — matches legacy wwwroot/js/context_menu.js
+   * (viewport coords from clientX/Y; legacy page offsets omitted for Wails).
+   */
+  function layoutFromAnchor(ax: number, ay: number, mw: number, mh: number): { left: number; top: number } {
+    const winW = window.innerWidth;
+    const winH = window.innerHeight;
+    const posX = ax - 14;
+    const posY = ay;
+    const hOffset = 42;
+    const xOverflow = posX + mw + hOffset - winW;
+    const yOverflow = posY + mh + hOffset - winH;
+    let left = posX + (xOverflow > 0 ? -mw : 10);
+    let top = posY + (yOverflow > 0 ? -yOverflow : 10);
+    left = clamp(left, PAD, Math.max(PAD, winW - mw - PAD));
+    top = clamp(top, PAD, Math.max(PAD, winH - mh - PAD));
+    return { left, top };
+  }
+
+  /**
+   * When a submenu extends past the viewport, shift the root menu (moveContextMenu in legacy).
+   */
+  /**
+   * Align each open flyout column with the root menu’s top edge (horizontal cascade only).
+   * `top` on `.submenu` is relative to the parent `li.hasSubmenu`; offset = rootTop − rowTop.
+   */
+  function alignExpandedSubmenusToRoot(root: HTMLUListElement): void {
+    root.querySelectorAll("ul.submenu").forEach((sub) => {
+      if (sub instanceof HTMLElement) {
+        sub.style.removeProperty("top");
+      }
+    });
+    const expanded = root.querySelectorAll("li.hasSubmenu.submenu-expanded > ul.submenu");
+    if (expanded.length === 0) {
+      return;
+    }
+    const rt = root.getBoundingClientRect().top;
+    expanded.forEach((sub) => {
+      if (!(sub instanceof HTMLElement)) {
+        return;
+      }
+      const li = sub.parentElement;
+      if (!(li instanceof HTMLElement) || !li.classList.contains("hasSubmenu")) {
+        return;
+      }
+      const liT = li.getBoundingClientRect().top;
+      sub.style.top = `${Math.round(rt - liT)}px`;
+    });
+  }
+
+  function nudgeRootForSubmenus(el: HTMLUListElement): void {
+    const subs = el.querySelectorAll(".submenu");
+    let shiftLeft = 0;
+    let shiftUp = 0;
+    subs.forEach((sub) => {
+      const r = sub.getBoundingClientRect();
+      const rs = r.right - window.innerWidth;
+      const bs = r.bottom - window.innerHeight;
+      if (rs > 0) shiftLeft = Math.max(shiftLeft, rs + 40);
+      if (bs > 0) shiftUp = Math.max(shiftUp, bs + 10);
+    });
+    if (shiftLeft <= 0 && shiftUp <= 0) {
+      return;
+    }
+    const cur = el.getBoundingClientRect();
+    const nextLeft = clamp(
+      cur.left - shiftLeft,
+      PAD,
+      Math.max(PAD, window.innerWidth - cur.width - PAD),
+    );
+    const nextTop = clamp(
+      cur.top - shiftUp,
+      PAD,
+      Math.max(PAD, window.innerHeight - cur.height - PAD),
+    );
+    el.style.left = `${nextLeft}px`;
+    el.style.top = `${nextTop}px`;
+  }
+
+  function applyAnchorLayout(): void {
+    const st = get(contextMenu);
+    if (!st || !menuEl) {
+      return;
+    }
+    const mw = menuEl.offsetWidth;
+    const mh = menuEl.offsetHeight;
+    if (mw === 0 || mh === 0) {
+      return;
+    }
+    const { left, top } = layoutFromAnchor(st.x, st.y, mw, mh);
+    menuEl.style.left = `${left}px`;
+    menuEl.style.top = `${top}px`;
+  }
+
+  async function layoutAfterOpen(): Promise<void> {
+    ctxMenuLog("layoutAfterOpen: start");
+    await tick();
+    await new Promise<void>((r) => requestAnimationFrame(() => r()));
+    await new Promise<void>((r) => requestAnimationFrame(() => r()));
+    if (!get(contextMenu) || !menuEl) {
+      ctxMenuLog("layoutAfterOpen: aborted (no context or menuEl)", {
+        hasState: !!get(contextMenu),
+        menuEl: !!menuEl,
+      });
+      return;
+    }
+    applyAnchorLayout();
+    void menuEl.offsetHeight;
+    observeSubmenus(menuEl);
+    nudgeRootForSubmenus(menuEl);
+    alignExpandedSubmenusToRoot(menuEl);
+    submenuExpandEnabled.set(true);
+    ctxMenuLog("layoutAfterOpen: done → submenuExpandEnabled=true", {
+      submenuExpandEnabled: get(submenuExpandEnabled),
+      menuRect: menuEl.getBoundingClientRect(),
+    });
+    priorFocusEl = capturePriorFocus(menuEl);
+    focusFirstNavigable(menuEl);
+  }
+
+  function onWinResize(): void {
+    if (get(contextMenu)) {
+      applyAnchorLayout();
+      if (menuEl) {
+        nudgeRootForSubmenus(menuEl);
+        alignExpandedSubmenusToRoot(menuEl);
+      }
+    }
+  }
+
+  function detachObservers(): void {
+    resizeObs?.disconnect();
+    resizeObs = null;
+    mutationObs?.disconnect();
+    mutationObs = null;
+    if (submenuObserveDebounce !== null) {
+      clearTimeout(submenuObserveDebounce);
+      submenuObserveDebounce = null;
+    }
+  }
+
+  /** ResizeObserver does not support subtree; observe root + each .submenu (legacy submenu1/submenu2). */
+  function observeSubmenus(el: HTMLUListElement): void {
+    if (!resizeObs) {
+      return;
+    }
+    el.querySelectorAll(".submenu").forEach((sub) => {
+      resizeObs!.observe(sub);
+    });
+  }
+
+  function attachObservers(el: HTMLUListElement): void {
+    detachObservers();
+    resizeObs = new ResizeObserver(() => {
+      /* Never applyAnchorLayout here: root/subtree size changes (e.g. submenu pagination)
+         would snap the menu back to the pointer anchor and undo nudge from flyouts. */
+      nudgeRootForSubmenus(el);
+      alignExpandedSubmenusToRoot(el);
+    });
+    resizeObs.observe(el);
+    observeSubmenus(el);
+
+    mutationObs = new MutationObserver(() => {
+      if (submenuObserveDebounce !== null) {
+        clearTimeout(submenuObserveDebounce);
+      }
+      submenuObserveDebounce = setTimeout(() => {
+        submenuObserveDebounce = null;
+        if (!resizeObs || !menuEl || !get(contextMenu)) {
+          return;
+        }
+        observeSubmenus(menuEl);
+        nudgeRootForSubmenus(menuEl);
+        alignExpandedSubmenusToRoot(menuEl);
+      }, 40);
+    });
+    mutationObs.observe(el, { subtree: true, childList: true });
+  }
+
+  $: if ($contextMenu && menuEl) {
+    if (menuSetupFor !== $contextMenu) {
+      menuSetupFor = $contextMenu;
+      ctxMenuLog("setup once / open", {
+        items: $contextMenu.items.length,
+        submenuExpandEnabledBefore: get(submenuExpandEnabled),
+      });
+      attachObservers(menuEl);
+      void layoutAfterOpen();
+    }
+  }
+
+  $: if (!$contextMenu) {
+    menuSetupFor = null;
+    ctxMenuLog("context menu cleared → detachObservers");
+    detachObservers();
+    const restore = priorFocusEl;
+    priorFocusEl = null;
+    restoreFocus(restore);
+  }
+
+  /** Keep flyout tops aligned when the expanded branch changes (after class/DOM updates). */
+  $: if (menuEl && $contextMenu) {
+    void $submenuOpenPath;
+    void tick().then(() => {
+      requestAnimationFrame(() => {
+        if (!menuEl || !get(contextMenu)) {
+          return;
+        }
+        nudgeRootForSubmenus(menuEl);
+        alignExpandedSubmenusToRoot(menuEl);
+      });
+    });
+  }
+
   onMount(() => {
     window.addEventListener("pointerdown", onDocPointerDown, true);
     window.addEventListener("keydown", onKey);
+    window.addEventListener("resize", onWinResize);
     return () => {
       window.removeEventListener("pointerdown", onDocPointerDown, true);
       window.removeEventListener("keydown", onKey);
+      window.removeEventListener("resize", onWinResize);
     };
   });
 
   onDestroy(() => {
+    detachObservers();
     closeContextMenu();
   });
-
-  function clamp(v: number, min: number, max: number): number {
-    return Math.max(min, Math.min(max, v));
-  }
-
-  $: pos = (() => {
-    const m = $contextMenu;
-    if (!m) {
-      return { left: 0, top: 0 };
-    }
-    const pad = 8;
-    const w = 260;
-    const h = 320;
-    const left = clamp(m.x, pad, window.innerWidth - w - pad);
-    const top = clamp(m.y, pad, window.innerHeight - h - pad);
-    return { left, top };
-  })();
 </script>
 
 {#if $contextMenu}
   <ul
+    bind:this={menuEl}
     class="ctx-menu-root contextmenu"
-    style:left="{pos.left}px"
-    style:top="{pos.top}px"
     role="menu"
+    tabindex="-1"
+    on:keydown={onMenuKeydown}
   >
-    <ContextMenuNest items={$contextMenu.items} depth={1} />
+    <ContextMenuNest items={$contextMenu.items} depth={1} pathPrefix={[]} />
   </ul>
 {/if}
 
 <style lang="scss">
-  .ctx-menu__btn {
-    display: block;
-    width: 100%;
-    text-align: left;
-    padding: 0.4rem 0.85rem;
+  /* fixed + clientX/Y; overrides global .contextmenu { position: absolute } */
+  ul.ctx-menu-root.contextmenu {
+    position: fixed;
+    left: 0;
+    top: 0;
     margin: 0;
-    border: none;
-    background: transparent;
-    color: #fff;
-    font: inherit;
-    cursor: pointer;
-    border-radius: 4px;
-  }
-
-  .ctx-menu__btn:hover {
-    background: rgba(255, 255, 255, 0.08);
+    z-index: 999999;
   }
 </style>

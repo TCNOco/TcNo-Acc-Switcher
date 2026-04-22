@@ -20,32 +20,40 @@
     li {
         border-left: 1em solid transparent;
         transition: ease 0.2s;
+        position: relative;
 
         &.hasSubmenu::after {
-            font-family: "Font Awesome 5 Free";
-            font-weight: 900;
-            font-size: 0.9em;
-            margin-right: 0.3em;
-            content: "\f105";
-            color: #fff;
+            content: "";
             position: absolute;
             right: 6px;
-            transform: translateY(-165%);
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0.4em;
+            height: 0.8em;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 512'%3E%3Cpath fill='%23fff' d='M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z'/%3E%3C/svg%3E")
+                no-repeat
+                center / contain;
         }
 
-        a {
-            color: #FFFFFF !important;
-            display: block;
-            padding: 10px;
+        a, span, button {
             text-decoration: none;
-            cursor: pointer;
             transition: ease 0.2s;
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 0.4rem 0.85rem;
+            margin: 0;
+            border: none;
+            background: transparent;
+            color: #fff;
+            font: inherit;
+            cursor: pointer;
+            border-radius: 4px;
         }
     }
 
     .submenu {
         display: none;
-        min-height: 100%;
         list-style: none;
         box-shadow: 10px 10px 5px -3px rgba(0, 0, 0, .3);
 
@@ -58,11 +66,18 @@
             }
         }
 
-        .paginationContainer {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
+        /* In-flow footer row (valid <ul><li>…); avoids overlapping the last menu row */
+        li.ctx-pagination-li {
             border-left: none;
+            list-style: none;
+
+            .paginationContainer {
+                width: 100%;
+                border-left: none;
+                border-top: 1px solid rgba(255, 255, 255, 0.08);
+                padding-top: 0.15rem;
+                margin-top: 0.1rem;
+            }
 
             .pagination {
                 display: flex;
@@ -70,15 +85,25 @@
                 align-items: center;
                 color: #fff;
 
-                a {
+                a,
+                button.paginationButton {
                     width: 38px;
                     text-align: center;
+                    border: none;
+                    background: transparent;
+                    color: inherit;
+                    font: inherit;
+                    cursor: pointer;
+                    padding: 0;
+                    margin: 0;
 
                     &:hover {
                         background: #1B2737;
 
-                        i {
+                        i,
+                        svg {
                             color: var(--accent);
+                            fill: var(--accent);
                         }
                     }
 
@@ -134,20 +159,66 @@
         a {
             color: #FFFFFF;
         }
-
-        > .submenu {
-            display: block;
-            position: absolute;
-            top: 0;
-            right: -15em;
-            width: 15em;
-            padding: 0;
-            font-size: 1em;
-            animation: expand 0.3s;
-            opacity: 1;
-            background: #253340;
-        }
     }
+
+    /* Keyboard focus — mirror hover when roving tabindex focuses controls / submenu rows */
+    li:has(> .ctx-menu__btn:focus-visible),
+    li:has(> .ctx-menu__search:focus-visible),
+    li.hasSubmenu:focus-visible {
+        border-left: 2px solid #8BE9FD;
+        background: #1B2737;
+    }
+
+    /* Submenus open via JS (.submenu-expanded) after first paint; not CSS :hover alone. */
+    /*
+     Later sibling `li` rows stack above earlier ones by default — without z-index the flyout
+     sits UNDER those rows, so hit-testing picks a leaf row underneath and fires leaf trim → path [].
+    */
+    li.hasSubmenu.submenu-expanded {
+        z-index: 50;
+    }
+
+    li.hasSubmenu.submenu-expanded > .submenu {
+        display: block;
+        position: absolute;
+        top: 0;
+        right: -15em;
+        width: 15em;
+        padding: 0;
+        font-size: 1em;
+        animation: expand 0.3s;
+        opacity: 1;
+        background: #253340;
+        z-index: 51;
+    }
+
+    /* Invisible hit strip between parent column and submenu so brief gaps don’t collapse the branch */
+    li.hasSubmenu.submenu-expanded > .submenu::before {
+        content: "";
+        position: absolute;
+        left: -14px;
+        top: 0;
+        bottom: 0;
+        width: 14px;
+        z-index: 1;
+    }
+}
+.ctx-menu__search {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0.15rem 0 0.35rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  font: inherit;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  margin: 0.25rem 0;
 }
 
 @keyframes expand {

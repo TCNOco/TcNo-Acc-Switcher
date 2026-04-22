@@ -37,7 +37,7 @@
   export let name: string;
 
   let steamAccounts: SteamAccountRow[] = [];
-  /** Bumped when a row receives a patch so `{#key}` remounts that tile (avoids stuck “Updating…” on last row). */
+  /** Bumped when a row receives a patch so `{#key}` remounts that tile (avoids stuck "Updating…" on last row). */
   let rowEpoch: Record<string, number> = {};
   /** Scroll/content box for Steam tooltips (keeps popovers off the window chrome). */
   let steamAcclistEl: HTMLDivElement | null = null;

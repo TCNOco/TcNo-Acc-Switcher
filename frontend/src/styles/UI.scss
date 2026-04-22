@@ -581,11 +581,6 @@ button .caret, .button .caret {
             color: #b1f2ff
         }
 
-        &.head::before {
-            content: "\f07c";
-            margin-right: 5px;
-        }
-
         &.head {
             margin-left: -1em;
         }
@@ -717,18 +712,6 @@ button .caret, .button .caret {
 
 .accNotesContainer {
     position: relative;
-
-    /*&::after {
-        font-family: "Font Awesome 5 Free";
-        font-weight: 900;
-
-        content: "\f424";
-        right: -18px;
-        bottom: -3px;
-        pointer-events: none;
-        position: absolute;
-        -webkit-transform: rotate(-90deg);
-    }*/
 }
 
 
