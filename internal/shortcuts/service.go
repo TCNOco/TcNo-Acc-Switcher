@@ -128,6 +128,21 @@ func (s *Service) CreateAccountShortcut(platformKey, uniqueID, displayName, stat
 	return CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix, stateTitle)
 }
 
+// CreatePlatformShortcut writes a desktop shortcut that opens the switcher on this platform's page.
+func (s *Service) CreatePlatformShortcut(platformKey string) (string, error) {
+	return CreatePlatformShortcut(platformKey)
+}
+
+// DeletePlatformShortcut removes the platform switcher desktop shortcut if present.
+func (s *Service) DeletePlatformShortcut(platformKey string) error {
+	return DeletePlatformShortcut(platformKey)
+}
+
+// PlatformShortcutExists reports whether the platform switcher desktop shortcut exists.
+func (s *Service) PlatformShortcutExists(platformKey string) (bool, error) {
+	return PlatformShortcutExists(platformKey)
+}
+
 // ReportSVGRenderResult completes an async SVG→PNG rasterization requested from Go (Wails canvas fallback).
 func (s *Service) ReportSVGRenderResult(id, pngBase64, errMsg string) {
 	winutil.DeliverSVGRenderResult(id, pngBase64, errMsg)

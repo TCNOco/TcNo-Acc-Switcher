@@ -8,6 +8,7 @@
   import ActionBar from "../components/ActionBar.svelte";
   import GeneralSettingsBlock from "../components/GeneralSettingsBlock.svelte";
   import * as Wails from "../lib/platformBindings";
+  import * as Shortcuts from "../../bindings/TcNo-Acc-Switcher/internal/shortcuts/service.js";
   import { PlatformSettings } from "../../bindings/TcNo-Acc-Switcher/internal/platform/models.js";
   import { Settings } from "../../bindings/TcNo-Acc-Switcher/internal/steam/models.js";
   import "../styles/Settings.scss";
@@ -31,6 +32,80 @@
   let stateOpen = false;
 
   let saveTimer: ReturnType<typeof setTimeout> | undefined;
+
+  let hasDesktopShortcut = false;
+
+  const ARG_SILENT = "-silent";
+  const ARG_VGUI = "-vgui";
+
+  function launchArgTokens(line: string): string[] {
+    return line.trim().split(/\s+/).filter((x) => x.length > 0);
+  }
+
+  function hasLaunchArgFlag(line: string, flag: string): boolean {
+    const f = flag.trim().toLowerCase();
+    return launchArgTokens(line).some((t) => t.toLowerCase() === f);
+  }
+
+  function withLaunchArgFlag(line: string, flag: string, on: boolean): string {
+    const f = flag.trim();
+    const lower = f.toLowerCase();
+    const parts = launchArgTokens(line).filter((t) => t.toLowerCase() !== lower);
+    if (on) parts.push(f);
+    return parts.join(" ");
+  }
+
+  async function refreshDesktopShortcutState(): Promise<void> {
+    try {
+      hasDesktopShortcut = await Shortcuts.PlatformShortcutExists(name);
+    } catch {
+      hasDesktopShortcut = false;
+    }
+  }
+
+  function onSteamSilentChange(e: Event): void {
+    const el = e.currentTarget as HTMLInputElement;
+    const s = steamSettings;
+    if (!s) return;
+    s.LaunchArguments = withLaunchArgFlag(s.LaunchArguments ?? "", ARG_SILENT, el.checked);
+    debouncedSaveSteam();
+  }
+
+  function onSteamOldUiChange(e: Event): void {
+    const el = e.currentTarget as HTMLInputElement;
+    const s = steamSettings;
+    if (!s) return;
+    s.LaunchArguments = withLaunchArgFlag(s.LaunchArguments ?? "", ARG_VGUI, el.checked);
+    debouncedSaveSteam();
+  }
+
+  async function onToggleDesktopShortcut(e: Event): Promise<void> {
+    const el = e.currentTarget as HTMLInputElement;
+    const want = el.checked;
+    try {
+      if (want) {
+        await Shortcuts.CreatePlatformShortcut(name);
+        pushToast({
+          type: "success",
+          title: "",
+          message: $t("Toast_ShortcutCreated"),
+          duration: 5000,
+        });
+      } else {
+        await Shortcuts.DeletePlatformShortcut(name);
+        pushToast({ type: "success", title: "", message: $t("Done"), duration: 3000 });
+      }
+      hasDesktopShortcut = want;
+    } catch (err) {
+      el.checked = !want;
+      pushToast({
+        type: "error",
+        title: "",
+        message: err instanceof Error ? err.message : String(err),
+        duration: 8000,
+      });
+    }
+  }
 
   const closingValues = ["Combined", "Close", "TaskKill"] as const;
   const startingValues = ["Default", "Direct"] as const;
@@ -64,6 +139,15 @@
     const row = overrideStates.find((x) => x.v === v);
     return row ? $t(row.key) : $t("NoDefault");
   }
+
+  $: silentOn =
+    isSteam && steamSettings
+      ? hasLaunchArgFlag(steamSettings.LaunchArguments ?? "", ARG_SILENT)
+      : false;
+  $: oldUiOn =
+    isSteam && steamSettings
+      ? hasLaunchArgFlag(steamSettings.LaunchArguments ?? "", ARG_VGUI)
+      : false;
 
   function debouncedSaveSteam(): void {
     if (!isSteam || !steamSettings) return;
@@ -113,6 +197,7 @@
             genericPS.LaunchArguments = "";
           }
         }
+        await refreshDesktopShortcutState();
       } catch (e) {
         loadError = e instanceof Error ? e.message : String(e);
       }
@@ -177,6 +262,7 @@
         const raw = await Wails.GetPlatformSettings(name);
         genericPS = PlatformSettings.createFrom(raw as Partial<PlatformSettings>);
       }
+      await refreshDesktopShortcutState();
       pushToast({
         type: "success",
         title: "",
@@ -244,6 +330,18 @@
     <h1 class="SettingsHeader">{$t("Settings_Header_Platform", { platformName: name })}</h1>
 
     <h2 class="SettingsHeader">{$t("Settings_Header_GeneralSettings")}</h2>
+    <div class="rowSetting">
+      <div class="form-check">
+        <input
+          id="ps-desktop-shortcut"
+          type="checkbox"
+          checked={hasDesktopShortcut}
+          on:change={onToggleDesktopShortcut}
+        />
+        <label class="form-check-label" for="ps-desktop-shortcut"></label>
+      </div>
+      <label for="ps-desktop-shortcut">{$t("Settings_Shortcut", { platform: name })}</label>
+    </div>
     <div class="rowSetting">
       <div class="form-check">
         <input
@@ -464,8 +562,8 @@
           id="ps-silent"
           type="checkbox"
           disabled={!steamSettings.AutoStart}
-          bind:checked={steamSettings.StartSilent}
-          on:change={debouncedSaveSteam}
+          checked={silentOn}
+          on:change={onSteamSilentChange}
         />
         <label class="form-check-label" for="ps-silent"></label>
       </div>
@@ -477,8 +575,8 @@
           id="ps-oldui"
           type="checkbox"
           disabled={!steamSettings.AutoStart}
-          bind:checked={steamSettings.OldUi}
-          on:change={debouncedSaveSteam}
+          checked={oldUiOn}
+          on:change={onSteamOldUiChange}
         />
         <label class="form-check-label" for="ps-oldui"></label>
       </div>
@@ -574,6 +672,18 @@
   {:else if !isSteam && genericPS}
     <h1 class="SettingsHeader">{$t("Settings_Header_Platform", { platformName: name })}</h1>
     <h2 class="SettingsHeader">{$t("Settings_Header_GeneralSettings")}</h2>
+    <div class="rowSetting">
+      <div class="form-check">
+        <input
+          id="gp-desktop-shortcut"
+          type="checkbox"
+          checked={hasDesktopShortcut}
+          on:change={onToggleDesktopShortcut}
+        />
+        <label class="form-check-label" for="gp-desktop-shortcut"></label>
+      </div>
+      <label for="gp-desktop-shortcut">{$t("Settings_Shortcut", { platform: name })}</label>
+    </div>
     <div class="rowSetting">
       <div class="form-check">
         <input

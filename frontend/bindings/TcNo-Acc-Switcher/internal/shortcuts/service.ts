@@ -22,6 +22,20 @@ export function CreateAccountShortcut(platformKey: string, uniqueID: string, dis
 }
 
 /**
+ * CreatePlatformShortcut writes a desktop shortcut that opens the switcher on this platform's page.
+ */
+export function CreatePlatformShortcut(platformKey: string): $CancellablePromise<string> {
+    return $Call.ByID(1046256413, platformKey);
+}
+
+/**
+ * DeletePlatformShortcut removes the platform switcher desktop shortcut if present.
+ */
+export function DeletePlatformShortcut(platformKey: string): $CancellablePromise<void> {
+    return $Call.ByID(85680078, platformKey);
+}
+
+/**
  * HideShortcut hides a shortcut (rename to _ignored).
  */
 export function HideShortcut(platformKey: string, fileName: string): $CancellablePromise<void> {
@@ -42,6 +56,13 @@ export function ListShortcuts(platformKey: string): $CancellablePromise<$models.
  */
 export function OpenShortcutFolder(platformKey: string): $CancellablePromise<void> {
     return $Call.ByID(1222665178, platformKey);
+}
+
+/**
+ * PlatformShortcutExists reports whether the platform switcher desktop shortcut exists.
+ */
+export function PlatformShortcutExists(platformKey: string): $CancellablePromise<boolean> {
+    return $Call.ByID(3762925017, platformKey);
 }
 
 /**

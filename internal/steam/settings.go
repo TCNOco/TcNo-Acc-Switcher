@@ -39,8 +39,6 @@ type Settings struct {
 
 	SteamWebAPIKey string `json:"SteamWebApiKey"`
 
-	StartSilent       bool `json:"StartSilent"`
-	OldUi             bool `json:"OldUi"`
 	ShowSteamSwitcher bool `json:"ShowSteamSwitcher"`
 	CollectInfo       bool `json:"CollectInfo"`
 }
@@ -113,6 +111,11 @@ func LoadSettings() (Settings, error) {
 			delete(raw, "shortcuts")
 		}
 	}
+	// Legacy StartSilent / OldUi bools → LaunchArguments tokens (-silent, -vgui); keys dropped on save.
+	legacySilent := jsonRawMessageBool(raw["StartSilent"])
+	legacyOldUI := jsonRawMessageBool(raw["OldUi"])
+	delete(raw, "StartSilent")
+	delete(raw, "OldUi")
 	data2, err := json.Marshal(raw)
 	if err != nil {
 		return Settings{}, err
@@ -121,6 +124,12 @@ func LoadSettings() (Settings, error) {
 	var s Settings
 	if err := json.Unmarshal(data2, &s); err != nil {
 		return defaultSettings(), err
+	}
+	if legacySilent {
+		s.LaunchArguments = platform.EnsureLaunchArg(s.LaunchArguments, "-silent")
+	}
+	if legacyOldUI {
+		s.LaunchArguments = platform.EnsureLaunchArg(s.LaunchArguments, "-vgui")
 	}
 	if gjson.GetBytes(data2, "AlwaysSwapOnShortcut").Exists() {
 		s.AlwaysSwapOnShortcut = gjson.GetBytes(data2, "AlwaysSwapOnShortcut").Bool()
@@ -226,4 +235,15 @@ func migrateLegacyShortcutsJSON(m map[string]string) []platform.GameShortcutEntr
 		out = append(out, platform.GameShortcutEntry{FileName: e.v, Pinned: false})
 	}
 	return out
+}
+
+func jsonRawMessageBool(m json.RawMessage) bool {
+	if len(m) == 0 || string(m) == "null" {
+		return false
+	}
+	var b bool
+	if err := json.Unmarshal(m, &b); err != nil {
+		return false
+	}
+	return b
 }

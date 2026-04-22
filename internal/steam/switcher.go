@@ -192,14 +192,7 @@ func LaunchSteamOnlyAs(forceAdmin bool, extraLaunchArgs []string) error {
 }
 
 func buildSteamArgs(st Settings, extraLaunchArgs []string) []string {
-	var args []string
-	if st.StartSilent {
-		args = append(args, "-silent")
-	}
-	if st.OldUi {
-		args = append(args, "-vgui")
-	}
-	args = append(args, platform.LaunchArgTokens(st.LaunchArguments)...)
+	args := append([]string{}, platform.LaunchArgTokens(st.LaunchArguments)...)
 	if len(extraLaunchArgs) > 0 {
 		args = append(args, extraLaunchArgs...)
 	}

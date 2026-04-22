@@ -139,6 +139,51 @@ func LaunchArgTokens(line string) []string {
 	return strings.Fields(strings.TrimSpace(line))
 }
 
+// HasLaunchArgToken reports whether flag appears as a whitespace-separated token (case-insensitive).
+func HasLaunchArgToken(line, flag string) bool {
+	flag = strings.TrimSpace(flag)
+	if flag == "" {
+		return false
+	}
+	for _, t := range LaunchArgTokens(line) {
+		if strings.EqualFold(strings.TrimSpace(t), flag) {
+			return true
+		}
+	}
+	return false
+}
+
+// EnsureLaunchArg appends flag if not already present as a token.
+func EnsureLaunchArg(line, flag string) string {
+	flag = strings.TrimSpace(flag)
+	if flag == "" {
+		return strings.TrimSpace(line)
+	}
+	if HasLaunchArgToken(line, flag) {
+		return strings.TrimSpace(line)
+	}
+	line = strings.TrimSpace(line)
+	if line == "" {
+		return flag
+	}
+	return line + " " + flag
+}
+
+// RemoveLaunchArgToken removes all case-insensitive matches of flag from the token list.
+func RemoveLaunchArgToken(line, flag string) string {
+	flag = strings.TrimSpace(flag)
+	if flag == "" {
+		return strings.TrimSpace(line)
+	}
+	var out []string
+	for _, t := range LaunchArgTokens(line) {
+		if !strings.EqualFold(strings.TrimSpace(t), flag) {
+			out = append(out, t)
+		}
+	}
+	return strings.Join(out, " ")
+}
+
 // LoadPlatformSettings reads common platform settings from the per-platform JSON file.
 // For Steam, reads SteamSettings.json and unmarshals only matching keys.
 func LoadPlatformSettings(platformKey string) (PlatformSettings, error) {

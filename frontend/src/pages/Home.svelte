@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { get } from "svelte/store";
   import ActionBar from "../components/ActionBar.svelte";
   import ReorderPointerGrid from "../components/ReorderPointerGrid.svelte";
   import { route, appBarTitle } from "../stores/nav";
@@ -9,10 +10,14 @@
   import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import type { PlatformStartup } from "../../bindings/TcNo-Acc-Switcher/internal/platform/models.js";
   import { platformIconFgHref } from "../lib/platformIcon";
+  import { contextMenu } from "../lib/actions/contextMenu";
+  import type { MenuItemDef } from "../stores/contextMenu";
+  import * as Shortcuts from "../../bindings/TcNo-Acc-Switcher/internal/shortcuts/service.js";
   import "../styles/HomePlatforms.scss";
 
   let startup: PlatformStartup | null = null;
   let homeOrder: string[] = [];
+  let disabledPlatformNames: string[] = [];
   let loadError: string | null = null;
 
   let navigating = false;
@@ -58,6 +63,7 @@
       }
       startup = s;
       homeOrder = s.homePlatformOrder ?? [];
+      disabledPlatformNames = [...(s.disabledPlatformNames ?? [])];
       if (!s.platformsFileMissing && s.allPlatformNames?.length && homeOrder.length === 0) {
         route.set({ page: "manage-platforms" });
       }
@@ -111,6 +117,56 @@
     void PlatformService.SaveHomeOrder(e.detail.items).catch(() => {});
   }
 
+  function tileContextMenu(platformName: string): MenuItemDef[] {
+    const tr = get(t);
+    return [
+      {
+        label: tr("Context_CreateShortcut"),
+        action: () => {
+          void (async () => {
+            try {
+              await Shortcuts.CreatePlatformShortcut(platformName);
+              pushToast({
+                type: "success",
+                title: "",
+                message: tr("Toast_ShortcutCreated"),
+                duration: 5000,
+              });
+            } catch (e) {
+              pushToast({
+                type: "error",
+                title: "",
+                message: e instanceof Error ? e.message : String(e),
+                duration: 8000,
+              });
+            }
+          })();
+        },
+      },
+      {
+        label: tr("Context_HidePlatform"),
+        action: () => {
+          void (async () => {
+            if (disabledPlatformNames.includes(platformName)) return;
+            const next = [...disabledPlatformNames, platformName];
+            try {
+              await PlatformService.SetDisabledPlatforms(next);
+              disabledPlatformNames = next;
+              await refreshStartup(true);
+            } catch (e) {
+              pushToast({
+                type: "error",
+                title: "",
+                message: e instanceof Error ? e.message : String(e),
+                duration: 8000,
+              });
+            }
+          })();
+        },
+      },
+    ];
+  }
+
   onMount(() => {
     void refreshStartup();
   });
@@ -137,17 +193,20 @@
       >
         <svelte:fragment slot="item" let:rowId>
           {@const rid = slotKey(rowId)}
-          <div class="fgText {textClass(rid)}">
-            <p>{rid.toUpperCase()}</p>
-          </div>
-          <div class="fgImg" aria-hidden="true">
-            <svg viewBox="0 0 500 500" aria-hidden="true">
-              <use href={platformIconFgHref(rid)} class="icoFG" />
+          <!-- svelte-ignore a11y-no-static-element-interactions -->
+          <div class="platform_tile_ctx" use:contextMenu={() => tileContextMenu(rid)}>
+            <div class="fgText {textClass(rid)}">
+              <p>{rid.toUpperCase()}</p>
+            </div>
+            <div class="fgImg" aria-hidden="true">
+              <svg viewBox="0 0 500 500" aria-hidden="true">
+                <use href={platformIconFgHref(rid)} class="icoFG" />
+              </svg>
+            </div>
+            <svg viewBox="0 0 2084 2084" class="icoBG" aria-hidden="true">
+              <use href="img/platform/glass.svg#GLASS" class="icoGlass"></use>
             </svg>
           </div>
-          <svg viewBox="0 0 2084 2084" class="icoBG" aria-hidden="true">
-            <use href="img/platform/glass.svg#GLASS" class="icoGlass"></use>
-          </svg>
         </svelte:fragment>
       </ReorderPointerGrid>
     </div>
@@ -169,6 +228,16 @@
   :global(.platform_list_item--draggable) {
     cursor: grab;
     touch-action: none;
+  }
+
+  :global(.platform_tile_ctx) {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 
   :global(.platform_list_item--ghost) {

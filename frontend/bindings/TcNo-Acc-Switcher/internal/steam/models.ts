@@ -225,8 +225,6 @@ export class Settings {
      */
     "ShortcutsJson"?: { [_ in string]?: string };
     "SteamWebApiKey": string;
-    "StartSilent": boolean;
-    "OldUi": boolean;
     "ShowSteamSwitcher": boolean;
     "CollectInfo": boolean;
 
@@ -285,12 +283,6 @@ export class Settings {
         }
         if (!("SteamWebApiKey" in $$source)) {
             this["SteamWebApiKey"] = "";
-        }
-        if (!("StartSilent" in $$source)) {
-            this["StartSilent"] = false;
-        }
-        if (!("OldUi" in $$source)) {
-            this["OldUi"] = false;
         }
         if (!("ShowSteamSwitcher" in $$source)) {
             this["ShowSteamSwitcher"] = false;
