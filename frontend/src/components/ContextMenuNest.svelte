@@ -24,6 +24,43 @@
     return s.toLowerCase();
   }
 
+  /**
+   * Splits a label into words for acronym-style search. Any run of these separators starts a new
+   * word (spaces, hyphen/minus, underscores, en/em dash, colon, semicolon, comma, dot, slash).
+   */
+  const LABEL_WORD_SPLIT_RE = /[\s\u00A0\-_–—:;,.|/\\\u2026]+/u;
+
+  function splitLabelWords(label: string): string[] {
+    return label
+      .trim()
+      .split(LABEL_WORD_SPLIT_RE)
+      .map((w) => w.trim())
+      .filter((w) => w.length > 0);
+  }
+
+  function firstGrapheme(word: string): string {
+    if (!word) {
+      return "";
+    }
+    try {
+      const Seg = (Intl as typeof Intl & { Segmenter?: typeof Intl.Segmenter }).Segmenter;
+      if (Seg) {
+        const seg = new Seg(undefined, { granularity: "grapheme" });
+        for (const { segment } of seg.segment(word)) {
+          return segment;
+        }
+      }
+    } catch {
+      /* Segmenter unsupported or invalid locale */
+    }
+    return [...word][0] ?? "";
+  }
+
+  /** Concatenation of first grapheme per word, e.g. "Counter-Strike: 2" → "CS2". */
+  function labelAcronymHaystack(label: string): string {
+    return splitLabelWords(label).map(firstGrapheme).join("");
+  }
+
   $: hasSearchMarker = items[0]?.type === "search";
   $: tail = hasSearchMarker ? items.slice(1) : items;
   /**
@@ -44,7 +81,12 @@
     if (!it.label) {
       return false;
     }
-    return norm(it.label).includes(q);
+    const lab = norm(it.label);
+    if (lab.includes(q)) {
+      return true;
+    }
+    const ac = norm(labelAcronymHaystack(it.label));
+    return ac.length > 0 && ac.includes(q);
   }
 
   type TailEntry = { item: MenuItemDef; idx: number };
