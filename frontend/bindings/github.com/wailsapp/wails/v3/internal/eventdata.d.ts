@@ -14,12 +14,16 @@ import type * as shortcuts$0 from "../../../../../TcNo-Acc-Switcher/internal/sho
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: Unused imports
 import type * as steam$0 from "../../../../../TcNo-Acc-Switcher/internal/steam/models.js";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore: Unused imports
+import type * as winutil$0 from "../../../../../TcNo-Acc-Switcher/internal/winutil/models.js";
 
 declare module "@wailsio/runtime" {
     namespace Events {
         interface CustomEvents {
             "action-bar-status": string;
             "navigate": string;
+            "shortcut:render-svg-request": winutil$0.RenderSVGRequest;
             "shortcuts-updated": shortcuts$0.ListPayload;
             "steam-account-updated": steam$0.AccountPatch;
             "time": string;

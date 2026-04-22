@@ -209,10 +209,6 @@ export class Settings {
     "AccountNotes": { [_ in string]?: string };
     "Shortcuts"?: platform$0.GameShortcutEntry[];
     "AlwaysSwapOnShortcut"?: boolean;
-
-    /**
-     * LaunchArguments is optional extra argv for the platform executable (whitespace-separated when edited as one line).
-     */
     "LaunchArguments"?: string;
     "FolderPath": string;
     "Steam_ShowSteamID": boolean;

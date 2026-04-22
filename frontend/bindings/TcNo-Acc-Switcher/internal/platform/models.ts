@@ -47,10 +47,6 @@ export class PlatformSettings {
     "AccountNotes": { [_ in string]?: string };
     "Shortcuts"?: GameShortcutEntry[];
     "AlwaysSwapOnShortcut"?: boolean;
-
-    /**
-     * LaunchArguments is optional extra argv for the platform executable (whitespace-separated when edited as one line).
-     */
     "LaunchArguments"?: string;
 
     /** Creates a new PlatformSettings instance. */

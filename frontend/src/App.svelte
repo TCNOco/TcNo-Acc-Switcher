@@ -16,8 +16,10 @@
   import { route, applyNavigateJSON } from './stores/nav'
   import { actionBarStatus } from './stores/actionBarStatus'
   import { t } from "./stores/i18n";
+  import { registerSvgRenderBridge } from "./lib/svgRenderBridge";
 
   onMount(() => {
+    const offSvgBridge = registerSvgRenderBridge();
     const offNav = Events.On("navigate", (ev) => {
       const raw = typeof ev.data === "string" ? ev.data : "";
       applyNavigateJSON(raw);
@@ -42,6 +44,7 @@
     return () => {
       off?.();
       offNav?.();
+      offSvgBridge?.();
     };
   });
 </script>

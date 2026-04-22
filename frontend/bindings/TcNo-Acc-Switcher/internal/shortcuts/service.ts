@@ -45,6 +45,13 @@ export function OpenShortcutFolder(platformKey: string): $CancellablePromise<voi
 }
 
 /**
+ * ReportSVGRenderResult completes an async SVG→PNG rasterization requested from Go (Wails canvas fallback).
+ */
+export function ReportSVGRenderResult(id: string, pngBase64: string, errMsg: string): $CancellablePromise<void> {
+    return $Call.ByID(166339185, id, pngBase64, errMsg);
+}
+
+/**
  * RunShortcut launches a cached .lnk or .url. When selectedUniqueID is set and AlwaysSwapOnShortcut is enabled for the platform, swaps first (strict on failure).
  */
 export function RunShortcut(platformKey: string, fileName: string, admin: boolean, selectedUniqueID: string): $CancellablePromise<void> {

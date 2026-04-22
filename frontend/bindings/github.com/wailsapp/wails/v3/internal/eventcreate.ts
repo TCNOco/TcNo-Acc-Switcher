@@ -15,18 +15,23 @@ import * as shortcuts$0 from "../../../../../TcNo-Acc-Switcher/internal/shortcut
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: Unused imports
 import * as steam$0 from "../../../../../TcNo-Acc-Switcher/internal/steam/models.js";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore: Unused imports
+import * as winutil$0 from "../../../../../TcNo-Acc-Switcher/internal/winutil/models.js";
 
 function configure() {
     Object.freeze(Object.assign($Create.Events, {
-        "shortcuts-updated": $$createType0,
-        "steam-account-updated": $$createType1,
-        "toast": $$createType2,
+        "shortcut:render-svg-request": $$createType0,
+        "shortcuts-updated": $$createType1,
+        "steam-account-updated": $$createType2,
+        "toast": $$createType3,
     }));
 }
 
 // Private type creation functions
-const $$createType0 = shortcuts$0.ListPayload.createFrom;
-const $$createType1 = steam$0.AccountPatch.createFrom;
-const $$createType2 = main$0.ToastPayload.createFrom;
+const $$createType0 = winutil$0.RenderSVGRequest.createFrom;
+const $$createType1 = shortcuts$0.ListPayload.createFrom;
+const $$createType2 = steam$0.AccountPatch.createFrom;
+const $$createType3 = main$0.ToastPayload.createFrom;
 
 configure();

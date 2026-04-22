@@ -9,6 +9,6 @@ func ReadLnkShortcut(lnkPath string) (target string, arguments string, iconLocat
 }
 
 // WriteShortcutLnk is unsupported outside Windows.
-func WriteShortcutLnk(shortcutPath, targetExe, arguments, iconLocation string) error {
+func WriteShortcutLnk(shortcutPath, targetExe, arguments, workingDir, description, iconLocation string) error {
 	return fmt.Errorf("shortcuts: %w", ErrUnsupported)
 }

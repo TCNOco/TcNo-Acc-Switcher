@@ -7,9 +7,9 @@ import (
 	"strings"
 
 	"TcNo-Acc-Switcher/internal/cli"
+	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/profileimage"
 	"TcNo-Acc-Switcher/internal/winutil"
-
 )
 
 // CreateAccountShortcut writes a Desktop .lnk targeting this exe with CLI swap args.
@@ -70,10 +70,24 @@ func CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix, stat
 
 	icon := ""
 	if p, ok := profileimage.CachedFilePath(platformKey, uniqueID); ok && p != "" {
-		icon = p + ",0"
+		if root, err := paths.DataRoot(); err == nil {
+			cacheDir := filepath.Join(root, "IconCache")
+			if err := os.MkdirAll(cacheDir, 0o755); err == nil {
+				icoName := fmt.Sprintf("%s_%s.ico", profileimage.PlatformFolder(platformKey), sanitizeShortcutFileName(uniqueID))
+				icoPath := filepath.Join(cacheDir, icoName)
+				if err := winutil.BuildCombinedAccountIcon(platformKey, p, icoPath); err == nil {
+					icon = icoPath + ",0"
+				}
+			}
+		}
+		if icon == "" {
+			icon = p + ",0"
+		}
 	}
 
-	if err := winutil.WriteShortcutLnk(outPath, self, argv, icon); err != nil {
+	workDir := filepath.Dir(self)
+	desc := fmt.Sprintf("TcNo Account Switcher - %s - %s", platformKey, title)
+	if err := winutil.WriteShortcutLnk(outPath, self, argv, workDir, desc, icon); err != nil {
 		return "", err
 	}
 	return outPath, nil

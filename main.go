@@ -35,6 +35,8 @@ var (
 var assets embed.FS
 
 func init() {
+	winutil.SetEmbeddedFrontendFS(assets)
+
 	application.RegisterEvent[string]("navigate")
 
 	application.RegisterEvent[string]("time")
