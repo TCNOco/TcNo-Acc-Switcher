@@ -347,84 +347,110 @@
     }
   }
 
+  function pointInRect(
+    x: number,
+    y: number,
+    r: DOMRect,
+    inset = 0,
+  ): boolean {
+    return (
+      x >= r.left - inset &&
+      x <= r.right + inset &&
+      y >= r.top - inset &&
+      y <= r.bottom + inset
+    );
+  }
+
+  /**
+   * Hit-test using cell bounding rects (not elementFromPoint). The open dropdown
+   * stacks above the pinned strip; geometry still matches the real tiles underneath.
+   */
   function hitTestDragOver(clientX: number, clientY: number): void {
     if (dragSourceZone === null || dragFromIndex === null || !draggingId) {
       return;
     }
+    const fromIdx = dragFromIndex;
+    const srcZone = dragSourceZone;
 
-    const el = document.elementFromPoint(clientX, clientY);
-    if (!el) {
-      return;
-    }
+    const tryZone = (zone: Zone, root: HTMLDivElement | null, names: string[]): boolean => {
+      if (!root) {
+        return false;
+      }
+      const cells = root.querySelectorAll("[data-dnd-cell]");
+      for (const cell of [...cells]) {
+        const r = cell.getBoundingClientRect();
+        if (!pointInRect(clientX, clientY, r)) {
+          continue;
+        }
+        const h = cell as HTMLElement;
+        if (h.dataset.dndGap === "true") {
+          const visual = Number(h.dataset.dndVisual);
+          if (!Number.isNaN(visual)) {
+            dragOverZone = zone;
+            dragOverIndex = visual;
+            return true;
+          }
+          continue;
+        }
+        const id = h.dataset.dndName ?? "";
+        if (!id) {
+          continue;
+        }
+        dragOverZone = zone;
+        if (zone === "pinned") {
+          if (srcZone === "pinned") {
+            dragOverIndex = insertionIndexFromTileHover(
+              names,
+              fromIdx,
+              id,
+              clientX,
+              h,
+            );
+          } else {
+            dragOverIndex = insertionIndexExternalDrag(names, id, clientX, h);
+          }
+        } else if (srcZone === "dropdown") {
+          dragOverIndex = insertionIndexFromTileHover(
+            names,
+            fromIdx,
+            id,
+            clientX,
+            h,
+          );
+        } else {
+          dragOverIndex = insertionIndexExternalDrag(names, id, clientX, h);
+        }
+        return true;
+      }
+      const br = root.getBoundingClientRect();
+      if (pointInRect(clientX, clientY, br, 4)) {
+        if (
+          zone === "pinned" &&
+          ddOpen &&
+          dropListEl &&
+          pointInRect(clientX, clientY, dropListEl.getBoundingClientRect())
+        ) {
+          return false;
+        }
+        dragOverZone = zone;
+        if (srcZone === zone) {
+          dragOverIndex = fromIdx;
+        } else if (names.length === 0) {
+          dragOverIndex = 0;
+        } else {
+          dragOverIndex = names.length;
+        }
+        return true;
+      }
+      return false;
+    };
 
-    const gap = el.closest("[data-dnd-gap='true']");
-    if (gap && pinListEl?.contains(gap)) {
-      const visual = Number((gap as HTMLElement).dataset.dndVisual);
-      if (!Number.isNaN(visual)) {
-        dragOverZone = "pinned";
-        dragOverIndex = visual;
-      }
+    if (tryZone("pinned", pinListEl, pinNames)) {
       return;
     }
-    if (ddOpen && gap && dropListEl?.contains(gap)) {
-      const visual = Number((gap as HTMLElement).dataset.dndVisual);
-      if (!Number.isNaN(visual)) {
-        dragOverZone = "dropdown";
-        dragOverIndex = visual;
-      }
+    if (ddOpen && tryZone("dropdown", dropListEl, dropNames)) {
       return;
     }
-
-    const cell = el.closest("[data-dnd-cell]");
-    if (cell && pinListEl?.contains(cell)) {
-      const id = (cell as HTMLElement).dataset.dndName ?? "";
-      if (!id) {
-        return;
-      }
-      dragOverZone = "pinned";
-      if (dragSourceZone === "pinned") {
-        dragOverIndex = insertionIndexFromTileHover(
-          pinNames,
-          dragFromIndex,
-          id,
-          clientX,
-          cell as HTMLElement,
-        );
-      } else {
-        dragOverIndex = insertionIndexExternalDrag(
-          pinNames,
-          id,
-          clientX,
-          cell as HTMLElement,
-        );
-      }
-      return;
-    }
-    if (ddOpen && cell && dropListEl?.contains(cell)) {
-      const id = (cell as HTMLElement).dataset.dndName ?? "";
-      if (!id) {
-        return;
-      }
-      dragOverZone = "dropdown";
-      if (dragSourceZone === "dropdown") {
-        dragOverIndex = insertionIndexFromTileHover(
-          dropNames,
-          dragFromIndex,
-          id,
-          clientX,
-          cell as HTMLElement,
-        );
-      } else {
-        dragOverIndex = insertionIndexExternalDrag(
-          dropNames,
-          id,
-          clientX,
-          cell as HTMLElement,
-        );
-      }
-      return;
-    }
-
   }
 
   function onWindowPointerMove(e: PointerEvent): void {
@@ -886,6 +912,12 @@
     left: 50%;
     transform: translateX(-50%);
     min-width: 168px;
+    /* Let pointer events reach the pinned strip underneath empty panel area */
+    pointer-events: none;
+    .shortcutDropdownItems,
+    #btnOpenShortcutFolder {
+      pointer-events: auto;
+    }
   }
 
   .shortcutDndGrid {
@@ -893,7 +925,6 @@
     flex-flow: row wrap;
     align-content: flex-start;
     align-items: center;
-    gap: 2px;
     min-width: 0;
   }
 
