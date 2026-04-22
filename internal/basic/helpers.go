@@ -4,6 +4,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
 )
 
@@ -62,20 +63,7 @@ func accountCacheDir(platformKey, accountName string) (string, error) {
 }
 
 func safeFileName(s string) string {
-	s = strings.TrimSpace(s)
-	if s == "" {
-		return "_"
-	}
-	var b strings.Builder
-	for _, r := range s {
-		switch {
-		case r < 32 || strings.ContainsRune(`<>:"/\|?*`, r):
-			b.WriteRune('_')
-		default:
-			b.WriteRune(r)
-		}
-	}
-	out := b.String()
+	out := paths.SanitizePathSegment(s)
 	if out == "" {
 		return "_"
 	}
