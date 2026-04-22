@@ -982,6 +982,38 @@
     flex-direction: column;
     background: transparent;
     border-radius: inherit;
+    > :global(*) {
+      box-sizing: border-box;
+      min-width: 0;
+      min-height: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      flex: 1 1 auto;
+    }
+
+    :global(button) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 3px;
+      box-sizing: border-box;
+      min-width: 0;
+      min-height: 0;
+    }
+
+    :global(img) {
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+      flex: 0 1 auto;
+    }
   }
 
   #shortcutDropdownBtn svg {
