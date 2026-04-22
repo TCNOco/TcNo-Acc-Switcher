@@ -5,14 +5,11 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/winutil"
-
-	"github.com/Jleagle/steam-go/steamid"
 )
 
 var steamKillNames = []string{
@@ -21,8 +18,6 @@ var steamKillNames = []string{
 	"steamwebhelper.exe",
 	"GameOverlayUI.exe",
 }
-
-var reEPersonaState = regexp.MustCompile(`"ePersonaState"\s+"-?\d+"`)
 
 // SwapToAccount switches the active Steam session: kills Steam, rewrites loginusers.vdf + registry, restarts.
 // steamID64 may be "" for Add New (clears AutoLoginUser). personaState -1 means use Steam_OverrideState from settings for localconfig; values < -1 skip persona file edit.
@@ -268,26 +263,6 @@ func setShowSteamSwitcher(steamRoot string, show bool) error {
 		return nil
 	}
 	return fsutil.WriteFileAtomic(path, []byte(strings.Join(out, "\n")), 0o644)
-}
-
-func setPersonaStateLocalConfig(steamRoot, id64 string, ePersonaState int) error {
-	sid, err := steamid.ParsePlayerID(id64)
-	if err != nil {
-		return err
-	}
-	acc := sid.GetAccountID()
-	userFolder := filepath.Join(steamRoot, "userdata", fmt.Sprintf("%d", acc), "config", "localconfig.vdf")
-	raw, err := os.ReadFile(userFolder)
-	if err != nil {
-		return err
-	}
-	s := string(raw)
-	repl := fmt.Sprintf(`"ePersonaState"		"%d"`, ePersonaState)
-	ns := reEPersonaState.ReplaceAllString(s, repl)
-	if ns == s {
-		return nil
-	}
-	return fsutil.WriteFileAtomic(userFolder, []byte(ns), 0o644)
 }
 
 // RemoveSteamAccountFromVDF removes one SteamID from loginusers.vdf (Forget).

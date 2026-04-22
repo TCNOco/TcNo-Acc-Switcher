@@ -13,7 +13,8 @@ import (
 )
 
 // CreateAccountShortcut writes a Desktop .lnk targeting this exe with CLI swap args.
-func CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix string) (string, error) {
+// For Steam, stateSuffix is the persona state index for argv; stateTitle is shown in the filename (optional, localized).
+func CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix, stateTitle string) (string, error) {
 	platformKey = strings.TrimSpace(platformKey)
 	uniqueID = strings.TrimSpace(uniqueID)
 	if platformKey == "" || uniqueID == "" {
@@ -37,7 +38,14 @@ func CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix strin
 	}
 	title = sanitizeShortcutFileName(title)
 	if strings.EqualFold(platformKey, "Steam") && strings.TrimSpace(stateSuffix) != "" {
-		title = fmt.Sprintf("%s [%s]", title, strings.TrimSpace(stateSuffix))
+		label := strings.TrimSpace(stateTitle)
+		if label == "" {
+			label = steamPersonaStateFileLabel(strings.TrimSpace(stateSuffix))
+		}
+		label = sanitizeShortcutFileName(label)
+		if label != "" {
+			title = fmt.Sprintf("%s (%s)", title, label)
+		}
 	}
 
 	outPath := filepath.Join(desktop, title+".lnk")
@@ -69,6 +77,29 @@ func CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix strin
 		return "", err
 	}
 	return outPath, nil
+}
+
+func steamPersonaStateFileLabel(numeric string) string {
+	switch strings.TrimSpace(numeric) {
+	case "0":
+		return "Offline"
+	case "1":
+		return "Online"
+	case "2":
+		return "Busy"
+	case "3":
+		return "Away"
+	case "4":
+		return "Snooze"
+	case "5":
+		return "Looking to trade"
+	case "6":
+		return "Looking to play"
+	case "7":
+		return "Invisible"
+	default:
+		return numeric
+	}
 }
 
 func sanitizeShortcutFileName(name string) string {

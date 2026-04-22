@@ -123,8 +123,8 @@ func (s *Service) RunShortcut(platformKey, fileName string, admin bool, selected
 }
 
 // CreateAccountShortcut writes a desktop shortcut with CLI args for this account.
-func (s *Service) CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix string) (string, error) {
-	return CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix)
+func (s *Service) CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix, stateTitle string) (string, error) {
+	return CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix, stateTitle)
 }
 
 // HideShortcut hides a shortcut (rename to _ignored).
