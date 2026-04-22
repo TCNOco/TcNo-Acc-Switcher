@@ -203,16 +203,16 @@
     <li
       class="hasSubmenu"
       class:submenu-expanded={expandedIdxAtLevel === idx}
-      role="menuitem"
-      tabindex="-1"
-      aria-haspopup="true"
-      aria-expanded={expandedIdxAtLevel === idx}
+      role="none"
       data-submenu-path={JSON.stringify([...pathPrefix, idx])}
       on:pointerenter={() => expandBranch(idx, "pointerenter")}
       on:mouseenter={() => expandBranch(idx, "mouseenter")}
     >
       <span
-        role="presentation"
+        role="menuitem"
+        tabindex="-1"
+        aria-haspopup="true"
+        aria-expanded={expandedIdxAtLevel === idx}
         class="ctx-menu__label"
         on:pointermove={() => expandBranch(idx, "pointermove")}
         on:mousemove={() => expandBranch(idx, "mousemove")}

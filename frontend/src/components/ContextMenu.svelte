@@ -45,7 +45,11 @@
     return a;
   }
 
-  function expandSubmenuForLi(li: HTMLElement): void {
+  function expandSubmenuForLi(el: HTMLElement): void {
+    const li = el.closest("li.hasSubmenu") ?? (el.classList.contains("hasSubmenu") ? el : null);
+    if (!li) {
+      return;
+    }
     const raw = li.getAttribute("data-submenu-path");
     if (!raw) {
       return;
@@ -110,10 +114,7 @@
   /**
    * When a submenu extends past the viewport, shift the root menu (moveContextMenu in legacy).
    */
-  /**
-   * Align each open flyout column with the root menu’s top edge (horizontal cascade only).
-   * `top` on `.submenu` is relative to the parent `li.hasSubmenu`; offset = rootTop − rowTop.
-   */
+
   function alignExpandedSubmenusToRoot(root: HTMLUListElement): void {
     root.querySelectorAll("ul.submenu").forEach((sub) => {
       if (sub instanceof HTMLElement) {
@@ -136,6 +137,20 @@
       const liT = li.getBoundingClientRect().top;
       sub.style.top = `${Math.round(rt - liT)}px`;
     });
+  }
+
+  /** Primary column height for `.submenu:has(.ctx-pagination-li)` (see context_menu.scss). */
+  function syncCtxRootColumnHeightVar(root: HTMLUListElement): void {
+    const h = root.offsetHeight;
+    if (h > 0) {
+      root.style.setProperty("--ctx-root-column-height", `${h}px`);
+    }
+  }
+
+  function refreshFlyoutLayout(root: HTMLUListElement): void {
+    nudgeRootForSubmenus(root);
+    alignExpandedSubmenusToRoot(root);
+    syncCtxRootColumnHeightVar(root);
   }
 
   function nudgeRootForSubmenus(el: HTMLUListElement): void {
@@ -197,8 +212,7 @@
     applyAnchorLayout();
     void menuEl.offsetHeight;
     observeSubmenus(menuEl);
-    nudgeRootForSubmenus(menuEl);
-    alignExpandedSubmenusToRoot(menuEl);
+    refreshFlyoutLayout(menuEl);
     submenuExpandEnabled.set(true);
     ctxMenuLog("layoutAfterOpen: done → submenuExpandEnabled=true", {
       submenuExpandEnabled: get(submenuExpandEnabled),
@@ -212,13 +226,15 @@
     if (get(contextMenu)) {
       applyAnchorLayout();
       if (menuEl) {
-        nudgeRootForSubmenus(menuEl);
-        alignExpandedSubmenusToRoot(menuEl);
+        refreshFlyoutLayout(menuEl);
       }
     }
   }
 
   function detachObservers(): void {
+    if (menuEl) {
+      menuEl.style.removeProperty("--ctx-root-column-height");
+    }
     resizeObs?.disconnect();
     resizeObs = null;
     mutationObs?.disconnect();
@@ -244,8 +260,7 @@
     resizeObs = new ResizeObserver(() => {
       /* Never applyAnchorLayout here: root/subtree size changes (e.g. submenu pagination)
          would snap the menu back to the pointer anchor and undo nudge from flyouts. */
-      nudgeRootForSubmenus(el);
-      alignExpandedSubmenusToRoot(el);
+      refreshFlyoutLayout(el);
     });
     resizeObs.observe(el);
     observeSubmenus(el);
@@ -260,8 +275,7 @@
           return;
         }
         observeSubmenus(menuEl);
-        nudgeRootForSubmenus(menuEl);
-        alignExpandedSubmenusToRoot(menuEl);
+        refreshFlyoutLayout(menuEl);
       }, 40);
     });
     mutationObs.observe(el, { subtree: true, childList: true });
@@ -296,8 +310,7 @@
         if (!menuEl || !get(contextMenu)) {
           return;
         }
-        nudgeRootForSubmenus(menuEl);
-        alignExpandedSubmenusToRoot(menuEl);
+        refreshFlyoutLayout(menuEl);
       });
     });
   }

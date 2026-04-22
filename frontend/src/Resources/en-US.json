@@ -368,7 +368,7 @@
   "Context_RunAdmin": "Run as Admin",
   "Context_Hide": "Hide",
   "Context_Search": "Search…",
-  "Context_Game_LoginAndLaunch": "Login & Launch",
+  "Context_Game_LoginAndLaunch": "Swap to & Launch",
   "Toast_CopyFailed": "Could not copy to clipboard.",
   "Toast_NotImplemented": "Not implemented yet.",
   "Toast_GameLaunchRequested": "Steam launch requested.",

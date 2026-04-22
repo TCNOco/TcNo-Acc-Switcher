@@ -34,6 +34,12 @@
   /** Vite `public/img/` → served at `/img/`; shown until Steam profile image is ready */
   const PROFILE_PLACEHOLDER = "/img/BasicDefault.webp";
 
+  /**
+   * App IDs omitted:
+   * 228980 = Steamworks Common Redistributables.
+   */
+  const STEAM_CONTEXT_MENU_HIDDEN_APP_IDS = new Set<string>(["228980"]);
+
   export let name: string;
 
   let steamAccounts: SteamAccountRow[] = [];
@@ -455,6 +461,10 @@
           },
         },
         {
+          label: tr("Context_Game_LoginAndLaunch"),
+          children: launchChildren,
+        },
+        {
           label: tr("Context_LoginAsSubmenu"),
           children: loginAsChildren,
         },
@@ -580,10 +590,6 @@
             },
           ],
         },
-        {
-          label: tr("Context_Game_LoginAndLaunch"),
-          children: launchChildren,
-        },
       ];
     };
   }
@@ -593,10 +599,12 @@
     void loadSteamAccounts();
     void SteamService.GetInstalledGames()
       .then((rows) => {
-        installedGames = rows.map((r) => ({
-          appId: r.appId,
-          name: r.name,
-        }));
+        installedGames = rows
+          .filter((r) => !STEAM_CONTEXT_MENU_HIDDEN_APP_IDS.has(String(r.appId).trim()))
+          .map((r) => ({
+            appId: r.appId,
+            name: r.name,
+          }));
       })
       .catch(() => {
         installedGames = [];
