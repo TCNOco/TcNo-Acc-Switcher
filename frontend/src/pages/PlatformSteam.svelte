@@ -9,6 +9,8 @@
     platformExeIconUrl,
     platformAction,
     selectedAccount as selectedAccountStore,
+    platformLiveSessionId,
+    platformAccountsRefresh,
   } from "../stores/platformPage";
   import { pushToast } from "../stores/toast";
   import * as SteamService from "../../bindings/TcNo-Acc-Switcher/internal/steam/steamservice.js";
@@ -70,6 +72,7 @@
   let steamLoadError = "";
   let offSteamEvent: (() => void) | undefined;
   let offPlatformAction: (() => void) | undefined;
+  let offAccountsRefresh: (() => void) | undefined;
   let lastHandledActionId = 0;
   /** Cleared on destroy; staggered reloads pick up Steam writing loginusers after swap/launch. */
   let steamListRefreshTimers: ReturnType<typeof setTimeout>[] = [];
@@ -188,7 +191,12 @@
       rowEpoch = {};
       steamAccounts = rows;
       steamIds = rows.map((r) => r.steamId64);
-      const active = rows.find((r) => r.currentSession);
+      const liveRow = rows.find((r) => r.currentSession);
+      platformLiveSessionId.set({
+        platformKey: name,
+        uniqueId: (liveRow?.steamId64 ?? "").trim(),
+      });
+      const active = liveRow;
       const firstId = rows[0]?.steamId64 ?? "";
       const stillValid =
         selectedSteamId && rows.some((r) => r.steamId64 === selectedSteamId);
@@ -207,6 +215,7 @@
       gameDataBySteamId = {};
       selectedSteamId = "";
       actionBarStatus.set("");
+      platformLiveSessionId.set({ platformKey: "", uniqueId: "" });
     }
   }
 
@@ -737,15 +746,24 @@
       lastHandledActionId = v.id;
       void handlePlatformActionKind(v.kind);
     });
+    offAccountsRefresh = platformAccountsRefresh.subscribe((p) => {
+      if (p.seq === 0 || p.platformKey !== name) {
+        return;
+      }
+      scheduleSteamAccountsRefresh();
+    });
   });
 
   onDestroy(() => {
     for (const t of steamListRefreshTimers) clearTimeout(t);
     steamListRefreshTimers = [];
     selectedAccountStore.set({ platformKey: "", uniqueId: "" });
+    platformLiveSessionId.set({ platformKey: "", uniqueId: "" });
     platformAction.set(null);
     offSteamEvent?.();
     offPlatformAction?.();
+    offAccountsRefresh?.();
+    platformAccountsRefresh.set({ seq: 0, platformKey: "" });
     platformExeIconUrl.set("");
     actionBarStatus.set("");
   });

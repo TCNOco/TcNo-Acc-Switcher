@@ -8,6 +8,8 @@
     platformExeIconUrl,
     platformAction,
     selectedAccount as selectedAccountStore,
+    platformLiveSessionId,
+    platformAccountsRefresh,
   } from "../stores/platformPage";
   import { pushToast } from "../stores/toast";
   import { openPrompt } from "../stores/modal";
@@ -35,6 +37,7 @@
   let loadError = "";
   let selectedUniqueId = "";
   let offPlatformAction: (() => void) | undefined;
+  let offAccountsRefresh: (() => void) | undefined;
   let lastHandledActionId = 0;
   let basicListRefreshTimers: ReturnType<typeof setTimeout>[] = [];
   let basicAcclistEl: HTMLDivElement | undefined;
@@ -74,6 +77,11 @@
       const rows = (await BasicService.GetAccounts(name)) as BasicRow[];
       accounts = rows;
       accountIds = rows.map((r) => r.uniqueId);
+      const liveRow = rows.find((r) => r.currentSession);
+      platformLiveSessionId.set({
+        platformKey: name,
+        uniqueId: (liveRow?.uniqueId ?? "").trim(),
+      });
       const first = rows[0]?.uniqueId ?? "";
       const stillValid = selectedUniqueId && rows.some((r) => r.uniqueId === selectedUniqueId);
       selectedUniqueId = stillValid ? selectedUniqueId : first;
@@ -84,6 +92,7 @@
       accountIds = [];
       selectedUniqueId = "";
       actionBarStatus.set("");
+      platformLiveSessionId.set({ platformKey: "", uniqueId: "" });
     }
   }
 
@@ -371,14 +380,23 @@
       lastHandledActionId = v.id;
       void handlePlatformActionKind(v.kind);
     });
+    offAccountsRefresh = platformAccountsRefresh.subscribe((p) => {
+      if (p.seq === 0 || p.platformKey !== name) {
+        return;
+      }
+      scheduleAccountsRefresh();
+    });
   });
 
   onDestroy(() => {
     for (const t of basicListRefreshTimers) clearTimeout(t);
     basicListRefreshTimers = [];
     selectedAccountStore.set({ platformKey: "", uniqueId: "" });
+    platformLiveSessionId.set({ platformKey: "", uniqueId: "" });
     platformAction.set(null);
     offPlatformAction?.();
+    offAccountsRefresh?.();
+    platformAccountsRefresh.set({ seq: 0, platformKey: "" });
     platformExeIconUrl.set("");
     actionBarStatus.set("");
   });
