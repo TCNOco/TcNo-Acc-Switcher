@@ -25,6 +25,23 @@
   import { get } from "svelte/store";
   import { openConfirm, openPrompt } from "../stores/modal";
 
+  const STEAM_USERDATA_ERR_KEYS = new Set([
+    "Toast_NoValidSteamId",
+    "Toast_SameAccount",
+    "Toast_NoFindSteamUserdata",
+    "Toast_NoFindGameBackup",
+  ]);
+
+  function mapSteamUserdataI18nError(
+    err: unknown,
+    tr: (k: string, v?: Record<string, string | number>) => string,
+  ): string {
+    return formatWailsError(err, {
+      translateMessage: (k) => tr(k),
+      i18nFirstLineKeys: STEAM_USERDATA_ERR_KEYS,
+    });
+  }
+
   /** Bindings row + client-only syncError; `currentSession` is explicit — TS sometimes omits quoted keys on generated classes. */
   type SteamAccountRow = InstanceType<typeof AccountDTO> & {
     syncError?: string;
@@ -58,6 +75,8 @@
   let selectedSteamId = "";
 
   let installedGames: { appId: string; name: string }[] = [];
+  /** Per account: app IDs with `userdata/.../id` and with `Backups/Steam/.../id` (drives Game data submenu). */
+  let gameDataBySteamId: Record<string, { userdata: Set<string>; backup: Set<string> }> = {};
 
   $: appBarTitle.set(name || "TcNo Account Switcher");
   $: if (name) {
@@ -128,6 +147,38 @@
     );
   }
 
+  async function refreshGameDataAppSets(): Promise<void> {
+    const ids = steamIds;
+    if (ids.length === 0) {
+      gameDataBySteamId = {};
+      return;
+    }
+    try {
+      const parts: [string, { userdata: Set<string>; backup: Set<string> }][] = await Promise.all(
+        ids.map(async (id) => {
+          try {
+            const s = await SteamService.GetSteamGameDataAppIDSets(id);
+            return [
+              id,
+              {
+                userdata: new Set(s.userdataAppIds.map((x: string) => String(x).trim())),
+                backup: new Set(s.backupAppIds.map((x: string) => String(x).trim())),
+              },
+            ] as [string, { userdata: Set<string>; backup: Set<string> }];
+          } catch {
+            return [
+              id,
+              { userdata: new Set<string>(), backup: new Set<string>() },
+            ] as [string, { userdata: Set<string>; backup: Set<string> }];
+          }
+        }),
+      );
+      gameDataBySteamId = Object.fromEntries(parts);
+    } catch {
+      gameDataBySteamId = {};
+    }
+  }
+
   async function loadSteamAccounts(): Promise<void> {
     steamLoadError = "";
     try {
@@ -146,10 +197,12 @@
           : firstId;
       touchSteamActionBar();
       SteamService.StartSteamProfileRefresh();
+      await refreshGameDataAppSets();
     } catch (e) {
       steamLoadError = formatWailsError(e) || String(e);
       steamAccounts = [];
       steamIds = [];
+      gameDataBySteamId = {};
       selectedSteamId = "";
       actionBarStatus.set("");
     }
@@ -391,41 +444,94 @@
         })),
       ];
 
-      const gameChildren: MenuItemDef[] = [
-        { type: "search", label: tr("Context_Search") },
-        ...installedGames.map((g) => ({
-          label: g.name,
-          children: [
-            {
-              label: tr("Context_Game_CopySettingsFrom"),
-              action: () =>
+      const gsets = gameDataBySteamId[rid];
+      const gameDataSubmenuItems: MenuItemDef[] = [];
+      for (const g of installedGames) {
+        const aid = String(g.appId).trim();
+        const hasUser = gsets?.userdata.has(aid) ?? false;
+        const hasBackup = gsets?.backup.has(aid) ?? false;
+        if (!hasUser && !hasBackup) {
+          continue;
+        }
+        const children: MenuItemDef[] = [];
+        if (hasUser) {
+          children.push({
+            label: tr("Context_Game_CopySettingsFrom"),
+            action: async () => {
+              try {
+                await SteamService.CopySteamGameSettingsFrom(rid, g.appId);
                 pushToast({
-                  type: "info",
-                  message: tr("Toast_NotImplemented"),
-                  duration: 4000,
-                }),
-            },
-            {
-              label: tr("Context_Game_RestoreSettingsTo"),
-              action: () =>
+                  type: "success",
+                  message: tr("Toast_SettingsCopied"),
+                  duration: 5000,
+                });
+                void refreshGameDataAppSets();
+              } catch (e) {
                 pushToast({
-                  type: "info",
-                  message: tr("Toast_NotImplemented"),
-                  duration: 4000,
-                }),
+                  type: "error",
+                  message: mapSteamUserdataI18nError(e, tr),
+                  duration: 8000,
+                });
+              }
             },
-            {
-              label: tr("Context_Game_BackupData"),
-              action: () =>
+          });
+        }
+        if (hasBackup) {
+          children.push({
+            label: tr("Context_Game_RestoreSettingsTo"),
+            action: async () => {
+              try {
+                await SteamService.RestoreSteamGameSettingsTo(rid, g.appId);
                 pushToast({
-                  type: "info",
-                  message: tr("Toast_NotImplemented"),
-                  duration: 4000,
-                }),
+                  type: "success",
+                  message: tr("Toast_GameDataRestored"),
+                  duration: 5000,
+                });
+                void refreshGameDataAppSets();
+              } catch (e) {
+                pushToast({
+                  type: "error",
+                  message: mapSteamUserdataI18nError(e, tr),
+                  duration: 8000,
+                });
+              }
             },
-          ],
-        })),
-      ];
+          });
+        }
+        if (hasUser) {
+          children.push({
+            label: tr("Context_Game_BackupData"),
+            action: async () => {
+              try {
+                const folder = await SteamService.BackupSteamGameData(rid, g.appId);
+                pushToast({
+                  type: "success",
+                  message: tr("Toast_GameBackupDone", { folderLocation: folder }),
+                  duration: 8000,
+                });
+                void refreshGameDataAppSets();
+              } catch (e) {
+                pushToast({
+                  type: "error",
+                  message: mapSteamUserdataI18nError(e, tr),
+                  duration: 8000,
+                });
+              }
+            },
+          });
+        }
+        gameDataSubmenuItems.push({ label: g.name, children });
+      }
+
+      const gameChildren: MenuItemDef[] =
+        gameDataSubmenuItems.length === 0
+          ? [
+              {
+                type: "item",
+                label: tr("Context_GameData_NoFolders"),
+              },
+            ]
+          : [{ type: "search", label: tr("Context_Search") }, ...gameDataSubmenuItems];
 
       const launchChildren: MenuItemDef[] = [
         { type: "search", label: tr("Context_Search") },
@@ -596,19 +702,20 @@
 
   onMount(() => {
     previousPage.set({ page: "home" });
-    void loadSteamAccounts();
-    void SteamService.GetInstalledGames()
-      .then((rows) => {
+    void (async () => {
+      await loadSteamAccounts();
+      try {
+        const rows = await SteamService.GetInstalledGames();
         installedGames = rows
           .filter((r) => !STEAM_CONTEXT_MENU_HIDDEN_APP_IDS.has(String(r.appId).trim()))
           .map((r) => ({
             appId: r.appId,
             name: r.name,
           }));
-      })
-      .catch(() => {
+      } catch {
         installedGames = [];
-      });
+      }
+    })();
     void GetPlatformExeIcon(name).then((u: string) => platformExeIconUrl.set(u ?? ""));
     offSteamEvent = Events.On("steam-account-updated", (ev) => {
       const raw = ev.data;

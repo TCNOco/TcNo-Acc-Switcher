@@ -14,8 +14,11 @@ import { Call as $Call, CancellablePromise as $CancellablePromise, Create as $Cr
 // @ts-ignore: Unused imports
 import * as $models from "./models.js";
 
-export function BackupSteamGameData($0: string): $CancellablePromise<void> {
-    return $Call.ByID(3596677579, $0);
+/**
+ * BackupSteamGameData copies live userdata for this game to Backups/Steam. Returns the backup path on success.
+ */
+export function BackupSteamGameData(steamID64: string, appID: string): $CancellablePromise<string> {
+    return $Call.ByID(3596677579, steamID64, appID);
 }
 
 /**
@@ -26,10 +29,11 @@ export function ChangeAccountImage(steamID64: string, sourcePath: string): $Canc
 }
 
 /**
- * SteamGameDataStub operations are reserved for future parity with the legacy app.
+ * CopySteamGameSettingsFrom copies <steam>/userdata/{source32}/{appID} into the current session
+ * account folder, auto-backing up the destination tree into Backups/Steam first (legacy C# behavior).
  */
-export function CopySteamGameSettingsFrom($0: string, $1: string): $CancellablePromise<void> {
-    return $Call.ByID(1375488891, $0, $1);
+export function CopySteamGameSettingsFrom(sourceSteamID64: string, appID: string): $CancellablePromise<void> {
+    return $Call.ByID(1375488891, sourceSteamID64, appID);
 }
 
 /**
@@ -58,11 +62,21 @@ export function GetSteamAccounts(): $CancellablePromise<$models.AccountDTO[]> {
 }
 
 /**
+ * GetSteamGameDataAppIDSets lists numeric subfolder names in userdata/{id32}/ and Backups/Steam/{id32}/
+ * so the client can show Copy/Backup only when local game data exists, and Restore when a backup exists.
+ */
+export function GetSteamGameDataAppIDSets(steamID64: string): $CancellablePromise<$models.SteamGameDataAppIDSets> {
+    return $Call.ByID(4184082038, steamID64).then(($result: any) => {
+        return $$createType4($result);
+    });
+}
+
+/**
  * GetSteamIDFormats exposes ID string conversions for the given SteamID64.
  */
 export function GetSteamIDFormats(id64: string): $CancellablePromise<$models.SteamIDFormats> {
     return $Call.ByID(829730036, id64).then(($result: any) => {
-        return $$createType4($result);
+        return $$createType5($result);
     });
 }
 
@@ -71,7 +85,7 @@ export function GetSteamIDFormats(id64: string): $CancellablePromise<$models.Ste
  */
 export function GetSteamSettings(): $CancellablePromise<$models.Settings> {
     return $Call.ByID(2672197668).then(($result: any) => {
-        return $$createType5($result);
+        return $$createType6($result);
     });
 }
 
@@ -110,8 +124,11 @@ export function RefreshVACStatus(): $CancellablePromise<void> {
     return $Call.ByID(860421344);
 }
 
-export function RestoreSteamGameSettingsTo($0: string, $1: string): $CancellablePromise<void> {
-    return $Call.ByID(2682924661, $0, $1);
+/**
+ * RestoreSteamGameSettingsTo restores from Backups/Steam/{id32}/{appID} into userdata.
+ */
+export function RestoreSteamGameSettingsTo(steamID64: string, appID: string): $CancellablePromise<void> {
+    return $Call.ByID(2682924661, steamID64, appID);
 }
 
 /**
@@ -154,5 +171,6 @@ const $$createType0 = $models.InstalledGameInfo.createFrom;
 const $$createType1 = $Create.Array($$createType0);
 const $$createType2 = $models.AccountDTO.createFrom;
 const $$createType3 = $Create.Array($$createType2);
-const $$createType4 = $models.SteamIDFormats.createFrom;
-const $$createType5 = $models.Settings.createFrom;
+const $$createType4 = $models.SteamGameDataAppIDSets.createFrom;
+const $$createType5 = $models.SteamIDFormats.createFrom;
+const $$createType6 = $models.Settings.createFrom;

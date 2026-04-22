@@ -315,6 +315,42 @@ export class Settings {
 }
 
 /**
+ * SteamGameDataAppIDSets is app folder names under Steam userdata and under our Backups/Steam for this account.
+ */
+export class SteamGameDataAppIDSets {
+    "userdataAppIds": string[];
+    "backupAppIds": string[];
+
+    /** Creates a new SteamGameDataAppIDSets instance. */
+    constructor($$source: Partial<SteamGameDataAppIDSets> = {}) {
+        if (!("userdataAppIds" in $$source)) {
+            this["userdataAppIds"] = [];
+        }
+        if (!("backupAppIds" in $$source)) {
+            this["backupAppIds"] = [];
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new SteamGameDataAppIDSets instance from a string or object.
+     */
+    static createFrom($$source: any = {}): SteamGameDataAppIDSets {
+        const $$createField0_0 = $$createType3;
+        const $$createField1_0 = $$createType3;
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        if ("userdataAppIds" in $$parsedSource) {
+            $$parsedSource["userdataAppIds"] = $$createField0_0($$parsedSource["userdataAppIds"]);
+        }
+        if ("backupAppIds" in $$parsedSource) {
+            $$parsedSource["backupAppIds"] = $$createField1_0($$parsedSource["backupAppIds"]);
+        }
+        return new SteamGameDataAppIDSets($$parsedSource as Partial<SteamGameDataAppIDSets>);
+    }
+}
+
+/**
  * SteamIDFormats exposes common string forms for a SteamID64 decimal string.
  */
 export class SteamIDFormats {
@@ -354,3 +390,4 @@ export class SteamIDFormats {
 const $$createType0 = $Create.Map($Create.Any, $Create.Any);
 const $$createType1 = platform$0.GameShortcutEntry.createFrom;
 const $$createType2 = $Create.Array($$createType1);
+const $$createType3 = $Create.Array($Create.Any);

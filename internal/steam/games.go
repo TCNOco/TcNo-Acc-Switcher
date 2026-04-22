@@ -3,7 +3,6 @@ package steam
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -285,6 +284,3 @@ func BuildInstalledGamesList(ctx context.Context, steamRoot string) ([]Installed
 	})
 	return list, nil
 }
-
-// ErrNotImplemented is returned for deferred game-folder operations.
-var ErrNotImplemented = errors.New("not implemented")

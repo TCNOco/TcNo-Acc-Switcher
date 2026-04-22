@@ -664,8 +664,3 @@ func (s *SteamService) LoginAndLaunchGame(steamID64 string, personaState int, ap
 func (s *SteamService) ChangeAccountImage(steamID64, sourcePath string) error {
 	return profileimage.CacheLocalFile(PlatformKey, strings.TrimSpace(steamID64), strings.TrimSpace(sourcePath))
 }
-
-// SteamGameDataStub operations are reserved for future parity with the legacy app.
-func (s *SteamService) CopySteamGameSettingsFrom(_ string, _ string) error { return ErrNotImplemented }
-func (s *SteamService) RestoreSteamGameSettingsTo(_ string, _ string) error { return ErrNotImplemented }
-func (s *SteamService) BackupSteamGameData(_ string) error                  { return ErrNotImplemented }

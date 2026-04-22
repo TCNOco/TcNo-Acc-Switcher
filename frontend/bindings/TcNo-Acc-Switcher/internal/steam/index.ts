@@ -11,5 +11,6 @@ export {
     AccountPatch,
     InstalledGameInfo,
     Settings,
+    SteamGameDataAppIDSets,
     SteamIDFormats
 } from "./models.js";
