@@ -10,7 +10,6 @@ import (
 	"github.com/Jleagle/steam-go/steamvdf"
 )
 
-// LoginUser is one row from loginusers.vdf.
 type LoginUser struct {
 	SteamID64    string
 	PersonaName  string
@@ -38,7 +37,7 @@ func childStringCI(kv steamvdf.KeyValue, key string) string {
 	return ""
 }
 
-// ParseLoginUsers reads loginusers.vdf and returns users. Tries path, then path with .vdf_last.
+// ParseLoginUsers tries the file, then a sibling with .vdf_last extension.
 func ParseLoginUsers(path string) ([]LoginUser, error) {
 	try := func(p string) ([]LoginUser, error) {
 		raw, err := os.ReadFile(p)
@@ -132,9 +131,7 @@ func ParseLoginUsers(path string) ([]LoginUser, error) {
 	return out, nil
 }
 
-// ActiveSessionSteamID64 returns the SteamID64 whose row has MostRecent=="1" when exactly
-// one row is marked. If none (e.g. Add New cleared all) or multiple, returns "" so the UI
-// shows no "current session" highlight — do not infer from Timestamp (that mislabels after Add New).
+// ActiveSessionSteamID64 returns the single SteamID64 with MostRecent=="1", else "" (ambiguous or none). Do not use Timestamp for current session.
 func ActiveSessionSteamID64(users []LoginUser) string {
 	var mostRecentID string
 	nMost := 0
@@ -159,7 +156,6 @@ func looksLikeSteamID64(s string) bool {
 	return err == nil
 }
 
-// LoginUsersFileExists reports whether config/loginusers.vdf exists under steamRoot.
 func LoginUsersFileExists(steamRoot string) bool {
 	p := filepath.Join(steamRoot, "config", "loginusers.vdf")
 	st, err := os.Stat(p)

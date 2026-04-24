@@ -7,13 +7,12 @@ import { formatWailsError } from "./formatWailsError";
 
 const needsAdminMarker = "NEEDS_ADMIN:";
 
-/** True when the Go backend returned [winutil.NeedsAdminPrefix] / ErrNeedsAdmin. */
+/** Error payload includes NEEDS_ADMIN: prefix from the Go backend. */
 export function isNeedsAdminError(err: unknown): boolean {
   const s = formatWailsError(err);
   return s.includes(needsAdminMarker);
 }
 
-/** Proactive check when opening a platform page; may restart elevated or toast if user declines. */
 export async function preflightAdminForPlatform(platformKey: string): Promise<void> {
   const key = String(platformKey ?? "").trim();
   if (!key) {
@@ -52,7 +51,6 @@ export async function preflightAdminForPlatform(platformKey: string): Promise<vo
   }
 }
 
-/** After a failed swap/launch, offer restart-as-admin when the error is NEEDS_ADMIN. */
 export async function offerRestartIfNeedsAdmin(err: unknown, platformKey: string): Promise<void> {
   if (!isNeedsAdminError(err)) {
     return;

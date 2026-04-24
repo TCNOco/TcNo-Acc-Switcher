@@ -21,10 +21,8 @@ import (
 	"golang.org/x/sync/semaphore"
 )
 
-// AccountUpdatedEvent is the Wails event name for per-row patches.
 const AccountUpdatedEvent = "steam-account-updated"
 
-// AccountDTO is the initial snapshot and list row model.
 type AccountDTO struct {
 	SteamID64 string `json:"steamId64"`
 
@@ -49,15 +47,12 @@ type AccountDTO struct {
 	ShowShortNotes  bool   `json:"showShortNotes"`
 	Note            string `json:"note"`
 
-	// SyncError is set when background profile/avatar fetch fails (shown in UI; also logged).
 	SyncError string `json:"syncError"`
 
-	// CurrentSession is true when this row is the active Steam session per loginusers.vdf
-	// True when loginusers.vdf has exactly one user with MostRecent=="1" (matches that row).
+	// CurrentSession: exactly one loginusers row has MostRecent=="1" and it is this account.
 	CurrentSession bool `json:"currentSession"`
 }
 
-// AccountPatch is emitted when background work updates one account.
 type AccountPatch struct {
 	SteamID64 string `json:"steamId64"`
 
@@ -73,16 +68,14 @@ type AccountPatch struct {
 	Error string `json:"error"`
 }
 
-// SteamService exposes Steam accounts to the Wails frontend.
 type SteamService struct {
 	mu sync.Mutex
 
 	refreshMu      sync.Mutex
 	refreshRunning bool
-	refreshQueued  bool // run again after the current refresh finishes (coalesce overlapping StartSteamProfileRefresh)
+	refreshQueued  bool // coalesce overlapping StartSteamProfileRefresh
 }
 
-// NewSteamService constructs the service. Outbound HTTP uses [appclient.Shared].
 func NewSteamService() *SteamService {
 	return &SteamService{}
 }
@@ -123,7 +116,6 @@ func (s *SteamService) migrateExePathFromAppSettings(exeDir string, st *Settings
 	return platform.SaveAppSettings(exeDir, *app)
 }
 
-// GetSteamAccounts returns the ordered account list for first paint.
 func (s *SteamService) GetSteamAccounts() ([]AccountDTO, error) {
 	exeDir, err := platform.ResolveExeDir()
 	if err != nil {
@@ -235,7 +227,6 @@ func (s *SteamService) GetSteamAccounts() ([]AccountDTO, error) {
 	return out, nil
 }
 
-// SaveSteamAccountOrder persists account order by SteamID64.
 func (s *SteamService) SaveSteamAccountOrder(ids []string) error {
 	exeDir, err := platform.ResolveExeDir()
 	if err != nil {
@@ -286,17 +277,14 @@ func (s *SteamService) SaveSteamAccountOrder(ids []string) error {
 	return SaveOrder(ids)
 }
 
-// GetSteamSettings returns current Steam settings.
 func (s *SteamService) GetSteamSettings() (Settings, error) {
 	return LoadSettings()
 }
 
-// SaveSteamSettings writes Steam settings.
 func (s *SteamService) SaveSteamSettings(st Settings) error {
 	return SaveSettings(st)
 }
 
-// RefreshVACStatus clears VAC/profile XML caches and triggers a background profile refresh.
 func (s *SteamService) RefreshVACStatus() error {
 	if err := ClearVACProfileCaches(); err != nil {
 		return err
@@ -305,7 +293,6 @@ func (s *SteamService) RefreshVACStatus() error {
 	return nil
 }
 
-// RefreshAllSteamImages deletes cached avatar files for all Steam accounts and triggers a refresh.
 func (s *SteamService) RefreshAllSteamImages() error {
 	dir, err := profileimage.ProfileDir(PlatformKey)
 	if err != nil {
@@ -332,7 +319,6 @@ func (s *SteamService) RefreshAllSteamImages() error {
 	return nil
 }
 
-// StartSteamProfileRefresh fetches missing avatars and ban info in the background.
 func (s *SteamService) StartSteamProfileRefresh() {
 	go s.runProfileRefresh()
 }
@@ -478,9 +464,7 @@ func (s *SteamService) runProfileRefresh() {
 				return
 			}
 
-			// If JPEG/PNG on disk is still within expiry, DownloadIfNeeded would return without
-			// downloading — avoid emitting AvatarPending first, which forces placeholder + "Updating…"
-			// and can appear stuck if the follow-up emit is missed.
+			// Skip AvatarPending when a fresh cached file exists (avoids stuck "Updating…" if the follow-up emit is missed).
 			if p, ok := profileimage.CachedFilePath(PlatformKey, u.SteamID64); ok {
 				if !profileimage.FileOlderThanDays(p, st.SteamImageExpiryTime) {
 					if cachedURL, hit := profileimage.FindCached(PlatformKey, u.SteamID64); hit {
@@ -546,27 +530,22 @@ func (s *SteamService) emit(p AccountPatch) {
 	app.Event.Emit(AccountUpdatedEvent, p)
 }
 
-// GetSteamIDFormats exposes ID string conversions for the given SteamID64.
 func (s *SteamService) GetSteamIDFormats(id64 string) (SteamIDFormats, error) {
 	return FormatsFromID64(strings.TrimSpace(id64))
 }
 
-// SwapToSteamAccount switches to the given account (-1 uses OverrideState for persona in localconfig).
 func (s *SteamService) SwapToSteamAccount(steamID64 string, personaState int, extraLaunchArgs []string) error {
 	return SwapToAccount(strings.TrimSpace(steamID64), personaState, extraLaunchArgs)
 }
 
-// SteamAddNew clears saved login and launches Steam for a new account sign-in.
 func (s *SteamService) SteamAddNew() error {
 	return SwapToAccount("", -1, nil)
 }
 
-// LaunchSteam starts Steam without changing saved accounts.
 func (s *SteamService) LaunchSteam() error {
 	return LaunchSteamOnly(nil)
 }
 
-// ForgetSteamAccount removes an account row from loginusers.vdf and deletes cached avatar files.
 func (s *SteamService) ForgetSteamAccount(steamID64 string) error {
 	steamID64 = strings.TrimSpace(steamID64)
 	if steamID64 == "" {
@@ -631,7 +610,6 @@ func (s *SteamService) steamInstallRoot() (string, error) {
 	return ResolveInstallFolder(exeDir, st, app, raw)
 }
 
-// GetInstalledGames lists installed titles (from appmanifest + optional Valve app list cache).
 func (s *SteamService) GetInstalledGames() ([]InstalledGameInfo, error) {
 	root, err := s.steamInstallRoot()
 	if err != nil {
@@ -643,7 +621,6 @@ func (s *SteamService) GetInstalledGames() ([]InstalledGameInfo, error) {
 	return BuildInstalledGamesList(context.Background(), root)
 }
 
-// OpenUserdataFolder opens userdata/<accountId> for this SteamID64.
 func (s *SteamService) OpenUserdataFolder(steamID64 string) error {
 	f, err := FormatsFromID64(strings.TrimSpace(steamID64))
 	if err != nil {
@@ -660,7 +637,6 @@ func (s *SteamService) OpenUserdataFolder(steamID64 string) error {
 	return platform.OpenPathInFileManager(ud)
 }
 
-// LoginAndLaunchGame swaps to the account then launches steam://rungameid/<appID>.
 func (s *SteamService) LoginAndLaunchGame(steamID64 string, personaState int, appID string) error {
 	steamID64 = strings.TrimSpace(steamID64)
 	appID = strings.TrimSpace(appID)
@@ -674,7 +650,6 @@ func (s *SteamService) LoginAndLaunchGame(steamID64 string, personaState int, ap
 	return winutil.Start("cmd.exe", []string{"/c", "start", "", url}, winutil.StartOpts{})
 }
 
-// ChangeAccountImage copies a local image into the Steam profile cache for this SteamID64.
 func (s *SteamService) ChangeAccountImage(steamID64, sourcePath string) error {
 	return profileimage.CacheLocalFile(PlatformKey, strings.TrimSpace(steamID64), strings.TrimSpace(sourcePath))
 }

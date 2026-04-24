@@ -17,7 +17,7 @@ const (
 	seIncreaseQuotaPrivilege = "SeIncreaseQuotaPrivilege"
 	sePrivilegeEnabled       = uint32(0x00000002)
 	tokenDupRights           = uint32(0x0002) // TOKEN_DUPLICATE
-	duplicateTokenRights     = uint32(0x18B) // minimal set for CreateProcessWithTokenW (matches C#)
+	duplicateTokenRights     = uint32(0x18B) // minimal for CreateProcessWithTokenW
 )
 
 var (
@@ -25,8 +25,7 @@ var (
 	procCreateProcessWithTokenW = modadvapi32.NewProc("CreateProcessWithTokenW")
 )
 
-// runAsDesktopUser starts exe with args under the interactive shell user's token (not inherited admin).
-// Caller must ensure the current process is elevated; SeIncreaseQuotaPrivilege must be usable.
+// runAsDesktopUser runs under the logged-in user's token (not inherited admin); requires elevation + SeIncreaseQuotaPrivilege.
 func runAsDesktopUser(exe string, args []string, workingDir string, hideWindow bool) error {
 	exe = strings.TrimSpace(exe)
 	if exe == "" {
@@ -160,11 +159,10 @@ func buildCommandLineForCreateProcess(args []string) string {
 		}
 		b.WriteString(syscall.EscapeArg(a))
 	}
-	// C# RunAsDesktopUser prepends a leading space before args when passed to CreateProcessWithTokenW.
+	// CreateProcessWithTokenW expects a leading space before argv (WinForms-era convention).
 	return " " + b.String()
 }
 
-// tryRunAsDesktopUser logs and returns false on failure (for fallback).
 func tryRunAsDesktopUser(exe string, args []string, workingDir string, hideWindow bool) bool {
 	if err := runAsDesktopUser(exe, args, workingDir, hideWindow); err != nil {
 		log.Printf("winutil: RunAsDesktopUser failed for %s: %v", exe, err)

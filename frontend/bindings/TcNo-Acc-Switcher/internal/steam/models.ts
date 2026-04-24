@@ -9,9 +9,6 @@ import { Create as $Create } from "@wailsio/runtime";
 // @ts-ignore: Unused imports
 import * as platform$0 from "../platform/models.js";
 
-/**
- * AccountDTO is the initial snapshot and list row model.
- */
 export class AccountDTO {
     "steamId64": string;
     "personaName": string;
@@ -32,15 +29,10 @@ export class AccountDTO {
     "collectInfo": boolean;
     "showShortNotes": boolean;
     "note": string;
-
-    /**
-     * SyncError is set when background profile/avatar fetch fails (shown in UI; also logged).
-     */
     "syncError": string;
 
     /**
-     * CurrentSession is true when this row is the active Steam session per loginusers.vdf
-     * True when loginusers.vdf has exactly one user with MostRecent=="1" (matches that row).
+     * CurrentSession: exactly one loginusers row has MostRecent=="1" and it is this account.
      */
     "currentSession": boolean;
 
@@ -122,9 +114,6 @@ export class AccountDTO {
     }
 }
 
-/**
- * AccountPatch is emitted when background work updates one account.
- */
 export class AccountPatch {
     "steamId64": string;
     "imageUrl": string;
@@ -200,8 +189,7 @@ export class InstalledGameInfo {
 }
 
 /**
- * Settings mirrors legacy SteamSettings.json (C#) field names for compatibility where applicable.
- * Shared fields are embedded from [platform.PlatformSettings].
+ * Settings adds Steam-only fields; shared options are embedded from platform.PlatformSettings.
  */
 export class Settings {
     "RunAsAdmin": boolean;

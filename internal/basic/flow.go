@@ -19,7 +19,6 @@ import (
 	"github.com/tidwall/sjson"
 )
 
-// FlowDeps gathers dependencies for account operations.
 type FlowDeps struct {
 	PS *platform.PlatformService
 }
@@ -48,7 +47,6 @@ func resolveExeFolder(deps FlowDeps, platformKey string) (string, error) {
 	return deps.PS.GetPlatformInstallFolder(platformKey)
 }
 
-// SaveCurrent copies live login state into LoginCache/<platform>/<accountName>/.
 func SaveCurrent(deps FlowDeps, platformKey, accountName string) error {
 	defer platform.EmitActionBarStatus("")
 
@@ -73,7 +71,6 @@ func SaveCurrent(deps FlowDeps, platformKey, accountName string) error {
 	return saveCurrentAfterKill(deps, platformKey, accountName, d)
 }
 
-// saveCurrentAfterKill persists login files (callers handle process kill + status).
 func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d platform.Descriptor) error {
 	accountName = paths.WindowsFileName(strings.TrimSpace(accountName), 200)
 	if accountName == "" {
@@ -268,7 +265,6 @@ func copyDir(src, dst string) error {
 	})
 }
 
-// Login restores account from cache to live paths.
 func Login(deps FlowDeps, platformKey, accountName string) error {
 	d, _, err := readDescriptor(platformKey)
 	if err != nil {
@@ -374,7 +370,6 @@ func parseHexReg(s string) ([]byte, error) {
 	return winutil.ParseHexString(s)
 }
 
-// ClearCurrentLogin removes/clears live session per PathListToClear + LoginFiles semantics.
 func ClearCurrentLogin(deps FlowDeps, platformKey string) error {
 	d, _, err := readDescriptor(platformKey)
 	if err != nil {
@@ -412,7 +407,6 @@ func ClearCurrentLogin(deps FlowDeps, platformKey string) error {
 	return nil
 }
 
-// SwapTo switches to the account identified by uniqueID (must exist in ids.json).
 func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []string) error {
 	defer platform.EmitActionBarStatus("")
 
@@ -471,14 +465,12 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 	return launchBasicNoStatus(deps, platformKey, extraLaunchArgs)
 }
 
-// LaunchBasic starts the platform executable with ExeExtraArgs.
 func LaunchBasic(deps FlowDeps, platformKey string, extraLaunchArgs []string) error {
 	defer platform.EmitActionBarStatus("")
 	platform.EmitActionBarStatusI18nPlatform("Status_StartingPlatform", platformKey)
 	return launchBasicNoStatus(deps, platformKey, extraLaunchArgs)
 }
 
-// AddNew clears session and launches without saving (parity with C# Basic).
 func AddNew(deps FlowDeps, platformKey string) error {
 	defer platform.EmitActionBarStatus("")
 
@@ -503,12 +495,10 @@ func AddNew(deps FlowDeps, platformKey string) error {
 	return launchBasicNoStatus(deps, platformKey, nil)
 }
 
-// launchBasicNoStatus is LaunchBasic without footer status (caller owns messages).
 func launchBasicNoStatus(deps FlowDeps, platformKey string, extraLaunchArgs []string) error {
 	return launchBasicNoStatusAs(deps, platformKey, false, extraLaunchArgs)
 }
 
-// launchBasicNoStatusAs starts the platform exe; if forceAdmin is true, always requests elevation.
 func launchBasicNoStatusAs(deps FlowDeps, platformKey string, forceAdmin bool, extraLaunchArgs []string) error {
 	d, _, err := readDescriptor(platformKey)
 	if err != nil {
@@ -547,7 +537,6 @@ func launchBasicNoStatusAs(deps FlowDeps, platformKey string, forceAdmin bool, e
 	return winutil.Start(exe, args, opts)
 }
 
-// LaunchBasicAs starts the platform executable; if forceAdmin is true, always requests elevation.
 func LaunchBasicAs(deps FlowDeps, platformKey string, forceAdmin bool, extraLaunchArgs []string) error {
 	defer platform.EmitActionBarStatus("")
 	platform.EmitActionBarStatusI18nPlatform("Status_StartingPlatform", platformKey)

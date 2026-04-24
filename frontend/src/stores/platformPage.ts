@@ -1,14 +1,11 @@
 import { writable } from "svelte/store";
 
-/** Public URL from GetPlatformExeIcon, or "" */
 export const platformExeIconUrl = writable<string>("");
 
 export type PlatformActionKind = "login" | "addNew" | "launch" | "saveCurrent";
 
-/** Fired when the ActionBar requests an action on the platform page (increment id each time). */
 export const platformAction = writable<{ id: number; kind: PlatformActionKind } | null>(null);
 
-/** Currently selected account on the active platform page (for shortcut swap-before-launch). */
 export const selectedAccount = writable<{
   platformKey: string;
   uniqueId: string;
@@ -21,10 +18,7 @@ export const selectedAccount = writable<{
   accountLogin: "",
 });
 
-/**
- * Last known active session for the visible platform page (from GetSteamAccounts / GetAccounts).
- * Used so footer game shortcuts can skip swap-before-launch when already on that account.
- */
+/** Live session id for the visible platform (footer shortcuts compare against this). */
 export const platformLiveSessionId = writable<{ platformKey: string; uniqueId: string }>({
   platformKey: "",
   uniqueId: "",
@@ -32,7 +26,6 @@ export const platformLiveSessionId = writable<{ platformKey: string; uniqueId: s
 
 export type PlatformAccountsRefreshSignal = { seq: number; platformKey: string };
 
-/** Bumped after external swaps (e.g. RunShortcut); platform pages subscribe and stagger-reload rows. */
 export const platformAccountsRefresh = writable<PlatformAccountsRefreshSignal>({
   seq: 0,
   platformKey: "",
@@ -46,7 +39,6 @@ export function triggerPlatformAction(kind: PlatformActionKind): void {
   platformAction.set({ id: actionSeq, kind });
 }
 
-/** Ask the platform account list (Steam or basic) to reload so current-session highlighting stays accurate. */
 export function requestPlatformAccountsRefresh(platformKey: string): void {
   const k = platformKey.trim();
   if (!k) {
@@ -56,10 +48,7 @@ export function requestPlatformAccountsRefresh(platformKey: string): void {
   platformAccountsRefresh.set({ seq: refreshSeq, platformKey: k });
 }
 
-/**
- * Unique id to pass into RunShortcut when "always swap on shortcut" is on.
- * Returns "" when the selected row is already the live session so the shortcut only launches (no redundant swap/restart).
- */
+/** Unique id for RunShortcut when "always swap" is on; "" if already on that account (launch only). */
 export function swapUidForGameShortcut(
   platformName: string,
   selected: { platformKey: string; uniqueId: string },

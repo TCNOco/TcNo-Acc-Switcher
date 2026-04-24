@@ -17,8 +17,7 @@ import (
 
 const settingsFileName = "SteamSettings.json"
 
-// Settings mirrors legacy SteamSettings.json (C#) field names for compatibility where applicable.
-// Shared fields are embedded from [platform.PlatformSettings].
+// Settings adds Steam-only fields; shared options are embedded from platform.PlatformSettings.
 type Settings struct {
 	platform.PlatformSettings
 

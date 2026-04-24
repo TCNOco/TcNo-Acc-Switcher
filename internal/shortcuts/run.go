@@ -13,8 +13,7 @@ import (
 	"TcNo-Acc-Switcher/internal/winutil"
 )
 
-// RunShortcut launches a shortcut from LoginCache/<platform>/Shortcuts/, or falls back to
-// Desktop (non-recursive) then Start Menu Programs (recursive) when the cache copy is missing.
+// RunShortcut uses LoginCache copy, else Desktop (non-recursive), else Start Menu (recursive).
 func RunShortcut(platformKey, fileName string, admin bool) error {
 	platformKey = strings.TrimSpace(platformKey)
 	fileName = filepath.Base(strings.TrimSpace(fileName))
@@ -34,7 +33,6 @@ func RunShortcut(platformKey, fileName string, admin bool) error {
 		return winutil.Start("cmd.exe", []string{"/C", full}, winutil.StartOpts{HideWindow: true})
 	}
 
-	// .lnk
 	if admin {
 		return winutil.Start(full, nil, winutil.StartOpts{
 			Admin:         true,
@@ -51,8 +49,7 @@ func shortcutNameIgnored(name string) bool {
 	return strings.Contains(strings.ToLower(name), "_ignored")
 }
 
-// matchesShortcutRequest is true when want is an exact basename match (case-insensitive) or
-// the same stem as another .lnk/.url (e.g. want "Game.lnk" matches "Game.url").
+// matchesShortcutRequest matches basename or same stem across .lnk/.url.
 func matchesShortcutRequest(want, candidate string) bool {
 	if shortcutNameIgnored(candidate) {
 		return false
@@ -76,14 +73,12 @@ func resolveShortcutPath(platformKey, fileName string) (string, error) {
 		return cacheFull, nil
 	}
 
-	// Desktop roots only (no recursion)
 	for _, dir := range desktopRoots() {
 		if p := findShortcutInDir(dir, fileName); p != "" {
 			return p, nil
 		}
 	}
 
-	// Start Menu — recursive
 	for _, base := range startMenuProgramRoots() {
 		var found string
 		_ = filepath.WalkDir(base, func(path string, d fs.DirEntry, walkErr error) error {
@@ -141,7 +136,6 @@ func findShortcutInDir(dir, fileName string) string {
 	if err != nil {
 		return ""
 	}
-	// Prefer exact basename match
 	for _, e := range entries {
 		if e.IsDir() {
 			continue
@@ -151,7 +145,6 @@ func findShortcutInDir(dir, fileName string) string {
 			return filepath.Join(dir, n)
 		}
 	}
-	// Stem match (.lnk vs .url)
 	for _, e := range entries {
 		if e.IsDir() {
 			continue
@@ -164,7 +157,6 @@ func findShortcutInDir(dir, fileName string) string {
 	return ""
 }
 
-// HideShortcut renames the cached shortcut to *_ignored.* and removes it from settings.
 func HideShortcut(platformKey, fileName string) error {
 	platformKey = strings.TrimSpace(platformKey)
 	fileName = filepath.Base(strings.TrimSpace(fileName))

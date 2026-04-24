@@ -61,8 +61,7 @@ func KillByName(names []string, method ClosingMethod) error {
 	return nil
 }
 
-// waitForImageExit polls until no process uses exeImage (e.g. "steam.exe") or maxWait elapses.
-// Replaces a fixed sleep so we return as soon as the process is gone.
+// waitForImageExit polls until exeImage is gone or maxWait elapses.
 func waitForImageExit(exeImage string, maxWait, poll time.Duration) {
 	deadline := time.Now().Add(maxWait)
 	for time.Now().Before(deadline) {

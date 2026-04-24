@@ -142,7 +142,6 @@ func saveAppNameMap(m map[string]string) error {
 	return os.WriteFile(p, b, 0o644)
 }
 
-// Mirrors legacy C#: primary mirror (issues/485), fallback to Valve's JSON API.
 const (
 	steamAppListMirrorURL = "https://api.tcno.co/sw/SteamAppList"
 	steamAppListValveURL  = "https://api.steampowered.com/ISteamApps/GetAppList/v2/"

@@ -22,12 +22,10 @@ import (
 	_ "golang.org/x/image/webp"
 )
 
-// Default platform logo colors. Foreground mirrors the frontend CSS --accent
-// (defined as var(--cyan) = #80ffea in frontend/src/styles/theme.scss) so
-// rasterised shortcut icons match the in-app accent.
+// DefaultPlatformLogoForeground matches in-app accent (#80ffea) so rasterised icons align with the UI.
 const (
 	DefaultPlatformLogoBackground = "#23272A"
-	DefaultPlatformLogoForeground = "#80ffea" // --accent
+	DefaultPlatformLogoForeground = "#80ffea"
 )
 
 var (
@@ -89,9 +87,7 @@ func coerceSVGRootPixelDimensions(s string, fallback int) string {
 	return s[:tagStart] + tag + s[tagEnd:]
 }
 
-// ApplyPlatformSVGTheming mirrors IconFactory.CreateIcon SVG tweaks.
-//
-// When the SVG contains a <path ... id="FG" ...> element we wrap it with a solid
+// ApplyPlatformSVGTheming: when a <path id="FG"> exists we wrap it with a solid
 // background <rect> and force a fill on the FG path. For SVGs that don't tag a
 // foreground path (and don't set fill themselves), we inject a default fill on
 // the <svg> root so all descendant paths inherit the accent colour instead of
@@ -158,10 +154,7 @@ func ensureSVGRootFill(s, fgHex string) string {
 	return s[:insertAt] + fmt.Sprintf(` fill="%s"`, fgHex) + s[insertAt:]
 }
 
-// ForceWailsFallbackSVG is a temporary debug toggle. When true, RasterizeSVGToNRGBA
-// skips the native oksvg rasteriser and always uses the Wails webview canvas
-// fallback path — useful for exercising RequestSVGRenderViaWails end-to-end.
-// Flip back to false for normal operation.
+// ForceWailsFallbackSVG forces canvas rasterization instead of oksvg (debug).
 const ForceWailsFallbackSVG = false
 
 // RasterizeSVGToNRGBA renders SVG to an NRGBA of size×size (oksvg; may fall back to Wails canvas).

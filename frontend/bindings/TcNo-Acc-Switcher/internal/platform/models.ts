@@ -5,9 +5,6 @@
 // @ts-ignore: Unused imports
 import { Create as $Create } from "@wailsio/runtime";
 
-/**
- * AdminCheckResult is returned to the UI for proactive elevation prompts.
- */
 export class AdminCheckResult {
     "needsAdmin": boolean;
     "blocker"?: string;
@@ -30,9 +27,6 @@ export class AdminCheckResult {
     }
 }
 
-/**
- * GameShortcutEntry is one cached game shortcut (.lnk / .url) in the footer bar or dropdown.
- */
 export class GameShortcutEntry {
     "fileName": string;
     "pinned": boolean;
@@ -58,9 +52,6 @@ export class GameShortcutEntry {
     }
 }
 
-/**
- * PlatformSettings are shared per-platform fields stored in Settings/<Name>Settings.json
- */
 export class PlatformSettings {
     "RunAsAdmin": boolean;
     "TrayAccNumber": number;
@@ -121,9 +112,6 @@ export class PlatformSettings {
     }
 }
 
-/**
- * PlatformStartup is the initial payload for the homepage and manage-platforms views.
- */
 export class PlatformStartup {
     "homePlatformOrder": string[];
     "allPlatformNames": string[];
@@ -132,7 +120,7 @@ export class PlatformStartup {
     "language": string;
 
     /**
-     * CliNavigateHint is a one-shot JSON route from a prior ProcessCommand line (e.g. "Steam" to open that page).
+     * One-shot SPA route from CLI (e.g. open Steam page after elevated restart).
      */
     "cliNavigateHint"?: string;
 
@@ -178,9 +166,6 @@ export class PlatformStartup {
     }
 }
 
-/**
- * ResolvePlatformLaunchResult is returned before navigating to a platform page.
- */
 export class ResolvePlatformLaunchResult {
     "ok": boolean;
     "needsManualLocate": boolean;

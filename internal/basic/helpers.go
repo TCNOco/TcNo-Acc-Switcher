@@ -12,7 +12,6 @@ func loadDescriptor(raw []byte, platformKey string) (platform.Descriptor, error)
 	return platform.ParseDescriptor(raw, platformKey)
 }
 
-// stripREG returns the path after optional REG: prefix.
 func stripREG(key string) string {
 	k := strings.TrimSpace(key)
 	if strings.HasPrefix(strings.ToUpper(k), "REG:") {

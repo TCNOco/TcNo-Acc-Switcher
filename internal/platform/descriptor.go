@@ -8,7 +8,6 @@ import (
 
 const SameAsLoginFiles = "SAME_AS_LOGIN_FILES"
 
-// DescriptorExtras mirrors optional per-platform metadata from Platforms.json "Extras".
 type DescriptorExtras struct {
 	CachePaths                []string          `json:"CachePaths,omitempty"`
 	BackupFolders             map[string]string `json:"BackupFolders,omitempty"`
@@ -27,7 +26,6 @@ type DescriptorExtras struct {
 	UsernameModalHintText     string            `json:"UsernameModalHintText,omitempty"`
 }
 
-// Descriptor is the full platform definition from Platforms.json (BasicPlatforms.cs parity).
 type Descriptor struct {
 	Identifiers              []string          `json:"Identifiers,omitempty"`
 	ExeLocationDefault       string            `json:"ExeLocationDefault,omitempty"`
@@ -45,8 +43,7 @@ type Descriptor struct {
 	Extras                   DescriptorExtras  `json:"Extras,omitempty"`
 }
 
-// ParseDescriptor loads the full descriptor for platformKey and expands PathListToClear
-// when it contains SAME_AS_LOGIN_FILES (once, using LoginFiles keys).
+// ParseDescriptor expands PathListToClear entries equal to SAME_AS_LOGIN_FILES into LoginFiles keys.
 func ParseDescriptor(raw []byte, platformKey string) (Descriptor, error) {
 	var top struct {
 		Platforms map[string]json.RawMessage `json:"Platforms"`
@@ -89,7 +86,6 @@ func (d *Descriptor) expandPathListToClear() {
 	d.PathListToClear = out
 }
 
-// ToPlatformEntry returns the minimal struct used by launch resolution.
 func (d Descriptor) ToPlatformEntry() PlatformEntry {
 	return PlatformEntry{
 		ExeLocationDefault:       d.ExeLocationDefault,

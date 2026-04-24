@@ -5,9 +5,6 @@
 // @ts-ignore: Unused imports
 import { Create as $Create } from "@wailsio/runtime";
 
-/**
- * AccountDTO is one row in the generic account list.
- */
 export class AccountDTO {
     "platformKey": string;
     "uniqueId": string;

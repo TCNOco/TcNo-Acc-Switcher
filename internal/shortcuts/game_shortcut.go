@@ -16,9 +16,7 @@ import (
 
 var steamRungameIDRE = regexp.MustCompile(`(?i)steam://rungameid/(\d+)`)
 
-// CreateGameAccountShortcut writes a Desktop .lnk that swaps to the account then launches a game
-// shortcut from the bar (by Steam app id when the cached tile is a steam://rungameid .url, else
-// by --run-shortcut=<encoded filename>).
+// CreateGameAccountShortcut: steam://rungameid .url tiles use --run-appid; otherwise --run-shortcut.
 func CreateGameAccountShortcut(platformKey, uniqueID, accountDisplayName, accountLogin, gameFileName string) (string, error) {
 	platformKey = strings.TrimSpace(platformKey)
 	uniqueID = strings.TrimSpace(uniqueID)

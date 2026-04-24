@@ -13,7 +13,6 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-// ReadUniqueID resolves the current session's unique id per descriptor (live system state).
 func ReadUniqueID(d platform.Descriptor, platformFolder string) (string, error) {
 	method := strings.TrimSpace(d.UniqueIdMethod)
 	ctx := platform.PathTokenContext{PlatformFolder: platformFolder}

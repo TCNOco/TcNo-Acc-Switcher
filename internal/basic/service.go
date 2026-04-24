@@ -11,7 +11,6 @@ import (
 	"TcNo-Acc-Switcher/internal/profileimage"
 )
 
-// BasicService exposes generic platform account switching to the Wails frontend.
 type BasicService struct {
 	mu sync.Mutex
 	PS *platform.PlatformService
@@ -25,7 +24,6 @@ func (b *BasicService) deps() FlowDeps {
 	return FlowDeps{PS: b.PS}
 }
 
-// AccountDTO is one row in the generic account list.
 type AccountDTO struct {
 	PlatformKey    string `json:"platformKey"`
 	UniqueID       string `json:"uniqueId"`
@@ -35,7 +33,6 @@ type AccountDTO struct {
 	CurrentSession bool   `json:"currentSession"`
 }
 
-// GetAccounts returns merged ids.json + order + notes + profile image URLs.
 func (b *BasicService) GetAccounts(platformKey string) ([]AccountDTO, error) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
@@ -101,35 +98,30 @@ func (b *BasicService) GetAccounts(platformKey string) ([]AccountDTO, error) {
 	return out, nil
 }
 
-// SwapToAccount switches to a saved account (non-Steam).
 func (b *BasicService) SwapToAccount(platformKey, uniqueID string, extraLaunchArgs []string) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	return SwapTo(b.deps(), strings.TrimSpace(platformKey), strings.TrimSpace(uniqueID), extraLaunchArgs)
 }
 
-// SaveCurrent saves the live session to LoginCache under the given display name.
 func (b *BasicService) SaveCurrent(platformKey, accountName string) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	return SaveCurrent(b.deps(), strings.TrimSpace(platformKey), strings.TrimSpace(accountName))
 }
 
-// AddNew clears login state and launches the platform exe.
 func (b *BasicService) AddNew(platformKey string) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	return AddNew(b.deps(), strings.TrimSpace(platformKey))
 }
 
-// LaunchPlatform starts the platform without switching (delegates Steam in main).
 func (b *BasicService) LaunchPlatform(platformKey string) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	return LaunchBasic(b.deps(), strings.TrimSpace(platformKey), nil)
 }
 
-// ForgetAccount removes cached data for an account.
 func (b *BasicService) ForgetAccount(platformKey, uniqueID string) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
@@ -154,14 +146,12 @@ func (b *BasicService) ForgetAccount(platformKey, uniqueID string) error {
 	return nil
 }
 
-// SaveAccountOrder persists the order of unique ids for the platform.
 func (b *BasicService) SaveAccountOrder(platformKey string, order []string) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	return writeOrder(strings.TrimSpace(platformKey), order)
 }
 
-// SetAccountNote updates AccountNotes in platform settings JSON.
 func (b *BasicService) SetAccountNote(platformKey, uniqueID, note string) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
@@ -180,7 +170,6 @@ func (b *BasicService) SetAccountNote(platformKey, uniqueID, note string) error 
 	return platform.SavePlatformSettings(strings.TrimSpace(platformKey), ps)
 }
 
-// RenameAccount updates the display name in ids.json and renames the cached folder when possible.
 func (b *BasicService) RenameAccount(platformKey, uniqueID, newName string) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
@@ -217,14 +206,12 @@ func (b *BasicService) RenameAccount(platformKey, uniqueID, newName string) erro
 	return nil
 }
 
-// ChangeAccountImage copies an image file into the profile cache for this account.
 func (b *BasicService) ChangeAccountImage(platformKey, uniqueID, sourcePath string) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	return profileimage.CacheLocalFile(strings.TrimSpace(platformKey), strings.TrimSpace(uniqueID), strings.TrimSpace(sourcePath))
 }
 
-// GetAccountNote reads AccountNotes from platform settings for one unique id.
 func (b *BasicService) GetAccountNote(platformKey, uniqueID string) (string, error) {
 	b.mu.Lock()
 	defer b.mu.Unlock()

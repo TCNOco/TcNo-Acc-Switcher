@@ -8,7 +8,7 @@ import (
 	"TcNo-Acc-Switcher/internal/winutil"
 )
 
-// steamKillNamesForAdmin mirrors [steam.steamKillNames] — keep in sync when changing Steam kill list.
+// Must match steam.steamKillNames (admin pre-flight uses the same process list).
 var steamKillNamesForAdmin = []string{
 	"steam.exe",
 	"SERVICE:Steam Client Service",
@@ -16,14 +16,11 @@ var steamKillNamesForAdmin = []string{
 	"GameOverlayUI.exe",
 }
 
-// AdminCheckResult is returned to the UI for proactive elevation prompts.
 type AdminCheckResult struct {
 	NeedsAdmin bool   `json:"needsAdmin"`
 	Blocker    string `json:"blocker,omitempty"`
 }
 
-// CheckAdminForPlatform reports whether the current process can close everything required
-// to swap accounts on this platform (mirrors C# CanKillProcess pre-flight).
 func (p *PlatformService) CheckAdminForPlatform(platformKey string) (AdminCheckResult, error) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
@@ -73,8 +70,7 @@ func (p *PlatformService) CheckAdminForPlatform(platformKey string) (AdminCheckR
 	return AdminCheckResult{}, nil
 }
 
-// RestartAsAdmin spawns an elevated copy of this executable with the given argv tail, then exits.
-// Register winutil.RegisterSingletonReleaser from main so the singleton mutex is released first.
+// RestartAsAdmin re-execs elevated with args and exits; main should register winutil.RegisterSingletonReleaser first.
 func (p *PlatformService) RestartAsAdmin(args []string) error {
 	_ = p // satisfy staticcheck if receiver unused in future
 	return winutil.RestartElevated(args)

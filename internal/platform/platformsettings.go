@@ -14,13 +14,12 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-// GameShortcutEntry is one cached game shortcut (.lnk / .url) in the footer bar or dropdown.
 type GameShortcutEntry struct {
 	FileName string `json:"fileName"`
 	Pinned   bool   `json:"pinned"`
 }
 
-// UnmarshalJSON accepts legacy / interop casing (e.g. C# FileName, Pinned) so shortcuts are not dropped.
+// UnmarshalJSON accepts alternate JSON key casing for FileName and Pinned.
 func (e *GameShortcutEntry) UnmarshalJSON(data []byte) error {
 	if len(data) == 0 || string(data) == "null" {
 		return nil
@@ -72,7 +71,6 @@ func settingsDirUnderExe() (string, error) {
 	return filepath.Join(exeDir, dataDirName, "Settings"), nil
 }
 
-// PlatformSettings are shared per-platform fields stored in Settings/<Name>Settings.json
 type PlatformSettings struct {
 	RunAsAdmin           bool                `json:"RunAsAdmin"`
 	TrayAccNumber        int                 `json:"TrayAccNumber"`
@@ -87,7 +85,6 @@ type PlatformSettings struct {
 	LaunchArguments      string              `json:"LaunchArguments,omitempty"`
 }
 
-// DefaultPlatformSettings returns defaults for a new platform settings file.
 func DefaultPlatformSettings() PlatformSettings {
 	return PlatformSettings{
 		TrayAccNumber:        3,
@@ -134,12 +131,10 @@ func platformSettingsJSONPath(platformKey string) (string, error) {
 	return filepath.Join(dir, sanitizePlatformSettingsFilePrefix(key)+"Settings.json"), nil
 }
 
-// LaunchArgTokens splits a user-entered launch-argument line on whitespace.
 func LaunchArgTokens(line string) []string {
 	return strings.Fields(strings.TrimSpace(line))
 }
 
-// HasLaunchArgToken reports whether flag appears as a whitespace-separated token (case-insensitive).
 func HasLaunchArgToken(line, flag string) bool {
 	flag = strings.TrimSpace(flag)
 	if flag == "" {
@@ -153,7 +148,6 @@ func HasLaunchArgToken(line, flag string) bool {
 	return false
 }
 
-// EnsureLaunchArg appends flag if not already present as a token.
 func EnsureLaunchArg(line, flag string) string {
 	flag = strings.TrimSpace(flag)
 	if flag == "" {
@@ -169,7 +163,6 @@ func EnsureLaunchArg(line, flag string) string {
 	return line + " " + flag
 }
 
-// RemoveLaunchArgToken removes all case-insensitive matches of flag from the token list.
 func RemoveLaunchArgToken(line, flag string) string {
 	flag = strings.TrimSpace(flag)
 	if flag == "" {
@@ -184,8 +177,7 @@ func RemoveLaunchArgToken(line, flag string) string {
 	return strings.Join(out, " ")
 }
 
-// LoadPlatformSettings reads common platform settings from the per-platform JSON file.
-// For Steam, reads SteamSettings.json and unmarshals only matching keys.
+// LoadPlatformSettings reads Settings/<Platform>Settings.json (Steam: SteamSettings.json); only fields on PlatformSettings are unmarshaled.
 func LoadPlatformSettings(platformKey string) (PlatformSettings, error) {
 	path, err := platformSettingsJSONPath(platformKey)
 	if err != nil {
@@ -225,8 +217,7 @@ func LoadPlatformSettings(platformKey string) (PlatformSettings, error) {
 	return s, nil
 }
 
-// SavePlatformSettings merges common fields into the per-platform JSON file without
-// removing other keys (e.g. Steam-specific fields in SteamSettings.json).
+// SavePlatformSettings patches the JSON file without removing keys not present on PlatformSettings.
 func SavePlatformSettings(platformKey string, s PlatformSettings) error {
 	path, err := platformSettingsJSONPath(platformKey)
 	if err != nil {
@@ -260,8 +251,7 @@ func SavePlatformSettings(platformKey string, s PlatformSettings) error {
 	return fsutil.WriteFileAtomic(path, out, 0o644)
 }
 
-// resetPlatformJSONToDefaults overwrites the per-platform JSON with defaults (common fields only).
-// For Steam, use the hook registered via SetSteamReset (full Steam defaults).
+// resetPlatformJSONToDefaults resets common settings; Steam uses SetSteamReset for a full reset.
 func resetPlatformJSONToDefaults(platformKey string) error {
 	platformKey = strings.TrimSpace(platformKey)
 	if strings.EqualFold(platformKey, "Steam") {

@@ -21,18 +21,16 @@ type platformsFile struct {
 	Platforms map[string]json.RawMessage `json:"Platforms"`
 }
 
-// PlatformStartup is the initial payload for the homepage and manage-platforms views.
 type PlatformStartup struct {
 	HomePlatformOrder     []string `json:"homePlatformOrder"`
 	AllPlatformNames      []string `json:"allPlatformNames"`
 	DisabledPlatformNames []string `json:"disabledPlatformNames"`
 	PlatformsFileMissing  bool     `json:"platformsFileMissing"`
 	Language              string   `json:"language"`
-	// CliNavigateHint is a one-shot JSON route from a prior ProcessCommand line (e.g. "Steam" to open that page).
+	// One-shot SPA route from CLI (e.g. open Steam page after elevated restart).
 	CliNavigateHint string `json:"cliNavigateHint,omitempty"`
 }
 
-// PlatformService exposes platform list, settings, and launch resolution to the UI.
 type PlatformService struct {
 	mu sync.Mutex
 }
@@ -263,7 +261,6 @@ func (p *PlatformService) SetPlatformExePath(platformKey, exePath string) error 
 	return saveSettingsAtomic(exeDir, settings)
 }
 
-// PickPlatformsJSON opens a native file dialog. Returns ("", nil) if the user cancels.
 func (p *PlatformService) PickPlatformsJSON() (string, error) {
 	app := application.Get()
 	if app == nil {
@@ -335,7 +332,6 @@ func (p *PlatformService) RestoreDefaultPlatformsJSON() error {
 	return saveSettingsAtomic(exeDir, settings)
 }
 
-// ResolvePlatformsJSONPath returns the absolute path to Platforms.json for the current app settings.
 func ResolvePlatformsJSONPath(exeDir string) (string, error) {
 	s, err := loadSettings(exeDir)
 	if err != nil {
@@ -433,36 +429,30 @@ func sortStringsFold(s []string) {
 	})
 }
 
-// GetPlatformSettings returns shared per-platform settings from Settings/<Platform>Settings.json
-// (Steam: SteamSettings.json, unmarshalling only common keys).
 func (p *PlatformService) GetPlatformSettings(platformKey string) (PlatformSettings, error) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 	return LoadPlatformSettings(platformKey)
 }
 
-// SavePlatformSettings merges shared fields into the per-platform JSON without removing other keys.
 func (p *PlatformService) SavePlatformSettings(platformKey string, s PlatformSettings) error {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 	return SavePlatformSettings(platformKey, s)
 }
 
-// ResetPlatformSettings resets the current platform's settings file to defaults.
 func (p *PlatformService) ResetPlatformSettings(platformKey string) error {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 	return resetPlatformJSONToDefaults(platformKey)
 }
 
-// GetPlatformInstallFolder returns the directory containing the platform's primary executable, if known.
 func (p *PlatformService) GetPlatformInstallFolder(platformKey string) (string, error) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 	return p.getPlatformInstallFolderUnlocked(platformKey)
 }
 
-// OpenPlatformFolder opens the install folder in the native file manager.
 func (p *PlatformService) OpenPlatformFolder(platformKey string) error {
 	p.mu.Lock()
 	folder, err := p.getPlatformInstallFolderUnlocked(platformKey)
@@ -484,7 +474,7 @@ func (p *PlatformService) OpenPlatformFolder(platformKey string) error {
 	return OpenPathInFileManager(folder)
 }
 
-// getPlatformInstallFolderUnlocked mirrors ResolvePlatformLaunch path resolution; caller must hold p.mu.
+// getPlatformInstallFolderUnlocked: caller must hold p.mu.
 func (p *PlatformService) getPlatformInstallFolderUnlocked(platformKey string) (string, error) {
 	platformKey = strings.TrimSpace(platformKey)
 	if platformKey == "" {
@@ -540,7 +530,6 @@ func (p *PlatformService) getPlatformInstallFolderUnlocked(platformKey string) (
 	return "", nil
 }
 
-// ResolvePlatformExeFullPath returns the absolute path to the platform's primary executable, if known.
 func (p *PlatformService) ResolvePlatformExeFullPath(platformKey string) (string, error) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
@@ -592,7 +581,6 @@ func (p *PlatformService) resolvePlatformExeFullPathUnlocked(platformKey string)
 	return filepath.Join(folder, exeName), nil
 }
 
-// GetPlatformExeIcon returns a public URL under /img/shortcuts/... for the platform exe icon, or "" on failure.
 func (p *PlatformService) GetPlatformExeIcon(platformKey string) (string, error) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
@@ -611,7 +599,6 @@ func (p *PlatformService) GetPlatformExeIcon(platformKey string) (string, error)
 	return u, nil
 }
 
-// LaunchPlatform starts the platform executable (no account switch).
 func (p *PlatformService) LaunchPlatform(platformKey string) error {
 	p.mu.Lock()
 	defer p.mu.Unlock()
@@ -628,7 +615,6 @@ func (p *PlatformService) LaunchPlatform(platformKey string) error {
 	return launchBasicPlatform(platformKey)
 }
 
-// LaunchPlatformAs starts the platform; when admin is true, requests elevation (RunAs) for this launch.
 func (p *PlatformService) LaunchPlatformAs(platformKey string, admin bool) error {
 	p.mu.Lock()
 	defer p.mu.Unlock()
@@ -651,7 +637,6 @@ func (p *PlatformService) LaunchPlatformAs(platformKey string, admin bool) error
 	return launchBasicPlatform(platformKey)
 }
 
-// HasShortcutMainExe is true when the footer should show a platform-launch tile (Steam always).
 func (p *PlatformService) HasShortcutMainExe(platformKey string) (bool, error) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
@@ -681,7 +666,6 @@ func (p *PlatformService) HasShortcutMainExe(platformKey string) (bool, error) {
 	return false, nil
 }
 
-// GetProtocolEnabled returns the stored Windows URL protocol (tcno://) setting.
 func (p *PlatformService) GetProtocolEnabled() (bool, error) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
@@ -696,7 +680,6 @@ func (p *PlatformService) GetProtocolEnabled() (bool, error) {
 	return s.ProtocolEnabled, nil
 }
 
-// SetProtocolEnabled registers or unregisters tcno:// for this executable (persists AppSettings).
 func (p *PlatformService) SetProtocolEnabled(enabled bool) error {
 	p.mu.Lock()
 	defer p.mu.Unlock()

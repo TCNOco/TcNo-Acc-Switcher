@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-// Steam launch hooks are set from main to avoid importing internal/steam here (import cycle).
+// Launch hooks are set from main to avoid an import cycle with internal/steam.
 var (
 	saveSteamFolderFromExe func(exeFullPath string) error
 	resolveSteamExePath    func() (exePath string, ok bool)
@@ -19,30 +19,25 @@ var (
 	launchBasicPlatformAs   func(platformKey string, forceAdmin bool) error
 )
 
-// SetSteamLaunchHooks wires SteamSettings + exe resolution from internal/steam.
 func SetSteamLaunchHooks(saveExe func(exeFullPath string) error, resolve func() (exePath string, ok bool)) {
 	saveSteamFolderFromExe = saveExe
 	resolveSteamExePath = resolve
 }
 
-// SetSteamReset wires full Steam settings reset (SteamSettings.json defaults) from internal/steam.
 func SetSteamReset(fn func() error) {
 	resetSteamSettings = fn
 }
 
-// SetPlatformLaunchers wires Steam and Basic launch from main (avoids import cycles).
 func SetPlatformLaunchers(steam func() error, basic func(platformKey string) error) {
 	launchSteamExe = steam
 	launchBasicPlatform = basic
 }
 
-// SetPlatformLaunchAs wires optional elevated launches (footer context menu).
 func SetPlatformLaunchAs(steamAs func(forceAdmin bool) error, basicAs func(platformKey string, forceAdmin bool) error) {
 	launchSteamExeAs = steamAs
 	launchBasicPlatformAs = basicAs
 }
 
-// ResolvePlatformLaunchResult is returned before navigating to a platform page.
 type ResolvePlatformLaunchResult struct {
 	Ok                bool   `json:"ok"`
 	NeedsManualLocate bool   `json:"needsManualLocate"`
@@ -51,7 +46,6 @@ type ResolvePlatformLaunchResult struct {
 	InitialPath       string `json:"initialPath"`
 }
 
-// ResolvePlatformLaunch checks saved path, default exe path, then OS-specific shortcut discovery.
 func (p *PlatformService) ResolvePlatformLaunch(platformKey string) (ResolvePlatformLaunchResult, error) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
@@ -154,7 +148,6 @@ func (p *PlatformService) ResolvePlatformLaunch(platformKey string) (ResolvePlat
 	}, nil
 }
 
-// ConfirmPlatformExePath validates basename and saves the full path to settings.
 func (p *PlatformService) ConfirmPlatformExePath(platformKey, exeFullPath string) error {
 	p.mu.Lock()
 	defer p.mu.Unlock()

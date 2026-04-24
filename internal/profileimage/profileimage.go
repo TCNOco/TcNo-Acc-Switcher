@@ -65,8 +65,7 @@ func CachedFilePath(platformKey, accountID string) (string, bool) {
 	return "", false
 }
 
-// CacheLocalFile copies a local image file into wwwroot/img/profiles/<platform>/<accountID>.<ext>.
-// Replaces any existing cached image for that account. ext is taken from src when possible.
+// CacheLocalFile copies src into the profile image cache (overwrites existing).
 func CacheLocalFile(platformKey, accountID, src string) error {
 	platformKey = strings.TrimSpace(platformKey)
 	accountID = strings.TrimSpace(accountID)

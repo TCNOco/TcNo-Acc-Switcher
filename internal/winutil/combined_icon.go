@@ -19,13 +19,7 @@ import (
 
 const combinedIconCanvas = 500
 
-// BuildCombinedAccountIcon writes a multi-size .ico (16,32,48,256) with platform background and avatar at bottom-right (half size), C# IconFactory parity.
-//
-// Optional cachedPlatformICO: when non-empty and the file exists, it must be the same
-// multi-size .ico written by BuildPlatformIcon for this platform (e.g. …/IconCache/steam_platform.ico).
-// Decoding that file yields the exact same background tile as the Desktop platform shortcut, then the
-// account avatar is composited on top. If the file is missing, art is resolved from the embedded dist
-// (SVG/PNG) like BuildPlatformIcon.
+// BuildCombinedAccountIcon builds a multi-size .ico: platform tile + avatar. Optional cachedPlatformICO is the same .ico as BuildPlatformIcon (matches desktop shortcut tile); otherwise embedded art.
 func BuildCombinedAccountIcon(platformKey, avatarPath, outICO string, cachedPlatformICO ...string) error {
 	platformKey = strings.TrimSpace(platformKey)
 	avatarPath = strings.TrimSpace(avatarPath)
@@ -71,8 +65,6 @@ func BuildCombinedAccountIcon(platformKey, avatarPath, outICO string, cachedPlat
 	return writeCombinedICOFromBG(bg, avatarPath, outICO)
 }
 
-// BuildCombinedGameIcon writes a multi-size .ico with the game/app tile as background and the
-// account avatar at bottom-right (half size), same layout as BuildCombinedAccountIcon.
 func BuildCombinedGameIcon(gameIconPath, avatarPath, outICO string) error {
 	gameIconPath = strings.TrimSpace(gameIconPath)
 	avatarPath = strings.TrimSpace(avatarPath)

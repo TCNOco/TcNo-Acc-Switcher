@@ -16,7 +16,6 @@ import (
 	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
-// Service exposes game shortcut operations to the Wails frontend.
 type Service struct {
 	ps *platform.PlatformService
 
@@ -24,7 +23,6 @@ type Service struct {
 	scanBusy map[string]struct{}
 }
 
-// NewService constructs the shortcuts service.
 func NewService(ps *platform.PlatformService) *Service {
 	return &Service{
 		ps:       ps,
@@ -69,12 +67,10 @@ func (s *Service) emitUpdated(platformKey string) {
 	app.Event.Emit(UpdatedEvent, ListPayload{PlatformKey: platformKey, Shortcuts: list})
 }
 
-// ListShortcuts returns persisted shortcuts and icon URLs without scanning source folders.
 func (s *Service) ListShortcuts(platformKey string) ([]ShortcutDTO, error) {
 	return s.buildDTOs(strings.TrimSpace(platformKey))
 }
 
-// ScanShortcuts reconciles Start Menu / configured folders with the cache (async).
 func (s *Service) ScanShortcuts(platformKey string) error {
 	platformKey = strings.TrimSpace(platformKey)
 	if platformKey == "" {
@@ -99,7 +95,6 @@ func (s *Service) ScanShortcuts(platformKey string) error {
 	return nil
 }
 
-// RunShortcut launches a cached .lnk or .url. When selectedUniqueID is set and AlwaysSwapOnShortcut is enabled for the platform, swaps first (strict on failure).
 func (s *Service) RunShortcut(platformKey, fileName string, admin bool, selectedUniqueID string) error {
 	platformKey = strings.TrimSpace(platformKey)
 	selectedUniqueID = strings.TrimSpace(selectedUniqueID)
@@ -123,13 +118,10 @@ func (s *Service) RunShortcut(platformKey, fileName string, admin bool, selected
 	return RunShortcut(platformKey, fileName, admin)
 }
 
-// CreateAccountShortcut writes a desktop shortcut with CLI args for this account.
 func (s *Service) CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix, stateTitle, accountLogin string) (string, error) {
 	return CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix, stateTitle, accountLogin)
 }
 
-// CreateGameAccountShortcut writes a desktop shortcut that swaps to the account then launches
-// the given game shortcut tile (Steam .url → --run-appid when possible).
 func (s *Service) CreateGameAccountShortcut(platformKey, uniqueID, accountDisplayName, accountLogin, gameFileName string) (string, error) {
 	return CreateGameAccountShortcut(platformKey, uniqueID, accountDisplayName, accountLogin, gameFileName)
 }
@@ -138,27 +130,22 @@ func (s *Service) ResolveAccountShortcutStem(platformKey, uniqueID, displayName,
 	return ResolvedAccountShortcutStem(platformKey, uniqueID, displayName, accountLogin)
 }
 
-// CreatePlatformShortcut writes a desktop shortcut that opens the switcher on this platform's page.
 func (s *Service) CreatePlatformShortcut(platformKey string) (string, error) {
 	return CreatePlatformShortcut(platformKey)
 }
 
-// DeletePlatformShortcut removes the platform switcher desktop shortcut if present.
 func (s *Service) DeletePlatformShortcut(platformKey string) error {
 	return DeletePlatformShortcut(platformKey)
 }
 
-// PlatformShortcutExists reports whether the platform switcher desktop shortcut exists.
 func (s *Service) PlatformShortcutExists(platformKey string) (bool, error) {
 	return PlatformShortcutExists(platformKey)
 }
 
-// ReportSVGRenderResult completes an async SVG→PNG rasterization requested from Go (Wails canvas fallback).
 func (s *Service) ReportSVGRenderResult(id, pngBase64, errMsg string) {
 	winutil.DeliverSVGRenderResult(id, pngBase64, errMsg)
 }
 
-// HideShortcut hides a shortcut (rename to _ignored).
 func (s *Service) HideShortcut(platformKey, fileName string) error {
 	if err := HideShortcut(platformKey, fileName); err != nil {
 		return err
@@ -167,7 +154,6 @@ func (s *Service) HideShortcut(platformKey, fileName string) error {
 	return nil
 }
 
-// SaveShortcutOrder persists pinned vs dropdown order (filenames only).
 func (s *Service) SaveShortcutOrder(platformKey string, pinned, dropdown []string) error {
 	platformKey = strings.TrimSpace(platformKey)
 	cur, err := loadEntries(platformKey)
@@ -220,7 +206,6 @@ func (s *Service) SaveShortcutOrder(platformKey string, pinned, dropdown []strin
 	return nil
 }
 
-// OpenShortcutFolder opens LoginCache/<platform>/Shortcuts in the file manager.
 func (s *Service) OpenShortcutFolder(platformKey string) error {
 	platformKey = strings.TrimSpace(platformKey)
 	root, err := paths.LoginCacheDir(platformKey)

@@ -12,8 +12,7 @@ import (
 	"TcNo-Acc-Switcher/internal/winutil"
 )
 
-// CreateAccountShortcut writes a Desktop .lnk targeting this exe with CLI swap args.
-// For Steam, stateSuffix is the persona state index for argv; stateTitle is shown in the filename (optional, localized).
+// CreateAccountShortcut builds a Desktop .lnk; for Steam, stateSuffix is persona argv index and stateTitle is an optional filename segment.
 func CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix, stateTitle, accountLogin string) (string, error) {
 	platformKey = strings.TrimSpace(platformKey)
 	uniqueID = strings.TrimSpace(uniqueID)

@@ -19,9 +19,7 @@ var steamKillNames = []string{
 	"GameOverlayUI.exe",
 }
 
-// SwapToAccount switches the active Steam session: kills Steam, rewrites loginusers.vdf + registry, restarts.
-// steamID64 may be "" for Add New (clears AutoLoginUser). personaState -1 means use Steam_OverrideState from settings for localconfig; values < -1 skip persona file edit.
-// extraLaunchArgs are appended after settings-derived argv (e.g. from desktop shortcuts: +s:... -dev).
+// SwapToAccount: empty steamID64 clears AutoLoginUser (Add New). personaState -1 uses Steam_OverrideState; < -1 skips localconfig persona edit. extraLaunchArgs append after settings argv.
 func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string) error {
 	defer platform.EmitActionBarStatus("")
 
@@ -99,7 +97,6 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 	return winutil.Start(exe, args, opts)
 }
 
-// LaunchSteamOnly starts Steam without mutating login state.
 func LaunchSteamOnly(extraLaunchArgs []string) error {
 	defer platform.EmitActionBarStatus("")
 	platform.EmitActionBarStatusI18nPlatform("Status_StartingPlatform", "Steam")
@@ -143,7 +140,6 @@ func LaunchSteamOnly(extraLaunchArgs []string) error {
 	return winutil.Start(exe, args, opts)
 }
 
-// LaunchSteamOnlyAs starts Steam; if forceAdmin is true, always requests elevation (RunAs).
 func LaunchSteamOnlyAs(forceAdmin bool, extraLaunchArgs []string) error {
 	defer platform.EmitActionBarStatus("")
 	platform.EmitActionBarStatusI18nPlatform("Status_StartingPlatform", "Steam")
@@ -269,7 +265,6 @@ func setShowSteamSwitcher(steamRoot string, show bool) error {
 	return fsutil.WriteFileAtomic(path, []byte(strings.Join(out, "\n")), 0o644)
 }
 
-// RemoveSteamAccountFromVDF removes one SteamID from loginusers.vdf (Forget).
 func RemoveSteamAccountFromVDF(steamRoot, steamID64 string) error {
 	loginPath := LoginUsersPath(steamRoot)
 	users, err := ParseLoginUsers(loginPath)

@@ -9,7 +9,6 @@ import (
 	"TcNo-Acc-Switcher/internal/winutil"
 )
 
-// SafeFolderName mirrors profileimage.PlatformFolder-style slug for paths.
 func SafeFolderName(platformKey string) string {
 	s := strings.TrimSpace(strings.ToLower(platformKey))
 	var b strings.Builder
