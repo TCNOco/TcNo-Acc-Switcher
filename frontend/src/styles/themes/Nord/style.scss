@@ -44,9 +44,6 @@ $nordAuora4: #B48EAD;
   --notification-border-radius: 0.25rem;
 }
 
-@import url("https://fonts.googleapis.com/css2?family=Rubik&family=Roboto&display=swap");
-
-
 app {
   border-radius: .125rem;
 }
@@ -56,7 +53,8 @@ app {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  font-family: "Rubik", sans-serif;
+  /* Rubik/Roboto load via info.yaml googleFontsCss when online; see themes.ts */
+  font-family: "Rubik", system-ui, "Segoe UI", Roboto, sans-serif;
 }
 
 body {

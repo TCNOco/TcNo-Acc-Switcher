@@ -5,7 +5,6 @@
   import { openConfirm, openFolderPicker } from "../stores/modal";
   import { pushToast } from "../stores/toast";
   import { tooltip } from "../lib/actions/tooltip";
-  import ActionBar from "../components/ActionBar.svelte";
   import GeneralSettingsBlock from "../components/GeneralSettingsBlock.svelte";
   import * as Wails from "../lib/platformBindings";
   import * as Shortcuts from "wails-shortcuts-service";
@@ -866,8 +865,6 @@
     <GeneralSettingsBlock />
   {/if}
 </div>
-
-<ActionBar />
 
 <style lang="scss">
   .platform-settings-scroll {

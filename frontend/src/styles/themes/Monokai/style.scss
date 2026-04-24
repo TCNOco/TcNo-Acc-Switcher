@@ -11,14 +11,12 @@
   --notification-main-bg: #131313;
 }
 
-@import url("https://fonts.googleapis.com/css2?family=Anton&family=Tajawal&display=swap");
-
 * {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  font-family: "Tajawal", sans-serif;
+  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
 }
 
 body {
