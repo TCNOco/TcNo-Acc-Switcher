@@ -8,7 +8,7 @@
   import ActionBar from "../components/ActionBar.svelte";
   import GeneralSettingsBlock from "../components/GeneralSettingsBlock.svelte";
   import * as Wails from "../lib/platformBindings";
-  import * as Shortcuts from "../../bindings/TcNo-Acc-Switcher/internal/shortcuts/service.js";
+  import * as Shortcuts from "wails-shortcuts-service";
   import { PlatformSettings } from "../../bindings/TcNo-Acc-Switcher/internal/platform/models.js";
   import { Settings } from "../../bindings/TcNo-Acc-Switcher/internal/steam/models.js";
   import "../styles/Settings.scss";

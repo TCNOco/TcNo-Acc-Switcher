@@ -22,7 +22,7 @@
   import { tooltip } from "../lib/actions/tooltip";
   import { contextMenu as ctxMenuAction } from "../lib/actions/contextMenu";
   import type { MenuItemDef } from "../stores/contextMenu";
-  import * as Shortcuts from "../../bindings/TcNo-Acc-Switcher/internal/shortcuts/service.js";
+  import * as Shortcuts from "wails-shortcuts-service";
   import { get } from "svelte/store";
   import { openConfirm } from "../stores/modal";
 

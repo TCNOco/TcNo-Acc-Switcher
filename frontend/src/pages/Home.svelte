@@ -12,7 +12,7 @@
   import { platformIconFgHref } from "../lib/platformIcon";
   import { contextMenu } from "../lib/actions/contextMenu";
   import type { MenuItemDef } from "../stores/contextMenu";
-  import * as Shortcuts from "../../bindings/TcNo-Acc-Switcher/internal/shortcuts/service.js";
+  import * as Shortcuts from "wails-shortcuts-service";
   import "../styles/HomePlatforms.scss";
 
   let startup: PlatformStartup | null = null;

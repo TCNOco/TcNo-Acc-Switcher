@@ -2,7 +2,7 @@
   import { onDestroy, onMount } from "svelte";
   import { get } from "svelte/store";
   import { Events } from "@wailsio/runtime";
-  import * as Shortcuts from "../../bindings/TcNo-Acc-Switcher/internal/shortcuts/service.js";
+  import * as Shortcuts from "wails-shortcuts-service";
   import { ListPayload, ShortcutDTO } from "../../bindings/TcNo-Acc-Switcher/internal/shortcuts/models.js";
   import {
     platformExeIconUrl,
@@ -47,7 +47,7 @@
         uid,
         sel.displayName,
         sel.accountLogin,
-      ).then((name) => {
+      ).then((name: string) => {
         if (seq === resolveSwapMenuLabelSeq) {
           resolvedSwapAccountLabelForMenu = name;
         }

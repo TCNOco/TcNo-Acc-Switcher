@@ -24,7 +24,7 @@
   import { contextMenu as ctxMenuAction } from "../lib/actions/contextMenu";
   import type { MenuItemDef } from "../stores/contextMenu";
   import * as BasicService from "../../bindings/TcNo-Acc-Switcher/internal/basic/basicservice.js";
-  import * as Shortcuts from "../../bindings/TcNo-Acc-Switcher/internal/shortcuts/service.js";
+  import * as Shortcuts from "wails-shortcuts-service";
   import { get } from "svelte/store";
   import { openConfirm, openPrompt } from "../stores/modal";
 

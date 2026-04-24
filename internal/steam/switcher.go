@@ -67,7 +67,7 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 		pS = st.SteamOverrideState
 	}
 
-	if err := writeLoginUsersAndRegistry(root, steamID64, st); err != nil {
+	if err := writeLoginUsersAndRegistry(root, steamID64); err != nil {
 		return err
 	}
 
@@ -199,7 +199,7 @@ func buildSteamArgs(st Settings, extraLaunchArgs []string) []string {
 	return args
 }
 
-func writeLoginUsersAndRegistry(steamRoot, selectedID64 string, st Settings) error {
+func writeLoginUsersAndRegistry(steamRoot, selectedID64 string) error {
 	loginPath := LoginUsersPath(steamRoot)
 	users, err := ParseLoginUsers(loginPath)
 	if err != nil {

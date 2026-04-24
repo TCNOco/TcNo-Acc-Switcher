@@ -57,7 +57,7 @@ func (b *BasicService) GetAccounts(platformKey string) ([]AccountDTO, error) {
 	}
 
 	liveUID := ""
-	if d, _, derr := readDescriptor(b.deps(), platformKey); derr == nil {
+	if d, _, derr := readDescriptor(platformKey); derr == nil {
 		folder, _ := resolveExeFolder(b.deps(), platformKey)
 		if u, uerr := ReadUniqueID(d, folder); uerr == nil {
 			liveUID = strings.TrimSpace(u)

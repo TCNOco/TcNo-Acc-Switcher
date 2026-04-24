@@ -61,7 +61,7 @@ func ParseLoginUsers(path string) ([]LoginUser, error) {
 			}
 		}
 		if !ok && len(kv.Children) > 0 && looksLikeSteamID64(kv.Children[0].Key) {
-			usersKV = steamvdf.KeyValue{Key: "users", Children: kv.Children}
+			usersKV = steamvdf.KeyValue{Children: kv.Children}
 			ok = true
 		}
 		if !ok {

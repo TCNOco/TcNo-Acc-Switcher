@@ -20,7 +20,7 @@ func ReadUniqueID(d platform.Descriptor, platformFolder string) (string, error) 
 
 	switch strings.ToUpper(method) {
 	case "REGKEY":
-		return uniqueFromRegKey(d, ctx)
+		return uniqueFromRegKey(d)
 	case "CREATE_ID_FILE":
 		return uniqueFromCreateIDFile(d, ctx)
 	case "STEAM":
@@ -34,7 +34,7 @@ func ReadUniqueID(d platform.Descriptor, platformFolder string) (string, error) 
 	}
 }
 
-func uniqueFromRegKey(d platform.Descriptor, ctx platform.PathTokenContext) (string, error) {
+func uniqueFromRegKey(d platform.Descriptor) (string, error) {
 	enc := stripREG(strings.TrimSpace(d.UniqueIdFile))
 	if enc == "" {
 		return "", fmt.Errorf("empty UniqueIdFile")

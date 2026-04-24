@@ -1,5 +1,5 @@
 import { Events } from "@wailsio/runtime";
-import * as Shortcuts from "../../bindings/TcNo-Acc-Switcher/internal/shortcuts/service.js";
+import * as Shortcuts from "wails-shortcuts-service";
 
 type RenderSVGRequest = {
   id: string;

@@ -24,7 +24,7 @@ type FlowDeps struct {
 	PS *platform.PlatformService
 }
 
-func readDescriptor(deps FlowDeps, platformKey string) (platform.Descriptor, []byte, error) {
+func readDescriptor(platformKey string) (platform.Descriptor, []byte, error) {
 	exeDir, err := platform.ResolveExeDir()
 	if err != nil {
 		return platform.Descriptor{}, nil, err
@@ -52,7 +52,7 @@ func resolveExeFolder(deps FlowDeps, platformKey string) (string, error) {
 func SaveCurrent(deps FlowDeps, platformKey, accountName string) error {
 	defer platform.EmitActionBarStatus("")
 
-	d, _, err := readDescriptor(deps, platformKey)
+	d, _, err := readDescriptor(platformKey)
 	if err != nil {
 		return err
 	}
@@ -206,7 +206,7 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 		return err
 	}
 
-	return saveProfileImage(deps, d, platformKey, folder, uid, ctx)
+	return saveProfileImage(d, platformKey, folder, uid, ctx)
 }
 
 func ensureUniqueIDOnSave(d platform.Descriptor, ctx platform.PathTokenContext) (string, error) {
@@ -270,7 +270,7 @@ func copyDir(src, dst string) error {
 
 // Login restores account from cache to live paths.
 func Login(deps FlowDeps, platformKey, accountName string) error {
-	d, _, err := readDescriptor(deps, platformKey)
+	d, _, err := readDescriptor(platformKey)
 	if err != nil {
 		return err
 	}
@@ -376,7 +376,7 @@ func parseHexReg(s string) ([]byte, error) {
 
 // ClearCurrentLogin removes/clears live session per PathListToClear + LoginFiles semantics.
 func ClearCurrentLogin(deps FlowDeps, platformKey string) error {
-	d, _, err := readDescriptor(deps, platformKey)
+	d, _, err := readDescriptor(platformKey)
 	if err != nil {
 		return err
 	}
@@ -416,7 +416,7 @@ func ClearCurrentLogin(deps FlowDeps, platformKey string) error {
 func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []string) error {
 	defer platform.EmitActionBarStatus("")
 
-	d, _, err := readDescriptor(deps, platformKey)
+	d, _, err := readDescriptor(platformKey)
 	if err != nil {
 		return err
 	}
@@ -482,7 +482,7 @@ func LaunchBasic(deps FlowDeps, platformKey string, extraLaunchArgs []string) er
 func AddNew(deps FlowDeps, platformKey string) error {
 	defer platform.EmitActionBarStatus("")
 
-	d, _, err := readDescriptor(deps, platformKey)
+	d, _, err := readDescriptor(platformKey)
 	if err != nil {
 		return err
 	}
@@ -510,7 +510,7 @@ func launchBasicNoStatus(deps FlowDeps, platformKey string, extraLaunchArgs []st
 
 // launchBasicNoStatusAs starts the platform exe; if forceAdmin is true, always requests elevation.
 func launchBasicNoStatusAs(deps FlowDeps, platformKey string, forceAdmin bool, extraLaunchArgs []string) error {
-	d, _, err := readDescriptor(deps, platformKey)
+	d, _, err := readDescriptor(platformKey)
 	if err != nil {
 		return err
 	}

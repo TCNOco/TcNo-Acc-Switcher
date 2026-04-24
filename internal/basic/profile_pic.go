@@ -9,7 +9,7 @@ import (
 	"TcNo-Acc-Switcher/internal/profileimage"
 )
 
-func saveProfileImage(_ FlowDeps, d platform.Descriptor, platformKey, folder, uid string, ctx platform.PathTokenContext) error {
+func saveProfileImage(d platform.Descriptor, platformKey, folder, uid string, ctx platform.PathTokenContext) error {
 	ctx.UniqueID = uid
 	if strings.TrimSpace(d.UniqueIdFile) != "" {
 		p := platform.ExpandPathTokens(platform.ExpandWindowsPath(d.UniqueIdFile), ctx)

@@ -97,7 +97,7 @@ func runAsDesktopUser(exe string, args []string, workingDir string, hideWindow b
 	if err != nil {
 		return err
 	}
-	cmdLine := buildCommandLineForCreateProcess(exe, args)
+	cmdLine := buildCommandLineForCreateProcess(args)
 	var cmdUTF16 *uint16
 	if strings.TrimSpace(cmdLine) != "" {
 		cmdUTF16, err = windows.UTF16PtrFromString(cmdLine)
@@ -149,7 +149,7 @@ func runAsDesktopUser(exe string, args []string, workingDir string, hideWindow b
 	return nil
 }
 
-func buildCommandLineForCreateProcess(exe string, args []string) string {
+func buildCommandLineForCreateProcess(args []string) string {
 	if len(args) == 0 {
 		return ""
 	}
