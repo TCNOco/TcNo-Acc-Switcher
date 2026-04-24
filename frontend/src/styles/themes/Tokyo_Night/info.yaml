@@ -1,0 +1,25 @@
+# This theme's name (Shows in-app, can be different to folder name)
+name: Tokyo Night
+accent: "#c0caf5"
+
+# Required colors for updater & main UI (not HTML/CSS):
+# - Not including these will cause the updater to use default color scheme (Dracula Cyan)
+linkColor: "#c0caf5" # Accent color
+headerbarBackground: "#16161E"
+mainBackground: "#1A1B26"
+modalInputBackground: "#1A1B26"
+borderedItemBorderColor: "#5f648b"
+buttonBackground: "#1E202E"
+buttonBackground-hover: "#252738"
+buttonBackground-active: "#24283b"
+buttonColor: "#c0caf5"
+buttonBorder: "#5f648b"
+buttonBorder-hover: "#c0caf5"
+buttonBorder-active: "#c0caf5"
+windowControlsBackground: "#16161E"
+windowControlsBackground-active: "#5f648b"
+windowControlsCloseBackground: "#16161E"
+windowControlsCloseBackground-active: "#5f648b"
+# For platform shortcuts on desktop (For consistency make sure these match your CSS)
+platformLogoForeground: "#1A1B26"
+platformLogoBackground: "#c0caf5"
