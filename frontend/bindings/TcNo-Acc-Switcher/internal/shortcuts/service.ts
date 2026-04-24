@@ -17,8 +17,8 @@ import * as $models from "./models.js";
 /**
  * CreateAccountShortcut writes a desktop shortcut with CLI args for this account.
  */
-export function CreateAccountShortcut(platformKey: string, uniqueID: string, displayName: string, stateSuffix: string, stateTitle: string): $CancellablePromise<string> {
-    return $Call.ByID(1934603281, platformKey, uniqueID, displayName, stateSuffix, stateTitle);
+export function CreateAccountShortcut(platformKey: string, uniqueID: string, displayName: string, stateSuffix: string, stateTitle: string, accountLogin: string): $CancellablePromise<string> {
+    return $Call.ByID(1934603281, platformKey, uniqueID, displayName, stateSuffix, stateTitle, accountLogin);
 }
 
 /**

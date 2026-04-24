@@ -30,6 +30,7 @@ type AccountDTO struct {
 
 	PersonaName   string `json:"personaName"`
 	AccountName   string `json:"accountName"`
+	DisplayName   string `json:"displayName"`
 	LastLogin     string `json:"lastLogin"`
 	Offline       bool   `json:"offline"`
 	ImageURL      string `json:"imageUrl"`
@@ -66,6 +67,8 @@ type AccountPatch struct {
 
 	AvatarPending bool `json:"avatarPending"`
 	MetaPending   bool `json:"metaPending"`
+
+	DisplayName string `json:"displayName,omitempty"`
 
 	Error string `json:"error"`
 }
@@ -208,6 +211,7 @@ func (s *SteamService) GetSteamAccounts() ([]AccountDTO, error) {
 			SteamID64:       u.SteamID64,
 			PersonaName:     displayPersona(u),
 			AccountName:     strings.TrimSpace(u.AccountName),
+			DisplayName:     CachedCommunityDisplayName(u.SteamID64),
 			LastLogin:       formatLastLogin(u.Timestamp),
 			Offline:         strings.TrimSpace(u.WantsOffline) == "1",
 			ImageURL:        imgURL,
@@ -459,6 +463,7 @@ func (s *SteamService) runProfileRefresh() {
 			patch.Ltd = fields.Limited
 			patch.MetaPending = false
 			patch.Error = ""
+			patch.DisplayName = fields.CommunityDisplayName
 
 			vmMu.Lock()
 			vm[u.SteamID64] = VacEntry{SteamID: u.SteamID64, Vac: patch.Vac, Ltd: patch.Ltd}

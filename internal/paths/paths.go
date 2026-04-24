@@ -28,31 +28,9 @@ func SettingsDir() (string, error) {
 }
 
 func SanitizePathSegment(name string) string {
-	s := strings.TrimSpace(name)
-	if s == "" {
+	out := WindowsFileName(name, 0)
+	if out == "" {
 		return ""
-	}
-	var b strings.Builder
-	for _, r := range s {
-		switch {
-		case r < 32:
-			b.WriteRune('_')
-		case r == '<' || r == '>' || r == ':' || r == '"' || r == '/' || r == '\\' || r == '|' || r == '?' || r == '*':
-			b.WriteRune('_')
-		default:
-			b.WriteRune(r)
-		}
-	}
-	out := strings.TrimRight(b.String(), " .")
-	out = strings.TrimSpace(out)
-	for strings.Contains(out, "__") {
-		out = strings.ReplaceAll(out, "__", "_")
-	}
-	if out == "" || out == "." || out == ".." {
-		return ""
-	}
-	if windowsReservedFileStem(out) {
-		return out + "_"
 	}
 	return out
 }

@@ -133,6 +133,10 @@
         avatarPending: p.avatarPending,
         metaPending: p.metaPending,
         syncError: errMsg,
+        displayName:
+          typeof p.displayName === "string" && p.displayName.trim() !== ""
+            ? p.displayName.trim()
+            : r.displayName ?? "",
       } as SteamAccountRow;
     });
     if (hit) {
@@ -357,7 +361,9 @@
         {
           label: tr("Context_CommunityUsername"),
           action: () =>
-            void clipboardWrite((acc.accountName ?? "").trim() || rid),
+            void clipboardWrite(
+              (acc.displayName ?? "").trim() || (acc.personaName ?? "").trim() || rid,
+            ),
         },
         {
           label: tr("Context_LoginUsername"),
@@ -416,6 +422,7 @@
                 acc.personaName ?? rid,
                 "",
                 "",
+                (acc.accountName ?? "").trim(),
               );
               pushToast({
                 type: "success",
@@ -441,6 +448,7 @@
                 acc.personaName ?? rid,
                 String(x.st),
                 x.lab,
+                (acc.accountName ?? "").trim(),
               );
               pushToast({
                 type: "success",

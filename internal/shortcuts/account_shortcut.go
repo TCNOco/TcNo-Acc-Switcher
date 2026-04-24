@@ -14,7 +14,7 @@ import (
 
 // CreateAccountShortcut writes a Desktop .lnk targeting this exe with CLI swap args.
 // For Steam, stateSuffix is the persona state index for argv; stateTitle is shown in the filename (optional, localized).
-func CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix, stateTitle string) (string, error) {
+func CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix, stateTitle, accountLogin string) (string, error) {
 	platformKey = strings.TrimSpace(platformKey)
 	uniqueID = strings.TrimSpace(uniqueID)
 	if platformKey == "" || uniqueID == "" {
@@ -32,21 +32,7 @@ func CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix, stat
 		return "", fmt.Errorf("desktop path unknown")
 	}
 
-	title := strings.TrimSpace(displayName)
-	if title == "" {
-		title = uniqueID
-	}
-	title = sanitizeShortcutFileName(title)
-	if strings.EqualFold(platformKey, "Steam") && strings.TrimSpace(stateSuffix) != "" {
-		label := strings.TrimSpace(stateTitle)
-		if label == "" {
-			label = steamPersonaStateFileLabel(strings.TrimSpace(stateSuffix))
-		}
-		label = sanitizeShortcutFileName(label)
-		if label != "" {
-			title = fmt.Sprintf("%s (%s)", title, label)
-		}
-	}
+	title := accountShortcutDesktopBaseName(platformKey, uniqueID, displayName, stateSuffix, stateTitle, accountLogin)
 
 	outPath := filepath.Join(desktop, title+".lnk")
 
@@ -97,6 +83,57 @@ func CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix, stat
 	return outPath, nil
 }
 
+func shortcutFilenameFallback(platformKey, uniqueID, accountLogin string) string {
+	login := strings.TrimSpace(accountLogin)
+	if strings.EqualFold(platformKey, "Steam") && login != "" {
+		if s := sanitizeShortcutFileName(login); !isDegenerateShortcutBasename(s) {
+			return s
+		}
+	}
+	if s := sanitizeShortcutFileName(uniqueID); !isDegenerateShortcutBasename(s) {
+		return s
+	}
+	return "TcNoShortcut"
+}
+
+// accountShortcutDesktopBaseName returns the .lnk filename stem (no extension).
+func accountShortcutDesktopBaseName(platformKey, uniqueID, displayName, stateSuffix, stateTitle, accountLogin string) string {
+	var stateLabel string
+	steamState := strings.EqualFold(platformKey, "Steam") && strings.TrimSpace(stateSuffix) != ""
+	if steamState {
+		stateLabel = strings.TrimSpace(stateTitle)
+		if stateLabel == "" {
+			stateLabel = steamPersonaStateFileLabel(strings.TrimSpace(stateSuffix))
+		}
+	}
+
+	base := strings.TrimSpace(displayName)
+	if base == "" {
+		base = uniqueID
+	}
+	sanBase := sanitizeShortcutFileName(base)
+	if isDegenerateShortcutBasename(sanBase) {
+		sanBase = shortcutFilenameFallback(platformKey, uniqueID, accountLogin)
+	}
+	if steamState && stateLabel != "" {
+		return sanitizeShortcutFileName(fmt.Sprintf("%s (%s)", sanBase, stateLabel))
+	}
+	return sanBase
+}
+
+func isDegenerateShortcutBasename(s string) bool {
+	s = strings.TrimSpace(s)
+	if s == "" {
+		return true
+	}
+	for _, r := range s {
+		if (r >= 'A' && r <= 'Z') || (r >= 'a' && r <= 'z') || (r >= '0' && r <= '9') {
+			return false
+		}
+	}
+	return true
+}
+
 func steamPersonaStateFileLabel(numeric string) string {
 	switch strings.TrimSpace(numeric) {
 	case "0":
@@ -121,21 +158,9 @@ func steamPersonaStateFileLabel(numeric string) string {
 }
 
 func sanitizeShortcutFileName(name string) string {
-	name = strings.TrimSpace(name)
-	name = strings.ReplaceAll(name, "<", "")
-	name = strings.ReplaceAll(name, ">", "")
-	name = strings.ReplaceAll(name, ":", "_")
-	name = strings.ReplaceAll(name, "/", "_")
-	name = strings.ReplaceAll(name, "\\", "_")
-	name = strings.ReplaceAll(name, "|", "_")
-	name = strings.ReplaceAll(name, "?", "_")
-	name = strings.ReplaceAll(name, "*", "")
-	name = strings.TrimSpace(name)
-	if name == "" || name == "." {
+	out := paths.ShellShortcutBaseName(name, 180)
+	if out == "" {
 		return "TcNoShortcut"
 	}
-	if len(name) > 120 {
-		name = name[:120]
-	}
-	return name
+	return out
 }

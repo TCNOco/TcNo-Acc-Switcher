@@ -6,6 +6,7 @@ import (
 	"strings"
 	"sync"
 
+	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/profileimage"
 )
@@ -185,7 +186,7 @@ func (b *BasicService) RenameAccount(platformKey, uniqueID, newName string) erro
 	defer b.mu.Unlock()
 	platformKey = strings.TrimSpace(platformKey)
 	uniqueID = strings.TrimSpace(uniqueID)
-	newName = strings.TrimSpace(newName)
+	newName = paths.WindowsFileName(strings.TrimSpace(newName), 200)
 	if platformKey == "" || uniqueID == "" || newName == "" {
 		return fmt.Errorf("invalid rename parameters")
 	}

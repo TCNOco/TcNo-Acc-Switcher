@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"TcNo-Acc-Switcher/internal/fsutil"
+	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/winutil"
 
@@ -74,6 +75,10 @@ func SaveCurrent(deps FlowDeps, platformKey, accountName string) error {
 
 // saveCurrentAfterKill persists login files (callers handle process kill + status).
 func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d platform.Descriptor) error {
+	accountName = paths.WindowsFileName(strings.TrimSpace(accountName), 200)
+	if accountName == "" {
+		return fmt.Errorf("account name is empty or invalid after normalization")
+	}
 	folder, err := resolveExeFolder(deps, platformKey)
 	if err != nil {
 		return err

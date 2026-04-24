@@ -63,7 +63,7 @@ func accountCacheDir(platformKey, accountName string) (string, error) {
 }
 
 func safeFileName(s string) string {
-	out := paths.SanitizePathSegment(s)
+	out := paths.WindowsFileName(s, 200)
 	if out == "" {
 		return "_"
 	}

@@ -16,6 +16,7 @@ export class AccountDTO {
     "steamId64": string;
     "personaName": string;
     "accountName": string;
+    "displayName": string;
     "lastLogin": string;
     "offline": boolean;
     "imageUrl": string;
@@ -53,6 +54,9 @@ export class AccountDTO {
         }
         if (!("accountName" in $$source)) {
             this["accountName"] = "";
+        }
+        if (!("displayName" in $$source)) {
+            this["displayName"] = "";
         }
         if (!("lastLogin" in $$source)) {
             this["lastLogin"] = "";
@@ -128,6 +132,7 @@ export class AccountPatch {
     "ltd": boolean;
     "avatarPending": boolean;
     "metaPending": boolean;
+    "displayName"?: string;
     "error": string;
 
     /** Creates a new AccountPatch instance. */

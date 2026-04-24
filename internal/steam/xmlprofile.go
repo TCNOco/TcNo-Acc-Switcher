@@ -19,20 +19,23 @@ const xmlCacheTTL = 24 * time.Hour
 
 // ProfileXMLFields are extracted from community profile ?xml=1.
 type ProfileXMLFields struct {
-	SteamID64     string
-	VacBanned     bool
-	Limited       bool
-	AvatarFullURL string
-	Private       bool
+	SteamID64 string
+	// CommunityDisplayName is the public profile title from <steamID> (not the login name).
+	CommunityDisplayName string
+	VacBanned            bool
+	Limited              bool
+	AvatarFullURL        string
+	Private              bool
 }
 
 type xmlProfileDoc struct {
-	XMLName        xml.Name `xml:"profile"`
-	PrivacyMessage []string `xml:"privacyMessage"`
-	SteamID64      string   `xml:"steamID64"`
-	VacBanned      string   `xml:"vacBanned"`
-	IsLimited      string   `xml:"isLimitedAccount"`
-	AvatarFull     string   `xml:"avatarFull"`
+	XMLName             xml.Name `xml:"profile"`
+	PrivacyMessage      []string `xml:"privacyMessage"`
+	SteamID64           string   `xml:"steamID64"`
+	SteamCommunityTitle string   `xml:"steamID"`
+	VacBanned           string   `xml:"vacBanned"`
+	IsLimited           string   `xml:"isLimitedAccount"`
+	AvatarFull          string   `xml:"avatarFull"`
 }
 
 func xmlCachePath(steamID64 string) (string, error) {
@@ -88,9 +91,27 @@ func FetchProfileXML(ctx context.Context, client *http.Client, steamID64 string)
 		return ProfileXMLFields{SteamID64: doc.SteamID64, Private: true}, nil
 	}
 	return ProfileXMLFields{
-		SteamID64:     strings.TrimSpace(doc.SteamID64),
-		VacBanned:     strings.TrimSpace(doc.VacBanned) == "1",
-		Limited:       strings.TrimSpace(doc.IsLimited) == "1",
-		AvatarFullURL: strings.TrimSpace(doc.AvatarFull),
+		SteamID64:            strings.TrimSpace(doc.SteamID64),
+		CommunityDisplayName: strings.TrimSpace(doc.SteamCommunityTitle),
+		VacBanned:            strings.TrimSpace(doc.VacBanned) == "1",
+		Limited:              strings.TrimSpace(doc.IsLimited) == "1",
+		AvatarFullURL:        strings.TrimSpace(doc.AvatarFull),
 	}, nil
+}
+
+// CachedCommunityDisplayName returns <steamID> from on-disk profile XML cache if present, ignoring TTL.
+func CachedCommunityDisplayName(steamID64 string) string {
+	p, err := xmlCachePath(steamID64)
+	if err != nil {
+		return ""
+	}
+	data, err := os.ReadFile(p)
+	if err != nil || len(data) == 0 {
+		return ""
+	}
+	var doc xmlProfileDoc
+	if err := xml.Unmarshal(data, &doc); err != nil {
+		return ""
+	}
+	return strings.TrimSpace(doc.SteamCommunityTitle)
 }
