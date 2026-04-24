@@ -25,6 +25,7 @@
   import * as Shortcuts from "wails-shortcuts-service";
   import { get } from "svelte/store";
   import { openConfirm } from "../stores/modal";
+  import { offlineMode, offlineSafeImageSrc } from "../stores/offlineMode";
 
   const PROFILE_FALLBACK = "/img/BasicDefault.webp";
 
@@ -478,7 +479,7 @@
                 }}
               >
                 <img
-                  src={acc?.imageUrl ? acc.imageUrl : PROFILE_FALLBACK}
+                  src={offlineSafeImageSrc($offlineMode, acc?.imageUrl, PROFILE_FALLBACK)}
                   alt=""
                   draggable="false"
                 />

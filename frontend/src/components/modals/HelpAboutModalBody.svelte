@@ -1,11 +1,22 @@
 <script lang="ts">
   import { Browser } from "@wailsio/runtime";
+  import { get } from "svelte/store";
   import { t } from "../../stores/i18n";
+  import { offlineMode } from "../../stores/offlineMode";
+  import { pushToast } from "../../stores/toast";
 
   const currentVersion = "0.0.1";
 
   function openExternal(url: string, e: MouseEvent): void {
     e.preventDefault();
+    if (get(offlineMode)) {
+      pushToast({
+        type: "info",
+        message: get(t)("Toast_OfflineModeNoLinks"),
+        duration: 5000,
+      });
+      return;
+    }
     void Browser.OpenURL(url);
   }
 </script>

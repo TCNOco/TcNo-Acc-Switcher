@@ -8,6 +8,8 @@
   import { tooltip } from "../lib/actions/tooltip";
   import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import { listThemes, setUserTheme, currentThemeId, type ThemeOption } from "../lib/themes";
+  import { get } from "svelte/store";
+  import { offlineMode, setUserOfflineMode } from "../stores/offlineMode";
 
   let open = false;
   let themeOpen = false;
@@ -16,6 +18,7 @@
   let isWindows = false;
   let protocolEnabled = false;
   let protocolLoading = false;
+  let offlineLoading = false;
 
   onMount(() => {
     themes = listThemes();
@@ -74,6 +77,30 @@
       protocolLoading = false;
     }
   }
+
+  async function toggleOfflineMode(): Promise<void> {
+    if (offlineLoading) {
+      return;
+    }
+    const next = !get(offlineMode);
+    offlineLoading = true;
+    try {
+      await setUserOfflineMode(next);
+      pushToast({
+        type: "success",
+        message: next ? $t("Toast_OfflineModeEnabled") : $t("Toast_OfflineModeDisabled"),
+        duration: 6000,
+      });
+    } catch (e) {
+      pushToast({
+        type: "error",
+        message: formatToastWithError($t("Toast_SaveFailed"), e),
+        duration: 8000,
+      });
+    } finally {
+      offlineLoading = false;
+    }
+  }
 </script>
 
 <h2 class="SettingsHeader">{$t("Settings_Header_Theme")}</h2>
@@ -104,6 +131,20 @@
   <button type="button" class="btnicontext themeRow__preview" on:click={() => route.set({ page: "preview-css" })}>
     {$t("PreviewCss")}
   </button>
+</div>
+
+<div class="rowSetting">
+  <div class="form-check">
+    <input
+      id="gs-offline"
+      type="checkbox"
+      checked={$offlineMode}
+      disabled={offlineLoading}
+      on:change={() => void toggleOfflineMode()}
+    />
+    <label class="form-check-label" for="gs-offline"></label>
+  </div>
+  <label for="gs-offline" use:tooltip={$t("Settings_OfflineMode")}>{$t("Settings_OfflineMode")}</label>
 </div>
 
 {#if isWindows}

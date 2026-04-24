@@ -27,6 +27,7 @@
   import * as Shortcuts from "wails-shortcuts-service";
   import { get } from "svelte/store";
   import { openConfirm, openPrompt } from "../stores/modal";
+  import { offlineMode, offlineSafeImageSrc } from "../stores/offlineMode";
 
   const STEAM_USERDATA_ERR_KEYS = new Set([
     "Toast_NoValidSteamId",
@@ -848,7 +849,11 @@
                 <img
                   class:status_vac={acc?.showVac && acc?.vac}
                   class:status_limited={acc?.showLimited && acc?.ltd}
-                  src={acc?.imageUrl && !acc?.avatarPending ? acc.imageUrl : PROFILE_PLACEHOLDER}
+                  src={offlineSafeImageSrc(
+                    $offlineMode,
+                    acc?.imageUrl && !acc?.avatarPending ? acc.imageUrl : undefined,
+                    PROFILE_PLACEHOLDER,
+                  )}
                   alt=""
                   draggable="false"
                 />

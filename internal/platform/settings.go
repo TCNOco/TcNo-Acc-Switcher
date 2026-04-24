@@ -27,6 +27,9 @@ type AppSettings struct {
 
 	// ProtocolEnabled registers the tcno:// URL scheme on Windows when true.
 	ProtocolEnabled bool `json:"protocolEnabled,omitempty"`
+
+	// OfflineMode blocks outbound HTTP (avatars, Steam APIs, etc.) when true.
+	OfflineMode bool `json:"offlineMode,omitempty"`
 }
 
 func defaultSettings() AppSettings {

@@ -7,11 +7,13 @@ import './styles/UI.scss'
 import './styles/acclist.scss'
 import './styles/rtl.scss'
 import { initI18n } from './stores/i18n'
+import { initOfflineMode } from './stores/offlineMode'
 import { resolveInitialRoute, installHashSync } from './stores/nav'
 import { initTheme } from './lib/themes'
 
 const app = void (async () => {
   await initI18n()
+  await initOfflineMode()
   await initTheme()
   await resolveInitialRoute()
   installHashSync()

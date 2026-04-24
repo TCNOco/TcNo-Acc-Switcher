@@ -21,6 +21,7 @@
   import { HasShortcutMainExe, LaunchPlatformAs } from "../lib/platformBindings";
   import { formatToastWithError, formatWailsError } from "../lib/formatWailsError";
   import { fileDropAcceptor, type FileDropAcceptor } from "../stores/fileDropTarget";
+  import { offlineMode, offlineSafeImageSrc } from "../stores/offlineMode";
   import {
     insertionIndexExternalDrag,
     insertionIndexFromTileHover,
@@ -32,6 +33,8 @@
 
   type Row = InstanceType<typeof ShortcutDTO>;
   type Zone = "pinned" | "dropdown";
+
+  const SHORTCUT_ICON_FALLBACK = "/img/icons/file.svg";
 
   export let platformName: string;
 
@@ -850,7 +853,11 @@
               use:contextMenu={ctxItemsFor(slot)}
               on:click={() => onShortcutClick(row)}
             >
-              <img src={row.iconUrl} alt="" draggable="false" />
+              <img
+                src={offlineSafeImageSrc($offlineMode, row.iconUrl, SHORTCUT_ICON_FALLBACK)}
+                alt=""
+                draggable="false"
+              />
             </button>
           </div>
         {/if}
@@ -913,7 +920,11 @@
                     use:contextMenu={ctxItemsFor(slot)}
                     on:click={() => onShortcutClick(row)}
                   >
-                    <img src={row.iconUrl} alt="" draggable="false" />
+                    <img
+                src={offlineSafeImageSrc($offlineMode, row.iconUrl, SHORTCUT_ICON_FALLBACK)}
+                alt=""
+                draggable="false"
+              />
                   </button>
                 </div>
               {/if}

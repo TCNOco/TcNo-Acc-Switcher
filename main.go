@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/basic"
 	"TcNo-Acc-Switcher/internal/cli"
 	"TcNo-Acc-Switcher/internal/ipc"
@@ -90,6 +91,8 @@ func main() {
 	}
 	defer releaseSingleton()
 	winutil.RegisterSingletonReleaser(releaseSingleton)
+
+	syncOfflineModeFromSettings()
 
 	if parsed.NeedsHeadlessMutex() {
 		winutil.AttachParentConsole()
@@ -224,6 +227,18 @@ func syncProtocolRegistration() {
 		return
 	}
 	_ = winutil.RegisterProtocol(filepath.Clean(self))
+}
+
+func syncOfflineModeFromSettings() {
+	exeDir, err := platform.ResolveExeDir()
+	if err != nil {
+		return
+	}
+	s, err := platform.LoadAppSettings(exeDir)
+	if err != nil {
+		return
+	}
+	appclient.SetOfflineMode(s.OfflineMode)
 }
 
 func handleForwardedCLI(app *application.App, argv []string) {

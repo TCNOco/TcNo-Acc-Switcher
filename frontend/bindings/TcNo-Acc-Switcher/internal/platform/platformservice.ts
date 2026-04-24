@@ -27,6 +27,10 @@ export function GetLanguage(): $CancellablePromise<string> {
     return $Call.ByID(1329797675);
 }
 
+export function GetOfflineMode(): $CancellablePromise<boolean> {
+    return $Call.ByID(125846475);
+}
+
 export function GetPlatformExeIcon(platformKey: string): $CancellablePromise<string> {
     return $Call.ByID(3242817395, platformKey);
 }
@@ -121,6 +125,10 @@ export function SetDisabledPlatforms(disabled: string[]): $CancellablePromise<vo
 
 export function SetLanguage(code: string): $CancellablePromise<void> {
     return $Call.ByID(1843532479, code);
+}
+
+export function SetOfflineMode(enabled: boolean): $CancellablePromise<void> {
+    return $Call.ByID(821998887, enabled);
 }
 
 export function SetPlatformExePath(platformKey: string, exePath: string): $CancellablePromise<void> {

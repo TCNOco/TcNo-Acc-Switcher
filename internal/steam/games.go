@@ -204,6 +204,10 @@ func ensureFullAppListCache(ctx context.Context) ([]byte, error) {
 		return b, nil
 	}
 
+	if appclient.IsOfflineMode() {
+		return nil, fmt.Errorf("steam app list: %w", appclient.ErrOfflineMode)
+	}
+
 	var lastErr error
 	for _, url := range []string{steamAppListMirrorURL, steamAppListValveURL} {
 		raw, err := fetchSteamAppListRaw(ctx, url)

@@ -11,6 +11,7 @@ import (
 	"strings"
 	"sync"
 
+	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/exeicon"
 	"TcNo-Acc-Switcher/internal/winutil"
 
@@ -758,4 +759,37 @@ func (p *PlatformService) SetProtocolEnabled(enabled bool) error {
 
 	s.ProtocolEnabled = enabled
 	return saveSettingsAtomic(exeDir, s)
+}
+
+func (p *PlatformService) GetOfflineMode() (bool, error) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return false, err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return false, err
+	}
+	return s.OfflineMode, nil
+}
+
+func (p *PlatformService) SetOfflineMode(enabled bool) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return err
+	}
+	s.OfflineMode = enabled
+	if err := saveSettingsAtomic(exeDir, s); err != nil {
+		return err
+	}
+	appclient.SetOfflineMode(enabled)
+	return nil
 }

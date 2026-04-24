@@ -179,12 +179,14 @@ func (s *SteamService) GetSteamAccounts() ([]AccountDTO, error) {
 		}
 	}
 
+	effectiveCollect := st.CollectInfo && !app.OfflineMode
+
 	out := make([]AccountDTO, 0, len(users))
 	for _, u := range users {
 		v := vm[u.SteamID64]
 		imgURL, hasImg := profileimage.FindCached(PlatformKey, u.SteamID64)
 		var avatarPending bool
-		if st.CollectInfo {
+		if effectiveCollect {
 			if !hasImg {
 				avatarPending = true
 			} else if p, ok := profileimage.CachedFilePath(PlatformKey, u.SteamID64); ok {
@@ -192,7 +194,7 @@ func (s *SteamService) GetSteamAccounts() ([]AccountDTO, error) {
 			}
 		}
 		_, vacCached := vacKnown[u.SteamID64]
-		metaPending := st.CollectInfo && !vacCached
+		metaPending := effectiveCollect && !vacCached
 
 		note := ""
 		if st.AccountNotes != nil {
@@ -365,6 +367,10 @@ func (s *SteamService) runProfileRefresh() {
 	}
 	if !st.CollectInfo {
 		steamLog.Info("profile refresh skipped: CollectInfo is false")
+		return
+	}
+	if app.OfflineMode {
+		steamLog.Info("profile refresh skipped: offline mode")
 		return
 	}
 
