@@ -19,6 +19,81 @@
   import type { MenuItemDef } from "../stores/contextMenu";
   import { platformIconFgHref } from "../lib/platformIcon";
   import ToastTypeIcon from "../components/ToastTypeIcon.svelte";
+  import ReorderPointerGrid from "../components/ReorderPointerGrid.svelte";
+
+  type PvAccRow = {
+    name: string;
+    status?: "vac" | "limited";
+    current?: boolean;
+    steamId: string;
+    when: string;
+  };
+
+  type PvShortcut = { label: string };
+
+  function textClass(name: string): string {
+    const n = name.length;
+    if (n < 7) return "shortText";
+    if (n > 12) return "longText";
+    return "";
+  }
+
+  function slotKey(x: string | null | undefined): string {
+    return x ?? "";
+  }
+
+  let platformIds = [
+    "Steam",
+    "GeForce Now",
+    "BattleNet",
+    "Epic Games",
+    "Ubisoft",
+    "Discord",
+  ];
+
+  let accIds = ["pv-1", "pv-2", "pv-3", "pv-4", "pv-5"];
+  let selectedPvAccId = "pv-1";
+
+  const pvAccounts: Record<string, PvAccRow> = {
+    "pv-1": {
+      name: "Current Account",
+      current: true,
+      steamId: "76561198000000001",
+      when: "07/03/2022 17:33",
+    },
+    "pv-2": {
+      name: "Normal account",
+      steamId: "76561198000000002",
+      when: "07/03/2022 12:06",
+    },
+    "pv-3": {
+      name: "Banned account",
+      status: "vac",
+      steamId: "76561198000000003",
+      when: "07/03/2022 9:20",
+    },
+    "pv-4": {
+      name: "Limited account",
+      status: "limited",
+      steamId: "76561198000000004",
+      when: "07/03/2022 6:33",
+    },
+    "pv-5": {
+      name: "Another account",
+      steamId: "76561198000000005",
+      when: "06/03/2022 14:00",
+    },
+  };
+
+  let pinnedShortcutIds = ["pv-pin-1", "pv-pin-2"];
+  let dropdownShortcutIds = ["pv-dd-a", "pv-dd-b", "pv-dd-c"];
+  const pvShortcutMeta: Record<string, PvShortcut> = {
+    "pv-pin-1": { label: "TcNo.lnk" },
+    "pv-pin-2": { label: "Pinned shortcut" },
+    "pv-dd-a": { label: "Shortcut A" },
+    "pv-dd-b": { label: "Shortcut B" },
+    "pv-dd-c": { label: "Shortcut C" },
+  };
 
   const toastPermanentDurationMs = 2_147_483_647;
 
@@ -189,44 +264,36 @@
   <h2 class="SettingsHeader">{$t("Preview_Platforms")}</h2>
   <div class="preview_element preview_program_main">
     <div class="platformTable">
-      <div class="platform_list" aria-label={$t("Preview_Platforms")}>
-        <!-- svelte-ignore a11y-no-static-element-interactions -->
-        <div
-          class="platform_list_item platform_tile_ctx"
-          use:contextMenu={noopPlatMenu}
-          role="presentation"
-        >
-          <div class="fgText shortText">
-            <p>STEAM</p>
-          </div>
-          <div class="fgImg" aria-hidden="true">
-            <svg viewBox="0 0 500 500" aria-hidden="true">
-              <use href={platformIconFgHref("Steam")} class="icoFG" />
+      <ReorderPointerGrid
+        items={platformIds}
+        listClass="platform_list"
+        itemClass="platform_list_item platform_list_item--draggable"
+        placeholderClass="platform_list_item platform_list_placeholder"
+        ghostClass="platform_list_item platform_list_item--ghost"
+        ariaLabel={$t("Preview_Platforms")}
+        on:reorder={(e) => {
+          platformIds = e.detail.items;
+        }}
+        on:itemclick={() => {}}
+      >
+        <svelte:fragment slot="item" let:rowId>
+          {@const rid = slotKey(rowId)}
+          <!-- svelte-ignore a11y-no-static-element-interactions -->
+          <div class="platform_tile_ctx" use:contextMenu={noopPlatMenu} role="presentation">
+            <div class="fgText {textClass(rid)}">
+              <p>{rid.toUpperCase()}</p>
+            </div>
+            <div class="fgImg" aria-hidden="true">
+              <svg viewBox="0 0 500 500" aria-hidden="true">
+                <use href={platformIconFgHref(rid)} class="icoFG" />
+              </svg>
+            </div>
+            <svg viewBox="0 0 2084 2084" class="icoBG" aria-hidden="true">
+              <use href="img/platform/glass.svg#GLASS" class="icoGlass" />
             </svg>
           </div>
-          <svg viewBox="0 0 2084 2084" class="icoBG" aria-hidden="true">
-            <use href="img/platform/glass.svg#GLASS" class="icoGlass" />
-          </svg>
-        </div>
-        <!-- svelte-ignore a11y-no-static-element-interactions -->
-        <div
-          class="platform_list_item platform_tile_ctx"
-          use:contextMenu={noopPlatMenu}
-          role="presentation"
-        >
-          <div class="fgText">
-            <p>GEFORCE NOW</p>
-          </div>
-          <div class="fgImg" aria-hidden="true">
-            <svg viewBox="0 0 500 500" aria-hidden="true">
-              <use href={platformIconFgHref("GeForce Now")} class="icoFG" />
-            </svg>
-          </div>
-          <svg viewBox="0 0 2084 2084" class="icoBG" aria-hidden="true">
-            <use href="img/platform/glass.svg#GLASS" class="icoGlass" />
-          </svg>
-        </div>
-      </div>
+        </svelte:fragment>
+      </ReorderPointerGrid>
     </div>
     <footer class="actionbar preview_fake_actionbar">
       <span class="actionbar__status">{$t("Preview_Platforms")}</span>
@@ -258,62 +325,55 @@
 
   <h2 class="SettingsHeader">{$t("Preview_Accounts")}</h2>
   <div class="preview_element preview_accounts_wrap">
-    <div
-      id="acc_list"
-      class="acc_list"
-      style="grid-template-rows: repeat(auto-fill, 135px); min-height: 160px;"
-      aria-label={$t("Preview_Accounts")}
-    >
-      <!-- svelte-ignore a11y-no-static-element-interactions -->
-      <div class="acc_list_item preview_list_item" use:contextMenu={noopAccMenu}>
-        <input type="radio" id="pv-acc-1" class="acc" name="pv-accounts" checked />
-        <label for="pv-acc-1" class="acc currentAcc" title={$t("Tooltip_CurrentAccount")}>
-          <img src="/img/BasicDefault.webp" alt="" draggable="false" />
-          <h6>Current Account</h6>
-          <p class="streamerCensor steamId">76561198000000001</p>
-          <p>07/03/2022 17:33</p>
-        </label>
-      </div>
-      <!-- svelte-ignore a11y-no-static-element-interactions -->
-      <div class="acc_list_item preview_list_item" use:contextMenu={noopAccMenu}>
-        <input type="radio" id="pv-acc-2" class="acc" name="pv-accounts" />
-        <label for="pv-acc-2" class="acc">
-          <img src="/img/BasicDefault.webp" alt="" draggable="false" />
-          <h6>Normal account</h6>
-          <p class="streamerCensor steamId">76561198000000002</p>
-          <p>07/03/2022 12:06</p>
-        </label>
-      </div>
-      <!-- svelte-ignore a11y-no-static-element-interactions -->
-      <div class="acc_list_item preview_list_item" use:contextMenu={noopAccMenu}>
-        <input type="radio" id="pv-acc-3" class="acc" name="pv-accounts" />
-        <label for="pv-acc-3" class="acc">
-          <img class="status_vac" src="/img/BasicDefault.webp" alt="" draggable="false" />
-          <h6>Banned account</h6>
-          <p class="streamerCensor steamId">76561198000000003</p>
-          <p>07/03/2022 9:20</p>
-        </label>
-      </div>
-      <!-- svelte-ignore a11y-no-static-element-interactions -->
-      <div class="acc_list_item preview_list_item" use:contextMenu={noopAccMenu}>
-        <input type="radio" id="pv-acc-4" class="acc" name="pv-accounts" />
-        <label for="pv-acc-4" class="acc">
-          <img class="status_limited" src="/img/BasicDefault.webp" alt="" draggable="false" />
-          <h6>Limited account</h6>
-          <p class="streamerCensor steamId">76561198000000004</p>
-          <p>07/03/2022 6:33</p>
-        </label>
-      </div>
-      <!-- svelte-ignore a11y-no-static-element-interactions -->
-      <div class="acc_list_item preview_list_item" use:contextMenu={noopAccMenu}>
-        <input type="radio" id="pv-acc-5" class="acc" name="pv-accounts" />
-        <label for="pv-acc-5" class="acc">
-          <img src="/img/BasicDefault.webp" alt="" draggable="false" />
-          <h6>Another account</h6>
-          <p class="streamerCensor steamId">76561198000000005</p>
-          <p>06/03/2022 14:00</p>
-        </label>
-      </div>
+    <div class="preview-acc-list-wrap" id="acc_list" aria-label={$t("Preview_Accounts")}>
+      <ReorderPointerGrid
+        items={accIds}
+        listClass="acc_list"
+        itemClass="acc_list_item acc_list_item--drag"
+        placeholderClass="acc_list_item placeHolderAcc"
+        ghostClass="acc_list_item acc_list_item--ghost"
+        ariaLabel={$t("Preview_Accounts")}
+        on:reorder={(e) => {
+          accIds = e.detail.items;
+        }}
+        on:itemclick={() => {}}
+      >
+        <svelte:fragment slot="item" let:rowId>
+          {@const rid = slotKey(rowId)}
+          {@const acc = pvAccounts[rid]}
+          {#if acc}
+            {@const radioId = `pv-acc-${rid}`}
+            <div class="acc_list_item_inner preview_list_item">
+              <input
+                type="radio"
+                class="acc"
+                id={radioId}
+                name="pv-accounts"
+                value={rid}
+                bind:group={selectedPvAccId}
+              />
+              <label
+                for={radioId}
+                class="acc"
+                class:currentAcc={acc.current}
+                title={acc.current ? $t("Tooltip_CurrentAccount") : undefined}
+                use:contextMenu={noopAccMenu}
+              >
+                <img
+                  src="/img/BasicDefault.webp"
+                  alt=""
+                  draggable="false"
+                  class:status_vac={acc.status === "vac"}
+                  class:status_limited={acc.status === "limited"}
+                />
+                <h6>{acc.name}</h6>
+                <p class="streamerCensor steamId">{acc.steamId}</p>
+                <p>{acc.when}</p>
+              </label>
+            </div>
+          {/if}
+        </svelte:fragment>
+      </ReorderPointerGrid>
     </div>
 
     <!-- overflow:visible so #shortcutDropdown (above the bar) is not clipped; .acc_list_actionbar defaults to overflow:hidden -->
@@ -324,11 +384,26 @@
       </div>
       <div class="gameShortcuts">
         <div class="preview_shortcut_bar">
-          <div class="shortcuts" role="list" aria-label={$t("Stats_GameShortcuts")}>
-            <button type="button" class="HasContextMenu" aria-label="Pinned shortcut">
-              <img src="/img/BasicDefault.webp" alt="" draggable="false" />
-            </button>
-          </div>
+          <ReorderPointerGrid
+            items={pinnedShortcutIds}
+            listClass="shortcuts shortcutDndGrid"
+            itemClass="shortcutDndCell"
+            placeholderClass="shortcutDndGap shortcutPlaceholder"
+            ghostClass="shortcutDndGhost"
+            ariaLabel={$t("Stats_GameShortcuts")}
+            on:reorder={(e) => {
+              pinnedShortcutIds = e.detail.items;
+            }}
+            on:itemclick={() => {}}
+          >
+            <svelte:fragment slot="item" let:rowId>
+              {@const sid = slotKey(rowId)}
+              {@const meta = pvShortcutMeta[sid]}
+              <button type="button" class="HasContextMenu" aria-label={meta?.label ?? sid}>
+                <img src="/img/BasicDefault.webp" alt="" draggable="false" />
+              </button>
+            </svelte:fragment>
+          </ReorderPointerGrid>
           <div class="shortcutDropdownWrap">
             <button
               type="button"
@@ -347,17 +422,26 @@
             </button>
             {#if shortcutDdOpen}
               <div class="shortcutDropdown gameShortcuts open" id="shortcutDropdown">
-                <div class="shortcutDropdownItems shortcutDndGrid" role="list">
-                  <button type="button" class="HasContextMenu" aria-label="Shortcut A">
-                    <img src="/img/BasicDefault.webp" alt="" draggable="false" />
-                  </button>
-                  <button type="button" class="HasContextMenu" aria-label="Shortcut B">
-                    <img src="/img/BasicDefault.webp" alt="" draggable="false" />
-                  </button>
-                  <button type="button" class="HasContextMenu" aria-label="Shortcut C">
-                    <img src="/img/BasicDefault.webp" alt="" draggable="false" />
-                  </button>
-                </div>
+                <ReorderPointerGrid
+                  items={dropdownShortcutIds}
+                  listClass="shortcutDropdownItems shortcutDndGrid"
+                  itemClass="shortcutDndCell"
+                  placeholderClass="shortcutDndGap shortcutPlaceholder"
+                  ghostClass="shortcutDndGhost"
+                  ariaLabel={$t("Stats_GameShortcuts")}
+                  on:reorder={(e) => {
+                    dropdownShortcutIds = e.detail.items;
+                  }}
+                  on:itemclick={() => {}}
+                >
+                  <svelte:fragment slot="item" let:rowId>
+                    {@const sid = slotKey(rowId)}
+                    {@const meta = pvShortcutMeta[sid]}
+                    <button type="button" class="HasContextMenu" aria-label={meta?.label ?? sid}>
+                      <img src="/img/BasicDefault.webp" alt="" draggable="false" />
+                    </button>
+                  </svelte:fragment>
+                </ReorderPointerGrid>
                 <button type="button" id="btnOpenShortcutFolder" aria-label={$t("Tooltip_ShortcutFolder")}>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true"
                     ><path
@@ -409,17 +493,45 @@
     <div class="preview-static-toast-host">
       <div class="toast-stack preview-static-toast-stack">
         <div class="toast toast--success preview-static-toast" role="status">
+          <button
+            type="button"
+            class="toast__close"
+            aria-label="Dismiss notification"
+            tabindex="-1"
+            on:click|preventDefault|stopPropagation={() => {}}
+          >
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
           <div class="toast__row">
             <div class="toast__icon" aria-hidden="true">
               <ToastTypeIcon type="success" />
             </div>
             <div class="toast__text">
               <div class="toast__title">Saved</div>
-              <div class="toast__message">Settings were applied (static preview).</div>
+              <div class="toast__message">Settings were applied</div>
             </div>
           </div>
         </div>
         <div class="toast toast--warning preview-static-toast" role="status">
+          <button
+            type="button"
+            class="toast__close"
+            aria-label="Dismiss notification"
+            tabindex="-1"
+            on:click|preventDefault|stopPropagation={() => {}}
+          >
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
           <div class="toast__row">
             <div class="toast__icon" aria-hidden="true">
               <ToastTypeIcon type="warning" />
@@ -431,16 +543,44 @@
           </div>
         </div>
         <div class="toast toast--error preview-static-toast" role="status">
+          <button
+            type="button"
+            class="toast__close"
+            aria-label="Dismiss notification"
+            tabindex="-1"
+            on:click|preventDefault|stopPropagation={() => {}}
+          >
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
           <div class="toast__row">
             <div class="toast__icon" aria-hidden="true">
               <ToastTypeIcon type="error" />
             </div>
             <div class="toast__text">
-              <div class="toast__message">A critical component could not be loaded. (static preview)</div>
+              <div class="toast__message">A critical component could not be loaded.</div>
             </div>
           </div>
         </div>
         <div class="toast toast--info preview-static-toast" role="status">
+          <button
+            type="button"
+            class="toast__close"
+            aria-label="Dismiss notification"
+            tabindex="-1"
+            on:click|preventDefault|stopPropagation={() => {}}
+          >
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
           <div class="toast__row">
             <div class="toast__icon" aria-hidden="true">
               <ToastTypeIcon type="info" />
@@ -596,6 +736,28 @@
     overflow: visible;
   }
 
+  /* Mirror .steam-acclist ghost/drag rules so preview account DnD matches Platform.svelte */
+  .preview-acc-list-wrap :global(.acc_list) {
+    grid-template-rows: repeat(auto-fill, 135px);
+  }
+
+  .preview-acc-list-wrap :global(.acc_list_item--drag) {
+    cursor: grab;
+    touch-action: none;
+  }
+
+  .preview-acc-list-wrap :global(.acc_list_item--ghost) {
+    position: fixed;
+    margin: 0;
+    z-index: 10000;
+    pointer-events: none;
+    opacity: 0.96;
+    cursor: grabbing;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+    left: 0;
+    top: 0;
+  }
+
   .preview_shortcut_bar {
     position: relative;
     display: flex;
@@ -649,7 +811,7 @@
   .preview-static-toast {
     position: relative;
     width: 100%;
-    padding: 0.65rem 0.65rem 0.65rem 0.65rem;
+    padding: 0.65rem 2.25rem 0.65rem 0.65rem;
     border-radius: 2px;
     border: 1px solid transparent;
     box-shadow: var(--shadow, 0 4px 14px rgba(0, 0, 0, 0.35));
