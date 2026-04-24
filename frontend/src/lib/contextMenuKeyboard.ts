@@ -30,6 +30,9 @@ function focusTargetForRowLi(li: HTMLElement): HTMLElement | null {
     return lab ?? li;
   }
   const btn = li.querySelector("button.ctx-menu__btn") as HTMLButtonElement | null;
+  if (btn?.disabled) {
+    return null;
+  }
   return btn ?? li;
 }
 

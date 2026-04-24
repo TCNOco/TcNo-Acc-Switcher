@@ -68,6 +68,34 @@ func BuildCombinedAccountIcon(platformKey, avatarPath, outICO string, cachedPlat
 		}
 	}
 
+	return writeCombinedICOFromBG(bg, avatarPath, outICO)
+}
+
+// BuildCombinedGameIcon writes a multi-size .ico with the game/app tile as background and the
+// account avatar at bottom-right (half size), same layout as BuildCombinedAccountIcon.
+func BuildCombinedGameIcon(gameIconPath, avatarPath, outICO string) error {
+	gameIconPath = strings.TrimSpace(gameIconPath)
+	avatarPath = strings.TrimSpace(avatarPath)
+	if gameIconPath == "" || avatarPath == "" {
+		return fmt.Errorf("missing game icon or avatar path")
+	}
+	b, err := os.ReadFile(gameIconPath)
+	if err != nil {
+		return fmt.Errorf("read game icon: %w", err)
+	}
+	im, _, err := image.Decode(bytes.NewReader(b))
+	if err != nil {
+		return fmt.Errorf("decode game icon: %w", err)
+	}
+	bg := imageToNRGBA(resize.Resize(combinedIconCanvas, combinedIconCanvas, im, resize.Lanczos3))
+	return writeCombinedICOFromBG(bg, avatarPath, outICO)
+}
+
+func writeCombinedICOFromBG(bg *image.NRGBA, avatarPath, outICO string) error {
+	avatarPath = strings.TrimSpace(avatarPath)
+	if bg == nil || avatarPath == "" {
+		return fmt.Errorf("missing background or avatar path")
+	}
 	fg, err := decodeAvatarImage(avatarPath)
 	if err != nil {
 		return fmt.Errorf("avatar: %w", err)
@@ -77,11 +105,11 @@ func BuildCombinedAccountIcon(platformKey, avatarPath, outICO string, cachedPlat
 	pngs := make([][]byte, 0, len(sizes))
 	for _, sz := range sizes {
 		layer := composePlatformAndAvatar(bg, fg, sz)
-		b, err := EncodePNG(layer)
+		pngBytes, err := EncodePNG(layer)
 		if err != nil {
 			return err
 		}
-		pngs = append(pngs, b)
+		pngs = append(pngs, pngBytes)
 	}
 
 	if err := os.MkdirAll(filepath.Dir(outICO), 0o755); err != nil {

@@ -104,14 +104,34 @@ func main() {
 func runHeadless(p cli.Parsed) error {
 	switch p.Kind {
 	case cli.KindSwapSteam:
-		return steamSvc.SwapToSteamAccount(p.SteamID64, p.PersonaState, p.PassthroughLaunchArgs)
+		if err := steamSvc.SwapToSteamAccount(p.SteamID64, p.PersonaState, p.PassthroughLaunchArgs); err != nil {
+			return err
+		}
+		return launchAfterSwapCLI(p)
 	case cli.KindSwapBasic:
-		return basic.SwapTo(basic.FlowDeps{PS: platformSvc}, p.PlatformKey, p.UniqueID, p.PassthroughLaunchArgs)
+		if err := basic.SwapTo(basic.FlowDeps{PS: platformSvc}, p.PlatformKey, p.UniqueID, p.PassthroughLaunchArgs); err != nil {
+			return err
+		}
+		return launchAfterSwapCLI(p)
 	case cli.KindLogout:
 		return runLogoutCLI(p)
 	default:
 		return nil
 	}
+}
+
+// launchAfterSwapCLI runs --run-appid (Steam) or --run-shortcut after a successful swap.
+func launchAfterSwapCLI(p cli.Parsed) error {
+	if strings.TrimSpace(p.RunAppID) != "" {
+		url := "steam://rungameid/" + strings.TrimSpace(p.RunAppID)
+		return winutil.Start("cmd.exe", []string{"/c", "start", "", url}, winutil.StartOpts{})
+	}
+	fn := strings.TrimSpace(p.RunShortcutFile)
+	pk := strings.TrimSpace(p.PlatformKey)
+	if fn != "" && pk != "" {
+		return shortcuts.RunShortcut(pk, fn, false)
+	}
+	return nil
 }
 
 func runLogoutCLI(p cli.Parsed) error {
@@ -220,10 +240,18 @@ func dispatchCLIInGUI(app *application.App, p cli.Parsed) {
 	case cli.KindSwapSteam:
 		if err := steamSvc.SwapToSteamAccount(p.SteamID64, p.PersonaState, p.PassthroughLaunchArgs); err != nil {
 			EmitToast("error", "Steam", err.Error(), 0)
+			return
+		}
+		if err := launchAfterSwapCLI(p); err != nil {
+			EmitToast("error", "Launch", err.Error(), 0)
 		}
 	case cli.KindSwapBasic:
 		if err := basic.SwapTo(basic.FlowDeps{PS: platformSvc}, p.PlatformKey, p.UniqueID, p.PassthroughLaunchArgs); err != nil {
 			EmitToast("error", "Swap", err.Error(), 0)
+			return
+		}
+		if err := launchAfterSwapCLI(p); err != nil {
+			EmitToast("error", "Launch", err.Error(), 0)
 		}
 	case cli.KindLogout:
 		if err := runLogoutCLI(p); err != nil {

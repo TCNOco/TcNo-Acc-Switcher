@@ -2,6 +2,7 @@ package shortcuts
 
 import (
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
@@ -12,7 +13,8 @@ import (
 	"TcNo-Acc-Switcher/internal/winutil"
 )
 
-// RunShortcut launches a cached shortcut from LoginCache/<platform>/Shortcuts/.
+// RunShortcut launches a shortcut from LoginCache/<platform>/Shortcuts/, or falls back to
+// Desktop (non-recursive) then Start Menu Programs (recursive) when the cache copy is missing.
 func RunShortcut(platformKey, fileName string, admin bool) error {
 	platformKey = strings.TrimSpace(platformKey)
 	fileName = filepath.Base(strings.TrimSpace(fileName))
@@ -22,16 +24,12 @@ func RunShortcut(platformKey, fileName string, admin bool) error {
 	if !isShortcutFile(fileName) {
 		return fmt.Errorf("not a shortcut file")
 	}
-	root, err := paths.LoginCacheDir(platformKey)
+	full, err := resolveShortcutPath(platformKey, fileName)
 	if err != nil {
 		return err
 	}
-	full := filepath.Join(root, "Shortcuts", fileName)
-	if st, err := os.Stat(full); err != nil || st.IsDir() {
-		return fmt.Errorf("shortcut not found")
-	}
 
-	low := strings.ToLower(fileName)
+	low := strings.ToLower(filepath.Base(full))
 	if strings.HasSuffix(low, ".url") {
 		return winutil.Start("cmd.exe", []string{"/C", full}, winutil.StartOpts{HideWindow: true})
 	}
@@ -47,6 +45,123 @@ func RunShortcut(platformKey, fileName string, admin bool) error {
 		return winutil.Start("explorer.exe", []string{full}, winutil.StartOpts{})
 	}
 	return winutil.Start("cmd.exe", []string{"/C", "start", "", full}, winutil.StartOpts{})
+}
+
+func shortcutNameIgnored(name string) bool {
+	return strings.Contains(strings.ToLower(name), "_ignored")
+}
+
+// matchesShortcutRequest is true when want is an exact basename match (case-insensitive) or
+// the same stem as another .lnk/.url (e.g. want "Game.lnk" matches "Game.url").
+func matchesShortcutRequest(want, candidate string) bool {
+	if shortcutNameIgnored(candidate) {
+		return false
+	}
+	if !isShortcutFile(candidate) {
+		return false
+	}
+	if strings.EqualFold(want, candidate) {
+		return true
+	}
+	return strings.EqualFold(removeShortcutExt(want), removeShortcutExt(candidate))
+}
+
+func resolveShortcutPath(platformKey, fileName string) (string, error) {
+	root, err := paths.LoginCacheDir(platformKey)
+	if err != nil {
+		return "", err
+	}
+	cacheFull := filepath.Join(root, "Shortcuts", fileName)
+	if st, err := os.Stat(cacheFull); err == nil && !st.IsDir() {
+		return cacheFull, nil
+	}
+
+	// Desktop roots only (no recursion)
+	for _, dir := range desktopRoots() {
+		if p := findShortcutInDir(dir, fileName); p != "" {
+			return p, nil
+		}
+	}
+
+	// Start Menu — recursive
+	for _, base := range startMenuProgramRoots() {
+		var found string
+		_ = filepath.WalkDir(base, func(path string, d fs.DirEntry, walkErr error) error {
+			if walkErr != nil || found != "" {
+				if found != "" {
+					return fs.SkipAll
+				}
+				return walkErr
+			}
+			if d.IsDir() {
+				return nil
+			}
+			if matchesShortcutRequest(fileName, d.Name()) {
+				found = path
+				return fs.SkipAll
+			}
+			return nil
+		})
+		if found != "" {
+			return found, nil
+		}
+	}
+
+	return "", fmt.Errorf("shortcut not found")
+}
+
+func desktopRoots() []string {
+	var out []string
+	if up := strings.TrimSpace(os.Getenv("USERPROFILE")); up != "" {
+		out = append(out, filepath.Join(up, "Desktop"))
+	}
+	if pub := strings.TrimSpace(os.Getenv("PUBLIC")); pub != "" {
+		out = append(out, filepath.Join(pub, "Desktop"))
+	}
+	return out
+}
+
+func startMenuProgramRoots() []string {
+	var out []string
+	if app := strings.TrimSpace(os.Getenv("APPDATA")); app != "" {
+		out = append(out, filepath.Join(app, "Microsoft", "Windows", "Start Menu", "Programs"))
+	}
+	if pd := strings.TrimSpace(os.Getenv("ProgramData")); pd != "" {
+		out = append(out, filepath.Join(pd, "Microsoft", "Windows", "Start Menu", "Programs"))
+	}
+	return out
+}
+
+func findShortcutInDir(dir, fileName string) string {
+	dir = strings.TrimSpace(dir)
+	if dir == "" {
+		return ""
+	}
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return ""
+	}
+	// Prefer exact basename match
+	for _, e := range entries {
+		if e.IsDir() {
+			continue
+		}
+		n := e.Name()
+		if strings.EqualFold(fileName, n) && !shortcutNameIgnored(n) && isShortcutFile(n) {
+			return filepath.Join(dir, n)
+		}
+	}
+	// Stem match (.lnk vs .url)
+	for _, e := range entries {
+		if e.IsDir() {
+			continue
+		}
+		n := e.Name()
+		if matchesShortcutRequest(fileName, n) {
+			return filepath.Join(dir, n)
+		}
+	}
+	return ""
 }
 
 // HideShortcut renames the cached shortcut to *_ignored.* and removes it from settings.

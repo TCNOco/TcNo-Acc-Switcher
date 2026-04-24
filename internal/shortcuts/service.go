@@ -128,6 +128,16 @@ func (s *Service) CreateAccountShortcut(platformKey, uniqueID, displayName, stat
 	return CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix, stateTitle, accountLogin)
 }
 
+// CreateGameAccountShortcut writes a desktop shortcut that swaps to the account then launches
+// the given game shortcut tile (Steam .url → --run-appid when possible).
+func (s *Service) CreateGameAccountShortcut(platformKey, uniqueID, accountDisplayName, accountLogin, gameFileName string) (string, error) {
+	return CreateGameAccountShortcut(platformKey, uniqueID, accountDisplayName, accountLogin, gameFileName)
+}
+
+func (s *Service) ResolveAccountShortcutStem(platformKey, uniqueID, displayName, accountLogin string) string {
+	return ResolvedAccountShortcutStem(platformKey, uniqueID, displayName, accountLogin)
+}
+
 // CreatePlatformShortcut writes a desktop shortcut that opens the switcher on this platform's page.
 func (s *Service) CreatePlatformShortcut(platformKey string) (string, error) {
 	return CreatePlatformShortcut(platformKey)

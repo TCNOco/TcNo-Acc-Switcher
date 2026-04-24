@@ -84,19 +84,41 @@ func CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix, stat
 }
 
 func shortcutFilenameFallback(platformKey, uniqueID, accountLogin string) string {
+	_ = platformKey
 	login := strings.TrimSpace(accountLogin)
-	if strings.EqualFold(platformKey, "Steam") && login != "" {
-		if s := sanitizeShortcutFileName(login); !isDegenerateShortcutBasename(s) {
-			return s
+	if login != "" {
+		if s := shellShortcutStem(login); s != "" && !isDegenerateShortcutBasename(s) {
+			return sanitizeShortcutFileName(s)
 		}
 	}
-	if s := sanitizeShortcutFileName(uniqueID); !isDegenerateShortcutBasename(s) {
-		return s
+	if s := shellShortcutStem(uniqueID); s != "" && !isDegenerateShortcutBasename(s) {
+		return sanitizeShortcutFileName(s)
 	}
 	return "TcNoShortcut"
 }
 
-// accountShortcutDesktopBaseName returns the .lnk filename stem (no extension).
+func shellShortcutStem(s string) string {
+	return strings.TrimSpace(paths.ShellShortcutBaseName(strings.TrimSpace(s), 180))
+}
+
+func resolvedAccountShortcutStem(platformKey, uniqueID, displayName, accountLogin string) string {
+	platformKey = strings.TrimSpace(platformKey)
+	uniqueID = strings.TrimSpace(uniqueID)
+	base := strings.TrimSpace(displayName)
+	if base == "" {
+		base = uniqueID
+	}
+	sanBase := shellShortcutStem(base)
+	if sanBase == "" || isDegenerateShortcutBasename(sanBase) {
+		return shortcutFilenameFallback(platformKey, uniqueID, accountLogin)
+	}
+	return sanitizeShortcutFileName(sanBase)
+}
+
+func ResolvedAccountShortcutStem(platformKey, uniqueID, displayName, accountLogin string) string {
+	return resolvedAccountShortcutStem(platformKey, uniqueID, displayName, accountLogin)
+}
+
 func accountShortcutDesktopBaseName(platformKey, uniqueID, displayName, stateSuffix, stateTitle, accountLogin string) string {
 	var stateLabel string
 	steamState := strings.EqualFold(platformKey, "Steam") && strings.TrimSpace(stateSuffix) != ""
@@ -107,14 +129,7 @@ func accountShortcutDesktopBaseName(platformKey, uniqueID, displayName, stateSuf
 		}
 	}
 
-	base := strings.TrimSpace(displayName)
-	if base == "" {
-		base = uniqueID
-	}
-	sanBase := sanitizeShortcutFileName(base)
-	if isDegenerateShortcutBasename(sanBase) {
-		sanBase = shortcutFilenameFallback(platformKey, uniqueID, accountLogin)
-	}
+	sanBase := resolvedAccountShortcutStem(platformKey, uniqueID, displayName, accountLogin)
 	if steamState && stateLabel != "" {
 		return sanitizeShortcutFileName(fmt.Sprintf("%s (%s)", sanBase, stateLabel))
 	}

@@ -22,6 +22,14 @@ export function CreateAccountShortcut(platformKey: string, uniqueID: string, dis
 }
 
 /**
+ * CreateGameAccountShortcut writes a desktop shortcut that swaps to the account then launches
+ * the given game shortcut tile (Steam .url → --run-appid when possible).
+ */
+export function CreateGameAccountShortcut(platformKey: string, uniqueID: string, accountDisplayName: string, accountLogin: string, gameFileName: string): $CancellablePromise<string> {
+    return $Call.ByID(564738711, platformKey, uniqueID, accountDisplayName, accountLogin, gameFileName);
+}
+
+/**
  * CreatePlatformShortcut writes a desktop shortcut that opens the switcher on this platform's page.
  */
 export function CreatePlatformShortcut(platformKey: string): $CancellablePromise<string> {
@@ -70,6 +78,10 @@ export function PlatformShortcutExists(platformKey: string): $CancellablePromise
  */
 export function ReportSVGRenderResult(id: string, pngBase64: string, errMsg: string): $CancellablePromise<void> {
     return $Call.ByID(166339185, id, pngBase64, errMsg);
+}
+
+export function ResolveAccountShortcutStem(platformKey: string, uniqueID: string, displayName: string, accountLogin: string): $CancellablePromise<string> {
+    return $Call.ByID(2322059396, platformKey, uniqueID, displayName, accountLogin);
 }
 
 /**

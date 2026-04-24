@@ -44,7 +44,7 @@ func WindowsFileName(name string, maxRunes int) string {
 			out = strings.ReplaceAll(out, " _", "_")
 			out = strings.ReplaceAll(out, "_ ", "_")
 		}
-		return strings.Trim(out, ".")
+		return strings.Trim(strings.Trim(out, "."), "_")
 	}
 	out := trimCollapsed(b.String())
 	if out == "" || out == "." || out == ".." {

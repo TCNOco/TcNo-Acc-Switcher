@@ -32,6 +32,29 @@
 
   export let platformName: string;
 
+  let resolvedSwapAccountLabelForMenu = "";
+  let resolveSwapMenuLabelSeq = 0;
+
+  $: {
+    const sel = $selectedAccount;
+    const uid = String(sel.uniqueId ?? "").trim();
+    if (sel.platformKey !== platformName || !uid) {
+      resolvedSwapAccountLabelForMenu = "";
+    } else {
+      const seq = ++resolveSwapMenuLabelSeq;
+      void Shortcuts.ResolveAccountShortcutStem(
+        platformName,
+        uid,
+        sel.displayName,
+        sel.accountLogin,
+      ).then((name) => {
+        if (seq === resolveSwapMenuLabelSeq) {
+          resolvedSwapAccountLabelForMenu = name;
+        }
+      });
+    }
+  }
+
   let includeMainExe = false;
   let pinNames: string[] = [];
   let dropNames: string[] = [];
@@ -566,7 +589,43 @@
         return [];
       }
       const tr = get(t);
+      const sel = get(selectedAccount);
+      const hasSel = sel.platformKey === platformName && String(sel.uniqueId ?? "").trim() !== "";
+      const swapName =
+        resolvedSwapAccountLabelForMenu || String(sel.displayName ?? "").trim() || sel.uniqueId;
+      const swapLabel = hasSel
+        ? tr("Context_CreateShortcut_SwapTo").replace("{name}", swapName)
+        : tr("Context_CreateShortcut_SelectAccount");
       return [
+        {
+          label: swapLabel,
+          disabled: !hasSel,
+          action: async () => {
+            if (!hasSel) {
+              return;
+            }
+            try {
+              const p = await Shortcuts.CreateGameAccountShortcut(
+                platformName,
+                sel.uniqueId,
+                sel.displayName,
+                sel.accountLogin,
+                row.fileName,
+              );
+              pushToast({
+                type: "success",
+                message: `${tr("Toast_ShortcutCreated")}\n${p}`,
+                duration: 8000,
+              });
+            } catch (e: unknown) {
+              pushToast({
+                type: "error",
+                message: formatToastWithError(tr("Toast_CreateShortcutFailed"), e),
+                duration: 8000,
+              });
+            }
+          },
+        },
         {
           label: tr("Context_RunAdmin"),
           action: () => {

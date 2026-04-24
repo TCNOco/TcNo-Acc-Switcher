@@ -89,9 +89,18 @@
     route.set({ page: "platform", platformName: name });
   }
 
+  $: selSteamAcc = accountBySteamId(selectedSteamId);
   $: selectedAccountStore.set({
     platformKey: name,
     uniqueId: selectedSteamId,
+    displayName: (() => {
+      const p = (selSteamAcc?.personaName ?? "").trim();
+      if (p) {
+        return p;
+      }
+      return (selSteamAcc?.displayName ?? "").trim();
+    })(),
+    accountLogin: (selSteamAcc?.accountName ?? "").trim(),
   });
 
   function accountBySteamId(id: string): SteamAccountRow | undefined {
@@ -767,7 +776,7 @@
   onDestroy(() => {
     for (const t of steamListRefreshTimers) clearTimeout(t);
     steamListRefreshTimers = [];
-    selectedAccountStore.set({ platformKey: "", uniqueId: "" });
+    selectedAccountStore.set({ platformKey: "", uniqueId: "", displayName: "", accountLogin: "" });
     platformLiveSessionId.set({ platformKey: "", uniqueId: "" });
     platformAction.set(null);
     offSteamEvent?.();

@@ -51,6 +51,8 @@
   $: selectedAccountStore.set({
     platformKey: name,
     uniqueId: selectedUniqueId,
+    displayName: accountById(selectedUniqueId)?.displayName ?? "",
+    accountLogin: "",
   });
 
   function accountById(id: string): BasicRow | undefined {
@@ -409,7 +411,7 @@
   onDestroy(() => {
     for (const t of basicListRefreshTimers) clearTimeout(t);
     basicListRefreshTimers = [];
-    selectedAccountStore.set({ platformKey: "", uniqueId: "" });
+    selectedAccountStore.set({ platformKey: "", uniqueId: "", displayName: "", accountLogin: "" });
     platformLiveSessionId.set({ platformKey: "", uniqueId: "" });
     platformAction.set(null);
     offPlatformAction?.();

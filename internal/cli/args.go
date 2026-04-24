@@ -2,6 +2,8 @@ package cli
 
 import (
 	"fmt"
+	"net/url"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -31,6 +33,8 @@ type Parsed struct {
 	LogoutAccount         string   // optional id for logout (reserved)
 	OpenPage              string   // platform name for GUI route
 	PassthroughLaunchArgs []string // forwarded to the target platform exe (not TcNo flags)
+	RunShortcutFile       string   // basename of .lnk/.url; used with swap to launch from cache / fallback
+	RunAppID              string   // numeric Steam app id; Steam + +s only, launches steam://rungameid/
 }
 
 const steamPlatformName = "Steam"
@@ -122,6 +126,39 @@ func Parse(argv []string, idx *PlatformIndex) (Parsed, error) {
 			continue
 		}
 
+		if val, ok := parseRunShortcutFlag(a); ok {
+			dec, err := url.QueryUnescape(val)
+			if err != nil {
+				return Parsed{}, fmt.Errorf("--run-shortcut: %w", err)
+			}
+			dec = strings.TrimSpace(dec)
+			if dec == "" {
+				return Parsed{}, fmt.Errorf("--run-shortcut: empty value")
+			}
+			if p.RunShortcutFile != "" {
+				return Parsed{}, fmt.Errorf("duplicate --run-shortcut")
+			}
+			p.RunShortcutFile = filepath.Base(dec)
+			continue
+		}
+
+		if val, ok := parseRunAppIDFlag(a); ok {
+			val = strings.TrimSpace(val)
+			if val == "" {
+				return Parsed{}, fmt.Errorf("--run-appid: empty value")
+			}
+			for _, r := range val {
+				if r < '0' || r > '9' {
+					return Parsed{}, fmt.Errorf("--run-appid: must be numeric digits only")
+				}
+			}
+			if p.RunAppID != "" {
+				return Parsed{}, fmt.Errorf("duplicate --run-appid")
+			}
+			p.RunAppID = val
+			continue
+		}
+
 		if idx != nil {
 			if canon, ok := idx.Names[strings.ToLower(a)]; ok {
 				pp := Parsed{Kind: KindOpenPage, OpenPage: canon}
@@ -138,6 +175,16 @@ func Parse(argv []string, idx *PlatformIndex) (Parsed, error) {
 		p.Kind = KindHelp
 	}
 
+	if p.RunAppID != "" && p.Kind != KindSwapSteam {
+		return Parsed{}, fmt.Errorf("--run-appid requires +s:<steamId64>")
+	}
+	if p.RunShortcutFile != "" && p.RunAppID != "" {
+		return Parsed{}, fmt.Errorf("cannot combine --run-shortcut and --run-appid")
+	}
+	if p.RunShortcutFile != "" && p.Kind != KindSwapSteam && p.Kind != KindSwapBasic {
+		return Parsed{}, fmt.Errorf("--run-shortcut requires a swap token (+s: or +<platform>:)")
+	}
+
 	return p, nil
 }
 
@@ -146,6 +193,28 @@ func parseOpenPageFlag(a string) (string, bool) {
 	s := strings.TrimSpace(a)
 	lo := strings.ToLower(s)
 	for _, prefix := range []string{"--page=", "-page=", "--open-page=", "-open-page="} {
+		if strings.HasPrefix(lo, strings.ToLower(prefix)) {
+			return strings.TrimSpace(s[len(prefix):]), true
+		}
+	}
+	return "", false
+}
+
+func parseRunShortcutFlag(a string) (string, bool) {
+	s := strings.TrimSpace(a)
+	lo := strings.ToLower(s)
+	for _, prefix := range []string{"--run-shortcut=", "-run-shortcut="} {
+		if strings.HasPrefix(lo, strings.ToLower(prefix)) {
+			return strings.TrimSpace(s[len(prefix):]), true
+		}
+	}
+	return "", false
+}
+
+func parseRunAppIDFlag(a string) (string, bool) {
+	s := strings.TrimSpace(a)
+	lo := strings.ToLower(s)
+	for _, prefix := range []string{"--run-appid=", "-run-appid="} {
 		if strings.HasPrefix(lo, strings.ToLower(prefix)) {
 			return strings.TrimSpace(s[len(prefix):]), true
 		}

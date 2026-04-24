@@ -7,6 +7,8 @@ export type MenuItemDef = {
   type?: "item" | "search" | "separator";
   action?: () => void;
   children?: MenuItemDef[];
+  /** When true, the row is visible but not clickable (no action, menu stays open on click). */
+  disabled?: boolean;
 };
 
 export type ContextMenuState =

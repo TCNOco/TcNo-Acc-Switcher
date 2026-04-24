@@ -30,7 +30,7 @@ func ShellShortcutBaseName(name string, maxRunes int) string {
 		out = strings.ReplaceAll(out, "_ ", "_")
 	}
 	out = strings.TrimRight(out, " .")
-	out = strings.Trim(out, ".")
+	out = strings.Trim(out, "._")
 	if out == "" || out == "." || out == ".." {
 		return ""
 	}
@@ -42,7 +42,7 @@ func ShellShortcutBaseName(name string, maxRunes int) string {
 		if len(rr) > maxRunes {
 			out = string(rr[:maxRunes])
 			out = strings.TrimRight(out, " .")
-			out = strings.Trim(out, ".")
+			out = strings.Trim(out, "._")
 		}
 	}
 	if out == "" || out == "." || out == ".." {

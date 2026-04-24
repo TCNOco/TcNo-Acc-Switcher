@@ -139,6 +139,9 @@
   }
 
   function run(item: MenuItemDef): void {
+    if (item.disabled) {
+      return;
+    }
     item.action?.();
     closeContextMenu();
   }
@@ -267,7 +270,14 @@
     </li>
   {:else}
     <li role="menuitem" on:pointerenter={(e) => onLeafPointerEnter(e)}>
-      <button type="button" class="ctx-menu__btn" on:click={() => run(item)}>{item.label}</button>
+      <button
+        type="button"
+        class="ctx-menu__btn"
+        class:ctx-menu__btn--disabled={item.disabled}
+        disabled={item.disabled}
+        aria-disabled={item.disabled ? "true" : undefined}
+        tabindex={item.disabled ? -1 : undefined}
+        on:click={() => run(item)}>{item.label}</button>
     </li>
   {/if}
 {/each}
