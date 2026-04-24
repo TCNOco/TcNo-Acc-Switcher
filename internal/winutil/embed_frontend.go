@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+	"unicode"
 )
 
 // ErrNoEmbeddedFrontend is returned when SetEmbeddedFrontendFS was not called.
@@ -40,6 +41,43 @@ func embeddedFS() (embed.FS, bool) {
 
 var embeddedFrontendSet bool
 
+// embeddedPathIsUnderPlatformArt reports whether path belongs to the platform
+// tile directory inside the embedded Vite dist. main embeds //go:embed
+// all:frontend/dist, so paths are like "frontend/dist/img/platform/Steam.svg".
+// Some layouts use "img/platform/..." at the FS root; accept both.
+func embeddedPathIsUnderPlatformArt(path string) bool {
+	up := strings.ReplaceAll(path, `\`, "/")
+	low := strings.ToLower(up)
+	return strings.HasPrefix(low, "frontend/dist/img/platform/") ||
+		strings.HasPrefix(low, "img/platform/")
+}
+
+// normalizePlatformArtKey folds case and strips non-alphanumeric characters so
+// e.g. "Battle.net" (Platforms.json) matches "BattleNet.svg" on disk.
+func normalizePlatformArtKey(s string) string {
+	var b strings.Builder
+	for _, r := range strings.ToLower(s) {
+		if unicode.IsLetter(r) || unicode.IsNumber(r) {
+			b.WriteRune(r)
+		}
+	}
+	return b.String()
+}
+
+// PlatformArtStemMatchesKey reports whether a filename stem under img/platform
+// corresponds to the given platform key from Platforms.json.
+func PlatformArtStemMatchesKey(stem, platformKey string) bool {
+	key := strings.TrimSpace(platformKey)
+	stem = strings.TrimSpace(stem)
+	if key == "" || stem == "" {
+		return false
+	}
+	if strings.EqualFold(stem, key) {
+		return true
+	}
+	return normalizePlatformArtKey(stem) == normalizePlatformArtKey(key)
+}
+
 // FindPlatformArt resolves img/platform/<name>.{svg,png} from embedded dist (case-insensitive stem match).
 func FindPlatformArt(platformKey string) (svg []byte, png []byte, err error) {
 	rootFS, ok := embeddedFS()
@@ -58,13 +96,12 @@ func FindPlatformArt(platformKey string) (svg []byte, png []byte, err error) {
 		if d.IsDir() {
 			return nil
 		}
-		low := strings.ToLower(path)
-		if !strings.HasPrefix(low, "img/platform/") {
+		if !embeddedPathIsUnderPlatformArt(path) {
 			return nil
 		}
 		ext := strings.ToLower(filepath.Ext(path))
 		stem := strings.TrimSuffix(filepath.Base(path), filepath.Ext(path))
-		if !strings.EqualFold(stem, key) {
+		if !PlatformArtStemMatchesKey(stem, key) {
 			return nil
 		}
 		switch ext {

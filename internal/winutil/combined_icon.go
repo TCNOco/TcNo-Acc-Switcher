@@ -20,34 +20,52 @@ import (
 const combinedIconCanvas = 500
 
 // BuildCombinedAccountIcon writes a multi-size .ico (16,32,48,256) with platform background and avatar at bottom-right (half size), C# IconFactory parity.
-func BuildCombinedAccountIcon(platformKey, avatarPath, outICO string) error {
+//
+// Optional cachedPlatformICO: when non-empty and the file exists, it must be the same
+// multi-size .ico written by BuildPlatformIcon for this platform (e.g. …/IconCache/steam_platform.ico).
+// Decoding that file yields the exact same background tile as the Desktop platform shortcut, then the
+// account avatar is composited on top. If the file is missing, art is resolved from the embedded dist
+// (SVG/PNG) like BuildPlatformIcon.
+func BuildCombinedAccountIcon(platformKey, avatarPath, outICO string, cachedPlatformICO ...string) error {
 	platformKey = strings.TrimSpace(platformKey)
 	avatarPath = strings.TrimSpace(avatarPath)
 	if platformKey == "" || avatarPath == "" {
 		return fmt.Errorf("missing platform or avatar path")
 	}
 
-	svgBytes, pngBytes, artErr := FindPlatformArt(platformKey)
 	var bg *image.NRGBA
-	switch {
-	case len(svgBytes) > 0:
-		themed := ApplyPlatformSVGTheming(svgBytes, DefaultPlatformLogoBackground, DefaultPlatformLogoForeground)
-		var err error
-		bg, err = RasterizeSVGToNRGBA(themed, combinedIconCanvas)
-		if err != nil {
-			return fmt.Errorf("rasterize platform svg: %w", err)
+	if len(cachedPlatformICO) > 0 {
+		if p := strings.TrimSpace(cachedPlatformICO[0]); p != "" {
+			if b, err := os.ReadFile(p); err == nil && len(b) > 0 {
+				if im, err := decodeBestFromICO(b); err == nil {
+					bg = imageToNRGBA(resize.Resize(combinedIconCanvas, combinedIconCanvas, im, resize.Lanczos3))
+				}
+			}
 		}
-	case len(pngBytes) > 0:
-		dec, err := png.Decode(bytes.NewReader(pngBytes))
-		if err != nil {
-			return fmt.Errorf("decode platform png: %w", err)
+	}
+
+	if bg == nil {
+		svgBytes, pngBytes, artErr := FindPlatformArt(platformKey)
+		switch {
+		case len(svgBytes) > 0:
+			themed := ApplyPlatformSVGTheming(svgBytes, DefaultPlatformLogoBackground, DefaultPlatformLogoForeground)
+			var err error
+			bg, err = RasterizeSVGToNRGBA(themed, combinedIconCanvas)
+			if err != nil {
+				return fmt.Errorf("rasterize platform svg: %w", err)
+			}
+		case len(pngBytes) > 0:
+			dec, err := png.Decode(bytes.NewReader(pngBytes))
+			if err != nil {
+				return fmt.Errorf("decode platform png: %w", err)
+			}
+			bg = imageToNRGBA(resize.Resize(combinedIconCanvas, combinedIconCanvas, dec, resize.Lanczos3))
+		default:
+			if artErr != nil && artErr != ErrNoPlatformArt && artErr != ErrNoEmbeddedFrontend {
+				return fmt.Errorf("no platform art: %w", artErr)
+			}
+			bg = SolidNRGBA(combinedIconCanvas, color.NRGBA{R: 0x23, G: 0x27, B: 0x2A, A: 0xff})
 		}
-		bg = imageToNRGBA(resize.Resize(combinedIconCanvas, combinedIconCanvas, dec, resize.Lanczos3))
-	default:
-		if artErr != nil && artErr != ErrNoPlatformArt && artErr != ErrNoEmbeddedFrontend {
-			return fmt.Errorf("no platform art: %w", artErr)
-		}
-		bg = SolidNRGBA(combinedIconCanvas, color.NRGBA{R: 0x23, G: 0x27, B: 0x2A, A: 0xff})
 	}
 
 	fg, err := decodeAvatarImage(avatarPath)

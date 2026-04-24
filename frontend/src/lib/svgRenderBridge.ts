@@ -43,7 +43,17 @@ export function registerSvgRenderBridge(): () => void {
         img.onerror = () => reject(new Error("svg image load failed"));
         img.src = svg64;
       });
-      ctx.clearRect(0, 0, d.size, d.size);
+      if (img.naturalWidth === 0 || img.naturalHeight === 0) {
+        await Shortcuts.ReportSVGRenderResult(
+          d.id,
+          "",
+          "svg intrinsic size 0 (check root width/height/viewBox)",
+        );
+        return;
+      }
+      // Match DefaultPlatformLogoBackground (#23272A); opaque base under the SVG.
+      //ctx.fillStyle = "#23272A";
+      ctx.fillRect(0, 0, d.size, d.size);
       ctx.drawImage(img, 0, 0, d.size, d.size);
       const blob = await new Promise<Blob | null>((r) =>
         canvas.toBlob((b) => r(b), "image/png"),

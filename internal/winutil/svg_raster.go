@@ -5,7 +5,10 @@ import (
 	"fmt"
 	"image"
 	"image/color"
+	"image/draw"
 	"image/png"
+	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -15,21 +18,86 @@ import (
 
 	_ "image/gif"
 	_ "image/jpeg"
+
 	_ "golang.org/x/image/webp"
 )
 
-// Default platform logo colors (C# AppSettings TryGetStyle parity stub).
+// Default platform logo colors. Foreground mirrors the frontend CSS --accent
+// (defined as var(--cyan) = #80ffea in frontend/src/styles/theme.scss) so
+// rasterised shortcut icons match the in-app accent.
 const (
 	DefaultPlatformLogoBackground = "#23272A"
-	DefaultPlatformLogoForeground = "#FFFFFF"
+	DefaultPlatformLogoForeground = "#80ffea" // --accent
 )
 
-// ApplyPlatformSVGTheming mirrors IconFactory.CreateIcon SVG tweaks when id="FG" is present.
+var (
+	// id="FG" may appear after other attributes (e.g. d= first).
+	pathFGOpenRE = regexp.MustCompile(`(?i)<path(\s+[^>]*\bid\s*=\s*["']FG["'][^>]*)(/?>)`)
+	svgAttrFill  = regexp.MustCompile(`(?i)\bfill\s*=`)
+	// width/height using percentage or other non-absolute units break oksvg and
+	// <img src=data:...> intrinsic sizing; coerce using viewBox.
+	svgWidthPercentRE  = regexp.MustCompile(`(?i)\s+width\s*=\s*["'][^"']*%[^"']*["']`)
+	svgHeightPercentRE = regexp.MustCompile(`(?i)\s+height\s*=\s*["'][^"']*%[^"']*["']`)
+	svgHasWidthRE      = regexp.MustCompile(`(?i)\s+width\s*=`)
+	svgHasHeightRE     = regexp.MustCompile(`(?i)\s+height\s*=`)
+	viewBoxRE          = regexp.MustCompile(`(?i)viewBox\s*=\s*["']([^"']+)["']`)
+)
+
+func parseViewBoxSize(s string) (w, h int, ok bool) {
+	m := viewBoxRE.FindStringSubmatch(s)
+	if len(m) < 2 {
+		return 0, 0, false
+	}
+	fields := strings.Fields(strings.TrimSpace(m[1]))
+	if len(fields) < 4 {
+		return 0, 0, false
+	}
+	fw, err1 := strconv.ParseFloat(fields[len(fields)-2], 64)
+	fh, err2 := strconv.ParseFloat(fields[len(fields)-1], 64)
+	if err1 != nil || err2 != nil || fw <= 0 || fh <= 0 {
+		return 0, 0, false
+	}
+	return int(fw + 0.5), int(fh + 0.5), true
+}
+
+// coerceSVGRootPixelDimensions forces numeric width/height on the root <svg>
+// so rasterisers get a definite viewport (percent sizes often rasterise empty).
+func coerceSVGRootPixelDimensions(s string, fallback int) string {
+	iw, ih, ok := parseViewBoxSize(s)
+	if !ok {
+		iw, ih = fallback, fallback
+	}
+	start := strings.Index(s, "<svg")
+	if start < 0 {
+		return s
+	}
+	rel := strings.Index(s[start:], ">")
+	if rel < 0 {
+		return s
+	}
+	tagStart, tagEnd := start, start+rel
+	tag := s[tagStart:tagEnd]
+
+	tag = svgWidthPercentRE.ReplaceAllString(tag, fmt.Sprintf(` width="%d"`, iw))
+	tag = svgHeightPercentRE.ReplaceAllString(tag, fmt.Sprintf(` height="%d"`, ih))
+	if !svgHasWidthRE.MatchString(tag) {
+		tag += fmt.Sprintf(` width="%d"`, iw)
+	}
+	if !svgHasHeightRE.MatchString(tag) {
+		tag += fmt.Sprintf(` height="%d"`, ih)
+	}
+	return s[:tagStart] + tag + s[tagEnd:]
+}
+
+// ApplyPlatformSVGTheming mirrors IconFactory.CreateIcon SVG tweaks.
+//
+// When the SVG contains a <path ... id="FG" ...> element we wrap it with a solid
+// background <rect> and force a fill on the FG path. For SVGs that don't tag a
+// foreground path (and don't set fill themselves), we inject a default fill on
+// the <svg> root so all descendant paths inherit the accent colour instead of
+// SVG's implicit black.
 func ApplyPlatformSVGTheming(svg []byte, bgHex, fgHex string) []byte {
 	s := string(svg)
-	if !strings.Contains(s, `id="FG"`) {
-		return svg
-	}
 	bgHex = strings.TrimSpace(bgHex)
 	if bgHex == "" {
 		bgHex = DefaultPlatformLogoBackground
@@ -38,31 +106,82 @@ func ApplyPlatformSVGTheming(svg []byte, bgHex, fgHex string) []byte {
 	if fgHex == "" {
 		fgHex = DefaultPlatformLogoForeground
 	}
-	const pathFG = `<path id="FG"`
-	if strings.Contains(s, pathFG) {
-		rectAndPath := fmt.Sprintf(
-			`<rect fill="%s" width="500" height="500"></rect><path id="FG" fill="%s"`,
-			bgHex, fgHex,
-		)
-		s = strings.Replace(s, pathFG, rectAndPath, 1)
+
+	s = coerceSVGRootPixelDimensions(s, combinedIconCanvas)
+
+	iw, ih, vbOK := parseViewBoxSize(s)
+	if !vbOK {
+		iw, ih = combinedIconCanvas, combinedIconCanvas
 	}
-	const glass = `<path d="M500,0L0,0L0,500L500,0Z" fill="#FFFFFF" fill-opacity="0.02"/>`
-	s = strings.Replace(s, "</svg>", glass+"</svg>", 1)
-	return []byte(s)
+
+	if m := pathFGOpenRE.FindStringSubmatch(s); len(m) >= 3 {
+		full := m[0]
+		attrs := m[1]
+		suffix := m[2]
+		if !svgAttrFill.MatchString(attrs) {
+			attrs = ` fill="` + fgHex + `"` + attrs
+		}
+		rect := fmt.Sprintf(
+			`<rect fill="%s" width="%d" height="%d" x="0" y="0"></rect><path`,
+			bgHex, iw, ih,
+		)
+		s = strings.Replace(s, full, rect+attrs+suffix, 1)
+		const glass = `<path d="M500,0L0,0L0,500L500,0Z" fill="#FFFFFF" fill-opacity="0.02"/>`
+		s = strings.Replace(s, "</svg>", glass+"</svg>", 1)
+		return []byte(s)
+	}
+
+	return []byte(ensureSVGRootFill(s, fgHex))
 }
+
+// ensureSVGRootFill adds a fill="..." attribute to the root <svg> element
+// when one isn't already present, so paths without an explicit fill inherit
+// fgHex instead of rendering black.
+func ensureSVGRootFill(s, fgHex string) string {
+	start := strings.Index(s, "<svg")
+	if start < 0 {
+		return s
+	}
+	rel := strings.Index(s[start:], ">")
+	if rel < 0 {
+		return s
+	}
+	tagEnd := start + rel
+	tag := s[start:tagEnd]
+	if strings.Contains(tag, " fill=") || strings.Contains(tag, "\tfill=") {
+		return s
+	}
+	insertAt := tagEnd
+	if tagEnd > 0 && s[tagEnd-1] == '/' {
+		insertAt = tagEnd - 1
+	}
+	return s[:insertAt] + fmt.Sprintf(` fill="%s"`, fgHex) + s[insertAt:]
+}
+
+// ForceWailsFallbackSVG is a temporary debug toggle. When true, RasterizeSVGToNRGBA
+// skips the native oksvg rasteriser and always uses the Wails webview canvas
+// fallback path — useful for exercising RequestSVGRenderViaWails end-to-end.
+// Flip back to false for normal operation.
+const ForceWailsFallbackSVG = false
 
 // RasterizeSVGToNRGBA renders SVG to an NRGBA of size×size (oksvg; may fall back to Wails canvas).
 func RasterizeSVGToNRGBA(svg []byte, size int) (*image.NRGBA, error) {
 	if size <= 0 {
 		return nil, fmt.Errorf("invalid size %d", size)
 	}
-	img, err := rasterizeSVGOK(svg, size)
-	if err == nil {
-		return img, nil
+	var okErr error
+	if ForceWailsFallbackSVG {
+		okErr = fmt.Errorf("skipped (ForceWailsFallbackSVG=true)")
+	} else {
+		img, err := rasterizeSVGOK(svg, size)
+		if err == nil {
+			return img, nil
+		}
+		okErr = err
 	}
 	pngBytes, werr := RequestSVGRenderViaWails(string(svg), size, 5*time.Second)
 	if werr != nil {
-		return nil, fmt.Errorf("oksvg: %v; wails: %w", err, werr)
+		return nil, fmt.Errorf("oksvg: %v; wails: %w", okErr, werr)
 	}
 	dec, _, derr := image.Decode(bytes.NewReader(pngBytes))
 	if derr != nil {
@@ -83,6 +202,9 @@ func rasterizeSVGOK(svg []byte, size int) (*image.NRGBA, error) {
 	icon.SetTarget(0, 0, float64(size), float64(size))
 
 	rgba := image.NewNRGBA(image.Rect(0, 0, size, size))
+	bg := color.NRGBA{R: 0x23, G: 0x27, B: 0x2A, A: 0xff}
+	draw.Draw(rgba, rgba.Bounds(), image.NewUniform(bg), image.Point{}, draw.Src)
+
 	scanner := rasterx.NewScannerGV(size, size, rgba, rgba.Bounds())
 	dasher := rasterx.NewDasher(size, size, scanner)
 	icon.Draw(dasher, 1)

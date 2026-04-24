@@ -73,9 +73,13 @@ func CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix, stat
 		if root, err := paths.DataRoot(); err == nil {
 			cacheDir := filepath.Join(root, "IconCache")
 			if err := os.MkdirAll(cacheDir, 0o755); err == nil {
+				platformIcoPath := filepath.Join(cacheDir, profileimage.PlatformFolder(platformKey)+"_platform.ico")
+				if _, err := os.Stat(platformIcoPath); err != nil {
+					_ = winutil.BuildPlatformIcon(platformKey, platformIcoPath)
+				}
 				icoName := fmt.Sprintf("%s_%s.ico", profileimage.PlatformFolder(platformKey), sanitizeShortcutFileName(uniqueID))
 				icoPath := filepath.Join(cacheDir, icoName)
-				if err := winutil.BuildCombinedAccountIcon(platformKey, p, icoPath); err == nil {
+				if err := winutil.BuildCombinedAccountIcon(platformKey, p, icoPath, platformIcoPath); err == nil {
 					icon = icoPath + ",0"
 				}
 			}

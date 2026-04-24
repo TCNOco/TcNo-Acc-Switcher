@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"image"
-	"image/color"
 	_ "image/gif"
 	"image/png"
 	"os"
@@ -44,10 +43,11 @@ func BuildPlatformIcon(platformKey, outICO string) error {
 		}
 		bg = imageToNRGBA(resize.Resize(combinedIconCanvas, combinedIconCanvas, dec, resize.Lanczos3))
 	default:
-		if artErr != nil && artErr != ErrNoPlatformArt && artErr != ErrNoEmbeddedFrontend {
-			return fmt.Errorf("no platform art: %w", artErr)
+		// No flat placeholder .ico — omit custom icon so the shell uses the app icon.
+		if artErr != nil {
+			return fmt.Errorf("no platform artwork for %q: %w", platformKey, artErr)
 		}
-		bg = SolidNRGBA(combinedIconCanvas, color.NRGBA{R: 0x23, G: 0x27, B: 0x2A, A: 0xff})
+		return fmt.Errorf("no platform artwork for %q", platformKey)
 	}
 
 	sizes := []int{16, 32, 48, 256}
