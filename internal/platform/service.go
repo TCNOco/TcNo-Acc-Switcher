@@ -27,6 +27,7 @@ type PlatformStartup struct {
 	DisabledPlatformNames []string `json:"disabledPlatformNames"`
 	PlatformsFileMissing  bool     `json:"platformsFileMissing"`
 	Language              string   `json:"language"`
+	Theme                 string   `json:"theme,omitempty"`
 	// One-shot SPA route from CLI (e.g. open Steam page after elevated restart).
 	CliNavigateHint string `json:"cliNavigateHint,omitempty"`
 }
@@ -53,6 +54,7 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 		if os.IsNotExist(err) {
 			return PlatformStartup{
 				Language:             settings.Language,
+				Theme:                sanitizeThemeID(settings.Theme),
 				PlatformsFileMissing: true,
 				CliNavigateHint:      ConsumeStartupNavigateHint(),
 			}, nil
@@ -79,6 +81,7 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 		DisabledPlatformNames: disList,
 		PlatformsFileMissing:  false,
 		Language:              settings.Language,
+		Theme:                 sanitizeThemeID(settings.Theme),
 		CliNavigateHint:       nav,
 	}, nil
 }
@@ -115,6 +118,54 @@ func (p *PlatformService) SetLanguage(code string) error {
 	if settings.Language == "" {
 		settings.Language = "en-US"
 	}
+	return saveSettingsAtomic(exeDir, settings)
+}
+
+func sanitizeThemeID(id string) string {
+	s := strings.TrimSpace(id)
+	if s == "" || strings.EqualFold(s, "default") {
+		return ""
+	}
+	if len(s) > 64 {
+		return ""
+	}
+	for _, r := range s {
+		switch {
+		case r >= 'a' && r <= 'z', r >= 'A' && r <= 'Z', r >= '0' && r <= '9', r == '_', r == '-':
+			continue
+		default:
+			return ""
+		}
+	}
+	return s
+}
+
+func (p *PlatformService) GetTheme() (string, error) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return "", err
+	}
+	settings, err := loadSettings(exeDir)
+	if err != nil {
+		return "", err
+	}
+	return sanitizeThemeID(settings.Theme), nil
+}
+
+func (p *PlatformService) SetTheme(themeID string) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return err
+	}
+	settings, err := loadSettings(exeDir)
+	if err != nil {
+		return err
+	}
+	settings.Theme = sanitizeThemeID(themeID)
 	return saveSettingsAtomic(exeDir, settings)
 }
 

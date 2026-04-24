@@ -118,6 +118,7 @@ export class PlatformStartup {
     "disabledPlatformNames": string[];
     "platformsFileMissing": boolean;
     "language": string;
+    "theme"?: string;
 
     /**
      * One-shot SPA route from CLI (e.g. open Steam page after elevated restart).

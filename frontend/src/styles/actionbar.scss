@@ -1,0 +1,50 @@
+.actionbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  height: 3.5em;
+  min-height: 3.5em;
+  padding: 0.25em 0.25em;
+  overflow: visible;
+  background: var(--footer-bg);
+  color: #fff;
+
+  button {
+    height: 36px;
+  }
+
+  button:not(.btnicontext) {
+    padding: 4.5px;
+  }
+}
+
+.actionbar__login {
+  padding: 0.25em 3em 0.25em 3.9em;
+}
+
+.actionbar__status {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: left;
+  font-size: 0.88rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-left: 0.35rem;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.actionbar__actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 0;
+  overflow: visible;
+  position: relative;
+  z-index: 20;
+}

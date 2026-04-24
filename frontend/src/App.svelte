@@ -8,7 +8,7 @@
 
   import Home from './pages/Home.svelte'
   import Settings from './pages/Settings.svelte'
-  import Test from './pages/Test.svelte'
+  import PreviewCss from './pages/PreviewCss.svelte'
   import Platform from './pages/Platform.svelte'
   import PlatformSteam from './pages/PlatformSteam.svelte'
   import PlatformSettings from './pages/PlatformSettings.svelte'
@@ -57,8 +57,8 @@
       <Home />
     {:else if $route.page === 'settings'}
       <Settings />
-    {:else if $route.page === 'test'}
-      <Test />
+    {:else if $route.page === 'preview-css'}
+      <PreviewCss />
     {:else if $route.page === 'platform'}
       {#if $route.platformName === 'Steam'}
         <PlatformSteam name={$route.platformName} />

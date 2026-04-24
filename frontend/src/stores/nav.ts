@@ -5,7 +5,7 @@ import type { PlatformStartup } from "../../bindings/TcNo-Acc-Switcher/internal/
 export type Route =
   | { page: "home" }
   | { page: "settings" }
-  | { page: "test" }
+  | { page: "preview-css" }
   | { page: "manage-platforms" }
   | { page: "platform"; platformName: string }
   | { page: "platform-settings"; platformName: string };
@@ -20,8 +20,8 @@ export function serializeRoute(r: Route): string {
       return "#/";
     case "settings":
       return "#/settings";
-    case "test":
-      return "#/test";
+    case "preview-css":
+      return "#/preview-css";
     case "manage-platforms":
       return "#/manage-platforms";
     case "platform":
@@ -47,8 +47,8 @@ export function parseHash(hash: string): Route | null {
   if (head === "settings") {
     return { page: "settings" };
   }
-  if (head === "test") {
-    return { page: "test" };
+  if (head === "preview-css" || head === "test") {
+    return { page: "preview-css" };
   }
   if (head === "manage-platforms") {
     return { page: "manage-platforms" };

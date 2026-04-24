@@ -15,6 +15,8 @@ type AppSettings struct {
 
 	Language string `json:"language"`
 
+	Theme string `json:"theme,omitempty"`
+
 	PlatformOrder []string `json:"platformOrder"`
 
 	DisabledPlatforms []string `json:"disabledPlatforms"`

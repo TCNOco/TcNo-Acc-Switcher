@@ -51,6 +51,10 @@ export function GetStartup(): $CancellablePromise<$models.PlatformStartup> {
     });
 }
 
+export function GetTheme(): $CancellablePromise<string> {
+    return $Call.ByID(3289970754);
+}
+
 export function HasShortcutMainExe(platformKey: string): $CancellablePromise<boolean> {
     return $Call.ByID(340062970, platformKey);
 }
@@ -125,6 +129,10 @@ export function SetPlatformExePath(platformKey: string, exePath: string): $Cance
 
 export function SetProtocolEnabled(enabled: boolean): $CancellablePromise<void> {
     return $Call.ByID(3616914874, enabled);
+}
+
+export function SetTheme(themeID: string): $CancellablePromise<void> {
+    return $Call.ByID(1553672910, themeID);
 }
 
 // Private type creation functions
