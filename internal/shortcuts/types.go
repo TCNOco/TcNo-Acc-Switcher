@@ -3,6 +3,9 @@ package shortcuts
 // UpdatedEvent is emitted after scan or order changes.
 const UpdatedEvent = "shortcuts-updated"
 
+// FilesDroppedEvent is emitted from main when the OS drops files onto the window (absolute paths).
+const FilesDroppedEvent = "files-dropped"
+
 // ListPayload is the Wails event payload for [UpdatedEvent].
 type ListPayload struct {
 	PlatformKey string         `json:"platformKey"`

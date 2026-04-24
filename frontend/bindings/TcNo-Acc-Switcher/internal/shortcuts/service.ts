@@ -29,6 +29,10 @@ export function HideShortcut(platformKey: string, fileName: string): $Cancellabl
     return $Call.ByID(3836965482, platformKey, fileName);
 }
 
+export function ImportDroppedShortcuts(platformKey: string, srcPaths: string[]): $CancellablePromise<number> {
+    return $Call.ByID(3614119248, platformKey, srcPaths);
+}
+
 export function ListShortcuts(platformKey: string): $CancellablePromise<$models.ShortcutDTO[]> {
     return $Call.ByID(532352755, platformKey).then(($result: any) => {
         return $$createType1($result);

@@ -22,6 +22,7 @@ declare module "@wailsio/runtime" {
     namespace Events {
         interface CustomEvents {
             "action-bar-status": string;
+            "files-dropped": string[];
             "navigate": string;
             "shortcut:render-svg-request": winutil$0.RenderSVGRequest;
             "shortcuts-updated": shortcuts$0.ListPayload;

@@ -21,17 +21,19 @@ import * as winutil$0 from "../../../../../TcNo-Acc-Switcher/internal/winutil/mo
 
 function configure() {
     Object.freeze(Object.assign($Create.Events, {
-        "shortcut:render-svg-request": $$createType0,
-        "shortcuts-updated": $$createType1,
-        "steam-account-updated": $$createType2,
-        "toast": $$createType3,
+        "files-dropped": $$createType0,
+        "shortcut:render-svg-request": $$createType1,
+        "shortcuts-updated": $$createType2,
+        "steam-account-updated": $$createType3,
+        "toast": $$createType4,
     }));
 }
 
 // Private type creation functions
-const $$createType0 = winutil$0.RenderSVGRequest.createFrom;
-const $$createType1 = shortcuts$0.ListPayload.createFrom;
-const $$createType2 = steam$0.AccountPatch.createFrom;
-const $$createType3 = main$0.ToastPayload.createFrom;
+const $$createType0 = $Create.Array($Create.Any);
+const $$createType1 = winutil$0.RenderSVGRequest.createFrom;
+const $$createType2 = shortcuts$0.ListPayload.createFrom;
+const $$createType3 = steam$0.AccountPatch.createFrom;
+const $$createType4 = main$0.ToastPayload.createFrom;
 
 configure();

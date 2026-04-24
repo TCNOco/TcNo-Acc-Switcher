@@ -18,6 +18,7 @@ import (
 	"TcNo-Acc-Switcher/internal/winutil"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
+	"github.com/wailsapp/wails/v3/pkg/events"
 )
 
 // Shared service instances so BasicService uses the same PlatformService as Wails bindings.
@@ -44,6 +45,7 @@ func init() {
 	application.RegisterEvent[steam.AccountPatch](steam.AccountUpdatedEvent)
 	application.RegisterEvent[string](platform.ActionBarStatusEvent)
 	application.RegisterEvent[shortcuts.ListPayload](shortcuts.UpdatedEvent)
+	application.RegisterEvent[[]string](shortcuts.FilesDroppedEvent)
 
 	platform.SetSteamLaunchHooks(steam.SaveFolderFromConfirmedExe, steam.ResolveSteamExePath)
 	platform.SetSteamReset(steam.ResetToDefaults)
@@ -174,7 +176,7 @@ func runGUI(parsed cli.Parsed) {
 		log.Printf("ipc server: %v", err)
 	}
 
-	app.Window.NewWithOptions(application.WebviewWindowOptions{
+	win := app.Window.NewWithOptions(application.WebviewWindowOptions{
 		Title: "TcNo Account Switcher",
 		Mac: application.MacWindow{
 			InvisibleTitleBarHeight: 50,
@@ -184,6 +186,14 @@ func runGUI(parsed cli.Parsed) {
 		BackgroundColour: application.NewRGB(27, 38, 54),
 		URL:              "/",
 		Frameless:        true,
+		EnableFileDrop:   true,
+	})
+	win.OnWindowEvent(events.Common.WindowFilesDropped, func(event *application.WindowEvent) {
+		files := event.Context().DroppedFiles()
+		if len(files) == 0 {
+			return
+		}
+		app.Event.Emit(shortcuts.FilesDroppedEvent, files)
 	})
 
 	go func() {

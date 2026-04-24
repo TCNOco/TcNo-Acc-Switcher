@@ -4,6 +4,7 @@
   import TitleBar from './components/TitleBar.svelte'
   import AppModal from './components/AppModal.svelte'
   import Toast from './components/Toast.svelte'
+  import FileDropOverlay from './components/FileDropOverlay.svelte'
   import ContextMenu from './components/ContextMenu.svelte'
 
   import Home from './pages/Home.svelte'
@@ -50,6 +51,7 @@
 </script>
 
 <div class="container">
+  <FileDropOverlay />
   <ContextMenu />
   <TitleBar />
   <div class="page">

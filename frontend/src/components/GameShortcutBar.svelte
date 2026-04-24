@@ -3,6 +3,7 @@
   import { get } from "svelte/store";
   import { Events } from "@wailsio/runtime";
   import * as Shortcuts from "wails-shortcuts-service";
+  import { ImportDroppedShortcuts } from "../../bindings/TcNo-Acc-Switcher/internal/shortcuts/service.js";
   import { ListPayload, ShortcutDTO } from "../../bindings/TcNo-Acc-Switcher/internal/shortcuts/models.js";
   import {
     platformExeIconUrl,
@@ -18,7 +19,8 @@
   import { t } from "../stores/i18n";
   import { pushToast } from "../stores/toast";
   import { HasShortcutMainExe, LaunchPlatformAs } from "../lib/platformBindings";
-  import { formatToastWithError } from "../lib/formatWailsError";
+  import { formatToastWithError, formatWailsError } from "../lib/formatWailsError";
+  import { fileDropAcceptor, type FileDropAcceptor } from "../stores/fileDropTarget";
   import {
     insertionIndexExternalDrag,
     insertionIndexFromTileHover,
@@ -724,7 +726,44 @@
   let offEv: (() => void) | undefined;
   let teardownDnd: (() => void) | undefined;
 
+  function isNoShortcutFilesDrop(err: unknown): boolean {
+    const s = formatWailsError(err) || String(err);
+    return s.includes("no .lnk or .url files in drop");
+  }
+
+  const shortcutFileDropAcceptor: FileDropAcceptor = {
+    labelKey: "DropOverlay_CopyShortcut",
+    handle: async (paths: string[]) => {
+      const tr = get(t);
+      try {
+        const n = await ImportDroppedShortcuts(platformName, paths);
+        ddOpen = true;
+        pushToast({
+          type: "success",
+          message: tr("Toast_ShortcutImported", { count: n }),
+          duration: 6000,
+        });
+      } catch (e: unknown) {
+        if (isNoShortcutFilesDrop(e)) {
+          pushToast({
+            type: "warning",
+            message: tr("Toast_ShortcutImportUnsupported"),
+            duration: 8000,
+          });
+        } else {
+          pushToast({
+            type: "error",
+            message: formatToastWithError(tr("Toast_ShortcutImportFailed"), e),
+            duration: 8000,
+          });
+        }
+      }
+    },
+  };
+
   onMount(() => {
+    fileDropAcceptor.set(shortcutFileDropAcceptor);
+
     void (async () => {
       try {
         includeMainExe = await HasShortcutMainExe(platformName);
@@ -764,6 +803,7 @@
   });
 
   onDestroy(() => {
+    fileDropAcceptor.update((cur) => (cur === shortcutFileDropAcceptor ? null : cur));
     offEv?.();
     teardownDnd?.();
     document.body.style.userSelect = "";
