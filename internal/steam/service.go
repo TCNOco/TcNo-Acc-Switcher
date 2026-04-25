@@ -193,6 +193,7 @@ func (s *SteamService) GetSteamAccounts() ([]AccountDTO, error) {
 
 	out := make([]AccountDTO, 0, len(users))
 	for _, u := range users {
+		clearExpiredSteamProfileAssets(u.SteamID64, st.SteamImageExpiryTime)
 		v := vm[u.SteamID64]
 		imgURL, hasImg := profileimage.FindCached(PlatformKey, u.SteamID64)
 		var avatarPending bool
@@ -316,6 +317,7 @@ func (s *SteamService) RefreshVACStatus() error {
 }
 
 func (s *SteamService) RefreshAllSteamImages() error {
+	_ = ClearAllMiniprofileHTMLCache()
 	dir, err := profileimage.ProfileDir(PlatformKey)
 	if err != nil {
 		return err
@@ -337,9 +339,28 @@ func (s *SteamService) RefreshAllSteamImages() error {
 		}
 		_ = os.Remove(filepath.Join(dir, e.Name()))
 	}
-	_ = ClearAllMiniprofileHTMLCache()
 	s.StartSteamProfileRefresh()
 	return nil
+}
+
+func clearExpiredSteamProfileAssets(steamID64 string, maxAgeDays int) {
+	ids := []string{
+		steamID64,
+		steamID64 + "_frame",
+		steamID64 + "_nameplate",
+		steamID64 + "_featuredbadge",
+		steamID64 + "_featuredcontainer",
+	}
+	removed := deleteMiniprofileCacheIfOlder(steamID64, maxAgeDays)
+	for _, id := range ids {
+		if p, ok := profileimage.CachedFilePath(PlatformKey, id); ok && profileimage.FileOlderThanDays(p, maxAgeDays) {
+			_ = profileimage.DeleteCached(PlatformKey, id)
+			removed = true
+		}
+	}
+	if removed {
+		deleteMiniprofileCache(steamID64)
+	}
 }
 
 func (s *SteamService) StartSteamProfileRefresh() {
@@ -441,6 +462,8 @@ func (s *SteamService) runProfileRefresh() {
 			defer wg.Done()
 			_ = sem.Acquire(ctx, 1)
 			defer sem.Release(1)
+
+			clearExpiredSteamProfileAssets(u.SteamID64, st.SteamImageExpiryTime)
 
 			vmMu.Lock()
 			prev := vm[u.SteamID64]
@@ -648,6 +671,7 @@ func (s *SteamService) ForgetSteamAccount(steamID64 string) error {
 	_ = profileimage.DeleteCached(PlatformKey, steamID64)
 	_ = profileimage.DeleteCached(PlatformKey, steamID64+"_frame")
 	_ = profileimage.DeleteCached(PlatformKey, steamID64+"_nameplate")
+	_ = profileimage.DeleteCached(PlatformKey, steamID64+"_featuredbadge")
 	_ = profileimage.DeleteCached(PlatformKey, steamID64+"_featuredcontainer")
 	deleteMiniprofileCache(steamID64)
 	s.StartSteamProfileRefresh()

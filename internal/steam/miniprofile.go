@@ -10,7 +10,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
@@ -18,8 +17,6 @@ import (
 
 	"golang.org/x/net/html"
 )
-
-const miniprofileCacheTTL = 24 * time.Hour
 
 func miniprofileCachePath(steamID64 string) (string, error) {
 	r, err := paths.LoginCacheDir("Steam")
@@ -39,7 +36,14 @@ func ReadCachedMiniprofileHTML(steamID64 string) string {
 	if err != nil || len(data) == 0 {
 		return ""
 	}
-	return string(data)
+	cleaned := sanitizeMiniprofileHTML(string(data))
+	if cleaned == "" {
+		return ""
+	}
+	if cleaned != string(data) {
+		_ = fsutil.WriteFileAtomic(p, []byte(cleaned), 0o644)
+	}
+	return cleaned
 }
 
 func deleteMiniprofileCache(steamID64 string) {
@@ -72,6 +76,22 @@ func ClearAllMiniprofileHTMLCache() error {
 	return nil
 }
 
+func deleteMiniprofileCacheIfOlder(steamID64 string, maxAgeDays int) bool {
+	p, err := miniprofileCachePath(steamID64)
+	if err != nil {
+		return false
+	}
+	st, err := os.Stat(p)
+	if err != nil || st.IsDir() {
+		return false
+	}
+	if profileimage.FileOlderThanDays(p, maxAgeDays) {
+		_ = os.Remove(p)
+		return true
+	}
+	return false
+}
+
 func FetchMiniprofile(ctx context.Context, client *http.Client, steamID64 string, maxAgeDays int) (frameImgURL string, sanitizedHTML string, err error) {
 	steamID64 = strings.TrimSpace(steamID64)
 	if steamID64 == "" {
@@ -93,11 +113,16 @@ func FetchMiniprofile(ctx context.Context, client *http.Client, steamID64 string
 
 	var page string
 	fromDisk := false
-	if st, statErr := os.Stat(cachePath); statErr == nil && !st.IsDir() && time.Since(st.ModTime()) < miniprofileCacheTTL {
+	if st, statErr := os.Stat(cachePath); statErr == nil && !st.IsDir() && !profileimage.FileOlderThanDays(cachePath, maxAgeDays) {
 		data, rerr := os.ReadFile(cachePath)
 		if rerr == nil && len(data) > 0 {
-			page = string(data)
-			fromDisk = true
+			page = sanitizeMiniprofileHTML(string(data))
+			if strings.TrimSpace(page) != "" {
+				if page != string(data) {
+					_ = fsutil.WriteFileAtomic(cachePath, []byte(page), 0o644)
+				}
+				fromDisk = true
+			}
 		}
 	}
 	url := fmt.Sprintf("https://steamcommunity.com/miniprofile/%s", id32)
@@ -241,6 +266,9 @@ func isSafeSteamAssetURL(u string) bool {
 		return false
 	}
 	lu := strings.ToLower(u)
+	if strings.HasPrefix(lu, "/img/profiles/steam/") {
+		return true
+	}
 	if !strings.HasPrefix(lu, "https://") {
 		return false
 	}
@@ -306,6 +334,9 @@ func sanitizeNode(n *html.Node, out *bytes.Buffer) {
 		out.WriteString(html.EscapeString(n.Data))
 		return
 	case html.ElementNode:
+		if classAttr(n, "miniprofile_gamesection") {
+			return
+		}
 		if !miniAllowedTags[strings.ToLower(n.Data)] {
 			for c := n.FirstChild; c != nil; c = c.NextSibling {
 				sanitizeNode(c, out)
@@ -565,7 +596,7 @@ func embedMiniprofileHTMLAssets(ctx context.Context, client *http.Client, steamI
 	if feat := findFirstFeaturedImg(body); feat != nil {
 		u := attrVal(feat, "src")
 		if u != "" {
-			res, derr := profileimage.DownloadIfNeeded(ctx, client, PlatformKey, steamID64+"_featuredcontainer", u, maxAgeDays)
+			res, derr := profileimage.DownloadIfNeeded(ctx, client, PlatformKey, steamID64+"_featuredbadge", u, maxAgeDays)
 			if derr == nil && res != nil {
 				setAttr(feat, "src", res.PublicURL)
 				removeAttr(feat, "srcset")

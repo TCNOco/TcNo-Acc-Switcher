@@ -74,32 +74,6 @@
   font-size: 10px;
 }
 
-.miniprofile_gamesection {
-  display: flex;
-  flex-direction: row;
-  position: relative;
-
-  min-height: 64px;
-}
-
-.miniprofile_gamesection .game_logo {
-  width: 90px;
-  height: 34px;
-  top: 18px;
-  left: 16px;
-  position: absolute;
-}
-
-.miniprofile_gamesection .miniprofile_game_details {
-  display: flex;
-  flex-direction: column;
-
-  padding: 8px 8px 8px 122px;
-  font-size: 14px;
-
-  align-self: center;
-}
-
 .miniprofile_detailssection {
   display: flex;
   flex-direction: column;
@@ -133,8 +107,6 @@
   font-size: 14px;
   overflow: hidden;
   white-space: nowrap;
-
-  font-family: "Motiva Sans", Arial, Helvetica, sans-serif;
 }
 
 .miniprofile_featuredcontainer .description .name {
