@@ -23,8 +23,20 @@ export function ConfirmPlatformExePath(platformKey: string, exeFullPath: string)
     return $Call.ByID(3388066149, platformKey, exeFullPath);
 }
 
+export function GetDesktopHomeShortcutExists(): $CancellablePromise<boolean> {
+    return $Call.ByID(1436342586);
+}
+
+export function GetExitToTray(): $CancellablePromise<boolean> {
+    return $Call.ByID(3705594180);
+}
+
 export function GetLanguage(): $CancellablePromise<string> {
     return $Call.ByID(1329797675);
+}
+
+export function GetMinimizeOnSwitch(): $CancellablePromise<boolean> {
+    return $Call.ByID(2562015012);
 }
 
 export function GetOfflineMode(): $CancellablePromise<boolean> {
@@ -47,6 +59,14 @@ export function GetPlatformSettings(platformKey: string): $CancellablePromise<$m
 
 export function GetProtocolEnabled(): $CancellablePromise<boolean> {
     return $Call.ByID(3867357470);
+}
+
+export function GetStartProgramCentered(): $CancellablePromise<boolean> {
+    return $Call.ByID(2764521137);
+}
+
+export function GetStartTrayWithWindows(): $CancellablePromise<boolean> {
+    return $Call.ByID(2723837104);
 }
 
 export function GetStartup(): $CancellablePromise<$models.PlatformStartup> {
@@ -119,12 +139,24 @@ export function SetActionBarStatus(text: string): $CancellablePromise<void> {
     return $Call.ByID(85095566, text);
 }
 
+export function SetDesktopHomeShortcut(create: boolean): $CancellablePromise<void> {
+    return $Call.ByID(3719931318, create);
+}
+
 export function SetDisabledPlatforms(disabled: string[]): $CancellablePromise<void> {
     return $Call.ByID(3278316535, disabled);
 }
 
+export function SetExitToTray(enabled: boolean): $CancellablePromise<void> {
+    return $Call.ByID(4055135808, enabled);
+}
+
 export function SetLanguage(code: string): $CancellablePromise<void> {
     return $Call.ByID(1843532479, code);
+}
+
+export function SetMinimizeOnSwitch(enabled: boolean): $CancellablePromise<void> {
+    return $Call.ByID(1588199976, enabled);
 }
 
 export function SetOfflineMode(enabled: boolean): $CancellablePromise<void> {
@@ -137,6 +169,14 @@ export function SetPlatformExePath(platformKey: string, exePath: string): $Cance
 
 export function SetProtocolEnabled(enabled: boolean): $CancellablePromise<void> {
     return $Call.ByID(3616914874, enabled);
+}
+
+export function SetStartProgramCentered(enabled: boolean): $CancellablePromise<void> {
+    return $Call.ByID(3584189133, enabled);
+}
+
+export function SetStartTrayWithWindows(enabled: boolean): $CancellablePromise<void> {
+    return $Call.ByID(444643124, enabled);
 }
 
 export function SetTheme(themeID: string): $CancellablePromise<void> {

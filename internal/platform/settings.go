@@ -30,6 +30,18 @@ type AppSettings struct {
 
 	// OfflineMode blocks outbound HTTP (avatars, Steam APIs, etc.) when true.
 	OfflineMode bool `json:"offlineMode,omitempty"`
+
+	// ExitToTray keeps the app running when the main window is closed; the window is hidden instead.
+	ExitToTray bool `json:"exitToTray,omitempty"`
+
+	// MinimizeOnSwitch hides the main window after a successful account switch (when launch succeeds if AutoStart is on).
+	MinimizeOnSwitch bool `json:"minimizeOnSwitch,omitempty"`
+
+	// StartTrayWithWindows registers Windows startup with the -tray flag (Tray-only launch).
+	StartTrayWithWindows bool `json:"startTrayWithWindows,omitempty"`
+
+	// StartProgramCentered places the main window in the center of the screen when the app opens.
+	StartProgramCentered bool `json:"startProgramCentered,omitempty"`
 }
 
 func defaultSettings() AppSettings {

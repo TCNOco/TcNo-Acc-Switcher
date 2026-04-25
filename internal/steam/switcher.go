@@ -9,6 +9,7 @@ import (
 
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/platform"
+	"TcNo-Acc-Switcher/internal/tray"
 	"TcNo-Acc-Switcher/internal/winutil"
 )
 
@@ -80,7 +81,10 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 		}
 	}
 
+	RecordTrayRecentAfterSwap(steamID64)
+
 	if !st.AutoStart {
+		tray.MaybeHideMainWindow()
 		return nil
 	}
 
@@ -94,7 +98,11 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 		WorkingDir:    root,
 		AsDesktopUser: winutil.IsProcessElevated() && !st.RunAsAdmin,
 	}
-	return winutil.Start(exe, args, opts)
+	if err := winutil.Start(exe, args, opts); err != nil {
+		return err
+	}
+	tray.MaybeHideMainWindow()
+	return nil
 }
 
 func LaunchSteamOnly(extraLaunchArgs []string) error {

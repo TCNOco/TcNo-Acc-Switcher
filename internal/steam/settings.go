@@ -153,7 +153,10 @@ func LoadSettings() (Settings, error) {
 	if s.SteamImageExpiryTime <= 0 {
 		s.SteamImageExpiryTime = 7
 	}
-	if s.TrayAccNumber <= 0 {
+	// Honor explicit 0 to disable tray MRU; default to 3 when the key was absent from JSON.
+	if gjson.GetBytes(data, "TrayAccNumber").Exists() || gjson.GetBytes(data, "Steam_TrayAccNumber").Exists() {
+		// keep unmarshaled TrayAccNumber (including 0)
+	} else if s.TrayAccNumber <= 0 {
 		s.TrayAccNumber = 3
 	}
 	if strings.TrimSpace(s.ClosingMethod) == "" {

@@ -16,6 +16,7 @@ import (
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/shortcuts"
 	"TcNo-Acc-Switcher/internal/steam"
+	"TcNo-Acc-Switcher/internal/tray"
 	"TcNo-Acc-Switcher/internal/winutil"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
@@ -35,6 +36,9 @@ var (
 
 //go:embed all:frontend/dist
 var assets embed.FS
+
+//go:embed build/appicon.png
+var trayIconPNG []byte
 
 func init() {
 	winutil.SetEmbeddedFrontendFS(assets)
@@ -93,6 +97,7 @@ func main() {
 	winutil.RegisterSingletonReleaser(releaseSingleton)
 
 	syncOfflineModeFromSettings()
+	syncWindowsStartupFromSettings()
 
 	if parsed.NeedsHeadlessMutex() {
 		winutil.AttachParentConsole()
@@ -154,6 +159,13 @@ func runGUI(parsed cli.Parsed) {
 
 	syncProtocolRegistration()
 
+	var guiSettings platform.AppSettings
+	if d, err := platform.ResolveExeDir(); err == nil {
+		if s, err := platform.LoadAppSettings(d); err == nil {
+			guiSettings = s
+		}
+	}
+
 	app := application.New(application.Options{
 		Name:        "TcNo Account Switcher",
 		Description: "A Superfast open-source account switcher",
@@ -179,7 +191,7 @@ func runGUI(parsed cli.Parsed) {
 		log.Printf("ipc server: %v", err)
 	}
 
-	win := app.Window.NewWithOptions(application.WebviewWindowOptions{
+	winOpts := application.WebviewWindowOptions{
 		Title: "TcNo Account Switcher",
 		Mac: application.MacWindow{
 			InvisibleTitleBarHeight: 50,
@@ -190,7 +202,18 @@ func runGUI(parsed cli.Parsed) {
 		URL:              "/",
 		Frameless:        true,
 		EnableFileDrop:   true,
-	})
+	}
+	if guiSettings.StartProgramCentered {
+		winOpts.InitialPosition = application.WindowCentered
+	} else {
+		winOpts.InitialPosition = application.WindowXY
+		winOpts.X = 96
+		winOpts.Y = 96
+	}
+	if parsed.StartInTray {
+		winOpts.Hidden = true
+	}
+	win := app.Window.NewWithOptions(winOpts)
 	win.OnWindowEvent(events.Common.WindowFilesDropped, func(event *application.WindowEvent) {
 		files := event.Context().DroppedFiles()
 		if len(files) == 0 {
@@ -198,6 +221,18 @@ func runGUI(parsed cli.Parsed) {
 		}
 		app.Event.Emit(shortcuts.FilesDroppedEvent, files)
 	})
+
+	trayMgr := tray.NewManager(app, win, tray.Deps{
+		SwapBasic: func(platformKey, uniqueID string) error {
+			return basicSvc.SwapToAccount(platformKey, uniqueID, nil)
+		},
+		SwapSteam: func(steamID64 string, personaState int) error {
+			return steamSvc.SwapToSteamAccount(steamID64, personaState, nil)
+		},
+	})
+	trayMgr.RegisterCloseHook()
+	tray.SetMenuRefresh(trayMgr.RefreshMenu)
+	trayMgr.Start(trayIconPNG)
 
 	go func() {
 		for {
@@ -241,6 +276,24 @@ func syncOfflineModeFromSettings() {
 	appclient.SetOfflineMode(s.OfflineMode)
 }
 
+func syncWindowsStartupFromSettings() {
+	exeDir, err := platform.ResolveExeDir()
+	if err != nil {
+		return
+	}
+	s, err := platform.LoadAppSettings(exeDir)
+	if err != nil {
+		return
+	}
+	self, err := os.Executable()
+	if err != nil {
+		return
+	}
+	if err := winutil.SyncRunAtStartupTray(filepath.Clean(self), s.StartTrayWithWindows); err != nil {
+		log.Printf("windows startup tray sync: %v", err)
+	}
+}
+
 func handleForwardedCLI(app *application.App, argv []string) {
 	idx, err := cli.LoadPlatformIndex()
 	idxPtr := idx
@@ -261,6 +314,14 @@ func handleForwardedCLI(app *application.App, argv []string) {
 }
 
 func dispatchCLIInGUI(app *application.App, p cli.Parsed) {
+	if p.StartInTray {
+		application.InvokeSync(func() {
+			w := app.Window.Current()
+			if w != nil {
+				_ = w.Hide()
+			}
+		})
+	}
 	switch p.Kind {
 	case cli.KindSwapSteam:
 		if err := steamSvc.SwapToSteamAccount(p.SteamID64, p.PersonaState, p.PassthroughLaunchArgs); err != nil {

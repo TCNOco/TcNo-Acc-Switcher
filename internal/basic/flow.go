@@ -10,9 +10,11 @@ import (
 	"path/filepath"
 	"strings"
 
+	"TcNo-Acc-Switcher/internal/cli"
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
+	"TcNo-Acc-Switcher/internal/tray"
 	"TcNo-Acc-Switcher/internal/winutil"
 
 	"github.com/tidwall/gjson"
@@ -407,6 +409,37 @@ func ClearCurrentLogin(deps FlowDeps, platformKey string) error {
 	return nil
 }
 
+func recordBasicTrayRecent(platformKey, uniqueID string) {
+	platformKey = strings.TrimSpace(platformKey)
+	uniqueID = strings.TrimSpace(uniqueID)
+	if platformKey == "" || uniqueID == "" {
+		return
+	}
+	ps, err := platform.LoadPlatformSettings(platformKey)
+	if err != nil || ps.TrayAccNumber <= 0 {
+		return
+	}
+	ids, err := readIDs(platformKey)
+	if err != nil {
+		return
+	}
+	name := strings.TrimSpace(ids[uniqueID])
+	if name == "" {
+		name = uniqueID
+	}
+	idx, err := cli.LoadPlatformIndex()
+	if err != nil {
+		return
+	}
+	short := cli.ShortTokenForPlatform(idx, platformKey)
+	if short == "" {
+		return
+	}
+	arg := "+" + short + ":" + uniqueID
+	_ = tray.AddUser(platformKey, arg, name, ps.TrayAccNumber)
+	tray.RefreshMenuIfSet()
+}
+
 func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []string) error {
 	defer platform.EmitActionBarStatus("")
 
@@ -458,11 +491,17 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 	if err := Login(deps, platformKey, accName); err != nil {
 		return err
 	}
+	recordBasicTrayRecent(platformKey, uniqueID)
 	if !ps.AutoStart {
+		tray.MaybeHideMainWindow()
 		return nil
 	}
 	platform.EmitActionBarStatusI18nPlatform("Status_StartingPlatform", platformKey)
-	return launchBasicNoStatus(deps, platformKey, extraLaunchArgs)
+	if err := launchBasicNoStatus(deps, platformKey, extraLaunchArgs); err != nil {
+		return err
+	}
+	tray.MaybeHideMainWindow()
+	return nil
 }
 
 func LaunchBasic(deps FlowDeps, platformKey string, extraLaunchArgs []string) error {

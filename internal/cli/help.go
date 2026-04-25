@@ -27,6 +27,7 @@ Logout:              logout[:<PlatformName>[:<accountId>]]
 
 Other:               -h, --help    Show this help
                      -v, --verbose Verbose logging (reserved)
+                     -tray, --tray Start with the main window hidden (tray / background)
 
 Second instance forwards arguments to the running GUI via a named pipe (Windows).
 `

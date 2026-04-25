@@ -793,3 +793,147 @@ func (p *PlatformService) SetOfflineMode(enabled bool) error {
 	appclient.SetOfflineMode(enabled)
 	return nil
 }
+
+func (p *PlatformService) GetExitToTray() (bool, error) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return false, err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return false, err
+	}
+	return s.ExitToTray, nil
+}
+
+func (p *PlatformService) SetExitToTray(enabled bool) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return err
+	}
+	s.ExitToTray = enabled
+	return saveSettingsAtomic(exeDir, s)
+}
+
+func (p *PlatformService) GetMinimizeOnSwitch() (bool, error) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return false, err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return false, err
+	}
+	return s.MinimizeOnSwitch, nil
+}
+
+func (p *PlatformService) SetMinimizeOnSwitch(enabled bool) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return err
+	}
+	s.MinimizeOnSwitch = enabled
+	return saveSettingsAtomic(exeDir, s)
+}
+
+func (p *PlatformService) GetStartTrayWithWindows() (bool, error) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return false, err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return false, err
+	}
+	return s.StartTrayWithWindows, nil
+}
+
+func (p *PlatformService) SetStartTrayWithWindows(enabled bool) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return err
+	}
+	prev := s.StartTrayWithWindows
+	s.StartTrayWithWindows = enabled
+	if err := saveSettingsAtomic(exeDir, s); err != nil {
+		return err
+	}
+	self, err := os.Executable()
+	if err != nil {
+		s.StartTrayWithWindows = prev
+		_ = saveSettingsAtomic(exeDir, s)
+		return err
+	}
+	self = filepath.Clean(self)
+	if err := winutil.SetRunAtStartupTray(self, enabled); err != nil {
+		s.StartTrayWithWindows = prev
+		_ = saveSettingsAtomic(exeDir, s)
+		return err
+	}
+	return nil
+}
+
+func (p *PlatformService) GetStartProgramCentered() (bool, error) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return false, err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return false, err
+	}
+	return s.StartProgramCentered, nil
+}
+
+func (p *PlatformService) SetStartProgramCentered(enabled bool) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return err
+	}
+	s.StartProgramCentered = enabled
+	return saveSettingsAtomic(exeDir, s)
+}
+
+func (p *PlatformService) GetDesktopHomeShortcutExists() (bool, error) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	return winutil.HomeDesktopShortcutExists(), nil
+}
+
+func (p *PlatformService) SetDesktopHomeShortcut(create bool) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	return winutil.SetHomeDesktopShortcut(create)
+}

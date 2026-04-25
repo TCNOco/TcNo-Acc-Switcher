@@ -20,6 +20,18 @@
   let protocolLoading = false;
   let offlineLoading = false;
 
+  let exitToTray = false;
+  let minimizeOnSwitch = false;
+  let exitToTrayLoading = false;
+  let minimizeOnSwitchLoading = false;
+
+  let startTrayWithWindows = false;
+  let startProgramCentered = false;
+  let desktopHomeShortcut = false;
+  let startTrayLoading = false;
+  let startCenteredLoading = false;
+  let desktopShortcutLoading = false;
+
   onMount(() => {
     themes = listThemes();
     isWindows = /windows/i.test(navigator.userAgent) || /win32/i.test(navigator.userAgent);
@@ -30,6 +42,43 @@
         })
         .catch(() => {
           protocolEnabled = false;
+        });
+    }
+    void PlatformService.GetExitToTray()
+      .then((v) => {
+        exitToTray = v;
+      })
+      .catch(() => {
+        exitToTray = false;
+      });
+    void PlatformService.GetMinimizeOnSwitch()
+      .then((v) => {
+        minimizeOnSwitch = v;
+      })
+      .catch(() => {
+        minimizeOnSwitch = false;
+      });
+    void PlatformService.GetStartProgramCentered()
+      .then((v) => {
+        startProgramCentered = v;
+      })
+      .catch(() => {
+        startProgramCentered = false;
+      });
+    if (isWindows) {
+      void PlatformService.GetStartTrayWithWindows()
+        .then((v) => {
+          startTrayWithWindows = v;
+        })
+        .catch(() => {
+          startTrayWithWindows = false;
+        });
+      void PlatformService.GetDesktopHomeShortcutExists()
+        .then((v) => {
+          desktopHomeShortcut = v;
+        })
+        .catch(() => {
+          desktopHomeShortcut = false;
         });
     }
   });
@@ -75,6 +124,142 @@
       });
     } finally {
       protocolLoading = false;
+    }
+  }
+
+  async function toggleExitToTray(): Promise<void> {
+    if (exitToTrayLoading) {
+      return;
+    }
+    const next = !exitToTray;
+    exitToTrayLoading = true;
+    try {
+      await PlatformService.SetExitToTray(next);
+      exitToTray = next;
+      pushToast({
+        type: "success",
+        message: get(t)("Toast_SavedItem", { item: get(t)("Settings_ExitToTray") }),
+        duration: 4000,
+      });
+    } catch (e) {
+      pushToast({
+        type: "error",
+        message: formatToastWithError($t("Toast_SaveFailed"), e),
+        duration: 8000,
+      });
+    } finally {
+      exitToTrayLoading = false;
+    }
+  }
+
+  async function toggleMinimizeOnSwitch(): Promise<void> {
+    if (minimizeOnSwitchLoading) {
+      return;
+    }
+    const next = !minimizeOnSwitch;
+    minimizeOnSwitchLoading = true;
+    try {
+      await PlatformService.SetMinimizeOnSwitch(next);
+      minimizeOnSwitch = next;
+      pushToast({
+        type: "success",
+        message: get(t)("Toast_SavedItem", { item: get(t)("Settings_MinimizeOnSwitch") }),
+        duration: 4000,
+      });
+    } catch (e) {
+      pushToast({
+        type: "error",
+        message: formatToastWithError($t("Toast_SaveFailed"), e),
+        duration: 8000,
+      });
+    } finally {
+      minimizeOnSwitchLoading = false;
+    }
+  }
+
+  async function refreshDesktopShortcutState(): Promise<void> {
+    if (!isWindows) {
+      return;
+    }
+    try {
+      desktopHomeShortcut = await PlatformService.GetDesktopHomeShortcutExists();
+    } catch {
+      desktopHomeShortcut = false;
+    }
+  }
+
+  async function toggleStartTrayWithWindows(): Promise<void> {
+    if (!isWindows || startTrayLoading) {
+      return;
+    }
+    const next = !startTrayWithWindows;
+    startTrayLoading = true;
+    try {
+      await PlatformService.SetStartTrayWithWindows(next);
+      startTrayWithWindows = next;
+      pushToast({
+        type: "success",
+        message: get(t)("Toast_SavedItem", { item: get(t)("Settings_Tray_StartWindows") }),
+        duration: 4000,
+      });
+    } catch (e) {
+      pushToast({
+        type: "error",
+        message: formatToastWithError($t("Toast_SaveFailed"), e),
+        duration: 8000,
+      });
+    } finally {
+      startTrayLoading = false;
+    }
+  }
+
+  async function toggleStartProgramCentered(): Promise<void> {
+    if (startCenteredLoading) {
+      return;
+    }
+    const next = !startProgramCentered;
+    startCenteredLoading = true;
+    try {
+      await PlatformService.SetStartProgramCentered(next);
+      startProgramCentered = next;
+      pushToast({
+        type: "success",
+        message: get(t)("Toast_SavedItem", { item: get(t)("Settings_StartCentered") }),
+        duration: 4000,
+      });
+    } catch (e) {
+      pushToast({
+        type: "error",
+        message: formatToastWithError($t("Toast_SaveFailed"), e),
+        duration: 8000,
+      });
+    } finally {
+      startCenteredLoading = false;
+    }
+  }
+
+  async function toggleDesktopHomeShortcut(): Promise<void> {
+    if (!isWindows || desktopShortcutLoading) {
+      return;
+    }
+    const next = !desktopHomeShortcut;
+    desktopShortcutLoading = true;
+    try {
+      await PlatformService.SetDesktopHomeShortcut(next);
+      await refreshDesktopShortcutState();
+      pushToast({
+        type: "success",
+        message: get(t)("Toast_SavedItem", { item: get(t)("Settings_DesktopShortcut") }),
+        duration: 4000,
+      });
+    } catch (e) {
+      pushToast({
+        type: "error",
+        message: formatToastWithError($t("Toast_SaveFailed"), e),
+        duration: 8000,
+      });
+    } finally {
+      desktopShortcutLoading = false;
     }
   }
 
@@ -147,6 +332,36 @@
   <label for="gs-offline" use:tooltip={$t("Settings_OfflineMode")}>{$t("Settings_OfflineMode")}</label>
 </div>
 
+<div class="rowSetting">
+  <div class="form-check">
+    <input
+      id="gs-exit-tray"
+      type="checkbox"
+      checked={exitToTray}
+      disabled={exitToTrayLoading}
+      on:change={() => void toggleExitToTray()}
+    />
+    <label class="form-check-label" for="gs-exit-tray"></label>
+  </div>
+  <label for="gs-exit-tray" use:tooltip={$t("Settings_ExitToTray")}>{$t("Settings_ExitToTray")}</label>
+</div>
+
+<div class="rowSetting">
+  <div class="form-check">
+    <input
+      id="gs-min-switch"
+      type="checkbox"
+      checked={minimizeOnSwitch}
+      disabled={minimizeOnSwitchLoading}
+      on:change={() => void toggleMinimizeOnSwitch()}
+    />
+    <label class="form-check-label" for="gs-min-switch"></label>
+  </div>
+  <label for="gs-min-switch" use:tooltip={$t("Settings_MinimizeOnSwitch")}
+    >{$t("Settings_MinimizeOnSwitch")}</label
+  >
+</div>
+
 {#if isWindows}
   <div class="rowSetting">
     <div class="form-check">
@@ -159,9 +374,61 @@
       />
       <label class="form-check-label" for="gs-protocol"></label>
     </div>
-    <label for="gs-protocol" use:tooltip={$t("Settings_EnableProtocol")}
-      >{$t("Settings_EnableProtocol")}</label
+    <label for="gs-protocol" use:tooltip={$t("Settings_Protocol")}
+      >{$t("Settings_Protocol")}</label
     >
+  </div>
+{/if}
+
+<h2 class="SettingsHeader">{$t("Settings_Header_System")}</h2>
+
+{#if isWindows}
+  <div class="rowSetting">
+    <div class="form-check">
+      <input
+        id="gs-start-tray-win"
+        type="checkbox"
+        checked={startTrayWithWindows}
+        disabled={startTrayLoading}
+        on:change={() => void toggleStartTrayWithWindows()}
+      />
+      <label class="form-check-label" for="gs-start-tray-win"></label>
+    </div>
+    <label for="gs-start-tray-win" use:tooltip={$t("Settings_Tray_StartWindows")}
+      >{$t("Settings_Tray_StartWindows")}</label
+    >
+  </div>
+{/if}
+
+<div class="rowSetting">
+  <div class="form-check">
+    <input
+      id="gs-start-centered"
+      type="checkbox"
+      checked={startProgramCentered}
+      disabled={startCenteredLoading}
+      on:change={() => void toggleStartProgramCentered()}
+    />
+    <label class="form-check-label" for="gs-start-centered"></label>
+  </div>
+  <label for="gs-start-centered" use:tooltip={$t("Settings_StartCentered")}
+    >{$t("Settings_StartCentered")}</label
+  >
+</div>
+
+{#if isWindows}
+  <div class="rowSetting">
+    <div class="form-check">
+      <input
+        id="gs-desktop-home"
+        type="checkbox"
+        checked={desktopHomeShortcut}
+        disabled={desktopShortcutLoading}
+        on:change={() => void toggleDesktopHomeShortcut()}
+      />
+      <label class="form-check-label" for="gs-desktop-home"></label>
+    </div>
+    <label for="gs-desktop-home">{$t("Settings_DesktopShortcut")}</label>
   </div>
 {/if}
 

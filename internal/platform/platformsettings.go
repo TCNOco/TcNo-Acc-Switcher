@@ -202,7 +202,10 @@ func LoadPlatformSettings(platformKey string) (PlatformSettings, error) {
 	if s.AccountNotes == nil {
 		s.AccountNotes = map[string]string{}
 	}
-	if s.TrayAccNumber <= 0 {
+	// TrayAccNumber <= 0 disables tray MRU for this platform when explicitly set in JSON.
+	if gjson.GetBytes(data, "TrayAccNumber").Exists() {
+		// keep unmarshaled value (including 0)
+	} else if s.TrayAccNumber <= 0 {
 		s.TrayAccNumber = 3
 	}
 	if strings.TrimSpace(s.ClosingMethod) == "" {

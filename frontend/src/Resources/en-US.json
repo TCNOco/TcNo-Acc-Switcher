@@ -389,7 +389,6 @@
   "Toast_CopyFailed": "Could not copy to clipboard.",
   "Toast_NotImplemented": "Not implemented yet.",
   "Toast_GameLaunchRequested": "Steam launch requested.",
-  "Settings_EnableProtocol": "Enable tcno:// URL protocol handler (Windows)",
   "Settings_AlwaysSwapOnShortcut": "Always switch to selected account before launching a shortcut",
   "Tooltip_AlwaysSwapOnShortcut": "When enabled, clicking a shortcut in the footer swaps to the selected account first.",
   "ProfileImage_ToggleText": "Use image as account image",

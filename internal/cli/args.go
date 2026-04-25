@@ -35,6 +35,7 @@ type Parsed struct {
 	PassthroughLaunchArgs []string // forwarded to the target platform exe (not TcNo flags)
 	RunShortcutFile       string   // basename of .lnk/.url; used with swap to launch from cache / fallback
 	RunAppID              string   // numeric Steam app id; Steam + +s only, launches steam://rungameid/
+	StartInTray           bool     // -tray: start GUI with main window hidden
 }
 
 const steamPlatformName = "Steam"
@@ -84,6 +85,9 @@ func Parse(argv []string, idx *PlatformIndex) (Parsed, error) {
 			continue
 		case "-v", "--verbose", "verbose":
 			p.Verbose = true
+			continue
+		case "-tray", "--tray":
+			p.StartInTray = true
 			continue
 		}
 
