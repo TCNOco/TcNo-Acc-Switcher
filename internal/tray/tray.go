@@ -18,9 +18,9 @@ import (
 	"github.com/wailsapp/wails/v3/pkg/application"
 	"github.com/wailsapp/wails/v3/pkg/events"
 
+	_ "golang.org/x/image/webp"
 	_ "image/gif"
 	_ "image/jpeg"
-	_ "golang.org/x/image/webp"
 )
 
 // Deps wires the tray to swap backends without import cycles.
@@ -65,15 +65,29 @@ func (m *Manager) RegisterCloseHook() {
 		}
 		exeDir, err := platform.ResolveExeDir()
 		if err != nil {
+			m.closeWithoutTray()
 			return
 		}
 		s, err := platform.LoadAppSettings(exeDir)
-		if err != nil || !s.ExitToTray {
+		if err != nil {
+			m.closeWithoutTray()
+			return
+		}
+		if !s.ExitToTray {
+			m.closeWithoutTray()
 			return
 		}
 		ev.Cancel()
 		m.win.Hide()
 	})
+}
+
+func (m *Manager) closeWithoutTray() {
+	m.SetQuitting(true)
+	if m.systray != nil {
+		m.systray.Destroy()
+		m.systray = nil
+	}
 }
 
 // MaybeHideMainWindow hides the main window when MinimizeOnSwitch is enabled in app settings.
