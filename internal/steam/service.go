@@ -47,6 +47,11 @@ type AccountDTO struct {
 	ShowShortNotes  bool   `json:"showShortNotes"`
 	Note            string `json:"note"`
 
+	AvatarFrameURL  string `json:"avatarFrameUrl"`
+	MiniProfileHTML string `json:"miniProfileHtml"`
+	ShowMiniProfile bool   `json:"showMiniProfile"`
+	ShowAvatarFrame bool   `json:"showAvatarFrame"`
+
 	SyncError string `json:"syncError"`
 
 	// CurrentSession: exactly one loginusers row has MostRecent=="1" and it is this account.
@@ -64,6 +69,11 @@ type AccountPatch struct {
 	MetaPending   bool `json:"metaPending"`
 
 	DisplayName string `json:"displayName,omitempty"`
+
+	AvatarFrameURL  string `json:"avatarFrameUrl"`
+	MiniProfileHTML string `json:"miniProfileHtml"`
+	ShowMiniProfile bool   `json:"showMiniProfile"`
+	ShowAvatarFrame bool   `json:"showAvatarFrame"`
 
 	Error string `json:"error"`
 }
@@ -201,6 +211,12 @@ func (s *SteamService) GetSteamAccounts() ([]AccountDTO, error) {
 			note = st.AccountNotes[u.SteamID64]
 		}
 
+		miniHTML := ReadCachedMiniprofileHTML(u.SteamID64)
+		frameURL := ""
+		if fu, ok := profileimage.FindCached(PlatformKey, u.SteamID64+"_frame"); ok {
+			frameURL = fu
+		}
+
 		dto := AccountDTO{
 			SteamID64:       u.SteamID64,
 			PersonaName:     displayPersona(u),
@@ -221,6 +237,10 @@ func (s *SteamService) GetSteamAccounts() ([]AccountDTO, error) {
 			CollectInfo:     st.CollectInfo,
 			ShowShortNotes:  st.ShowShortNotes,
 			Note:            note,
+			AvatarFrameURL:  frameURL,
+			MiniProfileHTML: miniHTML,
+			ShowMiniProfile: st.SteamShowMiniProfile,
+			ShowAvatarFrame: st.SteamShowAvatarFrame,
 			CurrentSession:  activeSteamID != "" && u.SteamID64 == activeSteamID,
 		}
 		out = append(out, dto)
@@ -317,6 +337,7 @@ func (s *SteamService) RefreshAllSteamImages() error {
 		}
 		_ = os.Remove(filepath.Join(dir, e.Name()))
 	}
+	_ = ClearAllMiniprofileHTMLCache()
 	s.StartSteamProfileRefresh()
 	return nil
 }
@@ -425,7 +446,13 @@ func (s *SteamService) runProfileRefresh() {
 			prev := vm[u.SteamID64]
 			vmMu.Unlock()
 
-			patch := AccountPatch{SteamID64: u.SteamID64, Vac: prev.Vac, Ltd: prev.Ltd}
+			patch := AccountPatch{
+				SteamID64:       u.SteamID64,
+				Vac:             prev.Vac,
+				Ltd:             prev.Ltd,
+				ShowMiniProfile: st.SteamShowMiniProfile,
+				ShowAvatarFrame: st.SteamShowAvatarFrame,
+			}
 
 			xctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 			fields, err := FetchProfileXML(xctx, appclient.Shared, u.SteamID64)
@@ -456,10 +483,41 @@ func (s *SteamService) runProfileRefresh() {
 			patch.MetaPending = false
 			patch.Error = ""
 			patch.DisplayName = fields.CommunityDisplayName
+			patch.ShowMiniProfile = st.SteamShowMiniProfile
+			patch.ShowAvatarFrame = st.SteamShowAvatarFrame
 
 			vmMu.Lock()
 			vm[u.SteamID64] = VacEntry{SteamID: u.SteamID64, Vac: patch.Vac, Ltd: patch.Ltd}
 			vmMu.Unlock()
+
+			if st.SteamShowMiniProfile || st.SteamShowAvatarFrame {
+				mctx, mcancel := context.WithTimeout(ctx, 15*time.Second)
+				frameSrc, miniHTML, mErr := FetchMiniprofile(mctx, appclient.Shared, u.SteamID64, st.SteamImageExpiryTime)
+				mcancel()
+				if mErr != nil {
+					steamLog.Warn("miniprofile fetch failed",
+						slog.String("steamId", tailSteamID(u.SteamID64)),
+						slog.Any("err", mErr))
+				} else {
+					patch.MiniProfileHTML = miniHTML
+					if st.SteamShowAvatarFrame && strings.TrimSpace(frameSrc) != "" {
+						fctx, fcancel := context.WithTimeout(ctx, 15*time.Second)
+						res, derr := profileimage.DownloadIfNeeded(fctx, appclient.Shared, PlatformKey, u.SteamID64+"_frame", frameSrc, st.SteamImageExpiryTime)
+						fcancel()
+						if derr == nil && res != nil {
+							patch.AvatarFrameURL = res.PublicURL
+						} else if derr != nil {
+							steamLog.Debug("avatar frame download failed",
+								slog.String("steamId", tailSteamID(u.SteamID64)),
+								slog.Any("err", derr))
+						}
+					} else if st.SteamShowAvatarFrame {
+						if fu, ok := profileimage.FindCached(PlatformKey, u.SteamID64+"_frame"); ok {
+							patch.AvatarFrameURL = fu
+						}
+					}
+				}
+			}
 
 			if strings.TrimSpace(fields.AvatarFullURL) == "" {
 				steamLog.Warn("no avatar URL in profile XML",
@@ -588,6 +646,10 @@ func (s *SteamService) ForgetSteamAccount(steamID64 string) error {
 		return err
 	}
 	_ = profileimage.DeleteCached(PlatformKey, steamID64)
+	_ = profileimage.DeleteCached(PlatformKey, steamID64+"_frame")
+	_ = profileimage.DeleteCached(PlatformKey, steamID64+"_nameplate")
+	_ = profileimage.DeleteCached(PlatformKey, steamID64+"_featuredcontainer")
+	deleteMiniprofileCache(steamID64)
 	s.StartSteamProfileRefresh()
 	return nil
 }

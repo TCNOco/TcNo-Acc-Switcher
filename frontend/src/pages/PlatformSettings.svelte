@@ -529,6 +529,34 @@
       </div>
       <label for="ps-show-ltd">{$t("Steam_ShowLimited")}</label>
     </div>
+    <div class="rowSetting">
+      <div class="form-check">
+        <input
+          id="ps-show-miniprofile"
+          type="checkbox"
+          bind:checked={steamSettings.Steam_ShowMiniProfile}
+          on:change={debouncedSaveSteam}
+        />
+        <label class="form-check-label" for="ps-show-miniprofile"></label>
+      </div>
+      <label for="ps-show-miniprofile" use:tooltip={{ text: $t("Tooltip_SteamShowMiniProfile"), placement: "right" }}
+        >{$t("Steam_ShowMiniProfile")}</label
+      >
+    </div>
+    <div class="rowSetting">
+      <div class="form-check">
+        <input
+          id="ps-show-avatar-frame"
+          type="checkbox"
+          bind:checked={steamSettings.Steam_ShowAvatarFrame}
+          on:change={debouncedSaveSteam}
+        />
+        <label class="form-check-label" for="ps-show-avatar-frame"></label>
+      </div>
+      <label for="ps-show-avatar-frame" use:tooltip={{ text: $t("Tooltip_SteamShowAvatarFrame"), placement: "right" }}
+        >{$t("Steam_ShowAvatarFrame")}</label
+      >
+    </div>
 
     <h2 class="SettingsHeader">{$t("Settings_Header_TraySettings")}</h2>
     <div class="rowSetting">

@@ -29,6 +29,10 @@ export class AccountDTO {
     "collectInfo": boolean;
     "showShortNotes": boolean;
     "note": string;
+    "avatarFrameUrl": string;
+    "miniProfileHtml": string;
+    "showMiniProfile": boolean;
+    "showAvatarFrame": boolean;
     "syncError": string;
 
     /**
@@ -95,6 +99,18 @@ export class AccountDTO {
         if (!("note" in $$source)) {
             this["note"] = "";
         }
+        if (!("avatarFrameUrl" in $$source)) {
+            this["avatarFrameUrl"] = "";
+        }
+        if (!("miniProfileHtml" in $$source)) {
+            this["miniProfileHtml"] = "";
+        }
+        if (!("showMiniProfile" in $$source)) {
+            this["showMiniProfile"] = false;
+        }
+        if (!("showAvatarFrame" in $$source)) {
+            this["showAvatarFrame"] = false;
+        }
         if (!("syncError" in $$source)) {
             this["syncError"] = "";
         }
@@ -122,6 +138,10 @@ export class AccountPatch {
     "avatarPending": boolean;
     "metaPending": boolean;
     "displayName"?: string;
+    "avatarFrameUrl": string;
+    "miniProfileHtml": string;
+    "showMiniProfile": boolean;
+    "showAvatarFrame": boolean;
     "error": string;
 
     /** Creates a new AccountPatch instance. */
@@ -143,6 +163,18 @@ export class AccountPatch {
         }
         if (!("metaPending" in $$source)) {
             this["metaPending"] = false;
+        }
+        if (!("avatarFrameUrl" in $$source)) {
+            this["avatarFrameUrl"] = "";
+        }
+        if (!("miniProfileHtml" in $$source)) {
+            this["miniProfileHtml"] = "";
+        }
+        if (!("showMiniProfile" in $$source)) {
+            this["showMiniProfile"] = false;
+        }
+        if (!("showAvatarFrame" in $$source)) {
+            this["showAvatarFrame"] = false;
         }
         if (!("error" in $$source)) {
             this["error"] = "";
@@ -212,14 +244,12 @@ export class Settings {
     "Steam_TrayAccountName": boolean;
     "Steam_ImageExpiryTime": number;
     "Steam_OverrideState": number;
-
-    /**
-     * ShortcutsJSON is legacy C# order map (int key as string -> filename); migrated into embedded Shortcuts on load.
-     */
     "ShortcutsJson"?: { [_ in string]?: string };
     "SteamWebApiKey": string;
     "ShowSteamSwitcher": boolean;
     "CollectInfo": boolean;
+    "Steam_ShowMiniProfile": boolean;
+    "Steam_ShowAvatarFrame": boolean;
 
     /** Creates a new Settings instance. */
     constructor($$source: Partial<Settings> = {}) {
@@ -282,6 +312,12 @@ export class Settings {
         }
         if (!("CollectInfo" in $$source)) {
             this["CollectInfo"] = false;
+        }
+        if (!("Steam_ShowMiniProfile" in $$source)) {
+            this["Steam_ShowMiniProfile"] = false;
+        }
+        if (!("Steam_ShowAvatarFrame" in $$source)) {
+            this["Steam_ShowAvatarFrame"] = false;
         }
 
         Object.assign(this, $$source);

@@ -21,6 +21,8 @@
   import { formatToastWithError, formatWailsError } from "../lib/formatWailsError";
   import { isNeedsAdminError, offerRestartIfNeedsAdmin, preflightAdminForPlatform } from "../lib/adminFlow";
   import { tooltip } from "../lib/actions/tooltip";
+  import { miniProfileHover } from "../lib/actions/miniProfileHover";
+  import "../styles/miniprofile.scss";
   import { contextMenu as ctxMenuAction } from "../lib/actions/contextMenu";
   import type { MenuItemDef } from "../stores/contextMenu";
   import * as BasicService from "../../bindings/TcNo-Acc-Switcher/internal/basic/basicservice.js";
@@ -52,6 +54,18 @@
     currentSession: boolean;
     showShortNotes: boolean;
     note: string;
+    avatarFrameUrl?: string;
+    miniProfileHtml?: string;
+    showMiniProfile?: boolean;
+    showAvatarFrame?: boolean;
+  };
+
+  /** Patch fields used by mini profile / frame (explicit for TS + Wails bindings). */
+  type SteamAccountPatch = AccountPatch & {
+    avatarFrameUrl?: string;
+    miniProfileHtml?: string;
+    showMiniProfile?: boolean;
+    showAvatarFrame?: boolean;
   };
 
   /** Vite `public/img/` → served at `/img/`; shown until Steam profile image is ready */
@@ -70,6 +84,8 @@
   let rowEpoch: Record<string, number> = {};
   /** Scroll/content box for Steam tooltips (keeps popovers off the window chrome). */
   let steamAcclistEl: HTMLDivElement | null = null;
+  /** `.main-content` root for mini profile clamping. */
+  let steamMainEl: HTMLDivElement | null = null;
   let steamIds: string[] = [];
   let steamLoadError = "";
   let offSteamEvent: (() => void) | undefined;
@@ -128,7 +144,7 @@
     touchSteamActionBar();
   }
 
-  function applySteamPatch(p: AccountPatch): void {
+  function applySteamPatch(p: SteamAccountPatch): void {
     const id = String(p.steamId64 ?? "");
     let hit = false;
     steamAccounts = steamAccounts.map((r) => {
@@ -147,6 +163,17 @@
           typeof p.displayName === "string" && p.displayName.trim() !== ""
             ? p.displayName.trim()
             : r.displayName ?? "",
+        avatarFrameUrl:
+          typeof p.avatarFrameUrl === "string" && p.avatarFrameUrl.trim() !== ""
+            ? p.avatarFrameUrl.trim()
+            : r.avatarFrameUrl ?? "",
+        miniProfileHtml:
+          typeof p.miniProfileHtml === "string" && p.miniProfileHtml.trim() !== ""
+            ? p.miniProfileHtml.trim()
+            : r.miniProfileHtml ?? "",
+        showMiniProfile: typeof p.showMiniProfile === "boolean" ? p.showMiniProfile : r.showMiniProfile,
+        showAvatarFrame:
+          typeof p.showAvatarFrame === "boolean" ? p.showAvatarFrame : r.showAvatarFrame,
       } as SteamAccountRow;
     });
     if (hit) {
@@ -757,7 +784,7 @@
         raw instanceof AccountPatch
           ? raw
           : AccountPatch.createFrom(raw as Record<string, unknown>);
-      applySteamPatch(p);
+      applySteamPatch(p as SteamAccountPatch);
     });
     offPlatformAction = platformAction.subscribe((v) => {
       if (!v || v.id === lastHandledActionId) {
@@ -789,7 +816,7 @@
   });
 </script>
 
-<div class="main-content platform-accounts-root">
+<div class="main-content platform-accounts-root" bind:this={steamMainEl}>
   {#if name}
     <div class="platformTable">
       {#if steamLoadError}
@@ -846,17 +873,37 @@
                   void steamLoginSelected();
                 }}
               >
-                <img
-                  class:status_vac={acc?.showVac && acc?.vac}
-                  class:status_limited={acc?.showLimited && acc?.ltd}
-                  src={offlineSafeImageSrc(
-                    $offlineMode,
-                    acc?.imageUrl && !acc?.avatarPending ? acc.imageUrl : undefined,
-                    PROFILE_PLACEHOLDER,
-                  )}
-                  alt=""
-                  draggable="false"
-                />
+                <span class="steam-acc-avatar-wrap">
+                  <img
+                    class="steam-acc-avatar"
+                    class:status_vac={acc?.showVac && acc?.vac}
+                    class:status_limited={acc?.showLimited && acc?.ltd}
+                    src={offlineSafeImageSrc(
+                      $offlineMode,
+                      acc?.imageUrl && !acc?.avatarPending ? acc.imageUrl : undefined,
+                      PROFILE_PLACEHOLDER,
+                    )}
+                    alt=""
+                    draggable="false"
+                    use:miniProfileHover={{
+                      html: acc?.miniProfileHtml ?? "",
+                      boundary: steamMainEl,
+                      offline: $offlineMode,
+                      enabled: !!(
+                        acc?.showMiniProfile &&
+                        (acc?.miniProfileHtml ?? "").trim() !== ""
+                      ),
+                    }}
+                  />
+                  {#if acc?.showAvatarFrame && (acc?.avatarFrameUrl ?? "").trim() !== "" && !$offlineMode}
+                    <img
+                      class="steam-acc-avatar-frame"
+                      src={offlineSafeImageSrc($offlineMode, acc.avatarFrameUrl, PROFILE_PLACEHOLDER)}
+                      alt=""
+                      draggable="false"
+                    />
+                  {/if}
+                </span>
                 {#if acc?.showAccUsername && acc?.accountName}
                   <p class="streamerCensor">{acc.accountName}</p>
                 {/if}

@@ -33,13 +33,15 @@ type Settings struct {
 	SteamImageExpiryTime int `json:"Steam_ImageExpiryTime"`
 	SteamOverrideState   int `json:"Steam_OverrideState"`
 
-	// ShortcutsJSON is legacy C# order map (int key as string -> filename); migrated into embedded Shortcuts on load.
 	ShortcutsJSON map[string]string `json:"ShortcutsJson,omitempty"`
 
 	SteamWebAPIKey string `json:"SteamWebApiKey"`
 
 	ShowSteamSwitcher bool `json:"ShowSteamSwitcher"`
 	CollectInfo       bool `json:"CollectInfo"`
+
+	SteamShowMiniProfile bool `json:"Steam_ShowMiniProfile"`
+	SteamShowAvatarFrame bool `json:"Steam_ShowAvatarFrame"`
 }
 
 func defaultSettings() Settings {
@@ -56,6 +58,8 @@ func defaultSettings() Settings {
 		SteamOverrideState:   -1,
 		ShortcutsJSON:        nil,
 		CollectInfo:          true,
+		SteamShowMiniProfile: true,
+		SteamShowAvatarFrame: true,
 	}
 }
 
@@ -157,6 +161,13 @@ func LoadSettings() (Settings, error) {
 	}
 	if strings.TrimSpace(s.StartingMethod) == "" {
 		s.StartingMethod = "Default"
+	}
+	// New bools default to true when absent from JSON (unmarshal sets false).
+	if !gjson.GetBytes(data2, "Steam_ShowMiniProfile").Exists() {
+		s.SteamShowMiniProfile = true
+	}
+	if !gjson.GetBytes(data2, "Steam_ShowAvatarFrame").Exists() {
+		s.SteamShowAvatarFrame = true
 	}
 	return s, nil
 }

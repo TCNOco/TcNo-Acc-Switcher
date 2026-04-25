@@ -172,7 +172,7 @@ label.acc {
     border: 2px solid rgb(255, 85, 85);
   }
 
-  img {
+  > img {
     -webkit-user-drag: none;
     display: inline-block;
     width: 6em;
@@ -188,6 +188,46 @@ label.acc {
     &.status_limited {
       border: 2px solid yellow !important;
     }
+  }
+
+  .steam-acc-avatar-wrap {
+    position: relative;
+    display: inline-block;
+    width: 6em;
+    height: 6em;
+    margin-bottom: 0.5em;
+    vertical-align: top;
+  }
+
+  img.steam-acc-avatar {
+    -webkit-user-drag: none;
+    display: block;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    border: 2px solid #000;
+    border: 2px solid rgba(0, 0, 0, 0);
+
+    &.status_vac {
+      border: 2px solid rgb(255, 85, 85) !important;
+    }
+
+    &.status_limited {
+      border: 2px solid yellow !important;
+    }
+  }
+
+  .steam-acc-avatar-frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+    margin: 0;
+    border: none !important;
+    box-sizing: border-box;
+    transform: scale(1.22);
   }
 
   h6 {
@@ -289,4 +329,32 @@ label h6 svg {
 .battleNetIcon {
   display: inline-block;
   width: 15px;
+}
+
+.steam-miniprofile-popover {
+  max-width: min(360px, calc(100vw - 24px));
+  max-height: min(480px, calc(100vh - 24px));
+  overflow: auto;
+  border-radius: 4px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+  background: #1b2838;
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.steam-miniprofile-popover__inner {
+  padding: 0;
+}
+
+.steam-miniprofile-popover__inner .miniprofile_container {
+  transform-origin: top left;
+  max-width: 100%;
+}
+
+.steam-miniprofile-popover__inner img,
+.steam-miniprofile-popover__inner video {
+  max-width: 100%;
+  height: auto;
+  vertical-align: middle;
 }

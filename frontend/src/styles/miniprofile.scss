@@ -1,0 +1,288 @@
+.miniprofile_container {
+  display: flex;
+  flex-direction: column;
+
+  position: relative;
+  overflow: hidden;
+
+  width: 328px;
+  font-weight: normal;
+}
+.miniprofile_playersection {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+
+  z-index: 1;
+  height: 90px;
+  padding: 16px;
+}
+
+.miniprofile_playersection .playersection_avatar {
+  width: 80px;
+  height: 80px;
+  background: none;
+  border-bottom-width: 2px;
+  border-bottom-style: solid;
+}
+
+.miniprofile_playersection .playersection_avatar img {
+  width: 80px;
+  height: 80px;
+  box-sizing: border-box;
+  background: none;
+}
+
+.miniprofile_playersection .playersection_avatar_frame {
+  position: absolute;
+  z-index: 1;
+  width: 96px;
+  height: 96px;
+  top: 8px;
+  left: 8px;
+  pointer-events: none;
+}
+.miniprofile_playersection .playersection_avatar_frame > img {
+  width: 100%;
+  height: 100%;
+  background: none;
+}
+
+.miniprofile_playersection .player_content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding-left: 16px;
+
+  text-shadow: 1px 1px 4px #000;
+}
+
+.miniprofile_playersection .player_content .persona {
+  font-size: 20px;
+}
+
+.miniprofile_playersection .player_content .persona,
+.miniprofile_playersection .player_content .secondaryname {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 200px;
+}
+
+.miniprofile_playersection .player_content .friend_status_offline {
+  font-size: 10px;
+}
+
+.miniprofile_gamesection {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+
+  min-height: 64px;
+}
+
+.miniprofile_gamesection .game_logo {
+  width: 90px;
+  height: 34px;
+  top: 18px;
+  left: 16px;
+  position: absolute;
+}
+
+.miniprofile_gamesection .miniprofile_game_details {
+  display: flex;
+  flex-direction: column;
+
+  padding: 8px 8px 8px 122px;
+  font-size: 14px;
+
+  align-self: center;
+}
+
+.miniprofile_detailssection {
+  display: flex;
+  flex-direction: column;
+
+  padding: 16px 16px 8px 16px;
+}
+
+.miniprofile_detailssection.not_in_game {
+  padding-top: 24px;
+}
+
+.miniprofile_featuredcontainer {
+  display: flex;
+  flex-direction: row;
+
+  height: 34px;
+  padding-left: 16px;
+  margin-bottom: 8px;
+}
+
+.miniprofile_featuredcontainer .badge_icon {
+  width: 34px;
+  height: 34px;
+  position: relative;
+}
+
+.miniprofile_featuredcontainer .description {
+  margin-left: 12px;
+  margin-top: auto;
+  margin-bottom: auto;
+  font-size: 14px;
+  overflow: hidden;
+  white-space: nowrap;
+
+  font-family: "Motiva Sans", Arial, Helvetica, sans-serif;
+}
+
+.miniprofile_featuredcontainer .description .name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #b1b1b1;
+}
+
+.miniprofile_featuredcontainer .description .xp {
+  font-size: 12px;
+  color: #6b6a6a;
+}
+
+.miniprofile_featuredcontainer .friendPlayerLevel {
+  margin-top: 0;
+  line-height: 34px;
+}
+
+.miniprofile_playtimesection {
+  border: none;
+  min-height: 57px;
+  box-sizing: border-box;
+  padding: 2px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(81, 148, 255, 0.5) 0%,
+      rgba(0, 39, 112, 0.075) 100%
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(58, 148, 184, 0.637) 0%,
+      rgba(106, 201, 239, 0.15) 1px,
+      rgba(19, 100, 133, 0.1) 25%,
+      rgba(106, 201, 239, 0) 50%
+    );
+}
+
+.miniprofile_playtimesection .gamelogo {
+  width: 120px;
+  height: 55px;
+  margin-right: 12px;
+  box-shadow: 0 0 2px black;
+}
+
+.miniprofile_playtimesection .playtimecontent {
+  color: rgba(181, 255, 255, 0.5);
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.miniprofile_playtimesection .playtimecontent div:nth-child(2) {
+  margin-top: 4px;
+}
+
+.miniprofile_playtimesection .playtimecontent .timeplayed {
+  color: rgb(181, 255, 255);
+}
+
+.miniprofile_playtimesection.forcurrentgame {
+  padding: 0px;
+  align-items: initial;
+  min-height: 0px;
+  background: transparent;
+}
+
+.miniprofile_background {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  z-index: -3;
+  background: radial-gradient(
+    ellipse farthest-corner at 20% 30%,
+    rgb(76, 80, 91) 0%,
+    rgb(52, 55, 63) 50%,
+    rgb(40, 44, 50) 100%
+  );
+}
+
+.miniprofile_backgroundblur {
+  width: 380px;
+  height: 380px;
+  filter: blur(10px) saturate(2);
+  position: absolute;
+  left: -60px;
+  top: -60px;
+  opacity: 0.6;
+  -webkit-mask: radial-gradient(
+    ellipse farthest-corner at 150px 150px,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.6) 20%,
+    rgba(0, 0, 0, 0.3) 34%,
+    rgba(0, 0, 0, 0) 64%
+  );
+  mask: radial-gradient(
+    ellipse farthest-corner at 150px 150px,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.6) 20%,
+    rgba(0, 0, 0, 0.3) 34%,
+    rgba(0, 0, 0, 0) 64%
+  );
+  mix-blend-mode: screen;
+}
+
+.miniprofile_backdropblur {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.miniprofile_backdrop {
+  background: linear-gradient(
+    to bottom,
+    rgba(24, 26, 30, 0.85) 5%,
+    rgba(24, 26, 30, 0.65) 95%
+  );
+}
+
+.miniprofile_content {
+  width: 302px;
+  border-radius: 3px;
+
+  color: #828282;
+  font-size: 14px;
+
+  position: relative;
+}
+
+.miniprofile_nameplatecontainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  z-index: -1;
+}
+
+.miniprofile_nameplate {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top right;
+}

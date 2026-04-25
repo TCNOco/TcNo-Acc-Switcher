@@ -56,7 +56,7 @@ func CachedFilePath(platformKey, accountID string) (string, bool) {
 	if err != nil {
 		return "", false
 	}
-	for _, ext := range []string{"jpg", "jpeg", "png", "webp", "gif"} {
+	for _, ext := range []string{"jpg", "jpeg", "png", "webp", "gif", "webm", "mp4"} {
 		full := filepath.Join(dir, accountID+"."+ext)
 		if st, err := os.Stat(full); err == nil && !st.IsDir() {
 			return full, true
@@ -80,7 +80,7 @@ func CacheLocalFile(platformKey, accountID, src string) error {
 	_ = DeleteCached(platformKey, accountID)
 	ext := strings.TrimPrefix(strings.ToLower(filepath.Ext(src)), ".")
 	switch ext {
-	case "jpg", "jpeg", "png", "webp", "gif":
+	case "jpg", "jpeg", "png", "webp", "gif", "webm", "mp4":
 	default:
 		ext = "jpg"
 	}
@@ -101,7 +101,7 @@ func DeleteCached(platformKey, accountID string) error {
 	if err != nil {
 		return err
 	}
-	for _, ext := range []string{"jpg", "jpeg", "png", "webp", "gif"} {
+	for _, ext := range []string{"jpg", "jpeg", "png", "webp", "gif", "webm", "mp4"} {
 		p := filepath.Join(dir, accountID+"."+ext)
 		_ = os.Remove(p)
 	}
@@ -114,7 +114,7 @@ func FindCached(platformKey, accountID string) (publicURL string, ok bool) {
 	if err != nil {
 		return "", false
 	}
-	for _, ext := range []string{"jpg", "jpeg", "png", "webp", "gif"} {
+	for _, ext := range []string{"jpg", "jpeg", "png", "webp", "gif", "webm", "mp4"} {
 		full := filepath.Join(dir, accountID+"."+ext)
 		if st, err := os.Stat(full); err == nil && !st.IsDir() {
 			return PublicPath(platformKey, accountID, ext), true
@@ -149,6 +149,10 @@ func extFromContentType(ct string) string {
 		return "webp"
 	case "image/gif":
 		return "gif"
+	case "video/webm":
+		return "webm"
+	case "video/mp4":
+		return "mp4"
 	default:
 		return ""
 	}
@@ -161,7 +165,7 @@ func extFromURL(u string) string {
 	}
 	ext := strings.TrimPrefix(strings.ToLower(filepath.Ext(base)), ".")
 	switch ext {
-	case "jpg", "jpeg", "png", "webp", "gif":
+	case "jpg", "jpeg", "png", "webp", "gif", "webm", "mp4":
 		return ext
 	default:
 		return ""
@@ -190,7 +194,7 @@ func DownloadIfNeeded(ctx context.Context, client *http.Client, platformKey, acc
 
 	// If a cached file exists and is still fresh, return without downloading.
 	var existingPath, existingExt string
-	for _, ext := range []string{"jpg", "jpeg", "png", "webp", "gif"} {
+	for _, ext := range []string{"jpg", "jpeg", "png", "webp", "gif", "webm", "mp4"} {
 		p := filepath.Join(dir, accountID+"."+ext)
 		if st, err := os.Stat(p); err == nil && !st.IsDir() {
 			existingPath, existingExt = p, ext
@@ -227,8 +231,13 @@ func DownloadIfNeeded(ctx context.Context, client *http.Client, platformKey, acc
 		ext = "jpg"
 	}
 
+	maxBody := int64(20 << 20)
+	if ext == "webm" || ext == "mp4" {
+		maxBody = 80 << 20
+	}
+
 	dest := filepath.Join(dir, accountID+"."+ext)
-	data, err := io.ReadAll(io.LimitReader(resp.Body, 20<<20))
+	data, err := io.ReadAll(io.LimitReader(resp.Body, maxBody))
 	if err != nil {
 		return nil, err
 	}

@@ -38,7 +38,7 @@ function parseParam(param: TooltipParams): Parsed | null {
 
 const GAP = 4
 const VIEWPORT_PAD = 15
-const Z = 999999
+const Z = 800
 
 function clamp(n: number, min: number, max: number) {
     return Math.min(Math.max(n, min), max)
@@ -150,8 +150,8 @@ function buildTooltip(text: string, placement: TooltipPlacement) {
 export const tooltip: Action<HTMLElement, TooltipParams> = (node, param) => {
     let parsed = parseParam(param)
     let tip: HTMLElement | null = null
-    let showTimer: ReturnType<typeof setTimeout> | null = null
-    let hideTimer: ReturnType<typeof setTimeout> | null = null
+    let showTimer: number | null = null
+    let hideTimer: number | null = null
 
     const clearShow = () => {
         if (showTimer != null) {
