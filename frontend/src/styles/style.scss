@@ -2,7 +2,7 @@
     font-family: "Montserrat";
     font-style: normal;
     font-weight: 100 900;
-    src: url("./Montserrat-VariableFont_wght.woff2") format("woff2");
+    src: url("/Montserrat-VariableFont_wght.woff2") format("woff2");
     font-display: swap;
 }
   
@@ -27,14 +27,6 @@
 
 * {
     box-sizing: border-box;
-}
-
-@font-face {
-    font-family: "Inter";
-    font-style: normal;
-    font-weight: 400;
-    src: local(""),
-    url("./Inter-Medium.ttf") format("truetype");
 }
 
 ::-webkit-scrollbar {

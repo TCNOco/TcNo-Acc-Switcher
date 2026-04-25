@@ -1,3 +1,4 @@
+@use "sass:color";
 ﻿/*
     Monokai Default
     - Created by MajorAmari
@@ -33,9 +34,9 @@ button#btnLogin {
     border-radius: 0.9rem;
 
     &:hover {
-        background-color: lighten($color: #3f3f3f, $amount: 10%);
+        background-color: color.adjust($color: #3f3f3f, $lightness: 10%);
         border-radius: 0.5rem;
-        border-color: lighten($color: #191919, $amount: 10%);
+        border-color: color.adjust($color: #191919, $lightness: 10%);
     }
 }
 
@@ -296,9 +297,9 @@ textarea {
   border-radius: 0.9rem !important;
 
   &:hover {
-    background-color: lighten($color: #3f3f3f, $amount: 10%);
+    background-color: color.adjust($color: #3f3f3f, $lightness: 10%);
     border-radius: 0.5rem;
-    border-color: lighten($color: #191919, $amount: 10%);
+    border-color: color.adjust($color: #191919, $lightness: 10%);
   }
 
   &:active {

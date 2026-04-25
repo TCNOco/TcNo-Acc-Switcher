@@ -1,4 +1,5 @@
-﻿/*
+﻿@use "sass:color";
+/*
     Nord Default
     - Created by Xapu1337
 */
@@ -10,13 +11,13 @@ $nordDark3: #4C566A;
 $nordDark4: #D8DEE9;
 $nordDark5: #E5E9F0;
 $nordDark6: #ECEFF4;
-$nordDark0-10: darken(#2E3440, 10%);
-$nordDark1-10: darken(#3B4252, 10%);
-$nordDark2-10: darken(#434C5E, 10%);
-$nordDark3-10: darken(#4C566A, 10%);
-$nordDark4-10: darken(#D8DEE9, 10%);
-$nordDark5-10: darken(#E5E9F0, 10%);
-$nordDark6-10: darken(#ECEFF4, 10%);
+$nordDark0-10: color.adjust(#2E3440, $lightness: -10%);
+$nordDark1-10: color.adjust(#3B4252, $lightness: -10%);
+$nordDark2-10: color.adjust(#434C5E, $lightness: -10%);
+$nordDark3-10: color.adjust(#4C566A, $lightness: -10%);
+$nordDark4-10: color.adjust(#D8DEE9, $lightness: -10%);
+$nordDark5-10: color.adjust(#E5E9F0, $lightness: -10%);
+$nordDark6-10: color.adjust(#ECEFF4, $lightness: -10%);
 $nordFrost0: #8FBCBB;
 $nordFrost1: #88C0D0;
 $nordFrost2: #81A1C1;
@@ -225,7 +226,7 @@ input[type=number] { border-bottom: 2px solid $nordFrost3; }
 
 input[type=number]:focus,
 input[type=text]:focus,
-input[type=password]:focus { border-bottom: 2px solid lighten($nordFrost3, 10%); }
+input[type=password]:focus { border-bottom: 2px solid color.adjust($nordFrost3, $lightness: 10%); }
 
 
 #modal_contents input[type=text],
