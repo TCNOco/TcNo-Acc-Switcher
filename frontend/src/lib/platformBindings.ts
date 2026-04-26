@@ -1,10 +1,12 @@
 /** Re-exports generated Wails platform + Steam service calls via `src/` for stable TS resolution. */
 export {
   CheckAdminForPlatform,
+  ClearPlatformCache,
   ConfirmPlatformExePath,
   GetPlatformExeIcon,
   GetPlatformInstallFolder,
   GetPlatformSettings,
+  HasPlatformCachePaths,
   HasShortcutMainExe,
   LaunchPlatform,
   LaunchPlatformAs,

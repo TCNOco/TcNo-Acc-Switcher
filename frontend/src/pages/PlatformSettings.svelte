@@ -33,6 +33,8 @@
   let saveTimer: ReturnType<typeof setTimeout> | undefined;
 
   let hasDesktopShortcut = false;
+  let hasCachePaths = false;
+  let clearingCache = false;
 
   const ARG_SILENT = "-silent";
   const ARG_VGUI = "-vgui";
@@ -59,6 +61,14 @@
       hasDesktopShortcut = await Shortcuts.PlatformShortcutExists(name);
     } catch {
       hasDesktopShortcut = false;
+    }
+  }
+
+  async function refreshCachePathState(): Promise<void> {
+    try {
+      hasCachePaths = await Wails.HasPlatformCachePaths(name);
+    } catch {
+      hasCachePaths = false;
     }
   }
 
@@ -196,6 +206,7 @@
             genericPS.LaunchArguments = "";
           }
         }
+        await refreshCachePathState();
         await refreshDesktopShortcutState();
       } catch (e) {
         loadError = e instanceof Error ? e.message : String(e);
@@ -288,6 +299,24 @@
         message: e instanceof Error ? e.message : String(e),
         duration: 8000,
       });
+    }
+  }
+
+  async function onClearCache(): Promise<void> {
+    if (clearingCache) return;
+    clearingCache = true;
+    try {
+      await Wails.ClearPlatformCache(name);
+      pushToast({ type: "success", title: "", message: $t("Done"), duration: 4000 });
+    } catch (e) {
+      pushToast({
+        type: "error",
+        title: "",
+        message: e instanceof Error ? e.message : String(e),
+        duration: 8000,
+      });
+    } finally {
+      clearingCache = false;
     }
   }
 
@@ -875,6 +904,13 @@
       <button type="button" on:click={onPickFolder}>{$t("Settings_PickFolder", { platform: name })}</button>
       <button type="button" on:click={onReset}>{$t("Button_ResetSettings")}</button>
     </div>
+    {#if hasCachePaths}
+      <div class="buttoncol settings-tools-row settings-tools-row--single">
+        <button type="button" disabled={clearingCache} on:click={onClearCache}>
+          {$t("Platform_ClearCache")}
+        </button>
+      </div>
+    {/if}
     {#if isSteam}
       <div class="buttoncol settings-tools-row">
         <button type="button" on:click={onRefreshVac}>{$t("Steam_CheckVac")}</button>

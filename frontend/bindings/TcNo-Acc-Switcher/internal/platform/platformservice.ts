@@ -19,6 +19,10 @@ export function CheckAdminForPlatform(platformKey: string): $CancellablePromise<
     });
 }
 
+export function ClearPlatformCache(platformKey: string): $CancellablePromise<void> {
+    return $Call.ByID(4269705643, platformKey);
+}
+
 export function ConfirmPlatformExePath(platformKey: string, exeFullPath: string): $CancellablePromise<void> {
     return $Call.ByID(3388066149, platformKey, exeFullPath);
 }
@@ -77,6 +81,10 @@ export function GetStartup(): $CancellablePromise<$models.PlatformStartup> {
 
 export function GetTheme(): $CancellablePromise<string> {
     return $Call.ByID(3289970754);
+}
+
+export function HasPlatformCachePaths(platformKey: string): $CancellablePromise<boolean> {
+    return $Call.ByID(2913727920, platformKey);
 }
 
 export function HasShortcutMainExe(platformKey: string): $CancellablePromise<boolean> {
