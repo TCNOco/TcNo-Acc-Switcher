@@ -396,15 +396,16 @@ func ClearCurrentLogin(deps FlowDeps, platformKey string) error {
 			}
 			continue
 		}
-		lp := expandPlatformPath(p, folder, ctx)
-		if strings.Contains(filepath.Base(lp), "*") {
-			matches, _ := filepath.Glob(lp)
-			for _, m := range matches {
-				_ = os.RemoveAll(m)
-			}
-			continue
+		pattern, err := platform.ResolveSafeDeletePattern(p, ctx)
+		if err != nil {
+			return err
 		}
-		_ = os.RemoveAll(lp)
+		for _, target := range platform.ExpandDeletePatternMatches(pattern) {
+			if err := platform.ValidateDeleteTargetPath(target); err != nil {
+				return err
+			}
+			_ = os.RemoveAll(target)
+		}
 	}
 	return nil
 }
