@@ -349,7 +349,6 @@ func clearExpiredSteamProfileAssets(steamID64 string, maxAgeDays int) {
 		steamID64 + "_frame",
 		steamID64 + "_nameplate",
 		steamID64 + "_featuredbadge",
-		steamID64 + "_featuredcontainer",
 	}
 	removed := deleteMiniprofileCacheIfOlder(steamID64, maxAgeDays)
 	for _, id := range ids {
@@ -672,7 +671,6 @@ func (s *SteamService) ForgetSteamAccount(steamID64 string) error {
 	_ = profileimage.DeleteCached(PlatformKey, steamID64+"_frame")
 	_ = profileimage.DeleteCached(PlatformKey, steamID64+"_nameplate")
 	_ = profileimage.DeleteCached(PlatformKey, steamID64+"_featuredbadge")
-	_ = profileimage.DeleteCached(PlatformKey, steamID64+"_featuredcontainer")
 	deleteMiniprofileCache(steamID64)
 	s.StartSteamProfileRefresh()
 	return nil
