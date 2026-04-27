@@ -126,10 +126,12 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 		}
 		if isJSONSelectFirst(liveKey) || isJSONSelectLast(liveKey) {
 			pfx := "JSON_SELECT_FIRST"
+			first := true
 			if isJSONSelectLast(liveKey) {
 				pfx = "JSON_SELECT_LAST"
+				first = false
 			}
-			fp, jp, ok := parseJSONSelect(pfx, liveKey)
+			fp, jp, delimiter, ok := parseJSONSelectWithDelimiter(pfx, liveKey)
 			if !ok {
 				return fmt.Errorf("bad JSON_SELECT key")
 			}
@@ -141,15 +143,34 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 				}
 				continue
 			}
-			chunk := gjson.GetBytes(data, jp).Raw
-			if chunk == "" {
-				chunk = gjson.GetBytes(data, jp).String()
+			res := gjson.GetBytes(data, jp)
+			selected := strings.TrimSpace(res.String())
+			if res.IsArray() && len(res.Array()) > 0 {
+				if first {
+					selected = strings.TrimSpace(res.Array()[0].String())
+				} else {
+					a := res.Array()
+					selected = strings.TrimSpace(a[len(a)-1].String())
+				}
+			} else if delimiter != "" && selected != "" {
+				parts := strings.Split(selected, delimiter)
+				if len(parts) > 0 {
+					if first {
+						selected = strings.TrimSpace(parts[0])
+					} else {
+						selected = strings.TrimSpace(parts[len(parts)-1])
+					}
+				}
+			}
+			chunk, err := json.Marshal(selected)
+			if err != nil {
+				return err
 			}
 			dst := filepath.Join(destRoot, filepath.FromSlash(cacheRel))
 			if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
 				return err
 			}
-			if err := fsutil.WriteFileAtomic(dst, []byte(chunk), 0o644); err != nil {
+			if err := fsutil.WriteFileAtomic(dst, chunk, 0o644); err != nil {
 				return err
 			}
 			continue

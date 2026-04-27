@@ -32,20 +32,30 @@ func isJSONSelectLast(key string) bool {
 	return strings.HasPrefix(strings.TrimSpace(key), "JSON_SELECT_LAST")
 }
 
-// parseJSONSelect splits JSON_SELECT_FIRST,::path::gjsonPath (first :: separates path from gjson path).
-func parseJSONSelect(prefix, key string) (filePath, jsonPath string, ok bool) {
+func parseJSONSelectWithDelimiter(prefix, key string) (filePath, jsonPath, delimiter string, ok bool) {
 	key = strings.TrimSpace(key)
 	if !strings.HasPrefix(key, prefix) {
-		return "", "", false
+		return "", "", "", false
 	}
 	rest := strings.TrimSpace(key[len(prefix):])
-	rest = strings.TrimPrefix(rest, ",")
-	rest = strings.TrimPrefix(rest, "::")
-	idx := strings.Index(rest, "::")
-	if idx < 0 {
-		return "", "", false
+	firstSep := strings.Index(rest, "::")
+	if firstSep < 0 {
+		return "", "", "", false
 	}
-	return rest[:idx], rest[idx+2:], true
+	delimiter = rest[:firstSep]
+	rest = rest[firstSep+2:]
+	secondSep := strings.Index(rest, "::")
+	if secondSep < 0 {
+		return "", "", "", false
+	}
+	filePath = rest[:secondSep]
+	jsonPath = rest[secondSep+2:]
+	return filePath, jsonPath, delimiter, true
+}
+
+func parseJSONSelect(prefix, key string) (filePath, jsonPath string, ok bool) {
+	filePath, jsonPath, _, ok = parseJSONSelectWithDelimiter(prefix, key)
+	return filePath, jsonPath, ok
 }
 
 func expandPlatformPath(s string, platformFolder string, ctx platform.PathTokenContext) string {

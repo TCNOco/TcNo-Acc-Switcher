@@ -90,13 +90,13 @@ func uniqueFromJSONSelect(d platform.Descriptor, ctx platform.PathTokenContext) 
 			key = m + "::" + key
 		}
 	}
-	var filePath, jsonPath string
+	var filePath, jsonPath, delimiter string
 	var ok bool
 	first := strings.HasPrefix(key, "JSON_SELECT_FIRST")
 	if first {
-		filePath, jsonPath, ok = parseJSONSelect("JSON_SELECT_FIRST", key)
+		filePath, jsonPath, delimiter, ok = parseJSONSelectWithDelimiter("JSON_SELECT_FIRST", key)
 	} else {
-		filePath, jsonPath, ok = parseJSONSelect("JSON_SELECT_LAST", key)
+		filePath, jsonPath, delimiter, ok = parseJSONSelectWithDelimiter("JSON_SELECT_LAST", key)
 	}
 	if !ok {
 		return "", fmt.Errorf("bad JSON_SELECT UniqueIdFile")
@@ -107,18 +107,22 @@ func uniqueFromJSONSelect(d platform.Descriptor, ctx platform.PathTokenContext) 
 		return "", err
 	}
 	res := gjson.GetBytes(data, jsonPath)
-	s := res.String()
+	s := strings.TrimSpace(res.String())
 	if res.IsArray() && len(res.Array()) > 0 {
 		if first {
-			s = res.Array()[0].String()
+			s = strings.TrimSpace(res.Array()[0].String())
 		} else {
 			a := res.Array()
-			s = a[len(a)-1].String()
+			s = strings.TrimSpace(a[len(a)-1].String())
 		}
-	} else if !first && s != "" {
-		parts := strings.Split(s, ",")
+	} else if delimiter != "" && s != "" {
+		parts := strings.Split(s, delimiter)
 		if len(parts) > 0 {
-			s = strings.TrimSpace(parts[len(parts)-1])
+			if first {
+				s = strings.TrimSpace(parts[0])
+			} else {
+				s = strings.TrimSpace(parts[len(parts)-1])
+			}
 		}
 	}
 	return strings.TrimSpace(s), nil
