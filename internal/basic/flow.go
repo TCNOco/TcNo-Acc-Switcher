@@ -286,6 +286,27 @@ func Login(deps FlowDeps, platformKey, accountName string) error {
 	if len(regData) > 0 {
 		_ = json.Unmarshal(regData, &regDump)
 	}
+	// Set UniqueIdFile from ids.json before restoring LoginFiles (update logged-in account)
+	if strings.EqualFold(strings.TrimSpace(d.UniqueIdMethod), "REGKEY") {
+		uidKey := stripREG(strings.TrimSpace(d.UniqueIdFile))
+		if uidKey != "" {
+			if ids, err := readIDs(platformKey); err == nil {
+				var targetID string
+				wantName := strings.TrimSpace(accountName)
+				for uid, name := range ids {
+					if strings.TrimSpace(name) == wantName {
+						targetID = strings.TrimSpace(uid)
+						break
+					}
+				}
+				if targetID != "" {
+					if err := winutil.RegistryWrite(uidKey, targetID); err != nil {
+						return err
+					}
+				}
+			}
+		}
+	}
 
 	for liveKey, cacheRel := range d.LoginFiles {
 		liveKey = strings.TrimSpace(liveKey)
