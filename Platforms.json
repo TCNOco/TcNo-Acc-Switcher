@@ -556,7 +556,7 @@
       "UniqueIdMethod": "CREATE_ID_FILE"
     },
     "Steam": {
-      "Identifiers": [ "steam", "s", "valve" ],
+      "Identifiers": [ "s", "steam", "valve" ],
       "ExeLocationDefault": "%ProgramFiles(x86)%\\Steam\\steam.exe",
       "GetPathFromShortcutNamed": "Steam",
       "ExesToEnd": [ "steam.exe" ],

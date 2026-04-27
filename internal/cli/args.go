@@ -119,7 +119,7 @@ func Parse(argv []string, idx *PlatformIndex) (Parsed, error) {
 			if pageVal != "" {
 				canon := pageVal
 				if idx != nil {
-					if c, has := idx.Names[strings.ToLower(pageVal)]; has {
+					if c, has := resolvePlatformAlias(idx, pageVal); has {
 						canon = c
 					}
 				}
@@ -164,7 +164,7 @@ func Parse(argv []string, idx *PlatformIndex) (Parsed, error) {
 		}
 
 		if idx != nil {
-			if canon, ok := idx.Names[strings.ToLower(a)]; ok {
+			if canon, ok := resolvePlatformAlias(idx, a); ok {
 				pp := Parsed{Kind: KindOpenPage, OpenPage: canon}
 				if err := mergePrimary(&p, pp); err != nil {
 					return Parsed{}, err
@@ -306,7 +306,7 @@ func parsePlusToken(a string, idx *PlatformIndex) (Parsed, error) {
 		return Parsed{}, fmt.Errorf("unknown platform prefix %q (platforms file not loaded)", prefix)
 	}
 
-	platformName, ok := idx.FirstIdentifier[prefix]
+	platformName, ok := resolvePlatformAlias(idx, prefix)
 	if !ok {
 		return Parsed{}, fmt.Errorf("unknown platform prefix %q", prefix)
 	}
@@ -320,6 +320,23 @@ func parsePlusToken(a string, idx *PlatformIndex) (Parsed, error) {
 		PlatformKey: platformName,
 		UniqueID:    val,
 	}, nil
+}
+
+func resolvePlatformAlias(idx *PlatformIndex, token string) (string, bool) {
+	if idx == nil {
+		return "", false
+	}
+	t := strings.ToLower(strings.TrimSpace(token))
+	if t == "" {
+		return "", false
+	}
+	if canon, ok := idx.Names[t]; ok {
+		return canon, true
+	}
+	if canon, ok := idx.IdentifierAliases[t]; ok {
+		return canon, true
+	}
+	return "", false
 }
 
 func parseSteamSwap(val string) (Parsed, error) {

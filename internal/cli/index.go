@@ -14,6 +14,8 @@ type PlatformIndex struct {
 	Names map[string]string
 	// First identifier (lowercase) -> canonical platform name
 	FirstIdentifier map[string]string
+	// Any identifier alias (lowercase) -> canonical platform name
+	IdentifierAliases map[string]string
 }
 
 // LoadPlatformIndex reads Platforms.json and builds lookup tables.
@@ -37,8 +39,9 @@ func LoadPlatformIndex() (*PlatformIndex, error) {
 		return nil, err
 	}
 	idx := &PlatformIndex{
-		Names:           make(map[string]string),
-		FirstIdentifier: make(map[string]string),
+		Names:              make(map[string]string),
+		FirstIdentifier:    make(map[string]string),
+		IdentifierAliases:  make(map[string]string),
 	}
 	for name := range top.Platforms {
 		key := strings.ToLower(strings.TrimSpace(name))
@@ -48,10 +51,14 @@ func LoadPlatformIndex() (*PlatformIndex, error) {
 			Identifiers []string `json:"Identifiers"`
 		}
 		_ = json.Unmarshal(top.Platforms[name], &d)
-		if len(d.Identifiers) > 0 {
-			short := strings.ToLower(strings.TrimSpace(d.Identifiers[0]))
-			if short != "" {
-				idx.FirstIdentifier[short] = name
+		for i, rawID := range d.Identifiers {
+			id := strings.ToLower(strings.TrimSpace(rawID))
+			if id == "" {
+				continue
+			}
+			idx.IdentifierAliases[id] = name
+			if i == 0 {
+				idx.FirstIdentifier[id] = name
 			}
 		}
 	}
