@@ -53,3 +53,18 @@ func EnsureCached(platformKey, exeFullPath, wwwroot string) (publicURL string, e
 	}
 	return PublicURL(platformKey, base), nil
 }
+
+func EnsureShortcutCached(platformKey, exeBase, shortcutPath, wwwroot string) (publicURL string, err error) {
+	exeBase = strings.TrimSpace(exeBase)
+	shortcutPath = filepath.Clean(strings.TrimSpace(shortcutPath))
+	if exeBase == "" || shortcutPath == "" {
+		return "", os.ErrInvalid
+	}
+	www := filepath.Clean(wwwroot)
+	dir := filepath.Join(www, "img", "shortcuts", SafeFolderName(platformKey))
+	out := filepath.Join(dir, strings.TrimSuffix(strings.ToLower(exeBase), ".exe")+".png")
+	if err := winutil.ExtractShortcutIcon(shortcutPath, out); err != nil {
+		return "", err
+	}
+	return PublicURL(platformKey, exeBase), nil
+}

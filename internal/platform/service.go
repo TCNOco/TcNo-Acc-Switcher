@@ -640,6 +640,31 @@ func (p *PlatformService) GetPlatformExeIcon(platformKey string) (string, error)
 	if err != nil || exe == "" {
 		return "", nil
 	}
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return "", nil
+	}
+	settings, err := loadSettings(exeDir)
+	if err != nil {
+		return "", nil
+	}
+	raw, err := os.ReadFile(p.resolvePlatformsPath(exeDir, settings))
+	if err == nil {
+		entry, err := parsePlatformEntry(raw, platformKey)
+		if err == nil {
+			d, err := ParseDescriptor(raw, platformKey)
+			if err == nil && d.Extras.SearchStartMenuForIcon {
+				if shortcutPath, ok := findStartMenuIconShortcut(entry); ok {
+					www, err := WwwrootDir()
+					if err == nil {
+						if u, err := exeicon.EnsureShortcutCached(platformKey, filepath.Base(exe), shortcutPath, www); err == nil {
+							return u, nil
+						}
+					}
+				}
+			}
+		}
+	}
 	www, err := WwwrootDir()
 	if err != nil {
 		return "", nil
