@@ -242,6 +242,19 @@ func classAttr(n *html.Node, want string) bool {
 	return false
 }
 
+func classAttrPrefix(n *html.Node, prefix string) bool {
+	for _, a := range n.Attr {
+		if strings.EqualFold(a.Key, "class") {
+			for _, tok := range strings.Fields(a.Val) {
+				if strings.HasPrefix(tok, prefix) {
+					return true
+				}
+			}
+		}
+	}
+	return false
+}
+
 func firstChildElement(n *html.Node, tag string) *html.Node {
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
 		if c.Type == html.ElementNode && strings.EqualFold(c.Data, tag) {
@@ -335,6 +348,9 @@ func sanitizeNode(n *html.Node, out *bytes.Buffer) {
 		return
 	case html.ElementNode:
 		if classAttr(n, "miniprofile_gamesection") {
+			return
+		}
+		if classAttrPrefix(n, "friend_status_") {
 			return
 		}
 		if !miniAllowedTags[strings.ToLower(n.Data)] {
