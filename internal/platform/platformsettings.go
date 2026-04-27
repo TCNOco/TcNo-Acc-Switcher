@@ -5,11 +5,13 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 	"unicode"
 
 	"TcNo-Acc-Switcher/internal/fsutil"
+	"TcNo-Acc-Switcher/internal/winutil"
 
 	"github.com/tidwall/gjson"
 )
@@ -100,6 +102,42 @@ func DefaultPlatformSettings() PlatformSettings {
 	}
 }
 
+func normalizeClosingMethodForOS(raw string) string {
+	m := strings.TrimSpace(raw)
+	if strings.EqualFold(m, string(winutil.ClosingCombined)) {
+		return string(winutil.ClosingCombined)
+	}
+	if runtime.GOOS == "windows" {
+		if strings.EqualFold(m, string(winutil.ClosingClose)) {
+			return string(winutil.ClosingClose)
+		}
+		if strings.EqualFold(m, string(winutil.ClosingTaskKill)) {
+			return string(winutil.ClosingTaskKill)
+		}
+	}
+	return string(winutil.ClosingCombined)
+}
+
+func defaultClosingMethodForPlatform(platformKey string) string {
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return string(winutil.ClosingCombined)
+	}
+	settings, err := loadSettings(exeDir)
+	if err != nil {
+		return string(winutil.ClosingCombined)
+	}
+	raw, err := os.ReadFile(resolvePlatformsPath(exeDir, settings))
+	if err != nil {
+		return string(winutil.ClosingCombined)
+	}
+	d, err := ParseDescriptor(raw, platformKey)
+	if err != nil {
+		return string(winutil.ClosingCombined)
+	}
+	return normalizeClosingMethodForOS(d.Extras.ClosingMethod)
+}
+
 func sanitizePlatformSettingsFilePrefix(platformKey string) string {
 	s := strings.TrimSpace(platformKey)
 	s = strings.ReplaceAll(s, " ", "")
@@ -179,6 +217,7 @@ func RemoveLaunchArgToken(line, flag string) string {
 
 // LoadPlatformSettings reads Settings/<Platform>Settings.json (Steam: SteamSettings.json); only fields on PlatformSettings are unmarshaled.
 func LoadPlatformSettings(platformKey string) (PlatformSettings, error) {
+	defaultClosingMethod := defaultClosingMethodForPlatform(platformKey)
 	path, err := platformSettingsJSONPath(platformKey)
 	if err != nil {
 		return PlatformSettings{}, err
@@ -186,13 +225,17 @@ func LoadPlatformSettings(platformKey string) (PlatformSettings, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return DefaultPlatformSettings(), nil
+			s := DefaultPlatformSettings()
+			s.ClosingMethod = defaultClosingMethod
+			return s, nil
 		}
 		return PlatformSettings{}, err
 	}
 	var s PlatformSettings
 	if err := json.Unmarshal(data, &s); err != nil {
-		return DefaultPlatformSettings(), err
+		s := DefaultPlatformSettings()
+		s.ClosingMethod = defaultClosingMethod
+		return s, err
 	}
 	if gjson.GetBytes(data, "AlwaysSwapOnShortcut").Exists() {
 		s.AlwaysSwapOnShortcut = gjson.GetBytes(data, "AlwaysSwapOnShortcut").Bool()
@@ -208,8 +251,9 @@ func LoadPlatformSettings(platformKey string) (PlatformSettings, error) {
 	} else if s.TrayAccNumber <= 0 {
 		s.TrayAccNumber = 3
 	}
+	s.ClosingMethod = normalizeClosingMethodForOS(s.ClosingMethod)
 	if strings.TrimSpace(s.ClosingMethod) == "" {
-		s.ClosingMethod = "Combined"
+		s.ClosingMethod = defaultClosingMethod
 	}
 	if strings.TrimSpace(s.StartingMethod) == "" {
 		s.StartingMethod = "Default"
@@ -268,6 +312,7 @@ func resetPlatformJSONToDefaults(platformKey string) error {
 		return err
 	}
 	def := DefaultPlatformSettings()
+	def.ClosingMethod = defaultClosingMethodForPlatform(platformKey)
 	data, err := json.MarshalIndent(def, "", "  ")
 	if err != nil {
 		return err
