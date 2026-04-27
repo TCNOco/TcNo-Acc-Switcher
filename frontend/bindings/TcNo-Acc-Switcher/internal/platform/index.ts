@@ -8,6 +8,7 @@ export {
 
 export {
     AdminCheckResult,
+    BackupResult,
     GameShortcutEntry,
     PlatformSettings,
     PlatformStartup,

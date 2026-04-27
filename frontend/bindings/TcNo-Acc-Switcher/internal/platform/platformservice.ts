@@ -13,9 +13,15 @@ export function ApplyPlatformsJSONFile(sourcePath: string): $CancellablePromise<
     return $Call.ByID(2231300943, sourcePath);
 }
 
+export function BackupPlatform(platformKey: string, everything: boolean): $CancellablePromise<$models.BackupResult> {
+    return $Call.ByID(2310227406, platformKey, everything).then(($result: any) => {
+        return $$createType0($result);
+    });
+}
+
 export function CheckAdminForPlatform(platformKey: string): $CancellablePromise<$models.AdminCheckResult> {
     return $Call.ByID(1142940076, platformKey).then(($result: any) => {
-        return $$createType0($result);
+        return $$createType1($result);
     });
 }
 
@@ -57,7 +63,7 @@ export function GetPlatformInstallFolder(platformKey: string): $CancellablePromi
 
 export function GetPlatformSettings(platformKey: string): $CancellablePromise<$models.PlatformSettings> {
     return $Call.ByID(1698365991, platformKey).then(($result: any) => {
-        return $$createType1($result);
+        return $$createType2($result);
     });
 }
 
@@ -75,12 +81,16 @@ export function GetStartTrayWithWindows(): $CancellablePromise<boolean> {
 
 export function GetStartup(): $CancellablePromise<$models.PlatformStartup> {
     return $Call.ByID(133724378).then(($result: any) => {
-        return $$createType2($result);
+        return $$createType3($result);
     });
 }
 
 export function GetTheme(): $CancellablePromise<string> {
     return $Call.ByID(3289970754);
+}
+
+export function HasPlatformBackupFolders(platformKey: string): $CancellablePromise<boolean> {
+    return $Call.ByID(2360319221, platformKey);
 }
 
 export function HasPlatformCachePaths(platformKey: string): $CancellablePromise<boolean> {
@@ -97,6 +107,10 @@ export function LaunchPlatform(platformKey: string): $CancellablePromise<void> {
 
 export function LaunchPlatformAs(platformKey: string, admin: boolean): $CancellablePromise<void> {
     return $Call.ByID(2773698227, platformKey, admin);
+}
+
+export function OpenPlatformBackupFolder(platformKey: string): $CancellablePromise<void> {
+    return $Call.ByID(1776189318, platformKey);
 }
 
 export function OpenPlatformFolder(platformKey: string): $CancellablePromise<void> {
@@ -117,7 +131,7 @@ export function ResolvePlatformExeFullPath(platformKey: string): $CancellablePro
 
 export function ResolvePlatformLaunch(platformKey: string): $CancellablePromise<$models.ResolvePlatformLaunchResult> {
     return $Call.ByID(176484757, platformKey).then(($result: any) => {
-        return $$createType3($result);
+        return $$createType4($result);
     });
 }
 
@@ -130,6 +144,12 @@ export function RestartAsAdmin(args: string[]): $CancellablePromise<void> {
 
 export function RestoreDefaultPlatformsJSON(): $CancellablePromise<void> {
     return $Call.ByID(1760795478);
+}
+
+export function RestoreLatestPlatformBackup(platformKey: string): $CancellablePromise<$models.BackupResult> {
+    return $Call.ByID(2230632465, platformKey).then(($result: any) => {
+        return $$createType0($result);
+    });
 }
 
 export function SaveHomeOrder(order: string[]): $CancellablePromise<void> {
@@ -192,7 +212,8 @@ export function SetTheme(themeID: string): $CancellablePromise<void> {
 }
 
 // Private type creation functions
-const $$createType0 = $models.AdminCheckResult.createFrom;
-const $$createType1 = $models.PlatformSettings.createFrom;
-const $$createType2 = $models.PlatformStartup.createFrom;
-const $$createType3 = $models.ResolvePlatformLaunchResult.createFrom;
+const $$createType0 = $models.BackupResult.createFrom;
+const $$createType1 = $models.AdminCheckResult.createFrom;
+const $$createType2 = $models.PlatformSettings.createFrom;
+const $$createType3 = $models.PlatformStartup.createFrom;
+const $$createType4 = $models.ResolvePlatformLaunchResult.createFrom;

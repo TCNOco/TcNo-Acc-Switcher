@@ -34,7 +34,10 @@
 
   let hasDesktopShortcut = false;
   let hasCachePaths = false;
+  let hasBackupFolders = false;
   let clearingCache = false;
+  let backingUp = false;
+  let restoringBackup = false;
 
   const ARG_SILENT = "-silent";
   const ARG_VGUI = "-vgui";
@@ -56,6 +59,18 @@
     return parts.join(" ");
   }
 
+  function sanitizeSettingsPayload(raw: unknown): Record<string, unknown> {
+    const source = raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
+    const next: Record<string, unknown> = { ...source };
+    if (!Array.isArray(next.Shortcuts)) {
+      delete next.Shortcuts;
+    }
+    if (!next.AccountNotes || typeof next.AccountNotes !== "object" || Array.isArray(next.AccountNotes)) {
+      delete next.AccountNotes;
+    }
+    return next;
+  }
+
   async function refreshDesktopShortcutState(): Promise<void> {
     try {
       hasDesktopShortcut = await Shortcuts.PlatformShortcutExists(name);
@@ -69,6 +84,14 @@
       hasCachePaths = await Wails.HasPlatformCachePaths(name);
     } catch {
       hasCachePaths = false;
+    }
+  }
+
+  async function refreshBackupPathState(): Promise<void> {
+    try {
+      hasBackupFolders = await Wails.HasPlatformBackupFolders(name);
+    } catch {
+      hasBackupFolders = false;
     }
   }
 
@@ -189,7 +212,7 @@
         await refreshInstallFolder();
         if (isSteam) {
           const raw = await Wails.GetSteamSettings();
-          steamSettings = Settings.createFrom(raw as Partial<Settings>);
+          steamSettings = Settings.createFrom(sanitizeSettingsPayload(raw) as Partial<Settings>);
           if (steamSettings.AlwaysSwapOnShortcut === undefined) {
             steamSettings.AlwaysSwapOnShortcut = true;
           }
@@ -198,7 +221,9 @@
           }
         } else {
           const raw = await Wails.GetPlatformSettings(name);
-          genericPS = PlatformSettings.createFrom(raw as Partial<PlatformSettings>);
+          genericPS = PlatformSettings.createFrom(
+            sanitizeSettingsPayload(raw) as Partial<PlatformSettings>,
+          );
           if (genericPS.AlwaysSwapOnShortcut === undefined) {
             genericPS.AlwaysSwapOnShortcut = true;
           }
@@ -207,6 +232,7 @@
           }
         }
         await refreshCachePathState();
+        await refreshBackupPathState();
         await refreshDesktopShortcutState();
       } catch (e) {
         loadError = e instanceof Error ? e.message : String(e);
@@ -234,7 +260,7 @@
         await refreshInstallFolder();
         if (isSteam) {
           const raw = await Wails.GetSteamSettings();
-          steamSettings = Settings.createFrom(raw as Partial<Settings>);
+          steamSettings = Settings.createFrom(sanitizeSettingsPayload(raw) as Partial<Settings>);
         }
         pushToast({
           type: "success",
@@ -267,10 +293,12 @@
       await refreshInstallFolder();
       if (isSteam) {
         const raw = await Wails.GetSteamSettings();
-        steamSettings = Settings.createFrom(raw as Partial<Settings>);
+        steamSettings = Settings.createFrom(sanitizeSettingsPayload(raw) as Partial<Settings>);
       } else {
         const raw = await Wails.GetPlatformSettings(name);
-        genericPS = PlatformSettings.createFrom(raw as Partial<PlatformSettings>);
+        genericPS = PlatformSettings.createFrom(
+          sanitizeSettingsPayload(raw) as Partial<PlatformSettings>,
+        );
       }
       await refreshDesktopShortcutState();
       pushToast({
@@ -317,6 +345,55 @@
       });
     } finally {
       clearingCache = false;
+    }
+  }
+
+  async function onBackup(everything: boolean): Promise<void> {
+    if (backingUp) return;
+    backingUp = true;
+    try {
+      await Wails.BackupPlatform(name, everything);
+      pushToast({ type: "success", title: "", message: $t("Done"), duration: 4000 });
+    } catch (e) {
+      pushToast({
+        type: "error",
+        title: "",
+        message: e instanceof Error ? e.message : String(e),
+        duration: 8000,
+      });
+    } finally {
+      backingUp = false;
+    }
+  }
+
+  async function onOpenBackupFolder(): Promise<void> {
+    try {
+      await Wails.OpenPlatformBackupFolder(name);
+    } catch (e) {
+      pushToast({
+        type: "error",
+        title: "",
+        message: e instanceof Error ? e.message : String(e),
+        duration: 8000,
+      });
+    }
+  }
+
+  async function onRestoreLatestBackup(): Promise<void> {
+    if (restoringBackup) return;
+    restoringBackup = true;
+    try {
+      await Wails.RestoreLatestPlatformBackup(name);
+      pushToast({ type: "success", title: "", message: $t("Toast_RestoreComplete"), duration: 5000 });
+    } catch (e) {
+      pushToast({
+        type: "error",
+        title: "",
+        message: e instanceof Error ? e.message : String(e),
+        duration: 8000,
+      });
+    } finally {
+      restoringBackup = false;
     }
   }
 
@@ -915,6 +992,32 @@
       <div class="buttoncol settings-tools-row">
         <button type="button" on:click={onRefreshVac}>{$t("Steam_CheckVac")}</button>
         <button type="button" on:click={onRefreshImages}>{$t("Button_RefreshImages")}</button>
+      </div>
+    {/if}
+
+    {#if hasBackupFolders}
+      <h2 class="SettingsHeader">{$t("Settings_Header_BackupRestore")}</h2>
+      {#if isSteam}
+        <div class="buttoncol settings-tools-row">
+          <button type="button" disabled={backingUp} on:click={() => void onBackup(false)}>
+            {$t("Button_Backup")}
+          </button>
+          <button type="button" disabled={backingUp} on:click={() => void onBackup(true)}>
+            {$t("Button_BackupAll")}
+          </button>
+        </div>
+      {:else}
+        <div class="buttoncol settings-tools-row settings-tools-row--single">
+          <button type="button" disabled={backingUp} on:click={() => void onBackup(true)}>
+            {$t("Button_BackupAll")}
+          </button>
+        </div>
+      {/if}
+      <div class="buttoncol settings-tools-row">
+        <button type="button" on:click={onOpenBackupFolder}>{$t("Button_OpenBackup")}</button>
+        <button type="button" disabled={restoringBackup} on:click={onRestoreLatestBackup}>
+          {$t("Button_Restore")}
+        </button>
       </div>
     {/if}
 

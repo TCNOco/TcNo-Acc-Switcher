@@ -27,6 +27,36 @@ export class AdminCheckResult {
     }
 }
 
+export class BackupResult {
+    "archivePath": string;
+    "files": number;
+    "bytes": number;
+    "restoredFrom"?: string;
+
+    /** Creates a new BackupResult instance. */
+    constructor($$source: Partial<BackupResult> = {}) {
+        if (!("archivePath" in $$source)) {
+            this["archivePath"] = "";
+        }
+        if (!("files" in $$source)) {
+            this["files"] = 0;
+        }
+        if (!("bytes" in $$source)) {
+            this["bytes"] = 0;
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new BackupResult instance from a string or object.
+     */
+    static createFrom($$source: any = {}): BackupResult {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new BackupResult($$parsedSource as Partial<BackupResult>);
+    }
+}
+
 export class GameShortcutEntry {
     "fileName": string;
     "pinned": boolean;
