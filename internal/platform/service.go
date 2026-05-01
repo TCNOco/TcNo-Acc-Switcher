@@ -155,6 +155,10 @@ func (p *PlatformService) GetTheme() (string, error) {
 	return sanitizeThemeID(settings.Theme), nil
 }
 
+func (p *PlatformService) GetAppVersion() string {
+	return appVersionFromBuildConfig()
+}
+
 func (p *PlatformService) SetTheme(themeID string) error {
 	p.mu.Lock()
 	defer p.mu.Unlock()

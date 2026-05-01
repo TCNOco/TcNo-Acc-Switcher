@@ -1,11 +1,23 @@
 <script lang="ts">
   import { Browser } from "@wailsio/runtime";
+  import { onMount } from "svelte";
   import { get } from "svelte/store";
+  import * as PlatformService from "../../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import { t } from "../../stores/i18n";
   import { offlineMode } from "../../stores/offlineMode";
   import { pushToast } from "../../stores/toast";
 
-  const currentVersion = "0.0.1";
+  let currentVersion = "0.0.0";
+
+  onMount(() => {
+    void PlatformService.GetAppVersion()
+      .then((v) => {
+        currentVersion = v || "0.0.0";
+      })
+      .catch(() => {
+        currentVersion = "0.0.0";
+      });
+  });
 
   function openExternal(url: string, e: MouseEvent): void {
     e.preventDefault();
