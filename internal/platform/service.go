@@ -800,6 +800,64 @@ func (p *PlatformService) GetOfflineMode() (bool, error) {
 	return s.OfflineMode, nil
 }
 
+func (p *PlatformService) GetStatsEnabled() (bool, error) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return false, err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return false, err
+	}
+	return s.StatsEnabled, nil
+}
+
+func (p *PlatformService) SetStatsEnabled(enabled bool) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return err
+	}
+	s.StatsEnabled = enabled
+	return saveSettingsAtomic(exeDir, s)
+}
+
+func (p *PlatformService) GetStatsShare() (bool, error) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return false, err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return false, err
+	}
+	return s.StatsShare, nil
+}
+
+func (p *PlatformService) SetStatsShare(enabled bool) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return err
+	}
+	s.StatsShare = enabled
+	return saveSettingsAtomic(exeDir, s)
+}
+
 func (p *PlatformService) SetOfflineMode(enabled bool) error {
 	p.mu.Lock()
 	defer p.mu.Unlock()

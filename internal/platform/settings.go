@@ -42,6 +42,12 @@ type AppSettings struct {
 
 	// StartProgramCentered places the main window in the center of the screen when the app opens.
 	StartProgramCentered bool `json:"startProgramCentered,omitempty"`
+
+	// StatsEnabled toggles local anonymous statistics collection.
+	StatsEnabled bool `json:"statsEnabled,omitempty"`
+
+	// StatsShare toggles anonymous statistics submission.
+	StatsShare bool `json:"statsShare,omitempty"`
 }
 
 func defaultSettings() AppSettings {
@@ -51,6 +57,8 @@ func defaultSettings() AppSettings {
 		PlatformExePaths:  map[string]string{},
 		PlatformOrder:     nil,
 		DisabledPlatforms: nil,
+		StatsEnabled:      true,
+		StatsShare:        true,
 	}
 }
 
@@ -77,6 +85,9 @@ func loadSettings(exeDir string) (AppSettings, error) {
 		}
 		return AppSettings{}, err
 	}
+	var raw map[string]json.RawMessage
+	_ = json.Unmarshal(data, &raw)
+
 	var s AppSettings
 	if err := json.Unmarshal(data, &s); err != nil {
 		return AppSettings{}, err
@@ -89,6 +100,12 @@ func loadSettings(exeDir string) (AppSettings, error) {
 	}
 	if s.PlatformExePaths == nil {
 		s.PlatformExePaths = map[string]string{}
+	}
+	if _, ok := raw["statsEnabled"]; !ok {
+		s.StatsEnabled = true
+	}
+	if _, ok := raw["statsShare"]; !ok {
+		s.StatsShare = true
 	}
 	return s, nil
 }

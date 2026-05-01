@@ -14,6 +14,7 @@ import (
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
+	"TcNo-Acc-Switcher/internal/stats"
 	"TcNo-Acc-Switcher/internal/tray"
 	"TcNo-Acc-Switcher/internal/winutil"
 
@@ -535,6 +536,9 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 		return err
 	}
 	recordBasicTrayRecent(platformKey, uniqueID)
+	if err := stats.IncrementSwitches(platformKey); err != nil {
+		return err
+	}
 	if !ps.AutoStart {
 		tray.MaybeHideMainWindow()
 		return nil

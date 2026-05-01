@@ -85,6 +85,14 @@ export function GetStartup(): $CancellablePromise<$models.PlatformStartup> {
     });
 }
 
+export function GetStatsEnabled(): $CancellablePromise<boolean> {
+    return $Call.ByID(2625733805);
+}
+
+export function GetStatsShare(): $CancellablePromise<boolean> {
+    return $Call.ByID(1253816439);
+}
+
 export function GetTheme(): $CancellablePromise<string> {
     return $Call.ByID(3289970754);
 }
@@ -205,6 +213,14 @@ export function SetStartProgramCentered(enabled: boolean): $CancellablePromise<v
 
 export function SetStartTrayWithWindows(enabled: boolean): $CancellablePromise<void> {
     return $Call.ByID(444643124, enabled);
+}
+
+export function SetStatsEnabled(enabled: boolean): $CancellablePromise<void> {
+    return $Call.ByID(3917824985, enabled);
+}
+
+export function SetStatsShare(enabled: boolean): $CancellablePromise<void> {
+    return $Call.ByID(2738502547, enabled);
 }
 
 export function SetTheme(themeID: string): $CancellablePromise<void> {

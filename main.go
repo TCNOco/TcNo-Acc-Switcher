@@ -15,6 +15,7 @@ import (
 	"TcNo-Acc-Switcher/internal/ipc"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/shortcuts"
+	"TcNo-Acc-Switcher/internal/stats"
 	"TcNo-Acc-Switcher/internal/steam"
 	"TcNo-Acc-Switcher/internal/tray"
 	"TcNo-Acc-Switcher/internal/winutil"
@@ -165,6 +166,10 @@ func runGUI(parsed cli.Parsed) {
 			guiSettings = s
 		}
 	}
+	if err := stats.IncrementLaunchCount(); err != nil {
+		log.Printf("stats launch count: %v", err)
+	}
+	go stats.MustTryUploadDaily(guiSettings)
 
 	app := application.New(application.Options{
 		Name:        "TcNo Account Switcher",

@@ -19,6 +19,10 @@
   let protocolEnabled = false;
   let protocolLoading = false;
   let offlineLoading = false;
+  let statsEnabled = true;
+  let statsShare = true;
+  let statsEnabledLoading = false;
+  let statsShareLoading = false;
 
   let exitToTray = false;
   let minimizeOnSwitch = false;
@@ -50,6 +54,20 @@
       })
       .catch(() => {
         exitToTray = false;
+      });
+    void PlatformService.GetStatsEnabled()
+      .then((v) => {
+        statsEnabled = v;
+      })
+      .catch(() => {
+        statsEnabled = true;
+      });
+    void PlatformService.GetStatsShare()
+      .then((v) => {
+        statsShare = v;
+      })
+      .catch(() => {
+        statsShare = true;
       });
     void PlatformService.GetMinimizeOnSwitch()
       .then((v) => {
@@ -286,6 +304,56 @@
       offlineLoading = false;
     }
   }
+
+  async function toggleStatsEnabled(): Promise<void> {
+    if (statsEnabledLoading) {
+      return;
+    }
+    const next = !statsEnabled;
+    statsEnabledLoading = true;
+    try {
+      await PlatformService.SetStatsEnabled(next);
+      statsEnabled = next;
+      pushToast({
+        type: "success",
+        message: get(t)("Toast_SavedItem", { item: get(t)("Settings_CollectStats") }),
+        duration: 4000,
+      });
+    } catch (e) {
+      pushToast({
+        type: "error",
+        message: formatToastWithError($t("Toast_SaveFailed"), e),
+        duration: 8000,
+      });
+    } finally {
+      statsEnabledLoading = false;
+    }
+  }
+
+  async function toggleStatsShare(): Promise<void> {
+    if (statsShareLoading || !statsEnabled) {
+      return;
+    }
+    const next = !statsShare;
+    statsShareLoading = true;
+    try {
+      await PlatformService.SetStatsShare(next);
+      statsShare = next;
+      pushToast({
+        type: "success",
+        message: get(t)("Toast_SavedItem", { item: get(t)("Settings_ShareStats") }),
+        duration: 4000,
+      });
+    } catch (e) {
+      pushToast({
+        type: "error",
+        message: formatToastWithError($t("Toast_SaveFailed"), e),
+        duration: 8000,
+      });
+    } finally {
+      statsShareLoading = false;
+    }
+  }
 </script>
 
 <h2 class="SettingsHeader">{$t("Settings_Header_Theme")}</h2>
@@ -330,6 +398,34 @@
     <label class="form-check-label" for="gs-offline"></label>
   </div>
   <label for="gs-offline" use:tooltip={$t("Settings_OfflineMode")}>{$t("Settings_OfflineMode")}</label>
+</div>
+
+<div class="rowSetting">
+  <div class="form-check">
+    <input
+      id="gs-stats-enabled"
+      type="checkbox"
+      checked={statsEnabled}
+      disabled={statsEnabledLoading}
+      on:change={() => void toggleStatsEnabled()}
+    />
+    <label class="form-check-label" for="gs-stats-enabled"></label>
+  </div>
+  <label for="gs-stats-enabled">{$t("Settings_CollectStats")}</label>
+</div>
+
+<div class="rowSetting">
+  <div class="form-check">
+    <input
+      id="gs-stats-share"
+      type="checkbox"
+      checked={statsShare}
+      disabled={statsShareLoading || !statsEnabled}
+      on:change={() => void toggleStatsShare()}
+    />
+    <label class="form-check-label" for="gs-stats-share"></label>
+  </div>
+  <label for="gs-stats-share">{$t("Settings_ShareStats")}</label>
 </div>
 
 <div class="rowSetting">
