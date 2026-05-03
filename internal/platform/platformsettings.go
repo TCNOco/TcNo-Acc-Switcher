@@ -81,6 +81,7 @@ type PlatformSettings struct {
 	StartingMethod       string              `json:"StartingMethod"`
 	AutoStart            bool                `json:"AutoStart"`
 	ShowShortNotes       bool                `json:"ShowShortNotes"`
+	ShowLastUsed         bool                `json:"ShowLastUsed"`
 	AccountNotes         map[string]string   `json:"AccountNotes"`
 	Shortcuts            []GameShortcutEntry `json:"Shortcuts,omitempty"`
 	AlwaysSwapOnShortcut bool                `json:"AlwaysSwapOnShortcut,omitempty"`
@@ -94,6 +95,7 @@ func DefaultPlatformSettings() PlatformSettings {
 		StartingMethod:       "Default",
 		AutoStart:            true,
 		ShowShortNotes:       true,
+		ShowLastUsed:         true,
 		AccountNotes:         map[string]string{},
 		Shortcuts:            []GameShortcutEntry{},
 		ForgetAccountEnabled: false,
@@ -241,6 +243,9 @@ func LoadPlatformSettings(platformKey string) (PlatformSettings, error) {
 		s.AlwaysSwapOnShortcut = gjson.GetBytes(data, "AlwaysSwapOnShortcut").Bool()
 	} else {
 		s.AlwaysSwapOnShortcut = true
+	}
+	if !gjson.GetBytes(data, "ShowLastUsed").Exists() {
+		s.ShowLastUsed = true
 	}
 	if s.AccountNotes == nil {
 		s.AccountNotes = map[string]string{}

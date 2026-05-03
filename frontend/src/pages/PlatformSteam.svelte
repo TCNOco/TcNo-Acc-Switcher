@@ -4,6 +4,7 @@
   import ActionBar from "../components/ActionBar.svelte";
   import ReorderPointerGrid from "../components/ReorderPointerGrid.svelte";
   import { route, previousPage, appBarTitle } from "../stores/nav";
+  import SearchOverlay, { type SearchResultRow } from "../components/SearchOverlay.svelte";
   import { actionBarStatus } from "../stores/actionBarStatus";
   import {
     platformExeIconUrl,
@@ -30,6 +31,9 @@
   import { get } from "svelte/store";
   import { openConfirm, openPrompt } from "../stores/modal";
   import { offlineMode, offlineSafeImageSrc } from "../stores/offlineMode";
+  import { fuzzyWordsMatch } from "../lib/searchFuzzy";
+  import { closeSearchOverlay, searchOverlayCtrl } from "../stores/searchOverlay";
+  import { platformListSort, type PlatformSortKind } from "../stores/platformListSort";
 
   const STEAM_USERDATA_ERR_KEYS = new Set([
     "Toast_NoValidSteamId",
@@ -100,6 +104,16 @@
   let installedGames: { appId: string; name: string }[] = [];
   /** Per account: app IDs with `userdata/.../id` and with `Backups/Steam/.../id` (drives Game data submenu). */
   let gameDataBySteamId: Record<string, { userdata: Set<string>; backup: Set<string> }> = {};
+
+  let overlayQuery = "";
+  let offSort: (() => void) | undefined;
+  let lastHandledSortId = 0;
+
+  const SEARCH_MAX = 5;
+
+  $: so = $searchOverlayCtrl;
+  $: steamSearchPrimary = buildSteamAccountRows(overlayQuery);
+  $: steamSearchGames = buildSteamGameRows(overlayQuery);
 
   $: appBarTitle.set(name || "TcNo Account Switcher");
   $: if (name) {
@@ -264,6 +278,172 @@
   function onAccountReorder(e: CustomEvent<{ items: string[] }>): void {
     steamIds = e.detail.items;
     SteamService.SaveSteamAccountOrder(e.detail.items).catch(() => {});
+  }
+
+  function steamDisplaySortKey(uid: string): string {
+    const a = accountBySteamId(uid);
+    const p = (a?.personaName ?? "").trim();
+    if (p) {
+      return p.toLowerCase();
+    }
+    const d = (a?.displayName ?? "").trim();
+    if (d) {
+      return d.toLowerCase();
+    }
+    return uid.toLowerCase();
+  }
+
+  function steamAccountNameSortKey(uid: string): string {
+    const a = accountBySteamId(uid);
+    const n = (a?.accountName ?? "").trim().toLowerCase();
+    return n || "\uffff";
+  }
+
+  function steamLastLoginMs(uid: string): number {
+    const a = accountBySteamId(uid);
+    const t = Date.parse((a?.lastLogin ?? "").trim());
+    return Number.isNaN(t) ? 0 : t;
+  }
+
+  function applySteamSort(kind: PlatformSortKind): void {
+    const ids = [...steamIds];
+    const cmpPersona = (x: string, y: string) =>
+      steamDisplaySortKey(x).localeCompare(steamDisplaySortKey(y));
+    const cmpUser = (x: string, y: string) =>
+      steamAccountNameSortKey(x).localeCompare(steamAccountNameSortKey(y));
+    switch (kind) {
+      case "alpha_asc":
+        ids.sort(cmpPersona);
+        break;
+      case "alpha_desc":
+        ids.sort((x, y) => -cmpPersona(x, y));
+        break;
+      case "steam_user_asc":
+        ids.sort(cmpUser);
+        break;
+      case "steam_user_desc":
+        ids.sort((x, y) => -cmpUser(x, y));
+        break;
+      case "lastused_new_old":
+      case "date_new_old":
+        ids.sort(
+          (x, y) =>
+            steamLastLoginMs(y) - steamLastLoginMs(x) || cmpPersona(x, y),
+        );
+        break;
+      case "lastused_old_new":
+      case "date_old_new":
+        ids.sort(
+          (x, y) =>
+            steamLastLoginMs(x) - steamLastLoginMs(y) || cmpPersona(x, y),
+        );
+        break;
+      default:
+        return;
+    }
+    steamIds = ids;
+    SteamService.SaveSteamAccountOrder(ids).catch(() => {});
+  }
+
+  function steamAccountSearchHay(acc: SteamAccountRow, trimmed: string): string {
+    const parts: string[] = [
+      acc.personaName ?? "",
+      acc.displayName ?? "",
+      acc.note ?? "",
+    ];
+    if (acc.showAccUsername) {
+      parts.push(acc.accountName ?? "");
+    }
+    const wantsSteamIdMatch = trimmed
+      .toLowerCase()
+      .split(/\s+/)
+      .filter((w) => w.length > 0)
+      .some((w) => /^\d{5,}$/.test(w));
+    if (wantsSteamIdMatch) {
+      parts.push(acc.steamId64 ?? "");
+    }
+    return parts.join("\n");
+  }
+
+  function buildSteamAccountRows(q: string): SearchResultRow[] {
+    const tr = get(t);
+    const trimmed = q.trim();
+    const hay = (acc: SteamAccountRow) => {
+      const blob = steamAccountSearchHay(acc, trimmed);
+      return fuzzyWordsMatch(trimmed, blob);
+    };
+    let list = trimmed
+      ? steamAccounts.filter((a) => hay(a))
+      : steamAccounts.slice(0, SEARCH_MAX);
+    if (trimmed) {
+      list = list.slice(0, SEARCH_MAX);
+    }
+    return list.map((a) => ({
+      key: `a:${a.steamId64}`,
+      title: (a.personaName || a.displayName || a.steamId64).trim(),
+      badge: tr("Search_Section_Account"),
+      accountIconUrl: offlineSafeImageSrc(
+        get(offlineMode),
+        a.imageUrl && !a.avatarPending ? a.imageUrl : undefined,
+        PROFILE_PLACEHOLDER,
+      ),
+    }));
+  }
+
+  function buildSteamGameRows(q: string): SearchResultRow[] {
+    const tr = get(t);
+    const trimmed = q.trim();
+    if (!trimmed) {
+      return [];
+    }
+    return installedGames
+      .filter((g) => fuzzyWordsMatch(trimmed, g.name))
+      .slice(0, SEARCH_MAX)
+      .map((g) => ({
+        key: `g:${String(g.appId).trim()}`,
+        title: g.name,
+        badge: tr("Search_Section_Game"),
+        isCategory: true,
+        accountIconUrl: PROFILE_PLACEHOLDER,
+      }));
+  }
+
+  async function onSteamSearchPick(ev: CustomEvent<SearchResultRow>): Promise<void> {
+    const row = ev.detail;
+    closeSearchOverlay();
+    if (row.key.startsWith("a:")) {
+      const id = row.key.slice(2);
+      selectedSteamId = id;
+      touchSteamActionBar();
+      await steamLoginSelected();
+      return;
+    }
+    if (row.key.startsWith("g:")) {
+      const appId = row.key.slice(2);
+      if (!selectedSteamId) {
+        pushToast({
+          type: "error",
+          message: $t("Toast_NoValidSteamId"),
+          duration: 5000,
+        });
+        return;
+      }
+      try {
+        await SteamService.LoginAndLaunchGame(selectedSteamId, -1, appId);
+        scheduleSteamAccountsRefresh();
+        pushToast({
+          type: "success",
+          message: $t("Toast_GameLaunchRequested"),
+          duration: 4000,
+        });
+      } catch (e) {
+        pushToast({
+          type: "error",
+          message: formatToastWithError($t("Toast_LaunchFailed"), e),
+          duration: 8000,
+        });
+      }
+    }
   }
 
   async function reportSteamSwitchFailure(e: unknown): Promise<void> {
@@ -778,6 +958,13 @@
       }
     })();
     void GetPlatformExeIcon(name).then((u: string) => platformExeIconUrl.set(u ?? ""));
+    offSort = platformListSort.subscribe((sig) => {
+      if (!sig || sig.id <= lastHandledSortId) {
+        return;
+      }
+      lastHandledSortId = sig.id;
+      applySteamSort(sig.kind);
+    });
     offSteamEvent = Events.On("steam-account-updated", (ev) => {
       const raw = ev.data;
       const p =
@@ -808,6 +995,7 @@
     platformLiveSessionId.set({ platformKey: "", uniqueId: "" });
     platformAction.set(null);
     offSteamEvent?.();
+    offSort?.();
     offPlatformAction?.();
     offAccountsRefresh?.();
     platformAccountsRefresh.set({ seq: 0, platformKey: "" });
@@ -818,7 +1006,21 @@
 
 <div class="main-content platform-accounts-root" bind:this={steamMainEl}>
   {#if name}
-    <div class="platformTable">
+    <div class="platformTableHost">
+      <SearchOverlay
+        open={so.open}
+        syncNonce={so.nonce}
+        initialQuery={so.initialQuery}
+        bind:query={overlayQuery}
+        primaryRows={steamSearchPrimary}
+        categoryRows={[]}
+        categoryHint=""
+        gameRows={steamSearchGames}
+        gameHint={$t("Search_Hint_Games")}
+        on:close={() => closeSearchOverlay()}
+        on:pick={(e) => void onSteamSearchPick(e)}
+      />
+      <div class="platformTable">
       {#if steamLoadError}
         <p class="platform-accounts-hint">{steamLoadError}</p>
       {/if}
@@ -929,6 +1131,7 @@
         </ReorderPointerGrid>
       </div>
     </div>
+    </div>
   {/if}
 </div>
 <ActionBar />
@@ -948,4 +1151,11 @@
     opacity: 0.85;
   }
 
+  .platformTableHost {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
 </style>

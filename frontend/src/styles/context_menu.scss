@@ -54,6 +54,10 @@
                 center / contain;
         }
 
+        &.hasSubmenu.hasSubmenu--parent-action > button.ctx-menu__parent-action {
+            padding-right: 1.85em;
+        }
+
         a, span, button {
             text-decoration: none;
             transition: ease 0.2s;

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { get } from "svelte/store";
   import { Events } from "@wailsio/runtime";
   import TitleBar from './components/TitleBar.svelte'
   import AppModal from './components/AppModal.svelte'
@@ -19,6 +20,60 @@
   import { actionBarStatus } from './stores/actionBarStatus'
   import { t } from "./stores/i18n";
   import { registerSvgRenderBridge } from "./lib/svgRenderBridge";
+  import { activeModal } from "./stores/modal";
+  import { contextMenu } from "./stores/contextMenu";
+  import {
+    openSearchOverlay,
+    searchOverlayCtrl,
+    searchOverlayPendingAppend,
+  } from "./stores/searchOverlay";
+
+  function isEditableTarget(t: EventTarget | null): boolean {
+    if (!t || !(t instanceof HTMLElement)) {
+      return false;
+    }
+    if (t.isContentEditable) {
+      return true;
+    }
+    const tag = t.tagName;
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") {
+      return true;
+    }
+    return t.closest("input, textarea, select, [contenteditable]") !== null;
+  }
+
+  function onGlobalKeydownCapture(e: KeyboardEvent): void {
+    const r = get(route);
+    if (r.page !== "home" && r.page !== "platform") {
+      return;
+    }
+    if (get(activeModal)) {
+      return;
+    }
+    if (get(contextMenu)) {
+      return;
+    }
+    if (e.ctrlKey || e.metaKey || e.altKey) {
+      return;
+    }
+    if (e.key.length !== 1) {
+      return;
+    }
+    const so = get(searchOverlayCtrl);
+    if (so.open) {
+      if (isEditableTarget(e.target)) {
+        return;
+      }
+      e.preventDefault();
+      searchOverlayPendingAppend.set(e.key);
+      return;
+    }
+    if (isEditableTarget(e.target)) {
+      return;
+    }
+    e.preventDefault();
+    openSearchOverlay(e.key);
+  }
 
   onMount(() => {
     const offPageStats = installPageStatsTracking();
@@ -44,7 +99,9 @@
         actionBarStatus.set(raw);
       }
     });
+    window.addEventListener("keydown", onGlobalKeydownCapture, true);
     return () => {
+      window.removeEventListener("keydown", onGlobalKeydownCapture, true);
       offPageStats();
       off?.();
       offNav?.();

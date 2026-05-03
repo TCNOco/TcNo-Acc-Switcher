@@ -32,6 +32,8 @@ type AccountDTO struct {
 	ImageURL       string `json:"imageUrl"`
 	Note           string `json:"note"`
 	CurrentSession bool   `json:"currentSession"`
+	LastUsed       string `json:"lastUsed"`
+	ShowLastUsed   bool   `json:"showLastUsed"`
 }
 
 func (b *BasicService) GetAccounts(platformKey string) ([]AccountDTO, error) {
@@ -41,10 +43,12 @@ func (b *BasicService) GetAccounts(platformKey string) ([]AccountDTO, error) {
 	if platformKey == "" {
 		return nil, nil
 	}
-	ids, err := readIDs(platformKey)
+	idf, err := readIdsFile(platformKey)
 	if err != nil {
 		return nil, err
 	}
+	ids := idf.IDs
+	lastUsedMap := idf.LastUsed
 	order, err := readOrder(platformKey)
 	if err != nil {
 		return nil, err
@@ -87,6 +91,10 @@ func (b *BasicService) GetAccounts(platformKey string) ([]AccountDTO, error) {
 		if u, ok := profileimage.FindCached(platformKey, uid); ok {
 			img = u
 		}
+		lu := ""
+		if lastUsedMap != nil {
+			lu = strings.TrimSpace(lastUsedMap[uid])
+		}
 		out = append(out, AccountDTO{
 			PlatformKey:    platformKey,
 			UniqueID:       uid,
@@ -94,6 +102,8 @@ func (b *BasicService) GetAccounts(platformKey string) ([]AccountDTO, error) {
 			ImageURL:       img,
 			Note:           note,
 			CurrentSession: liveUID != "" && strings.EqualFold(liveUID, uid),
+			LastUsed:       lu,
+			ShowLastUsed:   ps.ShowLastUsed,
 		})
 	}
 	sc, hot := 0, 0
@@ -140,13 +150,16 @@ func (b *BasicService) ForgetAccount(platformKey, uniqueID string) error {
 	defer b.mu.Unlock()
 	platformKey = strings.TrimSpace(platformKey)
 	uniqueID = strings.TrimSpace(uniqueID)
-	ids, err := readIDs(platformKey)
+	f, err := readIdsFile(platformKey)
 	if err != nil {
 		return err
 	}
-	name := ids[uniqueID]
-	delete(ids, uniqueID)
-	if err := writeIDs(platformKey, ids); err != nil {
+	name := f.IDs[uniqueID]
+	delete(f.IDs, uniqueID)
+	if f.LastUsed != nil {
+		delete(f.LastUsed, uniqueID)
+	}
+	if err := writeIdsFile(platformKey, f); err != nil {
 		return err
 	}
 	if name != "" {

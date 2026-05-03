@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { get } from "svelte/store";
   import { route, type Route } from "../stores/nav";
   import { actionBarStatus } from "../stores/actionBarStatus";
   import { triggerPlatformAction } from "../stores/platformPage";
@@ -7,12 +8,136 @@
   import { openAlertNoButton } from "../stores/modal";
   import HelpAboutModalBody from "./modals/HelpAboutModalBody.svelte";
   import GameShortcutBar from "./GameShortcutBar.svelte";
+  import { openContextMenu } from "../stores/contextMenu";
+  import type { MenuItemDef } from "../stores/contextMenu";
+  import { openSearchOverlay } from "../stores/searchOverlay";
+  import { triggerPlatformSort } from "../stores/platformListSort";
   import "../styles/actionbar.scss";
 
   $: r = $route;
   $: isPlatformPage = r.page === "platform";
+  $: isHomePage = r.page === "home";
   $: platformName = isPlatformPage ? (r as Extract<Route, { page: "platform" }>).platformName : "";
   $: showSaveCurrent = !!platformName && platformName !== "Steam";
+  let filterBtn: HTMLButtonElement | undefined;
+
+  function filterMenuItems(): MenuItemDef[] {
+    const tr = get(t);
+    const cur = get(route);
+
+    if (cur.page === "home") {
+      return [
+        {
+          label: tr("Filter_Search"),
+          action: () => openSearchOverlay(""),
+        },
+        {
+          label: tr("Filter_SortBy"),
+          children: [
+            {
+              label: tr("Filter_Sort_AZ"),
+              action: () => triggerPlatformSort("alpha_asc"),
+            },
+            {
+              label: tr("Filter_Sort_ZA"),
+              action: () => triggerPlatformSort("alpha_desc"),
+            },
+          ],
+        },
+      ];
+    }
+
+    const steam = platformName === "Steam";
+    const sortAlphaBlock: MenuItemDef[] = steam
+      ? ([
+          {
+            label: tr("Filter_Sort_AZ"),
+            action: () => triggerPlatformSort("alpha_asc"),
+            children: [
+              {
+                label: tr("Filter_Sort_AZ"),
+                action: () => triggerPlatformSort("alpha_asc"),
+              },
+              {
+                label: tr("Filter_Sort_Username"),
+                action: () => triggerPlatformSort("steam_user_asc"),
+              },
+            ],
+          },
+          {
+            label: tr("Filter_Sort_ZA"),
+            action: () => triggerPlatformSort("alpha_desc"),
+            children: [
+              {
+                label: tr("Filter_Sort_ZA"),
+                action: () => triggerPlatformSort("alpha_desc"),
+              },
+              {
+                label: tr("Filter_Sort_Username"),
+                action: () => triggerPlatformSort("steam_user_desc"),
+              },
+            ],
+          },
+        ] as MenuItemDef[])
+      : [
+          {
+            label: tr("Filter_Sort_AZ"),
+            action: () => triggerPlatformSort("alpha_asc"),
+          },
+          {
+            label: tr("Filter_Sort_ZA"),
+            action: () => triggerPlatformSort("alpha_desc"),
+          },
+        ];
+    const sortChildren: MenuItemDef[] = [
+      ...sortAlphaBlock,
+      {
+        label: tr("Filter_Sort_LastUsed"),
+        children: [
+          {
+            label: tr("Filter_Sort_NewOld"),
+            action: () => triggerPlatformSort("lastused_new_old"),
+          },
+          {
+            label: tr("Filter_Sort_OldNew"),
+            action: () => triggerPlatformSort("lastused_old_new"),
+          },
+        ],
+      },
+      {
+        label: tr("Filter_Sort_Date"),
+        children: [
+          {
+            label: tr("Filter_Sort_NewOld"),
+            action: () => triggerPlatformSort("date_new_old"),
+          },
+          {
+            label: tr("Filter_Sort_OldNew"),
+            action: () => triggerPlatformSort("date_old_new"),
+          },
+        ],
+      },
+    ];
+    return [
+      {
+        label: tr("Filter_Search"),
+        action: () => openSearchOverlay(""),
+      },
+      {
+        label: tr("Filter_SortBy"),
+        children: sortChildren,
+      },
+    ];
+  }
+
+  function onFilterClick(): void {
+    const el = filterBtn;
+    if (!el) {
+      return;
+    }
+    const rct = el.getBoundingClientRect();
+    openContextMenu(rct.left, rct.bottom + 4, filterMenuItems());
+  }
 
   function showHelpModal() {
     void openAlertNoButton({
@@ -60,7 +185,31 @@
             <path d="M217.9 105.9L340.7 228.7c7.2 7.2 11.3 17 11.3 27.3s-4.1 20.1-11.3 27.3L217.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9V160c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.5 24 9.9z"/></svg>
           </button
         >
+        <button
+          bind:this={filterBtn}
+          class="square"
+          type="button"
+          aria-label={$t("Filter_Menu")}
+          use:tooltip={$t("Filter_Menu")}
+          on:click={onFilterClick}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free v5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"/></svg>
+          </button
+        >
     {:else}
+        {#if isHomePage}
+          <button
+            bind:this={filterBtn}
+            class="square"
+            type="button"
+            aria-label={$t("Filter_Menu")}
+            use:tooltip={$t("Filter_Menu")}
+            on:click={onFilterClick}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free v5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"/></svg>
+            </button
+          >
+        {/if}
         <button class="btnicontext" aria-label={$t("Button_ManagePlatforms")} use:tooltip={$t("Tooltip_ManagePlatforms")} on:click={() => route.set({ page: 'manage-platforms'})}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free v5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"/></svg>{$t("Button_ManagePlatforms")}</button>
     {/if}
     <button class="square" aria-label="Settings" use:tooltip={$t("Tooltip_Settings")} on:click={() => {

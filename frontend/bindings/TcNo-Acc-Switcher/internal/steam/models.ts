@@ -231,6 +231,7 @@ export class Settings {
     "StartingMethod": string;
     "AutoStart": boolean;
     "ShowShortNotes": boolean;
+    "ShowLastUsed": boolean;
     "AccountNotes": { [_ in string]?: string };
     "Shortcuts"?: platform$0.GameShortcutEntry[];
     "AlwaysSwapOnShortcut"?: boolean;
@@ -273,6 +274,9 @@ export class Settings {
         }
         if (!("ShowShortNotes" in $$source)) {
             this["ShowShortNotes"] = false;
+        }
+        if (!("ShowLastUsed" in $$source)) {
+            this["ShowLastUsed"] = false;
         }
         if (!("AccountNotes" in $$source)) {
             this["AccountNotes"] = {};
@@ -327,18 +331,18 @@ export class Settings {
      * Creates a new Settings instance from a string or object.
      */
     static createFrom($$source: any = {}): Settings {
-        const $$createField7_0 = $$createType0;
-        const $$createField8_0 = $$createType2;
-        const $$createField20_0 = $$createType0;
+        const $$createField8_0 = $$createType0;
+        const $$createField9_0 = $$createType2;
+        const $$createField21_0 = $$createType0;
         let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
         if ("AccountNotes" in $$parsedSource) {
-            $$parsedSource["AccountNotes"] = $$createField7_0($$parsedSource["AccountNotes"]);
+            $$parsedSource["AccountNotes"] = $$createField8_0($$parsedSource["AccountNotes"]);
         }
         if ("Shortcuts" in $$parsedSource) {
-            $$parsedSource["Shortcuts"] = $$createField8_0($$parsedSource["Shortcuts"]);
+            $$parsedSource["Shortcuts"] = $$createField9_0($$parsedSource["Shortcuts"]);
         }
         if ("ShortcutsJson" in $$parsedSource) {
-            $$parsedSource["ShortcutsJson"] = $$createField20_0($$parsedSource["ShortcutsJson"]);
+            $$parsedSource["ShortcutsJson"] = $$createField21_0($$parsedSource["ShortcutsJson"]);
         }
         return new Settings($$parsedSource as Partial<Settings>);
     }

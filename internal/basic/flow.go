@@ -535,6 +535,7 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 	if err := Login(deps, platformKey, accName); err != nil {
 		return err
 	}
+	_ = touchLastUsed(platformKey, uniqueID)
 	recordBasicTrayRecent(platformKey, uniqueID)
 	if err := stats.IncrementSwitches(platformKey); err != nil {
 		return err

@@ -5,6 +5,7 @@ export type MenuItemDef = {
   /** Ignored when type is search/separator */
   label?: string;
   type?: "item" | "search" | "separator";
+  /** Leaf click, or with `children` a parent row click (see ContextMenuNest). */
   action?: () => void;
   children?: MenuItemDef[];
   /** When true, the row is visible but not clickable (no action, menu stays open on click). */

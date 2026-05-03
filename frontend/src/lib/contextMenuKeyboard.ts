@@ -26,6 +26,10 @@ function focusTargetForRowLi(li: HTMLElement): HTMLElement | null {
     return li.querySelector<HTMLInputElement>("input.ctx-menu__search");
   }
   if (li.classList.contains("hasSubmenu")) {
+    const btn = li.querySelector<HTMLElement>(":scope > button.ctx-menu__parent-action");
+    if (btn) {
+      return btn;
+    }
     const lab = li.querySelector<HTMLElement>(":scope > .ctx-menu__label");
     return lab ?? li;
   }
@@ -45,7 +49,14 @@ function leafButtonForActiveRow(active: HTMLElement): HTMLButtonElement | null {
     return active;
   }
   const rowLi = active.closest("li");
-  if (!(rowLi instanceof HTMLElement) || rowLi.classList.contains("hasSubmenu")) {
+  if (!(rowLi instanceof HTMLElement)) {
+    return null;
+  }
+  const parentAct = rowLi.querySelector(":scope > button.ctx-menu__parent-action");
+  if (parentAct instanceof HTMLButtonElement) {
+    return parentAct;
+  }
+  if (rowLi.classList.contains("hasSubmenu")) {
     return null;
   }
   const b = rowLi.querySelector(":scope > button.ctx-menu__btn");
@@ -67,7 +78,8 @@ function isSubmenuRowExpandTarget(active: HTMLElement, rowLi: HTMLElement): bool
   }
   return (
     active === rowLi ||
-    (active.classList.contains("ctx-menu__label") && active.parentElement === rowLi)
+    (active.classList.contains("ctx-menu__label") && active.parentElement === rowLi) ||
+    (active.classList.contains("ctx-menu__parent-action") && active.parentElement === rowLi)
   );
 }
 

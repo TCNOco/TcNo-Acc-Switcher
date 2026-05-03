@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"strings"
+	"time"
 
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
@@ -30,32 +32,36 @@ func orderPath(platformKey string) (string, error) {
 }
 
 type idsFile struct {
-	IDs map[string]string `json:"ids"`
+	IDs      map[string]string `json:"ids"`
+	LastUsed map[string]string `json:"lastused"`
 }
 
-func readIDs(platformKey string) (map[string]string, error) {
+func readIdsFile(platformKey string) (idsFile, error) {
 	p, err := idsPath(platformKey)
 	if err != nil {
-		return nil, err
+		return idsFile{}, err
 	}
 	data, err := os.ReadFile(p)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return map[string]string{}, nil
+			return idsFile{IDs: map[string]string{}, LastUsed: map[string]string{}}, nil
 		}
-		return nil, err
+		return idsFile{}, err
 	}
 	var f idsFile
 	if err := json.Unmarshal(data, &f); err != nil {
-		return map[string]string{}, nil
+		return idsFile{IDs: map[string]string{}, LastUsed: map[string]string{}}, nil
 	}
 	if f.IDs == nil {
 		f.IDs = map[string]string{}
 	}
-	return f.IDs, nil
+	if f.LastUsed == nil {
+		f.LastUsed = map[string]string{}
+	}
+	return f, nil
 }
 
-func writeIDs(platformKey string, m map[string]string) error {
+func writeIdsFile(platformKey string, f idsFile) error {
 	p, err := idsPath(platformKey)
 	if err != nil {
 		return err
@@ -63,12 +69,52 @@ func writeIDs(platformKey string, m map[string]string) error {
 	if err := os.MkdirAll(filepath.Dir(p), 0o755); err != nil {
 		return err
 	}
-	f := idsFile{IDs: m}
+	if f.IDs == nil {
+		f.IDs = map[string]string{}
+	}
+	if f.LastUsed == nil {
+		f.LastUsed = map[string]string{}
+	}
 	data, err := json.MarshalIndent(f, "", "  ")
 	if err != nil {
 		return err
 	}
 	return fsutil.WriteFileAtomic(p, data, 0o644)
+}
+
+func readIDs(platformKey string) (map[string]string, error) {
+	f, err := readIdsFile(platformKey)
+	if err != nil {
+		return nil, err
+	}
+	return f.IDs, nil
+}
+
+func writeIDs(platformKey string, m map[string]string) error {
+	f, err := readIdsFile(platformKey)
+	if err != nil {
+		return err
+	}
+	f.IDs = m
+	return writeIdsFile(platformKey, f)
+}
+
+// touchLastUsed records RFC3339 UTC for the account switched to (ids unique id key).
+func touchLastUsed(platformKey, uniqueID string) error {
+	platformKey = strings.TrimSpace(platformKey)
+	uniqueID = strings.TrimSpace(uniqueID)
+	if platformKey == "" || uniqueID == "" {
+		return nil
+	}
+	f, err := readIdsFile(platformKey)
+	if err != nil {
+		return err
+	}
+	if f.LastUsed == nil {
+		f.LastUsed = map[string]string{}
+	}
+	f.LastUsed[uniqueID] = time.Now().UTC().Format(time.RFC3339)
+	return writeIdsFile(platformKey, f)
 }
 
 func readOrder(platformKey string) ([]string, error) {

@@ -3,6 +3,7 @@
   import ActionBar from "../components/ActionBar.svelte";
   import ReorderPointerGrid from "../components/ReorderPointerGrid.svelte";
   import { route, previousPage, appBarTitle } from "../stores/nav";
+  import SearchOverlay, { type SearchResultRow } from "../components/SearchOverlay.svelte";
   import { actionBarStatus } from "../stores/actionBarStatus";
   import {
     platformExeIconUrl,
@@ -13,7 +14,7 @@
   } from "../stores/platformPage";
   import { pushToast } from "../stores/toast";
   import { openPrompt } from "../stores/modal";
-  import { t } from "../stores/i18n";
+  import { locale, t } from "../stores/i18n";
   import * as BasicService from "../../bindings/TcNo-Acc-Switcher/internal/basic/basicservice.js";
   import { AccountDTO } from "../../bindings/TcNo-Acc-Switcher/internal/basic/models.js";
   import { GetPlatformExeIcon, LaunchPlatform } from "../lib/platformBindings";
@@ -26,6 +27,10 @@
   import { get } from "svelte/store";
   import { openConfirm } from "../stores/modal";
   import { offlineMode, offlineSafeImageSrc } from "../stores/offlineMode";
+  import { fuzzyWordsMatch } from "../lib/searchFuzzy";
+  import { formatLastLoginForLocale } from "../lib/formatLastLogin";
+  import { closeSearchOverlay, searchOverlayCtrl } from "../stores/searchOverlay";
+  import { platformListSort, type PlatformSortKind } from "../stores/platformListSort";
 
   const PROFILE_FALLBACK = "/img/BasicDefault.webp";
 
@@ -43,8 +48,15 @@
   let lastHandledActionId = 0;
   let basicListRefreshTimers: ReturnType<typeof setTimeout>[] = [];
   let basicAcclistEl: HTMLDivElement | undefined;
+  let overlayQuery = "";
+  let offSort: (() => void) | undefined;
+  let lastHandledSortId = 0;
 
+  const SEARCH_MAX = 5;
+
+  $: so = $searchOverlayCtrl;
   $: appBarTitle.set(name || "TcNo Account Switcher");
+  $: basicSearchPrimary = buildBasicAccountRows(overlayQuery);
   $: if (name) {
     route.set({ page: "platform", platformName: name });
   }
@@ -108,6 +120,82 @@
   function onReorder(e: CustomEvent<{ items: string[] }>): void {
     accountIds = e.detail.items;
     BasicService.SaveAccountOrder(name, e.detail.items).catch(() => {});
+  }
+
+  function displayKeyForSort(uid: string): string {
+    const a = accountById(uid);
+    return (a?.displayName ?? uid).trim().toLowerCase();
+  }
+
+  function lastUsedMsForSort(uid: string): number {
+    const a = accountById(uid);
+    const t = Date.parse((a?.lastUsed ?? "").trim());
+    return Number.isNaN(t) ? 0 : t;
+  }
+
+  function applyPlatformSort(kind: PlatformSortKind): void {
+    if (kind === "steam_user_asc" || kind === "steam_user_desc") {
+      return;
+    }
+    const ids = [...accountIds];
+    const cmpAlpha = (x: string, y: string) =>
+      displayKeyForSort(x).localeCompare(displayKeyForSort(y));
+    switch (kind) {
+      case "alpha_asc":
+        ids.sort(cmpAlpha);
+        break;
+      case "alpha_desc":
+        ids.sort((x, y) => -cmpAlpha(x, y));
+        break;
+      case "lastused_new_old":
+      case "date_new_old":
+        ids.sort(
+          (x, y) =>
+            lastUsedMsForSort(y) - lastUsedMsForSort(x) || cmpAlpha(x, y),
+        );
+        break;
+      case "lastused_old_new":
+      case "date_old_new":
+        ids.sort(
+          (x, y) =>
+            lastUsedMsForSort(x) - lastUsedMsForSort(y) || cmpAlpha(x, y),
+        );
+        break;
+      default:
+        return;
+    }
+    accountIds = ids;
+    BasicService.SaveAccountOrder(name, ids).catch(() => {});
+  }
+
+  function buildBasicAccountRows(q: string): SearchResultRow[] {
+    const tr = get(t);
+    const trimmed = q.trim();
+    const hay = (acc: BasicRow) => {
+      const blob = `${acc.displayName}\n${acc.uniqueId}\n${acc.note ?? ""}`;
+      return fuzzyWordsMatch(trimmed, blob);
+    };
+    let list = trimmed ? accounts.filter((a) => hay(a)) : accounts.slice(0, SEARCH_MAX);
+    if (trimmed) {
+      list = list.slice(0, SEARCH_MAX);
+    }
+    return list.map((a) => ({
+      key: `a:${a.uniqueId}`,
+      title: a.displayName || a.uniqueId,
+      badge: tr("Search_Section_Account"),
+      accountIconUrl: offlineSafeImageSrc(get(offlineMode), a.imageUrl, PROFILE_FALLBACK),
+    }));
+  }
+
+  async function onSearchPick(ev: CustomEvent<SearchResultRow>): Promise<void> {
+    const row = ev.detail;
+    closeSearchOverlay();
+    if (row.key.startsWith("a:")) {
+      const uid = row.key.slice(2);
+      selectedUniqueId = uid;
+      touchStatus();
+      await swapToLogin();
+    }
   }
 
   async function reportBasicSwitchFailure(e: unknown): Promise<void> {
@@ -394,6 +482,13 @@
     void preflightAdminForPlatform(name);
     void loadAccounts();
     void GetPlatformExeIcon(name).then((u: string) => platformExeIconUrl.set(u ?? ""));
+    offSort = platformListSort.subscribe((sig) => {
+      if (!sig || sig.id <= lastHandledSortId) {
+        return;
+      }
+      lastHandledSortId = sig.id;
+      applyPlatformSort(sig.kind);
+    });
     offPlatformAction = platformAction.subscribe((v) => {
       if (!v || v.id === lastHandledActionId) {
         return;
@@ -416,6 +511,7 @@
     platformLiveSessionId.set({ platformKey: "", uniqueId: "" });
     platformAction.set(null);
     offPlatformAction?.();
+    offSort?.();
     offAccountsRefresh?.();
     platformAccountsRefresh.set({ seq: 0, platformKey: "" });
     platformExeIconUrl.set("");
@@ -425,7 +521,21 @@
 
 <div class="main-content platform-accounts-root">
   {#if name}
-    <div class="platformTable">
+    <div class="platformTableHost">
+      <SearchOverlay
+        open={so.open}
+        syncNonce={so.nonce}
+        initialQuery={so.initialQuery}
+        bind:query={overlayQuery}
+        primaryRows={basicSearchPrimary}
+        categoryRows={[]}
+        categoryHint=""
+        gameRows={[]}
+        gameHint=""
+        on:close={() => closeSearchOverlay()}
+        on:pick={(e) => void onSearchPick(e)}
+      />
+      <div class="platformTable">
       {#if loadError}
         <p class="platform-accounts-hint">{loadError}</p>
       {/if}
@@ -487,11 +597,17 @@
                 {#if acc?.note}
                   <p class="acc_note">{acc.note}</p>
                 {/if}
+                {#if acc?.showLastUsed && (acc?.lastUsed ?? "").trim()}
+                  <p class="acc_lastused">
+                    {formatLastLoginForLocale(acc.lastUsed, $locale)}
+                  </p>
+                {/if}
               </label>
             </div>
           </svelte:fragment>
         </ReorderPointerGrid>
       </div>
+    </div>
     </div>
   {/if}
 </div>
@@ -510,5 +626,19 @@
     font-size: 0.85rem;
     color: var(--white, #fff);
     opacity: 0.85;
+  }
+
+  .platformTableHost {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .acc_lastused {
+    margin: 0.15rem 0 0;
+    font-size: 0.72rem;
+    opacity: 0.75;
   }
 </style>

@@ -221,14 +221,16 @@
           }
         } else {
           const raw = await Wails.GetPlatformSettings(name);
-          genericPS = PlatformSettings.createFrom(
-            sanitizeSettingsPayload(raw) as Partial<PlatformSettings>,
-          );
+          const payload = sanitizeSettingsPayload(raw) as Record<string, unknown>;
+          genericPS = PlatformSettings.createFrom(payload as Partial<PlatformSettings>);
           if (genericPS.AlwaysSwapOnShortcut === undefined) {
             genericPS.AlwaysSwapOnShortcut = true;
           }
           if (genericPS.LaunchArguments === undefined) {
             genericPS.LaunchArguments = "";
+          }
+          if (!("ShowLastUsed" in payload)) {
+            genericPS.ShowLastUsed = true;
           }
         }
         await refreshCachePathState();
@@ -296,9 +298,11 @@
         steamSettings = Settings.createFrom(sanitizeSettingsPayload(raw) as Partial<Settings>);
       } else {
         const raw = await Wails.GetPlatformSettings(name);
-        genericPS = PlatformSettings.createFrom(
-          sanitizeSettingsPayload(raw) as Partial<PlatformSettings>,
-        );
+        const payload = sanitizeSettingsPayload(raw) as Record<string, unknown>;
+        genericPS = PlatformSettings.createFrom(payload as Partial<PlatformSettings>);
+        if (!("ShowLastUsed" in payload)) {
+          genericPS.ShowLastUsed = true;
+        }
       }
       await refreshDesktopShortcutState();
       pushToast({
@@ -928,6 +932,18 @@
         <label class="form-check-label" for="gp-shortnotes"></label>
       </div>
       <label for="gp-shortnotes">{$t("Settings_ShowShortNotes")}</label>
+    </div>
+    <div class="rowSetting">
+      <div class="form-check">
+        <input
+          id="gp-show-lastused"
+          type="checkbox"
+          bind:checked={genericPS.ShowLastUsed}
+          on:change={debouncedSaveGeneric}
+        />
+        <label class="form-check-label" for="gp-show-lastused"></label>
+      </div>
+      <label for="gp-show-lastused">{$t("Settings_ShowLastUsed")}</label>
     </div>
     <div class="rowSetting">
       <div class="form-check">

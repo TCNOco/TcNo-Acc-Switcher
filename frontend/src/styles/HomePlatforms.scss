@@ -1,3 +1,11 @@
+.platformTableHost {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
 .platformTable {
   flex: 1 1 auto;
   min-height: 0;
