@@ -53,6 +53,14 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 		return fmt.Errorf("steam install folder not found")
 	}
 
+	if tr := strings.TrimSpace(steamID64); tr != "" && len(extraLaunchArgs) == 0 {
+		if users, err := ParseLoginUsers(LoginUsersPath(root)); err == nil {
+			if a := ActiveSessionSteamID64(users); a != "" && strings.EqualFold(strings.TrimSpace(a), tr) {
+				return nil
+			}
+		}
+	}
+
 	platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatform", "Steam")
 	if err := winutil.ErrIfCannotKill(steamKillNames, winutil.ClosingMethod(st.ClosingMethod)); err != nil {
 		return err

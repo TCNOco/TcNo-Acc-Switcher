@@ -107,20 +107,35 @@ func (s *Service) ScanShortcuts(platformKey string) error {
 func (s *Service) RunShortcut(platformKey, fileName string, admin bool, selectedUniqueID string) error {
 	platformKey = strings.TrimSpace(platformKey)
 	selectedUniqueID = strings.TrimSpace(selectedUniqueID)
-	if selectedUniqueID != "" {
-		ps, err := platform.LoadPlatformSettings(platformKey)
+	if selectedUniqueID == "" {
+		return RunShortcut(platformKey, fileName, admin)
+	}
+
+	needSwap := true
+	if strings.EqualFold(platformKey, "Steam") {
+		active, err := steam.CurrentLiveSteamID64()
 		if err != nil {
-			return err
+			needSwap = true
+		} else {
+			needSwap = active == "" || !strings.EqualFold(strings.TrimSpace(active), selectedUniqueID)
 		}
-		if ps.AlwaysSwapOnShortcut {
-			if strings.EqualFold(platformKey, "Steam") {
-				if err := steam.SwapToAccount(selectedUniqueID, -1, nil); err != nil {
-					return err
-				}
-			} else {
-				if err := basic.SwapTo(basic.FlowDeps{PS: s.ps}, platformKey, selectedUniqueID, nil); err != nil {
-					return err
-				}
+	} else {
+		active, err := basic.CurrentLiveUniqueID(basic.FlowDeps{PS: s.ps}, platformKey)
+		if err != nil {
+			needSwap = true
+		} else {
+			needSwap = active == "" || !strings.EqualFold(strings.TrimSpace(active), selectedUniqueID)
+		}
+	}
+
+	if needSwap {
+		if strings.EqualFold(platformKey, "Steam") {
+			if err := steam.SwapToAccount(selectedUniqueID, -1, nil); err != nil {
+				return err
+			}
+		} else {
+			if err := basic.SwapTo(basic.FlowDeps{PS: s.ps}, platformKey, selectedUniqueID, nil); err != nil {
+				return err
 			}
 		}
 	}

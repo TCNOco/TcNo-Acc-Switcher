@@ -28,6 +28,7 @@
   import type { MenuItemDef } from "../stores/contextMenu";
   import * as BasicService from "../../bindings/TcNo-Acc-Switcher/internal/basic/basicservice.js";
   import * as Shortcuts from "wails-shortcuts-service";
+  import { ListPayload } from "../../bindings/TcNo-Acc-Switcher/internal/shortcuts/models.js";
   import { get } from "svelte/store";
   import { openConfirm, openPrompt } from "../stores/modal";
   import { offlineMode, offlineSafeImageSrc } from "../stores/offlineMode";
@@ -74,6 +75,8 @@
 
   /** Vite `public/img/` → served at `/img/`; shown until Steam profile image is ready */
   const PROFILE_PLACEHOLDER = "/img/BasicDefault.webp";
+  /** Same as `GameShortcutBar` when a shortcut has no usable icon. */
+  const SHORTCUT_ICON_FALLBACK = "/img/icons/file.svg";
 
   /**
    * App IDs omitted:
@@ -93,6 +96,7 @@
   let steamIds: string[] = [];
   let steamLoadError = "";
   let offSteamEvent: (() => void) | undefined;
+  let offShortcutsUpdated: (() => void) | undefined;
   let offPlatformAction: (() => void) | undefined;
   let offAccountsRefresh: (() => void) | undefined;
   let lastHandledActionId = 0;
@@ -102,6 +106,9 @@
   let selectedSteamId = "";
 
   let installedGames: { appId: string; name: string }[] = [];
+  /** Maps from `Shortcuts.ListShortcuts` / `shortcuts-updated` — same PNG paths as the footer bar. */
+  let steamShortcutIconByAppId: Record<string, string> = {};
+  let steamShortcutIconByStemKey: Record<string, string> = {};
   /** Per account: app IDs with `userdata/.../id` and with `Backups/Steam/.../id` (drives Game data submenu). */
   let gameDataBySteamId: Record<string, { userdata: Set<string>; backup: Set<string> }> = {};
 
@@ -114,6 +121,10 @@
   $: so = $searchOverlayCtrl;
   $: steamSearchPrimary = buildSteamAccountRows(overlayQuery);
   $: steamSearchGames = buildSteamGameRows(overlayQuery);
+
+  $: if (name) {
+    void refreshSteamGameShortcutIcons();
+  }
 
   $: appBarTitle.set(name || "TcNo Account Switcher");
   $: if (name) {
@@ -390,6 +401,88 @@
     }));
   }
 
+  /** Mirrors `internal/exeicon.SafeFolderName` for `/img/shortcuts/{folder}/…` paths. */
+  function safeFolderName(platformKey: string): string {
+    let b = "";
+    for (const r of platformKey.trim().toLowerCase()) {
+      if (r === " " || r === "/" || r === "\\") {
+        b += "_";
+      } else if (/[a-z0-9\-_]/.test(r)) {
+        b += r;
+      }
+    }
+    return b || "unknown";
+  }
+
+  function normalizeGameSearchKey(s: string): string {
+    return s
+      .toLowerCase()
+      .replace(/[™©®]/g, "")
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim()
+      .replace(/\s+/g, " ");
+  }
+
+  function applyShortcutIconsFromShortcutList(list: unknown[]): void {
+    const byAppId: Record<string, string> = {};
+    const byStemKey: Record<string, string> = {};
+    const platFolder = safeFolderName(name);
+    for (const raw of list) {
+      const o = (raw ?? {}) as Record<string, unknown>;
+      const fn = String(o.fileName ?? o.FileName ?? "").trim();
+      if (!fn) {
+        continue;
+      }
+      const stem = fn.replace(/\.(lnk|url)$/i, "").trim();
+      const stemLow = stem.toLowerCase();
+      let iconRaw = String(o.iconUrl ?? o.IconURL ?? o.iconURL ?? "").trim();
+      if (!iconRaw) {
+        iconRaw = `/img/shortcuts/${platFolder}/${stemLow}.png`;
+      }
+      const iconUrl = offlineSafeImageSrc(get(offlineMode), iconRaw, SHORTCUT_ICON_FALLBACK);
+      if (/^\d+$/.test(stem)) {
+        byAppId[stem] = iconUrl;
+      }
+      const nk = normalizeGameSearchKey(stem);
+      if (nk) {
+        byStemKey[nk] = iconUrl;
+      }
+    }
+    steamShortcutIconByAppId = byAppId;
+    steamShortcutIconByStemKey = byStemKey;
+  }
+
+  function resolveSteamGameSearchIcon(g: { appId: string; name: string }): string {
+    const id = String(g.appId).trim();
+    const fromId = steamShortcutIconByAppId[id];
+    if (fromId) {
+      return fromId;
+    }
+    const nameKey = normalizeGameSearchKey(g.name);
+    const fromName = steamShortcutIconByStemKey[nameKey];
+    if (fromName) {
+      return fromName;
+    }
+    const guessed = `/img/shortcuts/${safeFolderName(name)}/${id.toLowerCase()}.png`;
+    return offlineSafeImageSrc(get(offlineMode), guessed, SHORTCUT_ICON_FALLBACK);
+  }
+
+  async function refreshSteamGameShortcutIcons(): Promise<void> {
+    const plat = typeof name === "string" ? name.trim() : "";
+    if (!plat) {
+      steamShortcutIconByAppId = {};
+      steamShortcutIconByStemKey = {};
+      return;
+    }
+    try {
+      const list = await Shortcuts.ListShortcuts(plat);
+      applyShortcutIconsFromShortcutList(list as unknown[]);
+    } catch {
+      steamShortcutIconByAppId = {};
+      steamShortcutIconByStemKey = {};
+    }
+  }
+
   function buildSteamGameRows(q: string): SearchResultRow[] {
     const tr = get(t);
     const trimmed = q.trim();
@@ -404,7 +497,7 @@
         title: g.name,
         badge: tr("Search_Section_Game"),
         isCategory: true,
-        accountIconUrl: PROFILE_PLACEHOLDER,
+        accountIconUrl: resolveSteamGameSearchIcon(g),
       }));
   }
 
@@ -986,6 +1079,17 @@
       }
       scheduleSteamAccountsRefresh();
     });
+    offShortcutsUpdated = Events.On("shortcuts-updated", (ev) => {
+      const raw = ev.data;
+      const p =
+        raw instanceof ListPayload
+          ? raw
+          : ListPayload.createFrom(raw as Record<string, unknown>);
+      if (p.platformKey !== name) {
+        return;
+      }
+      applyShortcutIconsFromShortcutList(p.shortcuts ?? []);
+    });
   });
 
   onDestroy(() => {
@@ -995,6 +1099,7 @@
     platformLiveSessionId.set({ platformKey: "", uniqueId: "" });
     platformAction.set(null);
     offSteamEvent?.();
+    offShortcutsUpdated?.();
     offSort?.();
     offPlatformAction?.();
     offAccountsRefresh?.();

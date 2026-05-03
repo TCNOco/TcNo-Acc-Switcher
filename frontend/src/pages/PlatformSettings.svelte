@@ -563,21 +563,6 @@
       </div>
       <label for="ps-shortnotes">{$t("Settings_ShowShortNotes")}</label>
     </div>
-    <div class="rowSetting">
-      <div class="form-check">
-        <input
-          id="ps-always-swap"
-          type="checkbox"
-          bind:checked={steamSettings.AlwaysSwapOnShortcut}
-          on:change={debouncedSaveSteam}
-        />
-        <label class="form-check-label" for="ps-always-swap"></label>
-      </div>
-      <label for="ps-always-swap" use:tooltip={$t("Tooltip_AlwaysSwapOnShortcut")}
-        >{$t("Settings_AlwaysSwapOnShortcut")}</label
-      >
-    </div>
-
     <h2 class="SettingsHeader">{$t("Settings_Header_AccountDisplay")}</h2>
     <div class="rowSetting">
       <div class="form-check">
@@ -945,21 +930,6 @@
       </div>
       <label for="gp-show-lastused">{$t("Settings_ShowLastUsed")}</label>
     </div>
-    <div class="rowSetting">
-      <div class="form-check">
-        <input
-          id="gp-always-swap"
-          type="checkbox"
-          bind:checked={genericPS.AlwaysSwapOnShortcut}
-          on:change={debouncedSaveGeneric}
-        />
-        <label class="form-check-label" for="gp-always-swap"></label>
-      </div>
-      <label for="gp-always-swap" use:tooltip={$t("Tooltip_AlwaysSwapOnShortcut")}
-        >{$t("Settings_AlwaysSwapOnShortcut")}</label
-      >
-    </div>
-
     <h2 class="SettingsHeader">{$t("Settings_Header_LaunchOptions")}</h2>
     <div class="rowSetting form-text launch-args-row">
       <label for="gp-launch-args">{$t("Settings_LaunchArgumentsForPlatform", { platform: name })}</label>

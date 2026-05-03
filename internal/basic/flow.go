@@ -50,6 +50,27 @@ func resolveExeFolder(deps FlowDeps, platformKey string) (string, error) {
 	return deps.PS.GetPlatformInstallFolder(platformKey)
 }
 
+// CurrentLiveUniqueID returns the UniqueID from the live install folder (same basis as AccountDTO.currentSession), or "" if unknown.
+func CurrentLiveUniqueID(deps FlowDeps, platformKey string) (string, error) {
+	platformKey = strings.TrimSpace(platformKey)
+	if platformKey == "" {
+		return "", nil
+	}
+	d, _, err := readDescriptor(platformKey)
+	if err != nil {
+		return "", err
+	}
+	folder, err := resolveExeFolder(deps, platformKey)
+	if err != nil {
+		return "", err
+	}
+	u, err := ReadUniqueID(d, folder)
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimSpace(u), nil
+}
+
 func SaveCurrent(deps FlowDeps, platformKey, accountName string) error {
 	defer platform.EmitActionBarStatus("")
 
@@ -500,6 +521,14 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 		return err
 	}
 
+	cur, curErr := ReadUniqueID(d, folder)
+	if curErr == nil &&
+		strings.TrimSpace(cur) != "" &&
+		strings.EqualFold(strings.TrimSpace(cur), strings.TrimSpace(uniqueID)) &&
+		len(extraLaunchArgs) == 0 {
+		return nil
+	}
+
 	platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatform", platformKey)
 	if err := winutil.ErrIfCannotKill(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod)); err != nil {
 		return err
@@ -510,8 +539,7 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 	if err != nil {
 		return err
 	}
-	cur, err := ReadUniqueID(d, folder)
-	if err == nil && cur != "" {
+	if curErr == nil && cur != "" {
 		if prevName, ok := ids[cur]; ok {
 			targetName, ok2 := ids[uniqueID]
 			if ok2 && prevName != targetName {

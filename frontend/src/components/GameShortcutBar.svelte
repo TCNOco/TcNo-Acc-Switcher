@@ -9,8 +9,6 @@
     platformExeIconUrl,
     triggerPlatformAction,
     selectedAccount,
-    platformLiveSessionId,
-    swapUidForGameShortcut,
     requestPlatformAccountsRefresh,
   } from "../stores/platformPage";
   import { tooltip } from "../lib/actions/tooltip";
@@ -678,11 +676,9 @@
       a = false;
     }
     try {
-      const uid = swapUidForGameShortcut(
-        platformName,
-        get(selectedAccount),
-        get(platformLiveSessionId),
-      );
+      const sel = get(selectedAccount);
+      const uid =
+        sel.platformKey === platformName ? String(sel.uniqueId ?? "").trim() : "";
       await Shortcuts.RunShortcut(platformName, row.fileName, a, uid);
       requestPlatformAccountsRefresh(platformName);
     } catch (e) {

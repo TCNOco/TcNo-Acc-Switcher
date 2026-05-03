@@ -749,8 +749,14 @@ func (s *SteamService) LoginAndLaunchGame(steamID64 string, personaState int, ap
 	if appID == "" {
 		return errors.New("empty app id")
 	}
-	if err := SwapToAccount(steamID64, personaState, nil); err != nil {
-		return err
+	// Match shortcut behavior: if loginusers.vdf already marks this account as the active session,
+	// only open the game URL — do not run SwapToAccount (which kills and restarts Steam).
+	active, errActive := CurrentLiveSteamID64()
+	skipSwap := errActive == nil && active != "" && strings.EqualFold(strings.TrimSpace(active), steamID64)
+	if !skipSwap {
+		if err := SwapToAccount(steamID64, personaState, nil); err != nil {
+			return err
+		}
 	}
 	url := "steam://rungameid/" + appID
 	if err := winutil.Start("cmd.exe", []string{"/c", "start", "", url}, winutil.StartOpts{}); err != nil {

@@ -48,24 +48,3 @@ export function requestPlatformAccountsRefresh(platformKey: string): void {
   platformAccountsRefresh.set({ seq: refreshSeq, platformKey: k });
 }
 
-/** Unique id for RunShortcut when "always swap" is on; "" if already on that account (launch only). */
-export function swapUidForGameShortcut(
-  platformName: string,
-  selected: { platformKey: string; uniqueId: string },
-  live: { platformKey: string; uniqueId: string },
-): string {
-  const pn = platformName.trim();
-  if (!pn) {
-    return "";
-  }
-  const uid =
-    selected.platformKey === pn ? String(selected.uniqueId ?? "").trim() : "";
-  if (!uid) {
-    return "";
-  }
-  const lu = String(live.uniqueId ?? "").trim();
-  if (live.platformKey === pn && lu !== "" && uid.toLowerCase() === lu.toLowerCase()) {
-    return "";
-  }
-  return uid;
-}

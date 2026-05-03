@@ -66,6 +66,12 @@ func (s *SteamService) currentActiveSteamID64() (string, error) {
 	return ActiveSessionSteamID64(users), nil
 }
 
+// CurrentLiveSteamID64 returns the SteamID64 with MostRecent=="1" in loginusers.vdf, or "" if none/ambiguous.
+func CurrentLiveSteamID64() (string, error) {
+	var s SteamService
+	return s.currentActiveSteamID64()
+}
+
 // CopySteamGameSettingsFrom copies <steam>/userdata/{source32}/{appID} into the current session
 // account folder, auto-backing up the destination tree into Backups/Steam first (legacy C# behavior).
 func (s *SteamService) CopySteamGameSettingsFrom(sourceSteamID64, appID string) error {
