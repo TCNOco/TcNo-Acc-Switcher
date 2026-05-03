@@ -10,6 +10,7 @@ import (
 	"TcNo-Acc-Switcher/internal/basic"
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
+	"TcNo-Acc-Switcher/internal/stats"
 	"TcNo-Acc-Switcher/internal/steam"
 	"TcNo-Acc-Switcher/internal/winutil"
 
@@ -64,6 +65,14 @@ func (s *Service) emitUpdated(platformKey string) {
 	if err != nil {
 		list = nil
 	}
+	sc, hot := 0, 0
+	for _, x := range list {
+		sc++
+		if x.Pinned {
+			hot++
+		}
+	}
+	_ = stats.SyncPlatformCounts(platformKey, -1, sc, hot)
 	app.Event.Emit(UpdatedEvent, ListPayload{PlatformKey: platformKey, Shortcuts: list})
 }
 

@@ -15,6 +15,7 @@ import (
 	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/profileimage"
+	"TcNo-Acc-Switcher/internal/stats"
 	"TcNo-Acc-Switcher/internal/winutil"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
@@ -246,6 +247,21 @@ func (s *SteamService) GetSteamAccounts() ([]AccountDTO, error) {
 		}
 		out = append(out, dto)
 	}
+	psPlat, perr := platform.LoadPlatformSettings(PlatformKey)
+	sc, hot := 0, 0
+	if perr == nil {
+		for _, e := range psPlat.Shortcuts {
+			fn := strings.TrimSpace(e.FileName)
+			if fn == "" {
+				continue
+			}
+			sc++
+			if e.Pinned {
+				hot++
+			}
+		}
+	}
+	_ = stats.SyncPlatformCounts(PlatformKey, len(out), sc, hot)
 	steamLog.Info("GetSteamAccounts done", slog.Int("rows", len(out)))
 	return out, nil
 }
@@ -737,7 +753,11 @@ func (s *SteamService) LoginAndLaunchGame(steamID64 string, personaState int, ap
 		return err
 	}
 	url := "steam://rungameid/" + appID
-	return winutil.Start("cmd.exe", []string{"/c", "start", "", url}, winutil.StartOpts{})
+	if err := winutil.Start("cmd.exe", []string{"/c", "start", "", url}, winutil.StartOpts{}); err != nil {
+		return err
+	}
+	_ = stats.IncrementGamesLaunched(PlatformKey)
+	return nil
 }
 
 func (s *SteamService) ChangeAccountImage(steamID64, sourcePath string) error {

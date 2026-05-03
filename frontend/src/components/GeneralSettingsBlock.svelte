@@ -10,6 +10,8 @@
   import { listThemes, setUserTheme, currentThemeId, type ThemeOption } from "../lib/themes";
   import { get } from "svelte/store";
   import { offlineMode, setUserOfflineMode } from "../stores/offlineMode";
+  import { openAlertNoButton } from "../stores/modal";
+  import StatsReportModalBody from "./modals/StatsReportModalBody.svelte";
 
   let open = false;
   let themeOpen = false;
@@ -330,6 +332,23 @@
     }
   }
 
+  async function openStatsModal(): Promise<void> {
+    try {
+      const report = await PlatformService.GetStatsReport();
+      void openAlertNoButton({
+        title: $t("Settings_ViewStats"),
+        bodyComponent: StatsReportModalBody,
+        bodyProps: { initialReport: report },
+      });
+    } catch (e) {
+      pushToast({
+        type: "error",
+        message: formatToastWithError($t("Toast_StatsReportFailed"), e),
+        duration: 8000,
+      });
+    }
+  }
+
   async function toggleStatsShare(): Promise<void> {
     if (statsShareLoading || !statsEnabled) {
       return;
@@ -400,32 +419,34 @@
   <label for="gs-offline" use:tooltip={$t("Settings_OfflineMode")}>{$t("Settings_OfflineMode")}</label>
 </div>
 
-<div class="rowSetting">
-  <div class="form-check">
-    <input
-      id="gs-stats-enabled"
-      type="checkbox"
-      checked={statsEnabled}
-      disabled={statsEnabledLoading}
-      on:change={() => void toggleStatsEnabled()}
-    />
-    <label class="form-check-label" for="gs-stats-enabled"></label>
+<div class="rowSetting statsRow">
+  <div class="statsRow__checks">
+    <div class="form-check">
+      <input
+        id="gs-stats-enabled"
+        type="checkbox"
+        checked={statsEnabled}
+        disabled={statsEnabledLoading}
+        on:change={() => void toggleStatsEnabled()}
+      />
+      <label class="form-check-label" for="gs-stats-enabled"></label>
+    </div>
+    <label class="statsRow__lbl" for="gs-stats-enabled">{$t("Settings_CollectStats")}</label>
+    <div class="form-check">
+      <input
+        id="gs-stats-share"
+        type="checkbox"
+        checked={statsShare}
+        disabled={statsShareLoading || !statsEnabled}
+        on:change={() => void toggleStatsShare()}
+      />
+      <label class="form-check-label" for="gs-stats-share"></label>
+    </div>
+    <label class="statsRow__lbl" for="gs-stats-share">{$t("Settings_ShareStats")}</label>
   </div>
-  <label for="gs-stats-enabled">{$t("Settings_CollectStats")}</label>
-</div>
-
-<div class="rowSetting">
-  <div class="form-check">
-    <input
-      id="gs-stats-share"
-      type="checkbox"
-      checked={statsShare}
-      disabled={statsShareLoading || !statsEnabled}
-      on:change={() => void toggleStatsShare()}
-    />
-    <label class="form-check-label" for="gs-stats-share"></label>
-  </div>
-  <label for="gs-stats-share">{$t("Settings_ShareStats")}</label>
+  <button type="button" class="btnicontext statsRow__view" on:click={() => void openStatsModal()}>
+    {$t("Settings_ViewStats")}
+  </button>
 </div>
 
 <div class="rowSetting">
@@ -570,5 +591,31 @@
   .themeRow__preview {
     flex: 0 0 auto;
     align-self: flex-end;
+  }
+
+  .statsRow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+  }
+
+  .statsRow__checks {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem 0.75rem;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .statsRow__lbl {
+    margin: 0;
+    padding-right: 0.25rem;
+  }
+
+  .statsRow__view {
+    flex: 0 0 auto;
+    margin-left: auto;
   }
 </style>

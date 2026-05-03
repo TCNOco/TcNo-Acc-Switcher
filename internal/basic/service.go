@@ -9,6 +9,7 @@ import (
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/profileimage"
+	"TcNo-Acc-Switcher/internal/stats"
 )
 
 type BasicService struct {
@@ -95,6 +96,18 @@ func (b *BasicService) GetAccounts(platformKey string) ([]AccountDTO, error) {
 			CurrentSession: liveUID != "" && strings.EqualFold(liveUID, uid),
 		})
 	}
+	sc, hot := 0, 0
+	for _, e := range ps.Shortcuts {
+		fn := strings.TrimSpace(e.FileName)
+		if fn == "" {
+			continue
+		}
+		sc++
+		if e.Pinned {
+			hot++
+		}
+	}
+	_ = stats.SyncPlatformCounts(platformKey, len(out), sc, hot)
 	return out, nil
 }
 

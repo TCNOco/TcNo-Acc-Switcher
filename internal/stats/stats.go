@@ -14,7 +14,6 @@ import (
 	"time"
 
 	"TcNo-Acc-Switcher/internal/fsutil"
-	"TcNo-Acc-Switcher/internal/platform"
 
 	"github.com/google/uuid"
 )
@@ -56,7 +55,23 @@ var (
 	mu     sync.Mutex
 	loaded bool
 	state  AppStats
+
+	exeDirOnce sync.Once
+	exeDirVal  string
+	exeDirErr  error
 )
+
+func resolveExeDir() (string, error) {
+	exeDirOnce.Do(func() {
+		exe, err := os.Executable()
+		if err != nil {
+			exeDirErr = err
+			return
+		}
+		exeDirVal = filepath.Dir(exe)
+	})
+	return exeDirVal, exeDirErr
+}
 
 func defaultSwitcherStat() SwitcherStat {
 	now := time.Now()
@@ -79,7 +94,7 @@ func defaultStats() AppStats {
 }
 
 func statsPath() (string, error) {
-	exeDir, err := platform.ResolveExeDir()
+	exeDir, err := resolveExeDir()
 	if err != nil {
 		return "", err
 	}
@@ -210,6 +225,9 @@ func generateTotalsLocked() {
 }
 
 func IncrementLaunchCount() error {
+	if !collectionEnabled() {
+		return nil
+	}
 	mu.Lock()
 	defer mu.Unlock()
 	if err := ensureLoadedLocked(); err != nil {
@@ -220,6 +238,9 @@ func IncrementLaunchCount() error {
 }
 
 func IncrementSwitches(platformName string) error {
+	if !collectionEnabled() {
+		return nil
+	}
 	mu.Lock()
 	defer mu.Unlock()
 	if err := ensureLoadedLocked(); err != nil {
@@ -241,8 +262,8 @@ func IncrementSwitches(platformName string) error {
 	return saveLocked()
 }
 
-func TryUploadDaily(settings platform.AppSettings) error {
-	if !settings.StatsEnabled || !settings.StatsShare || settings.OfflineMode {
+func TryUploadDaily(statsEnabled, statsShare, offlineMode bool) error {
+	if !statsEnabled || !statsShare || offlineMode {
 		return nil
 	}
 
@@ -284,8 +305,8 @@ func TryUploadDaily(settings platform.AppSettings) error {
 	return saveLocked()
 }
 
-func MustTryUploadDaily(settings platform.AppSettings) {
-	if err := TryUploadDaily(settings); err != nil {
+func MustTryUploadDaily(statsEnabled, statsShare, offlineMode bool) {
+	if err := TryUploadDaily(statsEnabled, statsShare, offlineMode); err != nil {
 		log.Printf("stats upload skipped/failed: %v", err)
 	}
 }

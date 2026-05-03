@@ -169,7 +169,7 @@ func runGUI(parsed cli.Parsed) {
 	if err := stats.IncrementLaunchCount(); err != nil {
 		log.Printf("stats launch count: %v", err)
 	}
-	go stats.MustTryUploadDaily(guiSettings)
+	go stats.MustTryUploadDaily(guiSettings.StatsEnabled, guiSettings.StatsShare, guiSettings.OfflineMode)
 
 	app := application.New(application.Options{
 		Name:        "TcNo Account Switcher",

@@ -13,6 +13,7 @@ import (
 
 	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/exeicon"
+	"TcNo-Acc-Switcher/internal/stats"
 	"TcNo-Acc-Switcher/internal/winutil"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
@@ -860,6 +861,44 @@ func (p *PlatformService) SetStatsShare(enabled bool) error {
 	}
 	s.StatsShare = enabled
 	return saveSettingsAtomic(exeDir, s)
+}
+
+// GetStatsReport returns local statistics for display in the settings modal.
+func (p *PlatformService) GetStatsReport() (StatsReport, error) {
+	p.mu.Lock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		p.mu.Unlock()
+		return StatsReport{}, err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		p.mu.Unlock()
+		return StatsReport{}, err
+	}
+	share := s.StatsShare
+	p.mu.Unlock()
+
+	data, err := stats.GetReportData()
+	if err != nil {
+		return StatsReport{}, err
+	}
+	return assembleStatsReport(data, share), nil
+}
+
+// ResetStatistics clears collected statistics and assigns a new anonymous UUID.
+func (p *PlatformService) ResetStatistics() error {
+	return stats.ResetStatistics()
+}
+
+// StatsRecordPageVisit increments the visit counter for a SPA route path (e.g. "/", "/settings").
+func (p *PlatformService) StatsRecordPageVisit(pagePath string) error {
+	return stats.RecordPageVisit(pagePath)
+}
+
+// StatsAddPageTime adds dwell time in seconds for a SPA route path.
+func (p *PlatformService) StatsAddPageTime(pagePath string, seconds int) error {
+	return stats.AddPageTime(pagePath, seconds)
 }
 
 func (p *PlatformService) SetOfflineMode(enabled bool) error {

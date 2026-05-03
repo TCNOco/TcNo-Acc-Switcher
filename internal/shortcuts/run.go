@@ -10,6 +10,7 @@ import (
 	"TcNo-Acc-Switcher/internal/exeicon"
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
+	"TcNo-Acc-Switcher/internal/stats"
 	"TcNo-Acc-Switcher/internal/winutil"
 )
 
@@ -29,20 +30,23 @@ func RunShortcut(platformKey, fileName string, admin bool) error {
 	}
 
 	low := strings.ToLower(filepath.Base(full))
+	var startErr error
 	if strings.HasSuffix(low, ".url") {
-		return winutil.Start("cmd.exe", []string{"/C", full}, winutil.StartOpts{HideWindow: true})
-	}
-
-	if admin {
-		return winutil.Start(full, nil, winutil.StartOpts{
+		startErr = winutil.Start("cmd.exe", []string{"/C", full}, winutil.StartOpts{HideWindow: true})
+	} else if admin {
+		startErr = winutil.Start(full, nil, winutil.StartOpts{
 			Admin:         true,
 			AsDesktopUser: winutil.IsProcessElevated() && !admin,
 		})
+	} else if winutil.IsProcessElevated() {
+		startErr = winutil.Start("explorer.exe", []string{full}, winutil.StartOpts{})
+	} else {
+		startErr = winutil.Start("cmd.exe", []string{"/C", "start", "", full}, winutil.StartOpts{})
 	}
-	if winutil.IsProcessElevated() {
-		return winutil.Start("explorer.exe", []string{full}, winutil.StartOpts{})
+	if startErr == nil {
+		_ = stats.IncrementGamesLaunched(platformKey)
 	}
-	return winutil.Start("cmd.exe", []string{"/C", "start", "", full}, winutil.StartOpts{})
+	return startErr
 }
 
 func shortcutNameIgnored(name string) bool {

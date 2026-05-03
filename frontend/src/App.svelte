@@ -15,11 +15,13 @@
   import PlatformSettings from './pages/PlatformSettings.svelte'
   import ManagePlatforms from './pages/ManagePlatforms.svelte'
   import { route, applyNavigateJSON } from './stores/nav'
+  import { installPageStatsTracking } from "./lib/pageStatsTrack";
   import { actionBarStatus } from './stores/actionBarStatus'
   import { t } from "./stores/i18n";
   import { registerSvgRenderBridge } from "./lib/svgRenderBridge";
 
   onMount(() => {
+    const offPageStats = installPageStatsTracking();
     const offSvgBridge = registerSvgRenderBridge();
     const offNav = Events.On("navigate", (ev) => {
       const raw = typeof ev.data === "string" ? ev.data : "";
@@ -43,6 +45,7 @@
       }
     });
     return () => {
+      offPageStats();
       off?.();
       offNav?.();
       offSvgBridge?.();
