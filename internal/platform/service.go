@@ -46,6 +46,8 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 	if err != nil {
 		return PlatformStartup{}, err
 	}
+	_, settingsStatErr := os.Stat(settingsPath(exeDir))
+	settingsMissing := settingsStatErr != nil && os.IsNotExist(settingsStatErr)
 	settings, err := loadSettings(exeDir)
 	if err != nil {
 		return PlatformStartup{}, err
@@ -67,6 +69,12 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 	if err != nil {
 		return PlatformStartup{}, err
 	}
+	if settingsMissing {
+		p.seedDisabledPlatformsForFirstLaunch(&settings, raw, names)
+		if err := saveSettingsAtomic(exeDir, settings); err != nil {
+			return PlatformStartup{}, err
+		}
+	}
 	disabled := sliceToSet(settings.DisabledPlatforms)
 	home := computeHomeOrder(names, disabled, settings.PlatformOrder)
 	disList := make([]string, 0, len(disabled))
@@ -86,6 +94,63 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 		Theme:                 sanitizeThemeID(settings.Theme),
 		CliNavigateHint:       nav,
 	}, nil
+}
+
+func (p *PlatformService) seedDisabledPlatformsForFirstLaunch(settings *AppSettings, raw []byte, names []string) {
+	if settings == nil {
+		return
+	}
+	disabled := make(map[string]struct{}, len(names))
+	foundCount := 0
+	for _, platformName := range names {
+		if p.platformDetected(settings, raw, platformName) {
+			foundCount++
+			continue
+		}
+		disabled[platformName] = struct{}{}
+	}
+	if foundCount == 0 {
+		disabled = make(map[string]struct{}, len(names))
+		for _, platformName := range names {
+			if strings.EqualFold(platformName, "Steam") {
+				continue
+			}
+			disabled[platformName] = struct{}{}
+		}
+	}
+	settings.DisabledPlatforms = setToSortedSlice(disabled)
+}
+
+func (p *PlatformService) platformDetected(settings *AppSettings, raw []byte, platformName string) bool {
+	if settings == nil {
+		return false
+	}
+	if saved := strings.TrimSpace(settings.PlatformExePaths[platformName]); saved != "" {
+		if st, err := os.Stat(saved); err == nil && !st.IsDir() {
+			return true
+		}
+	}
+	if strings.EqualFold(platformName, "Steam") && resolveSteamExePath != nil {
+		if _, ok := resolveSteamExePath(); ok {
+			return true
+		}
+	}
+	entry, err := parsePlatformEntry(raw, platformName)
+	if err != nil {
+		return false
+	}
+	defaultExePath := ExpandWindowsPath(strings.TrimSpace(entry.ExeLocationDefault))
+	if defaultExePath != "" {
+		if st, err := os.Stat(defaultExePath); err == nil && !st.IsDir() {
+			return true
+		}
+	}
+	exeName := primaryExeName(entry)
+	if exeName == "" {
+		return false
+	}
+	_, ok := findExeViaStartMenuShortcuts(entry, exeName)
+	return ok
 }
 
 func (p *PlatformService) GetLanguage() (string, error) {
