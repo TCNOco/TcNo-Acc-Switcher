@@ -29,6 +29,9 @@ export const contextMenu: Action<HTMLElement, ContextMenuBinding> = (node, bindi
   ({ getter, beforeOpen } = normalize(binding));
 
   const onCtx = (ev: MouseEvent): void => {
+    if (ev.ctrlKey) {
+      return;
+    }
     ev.preventDefault();
     ev.stopPropagation();
     beforeOpen?.();
