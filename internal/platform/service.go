@@ -682,41 +682,47 @@ func (p *PlatformService) GetPlatformExeIcon(platformKey string) (string, error)
 }
 
 func (p *PlatformService) LaunchPlatform(platformKey string) error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
 	platformKey = strings.TrimSpace(platformKey)
+	p.mu.Lock()
+	steamLauncher := launchSteamExe
+	basicLauncher := launchBasicPlatform
+	p.mu.Unlock()
 	if strings.EqualFold(platformKey, "Steam") {
-		if launchSteamExe == nil {
+		if steamLauncher == nil {
 			return errors.New("steam launcher not configured")
 		}
-		return launchSteamExe()
+		return steamLauncher()
 	}
-	if launchBasicPlatform == nil {
+	if basicLauncher == nil {
 		return errors.New("basic launcher not configured")
 	}
-	return launchBasicPlatform(platformKey)
+	return basicLauncher(platformKey)
 }
 
 func (p *PlatformService) LaunchPlatformAs(platformKey string, admin bool) error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
 	platformKey = strings.TrimSpace(platformKey)
+	p.mu.Lock()
+	steamLauncherAs := launchSteamExeAs
+	steamLauncher := launchSteamExe
+	basicLauncherAs := launchBasicPlatformAs
+	basicLauncher := launchBasicPlatform
+	p.mu.Unlock()
 	if strings.EqualFold(platformKey, "Steam") {
-		if launchSteamExeAs != nil {
-			return launchSteamExeAs(admin)
+		if steamLauncherAs != nil {
+			return steamLauncherAs(admin)
 		}
-		if launchSteamExe == nil {
+		if steamLauncher == nil {
 			return errors.New("steam launcher not configured")
 		}
-		return launchSteamExe()
+		return steamLauncher()
 	}
-	if launchBasicPlatformAs != nil {
-		return launchBasicPlatformAs(platformKey, admin)
+	if basicLauncherAs != nil {
+		return basicLauncherAs(platformKey, admin)
 	}
-	if launchBasicPlatform == nil {
+	if basicLauncher == nil {
 		return errors.New("basic launcher not configured")
 	}
-	return launchBasicPlatform(platformKey)
+	return basicLauncher(platformKey)
 }
 
 func (p *PlatformService) HasShortcutMainExe(platformKey string) (bool, error) {

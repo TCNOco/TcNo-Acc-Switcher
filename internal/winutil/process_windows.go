@@ -30,6 +30,7 @@ func KillByName(names []string, method ClosingMethod) error {
 	if m == "" {
 		m = ClosingCombined
 	}
+	log.Printf("winutil: kill begin method=%s targets=%d", m, len(names))
 	var wg sync.WaitGroup
 	for _, name := range names {
 		raw := strings.TrimSpace(name)
@@ -41,15 +42,19 @@ func KillByName(names []string, method ClosingMethod) error {
 			defer wg.Done()
 			if strings.HasPrefix(strings.ToUpper(raw), strings.ToUpper(servicePrefix)) {
 				svcName := strings.TrimSpace(raw[len(servicePrefix):])
+				log.Printf("winutil: stopping service=%s", svcName)
 				if err := stopWindowsService(svcName); err != nil {
+					log.Printf("winutil: stop service failed service=%s err=%v; trying process kill fallback", svcName, err)
 					_ = taskKillIM(svcName+".exe", true)
 				}
+				log.Printf("winutil: stop service done service=%s", svcName)
 				return
 			}
 			base := filepath.Base(raw)
 			if !strings.HasSuffix(strings.ToLower(base), ".exe") {
 				base = raw + ".exe"
 			}
+			log.Printf("winutil: stopping process=%s method=%s", base, m)
 			switch m {
 			case ClosingTaskKill:
 				_ = taskKillIM(base, true)
@@ -62,9 +67,11 @@ func KillByName(names []string, method ClosingMethod) error {
 				waitForImageExit(base, 1500*time.Millisecond, 100*time.Millisecond)
 				_ = taskKillIM(base, true)
 			}
+			log.Printf("winutil: stop process done process=%s", base)
 		}(raw)
 	}
 	wg.Wait()
+	log.Printf("winutil: kill completed method=%s", m)
 	return nil
 }
 
@@ -173,21 +180,34 @@ func IsProcessElevated() bool {
 // Start launches exe with args. Uses PowerShell Start-Process -Verb RunAs when opts.Admin.
 func Start(exe string, args []string, opts StartOpts) error {
 	if opts.AsDesktopUser && IsProcessElevated() {
+		log.Printf("winutil: start request exe=%s mode=desktop-user args=%d admin=%t method=%s", exe, len(args), opts.Admin, opts.Method)
 		return startAsDesktopUser(exe, args, opts)
 	}
 	exe = strings.TrimSpace(exe)
 	if exe == "" {
 		return fmt.Errorf("empty executable")
 	}
+	log.Printf("winutil: start request exe=%s args=%d admin=%t method=%s workingDir=%s", exe, len(args), opts.Admin, opts.Method, strings.TrimSpace(opts.WorkingDir))
 	if opts.Admin {
-		return startElevated(exe, args, opts)
+		err := startElevated(exe, args, opts)
+		if err != nil {
+			log.Printf("winutil: start failed exe=%s err=%v", exe, err)
+			return err
+		}
+		log.Printf("winutil: start launched exe=%s mode=elevated", exe)
+		return nil
 	}
 	cmd := exec.Command(exe, args...)
 	if opts.WorkingDir != "" {
 		cmd.Dir = opts.WorkingDir
 	}
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: opts.HideWindow}
-	return cmd.Start()
+	if err := cmd.Start(); err != nil {
+		log.Printf("winutil: start failed exe=%s err=%v", exe, err)
+		return err
+	}
+	log.Printf("winutil: start launched exe=%s pid=%d", exe, cmd.Process.Pid)
+	return nil
 }
 
 func startElevated(exe string, args []string, opts StartOpts) error {

@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -615,12 +616,15 @@ func launchBasicNoStatus(deps FlowDeps, platformKey string, extraLaunchArgs []st
 }
 
 func launchBasicNoStatusAs(deps FlowDeps, platformKey string, forceAdmin bool, extraLaunchArgs []string) error {
+	log.Printf("basic: launch begin platform=%s forceAdmin=%t extraArgs=%d", platformKey, forceAdmin, len(extraLaunchArgs))
 	d, _, err := readDescriptor(platformKey)
 	if err != nil {
+		log.Printf("basic: launch read descriptor failed platform=%s err=%v", platformKey, err)
 		return err
 	}
 	ps, err := platform.LoadPlatformSettings(platformKey)
 	if err != nil {
+		log.Printf("basic: launch load settings failed platform=%s err=%v", platformKey, err)
 		return err
 	}
 	if deps.PS == nil {
@@ -628,6 +632,7 @@ func launchBasicNoStatusAs(deps FlowDeps, platformKey string, forceAdmin bool, e
 	}
 	exe, err := deps.PS.ResolvePlatformExeFullPath(platformKey)
 	if err != nil || exe == "" {
+		log.Printf("basic: launch resolve exe failed platform=%s exe=%s err=%v", platformKey, exe, err)
 		return fmt.Errorf("executable not found")
 	}
 	var args []string
@@ -649,7 +654,13 @@ func launchBasicNoStatusAs(deps FlowDeps, platformKey string, forceAdmin bool, e
 		WorkingDir:    filepath.Dir(exe),
 		AsDesktopUser: winutil.IsProcessElevated() && !admin,
 	}
-	return winutil.Start(exe, args, opts)
+	log.Printf("basic: start request platform=%s exe=%s args=%d method=%s admin=%t", platformKey, exe, len(args), opts.Method, opts.Admin)
+	if err := winutil.Start(exe, args, opts); err != nil {
+		log.Printf("basic: start failed platform=%s exe=%s err=%v", platformKey, exe, err)
+		return err
+	}
+	log.Printf("basic: start launched platform=%s exe=%s", platformKey, exe)
+	return nil
 }
 
 func LaunchBasicAs(deps FlowDeps, platformKey string, forceAdmin bool, extraLaunchArgs []string) error {
