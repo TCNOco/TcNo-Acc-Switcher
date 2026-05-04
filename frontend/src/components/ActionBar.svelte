@@ -104,19 +104,6 @@
           },
         ],
       },
-      {
-        label: tr("Filter_Sort_Date"),
-        children: [
-          {
-            label: tr("Filter_Sort_NewOld"),
-            action: () => triggerPlatformSort("date_new_old"),
-          },
-          {
-            label: tr("Filter_Sort_OldNew"),
-            action: () => triggerPlatformSort("date_old_new"),
-          },
-        ],
-      },
     ];
     return [
       {

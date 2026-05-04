@@ -869,7 +869,7 @@
       class:flip={ddOpen}
       aria-expanded={ddOpen}
       aria-label={$t("Tooltip_ExpandShortcuts")}
-      use:tooltip={$t("Tooltip_ExpandShortcuts")}
+      use:tooltip={ddOpen ? "" : $t("Tooltip_ExpandShortcuts")}
       on:click={() => (ddOpen = !ddOpen)}
     >
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true"
