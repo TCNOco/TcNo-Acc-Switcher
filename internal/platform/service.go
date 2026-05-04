@@ -139,11 +139,8 @@ func (p *PlatformService) platformDetected(settings *AppSettings, raw []byte, pl
 	if err != nil {
 		return false
 	}
-	defaultExePath := ExpandWindowsPath(strings.TrimSpace(entry.ExeLocationDefault))
-	if defaultExePath != "" {
-		if st, err := os.Stat(defaultExePath); err == nil && !st.IsDir() {
-			return true
-		}
+	if entry.ExeLocationDefault.FirstExistingExe() != "" {
+		return true
 	}
 	exeName := primaryExeName(entry)
 	if exeName == "" {
@@ -632,18 +629,16 @@ func (p *PlatformService) getPlatformInstallFolderUnlocked(platformKey string) (
 		}
 	}
 
-	defExpanded := ExpandWindowsPath(strings.TrimSpace(entry.ExeLocationDefault))
-	if defExpanded != "" {
-		if st, err := os.Stat(defExpanded); err == nil && !st.IsDir() {
-			return filepath.Dir(defExpanded), nil
-		}
+	defExisting := entry.ExeLocationDefault.FirstExistingExe()
+	if defExisting != "" {
+		return filepath.Dir(defExisting), nil
 	}
 
 	if found, ok := findExeViaStartMenuShortcuts(entry, exeName); ok {
 		return filepath.Dir(found), nil
 	}
 
-	if defExpanded != "" {
+	if defExpanded := entry.ExeLocationDefault.FirstExpanded(); defExpanded != "" {
 		d := filepath.Dir(defExpanded)
 		if d != "." && !strings.HasSuffix(d, ":") {
 			return d, nil

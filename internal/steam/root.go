@@ -32,15 +32,13 @@ func ResolveInstallFolder(exeDir string, s Settings, app platform.AppSettings, p
 	if err != nil {
 		return "", err
 	}
-	def := strings.TrimSpace(entry.ExeLocationDefault)
-	if def == "" {
-		return "", nil
+	if found := entry.ExeLocationDefault.FirstExistingExe(); found != "" {
+		return filepath.Clean(filepath.Dir(found)), nil
 	}
-	exp := platform.ExpandWindowsPath(def)
-	if exp == "" {
-		return "", nil
+	if exp := entry.ExeLocationDefault.FirstExpanded(); exp != "" {
+		return filepath.Clean(filepath.Dir(exp)), nil
 	}
-	return filepath.Clean(filepath.Dir(exp)), nil
+	return "", nil
 }
 
 // LoginUsersPath returns .../config/loginusers.vdf under the Steam root.

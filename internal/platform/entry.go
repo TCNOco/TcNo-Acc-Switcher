@@ -9,9 +9,9 @@ import (
 
 // PlatformEntry is a subset of a platform definition from Platforms.json.
 type PlatformEntry struct {
-	ExeLocationDefault       string   `json:"ExeLocationDefault"`
-	GetPathFromShortcutNamed string   `json:"GetPathFromShortcutNamed"`
-	ExesToEnd                []string `json:"ExesToEnd"`
+	ExeLocationDefault       ExeLocationDefaultList `json:"ExeLocationDefault"`
+	GetPathFromShortcutNamed string                 `json:"GetPathFromShortcutNamed"`
+	ExesToEnd                []string               `json:"ExesToEnd"`
 }
 
 // ParsePlatformEntry returns the platform entry for platformKey.
@@ -41,9 +41,15 @@ func parsePlatformEntry(raw []byte, platformKey string) (PlatformEntry, error) {
 }
 
 func primaryExeName(e PlatformEntry) string {
-	p := ExpandWindowsPath(strings.TrimSpace(e.ExeLocationDefault))
-	if p != "" {
-		return filepath.Base(p)
+	for _, raw := range e.ExeLocationDefault {
+		raw = strings.TrimSpace(raw)
+		if raw == "" {
+			continue
+		}
+		p := ExpandWindowsPath(raw)
+		if p != "" {
+			return filepath.Base(p)
+		}
 	}
 	return ""
 }

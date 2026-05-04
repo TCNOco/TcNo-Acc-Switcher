@@ -28,7 +28,7 @@ type DescriptorExtras struct {
 
 type Descriptor struct {
 	Identifiers              []string          `json:"Identifiers,omitempty"`
-	ExeLocationDefault       string            `json:"ExeLocationDefault,omitempty"`
+	ExeLocationDefault       ExeLocationDefaultList `json:"ExeLocationDefault,omitempty"`
 	ExeExtraArgs             string            `json:"ExeExtraArgs,omitempty"`
 	GetPathFromShortcutNamed string            `json:"GetPathFromShortcutNamed,omitempty"`
 	ExesToEnd                []string          `json:"ExesToEnd,omitempty"`
@@ -88,7 +88,7 @@ func (d *Descriptor) expandPathListToClear() {
 
 func (d Descriptor) ToPlatformEntry() PlatformEntry {
 	return PlatformEntry{
-		ExeLocationDefault:       d.ExeLocationDefault,
+		ExeLocationDefault:       append(ExeLocationDefaultList(nil), d.ExeLocationDefault...),
 		GetPathFromShortcutNamed: d.GetPathFromShortcutNamed,
 		ExesToEnd:                d.ExesToEnd,
 	}

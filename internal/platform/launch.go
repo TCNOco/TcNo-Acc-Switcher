@@ -76,7 +76,8 @@ func (p *PlatformService) ResolvePlatformLaunch(platformKey string) (ResolvePlat
 		return ResolvePlatformLaunchResult{}, errors.New("could not determine executable name for platform")
 	}
 
-	defExpanded := ExpandWindowsPath(strings.TrimSpace(entry.ExeLocationDefault))
+	defExisting := entry.ExeLocationDefault.FirstExistingExe()
+	defExpanded := entry.ExeLocationDefault.FirstExpanded()
 
 	if strings.EqualFold(platformKey, "Steam") && resolveSteamExePath != nil {
 		if p, ok := resolveSteamExePath(); ok {
@@ -100,14 +101,12 @@ func (p *PlatformService) ResolvePlatformLaunch(platformKey string) (ResolvePlat
 		}
 	}
 
-	if defExpanded != "" {
-		if st, err := os.Stat(defExpanded); err == nil && !st.IsDir() {
-			return ResolvePlatformLaunchResult{
-				Ok:            true,
-				SoughtExeName: exeName,
-				InitialPath:   filepath.Dir(defExpanded),
-			}, nil
-		}
+	if defExisting != "" {
+		return ResolvePlatformLaunchResult{
+			Ok:            true,
+			SoughtExeName: exeName,
+			InitialPath:   filepath.Dir(defExisting),
+		}, nil
 	}
 
 	if found, ok := findExeViaStartMenuShortcuts(entry, exeName); ok {

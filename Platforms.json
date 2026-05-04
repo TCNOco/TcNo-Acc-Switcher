@@ -410,7 +410,10 @@
     },
     "Genshin Impact": {
       "Identifiers": [ "gi", "genshin", "genshinimpact" ],
-      "ExeLocationDefault": "%ProgramFiles%\\Genshin Impact\\Genshin Impact Game\\GenshinImpact.exe",
+      "ExeLocationDefault": [
+        "%ProgramFiles%\\Genshin Impact\\Genshin Impact Game\\GenshinImpact.exe",
+        "%ProgramFiles%\\HoYoPlay\\games\\Genshin Impact Game\\GenshinImpact.exe",
+      ],
       "GetPathFromShortcutNamed": "Genshin Impact",
       "ExesToEnd": [ "GenshinImpact.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
@@ -531,7 +534,11 @@
     },
     "Honkai StarRail": {
       "Identifiers": [ "hsr", "starrail", "honkaistarrail" ],
-      "ExeLocationDefault": "%ProgramFiles%\\Star Rail\\Games\\StarRail.exe",
+      "ExeLocationDefault": [
+        "%ProgramFiles%\\Star Rail\\Games\\StarRail.exe",
+        "%ProgramFiles%\\HoYoPlay\\games\\Star Rail Games\\StarRail.exe",
+        "%ProgramFiles%\\Epic Games\\HonkaiStarRail\\games\\Star Rail Games\\StarRail.exe"
+      ],
       "GetPathFromShortcutNamed": "Honkai Star Rail",
       "ExesToEnd": [ "StarRail.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
@@ -583,7 +590,7 @@
     },
     "Jagex": {
       "Identifiers": [ "jagex", "osrs", "runescape" ],
-      "ExeLocationDefault": "%ProgramFiles(x86)%\\jagex launcher\\JagexLauncher.exe",
+      "ExeLocationDefault": "%ProgramFiles(x86)%\\Jagex Launcher\\JagexLauncher.exe",
       "GetPathFromShortcutNamed": "Jagex Launcher",
       "ExesToEnd": [ "JagexLauncher.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
