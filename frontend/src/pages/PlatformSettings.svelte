@@ -7,7 +7,9 @@
   import { tooltip } from "../lib/actions/tooltip";
   import GeneralSettingsBlock from "../components/GeneralSettingsBlock.svelte";
   import * as Wails from "../lib/platformBindings";
+  import * as BasicService from "../../bindings/TcNo-Acc-Switcher/internal/basic/basicservice.js";
   import * as Shortcuts from "wails-shortcuts-service";
+  import { requestPlatformAccountsRefresh } from "../stores/platformPage";
   import { PlatformSettings } from "../../bindings/TcNo-Acc-Switcher/internal/platform/models.js";
   import { Settings } from "../../bindings/TcNo-Acc-Switcher/internal/steam/models.js";
   import "../styles/Settings.scss";
@@ -35,6 +37,7 @@
   let hasDesktopShortcut = false;
   let hasCachePaths = false;
   let hasBackupFolders = false;
+  let hasRemoteProfileImages = false;
   let clearingCache = false;
   let backingUp = false;
   let restoringBackup = false;
@@ -232,6 +235,19 @@
           if (!("ShowLastUsed" in payload)) {
             genericPS.ShowLastUsed = true;
           }
+          if (
+            genericPS.ProfileImageExpiryDays === undefined ||
+            genericPS.ProfileImageExpiryDays === null ||
+            !(typeof genericPS.ProfileImageExpiryDays === "number") ||
+            genericPS.ProfileImageExpiryDays < 1
+          ) {
+            genericPS.ProfileImageExpiryDays = 7;
+          }
+          try {
+            hasRemoteProfileImages = await BasicService.PlatformUsesRemoteProfileImages(name);
+          } catch {
+            hasRemoteProfileImages = false;
+          }
         }
         await refreshCachePathState();
         await refreshBackupPathState();
@@ -302,6 +318,19 @@
         genericPS = PlatformSettings.createFrom(payload as Partial<PlatformSettings>);
         if (!("ShowLastUsed" in payload)) {
           genericPS.ShowLastUsed = true;
+        }
+        if (
+          genericPS.ProfileImageExpiryDays === undefined ||
+          genericPS.ProfileImageExpiryDays === null ||
+          !(typeof genericPS.ProfileImageExpiryDays === "number") ||
+          genericPS.ProfileImageExpiryDays < 1
+        ) {
+          genericPS.ProfileImageExpiryDays = 7;
+        }
+        try {
+          hasRemoteProfileImages = await BasicService.PlatformUsesRemoteProfileImages(name);
+        } catch {
+          hasRemoteProfileImages = false;
         }
       }
       await refreshDesktopShortcutState();
@@ -405,6 +434,21 @@
     try {
       await Wails.RefreshVACStatus();
       pushToast({ type: "success", title: "", message: $t("Toast_Steam_VacCleared"), duration: 5000 });
+    } catch (e) {
+      pushToast({
+        type: "error",
+        title: "",
+        message: e instanceof Error ? e.message : String(e),
+        duration: 8000,
+      });
+    }
+  }
+
+  async function onRefreshBasicProfileImages(): Promise<void> {
+    try {
+      await BasicService.RefreshAllBasicProfileImages(name);
+      requestPlatformAccountsRefresh(name);
+      pushToast({ type: "success", title: "", message: $t("Toast_ImagesRefreshing"), duration: 5000 });
     } catch (e) {
       pushToast({
         type: "error",
@@ -956,6 +1000,24 @@
         on:change={debouncedSaveGeneric}
       />
     </div>
+    {#if hasRemoteProfileImages}
+      <h2 class="SettingsHeader">{$t("Settings_Header_ProfileImages")}</h2>
+      <div class="form-text tray-max-row">
+        <span>{$t("Settings_ProfileImageExpiryDays")}</span>
+        <input
+          type="number"
+          min="1"
+          max="365"
+          bind:value={genericPS.ProfileImageExpiryDays}
+          on:change={debouncedSaveGeneric}
+        />
+      </div>
+      <div class="buttoncol settings-tools-row">
+        <button type="button" on:click={() => void onRefreshBasicProfileImages()}>
+          {$t("Button_RefreshImages")}
+        </button>
+      </div>
+    {/if}
   {/if}
 
   {#if (isSteam && steamSettings) || (!isSteam && genericPS)}

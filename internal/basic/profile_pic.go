@@ -1,13 +1,21 @@
 package basic
 
 import (
+	"context"
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
+	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/profileimage"
 )
+
+func remoteProfilePicTemplate(tpl string) bool {
+	t := strings.TrimSpace(strings.ToLower(tpl))
+	return strings.HasPrefix(t, "http://") || strings.HasPrefix(t, "https://")
+}
 
 func saveProfileImage(d platform.Descriptor, platformKey, folder, uid string, ctx platform.PathTokenContext) error {
 	ctx.UniqueID = uid
@@ -23,6 +31,27 @@ func saveProfileImage(d platform.Descriptor, platformKey, folder, uid string, ct
 		if s, err := profilePicFromFile(ex.ProfilePicFromFile, ex.ProfilePicRegex, folder, ctx); err == nil && s != "" {
 			src = s
 		}
+	}
+	if src == "" && remoteProfilePicTemplate(ex.ProfilePicPath) {
+		if strings.Contains(ex.ProfilePicPath, "%LARGEST%") {
+			return nil
+		}
+		url := expandPlatformPath(ex.ProfilePicPath, folder, ctx)
+		if !remoteProfilePicTemplate(url) {
+			return nil
+		}
+		ps, err := platform.LoadPlatformSettings(platformKey)
+		if err != nil {
+			return nil
+		}
+		maxAge := ps.ProfileImageExpiryDays
+		if maxAge <= 0 {
+			maxAge = 7
+		}
+		dctx, cancel := context.WithTimeout(context.Background(), 45*time.Second)
+		defer cancel()
+		_, _ = profileimage.DownloadIfNeeded(dctx, appclient.Shared, platformKey, uid, url, maxAge)
+		return nil
 	}
 	if src == "" && strings.TrimSpace(ex.ProfilePicPath) != "" {
 		if s, err := profilePicPathResolved(ex.ProfilePicPath, folder, ctx); err == nil && s != "" {
@@ -43,6 +72,12 @@ func profilePicPathResolved(tpl string, folder string, ctx platform.PathTokenCon
 	tpl = strings.TrimSpace(tpl)
 	if tpl == "" {
 		return "", nil
+	}
+	if remoteProfilePicTemplate(tpl) {
+		if strings.Contains(tpl, "%LARGEST%") {
+			return "", nil
+		}
+		return expandPlatformPath(tpl, folder, ctx), nil
 	}
 	if !strings.Contains(tpl, "%LARGEST%") {
 		return expandPlatformPath(tpl, folder, ctx), nil

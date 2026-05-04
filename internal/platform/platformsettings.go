@@ -86,6 +86,8 @@ type PlatformSettings struct {
 	Shortcuts            []GameShortcutEntry `json:"Shortcuts,omitempty"`
 	AlwaysSwapOnShortcut bool                `json:"AlwaysSwapOnShortcut,omitempty"`
 	LaunchArguments      string              `json:"LaunchArguments,omitempty"`
+	// ProfileImageExpiryDays is max age (days) for cached remote profile pictures (Platforms.json http(s) ProfilePicPath).
+	ProfileImageExpiryDays int `json:"ProfileImageExpiryDays,omitempty"`
 }
 
 func DefaultPlatformSettings() PlatformSettings {
@@ -100,7 +102,8 @@ func DefaultPlatformSettings() PlatformSettings {
 		Shortcuts:            []GameShortcutEntry{},
 		ForgetAccountEnabled: false,
 		RunAsAdmin:           false,
-		AlwaysSwapOnShortcut: true,
+		AlwaysSwapOnShortcut:   true,
+		ProfileImageExpiryDays: 7,
 	}
 }
 
@@ -265,6 +268,9 @@ func LoadPlatformSettings(platformKey string) (PlatformSettings, error) {
 	}
 	if s.Shortcuts == nil {
 		s.Shortcuts = []GameShortcutEntry{}
+	}
+	if s.ProfileImageExpiryDays <= 0 {
+		s.ProfileImageExpiryDays = 7
 	}
 	return s, nil
 }

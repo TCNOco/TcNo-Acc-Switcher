@@ -15,6 +15,10 @@ import (
 type BasicService struct {
 	mu sync.Mutex
 	PS *platform.PlatformService
+
+	imgRefreshMu      sync.Mutex
+	imgRefreshRunning bool
+	imgRefreshQueued  bool
 }
 
 func NewBasicService(ps *platform.PlatformService) *BasicService {
@@ -30,6 +34,7 @@ type AccountDTO struct {
 	UniqueID       string          `json:"uniqueId"`
 	DisplayName    string          `json:"displayName"`
 	ImageURL       string          `json:"imageUrl"`
+	AvatarPending  bool            `json:"avatarPending"`
 	Note           string          `json:"note"`
 	CurrentSession bool            `json:"currentSession"`
 	LastUsed       string          `json:"lastUsed"`
@@ -60,11 +65,18 @@ func (b *BasicService) GetAccounts(platformKey string) ([]AccountDTO, error) {
 	}
 
 	liveUID := ""
+	remoteProfilePics := false
 	if d, _, derr := readDescriptor(platformKey); derr == nil {
 		folder, _ := resolveExeFolder(b.deps(), platformKey)
 		if u, uerr := ReadUniqueID(d, folder); uerr == nil {
 			liveUID = strings.TrimSpace(u)
 		}
+		tpl := strings.TrimSpace(d.Extras.ProfilePicPath)
+		remoteProfilePics = remoteProfilePicTemplate(tpl) && !strings.Contains(tpl, "%LARGEST%")
+	}
+	maxAge := ps.ProfileImageExpiryDays
+	if maxAge <= 0 {
+		maxAge = 7
 	}
 
 	seen := map[string]struct{}{}
@@ -89,8 +101,16 @@ func (b *BasicService) GetAccounts(platformKey string) ([]AccountDTO, error) {
 			note = ps.AccountNotes[uid]
 		}
 		img := ""
+		pending := false
 		if u, ok := profileimage.FindCached(platformKey, uid); ok {
 			img = u
+		}
+		if remoteProfilePics {
+			if p, ok := profileimage.CachedFilePath(platformKey, uid); ok {
+				pending = profileimage.FileOlderThanDays(p, maxAge)
+			} else {
+				pending = true
+			}
 		}
 		lu := ""
 		if lastUsedMap != nil {
@@ -101,6 +121,7 @@ func (b *BasicService) GetAccounts(platformKey string) ([]AccountDTO, error) {
 			UniqueID:       uid,
 			DisplayName:    name,
 			ImageURL:       img,
+			AvatarPending:  pending,
 			Note:           note,
 			CurrentSession: liveUID != "" && strings.EqualFold(liveUID, uid),
 			LastUsed:       lu,

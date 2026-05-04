@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
+  import { Events } from "@wailsio/runtime";
   import ActionBar from "../components/ActionBar.svelte";
   import ReorderPointerGrid from "../components/ReorderPointerGrid.svelte";
   import TagFilterBar from "../components/TagFilterBar.svelte";
@@ -18,7 +19,7 @@
   import { openPrompt } from "../stores/modal";
   import { locale, t } from "../stores/i18n";
   import * as BasicService from "../../bindings/TcNo-Acc-Switcher/internal/basic/basicservice.js";
-  import { AccountDTO } from "../../bindings/TcNo-Acc-Switcher/internal/basic/models.js";
+  import { AccountDTO, AccountImagePatch } from "../../bindings/TcNo-Acc-Switcher/internal/basic/models.js";
   import { GetPlatformExeIcon, LaunchPlatform } from "../lib/platformBindings";
   import { formatToastWithError, formatWailsError } from "../lib/formatWailsError";
   import { isNeedsAdminError, offerRestartIfNeedsAdmin, preflightAdminForPlatform } from "../lib/adminFlow";
@@ -45,6 +46,7 @@
   /** Bindings class typing can lag `currentSession`; keep explicit for the list row. */
   type BasicRow = InstanceType<typeof AccountDTO> & {
     currentSession?: boolean;
+    avatarPending?: boolean;
     tags?: TagDefRow[];
   };
 
@@ -56,12 +58,14 @@
   let selectedUniqueId = "";
   let offPlatformAction: (() => void) | undefined;
   let offAccountsRefresh: (() => void) | undefined;
+  let offBasicImageEvent: (() => void) | undefined;
   let lastHandledActionId = 0;
   let basicListRefreshTimers: ReturnType<typeof setTimeout>[] = [];
   let basicAcclistEl: HTMLDivElement | undefined;
   let overlayQuery = "";
   let offSort: (() => void) | undefined;
   let lastHandledSortId = 0;
+  let basicAvatarEpoch: Record<string, number> = {};
 
   let tagDefs: TagDefRow[] = [];
   let tagFilterMode: TagFilterMode = { kind: "all" };
@@ -84,6 +88,33 @@
 
   function accountById(id: string): BasicRow | undefined {
     return accounts.find((a) => a.uniqueId === id);
+  }
+
+  function applyBasicImagePatch(p: AccountImagePatch): void {
+    const plat = String(p.platformKey ?? "").trim();
+    const uid = String(p.uniqueId ?? "").trim();
+    if (!plat || !uid || plat !== name) {
+      return;
+    }
+    let hit = false;
+    accounts = accounts.map((r) => {
+      if (r.uniqueId !== uid) {
+        return r;
+      }
+      hit = true;
+      const nextUrl =
+        typeof p.imageUrl === "string" && p.imageUrl.trim() !== "" ? p.imageUrl.trim() : r.imageUrl;
+      const nextPending =
+        typeof p.avatarPending === "boolean" ? p.avatarPending : (r.avatarPending ?? false);
+      return {
+        ...r,
+        imageUrl: nextUrl,
+        avatarPending: nextPending,
+      } as BasicRow;
+    });
+    if (hit) {
+      basicAvatarEpoch = { ...basicAvatarEpoch, [uid]: (basicAvatarEpoch[uid] ?? 0) + 1 };
+    }
   }
 
   $: tagFilterBarLabel =
@@ -245,7 +276,11 @@
       key: `a:${a.uniqueId}`,
       title: a.displayName || a.uniqueId,
       badge: tr("Search_Section_Account"),
-      accountIconUrl: offlineSafeImageSrc(get(offlineMode), a.imageUrl, PROFILE_FALLBACK),
+      accountIconUrl: offlineSafeImageSrc(
+        get(offlineMode),
+        a.imageUrl && !(a as { avatarPending?: boolean }).avatarPending ? a.imageUrl : undefined,
+        PROFILE_FALLBACK,
+      ),
     }));
   }
 
@@ -598,6 +633,24 @@
       }
       scheduleAccountsRefresh();
     });
+    offBasicImageEvent = Events.On("basic-account-image-updated", (ev) => {
+      const raw = ev.data;
+      const p =
+        raw instanceof AccountImagePatch
+          ? raw
+          : AccountImagePatch.createFrom(raw as Record<string, unknown>);
+      applyBasicImagePatch(p);
+    });
+    void (async () => {
+      try {
+        const remote = await BasicService.PlatformUsesRemoteProfileImages(name);
+        if (remote) {
+          void BasicService.StartBasicProfileImageRefresh(name);
+        }
+      } catch {
+        /* ignore */
+      }
+    })();
   });
 
   onDestroy(() => {
@@ -609,6 +662,7 @@
     offPlatformAction?.();
     offSort?.();
     offAccountsRefresh?.();
+    offBasicImageEvent?.();
     platformAccountsRefresh.set({ seq: 0, platformKey: "" });
     platformExeIconUrl.set("");
     actionBarStatus.set("");
@@ -688,11 +742,17 @@
                   void swapToLogin();
                 }}
               >
-                <img
-                  src={offlineSafeImageSrc($offlineMode, acc?.imageUrl, PROFILE_FALLBACK)}
-                  alt=""
-                  draggable="false"
-                />
+                {#key `${rid}:${basicAvatarEpoch[rid] ?? 0}`}
+                  <img
+                    src={offlineSafeImageSrc(
+                      $offlineMode,
+                      acc?.imageUrl && !acc?.avatarPending ? acc.imageUrl : undefined,
+                      PROFILE_FALLBACK,
+                    )}
+                    alt=""
+                    draggable="false"
+                  />
+                {/key}
                 <h6 class="displayName">{acc?.displayName ?? rid}</h6>
                 <AccountTagBubbles tags={acc?.tags ?? []} />
                 {#if acc?.note}

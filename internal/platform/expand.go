@@ -20,6 +20,7 @@ func ExpandWindowsPath(s string) string {
 	if s == "" {
 		return ""
 	}
+	s = strings.TrimSpace(s)
 	up := os.Getenv("USERPROFILE")
 	m := map[string]string{
 		"%ProgramFiles%":         os.Getenv("ProgramFiles"),
@@ -42,6 +43,9 @@ func ExpandWindowsPath(s string) string {
 		if v != "" {
 			out = strings.ReplaceAll(out, k, v)
 		}
+	}
+	if lt := strings.ToLower(strings.TrimSpace(out)); strings.HasPrefix(lt, "http://") || strings.HasPrefix(lt, "https://") {
+		return out
 	}
 	return filepath.Clean(out)
 }
