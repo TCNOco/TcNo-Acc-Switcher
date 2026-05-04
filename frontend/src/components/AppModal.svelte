@@ -24,10 +24,6 @@
     folderPathStat = null;
     if (m.kind === "prompt") {
       promptValue = m.initialValue ?? "";
-      void tick().then(() => {
-        promptEl?.focus();
-        promptEl?.select?.();
-      });
     }
     if (m.kind === "folder") {
       folderPath = normalizeDisplayPath(m.initialPath ?? "");
@@ -36,6 +32,11 @@
       requestAnimationFrame(() => {
         if (get(activeModal)?.id === m.id) {
           modalReady = true;
+          requestAnimationFrame(() => {
+            if (get(activeModal)?.id === m.id) {
+              focusAndSelectActiveInput();
+            }
+          });
         }
       }),
     );
@@ -84,6 +85,20 @@
 
   let backdropEl: HTMLDivElement | undefined;
   let promptEl: HTMLInputElement | HTMLTextAreaElement | undefined;
+  let folderInputEl: HTMLInputElement | undefined;
+
+  function focusAndSelectActiveInput(): void {
+    if (!m) return;
+    if (m.kind === "prompt") {
+      promptEl?.focus();
+      promptEl?.select?.();
+      return;
+    }
+    if (m.kind === "folder") {
+      folderInputEl?.focus();
+      folderInputEl?.select?.();
+    }
+  }
 
   function onBackdropDown(e: MouseEvent): void {
     if (e.target === backdropEl) cancelActiveModal();
@@ -271,6 +286,7 @@
               />
               <div class="modal-input-row">
                 <input
+                  bind:this={folderInputEl}
                   bind:value={folderPath}
                   type="text"
                   class="modal-input"
