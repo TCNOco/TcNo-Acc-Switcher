@@ -120,7 +120,9 @@
 
   function touchStatus(): void {
     const acc = accountById(selectedUniqueId);
-    actionBarStatus.set(acc ? acc.displayName || acc.uniqueId : "");
+    actionBarStatus.set(
+      acc ? $t("Status_SelectedAccount", { name: acc.displayName || acc.uniqueId }) : "",
+    );
   }
 
   function scheduleAccountsRefresh(): void {
