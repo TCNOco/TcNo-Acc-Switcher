@@ -3,6 +3,7 @@ package cli
 import (
 	"encoding/json"
 	"os"
+	"sort"
 	"strings"
 
 	"TcNo-Acc-Switcher/internal/platform"
@@ -16,6 +17,8 @@ type PlatformIndex struct {
 	FirstIdentifier map[string]string
 	// Any identifier alias (lowercase) -> canonical platform name
 	IdentifierAliases map[string]string
+	// OrderedNames is canonical platform names sorted for stable CLI output.
+	OrderedNames []string
 }
 
 // LoadPlatformIndex reads Platforms.json and builds lookup tables.
@@ -39,18 +42,23 @@ func LoadPlatformIndex() (*PlatformIndex, error) {
 		return nil, err
 	}
 	idx := &PlatformIndex{
-		Names:              make(map[string]string),
-		FirstIdentifier:    make(map[string]string),
-		IdentifierAliases:  make(map[string]string),
+		Names:             make(map[string]string),
+		FirstIdentifier:   make(map[string]string),
+		IdentifierAliases: make(map[string]string),
 	}
-	for name := range top.Platforms {
-		key := strings.ToLower(strings.TrimSpace(name))
+	for rawName := range top.Platforms {
+		name := strings.TrimSpace(rawName)
+		if name == "" {
+			continue
+		}
+		key := strings.ToLower(name)
 		idx.Names[key] = name
+		idx.OrderedNames = append(idx.OrderedNames, name)
 
 		var d struct {
 			Identifiers []string `json:"Identifiers"`
 		}
-		_ = json.Unmarshal(top.Platforms[name], &d)
+		_ = json.Unmarshal(top.Platforms[rawName], &d)
 		for i, rawID := range d.Identifiers {
 			id := strings.ToLower(strings.TrimSpace(rawID))
 			if id == "" {
@@ -62,6 +70,7 @@ func LoadPlatformIndex() (*PlatformIndex, error) {
 			}
 		}
 	}
+	sort.Strings(idx.OrderedNames)
 	return idx, nil
 }
 

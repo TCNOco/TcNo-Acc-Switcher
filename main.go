@@ -2,11 +2,13 @@ package main
 
 import (
 	"embed"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
+	"text/tabwriter"
 	"time"
 
 	"TcNo-Acc-Switcher/internal/appclient"
@@ -84,6 +86,15 @@ func main() {
 		os.Exit(0)
 	}
 
+	if parsed.IsListCommand() {
+		winutil.AttachParentConsole()
+		if err := runListCLI(parsed, idx); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+		os.Exit(0)
+	}
+
 	releaseSingleton, running, err := winutil.TryAcquireSingleton()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "singleton:", err)
@@ -112,6 +123,159 @@ func main() {
 	}
 
 	runGUI(parsed)
+}
+
+type cliListAccountRow struct {
+	UniqueID     string `json:"uniqueId"`
+	DisplayName  string `json:"displayName"`
+	LastLoggedIn string `json:"lastLoggedIn,omitempty"`
+}
+
+type cliListPlatformRow struct {
+	Code string `json:"code"` // first Identifiers entry (lowercase), for +<code>: swap CLI
+	Name string `json:"name"` // canonical platform name from Platforms.json
+}
+
+func runListCLI(p cli.Parsed, idx *cli.PlatformIndex) error {
+	switch p.Kind {
+	case cli.KindListPlatforms:
+		if idx == nil {
+			return fmt.Errorf("platforms file not loaded")
+		}
+		rows := make([]cliListPlatformRow, 0, len(idx.OrderedNames))
+		for _, name := range idx.OrderedNames {
+			code := cli.ShortTokenForPlatform(idx, name)
+			if code == "" {
+				code = "?"
+			}
+			rows = append(rows, cliListPlatformRow{Code: code, Name: name})
+		}
+		if p.OutputJSON {
+			b, err := json.Marshal(struct {
+				Platforms []cliListPlatformRow `json:"platforms"`
+			}{Platforms: rows})
+			if err != nil {
+				return err
+			}
+			fmt.Println(string(b))
+			return nil
+		}
+		tw := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
+		fmt.Fprintf(tw, "code:\tplatform name:\n")
+		for _, row := range rows {
+			fmt.Fprintf(tw, "%s\t%s\n", row.Code, row.Name)
+		}
+		_ = tw.Flush()
+		return nil
+
+	case cli.KindListAccounts:
+		var platNames []string
+		if strings.TrimSpace(p.ListAccountsPlatform) != "" {
+			platNames = []string{p.ListAccountsPlatform}
+		} else {
+			if idx == nil {
+				return fmt.Errorf("platforms file not loaded")
+			}
+			platNames = append([]string(nil), idx.OrderedNames...)
+		}
+
+		if p.OutputJSON {
+			if len(platNames) == 1 {
+				rows, err := cliAccountRowsForPlatform(platNames[0])
+				if err != nil {
+					return err
+				}
+				b, err := json.Marshal(struct {
+					Platform string              `json:"platform"`
+					Accounts []cliListAccountRow `json:"accounts"`
+				}{Platform: platNames[0], Accounts: rows})
+				if err != nil {
+					return err
+				}
+				fmt.Println(string(b))
+				return nil
+			}
+			type platBlock struct {
+				Platform string              `json:"platform"`
+				Accounts []cliListAccountRow `json:"accounts"`
+			}
+			blocks := make([]platBlock, 0, len(platNames))
+			for _, pk := range platNames {
+				rows, err := cliAccountRowsForPlatform(pk)
+				if err != nil {
+					return fmt.Errorf("%s: %w", pk, err)
+				}
+				if len(rows) == 0 {
+					continue
+				}
+				blocks = append(blocks, platBlock{Platform: pk, Accounts: rows})
+			}
+			b, err := json.Marshal(struct {
+				Platforms []platBlock `json:"platforms"`
+			}{Platforms: blocks})
+			if err != nil {
+				return err
+			}
+			fmt.Println(string(b))
+			return nil
+		}
+
+		for _, pk := range platNames {
+			rows, err := cliAccountRowsForPlatform(pk)
+			if err != nil {
+				return fmt.Errorf("%s: %w", pk, err)
+			}
+			if len(rows) == 0 {
+				continue
+			}
+			fmt.Printf("%s:\n", pk)
+			tw := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
+			fmt.Fprintf(tw, "  ID\tname\tlast login\n")
+			for _, r := range rows {
+				last := r.LastLoggedIn
+				if last == "" {
+					last = "-"
+				}
+				fmt.Fprintf(tw, "  %s\t%s\t%s\n", r.UniqueID, r.DisplayName, last)
+			}
+			_ = tw.Flush()
+		}
+		return nil
+
+	default:
+		return fmt.Errorf("internal: not a list command")
+	}
+}
+
+func cliAccountRowsForPlatform(platformKey string) ([]cliListAccountRow, error) {
+	if strings.EqualFold(strings.TrimSpace(platformKey), steam.PlatformKey) {
+		accs, err := steamSvc.GetSteamAccounts()
+		if err != nil {
+			return nil, err
+		}
+		out := make([]cliListAccountRow, 0, len(accs))
+		for _, a := range accs {
+			out = append(out, cliListAccountRow{
+				UniqueID:     a.SteamID64,
+				DisplayName:  strings.TrimSpace(a.DisplayName),
+				LastLoggedIn: strings.TrimSpace(a.LastLogin),
+			})
+		}
+		return out, nil
+	}
+	accs, err := basicSvc.GetAccounts(platformKey)
+	if err != nil {
+		return nil, err
+	}
+	out := make([]cliListAccountRow, 0, len(accs))
+	for _, a := range accs {
+		out = append(out, cliListAccountRow{
+			UniqueID:     a.UniqueID,
+			DisplayName:  strings.TrimSpace(a.DisplayName),
+			LastLoggedIn: strings.TrimSpace(a.LastUsed),
+		})
+	}
+	return out, nil
 }
 
 func runHeadless(p cli.Parsed) error {

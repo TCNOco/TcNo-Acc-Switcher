@@ -25,6 +25,11 @@ Open GUI to page:    <PlatformName>      e.g. Steam
 
 Logout:              logout[:<PlatformName>[:<accountId>]]
 
+List:                --list-platforms
+                     --list-accounts
+                     --list-accounts=<PlatformNameOrAlias>
+                     --json        JSON instead of plain text (use with list flags only)
+
 Other:               -h, --help    Show this help
                      -v, --verbose Verbose logging (reserved)
                      -tray, --tray Start with the main window hidden (tray / background)

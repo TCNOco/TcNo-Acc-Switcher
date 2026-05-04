@@ -162,14 +162,12 @@ func (s *SteamService) GetSteamAccounts() ([]AccountDTO, error) {
 	}
 
 	loginPath := LoginUsersPath(root)
-	steamLog.Info("loading Steam accounts", slog.String("steamRoot", root), slog.String("loginusers", loginPath))
 
 	users, err := ParseLoginUsers(loginPath)
 	if err != nil {
 		steamLog.Error("ParseLoginUsers failed", slog.String("path", loginPath), slog.Any("err", err))
 		return nil, err
 	}
-	steamLog.Info("parsed loginusers.vdf", slog.Int("userCount", len(users)))
 
 	order, err := LoadOrder()
 	if err != nil {
@@ -262,7 +260,6 @@ func (s *SteamService) GetSteamAccounts() ([]AccountDTO, error) {
 		}
 	}
 	_ = stats.SyncPlatformCounts(PlatformKey, len(out), sc, hot)
-	steamLog.Info("GetSteamAccounts done", slog.Int("rows", len(out)))
 	return out, nil
 }
 

@@ -18,6 +18,8 @@ const (
 	KindLogout
 	KindHelp
 	KindOpenPage
+	KindListPlatforms
+	KindListAccounts
 )
 
 // Parsed is the normalized CLI result.
@@ -36,6 +38,8 @@ type Parsed struct {
 	RunShortcutFile       string   // basename of .lnk/.url; used with swap to launch from cache / fallback
 	RunAppID              string   // numeric Steam app id; Steam + +s only, launches steam://rungameid/
 	StartInTray           bool     // -tray: start GUI with main window hidden
+	OutputJSON            bool     // --json: machine-readable stdout for list commands
+	ListAccountsPlatform  string   // KindListAccounts: empty = all platforms; else canonical name
 }
 
 const steamPlatformName = "Steam"
@@ -88,6 +92,34 @@ func Parse(argv []string, idx *PlatformIndex) (Parsed, error) {
 			continue
 		case "-tray", "--tray":
 			p.StartInTray = true
+			continue
+		case "--json", "-json":
+			p.OutputJSON = true
+			continue
+		}
+
+		if parseListPlatformsFlag(a) {
+			if err := mergePrimary(&p, Parsed{Kind: KindListPlatforms}); err != nil {
+				return Parsed{}, err
+			}
+			continue
+		}
+
+		if val, ok := parseListAccountsFlag(a); ok {
+			canon := strings.TrimSpace(val)
+			if canon != "" {
+				if idx == nil {
+					return Parsed{}, fmt.Errorf("--list-accounts: platforms file not loaded")
+				}
+				c, has := resolvePlatformAlias(idx, canon)
+				if !has {
+					return Parsed{}, fmt.Errorf("--list-accounts: unknown platform %q", val)
+				}
+				canon = c
+			}
+			if err := mergePrimary(&p, Parsed{Kind: KindListAccounts, ListAccountsPlatform: canon}); err != nil {
+				return Parsed{}, err
+			}
 			continue
 		}
 
@@ -189,6 +221,10 @@ func Parse(argv []string, idx *PlatformIndex) (Parsed, error) {
 		return Parsed{}, fmt.Errorf("--run-shortcut requires a swap token (+s: or +<platform>:)")
 	}
 
+	if p.OutputJSON && p.Kind != KindListPlatforms && p.Kind != KindListAccounts {
+		return Parsed{}, fmt.Errorf("--json requires --list-platforms or --list-accounts")
+	}
+
 	return p, nil
 }
 
@@ -219,6 +255,27 @@ func parseRunAppIDFlag(a string) (string, bool) {
 	s := strings.TrimSpace(a)
 	lo := strings.ToLower(s)
 	for _, prefix := range []string{"--run-appid=", "-run-appid="} {
+		if strings.HasPrefix(lo, strings.ToLower(prefix)) {
+			return strings.TrimSpace(s[len(prefix):]), true
+		}
+	}
+	return "", false
+}
+
+func parseListPlatformsFlag(a string) bool {
+	lo := strings.ToLower(strings.TrimSpace(a))
+	return lo == "--list-platforms" || lo == "-list-platforms"
+}
+
+// parseListAccountsFlag returns (filter, true) for --list-accounts or --list-accounts=value.
+// filter is empty for all platforms; otherwise the raw token before alias resolution.
+func parseListAccountsFlag(a string) (filter string, ok bool) {
+	s := strings.TrimSpace(a)
+	lo := strings.ToLower(s)
+	if lo == "--list-accounts" || lo == "-list-accounts" {
+		return "", true
+	}
+	for _, prefix := range []string{"--list-accounts=", "-list-accounts="} {
 		if strings.HasPrefix(lo, strings.ToLower(prefix)) {
 			return strings.TrimSpace(s[len(prefix):]), true
 		}
@@ -272,6 +329,13 @@ func mergePrimary(dst *Parsed, src Parsed) error {
 	if dst.Kind != KindNone && dst.Kind != src.Kind {
 		return fmt.Errorf("conflicting commands (already %v, got %v)", dst.Kind, src.Kind)
 	}
+	if src.Kind == KindListAccounts && dst.Kind == KindListAccounts {
+		s := strings.TrimSpace(src.ListAccountsPlatform)
+		d := strings.TrimSpace(dst.ListAccountsPlatform)
+		if d != "" && s != "" && !strings.EqualFold(d, s) {
+			return fmt.Errorf("conflicting --list-accounts filters")
+		}
+	}
 	dst.Kind = src.Kind
 	dst.SteamID64 = src.SteamID64
 	dst.PersonaState = src.PersonaState
@@ -280,6 +344,16 @@ func mergePrimary(dst *Parsed, src Parsed) error {
 	dst.OpenPage = src.OpenPage
 	dst.LogoutPlatform = src.LogoutPlatform
 	dst.LogoutAccount = src.LogoutAccount
+	switch src.Kind {
+	case KindListPlatforms:
+		dst.ListAccountsPlatform = ""
+	case KindListAccounts:
+		if strings.TrimSpace(src.ListAccountsPlatform) != "" {
+			dst.ListAccountsPlatform = strings.TrimSpace(src.ListAccountsPlatform)
+		} else {
+			dst.ListAccountsPlatform = ""
+		}
+	}
 	return nil
 }
 
@@ -368,6 +442,16 @@ func parseSteamSwap(val string) (Parsed, error) {
 func (p Parsed) NeedsHeadlessMutex() bool {
 	switch p.Kind {
 	case KindSwapSteam, KindSwapBasic, KindLogout:
+		return true
+	default:
+		return false
+	}
+}
+
+// IsListCommand reports argv that should print and exit before singleton / GUI.
+func (p Parsed) IsListCommand() bool {
+	switch p.Kind {
+	case KindListPlatforms, KindListAccounts:
 		return true
 	default:
 		return false
