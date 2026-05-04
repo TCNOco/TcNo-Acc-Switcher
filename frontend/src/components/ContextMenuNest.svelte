@@ -72,6 +72,25 @@
   $: showSearchRow =
     paginateThisColumn && (tail.length > ITEMS_PER_PAGE || alwaysShowSearchFlyout);
   $: q = norm(searchQuery.trim());
+  $: trimmedSearchQuery = searchQuery.trim();
+  $: searchItem = items[0];
+  $: searchEnterCb =
+    searchItem?.type === "search"
+      ? (searchItem as { onSearchEnter?: (q: string) => void }).onSearchEnter
+      : undefined;
+  $: searchCanCreateCb =
+    searchItem?.type === "search"
+      ? (searchItem as { onSearchCanCreate?: (q: string) => boolean }).onSearchCanCreate
+      : undefined;
+  $: searchCreateCb =
+    searchItem?.type === "search"
+      ? (searchItem as { onSearchCreate?: (q: string) => void }).onSearchCreate
+      : undefined;
+  $: showCreateRow =
+    showSearchRow &&
+    trimmedSearchQuery !== "" &&
+    !!searchEnterCb &&
+    (searchCanCreateCb ? searchCanCreateCb(trimmedSearchQuery) : true);
 
   /** Stable row visibility for search (indices must match pathPrefix). */
   function rowMatchesSearch(it: MenuItemDef): boolean {
@@ -219,16 +238,10 @@
   function onSearchKeydown(ev: KeyboardEvent): void {
     const k = ev.key;
     if (k === "Enter") {
-      const searchItem = items[0];
-      const enterCb =
-        searchItem?.type === "search"
-          ? (searchItem as { onSearchEnter?: (q: string) => void }).onSearchEnter
-          : undefined;
-      const q = searchQuery.trim();
-      if (enterCb && q !== "") {
+      if (searchEnterCb && trimmedSearchQuery !== "") {
         ev.preventDefault();
         ev.stopPropagation();
-        enterCb(q);
+        searchEnterCb(trimmedSearchQuery);
         closeContextMenu();
         return;
       }
@@ -245,6 +258,20 @@
     ev.stopPropagation();
   }
 
+  function onCreateClick(): void {
+    if (trimmedSearchQuery === "" || !showCreateRow) {
+      return;
+    }
+    if (searchCreateCb) {
+      searchCreateCb(trimmedSearchQuery);
+    } else if (searchEnterCb) {
+      searchEnterCb(trimmedSearchQuery);
+    } else {
+      return;
+    }
+    closeContextMenu();
+  }
+
 </script>
 
 {#if showSearchRow}
@@ -258,6 +285,14 @@
       on:pointerdown={stop}
       on:keydown={onSearchKeydown}
     />
+  </li>
+{/if}
+
+{#if showCreateRow}
+  <li role="menuitem" on:pointerdown={stop}>
+    <button type="button" class="ctx-menu__btn" on:click={onCreateClick}
+      >Create: {trimmedSearchQuery}</button
+    >
   </li>
 {/if}
 

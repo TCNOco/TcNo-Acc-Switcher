@@ -17,6 +17,10 @@ export type MenuItemDef = {
   alwaysShowSearch?: boolean;
   /** On `type: "search"`: invoked when Enter is pressed with a non-empty trimmed query. */
   onSearchEnter?: (query: string) => void;
+  /** On `type: "search"`: when true, show a synthetic `Create: <query>` row. */
+  onSearchCanCreate?: (query: string) => boolean;
+  /** On `type: "search"`: action for clicking synthetic `Create: <query>` row. */
+  onSearchCreate?: (query: string) => void;
 };
 
 export type ContextMenuState =

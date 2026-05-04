@@ -50,6 +50,22 @@ export function buildTagsSectionMenuItem(opts: {
       type: "search",
       label: tr("Tags_SearchPlaceholder"),
       alwaysShowSearch: true,
+      onSearchCanCreate: (q) => {
+        const w = q.trim();
+        if (!w) {
+          return false;
+        }
+        return !tagList.some((d) => d.name.trim().toLowerCase() === w.toLowerCase());
+      },
+      onSearchCreate: (q) => {
+        void wrap(async () => {
+          const w = q.trim();
+          if (!w) {
+            return;
+          }
+          await BasicService.CreateTagAndAddToAccount(platformKey, uniqueId, w);
+        });
+      },
       onSearchEnter: (q) => {
         void wrap(async () => {
           const w = q.trim();

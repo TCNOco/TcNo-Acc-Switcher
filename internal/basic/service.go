@@ -163,6 +163,7 @@ func (b *BasicService) ForgetAccount(platformKey, uniqueID string) error {
 	}
 	normalizeTagMaps(&f)
 	delete(f.AccountTags, uniqueID)
+	pruneUnusedTagDefinitions(&f)
 	if err := writeIdsFile(platformKey, f); err != nil {
 		return err
 	}
@@ -324,6 +325,7 @@ func (b *BasicService) RemoveTagFromAccount(platformKey, uniqueID, tagID string)
 	} else {
 		f.AccountTags[uniqueID] = next
 	}
+	pruneUnusedTagDefinitions(&f)
 	return writeIdsFile(platformKey, f)
 }
 

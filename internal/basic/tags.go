@@ -40,6 +40,37 @@ func normalizeTagMaps(f *idsFile) {
 	}
 }
 
+func pruneUnusedTagDefinitions(f *idsFile) {
+	normalizeTagMaps(f)
+	used := make(map[string]struct{})
+	for uid, ids := range f.AccountTags {
+		clean := ids[:0]
+		for _, id := range ids {
+			id = strings.TrimSpace(id)
+			if id == "" {
+				continue
+			}
+			if _, ok := f.Tags[id]; !ok {
+				continue
+			}
+			if _, seen := used[id]; !seen {
+				used[id] = struct{}{}
+			}
+			clean = append(clean, id)
+		}
+		if len(clean) == 0 {
+			delete(f.AccountTags, uid)
+		} else {
+			f.AccountTags[uid] = clean
+		}
+	}
+	for id := range f.Tags {
+		if _, ok := used[id]; !ok {
+			delete(f.Tags, id)
+		}
+	}
+}
+
 func newTagID() (string, error) {
 	b := make([]byte, 16)
 	if _, err := rand.Read(b); err != nil {
@@ -165,6 +196,7 @@ func ForgetAccountTagAssignments(platformKey, uniqueID string) error {
 	}
 	normalizeTagMaps(&f)
 	delete(f.AccountTags, uniqueID)
+	pruneUnusedTagDefinitions(&f)
 	return writeIdsFile(platformKey, f)
 }
 
