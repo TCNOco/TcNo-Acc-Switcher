@@ -248,6 +248,9 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 	if err := writeIDs(platformKey, ids); err != nil {
 		return err
 	}
+	if err := touchLastUsed(platformKey, uid); err != nil {
+		return err
+	}
 
 	return saveProfileImage(d, platformKey, folder, uid, ctx)
 }
