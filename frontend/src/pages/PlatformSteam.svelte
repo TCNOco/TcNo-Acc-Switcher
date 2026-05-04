@@ -854,7 +854,22 @@
         if (!hasUser && !hasBackup) {
           continue;
         }
-        const children: MenuItemDef[] = [];
+        const children: MenuItemDef[] = [
+          {
+            label: "Open folder",
+            action: async () => {
+              try {
+                await SteamService.OpenSteamGameDataFolder(rid, g.appId);
+              } catch (e) {
+                pushToast({
+                  type: "error",
+                  message: mapSteamUserdataI18nError(e, tr),
+                  duration: 8000,
+                });
+              }
+            },
+          },
+        ];
         if (hasUser) {
           children.push({
             label: tr("Context_Game_CopySettingsFrom"),

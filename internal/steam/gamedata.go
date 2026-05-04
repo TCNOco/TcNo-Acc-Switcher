@@ -10,6 +10,7 @@ import (
 
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
+	"TcNo-Acc-Switcher/internal/platform"
 )
 
 // Error messages match i18n keys; the Windows frontend maps them in PlatformSteam.
@@ -194,6 +195,41 @@ func (s *SteamService) BackupSteamGameData(steamID64, appID string) (string, err
 		return "", err
 	}
 	return dest, nil
+}
+
+// OpenSteamGameDataFolder opens userdata/{id32}/{appID} when present,
+// otherwise falls back to Backups/Steam/{id32}/{appID} when present.
+func (s *SteamService) OpenSteamGameDataFolder(steamID64, appID string) error {
+	appID, err := normalizeSteamAppID(appID)
+	if err != nil {
+		return err
+	}
+	f, err := FormatsFromID64(strings.TrimSpace(steamID64))
+	if err != nil {
+		return errSteamDataInvalidID
+	}
+	root, err := s.steamInstallRoot()
+	if err != nil {
+		return err
+	}
+	if strings.TrimSpace(root) == "" {
+		return errSteamDataInvalidID
+	}
+
+	live := steamUserdataGamePath(root, f.ID32, appID)
+	if st, e := os.Stat(live); e == nil && st.IsDir() {
+		return platform.OpenPathInFileManager(live)
+	}
+
+	backup, err := steamBackupGamePath(f.ID32, appID)
+	if err != nil {
+		return err
+	}
+	if st, e := os.Stat(backup); e == nil && st.IsDir() {
+		return platform.OpenPathInFileManager(backup)
+	}
+
+	return errNoSteamUserdataPath(live)
 }
 
 // SteamGameDataAppIDSets is app folder names under Steam userdata and under our Backups/Steam for this account.
