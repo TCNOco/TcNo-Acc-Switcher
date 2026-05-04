@@ -103,7 +103,7 @@
             : $t("Title_AccountsList", { platform: $appBarTitle })}
     </span>
     <span class="window-controls" role="toolbar">
-        <button type="button" class="win-btn win-btn-min" aria-label="Minimize" on:click={backClick}>
+        <button type="button" class="win-btn win-btn-min" aria-label="Minimize" on:click={() => Window.Minimise()}>
             <img class="icon" srcset="img/icons/min-w-10.webp 1x, img/icons/min-w-12.webp 1.25x, img/icons/min-w-15.webp 1.5x, img/icons/min-w-15.webp 1.75x, img/icons/min-w-20.webp 2x, img/icons/min-w-20.webp 2.25x, img/icons/min-w-24.webp 2.5x, img/icons/min-w-30.webp 3x, img/icons/min-w-30.webp 3.5x" draggable="false" alt="-">
         </button>
         {#if maximised}
