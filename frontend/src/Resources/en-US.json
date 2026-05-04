@@ -26,6 +26,8 @@
   "Tooltip_AddNew": "Clear session and sign in as a new account",
   "Tooltip_SaveCurrent": "Save the current session as a named account",
   "Tooltip_Launch": "Start the platform without switching accounts",
+  "Tooltip_LaunchAfterSwitch": "Start the platform after switching accounts to {name}",
+  "Tooltip_LaunchAfterSwitch_NameFallback": "the selected account",
   "Toast_AccountSaved": "Account saved.",
   "Toast_AccountSwitched": "Switched account.",
   "Toast_SwitchFailed": "Could not switch account.",

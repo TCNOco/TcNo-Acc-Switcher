@@ -10,6 +10,7 @@
     triggerPlatformAction,
     selectedAccount,
     requestPlatformAccountsRefresh,
+    platformLiveSessionId,
   } from "../stores/platformPage";
   import { tooltip } from "../lib/actions/tooltip";
   import { contextMenu } from "../lib/actions/contextMenu";
@@ -58,6 +59,26 @@
       });
     }
   }
+
+  /** Launch starts the client; if the list selection is not the active session, a switch happens first. */
+  $: launchTooltipText = (() => {
+    const sel = $selectedAccount;
+    const live = $platformLiveSessionId;
+    const uid = String(sel.uniqueId ?? "").trim();
+    const onPlatform = sel.platformKey === platformName;
+    const hasSel = onPlatform && uid !== "";
+    const liveUid = String(live.uniqueId ?? "").trim();
+    const liveHere = live.platformKey === platformName && liveUid !== "";
+    if (hasSel && liveHere && liveUid === uid) {
+      return $t("Tooltip_Launch");
+    }
+    const rawName =
+      hasSel
+        ? (resolvedSwapAccountLabelForMenu || String(sel.displayName ?? "").trim() || uid)
+        : "";
+    const name = rawName.trim() !== "" ? rawName.trim() : $t("Tooltip_LaunchAfterSwitch_NameFallback");
+    return $t("Tooltip_LaunchAfterSwitch", { name });
+  })();
 
   let includeMainExe = false;
   let pinNames: string[] = [];
@@ -950,7 +971,7 @@
       id="btnStartPlat"
       class="square actionbar__launch"
       aria-label={$t("Button_Launch")}
-      use:tooltip={$t("Tooltip_Launch")}
+      use:tooltip={launchTooltipText}
       use:contextMenu={() => ctxPlatformItems()}
       on:click={() => triggerPlatformAction("launch")}
     >
@@ -974,7 +995,7 @@
       type="button"
       class="actionbar__launch square"
       aria-label={$t("Button_Launch")}
-      use:tooltip={$t("Tooltip_Launch")}
+      use:tooltip={launchTooltipText}
       use:contextMenu={() => ctxPlatformItems()}
       on:click={() => triggerPlatformAction("launch")}
     >

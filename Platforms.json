@@ -343,6 +343,39 @@
       "UniqueIdFile": "%Platform_Folder%\\logs\\launcher_log.txt",
       "UniqueIdRegex": "(?s).*User:\\s+([0-9a-fA-F-]{36})"
     },
+    "Meta Horizon Link": {
+      "Identifiers": [ "mhl", "metahorizon", "metalink" ],
+      "ExeLocationDefault": "%ProgramFiles%\\Meta Horizon\\Support\\oculus-client\\Client.exe",
+      "GetPathFromShortcutNamed": "Meta Quest Link",
+      "ExesToEnd": [
+        "Client.exe",
+        "OculusDash.exe",
+        "OVRRedir.exe",
+        "OVRServer_x64.exe",
+        "OVRServiceLauncher.exe",
+        "Fixer.exe"
+      ],
+      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+      "LoginFiles": {
+        "%AppData%\\Oculus\\sessions\\": "AppData-OculusSessions\\",
+        "%AppData%\\Client\\Cache\\index": "Cache\\index",
+        "%AppData%\\Client\\Cache\\data_*": "Cache\\",
+        "%AppData%\\Client\\Local Storage\\leveldb\\": "Local Storage\\leveldb\\",
+        "%AppData%\\Client\\GPUCache\\index": "GPUCache\\index",
+        "%AppData%\\Client\\Cookies": "Cookies",
+        "%AppData%\\Client\\Network Persistent State": "Network Persistent State",
+        "%AppData%\\Client\\blob_storage": "blob_storage\\",
+        "%AppData%\\Client\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
+      },
+      "Extras": {
+        "CachePaths": [
+          "%AppData%\\Client\\Cache\\Cache_Data\\f_*"
+        ]
+      },
+      "ExitBeforeInteract": true,
+      "UniqueIdFile": "%AppData%\\Client\\TcNoAccSwitcher-ID.instance",
+      "UniqueIdMethod": "CREATE_ID_FILE"
+    },
     "Oculus": {
       "Identifiers": [ "oc", "oculus" ],
       "ExeLocationDefault": "%ProgramFiles%\\Oculus\\Support\\oculus-client\\OculusClient.exe",
