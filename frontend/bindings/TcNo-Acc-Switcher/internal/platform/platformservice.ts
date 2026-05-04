@@ -130,12 +130,26 @@ export function LaunchPlatformAs(platformKey: string, admin: boolean): $Cancella
     return $Call.ByID(2773698227, platformKey, admin);
 }
 
+/**
+ * Update checker. Skipped if Offline mode. Network errors may emit UpdateCheckFailedEvent at most once per 24 hours.
+ */
+export function NotifyLaunchUpdateCheck(): $CancellablePromise<void> {
+    return $Call.ByID(1996487032);
+}
+
 export function OpenPlatformBackupFolder(platformKey: string): $CancellablePromise<void> {
     return $Call.ByID(1776189318, platformKey);
 }
 
 export function OpenPlatformFolder(platformKey: string): $CancellablePromise<void> {
     return $Call.ByID(3725594492, platformKey);
+}
+
+/**
+ * OpenUpdateDownloadPage opens the latest GitHub release page in the default browser.
+ */
+export function OpenUpdateDownloadPage(): $CancellablePromise<void> {
+    return $Call.ByID(1696117573);
 }
 
 export function PickPlatformsJSON(): $CancellablePromise<string> {

@@ -1,0 +1,46 @@
+.updateBar {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 50;
+  width: 100%;
+  height: 2rem;
+  line-height: 2rem;
+  background: var(--accent);
+  color: #000;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.updateBar__label {
+  display: block;
+  padding: 0 2.5rem;
+}
+
+.updateBar__close {
+  padding: 0 1em;
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 2rem;
+  line-height: 2rem;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.updateBar__close:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.updateBar__close svg {
+  width: 14px;
+  height: 14px;
+  display: block;
+  fill: currentColor;
+}

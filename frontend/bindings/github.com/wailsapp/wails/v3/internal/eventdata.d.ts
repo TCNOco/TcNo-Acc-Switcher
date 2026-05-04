@@ -22,6 +22,7 @@ declare module "@wailsio/runtime" {
     namespace Events {
         interface CustomEvents {
             "action-bar-status": string;
+            "app-update-available": boolean;
             "files-dropped": string[];
             "navigate": string;
             "shortcut:render-svg-request": winutil$0.RenderSVGRequest;
@@ -29,6 +30,7 @@ declare module "@wailsio/runtime" {
             "steam-account-updated": steam$0.AccountPatch;
             "time": string;
             "toast": main$0.ToastPayload;
+            "update-check-failed": boolean;
         }
     }
 }

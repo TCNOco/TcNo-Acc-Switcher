@@ -12,6 +12,7 @@ export {
   HasShortcutMainExe,
   LaunchPlatform,
   LaunchPlatformAs,
+  NotifyLaunchUpdateCheck,
   OpenPlatformBackupFolder,
   OpenPlatformFolder,
   ResetPlatformSettings,

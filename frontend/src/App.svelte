@@ -3,6 +3,7 @@
   import { get } from "svelte/store";
   import { Events } from "@wailsio/runtime";
   import TitleBar from './components/TitleBar.svelte'
+  import UpdateBar from './components/UpdateBar.svelte'
   import AppModal from './components/AppModal.svelte'
   import Toast from './components/Toast.svelte'
   import FileDropOverlay from './components/FileDropOverlay.svelte'
@@ -19,6 +20,8 @@
   import { installPageStatsTracking } from "./lib/pageStatsTrack";
   import { actionBarStatus } from './stores/actionBarStatus'
   import { t } from "./stores/i18n";
+  import { NotifyLaunchUpdateCheck } from "./lib/platformBindings";
+  import { pushToast } from "./stores/toast";
   import { registerSvgRenderBridge } from "./lib/svgRenderBridge";
   import { activeModal } from "./stores/modal";
   import { contextMenu } from "./stores/contextMenu";
@@ -82,6 +85,17 @@
       const raw = typeof ev.data === "string" ? ev.data : "";
       applyNavigateJSON(raw);
     });
+    void NotifyLaunchUpdateCheck();
+
+    const offUpdateFail = Events.On("update-check-failed", () => {
+      pushToast({
+        type: "error",
+        title: "",
+        message: get(t)("Toast_UpdateCheckFail"),
+        duration: 15000,
+      });
+    });
+
     const off = Events.On("action-bar-status", (ev) => {
       const raw = typeof ev.data === "string" ? ev.data : "";
       if (raw.startsWith("i18n:")) {
@@ -105,6 +119,7 @@
       offPageStats();
       off?.();
       offNav?.();
+      offUpdateFail?.();
       offSvgBridge?.();
     };
   });
@@ -114,6 +129,7 @@
   <FileDropOverlay />
   <ContextMenu />
   <TitleBar />
+  <UpdateBar />
   <div class="page">
     {#if $route.page === 'home'}
       <Home />
