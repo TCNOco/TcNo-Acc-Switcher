@@ -413,6 +413,7 @@
       "ExeLocationDefault": [
         "%ProgramFiles%\\Genshin Impact\\Genshin Impact Game\\GenshinImpact.exe",
         "%ProgramFiles%\\HoYoPlay\\games\\Genshin Impact Game\\GenshinImpact.exe",
+        "%ProgramFiles%\\Epic Games\\GenshinImpact\\games\\Genshin Impact Game\\GenshinImpact.exe"
       ],
       "GetPathFromShortcutNamed": "Genshin Impact",
       "ExesToEnd": [ "GenshinImpact.exe" ],

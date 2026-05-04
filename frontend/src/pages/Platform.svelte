@@ -22,7 +22,12 @@
   import { AccountDTO, AccountImagePatch } from "../../bindings/TcNo-Acc-Switcher/internal/basic/models.js";
   import { GetPlatformExeIcon, LaunchPlatform } from "../lib/platformBindings";
   import { formatToastWithError, formatWailsError } from "../lib/formatWailsError";
-  import { isNeedsAdminError, offerRestartIfNeedsAdmin, preflightAdminForPlatform } from "../lib/adminFlow";
+  import {
+    isNeedsAdminError,
+    offerRestartIfNeedsAdmin,
+    preflightAdminForPlatform,
+    reportLaunchFailure,
+  } from "../lib/adminFlow";
   import { tooltip } from "../lib/actions/tooltip";
   import { contextMenu as ctxMenuAction } from "../lib/actions/contextMenu";
   import type { MenuItemDef } from "../stores/contextMenu";
@@ -368,14 +373,7 @@
         await LaunchPlatform(name);
         scheduleAccountsRefresh();
       } catch (e) {
-        await offerRestartIfNeedsAdmin(e, name);
-        if (!isNeedsAdminError(e)) {
-          pushToast({
-            type: "error",
-            message: formatToastWithError($t("Toast_LaunchFailed"), e),
-            duration: 8000,
-          });
-        }
+        await reportLaunchFailure(e, name);
       }
       return;
     }

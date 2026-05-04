@@ -204,7 +204,7 @@ func Start(exe string, args []string, opts StartOpts) error {
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: opts.HideWindow}
 	if err := cmd.Start(); err != nil {
 		log.Printf("winutil: start failed exe=%s err=%v", exe, err)
-		return err
+		return WrapIfElevationRequired(err)
 	}
 	log.Printf("winutil: start launched exe=%s pid=%d", exe, cmd.Process.Pid)
 	return nil
@@ -263,7 +263,7 @@ func startAsDesktopUser(exe string, args []string, opts StartOpts) error {
 		cmd.Dir = wd
 	}
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: opts.HideWindow}
-	return cmd.Start()
+	return WrapIfElevationRequired(cmd.Start())
 }
 
 // StartAsDesktopUser is exported for callers that always want non-inherited launch.

@@ -3,14 +3,21 @@ import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/plat
 import { t } from "../stores/i18n";
 import { openConfirm } from "../stores/modal";
 import { pushToast } from "../stores/toast";
-import { formatWailsError } from "./formatWailsError";
+import { formatToastWithError, formatWailsError } from "./formatWailsError";
 
 const needsAdminMarker = "NEEDS_ADMIN:";
 
-/** Error payload includes NEEDS_ADMIN: prefix from the Go backend. */
+/** Error payload includes NEEDS_ADMIN: prefix from the Go backend, or Win32 elevation (740). */
 export function isNeedsAdminError(err: unknown): boolean {
   const s = formatWailsError(err);
-  return s.includes(needsAdminMarker);
+  if (s.includes(needsAdminMarker)) {
+    return true;
+  }
+  // Wails/Go may surface fork/exec with JSON cause: {"Err":740,...} (ERROR_ELEVATION_REQUIRED).
+  if (/"Err"\s*:\s*740\b/.test(s)) {
+    return true;
+  }
+  return false;
 }
 
 export async function preflightAdminForPlatform(platformKey: string): Promise<void> {
@@ -67,4 +74,23 @@ export async function offerRestartIfNeedsAdmin(err: unknown, platformKey: string
   if (ok && key) {
     await PlatformService.RestartAsAdmin([`--page=${key}`]);
   }
+}
+
+export async function reportLaunchFailure(err: unknown, platformKey: string): Promise<void> {
+  await offerRestartIfNeedsAdmin(err, platformKey);
+  const tr = get(t);
+  if (isNeedsAdminError(err)) {
+    pushToast({
+      type: "error",
+      title: "",
+      message: tr("Toast_RestartAsAdmin"),
+      duration: 8000,
+    });
+    return;
+  }
+  pushToast({
+    type: "error",
+    message: formatToastWithError(tr("Toast_LaunchFailed"), err),
+    duration: 8000,
+  });
 }

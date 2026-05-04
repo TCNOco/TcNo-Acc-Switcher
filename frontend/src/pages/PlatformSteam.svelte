@@ -22,7 +22,12 @@
   import { locale, t } from "../stores/i18n";
   import { formatLastLoginForLocale } from "../lib/formatLastLogin";
   import { formatToastWithError, formatWailsError } from "../lib/formatWailsError";
-  import { isNeedsAdminError, offerRestartIfNeedsAdmin, preflightAdminForPlatform } from "../lib/adminFlow";
+  import {
+    isNeedsAdminError,
+    offerRestartIfNeedsAdmin,
+    preflightAdminForPlatform,
+    reportLaunchFailure,
+  } from "../lib/adminFlow";
   import { tooltip } from "../lib/actions/tooltip";
   import { miniProfileHover } from "../lib/actions/miniProfileHover";
   import "../styles/miniprofile.scss";
@@ -588,11 +593,7 @@
           duration: 4000,
         });
       } catch (e) {
-        pushToast({
-          type: "error",
-          message: formatToastWithError($t("Toast_LaunchFailed"), e),
-          duration: 8000,
-        });
+        await reportLaunchFailure(e, name);
       }
     }
   }
@@ -637,11 +638,7 @@
         await SteamService.LaunchSteam();
         scheduleSteamAccountsRefresh();
       } catch (e) {
-        pushToast({
-          type: "error",
-          message: formatToastWithError($t("Toast_LaunchFailed"), e),
-          duration: 8000,
-        });
+        await reportLaunchFailure(e, name);
       }
       return;
     }
@@ -963,11 +960,7 @@
                 duration: 4000,
               });
             } catch (e) {
-              pushToast({
-                type: "error",
-                message: formatToastWithError($t("Toast_LaunchFailed"), e),
-                duration: 8000,
-              });
+              await reportLaunchFailure(e, name);
             }
           },
         })),

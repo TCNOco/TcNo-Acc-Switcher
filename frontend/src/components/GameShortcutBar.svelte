@@ -19,6 +19,7 @@
   import { pushToast } from "../stores/toast";
   import { HasShortcutMainExe, LaunchPlatformAs } from "../lib/platformBindings";
   import { formatToastWithError, formatWailsError } from "../lib/formatWailsError";
+  import { reportLaunchFailure } from "../lib/adminFlow";
   import { fileDropAcceptor, type FileDropAcceptor } from "../stores/fileDropTarget";
   import { offlineMode, offlineSafeImageSrc } from "../stores/offlineMode";
   import {
@@ -674,11 +675,7 @@
         label: tr("Context_RunAdmin"),
         action: () => {
           void LaunchPlatformAs(platformName, true).catch((e: unknown) => {
-            pushToast({
-              type: "error",
-              message: formatToastWithError(tr("Toast_LaunchFailed"), e),
-              duration: 8000,
-            });
+            void reportLaunchFailure(e, platformName);
           });
         },
       },
@@ -703,11 +700,7 @@
       await Shortcuts.RunShortcut(platformName, row.fileName, a, uid);
       requestPlatformAccountsRefresh(platformName);
     } catch (e) {
-      pushToast({
-        type: "error",
-        message: formatToastWithError(tr("Toast_LaunchFailed"), e),
-        duration: 8000,
-      });
+      await reportLaunchFailure(e, platformName);
     }
   }
 

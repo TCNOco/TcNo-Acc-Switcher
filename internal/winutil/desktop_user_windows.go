@@ -135,7 +135,7 @@ func runAsDesktopUser(exe string, args []string, workingDir string, hideWindow b
 	)
 	if r1 == 0 {
 		if callErr != nil && callErr != syscall.Errno(0) {
-			return fmt.Errorf("CreateProcessWithTokenW: %w", callErr)
+			return WrapIfElevationRequired(fmt.Errorf("CreateProcessWithTokenW: %w", callErr))
 		}
 		return fmt.Errorf("CreateProcessWithTokenW failed")
 	}
