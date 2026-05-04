@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 	"unsafe"
@@ -29,35 +30,41 @@ func KillByName(names []string, method ClosingMethod) error {
 	if m == "" {
 		m = ClosingCombined
 	}
-	for _, raw := range names {
-		raw = strings.TrimSpace(raw)
+	var wg sync.WaitGroup
+	for _, name := range names {
+		raw := strings.TrimSpace(name)
 		if raw == "" {
 			continue
 		}
-		if strings.HasPrefix(strings.ToUpper(raw), strings.ToUpper(servicePrefix)) {
-			svcName := strings.TrimSpace(raw[len(servicePrefix):])
-			if err := stopWindowsService(svcName); err != nil {
-				_ = taskKillIM(svcName+".exe", true)
+		wg.Add(1)
+		go func(raw string) {
+			defer wg.Done()
+			if strings.HasPrefix(strings.ToUpper(raw), strings.ToUpper(servicePrefix)) {
+				svcName := strings.TrimSpace(raw[len(servicePrefix):])
+				if err := stopWindowsService(svcName); err != nil {
+					_ = taskKillIM(svcName+".exe", true)
+				}
+				return
 			}
-			continue
-		}
-		base := filepath.Base(raw)
-		if !strings.HasSuffix(strings.ToLower(base), ".exe") {
-			base = raw + ".exe"
-		}
-		switch m {
-		case ClosingTaskKill:
-			_ = taskKillIM(base, true)
-		case ClosingClose:
-			_ = taskKillIM(base, false)
-			waitForImageExit(base, 2*time.Second, 100*time.Millisecond)
-			_ = taskKillIM(base, true)
-		default: // Combined
-			_ = taskKillIM(base, false)
-			waitForImageExit(base, 1500*time.Millisecond, 100*time.Millisecond)
-			_ = taskKillIM(base, true)
-		}
+			base := filepath.Base(raw)
+			if !strings.HasSuffix(strings.ToLower(base), ".exe") {
+				base = raw + ".exe"
+			}
+			switch m {
+			case ClosingTaskKill:
+				_ = taskKillIM(base, true)
+			case ClosingClose:
+				_ = taskKillIM(base, false)
+				waitForImageExit(base, 2*time.Second, 100*time.Millisecond)
+				_ = taskKillIM(base, true)
+			default: // Combined
+				_ = taskKillIM(base, false)
+				waitForImageExit(base, 1500*time.Millisecond, 100*time.Millisecond)
+				_ = taskKillIM(base, true)
+			}
+		}(raw)
 	}
+	wg.Wait()
 	return nil
 }
 
@@ -140,6 +147,7 @@ func taskKillIM(name string, force bool) error {
 	}
 	args = append(args, "/T", "/IM", name)
 	cmd := exec.Command("cmd.exe", args...)
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		s := strings.TrimSpace(string(out))
