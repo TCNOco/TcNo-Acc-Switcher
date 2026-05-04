@@ -24,6 +24,7 @@
   let mutationObs: MutationObserver | null = null;
 
   let submenuObserveDebounce: ReturnType<typeof setTimeout> | null = null;
+  let menuReady = false;
 
   /**
    * Run attachObservers + layoutAfterOpen only once per open — the reactive block can fire many
@@ -199,6 +200,7 @@
 
   async function layoutAfterOpen(): Promise<void> {
     ctxMenuLog("layoutAfterOpen: start");
+    menuReady = false;
     await tick();
     await new Promise<void>((r) => requestAnimationFrame(() => r()));
     await new Promise<void>((r) => requestAnimationFrame(() => r()));
@@ -214,6 +216,7 @@
     observeSubmenus(menuEl);
     refreshFlyoutLayout(menuEl);
     submenuExpandEnabled.set(true);
+    menuReady = true;
     ctxMenuLog("layoutAfterOpen: done → submenuExpandEnabled=true", {
       submenuExpandEnabled: get(submenuExpandEnabled),
       menuRect: menuEl.getBoundingClientRect(),
@@ -295,6 +298,7 @@
 
   $: if (!$contextMenu) {
     menuSetupFor = null;
+    menuReady = false;
     ctxMenuLog("context menu cleared → detachObservers");
     detachObservers();
     const restore = priorFocusEl;
@@ -336,6 +340,7 @@
   <ul
     bind:this={menuEl}
     class="ctx-menu-root contextmenu"
+    class:ctx-menu-root--ready={menuReady}
     role="menu"
     tabindex="-1"
     on:keydown={onMenuKeydown}
@@ -352,5 +357,13 @@
     top: 0;
     margin: 0;
     z-index: 999999;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.08s ease;
+  }
+
+  ul.ctx-menu-root.contextmenu.ctx-menu-root--ready {
+    visibility: visible;
+    opacity: 1;
   }
 </style>

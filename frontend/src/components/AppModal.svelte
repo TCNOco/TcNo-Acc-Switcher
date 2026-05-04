@@ -12,6 +12,7 @@
 
   let folderPath = "";
   let promptValue = "";
+  let modalReady = false;
 
   let lastModalSyncId = -1;
   let folderStatSeq = 0;
@@ -19,6 +20,7 @@
 
   $: if (m?.id !== undefined && m.id !== lastModalSyncId) {
     lastModalSyncId = m.id;
+    modalReady = false;
     folderPathStat = null;
     if (m.kind === "prompt") {
       promptValue = m.initialValue ?? "";
@@ -30,10 +32,18 @@
     if (m.kind === "folder") {
       folderPath = normalizeDisplayPath(m.initialPath ?? "");
     }
+    void tick().then(() =>
+      requestAnimationFrame(() => {
+        if (get(activeModal)?.id === m.id) {
+          modalReady = true;
+        }
+      }),
+    );
   }
 
   $: if (!m) {
     lastModalSyncId = -1;
+    modalReady = false;
     folderStatSeq++;
     folderPathStat = null;
   }
@@ -129,6 +139,7 @@
   >
     <div
       class="modalFG"
+      class:modalFG--ready={modalReady}
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title-label"
@@ -332,6 +343,18 @@
     border: var(--border-bar-size, 1px) solid var(--border-bar-bg, #3b4853);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
     overflow: hidden;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(4px);
+    transition:
+      opacity 0.1s ease,
+      transform 0.1s ease;
+  }
+
+  .modalFG.modalFG--ready {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
   }
 
   .modal-headerbar {
