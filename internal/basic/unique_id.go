@@ -69,7 +69,10 @@ func uniqueFromFileRegex(d platform.Descriptor, ctx platform.PathTokenContext) (
 		return "", err
 	}
 	re, err := platform.ExpandRegex(d.UniqueIdRegex)
-	if err != nil || re == nil {
+	if err != nil {
+		return "", fmt.Errorf("unique id regex compile: %w", err)
+	}
+	if re == nil {
 		return strings.TrimSpace(string(data)), nil
 	}
 	m := re.FindStringSubmatch(string(data))

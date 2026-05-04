@@ -515,11 +515,28 @@ func dispatchCLIInGUI(app *application.App, p cli.Parsed) {
 			EmitToast("error", "Logout", err.Error(), 0)
 		}
 	case cli.KindOpenPage:
+		showAndFocusMainWindow(app)
 		j := p.RouteJSONForOpenPage()
 		if j != "" {
 			app.Event.Emit("navigate", j)
 		}
 	default:
-		// empty argv from second-instance launch — ignore
+		// Empty argv from second-instance launch means "open existing GUI".
+		// This also restores the app from tray/hidden state.
+		showAndFocusMainWindow(app)
+		_ = app.Event.Emit("navigate", `{"page":"home"}`)
 	}
+}
+
+func showAndFocusMainWindow(app *application.App) {
+	if app == nil {
+		return
+	}
+	application.InvokeSync(func() {
+		w := app.Window.Current()
+		if w == nil {
+			return
+		}
+		w.Show().Focus()
+	})
 }

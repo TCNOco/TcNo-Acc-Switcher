@@ -292,7 +292,7 @@
       },
       "ExitBeforeInteract": true,
       "UniqueIdFile": "%LocalAppData%\\Electronic Arts\\EA Desktop\\telemetry.ini",
-      "UniqueIdRegex": "(?<=\\=).*"
+      "UniqueIdRegex": "=([^\\r\\n]*)"
     },
     "GeForce Now": {
       "Identifiers": [ "gn", "geforce", "geforcenow" ],
@@ -327,7 +327,7 @@
         "%LocalAppData%\\Ubisoft Game Launcher\\user.dat": "user.dat"
       },
       "Extras": {
-        "ProfilePicPath": "%Platform_Folder%\\cache\\avatars\\%UniqueId%_256.png",
+        "ProfilePicPath": "https://avatars.ubisoft.com/%UniqueId%/default_256_256.png",
         "CachePaths": [
           "%Platform_Folder%\\cache\\achievements",
           "%Platform_Folder%\\cache\\assets",
@@ -341,7 +341,7 @@
       },
       "ExitBeforeInteract": true,
       "UniqueIdFile": "%Platform_Folder%\\logs\\launcher_log.txt",
-      "UniqueIdRegex": "(?<=User: ).*"
+      "UniqueIdRegex": "(?s).*User:\\s+([0-9a-fA-F-]{36})"
     },
     "Oculus": {
       "Identifiers": [ "oc", "oculus" ],
@@ -450,7 +450,14 @@
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
         "%LocalAppData%\\Rockstar Games\\Launcher\\settings_user.dat": "settings_user.dat",
+        "%LocalAppData%\\Rockstar Games\\Launcher\\launcher_online_config.dat": "launcher_online_config.dat",
+        "%ProgramData%\\Rockstar Games\\Launcher\\marketing_promos.dat": "marketing_promos.dat",
+        "%ProgramData%\\Rockstar Games\\Launcher\\recognised_titles.dat": "recognised_titles.dat",
+        "%ProgramData%\\Rockstar Games\\Launcher\\service_log.txt": "service_log.txt",
         "%ProgramData%\\Rockstar Games\\Launcher\\settings_machine.dat": "settings_machine.dat",
+        "%ProgramData%\\Rockstar Games\\Launcher\\svc_events.json": "svc_events.json",
+        "%ProgramData%\\Rockstar Games\\Launcher\\titles.dat": "titles.dat",
+        "%Documents%\\Rockstar Games\\Launcher\\Profiles\\*": "LauncherProfiles\\",
         "%Documents%\\Rockstar Games\\Social Club\\Profiles\\*": "Profiles\\",
         "%ProgramData%\\Rockstar Games\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
       },

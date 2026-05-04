@@ -200,10 +200,29 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 		}
 		src := expandPlatformPath(liveKey, folder, ctx)
 		dst := filepath.Join(destRoot, filepath.FromSlash(cacheRel))
-		if strings.Contains(filepath.Base(src), "*") {
+		if hasGlobPattern(src) {
 			matches, _ := filepath.Glob(src)
+			globDestRoot := globDestinationRoot(destRoot, cacheRel)
+			if err := os.MkdirAll(globDestRoot, 0o755); err != nil {
+				return err
+			}
 			for _, m := range matches {
-				if err := copyFileToDir(m, filepath.Dir(dst)); err != nil && d.AllFilesRequired {
+				st, err := os.Stat(m)
+				if err != nil {
+					if d.AllFilesRequired {
+						return err
+					}
+					continue
+				}
+				if st.IsDir() {
+					if err := copyDir(m, filepath.Join(globDestRoot, filepath.Base(m))); err != nil {
+						if d.AllFilesRequired {
+							return err
+						}
+					}
+					continue
+				}
+				if err := copyFileToDir(m, globDestRoot); err != nil && d.AllFilesRequired {
 					return err
 				}
 			}
@@ -314,6 +333,35 @@ func copyDir(src, dst string) error {
 	})
 }
 
+func hasGlobPattern(path string) bool {
+	return strings.ContainsAny(path, "*?[")
+}
+
+func globDestinationRoot(destRoot, cacheRel string) string {
+	cacheRel = strings.TrimSpace(cacheRel)
+	dst := filepath.Join(destRoot, filepath.FromSlash(cacheRel))
+	if strings.HasSuffix(cacheRel, "\\") || strings.HasSuffix(cacheRel, "/") {
+		return dst
+	}
+	return filepath.Dir(dst)
+}
+
+func globPatternBaseDir(path string) string {
+	path = strings.TrimSpace(path)
+	if path == "" {
+		return "."
+	}
+	idx := strings.IndexAny(path, "*?[")
+	if idx < 0 {
+		return filepath.Dir(path)
+	}
+	prefix := path[:idx]
+	if strings.HasSuffix(prefix, "\\") || strings.HasSuffix(prefix, "/") {
+		return filepath.Clean(prefix)
+	}
+	return filepath.Dir(prefix)
+}
+
 func Login(deps FlowDeps, platformKey, accountName string) error {
 	d, _, err := readDescriptor(platformKey)
 	if err != nil {
@@ -413,6 +461,48 @@ func Login(deps FlowDeps, platformKey, accountName string) error {
 		}
 		src := filepath.Join(srcRoot, filepath.FromSlash(cacheRel))
 		dst := expandPlatformPath(liveKey, folder, ctx)
+		if hasGlobPattern(dst) {
+			globDstRoot := globPatternBaseDir(dst)
+			if err := os.MkdirAll(globDstRoot, 0o755); err != nil {
+				return err
+			}
+			st, err := os.Stat(src)
+			if err != nil {
+				if d.AllFilesRequired {
+					return err
+				}
+				continue
+			}
+			if st.IsDir() {
+				entries, err := os.ReadDir(src)
+				if err != nil {
+					if d.AllFilesRequired {
+						return err
+					}
+					continue
+				}
+				for _, entry := range entries {
+					from := filepath.Join(src, entry.Name())
+					to := filepath.Join(globDstRoot, entry.Name())
+					if entry.IsDir() {
+						if err := copyDir(from, to); err != nil {
+							if d.AllFilesRequired {
+								return err
+							}
+						}
+						continue
+					}
+					if err := copyFile(from, to); err != nil && d.AllFilesRequired {
+						return err
+					}
+				}
+			} else {
+				if err := copyFileToDir(src, globDstRoot); err != nil && d.AllFilesRequired {
+					return err
+				}
+			}
+			continue
+		}
 		st, err := os.Stat(src)
 		if err != nil {
 			if d.AllFilesRequired {
