@@ -15,6 +15,7 @@ import (
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
+	"TcNo-Acc-Switcher/internal/profileimage"
 	"TcNo-Acc-Switcher/internal/stats"
 	"TcNo-Acc-Switcher/internal/tray"
 	"TcNo-Acc-Switcher/internal/winutil"
@@ -112,10 +113,39 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 		return err
 	}
 
+	idsFileData, err := readIdsFile(platformKey)
+	if err != nil {
+		return err
+	}
+	normalizeTagMaps(&idsFileData)
+	for existingUID, existingName := range idsFileData.IDs {
+		if strings.EqualFold(strings.TrimSpace(existingUID), strings.TrimSpace(uid)) {
+			continue
+		}
+		normalizedExisting := paths.WindowsFileName(strings.TrimSpace(existingName), 200)
+		if !strings.EqualFold(normalizedExisting, accountName) {
+			continue
+		}
+		delete(idsFileData.IDs, existingUID)
+		if idsFileData.LastUsed != nil {
+			delete(idsFileData.LastUsed, existingUID)
+		}
+		delete(idsFileData.AccountTags, existingUID)
+		if oldDestRoot, derr := accountCacheDir(platformKey, existingName); derr == nil {
+			_ = os.RemoveAll(oldDestRoot)
+		}
+		_ = profileimage.DeleteCached(platformKey, existingUID)
+	}
+	pruneUnusedTagDefinitions(&idsFileData)
+	if err := writeIdsFile(platformKey, idsFileData); err != nil {
+		return err
+	}
+
 	destRoot, err := accountCacheDir(platformKey, accountName)
 	if err != nil {
 		return err
 	}
+	_ = os.RemoveAll(destRoot)
 	if err := os.MkdirAll(destRoot, 0o755); err != nil {
 		return err
 	}
