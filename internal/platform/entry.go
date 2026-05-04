@@ -41,12 +41,9 @@ func parsePlatformEntry(raw []byte, platformKey string) (PlatformEntry, error) {
 }
 
 func primaryExeName(e PlatformEntry) string {
-	if len(e.ExesToEnd) > 0 && strings.TrimSpace(e.ExesToEnd[0]) != "" {
-		return filepath.Base(strings.TrimSpace(e.ExesToEnd[0]))
-	}
 	p := ExpandWindowsPath(strings.TrimSpace(e.ExeLocationDefault))
-	if p == "" {
-		return ""
+	if p != "" {
+		return filepath.Base(p)
 	}
-	return filepath.Base(p)
+	return ""
 }
