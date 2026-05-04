@@ -32,8 +32,10 @@ func orderPath(platformKey string) (string, error) {
 }
 
 type idsFile struct {
-	IDs      map[string]string `json:"ids"`
-	LastUsed map[string]string `json:"lastused"`
+	IDs         map[string]string      `json:"ids"`
+	LastUsed    map[string]string      `json:"lastused"`
+	Tags        map[string]tagFileEntry `json:"tags,omitempty"`
+	AccountTags map[string][]string    `json:"accountTags,omitempty"`
 }
 
 func readIdsFile(platformKey string) (idsFile, error) {
@@ -44,13 +46,17 @@ func readIdsFile(platformKey string) (idsFile, error) {
 	data, err := os.ReadFile(p)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return idsFile{IDs: map[string]string{}, LastUsed: map[string]string{}}, nil
+			f := idsFile{IDs: map[string]string{}, LastUsed: map[string]string{}}
+			normalizeTagMaps(&f)
+			return f, nil
 		}
 		return idsFile{}, err
 	}
 	var f idsFile
 	if err := json.Unmarshal(data, &f); err != nil {
-		return idsFile{IDs: map[string]string{}, LastUsed: map[string]string{}}, nil
+		f2 := idsFile{IDs: map[string]string{}, LastUsed: map[string]string{}}
+		normalizeTagMaps(&f2)
+		return f2, nil
 	}
 	if f.IDs == nil {
 		f.IDs = map[string]string{}
@@ -58,6 +64,7 @@ func readIdsFile(platformKey string) (idsFile, error) {
 	if f.LastUsed == nil {
 		f.LastUsed = map[string]string{}
 	}
+	normalizeTagMaps(&f)
 	return f, nil
 }
 
@@ -75,6 +82,7 @@ func writeIdsFile(platformKey string, f idsFile) error {
 	if f.LastUsed == nil {
 		f.LastUsed = map[string]string{}
 	}
+	normalizeTagMaps(&f)
 	data, err := json.MarshalIndent(f, "", "  ")
 	if err != nil {
 		return err

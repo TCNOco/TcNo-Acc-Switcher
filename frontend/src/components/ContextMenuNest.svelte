@@ -63,11 +63,14 @@
 
   $: hasSearchMarker = items[0]?.type === "search";
   $: tail = hasSearchMarker ? items.slice(1) : items;
+  $: alwaysShowSearchFlyout =
+    hasSearchMarker && !!(items[0] as { alwaysShowSearch?: boolean } | undefined)?.alwaysShowSearch;
   /**
    * Search row only in flyout columns (same >5 threshold as legacy); root lists are unpaged so
-   * no search strip on the root menu.
+   * no search strip on the root menu. `alwaysShowSearch` forces the search row for small lists.
    */
-  $: showSearchRow = paginateThisColumn && tail.length > ITEMS_PER_PAGE;
+  $: showSearchRow =
+    paginateThisColumn && (tail.length > ITEMS_PER_PAGE || alwaysShowSearchFlyout);
   $: q = norm(searchQuery.trim());
 
   /** Stable row visibility for search (indices must match pathPrefix). */
@@ -215,6 +218,21 @@
   /** Allow navigation keys to bubble to `.ctx-menu-root`; stop others so they don't hit the page. */
   function onSearchKeydown(ev: KeyboardEvent): void {
     const k = ev.key;
+    if (k === "Enter") {
+      const searchItem = items[0];
+      const enterCb =
+        searchItem?.type === "search"
+          ? (searchItem as { onSearchEnter?: (q: string) => void }).onSearchEnter
+          : undefined;
+      const q = searchQuery.trim();
+      if (enterCb && q !== "") {
+        ev.preventDefault();
+        ev.stopPropagation();
+        enterCb(q);
+        closeContextMenu();
+        return;
+      }
+    }
     if (
       k === "ArrowDown" ||
       k === "ArrowUp" ||

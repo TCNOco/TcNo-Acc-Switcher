@@ -40,7 +40,7 @@ button,
   &:active,
   &:target {
     background: var(--button-bg-hover);
-    border-color: var(--accent)!important;
+    border-color: var(--accent);
   }
 
   &:hover {

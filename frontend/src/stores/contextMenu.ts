@@ -10,6 +10,13 @@ export type MenuItemDef = {
   children?: MenuItemDef[];
   /** When true, the row is visible but not clickable (no action, menu stays open on click). */
   disabled?: boolean;
+  /**
+   * On a `type: "search"` row in a submenu: show the filter input even when the sibling list has
+   * five or fewer items (default submenu search only appears above that threshold).
+   */
+  alwaysShowSearch?: boolean;
+  /** On `type: "search"`: invoked when Enter is pressed with a non-empty trimmed query. */
+  onSearchEnter?: (query: string) => void;
 };
 
 export type ContextMenuState =

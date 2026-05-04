@@ -14,6 +14,7 @@ export class AccountDTO {
     "currentSession": boolean;
     "lastUsed": string;
     "showLastUsed": boolean;
+    "tags": AccountTagDTO[];
 
     /** Creates a new AccountDTO instance. */
     constructor($$source: Partial<AccountDTO> = {}) {
@@ -41,6 +42,9 @@ export class AccountDTO {
         if (!("showLastUsed" in $$source)) {
             this["showLastUsed"] = false;
         }
+        if (!("tags" in $$source)) {
+            this["tags"] = [];
+        }
 
         Object.assign(this, $$source);
     }
@@ -49,7 +53,79 @@ export class AccountDTO {
      * Creates a new AccountDTO instance from a string or object.
      */
     static createFrom($$source: any = {}): AccountDTO {
+        const $$createField8_0 = $$createType1;
         let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        if ("tags" in $$parsedSource) {
+            $$parsedSource["tags"] = $$createField8_0($$parsedSource["tags"]);
+        }
         return new AccountDTO($$parsedSource as Partial<AccountDTO>);
     }
 }
+
+/**
+ * AccountTagDTO is a resolved tag on an account row (matches TagDefinitionDTO shape).
+ */
+export class AccountTagDTO {
+    "id": string;
+    "name": string;
+    "color": string;
+
+    /** Creates a new AccountTagDTO instance. */
+    constructor($$source: Partial<AccountTagDTO> = {}) {
+        if (!("id" in $$source)) {
+            this["id"] = "";
+        }
+        if (!("name" in $$source)) {
+            this["name"] = "";
+        }
+        if (!("color" in $$source)) {
+            this["color"] = "";
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new AccountTagDTO instance from a string or object.
+     */
+    static createFrom($$source: any = {}): AccountTagDTO {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new AccountTagDTO($$parsedSource as Partial<AccountTagDTO>);
+    }
+}
+
+/**
+ * TagDefinitionDTO is one row in the global tag list for a platform.
+ */
+export class TagDefinitionDTO {
+    "id": string;
+    "name": string;
+    "color": string;
+
+    /** Creates a new TagDefinitionDTO instance. */
+    constructor($$source: Partial<TagDefinitionDTO> = {}) {
+        if (!("id" in $$source)) {
+            this["id"] = "";
+        }
+        if (!("name" in $$source)) {
+            this["name"] = "";
+        }
+        if (!("color" in $$source)) {
+            this["color"] = "";
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new TagDefinitionDTO instance from a string or object.
+     */
+    static createFrom($$source: any = {}): TagDefinitionDTO {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new TagDefinitionDTO($$parsedSource as Partial<TagDefinitionDTO>);
+    }
+}
+
+// Private type creation functions
+const $$createType0 = AccountTagDTO.createFrom;
+const $$createType1 = $Create.Array($$createType0);

@@ -8,6 +8,8 @@
 
   /** Unique string ids; order is the canonical list. */
   export let items: string[] = [];
+  /** When true, drag-reorder is disabled (e.g. while a tag filter is active). */
+  export let reorderDisabled = false;
   export let dragThresholdPx = 8;
   /** Classes on the scroll/flex container (e.g. `platform_list`). */
   export let listClass = "";
@@ -206,6 +208,9 @@
   }
 
   function onCellPointerDown(e: PointerEvent, id: string): void {
+    if (reorderDisabled) {
+      return;
+    }
     if (e.button !== 0) return;
     const from = itemsSnap.indexOf(id);
     if (from < 0) return;

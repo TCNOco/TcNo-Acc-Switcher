@@ -7,6 +7,9 @@ import { Create as $Create } from "@wailsio/runtime";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: Unused imports
+import * as basic$0 from "../basic/models.js";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore: Unused imports
 import * as platform$0 from "../platform/models.js";
 
 export class AccountDTO {
@@ -39,6 +42,7 @@ export class AccountDTO {
      * CurrentSession: exactly one loginusers row has MostRecent=="1" and it is this account.
      */
     "currentSession": boolean;
+    "tags": basic$0.AccountTagDTO[];
 
     /** Creates a new AccountDTO instance. */
     constructor($$source: Partial<AccountDTO> = {}) {
@@ -117,6 +121,9 @@ export class AccountDTO {
         if (!("currentSession" in $$source)) {
             this["currentSession"] = false;
         }
+        if (!("tags" in $$source)) {
+            this["tags"] = [];
+        }
 
         Object.assign(this, $$source);
     }
@@ -125,7 +132,11 @@ export class AccountDTO {
      * Creates a new AccountDTO instance from a string or object.
      */
     static createFrom($$source: any = {}): AccountDTO {
+        const $$createField25_0 = $$createType1;
         let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        if ("tags" in $$parsedSource) {
+            $$parsedSource["tags"] = $$createField25_0($$parsedSource["tags"]);
+        }
         return new AccountDTO($$parsedSource as Partial<AccountDTO>);
     }
 }
@@ -331,9 +342,9 @@ export class Settings {
      * Creates a new Settings instance from a string or object.
      */
     static createFrom($$source: any = {}): Settings {
-        const $$createField8_0 = $$createType0;
-        const $$createField9_0 = $$createType2;
-        const $$createField21_0 = $$createType0;
+        const $$createField8_0 = $$createType2;
+        const $$createField9_0 = $$createType4;
+        const $$createField21_0 = $$createType2;
         let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
         if ("AccountNotes" in $$parsedSource) {
             $$parsedSource["AccountNotes"] = $$createField8_0($$parsedSource["AccountNotes"]);
@@ -371,8 +382,8 @@ export class SteamGameDataAppIDSets {
      * Creates a new SteamGameDataAppIDSets instance from a string or object.
      */
     static createFrom($$source: any = {}): SteamGameDataAppIDSets {
-        const $$createField0_0 = $$createType3;
-        const $$createField1_0 = $$createType3;
+        const $$createField0_0 = $$createType5;
+        const $$createField1_0 = $$createType5;
         let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
         if ("userdataAppIds" in $$parsedSource) {
             $$parsedSource["userdataAppIds"] = $$createField0_0($$parsedSource["userdataAppIds"]);
@@ -421,7 +432,9 @@ export class SteamIDFormats {
 }
 
 // Private type creation functions
-const $$createType0 = $Create.Map($Create.Any, $Create.Any);
-const $$createType1 = platform$0.GameShortcutEntry.createFrom;
-const $$createType2 = $Create.Array($$createType1);
-const $$createType3 = $Create.Array($Create.Any);
+const $$createType0 = basic$0.AccountTagDTO.createFrom;
+const $$createType1 = $Create.Array($$createType0);
+const $$createType2 = $Create.Map($Create.Any, $Create.Any);
+const $$createType3 = platform$0.GameShortcutEntry.createFrom;
+const $$createType4 = $Create.Array($$createType3);
+const $$createType5 = $Create.Array($Create.Any);

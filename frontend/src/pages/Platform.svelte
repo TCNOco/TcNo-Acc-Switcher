@@ -2,6 +2,8 @@
   import { onDestroy, onMount } from "svelte";
   import ActionBar from "../components/ActionBar.svelte";
   import ReorderPointerGrid from "../components/ReorderPointerGrid.svelte";
+  import TagFilterBar from "../components/TagFilterBar.svelte";
+  import AccountTagBubbles from "../components/AccountTagBubbles.svelte";
   import { route, previousPage, appBarTitle } from "../stores/nav";
   import SearchOverlay, { type SearchResultRow } from "../components/SearchOverlay.svelte";
   import { actionBarStatus } from "../stores/actionBarStatus";
@@ -29,13 +31,22 @@
   import { offlineMode, offlineSafeImageSrc } from "../stores/offlineMode";
   import { fuzzyWordsMatch } from "../lib/searchFuzzy";
   import { formatLastLoginForLocale } from "../lib/formatLastLogin";
+  import {
+    buildTagsSectionMenuItem,
+    openTagFilterMenu,
+    type TagDefRow,
+    type TagFilterMode,
+  } from "../lib/accountTagsContext";
   import { closeSearchOverlay, searchOverlayCtrl } from "../stores/searchOverlay";
   import { platformListSort, type PlatformSortKind } from "../stores/platformListSort";
 
   const PROFILE_FALLBACK = "/img/BasicDefault.webp";
 
   /** Bindings class typing can lag `currentSession`; keep explicit for the list row. */
-  type BasicRow = InstanceType<typeof AccountDTO> & { currentSession?: boolean };
+  type BasicRow = InstanceType<typeof AccountDTO> & {
+    currentSession?: boolean;
+    tags?: TagDefRow[];
+  };
 
   export let name: string;
 
@@ -51,6 +62,9 @@
   let overlayQuery = "";
   let offSort: (() => void) | undefined;
   let lastHandledSortId = 0;
+
+  let tagDefs: TagDefRow[] = [];
+  let tagFilterMode: TagFilterMode = { kind: "all" };
 
   const SEARCH_MAX = 5;
 
@@ -72,6 +86,38 @@
     return accounts.find((a) => a.uniqueId === id);
   }
 
+  $: tagFilterBarLabel =
+    tagFilterMode.kind === "all"
+      ? $t("Tags_All")
+      : tagFilterMode.kind === "untagged"
+        ? $t("Tags_Filter_Untagged")
+        : tagFilterMode.name;
+
+  $: displayAccountIds = (() => {
+    const ids = accountIds;
+    if (tagFilterMode.kind === "all") {
+      return ids;
+    }
+    if (tagFilterMode.kind === "untagged") {
+      return ids.filter((id) => (accountById(id)?.tags?.length ?? 0) === 0);
+    }
+    const tid = tagFilterMode.id;
+    return ids.filter((id) => accountById(id)?.tags?.some((x) => x.id === tid));
+  })();
+
+  $: reorderDisabled = tagFilterMode.kind !== "all";
+
+  $: {
+    if (
+      selectedUniqueId &&
+      displayAccountIds.length > 0 &&
+      !displayAccountIds.includes(selectedUniqueId)
+    ) {
+      selectedUniqueId = displayAccountIds[0] ?? "";
+      touchStatus();
+    }
+  }
+
   function touchStatus(): void {
     const acc = accountById(selectedUniqueId);
     actionBarStatus.set(acc ? acc.displayName || acc.uniqueId : "");
@@ -85,6 +131,19 @@
       setTimeout(() => void loadAccounts(), 700),
       setTimeout(() => void loadAccounts(), 2200),
     );
+  }
+
+  async function loadTagDefs(): Promise<void> {
+    try {
+      const rows = await BasicService.ListTagDefinitions(name);
+      tagDefs = (rows as { id: string; name: string; color: string }[]).map((r) => ({
+        id: r.id,
+        name: r.name,
+        color: r.color,
+      }));
+    } catch {
+      tagDefs = [];
+    }
   }
 
   async function loadAccounts(): Promise<void> {
@@ -102,6 +161,7 @@
       const stillValid = selectedUniqueId && rows.some((r) => r.uniqueId === selectedUniqueId);
       selectedUniqueId = stillValid ? selectedUniqueId : first;
       touchStatus();
+      await loadTagDefs();
     } catch (e) {
       loadError = formatWailsError(e) || String(e);
       accounts = [];
@@ -309,6 +369,17 @@
     return x ?? "";
   }
 
+  function onTagFilterBarClick(ev: Event): void {
+    openTagFilterMenu({
+      ev: ev as MouseEvent,
+      tagDefs,
+      tr: get(t),
+      onPick: (mode) => {
+        tagFilterMode = mode;
+      },
+    });
+  }
+
   function basicCtxMenu(rowId: string): () => MenuItemDef[] {
     return () => {
       const tr = get(t);
@@ -439,6 +510,29 @@
             }
           },
         },
+        buildTagsSectionMenuItem({
+          platformKey: name,
+          uniqueId: rowId,
+          assignedTags: (acc.tags ?? []) as TagDefRow[],
+          tagDefs,
+          tr,
+          afterChange: async () => {
+            await loadAccounts();
+            await loadTagDefs();
+          },
+          onSuccess: () =>
+            pushToast({
+              type: "success",
+              message: tr("Toast_AccountSaved"),
+              duration: 2500,
+            }),
+          onError: (e) =>
+            pushToast({
+              type: "error",
+              message: formatToastWithError(tr("Toast_SaveFailed"), e),
+              duration: 8000,
+            }),
+        }),
         {
           label: tr("Notes"),
           action: async () => {
@@ -540,8 +634,12 @@
         <p class="platform-accounts-hint">{loadError}</p>
       {/if}
       <div class="steam-acclist" bind:this={basicAcclistEl}>
+        {#if tagDefs.length > 0}
+          <TagFilterBar label={tagFilterBarLabel} onClick={onTagFilterBarClick} />
+        {/if}
         <ReorderPointerGrid
-          items={accountIds}
+          items={displayAccountIds}
+          reorderDisabled={reorderDisabled}
           listClass="acc_list"
           itemClass="acc_list_item acc_list_item--drag"
           placeholderClass="acc_list_item placeHolderAcc"
@@ -594,6 +692,7 @@
                   draggable="false"
                 />
                 <h6 class="displayName">{acc?.displayName ?? rid}</h6>
+                <AccountTagBubbles tags={acc?.tags ?? []} />
                 {#if acc?.note}
                   <p class="acc_note">{acc.note}</p>
                 {/if}

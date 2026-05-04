@@ -26,14 +26,15 @@ func (b *BasicService) deps() FlowDeps {
 }
 
 type AccountDTO struct {
-	PlatformKey    string `json:"platformKey"`
-	UniqueID       string `json:"uniqueId"`
-	DisplayName    string `json:"displayName"`
-	ImageURL       string `json:"imageUrl"`
-	Note           string `json:"note"`
-	CurrentSession bool   `json:"currentSession"`
-	LastUsed       string `json:"lastUsed"`
-	ShowLastUsed   bool   `json:"showLastUsed"`
+	PlatformKey    string          `json:"platformKey"`
+	UniqueID       string          `json:"uniqueId"`
+	DisplayName    string          `json:"displayName"`
+	ImageURL       string          `json:"imageUrl"`
+	Note           string          `json:"note"`
+	CurrentSession bool            `json:"currentSession"`
+	LastUsed       string          `json:"lastUsed"`
+	ShowLastUsed   bool            `json:"showLastUsed"`
+	Tags           []AccountTagDTO `json:"tags"`
 }
 
 func (b *BasicService) GetAccounts(platformKey string) ([]AccountDTO, error) {
@@ -104,6 +105,7 @@ func (b *BasicService) GetAccounts(platformKey string) ([]AccountDTO, error) {
 			CurrentSession: liveUID != "" && strings.EqualFold(liveUID, uid),
 			LastUsed:       lu,
 			ShowLastUsed:   ps.ShowLastUsed,
+			Tags:           resolveTagsForAccount(idf, uid),
 		})
 	}
 	sc, hot := 0, 0
@@ -159,6 +161,8 @@ func (b *BasicService) ForgetAccount(platformKey, uniqueID string) error {
 	if f.LastUsed != nil {
 		delete(f.LastUsed, uniqueID)
 	}
+	normalizeTagMaps(&f)
+	delete(f.AccountTags, uniqueID)
 	if err := writeIdsFile(platformKey, f); err != nil {
 		return err
 	}
@@ -249,4 +253,113 @@ func (b *BasicService) GetAccountNote(platformKey, uniqueID string) (string, err
 		return "", nil
 	}
 	return ps.AccountNotes[strings.TrimSpace(uniqueID)], nil
+}
+
+func (b *BasicService) ListTagDefinitions(platformKey string) ([]TagDefinitionDTO, error) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	platformKey = strings.TrimSpace(platformKey)
+	if platformKey == "" {
+		return nil, nil
+	}
+	f, err := readIdsFile(platformKey)
+	if err != nil {
+		return nil, err
+	}
+	return listTagDefinitionsSorted(f), nil
+}
+
+func (b *BasicService) AddTagToAccount(platformKey, uniqueID, tagID string) error {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	platformKey = strings.TrimSpace(platformKey)
+	uniqueID = strings.TrimSpace(uniqueID)
+	tagID = strings.TrimSpace(tagID)
+	if platformKey == "" || uniqueID == "" || tagID == "" {
+		return fmt.Errorf("invalid tag parameters")
+	}
+	f, err := readIdsFile(platformKey)
+	if err != nil {
+		return err
+	}
+	normalizeTagMaps(&f)
+	if _, ok := f.Tags[tagID]; !ok {
+		return fmt.Errorf("unknown tag id")
+	}
+	cur := f.AccountTags[uniqueID]
+	if containsTagID(cur, tagID) {
+		return nil
+	}
+	f.AccountTags[uniqueID] = append(cur, tagID)
+	return writeIdsFile(platformKey, f)
+}
+
+func (b *BasicService) RemoveTagFromAccount(platformKey, uniqueID, tagID string) error {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	platformKey = strings.TrimSpace(platformKey)
+	uniqueID = strings.TrimSpace(uniqueID)
+	tagID = strings.TrimSpace(tagID)
+	if platformKey == "" || uniqueID == "" || tagID == "" {
+		return fmt.Errorf("invalid tag parameters")
+	}
+	f, err := readIdsFile(platformKey)
+	if err != nil {
+		return err
+	}
+	normalizeTagMaps(&f)
+	cur := f.AccountTags[uniqueID]
+	if len(cur) == 0 {
+		return nil
+	}
+	next := cur[:0]
+	for _, x := range cur {
+		if strings.EqualFold(strings.TrimSpace(x), tagID) {
+			continue
+		}
+		next = append(next, x)
+	}
+	if len(next) == 0 {
+		delete(f.AccountTags, uniqueID)
+	} else {
+		f.AccountTags[uniqueID] = next
+	}
+	return writeIdsFile(platformKey, f)
+}
+
+func (b *BasicService) CreateTagAndAddToAccount(platformKey, uniqueID, name string) (TagDefinitionDTO, error) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	var zero TagDefinitionDTO
+	platformKey = strings.TrimSpace(platformKey)
+	uniqueID = strings.TrimSpace(uniqueID)
+	name, err := tagNameOK(name)
+	if err != nil {
+		return zero, err
+	}
+	if platformKey == "" || uniqueID == "" {
+		return zero, fmt.Errorf("invalid tag parameters")
+	}
+	f, err := readIdsFile(platformKey)
+	if err != nil {
+		return zero, err
+	}
+	normalizeTagMaps(&f)
+	id, err := newTagID()
+	if err != nil {
+		return zero, err
+	}
+	color, err := randomSaturatedColorHex()
+	if err != nil {
+		return zero, err
+	}
+	f.Tags[id] = tagFileEntry{Name: name, Color: color}
+	cur := f.AccountTags[uniqueID]
+	if !containsTagID(cur, id) {
+		f.AccountTags[uniqueID] = append(cur, id)
+	}
+	if err := writeIdsFile(platformKey, f); err != nil {
+		return zero, err
+	}
+	return TagDefinitionDTO{ID: id, Name: name, Color: color}, nil
 }

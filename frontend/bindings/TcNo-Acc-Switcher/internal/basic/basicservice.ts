@@ -13,8 +13,18 @@ export function AddNew(platformKey: string): $CancellablePromise<void> {
     return $Call.ByID(2759945906, platformKey);
 }
 
+export function AddTagToAccount(platformKey: string, uniqueID: string, tagID: string): $CancellablePromise<void> {
+    return $Call.ByID(1063955948, platformKey, uniqueID, tagID);
+}
+
 export function ChangeAccountImage(platformKey: string, uniqueID: string, sourcePath: string): $CancellablePromise<void> {
     return $Call.ByID(2305033137, platformKey, uniqueID, sourcePath);
+}
+
+export function CreateTagAndAddToAccount(platformKey: string, uniqueID: string, name: string): $CancellablePromise<$models.TagDefinitionDTO> {
+    return $Call.ByID(2646754509, platformKey, uniqueID, name).then(($result: any) => {
+        return $$createType0($result);
+    });
 }
 
 export function ForgetAccount(platformKey: string, uniqueID: string): $CancellablePromise<void> {
@@ -27,12 +37,22 @@ export function GetAccountNote(platformKey: string, uniqueID: string): $Cancella
 
 export function GetAccounts(platformKey: string): $CancellablePromise<$models.AccountDTO[]> {
     return $Call.ByID(1547846643, platformKey).then(($result: any) => {
-        return $$createType1($result);
+        return $$createType2($result);
     });
 }
 
 export function LaunchPlatform(platformKey: string): $CancellablePromise<void> {
     return $Call.ByID(3329801989, platformKey);
+}
+
+export function ListTagDefinitions(platformKey: string): $CancellablePromise<$models.TagDefinitionDTO[]> {
+    return $Call.ByID(234947483, platformKey).then(($result: any) => {
+        return $$createType3($result);
+    });
+}
+
+export function RemoveTagFromAccount(platformKey: string, uniqueID: string, tagID: string): $CancellablePromise<void> {
+    return $Call.ByID(1287521298, platformKey, uniqueID, tagID);
 }
 
 export function RenameAccount(platformKey: string, uniqueID: string, newName: string): $CancellablePromise<void> {
@@ -56,5 +76,7 @@ export function SwapToAccount(platformKey: string, uniqueID: string, extraLaunch
 }
 
 // Private type creation functions
-const $$createType0 = $models.AccountDTO.createFrom;
-const $$createType1 = $Create.Array($$createType0);
+const $$createType0 = $models.TagDefinitionDTO.createFrom;
+const $$createType1 = $models.AccountDTO.createFrom;
+const $$createType2 = $Create.Array($$createType1);
+const $$createType3 = $Create.Array($$createType0);

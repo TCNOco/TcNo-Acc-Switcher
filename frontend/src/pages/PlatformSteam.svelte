@@ -3,6 +3,8 @@
   import { Events } from "@wailsio/runtime";
   import ActionBar from "../components/ActionBar.svelte";
   import ReorderPointerGrid from "../components/ReorderPointerGrid.svelte";
+  import TagFilterBar from "../components/TagFilterBar.svelte";
+  import AccountTagBubbles from "../components/AccountTagBubbles.svelte";
   import { route, previousPage, appBarTitle } from "../stores/nav";
   import SearchOverlay, { type SearchResultRow } from "../components/SearchOverlay.svelte";
   import { actionBarStatus } from "../stores/actionBarStatus";
@@ -35,6 +37,12 @@
   import { fuzzyWordsMatch } from "../lib/searchFuzzy";
   import { closeSearchOverlay, searchOverlayCtrl } from "../stores/searchOverlay";
   import { platformListSort, type PlatformSortKind } from "../stores/platformListSort";
+  import {
+    buildTagsSectionMenuItem,
+    openTagFilterMenu,
+    type TagDefRow,
+    type TagFilterMode,
+  } from "../lib/accountTagsContext";
 
   const STEAM_USERDATA_ERR_KEYS = new Set([
     "Toast_NoValidSteamId",
@@ -55,6 +63,7 @@
 
   /** Bindings row + client-only syncError; some JSON fields are explicit — TS sometimes omits quoted keys on generated classes. */
   type SteamAccountRow = InstanceType<typeof AccountDTO> & {
+    tags?: TagDefRow[];
     syncError?: string;
     currentSession: boolean;
     showShortNotes: boolean;
@@ -116,6 +125,9 @@
   let offSort: (() => void) | undefined;
   let lastHandledSortId = 0;
 
+  let tagDefs: TagDefRow[] = [];
+  let tagFilterMode: TagFilterMode = { kind: "all" };
+
   const SEARCH_MAX = 5;
 
   $: so = $searchOverlayCtrl;
@@ -147,6 +159,38 @@
 
   function accountBySteamId(id: string): SteamAccountRow | undefined {
     return steamAccounts.find((a) => a.steamId64 === id);
+  }
+
+  $: tagFilterBarLabel =
+    tagFilterMode.kind === "all"
+      ? $t("Tags_All")
+      : tagFilterMode.kind === "untagged"
+        ? $t("Tags_Filter_Untagged")
+        : tagFilterMode.name;
+
+  $: displaySteamIds = (() => {
+    const ids = steamIds;
+    if (tagFilterMode.kind === "all") {
+      return ids;
+    }
+    if (tagFilterMode.kind === "untagged") {
+      return ids.filter((id) => (accountBySteamId(id)?.tags?.length ?? 0) === 0);
+    }
+    const tid = tagFilterMode.id;
+    return ids.filter((id) => accountBySteamId(id)?.tags?.some((x) => x.id === tid));
+  })();
+
+  $: steamReorderDisabled = tagFilterMode.kind !== "all";
+
+  $: {
+    if (
+      selectedSteamId &&
+      displaySteamIds.length > 0 &&
+      !displaySteamIds.includes(selectedSteamId)
+    ) {
+      selectedSteamId = displaySteamIds[0] ?? "";
+      touchSteamActionBar();
+    }
   }
 
   function personaForStatus(acc: SteamAccountRow): string {
@@ -251,6 +295,19 @@
     }
   }
 
+  async function loadSteamTagDefs(): Promise<void> {
+    try {
+      const rows = await BasicService.ListTagDefinitions(name);
+      tagDefs = (rows as { id: string; name: string; color: string }[]).map((r) => ({
+        id: r.id,
+        name: r.name,
+        color: r.color,
+      }));
+    } catch {
+      tagDefs = [];
+    }
+  }
+
   async function loadSteamAccounts(): Promise<void> {
     steamLoadError = "";
     try {
@@ -275,6 +332,7 @@
       touchSteamActionBar();
       SteamService.StartSteamProfileRefresh();
       await refreshGameDataAppSets();
+      await loadSteamTagDefs();
     } catch (e) {
       steamLoadError = formatWailsError(e) || String(e);
       steamAccounts = [];
@@ -608,6 +666,17 @@
 
   function slotKey(x: string | null | undefined): string {
     return x ?? "";
+  }
+
+  function onSteamTagFilterBarClick(ev: Event): void {
+    openTagFilterMenu({
+      ev: ev as MouseEvent,
+      tagDefs,
+      tr: get(t),
+      onPick: (mode) => {
+        tagFilterMode = mode;
+      },
+    });
   }
 
   async function clipboardWrite(text: string): Promise<void> {
@@ -976,6 +1045,29 @@
             }
           },
         },
+        buildTagsSectionMenuItem({
+          platformKey: name,
+          uniqueId: rid,
+          assignedTags: (acc.tags ?? []) as TagDefRow[],
+          tagDefs,
+          tr,
+          afterChange: async () => {
+            await loadSteamAccounts();
+            await loadSteamTagDefs();
+          },
+          onSuccess: () =>
+            pushToast({
+              type: "success",
+              message: $t("Toast_AccountSaved"),
+              duration: 2500,
+            }),
+          onError: (e) =>
+            pushToast({
+              type: "error",
+              message: formatToastWithError($t("Toast_SaveFailed"), e),
+              duration: 8000,
+            }),
+        }),
         {
           label: tr("Context_ManageSubmenu"),
           children: [
@@ -1130,8 +1222,12 @@
         <p class="platform-accounts-hint">{steamLoadError}</p>
       {/if}
       <div class="steam-acclist" bind:this={steamAcclistEl}>
+        {#if tagDefs.length > 0}
+          <TagFilterBar label={tagFilterBarLabel} onClick={onSteamTagFilterBarClick} />
+        {/if}
         <ReorderPointerGrid
-          items={steamIds}
+          items={displaySteamIds}
+          reorderDisabled={steamReorderDisabled}
           listClass="acc_list"
           itemClass="acc_list_item acc_list_item--drag"
           placeholderClass="acc_list_item placeHolderAcc"
@@ -1215,6 +1311,7 @@
                   <p class="streamerCensor">{acc.accountName}</p>
                 {/if}
                 <h6 class="displayName">{acc?.personaName ?? rid}</h6>
+                <AccountTagBubbles tags={acc?.tags ?? []} />
                 {#if acc?.showShortNotes && acc?.note?.trim()}
                   <p class="acc_note">{acc.note}</p>
                 {/if}

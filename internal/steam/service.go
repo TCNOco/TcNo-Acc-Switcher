@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"TcNo-Acc-Switcher/internal/appclient"
+	"TcNo-Acc-Switcher/internal/basic"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/profileimage"
 	"TcNo-Acc-Switcher/internal/stats"
@@ -57,6 +58,8 @@ type AccountDTO struct {
 
 	// CurrentSession: exactly one loginusers row has MostRecent=="1" and it is this account.
 	CurrentSession bool `json:"currentSession"`
+
+	Tags []basic.AccountTagDTO `json:"tags"`
 }
 
 type AccountPatch struct {
@@ -190,6 +193,8 @@ func (s *SteamService) GetSteamAccounts() ([]AccountDTO, error) {
 
 	effectiveCollect := st.CollectInfo && !app.OfflineMode
 
+	tagByUID, _ := basic.BuildAccountTagMap(PlatformKey)
+
 	out := make([]AccountDTO, 0, len(users))
 	for _, u := range users {
 		clearExpiredSteamProfileAssets(u.SteamID64, st.SteamImageExpiryTime)
@@ -242,6 +247,7 @@ func (s *SteamService) GetSteamAccounts() ([]AccountDTO, error) {
 			ShowMiniProfile: st.SteamShowMiniProfile,
 			ShowAvatarFrame: st.SteamShowAvatarFrame,
 			CurrentSession:  activeSteamID != "" && u.SteamID64 == activeSteamID,
+			Tags:            tagByUID[u.SteamID64],
 		}
 		out = append(out, dto)
 	}
@@ -685,6 +691,7 @@ func (s *SteamService) ForgetSteamAccount(steamID64 string) error {
 	_ = profileimage.DeleteCached(PlatformKey, steamID64+"_nameplate")
 	_ = profileimage.DeleteCached(PlatformKey, steamID64+"_featuredbadge")
 	deleteMiniprofileCache(steamID64)
+	_ = basic.ForgetAccountTagAssignments(PlatformKey, steamID64)
 	s.StartSteamProfileRefresh()
 	return nil
 }

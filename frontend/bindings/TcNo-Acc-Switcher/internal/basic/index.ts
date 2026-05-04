@@ -7,5 +7,7 @@ export {
 };
 
 export {
-    AccountDTO
+    AccountDTO,
+    AccountTagDTO,
+    TagDefinitionDTO
 } from "./models.js";
