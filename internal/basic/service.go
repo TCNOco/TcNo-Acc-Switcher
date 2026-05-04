@@ -2,6 +2,7 @@ package basic
 
 import (
 	"fmt"
+	"log/slog"
 	"os"
 	"strings"
 	"sync"
@@ -153,7 +154,16 @@ func (b *BasicService) SwapToAccount(platformKey, uniqueID string, extraLaunchAr
 func (b *BasicService) SaveCurrent(platformKey, accountName string) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
-	return SaveCurrent(b.deps(), strings.TrimSpace(platformKey), strings.TrimSpace(accountName))
+	platformKey = strings.TrimSpace(platformKey)
+	accountName = strings.TrimSpace(accountName)
+	err := SaveCurrent(b.deps(), platformKey, accountName)
+	if err != nil {
+		slog.Default().Error("SaveCurrent failed",
+			"platform", platformKey,
+			"account", accountName,
+			"err", err)
+	}
+	return err
 }
 
 func (b *BasicService) AddNew(platformKey string) error {

@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"strings"
@@ -26,6 +26,10 @@ import (
 
 type FlowDeps struct {
 	PS *platform.PlatformService
+}
+
+func logFlow() *slog.Logger {
+	return slog.Default().With("component", "basic-flow")
 }
 
 func readDescriptor(platformKey string) (platform.Descriptor, []byte, error) {
@@ -132,6 +136,7 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 		}
 		delete(idsFileData.AccountTags, existingUID)
 		if oldDestRoot, derr := accountCacheDir(platformKey, existingName); derr == nil {
+			logFlow().Debug("remove superseded account cache", "path", oldDestRoot)
 			_ = os.RemoveAll(oldDestRoot)
 		}
 		_ = profileimage.DeleteCached(platformKey, existingUID)
@@ -145,9 +150,10 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 	if err != nil {
 		return err
 	}
+	logFlow().Debug("clear account cache before save", "path", destRoot)
 	_ = os.RemoveAll(destRoot)
 	if err := os.MkdirAll(destRoot, 0o755); err != nil {
-		return err
+		return fmt.Errorf("mkdir %s: %w", destRoot, err)
 	}
 
 	regDump := map[string]string{}
@@ -159,8 +165,9 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 			v, _, err := winutil.RegistryRead(enc)
 			if err != nil {
 				if d.AllFilesRequired {
-					return err
+					return fmt.Errorf("registry read %s: %w", liveKey, err)
 				}
+				logFlow().Debug("skipping optional registry read failure", "key", liveKey, "err", err)
 				continue
 			}
 			var s string
@@ -192,8 +199,9 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 			data, err := os.ReadFile(fp)
 			if err != nil {
 				if d.AllFilesRequired {
-					return err
+					return fmt.Errorf("read %s: %w", fp, err)
 				}
+				logFlow().Debug("skipping missing optional login file", "path", fp, "err", err)
 				continue
 			}
 			res := gjson.GetBytes(data, jp)
@@ -221,11 +229,12 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 			}
 			dst := filepath.Join(destRoot, filepath.FromSlash(cacheRel))
 			if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
-				return err
+				return fmt.Errorf("mkdir %s: %w", filepath.Dir(dst), err)
 			}
 			if err := fsutil.WriteFileAtomic(dst, chunk, 0o644); err != nil {
-				return err
+				return fmt.Errorf("write %s: %w", dst, err)
 			}
+			logFlow().Debug("wrote login fragment cache", "dst", dst)
 			continue
 		}
 		src := expandPlatformPath(liveKey, folder, ctx)
@@ -234,14 +243,15 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 			matches, _ := filepath.Glob(src)
 			globDestRoot := globDestinationRoot(destRoot, cacheRel)
 			if err := os.MkdirAll(globDestRoot, 0o755); err != nil {
-				return err
+				return fmt.Errorf("mkdir %s: %w", globDestRoot, err)
 			}
 			for _, m := range matches {
 				st, err := os.Stat(m)
 				if err != nil {
 					if d.AllFilesRequired {
-						return err
+						return fmt.Errorf("stat %s: %w", m, err)
 					}
+					logFlow().Debug("glob match missing", "path", m, "err", err)
 					continue
 				}
 				if st.IsDir() {
@@ -261,8 +271,9 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 		st, err := os.Stat(src)
 		if err != nil {
 			if d.AllFilesRequired {
-				return err
+				return fmt.Errorf("login file not found: %s: %w", src, err)
 			}
+			logFlow().Debug("skipping missing optional login path", "path", src, "err", err)
 			continue
 		}
 		if st.IsDir() {
@@ -271,7 +282,7 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 			}
 		} else {
 			if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
-				return err
+				return fmt.Errorf("mkdir %s: %w", filepath.Dir(dst), err)
 			}
 			if err := copyFile(src, dst); err != nil {
 				return err
@@ -284,9 +295,11 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 		if err != nil {
 			return err
 		}
-		if err := fsutil.WriteFileAtomic(filepath.Join(destRoot, "reg.json"), b, 0o644); err != nil {
-			return err
+		regPath := filepath.Join(destRoot, "reg.json")
+		if err := fsutil.WriteFileAtomic(regPath, b, 0o644); err != nil {
+			return fmt.Errorf("write %s: %w", regPath, err)
 		}
+		logFlow().Debug("wrote registry dump cache", "path", regPath)
 	}
 
 	ids, err := readIDs(platformKey)
@@ -314,10 +327,10 @@ func ensureUniqueIDOnSave(d platform.Descriptor, ctx platform.PathTokenContext) 
 		_, _ = rand.Read(b)
 		id := hex.EncodeToString(b)
 		if err := os.MkdirAll(filepath.Dir(p), 0o755); err != nil {
-			return "", err
+			return "", fmt.Errorf("mkdir %s: %w", filepath.Dir(p), err)
 		}
 		if err := fsutil.WriteFileAtomic(p, []byte(id), 0o644); err != nil {
-			return "", err
+			return "", fmt.Errorf("write %s: %w", p, err)
 		}
 		return id, nil
 	}
@@ -327,19 +340,22 @@ func ensureUniqueIDOnSave(d platform.Descriptor, ctx platform.PathTokenContext) 
 func copyFile(src, dst string) error {
 	in, err := os.Open(src)
 	if err != nil {
-		return err
+		return fmt.Errorf("open %s: %w", src, err)
 	}
 	defer in.Close()
 	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
-		return err
+		return fmt.Errorf("mkdir %s: %w", filepath.Dir(dst), err)
 	}
 	out, err := os.Create(dst)
 	if err != nil {
-		return err
+		return fmt.Errorf("create %s: %w", dst, err)
 	}
 	defer out.Close()
-	_, err = io.Copy(out, in)
-	return err
+	if _, err = io.Copy(out, in); err != nil {
+		return fmt.Errorf("copy %s -> %s: %w", src, dst, err)
+	}
+	logFlow().Debug("copied file", "src", src, "dst", dst)
+	return nil
 }
 
 func copyFileToDir(src, dir string) error {
@@ -347,17 +363,21 @@ func copyFileToDir(src, dir string) error {
 }
 
 func copyDir(src, dst string) error {
+	logFlow().Debug("copy directory tree", "src", src, "dst", dst)
 	return filepath.WalkDir(src, func(path string, de os.DirEntry, err error) error {
 		if err != nil {
-			return err
+			return fmt.Errorf("walk %s: %w", path, err)
 		}
 		rel, err := filepath.Rel(src, path)
 		if err != nil {
-			return err
+			return fmt.Errorf("rel %s: %w", path, err)
 		}
 		t := filepath.Join(dst, rel)
 		if de.IsDir() {
-			return os.MkdirAll(t, 0o755)
+			if err := os.MkdirAll(t, 0o755); err != nil {
+				return fmt.Errorf("mkdir %s: %w", t, err)
+			}
+			return nil
 		}
 		return copyFile(path, t)
 	})
@@ -468,25 +488,26 @@ func Login(deps FlowDeps, platformKey, accountName string) error {
 			cacheFile := filepath.Join(srcRoot, filepath.FromSlash(cacheRel))
 			chunk, err := os.ReadFile(cacheFile)
 			if err != nil {
-				return err
+				return fmt.Errorf("read %s: %w", cacheFile, err)
 			}
 			data, err := os.ReadFile(fp)
 			if os.IsNotExist(err) {
 				data = []byte("{}")
 				err = nil
 			} else if err != nil {
-				return err
+				return fmt.Errorf("read %s: %w", fp, err)
 			}
 			ns, err := sjson.SetRawBytes(data, jp, chunk)
 			if err != nil {
 				return err
 			}
 			if err := os.MkdirAll(filepath.Dir(fp), 0o755); err != nil {
-				return err
+				return fmt.Errorf("mkdir %s: %w", filepath.Dir(fp), err)
 			}
 			if err := fsutil.WriteFileAtomic(fp, ns, 0o644); err != nil {
-				return err
+				return fmt.Errorf("write %s: %w", fp, err)
 			}
+			logFlow().Debug("merged JSON login file", "path", fp)
 			continue
 		}
 		src := filepath.Join(srcRoot, filepath.FromSlash(cacheRel))
@@ -494,21 +515,23 @@ func Login(deps FlowDeps, platformKey, accountName string) error {
 		if hasGlobPattern(dst) {
 			globDstRoot := globPatternBaseDir(dst)
 			if err := os.MkdirAll(globDstRoot, 0o755); err != nil {
-				return err
+				return fmt.Errorf("mkdir %s: %w", globDstRoot, err)
 			}
 			st, err := os.Stat(src)
 			if err != nil {
 				if d.AllFilesRequired {
-					return err
+					return fmt.Errorf("stat %s: %w", src, err)
 				}
+				logFlow().Debug("skipping missing optional restore source", "path", src, "err", err)
 				continue
 			}
 			if st.IsDir() {
 				entries, err := os.ReadDir(src)
 				if err != nil {
 					if d.AllFilesRequired {
-						return err
+						return fmt.Errorf("readdir %s: %w", src, err)
 					}
+					logFlow().Debug("skipping restore source readdir failure", "path", src, "err", err)
 					continue
 				}
 				for _, entry := range entries {
@@ -536,8 +559,9 @@ func Login(deps FlowDeps, platformKey, accountName string) error {
 		st, err := os.Stat(src)
 		if err != nil {
 			if d.AllFilesRequired {
-				return err
+				return fmt.Errorf("restore source not found: %s: %w", src, err)
 			}
+			logFlow().Debug("skipping missing optional restore source", "path", src, "err", err)
 			continue
 		}
 		if st.IsDir() {
@@ -546,7 +570,7 @@ func Login(deps FlowDeps, platformKey, accountName string) error {
 			}
 		} else {
 			if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
-				return err
+				return fmt.Errorf("mkdir %s: %w", filepath.Dir(dst), err)
 			}
 			if err := copyFile(src, dst); err != nil {
 				return err
@@ -592,6 +616,7 @@ func ClearCurrentLogin(deps FlowDeps, platformKey string) error {
 			if err := platform.ValidateDeleteTargetPath(target); err != nil {
 				return err
 			}
+			logFlow().Debug("delete on session clear", "path", target)
 			_ = os.RemoveAll(target)
 		}
 	}
@@ -739,15 +764,15 @@ func launchBasicNoStatus(deps FlowDeps, platformKey string, extraLaunchArgs []st
 }
 
 func launchBasicNoStatusAs(deps FlowDeps, platformKey string, forceAdmin bool, extraLaunchArgs []string) error {
-	log.Printf("basic: launch begin platform=%s forceAdmin=%t extraArgs=%d", platformKey, forceAdmin, len(extraLaunchArgs))
+	logFlow().Debug("launch begin", "platform", platformKey, "forceAdmin", forceAdmin, "extraArgs", len(extraLaunchArgs))
 	d, _, err := readDescriptor(platformKey)
 	if err != nil {
-		log.Printf("basic: launch read descriptor failed platform=%s err=%v", platformKey, err)
+		logFlow().Warn("launch read descriptor failed", "platform", platformKey, "err", err)
 		return err
 	}
 	ps, err := platform.LoadPlatformSettings(platformKey)
 	if err != nil {
-		log.Printf("basic: launch load settings failed platform=%s err=%v", platformKey, err)
+		logFlow().Warn("launch load settings failed", "platform", platformKey, "err", err)
 		return err
 	}
 	if deps.PS == nil {
@@ -755,7 +780,7 @@ func launchBasicNoStatusAs(deps FlowDeps, platformKey string, forceAdmin bool, e
 	}
 	exe, err := deps.PS.ResolvePlatformExeFullPath(platformKey)
 	if err != nil || exe == "" {
-		log.Printf("basic: launch resolve exe failed platform=%s exe=%s err=%v", platformKey, exe, err)
+		logFlow().Warn("launch resolve exe failed", "platform", platformKey, "exe", exe, "err", err)
 		return fmt.Errorf("executable not found")
 	}
 	var args []string
@@ -777,12 +802,12 @@ func launchBasicNoStatusAs(deps FlowDeps, platformKey string, forceAdmin bool, e
 		WorkingDir:    filepath.Dir(exe),
 		AsDesktopUser: winutil.IsProcessElevated() && !admin,
 	}
-	log.Printf("basic: start request platform=%s exe=%s args=%d method=%s admin=%t", platformKey, exe, len(args), opts.Method, opts.Admin)
+	logFlow().Debug("start request", "platform", platformKey, "exe", exe, "args", len(args), "method", opts.Method, "admin", opts.Admin)
 	if err := winutil.Start(exe, args, opts); err != nil {
-		log.Printf("basic: start failed platform=%s exe=%s err=%v", platformKey, exe, err)
+		logFlow().Warn("start failed", "platform", platformKey, "exe", exe, "err", err)
 		return err
 	}
-	log.Printf("basic: start launched platform=%s exe=%s", platformKey, exe)
+	logFlow().Debug("start launched", "platform", platformKey, "exe", exe)
 	return nil
 }
 

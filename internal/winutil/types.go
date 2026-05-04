@@ -1,6 +1,13 @@
 package winutil
 
-import "errors"
+import (
+	"errors"
+	"log/slog"
+)
+
+func slogWin() *slog.Logger {
+	return slog.Default().With("component", "winutil")
+}
 
 // ErrUnsupported is returned by stubs on non-Windows builds.
 var ErrUnsupported = errors.New("winutil: unsupported on this platform")

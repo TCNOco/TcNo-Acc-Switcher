@@ -40,7 +40,7 @@ func uniqueFromRegKey(d platform.Descriptor) (string, error) {
 	}
 	v, typ, err := winutil.RegistryRead(enc)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("unique id registry REG:%s: %w", enc, err)
 	}
 	switch x := v.(type) {
 	case string:
@@ -57,7 +57,7 @@ func uniqueFromCreateIDFile(d platform.Descriptor, ctx platform.PathTokenContext
 	p := platform.ExpandPathTokens(platform.ExpandWindowsPath(d.UniqueIdFile), ctx)
 	data, err := os.ReadFile(p)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("read unique id file %s: %w", p, err)
 	}
 	return strings.TrimSpace(string(data)), nil
 }
@@ -66,7 +66,7 @@ func uniqueFromFileRegex(d platform.Descriptor, ctx platform.PathTokenContext) (
 	p := platform.ExpandPathTokens(platform.ExpandWindowsPath(d.UniqueIdFile), ctx)
 	data, err := os.ReadFile(p)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("read unique id file %s: %w", p, err)
 	}
 	re, err := platform.ExpandRegex(d.UniqueIdRegex)
 	if err != nil {
@@ -107,7 +107,7 @@ func uniqueFromJSONSelect(d platform.Descriptor, ctx platform.PathTokenContext) 
 	filePath = expandPlatformPath(filePath, ctx.PlatformFolder, ctx)
 	data, err := os.ReadFile(filePath)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("read unique id JSON file %s: %w", filePath, err)
 	}
 	res := gjson.GetBytes(data, jsonPath)
 	s := strings.TrimSpace(res.String())

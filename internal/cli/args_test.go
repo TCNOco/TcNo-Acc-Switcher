@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"log/slog"
 	"net/url"
 	"reflect"
 	"strings"
@@ -114,5 +115,46 @@ func TestParseOpenPageFlag(t *testing.T) {
 	j := p.RouteJSONForOpenPage()
 	if j == "" || !strings.Contains(j, "Steam") {
 		t.Fatalf("route json: %q", j)
+	}
+}
+
+func TestParseLogLevel(t *testing.T) {
+	idx := &PlatformIndex{Names: map[string]string{"steam": "Steam"}}
+	p, err := Parse([]string{"--log-level=warn", "Steam"}, idx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !p.LogLevelSet || p.LogLevel != slog.LevelWarn {
+		t.Fatalf("log level: got set=%v level=%v", p.LogLevelSet, p.LogLevel)
+	}
+	if p.EffectiveSlogLevel() != slog.LevelWarn {
+		t.Fatalf("effective: %v", p.EffectiveSlogLevel())
+	}
+}
+
+func TestParseVerboseSetsDebug(t *testing.T) {
+	p, err := Parse([]string{"-v"}, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if p.Verbose != true || p.EffectiveSlogLevel() != slog.LevelDebug {
+		t.Fatalf("got %#v effective=%v", p, p.EffectiveSlogLevel())
+	}
+}
+
+func TestParseLogLevelOverridesVerbose(t *testing.T) {
+	p, err := Parse([]string{"-v", "--log-level=error"}, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if p.EffectiveSlogLevel() != slog.LevelError {
+		t.Fatalf("want error, got %v", p.EffectiveSlogLevel())
+	}
+}
+
+func TestParseDuplicateLogLevel(t *testing.T) {
+	_, err := Parse([]string{"--log-level=info", "--log-level=debug"}, nil)
+	if err == nil || !strings.Contains(err.Error(), "duplicate") {
+		t.Fatalf("want duplicate error, got %v", err)
 	}
 }

@@ -2,6 +2,7 @@ package basic
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -50,7 +51,7 @@ func readIdsFile(platformKey string) (idsFile, error) {
 			normalizeTagMaps(&f)
 			return f, nil
 		}
-		return idsFile{}, err
+		return idsFile{}, fmt.Errorf("read %s: %w", p, err)
 	}
 	var f idsFile
 	if err := json.Unmarshal(data, &f); err != nil {
@@ -74,7 +75,7 @@ func writeIdsFile(platformKey string, f idsFile) error {
 		return err
 	}
 	if err := os.MkdirAll(filepath.Dir(p), 0o755); err != nil {
-		return err
+		return fmt.Errorf("mkdir %s: %w", filepath.Dir(p), err)
 	}
 	if f.IDs == nil {
 		f.IDs = map[string]string{}
@@ -87,7 +88,10 @@ func writeIdsFile(platformKey string, f idsFile) error {
 	if err != nil {
 		return err
 	}
-	return fsutil.WriteFileAtomic(p, data, 0o644)
+	if err := fsutil.WriteFileAtomic(p, data, 0o644); err != nil {
+		return fmt.Errorf("write %s: %w", p, err)
+	}
+	return nil
 }
 
 func readIDs(platformKey string) (map[string]string, error) {

@@ -4,7 +4,6 @@ package winutil
 
 import (
 	"fmt"
-	"log"
 	"path/filepath"
 	"strings"
 	"syscall"
@@ -165,7 +164,7 @@ func buildCommandLineForCreateProcess(args []string) string {
 
 func tryRunAsDesktopUser(exe string, args []string, workingDir string, hideWindow bool) bool {
 	if err := runAsDesktopUser(exe, args, workingDir, hideWindow); err != nil {
-		log.Printf("winutil: RunAsDesktopUser failed for %s: %v", exe, err)
+		slogWin().Debug("RunAsDesktopUser failed", "exe", exe, "err", err)
 		return false
 	}
 	return true

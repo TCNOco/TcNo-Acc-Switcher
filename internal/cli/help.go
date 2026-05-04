@@ -31,7 +31,8 @@ List:                --list-platforms
                      --json        JSON instead of plain text (use with list flags only)
 
 Other:               -h, --help    Show this help
-                     -v, --verbose Verbose logging (reserved)
+                     -v, --verbose Debug logging (same as --log-level=debug)
+                     --log-level=  Logging: debug, info, warn, error (app + Wails; default info)
                      -tray, --tray Start with the main window hidden (tray / background)
 
 Second instance forwards arguments to the running GUI via a named pipe (Windows).

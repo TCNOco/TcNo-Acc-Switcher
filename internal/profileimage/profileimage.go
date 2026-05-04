@@ -75,7 +75,7 @@ func CacheLocalFile(platformKey, accountID, src string) error {
 	}
 	data, err := os.ReadFile(src)
 	if err != nil {
-		return err
+		return fmt.Errorf("read profile image %s: %w", src, err)
 	}
 	_ = DeleteCached(platformKey, accountID)
 	ext := strings.TrimPrefix(strings.ToLower(filepath.Ext(src)), ".")
@@ -89,10 +89,13 @@ func CacheLocalFile(platformKey, accountID, src string) error {
 		return err
 	}
 	if err := os.MkdirAll(dir, 0o755); err != nil {
-		return err
+		return fmt.Errorf("mkdir profile cache %s: %w", dir, err)
 	}
 	dest := filepath.Join(dir, accountID+"."+ext)
-	return fsutil.WriteFileAtomic(dest, data, 0o644)
+	if err := fsutil.WriteFileAtomic(dest, data, 0o644); err != nil {
+		return fmt.Errorf("write profile cache %s: %w", dest, err)
+	}
+	return nil
 }
 
 // DeleteCached removes cached profile images for an account (any known extension).

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"strings"
@@ -81,6 +82,9 @@ func main() {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(2)
 	}
+
+	lvl := parsed.EffectiveSlogLevel()
+	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: lvl})))
 
 	if parsed.Kind == cli.KindHelp || parsed.Help {
 		fmt.Print(cli.HelpText())
@@ -341,6 +345,7 @@ func runGUI(parsed cli.Parsed) {
 	app := application.New(application.Options{
 		Name:        "TcNo Account Switcher",
 		Description: "A Superfast open-source account switcher",
+		LogLevel:    parsed.EffectiveSlogLevel(),
 		Services: []application.Service{
 			application.NewService(&GreetService{}),
 			application.NewService(&FilesystemService{}),

@@ -543,10 +543,10 @@
       "GetPathFromShortcutNamed": "Honkai Star Rail",
       "ExesToEnd": [ "StarRail.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
-      "LoginFiles": { "REG:HKCU\\Software\\Cognosphere\\Star Rail:MIHOYOSDK_ADL_PROD_OVERSEA_h1158948810": "UNIQUE_ID" },
+      "LoginFiles": { "REG:HKCU\\Software\\Cognosphere\\Star Rail:App_LastUserID_h2841727341": "UNIQUE_ID" },
       "ExitBeforeInteract": true,
       "AllFilesRequired": true,
-      "UniqueIdFile": "HKCU\\SOFTWARE\\Cognosphere\\Star Rail:MIHOYOSDK_ADL_PROD_OVERSEA_h1158948810",
+      "UniqueIdFile": "HKCU\\SOFTWARE\\Cognosphere\\Star Rail:App_LastUserID_h2841727341",
       "UniqueIdMethod": "REGKEY"
     },
     "Arena Breakout: Infinite": {

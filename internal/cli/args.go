@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"log/slog"
 	"net/url"
 	"path/filepath"
 	"strconv"
@@ -40,9 +41,22 @@ type Parsed struct {
 	StartInTray           bool     // -tray: start GUI with main window hidden
 	OutputJSON            bool     // --json: machine-readable stdout for list commands
 	ListAccountsPlatform  string   // KindListAccounts: empty = all platforms; else canonical name
+	LogLevelSet           bool     // true if --log-level was passed
+	LogLevel              slog.Level
 }
 
 const steamPlatformName = "Steam"
+
+// EffectiveSlogLevel returns the slog level for app and Wails logging.
+func (p Parsed) EffectiveSlogLevel() slog.Level {
+	if p.LogLevelSet {
+		return p.LogLevel
+	}
+	if p.Verbose {
+		return slog.LevelDebug
+	}
+	return slog.LevelInfo
+}
 
 // NormalizeProtocolArg strips tcno:// and returns the payload path (e.g. "s:765...").
 func NormalizeProtocolArg(s string) string {
@@ -95,6 +109,17 @@ func Parse(argv []string, idx *PlatformIndex) (Parsed, error) {
 			continue
 		case "--json", "-json":
 			p.OutputJSON = true
+			continue
+		}
+
+		if lvl, ok, err := parseLogLevelArg(a); err != nil {
+			return Parsed{}, err
+		} else if ok {
+			if p.LogLevelSet {
+				return Parsed{}, fmt.Errorf("duplicate --log-level")
+			}
+			p.LogLevel = lvl
+			p.LogLevelSet = true
 			continue
 		}
 
@@ -436,6 +461,45 @@ func parseSteamSwap(val string) (Parsed, error) {
 		SteamID64:    id,
 		PersonaState: state,
 	}, nil
+}
+
+func parseLogLevelArg(a string) (slog.Level, bool, error) {
+	s := strings.TrimSpace(a)
+	low := strings.ToLower(s)
+	const long = "--log-level="
+	const short = "-log-level="
+	var rest string
+	switch {
+	case strings.HasPrefix(low, long):
+		rest = strings.TrimSpace(s[len(long):])
+	case strings.HasPrefix(low, short):
+		rest = strings.TrimSpace(s[len(short):])
+	default:
+		return 0, false, nil
+	}
+	if rest == "" {
+		return 0, false, fmt.Errorf("--log-level: value required (debug, info, warn, error)")
+	}
+	lvl, err := parseLogLevelValue(rest)
+	if err != nil {
+		return 0, false, err
+	}
+	return lvl, true, nil
+}
+
+func parseLogLevelValue(s string) (slog.Level, error) {
+	switch strings.ToLower(strings.TrimSpace(s)) {
+	case "debug":
+		return slog.LevelDebug, nil
+	case "info":
+		return slog.LevelInfo, nil
+	case "warn", "warning":
+		return slog.LevelWarn, nil
+	case "error":
+		return slog.LevelError, nil
+	default:
+		return 0, fmt.Errorf("invalid --log-level %q (use debug, info, warn, error)", s)
+	}
 }
 
 // NeedsHeadlessMutex returns true when this process might run swap/logout without the GUI first.

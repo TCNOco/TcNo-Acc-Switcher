@@ -180,21 +180,21 @@ func IsProcessElevated() bool {
 // Start launches exe with args. Uses PowerShell Start-Process -Verb RunAs when opts.Admin.
 func Start(exe string, args []string, opts StartOpts) error {
 	if opts.AsDesktopUser && IsProcessElevated() {
-		log.Printf("winutil: start request exe=%s mode=desktop-user args=%d admin=%t method=%s", exe, len(args), opts.Admin, opts.Method)
+		slogWin().Debug("start request", "exe", exe, "mode", "desktop-user", "args", len(args), "admin", opts.Admin, "method", opts.Method)
 		return startAsDesktopUser(exe, args, opts)
 	}
 	exe = strings.TrimSpace(exe)
 	if exe == "" {
 		return fmt.Errorf("empty executable")
 	}
-	log.Printf("winutil: start request exe=%s args=%d admin=%t method=%s workingDir=%s", exe, len(args), opts.Admin, opts.Method, strings.TrimSpace(opts.WorkingDir))
+	slogWin().Debug("start request", "exe", exe, "args", len(args), "admin", opts.Admin, "method", opts.Method, "workingDir", strings.TrimSpace(opts.WorkingDir))
 	if opts.Admin {
 		err := startElevated(exe, args, opts)
 		if err != nil {
-			log.Printf("winutil: start failed exe=%s err=%v", exe, err)
+			slogWin().Warn("start failed", "exe", exe, "err", err)
 			return err
 		}
-		log.Printf("winutil: start launched exe=%s mode=elevated", exe)
+		slogWin().Debug("start launched", "exe", exe, "mode", "elevated")
 		return nil
 	}
 	cmd := exec.Command(exe, args...)
@@ -203,10 +203,10 @@ func Start(exe string, args []string, opts StartOpts) error {
 	}
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: opts.HideWindow}
 	if err := cmd.Start(); err != nil {
-		log.Printf("winutil: start failed exe=%s err=%v", exe, err)
+		slogWin().Warn("start failed", "exe", exe, "err", err)
 		return WrapIfElevationRequired(err)
 	}
-	log.Printf("winutil: start launched exe=%s pid=%d", exe, cmd.Process.Pid)
+	slogWin().Debug("start launched", "exe", exe, "pid", cmd.Process.Pid)
 	return nil
 }
 
@@ -256,7 +256,7 @@ func startAsDesktopUser(exe string, args []string, opts StartOpts) error {
 	if tryRunAsDesktopUser(exe, args, wd, opts.HideWindow) {
 		return nil
 	}
-	log.Printf("winutil: falling back to cmd start for %s", exe)
+	slogWin().Debug("falling back to cmd start", "exe", exe)
 	cmdline := append([]string{"/c", "start", "", exe}, args...)
 	cmd := exec.Command("cmd.exe", cmdline...)
 	if wd != "" {
