@@ -99,19 +99,23 @@
       "ExesToEnd": [ "Discord.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
-        "%AppData%\\discord\\settings.json": "settings.json",
-        "%AppData%\\discord\\Network Persistent State": "Network Persistent State",
-        "%AppData%\\discord\\Preferences": "Preferences",
-        "%AppData%\\discord\\TransportSecurity": "TransportSecurity",
+        "%AppData%\\discord\\blob_storage": "blob_storage\\",
         "%AppData%\\discord\\Cache\\index": "Cache\\index",
         "%AppData%\\discord\\Cache\\data_*": "Cache\\",
         "%AppData%\\discord\\Code Cache\\js\\index-dir\\the-real-index": "Code Cache\\js\\index-dir\\the-real-index",
-        "%AppData%\\discord\\GPUCache\\index": "GPUCache\\index",
-        "%AppData%\\discord\\Local Storage\\leveldb": "Local Storage\\leveldb\\",
-        "%AppData%\\discord\\Session Storage\\*.log": "Session Storage\\",
-        "%AppData%\\discord\\Session Storage\\*.ldb": "Session Storage\\",
-        "%AppData%\\discord\\blob_storage": "blob_storage\\",
-        "%AppData%\\discord\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
+        "%AppData%\\discord\\DawnGraphiteCache\\data_*": "DawnGraphiteCache\\",
+        "%AppData%\\discord\\DawnWebGPUCache\\data_*": "DawnWebGPUCache\\",
+        "%AppData%\\discord\\GPUCache\\data_*": "GPUCache\\",
+        "%AppData%\\discord\\Local Storage\\leveldb\\": "Local Storage\\leveldb\\",
+        "%AppData%\\discord\\Network\\": "Network\\",
+        "%AppData%\\discord\\sentry\\": "sentry\\",
+        "%AppData%\\discord\\Service Worker\\CacheStorage": "Service Worker\\CacheStorage\\",
+        "%AppData%\\discord\\Session Storage\\": "Session Storage\\",
+        "%AppData%\\discord\\shared_proto_db\\": "shared_proto_db\\",
+        "%AppData%\\discord\\settings.json": "settings.json",
+        "%AppData%\\discord\\Network Persistent State": "Network Persistent State",
+        "%AppData%\\discord\\Preferences": "Preferences",
+        "%AppData%\\discord\\TransportSecurity": "TransportSecurity"
       },
       "ExitBeforeInteract": true,
       "ExitBeforeSave": true,
@@ -120,6 +124,7 @@
         "CachePaths": [
           "%AppData%\\discord\\Cache\\f_*"
         ],
+        "SearchStartMenuForIcon": true,
         "BuiltInUsernameFile": "%userusername%",
         "BuiltInProfileImageFile": "https://cdn.discordapp.com/avatars/%userid%/%useravatar%.webp",
         "BuiltInUserId": "%userid%",
@@ -144,19 +149,23 @@
       "ExesToEnd": [ "DiscordCanary.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
-        "%AppData%\\discordcanary\\settings.json": "settings.json",
-        "%AppData%\\discordcanary\\Network Persistent State": "Network Persistent State",
-        "%AppData%\\discordcanary\\Preferences": "Preferences",
-        "%AppData%\\discordcanary\\TransportSecurity": "TransportSecurity",
+        "%AppData%\\discordcanary\\blob_storage": "blob_storage\\",
         "%AppData%\\discordcanary\\Cache\\index": "Cache\\index",
         "%AppData%\\discordcanary\\Cache\\data_*": "Cache\\",
         "%AppData%\\discordcanary\\Code Cache\\js\\index-dir\\the-real-index": "Code Cache\\js\\index-dir\\the-real-index",
-        "%AppData%\\discordcanary\\GPUCache\\index": "GPUCache\\index",
-        "%AppData%\\discordcanary\\Local Storage\\leveldb": "Local Storage\\leveldb\\",
-        "%AppData%\\discordcanary\\Session Storage\\*.log": "Session Storage\\",
-        "%AppData%\\discordcanary\\Session Storage\\*.ldb": "Session Storage\\",
-        "%AppData%\\discordcanary\\blob_storage": "blob_storage\\",
-        "%AppData%\\discordcanary\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
+        "%AppData%\\discordcanary\\DawnGraphiteCache\\data_*": "DawnGraphiteCache\\",
+        "%AppData%\\discordcanary\\DawnWebGPUCache\\data_*": "DawnWebGPUCache\\",
+        "%AppData%\\discordcanary\\GPUCache\\data_*": "GPUCache\\",
+        "%AppData%\\discordcanary\\Local Storage\\leveldb\\": "Local Storage\\leveldb\\",
+        "%AppData%\\discordcanary\\Network\\": "Network\\",
+        "%AppData%\\discordcanary\\sentry\\": "sentry\\",
+        "%AppData%\\discordcanary\\Service Worker\\CacheStorage": "Service Worker\\CacheStorage\\",
+        "%AppData%\\discordcanary\\Session Storage\\": "Session Storage\\",
+        "%AppData%\\discordcanary\\shared_proto_db\\": "shared_proto_db\\",
+        "%AppData%\\discordcanary\\settings.json": "settings.json",
+        "%AppData%\\discordcanary\\Network Persistent State": "Network Persistent State",
+        "%AppData%\\discordcanary\\Preferences": "Preferences",
+        "%AppData%\\discordcanary\\TransportSecurity": "TransportSecurity"
       },
       "ExitBeforeInteract": true,
       "ExitBeforeSave": true,
@@ -165,6 +174,7 @@
         "CachePaths": [
           "%AppData%\\discordcanary\\Cache\\f_*"
         ],
+        "SearchStartMenuForIcon": true,
         "BuiltInUsernameFile": "%userusername%",
         "BuiltInProfileImageFile": "https://cdn.discordapp.com/avatars/%userid%/%useravatar%.webp",
         "BuiltInUserId": "%userid%",
@@ -226,45 +236,6 @@
       },
       "UniqueIdFile": "leveldb:%AppData%\\discordptb\\Local Storage\\leveldb:_https://ptb.discord.comMultiAccountStore:_state.users.0.id",
       "UniqueIdMethod": "LEVELDB"
-    },
-    "Discord PTB2": {
-      "Identifiers": [
-        "dp",
-        "discordptb",
-        "ptb"
-      ],
-      "ExeLocationDefault": "%LocalAppData%\\DiscordPTB\\Update.exe",
-      "GetPathFromShortcutNamed": "Discord PTB",
-      "ExeExtraArgs": "--processStart DiscordPTB.exe",
-      "ExesToEnd": [ "DiscordPTB.exe" ],
-      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
-      "LoginFiles": {
-        "%AppData%\\discordptb\\settings.json": "settings.json",
-        "%AppData%\\discordptb\\Network Persistent State": "Network Persistent State",
-        "%AppData%\\discordptb\\Preferences": "Preferences",
-        "%AppData%\\discordptb\\TransportSecurity": "TransportSecurity",
-        "%AppData%\\discordptb\\Cache\\index": "Cache\\index",
-        "%AppData%\\discordptb\\Cache\\data_*": "Cache\\",
-        "%AppData%\\discordptb\\Code Cache\\js\\index-dir\\the-real-index": "Code Cache\\js\\index-dir\\the-real-index",
-        "%AppData%\\discordptb\\GPUCache\\index": "GPUCache\\index",
-        "%AppData%\\discordptb\\Local Storage\\leveldb\\": "Local Storage\\leveldb\\",
-        "%AppData%\\discordptb\\Session Storage\\*.log": "Session Storage\\",
-        "%AppData%\\discordptb\\Session Storage\\*.ldb": "Session Storage\\",
-        "%AppData%\\discordptb\\blob_storage": "blob_storage\\",
-        "%AppData%\\discordptb\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
-      },
-      "ExitBeforeInteract": true,
-      "Extras": {
-        "CachePaths": [
-          "%AppData%\\discordptb\\Cache\\f_*"
-        ],
-        "UsernameModalExtraButtons": "Platforms\\Discord\\Username.html",
-        "UsernameModalCopyText": "Platforms\\Discord\\Username.js",
-        "UsernameModalHintText": "Platform_DiscordPasteHint",
-        "SearchStartMenuForIcon": true
-      },
-      "UniqueIdFile": "%AppData%\\discordptb\\TcNoAccSwitcher-ID.instance",
-      "UniqueIdMethod": "CREATE_ID_FILE"
     },
     "Riot Games": {
       "Identifiers": [ "r", "riot", "riotgames" ],
