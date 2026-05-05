@@ -116,6 +116,7 @@
       "ExitBeforeInteract": true,
       "ExitBeforeSave": true,
       "Extras": {
+        "ClosingMethod": "Electron",
         "CachePaths": [
           "%AppData%\\discord\\Cache\\f_*"
         ],
@@ -160,6 +161,7 @@
       "ExitBeforeInteract": true,
       "ExitBeforeSave": true,
       "Extras": {
+        "ClosingMethod": "Electron",
         "CachePaths": [
           "%AppData%\\discordcanary\\Cache\\f_*"
         ],
@@ -208,7 +210,7 @@
       "ExitBeforeInteract": true,
       "ExitBeforeSave": true,
       "Extras": {
-        "ClosingMethod": "Combined",
+        "ClosingMethod": "Electron",
         "CachePaths": [
           "%AppData%\\discordptb\\Cache\\f_*"
         ],

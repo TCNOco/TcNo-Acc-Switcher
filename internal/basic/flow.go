@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"time"
 
 	"TcNo-Acc-Switcher/internal/cli"
 	"TcNo-Acc-Switcher/internal/fsutil"
@@ -31,6 +32,49 @@ type FlowDeps struct {
 
 func logFlow() *slog.Logger {
 	return slog.Default().With("component", "basic-flow")
+}
+
+const (
+	electronKillForegroundWait   = 20 * time.Second
+	electronKillForegroundSettle = 450 * time.Millisecond
+)
+
+func primaryExeImageForKill(exes []string) string {
+	const svc = "SERVICE:"
+	for _, raw := range exes {
+		e := strings.TrimSpace(raw)
+		if e == "" || strings.HasPrefix(strings.ToUpper(e), strings.ToUpper(svc)) {
+			continue
+		}
+		base := filepath.Base(e)
+		if !strings.HasSuffix(strings.ToLower(base), ".exe") {
+			base = strings.TrimSpace(e) + ".exe"
+		}
+		return base
+	}
+	return ""
+}
+
+// electronBeforeKillSynth runs the same launch as the platform button, then waits for that exe to own the foreground.
+func electronBeforeKillSynth(deps FlowDeps, platformKey string, exes []string) func() error {
+	ps, err := platform.LoadPlatformSettings(platformKey)
+	if err != nil || winutil.ClosingMethod(ps.ClosingMethod) != winutil.ClosingElectron {
+		return nil
+	}
+	want := primaryExeImageForKill(exes)
+	if want == "" {
+		return nil
+	}
+	return func() error {
+		if err := launchBasicNoStatus(deps, platformKey, nil); err != nil {
+			return err
+		}
+		if !winutil.WaitForegroundForExe(want, electronKillForegroundWait) {
+			logFlow().Warn("electron kill: foreground wait timeout", "image", want)
+		}
+		time.Sleep(electronKillForegroundSettle)
+		return nil
+	}
 }
 
 // regDumpEntry is one value in reg.json. Legacy files used a plain JSON string per key.
@@ -270,7 +314,7 @@ func SaveCurrent(deps FlowDeps, platformKey, accountName string) error {
 			return err
 		}
 		platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatform", platformKey)
-		_ = winutil.KillByName(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod))
+		_ = winutil.KillByName(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod), electronBeforeKillSynth(deps, platformKey, d.ExesToEnd))
 	}
 	platform.EmitActionBarStatusI18n("Status_ActionBar_SavingSession")
 
@@ -990,7 +1034,7 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 	if err := winutil.ErrIfCannotKill(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod)); err != nil {
 		return err
 	}
-	_ = winutil.KillByName(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod))
+	_ = winutil.KillByName(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod), electronBeforeKillSynth(deps, platformKey, d.ExesToEnd))
 
 	ids, err := readIDs(platformKey)
 	if err != nil {
@@ -1061,7 +1105,7 @@ func AddNew(deps FlowDeps, platformKey string) error {
 	if err := winutil.ErrIfCannotKill(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod)); err != nil {
 		return err
 	}
-	_ = winutil.KillByName(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod))
+	_ = winutil.KillByName(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod), electronBeforeKillSynth(deps, platformKey, d.ExesToEnd))
 	platform.EmitActionBarStatusI18n("Status_ActionBar_ClearingSession")
 	if err := ClearCurrentLogin(deps, platformKey); err != nil {
 		return err

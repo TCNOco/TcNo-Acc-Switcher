@@ -122,6 +122,9 @@ func normalizeClosingMethodForOS(raw string) string {
 		if strings.EqualFold(m, string(winutil.ClosingTaskKill)) {
 			return string(winutil.ClosingTaskKill)
 		}
+		if strings.EqualFold(m, string(winutil.ClosingElectron)) {
+			return string(winutil.ClosingElectron)
+		}
 	}
 	return string(winutil.ClosingCombined)
 }

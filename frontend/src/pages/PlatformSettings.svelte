@@ -143,13 +143,14 @@
     }
   }
 
-  const closingValues = ["Combined", "Close", "TaskKill"] as const;
+  const closingValues = ["Combined", "Close", "TaskKill", "Electron"] as const;
   const startingValues = ["Default", "Direct"] as const;
 
   function closingLabel(v: string): string {
     if (v === "Combined") return "Combined (Best)";
     if (v === "Close") return "Close";
     if (v === "TaskKill") return "TaskKill (Old)";
+    if (v === "Electron") return "Electron / Discord (recommended)";
     return v;
   }
 

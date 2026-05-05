@@ -65,7 +65,7 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 	if err := winutil.ErrIfCannotKill(steamKillNames, winutil.ClosingMethod(st.ClosingMethod)); err != nil {
 		return err
 	}
-	if err := winutil.KillByName(steamKillNames, winutil.ClosingMethod(st.ClosingMethod)); err != nil {
+	if err := winutil.KillByName(steamKillNames, winutil.ClosingMethod(st.ClosingMethod), nil); err != nil {
 		steamLog.Warn("kill steam processes", slog.Any("err", err))
 	}
 
