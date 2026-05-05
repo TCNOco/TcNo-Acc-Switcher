@@ -202,6 +202,41 @@ func RegistryReadValuesMatchingNameGlob(keyPath, valueNameGlob string) (map[stri
 	return out, nil
 }
 
+// RegistryReadFirstValueMatchingNameGlob returns the first value under keyPath whose name matches
+// valueNameGlob (path/filepath syntax), using the order returned by ReadValueNames.
+func RegistryReadFirstValueMatchingNameGlob(keyPath, valueNameGlob string) (valueName string, val any, typ uint32, err error) {
+	hive, sub, err := parseHiveSubKeyPath(keyPath)
+	if err != nil {
+		return "", nil, 0, err
+	}
+	key, err := registry.OpenKey(hive, sub, registry.QUERY_VALUE)
+	if err != nil {
+		return "", nil, 0, err
+	}
+	defer key.Close()
+
+	names, err := key.ReadValueNames(0)
+	if err != nil {
+		return "", nil, 0, err
+	}
+	for _, name := range names {
+		ok, err := filepath.Match(valueNameGlob, name)
+		if err != nil {
+			return "", nil, 0, fmt.Errorf("registry value name glob %q: %w", valueNameGlob, err)
+		}
+		if !ok {
+			continue
+		}
+		v, typ, err := readRegistryValueAt(key, name)
+		if err != nil {
+			slogWin().Debug("skip registry value in glob read", "value", name, "err", err)
+			continue
+		}
+		return name, v, typ, nil
+	}
+	return "", nil, 0, fmt.Errorf("registry glob %s:%s matched no values", keyPath, valueNameGlob)
+}
+
 func deleteEntireSubkey(hive registry.Key, sub string) error {
 	k, err := registry.OpenKey(hive, sub, registry.ENUMERATE_SUB_KEYS|registry.QUERY_VALUE|registry.SET_VALUE)
 	if err != nil {

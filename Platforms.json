@@ -415,11 +415,14 @@
       "ExesToEnd": [ "MTGA.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
-        "REG:HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:*": "*"
+        "REG:HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:LastLoginString_*": "UNIQUE_ID",
+        "REG:HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:LastLoginDate_*": "LastLoginDate_*",
+        "REG:HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:unity.*": "unity.*",
+        "REG:HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:WAS-*": "WAS-*"
       },
       "RegDeleteOnClear": true,
       "ExitBeforeInteract": true,
-      "UniqueIdFile": "HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:LastLoginString_h2517025721",
+      "UniqueIdFile": "HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:LastLoginString_*",
       "UniqueIdMethod": "REGKEY"
     },
     "PS Remote Play": {

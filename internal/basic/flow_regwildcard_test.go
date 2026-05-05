@@ -36,3 +36,14 @@ func TestRegDumpLookupValueNameGlobBundle(t *testing.T) {
 		t.Fatal("filepath.Match sanity")
 	}
 }
+
+func TestFirstValueNameMatchingGlobStableOrder(t *testing.T) {
+	v := map[string]regDumpEntry{
+		"LastLoginString_z": {V: "z", T: 1},
+		"LastLoginString_a": {V: "a", T: 1},
+	}
+	got := firstValueNameMatchingGlob(v, "LastLoginString_*")
+	if got != "LastLoginString_a" {
+		t.Fatalf("got %q want lexicographically smallest matching name", got)
+	}
+}

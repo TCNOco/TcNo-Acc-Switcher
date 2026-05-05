@@ -39,6 +39,11 @@ func RegistryReadValuesMatchingNameGlob(keyPath, valueNameGlob string) (map[stri
 	return nil, ErrUnsupported
 }
 
+// RegistryReadFirstValueMatchingNameGlob is only supported on Windows.
+func RegistryReadFirstValueMatchingNameGlob(keyPath, valueNameGlob string) (valueName string, val any, typ uint32, err error) {
+	return "", nil, 0, ErrUnsupported
+}
+
 // RegistryClearValuesMatchingNameGlob is only supported on Windows.
 func RegistryClearValuesMatchingNameGlob(keyPath, valueNameGlob string, deleteValues bool) error {
 	return ErrUnsupported

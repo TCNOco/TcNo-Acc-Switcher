@@ -38,10 +38,21 @@ func uniqueFromRegKey(d platform.Descriptor) (string, error) {
 	if enc == "" {
 		return "", fmt.Errorf("empty UniqueIdFile")
 	}
+	if kp, vglob, ok := splitRegistryKeyPathAndValueGlob(enc); ok {
+		_, v, typ, err := winutil.RegistryReadFirstValueMatchingNameGlob(kp, vglob)
+		if err != nil {
+			return "", fmt.Errorf("unique id registry REG:%s: %w", enc, err)
+		}
+		return registryCellToUniqueString(v, typ)
+	}
 	v, typ, err := winutil.RegistryRead(enc)
 	if err != nil {
 		return "", fmt.Errorf("unique id registry REG:%s: %w", enc, err)
 	}
+	return registryCellToUniqueString(v, typ)
+}
+
+func registryCellToUniqueString(v any, typ uint32) (string, error) {
 	switch x := v.(type) {
 	case string:
 		return strings.TrimSpace(x), nil

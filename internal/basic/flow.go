@@ -9,6 +9,7 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"TcNo-Acc-Switcher/internal/cli"
@@ -144,6 +145,24 @@ func regDumpLookup(m map[string]regDumpEntry, descriptorKey string) (regDumpEntr
 		}
 	}
 	return regDumpEntry{}, false
+}
+
+// firstValueNameMatchingGlob picks one value name in a reg.json bundle that matches valueNameGlob.
+// If several names match, the lexicographically smallest is used so behavior is stable.
+func firstValueNameMatchingGlob(values map[string]regDumpEntry, valueNameGlob string) string {
+	var names []string
+	for vn := range values {
+		ok, err := filepath.Match(valueNameGlob, vn)
+		if err != nil || !ok {
+			continue
+		}
+		names = append(names, vn)
+	}
+	if len(names) == 0 {
+		return ""
+	}
+	sort.Strings(names)
+	return names[0]
 }
 
 func writeRegistryFromRegDump(liveKey string, e regDumpEntry) error {
@@ -478,14 +497,35 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 				mapKey = "REG:" + enc
 			}
 			if _, exists := regDump[mapKey]; !exists {
-				v, typ, err := winutil.RegistryRead(enc)
-				if err != nil {
-					if d.AllFilesRequired {
-						return fmt.Errorf("registry read unique id %s: %w", uidKey, err)
+				if kp, vglob, ok := splitRegistryKeyPathAndValueGlob(enc); ok {
+					matched, err := winutil.RegistryReadValuesMatchingNameGlob(kp, vglob)
+					if err != nil {
+						if d.AllFilesRequired {
+							return fmt.Errorf("registry read unique id %s: %w", uidKey, err)
+						}
+						logFlow().Debug("skipping optional unique id registry read failure", "key", uidKey, "err", err)
+					} else if len(matched) == 0 {
+						if d.AllFilesRequired {
+							return fmt.Errorf("registry glob unique id %s matched no values", uidKey)
+						}
+						logFlow().Debug("skipping optional unique id registry glob: no matches", "key", uidKey)
+					} else {
+						inner := make(map[string]regDumpEntry, len(matched))
+						for vn, cell := range matched {
+							inner[vn] = regDumpEntry{V: registryValueStringForDump(cell.Val), T: cell.Typ}
+						}
+						regDump[mapKey] = regDumpEntry{Values: inner}
 					}
-					logFlow().Debug("skipping optional unique id registry read failure", "key", uidKey, "err", err)
 				} else {
-					regDump[mapKey] = regDumpEntry{V: registryValueStringForDump(v), T: typ}
+					v, typ, err := winutil.RegistryRead(enc)
+					if err != nil {
+						if d.AllFilesRequired {
+							return fmt.Errorf("registry read unique id %s: %w", uidKey, err)
+						}
+						logFlow().Debug("skipping optional unique id registry read failure", "key", uidKey, "err", err)
+					} else {
+						regDump[mapKey] = regDumpEntry{V: registryValueStringForDump(v), T: typ}
+					}
 				}
 			}
 		}
@@ -650,11 +690,40 @@ func Login(deps FlowDeps, platformKey, accountName string) error {
 					}
 				}
 				if targetID != "" {
-					if e, ok := regDumpLookup(regDump, uidKey); ok {
+					enc := stripREG(uidKey)
+					mapKey := uidKey
+					if !isREG(mapKey) {
+						mapKey = "REG:" + enc
+					}
+					var wrote bool
+					if kp, vglob, ok := splitRegistryKeyPathAndValueGlob(enc); ok {
+						if bundle, ok := regDump[mapKey]; ok && len(bundle.Values) > 0 {
+							if vn := firstValueNameMatchingGlob(bundle.Values, vglob); vn != "" {
+								cell := bundle.Values[vn]
+								wk := "REG:" + kp + ":" + vn
+								if err := writeRegistryFromRegDump(wk, regDumpEntry{V: targetID, T: cell.T}); err != nil {
+									return err
+								}
+								wrote = true
+							}
+						}
+						if !wrote {
+							vn, _, typ, err := winutil.RegistryReadFirstValueMatchingNameGlob(kp, vglob)
+							if err == nil && vn != "" {
+								full := "REG:" + kp + ":" + vn
+								if err := writeRegistryFromRegDump(full, regDumpEntry{V: targetID, T: typ}); err != nil {
+									return err
+								}
+								wrote = true
+							}
+						}
+					} else if e, ok := regDumpLookup(regDump, uidKey); ok {
 						if err := writeRegistryFromRegDump(uidKey, regDumpEntry{V: targetID, T: e.T}); err != nil {
 							return err
 						}
-					} else {
+						wrote = true
+					}
+					if !wrote {
 						if err := winutil.RegistryWrite(stripREG(uidKey), targetID); err != nil {
 							return err
 						}
