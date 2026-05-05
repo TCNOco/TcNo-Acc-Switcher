@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"os"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -29,6 +30,7 @@ type levelDBReference struct {
 type levelDBHandle struct {
 	db         *leveldb.DB
 	lastAccess time.Time
+	removeTemp func() // optional: remove temp dir used when opening a snapshot copy
 }
 
 type levelDBStore struct {
@@ -135,6 +137,40 @@ func resolveLevelDBReference(raw string, ctx platform.PathTokenContext) (string,
 	return sharedLevelDBStore.readValueFresh(dbPath, ref.Key, ref.JSONPath)
 }
 
+func levelDBOpenMayBeSharingViolation(err error) bool {
+	if err == nil {
+		return false
+	}
+	s := strings.ToLower(err.Error())
+	return strings.Contains(s, "being used by another process") ||
+		strings.Contains(s, "sharing violation") ||
+		strings.Contains(s, "used by another process")
+}
+
+func openReadOnlyLevelDBWithTempCopyFallback(dbPath string) (db *leveldb.DB, cleanup func(), err error) {
+	db, err = openReadOnlyLevelDB(dbPath)
+	if err == nil {
+		return db, nil, nil
+	}
+	origErr := err
+	if !levelDBOpenMayBeSharingViolation(origErr) {
+		return nil, nil, origErr
+	}
+	tmp, cerr := leveldbLockedDirROSnapshot(dbPath)
+	if cerr != nil {
+		slog.Debug("leveldb temp snapshot skipped", "dbPath", dbPath, "copyErr", cerr)
+		return nil, nil, origErr
+	}
+	slog.Debug("leveldb opened from temp snapshot", "dbPath", dbPath, "tempDir", tmp)
+	db2, err2 := openReadOnlyLevelDB(tmp)
+	if err2 != nil {
+		_ = os.RemoveAll(tmp)
+		slog.Debug("leveldb temp snapshot open failed", "tempDir", tmp, "err", err2)
+		return nil, nil, origErr
+	}
+	return db2, func() { _ = os.RemoveAll(tmp) }, nil
+}
+
 func (s *levelDBStore) readValueFresh(dbPath, key, jsonPath string) (string, error) {
 	dbPath = filepath.Clean(strings.TrimSpace(dbPath))
 	if dbPath == "" {
@@ -145,13 +181,16 @@ func (s *levelDBStore) readValueFresh(dbPath, key, jsonPath string) (string, err
 		return "", fmt.Errorf("empty leveldb key")
 	}
 	slog.Debug("leveldb open db handle", "dbPath", dbPath, "source", "fresh-read")
-	db, err := openReadOnlyLevelDB(dbPath)
+	db, cleanup, err := openReadOnlyLevelDBWithTempCopyFallback(dbPath)
 	if err != nil {
 		return "", fmt.Errorf("open leveldb %s: %w", dbPath, err)
 	}
 	defer func() {
 		slog.Debug("leveldb close db handle", "dbPath", dbPath, "reason", "fresh-read")
 		_ = db.Close()
+		if cleanup != nil {
+			cleanup()
+		}
 	}()
 	return readLevelDBValue(dbPath, db, key, jsonPath)
 }
@@ -169,12 +208,12 @@ func (s *levelDBStore) readValue(dbPath, key, jsonPath string) (string, error) {
 	h, ok := s.handles[dbPath]
 	if !ok {
 		slog.Debug("leveldb open db handle", "dbPath", dbPath, "source", "cache-miss")
-		db, err := openReadOnlyLevelDB(dbPath)
+		db, cleanup, err := openReadOnlyLevelDBWithTempCopyFallback(dbPath)
 		if err != nil {
 			s.mu.Unlock()
 			return "", fmt.Errorf("open leveldb %s: %w", dbPath, err)
 		}
-		h = &levelDBHandle{db: db, lastAccess: time.Now()}
+		h = &levelDBHandle{db: db, lastAccess: time.Now(), removeTemp: cleanup}
 		s.handles[dbPath] = h
 		logAllLevelDBKeys(dbPath, db)
 	} else {
@@ -322,7 +361,7 @@ func (c indexedDBComparer) Successor(dst, b []byte) []byte {
 
 func (s *levelDBStore) closeIdle(maxIdle time.Duration) {
 	cutoff := time.Now().Add(-maxIdle)
-	var closeList []*leveldb.DB
+	var closeList []*levelDBHandle
 
 	s.mu.Lock()
 	for p, h := range s.handles {
@@ -332,30 +371,36 @@ func (s *levelDBStore) closeIdle(maxIdle time.Duration) {
 		}
 		if h.lastAccess.Before(cutoff) {
 			slog.Debug("leveldb close idle db handle", "dbPath", p, "idleBefore", cutoff.Format(time.RFC3339))
-			closeList = append(closeList, h.db)
+			closeList = append(closeList, h)
 			delete(s.handles, p)
 		}
 	}
 	s.mu.Unlock()
 
-	for _, db := range closeList {
-		_ = db.Close()
+	for _, h := range closeList {
+		_ = h.db.Close()
+		if h.removeTemp != nil {
+			h.removeTemp()
+		}
 	}
 }
 
 func (s *levelDBStore) closeAll() {
-	var closeList []*leveldb.DB
+	var closeList []*levelDBHandle
 	s.mu.Lock()
 	for p, h := range s.handles {
 		if h != nil && h.db != nil {
 			slog.Debug("leveldb close db handle", "dbPath", p, "reason", "close-all")
-			closeList = append(closeList, h.db)
+			closeList = append(closeList, h)
 		}
 		delete(s.handles, p)
 	}
 	s.mu.Unlock()
-	for _, db := range closeList {
-		_ = db.Close()
+	for _, h := range closeList {
+		_ = h.db.Close()
+		if h.removeTemp != nil {
+			h.removeTemp()
+		}
 	}
 }
 
