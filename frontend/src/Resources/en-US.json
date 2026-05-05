@@ -375,6 +375,7 @@
   "Status_GetUniqueId": "Collecting unique user ID",
   "Status_CopyingFiles": "Copying user files...",
   "Status_HandlingImage": "Handling account profile image",
+  "Status_ActionBar_PreparingSave": "Preparing save…",
   "Status_ActionBar_SavingSession": "Saving current session…",
   "Status_ActionBar_ClearingSession": "Clearing current session…",
   "Status_ActionBar_RestoringAccount": "Restoring saved account…",

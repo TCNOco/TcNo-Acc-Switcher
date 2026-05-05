@@ -370,7 +370,11 @@
       suggestedName = await (
         BasicService as unknown as { SuggestedSaveAccountName: (platformKey: string) => Promise<string> }
       ).SuggestedSaveAccountName(name);
-    } catch {
+    } catch (e) {
+      await offerRestartIfNeedsAdmin(e, name);
+      if (isNeedsAdminError(e)) {
+        return;
+      }
       suggestedName = "";
     }
     const displayName = await openPrompt({
@@ -432,6 +436,7 @@
         return;
       }
       if (kind === "saveCurrent") {
+        actionBarStatus.set($t("Status_ActionBar_PreparingSave"));
         await saveCurrentPrompt();
         return;
       }
