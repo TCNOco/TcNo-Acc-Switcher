@@ -627,6 +627,24 @@
     }
   }
 
+  async function launchSteamForSelection(): Promise<void> {
+    const selected = accountBySteamId(selectedSteamId);
+    if (selectedSteamId && selected && !selected.currentSession) {
+      try {
+        await SteamService.SwapToSteamAccount(selectedSteamId, -1, []);
+      } catch (e) {
+        await reportSteamSwitchFailure(e);
+        return;
+      }
+    }
+    try {
+      await SteamService.LaunchSteam();
+      scheduleSteamAccountsRefresh();
+    } catch (e) {
+      await reportLaunchFailure(e, name);
+    }
+  }
+
   async function handlePlatformActionKind(
     kind: "login" | "addNew" | "launch" | "saveCurrent",
   ): Promise<void> {
@@ -634,12 +652,7 @@
       return;
     }
     if (kind === "launch") {
-      try {
-        await SteamService.LaunchSteam();
-        scheduleSteamAccountsRefresh();
-      } catch (e) {
-        await reportLaunchFailure(e, name);
-      }
+      await launchSteamForSelection();
       return;
     }
     if (kind === "addNew") {

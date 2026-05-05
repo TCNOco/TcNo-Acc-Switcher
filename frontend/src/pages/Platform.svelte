@@ -341,6 +341,24 @@
     }
   }
 
+  async function launchPlatformForSelection(): Promise<void> {
+    const selected = accountById(selectedUniqueId);
+    if (selectedUniqueId && selected && !selected.currentSession) {
+      try {
+        await BasicService.SwapToAccount(name, selectedUniqueId, []);
+      } catch (e) {
+        await reportBasicSwitchFailure(e);
+        return;
+      }
+    }
+    try {
+      await LaunchPlatform(name);
+      scheduleAccountsRefresh();
+    } catch (e) {
+      await reportLaunchFailure(e, name);
+    }
+  }
+
   async function saveCurrentPrompt(): Promise<void> {
     const displayName = await openPrompt({
       title: $t("Modal_SaveCurrent_Title"),
@@ -369,12 +387,7 @@
     kind: "login" | "addNew" | "launch" | "saveCurrent",
   ): Promise<void> {
     if (kind === "launch") {
-      try {
-        await LaunchPlatform(name);
-        scheduleAccountsRefresh();
-      } catch (e) {
-        await reportLaunchFailure(e, name);
-      }
+      await launchPlatformForSelection();
       return;
     }
     if (kind === "addNew") {
