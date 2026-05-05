@@ -276,7 +276,8 @@
       "ExesToEnd": [ "EADesktop.exe", "EABackgroundService.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
-        "%LocalAppData%\\Electronic Arts\\EA Desktop\\": "LocalAppData\\"
+        "%LocalAppData%\\Electronic Arts\\EA Desktop\\": "LocalAppData\\",
+        "%ProgramData%\\EA Desktop\\": "ProgramData\\"
       },
       "Extras": {
         "CachePaths": [

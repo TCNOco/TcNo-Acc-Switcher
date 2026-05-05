@@ -52,51 +52,85 @@ func EASuggestedName(dataPattern, userIniPattern string) (string, error) {
 }
 
 func parseEAAvatarURLForUserIDs(data []byte, userIDs []string) string {
+	// When we know candidate user IDs, do NOT fall back to "first me" match.
+	// Otherwise we can pick a different user from another cached response.
+	if len(userIDs) == 0 {
+		return parseEAAvatarURLForUserID(data, "")
+	}
 	for _, uid := range userIDs {
 		url := parseEAAvatarURLForUserID(data, uid)
-		if url != "" {
+		if strings.TrimSpace(url) != "" {
 			return url
 		}
 	}
-	return parseEAAvatarURLForUserID(data, "")
+	return ""
 }
 
 func parseEAAvatarURLForUserID(data []byte, userID string) string {
-	const marker = `{"data":{"me":`
-	searchFrom := data
-	if strings.TrimSpace(userID) != "" {
-		userMarker := []byte(`{"data":{"me":{"id":"` + strings.TrimSpace(userID) + `"`)
-		start := bytes.Index(data, userMarker)
-		if start < 0 {
+	uid := strings.TrimSpace(userID)
+	if uid == "" {
+		return firstLargeURL(data)
+	}
+
+	idNeedle := []byte(`"id":"` + uid + `"`)
+	if len(idNeedle) == 0 {
+		return ""
+	}
+
+	blockMarker := []byte(`{"data":{`)
+	off := 0
+	for {
+		idPosRel := bytes.Index(data[off:], idNeedle)
+		if idPosRel < 0 {
 			return ""
 		}
-		searchFrom = data[start:]
+		idPos := off + idPosRel
+
+		// Treat a "block" as from nearest preceding {"data":{ to the next one.
+		blockStart := bytes.LastIndex(data[:idPos], blockMarker)
+		if blockStart < 0 {
+			blockStart = 0
+		}
+		blockEnd := len(data)
+		if next := bytes.Index(data[idPos:], blockMarker); next > 0 {
+			blockEnd = idPos + next
+		}
+		if blockEnd > blockStart {
+			if u := firstLargeURL(data[blockStart:blockEnd]); u != "" {
+				return u
+			}
+		}
+
+		off = idPos + 1
 	}
-	start := bytes.Index(searchFrom, []byte(marker))
-	if start < 0 {
-		return ""
+}
+
+func firstLargeURL(data []byte) string {
+	search := data
+	for {
+		largeIdx := bytes.Index(search, []byte(`"large"`))
+		if largeIdx < 0 {
+			return ""
+		}
+		afterLarge := search[largeIdx:]
+		pathIdx := bytes.Index(afterLarge, []byte(`"path":"`))
+		if pathIdx < 0 {
+			search = afterLarge[len(`"large"`):]
+			continue
+		}
+		rest := afterLarge[pathIdx+len(`"path":"`):]
+		end := bytes.IndexByte(rest, '"')
+		if end <= 0 {
+			search = afterLarge[len(`"large"`):]
+			continue
+		}
+		u := strings.TrimSpace(string(rest[:end]))
+		u = strings.ReplaceAll(u, `\/`, `/`)
+		if strings.HasPrefix(strings.ToLower(u), "https://") || strings.HasPrefix(strings.ToLower(u), "http://") {
+			return u
+		}
+		search = afterLarge[len(`"large"`):]
 	}
-	chunk := searchFrom[start:]
-	largeIdx := bytes.Index(chunk, []byte(`"large"`))
-	if largeIdx < 0 {
-		return ""
-	}
-	chunk = chunk[largeIdx:]
-	pathIdx := bytes.Index(chunk, []byte(`"path":"`))
-	if pathIdx < 0 {
-		return ""
-	}
-	chunk = chunk[pathIdx+len(`"path":"`):]
-	end := bytes.IndexByte(chunk, '"')
-	if end <= 0 {
-		return ""
-	}
-	u := strings.TrimSpace(string(chunk[:end]))
-	u = strings.ReplaceAll(u, `\/`, `/`)
-	if strings.HasPrefix(strings.ToLower(u), "https://") || strings.HasPrefix(strings.ToLower(u), "http://") {
-		return u
-	}
-	return ""
 }
 
 func eaUserIDsByRecency(userIniPattern string) []string {
@@ -133,12 +167,15 @@ func eaUserIDsByRecency(userIniPattern string) []string {
 }
 
 func parseEANameForUserIDs(data []byte, userIDs []string) string {
+	if len(userIDs) == 0 {
+		return parseEANameForUserID(data, "")
+	}
 	for _, uid := range userIDs {
 		if n := parseEANameForUserID(data, uid); n != "" {
 			return n
 		}
 	}
-	return parseEANameForUserID(data, "")
+	return ""
 }
 
 func parseEANameForUserID(data []byte, userID string) string {

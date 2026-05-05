@@ -990,10 +990,11 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 	if err != nil {
 		return err
 	}
-	if curErr == nil && cur != "" {
+	// Persist live LoginFiles → account cache before clear/restore (must run per unique ID,
+	// not per display name — two accounts can legally share the same visible name).
+	if curErr == nil && strings.TrimSpace(cur) != "" {
 		if prevName, ok := ids[cur]; ok {
-			targetName, ok2 := ids[uniqueID]
-			if ok2 && prevName != targetName {
+			if !strings.EqualFold(strings.TrimSpace(cur), strings.TrimSpace(uniqueID)) {
 				platform.EmitActionBarStatusI18n("Status_ActionBar_SavingSession")
 				if err := saveCurrentAfterKill(deps, platformKey, prevName, d); err != nil {
 					return wrapNeedsAdminIfPermission(err)
