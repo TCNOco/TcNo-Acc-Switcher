@@ -501,6 +501,7 @@
         "BuiltInUserId": "%Documents%\\Rockstar Games\\Social Club\\Launcher\\Renderer\\Default\\Cache\\Cache_Data\\data_*"
       },
       "ExitBeforeInteract": true,
+      "ExitBeforeSave": true,
       "UniqueIdFile": "%Documents%\\Rockstar Games\\Social Club\\Launcher\\Renderer\\Default\\Cache\\Cache_Data\\data_*",
       "UniqueIdMethod": "BUILTIN"
     },

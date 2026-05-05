@@ -263,7 +263,7 @@ func SaveCurrent(deps FlowDeps, platformKey, accountName string) error {
 		return err
 	}
 
-	if d.ExitBeforeInteract {
+	if d.ExitBeforeInteract || d.ExitBeforeSave {
 		if err := winutil.ErrIfCannotKill(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod)); err != nil {
 			return err
 		}

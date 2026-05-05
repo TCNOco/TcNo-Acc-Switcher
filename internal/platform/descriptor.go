@@ -39,6 +39,7 @@ type Descriptor struct {
 	LoginFiles               map[string]string      `json:"LoginFiles,omitempty"`
 	AllFilesRequired         bool                   `json:"AllFilesRequired"`
 	ExitBeforeInteract       bool                   `json:"ExitBeforeInteract"`
+	ExitBeforeSave           bool                   `json:"ExitBeforeSave"`
 	RegDeleteOnClear         bool                   `json:"RegDeleteOnClear"`
 	UniqueIdFile             string                 `json:"UniqueIdFile,omitempty"`
 	UniqueIdMethod           string                 `json:"UniqueIdMethod,omitempty"`

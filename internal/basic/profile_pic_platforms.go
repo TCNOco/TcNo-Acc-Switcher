@@ -35,9 +35,10 @@ func platformProfileImageSource(platformKey, folder string, ctx platform.PathTok
 		src, err := basicplatforms.EAImageSource(cachePat, userPat)
 		return profileImageSource{LocalPath: src.LocalPath, RemoteURL: src.RemoteURL}, true, err
 	case "rockstar":
-		dataPat := builtInPatternPath(d, folder, ctx, d.Extras.BuiltInProfileImageFile, "", false)
+		// Rockstar built-ins should resolve from descriptor paths (Documents), not platform exe folder context.
+		dataPat := builtInPatternPath(d, "", platform.PathTokenContext{}, d.Extras.BuiltInProfileImageFile, "", false)
 		if strings.TrimSpace(dataPat) == "" {
-			dataPat = builtInPatternPath(d, folder, ctx, `%Documents%\Rockstar Games\Social Club\Launcher\Renderer\Default\Cache\Cache_Data\data_*`, "", false)
+			dataPat = builtInPatternPath(d, "", platform.PathTokenContext{}, `%Documents%\Rockstar Games\Social Club\Launcher\Renderer\Default\Cache\Cache_Data\data_*`, "", false)
 		}
 		src, err := basicplatforms.RockstarImageSource(dataPat)
 		return profileImageSource{LocalPath: src.LocalPath, RemoteURL: src.RemoteURL}, true, err
@@ -71,13 +72,16 @@ func platformSuggestedSaveName(platformKey, folder string, ctx platform.PathToke
 		if strings.TrimSpace(userPat) == "" {
 			userPat = builtInPatternPath(d, folder, ctx, `%LocalAppData%\Electronic Arts\EA Desktop\user_*.ini`, "", false)
 		}
+		profileImageProviderLog.Debug("ea suggested-name patterns", "builtInUsernameFile", d.Extras.BuiltInUsernameFile, "builtInUserId", d.Extras.BuiltInUserId, "resolvedDataPattern", dataPat, "resolvedUserPattern", userPat)
 		name, err := basicplatforms.EASuggestedName(dataPat, userPat)
 		return strings.TrimSpace(name), true, err
 	case "rockstar":
-		dataPat := builtInPatternPath(d, folder, ctx, d.Extras.BuiltInUsernameFile, "", false)
+		// Rockstar built-ins should resolve from descriptor paths (Documents), not platform exe folder context.
+		dataPat := builtInPatternPath(d, "", platform.PathTokenContext{}, d.Extras.BuiltInUsernameFile, "", false)
 		if strings.TrimSpace(dataPat) == "" {
-			dataPat = builtInPatternPath(d, folder, ctx, `%Documents%\Rockstar Games\Social Club\Launcher\Renderer\Default\Cache\Cache_Data\data_*`, "", false)
+			dataPat = builtInPatternPath(d, "", platform.PathTokenContext{}, `%Documents%\Rockstar Games\Social Club\Launcher\Renderer\Default\Cache\Cache_Data\data_*`, "", false)
 		}
+		profileImageProviderLog.Debug("rockstar suggested-name pattern", "builtInUsernameFile", d.Extras.BuiltInUsernameFile, "resolvedDataPattern", dataPat)
 		name, err := basicplatforms.RockstarSuggestedName(dataPat)
 		return strings.TrimSpace(name), true, err
 	default:
@@ -128,7 +132,7 @@ func platformProfileImageSourceFromSavedAccount(platformKey, accountName string)
 }
 
 func builtInPatternPath(d platform.Descriptor, folder string, ctx platform.PathTokenContext, builtInPattern, accountCacheRoot string, saved bool) string {
-	p := platform.ExpandPathTokens(platform.ExpandWindowsPath(builtInPattern), ctx)
+	p := expandPlatformPath(builtInPattern, folder, ctx)
 	if !saved || strings.TrimSpace(accountCacheRoot) == "" {
 		return p
 	}
