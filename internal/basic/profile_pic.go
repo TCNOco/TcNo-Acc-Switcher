@@ -2,6 +2,7 @@ package basic
 
 import (
 	"context"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"strings"
@@ -26,6 +27,16 @@ func saveProfileImage(d platform.Descriptor, platformKey, folder, uid string, ct
 
 	ex := d.Extras
 	var src string
+	var remoteURL string
+	ps, err := platform.LoadPlatformSettings(platformKey)
+	pullOnSwitch := err == nil && ps.PullAccountImagesOnSwitch
+	if err != nil {
+		pullOnSwitch = true
+		ps = platform.DefaultPlatformSettings()
+	}
+	if !pullOnSwitch {
+		return nil
+	}
 
 	if strings.TrimSpace(ex.ProfilePicFromFile) != "" && strings.TrimSpace(ex.ProfilePicRegex) != "" {
 		if s, err := profilePicFromFile(ex.ProfilePicFromFile, ex.ProfilePicRegex, folder, ctx); err == nil && s != "" {
@@ -40,23 +51,27 @@ func saveProfileImage(d platform.Descriptor, platformKey, folder, uid string, ct
 		if !remoteProfilePicTemplate(url) {
 			return nil
 		}
-		ps, err := platform.LoadPlatformSettings(platformKey)
-		if err != nil {
-			return nil
-		}
 		maxAge := ps.ProfileImageExpiryDays
 		if maxAge <= 0 {
 			maxAge = 7
 		}
-		dctx, cancel := context.WithTimeout(context.Background(), 45*time.Second)
-		defer cancel()
-		_, _ = profileimage.DownloadIfNeeded(dctx, appclient.Shared, platformKey, uid, url, maxAge)
+		queueProfileImageDownload(platformKey, uid, url, maxAge)
 		return nil
+	}
+	if src == "" {
+		if psrc, found, err := platformProfileImageSource(platformKey, folder, ctx); err == nil && found {
+			src = strings.TrimSpace(psrc.LocalPath)
+			remoteURL = strings.TrimSpace(psrc.RemoteURL)
+		}
 	}
 	if src == "" && strings.TrimSpace(ex.ProfilePicPath) != "" {
 		if s, err := profilePicPathResolved(ex.ProfilePicPath, folder, ctx); err == nil && s != "" {
 			src = s
 		}
+	}
+	if strings.TrimSpace(remoteURL) != "" {
+		queueProfileImageDownload(platformKey, uid, remoteURL, 0)
+		return nil
 	}
 	if strings.TrimSpace(src) == "" {
 		return nil
@@ -65,7 +80,41 @@ func saveProfileImage(d platform.Descriptor, platformKey, folder, uid string, ct
 	if err != nil || st.IsDir() {
 		return nil
 	}
-	return profileimage.CacheLocalFile(platformKey, uid, src)
+	queueProfileImageLocalCache(platformKey, uid, src)
+	return nil
+}
+
+func queueProfileImageDownload(platformKey, uid, remoteURL string, maxAge int) {
+	platformKey = strings.TrimSpace(platformKey)
+	uid = strings.TrimSpace(uid)
+	remoteURL = strings.TrimSpace(remoteURL)
+	if platformKey == "" || uid == "" || remoteURL == "" {
+		return
+	}
+	if appclient.IsOfflineMode() {
+		return
+	}
+	go func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 45*time.Second)
+		defer cancel()
+		if _, err := profileimage.DownloadIfNeeded(ctx, appclient.Shared, platformKey, uid, remoteURL, maxAge); err != nil {
+			slog.Debug("profile image download failed", "platform", platformKey, "uid", uid, "err", err)
+		}
+	}()
+}
+
+func queueProfileImageLocalCache(platformKey, uid, src string) {
+	platformKey = strings.TrimSpace(platformKey)
+	uid = strings.TrimSpace(uid)
+	src = strings.TrimSpace(src)
+	if platformKey == "" || uid == "" || src == "" {
+		return
+	}
+	go func() {
+		if err := profileimage.CacheLocalFile(platformKey, uid, src); err != nil {
+			slog.Debug("profile image local cache failed", "platform", platformKey, "uid", uid, "err", err)
+		}
+	}()
 }
 
 func profilePicPathResolved(tpl string, folder string, ctx platform.PathTokenContext) (string, error) {

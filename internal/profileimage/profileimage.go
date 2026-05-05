@@ -111,6 +111,15 @@ func DeleteCached(platformKey, accountID string) error {
 	return nil
 }
 
+// DeletePlatformCached removes all cached profile images for a platform.
+func DeletePlatformCached(platformKey string) error {
+	dir, err := ProfileDir(platformKey)
+	if err != nil {
+		return err
+	}
+	return os.RemoveAll(dir)
+}
+
 // FindCached returns the public URL and true if a cached image exists for this account (any known ext).
 func FindCached(platformKey, accountID string) (publicURL string, ok bool) {
 	dir, err := ProfileDir(platformKey)

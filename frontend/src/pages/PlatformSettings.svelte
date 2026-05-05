@@ -38,6 +38,7 @@
   let hasCachePaths = false;
   let hasBackupFolders = false;
   let hasRemoteProfileImages = false;
+  let hasSavedProfileImageSources = false;
   let clearingCache = false;
   let backingUp = false;
   let restoringBackup = false;
@@ -200,6 +201,19 @@
     }, 450);
   }
 
+  function getPullAccountImagesOnSwitch(): boolean {
+    const g = genericPS as unknown as Record<string, unknown> | null;
+    if (!g) return true;
+    return g.PullAccountImagesOnSwitch !== false;
+  }
+
+  function onPullAccountImagesOnSwitchChange(e: Event): void {
+    const g = genericPS as unknown as Record<string, unknown> | null;
+    if (!g) return;
+    g.PullAccountImagesOnSwitch = (e.currentTarget as HTMLInputElement).checked;
+    debouncedSaveGeneric();
+  }
+
   async function refreshInstallFolder(): Promise<void> {
     try {
       installFolder = (await Wails.GetPlatformInstallFolder(name)) ?? "";
@@ -243,10 +257,26 @@
           ) {
             genericPS.ProfileImageExpiryDays = 7;
           }
+          if (!("PullAccountImagesOnSwitch" in payload)) {
+            (genericPS as unknown as Record<string, unknown>).PullAccountImagesOnSwitch = true;
+          }
           try {
             hasRemoteProfileImages = await BasicService.PlatformUsesRemoteProfileImages(name);
           } catch {
             hasRemoteProfileImages = false;
+          }
+          try {
+            hasSavedProfileImageSources = (
+              BasicService as unknown as { PlatformProfileImagesSavedPerAccount: (platformKey: string) => Promise<boolean> }
+            ).PlatformProfileImagesSavedPerAccount
+              ? await (
+                  BasicService as unknown as {
+                    PlatformProfileImagesSavedPerAccount: (platformKey: string) => Promise<boolean>;
+                  }
+                ).PlatformProfileImagesSavedPerAccount(name)
+              : false;
+          } catch {
+            hasSavedProfileImageSources = false;
           }
         }
         await refreshCachePathState();
@@ -327,10 +357,26 @@
         ) {
           genericPS.ProfileImageExpiryDays = 7;
         }
+        if (!("PullAccountImagesOnSwitch" in payload)) {
+          (genericPS as unknown as Record<string, unknown>).PullAccountImagesOnSwitch = true;
+        }
         try {
           hasRemoteProfileImages = await BasicService.PlatformUsesRemoteProfileImages(name);
         } catch {
           hasRemoteProfileImages = false;
+        }
+        try {
+          hasSavedProfileImageSources = (
+            BasicService as unknown as { PlatformProfileImagesSavedPerAccount: (platformKey: string) => Promise<boolean> }
+          ).PlatformProfileImagesSavedPerAccount
+            ? await (
+                BasicService as unknown as {
+                  PlatformProfileImagesSavedPerAccount: (platformKey: string) => Promise<boolean>;
+                }
+              ).PlatformProfileImagesSavedPerAccount(name)
+            : false;
+        } catch {
+          hasSavedProfileImageSources = false;
         }
       }
       await refreshDesktopShortcutState();
@@ -449,6 +495,39 @@
       await BasicService.RefreshAllBasicProfileImages(name);
       requestPlatformAccountsRefresh(name);
       pushToast({ type: "success", title: "", message: $t("Toast_ImagesRefreshing"), duration: 5000 });
+    } catch (e) {
+      pushToast({
+        type: "error",
+        title: "",
+        message: e instanceof Error ? e.message : String(e),
+        duration: 8000,
+      });
+    }
+  }
+
+  async function onRefreshSavedBasicProfileImages(): Promise<void> {
+    try {
+      await (
+        BasicService as unknown as { RefreshSavedBasicProfileImages: (platformKey: string) => Promise<void> }
+      ).RefreshSavedBasicProfileImages(name);
+      requestPlatformAccountsRefresh(name);
+      pushToast({ type: "success", title: "", message: $t("Toast_ImagesRefreshing"), duration: 5000 });
+    } catch (e) {
+      pushToast({
+        type: "error",
+        title: "",
+        message: e instanceof Error ? e.message : String(e),
+        duration: 8000,
+      });
+    }
+  }
+
+  async function onClearBasicProfileImages(): Promise<void> {
+    try {
+      await (BasicService as unknown as { ClearAllBasicProfileImages: (platformKey: string) => Promise<void> })
+        .ClearAllBasicProfileImages(name);
+      requestPlatformAccountsRefresh(name);
+      pushToast({ type: "success", title: "", message: $t("Done"), duration: 5000 });
     } catch (e) {
       pushToast({
         type: "error",
@@ -1002,6 +1081,18 @@
     </div>
     {#if hasRemoteProfileImages}
       <h2 class="SettingsHeader">{$t("Settings_Header_ProfileImages")}</h2>
+      <div class="rowSetting">
+        <div class="form-check">
+          <input
+            id="gp-pull-account-images"
+            type="checkbox"
+            checked={getPullAccountImagesOnSwitch()}
+            on:change={onPullAccountImagesOnSwitchChange}
+          />
+          <label class="form-check-label" for="gp-pull-account-images"></label>
+        </div>
+        <label for="gp-pull-account-images">{$t("Settings_PullAccountImages")}</label>
+      </div>
       <div class="form-text tray-max-row">
         <span>{$t("Settings_ProfileImageExpiryDays")}</span>
         <input
@@ -1015,6 +1106,9 @@
       <div class="buttoncol settings-tools-row">
         <button type="button" on:click={() => void onRefreshBasicProfileImages()}>
           {$t("Button_RefreshImages")}
+        </button>
+        <button type="button" on:click={() => void onClearBasicProfileImages()}>
+          {$t("Button_ClearCachedProfileImages")}
         </button>
       </div>
     {/if}
@@ -1031,9 +1125,18 @@
     </div>
     {#if hasCachePaths}
       <div class="buttoncol settings-tools-row settings-tools-row--single">
-        <button type="button" disabled={clearingCache} on:click={onClearCache}>
-          {$t("Platform_ClearCache")}
-        </button>
+        {#if hasSavedProfileImageSources}
+          <button type="button" on:click={() => void onRefreshSavedBasicProfileImages()}>
+            {$t("Button_RefreshProfileImages")}
+          </button>
+          <button type="button" disabled={clearingCache} on:click={onClearCache}>
+            {$t("Platform_ClearCache")}
+          </button>
+        {:else}
+          <button type="button" disabled={clearingCache} on:click={onClearCache}>
+            {$t("Platform_ClearCache")}
+          </button>
+        {/if}
       </div>
     {/if}
     {#if isSteam}

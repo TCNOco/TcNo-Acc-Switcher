@@ -36,7 +36,7 @@ func emitAccountImagePatch(p AccountImagePatch) {
 	app.Event.Emit(AccountImageUpdatedEvent, p)
 }
 
-// PlatformUsesRemoteProfileImages reports whether Platforms.json uses an http(s) ProfilePicPath template for this platform.
+// PlatformUsesRemoteProfileImages reports whether this platform has any supported profile image source.
 func (b *BasicService) PlatformUsesRemoteProfileImages(platformKey string) (bool, error) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
@@ -45,7 +45,8 @@ func (b *BasicService) PlatformUsesRemoteProfileImages(platformKey string) (bool
 		return false, err
 	}
 	tpl := strings.TrimSpace(d.Extras.ProfilePicPath)
-	return remoteProfilePicTemplate(tpl) && !strings.Contains(tpl, "%LARGEST%"), nil
+	remoteTpl := remoteProfilePicTemplate(tpl) && !strings.Contains(tpl, "%LARGEST%")
+	return remoteTpl || platformHasProfileImageSource(platformKey), nil
 }
 
 // StartBasicProfileImageRefresh downloads missing or stale remote profile images in the background (bounded concurrency).
@@ -71,6 +72,48 @@ func (b *BasicService) RefreshAllBasicProfileImages(platformKey string) error {
 		_ = profileimage.DeleteCached(platformKey, uid)
 	}
 	go b.runProfileImageRefresh(platformKey)
+	return nil
+}
+
+// ClearAllBasicProfileImages deletes all cached profile images for this platform.
+func (b *BasicService) ClearAllBasicProfileImages(platformKey string) error {
+	return profileimage.DeletePlatformCached(strings.TrimSpace(platformKey))
+}
+
+// PlatformProfileImagesSavedPerAccount reports whether profile image source files are saved in account LoginFiles.
+func (b *BasicService) PlatformProfileImagesSavedPerAccount(platformKey string) bool {
+	return platformProfileImagesSavedPerAccount(platformKey)
+}
+
+// RefreshSavedBasicProfileImages clears and requeues profile image downloads from account-saved source files.
+func (b *BasicService) RefreshSavedBasicProfileImages(platformKey string) error {
+	platformKey = strings.TrimSpace(platformKey)
+	if platformKey == "" || !platformProfileImagesSavedPerAccount(platformKey) {
+		return nil
+	}
+	if err := profileimage.DeletePlatformCached(platformKey); err != nil {
+		return err
+	}
+	f, err := readIdsFile(platformKey)
+	if err != nil {
+		return err
+	}
+	for uid, accountName := range f.IDs {
+		uid = strings.TrimSpace(uid)
+		accountName = strings.TrimSpace(accountName)
+		if uid == "" || accountName == "" {
+			continue
+		}
+		src, ok, err := platformProfileImageSourceFromSavedAccount(platformKey, accountName)
+		if err != nil || !ok {
+			continue
+		}
+		if strings.TrimSpace(src.LocalPath) != "" {
+			queueProfileImageLocalCache(platformKey, uid, src.LocalPath)
+		} else if strings.TrimSpace(src.RemoteURL) != "" {
+			queueProfileImageDownload(platformKey, uid, src.RemoteURL, 0)
+		}
+	}
 	return nil
 }
 
@@ -103,9 +146,7 @@ func (b *BasicService) runProfileImageRefresh(platformKey string) {
 		return
 	}
 	tpl := strings.TrimSpace(d.Extras.ProfilePicPath)
-	if !remoteProfilePicTemplate(tpl) || strings.Contains(tpl, "%LARGEST%") {
-		return
-	}
+	remoteTpl := remoteProfilePicTemplate(tpl) && !strings.Contains(tpl, "%LARGEST%")
 
 	exeDir, err := platform.ResolveExeDir()
 	if err != nil {
@@ -130,6 +171,15 @@ func (b *BasicService) runProfileImageRefresh(platformKey string) {
 	maxAge := ps.ProfileImageExpiryDays
 	if maxAge <= 0 {
 		maxAge = 7
+	}
+	if !ps.PullAccountImagesOnSwitch {
+		return
+	}
+	if platformProfileImagesSavedPerAccount(platformKey) {
+		b.queueMissingSavedProfileImages(platformKey)
+	}
+	if !remoteTpl {
+		return
 	}
 
 	folder, _ := resolveExeFolder(b.deps(), platformKey)
@@ -187,4 +237,30 @@ func (b *BasicService) runProfileImageRefresh(platformKey string) {
 	}
 	wg.Wait()
 	basicProfileImgLog.Info("profile image refresh finished", slog.String("platform", platformKey))
+}
+
+func (b *BasicService) queueMissingSavedProfileImages(platformKey string) {
+	f, err := readIdsFile(platformKey)
+	if err != nil {
+		return
+	}
+	for uid, accountName := range f.IDs {
+		uid = strings.TrimSpace(uid)
+		accountName = strings.TrimSpace(accountName)
+		if uid == "" || accountName == "" {
+			continue
+		}
+		if _, ok := profileimage.FindCached(platformKey, uid); ok {
+			continue
+		}
+		src, ok, err := platformProfileImageSourceFromSavedAccount(platformKey, accountName)
+		if err != nil || !ok {
+			continue
+		}
+		if strings.TrimSpace(src.LocalPath) != "" {
+			queueProfileImageLocalCache(platformKey, uid, src.LocalPath)
+		} else if strings.TrimSpace(src.RemoteURL) != "" {
+			queueProfileImageDownload(platformKey, uid, src.RemoteURL, 0)
+		}
+	}
 }

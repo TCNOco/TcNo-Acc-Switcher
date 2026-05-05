@@ -555,6 +555,16 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 		return err
 	}
 
+	if platformProfileImagesSavedPerAccount(platformKey) {
+		if src, ok, err := platformProfileImageSourceFromSavedAccount(platformKey, accountName); err == nil && ok {
+			if strings.TrimSpace(src.LocalPath) != "" {
+				queueProfileImageLocalCache(platformKey, uid, src.LocalPath)
+			} else if strings.TrimSpace(src.RemoteURL) != "" {
+				queueProfileImageDownload(platformKey, uid, src.RemoteURL, 0)
+			}
+			return nil
+		}
+	}
 	return saveProfileImage(d, platformKey, folder, uid, ctx)
 }
 

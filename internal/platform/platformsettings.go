@@ -88,22 +88,25 @@ type PlatformSettings struct {
 	LaunchArguments      string              `json:"LaunchArguments,omitempty"`
 	// ProfileImageExpiryDays is max age (days) for cached remote profile pictures (Platforms.json http(s) ProfilePicPath).
 	ProfileImageExpiryDays int `json:"ProfileImageExpiryDays,omitempty"`
+	// PullAccountImagesOnSwitch enables fetching profile images during account save/switch.
+	PullAccountImagesOnSwitch bool `json:"PullAccountImagesOnSwitch,omitempty"`
 }
 
 func DefaultPlatformSettings() PlatformSettings {
 	return PlatformSettings{
-		TrayAccNumber:        3,
-		ClosingMethod:        "Combined",
-		StartingMethod:       "Default",
-		AutoStart:            true,
-		ShowShortNotes:       true,
-		ShowLastUsed:         true,
-		AccountNotes:         map[string]string{},
-		Shortcuts:            []GameShortcutEntry{},
-		ForgetAccountEnabled: false,
-		RunAsAdmin:           false,
-		AlwaysSwapOnShortcut:   true,
-		ProfileImageExpiryDays: 7,
+		TrayAccNumber:             3,
+		ClosingMethod:             "Combined",
+		StartingMethod:            "Default",
+		AutoStart:                 true,
+		ShowShortNotes:            true,
+		ShowLastUsed:              true,
+		AccountNotes:              map[string]string{},
+		Shortcuts:                 []GameShortcutEntry{},
+		ForgetAccountEnabled:      false,
+		RunAsAdmin:                false,
+		AlwaysSwapOnShortcut:      true,
+		ProfileImageExpiryDays:    7,
+		PullAccountImagesOnSwitch: true,
 	}
 }
 
@@ -271,6 +274,9 @@ func LoadPlatformSettings(platformKey string) (PlatformSettings, error) {
 	}
 	if s.ProfileImageExpiryDays <= 0 {
 		s.ProfileImageExpiryDays = 7
+	}
+	if !gjson.GetBytes(data, "PullAccountImagesOnSwitch").Exists() {
+		s.PullAccountImagesOnSwitch = true
 	}
 	return s, nil
 }
