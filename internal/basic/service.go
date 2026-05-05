@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"sort"
 	"strings"
 	"sync"
 
@@ -89,11 +90,15 @@ func (b *BasicService) GetAccounts(platformKey string) ([]AccountDTO, error) {
 			seen[id] = struct{}{}
 		}
 	}
+	var missing []string
 	for id := range ids {
 		if _, ok := seen[id]; !ok {
-			keys = append(keys, id)
+			missing = append(missing, id)
 		}
 	}
+	// Keep fallback order stable when order file is stale/missing entries.
+	sort.Strings(missing)
+	keys = append(keys, missing...)
 
 	out := make([]AccountDTO, 0, len(keys))
 	for _, uid := range keys {
