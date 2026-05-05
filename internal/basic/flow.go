@@ -964,8 +964,16 @@ func AddNew(deps FlowDeps, platformKey string) error {
 	if err := ClearCurrentLogin(deps, platformKey); err != nil {
 		return err
 	}
+	if !ps.AutoStart {
+		tray.MaybeHideMainWindow()
+		return nil
+	}
 	platform.EmitActionBarStatusI18nPlatform("Status_StartingPlatform", platformKey)
-	return launchBasicNoStatus(deps, platformKey, nil)
+	if err := launchBasicNoStatus(deps, platformKey, nil); err != nil {
+		return err
+	}
+	tray.MaybeHideMainWindow()
+	return nil
 }
 
 func launchBasicNoStatus(deps FlowDeps, platformKey string, extraLaunchArgs []string) error {
