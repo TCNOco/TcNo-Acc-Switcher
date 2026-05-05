@@ -578,14 +578,24 @@ func ensureUniqueIDOnSave(d platform.Descriptor, ctx platform.PathTokenContext) 
 		_, _ = rand.Read(b)
 		id := hex.EncodeToString(b)
 		if err := os.MkdirAll(filepath.Dir(p), 0o755); err != nil {
-			return "", fmt.Errorf("mkdir %s: %w", filepath.Dir(p), err)
+			return "", wrapNeedsAdminIfPermission(fmt.Errorf("mkdir %s: %w", filepath.Dir(p), err))
 		}
 		if err := fsutil.WriteFileAtomic(p, []byte(id), 0o644); err != nil {
-			return "", fmt.Errorf("write %s: %w", p, err)
+			return "", wrapNeedsAdminIfPermission(fmt.Errorf("write %s: %w", p, err))
 		}
 		return id, nil
 	}
 	return ReadUniqueID(d, ctx.PlatformFolder)
+}
+
+func wrapNeedsAdminIfPermission(err error) error {
+	if err == nil || winutil.IsNeedsAdmin(err) {
+		return err
+	}
+	if os.IsPermission(err) || strings.Contains(strings.ToLower(err.Error()), "access is denied") {
+		return winutil.NewNeedsAdminError(err.Error())
+	}
+	return err
 }
 
 func copyFile(src, dst string) error {
@@ -982,7 +992,7 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 			if ok2 && prevName != targetName {
 				platform.EmitActionBarStatusI18n("Status_ActionBar_SavingSession")
 				if err := saveCurrentAfterKill(deps, platformKey, prevName, d); err != nil {
-					return err
+					return wrapNeedsAdminIfPermission(err)
 				}
 			}
 		}
@@ -990,7 +1000,7 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 
 	platform.EmitActionBarStatusI18n("Status_ActionBar_ClearingSession")
 	if err := ClearCurrentLogin(deps, platformKey); err != nil {
-		return err
+		return wrapNeedsAdminIfPermission(err)
 	}
 	accName, ok := ids[uniqueID]
 	if !ok || strings.TrimSpace(accName) == "" {
@@ -998,7 +1008,7 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 	}
 	platform.EmitActionBarStatusI18n("Status_ActionBar_RestoringAccount")
 	if err := Login(deps, platformKey, accName); err != nil {
-		return err
+		return wrapNeedsAdminIfPermission(err)
 	}
 	_ = touchLastUsed(platformKey, uniqueID)
 	recordBasicTrayRecent(platformKey, uniqueID)
