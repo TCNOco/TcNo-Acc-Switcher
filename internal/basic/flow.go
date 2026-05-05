@@ -32,6 +32,91 @@ func logFlow() *slog.Logger {
 	return slog.Default().With("component", "basic-flow")
 }
 
+// regDumpEntry is one value in reg.json. Legacy files used a plain JSON string per key.
+type regDumpEntry struct {
+	V string `json:"v"`
+	T uint32 `json:"t,omitempty"`
+}
+
+func registryValueStringForDump(v any) string {
+	switch x := v.(type) {
+	case string:
+		return x
+	case []byte:
+		return winutil.HexEncodeBinary(x)
+	case uint32:
+		return fmt.Sprintf("%d", x)
+	case uint64:
+		return fmt.Sprintf("%d", x)
+	default:
+		return fmt.Sprint(x)
+	}
+}
+
+func regDumpFromJSON(data []byte) (map[string]regDumpEntry, error) {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return nil, err
+	}
+	out := make(map[string]regDumpEntry, len(raw))
+	for k, rm := range raw {
+		var s string
+		if err := json.Unmarshal(rm, &s); err == nil {
+			out[k] = regDumpEntry{V: s, T: 0}
+			continue
+		}
+		var e regDumpEntry
+		if err := json.Unmarshal(rm, &e); err != nil {
+			return nil, fmt.Errorf("reg.json key %q: %w", k, err)
+		}
+		out[k] = e
+	}
+	return out, nil
+}
+
+func regDumpLookup(m map[string]regDumpEntry, descriptorKey string) (regDumpEntry, bool) {
+	k := strings.TrimSpace(descriptorKey)
+	if e, ok := m[k]; ok {
+		return e, true
+	}
+	base := stripREG(k)
+	if !isREG(k) {
+		if e, ok := m["REG:"+base]; ok {
+			return e, true
+		}
+	}
+	if isREG(k) {
+		if e, ok := m[base]; ok {
+			return e, true
+		}
+	}
+	return regDumpEntry{}, false
+}
+
+func writeRegistryFromRegDump(liveKey string, e regDumpEntry) error {
+	enc := stripREG(liveKey)
+	v := strings.TrimSpace(e.V)
+	if v == "" {
+		if e.T != 0 {
+			return winutil.RegistryWriteHint(enc, "", e.T)
+		}
+		return nil
+	}
+	if strings.HasPrefix(strings.ToLower(v), "(hex)") {
+		switch e.T {
+		case winutil.RegValueTypeDWORD, winutil.RegValueTypeQWORD:
+			return winutil.RegistryWriteHint(enc, v, e.T)
+		default:
+			raw, err := parseHexReg(v)
+			if err != nil {
+				return err
+			}
+			return winutil.RegistryWriteHint(enc, raw, e.T)
+		}
+	}
+	return winutil.RegistryWriteHint(enc, v, e.T)
+}
+
 func readDescriptor(platformKey string) (platform.Descriptor, []byte, error) {
 	exeDir, err := platform.ResolveExeDir()
 	if err != nil {
@@ -156,13 +241,13 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 		return fmt.Errorf("mkdir %s: %w", destRoot, err)
 	}
 
-	regDump := map[string]string{}
+	regDump := map[string]regDumpEntry{}
 
 	for liveKey, cacheRel := range d.LoginFiles {
 		liveKey = strings.TrimSpace(liveKey)
 		if isREG(liveKey) {
 			enc := stripREG(liveKey)
-			v, _, err := winutil.RegistryRead(enc)
+			v, typ, err := winutil.RegistryRead(enc)
 			if err != nil {
 				if d.AllFilesRequired {
 					return fmt.Errorf("registry read %s: %w", liveKey, err)
@@ -170,18 +255,7 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 				logFlow().Debug("skipping optional registry read failure", "key", liveKey, "err", err)
 				continue
 			}
-			var s string
-			switch x := v.(type) {
-			case string:
-				s = x
-			case []byte:
-				s = winutil.HexEncodeBinary(x)
-			case uint32:
-				s = fmt.Sprintf("%d", x)
-			default:
-				s = fmt.Sprint(x)
-			}
-			regDump[liveKey] = s
+			regDump[liveKey] = regDumpEntry{V: registryValueStringForDump(v), T: typ}
 			continue
 		}
 		if isJSONSelectFirst(liveKey) || isJSONSelectLast(liveKey) {
@@ -286,6 +360,28 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 			}
 			if err := copyFile(src, dst); err != nil {
 				return err
+			}
+		}
+	}
+
+	if strings.EqualFold(strings.TrimSpace(d.UniqueIdMethod), "REGKEY") {
+		uidKey := strings.TrimSpace(d.UniqueIdFile)
+		enc := stripREG(uidKey)
+		if enc != "" {
+			mapKey := uidKey
+			if !isREG(mapKey) {
+				mapKey = "REG:" + enc
+			}
+			if _, exists := regDump[mapKey]; !exists {
+				v, typ, err := winutil.RegistryRead(enc)
+				if err != nil {
+					if d.AllFilesRequired {
+						return fmt.Errorf("registry read unique id %s: %w", uidKey, err)
+					}
+					logFlow().Debug("skipping optional unique id registry read failure", "key", uidKey, "err", err)
+				} else {
+					regDump[mapKey] = regDumpEntry{V: registryValueStringForDump(v), T: typ}
+				}
 			}
 		}
 	}
@@ -427,14 +523,18 @@ func Login(deps FlowDeps, platformKey, accountName string) error {
 		return err
 	}
 	regData, _ := os.ReadFile(filepath.Join(srcRoot, "reg.json"))
-	var regDump map[string]string
+	var regDump map[string]regDumpEntry
 	if len(regData) > 0 {
-		_ = json.Unmarshal(regData, &regDump)
+		var err error
+		regDump, err = regDumpFromJSON(regData)
+		if err != nil {
+			return fmt.Errorf("reg.json: %w", err)
+		}
 	}
 	// Set UniqueIdFile from ids.json before restoring LoginFiles (update logged-in account)
 	if strings.EqualFold(strings.TrimSpace(d.UniqueIdMethod), "REGKEY") {
-		uidKey := stripREG(strings.TrimSpace(d.UniqueIdFile))
-		if uidKey != "" {
+		uidKey := strings.TrimSpace(d.UniqueIdFile)
+		if stripREG(uidKey) != "" {
 			if ids, err := readIDs(platformKey); err == nil {
 				var targetID string
 				wantName := strings.TrimSpace(accountName)
@@ -445,8 +545,14 @@ func Login(deps FlowDeps, platformKey, accountName string) error {
 					}
 				}
 				if targetID != "" {
-					if err := winutil.RegistryWrite(uidKey, targetID); err != nil {
-						return err
+					if e, ok := regDumpLookup(regDump, uidKey); ok {
+						if err := writeRegistryFromRegDump(uidKey, regDumpEntry{V: targetID, T: e.T}); err != nil {
+							return err
+						}
+					} else {
+						if err := winutil.RegistryWrite(stripREG(uidKey), targetID); err != nil {
+							return err
+						}
 					}
 				}
 			}
@@ -456,22 +562,12 @@ func Login(deps FlowDeps, platformKey, accountName string) error {
 	for liveKey, cacheRel := range d.LoginFiles {
 		liveKey = strings.TrimSpace(liveKey)
 		if isREG(liveKey) {
-			v, ok := regDump[liveKey]
+			e, ok := regDumpLookup(regDump, liveKey)
 			if !ok {
 				continue
 			}
-			if strings.HasPrefix(strings.ToLower(v), "(hex)") {
-				raw, err := parseHexReg(v)
-				if err != nil {
-					return err
-				}
-				if err := winutil.RegistryWrite(stripREG(liveKey), raw); err != nil {
-					return err
-				}
-			} else {
-				if err := winutil.RegistryWrite(stripREG(liveKey), v); err != nil {
-					return err
-				}
+			if err := writeRegistryFromRegDump(liveKey, e); err != nil {
+				return err
 			}
 			continue
 		}

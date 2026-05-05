@@ -10,6 +10,11 @@ func RegistryWrite(encoded string, value any) error {
 	return ErrUnsupported
 }
 
+// RegistryWriteHint is the same as RegistryWrite on non-Windows builds.
+func RegistryWriteHint(encoded string, value any, savedType uint32) error {
+	return ErrUnsupported
+}
+
 func RegistryDelete(encoded string) error {
 	return ErrUnsupported
 }

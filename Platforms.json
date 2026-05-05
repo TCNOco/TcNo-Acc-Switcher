@@ -412,18 +412,47 @@
       "Identifiers": [ "gi", "genshin", "genshinimpact" ],
       "ExeLocationDefault": [
         "%ProgramFiles%\\Genshin Impact\\Genshin Impact Game\\GenshinImpact.exe",
-        "%ProgramFiles%\\HoYoPlay\\games\\Genshin Impact Game\\GenshinImpact.exe",
+        "%ProgramFiles%\\HoYoPlay\\games\\Genshin Impact game\\GenshinImpact.exe",
         "%ProgramFiles%\\Epic Games\\GenshinImpact\\games\\Genshin Impact Game\\GenshinImpact.exe"
       ],
       "GetPathFromShortcutNamed": "Genshin Impact",
       "ExesToEnd": [ "GenshinImpact.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
-        "REG:HKCU\\Software\\miHoYo\\Genshin Impact:MIHOYOSDK_ADL_PROD_OVERSEA_h1158948810": "UNIQUE_ID"
+        "REG:HKCU\\Software\\miHoYo\\Genshin Impact:MIHOYOSDK_CONFIG_MODEL_NAME_h2176277873": "MIHOYOSDK_CONFIG_MODEL_NAME_h2176277873",
+        "REG:HKCU\\Software\\miHoYo\\Genshin Impact:MIHOYOSDK_PROTOCOL_1_201551000_en_h1134287890": "MIHOYOSDK_PROTOCOL_1_201551000_en_h1134287890",
+        "REG:HKCU\\Software\\miHoYo\\Genshin Impact:MIHOYOSDK_PROTOCOL_SHOW_FLAG_1_201551000_en_h2978595357": "MIHOYOSDK_PROTOCOL_SHOW_FLAG_1_201551000_en_h2978595357",
+        "REG:HKCU\\Software\\miHoYo\\Genshin Impact:unity.player_session_count_h922449978": "unity.player_session_count_h922449978",
+        "REG:HKCU\\Software\\miHoYo\\Genshin Impact:unity.player_sessionid_h1351336811": "unity.player_sessionid_h1351336811",
+        "REG:HKCU\\Software\\miHoYoSDK:MIHOYOSDK_DEVICE_FP": "MIHOYOSDK_DEVICE_FP",
+        "REG:HKCU\\Software\\miHoYoSDK:MIHOYOSDK_DEVICE_ID": "MIHOYOSDK_DEVICE_ID",
+        "REG:HKCU\\Software\\miHoYoSDK:MIHOYOSDK_DEVICE_UID": "MIHOYOSDK_DEVICE_UID",
+        "REG:HKCU\\Software\\miHoYoSDK:MIHOYOSDK_GPU_NAME": "MIHOYOSDK_GPU_NAME",
+        "REG:HKCU\\Software\\miHoYoSDK:MIHOYOSDK_SEED_ID": "MIHOYOSDK_SEED_ID",
+        "REG:HKCU\\Software\\miHoYoSDK:MIHOYOSDK_SEED_TIME": "MIHOYOSDK_SEED_TIME",
+        "%Platform_Folder%\\GenshinImpact_Data\\Persistent\\base_res_version_hash": "base_res_version_hash",
+        "%Platform_Folder%\\GenshinImpact_Data\\Persistent\\ChannelName": "ChannelName",
+        "%Platform_Folder%\\GenshinImpact_Data\\Persistent\\CodeSwitch.config": "CodeSwitch.config",
+        "%Platform_Folder%\\GenshinImpact_Data\\Persistent\\data_versions_remote": "data_versions_remote",
+        "%Platform_Folder%\\GenshinImpact_Data\\Persistent\\DownloadError.log": "DownloadError.log",
+        "%Platform_Folder%\\GenshinImpact_Data\\Persistent\\DownloadPref": "DownloadPref",
+        "%Platform_Folder%\\GenshinImpact_Data\\Persistent\\res_versions_remote": "res_versions_remote",
+        "%Platform_Folder%\\GenshinImpact_Data\\Persistent\\ScriptVersion": "ScriptVersion",
+        "%Platform_Folder%\\GenshinImpact_Data\\Persistent\\silence_data_versions_remote": "silence_data_versions_remote",
+        "%Platform_Folder%\\GenshinImpact_Data\\Persistent\\test_file": "test_file",
+        "%Platform_Folder%\\GenshinImpact_Data\\SDKCaches\\telemetry\\*": "telemetry\\",
+        "%Platform_Folder%\\GenshinImpact_Data\\webCaches\\*": "webCaches\\",
+        "%LocalAppData%Low\\miHoYo\\Genshin Impact\\il2cpp-codeswitch.dat": "il2cpp-codeswitch.dat",
+        "%LocalAppData%Low\\miHoYo\\Genshin Impact\\info.txt": "info.txt",
+        "%LocalAppData%Low\\miHoYo\\Genshin Impact\\output_log.txt": "output_log.txt",
+        "%LocalAppData%Low\\miHoYo\\Genshin Impact\\output_log.txt.last": "output_log.txt.last",
+        "%LocalAppData%Low\\miHoYo\\Genshin Impact\\astrolabe\\telemetry.db": "telemetry.db",
+        "%LocalAppData%Low\\miHoYo\\Genshin Impact\\logs\\MiHoYoSDK.log": "MiHoYoSDK.log",
+        "%LocalAppData%Low\\miHoYo\\Genshin Impact\\Unity\\*": "Unity\\"
       },
       "ExitBeforeInteract": true,
-      "UniqueIdFile": "HKCU\\SOFTWARE\\miHoYo\\Genshin Impact:MIHOYOSDK_ADL_PROD_OVERSEA_h1158948810",
-      "UniqueIdMethod": "REGKEY"
+      "UniqueIdFile": "%LocalAppData%Low\\miHoYo\\Genshin Impact\\TcNoAccSwitcher-ID.instance",
+      "UniqueIdMethod": "CREATE_ID_FILE"
     },
     "Magic Arena": {
       "Identifiers": [ "mtga", "magicarena" ],
@@ -543,10 +572,12 @@
       "GetPathFromShortcutNamed": "Honkai Star Rail",
       "ExesToEnd": [ "StarRail.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
-      "LoginFiles": { "REG:HKCU\\Software\\Cognosphere\\Star Rail:App_LastUserID_h2841727341": "UNIQUE_ID" },
+      "LoginFiles": {
+        "REG:HKCU\\Software\\Cognosphere\\Star Rail:MIHOYOSDK_CONFIG_MODEL_NAME_h2176277873": "UNIQUE_ID"
+      },
       "ExitBeforeInteract": true,
       "AllFilesRequired": true,
-      "UniqueIdFile": "HKCU\\SOFTWARE\\Cognosphere\\Star Rail:App_LastUserID_h2841727341",
+      "UniqueIdFile": "HKCU\\SOFTWARE\\Cognosphere\\Star Rail:MIHOYOSDK_CONFIG_MODEL_NAME_h2176277873",
       "UniqueIdMethod": "REGKEY"
     },
     "Arena Breakout: Infinite": {
