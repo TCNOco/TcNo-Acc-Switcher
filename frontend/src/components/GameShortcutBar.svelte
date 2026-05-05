@@ -7,6 +7,7 @@
   import { ListPayload, ShortcutDTO } from "../../bindings/TcNo-Acc-Switcher/internal/shortcuts/models.js";
   import {
     platformExeIconUrl,
+    platformActionBusy,
     triggerPlatformAction,
     selectedAccount,
     requestPlatformAccountsRefresh,
@@ -80,6 +81,7 @@
     const name = rawName.trim() !== "" ? rawName.trim() : $t("Tooltip_LaunchAfterSwitch_NameFallback");
     return $t("Tooltip_LaunchAfterSwitch", { name });
   })();
+  $: isActionBusy = $platformActionBusy.busy;
 
   let includeMainExe = false;
   let pinNames: string[] = [];
@@ -579,6 +581,9 @@
   }
 
   function onShortcutClick(row: Row): void {
+    if (isActionBusy) {
+      return;
+    }
     if (suppressClickExpire) {
       clearTimeout(suppressClickExpire);
       suppressClickExpire = null;
@@ -625,7 +630,7 @@
       return [
         {
           label: swapLabel,
-          disabled: !hasSel,
+          disabled: !hasSel || isActionBusy,
           action: async () => {
             if (!hasSel) {
               return;
@@ -654,12 +659,14 @@
         },
         {
           label: tr("Context_RunAdmin"),
+          disabled: isActionBusy,
           action: () => {
             void runRow(row, true);
           },
         },
         {
           label: tr("Context_Hide"),
+          disabled: isActionBusy,
           action: () => {
             void hideRow(row.fileName);
           },
@@ -673,6 +680,7 @@
     return [
       {
         label: tr("Context_RunAdmin"),
+        disabled: isActionBusy,
         action: () => {
           void LaunchPlatformAs(platformName, true).catch((e: unknown) => {
             void reportLaunchFailure(e, platformName);
@@ -683,6 +691,9 @@
   }
 
   async function runRow(row: Row, admin: boolean): Promise<void> {
+    if (isActionBusy) {
+      return;
+    }
     let a = admin;
     const tr = get(t);
     if (a && row.isUrl) {
@@ -964,6 +975,7 @@
       id="btnStartPlat"
       class="square actionbar__launch"
       aria-label={$t("Button_Launch")}
+      disabled={isActionBusy}
       use:tooltip={launchTooltipText}
       use:contextMenu={() => ctxPlatformItems()}
       on:click={() => triggerPlatformAction("launch")}
@@ -988,6 +1000,7 @@
       type="button"
       class="actionbar__launch square"
       aria-label={$t("Button_Launch")}
+      disabled={isActionBusy}
       use:tooltip={launchTooltipText}
       use:contextMenu={() => ctxPlatformItems()}
       on:click={() => triggerPlatformAction("launch")}

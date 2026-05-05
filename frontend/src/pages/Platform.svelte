@@ -11,6 +11,7 @@
   import {
     platformExeIconUrl,
     platformAction,
+    platformActionBusy,
     selectedAccount as selectedAccountStore,
     platformLiveSessionId,
     platformAccountsRefresh,
@@ -79,6 +80,7 @@
 
   $: so = $searchOverlayCtrl;
   $: appBarTitle.set(name || "TcNo Account Switcher");
+  $: isActionBusy = $platformActionBusy.busy;
   $: basicSearchPrimary = buildBasicAccountRows(overlayQuery);
   $: if (name) {
     route.set({ page: "platform", platformName: name });
@@ -155,6 +157,9 @@
   }
 
   function touchStatus(): void {
+    if (isActionBusy) {
+      return;
+    }
     const acc = accountById(selectedUniqueId);
     actionBarStatus.set(
       acc ? $t("Status_SelectedAccount", { name: acc.displayName || acc.uniqueId }) : "",
@@ -391,34 +396,49 @@
     }
   }
 
+  async function runPlatformActionLocked(work: () => Promise<void>): Promise<void> {
+    if (isActionBusy) {
+      return;
+    }
+    platformActionBusy.set({ busy: true, platformKey: name });
+    try {
+      await work();
+    } finally {
+      platformActionBusy.set({ busy: false, platformKey: "" });
+      touchStatus();
+    }
+  }
+
   async function handlePlatformActionKind(
     kind: "login" | "addNew" | "launch" | "saveCurrent",
   ): Promise<void> {
-    if (kind === "launch") {
-      await launchPlatformForSelection();
-      return;
-    }
-    if (kind === "addNew") {
-      try {
-        await BasicService.AddNew(name);
-        scheduleAccountsRefresh();
-        pushToast({
-          type: "success",
-          message: $t("Toast_AccountSwitched"),
-          duration: 4000,
-        });
-      } catch (e) {
-        await reportBasicSwitchFailure(e);
+    await runPlatformActionLocked(async () => {
+      if (kind === "launch") {
+        await launchPlatformForSelection();
+        return;
       }
-      return;
-    }
-    if (kind === "saveCurrent") {
-      await saveCurrentPrompt();
-      return;
-    }
-    if (kind === "login") {
-      await swapToLogin();
-    }
+      if (kind === "addNew") {
+        try {
+          await BasicService.AddNew(name);
+          scheduleAccountsRefresh();
+          pushToast({
+            type: "success",
+            message: $t("Toast_AccountSwitched"),
+            duration: 4000,
+          });
+        } catch (e) {
+          await reportBasicSwitchFailure(e);
+        }
+        return;
+      }
+      if (kind === "saveCurrent") {
+        await saveCurrentPrompt();
+        return;
+      }
+      if (kind === "login") {
+        await swapToLogin();
+      }
+    });
   }
 
   function slotKey(x: string | null | undefined): string {
@@ -446,7 +466,11 @@
       return [
         {
           label: tr("Context_SwapTo"),
+          disabled: isActionBusy,
           action: () => {
+            if (isActionBusy) {
+              return;
+            }
             selectedUniqueId = rowId;
             touchStatus();
             void swapToLogin();
@@ -756,6 +780,9 @@
                     }
                   : undefined}
                 on:dblclick|preventDefault={() => {
+                  if (isActionBusy) {
+                    return;
+                  }
                   selectedUniqueId = rid;
                   touchStatus();
                   void swapToLogin();

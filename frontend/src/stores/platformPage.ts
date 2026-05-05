@@ -1,10 +1,15 @@
-import { writable } from "svelte/store";
+import { get, writable } from "svelte/store";
 
 export const platformExeIconUrl = writable<string>("");
 
 export type PlatformActionKind = "login" | "addNew" | "launch" | "saveCurrent";
 
 export const platformAction = writable<{ id: number; kind: PlatformActionKind } | null>(null);
+
+export const platformActionBusy = writable<{ busy: boolean; platformKey: string }>({
+  busy: false,
+  platformKey: "",
+});
 
 export const selectedAccount = writable<{
   platformKey: string;
@@ -35,6 +40,10 @@ let actionSeq = 0;
 let refreshSeq = 0;
 
 export function triggerPlatformAction(kind: PlatformActionKind): void {
+  const busy = get(platformActionBusy);
+  if (busy.busy) {
+    return;
+  }
   actionSeq += 1;
   platformAction.set({ id: actionSeq, kind });
 }

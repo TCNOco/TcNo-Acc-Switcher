@@ -2,7 +2,7 @@
   import { get } from "svelte/store";
   import { route, type Route } from "../stores/nav";
   import { actionBarStatus } from "../stores/actionBarStatus";
-  import { triggerPlatformAction } from "../stores/platformPage";
+  import { platformActionBusy, triggerPlatformAction } from "../stores/platformPage";
   import { tooltip } from "../lib/actions/tooltip";
   import { t } from "../stores/i18n";
   import { openAlertNoButton } from "../stores/modal";
@@ -19,6 +19,7 @@
   $: isHomePage = r.page === "home";
   $: platformName = isPlatformPage ? (r as Extract<Route, { page: "platform" }>).platformName : "";
   $: showSaveCurrent = !!platformName && platformName !== "Steam";
+  $: isActionBusy = $platformActionBusy.busy;
   let filterBtn: HTMLButtonElement | undefined;
 
   function filterMenuItems(): MenuItemDef[] {
@@ -141,7 +142,7 @@
         {#key platformName}
           <GameShortcutBar platformName={platformName} />
         {/key}
-        <button class="btnicontext" type="button" aria-label={$t("Button_AddNew")} use:tooltip={$t("Tooltip_AddNew")} on:click={() => triggerPlatformAction("addNew")}
+        <button class="btnicontext" type="button" aria-label={$t("Button_AddNew")} use:tooltip={$t("Tooltip_AddNew")} disabled={isActionBusy} on:click={() => triggerPlatformAction("addNew")}
           ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true"
             ><path
               d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"
@@ -154,6 +155,7 @@
             type="button"
             aria-label={$t("Button_SaveCurrent")}
             use:tooltip={$t("Tooltip_SaveCurrent")}
+            disabled={isActionBusy}
             on:click={() => triggerPlatformAction("saveCurrent")}
             ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true"
               ><path
@@ -167,6 +169,7 @@
           type="button"
           aria-label={$t("Button_Login")}
           use:tooltip={$t("Tooltip_Login")}
+          disabled={isActionBusy}
           on:click={() => triggerPlatformAction("login")}
           >{$t("Button_Login")}<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
             <path d="M217.9 105.9L340.7 228.7c7.2 7.2 11.3 17 11.3 27.3s-4.1 20.1-11.3 27.3L217.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9V160c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.5 24 9.9z"/></svg>

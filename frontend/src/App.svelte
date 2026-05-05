@@ -30,6 +30,7 @@
     searchOverlayCtrl,
     searchOverlayPendingAppend,
   } from "./stores/searchOverlay";
+import { platformActionBusy } from "./stores/platformPage";
 
   function isEditableTarget(t: EventTarget | null): boolean {
     if (!t || !(t instanceof HTMLElement)) {
@@ -125,7 +126,7 @@
   });
 </script>
 
-<div class="container">
+<div class="container" class:busyCursor={$platformActionBusy.busy}>
   <FileDropOverlay />
   <ContextMenu />
   <TitleBar />
@@ -160,6 +161,10 @@
     width: 100vw;
     display: flex;
     flex-direction: column;
+  }
+  .container.busyCursor,
+  .container.busyCursor * {
+    cursor: progress !important;
   }
   .page {
     position: relative;
