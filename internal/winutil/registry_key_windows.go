@@ -3,6 +3,7 @@
 package winutil
 
 import (
+	"errors"
 	"fmt"
 	"path/filepath"
 	"strings"
@@ -51,6 +52,27 @@ func parseHiveSubKeyPath(keyPath string) (hive registry.Key, sub string, err err
 	return hive, sub, nil
 }
 
+// readRegistryDataAnyType reads the raw value bytes for any registry value type.
+func readRegistryDataAnyType(key registry.Key, name string) ([]byte, uint32, error) {
+	buf := make([]byte, 64)
+	var valtype uint32
+	for {
+		n, typ, err := key.GetValue(name, buf)
+		valtype = typ
+		if err == nil {
+			return append([]byte(nil), buf[:n]...), valtype, nil
+		}
+		if errors.Is(err, registry.ErrShortBuffer) || err == registry.ErrShortBuffer {
+			if n <= len(buf) {
+				return nil, 0, err
+			}
+			buf = make([]byte, n)
+			continue
+		}
+		return nil, 0, err
+	}
+}
+
 func readRegistryValueAt(key registry.Key, name string) (val any, typ uint32, err error) {
 	_, typ, err = key.GetValue(name, nil)
 	if err != nil {
@@ -69,9 +91,32 @@ func readRegistryValueAt(key registry.Key, name string) (val any, typ uint32, er
 			return uint32(n), typ, nil
 		}
 		return n, typ, nil
+	case registry.MULTI_SZ:
+		ss, _, err := key.GetStringsValue(name)
+		if err != nil {
+			raw, _, err2 := readRegistryDataAnyType(key, name)
+			if err2 != nil {
+				return nil, typ, err2
+			}
+			return raw, typ, nil
+		}
+		if len(ss) == 0 {
+			return "", typ, nil
+		}
+		return strings.Join(ss, "\x00") + "\x00", typ, nil
 	default:
 		b, _, err := key.GetBinaryValue(name)
-		return b, typ, err
+		if err == nil {
+			return b, typ, nil
+		}
+		if !errors.Is(err, registry.ErrUnexpectedType) {
+			return nil, typ, err
+		}
+		raw, _, err2 := readRegistryDataAnyType(key, name)
+		if err2 != nil {
+			return nil, typ, err2
+		}
+		return raw, typ, nil
 	}
 }
 
@@ -101,7 +146,8 @@ func RegistryReadAllValuesInKey(keyPath string) (map[string]struct {
 	for _, name := range names {
 		v, typ, err := readRegistryValueAt(key, name)
 		if err != nil {
-			return nil, err
+			slogWin().Debug("skip registry value in key dump", "value", name, "err", err)
+			continue
 		}
 		out[name] = struct {
 			Val any
@@ -145,7 +191,8 @@ func RegistryReadValuesMatchingNameGlob(keyPath, valueNameGlob string) (map[stri
 		}
 		v, typ, err := readRegistryValueAt(key, name)
 		if err != nil {
-			return nil, err
+			slogWin().Debug("skip registry value in glob dump", "value", name, "err", err)
+			continue
 		}
 		out[name] = struct {
 			Val any

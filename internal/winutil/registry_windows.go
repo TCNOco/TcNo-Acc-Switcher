@@ -26,24 +26,7 @@ func RegistryRead(encoded string) (any, uint32, error) {
 	}
 	defer key.Close()
 
-	_, typ, err := key.GetValue(val, nil)
-	if err != nil {
-		return nil, 0, err
-	}
-	switch typ {
-	case registry.SZ, registry.EXPAND_SZ:
-		s, _, err := key.GetStringValue(val)
-		return s, typ, err
-	case registry.DWORD, registry.QWORD:
-		n, _, err := key.GetIntegerValue(val)
-		if typ == registry.DWORD {
-			return uint32(n), typ, err
-		}
-		return n, typ, err
-	default:
-		b, _, err := key.GetBinaryValue(val)
-		return b, typ, err
-	}
+	return readRegistryValueAt(key, val)
 }
 
 // RegistryWrite writes a registry value. value may be string, uint32, []byte, or int.
