@@ -287,6 +287,9 @@
         "BackupFolders": {
           "%LocalAppData%\\Electronic Arts\\EA Desktop\\": "LocalAppData"
         },
+        "BuiltInUsernameFile": "%LocalAppData%\\Electronic Arts\\EA Desktop\\CEF\\BrowserCache\\EADesktop\\Cache\\Cache_Data\\data_*",
+        "BuiltInProfileImageFile": "%LocalAppData%\\Electronic Arts\\EA Desktop\\CEF\\BrowserCache\\EADesktop\\Cache\\Cache_Data\\data_*",
+        "BuiltInUserId": "%LocalAppData%\\Electronic Arts\\EA Desktop\\user_*.ini",
         "BackupFileTypesIgnore": [
           ".log"
         ]
@@ -492,11 +495,14 @@
         "ShortcutFolders": [
           "%StartMenuProgramData%\\Rockstar Games\\"
         ],
-        "ShortcutIgnore": [ "Rockstar Games Launcher" ]
+        "ShortcutIgnore": [ "Rockstar Games Launcher" ],
+        "BuiltInUsernameFile": "%Documents%\\Rockstar Games\\Social Club\\Launcher\\Renderer\\Default\\Cache\\Cache_Data\\data_*",
+        "BuiltInProfileImageFile": "%Documents%\\Rockstar Games\\Social Club\\Launcher\\Renderer\\Default\\Cache\\Cache_Data\\data_*",
+        "BuiltInUserId": "%Documents%\\Rockstar Games\\Social Club\\Launcher\\Renderer\\Default\\Cache\\Cache_Data\\data_*"
       },
       "ExitBeforeInteract": true,
-      "UniqueIdFile": "%ProgramData%\\Rockstar Games\\TcNoAccSwitcher-ID.instance",
-      "UniqueIdMethod": "CREATE_ID_FILE"
+      "UniqueIdFile": "%Documents%\\Rockstar Games\\Social Club\\Launcher\\Renderer\\Default\\Cache\\Cache_Data\\data_*",
+      "UniqueIdMethod": "BUILTIN"
     },
     "BattleNet": {
       "Identifiers": [ "b", "bnet", "battlenet", "blizzard" ],

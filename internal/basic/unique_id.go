@@ -1,10 +1,14 @@
 package basic
 
 import (
+	"bytes"
 	"crypto/sha1"
 	"encoding/hex"
 	"fmt"
+	"log/slog"
 	"os"
+	"path/filepath"
+	"sort"
 	"strings"
 
 	"TcNo-Acc-Switcher/internal/platform"
@@ -13,7 +17,13 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-func ReadUniqueID(d platform.Descriptor, platformFolder string) (string, error) {
+type builtInUniqueIDResolver func(d platform.Descriptor, ctx platform.PathTokenContext) (string, error)
+
+var builtInUniqueIDResolvers = map[string]builtInUniqueIDResolver{
+	"rockstar": builtInUniqueIDRockstarEmail,
+}
+
+func ReadUniqueID(platformKey string, d platform.Descriptor, platformFolder string) (string, error) {
 	method := strings.TrimSpace(d.UniqueIdMethod)
 	ctx := platform.PathTokenContext{PlatformFolder: platformFolder}
 
@@ -22,6 +32,8 @@ func ReadUniqueID(d platform.Descriptor, platformFolder string) (string, error) 
 		return uniqueFromRegKey(d)
 	case "CREATE_ID_FILE":
 		return uniqueFromCreateIDFile(d, ctx)
+	case "BUILTIN":
+		return uniqueFromBuiltIn(platformKey, d, ctx)
 	case "STEAM":
 		return "", fmt.Errorf("STEAM unique id: use Steam service")
 	default:
@@ -31,6 +43,18 @@ func ReadUniqueID(d platform.Descriptor, platformFolder string) (string, error) 
 		}
 		return uniqueFromFileRegex(d, ctx)
 	}
+}
+
+func uniqueFromBuiltIn(platformKey string, d platform.Descriptor, ctx platform.PathTokenContext) (string, error) {
+	resolver, ok := builtInUniqueIDResolvers[strings.ToLower(strings.TrimSpace(platformKey))]
+	if !ok {
+		return "", fmt.Errorf("builtin unique id unsupported for platform %q", platformKey)
+	}
+	id, err := resolver(d, ctx)
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimSpace(id), nil
 }
 
 func uniqueFromRegKey(d platform.Descriptor) (string, error) {
@@ -140,4 +164,58 @@ func uniqueFromJSONSelect(d platform.Descriptor, ctx platform.PathTokenContext) 
 		}
 	}
 	return strings.TrimSpace(s), nil
+}
+
+func builtInUniqueIDRockstarEmail(d platform.Descriptor, ctx platform.PathTokenContext) (string, error) {
+	pat := strings.TrimSpace(d.UniqueIdFile)
+	if pat == "" {
+		return "", fmt.Errorf("empty built-in unique id file pattern")
+	}
+	globPat := platform.ExpandPathTokens(platform.ExpandWindowsPath(pat), ctx)
+	files, err := filepath.Glob(globPat)
+	if err != nil || len(files) == 0 {
+		return "", fmt.Errorf("rockstar builtin unique id: no files matched %s", globPat)
+	}
+	sort.Slice(files, func(i, j int) bool {
+		ist, ierr := os.Stat(files[i])
+		jst, jerr := os.Stat(files[j])
+		if ierr != nil || jerr != nil {
+			return files[i] > files[j]
+		}
+		return ist.ModTime().After(jst.ModTime())
+	})
+	for _, f := range files {
+		data, err := os.ReadFile(f)
+		if err != nil || len(data) == 0 {
+			continue
+		}
+		email := parseRockstarEmail(data)
+		if strings.TrimSpace(email) != "" {
+			slog.Debug("builtin unique id rockstar email extracted", "file", f, "email", email)
+			return strings.TrimSpace(email), nil
+		}
+	}
+	return "", fmt.Errorf("rockstar builtin unique id: no <Email> found in %d files", len(files))
+}
+
+func parseRockstarEmail(data []byte) string {
+	startTag := []byte("<Email>")
+	endTag := []byte("</Email>")
+	search := data
+	for {
+		i := bytes.Index(search, startTag)
+		if i < 0 {
+			return ""
+		}
+		search = search[i+len(startTag):]
+		j := bytes.Index(search, endTag)
+		if j < 0 {
+			return ""
+		}
+		v := strings.TrimSpace(string(search[:j]))
+		if v != "" {
+			return v
+		}
+		search = search[j+len(endTag):]
+	}
 }

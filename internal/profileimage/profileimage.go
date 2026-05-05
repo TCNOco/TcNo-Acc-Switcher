@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -196,6 +197,7 @@ func DownloadIfNeeded(ctx context.Context, client *http.Client, platformKey, acc
 	if strings.TrimSpace(imageSourceURL) == "" {
 		return nil, fmt.Errorf("empty image URL")
 	}
+	slog.Debug("profileimage download begin", "platform", platformKey, "accountID", accountID, "url", imageSourceURL, "maxAgeDays", maxAgeDays)
 	dir, err := ProfileDir(platformKey)
 	if err != nil {
 		return nil, err
@@ -214,6 +216,7 @@ func DownloadIfNeeded(ctx context.Context, client *http.Client, platformKey, acc
 		}
 	}
 	if existingPath != "" && !FileOlderThanDays(existingPath, maxAgeDays) {
+		slog.Debug("profileimage download skipped: fresh cache", "platform", platformKey, "accountID", accountID, "path", existingPath, "ext", existingExt)
 		return &DownloadResult{
 			PublicURL: PublicPath(platformKey, accountID, existingExt),
 			LocalPath: existingPath,
@@ -228,10 +231,12 @@ func DownloadIfNeeded(ctx context.Context, client *http.Client, platformKey, acc
 
 	resp, err := client.Do(req)
 	if err != nil {
+		slog.Debug("profileimage download http failed", "platform", platformKey, "accountID", accountID, "url", imageSourceURL, "err", err)
 		return nil, err
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		slog.Debug("profileimage download non-2xx", "platform", platformKey, "accountID", accountID, "status", resp.StatusCode, "url", imageSourceURL)
 		return nil, fmt.Errorf("HTTP %d", resp.StatusCode)
 	}
 
@@ -256,6 +261,7 @@ func DownloadIfNeeded(ctx context.Context, client *http.Client, platformKey, acc
 	if err := fsutil.WriteFileAtomic(dest, data, 0o644); err != nil {
 		return nil, err
 	}
+	slog.Debug("profileimage download saved", "platform", platformKey, "accountID", accountID, "dest", dest, "bytes", len(data), "ext", ext)
 
 	return &DownloadResult{
 		PublicURL: PublicPath(platformKey, accountID, ext),

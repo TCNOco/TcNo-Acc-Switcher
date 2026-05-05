@@ -14,6 +14,7 @@ import (
 
 	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/basic"
+	"TcNo-Acc-Switcher/internal/buildmode"
 	"TcNo-Acc-Switcher/internal/cli"
 	"TcNo-Acc-Switcher/internal/ipc"
 	"TcNo-Acc-Switcher/internal/platform"
@@ -83,7 +84,7 @@ func main() {
 		os.Exit(2)
 	}
 
-	lvl := parsed.EffectiveSlogLevel()
+	lvl := resolvedLogLevel(parsed)
 	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: lvl})))
 
 	if parsed.Kind == cli.KindHelp || parsed.Help {
@@ -128,6 +129,15 @@ func main() {
 	}
 
 	runGUI(parsed)
+}
+
+func resolvedLogLevel(p cli.Parsed) slog.Level {
+	lvl := p.EffectiveSlogLevel()
+	// In Wails dev / non-production builds, default app logs to debug unless user explicitly sets --log-level.
+	if buildmode.IsDebugBuild() && !p.LogLevelSet {
+		lvl = slog.LevelDebug
+	}
+	return lvl
 }
 
 type cliListAccountRow struct {
@@ -345,7 +355,7 @@ func runGUI(parsed cli.Parsed) {
 	app := application.New(application.Options{
 		Name:        "TcNo Account Switcher",
 		Description: "A Superfast open-source account switcher",
-		LogLevel:    parsed.EffectiveSlogLevel(),
+		LogLevel:    resolvedLogLevel(parsed),
 		Services: []application.Service{
 			application.NewService(&GreetService{}),
 			application.NewService(&FilesystemService{}),

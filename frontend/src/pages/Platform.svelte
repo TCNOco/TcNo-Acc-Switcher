@@ -360,12 +360,20 @@
   }
 
   async function saveCurrentPrompt(): Promise<void> {
+    let suggestedName = "";
+    try {
+      suggestedName = await (
+        BasicService as unknown as { SuggestedSaveAccountName: (platformKey: string) => Promise<string> }
+      ).SuggestedSaveAccountName(name);
+    } catch {
+      suggestedName = "";
+    }
     const displayName = await openPrompt({
       title: $t("Modal_SaveCurrent_Title"),
       body: $t("Modal_SaveCurrent_Body"),
       positiveLabel: $t("Button_SaveCurrent"),
       negativeLabel: $t("Button_Cancel"),
-      initialValue: "",
+      initialValue: suggestedName || "",
     });
     if (displayName === null || !String(displayName).trim()) {
       return;

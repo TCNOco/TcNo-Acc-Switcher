@@ -1,12 +1,11 @@
 package basic
 
 import (
-	"bytes"
-	"os"
+	"log/slog"
 	"path/filepath"
-	"sort"
 	"strings"
 
+	basicplatforms "TcNo-Acc-Switcher/internal/basic/platforms"
 	"TcNo-Acc-Switcher/internal/platform"
 )
 
@@ -15,28 +14,80 @@ type profileImageSource struct {
 	RemoteURL string
 }
 
-type platformImageProvider func(folder string, ctx platform.PathTokenContext) (profileImageSource, error)
-
-var platformImageProviders = map[string]platformImageProvider{
-	"ea desktop": eaDesktopProfileImageSource,
-}
+var profileImageProviderLog = slog.Default().With("component", "profile-image-provider")
 
 func platformProfileImageSource(platformKey, folder string, ctx platform.PathTokenContext) (profileImageSource, bool, error) {
-	p, ok := platformImageProviders[strings.ToLower(strings.TrimSpace(platformKey))]
-	if !ok {
+	key := strings.ToLower(strings.TrimSpace(platformKey))
+	d, _, err := readDescriptor(platformKey)
+	if err != nil {
+		return profileImageSource{}, false, err
+	}
+	switch key {
+	case "ea desktop":
+		cachePat := builtInPatternPath(d, folder, ctx, d.Extras.BuiltInProfileImageFile, "", false)
+		if strings.TrimSpace(cachePat) == "" {
+			cachePat = builtInPatternPath(d, folder, ctx, `%LocalAppData%\Electronic Arts\EA Desktop\CEF\BrowserCache\EADesktop\Cache\Cache_Data\data_*`, "", false)
+		}
+		userPat := builtInPatternPath(d, folder, ctx, d.Extras.BuiltInUserId, "", false)
+		if strings.TrimSpace(userPat) == "" {
+			userPat = builtInPatternPath(d, folder, ctx, `%LocalAppData%\Electronic Arts\EA Desktop\user_*.ini`, "", false)
+		}
+		src, err := basicplatforms.EAImageSource(cachePat, userPat)
+		return profileImageSource{LocalPath: src.LocalPath, RemoteURL: src.RemoteURL}, true, err
+	case "rockstar":
+		dataPat := builtInPatternPath(d, folder, ctx, d.Extras.BuiltInProfileImageFile, "", false)
+		if strings.TrimSpace(dataPat) == "" {
+			dataPat = builtInPatternPath(d, folder, ctx, `%Documents%\Rockstar Games\Social Club\Launcher\Renderer\Default\Cache\Cache_Data\data_*`, "", false)
+		}
+		src, err := basicplatforms.RockstarImageSource(dataPat)
+		return profileImageSource{LocalPath: src.LocalPath, RemoteURL: src.RemoteURL}, true, err
+	default:
 		return profileImageSource{}, false, nil
 	}
-	src, err := p(folder, ctx)
-	return src, true, err
 }
 
 func platformHasProfileImageSource(platformKey string) bool {
-	_, ok := platformImageProviders[strings.ToLower(strings.TrimSpace(platformKey))]
-	return ok
+	switch strings.ToLower(strings.TrimSpace(platformKey)) {
+	case "ea desktop", "rockstar":
+		return true
+	default:
+		return false
+	}
+}
+
+func platformSuggestedSaveName(platformKey, folder string, ctx platform.PathTokenContext) (string, bool, error) {
+	key := strings.ToLower(strings.TrimSpace(platformKey))
+	d, _, err := readDescriptor(platformKey)
+	if err != nil {
+		return "", false, err
+	}
+	switch key {
+	case "ea desktop":
+		dataPat := builtInPatternPath(d, folder, ctx, d.Extras.BuiltInUsernameFile, "", false)
+		if strings.TrimSpace(dataPat) == "" {
+			dataPat = builtInPatternPath(d, folder, ctx, `%LocalAppData%\Electronic Arts\EA Desktop\CEF\BrowserCache\EADesktop\Cache\Cache_Data\data_*`, "", false)
+		}
+		userPat := builtInPatternPath(d, folder, ctx, d.Extras.BuiltInUserId, "", false)
+		if strings.TrimSpace(userPat) == "" {
+			userPat = builtInPatternPath(d, folder, ctx, `%LocalAppData%\Electronic Arts\EA Desktop\user_*.ini`, "", false)
+		}
+		name, err := basicplatforms.EASuggestedName(dataPat, userPat)
+		return strings.TrimSpace(name), true, err
+	case "rockstar":
+		dataPat := builtInPatternPath(d, folder, ctx, d.Extras.BuiltInUsernameFile, "", false)
+		if strings.TrimSpace(dataPat) == "" {
+			dataPat = builtInPatternPath(d, folder, ctx, `%Documents%\Rockstar Games\Social Club\Launcher\Renderer\Default\Cache\Cache_Data\data_*`, "", false)
+		}
+		name, err := basicplatforms.RockstarSuggestedName(dataPat)
+		return strings.TrimSpace(name), true, err
+	default:
+		return "", false, nil
+	}
 }
 
 func platformProfileImagesSavedPerAccount(platformKey string) bool {
-	return strings.EqualFold(strings.TrimSpace(platformKey), "EA Desktop")
+	k := strings.ToLower(strings.TrimSpace(platformKey))
+	return k == "ea desktop" || k == "rockstar"
 }
 
 func platformProfileImageSourceFromSavedAccount(platformKey, accountName string) (profileImageSource, bool, error) {
@@ -47,146 +98,83 @@ func platformProfileImageSourceFromSavedAccount(platformKey, accountName string)
 	if err != nil {
 		return profileImageSource{}, false, err
 	}
-	if strings.EqualFold(strings.TrimSpace(platformKey), "EA Desktop") {
-		src, err := eaDesktopProfileImageSourceFromSavedCache(root)
-		return src, true, err
+	d, _, err := readDescriptor(platformKey)
+	if err != nil {
+		return profileImageSource{}, false, err
 	}
-	return profileImageSource{}, true, nil
-}
-
-func eaDesktopProfileImageSource(folder string, ctx platform.PathTokenContext) (profileImageSource, error) {
-	userIniDir := platform.ExpandPathTokens(
-		platform.ExpandWindowsPath("%LocalAppData%\\Electronic Arts\\EA Desktop"),
-		ctx,
-	)
-	cacheDataDir := platform.ExpandPathTokens(
-		platform.ExpandWindowsPath("%LocalAppData%\\Electronic Arts\\EA Desktop\\CEF\\BrowserCache\\EADesktop\\Cache\\Cache_Data"),
-		ctx,
-	)
-	return eaDesktopProfileImageSourceFromDir(cacheDataDir, userIniDir)
-}
-
-func eaDesktopProfileImageSourceFromSavedCache(accountCacheRoot string) (profileImageSource, error) {
-	userIniDir := filepath.Join(accountCacheRoot, "LocalAppData")
-	cacheDataDir := filepath.Join(accountCacheRoot, "LocalAppData", "CEF", "BrowserCache", "EADesktop", "Cache", "Cache_Data")
-	return eaDesktopProfileImageSourceFromDir(cacheDataDir, userIniDir)
-}
-
-func eaDesktopProfileImageSourceFromDir(cacheDataDir, userIniDir string) (profileImageSource, error) {
-	userIDs := eaDesktopUserIDsByRecency(userIniDir)
-	matches, err := filepath.Glob(filepath.Join(cacheDataDir, "data_*"))
-	if err != nil || len(matches) == 0 {
-		return profileImageSource{}, err
-	}
-	sort.Slice(matches, func(i, j int) bool {
-		ist, ierr := os.Stat(matches[i])
-		jst, jerr := os.Stat(matches[j])
-		if ierr != nil || jerr != nil {
-			return matches[i] > matches[j]
+	key := strings.ToLower(strings.TrimSpace(platformKey))
+	switch key {
+	case "ea desktop":
+		cachePat := builtInPatternPath(d, "", platform.PathTokenContext{}, d.Extras.BuiltInProfileImageFile, root, true)
+		if strings.TrimSpace(cachePat) == "" {
+			cachePat = builtInPatternPath(d, "", platform.PathTokenContext{}, `%LocalAppData%\Electronic Arts\EA Desktop\CEF\BrowserCache\EADesktop\Cache\Cache_Data\data_*`, root, true)
 		}
-		return ist.ModTime().After(jst.ModTime())
-	})
-	for _, f := range matches {
-		st, err := os.Stat(f)
-		if err != nil || st.IsDir() {
+		userPat := builtInPatternPath(d, "", platform.PathTokenContext{}, d.Extras.BuiltInUserId, root, true)
+		if strings.TrimSpace(userPat) == "" {
+			userPat = builtInPatternPath(d, "", platform.PathTokenContext{}, `%LocalAppData%\Electronic Arts\EA Desktop\user_*.ini`, root, true)
+		}
+		src, err := basicplatforms.EAImageSource(cachePat, userPat)
+		return profileImageSource{LocalPath: src.LocalPath, RemoteURL: src.RemoteURL}, true, err
+	case "rockstar":
+		dataPat := builtInPatternPath(d, "", platform.PathTokenContext{}, d.Extras.BuiltInProfileImageFile, root, true)
+		if strings.TrimSpace(dataPat) == "" {
+			dataPat = builtInPatternPath(d, "", platform.PathTokenContext{}, `%Documents%\Rockstar Games\Social Club\Launcher\Renderer\Default\Cache\Cache_Data\data_*`, root, true)
+		}
+		src, err := basicplatforms.RockstarImageSource(dataPat)
+		return profileImageSource{LocalPath: src.LocalPath, RemoteURL: src.RemoteURL}, true, err
+	default:
+		return profileImageSource{}, true, nil
+	}
+}
+
+func builtInPatternPath(d platform.Descriptor, folder string, ctx platform.PathTokenContext, builtInPattern, accountCacheRoot string, saved bool) string {
+	p := platform.ExpandPathTokens(platform.ExpandWindowsPath(builtInPattern), ctx)
+	if !saved || strings.TrimSpace(accountCacheRoot) == "" {
+		return p
+	}
+	mapped := mapLiveBuiltInToSavedPattern(d, folder, ctx, p, accountCacheRoot)
+	if strings.TrimSpace(mapped) != "" {
+		return mapped
+	}
+	return p
+}
+
+func mapLiveBuiltInToSavedPattern(d platform.Descriptor, folder string, ctx platform.PathTokenContext, liveBuiltInPattern, accountCacheRoot string) string {
+	liveBuiltRoot := nonGlobPrefix(liveBuiltInPattern)
+	if strings.TrimSpace(liveBuiltRoot) == "" {
+		return ""
+	}
+	for liveKey, cacheRel := range d.LoginFiles {
+		liveExpanded := expandPlatformPath(liveKey, folder, ctx)
+		liveLoginRoot := nonGlobPrefix(liveExpanded)
+		if strings.TrimSpace(liveLoginRoot) == "" {
 			continue
 		}
-		data, err := os.ReadFile(f)
-		if err != nil || len(data) == 0 {
+		if !strings.HasPrefix(strings.ToLower(liveBuiltRoot), strings.ToLower(liveLoginRoot)) {
 			continue
 		}
-		url := parseEAAvatarURLForUserIDs(data, userIDs)
-		if strings.TrimSpace(url) != "" {
-			return profileImageSource{RemoteURL: url}, nil
-		}
-	}
-	return profileImageSource{}, nil
-}
-
-func parseEAAvatarURLForUserIDs(data []byte, userIDs []string) string {
-	for _, uid := range userIDs {
-		url := parseEAAvatarURLForUserID(data, uid)
-		if url != "" {
-			return url
-		}
-	}
-	return parseEAAvatarURLForUserID(data, "")
-}
-
-func parseEAAvatarURLForUserID(data []byte, userID string) string {
-	const marker = `{"data":{"me":`
-	searchFrom := data
-	if strings.TrimSpace(userID) != "" {
-		userMarker := []byte(`{"data":{"me":{"id":"` + strings.TrimSpace(userID) + `"`)
-		start := bytes.Index(data, userMarker)
-		if start < 0 {
-			return ""
-		}
-		searchFrom = data[start:]
-	}
-	start := bytes.Index(searchFrom, []byte(marker))
-	if start < 0 {
-		return ""
-	}
-	chunk := searchFrom[start:]
-	largeIdx := bytes.Index(chunk, []byte(`"large"`))
-	if largeIdx < 0 {
-		return ""
-	}
-	chunk = chunk[largeIdx:]
-	pathIdx := bytes.Index(chunk, []byte(`"path":"`))
-	if pathIdx < 0 {
-		return ""
-	}
-	chunk = chunk[pathIdx+len(`"path":"`):]
-	end := bytes.IndexByte(chunk, '"')
-	if end <= 0 {
-		return ""
-	}
-	u := strings.TrimSpace(string(chunk[:end]))
-	u = strings.ReplaceAll(u, `\/`, `/`)
-	if strings.HasPrefix(strings.ToLower(u), "https://") || strings.HasPrefix(strings.ToLower(u), "http://") {
-		return u
+		relFromLogin := strings.TrimPrefix(liveBuiltRoot, liveLoginRoot)
+		relFromLogin = strings.TrimLeft(relFromLogin, `\/`)
+		cacheRoot := filepath.Join(accountCacheRoot, filepath.FromSlash(cacheRel))
+		savedBuiltRoot := filepath.Join(cacheRoot, filepath.FromSlash(relFromLogin))
+		tail := strings.TrimPrefix(liveBuiltInPattern, liveBuiltRoot)
+		return filepath.Clean(savedBuiltRoot) + tail
 	}
 	return ""
 }
 
-func eaDesktopUserIDsByRecency(userIniDir string) []string {
-	files, err := filepath.Glob(filepath.Join(strings.TrimSpace(userIniDir), "user_*.ini"))
-	if err != nil || len(files) == 0 {
-		return nil
+func nonGlobPrefix(path string) string {
+	path = strings.TrimSpace(path)
+	if path == "" {
+		return ""
 	}
-	sort.Slice(files, func(i, j int) bool {
-		ist, ierr := os.Stat(files[i])
-		jst, jerr := os.Stat(files[j])
-		if ierr != nil || jerr != nil {
-			return files[i] > files[j]
-		}
-		return ist.ModTime().After(jst.ModTime())
-	})
-	seen := map[string]struct{}{}
-	out := make([]string, 0, len(files))
-	for _, f := range files {
-		data, err := os.ReadFile(f)
-		if err != nil || len(data) == 0 {
-			continue
-		}
-		for _, line := range strings.Split(string(data), "\n") {
-			line = strings.TrimSpace(strings.TrimSuffix(line, "\r"))
-			if !strings.HasPrefix(strings.ToLower(line), "user.userid=") {
-				continue
-			}
-			id := strings.TrimSpace(line[len("user.userid="):])
-			if id == "" {
-				continue
-			}
-			if _, ok := seen[id]; ok {
-				continue
-			}
-			seen[id] = struct{}{}
-			out = append(out, id)
-			break
-		}
+	i := strings.IndexAny(path, "*?[")
+	if i < 0 {
+		return path
 	}
-	return out
+	prefix := path[:i]
+	if strings.HasSuffix(prefix, `\`) || strings.HasSuffix(prefix, `/`) {
+		return prefix
+	}
+	return filepath.Dir(prefix)
 }

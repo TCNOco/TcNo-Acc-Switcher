@@ -244,7 +244,7 @@ func CurrentLiveUniqueID(deps FlowDeps, platformKey string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	u, err := ReadUniqueID(d, folder)
+	u, err := ReadUniqueID(platformKey, d, folder)
 	if err != nil {
 		return "", err
 	}
@@ -286,7 +286,7 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 	}
 	ctx := platform.PathTokenContext{PlatformFolder: folder}
 
-	uid, err := ensureUniqueIDOnSave(d, ctx)
+	uid, err := ensureUniqueIDOnSave(platformKey, d, ctx)
 	if err != nil {
 		return err
 	}
@@ -559,16 +559,20 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 		if src, ok, err := platformProfileImageSourceFromSavedAccount(platformKey, accountName); err == nil && ok {
 			if strings.TrimSpace(src.LocalPath) != "" {
 				queueProfileImageLocalCache(platformKey, uid, src.LocalPath)
-			} else if strings.TrimSpace(src.RemoteURL) != "" {
-				queueProfileImageDownload(platformKey, uid, src.RemoteURL, 0)
+				return nil
 			}
-			return nil
+			if strings.TrimSpace(src.RemoteURL) != "" {
+				queueProfileImageDownload(platformKey, uid, src.RemoteURL, 0)
+				return nil
+			}
+			// Cached account files are preferred, but if no avatar was found there,
+			// fall back to the live platform files (e.g. %Documents%) as a secondary source.
 		}
 	}
 	return saveProfileImage(d, platformKey, folder, uid, ctx)
 }
 
-func ensureUniqueIDOnSave(d platform.Descriptor, ctx platform.PathTokenContext) (string, error) {
+func ensureUniqueIDOnSave(platformKey string, d platform.Descriptor, ctx platform.PathTokenContext) (string, error) {
 	if strings.EqualFold(strings.TrimSpace(d.UniqueIdMethod), "CREATE_ID_FILE") {
 		p := platform.ExpandPathTokens(platform.ExpandWindowsPath(d.UniqueIdFile), ctx)
 		if data, err := os.ReadFile(p); err == nil && len(strings.TrimSpace(string(data))) > 0 {
@@ -585,7 +589,7 @@ func ensureUniqueIDOnSave(d platform.Descriptor, ctx platform.PathTokenContext) 
 		}
 		return id, nil
 	}
-	return ReadUniqueID(d, ctx.PlatformFolder)
+	return ReadUniqueID(platformKey, d, ctx.PlatformFolder)
 }
 
 func wrapNeedsAdminIfPermission(err error) error {
@@ -968,7 +972,7 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 		return err
 	}
 
-	cur, curErr := ReadUniqueID(d, folder)
+	cur, curErr := ReadUniqueID(platformKey, d, folder)
 	if curErr == nil &&
 		strings.TrimSpace(cur) != "" &&
 		strings.EqualFold(strings.TrimSpace(cur), strings.TrimSpace(uniqueID)) &&

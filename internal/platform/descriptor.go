@@ -14,6 +14,9 @@ type DescriptorExtras struct {
 	ProfilePicPath            string            `json:"ProfilePicPath,omitempty"`
 	ProfilePicFromFile        string            `json:"ProfilePicFromFile,omitempty"`
 	ProfilePicRegex           string            `json:"ProfilePicRegex,omitempty"`
+	BuiltInUsernameFile       string            `json:"BuiltInUsernameFile,omitempty"`
+	BuiltInProfileImageFile   string            `json:"BuiltInProfileImageFile,omitempty"`
+	BuiltInUserId             string            `json:"BuiltInUserId,omitempty"`
 	ShortcutFolders           []string          `json:"ShortcutFolders,omitempty"`
 	ShortcutIgnore            []string          `json:"ShortcutIgnore,omitempty"`
 	ShortcutIncludeMainExe    *bool             `json:"ShortcutIncludeMainExe,omitempty"`
@@ -27,20 +30,20 @@ type DescriptorExtras struct {
 }
 
 type Descriptor struct {
-	Identifiers              []string          `json:"Identifiers,omitempty"`
+	Identifiers              []string               `json:"Identifiers,omitempty"`
 	ExeLocationDefault       ExeLocationDefaultList `json:"ExeLocationDefault,omitempty"`
-	ExeExtraArgs             string            `json:"ExeExtraArgs,omitempty"`
-	GetPathFromShortcutNamed string            `json:"GetPathFromShortcutNamed,omitempty"`
-	ExesToEnd                []string          `json:"ExesToEnd,omitempty"`
-	PathListToClear          []string          `json:"PathListToClear,omitempty"`
-	LoginFiles               map[string]string `json:"LoginFiles,omitempty"`
-	AllFilesRequired         bool              `json:"AllFilesRequired"`
-	ExitBeforeInteract       bool              `json:"ExitBeforeInteract"`
-	RegDeleteOnClear         bool              `json:"RegDeleteOnClear"`
-	UniqueIdFile             string            `json:"UniqueIdFile,omitempty"`
-	UniqueIdMethod           string            `json:"UniqueIdMethod,omitempty"`
-	UniqueIdRegex            string            `json:"UniqueIdRegex,omitempty"`
-	Extras                   DescriptorExtras  `json:"Extras,omitempty"`
+	ExeExtraArgs             string                 `json:"ExeExtraArgs,omitempty"`
+	GetPathFromShortcutNamed string                 `json:"GetPathFromShortcutNamed,omitempty"`
+	ExesToEnd                []string               `json:"ExesToEnd,omitempty"`
+	PathListToClear          []string               `json:"PathListToClear,omitempty"`
+	LoginFiles               map[string]string      `json:"LoginFiles,omitempty"`
+	AllFilesRequired         bool                   `json:"AllFilesRequired"`
+	ExitBeforeInteract       bool                   `json:"ExitBeforeInteract"`
+	RegDeleteOnClear         bool                   `json:"RegDeleteOnClear"`
+	UniqueIdFile             string                 `json:"UniqueIdFile,omitempty"`
+	UniqueIdMethod           string                 `json:"UniqueIdMethod,omitempty"`
+	UniqueIdRegex            string                 `json:"UniqueIdRegex,omitempty"`
+	Extras                   DescriptorExtras       `json:"Extras,omitempty"`
 }
 
 // ParseDescriptor expands PathListToClear entries equal to SAME_AS_LOGIN_FILES into LoginFiles keys.

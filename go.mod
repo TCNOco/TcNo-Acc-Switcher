@@ -13,7 +13,7 @@ require (
 	github.com/tc-hib/winres v0.3.1
 	github.com/tidwall/gjson v1.18.0
 	github.com/tidwall/sjson v1.2.5
-	github.com/wailsapp/wails/v3 v3.0.0-alpha.81
+	github.com/wailsapp/wails/v3 v3.0.0-alpha.84
 	golang.org/x/image v0.35.0
 	golang.org/x/net v0.49.0
 	golang.org/x/sync v0.19.0

@@ -35,6 +35,7 @@ func saveProfileImage(d platform.Descriptor, platformKey, folder, uid string, ct
 		ps = platform.DefaultPlatformSettings()
 	}
 	if !pullOnSwitch {
+		slog.Debug("profile image skipped: pull disabled", "platform", platformKey, "uid", uid)
 		return nil
 	}
 
@@ -70,16 +71,20 @@ func saveProfileImage(d platform.Descriptor, platformKey, folder, uid string, ct
 		}
 	}
 	if strings.TrimSpace(remoteURL) != "" {
+		slog.Debug("profile image remote source queued", "platform", platformKey, "uid", uid, "url", remoteURL)
 		queueProfileImageDownload(platformKey, uid, remoteURL, 0)
 		return nil
 	}
 	if strings.TrimSpace(src) == "" {
+		slog.Debug("profile image source not found", "platform", platformKey, "uid", uid)
 		return nil
 	}
 	st, err := os.Stat(src)
 	if err != nil || st.IsDir() {
+		slog.Debug("profile image local source missing", "platform", platformKey, "uid", uid, "src", src, "err", err)
 		return nil
 	}
+	slog.Debug("profile image local source queued", "platform", platformKey, "uid", uid, "src", src)
 	queueProfileImageLocalCache(platformKey, uid, src)
 	return nil
 }
@@ -92,13 +97,29 @@ func queueProfileImageDownload(platformKey, uid, remoteURL string, maxAge int) {
 		return
 	}
 	if appclient.IsOfflineMode() {
+		slog.Debug("profile image download skipped: offline mode", "platform", platformKey, "uid", uid, "url", remoteURL)
 		return
 	}
+	slog.Debug("profile image download queued", "platform", platformKey, "uid", uid, "url", remoteURL, "maxAgeDays", maxAge)
 	go func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 45*time.Second)
 		defer cancel()
-		if _, err := profileimage.DownloadIfNeeded(ctx, appclient.Shared, platformKey, uid, remoteURL, maxAge); err != nil {
+		if res, err := profileimage.DownloadIfNeeded(ctx, appclient.Shared, platformKey, uid, remoteURL, maxAge); err != nil {
 			slog.Debug("profile image download failed", "platform", platformKey, "uid", uid, "err", err)
+			if cached, ok := profileimage.FindCached(platformKey, uid); ok {
+				emitAccountImagePatch(AccountImagePatch{
+					PlatformKey: platformKey,
+					UniqueID:    uid,
+					ImageURL:    cached,
+				})
+			}
+		} else {
+			slog.Debug("profile image download finished", "platform", platformKey, "uid", uid, "publicURL", res.PublicURL, "localPath", res.LocalPath)
+			emitAccountImagePatch(AccountImagePatch{
+				PlatformKey: platformKey,
+				UniqueID:    uid,
+				ImageURL:    res.PublicURL,
+			})
 		}
 	}()
 }
@@ -110,9 +131,26 @@ func queueProfileImageLocalCache(platformKey, uid, src string) {
 	if platformKey == "" || uid == "" || src == "" {
 		return
 	}
+	slog.Debug("profile image local cache queued", "platform", platformKey, "uid", uid, "src", src)
 	go func() {
 		if err := profileimage.CacheLocalFile(platformKey, uid, src); err != nil {
 			slog.Debug("profile image local cache failed", "platform", platformKey, "uid", uid, "err", err)
+			if cached, ok := profileimage.FindCached(platformKey, uid); ok {
+				emitAccountImagePatch(AccountImagePatch{
+					PlatformKey: platformKey,
+					UniqueID:    uid,
+					ImageURL:    cached,
+				})
+			}
+		} else {
+			slog.Debug("profile image local cache finished", "platform", platformKey, "uid", uid, "src", src)
+			if cached, ok := profileimage.FindCached(platformKey, uid); ok {
+				emitAccountImagePatch(AccountImagePatch{
+					PlatformKey: platformKey,
+					UniqueID:    uid,
+					ImageURL:    cached,
+				})
+			}
 		}
 	}()
 }

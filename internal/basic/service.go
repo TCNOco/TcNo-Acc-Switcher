@@ -69,7 +69,7 @@ func (b *BasicService) GetAccounts(platformKey string) ([]AccountDTO, error) {
 	remoteProfilePics := false
 	if d, _, derr := readDescriptor(platformKey); derr == nil {
 		folder, _ := resolveExeFolder(b.deps(), platformKey)
-		if u, uerr := ReadUniqueID(d, folder); uerr == nil {
+		if u, uerr := ReadUniqueID(platformKey, d, folder); uerr == nil {
 			liveUID = strings.TrimSpace(u)
 		}
 		tpl := strings.TrimSpace(d.Extras.ProfilePicPath)
@@ -164,6 +164,31 @@ func (b *BasicService) SaveCurrent(platformKey, accountName string) error {
 			"err", err)
 	}
 	return err
+}
+
+// SuggestedSaveAccountName returns a platform-specific suggested display name for Save Current.
+func (b *BasicService) SuggestedSaveAccountName(platformKey string) (string, error) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	platformKey = strings.TrimSpace(platformKey)
+	if platformKey == "" {
+		slog.Debug("suggested save name skipped: empty platform")
+		return "", nil
+	}
+	folder, _ := resolveExeFolder(b.deps(), platformKey)
+	slog.Debug("suggested save name collect begin", "platform", platformKey, "folder", folder)
+	ctx := platform.PathTokenContext{PlatformFolder: folder}
+	name, found, err := platformSuggestedSaveName(platformKey, folder, ctx)
+	if err != nil {
+		slog.Debug("suggested save name provider error", "platform", platformKey, "err", err)
+		return "", err
+	}
+	if !found {
+		slog.Debug("suggested save name provider missing", "platform", platformKey)
+		return "", nil
+	}
+	slog.Debug("suggested save name collected", "platform", platformKey, "name", strings.TrimSpace(name))
+	return strings.TrimSpace(name), nil
 }
 
 func (b *BasicService) AddNew(platformKey string) error {
