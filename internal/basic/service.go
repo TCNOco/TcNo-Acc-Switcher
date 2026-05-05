@@ -48,6 +48,7 @@ type AccountDTO struct {
 func (b *BasicService) GetAccounts(platformKey string) ([]AccountDTO, error) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
+	defer closeSharedLevelDBHandles("GetAccounts.end")
 	platformKey = strings.TrimSpace(platformKey)
 	if platformKey == "" {
 		return nil, nil
@@ -73,6 +74,8 @@ func (b *BasicService) GetAccounts(platformKey string) ([]AccountDTO, error) {
 		folder, _ := resolveExeFolder(b.deps(), platformKey)
 		if u, uerr := ReadUniqueID(platformKey, d, folder); uerr == nil {
 			liveUID = strings.TrimSpace(u)
+		} else {
+			slog.Debug("list accounts: live unique id read failed", "platform", platformKey, "method", d.UniqueIdMethod, "file", d.UniqueIdFile, "err", uerr)
 		}
 		tpl := strings.TrimSpace(d.Extras.ProfilePicPath)
 		remoteProfilePics = remoteProfilePicTemplate(tpl) && !strings.Contains(tpl, "%LARGEST%")
@@ -176,6 +179,7 @@ func (b *BasicService) SaveCurrent(platformKey, accountName string) error {
 func (b *BasicService) SuggestedSaveAccountName(platformKey string) (string, error) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
+	defer closeSharedLevelDBHandles("SuggestedSaveAccountName.end")
 	platformKey = strings.TrimSpace(platformKey)
 	if platformKey == "" {
 		slog.Debug("suggested save name skipped: empty platform")

@@ -145,7 +145,10 @@ func (b *BasicService) runProfileImageRefresh(platformKey string) {
 		basicProfileImgLog.Warn("readDescriptor failed", slog.String("platform", platformKey), slog.Any("err", err))
 		return
 	}
-	tpl := strings.TrimSpace(d.Extras.ProfilePicPath)
+	folder, _ := resolveExeFolder(b.deps(), platformKey)
+	baseCtx := platform.PathTokenContext{PlatformFolder: folder}
+	vars := resolveDescriptorVariables(d, folder, baseCtx, "", false)
+	tpl := strings.TrimSpace(expandDescriptorVariables(d.Extras.ProfilePicPath, vars))
 	remoteTpl := remoteProfilePicTemplate(tpl) && !strings.Contains(tpl, "%LARGEST%")
 
 	exeDir, err := platform.ResolveExeDir()
@@ -182,7 +185,6 @@ func (b *BasicService) runProfileImageRefresh(platformKey string) {
 		return
 	}
 
-	folder, _ := resolveExeFolder(b.deps(), platformKey)
 	f, err := readIdsFile(platformKey)
 	if err != nil {
 		basicProfileImgLog.Warn("readIdsFile failed", slog.Any("err", err))

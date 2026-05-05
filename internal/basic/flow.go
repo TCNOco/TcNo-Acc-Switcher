@@ -253,6 +253,8 @@ func CurrentLiveUniqueID(deps FlowDeps, platformKey string) (string, error) {
 
 func SaveCurrent(deps FlowDeps, platformKey, accountName string) error {
 	defer platform.EmitActionBarStatus("")
+	closeSharedLevelDBHandles("SaveCurrent.begin")
+	defer closeSharedLevelDBHandles("SaveCurrent.end")
 
 	d, _, err := readDescriptor(platformKey)
 	if err != nil {
@@ -678,6 +680,8 @@ func globPatternBaseDir(path string) string {
 }
 
 func Login(deps FlowDeps, platformKey, accountName string) error {
+	closeSharedLevelDBHandles("Login.begin")
+	defer closeSharedLevelDBHandles("Login.end")
 	d, _, err := readDescriptor(platformKey)
 	if err != nil {
 		return err
@@ -958,6 +962,8 @@ func recordBasicTrayRecent(platformKey, uniqueID string) {
 
 func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []string) error {
 	defer platform.EmitActionBarStatus("")
+	closeSharedLevelDBHandles("SwapTo.begin")
+	defer closeSharedLevelDBHandles("SwapTo.end")
 
 	d, _, err := readDescriptor(platformKey)
 	if err != nil {
@@ -1040,6 +1046,8 @@ func LaunchBasic(deps FlowDeps, platformKey string, extraLaunchArgs []string) er
 
 func AddNew(deps FlowDeps, platformKey string) error {
 	defer platform.EmitActionBarStatus("")
+	closeSharedLevelDBHandles("AddNew.begin")
+	defer closeSharedLevelDBHandles("AddNew.end")
 
 	d, _, err := readDescriptor(platformKey)
 	if err != nil {

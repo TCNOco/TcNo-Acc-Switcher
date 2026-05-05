@@ -114,17 +114,22 @@
         "%AppData%\\discord\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
       },
       "ExitBeforeInteract": true,
+      "ExitBeforeSave": true,
       "Extras": {
         "CachePaths": [
           "%AppData%\\discord\\Cache\\f_*"
         ],
-        "UsernameModalExtraButtons": "Platforms\\Discord\\Username.html",
-        "UsernameModalCopyText": "Platforms\\Discord\\Username.js",
-        "UsernameModalHintText": "Platform_DiscordPasteHint",
-        "SearchStartMenuForIcon": true
+        "BuiltInUsernameFile": "%userusername%",
+        "BuiltInProfileImageFile": "https://cdn.discordapp.com/avatars/%userid%/%useravatar%.webp",
+        "BuiltInUserId": "%userid%",
+        "variables": {
+          "userid": "leveldb:%AppData%\\discord\\Local Storage\\leveldb:_https://discord.comMultiAccountStore:_state.users.0.id",
+          "useravatar": "leveldb:%AppData%\\discord\\Local Storage\\leveldb:_https://discord.comMultiAccountStore:_state.users.0.avatar",
+          "userusername": "leveldb:%AppData%\\discord\\Local Storage\\leveldb:_https://discord.comMultiAccountStore:_state.users.0.username"
+        }
       },
-      "UniqueIdFile": "%AppData%\\discord\\TcNoAccSwitcher-ID.instance",
-      "UniqueIdMethod": "CREATE_ID_FILE"
+      "UniqueIdFile": "leveldb:%AppData%\\discord\\Local Storage\\leveldb:_https://discord.comMultiAccountStore:_state.users.0.id",
+      "UniqueIdMethod": "LEVELDB"
     },
     "Discord Canary": {
       "Identifiers": [
@@ -153,19 +158,74 @@
         "%AppData%\\discordcanary\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
       },
       "ExitBeforeInteract": true,
+      "ExitBeforeSave": true,
       "Extras": {
         "CachePaths": [
           "%AppData%\\discordcanary\\Cache\\f_*"
         ],
-        "UsernameModalExtraButtons": "Platforms\\Discord\\Username.html",
-        "UsernameModalCopyText": "Platforms\\Discord\\Username.js",
-        "UsernameModalHintText": "Platform_DiscordPasteHint",
-        "SearchStartMenuForIcon": true
+        "BuiltInUsernameFile": "%userusername%",
+        "BuiltInProfileImageFile": "https://cdn.discordapp.com/avatars/%userid%/%useravatar%.webp",
+        "BuiltInUserId": "%userid%",
+        "variables": {
+          "userid": "leveldb:%AppData%\\discordcanary\\Local Storage\\leveldb:_https://canary.discord.comMultiAccountStore:_state.users.0.id",
+          "useravatar": "leveldb:%AppData%\\discordcanary\\Local Storage\\leveldb:_https://canary.discord.comMultiAccountStore:_state.users.0.avatar",
+          "userusername": "leveldb:%AppData%\\discordcanary\\Local Storage\\leveldb:_https://canary.discord.comMultiAccountStore:_state.users.0.username"
+        }
       },
-      "UniqueIdFile": "%AppData%\\discordcanary\\TcNoAccSwitcher-ID.instance",
-      "UniqueIdMethod": "CREATE_ID_FILE"
+      "UniqueIdFile": "leveldb:%AppData%\\discordcanary\\Local Storage\\leveldb:_https://canary.discord.comMultiAccountStore:_state.users.0.id",
+      "UniqueIdMethod": "LEVELDB"
     },
     "Discord PTB": {
+      "Identifiers": [
+        "dp",
+        "discordptb",
+        "ptb"
+      ],
+      "ExeLocationDefault": "%LocalAppData%\\DiscordPTB\\Update.exe",
+      "GetPathFromShortcutNamed": "Discord PTB",
+      "ExeExtraArgs": "--processStart DiscordPTB.exe",
+      "ExesToEnd": [ "DiscordPTB.exe" ],
+      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+      "LoginFiles": {
+        "%AppData%\\discordptb\\blob_storage": "blob_storage\\",
+        "%AppData%\\discordptb\\Cache\\index": "Cache\\index",
+        "%AppData%\\discordptb\\Cache\\data_*": "Cache\\",
+        "%AppData%\\discordptb\\Code Cache\\js\\index-dir\\the-real-index": "Code Cache\\js\\index-dir\\the-real-index",
+        "%AppData%\\discordptb\\DawnGraphiteCache\\data_*": "DawnGraphiteCache\\",
+        "%AppData%\\discordptb\\DawnWebGPUCache\\data_*": "DawnWebGPUCache\\",
+        "%AppData%\\discordptb\\GPUCache\\data_*": "GPUCache\\",
+        "%AppData%\\discordptb\\Local Storage\\leveldb\\": "Local Storage\\leveldb\\",
+        "%AppData%\\discordptb\\Network\\": "Network\\",
+        "%AppData%\\discordptb\\sentry\\": "sentry\\",
+        "%AppData%\\discordptb\\Service Worker\\CacheStorage": "Service Worker\\CacheStorage\\",
+        "%AppData%\\discordptb\\Session Storage\\": "Session Storage\\",
+        "%AppData%\\discordptb\\shared_proto_db\\": "shared_proto_db\\",
+        "%AppData%\\discordptb\\settings.json": "settings.json",
+        "%AppData%\\discordptb\\Network Persistent State": "Network Persistent State",
+        "%AppData%\\discordptb\\Preferences": "Preferences",
+        "%AppData%\\discordptb\\TransportSecurity": "TransportSecurity"
+      },
+      "ExitBeforeInteract": true,
+      "ExitBeforeSave": true,
+      "Extras": {
+        "ClosingMethod": "Combined",
+        "CachePaths": [
+          "%AppData%\\discordptb\\Cache\\f_*"
+        ],
+        "SearchStartMenuForIcon": true,
+        "BuiltInUsernameFile": "%userusername%",
+        "BuiltInProfileImageFile": "https://cdn.discordapp.com/avatars/%userid%/%useravatar%.webp",
+        "BuiltInUserId": "%userid%",
+        "variables": {
+          "userid": "leveldb:%AppData%\\discordptb\\Local Storage\\leveldb:_https://ptb.discord.comMultiAccountStore:_state.users.0.id",
+          "useravatar": "leveldb:%AppData%\\discordptb\\Local Storage\\leveldb:_https://ptb.discord.comMultiAccountStore:_state.users.0.avatar",
+          "userusername": "leveldb:%AppData%\\discordptb\\Local Storage\\leveldb:_https://ptb.discord.comMultiAccountStore:_state.users.0.username"
+        }
+      },
+      "UniqueIdFile": "leveldb:%AppData%\\discordptb\\Local Storage\\leveldb:_https://ptb.discord.comMultiAccountStore:_state.users.0.id",
+      "UniqueIdMethod": "LEVELDB"
+    },
+    "Discord PTB2": {
       "Identifiers": [
         "dp",
         "discordptb",

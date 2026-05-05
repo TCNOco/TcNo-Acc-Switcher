@@ -11,6 +11,7 @@ const SameAsLoginFiles = "SAME_AS_LOGIN_FILES"
 type DescriptorExtras struct {
 	CachePaths                []string          `json:"CachePaths,omitempty"`
 	BackupFolders             map[string]string `json:"BackupFolders,omitempty"`
+	Variables                 map[string]string `json:"variables,omitempty"`
 	ProfilePicPath            string            `json:"ProfilePicPath,omitempty"`
 	ProfilePicFromFile        string            `json:"ProfilePicFromFile,omitempty"`
 	ProfilePicRegex           string            `json:"ProfilePicRegex,omitempty"`

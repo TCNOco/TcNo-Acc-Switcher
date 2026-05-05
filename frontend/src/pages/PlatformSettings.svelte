@@ -193,6 +193,15 @@
     }, 450);
   }
 
+  /** Svelte 4 only invalidates on top-level assignment; bump after mutating nested fields. */
+  function bumpSteamSettings(): void {
+    steamSettings = steamSettings;
+  }
+
+  function bumpGenericPlatformSettings(): void {
+    genericPS = genericPS;
+  }
+
   function debouncedSaveGeneric(): void {
     if (isSteam || !genericPS) return;
     clearTimeout(saveTimer);
@@ -606,6 +615,7 @@
                     const s = steamSettings;
                     if (!s) return;
                     s.ClosingMethod = v;
+                    bumpSteamSettings();
                     closingOpen = false;
                     debouncedSaveSteam();
                   }}
@@ -638,6 +648,7 @@
                     const s = steamSettings;
                     if (!s) return;
                     s.StartingMethod = v;
+                    bumpSteamSettings();
                     startingOpen = false;
                     debouncedSaveSteam();
                   }}
@@ -882,6 +893,7 @@
                     const s = steamSettings;
                     if (!s) return;
                     s.Steam_OverrideState = o.v;
+                    bumpSteamSettings();
                     stateOpen = false;
                     debouncedSaveSteam();
                   }}
@@ -961,6 +973,7 @@
                     const g = genericPS;
                     if (!g) return;
                     g.ClosingMethod = v;
+                    bumpGenericPlatformSettings();
                     closingOpen = false;
                     debouncedSaveGeneric();
                   }}
@@ -993,6 +1006,7 @@
                     const g = genericPS;
                     if (!g) return;
                     g.StartingMethod = v;
+                    bumpGenericPlatformSettings();
                     startingOpen = false;
                     debouncedSaveGeneric();
                   }}

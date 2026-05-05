@@ -26,6 +26,7 @@ func saveProfileImage(d platform.Descriptor, platformKey, folder, uid string, ct
 	}
 
 	ex := d.Extras
+	vars := resolveDescriptorVariables(d, folder, ctx, "", false)
 	var src string
 	var remoteURL string
 	ps, err := platform.LoadPlatformSettings(platformKey)
@@ -44,11 +45,12 @@ func saveProfileImage(d platform.Descriptor, platformKey, folder, uid string, ct
 			src = s
 		}
 	}
-	if src == "" && remoteProfilePicTemplate(ex.ProfilePicPath) {
-		if strings.Contains(ex.ProfilePicPath, "%LARGEST%") {
+	profilePicPath := expandDescriptorVariables(ex.ProfilePicPath, vars)
+	if src == "" && remoteProfilePicTemplate(profilePicPath) {
+		if strings.Contains(profilePicPath, "%LARGEST%") {
 			return nil
 		}
-		url := expandPlatformPath(ex.ProfilePicPath, folder, ctx)
+		url := expandPlatformPath(profilePicPath, folder, ctx)
 		if !remoteProfilePicTemplate(url) {
 			return nil
 		}
@@ -65,8 +67,8 @@ func saveProfileImage(d platform.Descriptor, platformKey, folder, uid string, ct
 			remoteURL = strings.TrimSpace(psrc.RemoteURL)
 		}
 	}
-	if src == "" && strings.TrimSpace(ex.ProfilePicPath) != "" {
-		if s, err := profilePicPathResolved(ex.ProfilePicPath, folder, ctx); err == nil && s != "" {
+	if src == "" && strings.TrimSpace(profilePicPath) != "" {
+		if s, err := profilePicPathResolved(profilePicPath, folder, ctx); err == nil && s != "" {
 			src = s
 		}
 	}

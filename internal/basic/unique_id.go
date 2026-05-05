@@ -26,23 +26,65 @@ var builtInUniqueIDResolvers = map[string]builtInUniqueIDResolver{
 func ReadUniqueID(platformKey string, d platform.Descriptor, platformFolder string) (string, error) {
 	method := strings.TrimSpace(d.UniqueIdMethod)
 	ctx := platform.PathTokenContext{PlatformFolder: platformFolder}
+	slog.Debug("read unique id begin", "platform", platformKey, "method", method, "file", d.UniqueIdFile)
 
 	switch strings.ToUpper(method) {
 	case "REGKEY":
-		return uniqueFromRegKey(d)
+		id, err := uniqueFromRegKey(d)
+		logUniqueIDResult(platformKey, method, id, err)
+		return id, err
 	case "CREATE_ID_FILE":
-		return uniqueFromCreateIDFile(d, ctx)
+		id, err := uniqueFromCreateIDFile(d, ctx)
+		logUniqueIDResult(platformKey, method, id, err)
+		return id, err
 	case "BUILTIN":
-		return uniqueFromBuiltIn(platformKey, d, ctx)
+		id, err := uniqueFromBuiltIn(platformKey, d, ctx)
+		logUniqueIDResult(platformKey, method, id, err)
+		return id, err
+	case "LEVELDB":
+		id, err := uniqueFromLevelDB(d, platformFolder, ctx)
+		logUniqueIDResult(platformKey, method, id, err)
+		return id, err
 	case "STEAM":
 		return "", fmt.Errorf("STEAM unique id: use Steam service")
 	default:
 		if strings.HasPrefix(strings.ToUpper(strings.TrimSpace(method)), "JSON_SELECT") ||
 			strings.HasPrefix(strings.TrimSpace(d.UniqueIdFile), "JSON_SELECT") {
-			return uniqueFromJSONSelect(d, ctx)
+			id, err := uniqueFromJSONSelect(d, ctx)
+			logUniqueIDResult(platformKey, method, id, err)
+			return id, err
 		}
-		return uniqueFromFileRegex(d, ctx)
+		id, err := uniqueFromFileRegex(d, ctx)
+		logUniqueIDResult(platformKey, method, id, err)
+		return id, err
 	}
+}
+
+func uniqueFromLevelDB(d platform.Descriptor, platformFolder string, ctx platform.PathTokenContext) (string, error) {
+	raw := strings.TrimSpace(d.UniqueIdFile)
+	if raw == "" {
+		return "", fmt.Errorf("empty UniqueIdFile")
+	}
+	if !isLevelDBReference(raw) {
+		return "", fmt.Errorf("LEVELDB unique id requires leveldb: reference")
+	}
+	vars := resolveDescriptorVariables(d, platformFolder, ctx, "", false)
+	ref := expandDescriptorVariables(raw, vars)
+	if parsed, err := parseLevelDBReference(ref); err == nil {
+		expandedPath := platform.ExpandPathTokens(platform.ExpandWindowsPath(parsed.Path), ctx)
+		slog.Debug("unique id leveldb resolve", "ref", ref, "expandedPath", expandedPath, "key", parsed.Key, "jsonPath", parsed.JSONPath)
+	} else {
+		slog.Debug("unique id leveldb resolve", "ref", ref, "parseErr", err)
+	}
+	return resolveLevelDBReference(ref, ctx)
+}
+
+func logUniqueIDResult(platformKey, method, id string, err error) {
+	if err != nil {
+		slog.Debug("read unique id failed", "platform", platformKey, "method", method, "err", err)
+		return
+	}
+	slog.Debug("read unique id success", "platform", platformKey, "method", method, "valuePreview", previewLevelDBValue(strings.TrimSpace(id)))
 }
 
 func uniqueFromBuiltIn(platformKey string, d platform.Descriptor, ctx platform.PathTokenContext) (string, error) {
