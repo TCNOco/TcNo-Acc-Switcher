@@ -295,6 +295,7 @@
         ]
       },
       "ExitBeforeInteract": true,
+      "ExitBeforeSave": true,
       "UniqueIdFile": "%LocalAppData%\\Electronic Arts\\EA Desktop\\telemetry.ini",
       "UniqueIdRegex": "=([^\\r\\n]*)"
     },

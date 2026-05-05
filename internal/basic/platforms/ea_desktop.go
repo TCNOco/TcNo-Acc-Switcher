@@ -157,22 +157,46 @@ func parseEANameForUserID(data []byte, userID string) string {
 		return ""
 	}
 	chunk := searchFrom[start:]
-	for _, key := range []string{`"nickname":"`, `"displayName":"`, `"uniqueName":"`} {
-		i := bytes.Index(chunk, []byte(key))
-		if i < 0 {
-			continue
+	// Prefer the same payload section used for avatar extraction:
+	// me.player.* + avatar.large.path.
+	largeIdx := bytes.Index(chunk, []byte(`"large"`))
+	if largeIdx > 0 {
+		if n := parseEANameFromPlayerWindow(chunk[:largeIdx]); n != "" {
+			return n
 		}
-		rest := chunk[i+len(key):]
-		j := bytes.IndexByte(rest, '"')
-		if j <= 0 {
-			continue
-		}
-		v := strings.TrimSpace(strings.ReplaceAll(string(rest[:j]), `\/`, `/`))
-		if v != "" {
+	}
+	// Fallback when avatar info is not present in this cache record.
+	if n := parseEANameFromPlayerWindow(chunk); n != "" {
+		return n
+	}
+	return ""
+}
+
+func parseEANameFromPlayerWindow(window []byte) string {
+	// Stay close to me.player to avoid personas[].displayName from other sections.
+	playerIdx := bytes.Index(window, []byte(`"player":{`))
+	if playerIdx >= 0 {
+		window = window[playerIdx:]
+	}
+	for _, key := range []string{`"displayName":"`, `"uniqueName":"`, `"nickname":"`} {
+		if v := parseEAStringField(window, key); v != "" {
 			return v
 		}
 	}
 	return ""
+}
+
+func parseEAStringField(data []byte, key string) string {
+	i := bytes.Index(data, []byte(key))
+	if i < 0 {
+		return ""
+	}
+	rest := data[i+len(key):]
+	j := bytes.IndexByte(rest, '"')
+	if j <= 0 {
+		return ""
+	}
+	return strings.TrimSpace(strings.ReplaceAll(string(rest[:j]), `\/`, `/`))
 }
 
 func sortByModDesc(paths []string) {
