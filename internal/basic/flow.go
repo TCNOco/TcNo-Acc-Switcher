@@ -33,9 +33,11 @@ func logFlow() *slog.Logger {
 }
 
 // regDumpEntry is one value in reg.json. Legacy files used a plain JSON string per key.
+// For LoginFiles keys ending with :* (all values in a key), Values holds each value name → entry.
 type regDumpEntry struct {
-	V string `json:"v"`
-	T uint32 `json:"t,omitempty"`
+	V      string                  `json:"v,omitempty"`
+	T      uint32                  `json:"t,omitempty"`
+	Values map[string]regDumpEntry `json:"values,omitempty"`
 }
 
 func registryValueStringForDump(v any) string {
@@ -74,6 +76,29 @@ func regDumpFromJSON(data []byte) (map[string]regDumpEntry, error) {
 	return out, nil
 }
 
+func splitRegistryPathValue(enc string) (keyPath, valueName string, ok bool) {
+	enc = strings.TrimSpace(enc)
+	idx := strings.LastIndex(enc, ":")
+	if idx <= 0 || idx >= len(enc)-1 {
+		return "", "", false
+	}
+	keyPath = enc[:idx]
+	valueName = enc[idx+1:]
+	if !strings.Contains(keyPath, `\`) {
+		return "", "", false
+	}
+	return keyPath, valueName, true
+}
+
+// splitRegistryKeyPathAndValueGlob is true when the value part uses * ? [ (but not the reserved whole-key name "*").
+func splitRegistryKeyPathAndValueGlob(enc string) (keyPath, glob string, ok bool) {
+	kp, v, ok := splitRegistryPathValue(enc)
+	if !ok || v == "*" || !hasGlobPattern(v) {
+		return "", "", false
+	}
+	return kp, v, true
+}
+
 func regDumpLookup(m map[string]regDumpEntry, descriptorKey string) (regDumpEntry, bool) {
 	k := strings.TrimSpace(descriptorKey)
 	if e, ok := m[k]; ok {
@@ -90,10 +115,55 @@ func regDumpLookup(m map[string]regDumpEntry, descriptorKey string) (regDumpEntr
 			return e, true
 		}
 	}
+	// Concrete REG:path:value may be stored under REG:path:* or REG:path:ValueName_* bundle entries.
+	keyPath, valName, ok := splitRegistryPathValue(base)
+	if ok && valName != "" && valName != "*" {
+		for wildKey, bundle := range m {
+			if len(bundle.Values) == 0 {
+				continue
+			}
+			wb := strings.TrimSpace(stripREG(wildKey))
+			wkPath, wValPart, wok := splitRegistryPathValue(wb)
+			if !wok || !strings.EqualFold(wkPath, keyPath) {
+				continue
+			}
+			switch {
+			case wValPart == "*":
+				if ve, ok := bundle.Values[valName]; ok {
+					return ve, true
+				}
+			case hasGlobPattern(wValPart):
+				matched, err := filepath.Match(wValPart, valName)
+				if err != nil || !matched {
+					continue
+				}
+				if ve, ok := bundle.Values[valName]; ok {
+					return ve, true
+				}
+			}
+		}
+	}
 	return regDumpEntry{}, false
 }
 
 func writeRegistryFromRegDump(liveKey string, e regDumpEntry) error {
+	if len(e.Values) > 0 {
+		enc := stripREG(liveKey)
+		kp, valPart, ok := splitRegistryPathValue(enc)
+		if !ok {
+			return fmt.Errorf("registry dump has values map but key %q is not a valid registry path", liveKey)
+		}
+		if valPart != "*" && !hasGlobPattern(valPart) {
+			return fmt.Errorf("registry dump has values map but key %q must use value :* or a glob (* ? [)", liveKey)
+		}
+		for valName, ent := range e.Values {
+			full := "REG:" + kp + ":" + valName
+			if err := writeRegistryFromRegDump(full, ent); err != nil {
+				return err
+			}
+		}
+		return nil
+	}
 	enc := stripREG(liveKey)
 	v := strings.TrimSpace(e.V)
 	if v == "" {
@@ -247,6 +317,41 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 		liveKey = strings.TrimSpace(liveKey)
 		if isREG(liveKey) {
 			enc := stripREG(liveKey)
+			if kp, ok := winutil.RegistryKeyPathForAllValuesSpecifier(enc); ok {
+				all, err := winutil.RegistryReadAllValuesInKey(kp)
+				if err != nil {
+					if d.AllFilesRequired {
+						return fmt.Errorf("registry read all values %s: %w", liveKey, err)
+					}
+					logFlow().Debug("skipping optional registry enumerate failure", "key", liveKey, "err", err)
+					continue
+				}
+				inner := make(map[string]regDumpEntry, len(all))
+				for vn, cell := range all {
+					inner[vn] = regDumpEntry{V: registryValueStringForDump(cell.Val), T: cell.Typ}
+				}
+				regDump[liveKey] = regDumpEntry{Values: inner}
+				continue
+			}
+			if kp, vglob, ok := splitRegistryKeyPathAndValueGlob(enc); ok {
+				matched, err := winutil.RegistryReadValuesMatchingNameGlob(kp, vglob)
+				if err != nil {
+					if d.AllFilesRequired {
+						return fmt.Errorf("registry read glob values %s: %w", liveKey, err)
+					}
+					logFlow().Debug("skipping optional registry glob read failure", "key", liveKey, "err", err)
+					continue
+				}
+				if len(matched) == 0 && d.AllFilesRequired {
+					return fmt.Errorf("registry glob %s matched no values", liveKey)
+				}
+				inner := make(map[string]regDumpEntry, len(matched))
+				for vn, cell := range matched {
+					inner[vn] = regDumpEntry{V: registryValueStringForDump(cell.Val), T: cell.Typ}
+				}
+				regDump[liveKey] = regDumpEntry{Values: inner}
+				continue
+			}
 			v, typ, err := winutil.RegistryRead(enc)
 			if err != nil {
 				if d.AllFilesRequired {
@@ -697,6 +802,14 @@ func ClearCurrentLogin(deps FlowDeps, platformKey string) error {
 		}
 		if isREG(p) {
 			enc := stripREG(p)
+			if _, ok := winutil.RegistryKeyPathForAllValuesSpecifier(enc); ok {
+				_ = winutil.RegistryClearLoginKey(enc, d.RegDeleteOnClear)
+				continue
+			}
+			if kp, vglob, ok := splitRegistryKeyPathAndValueGlob(enc); ok {
+				_ = winutil.RegistryClearValuesMatchingNameGlob(kp, vglob, d.RegDeleteOnClear)
+				continue
+			}
 			if d.RegDeleteOnClear {
 				_ = winutil.RegistryDelete(enc)
 			} else {
