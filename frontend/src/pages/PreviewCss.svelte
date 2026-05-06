@@ -490,7 +490,7 @@
           <button
             type="button"
             class="toast__close"
-            aria-label="Dismiss notification"
+              aria-label={$t("Aria_DismissNotification")}
             tabindex="-1"
             on:click|preventDefault|stopPropagation={() => {}}
           >
@@ -515,7 +515,7 @@
           <button
             type="button"
             class="toast__close"
-            aria-label="Dismiss notification"
+              aria-label={$t("Aria_DismissNotification")}
             tabindex="-1"
             on:click|preventDefault|stopPropagation={() => {}}
           >
@@ -540,7 +540,7 @@
           <button
             type="button"
             class="toast__close"
-            aria-label="Dismiss notification"
+              aria-label={$t("Aria_DismissNotification")}
             tabindex="-1"
             on:click|preventDefault|stopPropagation={() => {}}
           >
@@ -564,7 +564,7 @@
           <button
             type="button"
             class="toast__close"
-            aria-label="Dismiss notification"
+              aria-label={$t("Aria_DismissNotification")}
             tabindex="-1"
             on:click|preventDefault|stopPropagation={() => {}}
           >

@@ -59,6 +59,9 @@
 
   $: appBarTitle.set($t("Title_Steam_Cleaning"));
 
+  const i18nLogPrefix = "i18n:";
+  const i18nLogSep = "\u001f";
+
   function isWindowsClient(): boolean {
     if (typeof navigator === "undefined") return false;
     const uaData = (navigator as { userAgentData?: { platform?: string } }).userAgentData;
@@ -83,17 +86,34 @@
     }
   }
 
+  function translateLogLine(line: string): string {
+    if (!line.startsWith(i18nLogPrefix)) {
+      return line;
+    }
+    const parts = line.slice(i18nLogPrefix.length).split(i18nLogSep);
+    const key = parts.shift() ?? "";
+    const vars: Record<string, string | number> = {};
+    for (let i = 0; i < parts.length; i += 2) {
+      const name = parts[i];
+      if (!name) continue;
+      vars[name] = parts[i + 1] ?? "";
+    }
+    return get(t)(key, vars);
+  }
+
   async function runAction(id: string): Promise<void> {
     if (!acceptedRisk || busy) return;
     busy = true;
     try {
       const res = await RunAdvancedClearingAction(id);
-      const lines = res?.lines?.length ? res.lines : ["(no output)"];
+      const lines = res?.lines?.length
+        ? res.lines.map(translateLogLine)
+        : [$t("SteamAdvanced_NoOutput")];
       logLines = [...logLines, ...lines, ""];
       await scrollLogToBottom();
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
-      logLines = [...logLines, `Error: ${msg}`, ""];
+      logLines = [...logLines, $t("SteamAdvanced_LogError", { message: msg }), ""];
       await scrollLogToBottom();
       pushToast({ type: "error", title: "", message: msg, duration: 10000 });
     } finally {

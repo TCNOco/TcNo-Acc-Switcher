@@ -8,6 +8,7 @@
     parentDisplayPath,
   } from "../../lib/fsPaths";
   import { formatUnknownError } from "../../lib/formatBindingError";
+  import { t } from "../../stores/i18n";
 
   type DirEntry = { name: string; path: string; isDir: boolean };
 
@@ -124,7 +125,7 @@
         type="button"
         class="pp-twisty"
         aria-expanded={expanded}
-        aria-label={expanded ? "Collapse" : "Expand"}
+        aria-label={expanded ? $t("Aria_Collapse") : $t("Aria_Expand")}
         on:click|stopPropagation={onLabelClick}
       >
         <img

@@ -11,6 +11,7 @@ import (
 	"strings"
 	"sync/atomic"
 
+	"TcNo-Acc-Switcher/internal/i18n"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/profileimage"
 
@@ -151,6 +152,7 @@ func (m *Manager) rebuildMenuLocked() {
 		return
 	}
 	menu := application.NewMenu()
+	tr := m.trayTranslator()
 
 	menu.Add("TcNo Account Switcher").OnClick(func(_ *application.Context) {
 		m.showHome()
@@ -183,7 +185,7 @@ func (m *Manager) rebuildMenuLocked() {
 		for _, u := range list {
 			u := u
 			plat := plat
-			item := sub.Add("Switch to: " + u.Name)
+			item := sub.Add(tr("Tray_Switch", map[string]string{"account": u.Name}))
 			if b := menuBitmapForAccount(plat, u.Arg); len(b) > 0 {
 				item.SetBitmap(b)
 			}
@@ -197,12 +199,29 @@ func (m *Manager) rebuildMenuLocked() {
 	}
 
 	menu.AddSeparator()
-	menu.Add("Exit").OnClick(func(_ *application.Context) {
+	menu.Add(tr("Tray_Exit", nil)).OnClick(func(_ *application.Context) {
 		m.SetQuitting(true)
 		m.app.Quit()
 	})
 
 	m.systray.SetMenu(menu)
+}
+
+func (m *Manager) trayTranslator() func(string, map[string]string) string {
+	exeDir, err := platform.ResolveExeDir()
+	if err != nil {
+		return func(key string, vars map[string]string) string {
+			return i18n.T("", "en-US", key, vars)
+		}
+	}
+	settings, err := platform.LoadAppSettings(exeDir)
+	language := "en-US"
+	if err == nil && strings.TrimSpace(settings.Language) != "" {
+		language = settings.Language
+	}
+	return func(key string, vars map[string]string) string {
+		return i18n.T(exeDir, language, key, vars)
+	}
 }
 
 func (m *Manager) showHome() {

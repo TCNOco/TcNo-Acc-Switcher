@@ -291,7 +291,7 @@
 {#if showCreateRow}
   <li role="menuitem" on:pointerdown={stop}>
     <button type="button" class="ctx-menu__btn" on:click={onCreateClick}
-      >Create: {trimmedSearchQuery}</button
+      >{$t("Context_CreateTag")} {trimmedSearchQuery}</button
     >
   </li>
 {/if}
@@ -360,7 +360,7 @@
         <button
           type="button"
           class="paginationButton"
-          aria-label="Previous page"
+          aria-label={$t("Aria_PreviousPage")}
           on:pointerdown={stop}
           on:click={() => {
             currentPage--;
@@ -399,7 +399,7 @@
         <button
           type="button"
           class="paginationButton"
-          aria-label="Next page"
+          aria-label={$t("Aria_NextPage")}
           on:pointerdown={stop}
           on:click={() => {
             currentPage++;

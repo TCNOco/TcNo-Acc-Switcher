@@ -3,7 +3,9 @@
   import { fly } from 'svelte/transition'
   import { cubicOut } from 'svelte/easing'
   import { Events } from '@wailsio/runtime'
+  import { get } from 'svelte/store'
   import { dismissToastById, pushToast, toastStore } from '../stores/toast'
+  import { t as translate } from '../stores/i18n'
   import ToastTypeIcon from './ToastTypeIcon.svelte'
   import "../styles/toast.scss";
 
@@ -22,14 +24,19 @@
     duration?: number
   }
 
+  function translateI18nToken(value: string): string {
+    if (!value.startsWith('i18n:')) return value
+    return get(translate)(value.slice(5))
+  }
+
   function fromWailsPayload(data: unknown): void {
     if (!data || typeof data !== 'object') return
     const p = data as WailsToastPayload
     if (typeof p.message !== 'string' || typeof p.type !== 'string') return
     pushToast({
       type: p.type,
-      title: typeof p.title === 'string' ? p.title : '',
-      message: p.message,
+      title: typeof p.title === 'string' ? translateI18nToken(p.title) : '',
+      message: translateI18nToken(p.message),
       duration: typeof p.duration === 'number' ? p.duration : undefined,
     })
   }
@@ -79,12 +86,12 @@
         role="status"
       >
         {#if t.count > 1}
-          <span class="toast__count" aria-label={`Repeated ${t.count} times`}>{t.count}</span>
+          <span class="toast__count" aria-label={$translate("Aria_RepeatedTimes", { count: t.count })}>{t.count}</span>
         {/if}
         <button
           type="button"
           class="toast__close"
-          aria-label="Dismiss notification"
+          aria-label={$translate("Aria_DismissNotification")}
           on:click={() => dismissToastById(t.id)}
         >
           <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">

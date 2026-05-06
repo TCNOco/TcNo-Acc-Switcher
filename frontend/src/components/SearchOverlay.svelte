@@ -16,6 +16,7 @@
   import { get } from "svelte/store";
   import { platformIconFgHref } from "../lib/platformIcon";
   import { searchOverlayCtrl, searchOverlayPendingAppend } from "../stores/searchOverlay";
+  import { t } from "../stores/i18n";
   import "../styles/SearchOverlay.scss";
 
   const dispatch = createEventDispatcher<{ pick: SearchResultRow; close: void }>();
@@ -117,7 +118,7 @@
         bind:value={query}
         type="text"
         class="searchOverlay_searchInput"
-        placeholder="Search…"
+        placeholder={$t("Context_Search")}
         spellcheck="false"
         autocomplete="off"
         on:keydown={onInputKeydown}

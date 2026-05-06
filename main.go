@@ -518,19 +518,19 @@ func dispatchCLIInGUI(app *application.App, p cli.Parsed) {
 			return
 		}
 		if err := launchAfterSwapCLI(p); err != nil {
-			EmitToast("error", "Launch", err.Error(), 0)
+			EmitToast("error", "i18n:Button_Launch", err.Error(), 0)
 		}
 	case cli.KindSwapBasic:
 		if err := basic.SwapTo(basic.FlowDeps{PS: platformSvc}, p.PlatformKey, p.UniqueID, p.PassthroughLaunchArgs); err != nil {
-			EmitToast("error", "Swap", err.Error(), 0)
+			EmitToast("error", "i18n:CLI_Swap", err.Error(), 0)
 			return
 		}
 		if err := launchAfterSwapCLI(p); err != nil {
-			EmitToast("error", "Launch", err.Error(), 0)
+			EmitToast("error", "i18n:Button_Launch", err.Error(), 0)
 		}
 	case cli.KindLogout:
 		if err := runLogoutCLI(p); err != nil {
-			EmitToast("error", "Logout", err.Error(), 0)
+			EmitToast("error", "i18n:CLI_Logout", err.Error(), 0)
 		}
 	case cli.KindOpenPage:
 		showAndFocusMainWindow(app)

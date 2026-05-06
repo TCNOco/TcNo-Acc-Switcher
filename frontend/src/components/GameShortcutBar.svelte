@@ -752,7 +752,7 @@
 
   function isNoShortcutFilesDrop(err: unknown): boolean {
     const s = formatWailsError(err) || String(err);
-    return s.includes("no .lnk or .url files in drop");
+    return s.trim() === "Toast_ShortcutImportUnsupported" || s.includes("Toast_ShortcutImportUnsupported");
   }
 
   const shortcutFileDropAcceptor: FileDropAcceptor = {

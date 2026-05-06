@@ -41,6 +41,15 @@ const (
 	acRegRememberPass  = "reg_rememberpassword"
 )
 
+const advancedClearingI18nSep = "\x1f"
+
+func advancedClearingI18nLine(key string, vars ...string) string {
+	if len(vars) == 0 {
+		return "i18n:" + key
+	}
+	return "i18n:" + key + advancedClearingI18nSep + strings.Join(vars, advancedClearingI18nSep)
+}
+
 // AdvancedClearingRegistrySupported is true when HKCU registry edits for Steam are supported.
 func (s *SteamService) AdvancedClearingRegistrySupported() bool {
 	return runtime.GOOS == "windows"
@@ -96,7 +105,7 @@ func (s *SteamService) RunAdvancedClearingAction(action string) (AdvancedClearRe
 		if err := winutil.KillByName(steamKillNames, method, nil); err != nil {
 			appendLine("Warning: " + err.Error())
 		}
-		appendLine("Closed Steam (or Steam was not running).")
+		appendLine(advancedClearingI18nLine("SteamAdvanced_ClosedSteam"))
 
 	case acClearLogs:
 		clearDirectoryContents(filepath.Join(root, "logs"), appendLine, "logs")
@@ -175,19 +184,19 @@ func clearDirectoryContents(dir string, appendLine func(string), label string) {
 	st, err := os.Stat(dir)
 	if err != nil {
 		if os.IsNotExist(err) {
-			appendLine(fmt.Sprintf("Skipped %s: folder does not exist (%s).", label, dir))
+			appendLine(advancedClearingI18nLine("SteamAdvanced_SkippedFolderMissing", "label", label, "path", dir))
 			return
 		}
-		appendLine(fmt.Sprintf("Error opening %s: %v", label, err))
+		appendLine(advancedClearingI18nLine("SteamAdvanced_ErrorOpening", "label", label, "error", err.Error()))
 		return
 	}
 	if !st.IsDir() {
-		appendLine(fmt.Sprintf("Skipped %s: not a directory (%s).", label, dir))
+		appendLine(advancedClearingI18nLine("SteamAdvanced_SkippedNotDirectory", "label", label))
 		return
 	}
 	entries, err := os.ReadDir(dir)
 	if err != nil {
-		appendLine(fmt.Sprintf("Error reading %s: %v", label, err))
+		appendLine(advancedClearingI18nLine("SteamAdvanced_ErrorReading", "label", label, "error", err.Error()))
 		return
 	}
 	var removed int
@@ -195,22 +204,22 @@ func clearDirectoryContents(dir string, appendLine func(string), label string) {
 		p := filepath.Join(dir, e.Name())
 		if e.IsDir() {
 			if err := os.RemoveAll(p); err != nil {
-				appendLine(fmt.Sprintf("Could not remove %s: %v", p, err))
+				appendLine(advancedClearingI18nLine("SteamAdvanced_CouldNotRemove", "path", p, "error", err.Error()))
 				continue
 			}
 			removed++
 			continue
 		}
 		if err := os.Remove(p); err != nil {
-			appendLine(fmt.Sprintf("Could not remove %s: %v", p, err))
+			appendLine(advancedClearingI18nLine("SteamAdvanced_CouldNotRemove", "path", p, "error", err.Error()))
 			continue
 		}
 		removed++
 	}
 	if removed == 0 {
-		appendLine(fmt.Sprintf("Cleared %s: nothing to remove (already empty).", label))
+		appendLine(advancedClearingI18nLine("SteamAdvanced_ClearEmpty", "label", label))
 	} else {
-		appendLine(fmt.Sprintf("Cleared %s: removed %d item(s).", label, removed))
+		appendLine(advancedClearingI18nLine("SteamAdvanced_RemovedFiles", "label", label, "count", fmt.Sprint(removed)))
 	}
 }
 
@@ -231,16 +240,16 @@ func clearTopLevelGlob(root string, patterns []string, appendLine func(string), 
 				continue
 			}
 			if err := os.Remove(p); err != nil {
-				appendLine(fmt.Sprintf("Could not remove %s: %v", p, err))
+				appendLine(advancedClearingI18nLine("SteamAdvanced_CouldNotRemove", "path", p, "error", err.Error()))
 				continue
 			}
 			n++
 		}
 	}
 	if n == 0 {
-		appendLine(fmt.Sprintf("Cleared %s: no matching files found.", label))
+		appendLine(advancedClearingI18nLine("SteamAdvanced_NoFiles", "label", label))
 	} else {
-		appendLine(fmt.Sprintf("Cleared %s: removed %d file(s).", label, n))
+		appendLine(advancedClearingI18nLine("SteamAdvanced_RemovedFiles", "label", label, "count", fmt.Sprint(n)))
 	}
 }
 
@@ -248,19 +257,19 @@ func clearTopLevelAllFiles(dir string, appendLine func(string), label string) {
 	st, err := os.Stat(dir)
 	if err != nil {
 		if os.IsNotExist(err) {
-			appendLine(fmt.Sprintf("Skipped %s: folder does not exist (%s).", label, dir))
+			appendLine(advancedClearingI18nLine("SteamAdvanced_SkippedFolderMissing", "label", label, "path", dir))
 			return
 		}
-		appendLine(fmt.Sprintf("Error opening %s: %v", label, err))
+		appendLine(advancedClearingI18nLine("SteamAdvanced_ErrorOpening", "label", label, "error", err.Error()))
 		return
 	}
 	if !st.IsDir() {
-		appendLine(fmt.Sprintf("Skipped %s: not a directory.", label))
+		appendLine(advancedClearingI18nLine("SteamAdvanced_SkippedNotDirectory", "label", label))
 		return
 	}
 	entries, err := os.ReadDir(dir)
 	if err != nil {
-		appendLine(fmt.Sprintf("Error reading %s: %v", label, err))
+		appendLine(advancedClearingI18nLine("SteamAdvanced_ErrorReading", "label", label, "error", err.Error()))
 		return
 	}
 	var n int
@@ -270,15 +279,15 @@ func clearTopLevelAllFiles(dir string, appendLine func(string), label string) {
 		}
 		p := filepath.Join(dir, e.Name())
 		if err := os.Remove(p); err != nil {
-			appendLine(fmt.Sprintf("Could not remove %s: %v", p, err))
+			appendLine(advancedClearingI18nLine("SteamAdvanced_CouldNotRemove", "path", p, "error", err.Error()))
 			continue
 		}
 		n++
 	}
 	if n == 0 {
-		appendLine(fmt.Sprintf("Cleared %s: no files at top level.", label))
+		appendLine(advancedClearingI18nLine("SteamAdvanced_NoFiles", "label", label))
 	} else {
-		appendLine(fmt.Sprintf("Cleared %s: removed %d file(s).", label, n))
+		appendLine(advancedClearingI18nLine("SteamAdvanced_RemovedFiles", "label", label, "count", fmt.Sprint(n)))
 	}
 }
 
@@ -286,14 +295,14 @@ func clearAllFilesRecursive(dir string, appendLine func(string), label string) {
 	st, err := os.Stat(dir)
 	if err != nil {
 		if os.IsNotExist(err) {
-			appendLine(fmt.Sprintf("Skipped %s: folder does not exist (%s).", label, dir))
+			appendLine(advancedClearingI18nLine("SteamAdvanced_SkippedFolderMissing", "label", label, "path", dir))
 			return
 		}
-		appendLine(fmt.Sprintf("Error opening %s: %v", label, err))
+		appendLine(advancedClearingI18nLine("SteamAdvanced_ErrorOpening", "label", label, "error", err.Error()))
 		return
 	}
 	if !st.IsDir() {
-		appendLine(fmt.Sprintf("Skipped %s: not a directory.", label))
+		appendLine(advancedClearingI18nLine("SteamAdvanced_SkippedNotDirectory", "label", label))
 		return
 	}
 	var n int
@@ -305,7 +314,7 @@ func clearAllFilesRecursive(dir string, appendLine func(string), label string) {
 			return nil
 		}
 		if err := os.Remove(path); err != nil {
-			appendLine(fmt.Sprintf("Could not remove %s: %v", path, err))
+			appendLine(advancedClearingI18nLine("SteamAdvanced_CouldNotRemove", "path", path, "error", err.Error()))
 			return nil
 		}
 		n++
@@ -316,9 +325,9 @@ func clearAllFilesRecursive(dir string, appendLine func(string), label string) {
 		return
 	}
 	if n == 0 {
-		appendLine(fmt.Sprintf("Cleared %s: no files found.", label))
+		appendLine(advancedClearingI18nLine("SteamAdvanced_NoFiles", "label", label))
 	} else {
-		appendLine(fmt.Sprintf("Cleared %s: removed %d file(s) (recursive).", label, n))
+		appendLine(advancedClearingI18nLine("SteamAdvanced_RemovedFiles", "label", label, "count", fmt.Sprint(n)))
 	}
 }
 
@@ -329,10 +338,10 @@ func tryRemoveFile(path string, appendLine func(string), label string) {
 			appendLine(fmt.Sprintf("%s: file not found (nothing to do).", label))
 			return
 		}
-		appendLine(fmt.Sprintf("Could not remove %s: %v", label, err))
+		appendLine(advancedClearingI18nLine("SteamAdvanced_CouldNotRemove", "path", label, "error", err.Error()))
 		return
 	}
-	appendLine(fmt.Sprintf("Removed %s.", label))
+	appendLine(advancedClearingI18nLine("SteamAdvanced_Removed", "label", label))
 }
 
 func clearSSFNFiles(root string, appendLine func(string)) {
@@ -348,15 +357,15 @@ func clearSSFNFiles(root string, appendLine func(string)) {
 			continue
 		}
 		if err := os.Remove(p); err != nil {
-			appendLine(fmt.Sprintf("Could not remove %s: %v", p, err))
+			appendLine(advancedClearingI18nLine("SteamAdvanced_CouldNotRemove", "path", p, "error", err.Error()))
 			continue
 		}
 		n++
 	}
 	if n == 0 {
-		appendLine("No SSFN files found.")
+		appendLine(advancedClearingI18nLine("SteamAdvanced_NoSsfnFiles"))
 	} else {
-		appendLine(fmt.Sprintf("Cleared SSFN files: removed %d file(s).", n))
+		appendLine(advancedClearingI18nLine("SteamAdvanced_RemovedFiles", "label", "SSFN files", "count", fmt.Sprint(n)))
 	}
 }
 

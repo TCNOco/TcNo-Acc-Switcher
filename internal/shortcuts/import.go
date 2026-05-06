@@ -12,7 +12,7 @@ import (
 	"TcNo-Acc-Switcher/internal/paths"
 )
 
-var ErrNoShortcutFilesInDrop = errors.New("shortcuts: no .lnk or .url files in drop")
+var ErrNoShortcutFilesInDrop = errors.New("Toast_ShortcutImportUnsupported")
 
 func (s *Service) ImportDroppedShortcuts(platformKey string, srcPaths []string) (int, error) {
 	platformKey = strings.TrimSpace(platformKey)

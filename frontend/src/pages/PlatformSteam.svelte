@@ -1372,7 +1372,7 @@
                 {#if acc?.syncError}
                   <div class="steam_meta_err" title={acc.syncError}>{acc.syncError}</div>
                 {:else if acc?.avatarPending}
-                  <div class="steam_meta_pending">Updating…</div>
+                  <div class="steam_meta_pending">{$t("Status_Updating")}</div>
                 {/if}
               </label>
             </div>
