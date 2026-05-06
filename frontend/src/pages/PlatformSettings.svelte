@@ -1217,6 +1217,9 @@
     <h2 class="SettingsHeader">{$t("Settings_Header_OtherTools")}</h2>
     <div class="buttoncol">
       <button type="button" on:click={onOpenFolder}>{$t("Settings_OpenFolder", { platform: name })}</button>
+      <button type="button" on:click={() => route.set({ page: "steam-advanced-clearing" })}>
+        {$t("Button_AdvancedCleaning")}
+      </button>
     </div>
 
     <hr class="settings-divider" />
@@ -1233,13 +1236,6 @@
     flex: 1;
     min-height: 0;
     padding-bottom: 1rem;
-  }
-
-  .settings-page-subtitle {
-    margin: 0.4rem 0 0;
-    color: rgba(255, 255, 255, 0.72);
-    font-size: 0.95rem;
-    line-height: 1.45;
   }
 
   .platform-settings-err {

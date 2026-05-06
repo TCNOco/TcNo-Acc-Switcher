@@ -23,8 +23,11 @@ export {
 } from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
 
 export {
+  AdvancedClearingItems,
+  AdvancedClearingRegistrySupported,
   GetSteamSettings,
   RefreshAllSteamImages,
   RefreshVACStatus,
+  RunAdvancedClearingAction,
   SaveSteamSettings,
 } from "../../bindings/TcNo-Acc-Switcher/internal/steam/steamservice.js";

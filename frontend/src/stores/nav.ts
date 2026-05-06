@@ -8,7 +8,8 @@ export type Route =
   | { page: "preview-css" }
   | { page: "manage-platforms" }
   | { page: "platform"; platformName: string }
-  | { page: "platform-settings"; platformName: string };
+  | { page: "platform-settings"; platformName: string }
+  | { page: "steam-advanced-clearing" };
 
 export const route = writable<Route>({ page: "home" });
 export const previousPage = writable<Route | null>(null);
@@ -28,6 +29,8 @@ export function serializeRoute(r: Route): string {
       return "#/platform/" + encodeURIComponent(r.platformName);
     case "platform-settings":
       return "#/platform-settings/" + encodeURIComponent(r.platformName);
+    case "steam-advanced-clearing":
+      return "#/steam/advanced-clearing";
     default:
       return "#/";
   }
@@ -59,6 +62,9 @@ export function parseHash(hash: string): Route | null {
   if (head === "platform-settings" && parts[1]) {
     return { page: "platform-settings", platformName: decodeURIComponent(parts[1]) };
   }
+  if (head === "steam" && parts[1]?.toLowerCase() === "advanced-clearing") {
+    return { page: "steam-advanced-clearing" };
+  }
   return null;
 }
 
@@ -86,6 +92,8 @@ function validateRoute(r: Route, startup: PlatformStartup): Route {
     case "platform":
     case "platform-settings":
       return nameOk(r.platformName) ? r : { page: "home" };
+    case "steam-advanced-clearing":
+      return nameOk("Steam") ? r : { page: "home" };
     default:
       return r;
   }

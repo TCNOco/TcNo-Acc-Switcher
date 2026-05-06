@@ -15,6 +15,7 @@
   import Platform from './pages/Platform.svelte'
   import PlatformSteam from './pages/PlatformSteam.svelte'
   import PlatformSettings from './pages/PlatformSettings.svelte'
+  import SteamAdvancedClearing from './pages/SteamAdvancedClearing.svelte'
   import ManagePlatforms from './pages/ManagePlatforms.svelte'
   import { route, applyNavigateJSON } from './stores/nav'
   import { installPageStatsTracking } from "./lib/pageStatsTrack";
@@ -146,6 +147,8 @@ import { platformActionBusy } from "./stores/platformPage";
       {/if}
     {:else if $route.page === 'platform-settings'}
       <PlatformSettings name={$route.platformName} />
+    {:else if $route.page === 'steam-advanced-clearing'}
+      <SteamAdvancedClearing />
     {:else if $route.page === 'manage-platforms'}
       <ManagePlatforms />
     {/if}

@@ -198,6 +198,7 @@
   "Cleaning_Button_KillProcess": "Kill {platform} process",
   "Cleaning_Button_ForgottenBackups": "Forgotten account backups",
   "Cleaning_Understand": "I understand what these buttons do.",
+  "SteamAdvanced_LogPlaceholder": "Output from each action will appear here.",
   "Restore_Info": "If you previously \"forgot\" an account, you can restore them here.<br /> This adds them back into your loginusers.vdf file, allowing you to switch to them.\n",
   "Restore_Button_Restore": "Restore selected",
   "Ignored_RemoveAccounts": "Remove accounts from ignore list",

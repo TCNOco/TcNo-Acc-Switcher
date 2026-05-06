@@ -5,6 +5,7 @@ package winutil
 import (
 	"encoding/binary"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -237,6 +238,14 @@ func RegistryDelete(encoded string) error {
 	}
 	defer key.Close()
 	return key.DeleteValue(val)
+}
+
+// RegistryDeleteIsNotExist reports whether err indicates the registry value (or key) did not exist.
+func RegistryDeleteIsNotExist(err error) bool {
+	if err == nil {
+		return false
+	}
+	return errors.Is(err, registry.ErrNotExist)
 }
 
 // ParseHexString decodes "(hex) aa bb" or "aabbcc" binary strings from reg.json.

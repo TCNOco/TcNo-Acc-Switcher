@@ -28,12 +28,3 @@
   <GeneralSettingsBlock />
 </div>
 <svelte:window on:keydown={onWindowKeyDown} />
-
-<style lang="scss">
-  .settings-page-subtitle {
-    margin: 0;
-    color: rgba(255, 255, 255, 0.75);
-    font-size: 0.95rem;
-    line-height: 1.45;
-  }
-</style>

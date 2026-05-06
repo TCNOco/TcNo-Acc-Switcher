@@ -17,6 +17,8 @@ export function routeToStatsPath(r: Route): string {
       return "/platform/" + r.platformName;
     case "platform-settings":
       return "/platform-settings/" + r.platformName;
+    case "steam-advanced-clearing":
+      return "/steam/advanced-clearing";
     default:
       return "/";
   }

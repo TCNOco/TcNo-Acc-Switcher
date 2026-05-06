@@ -19,6 +19,11 @@ func RegistryDelete(encoded string) error {
 	return ErrUnsupported
 }
 
+// RegistryDeleteIsNotExist is always false on non-Windows builds.
+func RegistryDeleteIsNotExist(err error) bool {
+	return false
+}
+
 func ParseHexString(s string) ([]byte, error) {
 	return nil, ErrUnsupported
 }
