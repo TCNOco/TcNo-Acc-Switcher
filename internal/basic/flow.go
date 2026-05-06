@@ -1160,6 +1160,7 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 	if err := stats.IncrementSwitches(platformKey); err != nil {
 		return err
 	}
+	platform.TriggerDiscordPresenceRefresh()
 	if !ps.AutoStart {
 		tray.MaybeHideMainWindow()
 		return nil

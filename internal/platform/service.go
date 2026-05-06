@@ -981,10 +981,90 @@ func (p *PlatformService) SetOfflineMode(enabled bool) error {
 		return err
 	}
 	s.OfflineMode = enabled
+	if enabled {
+		s.DiscordRpc = false
+		s.DiscordRpcShare = false
+	}
 	if err := saveSettingsAtomic(exeDir, s); err != nil {
 		return err
 	}
 	appclient.SetOfflineMode(enabled)
+	TriggerDiscordPresenceRefresh()
+	return nil
+}
+
+func (p *PlatformService) GetDiscordRpc() (bool, error) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return false, err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return false, err
+	}
+	return s.DiscordRpc, nil
+}
+
+func (p *PlatformService) SetDiscordRpc(enabled bool) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return err
+	}
+	if s.OfflineMode {
+		enabled = false
+	}
+	s.DiscordRpc = enabled
+	if !enabled {
+		s.DiscordRpcShare = false
+	}
+	if err := saveSettingsAtomic(exeDir, s); err != nil {
+		return err
+	}
+	TriggerDiscordPresenceRefresh()
+	return nil
+}
+
+func (p *PlatformService) GetDiscordRpcShare() (bool, error) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return false, err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return false, err
+	}
+	return s.DiscordRpc && s.DiscordRpcShare, nil
+}
+
+func (p *PlatformService) SetDiscordRpcShare(enabled bool) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return err
+	}
+	if s.OfflineMode || !s.DiscordRpc {
+		enabled = false
+	}
+	s.DiscordRpcShare = enabled
+	if err := saveSettingsAtomic(exeDir, s); err != nil {
+		return err
+	}
+	TriggerDiscordPresenceRefresh()
 	return nil
 }
 

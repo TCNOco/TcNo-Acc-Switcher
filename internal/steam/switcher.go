@@ -103,6 +103,7 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 	if err := stats.IncrementSwitches("Steam"); err != nil {
 		return err
 	}
+	platform.TriggerDiscordPresenceRefresh()
 
 	if !st.AutoStart {
 		tray.MaybeHideMainWindow()

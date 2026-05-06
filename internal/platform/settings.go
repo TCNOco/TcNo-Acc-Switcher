@@ -31,6 +31,13 @@ type AppSettings struct {
 	// OfflineMode blocks outbound HTTP (avatars, Steam APIs, etc.) when true.
 	OfflineMode bool `json:"offlineMode,omitempty"`
 
+	// DiscordRpc enables Discord rich presence integration.
+	// Stored without omitempty so false round-trips: omitted key plus normalize defaults would otherwise force true on load.
+	DiscordRpc bool `json:"discordRpc"`
+
+	// DiscordRpcShare controls whether total switch count is shown in Discord status.
+	DiscordRpcShare bool `json:"discordRpcShare,omitempty"`
+
 	// ExitToTray keeps the app running when the main window is closed; the window is hidden instead.
 	ExitToTray bool `json:"exitToTray,omitempty"`
 
@@ -59,6 +66,39 @@ func defaultSettings() AppSettings {
 		DisabledPlatforms: nil,
 		StatsEnabled:      true,
 		StatsShare:        true,
+		DiscordRpc:        true,
+		DiscordRpcShare:   false,
+	}
+}
+
+func normalizeAppSettingsDefaults(s *AppSettings, raw map[string]json.RawMessage) {
+	if s == nil {
+		return
+	}
+	if s.Version == 0 {
+		s.Version = 1
+	}
+	if s.Language == "" {
+		s.Language = "en-US"
+	}
+	if s.PlatformExePaths == nil {
+		s.PlatformExePaths = map[string]string{}
+	}
+	if _, ok := raw["statsEnabled"]; !ok {
+		s.StatsEnabled = true
+	}
+	if _, ok := raw["statsShare"]; !ok {
+		s.StatsShare = true
+	}
+	if _, ok := raw["discordRpc"]; !ok {
+		s.DiscordRpc = true
+	}
+	if !s.DiscordRpc {
+		s.DiscordRpcShare = false
+	}
+	if s.OfflineMode {
+		s.DiscordRpc = false
+		s.DiscordRpcShare = false
 	}
 }
 
@@ -92,21 +132,7 @@ func loadSettings(exeDir string) (AppSettings, error) {
 	if err := json.Unmarshal(data, &s); err != nil {
 		return AppSettings{}, err
 	}
-	if s.Version == 0 {
-		s.Version = 1
-	}
-	if s.Language == "" {
-		s.Language = "en-US"
-	}
-	if s.PlatformExePaths == nil {
-		s.PlatformExePaths = map[string]string{}
-	}
-	if _, ok := raw["statsEnabled"]; !ok {
-		s.StatsEnabled = true
-	}
-	if _, ok := raw["statsShare"]; !ok {
-		s.StatsShare = true
-	}
+	normalizeAppSettingsDefaults(&s, raw)
 	return s, nil
 }
 
@@ -114,6 +140,11 @@ func saveSettingsAtomic(exeDir string, s AppSettings) error {
 	if s.PlatformExePaths == nil {
 		s.PlatformExePaths = map[string]string{}
 	}
+	normalizeAppSettingsDefaults(&s, map[string]json.RawMessage{
+		"statsEnabled": {},
+		"statsShare":   {},
+		"discordRpc":   {},
+	})
 	path := settingsPath(exeDir)
 	data, err := json.MarshalIndent(s, "", "  ")
 	if err != nil {

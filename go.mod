@@ -7,6 +7,7 @@ require (
 	github.com/Microsoft/go-winio v0.6.2
 	github.com/go-ole/go-ole v1.3.0
 	github.com/google/uuid v1.6.0
+	github.com/hugolgst/rich-go v0.0.0-20240715122152-74618cc1ace2
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/srwiley/oksvg v0.0.0-20221011165216-be6e8873101c
 	github.com/srwiley/rasterx v0.0.0-20220730225603-2ab79fcdd4ef
@@ -58,5 +59,6 @@ require (
 	github.com/wailsapp/go-webview2 v1.0.23 // indirect
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
 	golang.org/x/crypto v0.47.0 // indirect
+	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 )

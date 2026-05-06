@@ -25,6 +25,10 @@
   let statsShare = true;
   let statsEnabledLoading = false;
   let statsShareLoading = false;
+  let discordRpc = true;
+  let discordRpcShare = false;
+  let discordRpcLoading = false;
+  let discordRpcShareLoading = false;
 
   let exitToTray = false;
   let minimizeOnSwitch = false;
@@ -70,6 +74,20 @@
       })
       .catch(() => {
         statsShare = true;
+      });
+    void PlatformService.GetDiscordRpc()
+      .then((v) => {
+        discordRpc = v;
+      })
+      .catch(() => {
+        discordRpc = true;
+      });
+    void PlatformService.GetDiscordRpcShare()
+      .then((v) => {
+        discordRpcShare = v;
+      })
+      .catch(() => {
+        discordRpcShare = false;
       });
     void PlatformService.GetMinimizeOnSwitch()
       .then((v) => {
@@ -291,6 +309,10 @@
     offlineLoading = true;
     try {
       await setUserOfflineMode(next);
+      if (next) {
+        discordRpc = false;
+        discordRpcShare = false;
+      }
       pushToast({
         type: "success",
         message: next ? $t("Toast_OfflineModeEnabled") : $t("Toast_OfflineModeDisabled"),
@@ -371,6 +393,59 @@
       });
     } finally {
       statsShareLoading = false;
+    }
+  }
+
+  async function toggleDiscordRpc(): Promise<void> {
+    if (discordRpcLoading || get(offlineMode)) {
+      return;
+    }
+    const next = !discordRpc;
+    discordRpcLoading = true;
+    try {
+      await PlatformService.SetDiscordRpc(next);
+      discordRpc = next;
+      if (!next) {
+        discordRpcShare = false;
+      }
+      pushToast({
+        type: "success",
+        message: get(t)("Toast_SavedItem", { item: get(t)("Settings_DiscordRpc") }),
+        duration: 4000,
+      });
+    } catch (e) {
+      pushToast({
+        type: "error",
+        message: formatToastWithError($t("Toast_SaveFailed"), e),
+        duration: 8000,
+      });
+    } finally {
+      discordRpcLoading = false;
+    }
+  }
+
+  async function toggleDiscordRpcShare(): Promise<void> {
+    if (discordRpcShareLoading || get(offlineMode) || !discordRpc) {
+      return;
+    }
+    const next = !discordRpcShare;
+    discordRpcShareLoading = true;
+    try {
+      await PlatformService.SetDiscordRpcShare(next);
+      discordRpcShare = next;
+      pushToast({
+        type: "success",
+        message: get(t)("Toast_SavedItem", { item: get(t)("Settings_DiscordRpcShare") }),
+        duration: 4000,
+      });
+    } catch (e) {
+      pushToast({
+        type: "error",
+        message: formatToastWithError($t("Toast_SaveFailed"), e),
+        duration: 8000,
+      });
+    } finally {
+      discordRpcShareLoading = false;
     }
   }
 </script>
@@ -566,6 +641,31 @@
   <button type="button" class="btnicontext" on:click={() => void openStatsModal()}>
     {$t("Settings_ViewStats")}
   </button>
+</div>
+
+<div class="rowSetting">
+  <div class="form-check">
+    <input
+      id="gs-discord-rpc"
+      type="checkbox"
+      checked={discordRpc}
+      disabled={discordRpcLoading || $offlineMode}
+      on:change={() => void toggleDiscordRpc()}
+    />
+    <label class="form-check-label" for="gs-discord-rpc"></label>
+  </div>
+  <label for="gs-discord-rpc">{$t("Settings_DiscordRpc")}</label>
+  <div class="form-check">
+    <input
+      id="gs-discord-rpc-share"
+      type="checkbox"
+      checked={discordRpcShare}
+      disabled={discordRpcShareLoading || $offlineMode || !discordRpc}
+      on:change={() => void toggleDiscordRpcShare()}
+    />
+    <label class="form-check-label" for="gs-discord-rpc-share"></label>
+  </div>
+  <label for="gs-discord-rpc-share">{$t("Settings_DiscordRpcShare")}</label>
 </div>
 
 <style lang="scss">

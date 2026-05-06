@@ -16,6 +16,7 @@ import (
 	"TcNo-Acc-Switcher/internal/basic"
 	"TcNo-Acc-Switcher/internal/buildmode"
 	"TcNo-Acc-Switcher/internal/cli"
+	"TcNo-Acc-Switcher/internal/discordrpc"
 	"TcNo-Acc-Switcher/internal/ipc"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/shortcuts"
@@ -33,6 +34,7 @@ var (
 	platformSvc = &platform.PlatformService{}
 	basicSvc    = basic.NewBasicService(platformSvc)
 	steamSvc    = steam.NewSteamService()
+	discordRPC  = discordrpc.NewManager()
 )
 
 // Wails uses Go's `embed` package to embed the frontend files into the binary.
@@ -62,6 +64,7 @@ func init() {
 
 	platform.SetSteamLaunchHooks(steam.SaveFolderFromConfirmedExe, steam.ResolveSteamExePath)
 	platform.SetSteamReset(steam.ResetToDefaults)
+	platform.SetDiscordPresenceRefreshHook(discordRPC.RefreshAsync)
 	platform.SetPlatformLaunchers(func() error { return steam.LaunchSteamOnly(nil) }, func(platformKey string) error {
 		return basic.LaunchBasic(basic.FlowDeps{PS: platformSvc}, platformKey, nil)
 	})
@@ -351,6 +354,7 @@ func runGUI(parsed cli.Parsed) {
 		log.Printf("stats launch count: %v", err)
 	}
 	go stats.MustTryUploadDaily(guiSettings.StatsEnabled, guiSettings.StatsShare, guiSettings.OfflineMode)
+	discordRPC.Start()
 
 	app := application.New(application.Options{
 		Name:        "TcNo Account Switcher",
@@ -370,6 +374,9 @@ func runGUI(parsed cli.Parsed) {
 		Mac: application.MacOptions{
 			ApplicationShouldTerminateAfterLastWindowClosed: true,
 		},
+	})
+	app.OnShutdown(func() {
+		discordRPC.Stop()
 	})
 
 	if err := ipc.StartGUIServer(func(argv []string) {
