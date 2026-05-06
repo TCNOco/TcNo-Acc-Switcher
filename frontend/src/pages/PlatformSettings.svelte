@@ -42,6 +42,7 @@
   let clearingCache = false;
   let backingUp = false;
   let restoringBackup = false;
+  let closingMethodUiLocked = false;
 
   const ARG_SILENT = "-silent";
   const ARG_VGUI = "-vgui";
@@ -61,6 +62,12 @@
     const parts = launchArgTokens(line).filter((t) => t.toLowerCase() !== lower);
     if (on) parts.push(f);
     return parts.join(" ");
+  }
+
+  function isClosingMethodForcedPayload(raw: unknown): boolean {
+    if (!raw || typeof raw !== "object") return false;
+    const o = raw as Record<string, unknown>;
+    return o.ClosingMethodForced === true || o.closingMethodForced === true;
   }
 
   function sanitizeSettingsPayload(raw: unknown): Record<string, unknown> {
@@ -239,6 +246,7 @@
         await refreshInstallFolder();
         if (isSteam) {
           const raw = await Wails.GetSteamSettings();
+          closingMethodUiLocked = isClosingMethodForcedPayload(raw);
           steamSettings = Settings.createFrom(sanitizeSettingsPayload(raw) as Partial<Settings>);
           if (steamSettings.AlwaysSwapOnShortcut === undefined) {
             steamSettings.AlwaysSwapOnShortcut = true;
@@ -248,6 +256,7 @@
           }
         } else {
           const raw = await Wails.GetPlatformSettings(name);
+          closingMethodUiLocked = isClosingMethodForcedPayload(raw);
           const payload = sanitizeSettingsPayload(raw) as Record<string, unknown>;
           genericPS = PlatformSettings.createFrom(payload as Partial<PlatformSettings>);
           if (genericPS.AlwaysSwapOnShortcut === undefined) {
@@ -351,9 +360,11 @@
       await refreshInstallFolder();
       if (isSteam) {
         const raw = await Wails.GetSteamSettings();
+        closingMethodUiLocked = isClosingMethodForcedPayload(raw);
         steamSettings = Settings.createFrom(sanitizeSettingsPayload(raw) as Partial<Settings>);
       } else {
         const raw = await Wails.GetPlatformSettings(name);
+        closingMethodUiLocked = isClosingMethodForcedPayload(raw);
         const payload = sanitizeSettingsPayload(raw) as Record<string, unknown>;
         genericPS = PlatformSettings.createFrom(payload as Partial<PlatformSettings>);
         if (!("ShowLastUsed" in payload)) {
@@ -596,39 +607,41 @@
       </div>
       <label for="ps-run-admin">{$t("Settings_Admin", { platform: name })}</label>
     </div>
-    <div class="rowSetting rowDropdown">
-      <span use:tooltip={{ text: $t("Tooltip_ClosingMethod"), placement: "right" }}
-        >{$t("Settings_Header_ClosingMethod", { platform: name })}</span
-      >
-      <div class="dropdown" class:show={closingOpen}>
-        <button type="button" class="dropdown-toggle" on:click={() => (closingOpen = !closingOpen)}>
-          {closingLabel(steamSettings.ClosingMethod)}
-          <span class="caret" aria-hidden="true"></span>
-        </button>
-        {#if closingOpen}
-          <ul class="custom-dropdown-menu dropdown-menu" style="position:absolute;z-index:20;margin:0;">
-            {#each closingValues as v}
-              <li>
-                <button
-                  type="button"
-                  class="dropdown-item"
-                  on:click={() => {
-                    const s = steamSettings;
-                    if (!s) return;
-                    s.ClosingMethod = v;
-                    bumpSteamSettings();
-                    closingOpen = false;
-                    debouncedSaveSteam();
-                  }}
-                >
-                  {closingLabel(v)}
-                </button>
-              </li>
-            {/each}
-          </ul>
-        {/if}
+    {#if !closingMethodUiLocked}
+      <div class="rowSetting rowDropdown">
+        <span use:tooltip={{ text: $t("Tooltip_ClosingMethod"), placement: "right" }}
+          >{$t("Settings_Header_ClosingMethod", { platform: name })}</span
+        >
+        <div class="dropdown" class:show={closingOpen}>
+          <button type="button" class="dropdown-toggle" on:click={() => (closingOpen = !closingOpen)}>
+            {closingLabel(steamSettings.ClosingMethod)}
+            <span class="caret" aria-hidden="true"></span>
+          </button>
+          {#if closingOpen}
+            <ul class="custom-dropdown-menu dropdown-menu" style="position:absolute;z-index:20;margin:0;">
+              {#each closingValues as v}
+                <li>
+                  <button
+                    type="button"
+                    class="dropdown-item"
+                    on:click={() => {
+                      const s = steamSettings;
+                      if (!s) return;
+                      s.ClosingMethod = v;
+                      bumpSteamSettings();
+                      closingOpen = false;
+                      debouncedSaveSteam();
+                    }}
+                  >
+                    {closingLabel(v)}
+                  </button>
+                </li>
+              {/each}
+            </ul>
+          {/if}
+        </div>
       </div>
-    </div>
+    {/if}
     <div class="rowSetting rowDropdown">
       <span use:tooltip={{ text: $t("Tooltip_StartingMethod"), placement: "right" }}
         >{$t("Settings_Header_StartingMethod", { platform: name })}</span
@@ -954,39 +967,41 @@
       </div>
       <label for="gp-run-admin">{$t("Settings_Admin", { platform: name })}</label>
     </div>
-    <div class="rowSetting rowDropdown">
-      <span use:tooltip={{ text: $t("Tooltip_ClosingMethod"), placement: "right" }}
-        >{$t("Settings_Header_ClosingMethod", { platform: name })}</span
-      >
-      <div class="dropdown" class:show={closingOpen}>
-        <button type="button" class="dropdown-toggle" on:click={() => (closingOpen = !closingOpen)}>
-          {closingLabel(genericPS.ClosingMethod)}
-          <span class="caret" aria-hidden="true"></span>
-        </button>
-        {#if closingOpen}
-          <ul class="custom-dropdown-menu dropdown-menu" style="position:absolute;z-index:20;margin:0;">
-            {#each closingValues as v}
-              <li>
-                <button
-                  type="button"
-                  class="dropdown-item"
-                  on:click={() => {
-                    const g = genericPS;
-                    if (!g) return;
-                    g.ClosingMethod = v;
-                    bumpGenericPlatformSettings();
-                    closingOpen = false;
-                    debouncedSaveGeneric();
-                  }}
-                >
-                  {closingLabel(v)}
-                </button>
-              </li>
-            {/each}
-          </ul>
-        {/if}
+    {#if !closingMethodUiLocked}
+      <div class="rowSetting rowDropdown">
+        <span use:tooltip={{ text: $t("Tooltip_ClosingMethod"), placement: "right" }}
+          >{$t("Settings_Header_ClosingMethod", { platform: name })}</span
+        >
+        <div class="dropdown" class:show={closingOpen}>
+          <button type="button" class="dropdown-toggle" on:click={() => (closingOpen = !closingOpen)}>
+            {closingLabel(genericPS.ClosingMethod)}
+            <span class="caret" aria-hidden="true"></span>
+          </button>
+          {#if closingOpen}
+            <ul class="custom-dropdown-menu dropdown-menu" style="position:absolute;z-index:20;margin:0;">
+              {#each closingValues as v}
+                <li>
+                  <button
+                    type="button"
+                    class="dropdown-item"
+                    on:click={() => {
+                      const g = genericPS;
+                      if (!g) return;
+                      g.ClosingMethod = v;
+                      bumpGenericPlatformSettings();
+                      closingOpen = false;
+                      debouncedSaveGeneric();
+                    }}
+                  >
+                    {closingLabel(v)}
+                  </button>
+                </li>
+              {/each}
+            </ul>
+          {/if}
+        </div>
       </div>
-    </div>
+    {/if}
     <div class="rowSetting rowDropdown">
       <span use:tooltip={{ text: $t("Tooltip_StartingMethod"), placement: "right" }}
         >{$t("Settings_Header_StartingMethod", { platform: name })}</span

@@ -74,22 +74,21 @@ func settingsDirUnderExe() (string, error) {
 }
 
 type PlatformSettings struct {
-	RunAsAdmin           bool                `json:"RunAsAdmin"`
-	TrayAccNumber        int                 `json:"TrayAccNumber"`
-	ForgetAccountEnabled bool                `json:"ForgetAccountEnabled"`
-	ClosingMethod        string              `json:"ClosingMethod"`
-	StartingMethod       string              `json:"StartingMethod"`
-	AutoStart            bool                `json:"AutoStart"`
-	ShowShortNotes       bool                `json:"ShowShortNotes"`
-	ShowLastUsed         bool                `json:"ShowLastUsed"`
-	AccountNotes         map[string]string   `json:"AccountNotes"`
-	Shortcuts            []GameShortcutEntry `json:"Shortcuts,omitempty"`
-	AlwaysSwapOnShortcut bool                `json:"AlwaysSwapOnShortcut,omitempty"`
-	LaunchArguments      string              `json:"LaunchArguments,omitempty"`
-	// ProfileImageExpiryDays is max age (days) for cached remote profile pictures (Platforms.json http(s) ProfilePicPath).
-	ProfileImageExpiryDays int `json:"ProfileImageExpiryDays,omitempty"`
-	// PullAccountImagesOnSwitch enables fetching profile images during account save/switch.
-	PullAccountImagesOnSwitch bool `json:"PullAccountImagesOnSwitch,omitempty"`
+	RunAsAdmin                bool                `json:"RunAsAdmin"`
+	TrayAccNumber             int                 `json:"TrayAccNumber"`
+	ForgetAccountEnabled      bool                `json:"ForgetAccountEnabled"`
+	ClosingMethod             string              `json:"ClosingMethod"`
+	ClosingMethodForced       bool                `json:"ClosingMethodForced,omitempty"`
+	StartingMethod            string              `json:"StartingMethod"`
+	AutoStart                 bool                `json:"AutoStart"`
+	ShowShortNotes            bool                `json:"ShowShortNotes"`
+	ShowLastUsed              bool                `json:"ShowLastUsed"`
+	AccountNotes              map[string]string   `json:"AccountNotes"`
+	Shortcuts                 []GameShortcutEntry `json:"Shortcuts,omitempty"`
+	AlwaysSwapOnShortcut      bool                `json:"AlwaysSwapOnShortcut,omitempty"`
+	LaunchArguments           string              `json:"LaunchArguments,omitempty"`
+	ProfileImageExpiryDays    int                 `json:"ProfileImageExpiryDays,omitempty"`
+	PullAccountImagesOnSwitch bool                `json:"PullAccountImagesOnSwitch,omitempty"`
 }
 
 func DefaultPlatformSettings() PlatformSettings {
@@ -108,6 +107,11 @@ func DefaultPlatformSettings() PlatformSettings {
 		ProfileImageExpiryDays:    7,
 		PullAccountImagesOnSwitch: true,
 	}
+}
+
+// NormalizeClosingMethod normalizes a closing-method value for the current OS (for callers outside this package).
+func NormalizeClosingMethod(raw string) string {
+	return normalizeClosingMethodForOS(raw)
 }
 
 func normalizeClosingMethodForOS(raw string) string {
@@ -129,24 +133,30 @@ func normalizeClosingMethodForOS(raw string) string {
 	return string(winutil.ClosingCombined)
 }
 
-func defaultClosingMethodForPlatform(platformKey string) string {
+// DescriptorClosingPolicy returns the default closing method from Platforms.json Extras and whether the user may override it in settings.
+func DescriptorClosingPolicy(platformKey string) (defaultMethod string, force bool) {
 	exeDir, err := ResolveExeDir()
 	if err != nil {
-		return string(winutil.ClosingCombined)
+		return string(winutil.ClosingCombined), false
 	}
 	settings, err := loadSettings(exeDir)
 	if err != nil {
-		return string(winutil.ClosingCombined)
+		return string(winutil.ClosingCombined), false
 	}
 	raw, err := os.ReadFile(resolvePlatformsPath(exeDir, settings))
 	if err != nil {
-		return string(winutil.ClosingCombined)
+		return string(winutil.ClosingCombined), false
 	}
 	d, err := ParseDescriptor(raw, platformKey)
 	if err != nil {
-		return string(winutil.ClosingCombined)
+		return string(winutil.ClosingCombined), false
 	}
-	return normalizeClosingMethodForOS(d.Extras.ClosingMethod)
+	return normalizeClosingMethodForOS(d.Extras.ClosingMethod), d.Extras.ForceClosingMethod
+}
+
+func defaultClosingMethodForPlatform(platformKey string) string {
+	m, _ := DescriptorClosingPolicy(platformKey)
+	return m
 }
 
 func sanitizePlatformSettingsFilePrefix(platformKey string) string {
@@ -228,7 +238,7 @@ func RemoveLaunchArgToken(line, flag string) string {
 
 // LoadPlatformSettings reads Settings/<Platform>Settings.json (Steam: SteamSettings.json); only fields on PlatformSettings are unmarshaled.
 func LoadPlatformSettings(platformKey string) (PlatformSettings, error) {
-	defaultClosingMethod := defaultClosingMethodForPlatform(platformKey)
+	defaultClosingMethod, closingForced := DescriptorClosingPolicy(platformKey)
 	path, err := platformSettingsJSONPath(platformKey)
 	if err != nil {
 		return PlatformSettings{}, err
@@ -238,6 +248,7 @@ func LoadPlatformSettings(platformKey string) (PlatformSettings, error) {
 		if os.IsNotExist(err) {
 			s := DefaultPlatformSettings()
 			s.ClosingMethod = defaultClosingMethod
+			s.ClosingMethodForced = closingForced
 			return s, nil
 		}
 		return PlatformSettings{}, err
@@ -246,6 +257,7 @@ func LoadPlatformSettings(platformKey string) (PlatformSettings, error) {
 	if err := json.Unmarshal(data, &s); err != nil {
 		s := DefaultPlatformSettings()
 		s.ClosingMethod = defaultClosingMethod
+		s.ClosingMethodForced = closingForced
 		return s, err
 	}
 	if gjson.GetBytes(data, "AlwaysSwapOnShortcut").Exists() {
@@ -269,6 +281,10 @@ func LoadPlatformSettings(platformKey string) (PlatformSettings, error) {
 	if strings.TrimSpace(s.ClosingMethod) == "" {
 		s.ClosingMethod = defaultClosingMethod
 	}
+	if closingForced {
+		s.ClosingMethod = defaultClosingMethod
+	}
+	s.ClosingMethodForced = closingForced
 	if strings.TrimSpace(s.StartingMethod) == "" {
 		s.StartingMethod = "Default"
 	}
@@ -286,6 +302,7 @@ func LoadPlatformSettings(platformKey string) (PlatformSettings, error) {
 
 // SavePlatformSettings patches the JSON file without removing keys not present on PlatformSettings.
 func SavePlatformSettings(platformKey string, s PlatformSettings) error {
+	s.ClosingMethodForced = false
 	path, err := platformSettingsJSONPath(platformKey)
 	if err != nil {
 		return err
@@ -305,7 +322,11 @@ func SavePlatformSettings(platformKey string, s PlatformSettings) error {
 	if err := json.Unmarshal(patch, &patchMap); err != nil {
 		return err
 	}
+	delete(existing, "ClosingMethodForced")
 	for k, v := range patchMap {
+		if k == "ClosingMethodForced" {
+			continue
+		}
 		existing[k] = v
 	}
 	out, err := json.MarshalIndent(existing, "", "  ")

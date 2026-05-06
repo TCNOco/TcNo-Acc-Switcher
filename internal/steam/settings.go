@@ -162,6 +162,15 @@ func LoadSettings() (Settings, error) {
 	if strings.TrimSpace(s.ClosingMethod) == "" {
 		s.ClosingMethod = "Combined"
 	}
+	s.ClosingMethod = platform.NormalizeClosingMethod(s.ClosingMethod)
+	defClose, forceClose := platform.DescriptorClosingPolicy("Steam")
+	if strings.TrimSpace(s.ClosingMethod) == "" {
+		s.ClosingMethod = defClose
+	}
+	if forceClose {
+		s.ClosingMethod = defClose
+	}
+	s.ClosingMethodForced = forceClose
 	if strings.TrimSpace(s.StartingMethod) == "" {
 		s.StartingMethod = "Default"
 	}
@@ -190,6 +199,7 @@ func SaveSettings(s Settings) error {
 	if s.AccountNotes == nil {
 		s.AccountNotes = map[string]string{}
 	}
+	s.ClosingMethodForced = false
 	data, err := json.MarshalIndent(s, "", "  ")
 	if err != nil {
 		return err

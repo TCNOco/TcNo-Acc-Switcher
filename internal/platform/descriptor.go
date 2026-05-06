@@ -25,6 +25,7 @@ type DescriptorExtras struct {
 	BackupFileTypesInclude    []string          `json:"BackupFileTypesInclude,omitempty"`
 	BackupFileTypesIgnore     []string          `json:"BackupFileTypesIgnore,omitempty"`
 	ClosingMethod             string            `json:"ClosingMethod,omitempty"`
+	ForceClosingMethod        bool              `json:"ForceClosingMethod,omitempty"`
 	UsernameModalExtraButtons string            `json:"UsernameModalExtraButtons,omitempty"`
 	UsernameModalCopyText     string            `json:"UsernameModalCopyText,omitempty"`
 	UsernameModalHintText     string            `json:"UsernameModalHintText,omitempty"`
