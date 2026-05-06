@@ -89,6 +89,14 @@ func platformSuggestedSaveName(platformKey, folder string, ctx platform.PathToke
 		profileImageProviderLog.Debug("rockstar suggested-name pattern", "builtInUsernameFile", d.Extras.BuiltInUsernameFile, "resolvedDataPattern", dataPat)
 		name, err := basicplatforms.RockstarSuggestedName(dataPat)
 		return strings.TrimSpace(name), true, err
+	case "geforce now":
+		dataPat := builtInPatternPath(d, folder, ctx, d.Extras.BuiltInUsernameFile, vars, "", false)
+		if strings.TrimSpace(dataPat) == "" {
+			dataPat = builtInPatternPath(d, folder, ctx, `%LocalAppData%\NVIDIA Corporation\GeForceNOW\CefCache\Default\Cache\Cache_Data\data_*`, vars, "", false)
+		}
+		profileImageProviderLog.Debug("geforce now suggested-name pattern", "builtInUsernameFile", d.Extras.BuiltInUsernameFile, "resolvedDataPattern", dataPat)
+		name, err := basicplatforms.GeForceNowSuggestedName(dataPat)
+		return strings.TrimSpace(name), true, err
 	default:
 		name := strings.TrimSpace(resolveDescriptorValue(d, d.Extras.BuiltInUsernameFile, folder, ctx, vars, "", false))
 		if name == "" {

@@ -350,9 +350,11 @@
         "CachePaths": [
           "%LocalAppData%\\NVIDIA Corporation\\GeForceNOW\\CefCache\\Cache",
           "%LocalAppData%\\NVIDIA Corporation\\GeForceNOW\\CefCache\\GPUCache"
-        ]
+        ],
+        "BuiltInUsernameFile": "%LocalAppData%\\NVIDIA Corporation\\GeForceNOW\\CefCache\\Default\\Cache\\Cache_Data\\data_*"
       },
       "ExitBeforeInteract": true,
+      "ExitBeforeSave": true,
       "UniqueIdFile": "%LocalAppData%\\NVIDIA Corporation\\GeForceNOW\\TcNoAccSwitcher-ID.instance",
       "UniqueIdMethod": "CREATE_ID_FILE"
     },
