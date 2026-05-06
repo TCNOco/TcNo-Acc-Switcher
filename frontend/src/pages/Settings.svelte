@@ -6,7 +6,7 @@
   import "../styles/Settings.scss";
   import GeneralSettingsBlock from "../components/GeneralSettingsBlock.svelte";
 
-  $: appBarTitle.set("TcNo Account Switcher - Settings");
+  $: appBarTitle.set($t("Title_Settings"));
   previousPage.set({ page: "home" });
   route.set({ page: "settings" });
 

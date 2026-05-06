@@ -17,7 +17,7 @@
 
   export let name: string;
 
-  $: appBarTitle.set(`${name} - Settings`);
+  $: appBarTitle.set($t("Title_Template_Settings", { platformName: name }));
   $: if (name) {
     route.set({ page: "platform-settings", platformName: name });
     previousPage.set({ page: "platform", platformName: name });
@@ -112,6 +112,7 @@
     const s = steamSettings;
     if (!s) return;
     s.LaunchArguments = withLaunchArgFlag(s.LaunchArguments ?? "", ARG_SILENT, el.checked);
+    bumpSteamSettings();
     debouncedSaveSteam();
   }
 
@@ -120,6 +121,7 @@
     const s = steamSettings;
     if (!s) return;
     s.LaunchArguments = withLaunchArgFlag(s.LaunchArguments ?? "", ARG_VGUI, el.checked);
+    bumpSteamSettings();
     debouncedSaveSteam();
   }
 

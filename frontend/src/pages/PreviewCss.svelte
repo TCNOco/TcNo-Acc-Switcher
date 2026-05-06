@@ -102,7 +102,7 @@
   let settingsDdOpen = false;
   let modalLog: string[] = [];
 
-  $: appBarTitle.set(`${$t("Settings_PreviewCssHeader")} — TcNo Account Switcher`);
+  $: appBarTitle.set($t("Title_Settings_TestCss"));
   previousPage.set({ page: "settings" });
   route.set({ page: "preview-css" });
 

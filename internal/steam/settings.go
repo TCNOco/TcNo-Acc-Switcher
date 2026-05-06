@@ -114,9 +114,8 @@ func LoadSettings() (Settings, error) {
 			delete(raw, "shortcuts")
 		}
 	}
-	// Legacy StartSilent / OldUi bools → LaunchArguments tokens (-silent, -vgui); keys dropped on save.
+	// Legacy StartSilent bool → LaunchArguments token (-silent); key dropped on save.
 	legacySilent := jsonRawMessageBool(raw["StartSilent"])
-	legacyOldUI := jsonRawMessageBool(raw["OldUi"])
 	delete(raw, "StartSilent")
 	delete(raw, "OldUi")
 	data2, err := json.Marshal(raw)
@@ -130,9 +129,6 @@ func LoadSettings() (Settings, error) {
 	}
 	if legacySilent {
 		s.LaunchArguments = platform.EnsureLaunchArg(s.LaunchArguments, "-silent")
-	}
-	if legacyOldUI {
-		s.LaunchArguments = platform.EnsureLaunchArg(s.LaunchArguments, "-vgui")
 	}
 	if gjson.GetBytes(data2, "AlwaysSwapOnShortcut").Exists() {
 		s.AlwaysSwapOnShortcut = gjson.GetBytes(data2, "AlwaysSwapOnShortcut").Bool()

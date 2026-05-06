@@ -56,6 +56,24 @@
     let backSpin = ''
     let backTransition = ''
     $: backDisabled = !!$activeModal
+    $: titleLabel = (() => {
+        if ($route.page === "manage-platforms") {
+            return $t("Title_Platforms_Settings")
+        }
+        if ($route.page === "preview-css") {
+            return $t("Title_Settings_TestCss")
+        }
+        if ($route.page === "settings") {
+            return $t("Title_Settings")
+        }
+        if ($route.page === "platform-settings") {
+            return $t("Title_Template_Settings", { platformName: $route.platformName })
+        }
+        if ($route.page === "platform") {
+            return $t("Title_AccountsList", { platform: $route.platformName })
+        }
+        return $appBarTitle
+    })()
 
     function backClick() {
         if ($route.page === 'home') {
@@ -98,9 +116,7 @@
         </svg>
     </span>
     <span id="title-label" class="title-drag">
-        {$appBarTitle === "TcNo Account Switcher"
-            ? $appBarTitle
-            : $t("Title_AccountsList", { platform: $appBarTitle })}
+        {titleLabel}
     </span>
     <span class="window-controls" role="toolbar">
         <button type="button" class="win-btn win-btn-min" aria-label="Minimize" on:click={() => Window.Minimise()}>
