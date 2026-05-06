@@ -447,34 +447,6 @@
 <div class="rowSetting">
   <div class="form-check">
     <input
-      id="gs-stats-enabled"
-      type="checkbox"
-      checked={statsEnabled}
-      disabled={statsEnabledLoading}
-      on:change={() => void toggleStatsEnabled()}
-    />
-    <label class="form-check-label" for="gs-stats-enabled"></label>
-  </div>
-  <label for="gs-stats-enabled">{$t("Settings_CollectStats")}</label>
-  <div class="form-check">
-    <input
-      id="gs-stats-share"
-      type="checkbox"
-      checked={statsShare}
-      disabled={statsShareLoading || !statsEnabled}
-      on:change={() => void toggleStatsShare()}
-    />
-    <label class="form-check-label" for="gs-stats-share"></label>
-  </div>
-  <label for="gs-stats-share">{$t("Settings_ShareStats")}</label>
-  <button type="button" class="btnicontext" on:click={() => void openStatsModal()}>
-    {$t("Settings_ViewStats")}
-  </button>
-</div>
-
-<div class="rowSetting">
-  <div class="form-check">
-    <input
       id="gs-min-switch"
       type="checkbox"
       checked={minimizeOnSwitch}
@@ -565,6 +537,36 @@
     <label for="gs-desktop-home">{$t("Settings_DesktopShortcut")}</label>
   </div>
 {/if}
+
+<h2 class="SettingsHeader">{$t("Settings_Header_StatsSharing")}</h2>
+
+<div class="rowSetting">
+  <div class="form-check">
+    <input
+      id="gs-stats-enabled"
+      type="checkbox"
+      checked={statsEnabled}
+      disabled={statsEnabledLoading}
+      on:change={() => void toggleStatsEnabled()}
+    />
+    <label class="form-check-label" for="gs-stats-enabled"></label>
+  </div>
+  <label for="gs-stats-enabled">{$t("Settings_CollectStats")}</label>
+  <div class="form-check">
+    <input
+      id="gs-stats-share"
+      type="checkbox"
+      checked={statsShare}
+      disabled={statsShareLoading || !statsEnabled}
+      on:change={() => void toggleStatsShare()}
+    />
+    <label class="form-check-label" for="gs-stats-share"></label>
+  </div>
+  <label for="gs-stats-share">{$t("Settings_ShareStats")}</label>
+  <button type="button" class="btnicontext" on:click={() => void openStatsModal()}>
+    {$t("Settings_ViewStats")}
+  </button>
+</div>
 
 <style lang="scss">
   button {
