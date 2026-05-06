@@ -1,0 +1,941 @@
+/* TcNo Modern UI — Direction A
+   Layered on top of existing site.css / acclist.css. Reuses --accent/--accentHS/--accentL
+   from accent.css so the user's runtime accent picker keeps working. */
+
+:root {
+  --m-bg-0: #0a0b0f;
+  --m-bg-1: #0e1015;
+  --m-bg-2: #14171f;
+  --m-bg-3: #1a1d27;
+  --m-bg-4: #232733;
+  --m-line: #262a36;
+  --m-line-2: #2f3441;
+  --m-text-0: #f4f5f8;
+  --m-text-1: #c8ccd6;
+  --m-text-2: #8b909c;
+  --m-text-3: #5a5f6b;
+
+  --m-accent: var(--accent);
+  --m-accent-2: hsl(var(--accentHS), calc(var(--accentL) + 8%));
+  --m-accent-glow: hsla(var(--accentHS), var(--accentL), 0.40);
+  --m-accent-soft: hsla(var(--accentHS), var(--accentL), 0.18);
+
+  --m-success: #3ec491;
+  --m-warn: #f5b04a;
+  --m-danger: #ef5e6e;
+
+  --m-r-sm: 6px;
+  --m-r-md: 10px;
+  --m-r-lg: 14px;
+}
+
+/* Base body — keep the existing dark gradient but switch font stack and surface */
+html.modern-active body,
+body.modern-active {
+  font-family: "Inter", "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-feature-settings: "ss01", "cv11";
+  background: var(--m-bg-0) !important;
+  color: var(--m-text-0);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* programMain becomes the flex shell host (sidebar + content) */
+.modern-active .programMain {
+  background: var(--m-bg-1) !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+}
+.modern-active .programMain > .app-shell {
+  flex: 1; min-height: 0;
+}
+
+/* Soften the existing custom titlebar to match modern surface */
+.modern-active .headerbar {
+  background: linear-gradient(180deg, #1a1d27 0%, #14171f 100%) !important;
+  border-bottom: 1px solid var(--m-line);
+  height: 36px;
+}
+.modern-active #window-title {
+  font-family: inherit;
+}
+.modern-active #window-title > span {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--m-text-2);
+}
+.modern-active .header_icon {
+  height: 12px;
+  margin: 12px 8px;
+  fill: var(--m-text-1);
+}
+
+/* ========== App shell (sidebar + content) ========== */
+.app-shell {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+/* ========== Sidebar ========== */
+.m-sidebar {
+  width: 224px;
+  background: #0c0e13;
+  border-right: 1px solid var(--m-line);
+  display: flex;
+  flex-direction: column;
+  padding: 14px 10px;
+  flex-shrink: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--m-line-2) transparent;
+}
+.m-sidebar::-webkit-scrollbar { width: 6px; }
+.m-sidebar::-webkit-scrollbar-thumb { background: var(--m-line-2); border-radius: 3px; }
+
+.m-sb-brand {
+  display: flex; align-items: center; gap: 8px;
+  padding: 4px 10px 16px;
+}
+.m-sb-brand-name { font-weight: 600; font-size: 14px; color: var(--m-text-0); }
+.m-sb-version { font-size: 10px; color: var(--m-text-3); margin-left: auto; }
+
+.m-eyebrow {
+  font-size: 10.5px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--m-text-3);
+  padding: 4px 10px 6px;
+}
+
+.m-sb-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: 8px;
+  font-size: 13px; color: var(--m-text-1);
+  cursor: pointer; user-select: none;
+  transition: background .12s ease;
+  text-decoration: none;
+}
+.m-sb-item:hover { background: rgba(255,255,255,.03); color: var(--m-text-0); }
+.m-sb-item.active {
+  background: var(--m-bg-3);
+  color: var(--m-text-0);
+  font-weight: 500;
+}
+.m-sb-item.active .m-sb-count { color: var(--m-accent-2); }
+.m-sb-count {
+  margin-left: auto; color: var(--m-text-3);
+  font-size: 11px; font-variant-numeric: tabular-nums;
+}
+.m-sb-spacer { flex: 1; min-height: 14px; }
+.m-sb-foot { border-top: 1px solid var(--m-line); padding-top: 10px; }
+
+.m-sb-platform-glyph {
+  width: 18px; height: 18px; border-radius: 5px;
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0; overflow: hidden;
+  background: var(--m-bg-3);
+}
+.m-sb-platform-glyph svg,
+.m-sb-platform-glyph img { width: 14px; height: 14px; display: block; }
+.m-sb-platform-glyph .ico-fg { fill: currentColor; }
+
+/* ========== Content area ========== */
+.m-content {
+  flex: 1; display: flex; flex-direction: column;
+  min-width: 0; min-height: 0;
+  overflow: auto;
+}
+
+.m-content-header {
+  padding: 14px 28px 18px;
+  border-bottom: 1px solid var(--m-line);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0; gap: 16px;
+}
+.m-content-title {
+  font-size: 22px; font-weight: 600; letter-spacing: -0.3px;
+  color: var(--m-text-0);
+}
+.m-content-sub {
+  color: var(--m-text-2); font-size: 12.5px; margin-top: 2px;
+}
+
+.m-content-body {
+  flex: 1; overflow: auto; padding: 20px 28px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--m-line-2) transparent;
+}
+.m-content-body::-webkit-scrollbar { width: 8px; }
+.m-content-body::-webkit-scrollbar-thumb { background: var(--m-line-2); border-radius: 4px; }
+
+/* ========== Buttons (modern variant — namespaced to avoid clobbering existing) ========== */
+.m-btn {
+  font: inherit; font-size: 13px; font-weight: 500;
+  padding: 7px 12px; border-radius: 8px;
+  border: 1px solid var(--m-line-2);
+  background: var(--m-bg-3); color: var(--m-text-0);
+  cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px;
+  line-height: 1;
+  transition: background .12s ease, transform .12s ease;
+  text-decoration: none;
+}
+.m-btn:hover { background: var(--m-bg-4); }
+.m-btn:active { transform: translateY(1px); }
+.m-btn.m-btn-primary {
+  background: var(--m-accent);
+  border-color: rgba(255,255,255,.12);
+  color: white;
+}
+.m-btn.m-btn-primary:hover { background: var(--m-accent-2); }
+.m-btn.m-btn-ghost {
+  background: transparent; border-color: transparent; color: var(--m-text-1);
+}
+.m-btn.m-btn-ghost:hover { background: rgba(255,255,255,.04); color: var(--m-text-0); }
+.m-btn.m-btn-sm { font-size: 12px; padding: 5px 9px; }
+.m-btn.m-btn-icon { padding: 6px; }
+
+/* ========== Active "currently signed in" banner ========== */
+.m-active-banner {
+  margin: 16px 28px 0;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, var(--m-accent-soft), transparent);
+  border: 1px solid var(--m-accent-glow);
+  display: flex; align-items: center; gap: 14px;
+}
+.m-active-banner-eyebrow {
+  font-size: 10.5px; color: var(--m-accent-2);
+  font-weight: 600; letter-spacing: 0.08em;
+}
+.m-active-banner-name {
+  font-size: 14px; font-weight: 500; margin-top: 2px;
+  color: var(--m-text-0);
+}
+.m-active-banner-meta { color: var(--m-text-3); font-weight: 400; }
+
+/* ========== Platform tile (used in banner + cards) ========== */
+.m-tile {
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; cursor: pointer; flex-shrink: 0;
+  font-weight: 700; letter-spacing: -1px;
+  transition: transform .15s ease, box-shadow .15s ease;
+  background: var(--m-bg-3);
+  overflow: hidden;
+}
+.m-tile:hover { transform: translateY(-2px); }
+.m-tile.active {
+  box-shadow: 0 0 0 2px var(--m-accent), 0 8px 24px var(--m-accent-glow);
+}
+.m-tile svg { width: 60%; height: 60%; }
+.m-tile svg .ico-fg,
+.m-tile svg use { fill: currentColor; }
+.m-tile-text {
+  font-size: 14px; color: rgba(255,255,255,.92);
+  text-shadow: 0 1px 2px rgba(0,0,0,.35);
+}
+.m-tile-count {
+  position: absolute; top: 6px; right: 6px;
+  font-size: 10px; font-weight: 600;
+  background: rgba(0,0,0,.55);
+  padding: 2px 6px; border-radius: 99px;
+  color: #fff; letter-spacing: 0;
+}
+
+/* ========== Platform card grid (home page) ========== */
+.m-section-label {
+  display: flex; align-items: center;
+  margin-bottom: 10px; margin-top: 4px;
+}
+.m-section-label .m-eyebrow { padding: 0; }
+.m-section-label .m-right { margin-left: auto; }
+
+.m-home-cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 24px;
+}
+.m-home-cols.no-rail { grid-template-columns: 1fr; }
+@media (max-width: 920px) {
+  .m-home-cols { grid-template-columns: 1fr; }
+}
+
+.m-platform-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.m-platform-card {
+  background: var(--m-bg-2);
+  border: 1px solid var(--m-line);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex; flex-direction: column; gap: 10px;
+  cursor: pointer;
+  position: relative;
+  min-height: 132px;
+  transition: border-color .15s ease, transform .12s ease;
+  color: var(--m-text-0);
+}
+.m-platform-card:hover {
+  border-color: var(--m-line-2);
+  transform: translateY(-1px);
+}
+.m-platform-card.active { border-color: var(--m-accent-glow); }
+.m-platform-card-name { font-weight: 500; font-size: 13.5px; }
+.m-platform-card-count { font-size: 11.5px; color: var(--m-text-2); margin-top: 2px; }
+.m-platform-card-active-pill {
+  position: absolute; top: 12px; right: 12px;
+  font-size: 10px; font-weight: 600; color: var(--m-accent-2);
+  padding: 3px 7px; border-radius: 99px;
+  background: var(--m-accent-soft);
+  border: 1px solid var(--m-accent-glow);
+  letter-spacing: 0.04em;
+}
+.m-platform-card-current {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 11.5px; color: var(--m-text-2); margin-top: 2px;
+  min-height: 18px;
+}
+.m-platform-card-current .m-name {
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.m-platform-card-empty {
+  font-size: 11px; color: var(--m-text-3); margin-top: 2px; font-style: italic;
+}
+
+/* Platform-tile color schemes (matched to design) */
+.m-tile.p-Steam       { background: linear-gradient(135deg, #1b2838 0%, #2a475e 100%); color: #e6f0ff; }
+.m-tile.p-Epic-Games  { background: #1d1d1d; color: #fff; box-shadow: inset 0 0 0 1px #2a2a2a; }
+.m-tile.p-BattleNet   { background: linear-gradient(135deg, #00264a 0%, #0070b8 100%); color: #d6eaff; }
+.m-tile.p-Origin      { background: linear-gradient(135deg, #2a0d00 0%, #f56c2d 130%); color: #fff; }
+.m-tile.p-EA-Desktop  { background: linear-gradient(135deg, #1a1a1a 0%, #c81e1e 130%); color: #fff; }
+.m-tile.p-Riot-Games  { background: linear-gradient(135deg, #0a0a0a 0%, #d13639 130%); color: #fff; }
+.m-tile.p-Ubisoft     { background: linear-gradient(135deg, #001a2c 0%, #0083e3 130%); color: #fff; }
+.m-tile.p-Discord     { background: linear-gradient(135deg, #2c2f3f 0%, #5865f2 130%); color: #fff; }
+.m-tile.p-Discord-Canary { background: linear-gradient(135deg, #2a1f0a 0%, #f1aa14 130%); color: #fff; }
+.m-tile.p-Discord-PTB { background: linear-gradient(135deg, #19243a 0%, #4488df 130%); color: #fff; }
+.m-tile.p-Rockstar    { background: linear-gradient(135deg, #131313 0%, #fcaf17 160%); color: #fff; }
+.m-tile.p-GOG-Galaxy  { background: linear-gradient(135deg, #1a0a2a 0%, #b164ff 130%); color: #fff; }
+.m-tile.p-Genshin-Impact { background: linear-gradient(135deg, #2a1f0a 0%, #d49b3a 130%); color: #fff; }
+.m-tile.p-OBS-Studio  { background: #1c1c1d; color: #fff; }
+.m-tile.p-Honkai-StarRail { background: linear-gradient(135deg, #0a1730 0%, #4ea4ff 130%); color: #fff; }
+.m-tile.p-Albion-Online   { background: linear-gradient(135deg, #2a1f10 0%, #c98c4b 130%); color: #fff; }
+.m-tile.p-Escape-from-Tarkov { background: linear-gradient(135deg, #1a1810 0%, #595138 130%); color: #d8d2bb; }
+.m-tile.p-Magic-Arena { background: linear-gradient(135deg, #2a1100 0%, #fbb040 130%); color: #fff; }
+.m-tile.p-Jagex       { background: linear-gradient(135deg, #2a160c 0%, #bf4e2c 130%); color: #fff; }
+.m-tile.p-Oculus      { background: linear-gradient(135deg, #0a1422 0%, #1c8cff 130%); color: #fff; }
+.m-tile.p-PS-Remote-Play { background: linear-gradient(135deg, #0a1124 0%, #003791 130%); color: #fff; }
+.m-tile.p-GeForce-Now { background: linear-gradient(135deg, #0a1a06 0%, #76b900 130%); color: #fff; }
+.m-tile.p-Delta-Force-Hawk-Ops { background: linear-gradient(135deg, #1a1d10 0%, #5a7a3a 130%); color: #fff; }
+.m-tile.p-Arena-Breakout-Infinite { background: linear-gradient(135deg, #1a1d10 0%, #c0a35a 130%); color: #fff; }
+.m-tile.p-default     { background: linear-gradient(135deg, #1a1d27 0%, #2a3142 100%); color: #fff; }
+
+/* Avatar primitive */
+.m-avatar {
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: white;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+.m-avatar.square { border-radius: 22%; }
+.m-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ========== Activity rail ========== */
+.m-activity-rail {
+  background: var(--m-bg-2);
+  border: 1px solid var(--m-line);
+  border-radius: 12px;
+  padding: 14px 0 4px;
+}
+.m-activity-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 14px;
+  font-size: 12px;
+}
+.m-activity-row + .m-activity-row { border-top: 1px solid var(--m-line); }
+.m-activity-row .m-activity-msg { flex: 1; color: var(--m-text-1); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.m-activity-time {
+  color: var(--m-text-3); font-variant-numeric: tabular-nums; font-size: 11px;
+  flex-shrink: 0;
+}
+.m-activity-dot {
+  width: 8px; height: 8px; border-radius: 99px; flex-shrink: 0;
+  background: var(--m-accent);
+}
+.m-activity-empty {
+  padding: 18px 14px; font-size: 12px; color: var(--m-text-3); text-align: center;
+}
+
+/* ============================================================
+   Phase 2 — Per-platform switcher: density, notes, switch overlay
+   ============================================================ */
+
+/* ---- Platform page top header (replaces bottom action bar) ---- */
+.m-platform-header {
+  padding: 14px 28px 18px;
+  border-bottom: 1px solid var(--m-line);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-shrink: 0;
+}
+.m-platform-header-left {
+  display: flex; align-items: center; gap: 14px; min-width: 0;
+}
+.m-platform-header-meta { min-width: 0; }
+.m-platform-header-title {
+  font-size: 22px; font-weight: 600; letter-spacing: -0.3px;
+  color: var(--m-text-0);
+  display: flex; align-items: center; gap: 10px;
+}
+.m-platform-header-sub {
+  color: var(--m-text-2); font-size: 12.5px; margin-top: 2px;
+}
+.m-platform-header-right {
+  display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+}
+.m-search {
+  font: inherit; font-size: 12.5px; padding: 7px 10px; width: 180px;
+  background: var(--m-bg-2); color: var(--m-text-0);
+  border: 1px solid var(--m-line-2); border-radius: 8px; outline: none;
+}
+.m-search:focus { border-color: var(--m-accent); }
+.m-search::placeholder { color: var(--m-text-3); }
+
+/* ---- Density toggle (3 buttons) ---- */
+.m-density-toggle {
+  display: flex;
+  background: var(--m-bg-3);
+  border: 1px solid var(--m-line-2);
+  border-radius: 8px;
+  padding: 2px;
+}
+.m-density-btn {
+  padding: 5px 8px; border-radius: 6px; cursor: pointer;
+  color: var(--m-text-2);
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: 0;
+}
+.m-density-btn:hover { color: var(--m-text-1); }
+.m-density-btn.active { background: var(--m-bg-4); color: var(--m-text-0); }
+
+/* ---- Account list — overrides existing acclist.css when modern density is set ---- */
+.modern-active .acc_list.m-density-tiles,
+.modern-active .acc_list.m-density-rows,
+.modern-active .acc_list.m-density-compact {
+  display: block;
+  background: transparent;
+  width: 100%;
+  height: auto;
+  padding: 16px 28px 28px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.modern-active .acc_list.m-density-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  padding: 16px 28px 28px;
+}
+.modern-active .acc_list.m-density-rows {
+  display: flex; flex-direction: column; gap: 6px;
+}
+.modern-active .acc_list.m-density-compact {
+  padding: 16px 28px 28px;
+}
+
+/* Hide the radio input itself; the label handles all interaction */
+.modern-active .acc_list.m-density-tiles .acc_list_item input.acc,
+.modern-active .acc_list.m-density-rows .acc_list_item input.acc,
+.modern-active .acc_list.m-density-compact .acc_list_item input.acc {
+  position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;
+}
+
+/* Make the item a flex shell that the label sits inside */
+.modern-active .acc_list.m-density-tiles .acc_list_item,
+.modern-active .acc_list.m-density-rows .acc_list_item,
+.modern-active .acc_list.m-density-compact .acc_list_item {
+  position: relative;
+  border: 0;
+  cursor: pointer;
+}
+.modern-active .acc_list.m-density-compact .acc_list_item + .acc_list_item label.acc {
+  border-top: 1px solid var(--m-line);
+}
+
+/* Per-density label styling */
+.modern-active .acc_list.m-density-tiles label.acc {
+  background: var(--m-bg-2);
+  border: 1px solid var(--m-line);
+  border-radius: 12px;
+  padding: 16px 14px 12px;
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; gap: 8px;
+  cursor: pointer; min-height: 0;
+  transition: border-color .15s ease, transform .12s ease;
+}
+.modern-active .acc_list.m-density-tiles label.acc:hover {
+  border-color: var(--m-line-2); transform: translateY(-1px);
+}
+.modern-active .acc_list.m-density-tiles label.acc img {
+  width: 56px; height: 56px; border-radius: 50%;
+  object-fit: cover; flex-shrink: 0;
+  margin: 0 auto;
+}
+.modern-active .acc_list.m-density-tiles label.acc h6.displayName {
+  font-weight: 500; font-size: 13.5px; margin: 0;
+  color: var(--m-text-0);
+}
+.modern-active .acc_list.m-density-tiles label.acc p {
+  font-size: 11px; color: var(--m-text-3); margin: 0;
+  line-height: 1.3;
+}
+
+.modern-active .acc_list.m-density-rows label.acc {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px;
+  background: var(--m-bg-2);
+  border: 1px solid var(--m-line);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color .12s ease, background .12s ease;
+}
+.modern-active .acc_list.m-density-rows label.acc:hover {
+  background: var(--m-bg-3); border-color: var(--m-line-2);
+}
+.modern-active .acc_list.m-density-rows label.acc img {
+  width: 40px; height: 40px; border-radius: 50%; object-fit: cover; grid-row: span 2; grid-column: 1;
+}
+.modern-active .acc_list.m-density-rows label.acc h6.displayName {
+  font-weight: 500; font-size: 13.5px; margin: 0; grid-column: 2;
+  color: var(--m-text-0);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.modern-active .acc_list.m-density-rows label.acc p {
+  font-size: 11.5px; color: var(--m-text-3); margin: 0; grid-column: 2;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.modern-active .acc_list.m-density-rows label.acc .m-acct-actions {
+  grid-column: 3; grid-row: span 2;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.modern-active .acc_list.m-density-compact .acc_list_item:first-child label.acc {
+  border-top: 1px solid var(--m-line);
+  border-radius: 10px 10px 0 0;
+}
+.modern-active .acc_list.m-density-compact .acc_list_item:last-child label.acc {
+  border-radius: 0 0 10px 10px;
+}
+.modern-active .acc_list.m-density-compact label.acc {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) 1fr 110px;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 14px;
+  background: var(--m-bg-2);
+  border-left: 1px solid var(--m-line);
+  border-right: 1px solid var(--m-line);
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.modern-active .acc_list.m-density-compact label.acc:hover {
+  background: var(--m-bg-3);
+}
+.modern-active .acc_list.m-density-compact label.acc img {
+  width: 26px; height: 26px; border-radius: 50%; object-fit: cover;
+}
+.modern-active .acc_list.m-density-compact label.acc h6.displayName {
+  font-weight: 500; font-size: 12.5px; margin: 0;
+  color: var(--m-text-0);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.modern-active .acc_list.m-density-compact label.acc p {
+  font-size: 11.5px; color: var(--m-text-2); margin: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.modern-active .acc_list.m-density-compact label.acc .m-acct-actions {
+  display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+}
+
+/* "Switch" / Active-pill on each item (rows + compact) */
+.m-active-pill {
+  font-size: 11px; color: var(--m-success);
+  padding: 3px 8px; border-radius: 99px;
+  background: rgba(62,196,145,.12);
+  border: 1px solid rgba(62,196,145,.3);
+  display: inline-flex; align-items: center; gap: 5px;
+  white-space: nowrap;
+}
+.m-active-pill .m-dot {
+  width: 5px; height: 5px; border-radius: 99px; background: var(--m-success);
+}
+
+/* Active highlight (replaces JS-set .currentAcc styling for the modern theme) */
+.modern-active .acc_list.m-density-tiles label.currentAcc {
+  border-color: rgba(62,196,145,.45);
+  box-shadow: 0 0 0 1px rgba(62,196,145,.25);
+}
+.modern-active .acc_list.m-density-rows label.currentAcc,
+.modern-active .acc_list.m-density-compact label.currentAcc {
+  border-color: rgba(62,196,145,.45);
+}
+.modern-active label.currentAcc::after {
+  content: "";
+}
+
+/* Inline note pill / input on each item */
+.m-note {
+  font-size: 11px; color: var(--m-accent-2);
+  padding: 1px 6px; border-radius: 4px;
+  background: var(--m-accent-soft);
+  border: 1px solid var(--m-accent-glow);
+  max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  display: inline-block; cursor: text;
+}
+.m-note-add {
+  font-size: 11px; color: var(--m-text-3); cursor: pointer;
+  display: inline-flex; align-items: center; gap: 4px;
+  background: transparent; border: 1px dashed transparent; padding: 1px 6px; border-radius: 4px;
+}
+.m-note-add:hover { color: var(--m-text-1); border-color: var(--m-line-2); }
+.m-note-input {
+  font: inherit; font-size: 12px; color: var(--m-text-0);
+  background: var(--m-bg-3);
+  border: 1px solid var(--m-line-2);
+  padding: 4px 8px;
+  border-radius: 6px;
+  outline: none;
+  max-width: 220px;
+}
+.m-note-input:focus { border-color: var(--m-accent); }
+
+/* Tag chips for level/VAC/etc. */
+.m-tag {
+  font-size: 11px;
+  padding: 1px 6px; border-radius: 4px;
+  background: var(--m-bg-3);
+  color: var(--m-text-2);
+}
+.m-tag.danger { color: var(--m-danger); background: rgba(239,94,110,.1); }
+
+/* ---- Switch overlay ---- */
+.m-switch-overlay {
+  position: fixed; inset: 0;
+  background: rgba(6,7,10,.78);
+  backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+  animation: m-fade-in .2s ease both;
+}
+.m-switch-card {
+  background: var(--m-bg-2);
+  border: 1px solid var(--m-line-2);
+  padding: 24px 28px;
+  border-radius: 14px;
+  display: flex; align-items: center; gap: 18px;
+  min-width: 360px;
+  box-shadow: 0 30px 80px rgba(0,0,0,.5);
+  color: var(--m-text-0);
+}
+.m-switch-eyebrow {
+  font-size: 11.5px; color: var(--m-text-3);
+  letter-spacing: 0.04em; font-weight: 600;
+}
+.m-switch-name {
+  font-size: 15px; font-weight: 500; margin-top: 4px;
+}
+.m-switch-name .m-accent { color: var(--m-accent-2); }
+.m-spinner {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 2.5px solid var(--m-bg-4);
+  border-top-color: var(--m-accent);
+  animation: m-spin .9s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes m-spin { to { transform: rotate(360deg); } }
+@keyframes m-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Empty state for filtered account list */
+.m-empty-state {
+  padding: 40px;
+  text-align: center;
+  color: var(--m-text-3);
+  font-size: 13px;
+}
+
+/* ============================================================
+   Phase 3 — Settings (sectioned nav) + Onboarding
+   ============================================================ */
+
+/* ---- Settings sectioned shell ---- */
+.m-set-shell {
+  flex: 1; display: flex; overflow: hidden; min-height: 0;
+}
+.m-set-nav {
+  width: 180px;
+  border-right: 1px solid var(--m-line);
+  padding: 18px 8px;
+  flex-shrink: 0;
+  background: transparent;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--m-line-2) transparent;
+}
+.m-set-nav-item {
+  padding: 7px 12px; border-radius: 6px;
+  font-size: 13px; color: var(--m-text-1);
+  cursor: pointer;
+  margin-bottom: 2px;
+  user-select: none;
+}
+.m-set-nav-item:hover { background: rgba(255,255,255,.03); color: var(--m-text-0); }
+.m-set-nav-item.active { background: var(--m-bg-3); color: var(--m-text-0); }
+
+.m-set-pane {
+  flex: 1; padding: 22px 28px; overflow: auto; min-width: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--m-line-2) transparent;
+}
+.m-set-pane::-webkit-scrollbar { width: 8px; }
+.m-set-pane::-webkit-scrollbar-thumb { background: var(--m-line-2); border-radius: 4px; }
+
+.m-set-section { margin-bottom: 28px; scroll-margin-top: 12px; }
+.m-set-section-title {
+  font-size: 11px; color: var(--m-text-3); font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  padding: 0 0 12px;
+}
+
+/* ---- Modern overrides for the existing SharedSettings markup ---- */
+.modern-active .SettingsHeader {
+  font-size: 11px !important; color: var(--m-text-3) !important; font-weight: 600 !important;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  padding: 18px 0 10px !important;
+  margin: 0 !important;
+  border-bottom: 1px solid var(--m-line);
+}
+.modern-active h1.SettingsHeader {
+  font-size: 20px !important; color: var(--m-text-0) !important;
+  text-transform: none; letter-spacing: -0.3px; font-weight: 600 !important;
+  border-bottom: none;
+  padding: 4px 0 16px !important;
+}
+.modern-active .rowSetting {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--m-line);
+  color: var(--m-text-1);
+  font-size: 13px;
+}
+.modern-active .rowSetting:last-child { border-bottom: none; }
+.modern-active .rowSetting label { color: var(--m-text-1); cursor: pointer; }
+
+/* Custom toggle styling for Bootstrap form-check inside settings */
+.modern-active .rowSetting .form-check {
+  display: inline-flex; align-items: center; padding: 0;
+  margin: 0;
+}
+.modern-active .rowSetting .form-check-input {
+  appearance: none; -webkit-appearance: none;
+  width: 36px; height: 20px; border-radius: 99px;
+  background: var(--m-bg-4) !important;
+  border: 1px solid var(--m-line-2) !important;
+  position: relative; cursor: pointer;
+  transition: background .2s;
+  margin: 0 8px 0 0;
+}
+.modern-active .rowSetting .form-check-input:checked {
+  background: var(--m-accent) !important;
+  border-color: rgba(255,255,255,.15) !important;
+}
+.modern-active .rowSetting .form-check-input::after {
+  content: "";
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: white;
+  position: absolute; top: 2px; left: 2px;
+  transition: left .2s;
+}
+.modern-active .rowSetting .form-check-input:checked::after { left: 19px; }
+.modern-active .rowSetting .form-check-label { display: none; }
+
+/* Bootstrap dropdown inside settings - keep functional, restyle subtly */
+.modern-active .rowDropdown { margin-top: 4px; }
+.modern-active .rowSetting .dropdown-toggle {
+  font: inherit; font-size: 13px; padding: 6px 12px; border-radius: 8px;
+  border: 1px solid var(--m-line-2);
+  background: var(--m-bg-3);
+  color: var(--m-text-0);
+}
+
+.modern-active .settingsCol {
+  background: transparent;
+  padding: 0 !important;
+}
+.modern-active .container.mainblock {
+  background: transparent;
+  max-width: none; padding: 0;
+}
+
+/* The Settings page's own bottom Close button */
+.modern-active .buttoncol.col_close {
+  padding: 16px 0;
+  display: flex; justify-content: flex-end;
+  border-top: 1px solid var(--m-line);
+  margin-top: 18px;
+}
+.modern-active .btn_close {
+  font: inherit; font-size: 13px; font-weight: 500;
+  padding: 7px 14px; border-radius: 8px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: var(--m-accent); color: white;
+  cursor: pointer;
+}
+.modern-active .btn_close:hover {
+  background: var(--m-accent-2);
+}
+
+/* ---- Onboarding ---- */
+.m-onb-shell {
+  flex: 1; display: flex; flex-direction: column; min-height: 0;
+}
+.m-onb-topbar {
+  padding: 16px 28px;
+  display: flex; align-items: center;
+  border-bottom: 1px solid var(--m-line);
+  flex-shrink: 0;
+}
+.m-onb-topbar-name {
+  font-weight: 600; font-size: 13.5px; color: var(--m-text-0);
+}
+.m-onb-step-dots { display: flex; gap: 6px; margin-left: auto; }
+.m-onb-dot {
+  width: 24px; height: 4px; border-radius: 2px;
+  background: var(--m-bg-4);
+  transition: background .2s;
+}
+.m-onb-dot.done { background: var(--m-accent); }
+.m-onb-dot.active { background: var(--m-accent); box-shadow: 0 0 8px var(--m-accent-glow); }
+
+.m-onb-body {
+  flex: 1; overflow: auto; padding: 24px 28px;
+  scrollbar-width: thin; scrollbar-color: var(--m-line-2) transparent;
+}
+.m-onb-footer {
+  padding: 12px 28px;
+  border-top: 1px solid var(--m-line);
+  display: flex; align-items: center; gap: 12px;
+  flex-shrink: 0;
+}
+.m-onb-spacer { flex: 1; }
+
+.m-onb-welcome {
+  max-width: 560px; margin: 30px auto; text-align: center;
+}
+.m-onb-welcome-mark {
+  display: inline-flex; padding: 18px; border-radius: 20px;
+  background: var(--m-accent-soft); border: 1px solid var(--m-accent-glow);
+  margin-bottom: 22px;
+}
+.m-onb-welcome-title {
+  font-size: 26px; font-weight: 600; letter-spacing: -0.5px;
+  color: var(--m-text-0);
+}
+.m-onb-welcome-sub {
+  color: var(--m-text-2); font-size: 14px; line-height: 1.55;
+  margin: 12px auto 0; max-width: 460px;
+}
+.m-onb-welcome-tiles {
+  display: flex; gap: 10px; justify-content: center;
+  margin-top: 26px; flex-wrap: wrap;
+}
+
+.m-onb-detect {
+  max-width: 720px; margin: 10px auto;
+}
+.m-onb-detect-title {
+  font-size: 20px; font-weight: 600; letter-spacing: -0.3px;
+  color: var(--m-text-0);
+}
+.m-onb-detect-sub {
+  color: var(--m-text-2); font-size: 13px;
+  margin-top: 6px; margin-bottom: 22px;
+}
+.m-onb-detect-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}
+.m-onb-detect-item {
+  background: var(--m-bg-2);
+  border: 1px solid var(--m-accent-glow);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex; align-items: center; gap: 12px;
+  color: var(--m-text-0);
+}
+.m-onb-detect-item.skip {
+  background: transparent; border-color: var(--m-line); opacity: 0.55;
+}
+.m-onb-detect-item-name {
+  font-weight: 500; font-size: 12.5px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.m-onb-detect-item-status {
+  font-size: 10.5px; color: var(--m-success);
+}
+.m-onb-detect-item.skip .m-onb-detect-item-status { color: var(--m-text-3); }
+
+.m-onb-hotkey {
+  max-width: 560px; margin: 30px auto; text-align: center;
+}
+.m-onb-hotkey-title {
+  font-size: 22px; font-weight: 600; letter-spacing: -0.3px;
+  color: var(--m-text-0);
+}
+.m-onb-hotkey-sub {
+  color: var(--m-text-2); font-size: 13px;
+  margin: 8px 0 28px;
+}
+.m-onb-hotkey-display {
+  display: inline-flex; gap: 8px;
+  padding: 20px 28px;
+  background: var(--m-bg-2);
+  border: 1px solid var(--m-line);
+  border-radius: 14px;
+}
+.m-kbd {
+  padding: 3px 8px; font-size: 11.5px; font-weight: 500;
+  background: var(--m-bg-3);
+  border: 1px solid var(--m-line-2);
+  border-radius: 5px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  box-shadow: 0 1px 0 var(--m-line-2);
+  color: var(--m-text-0);
+}
+
+/* When onboarding is the active route, hide the sidebar to keep the focus */
+.modern-active.onboarding .m-sidebar { display: none; }
+
+/* ========== Inline glyphs (stroke-icon shim — used in sidebar) ========== */
+.m-glyph {
+  width: 14px; height: 14px; flex-shrink: 0; display: block;
+  stroke: currentColor; stroke-width: 1.6; fill: none;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.m-glyph-fill { fill: currentColor; stroke: none; }

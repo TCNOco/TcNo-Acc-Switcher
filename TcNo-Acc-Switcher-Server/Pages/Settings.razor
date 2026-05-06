@@ -1,4 +1,4 @@
-﻿@*TcNo Account Switcher - A Super fast account switcher
+@*TcNo Account Switcher - A Super fast account switcher
     Copyright (C) 2019-2025 TroubleChute (Wesley Pyburn)
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,33 +22,58 @@
 @{ AData.SetActiveIJsRuntime(JsRuntime); }
 @inject Lang Locale
 
-<div class="container mainblock">
-    <div class="row">
-        <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
-            <div class="toastarea"></div>
-            <SharedSettings />
-
-            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Locale["Button_Close"]</span></button></div>
-        </div>
+<div class="m-content-header">
+    <div>
+        <div class="m-content-title">@Locale["Settings_Header_AppWide"]</div>
+        <div class="m-content-sub">App-wide preferences</div>
+    </div>
+    <div>
+        <button class="m-btn m-btn-sm m-btn-primary" @onclick="SaveAndClose">@Locale["Button_Close"]</button>
     </div>
 </div>
-<div id="blazor-error-ui">
-    <environment include="Staging,Production">
-        An error has occurred. This application may no longer respond until reloaded.
-    </environment>
-    <environment include="Development">
-        An unhandled exception has occurred. See browser dev tools for details.
-    </environment>
-    <a href="">Reload</a>
-    <a class="dismiss">🗙</a>
+
+<div class="m-set-shell">
+    <div class="m-set-nav">
+        @foreach (var (id, label) in Sections)
+        {
+            <div class="m-set-nav-item @(_active == id ? "active" : "")" @onclick="() => Navigate(id)">
+                @label
+            </div>
+        }
+    </div>
+    <div class="m-set-pane" id="set-pane">
+        <div class="toastarea"></div>
+        <SharedSettings />
+    </div>
 </div>
 
 @code
 {
+    private string _active = "language";
+
+    private static readonly (string id, string label)[] Sections = new[]
+    {
+        ("language", "Language"),
+        ("theme", "Theme"),
+        ("system", "System"),
+        ("program", "Program"),
+        ("statssharing", "Stats & Sharing"),
+    };
+
+    private async Task Navigate(string id)
+    {
+        _active = id;
+        // Scroll the matching <h2 class="SettingsHeader"> into view inside the pane.
+        try
+        {
+            await JsRuntime.InvokeVoidAsync("tcnoScrollSettingsTo", id);
+        }
+        catch { /* noop */ }
+    }
+
     public void SaveAndClose()
     {
         AppSettings.SaveSettings();
-
         NavManager.NavigateTo("/");
     }
 

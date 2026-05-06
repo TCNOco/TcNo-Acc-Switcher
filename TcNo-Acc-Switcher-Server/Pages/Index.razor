@@ -1,4 +1,4 @@
-﻿@*TcNo Account Switcher - A Super fast account switcher
+@*TcNo Account Switcher - A Super fast account switcher
     Copyright (C) 2019-2025 TroubleChute (Wesley Pyburn)
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,7 +19,6 @@
 @using System.Globalization
 @using System.IO
 @using TcNo_Acc_Switcher_Globals
-@using System.Configuration
 @inject IJSRuntime JsRuntime
 @{ AData.SetActiveIJsRuntime(JsRuntime); }
 @inject NavigationManager NavManager
@@ -37,85 +36,124 @@
 }
 
 <ContextMenu MenuItems="@AppSettings.PlatformContextMenuItems" ContextMenuId="AccOrPlatList" />
-<div class="platformTable">
-    <div class="platform_list">
-        @foreach (var platform in AData.SortedPlatformListHandleDisabled())
-        {
-            <div class="platform_list_item" id="@(platform)" @onclick="() => Check(platform)">
-                <div class="fgText @(!File.Exists(Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{BasicPlatforms.PlatformSafeName(platform)}.svg")) ? "noImageCenterText" : "") @(BasicPlatforms.PlatformFullName(platform).Length < 7 ? "shortText" : BasicPlatforms.PlatformFullName(platform).Length > 12 ? "longText" : "")"><p>@BasicPlatforms.PlatformFullName(platform).ToUpper(CultureInfo.InvariantCulture)</p></div>
-                <div class="fgImg">
-                    @if(File.Exists(Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{BasicPlatforms.PlatformSafeName(platform)}.svg")))
-                    {
-                        <svg viewBox="0 0 500 500" draggable="false" alt="@(BasicPlatforms.PlatformSafeName(platform))">
-                            <use href="@($"img/platform/{BasicPlatforms.PlatformSafeName(platform)}.svg#FG")" class="@("icoFG")"></use>
-                        </svg>
-                    }
-                </div>
-                <svg viewBox="0 0 2084 2084" draggable="false" alt="@(platform)" class="@("icoBG")">
-                    <use href="img/platform/glass.svg#GLASS" class="icoGlass @("icoGlass")"></use>
-                </svg>
-            </div>
-        }
+
+@{
+    var platforms = AData.SortedPlatformListHandleDisabled();
+    var totalAccounts = platforms.Sum(p => PlatformAccountCounts.Count(p));
+}
+
+<div class="m-content-header">
+    <div>
+        <div class="m-content-title">Accounts</div>
+        <div class="m-content-sub">
+            @platforms.Count platform@(platforms.Count == 1 ? "" : "s")
+            @if (totalAccounts > 0)
+            {
+                <span> · @totalAccounts account@(totalAccounts == 1 ? "" : "s") managed</span>
+            }
+        </div>
+    </div>
+    <div style="display:flex; gap:8px;">
+        <button class="m-btn m-btn-sm" @onclick="@(() => NavManager.NavigateTo("/Platforms"))" data-toggle="tooltip" title="@(Locale["Tooltip_ManagePlatforms"])">
+            <svg class="m-glyph" viewBox="0 0 16 16" style="width:12px; height:12px;"><path d="M8 3v10M3 8h10"></path></svg>
+            @Locale["Button_ManagePlatforms"]
+        </button>
     </div>
 </div>
 
-<div class="acc_list_actionbar">
-    <div>
-        @*<button id="btnTextEditor" onclick="location = 'TextEditor'">
-            <i class="fas fa-cog footerIcoSettings"></i>
-        </button>*@
-        @if (BasicPlatforms.PlatformDict.Count > 0)
-        {
-            <button id="btnPlatforms" onclick="location = 'Platforms'" data-toggle="tooltip" title="@(Locale["Tooltip_ManagePlatforms"])">
-                <i class="fas fa-plus footerIcoInline"></i>
-                @Lang["Button_ManagePlatforms"]
-            </button>
-        }
-        <button id="btnSettings" onclick="location = 'Settings'" data-toggle="tooltip" title="@(Locale["Tooltip_Settings"])">
-            <i class="fas fa-cog footerIcoSettings"></i>
-        </button>
-        <button id="btnHelp" onclick="showModal('info');" data-toggle="tooltip" title="@(Locale["Tooltip_Info"])">
-            <i class="fas fa-question footerIcoQuestion"></i>
-        </button>
+<div class="m-content-body">
+    <div class="m-home-cols">
+        <div>
+            <div class="m-section-label">
+                <div class="m-eyebrow">All platforms</div>
+            </div>
+            <div class="m-platform-grid">
+                @foreach (var platform in platforms)
+                {
+                    var safe = BasicPlatforms.PlatformSafeName(platform);
+                    var fullName = BasicPlatforms.PlatformFullName(platform);
+                    var safeClass = "p-" + safe.Replace(' ', '-');
+                    var svgPath = Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{safe}.svg");
+                    var hasSvg = File.Exists(svgPath);
+                    var letter = !string.IsNullOrEmpty(fullName) ? fullName[0].ToString().ToUpperInvariant() : "?";
+
+                    var count = PlatformAccountCounts.Count(platform);
+                    <div class="m-platform-card HasContextMenu" id="@platform" @onclick="() => Check(platform)">
+                        <div class="m-tile @safeClass" style="width:48px; height:48px; cursor:default;">
+                            @if (hasSvg)
+                            {
+                                <svg viewBox="0 0 500 500" preserveAspectRatio="xMidYMid meet" draggable="false">
+                                    <use href="@($"img/platform/{safe}.svg#FG")" class="ico-fg"></use>
+                                </svg>
+                            }
+                            else
+                            {
+                                <span class="m-tile-text">@letter</span>
+                            }
+                        </div>
+                        <div>
+                            <div class="m-platform-card-name">@fullName</div>
+                            <div class="m-platform-card-count">
+                                @(count == 0 ? "No accounts yet" : $"{count} account{(count == 1 ? "" : "s")}")
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div>
+            <div class="m-section-label">
+                <div class="m-eyebrow">Recent activity</div>
+            </div>
+            <div class="m-activity-rail">
+                <div class="m-activity-empty">No recent switches yet.</div>
+            </div>
+        </div>
     </div>
 </div>
 
 @code
 {
-	// This is run before everything is painted on, so that it can get the correct values for the CSS Block.
-	protected override void OnParametersSet()
-	{
-	}
+    // This is run before everything is painted on, so that it can get the correct values for the CSS Block.
+    protected override void OnParametersSet()
+    {
+    }
 
-	protected override void OnAfterRender(bool firstRender)
-	{
-		AppData.Instance.WindowTitle = "TcNo Account Switcher";
+    protected override void OnAfterRender(bool firstRender)
+    {
+        AppData.Instance.WindowTitle = "TcNo Account Switcher";
+
+        // First-launch: send the user through onboarding once.
+        if (firstRender && !Welcome.IsOnboarded())
+        {
+            NavManager.NavigateTo("/Welcome");
+            return;
+        }
 
         // If no platforms are showing:
-	    if (!AData.AnyPlatformsShowing())
-	    {
+        if (!AData.AnyPlatformsShowing())
+        {
             NavManager.NavigateTo("Platforms");
-	    }
+        }
 
         // If just 1 platform is showing, and first launch: Nav into:
-	    if (AppData.FirstMainMenuVisit && AData.SortedPlatformListHandleDisabled().Count == 1)
-	    {
-	        AppData.FirstMainMenuVisit = false;
-	        var onlyPlatform = AData.SortedPlatformListHandleDisabled().First();
-	        Check(onlyPlatform);
-	    }
-	    AppData.FirstMainMenuVisit = false;
+        if (AppData.FirstMainMenuVisit && AData.SortedPlatformListHandleDisabled().Count == 1)
+        {
+            AppData.FirstMainMenuVisit = false;
+            var onlyPlatform = AData.SortedPlatformListHandleDisabled().First();
+            Check(onlyPlatform);
+        }
+        AppData.FirstMainMenuVisit = false;
 
-	    if (firstRender)
-		{
-			GeneralFuncs.HandleQueries();
-		    _ = AppData.InvokeVoidAsync("initContextMenu");
-		    _ = AppData.InvokeVoidAsync("initPlatformListSortable");
-			//await AData.InvokeVoidAsync("initAccListSortable");
-		}
+        if (firstRender)
+        {
+            GeneralFuncs.HandleQueries();
+            _ = AppData.InvokeVoidAsync("initContextMenu");
+        }
 
-	    AppData.FirstLaunchCheck();
+        AppData.FirstLaunchCheck();
 
-	    AppStats.NewNavigation("/");
-	}
+        AppStats.NewNavigation("/");
+    }
 }

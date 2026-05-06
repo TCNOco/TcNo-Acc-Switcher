@@ -1,4 +1,4 @@
-﻿@*TcNo Account Switcher - A Super fast account switcher
+@*TcNo Account Switcher - A Super fast account switcher
     Copyright (C) 2019-2025 TroubleChute (Wesley Pyburn)
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,41 +17,77 @@
 @using TcNo_Acc_Switcher_Globals
 @using TcNo_Acc_Switcher_Server.Data.Settings
 @using TcNo_Acc_Switcher_Server.Pages.General
+@inject IJSRuntime Js
+
 @code {
-    [Parameter]
-    public Account Acc { get; set; }
-    [CascadingParameter]
-    public Dictionary<string, string> AccountNotes { get; set; }
+    [Parameter] public Account Acc { get; set; }
+    [CascadingParameter] public Dictionary<string, string> AccountNotes { get; set; }
+    [CascadingParameter] public string Density { get; set; } = "tiles";
+
+    private bool _editing;
+    private string _draft = "";
+
+    private string CurrentNote =>
+        (AccountNotes != null && AccountNotes.TryGetValue(Acc.AccountId, out var n)) ? n ?? "" : "";
+
+    private void StartEdit()
+    {
+        _draft = CurrentNote;
+        _editing = true;
+    }
+
+    private async Task CommitEdit()
+    {
+        if (!_editing) return;
+        _editing = false;
+        if (AccountNotes != null) AccountNotes[Acc.AccountId] = _draft ?? "";
+        try
+        {
+            await Js.InvokeVoidAsync("tcnoSaveNote", Acc.AccountId, _draft ?? "");
+        }
+        catch
+        {
+            // JS call may fail during prerender or if the page-specific Set*Notes isn't available; the in-memory
+            // dictionary is still updated so the UI stays consistent.
+        }
+        StateHasChanged();
+    }
+
+    private void CancelEdit() { _editing = false; StateHasChanged(); }
+
+    private async Task OnKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter") await CommitEdit();
+        else if (e.Key == "Escape") CancelEdit();
+    }
 }
 
-<div class="acc_list_item" data-toggle="tooltip" draggable="true" role="option" aria-grabbed="false">
+<div class="acc_list_item HasContextMenu" data-toggle="tooltip" draggable="true" role="option" aria-grabbed="false">
     <input type="radio" id="@Acc.AccountId" DisplayName="@GeneralFuncs.EscapeText(Acc.DisplayName)" class="acc" name="accounts" onchange="selectedItemChanged()">
     <label for="@Acc.AccountId" class="acc @Acc.Classes.Label">
         <img class="@Acc.Classes.Image" src="@Acc.ImagePath?@Globals.GetUnixTime()" draggable="false" alt="" onerror="if (this.src != 'img/BasicDefault.png') this.src = 'img/BasicDefault.png';" />
-        @if (@Acc.Line0 != "")
+
+        @if (!string.IsNullOrEmpty(Acc.Line0))
         {
             <p class="@Acc.Classes.Line0">@Acc.Line0</p>
         }
         <h6 class="displayName">@GeneralFuncs.EscapeText(Acc.DisplayName)</h6>
-        @if (@Acc.Line2 != "")
+        @if (!string.IsNullOrEmpty(Acc.Line2))
         {
             <p class="@Acc.Classes.Line2">@Acc.Line2</p>
         }
-        @if (@Acc.Line3 != "")
+        @if (!string.IsNullOrEmpty(Acc.Line3))
         {
             <p class="@Acc.Classes.Line3">@Acc.Line3</p>
         }
-        @if (AccountNotes.ContainsKey(Acc.AccountId) && AccountNotes[Acc.AccountId] != "")
-        {
-            <p class="acc_note">@AccountNotes[Acc.AccountId]</p>
-        }
-        @if (Acc.UserStats.Keys.Count > 0)
+
+        @if (Acc.UserStats != null && Acc.UserStats.Keys.Count > 0)
         {
             @foreach (var game in Acc.UserStats)
             {
                 var gameName = game.Key;
                 var gameStats = game.Value;
-                foreach (var gameStat in gameStats)
+                @foreach (var gameStat in gameStats)
                 {
                     @if (!AppSettings.GloballyHiddenMetrics[gameName][gameStat.Key])
                     {
@@ -60,5 +96,38 @@
                 }
             }
         }
+
+        <div class="m-acct-actions" @onclick:stopPropagation="true">
+            @if (_editing)
+            {
+                <input class="m-note-input"
+                       value="@_draft"
+                       autofocus
+                       @oninput="@(e => _draft = e.Value?.ToString() ?? string.Empty)"
+                       @onkeydown="OnKeyDown"
+                       @onblur="CommitEdit" />
+            }
+            else if (!string.IsNullOrEmpty(CurrentNote))
+            {
+                <span class="m-note" title="@CurrentNote — click to edit"
+                      @onclick="StartEdit" @onclick:stopPropagation="true">@CurrentNote</span>
+            }
+            else
+            {
+                <button type="button" class="m-note-add"
+                        @onclick="StartEdit" @onclick:stopPropagation="true">
+                    <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M11 2l3 3-8 8H3v-3z"></path></svg>
+                    Note
+                </button>
+            }
+            @if (Density == "rows" || Density == "compact")
+            {
+                <button type="button" class="m-btn m-btn-sm m-btn-primary"
+                        onclick="tcnoSwitchAccount('@Acc.AccountId', '@GeneralFuncs.EscapeText(Acc.DisplayName)', event)"
+                        @onclick:stopPropagation="true">
+                    Switch
+                </button>
+            }
+        </div>
     </label>
 </div>

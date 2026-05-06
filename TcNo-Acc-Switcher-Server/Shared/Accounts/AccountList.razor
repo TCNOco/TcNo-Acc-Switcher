@@ -1,4 +1,4 @@
-﻿@*TcNo Account Switcher - A Super fast account switcher
+@*TcNo Account Switcher - A Super fast account switcher
     Copyright (C) 2019-2025 TroubleChute (Wesley Pyburn)
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,18 +22,62 @@
     public ObservableCollection<Account> AccountItems { get; set; }
     [Parameter]
     public Dictionary<string, string> AccountNotes { get; set; }
+    [Parameter]
+    public string Density { get; set; } = "tiles"; // tiles | rows | compact
+    [Parameter]
+    public string Filter { get; set; } = "";
 
     protected override void OnInitialized()
     {
         AccountItems.CollectionChanged += ((_, _) => InvokeAsync(StateHasChanged));
     }
-}
-<div id="acc_list" class="acc_list">
-    <toastarea class="toastarea"/>
-    @foreach (var item in AccountItems)
+
+    private string DensityClass => Density switch
     {
-        <CascadingValue Value="@AccountNotes">
-            <AccountItem Acc="@item" />
-        </CascadingValue>
+        "rows" => "m-density-rows",
+        "compact" => "m-density-compact",
+        _ => "m-density-tiles"
+    };
+
+    private bool Matches(Account a)
+    {
+        if (string.IsNullOrEmpty(Filter)) return true;
+        var f = Filter.Trim();
+        if (string.IsNullOrEmpty(f)) return true;
+        return (a.DisplayName?.Contains(f, StringComparison.OrdinalIgnoreCase) ?? false)
+            || (a.Line0?.Contains(f, StringComparison.OrdinalIgnoreCase) ?? false)
+            || (a.Line2?.Contains(f, StringComparison.OrdinalIgnoreCase) ?? false)
+            || (a.Line3?.Contains(f, StringComparison.OrdinalIgnoreCase) ?? false);
+    }
+}
+
+<div id="acc_list" class="acc_list @DensityClass">
+    <toastarea class="toastarea" />
+    @{
+        var visible = AccountItems.Where(Matches).ToList();
+    }
+    @if (visible.Count == 0)
+    {
+        <div class="m-empty-state">
+            @if (string.IsNullOrEmpty(Filter))
+            {
+                <span>No accounts yet. Use “+ Add account” to capture the one you’re currently signed in to.</span>
+            }
+            else
+            {
+                <span>No accounts match “@Filter”.</span>
+            }
+        </div>
+    }
+    else
+    {
+        @foreach (var item in visible)
+        {
+            <CascadingValue Value="@AccountNotes">
+                <CascadingValue Value="@Density">
+                    <AccountItem Acc="@item" />
+                </CascadingValue>
+            </CascadingValue>
+        }
     }
 </div>

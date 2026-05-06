@@ -1,4 +1,4 @@
-﻿@*TcNo Account Switcher - A Super fast account switcher
+@*TcNo Account Switcher - A Super fast account switcher
     Copyright (C) 2019-2025 TroubleChute (Wesley Pyburn)
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -33,7 +33,68 @@
 <ContextMenu MenuItems="@Basic.ContextMenuShortcutItems" ContextMenuId="Shortcuts"/>
 <ContextMenu MenuItems="@Basic.ContextMenuPlatformItems" ContextMenuId="Platform"/>
 
-<AccountList AccountItems="@Basic.Accounts" AccountNotes="Basic.AccountNotes" @ref="BasicAccountList" />
+@{
+    var safe = CurrentPlatform.SafeName ?? "";
+    var safeClass = "p-" + safe.Replace(' ', '-');
+    var hasSvg = !string.IsNullOrEmpty(safe) &&
+                 File.Exists(Path.Join(TcNo_Acc_Switcher_Globals.Globals.UserDataFolder, $"wwwroot/img/platform/{safe}.svg"));
+    var letter = !string.IsNullOrEmpty(CurrentPlatform.FullName)
+                 ? CurrentPlatform.FullName[0].ToString().ToUpperInvariant() : "?";
+}
+
+<div class="m-platform-header">
+    <div class="m-platform-header-left">
+        <button type="button" class="m-btn m-btn-icon m-btn-ghost"
+                title="Back to all platforms" @onclick='@(() => NavManager.NavigateTo("/"))'>
+            <svg class="m-glyph" viewBox="0 0 16 16" style="width:14px; height:14px;"><path d="M10 3L5 8l5 5"></path></svg>
+        </button>
+        <div class="m-tile @safeClass" style="width:42px; height:42px; cursor:default;">
+            @if (hasSvg)
+            {
+                <svg viewBox="0 0 500 500" preserveAspectRatio="xMidYMid meet">
+                    <use href="@($"img/platform/{safe}.svg#FG")" class="ico-fg"></use>
+                </svg>
+            }
+            else
+            {
+                <span class="m-tile-text">@letter</span>
+            }
+        </div>
+        <div class="m-platform-header-meta">
+            <div class="m-platform-header-title">@CurrentPlatform.FullName</div>
+            <div class="m-platform-header-sub">@Basic.Accounts.Count account@(Basic.Accounts.Count == 1 ? "" : "s")</div>
+        </div>
+    </div>
+
+    <div class="m-platform-header-right">
+        <input type="text" class="m-search" placeholder="Search accounts…"
+               value="@_filter" @oninput="@(e => _filter = e.Value?.ToString() ?? string.Empty)" />
+        <div class="m-density-toggle" title="Density">
+            <button type="button" class="m-density-btn @(Density == "tiles" ? "active" : "")" @onclick='@(() => SetDensity("tiles"))' title="Tiles">
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="2" width="5" height="5"></rect><rect x="9" y="2" width="5" height="5"></rect><rect x="2" y="9" width="5" height="5"></rect><rect x="9" y="9" width="5" height="5"></rect></svg>
+            </button>
+            <button type="button" class="m-density-btn @(Density == "rows" ? "active" : "")" @onclick='@(() => SetDensity("rows"))' title="Rows">
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="3" width="12" height="3" rx=".5"></rect><rect x="2" y="10" width="12" height="3" rx=".5"></rect></svg>
+            </button>
+            <button type="button" class="m-density-btn @(Density == "compact" ? "active" : "")" @onclick='@(() => SetDensity("compact"))' title="Compact">
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 4h10M3 8h10M3 12h10"></path></svg>
+            </button>
+        </div>
+        <button type="button" class="m-btn m-btn-sm" id="btnAddNew" onclick="newLogin()" title="@(Locale["Button_AddNew"])">
+            <svg class="m-glyph" viewBox="0 0 16 16" style="width:12px; height:12px;"><path d="M8 3v10M3 8h10"></path></svg>
+            @Locale["Button_AddNew"]
+        </button>
+        <button type="button" class="m-btn m-btn-sm" id="btnAddCurrent" onclick="showModal('accString');" title="@(Locale["Button_SaveCurrent"])">
+            @Locale["Button_SaveCurrent"]
+        </button>
+        <button type="button" class="m-btn m-btn-sm m-btn-primary" id="btnLogin" onclick="tcnoSwitchSelected(event)">
+            @Locale["Button_Login"]
+        </button>
+    </div>
+</div>
+
+<AccountList AccountItems="@Basic.Accounts" AccountNotes="Basic.AccountNotes"
+             Density="@Density" Filter="@_filter" @ref="BasicAccountList" />
 
 <div class="shortcutDropdown gameShortcuts" id="shortcutDropdown" style="display: none">
     <div class="shortcutDropdownItems">
@@ -78,35 +139,22 @@
                 <img src="@(CurrentPlatform.GetShortcutImagePath(CurrentPlatform.SafeName))" alt="Start platform"/>
             </button>
         }
-
-        <button id="btnAddNew" onclick="newLogin()">
-            <i class="fas fa-plus footerIcoInline"></i>
-            <span>@Locale["Button_AddNew"]</span>
-        </button>
-        <button id="btnAddCurrent" onclick="showModal('accString');">
-            <i class="fas fa-save footerIcoInline"></i>
-            <span>@Locale["Button_SaveCurrent"]</span>
-        </button>
-        <button class="btn_login" id="btnLogin" onclick="swapTo(-1, event)">
-            <span>@Locale["Button_Login"]</span>
-            <i class="fas fa-caret-right footerIcoInline"></i>
-        </button>
-
-        <button id="btnSettings" onclick="location = 'Basic/Settings'" data-toggle="tooltip" title="@(Locale["Tooltip_Settings"])">
-            <i class="fas fa-cog footerIcoSettings"></i>
-        </button>
-
-        <button id="btnHelp" onclick="showModal('info');" data-toggle="tooltip" title="@(Locale["Tooltip_Info"])">
-            <i class="fas fa-question footerIcoQuestion"></i>
-        </button>
     </div>
-
 </div>
 
 
 @code
 {
     public static AccountList BasicAccountList;
+
+    private string _filter = "";
+    private string Density { get; set; } = "tiles";
+
+    private async Task SetDensity(string d)
+    {
+        Density = d;
+        try { await JsRuntime.InvokeVoidAsync("tcnoSetDensity", d); } catch { /* noop */ }
+    }
 
     private string RemoveShortcutExt(string s)
     {
@@ -157,6 +205,14 @@
         await GeneralFuncs.HandleFirstRender(firstRender, CurrentPlatform.FullName);
         AppStats.NewNavigation($"/[{CurrentPlatform.SafeName}]");
         if (!firstRender) return;
+
+        try
+        {
+            var saved = await JsRuntime.InvokeAsync<string>("tcnoGetDensity");
+            if (!string.IsNullOrEmpty(saved) && saved != Density) { Density = saved; StateHasChanged(); }
+        }
+        catch { /* noop */ }
+
         _ = AppData.InvokeVoidAsync("initCopyHotKey");
         _ = AppData.InvokeVoidAsync("showNoteTooltips");
 

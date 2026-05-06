@@ -42,12 +42,16 @@
     <link href="css/settings.min.css?@currentTime" rel="stylesheet" />
     <link href="css/notification.min.css?@currentTime" rel="stylesheet" />
     <link href="css/fontawesome.all.min.css?@currentTime" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="css/modern.css?@currentTime" rel="stylesheet" />
     <script src="js/ace/ace.js?@currentTime" type="text/javascript" charset="utf-8"></script>
     <script>if (window.module) module = window.module;</script>
     <script src="js/interop.js?@currentTime"></script>
     <script src="js/hotkeys.min.js?@currentTime"></script>
 </head>
-<body>
+<body class="modern-active">
     <app>
         <component type="typeof(App)" render-mode="ServerPrerendered" />
     </app>
@@ -67,6 +71,7 @@
     <script src="js/context_menu.js?@currentTime"></script>
     <script src="js/WebFuncs.js?@currentTime"></script>
     <script src="js/Headerbar.js?@currentTime"></script>
+    <script src="js/modern.js?@currentTime"></script>
     <script type="module">
         import Notification from './js/Notification.min.js';
         window.notification = new Notification({

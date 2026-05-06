@@ -31,7 +31,12 @@
 <div class="resizeBottomLeft"></div>
 <div class="programMain">
     <Modal />
-    @Body
+    <div class="app-shell">
+        <Sidebar />
+        <div class="m-content">
+            @Body
+        </div>
+    </div>
 </div>
 <DynamicStylesheet />
 

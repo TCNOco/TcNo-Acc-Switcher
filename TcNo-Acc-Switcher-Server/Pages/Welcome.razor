@@ -1,0 +1,197 @@
+@*TcNo Account Switcher - A Super fast account switcher
+    Copyright (C) 2019-2025 TroubleChute (Wesley Pyburn)
+    Modern UI first-launch onboarding flow.*@
+
+@page "/Welcome"
+@using System.IO
+@using TcNo_Acc_Switcher_Globals
+@using TcNo_Acc_Switcher_Server.Data
+@inject NavigationManager NavManager
+@inject AppData AData
+@inject IJSRuntime JsRuntime
+@{ AData.SetActiveNavMan(NavManager); }
+
+@code {
+    private int _step = 0;
+    private const int TotalSteps = 3;
+
+    private static string OnboardedMarker => Path.Join(Globals.UserDataFolder, ".onboarded");
+
+    public static bool IsOnboarded() => File.Exists(OnboardedMarker);
+
+    private async Task Next()
+    {
+        if (_step < TotalSteps - 1) { _step++; StateHasChanged(); return; }
+        await Finish();
+    }
+
+    private void Back()
+    {
+        if (_step > 0) { _step--; StateHasChanged(); }
+    }
+
+    private async Task Finish()
+    {
+        try
+        {
+            Directory.CreateDirectory(Globals.UserDataFolder);
+            await File.WriteAllTextAsync(OnboardedMarker, DateTime.UtcNow.ToString("O"));
+        }
+        catch
+        {
+            // Don't block the user if the marker can't be written; they'll just see onboarding again next launch.
+        }
+        NavManager.NavigateTo("/");
+    }
+
+    private List<string> Detected()
+    {
+        var list = new List<string>();
+        try
+        {
+            // Steam: present if the platform list has it (it always does until disabled).
+            if (AData.PlatformList.Contains("Steam") && !AppSettings.DisabledPlatforms.Contains("Steam"))
+                list.Add("Steam");
+            var basics = AppSettings.EnabledBasicPlatforms ?? (System.Collections.Generic.IEnumerable<string>)System.Array.Empty<string>();
+            foreach (var p in basics)
+            {
+                if (!AppSettings.DisabledPlatforms.Contains(p)) list.Add(p);
+            }
+        }
+        catch { }
+        return list;
+    }
+
+}
+
+<div class="m-onb-shell">
+    <div class="m-onb-topbar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <rect x="2" y="2" width="20" height="20" rx="5" fill="var(--m-accent)" />
+            <path d="M7 9h10M12 9v8" stroke="#fff" stroke-width="2.4" stroke-linecap="round" />
+        </svg>
+        <span class="m-onb-topbar-name" style="margin-left:8px;">Set up TcNo</span>
+        <div class="m-onb-step-dots">
+            @for (var i = 0; i < TotalSteps; i++)
+            {
+                var cls = i < _step ? "done" : (i == _step ? "active" : "");
+                <div class="m-onb-dot @cls"></div>
+            }
+        </div>
+    </div>
+
+    <div class="m-onb-body">
+        @if (_step == 0)
+        {
+            <div class="m-onb-welcome">
+                <div class="m-onb-welcome-mark">
+                    <svg width="44" height="44" viewBox="0 0 24 24" fill="none">
+                        <rect x="2" y="2" width="20" height="20" rx="5" fill="var(--m-accent)" />
+                        <path d="M7 9h10M12 9v8" stroke="#fff" stroke-width="2.4" stroke-linecap="round" />
+                    </svg>
+                </div>
+                <div class="m-onb-welcome-title">One switcher for every account.</div>
+                <div class="m-onb-welcome-sub">
+                    TcNo manages multiple accounts on Steam, Epic, Battle.net, Riot, Ubisoft, Discord, and 30+ more — without juggling passwords.
+                </div>
+                <div class="m-onb-welcome-tiles">
+                    @foreach (var p in new[] { "Steam", "Epic Games", "BattleNet", "Riot Games", "Discord", "Ubisoft", "EA Desktop", "Rockstar" })
+                    {
+                        var safeClass = "p-" + p.Replace(' ', '-');
+                        var hasSvg = File.Exists(Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{p}.svg"));
+                        <div class="m-tile @safeClass" style="width:48px; height:48px; cursor:default;">
+                            @if (hasSvg)
+                            {
+                                <svg viewBox="0 0 500 500" preserveAspectRatio="xMidYMid meet">
+                                    <use href="@($"img/platform/{p}.svg#FG")" class="ico-fg"></use>
+                                </svg>
+                            }
+                            else
+                            {
+                                <span class="m-tile-text">@p[0]</span>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+        else if (_step == 1)
+        {
+            var detected = Detected();
+            <div class="m-onb-detect">
+                <div class="m-onb-detect-title">Confirm what we found.</div>
+                <div class="m-onb-detect-sub">
+                    @if (detected.Count == 0)
+                    {
+                        <span>We didn't auto-detect any installed launchers yet — that's fine. You can add platforms anytime from Manage&nbsp;platforms.</span>
+                    }
+                    else
+                    {
+                        <span>We scanned your machine for installed launchers. You can change this later in Manage&nbsp;platforms.</span>
+                    }
+                </div>
+                @if (detected.Count > 0)
+                {
+                    <div class="m-onb-detect-grid">
+                        @foreach (var p in detected)
+                        {
+                            var safe = BasicPlatforms.PlatformSafeName(p);
+                            var safeClass = "p-" + safe.Replace(' ', '-');
+                            var fullName = BasicPlatforms.PlatformFullName(p);
+                            var hasSvg = File.Exists(Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{safe}.svg"));
+                            <div class="m-onb-detect-item">
+                                <div class="m-tile @safeClass" style="width:36px; height:36px; cursor:default;">
+                                    @if (hasSvg)
+                                    {
+                                        <svg viewBox="0 0 500 500" preserveAspectRatio="xMidYMid meet">
+                                            <use href="@($"img/platform/{safe}.svg#FG")" class="ico-fg"></use>
+                                        </svg>
+                                    }
+                                    else
+                                    {
+                                        <span class="m-tile-text" style="font-size:12px;">@(fullName.Length > 0 ? fullName[0].ToString() : "?")</span>
+                                    }
+                                </div>
+                                <div style="min-width:0; flex:1;">
+                                    <div class="m-onb-detect-item-name">@fullName</div>
+                                    <div class="m-onb-detect-item-status">Detected</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="m-onb-hotkey">
+                <div class="m-onb-hotkey-title">You're set.</div>
+                <div class="m-onb-hotkey-sub">
+                    TcNo lives in the system tray once you close the window. Use Settings → System to control startup, hotkeys, and the streamer-mode privacy toggle.
+                </div>
+                <div class="m-onb-hotkey-display">
+                    <span class="m-kbd">Ctrl</span>
+                    <span class="m-kbd">,</span>
+                </div>
+                <div style="margin-top: 16px; color: var(--m-text-3); font-size: 12px;">
+                    Open Settings anytime from the sidebar.
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="m-onb-footer">
+        <button type="button" class="m-btn m-btn-ghost" disabled="@(_step == 0)"
+                style="@(_step == 0 ? "opacity:.4;" : "")"
+                @onclick="Back">Back</button>
+        <div class="m-onb-spacer"></div>
+        @if (_step < TotalSteps - 1)
+        {
+            <button type="button" class="m-btn m-btn-primary" @onclick="Next">Continue</button>
+        }
+        else
+        {
+            <button type="button" class="m-btn m-btn-primary" @onclick="Finish">Open TcNo</button>
+        }
+    </div>
+</div>
