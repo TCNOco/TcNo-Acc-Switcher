@@ -600,6 +600,7 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 	if err := touchLastUsed(platformKey, uid); err != nil {
 		return err
 	}
+	syncBasicTrayKnownAccounts(platformKey, ids)
 
 	if platformProfileImagesSavedPerAccount(platformKey) {
 		if src, ok, err := platformProfileImageSourceFromSavedAccount(platformKey, accountName); err == nil && ok {
@@ -987,6 +988,7 @@ func recordBasicTrayRecent(platformKey, uniqueID string) {
 	if err != nil {
 		return
 	}
+	syncBasicTrayKnownAccounts(platformKey, ids)
 	name := strings.TrimSpace(ids[uniqueID])
 	if name == "" {
 		name = uniqueID
@@ -1002,6 +1004,52 @@ func recordBasicTrayRecent(platformKey, uniqueID string) {
 	arg := "+" + short + ":" + uniqueID
 	_ = tray.AddUser(platformKey, arg, name, ps.TrayAccNumber)
 	tray.RefreshMenuIfSet()
+}
+
+func syncBasicTrayKnownAccounts(platformKey string, ids map[string]string) {
+	platformKey = strings.TrimSpace(platformKey)
+	if platformKey == "" {
+		return
+	}
+	ps, err := platform.LoadPlatformSettings(platformKey)
+	if err != nil || ps.TrayAccNumber <= 0 {
+		return
+	}
+	idx, err := cli.LoadPlatformIndex()
+	if err != nil {
+		return
+	}
+	short := cli.ShortTokenForPlatform(idx, platformKey)
+	if short == "" {
+		return
+	}
+
+	argNames := make(map[string]string, len(ids))
+	for uniqueID, name := range ids {
+		uniqueID = strings.TrimSpace(uniqueID)
+		if uniqueID == "" {
+			continue
+		}
+		argNames["+"+short+":"+uniqueID] = strings.TrimSpace(name)
+	}
+	_ = tray.SyncPlatformUsers(platformKey, argNames, ps.TrayAccNumber)
+}
+
+func SyncAllTrayKnownAccounts() {
+	idx, err := cli.LoadPlatformIndex()
+	if err != nil {
+		return
+	}
+	for _, platformKey := range idx.OrderedNames {
+		if strings.EqualFold(strings.TrimSpace(platformKey), "Steam") {
+			continue
+		}
+		ids, err := readIDs(platformKey)
+		if err != nil {
+			continue
+		}
+		syncBasicTrayKnownAccounts(platformKey, ids)
+	}
 }
 
 func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []string) error {

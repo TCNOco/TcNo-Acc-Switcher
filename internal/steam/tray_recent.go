@@ -48,18 +48,60 @@ func RecordTrayRecentAfterSwap(steamID64 string) {
 		if u.SteamID64 != steamID64 {
 			continue
 		}
-		if st.SteamTrayAccountName && strings.TrimSpace(u.AccountName) != "" {
-			label = strings.TrimSpace(u.AccountName)
-		} else {
-			if dn := strings.TrimSpace(CachedCommunityDisplayName(steamID64)); dn != "" {
-				label = dn
-			} else {
-				label = displayPersona(u)
-			}
-		}
+		label = trayLabelForUser(st, u)
 		break
 	}
 	arg := "+s:" + steamID64
 	_ = tray.AddUser(PlatformKey, arg, label, st.TrayAccNumber)
 	tray.RefreshMenuIfSet()
+}
+
+func SyncTrayKnownAccounts() {
+	st, err := LoadSettings()
+	if err != nil || st.TrayAccNumber <= 0 {
+		return
+	}
+	exeDir, err := platform.ResolveExeDir()
+	if err != nil {
+		return
+	}
+	app, err := platform.LoadAppSettings(exeDir)
+	if err != nil {
+		return
+	}
+	pj, err := platform.ResolvePlatformsJSONPath(exeDir)
+	if err != nil {
+		return
+	}
+	raw, err := os.ReadFile(pj)
+	if err != nil {
+		return
+	}
+	root, err := ResolveInstallFolder(exeDir, st, app, raw)
+	if err != nil || root == "" {
+		return
+	}
+	users, err := ParseLoginUsers(LoginUsersPath(root))
+	if err != nil {
+		return
+	}
+	argNames := make(map[string]string, len(users))
+	for _, u := range users {
+		id := strings.TrimSpace(u.SteamID64)
+		if id == "" {
+			continue
+		}
+		argNames["+s:"+id] = trayLabelForUser(st, u)
+	}
+	_ = tray.SyncPlatformUsers(PlatformKey, argNames, st.TrayAccNumber)
+}
+
+func trayLabelForUser(st Settings, u LoginUser) string {
+	if st.SteamTrayAccountName && strings.TrimSpace(u.AccountName) != "" {
+		return strings.TrimSpace(u.AccountName)
+	}
+	if dn := strings.TrimSpace(CachedCommunityDisplayName(u.SteamID64)); dn != "" {
+		return dn
+	}
+	return displayPersona(u)
 }

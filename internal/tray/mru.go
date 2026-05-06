@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 
 	"TcNo-Acc-Switcher/internal/fsutil"
@@ -48,12 +50,103 @@ func LoadUsers() (map[string][]TrayUser, error) {
 	}
 	var raw map[string][]TrayUser
 	if err := json.Unmarshal(data, &raw); err != nil {
+		recovered := recoverMalformedTrayUsers(data)
+		if len(recovered) > 0 {
+			_ = saveUsers(recovered)
+			return recovered, nil
+		}
 		return map[string][]TrayUser{}, nil
 	}
 	if raw == nil {
 		raw = map[string][]TrayUser{}
 	}
 	return raw, nil
+}
+
+func recoverMalformedTrayUsers(data []byte) map[string][]TrayUser {
+	s := string(data)
+	keyRe := regexp.MustCompile(`"((?:\\.|[^"\\])*)"\s*:\s*\[`)
+	objRe := regexp.MustCompile(`(?s)\{.*?\}`)
+	out := map[string][]TrayUser{}
+
+	for _, loc := range keyRe.FindAllStringSubmatchIndex(s, -1) {
+		if len(loc) < 4 {
+			continue
+		}
+		nameRaw := s[loc[2]:loc[3]]
+		platformKey, err := strconv.Unquote(`"` + nameRaw + `"`)
+		if err != nil {
+			platformKey = nameRaw
+		}
+		platformKey = strings.TrimSpace(platformKey)
+		if platformKey == "" {
+			continue
+		}
+
+		openBracket := strings.LastIndex(s[loc[0]:loc[1]], "[")
+		if openBracket < 0 {
+			continue
+		}
+		arrayStart := loc[0] + openBracket
+		arrayEnd := matchingBracketIndex(s, arrayStart)
+		if arrayEnd <= arrayStart {
+			continue
+		}
+
+		arrayBody := s[arrayStart+1 : arrayEnd]
+		for _, objLoc := range objRe.FindAllStringIndex(arrayBody, -1) {
+			obj := arrayBody[objLoc[0]:objLoc[1]]
+			var u TrayUser
+			if err := json.Unmarshal([]byte(obj), &u); err != nil {
+				continue
+			}
+			u.Name = strings.TrimSpace(u.Name)
+			u.Arg = strings.TrimSpace(u.Arg)
+			if u.Arg == "" {
+				continue
+			}
+			out[platformKey] = append(out[platformKey], u)
+		}
+	}
+	return out
+}
+
+func matchingBracketIndex(s string, open int) int {
+	if open < 0 || open >= len(s) || s[open] != '[' {
+		return -1
+	}
+	depth := 0
+	inString := false
+	escaped := false
+	for i := open; i < len(s); i++ {
+		c := s[i]
+		if inString {
+			if escaped {
+				escaped = false
+				continue
+			}
+			if c == '\\' {
+				escaped = true
+				continue
+			}
+			if c == '"' {
+				inString = false
+			}
+			continue
+		}
+		switch c {
+		case '"':
+			inString = true
+		case '[':
+			depth++
+		case ']':
+			depth--
+			if depth == 0 {
+				return i
+			}
+		}
+	}
+	return -1
 }
 
 func saveUsers(m map[string][]TrayUser) error {
@@ -85,6 +178,57 @@ func sortedTrayMap(m map[string][]TrayUser) map[string][]TrayUser {
 		out[k] = m[k]
 	}
 	return out
+}
+
+// SyncPlatformUsers removes stale/duplicate entries for a platform and refreshes
+// names for entries that are still valid. It does not add accounts that are not
+// already present in the tray MRU.
+func SyncPlatformUsers(platformKey string, argNames map[string]string, maxAccounts int) error {
+	platformKey = strings.TrimSpace(platformKey)
+	if platformKey == "" || maxAccounts <= 0 {
+		return nil
+	}
+
+	valid := make(map[string]string, len(argNames))
+	for arg, name := range argNames {
+		arg = strings.TrimSpace(arg)
+		if arg == "" {
+			continue
+		}
+		valid[arg] = strings.TrimSpace(name)
+	}
+
+	trayUsers, err := LoadUsers()
+	if err != nil {
+		return err
+	}
+	list := trayUsers[platformKey]
+	if len(list) == 0 {
+		return nil
+	}
+
+	filtered := make([]TrayUser, 0, len(list))
+	seen := map[string]struct{}{}
+	for _, u := range list {
+		arg := strings.TrimSpace(u.Arg)
+		name, ok := valid[arg]
+		if !ok {
+			continue
+		}
+		if _, ok := seen[arg]; ok {
+			continue
+		}
+		seen[arg] = struct{}{}
+		if name == "" {
+			name = strings.TrimSpace(u.Name)
+		}
+		filtered = append(filtered, TrayUser{Name: name, Arg: arg})
+	}
+	for len(filtered) > maxAccounts {
+		filtered = filtered[:len(filtered)-1]
+	}
+	trayUsers[platformKey] = filtered
+	return saveUsers(trayUsers)
 }
 
 // AddUser inserts or moves an account to the front of the platform list and trims to max (max<=0 skips).

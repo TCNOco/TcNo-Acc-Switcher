@@ -12,6 +12,7 @@ import (
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/profileimage"
 	"TcNo-Acc-Switcher/internal/stats"
+	"TcNo-Acc-Switcher/internal/tray"
 	"TcNo-Acc-Switcher/internal/winutil"
 )
 
@@ -243,6 +244,8 @@ func (b *BasicService) ForgetAccount(platformKey, uniqueID string) error {
 	if err := writeIdsFile(platformKey, f); err != nil {
 		return err
 	}
+	syncBasicTrayKnownAccounts(platformKey, f.IDs)
+	tray.RefreshMenuIfSet()
 	if name != "" {
 		dir, err := accountCacheDir(platformKey, name)
 		if err == nil {

@@ -432,7 +432,8 @@ func (p *PlatformService) RestoreDefaultPlatformsJSON() error {
 	if len(embeddedPlatformsJSON) == 0 {
 		return errors.New("embedded platforms data missing")
 	}
-	if _, err := parsePlatformNames(embeddedPlatformsJSON); err != nil {
+	names, err := parsePlatformNames(embeddedPlatformsJSON)
+	if err != nil {
 		return err
 	}
 	exeDir, err := ResolveExeDir()
@@ -448,6 +449,7 @@ func (p *PlatformService) RestoreDefaultPlatformsJSON() error {
 		return err
 	}
 	settings.PlatformsJSONPath = ""
+	p.seedDisabledPlatformsForFirstLaunch(&settings, embeddedPlatformsJSON, names)
 	return saveSettingsAtomic(exeDir, settings)
 }
 

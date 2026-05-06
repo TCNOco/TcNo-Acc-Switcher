@@ -419,6 +419,8 @@ func runGUI(parsed cli.Parsed) {
 	})
 	trayMgr.RegisterCloseHook()
 	tray.SetMenuRefresh(trayMgr.RefreshMenu)
+	basic.SyncAllTrayKnownAccounts()
+	steam.SyncTrayKnownAccounts()
 	trayMgr.Start(trayIconPNG)
 
 	go func() {

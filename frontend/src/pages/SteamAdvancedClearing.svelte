@@ -134,7 +134,7 @@
       <input id="steam-adv-understand" type="checkbox" bind:checked={acceptedRisk} />
       <label class="form-check-label" for="steam-adv-understand"></label>
     </div>
-    <label for="steam-adv-understand">{$t("Cleaning_Understand")}</label>
+    <span class="steam-adv-ack-text">{$t("Cleaning_Understand")}</span>
   </div>
 
   <button type="button" disabled={!acceptedRisk || busy} on:click={() => void runAction("close_steam")}>
@@ -220,6 +220,11 @@
   .steam-adv-ack {
     margin: 0.5rem 0 1rem;
     align-items: flex-start;
+  }
+
+  .steam-adv-ack-text {
+    padding: 0 0.5em;
+    line-height: 1.35;
   }
 
   .steam-adv-layout {

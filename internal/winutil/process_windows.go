@@ -21,7 +21,10 @@ import (
 const servicePrefix = "SERVICE:"
 
 // gracefulExitMaxWait is how long we wait after non-force shutdown before escalating to /F taskkill.
-const gracefulExitMaxWait = 12 * time.Second
+const (
+	gracefulExitMaxWait         = 12 * time.Second
+	gracefulCombinedExitMaxWait = 5 * time.Second
+)
 
 // electronExitMaxWait caps how long we wait after gentle signals before /F taskkill.
 // Too short reliably truncates Electron/LevelDB flush (Discord observed ~26s+ in practice).
@@ -656,7 +659,7 @@ func KillByName(names []string, method ClosingMethod, beforeElectronSynth func()
 				_ = taskKillIM(base, true)
 			default: // Combined
 				requestGracefulProcessExit(base)
-				waitForImageExit(base, gracefulExitMaxWait, 100*time.Millisecond)
+				waitForImageExit(base, gracefulCombinedExitMaxWait, 100*time.Millisecond)
 				_ = taskKillIM(base, true)
 			}
 			log.Printf("winutil: stop process done process=%s", base)

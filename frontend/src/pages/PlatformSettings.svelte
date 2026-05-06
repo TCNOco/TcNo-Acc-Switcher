@@ -1192,10 +1192,10 @@
       <h2 class="SettingsHeader">{$t("Settings_Header_BackupRestore")}</h2>
       {#if isSteam}
         <div class="buttoncol">
-          <button type="button" disabled={backingUp} on:click={() => void onBackup(false)}>
+          <button type="button" disabled={backingUp} on:click={() => void onBackup(false)} use:tooltip={$t("Tooltip_Backup")}>
             {$t("Button_Backup")}
           </button>
-          <button type="button" disabled={backingUp} on:click={() => void onBackup(true)}>
+          <button type="button" disabled={backingUp} on:click={() => void onBackup(true)} use:tooltip={$t("Tooltip_BackupAll")}>
             {$t("Button_BackupAll")}
           </button>
         </div>
