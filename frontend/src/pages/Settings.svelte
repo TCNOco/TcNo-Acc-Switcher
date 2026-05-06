@@ -24,6 +24,16 @@
 
 <div class="main-content main-spacing">
   <h1 class="SettingsHeader">{$t("Settings_Header_AppWide")}</h1>
+
   <GeneralSettingsBlock />
 </div>
 <svelte:window on:keydown={onWindowKeyDown} />
+
+<style lang="scss">
+  .settings-page-subtitle {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.95rem;
+    line-height: 1.45;
+  }
+</style>

@@ -155,6 +155,7 @@
     <div
       class="modalFG"
       class:modalFG--ready={modalReady}
+      class:modalFilePicker={m.kind === "folder"}
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title-label"
@@ -353,7 +354,7 @@
   .modalFG {
     display: flex;
     flex-direction: column;
-    width: min(720px, 100%);
+    min-width: min(320px, 100%);
     max-height: min(900px, calc(100% - 2rem));
     background: var(--program-bg, #1b2636);
     border: var(--border-bar-size, 1px) solid var(--border-bar-bg, #3b4853);
@@ -365,6 +366,10 @@
     transition:
       opacity 0.1s ease,
       transform 0.1s ease;
+  }
+
+  .modalFilePicker {
+    min-width: min(720px, 100%);
   }
 
   .modalFG.modalFG--ready {

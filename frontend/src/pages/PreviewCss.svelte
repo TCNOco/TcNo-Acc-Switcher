@@ -252,12 +252,6 @@
 </script>
 
 <div class="main-content main-spacing preview-css-page">
-  <div class="preview-css-toolbar">
-    <button type="button" class="btnicontext" on:click={() => route.set({ page: "settings" })}>
-      {$t("Button_Back")}
-    </button>
-  </div>
-
   <h1 class="SettingsHeader">{$t("Settings_PreviewCssHeader")}</h1>
   <p class="preview-css-intro">{$t("Settings_PreviewCss")}</p>
 
@@ -659,7 +653,6 @@
               {#if settingsDdOpen}
                 <ul
                   class="custom-dropdown-menu dropdown-menu"
-                  style="position:absolute; top:100%; left:0; z-index:1000; margin:0;"
                 >
                   <li role="none">
                     <button type="button" class="dropdown-item">WebView</button>
@@ -795,6 +788,11 @@
     display: flex;
     flex-direction: row-reverse;
     padding:1em;
+  }
+
+  .settingsCol {
+    padding: 1em;
+    margin-top: 0;
   }
 
   .preview-static-toast-stack {

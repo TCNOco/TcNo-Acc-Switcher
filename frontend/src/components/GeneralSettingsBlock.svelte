@@ -375,9 +375,33 @@
   }
 </script>
 
+<h2 class="SettingsHeader">{$t("Settings_Header_Language")}</h2>
+<div class="rowDropdown">
+  <span>{$t("Header_ChooseLanguage")}</span>
+  <div class="dropdown" class:show={open}>
+    <button type="button" class="dropdown-toggle" on:click={() => (open = !open)}>
+      {currentLabel}
+      <span class="caret" aria-hidden="true"></span>
+    </button>
+    {#if open}
+      <ul
+        class="custom-dropdown-menu dropdown-menu"
+      >
+        {#each availableLocales as code}
+          <li role="none">
+            <button type="button" class="dropdown-item" on:click={() => void pick(code)}>
+              {code} - {nameFor(code)}
+            </button>
+          </li>
+        {/each}
+      </ul>
+    {/if}
+  </div>
+</div>
+
 <h2 class="SettingsHeader">{$t("Settings_Header_Theme")}</h2>
-<div class="themeRow">
-  <div class="rowDropdown themeRow__dropdown">
+<div>
+  <div class="rowDropdown">
     <span>{$t("Settings_CurrentStyle")}</span>
     <div class="dropdown" class:show={themeOpen}>
       <button type="button" class="dropdown-toggle" on:click={() => (themeOpen = !themeOpen)}>
@@ -387,7 +411,6 @@
       {#if themeOpen}
         <ul
           class="custom-dropdown-menu dropdown-menu"
-          style="position:absolute; top:100%; left:0; z-index:1000; margin:0;"
         >
           {#each themes as th}
             <li role="none">
@@ -399,11 +422,13 @@
         </ul>
       {/if}
     </div>
+    <button type="button" class="btnicontext" on:click={() => route.set({ page: "preview-css" })}>
+      {$t("PreviewCss")}
+    </button>
   </div>
-  <button type="button" class="btnicontext themeRow__preview" on:click={() => route.set({ page: "preview-css" })}>
-    {$t("PreviewCss")}
-  </button>
 </div>
+
+<h2 class="SettingsHeader">{$t("Settings_Header_System")}</h2>
 
 <div class="rowSetting">
   <div class="form-check">
@@ -419,48 +444,32 @@
   <label for="gs-offline" use:tooltip={$t("Settings_OfflineMode")}>{$t("Settings_OfflineMode")}</label>
 </div>
 
-<div class="rowSetting statsRow">
-  <div class="statsRow__checks">
-    <div class="form-check">
-      <input
-        id="gs-stats-enabled"
-        type="checkbox"
-        checked={statsEnabled}
-        disabled={statsEnabledLoading}
-        on:change={() => void toggleStatsEnabled()}
-      />
-      <label class="form-check-label" for="gs-stats-enabled"></label>
-    </div>
-    <label class="statsRow__lbl" for="gs-stats-enabled">{$t("Settings_CollectStats")}</label>
-    <div class="form-check">
-      <input
-        id="gs-stats-share"
-        type="checkbox"
-        checked={statsShare}
-        disabled={statsShareLoading || !statsEnabled}
-        on:change={() => void toggleStatsShare()}
-      />
-      <label class="form-check-label" for="gs-stats-share"></label>
-    </div>
-    <label class="statsRow__lbl" for="gs-stats-share">{$t("Settings_ShareStats")}</label>
-  </div>
-  <button type="button" class="btnicontext statsRow__view" on:click={() => void openStatsModal()}>
-    {$t("Settings_ViewStats")}
-  </button>
-</div>
-
 <div class="rowSetting">
   <div class="form-check">
     <input
-      id="gs-exit-tray"
+      id="gs-stats-enabled"
       type="checkbox"
-      checked={exitToTray}
-      disabled={exitToTrayLoading}
-      on:change={() => void toggleExitToTray()}
+      checked={statsEnabled}
+      disabled={statsEnabledLoading}
+      on:change={() => void toggleStatsEnabled()}
     />
-    <label class="form-check-label" for="gs-exit-tray"></label>
+    <label class="form-check-label" for="gs-stats-enabled"></label>
   </div>
-  <label for="gs-exit-tray" use:tooltip={$t("Settings_ExitToTray")}>{$t("Settings_ExitToTray")}</label>
+  <label for="gs-stats-enabled">{$t("Settings_CollectStats")}</label>
+  <div class="form-check">
+    <input
+      id="gs-stats-share"
+      type="checkbox"
+      checked={statsShare}
+      disabled={statsShareLoading || !statsEnabled}
+      on:change={() => void toggleStatsShare()}
+    />
+    <label class="form-check-label" for="gs-stats-share"></label>
+  </div>
+  <label for="gs-stats-share">{$t("Settings_ShareStats")}</label>
+  <button type="button" class="btnicontext" on:click={() => void openStatsModal()}>
+    {$t("Settings_ViewStats")}
+  </button>
 </div>
 
 <div class="rowSetting">
@@ -483,26 +492,6 @@
   <div class="rowSetting">
     <div class="form-check">
       <input
-        id="gs-protocol"
-        type="checkbox"
-        checked={protocolEnabled}
-        disabled={protocolLoading}
-        on:change={() => void toggleProtocol()}
-      />
-      <label class="form-check-label" for="gs-protocol"></label>
-    </div>
-    <label for="gs-protocol" use:tooltip={$t("Settings_Protocol")}
-      >{$t("Settings_Protocol")}</label
-    >
-  </div>
-{/if}
-
-<h2 class="SettingsHeader">{$t("Settings_Header_System")}</h2>
-
-{#if isWindows}
-  <div class="rowSetting">
-    <div class="form-check">
-      <input
         id="gs-start-tray-win"
         type="checkbox"
         checked={startTrayWithWindows}
@@ -513,6 +502,34 @@
     </div>
     <label for="gs-start-tray-win" use:tooltip={$t("Settings_Tray_StartWindows")}
       >{$t("Settings_Tray_StartWindows")}</label
+    >
+
+    <div class="form-check">
+      <input
+        id="gs-exit-tray"
+        type="checkbox"
+        checked={exitToTray}
+        disabled={exitToTrayLoading}
+        on:change={() => void toggleExitToTray()}
+      />
+      <label class="form-check-label" for="gs-exit-tray"></label>
+    </div>
+    <label for="gs-exit-tray" use:tooltip={$t("Settings_ExitToTray")}>{$t("Settings_ExitToTray")}</label>
+  </div>
+
+  <div class="rowSetting">
+    <div class="form-check">
+      <input
+        id="gs-protocol"
+        type="checkbox"
+        checked={protocolEnabled}
+        disabled={protocolLoading}
+        on:change={() => void toggleProtocol()}
+      />
+      <label class="form-check-label" for="gs-protocol"></label>
+    </div>
+    <label for="gs-protocol" use:tooltip={$t("Settings_Protocol")}
+      >{$t("Settings_Protocol")}</label
     >
   </div>
 {/if}
@@ -549,73 +566,9 @@
   </div>
 {/if}
 
-<h2 class="SettingsHeader">{$t("Settings_Header_Language")}</h2>
-<div class="rowDropdown">
-  <span>{$t("Header_ChooseLanguage")}</span>
-  <div class="dropdown" class:show={open}>
-    <button type="button" class="dropdown-toggle" on:click={() => (open = !open)}>
-      {currentLabel}
-      <span class="caret" aria-hidden="true"></span>
-    </button>
-    {#if open}
-      <ul
-        class="custom-dropdown-menu dropdown-menu"
-        style="position:absolute; top:100%; left:0; z-index:1000; margin:0;"
-      >
-        {#each availableLocales as code}
-          <li role="none">
-            <button type="button" class="dropdown-item" on:click={() => void pick(code)}>
-              {code} - {nameFor(code)}
-            </button>
-          </li>
-        {/each}
-      </ul>
-    {/if}
-  </div>
-</div>
-
 <style lang="scss">
-  .themeRow {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    gap: 0.75rem 1rem;
-    margin-bottom: 1.25rem;
-  }
-
-  .themeRow__dropdown {
-    flex: 1 1 12rem;
-    min-width: 0;
-  }
-
-  .themeRow__preview {
-    flex: 0 0 auto;
-    align-self: flex-end;
-  }
-
-  .statsRow {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem 0.75rem;
-  }
-
-  .statsRow__checks {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.35rem 0.75rem;
-    flex: 1 1 auto;
-    min-width: 0;
-  }
-
-  .statsRow__lbl {
-    margin: 0;
-    padding-right: 0.25rem;
-  }
-
-  .statsRow__view {
-    flex: 0 0 auto;
-    margin-left: auto;
+  button {
+    position: relative;
+    height: 38px;
   }
 </style>

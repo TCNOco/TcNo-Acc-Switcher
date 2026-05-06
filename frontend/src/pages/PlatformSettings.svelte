@@ -591,9 +591,9 @@
     <p class="platform-settings-err">{loadError}</p>
   {/if}
 
-  {#if isSteam && steamSettings}
-    <h1 class="SettingsHeader">{$t("Settings_Header_Platform", { platformName: name })}</h1>
+  <h1 class="SettingsHeader">{$t("Settings_Header_Platform", { platformName: name })}</h1>
 
+  {#if isSteam && steamSettings}
     <h2 class="SettingsHeader">{$t("Settings_Header_GeneralSettings")}</h2>
     <div class="rowSetting">
       <div class="form-check">
@@ -618,74 +618,6 @@
         <label class="form-check-label" for="ps-run-admin"></label>
       </div>
       <label for="ps-run-admin">{$t("Settings_Admin", { platform: name })}</label>
-    </div>
-    {#if !closingMethodUiLocked}
-      <div class="rowSetting rowDropdown">
-        <span use:tooltip={{ text: $t("Tooltip_ClosingMethod"), placement: "right" }}
-          >{$t("Settings_Header_ClosingMethod", { platform: name })}</span
-        >
-        <div class="dropdown" class:show={closingOpen}>
-          <button type="button" class="dropdown-toggle" on:click={() => (closingOpen = !closingOpen)}>
-            {closingLabel(steamSettings.ClosingMethod)}
-            <span class="caret" aria-hidden="true"></span>
-          </button>
-          {#if closingOpen}
-            <ul class="custom-dropdown-menu dropdown-menu" style="position:absolute;z-index:20;margin:0;">
-              {#each closingValues as v}
-                <li>
-                  <button
-                    type="button"
-                    class="dropdown-item"
-                    on:click={() => {
-                      const s = steamSettings;
-                      if (!s) return;
-                      s.ClosingMethod = v;
-                      bumpSteamSettings();
-                      closingOpen = false;
-                      debouncedSaveSteam();
-                    }}
-                  >
-                    {closingLabel(v)}
-                  </button>
-                </li>
-              {/each}
-            </ul>
-          {/if}
-        </div>
-      </div>
-    {/if}
-    <div class="rowSetting rowDropdown">
-      <span use:tooltip={{ text: $t("Tooltip_StartingMethod"), placement: "right" }}
-        >{$t("Settings_Header_StartingMethod", { platform: name })}</span
-      >
-      <div class="dropdown" class:show={startingOpen}>
-        <button type="button" class="dropdown-toggle" on:click={() => (startingOpen = !startingOpen)}>
-          {startingLabel(steamSettings.StartingMethod)}
-          <span class="caret" aria-hidden="true"></span>
-        </button>
-        {#if startingOpen}
-          <ul class="custom-dropdown-menu dropdown-menu" style="position:absolute;z-index:20;margin:0;">
-            {#each startingValues as v}
-              <li>
-                <button
-                  type="button"
-                  class="dropdown-item"
-                  on:click={() => {
-                    const s = steamSettings;
-                    if (!s) return;
-                    s.StartingMethod = v;
-                    bumpSteamSettings();
-                    startingOpen = false;
-                    debouncedSaveSteam();
-                  }}
-                >
-                  {startingLabel(v)}
-                </button>
-              </li>
-            {/each}
-          </ul>
-        {/if}
-      </div>
     </div>
     <div class="rowSetting">
       <div class="form-check">
@@ -723,6 +655,7 @@
       </div>
       <label for="ps-shortnotes">{$t("Settings_ShowShortNotes")}</label>
     </div>
+    
     <h2 class="SettingsHeader">{$t("Settings_Header_AccountDisplay")}</h2>
     <div class="rowSetting">
       <div class="form-check">
@@ -854,6 +787,30 @@
     <div class="rowSetting">
       <div class="form-check">
         <input
+          id="ps-steam-switcher"
+          type="checkbox"
+          bind:checked={steamSettings.ShowSteamSwitcher}
+          on:change={debouncedSaveSteam}
+        />
+        <label class="form-check-label" for="ps-steam-switcher"></label>
+      </div>
+      <label for="ps-steam-switcher">{$t("Settings_ShowSteamSwitcher")}</label>
+    </div>
+    <div class="rowSetting">
+      <div class="form-check">
+        <input
+          id="ps-collect"
+          type="checkbox"
+          bind:checked={steamSettings.CollectInfo}
+          on:change={debouncedSaveSteam}
+        />
+        <label class="form-check-label" for="ps-collect"></label>
+      </div>
+      <label for="ps-collect">{$t("Settings_SteamCollectInfo")}</label>
+    </div>
+    <div class="rowSetting">
+      <div class="form-check">
+        <input
           id="ps-oldui"
           type="checkbox"
           disabled={!steamSettings.AutoStart}
@@ -877,30 +834,6 @@
       />
       <p class="subtext">{$t("Settings_LaunchArguments_Hint")}</p>
     </div>
-    <div class="rowSetting">
-      <div class="form-check">
-        <input
-          id="ps-steam-switcher"
-          type="checkbox"
-          bind:checked={steamSettings.ShowSteamSwitcher}
-          on:change={debouncedSaveSteam}
-        />
-        <label class="form-check-label" for="ps-steam-switcher"></label>
-      </div>
-      <label for="ps-steam-switcher">{$t("Settings_ShowSteamSwitcher")}</label>
-    </div>
-    <div class="rowSetting">
-      <div class="form-check">
-        <input
-          id="ps-collect"
-          type="checkbox"
-          bind:checked={steamSettings.CollectInfo}
-          on:change={debouncedSaveSteam}
-        />
-        <label class="form-check-label" for="ps-collect"></label>
-      </div>
-      <label for="ps-collect">{$t("Settings_SteamCollectInfo")}</label>
-    </div>
     <div class="rowSetting rowDropdown">
       <span>{$t("Steam_OverrideDefaultState")}</span>
       <div class="dropdown" class:show={stateOpen}>
@@ -909,7 +842,7 @@
           <span class="caret" aria-hidden="true"></span>
         </button>
         {#if stateOpen}
-          <ul class="custom-dropdown-menu dropdown-menu" style="position:absolute;z-index:20;margin:0;">
+          <ul class="custom-dropdown-menu dropdown-menu">
             {#each overrideStates as o}
               <li>
                 <button
@@ -952,8 +885,72 @@
       />
       <p class="subtext">{$t("Settings_SteamAPIKey_Note")}</p>
     </div>
+    <h2 class="SettingsHeader">{$t("Settings_Header_ProcessManagement")}</h2>
+    {#if !closingMethodUiLocked}
+      <div class="rowSetting rowDropdown" use:tooltip={{ text: $t("Tooltip_ClosingMethod"), placement: "right" }}>
+        <span>{$t("Settings_Header_ClosingMethod", { platform: name })}</span>
+        <div class="dropdown" class:show={closingOpen}>
+          <button type="button" class="dropdown-toggle" on:click={() => (closingOpen = !closingOpen)}>
+            {closingLabel(steamSettings.ClosingMethod)}
+            <span class="caret" aria-hidden="true"></span>
+          </button>
+          {#if closingOpen}
+            <ul class="custom-dropdown-menu dropdown-menu">
+              {#each closingValues as v}
+                <li>
+                  <button
+                    type="button"
+                    class="dropdown-item"
+                    on:click={() => {
+                      const s = steamSettings;
+                      if (!s) return;
+                      s.ClosingMethod = v;
+                      bumpSteamSettings();
+                      closingOpen = false;
+                      debouncedSaveSteam();
+                    }}
+                  >
+                    {closingLabel(v)}
+                  </button>
+                </li>
+              {/each}
+            </ul>
+          {/if}
+        </div>
+      </div>
+    {/if}
+    <div class="rowSetting rowDropdown" use:tooltip={{ text: $t("Tooltip_StartingMethod"), placement: "right" }}>
+      <span>{$t("Settings_Header_StartingMethod", { platform: name })}</span>
+      <div class="dropdown" class:show={startingOpen}>
+        <button type="button" class="dropdown-toggle" on:click={() => (startingOpen = !startingOpen)}>
+          {startingLabel(steamSettings.StartingMethod)}
+          <span class="caret" aria-hidden="true"></span>
+        </button>
+        {#if startingOpen}
+          <ul class="custom-dropdown-menu dropdown-menu">
+            {#each startingValues as v}
+              <li>
+                <button
+                  type="button"
+                  class="dropdown-item"
+                  on:click={() => {
+                    const s = steamSettings;
+                    if (!s) return;
+                    s.StartingMethod = v;
+                    bumpSteamSettings();
+                    startingOpen = false;
+                    debouncedSaveSteam();
+                  }}
+                >
+                  {startingLabel(v)}
+                </button>
+              </li>
+            {/each}
+          </ul>
+        {/if}
+      </div>
+    </div>
   {:else if !isSteam && genericPS}
-    <h1 class="SettingsHeader">{$t("Settings_Header_Platform", { platformName: name })}</h1>
     <h2 class="SettingsHeader">{$t("Settings_Header_GeneralSettings")}</h2>
     <div class="rowSetting">
       <div class="form-check">
@@ -978,74 +975,6 @@
         <label class="form-check-label" for="gp-run-admin"></label>
       </div>
       <label for="gp-run-admin">{$t("Settings_Admin", { platform: name })}</label>
-    </div>
-    {#if !closingMethodUiLocked}
-      <div class="rowSetting rowDropdown">
-        <span use:tooltip={{ text: $t("Tooltip_ClosingMethod"), placement: "right" }}
-          >{$t("Settings_Header_ClosingMethod", { platform: name })}</span
-        >
-        <div class="dropdown" class:show={closingOpen}>
-          <button type="button" class="dropdown-toggle" on:click={() => (closingOpen = !closingOpen)}>
-            {closingLabel(genericPS.ClosingMethod)}
-            <span class="caret" aria-hidden="true"></span>
-          </button>
-          {#if closingOpen}
-            <ul class="custom-dropdown-menu dropdown-menu" style="position:absolute;z-index:20;margin:0;">
-              {#each closingValues as v}
-                <li>
-                  <button
-                    type="button"
-                    class="dropdown-item"
-                    on:click={() => {
-                      const g = genericPS;
-                      if (!g) return;
-                      g.ClosingMethod = v;
-                      bumpGenericPlatformSettings();
-                      closingOpen = false;
-                      debouncedSaveGeneric();
-                    }}
-                  >
-                    {closingLabel(v)}
-                  </button>
-                </li>
-              {/each}
-            </ul>
-          {/if}
-        </div>
-      </div>
-    {/if}
-    <div class="rowSetting rowDropdown">
-      <span use:tooltip={{ text: $t("Tooltip_StartingMethod"), placement: "right" }}
-        >{$t("Settings_Header_StartingMethod", { platform: name })}</span
-      >
-      <div class="dropdown" class:show={startingOpen}>
-        <button type="button" class="dropdown-toggle" on:click={() => (startingOpen = !startingOpen)}>
-          {startingLabel(genericPS.StartingMethod)}
-          <span class="caret" aria-hidden="true"></span>
-        </button>
-        {#if startingOpen}
-          <ul class="custom-dropdown-menu dropdown-menu" style="position:absolute;z-index:20;margin:0;">
-            {#each startingValues as v}
-              <li>
-                <button
-                  type="button"
-                  class="dropdown-item"
-                  on:click={() => {
-                    const g = genericPS;
-                    if (!g) return;
-                    g.StartingMethod = v;
-                    bumpGenericPlatformSettings();
-                    startingOpen = false;
-                    debouncedSaveGeneric();
-                  }}
-                >
-                  {startingLabel(v)}
-                </button>
-              </li>
-            {/each}
-          </ul>
-        {/if}
-      </div>
     </div>
     <div class="rowSetting">
       <div class="form-check">
@@ -1109,6 +1038,75 @@
       />
       <p class="subtext">{$t("Settings_LaunchArguments_Hint")}</p>
     </div>
+    <h2 class="SettingsHeader">{$t("Settings_Header_ProcessManagement")}</h2>
+    {#if !closingMethodUiLocked}
+      <div class="rowSetting rowDropdown">
+        <span use:tooltip={{ text: $t("Tooltip_ClosingMethod"), placement: "right" }}
+          >{$t("Settings_Header_ClosingMethod", { platform: name })}</span
+        >
+        <div class="dropdown" class:show={closingOpen}>
+          <button type="button" class="dropdown-toggle" on:click={() => (closingOpen = !closingOpen)}>
+            {closingLabel(genericPS.ClosingMethod)}
+            <span class="caret" aria-hidden="true"></span>
+          </button>
+          {#if closingOpen}
+            <ul class="custom-dropdown-menu dropdown-menu">
+              {#each closingValues as v}
+                <li>
+                  <button
+                    type="button"
+                    class="dropdown-item"
+                    on:click={() => {
+                      const g = genericPS;
+                      if (!g) return;
+                      g.ClosingMethod = v;
+                      bumpGenericPlatformSettings();
+                      closingOpen = false;
+                      debouncedSaveGeneric();
+                    }}
+                  >
+                    {closingLabel(v)}
+                  </button>
+                </li>
+              {/each}
+            </ul>
+          {/if}
+        </div>
+      </div>
+    {/if}
+    <div class="rowSetting rowDropdown">
+      <span use:tooltip={{ text: $t("Tooltip_StartingMethod"), placement: "right" }}
+        >{$t("Settings_Header_StartingMethod", { platform: name })}</span
+      >
+      <div class="dropdown" class:show={startingOpen}>
+        <button type="button" class="dropdown-toggle" on:click={() => (startingOpen = !startingOpen)}>
+          {startingLabel(genericPS.StartingMethod)}
+          <span class="caret" aria-hidden="true"></span>
+        </button>
+        {#if startingOpen}
+          <ul class="custom-dropdown-menu dropdown-menu">
+            {#each startingValues as v}
+              <li>
+                <button
+                  type="button"
+                  class="dropdown-item"
+                  on:click={() => {
+                    const g = genericPS;
+                    if (!g) return;
+                    g.StartingMethod = v;
+                    bumpGenericPlatformSettings();
+                    startingOpen = false;
+                    debouncedSaveGeneric();
+                  }}
+                >
+                  {startingLabel(v)}
+                </button>
+              </li>
+            {/each}
+          </ul>
+        {/if}
+      </div>
+    </div>
 
     <h2 class="SettingsHeader">{$t("Settings_Header_TraySettings")}</h2>
     <div class="form-text tray-max-row">
@@ -1145,7 +1143,7 @@
           on:change={debouncedSaveGeneric}
         />
       </div>
-      <div class="buttoncol settings-tools-row">
+      <div class="buttoncol">
         <button type="button" on:click={() => void onRefreshBasicProfileImages()}>
           {$t("Button_RefreshImages")}
         </button>
@@ -1161,12 +1159,12 @@
     <p class="install-loc">
       {$t("Settings_CurrentLocation", { path: installFolder || "" })}
     </p>
-    <div class="buttoncol settings-tools-row">
+    <div class="buttoncol">
       <button type="button" on:click={onPickFolder}>{$t("Settings_PickFolder", { platform: name })}</button>
       <button type="button" on:click={onReset}>{$t("Button_ResetSettings")}</button>
     </div>
     {#if hasCachePaths}
-      <div class="buttoncol settings-tools-row settings-tools-row--single">
+      <div class="buttoncol">
         {#if hasSavedProfileImageSources}
           <button type="button" on:click={() => void onRefreshSavedBasicProfileImages()}>
             {$t("Button_RefreshProfileImages")}
@@ -1182,7 +1180,7 @@
       </div>
     {/if}
     {#if isSteam}
-      <div class="buttoncol settings-tools-row">
+      <div class="buttoncol">
         <button type="button" on:click={onRefreshVac}>{$t("Steam_CheckVac")}</button>
         <button type="button" on:click={onRefreshImages}>{$t("Button_RefreshImages")}</button>
       </div>
@@ -1191,7 +1189,7 @@
     {#if hasBackupFolders}
       <h2 class="SettingsHeader">{$t("Settings_Header_BackupRestore")}</h2>
       {#if isSteam}
-        <div class="buttoncol settings-tools-row">
+        <div class="buttoncol">
           <button type="button" disabled={backingUp} on:click={() => void onBackup(false)}>
             {$t("Button_Backup")}
           </button>
@@ -1200,13 +1198,13 @@
           </button>
         </div>
       {:else}
-        <div class="buttoncol settings-tools-row settings-tools-row--single">
+        <div class="buttoncol">
           <button type="button" disabled={backingUp} on:click={() => void onBackup(true)}>
             {$t("Button_BackupAll")}
           </button>
         </div>
       {/if}
-      <div class="buttoncol settings-tools-row">
+      <div class="buttoncol">
         <button type="button" on:click={onOpenBackupFolder}>{$t("Button_OpenBackup")}</button>
         <button type="button" disabled={restoringBackup} on:click={onRestoreLatestBackup}>
           {$t("Button_Restore")}
@@ -1215,13 +1213,13 @@
     {/if}
 
     <h2 class="SettingsHeader">{$t("Settings_Header_OtherTools")}</h2>
-    <div class="buttoncol settings-tools-row settings-tools-row--single">
+    <div class="buttoncol">
       <button type="button" on:click={onOpenFolder}>{$t("Settings_OpenFolder", { platform: name })}</button>
     </div>
 
     <hr class="settings-divider" />
 
-    <h2 class="SettingsHeader">{$t("Settings_Header_AppWide")}</h2>
+    <h1 class="SettingsHeader">{$t("Settings_Header_AppWide")}</h1>
     <GeneralSettingsBlock />
   {/if}
 </div>
@@ -1235,12 +1233,11 @@
     padding-bottom: 1rem;
   }
 
-  :global(.platform-settings-scroll .rowSetting) {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    gap: 0.25rem 0.5rem;
-    margin: 0.4rem 0;
+  .settings-page-subtitle {
+    margin: 0.4rem 0 0;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.95rem;
+    line-height: 1.45;
   }
 
   .platform-settings-err {
@@ -1259,23 +1256,6 @@
     border: 0;
     border-top: 1px solid var(--accent, #6272a4);
     margin: 2rem 0 1.5rem;
-  }
-
-  .settings-tools-row {
-    position: relative;
-    height: auto;
-    min-height: 3.2em;
-    margin-bottom: 0.5rem;
-
-    button {
-      position: relative;
-      width: 49%;
-      margin: 0;
-    }
-
-    &--single button {
-      width: 100%;
-    }
   }
 
   .tray-max-row {
@@ -1302,4 +1282,5 @@
     width: 100%;
     max-width: 42rem;
   }
+
 </style>
