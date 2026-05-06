@@ -129,6 +129,12 @@ tasks:
     cmds:
       - npm run dev -- --port {{.VITE_PORT}} --strictPort
 
+  dev:frontend:nodeps:
+    summary: Runs the frontend in development mode (deps preinstalled)
+    dir: frontend
+    cmds:
+      - npm run dev -- --port {{.VITE_PORT}} --strictPort
+
   update:build-assets:
     summary: Updates the build assets
     dir: build
