@@ -651,15 +651,15 @@ func KillByName(names []string, method ClosingMethod, beforeElectronSynth func()
 					requestElectronChromiumExit(base, 0, false)
 				}
 				_ = taskKillIM(base, false)
-				waitForElectronImageExit(base, electronExitMaxWait)
+				waitForElectronImageExit(base, electronExitMaxWait, len(names))
 				_ = taskKillIM(base, true)
 			case ClosingClose:
 				requestGracefulProcessExit(base)
-				waitForImageExit(base, gracefulExitMaxWait, 100*time.Millisecond)
+				waitForImageExit(base, gracefulExitMaxWait, 100*time.Millisecond, len(names))
 				_ = taskKillIM(base, true)
 			default: // Combined
 				requestGracefulProcessExit(base)
-				waitForImageExit(base, gracefulCombinedExitMaxWait, 100*time.Millisecond)
+				waitForImageExit(base, gracefulCombinedExitMaxWait, 100*time.Millisecond, len(names))
 				_ = taskKillIM(base, true)
 			}
 			log.Printf("winutil: stop process done process=%s", base)
@@ -742,8 +742,28 @@ func postGracefulQuitPass(pid uint32) {
 }
 
 // waitForImageExit polls until exeImage is gone or maxWait elapses.
-func waitForImageExit(exeImage string, maxWait, poll time.Duration) {
+func waitForImageExit(exeImage string, maxWait, poll time.Duration, targetCount int) {
 	deadline := time.Now().Add(maxWait)
+	start := time.Now()
+	lastReported := -1
+	reportWaitStatus := func() {
+		elapsed := int(time.Since(start).Seconds())
+		if elapsed == lastReported {
+			return
+		}
+		lastReported = elapsed
+		key := "Status_WaitingForClose"
+		vars := map[string]string{
+			"processName": exeImage,
+			"timeout":     fmt.Sprint(elapsed),
+			"timeLimit":   fmt.Sprint(int(maxWait.Seconds())),
+		}
+		if targetCount > 1 {
+			key = "Status_WaitingForMultipleClose"
+			vars["count"] = fmt.Sprint(targetCount - 1)
+		}
+		emitStatus(key, vars)
+	}
 	for time.Now().Before(deadline) {
 		exists, err := processExistsByImageName(exeImage)
 		if err != nil {
@@ -753,14 +773,15 @@ func waitForImageExit(exeImage string, maxWait, poll time.Duration) {
 		if !exists {
 			return
 		}
+		reportWaitStatus()
 		time.Sleep(poll)
 	}
 }
 
 // waitForElectronImageExit polls often so we return immediately once the image is gone; we do not
 // send extra taskkill nudges mid-wait (those can interrupt a partially finished graceful shutdown).
-func waitForElectronImageExit(exeImage string, maxWait time.Duration) {
-	waitForImageExit(exeImage, maxWait, electronPollInterval)
+func waitForElectronImageExit(exeImage string, maxWait time.Duration, targetCount int) {
+	waitForImageExit(exeImage, maxWait, electronPollInterval, targetCount)
 }
 
 func processExistsByImageName(want string) (bool, error) {

@@ -295,8 +295,9 @@ func CurrentLiveUniqueID(deps FlowDeps, platformKey string) (string, error) {
 	return strings.TrimSpace(u), nil
 }
 
-func SaveCurrent(deps FlowDeps, platformKey, accountName string) error {
-	defer platform.EmitActionBarStatus("")
+func SaveCurrent(deps FlowDeps, platformKey, accountName string) (err error) {
+	defer finishActionBarStatus(&err)
+	platform.EmitActionBarStatusI18n("Status_Init")
 	closeSharedLevelDBHandles("SaveCurrent.begin")
 	defer closeSharedLevelDBHandles("SaveCurrent.end")
 
@@ -311,6 +312,7 @@ func SaveCurrent(deps FlowDeps, platformKey, accountName string) error {
 
 	if d.ExitBeforeInteract || d.ExitBeforeSave {
 		if err := winutil.ErrIfCannotKill(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod)); err != nil {
+			platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatformFailed", platformKey)
 			return err
 		}
 		platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatform", platformKey)
@@ -332,6 +334,7 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 	}
 	ctx := platform.PathTokenContext{PlatformFolder: folder}
 
+	platform.EmitActionBarStatusI18n("Status_GetUniqueId")
 	uid, err := ensureUniqueIDOnSave(platformKey, d, ctx)
 	if err != nil {
 		return err
@@ -378,9 +381,11 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 
 	regDump := map[string]regDumpEntry{}
 
+	platform.EmitActionBarStatusI18n("Status_CopyingFiles")
 	for liveKey, cacheRel := range d.LoginFiles {
 		liveKey = strings.TrimSpace(liveKey)
 		if isREG(liveKey) {
+			platform.EmitActionBarStatusI18n("Status_UpdatingRegistry")
 			enc := stripREG(liveKey)
 			if kp, ok := winutil.RegistryKeyPathForAllValuesSpecifier(enc); ok {
 				all, err := winutil.RegistryReadAllValuesInKey(kp)
@@ -440,6 +445,7 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 				return fmt.Errorf("bad JSON_SELECT key")
 			}
 			fp = expandPlatformPath(fp, folder, ctx)
+			emitUpdatingFileStatus(fp)
 			data, err := os.ReadFile(fp)
 			if err != nil {
 				if d.AllFilesRequired {
@@ -483,6 +489,7 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 		}
 		src := expandPlatformPath(liveKey, folder, ctx)
 		dst := filepath.Join(destRoot, filepath.FromSlash(cacheRel))
+		emitUpdatingFileStatus(src)
 		if hasGlobPattern(src) {
 			matches, _ := filepath.Glob(src)
 			globDestRoot := globDestinationRoot(destRoot, cacheRel)
@@ -535,6 +542,7 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 	}
 
 	if strings.EqualFold(strings.TrimSpace(d.UniqueIdMethod), "REGKEY") {
+		platform.EmitActionBarStatusI18n("Status_UpdatingRegistry")
 		uidKey := strings.TrimSpace(d.UniqueIdFile)
 		enc := stripREG(uidKey)
 		if enc != "" {
@@ -578,6 +586,7 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 	}
 
 	if len(regDump) > 0 {
+		platform.EmitActionBarStatusI18n("Status_UpdatingRegistry")
 		b, err := json.MarshalIndent(regDump, "", "  ")
 		if err != nil {
 			return err
@@ -602,6 +611,7 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 	}
 	syncBasicTrayKnownAccounts(platformKey, ids)
 
+	platform.EmitActionBarStatusI18n("Status_HandlingImage")
 	if platformProfileImagesSavedPerAccount(platformKey) {
 		if src, ok, err := platformProfileImageSourceFromSavedAccount(platformKey, accountName); err == nil && ok {
 			if strings.TrimSpace(src.LocalPath) != "" {
@@ -637,6 +647,29 @@ func ensureUniqueIDOnSave(platformKey string, d platform.Descriptor, ctx platfor
 		return id, nil
 	}
 	return ReadUniqueID(platformKey, d, ctx.PlatformFolder)
+}
+
+func finishActionBarStatus(err *error) {
+	if err != nil && *err != nil {
+		platform.EmitActionBarStatusI18n("Status_FailedLog")
+		return
+	}
+	platform.EmitActionBarStatus("")
+}
+
+func emitUpdatingFileStatus(path string) {
+	file := strings.TrimSpace(filepath.Base(path))
+	if file == "." || file == string(os.PathSeparator) {
+		file = ""
+	}
+	if file == "" {
+		file = strings.TrimSpace(path)
+	}
+	if file == "" {
+		platform.EmitActionBarStatusI18n("Status_CopyingFiles")
+		return
+	}
+	platform.EmitActionBarStatusI18nVars("Status_UpdatingFile", map[string]string{"file": file})
 }
 
 func wrapNeedsAdminIfPermission(err error) error {
@@ -751,6 +784,7 @@ func Login(deps FlowDeps, platformKey, accountName string) error {
 	}
 	// Set UniqueIdFile from ids.json before restoring LoginFiles (update logged-in account)
 	if strings.EqualFold(strings.TrimSpace(d.UniqueIdMethod), "REGKEY") {
+		platform.EmitActionBarStatusI18n("Status_UpdatingRegistry")
 		uidKey := strings.TrimSpace(d.UniqueIdFile)
 		if stripREG(uidKey) != "" {
 			if ids, err := readIDs(platformKey); err == nil {
@@ -809,6 +843,7 @@ func Login(deps FlowDeps, platformKey, accountName string) error {
 	for liveKey, cacheRel := range d.LoginFiles {
 		liveKey = strings.TrimSpace(liveKey)
 		if isREG(liveKey) {
+			platform.EmitActionBarStatusI18n("Status_UpdatingRegistry")
 			e, ok := regDumpLookup(regDump, liveKey)
 			if !ok {
 				continue
@@ -828,6 +863,7 @@ func Login(deps FlowDeps, platformKey, accountName string) error {
 				return fmt.Errorf("bad JSON_SELECT")
 			}
 			fp = expandPlatformPath(fp, folder, ctx)
+			emitUpdatingFileStatus(fp)
 			cacheFile := filepath.Join(srcRoot, filepath.FromSlash(cacheRel))
 			chunk, err := os.ReadFile(cacheFile)
 			if err != nil {
@@ -855,6 +891,7 @@ func Login(deps FlowDeps, platformKey, accountName string) error {
 		}
 		src := filepath.Join(srcRoot, filepath.FromSlash(cacheRel))
 		dst := expandPlatformPath(liveKey, folder, ctx)
+		emitUpdatingFileStatus(dst)
 		if hasGlobPattern(dst) {
 			globDstRoot := globPatternBaseDir(dst)
 			if err := os.MkdirAll(globDstRoot, 0o755); err != nil {
@@ -943,6 +980,7 @@ func ClearCurrentLogin(deps FlowDeps, platformKey string) error {
 			continue
 		}
 		if isREG(p) {
+			platform.EmitActionBarStatusI18n("Status_UpdatingRegistry")
 			enc := stripREG(p)
 			if _, ok := winutil.RegistryKeyPathForAllValuesSpecifier(enc); ok {
 				_ = winutil.RegistryClearLoginKey(enc, d.RegDeleteOnClear)
@@ -964,6 +1002,7 @@ func ClearCurrentLogin(deps FlowDeps, platformKey string) error {
 			return err
 		}
 		for _, target := range platform.ExpandDeletePatternMatches(pattern) {
+			emitUpdatingFileStatus(target)
 			if err := platform.ValidateDeleteTargetPath(target); err != nil {
 				return err
 			}
@@ -1052,8 +1091,9 @@ func SyncAllTrayKnownAccounts() {
 	}
 }
 
-func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []string) error {
-	defer platform.EmitActionBarStatus("")
+func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []string) (err error) {
+	defer finishActionBarStatus(&err)
+	platform.EmitActionBarStatusI18n("Status_Init")
 	closeSharedLevelDBHandles("SwapTo.begin")
 	defer closeSharedLevelDBHandles("SwapTo.end")
 
@@ -1070,6 +1110,7 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 		return err
 	}
 
+	platform.EmitActionBarStatusI18n("Status_GetUniqueId")
 	cur, curErr := ReadUniqueID(platformKey, d, folder)
 	if curErr == nil &&
 		strings.TrimSpace(cur) != "" &&
@@ -1080,6 +1121,7 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 
 	platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatform", platformKey)
 	if err := winutil.ErrIfCannotKill(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod)); err != nil {
+		platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatformFailed", platformKey)
 		return err
 	}
 	_ = winutil.KillByName(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod), electronBeforeKillSynth(deps, platformKey, d.ExesToEnd))
@@ -1136,8 +1178,9 @@ func LaunchBasic(deps FlowDeps, platformKey string, extraLaunchArgs []string) er
 	return launchBasicNoStatus(deps, platformKey, extraLaunchArgs)
 }
 
-func AddNew(deps FlowDeps, platformKey string) error {
-	defer platform.EmitActionBarStatus("")
+func AddNew(deps FlowDeps, platformKey string) (err error) {
+	defer finishActionBarStatus(&err)
+	platform.EmitActionBarStatusI18n("Status_Init")
 	closeSharedLevelDBHandles("AddNew.begin")
 	defer closeSharedLevelDBHandles("AddNew.end")
 
@@ -1151,6 +1194,7 @@ func AddNew(deps FlowDeps, platformKey string) error {
 	}
 	platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatform", platformKey)
 	if err := winutil.ErrIfCannotKill(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod)); err != nil {
+		platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatformFailed", platformKey)
 		return err
 	}
 	_ = winutil.KillByName(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod), electronBeforeKillSynth(deps, platformKey, d.ExesToEnd))

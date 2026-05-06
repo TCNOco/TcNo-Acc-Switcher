@@ -103,13 +103,20 @@ import { platformActionBusy } from "./stores/platformPage";
       if (raw.startsWith("i18n:")) {
         const payload = raw.slice(5);
         const sep = "\u001f";
-        const i = payload.indexOf(sep);
-        if (i >= 0) {
-          const key = payload.slice(0, i);
-          const platform = payload.slice(i + sep.length);
-          actionBarStatus.set($t(key, { platform }));
+        const parts = payload.split(sep);
+        const key = parts.shift() ?? "";
+        if (parts.length > 1) {
+          const vars: Record<string, string | number> = {};
+          for (let i = 0; i < parts.length; i += 2) {
+            const name = parts[i];
+            if (!name) continue;
+            vars[name] = parts[i + 1] ?? "";
+          }
+          actionBarStatus.set($t(key, vars));
+        } else if (parts.length === 1) {
+          actionBarStatus.set($t(key, { platform: parts[0] }));
         } else {
-          actionBarStatus.set($t(payload));
+          actionBarStatus.set($t(key));
         }
       } else {
         actionBarStatus.set(raw);

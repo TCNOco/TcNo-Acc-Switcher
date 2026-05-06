@@ -22,8 +22,15 @@ var steamKillNames = []string{
 }
 
 // SwapToAccount: empty steamID64 clears AutoLoginUser (Add New). personaState -1 uses Steam_OverrideState; < -1 skips localconfig persona edit. extraLaunchArgs append after settings argv.
-func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string) error {
-	defer platform.EmitActionBarStatus("")
+func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string) (err error) {
+	defer func() {
+		if err != nil {
+			platform.EmitActionBarStatusI18n("Status_FailedLog")
+			return
+		}
+		platform.EmitActionBarStatus("")
+	}()
+	platform.EmitActionBarStatusI18n("Status_Init")
 
 	st, err := LoadSettings()
 	if err != nil {
@@ -63,6 +70,7 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 
 	platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatform", "Steam")
 	if err := winutil.ErrIfCannotKill(steamKillNames, winutil.ClosingMethod(st.ClosingMethod)); err != nil {
+		platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatformFailed", "Steam")
 		return err
 	}
 	if err := winutil.KillByName(steamKillNames, winutil.ClosingMethod(st.ClosingMethod), nil); err != nil {
@@ -85,6 +93,7 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 
 	if pS >= 0 && strings.TrimSpace(steamID64) != "" {
 		platform.EmitActionBarStatusI18n("Status_ActionBar_UpdatingSteamPersona")
+		platform.EmitActionBarStatusI18nVars("Status_UpdatingFile", map[string]string{"file": "localconfig.vdf"})
 		if err := setPersonaStateLocalConfig(root, steamID64, pS); err != nil {
 			steamLog.Warn("localconfig ePersonaState", slog.Any("err", err))
 		}
@@ -243,11 +252,13 @@ func writeLoginUsersAndRegistry(steamRoot, selectedID64 string) error {
 
 	kv := LoginUsersToKeyValue(users)
 	out := KeyValueToText(kv)
+	platform.EmitActionBarStatusI18nVars("Status_UpdatingFile", map[string]string{"file": "loginusers.vdf"})
 	if err := fsutil.WriteFileAtomic(loginPath, out, 0o644); err != nil {
 		return err
 	}
 
 	regBase := `HKCU\Software\Valve\Steam`
+	platform.EmitActionBarStatusI18n("Status_UpdatingRegistry")
 	if err := winutil.RegistryWrite(regBase+":AutoLoginUser", autoUser); err != nil {
 		return err
 	}
@@ -259,6 +270,7 @@ func writeLoginUsersAndRegistry(steamRoot, selectedID64 string) error {
 
 func setShowSteamSwitcher(steamRoot string, show bool) error {
 	path := filepath.Join(steamRoot, "config", "config.vdf")
+	platform.EmitActionBarStatusI18nVars("Status_UpdatingFile", map[string]string{"file": "config.vdf"})
 	raw, err := os.ReadFile(path)
 	if err != nil {
 		return err
