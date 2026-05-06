@@ -37,7 +37,7 @@
   import * as Shortcuts from "wails-shortcuts-service";
   import { ListPayload } from "../../bindings/TcNo-Acc-Switcher/internal/shortcuts/models.js";
   import { get } from "svelte/store";
-  import { openConfirm, openPrompt } from "../stores/modal";
+  import { activeModal, openConfirm, openPrompt } from "../stores/modal";
   import { offlineMode, offlineSafeImageSrc } from "../stores/offlineMode";
   import { fuzzyWordsMatch } from "../lib/searchFuzzy";
   import { closeSearchOverlay, searchOverlayCtrl } from "../stores/searchOverlay";
@@ -193,7 +193,7 @@
       displaySteamIds.length > 0 &&
       !displaySteamIds.includes(selectedSteamId)
     ) {
-      selectedSteamId = displaySteamIds[0] ?? "";
+      selectedSteamId = "";
       touchSteamActionBar();
     }
   }
@@ -216,6 +216,35 @@
   function onSteamItemClick(e: CustomEvent<{ id: string }>): void {
     selectedSteamId = e.detail.id;
     touchSteamActionBar();
+  }
+
+  function clearSteamSelection(): void {
+    if (!selectedSteamId) {
+      return;
+    }
+    selectedSteamId = "";
+    touchSteamActionBar();
+  }
+
+  function onSteamAccountsAreaClick(e: MouseEvent): void {
+    const target = e.target as HTMLElement | null;
+    if (!target) {
+      return;
+    }
+    if (target.closest("[data-dnd-cell]")) {
+      return;
+    }
+    clearSteamSelection();
+  }
+
+  function onWindowKeyDown(e: KeyboardEvent): void {
+    if (e.key !== "Escape") {
+      return;
+    }
+    if (get(activeModal)) {
+      return;
+    }
+    clearSteamSelection();
   }
 
   function applySteamPatch(p: SteamAccountPatch): void {
@@ -325,15 +354,11 @@
         platformKey: name,
         uniqueId: (liveRow?.steamId64 ?? "").trim(),
       });
-      const active = liveRow;
-      const firstId = rows[0]?.steamId64 ?? "";
       const stillValid =
         selectedSteamId && rows.some((r) => r.steamId64 === selectedSteamId);
       selectedSteamId = stillValid
         ? selectedSteamId
-        : active
-          ? active.steamId64
-          : firstId;
+        : "";
       touchSteamActionBar();
       SteamService.StartSteamProfileRefresh();
       await refreshGameDataAppSets();
@@ -1242,7 +1267,9 @@
       {#if steamLoadError}
         <p class="platform-accounts-hint">{steamLoadError}</p>
       {/if}
-      <div class="steam-acclist" bind:this={steamAcclistEl}>
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <!-- svelte-ignore a11y-no-static-element-interactions -->
+      <div class="steam-acclist" bind:this={steamAcclistEl} on:click={onSteamAccountsAreaClick}>
         {#if tagDefs.length > 0}
           <TagFilterBar label={tagFilterBarLabel} onClick={onSteamTagFilterBarClick} />
         {/if}
@@ -1357,6 +1384,7 @@
     </div>
   {/if}
 </div>
+<svelte:window on:keydown={onWindowKeyDown} />
 <ActionBar />
 
 <style lang="scss">

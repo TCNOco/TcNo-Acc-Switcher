@@ -62,7 +62,7 @@
     }
   }
 
-  /** Launch starts the client; if the list selection is not the active session, a switch happens first. */
+  /** Launch starts the client; switch only when a different account is explicitly selected. */
   $: launchTooltipText = (() => {
     const sel = $selectedAccount;
     const live = $platformLiveSessionId;
@@ -71,7 +71,7 @@
     const hasSel = onPlatform && uid !== "";
     const liveUid = String(live.uniqueId ?? "").trim();
     const liveHere = live.platformKey === platformName && liveUid !== "";
-    if (hasSel && liveHere && liveUid === uid) {
+    if (!hasSel || (liveHere && liveUid === uid)) {
       return $t("Tooltip_Launch");
     }
     const rawName =

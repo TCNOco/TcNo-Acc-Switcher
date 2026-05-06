@@ -17,7 +17,7 @@
     platformAccountsRefresh,
   } from "../stores/platformPage";
   import { pushToast } from "../stores/toast";
-  import { openPrompt } from "../stores/modal";
+  import { activeModal, openPrompt } from "../stores/modal";
   import { locale, t } from "../stores/i18n";
   import * as BasicService from "../../bindings/TcNo-Acc-Switcher/internal/basic/basicservice.js";
   import { AccountDTO, AccountImagePatch } from "../../bindings/TcNo-Acc-Switcher/internal/basic/models.js";
@@ -151,7 +151,7 @@
       displayAccountIds.length > 0 &&
       !displayAccountIds.includes(selectedUniqueId)
     ) {
-      selectedUniqueId = displayAccountIds[0] ?? "";
+      selectedUniqueId = "";
       touchStatus();
     }
   }
@@ -200,9 +200,8 @@
         platformKey: name,
         uniqueId: (liveRow?.uniqueId ?? "").trim(),
       });
-      const first = rows[0]?.uniqueId ?? "";
       const stillValid = selectedUniqueId && rows.some((r) => r.uniqueId === selectedUniqueId);
-      selectedUniqueId = stillValid ? selectedUniqueId : first;
+      selectedUniqueId = stillValid ? selectedUniqueId : "";
       touchStatus();
       await loadTagDefs();
     } catch (e) {
@@ -218,6 +217,35 @@
   function onItemClick(e: CustomEvent<{ id: string }>): void {
     selectedUniqueId = e.detail.id;
     touchStatus();
+  }
+
+  function clearSelection(): void {
+    if (!selectedUniqueId) {
+      return;
+    }
+    selectedUniqueId = "";
+    touchStatus();
+  }
+
+  function onAccountsAreaClick(e: MouseEvent): void {
+    const target = e.target as HTMLElement | null;
+    if (!target) {
+      return;
+    }
+    if (target.closest("[data-dnd-cell]")) {
+      return;
+    }
+    clearSelection();
+  }
+
+  function onWindowKeyDown(e: KeyboardEvent): void {
+    if (e.key !== "Escape") {
+      return;
+    }
+    if (get(activeModal)) {
+      return;
+    }
+    clearSelection();
   }
 
   function onReorder(e: CustomEvent<{ items: string[] }>): void {
@@ -737,7 +765,9 @@
       {#if loadError}
         <p class="platform-accounts-hint">{loadError}</p>
       {/if}
-      <div class="steam-acclist" bind:this={basicAcclistEl}>
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <!-- svelte-ignore a11y-no-static-element-interactions -->
+      <div class="steam-acclist" bind:this={basicAcclistEl} on:click={onAccountsAreaClick}>
         {#if tagDefs.length > 0}
           <TagFilterBar label={tagFilterBarLabel} onClick={onTagFilterBarClick} />
         {/if}
@@ -823,6 +853,7 @@
     </div>
   {/if}
 </div>
+<svelte:window on:keydown={onWindowKeyDown} />
 <ActionBar />
 
 <style lang="scss">

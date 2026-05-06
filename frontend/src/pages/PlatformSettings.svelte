@@ -1,8 +1,9 @@
 <script lang="ts">
+  import { get } from "svelte/store";
   import { onDestroy, onMount } from "svelte";
   import { route, previousPage, appBarTitle } from "../stores/nav";
   import { t } from "../stores/i18n";
-  import { openConfirm, openFolderPicker } from "../stores/modal";
+  import { activeModal, openConfirm, openFolderPicker } from "../stores/modal";
   import { pushToast } from "../stores/toast";
   import { tooltip } from "../lib/actions/tooltip";
   import GeneralSettingsBlock from "../components/GeneralSettingsBlock.svelte";
@@ -571,6 +572,17 @@
         duration: 8000,
       });
     }
+  }
+
+  function onWindowKeyDown(e: KeyboardEvent): void {
+    if (e.key !== "Escape") {
+      return;
+    }
+    if (get(activeModal)) {
+      return;
+    }
+    const prev = get(previousPage);
+    route.set(prev ?? { page: "home" });
   }
 </script>
 
@@ -1213,6 +1225,7 @@
     <GeneralSettingsBlock />
   {/if}
 </div>
+<svelte:window on:keydown={onWindowKeyDown} />
 
 <style lang="scss">
   .platform-settings-scroll {
