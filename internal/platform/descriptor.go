@@ -9,26 +9,23 @@ import (
 const SameAsLoginFiles = "SAME_AS_LOGIN_FILES"
 
 type DescriptorExtras struct {
-	CachePaths                []string          `json:"CachePaths,omitempty"`
-	BackupFolders             map[string]string `json:"BackupFolders,omitempty"`
-	Variables                 map[string]string `json:"variables,omitempty"`
-	ProfilePicPath            string            `json:"ProfilePicPath,omitempty"`
-	ProfilePicFromFile        string            `json:"ProfilePicFromFile,omitempty"`
-	ProfilePicRegex           string            `json:"ProfilePicRegex,omitempty"`
-	BuiltInUsernameFile       string            `json:"BuiltInUsernameFile,omitempty"`
-	BuiltInProfileImageFile   string            `json:"BuiltInProfileImageFile,omitempty"`
-	BuiltInUserId             string            `json:"BuiltInUserId,omitempty"`
-	ShortcutFolders           []string          `json:"ShortcutFolders,omitempty"`
-	ShortcutIgnore            []string          `json:"ShortcutIgnore,omitempty"`
-	ShortcutIncludeMainExe    *bool             `json:"ShortcutIncludeMainExe,omitempty"`
-	SearchStartMenuForIcon    bool              `json:"SearchStartMenuForIcon,omitempty"`
-	BackupFileTypesInclude    []string          `json:"BackupFileTypesInclude,omitempty"`
-	BackupFileTypesIgnore     []string          `json:"BackupFileTypesIgnore,omitempty"`
-	ClosingMethod             string            `json:"ClosingMethod,omitempty"`
-	ForceClosingMethod        bool              `json:"ForceClosingMethod,omitempty"`
-	UsernameModalExtraButtons string            `json:"UsernameModalExtraButtons,omitempty"`
-	UsernameModalCopyText     string            `json:"UsernameModalCopyText,omitempty"`
-	UsernameModalHintText     string            `json:"UsernameModalHintText,omitempty"`
+	CachePaths              []string          `json:"CachePaths,omitempty"`
+	BackupFolders           map[string]string `json:"BackupFolders,omitempty"`
+	Variables               map[string]string `json:"variables,omitempty"`
+	ProfilePicPath          string            `json:"ProfilePicPath,omitempty"`
+	ProfilePicFromFile      string            `json:"ProfilePicFromFile,omitempty"`
+	ProfilePicRegex         string            `json:"ProfilePicRegex,omitempty"`
+	BuiltInUsernameFile     string            `json:"BuiltInUsernameFile,omitempty"`
+	BuiltInProfileImageFile string            `json:"BuiltInProfileImageFile,omitempty"`
+	BuiltInUserId           string            `json:"BuiltInUserId,omitempty"`
+	ShortcutFolders         []string          `json:"ShortcutFolders,omitempty"`
+	ShortcutIgnore          []string          `json:"ShortcutIgnore,omitempty"`
+	ShortcutIncludeMainExe  *bool             `json:"ShortcutIncludeMainExe,omitempty"`
+	SearchStartMenuForIcon  bool              `json:"SearchStartMenuForIcon,omitempty"`
+	BackupFileTypesInclude  []string          `json:"BackupFileTypesInclude,omitempty"`
+	BackupFileTypesIgnore   []string          `json:"BackupFileTypesIgnore,omitempty"`
+	ClosingMethod           string            `json:"ClosingMethod,omitempty"`
+	ForceClosingMethod      bool              `json:"ForceClosingMethod,omitempty"`
 }
 
 type Descriptor struct {

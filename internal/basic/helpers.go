@@ -32,6 +32,10 @@ func isJSONSelectLast(key string) bool {
 	return strings.HasPrefix(strings.TrimSpace(key), "JSON_SELECT_LAST")
 }
 
+func isJSONSelect(key string) bool {
+	return strings.HasPrefix(strings.TrimSpace(key), "JSON_SELECT")
+}
+
 func parseJSONSelectWithDelimiter(prefix, key string) (filePath, jsonPath, delimiter string, ok bool) {
 	key = strings.TrimSpace(key)
 	if !strings.HasPrefix(key, prefix) {
@@ -56,6 +60,22 @@ func parseJSONSelectWithDelimiter(prefix, key string) (filePath, jsonPath, delim
 func parseJSONSelect(prefix, key string) (filePath, jsonPath string, ok bool) {
 	filePath, jsonPath, _, ok = parseJSONSelectWithDelimiter(prefix, key)
 	return filePath, jsonPath, ok
+}
+
+func parseJSONSelectPlain(prefix, key string) (filePath, jsonPath string, ok bool) {
+	key = strings.TrimSpace(key)
+	if !strings.HasPrefix(key, prefix) {
+		return "", "", false
+	}
+	rest := strings.TrimSpace(key[len(prefix):])
+	rest = strings.TrimPrefix(rest, "::")
+	secondSep := strings.Index(rest, "::")
+	if secondSep < 0 {
+		return "", "", false
+	}
+	filePath = rest[:secondSep]
+	jsonPath = rest[secondSep+2:]
+	return filePath, jsonPath, true
 }
 
 func expandPlatformPath(s string, platformFolder string, ctx platform.PathTokenContext) string {

@@ -433,14 +433,23 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 			regDump[liveKey] = regDumpEntry{V: registryValueStringForDump(v), T: typ}
 			continue
 		}
-		if isJSONSelectFirst(liveKey) || isJSONSelectLast(liveKey) {
-			pfx := "JSON_SELECT_FIRST"
-			first := true
-			if isJSONSelectLast(liveKey) {
-				pfx = "JSON_SELECT_LAST"
-				first = false
+		if isJSONSelect(liveKey) {
+			first := false
+			last := false
+			plain := false
+			var fp, jp, delimiter string
+			var ok bool
+			switch {
+			case isJSONSelectFirst(liveKey):
+				first = true
+				fp, jp, delimiter, ok = parseJSONSelectWithDelimiter("JSON_SELECT_FIRST", liveKey)
+			case isJSONSelectLast(liveKey):
+				last = true
+				fp, jp, delimiter, ok = parseJSONSelectWithDelimiter("JSON_SELECT_LAST", liveKey)
+			default:
+				plain = true
+				fp, jp, ok = parseJSONSelectPlain("JSON_SELECT", liveKey)
 			}
-			fp, jp, delimiter, ok := parseJSONSelectWithDelimiter(pfx, liveKey)
 			if !ok {
 				return fmt.Errorf("bad JSON_SELECT key")
 			}
@@ -456,19 +465,24 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 			}
 			res := gjson.GetBytes(data, jp)
 			selected := strings.TrimSpace(res.String())
-			if res.IsArray() && len(res.Array()) > 0 {
+			if plain {
+				// Plain JSON_SELECT returns selected value directly (no split/select behavior).
+			} else if res.IsArray() && len(res.Array()) > 0 {
 				if first {
 					selected = strings.TrimSpace(res.Array()[0].String())
-				} else {
+				} else if last {
 					a := res.Array()
 					selected = strings.TrimSpace(a[len(a)-1].String())
 				}
-			} else if delimiter != "" && selected != "" {
+			} else if selected != "" {
+				if delimiter == "" {
+					delimiter = ","
+				}
 				parts := strings.Split(selected, delimiter)
 				if len(parts) > 0 {
 					if first {
 						selected = strings.TrimSpace(parts[0])
-					} else {
+					} else if last {
 						selected = strings.TrimSpace(parts[len(parts)-1])
 					}
 				}
@@ -839,12 +853,17 @@ func Login(deps FlowDeps, platformKey, accountName string) error {
 			}
 			continue
 		}
-		if isJSONSelectFirst(liveKey) || isJSONSelectLast(liveKey) {
-			pfx := "JSON_SELECT_FIRST"
-			if isJSONSelectLast(liveKey) {
-				pfx = "JSON_SELECT_LAST"
+		if isJSONSelect(liveKey) {
+			var fp, jp string
+			var ok bool
+			switch {
+			case isJSONSelectFirst(liveKey):
+				fp, jp, ok = parseJSONSelect("JSON_SELECT_FIRST", liveKey)
+			case isJSONSelectLast(liveKey):
+				fp, jp, ok = parseJSONSelect("JSON_SELECT_LAST", liveKey)
+			default:
+				fp, jp, ok = parseJSONSelectPlain("JSON_SELECT", liveKey)
 			}
-			fp, jp, ok := parseJSONSelect(pfx, liveKey)
 			if !ok {
 				return fmt.Errorf("bad JSON_SELECT")
 			}
