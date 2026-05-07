@@ -564,39 +564,34 @@
     },
     "Arena Breakout: Infinite": {
       "Identifiers": [ "abi", "arenabreakout" ],
-      "ExeLocationDefault": "C:\\Arena Breakout Infinite\\launcher\\arena_breakout_infinite_launcher.exe",
+      "ExeLocationDefault": [
+        "C:\\Arena Breakout Infinite\\launcher\\arena_breakout_infinite_launcher.exe",
+        "C:\\Program Files (x86)\\Arena Breakout Infinite\\launcher\\arena_breakout_infinite_launcher.exe"
+      ],
       "GetPathFromShortcutNamed": "Arena Breakout Infinite",
       "ExesToEnd": [ "arena_breakout_infinite_launcher.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
-        "%AppData%\\arena_breakout_infinite_launcher\\last_user.dat": "last_user.dat",
-        "%AppData%\\arena_breakout_infinite_launcher\\production_gl_launcher.db": "production_gl_launcher.db",
-        "%AppData%\\arena_breakout_infinite_launcher\\psd.dat": "psd.dat",
+        "%Platform_Folder%\\launcher\\Cache\\TSF4G2\\*": "sessions\\",
         "%AppData%\\arena_breakout_infinite_launcher\\30061\\service\\intl_auth.txt": "intl_auth.txt",
-        "%AppData%\\arena_breakout_infinite_launcher_Steam\\last_user.dat": "last_user.dat",
-        "%AppData%\\arena_breakout_infinite_launcher_Steam\\production_gl_launcher.db": "production_gl_launcher.db",
-        "%AppData%\\arena_breakout_infinite_launcher_Steam\\psd.dat": "psd.dat",
-        "%AppData%\\arena_breakout_infinite_launcher_Steam\\30061\\service\\intl_auth.txt": "intl_auth.txt"
+        "%AppData%\\arena_breakout_infinite_launcher_Steam\\29158\\service\\intl_auth.txt": "intl_auth.txt",
+        "%AppData%\\arena_breakout_infinite_launcher\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
       },
       "ExitBeforeInteract": true,
       "UniqueIdFile": "%AppData%\\arena_breakout_infinite_launcher\\TcNoAccSwitcher-ID.instance",
       "UniqueIdMethod": "CREATE_ID_FILE"
     },
-    "Delta Force: Hawk Ops": {
+    "Delta Force": {
       "Identifiers": [ "dfho", "deltaforce", "hawkops" ],
-      "ExeLocationDefault": "C:\\Delta Force Hawk Ops\\launcher\\df_launcher_global.exe",
+      "ExeLocationDefault": "C:\\Delta Force\\launcher\\df_launcher_global.exe",
       "GetPathFromShortcutNamed": "Delta Force",
       "ExesToEnd": [ "df_launcher_global.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
-        "%AppData%\\df_launcher_global_30029601\\last_user.dat": "last_user.dat",
-        "%AppData%\\df_launcher_global_30029601\\test_launcher.db": "test_launcher.db",
-        "%AppData%\\df_launcher_global_30029601\\psd.dat": "psd.dat",
+        "%Platform_Folder%\\launcher\\Cache\\TSF4G2\\*": "sessions\\",
         "%AppData%\\df_launcher_global_30029601\\29158\\service\\intl_auth.txt": "intl_auth.txt",
-        "%AppData%\\df_launcher_global_30029601_Steam\\last_user.dat": "last_user.dat",
-        "%AppData%\\df_launcher_global_30029601_Steam\\test_launcher.db": "test_launcher.db",
-        "%AppData%\\df_launcher_global_30029601_Steam\\psd.dat": "psd.dat",
-        "%AppData%\\df_launcher_global_30029601_Steam\\29158\\service\\intl_auth.txt": "intl_auth.txt"
+        "%AppData%\\df_launcher_global_30029601_Steam\\29158\\service\\intl_auth.txt": "intl_auth.txt",
+        "%AppData%\\df_launcher_global_30029601\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
       },
       "ExitBeforeInteract": true,
       "UniqueIdFile": "%AppData%\\df_launcher_global_30029601\\TcNoAccSwitcher-ID.instance",

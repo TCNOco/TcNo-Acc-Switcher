@@ -1,6 +1,5 @@
 <script lang="ts">
-    import { get } from 'svelte/store'
-    import { route, previousPage } from '../stores/nav'
+    import { route, navigateBackLikeButton } from '../stores/nav'
     import { t } from "../stores/i18n";
     import { onMount } from 'svelte'
     import { appBarTitle } from '../stores/nav'
@@ -85,12 +84,7 @@
                 backTransition = 'transform 0ms ease-in-out'
             }, 500)
         } else {
-            const prev = get(previousPage)
-            if (prev) {
-                route.set(prev)
-            } else {
-                route.set({ page: 'home' })
-            }
+            navigateBackLikeButton()
         }
     }
 </script>

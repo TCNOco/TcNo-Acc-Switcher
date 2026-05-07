@@ -1,4 +1,4 @@
-import { writable } from "svelte/store";
+import { get, writable } from "svelte/store";
 import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
 import type { PlatformStartup } from "../../bindings/TcNo-Acc-Switcher/internal/platform/models.js";
 
@@ -14,6 +14,8 @@ export type Route =
 export const route = writable<Route>({ page: "home" });
 export const previousPage = writable<Route | null>(null);
 export const appBarTitle = writable("TcNo Account Switcher");
+let historyIndex = 0;
+let historyMaxIndex = 0;
 
 export function serializeRoute(r: Route): string {
   switch (r.page) {
@@ -121,7 +123,9 @@ export async function resolveInitialRoute(): Promise<void> {
     route.set(next);
     const url = serializeRoute(next);
     if (window.location.hash !== url) {
-      history.replaceState(null, "", url);
+      history.replaceState({ idx: historyIndex }, "", url);
+    } else if (window.history.state?.idx !== historyIndex) {
+      history.replaceState({ idx: historyIndex }, "", url);
     }
   } catch {
     route.set(fromHash);
@@ -139,14 +143,24 @@ export function installHashSync(): () => void {
     const url = serializeRoute(r);
     if (window.location.hash !== url) {
       syncing = true;
-      history.replaceState(null, "", url);
+      if (historyIndex < historyMaxIndex) {
+        // Truncate the virtual forward stack after diverging navigation.
+        historyMaxIndex = historyIndex;
+      }
+      historyIndex += 1;
+      historyMaxIndex = historyIndex;
+      history.pushState({ idx: historyIndex }, "", url);
       syncing = false;
     }
   });
 
-  const onPop = (): void => {
+  const onPop = (ev: PopStateEvent): void => {
     const next = parseHash(window.location.hash || "#/");
     if (next) {
+      const idx = ev.state?.idx;
+      if (typeof idx === "number" && Number.isFinite(idx)) {
+        historyIndex = idx;
+      }
       syncing = true;
       route.set(next);
       syncing = false;
@@ -175,7 +189,6 @@ export function applyNavigateJSON(json: string): void {
       .then((startup) => {
         const v = validateRoute(obj, startup);
         route.set(v);
-        history.replaceState(null, "", serializeRoute(v));
       })
       .catch(() => {
         route.set(obj);
@@ -183,4 +196,40 @@ export function applyNavigateJSON(json: string): void {
   } catch {
     /* ignore */
   }
+}
+
+export function canNavigateBack(): boolean {
+  return historyIndex > 0;
+}
+
+export function canNavigateForward(): boolean {
+  return historyIndex < historyMaxIndex;
+}
+
+export function navigateBack(): boolean {
+  if (!canNavigateBack()) {
+    return false;
+  }
+  history.back();
+  return true;
+}
+
+export function navigateForward(): boolean {
+  if (!canNavigateForward()) {
+    return false;
+  }
+  history.forward();
+  return true;
+}
+
+export function navigateBackLikeButton(): void {
+  const r = get(route);
+  if (r.page === "home") {
+    return;
+  }
+  if (navigateBack()) {
+    return;
+  }
+  const prev = get(previousPage);
+  route.set(prev ?? { page: "home" });
 }

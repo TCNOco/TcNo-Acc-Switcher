@@ -17,7 +17,7 @@
   import PlatformSettings from './pages/PlatformSettings.svelte'
   import SteamAdvancedClearing from './pages/SteamAdvancedClearing.svelte'
   import ManagePlatforms from './pages/ManagePlatforms.svelte'
-  import { route, applyNavigateJSON } from './stores/nav'
+  import { route, applyNavigateJSON, navigateBackLikeButton, navigateForward } from './stores/nav'
   import { installPageStatsTracking } from "./lib/pageStatsTrack";
   import { actionBarStatus } from './stores/actionBarStatus'
   import { t } from "./stores/i18n";
@@ -80,6 +80,46 @@ import { platformActionBusy } from "./stores/platformPage";
     openSearchOverlay(e.key);
   }
 
+  function canHandleGlobalNavInput(target: EventTarget | null): boolean {
+    if (get(activeModal) || get(contextMenu)) {
+      return false;
+    }
+    return !isEditableTarget(target);
+  }
+
+  function onGlobalHistoryKeydownCapture(e: KeyboardEvent): void {
+    if (!canHandleGlobalNavInput(e.target)) {
+      return;
+    }
+    const key = e.key;
+    const isBack = key === "BrowserBack" || (e.altKey && key === "ArrowLeft");
+    const isForward = key === "BrowserForward" || (e.altKey && key === "ArrowRight");
+    if (!isBack && !isForward) {
+      return;
+    }
+    e.preventDefault();
+    if (isBack) {
+      navigateBackLikeButton();
+      return;
+    }
+    navigateForward();
+  }
+
+  function onGlobalHistoryMouseUpCapture(e: MouseEvent): void {
+    if (!canHandleGlobalNavInput(e.target)) {
+      return;
+    }
+    if (e.button !== 3 && e.button !== 4) {
+      return;
+    }
+    e.preventDefault();
+    if (e.button === 3) {
+      navigateBackLikeButton();
+      return;
+    }
+    navigateForward();
+  }
+
   onMount(() => {
     const offPageStats = installPageStatsTracking();
     const offSvgBridge = registerSvgRenderBridge();
@@ -123,8 +163,12 @@ import { platformActionBusy } from "./stores/platformPage";
       }
     });
     window.addEventListener("keydown", onGlobalKeydownCapture, true);
+    window.addEventListener("keydown", onGlobalHistoryKeydownCapture, true);
+    window.addEventListener("mouseup", onGlobalHistoryMouseUpCapture, true);
     return () => {
       window.removeEventListener("keydown", onGlobalKeydownCapture, true);
+      window.removeEventListener("keydown", onGlobalHistoryKeydownCapture, true);
+      window.removeEventListener("mouseup", onGlobalHistoryMouseUpCapture, true);
       offPageStats();
       off?.();
       offNav?.();
