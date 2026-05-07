@@ -23,6 +23,7 @@ func platformProfileImageSource(platformKey, folder string, ctx platform.PathTok
 		return profileImageSource{}, false, err
 	}
 	vars := resolveDescriptorVariables(d, folder, ctx, "", false)
+	vars = resolveBuiltInRuntimeVariables(platformKey, d, folder, ctx, vars, "", false)
 	switch key {
 	case "ea desktop":
 		cachePat := builtInPatternPath(d, folder, ctx, d.Extras.BuiltInProfileImageFile, vars, "", false)
@@ -67,6 +68,7 @@ func platformSuggestedSaveName(platformKey, folder string, ctx platform.PathToke
 		return "", false, err
 	}
 	vars := resolveDescriptorVariables(d, folder, ctx, "", false)
+	vars = resolveBuiltInRuntimeVariables(platformKey, d, folder, ctx, vars, "", false)
 	switch key {
 	case "ea desktop":
 		dataPat := builtInPatternPath(d, folder, ctx, d.Extras.BuiltInUsernameFile, vars, "", false)
@@ -139,6 +141,7 @@ func platformProfileImageSourceFromSavedAccount(platformKey, accountName string)
 		return profileImageSource{}, false, err
 	}
 	vars := resolveDescriptorVariables(d, "", platform.PathTokenContext{}, root, true)
+	vars = resolveBuiltInRuntimeVariables(platformKey, d, "", platform.PathTokenContext{}, vars, root, true)
 	key := strings.ToLower(strings.TrimSpace(platformKey))
 	switch key {
 	case "ea desktop":

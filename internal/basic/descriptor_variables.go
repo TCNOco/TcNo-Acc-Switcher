@@ -65,6 +65,14 @@ func resolveDescriptorValue(d platform.Descriptor, raw, folder string, ctx platf
 		return ""
 	}
 	v = strings.TrimSpace(expandDescriptorVariables(v, vars))
+	if resolved, handled, err := resolveLatestModifiedFileValue(v, folder, ctx); handled {
+		if err != nil {
+			descriptorVarsLog.Debug("resolve descriptor value via latest modified file failed", "saved", saved, "value", v, "err", err)
+			return ""
+		}
+		descriptorVarsLog.Debug("resolved descriptor value via latest modified file", "value", resolved)
+		return strings.TrimSpace(resolved)
+	}
 	if isLevelDBReference(v) {
 		ref := v
 		if saved {
@@ -80,6 +88,14 @@ func resolveDescriptorValue(d platform.Descriptor, raw, folder string, ctx platf
 			// Do not degrade to plain path expansion for command values.
 			return ""
 		}
+	}
+	if resolved, handled, err := resolveSQLiteValue(v, folder, ctx); handled {
+		if err != nil {
+			descriptorVarsLog.Debug("resolve descriptor value via sqlite failed", "saved", saved, "value", v, "err", err)
+			return ""
+		}
+		descriptorVarsLog.Debug("resolved descriptor value via sqlite", "valuePreview", previewLevelDBValue(resolved))
+		return strings.TrimSpace(resolved)
 	}
 	return strings.TrimSpace(expandPlatformPath(v, folder, ctx))
 }

@@ -1002,6 +1002,33 @@ func ClearCurrentLogin(deps FlowDeps, platformKey string) error {
 			}
 			continue
 		}
+		if isJSONEmptyValue(p) {
+			fp, jp, ok := parseJSONPathAction("JSON_EMPTY_VALUE", p)
+			if !ok {
+				return fmt.Errorf("bad JSON_EMPTY_VALUE")
+			}
+			fp = expandPlatformPath(fp, folder, ctx)
+			emitUpdatingFileStatus(fp)
+			data, err := os.ReadFile(fp)
+			if os.IsNotExist(err) {
+				continue
+			}
+			if err != nil {
+				return fmt.Errorf("read %s: %w", fp, err)
+			}
+			ns, err := sjson.SetBytes(data, jp, "")
+			if err != nil {
+				return err
+			}
+			if err := os.MkdirAll(filepath.Dir(fp), 0o755); err != nil {
+				return fmt.Errorf("mkdir %s: %w", filepath.Dir(fp), err)
+			}
+			if err := fsutil.WriteFileAtomic(fp, ns, 0o644); err != nil {
+				return fmt.Errorf("write %s: %w", fp, err)
+			}
+			logFlow().Debug("cleared JSON value on session clear", "path", fp, "jsonPath", jp)
+			continue
+		}
 		pattern, err := platform.ResolveSafeDeletePattern(p, ctx)
 		if err != nil {
 			return err

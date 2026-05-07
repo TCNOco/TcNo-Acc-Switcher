@@ -36,6 +36,10 @@ func isJSONSelect(key string) bool {
 	return strings.HasPrefix(strings.TrimSpace(key), "JSON_SELECT")
 }
 
+func isJSONEmptyValue(key string) bool {
+	return strings.HasPrefix(strings.TrimSpace(key), "JSON_EMPTY_VALUE")
+}
+
 func parseJSONSelectWithDelimiter(prefix, key string) (filePath, jsonPath, delimiter string, ok bool) {
 	key = strings.TrimSpace(key)
 	if !strings.HasPrefix(key, prefix) {
@@ -57,12 +61,7 @@ func parseJSONSelectWithDelimiter(prefix, key string) (filePath, jsonPath, delim
 	return filePath, jsonPath, delimiter, true
 }
 
-func parseJSONSelect(prefix, key string) (filePath, jsonPath string, ok bool) {
-	filePath, jsonPath, _, ok = parseJSONSelectWithDelimiter(prefix, key)
-	return filePath, jsonPath, ok
-}
-
-func parseJSONSelectPlain(prefix, key string) (filePath, jsonPath string, ok bool) {
+func parseJSONPathAction(prefix, key string) (filePath, jsonPath string, ok bool) {
 	key = strings.TrimSpace(key)
 	if !strings.HasPrefix(key, prefix) {
 		return "", "", false
@@ -76,6 +75,15 @@ func parseJSONSelectPlain(prefix, key string) (filePath, jsonPath string, ok boo
 	filePath = rest[:secondSep]
 	jsonPath = rest[secondSep+2:]
 	return filePath, jsonPath, true
+}
+
+func parseJSONSelect(prefix, key string) (filePath, jsonPath string, ok bool) {
+	filePath, jsonPath, _, ok = parseJSONSelectWithDelimiter(prefix, key)
+	return filePath, jsonPath, ok
+}
+
+func parseJSONSelectPlain(prefix, key string) (filePath, jsonPath string, ok bool) {
+	return parseJSONPathAction(prefix, key)
 }
 
 func expandPlatformPath(s string, platformFolder string, ctx platform.PathTokenContext) string {

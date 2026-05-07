@@ -33,7 +33,7 @@
       "ExeLocationDefault": "%ProgramFiles(x86)%\\Epic Games\\Launcher\\Portal\\Binaries\\Win32\\EpicGamesLauncher.exe",
       "GetPathFromShortcutNamed": "Epic Games Launcher",
       "ExesToEnd": [ "EpicGamesLauncher.exe" ],
-      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+      "PathListToClear": [ "JSON_EMPTY_VALUE::%AppData%\\Battle.net\\Battle.net.config::Client.SavedAccountNames" ],
       "LoginFiles": {
         "%LocalAppData%\\EpicGamesLauncher\\Saved\\Config\\WindowsEditor\\GameUserSettings.ini": "GameUserSettings.ini",
         "REG:HKCU\\Software\\Epic Games\\Unreal Engine\\Identifiers:AccountId": "UNIQUE_ID"
@@ -550,16 +550,18 @@
       "ExeLocationDefault": "%ProgramFiles(x86)%\\Battle.net\\Battle.net.exe",
       "GetPathFromShortcutNamed": "Battle.net",
       "ExesToEnd": [ "Battle.net" ],
-      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+      "PathListToClear": [ "JSON_EMPTY_VALUE::%AppData%\\Battle.net\\Battle.net.config::Client.SavedAccountNames" ],
       "LoginFiles": {
-        "JSON_SELECT_FIRST,::%AppData%\\Battle.net\\Battle.net.config::$.Client.SavedAccountNames": "email.json"
+        "JSON_SELECT_FIRST,::%AppData%\\Battle.net\\Battle.net.config::Client.SavedAccountNames": "email.json"
       },
       "AllFilesRequired": true,
       "ExitBeforeInteract": true,
-      "UniqueIdFile": "%AppData%\\Battle.net\\Battle.net.config::$.Client.SavedAccountNames",
+      "UniqueIdFile": "%AppData%\\Battle.net\\Battle.net.config::Client.SavedAccountNames",
       "UniqueIdMethod": "JSON_SELECT_FIRST,",
       "Extras": {
-        "ClosingMethod": "TaskKill"
+        "ClosingMethod": "TaskKill",
+        "BuiltInUsernameFile": "SQLITE:%LocalAppData%\\Battle.net\\CachedData.db|SELECT battle_tag FROM login_cache WHERE account_id_lo = '%BuiltInUserId%'",
+        "BuiltInUserId": "LATEST_MODIFIED_FILE:%LocalAppData%\\Battle.net\\Logs\\battle.net-*.log"
       }
     },
     "Arena Breakout: Infinite": {
