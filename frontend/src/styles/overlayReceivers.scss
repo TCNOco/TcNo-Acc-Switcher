@@ -1,0 +1,259 @@
+/* Full-screen file/profile overlay visuals — global so themes & Preview CSS can target classes */
+@keyframes overlayRecvFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.acc-img-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8, 12, 22, 0.72);
+  backdrop-filter: blur(4px);
+  animation: overlayRecvFadeIn 0.15s ease-out;
+}
+
+.acc-img-overlay__x {
+  position: fixed;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 10051;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--white, #f8f8f2);
+  font-size: 1.75rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:hover {
+    background: rgba(255, 255, 255, 0.14);
+  }
+}
+
+.acc-img-overlay__panel {
+  max-width: min(520px, 92vw);
+  padding: 1.75rem 1.5rem;
+  border-radius: 14px;
+  background: rgba(20, 32, 52, 0.95);
+  border: 1px solid rgba(120, 170, 240, 0.35);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.45);
+  text-align: center;
+}
+
+.acc-img-overlay__title {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--white, #f8f8f2);
+}
+
+.acc-img-overlay__hint {
+  margin: 0 0 1.25rem;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: rgba(230, 238, 255, 0.88);
+}
+
+.acc-img-overlay__dropzone {
+  width: 100%;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  border: 2px dashed rgba(130, 190, 255, 0.55);
+  border-radius: 12px;
+  background: rgba(10, 24, 44, 0.6);
+  color: rgba(200, 225, 255, 0.95);
+  cursor: pointer;
+  transition: border-color 0.12s ease, background 0.12s ease;
+  &:hover:not(:disabled) {
+    border-color: rgba(170, 210, 255, 0.85);
+    background: rgba(16, 36, 64, 0.75);
+  }
+  &:disabled {
+    opacity: 0.55;
+    cursor: default;
+  }
+}
+
+.acc-img-overlay__dropicon {
+  color: rgba(150, 200, 255, 0.95);
+  display: flex;
+}
+
+.acc-img-overlay__cta {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.acc-img-overlay__remove {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 140, 140, 0.45);
+  background: rgba(60, 20, 20, 0.45);
+  color: #ffb4b4;
+  cursor: pointer;
+  &:hover:not(:disabled) {
+    background: rgba(80, 28, 28, 0.65);
+  }
+  &:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+}
+
+/* Inline staging on Preview CSS page */
+.acc-img-overlay--preview {
+  position: relative;
+  inset: auto;
+  z-index: 1;
+  min-height: 260px;
+  border-radius: 14px;
+  overflow: hidden;
+
+  .acc-img-overlay__x {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    z-index: 2;
+  }
+}
+
+.fileDropOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8, 12, 22, 0.72);
+  backdrop-filter: blur(4px);
+  animation: overlayRecvFadeIn 0.15s ease-out;
+}
+
+.fileDropOverlay__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem 2.5rem;
+  max-width: min(420px, 90vw);
+  min-height: 140px;
+  border: 2px dashed rgba(120, 190, 255, 0.65);
+  border-radius: 12px;
+  background: rgba(10, 20, 40, 0.45);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.35);
+  text-align: center;
+  color: rgba(200, 225, 255, 0.95);
+}
+
+.fileDropOverlay__icon {
+  color: rgba(160, 210, 255, 0.95);
+  width: 4.5rem;
+  height: 4.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+}
+
+.fileDropOverlay__text {
+  margin: 0;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--white, #f8f8f2);
+}
+
+.fileDropOverlay--preview {
+  position: relative;
+  inset: auto;
+  z-index: 1;
+  min-height: 240px;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+/* Per-account row cue when dragging profile images onto the list (Platform / PlatformSteam) */
+label.acc.acc--profile-drop-target,
+label.acc.acc--drop-target {
+  position: relative;
+}
+
+.acc_profile_drop_overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: inherit;
+  border: 2px dashed rgba(120, 190, 255, 0.62);
+  background: rgba(10, 20, 40, 0.32);
+  backdrop-filter: blur(2.5px);
+  -webkit-backdrop-filter: blur(2.5px);
+  pointer-events: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.acc_profile_drop_overlay--hover {
+  border-color: rgba(170, 230, 255, 0.95);
+  background: rgba(12, 28, 52, 0.42);
+}
+
+.acc_profile_drop_overlay__center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  max-width: 90%;
+  text-align: center;
+}
+
+.acc_profile_drop_overlay__icon {
+  width: clamp(2rem, 18%, 3rem);
+  height: clamp(2rem, 18%, 3rem);
+  color: rgba(160, 210, 255, 0.98);
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.4));
+
+  svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+}
+
+.acc_profile_drop_overlay__label {
+  font-size: clamp(0.68rem, 2.8vw, 0.82rem);
+  font-weight: 600;
+  line-height: 1.25;
+  color: rgba(200, 230, 255, 0.98);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+}

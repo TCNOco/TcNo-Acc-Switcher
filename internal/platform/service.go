@@ -385,9 +385,28 @@ func (p *PlatformService) PickPlatformsJSON() (string, error) {
 	if app == nil {
 		return "", errors.New("application not initialised")
 	}
-	sel, err := app.Dialog.OpenFileWithOptions(nil).
+	sel, err := app.Dialog.OpenFile().
 		SetTitle("Locate Platforms.json").
 		AddFilter("JSON", "*.json").
+		PromptForSingleSelection()
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimSpace(sel), nil
+}
+
+// PickProfileImageFile opens a native file picker for a single image or short video avatar file.
+func (p *PlatformService) PickProfileImageFile() (string, error) {
+	app := application.Get()
+	if app == nil {
+		return "", errors.New("application not initialised")
+	}
+	sel, err := app.Dialog.OpenFile().
+		SetTitle("Choose profile image").
+		AddFilter("Images", "*.png;*.jpg;*.jpeg;*.webp;*.gif").
+		AddFilter("Video avatars", "*.webm;*.mp4").
+		AddFilter("All supported", "*.png;*.jpg;*.jpeg;*.webp;*.gif;*.webm;*.mp4").
+		AddFilter("All files", "*.*").
 		PromptForSingleSelection()
 	if err != nil {
 		return "", err

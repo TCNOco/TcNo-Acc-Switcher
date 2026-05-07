@@ -18,6 +18,35 @@ func remoteProfilePicTemplate(tpl string) bool {
 	return strings.HasPrefix(t, "http://") || strings.HasPrefix(t, "https://")
 }
 
+// queueAutomatedProfileImage runs the same profile-image pipeline as the end of Save Current (saved login
+// files first when applicable, then live disk / remote URL). Call after clearing a manual avatar so the UI
+// repopulates without requiring "Refresh profile images".
+func queueAutomatedProfileImage(platformKey, uniqueID, accountName string, d platform.Descriptor, folder string) error {
+	platformKey = strings.TrimSpace(platformKey)
+	uniqueID = strings.TrimSpace(uniqueID)
+	accountName = strings.TrimSpace(accountName)
+	if platformKey == "" || uniqueID == "" {
+		return nil
+	}
+	if profileimage.HasManualProfileMarker(platformKey, uniqueID) {
+		return nil
+	}
+	ctx := platform.PathTokenContext{PlatformFolder: folder}
+	if platformProfileImagesSavedPerAccount(platformKey) && accountName != "" {
+		if src, ok, err := platformProfileImageSourceFromSavedAccount(platformKey, accountName); err == nil && ok {
+			if strings.TrimSpace(src.LocalPath) != "" {
+				queueProfileImageLocalCache(platformKey, uniqueID, src.LocalPath)
+				return nil
+			}
+			if strings.TrimSpace(src.RemoteURL) != "" {
+				queueProfileImageDownload(platformKey, uniqueID, src.RemoteURL, 0)
+				return nil
+			}
+		}
+	}
+	return saveProfileImage(d, platformKey, folder, uniqueID, ctx)
+}
+
 func saveProfileImage(d platform.Descriptor, platformKey, folder, uid string, ctx platform.PathTokenContext) error {
 	ctx.UniqueID = uid
 	if strings.TrimSpace(d.UniqueIdFile) != "" {
@@ -37,6 +66,10 @@ func saveProfileImage(d platform.Descriptor, platformKey, folder, uid string, ct
 	}
 	if !pullOnSwitch {
 		slog.Debug("profile image skipped: pull disabled", "platform", platformKey, "uid", uid)
+		return nil
+	}
+	if profileimage.HasManualProfileMarker(platformKey, uid) {
+		slog.Debug("profile image skipped: manual avatar", "platform", platformKey, "uid", uid)
 		return nil
 	}
 
@@ -98,29 +131,38 @@ func queueProfileImageDownload(platformKey, uid, remoteURL string, maxAge int) {
 	if platformKey == "" || uid == "" || remoteURL == "" {
 		return
 	}
+	if profileimage.HasManualProfileMarker(platformKey, uid) {
+		slog.Debug("profile image download skipped: manual avatar", "platform", platformKey, "uid", uid)
+		return
+	}
 	if appclient.IsOfflineMode() {
 		slog.Debug("profile image download skipped: offline mode", "platform", platformKey, "uid", uid, "url", remoteURL)
 		return
 	}
 	slog.Debug("profile image download queued", "platform", platformKey, "uid", uid, "url", remoteURL, "maxAgeDays", maxAge)
 	go func() {
+		if profileimage.HasManualProfileMarker(platformKey, uid) {
+			return
+		}
 		ctx, cancel := context.WithTimeout(context.Background(), 45*time.Second)
 		defer cancel()
 		if res, err := profileimage.DownloadIfNeeded(ctx, appclient.Shared, platformKey, uid, remoteURL, maxAge); err != nil {
 			slog.Debug("profile image download failed", "platform", platformKey, "uid", uid, "err", err)
 			if cached, ok := profileimage.FindCached(platformKey, uid); ok {
 				emitAccountImagePatch(AccountImagePatch{
-					PlatformKey: platformKey,
-					UniqueID:    uid,
-					ImageURL:    cached,
+					PlatformKey:        platformKey,
+					UniqueID:           uid,
+					ImageURL:           cached,
+					ManualProfileImage: profileimage.HasManualProfileMarker(platformKey, uid),
 				})
 			}
 		} else {
 			slog.Debug("profile image download finished", "platform", platformKey, "uid", uid, "publicURL", res.PublicURL, "localPath", res.LocalPath)
 			emitAccountImagePatch(AccountImagePatch{
-				PlatformKey: platformKey,
-				UniqueID:    uid,
-				ImageURL:    res.PublicURL,
+				PlatformKey:        platformKey,
+				UniqueID:           uid,
+				ImageURL:           res.PublicURL,
+				ManualProfileImage: profileimage.HasManualProfileMarker(platformKey, uid),
 			})
 		}
 	}()
@@ -133,24 +175,33 @@ func queueProfileImageLocalCache(platformKey, uid, src string) {
 	if platformKey == "" || uid == "" || src == "" {
 		return
 	}
+	if profileimage.HasManualProfileMarker(platformKey, uid) {
+		slog.Debug("profile image local cache skipped: manual avatar", "platform", platformKey, "uid", uid)
+		return
+	}
 	slog.Debug("profile image local cache queued", "platform", platformKey, "uid", uid, "src", src)
 	go func() {
+		if profileimage.HasManualProfileMarker(platformKey, uid) {
+			return
+		}
 		if err := profileimage.CacheLocalFile(platformKey, uid, src); err != nil {
 			slog.Debug("profile image local cache failed", "platform", platformKey, "uid", uid, "err", err)
 			if cached, ok := profileimage.FindCached(platformKey, uid); ok {
 				emitAccountImagePatch(AccountImagePatch{
-					PlatformKey: platformKey,
-					UniqueID:    uid,
-					ImageURL:    cached,
+					PlatformKey:        platformKey,
+					UniqueID:           uid,
+					ImageURL:           cached,
+					ManualProfileImage: profileimage.HasManualProfileMarker(platformKey, uid),
 				})
 			}
 		} else {
 			slog.Debug("profile image local cache finished", "platform", platformKey, "uid", uid, "src", src)
 			if cached, ok := profileimage.FindCached(platformKey, uid); ok {
 				emitAccountImagePatch(AccountImagePatch{
-					PlatformKey: platformKey,
-					UniqueID:    uid,
-					ImageURL:    cached,
+					PlatformKey:        platformKey,
+					UniqueID:           uid,
+					ImageURL:           cached,
+					ManualProfileImage: profileimage.HasManualProfileMarker(platformKey, uid),
 				})
 			}
 		}

@@ -2,6 +2,7 @@
   import { onDestroy, onMount } from "svelte";
   import { Events } from "@wailsio/runtime";
   import ActionBar from "../components/ActionBar.svelte";
+  import AccountImagePickOverlay from "../components/AccountImagePickOverlay.svelte";
   import ReorderPointerGrid from "../components/ReorderPointerGrid.svelte";
   import TagFilterBar from "../components/TagFilterBar.svelte";
   import AccountTagBubbles from "../components/AccountTagBubbles.svelte";
@@ -35,7 +36,7 @@
   import * as Shortcuts from "wails-shortcuts-service";
   import { get } from "svelte/store";
   import { openConfirm } from "../stores/modal";
-  import { offlineMode, offlineSafeImageSrc } from "../stores/offlineMode";
+  import { offlineMode, offlineSafeImageSrc, withAssetCacheBust } from "../stores/offlineMode";
   import { fuzzyWordsMatch } from "../lib/searchFuzzy";
   import { formatLastLoginForLocale } from "../lib/formatLastLogin";
   import {
@@ -46,6 +47,9 @@
   } from "../lib/accountTagsContext";
   import { closeSearchOverlay, searchOverlayCtrl } from "../stores/searchOverlay";
   import { platformListSort, type PlatformSortKind } from "../stores/platformListSort";
+  import { fileDropInterceptor } from "../stores/fileDropInterceptor";
+  import { accountProfileImageDropActive } from "../stores/accountProfileImageDropUi";
+  import { firstProfileImagePath } from "../lib/profileImageDrop";
 
   const PROFILE_FALLBACK = "/img/BasicDefault.webp";
 
@@ -73,6 +77,9 @@
   let lastHandledSortId = 0;
   let basicAvatarEpoch: Record<string, number> = {};
 
+  let accImagePick = { open: false, uniqueId: "", displayName: "", manual: false };
+  let fileDragHoverRowId = "";
+
   let tagDefs: TagDefRow[] = [];
   let tagFilterMode: TagFilterMode = { kind: "all" };
 
@@ -81,7 +88,7 @@
   $: so = $searchOverlayCtrl;
   $: appBarTitle.set(name || "TcNo Account Switcher");
   $: isActionBusy = $platformActionBusy.busy;
-  $: basicSearchPrimary = buildBasicAccountRows(overlayQuery);
+  $: basicSearchPrimary = buildBasicAccountRows(overlayQuery, basicAvatarEpoch);
   $: if (name) {
     route.set({ page: "platform", platformName: name });
   }
@@ -97,6 +104,132 @@
     return accounts.find((a) => a.uniqueId === id);
   }
 
+  function closeImagePick(): void {
+    accImagePick = { open: false, uniqueId: "", displayName: "", manual: false };
+    fileDragHoverRowId = "";
+  }
+
+  function openImagePick(rowId: string): void {
+    const acc = accountById(rowId);
+    accImagePick = {
+      open: true,
+      uniqueId: rowId,
+      displayName: (acc?.displayName ?? rowId).trim(),
+      manual: !!acc?.manualProfileImage,
+    };
+  }
+
+  async function applyImageFromOverlay(path: string): Promise<void> {
+    const uid = accImagePick.uniqueId.trim();
+    if (!uid || !name) {
+      return;
+    }
+    await BasicService.ChangeAccountImage(name, uid, path);
+    await loadAccounts();
+    bumpBasicAvatarEpoch(uid);
+    pushToast({
+      type: "success",
+      message: get(t)("Toast_AccountSaved"),
+      duration: 3000,
+    });
+  }
+
+  async function removeImageFromOverlay(): Promise<void> {
+    const uid = accImagePick.uniqueId.trim();
+    if (!uid || !name) {
+      return;
+    }
+    await BasicService.ClearManualAccountProfileImage(name, uid);
+    await loadAccounts();
+    bumpBasicAvatarEpoch(uid);
+    scheduleAccountsRefresh();
+    pushToast({
+      type: "success",
+      message: get(t)("Toast_AccountSaved"),
+      duration: 3000,
+    });
+  }
+
+  function hasFilesDragType(ev: DragEvent): boolean {
+    const types = ev.dataTransfer?.types;
+    return !!(types && Array.from(types as unknown as Iterable<string>).includes("Files"));
+  }
+
+  function onBasicAccDragOver(ev: DragEvent, rid: string): void {
+    if (!hasFilesDragType(ev)) {
+      return;
+    }
+    ev.preventDefault();
+    fileDragHoverRowId = rid;
+  }
+
+  function onBasicAccDragLeave(ev: DragEvent, rid: string): void {
+    if (!hasFilesDragType(ev)) {
+      return;
+    }
+    const rel = ev.relatedTarget as Node | null;
+    const cur = ev.currentTarget as HTMLElement | null;
+    if (!rel || !cur?.contains(rel)) {
+      if (fileDragHoverRowId === rid) {
+        fileDragHoverRowId = "";
+      }
+    }
+  }
+
+  function onBasicAccListDragLeave(ev: DragEvent): void {
+    if (!hasFilesDragType(ev)) {
+      return;
+    }
+    const rel = ev.relatedTarget as Node | null;
+    const root = basicAcclistEl;
+    if (!root || rel === null || !root.contains(rel)) {
+      fileDragHoverRowId = "";
+    }
+  }
+
+  async function basicPlatformFileDropIntercept(paths: string[]): Promise<boolean> {
+    const img = firstProfileImagePath(paths);
+    if (!img || !name) {
+      return false;
+    }
+    try {
+      if (accImagePick.open && accImagePick.uniqueId.trim()) {
+        const target = accImagePick.uniqueId.trim();
+        await BasicService.ChangeAccountImage(name, target, img);
+        await loadAccounts();
+        bumpBasicAvatarEpoch(target);
+        pushToast({
+          type: "success",
+          message: get(t)("Toast_AccountSaved"),
+          duration: 3000,
+        });
+        closeImagePick();
+        return true;
+      }
+      const hover = fileDragHoverRowId.trim();
+      if (hover) {
+        await BasicService.ChangeAccountImage(name, hover, img);
+        await loadAccounts();
+        bumpBasicAvatarEpoch(hover);
+        pushToast({
+          type: "success",
+          message: get(t)("Toast_AccountSaved"),
+          duration: 3000,
+        });
+        fileDragHoverRowId = "";
+        return true;
+      }
+    } catch (e) {
+      pushToast({
+        type: "error",
+        message: formatToastWithError(get(t)("Toast_SaveFailed"), e),
+        duration: 8000,
+      });
+      return true;
+    }
+    return false;
+  }
+
   function applyBasicImagePatch(p: AccountImagePatch): void {
     const plat = String(p.platformKey ?? "").trim();
     const uid = String(p.uniqueId ?? "").trim();
@@ -109,14 +242,18 @@
         return r;
       }
       hit = true;
-      const nextUrl =
-        typeof p.imageUrl === "string" && p.imageUrl.trim() !== "" ? p.imageUrl.trim() : r.imageUrl;
+      const prevUrl = (r.imageUrl ?? "").trim();
+      // Allow explicit "" from backend/events (clear avatar); old logic kept stale URL whenever imageUrl was empty.
+      const nextUrl = p.imageUrl != null ? String(p.imageUrl).trim() : prevUrl;
       const nextPending =
         typeof p.avatarPending === "boolean" ? p.avatarPending : (r.avatarPending ?? false);
+      const nextManual =
+        typeof p.manualProfileImage === "boolean" ? p.manualProfileImage : (r.manualProfileImage ?? false);
       return {
         ...r,
         imageUrl: nextUrl,
         avatarPending: nextPending,
+        manualProfileImage: nextManual,
       } as BasicRow;
     });
     if (hit) {
@@ -176,6 +313,15 @@
     );
   }
 
+  /** Cache file is overwritten in place — public imageUrl often stays identical; bump so `{#key}` remounts `<img>`. */
+  function bumpBasicAvatarEpoch(uniqueId: string): void {
+    const uid = uniqueId.trim();
+    if (!uid) {
+      return;
+    }
+    basicAvatarEpoch = { ...basicAvatarEpoch, [uid]: (basicAvatarEpoch[uid] ?? 0) + 1 };
+  }
+
   async function loadTagDefs(): Promise<void> {
     try {
       const rows = await BasicService.ListTagDefinitions(name);
@@ -191,8 +337,27 @@
 
   async function loadAccounts(): Promise<void> {
     loadError = "";
+    const prevById = new Map(accounts.map((a) => [a.uniqueId, a]));
     try {
       const rows = (await BasicService.GetAccounts(name)) as BasicRow[];
+      let nextEpoch = { ...basicAvatarEpoch };
+      for (const r of rows) {
+        const prev = prevById.get(r.uniqueId);
+        const nw = (r.imageUrl ?? "").trim();
+        const pv = prev ? (prev.imageUrl ?? "").trim() : undefined;
+        let bump = pv !== undefined && pv !== nw;
+        if (
+          prev &&
+          ((prev.manualProfileImage ?? false) !== (r.manualProfileImage ?? false) ||
+            (prev.avatarPending ?? false) !== (r.avatarPending ?? false))
+        ) {
+          bump = true;
+        }
+        if (bump) {
+          nextEpoch[r.uniqueId] = (nextEpoch[r.uniqueId] ?? 0) + 1;
+        }
+      }
+      basicAvatarEpoch = nextEpoch;
       accounts = rows;
       accountIds = rows.map((r) => r.uniqueId);
       const liveRow = rows.find((r) => r.currentSession);
@@ -243,6 +408,11 @@
       return;
     }
     if (get(activeModal)) {
+      return;
+    }
+    if (accImagePick.open) {
+      e.preventDefault();
+      closeImagePick();
       return;
     }
     clearSelection();
@@ -299,7 +469,10 @@
     BasicService.SaveAccountOrder(name, ids).catch(() => {});
   }
 
-  function buildBasicAccountRows(q: string): SearchResultRow[] {
+  function buildBasicAccountRows(
+    q: string,
+    epochs: Record<string, number>,
+  ): SearchResultRow[] {
     const tr = get(t);
     const trimmed = q.trim();
     const hay = (acc: BasicRow) => {
@@ -316,7 +489,10 @@
       badge: tr("Search_Section_Account"),
       accountIconUrl: offlineSafeImageSrc(
         get(offlineMode),
-        a.imageUrl && !(a as { avatarPending?: boolean }).avatarPending ? a.imageUrl : undefined,
+        withAssetCacheBust(
+          a.imageUrl && !(a as { avatarPending?: boolean }).avatarPending ? a.imageUrl : undefined,
+          epochs[a.uniqueId] ?? 0,
+        ),
         PROFILE_FALLBACK,
       ),
     }));
@@ -565,36 +741,51 @@
             }
           },
         },
-        {
-          label: tr("Context_ChangeImage"),
-          action: async () => {
-            const path = await openPrompt({
-              title: tr("Context_ChangeImage"),
-              body: "",
-              positiveLabel: tr("Ok"),
-              negativeLabel: tr("Button_Cancel"),
-              initialValue: "",
-            });
-            if (path === null || !String(path).trim()) {
-              return;
-            }
-            try {
-              await BasicService.ChangeAccountImage(name, rowId, String(path).trim());
-              await loadAccounts();
-              pushToast({
-                type: "success",
-                message: tr("Toast_AccountSaved"),
-                duration: 3000,
-              });
-            } catch (e) {
-              pushToast({
-                type: "error",
-                message: formatToastWithError(tr("Toast_SaveFailed"), e),
-                duration: 8000,
-              });
-            }
-          },
-        },
+        (() => {
+          const imgUrl = (acc?.imageUrl ?? "").trim();
+          const manual = !!acc?.manualProfileImage;
+          const openPick = () => {
+            selectedUniqueId = rowId;
+            touchStatus();
+            openImagePick(rowId);
+          };
+          if (!imgUrl || !manual) {
+            return {
+              label: tr("Context_ChangeImage"),
+              action: openPick,
+            };
+          }
+          return {
+            label: tr("Context_ChangeImage"),
+            action: openPick,
+            children: [
+              {
+                label: tr("Context_ChooseProfileImage"),
+                action: openPick,
+              },
+              {
+                label: tr("Context_RemoveProfileImage"),
+                action: async () => {
+                  try {
+                    await BasicService.ClearManualAccountProfileImage(name, rowId);
+                    scheduleAccountsRefresh();
+                    pushToast({
+                      type: "success",
+                      message: tr("Toast_AccountSaved"),
+                      duration: 3000,
+                    });
+                  } catch (e) {
+                    pushToast({
+                      type: "error",
+                      message: formatToastWithError(tr("Toast_SaveFailed"), e),
+                      duration: 8000,
+                    });
+                  }
+                },
+              },
+            ],
+          };
+        })(),
         {
           label: tr("Forget"),
           action: async () => {
@@ -727,6 +918,7 @@
         /* ignore */
       }
     })();
+    fileDropInterceptor.set(basicPlatformFileDropIntercept);
   });
 
   onDestroy(() => {
@@ -739,6 +931,8 @@
     offSort?.();
     offAccountsRefresh?.();
     offBasicImageEvent?.();
+    accountProfileImageDropActive.set(false);
+    fileDropInterceptor.set(null);
     platformAccountsRefresh.set({ seq: 0, platformKey: "" });
     platformExeIconUrl.set("");
     actionBarStatus.set("");
@@ -767,7 +961,12 @@
       {/if}
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <!-- svelte-ignore a11y-no-static-element-interactions -->
-      <div class="steam-acclist" bind:this={basicAcclistEl} on:click={onAccountsAreaClick}>
+      <div
+        class="steam-acclist"
+        bind:this={basicAcclistEl}
+        on:click={onAccountsAreaClick}
+        on:dragleave={onBasicAccListDragLeave}
+      >
         {#if tagDefs.length > 0}
           <TagFilterBar label={tagFilterBarLabel} onClick={onTagFilterBarClick} />
         {/if}
@@ -800,6 +999,10 @@
                 for={radioId}
                 class="acc"
                 class:currentAcc={acc?.currentSession}
+                class:acc--profile-drop-target={$accountProfileImageDropActive && !accImagePick.open}
+                class:acc--drop-target={fileDragHoverRowId === rid}
+                on:dragover={(e) => onBasicAccDragOver(e, rid)}
+                on:dragleave={(e) => onBasicAccDragLeave(e, rid)}
                 use:ctxMenuAction={{
                   items: basicCtxMenu(rid),
                   beforeOpen: () => {
@@ -823,11 +1026,33 @@
                   void swapToLogin();
                 }}
               >
+                {#if $accountProfileImageDropActive && !accImagePick.open}
+                  <div
+                    class="acc_profile_drop_overlay"
+                    class:acc_profile_drop_overlay--hover={fileDragHoverRowId === rid}
+                    aria-hidden="true"
+                  >
+                    <div class="acc_profile_drop_overlay__center">
+                      <div class="acc_profile_drop_overlay__icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                          ><path
+                            fill="currentColor"
+                            d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"
+                          /></svg
+                        >
+                      </div>
+                      <span class="acc_profile_drop_overlay__label">{$t("Drop_SetAccountIcon")}</span>
+                    </div>
+                  </div>
+                {/if}
                 {#key `${rid}:${basicAvatarEpoch[rid] ?? 0}`}
                   <img
                     src={offlineSafeImageSrc(
                       $offlineMode,
-                      acc?.imageUrl && !acc?.avatarPending ? acc.imageUrl : undefined,
+                      withAssetCacheBust(
+                        acc?.imageUrl && !acc?.avatarPending ? acc.imageUrl : undefined,
+                        basicAvatarEpoch[rid] ?? 0,
+                      ),
                       PROFILE_FALLBACK,
                     )}
                     alt=""
@@ -851,6 +1076,14 @@
       </div>
     </div>
     </div>
+    <AccountImagePickOverlay
+      bind:open={accImagePick.open}
+      accountDisplayName={accImagePick.displayName}
+      showRemoveButton={accImagePick.manual}
+      onClose={closeImagePick}
+      onApplyPath={applyImageFromOverlay}
+      onRemoveManual={removeImageFromOverlay}
+    />
   {/if}
 </div>
 <svelte:window on:keydown={onWindowKeyDown} />

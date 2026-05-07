@@ -22,6 +22,7 @@
   import { formatToastWithError, formatWailsError } from "../lib/formatWailsError";
   import { reportLaunchFailure } from "../lib/adminFlow";
   import { fileDropAcceptor, type FileDropAcceptor } from "../stores/fileDropTarget";
+  import { pathsAreOnlyProfileMedia } from "../lib/profileImageDrop";
   import { offlineMode, offlineSafeImageSrc } from "../stores/offlineMode";
   import {
     insertionIndexExternalDrag,
@@ -769,6 +770,9 @@
         });
       } catch (e: unknown) {
         if (isNoShortcutFilesDrop(e)) {
+          if (pathsAreOnlyProfileMedia(paths)) {
+            return;
+          }
           pushToast({
             type: "warning",
             message: tr("Toast_ShortcutImportUnsupported"),

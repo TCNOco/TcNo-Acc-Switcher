@@ -3,6 +3,9 @@
   import { get } from "svelte/store";
   import { Events } from "@wailsio/runtime";
   import { fileDropAcceptor } from "../stores/fileDropTarget";
+  import { fileDropInterceptor } from "../stores/fileDropInterceptor";
+  import { accountProfileImageDropActive } from "../stores/accountProfileImageDropUi";
+  import { shouldUseAccountProfileRowDropCue } from "../lib/profileImageDrop";
   import { t } from "../stores/i18n";
 
   const FILES_DROPPED = "files-dropped";
@@ -11,7 +14,7 @@
   let offFilesDropped: (() => void) | undefined;
 
   $: acc = $fileDropAcceptor;
-  $: visible = overlayActive && acc !== null;
+  $: visible = overlayActive && acc !== null && !$accountProfileImageDropActive;
   $: syncDropTargetAttribute(acc !== null);
 
   function syncDropTargetAttribute(enabled: boolean): void {
@@ -33,14 +36,31 @@
     return Array.from(types as unknown as Iterable<string>).includes("Files");
   }
 
+  function dropHandlersActive(): boolean {
+    return get(fileDropAcceptor) !== null || get(fileDropInterceptor) !== null;
+  }
+
+  function clearAccountProfileDropUi(): void {
+    accountProfileImageDropActive.set(false);
+    overlayActive = false;
+  }
+
   function onDragEnter(e: DragEvent): void {
-    if (!hasFilesType(e) || !get(fileDropAcceptor)) {
+    if (!hasFilesType(e) || !dropHandlersActive()) {
       return;
     }
     e.preventDefault();
     const rel = e.relatedTarget as Node | null;
     if (rel === null || !document.documentElement.contains(rel)) {
-      overlayActive = true;
+      const rowCue =
+        get(fileDropInterceptor) !== null && shouldUseAccountProfileRowDropCue(e.dataTransfer);
+      if (rowCue) {
+        accountProfileImageDropActive.set(true);
+        overlayActive = false;
+      } else {
+        accountProfileImageDropActive.set(false);
+        overlayActive = true;
+      }
     }
   }
 
@@ -51,12 +71,12 @@
     e.preventDefault();
     const rel = e.relatedTarget as Node | null;
     if (rel === null || !document.documentElement.contains(rel)) {
-      overlayActive = false;
+      clearAccountProfileDropUi();
     }
   }
 
   function onDragOver(e: DragEvent): void {
-    if (!hasFilesType(e) || !get(fileDropAcceptor)) {
+    if (!hasFilesType(e) || !dropHandlersActive()) {
       return;
     }
     e.preventDefault();
@@ -69,7 +89,7 @@
     if (hasFilesType(e)) {
       e.preventDefault();
     }
-    overlayActive = false;
+    clearAccountProfileDropUi();
   }
 
   function normalizePaths(data: unknown): string[] {
@@ -87,9 +107,23 @@
 
     offFilesDropped = Events.On(FILES_DROPPED, async (ev) => {
       const paths = normalizePaths(ev.data);
+      accountProfileImageDropActive.set(false);
       overlayActive = false;
+      if (paths.length === 0) {
+        return;
+      }
+      const intercept = get(fileDropInterceptor);
+      if (intercept) {
+        try {
+          if (await intercept(paths)) {
+            return;
+          }
+        } catch {
+          /* interceptor failed — fall through to shortcuts */
+        }
+      }
       const acceptor = get(fileDropAcceptor);
-      if (!acceptor || paths.length === 0) {
+      if (!acceptor) {
         return;
       }
       await acceptor.handle(paths);
@@ -121,71 +155,3 @@
     </div>
   </div>
 {/if}
-
-<style lang="scss">
-  .fileDropOverlay {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    box-sizing: border-box;
-    margin: 0;
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(30, 100, 200, 0.22);
-    backdrop-filter: blur(2px);
-    pointer-events: none;
-    animation: fileDropOverlayIn 0.18s ease-out;
-  }
-
-  @keyframes fileDropOverlayIn {
-    from {
-      opacity: 0;
-      transform: scale(0.985);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-
-  .fileDropOverlay__inner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    padding: 2rem 2.5rem;
-    max-width: min(420px, 90vw);
-    border: 2px dashed rgba(120, 190, 255, 0.65);
-    border-radius: 12px;
-    background: rgba(10, 20, 40, 0.45);
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.35);
-  }
-
-  .fileDropOverlay__icon {
-    color: rgba(160, 210, 255, 0.95);
-    width: 4.5rem;
-    height: 4.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    svg {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-  }
-
-  .fileDropOverlay__text {
-    margin: 0;
-    text-align: center;
-    font-size: 1.15rem;
-    font-weight: 600;
-    line-height: 1.35;
-    color: var(--white, #f8f8f2);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-  }
-</style>

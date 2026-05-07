@@ -13,7 +13,7 @@ import (
 	"github.com/go-ole/go-ole/oleutil"
 )
 
-// WriteShortcutLnk creates a Windows shell shortcut via WScript.Shell COM (no PowerShell).
+// WriteShortcutLnk creates a Windows shell shortcut via WScript.Shell COM.
 func WriteShortcutLnk(shortcutPath, targetExe, arguments, workingDir, description, iconLocation string) error {
 	shortcutPath = filepath.Clean(shortcutPath)
 	targetExe = strings.TrimSpace(targetExe)

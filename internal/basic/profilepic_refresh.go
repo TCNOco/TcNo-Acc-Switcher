@@ -20,10 +20,11 @@ const AccountImageUpdatedEvent = "basic-account-image-updated"
 
 // AccountImagePatch updates one row on the generic platform account list.
 type AccountImagePatch struct {
-	PlatformKey   string `json:"platformKey"`
-	UniqueID      string `json:"uniqueId"`
-	ImageURL      string `json:"imageUrl"`
-	AvatarPending bool   `json:"avatarPending"`
+	PlatformKey        string `json:"platformKey"`
+	UniqueID           string `json:"uniqueId"`
+	ImageURL           string `json:"imageUrl"`
+	AvatarPending      bool   `json:"avatarPending"`
+	ManualProfileImage bool   `json:"manualProfileImage"`
 }
 
 var basicProfileImgLog = slog.Default().With("component", "basic-profile-image")
@@ -69,6 +70,9 @@ func (b *BasicService) RefreshAllBasicProfileImages(platformKey string) error {
 		if uid == "" {
 			continue
 		}
+		if profileimage.HasManualProfileMarker(platformKey, uid) {
+			continue
+		}
 		_ = profileimage.DeleteCached(platformKey, uid)
 	}
 	go b.runProfileImageRefresh(platformKey)
@@ -91,7 +95,7 @@ func (b *BasicService) RefreshSavedBasicProfileImages(platformKey string) error 
 	if platformKey == "" || !platformProfileImagesSavedPerAccount(platformKey) {
 		return nil
 	}
-	if err := profileimage.DeletePlatformCached(platformKey); err != nil {
+	if err := profileimage.DeleteAutomatedProfileCaches(platformKey); err != nil {
 		return err
 	}
 	f, err := readIdsFile(platformKey)
@@ -215,11 +219,27 @@ func (b *BasicService) runProfileImageRefresh(platformKey string) {
 			_ = sem.Acquire(ctx, 1)
 			defer sem.Release(1)
 
+			if profileimage.HasManualProfileMarker(platformKey, uid) {
+				u, _ := profileimage.FindCached(platformKey, uid)
+				emitAccountImagePatch(AccountImagePatch{
+					PlatformKey:        platformKey,
+					UniqueID:           uid,
+					ImageURL:           u,
+					AvatarPending:      false,
+					ManualProfileImage: true,
+				})
+				return
+			}
+
 			ctx2 := platform.PathTokenContext{PlatformFolder: folder, UniqueID: uid}
 			url, err := profilePicPathResolved(tpl, folder, ctx2)
 			if err != nil || strings.TrimSpace(url) == "" || !remoteProfilePicTemplate(url) {
 				emitAccountImagePatch(AccountImagePatch{
-					PlatformKey: platformKey, UniqueID: uid, ImageURL: "", AvatarPending: false,
+					PlatformKey:        platformKey,
+					UniqueID:           uid,
+					ImageURL:           "",
+					AvatarPending:      false,
+					ManualProfileImage: profileimage.HasManualProfileMarker(platformKey, uid),
 				})
 				return
 			}
@@ -234,6 +254,7 @@ func (b *BasicService) runProfileImageRefresh(platformKey string) {
 			} else if u, ok := profileimage.FindCached(platformKey, uid); ok {
 				patch.ImageURL = u
 			}
+			patch.ManualProfileImage = profileimage.HasManualProfileMarker(platformKey, uid)
 			emitAccountImagePatch(patch)
 		}()
 	}
@@ -253,6 +274,9 @@ func (b *BasicService) queueMissingSavedProfileImages(platformKey string) {
 			continue
 		}
 		if _, ok := profileimage.FindCached(platformKey, uid); ok {
+			continue
+		}
+		if profileimage.HasManualProfileMarker(platformKey, uid) {
 			continue
 		}
 		src, ok, err := platformProfileImageSourceFromSavedAccount(platformKey, accountName)

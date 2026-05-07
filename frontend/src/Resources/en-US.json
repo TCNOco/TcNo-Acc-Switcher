@@ -265,6 +265,7 @@
   "Toast_ShortcutImportUnsupported": "Only .lnk and .url files can be dropped here",
   "Toast_ShortcutImportFailed": "Could not import shortcut",
   "DropOverlay_CopyShortcut": "Drop to copy shortcut",
+  "Drop_SetAccountIcon": "Set icon",
   "Toast_SettingsCopied": "Settings successfully copied to current account.",
   "Toast_GameDataRestored": "Successfully restored game data for this account.",
   "Toast_NoValidSteamId": "Unable to find a valid Steam ID.",
@@ -404,6 +405,11 @@
   "Context_CreateShortcut_SwapTo": "Create Shortcut (& Swap to {name})",
   "Context_CreateShortcut_SelectAccount": "Create Shortcut (Select an account first)",
   "Context_ChangeImage": "Change image",
+  "Context_ChooseProfileImage": "Choose image",
+  "Context_RemoveProfileImage": "Remove image",
+  "Overlay_ProfileImageTitle": "Set account image",
+  "Overlay_ProfileImageHint": "Please drag and drop an image file for the account: {name}, or click below to select one.",
+  "Overlay_ProfileImageClickToBrowse": "Click to open file picker",
   "Context_ChangeName": "Change switcher name",
   "Context_LoginAsSubmenu": "Login as",
   "Context_UsernameSubmenu": "Username",
@@ -611,5 +617,10 @@
   "Preview_Accounts": "Accounts preview",
   "Preview_Notifications": "Toast notifications preview",
   "Preview_Settings": "Settings preview",
-  "Preview_Modals": "Modals preview"
+  "Preview_Modals": "Modals preview",
+  "Preview_OverlayDropReceivers": "File drop overlays",
+  "Settings_PreviewOverlayDropReceivers": "Fullscreen receivers and per-account cues shown while dragging profile images or shortcuts. Static previews below match those states.",
+  "Preview_AccountDropOnRows": "Account rows (profile image drop)",
+  "Preview_AccountDropRowNormal": "Normal row",
+  "Preview_AccountDropRowDragHover": "Drop receiver (row hover)"
 }

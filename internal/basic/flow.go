@@ -612,21 +612,7 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 	syncBasicTrayKnownAccounts(platformKey, ids)
 
 	platform.EmitActionBarStatusI18n("Status_HandlingImage")
-	if platformProfileImagesSavedPerAccount(platformKey) {
-		if src, ok, err := platformProfileImageSourceFromSavedAccount(platformKey, accountName); err == nil && ok {
-			if strings.TrimSpace(src.LocalPath) != "" {
-				queueProfileImageLocalCache(platformKey, uid, src.LocalPath)
-				return nil
-			}
-			if strings.TrimSpace(src.RemoteURL) != "" {
-				queueProfileImageDownload(platformKey, uid, src.RemoteURL, 0)
-				return nil
-			}
-			// Cached account files are preferred, but if no avatar was found there,
-			// fall back to the live platform files (e.g. %Documents%) as a secondary source.
-		}
-	}
-	return saveProfileImage(d, platformKey, folder, uid, ctx)
+	return queueAutomatedProfileImage(platformKey, uid, accountName, d, folder)
 }
 
 func ensureUniqueIDOnSave(platformKey string, d platform.Descriptor, ctx platform.PathTokenContext) (string, error) {

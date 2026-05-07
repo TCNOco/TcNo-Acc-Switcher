@@ -39,6 +39,7 @@ type AccountDTO struct {
 	DisplayName    string          `json:"displayName"`
 	ImageURL       string          `json:"imageUrl"`
 	AvatarPending  bool            `json:"avatarPending"`
+	ManualProfileImage bool `json:"manualProfileImage"`
 	Note           string          `json:"note"`
 	CurrentSession bool            `json:"currentSession"`
 	LastUsed       string          `json:"lastUsed"`
@@ -117,7 +118,9 @@ func (b *BasicService) GetAccounts(platformKey string) ([]AccountDTO, error) {
 			img = u
 		}
 		if remoteProfilePics {
-			if p, ok := profileimage.CachedFilePath(platformKey, uid); ok {
+			if profileimage.HasManualProfileMarker(platformKey, uid) {
+				pending = false
+			} else if p, ok := profileimage.CachedFilePath(platformKey, uid); ok {
 				pending = profileimage.FileOlderThanDays(p, maxAge)
 			} else {
 				pending = true
@@ -133,6 +136,7 @@ func (b *BasicService) GetAccounts(platformKey string) ([]AccountDTO, error) {
 			DisplayName:    name,
 			ImageURL:       img,
 			AvatarPending:  pending,
+			ManualProfileImage: profileimage.HasManualProfileMarker(platformKey, uid),
 			Note:           note,
 			CurrentSession: liveUID != "" && strings.EqualFold(liveUID, uid),
 			LastUsed:       lu,
@@ -319,7 +323,47 @@ func (b *BasicService) RenameAccount(platformKey, uniqueID, newName string) erro
 func (b *BasicService) ChangeAccountImage(platformKey, uniqueID, sourcePath string) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
-	return profileimage.CacheLocalFile(strings.TrimSpace(platformKey), strings.TrimSpace(uniqueID), strings.TrimSpace(sourcePath))
+	platformKey = strings.TrimSpace(platformKey)
+	uniqueID = strings.TrimSpace(uniqueID)
+	sourcePath = strings.TrimSpace(sourcePath)
+	if platformKey == "" || uniqueID == "" || sourcePath == "" {
+		return fmt.Errorf("invalid change image parameters")
+	}
+	// Lock manual marker before writing bytes so concurrent basic profile refresh cannot download/copy
+	// over the avatar during the gap where DeleteCached (old behavior) stripped the sentinel (Rockstar/EA/Ubisoft).
+	if err := profileimage.WriteManualProfileMarker(platformKey, uniqueID); err != nil {
+		return err
+	}
+	if err := profileimage.CacheLocalFileForUser(platformKey, uniqueID, sourcePath); err != nil {
+		_ = profileimage.ClearManualProfileMarker(platformKey, uniqueID)
+		return err
+	}
+	return nil
+}
+
+// ClearManualAccountProfileImage removes a user-set avatar and allows automated images again for this account.
+func (b *BasicService) ClearManualAccountProfileImage(platformKey, uniqueID string) error {
+	platformKey = strings.TrimSpace(platformKey)
+	uniqueID = strings.TrimSpace(uniqueID)
+	b.mu.Lock()
+	err := profileimage.DeleteCached(platformKey, uniqueID)
+	var accountName string
+	if err == nil {
+		if f, ferr := readIdsFile(platformKey); ferr == nil {
+			accountName = strings.TrimSpace(f.IDs[uniqueID])
+		}
+	}
+	d, _, derr := readDescriptor(platformKey)
+	folder, _ := resolveExeFolder(b.deps(), platformKey)
+	b.mu.Unlock()
+	if err != nil {
+		return err
+	}
+	if derr == nil {
+		_ = queueAutomatedProfileImage(platformKey, uniqueID, accountName, d, folder)
+	}
+	b.StartBasicProfileImageRefresh(platformKey)
+	return nil
 }
 
 func (b *BasicService) GetAccountNote(platformKey, uniqueID string) (string, error) {

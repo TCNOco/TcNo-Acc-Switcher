@@ -60,6 +60,9 @@ type AccountDTO struct {
 	CurrentSession bool `json:"currentSession"`
 
 	Tags []basic.AccountTagDTO `json:"tags"`
+
+	// ManualProfileImage: user-set avatar not replaced by refresh until removed.
+	ManualProfileImage bool `json:"manualProfileImage"`
 }
 
 type AccountPatch struct {
@@ -71,6 +74,8 @@ type AccountPatch struct {
 
 	AvatarPending bool `json:"avatarPending"`
 	MetaPending   bool `json:"metaPending"`
+
+	ManualProfileImage bool `json:"manualProfileImage,omitempty"`
 
 	DisplayName string `json:"displayName,omitempty"`
 
@@ -200,12 +205,17 @@ func (s *SteamService) GetSteamAccounts() ([]AccountDTO, error) {
 		clearExpiredSteamProfileAssets(u.SteamID64, st.SteamImageExpiryTime)
 		v := vm[u.SteamID64]
 		imgURL, hasImg := profileimage.FindCached(PlatformKey, u.SteamID64)
+		isManualAvatar := profileimage.HasManualProfileMarker(PlatformKey, u.SteamID64)
 		var avatarPending bool
 		if effectiveCollect {
 			if !hasImg {
 				avatarPending = true
 			} else if p, ok := profileimage.CachedFilePath(PlatformKey, u.SteamID64); ok {
-				avatarPending = profileimage.FileOlderThanDays(p, st.SteamImageExpiryTime)
+				if isManualAvatar {
+					avatarPending = false
+				} else {
+					avatarPending = profileimage.FileOlderThanDays(p, st.SteamImageExpiryTime)
+				}
 			}
 		}
 		_, vacCached := vacKnown[u.SteamID64]
@@ -216,7 +226,7 @@ func (s *SteamService) GetSteamAccounts() ([]AccountDTO, error) {
 			note = st.AccountNotes[u.SteamID64]
 		}
 
-		miniHTML := ReadCachedMiniprofileHTML(u.SteamID64)
+		miniHTML := ApplySteamManualAvatarMiniprofile(ReadCachedMiniprofileHTML(u.SteamID64), u.SteamID64)
 		frameURL := ""
 		if fu, ok := profileimage.FindCached(PlatformKey, u.SteamID64+"_frame"); ok {
 			frameURL = fu
@@ -245,9 +255,10 @@ func (s *SteamService) GetSteamAccounts() ([]AccountDTO, error) {
 			AvatarFrameURL:  frameURL,
 			MiniProfileHTML: miniHTML,
 			ShowMiniProfile: st.SteamShowMiniProfile,
-			ShowAvatarFrame: st.SteamShowAvatarFrame,
-			CurrentSession:  activeSteamID != "" && u.SteamID64 == activeSteamID,
-			Tags:            tagByUID[u.SteamID64],
+			ShowAvatarFrame:    st.SteamShowAvatarFrame,
+			CurrentSession:     activeSteamID != "" && u.SteamID64 == activeSteamID,
+			Tags:               tagByUID[u.SteamID64],
+			ManualProfileImage: isManualAvatar,
 		}
 		out = append(out, dto)
 	}
@@ -341,8 +352,7 @@ func (s *SteamService) RefreshAllSteamImages() error {
 	if err != nil {
 		return err
 	}
-	entries, err := os.ReadDir(dir)
-	if err != nil {
+	if _, err := os.ReadDir(dir); err != nil {
 		if os.IsNotExist(err) {
 			if err := os.MkdirAll(dir, 0o755); err != nil {
 				return err
@@ -352,11 +362,8 @@ func (s *SteamService) RefreshAllSteamImages() error {
 		}
 		return err
 	}
-	for _, e := range entries {
-		if e.IsDir() {
-			continue
-		}
-		_ = os.Remove(filepath.Join(dir, e.Name()))
+	if err := profileimage.DeleteAutomatedProfileCaches(PlatformKey); err != nil {
+		return err
 	}
 	s.StartSteamProfileRefresh()
 	return nil
@@ -371,6 +378,9 @@ func clearExpiredSteamProfileAssets(steamID64 string, maxAgeDays int) {
 	}
 	removed := deleteMiniprofileCacheIfOlder(steamID64, maxAgeDays)
 	for _, id := range ids {
+		if id == steamID64 && profileimage.HasManualProfileMarker(PlatformKey, steamID64) {
+			continue
+		}
 		if p, ok := profileimage.CachedFilePath(PlatformKey, id); ok && profileimage.FileOlderThanDays(p, maxAgeDays) {
 			_ = profileimage.DeleteCached(PlatformKey, id)
 			removed = true
@@ -581,6 +591,16 @@ func (s *SteamService) runProfileRefresh() {
 				}
 			}
 
+			if profileimage.HasManualProfileMarker(PlatformKey, u.SteamID64) {
+				if cachedURL, hit := profileimage.FindCached(PlatformKey, u.SteamID64); hit {
+					patch.ImageURL = cachedURL
+					patch.AvatarPending = false
+					patch.Error = ""
+					s.emit(patch)
+					return
+				}
+			}
+
 			patch.AvatarPending = true
 			s.emit(patch)
 
@@ -631,6 +651,11 @@ func (s *SteamService) emit(p AccountPatch) {
 		steamLog.Warn("emit steam-account-updated skipped: application not ready",
 			slog.String("steamId", tailSteamID(p.SteamID64)))
 		return
+	}
+	id := strings.TrimSpace(p.SteamID64)
+	if id != "" {
+		p.ManualProfileImage = profileimage.HasManualProfileMarker(PlatformKey, id)
+		p.MiniProfileHTML = ApplySteamManualAvatarMiniprofile(p.MiniProfileHTML, id)
 	}
 	app.Event.Emit(AccountUpdatedEvent, p)
 }
@@ -771,5 +796,34 @@ func (s *SteamService) LoginAndLaunchGame(steamID64 string, personaState int, ap
 }
 
 func (s *SteamService) ChangeAccountImage(steamID64, sourcePath string) error {
-	return profileimage.CacheLocalFile(PlatformKey, strings.TrimSpace(steamID64), strings.TrimSpace(sourcePath))
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	steamID64 = strings.TrimSpace(steamID64)
+	sourcePath = strings.TrimSpace(sourcePath)
+	if steamID64 == "" || sourcePath == "" {
+		return errors.New("invalid change image parameters")
+	}
+	if err := profileimage.WriteManualProfileMarker(PlatformKey, steamID64); err != nil {
+		return err
+	}
+	if err := profileimage.CacheLocalFileForUser(PlatformKey, steamID64, sourcePath); err != nil {
+		_ = profileimage.ClearManualProfileMarker(PlatformKey, steamID64)
+		return err
+	}
+	return nil
+}
+
+// ClearManualAccountProfileImage removes a user-set Steam avatar so automated images apply again.
+func (s *SteamService) ClearManualAccountProfileImage(steamID64 string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	steamID64 = strings.TrimSpace(steamID64)
+	if steamID64 == "" {
+		return errors.New("empty steam id")
+	}
+	if err := profileimage.DeleteCached(PlatformKey, steamID64); err != nil {
+		return err
+	}
+	s.StartSteamProfileRefresh()
+	return nil
 }

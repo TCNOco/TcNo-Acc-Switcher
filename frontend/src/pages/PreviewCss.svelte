@@ -482,6 +482,111 @@
     </div>
   </div>
 
+  <h2 class="SettingsHeader">{$t("Preview_OverlayDropReceivers")}</h2>
+  <div class="preview_element preview-overlay-drop-block">
+    <p class="preview-overlay-drop-intro">{$t("Settings_PreviewOverlayDropReceivers")}</p>
+    <div class="preview-overlay-drop-grid">
+      <figure class="preview-overlay-drop-cell">
+        <figcaption class="preview-overlay-drop-caption">{$t("Overlay_ProfileImageTitle")}</figcaption>
+        <div class="acc-img-overlay acc-img-overlay--preview" role="presentation">
+          <span class="acc-img-overlay__x" aria-hidden="true">&times;</span>
+          <div class="acc-img-overlay__panel" role="dialog" aria-labelledby="pv-acc-img-overlay-title">
+            <h2 id="pv-acc-img-overlay-title" class="acc-img-overlay__title">
+              {$t("Overlay_ProfileImageTitle")}
+            </h2>
+            <p class="acc-img-overlay__hint">
+              {$t("Overlay_ProfileImageHint", { name: pvAccounts["pv-1"].name })}
+            </p>
+            <div class="acc-img-overlay__dropzone">
+              <span class="acc-img-overlay__dropicon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48"
+                  ><path fill="currentColor" d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z" /></svg
+                >
+              </span>
+              <span class="acc-img-overlay__cta">{$t("Overlay_ProfileImageClickToBrowse")}</span>
+            </div>
+            <div class="acc-img-overlay__remove">{$t("Context_RemoveProfileImage")}</div>
+          </div>
+        </div>
+      </figure>
+      <figure class="preview-overlay-drop-cell">
+        <figcaption class="preview-overlay-drop-caption">{$t("DropOverlay_CopyShortcut")}</figcaption>
+        <div class="fileDropOverlay fileDropOverlay--preview" aria-hidden="true">
+          <div class="fileDropOverlay__inner">
+            <div class="fileDropOverlay__icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"
+                ><path
+                  fill="currentColor"
+                  d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"
+                /></svg
+              >
+            </div>
+            <p class="fileDropOverlay__text">{$t("DropOverlay_CopyShortcut")}</p>
+          </div>
+        </div>
+      </figure>
+    </div>
+
+    <h3 class="SettingsHeader preview-overlay-drop-subhead">{$t("Preview_AccountDropOnRows")}</h3>
+    <div class="preview-overlay-drop-grid">
+      <figure class="preview-overlay-drop-cell preview-overlay-drop-cell--accrow">
+        <figcaption class="preview-overlay-drop-caption">{$t("Preview_AccountDropRowNormal")}</figcaption>
+        <div class="preview-overlay-accrow-host" role="presentation">
+          <div class="acc_list_item_inner preview_list_item">
+            <input
+              type="radio"
+              class="acc"
+              id="pv-acc-drop-normal"
+              name="pv-acc-drop-row-a"
+              value="normal"
+              tabindex="-1"
+            />
+            <label for="pv-acc-drop-normal" class="acc">
+              <img src="/img/BasicDefault.webp" alt="" draggable="false" />
+              <h6>{pvAccounts["pv-2"].name}</h6>
+              <p class="streamerCensor steamId">{pvAccounts["pv-2"].steamId}</p>
+              <p>{pvAccounts["pv-2"].when}</p>
+            </label>
+          </div>
+        </div>
+      </figure>
+      <figure class="preview-overlay-drop-cell preview-overlay-drop-cell--accrow">
+        <figcaption class="preview-overlay-drop-caption">{$t("Preview_AccountDropRowDragHover")}</figcaption>
+        <div class="preview-overlay-accrow-host" role="presentation">
+          <div class="acc_list_item_inner preview_list_item">
+            <input
+              type="radio"
+              class="acc"
+              id="pv-acc-drop-hover"
+              name="pv-acc-drop-row-b"
+              value="hover"
+              tabindex="-1"
+            />
+            <label for="pv-acc-drop-hover" class="acc acc--profile-drop-target acc--drop-target">
+              <div class="acc_profile_drop_overlay acc_profile_drop_overlay--hover" aria-hidden="true">
+                <div class="acc_profile_drop_overlay__center">
+                  <div class="acc_profile_drop_overlay__icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                      ><path
+                        fill="currentColor"
+                        d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"
+                      /></svg
+                    >
+                  </div>
+                  <span class="acc_profile_drop_overlay__label">{$t("Drop_SetAccountIcon")}</span>
+                </div>
+              </div>
+              <img src="/img/BasicDefault.webp" alt="" draggable="false" />
+              <h6>{pvAccounts["pv-2"].name}</h6>
+              <p class="streamerCensor steamId">{pvAccounts["pv-2"].steamId}</p>
+              <p>{pvAccounts["pv-2"].when}</p>
+            </label>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </div>
+
   <h2 class="SettingsHeader">{$t("Preview_Notifications")}</h2>
   <div class="preview_element">
     <div class="preview-static-toast-host">
@@ -690,6 +795,57 @@
     margin: 0 0 1.25rem;
     color: var(--blackTernary, #a7abbe);
     line-height: 1.45;
+  }
+
+  .preview-overlay-drop-intro {
+    margin: 0 0 1rem;
+    color: var(--blackTernary, #a7abbe);
+    line-height: 1.45;
+    font-size: 0.95rem;
+  }
+
+  .preview-overlay-drop-grid {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  }
+
+  .preview-overlay-drop-cell {
+    margin: 0;
+    min-width: 0;
+    pointer-events: none;
+  }
+
+  .preview-overlay-drop-caption {
+    margin: 0 0 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--blackSecondary, #c8cbd9);
+  }
+
+  .preview-overlay-drop-subhead {
+    margin: 1.25rem 0 0.65rem;
+    font-size: 1.05rem;
+    border-bottom: none;
+  }
+
+  .preview-overlay-drop-cell--accrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .preview-overlay-accrow-host {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 0.35rem 0 0;
+    min-height: 148px;
+    width: 100%;
+  }
+
+  .preview-overlay-drop-block {
+    padding: 1em;
   }
 
   .preview_program_main {

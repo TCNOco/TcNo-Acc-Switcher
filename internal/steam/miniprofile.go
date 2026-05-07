@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"TcNo-Acc-Switcher/internal/fsutil"
@@ -652,4 +653,121 @@ func sanitizeSrcset(val string) string {
 		}
 	}
 	return strings.Join(kept, ", ")
+}
+
+// findFirstDivWithClass returns the first div under root whose class list contains token want.
+func findFirstDivWithClass(root *html.Node, want string) *html.Node {
+	var walk func(*html.Node) *html.Node
+	walk = func(n *html.Node) *html.Node {
+		if n.Type == html.ElementNode && strings.EqualFold(n.Data, "div") && classAttr(n, want) {
+			return n
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			if hit := walk(c); hit != nil {
+				return hit
+			}
+		}
+		return nil
+	}
+	return walk(root)
+}
+
+// findMiniprofileAvatarMountPoint locates the element that directly holds the profile picture
+// (still image or animated video) in Steam's miniprofile markup.
+func findMiniprofileAvatarMountPoint(root *html.Node) *html.Node {
+	if n := findFirstDivWithClass(root, "playerAvatarAutoSizeInner"); n != nil {
+		return n
+	}
+	if n := findFirstDivWithClass(root, "playersection_avatar"); n != nil {
+		if classAttr(n, "playersection_avatar_frame") {
+			return nil
+		}
+		return n
+	}
+	return nil
+}
+
+// ReplaceMiniprofileMainAvatar swaps the primary avatar media in sanitized miniprofile HTML for
+// publicAvatarURL (typically /img/profiles/steam/&lt;id&gt;.&lt;ext&gt;). Safe URLs only.
+func ReplaceMiniprofileMainAvatar(fragment, publicAvatarURL string) string {
+	publicAvatarURL = strings.TrimSpace(publicAvatarURL)
+	fragment = strings.TrimSpace(fragment)
+	if fragment == "" || publicAvatarURL == "" {
+		return fragment
+	}
+	if !isSafeSteamAssetURL(publicAvatarURL) {
+		return fragment
+	}
+
+	body, err := parseFragmentInBody(fragment)
+	if err != nil || body == nil {
+		return fragment
+	}
+
+	mount := findMiniprofileAvatarMountPoint(body)
+	if mount == nil {
+		return fragment
+	}
+
+	htmlRemoveAllChildren(mount)
+	htmlAppendChild(mount, &html.Node{
+		Type: html.ElementNode,
+		Data: "img",
+		Attr: []html.Attribute{
+			{Key: "class", Val: "avatar"},
+			{Key: "src", Val: publicAvatarURL},
+			{Key: "alt", Val: ""},
+		},
+	})
+
+	var buf bytes.Buffer
+	for c := body.FirstChild; c != nil; c = c.NextSibling {
+		if err := html.Render(&buf, c); err != nil {
+			return fragment
+		}
+	}
+	return sanitizeMiniprofileHTML(strings.TrimSpace(buf.String()))
+}
+
+func miniprofileAvatarURLWithModTimeBust(publicURL, steamID64 string) string {
+	publicURL = strings.TrimSpace(publicURL)
+	steamID64 = strings.TrimSpace(steamID64)
+	if publicURL == "" || steamID64 == "" {
+		return publicURL
+	}
+	p, ok := profileimage.CachedFilePath(PlatformKey, steamID64)
+	if !ok {
+		return publicURL
+	}
+	st, err := os.Stat(p)
+	if err != nil {
+		return publicURL
+	}
+	ms := st.ModTime().UnixMilli()
+	if ms <= 0 {
+		return publicURL
+	}
+	sep := "?"
+	if strings.Contains(publicURL, "?") {
+		sep = "&"
+	}
+	return publicURL + sep + "_tcv=" + strconv.FormatInt(ms, 10)
+}
+
+// ApplySteamManualAvatarMiniprofile replaces the miniprofile's main avatar with the locally cached
+// image when the account has a manual profile lock.
+func ApplySteamManualAvatarMiniprofile(fragment, steamID64 string) string {
+	steamID64 = strings.TrimSpace(steamID64)
+	if steamID64 == "" || strings.TrimSpace(fragment) == "" {
+		return fragment
+	}
+	if !profileimage.HasManualProfileMarker(PlatformKey, steamID64) {
+		return fragment
+	}
+	u, ok := profileimage.FindCached(PlatformKey, steamID64)
+	if !ok {
+		return fragment
+	}
+	u = miniprofileAvatarURLWithModTimeBust(u, steamID64)
+	return ReplaceMiniprofileMainAvatar(fragment, u)
 }

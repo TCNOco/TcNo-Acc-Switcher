@@ -2,6 +2,7 @@
   import { onDestroy, onMount } from "svelte";
   import { Events } from "@wailsio/runtime";
   import ActionBar from "../components/ActionBar.svelte";
+  import AccountImagePickOverlay from "../components/AccountImagePickOverlay.svelte";
   import ReorderPointerGrid from "../components/ReorderPointerGrid.svelte";
   import TagFilterBar from "../components/TagFilterBar.svelte";
   import AccountTagBubbles from "../components/AccountTagBubbles.svelte";
@@ -38,10 +39,13 @@
   import { ListPayload } from "../../bindings/TcNo-Acc-Switcher/internal/shortcuts/models.js";
   import { get } from "svelte/store";
   import { activeModal, openConfirm, openPrompt } from "../stores/modal";
-  import { offlineMode, offlineSafeImageSrc } from "../stores/offlineMode";
+  import { offlineMode, offlineSafeImageSrc, withAssetCacheBust } from "../stores/offlineMode";
   import { fuzzyWordsMatch } from "../lib/searchFuzzy";
   import { closeSearchOverlay, searchOverlayCtrl } from "../stores/searchOverlay";
   import { platformListSort, type PlatformSortKind } from "../stores/platformListSort";
+  import { fileDropInterceptor } from "../stores/fileDropInterceptor";
+  import { accountProfileImageDropActive } from "../stores/accountProfileImageDropUi";
+  import { firstProfileImagePath } from "../lib/profileImageDrop";
   import {
     buildTagsSectionMenuItem,
     openTagFilterMenu,
@@ -133,10 +137,13 @@
   let tagDefs: TagDefRow[] = [];
   let tagFilterMode: TagFilterMode = { kind: "all" };
 
+  let steamImagePick = { open: false, steamId: "", displayName: "", manual: false };
+  let steamFileDragHoverRowId = "";
+
   const SEARCH_MAX = 5;
 
   $: so = $searchOverlayCtrl;
-  $: steamSearchPrimary = buildSteamAccountRows(overlayQuery);
+  $: steamSearchPrimary = buildSteamAccountRows(overlayQuery, rowEpoch);
   $: steamSearchGames = buildSteamGameRows(overlayQuery);
 
   $: if (name) {
@@ -244,7 +251,139 @@
     if (get(activeModal)) {
       return;
     }
+    if (steamImagePick.open) {
+      e.preventDefault();
+      closeSteamImagePick();
+      return;
+    }
     clearSteamSelection();
+  }
+
+  function closeSteamImagePick(): void {
+    steamImagePick = { open: false, steamId: "", displayName: "", manual: false };
+    steamFileDragHoverRowId = "";
+  }
+
+  function openSteamImagePick(steamId64: string): void {
+    const acc = accountBySteamId(steamId64);
+    const dn = (acc?.personaName ?? acc?.displayName ?? steamId64).trim();
+    steamImagePick = {
+      open: true,
+      steamId: steamId64,
+      displayName: dn,
+      manual: !!(acc as SteamAccountRow | undefined)?.manualProfileImage,
+    };
+  }
+
+  async function applySteamImageFromOverlay(path: string): Promise<void> {
+    const sid = steamImagePick.steamId.trim();
+    if (!sid) {
+      return;
+    }
+    await SteamService.ChangeAccountImage(sid, path);
+    await loadSteamAccounts();
+    bumpSteamRowEpoch(sid);
+    pushToast({
+      type: "success",
+      message: $t("Toast_AccountSaved"),
+      duration: 4000,
+    });
+  }
+
+  async function removeSteamImageFromOverlay(): Promise<void> {
+    const sid = steamImagePick.steamId.trim();
+    if (!sid) {
+      return;
+    }
+    await SteamService.ClearManualAccountProfileImage(sid);
+    await loadSteamAccounts();
+    bumpSteamRowEpoch(sid);
+    scheduleSteamAccountsRefresh();
+    pushToast({
+      type: "success",
+      message: $t("Toast_AccountSaved"),
+      duration: 4000,
+    });
+  }
+
+  function steamHasFilesDragType(ev: DragEvent): boolean {
+    const types = ev.dataTransfer?.types;
+    return !!(types && Array.from(types as unknown as Iterable<string>).includes("Files"));
+  }
+
+  function onSteamAccDragOver(ev: DragEvent, rid: string): void {
+    if (!steamHasFilesDragType(ev)) {
+      return;
+    }
+    ev.preventDefault();
+    steamFileDragHoverRowId = rid;
+  }
+
+  function onSteamAccDragLeave(ev: DragEvent, rid: string): void {
+    if (!steamHasFilesDragType(ev)) {
+      return;
+    }
+    const rel = ev.relatedTarget as Node | null;
+    const cur = ev.currentTarget as HTMLElement | null;
+    if (!rel || !cur?.contains(rel)) {
+      if (steamFileDragHoverRowId === rid) {
+        steamFileDragHoverRowId = "";
+      }
+    }
+  }
+
+  function onSteamAccListDragLeave(ev: DragEvent): void {
+    if (!steamHasFilesDragType(ev)) {
+      return;
+    }
+    const rel = ev.relatedTarget as Node | null;
+    const root = steamAcclistEl;
+    if (!root || rel === null || !root.contains(rel)) {
+      steamFileDragHoverRowId = "";
+    }
+  }
+
+  async function steamPlatformFileDropIntercept(paths: string[]): Promise<boolean> {
+    const img = firstProfileImagePath(paths);
+    if (!img) {
+      return false;
+    }
+    try {
+      if (steamImagePick.open && steamImagePick.steamId.trim()) {
+        const target = steamImagePick.steamId.trim();
+        await SteamService.ChangeAccountImage(target, img);
+        await loadSteamAccounts();
+        bumpSteamRowEpoch(target);
+        pushToast({
+          type: "success",
+          message: $t("Toast_AccountSaved"),
+          duration: 4000,
+        });
+        closeSteamImagePick();
+        return true;
+      }
+      const hover = steamFileDragHoverRowId.trim();
+      if (hover) {
+        await SteamService.ChangeAccountImage(hover, img);
+        await loadSteamAccounts();
+        bumpSteamRowEpoch(hover);
+        pushToast({
+          type: "success",
+          message: $t("Toast_AccountSaved"),
+          duration: 4000,
+        });
+        steamFileDragHoverRowId = "";
+        return true;
+      }
+    } catch (e) {
+      pushToast({
+        type: "error",
+        message: formatToastWithError($t("Toast_SaveFailed"), e),
+        duration: 8000,
+      });
+      return true;
+    }
+    return false;
   }
 
   function applySteamPatch(p: SteamAccountPatch): void {
@@ -254,6 +393,8 @@
       if (r.steamId64 !== id) return r;
       hit = true;
       const errMsg = typeof p.error === "string" ? p.error : r.syncError ?? "";
+      const nextManual =
+        typeof p.manualProfileImage === "boolean" ? p.manualProfileImage : (r.manualProfileImage ?? false);
       return {
         ...r,
         imageUrl: p.imageUrl || r.imageUrl,
@@ -261,6 +402,7 @@
         ltd: p.ltd,
         avatarPending: p.avatarPending,
         metaPending: p.metaPending,
+        manualProfileImage: nextManual,
         syncError: errMsg,
         displayName:
           typeof p.displayName === "string" && p.displayName.trim() !== ""
@@ -295,6 +437,15 @@
       setTimeout(() => void loadSteamAccounts(), 700),
       setTimeout(() => void loadSteamAccounts(), 2200),
     );
+  }
+
+  /** Same public URL after cache overwrite — force `{#key}` remount so `<img>` reloads. */
+  function bumpSteamRowEpoch(steamId64: string): void {
+    const id = steamId64.trim();
+    if (!id) {
+      return;
+    }
+    rowEpoch = { ...rowEpoch, [id]: (rowEpoch[id] ?? 0) + 1 };
   }
 
   async function refreshGameDataAppSets(): Promise<void> {
@@ -344,9 +495,27 @@
 
   async function loadSteamAccounts(): Promise<void> {
     steamLoadError = "";
+    const prevById = new Map(steamAccounts.map((a) => [a.steamId64, a]));
     try {
       const rows = (await SteamService.GetSteamAccounts()) as SteamAccountRow[];
-      rowEpoch = {};
+      let nextEpoch = { ...rowEpoch };
+      for (const r of rows) {
+        const prev = prevById.get(r.steamId64);
+        const nw = (r.imageUrl ?? "").trim();
+        const pv = prev ? (prev.imageUrl ?? "").trim() : undefined;
+        let bump = pv !== undefined && pv !== nw;
+        if (
+          prev &&
+          ((prev.manualProfileImage ?? false) !== (r.manualProfileImage ?? false) ||
+            (prev.avatarPending ?? false) !== (r.avatarPending ?? false))
+        ) {
+          bump = true;
+        }
+        if (bump) {
+          nextEpoch[r.steamId64] = (nextEpoch[r.steamId64] ?? 0) + 1;
+        }
+      }
+      rowEpoch = nextEpoch;
       steamAccounts = rows;
       steamIds = rows.map((r) => r.steamId64);
       const liveRow = rows.find((r) => r.currentSession);
@@ -464,7 +633,10 @@
     return parts.join("\n");
   }
 
-  function buildSteamAccountRows(q: string): SearchResultRow[] {
+  function buildSteamAccountRows(
+    q: string,
+    epochs: Record<string, number>,
+  ): SearchResultRow[] {
     const tr = get(t);
     const trimmed = q.trim();
     const hay = (acc: SteamAccountRow) => {
@@ -483,7 +655,10 @@
       badge: tr("Search_Section_Account"),
       accountIconUrl: offlineSafeImageSrc(
         get(offlineMode),
-        a.imageUrl && !a.avatarPending ? a.imageUrl : undefined,
+        withAssetCacheBust(
+          a.imageUrl && !a.avatarPending ? a.imageUrl : undefined,
+          epochs[a.steamId64] ?? 0,
+        ),
         PROFILE_PLACEHOLDER,
       ),
     }));
@@ -1135,36 +1310,51 @@
                 }
               },
             },
-            {
-              label: tr("Context_ChangeImage"),
-              action: async () => {
-                const path = await openPrompt({
-                  title: tr("Context_ChangeImage"),
-                  body: "",
-                  positiveLabel: tr("Ok"),
-                  negativeLabel: tr("Button_Cancel"),
-                  initialValue: "",
-                });
-                if (path === null || !String(path).trim()) {
-                  return;
-                }
-                try {
-                  await SteamService.ChangeAccountImage(rid, String(path).trim());
-                  await loadSteamAccounts();
-                  pushToast({
-                    type: "success",
-                    message: $t("Toast_AccountSaved"),
-                    duration: 4000,
-                  });
-                } catch (e) {
-                  pushToast({
-                    type: "error",
-                    message: formatToastWithError($t("Toast_SaveFailed"), e),
-                    duration: 8000,
-                  });
-                }
-              },
-            },
+            (() => {
+              const imgUrl = (acc?.imageUrl ?? "").trim();
+              const manual = !!acc?.manualProfileImage;
+              const openPick = () => {
+                selectedSteamId = rid;
+                touchSteamActionBar();
+                openSteamImagePick(rid);
+              };
+              if (!imgUrl || !manual) {
+                return {
+                  label: tr("Context_ChangeImage"),
+                  action: openPick,
+                };
+              }
+              return {
+                label: tr("Context_ChangeImage"),
+                action: openPick,
+                children: [
+                  {
+                    label: tr("Context_ChooseProfileImage"),
+                    action: openPick,
+                  },
+                  {
+                    label: tr("Context_RemoveProfileImage"),
+                    action: async () => {
+                      try {
+                        await SteamService.ClearManualAccountProfileImage(rid);
+                        await loadSteamAccounts();
+                        pushToast({
+                          type: "success",
+                          message: $t("Toast_AccountSaved"),
+                          duration: 4000,
+                        });
+                      } catch (e) {
+                        pushToast({
+                          type: "error",
+                          message: formatToastWithError($t("Toast_SaveFailed"), e),
+                          duration: 8000,
+                        });
+                      }
+                    },
+                  },
+                ],
+              };
+            })(),
           ],
         },
       ];
@@ -1228,6 +1418,7 @@
       }
       applyShortcutIconsFromShortcutList(p.shortcuts ?? []);
     });
+    fileDropInterceptor.set(steamPlatformFileDropIntercept);
   });
 
   onDestroy(() => {
@@ -1241,6 +1432,8 @@
     offSort?.();
     offPlatformAction?.();
     offAccountsRefresh?.();
+    accountProfileImageDropActive.set(false);
+    fileDropInterceptor.set(null);
     platformAccountsRefresh.set({ seq: 0, platformKey: "" });
     platformExeIconUrl.set("");
     actionBarStatus.set("");
@@ -1269,7 +1462,12 @@
       {/if}
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <!-- svelte-ignore a11y-no-static-element-interactions -->
-      <div class="steam-acclist" bind:this={steamAcclistEl} on:click={onSteamAccountsAreaClick}>
+      <div
+        class="steam-acclist"
+        bind:this={steamAcclistEl}
+        on:click={onSteamAccountsAreaClick}
+        on:dragleave={onSteamAccListDragLeave}
+      >
         {#if tagDefs.length > 0}
           <TagFilterBar label={tagFilterBarLabel} onClick={onSteamTagFilterBarClick} />
         {/if}
@@ -1304,6 +1502,10 @@
                 for={radioId}
                 class="acc"
                 class:currentAcc={acc?.currentSession}
+                class:acc--profile-drop-target={$accountProfileImageDropActive && !steamImagePick.open}
+                class:acc--drop-target={steamFileDragHoverRowId === rid}
+                on:dragover={(e) => onSteamAccDragOver(e, rid)}
+                on:dragleave={(e) => onSteamAccDragLeave(e, rid)}
                 use:ctxMenuAction={{
                   items: steamCtxMenu(rid),
                   beforeOpen: () => {
@@ -1324,6 +1526,25 @@
                   void steamLoginSelected();
                 }}
               >
+                {#if $accountProfileImageDropActive && !steamImagePick.open}
+                  <div
+                    class="acc_profile_drop_overlay"
+                    class:acc_profile_drop_overlay--hover={steamFileDragHoverRowId === rid}
+                    aria-hidden="true"
+                  >
+                    <div class="acc_profile_drop_overlay__center">
+                      <div class="acc_profile_drop_overlay__icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                          ><path
+                            fill="currentColor"
+                            d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"
+                          /></svg
+                        >
+                      </div>
+                      <span class="acc_profile_drop_overlay__label">{$t("Drop_SetAccountIcon")}</span>
+                    </div>
+                  </div>
+                {/if}
                 <span class="steam-acc-avatar-wrap">
                   <img
                     class="steam-acc-avatar"
@@ -1331,7 +1552,10 @@
                     class:status_limited={acc?.showLimited && acc?.ltd}
                     src={offlineSafeImageSrc(
                       $offlineMode,
-                      acc?.imageUrl && !acc?.avatarPending ? acc.imageUrl : undefined,
+                      withAssetCacheBust(
+                        acc?.imageUrl && !acc?.avatarPending ? acc.imageUrl : undefined,
+                        rowEpoch[rid] ?? 0,
+                      ),
                       PROFILE_PLACEHOLDER,
                     )}
                     alt=""
@@ -1382,6 +1606,14 @@
       </div>
     </div>
     </div>
+    <AccountImagePickOverlay
+      bind:open={steamImagePick.open}
+      accountDisplayName={steamImagePick.displayName}
+      showRemoveButton={steamImagePick.manual}
+      onClose={closeSteamImagePick}
+      onApplyPath={applySteamImageFromOverlay}
+      onRemoveManual={removeSteamImageFromOverlay}
+    />
   {/if}
 </div>
 <svelte:window on:keydown={onWindowKeyDown} />
@@ -1409,4 +1641,5 @@
     display: flex;
     flex-direction: column;
   }
+
 </style>
