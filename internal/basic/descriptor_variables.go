@@ -38,7 +38,7 @@ func resolveDescriptorVariables(d platform.Descriptor, folder string, ctx platfo
 				continue
 			}
 		}
-		out[name] = strings.TrimSpace(expandDescriptorVariables(expandPlatformPath(v, folder, ctx), out))
+		out[name] = strings.TrimSpace(applyVariableTransformPipeline(expandDescriptorVariables(expandPlatformPath(v, folder, ctx), out)))
 		descriptorVarsLog.Debug("resolved variable via template", "name", name, "valuePreview", previewLevelDBValue(out[name]))
 	}
 	return out
@@ -71,7 +71,7 @@ func resolveDescriptorValue(d platform.Descriptor, raw, folder string, ctx platf
 			return ""
 		}
 		descriptorVarsLog.Debug("resolved descriptor value via latest modified file", "value", resolved)
-		return strings.TrimSpace(resolved)
+		return strings.TrimSpace(applyVariableTransformPipeline(strings.TrimSpace(resolved)))
 	}
 	if isLevelDBReference(v) {
 		ref := v
@@ -82,7 +82,7 @@ func resolveDescriptorValue(d platform.Descriptor, raw, folder string, ctx platf
 		if resolved, err := resolveLevelDBReference(ref, ctx); err == nil {
 			out := strings.TrimSpace(resolved)
 			descriptorVarsLog.Debug("resolved descriptor value via leveldb", "valuePreview", previewLevelDBValue(out))
-			return out
+			return strings.TrimSpace(applyVariableTransformPipeline(out))
 		} else {
 			descriptorVarsLog.Debug("resolve descriptor value via leveldb failed", "saved", saved, "ref", ref, "err", err)
 			// Do not degrade to plain path expansion for command values.
@@ -95,9 +95,9 @@ func resolveDescriptorValue(d platform.Descriptor, raw, folder string, ctx platf
 			return ""
 		}
 		descriptorVarsLog.Debug("resolved descriptor value via sqlite", "valuePreview", previewLevelDBValue(resolved))
-		return strings.TrimSpace(resolved)
+		return strings.TrimSpace(applyVariableTransformPipeline(strings.TrimSpace(resolved)))
 	}
-	return strings.TrimSpace(expandPlatformPath(v, folder, ctx))
+	return strings.TrimSpace(applyVariableTransformPipeline(strings.TrimSpace(expandPlatformPath(v, folder, ctx))))
 }
 
 func mapSavedLevelDBReference(d platform.Descriptor, folder string, ctx platform.PathTokenContext, ref, accountCacheRoot string) string {

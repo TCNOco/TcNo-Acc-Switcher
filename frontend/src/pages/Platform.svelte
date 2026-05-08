@@ -18,7 +18,7 @@
     platformAccountsRefresh,
   } from "../stores/platformPage";
   import { pushToast } from "../stores/toast";
-  import { activeModal, openPrompt } from "../stores/modal";
+  import { activeModal, openAlertNoButton, openConfirm, openPrompt } from "../stores/modal";
   import { locale, t } from "../stores/i18n";
   import * as BasicService from "../../bindings/TcNo-Acc-Switcher/internal/basic/basicservice.js";
   import { AccountDTO, AccountImagePatch } from "../../bindings/TcNo-Acc-Switcher/internal/basic/models.js";
@@ -35,7 +35,6 @@
   import type { MenuItemDef } from "../stores/contextMenu";
   import * as Shortcuts from "wails-shortcuts-service";
   import { get } from "svelte/store";
-  import { openConfirm } from "../stores/modal";
   import { offlineMode, offlineSafeImageSrc, withAssetCacheBust } from "../stores/offlineMode";
   import { fuzzyWordsMatch } from "../lib/searchFuzzy";
   import { formatLastLoginForLocale } from "../lib/formatLastLogin";
@@ -50,8 +49,11 @@
   import { fileDropInterceptor } from "../stores/fileDropInterceptor";
   import { accountProfileImageDropActive } from "../stores/accountProfileImageDropUi";
   import { firstProfileImagePath } from "../lib/profileImageDrop";
+  import GameStatsSetupModalBody from "../components/modals/GameStatsSetupModalBody.svelte";
 
   const PROFILE_FALLBACK = "/img/BasicDefault.webp";
+
+  type GameStatMetricDTO = { statValue: string; indicatorMarkup: string };
 
   /** Bindings class typing can lag `currentSession`; keep explicit for the list row. */
   type BasicRow = InstanceType<typeof AccountDTO> & {
@@ -76,6 +78,10 @@
   let offSort: (() => void) | undefined;
   let lastHandledSortId = 0;
   let basicAvatarEpoch: Record<string, number> = {};
+
+  /** Per account: game title → metric key → markup from stats cache. */
+  let gameStatsMarkupByAccount: Record<string, Record<string, Record<string, GameStatMetricDTO>>> = {};
+  let hasGameStatsSupport = false;
 
   let accImagePick = { open: false, uniqueId: "", displayName: "", manual: false };
   let fileDragHoverRowId = "";
@@ -335,6 +341,54 @@
     }
   }
 
+  async function refreshGameStatsMarkup(accountIds: string[]): Promise<void> {
+    if (!name.trim() || accountIds.length === 0) {
+      gameStatsMarkupByAccount = {};
+      return;
+    }
+    try {
+      const pairs = await Promise.all(
+        accountIds.map(async (uid) => {
+          try {
+            const m = await BasicService.GetUserStatsAllGamesMarkup(name, uid);
+            return [uid, m ?? {}] as const;
+          } catch {
+            return [uid, {}] as const;
+          }
+        }),
+      );
+      gameStatsMarkupByAccount = Object.fromEntries(pairs) as Record<
+        string,
+        Record<string, Record<string, GameStatMetricDTO>>
+      >;
+    } catch {
+      gameStatsMarkupByAccount = {};
+    }
+  }
+
+  async function refreshGameStatsSupport(): Promise<void> {
+    try {
+      const games = await BasicService.GetAvailableGames(name);
+      hasGameStatsSupport = (games?.length ?? 0) > 0;
+    } catch {
+      hasGameStatsSupport = false;
+    }
+  }
+
+  function openGameStatsModal(rowId: string): void {
+    const acc = accountById(rowId);
+    void openAlertNoButton({
+      title: get(t)("Context_ManageGameStats"),
+      bodyComponent: GameStatsSetupModalBody,
+      bodyProps: {
+        platformKey: name,
+        uniqueId: rowId,
+        displayName: (acc?.displayName ?? rowId).trim(),
+        onApplied: () => void loadAccounts(),
+      },
+    });
+  }
+
   async function loadAccounts(): Promise<void> {
     loadError = "";
     const prevById = new Map(accounts.map((a) => [a.uniqueId, a]));
@@ -369,11 +423,13 @@
       selectedUniqueId = stillValid ? selectedUniqueId : "";
       touchStatus();
       await loadTagDefs();
+      await refreshGameStatsMarkup(rows.map((r) => r.uniqueId));
     } catch (e) {
       loadError = formatWailsError(e) || String(e);
       accounts = [];
       accountIds = [];
       selectedUniqueId = "";
+      gameStatsMarkupByAccount = {};
       actionBarStatus.set("");
       platformLiveSessionId.set({ platformKey: "", uniqueId: "" });
     }
@@ -837,6 +893,14 @@
               duration: 8000,
             }),
         }),
+        ...(hasGameStatsSupport
+          ? ([
+              {
+                label: tr("Context_ManageGameStats"),
+                action: () => openGameStatsModal(rowId),
+              },
+            ] as MenuItemDef[])
+          : []),
         {
           label: tr("Notes"),
           action: async () => {
@@ -878,6 +942,7 @@
   onMount(() => {
     previousPage.set({ page: "home" });
     void preflightAdminForPlatform(name);
+    void refreshGameStatsSupport();
     void loadAccounts();
     void GetPlatformExeIcon(name).then((u: string) => platformExeIconUrl.set(u ?? ""));
     offSort = platformListSort.subscribe((sig) => {
@@ -1064,6 +1129,25 @@
                 {#if acc?.note}
                   <p class="acc_note">{acc.note}</p>
                 {/if}
+                {#if gameStatsMarkupByAccount[rid] && Object.keys(gameStatsMarkupByAccount[rid]).length > 0}
+                  <div class="acc_inline_gamestats" aria-label={$t("Context_ManageGameStats")}>
+                    {#each Object.entries(gameStatsMarkupByAccount[rid]) as [gameTitle, metrics]}
+                      <div class="acc_inline_gamestats_row">
+                        <span class="acc_inline_gamestats_game">{gameTitle}</span>
+                        <span class="acc_inline_gamestats_metrics">
+                          {#each Object.values(metrics) as dto}
+                            <span class="acc_inline_gamestats_metric">
+                              {#if dto.indicatorMarkup}
+                                <span class="acc_inline_gamestats_ind">{@html dto.indicatorMarkup}</span>
+                              {/if}
+                              <span class="acc_inline_gamestats_val">{@html dto.statValue}</span>
+                            </span>
+                          {/each}
+                        </span>
+                      </div>
+                    {/each}
+                  </div>
+                {/if}
                 {#if acc?.showLastUsed && (acc?.lastUsed ?? "").trim()}
                   <p class="acc_lastused">
                     {formatLastLoginForLocale(acc.lastUsed, $locale)}
@@ -1116,5 +1200,42 @@
     margin: 0.15rem 0 0;
     font-size: 0.72rem;
     opacity: 0.75;
+  }
+
+  .acc_inline_gamestats {
+    margin: 0.25rem 0 0;
+    font-size: 0.68rem;
+    line-height: 1.35;
+    opacity: 0.92;
+    max-width: 100%;
+  }
+  .acc_inline_gamestats_row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.5rem;
+    margin-top: 0.15rem;
+  }
+  .acc_inline_gamestats_game {
+    font-weight: 600;
+    opacity: 0.95;
+    flex: 0 0 auto;
+  }
+  .acc_inline_gamestats_metrics {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.5rem;
+    min-width: 0;
+  }
+  .acc_inline_gamestats_metric {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+  .acc_inline_gamestats_ind :global(svg),
+  .acc_inline_gamestats_val :global(img) {
+    max-height: 1.25em;
+    vertical-align: middle;
   }
 </style>

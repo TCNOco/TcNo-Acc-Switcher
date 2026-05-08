@@ -38,7 +38,7 @@
   import * as Shortcuts from "wails-shortcuts-service";
   import { ListPayload } from "../../bindings/TcNo-Acc-Switcher/internal/shortcuts/models.js";
   import { get } from "svelte/store";
-  import { activeModal, openConfirm, openPrompt } from "../stores/modal";
+  import { activeModal, openAlertNoButton, openConfirm, openPrompt } from "../stores/modal";
   import { offlineMode, offlineSafeImageSrc, withAssetCacheBust } from "../stores/offlineMode";
   import { fuzzyWordsMatch } from "../lib/searchFuzzy";
   import { closeSearchOverlay, searchOverlayCtrl } from "../stores/searchOverlay";
@@ -52,6 +52,9 @@
     type TagDefRow,
     type TagFilterMode,
   } from "../lib/accountTagsContext";
+  import GameStatsSetupModalBody from "../components/modals/GameStatsSetupModalBody.svelte";
+
+  type GameStatMetricDTO = { statValue: string; indicatorMarkup: string };
 
   const STEAM_USERDATA_ERR_KEYS = new Set([
     "Toast_NoValidSteamId",
@@ -113,6 +116,9 @@
   let steamMainEl: HTMLDivElement | null = null;
   let steamIds: string[] = [];
   let steamLoadError = "";
+  /** Per Steam id: game title → metric key → stats cache markup (Basic game stats for Steam platform). */
+  let steamGameStatsByAccount: Record<string, Record<string, Record<string, GameStatMetricDTO>>> = {};
+  let hasGameStatsSupport = false;
   let offSteamEvent: (() => void) | undefined;
   let offShortcutsUpdated: (() => void) | undefined;
   let offPlatformAction: (() => void) | undefined;
@@ -493,6 +499,40 @@
     }
   }
 
+  async function refreshSteamGameStatsMarkup(accountIds: string[]): Promise<void> {
+    if (!name.trim() || accountIds.length === 0) {
+      steamGameStatsByAccount = {};
+      return;
+    }
+    try {
+      const pairs = await Promise.all(
+        accountIds.map(async (uid) => {
+          try {
+            const m = await BasicService.GetUserStatsAllGamesMarkup(name, uid);
+            return [uid, m ?? {}] as const;
+          } catch {
+            return [uid, {}] as const;
+          }
+        }),
+      );
+      steamGameStatsByAccount = Object.fromEntries(pairs) as Record<
+        string,
+        Record<string, Record<string, GameStatMetricDTO>>
+      >;
+    } catch {
+      steamGameStatsByAccount = {};
+    }
+  }
+
+  async function refreshGameStatsSupport(): Promise<void> {
+    try {
+      const games = await BasicService.GetAvailableGames(name);
+      hasGameStatsSupport = (games?.length ?? 0) > 0;
+    } catch {
+      hasGameStatsSupport = false;
+    }
+  }
+
   async function loadSteamAccounts(): Promise<void> {
     steamLoadError = "";
     const prevById = new Map(steamAccounts.map((a) => [a.steamId64, a]));
@@ -532,11 +572,13 @@
       SteamService.StartSteamProfileRefresh();
       await refreshGameDataAppSets();
       await loadSteamTagDefs();
+      await refreshSteamGameStatsMarkup(rows.map((r) => r.steamId64));
     } catch (e) {
       steamLoadError = formatWailsError(e) || String(e);
       steamAccounts = [];
       steamIds = [];
       gameDataBySteamId = {};
+      steamGameStatsByAccount = {};
       selectedSteamId = "";
       actionBarStatus.set("");
       platformLiveSessionId.set({ platformKey: "", uniqueId: "" });
@@ -1296,6 +1338,29 @@
               label: tr("Context_GameDataSubmenu"),
               children: gameChildren,
             },
+            ...(hasGameStatsSupport
+              ? ([
+                  {
+                    label: tr("Context_ManageGameStats"),
+                    action: () => {
+                      void openAlertNoButton({
+                        title: get(t)("Context_ManageGameStats"),
+                        bodyComponent: GameStatsSetupModalBody,
+                        bodyProps: {
+                          platformKey: name,
+                          uniqueId: rid,
+                          displayName: (
+                            (acc?.personaName ?? "").trim() ||
+                            (acc?.displayName ?? "").trim() ||
+                            rid
+                          ).trim(),
+                          onApplied: () => void loadSteamAccounts(),
+                        },
+                      });
+                    },
+                  },
+                ] as MenuItemDef[])
+              : []),
             {
               label: tr("Context_Steam_OpenUserdata"),
               action: async () => {
@@ -1364,6 +1429,7 @@
   onMount(() => {
     previousPage.set({ page: "home" });
     void preflightAdminForPlatform(name);
+    void refreshGameStatsSupport();
     void (async () => {
       await loadSteamAccounts();
       try {
@@ -1587,6 +1653,25 @@
                 {#if acc?.showShortNotes && acc?.note?.trim()}
                   <p class="acc_note">{acc.note}</p>
                 {/if}
+                {#if steamGameStatsByAccount[rid] && Object.keys(steamGameStatsByAccount[rid]).length > 0}
+                  <div class="acc_inline_gamestats" aria-label={$t("Context_ManageGameStats")}>
+                    {#each Object.entries(steamGameStatsByAccount[rid]) as [gameTitle, metrics]}
+                      <div class="acc_inline_gamestats_row">
+                        <span class="acc_inline_gamestats_game">{gameTitle}</span>
+                        <span class="acc_inline_gamestats_metrics">
+                          {#each Object.values(metrics) as dto}
+                            <span class="acc_inline_gamestats_metric">
+                              {#if dto.indicatorMarkup}
+                                <span class="acc_inline_gamestats_ind">{@html dto.indicatorMarkup}</span>
+                              {/if}
+                              <span class="acc_inline_gamestats_val">{@html dto.statValue}</span>
+                            </span>
+                          {/each}
+                        </span>
+                      </div>
+                    {/each}
+                  </div>
+                {/if}
                 {#if acc?.showSteamId}
                   <p class="streamerCensor steamId">{acc.steamId64}</p>
                 {/if}
@@ -1642,4 +1727,40 @@
     flex-direction: column;
   }
 
+  .acc_inline_gamestats {
+    margin: 0.25rem 0 0;
+    font-size: 0.68rem;
+    line-height: 1.35;
+    opacity: 0.92;
+    max-width: 100%;
+  }
+  .acc_inline_gamestats_row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.5rem;
+    margin-top: 0.15rem;
+  }
+  .acc_inline_gamestats_game {
+    font-weight: 600;
+    opacity: 0.95;
+    flex: 0 0 auto;
+  }
+  .acc_inline_gamestats_metrics {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.5rem;
+    min-width: 0;
+  }
+  .acc_inline_gamestats_metric {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+  .acc_inline_gamestats_ind :global(svg),
+  .acc_inline_gamestats_val :global(img) {
+    max-height: 1.25em;
+    vertical-align: middle;
+  }
 </style>

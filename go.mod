@@ -5,6 +5,7 @@ go 1.25.0
 require (
 	github.com/Jleagle/steam-go v0.0.0-20260108213202-2dcd07fee7d7
 	github.com/Microsoft/go-winio v0.6.2
+	github.com/antchfx/htmlquery v1.3.6
 	github.com/go-ole/go-ole v1.3.0
 	github.com/google/uuid v1.6.0
 	github.com/hugolgst/rich-go v0.0.0-20240715122152-74618cc1ace2
@@ -28,6 +29,7 @@ require (
 	dario.cat/mergo v1.0.2 // indirect
 	github.com/ProtonMail/go-crypto v1.3.0 // indirect
 	github.com/adrg/xdg v0.5.3 // indirect
+	github.com/antchfx/xpath v1.3.6 // indirect
 	github.com/bep/debounce v1.2.1 // indirect
 	github.com/cloudflare/circl v1.6.3 // indirect
 	github.com/coder/websocket v1.8.14 // indirect
