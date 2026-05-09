@@ -5,12 +5,103 @@
 
 :root {
     --accent: #c0caf5;
-    --accentHS: 40, 100%;
-    --accentL: 60%;
-    --accentInt: 255, 170, 0;
-    --notification-main-bg: #1A1B26;
-    --notification-info-border: #c0caf5;
-    --notification-info-highlight: #c0caf5;
+    --accentHS: 232, 68%;
+    --accentL: 86%;
+    --accentInt: 192, 202, 245;
+    --cyan: var(--accent);
+    --cyanSecondary: #dbe2ff;
+    --cyanLight: hsla(229, 55%, 88%, 0.3);
+
+    --code: #32394d;
+    --code-background: #1f2336;
+    --slightly-darker-code-background: hsl(234, 18%, 9%);
+    --darker-code-background: #16161e;
+    --even-darker-code-background: rgb(17, 18, 28);
+    --shadow: 0 4px 10px -6px #07080d;
+
+    --black: #1a1b26;
+    --blackSecondary: #565f89;
+    --blackTernary: #9aa5ce;
+    --blackLight: hsla(236, 18%, 22%, 0.05);
+
+    --white: #d5dcef;
+    --whiteSecondary: #eef1ff;
+    --whiteLight: hsla(232, 45%, 96%, 0.05);
+
+    --green: #9ece6a;
+    --greenSecondary: #c7e3a5;
+    --greenLight: hsla(95, 45%, 70%, 0.08);
+    --orange: #ff9e64;
+    --orangeSecondary: #ffd1b3;
+    --orangeLight: hsla(24, 90%, 75%, 0.08);
+    --pink: #f7768e;
+    --pinkSecondary: #fbc5d0;
+    --pinkLight: hsla(350, 85%, 75%, 0.08);
+    --purple: #bb9af7;
+    --purpleSecondary: #ddd5fb;
+    --purpleLight: hsla(260, 70%, 82%, 0.08);
+    --red: #f7768e;
+    --redSecondary: #fbc5d0;
+    --redLight: hsla(350, 85%, 75%, 0.08);
+    --yellow: #e0af68;
+    --yellowSecondary: #f5e0ba;
+    --gradientDegree: 135deg;
+
+    --border-bar-bg: var(--code);
+    --border-bar-size: 7px;
+    --program-bg: linear-gradient(90deg, #1a1b26, #16161e 100%);
+    --accountListBackground: #1a1b26;
+    --footer-bg: #1e202e;
+    --scrollbar-track-bg: #21222e;
+    --button-bg: #1e202e;
+    --button-bg-hover: #252738;
+    --tooltip-bg: var(--even-darker-code-background);
+    --main-padding: 0.75rem;
+    --document-canvas-bg: #1a1b26;
+
+    --shadow-color-heavy: rgba(5, 6, 12, 0.88);
+    --shadow-color-50: rgba(5, 6, 12, 0.52);
+    --shadow-color-45: rgba(5, 6, 12, 0.46);
+    --shadow-color-40: rgba(5, 6, 12, 0.42);
+    --shadow-color-35: rgba(5, 6, 12, 0.38);
+    --shadow-color-30: rgba(5, 6, 12, 0.32);
+    --backdrop-scrim-55: rgba(8, 9, 16, 0.58);
+    --backdrop-scrim-65: rgba(8, 9, 16, 0.68);
+    --black-alpha-12: rgba(4, 5, 10, 0.14);
+    --black-alpha-15: rgba(4, 5, 10, 0.18);
+
+    --text-muted-gray: #bbc4e6;
+    --text-subtle-gray: #7c86a8;
+    --text-dim-gray: #5b6487;
+    --text-body-muted: #6b7394;
+
+    --surface-row-dark: #1e202e;
+    --surface-steam-popover: #222636;
+    --surface-context-submenu: var(--code);
+    --surface-context-row: #2a3150;
+    --surface-search-result: rgba(44, 50, 72, 0.78);
+
+    --context-menu-hotkey: #4b3d20;
+    --form-checkbox-border: #565f89;
+    --window-control-hover-bg: #3b4159;
+    --tag-default-bg: #4a5070;
+
+    --overlay-panel-bg: rgba(30, 32, 46, 0.96);
+    --overlay-scrim-deep: rgba(10, 11, 18, 0.75);
+
+    --greenInt: 158, 206, 106;
+    --orangeInt: 255, 158, 100;
+    --redInt: 247, 118, 142;
+
+    --ace-editor-bg: #24283f;
+    --ace-gutter-fg: rgb(130, 141, 185);
+    --ace-invisible: #6b7394;
+    --ace-muted-purple: #9d7cd8;
+    --ace-xml-pe: #4e5680;
+
+    --notification-main-bg: #1a1b26;
+    --notification-info-border: var(--accent);
+    --notification-info-highlight: #a9b1d6;
     --notification-success-border: #9ece6a;
     --notification-success-highlight: #9ece6a;
     --notification-warning-border: #ff9e64;
@@ -39,7 +130,7 @@ body, .programMain, .mainblock
 /* Terminal White */
 .header_icon, .container
     {
-        fill: #c0caf5;
+        fill: var(--accent);
     }
 
 /* Button Colors */
@@ -47,12 +138,12 @@ button, .button
     {
         background: #1E202E;
         border-color: #5f648b;
-        color: #c0caf5;
+        color: var(--accent);
     }
 
 #window-title, #window-title-modal 
     {
-        color: #c0caf5;
+        color: var(--accent);
     }
 
 .acc_list_actionbar
@@ -63,14 +154,13 @@ button, .button
 .platform_list_item 
     {
         border: #5f648b 1px solid;
-        -webkit-text-stroke: 1px #c0caf5;
-        color: transparent;
+        color: var(--accent);
         text-shadow: none;
     }
 
 .platform_list_item .icoFG 
     {
-        fill: #c0caf5; 
+        fill: var(--accent); 
     }
 
 .icoGlass 
@@ -85,7 +175,7 @@ button, .button
 
 .accountHover
     {
-        border: 0.1 em solid;
+        border: 0.1em solid;
         border-color: #5f648b;
         background: #1E202E; 
     }
@@ -98,7 +188,7 @@ button, .button
 button:hover, .button:hover
     {
         background: #252738;
-        border-color: #c0caf5;
+        border-color: var(--accent);
     }
 
 button:active, button:target, .button:active, .button:target 
@@ -136,18 +226,18 @@ button:active, button:target, .button:active, .button:target
     {
         background: #1E202E;
         border-color: #5f648b;
-        color: #c0caf5;
+        color: var(--accent);
     }
         
 #modal_contents button:hover 
     {
         background: #252738;
-        border-color: #c0caf5;
+        border-color: var(--accent);
     }
 
 #modal_contents button:active 
     {
-        border-color: #c0caf5;
+        border-color: var(--accent);
         background-color: #24283b 
     }
 
@@ -158,7 +248,7 @@ button:active, button:target, .button:active, .button:target
 
 .dropdown 
     {
-        color: #c0caf5; 
+        color: var(--accent); 
     }
         
 .dropdown-menu 
@@ -212,7 +302,7 @@ input[type=number], input[type=text], input[type=password]
 
 .contextmenu li a 
     {
-        color: #c0caf5; 
+        color: var(--accent); 
     }
 
 .contextmenu li:hover 
@@ -243,7 +333,7 @@ input[type=number], input[type=text], input[type=password]
 
 input.acc:checked + label.acc 
     {
-        border-color: #C0C9F3 !important;
+        border-color: var(--accent) !important;
         background: #252737;
     }
       

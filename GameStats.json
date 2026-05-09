@@ -54,7 +54,7 @@
               { "path": "rank", "op": "gt", "value": "20" }
             ]
           },
-          "DisplayAs": "<div class='cs-premier'><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100%\" height=\"100%\" viewBox=\"0 0 134 48\" fill-rule=\"evenodd\" stroke-linejoin=\"round\" stroke-miterlimit=\"2\" fill=\"%fill%\"><path d=\"M133.5 3.075l-7.562 41.849H15.377l7.562-41.849H133.5z\" fill-opacity=\".5\"/><path d=\"M31.331 3.075l-7.562 41.849h-3.814l7.562-41.849h3.814zm8.358 0l-7.562 41.849h-5.392l7.562-41.849h5.392zm11.815 0l-7.562 41.849h-7.621l7.562-41.849h7.621zm30.302 0l-7.562 41.849h-24.99l7.562-41.849h24.99zM25.312 0l-8.674 48H0L8.674 0h16.638z\" fill-opacity=\".5\"/><path d=\"M15.377 0L6.703 48H0L8.674 0h6.703zm9.935 0l-8.674 48H9.935l8.674-48h6.703z\"/></svg><span>%x_fmt%</span></div>",
+          "DisplayAs": "<div class='cs-premier'><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100%\" height=\"100%\" viewBox=\"0 0 134 48\" fill-rule=\"evenodd\" stroke-linejoin=\"round\" stroke-miterlimit=\"2\"><use href=\"#B\"/><use href=\"#C\"/><g fill=\"%fill%\"><use href=\"#B\" fill-opacity=\".5\"/><path d=\"M31.331 3.075l-7.562 41.849h-3.814l7.562-41.849h3.814zm8.358 0l-7.562 41.849h-5.392l7.562-41.849h5.392zm11.815 0l-7.562 41.849h-7.621l7.562-41.849h7.621zm30.302 0l-7.562 41.849h-24.99l7.562-41.849h24.99z\" fill-opacity=\".5\"/><use href=\"#C\" fill-opacity=\".5\"/><path d=\"M15.377 0L6.703 48H0L8.674 0h6.703zm9.935 0l-8.674 48H9.935l8.674-48h6.703z\"/></g><defs ><path id=\"B\" d=\"M133.5 3.075l-7.562 41.849H15.377l7.562-41.849H133.5z\"/><path id=\"C\" d=\"M25.312 0l-8.674 48H0L8.674 0h16.638z\"/></defs></svg><span>%x_fmt%</span></div>",
           "DisplayFormat": "commaNumber",
           "DisplayPlaceholders": [
             {

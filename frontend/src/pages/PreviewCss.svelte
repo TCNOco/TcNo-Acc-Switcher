@@ -108,6 +108,7 @@
 
   onMount(() => {
     themes = listThemes();
+    previousPage.set({ page: "settings" });
   });
 
   $: currentThemeLabel =
@@ -119,8 +120,6 @@
   }
 
   $: appBarTitle.set($t("Title_Settings_TestCss"));
-  previousPage.set({ page: "settings" });
-  route.set({ page: "preview-css" });
 
   function toastDuration(normalMs: number): number {
     return toastPermanent ? toastPermanentDurationMs : normalMs;

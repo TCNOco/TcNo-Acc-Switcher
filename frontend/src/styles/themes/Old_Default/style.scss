@@ -4,12 +4,111 @@
 */
 :root {
     // All these extra accent steps and redefinitions are required for Windows accent options
-    // Elements that use these will be set by either Windows Accent or Theme
-    --accent: #FFAA00; /* Must be HEX */
-    --accentHS: 40, 100%; // "H, S%" from accent as HSL
-    --accentL: 60%; // "L" from accent HSL
-    --accentInt: 255, 170, 0; // accent as "r, g, b"
-    --notification-main-bg: #333;
+    --accent: #ffaa00; /* Must be HEX */
+    --accentHS: 40, 100%;
+    --accentL: 52%;
+    --accentInt: 255, 170, 0;
+    /* Historic blue paired with orange on home tiles */
+    --cyan: #00a5f8;
+    --cyanSecondary: #7dd3ff;
+    --cyanLight: hsla(200, 95%, 55%, 0.18);
+
+    --code: #3d4558;
+    --code-background: #21262f;
+    --slightly-darker-code-background: hsl(226, 16%, 10%);
+    --darker-code-background: #171920;
+    --even-darker-code-background: rgb(15, 16, 20);
+    --shadow: 0 4px 10px -6px #08090d;
+
+    --black: #1f2129;
+    --blackSecondary: #515164;
+    --blackTernary: #9aa3bd;
+    --blackLight: hsla(226, 12%, 18%, 0.06);
+
+    --white: #eceff8;
+    --whiteSecondary: #ffffff;
+    --whiteLight: hsla(226, 20%, 98%, 0.05);
+
+    --green: #7cbd6e;
+    --greenSecondary: #d1edcc;
+    --greenLight: hsla(113, 40%, 60%, 0.1);
+    --orange: #ffaa33;
+    --orangeSecondary: #ffe0b8;
+    --orangeLight: hsla(36, 100%, 70%, 0.12);
+    --pink: #e86890;
+    --pinkSecondary: #fac9d8;
+    --pinkLight: hsla(340, 72%, 70%, 0.1);
+    --purple: #9b8fd9;
+    --purpleSecondary: #e8e4ff;
+    --purpleLight: hsla(252, 45%, 75%, 0.1);
+    --red: #e85d5d;
+    --redSecondary: #fac8c8;
+    --redLight: hsla(0, 70%, 70%, 0.1);
+    --yellow: #ffe566;
+    --yellowSecondary: #fff6c2;
+    --gradientDegree: 135deg;
+
+    --border-bar-bg: var(--code);
+    --border-bar-size: 7px;
+    --program-bg: linear-gradient(90deg, #2a2c3c, #1e202c 100%);
+    --accountListBackground: #28293a;
+    --footer-bg: #14151e;
+    --scrollbar-track-bg: #1f202d;
+    --button-bg: #333333;
+    --button-bg-hover: #444444;
+    --tooltip-bg: var(--even-darker-code-background);
+    --main-padding: 0.75rem;
+    --document-canvas-bg: #28293a;
+
+    --shadow-color-heavy: rgba(0, 0, 0, 0.82);
+    --shadow-color-50: rgba(0, 0, 0, 0.52);
+    --shadow-color-45: rgba(0, 0, 0, 0.46);
+    --shadow-color-40: rgba(0, 0, 0, 0.42);
+    --shadow-color-35: rgba(0, 0, 0, 0.37);
+    --shadow-color-30: rgba(0, 0, 0, 0.31);
+    --backdrop-scrim-55: rgba(6, 7, 10, 0.58);
+    --backdrop-scrim-65: rgba(6, 7, 10, 0.68);
+    --black-alpha-12: rgba(0, 0, 0, 0.14);
+    --black-alpha-15: rgba(0, 0, 0, 0.18);
+
+    --text-muted-gray: #d8dce8;
+    --text-subtle-gray: #959bb0;
+    --text-dim-gray: #676d87;
+    --text-body-muted: #79809a;
+
+    --surface-row-dark: #14151e;
+    --surface-steam-popover: #323648;
+    --surface-context-submenu: var(--code);
+    --surface-context-row: #1b2737;
+    --surface-search-result: rgba(55, 60, 75, 0.78);
+
+    --context-menu-hotkey: #5c4818;
+    --form-checkbox-border: #6272a4;
+    --window-control-hover-bg: #515b70;
+    --tag-default-bg: #4a5062;
+
+    --overlay-panel-bg: rgba(32, 35, 48, 0.95);
+    --overlay-scrim-deep: rgba(10, 11, 16, 0.74);
+
+    --greenInt: 124, 189, 110;
+    --orangeInt: 255, 170, 51;
+    --redInt: 232, 93, 93;
+
+    --ace-editor-bg: #282a36;
+    --ace-gutter-fg: rgb(130, 135, 155);
+    --ace-invisible: #5f667e;
+    --ace-muted-purple: #9fa4bc;
+    --ace-xml-pe: #4f5569;
+
+    --notification-main-bg: #333333;
+    --notification-info-border: var(--accent);
+    --notification-info-highlight: #ffe08a;
+    --notification-success-border: #69b06b;
+    --notification-success-highlight: #aed8b0;
+    --notification-warning-border: #e9a046;
+    --notification-warning-highlight: #f8d297;
+    --notification-error-border: #d94c4c;
+    --notification-error-highlight: #f0a8a8;
 }
 
 // Main UI

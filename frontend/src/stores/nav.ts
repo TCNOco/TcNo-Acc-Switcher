@@ -134,6 +134,21 @@ export async function resolveInitialRoute(): Promise<void> {
 
 let syncing = false;
 
+/** Replace current history entry + route (does not push — avoids orphan stack entries on logical back). */
+function replaceCurrentHistoryRoute(next: Route): void {
+  syncing = true;
+  try {
+    const url = serializeRoute(next);
+    const st = window.history.state as { idx?: unknown } | null;
+    const idx =
+      typeof st?.idx === "number" && Number.isFinite(st.idx) ? st.idx : historyIndex;
+    window.history.replaceState({ idx }, "", url);
+    route.set(next);
+  } finally {
+    syncing = false;
+  }
+}
+
 /** Sync store → location.hash without adding history entries. */
 export function installHashSync(): () => void {
   const unsub = route.subscribe((r) => {
@@ -227,9 +242,14 @@ export function navigateBackLikeButton(): void {
   if (r.page === "home") {
     return;
   }
-  if (navigateBack()) {
+  if (historyIndex > 0) {
+    history.back();
+    return;
+  }
+  if (typeof window !== "undefined" && window.history.length > 1) {
+    history.back();
     return;
   }
   const prev = get(previousPage);
-  route.set(prev ?? { page: "home" });
+  replaceCurrentHistoryRoute(prev ?? { page: "home" });
 }

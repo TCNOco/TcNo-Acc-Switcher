@@ -478,7 +478,7 @@
   .modal-input {
     padding: 8px;
     background: var(--even-darker-code-background);
-    border: 1px solid var(--button-bg);
+    border: 2px solid var(--button-bg);
     color: var(--whiteSecondary);
     font: inherit;
     width: 100%;

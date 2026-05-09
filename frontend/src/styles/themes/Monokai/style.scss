@@ -1,5 +1,6 @@
 @use "sass:color";
-﻿/*
+
+/*
     Monokai Default
     - Created by MajorAmari
 */
@@ -9,7 +10,106 @@
   --accentHS: 50, 96%;
   --accentL: 69%;
   --accentInt: 252, 229, 102;
+  --cyan: #66d9ef;
+  --cyanSecondary: #b8e8ff;
+  --cyanLight: hsla(191, 90%, 70%, 0.15);
+
+  --code: #49483e;
+  --code-background: #272822;
+  --slightly-darker-code-background: hsl(54, 6%, 12%);
+  --darker-code-background: #181915;
+  --even-darker-code-background: rgb(11, 11, 9);
+  --shadow: 0 4px 10px -6px #080807;
+
+  --black: #272822;
+  --blackSecondary: #49483e;
+  --blackTernary: #bcb7a7;
+  --blackLight: hsla(53, 8%, 20%, 0.06);
+
+  --white: #f8f8f2;
+  --whiteSecondary: #fffef9;
+  --whiteLight: hsla(53, 20%, 98%, 0.05);
+
+  --green: #a6e22e;
+  --greenSecondary: #d9f593;
+  --greenLight: hsla(80, 80%, 60%, 0.1);
+  --orange: #fd971f;
+  --orangeSecondary: #ffd099;
+  --orangeLight: hsla(31, 100%, 60%, 0.1);
+  --pink: #f92672;
+  --pinkSecondary: #fba7cb;
+  --pinkLight: hsla(339, 100%, 60%, 0.1);
+  --purple: #ae81ff;
+  --purpleSecondary: #d9caff;
+  --purpleLight: hsla(267, 100%, 80%, 0.1);
+  --red: #f92672;
+  --redSecondary: #fba7cb;
+  --redLight: hsla(339, 100%, 58%, 0.1);
+  --yellow: #e6db74;
+  --yellowSecondary: #f7f4c9;
+  --gradientDegree: 135deg;
+
+  --border-bar-bg: var(--code);
+  --border-bar-size: 7px;
+  --program-bg: linear-gradient(90deg, #272822, #1c1c17 100%);
+  --accountListBackground: #222222;
+  --footer-bg: #131313;
+  --scrollbar-track-bg: #3f3f3f;
+  --button-bg: #3f3f3f;
+  --button-bg-hover: #{color.adjust($color: #3f3f3f, $lightness: 8%)};
+  --tooltip-bg: var(--even-darker-code-background);
+  --main-padding: 0.75rem;
+  --document-canvas-bg: #222222;
+
+  --shadow-color-heavy: rgba(0, 0, 0, 0.86);
+  --shadow-color-50: rgba(0, 0, 0, 0.52);
+  --shadow-color-45: rgba(0, 0, 0, 0.46);
+  --shadow-color-40: rgba(0, 0, 0, 0.41);
+  --shadow-color-35: rgba(0, 0, 0, 0.37);
+  --shadow-color-30: rgba(0, 0, 0, 0.31);
+  --backdrop-scrim-55: rgba(0, 0, 0, 0.6);
+  --backdrop-scrim-65: rgba(0, 0, 0, 0.7);
+  --black-alpha-12: rgba(0, 0, 0, 0.16);
+  --black-alpha-15: rgba(0, 0, 0, 0.2);
+
+  --text-muted-gray: #d6d5cc;
+  --text-subtle-gray: #959183;
+  --text-dim-gray: #706b5f;
+  --text-body-muted: #837f71;
+
+  --surface-row-dark: #181818;
+  --surface-steam-popover: #2d2d29;
+  --surface-context-submenu: var(--code);
+  --surface-context-row: #32322c;
+  --surface-search-result: rgba(60, 59, 52, 0.82);
+
+  --context-menu-hotkey: #5c4820;
+  --form-checkbox-border: #756f62;
+  --window-control-hover-bg: #{color.adjust($color: #3f3f3f, $lightness: 14%)};
+  --tag-default-bg: #595348;
+
+  --overlay-panel-bg: rgba(39, 40, 34, 0.96);
+  --overlay-scrim-deep: rgba(8, 8, 6, 0.78);
+
+  --greenInt: 166, 226, 46;
+  --orangeInt: 253, 151, 31;
+  --redInt: 249, 38, 114;
+
+  --ace-editor-bg: #272822;
+  --ace-gutter-fg: #90908a;
+  --ace-invisible: #706b5f;
+  --ace-muted-purple: #b8a598;
+  --ace-xml-pe: #595751;
+
   --notification-main-bg: #131313;
+  --notification-info-border: var(--accent);
+  --notification-info-highlight: #fdf3b0;
+  --notification-success-border: #7bd88f;
+  --notification-success-highlight: #aeeb9d;
+  --notification-warning-border: #fd9353;
+  --notification-warning-highlight: #ffc08a;
+  --notification-error-border: #ff6188;
+  --notification-error-highlight: #ffa3b9;
 }
 
 * {

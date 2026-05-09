@@ -63,8 +63,7 @@ button, .button
 .platform_list_item 
     {
         border: #5f648b 1px solid;
-        -webkit-text-stroke: 1px #c0caf5;
-        color: transparent;
+        color: var(--accent);
         text-shadow: none;
     }
 

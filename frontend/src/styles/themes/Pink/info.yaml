@@ -1,0 +1,25 @@
+# This theme's name (Shows in-app, can be different to folder name)
+name: Pink
+accent: "#ef73a3"
+
+# Required colors for updater & main UI (not HTML/CSS):
+# Light theme: pastel pink surfaces, deep rose chrome, dark text
+linkColor: "#9e1348"
+headerbarBackground: "#9e1348"
+mainBackground: "#f5a8c6"
+modalInputBackground: "#fff0f5"
+borderedItemBorderColor: "#c2185b"
+buttonBackground: "#f0bcd0"
+buttonBackground-hover: "#eab6ca"
+buttonBackground-active: "#e29ab8"
+buttonColor: "#2a1f24"
+buttonBorder: "#c2185b"
+buttonBorder-hover: "#9e1348"
+buttonBorder-active: "#9e1348"
+windowControlsBackground: "#9e1348"
+windowControlsBackground-active: "#7a0f38"
+windowControlsCloseBackground: "#9e1348"
+windowControlsCloseBackground-active: "#7a0f38" 
+# For platform shortcuts on desktop
+platformLogoForeground: "#fff8fa"
+platformLogoBackground: "#9e1348"
