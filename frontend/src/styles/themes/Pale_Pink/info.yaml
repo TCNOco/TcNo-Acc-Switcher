@@ -1,0 +1,25 @@
+# This theme's name (Shows in-app, can be different to folder name)
+name: Pale Pink
+accent: "#fadadd"
+
+# Required colors for updater & main UI (not HTML/CSS):
+# - Not including these will cause the updater to use default color scheme (Dracula Cyan)
+linkColor: "#fadadd" # Accent color
+headerbarBackground: "#231b1f"
+mainBackground: "#2a2126"
+modalInputBackground: "#342a31"
+borderedItemBorderColor: "#7d6470"
+buttonBackground: "#342a31"
+buttonBackground-hover: "#40353d"
+buttonBackground-active: "#4a3e47"
+buttonColor: "#fadadd"
+buttonBorder: "#7d6470"
+buttonBorder-hover: "#fadadd"
+buttonBorder-active: "#fadadd"
+windowControlsBackground: "#231b1f"
+windowControlsBackground-active: "#7d6470"
+windowControlsCloseBackground: "#231b1f"
+windowControlsCloseBackground-active: "#7d6470"
+# For platform shortcuts on desktop (For consistency make sure these match your CSS)
+platformLogoForeground: "#2a2126"
+platformLogoBackground: "#fadadd"

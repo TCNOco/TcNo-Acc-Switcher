@@ -25,14 +25,14 @@
     width: 100%;
     margin: 0 0 0.5rem;
     padding: 0.4rem 0.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--overlay-white-12);
+    background: var(--backdrop-dark-20);
     color: inherit;
     font: inherit;
     cursor: pointer;
     box-sizing: border-box;
     &::active {
-      border: 1px solid rgba(255, 255, 255, 0.12)!important;
+      border: 1px solid var(--overlay-white-12)!important;
     }
   }
 

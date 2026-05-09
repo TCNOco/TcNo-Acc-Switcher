@@ -138,14 +138,14 @@
     height: 1.5rem;
 
     use {
-      fill: #fff;
+      fill: var(--whiteSecondary);
     }
   }
 
   .versionIdentifier {
     margin-top: 0.75rem;
     padding-top: 0.5rem;
-    border-top: 1px solid var(--border-bar-bg, #3b4853);
+    border-top: 1px solid var(--border-bar-bg);
     font-size: 0.85rem;
     opacity: 0.85;
   }

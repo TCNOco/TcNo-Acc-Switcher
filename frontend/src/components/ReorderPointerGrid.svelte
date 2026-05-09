@@ -370,7 +370,7 @@
     pointer-events: none;
     opacity: 0.96;
     cursor: grabbing;
-    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 12px 36px var(--shadow-color-50);
     transition: none;
     left: 0;
     top: 0;
@@ -378,7 +378,7 @@
     display: flex;
     flex-direction: column;
     /* Same as .acc_list / list chrome — cloned tiles are often transparent (Steam label.acc). */
-    background: var(--accountListBackground, #11181d);
+    background: var(--accountListBackground);
     border-radius: 6px;
 
     &:hover {
@@ -408,7 +408,7 @@
     height: 100%;
     width: 100%;
     font-weight: 700;
-    color: var(--accent, #80ffea);
+    color: var(--accent);
     padding: 0.5rem;
     text-align: center;
     word-break: break-word;

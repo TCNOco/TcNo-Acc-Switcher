@@ -31,7 +31,7 @@ button,
   border-style: solid;
   border-width: 0.1em;
   box-shadow: none;
-  color: white;
+  color: var(--whiteSecondary);
   cursor: pointer;
   margin: 0 0.25em;
   padding: 0.25em 0.651em;
@@ -64,8 +64,8 @@ button,
     width: 1.5em;
 
     &.footerIcoInline {
-      fill: white;
-      color: white;
+      fill: var(--whiteSecondary);
+      color: var(--whiteSecondary);
       height: 1em;
       width: auto;
       margin: 0 2px 2px 2px;
@@ -75,7 +75,7 @@ button,
 
   svg {
     height: 1.5rem;
-    fill: white;
+    fill: var(--whiteSecondary);
   }
 
   &.square {
@@ -153,18 +153,15 @@ button .caret, .button .caret {
   background: var(--button-bg);
   border-color: var(--button-bg);
   border-width: 0.1em;
-  -webkit-box-shadow: 0 0 15px 3px #000;
-  -webkit-box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.84);
-  -moz-box-shadow: 0 0 15px 3px #000;
-  -moz-box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.84);
-  box-shadow: 0 0 15px 3px #000;
-  box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.84);
+  -webkit-box-shadow: 0 0 15px 3px var(--shadow-color-heavy);
+  -moz-box-shadow: 0 0 15px 3px var(--shadow-color-heavy);
+  box-shadow: 0 0 15px 3px var(--shadow-color-heavy);
 }
 
 .dropdown-item {
   padding: 0.5rem 1rem;
   margin: 0;
-  color: white;
+  color: var(--whiteSecondary);
   display: block;
   width: 100%;
   clear: both;
@@ -179,14 +176,14 @@ button .caret, .button .caret {
   &:active,
   &:focus,
   &:target {
-    color: white;
-    background: #28374E !important;
+    color: var(--whiteSecondary);
+    background: var(--button-bg-hover) !important;
   }
 
   &:hover {
     cursor: pointer;
-    color: white;
-    background: #28374E;
+    color: var(--whiteSecondary);
+    background: var(--button-bg-hover);
   }
 }
 
@@ -272,63 +269,63 @@ button .caret, .button .caret {
 
 /* Ace Editor */
 .ace_editor {
-  background: #282a36;
-  color: #f8f8f2;
+  background: var(--ace-editor-bg);
+  color: var(--white);
 
   & .ace_gutter {
-    background: #282a36;
-    color: rgb(144,145,148);
+    background: var(--ace-editor-bg);
+    color: var(--ace-gutter-fg);
   }
 
   & .ace_print-margin {
     width: 1px;
-    background: #44475a;
+    background: var(--blackSecondary);
   }
 
   & .ace_cursor {
-    color: #F8F8F0;
+    color: var(--whiteSecondary);
   }
 
   &.ace_multiselect .ace_selection.ace_start {
-    box-shadow: 0 0 3px 0px #282a36;
+    box-shadow: 0 0 3px 0px var(--ace-editor-bg);
     border-radius: 2px;
   }
 
   & .ace_marker-layer {
     & .ace_selection {
-      background: #44475a;
+      background: var(--blackSecondary);
     }
 
     & .ace_step {
-      background: rgb(198, 219, 174);
+      background: var(--ace-step-green);
     }
 
     & .ace_bracket {
       margin: -1px 0 0 -1px;
-      border: 1px solid #a29709;
+      border: 1px solid var(--ace-bracket-gold);
     }
 
     & .ace_active-line {
-      background: #44475a;
+      background: var(--blackSecondary);
     }
 
     & .ace_selected-word {
-      border: 0px 0px 0px 1px #a29709;
+      border: 0px 0px 0px 1px var(--ace-bracket-gold);
       border-radius: 3px;
     }
   }
 
   & .ace_gutter-active-line {
-    background: #44475a;
+    background: var(--blackSecondary);
   }
 
   & .ace_invisible {
-    color: #626680;
+    color: var(--ace-invisible);
   }
 
   & .ace_keyword,
   & .ace_meta {
-    color: #ff79c6;
+    color: var(--pink);
   }
 
   & .ace_constant,
@@ -338,51 +335,51 @@ button .caret, .button .caret {
   & .ace_heading,
   & .ace_markup.ace_heading,
   & .ace_support.ace_constant {
-    color: #CF6A4C;
+    color: var(--ace-orange-constant);
   }
 
   & .ace_constant {
     &.ace_numeric {
-      color: #bd93f9;
+      color: var(--purple);
     }
 
     &.ace_character {
-      color: #bd93f9;
+      color: var(--purple);
     }
 
     &.ace_character.ace_escape {
-      color: #ff79c6;
+      color: var(--pink);
     }
 
     &.ace_other {
-      color: #bd93f9;
+      color: var(--purple);
     }
   }
 
   & .ace_language {
-    color: #bd93f9;
+    color: var(--purple);
   }
 
   & .ace_numeric {
-    color: #bd93f9;
+    color: var(--purple);
   }
 
   & .ace_invalid {
     &.ace_illegal {
-      color: #F8F8F0;
-      background: #ff79c6;
+      color: var(--whiteSecondary);
+      background: var(--pink);
     }
 
     &.ace_deprecated {
       text-decoration: underline;
       font-style: italic;
-      color: #F8F8F0;
-      background: #F8F8F0;
+      color: var(--whiteSecondary);
+      background: var(--whiteSecondary);
     }
   }
 
   & .ace_support {
-    color: #9B859D;
+    color: var(--ace-muted-purple);
 
     & .ace_function {
       color: var(--ace_editor_functionColor);
@@ -390,55 +387,55 @@ button .caret, .button .caret {
 
     & .ace_class {
       font-style: italic;
-      color: #66d9ef;
+      color: var(--accent-type-dim);
     }
 
     & .ace_type {
       font-style: italic;
-      color: #66d9ef;
+      color: var(--accent-type-dim);
     }
   }
 
   & .ace_fold {
-    background: #50fa7b;
-    border-color: #f8f8f2;
+    background: var(--green);
+    border-color: var(--white);
   }
 
   & .ace_list,
   & .ace_markup.ace_list,
   & .ace_storage {
-    color: #F9EE98;
+    color: var(--ace-yellow-pale);
   }
 
   & .ace_entity.ace_name.ace_function,
   & .ace_meta.ace_tag {
-    color: #AC885B;
+    color: var(--ace-brown-mid);
   }
 
   & .ace_string {
-    color: #f1fa8c;
+    color: var(--ace-string);
   }
 
   & .ace_string.ace_regexp {
-    color: #E9C062;
+    color: var(--ace-regexp);
   }
 
   & .ace_comment {
     font-style: italic;
-    color: #6272a4;
+    color: var(--form-checkbox-border);
   }
 
   & .ace_variable {
-    color: #50fa7b;
+    color: var(--green);
 
     &.ace_parameter {
       font-style: italic;
-      color: #ffb86c;
+      color: var(--ace-warning-orange);
     }
   }
 
   & .ace_xml-pe {
-    color: #494949;
+    color: var(--ace-xml-pe);
   }
 
   & .ace_indent-guide {
@@ -449,7 +446,7 @@ button .caret, .button .caret {
 /* SHORTCUTS for basic platforms */
 .shortcuts, .shortcutDropdown {
     border: 1px solid var(--button-bg);
-    background: linear-gradient(90deg,#11181d,#0e1419 100%);
+    background: var(--program-bg);
     width: fit-content;
     padding: 1px;
     max-width: 258px;
@@ -493,7 +490,7 @@ button .caret, .button .caret {
 /* For sortable */
 .shortcutPlaceholder {
     border: 2px dashed var(--accent);
-    background: #13222f;
+    background: var(--code-background);
 }
 
 .shortcuts {
@@ -524,7 +521,7 @@ button .caret, .button .caret {
 .shortcutDropdown {
     position: absolute;
     z-index: 500;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    box-shadow: 0px 8px 16px 0px var(--backdrop-dark-20);
     min-height: 36px;
     max-height: 260px;
     /* Wide enough for several tiles per row; avoid a single 30px-wide column */
@@ -575,8 +572,8 @@ button .caret, .button .caret {
 
 /* Path picker */
 .pathPicker {
-    color: white;
-    background: #070a0d;
+    color: var(--whiteSecondary);
+    background: var(--even-darker-code-background);
     width: calc(100% - 2em);
     max-width: 900px;
     max-height: 50vh;
@@ -593,7 +590,7 @@ button .caret, .button .caret {
         padding-left: 1em;
 
         &:not(:first-child) {
-            border-left: 1px solid #00252c
+            border-left: 1px solid var(--accent-border-deep)
         }
     }
 
@@ -604,7 +601,7 @@ button .caret, .button .caret {
         user-select: none;
 
         &:not(.c):hover {
-            color: #b1f2ff
+            color: var(--accent-text-bright)
         }
 
         &.head {
@@ -661,13 +658,13 @@ button .caret, .button .caret {
 .tooltip .tooltip-inner {
     max-width: 200px;
     padding: 0.25rem 0.5rem;
-    color: #fff;
+    color: var(--whiteSecondary);
     text-align: center;
     background-color: var(--tooltip-bg);
     border-radius: 0.25rem;
     font-size: 0.875rem;
     white-space: pre-wrap;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 2px 8px var(--shadow-color-35);
 }
 
 .tooltip[data-placement="top"] {
@@ -753,7 +750,7 @@ button .caret, .button .caret {
   &Discord,
   &Patreon,
   &Kofi {
-      fill: white;
+      fill: var(--whiteSecondary);
   }
 }
 
@@ -762,7 +759,7 @@ button .caret, .button .caret {
   &IcoOWTank,
   &IcoOWDamage,
   &IcoOWSupport {
-      fill: white;
+      fill: var(--whiteSecondary);
   }
 
   &Level sup {

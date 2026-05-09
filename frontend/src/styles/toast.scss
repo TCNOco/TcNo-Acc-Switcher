@@ -30,7 +30,7 @@
 
   border-radius: 2px;
   border: 1px solid transparent;
-  box-shadow: var(--shadow, 0 4px 14px rgba(0, 0, 0, 0.35));
+  box-shadow: var(--shadow, 0 4px 14px var(--shadow-color-35));
   background: var(--darker-code-background, #0f151a);
   color: var(--white, #f8f8f2);
   text-align: left;
@@ -44,8 +44,8 @@
 .toast--success {
   border-color: var(--green, #8aff80);
   box-shadow:
-    var(--shadow, 0 4px 14px rgba(0, 0, 0, 0.35)),
-    0 0 0 1px rgba(138, 255, 128, 0.12);
+    var(--shadow, 0 4px 14px var(--shadow-color-35)),
+    0 0 0 1px rgba(var(--greenInt), 0.12);
 
   .toast__icon,
   .toast__count,
@@ -58,8 +58,8 @@
 .toast--warning {
   border-color: var(--orange, #ffca80);
   box-shadow:
-    var(--shadow, 0 4px 14px rgba(0, 0, 0, 0.35)),
-    0 0 0 1px rgba(255, 202, 128, 0.12);
+    var(--shadow, 0 4px 14px var(--shadow-color-35)),
+    0 0 0 1px rgba(var(--orangeInt), 0.12);
 
   .toast__icon,
   .toast__count,
@@ -72,8 +72,8 @@
 .toast--error {
   border-color: var(--red, #ff9580);
   box-shadow:
-    var(--shadow, 0 4px 14px rgba(0, 0, 0, 0.35)),
-    0 0 0 1px rgba(255, 149, 128, 0.12);
+    var(--shadow, 0 4px 14px var(--shadow-color-35)),
+    0 0 0 1px rgba(var(--redInt), 0.12);
 
   .toast__icon,
   .toast__count,
@@ -84,16 +84,16 @@
 }
 
 .toast--info {
-  border-color: var(--cyan, #80ffea);
+  border-color: var(--accent);
   box-shadow:
-    var(--shadow, 0 4px 14px rgba(0, 0, 0, 0.35)),
-    0 0 0 1px rgba(128, 255, 234, 0.12);
+    var(--shadow, 0 4px 14px var(--shadow-color-35)),
+    0 0 0 1px var(--accent-fill-very-soft);
 
   .toast__icon,
   .toast__count,
   svg {
-    color: var(--cyan, #80ffea);
-    fill: var(--cyan, #80ffea);
+    color: var(--accent);
+    fill: var(--accent);
   }
 }
 
@@ -158,7 +158,7 @@
 
   &:hover {
     color: var(--white, #f8f8f2);
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--overlay-white-06);
   }
 }
 

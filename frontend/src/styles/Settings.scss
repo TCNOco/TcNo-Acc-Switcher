@@ -7,16 +7,16 @@
 .container {
   max-width: 100%;
   overflow: visible;
-  color: white;
+  color: var(--whiteSecondary);
 }
 
 .SettingsHeader {
-  color: white;
+  color: var(--whiteSecondary);
   font-weight: bold;
   padding: 0 0.1em 0.5em 0;
   margin: 1.25rem 0 0.75rem;
   border: 0;
-  border-left: 3px solid var(--accent, #6272a4);
+  border-left: 3px solid var(--accent);
   padding: 0.15rem 0 0.15rem 0.65rem;
 }
 
@@ -31,7 +31,7 @@
 }
 
 div.form-text {
-  color: white;
+  color: var(--whiteSecondary);
   font-size: 12px !important;
 }
 
@@ -46,8 +46,8 @@ textarea {
   border: 0;
   border-bottom: 2px solid transparent;
   outline: 0;
-  background: #070a0d;
-  color: white;
+  background: var(--even-darker-code-background);
+  color: var(--whiteSecondary);
 }
 
 textarea {
@@ -56,7 +56,7 @@ textarea {
 }
 
 input[type="number"] {
-  border-bottom: 2px solid #888;
+  border-bottom: 2px solid var(--input-number-border);
 }
 
 input[type="number"]:focus,
@@ -118,14 +118,14 @@ input[type="checkbox"] + label {
   cursor: pointer;
   -moz-transition: 0.5s ease all;
   -webkit-transition: 0.5s ease all;
-  border: 1px solid #6272a4;
+  border: 1px solid var(--form-checkbox-border);
   background: none;
   transition: 0.5s ease all;
   vertical-align: middle;
 }
 
 input[type="checkbox"]:checked + label {
-  border: 1px solid #6272a4;
+  border: 1px solid var(--form-checkbox-border);
   background: var(--accent);
 }
 

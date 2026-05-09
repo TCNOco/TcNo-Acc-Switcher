@@ -1,0 +1,333 @@
+/*
+    Pale Pink theme
+    - Accent #fadadd with dusty rose / mauve surfaces
+*/
+
+:root {
+    /* Accent (also drives --cyan for gradients / legacy references) */
+    --accent: #fadadd;
+    --accentHS: 352, 74%;
+    --accentL: 92%;
+    --accentInt: 250, 218, 221;
+    --cyan: var(--accent);
+    --cyanSecondary: #fcecf0;
+    --cyanLight: hsla(352, 78%, 94%, 0.35);
+
+    /* Base surfaces — dusty rose charcoal (replacing blue-grey defaults) */
+    --code: #3a3038;
+    --code-background: #2f272c;
+    --slightly-darker-code-background: hsl(328, 10%, 12%);
+    --darker-code-background: #261f24;
+    --even-darker-code-background: rgb(22, 18, 21);
+    --shadow: 0 4px 10px -6px #140f12;
+
+    --black: #2a2126;
+    --blackSecondary: #5c4e55;
+    --blackTernary: #c9adb8;
+    --blackLight: hsla(330, 10%, 20%, 0.05);
+
+    --white: #fdf5f7;
+    --whiteSecondary: #fffafc;
+    --whiteLight: hsla(352, 35%, 98%, 0.05);
+
+    /* Semantic accents — tuned for rose-tinted dark UI */
+    --green: #7ecf88;
+    --greenSecondary: #d4efd8;
+    --greenLight: hsla(130, 45%, 70%, 0.05);
+    --orange: #e9b06c;
+    --orangeSecondary: #fae8d4;
+    --orangeLight: hsla(32, 75%, 75%, 0.05);
+    --pink: #f5a8c6;
+    --pinkSecondary: #fddae8;
+    --pinkLight: hsla(330, 85%, 80%, 0.05);
+    --purple: #c4a8e0;
+    --purpleSecondary: #ebe2f5;
+    --purpleLight: hsla(268, 50%, 80%, 0.05);
+    --red: #e88898;
+    --redSecondary: #fad5dc;
+    --redLight: hsla(352, 70%, 75%, 0.05);
+    --yellow: #f0dc8c;
+    --yellowSecondary: #fcf6dd;
+    --gradientDegree: 135deg;
+
+    --border-bar-bg: var(--code);
+    --border-bar-size: 7px;
+    --program-bg: linear-gradient(90deg, #32272d, #261f24 100%);
+    --accountListBackground: #2a2126;
+    --footer-bg: #231b1f;
+    --scrollbar-track-bg: #2c2429;
+    --button-bg: #342a31;
+    --button-bg-hover: #40353d;
+    --tooltip-bg: var(--even-darker-code-background);
+    --main-padding: 0.75rem;
+    --document-canvas-bg: #2a2126;
+
+    /* Shared neutral overlays (warm-tint-friendly) */
+    --shadow-color-heavy: rgba(12, 8, 10, 0.88);
+    --shadow-color-50: rgba(12, 8, 10, 0.5);
+    --shadow-color-45: rgba(12, 8, 10, 0.45);
+    --shadow-color-40: rgba(12, 8, 10, 0.42);
+    --shadow-color-35: rgba(12, 8, 10, 0.38);
+    --shadow-color-30: rgba(12, 8, 10, 0.32);
+    --backdrop-scrim-55: rgba(10, 7, 9, 0.58);
+    --backdrop-scrim-65: rgba(10, 7, 9, 0.68);
+    --black-alpha-12: rgba(8, 5, 7, 0.14);
+    --black-alpha-15: rgba(8, 5, 7, 0.18);
+
+    --text-muted-gray: #e8d6dc;
+    --text-subtle-gray: #cfaab8;
+    --text-dim-gray: #957c86;
+    --text-body-muted: #aa8f9a;
+
+    --surface-row-dark: #31272e;
+    --surface-steam-popover: #352b33;
+    --surface-context-submenu: var(--code);
+    --surface-context-row: #3f343c;
+    --surface-search-result: rgba(58, 46, 52, 0.78);
+
+    --context-menu-hotkey: #6b483d;
+    --form-checkbox-border: #9d7d8c;
+    --window-control-hover-bg: #453a41;
+    --tag-default-bg: #5e4f56;
+
+    --overlay-panel-bg: rgba(45, 36, 41, 0.96);
+    --overlay-scrim-deep: rgba(16, 12, 14, 0.76);
+
+    /* Toast glow channels (harmonised with semantic greens/oranges/reds above) */
+    --greenInt: 126, 207, 136;
+    --orangeInt: 233, 176, 108;
+    --redInt: 232, 136, 152;
+
+    /* Ace editor chrome — warm violet-brown */
+    --ace-editor-bg: #30282c;
+    --ace-gutter-fg: rgb(158, 136, 145);
+    --ace-invisible: #7d6972;
+    --ace-muted-purple: #b698a8;
+    --ace-xml-pe: #5d5256;
+
+    /* Notifications */
+    --notification-main-bg: #2a2126;
+    --notification-info-border: var(--accent);
+    --notification-info-highlight: #fcecef;
+    --notification-success-border: #89c98a;
+    --notification-success-highlight: #b0dcb1;
+    --notification-warning-border: #e9b873;
+    --notification-warning-highlight: #f5d49a;
+    --notification-error-border: #df8fa3;
+    --notification-error-highlight: #ebb2c2;
+}
+
+/* Main Background Color (Brighter Part) */
+body,
+.programMain,
+.mainblock {
+    background: #2a2126;
+}
+
+/* Header Bar Color (Darker Part) */
+.headerbar,
+.resizeTopLeft,
+.resizeTop,
+.resizeTopRight,
+.resizeRight,
+.resizeBottomRight,
+.resizeBottom,
+.resizeBottomLeft,
+.resizeLeft {
+    background: #231b1f;
+}
+
+#window-controls,
+#btnBack {
+    background: #231b1f;
+}
+
+/* Icons / accents */
+.header_icon,
+.container {
+    fill: var(--accent);
+}
+
+/* Button Colors */
+button,
+.button {
+    background: #342a31;
+    border-color: #7d6470;
+    color: var(--accent);
+}
+
+#window-title,
+#window-title-modal {
+    color: var(--accent);
+}
+
+.acc_list_actionbar {
+    background: #342a31;
+}
+
+.platform_list_item {
+    border: #7d6470 1px solid;
+    -webkit-text-stroke: 1px var(--accent);
+    color: transparent;
+    text-shadow: none;
+}
+
+.platform_list_item .icoFG {
+    fill: var(--accent);
+}
+
+.icoGlass {
+    fill: rgba(255, 255, 255, 0%);
+}
+
+.icoBG {
+    background: #342a31;
+}
+
+.accountHover {
+    border: 0.1em solid;
+    border-color: #7d6470;
+    background: #342a31;
+}
+
+#window-controls button:hover,
+#btnBack:hover {
+    background: #342a31;
+}
+
+button:hover,
+.button:hover {
+    background: #40353d;
+    border-color: var(--accent);
+}
+
+button:active,
+button:target,
+.button:active,
+.button:target {
+    background-color: #4a3e47 !important;
+}
+
+.shortcuts,
+.shortcutDropdown,
+.shortcuts.expandShortcuts {
+    background: #342a31;
+    border-color: #7d6470;
+}
+
+.shortcutPlaceholder {
+    background: #342a31;
+}
+
+.modalFG {
+    background: #231b1f;
+}
+
+#modal_contents {
+    background: #2a2126;
+}
+
+#window-title-modal {
+    background: #342a31;
+}
+
+#modal_contents button {
+    background: #342a31;
+    border-color: #7d6470;
+    color: var(--accent);
+}
+
+#modal_contents button:hover {
+    background: #40353d;
+    border-color: var(--accent);
+}
+
+#modal_contents button:active {
+    border-color: var(--accent);
+    background-color: #4a3e47;
+}
+
+.pathPicker {
+    background: #342a31;
+}
+
+.dropdown {
+    color: var(--accent);
+}
+
+.dropdown-menu {
+    background: #342a31;
+    border-color: #8f7480;
+}
+
+.dropdown-item:hover {
+    background: #2a2126 !important;
+}
+
+::-webkit-scrollbar-track {
+    background: #2c2429;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 0.3em;
+    background: #50454c;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #6d6068;
+}
+
+.show > .dropdown-toggle {
+    background: #342a31 !important;
+}
+
+input[type="number"],
+input[type="text"],
+input[type="password"] {
+    background: #342a31;
+}
+
+#modal_contents input[type="text"],
+#modal_contents input[type="password"] {
+    background: #342a31 !important;
+}
+
+.contextmenu {
+    background: #342a31;
+}
+
+.contextmenu li a {
+    color: var(--accent);
+}
+
+.contextmenu li:hover {
+    border-left: 2px solid #ad8290;
+    background: #342a31;
+}
+
+.contextmenu li:hover .submenu {
+    background: #342a31;
+}
+
+.contextmenu,
+.contextmenu .submenu {
+    box-shadow: none;
+}
+
+.platform_list_item:hover:not(:active) {
+    animation: none;
+}
+
+.btnClose-modal {
+    background: #df8fa3;
+}
+
+input.acc:checked + label.acc {
+    border-color: var(--accent) !important;
+    background: #3d353b;
+}
+
+label.acc.currentAcc {
+    border-color: #89c98a;
+    border-style: dashed;
+}

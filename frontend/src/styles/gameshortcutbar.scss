@@ -66,7 +66,7 @@
   pointer-events: none;
   opacity: 0.96;
   cursor: grabbing;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 12px 36px var(--shadow-color-50);
   left: 0;
   top: 0;
   overflow: hidden;

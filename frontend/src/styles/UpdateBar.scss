@@ -6,7 +6,7 @@
   height: 2rem;
   line-height: 2rem;
   background: var(--accent);
-  color: #000;
+  color: var(--text-on-bright-bg);
   font-weight: 700;
   text-align: center;
   cursor: pointer;
@@ -35,7 +35,7 @@
 }
 
 .updateBar__close:hover {
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--backdrop-dark-20);
 }
 
 .updateBar__close svg {

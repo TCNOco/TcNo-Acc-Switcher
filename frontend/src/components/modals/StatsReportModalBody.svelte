@@ -167,8 +167,8 @@
     line-height: 1.35;
     white-space: pre-wrap;
     word-break: break-word;
-    background: rgba(0, 0, 0, 0.25);
-    border: 1px solid var(--border-bar-bg, #3b4853);
+    background: var(--backdrop-dark-25);
+    border: 1px solid var(--border-bar-bg);
     border-radius: 4px;
     max-height: 12rem;
     overflow: auto;

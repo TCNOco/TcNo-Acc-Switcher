@@ -57,7 +57,7 @@
 
 <style lang="scss">
   .pathPicker-err {
-    color: #ff8a8a;
+    color: var(--red);
     margin: 0.5rem 0;
     font-size: 12px;
   }
@@ -76,7 +76,7 @@
   }
 
   :global(.pathPicker.pp-svg-tree .pp-node > .pp-node) {
-    border-left: 1px solid #00252c;
+    border-left: 1px solid var(--accent-border-deep);
   }
   :global(.pathPicker.pp-svg-tree .pp-root-list > .pp-node) {
     border-left: none !important;

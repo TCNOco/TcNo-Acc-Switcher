@@ -231,7 +231,7 @@
   }
 
   .steam-adv-info {
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-white-90);
     font-size: 0.95rem;
     line-height: 1.45;
     margin-bottom: 0.75rem;
@@ -289,13 +289,13 @@
     max-height: min(50vh, 28rem);
     overflow-y: auto;
     padding: 0.6rem 0.75rem;
-    background: rgba(0, 0, 0, 0.35);
-    border: 1px solid var(--accent, #6272a4);
+    background: var(--backdrop-dark-35);
+    border: 1px solid var(--accent);
     border-radius: 4px;
     font-family: ui-monospace, monospace;
     font-size: 0.8rem;
     line-height: 1.35;
-    color: rgba(255, 255, 255, 0.92);
+    color: var(--text-white-92);
   }
 
   .steam-adv-log-empty {
@@ -324,7 +324,7 @@
     width: auto !important;
     background: transparent;
     border: none;
-    color: var(--accent, #8be9fd);
+    color: var(--accent);
     text-decoration: underline;
     cursor: pointer;
     font: inherit;

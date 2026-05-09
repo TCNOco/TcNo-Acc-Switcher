@@ -146,7 +146,7 @@
         min-height: 32px;
         width: 100%;
         -webkit-app-region: drag;
-        color: #fff;
+        color: var(--whiteSecondary);
         grid-column: 1;
         display: flex;
         justify-content: space-between;
@@ -164,10 +164,9 @@
     .win-btn-back {
         --wails-draggable: no-drag;
         svg {
-            fill: white;
+            fill: var(--whiteSecondary);
             height: 0.8rem;
             display: block;
-            fill: white;
         }
         &:disabled {
             opacity: 0.35;
@@ -178,7 +177,7 @@
         height: 10px;
         margin: 12px;
         display: block;
-        fill: white;
+        fill: var(--whiteSecondary);
     }
     .window-controls {
         --wails-draggable: no-drag;
@@ -200,8 +199,8 @@
         height: 100%;
 
         &:hover {
-            background: #3B4853;
+            background: var(--window-control-hover-bg);
         }
     }
-    .win-btn-close:hover {background: #d51426;}
+    .win-btn-close:hover {background: var(--window-close-hover);}
 </style>

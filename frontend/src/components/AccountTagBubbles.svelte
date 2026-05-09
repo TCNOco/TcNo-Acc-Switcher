@@ -2,6 +2,8 @@
   import { textColorForTagBackground, type TagDefRow } from "../lib/accountTagsContext";
 
   export let tags: TagDefRow[] = [];
+
+  const fallbackTagBg = "#555555";
 </script>
 
 {#if tags.length > 0}
@@ -9,8 +11,9 @@
     {#each tags as tg (tg.id)}
       <span
         class="acc_tag_bubble"
-        style:background-color={tg.color || "#555"}
-        style:color={textColorForTagBackground(tg.color || "#555")}>{tg.name}</span>
+        class:acc_tag_bubble--default={!tg.color?.trim()}
+        style:background-color={tg.color?.trim() ? tg.color : undefined}
+        style:color={textColorForTagBackground(tg.color?.trim() ? tg.color : fallbackTagBg)}>{tg.name}</span>
     {/each}
   </div>
 {/if}
@@ -24,6 +27,10 @@
     max-width: 100%;
     flex-direction: row;
     justify-content: center;
+  }
+
+  .acc_tag_bubble--default {
+    background-color: var(--tag-default-bg);
   }
 
   .acc_tag_bubble {

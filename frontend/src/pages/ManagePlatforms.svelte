@@ -133,7 +133,7 @@
 
 <style lang="scss">
   .settings-err {
-    color: #faa;
+    color: var(--red);
     padding: 0.5rem;
   }
   .mt-4 {

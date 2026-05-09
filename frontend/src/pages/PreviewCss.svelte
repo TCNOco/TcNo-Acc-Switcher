@@ -1,6 +1,8 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { get } from "svelte/store";
   import { route, previousPage, appBarTitle } from "../stores/nav";
+  import { listThemes, setUserTheme, currentThemeId, type ThemeOption } from "../lib/themes";
   import { t } from "../stores/i18n";
   import "../styles/Settings.scss";
   import "../styles/HomePlatforms.scss";
@@ -100,7 +102,21 @@
   let toastPermanent = false;
   let shortcutDdOpen = false;
   let settingsDdOpen = false;
+  let themeOpen = false;
+  let themes: ThemeOption[] = [];
   let modalLog: string[] = [];
+
+  onMount(() => {
+    themes = listThemes();
+  });
+
+  $: currentThemeLabel =
+    themes.find((th) => th.id === $currentThemeId)?.label ?? themes[0]?.label ?? "";
+
+  async function pickTheme(id: string): Promise<void> {
+    await setUserTheme(id);
+    themeOpen = false;
+  }
 
   $: appBarTitle.set($t("Title_Settings_TestCss"));
   previousPage.set({ page: "settings" });
@@ -254,6 +270,30 @@
 <div class="main-content main-spacing preview-css-page">
   <h1 class="SettingsHeader">{$t("Settings_PreviewCssHeader")}</h1>
   <p class="preview-css-intro">{$t("Settings_PreviewCss")}</p>
+
+  <h2 class="SettingsHeader">{$t("Settings_Header_Theme")}</h2>
+  <div>
+    <div class="rowDropdown">
+      <span>{$t("Settings_CurrentStyle")}</span>
+      <div class="dropdown" class:show={themeOpen}>
+        <button type="button" class="dropdown-toggle" on:click={() => (themeOpen = !themeOpen)}>
+          {currentThemeLabel}
+          <span class="caret" aria-hidden="true"></span>
+        </button>
+        {#if themeOpen}
+          <ul class="custom-dropdown-menu dropdown-menu">
+            {#each themes as th}
+              <li role="none">
+                <button type="button" class="dropdown-item" on:click={() => void pickTheme(th.id)}>
+                  {th.label}
+                </button>
+              </li>
+            {/each}
+          </ul>
+        {/if}
+      </div>
+    </div>
+  </div>
 
   <h2 class="SettingsHeader">{$t("Preview_Platforms")}</h2>
   <div class="preview_element preview_program_main">
@@ -902,7 +942,7 @@
     pointer-events: none;
     opacity: 0.96;
     cursor: grabbing;
-    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 12px 36px var(--shadow-color-50);
     left: 0;
     top: 0;
   }
@@ -968,9 +1008,9 @@
     padding: 0.65rem 2.25rem 0.65rem 0.65rem;
     border-radius: 2px;
     border: 1px solid transparent;
-    box-shadow: var(--shadow, 0 4px 14px rgba(0, 0, 0, 0.35));
-    background: var(--darker-code-background, #0f151a);
-    color: var(--white, #f8f8f2);
+    box-shadow: var(--shadow, 0 4px 14px var(--shadow-color-35));
+    background: var(--darker-code-background);
+    color: var(--white);
     text-align: left;
   }
 
@@ -1003,23 +1043,23 @@
   .preview-static-toast .toast__message {
     font-size: 1rem;
     line-height: 1.35;
-    color: var(--whiteSecondary, #fff);
+    color: var(--whiteSecondary);
     opacity: 0.92;
     word-break: break-word;
     white-space: pre-line;
   }
 
   .preview-static-toast.toast--success {
-    border-color: var(--green, #8aff80);
+    border-color: var(--green);
   }
   .preview-static-toast.toast--warning {
-    border-color: var(--orange, #ffca80);
+    border-color: var(--orange);
   }
   .preview-static-toast.toast--error {
-    border-color: var(--red, #ff9580);
+    border-color: var(--red);
   }
   .preview-static-toast.toast--info {
-    border-color: var(--cyan, #80ffea);
+    border-color: var(--accent);
   }
 
   .preview-toast-live-heading {
@@ -1038,7 +1078,7 @@
     cursor: pointer;
     user-select: none;
     font-size: 0.9rem;
-    color: var(--whiteSecondary, #fff);
+    color: var(--whiteSecondary);
   }
 
   .toastPermanentCheckbox {
@@ -1048,7 +1088,7 @@
     height: 1.1rem;
     margin: 0;
     cursor: pointer;
-    accent-color: var(--accent, #80ffea);
+    accent-color: var(--accent);
   }
 
   .toastPermanentNote {
@@ -1076,9 +1116,9 @@
     padding: 0.65rem 0.75rem;
     max-height: 11rem;
     overflow: auto;
-    background: #070a0d;
-    border: 1px solid var(--button-bg, #2c3e50);
-    color: #e8f4ff;
+    background: var(--even-darker-code-background);
+    border: 1px solid var(--button-bg);
+    color: var(--accent-text-bright);
     font-size: 11px;
     line-height: 1.45;
     white-space: pre-wrap;

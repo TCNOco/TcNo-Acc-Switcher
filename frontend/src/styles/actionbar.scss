@@ -10,7 +10,7 @@
   padding: 0.25em 0.25em;
   overflow: visible;
   background: var(--footer-bg);
-  color: #fff;
+  color: var(--whiteSecondary);
 
   button {
     height: 36px;
@@ -35,7 +35,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   padding-left: 0.35rem;
-  color: rgba(255, 255, 255, 0.92);
+  color: var(--text-white-92);
 }
 
 .actionbar__actions {

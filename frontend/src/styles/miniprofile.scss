@@ -55,7 +55,7 @@
 
   padding-left: 16px;
 
-  text-shadow: 1px 1px 4px #000;
+  text-shadow: 1px 1px 4px var(--shadow-color-60);
 }
 
 .miniprofile_playersection .player_content .persona {
@@ -112,12 +112,12 @@
 .miniprofile_featuredcontainer .description .name {
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #b1b1b1;
+  color: var(--text-subtle-gray);
 }
 
 .miniprofile_featuredcontainer .description .xp {
   font-size: 12px;
-  color: #6b6a6a;
+  color: var(--text-dim-gray);
 }
 
 .miniprofile_featuredcontainer .friendPlayerLevel {
@@ -136,15 +136,15 @@
   background:
     radial-gradient(
       circle at top left,
-      rgba(81, 148, 255, 0.5) 0%,
-      rgba(0, 39, 112, 0.075) 100%
+      var(--miniprofile-radial-glow) 0%,
+      var(--miniprofile-radial-fade) 100%
     ),
     linear-gradient(
       to bottom,
-      rgba(58, 148, 184, 0.637) 0%,
-      rgba(106, 201, 239, 0.15) 1px,
-      rgba(19, 100, 133, 0.1) 25%,
-      rgba(106, 201, 239, 0) 50%
+      var(--miniprofile-linear-top) 0%,
+      var(--miniprofile-linear-mid) 1px,
+      var(--miniprofile-linear-low) 25%,
+      rgba(var(--accentInt), 0) 50%
     );
 }
 
@@ -152,11 +152,12 @@
   width: 120px;
   height: 55px;
   margin-right: 12px;
-  box-shadow: 0 0 2px black;
+  box-shadow: 0 0 2px var(--pure-black);
 }
 
 .miniprofile_playtimesection .playtimecontent {
-  color: rgba(181, 255, 255, 0.5);
+  color: hsl(var(--accentHS), calc(var(--accentL) + 26%));
+  opacity: 0.5;
   font-size: 13px;
   display: flex;
   flex-direction: column;
@@ -168,7 +169,8 @@
 }
 
 .miniprofile_playtimesection .playtimecontent .timeplayed {
-  color: rgb(181, 255, 255);
+  color: hsl(var(--accentHS), calc(var(--accentL) + 30%));
+  opacity: 1;
 }
 
 .miniprofile_playtimesection.forcurrentgame {
@@ -204,14 +206,14 @@
   opacity: 0.6;
   -webkit-mask: radial-gradient(
     ellipse farthest-corner at 150px 150px,
-    rgba(0, 0, 0, 1) 0%,
+    var(--pure-black) 0%,
     rgba(0, 0, 0, 0.6) 20%,
     rgba(0, 0, 0, 0.3) 34%,
     rgba(0, 0, 0, 0) 64%
   );
   mask: radial-gradient(
     ellipse farthest-corner at 150px 150px,
-    rgba(0, 0, 0, 1) 0%,
+    var(--pure-black) 0%,
     rgba(0, 0, 0, 0.6) 20%,
     rgba(0, 0, 0, 0.3) 34%,
     rgba(0, 0, 0, 0) 64%
@@ -236,7 +238,7 @@
   width: 302px;
   border-radius: 3px;
 
-  color: #828282;
+  color: var(--text-body-muted);
   font-size: 14px;
 
   position: relative;

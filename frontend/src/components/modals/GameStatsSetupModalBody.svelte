@@ -457,7 +457,7 @@
   .linkbtn {
     background: transparent;
     border: 0;
-    color: var(--accent, #63b3ed);
+    color: var(--accent);
     cursor: pointer;
     padding: 0.15rem 0.35rem;
     font: inherit;
@@ -477,9 +477,9 @@
   }
   .modal-input {
     padding: 8px;
-    background: #070a0d;
-    border: 1px solid var(--button-bg, #2c3e50);
-    color: #fff;
+    background: var(--even-darker-code-background);
+    border: 1px solid var(--button-bg);
+    color: var(--whiteSecondary);
     font: inherit;
     width: 100%;
     box-sizing: border-box;

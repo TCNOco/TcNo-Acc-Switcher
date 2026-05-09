@@ -17,7 +17,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(8, 12, 22, 0.72);
+  background: var(--overlay-scrim-deep);
   backdrop-filter: blur(4px);
   animation: overlayRecvFadeIn 0.15s ease-out;
 }
@@ -31,8 +31,8 @@
   height: 2.5rem;
   border: none;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--white, #f8f8f2);
+  background: var(--overlay-white-08);
+  color: var(--white);
   font-size: 1.75rem;
   line-height: 1;
   cursor: pointer;
@@ -40,7 +40,7 @@
   align-items: center;
   justify-content: center;
   &:hover {
-    background: rgba(255, 255, 255, 0.14);
+    background: var(--overlay-white-14);
   }
 }
 
@@ -48,9 +48,9 @@
   max-width: min(520px, 92vw);
   padding: 1.75rem 1.5rem;
   border-radius: 14px;
-  background: rgba(20, 32, 52, 0.95);
-  border: 1px solid rgba(120, 170, 240, 0.35);
-  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.45);
+  background: var(--overlay-panel-bg);
+  border: 1px solid var(--accent-overlay-border);
+  box-shadow: 0 12px 48px var(--shadow-color-45);
   text-align: center;
 }
 
@@ -58,14 +58,15 @@
   margin: 0 0 0.75rem;
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--white, #f8f8f2);
+  color: var(--white);
 }
 
 .acc-img-overlay__hint {
   margin: 0 0 1.25rem;
   font-size: 0.95rem;
   line-height: 1.45;
-  color: rgba(230, 238, 255, 0.88);
+  color: hsl(var(--accentHS), calc(var(--accentL) + 42%));
+  opacity: 0.88;
 }
 
 .acc-img-overlay__dropzone {
@@ -77,15 +78,15 @@
   justify-content: center;
   gap: 0.75rem;
   padding: 1.25rem;
-  border: 2px dashed rgba(130, 190, 255, 0.55);
+  border: 2px dashed var(--accent-overlay-border-strong);
   border-radius: 12px;
-  background: rgba(10, 24, 44, 0.6);
-  color: rgba(200, 225, 255, 0.95);
+  background: var(--accent-fill-panel);
+  color: var(--accent-text-on-selection);
   cursor: pointer;
   transition: border-color 0.12s ease, background 0.12s ease;
   &:hover:not(:disabled) {
-    border-color: rgba(170, 210, 255, 0.85);
-    background: rgba(16, 36, 64, 0.75);
+    border-color: var(--accent-overlay-hover);
+    background: hsla(var(--accentHS), 40%, 16%, 0.75);
   }
   &:disabled {
     opacity: 0.55;
@@ -94,7 +95,7 @@
 }
 
 .acc-img-overlay__dropicon {
-  color: rgba(150, 200, 255, 0.95);
+  color: var(--accent-text-on-selection);
   display: flex;
 }
 
@@ -108,12 +109,12 @@
   padding: 0.5rem 1rem;
   font-size: 0.9rem;
   border-radius: 8px;
-  border: 1px solid rgba(255, 140, 140, 0.45);
-  background: rgba(60, 20, 20, 0.45);
-  color: #ffb4b4;
+  border: 1px solid var(--error-border-soft);
+  background: var(--error-bg-dim);
+  color: var(--error-text-soft);
   cursor: pointer;
   &:hover:not(:disabled) {
-    background: rgba(80, 28, 28, 0.65);
+    background: var(--error-bg-hover);
   }
   &:disabled {
     opacity: 0.45;
@@ -145,7 +146,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(8, 12, 22, 0.72);
+  background: var(--overlay-scrim-deep);
   backdrop-filter: blur(4px);
   animation: overlayRecvFadeIn 0.15s ease-out;
 }
@@ -159,16 +160,16 @@
   padding: 2rem 2.5rem;
   max-width: min(420px, 90vw);
   min-height: 140px;
-  border: 2px dashed rgba(120, 190, 255, 0.65);
+  border: 2px dashed var(--accent-line-muted);
   border-radius: 12px;
-  background: rgba(10, 20, 40, 0.45);
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.35);
+  background: var(--accent-fill-soft);
+  box-shadow: 0 8px 40px var(--shadow-color-35);
   text-align: center;
-  color: rgba(200, 225, 255, 0.95);
+  color: var(--accent-text-on-selection);
 }
 
 .fileDropOverlay__icon {
-  color: rgba(160, 210, 255, 0.95);
+  color: var(--accent-text-heading);
   width: 4.5rem;
   height: 4.5rem;
   display: flex;
@@ -188,7 +189,7 @@
   font-size: 1.1rem;
   font-weight: 600;
   line-height: 1.35;
-  color: var(--white, #f8f8f2);
+  color: var(--white);
 }
 
 .fileDropOverlay--preview {
@@ -214,17 +215,17 @@ label.acc.acc--drop-target {
   align-items: center;
   justify-content: center;
   border-radius: inherit;
-  border: 2px dashed rgba(120, 190, 255, 0.62);
-  background: rgba(10, 20, 40, 0.32);
+  border: 2px dashed var(--accent-line-muted);
+  background: var(--accent-fill-soft);
   backdrop-filter: blur(2.5px);
   -webkit-backdrop-filter: blur(2.5px);
   pointer-events: none;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 1px 0 var(--overlay-white-06);
 }
 
 .acc_profile_drop_overlay--hover {
-  border-color: rgba(170, 230, 255, 0.95);
-  background: rgba(12, 28, 52, 0.42);
+  border-color: var(--accent-overlay-hover);
+  background: var(--accent-fill-medium);
 }
 
 .acc_profile_drop_overlay__center {
@@ -240,8 +241,8 @@ label.acc.acc--drop-target {
 .acc_profile_drop_overlay__icon {
   width: clamp(2rem, 18%, 3rem);
   height: clamp(2rem, 18%, 3rem);
-  color: rgba(160, 210, 255, 0.98);
-  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.4));
+  color: var(--accent-text-heading);
+  filter: drop-shadow(0 1px 4px var(--shadow-color-40));
 
   svg {
     width: 100%;
@@ -254,6 +255,6 @@ label.acc.acc--drop-target {
   font-size: clamp(0.68rem, 2.8vw, 0.82rem);
   font-weight: 600;
   line-height: 1.25;
-  color: rgba(200, 230, 255, 0.98);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+  color: var(--accent-text-heading);
+  text-shadow: 0 1px 2px var(--shadow-color-55-text);
 }

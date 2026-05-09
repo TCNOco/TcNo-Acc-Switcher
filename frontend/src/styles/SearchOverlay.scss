@@ -4,7 +4,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0.6, 0.65);
+    background-color: var(--backdrop-scrim-65);
     backdrop-filter: blur(6.2px);
     -webkit-backdrop-filter: blur(6.2px);
     display: flex;
@@ -33,8 +33,8 @@
   .searchOverlay_searchInput {
     background: transparent;
     border: none;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.6);
-    color: white;
+    border-bottom: 2px solid var(--text-white-60);
+    color: var(--whiteSecondary);
     font-size: 32px;
     padding: 10px 0;
     outline: none;
@@ -43,10 +43,10 @@
     background: var(--black);
   }
   .searchOverlay_searchInput::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--text-white-40);
   }
   .searchOverlay_searchInput:focus {
-    border-bottom-color: rgba(255, 255, 255, 0.9);
+    border-bottom-color: var(--text-white-90);
   }
   
   .searchOverlay_results {
@@ -65,7 +65,7 @@
   }
   
   .searchOverlay_resultItem {
-    background: rgba(50, 50, 50, 0.7);
+    background: var(--surface-search-result);
     padding: 16px 20px;
     min-height: var(--result-item-height);
     cursor: pointer;
@@ -75,20 +75,20 @@
     transition: background 0.15s;
   }
   .searchOverlay_resultItem:hover, .searchOverlay_resultItem.searchOverlay_selected {
-    background: rgba(128, 255, 234, 0.9);
+    background: var(--accent-highlight-row);
   }
   .searchOverlay_resultItem:hover *, .searchOverlay_resultItem.searchOverlay_selected * {
-    color: black !important;
+    color: var(--text-on-bright-bg) !important;
   }
   .searchOverlay_resultItem.searchOverlay_selected {
     font-weight: 600;
   }
   .searchOverlay_resultItem.searchOverlay_selected * {
-    color: black !important;
+    color: var(--text-on-bright-bg) !important;
   }
   
   .searchOverlay_categoryResultItem {
-    background: rgba(50, 50, 50, 0.7);
+    background: var(--surface-search-result);
   }
   
   .searchOverlay_categoryChecked {
@@ -96,14 +96,14 @@
   }
   .searchOverlay_categoryChecked,
   .searchOverlay_categoryChecked * {
-    color: black !important;
+    color: var(--text-on-bright-bg) !important;
   }
   .searchOverlay_categoryChecked:hover, .searchOverlay_categoryChecked.searchOverlay_selected {
     background: var(--green);
   }
   
   .searchOverlay_resultTitle {
-    color: white;
+    color: var(--whiteSecondary);
     font-size: 18px;
     line-height: 1em;
   }
@@ -129,7 +129,7 @@
   }
   
   .searchOverlay_resultCategory {
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--text-white-50);
     font-size: 14px;
     line-height: 1em;
   }
@@ -142,7 +142,7 @@
   }
   
   .searchOverlay_categoryHint {
-    color: rgba(255, 255, 255, 0.65);
+    color: var(--text-white-65);
     font-size: 13px;
     text-align: left;
     padding: 0 2px 6px 2px;

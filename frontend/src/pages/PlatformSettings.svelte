@@ -1239,12 +1239,12 @@
   }
 
   .platform-settings-err {
-    color: #f88;
+    color: var(--red);
     padding: 0.5rem 1rem;
   }
 
   .install-loc {
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-white-90);
     font-size: 0.9rem;
     margin: 0.5rem 0 1rem;
     word-break: break-all;
@@ -1252,7 +1252,7 @@
 
   .settings-divider {
     border: 0;
-    border-top: 1px solid var(--accent, #6272a4);
+    border-top: 1px solid var(--accent);
     margin: 2rem 0 1.5rem;
   }
 

@@ -254,11 +254,11 @@
     word-break: break-all;
     padding: 0.3em 0;
     &:hover {
-      color: #b1f2ff;
+      color: var(--accent-text-bright);
     }
   }
   .pp-label.ancestor-of-selected:not(.selected-path) {
-    color: var(--cyan);
+    color: var(--accent);
   }
   .pp-muted,
   .pp-err {
@@ -266,6 +266,6 @@
     opacity: 0.85;
   }
   .pp-err {
-    color: #ff8a8a;
+    color: var(--red);
   }
 </style>

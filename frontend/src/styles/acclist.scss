@@ -31,7 +31,7 @@
   pointer-events: none;
   opacity: 0.96;
   cursor: grabbing;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 12px 36px var(--shadow-color-50);
   left: 0;
   top: 0;
 }
@@ -42,7 +42,7 @@
 
 .steam-acclist .steam_meta_err {
   font-size: 0.6em;
-  color: #ff8a8a;
+  color: var(--red);
   line-height: 1.15;
   max-width: 100%;
   overflow: hidden;
@@ -120,13 +120,13 @@
 .placeHolderAcc {
   width: 100px;
   height: 135px;
-  border: 2px dashed #039cbf;
-  background: #13222f;
+  border: 2px dashed var(--accent-border-strong);
+  background: var(--code-background);
 }
 
 .placeHolderPlat {
-  border: 2px dashed #039cbf;
-  background: #13222f;
+  border: 2px dashed var(--accent-border-strong);
+  background: var(--code-background);
   width: 20vw;
   height: 20vw;
   max-width: 175px;
@@ -137,9 +137,9 @@
 }
 
 .accountHover > label.acc {
-  border: 0.1em solid #039cbf;
+  border: 0.1em solid var(--accent-border-strong);
   /* Seperate because added by sortable */
-  background: #13222f;
+  background: var(--code-background);
 }
 
 input.acc {
@@ -166,16 +166,15 @@ label.acc {
   padding: 0.5em;
   border-width: 0.1em;
   border-style: solid;
-  border-color: #000;
-  border-color: rgba(0, 0, 0, 0);
-  color: white;
+  border-color: transparent;
+  color: var(--whiteSecondary);
   text-align: center;
   cursor: pointer;
   transition: all 50ms ease-in;
   line-height: 1em;
 
   &.vac img {
-    border: 2px solid rgb(255, 85, 85);
+    border: 2px solid var(--red);
   }
 
   > img {
@@ -184,15 +183,14 @@ label.acc {
     width: 6em;
     height: 6em;
     margin-bottom: 0.5em;
-    border: 2px solid #000;
-    border: 2px solid rgba(0, 0, 0, 0);
+    border: 2px solid transparent;
 
     &.status_vac {
-      border: 2px solid rgb(255, 85, 85) !important;
+      border: 2px solid var(--red) !important;
     }
 
     &.status_limited {
-      border: 2px solid yellow !important;
+      border: 2px solid var(--yellow) !important;
     }
   }
 
@@ -211,15 +209,14 @@ label.acc {
     width: 100%;
     height: 100%;
     margin: 0;
-    border: 2px solid #000;
-    border: 2px solid rgba(0, 0, 0, 0);
+    border: 2px solid transparent;
 
     &.status_vac {
-      border: 2px solid rgb(255, 85, 85) !important;
+      border: 2px solid var(--red) !important;
     }
 
     &.status_limited {
-      border: 2px solid yellow !important;
+      border: 2px solid var(--yellow) !important;
     }
   }
 
@@ -247,23 +244,23 @@ label.acc {
 
   p {
     margin: 0;
-    color: #ddd;
+    color: var(--text-muted-gray);
     font-size: 0.75em;
   }
 }
 
 input.acc:checked + label.acc.currentAcc {
-  border-color: #8aff80;
+  border-color: var(--green);
   border-style: solid;
 }
 
 input.acc:checked + label.acc {
-  border-color: #8be9fd;
-  background: #274560;
+  border-color: var(--accent);
+  background: var(--button-bg);
 }
 
 label.acc.currentAcc {
-  border-color: #8aff80;
+  border-color: var(--green);
   border-style: dashed;
 }
 
@@ -274,8 +271,8 @@ label.acc.currentAcc {
   height: 3.5em;
   padding: 0.25em 0.25em;
   overflow: hidden;
-  background: #252a2e;
-  color: white;
+  background: var(--surface-row-dark);
+  color: var(--whiteSecondary);
   /* Status section */
   input {
     user-select: none;
@@ -284,14 +281,14 @@ label.acc.currentAcc {
     border: none;
     outline: none;
     background: none;
-    color: #ddd;
+    color: var(--text-muted-gray);
     line-height: 3em;
   }
 
   input::selection {
     user-select: none;
     background: none;
-    color: #ddd;
+    color: var(--text-muted-gray);
   }
 
   > div {
@@ -328,7 +325,7 @@ label.acc.currentAcc {
 }
 
 label h6 svg {
-  fill: white;
+  fill: var(--whiteSecondary);
   margin: 2px;
 }
 
@@ -342,9 +339,9 @@ label h6 svg {
   max-height: min(480px, calc(100vh - 24px));
   overflow: auto;
   border-radius: 4px;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
-  background: #1b2838;
-  color: #fff;
+  box-shadow: 0 8px 28px var(--shadow-color-45);
+  background: var(--surface-steam-popover);
+  color: var(--whiteSecondary);
   font-size: 12px;
   line-height: 1.35;
 }

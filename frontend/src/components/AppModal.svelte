@@ -343,7 +343,7 @@
     position: absolute;
     inset: 0;
     z-index: 50;
-    background: rgba(0, 0, 0, 0.55);
+    background: var(--backdrop-scrim-55);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -356,9 +356,9 @@
     flex-direction: column;
     min-width: min(320px, 100%);
     max-height: min(900px, calc(100% - 2rem));
-    background: var(--program-bg, #1b2636);
-    border: var(--border-bar-size, 1px) solid var(--border-bar-bg, #3b4853);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+    background: var(--program-bg);
+    border: var(--border-bar-size, 1px) solid var(--border-bar-bg);
+    box-shadow: 0 12px 40px var(--shadow-color-45);
     overflow: hidden;
     visibility: hidden;
     opacity: 0;
@@ -384,8 +384,8 @@
     justify-content: space-between;
     height: 32px;
     min-height: 32px;
-    background: var(--border-bar-bg, #3b4853);
-    color: #fff;
+    background: var(--border-bar-bg);
+    color: var(--whiteSecondary);
     flex-shrink: 0;
     user-select: none;
   }
@@ -400,7 +400,7 @@
     height: 10px;
     margin: 0 12px;
     display: block;
-    fill: white;
+    fill: var(--whiteSecondary);
   }
 
   .modal-title-drag {
@@ -433,12 +433,12 @@
     cursor: pointer;
     padding: 0;
     &:hover {
-      background: #3b4853;
+      background: var(--window-control-hover-bg);
     }
   }
 
   .modal-window-controls .win-btn-close:hover {
-    background: #d51426;
+    background: var(--window-close-hover);
   }
 
   .modal-scroll {
@@ -465,9 +465,9 @@
     margin: 0;
     width: 100%;
     box-sizing: border-box;
-    background: #070a0d;
-    border: 1px solid var(--button-bg, #2c3e50);
-    color: #fff;
+    background: var(--even-darker-code-background);
+    border: 1px solid var(--button-bg);
+    color: var(--whiteSecondary);
     font: inherit;
     &:focus {
       outline: 1px solid var(--accent);
@@ -514,12 +514,12 @@
     min-width: 0.5rem;
     margin-right: 0.25rem;
     border-radius: 2px 2px 0 0;
-    background: #090;
+    background: var(--success-solid);
     transition: background 0.15s ease;
   }
 
   .folder_indicator.notfound {
-    background: #F00;
+    background: var(--error-solid);
   }
 
   .folder_indicator_text {
@@ -531,7 +531,7 @@
     align-items: center;
     justify-content: center;
     padding: 0.35rem 1rem 0.35rem 0.75rem;
-    background: #00990022;
+    background: var(--success-soft-bg);
     color: var(--white);
     font-size: 12px;
     border-radius: 0 0 2px 2px;
@@ -545,7 +545,7 @@
   }
 
   .indicator-warn .folder_indicator_bg {
-    background: #FF000033;
+    background: var(--error-soft-bg);
   }
 
   :global(.modal-pathPicker.pathPicker) {

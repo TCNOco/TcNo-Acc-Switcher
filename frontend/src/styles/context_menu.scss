@@ -1,13 +1,13 @@
 /* ReSharper disable CssNotResolved */
 /* Text selection styling */
 ::selection {
-    color: #402B00;
+    color: var(--context-menu-hotkey);
     background: var(--accent);
 }
 
 .contextmenu {
-    background: #253340;
-    box-shadow: 10px 10px 5px -3px rgba(0, 0, 0, .3);
+    background: var(--surface-context-submenu);
+    box-shadow: 10px 10px 5px -3px var(--shadow-color-30);
     position: absolute;
     width: 15em;
     max-height: 29em;
@@ -31,7 +31,7 @@
             top: 0;
             bottom: 0;
             width: 3px;
-            background: #8be9fd;
+            background: var(--accent);
             transform: scaleX(0);
             transform-origin: left center;
             transition: transform 0.2s ease;
@@ -67,7 +67,7 @@
             margin: 0;
             border: none;
             background: transparent;
-            color: #fff;
+            color: var(--whiteSecondary);
             font: inherit;
             cursor: pointer;
             position: relative;
@@ -84,14 +84,14 @@
     .submenu {
         display: none;
         list-style: none;
-        box-shadow: 10px 10px 5px -3px rgba(0, 0, 0, .3);
+        box-shadow: 10px 10px 5px -3px var(--shadow-color-30);
 
         li {
-            color: #FFFFFF;
+            color: var(--whiteSecondary);
             list-style: none;
 
             a {
-                color: #FFFFFF !important;
+                color: var(--whiteSecondary) !important;
             }
         }
 
@@ -112,7 +112,7 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                color: #fff;
+                color: var(--whiteSecondary);
 
                 a,
                 button.paginationButton {
@@ -127,7 +127,7 @@
                     margin: 0;
 
                     &:hover {
-                        background: #1B2737;
+                        background: var(--surface-context-row);
 
                         i,
                         svg {
@@ -159,7 +159,7 @@
 
         .contextSearch {
             border-left: 2px solid transparent;
-            background: #070a0d;
+            background: var(--even-darker-code-background);
             padding-left: 0;
             transition: border-left-color 0.2s ease, background 0.2s ease;
 
@@ -199,10 +199,10 @@
     }
 
     li:hover {
-        background: #1B2737;
+        background: var(--surface-context-row);
 
         a {
-            color: #FFFFFF;
+            color: var(--whiteSecondary);
         }
     }
 
@@ -210,7 +210,7 @@
     li:has(> .ctx-menu__btn:focus-visible),
     li.hasSubmenu:focus-visible,
     li.hasSubmenu:has(> .ctx-menu__label:focus-visible) {
-        background: #1B2737;
+        background: var(--surface-context-row);
     }
 
     /* Submenus open via JS (.submenu-expanded) after first paint; not CSS :hover alone. */
@@ -234,7 +234,7 @@
            or wrapping reflows every frame and jitters on long labels. */
         animation: submenuFlyout 0.25s ease-out forwards;
         opacity: 1;
-        background: #253340;
+        background: var(--surface-context-submenu);
         z-index: 51;
 
         /* Only this flyout column (pagination is direct child of this ul), not ancestor menus that merely contain a nested paginated list (e.g. Manage → Game data). */
@@ -262,15 +262,15 @@
   margin: 0.15rem 0 0.35rem;
   padding: 0.35rem 0.5rem;
   border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(0, 0, 0, 0.35);
-  color: #fff;
+  border: 1px solid var(--overlay-white-15);
+  background: var(--backdrop-dark-35);
+  color: var(--whiteSecondary);
   font: inherit;
 }
 
 hr {
   border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid var(--overlay-white-12);
   margin: 0.25rem 0;
 }
 
