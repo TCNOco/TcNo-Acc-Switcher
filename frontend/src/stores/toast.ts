@@ -41,9 +41,26 @@ function scheduleRemoval(id: string, ms: number): void {
   timers.set(
     id,
     setTimeout(() => {
-      dismissToastById(id)
+      timers.delete(id)
+      popOneOccurrence(id, ms)
     }, ms)
   )
+}
+
+/** Drops one merged occurrence (count) or removes the toast row when count is 1. */
+function popOneOccurrence(id: string, nextDurationMs: number): void {
+  update((list) => {
+    const idx = list.findIndex((t) => t.id === id)
+    if (idx < 0) return list
+    const cur = list[idx]
+    if (cur.count > 1) {
+      const next = list.slice()
+      next[idx] = { ...cur, count: cur.count - 1 }
+      scheduleRemoval(id, nextDurationMs)
+      return next
+    }
+    return list.filter((t) => t.id !== id)
+  })
 }
 
 /** Show or merge a toast (same type + title + message refreshes the timer and increments count). */
@@ -71,14 +88,17 @@ export function pushToast(input: ToastInput): void {
   })
 }
 
-/** Remove a toast immediately (starts Svelte out transition). */
+/**
+ * Dismiss one occurrence: merged toasts (count > 1) decrement; otherwise the row is removed.
+ * Uses the default duration for the auto-dismiss timer if further occurrences remain.
+ */
 export function dismissToastById(id: string): void {
   const prev = timers.get(id)
   if (prev !== undefined) {
     clearTimeout(prev)
     timers.delete(id)
   }
-  update((list) => list.filter((t) => t.id !== id))
+  popOneOccurrence(id, defaultToastDurationMs)
 }
 
 export const toastStore = { subscribe }

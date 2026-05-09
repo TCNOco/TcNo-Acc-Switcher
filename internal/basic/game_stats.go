@@ -66,11 +66,35 @@ type GameStatVarSpecDTO struct {
 	Placeholder string `json:"placeholder"`
 }
 
+type displayRangeEntry struct {
+	Min   *float64 `json:"min"`
+	Max   *float64 `json:"max"`
+	Value string   `json:"value"`
+}
+
+// displayPlaceholderRule maps a numeric value (from the collected metric, default %x%) into a token
+// like %fill% inside DisplayAs. Ranges are checked in order; first inclusive match wins.
+type displayPlaceholderRule struct {
+	Key     string              `json:"key"`
+	From    string              `json:"from"` // "x" (default) — parse as float from collected value
+	Ranges  []displayRangeEntry `json:"ranges"`
+	Default string              `json:"default"`
+}
+
 type collectInstruction struct {
-	XPath           string `json:"XPath"`
-	Select          string `json:"Select"`
-	SelectFunc      string `json:"SelectFunc"`
-	DisplayAs       string `json:"DisplayAs"`
+	Source              string                   `json:"Source"`
+	Path                string                   `json:"Path"`
+	FallbackPaths       []string                 `json:"FallbackPaths"`
+	Reducer             string                   `json:"Reducer"`
+	ReducerOptions      map[string]any           `json:"ReducerOptions"`
+	Pipeline            []string                 `json:"Pipeline"`
+	XPath               string                   `json:"XPath"`
+	Select              string                   `json:"Select"`
+	SelectFunc          string                   `json:"SelectFunc"`
+	DisplayAs           string                   `json:"DisplayAs"`
+	DisplayPlaceholders []displayPlaceholderRule `json:"DisplayPlaceholders"`
+	// DisplayFormat styles the value for %x_fmt% (e.g. commaNumber -> 13000 as 13,000). %x% stays the raw collected value (or data URI for imagedownload).
+	DisplayFormat   string `json:"DisplayFormat"`
 	ToggleText      string `json:"ToggleText"`
 	SelectAttribute string `json:"SelectAttribute"`
 	SpecialType     string `json:"SpecialType"`
@@ -321,6 +345,15 @@ func cloneStringMap(src map[string]string) map[string]string {
 		dst[k] = v
 	}
 	return dst
+}
+
+func cloneUserGameStat(u userGameStat) userGameStat {
+	return userGameStat{
+		Vars:          cloneStringMap(u.Vars),
+		Collected:     cloneStringMap(u.Collected),
+		HiddenMetrics: append([]string(nil), u.HiddenMetrics...),
+		LastUpdated:   u.LastUpdated,
+	}
 }
 
 func gameStatVarAutofillExpr(v gameStatVarDef) string {
@@ -577,7 +610,13 @@ func (b *BasicService) SetGameVars(platformName, game, accountID string, vars ma
 	if gameStatsState.cacheByGame[game] == nil {
 		gameStatsState.cacheByGame[game] = map[string]userGameStat{}
 	}
-	existing := gameStatsState.cacheByGame[game][accountID]
+	rows := gameStatsState.cacheByGame[game]
+	prev, hadPrev := rows[accountID]
+	var prevCopy userGameStat
+	if hadPrev {
+		prevCopy = cloneUserGameStat(prev)
+	}
+	existing := prev
 	if existing.Vars == nil {
 		existing.Vars = map[string]string{}
 	}
@@ -590,13 +629,19 @@ func (b *BasicService) SetGameVars(platformName, game, accountID string, vars ma
 		existing.LastUpdated = time.Now()
 	}
 	gameStatsState.cacheByGame[game][accountID] = existing
-	gameStatsLog.Info("game stats vars updated", "platform", platformName, "game", game, "accountID", accountID, "vars", len(existing.Vars), "hiddenMetrics", len(existing.HiddenMetrics))
-	if err := gameStatsState.saveGameCacheLocked(game); err != nil {
+	if err := gameStatsState.refreshFromWebLocked(platformName, game, accountID); err != nil {
+		if hadPrev {
+			gameStatsState.cacheByGame[game][accountID] = prevCopy
+		} else {
+			delete(gameStatsState.cacheByGame[game], accountID)
+		}
+		if saveErr := gameStatsState.saveGameCacheLocked(game); saveErr != nil {
+			return false, saveErr
+		}
+		gameStatsLog.Warn("game stats refresh after save failed", "platform", platformName, "game", game, "accountID", accountID, "err", err)
 		return false, err
 	}
-	if err := gameStatsState.refreshFromWebLocked(platformName, game, accountID); err != nil {
-		gameStatsLog.Warn("game stats refresh after save failed", "platform", platformName, "game", game, "accountID", accountID, "err", err)
-	}
+	gameStatsLog.Info("game stats vars updated", "platform", platformName, "game", game, "accountID", accountID, "vars", len(existing.Vars), "hiddenMetrics", len(existing.HiddenMetrics))
 	return true, nil
 }
 
@@ -709,7 +754,7 @@ func (m *gameStatsManager) refreshFromWebLocked(platformName, game, accountID st
 	if err != nil {
 		return err
 	}
-	collected, err := collectStatsFromHTML(platformName, accountID, def, doc)
+	collected, err := collectStatsFromHTML(platformName, accountID, def, doc, rawHTML)
 	if err != nil {
 		return err
 	}
@@ -737,5 +782,18 @@ func (b *BasicService) RefreshGameStats(platformName, game, accountID string) er
 	if err := gameStatsState.ensureLoadedLocked(); err != nil {
 		return err
 	}
-	return gameStatsState.refreshFromWebLocked(platformName, game, accountID)
+	err := gameStatsState.refreshFromWebLocked(platformName, game, accountID)
+	if err != nil && isGameStatsResourceNotFound(err) {
+		g := strings.TrimSpace(game)
+		acct := strings.TrimSpace(accountID)
+		if rows := gameStatsState.cacheByGame[g]; rows != nil {
+			delete(rows, acct)
+			gameStatsState.cacheByGame[g] = rows
+			if saveErr := gameStatsState.saveGameCacheLocked(g); saveErr != nil {
+				return saveErr
+			}
+			gameStatsLog.Info("game stats disabled after not-found response", "game", g, "accountID", acct)
+		}
+	}
+	return err
 }

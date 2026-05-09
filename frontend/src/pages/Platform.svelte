@@ -50,6 +50,8 @@
   import { accountProfileImageDropActive } from "../stores/accountProfileImageDropUi";
   import { firstProfileImagePath } from "../lib/profileImageDrop";
   import GameStatsSetupModalBody from "../components/modals/GameStatsSetupModalBody.svelte";
+  import "../styles/gamestats.scss";
+  import "../styles/platformAccountsShared.scss";
 
   const PROFILE_FALLBACK = "/img/BasicDefault.webp";
 
@@ -1172,70 +1174,3 @@
 </div>
 <svelte:window on:keydown={onWindowKeyDown} />
 <ActionBar />
-
-<style lang="scss">
-  .platform-accounts-root {
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-    flex: 1;
-  }
-
-  .platform-accounts-hint {
-    margin: 0.75rem 1rem 0;
-    font-size: 0.85rem;
-    color: var(--white, #fff);
-    opacity: 0.85;
-  }
-
-  .platformTableHost {
-    position: relative;
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .acc_lastused {
-    margin: 0.15rem 0 0;
-    font-size: 0.72rem;
-    opacity: 0.75;
-  }
-
-  .acc_inline_gamestats {
-    margin: 0.25rem 0 0;
-    font-size: 0.68rem;
-    line-height: 1.35;
-    opacity: 0.92;
-    max-width: 100%;
-  }
-  .acc_inline_gamestats_row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.25rem 0.5rem;
-    margin-top: 0.15rem;
-  }
-  .acc_inline_gamestats_game {
-    font-weight: 600;
-    opacity: 0.95;
-    flex: 0 0 auto;
-  }
-  .acc_inline_gamestats_metrics {
-    display: inline-flex;
-    flex-wrap: wrap;
-    gap: 0.35rem 0.5rem;
-    min-width: 0;
-  }
-  .acc_inline_gamestats_metric {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 0.15rem;
-    min-width: 0;
-  }
-  .acc_inline_gamestats_ind :global(svg),
-  .acc_inline_gamestats_val :global(img) {
-    max-height: 1.25em;
-    vertical-align: middle;
-  }
-</style>

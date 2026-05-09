@@ -176,32 +176,31 @@
     }
     const tr = get(t);
     busy = true;
+    const setGameVarsRejected = "SetGameVarsRejected";
     try {
       const hiddenList = Object.keys(hiddenToggles).filter((k) => hiddenPicked.has(k));
-      const ok = await BasicService.SetGameVars(platformKey, editGame, uniqueId, formValues, hiddenList);
-      if (!ok) {
-        throw new Error("SetGameVars rejected");
-      }
-      let refreshErr: unknown = null;
-      if (!get(offlineMode)) {
-        try {
-          await BasicService.RefreshGameStats(platformKey, editGame, uniqueId);
-        } catch (e) {
-          refreshErr = e;
+      try {
+        const ok = await BasicService.SetGameVars(platformKey, editGame, uniqueId, formValues, hiddenList);
+        if (!ok) {
+          throw new Error(setGameVarsRejected);
         }
+      } catch (e) {
+        const base =
+          e instanceof Error && e.message === setGameVarsRejected
+            ? tr("Toast_SaveFailed")
+            : tr("Toast_GameStatsLoadFail", { Game: editGame ?? "" });
+        pushToast({
+          type: "error",
+          message: formatToastWithError(base, e),
+          duration: 8000,
+        });
+        return;
       }
       pushToast({
         type: "success",
         message: tr("Toast_AccountSaved"),
         duration: 3000,
       });
-      if (refreshErr !== null) {
-        pushToast({
-          type: "error",
-          message: formatToastWithError(tr("Toast_GameStatsLoadFail", { Game: editGame }), refreshErr),
-          duration: 8000,
-        });
-      }
       onApplied?.();
       screen = "list";
       await loadList();

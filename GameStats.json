@@ -42,12 +42,45 @@
         }
       },
       "Collect": {
+        "Premiere": {
+          "Source": "json",
+          "Path": "ranks.premier",
+          "Reducer": "firstMatchInArray",
+          "ReducerOptions": {
+            "arrayPath": "recent_matches",
+            "valuePath": "rank",
+            "allMatch": [
+              { "path": "data_source", "op": "eq", "value": "matchmaking" },
+              { "path": "rank", "op": "gt", "value": "20" }
+            ]
+          },
+          "DisplayAs": "<div class='cs-premier'><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100%\" height=\"100%\" viewBox=\"0 0 134 48\" fill-rule=\"evenodd\" stroke-linejoin=\"round\" stroke-miterlimit=\"2\" fill=\"%fill%\"><path d=\"M133.5 3.075l-7.562 41.849H15.377l7.562-41.849H133.5z\" fill-opacity=\".5\"/><path d=\"M31.331 3.075l-7.562 41.849h-3.814l7.562-41.849h3.814zm8.358 0l-7.562 41.849h-5.392l7.562-41.849h5.392zm11.815 0l-7.562 41.849h-7.621l7.562-41.849h7.621zm30.302 0l-7.562 41.849h-24.99l7.562-41.849h24.99zM25.312 0l-8.674 48H0L8.674 0h16.638z\" fill-opacity=\".5\"/><path d=\"M15.377 0L6.703 48H0L8.674 0h6.703zm9.935 0l-8.674 48H9.935l8.674-48h6.703z\"/></svg><span>%x_fmt%</span></div>",
+          "DisplayFormat": "commaNumber",
+          "DisplayPlaceholders": [
+            {
+              "key": "fill",
+              "ranges": [
+                { "min": 0, "max": 4999, "value": "#b3cad6" },
+                { "min": 5000, "max": 9999, "value": "#8abce8" },
+                { "min": 10000, "max": 14999, "value": "#667deb" },
+                { "min": 15000, "max": 19999, "value": "#bc6bfd" },
+                { "min": 20000, "max": 24999, "value": "#e612f1" },
+                { "min": 25000, "max": 29999, "value": "#ed4c47" },
+                { "min": 30000, "value": "#fad701" }
+              ],
+              "default": "#b3cad6"
+            }
+          ],
+          "NoDisplayIf": "0",
+          "ToggleText": "Premier Rank"
+        },
         "CompRank": {
-          "XPath": ".//div[@class='player-ranks']/img",
-          "Select": "attribute",
-          "SelectAttribute": "src",
-          "SpecialType": "ImageDownload",
-          "DisplayAs": "<img src=\"%x%\" style=\"max-height:3em\"/>",
+          "Source": "json",
+          "Path": "ranks.competitive.#.rank",
+          "Reducer": "maxNumber",
+          "DisplayAs": "<img src=\"img/gs/cs/comp%x%.webp\" class=\"center\" style=\"max-height:3em\" alt=\"\"/>",
+          "DisplayFormat": "commaNumber",
+          "NoDisplayIf": "0",
           "ToggleText": "Competitive Rank"
         }
       }
@@ -106,7 +139,7 @@
   },
   "PlatformCompatibilities": {
     "EA Desktop": [ "Apex Legends" ],
-    "Steam": [ "Apex Legends", "Counter-Strike: Global Offensive" ],
+    "Steam": [ "Apex Legends", "Counter-Strike 2" ],
     "BattleNet": [ "Overwatch" ]
   }
 }

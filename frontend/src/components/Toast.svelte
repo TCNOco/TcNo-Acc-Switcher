@@ -92,7 +92,7 @@
           type="button"
           class="toast__close"
           aria-label={$translate("Aria_DismissNotification")}
-          on:click={() => dismissToastById(t.id)}
+          on:click|stopPropagation={() => dismissToastById(t.id)}
         >
           <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
             <path
