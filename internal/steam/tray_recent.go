@@ -1,7 +1,6 @@
 package steam
 
 import (
-	"os"
 	"strings"
 
 	"TcNo-Acc-Switcher/internal/platform"
@@ -27,11 +26,7 @@ func RecordTrayRecentAfterSwap(steamID64 string) {
 	if err != nil {
 		return
 	}
-	pj, err := platform.ResolvePlatformsJSONPath(exeDir)
-	if err != nil {
-		return
-	}
-	raw, err := os.ReadFile(pj)
+	raw, err := platform.LoadPlatformsJSON(exeDir)
 	if err != nil {
 		return
 	}
@@ -69,11 +64,7 @@ func SyncTrayKnownAccounts() {
 	if err != nil {
 		return
 	}
-	pj, err := platform.ResolvePlatformsJSONPath(exeDir)
-	if err != nil {
-		return
-	}
-	raw, err := os.ReadFile(pj)
+	raw, err := platform.LoadPlatformsJSON(exeDir)
 	if err != nil {
 		return
 	}

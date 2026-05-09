@@ -45,11 +45,7 @@ func ResolveSteamExePath() (string, bool) {
 	if err != nil {
 		return "", false
 	}
-	pj, err := platform.ResolvePlatformsJSONPath(exeDir)
-	if err != nil {
-		return "", false
-	}
-	raw, err := os.ReadFile(pj)
+	raw, err := platform.LoadPlatformsJSON(exeDir)
 	if err != nil {
 		return "", false
 	}

@@ -8,15 +8,13 @@ import (
 	"TcNo-Acc-Switcher/internal/platform"
 )
 
-const DataDirName = "TcNo Account Switcher"
-
 // DataRoot returns {ExeDir}/TcNo Account Switcher/
 func DataRoot() (string, error) {
 	exeDir, err := platform.ResolveExeDir()
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(exeDir, DataDirName), nil
+	return platform.UserDataDir(exeDir), nil
 }
 
 func SettingsDir() (string, error) {

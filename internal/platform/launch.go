@@ -63,7 +63,7 @@ func (p *PlatformService) ResolvePlatformLaunch(platformKey string) (ResolvePlat
 	if err != nil {
 		return ResolvePlatformLaunchResult{}, err
 	}
-	raw, err := os.ReadFile(p.resolvePlatformsPath(exeDir, settings))
+	raw, err := LoadPlatformsJSON(exeDir)
 	if err != nil {
 		return ResolvePlatformLaunchResult{}, err
 	}
@@ -164,7 +164,7 @@ func (p *PlatformService) ConfirmPlatformExePath(platformKey, exeFullPath string
 	if err != nil {
 		return err
 	}
-	raw, err := os.ReadFile(p.resolvePlatformsPath(exeDir, settings))
+	raw, err := LoadPlatformsJSON(exeDir)
 	if err != nil {
 		return err
 	}

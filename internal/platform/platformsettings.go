@@ -62,15 +62,12 @@ func (e *GameShortcutEntry) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// dataDirName matches [paths.DataDirName] (cannot import paths: it imports platform).
-const dataDirName = "TcNo Account Switcher"
-
 func settingsDirUnderExe() (string, error) {
 	exeDir, err := ResolveExeDir()
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(exeDir, dataDirName, "Settings"), nil
+	return filepath.Join(exeDir, UserDataDirName, "Settings"), nil
 }
 
 type PlatformSettings struct {
@@ -139,11 +136,7 @@ func DescriptorClosingPolicy(platformKey string) (defaultMethod string, force bo
 	if err != nil {
 		return string(winutil.ClosingCombined), false
 	}
-	settings, err := loadSettings(exeDir)
-	if err != nil {
-		return string(winutil.ClosingCombined), false
-	}
-	raw, err := os.ReadFile(resolvePlatformsPath(exeDir, settings))
+	raw, err := LoadPlatformsJSON(exeDir)
 	if err != nil {
 		return string(winutil.ClosingCombined), false
 	}

@@ -44,11 +44,7 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 	if err != nil {
 		return err
 	}
-	pj, err := platform.ResolvePlatformsJSONPath(exeDir)
-	if err != nil {
-		return err
-	}
-	raw, err := os.ReadFile(pj)
+	raw, err := platform.LoadPlatformsJSON(exeDir)
 	if err != nil {
 		return err
 	}
@@ -143,11 +139,7 @@ func LaunchSteamOnly(extraLaunchArgs []string) error {
 	if err != nil {
 		return err
 	}
-	pj, err := platform.ResolvePlatformsJSONPath(exeDir)
-	if err != nil {
-		return err
-	}
-	raw, err := os.ReadFile(pj)
+	raw, err := platform.LoadPlatformsJSON(exeDir)
 	if err != nil {
 		return err
 	}
@@ -186,11 +178,7 @@ func LaunchSteamOnlyAs(forceAdmin bool, extraLaunchArgs []string) error {
 	if err != nil {
 		return err
 	}
-	pj, err := platform.ResolvePlatformsJSONPath(exeDir)
-	if err != nil {
-		return err
-	}
-	raw, err := os.ReadFile(pj)
+	raw, err := platform.LoadPlatformsJSON(exeDir)
 	if err != nil {
 		return err
 	}

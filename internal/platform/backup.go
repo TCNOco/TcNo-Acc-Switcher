@@ -480,7 +480,7 @@ func platformBackupDir(platformKey string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(exeDir, dataDirName, "Backups", safeBackupPlatformName(platformKey)), nil
+	return filepath.Join(exeDir, UserDataDirName, "Backups", safeBackupPlatformName(platformKey)), nil
 }
 
 func safeBackupPlatformName(platformKey string) string {

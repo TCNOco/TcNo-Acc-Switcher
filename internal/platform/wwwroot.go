@@ -8,5 +8,5 @@ func WwwrootDir() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(exeDir, dataDirName, "wwwroot"), nil
+	return filepath.Join(exeDir, UserDataDirName, "wwwroot"), nil
 }

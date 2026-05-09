@@ -150,11 +150,7 @@ func (s *SteamService) GetSteamAccounts() ([]AccountDTO, error) {
 	}
 	_ = s.migrateExePathFromAppSettings(exeDir, &st, &app)
 
-	pj, err := platform.ResolvePlatformsJSONPath(exeDir)
-	if err != nil {
-		return nil, err
-	}
-	raw, err := os.ReadFile(pj)
+	raw, err := platform.LoadPlatformsJSON(exeDir)
 	if err != nil {
 		return nil, err
 	}
@@ -293,11 +289,7 @@ func (s *SteamService) SaveSteamAccountOrder(ids []string) error {
 	if err != nil {
 		return err
 	}
-	pj, err := platform.ResolvePlatformsJSONPath(exeDir)
-	if err != nil {
-		return err
-	}
-	raw, err := os.ReadFile(pj)
+	raw, err := platform.LoadPlatformsJSON(exeDir)
 	if err != nil {
 		return err
 	}
@@ -444,14 +436,9 @@ func (s *SteamService) runProfileRefresh() {
 		return
 	}
 
-	pj, err := platform.ResolvePlatformsJSONPath(exeDir)
+	raw, err := platform.LoadPlatformsJSON(exeDir)
 	if err != nil {
-		steamLog.Error("ResolvePlatformsJSONPath failed", slog.Any("err", err))
-		return
-	}
-	raw, err := os.ReadFile(pj)
-	if err != nil {
-		steamLog.Error("read Platforms.json failed", slog.String("path", pj), slog.Any("err", err))
+		steamLog.Error("load platforms config failed", slog.Any("err", err))
 		return
 	}
 	root, err := ResolveInstallFolder(exeDir, st, app, raw)
@@ -693,11 +680,7 @@ func (s *SteamService) ForgetSteamAccount(steamID64 string) error {
 	if err != nil {
 		return err
 	}
-	pj, err := platform.ResolvePlatformsJSONPath(exeDir)
-	if err != nil {
-		return err
-	}
-	raw, err := os.ReadFile(pj)
+	raw, err := platform.LoadPlatformsJSON(exeDir)
 	if err != nil {
 		return err
 	}
@@ -734,11 +717,7 @@ func (s *SteamService) steamInstallRoot() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	pj, err := platform.ResolvePlatformsJSONPath(exeDir)
-	if err != nil {
-		return "", err
-	}
-	raw, err := os.ReadFile(pj)
+	raw, err := platform.LoadPlatformsJSON(exeDir)
 	if err != nil {
 		return "", err
 	}

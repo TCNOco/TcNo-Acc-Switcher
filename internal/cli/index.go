@@ -2,7 +2,6 @@ package cli
 
 import (
 	"encoding/json"
-	"os"
 	"sort"
 	"strings"
 
@@ -27,11 +26,10 @@ func LoadPlatformIndex() (*PlatformIndex, error) {
 	if err != nil {
 		return nil, err
 	}
-	path, err := platform.ResolvePlatformsJSONPath(exeDir)
+	raw, err := platform.LoadPlatformsJSON(exeDir)
 	if err != nil {
 		return nil, err
 	}
-	raw, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}

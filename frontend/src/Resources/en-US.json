@@ -350,7 +350,7 @@
   "Modal_Title_AccountNotes": "Account Notes for: {accountName}",
   "Modal_Title_SetPassword": "Set Password",
   "Modal_Title_MissingPlatformsJson": "Platforms.json not found",
-  "Modal_Body_MissingPlatformsJson": "The Platforms.json file was not found next to this program. Choose a file to use, or restore the default list shipped with the app.",
+  "Modal_Body_MissingPlatformsJson": "The Platforms.json file was not found in the TcNo Account Switcher folder next to this program. Choose a file to use, or restore the default list shipped with the app.",
   "Modal_SetBackground": "Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):",
   "Modal_SetBackground_Button": "Set background",
   "Modal_SetBackground_ChooseImage": "Choose local image",

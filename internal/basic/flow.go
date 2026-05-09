@@ -255,11 +255,7 @@ func readDescriptor(platformKey string) (platform.Descriptor, []byte, error) {
 	if err != nil {
 		return platform.Descriptor{}, nil, err
 	}
-	pj, err := platform.ResolvePlatformsJSONPath(exeDir)
-	if err != nil {
-		return platform.Descriptor{}, nil, err
-	}
-	raw, err := os.ReadFile(pj)
+	raw, err := platform.LoadPlatformsJSON(exeDir)
 	if err != nil {
 		return platform.Descriptor{}, nil, err
 	}

@@ -52,8 +52,7 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 	if err != nil {
 		return PlatformStartup{}, err
 	}
-	path := p.resolvePlatformsPath(exeDir, settings)
-	raw, err := os.ReadFile(path)
+	raw, err := LoadPlatformsJSON(exeDir)
 	if err != nil {
 		if os.IsNotExist(err) {
 			return PlatformStartup{
@@ -248,7 +247,7 @@ func (p *PlatformService) SaveHomeOrder(order []string) error {
 	if err != nil {
 		return err
 	}
-	raw, err := os.ReadFile(p.resolvePlatformsPath(exeDir, settings))
+	raw, err := LoadPlatformsJSON(exeDir)
 	if err != nil {
 		return err
 	}
@@ -291,7 +290,7 @@ func (p *PlatformService) SetDisabledPlatforms(disabled []string) error {
 	if err != nil {
 		return err
 	}
-	raw, err := os.ReadFile(p.resolvePlatformsPath(exeDir, settings))
+	raw, err := LoadPlatformsJSON(exeDir)
 	if err != nil {
 		return err
 	}
@@ -432,7 +431,11 @@ func (p *PlatformService) ApplyPlatformsJSONFile(sourcePath string) error {
 	if err != nil {
 		return err
 	}
-	dest := filepath.Join(exeDir, "Platforms.json")
+	ud := UserDataDir(exeDir)
+	if err := os.MkdirAll(ud, 0o755); err != nil {
+		return err
+	}
+	dest := filepath.Join(ud, "Platforms.json")
 	if err := atomicWriteBytes(dest, data, 0o644); err != nil {
 		return err
 	}
@@ -459,7 +462,11 @@ func (p *PlatformService) RestoreDefaultPlatformsJSON() error {
 	if err != nil {
 		return err
 	}
-	dest := filepath.Join(exeDir, "Platforms.json")
+	ud := UserDataDir(exeDir)
+	if err := os.MkdirAll(ud, 0o755); err != nil {
+		return err
+	}
+	dest := filepath.Join(ud, "Platforms.json")
 	if err := atomicWriteBytes(dest, bytes.Clone(embeddedPlatformsJSON), 0o644); err != nil {
 		return err
 	}
@@ -472,6 +479,9 @@ func (p *PlatformService) RestoreDefaultPlatformsJSON() error {
 	return saveSettingsAtomic(exeDir, settings)
 }
 
+// ResolvePlatformsJSONPath returns the path to the base Platforms.json file
+// (not merged with Platforms.custom.json). Use [LoadPlatformsJSON] to read the
+// effective configuration.
 func ResolvePlatformsJSONPath(exeDir string) (string, error) {
 	s, err := loadSettings(exeDir)
 	if err != nil {
@@ -491,7 +501,7 @@ func resolvePlatformsPath(exeDir string, s AppSettings) string {
 		}
 		return filepath.Clean(filepath.Join(exeDir, rel))
 	}
-	return filepath.Join(exeDir, "Platforms.json")
+	return filepath.Join(UserDataDir(exeDir), "Platforms.json")
 }
 
 func parsePlatformNames(raw []byte) ([]string, error) {
@@ -628,7 +638,7 @@ func (p *PlatformService) getPlatformInstallFolderUnlocked(platformKey string) (
 	if err != nil {
 		return "", err
 	}
-	raw, err := os.ReadFile(p.resolvePlatformsPath(exeDir, settings))
+	raw, err := LoadPlatformsJSON(exeDir)
 	if err != nil {
 		return "", err
 	}
@@ -697,7 +707,7 @@ func (p *PlatformService) resolvePlatformExeFullPathUnlocked(platformKey string)
 			return filepath.Clean(ex), nil
 		}
 	}
-	raw, err := os.ReadFile(p.resolvePlatformsPath(exeDir, settings))
+	raw, err := LoadPlatformsJSON(exeDir)
 	if err != nil {
 		return "", err
 	}
@@ -730,11 +740,7 @@ func (p *PlatformService) GetPlatformExeIcon(platformKey string) (string, error)
 	if err != nil {
 		return "", nil
 	}
-	settings, err := loadSettings(exeDir)
-	if err != nil {
-		return "", nil
-	}
-	raw, err := os.ReadFile(p.resolvePlatformsPath(exeDir, settings))
+	raw, err := LoadPlatformsJSON(exeDir)
 	if err == nil {
 		entry, err := parsePlatformEntry(raw, platformKey)
 		if err == nil {
@@ -817,11 +823,7 @@ func (p *PlatformService) HasShortcutMainExe(platformKey string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	settings, err := loadSettings(exeDir)
-	if err != nil {
-		return false, err
-	}
-	raw, err := os.ReadFile(resolvePlatformsPath(exeDir, settings))
+	raw, err := LoadPlatformsJSON(exeDir)
 	if err != nil {
 		return false, err
 	}

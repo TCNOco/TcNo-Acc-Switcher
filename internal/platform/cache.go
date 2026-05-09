@@ -69,11 +69,7 @@ func (p *PlatformService) loadDescriptorUnlocked(platformKey string) (Descriptor
 	if err != nil {
 		return Descriptor{}, err
 	}
-	settings, err := loadSettings(exeDir)
-	if err != nil {
-		return Descriptor{}, err
-	}
-	raw, err := os.ReadFile(p.resolvePlatformsPath(exeDir, settings))
+	raw, err := LoadPlatformsJSON(exeDir)
 	if err != nil {
 		return Descriptor{}, err
 	}

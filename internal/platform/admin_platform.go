@@ -2,7 +2,6 @@ package platform
 
 import (
 	"errors"
-	"os"
 	"strings"
 
 	"TcNo-Acc-Switcher/internal/winutil"
@@ -51,11 +50,7 @@ func (p *PlatformService) CheckAdminForPlatform(platformKey string) (AdminCheckR
 	if err != nil {
 		return AdminCheckResult{}, err
 	}
-	settings, err := loadSettings(exeDir)
-	if err != nil {
-		return AdminCheckResult{}, err
-	}
-	raw, err := os.ReadFile(p.resolvePlatformsPath(exeDir, settings))
+	raw, err := LoadPlatformsJSON(exeDir)
 	if err != nil {
 		return AdminCheckResult{}, err
 	}

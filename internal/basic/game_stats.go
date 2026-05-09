@@ -26,6 +26,33 @@ type gameStatsFile struct {
 	PlatformCompatibilities map[string][]string       `json:"PlatformCompatibilities"`
 }
 
+func mergeGameStatsCustom(cfg *gameStatsFile, customRaw []byte) error {
+	if len(bytes.TrimSpace(customRaw)) == 0 {
+		return nil
+	}
+	var c gameStatsFile
+	if err := json.Unmarshal(customRaw, &c); err != nil {
+		return fmt.Errorf("parse GameStats.custom.json: %w", err)
+	}
+	if c.StatsDefinitions != nil {
+		if cfg.StatsDefinitions == nil {
+			cfg.StatsDefinitions = map[string]gameDefinition{}
+		}
+		for k, v := range c.StatsDefinitions {
+			cfg.StatsDefinitions[k] = v
+		}
+	}
+	if c.PlatformCompatibilities != nil {
+		if cfg.PlatformCompatibilities == nil {
+			cfg.PlatformCompatibilities = map[string][]string{}
+		}
+		for k, v := range c.PlatformCompatibilities {
+			cfg.PlatformCompatibilities[k] = v
+		}
+	}
+	return nil
+}
+
 type gameDefinition struct {
 	UniqueID       string                        `json:"UniqueId"`
 	Indicator      string                        `json:"Indicator"`
@@ -167,6 +194,18 @@ func (m *gameStatsManager) ensureLoadedLocked() error {
 	var cfg gameStatsFile
 	if err := json.Unmarshal(raw, &cfg); err != nil {
 		return fmt.Errorf("parse %s: %w", cfgPath, err)
+	}
+	if dataRoot, derr := paths.DataRoot(); derr == nil {
+		customPath := filepath.Join(dataRoot, "GameStats.custom.json")
+		customRaw, err := os.ReadFile(customPath)
+		if err == nil {
+			if err := mergeGameStatsCustom(&cfg, customRaw); err != nil {
+				return err
+			}
+			gameStatsLog.Debug("merged GameStats.custom.json", "path", customPath)
+		} else if !os.IsNotExist(err) {
+			return fmt.Errorf("read %s: %w", customPath, err)
+		}
 	}
 	m.defs = cfg.StatsDefinitions
 	if m.defs == nil {
