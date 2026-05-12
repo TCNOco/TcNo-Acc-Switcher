@@ -1,0 +1,23 @@
+# This theme's name (Shows in-app, can be different to folder name)
+name: Kanagawa Lotus
+accent: "#4D699B"
+
+# Required colors for updater & main UI (not HTML/CSS):
+linkColor: "#4D699B"
+headerbarBackground: "#DCD5AC"
+mainBackground: "#F2ECBC"
+modalInputBackground: "#C7D7E0"
+borderedItemBorderColor: "#766B90"
+buttonBackground: "#C7D7E0"
+buttonBackground-hover: "#9FB5C9"
+buttonBackground-active: "#B5CBD2"
+buttonColor: "#545464"
+buttonBorder: "#766B90"
+buttonBorder-hover: "#4D699B"
+buttonBorder-active: "#4D699B"
+windowControlsBackground: "#DCD5AC"
+windowControlsBackground-active: "#E7DBA0"
+windowControlsCloseBackground: "#C84053"
+windowControlsCloseBackground-active: "#D7474B"
+platformLogoForeground: "#F2ECBC"
+platformLogoBackground: "#4D699B"
