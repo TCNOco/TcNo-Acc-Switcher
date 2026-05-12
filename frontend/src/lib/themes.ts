@@ -5,6 +5,7 @@ import { offlineMode } from "../stores/offlineMode";
 export const DEFAULT_THEME_ID = "default";
 
 const OVERLAY_STYLE_ID = "tcno-theme-overlay";
+const OVERLAY_STYLE_ATTR = "data-tcno-theme-overlay";
 /** Marks runtime-injected Google Fonts stylesheets (see syncThemeGoogleFonts). */
 const THEME_FONT_LINK_ATTR = "data-tcno-google-fonts-theme";
 export const THEME_STORAGE_KEY = "tcno:theme";
@@ -138,12 +139,17 @@ function styleLoaderPathForId(themeId: string): string | null {
 }
 
 export const currentThemeId = writable<string>(DEFAULT_THEME_ID);
+let activeThemeRequestId = 0;
 
 function removeOverlay(): void {
-  document.getElementById(OVERLAY_STYLE_ID)?.remove();
+  if (typeof document === "undefined") {
+    return;
+  }
+  document.querySelectorAll(`style[${OVERLAY_STYLE_ATTR}]`).forEach((node) => node.remove());
 }
 
 export async function applyTheme(id: string): Promise<void> {
+  const requestId = ++activeThemeRequestId;
   removeOverlay();
   removeThemeGoogleFontLinks();
   if (id === DEFAULT_THEME_ID) {
@@ -158,8 +164,13 @@ export async function applyTheme(id: string): Promise<void> {
   }
   const load = themeStyles[key];
   const css = await load();
+  if (requestId !== activeThemeRequestId) {
+    return;
+  }
+  removeOverlay();
   const style = document.createElement("style");
   style.id = OVERLAY_STYLE_ID;
+  style.setAttribute(OVERLAY_STYLE_ATTR, "");
   style.textContent = css;
   document.head.appendChild(style);
   currentThemeId.set(id);
