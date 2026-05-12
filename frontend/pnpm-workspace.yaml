@@ -1,0 +1,20 @@
+minimumReleaseAge: 1440 # 1-day
+minimumReleaseAgeStrict: true
+minimumReleaseAgeIgnoreMissingTime: false
+
+trustPolicy: no-downgrade
+trustPolicyIgnoreAfter: 1440 # 1-day
+
+blockExoticSubdeps: true
+strictDepBuilds: true
+savePrefix: ''
+
+overrides:
+  '@parcel/watcher': 2.5.6
+  esbuild: 0.21.5
+  svelte-preprocess: 5.1.4
+
+allowBuilds:
+  '@parcel/watcher@2.5.6': true
+  esbuild@0.21.5: true
+  svelte-preprocess@5.1.4: true

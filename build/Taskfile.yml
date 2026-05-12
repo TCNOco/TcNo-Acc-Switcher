@@ -12,14 +12,14 @@ tasks:
     dir: frontend
     sources:
       - package.json
-      - package-lock.json
+      - pnpm-lock.yaml
     generates:
       - node_modules
     preconditions:
-      - sh: npm version
-        msg: "Looks like npm isn't installed. Npm is part of the Node installer: https://nodejs.org/en/download/"
+      - sh: pnpm --version
+        msg: "Looks like pnpm isn't installed. Install Node.js, then run: npm install -g pnpm"
     cmds:
-      - npm install
+      - pnpm install --frozen-lockfile
 
   copy:platforms_json:
     summary: Copy Platforms.json next to the built executable (bin/)
@@ -49,7 +49,7 @@ tasks:
           BUILD_FLAGS:
             ref: .BUILD_FLAGS
     cmds:
-      - npm run {{.BUILD_COMMAND}} -q
+      - pnpm run {{.BUILD_COMMAND}}
     env:
       PRODUCTION: '{{if eq .DEV "true"}}false{{else}}true{{end}}'
     vars:
@@ -127,13 +127,13 @@ tasks:
     deps:
       - task: install:frontend:deps
     cmds:
-      - npm run dev -- --port {{.VITE_PORT}} --strictPort
+      - pnpm run dev --port {{.VITE_PORT}} --strictPort
 
   dev:frontend:nodeps:
     summary: Runs the frontend in development mode (deps preinstalled)
     dir: frontend
     cmds:
-      - npm run dev -- --port {{.VITE_PORT}} --strictPort
+      - pnpm run dev --port {{.VITE_PORT}} --strictPort
 
   update:build-assets:
     summary: Updates the build assets
