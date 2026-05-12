@@ -1,0 +1,23 @@
+# This theme's name (Shows in-app, can be different to folder name)
+name: Catppuccin Latte
+accent: "#1e66f5"
+
+# Required colors for updater & main UI (not HTML/CSS):
+linkColor: "#1e66f5"
+headerbarBackground: "#e6e9ef"
+mainBackground: "#eff1f5"
+modalInputBackground: "#ccd0da"
+borderedItemBorderColor: "#acb0be"
+buttonBackground: "#ccd0da"
+buttonBackground-hover: "#bcc0cc"
+buttonBackground-active: "#acb0be"
+buttonColor: "#4c4f69"
+buttonBorder: "#acb0be"
+buttonBorder-hover: "#1e66f5"
+buttonBorder-active: "#1e66f5"
+windowControlsBackground: "#e6e9ef"
+windowControlsBackground-active: "#bcc0cc"
+windowControlsCloseBackground: "#d20f39"
+windowControlsCloseBackground-active: "#e64553"
+platformLogoForeground: "#eff1f5"
+platformLogoBackground: "#1e66f5"

@@ -1,0 +1,384 @@
+@use "sass:color";
+@use "sass:map";
+
+@function cp($palette, $token) {
+  @return map.get($palette, $token);
+}
+
+@function pick($condition, $when-true, $when-false) {
+  @if $condition {
+    @return $when-true;
+  }
+
+  @return $when-false;
+}
+
+@mixin theme($palette, $meta, $is-light: false) {
+  $rosewater: cp($palette, rosewater);
+  $flamingo: cp($palette, flamingo);
+  $pink: cp($palette, pink);
+  $mauve: cp($palette, mauve);
+  $red: cp($palette, red);
+  $maroon: cp($palette, maroon);
+  $peach: cp($palette, peach);
+  $yellow: cp($palette, yellow);
+  $green: cp($palette, green);
+  $teal: cp($palette, teal);
+  $sky: cp($palette, sky);
+  $sapphire: cp($palette, sapphire);
+  $blue: cp($palette, blue);
+  $lavender: cp($palette, lavender);
+  $text: cp($palette, text);
+  $subtext1: cp($palette, subtext1);
+  $subtext0: cp($palette, subtext0);
+  $overlay2: cp($palette, overlay2);
+  $overlay1: cp($palette, overlay1);
+  $overlay0: cp($palette, overlay0);
+  $surface2: cp($palette, surface2);
+  $surface1: cp($palette, surface1);
+  $surface0: cp($palette, surface0);
+  $base: cp($palette, base);
+  $mantle: cp($palette, mantle);
+  $crust: cp($palette, crust);
+
+  $accent-hs: map.get($meta, accent-hs);
+  $accent-l: map.get($meta, accent-l);
+  $accent-int: map.get($meta, accent-int);
+  $green-int: map.get($meta, green-int);
+  $orange-int: map.get($meta, orange-int);
+  $red-int: map.get($meta, red-int);
+
+  $shadow-base: pick($is-light, $text, $crust);
+  $overlay-panel: pick($is-light, rgba($surface0, 0.96), rgba($mantle, 0.96));
+  $overlay-scrim: pick($is-light, rgba($text, 0.44), rgba($crust, 0.75));
+  $program-bg: pick($is-light, $base, linear-gradient(90deg, $base, $mantle 100%));
+  $surface-popover: pick($is-light, $surface0, color.adjust($surface0, $lightness: -2%));
+  $surface-context-row: pick($is-light, $mantle, $surface1);
+  $surface-search-result: pick($is-light, rgba($surface0, 0.92), rgba($surface2, 0.78));
+  $input-bg: pick($is-light, $mantle, $surface0);
+  $input-border: pick($is-light, $overlay1, $surface2);
+  $window-hover: $surface1;
+  $text-muted: pick($is-light, $subtext1, color.adjust($subtext1, $lightness: -2%));
+  $text-subtle: pick($is-light, $subtext0, $overlay2);
+  $text-dim: $overlay0;
+  $text-body-muted: pick($is-light, $subtext0, $overlay1);
+  $tooltip-bg: pick($is-light, $surface2, $crust);
+  $ace-bg: pick($is-light, $mantle, $base);
+
+  :root {
+    --accent: #{$blue};
+    --accentHS: #{$accent-hs};
+    --accentL: #{$accent-l};
+    --accentInt: #{$accent-int};
+    --cyan: #{$sky};
+    --cyanSecondary: #{$sapphire};
+    --cyanLight: #{rgba($sky, pick($is-light, 0.18, 0.22))};
+
+    --code: #{$surface1};
+    --code-background: #{$mantle};
+    --slightly-darker-code-background: #{pick($is-light, color.adjust($mantle, $lightness: -3%), color.adjust($mantle, $lightness: -2%))};
+    --darker-code-background: #{$mantle};
+    --even-darker-code-background: #{$input-bg};
+    --shadow: 0 4px 12px -6px #{rgba($shadow-base, pick($is-light, 0.3, 0.82))};
+
+    --black: #{pick($is-light, $text, $base)};
+    --blackSecondary: #{pick($is-light, $subtext0, $surface2)};
+    --blackTernary: #{pick($is-light, $overlay0, $subtext1)};
+    --blackLight: #{rgba($text, pick($is-light, 0.08, 0.12))};
+
+    --white: #{$text};
+    --whiteSecondary: #{$text};
+    --whiteLight: #{rgba($text, pick($is-light, 0.07, 0.06))};
+
+    --green: #{$green};
+    --greenSecondary: #{color.mix($green, $base, 28%)};
+    --greenLight: #{rgba($green, pick($is-light, 0.16, 0.12))};
+    --orange: #{$peach};
+    --orangeSecondary: #{color.mix($peach, $base, 28%)};
+    --orangeLight: #{rgba($peach, pick($is-light, 0.16, 0.12))};
+    --pink: #{$pink};
+    --pinkSecondary: #{color.mix($pink, $base, 24%)};
+    --pinkLight: #{rgba($pink, pick($is-light, 0.16, 0.12))};
+    --purple: #{$mauve};
+    --purpleSecondary: #{color.mix($lavender, $base, 26%)};
+    --purpleLight: #{rgba($mauve, pick($is-light, 0.16, 0.12))};
+    --red: #{$red};
+    --redSecondary: #{color.mix($red, $base, 24%)};
+    --redLight: #{rgba($red, pick($is-light, 0.16, 0.12))};
+    --yellow: #{$yellow};
+    --yellowSecondary: #{color.mix($yellow, $base, 30%)};
+    --gradientDegree: 135deg;
+
+    --base-surface: #{$base};
+    --mantle-surface: #{$mantle};
+    --crust-surface: #{$crust};
+    --surface0: #{$surface0};
+    --surface1: #{$surface1};
+    --surface2: #{$surface2};
+    --surface-panel-bg: #{$surface0};
+    --border-bar-bg: #{$mantle};
+    --border-bar-size: 7px;
+    --program-bg: #{$program-bg};
+    --accountListBackground: #{$base};
+    --footer-bg: #{$mantle};
+    --scrollbar-track-bg: #{$surface0};
+    --button-bg: #{$surface0};
+    --button-bg-hover: #{$surface1};
+    --tooltip-bg: #{$tooltip-bg};
+    --main-padding: 0.75rem;
+    --document-canvas-bg: #{$base};
+
+    --shadow-color-heavy: #{rgba($shadow-base, pick($is-light, 0.24, 0.88))};
+    --shadow-color-50: #{rgba($shadow-base, pick($is-light, 0.14, 0.52))};
+    --shadow-color-45: #{rgba($shadow-base, pick($is-light, 0.12, 0.46))};
+    --shadow-color-40: #{rgba($shadow-base, pick($is-light, 0.1, 0.42))};
+    --shadow-color-35: #{rgba($shadow-base, pick($is-light, 0.09, 0.37))};
+    --shadow-color-30: #{rgba($shadow-base, pick($is-light, 0.08, 0.32))};
+    --backdrop-scrim-55: #{rgba($shadow-base, pick($is-light, 0.36, 0.58))};
+    --backdrop-scrim-65: #{rgba($shadow-base, pick($is-light, 0.44, 0.68))};
+    --black-alpha-12: #{rgba($shadow-base, pick($is-light, 0.08, 0.14))};
+    --black-alpha-15: #{rgba($shadow-base, pick($is-light, 0.1, 0.18))};
+
+    --text-white-40: #{rgba($text, pick($is-light, 0.45, 0.4))};
+    --text-white-50: #{rgba($text, pick($is-light, 0.55, 0.5))};
+    --text-white-60: #{rgba($text, pick($is-light, 0.65, 0.6))};
+    --text-white-65: #{rgba($text, pick($is-light, 0.68, 0.65))};
+    --text-white-88: #{rgba($text, 0.88)};
+    --text-white-90: #{rgba($text, 0.9)};
+    --text-white-92: #{rgba($text, 0.92)};
+
+    --overlay-white-06: rgba(255, 255, 255, #{pick($is-light, 0.5, 0.06)});
+    --overlay-white-08: rgba(255, 255, 255, #{pick($is-light, 0.55, 0.08)});
+    --overlay-white-12: rgba(255, 255, 255, #{pick($is-light, 0.65, 0.12)});
+    --overlay-white-14: rgba(255, 255, 255, #{pick($is-light, 0.72, 0.14)});
+    --overlay-white-15: rgba(255, 255, 255, #{pick($is-light, 0.75, 0.15)});
+
+    --text-muted-gray: #{$text-muted};
+    --text-subtle-gray: #{$text-subtle};
+    --text-dim-gray: #{$text-dim};
+    --text-body-muted: #{$text-body-muted};
+    --tag-default-bg: #{$surface2};
+    --surface-glass-06-15: linear-gradient(145deg, var(--overlay-white-08), #{rgba($shadow-base, pick($is-light, 0.08, 0.15))});
+    --surface-row-dark: #{$surface0};
+    --surface-steam-popover: #{$surface-popover};
+    --surface-context-submenu: #{$surface1};
+    --surface-context-row: #{$surface-context-row};
+    --surface-search-result: #{$surface-search-result};
+    --text-on-bright-bg: #{$text};
+    --context-menu-hotkey: #{pick($is-light, color.mix($peach, $base, 32%), color.mix($peach, $crust, 36%))};
+    --form-checkbox-border: #{$blue};
+    --input-number-border: #{$input-border};
+    --window-close-hover: #{$red};
+    --window-control-hover-bg: #{$window-hover};
+    --error-text-soft: #{pick($is-light, color.adjust($red, $lightness: -12%), color.mix($red, $text, 42%))};
+    --error-bg-dim: #{rgba($red, pick($is-light, 0.16, 0.24))};
+    --error-bg-hover: #{rgba($red, pick($is-light, 0.24, 0.34))};
+    --error-border-soft: #{rgba($red, pick($is-light, 0.28, 0.42))};
+    --overlay-panel-bg: #{$overlay-panel};
+    --overlay-scrim-deep: #{$overlay-scrim};
+
+    --greenInt: #{$green-int};
+    --orangeInt: #{$orange-int};
+    --redInt: #{$red-int};
+
+    --accent-border-deep: #{pick($is-light, $sapphire, $blue)};
+    --accent-text-bright: #{$blue};
+    --accent-text-on-selection: #{$blue};
+    --accent-text-heading: #{$blue};
+    --home-ico-gradient-end: #{rgba($blue, 1)};
+
+    --ace-editor-bg: #{$ace-bg};
+    --ace-gutter-fg: #{$overlay1};
+    --ace-invisible: #{$overlay0};
+    --ace-muted-purple: #{$mauve};
+    --ace-xml-pe: #{$surface2};
+
+    --notification-main-bg: #{$surface0};
+    --notification-info-border: #{$blue};
+    --notification-info-highlight: #{$lavender};
+    --notification-success-border: #{$green};
+    --notification-success-highlight: #{$green};
+    --notification-warning-border: #{$yellow};
+    --notification-warning-highlight: #{$yellow};
+    --notification-error-border: #{$red};
+    --notification-error-highlight: #{$red};
+  }
+
+  body,
+  .programMain,
+  .mainblock {
+    background: var(--program-bg);
+    color: var(--white);
+  }
+
+  .headerbar,
+  .resizeTopLeft,
+  .resizeTop,
+  .resizeTopRight,
+  .resizeRight,
+  .resizeBottomRight,
+  .resizeBottom,
+  .resizeBottomLeft,
+  .resizeLeft,
+  #window-controls,
+  #btnBack {
+    background: var(--border-bar-bg);
+  }
+
+  .header_icon {
+    fill: var(--accent);
+  }
+
+  #window-title,
+  #window-title-modal,
+  .container {
+    color: var(--whiteSecondary);
+  }
+
+  button,
+  .button {
+    background: var(--button-bg);
+    border-color: var(--form-checkbox-border);
+    color: var(--whiteSecondary);
+  }
+
+  button:hover,
+  .button:hover,
+  #window-controls button:hover,
+  #btnBack:hover {
+    background: var(--button-bg-hover);
+    border-color: var(--accent);
+  }
+
+  button:active,
+  button:target,
+  .button:active,
+  .button:target,
+  .show > .dropdown-toggle {
+    background-color: var(--surface-context-row) !important;
+  }
+
+  .acc_list_actionbar {
+    background: var(--footer-bg);
+  }
+
+  .platform_list_item {
+    border: 1px solid var(--form-checkbox-border);
+    color: var(--whiteSecondary);
+    text-shadow: none;
+  }
+
+  .platform_list_item .icoFG,
+  .platform_list_item .fgImg use.icoFG {
+    fill: var(--whiteSecondary);
+  }
+
+  .icoGlass {
+    fill: rgba(255, 255, 255, 0);
+  }
+
+  .icoBG {
+    background: var(--surface-row-dark);
+  }
+
+  .accountHover {
+    border: 0.1em solid var(--form-checkbox-border);
+    background: var(--surface-row-dark);
+  }
+
+  .shortcuts,
+  .shortcutDropdown,
+  .shortcuts.expandShortcuts,
+  .shortcutPlaceholder,
+  .pathPicker,
+  .dropdown-menu,
+  .contextmenu,
+  .contextmenu .submenu,
+  .custom-dropdown-menu,
+  .modalFG,
+  #modal_contents {
+    background: var(--surface-panel-bg, var(--surface-row-dark));
+    color: var(--whiteSecondary);
+  }
+
+  .shortcutPlaceholder {
+    background: var(--surface-context-row);
+  }
+
+  .shortcuts,
+  .shortcutDropdown,
+  .shortcuts.expandShortcuts {
+    border-color: var(--form-checkbox-border);
+  }
+
+  .dropdown {
+    color: var(--accent);
+  }
+
+  .dropdown-item {
+    color: var(--whiteSecondary);
+  }
+
+  .dropdown-item:hover,
+  .contextmenu li:hover {
+    background: var(--surface-context-row) !important;
+  }
+
+  .contextmenu li:hover {
+    border-left: 2px solid var(--accent);
+  }
+
+  .contextmenu li a,
+  .contextmenu li span,
+  .contextmenu li button {
+    color: var(--whiteSecondary);
+  }
+
+  .contextmenu,
+  .contextmenu .submenu {
+    box-shadow: 0 4px 16px var(--shadow-color-35);
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--scrollbar-track-bg);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 0.3em;
+    background: var(--surface2, var(--blackSecondary));
+    border: 1px solid var(--blackSecondary);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+  }
+
+  input[type="number"],
+  input[type="text"],
+  input[type="password"],
+  textarea,
+  #modal_contents input[type="text"],
+  #modal_contents input[type="password"] {
+    background: var(--even-darker-code-background) !important;
+    border-color: var(--input-number-border);
+    color: var(--whiteSecondary);
+  }
+
+  .platform_list_item:hover:not(:active) {
+    animation: none;
+  }
+
+  .btnClose-modal {
+    background: var(--red);
+  }
+
+  input.acc:checked + label.acc {
+    border-color: var(--accent) !important;
+    background: var(--surface-context-row);
+  }
+
+  label.acc.currentAcc {
+    border-color: var(--green);
+    border-style: dashed;
+  }
+}

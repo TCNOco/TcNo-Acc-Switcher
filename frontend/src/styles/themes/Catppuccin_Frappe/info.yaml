@@ -1,0 +1,23 @@
+# This theme's name (Shows in-app, can be different to folder name)
+name: Catppuccin Frappe
+accent: "#8caaee"
+
+# Required colors for updater & main UI (not HTML/CSS):
+linkColor: "#8caaee"
+headerbarBackground: "#292c3c"
+mainBackground: "#303446"
+modalInputBackground: "#414559"
+borderedItemBorderColor: "#626880"
+buttonBackground: "#414559"
+buttonBackground-hover: "#51576d"
+buttonBackground-active: "#626880"
+buttonColor: "#c6d0f5"
+buttonBorder: "#626880"
+buttonBorder-hover: "#8caaee"
+buttonBorder-active: "#8caaee"
+windowControlsBackground: "#292c3c"
+windowControlsBackground-active: "#51576d"
+windowControlsCloseBackground: "#e78284"
+windowControlsCloseBackground-active: "#ea999c"
+platformLogoForeground: "#303446"
+platformLogoBackground: "#8caaee"
