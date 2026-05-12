@@ -2,7 +2,6 @@
   import { onMount } from "svelte";
   import { get } from "svelte/store";
   import { route, previousPage, appBarTitle } from "../stores/nav";
-  import { listThemes, setUserTheme, currentThemeId, type ThemeOption } from "../lib/themes";
   import { t } from "../stores/i18n";
   import "../styles/Settings.scss";
   import "../styles/HomePlatforms.scss";
@@ -22,6 +21,7 @@
   import { platformIconFgHref } from "../lib/platformIcon";
   import ToastTypeIcon from "../components/ToastTypeIcon.svelte";
   import ReorderPointerGrid from "../components/ReorderPointerGrid.svelte";
+  import ThemePickerControls from "../components/ThemePickerControls.svelte";
 
   type PvAccRow = {
     name: string;
@@ -102,22 +102,11 @@
   let toastPermanent = false;
   let shortcutDdOpen = false;
   let settingsDdOpen = false;
-  let themeOpen = false;
-  let themes: ThemeOption[] = [];
   let modalLog: string[] = [];
 
   onMount(() => {
-    themes = listThemes();
     previousPage.set({ page: "settings" });
   });
-
-  $: currentThemeLabel =
-    themes.find((th) => th.id === $currentThemeId)?.label ?? themes[0]?.label ?? "";
-
-  async function pickTheme(id: string): Promise<void> {
-    await setUserTheme(id);
-    themeOpen = false;
-  }
 
   $: appBarTitle.set($t("Title_Settings_TestCss"));
 
@@ -271,28 +260,7 @@
   <p class="preview-css-intro">{$t("Settings_PreviewCss")}</p>
 
   <h2 class="SettingsHeader">{$t("Settings_Header_Theme")}</h2>
-  <div>
-    <div class="rowDropdown">
-      <span>{$t("Settings_CurrentStyle")}</span>
-      <div class="dropdown" class:show={themeOpen}>
-        <button type="button" class="dropdown-toggle" on:click={() => (themeOpen = !themeOpen)}>
-          {currentThemeLabel}
-          <span class="caret" aria-hidden="true"></span>
-        </button>
-        {#if themeOpen}
-          <ul class="custom-dropdown-menu dropdown-menu">
-            {#each themes as th}
-              <li role="none">
-                <button type="button" class="dropdown-item" on:click={() => void pickTheme(th.id)}>
-                  {th.label}
-                </button>
-              </li>
-            {/each}
-          </ul>
-        {/if}
-      </div>
-    </div>
-  </div>
+  <ThemePickerControls />
 
   <h2 class="SettingsHeader">{$t("Preview_Platforms")}</h2>
   <div class="preview_element preview_program_main">

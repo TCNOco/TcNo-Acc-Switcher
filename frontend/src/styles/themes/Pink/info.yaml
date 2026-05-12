@@ -2,24 +2,18 @@
 name: Pink
 accent: "#FF7AB3"
 
-# Required colors for updater & main UI (not HTML/CSS):
-# Light theme: pastel pink surfaces, deep rose chrome, dark text
-linkColor: "#FF7AB3"
-headerbarBackground: "#F5BEDB"
-mainBackground: "#F5F5F5"
-modalInputBackground: "#F2F8FC"
-borderedItemBorderColor: "#c2185b"
-buttonBackground: "#F5F0F3"
-buttonBackground-hover: "#F1DDE9"
-buttonBackground-active: "#EDE8FC"
-buttonColor: "#54494B"
-buttonBorder: "#c2185b"
-buttonBorder-hover: "#9e1348"
-buttonBorder-active: "#9e1348"
-windowControlsBackground: "#F5BEDB"
-windowControlsBackground-active: "#F1DDE9"
-windowControlsCloseBackground: "#9e1348"
-windowControlsCloseBackground-active: "#7a0f38" 
-# For platform shortcuts on desktop
-platformLogoForeground: "#fff8fa"
-platformLogoBackground: "#9e1348"
+accents:
+  - name: Accent
+    color: "#FF7AB3"
+  - name: Shell
+    color: "#F5BEDB"
+  - name: Shell Hover
+    color: "#F1DDE9"
+  - name: Tile
+    color: "#EDE8FC"
+  - name: Line
+    color: "#E29AB8"
+  - name: Magenta
+    color: "#C2185B"
+  - name: Close
+    color: "#E57373"

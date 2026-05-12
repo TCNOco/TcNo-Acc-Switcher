@@ -438,6 +438,18 @@ func runGUI(parsed cli.Parsed) {
 		}
 	}()
 
+	go func() {
+		last := ""
+		for {
+			current := platform.CurrentWindowsAccentColor()
+			if current != "" && current != last {
+				last = current
+				_ = app.Event.Emit(platform.WindowsAccentChangedEvent, current)
+			}
+			time.Sleep(2 * time.Second)
+		}
+	}()
+
 	err := app.Run()
 	if err != nil {
 		log.Fatal(err)

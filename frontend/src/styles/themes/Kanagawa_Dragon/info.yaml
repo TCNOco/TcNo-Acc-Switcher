@@ -2,22 +2,20 @@
 name: Kanagawa Dragon
 accent: "#8BA4B0"
 
-# Required colors for updater & main UI (not HTML/CSS):
-linkColor: "#8BA4B0"
-headerbarBackground: "#12120F"
-mainBackground: "#181616"
-modalInputBackground: "#282727"
-borderedItemBorderColor: "#7A8382"
-buttonBackground: "#282727"
-buttonBackground-hover: "#393836"
-buttonBackground-active: "#393836"
-buttonColor: "#C5C9C5"
-buttonBorder: "#7A8382"
-buttonBorder-hover: "#8BA4B0"
-buttonBorder-active: "#8BA4B0"
-windowControlsBackground: "#12120F"
-windowControlsBackground-active: "#282727"
-windowControlsCloseBackground: "#E82424"
-windowControlsCloseBackground-active: "#c4746e"
-platformLogoForeground: "#181616"
-platformLogoBackground: "#8BA4B0"
+accents:
+  - name: Accent
+    color: "#8BA4B0"
+  - name: Cyan
+    color: "#8EA4A2"
+  - name: Green
+    color: "#8A9A7B"
+  - name: Orange
+    color: "#B6927B"
+  - name: Pink
+    color: "#A292A3"
+  - name: Purple
+    color: "#8992A7"
+  - name: Red
+    color: "#C4746E"
+  - name: Yellow
+    color: "#C4B28A"

@@ -2,22 +2,20 @@
 name: Gruvbox
 accent: "#83A598"
 
-# Required colors for updater & main UI (not HTML/CSS):
-linkColor: "#83A598"
-headerbarBackground: "#282828"
-mainBackground: "#282828"
-modalInputBackground: "#3C3836"
-borderedItemBorderColor: "#7C6F64"
-buttonBackground: "#3C3836"
-buttonBackground-hover: "#504945"
-buttonBackground-active: "#665C54"
-buttonColor: "#EBDBB2"
-buttonBorder: "#83A598"
-buttonBorder-hover: "#FABD2F"
-buttonBorder-active: "#FABD2F"
-windowControlsBackground: "#282828"
-windowControlsBackground-active: "#3C3836"
-windowControlsCloseBackground: "#FB4934"
-windowControlsCloseBackground-active: "#FB4934"
-platformLogoForeground: "#282828"
-platformLogoBackground: "#83A598"
+accents:
+  - name: Accent
+    color: "#83A598"
+  - name: Cyan
+    color: "#8EC07C"
+  - name: Green
+    color: "#B8BB26"
+  - name: Orange
+    color: "#FE8019"
+  - name: Pink
+    color: "#D3869B"
+  - name: Purple
+    color: "#D3869B"
+  - name: Red
+    color: "#FB4934"
+  - name: Yellow
+    color: "#FABD2F"

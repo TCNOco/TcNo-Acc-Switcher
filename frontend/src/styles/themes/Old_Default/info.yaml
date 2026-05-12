@@ -2,24 +2,18 @@
 name: Old Default
 accent: "#FFAA00"
 
-# Required colors for updater & main UI (not HTML/CSS):
-# - Not including these will cause the updater to use default color scheme (Dracula Cyan)
-linkColor: "#FFAA00" # Accent color
-headerbarBackground: "#14151E"
-mainBackground: "#28293A"
-modalInputBackground: "#212529"
-borderedItemBorderColor: "#888888"
-buttonBackground: "#333333"
-buttonBackground-hover: "#444444"
-buttonBackground-active: "#222222"
-buttonColor: "#FFFFFF"
-buttonBorder: "#888888"
-buttonBorder-hover: "#888888"
-buttonBorder-active: "#FFAA00"
-windowControlsBackground: "#14151E"
-windowControlsBackground-active: "#43444B"
-windowControlsCloseBackground: "#E81123"
-windowControlsCloseBackground-active: "#F1707A"
-# For platform shortcuts on desktop (For consistency make sure these match your CSS)
-platformLogoForeground: "#FFAA00"
-platformLogoBackground: "#202123"
+accents:
+  - name: Cyan
+    color: "#00A5F8"
+  - name: Green
+    color: "#7CBD6E"
+  - name: Orange
+    color: "#FFAA33"
+  - name: Pink
+    color: "#E86890"
+  - name: Purple
+    color: "#9B8FD9"
+  - name: Red
+    color: "#E85D5D"
+  - name: Yellow
+    color: "#FFE566"

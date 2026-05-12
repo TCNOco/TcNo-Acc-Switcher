@@ -203,6 +203,48 @@ func sanitizeThemeID(id string) string {
 	return s
 }
 
+func sanitizeThemeAccentPreset(id string) string {
+	s := strings.TrimSpace(id)
+	if s == "" {
+		return ""
+	}
+	if strings.EqualFold(s, "custom") {
+		return "custom"
+	}
+	if strings.EqualFold(s, "windows") {
+		return "windows"
+	}
+	if len(s) > 64 {
+		return ""
+	}
+	for _, r := range s {
+		switch {
+		case r >= 'a' && r <= 'z', r >= 'A' && r <= 'Z', r >= '0' && r <= '9', r == '-':
+			continue
+		default:
+			return ""
+		}
+	}
+	return s
+}
+
+func sanitizeHexColor(value string) string {
+	s := strings.TrimSpace(value)
+	if len(s) != 7 || s[0] != '#' {
+		return ""
+	}
+	for i := 1; i < len(s); i++ {
+		c := s[i]
+		switch {
+		case c >= '0' && c <= '9', c >= 'a' && c <= 'f', c >= 'A' && c <= 'F':
+			continue
+		default:
+			return ""
+		}
+	}
+	return strings.ToLower(s)
+}
+
 func (p *PlatformService) GetTheme() (string, error) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
@@ -215,6 +257,38 @@ func (p *PlatformService) GetTheme() (string, error) {
 		return "", err
 	}
 	return sanitizeThemeID(settings.Theme), nil
+}
+
+func (p *PlatformService) GetThemeAccentPreset() (string, error) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return "", err
+	}
+	settings, err := loadSettings(exeDir)
+	if err != nil {
+		return "", err
+	}
+	return sanitizeThemeAccentPreset(settings.ThemeAccentPreset), nil
+}
+
+func (p *PlatformService) GetThemeAccentCustom() (string, error) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return "", err
+	}
+	settings, err := loadSettings(exeDir)
+	if err != nil {
+		return "", err
+	}
+	return sanitizeHexColor(settings.ThemeAccentCustom), nil
+}
+
+func (p *PlatformService) GetWindowsAccentColor() string {
+	return CurrentWindowsAccentColor()
 }
 
 func (p *PlatformService) GetAppVersion() string {
@@ -232,7 +306,42 @@ func (p *PlatformService) SetTheme(themeID string) error {
 	if err != nil {
 		return err
 	}
-	settings.Theme = sanitizeThemeID(themeID)
+	nextTheme := sanitizeThemeID(themeID)
+	if settings.Theme != nextTheme {
+		settings.ThemeAccentPreset = ""
+		settings.ThemeAccentCustom = ""
+	}
+	settings.Theme = nextTheme
+	return saveSettingsAtomic(exeDir, settings)
+}
+
+func (p *PlatformService) SetThemeAccentPreset(preset string) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return err
+	}
+	settings, err := loadSettings(exeDir)
+	if err != nil {
+		return err
+	}
+	settings.ThemeAccentPreset = sanitizeThemeAccentPreset(preset)
+	return saveSettingsAtomic(exeDir, settings)
+}
+
+func (p *PlatformService) SetThemeAccentCustom(color string) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return err
+	}
+	settings, err := loadSettings(exeDir)
+	if err != nil {
+		return err
+	}
+	settings.ThemeAccentCustom = sanitizeHexColor(color)
 	return saveSettingsAtomic(exeDir, settings)
 }
 

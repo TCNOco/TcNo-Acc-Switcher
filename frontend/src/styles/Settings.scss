@@ -39,6 +39,7 @@ input[type="number"],
 input[type="text"],
 input[type="password"],
 textarea {
+  appearance: textfield;
   -moz-appearance: textfield;
   display: inline-block;
   margin: 0 0 2px 0;
@@ -210,4 +211,77 @@ input[type="checkbox"]:checked + label {
   .SettingsHeader {
     padding-top: 1em;
   }
+}
+
+.theme-control-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+
+  .rowDropdown {
+    margin-right: 0;
+  }
+}
+
+.accent-toggle,
+.accent-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.accent-toggle {
+  min-width: 13.5rem;
+  justify-content: flex-start;
+}
+
+.accent-toggle-label {
+  flex: 1;
+  text-align: left;
+}
+
+.accent-dropdown-menu {
+  min-width: 13.5rem;
+}
+
+.theme-accent-chip {
+  display: inline-block;
+  width: 0.9rem;
+  height: 0.9rem;
+  min-width: 0.9rem;
+  min-height: 0.9rem;
+  flex: 0 0 0.9rem;
+  border: 1px solid var(--shadow-color-50);
+  border-radius: 0.2rem;
+  background: var(--accent-chip-color);
+  box-shadow: inset 0 0 0 1px var(--overlay-white-12);
+}
+
+.accent-custom-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: fit-content;
+  padding: 5px 0 2px 0;
+}
+
+.accent-custom-picker {
+  width: 2.5rem;
+  height: 2rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--buttonBorder, var(--button-bg-hover));
+  border-radius: 0.35rem;
+  background: none;
+  cursor: pointer;
+}
+
+.accent-custom-picker::-webkit-color-swatch-wrapper {
+  padding: 0.15rem;
+}
+
+.accent-custom-picker::-webkit-color-swatch {
+  border: 0;
+  border-radius: 0.2rem;
 }

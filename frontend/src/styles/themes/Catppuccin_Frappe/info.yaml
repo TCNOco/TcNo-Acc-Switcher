@@ -1,23 +1,33 @@
 # This theme's name (Shows in-app, can be different to folder name)
 name: Catppuccin Frappe
-accent: "#8caaee"
+accent: "#8CAAEE"
 
-# Required colors for updater & main UI (not HTML/CSS):
-linkColor: "#8caaee"
-headerbarBackground: "#292c3c"
-mainBackground: "#303446"
-modalInputBackground: "#414559"
-borderedItemBorderColor: "#626880"
-buttonBackground: "#414559"
-buttonBackground-hover: "#51576d"
-buttonBackground-active: "#626880"
-buttonColor: "#c6d0f5"
-buttonBorder: "#626880"
-buttonBorder-hover: "#8caaee"
-buttonBorder-active: "#8caaee"
-windowControlsBackground: "#292c3c"
-windowControlsBackground-active: "#51576d"
-windowControlsCloseBackground: "#e78284"
-windowControlsCloseBackground-active: "#ea999c"
-platformLogoForeground: "#303446"
-platformLogoBackground: "#8caaee"
+accents:
+  - name: Rosewater
+    color: "#F2D5CF"
+  - name: Flamingo
+    color: "#EEBEBE"
+  - name: Pink
+    color: "#F4B8E4"
+  - name: Mauve
+    color: "#CA9EE6"
+  - name: Red
+    color: "#E78284"
+  - name: Maroon
+    color: "#EA999C"
+  - name: Peach
+    color: "#EF9F76"
+  - name: Yellow
+    color: "#E5C890"
+  - name: Green
+    color: "#A6D189"
+  - name: Teal
+    color: "#81C8BE"
+  - name: Sky
+    color: "#99D1DB"
+  - name: Sapphire
+    color: "#85C1DC"
+  - name: Blue
+    color: "#8CAAEE"
+  - name: Lavender
+    color: "#BABBF1"

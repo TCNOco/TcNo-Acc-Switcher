@@ -2,22 +2,20 @@
 name: Kanagawa Wave
 accent: "#7E9CD8"
 
-# Required colors for updater & main UI (not HTML/CSS):
-linkColor: "#7E9CD8"
-headerbarBackground: "#181820"
-mainBackground: "#1F1F28"
-modalInputBackground: "#2A2A37"
-borderedItemBorderColor: "#938AA9"
-buttonBackground: "#2A2A37"
-buttonBackground-hover: "#363646"
-buttonBackground-active: "#363646"
-buttonColor: "#DCD7BA"
-buttonBorder: "#938AA9"
-buttonBorder-hover: "#7E9CD8"
-buttonBorder-active: "#7E9CD8"
-windowControlsBackground: "#181820"
-windowControlsBackground-active: "#2A2A37"
-windowControlsCloseBackground: "#E82424"
-windowControlsCloseBackground-active: "#E46876"
-platformLogoForeground: "#1F1F28"
-platformLogoBackground: "#7E9CD8"
+accents:
+  - name: Accent
+    color: "#7E9CD8"
+  - name: Cyan
+    color: "#7AA89F"
+  - name: Green
+    color: "#98BB6C"
+  - name: Orange
+    color: "#FFA066"
+  - name: Pink
+    color: "#D27E99"
+  - name: Purple
+    color: "#957FB8"
+  - name: Red
+    color: "#E46876"
+  - name: Yellow
+    color: "#E6C384"

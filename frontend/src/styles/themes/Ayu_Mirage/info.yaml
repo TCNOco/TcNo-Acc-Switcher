@@ -2,22 +2,20 @@
 name: Ayu Mirage
 accent: "#FFCC66"
 
-# Required colors for updater & main UI (not HTML/CSS):
-linkColor: "#73D0FF"
-headerbarBackground: "#1A1F29"
-mainBackground: "#242936"
-modalInputBackground: "#282E3B"
-borderedItemBorderColor: "#8A9199"
-buttonBackground: "#282E3B"
-buttonBackground-hover: "#313845"
-buttonBackground-active: "#313845"
-buttonColor: "#CCCAC2"
-buttonBorder: "#FFCC66"
-buttonBorder-hover: "#FFD173"
-buttonBorder-active: "#FFD173"
-windowControlsBackground: "#1A1F29"
-windowControlsBackground-active: "#282E3B"
-windowControlsCloseBackground: "#f28779"
-windowControlsCloseBackground-active: "#ff6666"
-platformLogoForeground: "#242936"
-platformLogoBackground: "#FFCC66"
+accents:
+  - name: Accent
+    color: "#FFCC66"
+  - name: Cyan
+    color: "#73D0FF"
+  - name: Green
+    color: "#D5FF80"
+  - name: Orange
+    color: "#FFAD66"
+  - name: Pink
+    color: "#F28779"
+  - name: Purple
+    color: "#DFBFFF"
+  - name: Red
+    color: "#FF6666"
+  - name: Yellow
+    color: "#FFD173"

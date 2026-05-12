@@ -2,22 +2,20 @@
 name: Ayu Dark
 accent: "#E6B450"
 
-# Required colors for updater & main UI (not HTML/CSS):
-linkColor: "#59C2FF"
-headerbarBackground: "#10141C"
-mainBackground: "#10141C"
-modalInputBackground: "#141821"
-borderedItemBorderColor: "#6C7380"
-buttonBackground: "#141821"
-buttonBackground-hover: "#161A24"
-buttonBackground-active: "#161A24"
-buttonColor: "#BFBDB6"
-buttonBorder: "#E6B450"
-buttonBorder-hover: "#FFB454"
-buttonBorder-active: "#FFB454"
-windowControlsBackground: "#10141C"
-windowControlsBackground-active: "#161A24"
-windowControlsCloseBackground: "#f07178"
-windowControlsCloseBackground-active: "#d95757"
-platformLogoForeground: "#10141C"
-platformLogoBackground: "#E6B450"
+accents:
+  - name: Accent
+    color: "#E6B450"
+  - name: Cyan
+    color: "#59C2FF"
+  - name: Green
+    color: "#AAD94C"
+  - name: Orange
+    color: "#FF8F40"
+  - name: Pink
+    color: "#F07178"
+  - name: Purple
+    color: "#D2A6FF"
+  - name: Red
+    color: "#D95757"
+  - name: Yellow
+    color: "#FFB454"
