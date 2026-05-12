@@ -1,0 +1,23 @@
+# This theme's name (Shows in-app, can be different to folder name)
+name: Gruvbox Light
+accent: "#076678"
+
+# Required colors for updater & main UI (not HTML/CSS):
+linkColor: "#076678"
+headerbarBackground: "#EBDBB2"
+mainBackground: "#FBF1C7"
+modalInputBackground: "#F9F5D7"
+borderedItemBorderColor: "#A89984"
+buttonBackground: "#EBDBB2"
+buttonBackground-hover: "#D5C4A1"
+buttonBackground-active: "#BDAE93"
+buttonColor: "#3C3836"
+buttonBorder: "#076678"
+buttonBorder-hover: "#B57614"
+buttonBorder-active: "#B57614"
+windowControlsBackground: "#EBDBB2"
+windowControlsBackground-active: "#D5C4A1"
+windowControlsCloseBackground: "#9D0006"
+windowControlsCloseBackground-active: "#9D0006"
+platformLogoForeground: "#FBF1C7"
+platformLogoBackground: "#076678"

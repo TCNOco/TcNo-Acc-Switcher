@@ -1,0 +1,23 @@
+# This theme's name (Shows in-app, can be different to folder name)
+name: Ayu Mirage
+accent: "#FFCC66"
+
+# Required colors for updater & main UI (not HTML/CSS):
+linkColor: "#73D0FF"
+headerbarBackground: "#1A1F29"
+mainBackground: "#242936"
+modalInputBackground: "#282E3B"
+borderedItemBorderColor: "#8A9199"
+buttonBackground: "#282E3B"
+buttonBackground-hover: "#313845"
+buttonBackground-active: "#313845"
+buttonColor: "#CCCAC2"
+buttonBorder: "#FFCC66"
+buttonBorder-hover: "#FFD173"
+buttonBorder-active: "#FFD173"
+windowControlsBackground: "#1A1F29"
+windowControlsBackground-active: "#282E3B"
+windowControlsCloseBackground: "#f28779"
+windowControlsCloseBackground-active: "#ff6666"
+platformLogoForeground: "#242936"
+platformLogoBackground: "#FFCC66"

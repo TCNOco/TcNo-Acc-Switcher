@@ -1,0 +1,23 @@
+# This theme's name (Shows in-app, can be different to folder name)
+name: Ayu Light
+accent: "#FFAA33"
+
+# Required colors for updater & main UI (not HTML/CSS):
+linkColor: "#22A4E6"
+headerbarBackground: "#FFFFFF"
+mainBackground: "#FCFCFC"
+modalInputBackground: "#FFFFFF"
+borderedItemBorderColor: "#8A9199"
+buttonBackground: "#FFFFFF"
+buttonBackground-hover: "#F3F4F5"
+buttonBackground-active: "#F3F4F5"
+buttonColor: "#5C6166"
+buttonBorder: "#FFAA33"
+buttonBorder-hover: "#F2AE49"
+buttonBorder-active: "#F2AE49"
+windowControlsBackground: "#FFFFFF"
+windowControlsBackground-active: "#F3F4F5"
+windowControlsCloseBackground: "#f07171"
+windowControlsCloseBackground-active: "#e65050"
+platformLogoForeground: "#FCFCFC"
+platformLogoBackground: "#FFAA33"

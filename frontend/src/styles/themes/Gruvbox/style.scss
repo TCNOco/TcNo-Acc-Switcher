@@ -1,0 +1,37 @@
+@use "../editor_palette" as editor;
+
+$palette: (
+  fg: #ebdbb2,
+  fg-dim: #d5c4a1,
+  comment: #928374,
+  accent: #83a598,
+  cyan: #8ec07c,
+  green: #b8bb26,
+  orange: #fe8019,
+  pink: #d3869b,
+  purple: #d3869b,
+  red: #fb4934,
+  yellow: #fabd2f,
+  bg: #282828,
+  bg-dim: #1d2021,
+  bg-deep: #1d2021,
+  bg-panel: #3c3836,
+  bg-hover: #504945,
+  bg-gutter: #665c54,
+  bg-search: #fabd2f,
+  bg-visual: #665c54,
+  border: #83a598,
+  nontext: #7c6f64,
+  surface-float: #32302f,
+);
+
+$meta: (
+  accent-hs: "169, 20%",
+  accent-l: "58%",
+  accent-int: "131, 165, 152",
+  green-int: "184, 187, 38",
+  orange-int: "254, 128, 25",
+  red-int: "251, 73, 52",
+);
+
+@include editor.theme($palette, $meta);
