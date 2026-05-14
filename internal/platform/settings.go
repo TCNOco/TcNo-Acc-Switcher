@@ -58,6 +58,36 @@ type AppSettings struct {
 
 	// StatsShare toggles anonymous statistics submission.
 	StatsShare bool `json:"statsShare,omitempty"`
+
+	// AppBgImage is the filename (under wwwroot/backgrounds/) of the app-wide background image.
+	AppBgImage string `json:"appBgImage,omitempty"`
+
+	// AppBgOpacity is the opacity of the app-wide background (0.0–1.0). 0 means use default (0.6).
+	AppBgOpacity float64 `json:"appBgOpacity,omitempty"`
+
+	// AppBgBlur is the blur radius in px for the app-wide background. 0 means use default (4.0).
+	AppBgBlur float64 `json:"appBgBlur,omitempty"`
+
+	// PlatformBgs stores per-platform background image settings keyed by platform name.
+	PlatformBgs map[string]PlatformBgSettings `json:"platformBgs,omitempty"`
+}
+
+// PlatformBgSettings holds background image configuration for a single platform.
+type PlatformBgSettings struct {
+	// Image is the filename (under wwwroot/backgrounds/) of the platform background.
+	Image string `json:"image,omitempty"`
+	// Opacity is the opacity (0.0–1.0). 0 means use default (0.6).
+	Opacity float64 `json:"opacity,omitempty"`
+	// Blur is the blur radius in px. 0 means use default (4.0).
+	Blur float64 `json:"blur,omitempty"`
+}
+
+// AppBackgroundInfo is returned to the frontend with background image state.
+type AppBackgroundInfo struct {
+	HasImage bool    `json:"hasImage"`
+	ImageURL string  `json:"imageUrl"`
+	Opacity  float64 `json:"opacity"`
+	Blur     float64 `json:"blur"`
 }
 
 func defaultSettings() AppSettings {
@@ -121,10 +151,10 @@ func SaveAppSettings(exeDir string, s AppSettings) error {
 
 var (
 	settingsCache struct {
-		mu      sync.RWMutex
-		exeDir  string
+		mu       sync.RWMutex
+		exeDir   string
 		settings AppSettings
-		loaded  bool
+		loaded   bool
 	}
 )
 

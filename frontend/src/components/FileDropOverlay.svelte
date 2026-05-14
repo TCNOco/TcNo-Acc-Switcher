@@ -4,13 +4,15 @@
   import { Events } from "@wailsio/runtime";
   import { fileDropAcceptor } from "../stores/fileDropTarget";
   import { fileDropInterceptor } from "../stores/fileDropInterceptor";
+  import { backgroundZoneInterceptor } from "../stores/backgroundZoneInterceptor";
   import { accountProfileImageDropActive } from "../stores/accountProfileImageDropUi";
-  import { shouldUseAccountProfileRowDropCue } from "../lib/profileImageDrop";
+  import { getDragFileCategory, type DragFileCategory } from "../lib/profileImageDrop";
   import { t } from "../stores/i18n";
 
   const FILES_DROPPED = "files-dropped";
 
   let overlayActive = false;
+  let dragCategory: DragFileCategory = "shortcut";
   let offFilesDropped: (() => void) | undefined;
 
   $: acc = $fileDropAcceptor;
@@ -37,12 +39,17 @@
   }
 
   function dropHandlersActive(): boolean {
-    return get(fileDropAcceptor) !== null || get(fileDropInterceptor) !== null;
+    return (
+      get(fileDropAcceptor) !== null ||
+      get(fileDropInterceptor) !== null ||
+      get(backgroundZoneInterceptor) !== null
+    );
   }
 
   function clearAccountProfileDropUi(): void {
     accountProfileImageDropActive.set(false);
     overlayActive = false;
+    dragCategory = "shortcut";
   }
 
   function onDragEnter(e: DragEvent): void {
@@ -52,12 +59,13 @@
     e.preventDefault();
     const rel = e.relatedTarget as Node | null;
     if (rel === null || !document.documentElement.contains(rel)) {
-      const rowCue =
-        get(fileDropInterceptor) !== null && shouldUseAccountProfileRowDropCue(e.dataTransfer);
+      const cat = getDragFileCategory(e.dataTransfer);
+      const rowCue = get(fileDropInterceptor) !== null && cat === "image";
       if (rowCue) {
         accountProfileImageDropActive.set(true);
         overlayActive = false;
       } else {
+        dragCategory = cat;
         accountProfileImageDropActive.set(false);
         overlayActive = true;
       }
@@ -112,6 +120,16 @@
       if (paths.length === 0) {
         return;
       }
+      const bgIntercept = get(backgroundZoneInterceptor);
+      if (bgIntercept) {
+        try {
+          if (await bgIntercept(paths)) {
+            return;
+          }
+        } catch {
+          /* bg zone interceptor failed — continue */
+        }
+      }
       const intercept = get(fileDropInterceptor);
       if (intercept) {
         try {
@@ -141,17 +159,36 @@
 </script>
 
 {#if visible && acc}
-  <div class="fileDropOverlay" aria-hidden="true">
+  <div
+    class="fileDropOverlay"
+    class:fileDropOverlay--incompatible={dragCategory === "incompatible"}
+    aria-hidden="true"
+  >
     <div class="fileDropOverlay__inner">
       <div class="fileDropOverlay__icon" aria-hidden="true">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"
-          ><path
-            fill="currentColor"
-            d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"
-          /></svg
-        >
+        {#if dragCategory === "incompatible"}
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"
+            ><path
+              fill="currentColor"
+              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            /></svg
+          >
+        {:else}
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"
+            ><path
+              fill="currentColor"
+              d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"
+            /></svg
+          >
+        {/if}
       </div>
-      <p class="fileDropOverlay__text">{$t(acc.labelKey)}</p>
+      <p class="fileDropOverlay__text">
+        {#if dragCategory === "incompatible"}
+          Unknown file type. Try a shortcut or image!
+        {:else}
+          {$t(acc.labelKey)}
+        {/if}
+      </p>
     </div>
   </div>
 {/if}

@@ -109,6 +109,70 @@ button .caret, .button .caret {
   align-items: center;
 }
 
+.bg-settings-row {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  padding: 0.4rem 0 0.6rem;
+
+  &__label {
+    font-size: 0.85rem;
+    color: var(--text-white-70);
+    white-space: nowrap;
+  }
+}
+
+.bg-slider-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    min-width: 100px;
+    max-width: 160px;
+    height: 0.75rem;
+    border-radius: 0.5rem;
+    background: var(--scrollbar-track-bg);
+    outline: none;
+    cursor: pointer;
+
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 1rem;
+      height: 1rem;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      border: none;
+    }
+
+    &::-moz-range-thumb {
+      width: 1rem;
+      height: 1rem;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      border: none;
+    }
+
+    &::-moz-range-track {
+      background: var(--scrollbar-track-bg);
+      border-radius: 0.5rem;
+    }
+  }
+}
+
+.bg-slider-value {
+  font-size: 0.75rem;
+  color: var(--text-white-70);
+  text-align: center;
+}
+
 .rowDropdown {
   display: flex;
   align-items: center;

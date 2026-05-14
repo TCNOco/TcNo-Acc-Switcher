@@ -8,6 +8,7 @@
   import Toast from './components/Toast.svelte'
   import FileDropOverlay from './components/FileDropOverlay.svelte'
   import ContextMenu from './components/ContextMenu.svelte'
+  import BackgroundDropZones from './components/BackgroundDropZones.svelte'
 
   import Home from './pages/Home.svelte'
   import Settings from './pages/Settings.svelte'
@@ -31,7 +32,58 @@
     searchOverlayCtrl,
     searchOverlayPendingAppend,
   } from "./stores/searchOverlay";
-import { platformActionBusy } from "./stores/platformPage";
+  import { platformActionBusy } from "./stores/platformPage";
+  import { appBgInfo, platformBgInfo } from "./stores/backgroundImage";
+  import type { AppBackgroundInfo } from "./stores/backgroundImage";
+  import * as PlatformService from "../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
+
+  let pageEl: HTMLDivElement;
+
+  function resolveActiveBg(r: typeof $route, app: AppBackgroundInfo, plat: AppBackgroundInfo): AppBackgroundInfo | null {
+    const isPlatformPage =
+      r.page === "platform" ||
+      r.page === "platform-settings" ||
+      r.page === "steam-advanced-clearing";
+    if (isPlatformPage && plat.hasImage) return plat;
+    if (app.hasImage) return app;
+    return null;
+  }
+
+  $: activeBg = resolveActiveBg($route, $appBgInfo, $platformBgInfo);
+
+  $: if (pageEl) {
+    if (activeBg) {
+      pageEl.style.setProperty("--main-bg-image", `url(${JSON.stringify(activeBg.imageUrl)})`);
+      pageEl.style.setProperty("--main-bg-opacity", String(activeBg.opacity));
+      pageEl.style.setProperty("--main-bg-blur", `${activeBg.blur}px`);
+    } else {
+      pageEl.style.removeProperty("--main-bg-image");
+      pageEl.style.removeProperty("--main-bg-opacity");
+      pageEl.style.removeProperty("--main-bg-blur");
+    }
+  }
+
+  /** Load/reload the platform background for the given platform name. */
+  async function loadPlatformBg(platformName: string): Promise<void> {
+    try {
+      const info = await PlatformService.GetPlatformBackground(platformName);
+      platformBgInfo.set(info);
+    } catch {
+      platformBgInfo.set({ hasImage: false, imageUrl: "", opacity: 0.6, blur: 4.0 });
+    }
+  }
+
+  // When the route changes to a platform page, reload the platform background.
+  $: {
+    const r = $route;
+    if (r.page === "platform" || r.page === "platform-settings") {
+      void loadPlatformBg(r.platformName);
+    } else if (r.page === "steam-advanced-clearing") {
+      void loadPlatformBg("Steam");
+    } else {
+      platformBgInfo.set({ hasImage: false, imageUrl: "", opacity: 0.6, blur: 4.0 });
+    }
+  }
 
   function isEditableTarget(t: EventTarget | null): boolean {
     if (!t || !(t instanceof HTMLElement)) {
@@ -121,6 +173,11 @@ import { platformActionBusy } from "./stores/platformPage";
   }
 
   onMount(() => {
+    // Load initial app background state.
+    void PlatformService.GetAppBackground().then((info) => {
+      appBgInfo.set(info);
+    }).catch(() => {});
+
     const offPageStats = installPageStatsTracking();
     const offSvgBridge = registerSvgRenderBridge();
     const offNav = Events.On("navigate", (ev) => {
@@ -183,7 +240,7 @@ import { platformActionBusy } from "./stores/platformPage";
   <ContextMenu />
   <TitleBar />
   <UpdateBar />
-  <div class="page">
+  <div class="page" bind:this={pageEl}>
     {#if $route.page === 'home'}
       <Home />
     {:else if $route.page === 'settings'}
@@ -203,6 +260,7 @@ import { platformActionBusy } from "./stores/platformPage";
     {:else if $route.page === 'manage-platforms'}
       <ManagePlatforms />
     {/if}
+    <BackgroundDropZones />
     <AppModal />
     <Toast />
   </div>
@@ -222,6 +280,7 @@ import { platformActionBusy } from "./stores/platformPage";
   }
   .page {
     position: relative;
+    isolation: isolate;
     border-left: var(--border-bar-size) solid var(--border-bar-bg);
     border-right: var(--border-bar-size) solid var(--border-bar-bg);
     border-bottom: var(--border-bar-size) solid var(--border-bar-bg);
@@ -230,5 +289,22 @@ import { platformActionBusy } from "./stores/platformPage";
     overflow: hidden;
     display: flex;
     flex-direction: column;
+
+    /* Background image — rendered behind all page content.
+       Negative inset hides blur edges; overflow:hidden on .page clips them. */
+    &::before {
+      content: '';
+      position: absolute;
+      inset: -24px;
+      z-index: -1;
+      background-image: var(--main-bg-image, none);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: var(--main-bg-opacity, 0);
+      filter: blur(var(--main-bg-blur, 0px));
+      pointer-events: none;
+      will-change: opacity, filter;
+    }
   }
 </style>

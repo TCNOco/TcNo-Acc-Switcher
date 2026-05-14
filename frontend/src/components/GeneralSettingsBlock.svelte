@@ -12,8 +12,104 @@
   import { openAlertNoButton } from "../stores/modal";
   import StatsReportModalBody from "./modals/StatsReportModalBody.svelte";
   import ThemePickerControls from "./ThemePickerControls.svelte";
+  import { appBgInfo, platformBgInfo } from "../stores/backgroundImage";
 
   let open = false;
+
+  let bgOpacity = 0.6;
+  let bgBlur = 6.0;
+  let bgOpacityDebounce: ReturnType<typeof setTimeout>;
+  let bgBlurDebounce: ReturnType<typeof setTimeout>;
+
+  $: {
+    bgOpacity = $appBgInfo.opacity;
+    bgBlur = $appBgInfo.blur;
+  }
+
+  async function clearAppBackground(): Promise<void> {
+    try {
+      await PlatformService.ClearAppBackground();
+      const info = await PlatformService.GetAppBackground();
+      appBgInfo.set(info);
+    } catch (e) {
+      pushToast({
+        type: "error",
+        message: formatToastWithError(get(t)("Toast_SaveFailed"), e),
+        duration: 8000,
+      });
+    }
+  }
+
+  function onBgOpacityInput(e: Event): void {
+    const val = parseFloat((e.target as HTMLInputElement).value);
+    appBgInfo.update((s) => ({ ...s, opacity: val }));
+    clearTimeout(bgOpacityDebounce);
+    bgOpacityDebounce = setTimeout(async () => {
+      try {
+        await PlatformService.SetAppBackgroundOpacity(val);
+      } catch { /* ignore */ }
+    }, 300);
+  }
+
+  function onBgBlurInput(e: Event): void {
+    const val = parseFloat((e.target as HTMLInputElement).value);
+    appBgInfo.update((s) => ({ ...s, blur: val }));
+    clearTimeout(bgBlurDebounce);
+    bgBlurDebounce = setTimeout(async () => {
+      try {
+        await PlatformService.SetAppBackgroundBlur(val);
+      } catch { /* ignore */ }
+    }, 300);
+  }
+
+  let platBgOpacity = 0.6;
+  let platBgBlur = 6.0;
+  let platBgOpacityDebounce: ReturnType<typeof setTimeout>;
+  let platBgBlurDebounce: ReturnType<typeof setTimeout>;
+
+  $: {
+    platBgOpacity = $platformBgInfo.opacity;
+    platBgBlur = $platformBgInfo.blur;
+  }
+
+  async function clearPlatformBackground(): Promise<void> {
+    const routeName = ($route as { platformName?: string }).platformName ?? "";
+    try {
+      await PlatformService.ClearPlatformBackground(routeName);
+      const info = await PlatformService.GetPlatformBackground(routeName);
+      platformBgInfo.set(info);
+    } catch (e) {
+      pushToast({
+        type: "error",
+        message: formatToastWithError(get(t)("Toast_SaveFailed"), e),
+        duration: 8000,
+      });
+    }
+  }
+
+  function onPlatBgOpacityInput(e: Event): void {
+    const routeName = ($route as { platformName?: string }).platformName ?? "";
+    const val = parseFloat((e.target as HTMLInputElement).value);
+    platformBgInfo.update((s) => ({ ...s, opacity: val }));
+    clearTimeout(platBgOpacityDebounce);
+    platBgOpacityDebounce = setTimeout(async () => {
+      try {
+        await PlatformService.SetPlatformBackgroundOpacity(routeName, val);
+      } catch { /* ignore */ }
+    }, 300);
+  }
+
+  function onPlatBgBlurInput(e: Event): void {
+    const routeName = ($route as { platformName?: string }).platformName ?? "";
+    const val = parseFloat((e.target as HTMLInputElement).value);
+    platformBgInfo.update((s) => ({ ...s, blur: val }));
+    clearTimeout(platBgBlurDebounce);
+    platBgBlurDebounce = setTimeout(async () => {
+      try {
+        await PlatformService.SetPlatformBackgroundBlur(routeName, val);
+      } catch { /* ignore */ }
+    }, 300);
+  }
 
   let isWindows = false;
   let protocolEnabled = false;
@@ -477,6 +573,74 @@
     </button>
   </ThemePickerControls>
 </div>
+
+{#if $appBgInfo.hasImage}
+  <div class="bg-settings-row">
+    <button type="button" class="btnicontext" on:click={() => void clearAppBackground()}>
+      {$t("Settings_ClearBackground")}
+    </button>
+    <div class="bg-slider-group">
+      <label class="bg-settings-row__label" for="gs-bg-opacity">{$t("Settings_BgOpacity")}</label>
+      <input
+        id="gs-bg-opacity"
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        value={bgOpacity}
+        on:input={onBgOpacityInput}
+      />
+      <span class="bg-slider-value">{Math.round(bgOpacity * 100)}%</span>
+    </div>
+    <div class="bg-slider-group">
+      <label class="bg-settings-row__label" for="gs-bg-blur">{$t("Settings_BgBlur")}</label>
+      <input
+        id="gs-bg-blur"
+        type="range"
+        min="0"
+        max="40"
+        step="0.5"
+        value={bgBlur}
+        on:input={onBgBlurInput}
+      />
+      <span class="bg-slider-value">{bgBlur.toFixed(1)}px</span>
+    </div>
+  </div>
+{/if}
+
+{#if $platformBgInfo.hasImage}
+  <div class="bg-settings-row">
+    <button type="button" class="btnicontext" on:click={() => void clearPlatformBackground()}>
+      {$t("Settings_ClearPlatformBackground")}
+    </button>
+    <div class="bg-slider-group">
+      <label class="bg-settings-row__label" for="gen-plat-bg-opacity">{$t("Settings_BgOpacity")}</label>
+      <input
+        id="gen-plat-bg-opacity"
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        value={platBgOpacity}
+        on:input={onPlatBgOpacityInput}
+      />
+      <span class="bg-slider-value">{Math.round(platBgOpacity * 100)}%</span>
+    </div>
+    <div class="bg-slider-group">
+      <label class="bg-settings-row__label" for="gen-plat-bg-blur">{$t("Settings_BgBlur")}</label>
+      <input
+        id="gen-plat-bg-blur"
+        type="range"
+        min="0"
+        max="40"
+        step="0.5"
+        value={platBgBlur}
+        on:input={onPlatBgBlurInput}
+      />
+      <span class="bg-slider-value">{platBgBlur.toFixed(1)}px</span>
+    </div>
+  </div>
+{/if}
 
 <h2 class="SettingsHeader">{$t("Settings_Header_System")}</h2>
 

@@ -33,8 +33,6 @@
   let startingOpen = false;
   let stateOpen = false;
 
-  let saveTimer: ReturnType<typeof setTimeout> | undefined;
-
   let hasDesktopShortcut = false;
   let hasCachePaths = false;
   let hasBackupFolders = false;
@@ -44,6 +42,8 @@
   let backingUp = false;
   let restoringBackup = false;
   let closingMethodUiLocked = false;
+
+  let saveTimer: ReturnType<typeof setTimeout> | undefined;
 
   const ARG_SILENT = "-silent";
   const ARG_VGUI = "-vgui";

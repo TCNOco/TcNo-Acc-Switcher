@@ -378,7 +378,7 @@
     display: flex;
     flex-direction: column;
     /* Same as .acc_list / list chrome — cloned tiles are often transparent (Steam label.acc). */
-    background: var(--accountListBackground);
+    background: var(--mainContentBackground);
     border-radius: 6px;
 
     &:hover {
