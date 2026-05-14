@@ -35,7 +35,7 @@ type PlatformStartup struct {
 }
 
 type PlatformService struct {
-	mu sync.Mutex
+	mu sync.RWMutex
 }
 
 func (p *PlatformService) GetStartup() (PlatformStartup, error) {
@@ -150,8 +150,8 @@ func (p *PlatformService) platformDetected(settings *AppSettings, raw []byte, pl
 }
 
 func (p *PlatformService) GetLanguage() (string, error) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
+	p.mu.RLock()
+	defer p.mu.RUnlock()
 	exeDir, err := ResolveExeDir()
 	if err != nil {
 		return "", err
@@ -246,8 +246,8 @@ func sanitizeHexColor(value string) string {
 }
 
 func (p *PlatformService) GetTheme() (string, error) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
+	p.mu.RLock()
+	defer p.mu.RUnlock()
 	exeDir, err := ResolveExeDir()
 	if err != nil {
 		return "", err
@@ -260,8 +260,8 @@ func (p *PlatformService) GetTheme() (string, error) {
 }
 
 func (p *PlatformService) GetThemeAccentPreset() (string, error) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
+	p.mu.RLock()
+	defer p.mu.RUnlock()
 	exeDir, err := ResolveExeDir()
 	if err != nil {
 		return "", err
@@ -274,8 +274,8 @@ func (p *PlatformService) GetThemeAccentPreset() (string, error) {
 }
 
 func (p *PlatformService) GetThemeAccentCustom() (string, error) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
+	p.mu.RLock()
+	defer p.mu.RUnlock()
 	exeDir, err := ResolveExeDir()
 	if err != nil {
 		return "", err
@@ -689,8 +689,8 @@ func sortStringsFold(s []string) {
 }
 
 func (p *PlatformService) GetPlatformSettings(platformKey string) (PlatformSettings, error) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
+	p.mu.RLock()
+	defer p.mu.RUnlock()
 	return LoadPlatformSettings(platformKey)
 }
 
@@ -707,15 +707,15 @@ func (p *PlatformService) ResetPlatformSettings(platformKey string) error {
 }
 
 func (p *PlatformService) GetPlatformInstallFolder(platformKey string) (string, error) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
+	p.mu.RLock()
+	defer p.mu.RUnlock()
 	return p.getPlatformInstallFolderUnlocked(platformKey)
 }
 
 func (p *PlatformService) OpenPlatformFolder(platformKey string) error {
-	p.mu.Lock()
+	p.mu.RLock()
 	folder, err := p.getPlatformInstallFolderUnlocked(platformKey)
-	p.mu.Unlock()
+	p.mu.RUnlock()
 	if err != nil {
 		return err
 	}
@@ -788,8 +788,8 @@ func (p *PlatformService) getPlatformInstallFolderUnlocked(platformKey string) (
 }
 
 func (p *PlatformService) ResolvePlatformExeFullPath(platformKey string) (string, error) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
+	p.mu.RLock()
+	defer p.mu.RUnlock()
 	return p.resolvePlatformExeFullPathUnlocked(platformKey)
 }
 
@@ -839,8 +839,8 @@ func (p *PlatformService) resolvePlatformExeFullPathUnlocked(platformKey string)
 }
 
 func (p *PlatformService) GetPlatformExeIcon(platformKey string) (string, error) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
+	p.mu.RLock()
+	defer p.mu.RUnlock()
 	exe, err := p.resolvePlatformExeFullPathUnlocked(platformKey)
 	if err != nil || exe == "" {
 		return "", nil
@@ -879,10 +879,10 @@ func (p *PlatformService) GetPlatformExeIcon(platformKey string) (string, error)
 
 func (p *PlatformService) LaunchPlatform(platformKey string) error {
 	platformKey = strings.TrimSpace(platformKey)
-	p.mu.Lock()
+	p.mu.RLock()
 	steamLauncher := launchSteamExe
 	basicLauncher := launchBasicPlatform
-	p.mu.Unlock()
+	p.mu.RUnlock()
 	if strings.EqualFold(platformKey, "Steam") {
 		if steamLauncher == nil {
 			return errors.New("steam launcher not configured")
@@ -897,12 +897,12 @@ func (p *PlatformService) LaunchPlatform(platformKey string) error {
 
 func (p *PlatformService) LaunchPlatformAs(platformKey string, admin bool) error {
 	platformKey = strings.TrimSpace(platformKey)
-	p.mu.Lock()
+	p.mu.RLock()
 	steamLauncherAs := launchSteamExeAs
 	steamLauncher := launchSteamExe
 	basicLauncherAs := launchBasicPlatformAs
 	basicLauncher := launchBasicPlatform
-	p.mu.Unlock()
+	p.mu.RUnlock()
 	if strings.EqualFold(platformKey, "Steam") {
 		if steamLauncherAs != nil {
 			return steamLauncherAs(admin)
@@ -922,8 +922,8 @@ func (p *PlatformService) LaunchPlatformAs(platformKey string, admin bool) error
 }
 
 func (p *PlatformService) HasShortcutMainExe(platformKey string) (bool, error) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
+	p.mu.RLock()
+	defer p.mu.RUnlock()
 	platformKey = strings.TrimSpace(platformKey)
 	if strings.EqualFold(platformKey, "Steam") {
 		return true, nil
@@ -947,8 +947,8 @@ func (p *PlatformService) HasShortcutMainExe(platformKey string) (bool, error) {
 }
 
 func (p *PlatformService) GetProtocolEnabled() (bool, error) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
+	p.mu.RLock()
+	defer p.mu.RUnlock()
 	exeDir, err := ResolveExeDir()
 	if err != nil {
 		return false, err
@@ -958,6 +958,48 @@ func (p *PlatformService) GetProtocolEnabled() (bool, error) {
 		return false, err
 	}
 	return s.ProtocolEnabled, nil
+}
+
+func (p *PlatformService) GetOfflineMode() (bool, error) {
+	p.mu.RLock()
+	defer p.mu.RUnlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return false, err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return false, err
+	}
+	return s.OfflineMode, nil
+}
+
+func (p *PlatformService) GetStatsEnabled() (bool, error) {
+	p.mu.RLock()
+	defer p.mu.RUnlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return false, err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return false, err
+	}
+	return s.StatsEnabled, nil
+}
+
+func (p *PlatformService) GetStatsShare() (bool, error) {
+	p.mu.RLock()
+	defer p.mu.RUnlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return false, err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return false, err
+	}
+	return s.StatsShare, nil
 }
 
 func (p *PlatformService) SetProtocolEnabled(enabled bool) error {
@@ -989,34 +1031,6 @@ func (p *PlatformService) SetProtocolEnabled(enabled bool) error {
 	return saveSettingsAtomic(exeDir, s)
 }
 
-func (p *PlatformService) GetOfflineMode() (bool, error) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return false, err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return false, err
-	}
-	return s.OfflineMode, nil
-}
-
-func (p *PlatformService) GetStatsEnabled() (bool, error) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return false, err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return false, err
-	}
-	return s.StatsEnabled, nil
-}
-
 func (p *PlatformService) SetStatsEnabled(enabled bool) error {
 	p.mu.Lock()
 	defer p.mu.Unlock()
@@ -1031,20 +1045,6 @@ func (p *PlatformService) SetStatsEnabled(enabled bool) error {
 	s.StatsEnabled = enabled
 	stats.SetStatsCollectionEnabled(enabled)
 	return saveSettingsAtomic(exeDir, s)
-}
-
-func (p *PlatformService) GetStatsShare() (bool, error) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return false, err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return false, err
-	}
-	return s.StatsShare, nil
 }
 
 func (p *PlatformService) SetStatsShare(enabled bool) error {
@@ -1064,19 +1064,19 @@ func (p *PlatformService) SetStatsShare(enabled bool) error {
 
 // GetStatsReport returns local statistics for display in the settings modal.
 func (p *PlatformService) GetStatsReport() (StatsReport, error) {
-	p.mu.Lock()
+	p.mu.RLock()
 	exeDir, err := ResolveExeDir()
 	if err != nil {
-		p.mu.Unlock()
+		p.mu.RUnlock()
 		return StatsReport{}, err
 	}
 	s, err := loadSettings(exeDir)
 	if err != nil {
-		p.mu.Unlock()
+		p.mu.RUnlock()
 		return StatsReport{}, err
 	}
 	share := s.StatsShare
-	p.mu.Unlock()
+	p.mu.RUnlock()
 
 	data, err := stats.GetReportData()
 	if err != nil {
@@ -1125,8 +1125,8 @@ func (p *PlatformService) SetOfflineMode(enabled bool) error {
 }
 
 func (p *PlatformService) GetDiscordRpc() (bool, error) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
+	p.mu.RLock()
+	defer p.mu.RUnlock()
 	exeDir, err := ResolveExeDir()
 	if err != nil {
 		return false, err
@@ -1136,6 +1136,80 @@ func (p *PlatformService) GetDiscordRpc() (bool, error) {
 		return false, err
 	}
 	return s.DiscordRpc, nil
+}
+
+func (p *PlatformService) GetDiscordRpcShare() (bool, error) {
+	p.mu.RLock()
+	defer p.mu.RUnlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return false, err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return false, err
+	}
+	return s.DiscordRpc && s.DiscordRpcShare, nil
+}
+
+func (p *PlatformService) GetExitToTray() (bool, error) {
+	p.mu.RLock()
+	defer p.mu.RUnlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return false, err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return false, err
+	}
+	return s.ExitToTray, nil
+}
+
+func (p *PlatformService) GetMinimizeOnSwitch() (bool, error) {
+	p.mu.RLock()
+	defer p.mu.RUnlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return false, err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return false, err
+	}
+	return s.MinimizeOnSwitch, nil
+}
+
+func (p *PlatformService) GetStartTrayWithWindows() (bool, error) {
+	p.mu.RLock()
+	defer p.mu.RUnlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return false, err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return false, err
+	}
+	return s.StartTrayWithWindows, nil
+}
+
+func (p *PlatformService) GetStartProgramCentered() (bool, error) {
+	p.mu.RLock()
+	defer p.mu.RUnlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return false, err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return false, err
+	}
+	return s.StartProgramCentered, nil
+}
+
+func (p *PlatformService) GetDesktopHomeShortcutExists() (bool, error) {
+	return winutil.HomeDesktopShortcutExists(), nil
 }
 
 func (p *PlatformService) SetDiscordRpc(enabled bool) error {
@@ -1163,20 +1237,6 @@ func (p *PlatformService) SetDiscordRpc(enabled bool) error {
 	return nil
 }
 
-func (p *PlatformService) GetDiscordRpcShare() (bool, error) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return false, err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return false, err
-	}
-	return s.DiscordRpc && s.DiscordRpcShare, nil
-}
-
 func (p *PlatformService) SetDiscordRpcShare(enabled bool) error {
 	p.mu.Lock()
 	defer p.mu.Unlock()
@@ -1199,20 +1259,6 @@ func (p *PlatformService) SetDiscordRpcShare(enabled bool) error {
 	return nil
 }
 
-func (p *PlatformService) GetExitToTray() (bool, error) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return false, err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return false, err
-	}
-	return s.ExitToTray, nil
-}
-
 func (p *PlatformService) SetExitToTray(enabled bool) error {
 	p.mu.Lock()
 	defer p.mu.Unlock()
@@ -1228,20 +1274,6 @@ func (p *PlatformService) SetExitToTray(enabled bool) error {
 	return saveSettingsAtomic(exeDir, s)
 }
 
-func (p *PlatformService) GetMinimizeOnSwitch() (bool, error) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return false, err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return false, err
-	}
-	return s.MinimizeOnSwitch, nil
-}
-
 func (p *PlatformService) SetMinimizeOnSwitch(enabled bool) error {
 	p.mu.Lock()
 	defer p.mu.Unlock()
@@ -1255,20 +1287,6 @@ func (p *PlatformService) SetMinimizeOnSwitch(enabled bool) error {
 	}
 	s.MinimizeOnSwitch = enabled
 	return saveSettingsAtomic(exeDir, s)
-}
-
-func (p *PlatformService) GetStartTrayWithWindows() (bool, error) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return false, err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return false, err
-	}
-	return s.StartTrayWithWindows, nil
 }
 
 func (p *PlatformService) SetStartTrayWithWindows(enabled bool) error {
@@ -1302,20 +1320,6 @@ func (p *PlatformService) SetStartTrayWithWindows(enabled bool) error {
 	return nil
 }
 
-func (p *PlatformService) GetStartProgramCentered() (bool, error) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return false, err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return false, err
-	}
-	return s.StartProgramCentered, nil
-}
-
 func (p *PlatformService) SetStartProgramCentered(enabled bool) error {
 	p.mu.Lock()
 	defer p.mu.Unlock()
@@ -1329,12 +1333,6 @@ func (p *PlatformService) SetStartProgramCentered(enabled bool) error {
 	}
 	s.StartProgramCentered = enabled
 	return saveSettingsAtomic(exeDir, s)
-}
-
-func (p *PlatformService) GetDesktopHomeShortcutExists() (bool, error) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	return winutil.HomeDesktopShortcutExists(), nil
 }
 
 func (p *PlatformService) SetDesktopHomeShortcut(create bool) error {

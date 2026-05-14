@@ -302,23 +302,6 @@ func normalizeLevelDBKey(k []byte) []byte {
 	return out
 }
 
-func logAllLevelDBKeys(dbPath string, db *leveldb.DB) {
-	iter := db.NewIterator(nil, nil)
-	defer iter.Release()
-
-	count := 0
-	for iter.Next() {
-		count++
-		k := append([]byte(nil), iter.Key()...)
-		slog.Debug("leveldb key", "dbPath", dbPath, "index", count, "key", previewLevelDBValue(string(k)))
-	}
-	if err := iter.Error(); err != nil {
-		slog.Debug("leveldb key dump error", "dbPath", dbPath, "err", err)
-		return
-	}
-	slog.Debug("leveldb key dump complete", "dbPath", dbPath, "count", count)
-}
-
 func openReadOnlyLevelDB(dbPath string) (*leveldb.DB, error) {
 	slog.Debug("leveldb open read-only standard comparer", "dbPath", dbPath)
 	db, err := leveldb.OpenFile(dbPath, &opt.Options{ReadOnly: true})

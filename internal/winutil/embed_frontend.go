@@ -19,6 +19,11 @@ var ErrNoPlatformArt = errors.New("no platform art in embedded assets")
 var (
 	embeddedFrontendMu sync.RWMutex
 	embeddedFrontend   embed.FS
+
+	platformArtMu   sync.RWMutex
+	platformArtOnce sync.Once
+	platformArtSVGs map[string]string // normalized key -> svg path
+	platformArtPNGs map[string]string // normalized key -> png path
 )
 
 // SetEmbeddedFrontendFS sets the embedded Vite dist FS (e.g. main's //go:embed all:frontend/dist).
@@ -27,6 +32,39 @@ func SetEmbeddedFrontendFS(f embed.FS) {
 	embeddedFrontend = f
 	embeddedFrontendSet = true
 	embeddedFrontendMu.Unlock()
+}
+
+func buildPlatformArtMap(rootFS embed.FS) {
+	platformArtOnce.Do(func() {
+		svgMap := make(map[string]string)
+		pngMap := make(map[string]string)
+		iofs.WalkDir(rootFS, ".", func(path string, d iofs.DirEntry, walkErr error) error {
+			if walkErr != nil {
+				return walkErr
+			}
+			if d.IsDir() {
+				return nil
+			}
+			if !embeddedPathIsUnderPlatformArt(path) {
+				return nil
+			}
+			ext := strings.ToLower(filepath.Ext(path))
+			stem := strings.TrimSuffix(filepath.Base(path), filepath.Ext(path))
+			norm := normalizePlatformArtKey(stem)
+			if norm == "" {
+				return nil
+			}
+			switch ext {
+			case ".svg":
+				svgMap[norm] = path
+			case ".png":
+				pngMap[norm] = path
+			}
+			return nil
+		})
+		platformArtSVGs = svgMap
+		platformArtPNGs = pngMap
+	})
 }
 
 func embeddedFS() (embed.FS, bool) {
@@ -88,30 +126,14 @@ func FindPlatformArt(platformKey string) (svg []byte, png []byte, err error) {
 	if key == "" {
 		return nil, nil, ErrNoPlatformArt
 	}
-	var svgPath, pngPath string
-	_ = iofs.WalkDir(rootFS, ".", func(path string, d iofs.DirEntry, walkErr error) error {
-		if walkErr != nil {
-			return walkErr
-		}
-		if d.IsDir() {
-			return nil
-		}
-		if !embeddedPathIsUnderPlatformArt(path) {
-			return nil
-		}
-		ext := strings.ToLower(filepath.Ext(path))
-		stem := strings.TrimSuffix(filepath.Base(path), filepath.Ext(path))
-		if !PlatformArtStemMatchesKey(stem, key) {
-			return nil
-		}
-		switch ext {
-		case ".svg":
-			svgPath = path
-		case ".png":
-			pngPath = path
-		}
-		return nil
-	})
+	buildPlatformArtMap(rootFS)
+
+	norm := normalizePlatformArtKey(key)
+	platformArtMu.RLock()
+	svgPath := platformArtSVGs[norm]
+	pngPath := platformArtPNGs[norm]
+	platformArtMu.RUnlock()
+
 	if svgPath != "" {
 		svg, err = rootFS.ReadFile(svgPath)
 		if err != nil {

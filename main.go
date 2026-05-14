@@ -119,8 +119,9 @@ func main() {
 	defer releaseSingleton()
 	winutil.RegisterSingletonReleaser(releaseSingleton)
 
-	syncOfflineModeFromSettings()
-	syncWindowsStartupFromSettings()
+	startupSettings, _ := loadStartupSettings()
+	syncOfflineModeFromSettings(startupSettings)
+	syncWindowsStartupFromSettings(startupSettings)
 
 	if parsed.NeedsHeadlessMutex() {
 		winutil.AttachParentConsole()
@@ -131,7 +132,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	runGUI(parsed)
+	runGUI(parsed, startupSettings)
 }
 
 func resolvedLogLevel(p cli.Parsed) slog.Level {
@@ -337,19 +338,22 @@ func runLogoutCLI(p cli.Parsed) error {
 	return basic.ClearCurrentLogin(basic.FlowDeps{PS: platformSvc}, plat)
 }
 
-func runGUI(parsed cli.Parsed) {
+// loadStartupSettings loads AppSettings once, returning default settings on error.
+func loadStartupSettings() (platform.AppSettings, error) {
+	d, err := platform.ResolveExeDir()
+	if err != nil {
+		return platform.AppSettings{}, err
+	}
+	return platform.LoadAppSettings(d)
+}
+
+func runGUI(parsed cli.Parsed, guiSettings platform.AppSettings) {
 	if parsed.Kind == cli.KindOpenPage {
 		platform.SetStartupNavigateHint(parsed.RouteJSONForOpenPage())
 	}
 
 	syncProtocolRegistration()
 
-	var guiSettings platform.AppSettings
-	if d, err := platform.ResolveExeDir(); err == nil {
-		if s, err := platform.LoadAppSettings(d); err == nil {
-			guiSettings = s
-		}
-	}
 	if err := stats.IncrementLaunchCount(); err != nil {
 		log.Printf("stats launch count: %v", err)
 	}
@@ -472,27 +476,11 @@ func syncProtocolRegistration() {
 	_ = winutil.RegisterProtocol(filepath.Clean(self))
 }
 
-func syncOfflineModeFromSettings() {
-	exeDir, err := platform.ResolveExeDir()
-	if err != nil {
-		return
-	}
-	s, err := platform.LoadAppSettings(exeDir)
-	if err != nil {
-		return
-	}
+func syncOfflineModeFromSettings(s platform.AppSettings) {
 	appclient.SetOfflineMode(s.OfflineMode)
 }
 
-func syncWindowsStartupFromSettings() {
-	exeDir, err := platform.ResolveExeDir()
-	if err != nil {
-		return
-	}
-	s, err := platform.LoadAppSettings(exeDir)
-	if err != nil {
-		return
-	}
+func syncWindowsStartupFromSettings(s platform.AppSettings) {
 	self, err := os.Executable()
 	if err != nil {
 		return
