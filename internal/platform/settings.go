@@ -119,7 +119,16 @@ func SaveAppSettings(exeDir string, s AppSettings) error {
 	return saveSettingsAtomic(exeDir, s)
 }
 
-func loadSettings(exeDir string) (AppSettings, error) {
+var (
+	settingsCache struct {
+		mu      sync.RWMutex
+		exeDir  string
+		settings AppSettings
+		loaded  bool
+	}
+)
+
+func loadSettingsFromDisk(exeDir string) (AppSettings, error) {
 	path := settingsPath(exeDir)
 	data, err := os.ReadFile(path)
 	if err != nil {
@@ -130,12 +139,37 @@ func loadSettings(exeDir string) (AppSettings, error) {
 	}
 	var raw map[string]json.RawMessage
 	_ = json.Unmarshal(data, &raw)
-
 	var s AppSettings
 	if err := json.Unmarshal(data, &s); err != nil {
 		return AppSettings{}, err
 	}
 	normalizeAppSettingsDefaults(&s, raw)
+	return s, nil
+}
+
+func loadSettings(exeDir string) (AppSettings, error) {
+	settingsCache.mu.RLock()
+	if settingsCache.loaded && settingsCache.exeDir == exeDir {
+		s := settingsCache.settings
+		settingsCache.mu.RUnlock()
+		return s, nil
+	}
+	settingsCache.mu.RUnlock()
+
+	settingsCache.mu.Lock()
+	defer settingsCache.mu.Unlock()
+
+	if settingsCache.loaded && settingsCache.exeDir == exeDir {
+		return settingsCache.settings, nil
+	}
+
+	s, err := loadSettingsFromDisk(exeDir)
+	if err != nil {
+		return s, err
+	}
+	settingsCache.exeDir = exeDir
+	settingsCache.settings = s
+	settingsCache.loaded = true
 	return s, nil
 }
 
@@ -153,7 +187,17 @@ func saveSettingsAtomic(exeDir string, s AppSettings) error {
 	if err != nil {
 		return err
 	}
-	return atomicWriteBytes(path, data, 0o644)
+	if err := atomicWriteBytes(path, data, 0o644); err != nil {
+		return err
+	}
+
+	settingsCache.mu.Lock()
+	settingsCache.exeDir = exeDir
+	settingsCache.settings = s
+	settingsCache.loaded = true
+	settingsCache.mu.Unlock()
+
+	return nil
 }
 
 func atomicWriteBytes(path string, data []byte, perm os.FileMode) error {

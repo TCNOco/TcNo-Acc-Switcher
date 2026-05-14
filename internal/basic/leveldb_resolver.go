@@ -215,7 +215,6 @@ func (s *levelDBStore) readValue(dbPath, key, jsonPath string) (string, error) {
 		}
 		h = &levelDBHandle{db: db, lastAccess: time.Now(), removeTemp: cleanup}
 		s.handles[dbPath] = h
-		logAllLevelDBKeys(dbPath, db)
 	} else {
 		slog.Debug("leveldb reuse db handle", "dbPath", dbPath, "source", "cache-hit")
 	}

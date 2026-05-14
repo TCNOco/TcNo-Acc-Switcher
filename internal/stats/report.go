@@ -116,5 +116,5 @@ func ResetStatistics() error {
 		return err
 	}
 	state = defaultStats()
-	return saveLocked()
+	return flushLocked()
 }

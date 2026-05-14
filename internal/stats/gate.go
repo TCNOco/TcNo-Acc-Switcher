@@ -4,12 +4,36 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"sync/atomic"
 )
 
 const appSettingsFile = "TcNo-Acc-Switcher.settings.json"
 
+var (
+	collectionCached atomic.Bool
+	collectionReady  atomic.Bool
+)
+
+// SetStatsCollectionEnabled updates the in-memory cached value so collectionEnabled
+// does not need to read the settings file from disk on every call.
+// The platform package calls this when the user toggles the setting.
+func SetStatsCollectionEnabled(enabled bool) {
+	collectionCached.Store(enabled)
+	collectionReady.Store(true)
+}
+
 // collectionEnabled mirrors AppSettings.StatsEnabled (default true when unset).
 func collectionEnabled() bool {
+	if collectionReady.Load() {
+		return collectionCached.Load()
+	}
+	v := readCollectionEnabled()
+	collectionCached.Store(v)
+	collectionReady.Store(true)
+	return v
+}
+
+func readCollectionEnabled() bool {
 	dir, err := resolveExeDir()
 	if err != nil {
 		return true

@@ -1029,6 +1029,7 @@ func (p *PlatformService) SetStatsEnabled(enabled bool) error {
 		return err
 	}
 	s.StatsEnabled = enabled
+	stats.SetStatsCollectionEnabled(enabled)
 	return saveSettingsAtomic(exeDir, s)
 }
 

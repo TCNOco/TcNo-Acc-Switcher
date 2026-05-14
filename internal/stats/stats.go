@@ -54,12 +54,40 @@ type AppStats struct {
 var (
 	mu     sync.Mutex
 	loaded bool
+	dirty  bool
 	state  AppStats
+
+	flushTicker *time.Ticker
 
 	exeDirOnce sync.Once
 	exeDirVal  string
 	exeDirErr  error
 )
+
+func init() {
+	flushTicker = time.NewTicker(5 * time.Second)
+	go func() {
+		for range flushTicker.C {
+			mu.Lock()
+			if dirty {
+				dirty = false
+				_ = flushLocked()
+			}
+			mu.Unlock()
+		}
+	}()
+}
+
+// Flush forces any pending dirty state to disk immediately.
+func Flush() error {
+	mu.Lock()
+	defer mu.Unlock()
+	if dirty {
+		dirty = false
+		return flushLocked()
+	}
+	return nil
+}
 
 func resolveExeDir() (string, error) {
 	exeDirOnce.Do(func() {
@@ -114,7 +142,7 @@ func ensureLoadedLocked() error {
 		if isNotExist(err) {
 			state = defaultStats()
 			loaded = true
-			return saveLocked()
+			return flushLocked()
 		}
 		return err
 	}
@@ -122,7 +150,7 @@ func ensureLoadedLocked() error {
 	if err := json.Unmarshal(data, &next); err != nil {
 		state = defaultStats()
 		loaded = true
-		_ = saveLocked()
+		_ = flushLocked()
 		return nil
 	}
 	if strings.TrimSpace(next.Uuid) == "" {
@@ -152,6 +180,13 @@ func ensureLoadedLocked() error {
 }
 
 func saveLocked() error {
+	dirty = true
+	return nil
+}
+
+// flushLocked writes state to disk immediately. Caller must hold mu.
+func flushLocked() error {
+	dirty = false
 	generateTotalsLocked()
 	path, err := statsPath()
 	if err != nil {
@@ -268,6 +303,11 @@ func TryUploadDaily(statsEnabled, statsShare, offlineMode bool) error {
 	}
 
 	mu.Lock()
+	// Flush any pending dirty data before we compute totals for upload.
+	if dirty {
+		dirty = false
+		_ = flushLocked()
+	}
 	if err := ensureLoadedLocked(); err != nil {
 		mu.Unlock()
 		return err
