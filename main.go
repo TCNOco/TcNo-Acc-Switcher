@@ -360,10 +360,20 @@ func runGUI(parsed cli.Parsed, guiSettings platform.AppSettings) {
 	go stats.MustTryUploadDaily(guiSettings.StatsEnabled, guiSettings.StatsShare, guiSettings.OfflineMode)
 	discordRPC.Start()
 
+	// Wails runtime logs excessively at DEBUG (Runtime call, Asset Request, etc. on every resize).
+	// Keep app-level slog.Default() at whatever level was resolved, but give Wails its own logger
+	// at INFO+ by default to suppress that noise. If user explicitly passed --log-level, respect it.
+	wailsLvl := resolvedLogLevel(parsed)
+	if !parsed.LogLevelSet && wailsLvl < slog.LevelInfo {
+		wailsLvl = slog.LevelInfo
+	}
+	wailsLogger := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: wailsLvl}))
+
 	app := application.New(application.Options{
 		Name:        "TcNo Account Switcher",
 		Description: "A Superfast open-source account switcher",
-		LogLevel:    resolvedLogLevel(parsed),
+		LogLevel:    wailsLvl,
+		Logger:      wailsLogger,
 		Services: []application.Service{
 			application.NewService(&GreetService{}),
 			application.NewService(&FilesystemService{}),
