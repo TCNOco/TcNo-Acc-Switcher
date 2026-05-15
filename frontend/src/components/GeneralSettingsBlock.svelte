@@ -12,7 +12,8 @@
   import { openAlertNoButton } from "../stores/modal";
   import StatsReportModalBody from "./modals/StatsReportModalBody.svelte";
   import ThemePickerControls from "./ThemePickerControls.svelte";
-  import { appBgInfo, platformBgInfo } from "../stores/backgroundImage";
+  import { appBgInfo, platformBgInfo, userOverriddenAppBg, setUserOverride } from "../stores/backgroundImage";
+  import { currentThemeBgUrl } from "../lib/themes";
 
   let open = false;
 
@@ -20,6 +21,8 @@
   let bgBlur = 6.0;
   let bgOpacityDebounce: ReturnType<typeof setTimeout>;
   let bgBlurDebounce: ReturnType<typeof setTimeout>;
+
+  $: showResetToThemeBg = !!$currentThemeBgUrl && ($appBgInfo.hasImage || $userOverriddenAppBg);
 
   $: {
     bgOpacity = $appBgInfo.opacity;
@@ -30,7 +33,7 @@
     try {
       await PlatformService.ClearAppBackground();
       const info = await PlatformService.GetAppBackground();
-      appBgInfo.set(info);
+      appBgInfo.set(info); // info.themeBgOverride is true — backend auto-sets it
     } catch (e) {
       pushToast({
         type: "error",
@@ -78,6 +81,23 @@
       await PlatformService.ClearPlatformBackground(routeName);
       const info = await PlatformService.GetPlatformBackground(routeName);
       platformBgInfo.set(info);
+    } catch (e) {
+      pushToast({
+        type: "error",
+        message: formatToastWithError(get(t)("Toast_SaveFailed"), e),
+        duration: 8000,
+      });
+    }
+  }
+
+  async function resetToThemeBg(): Promise<void> {
+    try {
+      if ($appBgInfo.hasImage) {
+        await PlatformService.ClearAppBackground();
+      }
+      await setUserOverride(false);
+      const info = await PlatformService.GetAppBackground();
+      appBgInfo.set(info);
     } catch (e) {
       pushToast({
         type: "error",
@@ -574,37 +594,46 @@
   </ThemePickerControls>
 </div>
 
-{#if $appBgInfo.hasImage}
+{#if $appBgInfo.hasImage || showResetToThemeBg}
   <div class="bg-settings-row">
-    <button type="button" class="btnicontext" on:click={() => void clearAppBackground()}>
-      {$t("Settings_ClearBackground")}
-    </button>
-    <div class="bg-slider-group">
-      <label class="bg-settings-row__label" for="gs-bg-opacity">{$t("Settings_BgOpacity")}</label>
-      <input
-        id="gs-bg-opacity"
-        type="range"
-        min="0"
-        max="1"
-        step="0.01"
-        value={bgOpacity}
-        on:input={onBgOpacityInput}
-      />
-      <span class="bg-slider-value">{Math.round(bgOpacity * 100)}%</span>
-    </div>
-    <div class="bg-slider-group">
-      <label class="bg-settings-row__label" for="gs-bg-blur">{$t("Settings_BgBlur")}</label>
-      <input
-        id="gs-bg-blur"
-        type="range"
-        min="0"
-        max="40"
-        step="0.5"
-        value={bgBlur}
-        on:input={onBgBlurInput}
-      />
-      <span class="bg-slider-value">{bgBlur.toFixed(1)}px</span>
-    </div>
+    {#if $appBgInfo.hasImage}
+      <button type="button" class="btnicontext" on:click={() => void clearAppBackground()}>
+        {$t("Settings_ClearBackground")}
+      </button>
+    {/if}
+    {#if showResetToThemeBg}
+      <button type="button" class="btnicontext" on:click={() => void resetToThemeBg()}>
+        {$t("Settings_ResetToThemeBackground")}
+      </button>
+    {/if}
+    {#if $appBgInfo.hasImage}
+      <div class="bg-slider-group">
+        <label class="bg-settings-row__label" for="gs-bg-opacity">{$t("Settings_BgOpacity")}</label>
+        <input
+          id="gs-bg-opacity"
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          value={bgOpacity}
+          on:input={onBgOpacityInput}
+        />
+        <span class="bg-slider-value">{Math.round(bgOpacity * 100)}%</span>
+      </div>
+      <div class="bg-slider-group">
+        <label class="bg-settings-row__label" for="gs-bg-blur">{$t("Settings_BgBlur")}</label>
+        <input
+          id="gs-bg-blur"
+          type="range"
+          min="0"
+          max="40"
+          step="0.5"
+          value={bgBlur}
+          on:input={onBgBlurInput}
+        />
+        <span class="bg-slider-value">{bgBlur.toFixed(1)}px</span>
+      </div>
+    {/if}
   </div>
 {/if}
 

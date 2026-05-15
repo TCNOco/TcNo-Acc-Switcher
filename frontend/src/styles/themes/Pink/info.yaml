@@ -1,6 +1,7 @@
 # This theme's name (Shows in-app, can be different to folder name)
 name: Pink
 accent: "#FF7AB3"
+background: background.webp
 
 accents:
   - name: Accent

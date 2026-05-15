@@ -82,11 +82,9 @@
       <h2 class="SettingsHeader">{$t("Settings_ExtraPlatformsDisabled")}</h2>
       {#if !anyEnabled}
         <span>{$t("Settings_NoPlatforms")}</span>
-        <h1 class="SettingsHeader mt-4">
-          <span>{$t("Settings_Header_ExtraPlatforms")}</span>
-        </h1>
+        <h1 class="SettingsHeader mt-4">{$t("Settings_Header_ExtraPlatforms")}</h1>
       {/if}
-      <div class="rowSetting">
+      <div class="rowSetting platformsCheckboxes">
         {#each disabledSorted as item (item)}
           <div class="form-check mb-2">
             <input
@@ -103,10 +101,8 @@
     {/if}
 
     {#if enabledSorted.length}
-      <div class="SettingsHeader mt-2">
-        <p>{$t("Settings_ExtraPlatformsEnabled")}</p>
-      </div>
-      <div class="rowSetting">
+      <h2 class="SettingsHeader">{$t("Settings_ExtraPlatformsEnabled")}</h2>
+      <div class="rowSetting platformsCheckboxes">
         {#each enabledSorted as item (item)}
           <div class="form-check mb-2">
             <input

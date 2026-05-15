@@ -3,6 +3,7 @@ import { parse as parseYaml } from "yaml";
 import { get, writable } from "svelte/store";
 import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
 import { offlineMode } from "../stores/offlineMode";
+import { setUserOverride } from "../stores/backgroundImage";
 
 export const DEFAULT_THEME_ID = "default";
 export const CUSTOM_THEME_ACCENT_KEY = "custom";
@@ -32,11 +33,17 @@ const themeStyles = import.meta.glob("../styles/themes/*/style.scss", {
   import: "default",
 }) as Record<string, () => Promise<string>>;
 
+const themeBackgrounds = import.meta.glob(
+  "../styles/themes/*/*.{jpg,jpeg,png,webp,gif}",
+  { eager: true, import: "default" }
+) as Record<string, string>;
+
 type ThemeInfoYaml = {
   name?: unknown;
   accent?: unknown;
   accents?: unknown;
   googleFontsCss?: unknown;
+  background?: unknown;
 };
 
 export type ThemeAccentOption = {
@@ -53,6 +60,7 @@ export type ThemeOption = {
   id: string;
   label: string;
   googleFontsCss: string | null;
+  backgroundUrl: string | null;
   defaultAccentColor: string;
   defaultAccentKey: string;
   accents: ThemeAccentOption[];
@@ -62,6 +70,7 @@ const DEFAULT_THEME_OPTION: ThemeOption = {
   id: DEFAULT_THEME_ID,
   label: DEFAULT_LABEL,
   googleFontsCss: null,
+  backgroundUrl: null,
   defaultAccentColor: "#80ffea",
   defaultAccentKey: "cyan",
   accents: [
@@ -199,10 +208,31 @@ function parseThemeInfo(raw: string, id: string): ThemeOption | null {
     id,
     label,
     googleFontsCss: sanitizeGoogleFontsCssUrl(parsed.googleFontsCss),
+    backgroundUrl: (() => {
+      const fn = sanitizeThemeBackgroundFilename(parsed.background);
+      return fn ? findThemeBackgroundUrl(id, fn) : null;
+    })(),
     defaultAccentColor: accent,
     defaultAccentKey,
     accents,
   };
+}
+
+function sanitizeThemeBackgroundFilename(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim();
+  if (!/^[a-zA-Z0-9_-]+\.(jpe?g|png|webp|gif)$/i.test(trimmed)) return null;
+  return trimmed;
+}
+
+function findThemeBackgroundUrl(themeId: string, filename: string): string | null {
+  const suffix = normPath(`themes/${themeId}/${filename}`);
+  for (const [path, url] of Object.entries(themeBackgrounds)) {
+    if (normPath(path).endsWith(suffix)) {
+      return url;
+    }
+  }
+  return null;
 }
 
 function buildThemeCatalog(): ThemeOption[] {
@@ -261,6 +291,7 @@ export function getThemeOptionById(id: string): ThemeOption {
 }
 
 export const currentThemeId = writable<string>(DEFAULT_THEME_ID);
+export const currentThemeBgUrl = writable<string>("");
 export const currentThemeAccentKey = writable<string>("");
 export const currentThemeCustomAccentColor = writable<string>("");
 export const currentWindowsThemeAccentColor = writable<string>("");
@@ -542,6 +573,7 @@ export async function applyTheme(id: string): Promise<void> {
 
   if (id === DEFAULT_THEME_ID) {
     currentThemeId.set(DEFAULT_THEME_ID);
+    currentThemeBgUrl.set("");
     syncThemeGoogleFonts(DEFAULT_THEME_ID);
     return;
   }
@@ -550,6 +582,7 @@ export async function applyTheme(id: string): Promise<void> {
   if (!key) {
     console.warn("[themes] Unknown or missing style for theme:", id);
     currentThemeId.set(DEFAULT_THEME_ID);
+    currentThemeBgUrl.set("");
     syncThemeGoogleFonts(DEFAULT_THEME_ID);
     return;
   }
@@ -567,6 +600,7 @@ export async function applyTheme(id: string): Promise<void> {
   style.textContent = css;
   document.head.appendChild(style);
   currentThemeId.set(id);
+  currentThemeBgUrl.set(getThemeOptionById(id).backgroundUrl ?? "");
   syncThemeGoogleFonts(id);
 }
 
@@ -606,6 +640,8 @@ export async function setUserTheme(id: string): Promise<void> {
   await persistAccentState("", "");
   clearThemeAccentState();
   await applyTheme(next);
+  // New theme chosen — reset any user background override so the theme bg shows.
+  await setUserOverride(false);
 }
 
 export async function setUserThemeAccentPreset(accentKey: string): Promise<void> {

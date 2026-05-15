@@ -33,23 +33,33 @@
     searchOverlayPendingAppend,
   } from "./stores/searchOverlay";
   import { platformActionBusy } from "./stores/platformPage";
-  import { appBgInfo, platformBgInfo } from "./stores/backgroundImage";
+  import { appBgInfo, platformBgInfo, userOverriddenAppBg } from "./stores/backgroundImage";
   import type { AppBackgroundInfo } from "./stores/backgroundImage";
+  import { currentThemeBgUrl } from "./lib/themes";
   import * as PlatformService from "../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
 
   let pageEl: HTMLDivElement;
 
-  function resolveActiveBg(r: typeof $route, app: AppBackgroundInfo, plat: AppBackgroundInfo): AppBackgroundInfo | null {
+  function resolveActiveBg(
+    r: typeof $route,
+    app: AppBackgroundInfo,
+    plat: AppBackgroundInfo,
+    themeBgUrl: string,
+    userOverridden: boolean
+  ): AppBackgroundInfo | null {
     const isPlatformPage =
       r.page === "platform" ||
       r.page === "platform-settings" ||
       r.page === "steam-advanced-clearing";
     if (isPlatformPage && plat.hasImage) return plat;
     if (app.hasImage) return app;
+    if (!userOverridden && themeBgUrl) {
+      return { hasImage: true, imageUrl: themeBgUrl, opacity: 1.0, blur: 0, themeBgOverride: false };
+    }
     return null;
   }
 
-  $: activeBg = resolveActiveBg($route, $appBgInfo, $platformBgInfo);
+  $: activeBg = resolveActiveBg($route, $appBgInfo, $platformBgInfo, $currentThemeBgUrl, $userOverriddenAppBg);
 
   $: if (pageEl) {
     if (activeBg) {
@@ -69,7 +79,7 @@
       const info = await PlatformService.GetPlatformBackground(platformName);
       platformBgInfo.set(info);
     } catch {
-      platformBgInfo.set({ hasImage: false, imageUrl: "", opacity: 0.6, blur: 4.0 });
+      platformBgInfo.set({ hasImage: false, imageUrl: "", opacity: 0.6, blur: 4.0, themeBgOverride: false });
     }
   }
 
@@ -81,7 +91,7 @@
     } else if (r.page === "steam-advanced-clearing") {
       void loadPlatformBg("Steam");
     } else {
-      platformBgInfo.set({ hasImage: false, imageUrl: "", opacity: 0.6, blur: 4.0 });
+      platformBgInfo.set({ hasImage: false, imageUrl: "", opacity: 0.6, blur: 4.0, themeBgOverride: false });
     }
   }
 
@@ -290,8 +300,6 @@
     display: flex;
     flex-direction: column;
 
-    /* Background image — rendered behind all page content.
-       Negative inset hides blur edges; overflow:hidden on .page clips them. */
     &::before {
       content: '';
       position: absolute;

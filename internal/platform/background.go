@@ -80,9 +80,9 @@ func bgCopyFile(src, dst string) error {
 	return err
 }
 
-func buildAppBgInfo(img string, opacity, blur float64) AppBackgroundInfo {
+func buildAppBgInfo(img string, opacity, blur float64, override bool) AppBackgroundInfo {
 	if img == "" {
-		return AppBackgroundInfo{Opacity: defaultBgOpacity, Blur: defaultBgBlur}
+		return AppBackgroundInfo{Opacity: defaultBgOpacity, Blur: defaultBgBlur, ThemeBgOverride: override}
 	}
 	op := opacity
 	if op <= 0 {
@@ -93,10 +93,11 @@ func buildAppBgInfo(img string, opacity, blur float64) AppBackgroundInfo {
 		bl = defaultBgBlur
 	}
 	return AppBackgroundInfo{
-		HasImage: true,
-		ImageURL: "/" + bgSubDir + "/" + img,
-		Opacity:  op,
-		Blur:     bl,
+		HasImage:        true,
+		ImageURL:        "/" + bgSubDir + "/" + img,
+		Opacity:         op,
+		Blur:            bl,
+		ThemeBgOverride: override,
 	}
 }
 
@@ -113,7 +114,7 @@ func (p *PlatformService) GetAppBackground() (AppBackgroundInfo, error) {
 	if err != nil {
 		return AppBackgroundInfo{}, err
 	}
-	return buildAppBgInfo(s.AppBgImage, s.AppBgOpacity, s.AppBgBlur), nil
+	return buildAppBgInfo(s.AppBgImage, s.AppBgOpacity, s.AppBgBlur, s.ThemeBgOverride), nil
 }
 
 func (p *PlatformService) SetAppBackground(imagePath string) error {
@@ -151,6 +152,7 @@ func (p *PlatformService) SetAppBackground(imagePath string) error {
 		return err
 	}
 	s.AppBgImage = dstName
+	s.ThemeBgOverride = true
 	if s.AppBgOpacity <= 0 {
 		s.AppBgOpacity = defaultBgOpacity
 	}
@@ -181,6 +183,24 @@ func (p *PlatformService) ClearAppBackground() error {
 	s.AppBgImage = ""
 	s.AppBgOpacity = 0
 	s.AppBgBlur = 0
+	s.ThemeBgOverride = true
+	return saveSettingsAtomic(exeDir, s)
+}
+
+// SetThemeBgOverride persists whether the user's background choice overrides the active
+// theme's bundled background. Pass false to let the theme background show again.
+func (p *PlatformService) SetThemeBgOverride(val bool) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return err
+	}
+	s.ThemeBgOverride = val
 	return saveSettingsAtomic(exeDir, s)
 }
 
@@ -246,7 +266,7 @@ func (p *PlatformService) GetPlatformBackground(platformKey string) (AppBackgrou
 	if !ok {
 		return AppBackgroundInfo{Opacity: defaultBgOpacity, Blur: defaultBgBlur}, nil
 	}
-	return buildAppBgInfo(ps.Image, ps.Opacity, ps.Blur), nil
+	return buildAppBgInfo(ps.Image, ps.Opacity, ps.Blur, false), nil
 }
 
 func (p *PlatformService) SetPlatformBackground(platformKey, imagePath string) error {

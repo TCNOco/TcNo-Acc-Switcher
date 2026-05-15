@@ -109,6 +109,11 @@ button .caret, .button .caret {
   align-items: center;
 }
 
+.platformsCheckboxes {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
 .bg-settings-row {
   display: flex;
   align-items: flex-start;

@@ -68,6 +68,10 @@ type AppSettings struct {
 	// AppBgBlur is the blur radius in px for the app-wide background. 0 means use default (4.0).
 	AppBgBlur float64 `json:"appBgBlur,omitempty"`
 
+	// ThemeBgOverride is true when the user has explicitly set or cleared the app background,
+	// overriding any background image bundled with the active theme.
+	ThemeBgOverride bool `json:"themeBgOverride,omitempty"`
+
 	// PlatformBgs stores per-platform background image settings keyed by platform name.
 	PlatformBgs map[string]PlatformBgSettings `json:"platformBgs,omitempty"`
 }
@@ -84,10 +88,11 @@ type PlatformBgSettings struct {
 
 // AppBackgroundInfo is returned to the frontend with background image state.
 type AppBackgroundInfo struct {
-	HasImage bool    `json:"hasImage"`
-	ImageURL string  `json:"imageUrl"`
-	Opacity  float64 `json:"opacity"`
-	Blur     float64 `json:"blur"`
+	HasImage        bool    `json:"hasImage"`
+	ImageURL        string  `json:"imageUrl"`
+	Opacity         float64 `json:"opacity"`
+	Blur            float64 `json:"blur"`
+	ThemeBgOverride bool    `json:"themeBgOverride"`
 }
 
 func defaultSettings() AppSettings {

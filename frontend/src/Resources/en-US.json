@@ -119,6 +119,7 @@
   "Settings_ThemeBackground": "[Set background]",
   "Settings_ThemeOpenFolder": "[Open theme folder]",
   "Settings_ClearBackground": "Clear Background",
+  "Settings_ResetToThemeBackground": "Reset to Theme Background",
   "Settings_ClearPlatformBackground": "Clear Platform Background",
   "Settings_BgOpacity": "Opacity",
   "Settings_BgBlur": "Blur",
