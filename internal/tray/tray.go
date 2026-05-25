@@ -9,6 +9,7 @@ import (
 	"os"
 	"runtime"
 	"strings"
+	"sync"
 	"sync/atomic"
 
 	"TcNo-Acc-Switcher/internal/i18n"
@@ -260,10 +261,27 @@ func (m *Manager) handleAccountClick(platformKey, arg string) error {
 	return fmt.Errorf("unrecognized tray arg")
 }
 
+var (
+	menuBitmapCacheMu sync.RWMutex
+	menuBitmapCache   = map[string][]byte{}
+)
+
+func cacheKey(platformKey, arg string) string {
+	return platformKey + "|" + arg
+}
+
 func menuBitmapForAccount(platformKey, arg string) []byte {
 	if runtime.GOOS != "windows" {
 		return nil
 	}
+	key := cacheKey(platformKey, arg)
+	menuBitmapCacheMu.RLock()
+	if cached, ok := menuBitmapCache[key]; ok {
+		menuBitmapCacheMu.RUnlock()
+		return append([]byte(nil), cached...)
+	}
+	menuBitmapCacheMu.RUnlock()
+
 	uid := trayUniqueFromArg(arg)
 	if uid == "" {
 		return nil
@@ -272,15 +290,21 @@ func menuBitmapForAccount(platformKey, arg string) []byte {
 	if !ok {
 		return nil
 	}
+	st, err := os.Stat(p)
+	if err != nil || st.Size() > 512*1024 {
+		return nil
+	}
 	b, err := os.ReadFile(p)
 	if err != nil || len(b) == 0 {
 		return nil
 	}
-	if len(b) > 512*1024 {
-		return nil
+	out := cachedImageBytesAsMenuPNG(b)
+	if len(out) > 0 {
+		menuBitmapCacheMu.Lock()
+		menuBitmapCache[key] = append([]byte(nil), out...)
+		menuBitmapCacheMu.Unlock()
 	}
-	// Wails validates menu bitmaps as PNG; cache may be WebP/JPEG/GIF.
-	return cachedImageBytesAsMenuPNG(b)
+	return out
 }
 
 func cachedImageBytesAsMenuPNG(b []byte) []byte {

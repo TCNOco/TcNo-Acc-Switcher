@@ -17,7 +17,10 @@ const (
 	launchCheckDelay = 700 * time.Millisecond
 )
 
-var launchOnce sync.Once
+var (
+	launchOnce       sync.Once
+	sharedHTTPClient = &http.Client{Timeout: httpTimeout}
+)
 
 type failStateJSON struct {
 	At string `json:"at"`
@@ -88,8 +91,7 @@ func runLaunchCheck(exeDir string, offline bool, currentVersion string, onUpdate
 	ctx, cancel := context.WithTimeout(context.Background(), httpTimeout)
 	defer cancel()
 
-	client := &http.Client{Timeout: httpTimeout}
-	latest, err := FetchLatestVersion(ctx, client, currentVersion)
+	latest, err := FetchLatestVersion(ctx, sharedHTTPClient, currentVersion)
 	if err != nil {
 		if shouldEmitFailToast(exeDir) {
 			_ = writeFailTimestamp(exeDir)

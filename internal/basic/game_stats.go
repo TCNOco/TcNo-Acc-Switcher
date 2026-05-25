@@ -246,7 +246,6 @@ func (m *gameStatsManager) ensureLoadedLocked() error {
 }
 
 func resolveGameStatsConfigPath() (string, error) {
-	seedEmbeddedGameStats()
 	if dataRoot, derr := paths.DataRoot(); derr == nil {
 		p := filepath.Join(dataRoot, "GameStats.json")
 		if fileExists(p) {
@@ -344,6 +343,17 @@ func (m *gameStatsManager) saveGameCacheLocked(game string) error {
 	payload := m.cacheByGame[game]
 	if payload == nil {
 		payload = map[string]userGameStat{}
+	}
+	cutoff := time.Now().Add(-30 * 24 * time.Hour)
+	for acct, row := range payload {
+		if !row.LastUpdated.IsZero() && row.LastUpdated.Before(cutoff) {
+			delete(payload, acct)
+		}
+	}
+	if len(payload) == 0 {
+		delete(m.cacheByGame, game)
+	} else {
+		m.cacheByGame[game] = payload
 	}
 	b, err := json.MarshalIndent(payload, "", "  ")
 	if err != nil {
@@ -751,27 +761,47 @@ func (b *BasicService) GetUserStatsAllGamesMarkup(platformName, accountID string
 	return out, nil
 }
 
-func (m *gameStatsManager) refreshFromWebLocked(platformName, game, accountID string) error {
+func fetchAndParseGameStats(urlStr, requestCookies, platformName, game, accountID string, def gameDefinition) (rawHTML []byte, collected map[string]string, err error) {
+	gameStatsLog.Info("refresh game stats begin", "platform", platformName, "game", game, "accountID", accountID, "url", urlStr)
+	reqCtx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
+	rawHTML, err = fetchGameStatsHTML(reqCtx, urlStr, requestCookies)
+	if err != nil {
+		gameStatsLog.Warn("refresh game stats fetch failed", "platform", platformName, "game", game, "accountID", accountID, "url", urlStr, "err", err)
+		return nil, nil, err
+	}
+	doc, err := htmlquery.Parse(bytes.NewReader(rawHTML))
+	if err != nil {
+		return nil, nil, err
+	}
+	collected, err = collectStatsFromHTML(platformName, accountID, def, doc, rawHTML)
+	if err != nil {
+		return nil, nil, err
+	}
+	return rawHTML, collected, nil
+}
+
+func (m *gameStatsManager) refreshPrepareLocked(platformName, game, accountID string) (def gameDefinition, urlStr string, err error) {
 	if appclient.IsOfflineMode() {
-		return appclient.ErrOfflineMode
+		return gameDefinition{}, "", appclient.ErrOfflineMode
 	}
 	platformName = strings.TrimSpace(platformName)
 	game = strings.TrimSpace(game)
 	accountID = strings.TrimSpace(accountID)
 	if game == "" || accountID == "" {
-		return fmt.Errorf("missing game or account id")
+		return gameDefinition{}, "", fmt.Errorf("missing game or account id")
 	}
 	def, ok := m.defs[game]
 	if !ok {
-		return fmt.Errorf("unknown game stats definition")
+		return gameDefinition{}, "", fmt.Errorf("unknown game stats definition")
 	}
 	row, ok := m.cacheByGame[game][accountID]
 	if !ok {
-		return fmt.Errorf("stats not enabled for this account")
+		return gameDefinition{}, "", fmt.Errorf("stats not enabled for this account")
 	}
 	idf, err := readIdsFile(platformName)
 	if err != nil {
-		return err
+		return gameDefinition{}, "", err
 	}
 	username := strings.TrimSpace(idf.IDs[accountID])
 	display := username
@@ -780,59 +810,86 @@ func (m *gameStatsManager) refreshFromWebLocked(platformName, game, accountID st
 	}
 	ctx := GameStatVarContext{AccountID: accountID, AccountUsername: display, Username: username}
 	resolved := ResolveGameStatsVarTemplates(gameStatVarDefsToAutofillMap(def.Vars), row.Vars, ctx)
-	urlStr := substituteGameStatsURL(def.URL, resolved)
-	gameStatsLog.Info("refresh game stats begin", "platform", platformName, "game", game, "accountID", accountID, "url", urlStr)
-	reqCtx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
-	defer cancel()
-	rawHTML, err := fetchGameStatsHTML(reqCtx, urlStr, def.RequestCookies)
-	if err != nil {
-		gameStatsLog.Warn("refresh game stats fetch failed", "platform", platformName, "game", game, "accountID", accountID, "url", urlStr, "err", err)
-		return err
+	urlStr = substituteGameStatsURL(def.URL, resolved)
+	return def, urlStr, nil
+}
+
+func (m *gameStatsManager) refreshSaveLocked(platformName, game, accountID string, rawHTML []byte, collected map[string]string) error {
+	g := strings.TrimSpace(game)
+	acct := strings.TrimSpace(accountID)
+	rows := m.cacheByGame[g]
+	if rows == nil {
+		return fmt.Errorf("stats not enabled for this account")
 	}
-	doc, err := htmlquery.Parse(bytes.NewReader(rawHTML))
-	if err != nil {
-		return err
-	}
-	collected, err := collectStatsFromHTML(platformName, accountID, def, doc, rawHTML)
-	if err != nil {
-		return err
+	row, ok := rows[acct]
+	if !ok {
+		return fmt.Errorf("stats not enabled for this account")
 	}
 	if len(collected) == 0 {
 		writeGameStatsDebugHTML(accountID, game, rawHTML)
-		// Keep the game enabled and preserve vars/hidden metrics; only clear collected values.
 		row.Collected = map[string]string{}
-		m.cacheByGame[game][accountID] = row
-		_ = m.saveGameCacheLocked(game)
+		m.cacheByGame[g][acct] = row
+		_ = m.saveGameCacheLocked(g)
 		gameStatsLog.Warn("refresh game stats extracted no rows", "platform", platformName, "game", game, "accountID", accountID, "htmlBytes", len(rawHTML))
 		return fmt.Errorf("no statistics extracted (saved debug HTML under DataRoot/temp)")
 	}
 	row.Collected = collected
 	row.LastUpdated = time.Now()
 	row.Vars = cloneStringMap(row.Vars)
-	m.cacheByGame[game][accountID] = row
+	m.cacheByGame[g][acct] = row
 	gameStatsLog.Info("refresh game stats success", "platform", platformName, "game", game, "accountID", accountID, "collected", len(collected))
-	return m.saveGameCacheLocked(game)
+	return m.saveGameCacheLocked(g)
+}
+
+func (m *gameStatsManager) refreshFromWebLocked(platformName, game, accountID string) error {
+	def, urlStr, err := m.refreshPrepareLocked(platformName, game, accountID)
+	if err != nil {
+		return err
+	}
+	rawHTML, collected, err := fetchAndParseGameStats(urlStr, def.RequestCookies, platformName, game, accountID, def)
+	if err != nil {
+		return err
+	}
+	return m.refreshSaveLocked(platformName, game, accountID, rawHTML, collected)
 }
 
 // RefreshGameStats downloads game statistics HTML for one enabled game and updates the cache.
 func (b *BasicService) RefreshGameStats(platformName, game, accountID string) error {
 	gameStatsState.mu.Lock()
-	defer gameStatsState.mu.Unlock()
 	if err := gameStatsState.ensureLoadedLocked(); err != nil {
+		gameStatsState.mu.Unlock()
 		return err
 	}
-	err := gameStatsState.refreshFromWebLocked(platformName, game, accountID)
-	if err != nil && isGameStatsResourceNotFound(err) {
-		g := strings.TrimSpace(game)
-		acct := strings.TrimSpace(accountID)
-		if rows := gameStatsState.cacheByGame[g]; rows != nil {
-			delete(rows, acct)
-			gameStatsState.cacheByGame[g] = rows
-			if saveErr := gameStatsState.saveGameCacheLocked(g); saveErr != nil {
-				return saveErr
-			}
-			gameStatsLog.Info("game stats disabled after not-found response", "game", g, "accountID", acct)
-		}
+	def, urlStr, err := gameStatsState.refreshPrepareLocked(platformName, game, accountID)
+	if err != nil {
+		gameStatsState.mu.Unlock()
+		return err
 	}
+	requestCookies := def.RequestCookies
+	gameStatsState.mu.Unlock()
+
+	rawHTML, collected, err := fetchAndParseGameStats(urlStr, requestCookies, platformName, game, accountID, def)
+	if err != nil {
+		if isGameStatsResourceNotFound(err) {
+			gameStatsState.mu.Lock()
+			g := strings.TrimSpace(game)
+			acct := strings.TrimSpace(accountID)
+			if rows := gameStatsState.cacheByGame[g]; rows != nil {
+				delete(rows, acct)
+				gameStatsState.cacheByGame[g] = rows
+				if saveErr := gameStatsState.saveGameCacheLocked(g); saveErr != nil {
+					gameStatsState.mu.Unlock()
+					return saveErr
+				}
+				gameStatsLog.Info("game stats disabled after not-found response", "game", g, "accountID", acct)
+			}
+			gameStatsState.mu.Unlock()
+		}
+		return err
+	}
+
+	gameStatsState.mu.Lock()
+	err = gameStatsState.refreshSaveLocked(platformName, game, accountID, rawHTML, collected)
+	gameStatsState.mu.Unlock()
 	return err
 }

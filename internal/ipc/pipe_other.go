@@ -15,6 +15,6 @@ func ForwardArgs(argv []string) error {
 }
 
 // StartGUIServer is a no-op outside Windows.
-func StartGUIServer(handler func(argv []string)) error {
-	return nil
+func StartGUIServer(handler func(argv []string)) (func(), error) {
+	return func() {}, nil
 }

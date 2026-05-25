@@ -715,16 +715,15 @@ func postGracefulQuitForPID(pid uint32) {
 	postGracefulQuitPass(pid)
 }
 
-func postGracefulQuitPass(pid uint32) {
-	if err := procEnumWindows.Find(); err != nil {
-		return
-	}
-	cb := syscall.NewCallback(func(hwnd, lParam uintptr) uintptr {
+var gracefulQuitCb uintptr
+
+func init() {
+	gracefulQuitCb = syscall.NewCallback(func(hwnd, lParam uintptr) uintptr {
 		targetPID := uint32(lParam)
 		var windowPID uint32
 		r0, _, _ := procGetWindowThreadProcessId.Call(hwnd, uintptr(unsafe.Pointer(&windowPID)))
 		if r0 == 0 {
-			return 1 // continue enumeration
+			return 1
 		}
 		if windowPID != targetPID {
 			return 1
@@ -733,12 +732,17 @@ func postGracefulQuitPass(pid uint32) {
 		if owner != 0 {
 			return 1
 		}
-		// Async posts; never send WM_QUERYENDSESSION/WM_ENDSESSION (session shutdown semantics).
 		procPostMessageW.Call(hwnd, uintptr(winWMSysCommand), uintptr(winSCClose), 0)
 		procPostMessageW.Call(hwnd, uintptr(winWMClose), 0, 0)
 		return 1
 	})
-	_, _, _ = procEnumWindows.Call(cb, uintptr(pid))
+}
+
+func postGracefulQuitPass(pid uint32) {
+	if err := procEnumWindows.Find(); err != nil {
+		return
+	}
+	_, _, _ = procEnumWindows.Call(gracefulQuitCb, uintptr(pid))
 }
 
 // waitForImageExit polls until exeImage is gone or maxWait elapses.
@@ -764,13 +768,42 @@ func waitForImageExit(exeImage string, maxWait, poll time.Duration, targetCount 
 		}
 		emitStatus(key, vars)
 	}
+	var cachedPIDs []uint32
 	for time.Now().Before(deadline) {
-		exists, err := processExistsByImageName(exeImage)
-		if err != nil {
-			time.Sleep(300 * time.Millisecond)
-			return
+		if len(cachedPIDs) == 0 {
+			var err error
+			cachedPIDs, err = allPIDsForImageName(exeImage)
+			if err != nil {
+				time.Sleep(300 * time.Millisecond)
+				return
+			}
+			if len(cachedPIDs) == 0 {
+				return
+			}
 		}
-		if !exists {
+
+		stillRunning := false
+		remaining := cachedPIDs[:0]
+		for _, pid := range cachedPIDs {
+			h, err := windows.OpenProcess(windows.SYNCHRONIZE, false, pid)
+			if err != nil {
+				if err == windows.ERROR_ACCESS_DENIED {
+					stillRunning = true
+					remaining = append(remaining, pid)
+				}
+				continue
+			}
+			r, _ := windows.WaitForSingleObject(h, 0)
+			windows.CloseHandle(h)
+			if r == windows.WAIT_OBJECT_0 {
+				continue
+			}
+			stillRunning = true
+			remaining = append(remaining, pid)
+		}
+		cachedPIDs = remaining
+
+		if !stillRunning {
 			return
 		}
 		reportWaitStatus()
@@ -785,36 +818,11 @@ func waitForElectronImageExit(exeImage string, maxWait time.Duration, targetCoun
 }
 
 func processExistsByImageName(want string) (bool, error) {
-	want = normalizeExeBase(want)
-	if want == "" {
-		return false, nil
-	}
-	snap, err := windows.CreateToolhelp32Snapshot(windows.TH32CS_SNAPPROCESS, 0)
+	pids, err := allPIDsForImageName(want)
 	if err != nil {
 		return false, err
 	}
-	defer windows.CloseHandle(snap)
-
-	var pe windows.ProcessEntry32
-	pe.Size = uint32(unsafe.Sizeof(pe))
-	if err := windows.Process32First(snap, &pe); err != nil {
-		if err == windows.ERROR_NO_MORE_FILES {
-			return false, nil
-		}
-		return false, err
-	}
-	for {
-		exe := utf16FixedToString(pe.ExeFile[:])
-		if strings.EqualFold(exe, want) {
-			return true, nil
-		}
-		if err := windows.Process32Next(snap, &pe); err != nil {
-			if err == windows.ERROR_NO_MORE_FILES {
-				return false, nil
-			}
-			return false, err
-		}
-	}
+	return len(pids) > 0, nil
 }
 
 func utf16FixedToString(b []uint16) string {
@@ -900,6 +908,7 @@ func Start(exe string, args []string, opts StartOpts) error {
 		return WrapIfElevationRequired(err)
 	}
 	slogWin().Debug("start launched", "exe", exe, "pid", cmd.Process.Pid)
+	go func() { _ = cmd.Wait() }()
 	return nil
 }
 

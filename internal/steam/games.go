@@ -257,19 +257,17 @@ func BuildInstalledGamesList(ctx context.Context, steamRoot string) ([]Installed
 		if err != nil {
 			// proceed with numeric ids only
 		} else {
-			applist := gjson.GetBytes(raw, "applist.apps")
-			if applist.Exists() {
-				applist.ForEach(func(_, value gjson.Result) bool {
-					appidStr := normalizeAppListAppID(value.Get("appid"))
-					name := strings.TrimSpace(value.Get("name").String())
-					if appidStr != "" && name != "" {
-						if _, ok := installed[appidStr]; ok {
-							names[appidStr] = name
-						}
-					}
-					return true
-				})
-			}
+		applist := gjson.GetBytes(raw, "applist.apps")
+		if applist.Exists() {
+			applist.ForEach(func(_, value gjson.Result) bool {
+				appidStr := normalizeAppListAppID(value.Get("appid"))
+				name := strings.TrimSpace(value.Get("name").String())
+				if appidStr != "" && name != "" {
+					names[appidStr] = name
+				}
+				return true
+			})
+		}
 		}
 		_ = saveAppNameMap(names)
 	}

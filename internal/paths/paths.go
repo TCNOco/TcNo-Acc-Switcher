@@ -4,25 +4,46 @@ package paths
 import (
 	"path/filepath"
 	"strings"
+	"sync"
 
 	"TcNo-Acc-Switcher/internal/platform"
 )
 
+var (
+	dataRootOnce sync.Once
+	dataRoot     string
+	dataRootErr  error
+)
+
 // DataRoot returns {ExeDir}/TcNo Account Switcher/
 func DataRoot() (string, error) {
-	exeDir, err := platform.ResolveExeDir()
-	if err != nil {
-		return "", err
-	}
-	return platform.UserDataDir(exeDir), nil
+	dataRootOnce.Do(func() {
+		exeDir, err := platform.ResolveExeDir()
+		if err != nil {
+			dataRootErr = err
+			return
+		}
+		dataRoot = platform.UserDataDir(exeDir)
+	})
+	return dataRoot, dataRootErr
 }
 
+var (
+	settingsDirOnce sync.Once
+	settingsDir     string
+	settingsDirErr  error
+)
+
 func SettingsDir() (string, error) {
-	r, err := DataRoot()
-	if err != nil {
-		return "", err
-	}
-	return filepath.Join(r, "Settings"), nil
+	settingsDirOnce.Do(func() {
+		r, err := DataRoot()
+		if err != nil {
+			settingsDirErr = err
+			return
+		}
+		settingsDir = filepath.Join(r, "Settings")
+	})
+	return settingsDir, settingsDirErr
 }
 
 func SanitizePathSegment(name string) string {
@@ -50,22 +71,45 @@ func windowsReservedFileStem(s string) bool {
 	return false
 }
 
+var (
+	loginCacheDirOnce sync.Once
+	loginCacheDirBase string
+	loginCacheDirErr  error
+)
+
 func LoginCacheDir(platformKey string) (string, error) {
-	r, err := DataRoot()
-	if err != nil {
-		return "", err
+	loginCacheDirOnce.Do(func() {
+		r, err := DataRoot()
+		if err != nil {
+			loginCacheDirErr = err
+			return
+		}
+		loginCacheDirBase = filepath.Join(r, "LoginCache")
+	})
+	if loginCacheDirErr != nil {
+		return "", loginCacheDirErr
 	}
 	seg := SanitizePathSegment(platformKey)
 	if seg == "" {
 		seg = "platform"
 	}
-	return filepath.Join(r, "LoginCache", seg), nil
+	return filepath.Join(loginCacheDirBase, seg), nil
 }
 
+var (
+	wwwrootDirOnce sync.Once
+	wwwrootDir     string
+	wwwrootDirErr  error
+)
+
 func WwwrootDir() (string, error) {
-	r, err := DataRoot()
-	if err != nil {
-		return "", err
-	}
-	return filepath.Join(r, "wwwroot"), nil
+	wwwrootDirOnce.Do(func() {
+		r, err := DataRoot()
+		if err != nil {
+			wwwrootDirErr = err
+			return
+		}
+		wwwrootDir = filepath.Join(r, "wwwroot")
+	})
+	return wwwrootDir, wwwrootDirErr
 }

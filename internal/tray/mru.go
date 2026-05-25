@@ -8,6 +8,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
@@ -17,6 +18,8 @@ const trayUsersFile = "Tray_Users.json"
 
 // testTrayUsersPath, when non-empty, overrides the tray JSON path (for unit tests only).
 var testTrayUsersPath string
+
+var trayUsersMu sync.Mutex
 
 // TrayUser is one remembered account entry (compatible shape with legacy Tray_Users.json).
 type TrayUser struct {
@@ -37,6 +40,12 @@ func trayUsersPath() (string, error) {
 
 // LoadUsers reads Tray_Users.json into a map platform -> list (may be empty).
 func LoadUsers() (map[string][]TrayUser, error) {
+	trayUsersMu.Lock()
+	defer trayUsersMu.Unlock()
+	return loadUsersUnlocked()
+}
+
+func loadUsersUnlocked() (map[string][]TrayUser, error) {
 	p, err := trayUsersPath()
 	if err != nil {
 		return nil, err
@@ -63,10 +72,13 @@ func LoadUsers() (map[string][]TrayUser, error) {
 	return raw, nil
 }
 
+var (
+	keyRe = regexp.MustCompile(`"((?:\\.|[^"\\])*)"\s*:\s*\[`)
+	objRe = regexp.MustCompile(`(?s)\{.*?\}`)
+)
+
 func recoverMalformedTrayUsers(data []byte) map[string][]TrayUser {
 	s := string(data)
-	keyRe := regexp.MustCompile(`"((?:\\.|[^"\\])*)"\s*:\s*\[`)
-	objRe := regexp.MustCompile(`(?s)\{.*?\}`)
 	out := map[string][]TrayUser{}
 
 	for _, loc := range keyRe.FindAllStringSubmatchIndex(s, -1) {
@@ -150,6 +162,8 @@ func matchingBracketIndex(s string, open int) int {
 }
 
 func saveUsers(m map[string][]TrayUser) error {
+	trayUsersMu.Lock()
+	defer trayUsersMu.Unlock()
 	p, err := trayUsersPath()
 	if err != nil {
 		return err

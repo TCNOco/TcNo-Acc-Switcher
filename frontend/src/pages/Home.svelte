@@ -26,6 +26,8 @@
 
   let navigating = false;
   let overlayQuery = "";
+  let overlayQueryDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+  let debouncedOverlayQuery = "";
   let offHomeSort: (() => void) | undefined;
   let lastHandledHomeSortId = 0;
 
@@ -33,7 +35,14 @@
 
   $: so = $searchOverlayCtrl;
   $: appBarTitle.set("TcNo Account Switcher");
-  $: homeSearchPrimary = buildHomePrimary(overlayQuery);
+  $: {
+    const q = overlayQuery;
+    if (overlayQueryDebounceTimer) clearTimeout(overlayQueryDebounceTimer);
+    overlayQueryDebounceTimer = setTimeout(() => {
+      debouncedOverlayQuery = q;
+    }, 150);
+  }
+  $: homeSearchPrimary = buildHomePrimary(debouncedOverlayQuery);
   $: homeSearchDisabled = buildHomeDisabled(overlayQuery);
 
   function textClass(name: string): string {
@@ -270,6 +279,7 @@
 
   onDestroy(() => {
     offHomeSort?.();
+    if (overlayQueryDebounceTimer) clearTimeout(overlayQueryDebounceTimer);
   });
 </script>
 

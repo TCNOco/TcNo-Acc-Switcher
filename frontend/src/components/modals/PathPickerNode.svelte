@@ -8,6 +8,7 @@
     parentDisplayPath,
   } from "../../lib/fsPaths";
   import { formatUnknownError } from "../../lib/formatBindingError";
+  import { onDestroy } from "svelte";
   import { t } from "../../stores/i18n";
 
   type DirEntry = { name: string; path: string; isDir: boolean };
@@ -30,6 +31,7 @@
 
   let listAttempted = false;
   let hasExpandableChildren = true;
+  let loadChildrenSeq = 0;
 
   $: displayLabel = depth === 0 ? normalizeDisplayPath(path) : label;
 
@@ -54,10 +56,12 @@
   async function loadChildren(): Promise<void> {
     if (!isDir || loading) return;
     if (children.length > 0) return;
+    const seq = ++loadChildrenSeq;
     loading = true;
     loadError = null;
     try {
       const list = await FilesystemService.ListDir(path);
+      if (seq !== loadChildrenSeq) return;
       children = dirsOnly ? list.filter((c: DirEntry) => c.isDir) : list;
       listAttempted = true;
       if (dirsOnly) {
@@ -67,12 +71,15 @@
           children.some((c) => !c.isDir) || children.some((c) => c.isDir);
       }
     } catch (e) {
+      if (seq !== loadChildrenSeq) return;
       loadError = formatUnknownError(e);
       children = [];
       listAttempted = true;
       hasExpandableChildren = true;
     } finally {
-      loading = false;
+      if (seq === loadChildrenSeq) {
+        loading = false;
+      }
     }
   }
 
@@ -92,9 +99,11 @@
       if (openedEmpty) {
         onPick(pNorm, true);
         expanded = false;
+        loadChildrenSeq++;
         return;
       }
       expanded = false;
+      loadChildrenSeq++;
       if (
         selectedPath &&
         (sameFsPath(selectedPath, pNorm) || folderCoversSelected(pNorm, selectedPath))
@@ -116,6 +125,10 @@
   $: soughtNorm = soughtNameNorm(soughtFilename);
   $: rowSuggested =
     !isDir && soughtNorm !== "" && label.toLowerCase() === soughtNorm;
+
+  onDestroy(() => {
+    loadChildrenSeq++;
+  });
 </script>
 
 <div class="pp-node" style:padding-left={depth === 0 ? "0" : "14px"}>

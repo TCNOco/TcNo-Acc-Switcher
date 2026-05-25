@@ -554,6 +554,7 @@ func (p *PlatformService) ApplyPlatformsJSONFile(sourcePath string) error {
 	}
 	settings.PlatformsJSONPath = ""
 	settings.PlatformOrder = nil
+	invalidatePlatformsJSONCache()
 	return saveSettingsAtomic(exeDir, settings)
 }
 
@@ -585,6 +586,7 @@ func (p *PlatformService) RestoreDefaultPlatformsJSON() error {
 	}
 	settings.PlatformsJSONPath = ""
 	p.seedDisabledPlatformsForFirstLaunch(&settings, embeddedPlatformsJSON, names)
+	invalidatePlatformsJSONCache()
 	return saveSettingsAtomic(exeDir, settings)
 }
 
@@ -683,9 +685,20 @@ func computeHomeOrder(all []string, disabled map[string]struct{}, savedOrder []s
 }
 
 func sortStringsFold(s []string) {
-	sort.Slice(s, func(i, j int) bool {
-		return strings.ToLower(s[i]) < strings.ToLower(s[j])
+	type item struct {
+		orig  string
+		lower string
+	}
+	items := make([]item, len(s))
+	for i, v := range s {
+		items[i] = item{orig: v, lower: strings.ToLower(v)}
+	}
+	sort.Slice(items, func(i, j int) bool {
+		return items[i].lower < items[j].lower
 	})
+	for i, v := range items {
+		s[i] = v.orig
+	}
 }
 
 func (p *PlatformService) GetPlatformSettings(platformKey string) (PlatformSettings, error) {

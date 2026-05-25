@@ -78,9 +78,16 @@ func RestartElevated(extraArgs []string) error {
 		return fmt.Errorf("ShellExecuteW runas failed (code=%d)", r)
 	}
 
-	time.Sleep(300 * time.Millisecond)
-	os.Exit(0)
-	return nil
+	name, _ := windows.UTF16PtrFromString(singletonMutexName)
+	for i := 0; i < 30; i++ {
+		h, err := windows.OpenMutex(windows.SYNCHRONIZE, false, name)
+		if err == nil {
+			windows.CloseHandle(h)
+			os.Exit(0)
+		}
+		time.Sleep(100 * time.Millisecond)
+	}
+	return fmt.Errorf("elevated restart failed: child process did not start within 3s")
 }
 
 func joinArgsUTF16(args []string) string {

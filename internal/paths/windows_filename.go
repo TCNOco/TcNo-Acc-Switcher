@@ -37,14 +37,33 @@ func WindowsFileName(name string, maxRunes int) string {
 	trimCollapsed := func(s string) string {
 		out := strings.TrimRight(s, " .")
 		out = strings.TrimSpace(out)
-		for strings.Contains(out, "__") {
-			out = strings.ReplaceAll(out, "__", "_")
+		var b strings.Builder
+		b.Grow(len(out))
+		var prev byte
+		for i := 0; i < len(out); i++ {
+			c := out[i]
+			switch c {
+			case '_':
+				if prev == '_' {
+					continue
+				}
+				prev = '_'
+				b.WriteByte('_')
+			case ' ':
+				if prev == '_' {
+					continue
+				}
+				if i+1 < len(out) && out[i+1] == '_' {
+					continue
+				}
+				prev = ' '
+				b.WriteByte(' ')
+			default:
+				prev = c
+				b.WriteByte(c)
+			}
 		}
-		for strings.Contains(out, " _") || strings.Contains(out, "_ ") {
-			out = strings.ReplaceAll(out, " _", "_")
-			out = strings.ReplaceAll(out, "_ ", "_")
-		}
-		return strings.Trim(strings.Trim(out, "."), "_")
+		return strings.Trim(strings.Trim(b.String(), "."), "_")
 	}
 	out := trimCollapsed(b.String())
 	if out == "" || out == "." || out == ".." {

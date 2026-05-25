@@ -112,6 +112,7 @@
   let steamAccounts: SteamAccountRow[] = [];
   /** Bumped when a row receives a patch so `{#key}` remounts that tile (avoids stuck "Updating…" on last row). */
   let rowEpoch: Record<string, number> = {};
+  $: steamAccountMap = new Map(steamAccounts.map((a) => [a.steamId64, a]));
   /** Scroll/content box for Steam tooltips (keeps popovers off the window chrome). */
   let steamAcclistEl: HTMLDivElement | null = null;
   /** `.main-content` root for mini profile clamping. */
@@ -139,6 +140,8 @@
   let gameDataBySteamId: Record<string, { userdata: Set<string>; backup: Set<string> }> = {};
 
   let overlayQuery = "";
+  let overlayQueryDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+  let debouncedOverlayQuery = "";
   let offSort: (() => void) | undefined;
   let lastHandledSortId = 0;
 
@@ -151,7 +154,14 @@
   const SEARCH_MAX = 5;
 
   $: so = $searchOverlayCtrl;
-  $: steamSearchPrimary = buildSteamAccountRows(overlayQuery, rowEpoch);
+  $: {
+    const q = overlayQuery;
+    if (overlayQueryDebounceTimer) clearTimeout(overlayQueryDebounceTimer);
+    overlayQueryDebounceTimer = setTimeout(() => {
+      debouncedOverlayQuery = q;
+    }, 150);
+  }
+  $: steamSearchPrimary = buildSteamAccountRows(debouncedOverlayQuery, rowEpoch);
   $: steamSearchGames = buildSteamGameRows(overlayQuery);
 
   $: if (name) {
@@ -194,10 +204,10 @@
       return ids;
     }
     if (tagFilterMode.kind === "untagged") {
-      return ids.filter((id) => (accountBySteamId(id)?.tags?.length ?? 0) === 0);
+      return ids.filter((id) => (steamAccountMap.get(id)?.tags?.length ?? 0) === 0);
     }
     const tid = tagFilterMode.id;
-    return ids.filter((id) => accountBySteamId(id)?.tags?.some((x) => x.id === tid));
+    return ids.filter((id) => steamAccountMap.get(id)?.tags?.some((x) => x.id === tid));
   })();
 
   $: steamReorderDisabled = tagFilterMode.kind !== "all";
@@ -1492,6 +1502,7 @@
   onDestroy(() => {
     for (const t of steamListRefreshTimers) clearTimeout(t);
     steamListRefreshTimers = [];
+    if (overlayQueryDebounceTimer) clearTimeout(overlayQueryDebounceTimer);
     selectedAccountStore.set({ platformKey: "", uniqueId: "", displayName: "", accountLogin: "" });
     platformLiveSessionId.set({ platformKey: "", uniqueId: "" });
     platformAction.set(null);
@@ -1552,8 +1563,7 @@
         >
           <svelte:fragment slot="item" let:rowId>
             {@const rid = slotKey(rowId)}
-            <!-- Inline .find so updates to steamAccounts re-run this block (helpers are not dependency-tracked). -->
-            {@const acc = steamAccounts.find((a) => a.steamId64 === rid)}
+            {@const acc = steamAccountMap.get(rid)}
             {@const radioId = `steam-acc-${rid}`}
             {#key `${rid}-${rowEpoch[rid] ?? 0}`}
             <div class="acc_list_item_inner">

@@ -37,14 +37,7 @@ func ReadCachedMiniprofileHTML(steamID64 string) string {
 	if err != nil || len(data) == 0 {
 		return ""
 	}
-	cleaned := sanitizeMiniprofileHTML(string(data))
-	if cleaned == "" {
-		return ""
-	}
-	if cleaned != string(data) {
-		_ = fsutil.WriteFileAtomic(p, []byte(cleaned), 0o644)
-	}
-	return cleaned
+	return sanitizeMiniprofileHTML(string(data))
 }
 
 func deleteMiniprofileCache(steamID64 string) {
@@ -119,9 +112,6 @@ func FetchMiniprofile(ctx context.Context, client *http.Client, steamID64 string
 		if rerr == nil && len(data) > 0 {
 			page = sanitizeMiniprofileHTML(string(data))
 			if strings.TrimSpace(page) != "" {
-				if page != string(data) {
-					_ = fsutil.WriteFileAtomic(cachePath, []byte(page), 0o644)
-				}
 				fromDisk = true
 			}
 		}
@@ -164,12 +154,16 @@ func FetchMiniprofile(ctx context.Context, client *http.Client, steamID64 string
 			_ = os.MkdirAll(filepath.Dir(cachePath), 0o755)
 			_ = fsutil.WriteFileAtomic(cachePath, []byte(sanitizedHTML), 0o644)
 		}
-		page = sanitizedHTML // frame extract from same snapshot we cached
+		page = sanitizedHTML
 	} else {
 		sanitizedHTML = page
 	}
 
-	frameImgURL = extractAvatarFrameImgURL(page)
+	doc, err := html.Parse(strings.NewReader(page))
+	if err != nil {
+		return "", strings.TrimSpace(sanitizedHTML), nil
+	}
+	frameImgURL = extractAvatarFrameImgURLFromDoc(doc)
 	return frameImgURL, strings.TrimSpace(sanitizedHTML), nil
 }
 
@@ -178,6 +172,10 @@ func extractAvatarFrameImgURL(page string) string {
 	if err != nil {
 		return ""
 	}
+	return extractAvatarFrameImgURLFromDoc(doc)
+}
+
+func extractAvatarFrameImgURLFromDoc(doc *html.Node) string {
 	var walk func(*html.Node) string
 	walk = func(n *html.Node) string {
 		if n.Type == html.ElementNode && n.Data == "div" {
@@ -204,6 +202,10 @@ func extractMiniprofileContainerHTML(page string) string {
 	if err != nil {
 		return ""
 	}
+	return extractMiniprofileContainerHTMLFromDoc(doc)
+}
+
+func extractMiniprofileContainerHTMLFromDoc(doc *html.Node) string {
 	var walk func(*html.Node) *html.Node
 	walk = func(n *html.Node) *html.Node {
 		if n.Type == html.ElementNode && n.Data == "div" && classAttr(n, "miniprofile_container") {
@@ -226,7 +228,6 @@ func extractMiniprofileContainerHTML(page string) string {
 			return ""
 		}
 	}
-	// Re-wrap as single root for fragment sanitize
 	return `<div class="miniprofile_container">` + buf.String() + `</div>`
 }
 

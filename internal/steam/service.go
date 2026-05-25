@@ -92,7 +92,8 @@ type SteamService struct {
 
 	refreshMu      sync.Mutex
 	refreshRunning bool
-	refreshQueued  bool // coalesce overlapping StartSteamProfileRefresh
+	refreshQueued  bool
+	refreshTimer   *time.Timer
 }
 
 func NewSteamService() *SteamService {
@@ -198,7 +199,6 @@ func (s *SteamService) GetSteamAccounts() ([]AccountDTO, error) {
 
 	out := make([]AccountDTO, 0, len(users))
 	for _, u := range users {
-		clearExpiredSteamProfileAssets(u.SteamID64, st.SteamImageExpiryTime)
 		v := vm[u.SteamID64]
 		imgURL, hasImg := profileimage.FindCached(PlatformKey, u.SteamID64)
 		isManualAvatar := profileimage.HasManualProfileMarker(PlatformKey, u.SteamID64)
@@ -384,7 +384,14 @@ func clearExpiredSteamProfileAssets(steamID64 string, maxAgeDays int) {
 }
 
 func (s *SteamService) StartSteamProfileRefresh() {
-	go s.runProfileRefresh()
+	s.refreshMu.Lock()
+	if s.refreshTimer != nil {
+		s.refreshTimer.Stop()
+	}
+	s.refreshTimer = time.AfterFunc(500*time.Millisecond, func() {
+		s.runProfileRefresh()
+	})
+	s.refreshMu.Unlock()
 }
 
 func (s *SteamService) runProfileRefresh() {
@@ -406,7 +413,7 @@ func (s *SteamService) runProfileRefresh() {
 		s.refreshQueued = false
 		s.refreshMu.Unlock()
 		if again {
-			go s.runProfileRefresh()
+			s.StartSteamProfileRefresh()
 		}
 	}()
 

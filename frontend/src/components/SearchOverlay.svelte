@@ -12,7 +12,7 @@
 </script>
 
 <script lang="ts">
-  import { createEventDispatcher, onMount, tick } from "svelte";
+  import { createEventDispatcher, onDestroy, onMount, tick } from "svelte";
   import { get } from "svelte/store";
   import { platformIconFgHref } from "../lib/platformIcon";
   import { searchOverlayCtrl, searchOverlayPendingAppend } from "../stores/searchOverlay";
@@ -35,6 +35,7 @@
   let inputEl: HTMLInputElement | null = null;
   let selectedIndex = 0;
   let appliedNonce = -1;
+  let focusTimeout: ReturnType<typeof setTimeout> | null = null;
 
   $: flatPrimary = primaryRows;
   $: flatCategory = categoryRows;
@@ -46,8 +47,15 @@
     appliedNonce = syncNonce;
     query = initialQuery;
     selectedIndex = 0;
+    if (focusTimeout !== null) {
+      clearTimeout(focusTimeout);
+      focusTimeout = null;
+    }
     void tick().then(() => {
-      setTimeout(() => inputEl?.focus(), 50);
+      focusTimeout = setTimeout(() => {
+        focusTimeout = null;
+        inputEl?.focus();
+      }, 50);
     });
   }
 
@@ -59,6 +67,12 @@
       query += ch;
       searchOverlayPendingAppend.set(null);
     });
+  });
+
+  onDestroy(() => {
+    if (focusTimeout !== null) {
+      clearTimeout(focusTimeout);
+    }
   });
 
   $: if (selectedIndex >= combined.length) {

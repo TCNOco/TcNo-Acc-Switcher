@@ -34,6 +34,7 @@
 
   /** Element to restore focus when the menu closes (set when moving focus into the menu). */
   let priorFocusEl: HTMLElement | null = null;
+  let flyoutRaf: number | null = null;
 
   function capturePriorFocus(menuRoot: HTMLElement): HTMLElement | null {
     const a = document.activeElement;
@@ -310,7 +311,11 @@
   $: if (menuEl && $contextMenu) {
     void $submenuOpenPath;
     void tick().then(() => {
-      requestAnimationFrame(() => {
+      if (flyoutRaf !== null) {
+        cancelAnimationFrame(flyoutRaf);
+      }
+      flyoutRaf = requestAnimationFrame(() => {
+        flyoutRaf = null;
         if (!menuEl || !get(contextMenu)) {
           return;
         }
@@ -331,6 +336,9 @@
   });
 
   onDestroy(() => {
+    if (flyoutRaf !== null) {
+      cancelAnimationFrame(flyoutRaf);
+    }
     detachObservers();
     closeContextMenu();
   });

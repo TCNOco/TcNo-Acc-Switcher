@@ -7,7 +7,24 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sync"
 )
+
+var (
+	platformsJSONCache struct {
+		mu      sync.RWMutex
+		exeDir  string
+		data    []byte
+		loaded  bool
+	}
+)
+
+func invalidatePlatformsJSONCache() {
+	platformsJSONCache.mu.Lock()
+	platformsJSONCache.loaded = false
+	platformsJSONCache.data = nil
+	platformsJSONCache.mu.Unlock()
+}
 
 // LoadPlatformsJSON returns the effective platforms configuration: the base
 // Platforms.json (see [ResolvePlatformsJSONPath]) after optional merge with
@@ -20,6 +37,15 @@ import (
 // unchanged so a copy applied via the UI persists until you use Restore default.
 func LoadPlatformsJSON(exeDir string) ([]byte, error) {
 	exeDir = filepath.Clean(exeDir)
+
+	platformsJSONCache.mu.RLock()
+	if platformsJSONCache.loaded && platformsJSONCache.exeDir == exeDir {
+		data := append([]byte(nil), platformsJSONCache.data...)
+		platformsJSONCache.mu.RUnlock()
+		return data, nil
+	}
+	platformsJSONCache.mu.RUnlock()
+
 	if err := seedEmbeddedPlatforms(exeDir); err != nil {
 		return nil, err
 	}
@@ -36,7 +62,12 @@ func LoadPlatformsJSON(exeDir string) ([]byte, error) {
 	custom, err := os.ReadFile(customPath)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
-			return base, nil
+			platformsJSONCache.mu.Lock()
+			platformsJSONCache.exeDir = exeDir
+			platformsJSONCache.data = append([]byte(nil), base...)
+			platformsJSONCache.loaded = true
+			platformsJSONCache.mu.Unlock()
+			return append([]byte(nil), base...), nil
 		}
 		return nil, fmt.Errorf("read %s: %w", customPath, err)
 	}
@@ -44,7 +75,12 @@ func LoadPlatformsJSON(exeDir string) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("merge Platforms.custom.json: %w", err)
 	}
-	return out, nil
+	platformsJSONCache.mu.Lock()
+	platformsJSONCache.exeDir = exeDir
+	platformsJSONCache.data = append([]byte(nil), out...)
+	platformsJSONCache.loaded = true
+	platformsJSONCache.mu.Unlock()
+	return append([]byte(nil), out...), nil
 }
 
 func seedEmbeddedPlatforms(exeDir string) error {

@@ -242,30 +242,26 @@ func deleteEntireSubkey(hive registry.Key, sub string) error {
 	if err != nil {
 		return err
 	}
+	defer k.Close()
 
 	children, err := k.ReadSubKeyNames(0)
 	if err != nil {
-		k.Close()
 		return err
 	}
 	for _, name := range children {
 		if err := deleteEntireSubkey(hive, sub+`\`+name); err != nil {
-			k.Close()
 			return err
 		}
 	}
 	vals, err := k.ReadValueNames(0)
 	if err != nil {
-		k.Close()
 		return err
 	}
 	for _, vn := range vals {
 		if err := k.DeleteValue(vn); err != nil {
-			k.Close()
 			return err
 		}
 	}
-	k.Close()
 	return registry.DeleteKey(hive, sub)
 }
 
@@ -314,13 +310,12 @@ func RegistryClearLoginKey(encoded string, deleteValues bool) error {
 		return err
 	}
 	for _, vn := range vals {
-		full := kp + ":" + vn
 		if deleteValues {
-			if err := RegistryDelete(full); err != nil {
+			if err := k.DeleteValue(vn); err != nil {
 				return err
 			}
 		} else {
-			if err := RegistryWriteHint(full, "", 0); err != nil {
+			if err := registryWriteInferred(k, vn, ""); err != nil {
 				return err
 			}
 		}
@@ -353,13 +348,12 @@ func RegistryClearValuesMatchingNameGlob(keyPath, valueNameGlob string, deleteVa
 		if !ok {
 			continue
 		}
-		full := keyPath + ":" + vn
 		if deleteValues {
-			if err := RegistryDelete(full); err != nil {
+			if err := k.DeleteValue(vn); err != nil {
 				return err
 			}
 		} else {
-			if err := RegistryWriteHint(full, "", 0); err != nil {
+			if err := registryWriteInferred(k, vn, ""); err != nil {
 				return err
 			}
 		}

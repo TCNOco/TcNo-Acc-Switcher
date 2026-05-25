@@ -312,7 +312,10 @@ func SaveCurrent(deps FlowDeps, platformKey, accountName string) (err error) {
 			return err
 		}
 		platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatform", platformKey)
-		_ = winutil.KillByName(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod), electronBeforeKillSynth(deps, platformKey, d.ExesToEnd))
+		if err := winutil.KillByName(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod), electronBeforeKillSynth(deps, platformKey, d.ExesToEnd)); err != nil {
+			platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatformFailed", platformKey)
+			return err
+		}
 	}
 	platform.EmitActionBarStatusI18n("Status_ActionBar_SavingSession")
 
@@ -632,7 +635,9 @@ func ensureUniqueIDOnSave(platformKey string, d platform.Descriptor, ctx platfor
 			return strings.TrimSpace(string(data)), nil
 		}
 		b := make([]byte, 8)
-		_, _ = rand.Read(b)
+		if _, err := rand.Read(b); err != nil {
+			return "", fmt.Errorf("generate unique id: %w", err)
+		}
 		id := hex.EncodeToString(b)
 		if err := os.MkdirAll(filepath.Dir(p), 0o755); err != nil {
 			return "", wrapNeedsAdminIfPermission(fmt.Errorf("mkdir %s: %w", filepath.Dir(p), err))
@@ -1152,7 +1157,10 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 		platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatformFailed", platformKey)
 		return err
 	}
-	_ = winutil.KillByName(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod), electronBeforeKillSynth(deps, platformKey, d.ExesToEnd))
+	if err := winutil.KillByName(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod), electronBeforeKillSynth(deps, platformKey, d.ExesToEnd)); err != nil {
+		platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatformFailed", platformKey)
+		return err
+	}
 
 	ids, err := readIDs(platformKey)
 	if err != nil {
@@ -1226,7 +1234,10 @@ func AddNew(deps FlowDeps, platformKey string) (err error) {
 		platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatformFailed", platformKey)
 		return err
 	}
-	_ = winutil.KillByName(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod), electronBeforeKillSynth(deps, platformKey, d.ExesToEnd))
+	if err := winutil.KillByName(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod), electronBeforeKillSynth(deps, platformKey, d.ExesToEnd)); err != nil {
+		platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatformFailed", platformKey)
+		return err
+	}
 	platform.EmitActionBarStatusI18n("Status_ActionBar_ClearingSession")
 	if err := ClearCurrentLogin(deps, platformKey); err != nil {
 		return err

@@ -402,9 +402,10 @@ func runGUI(parsed cli.Parsed, guiSettings platform.AppSettings) {
 		discordRPC.Stop()
 	})
 
-	if err := ipc.StartGUIServer(func(argv []string) {
+	_, err := ipc.StartGUIServer(func(argv []string) {
 		handleForwardedCLI(app, argv)
-	}); err != nil {
+	})
+	if err != nil {
 		log.Printf("ipc server: %v", err)
 	}
 
@@ -473,7 +474,7 @@ func runGUI(parsed cli.Parsed, guiSettings platform.AppSettings) {
 		}
 	}()
 
-	err := app.Run()
+	err = app.Run()
 	if err != nil {
 		slog.Error("app run", "err", err)
 	}

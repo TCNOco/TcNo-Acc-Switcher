@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"sync/atomic"
 	"time"
 
 	"github.com/Microsoft/go-winio"
@@ -46,16 +47,22 @@ func ForwardArgs(argv []string) error {
 }
 
 // StartGUIServer listens for forwarded argv until the process exits.
-func StartGUIServer(handler func(argv []string)) error {
+// Returns a function that can be called to stop the listener.
+func StartGUIServer(handler func(argv []string)) (func(), error) {
 	l, err := winio.ListenPipe(PipePath, nil)
 	if err != nil {
-		return err
+		return nil, err
 	}
+	var closed int32
 	go func() {
 		for {
 			c, err := l.Accept()
 			if err != nil {
+				if atomic.LoadInt32(&closed) != 0 {
+					return
+				}
 				log.Printf("ipc accept: %v", err)
+				time.Sleep(100 * time.Millisecond)
 				continue
 			}
 			go func(conn net.Conn) {
@@ -77,5 +84,9 @@ func StartGUIServer(handler func(argv []string)) error {
 			}(c)
 		}
 	}()
-	return nil
+	stop := func() {
+		atomic.StoreInt32(&closed, 1)
+		_ = l.Close()
+	}
+	return stop, nil
 }

@@ -68,6 +68,7 @@
 
   let accounts: BasicRow[] = [];
   let accountIds: string[] = [];
+  $: accountMap = new Map(accounts.map((a) => [a.uniqueId, a]));
   let loadError = "";
   let selectedUniqueId = "";
   let offPlatformAction: (() => void) | undefined;
@@ -77,6 +78,8 @@
   let basicListRefreshTimers: ReturnType<typeof setTimeout>[] = [];
   let basicAcclistEl: HTMLDivElement | undefined;
   let overlayQuery = "";
+  let overlayQueryDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+  let debouncedOverlayQuery = "";
   let offSort: (() => void) | undefined;
   let lastHandledSortId = 0;
   let basicAvatarEpoch: Record<string, number> = {};
@@ -96,7 +99,14 @@
   $: so = $searchOverlayCtrl;
   $: appBarTitle.set(name || "TcNo Account Switcher");
   $: isActionBusy = $platformActionBusy.busy;
-  $: basicSearchPrimary = buildBasicAccountRows(overlayQuery, basicAvatarEpoch);
+  $: {
+    const q = overlayQuery;
+    if (overlayQueryDebounceTimer) clearTimeout(overlayQueryDebounceTimer);
+    overlayQueryDebounceTimer = setTimeout(() => {
+      debouncedOverlayQuery = q;
+    }, 150);
+  }
+  $: basicSearchPrimary = buildBasicAccountRows(debouncedOverlayQuery, basicAvatarEpoch);
   $: if (name) {
     route.set({ page: "platform", platformName: name });
   }
@@ -282,10 +292,10 @@
       return ids;
     }
     if (tagFilterMode.kind === "untagged") {
-      return ids.filter((id) => (accountById(id)?.tags?.length ?? 0) === 0);
+      return ids.filter((id) => (accountMap.get(id)?.tags?.length ?? 0) === 0);
     }
     const tid = tagFilterMode.id;
-    return ids.filter((id) => accountById(id)?.tags?.some((x) => x.id === tid));
+    return ids.filter((id) => accountMap.get(id)?.tags?.some((x) => x.id === tid));
   })();
 
   $: reorderDisabled = tagFilterMode.kind !== "all";
@@ -991,6 +1001,7 @@
   onDestroy(() => {
     for (const t of basicListRefreshTimers) clearTimeout(t);
     basicListRefreshTimers = [];
+    if (overlayQueryDebounceTimer) clearTimeout(overlayQueryDebounceTimer);
     selectedAccountStore.set({ platformKey: "", uniqueId: "", displayName: "", accountLogin: "" });
     platformLiveSessionId.set({ platformKey: "", uniqueId: "" });
     platformAction.set(null);
@@ -1050,7 +1061,7 @@
         >
           <svelte:fragment slot="item" let:rowId>
             {@const rid = slotKey(rowId)}
-            {@const acc = accounts.find((a) => a.uniqueId === rid)}
+            {@const acc = accountMap.get(rid)}
             {@const radioId = `basic-acc-${rid}`}
             <div class="acc_list_item_inner">
               <input

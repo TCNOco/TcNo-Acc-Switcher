@@ -831,6 +831,7 @@
   });
 
   onDestroy(() => {
+    resolveSwapMenuLabelSeq++;
     fileDropAcceptor.update((cur) => (cur === shortcutFileDropAcceptor ? null : cur));
     offEv?.();
     teardownDnd?.();
