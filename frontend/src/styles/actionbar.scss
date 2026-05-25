@@ -48,3 +48,28 @@
   position: relative;
   z-index: 20;
 }
+
+.actionbar[data-busy="true"] {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    background-size: 200% 100%;
+    animation: busyBar 1s linear infinite;
+  }
+}
+
+@keyframes busyBar {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

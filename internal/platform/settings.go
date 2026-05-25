@@ -20,6 +20,10 @@ type AppSettings struct {
 	ThemeAccentPreset string `json:"themeAccentPreset,omitempty"`
 	ThemeAccentCustom string `json:"themeAccentCustom,omitempty"`
 
+	// AnimationsEnabled controls whether UI motion is active.
+	// Stored without omitempty so false round-trips: omitted key plus normalize defaults would otherwise force true on load.
+	AnimationsEnabled bool `json:"animationsEnabled"`
+
 	PlatformOrder []string `json:"platformOrder"`
 
 	DisabledPlatforms []string `json:"disabledPlatforms"`
@@ -106,6 +110,7 @@ func defaultSettings() AppSettings {
 		StatsShare:        true,
 		DiscordRpc:        true,
 		DiscordRpcShare:   false,
+		AnimationsEnabled: true,
 	}
 }
 
@@ -130,6 +135,9 @@ func normalizeAppSettingsDefaults(s *AppSettings, raw map[string]json.RawMessage
 	}
 	if _, ok := raw["discordRpc"]; !ok {
 		s.DiscordRpc = true
+	}
+	if _, ok := raw["animationsEnabled"]; !ok {
+		s.AnimationsEnabled = true
 	}
 	if !s.DiscordRpc {
 		s.DiscordRpcShare = false
@@ -213,9 +221,10 @@ func saveSettingsAtomic(exeDir string, s AppSettings) error {
 		s.PlatformExePaths = map[string]string{}
 	}
 	normalizeAppSettingsDefaults(&s, map[string]json.RawMessage{
-		"statsEnabled": {},
-		"statsShare":   {},
-		"discordRpc":   {},
+		"animationsEnabled": {},
+		"statsEnabled":      {},
+		"statsShare":        {},
+		"discordRpc":        {},
 	})
 	path := settingsPath(exeDir)
 	data, err := json.MarshalIndent(s, "", "  ")

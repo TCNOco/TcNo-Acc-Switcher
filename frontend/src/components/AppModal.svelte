@@ -1,7 +1,10 @@
 <script lang="ts">
   import { tick, onMount } from "svelte";
   import { get } from "svelte/store";
+  import { fade, scale } from "svelte/transition";
+  import { cubicOut } from "svelte/easing";
   import { activeModal, dismissModal, cancelActiveModal } from "../stores/modal";
+  import { DUR, motionEnabled } from "../lib/animation";
   import { t } from "../stores/i18n";
   import PathPickerTree from "./modals/PathPickerTree.svelte";
   import ModalBodyShell from "./modals/ModalBodyShell.svelte";
@@ -12,7 +15,6 @@
 
   let folderPath = "";
   let promptValue = "";
-  let modalReady = false;
 
   let lastModalSyncId = -1;
   let folderStatSeq = 0;
@@ -20,7 +22,6 @@
 
   $: if (m?.id !== undefined && m.id !== lastModalSyncId) {
     lastModalSyncId = m.id;
-    modalReady = false;
     folderPathStat = null;
     if (m.kind === "prompt") {
       promptValue = m.initialValue ?? "";
@@ -31,12 +32,7 @@
     void tick().then(() =>
       requestAnimationFrame(() => {
         if (get(activeModal)?.id === m.id) {
-          modalReady = true;
-          requestAnimationFrame(() => {
-            if (get(activeModal)?.id === m.id) {
-              focusAndSelectActiveInput();
-            }
-          });
+          focusAndSelectActiveInput();
         }
       }),
     );
@@ -44,8 +40,6 @@
 
   $: if (!m) {
     lastModalSyncId = -1;
-    modalReady = false;
-    folderStatSeq++;
     folderPathStat = null;
   }
 
@@ -151,15 +145,18 @@
     bind:this={backdropEl}
     on:mousedown={onBackdropDown}
     role="presentation"
+    in:fade={{ duration: motionEnabled() ? DUR.fast : 0, easing: cubicOut }}
+    out:fade={{ duration: motionEnabled() ? DUR.fast : 0, easing: cubicOut }}
   >
     <div
       class="modalFG"
-      class:modalFG--ready={modalReady}
       class:modalFilePicker={m.kind === "folder"}
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title-label"
       on:mousedown|stopPropagation
+      in:scale={{ start: 0.96, duration: motionEnabled() ? DUR.normal : 0, easing: cubicOut, delay: motionEnabled() ? 20 : 0 }}
+      out:scale={{ start: 0.96, duration: motionEnabled() ? DUR.fast : 0, easing: cubicOut }}
     >
       <header class="modal-headerbar">
         <span class="modal-title-left">
@@ -360,22 +357,10 @@
     border: var(--border-bar-size, 1px) solid var(--border-bar-bg);
     box-shadow: 0 12px 40px var(--shadow-color-45);
     overflow: hidden;
-    visibility: hidden;
-    opacity: 0;
-    transform: translateY(4px);
-    transition:
-      opacity 0.1s ease,
-      transform 0.1s ease;
   }
 
   .modalFilePicker {
     min-width: min(720px, 100%);
-  }
-
-  .modalFG.modalFG--ready {
-    visibility: visible;
-    opacity: 1;
-    transform: translateY(0);
   }
 
   .modal-headerbar {

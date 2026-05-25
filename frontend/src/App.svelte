@@ -1,7 +1,11 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { get } from "svelte/store";
+  import { fade } from "svelte/transition";
+  import { cubicOut } from "svelte/easing";
   import { Events } from "@wailsio/runtime";
+  import { DUR, motionEnabled } from "./lib/animation";
+  import { animationsEnabled, loadAnimationsEnabled } from "./stores/animationSettings";
   import TitleBar from './components/TitleBar.svelte'
   import UpdateBar from './components/UpdateBar.svelte'
   import AppModal from './components/AppModal.svelte'
@@ -38,8 +42,6 @@
   import { currentThemeBgUrl } from "./lib/themes";
   import * as PlatformService from "../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
 
-  let pageEl: HTMLDivElement;
-
   function resolveActiveBg(
     r: typeof $route,
     app: AppBackgroundInfo,
@@ -60,18 +62,6 @@
   }
 
   $: activeBg = resolveActiveBg($route, $appBgInfo, $platformBgInfo, $currentThemeBgUrl, $userOverriddenAppBg);
-
-  $: if (pageEl) {
-    if (activeBg) {
-      pageEl.style.setProperty("--main-bg-image", `url(${JSON.stringify(activeBg.imageUrl)})`);
-      pageEl.style.setProperty("--main-bg-opacity", String(activeBg.opacity));
-      pageEl.style.setProperty("--main-bg-blur", `${activeBg.blur}px`);
-    } else {
-      pageEl.style.removeProperty("--main-bg-image");
-      pageEl.style.removeProperty("--main-bg-opacity");
-      pageEl.style.removeProperty("--main-bg-blur");
-    }
-  }
 
   /** Load/reload the platform background for the given platform name. */
   async function loadPlatformBg(platformName: string): Promise<void> {
@@ -183,6 +173,7 @@
   }
 
   onMount(() => {
+    void loadAnimationsEnabled();
     // Load initial app background state.
     void PlatformService.GetAppBackground().then((info) => {
       appBgInfo.set(info);
@@ -245,31 +236,51 @@
   });
 </script>
 
-<div class="container" class:busyCursor={$platformActionBusy.busy}>
+<div class="container" class:busyCursor={$platformActionBusy.busy} class:animations-disabled={!$animationsEnabled}>
   <FileDropOverlay />
   <ContextMenu />
   <TitleBar />
   <UpdateBar />
-  <div class="page" bind:this={pageEl}>
-    {#if $route.page === 'home'}
-      <Home />
-    {:else if $route.page === 'settings'}
-      <Settings />
-    {:else if $route.page === 'preview-css'}
-      <PreviewCss />
-    {:else if $route.page === 'platform'}
-      {#if $route.platformName === 'Steam'}
-        <PlatformSteam name={$route.platformName} />
-      {:else}
-        <Platform name={$route.platformName} />
+  <div class="page">
+    {#key activeBg?.imageUrl}
+      {#if activeBg}
+        <div
+          class="bg-layer"
+          in:fade={{ duration: motionEnabled() ? 350 : 0, easing: cubicOut }}
+          out:fade={{ duration: motionEnabled() ? 250 : 0, easing: cubicOut }}
+          style="background-image: url({JSON.stringify(activeBg.imageUrl)}); opacity: {activeBg.opacity}; filter: blur({activeBg.blur}px);"
+        ></div>
       {/if}
-    {:else if $route.page === 'platform-settings'}
-      <PlatformSettings name={$route.platformName} />
-    {:else if $route.page === 'steam-advanced-clearing'}
-      <SteamAdvancedClearing />
-    {:else if $route.page === 'manage-platforms'}
-      <ManagePlatforms />
-    {/if}
+    {/key}
+    <div class="page-content-wrapper">
+      {#key $route.page + ("platformName" in $route ? $route.platformName : "")}
+        <div
+          class="page-content"
+          in:fade={{ duration: motionEnabled() ? DUR.normal : 0, easing: cubicOut, delay: motionEnabled() ? 40 : 0 }}
+          out:fade={{ duration: motionEnabled() ? DUR.fast : 0, easing: cubicOut }}
+        >
+          {#if $route.page === "home"}
+            <Home />
+          {:else if $route.page === "settings"}
+            <Settings />
+          {:else if $route.page === "preview-css"}
+            <PreviewCss />
+          {:else if $route.page === "platform"}
+            {#if $route.platformName === "Steam"}
+              <PlatformSteam name={$route.platformName} />
+            {:else}
+              <Platform name={$route.platformName} />
+            {/if}
+          {:else if $route.page === "platform-settings"}
+            <PlatformSettings name={$route.platformName} />
+          {:else if $route.page === "steam-advanced-clearing"}
+            <SteamAdvancedClearing />
+          {:else if $route.page === "manage-platforms"}
+            <ManagePlatforms />
+          {/if}
+        </div>
+      {/key}
+    </div>
     <BackgroundDropZones />
     <AppModal />
     <Toast />
@@ -299,20 +310,32 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
+  }
+  .bg-layer {
+    position: absolute;
+    inset: -24px;
+    z-index: -1;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    will-change: opacity;
+  }
+  .page-content-wrapper {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
 
-    &::before {
-      content: '';
-      position: absolute;
-      inset: -24px;
-      z-index: -1;
-      background-image: var(--main-bg-image, none);
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      opacity: var(--main-bg-opacity, 0);
-      filter: blur(var(--main-bg-blur, 0px));
-      pointer-events: none;
-      will-change: opacity, filter;
-    }
+  .page-content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
   }
 </style>

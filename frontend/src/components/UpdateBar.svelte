@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { fly } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
+  import { motionEnabled } from "../lib/animation";
   import { Events } from "@wailsio/runtime";
   import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import { t } from "../stores/i18n";
@@ -58,7 +59,7 @@
     class="updateBar"
     role="button"
     tabindex="0"
-    transition:fly={{ y: -12, duration: 220, easing: cubicOut }}
+    transition:fly={{ y: -12, duration: motionEnabled() ? 220 : 0, easing: cubicOut }}
     on:click={onBarClick}
     on:keydown={onBarKeydown}
   >

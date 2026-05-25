@@ -13,6 +13,9 @@
   import { openSearchOverlay } from "../stores/searchOverlay";
   import { triggerPlatformSort } from "../stores/platformListSort";
   import "../styles/actionbar.scss";
+  import { fade } from "svelte/transition";
+  import { cubicOut } from "svelte/easing";
+  import { motionEnabled } from "../lib/animation";
 
   $: r = $route;
   $: isPlatformPage = r.page === "platform";
@@ -135,8 +138,13 @@
   }
 </script>
 
-<footer class="actionbar">
-  <span class="actionbar__status" title={$actionBarStatus}>{$actionBarStatus}</span>
+<footer class="actionbar" data-busy={$platformActionBusy.busy}>
+{#key $actionBarStatus}
+  <span
+    class="actionbar__status"
+    in:fade={{ duration: motionEnabled() ? 120 : 0, easing: cubicOut }}
+  >{$actionBarStatus}</span>
+{/key}
   <div class="actionbar__actions">
     {#if isPlatformPage}
         {#key platformName}

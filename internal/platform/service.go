@@ -1221,6 +1221,20 @@ func (p *PlatformService) GetStartProgramCentered() (bool, error) {
 	return s.StartProgramCentered, nil
 }
 
+func (p *PlatformService) GetAnimationsEnabled() (bool, error) {
+	p.mu.RLock()
+	defer p.mu.RUnlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return true, err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return true, err
+	}
+	return s.AnimationsEnabled, nil
+}
+
 func (p *PlatformService) GetDesktopHomeShortcutExists() (bool, error) {
 	return winutil.HomeDesktopShortcutExists(), nil
 }
@@ -1345,6 +1359,21 @@ func (p *PlatformService) SetStartProgramCentered(enabled bool) error {
 		return err
 	}
 	s.StartProgramCentered = enabled
+	return saveSettingsAtomic(exeDir, s)
+}
+
+func (p *PlatformService) SetAnimationsEnabled(enabled bool) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return err
+	}
+	s.AnimationsEnabled = enabled
 	return saveSettingsAtomic(exeDir, s)
 }
 

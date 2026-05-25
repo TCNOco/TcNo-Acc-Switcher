@@ -129,6 +129,7 @@
   "Toast_PlatformBgSet": "{platform} background updated.",
   "Settings_Protocol": "Enable tcno:\\\\ protocol (Recommended)",
   "Settings_StartCentered": "Start program centered",
+  "Settings_AnimationsEnabled": "Enable animations",
   "Settings_OfflineMode": "Offline Mode (No network activity)",
   "Settings_WindowsAccent": "Use the Windows Accent Colour",
   "Settings_HelpTranslate": "[Help translate]",

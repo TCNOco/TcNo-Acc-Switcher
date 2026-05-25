@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { scale } from "svelte/transition";
+  import { cubicOut } from "svelte/easing";
+  import { DUR, motionEnabled } from "../lib/animation";
   import { get } from "svelte/store";
   import { onDestroy, onMount, tick } from "svelte";
   import {
@@ -351,6 +354,7 @@
     class:ctx-menu-root--ready={menuReady}
     role="menu"
     tabindex="-1"
+    in:scale={{ start: 0.97, duration: motionEnabled() ? DUR.fast : 0, easing: cubicOut }}
     on:keydown={onMenuKeydown}
   >
     <ContextMenuNest items={$contextMenu.items} depth={1} pathPrefix={[]} />

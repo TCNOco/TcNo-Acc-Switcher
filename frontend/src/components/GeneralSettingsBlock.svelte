@@ -14,6 +14,7 @@
   import ThemePickerControls from "./ThemePickerControls.svelte";
   import { appBgInfo, platformBgInfo, userOverriddenAppBg, setUserOverride } from "../stores/backgroundImage";
   import { currentThemeBgUrl } from "../lib/themes";
+  import { animationsEnabled, loadAnimationsEnabled, setAnimationsEnabled } from "../stores/animationSettings";
 
   let open = false;
 
@@ -156,6 +157,11 @@
   let startCenteredLoading = false;
   let desktopShortcutLoading = false;
 
+  let animationsEnabledLocal = true;
+  let animationsLoading = false;
+
+  $: animationsEnabledLocal = $animationsEnabled;
+
   onMount(() => {
     isWindows = /windows/i.test(navigator.userAgent) || /win32/i.test(navigator.userAgent);
     if (isWindows) {
@@ -216,6 +222,7 @@
       .catch(() => {
         startProgramCentered = false;
       });
+    void loadAnimationsEnabled();
     if (isWindows) {
       void PlatformService.GetStartTrayWithWindows()
         .then((v) => {
@@ -379,6 +386,32 @@
       });
     } finally {
       startCenteredLoading = false;
+    }
+  }
+
+  async function toggleAnimations(): Promise<void> {
+    if (animationsLoading) {
+      return;
+    }
+    const next = !animationsEnabledLocal;
+    animationsEnabledLocal = next;
+    animationsLoading = true;
+    try {
+      await setAnimationsEnabled(next);
+      pushToast({
+        type: "success",
+        message: get(t)("Toast_SavedItem", { item: get(t)("Settings_AnimationsEnabled") }),
+        duration: 3000,
+      });
+    } catch (e) {
+      animationsEnabledLocal = !next;
+      pushToast({
+        type: "error",
+        message: formatToastWithError($t("Toast_SaveFailed"), e),
+        duration: 8000,
+      });
+    } finally {
+      animationsLoading = false;
     }
   }
 
@@ -763,6 +796,20 @@
   <label for="gs-start-centered" use:tooltip={$t("Settings_StartCentered")}
     >{$t("Settings_StartCentered")}</label
   >
+</div>
+
+<div class="rowSetting">
+  <div class="form-check">
+    <input
+      type="checkbox"
+      id="settings-animations"
+      checked={animationsEnabledLocal}
+      disabled={animationsLoading}
+      on:change={() => void toggleAnimations()}
+    />
+    <label class="form-check-label" for="settings-animations"></label>
+  </div>
+  <label for="settings-animations">{$t("Settings_AnimationsEnabled")}</label>
 </div>
 
 {#if isWindows}

@@ -91,6 +91,15 @@ button,
   }
 }
 
+.btnicontext,
+button {
+  transition: transform 0.08s ease-out, background 0.12s ease-out;
+
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+}
+
 /* Dropdown */
 button .caret, .button .caret {
     margin-left: 0;

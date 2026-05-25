@@ -304,6 +304,7 @@
       <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
       <div
         class="reorder-pointer-grid__cell {itemClass}"
+        class:dragging={draggingId === slot}
         role="listitem"
         tabindex="0"
         data-dnd-cell
@@ -412,5 +413,13 @@
     padding: 0.5rem;
     text-align: center;
     word-break: break-word;
+  }
+
+  [data-dnd-cell] {
+    transition: transform 0.15s ease-out;
+  }
+
+  [data-dnd-cell].dragging {
+    transition: none;
   }
 </style>

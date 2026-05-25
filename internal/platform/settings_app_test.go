@@ -55,3 +55,40 @@ func TestAppSettings_UnmarshalEmptyObject(t *testing.T) {
 		t.Fatalf("expected false defaults, got %+v", s)
 	}
 }
+
+func TestAppSettingsJSON_AnimationsEnabled(t *testing.T) {
+	t.Parallel()
+
+	// Round-trip: save false, reload, expect false
+	dir := t.TempDir()
+	s := AppSettings{
+		Version:           1,
+		Language:          "en-US",
+		AnimationsEnabled: false,
+		PlatformExePaths:  map[string]string{},
+	}
+	if err := SaveAppSettings(dir, s); err != nil {
+		t.Fatal(err)
+	}
+	loaded, err := LoadAppSettings(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if loaded.AnimationsEnabled {
+		t.Fatalf("expected AnimationsEnabled=false after round-trip, got %+v", loaded)
+	}
+
+	// Missing key should default to true
+	p := filepath.Join(t.TempDir(), settingsFileName)
+	raw := []byte(`{"version":1,"language":"en-US"}`)
+	if err := atomicWriteBytes(p, raw, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	loaded2, err := LoadAppSettings(filepath.Dir(p))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !loaded2.AnimationsEnabled {
+		t.Fatalf("expected AnimationsEnabled=true when omitted, got %+v", loaded2)
+	}
+}
