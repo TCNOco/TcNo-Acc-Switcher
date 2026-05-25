@@ -14,6 +14,7 @@ import (
 
 	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/basic"
+	"TcNo-Acc-Switcher/internal/crashlog"
 	"TcNo-Acc-Switcher/internal/buildmode"
 	"TcNo-Acc-Switcher/internal/cli"
 	"TcNo-Acc-Switcher/internal/discordrpc"
@@ -35,6 +36,8 @@ var (
 	basicSvc    = basic.NewBasicService(platformSvc)
 	steamSvc    = steam.NewSteamService()
 	discordRPC  = discordrpc.NewManager()
+
+	crashSubmitted bool // set by crashlog.SubmitPending; read by runGUI for toast
 )
 
 // Wails uses Go's `embed` package to embed the frontend files into the binary.
@@ -89,6 +92,9 @@ func main() {
 
 	lvl := resolvedLogLevel(parsed)
 	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: lvl})))
+
+	crashSubmitted = crashlog.SubmitPending()
+	defer crashlog.Capture()
 
 	if parsed.Kind == cli.KindHelp || parsed.Help {
 		fmt.Print(cli.HelpText())
@@ -389,6 +395,9 @@ func runGUI(parsed cli.Parsed, guiSettings platform.AppSettings) {
 			ApplicationShouldTerminateAfterLastWindowClosed: true,
 		},
 	})
+	if crashSubmitted {
+		EmitToast("success", "i18n:Toast_CrashReported", "", 0)
+	}
 	app.OnShutdown(func() {
 		discordRPC.Stop()
 	})
@@ -466,7 +475,7 @@ func runGUI(parsed cli.Parsed, guiSettings platform.AppSettings) {
 
 	err := app.Run()
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("app run", "err", err)
 	}
 }
 

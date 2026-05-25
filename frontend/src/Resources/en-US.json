@@ -634,5 +634,6 @@
   "Settings_PreviewOverlayDropReceivers": "Fullscreen receivers and per-account cues shown while dragging profile images or shortcuts. Static previews below match those states.",
   "Preview_AccountDropOnRows": "Account rows (profile image drop)",
   "Preview_AccountDropRowNormal": "Normal row",
-  "Preview_AccountDropRowDragHover": "Drop receiver (row hover)"
+  "Preview_AccountDropRowDragHover": "Drop receiver (row hover)",
+  "Toast_CrashReported": "A crash report was submitted successfully."
 }

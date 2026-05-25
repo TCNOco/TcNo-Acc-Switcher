@@ -272,6 +272,19 @@ func IncrementLaunchCount() error {
 	return saveLocked()
 }
 
+func IncrementCrashCount() error {
+	if !collectionEnabled() {
+		return nil
+	}
+	mu.Lock()
+	defer mu.Unlock()
+	if err := ensureLoadedLocked(); err != nil {
+		return err
+	}
+	state.CrashCount++
+	return saveLocked()
+}
+
 func IncrementSwitches(platformName string) error {
 	if !collectionEnabled() {
 		return nil
