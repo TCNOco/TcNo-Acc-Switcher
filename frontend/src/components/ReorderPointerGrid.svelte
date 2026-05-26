@@ -139,7 +139,7 @@
     ghostX = e.clientX - pd.grabOffsetX;
     ghostY = e.clientY - pd.grabOffsetY;
     document.body.style.userSelect = "none";
-    hitTestDragOver(e.clientX, e.clientY);
+    document.body.dataset.dragging = "true";
   }
 
   function endPointerDrag(commit: boolean): void {
@@ -157,6 +157,7 @@
       draggingId = null;
       dragVisualClone = null;
       document.body.style.userSelect = "";
+      delete document.body.dataset.dragging;
       if (commit && from !== to) {
         dispatch("reorder", { items: moveItem(itemsSnap, from, to) });
       }
@@ -204,6 +205,7 @@
     draggingId = null;
     dragVisualClone = null;
     document.body.style.userSelect = "";
+    delete document.body.dataset.dragging;
     armSuppressClickAfterDrag();
   }
 
@@ -280,6 +282,7 @@
   onDestroy(() => {
     teardown?.();
     document.body.style.userSelect = "";
+    delete document.body.dataset.dragging;
     if (suppressClickExpire) clearTimeout(suppressClickExpire);
   });
 </script>

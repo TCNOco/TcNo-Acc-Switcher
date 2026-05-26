@@ -95,15 +95,6 @@
   border: 0.1em solid transparent;
   cursor: pointer;
   position: relative;
-  opacity: 0;
-  animation: slideUp 0.22s ease-out forwards;
-
-  @for $i from 1 through 40 {
-    &:nth-child(#{$i}) {
-      animation-delay: #{$i * 0.02}s;
-    }
-  }
-
   .acc_note {
     white-space: nowrap;
     overflow: hidden;
@@ -190,16 +181,6 @@ label.acc {
   cursor: pointer;
   transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, all 50ms ease-in;
   line-height: 1em;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-  }
-
-  &:active {
-    transform: translateY(0) scale(0.985);
-    transition-duration: 0.05s;
-  }
 
   &.vac img {
     border: 2px solid var(--red);

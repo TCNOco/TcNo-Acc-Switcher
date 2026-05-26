@@ -120,6 +120,7 @@ export const miniProfileHover: Action<HTMLElement, MiniProfileHoverParams> = (no
     parsed = parse(slot);
     if (!parsed) return;
     if (pop) return;
+    if (isDragging()) return;
     pop = document.createElement("div");
     pop.className = "steam-miniprofile-popover";
     pop.style.position = "fixed";
@@ -140,9 +141,15 @@ export const miniProfileHover: Action<HTMLElement, MiniProfileHoverParams> = (no
     });
   };
 
+  const isDragging = () =>
+    !!document.querySelector(".reorder-pointer-grid__ghost") ||
+    !!document.querySelector(".shortcutDndGhost") ||
+    document.body.dataset.dragging === "true";
+
   const scheduleShow = () => {
     clearShow();
     if (!parsed) return;
+    if (isDragging()) return;
     showTimer = window.setTimeout(show, SHOW_DELAY_MS);
   };
 

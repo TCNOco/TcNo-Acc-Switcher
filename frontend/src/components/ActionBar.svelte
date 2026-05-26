@@ -13,10 +13,6 @@
   import { openSearchOverlay } from "../stores/searchOverlay";
   import { triggerPlatformSort } from "../stores/platformListSort";
   import "../styles/actionbar.scss";
-  import { fade } from "svelte/transition";
-  import { cubicOut } from "svelte/easing";
-  import { motionEnabled } from "../lib/animation";
-
   $: r = $route;
   $: isPlatformPage = r.page === "platform";
   $: isHomePage = r.page === "home";
@@ -139,50 +135,56 @@
 </script>
 
 <footer class="actionbar" data-busy={$platformActionBusy.busy}>
-{#key $actionBarStatus}
-  <span
-    class="actionbar__status"
-    in:fade={{ duration: motionEnabled() ? 120 : 0, easing: cubicOut }}
-  >{$actionBarStatus}</span>
-{/key}
+<span class="actionbar__status">{$actionBarStatus}</span>
   <div class="actionbar__actions">
     {#if isPlatformPage}
-        {#key platformName}
-          <GameShortcutBar platformName={platformName} />
-        {/key}
-        <button class="btnicontext" type="button" aria-label={$t("Button_AddNew")} use:tooltip={$t("Tooltip_AddNew")} disabled={isActionBusy} on:click={() => triggerPlatformAction("addNew")}
+      <GameShortcutBar platformName={platformName} />
+      <button class="btnicontext" type="button" aria-label={$t("Button_AddNew")} use:tooltip={$t("Tooltip_AddNew")} disabled={isActionBusy} on:click={() => triggerPlatformAction("addNew")}
+        ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true"
+          ><path
+            d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"
+          /></svg
+        >{$t("Button_AddNew")}</button
+      >
+      {#if showSaveCurrent}
+        <button
+          class="btnicontext"
+          type="button"
+          aria-label={$t("Button_SaveCurrent")}
+          use:tooltip={$t("Tooltip_SaveCurrent")}
+          disabled={isActionBusy}
+          on:click={() => triggerPlatformAction("saveCurrent")}
           ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true"
             ><path
-              d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"
+              d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V173.3c0-17-6.7-33.3-18.7-45.3L352 69.3c-12-12-28.3-18.7-45.3-18.7H64zm32 64H288v64H96V96zm160 384H96V288H320V480zm64 0V288h32V480H320z"
             /></svg
-          >{$t("Button_AddNew")}</button
+          >{$t("Button_SaveCurrent")}</button
         >
-        {#if showSaveCurrent}
-          <button
-            class="btnicontext"
-            type="button"
-            aria-label={$t("Button_SaveCurrent")}
-            use:tooltip={$t("Tooltip_SaveCurrent")}
-            disabled={isActionBusy}
-            on:click={() => triggerPlatformAction("saveCurrent")}
-            ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true"
-              ><path
-                d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V173.3c0-17-6.7-33.3-18.7-45.3L352 69.3c-12-12-28.3-18.7-45.3-18.7H64zm32 64H288v64H96V96zm160 384H96V288H320V480zm64 0V288h32V480H320z"
-              /></svg
-            >{$t("Button_SaveCurrent")}</button
-          >
-        {/if}
-        <button
-          class="btnicontext actionbar__login"
-          type="button"
-          aria-label={$t("Button_Login")}
-          use:tooltip={$t("Tooltip_Login")}
-          disabled={isActionBusy}
-          on:click={() => triggerPlatformAction("login")}
-          >{$t("Button_Login")}<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
-            <path d="M217.9 105.9L340.7 228.7c7.2 7.2 11.3 17 11.3 27.3s-4.1 20.1-11.3 27.3L217.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9V160c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.5 24 9.9z"/></svg>
-          </button
+      {/if}
+      <button
+        class="btnicontext actionbar__login"
+        type="button"
+        aria-label={$t("Button_Login")}
+        use:tooltip={$t("Tooltip_Login")}
+        disabled={isActionBusy}
+        on:click={() => triggerPlatformAction("login")}
+        >{$t("Button_Login")}<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
+          <path d="M217.9 105.9L340.7 228.7c7.2 7.2 11.3 17 11.3 27.3s-4.1 20.1-11.3 27.3L217.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9V160c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.5 24 9.9z"/></svg>
+        </button
+      >
+      <button
+        bind:this={filterBtn}
+        class="square"
+        type="button"
+        aria-label={$t("Filter_Menu")}
+        use:tooltip={$t("Filter_Menu")}
+        on:click={onFilterClick}
         >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free v5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"/></svg>
+        </button
+      >
+    {:else}
+      {#if isHomePage}
         <button
           bind:this={filterBtn}
           class="square"
@@ -194,21 +196,8 @@
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free v5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"/></svg>
           </button
         >
-    {:else}
-        {#if isHomePage}
-          <button
-            bind:this={filterBtn}
-            class="square"
-            type="button"
-            aria-label={$t("Filter_Menu")}
-            use:tooltip={$t("Filter_Menu")}
-            on:click={onFilterClick}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free v5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"/></svg>
-            </button
-          >
-        {/if}
-        <button class="btnicontext" aria-label={$t("Button_ManagePlatforms")} use:tooltip={$t("Tooltip_ManagePlatforms")} on:click={() => route.set({ page: 'manage-platforms'})}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free v5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"/></svg>{$t("Button_ManagePlatforms")}</button>
+      {/if}
+      <button class="btnicontext" aria-label={$t("Button_ManagePlatforms")} use:tooltip={$t("Tooltip_ManagePlatforms")} on:click={() => route.set({ page: 'manage-platforms'})}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free v5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"/></svg>{$t("Button_ManagePlatforms")}</button>
     {/if}
     <button class="square" aria-label={$t("Aria_OpenSettings")} use:tooltip={$t("Tooltip_Settings")} on:click={() => {
     const r = $route;

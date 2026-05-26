@@ -47,6 +47,7 @@
   overflow: visible;
   position: relative;
   z-index: 20;
+  justify-content: flex-end;
 }
 
 .actionbar[data-busy="true"] {

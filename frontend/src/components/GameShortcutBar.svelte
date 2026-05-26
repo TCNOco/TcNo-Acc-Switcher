@@ -84,6 +84,29 @@
   })();
   $: isActionBusy = $platformActionBusy.busy;
 
+  let prevPlatform = platformName;
+  $: if (platformName !== prevPlatform) {
+    prevPlatform = platformName;
+    iconBroken = false;
+    ddOpen = false;
+    dragSourceZone = null;
+    dragFromIndex = null;
+    dragOverZone = null;
+    dragOverIndex = null;
+    draggingId = null;
+    dragVisualClone = null;
+    pendingDrag = null;
+    void (async () => {
+      try {
+        includeMainExe = await HasShortcutMainExe(platformName);
+      } catch {
+        includeMainExe = false;
+      }
+      await refreshFromServer();
+      void Shortcuts.ScanShortcuts(platformName);
+    })();
+  }
+
   let includeMainExe = false;
   let pinNames: string[] = [];
   let dropNames: string[] = [];
@@ -333,6 +356,7 @@
     ghostX = e.clientX - pd.grabOffsetX;
     ghostY = e.clientY - pd.grabOffsetY;
     document.body.style.userSelect = "none";
+    document.body.dataset.dragging = "true";
     hitTestDragOver(e.clientX, e.clientY);
   }
 
@@ -401,6 +425,7 @@
       dragVisualClone = null;
       pendingDrag = null;
       document.body.style.userSelect = "";
+      delete document.body.dataset.dragging;
     } else {
       pendingDrag = null;
     }
@@ -836,6 +861,7 @@
     offEv?.();
     teardownDnd?.();
     document.body.style.userSelect = "";
+    delete document.body.dataset.dragging;
     if (suppressClickExpire) {
       clearTimeout(suppressClickExpire);
     }
@@ -947,10 +973,10 @@
                     on:click={() => onShortcutClick(row)}
                   >
                     <img
-                src={offlineSafeImageSrc($offlineMode, row.iconUrl, SHORTCUT_ICON_FALLBACK)}
-                alt=""
-                draggable="false"
-              />
+                      src={offlineSafeImageSrc($offlineMode, row.iconUrl, SHORTCUT_ICON_FALLBACK)}
+                      alt=""
+                      draggable="false"
+                    />
                   </button>
                 </div>
               {/if}
