@@ -429,19 +429,7 @@ namespace TcNo_Acc_Switcher_Globals
             }
             catch (Win32Exception win32Exception)
             {
-                if (win32Exception.HResult != -2147467259) throw; // Throw is error is not: Requires elevation
-                try
-                {
-                    startInfo.UseShellExecute = true;
-                    startInfo.Verb = "runas";
-                    _ = Process.Start(startInfo);
-                    return "Started Tray";
-                }
-
-                catch (Win32Exception win32Exception2)
-                {
-                    if (win32Exception2.HResult != -2147467259) throw; // Throw is error is not: cancelled by user
-                }
+                if (win32Exception.HResult != -2147467259) throw;
             }
 
             return "Could not start tray";

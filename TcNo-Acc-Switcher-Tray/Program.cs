@@ -67,6 +67,7 @@ namespace TcNo_Acc_Switcher_Tray
         private readonly string _mainProgram = Path.Join(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule?.FileName)!, "TcNo-Acc-Switcher_main.exe");
 
         private NotifyIcon _trayIcon;
+        private ContextMenuStrip _contextMenu;
 
         public AppCont()
         {
@@ -102,10 +103,11 @@ namespace TcNo_Acc_Switcher_Tray
                 tsi.BackColor = Color.FromArgb(255, 34, 34, 34);
                 foreach (var trayUsers in value)
                 {
+                    var displayName = string.IsNullOrWhiteSpace(trayUsers.Name) ? trayUsers.Arg : trayUsers.Name;
                     _ = tsi.DropDownItems.Add(new ToolStripMenuItem
                     {
                         Name = trayUsers.Arg,
-                        Text = GLang.Instance["Tray_Switch", new { account = trayUsers.Name}],
+                        Text = GLang.Instance["Tray_Switch", new { account = displayName}],
                         ForeColor = Color.White,
                         BackColor = Color.FromArgb(255, 34, 34, 34)
                     });
@@ -132,10 +134,18 @@ namespace TcNo_Acc_Switcher_Tray
                     Visible = true
                 };
             else
+            {
+                var previousMenu = _contextMenu;
                 _trayIcon.ContextMenuStrip = contextMenu;
+                previousMenu?.Dispose();
+            }
 
-            _trayIcon.MouseDown += TrayIconOnMouseDown;
-            _trayIcon.DoubleClick += NotifyIcon_DoubleClick;
+            _contextMenu = contextMenu;
+            if (first)
+            {
+                _trayIcon.MouseDown += TrayIconOnMouseDown;
+                _trayIcon.DoubleClick += NotifyIcon_DoubleClick;
+            }
         }
 
         private void TrayIconOnMouseDown(object sender, MouseEventArgs e)
@@ -151,8 +161,10 @@ namespace TcNo_Acc_Switcher_Tray
             {
                 if (item.Name == "EXIT")
                 {
+                    _trayIcon.ContextMenuStrip?.Close();
                     _trayIcon.Visible = false;
                     CloseMainProcess();
+                    _trayIcon.Dispose();
                     Application.Exit();
                 }
                 else StartSwitcher($"{item.Name} quit");
@@ -173,7 +185,20 @@ namespace TcNo_Acc_Switcher_Tray
             var proc = Process.GetProcessesByName("TcNo-Acc-Switcher_main").FirstOrDefault();
             if (proc == null || proc.MainWindowHandle == IntPtr.Zero) return;
             _ = proc.CloseMainWindow();
-            proc.WaitForExit();
+            if (proc.WaitForExit(5000)) return;
+            try
+            {
+                proc.Kill(true);
+                proc.WaitForExit(2000);
+            }
+            catch (Win32Exception)
+            {
+                // The process may have exited between the timeout and the kill attempt.
+            }
+            catch (InvalidOperationException)
+            {
+                // Already exited.
+            }
         }
         private void StartSwitcher(string args = "")
         {
@@ -194,18 +219,8 @@ namespace TcNo_Acc_Switcher_Tray
                     }
                     catch (Win32Exception win32Exception)
                     {
-                        if (win32Exception.HResult != -2147467259) throw; // Throw is error is not: Requires elevation
-                        try
-                        {
-                            startInfo.UseShellExecute = true;
-                            startInfo.Verb = "runas";
-                            _ = Process.Start(startInfo);
-                        }
-
-                        catch (Win32Exception win32Exception2)
-                        {
-                            if (win32Exception2.HResult != -2147467259) throw; // Throw is error is not: cancelled by user
-                        }
+                        if (win32Exception.HResult != -2147467259) throw;
+                        _ = MessageBox.Show(@$"{GLang.Instance["Tray_CantOpenExe"]} {_mainProgram}", GLang.Instance["Tray_LaunchFail"]);
                     }
                 }
                 else

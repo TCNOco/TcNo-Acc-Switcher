@@ -179,6 +179,7 @@ namespace TcNo_Acc_Switcher_Client
             {
                 var mainWindow = new MainWindow();
                 mainWindow.Show();
+                StartTrayForTrayMode();
             }
             catch (FileNotFoundException ex)
             {
@@ -200,6 +201,12 @@ namespace TcNo_Acc_Switcher_Client
 
             AppStats.CrashCount++;
             AppStats.SaveSettings();
+        }
+
+        private static void StartTrayForTrayMode()
+        {
+            if (!AppSettings.TrayStartup && !AppSettings.TrayMinimizeNotExit) return;
+            _ = NativeFuncs.StartTrayIfNotRunning();
         }
 
         /// <summary>

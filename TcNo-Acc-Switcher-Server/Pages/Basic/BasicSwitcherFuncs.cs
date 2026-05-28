@@ -996,6 +996,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             {
                 AccountIds[accId] = newName;
                 SaveAccountIds();
+                Globals.UpdateTrayUserNameByArg(CurrentPlatform.SafeName, $"+{CurrentPlatform.PrimaryId}:" + accId, newName);
             }
             catch (Exception e)
             {

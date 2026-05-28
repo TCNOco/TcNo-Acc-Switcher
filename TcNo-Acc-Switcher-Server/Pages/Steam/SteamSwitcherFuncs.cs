@@ -152,7 +152,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
             GenericFunctions.FinaliseAccountList();
             AppStats.SetAccountCount("Steam", AppData.SteamUsers.Count);
+            RefreshSteamTrayNames();
             AppData.SteamLoadingProfiles = false;
+        }
+
+        private static void RefreshSteamTrayNames()
+        {
+            foreach (var su in AppData.SteamUsers)
+            {
+                if (string.IsNullOrWhiteSpace(su.SteamId)) continue;
+                var displayName = SteamSettings.TrayAccName ? su.AccName : GetName(su);
+                Globals.UpdateTrayUserNameByArg("Steam", "+s:" + su.SteamId, displayName);
+            }
         }
 
         private static void InsertAccount(Index.Steamuser su)

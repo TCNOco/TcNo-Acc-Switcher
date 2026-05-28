@@ -59,6 +59,14 @@ namespace TcNo_Acc_Switcher_Globals
             TrayUser.RemoveUserByArg(ref trayUsers, platform, arg);
             TrayUser.SaveUsers(trayUsers);
         }
+
+        public static void UpdateTrayUserNameByArg(string platform, string arg, string name)
+        {
+            if (string.IsNullOrWhiteSpace(name)) return;
+            var trayUsers = TrayUser.ReadTrayUsers();
+            if (!TrayUser.UpdateUserNameByArg(ref trayUsers, platform, arg, name)) return;
+            TrayUser.SaveUsers(trayUsers);
+        }
         #endregion
     }
     public class TrayUser
@@ -135,6 +143,15 @@ namespace TcNo_Acc_Switcher_Globals
             {
                 _ = trayUsers[platform].Remove(tu);
             }
+        }
+
+        public static bool UpdateUserNameByArg(ref Dictionary<string, List<TrayUser>> trayUsers, string platform, string arg, string name)
+        {
+            if (!trayUsers.ContainsKey(platform)) return false;
+            var user = trayUsers[platform].FirstOrDefault(x => x.Arg == arg);
+            if (user == null || user.Name == name) return false;
+            user.Name = name;
+            return true;
         }
 
         /// <summary>
