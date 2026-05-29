@@ -135,7 +135,5 @@
   .mt-4 {
     margin-top: 1.5rem;
   }
-  .mt-2 {
-    margin-top: 0.5rem;
-  }
+
 </style>
