@@ -310,10 +310,15 @@
     restoreFocus(restore);
   }
 
-  /** Keep flyout tops aligned when the expanded branch changes (after class/DOM updates). */
-  $: if (menuEl && $contextMenu) {
-    void $submenuOpenPath;
-    void tick().then(() => {
+  onMount(() => {
+    window.addEventListener("pointerdown", onDocPointerDown, true);
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("resize", onWinResize);
+
+    const unsub = submenuOpenPath.subscribe(() => {
+      if (!menuEl || !get(contextMenu)) {
+        return;
+      }
       if (flyoutRaf !== null) {
         cancelAnimationFrame(flyoutRaf);
       }
@@ -325,16 +330,12 @@
         refreshFlyoutLayout(menuEl);
       });
     });
-  }
 
-  onMount(() => {
-    window.addEventListener("pointerdown", onDocPointerDown, true);
-    window.addEventListener("keydown", onKey);
-    window.addEventListener("resize", onWinResize);
     return () => {
       window.removeEventListener("pointerdown", onDocPointerDown, true);
       window.removeEventListener("keydown", onKey);
       window.removeEventListener("resize", onWinResize);
+      unsub();
     };
   });
 

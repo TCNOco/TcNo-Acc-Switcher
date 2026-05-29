@@ -20,6 +20,8 @@
   let searchQuery = "";
   let currentPage = 0;
 
+
+
   function norm(s: string): string {
     return s.toLowerCase();
   }
