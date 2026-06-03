@@ -252,9 +252,13 @@ label.acc {
   }
 
   p {
-    margin: 0;
+    max-width: 9em;
+    margin: 0 auto;
+    overflow: hidden;
     color: var(--text-muted-gray);
     font-size: 0.75em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 
