@@ -66,7 +66,7 @@ func registryWriteInferred(key registry.Key, val string, value any) error {
 	case string:
 		s := strings.TrimSpace(v)
 		if s == "" {
-			return key.DeleteValue(val)
+			return deleteRegistryValueIfPresent(key, val)
 		}
 		if strings.HasPrefix(strings.ToLower(s), "(hex)") {
 			raw, err := parseHexString(s)
@@ -111,7 +111,7 @@ func registryWriteTyped(key registry.Key, val string, typ uint32, value any) err
 			return fmt.Errorf("registry SZ %s: %w", val, err)
 		}
 		if s == "" {
-			return key.DeleteValue(val)
+			return deleteRegistryValueIfPresent(key, val)
 		}
 		return key.SetStringValue(val, s)
 	case registry.EXPAND_SZ:
@@ -120,7 +120,7 @@ func registryWriteTyped(key registry.Key, val string, typ uint32, value any) err
 			return fmt.Errorf("registry EXPAND_SZ %s: %w", val, err)
 		}
 		if s == "" {
-			return key.DeleteValue(val)
+			return deleteRegistryValueIfPresent(key, val)
 		}
 		return key.SetExpandStringValue(val, s)
 	case registry.BINARY:
@@ -129,7 +129,7 @@ func registryWriteTyped(key registry.Key, val string, typ uint32, value any) err
 			return fmt.Errorf("registry BINARY %s: %w", val, err)
 		}
 		if len(b) == 0 {
-			return key.DeleteValue(val)
+			return deleteRegistryValueIfPresent(key, val)
 		}
 		return key.SetBinaryValue(val, b)
 	case registry.MULTI_SZ:
@@ -138,7 +138,7 @@ func registryWriteTyped(key registry.Key, val string, typ uint32, value any) err
 			return fmt.Errorf("registry MULTI_SZ %s: %w", val, err)
 		}
 		if s == "" {
-			return key.DeleteValue(val)
+			return deleteRegistryValueIfPresent(key, val)
 		}
 		parts := strings.Split(s, "\x00")
 		return key.SetStringsValue(val, parts)
@@ -224,6 +224,14 @@ func coerceToBinary(value any) ([]byte, error) {
 	default:
 		return nil, fmt.Errorf("expected []byte or hex string, got %T", value)
 	}
+}
+
+func deleteRegistryValueIfPresent(key registry.Key, val string) error {
+	err := key.DeleteValue(val)
+	if RegistryDeleteIsNotExist(err) {
+		return nil
+	}
+	return err
 }
 
 // RegistryDelete removes a value or the whole key if value name is empty (not used here).
