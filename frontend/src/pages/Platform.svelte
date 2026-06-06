@@ -7,6 +7,7 @@
   import TagFilterBar from "../components/TagFilterBar.svelte";
   import AccountTagBubbles from "../components/AccountTagBubbles.svelte";
   import { route, previousPage, appBarTitle } from "../stores/nav";
+  import { buildEpochMap } from "../lib/accountEpoch";
   import SearchOverlay, { type SearchResultRow } from "../components/SearchOverlay.svelte";
   import { actionBarStatus } from "../stores/actionBarStatus";
   import {
@@ -406,24 +407,7 @@
     const prevById = new Map(accounts.map((a) => [a.uniqueId, a]));
     try {
       const rows = (await BasicService.GetAccounts(name)) as BasicRow[];
-      let nextEpoch = { ...basicAvatarEpoch };
-      for (const r of rows) {
-        const prev = prevById.get(r.uniqueId);
-        const nw = (r.imageUrl ?? "").trim();
-        const pv = prev ? (prev.imageUrl ?? "").trim() : undefined;
-        let bump = pv !== undefined && pv !== nw;
-        if (
-          prev &&
-          ((prev.manualProfileImage ?? false) !== (r.manualProfileImage ?? false) ||
-            (prev.avatarPending ?? false) !== (r.avatarPending ?? false))
-        ) {
-          bump = true;
-        }
-        if (bump) {
-          nextEpoch[r.uniqueId] = (nextEpoch[r.uniqueId] ?? 0) + 1;
-        }
-      }
-      basicAvatarEpoch = nextEpoch;
+      basicAvatarEpoch = buildEpochMap(rows, prevById, (r) => r.uniqueId, basicAvatarEpoch);
       accounts = rows;
       accountIds = rows.map((r) => r.uniqueId);
       const liveRow = rows.find((r) => r.currentSession);

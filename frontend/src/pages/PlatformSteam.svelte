@@ -7,6 +7,7 @@
   import TagFilterBar from "../components/TagFilterBar.svelte";
   import AccountTagBubbles from "../components/AccountTagBubbles.svelte";
   import { route, previousPage, appBarTitle } from "../stores/nav";
+  import { buildEpochMap } from "../lib/accountEpoch";
   import SearchOverlay, { type SearchResultRow } from "../components/SearchOverlay.svelte";
   import { actionBarStatus } from "../stores/actionBarStatus";
   import {
@@ -550,24 +551,7 @@
     const prevById = new Map(steamAccounts.map((a) => [a.steamId64, a]));
     try {
       const rows = (await SteamService.GetSteamAccounts()) as SteamAccountRow[];
-      let nextEpoch = { ...rowEpoch };
-      for (const r of rows) {
-        const prev = prevById.get(r.steamId64);
-        const nw = (r.imageUrl ?? "").trim();
-        const pv = prev ? (prev.imageUrl ?? "").trim() : undefined;
-        let bump = pv !== undefined && pv !== nw;
-        if (
-          prev &&
-          ((prev.manualProfileImage ?? false) !== (r.manualProfileImage ?? false) ||
-            (prev.avatarPending ?? false) !== (r.avatarPending ?? false))
-        ) {
-          bump = true;
-        }
-        if (bump) {
-          nextEpoch[r.steamId64] = (nextEpoch[r.steamId64] ?? 0) + 1;
-        }
-      }
-      rowEpoch = nextEpoch;
+      rowEpoch = buildEpochMap(rows, prevById, (r) => r.steamId64, rowEpoch);
       steamAccounts = rows;
       steamIds = rows.map((r) => r.steamId64);
       const liveRow = rows.find((r) => r.currentSession);

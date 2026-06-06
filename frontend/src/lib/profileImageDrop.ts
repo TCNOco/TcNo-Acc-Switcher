@@ -14,49 +14,63 @@ function isMediaType(ty: string): boolean {
  * - "shortcut"    — empty MIME type (Windows .lnk/.url) or no type info → fullscreen shortcut overlay
  * - "incompatible"— non-empty, non-image MIME type → error overlay
  */
+function classifyItemType(type: string): DragFileCategory | null {
+  const ty = type.trim().toLowerCase();
+  if (!ty) return null;
+  if (isMediaType(ty)) return "image";
+  return "incompatible";
+}
+
+function classifyFileByExt(name: string): DragFileCategory | null {
+  return PROFILE_IMAGE_EXT_RE.test(name.trim()) ? "image" : null;
+}
+
+function classifyItems(items: DataTransferItemList): DragFileCategory | null {
+  let sawFileItem = false;
+  const len = items.length;
+  for (let i = 0; i < len; i++) {
+    const it = items[i];
+    if (!it || it.kind !== "file") continue;
+    sawFileItem = true;
+    const result = classifyItemType(it.type ?? "");
+    if (result) return result;
+  }
+  return sawFileItem ? "shortcut" : null;
+}
+
+function classifyFiles(files: FileList): DragFileCategory | null {
+  const len = files.length;
+  for (let i = 0; i < len; i++) {
+    const f = files[i];
+    const result = classifyItemType((f?.type ?? "") as string);
+    if (result) return result;
+    if (classifyFileByExt((f?.name ?? "") as string)) return "image";
+  }
+  return "shortcut";
+}
+
 export function getDragFileCategory(dt: DataTransfer | null): DragFileCategory {
   if (!dt?.types || typeof dt.types.length !== "number") return "shortcut";
   const typesArr = Array.from(dt.types as unknown as Iterable<string>);
   if (!typesArr.includes("Files")) return "shortcut";
 
-  let sawFileItem = false;
   try {
-    const items = dt.items;
-    if (items?.length) {
-      for (let i = 0; i < items.length; i++) {
-        const it = items[i];
-        if (!it || it.kind !== "file") continue;
-        sawFileItem = true;
-        const ty = (it.type ?? "").trim().toLowerCase();
-        if (isMediaType(ty)) return "image";
-        if (ty !== "") return "incompatible"; // known non-image MIME type
-      }
+    if (dt.items?.length) {
+      const result = classifyItems(dt.items);
+      if (result) return result;
     }
-  } catch {
-    /* stale DataTransfer during drag */
-  }
-  // Items had files but all had empty types → Windows shortcuts (.lnk / .url)
-  if (sawFileItem) return "shortcut";
+  } catch {}
 
   try {
-    const files = dt.files;
-    if (files?.length) {
-      for (let i = 0; i < files.length; i++) {
-        const f = files[i];
-        const ty = ((f?.type ?? "") as string).trim().toLowerCase();
-        if (isMediaType(ty)) return "image";
-        if (PROFILE_IMAGE_EXT_RE.test((f?.name ?? "") as string)) return "image";
-        if (ty !== "") return "incompatible";
-      }
-      return "shortcut";
+    if (dt.files?.length) {
+      const result = classifyFiles(dt.files);
+      if (result) return result;
     }
-  } catch {
-    /* empty during drag until drop */
-  }
-  return "shortcut"; // fallback — no type info, assume shortcut
+  } catch {}
+
+  return "shortcut";
 }
 
-/** True during drag when we prefer per-account avatar drop UI instead of fullscreen shortcut overlay. */
 export function shouldUseAccountProfileRowDropCue(dt: DataTransfer | null): boolean {
   return getDragFileCategory(dt) === "image";
 }

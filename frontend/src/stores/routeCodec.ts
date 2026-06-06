@@ -30,6 +30,20 @@ export function serializeRoute(r: Route): string {
   }
 }
 
+type RouteParser = (parts: string[]) => Route | null;
+
+const ROUTE_PARSERS: Record<string, RouteParser> = {
+  "":                  () => ({ page: "home" }),
+  home:                () => ({ page: "home" }),
+  settings:            () => ({ page: "settings" }),
+  "preview-css":       () => ({ page: "preview-css" }),
+  test:                () => ({ page: "preview-css" }),
+  "manage-platforms":   () => ({ page: "manage-platforms" }),
+  platform:             (p) => p[1] ? { page: "platform", platformName: decodeURIComponent(p[1]) } : null,
+  "platform-settings":  (p) => p[1] ? { page: "platform-settings", platformName: decodeURIComponent(p[1]) } : null,
+  steam:                (p) => p[1]?.toLowerCase() === "advanced-clearing" ? { page: "steam-advanced-clearing" } : null,
+};
+
 export function parseHash(hash: string): Route | null {
   let h = (hash.startsWith("#") ? hash.slice(1) : hash).trim();
   if (!h || h === "/") return { page: "home" };
@@ -37,15 +51,8 @@ export function parseHash(hash: string): Route | null {
   const parts = h.split("/").filter((p) => p.length > 0);
   const head = decodeURIComponent(parts[0] || "").toLowerCase();
 
-  if (head === "" || head === "home") return { page: "home" };
-  if (head === "settings") return { page: "settings" };
-  if (head === "preview-css" || head === "test") return { page: "preview-css" };
-  if (head === "manage-platforms") return { page: "manage-platforms" };
-  if (head === "platform" && parts[1]) return { page: "platform", platformName: decodeURIComponent(parts[1]) };
-  if (head === "platform-settings" && parts[1]) return { page: "platform-settings", platformName: decodeURIComponent(parts[1]) };
-  if (head === "steam" && parts[1]?.toLowerCase() === "advanced-clearing") return { page: "steam-advanced-clearing" };
-
-  return null;
+  const parser = ROUTE_PARSERS[head];
+  return parser ? parser(parts) : null;
 }
 
 export function validateRoute(r: Route, startup: PlatformStartup): Route {
