@@ -1,6 +1,7 @@
 import { get } from "svelte/store";
 import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
-import { route, type Route } from "../stores/nav";
+import { route } from "../stores/nav";
+import type { Route } from "../stores/routeCodec";
 
 /** Stable path key for Statistics.json PageStats (matches server normPageKey). */
 function routeToStatsPath(r: Route): string {

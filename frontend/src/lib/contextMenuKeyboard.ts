@@ -144,150 +144,103 @@ export type KeyboardNavDeps = {
   expandSubmenuForLi: (liHasSubmenu: HTMLElement) => void;
 };
 
-/**
- * Returns true if the event was consumed (caller should preventDefault/stopPropagation).
- */
-export function handleContextMenuKeydown(ev: KeyboardEvent, menuRoot: HTMLElement, deps: KeyboardNavDeps): boolean {
-  const menu = menuRoot.closest(".ctx-menu-root") ?? menuRoot;
-  if (!(menu instanceof HTMLElement) || !menu.classList.contains("ctx-menu-root")) {
-    return false;
-  }
-
-  const active = document.activeElement as HTMLElement | null;
-  if (!active || !menu.contains(active)) {
-    return false;
-  }
-
-  const key = ev.key;
-
-  if (key === "Escape") {
-    return false;
-  }
-
+function navigateArrow(active: HTMLElement, menu: HTMLElement, key: "ArrowDown" | "ArrowUp"): void {
   const searchInput = menu.querySelector<HTMLInputElement>("li.contextSearch input.ctx-menu__search");
-
-  if (active === searchInput && (key === "ArrowDown" || key === "ArrowUp")) {
-    ev.preventDefault();
-    ev.stopPropagation();
-    const rootUl = menu as HTMLUListElement;
-    const col = navigableTargetsInColumn(rootUl);
-    if (col.length === 0) {
-      return true;
-    }
+  if (active === searchInput) {
+    const col = navigableTargetsInColumn(menu as HTMLUListElement);
+    if (col.length === 0) return;
     const i = col.indexOf(active);
-    if (key === "ArrowDown") {
-      col[i + 1]?.focus();
-    } else {
+    if (key === "ArrowDown") col[i + 1]?.focus();
+    else {
       const prev = i <= 0 ? col[col.length - 1] : col[i - 1];
       prev?.focus();
     }
-    return true;
+    return;
   }
 
-  if (key === "ArrowDown" || key === "ArrowUp") {
+  const list = parentMenuList(active);
+  if (!list) return;
+  const items = navigableTargetsInColumn(list);
+  const i = indexInList(items, active);
+  if (i < 0) return;
+  const delta = key === "ArrowDown" ? 1 : -1;
+  items[i + delta]?.focus();
+}
+
+function tryExpandSubmenu(active: HTMLElement, deps: KeyboardNavDeps): boolean {
+  const rowLi = active.closest("li");
+  if (!(rowLi instanceof HTMLElement) || !rowLi.classList.contains("hasSubmenu") || !isSubmenuRowExpandTarget(active, rowLi))
+    return false;
+  deps.expandSubmenuForLi(rowLi);
+  requestAnimationFrame(() => {
+    const inner = firstNavigableInSubmenu(rowLi);
+    inner?.focus();
+  });
+  return true;
+}
+
+function tryActivateRow(active: HTMLElement, deps: KeyboardNavDeps): boolean {
+  const leafBtn = leafButtonForActiveRow(active);
+  if (leafBtn) {
+    leafBtn.click();
+    return true;
+  }
+  return tryExpandSubmenu(active, deps);
+}
+
+function jumpToEdge(active: HTMLElement, key: "Home" | "End"): void {
+  const list = parentMenuList(active);
+  if (!list) return;
+  const items = navigableTargetsInColumn(list);
+  const target = key === "Home" ? items[0] : items[items.length - 1];
+  target?.focus();
+}
+
+export function handleContextMenuKeydown(ev: KeyboardEvent, menuRoot: HTMLElement, deps: KeyboardNavDeps): boolean {
+  const menu = menuRoot.closest(".ctx-menu-root") ?? menuRoot;
+  if (!(menu instanceof HTMLElement) || !menu.classList.contains("ctx-menu-root")) return false;
+
+  const active = document.activeElement as HTMLElement | null;
+  if (!active || !menu.contains(active)) return false;
+
+  if (ev.key === "Escape") return false;
+
+  if (ev.key === "ArrowDown" || ev.key === "ArrowUp") {
     ev.preventDefault();
     ev.stopPropagation();
-    const list = parentMenuList(active);
-    if (!list) {
-      return true;
-    }
-    const items = navigableTargetsInColumn(list);
-    const i = indexInList(items, active);
-    if (i < 0) {
-      return true;
-    }
-    const delta = key === "ArrowDown" ? 1 : -1;
-    const next = items[i + delta];
-    next?.focus();
+    navigateArrow(active, menu, ev.key);
     return true;
   }
 
-  if (key === "ArrowRight") {
-    const rowLi = active.closest("li");
-    if (
-      !(rowLi instanceof HTMLElement) ||
-      !rowLi.classList.contains("hasSubmenu") ||
-      !isSubmenuRowExpandTarget(active, rowLi)
-    ) {
-      return false;
-    }
+  if (ev.key === "ArrowRight") {
+    if (!tryExpandSubmenu(active, deps)) return false;
     ev.preventDefault();
     ev.stopPropagation();
-    deps.expandSubmenuForLi(rowLi);
-    requestAnimationFrame(() => {
-      const inner = firstNavigableInSubmenu(rowLi);
-      inner?.focus();
-    });
     return true;
   }
 
-  if (key === "ArrowLeft") {
+  if (ev.key === "ArrowLeft") {
     const ownerLi = owningHasSubmenuLi(active);
-    if (!ownerLi) {
-      return false;
-    }
+    if (!ownerLi) return false;
     ev.preventDefault();
     ev.stopPropagation();
     ownerLi.focus();
     return true;
   }
 
-  if (key === "Enter" || key === " ") {
-    if (active.tagName === "INPUT") {
-      return false;
-    }
-    const leafBtn = leafButtonForActiveRow(active);
-    if (leafBtn) {
-      ev.preventDefault();
-      ev.stopPropagation();
-      leafBtn.click();
-      return true;
-    }
-    const rowLi = active.closest("li");
-    if (
-      rowLi instanceof HTMLElement &&
-      rowLi.classList.contains("hasSubmenu") &&
-      isSubmenuRowExpandTarget(active, rowLi)
-    ) {
-      ev.preventDefault();
-      ev.stopPropagation();
-      deps.expandSubmenuForLi(rowLi);
-      requestAnimationFrame(() => {
-        const inner = firstNavigableInSubmenu(rowLi);
-        inner?.focus();
-      });
-      return true;
-    }
-    return false;
-  }
-
-  if (key === "Home") {
-    if (active.tagName === "INPUT") {
-      return false;
-    }
+  if (ev.key === "Enter" || ev.key === " ") {
+    if (active.tagName === "INPUT") return false;
+    if (!tryActivateRow(active, deps)) return false;
     ev.preventDefault();
     ev.stopPropagation();
-    const list = parentMenuList(active);
-    if (!list) {
-      return true;
-    }
-    const items = navigableTargetsInColumn(list);
-    items[0]?.focus();
     return true;
   }
 
-  if (key === "End") {
-    if (active.tagName === "INPUT") {
-      return false;
-    }
+  if (ev.key === "Home" || ev.key === "End") {
+    if (active.tagName === "INPUT") return false;
     ev.preventDefault();
     ev.stopPropagation();
-    const list = parentMenuList(active);
-    if (!list) {
-      return true;
-    }
-    const items = navigableTargetsInColumn(list);
-    items[items.length - 1]?.focus();
+    jumpToEdge(active, ev.key);
     return true;
   }
 
