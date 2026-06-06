@@ -9,7 +9,7 @@ export type ModalBodyOptions = {
   bodyProps?: Record<string, unknown>;
 };
 
-export type ActiveModal =
+type ActiveModal =
   | (ModalBase & { kind: "alert"; title: string; dismissLabel?: string } & ModalBodyOptions)
   | (ModalBase & { kind: "alertNoButton"; title: string } & ModalBodyOptions)
   | (ModalBase & {

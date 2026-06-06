@@ -61,7 +61,7 @@ export function shouldUseAccountProfileRowDropCue(dt: DataTransfer | null): bool
   return getDragFileCategory(dt) === "image";
 }
 
-export function isProfileImagePath(fsPath: string): boolean {
+function isProfileImagePath(fsPath: string): boolean {
   return PROFILE_IMAGE_EXT_RE.test(fsPath.trim());
 }
 

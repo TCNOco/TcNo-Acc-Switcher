@@ -9,7 +9,7 @@ export const DUR = {
   slow: 300,
 } as const;
 
-export const EASE = {
+const EASE = {
   default: cubicOut,
   snappy: quartOut,
 } as const;
@@ -25,7 +25,7 @@ function noOpTransition() {
 }
 
 /** Fade + slight upward drift for toasts, dropdowns, etc. */
-export function fadeUp(node: Element, params?: { delay?: number; duration?: number }) {
+function fadeUp(node: Element, params?: { delay?: number; duration?: number }) {
   if (!motionEnabled()) return noOpTransition();
   return fly(node, {
     y: 10,
@@ -37,7 +37,7 @@ export function fadeUp(node: Element, params?: { delay?: number; duration?: numb
 }
 
 /** Scale + fade for modals, menus, dialogs. */
-export function scaleFade(node: Element, params?: { delay?: number; duration?: number }) {
+function scaleFade(node: Element, params?: { delay?: number; duration?: number }) {
   if (!motionEnabled()) return noOpTransition();
   return scale(node, {
     start: 0.96,
@@ -49,6 +49,6 @@ export function scaleFade(node: Element, params?: { delay?: number; duration?: n
 }
 
 /** Staggered entrance delay helper. */
-export function staggerDelay(index: number, baseMs = 30, maxMs = 400): number {
+function staggerDelay(index: number, baseMs = 30, maxMs = 400): number {
   return Math.min(index * baseMs, maxMs);
 }

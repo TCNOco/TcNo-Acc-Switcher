@@ -11,3 +11,4 @@ TcNo-Acc-Switcher.exe
 *.af
 *.af~lock~
 *.syso
+.fallowrc.json

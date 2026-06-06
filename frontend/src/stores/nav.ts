@@ -17,7 +17,7 @@ export const appBarTitle = writable("TcNo Account Switcher");
 let historyIndex = 0;
 let historyMaxIndex = 0;
 
-export function serializeRoute(r: Route): string {
+function serializeRoute(r: Route): string {
   switch (r.page) {
     case "home":
       return "#/";
@@ -38,7 +38,7 @@ export function serializeRoute(r: Route): string {
   }
 }
 
-export function parseHash(hash: string): Route | null {
+function parseHash(hash: string): Route | null {
   let h = (hash.startsWith("#") ? hash.slice(1) : hash).trim();
   if (!h || h === "/") {
     return { page: "home" };
@@ -213,15 +213,15 @@ export function applyNavigateJSON(json: string): void {
   }
 }
 
-export function canNavigateBack(): boolean {
+function canNavigateBack(): boolean {
   return historyIndex > 0;
 }
 
-export function canNavigateForward(): boolean {
+function canNavigateForward(): boolean {
   return historyIndex < historyMaxIndex;
 }
 
-export function navigateBack(): boolean {
+function navigateBack(): boolean {
   if (!canNavigateBack()) {
     return false;
   }

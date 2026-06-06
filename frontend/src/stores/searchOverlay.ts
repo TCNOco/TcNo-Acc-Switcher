@@ -1,6 +1,6 @@
 import { get, writable } from "svelte/store";
 
-export type SearchOverlayCtrl = {
+type SearchOverlayCtrl = {
   open: boolean;
   /** Seed when overlay opens (e.g. first typed character). */
   initialQuery: string;

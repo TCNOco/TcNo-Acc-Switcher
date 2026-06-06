@@ -5,8 +5,8 @@ import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/plat
 import { offlineMode } from "../stores/offlineMode";
 import { setUserOverride } from "../stores/backgroundImage";
 
-export const DEFAULT_THEME_ID = "default";
-export const CUSTOM_THEME_ACCENT_KEY = "custom";
+const DEFAULT_THEME_ID = "default";
+const CUSTOM_THEME_ACCENT_KEY = "custom";
 export const WINDOWS_THEME_ACCENT_KEY = "windows";
 
 const OVERLAY_STYLE_ID = "tcno-theme-overlay";
@@ -15,9 +15,9 @@ const ACCENT_OVERLAY_STYLE_ID = "tcno-theme-accent-overlay";
 const ACCENT_OVERLAY_STYLE_ATTR = "data-tcno-theme-accent-overlay";
 /** Marks runtime-injected Google Fonts stylesheets (see syncThemeGoogleFonts). */
 const THEME_FONT_LINK_ATTR = "data-tcno-google-fonts-theme";
-export const THEME_STORAGE_KEY = "tcno:theme";
-export const THEME_ACCENT_STORAGE_KEY = "tcno:theme-accent";
-export const THEME_ACCENT_CUSTOM_STORAGE_KEY = "tcno:theme-accent-custom";
+const THEME_STORAGE_KEY = "tcno:theme";
+const THEME_ACCENT_STORAGE_KEY = "tcno:theme-accent";
+const THEME_ACCENT_CUSTOM_STORAGE_KEY = "tcno:theme-accent-custom";
 
 const DEFAULT_LABEL = "Dracula Cyan (Default)";
 const WINDOWS_ACCENT_CHANGED_EVENT = "windows-accent-changed";
@@ -262,7 +262,7 @@ function removeThemeGoogleFontLinks(): void {
 }
 
 /** Injects googleFontsCss from the theme's info.yaml when online; removes links when offline or on default theme. */
-export function syncThemeGoogleFonts(themeId: string): void {
+function syncThemeGoogleFonts(themeId: string): void {
   if (typeof document === "undefined") {
     return;
   }
@@ -286,7 +286,7 @@ export function listThemes(): ThemeOption[] {
   return THEMES;
 }
 
-export function getThemeOptionById(id: string): ThemeOption {
+function getThemeOptionById(id: string): ThemeOption {
   return THEMES_BY_ID.get(id) ?? DEFAULT_THEME_OPTION;
 }
 
@@ -565,7 +565,7 @@ async function persistAccentState(accentKey: string, customColor: string): Promi
   }
 }
 
-export async function applyTheme(id: string): Promise<void> {
+async function applyTheme(id: string): Promise<void> {
   const requestId = ++activeThemeRequestId;
   removeThemeOverlay();
   removeAccentOverlay();

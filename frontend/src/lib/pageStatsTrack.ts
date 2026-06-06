@@ -3,7 +3,7 @@ import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/plat
 import { route, type Route } from "../stores/nav";
 
 /** Stable path key for Statistics.json PageStats (matches server normPageKey). */
-export function routeToStatsPath(r: Route): string {
+function routeToStatsPath(r: Route): string {
   switch (r.page) {
     case "home":
       return "/";

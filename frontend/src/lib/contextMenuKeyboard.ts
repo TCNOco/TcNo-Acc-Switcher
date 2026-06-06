@@ -84,7 +84,7 @@ function isSubmenuRowExpandTarget(active: HTMLElement, rowLi: HTMLElement): bool
 }
 
 /** Direct navigable targets in document order under this `ul` (one column). */
-export function navigableTargetsInColumn(ul: HTMLUListElement): HTMLElement[] {
+function navigableTargetsInColumn(ul: HTMLUListElement): HTMLElement[] {
   const rows = ul.querySelectorAll<HTMLElement>(SEL_ROW);
   const out: HTMLElement[] = [];
   rows.forEach((li) => {

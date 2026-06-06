@@ -15,7 +15,7 @@ export function normalizeDisplayPath(p: string): string {
   return s;
 }
 
-export function normalizePathKey(p: string): string {
+function normalizePathKey(p: string): string {
   const d = normalizeDisplayPath(p);
   if (/^[a-zA-Z]:\\/.test(d) || d.startsWith("\\\\")) {
     return d.toLowerCase();

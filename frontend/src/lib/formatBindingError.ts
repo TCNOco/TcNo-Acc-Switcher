@@ -1,5 +1,5 @@
 // Improve errors from Wails for displying in Modal dialog
-export function simplifyBindingErrorText(text: string): string {
+function simplifyBindingErrorText(text: string): string {
   const t = text.trim();
   if (!t.startsWith("{") || !t.includes('"message"')) {
     return text;

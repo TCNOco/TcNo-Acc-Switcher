@@ -10,7 +10,7 @@ export type PlatformSortKind =
   | "date_new_old"
   | "date_old_new";
 
-export type PlatformListSortSignal = { id: number; kind: PlatformSortKind };
+type PlatformListSortSignal = { id: number; kind: PlatformSortKind };
 
 export const platformListSort = writable<PlatformListSortSignal | null>(null);
 

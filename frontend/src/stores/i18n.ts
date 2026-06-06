@@ -9,7 +9,7 @@ const modules = import.meta.glob("../Resources/*.json") as Record<
 >;
 
 export const locale = writable("en-US");
-export const messages = writable<Record<string, string>>({});
+const messages = writable<Record<string, string>>({});
 
 export const availableLocales = Object.keys(modules)
   .map((p) => (p.match(/([^/]+)\.json$/)?.[1] ?? "").replace(/\.json$/, ""))
@@ -45,7 +45,7 @@ function syncDocumentLanguageAndDirection(code: string) {
 /**
  * Whether the locale uses right-to-left UI (Arabic, Hebrew, Persian, etc.).
  */
-export function localeIsRtl(code: string): boolean {
+function localeIsRtl(code: string): boolean {
   const normalized = code.trim().replace(/_/g, "-");
   try {
     const Locale = Intl.Locale as typeof Intl.Locale & {
@@ -90,7 +90,7 @@ async function loadEnUSMessages(): Promise<Record<string, string>> {
   return enUSMessagesCache;
 }
 
-export async function loadLocale(code: string) {
+async function loadLocale(code: string) {
   const entry = Object.entries(modules).find(([path]) =>
     pathKey(path).endsWith(`/${code}.json`),
   );

@@ -1,6 +1,6 @@
 import { get, writable } from 'svelte/store'
 
-export const defaultToastDurationMs = 5000
+const defaultToastDurationMs = 5000
 
 export type ToastInput = {
   type: string
@@ -9,7 +9,7 @@ export type ToastInput = {
   duration?: number
 }
 
-export type ToastItem = {
+type ToastItem = {
   id: string
   type: string
   title: string
@@ -104,6 +104,6 @@ export function dismissToastById(id: string): void {
 export const toastStore = { subscribe }
 
 /** Read current list (e.g. tests). */
-export function getToasts(): ToastItem[] {
+function getToasts(): ToastItem[] {
   return get({ subscribe })
 }

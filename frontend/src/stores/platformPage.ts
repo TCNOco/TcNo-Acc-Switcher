@@ -29,7 +29,7 @@ export const platformLiveSessionId = writable<{ platformKey: string; uniqueId: s
   uniqueId: "",
 });
 
-export type PlatformAccountsRefreshSignal = { seq: number; platformKey: string };
+type PlatformAccountsRefreshSignal = { seq: number; platformKey: string };
 
 export const platformAccountsRefresh = writable<PlatformAccountsRefreshSignal>({
   seq: 0,
