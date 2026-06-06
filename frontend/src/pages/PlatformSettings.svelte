@@ -500,10 +500,10 @@
     }
   }
 
-  async function onRefreshVac(): Promise<void> {
+  async function runWithToast(op: () => Promise<void>, successMsg: string): Promise<void> {
     try {
-      await Wails.RefreshVACStatus();
-      pushToast({ type: "success", title: "", message: $t("Toast_Steam_VacCleared"), duration: 5000 });
+      await op();
+      pushToast({ type: "success", title: "", message: successMsg, duration: 5000 });
     } catch (e) {
       pushToast({
         type: "error",
@@ -512,68 +512,38 @@
         duration: 8000,
       });
     }
+  }
+
+  async function onRefreshVac(): Promise<void> {
+    await runWithToast(() => Wails.RefreshVACStatus(), $t("Toast_Steam_VacCleared"));
   }
 
   async function onRefreshBasicProfileImages(): Promise<void> {
-    try {
+    await runWithToast(async () => {
       await BasicService.RefreshAllBasicProfileImages(name);
       requestPlatformAccountsRefresh(name);
-      pushToast({ type: "success", title: "", message: $t("Toast_ImagesRefreshing"), duration: 5000 });
-    } catch (e) {
-      pushToast({
-        type: "error",
-        title: "",
-        message: e instanceof Error ? e.message : String(e),
-        duration: 8000,
-      });
-    }
+    }, $t("Toast_ImagesRefreshing"));
   }
 
   async function onRefreshSavedBasicProfileImages(): Promise<void> {
-    try {
+    await runWithToast(async () => {
       await (
         BasicService as unknown as { RefreshSavedBasicProfileImages: (platformKey: string) => Promise<void> }
       ).RefreshSavedBasicProfileImages(name);
       requestPlatformAccountsRefresh(name);
-      pushToast({ type: "success", title: "", message: $t("Toast_ImagesRefreshing"), duration: 5000 });
-    } catch (e) {
-      pushToast({
-        type: "error",
-        title: "",
-        message: e instanceof Error ? e.message : String(e),
-        duration: 8000,
-      });
-    }
+    }, $t("Toast_ImagesRefreshing"));
   }
 
   async function onClearBasicProfileImages(): Promise<void> {
-    try {
+    await runWithToast(async () => {
       await (BasicService as unknown as { ClearAllBasicProfileImages: (platformKey: string) => Promise<void> })
         .ClearAllBasicProfileImages(name);
       requestPlatformAccountsRefresh(name);
-      pushToast({ type: "success", title: "", message: $t("Done"), duration: 5000 });
-    } catch (e) {
-      pushToast({
-        type: "error",
-        title: "",
-        message: e instanceof Error ? e.message : String(e),
-        duration: 8000,
-      });
-    }
+    }, $t("Done"));
   }
 
   async function onRefreshImages(): Promise<void> {
-    try {
-      await Wails.RefreshAllSteamImages();
-      pushToast({ type: "success", title: "", message: $t("Toast_ImagesRefreshing"), duration: 5000 });
-    } catch (e) {
-      pushToast({
-        type: "error",
-        title: "",
-        message: e instanceof Error ? e.message : String(e),
-        duration: 8000,
-      });
-    }
+    await runWithToast(() => Wails.RefreshAllSteamImages(), $t("Toast_ImagesRefreshing"));
   }
 
   function onWindowKeyDown(e: KeyboardEvent): void {
