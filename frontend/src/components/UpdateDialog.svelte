@@ -32,12 +32,6 @@
     window.open(downloadUrl, "_blank");
   }
 
-  function onBackdropClick(e: MouseEvent) {
-    if ((e.target as HTMLElement).classList.contains("updateDialog__backdrop")) {
-      dismiss();
-    }
-  }
-
   function onKeydown(e: KeyboardEvent) {
     if (e.key === "Escape") {
       dismiss();
@@ -48,14 +42,19 @@
 <svelte:window on:keydown={onKeydown} />
 
 <div
-  class="updateDialog__backdrop"
+  class="updateDialog__container"
   transition:fade={{ duration: motionEnabled() ? 160 : 0 }}
-  on:click={onBackdropClick}
-  on:keydown={onKeydown}
   role="dialog"
   aria-modal="true"
   aria-label={$t("Update")}
 >
+  <button
+    class="updateDialog__backdrop"
+    type="button"
+    on:click={dismiss}
+    aria-label={$t("Button_Close")}
+  ></button>
+
   <div
     class="updateDialog"
     transition:fly={{ y: 24, duration: motionEnabled() ? 200 : 0, easing: cubicOut }}
@@ -100,14 +99,24 @@
 </div>
 
 <style>
-  .updateDialog__backdrop {
+  .updateDialog__container {
     position: fixed;
     inset: 0;
     z-index: 9999;
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .updateDialog__backdrop {
+    position: absolute;
+    inset: 0;
+    border: none;
+    padding: 0;
+    cursor: pointer;
     background: rgb(0 0 0 / 55%);
+    font: inherit;
+    color: inherit;
   }
 
   .updateDialog {
