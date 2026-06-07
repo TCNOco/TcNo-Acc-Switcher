@@ -2,8 +2,8 @@
 
 package updatecheck
 
-import "net/url"
+import "TcNo-Acc-Switcher/internal/api"
 
 func updateAPIURL(version string) string {
-	return "https://tcno.co/Projects/AccSwitcher/api?debug&v=" + url.QueryEscape(version)
+	return api.VersionCheckURL(version, true)
 }

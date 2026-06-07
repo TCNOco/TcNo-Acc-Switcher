@@ -8,6 +8,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"TcNo-Acc-Switcher/internal/api"
 )
 
 const (
@@ -55,7 +57,7 @@ func FetchLatestVersion(ctx context.Context, client *http.Client, currentVersion
 	if err != nil {
 		return "", "", err
 	}
-	req.Header.Set("User-Agent", "TcNo-Acc-Switcher/"+strings.TrimSpace(currentVersion))
+	req.Header.Set("User-Agent", api.UserAgent(strings.TrimSpace(currentVersion)))
 	resp, err := client.Do(req)
 	if err != nil {
 		return "", "", err

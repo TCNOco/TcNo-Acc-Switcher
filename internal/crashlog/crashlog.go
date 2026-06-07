@@ -13,13 +13,13 @@ import (
 	"time"
 
 	buildinfo "TcNo-Acc-Switcher/build"
+	"TcNo-Acc-Switcher/internal/api"
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/stats"
 )
 
 const (
 	crashDumpFile = "CrashDump.json"
-	crashEndpoint = "https://tcno.co/Projects/AccSwitcher/api/crashes/"
 )
 
 type CrashDump struct {
@@ -162,7 +162,15 @@ func SubmitPending() bool {
 		return false
 	}
 
-	resp, err := http.Post(crashEndpoint, "application/json", bytes.NewReader(data))
+	req, err := http.NewRequest(http.MethodPost, api.CrashURL(), bytes.NewReader(data))
+	if err != nil {
+		slog.Warn("crashlog: building submit request", "err", err)
+		return false
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("User-Agent", api.UserAgent(buildinfo.Version()))
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		slog.Warn("crashlog: submitting dump", "err", err)
 		return false

@@ -13,15 +13,14 @@ import (
 	"sync"
 	"time"
 
+	buildinfo "TcNo-Acc-Switcher/build"
+	"TcNo-Acc-Switcher/internal/api"
 	"TcNo-Acc-Switcher/internal/fsutil"
 
 	"github.com/google/uuid"
 )
 
-const (
-	fileName  = "Statistics.json"
-	uploadURL = "https://tcno.co/Projects/AccSwitcher/api/stats/"
-)
+const fileName = "Statistics.json"
 
 type PageStat struct {
 	TotalTime int `json:"TotalTime"`
@@ -340,10 +339,18 @@ func TryUploadDaily(statsEnabled, statsShare, offlineMode bool) error {
 	uuid := state.Uuid
 	mu.Unlock()
 
-	resp, err := http.PostForm(uploadURL, url.Values{
+	form := url.Values{
 		"uuid":      []string{uuid},
 		"statsData": []string{string(payloadBytes)},
-	})
+	}
+	req, err := http.NewRequest(http.MethodPost, api.AnonymousStatsUploadURL(), strings.NewReader(form.Encode()))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Set("User-Agent", api.UserAgent(buildinfo.Version()))
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return err
 	}
