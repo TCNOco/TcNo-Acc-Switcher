@@ -1,5 +1,8 @@
 import { writable } from "svelte/store";
-import { ctxMenuLog } from "../lib/contextMenuDebug";
+const CTX_MENU_DEBUG = false;
+function ctxMenuLog(...args: unknown[]): void {
+  if (CTX_MENU_DEBUG) console.log("[ctx-menu]", ...args);
+}
 
 export type MenuItemDef = {
   /** Ignored when type is search/separator */

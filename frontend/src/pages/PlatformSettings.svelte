@@ -7,9 +7,10 @@
   import { pushToast } from "../stores/toast";
   import { tooltip } from "../lib/actions/tooltip";
   import GeneralSettingsBlock from "../components/GeneralSettingsBlock.svelte";
-  import * as Wails from "../lib/platformBindings";
+  import * as Wails from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import * as BasicService from "../../bindings/TcNo-Acc-Switcher/internal/basic/basicservice.js";
   import * as Shortcuts from "wails-shortcuts-service";
+  import { SaveSteamSettings, GetSteamSettings, RefreshVACStatus, RefreshAllSteamImages } from "../../bindings/TcNo-Acc-Switcher/internal/steam/steamservice.js";
   import { requestPlatformAccountsRefresh } from "../stores/platformPage";
   import { PlatformSettings } from "../../bindings/TcNo-Acc-Switcher/internal/platform/models.js";
   import { Settings } from "../../bindings/TcNo-Acc-Switcher/internal/steam/models.js";
@@ -200,7 +201,7 @@
     if (!isSteam || !steamSettings) return;
     clearTimeout(saveTimer);
     saveTimer = setTimeout(() => {
-      void Wails.SaveSteamSettings(steamSettings!).catch(() => {});
+      void SaveSteamSettings(steamSettings!).catch(() => {});
     }, 450);
   }
 
@@ -280,7 +281,7 @@
         await Wails.ConfirmPlatformExePath(name, picked);
         await refreshInstallFolder();
         if (isSteam) {
-          const raw = await Wails.GetSteamSettings();
+          const raw = await GetSteamSettings();
           steamSettings = Settings.createFrom(sanitizeSettingsPayload(raw) as Partial<Settings>);
         }
         pushToast({
@@ -301,7 +302,7 @@
   }
 
   async function loadSteamSettings(): Promise<void> {
-    const raw = await Wails.GetSteamSettings();
+    const raw = await GetSteamSettings();
     closingMethodUiLocked = isClosingMethodForcedPayload(raw);
     steamSettings = Settings.createFrom(sanitizeSettingsPayload(raw) as Partial<Settings>);
     if (steamSettings.AlwaysSwapOnShortcut === undefined) steamSettings.AlwaysSwapOnShortcut = true;
@@ -462,7 +463,7 @@
   }
 
   async function onRefreshVac(): Promise<void> {
-    await runWithToast(() => Wails.RefreshVACStatus(), $t("Toast_Steam_VacCleared"));
+    await runWithToast(() => RefreshVACStatus(), $t("Toast_Steam_VacCleared"));
   }
 
   async function onRefreshBasicProfileImages(): Promise<void> {
@@ -490,7 +491,7 @@
   }
 
   async function onRefreshImages(): Promise<void> {
-    await runWithToast(() => Wails.RefreshAllSteamImages(), $t("Toast_ImagesRefreshing"));
+    await runWithToast(() => RefreshAllSteamImages(), $t("Toast_ImagesRefreshing"));
   }
 
   function onWindowKeyDown(e: KeyboardEvent): void {

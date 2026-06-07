@@ -11,7 +11,35 @@
   import TagFilterBar from "./TagFilterBar.svelte";
   import AccountTagBubbles from "./AccountTagBubbles.svelte";
   import { route, previousPage, appBarTitle } from "../stores/nav";
-  import { buildEpochMap } from "../lib/accountEpoch";
+  type EpochCheckRow = {
+    imageUrl?: string | null;
+    manualProfileImage?: boolean | null;
+    avatarPending?: boolean | null;
+  };
+
+  function shouldBumpEpoch(prev: EpochCheckRow | undefined, row: EpochCheckRow): boolean {
+    if (!prev) return false;
+    if ((prev.imageUrl ?? "").trim() !== (row.imageUrl ?? "").trim()) return true;
+    if ((prev.manualProfileImage ?? false) !== (row.manualProfileImage ?? false)) return true;
+    if ((prev.avatarPending ?? false) !== (row.avatarPending ?? false)) return true;
+    return false;
+  }
+
+  function buildEpochMap<T extends EpochCheckRow>(
+    rows: T[],
+    prevById: Map<string, T>,
+    idKey: (r: T) => string,
+    currentEpoch: Record<string, number>,
+  ): Record<string, number> {
+    const next: Record<string, number> = { ...currentEpoch };
+    for (const r of rows) {
+      const id = idKey(r);
+      if (shouldBumpEpoch(prevById.get(id), r)) {
+        next[id] = (next[id] ?? 0) + 1;
+      }
+    }
+    return next;
+  }
   import SearchOverlay, { type SearchResultRow } from "./SearchOverlay.svelte";
   import {
     platformExeIconUrl,
@@ -25,7 +53,7 @@
   import { activeModal, openAlertNoButton, openConfirm, openPrompt } from "../stores/modal";
   import { locale, t } from "../stores/i18n";
   import * as BasicService from "../../bindings/TcNo-Acc-Switcher/internal/basic/basicservice.js";
-  import { GetPlatformExeIcon } from "../lib/platformBindings";
+  import { GetPlatformExeIcon } from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import { formatToastWithError, formatWailsError } from "../lib/formatWailsError";
   import {
     isNeedsAdminError,

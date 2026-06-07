@@ -2,7 +2,10 @@
   import type { MenuItemDef } from "../stores/contextMenu";
   import { get } from "svelte/store";
   import { closeContextMenu, submenuOpenPath, submenuExpandEnabled } from "../stores/contextMenu";
-  import { ctxMenuLog } from "../lib/contextMenuDebug";
+  const CTX_MENU_DEBUG = false;
+  function ctxMenuLog(...args: unknown[]): void {
+    if (CTX_MENU_DEBUG) console.log("[ctx-menu]", ...args);
+  }
   import { t } from "../stores/i18n";
 
   /** Matches legacy Blazor ContextMenuItem.razor */

@@ -12,7 +12,10 @@
     type ContextMenuState,
   } from "../stores/contextMenu";
   import ContextMenuNest from "./ContextMenuNest.svelte";
-  import { ctxMenuLog } from "../lib/contextMenuDebug";
+  const CTX_MENU_DEBUG = false;
+  function ctxMenuLog(...args: unknown[]): void {
+    if (CTX_MENU_DEBUG) console.log("[ctx-menu]", ...args);
+  }
   import {
     focusFirstNavigable,
     restoreFocus,

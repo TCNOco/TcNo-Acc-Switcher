@@ -16,7 +16,7 @@
   } from "../stores/platformPage";
   import { t } from "../stores/i18n";
   import { pushToast } from "../stores/toast";
-  import { HasShortcutMainExe } from "../lib/platformBindings";
+  import { HasShortcutMainExe } from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import { formatToastWithError, formatWailsError } from "../lib/formatWailsError";
   import { fileDropAcceptor, type FileDropAcceptor } from "../stores/fileDrop";
   import { pathsAreOnlyProfileMedia } from "../lib/profileImageDrop";

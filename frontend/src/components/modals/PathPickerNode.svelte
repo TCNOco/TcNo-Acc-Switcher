@@ -7,7 +7,7 @@
     folderCoversSelected,
     parentDisplayPath,
   } from "../../lib/fsPaths";
-  import { formatUnknownError } from "../../lib/formatBindingError";
+  import { formatUnknownError } from "../../lib/formatWailsError";
   import { onDestroy } from "svelte";
   import { t } from "../../stores/i18n";
 

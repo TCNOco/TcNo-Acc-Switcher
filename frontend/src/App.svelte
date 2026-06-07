@@ -26,7 +26,7 @@
   import { installPageStatsTracking } from "./lib/pageStatsTrack";
   import { actionBarStatus } from './stores/fileDrop'
   import { t } from "./stores/i18n";
-  import { NotifyLaunchUpdateCheck } from "./lib/platformBindings";
+  import { NotifyLaunchUpdateCheck } from "../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import { pushToast } from "./stores/toast";
   import { registerSvgRenderBridge } from "./lib/svgRenderBridge";
   import { activeModal } from "./stores/modal";

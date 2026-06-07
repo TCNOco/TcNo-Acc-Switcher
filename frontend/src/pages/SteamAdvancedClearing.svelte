@@ -7,7 +7,7 @@
   import { t } from "../stores/i18n";
   import { pushToast } from "../stores/toast";
   import { activeModal } from "../stores/modal";
-  import { RunAdvancedClearingAction } from "../lib/platformBindings";
+  import { RunAdvancedClearingAction } from "../../bindings/TcNo-Acc-Switcher/internal/steam/steamservice.js";
   import "../styles/Settings.scss";
 
   const WIKI_URL =

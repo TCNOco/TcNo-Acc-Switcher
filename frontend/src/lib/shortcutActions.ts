@@ -7,7 +7,7 @@ import {
   selectedAccount,
   platformActionBusy,
 } from "../stores/platformPage";
-import { LaunchPlatformAs } from "./platformBindings";
+import { LaunchPlatformAs } from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
 import { reportLaunchFailure } from "./adminFlow";
 import { formatToastWithError } from "./formatWailsError";
 
