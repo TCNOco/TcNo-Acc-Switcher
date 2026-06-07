@@ -27,6 +27,7 @@ install:
   - ps: Install-Module -Name SignPath -RequiredVersion 4.4.6 -Force -Scope CurrentUser
   - npm install -g pnpm
   - go install github.com/wailsapp/wails/v3/cmd/wails3@latest
+  - set PATH=%USERPROFILE%\go\bin;%PATH%
   - ps: |
       Write-Host "Installing NSIS 7z plugin..."
       $downloadUrl = "https://nsis.sourceforge.io/mediawiki/images/6/69/Nsis7z_19.00.7z"
