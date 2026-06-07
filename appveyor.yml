@@ -97,6 +97,18 @@ after_build:
         -WaitForCompletion
       Move-Item -Force "$env:APPVEYOR_BUILD_FOLDER\bin\TcNo-Acc-Switcher-signed.exe" "$env:APPVEYOR_BUILD_FOLDER\bin\TcNo-Acc-Switcher.exe"
 
+      Write-Host "Signing with Ed25519..."
+      if ($env:UPDATER_KEY) {
+        [System.IO.File]::WriteAllBytes("$env:APPVEYOR_BUILD_FOLDER\updater-key", [System.Convert]::FromBase64String($env:UPDATER_KEY))
+      }
+      go run "$env:APPVEYOR_BUILD_FOLDER\cmd\sign-release\main.go" "$env:APPVEYOR_BUILD_FOLDER\updater-key" "$env:APPVEYOR_BUILD_FOLDER\bin\TcNo-Acc-Switcher.exe" | Out-File -Encoding ascii "$env:APPVEYOR_BUILD_FOLDER\bin\TcNo-Acc-Switcher.exe.sig"
+      if ($LASTEXITCODE -ne 0) {
+        Write-Host "Ed25519 signing failed — skipping (no key available)."
+        Remove-Item -Force "$env:APPVEYOR_BUILD_FOLDER\bin\TcNo-Acc-Switcher.exe.sig" -ErrorAction SilentlyContinue
+      } else {
+        Write-Host "Ed25519 signature created."
+      }
+
       Write-Host "Copying NSIS images..."
       $imgDest = "$env:APPVEYOR_BUILD_FOLDER\build\windows\nsis\img"
       New-Item -ItemType Directory -Force -Path $imgDest | Out-Null
@@ -135,6 +147,8 @@ after_build:
 artifacts:
   - path: bin\TcNo-Acc-Switcher.exe
     name: executable
+  - path: bin\TcNo-Acc-Switcher.exe.sig
+    name: signature
   - path: build\windows\nsis\*installer*.exe
     name: installer
   - path: bin\TcNo-Acc-Switcher.7z
@@ -148,7 +162,7 @@ deploy:
     provider: GitHub
     auth_token:
       secure: Z8dNV9vQVfZfYXD0aPFxbnYz9pPxwOXGdZXI0+/xSH7BLAQt8WjWToqifxXJxd1T
-    artifact: installer,executable,archive
+    artifact: installer,executable,archive,signature
     draft: true
     prerelease: false
     on:

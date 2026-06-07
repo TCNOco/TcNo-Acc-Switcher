@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"io/fs"
 	"log"
 	"log/slog"
@@ -8,8 +9,8 @@ import (
 	"path/filepath"
 	"time"
 
-	"TcNo-Acc-Switcher/internal/basic"
 	buildinfo "TcNo-Acc-Switcher/build"
+	"TcNo-Acc-Switcher/internal/basic"
 	"TcNo-Acc-Switcher/internal/buildmode"
 	"TcNo-Acc-Switcher/internal/cli"
 	"TcNo-Acc-Switcher/internal/discordrpc"
@@ -19,6 +20,7 @@ import (
 	"TcNo-Acc-Switcher/internal/stats"
 	"TcNo-Acc-Switcher/internal/steam"
 	"TcNo-Acc-Switcher/internal/tray"
+	"TcNo-Acc-Switcher/internal/updatecheck"
 	"TcNo-Acc-Switcher/internal/winutil"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
@@ -28,14 +30,15 @@ import (
 )
 
 type RunGUIParams struct {
-	Parsed         cli.Parsed
-	GuiSettings    platform.AppSettings
-	Services       []application.Service
-	Dispatch       *Dispatch
-	DiscordRPC     *discordrpc.Manager
-	CrashSubmitted bool
-	EmbeddedAssets fs.FS
-	TrayIconPNG    []byte
+	Parsed           cli.Parsed
+	GuiSettings      platform.AppSettings
+	Services         []application.Service
+	Dispatch         *Dispatch
+	DiscordRPC       *discordrpc.Manager
+	CrashSubmitted   bool
+	EmbeddedAssets   fs.FS
+	TrayIconPNG      []byte
+	UpdaterPublicKey []byte
 }
 
 func ResolvedLogLevel(p cli.Parsed) slog.Level {
@@ -85,21 +88,33 @@ func RunGUI(params RunGUIParams) {
 	currentVersion := buildinfo.Version()
 
 	if currentVersion != "" {
-		gh, err := github.New(github.Config{
+		gh, err := updatecheck.NewSignedGitHubProvider(github.Config{
 			Repository:    "TCNOco/TcNo-Acc-Switcher",
 			ChecksumAsset: "SHA256SUMS",
-		})
+		}, ".exe.sig")
 		if err != nil {
-			app.Logger.Error("updater: github provider", "error", err)
+			app.Logger.Error("updater: provider", "error", err)
 		} else {
 			if err := app.Updater.Init(updater.Config{
 				CurrentVersion: currentVersion,
 				Providers:      []updater.Provider{gh},
-				CheckInterval:  4 * time.Hour,
+				PublicKey:      params.UpdaterPublicKey,
+				CheckInterval:  6 * time.Hour,
 			}); err != nil {
 				app.Logger.Error("updater: init", "error", err)
 			}
 		}
+
+		appMenu := app.Menu.New()
+		app.Menu.SetApplicationMenu(appMenu)
+		fileMenu := appMenu.AddSubmenu("App")
+		fileMenu.Add("Check for Updates…").OnClick(func(*application.Context) {
+			go func() {
+				if err := app.Updater.CheckAndInstall(context.Background()); err != nil {
+					app.Logger.Error("update", "error", err)
+				}
+			}()
+		})
 	}
 
 	if params.CrashSubmitted {
