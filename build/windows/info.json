@@ -1,10 +1,10 @@
 {
 	"fixed": {
-		"file_version": "4.0.5"
+		"file_version": "4.0.6"
 	},
 	"info": {
 		"0000": {
-			"ProductVersion": "4.0.5",
+			"ProductVersion": "4.0.6",
 			"CompanyName": "TroubleChute (Wesley Pyburn)",
 			"FileDescription": "TcNo Account Switcher",
 			"LegalCopyright": "TroubleChute (Wesley Pyburn) \u00a9 2024",

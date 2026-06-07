@@ -19,6 +19,12 @@ pull_requests:
   do_not_increment_build_number: true
 
 init:
+  - ps: |
+      # pnpm/vite and wails3 log to stderr; PS 7 treats that as NativeCommandError.
+      $ErrorActionPreference = 'Continue'
+      if (Get-Variable -Name PSNativeCommandUseErrorActionPreference -ErrorAction SilentlyContinue) {
+        $PSNativeCommandUseErrorActionPreference = $false
+      }
   - ps: Write-Host "APPVEYOR_REPO_TAG_NAME is $env:APPVEYOR_REPO_TAG_NAME"
   - ps: Write-Host "DATEVERSION is $env:DATEVERSION"
 #  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
@@ -74,9 +80,18 @@ build_script:
       [System.IO.File]::WriteAllText($infoPath, $json, $utf8nobom)
       Write-Host "config.yml and info.json updated."
   - go mod tidy
-  - ps: cd frontend; pnpm install --frozen-lockfile; cd ..
+  - ps: |
+      Push-Location "$env:APPVEYOR_BUILD_FOLDER\frontend"
+      pnpm install --frozen-lockfile
+      if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      Pop-Location
   - wails3 generate bindings -f "-tags production" -clean=true -ts
-  - ps: cd frontend; $env:PRODUCTION="true"; pnpm run build; cd ..
+  - ps: |
+      Push-Location "$env:APPVEYOR_BUILD_FOLDER\frontend"
+      $env:PRODUCTION = "true"
+      pnpm run build
+      if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      Pop-Location
   - ps: cd build; wails3 generate icons -input appicon.png -macfilename darwin/icons.icns -windowsfilename windows/icon.ico; cd ..
   - ps: Copy-Item -Force "$env:APPVEYOR_BUILD_FOLDER\other\NSIS\img\icon.ico" "$env:APPVEYOR_BUILD_FOLDER\build\windows\icon.ico"
   - ps: cd build; wails3 generate syso -arch amd64 -icon windows/icon.ico -manifest windows/wails.exe.manifest -info windows/info.json -out ..\wails_windows_amd64.syso; cd ..

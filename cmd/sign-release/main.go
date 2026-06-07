@@ -28,11 +28,14 @@ func loadPrivateKey(path string) (ed25519.PrivateKey, error) {
 	if err != nil {
 		return nil, fmt.Errorf("parse key: %w", err)
 	}
-	key, ok := signer.(ed25519.PrivateKey)
-	if !ok {
+	switch k := signer.(type) {
+	case ed25519.PrivateKey:
+		return k, nil
+	case *ed25519.PrivateKey:
+		return *k, nil
+	default:
 		return nil, fmt.Errorf("key is %T, want ed25519", signer)
 	}
-	return key, nil
 }
 
 func main() {
