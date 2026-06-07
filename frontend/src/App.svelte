@@ -13,15 +13,6 @@
   import FileDropOverlay from './components/FileDropOverlay.svelte'
   import ContextMenu from './components/ContextMenu.svelte'
   import BackgroundDropZones from './components/BackgroundDropZones.svelte'
-
-  import Home from './pages/Home.svelte'
-  import Settings from './pages/Settings.svelte'
-  import PreviewCss from './pages/PreviewCss.svelte'
-  import Platform from './pages/Platform.svelte'
-  import PlatformSteam from './pages/PlatformSteam.svelte'
-  import PlatformSettings from './pages/PlatformSettings.svelte'
-  import SteamAdvancedClearing from './pages/SteamAdvancedClearing.svelte'
-  import ManagePlatforms from './pages/ManagePlatforms.svelte'
   import { route, applyNavigateJSON, navigateBackLikeButton, navigateForward } from './stores/nav'
   import { installPageStatsTracking } from "./lib/pageStatsTrack";
   import { actionBarStatus } from './stores/fileDrop'
@@ -263,23 +254,39 @@
           out:fade={{ duration: motionEnabled() ? DUR.fast : 0, easing: cubicOut }}
         >
           {#if $route.page === "home"}
-            <Home />
+            {#await import('./pages/Home.svelte') then { default: Home }}
+              <Home />
+            {/await}
           {:else if $route.page === "settings"}
-            <Settings />
+            {#await import('./pages/Settings.svelte') then { default: Settings }}
+              <Settings />
+            {/await}
           {:else if $route.page === "preview-css"}
-            <PreviewCss />
+            {#await import('./pages/PreviewCss.svelte') then { default: PreviewCss }}
+              <PreviewCss />
+            {/await}
           {:else if $route.page === "platform"}
             {#if $route.platformName === "Steam"}
-              <PlatformSteam name={$route.platformName} />
+              {#await import('./pages/PlatformSteam.svelte') then { default: PlatformSteam }}
+                <PlatformSteam name={$route.platformName} />
+              {/await}
             {:else}
-              <Platform name={$route.platformName} />
+              {#await import('./pages/Platform.svelte') then { default: Platform }}
+                <Platform name={$route.platformName} />
+              {/await}
             {/if}
           {:else if $route.page === "platform-settings"}
-            <PlatformSettings name={$route.platformName} />
+            {#await import('./pages/PlatformSettings.svelte') then { default: PlatformSettings }}
+              <PlatformSettings name={$route.platformName} />
+            {/await}
           {:else if $route.page === "steam-advanced-clearing"}
-            <SteamAdvancedClearing />
+            {#await import('./pages/SteamAdvancedClearing.svelte') then { default: SteamAdvancedClearing }}
+              <SteamAdvancedClearing />
+            {/await}
           {:else if $route.page === "manage-platforms"}
-            <ManagePlatforms />
+            {#await import('./pages/ManagePlatforms.svelte') then { default: ManagePlatforms }}
+              <ManagePlatforms />
+            {/await}
           {/if}
         </div>
       {/key}
