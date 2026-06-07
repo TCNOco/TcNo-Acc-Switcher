@@ -9,7 +9,7 @@
   import { route, previousPage, appBarTitle } from "../stores/nav";
   import { buildEpochMap } from "../lib/accountEpoch";
   import SearchOverlay, { type SearchResultRow } from "../components/SearchOverlay.svelte";
-  import { actionBarStatus } from "../stores/actionBarStatus";
+  
   import {
     platformExeIconUrl,
     platformAction,
@@ -46,8 +46,7 @@
   import { fuzzyWordsMatch } from "../lib/searchFuzzy";
   import { closeSearchOverlay, searchOverlayCtrl } from "../stores/searchOverlay";
   import { platformListSort, type PlatformSortKind } from "../stores/platformListSort";
-  import { fileDropInterceptor } from "../stores/fileDropInterceptor";
-  import { accountProfileImageDropActive } from "../stores/accountProfileImageDropUi";
+  import { actionBarStatus, fileDropInterceptor, accountProfileImageDropActive } from "../stores/fileDrop";
   import { firstProfileImagePath } from "../lib/profileImageDrop";
   import {
     buildTagsSectionMenuItem,

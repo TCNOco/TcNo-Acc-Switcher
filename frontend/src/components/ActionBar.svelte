@@ -1,7 +1,7 @@
 <script lang="ts">
   import { get } from "svelte/store";
   import { route, type Route } from "../stores/nav";
-  import { actionBarStatus } from "../stores/actionBarStatus";
+  import { actionBarStatus } from "../stores/fileDrop";
   import { platformActionBusy, triggerPlatformAction } from "../stores/platformPage";
   import { tooltip } from "../lib/actions/tooltip";
   import { t } from "../stores/i18n";

@@ -4,7 +4,7 @@
   import { t } from "../stores/i18n";
   import { route } from "../stores/nav";
   import { shouldUseAccountProfileRowDropCue } from "../lib/profileImageDrop";
-  import { backgroundZoneInterceptor } from "../stores/backgroundZoneInterceptor";
+  import { backgroundZoneInterceptor } from "../stores/fileDrop";
   import { appBgInfo, platformBgInfo } from "../stores/backgroundImage";
   import { pushToast } from "../stores/toast";
   import { formatToastWithError } from "../lib/formatWailsError";

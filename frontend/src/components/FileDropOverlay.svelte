@@ -2,10 +2,7 @@
   import { onDestroy, onMount } from "svelte";
   import { get } from "svelte/store";
   import { Events } from "@wailsio/runtime";
-  import { fileDropAcceptor } from "../stores/fileDropTarget";
-  import { fileDropInterceptor } from "../stores/fileDropInterceptor";
-  import { backgroundZoneInterceptor } from "../stores/backgroundZoneInterceptor";
-  import { accountProfileImageDropActive } from "../stores/accountProfileImageDropUi";
+  import { fileDropAcceptor, fileDropInterceptor, backgroundZoneInterceptor, accountProfileImageDropActive } from "../stores/fileDrop";
   import { getDragFileCategory, type DragFileCategory } from "../lib/profileImageDrop";
   import { t } from "../stores/i18n";
 

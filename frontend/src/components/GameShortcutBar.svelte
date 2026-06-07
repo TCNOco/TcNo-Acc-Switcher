@@ -21,7 +21,7 @@
   import { HasShortcutMainExe, LaunchPlatformAs } from "../lib/platformBindings";
   import { formatToastWithError, formatWailsError } from "../lib/formatWailsError";
   import { reportLaunchFailure } from "../lib/adminFlow";
-  import { fileDropAcceptor, type FileDropAcceptor } from "../stores/fileDropTarget";
+  import { fileDropAcceptor, type FileDropAcceptor } from "../stores/fileDrop";
   import { pathsAreOnlyProfileMedia } from "../lib/profileImageDrop";
   import { offlineMode, offlineSafeImageSrc } from "../stores/offlineMode";
   import {

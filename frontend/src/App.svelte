@@ -24,7 +24,7 @@
   import ManagePlatforms from './pages/ManagePlatforms.svelte'
   import { route, applyNavigateJSON, navigateBackLikeButton, navigateForward } from './stores/nav'
   import { installPageStatsTracking } from "./lib/pageStatsTrack";
-  import { actionBarStatus } from './stores/actionBarStatus'
+  import { actionBarStatus } from './stores/fileDrop'
   import { t } from "./stores/i18n";
   import { NotifyLaunchUpdateCheck } from "./lib/platformBindings";
   import { pushToast } from "./stores/toast";
