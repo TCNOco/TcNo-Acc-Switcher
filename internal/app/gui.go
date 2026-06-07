@@ -89,7 +89,7 @@ func RunGUI(params RunGUIParams) {
 
 	if currentVersion != "" {
 		gh, err := updatecheck.NewSignedGitHubProvider(github.Config{
-			Repository:    "TCNOco/TcNo-Acc-Switcher",
+			Repository:    "TCNOco/TcNo-Acc-Switcher-BETA", // TODO: Reset back to TCNOco/TcNo-Acc-Switcher when done testing.
 			ChecksumAsset: "SHA256SUMS",
 		}, ".exe.sig")
 		if err != nil {
