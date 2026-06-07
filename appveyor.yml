@@ -69,7 +69,9 @@ build_script:
       $info = Get-Content -Raw $infoPath | ConvertFrom-Json
       $info.fixed.file_version = $nsisVersion
       $info.info.'0000'.ProductVersion = $nsisVersion
-      $info | ConvertTo-Json -Depth 4 | Set-Content -Encoding UTF8 $infoPath
+      $json = $info | ConvertTo-Json -Depth 4
+      $utf8nobom = New-Object System.Text.UTF8Encoding($false)
+      [System.IO.File]::WriteAllText($infoPath, $json, $utf8nobom)
       Write-Host "config.yml and info.json updated."
   - go mod tidy
   - ps: cd frontend; pnpm install --frozen-lockfile; cd ..
