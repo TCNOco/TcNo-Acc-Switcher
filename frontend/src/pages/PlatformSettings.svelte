@@ -248,58 +248,9 @@
       try {
         await refreshInstallFolder();
         if (isSteam) {
-          const raw = await Wails.GetSteamSettings();
-          closingMethodUiLocked = isClosingMethodForcedPayload(raw);
-          steamSettings = Settings.createFrom(sanitizeSettingsPayload(raw) as Partial<Settings>);
-          if (steamSettings.AlwaysSwapOnShortcut === undefined) {
-            steamSettings.AlwaysSwapOnShortcut = true;
-          }
-          if (steamSettings.LaunchArguments === undefined) {
-            steamSettings.LaunchArguments = "";
-          }
+          await loadSteamSettings();
         } else {
-          const raw = await Wails.GetPlatformSettings(name);
-          closingMethodUiLocked = isClosingMethodForcedPayload(raw);
-          const payload = sanitizeSettingsPayload(raw) as Record<string, unknown>;
-          genericPS = PlatformSettings.createFrom(payload as Partial<PlatformSettings>);
-          if (genericPS.AlwaysSwapOnShortcut === undefined) {
-            genericPS.AlwaysSwapOnShortcut = true;
-          }
-          if (genericPS.LaunchArguments === undefined) {
-            genericPS.LaunchArguments = "";
-          }
-          if (!("ShowLastUsed" in payload)) {
-            genericPS.ShowLastUsed = true;
-          }
-          if (
-            genericPS.ProfileImageExpiryDays === undefined ||
-            genericPS.ProfileImageExpiryDays === null ||
-            !(typeof genericPS.ProfileImageExpiryDays === "number") ||
-            genericPS.ProfileImageExpiryDays < 1
-          ) {
-            genericPS.ProfileImageExpiryDays = 7;
-          }
-          if (!("PullAccountImagesOnSwitch" in payload)) {
-            (genericPS as unknown as Record<string, unknown>).PullAccountImagesOnSwitch = true;
-          }
-          try {
-            hasRemoteProfileImages = await BasicService.PlatformUsesRemoteProfileImages(name);
-          } catch {
-            hasRemoteProfileImages = false;
-          }
-          try {
-            hasSavedProfileImageSources = (
-              BasicService as unknown as { PlatformProfileImagesSavedPerAccount: (platformKey: string) => Promise<boolean> }
-            ).PlatformProfileImagesSavedPerAccount
-              ? await (
-                  BasicService as unknown as {
-                    PlatformProfileImagesSavedPerAccount: (platformKey: string) => Promise<boolean>;
-                  }
-                ).PlatformProfileImagesSavedPerAccount(name)
-              : false;
-          } catch {
-            hasSavedProfileImageSources = false;
-          }
+          await loadGenericPlatformSettings();
         }
         await refreshCachePathState();
         await refreshBackupPathState();
@@ -349,6 +300,53 @@
     }
   }
 
+  async function loadSteamSettings(): Promise<void> {
+    const raw = await Wails.GetSteamSettings();
+    closingMethodUiLocked = isClosingMethodForcedPayload(raw);
+    steamSettings = Settings.createFrom(sanitizeSettingsPayload(raw) as Partial<Settings>);
+    if (steamSettings.AlwaysSwapOnShortcut === undefined) steamSettings.AlwaysSwapOnShortcut = true;
+    if (steamSettings.LaunchArguments === undefined) steamSettings.LaunchArguments = "";
+  }
+
+  async function loadGenericPlatformSettings(): Promise<void> {
+    const raw = await Wails.GetPlatformSettings(name);
+    closingMethodUiLocked = isClosingMethodForcedPayload(raw);
+    const payload = sanitizeSettingsPayload(raw) as Record<string, unknown>;
+    genericPS = PlatformSettings.createFrom(payload as Partial<PlatformSettings>);
+    if (genericPS.AlwaysSwapOnShortcut === undefined) genericPS.AlwaysSwapOnShortcut = true;
+    if (genericPS.LaunchArguments === undefined) genericPS.LaunchArguments = "";
+    if (!("ShowLastUsed" in payload)) genericPS.ShowLastUsed = true;
+    if (
+      genericPS.ProfileImageExpiryDays === undefined ||
+      genericPS.ProfileImageExpiryDays === null ||
+      typeof genericPS.ProfileImageExpiryDays !== "number" ||
+      genericPS.ProfileImageExpiryDays < 1
+    ) {
+      genericPS.ProfileImageExpiryDays = 7;
+    }
+    if (!("PullAccountImagesOnSwitch" in payload)) {
+      (genericPS as unknown as Record<string, unknown>).PullAccountImagesOnSwitch = true;
+    }
+    try {
+      hasRemoteProfileImages = await BasicService.PlatformUsesRemoteProfileImages(name);
+    } catch {
+      hasRemoteProfileImages = false;
+    }
+    try {
+      hasSavedProfileImageSources = (
+        BasicService as unknown as { PlatformProfileImagesSavedPerAccount: (platformKey: string) => Promise<boolean> }
+      ).PlatformProfileImagesSavedPerAccount
+        ? await (
+            BasicService as unknown as {
+              PlatformProfileImagesSavedPerAccount: (platformKey: string) => Promise<boolean>;
+            }
+          ).PlatformProfileImagesSavedPerAccount(name)
+        : false;
+    } catch {
+      hasSavedProfileImageSources = false;
+    }
+  }
+
   async function onReset(): Promise<void> {
     const ok = await openConfirm({
       title: $t("Button_ResetSettings"),
@@ -358,67 +356,16 @@
       negativeLabel: $t("No"),
     });
     if (!ok) return;
-    try {
+
+    await runWithToast(async () => {
       await Wails.ResetPlatformSettings(name);
       await refreshInstallFolder();
-      if (isSteam) {
-        const raw = await Wails.GetSteamSettings();
-        closingMethodUiLocked = isClosingMethodForcedPayload(raw);
-        steamSettings = Settings.createFrom(sanitizeSettingsPayload(raw) as Partial<Settings>);
-      } else {
-        const raw = await Wails.GetPlatformSettings(name);
-        closingMethodUiLocked = isClosingMethodForcedPayload(raw);
-        const payload = sanitizeSettingsPayload(raw) as Record<string, unknown>;
-        genericPS = PlatformSettings.createFrom(payload as Partial<PlatformSettings>);
-        if (!("ShowLastUsed" in payload)) {
-          genericPS.ShowLastUsed = true;
-        }
-        if (
-          genericPS.ProfileImageExpiryDays === undefined ||
-          genericPS.ProfileImageExpiryDays === null ||
-          !(typeof genericPS.ProfileImageExpiryDays === "number") ||
-          genericPS.ProfileImageExpiryDays < 1
-        ) {
-          genericPS.ProfileImageExpiryDays = 7;
-        }
-        if (!("PullAccountImagesOnSwitch" in payload)) {
-          (genericPS as unknown as Record<string, unknown>).PullAccountImagesOnSwitch = true;
-        }
-        try {
-          hasRemoteProfileImages = await BasicService.PlatformUsesRemoteProfileImages(name);
-        } catch {
-          hasRemoteProfileImages = false;
-        }
-        try {
-          hasSavedProfileImageSources = (
-            BasicService as unknown as { PlatformProfileImagesSavedPerAccount: (platformKey: string) => Promise<boolean> }
-          ).PlatformProfileImagesSavedPerAccount
-            ? await (
-                BasicService as unknown as {
-                  PlatformProfileImagesSavedPerAccount: (platformKey: string) => Promise<boolean>;
-                }
-              ).PlatformProfileImagesSavedPerAccount(name)
-            : false;
-        } catch {
-          hasSavedProfileImageSources = false;
-        }
-      }
+      if (isSteam) await loadSteamSettings();
+      else await loadGenericPlatformSettings();
       await refreshDesktopShortcutState();
-      pushToast({
-        type: "success",
-        title: "",
-        message: $t("Toast_SettingsReset"),
-        duration: 4000,
-      });
-    } catch (e) {
-      pushToast({
-        type: "error",
-        title: "",
-        message: e instanceof Error ? e.message : String(e),
-        duration: 8000,
-      });
-    }
+    }, $t("Toast_SettingsReset"));
   }
+
 
   async function onOpenFolder(): Promise<void> {
     try {

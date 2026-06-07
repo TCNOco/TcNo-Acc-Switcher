@@ -53,6 +53,11 @@
     }
   }
 
+  function computeExpandableChildren(list: DirEntry[]): boolean {
+    if (dirsOnly) return list.some((c) => c.isDir);
+    return list.some((c) => !c.isDir) || list.some((c) => c.isDir);
+  }
+
   async function loadChildren(): Promise<void> {
     if (!isDir || loading) return;
     if (children.length > 0) return;
@@ -64,12 +69,7 @@
       if (seq !== loadChildrenSeq) return;
       children = dirsOnly ? list.filter((c: DirEntry) => c.isDir) : list;
       listAttempted = true;
-      if (dirsOnly) {
-        hasExpandableChildren = children.some((c) => c.isDir);
-      } else {
-        hasExpandableChildren =
-          children.some((c) => !c.isDir) || children.some((c) => c.isDir);
-      }
+      hasExpandableChildren = computeExpandableChildren(list);
     } catch (e) {
       if (seq !== loadChildrenSeq) return;
       loadError = formatUnknownError(e);
@@ -77,9 +77,7 @@
       listAttempted = true;
       hasExpandableChildren = true;
     } finally {
-      if (seq === loadChildrenSeq) {
-        loading = false;
-      }
+      if (seq === loadChildrenSeq) loading = false;
     }
   }
 
@@ -91,30 +89,28 @@
     return (idx >= 0 ? u.slice(idx + 1) : t).toLowerCase();
   }
 
+  function handleDirCollapse(pNorm: string): void {
+    if (listAttempted && !loadError && children.length === 0) {
+      onPick(pNorm, true);
+      expanded = false;
+      loadChildrenSeq++;
+      return;
+    }
+    expanded = false;
+    loadChildrenSeq++;
+    if (selectedPath && (sameFsPath(selectedPath, pNorm) || folderCoversSelected(pNorm, selectedPath))) {
+      onPick(parentDisplayPath(pNorm), true);
+    }
+  }
+
   function onLabelClick(): void {
     const pNorm = normalizeDisplayPath(path);
     if (isDir && expanded) {
-      const openedEmpty =
-        listAttempted && !loadError && children.length === 0;
-      if (openedEmpty) {
-        onPick(pNorm, true);
-        expanded = false;
-        loadChildrenSeq++;
-        return;
-      }
-      expanded = false;
-      loadChildrenSeq++;
-      if (
-        selectedPath &&
-        (sameFsPath(selectedPath, pNorm) || folderCoversSelected(pNorm, selectedPath))
-      ) {
-        onPick(parentDisplayPath(pNorm), true);
-      }
+      handleDirCollapse(pNorm);
       return;
     }
     onPick(pNorm, isDir);
-    if (!isDir) return;
-    if (!expanded) {
+    if (isDir && !expanded) {
       expanded = true;
       void loadChildren();
     }

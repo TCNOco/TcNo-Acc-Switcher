@@ -1,6 +1,7 @@
 import { get, writable } from "svelte/store";
 import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
 import { type Route, serializeRoute, parseHash, validateRoute } from "./routeCodec";
+import type { PlatformStartup } from "../../bindings/TcNo-Acc-Switcher/internal/platform/models.js";
 
 export type { Route };
 
@@ -11,32 +12,32 @@ let historyIndex = 0;
 let historyMaxIndex = 0;
 
 
+function applyCliHint(startup: PlatformStartup, base: Route): Route {
+  const hint = startup.cliNavigateHint?.trim();
+  if (!hint) return base;
+  try {
+    const parsed = JSON.parse(hint) as Route;
+    if (parsed && typeof parsed === "object" && "page" in parsed) return validateRoute(parsed, startup);
+  } catch {}
+  return base;
+}
+
+function syncRouteUrl(next: Route): void {
+  const url = serializeRoute(next);
+  if (window.location.hash !== url || window.history.state?.idx !== historyIndex) {
+    history.replaceState({ idx: historyIndex }, "", url);
+  }
+}
+
 /** Call after i18n init; sets route from hash + startup validation and optional CLI hint. */
 export async function resolveInitialRoute(): Promise<void> {
   let fromHash = parseHash(window.location.hash || "#/") || { page: "home" };
   try {
     const startup = await PlatformService.GetStartup();
     let next = validateRoute(fromHash, startup);
-
-    const hint = startup.cliNavigateHint?.trim();
-    if (hint) {
-      try {
-        const parsed = JSON.parse(hint) as Route;
-        if (parsed && typeof parsed === "object" && "page" in parsed) {
-          next = validateRoute(parsed, startup);
-        }
-      } catch {
-        /* ignore */
-      }
-    }
-
+    next = applyCliHint(startup, next);
     route.set(next);
-    const url = serializeRoute(next);
-    if (window.location.hash !== url) {
-      history.replaceState({ idx: historyIndex }, "", url);
-    } else if (window.history.state?.idx !== historyIndex) {
-      history.replaceState({ idx: historyIndex }, "", url);
-    }
+    syncRouteUrl(next);
   } catch {
     route.set(fromHash);
   }

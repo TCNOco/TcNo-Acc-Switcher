@@ -16,32 +16,31 @@ function isEmptyPlainObject(v: unknown): boolean {
  * @param err - Wails/runtime error
  * @param options - optional i18n for the first `message` line (when it is a known key; see Steam userdata ops)
  */
-export function formatWailsError(err: unknown, options?: FormatWailsErrorOptions): string {
-  const obj = extractErrorObject(err);
-  if (!obj) {
-    if (err == null) return "";
-    return String(err);
-  }
-
-  const lines: string[] = [];
+function buildMessageLines(
+  obj: Record<string, unknown>,
+  options?: FormatWailsErrorOptions,
+): string[] {
   const msg = obj.message;
-  if (typeof msg === "string" && msg.trim()) {
-    const messageLines = msg
-      .split("\n")
-      .map((s) => s.replace(/\r$/, "").trimEnd())
-      .filter((s) => s.length > 0);
-    if (messageLines.length > 0) {
-      const first = messageLines[0].trim();
-      const keys = options?.i18nFirstLineKeys;
-      const tr = options?.translateMessage;
-      const head = tr && keys && keys.has(first) ? tr(first) : first;
-      lines.push(head, ...messageLines.slice(1));
-    }
-  }
+  if (typeof msg !== "string" || !msg.trim()) return [];
 
+  const messageLines = msg
+    .split("\n")
+    .map((s) => s.replace(/\r$/, "").trimEnd())
+    .filter((s) => s.length > 0);
+  if (messageLines.length === 0) return [];
+
+  const first = messageLines[0].trim();
+  const keys = options?.i18nFirstLineKeys;
+  const tr = options?.translateMessage;
+  return [tr && keys?.has(first) ? tr(first) : first, ...messageLines.slice(1)];
+}
+
+function buildMetaLines(obj: Record<string, unknown>): string[] {
   const otherKeys = Object.keys(obj)
     .filter((k) => k !== "message")
     .sort((a, b) => a.localeCompare(b));
+
+  const lines: string[] = [];
   for (const k of otherKeys) {
     const v = obj[k];
     if (v === undefined) continue;
@@ -51,12 +50,17 @@ export function formatWailsError(err: unknown, options?: FormatWailsErrorOptions
     }
     lines.push(`${formatKeyLabel(k)}: ${formatValue(v)}`);
   }
-
-  if (lines.length === 0) {
-    return String(err);
-  }
-  return lines.join("\n");
+  return lines;
 }
+
+export function formatWailsError(err: unknown, options?: FormatWailsErrorOptions): string {
+  const obj = extractErrorObject(err);
+  if (!obj) return err == null ? "" : String(err);
+
+  const lines = [...buildMessageLines(obj, options), ...buildMetaLines(obj)];
+  return lines.length > 0 ? lines.join("\n") : String(err);
+}
+
 
 /** Prefix + blank line + formatted error body (same options as [formatWailsError]). */
 export function formatToastWithError(
@@ -89,34 +93,33 @@ function tryParseJSONMessageObject(msg: string): Record<string, unknown> | null 
   return null;
 }
 
+function extractFromPlainObject(o: Record<string, unknown>): Record<string, unknown> | null {
+  if (typeof o.message === "string") {
+    const inner = tryParseJSONMessageObject(o.message);
+    if (inner && typeof inner.message === "string") return { ...o, ...inner };
+  }
+  if ("message" in o || "cause" in o || "kind" in o) return o;
+  return null;
+}
+
+function extractFromError(err: Error): Record<string, unknown> | null {
+  if (err.message != null) {
+    const parsed = tryParseJSONMessageObject(String(err.message));
+    if (parsed) return parsed;
+  }
+  return { message: err.message };
+}
+
 function extractErrorObject(err: unknown): Record<string, unknown> | null {
   if (err == null) return null;
 
-  if (typeof err === "object" && !Array.isArray(err)) {
-    const o = err as Record<string, unknown>;
-    if (typeof o.message === "string") {
-      const inner = tryParseJSONMessageObject(o.message);
-      if (inner && typeof inner.message === "string") {
-        return { ...o, ...inner };
-      }
-    }
-    if ("message" in o || "cause" in o || "kind" in o) {
-      return o;
-    }
-  }
-
-  if (typeof err === "string") {
-    return tryParseJSONMessageObject(err) ?? null;
-  }
-
-  if (err instanceof Error) {
-    const fromMsg = err.message != null ? tryParseJSONMessageObject(String(err.message)) : null;
-    if (fromMsg) return fromMsg;
-    return { message: err.message };
-  }
+  if (typeof err === "object" && !Array.isArray(err)) return extractFromPlainObject(err as Record<string, unknown>);
+  if (typeof err === "string") return tryParseJSONMessageObject(err) ?? null;
+  if (err instanceof Error) return extractFromError(err);
 
   return null;
 }
+
 
 function formatKeyLabel(k: string): string {
   if (k.length === 0) return k;

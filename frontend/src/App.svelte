@@ -196,30 +196,33 @@
       });
     });
 
+    function parseI18nPayload(raw: string): { key: string; vars?: Record<string, string | number> } {
+      const parts = raw.slice(5).split("\u001f");
+      const key = parts.shift() ?? "";
+      if (parts.length > 1) {
+        const vars: Record<string, string | number> = {};
+        for (let i = 0; i < parts.length; i += 2) {
+          const name = parts[i];
+          if (!name) continue;
+          vars[name] = parts[i + 1] ?? "";
+        }
+        return { key, vars };
+      }
+      if (parts.length === 1) return { key, vars: { platform: parts[0] } };
+      return { key };
+    }
+
     const off = Events.On("action-bar-status", (ev) => {
       const raw = typeof ev.data === "string" ? ev.data : "";
       if (raw.startsWith("i18n:")) {
-        const payload = raw.slice(5);
-        const sep = "\u001f";
-        const parts = payload.split(sep);
-        const key = parts.shift() ?? "";
-        if (parts.length > 1) {
-          const vars: Record<string, string | number> = {};
-          for (let i = 0; i < parts.length; i += 2) {
-            const name = parts[i];
-            if (!name) continue;
-            vars[name] = parts[i + 1] ?? "";
-          }
-          actionBarStatus.set($t(key, vars));
-        } else if (parts.length === 1) {
-          actionBarStatus.set($t(key, { platform: parts[0] }));
-        } else {
-          actionBarStatus.set($t(key));
-        }
+        const { key, vars } = parseI18nPayload(raw);
+        actionBarStatus.set(vars ? $t(key, vars) : $t(key));
       } else {
         actionBarStatus.set(raw);
       }
     });
+
+
     window.addEventListener("keydown", onGlobalKeydownCapture, true);
     window.addEventListener("keydown", onGlobalHistoryKeydownCapture, true);
     window.addEventListener("mouseup", onGlobalHistoryMouseUpCapture, true);

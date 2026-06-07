@@ -196,6 +196,54 @@ function jumpToEdge(active: HTMLElement, key: "Home" | "End"): void {
   target?.focus();
 }
 
+type KeyHandler = (ev: KeyboardEvent, active: HTMLElement, menu: HTMLElement, deps: KeyboardNavDeps) => boolean;
+
+function handleArrow(ev: KeyboardEvent, active: HTMLElement, menu: HTMLElement, key: "ArrowDown" | "ArrowUp"): boolean {
+  ev.preventDefault();
+  ev.stopPropagation();
+  navigateArrow(active, menu, key);
+  return true;
+}
+
+function handleActivation(ev: KeyboardEvent, active: HTMLElement, deps: KeyboardNavDeps): boolean {
+  if (active.tagName === "INPUT") return false;
+  if (!tryActivateRow(active, deps)) return false;
+  ev.preventDefault();
+  ev.stopPropagation();
+  return true;
+}
+
+function handleEdgeKey(ev: KeyboardEvent, active: HTMLElement, key: "Home" | "End"): boolean {
+  if (active.tagName === "INPUT") return false;
+  ev.preventDefault();
+  ev.stopPropagation();
+  jumpToEdge(active, key);
+  return true;
+}
+
+const KEY_HANDLERS: Record<string, KeyHandler> = {
+  ArrowDown: (ev, a, m) => handleArrow(ev, a, m, "ArrowDown"),
+  ArrowUp: (ev, a, m) => handleArrow(ev, a, m, "ArrowUp"),
+  ArrowRight: (ev, a, _m, d) => {
+    if (!tryExpandSubmenu(a, d)) return false;
+    ev.preventDefault();
+    ev.stopPropagation();
+    return true;
+  },
+  ArrowLeft: (ev, a) => {
+    const ownerLi = owningHasSubmenuLi(a);
+    if (!ownerLi) return false;
+    ev.preventDefault();
+    ev.stopPropagation();
+    ownerLi.focus();
+    return true;
+  },
+  Enter: (ev, a, _m, d) => handleActivation(ev, a, d),
+  " ": (ev, a, _m, d) => handleActivation(ev, a, d),
+  Home: (ev, a) => handleEdgeKey(ev, a, "Home"),
+  End: (ev, a) => handleEdgeKey(ev, a, "End"),
+};
+
 export function handleContextMenuKeydown(ev: KeyboardEvent, menuRoot: HTMLElement, deps: KeyboardNavDeps): boolean {
   const menu = menuRoot.closest(".ctx-menu-root") ?? menuRoot;
   if (!(menu instanceof HTMLElement) || !menu.classList.contains("ctx-menu-root")) return false;
@@ -205,44 +253,6 @@ export function handleContextMenuKeydown(ev: KeyboardEvent, menuRoot: HTMLElemen
 
   if (ev.key === "Escape") return false;
 
-  if (ev.key === "ArrowDown" || ev.key === "ArrowUp") {
-    ev.preventDefault();
-    ev.stopPropagation();
-    navigateArrow(active, menu, ev.key);
-    return true;
-  }
-
-  if (ev.key === "ArrowRight") {
-    if (!tryExpandSubmenu(active, deps)) return false;
-    ev.preventDefault();
-    ev.stopPropagation();
-    return true;
-  }
-
-  if (ev.key === "ArrowLeft") {
-    const ownerLi = owningHasSubmenuLi(active);
-    if (!ownerLi) return false;
-    ev.preventDefault();
-    ev.stopPropagation();
-    ownerLi.focus();
-    return true;
-  }
-
-  if (ev.key === "Enter" || ev.key === " ") {
-    if (active.tagName === "INPUT") return false;
-    if (!tryActivateRow(active, deps)) return false;
-    ev.preventDefault();
-    ev.stopPropagation();
-    return true;
-  }
-
-  if (ev.key === "Home" || ev.key === "End") {
-    if (active.tagName === "INPUT") return false;
-    ev.preventDefault();
-    ev.stopPropagation();
-    jumpToEdge(active, ev.key);
-    return true;
-  }
-
-  return false;
+  const handler = KEY_HANDLERS[ev.key];
+  return handler ? handler(ev, active, menu, deps) : false;
 }

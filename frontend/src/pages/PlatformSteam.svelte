@@ -724,34 +724,36 @@
       .replace(/\s+/g, " ");
   }
 
+  function resolveShortcutIconUrl(o: Record<string, unknown>, stemLow: string, platFolder: string): string {
+    let iconRaw = String(o.iconUrl ?? o.IconURL ?? o.iconURL ?? "").trim();
+    if (!iconRaw) iconRaw = `/img/shortcuts/${platFolder}/${stemLow}.png`;
+    return offlineSafeImageSrc(get(offlineMode), iconRaw, SHORTCUT_ICON_FALLBACK);
+  }
+
+  function extractShortcutRecord(raw: unknown): { stem: string; stemLow: string } | null {
+    const o = (raw ?? {}) as Record<string, unknown>;
+    const fn = String(o.fileName ?? o.FileName ?? "").trim();
+    if (!fn) return null;
+    const stem = fn.replace(/\.(lnk|url)$/i, "").trim();
+    return { stem, stemLow: stem.toLowerCase() };
+  }
+
   function applyShortcutIconsFromShortcutList(list: unknown[]): void {
     const byAppId: Record<string, string> = {};
     const byStemKey: Record<string, string> = {};
     const platFolder = safeFolderName(name);
     for (const raw of list) {
-      const o = (raw ?? {}) as Record<string, unknown>;
-      const fn = String(o.fileName ?? o.FileName ?? "").trim();
-      if (!fn) {
-        continue;
-      }
-      const stem = fn.replace(/\.(lnk|url)$/i, "").trim();
-      const stemLow = stem.toLowerCase();
-      let iconRaw = String(o.iconUrl ?? o.IconURL ?? o.iconURL ?? "").trim();
-      if (!iconRaw) {
-        iconRaw = `/img/shortcuts/${platFolder}/${stemLow}.png`;
-      }
-      const iconUrl = offlineSafeImageSrc(get(offlineMode), iconRaw, SHORTCUT_ICON_FALLBACK);
-      if (/^\d+$/.test(stem)) {
-        byAppId[stem] = iconUrl;
-      }
-      const nk = normalizeGameSearchKey(stem);
-      if (nk) {
-        byStemKey[nk] = iconUrl;
-      }
+      const rec = extractShortcutRecord(raw);
+      if (!rec) continue;
+      const iconUrl = resolveShortcutIconUrl((raw ?? {}) as Record<string, unknown>, rec.stemLow, platFolder);
+      if (/^\d+$/.test(rec.stem)) byAppId[rec.stem] = iconUrl;
+      const nk = normalizeGameSearchKey(rec.stem);
+      if (nk) byStemKey[nk] = iconUrl;
     }
     steamShortcutIconByAppId = byAppId;
     steamShortcutIconByStemKey = byStemKey;
   }
+
 
   function resolveSteamGameSearchIcon(g: { appId: string; name: string }): string {
     const id = String(g.appId).trim();

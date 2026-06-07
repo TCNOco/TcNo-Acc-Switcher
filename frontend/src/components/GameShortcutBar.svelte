@@ -360,6 +360,25 @@
     hitTestDragOver(e.clientX, e.clientY);
   }
 
+  function moveWithinZone(zone: string, from: number, to: number): void {
+    if (zone === "pinned") pinNames = moveItem(pinNames, from, to);
+    else dropNames = moveItem(dropNames, from, to);
+  }
+
+  function moveAcrossZones(fromZ: string, toZ: string, from: number, to: number, id: string): void {
+    let p = [...pinNames];
+    let d = [...dropNames];
+    if (fromZ === "pinned") {
+      p.splice(from, 1);
+      d.splice(to, 0, id);
+    } else {
+      d.splice(from, 1);
+      p.splice(to, 0, id);
+    }
+    pinNames = p;
+    dropNames = d;
+  }
+
   function commitDrag(): void {
     if (
       dragSourceZone == null ||
@@ -367,36 +386,13 @@
       dragOverZone == null ||
       dragOverIndex == null ||
       draggingId == null
-    ) {
-      return;
-    }
-    const fromZ = dragSourceZone;
-    const toZ = dragOverZone;
-    const from = dragFromIndex;
-    const to = dragOverIndex;
-    const id = draggingId;
+    ) return;
 
-    if (fromZ === toZ) {
-      if (from === to) {
-        return;
-      }
-      if (fromZ === "pinned") {
-        pinNames = moveItem(pinNames, from, to);
-      } else {
-        dropNames = moveItem(dropNames, from, to);
-      }
+    if (dragSourceZone === dragOverZone) {
+      if (dragFromIndex === dragOverIndex) return;
+      moveWithinZone(dragSourceZone, dragFromIndex, dragOverIndex);
     } else {
-      let p = [...pinNames];
-      let d = [...dropNames];
-      if (fromZ === "pinned") {
-        p.splice(from, 1);
-        d.splice(to, 0, id);
-      } else {
-        d.splice(from, 1);
-        p.splice(to, 0, id);
-      }
-      pinNames = p;
-      dropNames = d;
+      moveAcrossZones(dragSourceZone, dragOverZone, dragFromIndex, dragOverIndex, draggingId);
     }
     void persist();
   }
@@ -456,16 +452,47 @@
     const fromIdx = dragFromIndex;
     const srcZone = dragSourceZone;
 
+    function computeDropIndex(
+      zone: Zone,
+      srcZone: Zone,
+      names: string[],
+      fromIdx: number,
+      id: string,
+      cell: HTMLElement,
+    ): number {
+      const sameSource =
+        (zone === "pinned" && srcZone === "pinned") ||
+        (zone === "dropdown" && srcZone === "dropdown");
+      if (sameSource) return insertionIndexFromTileHover(names, fromIdx, id, clientX, cell);
+      return insertionIndexExternalDrag(names, id, clientX, cell);
+    }
+
+    function tryBoundary(zone: Zone, srcZone: Zone, fromIdx: number, namesLen: number, root: HTMLDivElement): boolean {
+      const br = root.getBoundingClientRect();
+      if (!pointInRect(clientX, clientY, br, 4)) return false;
+
+      if (
+        zone === "pinned" &&
+        ddOpen &&
+        dropListEl &&
+        pointInRect(clientX, clientY, dropListEl.getBoundingClientRect())
+      ) return false;
+
+      dragOverZone = zone;
+      if (srcZone === zone) dragOverIndex = fromIdx;
+      else if (namesLen === 0) dragOverIndex = 0;
+      else dragOverIndex = namesLen;
+      return true;
+    }
+
     const tryZone = (zone: Zone, root: HTMLDivElement | null, names: string[]): boolean => {
-      if (!root) {
-        return false;
-      }
+      if (!root) return false;
+
       const cells = root.querySelectorAll("[data-dnd-cell]");
       for (const cell of [...cells]) {
         const r = cell.getBoundingClientRect();
-        if (!pointInRect(clientX, clientY, r)) {
-          continue;
-        }
+        if (!pointInRect(clientX, clientY, r)) continue;
+
         const h = cell as HTMLElement;
         if (h.dataset.dndGap === "true") {
           const visual = Number(h.dataset.dndVisual);
@@ -476,57 +503,16 @@
           }
           continue;
         }
+
         const id = h.dataset.dndName ?? "";
-        if (!id) {
-          continue;
-        }
+        if (!id) continue;
+
         dragOverZone = zone;
-        if (zone === "pinned") {
-          if (srcZone === "pinned") {
-            dragOverIndex = insertionIndexFromTileHover(
-              names,
-              fromIdx,
-              id,
-              clientX,
-              h,
-            );
-          } else {
-            dragOverIndex = insertionIndexExternalDrag(names, id, clientX, h);
-          }
-        } else if (srcZone === "dropdown") {
-          dragOverIndex = insertionIndexFromTileHover(
-            names,
-            fromIdx,
-            id,
-            clientX,
-            h,
-          );
-        } else {
-          dragOverIndex = insertionIndexExternalDrag(names, id, clientX, h);
-        }
+        dragOverIndex = computeDropIndex(zone, srcZone, names, fromIdx, id, h);
         return true;
       }
-      const br = root.getBoundingClientRect();
-      if (pointInRect(clientX, clientY, br, 4)) {
-        if (
-          zone === "pinned" &&
-          ddOpen &&
-          dropListEl &&
-          pointInRect(clientX, clientY, dropListEl.getBoundingClientRect())
-        ) {
-          return false;
-        }
-        dragOverZone = zone;
-        if (srcZone === zone) {
-          dragOverIndex = fromIdx;
-        } else if (names.length === 0) {
-          dragOverIndex = 0;
-        } else {
-          dragOverIndex = names.length;
-        }
-        return true;
-      }
-      return false;
+
+      return tryBoundary(zone, srcZone, fromIdx, names.length, root);
     };
 
     if (tryZone("pinned", pinListEl, pinNames)) {

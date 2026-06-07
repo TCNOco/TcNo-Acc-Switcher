@@ -155,33 +155,35 @@ function accentKeyFromLabel(label: string): string {
   );
 }
 
-function parseAccentOptions(value: unknown, fallbackColor: string): ThemeAccentOption[] {
-  if (!Array.isArray(value)) {
-    return [{ id: "accent", label: "Accent", color: fallbackColor }];
+function dedupKey(baseKey: string, seen: Set<string>): string {
+  let key = baseKey;
+  let suffix = 2;
+  while (seen.has(key)) {
+    key = `${baseKey}-${suffix++}`;
   }
+  return key;
+}
+
+function parseAccentOptions(value: unknown, fallbackColor: string): ThemeAccentOption[] {
+  const fallback = () => [{ id: "accent", label: "Accent", color: fallbackColor }];
+  if (!Array.isArray(value)) return fallback();
+
   const options: ThemeAccentOption[] = [];
   const seen = new Set<string>();
   for (const entry of value) {
-    if (!entry || typeof entry !== "object") {
-      continue;
-    }
+    if (!entry || typeof entry !== "object") continue;
     const record = entry as Record<string, unknown>;
     const label = typeof record.name === "string" ? record.name.trim() : "";
     const color = normalizeHexColor(record.color);
-    if (!label || !color) {
-      continue;
-    }
-    const baseKey = accentKeyFromLabel(label);
-    let key = baseKey;
-    let suffix = 2;
-    while (seen.has(key)) {
-      key = `${baseKey}-${suffix++}`;
-    }
+    if (!label || !color) continue;
+
+    const key = dedupKey(accentKeyFromLabel(label), seen);
     seen.add(key);
     options.push({ id: key, label, color });
   }
-  return options.length ? options : [{ id: "accent", label: "Accent", color: fallbackColor }];
+  return options.length ? options : fallback();
 }
+
 
 function parseThemeInfo(raw: string, id: string): ThemeOption | null {
   let parsed: ThemeInfoYaml;
