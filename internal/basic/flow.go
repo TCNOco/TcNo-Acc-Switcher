@@ -30,6 +30,51 @@ type FlowDeps struct {
 	PS *platform.PlatformService
 }
 
+type FlowContext struct {
+	PlatformKey string
+	Descriptor  platform.Descriptor
+	Settings    platform.PlatformSettings
+	Folder      string
+	PathCtx     platform.PathTokenContext
+}
+
+// PrepareFlow resolves descriptor, settings, and install folder for a platform.
+func PrepareFlow(deps FlowDeps, platformKey string) (FlowContext, error) {
+	d, _, err := readDescriptor(platformKey)
+	if err != nil {
+		return FlowContext{}, err
+	}
+	ps, err := platform.LoadPlatformSettings(platformKey)
+	if err != nil {
+		return FlowContext{}, err
+	}
+	folder, err := resolveExeFolder(deps, platformKey)
+	if err != nil {
+		return FlowContext{}, err
+	}
+	return FlowContext{
+		PlatformKey: platformKey,
+		Descriptor:  d,
+		Settings:    ps,
+		Folder:      folder,
+		PathCtx:     platform.PathTokenContext{PlatformFolder: folder},
+	}, nil
+}
+
+func killPlatformExes(deps FlowDeps, fc FlowContext) error {
+	closingMethod := winutil.ClosingMethod(fc.Settings.ClosingMethod)
+	if err := winutil.ErrIfCannotKill(fc.Descriptor.ExesToEnd, closingMethod); err != nil {
+		platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatformFailed", fc.PlatformKey)
+		return err
+	}
+	platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatform", fc.PlatformKey)
+	if err := winutil.KillByName(fc.Descriptor.ExesToEnd, closingMethod, electronBeforeKillSynth(deps, fc.PlatformKey, fc.Descriptor.ExesToEnd)); err != nil {
+		platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatformFailed", fc.PlatformKey)
+		return err
+	}
+	return nil
+}
+
 func logFlow() *slog.Logger {
 	return slog.Default().With("component", "basic-flow")
 }
@@ -297,49 +342,33 @@ func SaveCurrent(deps FlowDeps, platformKey, accountName string) (err error) {
 	closeSharedLevelDBHandles("SaveCurrent.begin")
 	defer closeSharedLevelDBHandles("SaveCurrent.end")
 
-	d, _, err := readDescriptor(platformKey)
-	if err != nil {
-		return err
-	}
-	ps, err := platform.LoadPlatformSettings(platformKey)
+	fc, err := PrepareFlow(deps, platformKey)
 	if err != nil {
 		return err
 	}
 
-	if d.ExitBeforeInteract || d.ExitBeforeSave {
-		if err := winutil.ErrIfCannotKill(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod)); err != nil {
-			platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatformFailed", platformKey)
-			return err
-		}
-		platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatform", platformKey)
-		if err := winutil.KillByName(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod), electronBeforeKillSynth(deps, platformKey, d.ExesToEnd)); err != nil {
-			platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatformFailed", platformKey)
+	if fc.Descriptor.ExitBeforeInteract || fc.Descriptor.ExitBeforeSave {
+		if err := killPlatformExes(deps, fc); err != nil {
 			return err
 		}
 	}
 	platform.EmitActionBarStatusI18n("Status_ActionBar_SavingSession")
 
-	return saveCurrentAfterKill(deps, platformKey, accountName, d)
+	return saveCurrentAfterKill(deps, accountName, fc)
 }
 
-func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d platform.Descriptor) error {
+func saveCurrentAfterKill(deps FlowDeps, accountName string, fc FlowContext) error {
 	accountName = paths.WindowsFileName(strings.TrimSpace(accountName), 200)
 	if accountName == "" {
 		return fmt.Errorf("account name is empty or invalid after normalization")
 	}
-	folder, err := resolveExeFolder(deps, platformKey)
-	if err != nil {
-		return err
-	}
-	ctx := platform.PathTokenContext{PlatformFolder: folder}
-
 	platform.EmitActionBarStatusI18n("Status_GetUniqueId")
-	uid, err := ensureUniqueIDOnSave(platformKey, d, ctx)
+	uid, err := ensureUniqueIDOnSave(fc.PlatformKey, fc.Descriptor, fc.PathCtx)
 	if err != nil {
 		return err
 	}
 
-	idsFileData, err := readIdsFile(platformKey)
+	idsFileData, err := readIdsFile(fc.PlatformKey)
 	if err != nil {
 		return err
 	}
@@ -357,18 +386,18 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 			delete(idsFileData.LastUsed, existingUID)
 		}
 		delete(idsFileData.AccountTags, existingUID)
-		if oldDestRoot, derr := accountCacheDir(platformKey, existingName); derr == nil {
+		if oldDestRoot, derr := accountCacheDir(fc.PlatformKey, existingName); derr == nil {
 			logFlow().Debug("remove superseded account cache", "path", oldDestRoot)
 			_ = os.RemoveAll(oldDestRoot)
 		}
-		_ = profileimage.DeleteCached(platformKey, existingUID)
+		_ = profileimage.DeleteCached(fc.PlatformKey, existingUID)
 	}
 	pruneUnusedTagDefinitions(&idsFileData)
-	if err := writeIdsFile(platformKey, idsFileData); err != nil {
+	if err := writeIdsFile(fc.PlatformKey, idsFileData); err != nil {
 		return err
 	}
 
-	destRoot, err := accountCacheDir(platformKey, accountName)
+	destRoot, err := accountCacheDir(fc.PlatformKey, accountName)
 	if err != nil {
 		return err
 	}
@@ -381,7 +410,7 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 	regDump := map[string]regDumpEntry{}
 
 	platform.EmitActionBarStatusI18n("Status_CopyingFiles")
-	for liveKey, cacheRel := range d.LoginFiles {
+	for liveKey, cacheRel := range fc.Descriptor.LoginFiles {
 		liveKey = strings.TrimSpace(liveKey)
 		if isREG(liveKey) {
 			platform.EmitActionBarStatusI18n("Status_UpdatingRegistry")
@@ -389,7 +418,7 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 			if kp, ok := winutil.RegistryKeyPathForAllValuesSpecifier(enc); ok {
 				all, err := winutil.RegistryReadAllValuesInKey(kp)
 				if err != nil {
-					if d.AllFilesRequired {
+					if fc.Descriptor.AllFilesRequired {
 						return fmt.Errorf("registry read all values %s: %w", liveKey, err)
 					}
 					logFlow().Debug("skipping optional registry enumerate failure", "key", liveKey, "err", err)
@@ -405,13 +434,13 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 			if kp, vglob, ok := splitRegistryKeyPathAndValueGlob(enc); ok {
 				matched, err := winutil.RegistryReadValuesMatchingNameGlob(kp, vglob)
 				if err != nil {
-					if d.AllFilesRequired {
+					if fc.Descriptor.AllFilesRequired {
 						return fmt.Errorf("registry read glob values %s: %w", liveKey, err)
 					}
 					logFlow().Debug("skipping optional registry glob read failure", "key", liveKey, "err", err)
 					continue
 				}
-				if len(matched) == 0 && d.AllFilesRequired {
+				if len(matched) == 0 && fc.Descriptor.AllFilesRequired {
 					return fmt.Errorf("registry glob %s matched no values", liveKey)
 				}
 				inner := make(map[string]regDumpEntry, len(matched))
@@ -423,7 +452,7 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 			}
 			v, typ, err := winutil.RegistryRead(enc)
 			if err != nil {
-				if d.AllFilesRequired {
+				if fc.Descriptor.AllFilesRequired {
 					return fmt.Errorf("registry read %s: %w", liveKey, err)
 				}
 				logFlow().Debug("skipping optional registry read failure", "key", liveKey, "err", err)
@@ -452,11 +481,11 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 			if !ok {
 				return fmt.Errorf("bad JSON_SELECT key")
 			}
-			fp = expandPlatformPath(fp, folder, ctx)
+			fp = expandPlatformPath(fp, fc.Folder, fc.PathCtx)
 			emitUpdatingFileStatus(fp)
 			data, err := os.ReadFile(fp)
 			if err != nil {
-				if d.AllFilesRequired {
+				if fc.Descriptor.AllFilesRequired {
 					return fmt.Errorf("read %s: %w", fp, err)
 				}
 				logFlow().Debug("skipping missing optional login file", "path", fp, "err", err)
@@ -500,7 +529,7 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 			logFlow().Debug("wrote login fragment cache", "dst", dst)
 			continue
 		}
-		src := expandPlatformPath(liveKey, folder, ctx)
+		src := expandPlatformPath(liveKey, fc.Folder, fc.PathCtx)
 		dst := filepath.Join(destRoot, filepath.FromSlash(cacheRel))
 		emitUpdatingFileStatus(src)
 		if hasGlobPattern(src) {
@@ -512,7 +541,7 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 			for _, m := range matches {
 				st, err := os.Stat(m)
 				if err != nil {
-					if d.AllFilesRequired {
+					if fc.Descriptor.AllFilesRequired {
 						return fmt.Errorf("stat %s: %w", m, err)
 					}
 					logFlow().Debug("glob match missing", "path", m, "err", err)
@@ -520,13 +549,13 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 				}
 				if st.IsDir() {
 					if err := copyDir(m, filepath.Join(globDestRoot, filepath.Base(m))); err != nil {
-						if d.AllFilesRequired {
+						if fc.Descriptor.AllFilesRequired {
 							return err
 						}
 					}
 					continue
 				}
-				if err := copyFileToDir(m, globDestRoot); err != nil && d.AllFilesRequired {
+				if err := copyFileToDir(m, globDestRoot); err != nil && fc.Descriptor.AllFilesRequired {
 					return err
 				}
 			}
@@ -534,7 +563,7 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 		}
 		st, err := os.Stat(src)
 		if err != nil {
-			if d.AllFilesRequired {
+			if fc.Descriptor.AllFilesRequired {
 				return fmt.Errorf("login file not found: %s: %w", src, err)
 			}
 			logFlow().Debug("skipping missing optional login path", "path", src, "err", err)
@@ -554,9 +583,9 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 		}
 	}
 
-	if strings.EqualFold(strings.TrimSpace(d.UniqueIdMethod), "REGKEY") {
+	if strings.EqualFold(strings.TrimSpace(fc.Descriptor.UniqueIdMethod), "REGKEY") {
 		platform.EmitActionBarStatusI18n("Status_UpdatingRegistry")
-		uidKey := strings.TrimSpace(d.UniqueIdFile)
+		uidKey := strings.TrimSpace(fc.Descriptor.UniqueIdFile)
 		enc := stripREG(uidKey)
 		if enc != "" {
 			mapKey := uidKey
@@ -567,12 +596,12 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 				if kp, vglob, ok := splitRegistryKeyPathAndValueGlob(enc); ok {
 					matched, err := winutil.RegistryReadValuesMatchingNameGlob(kp, vglob)
 					if err != nil {
-						if d.AllFilesRequired {
+						if fc.Descriptor.AllFilesRequired {
 							return fmt.Errorf("registry read unique id %s: %w", uidKey, err)
 						}
 						logFlow().Debug("skipping optional unique id registry read failure", "key", uidKey, "err", err)
 					} else if len(matched) == 0 {
-						if d.AllFilesRequired {
+						if fc.Descriptor.AllFilesRequired {
 							return fmt.Errorf("registry glob unique id %s matched no values", uidKey)
 						}
 						logFlow().Debug("skipping optional unique id registry glob: no matches", "key", uidKey)
@@ -586,7 +615,7 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 				} else {
 					v, typ, err := winutil.RegistryRead(enc)
 					if err != nil {
-						if d.AllFilesRequired {
+						if fc.Descriptor.AllFilesRequired {
 							return fmt.Errorf("registry read unique id %s: %w", uidKey, err)
 						}
 						logFlow().Debug("skipping optional unique id registry read failure", "key", uidKey, "err", err)
@@ -611,21 +640,21 @@ func saveCurrentAfterKill(deps FlowDeps, platformKey, accountName string, d plat
 		logFlow().Debug("wrote registry dump cache", "path", regPath)
 	}
 
-	ids, err := readIDs(platformKey)
+	ids, err := readIDs(fc.PlatformKey)
 	if err != nil {
 		return err
 	}
 	ids[uid] = accountName
-	if err := writeIDs(platformKey, ids); err != nil {
+	if err := writeIDs(fc.PlatformKey, ids); err != nil {
 		return err
 	}
-	if err := touchLastUsed(platformKey, uid); err != nil {
+	if err := touchLastUsed(fc.PlatformKey, uid); err != nil {
 		return err
 	}
-	syncBasicTrayKnownAccounts(platformKey, ids)
+	syncBasicTrayKnownAccounts(fc.PlatformKey, ids)
 
 	platform.EmitActionBarStatusI18n("Status_HandlingImage")
-	return queueAutomatedProfileImage(platformKey, uid, accountName, d, folder)
+	return queueAutomatedProfileImage(fc.PlatformKey, uid, accountName, fc.Descriptor, fc.Folder)
 }
 
 func ensureUniqueIDOnSave(platformKey string, d platform.Descriptor, ctx platform.PathTokenContext) (string, error) {
@@ -758,19 +787,13 @@ func globPatternBaseDir(path string) string {
 	return filepath.Dir(prefix)
 }
 
-func Login(deps FlowDeps, platformKey, accountName string) error {
+func Login(deps FlowDeps, fc FlowContext, accountName string) error {
 	closeSharedLevelDBHandles("Login.begin")
 	defer closeSharedLevelDBHandles("Login.end")
-	d, _, err := readDescriptor(platformKey)
-	if err != nil {
-		return err
-	}
-	folder, err := resolveExeFolder(deps, platformKey)
-	if err != nil {
-		return err
-	}
-	ctx := platform.PathTokenContext{PlatformFolder: folder}
-	srcRoot, err := accountCacheDir(platformKey, accountName)
+
+	ctx := fc.PathCtx
+	folder := fc.Folder
+	srcRoot, err := accountCacheDir(fc.PlatformKey, accountName)
 	if err != nil {
 		return err
 	}
@@ -784,11 +807,11 @@ func Login(deps FlowDeps, platformKey, accountName string) error {
 		}
 	}
 	// Set UniqueIdFile from ids.json before restoring LoginFiles (update logged-in account)
-	if strings.EqualFold(strings.TrimSpace(d.UniqueIdMethod), "REGKEY") {
+	if strings.EqualFold(strings.TrimSpace(fc.Descriptor.UniqueIdMethod), "REGKEY") {
 		platform.EmitActionBarStatusI18n("Status_UpdatingRegistry")
-		uidKey := strings.TrimSpace(d.UniqueIdFile)
+		uidKey := strings.TrimSpace(fc.Descriptor.UniqueIdFile)
 		if stripREG(uidKey) != "" {
-			if ids, err := readIDs(platformKey); err == nil {
+			if ids, err := readIDs(fc.PlatformKey); err == nil {
 				var targetID string
 				wantName := strings.TrimSpace(accountName)
 				for uid, name := range ids {
@@ -841,7 +864,7 @@ func Login(deps FlowDeps, platformKey, accountName string) error {
 		}
 	}
 
-	for liveKey, cacheRel := range d.LoginFiles {
+	for liveKey, cacheRel := range fc.Descriptor.LoginFiles {
 		liveKey = strings.TrimSpace(liveKey)
 		if isREG(liveKey) {
 			platform.EmitActionBarStatusI18n("Status_UpdatingRegistry")
@@ -905,7 +928,7 @@ func Login(deps FlowDeps, platformKey, accountName string) error {
 			}
 			st, err := os.Stat(src)
 			if err != nil {
-				if d.AllFilesRequired {
+				if fc.Descriptor.AllFilesRequired {
 					return fmt.Errorf("stat %s: %w", src, err)
 				}
 				logFlow().Debug("skipping missing optional restore source", "path", src, "err", err)
@@ -914,7 +937,7 @@ func Login(deps FlowDeps, platformKey, accountName string) error {
 			if st.IsDir() {
 				entries, err := os.ReadDir(src)
 				if err != nil {
-					if d.AllFilesRequired {
+					if fc.Descriptor.AllFilesRequired {
 						return fmt.Errorf("readdir %s: %w", src, err)
 					}
 					logFlow().Debug("skipping restore source readdir failure", "path", src, "err", err)
@@ -925,18 +948,18 @@ func Login(deps FlowDeps, platformKey, accountName string) error {
 					to := filepath.Join(globDstRoot, entry.Name())
 					if entry.IsDir() {
 						if err := copyDir(from, to); err != nil {
-							if d.AllFilesRequired {
+							if fc.Descriptor.AllFilesRequired {
 								return err
 							}
 						}
 						continue
 					}
-					if err := copyFile(from, to); err != nil && d.AllFilesRequired {
+					if err := copyFile(from, to); err != nil && fc.Descriptor.AllFilesRequired {
 						return err
 					}
 				}
 			} else {
-				if err := copyFileToDir(src, globDstRoot); err != nil && d.AllFilesRequired {
+				if err := copyFileToDir(src, globDstRoot); err != nil && fc.Descriptor.AllFilesRequired {
 					return err
 				}
 			}
@@ -944,7 +967,7 @@ func Login(deps FlowDeps, platformKey, accountName string) error {
 		}
 		st, err := os.Stat(src)
 		if err != nil {
-			if d.AllFilesRequired {
+			if fc.Descriptor.AllFilesRequired {
 				return fmt.Errorf("restore source not found: %s: %w", src, err)
 			}
 			logFlow().Debug("skipping missing optional restore source", "path", src, "err", err)
@@ -970,17 +993,10 @@ func parseHexReg(s string) ([]byte, error) {
 	return winutil.ParseHexString(s)
 }
 
-func ClearCurrentLogin(deps FlowDeps, platformKey string) error {
-	d, _, err := readDescriptor(platformKey)
-	if err != nil {
-		return err
-	}
-	folder, err := resolveExeFolder(deps, platformKey)
-	if err != nil {
-		return err
-	}
-	ctx := platform.PathTokenContext{PlatformFolder: folder}
-	for _, p := range d.PathListToClear {
+func ClearCurrentLogin(deps FlowDeps, fc FlowContext) error {
+	ctx := fc.PathCtx
+	folder := fc.Folder
+	for _, p := range fc.Descriptor.PathListToClear {
 		p = strings.TrimSpace(p)
 		if p == "" {
 			continue
@@ -989,14 +1005,14 @@ func ClearCurrentLogin(deps FlowDeps, platformKey string) error {
 			platform.EmitActionBarStatusI18n("Status_UpdatingRegistry")
 			enc := stripREG(p)
 			if _, ok := winutil.RegistryKeyPathForAllValuesSpecifier(enc); ok {
-				_ = winutil.RegistryClearLoginKey(enc, d.RegDeleteOnClear)
+				_ = winutil.RegistryClearLoginKey(enc, fc.Descriptor.RegDeleteOnClear)
 				continue
 			}
 			if kp, vglob, ok := splitRegistryKeyPathAndValueGlob(enc); ok {
-				_ = winutil.RegistryClearValuesMatchingNameGlob(kp, vglob, d.RegDeleteOnClear)
+				_ = winutil.RegistryClearValuesMatchingNameGlob(kp, vglob, fc.Descriptor.RegDeleteOnClear)
 				continue
 			}
-			if d.RegDeleteOnClear {
+			if fc.Descriptor.RegDeleteOnClear {
 				_ = winutil.RegistryDelete(enc)
 			} else {
 				_ = winutil.RegistryWrite(enc, "")
@@ -1130,18 +1146,13 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 	closeSharedLevelDBHandles("SwapTo.begin")
 	defer closeSharedLevelDBHandles("SwapTo.end")
 
-	d, _, err := readDescriptor(platformKey)
+	fc, err := PrepareFlow(deps, platformKey)
 	if err != nil {
 		return err
 	}
-	ps, err := platform.LoadPlatformSettings(platformKey)
-	if err != nil {
-		return err
-	}
-	folder, err := resolveExeFolder(deps, platformKey)
-	if err != nil {
-		return err
-	}
+	d := fc.Descriptor
+	ps := fc.Settings
+	folder := fc.Folder
 
 	platform.EmitActionBarStatusI18n("Status_GetUniqueId")
 	cur, curErr := ReadUniqueID(platformKey, d, folder)
@@ -1152,13 +1163,7 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 		return nil
 	}
 
-	platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatform", platformKey)
-	if err := winutil.ErrIfCannotKill(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod)); err != nil {
-		platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatformFailed", platformKey)
-		return err
-	}
-	if err := winutil.KillByName(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod), electronBeforeKillSynth(deps, platformKey, d.ExesToEnd)); err != nil {
-		platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatformFailed", platformKey)
+	if err := killPlatformExes(deps, fc); err != nil {
 		return err
 	}
 
@@ -1172,7 +1177,7 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 		if prevName, ok := ids[cur]; ok {
 			if !strings.EqualFold(strings.TrimSpace(cur), strings.TrimSpace(uniqueID)) {
 				platform.EmitActionBarStatusI18n("Status_ActionBar_SavingSession")
-				if err := saveCurrentAfterKill(deps, platformKey, prevName, d); err != nil {
+				if err := saveCurrentAfterKill(deps, prevName, fc); err != nil {
 					return wrapNeedsAdminIfPermission(err)
 				}
 			}
@@ -1180,7 +1185,7 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 	}
 
 	platform.EmitActionBarStatusI18n("Status_ActionBar_ClearingSession")
-	if err := ClearCurrentLogin(deps, platformKey); err != nil {
+	if err := ClearCurrentLogin(deps, fc); err != nil {
 		return wrapNeedsAdminIfPermission(err)
 	}
 	accName, ok := ids[uniqueID]
@@ -1188,10 +1193,10 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 		return fmt.Errorf("unknown account id")
 	}
 	platform.EmitActionBarStatusI18n("Status_ActionBar_RestoringAccount")
-	if err := Login(deps, platformKey, accName); err != nil {
+	if err := Login(deps, fc, accName); err != nil {
 		return wrapNeedsAdminIfPermission(err)
 	}
-	_ = touchLastUsed(platformKey, uniqueID)
+	_ = touchLastUsed(fc.PlatformKey, uniqueID)
 	recordBasicTrayRecent(platformKey, uniqueID)
 	if err := stats.IncrementSwitches(platformKey); err != nil {
 		return err
@@ -1221,28 +1226,18 @@ func AddNew(deps FlowDeps, platformKey string) (err error) {
 	closeSharedLevelDBHandles("AddNew.begin")
 	defer closeSharedLevelDBHandles("AddNew.end")
 
-	d, _, err := readDescriptor(platformKey)
+	fc, err := PrepareFlow(deps, platformKey)
 	if err != nil {
 		return err
 	}
-	ps, err := platform.LoadPlatformSettings(platformKey)
-	if err != nil {
-		return err
-	}
-	platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatform", platformKey)
-	if err := winutil.ErrIfCannotKill(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod)); err != nil {
-		platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatformFailed", platformKey)
-		return err
-	}
-	if err := winutil.KillByName(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod), electronBeforeKillSynth(deps, platformKey, d.ExesToEnd)); err != nil {
-		platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatformFailed", platformKey)
+	if err := killPlatformExes(deps, fc); err != nil {
 		return err
 	}
 	platform.EmitActionBarStatusI18n("Status_ActionBar_ClearingSession")
-	if err := ClearCurrentLogin(deps, platformKey); err != nil {
+	if err := ClearCurrentLogin(deps, fc); err != nil {
 		return err
 	}
-	if !ps.AutoStart {
+	if !fc.Settings.AutoStart {
 		tray.MaybeHideMainWindow()
 		return nil
 	}
@@ -1260,14 +1255,9 @@ func launchBasicNoStatus(deps FlowDeps, platformKey string, extraLaunchArgs []st
 
 func launchBasicNoStatusAs(deps FlowDeps, platformKey string, forceAdmin bool, extraLaunchArgs []string) error {
 	logFlow().Debug("launch begin", "platform", platformKey, "forceAdmin", forceAdmin, "extraArgs", len(extraLaunchArgs))
-	d, _, err := readDescriptor(platformKey)
+	fc, err := PrepareFlow(deps, platformKey)
 	if err != nil {
 		logFlow().Warn("launch read descriptor failed", "platform", platformKey, "err", err)
-		return err
-	}
-	ps, err := platform.LoadPlatformSettings(platformKey)
-	if err != nil {
-		logFlow().Warn("launch load settings failed", "platform", platformKey, "err", err)
 		return err
 	}
 	if deps.PS == nil {
@@ -1279,20 +1269,20 @@ func launchBasicNoStatusAs(deps FlowDeps, platformKey string, forceAdmin bool, e
 		return fmt.Errorf("executable not found")
 	}
 	var args []string
-	if strings.TrimSpace(d.ExeExtraArgs) != "" {
-		args = append(args, strings.Fields(d.ExeExtraArgs)...)
+	if strings.TrimSpace(fc.Descriptor.ExeExtraArgs) != "" {
+		args = append(args, strings.Fields(fc.Descriptor.ExeExtraArgs)...)
 	}
-	args = append(args, platform.LaunchArgTokens(ps.LaunchArguments)...)
+	args = append(args, platform.LaunchArgTokens(fc.Settings.LaunchArguments)...)
 	if len(extraLaunchArgs) > 0 {
 		args = append(args, extraLaunchArgs...)
 	}
-	admin := ps.RunAsAdmin
+	admin := fc.Settings.RunAsAdmin
 	if forceAdmin {
 		admin = true
 	}
 	opts := winutil.StartOpts{
 		Admin:         admin,
-		Method:        winutil.StartingMethod(strings.TrimSpace(ps.StartingMethod)),
+		Method:        winutil.StartingMethod(strings.TrimSpace(fc.Settings.StartingMethod)),
 		HideWindow:    false,
 		WorkingDir:    filepath.Dir(exe),
 		AsDesktopUser: winutil.IsProcessElevated() && !admin,

@@ -211,5 +211,10 @@ func (d *Dispatch) RunLogout(p cli.Parsed) error {
 	if plat == "" || strings.EqualFold(plat, "Steam") {
 		return d.SteamSvc.SteamAddNew()
 	}
-	return basic.ClearCurrentLogin(basic.FlowDeps{PS: d.PlatformSvc}, plat)
+	deps := basic.FlowDeps{PS: d.PlatformSvc}
+	fc, err := basic.PrepareFlow(deps, plat)
+	if err != nil {
+		return err
+	}
+	return basic.ClearCurrentLogin(deps, fc)
 }
