@@ -13,3 +13,4 @@ TcNo-Acc-Switcher.exe
 *.syso
 .fallowrc.json
 basic.test.exe
+/frontend/.vite
