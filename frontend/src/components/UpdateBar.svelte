@@ -29,7 +29,7 @@
 
   async function openDownloadPage(): Promise<void> {
     try {
-      await PlatformService.OpenUpdateDownloadPage();
+      await PlatformService.CheckForUpdatesAndInstall();
     } catch {
       /* ignore */
     }

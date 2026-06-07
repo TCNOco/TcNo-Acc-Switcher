@@ -52,14 +52,24 @@ install:
 
 build_script:
   - ps: |
-      $nsisVersion = $env:DATEVERSION -replace '(\d{4})-0?(\d{1,2})-0?(\d{1,2})_0?(\d{1,2})', '$1.$2.$3.$4'
-      Write-Host "Version (sys): $nsisVersion  Display: $env:DATEVERSION"
+      $tag = $env:DATEVERSION -replace '^v', ''
+      $nsisVersion = "$tag.0"
+      $env:APP_VERSION = $tag
+      $env:NSIS_VERSION = $nsisVersion
+      Write-Host "Tag: $env:DATEVERSION  Version: $tag  NSIS: $nsisVersion"
+
+      Write-Host "Updating config.yml with tag version..."
+      $configPath = "$env:APPVEYOR_BUILD_FOLDER\build\config.yml"
+      $config = Get-Content -Raw $configPath
+      $config = $config -replace '(?m)^(\s+)version:\s*"[^"]*"', "`${1}version: `"$tag`""
+      [System.IO.File]::WriteAllText($configPath, $config, [System.Text.UTF8Encoding]::new($false))
+
       $infoPath = "$env:APPVEYOR_BUILD_FOLDER\build\windows\info.json"
       $info = Get-Content -Raw $infoPath | ConvertFrom-Json
       $info.fixed.file_version = $nsisVersion
       $info.info.'0000'.ProductVersion = $nsisVersion
       $info | ConvertTo-Json -Depth 4 | Set-Content -Encoding UTF8 $infoPath
-      Write-Host "info.json updated."
+      Write-Host "config.yml and info.json updated."
   - go mod tidy
   - ps: cd frontend; pnpm install --frozen-lockfile; cd ..
   - wails3 generate bindings -f "-tags production" -clean=true -ts
@@ -73,8 +83,7 @@ build_script:
 
 after_build:
   - ps: |
-      $nsisVersion = $env:DATEVERSION -replace '(\d{4})-0?(\d{1,2})-0?(\d{1,2})_0?(\d{1,2})', '$1.$2.$3.$4'
-      Write-Host "NSIS VIProductVersion: $nsisVersion"
+      Write-Host "NSIS VIProductVersion: $env:NSIS_VERSION"
       Write-Host "NSIS DisplayVersion: $env:DATEVERSION"
 
       Write-Host "Signing EXE with SignPath..."
@@ -109,9 +118,17 @@ after_build:
       Remove-Item -Recurse -Force $stageDir
       Write-Host "7z archive created."
 
+      Write-Host "Generating SHA256SUMS..."
+      $shaOut = "$env:APPVEYOR_BUILD_FOLDER\bin\SHA256SUMS"
+      @(
+        "$((Get-FileHash "$env:APPVEYOR_BUILD_FOLDER\bin\TcNo-Acc-Switcher.exe" -Algorithm SHA256).Hash.ToLower())  TcNo-Acc-Switcher-windows-amd64.exe",
+        "$((Get-FileHash "$env:APPVEYOR_BUILD_FOLDER\bin\TcNo-Acc-Switcher.7z" -Algorithm SHA256).Hash.ToLower())  TcNo-Acc-Switcher.7z"
+      ) | Out-File -Encoding ascii $shaOut
+      Write-Host "SHA256SUMS generated."
+
       Write-Host "Building NSIS installer..."
       Push-Location "$env:APPVEYOR_BUILD_FOLDER\build\windows\nsis"
-      makensis -DVERSION="$nsisVersion" -DDISPLAY_VERSION="$env:DATEVERSION" project.nsi
+      makensis -DVERSION="$env:NSIS_VERSION" -DDISPLAY_VERSION="$env:APP_VERSION" project.nsi
       Pop-Location
       Write-Host "NSIS installer built."
 
@@ -122,6 +139,8 @@ artifacts:
     name: installer
   - path: bin\TcNo-Acc-Switcher.7z
     name: archive
+  - path: bin\SHA256SUMS
+    name: checksums
 
 deploy:
   - release: $(APPVEYOR_REPO_TAG_NAME)

@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"TcNo-Acc-Switcher/internal/basic"
+	buildinfo "TcNo-Acc-Switcher/build"
 	"TcNo-Acc-Switcher/internal/buildmode"
 	"TcNo-Acc-Switcher/internal/cli"
 	"TcNo-Acc-Switcher/internal/discordrpc"
@@ -22,6 +23,8 @@ import (
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 	"github.com/wailsapp/wails/v3/pkg/events"
+	"github.com/wailsapp/wails/v3/pkg/updater"
+	"github.com/wailsapp/wails/v3/pkg/updater/providers/github"
 )
 
 type RunGUIParams struct {
@@ -78,6 +81,27 @@ func RunGUI(params RunGUIParams) {
 			ApplicationShouldTerminateAfterLastWindowClosed: true,
 		},
 	})
+
+	currentVersion := buildinfo.Version()
+
+	if currentVersion != "" {
+		gh, err := github.New(github.Config{
+			Repository:    "TCNOco/TcNo-Acc-Switcher",
+			ChecksumAsset: "SHA256SUMS",
+		})
+		if err != nil {
+			app.Logger.Error("updater: github provider", "error", err)
+		} else {
+			if err := app.Updater.Init(updater.Config{
+				CurrentVersion: currentVersion,
+				Providers:      []updater.Provider{gh},
+				CheckInterval:  4 * time.Hour,
+			}); err != nil {
+				app.Logger.Error("updater: init", "error", err)
+			}
+		}
+	}
+
 	if params.CrashSubmitted {
 		EmitToast("success", "i18n:Toast_CrashReported", "", 0)
 	}

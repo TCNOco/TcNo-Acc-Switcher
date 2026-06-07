@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -26,22 +25,17 @@ type failStateJSON struct {
 	At string `json:"at"`
 }
 
-// ParseVersionClock parses a version string like 2026-05-04_00
+// ParseVersionClock parses a semver version string (e.g. "4.0.0" or "v4.0.0")
+// into a comparable time.Time. MAJOR.MINOR.PATCH maps to year.month.day.
 func ParseVersionClock(s string) (time.Time, error) {
 	s = strings.TrimSpace(strings.ReplaceAll(strings.ReplaceAll(s, "\r", ""), "\n", ""))
-	parts := strings.SplitN(s, "_", 2)
-	if len(parts) != 2 {
-		return time.Time{}, fmt.Errorf("updatecheck: missing underscore suffix")
+	s = strings.TrimPrefix(s, "v")
+
+	var y, m, d int
+	if n, _ := fmt.Sscanf(s, "%d.%d.%d", &y, &m, &d); n == 3 {
+		return time.Date(y, time.Month(m), d, 0, 0, 0, 0, time.UTC), nil
 	}
-	day, err := time.ParseInLocation("2006-01-02", parts[0], time.Local)
-	if err != nil {
-		return time.Time{}, err
-	}
-	min, err := strconv.Atoi(parts[1])
-	if err != nil || min < 0 || min > 59 {
-		return time.Time{}, fmt.Errorf("updatecheck: suffix not in 0..59")
-	}
-	return day.Add(time.Duration(min) * time.Minute), nil
+	return time.Time{}, fmt.Errorf("updatecheck: invalid semver format: %q", s)
 }
 
 func IsUpToDate(current, latest string) bool {
