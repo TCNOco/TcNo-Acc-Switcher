@@ -4,19 +4,24 @@
   import { cubicOut } from "svelte/easing";
   import { motionEnabled } from "../lib/animation";
   import { Events } from "@wailsio/runtime";
-  import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import { t } from "../stores/i18n";
+  import UpdateDialog from "./UpdateDialog.svelte";
   import "../styles/UpdateBar.scss";
 
   let showBanner = false;
   let dismissed = false;
+  let showDialog = false;
+  let dialogMessage = "";
+  let dialogDownloadUrl = "";
 
   $: visible = showBanner && !dismissed;
 
   onMount(() => {
-    const off = Events.On("app-update-available", () => {
+    const off = Events.On("app-update-available", (payload: { message: string; downloadUrl: string }) => {
       showBanner = true;
       dismissed = false;
+      dialogMessage = payload?.message ?? "";
+      dialogDownloadUrl = payload?.downloadUrl ?? "https://github.com/TCNOco/TcNo-Acc-Switcher/releases/latest";
     });
     return () => {
       off?.();
@@ -27,29 +32,18 @@
     dismissed = true;
   }
 
-  async function openDownloadPage(): Promise<void> {
-    try {
-      await PlatformService.CheckForUpdatesAndInstall();
-    } catch {
-      /* ignore */
-    }
-  }
-
-  async function onBarClick(e: MouseEvent): Promise<void> {
+  function onBarClick(e: MouseEvent): void {
     const el = e.target as HTMLElement | null;
-    if (!el) {
+    if (!el || el.closest(".updateBar__close")) {
       return;
     }
-    if (el.closest(".updateBar__close")) {
-      return;
-    }
-    await openDownloadPage();
+    showDialog = true;
   }
 
   function onBarKeydown(e: KeyboardEvent): void {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      void openDownloadPage();
+      showDialog = true;
     }
   }
 </script>
@@ -79,4 +73,12 @@
       </svg>
     </button>
   </div>
+{/if}
+
+{#if showDialog}
+  <UpdateDialog
+    message={dialogMessage}
+    downloadUrl={dialogDownloadUrl}
+    on:dismiss={() => (showDialog = false)}
+  />
 {/if}

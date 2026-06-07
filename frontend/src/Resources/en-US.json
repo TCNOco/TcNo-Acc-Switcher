@@ -637,4 +637,8 @@
   "Preview_AccountDropRowNormal": "Normal row",
   "Preview_AccountDropRowDragHover": "Drop receiver (row hover)",
   "Toast_CrashReported": "A crash report was submitted successfully."
+  "Heading_UpdateAvailable": "Update Available",
+  "Button_UpdateNow": "Update Now",
+  "Button_OpenDownloadPage": "Download from GitHub",
+  "Button_Loading": "Loading\u2026"
 }

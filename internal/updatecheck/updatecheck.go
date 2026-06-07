@@ -47,37 +47,42 @@ func IsUpToDate(current, latest string) bool {
 	return lat.Equal(cur) || cur.After(lat)
 }
 
-func FetchLatestVersion(ctx context.Context, client *http.Client, currentVersion string) (string, error) {
+func FetchLatestVersion(ctx context.Context, client *http.Client, currentVersion string) (version string, message string, err error) {
 	if client == nil {
 		client = http.DefaultClient
 	}
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, updateAPIURL(currentVersion), nil)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 	req.Header.Set("User-Agent", "TcNo-Acc-Switcher/"+strings.TrimSpace(currentVersion))
 	resp, err := client.Do(req)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 	defer resp.Body.Close()
-	body, err := io.ReadAll(io.LimitReader(resp.Body, 256))
+	body, err := io.ReadAll(io.LimitReader(resp.Body, 4096))
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return "", fmt.Errorf("updatecheck: HTTP %d", resp.StatusCode)
+		return "", "", fmt.Errorf("updatecheck: HTTP %d", resp.StatusCode)
 	}
-	return strings.TrimSpace(string(body)), nil
+	lines := strings.SplitN(strings.TrimSpace(string(body)), "\n", 2)
+	version = strings.TrimSpace(lines[0])
+	if len(lines) > 1 {
+		message = strings.TrimSpace(lines[1])
+	}
+	return version, message, nil
 }
 
-func StartLaunchCheck(exeDir string, offline bool, currentVersion string, onUpdateAvailable, onCheckFailed func()) {
+func StartLaunchCheck(exeDir string, offline bool, currentVersion string, onUpdateAvailable func(message string), onCheckFailed func()) {
 	launchOnce.Do(func() {
 		go runLaunchCheck(exeDir, offline, currentVersion, onUpdateAvailable, onCheckFailed)
 	})
 }
 
-func runLaunchCheck(exeDir string, offline bool, currentVersion string, onUpdateAvailable, onCheckFailed func()) {
+func runLaunchCheck(exeDir string, offline bool, currentVersion string, onUpdateAvailable func(message string), onCheckFailed func()) {
 	time.Sleep(launchCheckDelay)
 	if offline {
 		return
@@ -85,7 +90,7 @@ func runLaunchCheck(exeDir string, offline bool, currentVersion string, onUpdate
 	ctx, cancel := context.WithTimeout(context.Background(), httpTimeout)
 	defer cancel()
 
-	latest, err := FetchLatestVersion(ctx, sharedHTTPClient, currentVersion)
+	latest, message, err := FetchLatestVersion(ctx, sharedHTTPClient, currentVersion)
 	if err != nil {
 		if shouldEmitFailToast(exeDir) {
 			_ = writeFailTimestamp(exeDir)
@@ -99,6 +104,6 @@ func runLaunchCheck(exeDir string, offline bool, currentVersion string, onUpdate
 		return
 	}
 	if onUpdateAvailable != nil {
-		onUpdateAvailable()
+		onUpdateAvailable(message)
 	}
 }

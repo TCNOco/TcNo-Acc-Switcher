@@ -29,6 +29,9 @@ var assets embed.FS
 //go:embed build/appicon.png
 var trayIconPNG []byte
 
+//go:embed updater-key.pub
+var updaterPublicKey []byte
+
 var (
 	platformSvc = &platform.PlatformService{}
 	basicSvc    = basic.NewBasicService(platformSvc)
@@ -50,7 +53,7 @@ func init() {
 	application.RegisterEvent[string](platform.ActionBarStatusEvent)
 	application.RegisterEvent[shortcuts.ListPayload](shortcuts.UpdatedEvent)
 	application.RegisterEvent[[]string](shortcuts.FilesDroppedEvent)
-	application.RegisterEvent[bool](platform.AppUpdateAvailableEvent)
+	application.RegisterEvent[platform.UpdateAvailablePayload](platform.AppUpdateAvailableEvent)
 	application.RegisterEvent[bool](platform.UpdateCheckFailedEvent)
 
 	platform.SetSteamLaunchHooks(steam.SaveFolderFromConfirmedExe, steam.ResolveSteamExePath)
@@ -133,14 +136,15 @@ func main() {
 	}
 
 	app.RunGUI(app.RunGUIParams{
-		Parsed:         parsed,
-		GuiSettings:    startupSettings,
-		Services:       serviceList(),
-		Dispatch:       disp,
-		DiscordRPC:     discordRPC,
-		CrashSubmitted: crashSubmitted,
-		EmbeddedAssets: assets,
-		TrayIconPNG:    trayIconPNG,
+		Parsed:           parsed,
+		GuiSettings:      startupSettings,
+		Services:         serviceList(),
+		Dispatch:         disp,
+		DiscordRPC:       discordRPC,
+		CrashSubmitted:   crashSubmitted,
+		EmbeddedAssets:   assets,
+		TrayIconPNG:      trayIconPNG,
+		UpdaterPublicKey: updaterPublicKey,
 	})
 }
 

@@ -14,3 +14,8 @@ TcNo-Acc-Switcher.exe
 .fallowrc.json
 basic.test.exe
 /frontend/.vite
+
+updater-key
+/docs
+
+docs/RELEASING.md

@@ -13,12 +13,20 @@ const (
 	UpdateCheckFailedEvent  = "update-check-failed"
 )
 
-func emitAppUpdateAvailable() {
+type UpdateAvailablePayload struct {
+	Message     string `json:"message"`
+	DownloadURL string `json:"downloadUrl"`
+}
+
+func emitAppUpdateAvailable(message string) {
 	app := application.Get()
 	if app == nil {
 		return
 	}
-	_ = app.Event.Emit(AppUpdateAvailableEvent, true)
+	_ = app.Event.Emit(AppUpdateAvailableEvent, UpdateAvailablePayload{
+		Message:     message,
+		DownloadURL: "https://github.com/TCNOco/TcNo-Acc-Switcher/releases/latest",
+	})
 }
 
 func emitUpdateCheckFailed() {
