@@ -5,11 +5,11 @@
 	"info": {
 		"0000": {
 			"ProductVersion": "0.1.0",
-			"CompanyName": "My Company",
-			"FileDescription": "A TcNo-Acc-Switcher application",
-			"LegalCopyright": "© 2026, My Company",
-			"ProductName": "My Product",
-			"Comments": "This is a comment"
+			"CompanyName": "TroubleChute (Wesley Pyburn)",
+			"FileDescription": "TcNo Account Switcher",
+			"LegalCopyright": "TroubleChute (Wesley Pyburn) \u00a9 2024",
+			"ProductName": "TcNo Account Switcher",
+			"Comments": "A Super-fast account switcher for Steam, Battle.net, Epic Games, Origin, Riot, Ubisoft and many others!"
 		}
 	}
 }

@@ -1,0 +1,139 @@
+version: '{build}'
+skip_non_tags: true
+branches:
+  only:
+    - main
+    - go
+skip_branch_with_pr: true
+
+image: Visual Studio 2022
+
+environment:
+  GOFLAGS: -mod=mod
+  DATEVERSION: $(APPVEYOR_REPO_TAG_NAME)
+  SIGNPATH_ORGANIZATION_ID: "a2a88c4e-72da-4d2c-925e-91f41aff9d77"
+  SIGNPATH_PROJECT_SLUG: "TcNo-Acc-Switcher"
+  SIGNPATH_POLICY_SLUG: "test-signing"
+
+pull_requests:
+  do_not_increment_build_number: true
+
+init:
+  - ps: Write-Host "APPVEYOR_REPO_TAG_NAME is $env:APPVEYOR_REPO_TAG_NAME"
+  - ps: Write-Host "DATEVERSION is $env:DATEVERSION"
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
+install:
+  - ps: Install-Module -Name SignPath -RequiredVersion 4.4.6 -Force -Scope CurrentUser
+  - npm install -g pnpm
+  - go install github.com/wailsapp/wails/v3/cmd/wails3@latest
+  - ps: |
+      Write-Host "Installing NSIS 7z plugin..."
+      $downloadUrl = "https://nsis.sourceforge.io/mediawiki/images/6/69/Nsis7z_19.00.7z"
+      $destinationFolder = "C:\Program Files (x86)\NSIS"
+      $tempDownloadPath = "$env:TEMP\Nsis7z_19.00.7z"
+      $extractPath = "$env:TEMP\NsisExtracted"
+      Invoke-WebRequest -Uri $downloadUrl -OutFile $tempDownloadPath
+      if (-Not (Test-Path -Path $extractPath)) {
+        New-Item -ItemType Directory -Path $extractPath | Out-Null
+      }
+      & 7z x "$tempDownloadPath" -o"$extractPath" -y
+      $foldersToMerge = @("Contrib", "Examples", "Plugins")
+      foreach ($folder in $foldersToMerge) {
+        $sourcePath = Join-Path -Path $extractPath -ChildPath $folder
+        $destinationPath = Join-Path -Path $destinationFolder -ChildPath $folder
+        if (Test-Path -Path $sourcePath) {
+          Copy-Item -Path "$sourcePath\*" -Destination $destinationPath -Recurse -Force
+        }
+      }
+      Remove-Item -Path $tempDownloadPath -Force
+      Remove-Item -Path $extractPath -Recurse -Force
+      Write-Host "NSIS 7z plugin installed."
+
+build_script:
+  - ps: |
+      $nsisVersion = $env:DATEVERSION -replace '(\d{4})-0?(\d{1,2})-0?(\d{1,2})_0?(\d{1,2})', '$1.$2.$3.$4'
+      Write-Host "Version (sys): $nsisVersion  Display: $env:DATEVERSION"
+      $infoPath = "$env:APPVEYOR_BUILD_FOLDER\build\windows\info.json"
+      $info = Get-Content -Raw $infoPath | ConvertFrom-Json
+      $info.fixed.file_version = $nsisVersion
+      $info.info.'0000'.ProductVersion = $nsisVersion
+      $info | ConvertTo-Json -Depth 4 | Set-Content -Encoding UTF8 $infoPath
+      Write-Host "info.json updated."
+  - go mod tidy
+  - ps: cd frontend; pnpm install --frozen-lockfile; cd ..
+  - wails3 generate bindings -f "-tags production" -clean=true -ts
+  - ps: cd frontend; $env:PRODUCTION="true"; pnpm run build; cd ..
+  - ps: cd build; wails3 generate icons -input appicon.png -macfilename darwin/icons.icns -windowsfilename windows/icon.ico; cd ..
+  - ps: Copy-Item -Force "$env:APPVEYOR_BUILD_FOLDER\other\NSIS\img\icon.ico" "$env:APPVEYOR_BUILD_FOLDER\build\windows\icon.ico"
+  - ps: cd build; wails3 generate syso -arch amd64 -icon windows/icon.ico -manifest windows/wails.exe.manifest -info windows/info.json -out ..\wails_windows_amd64.syso; cd ..
+  - go build -tags production -trimpath -buildvcs=false -ldflags="-w -s -H windowsgui" -o bin\TcNo-Acc-Switcher.exe
+  - ps: Remove-Item -Force *.syso
+  - ps: New-Item -ItemType Directory -Force -Path bin | Out-Null; Copy-Item -Force Platforms.json bin\Platforms.json
+
+after_build:
+  - ps: |
+      $nsisVersion = $env:DATEVERSION -replace '(\d{4})-0?(\d{1,2})-0?(\d{1,2})_0?(\d{1,2})', '$1.$2.$3.$4'
+      Write-Host "NSIS VIProductVersion: $nsisVersion"
+      Write-Host "NSIS DisplayVersion: $env:DATEVERSION"
+
+      Write-Host "Signing EXE with SignPath..."
+      Submit-SigningRequest `
+        -InputArtifactPath "$env:APPVEYOR_BUILD_FOLDER\bin\TcNo-Acc-Switcher.exe" `
+        -ApiToken $env:SIGNPATH_API_TOKEN `
+        -OrganizationId $env:SIGNPATH_ORGANIZATION_ID `
+        -ProjectSlug $env:SIGNPATH_PROJECT_SLUG `
+        -SigningPolicySlug $env:SIGNPATH_POLICY_SLUG `
+        -OutputArtifactPath "$env:APPVEYOR_BUILD_FOLDER\bin\TcNo-Acc-Switcher-signed.exe" `
+        -WaitForCompletion
+      Move-Item -Force "$env:APPVEYOR_BUILD_FOLDER\bin\TcNo-Acc-Switcher-signed.exe" "$env:APPVEYOR_BUILD_FOLDER\bin\TcNo-Acc-Switcher.exe"
+
+      Write-Host "Copying NSIS images..."
+      $imgDest = "$env:APPVEYOR_BUILD_FOLDER\build\windows\nsis\img"
+      New-Item -ItemType Directory -Force -Path $imgDest | Out-Null
+      Copy-Item -Force "$env:APPVEYOR_BUILD_FOLDER\other\NSIS\img\*" $imgDest
+
+      Write-Host "Fetching WebView2 bootstrapper..."
+      Push-Location "$env:APPVEYOR_BUILD_FOLDER\build\windows\nsis"
+      wails3 generate webview2bootstrapper -dir .
+      Pop-Location
+
+      Write-Host "Creating 7z archive for NSIS installer..."
+      $stageDir = "$env:APPVEYOR_BUILD_FOLDER\bin\installer_stage"
+      New-Item -ItemType Directory -Force -Path $stageDir | Out-Null
+      Copy-Item -Force "$env:APPVEYOR_BUILD_FOLDER\bin\TcNo-Acc-Switcher.exe" $stageDir
+      Copy-Item -Force "$env:APPVEYOR_BUILD_FOLDER\bin\Platforms.json" $stageDir
+      Copy-Item -Force "$env:APPVEYOR_BUILD_FOLDER\build\windows\nsis\MicrosoftEdgeWebview2Setup.exe" $stageDir
+
+      & 7z a -mx9 "$env:APPVEYOR_BUILD_FOLDER\bin\TcNo-Acc-Switcher.7z" "$stageDir\*"
+      Remove-Item -Recurse -Force $stageDir
+      Write-Host "7z archive created."
+
+      Write-Host "Building NSIS installer..."
+      Push-Location "$env:APPVEYOR_BUILD_FOLDER\build\windows\nsis"
+      makensis -DVERSION="$nsisVersion" -DDISPLAY_VERSION="$env:DATEVERSION" project.nsi
+      Pop-Location
+      Write-Host "NSIS installer built."
+
+artifacts:
+  - path: bin\TcNo-Acc-Switcher.exe
+    name: executable
+  - path: build\windows\nsis\*installer*.exe
+    name: installer
+  - path: bin\TcNo-Acc-Switcher.7z
+    name: archive
+
+deploy:
+  - release: $(APPVEYOR_REPO_TAG_NAME)
+    description: 'Release $(APPVEYOR_REPO_TAG_NAME)'
+    provider: GitHub
+    auth_token:
+      secure: Z8dNV9vQVfZfYXD0aPFxbnYz9pPxwOXGdZXI0+/xSH7BLAQt8WjWToqifxXJxd1T
+    artifact: installer,executable,archive
+    draft: true
+    prerelease: false
+    on:
+      APPVEYOR_REPO_TAG: true
+
+on_finish:
+  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
