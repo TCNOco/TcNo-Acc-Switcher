@@ -47,11 +47,11 @@
 
 <svelte:window on:keydown={onKeydown} />
 
-<!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
 <div
   class="updateDialog__backdrop"
   transition:fade={{ duration: motionEnabled() ? 160 : 0 }}
   on:click={onBackdropClick}
+  on:keydown={onKeydown}
   role="dialog"
   aria-modal="true"
   aria-label={$t("Update")}
