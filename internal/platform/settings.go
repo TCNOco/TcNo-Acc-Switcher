@@ -288,6 +288,15 @@ var (
 	exeDirErr  error
 )
 
+// ResetPathSingletonsForTest resets all cached path singletons for the given exe dir.
+// Call once per test, before any flow operations. Do not use t.Parallel().
+func ResetPathSingletonsForTest(exeDir string) {
+	exeDirVal = exeDir
+	exeDirErr = nil
+	exeDirOnce = sync.Once{}
+	exeDirOnce.Do(func() {})
+}
+
 // ResolveExeDir returns the directory containing the running executable.
 func ResolveExeDir() (string, error) {
 	exeDirOnce.Do(func() {

@@ -77,6 +77,19 @@ var (
 	loginCacheDirErr  error
 )
 
+// ResetForTest resets all cached path singletons for the given exe dir.
+func ResetForTest(dataDir string) {
+	dataRoot = dataDir
+	dataRootErr = nil
+	dataRootOnce = sync.Once{}
+	dataRootOnce.Do(func() {})
+
+	loginCacheDirBase = filepath.Join(dataDir, "LoginCache")
+	loginCacheDirErr = nil
+	loginCacheDirOnce = sync.Once{}
+	loginCacheDirOnce.Do(func() {})
+}
+
 func LoginCacheDir(platformKey string) (string, error) {
 	loginCacheDirOnce.Do(func() {
 		r, err := DataRoot()
