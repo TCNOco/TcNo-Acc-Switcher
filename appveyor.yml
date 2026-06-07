@@ -164,7 +164,7 @@ deploy:
     description: 'Release $(APPVEYOR_REPO_TAG_NAME)'
     provider: GitHub
     auth_token:
-      secure: Z8dNV9vQVfZfYXD0aPFxbnYz9pPxwOXGdZXI0+/xSH7BLAQt8WjWToqifxXJxd1T
+      secure: RV5NBPt9kVuEp2SyxG8FKkaA7a4quJTiaxtLCui6ipA/nMpyfma41fbrZ8LMCFwA # TODO: Change back when done with testing
     artifact: installer,executable,archive,signature
     draft: true
     prerelease: false
