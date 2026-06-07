@@ -381,7 +381,6 @@ func runGUI(parsed cli.Parsed, guiSettings platform.AppSettings) {
 		LogLevel:    wailsLvl,
 		Logger:      wailsLogger,
 		Services: []application.Service{
-			application.NewService(&GreetService{}),
 			application.NewService(&FilesystemService{}),
 			application.NewService(platformSvc),
 			application.NewService(steamSvc),
