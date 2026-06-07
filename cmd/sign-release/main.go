@@ -7,7 +7,33 @@ import (
 	"fmt"
 	"io"
 	"os"
+
+	"golang.org/x/crypto/ssh"
 )
+
+func loadPrivateKey(path string) (ed25519.PrivateKey, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	switch len(data) {
+	case ed25519.PrivateKeySize:
+		return ed25519.PrivateKey(data), nil
+	case ed25519.SeedSize:
+		return ed25519.NewKeyFromSeed(data), nil
+	}
+
+	signer, err := ssh.ParseRawPrivateKey(data)
+	if err != nil {
+		return nil, fmt.Errorf("parse key: %w", err)
+	}
+	key, ok := signer.(ed25519.PrivateKey)
+	if !ok {
+		return nil, fmt.Errorf("key is %T, want ed25519", signer)
+	}
+	return key, nil
+}
 
 func main() {
 	if len(os.Args) != 3 {
@@ -15,12 +41,11 @@ func main() {
 		os.Exit(2)
 	}
 
-	priv, err := os.ReadFile(os.Args[1])
+	key, err := loadPrivateKey(os.Args[1])
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "reading key: %v\n", err)
 		os.Exit(1)
 	}
-	key := ed25519.PrivateKey(priv)
 
 	f, err := os.Open(os.Args[2])
 	if err != nil {
