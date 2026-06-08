@@ -285,7 +285,7 @@
   "Toast_FailedUpdateCheck": "Controleren op updates mislukt",
   "Toast_UpToDate": "Je bent up-to-date!",
   "Toast_UpdateVerifyFail": "Kan updatebestand niet verifiëren. Download de nieuwste versie en vervang bestanden in uw map.",
-  "Toast_StartedGame": "Gestart {program}",
+  "Toast_StartedGame": "{program} started successfully.",
   "Toast_SteamCantLoadXml": "Kan geen XML-informatie ophalen voor {steamId}. Zie logboek voor meer details.",
   "Toast_Steam_VacCleared": "VAC-status voor accounts is gewist",
   "Toast_Steam_CantDeleteVacCache": "Kon 'LoginCache/Steam/VACCache/SteamVACCache.json' niet verwijderen",
