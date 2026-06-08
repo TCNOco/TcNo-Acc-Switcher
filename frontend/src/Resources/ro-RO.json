@@ -285,7 +285,7 @@
   "Toast_FailedUpdateCheck": "Căutarea actualizărilor a eșuat",
   "Toast_UpToDate": "Ești la zi!",
   "Toast_UpdateVerifyFail": "Nu se pot verifica fișierele de actualizare. Descărcați cea mai recentă versiune și înlocuiți fișierele din directorul dvs.",
-  "Toast_StartedGame": "Început {program}",
+  "Toast_StartedGame": "{program} started successfully.",
   "Toast_SteamCantLoadXml": "Nu s-au putut obține informații XML pentru {steamId}. Consultați jurnalul pentru mai multe detalii.",
   "Toast_Steam_VacCleared": "Starea VCA pentru conturi a fost eliminată",
   "Toast_Steam_CantDeleteVacCache": "Nu s-a putut șterge „LoginCache/Steam/VACCache/SteamVACCache.json”",
