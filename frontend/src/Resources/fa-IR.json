@@ -285,7 +285,7 @@
   "Toast_FailedUpdateCheck": "بررسی به‌روزرسانی‌ها انجام نشد",
   "Toast_UpToDate": "شما به‌روز هستید!",
   "Toast_UpdateVerifyFail": "نمی‌توان فایل‌های به‌روزرسانی را تأیید کرد. آخرین نسخه را دانلود کنید و فایل ها را در دایرکتوری خود جایگزین کنید.",
-  "Toast_StartedGame": "{program}شروع شد",
+  "Toast_StartedGame": "{program} started successfully.",
   "Toast_SteamCantLoadXml": "اطلاعات XML برای {steamId}دریافت نشد. برای جزئیات بیشتر به گزارش مراجعه کنید.",
   "Toast_Steam_VacCleared": "وضعیت VAC برای حساب ها پاک شد",
   "Toast_Steam_CantDeleteVacCache": "\"LoginCache/Steam/VACCache/SteamVACCache.json\" نمی تواند حذف شود",
