@@ -285,7 +285,7 @@
   "Toast_FailedUpdateCheck": "업데이트 확인 실패",
   "Toast_UpToDate": "최신 버전입니다!",
   "Toast_UpdateVerifyFail": "최신 업데이트 된 파일을 확인할 수 없습니다. 최신 버전을 다운로드하고 디렉토리의 파일을 교체하십시오.",
-  "Toast_StartedGame": "{program} 시작됨",
+  "Toast_StartedGame": "{program} started successfully.",
   "Toast_SteamCantLoadXml": "{steamId}에 대한 XML 정보를 가져올 수 없습니다. 자세한 내용은 로그를 참조하십시오.",
   "Toast_Steam_VacCleared": "계정의 VAC 상태 항목이 지워졌습니다.",
   "Toast_Steam_CantDeleteVacCache": "'LoginCache/Steam/VACCache/SteamVACCache.json' 을 삭제할 수 없습니다.",
