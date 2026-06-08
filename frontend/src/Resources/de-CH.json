@@ -285,7 +285,7 @@
   "Toast_FailedUpdateCheck": "Fehler bei der Suche nach Updates",
   "Toast_UpToDate": "Du bist auf dem neuesten Stand!",
   "Toast_UpdateVerifyFail": "Updater-Dateien können nicht verifiziert werden. Lade die neueste Version herunter und ersetze die Dateien in Ihrem Verzeichnis.",
-  "Toast_StartedGame": "{program} gestartet",
+  "Toast_StartedGame": "{program} started successfully.",
   "Toast_SteamCantLoadXml": "XML-Informationen für {steamId}konnten nicht abgerufen werden. Siehe Protokoll für weitere Details.",
   "Toast_Steam_VacCleared": "VAC-Status für Accounts wurde gelöscht",
   "Toast_Steam_CantDeleteVacCache": "'LoginCache/Steam/VACCache/SteamVACCache.json' konnte nicht gelöscht werden",
