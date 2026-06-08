@@ -285,7 +285,7 @@
   "Toast_FailedUpdateCheck": "Güncellemeler denetlenemedi",
   "Toast_UpToDate": "Güncelsiniz!",
   "Toast_UpdateVerifyFail": "Güncelleyici dosyaları doğrulanamıyor. En son sürümü indirin ve dizininizdeki dosyaları değiştirin.",
-  "Toast_StartedGame": "{program} başlatıldı",
+  "Toast_StartedGame": "{program} started successfully.",
   "Toast_SteamCantLoadXml": "{steamId}için XML bilgisi alınamadı. Daha fazla ayrıntı için günlüğe bakın.",
   "Toast_Steam_VacCleared": "Hesaplar için VAC durumu temizlendi",
   "Toast_Steam_CantDeleteVacCache": "'LoginCache/Steam/VACCache/SteamVACCache.json' silinemedi",
