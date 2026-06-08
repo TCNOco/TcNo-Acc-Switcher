@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
@@ -11,6 +12,8 @@ import (
 
 	"TcNo-Acc-Switcher/internal/updatecheck"
 )
+
+var launchCheckOnce sync.Once
 
 const (
 	AppUpdateAvailableEvent = "app-update-available"
@@ -45,15 +48,30 @@ func emitUpdateCheckFailed() {
 }
 
 func (*PlatformService) NotifyLaunchUpdateCheck() {
+	launchCheckOnce.Do(func() {
+		go runLaunchUpdateCheck()
+	})
+}
+
+func runLaunchUpdateCheck() {
+	time.Sleep(updatecheck.LaunchCheckDelay)
+
 	exeDir, err := ResolveExeDir()
 	if err != nil {
 		return
 	}
 	s, err := loadSettings(exeDir)
-	if err != nil {
+	if err != nil || s.OfflineMode {
 		return
 	}
-	updatecheck.StartLaunchCheck(exeDir, s.OfflineMode, appVersionFromBuildConfig(), emitAppUpdateAvailable, emitUpdateCheckFailed)
+
+	wailsCtx, wailsCancel := context.WithTimeout(context.Background(), wailsUpdateCheckTimeout)
+	defer wailsCancel()
+	if _, ok := tryWailsUpdateCheck(wailsCtx); ok {
+		return
+	}
+
+	updatecheck.RunLaunchAPICheck(context.Background(), exeDir, appVersionFromBuildConfig(), emitAppUpdateAvailable, emitUpdateCheckFailed)
 }
 
 func (*PlatformService) CheckForUpdatesAndInstall() {

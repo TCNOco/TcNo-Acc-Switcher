@@ -6,7 +6,6 @@ import (
 	"io"
 	"net/http"
 	"strings"
-	"sync"
 	"time"
 
 	"TcNo-Acc-Switcher/internal/api"
@@ -15,13 +14,10 @@ import (
 const (
 	failStateFile    = "TcNo-Acc-Switcher.lastUpdateCheckFail.json"
 	httpTimeout      = 15 * time.Second
-	launchCheckDelay = 700 * time.Millisecond
+	LaunchCheckDelay = 700 * time.Millisecond
 )
 
-var (
-	launchOnce       sync.Once
-	sharedHTTPClient = &http.Client{Timeout: httpTimeout}
-)
+var sharedHTTPClient = &http.Client{Timeout: httpTimeout}
 
 type failStateJSON struct {
 	At string `json:"at"`
@@ -78,33 +74,13 @@ func FetchLatestVersion(ctx context.Context, client *http.Client, currentVersion
 	return version, message, nil
 }
 
-func StartLaunchCheck(exeDir string, offline bool, currentVersion string, onUpdateAvailable func(message string), onCheckFailed func()) {
-	launchOnce.Do(func() {
-		go runLaunchCheck(exeDir, offline, currentVersion, onUpdateAvailable, onCheckFailed)
-	})
-}
-
-// RunManualCheck checks for updates on user request. Returns "available", "up-to-date", or "failed".
-func RunManualCheck(ctx context.Context, currentVersion string, onUpdateAvailable func(message string)) string {
-	latest, message, err := FetchLatestVersion(ctx, sharedHTTPClient, currentVersion)
-	if err != nil {
-		return "failed"
+// RunLaunchAPICheck runs the tcno.co API check used as an updater fallback on launch.
+// Fail toasts are throttled to once per day.
+func RunLaunchAPICheck(ctx context.Context, exeDir string, currentVersion string, onUpdateAvailable func(message string), onCheckFailed func()) {
+	if ctx == nil {
+		ctx = context.Background()
 	}
-	if IsUpToDate(currentVersion, latest) {
-		return "up-to-date"
-	}
-	if onUpdateAvailable != nil {
-		onUpdateAvailable(message)
-	}
-	return "available"
-}
-
-func runLaunchCheck(exeDir string, offline bool, currentVersion string, onUpdateAvailable func(message string), onCheckFailed func()) {
-	time.Sleep(launchCheckDelay)
-	if offline {
-		return
-	}
-	ctx, cancel := context.WithTimeout(context.Background(), httpTimeout)
+	ctx, cancel := context.WithTimeout(ctx, httpTimeout)
 	defer cancel()
 
 	latest, message, err := FetchLatestVersion(ctx, sharedHTTPClient, currentVersion)
@@ -123,4 +99,19 @@ func runLaunchCheck(exeDir string, offline bool, currentVersion string, onUpdate
 	if onUpdateAvailable != nil {
 		onUpdateAvailable(message)
 	}
+}
+
+// RunManualCheck checks for updates on user request. Returns "available", "up-to-date", or "failed".
+func RunManualCheck(ctx context.Context, currentVersion string, onUpdateAvailable func(message string)) string {
+	latest, message, err := FetchLatestVersion(ctx, sharedHTTPClient, currentVersion)
+	if err != nil {
+		return "failed"
+	}
+	if IsUpToDate(currentVersion, latest) {
+		return "up-to-date"
+	}
+	if onUpdateAvailable != nil {
+		onUpdateAvailable(message)
+	}
+	return "available"
 }
