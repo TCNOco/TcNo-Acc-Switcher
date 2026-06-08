@@ -85,7 +85,6 @@
   "Settings_Protocol": "پروتکل tcno:\\\\ را فعال کنید (توصیه می شود)",
   "Settings_StartCentered": "برنامه را متمرکز شروع کنید",
   "Settings_OfflineMode": "حالت آفلاین (بدون فعالیت شبکه)",
-  "Settings_WindowsAccent": "از رنگ لهجه ویندوز استفاده کنید",
   "Settings_HelpTranslate": "[کمک به ترجمه]",
   "Settings_ViewTranslators": "[دست‌اندرکاران]",
   "Settings_Header_ActiveBrowser": "(پیشرفته) تنظیم موتور رندر:",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "دانلود از گیت‌هاب",
   "Button_Loading": "در حال بارگذاری…",
   "Toast_PlatformsJsonUpdateFound": "یک Platforms.json جدیدتر در دسترس است (v{version}). در حال دانلود…",
-  "Toast_PlatformsJsonUpdated": "Platforms.json به نسخهٔ v{version} به‌روز شد."
+  "Toast_PlatformsJsonUpdated": "Platforms.json به نسخهٔ v{version} به‌روز شد.",
+  "Toast_DataLocationSuccess": "مکان داده‌های کاربر با موفقیت به‌روزرسانی شد.",
+  "Button_PortableMode": "حالت قابل حمل",
+  "Tooltip_PortableMode": "با فشردن این، پوشهٔ TcNo Account Switcher برای نصب‌های قابل حمل دقیقاً در کنار فایل .exe قرار می‌گیرد.",
+  "Modal_Title_MoveUserdata": "مکان انتقال داده‌های کاربر را انتخاب کنید",
+  "Settings_WindowsAccent": "رنگ تاکید ویندوز"
 }

@@ -85,7 +85,6 @@
   "Settings_Protocol": "Aktivera tcno:\\\\ protokoll (rekommenderas)",
   "Settings_StartCentered": "Starta programmet centrerat",
   "Settings_OfflineMode": "Offlineläge (ingen nätverksaktivitet)",
-  "Settings_WindowsAccent": "Använd Windows accentfärg",
   "Settings_HelpTranslate": "[Hjälp till att översätta]",
   "Settings_ViewTranslators": "[Tack till]",
   "Settings_Header_ActiveBrowser": "(Avancerat) Ställ in återgivningsmotor:",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "Ladda ner från GitHub",
   "Button_Loading": "Laddar…",
   "Toast_PlatformsJsonUpdateFound": "En nyare Platforms.json är tillgänglig (v{version}). Laddar ner…",
-  "Toast_PlatformsJsonUpdated": "Platforms.json uppdaterad till v{version}."
+  "Toast_PlatformsJsonUpdated": "Platforms.json uppdaterad till v{version}.",
+  "Toast_DataLocationSuccess": "Användardatas plats har uppdaterats framgångsrikt.",
+  "Button_PortableMode": "Portabelt läge",
+  "Tooltip_PortableMode": "Tryck här för att flytta mappen TcNo Account Switcher precis bredvid .exe-filen för portabla installationer.",
+  "Modal_Title_MoveUserdata": "Välj plats för att flytta användardata",
+  "Settings_WindowsAccent": "Windows-accent"
 }

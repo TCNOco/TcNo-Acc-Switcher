@@ -85,7 +85,6 @@
   "Settings_Protocol": "אפשר TcNo: \\\\ פרוטוקול (מומלץ)",
   "Settings_StartCentered": "התחל תוכנית ממורכזת",
   "Settings_OfflineMode": "מצב לא מקוון (ללא פעילות ברשת)",
-  "Settings_WindowsAccent": "השתמש בצבע הדגשה של Windows",
   "Settings_HelpTranslate": "[עזרה לתרגם]",
   "Settings_ViewTranslators": "[קרדיטים]",
   "Settings_Header_ActiveBrowser": "(מתקדם) הגדרת מנוע עיבוד:",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "הורד מ-GitHub",
   "Button_Loading": "טוען…",
   "Toast_PlatformsJsonUpdateFound": "קובץ Platforms.json חדש יותר זמין (v{version}). מוריד…",
-  "Toast_PlatformsJsonUpdated": "Platforms.json עודכן לגרסה v{version}."
+  "Toast_PlatformsJsonUpdated": "Platforms.json עודכן לגרסה v{version}.",
+  "Toast_DataLocationSuccess": "מיקום נתוני המשתמש עודכן בהצלחה.",
+  "Button_PortableMode": "מצב נייד",
+  "Tooltip_PortableMode": "לחיצה על כפתור זה תעביר את תיקיית TcNo Account Switcher ממש ליד קובץ ה-.exe עבור התקנות ניידות.",
+  "Modal_Title_MoveUserdata": "בחר מיקום להעברת נתוני המשתמש",
+  "Settings_WindowsAccent": "הדגשת Windows"
 }

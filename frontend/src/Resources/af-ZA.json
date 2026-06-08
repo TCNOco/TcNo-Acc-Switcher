@@ -85,7 +85,6 @@
   "Settings_Protocol": "Aktiveer TcNo: \\\\ protokol (aanbeveel)",
   "Settings_StartCentered": "Begin program gesentreer",
   "Settings_OfflineMode": "Vanlyn modus (Geen netwerkaktiwiteit nie)",
-  "Settings_WindowsAccent": "Gebruik die Windows Accent Color",
   "Settings_HelpTranslate": "[Help vertaal]",
   "Settings_ViewTranslators": "[Krediete]",
   "Settings_Header_ActiveBrowser": "(Gevorderd) Stel weergawe-enjin:",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "Laai af van GitHub",
   "Button_Loading": "Laai tans...",
   "Toast_PlatformsJsonUpdateFound": "'n Nuwer Platforms.json is beskikbaar (v{version}). Laai af…",
-  "Toast_PlatformsJsonUpdated": "Platforms.json opgedateer na v{version}."
+  "Toast_PlatformsJsonUpdated": "Platforms.json opgedateer na v{version}.",
+  "Toast_DataLocationSuccess": "Gebruikersdataligging suksesvol opgedateer.",
+  "Button_PortableMode": "Draagbare modus",
+  "Tooltip_PortableMode": "Deur hierdie te druk, sal die TcNo Account Switcher-vouer reg langs die .exe geskuif word vir draagbare installasies.",
+  "Modal_Title_MoveUserdata": "Kies ligging om gebruikersdata te skuif",
+  "Settings_WindowsAccent": "Windows Aksent"
 }

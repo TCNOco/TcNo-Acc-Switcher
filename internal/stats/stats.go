@@ -16,6 +16,7 @@ import (
 	buildinfo "TcNo-Acc-Switcher/build"
 	"TcNo-Acc-Switcher/internal/api"
 	"TcNo-Acc-Switcher/internal/fsutil"
+	"TcNo-Acc-Switcher/internal/paths"
 
 	"github.com/google/uuid"
 )
@@ -121,11 +122,11 @@ func defaultStats() AppStats {
 }
 
 func statsPath() (string, error) {
-	exeDir, err := resolveExeDir()
+	root, err := paths.DataRoot()
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(exeDir, fileName), nil
+	return filepath.Join(root, fileName), nil
 }
 
 func ensureLoadedLocked() error {

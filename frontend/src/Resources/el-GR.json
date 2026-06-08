@@ -85,7 +85,6 @@
   "Settings_Protocol": "Ενεργοποίηση tcno:\\\\ protocol (Συνιστάται)",
   "Settings_StartCentered": "Έναρξη προγράμματος στο κέντρο",
   "Settings_OfflineMode": "Λειτουργία εκτός σύνδεσης (Χωρίς δραστηριότητα δικτύου)",
-  "Settings_WindowsAccent": "Χρήση του χρώματος έμφασης των Windows",
   "Settings_HelpTranslate": "[Βοηθήστε στη μετάφραση]",
   "Settings_ViewTranslators": "[Συντελεστές]",
   "Settings_Header_ActiveBrowser": "(Σύνθετη) set rendering engine:",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "Λήψη από το GitHub",
   "Button_Loading": "Φόρτωση…",
   "Toast_PlatformsJsonUpdateFound": "Μια νεότερη έκδοση του Platforms.json είναι διαθέσιμη (v{version}). Λήψη σε εξέλιξη…",
-  "Toast_PlatformsJsonUpdated": "Το Platforms.json ενημερώθηκε στην έκδοση v{version}."
+  "Toast_PlatformsJsonUpdated": "Το Platforms.json ενημερώθηκε στην έκδοση v{version}.",
+  "Toast_DataLocationSuccess": "Η τοποθεσία των δεδομένων χρήστη ενημερώθηκε επιτυχώς.",
+  "Button_PortableMode": "Φορητή λειτουργία",
+  "Tooltip_PortableMode": "Πατώντας αυτό, ο φάκελος TcNo Account Switcher θα μετακινηθεί ακριβώς δίπλα στο .exe για φορητές εγκαταστάσεις.",
+  "Modal_Title_MoveUserdata": "Επιλέξτε τοποθεσία για τη μετακίνηση των δεδομένων χρήστη",
+  "Settings_WindowsAccent": "Έμφαση Windows"
 }

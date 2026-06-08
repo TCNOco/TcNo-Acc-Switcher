@@ -85,7 +85,6 @@
   "Settings_Protocol": "Ota käyttöön tcno:\\\\ protocol (Suositeltava)",
   "Settings_StartCentered": "Käynnistä ohjelma keskitetysti",
   "Settings_OfflineMode": "Offline-tila (ei verkkotoimintaa)",
-  "Settings_WindowsAccent": "Käytä Windowsin korostusväriä",
   "Settings_HelpTranslate": "[Apua kääntämään]",
   "Settings_ViewTranslators": "[Tekijät]",
   "Settings_Header_ActiveBrowser": "(Advanced) Aseta renderöintimoottori:",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "Lataa GitHubista",
   "Button_Loading": "Ladataan…",
   "Toast_PlatformsJsonUpdateFound": "Uudempi Platforms.json on saatavilla (v{version}). Ladataan…",
-  "Toast_PlatformsJsonUpdated": "Platforms.json päivitetty v{version}."
+  "Toast_PlatformsJsonUpdated": "Platforms.json päivitetty v{version}.",
+  "Toast_DataLocationSuccess": "Käyttäjätietojen sijainti päivitetty onnistuneesti.",
+  "Button_PortableMode": "Siirrettävä tila",
+  "Tooltip_PortableMode": "Tämän painaminen siirtää TcNo Account Switcher -kansion .exe-tiedoston viereen siirrettäviä asennuksia varten.",
+  "Modal_Title_MoveUserdata": "Valitse sijainti käyttäjätietojen siirtämiseksi",
+  "Settings_WindowsAccent": "Windows-korostus"
 }

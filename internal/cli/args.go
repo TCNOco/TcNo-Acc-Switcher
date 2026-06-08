@@ -43,6 +43,9 @@ type Parsed struct {
 	ListAccountsPlatform  string   // KindListAccounts: empty = all platforms; else canonical name
 	LogLevelSet           bool     // true if --log-level was passed
 	LogLevel              slog.Level
+	UserDataMoveFrom      string   // --userdata-move-from= old path after relocation restart
+	UserDataMoveTo        string   // --userdata-move-to= new path after relocation restart
+	StartupToast          string   // --toast= i18n key emitted when GUI window is ready
 }
 
 const steamPlatformName = "Steam"
@@ -203,6 +206,30 @@ func Parse(argv []string, idx *PlatformIndex) (Parsed, error) {
 			continue
 		}
 
+		if val, ok := parseUserDataMoveFromFlag(a); ok {
+			if p.UserDataMoveFrom != "" {
+				return Parsed{}, fmt.Errorf("duplicate --userdata-move-from")
+			}
+			p.UserDataMoveFrom = val
+			continue
+		}
+
+		if val, ok := parseUserDataMoveToFlag(a); ok {
+			if p.UserDataMoveTo != "" {
+				return Parsed{}, fmt.Errorf("duplicate --userdata-move-to")
+			}
+			p.UserDataMoveTo = val
+			continue
+		}
+
+		if val, ok := parseStartupToastFlag(a); ok {
+			if p.StartupToast != "" {
+				return Parsed{}, fmt.Errorf("duplicate --toast")
+			}
+			p.StartupToast = val
+			continue
+		}
+
 		if val, ok := parseRunAppIDFlag(a); ok {
 			val = strings.TrimSpace(val)
 			if val == "" {
@@ -269,6 +296,39 @@ func parseRunShortcutFlag(a string) (string, bool) {
 	s := strings.TrimSpace(a)
 	lo := strings.ToLower(s)
 	for _, prefix := range []string{"--run-shortcut=", "-run-shortcut="} {
+		if strings.HasPrefix(lo, strings.ToLower(prefix)) {
+			return strings.TrimSpace(s[len(prefix):]), true
+		}
+	}
+	return "", false
+}
+
+func parseUserDataMoveFromFlag(a string) (string, bool) {
+	s := strings.TrimSpace(a)
+	lo := strings.ToLower(s)
+	for _, prefix := range []string{"--userdata-move-from=", "-userdata-move-from="} {
+		if strings.HasPrefix(lo, strings.ToLower(prefix)) {
+			return strings.TrimSpace(s[len(prefix):]), true
+		}
+	}
+	return "", false
+}
+
+func parseUserDataMoveToFlag(a string) (string, bool) {
+	s := strings.TrimSpace(a)
+	lo := strings.ToLower(s)
+	for _, prefix := range []string{"--userdata-move-to=", "-userdata-move-to="} {
+		if strings.HasPrefix(lo, strings.ToLower(prefix)) {
+			return strings.TrimSpace(s[len(prefix):]), true
+		}
+	}
+	return "", false
+}
+
+func parseStartupToastFlag(a string) (string, bool) {
+	s := strings.TrimSpace(a)
+	lo := strings.ToLower(s)
+	for _, prefix := range []string{"--toast=", "-toast="} {
 		if strings.HasPrefix(lo, strings.ToLower(prefix)) {
 			return strings.TrimSpace(s[len(prefix):]), true
 		}

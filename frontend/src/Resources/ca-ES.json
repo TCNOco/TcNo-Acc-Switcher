@@ -85,7 +85,6 @@
   "Settings_Protocol": "Activa el protocol TcNo: \\\\ (recomanat)",
   "Settings_StartCentered": "Inicia el programa centrat",
   "Settings_OfflineMode": "Mode fora de línia (sense activitat de xarxa)",
-  "Settings_WindowsAccent": "Utilitza el color accentuat de Windows",
   "Settings_HelpTranslate": "[Ajuda a traduir]",
   "Settings_ViewTranslators": "[Crèdits]",
   "Settings_Header_ActiveBrowser": "(Avançat) Estableix el motor de representació:",
@@ -342,7 +341,7 @@
   "ProfileImage_ToggleText": "Utilitza la imatge com a imatge del compte",
   "Title_Platforms_Settings": "TcNo Account Switcher - Configuració de la plataforma",
   "Title_Settings_TestCss": "TcNo Account Switcher - Prova d'estil CSS",
-  "Title_AccountsList": "TcNo Account Switcher - {platform}",
+  "Title_AccountsList": "TcNo Commutador de comptes - {platform}",
   "Title_TextEditor": "TcNo Account Switcher - Editor de text",
   "Title_Settings": "TcNo Account Switcher - Configuració",
   "Title_Steam_Cleaning": "TcNo Account Switcher - Neteja a vapor",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "Descarrega des de GitHub",
   "Button_Loading": "Carregant…",
   "Toast_PlatformsJsonUpdateFound": "Una nova versió de Platforms.json està disponible (v{version}). S'està descarregant…",
-  "Toast_PlatformsJsonUpdated": "Platforms.json actualitzat a v{version}."
+  "Toast_PlatformsJsonUpdated": "Platforms.json actualitzat a v{version}.",
+  "Toast_DataLocationSuccess": "La ubicació de les dades d'usuari s'ha actualitzat correctament.",
+  "Button_PortableMode": "Mode portàtil",
+  "Tooltip_PortableMode": "En prémer això, es mourà la carpeta del TcNo Account Switcher just al costat del .exe per a instal·lacions portàtils.",
+  "Modal_Title_MoveUserdata": "Seleccioneu la ubicació per moure les dades d'usuari",
+  "Settings_WindowsAccent": "Accent de Windows"
 }

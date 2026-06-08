@@ -60,7 +60,7 @@
   "Settings_RTL": "Zobraziť text ako sprava doľava",
   "Settings_CollectStats": "Zbierajte štatistiky",
   "Settings_ShareStats": "Anonymné zdieľanie štatistík (odporúča sa)",
-  "Settings_DiscordRpc": "Discord Rich Presence (RPC)",
+  "Settings_DiscordRpc": "Rozšírená prítomnosť Discordu (RPC)",
   "Settings_DiscordRpcShare": "Zdieľať celkové prepínače",
   "Settings_ViewStats": "Zobraziť štatistiky",
   "Preview": "Náhľad",
@@ -85,7 +85,6 @@
   "Settings_Protocol": "Povoliť protokol tcno:\\\\ (odporúča sa)",
   "Settings_StartCentered": "Spustite program na stred",
   "Settings_OfflineMode": "Režim offline (žiadna sieťová aktivita)",
-  "Settings_WindowsAccent": "Použite farbu Windows Accent Color",
   "Settings_HelpTranslate": "[Pomoc s prekladom]",
   "Settings_ViewTranslators": "[Autori]",
   "Settings_Header_ActiveBrowser": "(Pokročilé) Nastaviť vykresľovací mechanizmus:",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "Stiahnuť z GitHubu",
   "Button_Loading": "Načítava sa…",
   "Toast_PlatformsJsonUpdateFound": "K dispozícii je novšia Platforms.json (v{version}). Prebieha sťahovanie…",
-  "Toast_PlatformsJsonUpdated": "Platforms.json bol aktualizovaný na v{version}."
+  "Toast_PlatformsJsonUpdated": "Platforms.json bol aktualizovaný na v{version}.",
+  "Toast_DataLocationSuccess": "Umiestnenie používateľských údajov bolo úspešne aktualizované.",
+  "Button_PortableMode": "Prenosný režim",
+  "Tooltip_PortableMode": "Stlačením tohto presuniete priečinok TcNo Account Switcher priamo vedľa .exe súboru pre prenosné inštalácie.",
+  "Modal_Title_MoveUserdata": "Vyberte umiestnenie na presun používateľských údajov.",
+  "Settings_WindowsAccent": "Windows akcent"
 }

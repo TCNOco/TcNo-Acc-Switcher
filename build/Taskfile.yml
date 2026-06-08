@@ -21,18 +21,6 @@ tasks:
     cmds:
       - pnpm install --frozen-lockfile
 
-  copy:platforms_json:
-    summary: Copy Platforms.json next to the built executable (bin/)
-    cmds:
-      - cmd: powershell -NoProfile -Command "if (!(Test-Path 'Platforms.json')) { throw 'Platforms.json missing at repository root' }; New-Item -ItemType Directory -Force -Path 'bin' -ErrorAction Stop | Out-Null; Copy-Item -Force 'Platforms.json' (Join-Path 'bin' 'Platforms.json') -ErrorAction Stop"
-        platforms: [windows]
-      - cmd: |
-          set -euo pipefail
-          test -f Platforms.json
-          mkdir -p bin
-          cp -f Platforms.json bin/Platforms.json
-        platforms: [linux, darwin]
-
   build:frontend:
     label: build:frontend (DEV={{.DEV}})
     summary: Build the frontend project

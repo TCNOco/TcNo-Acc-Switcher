@@ -85,9 +85,8 @@
   "Settings_Protocol": "tcno:\\\\ protocol (Aanbevolen) inschakelen",
   "Settings_StartCentered": "Start programma gecentreerd",
   "Settings_OfflineMode": "Offline-modus (geen netwerkactiviteit)",
-  "Settings_WindowsAccent": "De Windows Accentkleur gebruiken",
   "Settings_HelpTranslate": "[Help vertalen]",
-  "Settings_ViewTranslators": "[Credits]",
+  "Settings_ViewTranslators": "[Colofon]",
   "Settings_Header_ActiveBrowser": "(Geavanceerd) Rendering engine instellen:",
   "Settings_Header_ClosingMethod": "(Geavanceerd) Stel methode in op sluiten {platform}",
   "Settings_Header_StartingMethod": "(Geavanceerd) Stel methode in op start {platform}",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "Downloaden van GitHub",
   "Button_Loading": "Laden…",
   "Toast_PlatformsJsonUpdateFound": "Een nieuwere Platforms.json is beschikbaar (v{version}). Downloaden…",
-  "Toast_PlatformsJsonUpdated": "Platforms.json bijgewerkt naar v{version}."
+  "Toast_PlatformsJsonUpdated": "Platforms.json bijgewerkt naar v{version}.",
+  "Toast_DataLocationSuccess": "Locatie van gebruikersgegevens succesvol bijgewerkt.",
+  "Button_PortableMode": "Draagbare modus",
+  "Tooltip_PortableMode": "Als u hierop drukt, wordt de map van TcNo Account Switcher direct naast het .exe-bestand geplaatst voor draagbare installaties.",
+  "Modal_Title_MoveUserdata": "Selecteer locatie om gebruikersgegevens te verplaatsen",
+  "Settings_WindowsAccent": "Windows-accent"
 }

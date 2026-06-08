@@ -85,7 +85,6 @@
   "Settings_Protocol": "A TcNo: \\\\ protokoll engedélyezése (ajánlott)",
   "Settings_StartCentered": "Program indítása központilag",
   "Settings_OfflineMode": "Offline mód (nincs hálózati tevékenység)",
-  "Settings_WindowsAccent": "A Windows kiemelőszíne",
   "Settings_HelpTranslate": "[Segítsen fordítani]",
   "Settings_ViewTranslators": "[Készítők]",
   "Settings_Header_ActiveBrowser": "(Speciális) Renderelőmotor beállítása:",
@@ -342,7 +341,7 @@
   "ProfileImage_ToggleText": "Kép használata fiókképként",
   "Title_Platforms_Settings": "TcNo Account Switcher - Platformbeállítások",
   "Title_Settings_TestCss": "TcNo Account Switcher - CSS stílus tesztelése",
-  "Title_AccountsList": "TcNo Account Switcher - {platform}",
+  "Title_AccountsList": "TcNo Fiókváltó - {platform}",
   "Title_TextEditor": "TcNo Account Switcher - Szövegszerkesztő",
   "Title_Settings": "TcNo Account Switcher - Beállítások",
   "Title_Steam_Cleaning": "TcNo Account Switcher - Gőztisztítás",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "Letöltés a GitHubról",
   "Button_Loading": "Betöltés…",
   "Toast_PlatformsJsonUpdateFound": "Elérhető egy újabb Platforms.json (v{version}). Letöltés…",
-  "Toast_PlatformsJsonUpdated": "Platforms.json frissítve v{version}."
+  "Toast_PlatformsJsonUpdated": "Platforms.json frissítve v{version}.",
+  "Toast_DataLocationSuccess": "A felhasználói adatok helye sikeresen frissült.",
+  "Button_PortableMode": "Hordozható mód",
+  "Tooltip_PortableMode": "E gomb megnyomásával a TcNo Account Switcher mappa közvetlenül az .exe fájl mellé kerül, hordozható telepítések esetén.",
+  "Modal_Title_MoveUserdata": "Válasszon helyet a felhasználói adatok áthelyezéséhez",
+  "Settings_WindowsAccent": "Windows kiemelőszín"
 }

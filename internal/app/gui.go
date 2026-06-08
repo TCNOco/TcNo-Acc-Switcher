@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"time"
 
 	buildinfo "TcNo-Acc-Switcher/build"
@@ -38,6 +39,7 @@ type RunGUIParams struct {
 	Dispatch         *Dispatch
 	DiscordRPC       *discordrpc.Manager
 	CrashSubmitted   bool
+	StartupToast     string
 	EmbeddedAssets   fs.FS
 	TrayIconPNG      []byte
 	UpdaterPublicKey []byte
@@ -128,6 +130,9 @@ func RunGUI(params RunGUIParams) {
 
 	if params.CrashSubmitted {
 		EmitToast("success", "i18n:Toast_CrashReported", "", 0)
+	}
+	if toast := strings.TrimSpace(params.StartupToast); toast != "" {
+		EmitToast("success", toast, "", 6000)
 	}
 	app.OnShutdown(func() {
 		params.DiscordRPC.Stop()

@@ -85,7 +85,6 @@
   "Settings_Protocol": "Aktiver tcno:\\\\ protokoll (anbefalt)",
   "Settings_StartCentered": "Start programmet sentrert",
   "Settings_OfflineMode": "Frakoblet modus (ingen nettverksaktivitet)",
-  "Settings_WindowsAccent": "Bruk Windows Accent Color",
   "Settings_HelpTranslate": "[Hjelp til å oversette]",
   "Settings_ViewTranslators": "[Krediteringer]",
   "Settings_Header_ActiveBrowser": "(Avansert) Angi gjengivelsesmotor:",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "Last ned fra GitHub",
   "Button_Loading": "Laster…",
   "Toast_PlatformsJsonUpdateFound": "En nyere Platforms.json er tilgjengelig (v{version}). Laster ned…",
-  "Toast_PlatformsJsonUpdated": "Platforms.json oppdatert til v{version}."
+  "Toast_PlatformsJsonUpdated": "Platforms.json oppdatert til v{version}.",
+  "Toast_DataLocationSuccess": "Lagringssted for brukerdata ble oppdatert.",
+  "Button_PortableMode": "Portable modus",
+  "Tooltip_PortableMode": "Ved å trykke på denne flyttes TcNo Account Switcher-mappen rett ved siden av .exe-filen for portable installasjoner.",
+  "Modal_Title_MoveUserdata": "Velg plassering for å flytte brukerdata",
+  "Settings_WindowsAccent": "Windows-aksent"
 }

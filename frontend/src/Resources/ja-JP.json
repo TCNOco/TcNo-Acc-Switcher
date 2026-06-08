@@ -85,7 +85,6 @@
   "Settings_Protocol": "tcno:\\\\プロトコルを有効にする (推奨)",
   "Settings_StartCentered": "プログラムを中心に開始",
   "Settings_OfflineMode": "オフラインモード（ネットワークアクティビティなし）",
-  "Settings_WindowsAccent": "Windowsアクセントカラーを使用する",
   "Settings_HelpTranslate": "[ヘルプ翻訳]",
   "Settings_ViewTranslators": "[クレジット]",
   "Settings_Header_ActiveBrowser": "(詳細)レンダリングエンジンの設定:",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "GitHub からダウンロード",
   "Button_Loading": "読み込み中…",
   "Toast_PlatformsJsonUpdateFound": "新しい Platforms.json が利用可能です (v{version})。ダウンロード中…",
-  "Toast_PlatformsJsonUpdated": "Platforms.json が v{version} に更新されました。"
+  "Toast_PlatformsJsonUpdated": "Platforms.json が v{version} に更新されました。",
+  "Toast_DataLocationSuccess": "ユーザーデータの場所が正常に更新されました。",
+  "Button_PortableMode": "ポータブルモード",
+  "Tooltip_PortableMode": "これを押すと、ポータブルインストール用に TcNo Account Switcher フォルダが .exe のすぐ隣に移動します。",
+  "Modal_Title_MoveUserdata": "ユーザーデータの移動先を選択してください",
+  "Settings_WindowsAccent": "Windows アクセント"
 }

@@ -85,7 +85,6 @@
   "Settings_Protocol": "Włącz protokół tcno:\\\\ (zalecane)",
   "Settings_StartCentered": "Uruchom program wyśrodkowany",
   "Settings_OfflineMode": "Tryb offline (brak aktywności sieciowej)",
-  "Settings_WindowsAccent": "Używaj kolorów wiodących Windowsa",
   "Settings_HelpTranslate": "[Pomóż tłumaczyć]",
   "Settings_ViewTranslators": "[Autorzy]",
   "Settings_Header_ActiveBrowser": "(Zaawansowane) Ustaw silnik renderowania:",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "Pobierz z GitHuba",
   "Button_Loading": "Ładowanie…",
   "Toast_PlatformsJsonUpdateFound": "Dostępna jest nowsza wersja Platforms.json (v{version}). Pobieranie…",
-  "Toast_PlatformsJsonUpdated": "Platforms.json został zaktualizowany do wersji v{version}."
+  "Toast_PlatformsJsonUpdated": "Platforms.json został zaktualizowany do wersji v{version}.",
+  "Toast_DataLocationSuccess": "Pomyślnie zaktualizowano lokalizację danych użytkownika.",
+  "Button_PortableMode": "Tryb przenośny",
+  "Tooltip_PortableMode": "Naciśnięcie tego spowoduje przeniesienie folderu TcNo Account Switcher tuż obok pliku .exe, umożliwiając tryb przenośny.",
+  "Modal_Title_MoveUserdata": "Wybierz lokalizację, do której przenieść dane użytkownika",
+  "Settings_WindowsAccent": "Akcent Windows"
 }

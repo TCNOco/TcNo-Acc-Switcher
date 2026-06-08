@@ -11,6 +11,7 @@
   import AppModal from './components/AppModal.svelte'
   import Toast from './components/Toast.svelte'
   import FileDropOverlay from './components/FileDropOverlay.svelte'
+  import UserDataMoveOverlay from './components/UserDataMoveOverlay.svelte'
   import ContextMenu from './components/ContextMenu.svelte'
   import BackgroundDropZones from './components/BackgroundDropZones.svelte'
   import ActionBar from './components/ActionBar.svelte'
@@ -20,6 +21,7 @@
   import { actionBarStatus } from './stores/fileDrop'
   import { t } from "./stores/i18n";
   import { NotifyLaunchUpdateCheck } from "../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
+  import * as PlatformService from "../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import { pushToast } from "./stores/toast";
   import { registerSvgRenderBridge } from "./lib/svgRenderBridge";
   import { activeModal } from "./stores/modal";
@@ -33,7 +35,7 @@
   import { appBgInfo, platformBgInfo, userOverriddenAppBg } from "./stores/backgroundImage";
   import type { AppBackgroundInfo } from "./stores/backgroundImage";
   import { currentThemeBgUrl } from "./lib/themes";
-  import * as PlatformService from "../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
+  import { applyUserDataMoveProgress } from "./stores/userDataMove";
 
   function resolveActiveBg(
     r: typeof $route,
@@ -223,6 +225,17 @@
       });
     });
 
+    const offUserDataMoveProgress = Events.On("userdata-move-progress", (ev) => {
+      const data = ev.data;
+      if (typeof data !== "object" || !data) return;
+      const payload = data as { phase?: string; done?: number; total?: number };
+      applyUserDataMoveProgress({
+        phase: payload.phase,
+        done: payload.done,
+        total: payload.total,
+      });
+    });
+
     function parseI18nPayload(raw: string): { key: string; vars?: Record<string, string | number> } {
       const parts = raw.slice(5).split("\u001f");
       const key = parts.shift() ?? "";
@@ -263,6 +276,7 @@
       offUpdateFail?.();
       offPlatformsFound?.();
       offPlatformsUpdated?.();
+      offUserDataMoveProgress?.();
       offSvgBridge?.();
     };
   });
@@ -270,6 +284,7 @@
 
 <div class="container" class:busyCursor={$platformActionBusy.busy} class:animations-disabled={!$animationsEnabled}>
   <FileDropOverlay />
+  <UserDataMoveOverlay />
   <ContextMenu />
   <TitleBar />
   <UpdateBar />

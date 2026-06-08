@@ -32,6 +32,9 @@ type AppSettings struct {
 
 	PlatformsJSONPath string `json:"platformsJsonPath,omitempty"`
 
+	// UserDataPath is the absolute path to the TcNo Account Switcher user data folder.
+	UserDataPath string `json:"userDataPath,omitempty"`
+
 	// ProtocolEnabled registers the tcno:// URL scheme on Windows when true.
 	ProtocolEnabled bool `json:"protocolEnabled,omitempty"`
 
@@ -295,6 +298,7 @@ func ResetPathSingletonsForTest(exeDir string) {
 	exeDirErr = nil
 	exeDirOnce = sync.Once{}
 	exeDirOnce.Do(func() {})
+	ResetUserDataPathsForTest(exeDir, PortableUserDataDir(exeDir))
 }
 
 // ResolveExeDir returns the directory containing the running executable.

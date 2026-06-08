@@ -85,7 +85,6 @@
   "Settings_Protocol": "Tcno:\\\\ protocol सक्षम करें (अनुशंसित)",
   "Settings_StartCentered": "केंद्रित प्रोग्राम प्रारंभ करें",
   "Settings_OfflineMode": "ऑफ़लाइन मोड (कोई नेटवर्क गतिविधि नहीं)",
-  "Settings_WindowsAccent": "विंडोज एक्सेंट रंग का उपयोग करें",
   "Settings_HelpTranslate": "[अनुवाद करने में मदद करें]",
   "Settings_ViewTranslators": "[श्रेय]",
   "Settings_Header_ActiveBrowser": "(उन्नत) प्रतिपादन इंजन सेट करें:",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "GitHub से डाउनलोड करें",
   "Button_Loading": "लोड हो रहा है…",
   "Toast_PlatformsJsonUpdateFound": "एक नया Platforms.json उपलब्ध है (v{version})। डाउनलोड हो रहा है…",
-  "Toast_PlatformsJsonUpdated": "Platforms.json को v{version} में अपडेट कर दिया गया।"
+  "Toast_PlatformsJsonUpdated": "Platforms.json को v{version} में अपडेट कर दिया गया।",
+  "Toast_DataLocationSuccess": "उपयोगकर्ता डेटा स्थान सफलतापूर्वक अपडेट किया गया।",
+  "Button_PortableMode": "पोर्टेबल मोड",
+  "Tooltip_PortableMode": "इसे दबाने पर पोर्टेबल इंस्टॉल के लिए TcNo Account Switcher फ़ोल्डर .exe के ठीक बगल में चला जाएगा।",
+  "Modal_Title_MoveUserdata": "उपयोगकर्ता डेटा स्थानांतरित करने के लिए स्थान चुनें",
+  "Settings_WindowsAccent": "विंडोज़ एक्सेंट"
 }

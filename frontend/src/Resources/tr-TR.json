@@ -85,7 +85,6 @@
   "Settings_Protocol": "Tcno'yu etkinleştir:\\\\ protocol (Önerilen)",
   "Settings_StartCentered": "Programı merkezde başlat",
   "Settings_OfflineMode": "Çevrimdışı Mod (Ağ etkinliği yok)",
-  "Settings_WindowsAccent": "Windows Vurgu Rengini Kullan",
   "Settings_HelpTranslate": "[Çeviriye yardım et]",
   "Settings_ViewTranslators": "[Katkıda Bulunanlar]",
   "Settings_Header_ActiveBrowser": "(Gelişmiş) İşleme motorunu ayarlayın:",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "GitHub'dan indir",
   "Button_Loading": "Yükleniyor…",
   "Toast_PlatformsJsonUpdateFound": "Daha yeni bir Platforms.json mevcut (v{version}). İndiriliyor…",
-  "Toast_PlatformsJsonUpdated": "Platforms.json v{version} sürümüne güncellendi."
+  "Toast_PlatformsJsonUpdated": "Platforms.json v{version} sürümüne güncellendi.",
+  "Toast_DataLocationSuccess": "Kullanıcı verileri konumu başarıyla güncellendi.",
+  "Button_PortableMode": "Taşınabilir Mod",
+  "Tooltip_PortableMode": "Buna basmak, taşınabilir kurulumlar için TcNo Account Switcher klasörünü .exe'nin hemen yanına taşıyacaktır.",
+  "Modal_Title_MoveUserdata": "Kullanıcı verilerini taşımak için konum seçin",
+  "Settings_WindowsAccent": "Windows Vurgusu"
 }

@@ -85,7 +85,6 @@
   "Settings_Protocol": "Aktifkan tcno:\\\\ protokol (Disarankan)",
   "Settings_StartCentered": "Mulai program yang dipusatkan",
   "Settings_OfflineMode": "Mode Offline (Tidak ada aktivitas jaringan)",
-  "Settings_WindowsAccent": "Gunakan Warna Aksen Windows",
   "Settings_HelpTranslate": "[Bantuan menerjemahkan]",
   "Settings_ViewTranslators": "[Kredit]",
   "Settings_Header_ActiveBrowser": "(Lanjutan) Setel mesin render:",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "Unduh dari GitHub",
   "Button_Loading": "Memuat…",
   "Toast_PlatformsJsonUpdateFound": "Platforms.json yang lebih baru tersedia (v{version}). Mengunduh…",
-  "Toast_PlatformsJsonUpdated": "Platforms.json diperbarui ke v{version}."
+  "Toast_PlatformsJsonUpdated": "Platforms.json diperbarui ke v{version}.",
+  "Toast_DataLocationSuccess": "Lokasi data pengguna berhasil diperbarui.",
+  "Button_PortableMode": "Mode Portabel",
+  "Tooltip_PortableMode": "Menekan ini akan memindahkan folder TcNo Account Switcher tepat di sebelah .exe untuk instalasi portabel.",
+  "Modal_Title_MoveUserdata": "Pilih lokasi untuk memindahkan data pengguna",
+  "Settings_WindowsAccent": "Aksen Windows"
 }

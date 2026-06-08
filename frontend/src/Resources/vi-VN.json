@@ -85,7 +85,6 @@
   "Settings_Protocol": "Kích hoạt giao thức tcno:\\ (Được khuyến nghị)",
   "Settings_StartCentered": "Khởi động chương trình ở giữa màn hình",
   "Settings_OfflineMode": "Chế độ ngoại tuyến (Không có hoạt động mạng)",
-  "Settings_WindowsAccent": "Sử dụng màu sắc của Windows",
   "Settings_HelpTranslate": "[Hỗ trợ dịch thuật]",
   "Settings_ViewTranslators": "[Tác giả]",
   "Settings_Header_ActiveBrowser": "(Nâng cao) Đặt công cụ hiển thị:",
@@ -490,8 +489,8 @@
   "Filter_Menu": "Lọc và sắp xếp",
   "Filter_Search": "Tìm kiếm",
   "Filter_SortBy": "Sắp xếp theo",
-  "Filter_Sort_AZ": "A - Z",
-  "Filter_Sort_ZA": "Z - A",
+  "Filter_Sort_AZ": "A đến Z",
+  "Filter_Sort_ZA": "Z đến A",
   "Filter_Sort_UserAZ": "A - Z (Tên người dùng tài khoản)",
   "Filter_Sort_UserZA": "Z - A (Tên người dùng tài khoản)",
   "Filter_Sort_Username": "Tên người dùng",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "Tải xuống từ GitHub",
   "Button_Loading": "Đang tải…",
   "Toast_PlatformsJsonUpdateFound": "Đã có Platforms.json mới hơn (v{version}). Đang tải xuống…",
-  "Toast_PlatformsJsonUpdated": "Platforms.json đã được cập nhật lên v{version}."
+  "Toast_PlatformsJsonUpdated": "Platforms.json đã được cập nhật lên v{version}.",
+  "Toast_DataLocationSuccess": "Vị trí dữ liệu người dùng đã được cập nhật thành công.",
+  "Button_PortableMode": "Chế độ di động",
+  "Tooltip_PortableMode": "Nhấn nút này sẽ di chuyển thư mục TcNo Account Switcher đến ngay bên cạnh tệp .exe cho các bản cài đặt di động.",
+  "Modal_Title_MoveUserdata": "Chọn vị trí để di chuyển dữ liệu người dùng",
+  "Settings_WindowsAccent": "Màu nhấn Windows"
 }

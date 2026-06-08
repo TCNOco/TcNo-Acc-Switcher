@@ -85,7 +85,6 @@
   "Settings_Protocol": "Омогући тцно:\\\\ протокол (препоручено)",
   "Settings_StartCentered": "Покрени програм усредсређен",
   "Settings_OfflineMode": "Офлајн режим (без мрежне активности)",
-  "Settings_WindowsAccent": "Користите боју Wиндоwс Аццент",
   "Settings_HelpTranslate": "[Помоћ превести]",
   "Settings_ViewTranslators": "[Zasluge]",
   "Settings_Header_ActiveBrowser": "(Напредно) Подешавање мотора за рендеровање:",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "Preuzmite sa GitHub-a",
   "Button_Loading": "Učitavanje…",
   "Toast_PlatformsJsonUpdateFound": "Dostupan je noviji Platforms.json (v{version}). Preuzimanje…",
-  "Toast_PlatformsJsonUpdated": "Platforms.json ažuriran na v{version}."
+  "Toast_PlatformsJsonUpdated": "Platforms.json ažuriran na v{version}.",
+  "Toast_DataLocationSuccess": "Lokacija korisničkih podataka je uspešno ažurirana.",
+  "Button_PortableMode": "Prenosivi režim",
+  "Tooltip_PortableMode": "Pritiskom na ovo premestićete folder TcNo Account Switcher odmah pored .exe datoteke za prenosive instalacije.",
+  "Modal_Title_MoveUserdata": "Izaberite lokaciju za premeštanje korisničkih podataka",
+  "Settings_WindowsAccent": "Windows akcenat"
 }

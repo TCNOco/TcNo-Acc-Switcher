@@ -2,11 +2,11 @@ package platform
 
 import "path/filepath"
 
-// WwwrootDir returns {ExeDir}/TcNo Account Switcher/wwwroot (same layout as internal/paths).
+// WwwrootDir returns {UserDataDir}/wwwroot.
 func WwwrootDir() (string, error) {
-	exeDir, err := ResolveExeDir()
+	ud, err := EffectiveUserDataDir()
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(exeDir, UserDataDirName, "wwwroot"), nil
+	return filepath.Join(ud, "wwwroot"), nil
 }

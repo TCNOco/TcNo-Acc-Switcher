@@ -85,7 +85,6 @@
   "Settings_Protocol": "Hoist tcno:\\\\ protocol (Recommended)",
   "Settings_StartCentered": "Hoist code centered",
   "Settings_OfflineMode": "Off the grid mode (No network activity)",
-  "Settings_WindowsAccent": "Use the Windows Highlight Hue",
   "Settings_HelpTranslate": "[Help with the tongue]",
   "Settings_ViewTranslators": "[Thanks t']",
   "Settings_Header_ActiveBrowser": "(Advanced) Set renderin' engine:",
@@ -323,10 +322,10 @@
   "Context_CommunityUsername": "Community Name",
   "Context_LoginUsername": "Cap'n's username",
   "Context_CopySteamIdSubmenu": "Plunder SteamID",
-  "Context_Steam_Id": "SteamID [STEAM0:~]",
-  "Context_Steam_Id3": "SteamID3 [U:1:~]",
+  "Context_Steam_Id": "PirateID [STEAM0:~]",
+  "Context_Steam_Id3": "PirateID3 [U:1:~]",
   "Context_Steam_Id32": "SteamID32, arrr!",
-  "Context_Steam_Id64": "SteamID64 7656~",
+  "Context_Steam_Id64": "PirateID64 7656~",
   "Context_Steam_OpenUserdata": "Open sailor data",
   "Context_ManageSubmenu": "Command",
   "Context_GameDataSubmenu": "Game plunder",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "Plunder from GitHub",
   "Button_Loading": "Loadin'…",
   "Toast_PlatformsJsonUpdateFound": "A fresher Platforms.json be ready (v{version}). Haulin' aboard…",
-  "Toast_PlatformsJsonUpdated": "Platforms.json be updated t' v{version}."
+  "Toast_PlatformsJsonUpdated": "Platforms.json be updated t' v{version}.",
+  "Toast_DataLocationSuccess": "Yer user data location be updated successfully, arr!",
+  "Button_PortableMode": "Travelin' Mode",
+  "Tooltip_PortableMode": "Pressin' this'll move th' TcNo Account Switcher folder right next to th' .exe for travelin' installs, arr!",
+  "Modal_Title_MoveUserdata": "Pick a location to move yer user data, arr!",
+  "Settings_WindowsAccent": "Winders Accent"
 }

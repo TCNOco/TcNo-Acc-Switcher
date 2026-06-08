@@ -85,7 +85,6 @@
   "Settings_Protocol": "启用 tcno:\\\\ 协议（推荐）",
   "Settings_StartCentered": "启动程序时居中",
   "Settings_OfflineMode": "离线模式（无网络活动）",
-  "Settings_WindowsAccent": "使用 Windows 主题色",
   "Settings_HelpTranslate": "[帮助翻译]",
   "Settings_ViewTranslators": "[致谢]",
   "Settings_Header_ActiveBrowser": "（高级）设置渲染引擎：",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "从 GitHub 下载",
   "Button_Loading": "正在加载…",
   "Toast_PlatformsJsonUpdateFound": "有较新的 Platforms.json 可用 (v{version})。正在下载…",
-  "Toast_PlatformsJsonUpdated": "Platforms.json 已更新至 v{version}。"
+  "Toast_PlatformsJsonUpdated": "Platforms.json 已更新至 v{version}。",
+  "Toast_DataLocationSuccess": "用户数据位置更新成功。",
+  "Button_PortableMode": "便携模式",
+  "Tooltip_PortableMode": "按下此按钮会将 TcNo Account Switcher 文件夹移动到 .exe 文件旁边，以便进行便携安装。",
+  "Modal_Title_MoveUserdata": "选择移动用户数据的位置",
+  "Settings_WindowsAccent": "Windows 强调色"
 }

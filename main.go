@@ -57,6 +57,7 @@ func init() {
 	application.RegisterEvent[bool](platform.UpdateCheckFailedEvent)
 	application.RegisterEvent[platform.PlatformsJSONUpdatePayload](platform.PlatformsJSONUpdateFoundEvent)
 	application.RegisterEvent[platform.PlatformsJSONUpdatePayload](platform.PlatformsJSONUpdatedEvent)
+	application.RegisterEvent[platform.UserDataMoveProgressPayload](platform.UserDataMoveProgressEvent)
 
 	platform.SetSteamLaunchHooks(steam.SaveFolderFromConfirmedExe, steam.ResolveSteamExePath)
 	platform.SetSteamReset(steam.ResetToDefaults)
@@ -70,6 +71,16 @@ func init() {
 }
 
 func main() {
+	exeDir, err := platform.ResolveExeDir()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "exe dir:", err)
+		os.Exit(1)
+	}
+	if err := platform.InitDataPaths(exeDir); err != nil {
+		fmt.Fprintln(os.Stderr, "init data paths:", err)
+		os.Exit(1)
+	}
+
 	idx, idxErr := cli.LoadPlatformIndex()
 	idxPtr := idx
 	if idxErr != nil {
@@ -124,6 +135,8 @@ func main() {
 	defer releaseSingleton()
 	winutil.RegisterSingletonReleaser(releaseSingleton)
 
+	platform.RunUserDataMoveCleanup(exeDir, parsed.UserDataMoveFrom, parsed.UserDataMoveTo)
+
 	startupSettings, _ := loadStartupSettings()
 	syncOfflineModeFromSettings(startupSettings)
 	syncWindowsStartupFromSettings(startupSettings)
@@ -144,6 +157,7 @@ func main() {
 		Dispatch:         disp,
 		DiscordRPC:       discordRPC,
 		CrashSubmitted:   crashSubmitted,
+		StartupToast:     parsed.StartupToast,
 		EmbeddedAssets:   assets,
 		TrayIconPNG:      trayIconPNG,
 		UpdaterPublicKey: updaterPublicKey,

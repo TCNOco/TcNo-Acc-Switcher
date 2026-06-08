@@ -37,6 +37,7 @@ type ActiveModal =
       negativeLabel?: string;
       dirsOnly?: boolean;
       soughtFilename?: string;
+      showPortableButton?: boolean;
     } & ModalBodyOptions)
   | (ModalBase & {
       kind: "update";
@@ -136,6 +137,11 @@ export function openPrompt(
   });
 }
 
+/** Returned from [openFolderPicker] when the user chooses portable mode. */
+export const FOLDER_PICKER_PORTABLE = "__portable__";
+/** Returned from [openFolderPicker] when the user chooses the default AppData location. */
+export const FOLDER_PICKER_APPDATA = "__appdata__";
+
 export function openFolderPicker(
   opts: {
     title: string;
@@ -144,6 +150,7 @@ export function openFolderPicker(
     negativeLabel?: string;
     dirsOnly?: boolean;
     soughtFilename?: string;
+    showPortableButton?: boolean;
   } & ModalBodyOptions,
 ): Promise<string | null> {
   return new Promise((resolve) => {
@@ -160,6 +167,7 @@ export function openFolderPicker(
       negativeLabel: opts.negativeLabel,
       dirsOnly: opts.dirsOnly ?? true,
       soughtFilename: opts.soughtFilename,
+      showPortableButton: opts.showPortableButton,
     });
   });
 }

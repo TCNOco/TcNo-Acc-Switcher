@@ -53,8 +53,6 @@ dev_mode:
   executes:
     - cmd: wails3 build DEV=true
       type: blocking
-    - cmd: wails3 task common:copy:platforms_json
-      type: blocking
     - cmd: wails3 task common:install:frontend:deps
       type: blocking
     - cmd: wails3 task common:dev:frontend:nodeps

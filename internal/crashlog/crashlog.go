@@ -15,6 +15,7 @@ import (
 	buildinfo "TcNo-Acc-Switcher/build"
 	"TcNo-Acc-Switcher/internal/api"
 	"TcNo-Acc-Switcher/internal/fsutil"
+	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/stats"
 )
 
@@ -78,11 +79,11 @@ func isOfflineMode() bool {
 }
 
 func readStatsUUID() string {
-	dir, err := exeDir()
+	root, err := paths.DataRoot()
 	if err != nil {
 		return ""
 	}
-	data, err := os.ReadFile(filepath.Join(dir, "Statistics.json"))
+	data, err := os.ReadFile(filepath.Join(root, "Statistics.json"))
 	if err != nil {
 		return ""
 	}

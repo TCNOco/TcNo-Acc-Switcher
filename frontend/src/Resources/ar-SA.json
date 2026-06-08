@@ -85,7 +85,6 @@
   "Settings_Protocol": "تمكين بروتوكول tcno:\\\\(مفضل)",
   "Settings_StartCentered": "بدء البرنامج في منتصف الشاشة",
   "Settings_OfflineMode": "الوضع غير المتصل بالإنترنت (لا يوجد نشاط على الشبكة)",
-  "Settings_WindowsAccent": "استخدام لون ثيم ويندوز",
   "Settings_HelpTranslate": "[ساعد في الترجمة]",
   "Settings_ViewTranslators": "[الشكر]",
   "Settings_Header_ActiveBrowser": "(متقدم) مجموعة تقديم المحرك:",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "تنزيل من GitHub",
   "Button_Loading": "جارٍ التحميل…",
   "Toast_PlatformsJsonUpdateFound": "يتوفر ملف Platforms.json أحدث (v{version}). جارٍ التنزيل…",
-  "Toast_PlatformsJsonUpdated": "تم تحديث Platforms.json إلى v{version}."
+  "Toast_PlatformsJsonUpdated": "تم تحديث Platforms.json إلى v{version}.",
+  "Toast_DataLocationSuccess": "تم تحديث موقع بيانات المستخدم بنجاح.",
+  "Button_PortableMode": "الوضع المحمول",
+  "Tooltip_PortableMode": "الضغط على هذا سينقل مجلد TcNo Account Switcher إلى جانب ملف .exe للتثبيتات المحمولة.",
+  "Modal_Title_MoveUserdata": "اختر موقعًا لنقل بيانات المستخدم",
+  "Settings_WindowsAccent": "تمييز Windows"
 }

@@ -85,7 +85,6 @@
   "Settings_Protocol": "Povolit tcno:\\\\ protokol (doporučeno)",
   "Settings_StartCentered": "Spustit program ve středu obrazovky",
   "Settings_OfflineMode": "Režim offline (žádná síťová aktivita)",
-  "Settings_WindowsAccent": "Použí barvu motivu Windows",
   "Settings_HelpTranslate": "[Pomozte s překladem]",
   "Settings_ViewTranslators": "[Titulky]",
   "Settings_Header_ActiveBrowser": "(Pokročilé) Nastavení vykreslovacího motoru:",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "Stáhnout z GitHubu",
   "Button_Loading": "Načítání…",
   "Toast_PlatformsJsonUpdateFound": "Je k dispozici novější Platforms.json (v{version}). Stahování…",
-  "Toast_PlatformsJsonUpdated": "Platforms.json aktualizován na v{version}."
+  "Toast_PlatformsJsonUpdated": "Platforms.json aktualizován na v{version}.",
+  "Toast_DataLocationSuccess": "Umístění uživatelských dat úspěšně aktualizováno.",
+  "Button_PortableMode": "Přenosný režim",
+  "Tooltip_PortableMode": "Stisknutím přesunete složku TcNo Account Switcher těsně vedle souboru .exe pro přenosné instalace.",
+  "Modal_Title_MoveUserdata": "Vyberte umístění pro přesun uživatelských dat",
+  "Settings_WindowsAccent": "Zvýraznění Windows"
 }

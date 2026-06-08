@@ -476,11 +476,11 @@ func restoreExtractedBackup(restoreRoot string, mappings []backupMapping) error 
 }
 
 func platformBackupDir(platformKey string) (string, error) {
-	exeDir, err := ResolveExeDir()
+	ud, err := EffectiveUserDataDir()
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(exeDir, UserDataDirName, "Backups", safeBackupPlatformName(platformKey)), nil
+	return filepath.Join(ud, "Backups", safeBackupPlatformName(platformKey)), nil
 }
 
 func safeBackupPlatformName(platformKey string) string {

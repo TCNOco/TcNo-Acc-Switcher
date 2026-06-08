@@ -63,11 +63,11 @@ func (e *GameShortcutEntry) UnmarshalJSON(data []byte) error {
 }
 
 func settingsDirUnderExe() (string, error) {
-	exeDir, err := ResolveExeDir()
+	ud, err := EffectiveUserDataDir()
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(exeDir, UserDataDirName, "Settings"), nil
+	return filepath.Join(ud, "Settings"), nil
 }
 
 type PlatformSettings struct {

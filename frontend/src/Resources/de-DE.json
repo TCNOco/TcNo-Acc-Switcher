@@ -85,7 +85,6 @@
   "Settings_Protocol": "tcno:\\\\ Protokoll Aktivieren (empfohlen)",
   "Settings_StartCentered": "Programm zentriert starten",
   "Settings_OfflineMode": "Offline-Modus (keine Netzwerkaktivität)",
-  "Settings_WindowsAccent": "Verwende die Windows-Akzentfarbe",
   "Settings_HelpTranslate": "[Beim Übersetzen helfen]",
   "Settings_ViewTranslators": "[Mitwirkende]",
   "Settings_Header_ActiveBrowser": "(Erweitert) Rendering-Engine einstellen:",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "Von GitHub herunterladen",
   "Button_Loading": "Laden…",
   "Toast_PlatformsJsonUpdateFound": "Eine neuere Platforms.json ist verfügbar (v{version}). Wird heruntergeladen…",
-  "Toast_PlatformsJsonUpdated": "Platforms.json auf v{version} aktualisiert."
+  "Toast_PlatformsJsonUpdated": "Platforms.json auf v{version} aktualisiert.",
+  "Toast_DataLocationSuccess": "Benutzerdaten-Speicherort erfolgreich aktualisiert.",
+  "Button_PortableMode": "Portabler Modus",
+  "Tooltip_PortableMode": "Durch Drücken dieser Schaltfläche wird der Ordner „TcNo Account Switcher“ direkt neben die .exe-Datei für portable Installationen verschoben.",
+  "Modal_Title_MoveUserdata": "Speicherort zum Verschieben der Benutzerdaten auswählen",
+  "Settings_WindowsAccent": "Windows-Akzent"
 }

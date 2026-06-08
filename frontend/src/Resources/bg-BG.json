@@ -85,7 +85,6 @@
   "Settings_Protocol": "Активиране на tcno:\\\\ protocol (препоръчително)",
   "Settings_StartCentered": "Стартиране на програмата центрирано",
   "Settings_OfflineMode": "Офлайн режим (Няма мрежова активност)",
-  "Settings_WindowsAccent": "Използване на цвета на акцента на Windows",
   "Settings_HelpTranslate": "[Помощ за превода]",
   "Settings_ViewTranslators": "[Екип]",
   "Settings_Header_ActiveBrowser": "(Разширено) Задаване на рендиращ двигател:",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "Изтегляне от GitHub",
   "Button_Loading": "Зареждане…",
   "Toast_PlatformsJsonUpdateFound": "Налична е по-нова версия на Platforms.json (v{version}). Изтегляне…",
-  "Toast_PlatformsJsonUpdated": "Platforms.json е актуализиран до v{version}."
+  "Toast_PlatformsJsonUpdated": "Platforms.json е актуализиран до v{version}.",
+  "Toast_DataLocationSuccess": "Местоположението на потребителските данни е обновено успешно.",
+  "Button_PortableMode": "Преносим режим",
+  "Tooltip_PortableMode": "Натискането на този бутон ще премести папката на TcNo Account Switcher точно до .exe файла за преносими инсталации.",
+  "Modal_Title_MoveUserdata": "Изберете местоположение за преместване на потребителските данни",
+  "Settings_WindowsAccent": "Акцент на Windows"
 }

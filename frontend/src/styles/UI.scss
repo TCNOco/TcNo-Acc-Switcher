@@ -118,6 +118,12 @@ button .caret, .button .caret {
   align-items: center;
 }
 
+.multilineSetting {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
 .platformsCheckboxes {
   flex-wrap: wrap;
   gap: 0.5rem;

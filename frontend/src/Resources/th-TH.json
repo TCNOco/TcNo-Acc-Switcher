@@ -85,7 +85,6 @@
   "Settings_Protocol": "เปิดใช้งานโปรโตคอล tcno:\\\\ (แนะนำ)",
   "Settings_StartCentered": "เริ่มต้นโปรแกรมที่อยู่ตรงกลาง",
   "Settings_OfflineMode": "โหมดออฟไลน์ (ไม่มีกิจกรรมเครือข่าย)",
-  "Settings_WindowsAccent": "ใช้สีของวินโดวส์แอคเซนท์",
   "Settings_HelpTranslate": "[ช่วยแปล]",
   "Settings_ViewTranslators": "[เครดิต]",
   "Settings_Header_ActiveBrowser": "(ขั้นสูง) ตั้งค่ากลไกการแสดงผล:",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "ดาวน์โหลดจาก GitHub",
   "Button_Loading": "กำลังโหลด…",
   "Toast_PlatformsJsonUpdateFound": "มี Platforms.json รุ่นใหม่กว่า (v{version}) กำลังดาวน์โหลด…",
-  "Toast_PlatformsJsonUpdated": "Platforms.json อัปเดตเป็น v{version} แล้ว"
+  "Toast_PlatformsJsonUpdated": "Platforms.json อัปเดตเป็น v{version} แล้ว",
+  "Toast_DataLocationSuccess": "อัปเดตตำแหน่งข้อมูลผู้ใช้สำเร็จ",
+  "Button_PortableMode": "โหมดพกพา",
+  "Tooltip_PortableMode": "การกดปุ่มนี้จะย้ายโฟลเดอร์ TcNo Account Switcher ไปไว้ข้างๆ ไฟล์ .exe สำหรับการติดตั้งแบบพกพา",
+  "Modal_Title_MoveUserdata": "เลือกตำแหน่งเพื่อย้ายข้อมูลผู้ใช้",
+  "Settings_WindowsAccent": "สีเน้น Windows"
 }

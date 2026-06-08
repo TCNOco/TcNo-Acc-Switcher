@@ -24,7 +24,7 @@
   "Button_ClearLog": "Șterge jurnalul",
   "Button_WikiInfo": "Mai multe informații (Wiki)",
   "Button_ManagePlatforms": "Gestionați platformele",
-  "Button_Backup": "Backup",
+  "Button_Backup": "Copie de rezervă",
   "Button_BackupAll": "Faceți backup pentru tot",
   "Button_Restore": "Restabiliți",
   "Button_OpenBackup": "Deschideți dosarul de backup",
@@ -85,7 +85,6 @@
   "Settings_Protocol": "Activați tcno:\\\\ protocol (recomandat)",
   "Settings_StartCentered": "Pornește programul centrat",
   "Settings_OfflineMode": "Modul offline (fără activitate în rețea)",
-  "Settings_WindowsAccent": "Utilizează culoarea de accentuare Windows",
   "Settings_HelpTranslate": "[Help translate] ([Ajutor la traducere])",
   "Settings_ViewTranslators": "[Credite]",
   "Settings_Header_ActiveBrowser": "(Avansat) Setați motorul de randare:",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "Descarcă de pe GitHub",
   "Button_Loading": "Se încarcă…",
   "Toast_PlatformsJsonUpdateFound": "Un Platforms.json mai nou este disponibil (v{version}). Se descarcă…",
-  "Toast_PlatformsJsonUpdated": "Platforms.json a fost actualizat la v{version}."
+  "Toast_PlatformsJsonUpdated": "Platforms.json a fost actualizat la v{version}.",
+  "Toast_DataLocationSuccess": "Locația datelor utilizatorului a fost actualizată cu succes.",
+  "Button_PortableMode": "Mod portabil",
+  "Tooltip_PortableMode": "Apăsarea acestui buton va muta folderul TcNo Account Switcher lângă fișierul .exe pentru instalări portabile.",
+  "Modal_Title_MoveUserdata": "Selectați locația pentru mutarea datelor utilizatorului",
+  "Settings_WindowsAccent": "Accent Windows"
 }

@@ -85,7 +85,6 @@
   "Settings_Protocol": "Включить протокол tcno:\\\\ (Рекомендуется)",
   "Settings_StartCentered": "Центрировать окно при запуске",
   "Settings_OfflineMode": "Автономный режим (нет сетевой активности)",
-  "Settings_WindowsAccent": "Использовать цвет Windows",
   "Settings_HelpTranslate": "[Помочь с переводом]",
   "Settings_ViewTranslators": "[Авторы]",
   "Settings_Header_ActiveBrowser": "(Дополнительно) Выбрать режим рендеринга:",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "Скачать с GitHub",
   "Button_Loading": "Загрузка…",
   "Toast_PlatformsJsonUpdateFound": "Доступна обновлённая версия Platforms.json (v{version}). Загрузка…",
-  "Toast_PlatformsJsonUpdated": "Platforms.json обновлён до v{version}."
+  "Toast_PlatformsJsonUpdated": "Platforms.json обновлён до v{version}.",
+  "Toast_DataLocationSuccess": "Местоположение пользовательских данных успешно обновлено.",
+  "Button_PortableMode": "Портативный режим",
+  "Tooltip_PortableMode": "При нажатии этой кнопки папка TcNo Account Switcher будет перемещена прямо рядом с .exe для портативной установки.",
+  "Modal_Title_MoveUserdata": "Выберите местоположение для перемещения пользовательских данных",
+  "Settings_WindowsAccent": "Акцент Windows"
 }

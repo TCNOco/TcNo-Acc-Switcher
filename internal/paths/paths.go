@@ -1,31 +1,35 @@
-// Package paths resolves the app's data directory layout (next to exe for now).
+// Package paths resolves the app's data directory layout.
 package paths
 
 import (
+	"errors"
 	"path/filepath"
 	"strings"
 	"sync"
-
-	"TcNo-Acc-Switcher/internal/platform"
 )
 
 var (
-	dataRootOnce sync.Once
-	dataRoot     string
-	dataRootErr  error
+	dataRootMu  sync.RWMutex
+	dataRoot    string
+	dataRootSet bool
 )
 
-// DataRoot returns {ExeDir}/TcNo Account Switcher/
+// InitDataRoot sets the resolved user data directory. Call once at startup from platform.InitDataPaths.
+func InitDataRoot(dir string) {
+	dataRootMu.Lock()
+	dataRoot = filepath.Clean(dir)
+	dataRootSet = true
+	dataRootMu.Unlock()
+}
+
+// DataRoot returns the resolved user data directory set by [InitDataRoot].
 func DataRoot() (string, error) {
-	dataRootOnce.Do(func() {
-		exeDir, err := platform.ResolveExeDir()
-		if err != nil {
-			dataRootErr = err
-			return
-		}
-		dataRoot = platform.UserDataDir(exeDir)
-	})
-	return dataRoot, dataRootErr
+	dataRootMu.RLock()
+	defer dataRootMu.RUnlock()
+	if !dataRootSet || dataRoot == "" {
+		return "", errors.New("data root not initialized")
+	}
+	return dataRoot, nil
 }
 
 var (
@@ -79,10 +83,7 @@ var (
 
 // ResetForTest resets all cached path singletons for the given exe dir.
 func ResetForTest(dataDir string) {
-	dataRoot = dataDir
-	dataRootErr = nil
-	dataRootOnce = sync.Once{}
-	dataRootOnce.Do(func() {})
+	InitDataRoot(dataDir)
 
 	loginCacheDirBase = filepath.Join(dataDir, "LoginCache")
 	loginCacheDirErr = nil

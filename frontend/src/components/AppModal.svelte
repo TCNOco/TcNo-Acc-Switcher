@@ -10,6 +10,8 @@
   import ModalBodyShell from "./modals/ModalBodyShell.svelte";
   import UpdateModalBody from "./modals/UpdateModalBody.svelte";
   import { normalizeDisplayPath } from "../lib/fsPaths";
+  import { tooltip } from "../lib/actions/tooltip";
+  import { FOLDER_PICKER_APPDATA, FOLDER_PICKER_PORTABLE } from "../stores/modal";
   import * as FilesystemService from "../../bindings/TcNo-Acc-Switcher/filesystemservice";
 
   $: m = $activeModal;
@@ -132,6 +134,16 @@
     const v = normalizeDisplayPath(folderPath.trim());
     if (!v) return;
     dismissModal(v);
+  }
+
+  function folderPortable(): void {
+    if (!m || m.kind !== "folder") return;
+    dismissModal(FOLDER_PICKER_PORTABLE);
+  }
+
+  function folderAppData(): void {
+    if (!m || m.kind !== "folder") return;
+    dismissModal(FOLDER_PICKER_APPDATA);
   }
 
   function pickTreePath(p: string, _entryIsDir: boolean): void {
@@ -316,6 +328,23 @@
               {/if}
               <div class="modal-inline-actions settingsCol inputAndButton">
                 <span class="modal-actions-spacer"></span>
+                {#if m.showPortableButton}
+                  <button
+                    type="button"
+                    class="btnicontext"
+                    on:click={folderAppData}
+                  >
+                    AppData
+                  </button>
+                  <button
+                    type="button"
+                    class="btnicontext"
+                    use:tooltip={$t("Tooltip_PortableMode")}
+                    on:click={folderPortable}
+                  >
+                    {$t("Button_PortableMode")}
+                  </button>
+                {/if}
                 <button
                   type="button"
                   class="btnicontext modal-pick-primary"

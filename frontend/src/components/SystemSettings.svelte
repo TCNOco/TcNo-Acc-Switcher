@@ -2,14 +2,16 @@
   import { onMount } from "svelte";
   import { get } from "svelte/store";
   import { t } from "../stores/i18n";
+  import { showUserDataMoveOverlay, hideUserDataMoveOverlay } from "../stores/userDataMove";
   import { pushToast } from "../stores/toast";
   import { formatToastWithError } from "../lib/formatWailsError";
   import { tooltip } from "../lib/actions/tooltip";
   import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import { offlineMode, setUserOfflineMode } from "../stores/offlineMode";
-  import { openAlertNoButton } from "../stores/modal";
+  import { FOLDER_PICKER_APPDATA, FOLDER_PICKER_PORTABLE, openAlertNoButton, openFolderPicker } from "../stores/modal";
   import { animationsEnabled, loadAnimationsEnabled, setAnimationsEnabled } from "../stores/animationSettings";
   import { checkForUpdatesManually, formatAppVersion } from "../lib/checkForUpdates";
+  import { parentDisplayPath } from "../lib/fsPaths";
   import StatsReportModalBody from "./modals/StatsReportModalBody.svelte";
 
   let isWindows = false;
@@ -38,6 +40,8 @@
   let animationsLoading = false;
   let currentVersion = "";
   let updateCheckLoading = false;
+  let userDataPath = "";
+  let userDataMoveLoading = false;
 
   $: animationsEnabledLocal = $animationsEnabled;
 
@@ -73,6 +77,9 @@
     void PlatformService.GetAppVersion()
       .then((v) => { currentVersion = v || ""; })
       .catch(() => { currentVersion = ""; });
+    void PlatformService.GetUserDataLocation()
+      .then((v) => { userDataPath = v || ""; })
+      .catch(() => { userDataPath = ""; });
     if (isWindows) {
       void PlatformService.GetStartTrayWithWindows()
         .then((v) => { startTrayWithWindows = v; })
@@ -290,6 +297,49 @@
     }
   }
 
+  async function runUserDataMove(action: () => Promise<void>): Promise<void> {
+    if (userDataMoveLoading) return;
+    userDataMoveLoading = true;
+    showUserDataMoveOverlay();
+    try {
+      await action();
+    } catch (e) {
+      hideUserDataMoveOverlay();
+      pushToast({ type: "error", message: formatToastWithError($t("Toast_SaveFailed"), e), duration: 8000 });
+      userDataMoveLoading = false;
+    }
+  }
+
+  async function openMoveUserDataModal(): Promise<void> {
+    if (userDataMoveLoading) return;
+    const picked = await openFolderPicker({
+      title: $t("Modal_Title_MoveUserdata"),
+      body: $t("Modal_SetUserdata"),
+      initialPath: parentDisplayPath(userDataPath),
+      dirsOnly: true,
+      showPortableButton: true,
+      positiveLabel: $t("Modal_SetUserdata_Button"),
+    });
+    if (!picked) return;
+    if (picked === FOLDER_PICKER_PORTABLE) {
+      await runUserDataMove(() => PlatformService.MoveUserDataPortable());
+      return;
+    }
+    if (picked === FOLDER_PICKER_APPDATA) {
+      await runUserDataMove(() => PlatformService.MoveUserDataAppData());
+      return;
+    }
+    await runUserDataMove(() => PlatformService.MoveUserDataTo(picked));
+  }
+
+  async function openUserDataFolder(): Promise<void> {
+    try {
+      await PlatformService.OpenUserDataFolder();
+    } catch (e) {
+      pushToast({ type: "error", message: formatToastWithError($t("Toast_SaveFailed"), e), duration: 8000 });
+    }
+  }
+
   async function onCheckForUpdates(): Promise<void> {
     if (updateCheckLoading) {
       return;
@@ -304,6 +354,23 @@
 </script>
 
 <h2 class="SettingsHeader">{$t("Settings_Header_System")}</h2>
+
+<div class="multilineSetting">
+  <span>{$t("Settings_CurrentDataLocation", { path: userDataPath || "…" })}</span>
+  <span>
+    <a
+      class="fancyLink"
+      class:disabled={userDataMoveLoading}
+      href="#"
+      on:click={(e) => { e.preventDefault(); if (!userDataMoveLoading) void openMoveUserDataModal(); }}
+    >{$t("Settings_SetDataLocation")}</a>
+    <a
+      class="fancyLink"
+      href="#"
+      on:click={(e) => { e.preventDefault(); void openUserDataFolder(); }}
+    >{$t("Settings_OpenUserDataFolder")}</a>
+    </span>
+</div>
 
 <div class="rowSetting">
   <div class="form-check">

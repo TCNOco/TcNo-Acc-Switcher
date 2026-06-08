@@ -85,7 +85,6 @@
   "Settings_Protocol": "Activer le protocole tcno :\\\\ (recommandé)",
   "Settings_StartCentered": "Démarrer le programme centré",
   "Settings_OfflineMode": "Mode hors ligne (aucune activité réseau)",
-  "Settings_WindowsAccent": "Utiliser la couleur d'accentuation Windows",
   "Settings_HelpTranslate": "[Aider à traduire]",
   "Settings_ViewTranslators": "[Crédits]",
   "Settings_Header_ActiveBrowser": "Moteur de rendu (avancé) :",
@@ -419,7 +418,7 @@
   "Error_FileAccessDenied": "Impossible d'accéder au fichier ! Chèque {logPath}",
   "Error_RequiredFileVerify": "Un fichier requis est introuvable. Veuillez vous assurer que les dossiers x64 et x86 existent dans le répertoire d'installation. Si ce n'est pas le cas, exécutez TcNo-Acc-Switcher-Updater.exe et vérifiez les fichiers.",
   "Tooltip_Settings": "Réglages",
-  "Tooltip_Info": "Info",
+  "Tooltip_Info": "Informations",
   "Tooltip_ManagePlatforms": "Afficher ou masquer les autres plates-formes",
   "Tooltip_ExpandShortcuts": "Développer la sélection de jeux et de raccourcis",
   "Tooltip_ShortcutFolder": "Ouvrir le dossier de raccourcis. Placez-y des raccourcis et le sélecteur de compte TcNo pour les voir.",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "Télécharger depuis GitHub",
   "Button_Loading": "Chargement…",
   "Toast_PlatformsJsonUpdateFound": "Une version plus récente de Platforms.json est disponible (v{version}). Téléchargement…",
-  "Toast_PlatformsJsonUpdated": "Platforms.json mis à jour vers v{version}."
+  "Toast_PlatformsJsonUpdated": "Platforms.json mis à jour vers v{version}.",
+  "Toast_DataLocationSuccess": "Emplacement des données utilisateur mis à jour avec succès.",
+  "Button_PortableMode": "Mode portable",
+  "Tooltip_PortableMode": "Cliquer ici déplacera le dossier TcNo Account Switcher juste à côté du .exe pour les installations portables.",
+  "Modal_Title_MoveUserdata": "Sélectionnez l'emplacement pour déplacer les données utilisateur",
+  "Settings_WindowsAccent": "Accent Windows"
 }

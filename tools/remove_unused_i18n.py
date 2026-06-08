@@ -7,6 +7,8 @@ Usage:
   python tools/remove_unused_i18n.py --apply      # write changes
   python tools/remove_unused_i18n.py --apply --prefix Installer_ --prefix Updater_
   python tools/remove_unused_i18n.py --apply --prefix Installer_,Updater_,Installed_
+  python tools/remove_unused_i18n.py --apply --key Settings_WindowsAccent
+  python tools/remove_unused_i18n.py --apply --key Foo_,Bar_   # comma-separated
 
 Keys are "unused" when the exact key string does not appear in:
   - frontend/src/**/*.{svelte,ts,js}
@@ -126,6 +128,13 @@ def main() -> int:
         default=[],
         help="Never remove KEY even if unused (repeatable)",
     )
+    parser.add_argument(
+        "--key",
+        metavar="KEY",
+        action="append",
+        default=[],
+        help="Remove exact KEY from all locale files, even if still referenced in source (repeatable)",
+    )
     args = parser.parse_args()
 
     en_us = RESOURCES / "en-US.json"
@@ -134,31 +143,49 @@ def main() -> int:
         return 1
 
     canonical_keys = load_keys(en_us)
-    source_blob = collect_source_blob()
+    explicit_keys: set[str] = set()
+    for item in args.key:
+        explicit_keys.update(k.strip() for k in item.split(",") if k.strip())
+    explicit_keys -= set(args.keep)
+
     prefixes: tuple[str, ...] | None = None
     if args.prefix:
         expanded: list[str] = []
         for item in args.prefix:
             expanded.extend(p.strip() for p in item.split(",") if p.strip())
         prefixes = tuple(expanded)
-    remove_list = keys_to_remove(
-        canonical_keys,
-        source_blob,
-        prefixes,
-        set(args.also_remove),
-        set(args.keep),
-    )
-    remove_set = set(remove_list)
+
+    remove_set: set[str] = set(explicit_keys)
+    remove_list: list[str] = sorted(explicit_keys)
+
+    scan_unused = prefixes is not None or args.also_remove or not explicit_keys
+    if scan_unused:
+        source_blob = collect_source_blob()
+        unused_list = keys_to_remove(
+            canonical_keys,
+            source_blob,
+            prefixes,
+            set(args.also_remove),
+            set(args.keep),
+        )
+        remove_set.update(unused_list)
+        remove_list = sorted(remove_set, key=lambda k: (k not in explicit_keys, k))
 
     if not remove_set:
         print("No keys to remove.")
         return 0
 
+    missing_from_en = sorted(explicit_keys - set(canonical_keys))
+    if missing_from_en:
+        print("Warning: key(s) not in en-US.json:", ", ".join(missing_from_en))
+
     locale_files = sorted(RESOURCES.glob(LOCALE_GLOB))
     print(f"Mode: {'APPLY' if args.apply else 'DRY-RUN'}")
+    if explicit_keys:
+        print(f"Explicit key(s): {', '.join(sorted(explicit_keys))}")
     if prefixes:
         print(f"Prefix filter: {', '.join(prefixes)}")
-    print(f"Unused keys to remove: {len(remove_set)}")
+    print(f"Keys to remove: {len(remove_set)}")
     print()
 
     total_removed = 0
@@ -175,7 +202,7 @@ def main() -> int:
     else:
         print(f"Dry-run complete ({total_removed} key occurrence(s)). Re-run with --apply to write files.")
         print()
-        print("Keys that would be removed from en-US.json:")
+        print("Keys that would be removed:")
         for key in remove_list:
             print(f"  {key}")
 

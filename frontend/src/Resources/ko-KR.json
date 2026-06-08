@@ -85,7 +85,6 @@
   "Settings_Protocol": "Tcno:\\\\ 프로토콜 사용 (권장)",
   "Settings_StartCentered": "프로그램을 시작할때 화면 중앙에 표시하기",
   "Settings_OfflineMode": "오프라인 모드(네트워크 활동 없음)",
-  "Settings_WindowsAccent": "Windows 강조 색상 사용",
   "Settings_HelpTranslate": "[도움말 번역]",
   "Settings_ViewTranslators": "[제작진]",
   "Settings_Header_ActiveBrowser": "(고급) 렌더링 엔진 설정:",
@@ -325,7 +324,7 @@
   "Context_CopySteamIdSubmenu": "SteamID 복사",
   "Context_Steam_Id": "스팀아이디 [STEAM0: ~]",
   "Context_Steam_Id3": "스팀ID3 [U: 1: 1 문의 ~]",
-  "Context_Steam_Id32": "SteamID32",
+  "Context_Steam_Id32": "스팀ID32",
   "Context_Steam_Id64": "SteamID64 7656 ~",
   "Context_Steam_OpenUserdata": "userdata 열기",
   "Context_ManageSubmenu": "관리",
@@ -590,5 +589,10 @@
   "Button_OpenDownloadPage": "GitHub에서 다운로드",
   "Button_Loading": "로딩 중…",
   "Toast_PlatformsJsonUpdateFound": "최신 Platforms.json이 있습니다 (v{version}). 다운로드 중…",
-  "Toast_PlatformsJsonUpdated": "Platforms.json이 v{version}(으)로 업데이트되었습니다."
+  "Toast_PlatformsJsonUpdated": "Platforms.json이 v{version}(으)로 업데이트되었습니다.",
+  "Toast_DataLocationSuccess": "사용자 데이터 위치가 성공적으로 업데이트되었습니다.",
+  "Button_PortableMode": "포터블 모드",
+  "Tooltip_PortableMode": "이것을 누르면 포터블 설치를 위해 TcNo Account Switcher 폴더를 .exe 바로 옆으로 이동합니다.",
+  "Modal_Title_MoveUserdata": "사용자 데이터를 이동할 위치 선택",
+  "Settings_WindowsAccent": "Windows 강조색"
 }
