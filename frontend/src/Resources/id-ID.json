@@ -285,7 +285,7 @@
   "Toast_FailedUpdateCheck": "Gagal memeriksa pembaruan",
   "Toast_UpToDate": "Versi Anda sudah terbaru!",
   "Toast_UpdateVerifyFail": "Tidak dapat memverifikasi file updater. Unduh versi terbaru dan ganti file di direktori Anda.",
-  "Toast_StartedGame": "Dimulai {program}",
+  "Toast_StartedGame": "{program} started successfully.",
   "Toast_SteamCantLoadXml": "Tidak bisa mendapatkan info XML untuk {steamId}. Lihat log untuk detail lebih lanjut.",
   "Toast_Steam_VacCleared": "Status VAC untuk akun telah dihapus",
   "Toast_Steam_CantDeleteVacCache": "Tidak dapat menghapus 'LoginCache/Steam/VACCache/SteamVACCache.json'",
