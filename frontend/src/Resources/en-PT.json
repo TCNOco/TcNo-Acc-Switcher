@@ -285,7 +285,7 @@
   "Toast_FailedUpdateCheck": "Failed t' check fer updates",
   "Toast_UpToDate": "Yer up to date!",
   "Toast_UpdateVerifyFail": "Can nah verify updater files. Download latest version 'n replace files in yer directory.",
-  "Toast_StartedGame": "Sailed {program}",
+  "Toast_StartedGame": "{program} started successfully.",
   "Toast_SteamCantLoadXml": "Couldn't get XML info fer {steamId}. See log fer more details.",
   "Toast_Steam_VacCleared": "VAC status fer accounts was cleared",
   "Toast_Steam_CantDeleteVacCache": "Could nah scuttle 'LoginCache/Steam/VACCache/SteamVACCache.json'",
