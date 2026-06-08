@@ -1,5 +1,15 @@
 <script lang="ts">
+  import { Browser } from "@wailsio/runtime";
+  import { get } from "svelte/store";
+  import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
+  import type { CrowdinTranslatorsList } from "../lib/crowdinTranslators";
   import { t, availableLocales, locale, setUserLanguage } from "../stores/i18n";
+  import { offlineMode } from "../stores/offlineMode";
+  import { openAlertNoButton } from "../stores/modal";
+  import { pushToast } from "../stores/toast";
+  import CrowdinTranslatorsModalBody from "./modals/CrowdinTranslatorsModalBody.svelte";
+
+  const CROWDIN_URL = "https://crowdin.com/project/tcno-account-switcher";
 
   let open = false;
 
@@ -13,6 +23,40 @@
   async function pick(code: string): Promise<void> {
     await setUserLanguage(code);
     open = false;
+  }
+
+  function openHelpTranslate(e: MouseEvent): void {
+    e.preventDefault();
+    if (get(offlineMode)) {
+      pushToast({
+        type: "info",
+        message: get(t)("Toast_OfflineModeNoLinks"),
+        duration: 5000,
+      });
+      return;
+    }
+    void Browser.OpenURL(CROWDIN_URL);
+  }
+
+  async function openCreditsModal(): Promise<void> {
+    let list: CrowdinTranslatorsList = { proofReaders: [], translators: [] };
+    let loadError: string | undefined;
+
+    if (get(offlineMode)) {
+      loadError = "OFFLINE MODE";
+    } else {
+      try {
+        list = await PlatformService.GetCrowdinTranslators();
+      } catch {
+        loadError = "Failed to load Crowdin supporters!";
+      }
+    }
+
+    void openAlertNoButton({
+      title: get(t)("Modal_Crowdin_Header"),
+      bodyComponent: CrowdinTranslatorsModalBody,
+      bodyProps: { list, loadError },
+    });
   }
 </script>
 
@@ -36,6 +80,10 @@
       </ul>
     {/if}
   </div>
+  <a class="fancyLink" href={CROWDIN_URL} on:click={openHelpTranslate}>{$t("Settings_HelpTranslate")}</a>
+  <a class="fancyLink" href="#" on:click={(e) => { e.preventDefault(); void openCreditsModal(); }}
+    >{$t("Settings_ViewTranslators")}</a
+  >
 </div>
 
 <style lang="scss">

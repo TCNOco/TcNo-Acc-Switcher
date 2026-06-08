@@ -5,7 +5,6 @@
   import { activeModal } from "../stores/modal";
   import { t } from "../stores/i18n";
   import "../styles/Settings.scss";
-  import GeneralSettingsBlock from "../components/GeneralSettingsBlock.svelte";
 
   $: appBarTitle.set($t("Title_Settings"));
   onMount(() => {
@@ -27,6 +26,8 @@
 <div class="main-content main-spacing">
   <h1 class="SettingsHeader">{$t("Settings_Header_AppWide")}</h1>
 
-  <GeneralSettingsBlock />
+  {#await import("../components/GeneralSettingsBlock.svelte") then { default: GeneralSettingsBlock }}
+    <GeneralSettingsBlock />
+  {/await}
 </div>
 <svelte:window on:keydown={onWindowKeyDown} />

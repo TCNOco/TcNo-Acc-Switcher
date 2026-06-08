@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
   import { get } from "svelte/store";
-  import ActionBar from "../components/ActionBar.svelte";
   import ReorderPointerGrid from "../components/ReorderPointerGrid.svelte";
   import SearchOverlay, { type SearchResultRow } from "../components/SearchOverlay.svelte";
   import { route, appBarTitle } from "../stores/nav";
@@ -345,4 +344,3 @@
     {/if}
   </div>
 </div>
-<ActionBar />

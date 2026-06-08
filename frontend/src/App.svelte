@@ -4,7 +4,7 @@
   import { fade } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
   import { Events } from "@wailsio/runtime";
-  import { DUR, motionEnabled } from "./lib/animation";
+  import { motionEnabled } from "./lib/animation";
   import { animationsEnabled, loadAnimationsEnabled } from "./stores/animationSettings";
   import TitleBar from './components/TitleBar.svelte'
   import UpdateBar from './components/UpdateBar.svelte'
@@ -13,8 +13,10 @@
   import FileDropOverlay from './components/FileDropOverlay.svelte'
   import ContextMenu from './components/ContextMenu.svelte'
   import BackgroundDropZones from './components/BackgroundDropZones.svelte'
+  import ActionBar from './components/ActionBar.svelte'
   import { route, applyNavigateJSON, navigateBackLikeButton, navigateForward } from './stores/nav'
   import { installPageStatsTracking } from "./lib/pageStatsTrack";
+  import { loadPageModule, prefetchCommonPages } from "./lib/pageLoaders";
   import { actionBarStatus } from './stores/fileDrop'
   import { t } from "./stores/i18n";
   import { NotifyLaunchUpdateCheck } from "../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
@@ -53,6 +55,7 @@
   }
 
   $: activeBg = resolveActiveBg($route, $appBgInfo, $platformBgInfo, $currentThemeBgUrl, $userOverriddenAppBg);
+  $: showActionBar = $route.page === "home" || $route.page === "platform";
 
   /** Load/reload the platform background for the given platform name. */
   async function loadPlatformBg(platformName: string): Promise<void> {
@@ -178,6 +181,15 @@
     });
     void NotifyLaunchUpdateCheck();
 
+    const schedulePrefetch = (): void => {
+      prefetchCommonPages();
+    };
+    if (typeof requestIdleCallback === "function") {
+      requestIdleCallback(schedulePrefetch);
+    } else {
+      setTimeout(schedulePrefetch, 1500);
+    }
+
     const offUpdateFail = Events.On("update-check-failed", () => {
       pushToast({
         type: "error",
@@ -248,48 +260,29 @@
     {/key}
     <div class="page-content-wrapper">
       {#key $route.page + ("platformName" in $route ? $route.platformName : "")}
-        <div
-          class="page-content"
-          in:fade={{ duration: motionEnabled() ? DUR.normal : 0, easing: cubicOut, delay: motionEnabled() ? 40 : 0 }}
-          out:fade={{ duration: motionEnabled() ? DUR.fast : 0, easing: cubicOut }}
-        >
-          {#if $route.page === "home"}
-            {#await import('./pages/Home.svelte') then { default: Home }}
-              <Home />
-            {/await}
-          {:else if $route.page === "settings"}
-            {#await import('./pages/Settings.svelte') then { default: Settings }}
-              <Settings />
-            {/await}
-          {:else if $route.page === "preview-css"}
-            {#await import('./pages/PreviewCss.svelte') then { default: PreviewCss }}
-              <PreviewCss />
-            {/await}
-          {:else if $route.page === "platform"}
-            {#if $route.platformName === "Steam"}
-              {#await import('./pages/PlatformSteam.svelte') then { default: PlatformSteam }}
-                <PlatformSteam name={$route.platformName} />
-              {/await}
-            {:else}
-              {#await import('./pages/Platform.svelte') then { default: Platform }}
-                <Platform name={$route.platformName} />
-              {/await}
+        <div class="page-content">
+          {#await loadPageModule($route) then { default: Page }}
+            {#if $route.page === "home"}
+              <Page />
+            {:else if $route.page === "settings"}
+              <Page />
+            {:else if $route.page === "preview-css"}
+              <Page />
+            {:else if $route.page === "platform"}
+              <Page name={$route.platformName} />
+            {:else if $route.page === "platform-settings"}
+              <Page name={$route.platformName} />
+            {:else if $route.page === "steam-advanced-clearing"}
+              <Page />
+            {:else if $route.page === "manage-platforms"}
+              <Page />
             {/if}
-          {:else if $route.page === "platform-settings"}
-            {#await import('./pages/PlatformSettings.svelte') then { default: PlatformSettings }}
-              <PlatformSettings name={$route.platformName} />
-            {/await}
-          {:else if $route.page === "steam-advanced-clearing"}
-            {#await import('./pages/SteamAdvancedClearing.svelte') then { default: SteamAdvancedClearing }}
-              <SteamAdvancedClearing />
-            {/await}
-          {:else if $route.page === "manage-platforms"}
-            {#await import('./pages/ManagePlatforms.svelte') then { default: ManagePlatforms }}
-              <ManagePlatforms />
-            {/await}
-          {/if}
+          {/await}
         </div>
       {/key}
+      {#if showActionBar}
+        <ActionBar />
+      {/if}
     </div>
     <BackgroundDropZones />
     <AppModal />
@@ -341,11 +334,10 @@
   }
 
   .page-content {
-    position: absolute;
-    inset: 0;
+    flex: 1;
+    min-height: 0;
     display: flex;
     flex-direction: column;
-    min-height: 0;
     overflow: hidden;
   }
 </style>

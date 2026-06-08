@@ -5,7 +5,6 @@
 <script lang="ts" generics="TAccount">
   import { onDestroy, onMount } from "svelte";
   import { Events } from "@wailsio/runtime";
-  import ActionBar from "./ActionBar.svelte";
   import AccountImagePickOverlay from "./AccountImagePickOverlay.svelte";
   import ReorderPointerGrid from "./ReorderPointerGrid.svelte";
   import TagFilterBar from "./TagFilterBar.svelte";
@@ -909,4 +908,3 @@
   {/if}
 </div>
 <svelte:window on:keydown={onWindowKeyDown} />
-<ActionBar />
