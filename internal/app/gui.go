@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"runtime"
 	"time"
 
 	buildinfo "TcNo-Acc-Switcher/build"
@@ -14,6 +15,7 @@ import (
 	"TcNo-Acc-Switcher/internal/cli"
 	"TcNo-Acc-Switcher/internal/discordrpc"
 	"TcNo-Acc-Switcher/internal/ipc"
+	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/shortcuts"
 	"TcNo-Acc-Switcher/internal/stats"
@@ -71,7 +73,7 @@ func RunGUI(params RunGUIParams) {
 	}
 	wailsLogger := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: wailsLvl}))
 
-	app := application.New(application.Options{
+	appOpts := application.Options{
 		Name:        "TcNo Account Switcher",
 		Description: "A Superfast open-source account switcher",
 		LogLevel:    wailsLvl,
@@ -83,7 +85,18 @@ func RunGUI(params RunGUIParams) {
 		Mac: application.MacOptions{
 			ApplicationShouldTerminateAfterLastWindowClosed: true,
 		},
-	})
+	}
+	if runtime.GOOS == "windows" {
+		if cacheDir, err := paths.WebViewCacheDir(); err != nil {
+			log.Printf("webview cache dir: %v", err)
+		} else if err := os.MkdirAll(cacheDir, 0o755); err != nil {
+			log.Printf("webview cache dir: %v", err)
+		} else {
+			appOpts.Windows.WebviewUserDataPath = cacheDir
+		}
+	}
+
+	app := application.New(appOpts)
 
 	currentVersion := buildinfo.Version()
 
