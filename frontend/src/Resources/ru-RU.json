@@ -60,7 +60,7 @@
   "Settings_RTL": "Показывать текст справа налево",
   "Settings_CollectStats": "Собирать статистику",
   "Settings_ShareStats": "Делитесь статистикой анонимно (рекомендуется)",
-  "Settings_DiscordRpc": "Discord Rich Presence (RPC)",
+  "Settings_DiscordRpc": "Расширенное присутствие Discord (RPC)",
   "Settings_DiscordRpcShare": "Поделиться общим количеством переключений",
   "Settings_ViewStats": "Посмотреть статистику",
   "Preview": "Предварительный просмотр",
@@ -588,5 +588,7 @@
   "Button_UpdateNow": "Обновить сейчас",
   "Button_CheckForUpdates": "Проверить обновления",
   "Button_OpenDownloadPage": "Скачать с GitHub",
-  "Button_Loading": "Загрузка…"
+  "Button_Loading": "Загрузка…",
+  "Toast_PlatformsJsonUpdateFound": "Доступна обновлённая версия Platforms.json (v{version}). Загрузка…",
+  "Toast_PlatformsJsonUpdated": "Platforms.json обновлён до v{version}."
 }

@@ -588,5 +588,7 @@
   "Button_UpdateNow": "Ažurirajte odmah",
   "Button_CheckForUpdates": "Proverite ažuriranja",
   "Button_OpenDownloadPage": "Preuzmite sa GitHub-a",
-  "Button_Loading": "Učitavanje…"
+  "Button_Loading": "Učitavanje…",
+  "Toast_PlatformsJsonUpdateFound": "Dostupan je noviji Platforms.json (v{version}). Preuzimanje…",
+  "Toast_PlatformsJsonUpdated": "Platforms.json ažuriran na v{version}."
 }

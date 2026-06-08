@@ -490,8 +490,8 @@
   "Filter_Menu": "Filtrera och sortera",
   "Filter_Search": "Sök",
   "Filter_SortBy": "Sortera efter",
-  "Filter_Sort_AZ": "A - Z",
-  "Filter_Sort_ZA": "Z - A",
+  "Filter_Sort_AZ": "A - Ö",
+  "Filter_Sort_ZA": "Ö - A",
   "Filter_Sort_UserAZ": "A - Z (Kontots användarnamn)",
   "Filter_Sort_UserZA": "Z - A (Kontots användarnamn)",
   "Filter_Sort_Username": "Användarnamn",
@@ -501,7 +501,7 @@
   "Search_Section_Platform": "PLATTFORM",
   "Search_Section_DisabledPlatform": "INAKTIVERAD",
   "Search_Section_Account": "KONTO",
-  "Search_Section_Game": "APP",
+  "Search_Section_Game": "App",
   "Search_Hint_EnablePlatform": "Klicka för att aktivera plattformen",
   "Search_Hint_Games": "Appar/Spel",
   "Stats_ModalShareEnabled": "Denna statistik delas anonymt och ingår i de offentliga totalerna.",
@@ -588,5 +588,7 @@
   "Button_UpdateNow": "Uppdatera nu",
   "Button_CheckForUpdates": "Sök efter uppdateringar",
   "Button_OpenDownloadPage": "Ladda ner från GitHub",
-  "Button_Loading": "Laddar…"
+  "Button_Loading": "Laddar…",
+  "Toast_PlatformsJsonUpdateFound": "En nyare Platforms.json är tillgänglig (v{version}). Laddar ner…",
+  "Toast_PlatformsJsonUpdated": "Platforms.json uppdaterad till v{version}."
 }

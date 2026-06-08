@@ -588,5 +588,7 @@
   "Button_UpdateNow": "Actualizar ahora",
   "Button_CheckForUpdates": "Buscar actualizaciones",
   "Button_OpenDownloadPage": "Descargar desde GitHub",
-  "Button_Loading": "Cargando…"
+  "Button_Loading": "Cargando…",
+  "Toast_PlatformsJsonUpdateFound": "Hay una nueva versión de Platforms.json disponible (v{version}). Descargando…",
+  "Toast_PlatformsJsonUpdated": "Platforms.json actualizado a v{version}."
 }

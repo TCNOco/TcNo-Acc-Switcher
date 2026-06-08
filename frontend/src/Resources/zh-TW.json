@@ -490,8 +490,8 @@
   "Filter_Menu": "篩選與排序",
   "Filter_Search": "搜尋",
   "Filter_SortBy": "排序依據",
-  "Filter_Sort_AZ": "A - Z",
-  "Filter_Sort_ZA": "Z - A",
+  "Filter_Sort_AZ": "A 到 Z",
+  "Filter_Sort_ZA": "Z 到 A",
   "Filter_Sort_UserAZ": "A - Z（帳戶使用者名稱）",
   "Filter_Sort_UserZA": "Z - A（帳戶使用者名稱）",
   "Filter_Sort_Username": "使用者名稱",
@@ -588,5 +588,7 @@
   "Button_UpdateNow": "立即更新",
   "Button_CheckForUpdates": "檢查更新",
   "Button_OpenDownloadPage": "從 GitHub 下載",
-  "Button_Loading": "載入中…"
+  "Button_Loading": "載入中…",
+  "Toast_PlatformsJsonUpdateFound": "有較新版本的 Platforms.json 可用 (v{version})。正在下載…",
+  "Toast_PlatformsJsonUpdated": "Platforms.json 已更新至 v{version}。"
 }

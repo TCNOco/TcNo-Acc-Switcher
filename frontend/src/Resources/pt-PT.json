@@ -490,8 +490,8 @@
   "Filter_Menu": "Filtrar e ordenar",
   "Filter_Search": "Pesquisar",
   "Filter_SortBy": "Ordenar por",
-  "Filter_Sort_AZ": "A - Z",
-  "Filter_Sort_ZA": "Z - A",
+  "Filter_Sort_AZ": "A a Z",
+  "Filter_Sort_ZA": "Z a A",
   "Filter_Sort_UserAZ": "A - Z (Nome de usuário da conta)",
   "Filter_Sort_UserZA": "Z - A (Nome de usuário da conta)",
   "Filter_Sort_Username": "Nome de usuário",
@@ -539,7 +539,7 @@
   "Status_ActionBar_RestoringAccount": "Restaurando conta salva…",
   "Status_ActionBar_UpdatingSteamLogin": "Atualizando dados de login da Steam…",
   "Status_ActionBar_UpdatingSteamPersona": "Atualizando estado do perfil da Steam…",
-  "Tags_Section": "Tags",
+  "Tags_Section": "Etiquetas",
   "Tags_Add": "Adicionar tags",
   "Tags_Remove": "Remover tags",
   "Tags_RemoveEmpty": "(nenhuma)",
@@ -588,5 +588,7 @@
   "Button_UpdateNow": "Atualizar agora",
   "Button_CheckForUpdates": "Verificar atualizações",
   "Button_OpenDownloadPage": "Baixar do GitHub",
-  "Button_Loading": "Carregando…"
+  "Button_Loading": "Carregando…",
+  "Toast_PlatformsJsonUpdateFound": "Uma versão mais recente do Platforms.json está disponível (v{version}). Baixando…",
+  "Toast_PlatformsJsonUpdated": "Platforms.json atualizado para v{version}."
 }

@@ -588,5 +588,7 @@
   "Button_UpdateNow": "Frissítés most",
   "Button_CheckForUpdates": "Frissítések keresése",
   "Button_OpenDownloadPage": "Letöltés a GitHubról",
-  "Button_Loading": "Betöltés…"
+  "Button_Loading": "Betöltés…",
+  "Toast_PlatformsJsonUpdateFound": "Elérhető egy újabb Platforms.json (v{version}). Letöltés…",
+  "Toast_PlatformsJsonUpdated": "Platforms.json frissítve v{version}."
 }

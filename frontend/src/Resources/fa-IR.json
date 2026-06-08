@@ -60,7 +60,7 @@
   "Settings_RTL": "نمایش متن به صورت راست به چپ",
   "Settings_CollectStats": "جمع آوری آمار",
   "Settings_ShareStats": "به اشتراک گذاری آمار به صورت ناشناس (توصیه می شود)",
-  "Settings_DiscordRpc": "Discord Rich Presence (RPC)",
+  "Settings_DiscordRpc": "دیسکورد Rich Presence (RPC)",
   "Settings_DiscordRpcShare": "کل سوئیچ ها را به اشتراک بگذارید",
   "Settings_ViewStats": "مشاهده آمار",
   "Preview": "پیش نمایش",
@@ -490,8 +490,8 @@
   "Filter_Menu": "فیلتر و مرتب‌سازی",
   "Filter_Search": "جستجو",
   "Filter_SortBy": "مرتب‌سازی بر اساس",
-  "Filter_Sort_AZ": "A - Z",
-  "Filter_Sort_ZA": "Z - A",
+  "Filter_Sort_AZ": "الف - ی",
+  "Filter_Sort_ZA": "ی - الف",
   "Filter_Sort_UserAZ": "A - Z (نام کاربری حساب)",
   "Filter_Sort_UserZA": "Z - A (نام کاربری حساب)",
   "Filter_Sort_Username": "نام کاربری",
@@ -588,5 +588,7 @@
   "Button_UpdateNow": "به‌روزرسانی اکنون",
   "Button_CheckForUpdates": "بررسی برای به‌روزرسانی",
   "Button_OpenDownloadPage": "دانلود از گیت‌هاب",
-  "Button_Loading": "در حال بارگذاری…"
+  "Button_Loading": "در حال بارگذاری…",
+  "Toast_PlatformsJsonUpdateFound": "یک Platforms.json جدیدتر در دسترس است (v{version}). در حال دانلود…",
+  "Toast_PlatformsJsonUpdated": "Platforms.json به نسخهٔ v{version} به‌روز شد."
 }

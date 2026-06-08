@@ -490,8 +490,8 @@
   "Filter_Menu": "Suodata ja lajittele",
   "Filter_Search": "Haku",
   "Filter_SortBy": "Lajitteluperuste",
-  "Filter_Sort_AZ": "A - Z",
-  "Filter_Sort_ZA": "Z - A",
+  "Filter_Sort_AZ": "A - Ö",
+  "Filter_Sort_ZA": "Ö - A",
   "Filter_Sort_UserAZ": "A - Z (Tilin käyttäjätunnus)",
   "Filter_Sort_UserZA": "Z - A (Tilin käyttäjätunnus)",
   "Filter_Sort_Username": "Käyttäjätunnus",
@@ -588,5 +588,7 @@
   "Button_UpdateNow": "Päivitä nyt",
   "Button_CheckForUpdates": "Tarkista päivitykset",
   "Button_OpenDownloadPage": "Lataa GitHubista",
-  "Button_Loading": "Ladataan…"
+  "Button_Loading": "Ladataan…",
+  "Toast_PlatformsJsonUpdateFound": "Uudempi Platforms.json on saatavilla (v{version}). Ladataan…",
+  "Toast_PlatformsJsonUpdated": "Platforms.json päivitetty v{version}."
 }

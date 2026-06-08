@@ -588,5 +588,7 @@
   "Button_UpdateNow": "Actualizează acum",
   "Button_CheckForUpdates": "Verifică actualizări",
   "Button_OpenDownloadPage": "Descarcă de pe GitHub",
-  "Button_Loading": "Se încarcă…"
+  "Button_Loading": "Se încarcă…",
+  "Toast_PlatformsJsonUpdateFound": "Un Platforms.json mai nou este disponibil (v{version}). Se descarcă…",
+  "Toast_PlatformsJsonUpdated": "Platforms.json a fost actualizat la v{version}."
 }

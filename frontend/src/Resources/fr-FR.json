@@ -539,7 +539,7 @@
   "Status_ActionBar_RestoringAccount": "Restauration du compte enregistré…",
   "Status_ActionBar_UpdatingSteamLogin": "Mise à jour des données de connexion Steam…",
   "Status_ActionBar_UpdatingSteamPersona": "Mise à jour de l'état du profil Steam…",
-  "Tags_Section": "Tags",
+  "Tags_Section": "Étiquettes",
   "Tags_Add": "Ajouter des tags",
   "Tags_Remove": "Supprimer des tags",
   "Tags_RemoveEmpty": "(aucun)",
@@ -588,5 +588,7 @@
   "Button_UpdateNow": "Mettre à jour maintenant",
   "Button_CheckForUpdates": "Vérifier les mises à jour",
   "Button_OpenDownloadPage": "Télécharger depuis GitHub",
-  "Button_Loading": "Chargement…"
+  "Button_Loading": "Chargement…",
+  "Toast_PlatformsJsonUpdateFound": "Une version plus récente de Platforms.json est disponible (v{version}). Téléchargement…",
+  "Toast_PlatformsJsonUpdated": "Platforms.json mis à jour vers v{version}."
 }

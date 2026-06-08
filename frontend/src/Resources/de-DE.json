@@ -1,7 +1,7 @@
 {
   "Update": "Update verfügbar! Klicken Sie hier, um es zu starten.",
   "Header_ChooseLanguage": "Sprache auswählen:",
-  "Steam_ShowSteamID": "SteamID",
+  "Steam_ShowSteamID": "Steam-ID",
   "Steam_ShowVac": "VAC-Status",
   "Steam_ShowLastLogin": "Letzte Anmeldezeit",
   "Steam_ShowLimited": "Eingeschränkter Status",
@@ -323,10 +323,10 @@
   "Context_CommunityUsername": "Community-Benutzername",
   "Context_LoginUsername": "Login-Benutzername",
   "Context_CopySteamIdSubmenu": "SteamID kopieren",
-  "Context_Steam_Id": "SteamID [STEAM0:~]",
-  "Context_Steam_Id3": "SteamID3 [U:1:~]",
-  "Context_Steam_Id32": "SteamID32",
-  "Context_Steam_Id64": "SteamID64 7656~",
+  "Context_Steam_Id": "Steam-ID [STEAM0:~]",
+  "Context_Steam_Id3": "Steam-ID3 [U:1:~]",
+  "Context_Steam_Id32": "Steam-ID32",
+  "Context_Steam_Id64": "Steam-ID64 7656~",
   "Context_Steam_OpenUserdata": "Benutzerdaten öffnen",
   "Context_ManageSubmenu": "Verwalten",
   "Context_GameDataSubmenu": "Spieldaten",
@@ -588,5 +588,7 @@
   "Button_UpdateNow": "Jetzt aktualisieren",
   "Button_CheckForUpdates": "Nach Updates suchen",
   "Button_OpenDownloadPage": "Von GitHub herunterladen",
-  "Button_Loading": "Laden…"
+  "Button_Loading": "Laden…",
+  "Toast_PlatformsJsonUpdateFound": "Eine neuere Platforms.json ist verfügbar (v{version}). Wird heruntergeladen…",
+  "Toast_PlatformsJsonUpdated": "Platforms.json auf v{version} aktualisiert."
 }

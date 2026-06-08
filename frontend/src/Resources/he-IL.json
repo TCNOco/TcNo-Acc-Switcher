@@ -490,8 +490,8 @@
   "Filter_Menu": "סינון ומיון",
   "Filter_Search": "חיפוש",
   "Filter_SortBy": "מיין לפי",
-  "Filter_Sort_AZ": "A - Z",
-  "Filter_Sort_ZA": "Z - A",
+  "Filter_Sort_AZ": "A - ת",
+  "Filter_Sort_ZA": "ת - A",
   "Filter_Sort_UserAZ": "A - Z (שם המשתמש של החשבון)",
   "Filter_Sort_UserZA": "Z - A (שם המשתמש של החשבון)",
   "Filter_Sort_Username": "שם משתמש",
@@ -588,5 +588,7 @@
   "Button_UpdateNow": "עדכן עכשיו",
   "Button_CheckForUpdates": "בדוק עדכונים",
   "Button_OpenDownloadPage": "הורד מ-GitHub",
-  "Button_Loading": "טוען…"
+  "Button_Loading": "טוען…",
+  "Toast_PlatformsJsonUpdateFound": "קובץ Platforms.json חדש יותר זמין (v{version}). מוריד…",
+  "Toast_PlatformsJsonUpdated": "Platforms.json עודכן לגרסה v{version}."
 }

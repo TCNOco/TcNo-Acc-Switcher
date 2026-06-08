@@ -588,5 +588,7 @@
   "Button_UpdateNow": "अभी अपडेट करें",
   "Button_CheckForUpdates": "अपडेट की जाँच करें",
   "Button_OpenDownloadPage": "GitHub से डाउनलोड करें",
-  "Button_Loading": "लोड हो रहा है…"
+  "Button_Loading": "लोड हो रहा है…",
+  "Toast_PlatformsJsonUpdateFound": "एक नया Platforms.json उपलब्ध है (v{version})। डाउनलोड हो रहा है…",
+  "Toast_PlatformsJsonUpdated": "Platforms.json को v{version} में अपडेट कर दिया गया।"
 }

@@ -1,7 +1,7 @@
 {
   "Update": "更新可用！点击这里开始更新。",
   "Header_ChooseLanguage": "选择语言：",
-  "Steam_ShowSteamID": "SteamID",
+  "Steam_ShowSteamID": "Steam ID",
   "Steam_ShowVac": "VAC 状态",
   "Steam_ShowLastLogin": "上次登录时间",
   "Steam_ShowLimited": "受限状态",
@@ -323,10 +323,10 @@
   "Context_CommunityUsername": "社区用户名",
   "Context_LoginUsername": "登录用户名",
   "Context_CopySteamIdSubmenu": "复制 SteamID",
-  "Context_Steam_Id": "SteamID [STEAM0:~]",
-  "Context_Steam_Id3": "SteamID3 [U:1:~]",
-  "Context_Steam_Id32": "SteamID32",
-  "Context_Steam_Id64": "SteamID64 7656~",
+  "Context_Steam_Id": "Steam ID [STEAM0:~]",
+  "Context_Steam_Id3": "Steam ID3 [U:1:~]",
+  "Context_Steam_Id32": "Steam ID32",
+  "Context_Steam_Id64": "Steam ID64 7656~",
   "Context_Steam_OpenUserdata": "打开 userdata 文件夹",
   "Context_ManageSubmenu": "管理",
   "Context_GameDataSubmenu": "游戏数据",
@@ -588,5 +588,7 @@
   "Button_UpdateNow": "立即更新",
   "Button_CheckForUpdates": "检查更新",
   "Button_OpenDownloadPage": "从 GitHub 下载",
-  "Button_Loading": "正在加载…"
+  "Button_Loading": "正在加载…",
+  "Toast_PlatformsJsonUpdateFound": "有较新的 Platforms.json 可用 (v{version})。正在下载…",
+  "Toast_PlatformsJsonUpdated": "Platforms.json 已更新至 v{version}。"
 }

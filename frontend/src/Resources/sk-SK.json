@@ -588,5 +588,7 @@
   "Button_UpdateNow": "Aktualizovať teraz",
   "Button_CheckForUpdates": "Skontrolovať aktualizácie",
   "Button_OpenDownloadPage": "Stiahnuť z GitHubu",
-  "Button_Loading": "Načítava sa…"
+  "Button_Loading": "Načítava sa…",
+  "Toast_PlatformsJsonUpdateFound": "K dispozícii je novšia Platforms.json (v{version}). Prebieha sťahovanie…",
+  "Toast_PlatformsJsonUpdated": "Platforms.json bol aktualizovaný na v{version}."
 }

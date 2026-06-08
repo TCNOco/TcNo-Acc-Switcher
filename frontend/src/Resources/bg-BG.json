@@ -1,7 +1,7 @@
 {
   "Update": "Налична актуализация! Щракнете тук, за да я стартирате.",
   "Header_ChooseLanguage": "Избор на език:",
-  "Steam_ShowSteamID": "SteamID",
+  "Steam_ShowSteamID": "Steam ID",
   "Steam_ShowVac": "VAC състояние",
   "Steam_ShowLastLogin": "Време на последно влизане",
   "Steam_ShowLimited": "Ограничено състояние",
@@ -325,8 +325,8 @@
   "Context_CopySteamIdSubmenu": "Копиране на SteamID",
   "Context_Steam_Id": "SteamID [STEAM0 :~]",
   "Context_Steam_Id3": "SteamID3 [U:1 :~]",
-  "Context_Steam_Id32": "SteamID32",
-  "Context_Steam_Id64": "SteamID64 7656~",
+  "Context_Steam_Id32": "Steam ID32",
+  "Context_Steam_Id64": "Steam ID64 7656~",
   "Context_Steam_OpenUserdata": "Отваряне на потребителски данни",
   "Context_ManageSubmenu": "Управление",
   "Context_GameDataSubmenu": "Данни за играта",
@@ -588,5 +588,7 @@
   "Button_UpdateNow": "Актуализиране сега",
   "Button_CheckForUpdates": "Проверка за актуализации",
   "Button_OpenDownloadPage": "Изтегляне от GitHub",
-  "Button_Loading": "Зареждане…"
+  "Button_Loading": "Зареждане…",
+  "Toast_PlatformsJsonUpdateFound": "Налична е по-нова версия на Platforms.json (v{version}). Изтегляне…",
+  "Toast_PlatformsJsonUpdated": "Platforms.json е актуализиран до v{version}."
 }

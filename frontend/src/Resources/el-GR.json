@@ -588,5 +588,7 @@
   "Button_UpdateNow": "Ενημέρωση τώρα",
   "Button_CheckForUpdates": "Έλεγχος για ενημερώσεις",
   "Button_OpenDownloadPage": "Λήψη από το GitHub",
-  "Button_Loading": "Φόρτωση…"
+  "Button_Loading": "Φόρτωση…",
+  "Toast_PlatformsJsonUpdateFound": "Μια νεότερη έκδοση του Platforms.json είναι διαθέσιμη (v{version}). Λήψη σε εξέλιξη…",
+  "Toast_PlatformsJsonUpdated": "Το Platforms.json ενημερώθηκε στην έκδοση v{version}."
 }

@@ -588,5 +588,7 @@
   "Button_UpdateNow": "Dateer nou op",
   "Button_CheckForUpdates": "Kontroleer vir opdaterings",
   "Button_OpenDownloadPage": "Laai af van GitHub",
-  "Button_Loading": "Laai tans..."
+  "Button_Loading": "Laai tans...",
+  "Toast_PlatformsJsonUpdateFound": "'n Nuwer Platforms.json is beskikbaar (v{version}). Laai af…",
+  "Toast_PlatformsJsonUpdated": "Platforms.json opgedateer na v{version}."
 }

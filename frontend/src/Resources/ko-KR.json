@@ -588,5 +588,7 @@
   "Button_UpdateNow": "지금 업데이트",
   "Button_CheckForUpdates": "업데이트 확인",
   "Button_OpenDownloadPage": "GitHub에서 다운로드",
-  "Button_Loading": "로딩 중…"
+  "Button_Loading": "로딩 중…",
+  "Toast_PlatformsJsonUpdateFound": "최신 Platforms.json이 있습니다 (v{version}). 다운로드 중…",
+  "Toast_PlatformsJsonUpdated": "Platforms.json이 v{version}(으)로 업데이트되었습니다."
 }

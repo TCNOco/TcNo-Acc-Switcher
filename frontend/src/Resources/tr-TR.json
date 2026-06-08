@@ -588,5 +588,7 @@
   "Button_UpdateNow": "Şimdi Güncelle",
   "Button_CheckForUpdates": "Güncellemeleri kontrol et",
   "Button_OpenDownloadPage": "GitHub'dan indir",
-  "Button_Loading": "Yükleniyor…"
+  "Button_Loading": "Yükleniyor…",
+  "Toast_PlatformsJsonUpdateFound": "Daha yeni bir Platforms.json mevcut (v{version}). İndiriliyor…",
+  "Toast_PlatformsJsonUpdated": "Platforms.json v{version} sürümüne güncellendi."
 }

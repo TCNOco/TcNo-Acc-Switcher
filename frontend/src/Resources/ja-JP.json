@@ -588,5 +588,7 @@
   "Button_UpdateNow": "今すぐ更新",
   "Button_CheckForUpdates": "更新を確認",
   "Button_OpenDownloadPage": "GitHub からダウンロード",
-  "Button_Loading": "読み込み中…"
+  "Button_Loading": "読み込み中…",
+  "Toast_PlatformsJsonUpdateFound": "新しい Platforms.json が利用可能です (v{version})。ダウンロード中…",
+  "Toast_PlatformsJsonUpdated": "Platforms.json が v{version} に更新されました。"
 }

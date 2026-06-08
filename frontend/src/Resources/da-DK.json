@@ -490,8 +490,8 @@
   "Filter_Menu": "Filtrér og sortér",
   "Filter_Search": "Søg",
   "Filter_SortBy": "Sortér efter",
-  "Filter_Sort_AZ": "A - Z",
-  "Filter_Sort_ZA": "Z - A",
+  "Filter_Sort_AZ": "A - Å",
+  "Filter_Sort_ZA": "Å - A",
   "Filter_Sort_UserAZ": "A - Z (Kontobrugernavn)",
   "Filter_Sort_UserZA": "Z - A (Kontobrugernavn)",
   "Filter_Sort_Username": "Brugernavn",
@@ -539,7 +539,7 @@
   "Status_ActionBar_RestoringAccount": "Gendanner gemt konto…",
   "Status_ActionBar_UpdatingSteamLogin": "Opdaterer Steam-login-data…",
   "Status_ActionBar_UpdatingSteamPersona": "Opdaterer Steam-profilstatus…",
-  "Tags_Section": "Tags",
+  "Tags_Section": "Mærkater",
   "Tags_Add": "Tilføj tags",
   "Tags_Remove": "Fjern tags",
   "Tags_RemoveEmpty": "(ingen)",
@@ -588,5 +588,7 @@
   "Button_UpdateNow": "Opdater nu",
   "Button_CheckForUpdates": "Søg efter opdateringer",
   "Button_OpenDownloadPage": "Download fra GitHub",
-  "Button_Loading": "Indlæser…"
+  "Button_Loading": "Indlæser…",
+  "Toast_PlatformsJsonUpdateFound": "En nyere Platforms.json er tilgængelig (v{version}). Henter…",
+  "Toast_PlatformsJsonUpdated": "Platforms.json opdateret til v{version}."
 }

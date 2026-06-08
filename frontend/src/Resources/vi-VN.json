@@ -588,5 +588,7 @@
   "Button_UpdateNow": "Cập nhật ngay",
   "Button_CheckForUpdates": "Kiểm tra cập nhật",
   "Button_OpenDownloadPage": "Tải xuống từ GitHub",
-  "Button_Loading": "Đang tải…"
+  "Button_Loading": "Đang tải…",
+  "Toast_PlatformsJsonUpdateFound": "Đã có Platforms.json mới hơn (v{version}). Đang tải xuống…",
+  "Toast_PlatformsJsonUpdated": "Platforms.json đã được cập nhật lên v{version}."
 }

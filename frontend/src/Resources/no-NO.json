@@ -341,7 +341,7 @@
   "Context_Hide": "Gjemme seg",
   "ProfileImage_ToggleText": "Bruk bilde som kontobilde",
   "Title_Platforms_Settings": "TcNo Account Switcher - Plattforminnstillinger",
-  "Title_Settings_TestCss": "TcNo Account Switcher - Test CSS Styling",
+  "Title_Settings_TestCss": "TcNo Account Switcher - Test CSS-styling",
   "Title_AccountsList": "TcNo-kontobytter - {platform}",
   "Title_TextEditor": "TcNo Account Switcher - Tekstredigerer",
   "Title_Settings": "TcNo Account Switcher - Innstillinger",
@@ -501,7 +501,7 @@
   "Search_Section_Platform": "PLATTFORM",
   "Search_Section_DisabledPlatform": "DEAKTIVERT",
   "Search_Section_Account": "KONTO",
-  "Search_Section_Game": "APP",
+  "Search_Section_Game": "App",
   "Search_Hint_EnablePlatform": "Klikk for å aktivere plattform",
   "Search_Hint_Games": "App/Spill",
   "Stats_ModalShareEnabled": "Disse statistikkene deles anonymt og er inkludert i de offentlige totalene.",
@@ -588,5 +588,7 @@
   "Button_UpdateNow": "Oppdater nå",
   "Button_CheckForUpdates": "Se etter oppdateringer",
   "Button_OpenDownloadPage": "Last ned fra GitHub",
-  "Button_Loading": "Laster…"
+  "Button_Loading": "Laster…",
+  "Toast_PlatformsJsonUpdateFound": "En nyere Platforms.json er tilgjengelig (v{version}). Laster ned…",
+  "Toast_PlatformsJsonUpdated": "Platforms.json oppdatert til v{version}."
 }

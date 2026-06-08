@@ -588,5 +588,7 @@
   "Button_UpdateNow": "Оновити зараз",
   "Button_CheckForUpdates": "Перевірити наявність оновлень",
   "Button_OpenDownloadPage": "Завантажити з GitHub",
-  "Button_Loading": "Завантаження…"
+  "Button_Loading": "Завантаження…",
+  "Toast_PlatformsJsonUpdateFound": "Доступна новіша версія Platforms.json (v{version}). Завантаження…",
+  "Toast_PlatformsJsonUpdated": "Platforms.json оновлено до v{version}."
 }

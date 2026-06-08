@@ -588,5 +588,7 @@
   "Button_UpdateNow": "Perbarui Sekarang",
   "Button_CheckForUpdates": "Periksa pembaruan",
   "Button_OpenDownloadPage": "Unduh dari GitHub",
-  "Button_Loading": "Memuat…"
+  "Button_Loading": "Memuat…",
+  "Toast_PlatformsJsonUpdateFound": "Platforms.json yang lebih baru tersedia (v{version}). Mengunduh…",
+  "Toast_PlatformsJsonUpdated": "Platforms.json diperbarui ke v{version}."
 }
