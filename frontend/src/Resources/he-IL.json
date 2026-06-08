@@ -285,7 +285,7 @@
   "Toast_FailedUpdateCheck": "בדיקת העדכונים נכשלה",
   "Toast_UpToDate": "הגרסה שלך עדכנית!",
   "Toast_UpdateVerifyFail": "לא ניתן לאמת קבצי עדכון. הורד את הגירסה האחרונה והחלף קבצים בספריה שלך.",
-  "Toast_StartedGame": "התחיל {program}",
+  "Toast_StartedGame": "{program} started successfully.",
   "Toast_SteamCantLoadXml": "לא ניתן היה לקבל מידע XML עבור {steamId}. ראה יומן לפרטים נוספים.",
   "Toast_Steam_VacCleared": "סטטוס VAC עבור חשבונות נוקה",
   "Toast_Steam_CantDeleteVacCache": "לא ניתן למחוק את 'LoginCache/Steam/VACCache/SteamVACCache.json'",
