@@ -199,6 +199,30 @@
       });
     });
 
+    const offPlatformsFound = Events.On("platforms-json-update-found", (ev) => {
+      const version = typeof ev.data === "object" && ev.data && "version" in ev.data
+        ? String((ev.data as { version?: string }).version ?? "")
+        : "";
+      pushToast({
+        type: "info",
+        title: "",
+        message: get(t)("Toast_PlatformsJsonUpdateFound", { version }),
+        duration: 8000,
+      });
+    });
+
+    const offPlatformsUpdated = Events.On("platforms-json-updated", (ev) => {
+      const version = typeof ev.data === "object" && ev.data && "version" in ev.data
+        ? String((ev.data as { version?: string }).version ?? "")
+        : "";
+      pushToast({
+        type: "success",
+        title: "",
+        message: get(t)("Toast_PlatformsJsonUpdated", { version }),
+        duration: 8000,
+      });
+    });
+
     function parseI18nPayload(raw: string): { key: string; vars?: Record<string, string | number> } {
       const parts = raw.slice(5).split("\u001f");
       const key = parts.shift() ?? "";
@@ -237,6 +261,8 @@
       off?.();
       offNav?.();
       offUpdateFail?.();
+      offPlatformsFound?.();
+      offPlatformsUpdated?.();
       offSvgBridge?.();
     };
   });

@@ -10,6 +10,7 @@ import (
 	"github.com/wailsapp/wails/v3/pkg/application"
 	"github.com/wailsapp/wails/v3/pkg/updater"
 
+	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/updatecheck"
 )
 
@@ -65,6 +66,8 @@ func runLaunchUpdateCheck() {
 		return
 	}
 
+	go runLaunchPlatformsJSONCheck(exeDir)
+
 	wailsCtx, wailsCancel := context.WithTimeout(context.Background(), wailsUpdateCheckTimeout)
 	defer wailsCancel()
 	if _, ok := tryWailsUpdateCheck(wailsCtx); ok {
@@ -78,6 +81,14 @@ func (*PlatformService) CheckForUpdatesAndInstall() {
 	go func() {
 		app := application.Get()
 		if app == nil {
+			return
+		}
+		exeDir, err := ResolveExeDir()
+		if err != nil {
+			return
+		}
+		s, err := loadSettings(exeDir)
+		if err != nil || s.OfflineMode {
 			return
 		}
 		if err := app.Updater.CheckAndInstall(context.Background()); err != nil {
@@ -124,6 +135,9 @@ func wailsReleaseMessage(rel *updater.Release) string {
 func tryWailsUpdateCheck(ctx context.Context) (string, bool) {
 	app := application.Get()
 	if app == nil {
+		return "", false
+	}
+	if appclient.IsOfflineMode() {
 		return "", false
 	}
 

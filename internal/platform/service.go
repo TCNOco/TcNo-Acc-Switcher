@@ -21,6 +21,7 @@ import (
 
 type platformsFile struct {
 	Platforms map[string]json.RawMessage `json:"Platforms"`
+	Version   string                     `json:"Version,omitempty"`
 }
 
 type PlatformStartup struct {

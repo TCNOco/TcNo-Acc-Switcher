@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"TcNo-Acc-Switcher/internal/api"
+	"TcNo-Acc-Switcher/internal/appclient"
 )
 
 const (
@@ -17,7 +18,6 @@ const (
 	LaunchCheckDelay = 700 * time.Millisecond
 )
 
-var sharedHTTPClient = &http.Client{Timeout: httpTimeout}
 
 type failStateJSON struct {
 	At string `json:"at"`
@@ -46,8 +46,11 @@ func IsUpToDate(current, latest string) bool {
 }
 
 func FetchLatestVersion(ctx context.Context, client *http.Client, currentVersion string) (version string, message string, err error) {
+	if appclient.IsOfflineMode() {
+		return "", "", appclient.ErrOfflineMode
+	}
 	if client == nil {
-		client = http.DefaultClient
+		client = appclient.Shared
 	}
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, updateAPIURL(currentVersion), nil)
 	if err != nil {
@@ -77,13 +80,16 @@ func FetchLatestVersion(ctx context.Context, client *http.Client, currentVersion
 // RunLaunchAPICheck runs the tcno.co API check used as an updater fallback on launch.
 // Fail toasts are throttled to once per day.
 func RunLaunchAPICheck(ctx context.Context, exeDir string, currentVersion string, onUpdateAvailable func(message string), onCheckFailed func()) {
+	if appclient.IsOfflineMode() {
+		return
+	}
 	if ctx == nil {
 		ctx = context.Background()
 	}
 	ctx, cancel := context.WithTimeout(ctx, httpTimeout)
 	defer cancel()
 
-	latest, message, err := FetchLatestVersion(ctx, sharedHTTPClient, currentVersion)
+	latest, message, err := FetchLatestVersion(ctx, appclient.Shared, currentVersion)
 	if err != nil {
 		if shouldEmitFailToast(exeDir) {
 			_ = writeFailTimestamp(exeDir)
@@ -103,7 +109,10 @@ func RunLaunchAPICheck(ctx context.Context, exeDir string, currentVersion string
 
 // RunManualCheck checks for updates on user request. Returns "available", "up-to-date", or "failed".
 func RunManualCheck(ctx context.Context, currentVersion string, onUpdateAvailable func(message string)) string {
-	latest, message, err := FetchLatestVersion(ctx, sharedHTTPClient, currentVersion)
+	if appclient.IsOfflineMode() {
+		return "failed"
+	}
+	latest, message, err := FetchLatestVersion(ctx, appclient.Shared, currentVersion)
 	if err != nil {
 		return "failed"
 	}

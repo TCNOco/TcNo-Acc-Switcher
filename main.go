@@ -55,6 +55,8 @@ func init() {
 	application.RegisterEvent[[]string](shortcuts.FilesDroppedEvent)
 	application.RegisterEvent[platform.UpdateAvailablePayload](platform.AppUpdateAvailableEvent)
 	application.RegisterEvent[bool](platform.UpdateCheckFailedEvent)
+	application.RegisterEvent[platform.PlatformsJSONUpdatePayload](platform.PlatformsJSONUpdateFoundEvent)
+	application.RegisterEvent[platform.PlatformsJSONUpdatePayload](platform.PlatformsJSONUpdatedEvent)
 
 	platform.SetSteamLaunchHooks(steam.SaveFolderFromConfirmedExe, steam.ResolveSteamExePath)
 	platform.SetSteamReset(steam.ResetToDefaults)
