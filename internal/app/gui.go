@@ -1,12 +1,12 @@
 package app
 
 import (
-	"context"
 	"io/fs"
 	"log"
 	"log/slog"
 	"os"
 	"path/filepath"
+	"runtime"
 	"time"
 
 	buildinfo "TcNo-Acc-Switcher/build"
@@ -15,12 +15,14 @@ import (
 	"TcNo-Acc-Switcher/internal/cli"
 	"TcNo-Acc-Switcher/internal/discordrpc"
 	"TcNo-Acc-Switcher/internal/ipc"
+	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/shortcuts"
 	"TcNo-Acc-Switcher/internal/stats"
 	"TcNo-Acc-Switcher/internal/steam"
 	"TcNo-Acc-Switcher/internal/tray"
 	"TcNo-Acc-Switcher/internal/updatecheck"
+	"TcNo-Acc-Switcher/internal/updatertheme"
 	"TcNo-Acc-Switcher/internal/winutil"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
@@ -71,7 +73,7 @@ func RunGUI(params RunGUIParams) {
 	}
 	wailsLogger := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: wailsLvl}))
 
-	app := application.New(application.Options{
+	appOpts := application.Options{
 		Name:        "TcNo Account Switcher",
 		Description: "A Superfast open-source account switcher",
 		LogLevel:    wailsLvl,
@@ -83,38 +85,45 @@ func RunGUI(params RunGUIParams) {
 		Mac: application.MacOptions{
 			ApplicationShouldTerminateAfterLastWindowClosed: true,
 		},
-	})
+	}
+	if runtime.GOOS == "windows" {
+		if cacheDir, err := paths.WebViewCacheDir(); err != nil {
+			log.Printf("webview cache dir: %v", err)
+		} else if err := os.MkdirAll(cacheDir, 0o755); err != nil {
+			log.Printf("webview cache dir: %v", err)
+		} else {
+			appOpts.Windows.WebviewUserDataPath = cacheDir
+		}
+	}
+
+	app := application.New(appOpts)
 
 	currentVersion := buildinfo.Version()
 
 	if currentVersion != "" {
 		gh, err := updatecheck.NewSignedGitHubProvider(github.Config{
-			Repository:    "TCNOco/TcNo-Acc-Switcher",
+			Repository:    "TCNOco/TcNo-Acc-Switcher-BETA", // TODO: Reset back to TCNOco/TcNo-Acc-Switcher when done testing.
 			ChecksumAsset: "SHA256SUMS",
+			AssetMatcher:  updatecheck.GitHubAssetMatcher,
 		}, ".exe.sig")
 		if err != nil {
 			app.Logger.Error("updater: provider", "error", err)
 		} else {
+			updaterWindow := updatertheme.NewBuiltinWindow()
+			updatertheme.SetWindow(updaterWindow)
 			if err := app.Updater.Init(updater.Config{
 				CurrentVersion: currentVersion,
 				Providers:      []updater.Provider{gh},
 				PublicKey:      params.UpdaterPublicKey,
 				CheckInterval:  6 * time.Hour,
+				Window:         updaterWindow,
 			}); err != nil {
 				app.Logger.Error("updater: init", "error", err)
+			} else {
+				platform.EnableAutoRestartAfterUpdate(app)
 			}
 		}
 
-		appMenu := app.Menu.New()
-		app.Menu.SetApplicationMenu(appMenu)
-		fileMenu := appMenu.AddSubmenu("App")
-		fileMenu.Add("Check for Updates…").OnClick(func(*application.Context) {
-			go func() {
-				if err := app.Updater.CheckAndInstall(context.Background()); err != nil {
-					app.Logger.Error("update", "error", err)
-				}
-			}()
-		})
 	}
 
 	if params.CrashSubmitted {

@@ -6,6 +6,7 @@
   import { t } from "../../stores/i18n";
   import { offlineMode } from "../../stores/offlineMode";
   import { pushToast } from "../../stores/toast";
+  import { checkForUpdatesManually } from "../../lib/checkForUpdates";
 
   let currentVersion = "0.0.0";
 
@@ -30,6 +31,11 @@
       return;
     }
     void Browser.OpenURL(url);
+  }
+
+  async function onVersionClick(e: MouseEvent): Promise<void> {
+    e.preventDefault();
+    await checkForUpdatesManually();
   }
 </script>
 
@@ -90,7 +96,7 @@
   </div>
 </div>
 <div class="versionIdentifier">
-  <span>{$t("Modal_Info_Version")}: {currentVersion}</span>
+  <span>{$t("Modal_Info_Version")}: <a href="#" class="version-link" on:click={(e) => void onVersionClick(e)}>{currentVersion}</a></span>
 </div>
 
 <style lang="scss">
@@ -148,5 +154,15 @@
     border-top: 1px solid var(--border-bar-bg);
     font-size: 0.85rem;
     opacity: 0.85;
+  }
+
+  .version-link {
+    color: var(--accent, #f90);
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.85;
+    }
   }
 </style>

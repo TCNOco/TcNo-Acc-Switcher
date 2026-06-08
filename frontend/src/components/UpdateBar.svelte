@@ -5,12 +5,11 @@
   import { motionEnabled } from "../lib/animation";
   import { Events } from "@wailsio/runtime";
   import { t } from "../stores/i18n";
-  import UpdateDialog from "./UpdateDialog.svelte";
+  import { openUpdateDialog } from "../stores/modal";
   import "../styles/UpdateBar.scss";
 
   let showBanner = false;
   let dismissed = false;
-  let showDialog = false;
   let dialogMessage = "";
   let dialogDownloadUrl = "";
 
@@ -37,13 +36,13 @@
     if (!el || el.closest(".updateBar__close")) {
       return;
     }
-    showDialog = true;
+    void openUpdateDialog({ message: dialogMessage, downloadUrl: dialogDownloadUrl });
   }
 
   function onBarKeydown(e: KeyboardEvent): void {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      showDialog = true;
+      void openUpdateDialog({ message: dialogMessage, downloadUrl: dialogDownloadUrl });
     }
   }
 </script>
@@ -73,12 +72,4 @@
       </svg>
     </button>
   </div>
-{/if}
-
-{#if showDialog}
-  <UpdateDialog
-    message={dialogMessage}
-    downloadUrl={dialogDownloadUrl}
-    on:dismiss={() => (showDialog = false)}
-  />
 {/if}

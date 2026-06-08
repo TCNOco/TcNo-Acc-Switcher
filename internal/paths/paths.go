@@ -88,6 +88,11 @@ func ResetForTest(dataDir string) {
 	loginCacheDirErr = nil
 	loginCacheDirOnce = sync.Once{}
 	loginCacheDirOnce.Do(func() {})
+
+	webviewCacheDir = filepath.Join(dataDir, "WebViewCache")
+	webviewCacheDirErr = nil
+	webviewCacheDirOnce = sync.Once{}
+	webviewCacheDirOnce.Do(func() {})
 }
 
 func LoginCacheDir(platformKey string) (string, error) {
@@ -125,4 +130,23 @@ func WwwrootDir() (string, error) {
 		wwwrootDir = filepath.Join(r, "wwwroot")
 	})
 	return wwwrootDir, wwwrootDirErr
+}
+
+var (
+	webviewCacheDirOnce sync.Once
+	webviewCacheDir     string
+	webviewCacheDirErr  error
+)
+
+// WebViewCacheDir returns {DataRoot}/WebViewCache/ (WebView2 user-data folder on Windows).
+func WebViewCacheDir() (string, error) {
+	webviewCacheDirOnce.Do(func() {
+		r, err := DataRoot()
+		if err != nil {
+			webviewCacheDirErr = err
+			return
+		}
+		webviewCacheDir = filepath.Join(r, "WebViewCache")
+	})
+	return webviewCacheDir, webviewCacheDirErr
 }

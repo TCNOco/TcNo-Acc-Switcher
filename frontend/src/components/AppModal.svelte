@@ -8,6 +8,7 @@
   import { t } from "../stores/i18n";
   import PathPickerTree from "./modals/PathPickerTree.svelte";
   import ModalBodyShell from "./modals/ModalBodyShell.svelte";
+  import UpdateModalBody from "./modals/UpdateModalBody.svelte";
   import { normalizeDisplayPath } from "../lib/fsPaths";
   import * as FilesystemService from "../../bindings/TcNo-Acc-Switcher/filesystemservice";
 
@@ -172,7 +173,13 @@
             <use href="img/TcNo_Logo_Flat.svg#logo"></use>
           </svg>
         </span>
-        <span id="modal-title-label" class="modal-title-drag">{m.title}</span>
+        <span id="modal-title-label" class="modal-title-drag">
+          {#if m.kind === "update"}
+            {$t("Heading_UpdateAvailable")}
+          {:else}
+            {m.title}
+          {/if}
+        </span>
         <span class="modal-window-controls" role="toolbar">
           <button
             type="button"
@@ -327,6 +334,10 @@
                 soughtFilename={m.soughtFilename?.trim() ?? ""}
                 onPick={pickTreePath}
               />
+            </div>
+          {:else if m.kind === "update"}
+            <div class="modal-block">
+              <UpdateModalBody message={m.message} downloadUrl={m.downloadUrl} />
             </div>
           {/if}
         {/key}
