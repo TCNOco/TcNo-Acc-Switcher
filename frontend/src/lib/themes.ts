@@ -4,6 +4,7 @@ import { get, writable } from "svelte/store";
 import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
 import { offlineMode } from "../stores/offlineMode";
 import { setUserOverride } from "../stores/backgroundImage";
+import { scheduleUpdaterThemeSync } from "./updaterTheme";
 
 const DEFAULT_THEME_ID = "default";
 const CUSTOM_THEME_ACCENT_KEY = "custom";
@@ -402,6 +403,7 @@ function buildAccentOverlayCss(color: string): string {
 function applyAccentOverlay(color: string | null): void {
   removeAccentOverlay();
   if (typeof document === "undefined" || !color) {
+    scheduleUpdaterThemeSync();
     return;
   }
   const style = document.createElement("style");
@@ -409,6 +411,7 @@ function applyAccentOverlay(color: string | null): void {
   style.setAttribute(ACCENT_OVERLAY_STYLE_ATTR, "");
   style.textContent = buildAccentOverlayCss(color);
   document.head.appendChild(style);
+  scheduleUpdaterThemeSync();
 }
 
 function validateAccentKey(theme: ThemeOption, key: string): string {
@@ -577,6 +580,7 @@ async function applyTheme(id: string): Promise<void> {
     currentThemeId.set(DEFAULT_THEME_ID);
     currentThemeBgUrl.set("");
     syncThemeGoogleFonts(DEFAULT_THEME_ID);
+    scheduleUpdaterThemeSync();
     return;
   }
 
@@ -586,6 +590,7 @@ async function applyTheme(id: string): Promise<void> {
     currentThemeId.set(DEFAULT_THEME_ID);
     currentThemeBgUrl.set("");
     syncThemeGoogleFonts(DEFAULT_THEME_ID);
+    scheduleUpdaterThemeSync();
     return;
   }
 
@@ -604,6 +609,7 @@ async function applyTheme(id: string): Promise<void> {
   currentThemeId.set(id);
   currentThemeBgUrl.set(getThemeOptionById(id).backgroundUrl ?? "");
   syncThemeGoogleFonts(id);
+  scheduleUpdaterThemeSync();
 }
 
 function isKnownThemeId(id: string): boolean {

@@ -20,6 +20,7 @@ import (
 	"TcNo-Acc-Switcher/internal/steam"
 	"TcNo-Acc-Switcher/internal/tray"
 	"TcNo-Acc-Switcher/internal/updatecheck"
+	"TcNo-Acc-Switcher/internal/updatertheme"
 	"TcNo-Acc-Switcher/internal/winutil"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
@@ -90,15 +91,19 @@ func RunGUI(params RunGUIParams) {
 		gh, err := updatecheck.NewSignedGitHubProvider(github.Config{
 			Repository:    "TCNOco/TcNo-Acc-Switcher-BETA", // TODO: Reset back to TCNOco/TcNo-Acc-Switcher when done testing.
 			ChecksumAsset: "SHA256SUMS",
+			AssetMatcher:  updatecheck.GitHubAssetMatcher,
 		}, ".exe.sig")
 		if err != nil {
 			app.Logger.Error("updater: provider", "error", err)
 		} else {
+			updaterWindow := updatertheme.NewBuiltinWindow()
+			updatertheme.SetWindow(updaterWindow)
 			if err := app.Updater.Init(updater.Config{
 				CurrentVersion: currentVersion,
 				Providers:      []updater.Provider{gh},
 				PublicKey:      params.UpdaterPublicKey,
 				CheckInterval:  6 * time.Hour,
+				Window:         updaterWindow,
 			}); err != nil {
 				app.Logger.Error("updater: init", "error", err)
 			}

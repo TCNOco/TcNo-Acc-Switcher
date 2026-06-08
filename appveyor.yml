@@ -169,7 +169,7 @@ after_build:
       Write-Host "Generating SHA256SUMS..."
       $shaOut = "$env:APPVEYOR_BUILD_FOLDER\bin\SHA256SUMS"
       @(
-        "$((Get-FileHash "$env:APPVEYOR_BUILD_FOLDER\bin\TcNo-Acc-Switcher.exe" -Algorithm SHA256).Hash.ToLower())  TcNo-Acc-Switcher-windows-amd64.exe",
+        "$((Get-FileHash "$env:APPVEYOR_BUILD_FOLDER\bin\TcNo-Acc-Switcher.exe" -Algorithm SHA256).Hash.ToLower())  TcNo-Acc-Switcher.exe",
         "$((Get-FileHash "$env:APPVEYOR_BUILD_FOLDER\bin\TcNo-Acc-Switcher.7z" -Algorithm SHA256).Hash.ToLower())  TcNo-Acc-Switcher.7z"
       ) | Out-File -Encoding ascii $shaOut
       Write-Host "SHA256SUMS generated."
@@ -198,7 +198,7 @@ deploy:
     provider: GitHub
     auth_token:
       secure: RV5NBPt9kVuEp2SyxG8FKkaA7a4quJTiaxtLCui6ipA/nMpyfma41fbrZ8LMCFwA # TODO: Change back when done with testing
-    artifact: installer,executable,archive,signature
+    artifact: installer,executable,archive,signature,checksums
     draft: true
     prerelease: false
     on:
