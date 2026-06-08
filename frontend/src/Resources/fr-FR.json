@@ -285,7 +285,7 @@
   "Toast_FailedUpdateCheck": "Échec de la vérification des mises à jour",
   "Toast_UpToDate": "Vous êtes à jour !",
   "Toast_UpdateVerifyFail": "Impossible de vérifier les fichiers de mise à jour. Téléchargez la dernière version et remplacez les fichiers de votre répertoire.",
-  "Toast_StartedGame": "Commencé {program}",
+  "Toast_StartedGame": "{program} started successfully.",
   "Toast_SteamCantLoadXml": "Impossible d'obtenir les informations XML pour {steamId}. Voir le journal pour plus de détails.",
   "Toast_Steam_VacCleared": "Le statut d'ACC pour les comptes a été effacé",
   "Toast_Steam_CantDeleteVacCache": "Impossible de supprimer « LoginCache/Steam/VACCache/SteamVACCache.json »",
