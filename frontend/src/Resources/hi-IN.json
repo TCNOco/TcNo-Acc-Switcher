@@ -285,7 +285,7 @@
   "Toast_FailedUpdateCheck": "अपडेट की जांच करने में विफल",
   "Toast_UpToDate": "आप अप-टू-डेट हैं!",
   "Toast_UpdateVerifyFail": "अद्यतनकर्ता फ़ाइलों को सत्यापित नहीं कर सकता है. नवीनतम संस्करण डाउनलोड करें और अपनी निर्देशिका में फ़ाइलों को बदलें।",
-  "Toast_StartedGame": "प्रारंभ {program}",
+  "Toast_StartedGame": "{program} started successfully.",
   "Toast_SteamCantLoadXml": "{steamId}के लिए XML जानकारी प्राप्त नहीं हो सकी। अधिक विवरण के लिए लॉग देखें.",
   "Toast_Steam_VacCleared": "खातों के लिए VAC स्थिति साफ कर दी गई",
   "Toast_Steam_CantDeleteVacCache": "'LoginCache/Steam/VACCache/SteamVACCache.json' को हटा नहीं सका",
