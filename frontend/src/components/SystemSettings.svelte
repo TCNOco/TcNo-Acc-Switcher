@@ -9,6 +9,7 @@
   import { offlineMode, setUserOfflineMode } from "../stores/offlineMode";
   import { openAlertNoButton } from "../stores/modal";
   import { animationsEnabled, loadAnimationsEnabled, setAnimationsEnabled } from "../stores/animationSettings";
+  import { checkForUpdatesManually, formatAppVersion } from "../lib/checkForUpdates";
   import StatsReportModalBody from "./modals/StatsReportModalBody.svelte";
 
   let isWindows = false;
@@ -35,6 +36,8 @@
   let desktopShortcutLoading = false;
   let animationsEnabledLocal = true;
   let animationsLoading = false;
+  let currentVersion = "";
+  let updateCheckLoading = false;
 
   $: animationsEnabledLocal = $animationsEnabled;
 
@@ -67,6 +70,9 @@
       .then((v) => { startProgramCentered = v; })
       .catch(() => { startProgramCentered = false; });
     void loadAnimationsEnabled();
+    void PlatformService.GetAppVersion()
+      .then((v) => { currentVersion = v || ""; })
+      .catch(() => { currentVersion = ""; });
     if (isWindows) {
       void PlatformService.GetStartTrayWithWindows()
         .then((v) => { startTrayWithWindows = v; })
@@ -283,6 +289,18 @@
       discordRpcShareLoading = false;
     }
   }
+
+  async function onCheckForUpdates(): Promise<void> {
+    if (updateCheckLoading) {
+      return;
+    }
+    updateCheckLoading = true;
+    try {
+      await checkForUpdatesManually();
+    } finally {
+      updateCheckLoading = false;
+    }
+  }
 </script>
 
 <h2 class="SettingsHeader">{$t("Settings_Header_System")}</h2>
@@ -353,6 +371,18 @@
   </div>
 {/if}
 
+<div class="rowDropdown version-row">
+  <span>{formatAppVersion(currentVersion || "0.0.0")}</span>
+  <button
+    type="button"
+    class="btnicontext"
+    disabled={updateCheckLoading}
+    on:click={() => void onCheckForUpdates()}
+  >
+    {$t("Button_CheckForUpdates")}
+  </button>
+</div>
+
 <h2 class="SettingsHeader">{$t("Settings_Header_StatsSharing")}</h2>
 
 <div class="rowSetting">
@@ -388,5 +418,9 @@
   button {
     position: relative;
     height: 38px;
+  }
+
+  .version-row {
+    margin-top: 0.25rem;
   }
 </style>

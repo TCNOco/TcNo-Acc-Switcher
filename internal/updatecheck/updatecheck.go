@@ -84,6 +84,21 @@ func StartLaunchCheck(exeDir string, offline bool, currentVersion string, onUpda
 	})
 }
 
+// RunManualCheck checks for updates on user request. Returns "available", "up-to-date", or "failed".
+func RunManualCheck(ctx context.Context, currentVersion string, onUpdateAvailable func(message string)) string {
+	latest, message, err := FetchLatestVersion(ctx, sharedHTTPClient, currentVersion)
+	if err != nil {
+		return "failed"
+	}
+	if IsUpToDate(currentVersion, latest) {
+		return "up-to-date"
+	}
+	if onUpdateAvailable != nil {
+		onUpdateAvailable(message)
+	}
+	return "available"
+}
+
 func runLaunchCheck(exeDir string, offline bool, currentVersion string, onUpdateAvailable func(message string), onCheckFailed func()) {
 	time.Sleep(launchCheckDelay)
 	if offline {

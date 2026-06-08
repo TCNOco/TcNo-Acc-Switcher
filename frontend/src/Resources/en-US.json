@@ -639,6 +639,7 @@
   "Toast_CrashReported": "A crash report was submitted successfully.",
   "Heading_UpdateAvailable": "Update Available",
   "Button_UpdateNow": "Update Now",
+  "Button_CheckForUpdates": "Check for updates",
   "Button_OpenDownloadPage": "Download from GitHub",
   "Button_Loading": "Loading\u2026"
 }

@@ -2,6 +2,7 @@ package platform
 
 import (
 	"context"
+	"time"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 
@@ -59,4 +60,23 @@ func (*PlatformService) CheckForUpdatesAndInstall() {
 			app.Logger.Error("update: CheckAndInstall", "error", err)
 		}
 	}()
+}
+
+// CheckForUpdatesManually checks for updates when triggered from the UI.
+// Returns "available", "up-to-date", "offline", or "failed".
+func (*PlatformService) CheckForUpdatesManually() string {
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return "failed"
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return "failed"
+	}
+	if s.OfflineMode {
+		return "offline"
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	return updatecheck.RunManualCheck(ctx, appVersionFromBuildConfig(), emitAppUpdateAvailable)
 }

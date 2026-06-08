@@ -1,7 +1,6 @@
 package app
 
 import (
-	"context"
 	"io/fs"
 	"log"
 	"log/slog"
@@ -105,16 +104,6 @@ func RunGUI(params RunGUIParams) {
 			}
 		}
 
-		appMenu := app.Menu.New()
-		app.Menu.SetApplicationMenu(appMenu)
-		fileMenu := appMenu.AddSubmenu("App")
-		fileMenu.Add("Check for Updates…").OnClick(func(*application.Context) {
-			go func() {
-				if err := app.Updater.CheckAndInstall(context.Background()); err != nil {
-					app.Logger.Error("update", "error", err)
-				}
-			}()
-		})
 	}
 
 	if params.CrashSubmitted {
