@@ -499,6 +499,21 @@
       "UniqueIdFile": "HKCU\\Software\\Sandbox Interactive GmbH\\Albion Online Client:LastUsedAccountId_h136571812",
       "UniqueIdMethod": "REGKEY"
     },
+    "Roblox": {
+      "Identifiers": ["rb", "roblox", "rblx"],
+      "ExeLocationDefault": "%LocalAppData%\\Roblox\\Versions\\RobloxPlayerBeta.exe",
+      "GetPathFromShortcutNamed": "Roblox Player",
+      "ExesToEnd": ["RobloxPlayerBeta.exe", "RobloxCrashHandler.exe"],
+      "PathListToClear": ["SAME_AS_LOGIN_FILES"],
+      "LoginFiles": {
+        "%LocalAppData%\\Roblox\\LocalStorage\\appStorage.json": "appStorage.json",
+        "%LocalAppData%\\Roblox\\LocalStorage\\RobloxCookies.dat": "RobloxCookies.dat",
+        "%LocalAppData%\\Roblox\\UniversalApp\\WebView2\\EBWebView\\Default\\Network\\Cookies": "WebView2\\Network\\Cookies",
+        "%LocalAppData%\\Roblox\\UniversalApp\\WebView2\\EBWebView\\Default\\Network\\Cookies-journal": "WebView2\\Network\\Cookies-journal"
+      },
+      "ExitBeforeInteract": true,
+      "UniqueIdFile": "JSON_SELECT::%LocalAppData%\\Roblox\\LocalStorage\\appStorage.json::UserId"
+    },
     "Rockstar": {
       "Identifiers": [ "rs", "rockstar", "socialclub" ],
       "ExeLocationDefault": "%ProgramFiles%\\Rockstar Games\\Launcher\\LauncherPatcher.exe",
