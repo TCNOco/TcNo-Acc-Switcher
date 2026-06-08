@@ -285,7 +285,7 @@
   "Toast_FailedUpdateCheck": "Αποτυχία ελέγχου για ενημερώσεις",
   "Toast_UpToDate": "Είστε ενημερωμένος!",
   "Toast_UpdateVerifyFail": "Δεν είναι δυνατή η επαλήθευση των αρχείων ενημέρωσης. Κατεβάστε την τελευταία έκδοση και αντικαταστήστε τα αρχεία στον κατάλογό σας.",
-  "Toast_StartedGame": "Ξεκίνησε {program}",
+  "Toast_StartedGame": "{program} started successfully.",
   "Toast_SteamCantLoadXml": "Δεν ήταν δυνατή η λήψη πληροφοριών XML για {steamId}. Δείτε το αρχείο καταγραφής για περισσότερες λεπτομέρειες.",
   "Toast_Steam_VacCleared": "Η κατάσταση VAC για λογαριασμούς διαγράφηκε",
   "Toast_Steam_CantDeleteVacCache": "Αδυναμία διαγραφής 'LoginCache/Steam/VACCache/SteamVACCache.json'",
