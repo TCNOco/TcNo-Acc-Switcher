@@ -628,6 +628,7 @@
       false,
       row.isUrl,
       () => requestPlatformAccountsRefresh(platformName),
+      row.displayName,
     );
   }
 
@@ -664,6 +665,7 @@
             true,
             r.isUrl,
             () => requestPlatformAccountsRefresh(platformName),
+            r.displayName,
           );
       },
       onHide: () => {

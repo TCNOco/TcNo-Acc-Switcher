@@ -342,7 +342,7 @@
   "ProfileImage_ToggleText": "Usar imagen como imagen de cuenta",
   "Title_Platforms_Settings": "TcNo Account Switcher - Configuración de la plataforma",
   "Title_Settings_TestCss": "TcNo Account Switcher - Prueba de estilos CSS",
-  "Title_AccountsList": "TcNo Account Switcher - {platform}",
+  "Title_AccountsList": "TcNo Cambiador de cuentas - {platform}",
   "Title_TextEditor": "TcNo Account Switcher - Editor de texto",
   "Title_Settings": "TcNo Account Switcher - Ajustes",
   "Title_Steam_Cleaning": "TcNo Account Switcher - Limpieza a vapor",

@@ -11,12 +11,19 @@ import { LaunchPlatformAs } from "../../bindings/TcNo-Acc-Switcher/internal/plat
 import { reportLaunchFailure } from "./adminFlow";
 import { formatToastWithError } from "./formatWailsError";
 
+function shortcutProgramLabel(fileName: string, displayName?: string): string {
+  const label = String(displayName ?? "").trim();
+  if (label) return label;
+  return fileName.replace(/\.(lnk|url)$/i, "").trim() || fileName;
+}
+
 export async function runShortcut(
   platformName: string,
   fileName: string,
   admin: boolean,
   isUrl: boolean,
   onAccountsRefresh: () => void,
+  displayName?: string,
 ): Promise<void> {
   const busy = get(platformActionBusy);
   if (busy.busy) return;
@@ -35,6 +42,13 @@ export async function runShortcut(
         : "";
     await Shortcuts.RunShortcut(platformName, fileName, a, uid);
     onAccountsRefresh();
+    pushToast({
+      type: "success",
+      message: tr("Toast_StartedGame", {
+        program: shortcutProgramLabel(fileName, displayName),
+      }),
+      duration: 4000,
+    });
   } catch (e) {
     await reportLaunchFailure(e, platformName);
   }

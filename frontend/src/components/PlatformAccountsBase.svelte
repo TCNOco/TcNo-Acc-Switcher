@@ -556,7 +556,11 @@
       try {
         if (adapter.loginAndLaunchGame) await adapter.loginAndLaunchGame(selectedId, appId);
         scheduleAccountsRefresh();
-        pushToast({ type: "success", message: $t("Toast_GameLaunchRequested"), duration: 4000 });
+        pushToast({
+          type: "success",
+          message: $t("Toast_StartedGame", { program: row.title }),
+          duration: 4000,
+        });
       } catch (e) { await reportLaunchFailure(e, name); }
     }
   }

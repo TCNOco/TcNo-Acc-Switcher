@@ -342,7 +342,7 @@
   "ProfileImage_ToggleText": "Использовать изображение в качестве изображения аккаунта",
   "Title_Platforms_Settings": "TcNo Account Switcher - Настройки платформ",
   "Title_Settings_TestCss": "TcNo Account Switcher - Тест стиля CSS",
-  "Title_AccountsList": "TcNo Account Switcher - {platform}",
+  "Title_AccountsList": "TcNo Переключатель аккаунтов - {platform}",
   "Title_TextEditor": "TcNo Account Switcher - текстовый редактор",
   "Title_Settings": "TcNo Account Switcher - Настройки",
   "Title_Steam_Cleaning": "TcNo Account Switcher - Очистка Steam",

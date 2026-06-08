@@ -218,7 +218,14 @@
       ...installedGames.map((g) => ({
         label: g.name,
         action: async () => {
-          try { await SteamService.LoginAndLaunchGame(rid, -1, g.appId); pushToast({ type: "success", message: tr("Toast_GameLaunchRequested"), duration: 4000 }); }
+          try {
+            await SteamService.LoginAndLaunchGame(rid, -1, g.appId);
+            pushToast({
+              type: "success",
+              message: tr("Toast_StartedGame", { program: g.name }),
+              duration: 4000,
+            });
+          }
           catch (e) { await reportLaunchFailure(e, name); }
         },
       })),

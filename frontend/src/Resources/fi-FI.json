@@ -342,7 +342,7 @@
   "ProfileImage_ToggleText": "Käytä kuvaa tilikuvana",
   "Title_Platforms_Settings": "TcNo Account Switcher - Alusta-asetukset",
   "Title_Settings_TestCss": "TcNo Account Switcher - Testaa CSS: n tyyli",
-  "Title_AccountsList": "TcNo Account Switcher - {platform}",
+  "Title_AccountsList": "TcNo-tilinvaihtaja - {platform}",
   "Title_TextEditor": "TcNo Account Switcher - Tekstieditori",
   "Title_Settings": "TcNo Account Switcher - Asetukset",
   "Title_Steam_Cleaning": "TcNo Account Switcher - Höyrypuhdistus",
