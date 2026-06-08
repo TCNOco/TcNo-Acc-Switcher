@@ -8,10 +8,6 @@ import (
 )
 
 // Updater release asset basenames on GitHub, keyed by GOOS/GOARCH.
-// These are the files Wails downloads and swaps in — not necessarily every
-// asset on the release page (installer, 7z, etc. are user-facing only).
-//
-// Add a row when you ship a new platform. SHA256SUMS must list the same basename.
 var updaterReleaseAssets = map[string]string{
 	"windows/amd64": "TcNo-Acc-Switcher.exe",
 	// "darwin/arm64":  "TcNo-Acc-Switcher-macos-universal.zip",
