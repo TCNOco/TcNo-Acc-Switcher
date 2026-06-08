@@ -285,7 +285,7 @@
   "Toast_FailedUpdateCheck": "Không thể kiểm tra cập nhật",
   "Toast_UpToDate": "Bạn đã cập nhật mới nhất!",
   "Toast_UpdateVerifyFail": "Không thể xác minh các tệp cập nhật. Tải phiên bản mới nhất và thay thế các tệp trong thư mục của bạn.",
-  "Toast_StartedGame": "Đã khởi động {program}",
+  "Toast_StartedGame": "{program} started successfully.",
   "Toast_SteamCantLoadXml": "Không thể lấy thông tin XML cho {steamId}. Xem nhật ký để biết thêm chi tiết.",
   "Toast_Steam_VacCleared": "Trạng thái VAC cho các tài khoản đã bị xóa",
   "Toast_Steam_CantDeleteVacCache": "Không thể xóa 'LoginCache/Steam/VACCache/SteamVACCache.json'",
