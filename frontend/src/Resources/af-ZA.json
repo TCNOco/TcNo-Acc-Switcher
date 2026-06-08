@@ -285,7 +285,7 @@
   "Toast_FailedUpdateCheck": "Kon nie kyk vir opdaterings nie",
   "Toast_UpToDate": "Jy is op datum!",
   "Toast_UpdateVerifyFail": "Kan nie opdaterlêers verifieer nie. Laai die nuutste weergawe af en vervang lêers in jou gids.",
-  "Toast_StartedGame": "Begin {program}",
+  "Toast_StartedGame": "{program} started successfully.",
   "Toast_SteamCantLoadXml": "Kon nie XML-inligting vir {steamId}kry nie. Sien log vir meer besonderhede.",
   "Toast_Steam_VacCleared": "VAC-status vir rekeninge is uitgevee",
   "Toast_Steam_CantDeleteVacCache": "Kon nie 'LoginCache/Steam/VACCache/SteamVACCache.json' uitvee nie",
