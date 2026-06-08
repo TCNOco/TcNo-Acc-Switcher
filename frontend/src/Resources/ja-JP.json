@@ -285,7 +285,7 @@
   "Toast_FailedUpdateCheck": "更新の確認に失敗しました",
   "Toast_UpToDate": "最新の状態です！",
   "Toast_UpdateVerifyFail": "アップデータファイルを確認できません。最新バージョンをダウンロードし、ディレクトリ内のファイルを置き換えてください。",
-  "Toast_StartedGame": "{program} を開始",
+  "Toast_StartedGame": "{program} started successfully.",
   "Toast_SteamCantLoadXml": "{steamId}の XML 情報を取得できませんでした。詳細についてはログを参照してください。",
   "Toast_Steam_VacCleared": "アカウントのVACステータスをクリアしました",
   "Toast_Steam_CantDeleteVacCache": "'LoginCache/Steam/VACCache/SteamVACCache.json' を削除できませんでした",
