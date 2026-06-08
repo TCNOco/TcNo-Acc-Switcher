@@ -33,7 +33,7 @@
 !define LNK_NAME "TcNo Account Switcher.lnk"
 !define COMP_NAME "TroubleChute (Wesley Pyburn)"
 !define WEB_SITE "https://tcno.co"
-!define COPYRIGHT "TroubleChute (Wesley Pyburn) (C) 2024"
+!define COPYRIGHT "TroubleChute (Wesley Pyburn) (C) 2026"
 !define DESCRIPTION "TcNo Account Switcher"
 !define INSTALL_TYPE "SetShellVarContext current"
 !define REG_ROOT "HKCU"

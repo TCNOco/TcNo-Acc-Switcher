@@ -17,7 +17,7 @@
 !define WEB_SITE "https://tcno.co"
 !define VERSION "2025.11.20.03"
 !define DISPLAY_VERSION "2025-11-20_03"
-!define COPYRIGHT "TroubleChute (Wesley Pyburn) (C) 2024"
+!define COPYRIGHT "TroubleChute (Wesley Pyburn) (C) 2026"
 !define DESCRIPTION "TcNo Account Switcher"
 !define LICENSE_TXT "..\..\LICENSE"
 !define PRIVACY_TXT "..\..\PRIVACY.md"
