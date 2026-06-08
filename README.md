@@ -113,7 +113,9 @@ Want a portable install? Download and run `TcNo-Acc-Switcher.exe` directly (Do s
 #### Code Signing
 
 A special thanks to [SignPath.io](https://signpath.io/?utm_source=foundation&utm_medium=github&utm_campaign=tcno-acc-switcher) for providing a free code signing service and to the [SignPath Foundation](https://signpath.org/?utm_source=foundation&utm_medium=github&utm_campaign=tcno-acc-switcher) for a free code signing certificate to sign builds.
+<p>
    <a href="https://signpath.io/?utm_source=foundation&utm_medium=github&utm_campaign=tcno-acc-switcher" target="_blank"><img src="/other/img/signpath_logo.webp"></a>
+</p>
 
 #### [Privacy Policy](https://github.com/TCNOco/TcNo-Acc-Switcher/blob/master/PRIVACY.md)
 
