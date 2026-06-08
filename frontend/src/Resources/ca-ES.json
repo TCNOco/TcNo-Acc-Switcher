@@ -285,7 +285,7 @@
   "Toast_FailedUpdateCheck": "No s'han pogut comprovar les actualitzacions",
   "Toast_UpToDate": "Estàs al dia!",
   "Toast_UpdateVerifyFail": "No es poden verificar els fitxers d'actualització. Descarrega la versió més recent i reemplaça els fitxers del directori.",
-  "Toast_StartedGame": "S'ha iniciat {program}",
+  "Toast_StartedGame": "{program} started successfully.",
   "Toast_SteamCantLoadXml": "No s'ha pogut obtenir la informació XML per a {steamId}. Consulteu el registre per a més detalls.",
   "Toast_Steam_VacCleared": "S'ha netejat l'estat del VAC per als comptes",
   "Toast_Steam_CantDeleteVacCache": "No s'ha pogut suprimir 'LoginCache/Steam/VACCache/SteamVACCache.json'",
