@@ -285,7 +285,7 @@
   "Toast_FailedUpdateCheck": "Nepodařilo se zkontrolovat aktualizace",
   "Toast_UpToDate": "Máte aktuální verzi!",
   "Toast_UpdateVerifyFail": "Nelze ověřit soubory aktualizátoru. Stáhněte si nejnovější verzi a nahraďte soubory ve svém adresáři.",
-  "Toast_StartedGame": "Spuštěn {program}",
+  "Toast_StartedGame": "{program} started successfully.",
   "Toast_SteamCantLoadXml": "Nelze získat informace XML pro {steamId}. Další podrobnosti naleznete v protokolu.",
   "Toast_Steam_VacCleared": "Status VAC pro účty byl vymazán",
   "Toast_Steam_CantDeleteVacCache": "Nelze odstranit 'LoginCache/Steam/VACCache/SteamVACCache.json'",
