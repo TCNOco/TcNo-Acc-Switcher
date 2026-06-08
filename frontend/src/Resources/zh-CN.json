@@ -285,7 +285,7 @@
   "Toast_FailedUpdateCheck": "检查更新失败",
   "Toast_UpToDate": "你已是最新版本！",
   "Toast_UpdateVerifyFail": "无法验证更新程序文件。请下载最新版本并替换目录中的文件。",
-  "Toast_StartedGame": "已启动 {program}",
+  "Toast_StartedGame": "{program} started successfully.",
   "Toast_SteamCantLoadXml": "无法获取 {steamId} 的 XML 信息。请查看日志了解详情。",
   "Toast_Steam_VacCleared": "已清除帐户 VAC 状态",
   "Toast_Steam_CantDeleteVacCache": "无法删除 'LoginCache/Steam/VACCache/SteamVACCache.json'",
