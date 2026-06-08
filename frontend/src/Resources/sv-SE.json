@@ -285,7 +285,7 @@
   "Toast_FailedUpdateCheck": "Det gick inte att söka efter uppdateringar",
   "Toast_UpToDate": "Du är uppdaterad!",
   "Toast_UpdateVerifyFail": "Kan inte verifiera uppdateringsfiler. Ladda ner den senaste versionen och ersätt filer i din katalog.",
-  "Toast_StartedGame": "Startade {program}",
+  "Toast_StartedGame": "{program} started successfully.",
   "Toast_SteamCantLoadXml": "Det gick inte att hämta XML-information för {steamId}. Se logg för mer information.",
   "Toast_Steam_VacCleared": "VAC-status för konton har rensats",
   "Toast_Steam_CantDeleteVacCache": "Kunde inte ta bort 'LoginCache/Steam/VACCache/SteamVACCache.json'",
