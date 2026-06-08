@@ -283,6 +283,7 @@
   "Toast_GameDataRestored": "Successfully restored game data for this account.",
   "Toast_NoValidSteamId": "Unable to find a valid Steam ID.",
   "Toast_FailedUpdateCheck": "Failed to check for updates",
+  "Toast_UpToDate": "You're up-to-date!",
   "Toast_UpdateVerifyFail": "Can't verify updater files. Download latest version and replace files in your directory.",
   "Toast_StartedGame": "Started {program}",
   "Toast_SteamCantLoadXml": "Couldn't get XML info for {steamId}. See log for more details.",

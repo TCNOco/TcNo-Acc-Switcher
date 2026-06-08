@@ -32,6 +32,12 @@ export async function checkForUpdatesManually(): Promise<void> {
         message: get(t)("Toast_FailedUpdateCheck"),
         duration: 8000,
       });
+    } else if (result === "up-to-date") {
+      pushToast({
+        type: "success",
+        message: get(t)("Toast_UpToDate"),
+        duration: 5000,
+      });
     }
   } catch (e) {
     pushToast({
