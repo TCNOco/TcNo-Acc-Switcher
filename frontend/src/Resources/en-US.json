@@ -319,6 +319,8 @@
   "Toast_RestoreComplete": "Restore finished!",
   "Toast_FailedLoad": "Failed to load {platform}! Click the platform to see the error.",
   "Toast_FailedPlatformsLoad": "Failed to load Platforms.json! Please verify this file exists.",
+  "Toast_PlatformsJsonUpdateFound": "A newer Platforms.json is available (v{version}). Downloading…",
+  "Toast_PlatformsJsonUpdated": "Platforms.json updated to v{version}.",
   "Toast_FailedLoadSettings": "Failed to load settings! Loading default settings instead. Adding 'old' to existing settings file name.",
   "Toast_FailedLoadStats": "Failed to load statistics! Starting fresh.",
   "Toast_FailedStatsLoad": "Failed to load GameStats.json! Please verify this file exists.",
