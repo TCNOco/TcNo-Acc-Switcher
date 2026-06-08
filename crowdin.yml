@@ -1,3 +1,6 @@
+base_path: "."
+preserve_hierarchy: true
+
 files:
-  - source: /frontend/src/Resources/en-US.json
+  - source: frontend/src/Resources/en-US.json
     translation: /frontend/src/Resources/%locale%.json
