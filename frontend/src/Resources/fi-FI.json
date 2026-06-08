@@ -285,7 +285,7 @@
   "Toast_FailedUpdateCheck": "Päivitysten tarkistaminen epäonnistui",
   "Toast_UpToDate": "Olet ajan tasalla!",
   "Toast_UpdateVerifyFail": "Päivitystiedostoja ei voida vahvistaa. Lataa uusin versio ja korvaa hakemistosi tiedostot.",
-  "Toast_StartedGame": "Aloitettu {program}",
+  "Toast_StartedGame": "{program} started successfully.",
   "Toast_SteamCantLoadXml": "Ei saatu XML-tietoja kohteelle {steamId}. Katso lisätiedot lokista.",
   "Toast_Steam_VacCleared": "Tilien VAC-tila tyhjennettiin",
   "Toast_Steam_CantDeleteVacCache": "'LoginCache/Steam/VACCache/SteamVACCache.json' ei voitu poistaa",
