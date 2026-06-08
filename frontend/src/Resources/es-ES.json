@@ -285,7 +285,7 @@
   "Toast_FailedUpdateCheck": "No se han podido comprobar las actualizaciones",
   "Toast_UpToDate": "¡Estás al día!",
   "Toast_UpdateVerifyFail": "No se pueden verificar los archivos de actualización. Descargue la última versión y reemplace los archivos de su directorio.",
-  "Toast_StartedGame": "Iniciado {program}",
+  "Toast_StartedGame": "{program} started successfully.",
   "Toast_SteamCantLoadXml": "No se pudo obtener información XML para {steamId}. Ver registro para más detalles.",
   "Toast_Steam_VacCleared": "El estado del VAC para las cuentas se ha compensado",
   "Toast_Steam_CantDeleteVacCache": "No se pudo eliminar 'LoginCache/Steam/VACCache/SteamVACCache.json'",
