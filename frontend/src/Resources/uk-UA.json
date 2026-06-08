@@ -285,7 +285,7 @@
   "Toast_FailedUpdateCheck": "Не вдалося перевірити наявність оновлень",
   "Toast_UpToDate": "Ви використовуєте останню версію!",
   "Toast_UpdateVerifyFail": "Неможливо перевірити файли оновлення. Завантажте останню версію та замініть файли у своєму каталозі.",
-  "Toast_StartedGame": "Розпочато {program}",
+  "Toast_StartedGame": "{program} started successfully.",
   "Toast_SteamCantLoadXml": "Не вдалося отримати інформацію XML для {steamId}. Перегляньте журнал для отримання додаткової інформації.",
   "Toast_Steam_VacCleared": "Статус VAC для акаунтів очищено",
   "Toast_Steam_CantDeleteVacCache": "Не вдалося видалити «LoginCache/Steam/VACCache/SteamVACCache.json»",
