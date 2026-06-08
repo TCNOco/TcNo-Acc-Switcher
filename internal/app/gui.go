@@ -106,6 +106,8 @@ func RunGUI(params RunGUIParams) {
 				Window:         updaterWindow,
 			}); err != nil {
 				app.Logger.Error("updater: init", "error", err)
+			} else {
+				platform.EnableAutoRestartAfterUpdate(app)
 			}
 		}
 

@@ -86,6 +86,22 @@ func (*PlatformService) CheckForUpdatesAndInstall() {
 	}()
 }
 
+// EnableAutoRestartAfterUpdate applies a staged update as soon as the Wails updater
+// reaches the ready state. CheckAndInstall only downloads and stages; Restart swaps
+// the binary and relaunches (see https://v3.wails.io/guides/updater/).
+func EnableAutoRestartAfterUpdate(app *application.App) {
+	if app == nil {
+		return
+	}
+	app.Event.On(updater.EventUpdateReady, func(*application.CustomEvent) {
+		go func() {
+			if err := app.Updater.Restart(context.Background()); err != nil {
+				app.Logger.Error("update: Restart", "error", err)
+			}
+		}()
+	})
+}
+
 func wailsReleaseMessage(rel *updater.Release) string {
 	if rel == nil {
 		return ""
