@@ -285,7 +285,7 @@
   "Toast_FailedUpdateCheck": "Провера ажурирања није успела",
   "Toast_UpToDate": "Imate najnoviju verziju!",
   "Toast_UpdateVerifyFail": "Није могуће верификовати датотеке ажурирања. Преузмите најновију верзију и замените датотеке у директоријуму.",
-  "Toast_StartedGame": "Започето {program}",
+  "Toast_StartedGame": "{program} started successfully.",
   "Toast_SteamCantLoadXml": "Није могуће добити КСМЛ информације за {steamId}. Погледајте дневник за више детаља.",
   "Toast_Steam_VacCleared": "ВАЦ статус за налоге је избрисан",
   "Toast_Steam_CantDeleteVacCache": "Није могуће избрисати 'ЛогинЦацхе/Стеам/ВАЦЦацхе/СтеамВАЦЦацхе.јсон'",
