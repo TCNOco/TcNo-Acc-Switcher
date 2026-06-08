@@ -285,7 +285,7 @@
   "Toast_FailedUpdateCheck": "Frissítések keresése sikertelen",
   "Toast_UpToDate": "Naprakész!",
   "Toast_UpdateVerifyFail": "Nem lehet ellenőrizni a frissítőfájlokat. Töltse le a legújabb verziót, és cserélje ki a fájlokat a könyvtárban.",
-  "Toast_StartedGame": "Elkezdődött {program}",
+  "Toast_StartedGame": "{program} started successfully.",
   "Toast_SteamCantLoadXml": "Nem sikerült beszerezni a {steamId}XML-információit. További részletekért lásd a naplót.",
   "Toast_Steam_VacCleared": "Fiókok VAC állapota törölve",
   "Toast_Steam_CantDeleteVacCache": "A 'LoginCache/Steam/VACCache/SteamVACCache.json' nem törölhető",
