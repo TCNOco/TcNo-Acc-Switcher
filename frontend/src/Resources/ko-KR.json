@@ -195,6 +195,8 @@
   "Stats_GameShortcutsHotbar": "게임 바로가기 (단축바에 있음): ",
   "Stats_GamesLaunched": "게임 실행: ",
   "Stats_MetricsToShow": "표시된 측정항목:",
+  "Stats_MetricsProvidedBy": "Metrics data provided by: ",
+  "Stats_MetricsAffiliationNote": "NOTE: This program is not affiliated or endorsed by this website or service.",
   "Stats_AccountId": "계정 ID:",
   "Auth_LoginRequired": "암호가 이전에 설정되었으며 필수입니다. 아래에 암호를 입력하십시오.",
   "Auth_EnterPassword": "비밀번호 입력:",
