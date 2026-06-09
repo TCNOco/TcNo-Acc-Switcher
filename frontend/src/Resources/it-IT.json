@@ -195,6 +195,8 @@
   "Stats_GameShortcutsHotbar": "Scorciatoie di gioco (sulla barra di scelta rapida): ",
   "Stats_GamesLaunched": "Giochi lanciati: ",
   "Stats_MetricsToShow": "Metriche visualizzate:",
+  "Stats_MetricsProvidedBy": "Metrics data provided by: ",
+  "Stats_MetricsAffiliationNote": "NOTE: This program is not affiliated or endorsed by this website or service.",
   "Stats_AccountId": "ID account:",
   "Auth_LoginRequired": "Una password è stata precedentemente impostata ed è obbligatoria. Inserisci la password qui sotto.",
   "Auth_EnterPassword": "Inserisci la password:",
