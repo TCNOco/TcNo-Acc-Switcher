@@ -195,6 +195,8 @@
   "Stats_GameShortcutsHotbar": "Játékparancsikonok (a gyorsbillentyűn): ",
   "Stats_GamesLaunched": "Elindított játékok: ",
   "Stats_MetricsToShow": "Megjelenített mutatók:",
+  "Stats_MetricsProvidedBy": "Metrics data provided by: ",
+  "Stats_MetricsAffiliationNote": "NOTE: This program is not affiliated or endorsed by this website or service.",
   "Stats_AccountId": "Fiókazonosító:",
   "Auth_LoginRequired": "A jelszó korábban be volt állítva, és szükséges. Adja meg alább a jelszót.",
   "Auth_EnterPassword": "Adja meg a jelszót:",
