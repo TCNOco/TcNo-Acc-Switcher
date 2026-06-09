@@ -195,6 +195,8 @@
   "Stats_GameShortcutsHotbar": "Spel snelkoppelingen (op de hotbar): ",
   "Stats_GamesLaunched": "Games gelanceerd: ",
   "Stats_MetricsToShow": "Weergegeven statistieken:",
+  "Stats_MetricsProvidedBy": "Metrics data provided by: ",
+  "Stats_MetricsAffiliationNote": "NOTE: This program is not affiliated or endorsed by this website or service.",
   "Stats_AccountId": "Account-ID:",
   "Auth_LoginRequired": "Een wachtwoord is eerder ingesteld en is vereist. Voer het wachtwoord hieronder in.",
   "Auth_EnterPassword": "Voer wachtwoord in:",
