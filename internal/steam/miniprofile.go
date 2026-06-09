@@ -673,6 +673,83 @@ func findFirstDivWithClass(root *html.Node, want string) *html.Node {
 	return walk(root)
 }
 
+// ExtractMiniprofileDisplayName returns the public persona label from miniprofile HTML
+// (span.persona), which updates more often than loginusers.vdf or cached profile XML.
+func ExtractMiniprofileDisplayName(fragment string) string {
+	fragment = strings.TrimSpace(fragment)
+	if fragment == "" {
+		return ""
+	}
+	body, err := parseFragmentInBody(fragment)
+	if err != nil || body == nil {
+		return ""
+	}
+	var walk func(*html.Node) string
+	walk = func(n *html.Node) string {
+		if n.Type == html.ElementNode && strings.EqualFold(n.Data, "span") && classAttrPrefix(n, "persona") {
+			if t := strings.TrimSpace(elementTextContent(n)); t != "" {
+				return t
+			}
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			if hit := walk(c); hit != "" {
+				return hit
+			}
+		}
+		return ""
+	}
+	return walk(body)
+}
+
+func elementTextContent(n *html.Node) string {
+	if n == nil {
+		return ""
+	}
+	var b strings.Builder
+	var collect func(*html.Node)
+	collect = func(cur *html.Node) {
+		if cur.Type == html.TextNode {
+			b.WriteString(cur.Data)
+		}
+		for c := cur.FirstChild; c != nil; c = c.NextSibling {
+			collect(c)
+		}
+	}
+	collect(n)
+	return b.String()
+}
+
+// ExtractMiniprofileAvatarMediaURL returns the remote URL for the list avatar from miniprofile HTML:
+// animated webm/mp4 video or item-store gif/png still inside playersection_avatar.
+func ExtractMiniprofileAvatarMediaURL(fragment string) string {
+	fragment = strings.TrimSpace(fragment)
+	if fragment == "" {
+		return ""
+	}
+	body, err := parseFragmentInBody(fragment)
+	if err != nil || body == nil {
+		return ""
+	}
+	mount := findMiniprofileAvatarMountPoint(body)
+	if mount == nil {
+		return ""
+	}
+	if v := firstDescendantElement(mount, "video"); v != nil {
+		if u, _ := pickNameplateSource(v); u != "" {
+			return u
+		}
+		if u := attrVal(v, "src"); isSafeSteamAssetURL(u) {
+			return u
+		}
+	}
+	if img := firstDescendantElement(mount, "img"); img != nil {
+		if u := attrVal(img, "src"); isSafeSteamAssetURL(u) {
+			return u
+		}
+	}
+	return ""
+}
+
 // findMiniprofileAvatarMountPoint locates the element that directly holds the profile picture
 // (still image or animated video) in Steam's miniprofile markup.
 func findMiniprofileAvatarMountPoint(root *html.Node) *html.Node {

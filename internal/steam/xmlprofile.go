@@ -99,8 +99,12 @@ func FetchProfileXML(ctx context.Context, client *http.Client, steamID64 string)
 	}, nil
 }
 
-// CachedCommunityDisplayName returns <steamID> from on-disk profile XML cache if present, ignoring TTL.
+// CachedCommunityDisplayName returns the freshest known public persona label for an account.
+// Miniprofile HTML is preferred over profile XML because it updates more often than loginusers.vdf.
 func CachedCommunityDisplayName(steamID64 string) string {
+	if n := ExtractMiniprofileDisplayName(ReadCachedMiniprofileHTML(steamID64)); n != "" {
+		return n
+	}
 	p, err := xmlCachePath(steamID64)
 	if err != nil {
 		return ""

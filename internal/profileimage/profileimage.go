@@ -84,7 +84,7 @@ func MainAvatarStemFromCacheStem(cacheStem string) string {
 	if cacheStem == "" {
 		return ""
 	}
-	for _, suf := range []string{"_frame", "_nameplate", "_featuredbadge"} {
+	for _, suf := range []string{"_frame", "_nameplate", "_featuredbadge", "_static"} {
 		if strings.HasSuffix(cacheStem, suf) {
 			return strings.TrimSuffix(cacheStem, suf)
 		}

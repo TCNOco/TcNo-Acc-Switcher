@@ -1,6 +1,14 @@
 /** Extensions supported by profile image cache (see internal/profileimage). */
 const PROFILE_IMAGE_EXT_RE = /\.(jpe?g|png|webp|gif|webm|mp4)$/i;
 
+const PROFILE_VIDEO_EXT_RE = /\.(webm|mp4)$/i;
+
+/** True when a cached profile public URL points at an animated avatar (webm/mp4). */
+export function isProfileVideoUrl(url: string | null | undefined): boolean {
+  const u = (url ?? "").trim().split(/[?#]/)[0] ?? "";
+  return PROFILE_VIDEO_EXT_RE.test(u);
+}
+
 /** Drag classification: image/video → row cues; shortcut → fullscreen overlay; incompatible → error overlay. */
 export type DragFileCategory = "image" | "shortcut" | "incompatible";
 

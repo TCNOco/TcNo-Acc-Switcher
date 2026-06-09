@@ -212,13 +212,15 @@ label.acc {
     vertical-align: top;
   }
 
-  img.steam-acc-avatar {
+  img.steam-acc-avatar,
+  video.steam-acc-avatar {
     -webkit-user-drag: none;
     display: block;
     width: 100%;
     height: 100%;
     margin: 0;
     border: 2px solid transparent;
+    object-fit: cover;
 
     &.status_vac {
       border: 2px solid var(--red) !important;

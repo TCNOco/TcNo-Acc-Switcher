@@ -15,6 +15,7 @@
   import * as Shortcuts from "wails-shortcuts-service";
   import { ListPayload } from "../../bindings/TcNo-Acc-Switcher/internal/shortcuts/models.js";
   import { offlineMode, offlineSafeImageSrc, withAssetCacheBust } from "../stores/offlineMode";
+  import { isProfileVideoUrl } from "../lib/profileImageDrop";
   import { miniProfileHover } from "../lib/actions/miniProfileHover";
   import { formatToastWithError, formatWailsError } from "../lib/formatWailsError";
   import * as BasicService from "../../bindings/TcNo-Acc-Switcher/internal/basic/basicservice.js";
@@ -39,9 +40,21 @@
 
   type SteamAccountRow = InstanceType<typeof AccountDTO> & {
     tags?: TagDefRow[]; syncError?: string; currentSession: boolean;
-    showShortNotes: boolean; note: string; avatarFrameUrl?: string;
-    miniProfileHtml?: string; showMiniProfile?: boolean; showAvatarFrame?: boolean;
+    showShortNotes: boolean; note: string; staticImageUrl?: string;
+    avatarFrameUrl?: string; miniProfileHtml?: string; showMiniProfile?: boolean; showAvatarFrame?: boolean;
   };
+
+  function steamListAvatarUrl(acc: SteamAccountRow, offline: boolean): string | undefined {
+    if (acc.avatarPending) return undefined;
+    const primary = acc.imageUrl?.trim() || undefined;
+    const fallback = acc.staticImageUrl?.trim() || undefined;
+    if (offline) {
+      if (fallback) return fallback;
+      if (primary && !isProfileVideoUrl(primary)) return primary;
+      return undefined;
+    }
+    return primary ?? fallback;
+  }
 
   type SteamAccountPatch = AccountPatch & {
     avatarFrameUrl?: string; miniProfileHtml?: string;
@@ -168,7 +181,7 @@
         label: `${tr("Context_CreateShortcut")} (${x.lab})`,
         action: async () => {
           try {
-            const p = await Shortcuts.CreateAccountShortcut("Steam", rid, acc.personaName ?? rid, String(x.st), x.lab, (acc.accountName ?? "").trim());
+            const p = await Shortcuts.CreateAccountShortcut("Steam", rid, acc.displayName?.trim() || acc.personaName?.trim() || rid, String(x.st), x.lab, (acc.accountName ?? "").trim());
             pushToast({ type: "success", message: `${tr("Toast_ShortcutCreated")}\n${p}`, duration: 6000 });
           } catch (e) { pushToast({ type: "error", message: formatToastWithError(get(t)("Toast_SwitchFailed"), e), duration: 8000 }); }
         },
@@ -263,7 +276,7 @@
     profileFallback: PROFILE_PLACEHOLDER,
 
     id: (a: SteamAccountRow) => a.steamId64,
-    name: (a: SteamAccountRow) => a.personaName?.trim() || a.displayName?.trim() || a.steamId64,
+    name: (a: SteamAccountRow) => a.displayName?.trim() || a.personaName?.trim() || a.steamId64,
     imageUrl: (a: SteamAccountRow) => a.imageUrl,
     imagePending: (a: SteamAccountRow) => a.avatarPending ?? false,
     currentSession: (a: SteamAccountRow) => a.currentSession ?? false,
@@ -309,6 +322,7 @@
         avatarPending: p.avatarPending, metaPending: p.metaPending,
         manualProfileImage: nextManual, syncError: errMsg,
         displayName: typeof p.displayName === "string" && p.displayName.trim() !== "" ? p.displayName.trim() : account.displayName ?? "",
+        staticImageUrl: typeof p.staticImageUrl === "string" && p.staticImageUrl.trim() !== "" ? p.staticImageUrl.trim() : account.staticImageUrl ?? "",
         avatarFrameUrl: typeof p.avatarFrameUrl === "string" && p.avatarFrameUrl.trim() !== "" ? p.avatarFrameUrl.trim() : account.avatarFrameUrl ?? "",
         miniProfileHtml: typeof p.miniProfileHtml === "string" && p.miniProfileHtml.trim() !== "" ? p.miniProfileHtml.trim() : account.miniProfileHtml ?? "",
         showMiniProfile: typeof p.showMiniProfile === "boolean" ? p.showMiniProfile : account.showMiniProfile,
@@ -317,7 +331,7 @@
     },
 
     searchHay: (a: SteamAccountRow, trimmed: string) => {
-      const parts = [a.personaName ?? "", a.displayName ?? "", a.note ?? ""];
+      const parts = [a.displayName ?? "", a.personaName ?? "", a.note ?? ""];
       if (a.showAccUsername) parts.push(a.accountName ?? "");
       if (trimmed.toLowerCase().split(/\s+/).some((w) => /^\d{5,}$/.test(w))) parts.push(a.steamId64 ?? "");
       return parts.join("\n");
@@ -380,22 +394,39 @@
   <PlatformAccountsBase {name} {adapter}>
     <svelte:fragment slot="account-avatar" let:acc let:epoch let:fallback>
       {@const a = acc}
+      {@const avatarSrc = offlineSafeImageSrc($offlineMode, withAssetCacheBust(steamListAvatarUrl(a, $offlineMode), epoch), fallback)}
+      {@const avatarIsVideo = !$offlineMode && isProfileVideoUrl(avatarSrc)}
       <span class="steam-acc-avatar-wrap">
-        <img
-          class="steam-acc-avatar"
-          class:status_vac={a.showVac && a.vac}
-          class:status_limited={a.showLimited && a.ltd}
-          src={offlineSafeImageSrc($offlineMode, withAssetCacheBust(
-            a.imageUrl && !a.avatarPending ? a.imageUrl : undefined, epoch,
-          ), fallback)}
-          alt="" draggable="false"
-          use:miniProfileHover={{
-            html: a.miniProfileHtml ?? "",
-            boundary: steamMainEl,
-            offline: $offlineMode,
-            enabled: !!(a.showMiniProfile && (a.miniProfileHtml ?? "").trim() !== ""),
-          }}
-        />
+        {#if avatarIsVideo}
+          <video
+            class="steam-acc-avatar"
+            class:status_vac={a.showVac && a.vac}
+            class:status_limited={a.showLimited && a.ltd}
+            src={avatarSrc}
+            autoplay loop muted playsinline
+            aria-hidden="true" draggable="false"
+            use:miniProfileHover={{
+              html: a.miniProfileHtml ?? "",
+              boundary: steamMainEl,
+              offline: $offlineMode,
+              enabled: !!(a.showMiniProfile && (a.miniProfileHtml ?? "").trim() !== ""),
+            }}
+          ></video>
+        {:else}
+          <img
+            class="steam-acc-avatar"
+            class:status_vac={a.showVac && a.vac}
+            class:status_limited={a.showLimited && a.ltd}
+            src={avatarSrc}
+            alt="" draggable="false"
+            use:miniProfileHover={{
+              html: a.miniProfileHtml ?? "",
+              boundary: steamMainEl,
+              offline: $offlineMode,
+              enabled: !!(a.showMiniProfile && (a.miniProfileHtml ?? "").trim() !== ""),
+            }}
+          />
+        {/if}
         {#if a.showAvatarFrame && (a.avatarFrameUrl ?? "").trim() !== "" && !$offlineMode}
           <img class="steam-acc-avatar-frame" src={offlineSafeImageSrc($offlineMode, a.avatarFrameUrl, fallback)} alt="" draggable="false" />
         {/if}
