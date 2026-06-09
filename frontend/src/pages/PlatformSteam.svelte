@@ -178,7 +178,7 @@
     const shortcutChildren: MenuItemDef[] = [
       { type: "search", label: tr("Context_Search") },
       ...loginStates.map((x) => ({
-        label: `${tr("Context_CreateShortcut")} (${x.lab})`,
+        label: x.lab,
         action: async () => {
           try {
             const p = await Shortcuts.CreateAccountShortcut("Steam", rid, acc.displayName?.trim() || acc.personaName?.trim() || rid, String(x.st), x.lab, (acc.accountName ?? "").trim());
@@ -249,8 +249,7 @@
       { label: tr("Context_Game_LoginAndLaunch"), children: launchChildren },
       { label: tr("Context_LoginAsSubmenu"), children: loginAsChildren },
       { label: tr("Context_CopySubmenu"), children: copyChildren },
-      shared.createShortcut,
-      { label: `${tr("Context_CreateShortcut")} (${tr("PersonaState")})`, children: shortcutChildren },
+      { ...shared.createShortcut, children: shortcutChildren },
       shared.forget,
       shared.notes,
       shared.tags,
