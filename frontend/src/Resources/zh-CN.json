@@ -195,6 +195,8 @@
   "Stats_GameShortcutsHotbar": "游戏快捷方式（在快捷栏上）：",
   "Stats_GamesLaunched": "运行过游戏：",
   "Stats_MetricsToShow": "显示的指标：",
+  "Stats_MetricsProvidedBy": "Metrics data provided by: ",
+  "Stats_MetricsAffiliationNote": "NOTE: This program is not affiliated or endorsed by this website or service.",
   "Stats_AccountId": "帐户 ID：",
   "Auth_LoginRequired": "已设置过密码，并且是必需的。请在下面输入密码。",
   "Auth_EnterPassword": "输入密码：",
