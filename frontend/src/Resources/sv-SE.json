@@ -195,6 +195,8 @@
   "Stats_GameShortcutsHotbar": "Spelgenvägar (på hotbar): ",
   "Stats_GamesLaunched": "Lanserade spel: ",
   "Stats_MetricsToShow": "Visade mätvärden:",
+  "Stats_MetricsProvidedBy": "Metrics data provided by: ",
+  "Stats_MetricsAffiliationNote": "NOTE: This program is not affiliated or endorsed by this website or service.",
   "Stats_AccountId": "Konto-ID:",
   "Auth_LoginRequired": "Ett lösenord har tidigare ställts in och krävs. Ange lösenordet nedan.",
   "Auth_EnterPassword": "Ange lösenord:",
