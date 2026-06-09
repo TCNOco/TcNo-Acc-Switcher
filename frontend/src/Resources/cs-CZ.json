@@ -195,6 +195,8 @@
   "Stats_GameShortcutsHotbar": "Herní zkratky (na liště): ",
   "Stats_GamesLaunched": "Kolik her bylo spuštěno: ",
   "Stats_MetricsToShow": "Zobrazené metriky:",
+  "Stats_MetricsProvidedBy": "Metrics data provided by: ",
+  "Stats_MetricsAffiliationNote": "NOTE: This program is not affiliated or endorsed by this website or service.",
   "Stats_AccountId": "ID účtu:",
   "Auth_LoginRequired": "Heslo bylo dříve nastaveno a je vyžadováno. Níže prosím zadejte heslo.",
   "Auth_EnterPassword": "Zadejte heslo:",
