@@ -195,6 +195,8 @@
   "Stats_GameShortcutsHotbar": "קיצורי דרך למשחק (ב - Hotbar): ",
   "Stats_GamesLaunched": "משחקים שהושקו: ",
   "Stats_MetricsToShow": "מדדים מוצגים:",
+  "Stats_MetricsProvidedBy": "Metrics data provided by: ",
+  "Stats_MetricsAffiliationNote": "NOTE: This program is not affiliated or endorsed by this website or service.",
   "Stats_AccountId": "מזהה חשבון:",
   "Auth_LoginRequired": "סיסמה הוגדרה בעבר, והיא נדרשת. הזן את הסיסמה שלהלן.",
   "Auth_EnterPassword": "הזן סיסמה:",
