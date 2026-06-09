@@ -12,7 +12,7 @@ func TestParsePassthroughLaunchArgs(t *testing.T) {
 	idx := &PlatformIndex{
 		Names: map[string]string{"steam": "Steam"},
 	}
-	argv := []string{"+s:76561198064588130", "-dev", "-x", "-y"}
+	argv := []string{"+s:76561197960287930", "-dev", "-x", "-y"}
 	p, err := Parse(argv, idx)
 	if err != nil {
 		t.Fatal(err)
@@ -20,7 +20,7 @@ func TestParsePassthroughLaunchArgs(t *testing.T) {
 	if p.Kind != KindSwapSteam {
 		t.Fatalf("kind: got %v want KindSwapSteam", p.Kind)
 	}
-	if p.SteamID64 != "76561198064588130" {
+	if p.SteamID64 != "76561197960287930" {
 		t.Fatalf("steam id: got %q", p.SteamID64)
 	}
 	want := []string{"-dev", "-x", "-y"}
@@ -31,7 +31,7 @@ func TestParsePassthroughLaunchArgs(t *testing.T) {
 
 func TestParseRunAppIDSteam(t *testing.T) {
 	idx := &PlatformIndex{Names: map[string]string{"steam": "Steam"}}
-	p, err := Parse([]string{"+s:76561198064588130", "--run-appid=945360"}, idx)
+	p, err := Parse([]string{"+s:76561197960287930", "--run-appid=945360"}, idx)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -58,11 +58,11 @@ func TestParsePlusTokenAcceptsAnyIdentifierAlias(t *testing.T) {
 		FirstIdentifier:   map[string]string{"s": "Steam"},
 		IdentifierAliases: map[string]string{"s": "Steam", "steam": "Steam", "valve": "Steam"},
 	}
-	p, err := Parse([]string{"+valve:76561198064588130"}, idx)
+	p, err := Parse([]string{"+valve:76561197960287930"}, idx)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if p.Kind != KindSwapSteam || p.PlatformKey != "Steam" || p.SteamID64 != "76561198064588130" {
+	if p.Kind != KindSwapSteam || p.PlatformKey != "Steam" || p.SteamID64 != "76561197960287930" {
 		t.Fatalf("got %#v", p)
 	}
 }
@@ -84,7 +84,7 @@ func TestParseOpenPageAcceptsIdentifierAlias(t *testing.T) {
 func TestParseRunShortcutWithSteam(t *testing.T) {
 	idx := &PlatformIndex{Names: map[string]string{"steam": "Steam"}}
 	enc := url.QueryEscape("My Game.lnk")
-	p, err := Parse([]string{"+s:76561198064588130", "--run-shortcut=" + enc}, idx)
+	p, err := Parse([]string{"+s:76561197960287930", "--run-shortcut=" + enc}, idx)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -95,7 +95,7 @@ func TestParseRunShortcutWithSteam(t *testing.T) {
 
 func TestParseRunShortcutMutuallyExclusive(t *testing.T) {
 	idx := &PlatformIndex{Names: map[string]string{"steam": "Steam"}}
-	_, err := Parse([]string{"+s:76561198064588130", "--run-appid=1", "--run-shortcut=x.lnk"}, idx)
+	_, err := Parse([]string{"+s:76561197960287930", "--run-appid=1", "--run-shortcut=x.lnk"}, idx)
 	if err == nil || !strings.Contains(err.Error(), "cannot combine") {
 		t.Fatalf("want error, got %v", err)
 	}

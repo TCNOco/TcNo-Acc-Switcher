@@ -24,11 +24,28 @@ import (
 
 	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/fsutil"
+	"TcNo-Acc-Switcher/internal/gamestatsimage"
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/profileimage"
 )
 
 const gameStatsImageDownloadMaxBytes = 2 << 20 // 2 MiB
+
+func gameDefinitionUsesJSONOnly(def gameDefinition) bool {
+	if len(def.Collect) == 0 {
+		return false
+	}
+	for _, ci := range def.Collect {
+		key := strings.TrimSpace(ci.Source)
+		if key == "" {
+			return false
+		}
+		if strings.ToLower(key) != "json" {
+			return false
+		}
+	}
+	return true
+}
 
 func substituteGameStatsURL(tmpl string, vars map[string]string) string {
 	out := tmpl
@@ -71,6 +88,10 @@ func fetchGameStatsHTML(ctx context.Context, urlStr, cookiesHeader string) ([]by
 	defer resp.Body.Close()
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		gameStatsLog.Debug("game stats fetch non-2xx", "url", urlStr, "status", resp.StatusCode)
+		body, _ := io.ReadAll(io.LimitReader(resp.Body, 4096))
+		if msg := strings.TrimSpace(gjson.GetBytes(body, "Error").String()); msg != "" {
+			return nil, fmt.Errorf("%s", msg)
+		}
 		return nil, &GameStatsHTTPError{StatusCode: resp.StatusCode}
 	}
 	data, err := io.ReadAll(io.LimitReader(resp.Body, 8<<20))
@@ -237,8 +258,26 @@ func collectStatsFromHTML(platformKey, accountID string, def gameDefinition, doc
 			xVal = dataURI
 		}
 
+		imgToken := ""
+		if imgPath := strings.TrimSpace(ci.ImageFromPath); imgPath != "" && len(rawBody) > 0 {
+			imgURL := strings.TrimSpace(gjson.GetBytes(rawBody, imgPath).String())
+			if imgURL != "" {
+				cacheDir := strings.TrimSpace(ci.ImageCacheDir)
+				if cacheDir == "" {
+					cacheDir = "gs"
+				}
+				ctx, cancel := context.WithTimeout(context.Background(), 45*time.Second)
+				localURL, imgErr := gamestatsimage.DownloadIfNeeded(ctx, appclient.Shared, cacheDir, imgURL, gamestatsimage.DefaultMaxAgeDays)
+				cancel()
+				if imgErr == nil {
+					imgToken = localURL
+				}
+			}
+		}
+
 		displayAs = applyDisplayPlaceholders(displayAs, text, ci.DisplayPlaceholders)
 		displayAs = strings.ReplaceAll(displayAs, "%x_fmt%", applyDisplayFormat(text, ci.DisplayFormat))
+		displayAs = strings.ReplaceAll(displayAs, "%img%", imgToken)
 		out[itemName] = strings.ReplaceAll(displayAs, "%x%", xVal)
 	}
 	gameStatsLog.Debug("collect stats from html", "platform", platformKey, "accountID", accountID, "requestedMetrics", len(def.Collect), "collectedMetrics", len(out), "missingMetrics", missing)

@@ -14,6 +14,8 @@ import (
 	"time"
 
 	"github.com/antchfx/htmlquery"
+	"github.com/tidwall/gjson"
+	htmlnet "golang.org/x/net/html"
 
 	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/fsutil"
@@ -68,6 +70,12 @@ type gameDefinition struct {
 	Indicator      string                        `json:"Indicator"`
 	URL            string                        `json:"Url"`
 	RequestCookies string                        `json:"RequestCookies"`
+	// TTL is how long collected stats remain fresh before a background refresh (default 3h). JSON: seconds number or duration string ("3h", "30m").
+	TTL gameStatTTL `json:"TTL"`
+	// ProcessName is an optional exe base name (e.g. cs2.exe). When running, the signed-in account uses GameRunningTTL instead of TTL.
+	ProcessName string `json:"ProcessName"`
+	// GameRunningTTL applies while ProcessName is running for the current session account (default 30m).
+	GameRunningTTL gameStatTTL `json:"GameRunningTTL"`
 	Attribution    *gameAttribution              `json:"Attribution"`
 	Vars           map[string]gameStatVarDef     `json:"Vars"`
 	Collect        map[string]collectInstruction `json:"Collect"`
@@ -144,8 +152,14 @@ type collectInstruction struct {
 	ToggleText      string `json:"ToggleText"`
 	SelectAttribute string `json:"SelectAttribute"`
 	SpecialType     string `json:"SpecialType"`
-	NoDisplayIf     string `json:"NoDisplayIf"`
-	Icon            string `json:"Icon"`
+	// ImageFromPath is a JSON path (same document as Path) for a remote image URL cached under wwwroot/img/<ImageCacheDir>/.
+	ImageFromPath string `json:"ImageFromPath"`
+	ImageCacheDir string `json:"ImageCacheDir"`
+	NoDisplayIf string `json:"NoDisplayIf"`
+	// Icon is raw HTML shown before the metric (Overwatch role icons). Takes precedence over Indicator.
+	Icon string `json:"Icon"`
+	// Indicator is optional short text wrapped in <sup>. nil = inherit game-level Indicator; "" = none; "APEX" = override.
+	Indicator *string `json:"Indicator"`
 }
 
 type userGameStat struct {
@@ -764,15 +778,36 @@ func (b *BasicService) DisableGame(game, accountID string) error {
 	return gameStatsState.saveGameCacheLocked(game)
 }
 
+func collectIndicatorMarkup(ci collectInstruction, gameIndicator string) string {
+	if icon := strings.TrimSpace(ci.Icon); icon != "" {
+		return icon
+	}
+	if ci.Indicator != nil {
+		ind := strings.TrimSpace(*ci.Indicator)
+		if ind == "" {
+			return ""
+		}
+		return "<sup>" + ind + "</sup>"
+	}
+	gameIndicator = strings.TrimSpace(gameIndicator)
+	if gameIndicator == "" {
+		return ""
+	}
+	return "<sup>" + gameIndicator + "</sup>"
+}
+
 func (b *BasicService) GetUserStatsAllGamesMarkup(platformName, accountID string) (map[string]map[string]StatValueAndIconDTO, error) {
 	gameStatsState.mu.Lock()
-	defer gameStatsState.mu.Unlock()
 	if err := gameStatsState.ensureLoadedLocked(); err != nil {
+		gameStatsState.mu.Unlock()
 		return nil, err
 	}
+	platformName = strings.TrimSpace(platformName)
 	accountID = strings.TrimSpace(accountID)
+	liveAccountID := currentLiveAccountID(b, platformName)
+	staleJobs := collectStaleGameStatsJobs(platformName, accountID, liveAccountID)
 	out := map[string]map[string]StatValueAndIconDTO{}
-	for _, game := range gameStatsState.compat[strings.TrimSpace(platformName)] {
+	for _, game := range gameStatsState.compat[platformName] {
 		def, ok := gameStatsState.defs[game]
 		if !ok {
 			continue
@@ -794,10 +829,7 @@ func (b *BasicService) GetUserStatsAllGamesMarkup(platformName, accountID string
 			if _, skip := hidden[key]; skip {
 				continue
 			}
-			indicator := strings.TrimSpace(def.Collect[key].Icon)
-			if indicator == "" && strings.TrimSpace(def.Indicator) != "" {
-				indicator = "<sup>" + def.Indicator + "</sup>"
-			}
+			indicator := collectIndicatorMarkup(def.Collect[key], def.Indicator)
 			statsByKey[key] = StatValueAndIconDTO{
 				StatValue:       value,
 				IndicatorMarkup: indicator,
@@ -806,6 +838,10 @@ func (b *BasicService) GetUserStatsAllGamesMarkup(platformName, accountID string
 		if len(statsByKey) > 0 {
 			out[game] = statsByKey
 		}
+	}
+	gameStatsState.mu.Unlock()
+	for _, job := range staleJobs {
+		queueGameStatsRefresh(job.platformKey, job.game, job.accountID)
 	}
 	return out, nil
 }
@@ -819,9 +855,15 @@ func fetchAndParseGameStats(urlStr, requestCookies, platformName, game, accountI
 		gameStatsLog.Warn("refresh game stats fetch failed", "platform", platformName, "game", game, "accountID", accountID, "url", urlStr, "err", err)
 		return nil, nil, err
 	}
-	doc, err := htmlquery.Parse(bytes.NewReader(rawHTML))
-	if err != nil {
-		return nil, nil, err
+	if msg := strings.TrimSpace(gjson.GetBytes(rawHTML, "Error").String()); msg != "" {
+		return nil, nil, fmt.Errorf("%s", msg)
+	}
+	var doc *htmlnet.Node
+	if !gameDefinitionUsesJSONOnly(def) {
+		doc, err = htmlquery.Parse(bytes.NewReader(rawHTML))
+		if err != nil {
+			return nil, nil, err
+		}
 	}
 	collected, err = collectStatsFromHTML(platformName, accountID, def, doc, rawHTML)
 	if err != nil {
@@ -902,8 +944,7 @@ func (m *gameStatsManager) refreshFromWebLocked(platformName, game, accountID st
 	return m.refreshSaveLocked(platformName, game, accountID, rawHTML, collected)
 }
 
-// RefreshGameStats downloads game statistics HTML for one enabled game and updates the cache.
-func (b *BasicService) RefreshGameStats(platformName, game, accountID string) error {
+func refreshGameStatsWorker(platformName, game, accountID string) error {
 	gameStatsState.mu.Lock()
 	if err := gameStatsState.ensureLoadedLocked(); err != nil {
 		gameStatsState.mu.Unlock()
@@ -941,4 +982,9 @@ func (b *BasicService) RefreshGameStats(platformName, game, accountID string) er
 	err = gameStatsState.refreshSaveLocked(platformName, game, accountID, rawHTML, collected)
 	gameStatsState.mu.Unlock()
 	return err
+}
+
+// RefreshGameStats downloads game statistics for one enabled game and updates the cache.
+func (b *BasicService) RefreshGameStats(platformName, game, accountID string) error {
+	return refreshGameStatsWorker(platformName, game, accountID)
 }

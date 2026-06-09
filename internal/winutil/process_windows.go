@@ -825,6 +825,29 @@ func processExistsByImageName(want string) (bool, error) {
 	return len(pids) > 0, nil
 }
 
+// SnapshotRunningExeBasenames returns lowercase exe base names for all running processes (e.g. cs2.exe).
+func SnapshotRunningExeBasenames() (map[string]struct{}, error) {
+	all, err := snapshotProcesses()
+	if err != nil {
+		return nil, err
+	}
+	out := make(map[string]struct{}, len(all))
+	for _, p := range all {
+		base := normalizeExeBase(p.ExeBase)
+		if base == "" {
+			continue
+		}
+		out[strings.ToLower(base)] = struct{}{}
+	}
+	return out, nil
+}
+
+// IsExeRunning reports whether any process with the given image base name is running.
+func IsExeRunning(exeName string) bool {
+	ok, err := processExistsByImageName(exeName)
+	return err == nil && ok
+}
+
 func utf16FixedToString(b []uint16) string {
 	n := 0
 	for n < len(b) && b[n] != 0 {

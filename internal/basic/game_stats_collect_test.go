@@ -278,6 +278,48 @@ func TestCollectStatsFromHTML_RawAndFormattedPlaceholders(t *testing.T) {
 	}
 }
 
+func TestGameDefinitionUsesJSONOnly(t *testing.T) {
+	t.Parallel()
+	if !gameDefinitionUsesJSONOnly(gameDefinition{
+		Collect: map[string]collectInstruction{
+			"A": {Source: "json", Path: "a"},
+		},
+	}) {
+		t.Fatal("expected json-only")
+	}
+	if gameDefinitionUsesJSONOnly(gameDefinition{
+		Collect: map[string]collectInstruction{
+			"A": {XPath: "//a"},
+		},
+	}) {
+		t.Fatal("expected mixed/html definition")
+	}
+}
+
+func TestCollectStatsFromHTML_ApexRankDisplay(t *testing.T) {
+	raw := []byte(`{"level":123,"rankScore":1234,"rankImg":"https://api.mozambiquehe.re/assets/ranks/platinum4.png"}`)
+	def := gameDefinition{
+		Collect: map[string]collectInstruction{
+			"BR": {
+				Source:          "json",
+				Path:            "rankScore",
+				ImageFromPath:   "rankImg",
+				ImageCacheDir:   "gs/apex",
+				DisplayFormat:   "commaNumber",
+				DisplayAs:       `<div class='apex-rank'><img src="%img%" alt=""/><span>%x_fmt% BR</span></div>`,
+			},
+		},
+	}
+	out, err := collectStatsFromHTML("steam", "1", def, nil, raw)
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := out["BR"]
+	if !strings.Contains(s, `class='apex-rank'`) || !strings.Contains(s, `>1,234 BR<`) {
+		t.Fatalf("unexpected BR output: %q", s)
+	}
+}
+
 func TestCollectStatsFromHTML_JSONWithDisplayPlaceholders(t *testing.T) {
 	raw := []byte(`{"v":12000}`)
 	def := gameDefinition{

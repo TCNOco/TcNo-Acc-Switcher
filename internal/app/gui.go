@@ -207,6 +207,14 @@ func RunGUI(params RunGUIParams) {
 	steam.SyncTrayKnownAccounts()
 	trayMgr.Start(params.TrayIconPNG)
 
+	basic.SetLiveAccountIDResolver(func(platformKey string) (string, error) {
+		if strings.EqualFold(strings.TrimSpace(platformKey), "Steam") {
+			return steam.CurrentLiveSteamID64()
+		}
+		return basic.CurrentLiveUniqueID(basic.FlowDeps{PS: params.Dispatch.PlatformSvc}, platformKey)
+	})
+	params.Dispatch.BasicSvc.StartGameStatsProcessMonitor()
+
 	go func() {
 		for {
 			now := time.Now().Format(time.RFC1123)

@@ -108,6 +108,7 @@
   let offPlatformAction: (() => void) | undefined;
   let offAccountsRefresh: (() => void) | undefined;
   let offUpdateEvent: (() => void) | undefined;
+  let offGameStatsUpdated: (() => void) | undefined;
   let offSort: (() => void) | undefined;
   let lastHandledActionId = 0;
   let lastHandledSortId = 0;
@@ -394,6 +395,7 @@
       touchStatus();
       await loadTagDefs();
       await refreshGameStatsMarkup(rows.map((r) => adapter.id(r)));
+      void BasicService.StartGameStatsRefresh(name);
       void adapter.onAfterLoad?.(rows);
     } catch (e) {
       loadError = formatWailsError(e) || String(e);
@@ -731,6 +733,13 @@
       applyPatchFromEvent(ev.data);
     });
 
+    offGameStatsUpdated = Events.On("basic-game-stats-updated", (ev) => {
+      const p = ev.data as { platformKey?: string; uniqueId?: string };
+      if ((p.platformKey ?? "").trim() !== name.trim()) return;
+      const uid = (p.uniqueId ?? "").trim();
+      if (uid) void refreshGameStatsMarkup([uid]);
+    });
+
     fileDropInterceptor.set(fileDropIntercept);
   });
 
@@ -745,6 +754,7 @@
     offSort?.();
     offAccountsRefresh?.();
     offUpdateEvent?.();
+    offGameStatsUpdated?.();
     accountProfileImageDropActive.set(false);
     fileDropInterceptor.set(null);
     platformAccountsRefresh.set({ seq: 0, platformKey: "" });
@@ -867,21 +877,18 @@
 
                   {#if gameStatsByAccount[rid] && Object.keys(gameStatsByAccount[rid]).length > 0}
                     <div class="acc_inline_gamestats" aria-label={$t("Context_ManageGameStats")}>
-                      {#each Object.entries(gameStatsByAccount[rid]) as [gameTitle, metrics]}
-                        <div class="acc_inline_gamestats_row">
-                          <span class="acc_inline_gamestats_game">{gameTitle}</span>
-                          <span class="acc_inline_gamestats_metrics">
-                            {#each Object.values(metrics) as dto}
-                              <span class="acc_inline_gamestats_metric">
-                                {#if dto.indicatorMarkup}
-                                  <span class="acc_inline_gamestats_ind">{@html dto.indicatorMarkup}</span>
-                                {/if}
-                                <span class="acc_inline_gamestats_val">{@html dto.statValue}</span>
-                              </span>
-                            {/each}
-                          </span>
-                        </div>
-                      {/each}
+                      <span class="acc_inline_gamestats_metrics">
+                        {#each Object.values(gameStatsByAccount[rid]) as metrics}
+                          {#each Object.values(metrics) as dto}
+                            <span class="acc_inline_gamestats_metric">
+                              {#if dto.indicatorMarkup}
+                                <span class="acc_inline_gamestats_ind">{@html dto.indicatorMarkup}</span>
+                              {/if}
+                              <span class="acc_inline_gamestats_val">{@html dto.statValue}</span>
+                            </span>
+                          {/each}
+                        {/each}
+                      </span>
                     </div>
                   {/if}
 

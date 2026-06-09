@@ -50,6 +50,7 @@ func init() {
 	application.RegisterEvent[app.ToastPayload]("toast")
 	application.RegisterEvent[steam.AccountPatch](steam.AccountUpdatedEvent)
 	application.RegisterEvent[basic.AccountImagePatch](basic.AccountImageUpdatedEvent)
+	application.RegisterEvent[basic.GameStatsUpdatedPatch](basic.GameStatsUpdatedEvent)
 	application.RegisterEvent[string](platform.ActionBarStatusEvent)
 	application.RegisterEvent[shortcuts.ListPayload](shortcuts.UpdatedEvent)
 	application.RegisterEvent[[]string](shortcuts.FilesDroppedEvent)

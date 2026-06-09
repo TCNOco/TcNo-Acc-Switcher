@@ -66,13 +66,33 @@ func TestResolveGameStatsVarTemplates_UsernameAliasNoFallback(t *testing.T) {
 		"Username": "%Username%",
 	}
 	ctx := GameStatVarContext{
-		AccountID:       "76561198064588130",
-		AccountUsername: "76561198064588130",
+		AccountID:       "76561197960287930",
+		AccountUsername: "76561197960287930",
 		Username:        "",
 	}
 	got := ResolveGameStatsVarTemplates(def, map[string]string{}, ctx)
 	if got["Username"] != "" {
 		t.Fatalf("expected empty Username alias when raw username missing, got %q", got["Username"])
+	}
+}
+
+func TestResolveGameStatsVarTemplates_PlainTokenPrefersStored(t *testing.T) {
+	t.Parallel()
+	def := map[string]string{"Username": "%Username%"}
+	ctx := GameStatVarContext{AccountID: "1", AccountUsername: "steam", Username: "ea_default"}
+	got := ResolveGameStatsVarTemplates(def, map[string]string{"Username": "MyEAName"}, ctx)
+	if got["Username"] != "MyEAName" {
+		t.Fatalf("stored EA username should win over token, got %q", got["Username"])
+	}
+}
+
+func TestResolveGameStatsVarTemplates_PlainAccountIDToken(t *testing.T) {
+	t.Parallel()
+	def := map[string]string{"SteamId": "%ACCOUNTID%"}
+	ctx := GameStatVarContext{AccountID: "76561197960287930", AccountUsername: "x"}
+	got := ResolveGameStatsVarTemplates(def, map[string]string{}, ctx)
+	if got["SteamId"] != "76561197960287930" {
+		t.Fatalf("got %q", got["SteamId"])
 	}
 }
 

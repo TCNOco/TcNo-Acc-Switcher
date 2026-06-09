@@ -65,6 +65,12 @@ func ResolveGameStatsVarTemplates(defVars map[string]string, stored map[string]s
 		switch {
 		case rawDef == "":
 			out[k] = strings.TrimSpace(stored[k])
+		case gameStatVarIsPlainToken(rawDef):
+			if v := strings.TrimSpace(stored[k]); v != "" {
+				out[k] = v
+			} else {
+				out[k] = strings.TrimSpace(expandGameStatPercentTokens(rawDef, resolved))
+			}
 		case !gameStatVarNeedsComputation(rawDef):
 			out[k] = strings.TrimSpace(stored[k])
 		default:
@@ -74,9 +80,27 @@ func ResolveGameStatsVarTemplates(defVars map[string]string, stored map[string]s
 	return out
 }
 
+// gameStatVarIsPlainToken is true for a single %Token% with no transforms (editable prefill in the UI).
+func gameStatVarIsPlainToken(def string) bool {
+	def = strings.TrimSpace(def)
+	if len(def) < 3 || def[0] != '%' || def[len(def)-1] != '%' {
+		return false
+	}
+	inner := def[1 : len(def)-1]
+	if inner == "" {
+		return false
+	}
+	for _, r := range inner {
+		if !unicode.IsLetter(r) && !unicode.IsDigit(r) && r != '_' {
+			return false
+		}
+	}
+	return true
+}
+
 func gameStatVarNeedsComputation(def string) bool {
 	def = strings.TrimSpace(def)
-	if def == "" {
+	if def == "" || gameStatVarIsPlainToken(def) {
 		return false
 	}
 	if strings.Contains(def, "%") {

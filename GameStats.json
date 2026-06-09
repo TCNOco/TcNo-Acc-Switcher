@@ -3,32 +3,35 @@
     "Apex Legends": {
       "UniqueId": "AL",
       "Indicator": "APEX",
-      "Url": "https://apexlegendsstatus.com/core/interface?platform=PC&player={Username}",
-      "RequestCookies": "apexlegendsstatus_ssid=TcNoAccSwitcher",
+      "ProcessName": "r5apex_dx12.exe",
+      "Url": "https://api.tcno.co/sw/apexStats?player={Username}",
       "Attribution": {
-        "Text": "Apex Legends Status",
+        "Image": "img/gs/providers/apexlegendsstatus.webp",
+        "Dimensions": "253x90",
         "Link": "https://apexlegendsstatus.com"
       },
       "Vars": {
         "Username": {
-          "Autofill": "%Username%",
-          "Display": "Origin Username"
+          "Display": "EA Username"
         }
       },
       "Collect": {
         "BR": {
-          "XPath": "//p[contains(text(), 'RP') and contains(@class, 'general-stats-rank')]",
-          "Select": "innerText",
-          "DisplayAs": "%x%",
-          "NoDisplayIf": "0 RP",
+          "Source": "json",
+          "Path": "rankScore",
+          "ImageFromPath": "rankImg",
+          "ImageCacheDir": "gs/apex",
+          "Indicator": "",
+          "DisplayAs": "<div class='apex-rank'><img src=\"%img%\" alt=\"\"/><span>%x_fmt% BR</span></div>",
+          "DisplayFormat": "commaNumber",
+          "NoDisplayIf": "0",
           "ToggleText": "Ranked Points"
         },
         "LVL": {
-          "XPath": "//img[starts-with(@src, '/core/level_badge/?level=')]",
-          "Select": "attribute",
-          "SelectAttribute": "src",
-          "SelectFunc": ".split('?level=')[1]",
+          "Source": "json",
+          "Path": "level",
           "DisplayAs": "LVL %x%",
+          "NoDisplayIf": "0",
           "ToggleText": "Account Level"
         }
       }
@@ -36,10 +39,10 @@
     "Counter-Strike 2": {
       "UniqueId": "CSGO",
       "Indicator": "",
+      "ProcessName": "cs2.exe",
       "Url": "https://api-public.cs-prod.leetify.com/v2/profiles/{SteamId}",
-      "RequestCookies": "",
       "Attribution": {
-        "Image": "img/gs/cs/leetify.webp",
+        "Image": "img/gs/providers/leetify.webp",
         "Dimensions": "270x115",
         "Link": "https://leetify.com"
       },
@@ -97,8 +100,8 @@
     "Overwatch": {
       "UniqueId": "OW",
       "Indicator": "OW",
+      "ProcessName": "overwatch.exe",
       "Url": "https://playoverwatch.com/en-us/career/pc/{BattleTag}",
-      "RequestCookies": "",
       "Attribution": {
         "Text": "PlayOverwatch",
         "Link": "https://playoverwatch.com"
