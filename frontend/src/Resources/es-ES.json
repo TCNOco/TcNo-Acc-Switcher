@@ -195,6 +195,8 @@
   "Stats_GameShortcutsHotbar": "Accesos directos del juego (en la barra caliente): ",
   "Stats_GamesLaunched": "Juegos lanzados: ",
   "Stats_MetricsToShow": "Métricas mostradas:",
+  "Stats_MetricsProvidedBy": "Metrics data provided by: ",
+  "Stats_MetricsAffiliationNote": "NOTE: This program is not affiliated or endorsed by this website or service.",
   "Stats_AccountId": "ID de la cuenta:",
   "Auth_LoginRequired": "Anteriormente se estableció una contraseña, que es obligatoria. Introduzca la contraseña a continuación.",
   "Auth_EnterPassword": "Introduzca la contraseña:",
