@@ -195,6 +195,8 @@
   "Stats_GameShortcutsHotbar": "Dreceres de joc (a la barra d'accés): ",
   "Stats_GamesLaunched": "Jocs llançats: ",
   "Stats_MetricsToShow": "Mètriques mostrades:",
+  "Stats_MetricsProvidedBy": "Metrics data provided by: ",
+  "Stats_MetricsAffiliationNote": "NOTE: This program is not affiliated or endorsed by this website or service.",
   "Stats_AccountId": "Identificador del compte:",
   "Auth_LoginRequired": "Prèviament s'ha establert una contrasenya i és necessària. Introduïu la contrasenya a continuació.",
   "Auth_EnterPassword": "Introduïu la contrasenya:",
