@@ -214,6 +214,7 @@ func RunGUI(params RunGUIParams) {
 		return basic.CurrentLiveUniqueID(basic.FlowDeps{PS: params.Dispatch.PlatformSvc}, platformKey)
 	})
 	params.Dispatch.BasicSvc.StartGameStatsProcessMonitor()
+	steam.StartSteamAppListMonitor()
 
 	go func() {
 		for {

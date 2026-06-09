@@ -25,6 +25,10 @@ export function setPlatformAccountsCache(platformKey: string, entry: PlatformAcc
   }
 }
 
-export function setPlatformAccountCounts(counts: Record<string, number> | null | undefined): void {
-  platformAccountCounts.set(counts ?? {});
+export function setPlatformAccountCounts(counts: Record<string, number | undefined> | null | undefined): void {
+  const next: Record<string, number> = {};
+  for (const [key, value] of Object.entries(counts ?? {})) {
+    if (typeof value === "number" && value > 0) next[key] = value;
+  }
+  platformAccountCounts.set(next);
 }

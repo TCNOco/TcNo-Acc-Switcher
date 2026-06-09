@@ -16,6 +16,7 @@ require (
 	github.com/tc-hib/winres v0.3.1
 	github.com/tidwall/gjson v1.19.0
 	github.com/tidwall/sjson v1.2.5
+	github.com/ulikunitz/xz v0.5.15
 	github.com/wailsapp/wails/v3 v3.0.0-alpha.96
 	golang.org/x/crypto v0.52.0
 	golang.org/x/image v0.41.0
