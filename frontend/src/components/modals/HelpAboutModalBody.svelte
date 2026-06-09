@@ -33,8 +33,7 @@
     void Browser.OpenURL(url);
   }
 
-  async function onVersionClick(e: MouseEvent): Promise<void> {
-    e.preventDefault();
+  async function onVersionClick(): Promise<void> {
     await checkForUpdatesManually();
   }
 </script>
@@ -96,7 +95,7 @@
   </div>
 </div>
 <div class="versionIdentifier">
-  <span>{$t("Modal_Info_Version")}: <a href="#" class="version-link" on:click={(e) => void onVersionClick(e)}>{currentVersion}</a></span>
+  <span>{$t("Modal_Info_Version")}: <button type="button" class="version-link" on:click={() => void onVersionClick()}>{currentVersion}</button></span>
 </div>
 
 <style lang="scss">
@@ -157,6 +156,10 @@
   }
 
   .version-link {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
     color: var(--accent, #f90);
     text-decoration: underline;
     cursor: pointer;

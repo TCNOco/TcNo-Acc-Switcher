@@ -81,13 +81,13 @@
     {/if}
   </div>
   <a class="fancyLink" href={CROWDIN_URL} on:click={openHelpTranslate}>{$t("Settings_HelpTranslate")}</a>
-  <a class="fancyLink" href="#" on:click={(e) => { e.preventDefault(); void openCreditsModal(); }}
-    >{$t("Settings_ViewTranslators")}</a
+  <button type="button" class="fancyLink" on:click={() => void openCreditsModal()}
+    >{$t("Settings_ViewTranslators")}</button
   >
 </div>
 
 <style lang="scss">
-  button {
+  .dropdown-toggle {
     position: relative;
     height: 38px;
   }

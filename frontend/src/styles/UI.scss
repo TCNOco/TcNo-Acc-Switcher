@@ -21,6 +21,40 @@ a {
   }
 }
 
+button.fancyLink {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  color: var(--accent);
+  display: inline;
+  font: inherit;
+  height: auto;
+  margin: 1px 0;
+  padding: 0;
+  text-align: inherit;
+  text-decoration: none;
+  width: auto;
+
+  &:hover {
+    background: transparent;
+    border-color: transparent;
+    color: hsl(var(--accentHS), calc(var(--accentL) - 5%));
+  }
+
+  &:active,
+  &:target {
+    background: transparent;
+    border-color: transparent;
+    color: hsl(var(--accentHS), calc(var(--accentL) - 10%));
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
 /* Buttons */
 button,
 .button {

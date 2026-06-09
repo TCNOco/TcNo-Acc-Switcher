@@ -358,17 +358,17 @@
 <div class="multilineSetting">
   <span>{$t("Settings_CurrentDataLocation", { path: userDataPath || "…" })}</span>
   <span>
-    <a
+    <button
+      type="button"
       class="fancyLink"
-      class:disabled={userDataMoveLoading}
-      href="#"
-      on:click={(e) => { e.preventDefault(); if (!userDataMoveLoading) void openMoveUserDataModal(); }}
-    >{$t("Settings_SetDataLocation")}</a>
-    <a
+      disabled={userDataMoveLoading}
+      on:click={() => void openMoveUserDataModal()}
+    >{$t("Settings_SetDataLocation")}</button>
+    <button
+      type="button"
       class="fancyLink"
-      href="#"
-      on:click={(e) => { e.preventDefault(); void openUserDataFolder(); }}
-    >{$t("Settings_OpenUserDataFolder")}</a>
+      on:click={() => void openUserDataFolder()}
+    >{$t("Settings_OpenUserDataFolder")}</button>
     </span>
 </div>
 
@@ -482,7 +482,7 @@
 </div>
 
 <style lang="scss">
-  button {
+  button:not(.fancyLink) {
     position: relative;
     height: 38px;
   }
