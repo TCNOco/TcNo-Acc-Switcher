@@ -195,6 +195,8 @@
   "Stats_GameShortcutsHotbar": "Lối tắt trò chơi (trên thanh công cụ nhanh): ",
   "Stats_GamesLaunched": "Trò chơi được khởi động: ",
   "Stats_MetricsToShow": "Số liệu được hiển thị:",
+  "Stats_MetricsProvidedBy": "Metrics data provided by: ",
+  "Stats_MetricsAffiliationNote": "NOTE: This program is not affiliated or endorsed by this website or service.",
   "Stats_AccountId": "ID Tài khoản:",
   "Auth_LoginRequired": "Mật khẩu đã được đặt trước đó và bắt buộc phải có. Vui lòng nhập mật khẩu bên dưới.",
   "Auth_EnterPassword": "Nhập mật khẩu:",
