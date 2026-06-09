@@ -195,6 +195,8 @@
   "Stats_GameShortcutsHotbar": "Atalhos do jogo (na barra de atalho): ",
   "Stats_GamesLaunched": "Jogos iniciados: ",
   "Stats_MetricsToShow": "Métricas exibidas:",
+  "Stats_MetricsProvidedBy": "Metrics data provided by: ",
+  "Stats_MetricsAffiliationNote": "NOTE: This program is not affiliated or endorsed by this website or service.",
   "Stats_AccountId": "ID da Conta:",
   "Auth_LoginRequired": "Uma senha foi previamente definida e é necessária. Introduza a palavra-passe abaixo.",
   "Auth_EnterPassword": "Introduza a palavra-passe:",
