@@ -195,6 +195,8 @@
   "Stats_GameShortcutsHotbar": "Pintasan permainan (pada hotbar): ",
   "Stats_GamesLaunched": "Permainan yang diluncurkan: ",
   "Stats_MetricsToShow": "Metrik yang ditampilkan:",
+  "Stats_MetricsProvidedBy": "Metrics data provided by: ",
+  "Stats_MetricsAffiliationNote": "NOTE: This program is not affiliated or endorsed by this website or service.",
   "Stats_AccountId": "Id Akun:",
   "Auth_LoginRequired": "Kata sandi sebelumnya telah ditetapkan, dan diperlukan. Silakan masukkan kata sandi di bawah ini.",
   "Auth_EnterPassword": "Masukkan kata sandi:",
