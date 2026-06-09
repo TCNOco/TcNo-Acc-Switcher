@@ -195,6 +195,8 @@
   "Stats_GameShortcutsHotbar": "खेल शॉर्टकट (हॉटबार पर): ",
   "Stats_GamesLaunched": "लॉन्च किए गए गेम्स: ",
   "Stats_MetricsToShow": "प्रदर्शित मेट्रिक्स:",
+  "Stats_MetricsProvidedBy": "Metrics data provided by: ",
+  "Stats_MetricsAffiliationNote": "NOTE: This program is not affiliated or endorsed by this website or service.",
   "Stats_AccountId": "खाता आईडी:",
   "Auth_LoginRequired": "एक पासवर्ड पहले सेट किया गया था, और आवश्यक है। कृपया नीचे दिया गया पासवर्ड दर्ज करें।",
   "Auth_EnterPassword": "कूटशब्द दाखिल करें:",
