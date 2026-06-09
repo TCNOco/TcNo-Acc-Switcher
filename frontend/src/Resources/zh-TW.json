@@ -195,6 +195,8 @@
   "Stats_GameShortcutsHotbar": "遊戲快捷鍵（在任務欄上） ： ",
   "Stats_GamesLaunched": "啟動遊戲次數： ",
   "Stats_MetricsToShow": "顯示的指標：",
+  "Stats_MetricsProvidedBy": "Metrics data provided by: ",
+  "Stats_MetricsAffiliationNote": "NOTE: This program is not affiliated or endorsed by this website or service.",
   "Stats_AccountId": "賬戶ID：",
   "Auth_LoginRequired": "先前已設定密碼，並且必須填寫密碼。請在下方輸入密碼。",
   "Auth_EnterPassword": "輸入密碼：",
