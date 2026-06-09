@@ -195,6 +195,8 @@
   "Stats_GameShortcutsHotbar": "Ярлики ігор (на хот-барі): ",
   "Stats_GamesLaunched": "Запущені ігри: ",
   "Stats_MetricsToShow": "Зображені показники:",
+  "Stats_MetricsProvidedBy": "Metrics data provided by: ",
+  "Stats_MetricsAffiliationNote": "NOTE: This program is not affiliated or endorsed by this website or service.",
   "Stats_AccountId": "Ідентифікатор акаунту:",
   "Auth_LoginRequired": "Попередньо було встановлено пароль, який є обов'язковим. Введіть пароль нижче.",
   "Auth_EnterPassword": "Введіть пароль:",
