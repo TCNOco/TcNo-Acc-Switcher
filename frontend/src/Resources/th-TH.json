@@ -195,6 +195,8 @@
   "Stats_GameShortcutsHotbar": "ทางลัดสำหรับเกม (บน hotbar): ",
   "Stats_GamesLaunched": "เกมที่เปิดตัว: ",
   "Stats_MetricsToShow": "เมตริกที่แสดง:",
+  "Stats_MetricsProvidedBy": "Metrics data provided by: ",
+  "Stats_MetricsAffiliationNote": "NOTE: This program is not affiliated or endorsed by this website or service.",
   "Stats_AccountId": "ID บัญชี:",
   "Auth_LoginRequired": "ก่อนหน้านี้มีการตั้งค่ารหัสผ่านและจำเป็นต้องใช้โปรดป้อนรหัสผ่านด้านล่าง",
   "Auth_EnterPassword": "ป้อนรหัสผ่าน:",
