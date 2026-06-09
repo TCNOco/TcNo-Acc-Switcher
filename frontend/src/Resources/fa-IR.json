@@ -195,6 +195,8 @@
   "Stats_GameShortcutsHotbar": "میانبرهای بازی (در هاتبار): ",
   "Stats_GamesLaunched": "بازی های راه اندازی شده: ",
   "Stats_MetricsToShow": "معیارهای نمایش داده شده:",
+  "Stats_MetricsProvidedBy": "Metrics data provided by: ",
+  "Stats_MetricsAffiliationNote": "NOTE: This program is not affiliated or endorsed by this website or service.",
   "Stats_AccountId": "شناسه حساب:",
   "Auth_LoginRequired": "رمز عبور قبلاً تنظیم شده است و لازم است. لطفا رمز عبور زیر را وارد کنید.",
   "Auth_EnterPassword": "رمز عبور را وارد کنید:",
