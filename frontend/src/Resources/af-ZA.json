@@ -195,6 +195,8 @@
   "Stats_GameShortcutsHotbar": "Spelkortpaaie (op hotbar): ",
   "Stats_GamesLaunched": "Speletjies bekendgestel: ",
   "Stats_MetricsToShow": "Getoonde maatstawwe:",
+  "Stats_MetricsProvidedBy": "Metrics data provided by: ",
+  "Stats_MetricsAffiliationNote": "NOTE: This program is not affiliated or endorsed by this website or service.",
   "Stats_AccountId": "Rekening ID:",
   "Auth_LoginRequired": "'n Wagwoord is voorheen gestel en word vereis. Voer asseblief die wagwoord hieronder in.",
   "Auth_EnterPassword": "Sleutel wagwoord in:",
