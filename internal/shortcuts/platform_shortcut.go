@@ -74,7 +74,8 @@ func CreatePlatformShortcut(platformKey string) (string, error) {
 	workDir := filepath.Dir(self)
 	desc := fmt.Sprintf("TcNo Account Switcher - %s", platformKey)
 	argv := platformKey
-	if err := winutil.WriteShortcutLnk(outPath, self, argv, workDir, desc, icon); err != nil {
+	appID := winutil.ShortcutAppUserModelID("platform", platformKey)
+	if err := winutil.WriteShortcutLnk(outPath, self, argv, workDir, desc, icon, appID); err != nil {
 		return "", err
 	}
 	return outPath, nil

@@ -75,7 +75,8 @@ func CreateGameAccountShortcut(platformKey, uniqueID, accountDisplayName, accoun
 
 	workDir := filepath.Dir(self)
 	desc := fmt.Sprintf("TcNo Account Switcher - %s - %s", platformKey, title)
-	if err := winutil.WriteShortcutLnk(outPath, self, argv, workDir, desc, icon); err != nil {
+	appID := winutil.ShortcutAppUserModelID(platformKey, uniqueID, gameFileName)
+	if err := winutil.WriteShortcutLnk(outPath, self, argv, workDir, desc, icon, appID); err != nil {
 		return "", err
 	}
 	return outPath, nil

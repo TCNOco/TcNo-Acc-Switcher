@@ -86,5 +86,5 @@ func SetHomeDesktopShortcut(create bool) error {
 	workDir := filepath.Dir(self)
 	desc := "TcNo Account Switcher — Home"
 	icon := self + ",0"
-	return WriteShortcutLnk(out, self, "", workDir, desc, icon)
+	return WriteShortcutLnk(out, self, "", workDir, desc, icon, ShortcutAppUserModelID("home"))
 }

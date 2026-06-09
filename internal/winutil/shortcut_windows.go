@@ -14,7 +14,8 @@ import (
 )
 
 // WriteShortcutLnk creates a Windows shell shortcut via WScript.Shell COM.
-func WriteShortcutLnk(shortcutPath, targetExe, arguments, workingDir, description, iconLocation string) error {
+// appUserModelID, when set, gives the shortcut a unique Start Menu / pinned-tile identity.
+func WriteShortcutLnk(shortcutPath, targetExe, arguments, workingDir, description, iconLocation, appUserModelID string) error {
 	shortcutPath = filepath.Clean(shortcutPath)
 	targetExe = strings.TrimSpace(targetExe)
 	if shortcutPath == "" || targetExe == "" {
@@ -26,7 +27,13 @@ func WriteShortcutLnk(shortcutPath, targetExe, arguments, workingDir, descriptio
 
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
-	return writeShortcutLnkCOM(shortcutPath, targetExe, arguments, workingDir, description, iconLocation)
+	if err := writeShortcutLnkCOM(shortcutPath, targetExe, arguments, workingDir, description, iconLocation); err != nil {
+		return err
+	}
+	if err := setShortcutAppUserModelID(shortcutPath, appUserModelID); err != nil {
+		return err
+	}
+	return nil
 }
 
 func writeShortcutLnkCOM(shortcutPath, targetExe, arguments, workingDir, description, iconLocation string) error {
