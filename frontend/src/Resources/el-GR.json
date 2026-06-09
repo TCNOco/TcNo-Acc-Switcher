@@ -195,6 +195,8 @@
   "Stats_GameShortcutsHotbar": "Συντομεύσεις παιχνιδιού (σε hotbar): ",
   "Stats_GamesLaunched": "Δρομολόγηση παιχνιδιών: ",
   "Stats_MetricsToShow": "Εμφανιζόμενες μετρήσεις:",
+  "Stats_MetricsProvidedBy": "Metrics data provided by: ",
+  "Stats_MetricsAffiliationNote": "NOTE: This program is not affiliated or endorsed by this website or service.",
   "Stats_AccountId": "Αναγνωριστικό λογαριασμού:",
   "Auth_LoginRequired": "Ο κωδικός πρόσβασης ορίστηκε προηγουμένως και απαιτείται. Πληκτρολογήστε τον παρακάτω κωδικό πρόσβασης.",
   "Auth_EnterPassword": "Εισάγετε κωδικό πρόσβασης:",
