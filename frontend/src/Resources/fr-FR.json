@@ -195,6 +195,8 @@
   "Stats_GameShortcutsHotbar": "Raccourcis de jeux (sur la barre de raccourcis) : ",
   "Stats_GamesLaunched": "Lancement des jeux : ",
   "Stats_MetricsToShow": "Indicateurs affichés :",
+  "Stats_MetricsProvidedBy": "Metrics data provided by: ",
+  "Stats_MetricsAffiliationNote": "NOTE: This program is not affiliated or endorsed by this website or service.",
   "Stats_AccountId": "Identifiant du compte :",
   "Auth_LoginRequired": "Un mot de passe a déjà été défini et est requis. Veuillez saisir le mot de passe ci-dessous.",
   "Auth_EnterPassword": "Saisissez le mot de passe :",
