@@ -195,6 +195,8 @@
   "Stats_GameShortcutsHotbar": "Oyun kısayolları (hotbar üzerinde): ",
   "Stats_GamesLaunched": "Başlatılan oyunlar: ",
   "Stats_MetricsToShow": "Görüntülenen metrikler:",
+  "Stats_MetricsProvidedBy": "Metrics data provided by: ",
+  "Stats_MetricsAffiliationNote": "NOTE: This program is not affiliated or endorsed by this website or service.",
   "Stats_AccountId": "Hesap Kimliği:",
   "Auth_LoginRequired": "Bir parola daha önce ayarlanmıştı ve gereklidir. Lütfen şifreyi aşağıya girin.",
   "Auth_EnterPassword": "Parolayı girin:",
