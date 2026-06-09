@@ -20,6 +20,7 @@
     focusFirstNavigable,
     restoreFocus,
     handleContextMenuKeydown,
+    handleContextMenuQuickFilter,
   } from "../lib/contextMenuKeyboard";
 
   /** Viewport padding — keep menu fully inside the window. */
@@ -93,6 +94,11 @@
   function onKey(ev: KeyboardEvent): void {
     if (ev.key === "Escape") {
       closeContextMenu();
+      return;
+    }
+    if (handleContextMenuQuickFilter(ev, menuEl)) {
+      ev.preventDefault();
+      ev.stopPropagation();
     }
   }
 

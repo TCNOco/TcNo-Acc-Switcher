@@ -221,6 +221,51 @@ function handleEdgeKey(ev: KeyboardEvent, active: HTMLElement, key: "Home" | "En
   return true;
 }
 
+/** Search input in the rightmost/deepest expanded flyout column, if present. */
+function searchInputInLatestSection(menuRoot: HTMLElement): HTMLInputElement | null {
+  const expanded = menuRoot.querySelectorAll<HTMLUListElement>("li.hasSubmenu.submenu-expanded > ul.submenu");
+  const latest = expanded.length > 0 ? expanded[expanded.length - 1]! : menuRoot;
+  return latest.querySelector<HTMLInputElement>("li.contextSearch input.ctx-menu__search");
+}
+
+function isQuickFilterTypingKey(ev: KeyboardEvent): boolean {
+  if (ev.ctrlKey || ev.altKey || ev.metaKey || ev.isComposing) {
+    return false;
+  }
+  if (ev.key === " ") {
+    return false;
+  }
+  return ev.key.length === 1;
+}
+
+/** Focus the latest section's search field and insert the typed character (quick-filter). */
+function redirectTypingToSearch(ev: KeyboardEvent, active: HTMLElement, menuRoot: HTMLElement): boolean {
+  if (!isQuickFilterTypingKey(ev)) {
+    return false;
+  }
+  if (active instanceof HTMLInputElement && active.classList.contains("ctx-menu__search")) {
+    return false;
+  }
+
+  const searchInput = searchInputInLatestSection(menuRoot);
+  if (!searchInput) {
+    return false;
+  }
+
+  ev.preventDefault();
+  ev.stopPropagation();
+
+  const char = ev.key;
+  searchInput.focus();
+  const start = searchInput.selectionStart ?? searchInput.value.length;
+  const end = searchInput.selectionEnd ?? searchInput.value.length;
+  searchInput.value = searchInput.value.slice(0, start) + char + searchInput.value.slice(end);
+  searchInput.dispatchEvent(new Event("input", { bubbles: true }));
+  const pos = start + char.length;
+  searchInput.setSelectionRange(pos, pos);
+  return true;
+}
+
 const KEY_HANDLERS: Record<string, KeyHandler> = {
   ArrowDown: (ev, a, m) => handleArrow(ev, a, m, "ArrowDown"),
   ArrowUp: (ev, a, m) => handleArrow(ev, a, m, "ArrowUp"),
@@ -244,6 +289,22 @@ const KEY_HANDLERS: Record<string, KeyHandler> = {
   End: (ev, a) => handleEdgeKey(ev, a, "End"),
 };
 
+/** Quick-filter when the menu is open but focus has not moved into it (e.g. mouse-expanded flyout). */
+export function handleContextMenuQuickFilter(ev: KeyboardEvent, menuRoot: HTMLElement | null): boolean {
+  if (!menuRoot) {
+    return false;
+  }
+  const menu = menuRoot.closest(".ctx-menu-root") ?? menuRoot;
+  if (!(menu instanceof HTMLElement) || !menu.classList.contains("ctx-menu-root")) {
+    return false;
+  }
+  const active = document.activeElement as HTMLElement | null;
+  if (active && menu.contains(active)) {
+    return false;
+  }
+  return redirectTypingToSearch(ev, active ?? document.body, menu);
+}
+
 export function handleContextMenuKeydown(ev: KeyboardEvent, menuRoot: HTMLElement, deps: KeyboardNavDeps): boolean {
   const menu = menuRoot.closest(".ctx-menu-root") ?? menuRoot;
   if (!(menu instanceof HTMLElement) || !menu.classList.contains("ctx-menu-root")) return false;
@@ -252,6 +313,10 @@ export function handleContextMenuKeydown(ev: KeyboardEvent, menuRoot: HTMLElemen
   if (!active || !menu.contains(active)) return false;
 
   if (ev.key === "Escape") return false;
+
+  if (redirectTypingToSearch(ev, active, menu)) {
+    return true;
+  }
 
   const handler = KEY_HANDLERS[ev.key];
   return handler ? handler(ev, active, menu, deps) : false;

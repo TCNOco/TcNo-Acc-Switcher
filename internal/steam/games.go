@@ -12,7 +12,6 @@ import (
 	"path/filepath"
 	"regexp"
 	"sort"
-	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -21,7 +20,6 @@ import (
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
 
-	"github.com/tidwall/gjson"
 	"github.com/ulikunitz/xz"
 )
 
@@ -106,15 +104,7 @@ func appIdsUserPath() (string, error) {
 	return filepath.Join(base, "AppIdsUser.json"), nil
 }
 
-func appIdsFullCachePath() (string, error) {
-	base, err := loginCacheSteamDir()
-	if err != nil {
-		return "", err
-	}
-	return filepath.Join(base, "AppIdsFullListCache.json"), nil
-}
-
-func loadAppNameMap() (map[string]string, error) {
+func loadAppNameMapFromDisk() (map[string]string, error) {
 	p, err := appIdsUserPath()
 	if err != nil {
 		return nil, err
@@ -126,14 +116,10 @@ func loadAppNameMap() (map[string]string, error) {
 		}
 		return nil, err
 	}
-	var m map[string]string
-	if err := json.Unmarshal(b, &m); err != nil {
-		return map[string]string{}, nil
-	}
-	return m, nil
+	return parseAppNameMapJSON(b)
 }
 
-func saveAppNameMap(m map[string]string) error {
+func saveAppNameMapToDisk(m map[string]string) error {
 	p, err := appIdsUserPath()
 	if err != nil {
 		return err
@@ -145,67 +131,71 @@ func saveAppNameMap(m map[string]string) error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(p, b, 0o644)
+	return fsutil.WriteFileAtomic(p, b, 0o644)
 }
 
 const (
-	steamAppListMirrorXZURL   = "https://api.tcno.co/sw/SteamAppListXZ"
-	steamAppListValveURL      = "https://api.steampowered.com/ISteamApps/GetAppList/v2/"
-	steamAppListCacheTTL      = 24 * time.Hour
-	steamAppListFetchTimeout  = 10 * time.Minute
-	steamAppListMaxJSONBytes  = 120 << 20
-	steamAppListMaxXZBytes    = 32 << 20
+	steamAppArrayMirrorXZURL = "https://api.tcno.co/sw/SteamAppArrayXZ"
+	steamAppArrayMirrorURL   = "https://api.tcno.co/sw/SteamAppArray"
+	steamAppNameMapCacheTTL  = 24 * time.Hour
+	steamAppNameMapFetchTimeout = 10 * time.Minute
+	steamAppNameMapMaxJSONBytes = 32 << 20
+	steamAppNameMapMaxXZBytes   = 8 << 20
 )
 
-type steamAppListSource struct {
+type steamAppNameMapSource struct {
 	url          string
 	xzCompressed bool
 }
 
-var steamAppListSources = []steamAppListSource{
-	{url: steamAppListMirrorXZURL, xzCompressed: true},
-	{url: steamAppListValveURL, xzCompressed: false},
+var steamAppNameMapSources = []steamAppNameMapSource{
+	{url: steamAppArrayMirrorXZURL, xzCompressed: true},
+	{url: steamAppArrayMirrorURL, xzCompressed: false},
 }
 
 var (
-	steamAppListMu       sync.RWMutex
-	steamAppListData     []byte
-	steamAppListRefreshMu sync.Mutex
-	steamAppListRefreshing bool
+	steamAppNameMapMu        sync.RWMutex
+	steamAppNameMapMem       map[string]string
+	steamAppNameMapRefreshMu sync.Mutex
+	steamAppNameMapRefreshing bool
 )
 
-func steamAppListJSONLooksValid(raw []byte) bool {
-	if len(raw) < 50 {
+func steamAppNameMapLooksValid(m map[string]string) bool {
+	if len(m) == 0 {
 		return false
 	}
-	if !gjson.GetBytes(raw, "applist.apps").Exists() {
-		return false
-	}
-	// Cheap structural check (full list has many entries; avoids trusting tiny/corrupt files).
-	return gjson.GetBytes(raw, "applist.apps.0.appid").Exists()
-}
-
-func normalizeAppListAppID(r gjson.Result) string {
-	if !r.Exists() {
-		return ""
-	}
-	switch r.Type {
-	case gjson.String:
-		return strings.TrimSpace(r.Str)
-	case gjson.Number:
-		f := r.Float()
-		return strconv.FormatInt(int64(f), 10)
-	default:
-		s := strings.TrimSpace(r.String())
-		if s != "" {
-			return s
+	for id, name := range m {
+		if strings.TrimSpace(id) != "" && strings.TrimSpace(name) != "" {
+			return true
 		}
-		return strings.TrimSpace(strings.Trim(r.Raw, `"`))
 	}
+	return false
 }
 
-func steamAppListCacheModTime() (time.Time, bool) {
-	cachePath, err := appIdsFullCachePath()
+func parseAppNameMapJSON(raw []byte) (map[string]string, error) {
+	var m map[string]string
+	if err := json.Unmarshal(raw, &m); err != nil {
+		return nil, err
+	}
+	if !steamAppNameMapLooksValid(m) {
+		return nil, fmt.Errorf("steam app name map invalid")
+	}
+	return m, nil
+}
+
+func cloneAppNameMap(m map[string]string) map[string]string {
+	if len(m) == 0 {
+		return map[string]string{}
+	}
+	out := make(map[string]string, len(m))
+	for k, v := range m {
+		out[k] = v
+	}
+	return out
+}
+
+func steamAppNameMapCacheModTime() (time.Time, bool) {
+	cachePath, err := appIdsUserPath()
 	if err != nil {
 		return time.Time{}, false
 	}
@@ -216,157 +206,153 @@ func steamAppListCacheModTime() (time.Time, bool) {
 	return st.ModTime(), true
 }
 
-func steamAppListCacheExpired() bool {
-	mt, ok := steamAppListCacheModTime()
+func steamAppNameMapCacheExpired() bool {
+	mt, ok := steamAppNameMapCacheModTime()
 	if !ok {
 		return true
 	}
-	return time.Since(mt) >= steamAppListCacheTTL
+	return time.Since(mt) >= steamAppNameMapCacheTTL
 }
 
-func steamAppListCacheAge() (time.Duration, bool) {
-	mt, ok := steamAppListCacheModTime()
+func steamAppNameMapCacheAge() (time.Duration, bool) {
+	mt, ok := steamAppNameMapCacheModTime()
 	if !ok {
 		return 0, false
 	}
 	return time.Since(mt), true
 }
 
-func setSteamAppListMemory(raw []byte) {
-	steamAppListMu.Lock()
-	steamAppListData = raw
-	steamAppListMu.Unlock()
+func setSteamAppNameMapMemory(m map[string]string) {
+	steamAppNameMapMu.Lock()
+	steamAppNameMapMem = cloneAppNameMap(m)
+	steamAppNameMapMu.Unlock()
 }
 
-func getSteamAppListCached() ([]byte, error) {
-	steamAppListMu.RLock()
-	if len(steamAppListData) > 0 && steamAppListJSONLooksValid(steamAppListData) {
-		data := steamAppListData
-		steamAppListMu.RUnlock()
-		return data, nil
+func getSteamAppNameMapCached() (map[string]string, error) {
+	steamAppNameMapMu.RLock()
+	if steamAppNameMapLooksValid(steamAppNameMapMem) {
+		m := cloneAppNameMap(steamAppNameMapMem)
+		steamAppNameMapMu.RUnlock()
+		return m, nil
 	}
-	steamAppListMu.RUnlock()
+	steamAppNameMapMu.RUnlock()
 
-	cachePath, err := appIdsFullCachePath()
+	m, err := loadAppNameMapFromDisk()
 	if err != nil {
 		return nil, err
 	}
-	b, err := os.ReadFile(cachePath)
-	if err != nil {
-		return nil, err
+	if !steamAppNameMapLooksValid(m) {
+		return nil, fmt.Errorf("steam app name map cache invalid")
 	}
-	if !steamAppListJSONLooksValid(b) {
-		return nil, fmt.Errorf("steam app list cache invalid")
-	}
-	setSteamAppListMemory(b)
-	return b, nil
+	setSteamAppNameMapMemory(m)
+	return cloneAppNameMap(m), nil
 }
 
-func downloadAndStoreSteamAppList(ctx context.Context, reason string) error {
-	cachePath, err := appIdsFullCachePath()
+func downloadAndStoreAppNameMap(ctx context.Context, reason string) error {
+	cachePath, err := appIdsUserPath()
 	if err != nil {
 		return err
 	}
 
-	steamLog.Info("steam app list download started",
+	steamLog.Info("steam app name map download started",
 		slog.String("reason", reason),
 		slog.String("cachePath", cachePath),
 	)
 
 	var lastErr error
-	for _, source := range steamAppListSources {
-		steamLog.Info("steam app list fetching",
+	for _, source := range steamAppNameMapSources {
+		steamLog.Info("steam app name map fetching",
 			slog.String("url", source.url),
 			slog.String("reason", reason),
 			slog.Bool("xz", source.xzCompressed),
 		)
-		raw, compressedBytes, err := fetchSteamAppListPayload(ctx, source)
+		raw, compressedBytes, err := fetchSteamAppNameMapPayload(ctx, source)
 		if err != nil {
 			lastErr = err
-			steamLog.Warn("steam app list fetch failed",
+			steamLog.Warn("steam app name map fetch failed",
 				slog.String("url", source.url),
 				slog.Bool("xz", source.xzCompressed),
 				slog.Any("err", err),
 			)
 			continue
 		}
-		if !steamAppListJSONLooksValid(raw) {
-			lastErr = fmt.Errorf("invalid app list payload from %s", source.url)
-			steamLog.Warn("steam app list fetch invalid payload",
+		names, err := parseAppNameMapJSON(raw)
+		if err != nil {
+			lastErr = fmt.Errorf("invalid app name map payload from %s: %w", source.url, err)
+			steamLog.Warn("steam app name map fetch invalid payload",
 				slog.String("url", source.url),
 				slog.Bool("xz", source.xzCompressed),
 				slog.Int("compressedBytes", compressedBytes),
 				slog.Int("jsonBytes", len(raw)),
+				slog.Any("err", err),
 			)
 			continue
 		}
-		if err := os.MkdirAll(filepath.Dir(cachePath), 0o755); err != nil {
+		if err := saveAppNameMapToDisk(names); err != nil {
 			return err
 		}
-		if err := fsutil.WriteFileAtomic(cachePath, raw, 0o644); err != nil {
-			return err
-		}
-		setSteamAppListMemory(raw)
+		setSteamAppNameMapMemory(names)
 		logArgs := []any{
 			slog.String("reason", reason),
 			slog.String("source", source.url),
+			slog.Int("entries", len(names)),
 			slog.Int("jsonBytes", len(raw)),
 			slog.String("cachePath", cachePath),
 		}
 		if source.xzCompressed {
 			logArgs = append(logArgs, slog.Int("compressedBytes", compressedBytes))
 		}
-		steamLog.Info("steam app list refreshed", logArgs...)
+		steamLog.Info("steam app name map refreshed", logArgs...)
 		return nil
 	}
 	if lastErr != nil {
 		return lastErr
 	}
-	return fmt.Errorf("steam app list: empty")
+	return fmt.Errorf("steam app name map: empty")
 }
 
-func tryStartSteamAppListRefresh(reason string) {
+func tryStartAppNameMapRefresh(reason string) {
 	if appclient.IsOfflineMode() {
-		steamLog.Info("steam app list refresh skipped: offline mode", slog.String("reason", reason))
+		steamLog.Info("steam app name map refresh skipped: offline mode", slog.String("reason", reason))
 		return
 	}
-	steamAppListRefreshMu.Lock()
-	if steamAppListRefreshing {
-		steamAppListRefreshMu.Unlock()
-		steamLog.Debug("steam app list refresh coalesced: already running", slog.String("reason", reason))
+	steamAppNameMapRefreshMu.Lock()
+	if steamAppNameMapRefreshing {
+		steamAppNameMapRefreshMu.Unlock()
+		steamLog.Debug("steam app name map refresh coalesced: already running", slog.String("reason", reason))
 		return
 	}
-	steamAppListRefreshing = true
-	steamAppListRefreshMu.Unlock()
+	steamAppNameMapRefreshing = true
+	steamAppNameMapRefreshMu.Unlock()
 
-	steamLog.Info("steam app list background refresh queued", slog.String("reason", reason))
+	steamLog.Info("steam app name map background refresh queued", slog.String("reason", reason))
 
 	go func() {
 		defer func() {
-			steamAppListRefreshMu.Lock()
-			steamAppListRefreshing = false
-			steamAppListRefreshMu.Unlock()
+			steamAppNameMapRefreshMu.Lock()
+			steamAppNameMapRefreshing = false
+			steamAppNameMapRefreshMu.Unlock()
 		}()
-		ctx, cancel := context.WithTimeout(context.Background(), steamAppListFetchTimeout)
+		ctx, cancel := context.WithTimeout(context.Background(), steamAppNameMapFetchTimeout)
 		defer cancel()
-		if err := downloadAndStoreSteamAppList(ctx, reason); err != nil {
-			steamLog.Warn("steam app list background refresh failed", slog.String("reason", reason), slog.Any("err", err))
+		if err := downloadAndStoreAppNameMap(ctx, reason); err != nil {
+			steamLog.Warn("steam app name map background refresh failed", slog.String("reason", reason), slog.Any("err", err))
 		}
 	}()
 }
 
-// StartSteamAppListMonitor warms the in-memory app list from disk, refreshes immediately
-// when the on-disk cache is older than 24 hours, and keeps refreshing every 24 hours.
+// StartSteamAppListMonitor warms the app name map from disk, refreshes immediately when
+// AppIdsUser.json is older than 24 hours, and keeps refreshing every 24 hours.
 func StartSteamAppListMonitor() {
-	go runSteamAppListMonitor()
+	go runSteamAppNameMapMonitor()
 }
 
-func runSteamAppListMonitor() {
-	cachePath, pathErr := appIdsFullCachePath()
-	_, cacheErr := getSteamAppListCached()
+func runSteamAppNameMapMonitor() {
+	cachePath, pathErr := appIdsUserPath()
+	_, cacheErr := getSteamAppNameMapCached()
 
 	logArgs := []any{
-		slog.Duration("ttl", steamAppListCacheTTL),
+		slog.Duration("ttl", steamAppNameMapCacheTTL),
 	}
 	if pathErr == nil {
 		logArgs = append(logArgs, slog.String("cachePath", cachePath))
@@ -375,28 +361,28 @@ func runSteamAppListMonitor() {
 	}
 	if cacheErr != nil {
 		logArgs = append(logArgs, slog.String("cacheStatus", "missing"), slog.Any("cacheErr", cacheErr))
-	} else if age, ok := steamAppListCacheAge(); ok {
+	} else if age, ok := steamAppNameMapCacheAge(); ok {
 		logArgs = append(logArgs,
 			slog.String("cacheStatus", "present"),
 			slog.Duration("cacheAge", age),
-			slog.Bool("cacheExpired", steamAppListCacheExpired()),
+			slog.Bool("cacheExpired", steamAppNameMapCacheExpired()),
 		)
 	} else {
 		logArgs = append(logArgs, slog.String("cacheStatus", "missing"))
 	}
-	steamLog.Info("steam app list monitor started", logArgs...)
+	steamLog.Info("steam app name map monitor started", logArgs...)
 
 	refreshIfStale := func() {
 		if appclient.IsOfflineMode() {
-			steamLog.Info("steam app list refresh skipped: offline mode", slog.String("reason", "startup"))
+			steamLog.Info("steam app name map refresh skipped: offline mode", slog.String("reason", "startup"))
 			return
 		}
-		if steamAppListCacheExpired() {
-			tryStartSteamAppListRefresh("startup-stale")
+		if steamAppNameMapCacheExpired() {
+			tryStartAppNameMapRefresh("startup-stale")
 			return
 		}
-		if age, ok := steamAppListCacheAge(); ok {
-			steamLog.Info("steam app list refresh skipped: cache fresh",
+		if age, ok := steamAppNameMapCacheAge(); ok {
+			steamLog.Info("steam app name map refresh skipped: cache fresh",
 				slog.String("reason", "startup"),
 				slog.Duration("cacheAge", age),
 			)
@@ -404,45 +390,45 @@ func runSteamAppListMonitor() {
 	}
 	refreshIfStale()
 
-	ticker := time.NewTicker(steamAppListCacheTTL)
+	ticker := time.NewTicker(steamAppNameMapCacheTTL)
 	defer ticker.Stop()
 	for range ticker.C {
 		if appclient.IsOfflineMode() {
-			steamLog.Info("steam app list refresh skipped: offline mode", slog.String("reason", "scheduled"))
+			steamLog.Info("steam app name map refresh skipped: offline mode", slog.String("reason", "scheduled"))
 			continue
 		}
-		tryStartSteamAppListRefresh("scheduled")
+		tryStartAppNameMapRefresh("scheduled")
 	}
 }
 
-func fetchSteamAppListPayload(ctx context.Context, source steamAppListSource) ([]byte, int, error) {
-	compressed, err := fetchSteamAppListRaw(ctx, source)
+func fetchSteamAppNameMapPayload(ctx context.Context, source steamAppNameMapSource) ([]byte, int, error) {
+	compressed, err := fetchSteamAppNameMapRaw(ctx, source)
 	if err != nil {
 		return nil, 0, err
 	}
 	if !source.xzCompressed {
 		return compressed, len(compressed), nil
 	}
-	raw, err := decompressXZSteamAppList(compressed)
+	raw, err := decompressXZSteamAppNameMap(compressed)
 	if err != nil {
 		return nil, len(compressed), err
 	}
 	return raw, len(compressed), nil
 }
 
-func decompressXZSteamAppList(compressed []byte) ([]byte, error) {
+func decompressXZSteamAppNameMap(compressed []byte) ([]byte, error) {
 	r, err := xz.NewReader(bytes.NewReader(compressed))
 	if err != nil {
 		return nil, fmt.Errorf("xz reader: %w", err)
 	}
-	raw, err := io.ReadAll(io.LimitReader(r, steamAppListMaxJSONBytes))
+	raw, err := io.ReadAll(io.LimitReader(r, steamAppNameMapMaxJSONBytes))
 	if err != nil {
 		return nil, fmt.Errorf("xz decompress: %w", err)
 	}
 	return raw, nil
 }
 
-func fetchSteamAppListRaw(ctx context.Context, source steamAppListSource) ([]byte, error) {
+func fetchSteamAppNameMapRaw(ctx context.Context, source steamAppNameMapSource) ([]byte, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, source.url, nil)
 	if err != nil {
 		return nil, err
@@ -452,7 +438,7 @@ func fetchSteamAppListRaw(ctx context.Context, source steamAppListSource) ([]byt
 	} else {
 		req.Header.Set("Accept", "application/json")
 	}
-	req.Header.Set("User-Agent", "TcNo-Acc-Switcher/3 (Steam app list; +https://github.com/TcNo-Acc-Switcher)")
+	req.Header.Set("User-Agent", "TcNo-Acc-Switcher/3 (Steam app names; +https://github.com/TcNo-Acc-Switcher)")
 	resp, err := appclient.Shared.Do(req)
 	if err != nil {
 		return nil, err
@@ -461,69 +447,42 @@ func fetchSteamAppListRaw(ctx context.Context, source steamAppListSource) ([]byt
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		return nil, fmt.Errorf("GET %s: HTTP %d", source.url, resp.StatusCode)
 	}
-	limit := steamAppListMaxJSONBytes
+	limit := steamAppNameMapMaxJSONBytes
 	if source.xzCompressed {
-		limit = steamAppListMaxXZBytes
+		limit = steamAppNameMapMaxXZBytes
 	}
 	return io.ReadAll(io.LimitReader(resp.Body, int64(limit)))
 }
 
-func ensureFullAppListCache(ctx context.Context) ([]byte, error) {
-	if b, err := getSteamAppListCached(); err == nil {
-		if !appclient.IsOfflineMode() && steamAppListCacheExpired() {
-			tryStartSteamAppListRefresh("on-demand-stale")
+func ensureAppNameMap(ctx context.Context) (map[string]string, error) {
+	if m, err := getSteamAppNameMapCached(); err == nil {
+		if !appclient.IsOfflineMode() && steamAppNameMapCacheExpired() {
+			tryStartAppNameMapRefresh("on-demand-stale")
 		}
-		return b, nil
+		return m, nil
 	}
 
 	if appclient.IsOfflineMode() {
-		steamLog.Info("steam app list download skipped: offline mode", slog.String("reason", "on-demand-missing"))
-		return nil, fmt.Errorf("steam app list: %w", appclient.ErrOfflineMode)
+		steamLog.Info("steam app name map download skipped: offline mode", slog.String("reason", "on-demand-missing"))
+		return nil, fmt.Errorf("steam app name map: %w", appclient.ErrOfflineMode)
 	}
-	steamLog.Info("steam app list cache missing; blocking download", slog.String("reason", "on-demand-missing"))
-	if err := downloadAndStoreSteamAppList(ctx, "on-demand-missing"); err != nil {
-		return nil, fmt.Errorf("steam app list: %w", err)
+	steamLog.Info("steam app name map cache missing; blocking download", slog.String("reason", "on-demand-missing"))
+	if err := downloadAndStoreAppNameMap(ctx, "on-demand-missing"); err != nil {
+		return nil, fmt.Errorf("steam app name map: %w", err)
 	}
-	return getSteamAppListCached()
+	return getSteamAppNameMapCached()
 }
 
-// BuildInstalledGamesList resolves names for installed ids and writes AppIdsUser.json.
+// BuildInstalledGamesList resolves names for installed ids using AppIdsUser.json.
 func BuildInstalledGamesList(ctx context.Context, steamRoot string) ([]InstalledGameInfo, error) {
 	installed, err := installedAppIDs(steamRoot)
 	if err != nil {
 		return nil, err
 	}
-	names, err := loadAppNameMap()
+
+	names, err := ensureAppNameMap(ctx)
 	if err != nil {
 		names = map[string]string{}
-	}
-
-	missingNames := false
-	for id := range installed {
-		if strings.TrimSpace(names[id]) == "" {
-			missingNames = true
-			break
-		}
-	}
-
-	if missingNames {
-		raw, err := ensureFullAppListCache(ctx)
-		if err != nil {
-			// proceed with numeric ids only
-		} else {
-			applist := gjson.GetBytes(raw, "applist.apps")
-			if applist.Exists() {
-				applist.ForEach(func(_, value gjson.Result) bool {
-					appidStr := normalizeAppListAppID(value.Get("appid"))
-					name := strings.TrimSpace(value.Get("name").String())
-					if appidStr != "" && name != "" {
-						names[appidStr] = name
-					}
-					return true
-				})
-			}
-		}
-		_ = saveAppNameMap(names)
 	}
 
 	var list []InstalledGameInfo

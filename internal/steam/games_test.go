@@ -13,26 +13,26 @@ import (
 	"github.com/ulikunitz/xz"
 )
 
-func validSteamAppListJSON() []byte {
-	return []byte(`{"applist":{"apps":[{"appid":730,"name":"Counter-Strike 2"}]}}`)
+func validSteamAppArrayJSON() []byte {
+	return []byte(`{"730":"Counter-Strike 2","440":"Team Fortress 2"}`)
 }
 
-func TestSteamAppListCacheExpired(t *testing.T) {
+func TestSteamAppNameMapCacheExpired(t *testing.T) {
 	dir := t.TempDir()
 	paths.ResetForTest(dir)
 
-	cachePath, err := appIdsFullCachePath()
+	cachePath, err := appIdsUserPath()
 	if err != nil {
 		t.Fatal(err)
 	}
 	if err := os.MkdirAll(filepath.Dir(cachePath), 0o755); err != nil {
 		t.Fatal(err)
 	}
-	if err := fsutil.WriteFileAtomic(cachePath, validSteamAppListJSON(), 0o644); err != nil {
+	if err := fsutil.WriteFileAtomic(cachePath, validSteamAppArrayJSON(), 0o644); err != nil {
 		t.Fatal(err)
 	}
 
-	if steamAppListCacheExpired() {
+	if steamAppNameMapCacheExpired() {
 		t.Fatal("expected fresh cache not to be expired")
 	}
 
@@ -40,7 +40,7 @@ func TestSteamAppListCacheExpired(t *testing.T) {
 	if err := os.Chtimes(cachePath, old, old); err != nil {
 		t.Fatal(err)
 	}
-	if !steamAppListCacheExpired() {
+	if !steamAppNameMapCacheExpired() {
 		t.Fatal("expected old cache to be expired")
 	}
 }
@@ -61,35 +61,39 @@ func compressXZForTest(t *testing.T, data []byte) []byte {
 	return buf.Bytes()
 }
 
-func TestDecompressXZSteamAppList(t *testing.T) {
-	raw := validSteamAppListJSON()
+func TestDecompressXZSteamAppNameMap(t *testing.T) {
+	raw := validSteamAppArrayJSON()
 	compressed := compressXZForTest(t, raw)
 
-	got, err := decompressXZSteamAppList(compressed)
+	got, err := decompressXZSteamAppNameMap(compressed)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if string(got) != string(raw) {
 		t.Fatalf("decompressed payload mismatch")
 	}
-	if !steamAppListJSONLooksValid(got) {
-		t.Fatal("decompressed payload is not valid app list JSON")
-	}
-}
-
-func TestGetSteamAppListCachedLoadsMemory(t *testing.T) {
-	dir := t.TempDir()
-	paths.ResetForTest(dir)
-
-	steamAppListMu.Lock()
-	steamAppListData = nil
-	steamAppListMu.Unlock()
-
-	cachePath, err := appIdsFullCachePath()
+	m, err := parseAppNameMapJSON(got)
 	if err != nil {
 		t.Fatal(err)
 	}
-	raw := validSteamAppListJSON()
+	if m["730"] != "Counter-Strike 2" {
+		t.Fatalf("unexpected parsed name: %q", m["730"])
+	}
+}
+
+func TestGetSteamAppNameMapCachedLoadsMemory(t *testing.T) {
+	dir := t.TempDir()
+	paths.ResetForTest(dir)
+
+	steamAppNameMapMu.Lock()
+	steamAppNameMapMem = nil
+	steamAppNameMapMu.Unlock()
+
+	cachePath, err := appIdsUserPath()
+	if err != nil {
+		t.Fatal(err)
+	}
+	raw := validSteamAppArrayJSON()
 	if err := os.MkdirAll(filepath.Dir(cachePath), 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -97,18 +101,18 @@ func TestGetSteamAppListCachedLoadsMemory(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	got, err := getSteamAppListCached()
+	got, err := getSteamAppNameMapCached()
 	if err != nil {
 		t.Fatal(err)
 	}
-	if string(got) != string(raw) {
-		t.Fatalf("cached bytes mismatch")
+	if got["730"] != "Counter-Strike 2" {
+		t.Fatalf("cached map mismatch: %q", got["730"])
 	}
 
-	steamAppListMu.RLock()
-	mem := steamAppListData
-	steamAppListMu.RUnlock()
-	if string(mem) != string(raw) {
+	steamAppNameMapMu.RLock()
+	mem := steamAppNameMapMem
+	steamAppNameMapMu.RUnlock()
+	if mem["730"] != "Counter-Strike 2" {
 		t.Fatalf("memory cache was not populated")
 	}
 }
