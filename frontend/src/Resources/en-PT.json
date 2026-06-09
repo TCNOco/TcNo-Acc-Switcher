@@ -195,6 +195,8 @@
   "Stats_GameShortcutsHotbar": "Game map markers (on hotbar):",
   "Stats_GamesLaunched": "Games sailed:",
   "Stats_MetricsToShow": "Showed metrics:",
+  "Stats_MetricsProvidedBy": "Metrics data provided by: ",
+  "Stats_MetricsAffiliationNote": "NOTE: This program is not affiliated or endorsed by this website or service.",
   "Stats_AccountId": "Cap'n's Id:",
   "Auth_LoginRequired": "A password was previously set, 'n be required. Please enter yer password below.",
   "Auth_EnterPassword": "Enter ye password:",
