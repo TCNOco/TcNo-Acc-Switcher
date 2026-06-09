@@ -195,6 +195,8 @@
   "Stats_GameShortcutsHotbar": "Ярлыки игр (на панели быстрого доступа): ",
   "Stats_GamesLaunched": "Запущено игр: ",
   "Stats_MetricsToShow": "Отображаемые показатели:",
+  "Stats_MetricsProvidedBy": "Metrics data provided by: ",
+  "Stats_MetricsAffiliationNote": "NOTE: This program is not affiliated or endorsed by this website or service.",
   "Stats_AccountId": "ID аккаунта:",
   "Auth_LoginRequired": "Пароль был ранее установлен и является обязательным. Пожалуйста, введите пароль ниже.",
   "Auth_EnterPassword": "Введите пароль:",
