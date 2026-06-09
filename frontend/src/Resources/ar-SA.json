@@ -195,6 +195,8 @@
   "Stats_GameShortcutsHotbar": "اختصارات اللعبة (على شريط الساخن): ",
   "Stats_GamesLaunched": "الألعاب التي تم إطلاقها: ",
   "Stats_MetricsToShow": "المقاييس المعروضة:",
+  "Stats_MetricsProvidedBy": "Metrics data provided by: ",
+  "Stats_MetricsAffiliationNote": "NOTE: This program is not affiliated or endorsed by this website or service.",
   "Stats_AccountId": "معرّف الحساب:",
   "Auth_LoginRequired": "تم تعيين كلمة مرور مسبقًا ، وهي مطلوبة. يرجى إدخال كلمة المرور أدناه.",
   "Auth_EnterPassword": "أدخل كلمة المرور:",
