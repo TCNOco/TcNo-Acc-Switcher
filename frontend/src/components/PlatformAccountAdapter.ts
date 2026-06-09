@@ -38,7 +38,10 @@ export interface PlatformAccountAdapter<TAccount> {
   accountLogin(a: TAccount): string;
 
   // ---- I/O ----
-  loadAccounts(): Promise<TAccount[]>;
+  /** Fast list: ids, names, order, current session. */
+  loadAccountsList(): Promise<TAccount[]>;
+  /** Slower per-account metadata merged into the list after first paint. */
+  loadAccountsEnrichment(): Promise<TAccount[]>;
   swapTo(id: string): Promise<void>;
   saveOrder(ids: string[]): Promise<void>;
   addNew(): Promise<void>;
@@ -69,7 +72,10 @@ export interface PlatformAccountAdapter<TAccount> {
   searchHay(account: TAccount, query: string): string;
 
   // ---- Lifecycle ----
-  onAfterLoad?(accounts: TAccount[]): void | Promise<void>;
+  onAfterLoad?(
+    accounts: TAccount[],
+    ctx?: { hadCachedAccounts: boolean; enrichChanged: boolean },
+  ): void | Promise<void>;
   onCleanup?(): void;
 
   // ---- Optional extensions ----

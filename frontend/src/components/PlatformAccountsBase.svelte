@@ -48,6 +48,11 @@
     platformLiveSessionId,
     platformAccountsRefresh,
   } from "../stores/platformPage";
+  import {
+    getPlatformAccountsCache,
+    platformAccountCounts,
+    setPlatformAccountsCache,
+  } from "../stores/platformAccountsCache";
   import { pushToast } from "../stores/toast";
   import { activeModal, openAlertNoButton, openConfirm, openPrompt } from "../stores/modal";
   import { locale, t } from "../stores/i18n";
@@ -91,6 +96,7 @@
   let accounts: TAccount[] = [];
   let accountIds: string[] = [];
   $: accountMap = new Map(accounts.map((a) => [adapter.id(a), a] as const));
+  let accountsLoading = false;
   let loadError = "";
   let selectedId = "";
   let isActionBusyValue = false;
@@ -162,6 +168,9 @@
 
   $: reorderDisabled = tagFilterMode.kind !== "all";
 
+  $: skeletonCount = Math.max(1, Math.min(24, $platformAccountCounts[name] ?? 3));
+  $: skeletonSlots = Array.from({ length: skeletonCount });
+
   $: {
     if (selectedId && displayIds.length > 0 && !displayIds.includes(selectedId)) {
       selectedId = "";
@@ -176,6 +185,73 @@
 
   function slotKey(x: string | null | undefined): string {
     return x ?? "";
+  }
+
+  function accountRowEqual(a: TAccount, b: TAccount): boolean {
+    return JSON.stringify(a) === JSON.stringify(b);
+  }
+
+  /** Overlay fast-list fields onto existing rows so enrichment data is not wiped. */
+  function mergeListIntoExisting(existing: TAccount[], list: TAccount[]): TAccount[] {
+    const byId = new Map(existing.map((a) => [adapter.id(a), a] as const));
+    return list.map((row) => {
+      const prev = byId.get(adapter.id(row));
+      return prev ? ({ ...prev, ...row } as TAccount) : row;
+    });
+  }
+
+  /** Overlay enrichment fields onto existing rows, preserving list order. */
+  function mergeEnrichmentIntoExisting(existing: TAccount[], enrich: TAccount[]): TAccount[] {
+    const byId = new Map(enrich.map((a) => [adapter.id(a), a] as const));
+    return existing.map((row) => {
+      const patch = byId.get(adapter.id(row));
+      return patch ? ({ ...row, ...patch } as TAccount) : row;
+    });
+  }
+
+  function rowsVisuallyChanged(rows: TAccount[], prevById: Map<string, TAccount>): boolean {
+    for (const row of rows) {
+      const prev = prevById.get(adapter.id(row));
+      if (!prev || !accountRowEqual(prev, row)) return true;
+    }
+    return false;
+  }
+
+  function applyLoadedAccounts(rows: TAccount[], prevById: Map<string, TAccount>): boolean {
+    const newIds = rows.map((r) => adapter.id(r));
+    const idsChanged =
+      newIds.length !== accountIds.length || newIds.some((id, i) => id !== accountIds[i]);
+    const dataChanged = rowsVisuallyChanged(rows, prevById);
+
+    if (!idsChanged && !dataChanged) return false;
+
+    if (dataChanged) {
+      avatarEpoch = buildEpochMap(
+        rows as unknown as Record<string, unknown>[],
+        prevById as unknown as Map<string, Record<string, unknown>>,
+        (r: unknown) => adapter.id(r as TAccount),
+        avatarEpoch,
+      );
+      accounts = rows;
+    } else if (idsChanged) {
+      const byId = new Map(accounts.map((a) => [adapter.id(a), a] as const));
+      accounts = newIds.map((id) => byId.get(id)).filter((a): a is TAccount => !!a);
+    }
+
+    accountIds = newIds;
+    const liveRow = accounts.find((r) => adapter.currentSession(r));
+    platformLiveSessionId.set({ platformKey: name, uniqueId: liveRow ? adapter.id(liveRow) : "" });
+    const stillValid = selectedId && newIds.includes(selectedId);
+    selectedId = stillValid ? selectedId : "";
+    touchStatus();
+    setPlatformAccountsCache(name, { accounts, accountIds });
+    return true;
+  }
+
+  function deferNonCriticalAccountWork(ids: string[]): void {
+    void loadTagDefs();
+    void refreshGameStatsMarkup(ids);
+    void BasicService.StartGameStatsRefresh(name);
   }
 
   function touchStatus(): void {
@@ -382,27 +458,47 @@
   // ---- Load accounts ----
   async function loadAccounts(): Promise<void> {
     loadError = "";
-    const prevById = new Map(accounts.map((a) => [adapter.id(a), a]));
-    try {
-      const rows = await adapter.loadAccounts();
-      avatarEpoch = buildEpochMap(rows as unknown as Record<string, unknown>[], prevById as unknown as Map<string, Record<string, unknown>>, (r: unknown) => adapter.id(r as TAccount), avatarEpoch);
-      accounts = rows;
-      accountIds = rows.map((r) => adapter.id(r));
-      const liveRow = rows.find((r) => adapter.currentSession(r));
+    accountsLoading = true;
+
+    const cached = getPlatformAccountsCache(name);
+    if (cached && cached.accounts.length > 0) {
+      accounts = cached.accounts as TAccount[];
+      accountIds = [...cached.accountIds];
+      const liveRow = accounts.find((r) => adapter.currentSession(r));
       platformLiveSessionId.set({ platformKey: name, uniqueId: liveRow ? adapter.id(liveRow) : "" });
-      const stillValid = selectedId && rows.some((r) => adapter.id(r) === selectedId);
-      selectedId = stillValid ? selectedId : "";
       touchStatus();
-      await loadTagDefs();
-      await refreshGameStatsMarkup(rows.map((r) => adapter.id(r)));
-      void BasicService.StartGameStatsRefresh(name);
-      void adapter.onAfterLoad?.(rows);
+    }
+
+    const prevById = new Map(accounts.map((a) => [adapter.id(a), a]));
+    const hadCachedAccounts = !!(cached && cached.accounts.length > 0);
+    try {
+      const list = await adapter.loadAccountsList();
+      const mergedList = mergeListIntoExisting(accounts, list);
+      const listChanged = applyLoadedAccounts(mergedList, prevById);
+      accountsLoading = false;
+      if (listChanged) deferNonCriticalAccountWork(accountIds);
+
+      void (async () => {
+        try {
+          const enrich = await adapter.loadAccountsEnrichment();
+          const enrichPrev = new Map(accounts.map((a) => [adapter.id(a), a]));
+          const merged = mergeEnrichmentIntoExisting(accounts, enrich);
+          const enrichChanged = applyLoadedAccounts(merged, enrichPrev);
+          if (enrichChanged) deferNonCriticalAccountWork(accountIds);
+          await adapter.onAfterLoad?.(accounts, { hadCachedAccounts, enrichChanged });
+        } catch {
+          await adapter.onAfterLoad?.(accounts, { hadCachedAccounts, enrichChanged: false });
+        }
+      })();
     } catch (e) {
-      loadError = formatWailsError(e) || String(e);
-      accounts = []; accountIds = []; selectedId = "";
-      gameStatsByAccount = {};
-      actionBarStatus.set("");
-      platformLiveSessionId.set({ platformKey: "", uniqueId: "" });
+      accountsLoading = false;
+      if (!cached || cached.accounts.length === 0) {
+        loadError = formatWailsError(e) || String(e);
+        accounts = []; accountIds = []; selectedId = "";
+        gameStatsByAccount = {};
+        actionBarStatus.set("");
+        platformLiveSessionId.set({ platformKey: "", uniqueId: "" });
+      }
     }
   }
 
@@ -440,13 +536,18 @@
   function applyPatchFromEvent(raw: unknown): void {
     const patch = adapter.buildPatch(raw);
     const targetId = adapter.patchTargetId(patch);
-    let hit = false;
-    accounts = accounts.map((r) => {
-      if (adapter.id(r) !== targetId) return r;
-      hit = true;
-      return adapter.applyPatch(patch, r);
-    });
-    if (hit) bumpAvatarEpoch(targetId);
+    const idx = accounts.findIndex((r) => adapter.id(r) === targetId);
+    if (idx < 0) return;
+
+    const prev = accounts[idx];
+    const next = adapter.applyPatch(patch, prev);
+    if (accountRowEqual(prev, next)) return;
+
+    accounts = accounts.map((r, i) => (i === idx ? next : r));
+    if (shouldBumpEpoch(prev as unknown as EpochCheckRow, next as unknown as EpochCheckRow)) {
+      bumpAvatarEpoch(targetId);
+    }
+    setPlatformAccountsCache(name, { accounts, accountIds });
     if (targetId === selectedId) touchStatus();
   }
 
@@ -795,6 +896,18 @@
         {#if tagDefs.length > 0}
           <TagFilterBar label={tagFilterBarLabel} onClick={onTagFilterBarClick} />
         {/if}
+        {#if accountsLoading && displayIds.length === 0}
+          <div class="acc_list acc_list--skeleton" aria-busy="true" aria-label={$t("Button_Loading")}>
+            {#each skeletonSlots as _, i (i)}
+              <div class="acc_list_item acc_list_item--skeleton" aria-hidden="true">
+                <div class="acc_skeleton_avatar"></div>
+                <div class="acc_skeleton_lines">
+                  <div class="acc_skeleton_line acc_skeleton_line--name"></div>
+                </div>
+              </div>
+            {/each}
+          </div>
+        {:else}
         <ReorderPointerGrid
           items={displayIds}
           reorderDisabled={reorderDisabled}
@@ -905,6 +1018,7 @@
             {/if}
           </svelte:fragment>
         </ReorderPointerGrid>
+        {/if}
       </div>
     </div>
     </div>

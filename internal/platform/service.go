@@ -25,12 +25,13 @@ type platformsFile struct {
 }
 
 type PlatformStartup struct {
-	HomePlatformOrder     []string `json:"homePlatformOrder"`
-	AllPlatformNames      []string `json:"allPlatformNames"`
-	DisabledPlatformNames []string `json:"disabledPlatformNames"`
-	PlatformsFileMissing  bool     `json:"platformsFileMissing"`
-	Language              string   `json:"language"`
-	Theme                 string   `json:"theme,omitempty"`
+	HomePlatformOrder     []string       `json:"homePlatformOrder"`
+	AllPlatformNames      []string       `json:"allPlatformNames"`
+	DisabledPlatformNames []string       `json:"disabledPlatformNames"`
+	PlatformsFileMissing  bool           `json:"platformsFileMissing"`
+	PlatformAccountCounts map[string]int `json:"platformAccountCounts"`
+	Language              string         `json:"language"`
+	Theme                 string         `json:"theme,omitempty"`
 	// One-shot SPA route from CLI (e.g. open Steam page after elevated restart).
 	CliNavigateHint string `json:"cliNavigateHint,omitempty"`
 }
@@ -57,10 +58,11 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 	if err != nil {
 		if os.IsNotExist(err) {
 			return PlatformStartup{
-				Language:             settings.Language,
-				Theme:                sanitizeThemeID(settings.Theme),
-				PlatformsFileMissing: true,
-				CliNavigateHint:      ConsumeStartupNavigateHint(),
+				Language:              settings.Language,
+				Theme:                 sanitizeThemeID(settings.Theme),
+				PlatformsFileMissing:  true,
+				PlatformAccountCounts: map[string]int{},
+				CliNavigateHint:       ConsumeStartupNavigateHint(),
 			}, nil
 		}
 		return PlatformStartup{}, err
@@ -85,11 +87,16 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 	}
 	sortStringsFold(disList)
 	nav := ConsumeStartupNavigateHint()
+	accountCounts, _ := stats.GetPlatformAccountCounts()
+	if accountCounts == nil {
+		accountCounts = map[string]int{}
+	}
 	return PlatformStartup{
 		HomePlatformOrder:     home,
 		AllPlatformNames:      names,
 		DisabledPlatformNames: disList,
 		PlatformsFileMissing:  false,
+		PlatformAccountCounts: accountCounts,
 		Language:              settings.Language,
 		Theme:                 sanitizeThemeID(settings.Theme),
 		CliNavigateHint:       nav,

@@ -4,14 +4,12 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
-	"sort"
 	"strings"
 	"sync"
 
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/profileimage"
-	"TcNo-Acc-Switcher/internal/stats"
 	"TcNo-Acc-Switcher/internal/tray"
 	"TcNo-Acc-Switcher/internal/winutil"
 )
@@ -48,114 +46,28 @@ type AccountDTO struct {
 }
 
 func (b *BasicService) GetAccounts(platformKey string) ([]AccountDTO, error) {
-	b.mu.Lock()
-	defer b.mu.Unlock()
-	defer closeSharedLevelDBHandles("GetAccounts.end")
-	platformKey = strings.TrimSpace(platformKey)
-	if platformKey == "" {
-		return nil, nil
-	}
-	idf, err := readIdsFile(platformKey)
+	list, err := b.GetAccountsList(platformKey)
 	if err != nil {
 		return nil, err
 	}
-	ids := idf.IDs
-	lastUsedMap := idf.LastUsed
-	order, err := readOrder(platformKey)
+	enrich, err := b.GetAccountsEnrichment(platformKey)
 	if err != nil {
 		return nil, err
 	}
-	ps, err := platform.LoadPlatformSettings(platformKey)
-	if err != nil {
-		return nil, err
+	enrichByID := make(map[string]AccountEnrichmentDTO, len(enrich))
+	for _, row := range enrich {
+		enrichByID[row.UniqueID] = row
 	}
-
-	liveUID := ""
-	remoteProfilePics := false
-	if d, _, derr := readDescriptor(platformKey); derr == nil {
-		folder, _ := resolveExeFolder(b.deps(), platformKey)
-		if u, uerr := ReadUniqueID(platformKey, d, folder); uerr == nil {
-			liveUID = strings.TrimSpace(u)
-		} else {
-			slog.Debug("list accounts: live unique id read failed", "platform", platformKey, "method", d.UniqueIdMethod, "file", d.UniqueIdFile, "err", uerr)
-		}
-		tpl := strings.TrimSpace(d.Extras.ProfilePicPath)
-		remoteProfilePics = remoteProfilePicTemplate(tpl) && !strings.Contains(tpl, "%LARGEST%")
+	out := make([]AccountDTO, 0, len(list))
+	for _, row := range list {
+		out = append(out, mergeBasicAccountDTO(row, enrichByID[row.UniqueID]))
 	}
-	maxAge := ps.ProfileImageExpiryDays
-	if maxAge <= 0 {
-		maxAge = 7
-	}
-
-	seen := map[string]struct{}{}
-	var keys []string
-	for _, id := range order {
-		if _, ok := ids[id]; ok {
-			keys = append(keys, id)
-			seen[id] = struct{}{}
+	if len(out) > 0 {
+		ps, perr := platform.LoadPlatformSettings(platformKey)
+		if perr == nil {
+			syncBasicPlatformCounts(platformKey, len(out), ps)
 		}
 	}
-	var missing []string
-	for id := range ids {
-		if _, ok := seen[id]; !ok {
-			missing = append(missing, id)
-		}
-	}
-	// Keep fallback order stable when order file is stale/missing entries.
-	sort.Strings(missing)
-	keys = append(keys, missing...)
-
-	out := make([]AccountDTO, 0, len(keys))
-	for _, uid := range keys {
-		name := ids[uid]
-		note := ""
-		if ps.AccountNotes != nil {
-			note = ps.AccountNotes[uid]
-		}
-		img := ""
-		pending := false
-		if u, ok := profileimage.FindCached(platformKey, uid); ok {
-			img = u
-		}
-		if remoteProfilePics {
-			if profileimage.HasManualProfileMarker(platformKey, uid) {
-				pending = false
-			} else if p, ok := profileimage.CachedFilePath(platformKey, uid); ok {
-				pending = profileimage.FileOlderThanDays(p, maxAge)
-			} else {
-				pending = true
-			}
-		}
-		lu := ""
-		if lastUsedMap != nil {
-			lu = strings.TrimSpace(lastUsedMap[uid])
-		}
-		out = append(out, AccountDTO{
-			PlatformKey:    platformKey,
-			UniqueID:       uid,
-			DisplayName:    name,
-			ImageURL:       img,
-			AvatarPending:  pending,
-			ManualProfileImage: profileimage.HasManualProfileMarker(platformKey, uid),
-			Note:           note,
-			CurrentSession: liveUID != "" && strings.EqualFold(liveUID, uid),
-			LastUsed:       lu,
-			ShowLastUsed:   ps.ShowLastUsed,
-			Tags:           resolveTagsForAccount(idf, uid),
-		})
-	}
-	sc, hot := 0, 0
-	for _, e := range ps.Shortcuts {
-		fn := strings.TrimSpace(e.FileName)
-		if fn == "" {
-			continue
-		}
-		sc++
-		if e.Pinned {
-			hot++
-		}
-	}
-	_ = stats.SyncPlatformCounts(platformKey, len(out), sc, hot)
 	return out, nil
 }
 

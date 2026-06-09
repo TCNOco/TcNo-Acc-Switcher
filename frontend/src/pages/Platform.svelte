@@ -7,7 +7,12 @@
   import { pushToast } from "../stores/toast";
   import { t } from "../stores/i18n";
   import * as BasicService from "../../bindings/TcNo-Acc-Switcher/internal/basic/basicservice.js";
-  import { AccountDTO, AccountImagePatch } from "../../bindings/TcNo-Acc-Switcher/internal/basic/models.js";
+  import {
+    AccountDTO,
+    AccountEnrichmentDTO,
+    AccountImagePatch,
+    AccountListItemDTO,
+  } from "../../bindings/TcNo-Acc-Switcher/internal/basic/models.js";
   import { LaunchPlatform } from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import { formatToastWithError } from "../lib/formatWailsError";
   import { offerRestartIfNeedsAdmin, isNeedsAdminError } from "../lib/adminFlow";
@@ -45,7 +50,28 @@
     lastUsed: (a: BasicRow) => a.lastUsed ?? "",
     accountLogin: () => "",
 
-    loadAccounts: () => BasicService.GetAccounts(name) as Promise<BasicRow[]>,
+    loadAccountsList: async () => {
+      const rows = await BasicService.GetAccountsList(name);
+      return rows.map((r: AccountListItemDTO) => ({
+        platformKey: r.platformKey,
+        uniqueId: r.uniqueId,
+        displayName: r.displayName,
+        currentSession: r.currentSession ?? false,
+      })) as BasicRow[];
+    },
+    loadAccountsEnrichment: async () => {
+      const rows = await BasicService.GetAccountsEnrichment(name);
+      return rows.map((r: AccountEnrichmentDTO) => ({
+        uniqueId: r.uniqueId,
+        imageUrl: r.imageUrl,
+        avatarPending: r.avatarPending ?? false,
+        manualProfileImage: r.manualProfileImage ?? false,
+        note: r.note ?? "",
+        lastUsed: r.lastUsed ?? "",
+        showLastUsed: r.showLastUsed ?? false,
+        tags: r.tags,
+      })) as BasicRow[];
+    },
     swapTo: (id: string) => BasicService.SwapToAccount(name, id, []),
     saveOrder: (ids: string[]) => BasicService.SaveAccountOrder(name, ids),
     addNew: () => BasicService.AddNew(name),

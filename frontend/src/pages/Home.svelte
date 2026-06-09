@@ -16,6 +16,8 @@
   import * as Shortcuts from "wails-shortcuts-service";
   import { fuzzyWordsMatch } from "../lib/searchFuzzy";
   import { closeSearchOverlay, searchOverlayCtrl } from "../stores/searchOverlay";
+  import { setPlatformAccountCounts } from "../stores/platformAccountsCache";
+  import { prefetchPlatformPages } from "../lib/pageLoaders";
   import "../styles/HomePlatforms.scss";
 
   let startup: PlatformStartup | null = null;
@@ -29,6 +31,7 @@
   let debouncedOverlayQuery = "";
   let offHomeSort: (() => void) | undefined;
   let lastHandledHomeSortId = 0;
+  let warmedPlatformPages = false;
 
   const SEARCH_MAX = 5;
 
@@ -43,6 +46,11 @@
   }
   $: homeSearchPrimary = buildHomePrimary(debouncedOverlayQuery);
   $: homeSearchDisabled = buildHomeDisabled(overlayQuery);
+
+  $: if (startup && !startup.platformsFileMissing && !warmedPlatformPages) {
+    warmedPlatformPages = true;
+    requestAnimationFrame(() => prefetchPlatformPages());
+  }
 
   function textClass(name: string): string {
     const n = name.length;
@@ -84,6 +92,7 @@
       startup = s;
       homeOrder = s.homePlatformOrder ?? [];
       disabledPlatformNames = [...(s.disabledPlatformNames ?? [])];
+      setPlatformAccountCounts(s.platformAccountCounts ?? {});
       if (!s.platformsFileMissing && s.allPlatformNames?.length && homeOrder.length === 0) {
         route.set({ page: "manage-platforms" });
       }

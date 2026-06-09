@@ -58,3 +58,10 @@ export function prefetchCommonPages(): void {
   prefetchPage({ page: "manage-platforms" });
   void import("../components/GeneralSettingsBlock.svelte");
 }
+
+/** Warm platform account pages after the home screen has rendered. */
+export function prefetchPlatformPages(): void {
+  prefetchPage({ page: "platform", platformName: "Steam" });
+  void import("../pages/PlatformSteam.svelte");
+  void import("../pages/Platform.svelte");
+}

@@ -251,138 +251,23 @@ func (s *SteamService) migrateExePathFromAppSettings(exeDir string, st *Settings
 }
 
 func (s *SteamService) GetSteamAccounts() ([]AccountDTO, error) {
-	exeDir, err := platform.ResolveExeDir()
+	list, err := s.GetSteamAccountsList()
 	if err != nil {
 		return nil, err
 	}
-	app, err := platform.LoadAppSettings(exeDir)
+	enrich, err := s.GetSteamAccountsEnrichment()
 	if err != nil {
 		return nil, err
 	}
-	st, err := LoadSettings()
-	if err != nil {
-		return nil, err
+	enrichByID := make(map[string]SteamAccountEnrichmentDTO, len(enrich))
+	for _, row := range enrich {
+		enrichByID[row.SteamID64] = row
 	}
-	_ = s.migrateExePathFromAppSettings(exeDir, &st, &app)
-
-	raw, err := platform.LoadPlatformsJSON(exeDir)
-	if err != nil {
-		return nil, err
+	out := make([]AccountDTO, 0, len(list))
+	for _, row := range list {
+		out = append(out, mergeSteamAccountDTO(row, enrichByID[row.SteamID64]))
 	}
-
-	root, err := ResolveInstallFolder(exeDir, st, app, raw)
-	if err != nil {
-		steamLog.Error("ResolveInstallFolder failed", slog.Any("err", err))
-		return nil, err
-	}
-	if root == "" {
-		steamLog.Error("steam install folder not found after resolution")
-		return nil, fmt.Errorf("steam install folder not found")
-	}
-
-	loginPath := LoginUsersPath(root)
-
-	users, err := ParseLoginUsers(loginPath)
-	if err != nil {
-		steamLog.Error("ParseLoginUsers failed", slog.String("path", loginPath), slog.Any("err", err))
-		return nil, err
-	}
-
-	order, err := LoadOrder()
-	if err != nil {
-		return nil, err
-	}
-	users = MergeOrder(order, users)
-	activeSteamID := ActiveSessionSteamID64(users)
-
-	vacRows, err := LoadVacCache(st.SteamImageExpiryTime)
-	if err != nil {
-		return nil, err
-	}
-	vm := vacMap(vacRows)
-	vacKnown := make(map[string]struct{}, len(vacRows))
-	for _, r := range vacRows {
-		if r.SteamID != "" {
-			vacKnown[r.SteamID] = struct{}{}
-		}
-	}
-
-	effectiveCollect := st.CollectInfo && !app.OfflineMode
-
-	tagByUID, _ := basic.BuildAccountTagMap(PlatformKey)
-
-	out := make([]AccountDTO, 0, len(users))
-	for _, u := range users {
-		v := vm[u.SteamID64]
-		primaryURL, _ := profileimage.FindCached(PlatformKey, u.SteamID64)
-		staticURL, _ := profileimage.FindCached(PlatformKey, steamStaticAvatarID(u.SteamID64))
-		displayURL, fallbackStatic := resolveSteamAvatarDisplay(staticURL, primaryURL)
-		isManualAvatar := profileimage.HasManualProfileMarker(PlatformKey, u.SteamID64)
-		miniHTMLForName := ReadCachedMiniprofileHTML(u.SteamID64)
-		var avatarPending bool
-		if effectiveCollect {
-			avatarPending = steamAvatarPending(u.SteamID64, miniHTMLForName, st.SteamShowMiniProfile, st.SteamImageExpiryTime, isManualAvatar)
-		}
-		_, vacCached := vacKnown[u.SteamID64]
-		metaPending := effectiveCollect && !vacCached
-
-		note := ""
-		if st.AccountNotes != nil {
-			note = st.AccountNotes[u.SteamID64]
-		}
-
-		miniHTML := ApplySteamManualAvatarMiniprofile(miniHTMLForName, u.SteamID64)
-		frameURL := ""
-		if fu, ok := profileimage.FindCached(PlatformKey, u.SteamID64+"_frame"); ok {
-			frameURL = fu
-		}
-
-		dto := AccountDTO{
-			SteamID64:       u.SteamID64,
-			PersonaName:     displayPersona(u),
-			AccountName:     strings.TrimSpace(u.AccountName),
-			DisplayName:     CachedCommunityDisplayName(u.SteamID64),
-			LastLogin:       formatLastLogin(u.Timestamp),
-			Offline:         strings.TrimSpace(u.WantsOffline) == "1",
-			ImageURL:        displayURL,
-			StaticImageURL:  fallbackStatic,
-			AvatarPending:   avatarPending,
-			MetaPending:     metaPending,
-			Vac:             v.Vac,
-			Ltd:             v.Ltd,
-			ShowSteamID:     st.SteamShowSteamID,
-			ShowVAC:         st.SteamShowVAC,
-			ShowLimited:     st.SteamShowLimited,
-			ShowLastLogin:   st.SteamShowLastLogin,
-			ShowAccUsername: st.SteamShowAccUsername,
-			CollectInfo:     st.CollectInfo,
-			ShowShortNotes:  st.ShowShortNotes,
-			Note:            note,
-			AvatarFrameURL:  frameURL,
-			MiniProfileHTML: miniHTML,
-			ShowMiniProfile: st.SteamShowMiniProfile,
-			ShowAvatarFrame:    st.SteamShowAvatarFrame,
-			CurrentSession:     activeSteamID != "" && u.SteamID64 == activeSteamID,
-			Tags:               tagByUID[u.SteamID64],
-			ManualProfileImage: isManualAvatar,
-		}
-		out = append(out, dto)
-	}
-	psPlat, perr := platform.LoadPlatformSettings(PlatformKey)
-	sc, hot := 0, 0
-	if perr == nil {
-		for _, e := range psPlat.Shortcuts {
-			fn := strings.TrimSpace(e.FileName)
-			if fn == "" {
-				continue
-			}
-			sc++
-			if e.Pinned {
-				hot++
-			}
-		}
-	}
-	_ = stats.SyncPlatformCounts(PlatformKey, len(out), sc, hot)
+	syncSteamPlatformCounts(len(out))
 	return out, nil
 }
 

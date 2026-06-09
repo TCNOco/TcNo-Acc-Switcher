@@ -11,7 +11,12 @@
   import { t } from "../stores/i18n";
   import { openConfirm, openPrompt } from "../stores/modal";
   import * as SteamService from "../../bindings/TcNo-Acc-Switcher/internal/steam/steamservice.js";
-  import { AccountDTO, AccountPatch } from "../../bindings/TcNo-Acc-Switcher/internal/steam/models.js";
+  import {
+    AccountDTO,
+    AccountPatch,
+    SteamAccountEnrichmentDTO,
+    SteamAccountListItemDTO,
+  } from "../../bindings/TcNo-Acc-Switcher/internal/steam/models.js";
   import * as Shortcuts from "wails-shortcuts-service";
   import { ListPayload } from "../../bindings/TcNo-Acc-Switcher/internal/shortcuts/models.js";
   import { offlineMode, offlineSafeImageSrc, withAssetCacheBust } from "../stores/offlineMode";
@@ -287,7 +292,46 @@
     lastUsed: (a: SteamAccountRow) => a.lastLogin ?? "",
     accountLogin: (a: SteamAccountRow) => (a.accountName ?? "").trim(),
 
-    loadAccounts: () => SteamService.GetSteamAccounts() as Promise<SteamAccountRow[]>,
+    loadAccountsList: async () => {
+      const rows = await SteamService.GetSteamAccountsList();
+      return rows.map((r: SteamAccountListItemDTO) => ({
+        steamId64: r.steamId64,
+        personaName: r.personaName,
+        displayName: r.displayName,
+        accountName: r.accountName,
+        currentSession: r.currentSession ?? false,
+      })) as SteamAccountRow[];
+    },
+    loadAccountsEnrichment: async () => {
+      const rows = await SteamService.GetSteamAccountsEnrichment();
+      return rows.map((r: SteamAccountEnrichmentDTO) => ({
+        steamId64: r.steamId64,
+        displayName: r.displayName,
+        lastLogin: r.lastLogin,
+        offline: r.offline ?? false,
+        imageUrl: r.imageUrl,
+        staticImageUrl: r.staticImageUrl,
+        avatarPending: r.avatarPending ?? false,
+        metaPending: r.metaPending ?? false,
+        vac: r.vac ?? false,
+        ltd: r.ltd ?? false,
+        showSteamId: r.showSteamId ?? false,
+        showVac: r.showVac ?? false,
+        showLimited: r.showLimited ?? false,
+        showLastLogin: r.showLastLogin ?? false,
+        showAccUsername: r.showAccUsername ?? false,
+        collectInfo: r.collectInfo ?? false,
+        showShortNotes: r.showShortNotes ?? false,
+        note: r.note ?? "",
+        avatarFrameUrl: r.avatarFrameUrl,
+        miniProfileHtml: r.miniProfileHtml,
+        showMiniProfile: r.showMiniProfile ?? false,
+        showAvatarFrame: r.showAvatarFrame ?? false,
+        syncError: r.syncError ?? "",
+        tags: r.tags,
+        manualProfileImage: r.manualProfileImage ?? false,
+      })) as SteamAccountRow[];
+    },
     swapTo: (id: string) => SteamService.SwapToSteamAccount(id, -1, []),
     saveOrder: (ids: string[]) => SteamService.SaveSteamAccountOrder(ids),
     addNew: () => SteamService.SteamAddNew(),
@@ -350,9 +394,11 @@
       await SteamService.LoginAndLaunchGame(accountId, -1, appId);
     },
 
-    onAfterLoad: async (accounts: SteamAccountRow[]) => {
+    onAfterLoad: async (accounts: SteamAccountRow[], ctx) => {
       steamIds = accounts.map((r) => r.steamId64);
-      SteamService.StartSteamProfileRefresh();
+      if (!ctx?.hadCachedAccounts || ctx.enrichChanged) {
+        SteamService.StartSteamProfileRefresh();
+      }
       try { await refreshGameDataAppSets(steamIds); } catch {}
     },
   } satisfies PlatformAccountAdapter<SteamAccountRow>;

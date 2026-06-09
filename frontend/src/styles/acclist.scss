@@ -133,6 +133,68 @@
   background: var(--code-background);
 }
 
+.acc_list--skeleton {
+  pointer-events: none;
+}
+
+.acc_list_item--skeleton {
+  width: 100px;
+  min-height: 135px;
+  padding: 0.35rem 0.25rem 0.5rem;
+  border: 0.1em solid var(--accent-border-strong);
+  background: var(--code-background);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  cursor: default;
+  box-sizing: border-box;
+}
+
+.acc_skeleton_avatar,
+.acc_skeleton_line {
+  background: linear-gradient(
+    90deg,
+    var(--black-alpha-12, rgba(0, 0, 0, 0.12)) 0%,
+    var(--accent-border-strong, rgba(255, 255, 255, 0.18)) 50%,
+    var(--black-alpha-12, rgba(0, 0, 0, 0.12)) 100%
+  );
+  background-size: 200% 100%;
+  animation: accSkeletonShimmer 1.2s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+.acc_skeleton_avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 4px;
+}
+
+.acc_skeleton_lines {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.acc_skeleton_line {
+  height: 0.65rem;
+}
+
+.acc_skeleton_line--name {
+  width: 72%;
+}
+
+@keyframes accSkeletonShimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
 .placeHolderPlat {
   border: 2px dashed var(--accent-border-strong);
   background: var(--code-background);
