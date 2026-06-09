@@ -195,6 +195,8 @@
   "Stats_GameShortcutsHotbar": "Game shortcuts (on hotbar): ",
   "Stats_GamesLaunched": "Games launched: ",
   "Stats_MetricsToShow": "Displayed metrics:",
+  "Stats_MetricsProvidedBy": "Metrics data provided by: ",
+  "Stats_MetricsAffiliationNote": "NOTE: This program is not affiliated or endorsed by this website or service.",
   "Stats_AccountId": "Account Id:",
   "Auth_LoginRequired": "A password was previously set, and is required. Please enter the password below.",
   "Auth_EnterPassword": "Enter password:",
