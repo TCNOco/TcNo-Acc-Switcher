@@ -594,5 +594,10 @@
   "Button_PortableMode": "ポータブルモード",
   "Tooltip_PortableMode": "これを押すと、ポータブルインストール用に TcNo Account Switcher フォルダが .exe のすぐ隣に移動します。",
   "Modal_Title_MoveUserdata": "ユーザーデータの移動先を選択してください",
-  "Settings_WindowsAccent": "Windows アクセント"
+  "Settings_WindowsAccent": "Windows アクセント",
+  "Settings_OpenUserDataFolder": "[フォルダを開く]",
+  "Stats_MetricsProvidedBy": "メトリクスデータ提供元:",
+  "Stats_MetricsAffiliationNote": "注: このプログラムは、本ウェブサイトまたはサービスとは一切関係がなく、公認も受けていません。",
+  "Overlay_UserDataMove": "ユーザーデータを新しい場所にコピーしています…",
+  "Overlay_UserDataMoveRestarting": "ユーザーデータの移動を完了するために再起動しています…"
 }

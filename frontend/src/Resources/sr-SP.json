@@ -594,5 +594,10 @@
   "Button_PortableMode": "Prenosivi režim",
   "Tooltip_PortableMode": "Pritiskom na ovo premestićete folder TcNo Account Switcher odmah pored .exe datoteke za prenosive instalacije.",
   "Modal_Title_MoveUserdata": "Izaberite lokaciju za premeštanje korisničkih podataka",
-  "Settings_WindowsAccent": "Windows akcenat"
+  "Settings_WindowsAccent": "Windows akcenat",
+  "Settings_OpenUserDataFolder": "[Otvori fasciklu]",
+  "Stats_MetricsProvidedBy": "Podatke metrike obezbeđuje:",
+  "Stats_MetricsAffiliationNote": "NAPOMENA: Ovaj program nije povezan niti podržan od strane ovog veb-sajta ili servisa.",
+  "Overlay_UserDataMove": "Kopiranje korisničkih podataka na novu lokaciju…",
+  "Overlay_UserDataMoveRestarting": "Restartovanje radi završetka premeštanja korisničkih podataka…"
 }

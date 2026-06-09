@@ -594,5 +594,10 @@
   "Button_PortableMode": "Modo Portátil",
   "Tooltip_PortableMode": "Pressionar isto irá mover a pasta do TcNo Account Switcher para junto do .exe para instalações portáteis.",
   "Modal_Title_MoveUserdata": "Selecionar local para mover os dados do usuário",
-  "Settings_WindowsAccent": "Acento do Windows"
+  "Settings_WindowsAccent": "Acento do Windows",
+  "Settings_OpenUserDataFolder": "[Abrir Pasta]",
+  "Stats_MetricsProvidedBy": "Dados de métricas fornecidos por:",
+  "Stats_MetricsAffiliationNote": "NOTA: Este programa não é afiliado ou endossado por este site ou serviço.",
+  "Overlay_UserDataMove": "Copiando dados do usuário para o novo local…",
+  "Overlay_UserDataMoveRestarting": "Reiniciando para terminar de mover os dados do usuário…"
 }

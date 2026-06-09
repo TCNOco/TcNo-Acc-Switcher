@@ -594,5 +594,10 @@
   "Button_PortableMode": "पोर्टेबल मोड",
   "Tooltip_PortableMode": "इसे दबाने पर पोर्टेबल इंस्टॉल के लिए TcNo Account Switcher फ़ोल्डर .exe के ठीक बगल में चला जाएगा।",
   "Modal_Title_MoveUserdata": "उपयोगकर्ता डेटा स्थानांतरित करने के लिए स्थान चुनें",
-  "Settings_WindowsAccent": "विंडोज़ एक्सेंट"
+  "Settings_WindowsAccent": "विंडोज़ एक्सेंट",
+  "Settings_OpenUserDataFolder": "[फ़ोल्डर खोलें]",
+  "Stats_MetricsProvidedBy": "मीट्रिक्स डेटा प्रदाता:",
+  "Stats_MetricsAffiliationNote": "ध्यान दें: यह प्रोग्राम इस वेबसाइट या सेवा से संबद्ध या समर्थित नहीं है।",
+  "Overlay_UserDataMove": "उपयोगकर्ता डेटा को नए स्थान पर कॉपी किया जा रहा है…",
+  "Overlay_UserDataMoveRestarting": "उपयोगकर्ता डेटा स्थानांतरण पूर्ण करने के लिए पुनरारंभ किया जा रहा है…"
 }

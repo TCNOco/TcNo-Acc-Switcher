@@ -594,5 +594,10 @@
   "Button_PortableMode": "Mode portàtil",
   "Tooltip_PortableMode": "En prémer això, es mourà la carpeta del TcNo Account Switcher just al costat del .exe per a instal·lacions portàtils.",
   "Modal_Title_MoveUserdata": "Seleccioneu la ubicació per moure les dades d'usuari",
-  "Settings_WindowsAccent": "Accent de Windows"
+  "Settings_WindowsAccent": "Accent de Windows",
+  "Settings_OpenUserDataFolder": "[Obrir carpeta]",
+  "Stats_MetricsProvidedBy": "Dades de mètriques proporcionades per:",
+  "Stats_MetricsAffiliationNote": "NOTA: Aquest programa no està afiliat ni avalat per aquest lloc web o servei.",
+  "Overlay_UserDataMove": "S'estan copiant les dades d'usuari a la nova ubicació…",
+  "Overlay_UserDataMoveRestarting": "Reiniciant per acabar de moure les dades d'usuari…"
 }

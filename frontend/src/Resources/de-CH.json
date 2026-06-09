@@ -594,5 +594,10 @@
   "Button_PortableMode": "Portabler Modus",
   "Tooltip_PortableMode": "Durch Drücken dieser Schaltfläche wird der Ordner TcNo Account Switcher direkt neben die .exe für portable Installationen verschoben.",
   "Modal_Title_MoveUserdata": "Speicherort zum Verschieben der Benutzerdaten auswählen",
-  "Settings_WindowsAccent": "Windows-Akzent"
+  "Settings_WindowsAccent": "Windows-Akzent",
+  "Settings_OpenUserDataFolder": "[Ordner öffnen]",
+  "Stats_MetricsProvidedBy": "Metrikdaten bereitgestellt von:",
+  "Stats_MetricsAffiliationNote": "HINWEIS: Dieses Programm ist weder mit dieser Website oder diesem Dienst verbunden noch wird es von diesen unterstützt.",
+  "Overlay_UserDataMove": "Benutzerdaten werden an den neuen Speicherort kopiert…",
+  "Overlay_UserDataMoveRestarting": "Neustart, um das Verschieben der Benutzerdaten abzuschliessen…"
 }

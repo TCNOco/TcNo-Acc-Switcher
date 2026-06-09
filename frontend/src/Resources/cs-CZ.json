@@ -594,5 +594,10 @@
   "Button_PortableMode": "Přenosný režim",
   "Tooltip_PortableMode": "Stisknutím přesunete složku TcNo Account Switcher těsně vedle souboru .exe pro přenosné instalace.",
   "Modal_Title_MoveUserdata": "Vyberte umístění pro přesun uživatelských dat",
-  "Settings_WindowsAccent": "Zvýraznění Windows"
+  "Settings_WindowsAccent": "Zvýraznění Windows",
+  "Settings_OpenUserDataFolder": "[Otevřít složku]",
+  "Stats_MetricsProvidedBy": "Data metrik poskytuje:",
+  "Stats_MetricsAffiliationNote": "POZNÁMKA: Tento program není spojen ani podporován touto webovou stránkou nebo službou.",
+  "Overlay_UserDataMove": "Kopírování uživatelských dat do nového umístění…",
+  "Overlay_UserDataMoveRestarting": "Restartování pro dokončení přesunu uživatelských dat…"
 }

@@ -594,5 +594,10 @@
   "Button_PortableMode": "Siirrettävä tila",
   "Tooltip_PortableMode": "Tämän painaminen siirtää TcNo Account Switcher -kansion .exe-tiedoston viereen siirrettäviä asennuksia varten.",
   "Modal_Title_MoveUserdata": "Valitse sijainti käyttäjätietojen siirtämiseksi",
-  "Settings_WindowsAccent": "Windows-korostus"
+  "Settings_WindowsAccent": "Windows-korostus",
+  "Settings_OpenUserDataFolder": "[Avaa kansio]",
+  "Stats_MetricsProvidedBy": "Mittaustiedot tarjoaa:",
+  "Stats_MetricsAffiliationNote": "HUOMAA: Tämä ohjelma ei ole tämän verkkosivuston tai palvelun sidoksissa eikä hyväksymä.",
+  "Overlay_UserDataMove": "Kopioidaan käyttäjätietoja uuteen sijaintiin…",
+  "Overlay_UserDataMoveRestarting": "Käynnistetään uudelleen käyttäjätietojen siirron viimeistelemiseksi…"
 }

@@ -594,5 +594,10 @@
   "Button_PortableMode": "Преносим режим",
   "Tooltip_PortableMode": "Натискането на този бутон ще премести папката на TcNo Account Switcher точно до .exe файла за преносими инсталации.",
   "Modal_Title_MoveUserdata": "Изберете местоположение за преместване на потребителските данни",
-  "Settings_WindowsAccent": "Акцент на Windows"
+  "Settings_WindowsAccent": "Акцент на Windows",
+  "Settings_OpenUserDataFolder": "[Отвори папка]",
+  "Stats_MetricsProvidedBy": "Метрични данни, предоставени от:",
+  "Stats_MetricsAffiliationNote": "ЗАБЕЛЕЖКА: Тази програма не е свързана или одобрена от този уебсайт или услуга.",
+  "Overlay_UserDataMove": "Копиране на потребителските данни на новото място…",
+  "Overlay_UserDataMoveRestarting": "Рестартиране за завършване на преместването на потребителските данни…"
 }

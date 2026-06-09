@@ -594,5 +594,10 @@
   "Button_PortableMode": "Mode Portabel",
   "Tooltip_PortableMode": "Menekan ini akan memindahkan folder TcNo Account Switcher tepat di sebelah .exe untuk instalasi portabel.",
   "Modal_Title_MoveUserdata": "Pilih lokasi untuk memindahkan data pengguna",
-  "Settings_WindowsAccent": "Aksen Windows"
+  "Settings_WindowsAccent": "Aksen Windows",
+  "Settings_OpenUserDataFolder": "[Buka Folder]",
+  "Stats_MetricsProvidedBy": "Data metrik disediakan oleh:",
+  "Stats_MetricsAffiliationNote": "CATATAN: Program ini tidak berafiliasi atau didukung oleh situs web atau layanan ini.",
+  "Overlay_UserDataMove": "Menyalin data pengguna ke lokasi baru…",
+  "Overlay_UserDataMoveRestarting": "Memulai ulang untuk menyelesaikan pemindahan data pengguna…"
 }

@@ -594,5 +594,10 @@
   "Button_PortableMode": "โหมดพกพา",
   "Tooltip_PortableMode": "การกดปุ่มนี้จะย้ายโฟลเดอร์ TcNo Account Switcher ไปไว้ข้างๆ ไฟล์ .exe สำหรับการติดตั้งแบบพกพา",
   "Modal_Title_MoveUserdata": "เลือกตำแหน่งเพื่อย้ายข้อมูลผู้ใช้",
-  "Settings_WindowsAccent": "สีเน้น Windows"
+  "Settings_WindowsAccent": "สีเน้น Windows",
+  "Settings_OpenUserDataFolder": "[เปิดโฟลเดอร์]",
+  "Stats_MetricsProvidedBy": "ข้อมูลเมตริกซ์ให้บริการโดย:",
+  "Stats_MetricsAffiliationNote": "หมายเหตุ: โปรแกรมนี้ไม่เกี่ยวข้องหรือได้รับการรับรองจากเว็บไซต์หรือบริการนี้",
+  "Overlay_UserDataMove": "กำลังคัดลอกข้อมูลผู้ใช้ไปยังตำแหน่งใหม่…",
+  "Overlay_UserDataMoveRestarting": "กำลังรีสตาร์ทเพื่อเสร็จสิ้นการย้ายข้อมูลผู้ใช้…"
 }

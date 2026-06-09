@@ -594,5 +594,10 @@
   "Button_PortableMode": "Φορητή λειτουργία",
   "Tooltip_PortableMode": "Πατώντας αυτό, ο φάκελος TcNo Account Switcher θα μετακινηθεί ακριβώς δίπλα στο .exe για φορητές εγκαταστάσεις.",
   "Modal_Title_MoveUserdata": "Επιλέξτε τοποθεσία για τη μετακίνηση των δεδομένων χρήστη",
-  "Settings_WindowsAccent": "Έμφαση Windows"
+  "Settings_WindowsAccent": "Έμφαση Windows",
+  "Settings_OpenUserDataFolder": "[Άνοιγμα φακέλου]",
+  "Stats_MetricsProvidedBy": "Δεδομένα μετρήσεων παρέχονται από:",
+  "Stats_MetricsAffiliationNote": "ΣΗΜΕΙΩΣΗ: Αυτό το πρόγραμμα δεν είναι συνδεδεμένο ούτε υποστηρίζεται από αυτόν τον ιστότοπο ή την υπηρεσία.",
+  "Overlay_UserDataMove": "Αντιγραφή δεδομένων χρήστη στη νέα τοποθεσία…",
+  "Overlay_UserDataMoveRestarting": "Επανεκκίνηση για ολοκλήρωση της μετακίνησης δεδομένων χρήστη…"
 }

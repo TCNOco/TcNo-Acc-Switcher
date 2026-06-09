@@ -594,5 +594,10 @@
   "Button_PortableMode": "الوضع المحمول",
   "Tooltip_PortableMode": "الضغط على هذا سينقل مجلد TcNo Account Switcher إلى جانب ملف .exe للتثبيتات المحمولة.",
   "Modal_Title_MoveUserdata": "اختر موقعًا لنقل بيانات المستخدم",
-  "Settings_WindowsAccent": "تمييز Windows"
+  "Settings_WindowsAccent": "تمييز Windows",
+  "Settings_OpenUserDataFolder": "[فتح المجلد]",
+  "Stats_MetricsProvidedBy": "بيانات المقاييس مقدمة من:",
+  "Stats_MetricsAffiliationNote": "ملاحظة: هذا البرنامج غير تابع أو معتمد من قبل هذا الموقع أو الخدمة.",
+  "Overlay_UserDataMove": "جاري نسخ بيانات المستخدم إلى الموقع الجديد…",
+  "Overlay_UserDataMoveRestarting": "جاري إعادة التشغيل لإنهاء نقل بيانات المستخدم…"
 }

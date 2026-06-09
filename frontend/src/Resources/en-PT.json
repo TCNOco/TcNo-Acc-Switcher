@@ -594,5 +594,10 @@
   "Button_PortableMode": "Travelin' Mode",
   "Tooltip_PortableMode": "Pressin' this'll move th' TcNo Account Switcher folder right next to th' .exe for travelin' installs, arr!",
   "Modal_Title_MoveUserdata": "Pick a location to move yer user data, arr!",
-  "Settings_WindowsAccent": "Winders Accent"
+  "Settings_WindowsAccent": "Winders Accent",
+  "Settings_OpenUserDataFolder": "[Open Yer Folder]",
+  "Stats_MetricsProvidedBy": "Metrics data be provided by:",
+  "Stats_MetricsAffiliationNote": "NOTE: This program be not affiliated or endorsed by this website or service.",
+  "Overlay_UserDataMove": "Copyin' user data to th' new location…",
+  "Overlay_UserDataMoveRestarting": "Restartin' to finish movin' user data…"
 }

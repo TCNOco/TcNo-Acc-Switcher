@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Browser } from "@wailsio/runtime";
   import { onMount } from "svelte";
   import { get } from "svelte/store";
   import * as BasicService from "../../../bindings/TcNo-Acc-Switcher/internal/basic/basicservice.js";
@@ -42,6 +43,9 @@
   let resolvedValues: Record<string, string> = {};
   let hiddenToggles: Record<string, { hidden: boolean; toggleText: string }> = {};
   let hiddenPicked = new Set<string>();
+  let attribution: { header: string; image: string; text: string; link: string; dimensions: string } | null = null;
+
+  const defaultAttributionHeader = "Data source:";
 
   function normalizeVarSpecs(
     src: Record<string, { autofill?: string; display?: string; placeholder?: string } | undefined> | null | undefined,
@@ -69,6 +73,70 @@
       out[k] = String(v ?? "");
     }
     return out;
+  }
+
+  function normalizeAttribution(
+    src: { header?: string; image?: string; text?: string; link?: string; dimensions?: string } | null | undefined,
+  ): { header: string; image: string; text: string; link: string; dimensions: string } | null {
+    const link = String(src?.link ?? "").trim();
+    if (!link) {
+      return null;
+    }
+    const header = String(src?.header ?? "").trim();
+    return {
+      header: header || defaultAttributionHeader,
+      image: String(src?.image ?? "").trim(),
+      text: String(src?.text ?? "").trim(),
+      link,
+      dimensions: String(src?.dimensions ?? "").trim(),
+    };
+  }
+
+  function parseAttributionDimensions(raw: string): { width: number; height: number } | null {
+    const m = String(raw ?? "").trim().match(/^(\d+)x(\d+)$/i);
+    if (!m) {
+      return null;
+    }
+    const width = Number(m[1]);
+    const height = Number(m[2]);
+    if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) {
+      return null;
+    }
+    return { width, height };
+  }
+
+  function attributionImageStyle(dimensions: string): string {
+    const parsed = parseAttributionDimensions(dimensions);
+    if (!parsed) {
+      return "";
+    }
+    return `width:${parsed.width}px;max-width:100%;aspect-ratio:${parsed.width}/${parsed.height};height:auto;`;
+  }
+
+  function attributionImageSrc(imagePath: string): string {
+    const p = imagePath.trim();
+    if (!p) {
+      return "";
+    }
+    if (p.startsWith("/") || /^https?:\/\//i.test(p)) {
+      return p;
+    }
+    return p.startsWith("img/") ? p : `img/${p.replace(/^\/+/, "")}`;
+  }
+
+  function openAttributionLink(url: string): void {
+    if (!url.trim()) {
+      return;
+    }
+    if (get(offlineMode)) {
+      pushToast({
+        type: "info",
+        message: get(t)("Toast_OfflineModeNoLinks"),
+        duration: 5000,
+      });
+      return;
+    }
+    void Browser.OpenURL(url);
   }
 
   function normalizeHiddenToggles(
@@ -111,12 +179,14 @@
     editGame = game;
     screen = "vars";
     busy = true;
+    attribution = null;
     try {
-      const [req, exist, res, hid] = await Promise.all([
+      const [req, exist, res, hid, attr] = await Promise.all([
         BasicService.GetRequiredVarSpecs(game),
         BasicService.GetExistingVars(game, uniqueId),
         BasicService.GetResolvedGameStatVars(platformKey, game, uniqueId),
         BasicService.GetHiddenMetrics(game, uniqueId),
+        BasicService.GetGameAttribution(game),
       ]);
       requiredSpecs = normalizeVarSpecs(req as Record<
         string,
@@ -148,6 +218,9 @@
         Object.entries(hiddenToggles)
           .filter(([, v]) => v?.hidden)
           .map(([k]) => k),
+      );
+      attribution = normalizeAttribution(
+        attr as { header?: string; image?: string; text?: string; link?: string; dimensions?: string },
       );
     } catch (e) {
       pushToast({
@@ -392,6 +465,42 @@
           {/each}
         {/if}
 
+        {#if attribution}
+          <div class="gamestats-attribution">
+            <h6 class="gamestats-sub">{attribution.header}</h6>
+            <div class="attribution-inset">
+              {#if attribution.image}
+                <button
+                  type="button"
+                  class="attribution-image-btn"
+                  title={attribution.link}
+                  on:click={() => openAttributionLink(attribution?.link ?? "")}
+                >
+                  <img
+                    src={attributionImageSrc(attribution.image)}
+                    alt=""
+                    draggable="false"
+                    class:has-dimensions={Boolean(parseAttributionDimensions(attribution.dimensions))}
+                    style={attributionImageStyle(attribution.dimensions)}
+                  />
+                </button>
+              {:else if attribution.text}
+                <p class="attribution-text">
+                  <strong>{tr("Stats_MetricsProvidedBy")}</strong>
+                  <button
+                    type="button"
+                    class="linkbtn attribution-link"
+                    on:click={() => openAttributionLink(attribution?.link ?? "")}
+                  >
+                    {attribution.text}
+                  </button>
+                </p>
+              {/if}
+            </div>
+            <p class="attribution-note">{tr("Stats_MetricsAffiliationNote")}</p>
+          </div>
+        {/if}
+
         <div class="modal-actions">
           <button
             type="button"
@@ -400,6 +509,7 @@
             on:click={() => {
               screen = "list";
               editGame = "";
+              attribution = null;
             }}
           >
             {tr("Button_Back")}
@@ -431,6 +541,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    --gamestats-row-indent: calc(1rem + 0.35rem);
   }
   .gamestats-sub {
     margin: 0.5rem 0 0.15rem;
@@ -489,6 +600,48 @@
     align-items: center;
     gap: 0.35rem;
     font-size: 0.85rem;
+  }
+  .gamestats-attribution {
+    margin-top: 0.15rem;
+  }
+  .attribution-inset {
+    padding-left: var(--gamestats-row-indent);
+  }
+  .attribution-text {
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+  .attribution-link {
+    font-weight: normal;
+    padding: 0;
+  }
+  .attribution-note {
+    margin: 0.35rem 0 0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    opacity: 0.85;
+  }
+  .attribution-image-btn {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    line-height: 0;
+    img {
+      max-height: 2.25rem;
+      width: auto;
+      display: block;
+      &.has-dimensions {
+        max-height: none;
+      }
+    }
+    &:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
   }
   .modal-actions {
     display: flex;

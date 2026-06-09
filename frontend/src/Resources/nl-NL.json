@@ -594,5 +594,10 @@
   "Button_PortableMode": "Draagbare modus",
   "Tooltip_PortableMode": "Als u hierop drukt, wordt de map van TcNo Account Switcher direct naast het .exe-bestand geplaatst voor draagbare installaties.",
   "Modal_Title_MoveUserdata": "Selecteer locatie om gebruikersgegevens te verplaatsen",
-  "Settings_WindowsAccent": "Windows-accent"
+  "Settings_WindowsAccent": "Windows-accent",
+  "Settings_OpenUserDataFolder": "[Map openen]",
+  "Stats_MetricsProvidedBy": "Meetgegevens verstrekt door:",
+  "Stats_MetricsAffiliationNote": "OPMERKING: Dit programma is niet gelieerd aan of goedgekeurd door deze website of dienst.",
+  "Overlay_UserDataMove": "Gebruikersgegevens kopiëren naar de nieuwe locatie…",
+  "Overlay_UserDataMoveRestarting": "Herstarten om het verplaatsen van gebruikersgegevens af te ronden…"
 }

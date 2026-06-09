@@ -594,5 +594,10 @@
   "Button_PortableMode": "מצב נייד",
   "Tooltip_PortableMode": "לחיצה על כפתור זה תעביר את תיקיית TcNo Account Switcher ממש ליד קובץ ה-.exe עבור התקנות ניידות.",
   "Modal_Title_MoveUserdata": "בחר מיקום להעברת נתוני המשתמש",
-  "Settings_WindowsAccent": "הדגשת Windows"
+  "Settings_WindowsAccent": "הדגשת Windows",
+  "Settings_OpenUserDataFolder": "[פתח תיקייה]",
+  "Stats_MetricsProvidedBy": "נתוני מדדים מסופקים על ידי:",
+  "Stats_MetricsAffiliationNote": "הערה: תוכנית זו אינה קשורה או מאושרת על ידי אתר או שירות זה.",
+  "Overlay_UserDataMove": "מעתיק נתוני משתמש למיקום החדש…",
+  "Overlay_UserDataMoveRestarting": "מפעיל מחדש כדי לסיים העברת נתוני משתמש…"
 }

@@ -594,5 +594,10 @@
   "Button_PortableMode": "Taşınabilir Mod",
   "Tooltip_PortableMode": "Buna basmak, taşınabilir kurulumlar için TcNo Account Switcher klasörünü .exe'nin hemen yanına taşıyacaktır.",
   "Modal_Title_MoveUserdata": "Kullanıcı verilerini taşımak için konum seçin",
-  "Settings_WindowsAccent": "Windows Vurgusu"
+  "Settings_WindowsAccent": "Windows Vurgusu",
+  "Settings_OpenUserDataFolder": "[Klasörü Aç]",
+  "Stats_MetricsProvidedBy": "Metrik verileri sağlayan:",
+  "Stats_MetricsAffiliationNote": "NOT: Bu program, bu web sitesi veya hizmetle bağlantılı değildir veya onaylanmamıştır.",
+  "Overlay_UserDataMove": "Kullanıcı verileri yeni konuma kopyalanıyor…",
+  "Overlay_UserDataMoveRestarting": "Kullanıcı verilerinin taşınmasını tamamlamak için yeniden başlatılıyor…"
 }

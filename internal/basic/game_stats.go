@@ -53,11 +53,22 @@ func mergeGameStatsCustom(cfg *gameStatsFile, customRaw []byte) error {
 	return nil
 }
 
+const defaultGameStatAttributionHeader = "Data source:"
+
+type gameAttribution struct {
+	Header     string `json:"Header"`
+	Image      string `json:"Image"`
+	Text       string `json:"Text"`
+	Link       string `json:"Link"`
+	Dimensions string `json:"Dimensions"`
+}
+
 type gameDefinition struct {
 	UniqueID       string                        `json:"UniqueId"`
 	Indicator      string                        `json:"Indicator"`
 	URL            string                        `json:"Url"`
 	RequestCookies string                        `json:"RequestCookies"`
+	Attribution    *gameAttribution              `json:"Attribution"`
 	Vars           map[string]gameStatVarDef     `json:"Vars"`
 	Collect        map[string]collectInstruction `json:"Collect"`
 }
@@ -91,6 +102,14 @@ type GameStatVarSpecDTO struct {
 	Autofill    string `json:"autofill"`
 	Display     string `json:"display"`
 	Placeholder string `json:"placeholder"`
+}
+
+type GameStatAttributionDTO struct {
+	Header     string `json:"header"`
+	Image      string `json:"image"`
+	Text       string `json:"text"`
+	Link       string `json:"link"`
+	Dimensions string `json:"dimensions"`
 }
 
 type displayRangeEntry struct {
@@ -550,6 +569,36 @@ func (b *BasicService) GetExistingVars(game, accountID string) (map[string]strin
 		return map[string]string{}, nil
 	}
 	return cloneStringMap(row.Vars), nil
+}
+
+func gameAttributionToDTO(a *gameAttribution) GameStatAttributionDTO {
+	if a == nil {
+		return GameStatAttributionDTO{}
+	}
+	header := strings.TrimSpace(a.Header)
+	if header == "" {
+		header = defaultGameStatAttributionHeader
+	}
+	return GameStatAttributionDTO{
+		Header:     header,
+		Image:      strings.TrimSpace(a.Image),
+		Text:       strings.TrimSpace(a.Text),
+		Link:       strings.TrimSpace(a.Link),
+		Dimensions: strings.TrimSpace(a.Dimensions),
+	}
+}
+
+func (b *BasicService) GetGameAttribution(game string) (GameStatAttributionDTO, error) {
+	gameStatsState.mu.Lock()
+	defer gameStatsState.mu.Unlock()
+	if err := gameStatsState.ensureLoadedLocked(); err != nil {
+		return GameStatAttributionDTO{}, err
+	}
+	def, ok := gameStatsState.defs[strings.TrimSpace(game)]
+	if !ok {
+		return GameStatAttributionDTO{}, nil
+	}
+	return gameAttributionToDTO(def.Attribution), nil
 }
 
 func (b *BasicService) GetAllMetrics(game string) (map[string]string, error) {

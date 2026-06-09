@@ -594,5 +594,10 @@
   "Button_PortableMode": "Mod portabil",
   "Tooltip_PortableMode": "Apăsarea acestui buton va muta folderul TcNo Account Switcher lângă fișierul .exe pentru instalări portabile.",
   "Modal_Title_MoveUserdata": "Selectați locația pentru mutarea datelor utilizatorului",
-  "Settings_WindowsAccent": "Accent Windows"
+  "Settings_WindowsAccent": "Accent Windows",
+  "Settings_OpenUserDataFolder": "[Deschide folderul]",
+  "Stats_MetricsProvidedBy": "Date metrice furnizate de:",
+  "Stats_MetricsAffiliationNote": "NOTĂ: Acest program nu este afiliat sau aprobat de acest site web sau serviciu.",
+  "Overlay_UserDataMove": "Se copiază datele utilizatorului în noua locație…",
+  "Overlay_UserDataMoveRestarting": "Se repornește pentru a finaliza mutarea datelor utilizatorului…"
 }

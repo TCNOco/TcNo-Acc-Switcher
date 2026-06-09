@@ -594,5 +594,10 @@
   "Button_PortableMode": "Bærbar tilstand",
   "Tooltip_PortableMode": "Ved tryk på denne flyttes TcNo Account Switcher-mappen lige ved siden af .exe-filen til bærbare installationer.",
   "Modal_Title_MoveUserdata": "Vælg placering for at flytte brugerdata",
-  "Settings_WindowsAccent": "Windows accent"
+  "Settings_WindowsAccent": "Windows accent",
+  "Settings_OpenUserDataFolder": "[Åbn mappe]",
+  "Stats_MetricsProvidedBy": "Metricsdata leveret af:",
+  "Stats_MetricsAffiliationNote": "BEMÆRK: Dette program er ikke tilknyttet eller godkendt af denne hjemmeside eller tjeneste.",
+  "Overlay_UserDataMove": "Kopierer brugerdata til den nye placering…",
+  "Overlay_UserDataMoveRestarting": "Genstarter for at afslutte flytning af brugerdata…"
 }

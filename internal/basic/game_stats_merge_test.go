@@ -48,3 +48,46 @@ func TestMergeGameStatsCustom(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestGameAttributionJSON(t *testing.T) {
+	t.Parallel()
+	raw := []byte(`{
+		"StatsDefinitions": {
+			"Counter-Strike 2": {
+				"UniqueId": "CSGO",
+				"Attribution": {
+					"Image": "img/gs/cs/leetify.webp",
+					"Dimensions": "270x115",
+					"Link": "https://leetify.com"
+				}
+			},
+			"Apex Legends": {
+				"UniqueId": "AL",
+				"Attribution": {
+					"Text": "Apex Legends Status",
+					"Link": "https://apexlegendsstatus.com"
+				}
+			}
+		}
+	}`)
+	var cfg gameStatsFile
+	if err := json.Unmarshal(raw, &cfg); err != nil {
+		t.Fatal(err)
+	}
+	cs := cfg.StatsDefinitions["Counter-Strike 2"]
+	if cs.Attribution == nil || cs.Attribution.Image != "img/gs/cs/leetify.webp" || cs.Attribution.Link != "https://leetify.com" || cs.Attribution.Dimensions != "270x115" {
+		t.Fatalf("cs attribution: %+v", cs.Attribution)
+	}
+	dto := gameAttributionToDTO(cs.Attribution)
+	if dto.Image != "img/gs/cs/leetify.webp" || dto.Link != "https://leetify.com" || dto.Dimensions != "270x115" || dto.Header != defaultGameStatAttributionHeader {
+		t.Fatalf("cs dto: %+v", dto)
+	}
+	dtoEmptyHeader := gameAttributionToDTO(&gameAttribution{Link: "https://example.com"})
+	if dtoEmptyHeader.Header != defaultGameStatAttributionHeader {
+		t.Fatalf("empty header dto: %+v", dtoEmptyHeader)
+	}
+	al := cfg.StatsDefinitions["Apex Legends"]
+	if al.Attribution == nil || al.Attribution.Text != "Apex Legends Status" {
+		t.Fatalf("al attribution: %+v", al.Attribution)
+	}
+}

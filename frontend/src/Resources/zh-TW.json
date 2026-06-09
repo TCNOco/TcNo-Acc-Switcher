@@ -594,5 +594,10 @@
   "Button_PortableMode": "可攜式模式",
   "Tooltip_PortableMode": "按下此按鈕會將 TcNo Account Switcher 資料夾移動到 .exe 檔案旁邊，以用於可攜式安裝。",
   "Modal_Title_MoveUserdata": "選擇移動使用者資料的位置",
-  "Settings_WindowsAccent": "Windows 輔色"
+  "Settings_WindowsAccent": "Windows 輔色",
+  "Settings_OpenUserDataFolder": "[開啟資料夾]",
+  "Stats_MetricsProvidedBy": "指標資料提供者：",
+  "Stats_MetricsAffiliationNote": "注意：本程式與此網站或服務無關聯，亦未受其背書。",
+  "Overlay_UserDataMove": "正在複製使用者資料到新位置…",
+  "Overlay_UserDataMoveRestarting": "正在重新啟動以完成移動使用者資料…"
 }

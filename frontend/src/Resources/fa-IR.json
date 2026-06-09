@@ -594,5 +594,10 @@
   "Button_PortableMode": "حالت قابل حمل",
   "Tooltip_PortableMode": "با فشردن این، پوشهٔ TcNo Account Switcher برای نصب‌های قابل حمل دقیقاً در کنار فایل .exe قرار می‌گیرد.",
   "Modal_Title_MoveUserdata": "مکان انتقال داده‌های کاربر را انتخاب کنید",
-  "Settings_WindowsAccent": "رنگ تاکید ویندوز"
+  "Settings_WindowsAccent": "رنگ تاکید ویندوز",
+  "Settings_OpenUserDataFolder": "[باز کردن پوشه]",
+  "Stats_MetricsProvidedBy": "داده‌های متریک ارائه شده توسط:",
+  "Stats_MetricsAffiliationNote": "توجه: این برنامه وابسته یا تأیید شده توسط این وب‌سایت یا سرویس نیست.",
+  "Overlay_UserDataMove": "در حال کپی کردن داده‌های کاربر به مکان جدید…",
+  "Overlay_UserDataMoveRestarting": "راه‌اندازی مجدد برای اتمام انتقال داده‌های کاربر…"
 }

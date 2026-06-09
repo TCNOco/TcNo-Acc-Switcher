@@ -594,5 +594,10 @@
   "Button_PortableMode": "Chế độ di động",
   "Tooltip_PortableMode": "Nhấn nút này sẽ di chuyển thư mục TcNo Account Switcher đến ngay bên cạnh tệp .exe cho các bản cài đặt di động.",
   "Modal_Title_MoveUserdata": "Chọn vị trí để di chuyển dữ liệu người dùng",
-  "Settings_WindowsAccent": "Màu nhấn Windows"
+  "Settings_WindowsAccent": "Màu nhấn Windows",
+  "Settings_OpenUserDataFolder": "[Mở thư mục]",
+  "Stats_MetricsProvidedBy": "Dữ liệu chỉ số được cung cấp bởi:",
+  "Stats_MetricsAffiliationNote": "LƯU Ý: Chương trình này không được liên kết hoặc chứng thực bởi trang web hoặc dịch vụ này.",
+  "Overlay_UserDataMove": "Đang sao chép dữ liệu người dùng đến vị trí mới…",
+  "Overlay_UserDataMoveRestarting": "Đang khởi động lại để hoàn tất việc di chuyển dữ liệu người dùng…"
 }

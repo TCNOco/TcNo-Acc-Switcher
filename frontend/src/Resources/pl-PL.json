@@ -594,5 +594,10 @@
   "Button_PortableMode": "Tryb przenośny",
   "Tooltip_PortableMode": "Naciśnięcie tego spowoduje przeniesienie folderu TcNo Account Switcher tuż obok pliku .exe, umożliwiając tryb przenośny.",
   "Modal_Title_MoveUserdata": "Wybierz lokalizację, do której przenieść dane użytkownika",
-  "Settings_WindowsAccent": "Akcent Windows"
+  "Settings_WindowsAccent": "Akcent Windows",
+  "Settings_OpenUserDataFolder": "[Otwórz folder]",
+  "Stats_MetricsProvidedBy": "Dane metryczne udostępnione przez:",
+  "Stats_MetricsAffiliationNote": "UWAGA: Ten program nie jest powiązany ani popierany przez tę stronę internetową lub usługę.",
+  "Overlay_UserDataMove": "Kopiowanie danych użytkownika do nowej lokalizacji…",
+  "Overlay_UserDataMoveRestarting": "Ponowne uruchamianie, aby dokończyć przenoszenie danych użytkownika…"
 }

@@ -594,5 +594,10 @@
   "Button_PortableMode": "Hordozható mód",
   "Tooltip_PortableMode": "E gomb megnyomásával a TcNo Account Switcher mappa közvetlenül az .exe fájl mellé kerül, hordozható telepítések esetén.",
   "Modal_Title_MoveUserdata": "Válasszon helyet a felhasználói adatok áthelyezéséhez",
-  "Settings_WindowsAccent": "Windows kiemelőszín"
+  "Settings_WindowsAccent": "Windows kiemelőszín",
+  "Settings_OpenUserDataFolder": "[Mappa megnyitása]",
+  "Stats_MetricsProvidedBy": "Metrikai adatok forrása:",
+  "Stats_MetricsAffiliationNote": "MEGJEGYZÉS: Ez a program nem áll kapcsolatban, és nincs jóváhagyva e webhely vagy szolgáltatás által.",
+  "Overlay_UserDataMove": "Felhasználói adatok másolása az új helyre…",
+  "Overlay_UserDataMoveRestarting": "Újraindítás a felhasználói adatok áthelyezésének befejezéséhez…"
 }

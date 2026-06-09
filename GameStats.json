@@ -5,6 +5,10 @@
       "Indicator": "APEX",
       "Url": "https://apexlegendsstatus.com/core/interface?platform=PC&player={Username}",
       "RequestCookies": "apexlegendsstatus_ssid=TcNoAccSwitcher",
+      "Attribution": {
+        "Text": "Apex Legends Status",
+        "Link": "https://apexlegendsstatus.com"
+      },
       "Vars": {
         "Username": {
           "Autofill": "%Username%",
@@ -34,6 +38,11 @@
       "Indicator": "",
       "Url": "https://api-public.cs-prod.leetify.com/v2/profiles/{SteamId}",
       "RequestCookies": "",
+      "Attribution": {
+        "Image": "img/gs/cs/leetify.webp",
+        "Dimensions": "270x115",
+        "Link": "https://leetify.com"
+      },
       "Vars": {
         "SteamId": {
           "Autofill": "%ACCOUNTID%",
@@ -90,6 +99,10 @@
       "Indicator": "OW",
       "Url": "https://playoverwatch.com/en-us/career/pc/{BattleTag}",
       "RequestCookies": "",
+      "Attribution": {
+        "Text": "PlayOverwatch",
+        "Link": "https://playoverwatch.com"
+      },
       "Vars": {
         "BattleTag": {
           "Autofill": "%ACCOUNTUSERNAME%|ReplaceLast('_','-')",

@@ -594,5 +594,10 @@
   "Button_PortableMode": "Портативний режим",
   "Tooltip_PortableMode": "Натискання цього перемістить теку TcNo Account Switcher прямо поруч із .exe для портативних установок.",
   "Modal_Title_MoveUserdata": "Виберіть розташування для переміщення даних користувача",
-  "Settings_WindowsAccent": "Акцент Windows"
+  "Settings_WindowsAccent": "Акцент Windows",
+  "Settings_OpenUserDataFolder": "[Відкрити папку]",
+  "Stats_MetricsProvidedBy": "Дані метрик надано:",
+  "Stats_MetricsAffiliationNote": "ПРИМІТКА: Ця програма не пов'язана з цим веб-сайтом або службою та не схвалена ними.",
+  "Overlay_UserDataMove": "Копіювання даних користувача до нового розташування…",
+  "Overlay_UserDataMoveRestarting": "Перезавантаження для завершення переміщення даних користувача…"
 }

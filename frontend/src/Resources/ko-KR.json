@@ -594,5 +594,10 @@
   "Button_PortableMode": "포터블 모드",
   "Tooltip_PortableMode": "이것을 누르면 포터블 설치를 위해 TcNo Account Switcher 폴더를 .exe 바로 옆으로 이동합니다.",
   "Modal_Title_MoveUserdata": "사용자 데이터를 이동할 위치 선택",
-  "Settings_WindowsAccent": "Windows 강조색"
+  "Settings_WindowsAccent": "Windows 강조색",
+  "Settings_OpenUserDataFolder": "[폴더 열기]",
+  "Stats_MetricsProvidedBy": "측정 데이터 제공:",
+  "Stats_MetricsAffiliationNote": "참고: 이 프로그램은 이 웹사이트 또는 서비스와 제휴 또는 보증 관계가 아닙니다.",
+  "Overlay_UserDataMove": "사용자 데이터를 새 위치로 복사 중…",
+  "Overlay_UserDataMoveRestarting": "사용자 데이터 이동을 완료하기 위해 재시작 중…"
 }

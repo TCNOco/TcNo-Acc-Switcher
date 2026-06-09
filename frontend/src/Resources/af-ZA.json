@@ -594,5 +594,10 @@
   "Button_PortableMode": "Draagbare modus",
   "Tooltip_PortableMode": "Deur hierdie te druk, sal die TcNo Account Switcher-vouer reg langs die .exe geskuif word vir draagbare installasies.",
   "Modal_Title_MoveUserdata": "Kies ligging om gebruikersdata te skuif",
-  "Settings_WindowsAccent": "Windows Aksent"
+  "Settings_WindowsAccent": "Windows Aksent",
+  "Settings_OpenUserDataFolder": "[Open Vouer]",
+  "Stats_MetricsProvidedBy": "Metrieke data verskaf deur:",
+  "Stats_MetricsAffiliationNote": "LET WEL: Hierdie program is nie verbonde aan of onderskryf deur hierdie webwerf of diens nie.",
+  "Overlay_UserDataMove": "Besig om gebruikersdata na die nuwe ligging te kopieer…",
+  "Overlay_UserDataMoveRestarting": "Herbegin om die verskuiwing van gebruikersdata te voltooi…"
 }
