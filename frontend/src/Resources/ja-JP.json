@@ -195,6 +195,8 @@
   "Stats_GameShortcutsHotbar": "ゲームショートカット(ホットバー): ",
   "Stats_GamesLaunched": "発売されたゲーム： ",
   "Stats_MetricsToShow": "表示される指標:",
+  "Stats_MetricsProvidedBy": "Metrics data provided by: ",
+  "Stats_MetricsAffiliationNote": "NOTE: This program is not affiliated or endorsed by this website or service.",
   "Stats_AccountId": "アカウントID:",
   "Auth_LoginRequired": "パスワードは以前に設定されており、必須です。以下にパスワードを入力してください。",
   "Auth_EnterPassword": "パスワードを入力:",
