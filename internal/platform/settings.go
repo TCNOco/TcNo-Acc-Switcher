@@ -5,11 +5,13 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
+
+	"TcNo-Acc-Switcher/internal/settingsfile"
 )
 
-const settingsFileName = "TcNo-Acc-Switcher.settings.json"
+const settingsFileName = settingsfile.FileName
 
-// AppSettings is stored as indented JSON next to the executable for easy manual edits.
+// AppSettings is stored as indented JSON in the user data folder (default locations) or next to the executable when user data is custom.
 type AppSettings struct {
 	Version int `json:"version"`
 
@@ -154,11 +156,21 @@ func normalizeAppSettingsDefaults(s *AppSettings, raw map[string]json.RawMessage
 	}
 }
 
-func settingsPath(exeDir string) string {
-	return filepath.Join(exeDir, settingsFileName)
+func resolveSettingsSavePath(exeDir string, s AppSettings) (string, error) {
+	userDataDir, err := ResolveUserDataDir(exeDir, s)
+	if err != nil {
+		return "", err
+	}
+	if settingsfile.IsDefaultUserDataDir(userDataDir, exeDir) {
+		if err := os.MkdirAll(userDataDir, 0o755); err != nil {
+			return "", err
+		}
+		return filepath.Join(userDataDir, settingsFileName), nil
+	}
+	return filepath.Join(filepath.Clean(exeDir), settingsFileName), nil
 }
 
-// LoadAppSettings reads TcNo-Acc-Switcher.settings.json next to the executable.
+// LoadAppSettings reads TcNo-Acc-Switcher.settings.json from the resolved location.
 func LoadAppSettings(exeDir string) (AppSettings, error) {
 	return loadSettings(exeDir)
 }
@@ -172,28 +184,49 @@ var (
 	settingsCache struct {
 		mu       sync.RWMutex
 		exeDir   string
+		path     string
 		settings AppSettings
 		loaded   bool
 	}
 )
 
 func loadSettingsFromDisk(exeDir string) (AppSettings, error) {
-	path := settingsPath(exeDir)
+	s, _, err := loadSettingsFromDiskAt(exeDir)
+	return s, err
+}
+
+func loadSettingsFromDiskAt(exeDir string) (AppSettings, string, error) {
+	path, found := settingsfile.Discover(exeDir)
+	if !found {
+		return defaultSettings(), "", nil
+	}
 	data, err := os.ReadFile(path)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return defaultSettings(), nil
+			return defaultSettings(), "", nil
 		}
-		return AppSettings{}, err
+		return AppSettings{}, "", err
 	}
 	var raw map[string]json.RawMessage
 	_ = json.Unmarshal(data, &raw)
 	var s AppSettings
 	if err := json.Unmarshal(data, &s); err != nil {
-		return AppSettings{}, err
+		return AppSettings{}, "", err
 	}
 	normalizeAppSettingsDefaults(&s, raw)
-	return s, nil
+
+	savePath, err := resolveSettingsSavePath(exeDir, s)
+	if err != nil {
+		return AppSettings{}, "", err
+	}
+	if savePath != path {
+		if err := atomicWriteBytes(savePath, data, 0o644); err != nil {
+			return AppSettings{}, "", err
+		}
+		_ = os.Remove(path)
+		path = savePath
+	}
+	return s, path, nil
 }
 
 func loadSettings(exeDir string) (AppSettings, error) {
@@ -212,11 +245,12 @@ func loadSettings(exeDir string) (AppSettings, error) {
 		return settingsCache.settings, nil
 	}
 
-	s, err := loadSettingsFromDisk(exeDir)
+	s, path, err := loadSettingsFromDiskAt(exeDir)
 	if err != nil {
 		return s, err
 	}
 	settingsCache.exeDir = exeDir
+	settingsCache.path = path
 	settingsCache.settings = s
 	settingsCache.loaded = true
 	return s, nil
@@ -232,7 +266,10 @@ func saveSettingsAtomic(exeDir string, s AppSettings) error {
 		"statsShare":        {},
 		"discordRpc":        {},
 	})
-	path := settingsPath(exeDir)
+	path, err := resolveSettingsSavePath(exeDir, s)
+	if err != nil {
+		return err
+	}
 	data, err := json.MarshalIndent(s, "", "  ")
 	if err != nil {
 		return err
@@ -242,12 +279,23 @@ func saveSettingsAtomic(exeDir string, s AppSettings) error {
 	}
 
 	settingsCache.mu.Lock()
+	prevPath := settingsCache.path
 	settingsCache.exeDir = exeDir
+	settingsCache.path = path
 	settingsCache.settings = s
 	settingsCache.loaded = true
 	settingsCache.mu.Unlock()
 
+	if prevPath != "" && prevPath != path {
+		_ = os.Remove(prevPath)
+	}
+
 	return nil
+}
+
+func settingsFileExists(exeDir string) bool {
+	_, ok := settingsfile.Discover(exeDir)
+	return ok
 }
 
 func atomicWriteBytes(path string, data []byte, perm os.FileMode) error {
@@ -301,6 +349,11 @@ func ResetPathSingletonsForTest(exeDir string) {
 	exeDirErr = nil
 	exeDirOnce = sync.Once{}
 	exeDirOnce.Do(func() {})
+	settingsCache.mu.Lock()
+	settingsCache.exeDir = ""
+	settingsCache.path = ""
+	settingsCache.loaded = false
+	settingsCache.mu.Unlock()
 	ResetUserDataPathsForTest(exeDir, PortableUserDataDir(exeDir))
 }
 

@@ -2,13 +2,24 @@ package platform
 
 import (
 	"encoding/json"
+	"os"
 	"path/filepath"
 	"testing"
 )
 
+func testExeDirWithPortable(t *testing.T) string {
+	t.Helper()
+	dir := t.TempDir()
+	if err := os.MkdirAll(PortableUserDataDir(dir), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	ResetPathSingletonsForTest(dir)
+	return dir
+}
+
 func TestAppSettingsJSON_RoundTripTrayFields(t *testing.T) {
 	t.Parallel()
-	dir := t.TempDir()
+	dir := testExeDirWithPortable(t)
 	s := AppSettings{
 		Version:          1,
 		Language:         "en-US",
@@ -30,12 +41,12 @@ func TestAppSettingsJSON_RoundTripTrayFields(t *testing.T) {
 
 func TestAppSettingsJSON_UnknownFieldsIgnored(t *testing.T) {
 	t.Parallel()
-	p := filepath.Join(t.TempDir(), settingsFileName)
+	dir := testExeDirWithPortable(t)
+	p := filepath.Join(PortableUserDataDir(dir), settingsFileName)
 	raw := []byte(`{"version":1,"language":"en-US","futureUnknown":42}`)
 	if err := atomicWriteBytes(p, raw, 0o644); err != nil {
 		t.Fatal(err)
 	}
-	dir := filepath.Dir(p)
 	s, err := LoadAppSettings(dir)
 	if err != nil {
 		t.Fatal(err)
@@ -60,7 +71,7 @@ func TestAppSettingsJSON_AnimationsEnabled(t *testing.T) {
 	t.Parallel()
 
 	// Round-trip: save false, reload, expect false
-	dir := t.TempDir()
+	dir := testExeDirWithPortable(t)
 	s := AppSettings{
 		Version:           1,
 		Language:          "en-US",
@@ -79,12 +90,13 @@ func TestAppSettingsJSON_AnimationsEnabled(t *testing.T) {
 	}
 
 	// Missing key should default to true
-	p := filepath.Join(t.TempDir(), settingsFileName)
+	dir2 := testExeDirWithPortable(t)
+	p := filepath.Join(PortableUserDataDir(dir2), settingsFileName)
 	raw := []byte(`{"version":1,"language":"en-US"}`)
 	if err := atomicWriteBytes(p, raw, 0o644); err != nil {
 		t.Fatal(err)
 	}
-	loaded2, err := LoadAppSettings(filepath.Dir(p))
+	loaded2, err := LoadAppSettings(dir2)
 	if err != nil {
 		t.Fatal(err)
 	}

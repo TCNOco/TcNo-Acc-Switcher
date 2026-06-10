@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"TcNo-Acc-Switcher/internal/settingsfile"
 	"TcNo-Acc-Switcher/internal/winutil"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
@@ -98,7 +99,8 @@ func FinalizeUserDataMove(exeDir, from, to string) {
 		clearUserDataMovePending(exeDir)
 		return
 	}
-	if err := copyUserDataTree(from, to, nil); err != nil {
+	destIsCustom := !settingsfile.IsDefaultUserDataDir(to, exeDir)
+	if err := copyUserDataTree(from, to, destIsCustom, nil); err != nil {
 		log.Printf("userdata move finalize copy: %v", err)
 	}
 	go removeOldUserDataDirAfterExit(exeDir, from)
@@ -242,18 +244,19 @@ func moveUserDataToResolved(dest string) error {
 	if err := os.MkdirAll(dest, 0o755); err != nil {
 		return fmt.Errorf("create destination: %w", err)
 	}
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return err
+	}
 	total, err := countUserDataCopyFiles(current)
 	if err != nil {
 		return err
 	}
+	destIsCustom := !settingsfile.IsDefaultUserDataDir(dest, exeDir)
 	emitUserDataMoveProgress("copying", 0, total)
-	if err := copyUserDataTree(current, dest, func(done int) {
+	if err := copyUserDataTree(current, dest, destIsCustom, func(done int) {
 		emitUserDataMoveProgress("copying", done, total)
 	}); err != nil {
-		return err
-	}
-	exeDir, err := ResolveExeDir()
-	if err != nil {
 		return err
 	}
 	settings, err := loadSettings(exeDir)
@@ -263,6 +266,9 @@ func moveUserDataToResolved(dest string) error {
 	settings.UserDataPath = dest
 	if err := saveSettingsAtomic(exeDir, settings); err != nil {
 		return err
+	}
+	if destIsCustom {
+		_ = os.Remove(filepath.Join(dest, settingsfile.FileName))
 	}
 	if err := writeUserDataMovePending(exeDir, current, dest); err != nil {
 		return err
@@ -316,7 +322,7 @@ func countUserDataCopyFiles(src string) (int, error) {
 
 type userDataCopyProgressFn func(done int)
 
-func copyUserDataTree(src, dst string, onProgress userDataCopyProgressFn) error {
+func copyUserDataTree(src, dst string, skipSettingsFile bool, onProgress userDataCopyProgressFn) error {
 	done := 0
 	return filepath.WalkDir(src, func(path string, de os.DirEntry, walkErr error) error {
 		if walkErr != nil {
@@ -333,6 +339,9 @@ func copyUserDataTree(src, dst string, onProgress userDataCopyProgressFn) error 
 			return err
 		}
 		if rel == "." {
+			return nil
+		}
+		if skipSettingsFile && strings.EqualFold(filepath.Base(rel), settingsfile.FileName) {
 			return nil
 		}
 		if isUnderSkippedUserData(path, src) {

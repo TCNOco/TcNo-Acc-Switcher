@@ -2,6 +2,7 @@ package platform
 
 import (
 	"encoding/json"
+	"os"
 	"path/filepath"
 	"testing"
 )
@@ -38,7 +39,10 @@ func TestLoadPlatformsJSON_mergesCustom(t *testing.T) {
 	defer SetEmbeddedPlatformsJSON(prev)
 	SetEmbeddedPlatformsJSON([]byte(`{"Platforms":{"Steam":{"Identifiers":["s"]}}}`))
 
-	if err := atomicWriteBytes(filepath.Join(dir, settingsFileName), []byte(`{"version":1,"language":"en-US"}`), 0o644); err != nil {
+	if err := os.MkdirAll(PortableUserDataDir(dir), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := atomicWriteBytes(filepath.Join(PortableUserDataDir(dir), settingsFileName), []byte(`{"version":1,"language":"en-US"}`), 0o644); err != nil {
 		t.Fatal(err)
 	}
 	ud := UserDataDir(dir)

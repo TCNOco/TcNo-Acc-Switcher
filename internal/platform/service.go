@@ -48,8 +48,7 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 	if err != nil {
 		return PlatformStartup{}, err
 	}
-	_, settingsStatErr := os.Stat(settingsPath(exeDir))
-	settingsMissing := settingsStatErr != nil && os.IsNotExist(settingsStatErr)
+	settingsMissing := !settingsFileExists(exeDir)
 	settings, err := loadSettings(exeDir)
 	if err != nil {
 		return PlatformStartup{}, err

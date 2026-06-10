@@ -3,11 +3,10 @@ package stats
 import (
 	"encoding/json"
 	"os"
-	"path/filepath"
 	"sync/atomic"
-)
 
-const appSettingsFile = "TcNo-Acc-Switcher.settings.json"
+	"TcNo-Acc-Switcher/internal/settingsfile"
+)
 
 var (
 	collectionCached atomic.Bool
@@ -38,7 +37,11 @@ func readCollectionEnabled() bool {
 	if err != nil {
 		return true
 	}
-	data, err := os.ReadFile(filepath.Join(dir, appSettingsFile))
+	path, ok := settingsfile.Discover(dir)
+	if !ok {
+		return true
+	}
+	data, err := os.ReadFile(path)
 	if err != nil {
 		if os.IsNotExist(err) {
 			return true
