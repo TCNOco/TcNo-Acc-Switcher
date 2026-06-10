@@ -44,14 +44,14 @@
   min-width: 0;
   font-size: 1rem;
   line-height: 1.35;
-  color: var(--whiteSecondary, #fff);
+  color: var(--notification-message-fg, var(--whiteSecondary, #fff));
   font-weight: 500;
 }
 
 .stability-prompt__message {
   font-size: 1rem;
   line-height: 1.35;
-  color: var(--whiteSecondary, #fff);
+  color: var(--notification-message-fg, var(--whiteSecondary, #fff));
   width: 100%;
   min-width: 0;
 }
@@ -78,10 +78,10 @@
   height: 2.1rem;
   margin: 0;
   padding: 0;
-  border: 1px solid var(--button-bg, #274560);
+  border: 1px solid var(--overlay-thumb-border, var(--button-bg, #274560));
   border-radius: 2px;
-  background: var(--even-darker-code-background, #0a0e12);
-  color: var(--blackTernary, #a7abbe);
+  background: var(--overlay-thumb-bg, var(--even-darker-code-background, #0a0e12));
+  color: var(--overlay-thumb-muted-fg, var(--blackTernary, #a7abbe));
   cursor: pointer;
   transition:
     color 120ms ease,

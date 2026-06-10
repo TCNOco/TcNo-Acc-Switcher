@@ -2,6 +2,9 @@
     Old Default theme
     - Created by TroubleChute
 */
+
+@use "overlay_surfaces" as overlay;
+
 :root {
     // All these extra accent steps and redefinitions are required for Windows accent options
     --accent: #ffaa00; /* Must be HEX */
@@ -109,6 +112,15 @@
     --notification-warning-highlight: #f8d297;
     --notification-error-border: #d94c4c;
     --notification-error-highlight: #f0a8a8;
+
+    @include overlay.overlay-root-tokens(
+        $modal-bg: #14151e,
+        $modal-header-bg: #14151e,
+        $modal-input-bg: #212529,
+        $modal-input-border: #888888,
+        $overlay-thumb-bg: rgb(15, 16, 20),
+        $overlay-thumb-border: #888888
+    );
 }
 
 // Main UI
@@ -334,3 +346,5 @@ div.clearingRight {
         }
     }
 }
+
+@include overlay.overlay-component-overrides;

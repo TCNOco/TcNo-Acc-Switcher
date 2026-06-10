@@ -1,4 +1,5 @@
 ﻿@use "sass:color";
+@use "overlay_surfaces" as overlay;
 /*
     Nord Default
     - Created by Xapu1337
@@ -133,6 +134,16 @@ $nordAuora4: #B48EAD;
   --notification-error-border: #{$nordAuora0};
   --notification-error-highlight: #e07f88;
   --notification-border-radius: 0.25rem;
+
+  @include overlay.overlay-root-tokens(
+    $modal-bg: #{$nordDark1},
+    $modal-header-bg: #{$nordDark3},
+    $modal-input-bg: #{$nordDark0},
+    $modal-input-border: #{$nordFrost2},
+    $overlay-thumb-bg: #{$nordDark0},
+    $overlay-thumb-border: #{$nordFrost2},
+    $notification-border-radius: 0.25rem
+  );
 }
 
 app {
@@ -685,3 +696,5 @@ label.acc.currentAcc {
     opacity: 1;
   }
 }
+
+@include overlay.overlay-component-overrides;

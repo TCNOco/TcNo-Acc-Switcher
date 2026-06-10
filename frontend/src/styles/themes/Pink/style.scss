@@ -3,6 +3,8 @@
     Main surfaces from palette; chrome strips/footer: deep rose; dark text on light.
 */
 
+@use "overlay_surfaces" as overlay;
+
 :root {
     /* ── Palette primitives (single hex source per stop) ── */
     --pink-shell: #f5bedb;
@@ -181,6 +183,19 @@
     --notification-warning-highlight: #fff3e0;
     --notification-error-border: #c62828;
     --notification-error-highlight: #ffebee;
+
+    @include overlay.overlay-root-tokens(
+        $modal-bg: var(--surface-panel),
+        $modal-header-bg: var(--chrome-bg),
+        $modal-header-fg: var(--chrome-fg),
+        $modal-input-bg: var(--surface-soft),
+        $modal-input-border: var(--button-border),
+        $modal-body-fg: var(--pink-ink-2),
+        $modal-muted-fg: var(--blackTernary),
+        $overlay-thumb-bg: var(--surface-soft),
+        $overlay-thumb-border: var(--button-border),
+        $overlay-thumb-muted-fg: var(--blackTernary)
+    );
 }
 
 /* Main content — soft pink field */
@@ -451,17 +466,17 @@ label.acc p {
     color: var(--chrome-fg);
 }
 
-/* App modal title bar is deep rose — force light title + controls text */
+/* App modal title bar is deep rose — light title + controls text (tokens + fallback) */
 .modal-headerbar {
-    color: var(--chrome-fg) !important;
+    color: var(--modal-header-fg, var(--chrome-fg)) !important;
 }
 
 .modal-window-controls .win-btn {
-    color: var(--chrome-fg);
+    color: var(--modal-header-fg, var(--chrome-fg));
 }
 
 .modal-window-controls .win-btn:hover {
-    color: var(--chrome-fg);
+    color: var(--modal-header-fg, var(--chrome-fg));
 }
 
 /* Footer / action bar uses deep rose bg — light icon & label text */
@@ -490,3 +505,5 @@ label.acc p {
 #btnHelp i {
     color: var(--chrome-fg);
 }
+
+@include overlay.overlay-component-overrides;

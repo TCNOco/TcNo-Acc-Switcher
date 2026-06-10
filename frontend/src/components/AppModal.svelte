@@ -475,7 +475,7 @@
     position: absolute;
     inset: 0;
     z-index: 50;
-    background: var(--backdrop-scrim-55);
+    background: var(--modal-scrim, var(--backdrop-scrim-55));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -488,7 +488,7 @@
     flex-direction: column;
     min-width: min(320px, 100%);
     max-height: min(900px, calc(100% - 2rem));
-    background: var(--program-bg);
+    background: var(--modal-bg, var(--mainContentBackground, var(--program-bg)));
     border: var(--border-bar-size, 1px) solid var(--border-bar-bg);
     box-shadow: 0 12px 40px var(--shadow-color-45);
     overflow: hidden;
@@ -504,8 +504,8 @@
     justify-content: space-between;
     height: 32px;
     min-height: 32px;
-    background: var(--border-bar-bg);
-    color: var(--whiteSecondary);
+    background: var(--modal-header-bg, var(--border-bar-bg));
+    color: var(--modal-header-fg, var(--whiteSecondary));
     flex-shrink: 0;
     user-select: none;
   }
@@ -520,7 +520,7 @@
     height: 10px;
     margin: 0 12px;
     display: block;
-    fill: var(--whiteSecondary);
+    fill: var(--modal-header-fg, var(--whiteSecondary));
   }
 
   .modal-title-drag {
@@ -552,6 +552,7 @@
     height: 100%;
     cursor: pointer;
     padding: 0;
+    color: var(--modal-header-fg, var(--whiteSecondary));
     &:hover {
       background: var(--window-control-hover-bg);
     }
@@ -585,9 +586,9 @@
     margin: 0;
     width: 100%;
     box-sizing: border-box;
-    background: var(--even-darker-code-background);
-    border: 1px solid var(--button-bg);
-    color: var(--whiteSecondary);
+    background: var(--modal-input-bg, var(--even-darker-code-background));
+    border: 1px solid var(--modal-input-border, var(--button-bg));
+    color: var(--modal-body-fg, var(--whiteSecondary));
     font: inherit;
     &:focus {
       outline: 1px solid var(--accent);
@@ -683,14 +684,14 @@
 
   .modal-feedback-body {
     margin: 0;
-    color: var(--whiteSecondary, #fff);
+    color: var(--modal-body-fg, var(--whiteSecondary, #fff));
     line-height: 1.4;
   }
 
   .modal-feedback-char-count {
     margin: 0.2rem 0 0;
     font-size: 0.85rem;
-    color: var(--blackTernary, #a7abbe);
+    color: var(--modal-muted-fg, var(--blackTernary, #a7abbe));
     text-align: right;
   }
 

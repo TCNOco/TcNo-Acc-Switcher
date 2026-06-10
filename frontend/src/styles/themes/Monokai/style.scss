@@ -1,4 +1,5 @@
 @use "sass:color";
+@use "overlay_surfaces" as overlay;
 
 /*
     Monokai Default
@@ -110,6 +111,16 @@
   --notification-warning-highlight: #ffc08a;
   --notification-error-border: #ff6188;
   --notification-error-highlight: #ffa3b9;
+
+  @include overlay.overlay-root-tokens(
+    $modal-bg: #131313,
+    $modal-header-bg: #222222,
+    $modal-input-bg: #131313,
+    $modal-input-border: #49483e,
+    $overlay-thumb-bg: #0b0b09,
+    $overlay-thumb-border: #49483e,
+    $notification-border-radius: 0.5rem
+  );
 }
 
 * {
@@ -551,3 +562,5 @@ input.acc:checked + label.acc {
     opacity: 1;
   }
 }
+
+@include overlay.overlay-component-overrides;

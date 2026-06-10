@@ -142,6 +142,30 @@
     --accent-text-heading: rgba(var(--accentInt), 0.98);
     --home-ico-gradient-end: rgba(var(--accentInt), 1);
 
+    /* Toasts, modals, stability prompt */
+    --notification-main-bg: var(--darker-code-background);
+    --notification-info-border: var(--accent);
+    --notification-info-highlight: var(--accent);
+    --notification-success-border: var(--green);
+    --notification-success-highlight: var(--green);
+    --notification-warning-border: var(--orange);
+    --notification-warning-highlight: var(--orange);
+    --notification-error-border: var(--red);
+    --notification-error-highlight: var(--red);
+    --notification-border-radius: 2px;
+    --notification-message-fg: var(--whiteSecondary);
+    --modal-bg: var(--mainContentBackground);
+    --modal-header-bg: var(--border-bar-bg);
+    --modal-header-fg: var(--whiteSecondary);
+    --modal-scrim: var(--backdrop-scrim-55);
+    --modal-input-bg: var(--even-darker-code-background);
+    --modal-input-border: var(--button-bg);
+    --modal-body-fg: var(--whiteSecondary);
+    --modal-muted-fg: var(--blackTernary);
+    --overlay-thumb-bg: var(--even-darker-code-background);
+    --overlay-thumb-border: var(--button-bg);
+    --overlay-thumb-muted-fg: var(--blackTernary);
+
     /* Ace editor (Dracula-style; ties to main palette where close) */
     --ace-editor-bg: #282a36;
     --ace-gutter-fg: rgb(144, 145, 148);

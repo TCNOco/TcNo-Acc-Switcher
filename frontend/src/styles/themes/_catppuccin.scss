@@ -1,5 +1,6 @@
 @use "sass:color";
 @use "sass:map";
+@use "overlay_surfaces" as overlay;
 
 @function cp($palette, $token) {
   @return map.get($palette, $token);
@@ -202,6 +203,11 @@
     --notification-warning-highlight: #{$yellow};
     --notification-error-border: #{$red};
     --notification-error-highlight: #{$red};
+
+    @include overlay.overlay-root-tokens(
+      $modal-bg: var(--surface-panel-bg),
+      $modal-input-border: var(--form-checkbox-border)
+    );
   }
 
   body,
@@ -381,4 +387,6 @@
     border-color: var(--green);
     border-style: dashed;
   }
+
+  @include overlay.overlay-component-overrides;
 }

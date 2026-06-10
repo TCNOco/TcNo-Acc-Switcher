@@ -469,12 +469,6 @@
 </div>
 
 <div class="rowSetting">
-  <button type="button" class="btnicontext" on:click={() => void openFeedbackModal({ mode: "suggestion" })}>
-    {$t("Settings_SuggestFeature")}
-  </button>
-</div>
-
-<div class="rowSetting">
   <div class="form-check">
     <input id="gs-discord-rpc" type="checkbox" checked={discordRpc} disabled={discordRpcLoading || $offlineMode} on:change={() => void toggleDiscordRpc()} />
     <label class="form-check-label" for="gs-discord-rpc"></label>
@@ -485,6 +479,12 @@
     <label class="form-check-label" for="gs-discord-rpc-share"></label>
   </div>
   <label for="gs-discord-rpc-share">{$t("Settings_DiscordRpcShare")}</label>
+</div>
+
+<div class="rowSetting">
+  <button type="button" class="btnicontext" on:click={() => void openFeedbackModal({ mode: "suggestion" })}>
+    {$t("Settings_SuggestFeature")}
+  </button>
 </div>
 
 <style lang="scss">

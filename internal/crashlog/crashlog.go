@@ -14,6 +14,7 @@ import (
 
 	buildinfo "TcNo-Acc-Switcher/build"
 	"TcNo-Acc-Switcher/internal/api"
+	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/stats"
@@ -46,36 +47,6 @@ func crashDumpPath() (string, error) {
 		return "", err
 	}
 	return filepath.Join(dir, crashDumpFile), nil
-}
-
-const settingsFileName = "TcNo-Acc-Switcher.settings.json"
-
-func readSettingsValue(key string) string {
-	dir, err := exeDir()
-	if err != nil {
-		return ""
-	}
-	data, err := os.ReadFile(filepath.Join(dir, settingsFileName))
-	if err != nil {
-		return ""
-	}
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return ""
-	}
-	v, ok := raw[key]
-	if !ok {
-		return ""
-	}
-	var s string
-	if err := json.Unmarshal(v, &s); err != nil {
-		return ""
-	}
-	return s
-}
-
-func isOfflineMode() bool {
-	return readSettingsValue("offlineMode") == "true"
 }
 
 func readStatsUUID() string {
@@ -144,7 +115,7 @@ func Capture() {
 // SubmitPending checks for a crash dump from a previous run and submits it.
 // Returns true if a crash dump was found and successfully submitted.
 func SubmitPending() bool {
-	if isOfflineMode() {
+	if appclient.IsOfflineMode() {
 		return false
 	}
 
@@ -171,7 +142,7 @@ func SubmitPending() bool {
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("User-Agent", api.UserAgent(buildinfo.Version()))
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := appclient.Shared.Do(req)
 	if err != nil {
 		slog.Warn("crashlog: submitting dump", "err", err)
 		return false
