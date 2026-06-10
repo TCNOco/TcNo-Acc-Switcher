@@ -134,6 +134,40 @@ button {
   }
 }
 
+/* Filled accent button for modal preferred actions (Submit, Yes, Ok, …) */
+button.btnicontext.modal-primary,
+.btnicontext.modal-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--text-on-bright-bg, var(--whiteSecondary));
+
+  svg {
+    fill: currentColor;
+    color: currentColor;
+  }
+
+  &:hover:not(:disabled) {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--text-on-bright-bg, var(--whiteSecondary));
+    filter: brightness(1.08);
+  }
+
+  &:active:not(:disabled),
+  &:target:not(:disabled) {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--text-on-bright-bg, var(--whiteSecondary));
+    filter: brightness(0.96);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    filter: none;
+  }
+}
+
 /* Dropdown */
 button .caret, .button .caret {
     margin-left: 0;

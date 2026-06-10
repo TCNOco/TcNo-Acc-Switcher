@@ -3,7 +3,7 @@
     Main surfaces from palette; chrome strips/footer: deep rose; dark text on light.
 */
 
-@use "overlay_surfaces" as overlay;
+@use "../overlay_surfaces" as overlay;
 
 :root {
     /* ── Palette primitives (single hex source per stop) ── */

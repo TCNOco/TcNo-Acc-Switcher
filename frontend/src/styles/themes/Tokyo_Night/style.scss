@@ -3,7 +3,7 @@
     - Created by Avo
 */
 
-@use "overlay_surfaces" as overlay;
+@use "../overlay_surfaces" as overlay;
 
 :root {
     --accent: #c0caf5;
@@ -94,6 +94,7 @@
     --greenInt: 158, 206, 106;
     --orangeInt: 255, 158, 100;
     --redInt: 247, 118, 142;
+    --text-on-bright-bg: #1a1b26;
 
     --ace-editor-bg: #24283f;
     --ace-gutter-fg: rgb(130, 141, 185);

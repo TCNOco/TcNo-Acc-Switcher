@@ -3,7 +3,7 @@
     - Created by TroubleChute
 */
 
-@use "overlay_surfaces" as overlay;
+@use "../overlay_surfaces" as overlay;
 
 :root {
     // All these extra accent steps and redefinitions are required for Windows accent options
@@ -96,6 +96,7 @@
     --greenInt: 124, 189, 110;
     --orangeInt: 255, 170, 51;
     --redInt: 232, 93, 93;
+    --text-on-bright-bg: #111111;
 
     --ace-editor-bg: #282a36;
     --ace-gutter-fg: rgb(130, 135, 155);

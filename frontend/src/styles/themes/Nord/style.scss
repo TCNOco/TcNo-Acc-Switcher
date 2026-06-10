@@ -1,5 +1,5 @@
 ﻿@use "sass:color";
-@use "overlay_surfaces" as overlay;
+@use "../overlay_surfaces" as overlay;
 /*
     Nord Default
     - Created by Xapu1337
@@ -117,6 +117,7 @@ $nordAuora4: #B48EAD;
   --greenInt: 163, 190, 140;
   --orangeInt: 208, 135, 112;
   --redInt: 191, 97, 106;
+  --text-on-bright-bg: #{$nordDark6};
 
   --ace-editor-bg: #{$nordDark0};
   --ace-gutter-fg: #{$nordDark3};
