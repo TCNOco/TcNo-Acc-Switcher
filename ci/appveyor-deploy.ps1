@@ -259,6 +259,28 @@ function Find-SignPathSigningRequestId {
   return $null
 }
 
+function Receive-SignPathDirectSignedArtifact {
+  param(
+    [string]$InputPath,
+    [string]$OutputPath,
+    [string]$Description
+  )
+
+  Write-Host "Submitting $(Split-Path $InputPath -Leaf) for direct SignPath signing..."
+  $signingRequestId = Submit-SigningRequest `
+    -InputArtifactPath $InputPath `
+    -ProjectSlug $env:SIGNPATH_PROJECT_SLUG `
+    -SigningPolicySlug $env:SIGNPATH_POLICY_SLUG `
+    -OrganizationId $env:SIGNPATH_ORGANIZATION_ID `
+    -ApiToken $env:SIGNPATH_API_TOKEN `
+    -Description $Description `
+    -WaitForCompletion `
+    -OutputArtifactPath $OutputPath `
+    -Force
+  Write-Host "Direct SignPath signing completed (request $signingRequestId)."
+  return $signingRequestId
+}
+
 function Receive-SignPathOriginVerifiedArtifact {
   param(
     [string]$BuildUrl,
@@ -333,6 +355,7 @@ $exeSigningRequestId = Receive-SignPathOriginVerifiedArtifact `
   -OutputPath $exePath `
   -PhaseLabel 'application EXE' `
   -ArtifactName 'TcNo-Acc-Switcher.exe'
+Write-Host "EXE signed with AppVeyor origin verification (request $exeSigningRequestId)."
 
 Write-Host "Signing with Ed25519..."
 $keyPath = Join-Path $root 'updater-key'
@@ -401,33 +424,12 @@ if (-not $installer) {
   throw 'NSIS installer not found after build.'
 }
 
-# Installer is built after the signed EXE is available; publish it to AppVeyor and trigger the same
-# SignPath AppVeyor integration so origin metadata matches the EXE signing request.
-Write-Host "Publishing NSIS installer as AppVeyor artifact..."
-if (-not (Get-Command Push-AppveyorArtifact -ErrorAction SilentlyContinue)) {
-  Import-Module 'C:\Program Files\AppVeyor\BuildAgent\Modules\build-worker-api' -ErrorAction Stop
-}
-Push-AppveyorArtifact $installer.FullName -FileName $installer.Name -DeploymentName installer
-
-$installerArtifacts = @(Get-AppVeyorWebhookArtifacts | Where-Object {
-  $_.fileName -like '*Installer.exe' -or $_.name -eq 'installer'
-})
-if ($installerArtifacts.Count -eq 0) {
-  throw 'Installer artifact was not found on AppVeyor after Push-AppveyorArtifact.'
-}
-
-Write-Host "Triggering SignPath AppVeyor origin verification for installer..."
-Invoke-SignPathAppVeyorIntegration -Artifacts $installerArtifacts
-
-$installerSigningRequestId = Receive-SignPathOriginVerifiedArtifact `
-  -BuildUrl $expectedBuildUrl `
-  -Deadline $deadline `
+$installerSigningRequestId = Receive-SignPathDirectSignedArtifact `
+  -InputPath $installer.FullName `
   -OutputPath $installer.FullName `
-  -PhaseLabel 'NSIS installer' `
-  -ExcludeRequestIds @($exeSigningRequestId) `
-  -ArtifactNameContains 'Installer'
+  -Description "NSIS installer $($env:APPVEYOR_REPO_TAG_NAME)"
 $installer = Get-Item $installer.FullName
-Write-Host "NSIS installer signed with origin verification (request $installerSigningRequestId)."
+Write-Host "Installer signed via direct API, no origin (request $installerSigningRequestId)."
 
 Write-Host "Publishing draft GitHub release $($env:APPVEYOR_REPO_TAG_NAME)..."
 if (-not $env:github_release_token) {

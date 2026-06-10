@@ -166,7 +166,6 @@ artifacts:
   - path: bin\TcNo-Acc-Switcher.exe
     name: executable
 
-# Origin verification: AppVeyor must POST the official deploy payload to SignPath (manual API calls return 403).
 deploy:
   - provider: Webhook
     url: https://app.signpath.io/API/v1/%SIGNPATH_ORGANIZATION_ID%/Integrations/AppVeyor?ProjectSlug=%SIGNPATH_PROJECT_SLUG%&SigningPolicySlug=%SIGNPATH_POLICY_SLUG%
