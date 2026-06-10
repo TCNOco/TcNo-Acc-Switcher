@@ -104,7 +104,7 @@ func RunGUI(params RunGUIParams) {
 
 	if currentVersion != "" && !guiSettings.OfflineMode {
 		gh, err := updatecheck.NewSignedGitHubProvider(github.Config{
-			Repository:    "TCNOco/TcNo-Acc-Switcher-BETA", // TODO: Reset back to TCNOco/TcNo-Acc-Switcher when done testing.
+			Repository:    "TCNOco/TcNo-Acc-Switcher",
 			ChecksumAsset: "SHA256SUMS",
 			AssetMatcher:  updatecheck.GitHubAssetMatcher,
 		}, ".exe.sig")
