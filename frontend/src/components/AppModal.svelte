@@ -291,7 +291,7 @@
               {#if m.kind === "alert"}
                 <div class="modal-inline-actions settingsCol inputAndButton">
                   <span class="modal-actions-spacer"></span>
-                  <button type="button" class="btnicontext" on:click={() => dismissModal()}>
+                  <button type="button" class="btnicontext modal-primary" on:click={() => dismissModal()}>
                     {m.dismissLabel ?? $t("Ok")}
                   </button>
                 </div>
@@ -306,7 +306,7 @@
               />
               <div class="modal-inline-actions settingsCol inputAndButton">
                 <span class="modal-actions-spacer"></span>
-                <button type="button" class="btnicontext" on:click={confirmPositive}>
+                <button type="button" class="btnicontext modal-primary" on:click={confirmPositive}>
                   {#if m.style === "yesno"}
                     {m.positiveLabel ?? $t("Yes")}
                   {:else}
@@ -359,7 +359,7 @@
               </div>
               <div class="modal-inline-actions settingsCol inputAndButton">
                 <span class="modal-actions-spacer"></span>
-                <button type="button" class="btnicontext" on:click={promptOk}>
+                <button type="button" class="btnicontext modal-primary" on:click={promptOk}>
                   {m.positiveLabel ?? $t("Ok")}
                 </button>
               </div>
@@ -417,7 +417,7 @@
                 {/if}
                 <button
                   type="button"
-                  class="btnicontext modal-pick-primary"
+                  class="btnicontext modal-primary"
                   disabled={primaryFolderDisabled}
                   on:click={folderOk}
                 >
@@ -461,7 +461,7 @@
                 </button>
                 <button
                   type="button"
-                  class="btnicontext"
+                  class="btnicontext modal-primary"
                   disabled={feedbackSubmitDisabled}
                   on:click={feedbackSubmit}
                 >
@@ -484,7 +484,7 @@
                 </button>
                 <button
                   type="button"
-                  class="btnicontext modal-pick-primary"
+                  class="btnicontext modal-primary"
                   bind:this={crashReportYesEl}
                   on:click={() => crashReportChoice("yes")}
                 >
@@ -645,16 +645,6 @@
     white-space: pre-line;
     line-height: 1.45;
     color: var(--modal-body-fg, var(--whiteSecondary));
-  }
-
-  .modal-pick-primary {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--buttonText, var(--whiteSecondary));
-
-    &:hover:not(:disabled) {
-      filter: brightness(1.08);
-    }
   }
 
   .modal-inline-actions {

@@ -650,9 +650,6 @@
     justify-content: flex-end;
     margin-top: 0.75rem;
   }
-  .modal-primary {
-    font-weight: 600;
-  }
   .muted {
     opacity: 0.7;
     font-size: 0.85rem;
