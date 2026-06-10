@@ -59,33 +59,7 @@ install:
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
         Write-Host "wails3 installed: $(wails3 version 2>&1 | Out-String)"
       }
-  - ps: |
-      $nsis7zPlugin = 'C:\Program Files (x86)\NSIS\Plugins\x86-unicode\nsis7z.dll'
-      if (Test-Path $nsis7zPlugin) {
-        Write-Host "NSIS 7z plugin already present; skipping download."
-        return
-      }
-      Write-Host "Installing NSIS 7z plugin..."
-      $downloadUrl = "https://nsis.sourceforge.io/mediawiki/images/6/69/Nsis7z_19.00.7z"
-      $destinationFolder = "C:\Program Files (x86)\NSIS"
-      $tempDownloadPath = "$env:TEMP\Nsis7z_19.00.7z"
-      $extractPath = "$env:TEMP\NsisExtracted"
-      Invoke-WebRequest -Uri $downloadUrl -OutFile $tempDownloadPath
-      if (-Not (Test-Path -Path $extractPath)) {
-        New-Item -ItemType Directory -Path $extractPath | Out-Null
-      }
-      & 7z x "$tempDownloadPath" -o"$extractPath" -y
-      $foldersToMerge = @("Contrib", "Examples", "Plugins")
-      foreach ($folder in $foldersToMerge) {
-        $sourcePath = Join-Path -Path $extractPath -ChildPath $folder
-        $destinationPath = Join-Path -Path $destinationFolder -ChildPath $folder
-        if (Test-Path -Path $sourcePath) {
-          Copy-Item -Path "$sourcePath\*" -Destination $destinationPath -Recurse -Force
-        }
-      }
-      Remove-Item -Path $tempDownloadPath -Force
-      Remove-Item -Path $extractPath -Recurse -Force
-      Write-Host "NSIS 7z plugin installed."
+  - ps: & "$env:APPVEYOR_BUILD_FOLDER\other\NSIS\nsis7zplugin.ps1"
 
 build_script:
   - ps: |
