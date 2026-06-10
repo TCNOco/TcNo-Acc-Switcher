@@ -599,5 +599,20 @@
   "Stats_MetricsProvidedBy": "נתוני מדדים מסופקים על ידי:",
   "Stats_MetricsAffiliationNote": "הערה: תוכנית זו אינה קשורה או מאושרת על ידי אתר או שירות זה.",
   "Overlay_UserDataMove": "מעתיק נתוני משתמש למיקום החדש…",
-  "Overlay_UserDataMoveRestarting": "מפעיל מחדש כדי לסיים העברת נתוני משתמש…"
+  "Overlay_UserDataMoveRestarting": "מפעיל מחדש כדי לסיים העברת נתוני משתמש…",
+  "Settings_SuggestFeature": "הצע תכונה/שינוי",
+  "Stability_DidSwitchWork": "האם המתג עבד?",
+  "Stability_ThanksRating": "תודה על הדירוג",
+  "Stability_ThanksReportLine1": "תודה על הדירוג.",
+  "Stability_ThanksReportAskPrefix": "צריך",
+  "Stability_ThanksReportAskSuffix": "?",
+  "Stability_ReportIssue": "דווח על בעיה",
+  "Stability_ThumbUp": "כן, המתג עבד",
+  "Stability_ThumbDown": "לא, המתג לא עבד",
+  "Feedback_Issue_Title": "דווח על בעיה",
+  "Feedback_Issue_Body": "תאר מה השתבש ומה ציפית:",
+  "Feedback_Suggestion_Title": "הצע תכונה או שינוי",
+  "Feedback_Suggestion_Body": "הזן רעיון, שינוי או תיקון בפירוט:",
+  "Feedback_Submit": "שלח",
+  "Feedback_DiscordLink": "הצטרף לקהילת הדיסקורד"
 }

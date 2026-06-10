@@ -599,5 +599,20 @@
   "Stats_MetricsProvidedBy": "指标数据提供方：",
   "Stats_MetricsAffiliationNote": "注意：本程序与该网站或服务无关，亦未获其认可。",
   "Overlay_UserDataMove": "正在将用户数据复制到新位置…",
-  "Overlay_UserDataMoveRestarting": "正在重启以完成用户数据移动…"
+  "Overlay_UserDataMoveRestarting": "正在重启以完成用户数据移动…",
+  "Settings_SuggestFeature": "建议功能/更改",
+  "Stability_DidSwitchWork": "切换成功了吗？",
+  "Stability_ThanksRating": "感谢评分",
+  "Stability_ThanksReportLine1": "感谢评分。",
+  "Stability_ThanksReportAskPrefix": "需要",
+  "Stability_ThanksReportAskSuffix": "?",
+  "Stability_ReportIssue": "报告问题",
+  "Stability_ThumbUp": "是的，切换成功了",
+  "Stability_ThumbDown": "不，切换未成功",
+  "Feedback_Issue_Title": "报告问题",
+  "Feedback_Issue_Body": "描述遇到的问题以及您期望的结果：",
+  "Feedback_Suggestion_Title": "建议功能或更改",
+  "Feedback_Suggestion_Body": "详细输入想法、更改或修复：",
+  "Feedback_Submit": "提交",
+  "Feedback_DiscordLink": "加入社区 Discord"
 }

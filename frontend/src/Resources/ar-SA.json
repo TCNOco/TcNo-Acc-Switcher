@@ -599,5 +599,20 @@
   "Stats_MetricsProvidedBy": "بيانات المقاييس مقدمة من:",
   "Stats_MetricsAffiliationNote": "ملاحظة: هذا البرنامج غير تابع أو معتمد من قبل هذا الموقع أو الخدمة.",
   "Overlay_UserDataMove": "جاري نسخ بيانات المستخدم إلى الموقع الجديد…",
-  "Overlay_UserDataMoveRestarting": "جاري إعادة التشغيل لإنهاء نقل بيانات المستخدم…"
+  "Overlay_UserDataMoveRestarting": "جاري إعادة التشغيل لإنهاء نقل بيانات المستخدم…",
+  "Settings_SuggestFeature": "اقترح ميزة/تغيير",
+  "Stability_DidSwitchWork": "هل عمل التبديل؟",
+  "Stability_ThanksRating": "شكراً على التقييم",
+  "Stability_ThanksReportLine1": "شكراً على التقييم.",
+  "Stability_ThanksReportAskPrefix": "بحاجة إلى",
+  "Stability_ThanksReportAskSuffix": "؟",
+  "Stability_ReportIssue": "الإبلاغ عن مشكلة",
+  "Stability_ThumbUp": "نعم، عمل التبديل",
+  "Stability_ThumbDown": "لا، لم يعمل التبديل",
+  "Feedback_Issue_Title": "الإبلاغ عن مشكلة",
+  "Feedback_Issue_Body": "صف ما حدث من خطأ وما كنت تتوقعه:",
+  "Feedback_Suggestion_Title": "اقترح ميزة أو تغيير",
+  "Feedback_Suggestion_Body": "أدخل فكرة أو تغيير أو إصلاح بالتفصيل:",
+  "Feedback_Submit": "إرسال",
+  "Feedback_DiscordLink": "انضم إلى مجتمع ديسكورد"
 }

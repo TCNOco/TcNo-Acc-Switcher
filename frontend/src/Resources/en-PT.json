@@ -599,5 +599,20 @@
   "Stats_MetricsProvidedBy": "Metrics data be provided by:",
   "Stats_MetricsAffiliationNote": "NOTE: This program be not affiliated or endorsed by this website or service.",
   "Overlay_UserDataMove": "Copyin' user data to th' new location…",
-  "Overlay_UserDataMoveRestarting": "Restartin' to finish movin' user data…"
+  "Overlay_UserDataMoveRestarting": "Restartin' to finish movin' user data…",
+  "Settings_SuggestFeature": "Propose a Feature/Change",
+  "Stability_DidSwitchWork": "Did th' switch be workin'?",
+  "Stability_ThanksRating": "Thank ye fer ratin'",
+  "Stability_ThanksReportLine1": "Thank ye fer ratin'.",
+  "Stability_ThanksReportAskPrefix": "Be needin' t'",
+  "Stability_ThanksReportAskSuffix": "?",
+  "Stability_ReportIssue": "report a mishap",
+  "Stability_ThumbUp": "Aye, th' switch worked",
+  "Stability_ThumbDown": "Nay, th' switch did not work",
+  "Feedback_Issue_Title": "Report a mishap",
+  "Feedback_Issue_Body": "Describe what went afoul an' what ye expected:",
+  "Feedback_Suggestion_Title": "Propose a feature or change",
+  "Feedback_Suggestion_Body": "Scribble an idea, change or fix in detail:",
+  "Feedback_Submit": "Send it in",
+  "Feedback_DiscordLink": "Join th' crew Discord"
 }

@@ -599,5 +599,20 @@
   "Stats_MetricsProvidedBy": "Data metrik poskytuje:",
   "Stats_MetricsAffiliationNote": "POZNÁMKA: Tento program není spojen ani podporován touto webovou stránkou nebo službou.",
   "Overlay_UserDataMove": "Kopírování uživatelských dat do nového umístění…",
-  "Overlay_UserDataMoveRestarting": "Restartování pro dokončení přesunu uživatelských dat…"
+  "Overlay_UserDataMoveRestarting": "Restartování pro dokončení přesunu uživatelských dat…",
+  "Settings_SuggestFeature": "Navrhnout funkci/změnu",
+  "Stability_DidSwitchWork": "Fungovalo přepnutí?",
+  "Stability_ThanksRating": "Děkujeme za hodnocení",
+  "Stability_ThanksReportLine1": "Děkujeme za hodnocení.",
+  "Stability_ThanksReportAskPrefix": "Potřebujete",
+  "Stability_ThanksReportAskSuffix": "?",
+  "Stability_ReportIssue": "nahlásit problém",
+  "Stability_ThumbUp": "Ano, přepnutí fungovalo.",
+  "Stability_ThumbDown": "Ne, přepnutí nefungovalo.",
+  "Feedback_Issue_Title": "Nahlásit problém",
+  "Feedback_Issue_Body": "Popište, co se pokazilo a co jste očekávali:",
+  "Feedback_Suggestion_Title": "Navrhnout funkci nebo změnu",
+  "Feedback_Suggestion_Body": "Podrobně popište nápad, změnu nebo opravu:",
+  "Feedback_Submit": "Odeslat",
+  "Feedback_DiscordLink": "Připojte se na komunitní Discord"
 }

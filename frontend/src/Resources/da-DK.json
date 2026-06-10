@@ -599,5 +599,20 @@
   "Stats_MetricsProvidedBy": "Metricsdata leveret af:",
   "Stats_MetricsAffiliationNote": "BEMÆRK: Dette program er ikke tilknyttet eller godkendt af denne hjemmeside eller tjeneste.",
   "Overlay_UserDataMove": "Kopierer brugerdata til den nye placering…",
-  "Overlay_UserDataMoveRestarting": "Genstarter for at afslutte flytning af brugerdata…"
+  "Overlay_UserDataMoveRestarting": "Genstarter for at afslutte flytning af brugerdata…",
+  "Settings_SuggestFeature": "Foreslå en funktion/ændring",
+  "Stability_DidSwitchWork": "Virkede skiftet?",
+  "Stability_ThanksRating": "Tak for din vurdering",
+  "Stability_ThanksReportLine1": "Tak for din vurdering.",
+  "Stability_ThanksReportAskPrefix": "Skal",
+  "Stability_ThanksReportAskSuffix": "?",
+  "Stability_ReportIssue": "rapporter et problem",
+  "Stability_ThumbUp": "Ja, skiftet virkede",
+  "Stability_ThumbDown": "Nej, skiftet virkede ikke",
+  "Feedback_Issue_Title": "Rapporter et problem",
+  "Feedback_Issue_Body": "Beskriv hvad der gik galt, og hvad du forventede:",
+  "Feedback_Suggestion_Title": "Foreslå en funktion eller ændring",
+  "Feedback_Suggestion_Body": "Indtast en idé, ændring eller rettelse i detaljer:",
+  "Feedback_Submit": "Indsend",
+  "Feedback_DiscordLink": "Deltag i community Discord"
 }

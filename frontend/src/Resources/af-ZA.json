@@ -599,5 +599,20 @@
   "Stats_MetricsProvidedBy": "Metrieke data verskaf deur:",
   "Stats_MetricsAffiliationNote": "LET WEL: Hierdie program is nie verbonde aan of onderskryf deur hierdie webwerf of diens nie.",
   "Overlay_UserDataMove": "Besig om gebruikersdata na die nuwe ligging te kopieer…",
-  "Overlay_UserDataMoveRestarting": "Herbegin om die verskuiwing van gebruikersdata te voltooi…"
+  "Overlay_UserDataMoveRestarting": "Herbegin om die verskuiwing van gebruikersdata te voltooi…",
+  "Settings_SuggestFeature": "Stel 'n Kenmerk/Verandering voor",
+  "Stability_DidSwitchWork": "Het die skakelaar gewerk?",
+  "Stability_ThanksRating": "Dankie vir jou gradering",
+  "Stability_ThanksReportLine1": "Dankie vir jou gradering.",
+  "Stability_ThanksReportAskPrefix": "Moet",
+  "Stability_ThanksReportAskSuffix": "?",
+  "Stability_ReportIssue": "Meld 'n probleem",
+  "Stability_ThumbUp": "Ja, die skakelaar het gewerk",
+  "Stability_ThumbDown": "Nee, die skakelaar het nie gewerk nie",
+  "Feedback_Issue_Title": "Meld 'n probleem",
+  "Feedback_Issue_Body": "Beskryf wat verkeerd geloop het en wat jy verwag het:",
+  "Feedback_Suggestion_Title": "Stel 'n kenmerk of verandering voor",
+  "Feedback_Suggestion_Body": "Voer 'n idee, verandering of regstelling in detail in:",
+  "Feedback_Submit": "Dien in",
+  "Feedback_DiscordLink": "Sluit aan by die gemeenskap Discord"
 }

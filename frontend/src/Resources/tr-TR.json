@@ -599,5 +599,20 @@
   "Stats_MetricsProvidedBy": "Metrik verileri sağlayan:",
   "Stats_MetricsAffiliationNote": "NOT: Bu program, bu web sitesi veya hizmetle bağlantılı değildir veya onaylanmamıştır.",
   "Overlay_UserDataMove": "Kullanıcı verileri yeni konuma kopyalanıyor…",
-  "Overlay_UserDataMoveRestarting": "Kullanıcı verilerinin taşınmasını tamamlamak için yeniden başlatılıyor…"
+  "Overlay_UserDataMoveRestarting": "Kullanıcı verilerinin taşınmasını tamamlamak için yeniden başlatılıyor…",
+  "Settings_SuggestFeature": "Özellik/Değişiklik Öner",
+  "Stability_DidSwitchWork": "Değişiklik işe yaradı mı?",
+  "Stability_ThanksRating": "Değerlendirme için teşekkürler",
+  "Stability_ThanksReportLine1": "Değerlendirme için teşekkürler.",
+  "Stability_ThanksReportAskPrefix": "Gerekiyor mu",
+  "Stability_ThanksReportAskSuffix": "?",
+  "Stability_ReportIssue": "sorun bildir",
+  "Stability_ThumbUp": "Evet, değişiklik işe yaradı",
+  "Stability_ThumbDown": "Hayır, değişiklik işe yaramadı",
+  "Feedback_Issue_Title": "Sorun bildir",
+  "Feedback_Issue_Body": "Neyin yanlış gittiğini ve ne beklediğinizi açıklayın:",
+  "Feedback_Suggestion_Title": "Özellik veya değişiklik öner",
+  "Feedback_Suggestion_Body": "Bir fikri, değişikliği veya düzeltmeyi ayrıntılı olarak girin:",
+  "Feedback_Submit": "Gönder",
+  "Feedback_DiscordLink": "Topluluk Discord'una katıl"
 }

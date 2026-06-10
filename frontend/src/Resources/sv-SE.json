@@ -599,5 +599,20 @@
   "Stats_MetricsProvidedBy": "Mätdata tillhandahålls av:",
   "Stats_MetricsAffiliationNote": "OBS: Detta program är inte anslutet till eller godkänt av denna webbplats eller tjänst.",
   "Overlay_UserDataMove": "Kopierar användardata till den nya platsen…",
-  "Overlay_UserDataMoveRestarting": "Startar om för att slutföra flytten av användardata…"
+  "Overlay_UserDataMoveRestarting": "Startar om för att slutföra flytten av användardata…",
+  "Settings_SuggestFeature": "Föreslå en funktion/ändring",
+  "Stability_DidSwitchWork": "Fungerade bytet?",
+  "Stability_ThanksRating": "Tack för betyget",
+  "Stability_ThanksReportLine1": "Tack för betyget.",
+  "Stability_ThanksReportAskPrefix": "Behöver",
+  "Stability_ThanksReportAskSuffix": "?",
+  "Stability_ReportIssue": "rapportera ett problem",
+  "Stability_ThumbUp": "Ja, bytet fungerade",
+  "Stability_ThumbDown": "Nej, bytet fungerade inte",
+  "Feedback_Issue_Title": "Rapportera ett problem",
+  "Feedback_Issue_Body": "Beskriv vad som gick fel och vad du förväntade dig:",
+  "Feedback_Suggestion_Title": "Föreslå en funktion eller ändring",
+  "Feedback_Suggestion_Body": "Ange en idé, ändring eller fix i detalj:",
+  "Feedback_Submit": "Skicka",
+  "Feedback_DiscordLink": "Gå med i community-Discorden"
 }

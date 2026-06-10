@@ -599,5 +599,20 @@
   "Stats_MetricsProvidedBy": "ข้อมูลเมตริกซ์ให้บริการโดย:",
   "Stats_MetricsAffiliationNote": "หมายเหตุ: โปรแกรมนี้ไม่เกี่ยวข้องหรือได้รับการรับรองจากเว็บไซต์หรือบริการนี้",
   "Overlay_UserDataMove": "กำลังคัดลอกข้อมูลผู้ใช้ไปยังตำแหน่งใหม่…",
-  "Overlay_UserDataMoveRestarting": "กำลังรีสตาร์ทเพื่อเสร็จสิ้นการย้ายข้อมูลผู้ใช้…"
+  "Overlay_UserDataMoveRestarting": "กำลังรีสตาร์ทเพื่อเสร็จสิ้นการย้ายข้อมูลผู้ใช้…",
+  "Settings_SuggestFeature": "แนะนำฟีเจอร์/การเปลี่ยนแปลง",
+  "Stability_DidSwitchWork": "สวิตช์ทำงานหรือไม่?",
+  "Stability_ThanksRating": "ขอบคุณสำหรับการให้คะแนน",
+  "Stability_ThanksReportLine1": "ขอบคุณสำหรับการให้คะแนน.",
+  "Stability_ThanksReportAskPrefix": "ต้อง",
+  "Stability_ThanksReportAskSuffix": "?",
+  "Stability_ReportIssue": "แจ้งปัญหา",
+  "Stability_ThumbUp": "ใช่ สวิตช์ทำงานแล้ว",
+  "Stability_ThumbDown": "ไม่ สวิตช์ไม่ทำงาน",
+  "Feedback_Issue_Title": "แจ้งปัญหา",
+  "Feedback_Issue_Body": "อธิบายปัญหาที่เกิดขึ้นและสิ่งที่คุณคาดหวัง:",
+  "Feedback_Suggestion_Title": "แนะนำฟีเจอร์หรือการเปลี่ยนแปลง",
+  "Feedback_Suggestion_Body": "ระบุความคิด การเปลี่ยนแปลง หรือการแก้ไขโดยละเอียด:",
+  "Feedback_Submit": "ส่ง",
+  "Feedback_DiscordLink": "เข้าร่วมชุมชน Discord"
 }

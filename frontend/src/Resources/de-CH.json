@@ -599,5 +599,20 @@
   "Stats_MetricsProvidedBy": "Metrikdaten bereitgestellt von:",
   "Stats_MetricsAffiliationNote": "HINWEIS: Dieses Programm ist weder mit dieser Website oder diesem Dienst verbunden noch wird es von diesen unterstützt.",
   "Overlay_UserDataMove": "Benutzerdaten werden an den neuen Speicherort kopiert…",
-  "Overlay_UserDataMoveRestarting": "Neustart, um das Verschieben der Benutzerdaten abzuschliessen…"
+  "Overlay_UserDataMoveRestarting": "Neustart, um das Verschieben der Benutzerdaten abzuschliessen…",
+  "Settings_SuggestFeature": "Feature/Änderung vorschlagen",
+  "Stability_DidSwitchWork": "Hat der Wechsel funktioniert?",
+  "Stability_ThanksRating": "Danke für die Bewertung",
+  "Stability_ThanksReportLine1": "Danke für die Bewertung.",
+  "Stability_ThanksReportAskPrefix": "Müssen",
+  "Stability_ThanksReportAskSuffix": "?",
+  "Stability_ReportIssue": "Problem melden",
+  "Stability_ThumbUp": "Ja, der Wechsel hat funktioniert",
+  "Stability_ThumbDown": "Nein, der Wechsel hat nicht funktioniert",
+  "Feedback_Issue_Title": "Problem melden",
+  "Feedback_Issue_Body": "Beschreib, was schiefgelaufen ist und was du erwartet hast:",
+  "Feedback_Suggestion_Title": "Feature oder Änderung vorschlagen",
+  "Feedback_Suggestion_Body": "Gib eine Idee, Änderung oder einen Fix im Detail ein:",
+  "Feedback_Submit": "Absenden",
+  "Feedback_DiscordLink": "Community-Discord beitreten"
 }

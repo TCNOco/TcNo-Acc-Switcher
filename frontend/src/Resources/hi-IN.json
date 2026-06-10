@@ -599,5 +599,20 @@
   "Stats_MetricsProvidedBy": "मीट्रिक्स डेटा प्रदाता:",
   "Stats_MetricsAffiliationNote": "ध्यान दें: यह प्रोग्राम इस वेबसाइट या सेवा से संबद्ध या समर्थित नहीं है।",
   "Overlay_UserDataMove": "उपयोगकर्ता डेटा को नए स्थान पर कॉपी किया जा रहा है…",
-  "Overlay_UserDataMoveRestarting": "उपयोगकर्ता डेटा स्थानांतरण पूर्ण करने के लिए पुनरारंभ किया जा रहा है…"
+  "Overlay_UserDataMoveRestarting": "उपयोगकर्ता डेटा स्थानांतरण पूर्ण करने के लिए पुनरारंभ किया जा रहा है…",
+  "Settings_SuggestFeature": "सुविधा/बदलाव सुझाएं",
+  "Stability_DidSwitchWork": "क्या स्विच ने काम किया?",
+  "Stability_ThanksRating": "रेटिंग देने के लिए धन्यवाद",
+  "Stability_ThanksReportLine1": "रेटिंग देने के लिए धन्यवाद।",
+  "Stability_ThanksReportAskPrefix": "ज़रूरत है",
+  "Stability_ThanksReportAskSuffix": "?",
+  "Stability_ReportIssue": "समस्या रिपोर्ट करें",
+  "Stability_ThumbUp": "हाँ, स्विच ने काम किया",
+  "Stability_ThumbDown": "नहीं, स्विच ने काम नहीं किया",
+  "Feedback_Issue_Title": "समस्या रिपोर्ट करें",
+  "Feedback_Issue_Body": "बताएं कि क्या गलत हुआ और आपको क्या अपेक्षा थी:",
+  "Feedback_Suggestion_Title": "कोई सुविधा या बदलाव सुझाएं",
+  "Feedback_Suggestion_Body": "विस्तार से कोई विचार, बदलाव या सुधार दर्ज करें:",
+  "Feedback_Submit": "जमा करें",
+  "Feedback_DiscordLink": "डिस्कॉर्ड समुदाय से जुड़ें"
 }

@@ -599,5 +599,20 @@
   "Stats_MetricsProvidedBy": "Datos de métricas proporcionados por:",
   "Stats_MetricsAffiliationNote": "NOTA: Este programa no está afiliado ni respaldado por este sitio web o servicio.",
   "Overlay_UserDataMove": "Copiando datos del usuario a la nueva ubicación…",
-  "Overlay_UserDataMoveRestarting": "Reiniciando para terminar de mover los datos del usuario…"
+  "Overlay_UserDataMoveRestarting": "Reiniciando para terminar de mover los datos del usuario…",
+  "Settings_SuggestFeature": "Sugerir característica/cambio",
+  "Stability_DidSwitchWork": "¿Funcionó el cambio?",
+  "Stability_ThanksRating": "Gracias por valorar",
+  "Stability_ThanksReportLine1": "Gracias por valorar.",
+  "Stability_ThanksReportAskPrefix": "¿Necesitas",
+  "Stability_ThanksReportAskSuffix": "?",
+  "Stability_ReportIssue": "informar de un problema",
+  "Stability_ThumbUp": "Sí, el cambio funcionó",
+  "Stability_ThumbDown": "No, el cambio no funcionó",
+  "Feedback_Issue_Title": "Informar de un problema",
+  "Feedback_Issue_Body": "Describe lo que salió mal y lo que esperabas:",
+  "Feedback_Suggestion_Title": "Sugerir una característica o cambio",
+  "Feedback_Suggestion_Body": "Ingresa una idea, cambio o corrección en detalle:",
+  "Feedback_Submit": "Enviar",
+  "Feedback_DiscordLink": "Únete al Discord de la comunidad"
 }

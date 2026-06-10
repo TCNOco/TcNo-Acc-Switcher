@@ -599,5 +599,20 @@
   "Stats_MetricsProvidedBy": "Δεδομένα μετρήσεων παρέχονται από:",
   "Stats_MetricsAffiliationNote": "ΣΗΜΕΙΩΣΗ: Αυτό το πρόγραμμα δεν είναι συνδεδεμένο ούτε υποστηρίζεται από αυτόν τον ιστότοπο ή την υπηρεσία.",
   "Overlay_UserDataMove": "Αντιγραφή δεδομένων χρήστη στη νέα τοποθεσία…",
-  "Overlay_UserDataMoveRestarting": "Επανεκκίνηση για ολοκλήρωση της μετακίνησης δεδομένων χρήστη…"
+  "Overlay_UserDataMoveRestarting": "Επανεκκίνηση για ολοκλήρωση της μετακίνησης δεδομένων χρήστη…",
+  "Settings_SuggestFeature": "Προτείνετε δυνατότητα/αλλαγή",
+  "Stability_DidSwitchWork": "Λειτούργησε ο διακόπτης;",
+  "Stability_ThanksRating": "Ευχαριστούμε για τη βαθμολογία",
+  "Stability_ThanksReportLine1": "Ευχαριστούμε για τη βαθμολογία.",
+  "Stability_ThanksReportAskPrefix": "Πρέπει να",
+  "Stability_ThanksReportAskSuffix": "?",
+  "Stability_ReportIssue": "αναφέρετε ένα πρόβλημα",
+  "Stability_ThumbUp": "Ναι, ο διακόπτης λειτούργησε",
+  "Stability_ThumbDown": "Όχι, ο διακόπτης δεν λειτούργησε",
+  "Feedback_Issue_Title": "Αναφέρετε ένα πρόβλημα",
+  "Feedback_Issue_Body": "Περιγράψτε τι πήγε λάθος και τι περιμένατε:",
+  "Feedback_Suggestion_Title": "Προτείνετε μια δυνατότητα ή αλλαγή",
+  "Feedback_Suggestion_Body": "Εισάγετε λεπτομερώς μια ιδέα, αλλαγή ή διόρθωση:",
+  "Feedback_Submit": "Υποβολή",
+  "Feedback_DiscordLink": "Συμμετέχετε στο κοινοτικό Discord"
 }

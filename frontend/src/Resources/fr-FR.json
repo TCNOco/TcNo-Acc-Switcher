@@ -599,5 +599,20 @@
   "Stats_MetricsProvidedBy": "Données métriques fournies par :",
   "Stats_MetricsAffiliationNote": "REMARQUE : Ce programme n'est ni affilié ni approuvé par ce site ou ce service.",
   "Overlay_UserDataMove": "Copie des données utilisateur vers le nouvel emplacement…",
-  "Overlay_UserDataMoveRestarting": "Redémarrage pour terminer le déplacement des données utilisateur…"
+  "Overlay_UserDataMoveRestarting": "Redémarrage pour terminer le déplacement des données utilisateur…",
+  "Settings_SuggestFeature": "Suggérer une fonctionnalité/modification",
+  "Stability_DidSwitchWork": "Est-ce que le commutateur a fonctionné ?",
+  "Stability_ThanksRating": "Merci pour votre évaluation",
+  "Stability_ThanksReportLine1": "Merci pour votre évaluation.",
+  "Stability_ThanksReportAskPrefix": "Besoin de",
+  "Stability_ThanksReportAskSuffix": "?",
+  "Stability_ReportIssue": "signaler un problème",
+  "Stability_ThumbUp": "Oui, le commutateur a fonctionné",
+  "Stability_ThumbDown": "Non, le commutateur n'a pas fonctionné",
+  "Feedback_Issue_Title": "Signaler un problème",
+  "Feedback_Issue_Body": "Décrivez ce qui n'a pas fonctionné et ce à quoi vous vous attendiez :",
+  "Feedback_Suggestion_Title": "Suggérer une fonctionnalité ou une modification",
+  "Feedback_Suggestion_Body": "Entrez une idée, une modification ou une correction en détail :",
+  "Feedback_Submit": "Soumettre",
+  "Feedback_DiscordLink": "Rejoignez le Discord de la communauté"
 }

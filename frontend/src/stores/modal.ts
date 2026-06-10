@@ -43,6 +43,11 @@ type ActiveModal =
       kind: "update";
       message: string;
       downloadUrl: string;
+    })
+  | (ModalBase & {
+      kind: "feedback";
+      mode: "issue" | "suggestion";
+      platform?: string;
     });
 
 let resolver: ((value: unknown) => void) | null = null;
@@ -180,6 +185,21 @@ export function openUpdateDialog(opts: { message: string; downloadUrl: string })
       kind: "update",
       message: opts.message,
       downloadUrl: opts.downloadUrl,
+    });
+  });
+}
+
+export function openFeedbackModal(opts: {
+  mode: "issue" | "suggestion";
+  platform?: string;
+}): Promise<string | null> {
+  return new Promise((resolve) => {
+    resolver = resolve as (value: unknown) => void;
+    activeModal.set({
+      id: bumpId(),
+      kind: "feedback",
+      mode: opts.mode,
+      platform: opts.platform,
     });
   });
 }

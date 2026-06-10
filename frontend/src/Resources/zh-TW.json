@@ -599,5 +599,20 @@
   "Stats_MetricsProvidedBy": "指標資料提供者：",
   "Stats_MetricsAffiliationNote": "注意：本程式與此網站或服務無關聯，亦未受其背書。",
   "Overlay_UserDataMove": "正在複製使用者資料到新位置…",
-  "Overlay_UserDataMoveRestarting": "正在重新啟動以完成移動使用者資料…"
+  "Overlay_UserDataMoveRestarting": "正在重新啟動以完成移動使用者資料…",
+  "Settings_SuggestFeature": "建議功能/變更",
+  "Stability_DidSwitchWork": "切換成功了嗎？",
+  "Stability_ThanksRating": "感謝評分",
+  "Stability_ThanksReportLine1": "感謝評分。",
+  "Stability_ThanksReportAskPrefix": "需要",
+  "Stability_ThanksReportAskSuffix": "？",
+  "Stability_ReportIssue": "回報問題",
+  "Stability_ThumbUp": "是，切換成功",
+  "Stability_ThumbDown": "否，切換無效",
+  "Feedback_Issue_Title": "回報問題",
+  "Feedback_Issue_Body": "描述發生什麼問題以及您的預期：",
+  "Feedback_Suggestion_Title": "建議功能或變更",
+  "Feedback_Suggestion_Body": "詳細輸入想法、變更或修正內容：",
+  "Feedback_Submit": "提交",
+  "Feedback_DiscordLink": "加入社群 Discord"
 }

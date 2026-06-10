@@ -599,5 +599,20 @@
   "Stats_MetricsProvidedBy": "Dữ liệu chỉ số được cung cấp bởi:",
   "Stats_MetricsAffiliationNote": "LƯU Ý: Chương trình này không được liên kết hoặc chứng thực bởi trang web hoặc dịch vụ này.",
   "Overlay_UserDataMove": "Đang sao chép dữ liệu người dùng đến vị trí mới…",
-  "Overlay_UserDataMoveRestarting": "Đang khởi động lại để hoàn tất việc di chuyển dữ liệu người dùng…"
+  "Overlay_UserDataMoveRestarting": "Đang khởi động lại để hoàn tất việc di chuyển dữ liệu người dùng…",
+  "Settings_SuggestFeature": "Đề xuất Tính năng/Thay đổi",
+  "Stability_DidSwitchWork": "Chuyển đổi có hoạt động không?",
+  "Stability_ThanksRating": "Cảm ơn bạn đã đánh giá",
+  "Stability_ThanksReportLine1": "Cảm ơn bạn đã đánh giá.",
+  "Stability_ThanksReportAskPrefix": "Cần",
+  "Stability_ThanksReportAskSuffix": "?",
+  "Stability_ReportIssue": "báo cáo sự cố",
+  "Stability_ThumbUp": "Có, chuyển đổi đã hoạt động",
+  "Stability_ThumbDown": "Không, chuyển đổi không hoạt động",
+  "Feedback_Issue_Title": "Báo cáo sự cố",
+  "Feedback_Issue_Body": "Mô tả điều gì đã xảy ra không đúng và bạn mong đợi điều gì:",
+  "Feedback_Suggestion_Title": "Đề xuất một tính năng hoặc thay đổi",
+  "Feedback_Suggestion_Body": "Nhập ý tưởng, thay đổi hoặc sửa lỗi một cách chi tiết:",
+  "Feedback_Submit": "Gửi",
+  "Feedback_DiscordLink": "Tham gia cộng đồng Discord"
 }

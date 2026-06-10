@@ -599,5 +599,20 @@
   "Stats_MetricsProvidedBy": "داده‌های متریک ارائه شده توسط:",
   "Stats_MetricsAffiliationNote": "توجه: این برنامه وابسته یا تأیید شده توسط این وب‌سایت یا سرویس نیست.",
   "Overlay_UserDataMove": "در حال کپی کردن داده‌های کاربر به مکان جدید…",
-  "Overlay_UserDataMoveRestarting": "راه‌اندازی مجدد برای اتمام انتقال داده‌های کاربر…"
+  "Overlay_UserDataMoveRestarting": "راه‌اندازی مجدد برای اتمام انتقال داده‌های کاربر…",
+  "Settings_SuggestFeature": "پیشنهاد ویژگی/تغییر",
+  "Stability_DidSwitchWork": "آیا کلید کار کرد؟",
+  "Stability_ThanksRating": "با تشکر از امتیازدهی",
+  "Stability_ThanksReportLine1": "با تشکر از امتیازدهی.",
+  "Stability_ThanksReportAskPrefix": "باید",
+  "Stability_ThanksReportAskSuffix": "?",
+  "Stability_ReportIssue": "گزارش مشکل",
+  "Stability_ThumbUp": "بله، کلید کار کرد",
+  "Stability_ThumbDown": "نه، کلید کار نکرد",
+  "Feedback_Issue_Title": "گزارش مشکل",
+  "Feedback_Issue_Body": "توضیح دهید چه مشکلی رخ داد و چه انتظاری داشتید:",
+  "Feedback_Suggestion_Title": "پیشنهاد یک ویژگی یا تغییر",
+  "Feedback_Suggestion_Body": "یک ایده، تغییر یا اصلاح را با جزئیات وارد کنید:",
+  "Feedback_Submit": "ارسال",
+  "Feedback_DiscordLink": "به دیسکورد انجمن بپیوندید"
 }

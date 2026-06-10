@@ -599,5 +599,20 @@
   "Stats_MetricsProvidedBy": "Метрични данни, предоставени от:",
   "Stats_MetricsAffiliationNote": "ЗАБЕЛЕЖКА: Тази програма не е свързана или одобрена от този уебсайт или услуга.",
   "Overlay_UserDataMove": "Копиране на потребителските данни на новото място…",
-  "Overlay_UserDataMoveRestarting": "Рестартиране за завършване на преместването на потребителските данни…"
+  "Overlay_UserDataMoveRestarting": "Рестартиране за завършване на преместването на потребителските данни…",
+  "Settings_SuggestFeature": "Предложете функция/промяна",
+  "Stability_DidSwitchWork": "Превключвателят работи ли?",
+  "Stability_ThanksRating": "Благодарим за оценката",
+  "Stability_ThanksReportLine1": "Благодарим за оценката.",
+  "Stability_ThanksReportAskPrefix": "Трябва да",
+  "Stability_ThanksReportAskSuffix": "?",
+  "Stability_ReportIssue": "Докладвайте за проблем",
+  "Stability_ThumbUp": "Да, превключвателят работи",
+  "Stability_ThumbDown": "Не, превключвателят не работи",
+  "Feedback_Issue_Title": "Докладвайте за проблем",
+  "Feedback_Issue_Body": "Опишете какво се обърка и какво очаквахте:",
+  "Feedback_Suggestion_Title": "Предложете функция или промяна",
+  "Feedback_Suggestion_Body": "Въведете подробно идея, промяна или поправка:",
+  "Feedback_Submit": "Изпратете",
+  "Feedback_DiscordLink": "Присъединете се към Discord общността"
 }

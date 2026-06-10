@@ -599,5 +599,20 @@
   "Stats_MetricsProvidedBy": "Meetgegevens verstrekt door:",
   "Stats_MetricsAffiliationNote": "OPMERKING: Dit programma is niet gelieerd aan of goedgekeurd door deze website of dienst.",
   "Overlay_UserDataMove": "Gebruikersgegevens kopiëren naar de nieuwe locatie…",
-  "Overlay_UserDataMoveRestarting": "Herstarten om het verplaatsen van gebruikersgegevens af te ronden…"
+  "Overlay_UserDataMoveRestarting": "Herstarten om het verplaatsen van gebruikersgegevens af te ronden…",
+  "Settings_SuggestFeature": "Functie/wijziging voorstellen",
+  "Stability_DidSwitchWork": "Heeft de wissel gewerkt?",
+  "Stability_ThanksRating": "Bedankt voor de beoordeling",
+  "Stability_ThanksReportLine1": "Bedankt voor de beoordeling.",
+  "Stability_ThanksReportAskPrefix": "Moet",
+  "Stability_ThanksReportAskSuffix": "?",
+  "Stability_ReportIssue": "een probleem melden",
+  "Stability_ThumbUp": "Ja, de wissel heeft gewerkt",
+  "Stability_ThumbDown": "Nee, de wissel heeft niet gewerkt",
+  "Feedback_Issue_Title": "Probleem melden",
+  "Feedback_Issue_Body": "Beschrijf wat er misging en wat je verwachtte:",
+  "Feedback_Suggestion_Title": "Stel een functie of wijziging voor",
+  "Feedback_Suggestion_Body": "Beschrijf een idee, wijziging of oplossing in detail:",
+  "Feedback_Submit": "Verzenden",
+  "Feedback_DiscordLink": "Word lid van de community Discord"
 }

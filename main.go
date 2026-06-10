@@ -17,6 +17,7 @@ import (
 	"TcNo-Acc-Switcher/internal/ipc"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/shortcuts"
+	"TcNo-Acc-Switcher/internal/stability"
 	"TcNo-Acc-Switcher/internal/steam"
 	"TcNo-Acc-Switcher/internal/winutil"
 
@@ -48,6 +49,7 @@ func init() {
 
 	application.RegisterEvent[string]("time")
 	application.RegisterEvent[app.ToastPayload]("toast")
+	application.RegisterEvent[stability.StabilityPromptPayload]("stability-prompt")
 	application.RegisterEvent[steam.AccountPatch](steam.AccountUpdatedEvent)
 	application.RegisterEvent[basic.AccountImagePatch](basic.AccountImageUpdatedEvent)
 	application.RegisterEvent[basic.GameStatsUpdatedPatch](basic.GameStatsUpdatedEvent)

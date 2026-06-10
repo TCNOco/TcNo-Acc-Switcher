@@ -10,6 +10,7 @@
   import UpdateBar from './components/UpdateBar.svelte'
   import AppModal from './components/AppModal.svelte'
   import Toast from './components/Toast.svelte'
+  import StabilityPrompt from './components/StabilityPrompt.svelte'
   import FileDropOverlay from './components/FileDropOverlay.svelte'
   import UserDataMoveOverlay from './components/UserDataMoveOverlay.svelte'
   import ContextMenu from './components/ContextMenu.svelte'
@@ -328,6 +329,7 @@
     <BackgroundDropZones />
     <AppModal />
     <Toast />
+    <StabilityPrompt />
   </div>
 </div>
 

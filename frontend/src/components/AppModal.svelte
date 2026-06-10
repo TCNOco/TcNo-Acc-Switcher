@@ -3,21 +3,30 @@
   import { get } from "svelte/store";
   import { fade, scale } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
+  import { Browser } from "@wailsio/runtime";
   import { activeModal, dismissModal, cancelActiveModal } from "../stores/modal";
   import { DUR, motionEnabled } from "../lib/animation";
   import { t } from "../stores/i18n";
+  import { offlineMode } from "../stores/offlineMode";
+  import { pushToast } from "../stores/toast";
   import PathPickerTree from "./modals/PathPickerTree.svelte";
   import ModalBodyShell from "./modals/ModalBodyShell.svelte";
   import UpdateModalBody from "./modals/UpdateModalBody.svelte";
   import { normalizeDisplayPath } from "../lib/fsPaths";
+  import { formatToastWithError } from "../lib/formatWailsError";
   import { tooltip } from "../lib/actions/tooltip";
   import { FOLDER_PICKER_APPDATA, FOLDER_PICKER_PORTABLE } from "../stores/modal";
   import * as FilesystemService from "../../bindings/TcNo-Acc-Switcher/filesystemservice";
+  import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
+
+  const DISCORD_URL = "https://s.tcno.co/AccSwitcherDiscord";
+  const FEEDBACK_MAX_LENGTH = 2000;
 
   $: m = $activeModal;
 
   let folderPath = "";
   let promptValue = "";
+  let feedbackValue = "";
 
   let lastModalSyncId = -1;
   let folderStatSeq = 0;
@@ -28,6 +37,9 @@
     folderPathStat = null;
     if (m.kind === "prompt") {
       promptValue = m.initialValue ?? "";
+    }
+    if (m.kind === "feedback") {
+      feedbackValue = "";
     }
     if (m.kind === "folder") {
       folderPath = normalizeDisplayPath(m.initialPath ?? "");
@@ -82,13 +94,20 @@
 
   let backdropEl: HTMLDivElement | undefined;
   let promptEl: HTMLInputElement | HTMLTextAreaElement | undefined;
+  let feedbackEl: HTMLTextAreaElement | undefined;
   let folderInputEl: HTMLInputElement | undefined;
+
+  $: feedbackSubmitDisabled = feedbackValue.trim().length === 0;
 
   function focusAndSelectActiveInput(): void {
     if (!m) return;
     if (m.kind === "prompt") {
       promptEl?.focus();
       promptEl?.select?.();
+      return;
+    }
+    if (m.kind === "feedback") {
+      feedbackEl?.focus();
       return;
     }
     if (m.kind === "folder") {
@@ -149,6 +168,40 @@
   function pickTreePath(p: string, _entryIsDir: boolean): void {
     folderPath = normalizeDisplayPath(p);
   }
+
+  async function feedbackSubmit(): Promise<void> {
+    if (!m || m.kind !== "feedback" || feedbackSubmitDisabled) return;
+    const text = feedbackValue.trim();
+    const kind = m.mode === "issue" ? "switch_issue" : "feature_suggestion";
+    try {
+      await PlatformService.SubmitFeedback(kind, m.platform ?? "", text);
+      dismissModal(text);
+      pushToast({
+        type: "success",
+        message: get(t)("Toast_FeedbackThanks"),
+        duration: 4000,
+      });
+    } catch (e) {
+      pushToast({
+        type: "error",
+        message: formatToastWithError(get(t)("Toast_FeedbackSubmitFailed"), e),
+        duration: 8000,
+      });
+    }
+  }
+
+  function openDiscordLink(e: MouseEvent): void {
+    e.preventDefault();
+    if (get(offlineMode)) {
+      pushToast({
+        type: "info",
+        message: get(t)("Toast_OfflineModeNoLinks"),
+        duration: 5000,
+      });
+      return;
+    }
+    void Browser.OpenURL(DISCORD_URL);
+  }
 </script>
 
 {#if m}
@@ -188,6 +241,8 @@
         <span id="modal-title-label" class="modal-title-drag">
           {#if m.kind === "update"}
             {$t("Heading_UpdateAvailable")}
+          {:else if m.kind === "feedback"}
+            {m.mode === "issue" ? $t("Feedback_Issue_Title") : $t("Feedback_Suggestion_Title")}
           {:else}
             {m.title}
           {/if}
@@ -363,6 +418,46 @@
                 soughtFilename={m.soughtFilename?.trim() ?? ""}
                 onPick={pickTreePath}
               />
+            </div>
+          {:else if m.kind === "feedback"}
+            <div class="modal-block">
+              <p class="modal-feedback-body">
+                {m.mode === "issue" ? $t("Feedback_Issue_Body") : $t("Feedback_Suggestion_Body")}
+              </p>
+              <div class="modal-input-row modal-feedback-input-row">
+                <textarea
+                  bind:this={feedbackEl}
+                  bind:value={feedbackValue}
+                  class="modal-input modal-input--multiline"
+                  rows="6"
+                  maxlength={FEEDBACK_MAX_LENGTH}
+                  spellcheck="true"
+                  autocomplete="off"
+                  aria-describedby="feedback-char-count"
+                ></textarea>
+              </div>
+              <div id="feedback-char-count" class="modal-feedback-char-count" aria-live="polite">
+                {feedbackValue.length} / {FEEDBACK_MAX_LENGTH}
+              </div>
+              <div class="modal-inline-actions settingsCol inputAndButton">
+                <span class="modal-actions-spacer"></span>
+                <button type="button" class="btnicontext" on:click={() => cancelActiveModal()}>
+                  {$t("Button_Cancel")}
+                </button>
+                <button
+                  type="button"
+                  class="btnicontext"
+                  disabled={feedbackSubmitDisabled}
+                  on:click={feedbackSubmit}
+                >
+                  {$t("Feedback_Submit")}
+                </button>
+              </div>
+              <div class="modal-feedback-footer">
+                <button type="button" class="fancyLink modal-feedback-discord" on:click={openDiscordLink}>
+                  {$t("Feedback_DiscordLink")}
+                </button>
+              </div>
             </div>
           {:else if m.kind === "update"}
             <div class="modal-block">
@@ -584,5 +679,27 @@
     opacity: 0.45;
     cursor: not-allowed;
     pointer-events: none;
+  }
+
+  .modal-feedback-body {
+    margin: 0;
+    color: var(--whiteSecondary, #fff);
+    line-height: 1.4;
+  }
+
+  .modal-feedback-char-count {
+    margin: 0.2rem 0 0;
+    font-size: 0.85rem;
+    color: var(--blackTernary, #a7abbe);
+    text-align: right;
+  }
+
+  .modal-feedback-footer {
+    margin-top: 0.35rem;
+    text-align: center;
+  }
+
+  .modal-feedback-discord {
+    font-size: 0.95rem;
   }
 </style>

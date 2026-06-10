@@ -9,6 +9,7 @@ import (
 
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/platform"
+	"TcNo-Acc-Switcher/internal/stability"
 	"TcNo-Acc-Switcher/internal/stats"
 	"TcNo-Acc-Switcher/internal/tray"
 	"TcNo-Acc-Switcher/internal/winutil"
@@ -96,6 +97,7 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 	}
 
 	RecordTrayRecentAfterSwap(steamID64)
+	stability.OnSuccessfulSwitch("Steam")
 	if err := stats.IncrementSwitches("Steam"); err != nil {
 		return err
 	}

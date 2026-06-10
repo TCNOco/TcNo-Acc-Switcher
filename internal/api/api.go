@@ -19,6 +19,14 @@ func CrashURL() string {
 	return baseURL + "/crashes/"
 }
 
+func StabilityRateURL() string {
+	return baseURL + "/stability/rate/"
+}
+
+func FeedbackURL() string {
+	return baseURL + "/feedback/"
+}
+
 func VersionCheckURL(version string, debug bool) string {
 	v := url.QueryEscape(strings.TrimSpace(version))
 	if debug {

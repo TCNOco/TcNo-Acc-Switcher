@@ -599,5 +599,20 @@
   "Stats_MetricsProvidedBy": "Podatke metrike obezbeđuje:",
   "Stats_MetricsAffiliationNote": "NAPOMENA: Ovaj program nije povezan niti podržan od strane ovog veb-sajta ili servisa.",
   "Overlay_UserDataMove": "Kopiranje korisničkih podataka na novu lokaciju…",
-  "Overlay_UserDataMoveRestarting": "Restartovanje radi završetka premeštanja korisničkih podataka…"
+  "Overlay_UserDataMoveRestarting": "Restartovanje radi završetka premeštanja korisničkih podataka…",
+  "Settings_SuggestFeature": "Suggest a Feature/Change",
+  "Stability_DidSwitchWork": "Did the switch work?",
+  "Stability_ThanksRating": "Thanks for rating",
+  "Stability_ThanksReportLine1": "Thanks for rating.",
+  "Stability_ThanksReportAskPrefix": "Need to",
+  "Stability_ThanksReportAskSuffix": "?",
+  "Stability_ReportIssue": "report an issue",
+  "Stability_ThumbUp": "Yes, the switch worked",
+  "Stability_ThumbDown": "No, the switch did not work",
+  "Feedback_Issue_Title": "Report an issue",
+  "Feedback_Issue_Body": "Describe what went wrong and what you expected:",
+  "Feedback_Suggestion_Title": "Suggest a feature or change",
+  "Feedback_Suggestion_Body": "Enter an idea, change or fix in detail:",
+  "Feedback_Submit": "Submit",
+  "Feedback_DiscordLink": "Join the community Discord"
 }

@@ -599,5 +599,20 @@
   "Stats_MetricsProvidedBy": "Данные метрик предоставлены:",
   "Stats_MetricsAffiliationNote": "ПРИМЕЧАНИЕ: Эта программа не связана с данным веб-сайтом или сервисом и не одобрена им.",
   "Overlay_UserDataMove": "Копирование данных пользователя в новое место…",
-  "Overlay_UserDataMoveRestarting": "Перезапуск для завершения перемещения данных пользователя…"
+  "Overlay_UserDataMoveRestarting": "Перезапуск для завершения перемещения данных пользователя…",
+  "Settings_SuggestFeature": "Предложить функцию/изменение",
+  "Stability_DidSwitchWork": "Переключатель сработал?",
+  "Stability_ThanksRating": "Спасибо за оценку",
+  "Stability_ThanksReportLine1": "Спасибо за оценку.",
+  "Stability_ThanksReportAskPrefix": "Нужно",
+  "Stability_ThanksReportAskSuffix": "?",
+  "Stability_ReportIssue": "сообщить о проблеме",
+  "Stability_ThumbUp": "Да, переключатель сработал",
+  "Stability_ThumbDown": "Нет, переключатель не сработал",
+  "Feedback_Issue_Title": "Сообщить о проблеме",
+  "Feedback_Issue_Body": "Опишите, что пошло не так и что вы ожидали:",
+  "Feedback_Suggestion_Title": "Предложить функцию или изменение",
+  "Feedback_Suggestion_Body": "Введите идею, изменение или исправление подробно:",
+  "Feedback_Submit": "Отправить",
+  "Feedback_DiscordLink": "Присоединиться к сообществу Discord"
 }

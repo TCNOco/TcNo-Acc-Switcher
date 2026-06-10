@@ -8,7 +8,7 @@
   import { tooltip } from "../lib/actions/tooltip";
   import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import { offlineMode, setUserOfflineMode } from "../stores/offlineMode";
-  import { FOLDER_PICKER_APPDATA, FOLDER_PICKER_PORTABLE, openAlertNoButton, openFolderPicker } from "../stores/modal";
+  import { FOLDER_PICKER_APPDATA, FOLDER_PICKER_PORTABLE, openAlertNoButton, openFeedbackModal, openFolderPicker } from "../stores/modal";
   import { animationsEnabled, loadAnimationsEnabled, setAnimationsEnabled } from "../stores/animationSettings";
   import { checkForUpdatesManually, formatAppVersion } from "../lib/checkForUpdates";
   import { parentDisplayPath } from "../lib/fsPaths";
@@ -465,6 +465,12 @@
   <label for="gs-stats-share">{$t("Settings_ShareStats")}</label>
   <button type="button" class="btnicontext" on:click={() => void openStatsModal()}>
     {$t("Settings_ViewStats")}
+  </button>
+</div>
+
+<div class="rowSetting">
+  <button type="button" class="btnicontext" on:click={() => void openFeedbackModal({ mode: "suggestion" })}>
+    {$t("Settings_SuggestFeature")}
   </button>
 </div>
 

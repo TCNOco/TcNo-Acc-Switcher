@@ -18,6 +18,7 @@ import (
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/profileimage"
+	"TcNo-Acc-Switcher/internal/stability"
 	"TcNo-Acc-Switcher/internal/stats"
 	"TcNo-Acc-Switcher/internal/tray"
 	"TcNo-Acc-Switcher/internal/winutil"
@@ -1198,6 +1199,7 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 	}
 	_ = touchLastUsed(fc.PlatformKey, uniqueID)
 	recordBasicTrayRecent(platformKey, uniqueID)
+	stability.OnSuccessfulSwitch(platformKey)
 	if err := stats.IncrementSwitches(platformKey); err != nil {
 		return err
 	}

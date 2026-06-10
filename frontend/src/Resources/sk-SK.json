@@ -599,5 +599,20 @@
   "Stats_MetricsProvidedBy": "Metrické údaje poskytuje:",
   "Stats_MetricsAffiliationNote": "Poznámka: Tento program nie je pridružený ani schválený touto webovou stránkou alebo službou.",
   "Overlay_UserDataMove": "Kopírovanie používateľských údajov do nového umiestnenia…",
-  "Overlay_UserDataMoveRestarting": "Reštartovanie na dokončenie presunu používateľských údajov…"
+  "Overlay_UserDataMoveRestarting": "Reštartovanie na dokončenie presunu používateľských údajov…",
+  "Settings_SuggestFeature": "Navrhnúť funkciu/zmenu",
+  "Stability_DidSwitchWork": "Fungoval prepínač?",
+  "Stability_ThanksRating": "Ďakujeme za hodnotenie",
+  "Stability_ThanksReportLine1": "Ďakujeme za hodnotenie.",
+  "Stability_ThanksReportAskPrefix": "Potrebujete",
+  "Stability_ThanksReportAskSuffix": "?",
+  "Stability_ReportIssue": "nahlásiť problém",
+  "Stability_ThumbUp": "Áno, prepínač fungoval",
+  "Stability_ThumbDown": "Nie, prepínač nefungoval",
+  "Feedback_Issue_Title": "Nahlásiť problém",
+  "Feedback_Issue_Body": "Popíšte, čo sa pokazilo a čo ste očakávali:",
+  "Feedback_Suggestion_Title": "Navrhnúť funkciu alebo zmenu",
+  "Feedback_Suggestion_Body": "Podrobne zadajte nápad, zmenu alebo opravu:",
+  "Feedback_Submit": "Odoslať",
+  "Feedback_DiscordLink": "Pripojte sa na komunitný Discord"
 }

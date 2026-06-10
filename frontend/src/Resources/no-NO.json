@@ -599,5 +599,20 @@
   "Stats_MetricsProvidedBy": "Måledata levert av:",
   "Stats_MetricsAffiliationNote": "MERK: Dette programmet er ikke tilknyttet eller godkjent av denne nettsiden eller tjenesten.",
   "Overlay_UserDataMove": "Kopierer brukerdata til den nye plasseringen…",
-  "Overlay_UserDataMoveRestarting": "Starter på nytt for å fullføre flytting av brukerdata…"
+  "Overlay_UserDataMoveRestarting": "Starter på nytt for å fullføre flytting av brukerdata…",
+  "Settings_SuggestFeature": "Foreslå en funksjon/endring",
+  "Stability_DidSwitchWork": "Fungerte bryteren?",
+  "Stability_ThanksRating": "Takk for vurderingen",
+  "Stability_ThanksReportLine1": "Takk for vurderingen.",
+  "Stability_ThanksReportAskPrefix": "Må",
+  "Stability_ThanksReportAskSuffix": "?",
+  "Stability_ReportIssue": "rapporter et problem",
+  "Stability_ThumbUp": "Ja, bryteren fungerte",
+  "Stability_ThumbDown": "Nei, bryteren fungerte ikke",
+  "Feedback_Issue_Title": "Rapporter et problem",
+  "Feedback_Issue_Body": "Beskriv hva som gikk galt og hva du forventet:",
+  "Feedback_Suggestion_Title": "Foreslå en funksjon eller endring",
+  "Feedback_Suggestion_Body": "Skriv inn en idé, endring eller fiks i detalj:",
+  "Feedback_Submit": "Send",
+  "Feedback_DiscordLink": "Bli med på fellesskapets Discord"
 }

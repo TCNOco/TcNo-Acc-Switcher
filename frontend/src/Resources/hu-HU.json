@@ -599,5 +599,20 @@
   "Stats_MetricsProvidedBy": "Metrikai adatok forrása:",
   "Stats_MetricsAffiliationNote": "MEGJEGYZÉS: Ez a program nem áll kapcsolatban, és nincs jóváhagyva e webhely vagy szolgáltatás által.",
   "Overlay_UserDataMove": "Felhasználói adatok másolása az új helyre…",
-  "Overlay_UserDataMoveRestarting": "Újraindítás a felhasználói adatok áthelyezésének befejezéséhez…"
+  "Overlay_UserDataMoveRestarting": "Újraindítás a felhasználói adatok áthelyezésének befejezéséhez…",
+  "Settings_SuggestFeature": "Funkció/változtatás javaslása",
+  "Stability_DidSwitchWork": "Működött a váltás?",
+  "Stability_ThanksRating": "Köszönjük az értékelést",
+  "Stability_ThanksReportLine1": "Köszönjük az értékelést.",
+  "Stability_ThanksReportAskPrefix": "Szükséges",
+  "Stability_ThanksReportAskSuffix": "?",
+  "Stability_ReportIssue": "problémát bejelenteni",
+  "Stability_ThumbUp": "Igen, a váltás működött",
+  "Stability_ThumbDown": "Nem, a váltás nem működött",
+  "Feedback_Issue_Title": "Probléma bejelentése",
+  "Feedback_Issue_Body": "Írd le, hogy mi ment félre, és mire számítottál:",
+  "Feedback_Suggestion_Title": "Javasolj egy funkciót vagy változtatást",
+  "Feedback_Suggestion_Body": "Írj le egy ötletet, változtatást vagy javítást részletesen:",
+  "Feedback_Submit": "Küldés",
+  "Feedback_DiscordLink": "Csatlakozz a közösségi Discordhoz"
 }

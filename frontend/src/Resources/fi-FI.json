@@ -599,5 +599,20 @@
   "Stats_MetricsProvidedBy": "Mittaustiedot tarjoaa:",
   "Stats_MetricsAffiliationNote": "HUOMAA: Tämä ohjelma ei ole tämän verkkosivuston tai palvelun sidoksissa eikä hyväksymä.",
   "Overlay_UserDataMove": "Kopioidaan käyttäjätietoja uuteen sijaintiin…",
-  "Overlay_UserDataMoveRestarting": "Käynnistetään uudelleen käyttäjätietojen siirron viimeistelemiseksi…"
+  "Overlay_UserDataMoveRestarting": "Käynnistetään uudelleen käyttäjätietojen siirron viimeistelemiseksi…",
+  "Settings_SuggestFeature": "Ehdota ominaisuutta/muutosta",
+  "Stability_DidSwitchWork": "Toimiko vaihto?",
+  "Stability_ThanksRating": "Kiitos arvioinnista",
+  "Stability_ThanksReportLine1": "Kiitos arvioinnista.",
+  "Stability_ThanksReportAskPrefix": "Täytyy",
+  "Stability_ThanksReportAskSuffix": "?",
+  "Stability_ReportIssue": "Ilmoita ongelmasta",
+  "Stability_ThumbUp": "Kyllä, vaihto toimi.",
+  "Stability_ThumbDown": "Ei, vaihto ei toiminut.",
+  "Feedback_Issue_Title": "Ilmoita ongelmasta",
+  "Feedback_Issue_Body": "Kuvaile, mikä meni pieleen ja mitä odotit:",
+  "Feedback_Suggestion_Title": "Ehdota ominaisuutta tai muutosta",
+  "Feedback_Suggestion_Body": "Kirjoita idea, muutos tai korjaus yksityiskohtaisesti:",
+  "Feedback_Submit": "Lähetä",
+  "Feedback_DiscordLink": "Liity yhteisön Discordiin"
 }

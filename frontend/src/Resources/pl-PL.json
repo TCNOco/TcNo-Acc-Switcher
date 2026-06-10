@@ -599,5 +599,20 @@
   "Stats_MetricsProvidedBy": "Dane metryczne udostępnione przez:",
   "Stats_MetricsAffiliationNote": "UWAGA: Ten program nie jest powiązany ani popierany przez tę stronę internetową lub usługę.",
   "Overlay_UserDataMove": "Kopiowanie danych użytkownika do nowej lokalizacji…",
-  "Overlay_UserDataMoveRestarting": "Ponowne uruchamianie, aby dokończyć przenoszenie danych użytkownika…"
+  "Overlay_UserDataMoveRestarting": "Ponowne uruchamianie, aby dokończyć przenoszenie danych użytkownika…",
+  "Settings_SuggestFeature": "Zaproponuj funkcję/zmianę",
+  "Stability_DidSwitchWork": "Czy przełącznik zadziałał?",
+  "Stability_ThanksRating": "Dziękujemy za ocenę",
+  "Stability_ThanksReportLine1": "Dziękujemy za ocenę.",
+  "Stability_ThanksReportAskPrefix": "Musisz",
+  "Stability_ThanksReportAskSuffix": "?",
+  "Stability_ReportIssue": "zgłosić problem",
+  "Stability_ThumbUp": "Tak, przełącznik zadziałał",
+  "Stability_ThumbDown": "Nie, przełącznik nie zadziałał",
+  "Feedback_Issue_Title": "Zgłoś problem",
+  "Feedback_Issue_Body": "Opisz, co poszło nie tak i czego oczekiwałeś:",
+  "Feedback_Suggestion_Title": "Zaproponuj funkcję lub zmianę",
+  "Feedback_Suggestion_Body": "Wprowadź szczegółowo pomysł, zmianę lub poprawkę:",
+  "Feedback_Submit": "Wyślij",
+  "Feedback_DiscordLink": "Dołącz do społeczności na Discordzie"
 }

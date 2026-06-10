@@ -599,5 +599,20 @@
   "Stats_MetricsProvidedBy": "Dades de mètriques proporcionades per:",
   "Stats_MetricsAffiliationNote": "NOTA: Aquest programa no està afiliat ni avalat per aquest lloc web o servei.",
   "Overlay_UserDataMove": "S'estan copiant les dades d'usuari a la nova ubicació…",
-  "Overlay_UserDataMoveRestarting": "Reiniciant per acabar de moure les dades d'usuari…"
+  "Overlay_UserDataMoveRestarting": "Reiniciant per acabar de moure les dades d'usuari…",
+  "Settings_SuggestFeature": "Suggeriu una funció/canvi",
+  "Stability_DidSwitchWork": "Ha funcionat l'interruptor?",
+  "Stability_ThanksRating": "Gràcies per valorar",
+  "Stability_ThanksReportLine1": "Gràcies per valorar.",
+  "Stability_ThanksReportAskPrefix": "Cal",
+  "Stability_ThanksReportAskSuffix": "?",
+  "Stability_ReportIssue": "informar d'un problema",
+  "Stability_ThumbUp": "Sí, l'interruptor ha funcionat",
+  "Stability_ThumbDown": "No, l'interruptor no ha funcionat",
+  "Feedback_Issue_Title": "Informeu d'un problema",
+  "Feedback_Issue_Body": "Descriviu què ha anat malament i què esperàveu:",
+  "Feedback_Suggestion_Title": "Suggeriu una funció o un canvi",
+  "Feedback_Suggestion_Body": "Introduïu una idea, un canvi o una correcció amb detall:",
+  "Feedback_Submit": "Envieu",
+  "Feedback_DiscordLink": "Uniu-vos al Discord de la comunitat"
 }
