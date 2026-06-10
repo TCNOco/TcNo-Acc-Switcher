@@ -10,8 +10,11 @@ image: Visual Studio 2022
 
 environment:
   GOFLAGS: -mod=mod
-  # Use the VM's preinstalled Go; avoid go install downloading a full toolchain.
   GOTOOLCHAIN: local
+  GOPROXY: https://proxy.golang.org,direct
+  GOSUMDB: sum.golang.org
+  GOROOT: C:\go126
+  PATH: C:\go126\bin;%PATH%
   WAILS3_VERSION: v3.0.0-alpha.96
   DATEVERSION: $(APPVEYOR_REPO_TAG_NAME)
   SIGNPATH_ORGANIZATION_ID: "a2a88c4e-72da-4d2c-925e-91f41aff9d77"
@@ -38,16 +41,21 @@ init:
   - ps: Write-Host "APPVEYOR_REPO_TAG_NAME is $env:APPVEYOR_REPO_TAG_NAME"
   - ps: Write-Host "DATEVERSION is $env:DATEVERSION"
   - ps: |
-      if (Test-Path 'C:\go126') {
-        $env:Path = "C:\go126;$env:Path"
-      }
       Write-Host "Go toolchain: $(go version)"
-      Write-Host "GOTOOLCHAIN=$env:GOTOOLCHAIN"
+      Write-Host "GOROOT=$(go env GOROOT)  GOTOOLCHAIN=$env:GOTOOLCHAIN"
+      $requiredGo = (Select-String -Path "$env:APPVEYOR_BUILD_FOLDER\go.mod" -Pattern '^go\s+(\S+)' | ForEach-Object { $_.Matches[0].Groups[1].Value })
+      $actualGo = (go env GOVERSION) -replace '^go', ''
+      if ($actualGo -ne $requiredGo) {
+        throw "go.mod requires go $requiredGo but VM has go $actualGo. Check GOROOT/PATH (expected C:\go126)."
+      }
 #  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 install:
   - ps: Install-Module -Name SignPath -RequiredVersion 4.4.6 -Force -Scope CurrentUser
-  - npm install -g pnpm
+  - npm install -g corepack@latest
+  - ps: corepack enable
+  - ps: corepack prepare pnpm@11.0.8 --activate
+  - ps: Write-Host "pnpm version: $(pnpm --version)"
   - ps: |
       $env:Path = "$env:USERPROFILE\go\bin;$env:Path"
       function Get-Wails3VersionText {
@@ -96,8 +104,11 @@ build_script:
       $utf8nobom = New-Object System.Text.UTF8Encoding($false)
       [System.IO.File]::WriteAllText($infoPath, $json, $utf8nobom)
       Write-Host "config.yml and info.json updated."
-  - ps: Write-Host "=== go mod tidy ==="
-  - go mod tidy
+  - ps: |
+      Write-Host "=== go mod tidy ==="
+      go mod tidy -v 2>&1 | ForEach-Object { Write-Host $_ }
+      if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      Write-Host "go mod tidy finished."
   - ps: |
       Write-Host "=== pnpm install (frontend) ==="
       Push-Location "$env:APPVEYOR_BUILD_FOLDER\frontend"
