@@ -67,10 +67,16 @@ install:
 build_script:
   - ps: |
       $tag = $env:DATEVERSION -replace '^v', ''
-      $nsisVersion = "$tag.0"
+      $versionNumbers = [regex]::Matches($tag, '\d+') | ForEach-Object { [int]$_.Value }
+      if ($versionNumbers.Count -eq 0) {
+        throw "Tag '$tag' has no numeric version for NSIS (use e.g. v4.0.10 or Test-4)."
+      }
+      while ($versionNumbers.Count -lt 4) { $versionNumbers += 0 }
+      if ($versionNumbers.Count -gt 4) { $versionNumbers = $versionNumbers[0..3] }
+      $nsisVersion = $versionNumbers -join '.'
       $env:APP_VERSION = $tag
       $env:NSIS_VERSION = $nsisVersion
-      Write-Host "Tag: $env:DATEVERSION  Version: $tag  NSIS: $nsisVersion"
+      Write-Host "Tag: $env:DATEVERSION  Display: $tag  NSIS VIProductVersion: $nsisVersion"
 
       Write-Host "Updating config.yml with tag version..."
       $configPath = "$env:APPVEYOR_BUILD_FOLDER\build\config.yml"
