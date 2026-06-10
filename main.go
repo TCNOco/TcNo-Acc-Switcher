@@ -100,7 +100,12 @@ func main() {
 	lvl := app.ResolvedLogLevel(parsed)
 	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: lvl})))
 
-	crashSubmitted = crashlog.SubmitPending()
+	startupSettings, _ := loadStartupSettings()
+	syncOfflineModeFromSettings(startupSettings)
+
+	if crashlog.HasPending() && !startupSettings.OfflineMode && startupSettings.CrashReportAutoSubmit {
+		crashSubmitted = crashlog.SubmitPending()
+	}
 	defer crashlog.Capture()
 
 	if parsed.Kind == cli.KindHelp || parsed.Help {
@@ -140,8 +145,6 @@ func main() {
 
 	platform.RunUserDataMoveCleanup(exeDir, parsed.UserDataMoveFrom, parsed.UserDataMoveTo)
 
-	startupSettings, _ := loadStartupSettings()
-	syncOfflineModeFromSettings(startupSettings)
 	syncWindowsStartupFromSettings(startupSettings)
 
 	if parsed.NeedsHeadlessMutex() {

@@ -605,7 +605,7 @@
   "Stability_ThanksRating": "評価ありがとうございます",
   "Stability_ThanksReportLine1": "評価ありがとうございます。",
   "Stability_ThanksReportAskPrefix": "必要があります",
-  "Stability_ThanksReportAskSuffix": "?",
+  "Stability_ThanksReportAskSuffix": "？",
   "Stability_ReportIssue": "問題を報告する",
   "Stability_ThumbUp": "はい、切り替えは機能しました",
   "Stability_ThumbDown": "いいえ、切り替えは機能しませんでした",
@@ -614,5 +614,12 @@
   "Feedback_Suggestion_Title": "機能や変更の提案",
   "Feedback_Suggestion_Body": "アイデア、変更、修正の詳細を入力してください:",
   "Feedback_Submit": "送信",
-  "Feedback_DiscordLink": "コミュニティDiscordに参加"
+  "Feedback_DiscordLink": "コミュニティDiscordに参加",
+  "Button_Always": "常に",
+  "Settings_CrashReportAutoSubmit": "クラッシュログレポートを自動送信",
+  "Modal_CrashReport_Title": "クラッシュを検出しました",
+  "Modal_CrashReport_Body": "クラッシュしたようです！\n問題のデバッグと修正に役立てるため、クラッシュログを送信しますか？\n\n注意: このレポートには、入力されたユーザー名、アカウントID、およびプログラムが収集したその他の情報が含まれる場合があります。",
+  "Toast_CrashReportSubmitFailed": "クラッシュレポートを送信できませんでした。",
+  "Toast_FeedbackThanks": "フィードバックありがとうございます。",
+  "Toast_FeedbackSubmitFailed": "フィードバックを送信できませんでした。"
 }

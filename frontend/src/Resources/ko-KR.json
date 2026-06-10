@@ -614,5 +614,12 @@
   "Feedback_Suggestion_Title": "기능 또는 변경 사항 제안",
   "Feedback_Suggestion_Body": "아이디어, 변경 사항 또는 수정 사항을 자세히 입력하세요:",
   "Feedback_Submit": "제출",
-  "Feedback_DiscordLink": "커뮤니티 디스코드 참여"
+  "Feedback_DiscordLink": "커뮤니티 디스코드 참여",
+  "Button_Always": "항상",
+  "Settings_CrashReportAutoSubmit": "충돌 로그 보고서 자동 제출",
+  "Modal_CrashReport_Title": "충돌 감지됨",
+  "Modal_CrashReport_Body": "충돌이 발생한 것 같습니다!\n디버깅 및 문제 해결을 위해 충돌 로그를 제출하시겠습니까?\n\n참고: 이 보고서에는 사용자 이름, 계정 ID 및 귀하가 입력했거나 프로그램이 수집한 기타 정보가 포함될 수 있습니다.",
+  "Toast_CrashReportSubmitFailed": "충돌 보고서를 제출할 수 없습니다.",
+  "Toast_FeedbackThanks": "피드백을 보내주셔서 감사합니다.",
+  "Toast_FeedbackSubmitFailed": "피드백을 제출할 수 없습니다."
 }

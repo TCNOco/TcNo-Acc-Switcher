@@ -614,5 +614,12 @@
   "Feedback_Suggestion_Title": "Özellik veya değişiklik öner",
   "Feedback_Suggestion_Body": "Bir fikri, değişikliği veya düzeltmeyi ayrıntılı olarak girin:",
   "Feedback_Submit": "Gönder",
-  "Feedback_DiscordLink": "Topluluk Discord'una katıl"
+  "Feedback_DiscordLink": "Topluluk Discord'una katıl",
+  "Button_Always": "Her zaman",
+  "Settings_CrashReportAutoSubmit": "Çökme günlüğü raporlarını otomatik gönder",
+  "Modal_CrashReport_Title": "Çökme algılandı",
+  "Modal_CrashReport_Body": "Görünüşe göre çöktük!\nSorunları ayıklamaya ve düzeltmeye yardımcı olması için çökme günlüğünü göndermek ister misiniz?\n\nNot: Bu rapor, girdiğiniz veya programın topladığı kullanıcı adları, hesap kimlikleri ve diğer bilgileri içerebilir.",
+  "Toast_CrashReportSubmitFailed": "Çökme raporu gönderilemedi.",
+  "Toast_FeedbackThanks": "Geri bildiriminiz için teşekkürler.",
+  "Toast_FeedbackSubmitFailed": "Geri bildirim gönderilemedi."
 }

@@ -614,5 +614,12 @@
   "Feedback_Suggestion_Title": "Navrhnout funkci nebo změnu",
   "Feedback_Suggestion_Body": "Podrobně popište nápad, změnu nebo opravu:",
   "Feedback_Submit": "Odeslat",
-  "Feedback_DiscordLink": "Připojte se na komunitní Discord"
+  "Feedback_DiscordLink": "Připojte se na komunitní Discord",
+  "Button_Always": "Vždy",
+  "Settings_CrashReportAutoSubmit": "Automaticky odesílat hlášení o pádu",
+  "Modal_CrashReport_Title": "Zjištěn pád",
+  "Modal_CrashReport_Body": "Vypadá to, že došlo k pádu!\nChcete odeslat hlášení o pádu, abyste pomohli s laděním a opravou problémů?\n\nPoznámka: Toto hlášení může obsahovat uživatelská jména, ID účtů a další informace, které jste zadali, nebo které program shromáždil.",
+  "Toast_CrashReportSubmitFailed": "Nepodařilo se odeslat hlášení o pádu.",
+  "Toast_FeedbackThanks": "Děkujeme za vaši zpětnou vazbu.",
+  "Toast_FeedbackSubmitFailed": "Nepodařilo se odeslat zpětnou vazbu."
 }

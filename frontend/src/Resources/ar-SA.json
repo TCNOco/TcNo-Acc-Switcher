@@ -614,5 +614,12 @@
   "Feedback_Suggestion_Title": "اقترح ميزة أو تغيير",
   "Feedback_Suggestion_Body": "أدخل فكرة أو تغيير أو إصلاح بالتفصيل:",
   "Feedback_Submit": "إرسال",
-  "Feedback_DiscordLink": "انضم إلى مجتمع ديسكورد"
+  "Feedback_DiscordLink": "انضم إلى مجتمع ديسكورد",
+  "Button_Always": "دائمًا",
+  "Settings_CrashReportAutoSubmit": "إرسال تقارير سجل الأعطال تلقائيًا",
+  "Modal_CrashReport_Title": "تم اكتشاف عطل",
+  "Modal_CrashReport_Body": "يبدو أننا تعرضنا لعطل!\nهل ترغب في إرسال سجل الأعطال للمساعدة في تصحيح الأخطاء وإصلاح المشكلات؟\n\nملاحظة: قد يتضمن هذا التقرير أسماء المستخدمين ومعرفات الحسابات وغيرها من المعلومات التي قمت بإدخالها أو التي جمعها البرنامج.",
+  "Toast_CrashReportSubmitFailed": "تعذّر إرسال تقرير العطل",
+  "Toast_FeedbackThanks": "شكرًا على تعليقاتك",
+  "Toast_FeedbackSubmitFailed": "تعذّر إرسال التعليقات"
 }

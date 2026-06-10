@@ -614,5 +614,12 @@
   "Feedback_Suggestion_Title": "Navrhnúť funkciu alebo zmenu",
   "Feedback_Suggestion_Body": "Podrobne zadajte nápad, zmenu alebo opravu:",
   "Feedback_Submit": "Odoslať",
-  "Feedback_DiscordLink": "Pripojte sa na komunitný Discord"
+  "Feedback_DiscordLink": "Pripojte sa na komunitný Discord",
+  "Button_Always": "Vždy",
+  "Settings_CrashReportAutoSubmit": "Automaticky odosielať hlásenia o pádoch",
+  "Modal_CrashReport_Title": "Zistený pád",
+  "Modal_CrashReport_Body": "Zdá sa, že došlo k pádu!\nChcete odoslať svoj denník pádov, aby ste pomohli s ladením a opravou chýb?\n\nPoznámka: Toto hlásenie môže obsahovať používateľské mená, ID účtov a ďalšie informácie, ktoré ste zadali, alebo ktoré program zhromaždil.",
+  "Toast_CrashReportSubmitFailed": "Nepodarilo sa odoslať hlásenie o páde.",
+  "Toast_FeedbackThanks": "Ďakujeme za spätnú väzbu.",
+  "Toast_FeedbackSubmitFailed": "Nepodarilo sa odoslať spätnú väzbu."
 }

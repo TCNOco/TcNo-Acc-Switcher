@@ -66,6 +66,9 @@ type AppSettings struct {
 	// StatsShare toggles anonymous statistics submission.
 	StatsShare bool `json:"statsShare,omitempty"`
 
+	// CrashReportAutoSubmit uploads pending crash dumps on launch without prompting.
+	CrashReportAutoSubmit bool `json:"crashReportAutoSubmit,omitempty"`
+
 	// AppBgImage is the filename (under wwwroot/backgrounds/) of the app-wide background image.
 	AppBgImage string `json:"appBgImage,omitempty"`
 

@@ -48,7 +48,12 @@ type ActiveModal =
       kind: "feedback";
       mode: "issue" | "suggestion";
       platform?: string;
+    })
+  | (ModalBase & {
+      kind: "crashReport";
     });
+
+export type CrashReportChoice = "no" | "yes" | "always";
 
 let resolver: ((value: unknown) => void) | null = null;
 let nextModalId = 0;
@@ -204,10 +209,21 @@ export function openFeedbackModal(opts: {
   });
 }
 
+export function openCrashReportPrompt(): Promise<CrashReportChoice> {
+  return new Promise((resolve) => {
+    resolver = resolve as (value: unknown) => void;
+    activeModal.set({
+      id: bumpId(),
+      kind: "crashReport",
+    });
+  });
+}
+
 export function cancelActiveModal(): void {
   const m = get(activeModal);
   if (!m) return;
   if (m.kind === "alert" || m.kind === "alertNoButton" || m.kind === "update") dismissModal();
   else if (m.kind === "confirm") dismissModal(false);
+  else if (m.kind === "crashReport") dismissModal("no" satisfies CrashReportChoice);
   else dismissModal(null);
 }

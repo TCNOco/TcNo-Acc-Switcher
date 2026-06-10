@@ -614,5 +614,12 @@
   "Feedback_Suggestion_Title": "הצע תכונה או שינוי",
   "Feedback_Suggestion_Body": "הזן רעיון, שינוי או תיקון בפירוט:",
   "Feedback_Submit": "שלח",
-  "Feedback_DiscordLink": "הצטרף לקהילת הדיסקורד"
+  "Feedback_DiscordLink": "הצטרף לקהילת הדיסקורד",
+  "Button_Always": "תמיד",
+  "Settings_CrashReportAutoSubmit": "שליחה אוטומטית של דוחות יומן קריסה",
+  "Modal_CrashReport_Title": "זוהתה קריסה",
+  "Modal_CrashReport_Body": "נראה שקרסנו!\nהאם לשלוח את יומן הקריסה כדי לסייע בניפוי באגים ופתרון בעיות?\n\nהערה: דוח זה עלול לכלול שמות משתמש, מזהי חשבון ומידע אחר שהוזן או נאסף על ידי התוכנית.",
+  "Toast_CrashReportSubmitFailed": "לא ניתן לשלוח את דוח הקריסה.",
+  "Toast_FeedbackThanks": "תודה על המשוב.",
+  "Toast_FeedbackSubmitFailed": "לא ניתן לשלוח משוב."
 }

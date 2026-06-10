@@ -20,8 +20,10 @@
   let offlineLoading = false;
   let statsEnabled = true;
   let statsShare = true;
+  let crashReportAutoSubmit = false;
   let statsEnabledLoading = false;
   let statsShareLoading = false;
+  let crashReportAutoSubmitLoading = false;
   let discordRpc = true;
   let discordRpcShare = false;
   let discordRpcLoading = false;
@@ -61,6 +63,9 @@
     void PlatformService.GetStatsShare()
       .then((v) => { statsShare = v; })
       .catch(() => { statsShare = true; });
+    void PlatformService.GetCrashReportAutoSubmit()
+      .then((v) => { crashReportAutoSubmit = v; })
+      .catch(() => { crashReportAutoSubmit = false; });
     void PlatformService.GetDiscordRpc()
       .then((v) => { discordRpc = v; })
       .catch(() => { discordRpc = true; });
@@ -248,6 +253,25 @@
       });
     } catch (e) {
       pushToast({ type: "error", message: formatToastWithError($t("Toast_StatsReportFailed"), e), duration: 8000 });
+    }
+  }
+
+  async function toggleCrashReportAutoSubmit(): Promise<void> {
+    if (crashReportAutoSubmitLoading || get(offlineMode)) return;
+    const next = !crashReportAutoSubmit;
+    crashReportAutoSubmitLoading = true;
+    try {
+      await PlatformService.SetCrashReportAutoSubmit(next);
+      crashReportAutoSubmit = next;
+      pushToast({
+        type: "success",
+        message: get(t)("Toast_SavedItem", { item: get(t)("Settings_CrashReportAutoSubmit") }),
+        duration: 4000,
+      });
+    } catch (e) {
+      pushToast({ type: "error", message: formatToastWithError($t("Toast_SaveFailed"), e), duration: 8000 });
+    } finally {
+      crashReportAutoSubmitLoading = false;
     }
   }
 
@@ -451,6 +475,20 @@
 </div>
 
 <h2 class="SettingsHeader">{$t("Settings_Header_StatsSharing")}</h2>
+
+<div class="rowSetting">
+  <div class="form-check">
+    <input
+      id="gs-crash-report-auto-submit"
+      type="checkbox"
+      checked={crashReportAutoSubmit}
+      disabled={crashReportAutoSubmitLoading || $offlineMode}
+      on:change={() => void toggleCrashReportAutoSubmit()}
+    />
+    <label class="form-check-label" for="gs-crash-report-auto-submit"></label>
+  </div>
+  <label for="gs-crash-report-auto-submit">{$t("Settings_CrashReportAutoSubmit")}</label>
+</div>
 
 <div class="rowSetting">
   <div class="form-check">

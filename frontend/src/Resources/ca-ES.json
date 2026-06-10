@@ -614,5 +614,12 @@
   "Feedback_Suggestion_Title": "Suggeriu una funció o un canvi",
   "Feedback_Suggestion_Body": "Introduïu una idea, un canvi o una correcció amb detall:",
   "Feedback_Submit": "Envieu",
-  "Feedback_DiscordLink": "Uniu-vos al Discord de la comunitat"
+  "Feedback_DiscordLink": "Uniu-vos al Discord de la comunitat",
+  "Button_Always": "Sempre",
+  "Settings_CrashReportAutoSubmit": "Enviament automàtic dels informes de registre de fallades",
+  "Modal_CrashReport_Title": "Fallada detectada",
+  "Modal_CrashReport_Body": "Sembla que ha fallat!\nVols enviar el teu registre de fallades per ajudar a depurar i solucionar problemes?\n\nNota: Aquest informe pot incloure noms d'usuari, identificadors de compte i altra informació que hagis introduït o que el programa hagi recollit.",
+  "Toast_CrashReportSubmitFailed": "No s'ha pogut enviar l'informe de fallada.",
+  "Toast_FeedbackThanks": "Gràcies pels teus comentaris.",
+  "Toast_FeedbackSubmitFailed": "No s'han pogut enviar els comentaris."
 }

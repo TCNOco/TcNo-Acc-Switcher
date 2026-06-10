@@ -614,5 +614,12 @@
   "Feedback_Suggestion_Title": "Foreslå en funksjon eller endring",
   "Feedback_Suggestion_Body": "Skriv inn en idé, endring eller fiks i detalj:",
   "Feedback_Submit": "Send",
-  "Feedback_DiscordLink": "Bli med på fellesskapets Discord"
+  "Feedback_DiscordLink": "Bli med på fellesskapets Discord",
+  "Button_Always": "Alltid",
+  "Settings_CrashReportAutoSubmit": "Automatisk innsending av krasjloggrapporter",
+  "Modal_CrashReport_Title": "Krasj oppdaget",
+  "Modal_CrashReport_Body": "Ser ut til at vi krasjet!\nVil du sende inn krasjloggen for å hjelpe med feilsøking og problemløsning?\n\nMerk: Denne rapporten kan inneholde brukernavn, konto-IDer og annen informasjon du har oppgitt, eller som programmet har samlet inn.",
+  "Toast_CrashReportSubmitFailed": "Kunne ikke sende inn krasjrapporten.",
+  "Toast_FeedbackThanks": "Takk for tilbakemeldingen.",
+  "Toast_FeedbackSubmitFailed": "Kunne ikke sende inn tilbakemelding."
 }

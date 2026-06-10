@@ -614,5 +614,12 @@
   "Feedback_Suggestion_Title": "建議功能或變更",
   "Feedback_Suggestion_Body": "詳細輸入想法、變更或修正內容：",
   "Feedback_Submit": "提交",
-  "Feedback_DiscordLink": "加入社群 Discord"
+  "Feedback_DiscordLink": "加入社群 Discord",
+  "Button_Always": "一律",
+  "Settings_CrashReportAutoSubmit": "自動提交崩潰記錄報告",
+  "Modal_CrashReport_Title": "偵測到崩潰",
+  "Modal_CrashReport_Body": "看來我們崩潰了！\n您要提交崩潰記錄以協助除錯和修正問題嗎？\n\n注意：此報告可能包含使用者名稱、帳戶 ID，以及您輸入或程式收集的其他資訊。",
+  "Toast_CrashReportSubmitFailed": "無法提交崩潰報告。",
+  "Toast_FeedbackThanks": "感謝您的回饋。",
+  "Toast_FeedbackSubmitFailed": "無法提交回饋。"
 }

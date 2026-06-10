@@ -614,5 +614,12 @@
   "Feedback_Suggestion_Title": "Feature oder Änderung vorschlagen",
   "Feedback_Suggestion_Body": "Gib eine Idee, Änderung oder einen Fix im Detail ein:",
   "Feedback_Submit": "Absenden",
-  "Feedback_DiscordLink": "Community-Discord beitreten"
+  "Feedback_DiscordLink": "Community-Discord beitreten",
+  "Button_Always": "Immer",
+  "Settings_CrashReportAutoSubmit": "Absturzberichte automatisch senden",
+  "Modal_CrashReport_Title": "Absturz erkannt",
+  "Modal_CrashReport_Body": "Sieht so aus, als wären wir abgestürzt!\nMöchten Sie Ihr Absturzprotokoll senden, um bei der Fehlerbehebung zu helfen?\n\nHinweis: Dieser Bericht kann Benutzernamen, Konto-IDs und andere von Ihnen eingegebene oder vom Programm gesammelte Informationen enthalten.",
+  "Toast_CrashReportSubmitFailed": "Absturzbericht konnte nicht gesendet werden.",
+  "Toast_FeedbackThanks": "Vielen Dank für Ihr Feedback.",
+  "Toast_FeedbackSubmitFailed": "Feedback konnte nicht gesendet werden."
 }

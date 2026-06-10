@@ -614,5 +614,12 @@
   "Feedback_Suggestion_Title": "Propose a feature or change",
   "Feedback_Suggestion_Body": "Scribble an idea, change or fix in detail:",
   "Feedback_Submit": "Send it in",
-  "Feedback_DiscordLink": "Join th' crew Discord"
+  "Feedback_DiscordLink": "Join th' crew Discord",
+  "Button_Always": "Allus",
+  "Settings_CrashReportAutoSubmit": "Auto-Send crash log reports",
+  "Modal_CrashReport_Title": "Arr! A crash be detected!",
+  "Modal_CrashReport_Body": "Arr! We be crashed!\nWould ye like to send yer crash log to help debug and fix issues?\n\nTake heed: This report may include usernames, account IDs and other info ye entered, or the program be collectin'.",
+  "Toast_CrashReportSubmitFailed": "Could not send the crash report, matey.",
+  "Toast_FeedbackThanks": "Thanks for yer feedback!",
+  "Toast_FeedbackSubmitFailed": "Could not send feedback."
 }

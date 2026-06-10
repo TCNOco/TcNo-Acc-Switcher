@@ -614,5 +614,12 @@
   "Feedback_Suggestion_Title": "Javasolj egy funkciót vagy változtatást",
   "Feedback_Suggestion_Body": "Írj le egy ötletet, változtatást vagy javítást részletesen:",
   "Feedback_Submit": "Küldés",
-  "Feedback_DiscordLink": "Csatlakozz a közösségi Discordhoz"
+  "Feedback_DiscordLink": "Csatlakozz a közösségi Discordhoz",
+  "Button_Always": "Mindig",
+  "Settings_CrashReportAutoSubmit": "Összeomlási naplók automatikus beküldése",
+  "Modal_CrashReport_Title": "Összeomlás észlelve",
+  "Modal_CrashReport_Body": "Úgy tűnik, összeomlottunk!\nSzeretné beküldeni az összeomlási naplót, hogy segítsen a hibakeresésben és -javításban?\n\nMegjegyzés: Ez a jelentés tartalmazhat felhasználóneveket, fiókazonosítókat és egyéb, Ön által megadott vagy a program által gyűjtött információkat.",
+  "Toast_CrashReportSubmitFailed": "Nem sikerült elküldeni az összeomlási jelentést.",
+  "Toast_FeedbackThanks": "Köszönjük a visszajelzést!",
+  "Toast_FeedbackSubmitFailed": "Nem sikerült beküldeni a visszajelzést."
 }

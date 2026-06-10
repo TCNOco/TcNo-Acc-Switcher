@@ -4,7 +4,7 @@
   import { fade, scale } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
   import { Browser } from "@wailsio/runtime";
-  import { activeModal, dismissModal, cancelActiveModal } from "../stores/modal";
+  import { activeModal, dismissModal, cancelActiveModal, type CrashReportChoice } from "../stores/modal";
   import { DUR, motionEnabled } from "../lib/animation";
   import { t } from "../stores/i18n";
   import { offlineMode } from "../stores/offlineMode";
@@ -40,6 +40,13 @@
     }
     if (m.kind === "feedback") {
       feedbackValue = "";
+    }
+    if (m.kind === "crashReport") {
+      void tick().then(() =>
+        requestAnimationFrame(() => {
+          crashReportYesEl?.focus();
+        }),
+      );
     }
     if (m.kind === "folder") {
       folderPath = normalizeDisplayPath(m.initialPath ?? "");
@@ -96,6 +103,7 @@
   let promptEl: HTMLInputElement | HTMLTextAreaElement | undefined;
   let feedbackEl: HTMLTextAreaElement | undefined;
   let folderInputEl: HTMLInputElement | undefined;
+  let crashReportYesEl: HTMLButtonElement | undefined;
 
   $: feedbackSubmitDisabled = feedbackValue.trim().length === 0;
 
@@ -140,6 +148,11 @@
   function confirmNegative(): void {
     if (!m || m.kind !== "confirm") return;
     dismissModal(false);
+  }
+
+  function crashReportChoice(choice: CrashReportChoice): void {
+    if (!m || m.kind !== "crashReport") return;
+    dismissModal(choice);
   }
 
   function promptOk(): void {
@@ -243,6 +256,8 @@
             {$t("Heading_UpdateAvailable")}
           {:else if m.kind === "feedback"}
             {m.mode === "issue" ? $t("Feedback_Issue_Title") : $t("Feedback_Suggestion_Title")}
+          {:else if m.kind === "crashReport"}
+            {$t("Modal_CrashReport_Title")}
           {:else}
             {m.title}
           {/if}
@@ -459,6 +474,27 @@
                 </button>
               </div>
             </div>
+          {:else if m.kind === "crashReport"}
+            <div class="modal-block">
+              <p class="modal-crash-report-body">{$t("Modal_CrashReport_Body")}</p>
+              <div class="modal-inline-actions settingsCol inputAndButton">
+                <span class="modal-actions-spacer"></span>
+                <button type="button" class="btnicontext" on:click={() => crashReportChoice("no")}>
+                  {$t("No")}
+                </button>
+                <button
+                  type="button"
+                  class="btnicontext modal-pick-primary"
+                  bind:this={crashReportYesEl}
+                  on:click={() => crashReportChoice("yes")}
+                >
+                  {$t("Yes")}
+                </button>
+                <button type="button" class="btnicontext" on:click={() => crashReportChoice("always")}>
+                  {$t("Button_Always")}
+                </button>
+              </div>
+            </div>
           {:else if m.kind === "update"}
             <div class="modal-block">
               <UpdateModalBody message={m.message} downloadUrl={m.downloadUrl} />
@@ -602,6 +638,23 @@
     resize: vertical;
     line-height: 1.35;
     white-space: pre-wrap;
+  }
+
+  .modal-crash-report-body {
+    margin: 0;
+    white-space: pre-line;
+    line-height: 1.45;
+    color: var(--modal-body-fg, var(--whiteSecondary));
+  }
+
+  .modal-pick-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--buttonText, var(--whiteSecondary));
+
+    &:hover:not(:disabled) {
+      filter: brightness(1.08);
+    }
   }
 
   .modal-inline-actions {

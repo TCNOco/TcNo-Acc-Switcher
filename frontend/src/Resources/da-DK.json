@@ -614,5 +614,12 @@
   "Feedback_Suggestion_Title": "Foreslå en funktion eller ændring",
   "Feedback_Suggestion_Body": "Indtast en idé, ændring eller rettelse i detaljer:",
   "Feedback_Submit": "Indsend",
-  "Feedback_DiscordLink": "Deltag i community Discord"
+  "Feedback_DiscordLink": "Deltag i community Discord",
+  "Button_Always": "Altid",
+  "Settings_CrashReportAutoSubmit": "Auto-indsend crashlog-rapporter",
+  "Modal_CrashReport_Title": "Nedbrud registreret",
+  "Modal_CrashReport_Body": "Ser ud til at vi er crashet!\nVil du indsende din crashlog for at hjælpe med at debugge og løse problemer?\n\nBemærk: Denne rapport kan indeholde brugernavne, konto-id'er og andre oplysninger, du har indtastet, eller som programmet har indsamlet.",
+  "Toast_CrashReportSubmitFailed": "Kunne ikke indsende crashrapporten.",
+  "Toast_FeedbackThanks": "Tak for din feedback.",
+  "Toast_FeedbackSubmitFailed": "Kunne ikke indsende feedback."
 }

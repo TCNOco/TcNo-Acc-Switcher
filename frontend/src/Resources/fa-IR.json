@@ -605,7 +605,7 @@
   "Stability_ThanksRating": "با تشکر از امتیازدهی",
   "Stability_ThanksReportLine1": "با تشکر از امتیازدهی.",
   "Stability_ThanksReportAskPrefix": "باید",
-  "Stability_ThanksReportAskSuffix": "?",
+  "Stability_ThanksReportAskSuffix": "؟",
   "Stability_ReportIssue": "گزارش مشکل",
   "Stability_ThumbUp": "بله، کلید کار کرد",
   "Stability_ThumbDown": "نه، کلید کار نکرد",
@@ -614,5 +614,12 @@
   "Feedback_Suggestion_Title": "پیشنهاد یک ویژگی یا تغییر",
   "Feedback_Suggestion_Body": "یک ایده، تغییر یا اصلاح را با جزئیات وارد کنید:",
   "Feedback_Submit": "ارسال",
-  "Feedback_DiscordLink": "به دیسکورد انجمن بپیوندید"
+  "Feedback_DiscordLink": "به دیسکورد انجمن بپیوندید",
+  "Button_Always": "همیشه",
+  "Settings_CrashReportAutoSubmit": "ارسال خودکار گزارش‌های خرابی",
+  "Modal_CrashReport_Title": "خرابی شناسایی شد",
+  "Modal_CrashReport_Body": "به نظر می‌رسد برنامه خراب شد!\nآیا می‌خواهید گزارش خرابی را برای کمک به اشکال‌زدایی و رفع مشکلات ارسال کنید؟\n\nتوجه: این گزارش ممکن است شامل نام‌های کاربری، شناسه‌های حساب و سایر اطلاعاتی باشد که شما وارد کرده‌اید یا برنامه جمع‌آوری کرده است.",
+  "Toast_CrashReportSubmitFailed": "نتوانست گزارش خرابی را ارسال کند.",
+  "Toast_FeedbackThanks": "بابت بازخوردتان سپاسگزاریم.",
+  "Toast_FeedbackSubmitFailed": "نتوانست بازخورد را ارسال کند."
 }

@@ -25,6 +25,7 @@
   import * as PlatformService from "../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import { pushToast } from "./stores/toast";
   import { registerSvgRenderBridge } from "./lib/svgRenderBridge";
+  import { runCrashReportPromptIfNeeded } from "./lib/crashReportPrompt";
   import { activeModal } from "./stores/modal";
   import { contextMenu } from "./stores/contextMenu";
   import {
@@ -183,6 +184,7 @@
       applyNavigateJSON(raw);
     });
     void NotifyLaunchUpdateCheck();
+    void runCrashReportPromptIfNeeded();
 
     const schedulePrefetch = (): void => {
       prefetchCommonPages();

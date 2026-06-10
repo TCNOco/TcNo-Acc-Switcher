@@ -614,5 +614,12 @@
   "Feedback_Suggestion_Title": "Stel 'n kenmerk of verandering voor",
   "Feedback_Suggestion_Body": "Voer 'n idee, verandering of regstelling in detail in:",
   "Feedback_Submit": "Dien in",
-  "Feedback_DiscordLink": "Sluit aan by die gemeenskap Discord"
+  "Feedback_DiscordLink": "Sluit aan by die gemeenskap Discord",
+  "Button_Always": "Altyd",
+  "Settings_CrashReportAutoSubmit": "Outomaties indien ongeluklogverslae",
+  "Modal_CrashReport_Title": "Ongeluk bespeur",
+  "Modal_CrashReport_Body": "Dit lyk of ons omgeval het!\nWil jy jou ongeluklog indien om te help met foutopsporing en die oplos van probleme?\n\nLet wel: Hierdie verslag mag gebruikersname, rekening-ID's en ander inligting bevat wat jy ingevoer het, of wat die program ingesamel het.",
+  "Toast_CrashReportSubmitFailed": "Kon nie die ongelukverslag indien nie.",
+  "Toast_FeedbackThanks": "Dankie vir jou terugvoer.",
+  "Toast_FeedbackSubmitFailed": "Kon nie terugvoer indien nie."
 }

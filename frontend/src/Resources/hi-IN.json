@@ -614,5 +614,12 @@
   "Feedback_Suggestion_Title": "कोई सुविधा या बदलाव सुझाएं",
   "Feedback_Suggestion_Body": "विस्तार से कोई विचार, बदलाव या सुधार दर्ज करें:",
   "Feedback_Submit": "जमा करें",
-  "Feedback_DiscordLink": "डिस्कॉर्ड समुदाय से जुड़ें"
+  "Feedback_DiscordLink": "डिस्कॉर्ड समुदाय से जुड़ें",
+  "Button_Always": "हमेशा",
+  "Settings_CrashReportAutoSubmit": "ऑटो-सबमिट क्रैश लॉग रिपोर्ट",
+  "Modal_CrashReport_Title": "क्रैश का पता चला",
+  "Modal_CrashReport_Body": "लगता है कि हम क्रैश हो गए!\nक्या आप समस्याओं को डीबग करने और ठीक करने में मदद के लिए अपना क्रैश लॉग सबमिट करना चाहेंगे?\n\nनोट: इस रिपोर्ट में उपयोगकर्ता नाम, खाता आईडी और अन्य जानकारी शामिल हो सकती है जो आपने दर्ज की है या प्रोग्राम ने एकत्र की है।",
+  "Toast_CrashReportSubmitFailed": "क्रैश रिपोर्ट सबमिट नहीं की जा सकी।",
+  "Toast_FeedbackThanks": "आपके फीडबैक के लिए धन्यवाद।",
+  "Toast_FeedbackSubmitFailed": "फीडबैक सबमिट नहीं की जा सकी।"
 }

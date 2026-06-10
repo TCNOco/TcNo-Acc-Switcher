@@ -614,5 +614,12 @@
   "Feedback_Suggestion_Title": "Предложить функцию или изменение",
   "Feedback_Suggestion_Body": "Введите идею, изменение или исправление подробно:",
   "Feedback_Submit": "Отправить",
-  "Feedback_DiscordLink": "Присоединиться к сообществу Discord"
+  "Feedback_DiscordLink": "Присоединиться к сообществу Discord",
+  "Button_Always": "Всегда",
+  "Settings_CrashReportAutoSubmit": "Автоматически отправлять отчёты о сбоях",
+  "Modal_CrashReport_Title": "Обнаружен сбой",
+  "Modal_CrashReport_Body": "Похоже, произошёл сбой!\nХотите отправить журнал сбоев, чтобы помочь в отладке и исправлении проблем?\n\nПримечание: Этот отчёт может содержать имена пользователей, идентификаторы аккаунтов и другую информацию, которую вы ввели или программа собрала.",
+  "Toast_CrashReportSubmitFailed": "Не удалось отправить отчёт о сбое.",
+  "Toast_FeedbackThanks": "Спасибо за ваш отзыв.",
+  "Toast_FeedbackSubmitFailed": "Не удалось отправить отзыв."
 }

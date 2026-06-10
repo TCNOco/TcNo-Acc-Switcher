@@ -614,5 +614,12 @@
   "Feedback_Suggestion_Title": "Sugerir uma funcionalidade ou alteração",
   "Feedback_Suggestion_Body": "Digite uma ideia, alteração ou correção em detalhes:",
   "Feedback_Submit": "Enviar",
-  "Feedback_DiscordLink": "Entrar no Discord da comunidade"
+  "Feedback_DiscordLink": "Entrar no Discord da comunidade",
+  "Button_Always": "Sempre",
+  "Settings_CrashReportAutoSubmit": "Enviar automaticamente relatórios de falhas",
+  "Modal_CrashReport_Title": "Falha detectada",
+  "Modal_CrashReport_Body": "Parece que ocorreu uma falha!\nGostaria de enviar o seu relatório de falha para ajudar a depurar e corrigir problemas?\n\nNota: Este relatório pode incluir nomes de usuário, IDs de conta e outras informações que você inseriu ou que o programa coletou.",
+  "Toast_CrashReportSubmitFailed": "Não foi possível enviar o relatório de falha.",
+  "Toast_FeedbackThanks": "Obrigado pelo seu feedback.",
+  "Toast_FeedbackSubmitFailed": "Não foi possível enviar o feedback."
 }

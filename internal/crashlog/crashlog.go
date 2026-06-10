@@ -41,8 +41,10 @@ func exeDir() (string, error) {
 	return filepath.Dir(exe), nil
 }
 
+var crashDumpDirResolver = exeDir
+
 func crashDumpPath() (string, error) {
-	dir, err := exeDir()
+	dir, err := crashDumpDirResolver()
 	if err != nil {
 		return "", err
 	}
@@ -110,6 +112,29 @@ func Capture() {
 	}
 
 	os.Exit(1)
+}
+
+// HasPending reports whether a crash dump from a previous run is waiting locally.
+func HasPending() bool {
+	path, err := crashDumpPath()
+	if err != nil {
+		return false
+	}
+	st, err := os.Stat(path)
+	return err == nil && !st.IsDir()
+}
+
+// DiscardPending removes a pending crash dump without submitting it.
+func DiscardPending() error {
+	path, err := crashDumpPath()
+	if err != nil {
+		return err
+	}
+	err = os.Remove(path)
+	if err != nil && os.IsNotExist(err) {
+		return nil
+	}
+	return err
 }
 
 // SubmitPending checks for a crash dump from a previous run and submits it.

@@ -614,5 +614,12 @@
   "Feedback_Suggestion_Title": "Suggerisci una funzionalità o una modifica",
   "Feedback_Suggestion_Body": "Inserisci un'idea, una modifica o una correzione in dettaglio:",
   "Feedback_Submit": "Invia",
-  "Feedback_DiscordLink": "Unisciti al Discord della comunità"
+  "Feedback_DiscordLink": "Unisciti al Discord della comunità",
+  "Button_Always": "Sempre",
+  "Settings_CrashReportAutoSubmit": "Invio automatico dei report di crash log",
+  "Modal_CrashReport_Title": "Crash rilevato",
+  "Modal_CrashReport_Body": "Sembra che si sia verificato un crash!\nVuoi inviare il tuo crash log per aiutare a eseguire il debug e risolvere i problemi?\n\nNota: Questo report potrebbe includere nomi utente, ID account e altre informazioni che hai inserito o che il programma ha raccolto.",
+  "Toast_CrashReportSubmitFailed": "Impossibile inviare il report di crash.",
+  "Toast_FeedbackThanks": "Grazie per il tuo feedback.",
+  "Toast_FeedbackSubmitFailed": "Impossibile inviare il feedback."
 }

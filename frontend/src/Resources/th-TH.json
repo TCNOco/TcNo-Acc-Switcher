@@ -614,5 +614,12 @@
   "Feedback_Suggestion_Title": "แนะนำฟีเจอร์หรือการเปลี่ยนแปลง",
   "Feedback_Suggestion_Body": "ระบุความคิด การเปลี่ยนแปลง หรือการแก้ไขโดยละเอียด:",
   "Feedback_Submit": "ส่ง",
-  "Feedback_DiscordLink": "เข้าร่วมชุมชน Discord"
+  "Feedback_DiscordLink": "เข้าร่วมชุมชน Discord",
+  "Button_Always": "เสมอ",
+  "Settings_CrashReportAutoSubmit": "ส่งรายงานบันทึกข้อขัดข้องอัตโนมัติ",
+  "Modal_CrashReport_Title": "ตรวจพบข้อขัดข้อง",
+  "Modal_CrashReport_Body": "ดูเหมือนว่าโปรแกรมจะขัดข้อง!\nคุณต้องการส่งบันทึกข้อขัดข้องเพื่อช่วยในการดีบักและแก้ไขปัญหาหรือไม่?\n\nหมายเหตุ: รายงานนี้อาจรวมถึงชื่อผู้ใช้ รหัสบัญชี และข้อมูลอื่นๆ ที่คุณป้อน หรือที่โปรแกรมเก็บรวบรวมไว้",
+  "Toast_CrashReportSubmitFailed": "ไม่สามารถส่งรายงานข้อขัดข้องได้",
+  "Toast_FeedbackThanks": "ขอบคุณสำหรับความคิดเห็นของคุณ",
+  "Toast_FeedbackSubmitFailed": "ไม่สามารถส่งความคิดเห็นได้"
 }

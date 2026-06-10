@@ -13,7 +13,6 @@ This program will not transfer any information to other networked systems unless
 This project works entirely by moving files and registry keys around that store user information for specific programs, game platforms and more. This project does not send those files, nor information from them in any way over internet. This data remains entirely on your computer, usually within `%AppData%\TcNo Account Switcher` unless otherwise specified in settings.
 
 However, this project does communicate over the internet in the following ways:
-- During installation, on first run (and subsequent runs) the program checks for required runtimes like .NET, downloads and executes those installers. Information like your IP address will be handled by Microsoft.com as defined in their policies.
 - Each launch in these scenarios:
   - If the user has `Statistics collection` enabled AND `Anonymous Statistics Sharing` enabled their statistics will be submitted. See below.
   - If the user has `Check for updates` enabled: When the program is launched it checks for an update. This web request is logged through normal means by ISPs and the usual - but also used by our server in the following way:
@@ -22,7 +21,11 @@ However, this project does communicate over the internet in the following ways:
     - The current version you are using is also submitted with this request, which also adds to a global total. This is again, anonymous.
   - When the `Game Stats` function is used. See below.
   - When the user checks the [CrowdIn](https://crowdin.com/project/tcno-account-switcher) information in-app the usernames of persons who helped translate this app is via [CrowdIn](https://crowdin.com/project/tcno-account-switcher) are displayed publicly in the TcNo Account Switcher, and possibly on the website.
-  - When the user opens the Steam account switcher in the TcNo Account Switcher each profile is checked on Steam via `https://steamcommunity.com/profiles/{SteamId}?xml=1` for the VAC status of the account, as well as the profile image for that account. This can be disabled at any time through the TcNo Account Switcher > Steam > Settings > `Collect profile images and VAC ban status from Steam`.
+  - When the user opens the Steam account switcher in the TcNo Account Switcher:
+    - Each profile is checked on Steam via `https://steamcommunity.com/profiles/{SteamId}?xml=1` for the VAC status of the account, as well as the profile image for that account. This can be disabled at any time through the TcNo Account Switcher > Steam > Settings > `Collect profile images and VAC ban status from Steam`.
+    - Each profile also gets Mini-profiles (Hovering over user images like on Steam) collected from Steam. This nice-to-have feature is also toggled in the same settings as `Mini profile (hover over avater)`.
+    - All App IDs to game/app name mappings are downloaded from my API. This is a compressed mirror of Steam's official API to save you bandwidth.
+  - When the user leaves a rating after switching an account (Worked or Broken) as well as text the user enters into the input should they choose to give a more detailed issue report, as well as text the user enters if they click "Suggest a Feature/Change".
 
 Every web request from updates, to data collecting, submission and more can be turned off through `Offline Mode`.
 
@@ -36,6 +39,7 @@ There are a few types of logs that this program creates.
 ### Crash Logs
 Crash logs contain useful information for debugging, and improving the program. These crash logs contain: 
   - The crash information including information like a stack trace.
+  - Possibly usernames, and account IDs as well as other data that the program may have been provided or has collected. 
 
 ### Log files
 - The log file. This log file contains every action in the program that run. Each function used logs the time it was accessed, actions like moving files and registry items, and more. There is no personally identifiable information included here where possible. For example, this file includes information like:
@@ -80,6 +84,8 @@ The information submitted to these sites is presented to, and often must be set 
 Your information will then be handled in accordance of those third-parties privacy policies, terms and more.
 
 Information collected such as your rank and more will then be displayed based on the rest of the file, usually under your account's username in the TcNo Account Switcher.
+
+The TcNo API is an option for a few like Apex Legends statistics. Your entered Username is submitted, but is not logged or saved - except for the expected web traffic logs (IP, time, etc). This particular endpoint is a mirror for [apexlegendsstatus.com](https://apexlegendsstatus.com) as an authenticated API key is needed for this project - The same data submitted to us is sent to them to fulfil the request. This is just one exmple, but the data source that recieves your information is clearly indicated when you enable these statistics.
 
 # DISCLAIMER
 

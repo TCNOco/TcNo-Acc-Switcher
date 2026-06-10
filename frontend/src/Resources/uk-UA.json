@@ -614,5 +614,12 @@
   "Feedback_Suggestion_Title": "Запропонувати функцію або зміну",
   "Feedback_Suggestion_Body": "Введіть ідею, зміну або виправлення детально:",
   "Feedback_Submit": "Надіслати",
-  "Feedback_DiscordLink": "Приєднатися до Discord-спільноти"
+  "Feedback_DiscordLink": "Приєднатися до Discord-спільноти",
+  "Button_Always": "Завжди",
+  "Settings_CrashReportAutoSubmit": "Автоматично надсилати звіти про збої",
+  "Modal_CrashReport_Title": "Виявлено збій",
+  "Modal_CrashReport_Body": "Схоже, стався збій!\nБажаєте надіслати журнал збоїв, щоб допомогти у виправленні проблем?\n\nПримітка: Цей звіт може містити імена користувачів, ідентифікатори облікових записів та іншу інформацію, яку ви ввели або яку зібрала програма.",
+  "Toast_CrashReportSubmitFailed": "Не вдалося надіслати звіт про збій.",
+  "Toast_FeedbackThanks": "Дякуємо за ваш відгук.",
+  "Toast_FeedbackSubmitFailed": "Не вдалося надіслати відгук."
 }

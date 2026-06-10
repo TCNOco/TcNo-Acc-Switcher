@@ -614,5 +614,12 @@
   "Feedback_Suggestion_Title": "Föreslå en funktion eller ändring",
   "Feedback_Suggestion_Body": "Ange en idé, ändring eller fix i detalj:",
   "Feedback_Submit": "Skicka",
-  "Feedback_DiscordLink": "Gå med i community-Discorden"
+  "Feedback_DiscordLink": "Gå med i community-Discorden",
+  "Button_Always": "Alltid",
+  "Settings_CrashReportAutoSubmit": "Skicka in kraschloggsrapporter automatiskt",
+  "Modal_CrashReport_Title": "Krasch upptäckt",
+  "Modal_CrashReport_Body": "Det verkar som att vi kraschade!\nVill du skicka in din kraschlogg för att felsöka och åtgärda problem?\n\nObs! Den här rapporten kan innehålla användarnamn, konto-ID:n och annan information som du har angett eller som programmet har samlat in.",
+  "Toast_CrashReportSubmitFailed": "Kunde inte skicka in kraschrapporten.",
+  "Toast_FeedbackThanks": "Tack för din feedback.",
+  "Toast_FeedbackSubmitFailed": "Kunde inte skicka in feedback."
 }

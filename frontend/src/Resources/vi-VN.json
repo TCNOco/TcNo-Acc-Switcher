@@ -614,5 +614,12 @@
   "Feedback_Suggestion_Title": "Đề xuất một tính năng hoặc thay đổi",
   "Feedback_Suggestion_Body": "Nhập ý tưởng, thay đổi hoặc sửa lỗi một cách chi tiết:",
   "Feedback_Submit": "Gửi",
-  "Feedback_DiscordLink": "Tham gia cộng đồng Discord"
+  "Feedback_DiscordLink": "Tham gia cộng đồng Discord",
+  "Button_Always": "Luôn luôn",
+  "Settings_CrashReportAutoSubmit": "Tự động gửi báo cáo nhật ký sự cố",
+  "Modal_CrashReport_Title": "Phát hiện sự cố",
+  "Modal_CrashReport_Body": "Có vẻ như chúng tôi đã gặp sự cố!\nBạn có muốn gửi nhật ký sự cố để giúp gỡ lỗi và sửa các vấn đề không?\n\nLưu ý: Báo cáo này có thể bao gồm tên người dùng, ID tài khoản và các thông tin khác mà bạn đã nhập hoặc chương trình đã thu thập.",
+  "Toast_CrashReportSubmitFailed": "Không thể gửi báo cáo sự cố.",
+  "Toast_FeedbackThanks": "Cảm ơn phản hồi của bạn.",
+  "Toast_FeedbackSubmitFailed": "Không thể gửi phản hồi."
 }
