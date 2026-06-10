@@ -19,11 +19,10 @@ environment:
   SIGNPATH_ORGANIZATION_ID: "a2a88c4e-72da-4d2c-925e-91f41aff9d77"
   SIGNPATH_PROJECT_SLUG: "TcNo-Acc-Switcher"
   SIGNPATH_POLICY_SLUG: "test-signing"
-  SIGNPATH_INSTALLER_ARTIFACT_CONFIGURATION_SLUG: "installer"
   # Origin verification is triggered by the deploy Webhook below (not the deploy script).
   SIGNPATH_TRIGGER_VIA_WEBHOOK: "true"
   SIGNPATH_API_TOKEN:
-    secure: HwG+g0ChGdP50wGnnIj/9o9TS7MvXMIBSO70ATBBgDgLKkI5LIHj/J+no0S4fkjm
+    secure: nCxtLCPGtKTrnt0aDyNiCJja492RG+t4+Z/zDMOWQKQgGOOXWhO1AXuGEzGu7j55
   github_release_token:
     secure: 1HFaonHaIKyvSv76Nf4j1RDHbeWJBF9laym2kreewJBKLhFHQ3k6MWQ3dZlFQ0QloTW0DpYWdpLth0ALUu/ejE8WwoalGgptnYi70EK+Uq5EnS0vq/1ltrzr9XLvznHJ
 

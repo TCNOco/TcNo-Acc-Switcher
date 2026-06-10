@@ -331,23 +331,22 @@ if (-not $installer) {
   throw 'NSIS installer not found after build.'
 }
 
-# Installer SignPath signing disabled until an 'installer' artifact configuration exists in SignPath.
-# Write-Host "Signing NSIS installer with SignPath (direct submit)..."
-# $signedInstallerPath = Join-Path $installer.DirectoryName ($installer.BaseName + '-signed' + $installer.Extension)
-# Submit-SigningRequest `
-#   -InputArtifactPath $installer.FullName `
-#   -ApiToken $env:SIGNPATH_API_TOKEN `
-#   -OrganizationId $env:SIGNPATH_ORGANIZATION_ID `
-#   -ProjectSlug $env:SIGNPATH_PROJECT_SLUG `
-#   -SigningPolicySlug $env:SIGNPATH_POLICY_SLUG `
-#   -ArtifactConfigurationSlug $env:SIGNPATH_INSTALLER_ARTIFACT_CONFIGURATION_SLUG `
-#   -OutputArtifactPath $signedInstallerPath `
-#   -Description "Installer $($env:APPVEYOR_REPO_TAG_NAME)" `
-#   -WaitForCompletion
-# Move-Item -Force $signedInstallerPath $installer.FullName
-# $installer = Get-Item $installer.FullName
-# Write-Host "NSIS installer signed."
-Write-Host "NSIS installer signing skipped (no SignPath installer artifact configuration yet)."
+# Same default artifact configuration as the main EXE (webhook does not pass a slug either).
+# Direct submit: installer is built here in after_deploy, after the origin-verified webhook ran for the EXE.
+Write-Host "Signing NSIS installer with SignPath (direct submit, default artifact configuration)..."
+$signedInstallerPath = Join-Path $installer.DirectoryName ($installer.BaseName + '-signed' + $installer.Extension)
+Submit-SigningRequest `
+  -InputArtifactPath $installer.FullName `
+  -ApiToken $env:SIGNPATH_API_TOKEN `
+  -OrganizationId $env:SIGNPATH_ORGANIZATION_ID `
+  -ProjectSlug $env:SIGNPATH_PROJECT_SLUG `
+  -SigningPolicySlug $env:SIGNPATH_POLICY_SLUG `
+  -OutputArtifactPath $signedInstallerPath `
+  -Description "Installer $($env:APPVEYOR_REPO_TAG_NAME)" `
+  -WaitForCompletion
+Move-Item -Force $signedInstallerPath $installer.FullName
+$installer = Get-Item $installer.FullName
+Write-Host "NSIS installer signed."
 
 Write-Host "Publishing draft GitHub release $($env:APPVEYOR_REPO_TAG_NAME)..."
 if (-not $env:github_release_token) {
