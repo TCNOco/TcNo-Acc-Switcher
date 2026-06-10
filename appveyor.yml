@@ -10,11 +10,8 @@ image: Visual Studio 2022
 
 environment:
   GOFLAGS: -mod=mod
-  GOTOOLCHAIN: local
   GOPROXY: https://proxy.golang.org,direct
   GOSUMDB: sum.golang.org
-  GOROOT: C:\go126
-  PATH: C:\go126\bin;%PATH%
   WAILS3_VERSION: v3.0.0-alpha.96
   DATEVERSION: $(APPVEYOR_REPO_TAG_NAME)
   SIGNPATH_ORGANIZATION_ID: "a2a88c4e-72da-4d2c-925e-91f41aff9d77"
@@ -40,17 +37,42 @@ init:
       }
   - ps: Write-Host "APPVEYOR_REPO_TAG_NAME is $env:APPVEYOR_REPO_TAG_NAME"
   - ps: Write-Host "DATEVERSION is $env:DATEVERSION"
-  - ps: |
-      Write-Host "Go toolchain: $(go version)"
-      Write-Host "GOROOT=$(go env GOROOT)  GOTOOLCHAIN=$env:GOTOOLCHAIN"
-      $requiredGo = (Select-String -Path "$env:APPVEYOR_BUILD_FOLDER\go.mod" -Pattern '^go\s+(\S+)' | ForEach-Object { $_.Matches[0].Groups[1].Value })
-      $actualGo = (go env GOVERSION) -replace '^go', ''
-      if ($actualGo -ne $requiredGo) {
-        throw "go.mod requires go $requiredGo but VM has go $actualGo. Check GOROOT/PATH (expected C:\go126)."
-      }
 #  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 install:
+  - ps: |
+      # C:\go126 exists on newer AppVeyor images; C:\go is the default fallback.
+      $goRoot = $null
+      foreach ($candidate in @('C:\go126', 'C:\go')) {
+        if (Test-Path "$candidate\bin\go.exe") {
+          $goRoot = $candidate
+          break
+        }
+      }
+      if (-not $goRoot) {
+        throw 'No Go installation found under C:\go126 or C:\go'
+      }
+      $env:GOROOT = $goRoot
+      $env:Path = "$goRoot\bin;$env:Path"
+      Write-Host "Go toolchain: $(((cmd /c 'go version 2>&1') | Out-String).Trim())"
+      Write-Host "GOROOT=$env:GOROOT  GOTOOLCHAIN=$env:GOTOOLCHAIN"
+      $goMod = Join-Path $env:APPVEYOR_BUILD_FOLDER 'go.mod'
+      if (-not (Test-Path $goMod)) {
+        throw "go.mod not found at $goMod"
+      }
+      $requiredGo = (Select-String -Path $goMod -Pattern '^go\s+(\S+)' | ForEach-Object { $_.Matches[0].Groups[1].Value })
+      $actualGo = ((cmd /c 'go env GOVERSION 2>&1') | Out-String).Trim() -replace '^go', ''
+      if ($actualGo -ne $requiredGo) {
+        Write-Host "VM Go is $actualGo; fetching go $requiredGo via GOTOOLCHAIN=go$requiredGo+auto"
+        $env:GOTOOLCHAIN = "go$requiredGo+auto"
+        go version 2>&1 | ForEach-Object { Write-Host $_ }
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        $actualGo = ((cmd /c 'go env GOVERSION 2>&1') | Out-String).Trim() -replace '^go', ''
+        if ($actualGo -ne $requiredGo) {
+          throw "Failed to activate go $requiredGo (still on $actualGo, GOROOT=$goRoot)."
+        }
+      }
+      Write-Host "Using Go $actualGo (GOROOT=$env:GOROOT, GOTOOLCHAIN=$env:GOTOOLCHAIN)"
   - ps: Install-Module -Name SignPath -RequiredVersion 4.4.6 -Force -Scope CurrentUser
   - npm install -g corepack@latest
   - ps: corepack enable
