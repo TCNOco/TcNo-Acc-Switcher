@@ -10,6 +10,9 @@ image: Visual Studio 2022
 
 environment:
   GOFLAGS: -mod=mod
+  # Use the VM's preinstalled Go; avoid go install downloading a full toolchain.
+  GOTOOLCHAIN: local
+  WAILS3_VERSION: v3.0.0-alpha.96
   DATEVERSION: $(APPVEYOR_REPO_TAG_NAME)
   SIGNPATH_ORGANIZATION_ID: "a2a88c4e-72da-4d2c-925e-91f41aff9d77"
   SIGNPATH_PROJECT_SLUG: "TcNo-Acc-Switcher"
@@ -34,14 +37,34 @@ init:
       }
   - ps: Write-Host "APPVEYOR_REPO_TAG_NAME is $env:APPVEYOR_REPO_TAG_NAME"
   - ps: Write-Host "DATEVERSION is $env:DATEVERSION"
+  - ps: |
+      if (Test-Path 'C:\go126') {
+        $env:Path = "C:\go126;$env:Path"
+      }
+      Write-Host "Go toolchain: $(go version)"
+      Write-Host "GOTOOLCHAIN=$env:GOTOOLCHAIN"
 #  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 install:
   - ps: Install-Module -Name SignPath -RequiredVersion 4.4.6 -Force -Scope CurrentUser
   - npm install -g pnpm
-  - go install github.com/wailsapp/wails/v3/cmd/wails3@latest
-  - set PATH=%USERPROFILE%\go\bin;%PATH%
   - ps: |
+      $env:Path = "$env:USERPROFILE\go\bin;$env:Path"
+      $wails3Exe = Join-Path $env:USERPROFILE 'go\bin\wails3.exe'
+      if ((Test-Path $wails3Exe) -and (wails3 version 2>&1 | Out-String) -match [regex]::Escape($env:WAILS3_VERSION)) {
+        Write-Host "wails3 $($env:WAILS3_VERSION) already installed."
+      } else {
+        Write-Host "Installing wails3 $($env:WAILS3_VERSION) (pinned; do not use @latest)..."
+        go install "github.com/wailsapp/wails/v3/cmd/wails3@$($env:WAILS3_VERSION)"
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        Write-Host "wails3 installed: $(wails3 version 2>&1 | Out-String)"
+      }
+  - ps: |
+      $nsis7zPlugin = 'C:\Program Files (x86)\NSIS\Plugins\x86-unicode\nsis7z.dll'
+      if (Test-Path $nsis7zPlugin) {
+        Write-Host "NSIS 7z plugin already present; skipping download."
+        return
+      }
       Write-Host "Installing NSIS 7z plugin..."
       $downloadUrl = "https://nsis.sourceforge.io/mediawiki/images/6/69/Nsis7z_19.00.7z"
       $destinationFolder = "C:\Program Files (x86)\NSIS"
