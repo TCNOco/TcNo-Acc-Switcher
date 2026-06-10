@@ -15,6 +15,8 @@ environment:
   SIGNPATH_PROJECT_SLUG: "TcNo-Acc-Switcher"
   SIGNPATH_POLICY_SLUG: "test-signing"
   SIGNPATH_INSTALLER_ARTIFACT_CONFIGURATION_SLUG: "installer"
+  # Origin verification is triggered by the deploy Webhook below (not the deploy script).
+  SIGNPATH_TRIGGER_VIA_WEBHOOK: "true"
   SIGNPATH_API_TOKEN:
     secure: 3oIsIisCSSOgB9r4uzvgcbWegpCFrOXGpV5qTf2ijNNQ3NSZNz7K5q1k3wOgl1HV
   github_release_token:
@@ -131,8 +133,16 @@ artifacts:
   - path: bin\TcNo-Acc-Switcher.exe
     name: executable
 
-# deploy_script runs the deploy phase (after_deploy is skipped when no deploy: providers are set).
-deploy_script:
+# Origin verification: AppVeyor must POST the official deploy payload to SignPath (manual API calls return 403).
+deploy:
+  - provider: Webhook
+    url: https://app.signpath.io/API/v1/%SIGNPATH_ORGANIZATION_ID%/Integrations/AppVeyor?ProjectSlug=%SIGNPATH_PROJECT_SLUG%&SigningPolicySlug=%SIGNPATH_POLICY_SLUG%
+    authorization: Bearer $(SIGNPATH_API_TOKEN)
+    request_timeout: 10
+    on:
+      APPVEYOR_REPO_TAG: true
+
+after_deploy:
   - ps: . "$env:APPVEYOR_BUILD_FOLDER\ci\appveyor-deploy.ps1"
 
 #on_finish:

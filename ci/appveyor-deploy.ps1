@@ -166,7 +166,11 @@ function Wait-SignPathSigningRequest {
 }
 
 Test-SignPathApiAccess
-Invoke-SignPathAppVeyorIntegration
+if ($env:SIGNPATH_TRIGGER_VIA_WEBHOOK -eq 'true') {
+  Write-Host 'SignPath origin verification was triggered by the AppVeyor deploy webhook.'
+} else {
+  Invoke-SignPathAppVeyorIntegration
+}
 
 Write-Host "Waiting for SignPath origin-verified signing request for $expectedBuildUrl..."
 $signingRequestId = $null
