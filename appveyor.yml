@@ -12,6 +12,8 @@ environment:
   GOFLAGS: -mod=mod
   GOPROXY: https://proxy.golang.org,direct
   GOSUMDB: sum.golang.org
+  # go.mod requires 1.26.3; AppVeyor VS2022 image may only ship C:\go (1.25.x).
+  GOTOOLCHAIN: go1.26.3+auto
   WAILS3_VERSION: v3.0.0-alpha.96
   DATEVERSION: $(APPVEYOR_REPO_TAG_NAME)
   SIGNPATH_ORGANIZATION_ID: "a2a88c4e-72da-4d2c-925e-91f41aff9d77"
@@ -99,8 +101,16 @@ install:
 
 build_script:
   - ps: |
+      foreach ($candidate in @('C:\go126', 'C:\go')) {
+        if (Test-Path "$candidate\bin\go.exe") {
+          $env:GOROOT = $candidate
+          $env:Path = "$candidate\bin;$env:Path"
+          break
+        }
+      }
       $env:Path = "$env:USERPROFILE\go\bin;$env:Path"
-      Write-Host "=== build_script: version and metadata ==="
+      Write-Host "build Go: $(((cmd /c 'go version 2>&1') | Out-String).Trim())"
+  - ps: |
       $tag = $env:DATEVERSION -replace '^v', ''
       $versionNumbers = [regex]::Matches($tag, '\d+') | ForEach-Object { [int]$_.Value }
       if ($versionNumbers.Count -eq 0) {
@@ -127,44 +137,22 @@ build_script:
       $utf8nobom = New-Object System.Text.UTF8Encoding($false)
       [System.IO.File]::WriteAllText($infoPath, $json, $utf8nobom)
       Write-Host "config.yml and info.json updated."
+  - set PATH=%USERPROFILE%\go\bin;%PATH%
   - ps: |
-      Write-Host "=== go mod tidy ==="
-      go mod tidy -v 2>&1 | ForEach-Object { Write-Host $_ }
-      if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-      Write-Host "go mod tidy finished."
-  - ps: |
-      Write-Host "=== pnpm install (frontend) ==="
       Push-Location "$env:APPVEYOR_BUILD_FOLDER\frontend"
-      pnpm install --frozen-lockfile 2>&1 | ForEach-Object { Write-Host $_ }
+      pnpm install --frozen-lockfile
       if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       Pop-Location
-      Write-Host "pnpm install finished."
+  - wails3 generate bindings -f "-tags production" -clean=true -ts
   - ps: |
-      Write-Host "=== wails3 generate bindings ==="
-      wails3 generate bindings -f "-tags production" -clean=true -ts 2>&1 | ForEach-Object { Write-Host $_ }
-      if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-  - ps: |
-      Write-Host "=== pnpm run build (frontend) ==="
       Push-Location "$env:APPVEYOR_BUILD_FOLDER\frontend"
       $env:PRODUCTION = "true"
-      pnpm run build 2>&1 | ForEach-Object { Write-Host $_ }
+      pnpm run build
       if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       Pop-Location
-      Write-Host "frontend build finished."
-  - ps: |
-      Write-Host "=== wails3 generate icons ==="
-      Push-Location "$env:APPVEYOR_BUILD_FOLDER\build"
-      wails3 generate icons -input appicon.png -macfilename darwin/icons.icns -windowsfilename windows/icon.ico 2>&1 | ForEach-Object { Write-Host $_ }
-      if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-      Pop-Location
+  - ps: cd build; wails3 generate icons -input appicon.png -macfilename darwin/icons.icns -windowsfilename windows/icon.ico; cd ..
   - ps: Copy-Item -Force "$env:APPVEYOR_BUILD_FOLDER\other\NSIS\img\icon.ico" "$env:APPVEYOR_BUILD_FOLDER\build\windows\icon.ico"
-  - ps: |
-      Write-Host "=== wails3 generate syso ==="
-      Push-Location "$env:APPVEYOR_BUILD_FOLDER\build"
-      wails3 generate syso -arch amd64 -icon windows/icon.ico -manifest windows/wails.exe.manifest -info windows/info.json -out ..\wails_windows_amd64.syso 2>&1 | ForEach-Object { Write-Host $_ }
-      if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-      Pop-Location
-  - ps: Write-Host "=== go build (Windows exe) ==="
+  - ps: cd build; wails3 generate syso -arch amd64 -icon windows/icon.ico -manifest windows/wails.exe.manifest -info windows/info.json -out ..\wails_windows_amd64.syso; cd ..
   - go build -tags production -trimpath -buildvcs=false -ldflags="-w -s -H windowsgui" -o bin\TcNo-Acc-Switcher.exe
   - ps: Remove-Item -Force *.syso
 
