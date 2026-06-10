@@ -97,17 +97,35 @@ install:
   - ps: |
       & "$env:APPVEYOR_BUILD_FOLDER\other\NSIS\nsis7zplugin.ps1"
   - set PATH=%USERPROFILE%\go\bin;%PATH%
-
-build_script:
   - ps: |
-      & "$env:APPVEYOR_BUILD_FOLDER\ci\appveyor-set-version.ps1"
+      $tag = $env:DATEVERSION -replace '^v', ''
+      if (-not $tag) { $tag = $env:APPVEYOR_REPO_TAG_NAME -replace '^v', '' }
+      $nums = @()
+      foreach ($m in [regex]::Matches($tag, '\d+')) { $nums += [int]$m.Value }
+      if ($nums.Count -eq 0) { throw "Tag '$tag' has no numeric version for NSIS." }
+      while ($nums.Count -lt 4) { $nums += 0 }
+      if ($nums.Count -gt 4) { $nums = $nums[0..3] }
+      $nsisVersion = $nums -join '.'
+      $env:APP_VERSION = $tag
+      $env:NSIS_VERSION = $nsisVersion
+      Write-Host "Tag: $env:DATEVERSION  Display: $tag  NSIS VIProductVersion: $nsisVersion"
+      $configPath = "$env:APPVEYOR_BUILD_FOLDER\build\config.yml"
+      $config = [System.IO.File]::ReadAllText($configPath)
+      $config = $config -replace '(?m)^(\s+)version:\s*"[^"]*"', "`${1}version: `"$tag`""
+      [System.IO.File]::WriteAllText($configPath, $config, [System.Text.UTF8Encoding]::new($false))
+      $infoPath = "$env:APPVEYOR_BUILD_FOLDER\build\windows\info.json"
+      $info = [System.IO.File]::ReadAllText($infoPath)
+      $info = $info -replace '"file_version":\s*"[^"]*"', "`"file_version`": `"$nsisVersion`""
+      $info = $info -replace '"ProductVersion":\s*"[^"]*"', "`"ProductVersion`": `"$nsisVersion`""
+      [System.IO.File]::WriteAllText($infoPath, $info, [System.Text.UTF8Encoding]::new($false))
+      Write-Host "config.yml and info.json updated."
   - ps: |
-      Write-Host "pnpm install starting..."
       Push-Location "$env:APPVEYOR_BUILD_FOLDER\frontend"
-      pnpm install --frozen-lockfile --reporter=append-only
+      pnpm install --frozen-lockfile
       if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       Pop-Location
-      Write-Host "pnpm install finished."
+
+build_script:
   - wails3 generate bindings -f "-tags production" -clean=true -ts
   - ps: |
       Push-Location "$env:APPVEYOR_BUILD_FOLDER\frontend"
