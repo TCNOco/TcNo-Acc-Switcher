@@ -26,6 +26,16 @@
   padding: 0.25rem;
 }
 
+.platform_tile_ctx {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .platform_list_item {
   /* Single formula for tile size — empty drag gaps must match filled cells (flex min-size). */
   $tile: min(20vw, 175px);

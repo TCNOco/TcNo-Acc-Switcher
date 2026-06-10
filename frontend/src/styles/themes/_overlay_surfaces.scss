@@ -1,6 +1,8 @@
 // Shared CSS custom properties for toasts, AppModal, and the stability prompt.
 // Include inside each theme's :root { … } block.
 
+@use "../modal_primary" as mp;
+
 @mixin overlay-root-tokens(
   $modal-bg: var(--surface-panel-bg),
   $modal-header-bg: var(--border-bar-bg),
@@ -45,4 +47,6 @@
   .stability-prompt__link:hover {
     color: var(--notification-message-fg, var(--whiteSecondary));
   }
+
+  @include mp.modal-primary-button-rules;
 }

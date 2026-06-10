@@ -18,6 +18,20 @@
   import { FOLDER_PICKER_APPDATA, FOLDER_PICKER_PORTABLE } from "../stores/modal";
   import * as FilesystemService from "../../bindings/TcNo-Acc-Switcher/filesystemservice";
   import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
+  import {
+    MODAL_FRAME_MIN_H,
+    MODAL_FRAME_MIN_W,
+    MODAL_FRAME_MIN_W_FOLDER,
+    MODAL_RESIZE_EDGES,
+    MODAL_RESIZE_CURSOR,
+    centerFrame,
+    clampRect,
+    getModalBounds,
+    startModalDrag,
+    startModalResize,
+    type ModalFrameRect,
+    type ResizeEdge,
+  } from "../lib/modalFrame";
 
   const DISCORD_URL = "https://s.tcno.co/AccSwitcherDiscord";
   const FEEDBACK_MAX_LENGTH = 2000;
@@ -32,8 +46,14 @@
   let folderStatSeq = 0;
   let folderPathStat: { exists: boolean; isDir: boolean } | null = null;
 
+  $: modalMinSize = {
+    minW: m?.kind === "folder" ? MODAL_FRAME_MIN_W_FOLDER : MODAL_FRAME_MIN_W,
+    minH: MODAL_FRAME_MIN_H,
+  };
+
   $: if (m?.id !== undefined && m.id !== lastModalSyncId) {
     lastModalSyncId = m.id;
+    frameReady = false;
     folderPathStat = null;
     if (m.kind === "prompt") {
       promptValue = m.initialValue ?? "";
@@ -54,6 +74,7 @@
     void tick().then(() =>
       requestAnimationFrame(() => {
         if (get(activeModal)?.id === m.id) {
+          initModalFrame(m.id);
           focusAndSelectActiveInput();
         }
       }),
@@ -62,7 +83,46 @@
 
   $: if (!m) {
     lastModalSyncId = -1;
+    frameReady = false;
     folderPathStat = null;
+  }
+
+  function initModalFrame(expectedId: number): void {
+    if (!backdropEl || !modalFgEl || get(activeModal)?.id !== expectedId) return;
+    const bounds = getModalBounds(backdropEl);
+    const naturalW = modalFgEl.offsetWidth;
+    const naturalH = modalFgEl.offsetHeight;
+    modalFrame = centerFrame(naturalW, naturalH, bounds, modalMinSize);
+    frameReady = true;
+  }
+
+  function reclampModalFrame(): void {
+    if (!frameReady || !backdropEl) return;
+    modalFrame = clampRect(modalFrame, getModalBounds(backdropEl), modalMinSize);
+  }
+
+  function onHeaderPointerDown(e: PointerEvent): void {
+    if (!frameReady || !headerEl || !backdropEl) return;
+    startModalDrag(e, headerEl, modalFrame, {
+      bounds: getModalBounds(backdropEl),
+      minSize: modalMinSize,
+      onUpdate: (rect) => {
+        modalFrame = rect;
+      },
+    });
+  }
+
+  function onResizePointerDown(e: PointerEvent, edge: ResizeEdge): void {
+    if (!frameReady || !backdropEl) return;
+    const handle = e.currentTarget;
+    if (!(handle instanceof HTMLElement)) return;
+    startModalResize(e, handle, edge, modalFrame, {
+      bounds: getModalBounds(backdropEl),
+      minSize: modalMinSize,
+      onUpdate: (rect) => {
+        modalFrame = rect;
+      },
+    });
   }
 
   $: if (!m || m.kind !== "folder" || !folderPath.trim()) {
@@ -100,6 +160,11 @@
   })();
 
   let backdropEl: HTMLDivElement | undefined;
+  let modalFgEl: HTMLDivElement | undefined;
+  let headerEl: HTMLElement | undefined;
+  let modalFrame: ModalFrameRect = { left: 0, top: 0, width: 0, height: 0 };
+  let frameReady = false;
+
   let promptEl: HTMLInputElement | HTMLTextAreaElement | undefined;
   let feedbackEl: HTMLTextAreaElement | undefined;
   let folderInputEl: HTMLInputElement | undefined;
@@ -137,7 +202,11 @@
 
   onMount(() => {
     window.addEventListener("keydown", onKeydown);
-    return () => window.removeEventListener("keydown", onKeydown);
+    window.addEventListener("resize", reclampModalFrame);
+    return () => {
+      window.removeEventListener("keydown", onKeydown);
+      window.removeEventListener("resize", reclampModalFrame);
+    };
   });
 
   function confirmPositive(): void {
@@ -229,15 +298,29 @@
   >
     <div
       class="modalFG"
+      class:modalFG--ready={frameReady}
       class:modalFilePicker={m.kind === "folder"}
+      bind:this={modalFgEl}
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title-label"
-      on:mousedown|stopPropagation
+      style={frameReady
+        ? `left:${modalFrame.left}px;top:${modalFrame.top}px;width:${modalFrame.width}px;height:${modalFrame.height}px`
+        : undefined}
       in:scale={{ start: 0.96, duration: motionEnabled() ? DUR.normal : 0, easing: cubicOut, delay: motionEnabled() ? 20 : 0 }}
       out:scale={{ start: 0.96, duration: motionEnabled() ? DUR.fast : 0, easing: cubicOut }}
     >
-      <header class="modal-headerbar">
+      {#each MODAL_RESIZE_EDGES as edge (edge)}
+        <div
+          class="modal-resize-handle modal-resize-{edge}"
+          style:cursor={MODAL_RESIZE_CURSOR[edge]}
+          role="presentation"
+          on:pointerdown={(e) => onResizePointerDown(e, edge)}
+        ></div>
+      {/each}
+      <div class="modalFG-inner">
+      <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+      <header class="modal-headerbar" bind:this={headerEl} on:pointerdown={onHeaderPointerDown}>
         <span class="modal-title-left">
           <svg
             class="header_icon"
@@ -502,6 +585,7 @@
           {/if}
         {/key}
       </div>
+      </div>
     </div>
   </div>
 {/if}
@@ -512,9 +596,6 @@
     inset: 0;
     z-index: 50;
     background: var(--modal-scrim, var(--backdrop-scrim-55));
-    display: flex;
-    align-items: center;
-    justify-content: center;
     padding: 1rem;
     box-sizing: border-box;
   }
@@ -522,16 +603,119 @@
   .modalFG {
     display: flex;
     flex-direction: column;
-    min-width: min(320px, 100%);
-    max-height: min(900px, calc(100% - 2rem));
+    position: absolute;
     background: var(--modal-bg, var(--mainContentBackground, var(--program-bg)));
     border: var(--border-bar-size, 1px) solid var(--border-bar-bg);
     box-shadow: 0 12px 40px var(--shadow-color-45);
+    overflow: visible;
+    box-sizing: border-box;
+  }
+
+  .modalFG-inner {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    height: 100%;
     overflow: hidden;
   }
 
-  .modalFilePicker {
-    min-width: min(720px, 100%);
+  .modalFG:not(.modalFG--ready) {
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: auto;
+    min-width: min(320px, calc(100% - 2rem));
+    max-width: calc(100% - 2rem);
+    max-height: min(900px, calc(100% - 2rem));
+    height: auto;
+  }
+
+  .modalFG.modalFG--ready {
+    transform: none;
+    min-width: 0;
+    max-width: none;
+    max-height: none;
+  }
+
+  .modalFG.modalFilePicker:not(.modalFG--ready) {
+    min-width: min(720px, calc(100% - 2rem));
+  }
+
+  $modal-resize-handle: 16px;
+  $modal-resize-outset: 8px;
+
+  .modal-resize-handle {
+    position: absolute;
+    z-index: 3;
+    touch-action: none;
+  }
+
+  .modal-resize-n,
+  .modal-resize-s {
+    left: -$modal-resize-outset;
+    right: -$modal-resize-outset;
+    height: $modal-resize-handle;
+  }
+
+  .modal-resize-n {
+    top: -$modal-resize-outset;
+    cursor: ns-resize;
+  }
+
+  .modal-resize-s {
+    bottom: -$modal-resize-outset;
+    cursor: ns-resize;
+  }
+
+  .modal-resize-e,
+  .modal-resize-w {
+    top: -$modal-resize-outset;
+    bottom: -$modal-resize-outset;
+    width: $modal-resize-handle;
+  }
+
+  .modal-resize-e {
+    right: -$modal-resize-outset;
+    cursor: ew-resize;
+  }
+
+  .modal-resize-w {
+    left: -$modal-resize-outset;
+    cursor: ew-resize;
+  }
+
+  .modal-resize-ne,
+  .modal-resize-nw,
+  .modal-resize-se,
+  .modal-resize-sw {
+    width: $modal-resize-handle;
+    height: $modal-resize-handle;
+    z-index: 4;
+  }
+
+  .modal-resize-ne {
+    top: -$modal-resize-outset;
+    right: -$modal-resize-outset;
+    cursor: nesw-resize;
+  }
+
+  .modal-resize-nw {
+    top: -$modal-resize-outset;
+    left: -$modal-resize-outset;
+    cursor: nwse-resize;
+  }
+
+  .modal-resize-se {
+    bottom: -$modal-resize-outset;
+    right: -$modal-resize-outset;
+    cursor: nwse-resize;
+  }
+
+  .modal-resize-sw {
+    bottom: -$modal-resize-outset;
+    left: -$modal-resize-outset;
+    cursor: nesw-resize;
   }
 
   .modal-headerbar {
@@ -544,6 +728,14 @@
     color: var(--modal-header-fg, var(--whiteSecondary));
     flex-shrink: 0;
     user-select: none;
+    cursor: grab;
+    position: relative;
+    z-index: 2;
+    touch-action: none;
+
+    &:active {
+      cursor: grabbing;
+    }
   }
 
   .modal-title-left {
@@ -574,6 +766,7 @@
   .modal-window-controls {
     display: flex;
     height: 100%;
+    cursor: default;
   }
 
   .modal-window-controls .win-btn {

@@ -5,6 +5,7 @@ import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/plat
 import { offlineMode } from "../stores/offlineMode";
 import { setUserOverride } from "../stores/backgroundImage";
 import { scheduleUpdaterThemeSync } from "./updaterTheme";
+import modalPrimaryCss from "../styles/modal-primary.scss?inline";
 
 const DEFAULT_THEME_ID = "default";
 const CUSTOM_THEME_ACCENT_KEY = "custom";
@@ -14,6 +15,8 @@ const OVERLAY_STYLE_ID = "tcno-theme-overlay";
 const OVERLAY_STYLE_ATTR = "data-tcno-theme-overlay";
 const ACCENT_OVERLAY_STYLE_ID = "tcno-theme-accent-overlay";
 const ACCENT_OVERLAY_STYLE_ATTR = "data-tcno-theme-accent-overlay";
+const MODAL_PRIMARY_STYLE_ID = "tcno-modal-primary-overlay";
+const MODAL_PRIMARY_STYLE_ATTR = "data-tcno-modal-primary-overlay";
 /** Marks runtime-injected Google Fonts stylesheets (see syncThemeGoogleFonts). */
 const THEME_FONT_LINK_ATTR = "data-tcno-google-fonts-theme";
 const THEME_STORAGE_KEY = "tcno:theme";
@@ -370,12 +373,14 @@ function buildAccentOverlayCss(color: string): string {
   const normalized = normalizeHexColor(color) ?? DEFAULT_THEME_OPTION.defaultAccentColor;
   const rgb = hexToRgb(normalized);
   const hsl = rgbToHsl(rgb);
+  const textOnBrightBg = hsl.l >= 58 ? "#111111" : "#f8f8f2";
   return `
 :root {
   --accent: ${normalized};
   --accentHS: ${hsl.h}, ${hsl.s}%;
   --accentL: ${hsl.l}%;
   --accentInt: ${rgb.r}, ${rgb.g}, ${rgb.b};
+  --text-on-bright-bg: ${textOnBrightBg};
   --notification-info-border: var(--accent);
   --accent-border-deep: hsl(var(--accentHS), 100%, 9%);
   --accent-text-bright: hsl(var(--accentHS), calc(var(--accentL) + 32%));
@@ -403,6 +408,7 @@ function buildAccentOverlayCss(color: string): string {
 function applyAccentOverlay(color: string | null): void {
   removeAccentOverlay();
   if (typeof document === "undefined" || !color) {
+    syncModalPrimaryStyles();
     scheduleUpdaterThemeSync();
     return;
   }
@@ -411,7 +417,23 @@ function applyAccentOverlay(color: string | null): void {
   style.setAttribute(ACCENT_OVERLAY_STYLE_ATTR, "");
   style.textContent = buildAccentOverlayCss(color);
   document.head.appendChild(style);
+  syncModalPrimaryStyles();
   scheduleUpdaterThemeSync();
+}
+
+/** Keep modal primary button rules last in `<head>` so theme sheets cannot override them. */
+function syncModalPrimaryStyles(): void {
+  if (typeof document === "undefined") {
+    return;
+  }
+  let style = document.getElementById(MODAL_PRIMARY_STYLE_ID) as HTMLStyleElement | null;
+  if (!style) {
+    style = document.createElement("style");
+    style.id = MODAL_PRIMARY_STYLE_ID;
+    style.setAttribute(MODAL_PRIMARY_STYLE_ATTR, "");
+    style.textContent = modalPrimaryCss;
+  }
+  document.head.appendChild(style);
 }
 
 function validateAccentKey(theme: ThemeOption, key: string): string {
