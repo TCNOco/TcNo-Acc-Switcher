@@ -125,26 +125,85 @@ function Get-SignPathSigningRequest {
   return Invoke-RestMethod -Method Get -Uri "$apiBase/SigningRequests/$SigningRequestId" -Headers $authHeaders
 }
 
-function Find-SignPathSigningRequestId {
-  param([string]$BuildUrl)
+function Get-SignPathSigningRequestList {
+  $preApiBase = "https://app.signpath.io/api/v1-pre/$($env:SIGNPATH_ORGANIZATION_ID)"
   $listUrls = @(
-    "$apiBase/SigningRequests?projectSlug=$($env:SIGNPATH_PROJECT_SLUG)&pageSize=20&sortOrder=Descending",
-    "$apiBase/SigningRequests?projectSlug=$($env:SIGNPATH_PROJECT_SLUG)"
+    "$apiBase/SigningRequests?projectSlug=$($env:SIGNPATH_PROJECT_SLUG)&pageSize=25&sortOrder=Descending",
+    "$apiBase/SigningRequests?projectSlug=$($env:SIGNPATH_PROJECT_SLUG)",
+    "$preApiBase/SigningRequests?projectSlug=$($env:SIGNPATH_PROJECT_SLUG)&pageSize=25",
+    "$preApiBase/SigningRequests"
   )
   foreach ($listUrl in $listUrls) {
     try {
       $response = Invoke-RestMethod -Method Get -Uri $listUrl -Headers $authHeaders
     } catch {
-      Write-Host "SignPath list request failed for $listUrl : $_"
+      Write-Host "SignPath list API failed for $listUrl : $($_.Exception.Message)"
       continue
     }
     $requests = @($response)
     if ($response.PSObject.Properties.Name -contains 'items') { $requests = @($response.items) }
-    foreach ($request in $requests) {
-      $originUrl = $request.origin.buildData.url
-      if ($originUrl -and ($originUrl -eq $BuildUrl -or $originUrl -like "*$($env:APPVEYOR_BUILD_ID)*")) {
-        return $request.id
-      }
+    if ($response.PSObject.Properties.Name -contains 'signingRequests') { $requests = @($response.signingRequests) }
+    if ($requests.Count -gt 0) {
+      Write-Host "SignPath list API returned $($requests.Count) request(s) from $listUrl"
+      return $requests
+    }
+  }
+  return @()
+}
+
+function Test-SignPathSigningRequestMatch {
+  param(
+    $Request,
+    [string]$BuildUrl
+  )
+  $request = $Request
+  $requestId = $request.id
+  if (-not $requestId) { $requestId = $request.signingRequestId }
+
+  if (-not $request.origin -and $requestId) {
+    try {
+      $request = Get-SignPathSigningRequest -SigningRequestId $requestId
+    } catch {
+      Write-Host "Could not load signing request $requestId for matching: $_"
+      return $false
+    }
+  }
+
+  if ($request.projectSlug -and $request.projectSlug -ne $env:SIGNPATH_PROJECT_SLUG) { return $false }
+  if ($request.signingPolicySlug -and $request.signingPolicySlug -ne $env:SIGNPATH_POLICY_SLUG) { return $false }
+
+  $originUrl = $request.origin.buildData.url
+  if ($originUrl) {
+    if ($originUrl -eq $BuildUrl) { return $true }
+    if ($originUrl -like "*$($env:APPVEYOR_BUILD_ID)*") { return $true }
+    if ($originUrl -like "*$($env:APPVEYOR_JOB_ID)*") { return $true }
+  }
+
+  $commitId = $request.origin.repositoryData.commitId
+  if ($commitId -and $env:APPVEYOR_REPO_COMMIT) {
+    $shortCommit = $env:APPVEYOR_REPO_COMMIT.Substring(0, [Math]::Min(7, $env:APPVEYOR_REPO_COMMIT.Length))
+    if ($commitId -eq $env:APPVEYOR_REPO_COMMIT) { return $true }
+    if ($commitId.StartsWith($shortCommit) -or $env:APPVEYOR_REPO_COMMIT.StartsWith($commitId)) { return $true }
+  }
+
+  foreach ($tag in @($env:APPVEYOR_REPO_TAG_NAME, $env:DATEVERSION)) {
+    if ($tag -and $request.description -and $request.description -like "*$tag*") {
+      return $true
+    }
+  }
+
+  return $false
+}
+
+function Find-SignPathSigningRequestId {
+  param([string]$BuildUrl)
+  foreach ($request in (Get-SignPathSigningRequestList)) {
+    $requestId = $request.id
+    if (-not $requestId) { $requestId = $request.signingRequestId }
+    if (-not $requestId) { continue }
+    if (Test-SignPathSigningRequestMatch -Request $request -BuildUrl $BuildUrl) {
+      Write-Host "Matched SignPath signing request $requestId"
+      return $requestId
     }
   }
   return $null
@@ -173,11 +232,14 @@ if ($env:SIGNPATH_TRIGGER_VIA_WEBHOOK -eq 'true') {
 }
 
 Write-Host "Waiting for SignPath origin-verified signing request for $expectedBuildUrl..."
+Write-Host "Commit: $($env:APPVEYOR_REPO_COMMIT)  Tag: $($env:APPVEYOR_REPO_TAG_NAME)"
 $signingRequestId = $null
 $deadline = (Get-Date).AddMinutes(30)
 while (-not $signingRequestId -and (Get-Date) -lt $deadline) {
-  Start-Sleep -Seconds 10
   $signingRequestId = Find-SignPathSigningRequestId -BuildUrl $expectedBuildUrl
+  if ($signingRequestId) { break }
+  Write-Host 'No matching SignPath signing request yet; retrying in 10s...'
+  Start-Sleep -Seconds 10
 }
 if (-not $signingRequestId) {
   throw "Timed out waiting for SignPath signing request linked to AppVeyor build $($env:APPVEYOR_BUILD_ID)."
