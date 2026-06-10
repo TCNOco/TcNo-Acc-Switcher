@@ -1,4 +1,8 @@
 $ErrorActionPreference = 'Stop'
+# go/7z/makensis log to stderr; PS 7+ treats that as a terminating NativeCommandError.
+if (Get-Variable -Name PSNativeCommandUseErrorActionPreference -ErrorAction SilentlyContinue) {
+  $PSNativeCommandUseErrorActionPreference = $false
+}
 
 if (-not $env:SIGNPATH_API_TOKEN) {
   throw @'
@@ -280,9 +284,12 @@ if ($env:UPDATER_KEY) {
 }
 $sigPath = Join-Path $root 'bin\TcNo-Acc-Switcher.exe.sig'
 if ($keyReady) {
-  go run "$root\cmd\sign-release\main.go" $keyPath $exePath | Out-File -Encoding ascii $sigPath
+  go run "$root\cmd\sign-release\main.go" $keyPath $exePath 2>$null | Out-File -Encoding ascii $sigPath
   if ($LASTEXITCODE -ne 0) {
-    Write-Host "Ed25519 signing failed."
+    Write-Host "Ed25519 signing failed (exit $LASTEXITCODE)."
+    Remove-Item -Force $sigPath -ErrorAction SilentlyContinue
+  } elseif (-not (Test-Path $sigPath) -or (Get-Item $sigPath).Length -eq 0) {
+    Write-Host "Ed25519 signing failed (empty signature file)."
     Remove-Item -Force $sigPath -ErrorAction SilentlyContinue
   } else {
     Write-Host "Ed25519 signature created."
