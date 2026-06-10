@@ -71,7 +71,14 @@ Create a SignPath CI user, add it as submitter on $($env:SIGNPATH_POLICY_SLUG), 
 }
 
 function Invoke-SignPathAppVeyorIntegration {
+  param(
+    [array]$Artifacts = $null
+  )
+
   $integrationUrl = "https://app.signpath.io/API/v1/$($env:SIGNPATH_ORGANIZATION_ID)/Integrations/AppVeyor?ProjectSlug=$($env:SIGNPATH_PROJECT_SLUG)&SigningPolicySlug=$($env:SIGNPATH_POLICY_SLUG)"
+  if (-not $Artifacts) {
+    $Artifacts = @(Get-AppVeyorWebhookArtifacts)
+  }
   $payload = @{
     accountName = $env:APPVEYOR_ACCOUNT_NAME
     projectId   = [int]$env:APPVEYOR_PROJECT_ID
@@ -89,7 +96,7 @@ function Invoke-SignPathAppVeyorIntegration {
     commitAuthorEmail = $env:APPVEYOR_REPO_COMMIT_AUTHOR_EMAIL
     commitDate  = $env:APPVEYOR_REPO_COMMIT_TIMESTAMP
     commitMessage = $env:APPVEYOR_REPO_COMMIT_MESSAGE
-    artifacts   = @(Get-AppVeyorWebhookArtifacts)
+    artifacts   = @($Artifacts)
   }
 
   Write-Host "Triggering SignPath AppVeyor origin verification..."
@@ -155,6 +162,16 @@ function Get-SignPathSigningRequestList {
   return @()
 }
 
+function Get-SignPathRequestArtifactName {
+  param($Request)
+  foreach ($key in @('unsignedArtifactFileName', 'artifactFileName', 'fileName', 'unsignedArtifactName')) {
+    if ($Request.PSObject.Properties.Name -contains $key -and $Request.$key) {
+      return [string]$Request.$key
+    }
+  }
+  return $null
+}
+
 function Test-SignPathSigningRequestMatch {
   param(
     $Request,
@@ -200,17 +217,90 @@ function Test-SignPathSigningRequestMatch {
 }
 
 function Find-SignPathSigningRequestId {
-  param([string]$BuildUrl)
+  param(
+    [string]$BuildUrl,
+    [string[]]$ExcludeRequestIds = @(),
+    [string]$ArtifactName = $null,
+    [string]$ArtifactNameContains = $null,
+    [switch]$RequireOrigin
+  )
   foreach ($request in (Get-SignPathSigningRequestList)) {
     $requestId = $request.id
     if (-not $requestId) { $requestId = $request.signingRequestId }
     if (-not $requestId) { continue }
-    if (Test-SignPathSigningRequestMatch -Request $request -BuildUrl $BuildUrl) {
-      Write-Host "Matched SignPath signing request $requestId"
-      return $requestId
+    if ($ExcludeRequestIds -contains $requestId) { continue }
+
+    $artifactLabel = Get-SignPathRequestArtifactName -Request $request
+    if (-not $artifactLabel -and $requestId) {
+      try {
+        $artifactLabel = Get-SignPathRequestArtifactName -Request (Get-SignPathSigningRequest -SigningRequestId $requestId)
+      } catch {
+        # Keep matching on build metadata when artifact name is unavailable in list API.
+      }
     }
+    if ($ArtifactName -and $artifactLabel -and $artifactLabel -notlike "*$ArtifactName") { continue }
+    if ($ArtifactNameContains -and $artifactLabel -and $artifactLabel -notlike "*$ArtifactNameContains*") { continue }
+
+    if (-not (Test-SignPathSigningRequestMatch -Request $request -BuildUrl $BuildUrl)) { continue }
+
+    $originRequest = $request
+    if (-not $originRequest.origin -and $requestId) {
+      try { $originRequest = Get-SignPathSigningRequest -SigningRequestId $requestId } catch { }
+    }
+    if ($RequireOrigin -and -not $originRequest.origin) { continue }
+
+    if ($artifactLabel) {
+      Write-Host "Matched SignPath signing request $requestId (artifact: $artifactLabel)"
+    } else {
+      Write-Host "Matched SignPath signing request $requestId"
+    }
+    return $requestId
   }
   return $null
+}
+
+function Receive-SignPathOriginVerifiedArtifact {
+  param(
+    [string]$BuildUrl,
+    [datetime]$Deadline,
+    [string]$OutputPath,
+    [string]$PhaseLabel,
+    [string[]]$ExcludeRequestIds = @(),
+    [string]$ArtifactName = $null,
+    [string]$ArtifactNameContains = $null
+  )
+
+  Write-Host "Waiting for SignPath origin-verified $PhaseLabel..."
+  $signingRequestId = $null
+  while (-not $signingRequestId -and (Get-Date) -lt $Deadline) {
+    $signingRequestId = Find-SignPathSigningRequestId `
+      -BuildUrl $BuildUrl `
+      -ExcludeRequestIds $ExcludeRequestIds `
+      -ArtifactName $ArtifactName `
+      -ArtifactNameContains $ArtifactNameContains `
+      -RequireOrigin
+    if ($signingRequestId) { break }
+    Write-Host "No matching SignPath signing request for $PhaseLabel yet; retrying in 10s..."
+    Start-Sleep -Seconds 10
+  }
+  if (-not $signingRequestId) {
+    throw "Timed out waiting for SignPath signing request for $PhaseLabel on build $($env:APPVEYOR_BUILD_ID)."
+  }
+
+  $status = Wait-SignPathSigningRequest -SigningRequestId $signingRequestId -Deadline $Deadline
+  if ($status.status -ne 'Completed') {
+    throw "SignPath signing failed for $PhaseLabel with status $($status.status) / $($status.workflowStatus)."
+  }
+
+  $signingRequest = Get-SignPathSigningRequest -SigningRequestId $signingRequestId
+  if (-not $signingRequest.origin) {
+    throw "SignPath signing request for $PhaseLabel completed without origin metadata."
+  }
+  Write-Host "Origin verified ($PhaseLabel): $($signingRequest.origin.repositoryData.url) @ $($signingRequest.origin.repositoryData.commitId)"
+
+  Write-Host "Downloading signed $PhaseLabel..."
+  Invoke-WebRequest -Method Get -Uri "$apiBase/SigningRequests/$signingRequestId/SignedArtifact" -Headers $authHeaders -OutFile $OutputPath
+  return $signingRequestId
 }
 
 function Wait-SignPathSigningRequest {
@@ -235,34 +325,14 @@ if ($env:SIGNPATH_TRIGGER_VIA_WEBHOOK -eq 'true') {
   Invoke-SignPathAppVeyorIntegration
 }
 
-Write-Host "Waiting for SignPath origin-verified signing request for $expectedBuildUrl..."
 Write-Host "Commit: $($env:APPVEYOR_REPO_COMMIT)  Tag: $($env:APPVEYOR_REPO_TAG_NAME)"
-$signingRequestId = $null
 $deadline = (Get-Date).AddMinutes(30)
-while (-not $signingRequestId -and (Get-Date) -lt $deadline) {
-  $signingRequestId = Find-SignPathSigningRequestId -BuildUrl $expectedBuildUrl
-  if ($signingRequestId) { break }
-  Write-Host 'No matching SignPath signing request yet; retrying in 10s...'
-  Start-Sleep -Seconds 10
-}
-if (-not $signingRequestId) {
-  throw "Timed out waiting for SignPath signing request linked to AppVeyor build $($env:APPVEYOR_BUILD_ID)."
-}
-Write-Host "Found SignPath signing request $signingRequestId"
-
-$status = Wait-SignPathSigningRequest -SigningRequestId $signingRequestId -Deadline $deadline
-if ($status.status -ne 'Completed') {
-  throw "SignPath signing failed with status $($status.status) / $($status.workflowStatus)."
-}
-
-$signingRequest = Get-SignPathSigningRequest -SigningRequestId $signingRequestId
-if (-not $signingRequest.origin) {
-  throw "SignPath signing request completed without origin metadata (origin verification missing)."
-}
-Write-Host "Origin verified: $($signingRequest.origin.repositoryData.url) @ $($signingRequest.origin.repositoryData.commitId)"
-
-Write-Host "Downloading signed artifact..."
-Invoke-WebRequest -Method Get -Uri "$apiBase/SigningRequests/$signingRequestId/SignedArtifact" -Headers $authHeaders -OutFile $exePath
+$exeSigningRequestId = Receive-SignPathOriginVerifiedArtifact `
+  -BuildUrl $expectedBuildUrl `
+  -Deadline $deadline `
+  -OutputPath $exePath `
+  -PhaseLabel 'application EXE' `
+  -ArtifactName 'TcNo-Acc-Switcher.exe'
 
 Write-Host "Signing with Ed25519..."
 $keyPath = Join-Path $root 'updater-key'
@@ -331,22 +401,33 @@ if (-not $installer) {
   throw 'NSIS installer not found after build.'
 }
 
-# Same default artifact configuration as the main EXE (webhook does not pass a slug either).
-# Direct submit: installer is built here in after_deploy, after the origin-verified webhook ran for the EXE.
-Write-Host "Signing NSIS installer with SignPath (direct submit, default artifact configuration)..."
-$signedInstallerPath = Join-Path $installer.DirectoryName ($installer.BaseName + '-signed' + $installer.Extension)
-Submit-SigningRequest `
-  -InputArtifactPath $installer.FullName `
-  -ApiToken $env:SIGNPATH_API_TOKEN `
-  -OrganizationId $env:SIGNPATH_ORGANIZATION_ID `
-  -ProjectSlug $env:SIGNPATH_PROJECT_SLUG `
-  -SigningPolicySlug $env:SIGNPATH_POLICY_SLUG `
-  -OutputArtifactPath $signedInstallerPath `
-  -Description "Installer $($env:APPVEYOR_REPO_TAG_NAME)" `
-  -WaitForCompletion
-Move-Item -Force $signedInstallerPath $installer.FullName
+# Installer is built after the signed EXE is available; publish it to AppVeyor and trigger the same
+# SignPath AppVeyor integration so origin metadata matches the EXE signing request.
+Write-Host "Publishing NSIS installer as AppVeyor artifact..."
+if (-not (Get-Command Push-AppveyorArtifact -ErrorAction SilentlyContinue)) {
+  Import-Module 'C:\Program Files\AppVeyor\BuildAgent\Modules\build-worker-api' -ErrorAction Stop
+}
+Push-AppveyorArtifact $installer.FullName -FileName $installer.Name -DeploymentName installer
+
+$installerArtifacts = @(Get-AppVeyorWebhookArtifacts | Where-Object {
+  $_.fileName -like '*Installer.exe' -or $_.name -eq 'installer'
+})
+if ($installerArtifacts.Count -eq 0) {
+  throw 'Installer artifact was not found on AppVeyor after Push-AppveyorArtifact.'
+}
+
+Write-Host "Triggering SignPath AppVeyor origin verification for installer..."
+Invoke-SignPathAppVeyorIntegration -Artifacts $installerArtifacts
+
+$installerSigningRequestId = Receive-SignPathOriginVerifiedArtifact `
+  -BuildUrl $expectedBuildUrl `
+  -Deadline $deadline `
+  -OutputPath $installer.FullName `
+  -PhaseLabel 'NSIS installer' `
+  -ExcludeRequestIds @($exeSigningRequestId) `
+  -ArtifactNameContains 'Installer'
 $installer = Get-Item $installer.FullName
-Write-Host "NSIS installer signed."
+Write-Host "NSIS installer signed with origin verification (request $installerSigningRequestId)."
 
 Write-Host "Publishing draft GitHub release $($env:APPVEYOR_REPO_TAG_NAME)..."
 if (-not $env:github_release_token) {
