@@ -55,7 +55,8 @@ install:
   - npm install -g corepack@latest
   - ps: corepack enable
   - ps: corepack prepare pnpm@11.0.8 --activate
-  - ps: Write-Host "pnpm version: $(pnpm --version)"
+  - ps: |
+      Write-Host "pnpm version: $(pnpm --version)"
   - ps: |
       $env:Path = "$env:USERPROFILE\go\bin;$env:Path"
       function Get-Wails3VersionText {
