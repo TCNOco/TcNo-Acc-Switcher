@@ -50,20 +50,26 @@ install:
   - npm install -g pnpm
   - ps: |
       $env:Path = "$env:USERPROFILE\go\bin;$env:Path"
+      function Get-Wails3VersionText {
+        # wails3 prints its version to stderr; cmd avoids PowerShell NativeCommandError noise in CI logs
+        return (& cmd /c "wails3 version 2>&1").Trim()
+      }
       $wails3Exe = Join-Path $env:USERPROFILE 'go\bin\wails3.exe'
-      if ((Test-Path $wails3Exe) -and (wails3 version 2>&1 | Out-String) -match [regex]::Escape($env:WAILS3_VERSION)) {
+      if ((Test-Path $wails3Exe) -and ((Get-Wails3VersionText) -match [regex]::Escape($env:WAILS3_VERSION))) {
         Write-Host "wails3 $($env:WAILS3_VERSION) already installed."
       } else {
         Write-Host "Installing wails3 $($env:WAILS3_VERSION) (pinned; do not use @latest)..."
-        go install "github.com/wailsapp/wails/v3/cmd/wails3@$($env:WAILS3_VERSION)"
+        go install "github.com/wailsapp/wails/v3/cmd/wails3@$($env:WAILS3_VERSION)" 2>&1 | ForEach-Object { Write-Host $_ }
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-        Write-Host "wails3 installed: $(wails3 version 2>&1 | Out-String)"
+        Write-Host "wails3 installed: $(Get-Wails3VersionText)"
       }
   - ps: |
       & "$env:APPVEYOR_BUILD_FOLDER\other\NSIS\nsis7zplugin.ps1"
 
 build_script:
   - ps: |
+      $env:Path = "$env:USERPROFILE\go\bin;$env:Path"
+      Write-Host "=== build_script: version and metadata ==="
       $tag = $env:DATEVERSION -replace '^v', ''
       $versionNumbers = [regex]::Matches($tag, '\d+') | ForEach-Object { [int]$_.Value }
       if ($versionNumbers.Count -eq 0) {
@@ -90,22 +96,41 @@ build_script:
       $utf8nobom = New-Object System.Text.UTF8Encoding($false)
       [System.IO.File]::WriteAllText($infoPath, $json, $utf8nobom)
       Write-Host "config.yml and info.json updated."
+  - ps: Write-Host "=== go mod tidy ==="
   - go mod tidy
   - ps: |
+      Write-Host "=== pnpm install (frontend) ==="
       Push-Location "$env:APPVEYOR_BUILD_FOLDER\frontend"
-      pnpm install --frozen-lockfile
+      pnpm install --frozen-lockfile 2>&1 | ForEach-Object { Write-Host $_ }
       if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       Pop-Location
-  - wails3 generate bindings -f "-tags production" -clean=true -ts
+      Write-Host "pnpm install finished."
   - ps: |
+      Write-Host "=== wails3 generate bindings ==="
+      wails3 generate bindings -f "-tags production" -clean=true -ts 2>&1 | ForEach-Object { Write-Host $_ }
+      if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+  - ps: |
+      Write-Host "=== pnpm run build (frontend) ==="
       Push-Location "$env:APPVEYOR_BUILD_FOLDER\frontend"
       $env:PRODUCTION = "true"
-      pnpm run build
+      pnpm run build 2>&1 | ForEach-Object { Write-Host $_ }
       if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       Pop-Location
-  - ps: cd build; wails3 generate icons -input appicon.png -macfilename darwin/icons.icns -windowsfilename windows/icon.ico; cd ..
+      Write-Host "frontend build finished."
+  - ps: |
+      Write-Host "=== wails3 generate icons ==="
+      Push-Location "$env:APPVEYOR_BUILD_FOLDER\build"
+      wails3 generate icons -input appicon.png -macfilename darwin/icons.icns -windowsfilename windows/icon.ico 2>&1 | ForEach-Object { Write-Host $_ }
+      if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      Pop-Location
   - ps: Copy-Item -Force "$env:APPVEYOR_BUILD_FOLDER\other\NSIS\img\icon.ico" "$env:APPVEYOR_BUILD_FOLDER\build\windows\icon.ico"
-  - ps: cd build; wails3 generate syso -arch amd64 -icon windows/icon.ico -manifest windows/wails.exe.manifest -info windows/info.json -out ..\wails_windows_amd64.syso; cd ..
+  - ps: |
+      Write-Host "=== wails3 generate syso ==="
+      Push-Location "$env:APPVEYOR_BUILD_FOLDER\build"
+      wails3 generate syso -arch amd64 -icon windows/icon.ico -manifest windows/wails.exe.manifest -info windows/info.json -out ..\wails_windows_amd64.syso 2>&1 | ForEach-Object { Write-Host $_ }
+      if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      Pop-Location
+  - ps: Write-Host "=== go build (Windows exe) ==="
   - go build -tags production -trimpath -buildvcs=false -ldflags="-w -s -H windowsgui" -o bin\TcNo-Acc-Switcher.exe
   - ps: Remove-Item -Force *.syso
 
