@@ -4,42 +4,14 @@
 
 <script lang="ts" generics="TAccount">
   import { onDestroy, onMount } from "svelte";
+  import { get } from "svelte/store";
   import { Events } from "@wailsio/runtime";
   import AccountImagePickOverlay from "./AccountImagePickOverlay.svelte";
   import ReorderPointerGrid from "./ReorderPointerGrid.svelte";
   import TagFilterBar from "./TagFilterBar.svelte";
   import AccountTagBubbles from "./AccountTagBubbles.svelte";
-  import { route, previousPage, appBarTitle } from "../stores/nav";
-  type EpochCheckRow = {
-    imageUrl?: string | null;
-    manualProfileImage?: boolean | null;
-    avatarPending?: boolean | null;
-  };
-
-  function shouldBumpEpoch(prev: EpochCheckRow | undefined, row: EpochCheckRow): boolean {
-    if (!prev) return false;
-    if ((prev.imageUrl ?? "").trim() !== (row.imageUrl ?? "").trim()) return true;
-    if ((prev.manualProfileImage ?? false) !== (row.manualProfileImage ?? false)) return true;
-    if ((prev.avatarPending ?? false) !== (row.avatarPending ?? false)) return true;
-    return false;
-  }
-
-  function buildEpochMap<T extends EpochCheckRow>(
-    rows: T[],
-    prevById: Map<string, T>,
-    idKey: (r: T) => string,
-    currentEpoch: Record<string, number>,
-  ): Record<string, number> {
-    const next: Record<string, number> = { ...currentEpoch };
-    for (const r of rows) {
-      const id = idKey(r);
-      if (shouldBumpEpoch(prevById.get(id), r)) {
-        next[id] = (next[id] ?? 0) + 1;
-      }
-    }
-    return next;
-  }
   import SearchOverlay, { type SearchResultRow } from "./SearchOverlay.svelte";
+  import { route, previousPage, appBarTitle } from "../stores/nav";
   import {
     platformExeIconUrl,
     platformAction,
@@ -54,27 +26,22 @@
     setPlatformAccountsCache,
   } from "../stores/platformAccountsCache";
   import { pushToast } from "../stores/toast";
-  import { activeModal, openAlertNoButton, openConfirm, openPrompt } from "../stores/modal";
+  import { activeModal } from "../stores/modal";
   import { locale, t } from "../stores/i18n";
   import * as BasicService from "../../bindings/TcNo-Acc-Switcher/internal/basic/basicservice.js";
   import { GetPlatformExeIcon } from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
-  import { formatToastWithError, formatWailsError } from "../lib/formatWailsError";
+  import { formatWailsError } from "../lib/formatWailsError";
   import {
-    isNeedsAdminError,
-    offerRestartIfNeedsAdmin,
     preflightAdminForPlatform,
     reportLaunchFailure,
   } from "../lib/adminFlow";
   import { tooltip } from "../lib/actions/tooltip";
   import { contextMenu as ctxMenuAction } from "../lib/actions/contextMenu";
   import type { MenuItemDef } from "../stores/contextMenu";
-  import * as Shortcuts from "wails-shortcuts-service";
-  import { get } from "svelte/store";
   import { offlineMode, offlineSafeImageSrc, withAssetCacheBust } from "../stores/offlineMode";
   import { fuzzyWordsMatch } from "../lib/searchFuzzy";
   import { formatLastLoginForLocale } from "../lib/formatLastLogin";
   import {
-    buildTagsSectionMenuItem,
     openTagFilterMenu,
     type TagDefRow,
     type TagFilterMode,
@@ -82,11 +49,32 @@
   import { closeSearchOverlay, searchOverlayCtrl } from "../stores/searchOverlay";
   import { platformListSort, type PlatformSortKind } from "../stores/platformListSort";
   import { actionBarStatus, fileDropInterceptor, accountProfileImageDropActive } from "../stores/fileDrop";
-  import { firstProfileImagePath } from "../lib/profileImageDrop";
-  import GameStatsSetupModalBody from "./modals/GameStatsSetupModalBody.svelte";
   import type { PlatformAccountAdapter } from "./PlatformAccountAdapter";
   import "../styles/gamestats.scss";
   import "../styles/platformAccountsShared.scss";
+
+  // ---- Extracted pure logic modules ----
+  import { shouldBumpEpoch } from "../lib/accounts/epochManager";
+  import type { EpochCheckRow } from "../lib/accounts/types";
+  import {
+    mergeListIntoExisting,
+    mergeEnrichmentIntoExisting,
+    applyLoadedAccounts,
+    type ApplyLoadedAccountsState,
+  } from "../lib/accounts/mergePipeline";
+  import { buildSharedItems, type ContextMenuContext } from "../lib/accounts/contextMenuBuilder";
+  import { fileDropIntercept, type FileDropContext } from "../lib/accounts/fileDropHandler";
+  import {
+    loadTagDefs,
+    refreshGameStatsMarkup,
+    refreshGameStatsSupport,
+    openGameStatsModal,
+  } from "../lib/accounts/gameStatsWorker";
+  import {
+    swapToLogin as swapToLoginFn,
+    handlePlatformActionKind,
+    type AccountActionsContext,
+  } from "../lib/accounts/accountActions";
 
   export let name: string;
   export let adapter: PlatformAccountAdapter<TAccount>;
@@ -191,69 +179,6 @@
     return JSON.stringify(a) === JSON.stringify(b);
   }
 
-  /** Overlay fast-list fields onto existing rows so enrichment data is not wiped. */
-  function mergeListIntoExisting(existing: TAccount[], list: TAccount[]): TAccount[] {
-    const byId = new Map(existing.map((a) => [adapter.id(a), a] as const));
-    return list.map((row) => {
-      const prev = byId.get(adapter.id(row));
-      return prev ? ({ ...prev, ...row } as TAccount) : row;
-    });
-  }
-
-  /** Overlay enrichment fields onto existing rows, preserving list order. */
-  function mergeEnrichmentIntoExisting(existing: TAccount[], enrich: TAccount[]): TAccount[] {
-    const byId = new Map(enrich.map((a) => [adapter.id(a), a] as const));
-    return existing.map((row) => {
-      const patch = byId.get(adapter.id(row));
-      return patch ? ({ ...row, ...patch } as TAccount) : row;
-    });
-  }
-
-  function rowsVisuallyChanged(rows: TAccount[], prevById: Map<string, TAccount>): boolean {
-    for (const row of rows) {
-      const prev = prevById.get(adapter.id(row));
-      if (!prev || !accountRowEqual(prev, row)) return true;
-    }
-    return false;
-  }
-
-  function applyLoadedAccounts(rows: TAccount[], prevById: Map<string, TAccount>): boolean {
-    const newIds = rows.map((r) => adapter.id(r));
-    const idsChanged =
-      newIds.length !== accountIds.length || newIds.some((id, i) => id !== accountIds[i]);
-    const dataChanged = rowsVisuallyChanged(rows, prevById);
-
-    if (!idsChanged && !dataChanged) return false;
-
-    if (dataChanged) {
-      avatarEpoch = buildEpochMap(
-        rows as unknown as Record<string, unknown>[],
-        prevById as unknown as Map<string, Record<string, unknown>>,
-        (r: unknown) => adapter.id(r as TAccount),
-        avatarEpoch,
-      );
-      accounts = rows;
-    } else if (idsChanged) {
-      const byId = new Map(accounts.map((a) => [adapter.id(a), a] as const));
-      accounts = newIds.map((id) => byId.get(id)).filter((a): a is TAccount => !!a);
-    }
-
-    accountIds = newIds;
-    const liveRow = accounts.find((r) => adapter.currentSession(r));
-    platformLiveSessionId.set({ platformKey: name, uniqueId: liveRow ? adapter.id(liveRow) : "" });
-    const stillValid = selectedId && newIds.includes(selectedId);
-    selectedId = stillValid ? selectedId : "";
-    touchStatus();
-    setPlatformAccountsCache(name, { accounts, accountIds });
-    return true;
-  }
-
-  function deferNonCriticalAccountWork(ids: string[]): void {
-    void loadTagDefs();
-    void refreshGameStatsMarkup(ids);
-    void BasicService.StartGameStatsRefresh(name);
-  }
-
   function touchStatus(): void {
     if (isActionBusy) return;
     const acc = accountById(selectedId);
@@ -299,6 +224,50 @@
     const uid = id.trim();
     if (!uid) return;
     avatarEpoch = { ...avatarEpoch, [uid]: (avatarEpoch[uid] ?? 0) + 1 };
+  }
+
+  // ---- Context factories for extracted modules ----
+  function getAccountActionsCtx(): AccountActionsContext {
+    return {
+      name,
+      adapter,
+      get selectedId() { return selectedId; },
+      get isActionBusyValue() { return isActionBusyValue; },
+      accountById,
+      scheduleAccountsRefresh,
+      touchStatus,
+      setIsActionBusy: (v: boolean) => { isActionBusyValue = v; },
+    };
+  }
+
+  function createFileDropCtx(): FileDropContext {
+    return {
+      adapter,
+      get imagePick() { return imagePick; },
+      get fileDragHoverRowId() { return fileDragHoverRowId; },
+      tr: get(t),
+      loadAccounts,
+      bumpAvatarEpoch,
+      closeImagePick,
+      clearFileDragHover: () => { fileDragHoverRowId = ""; },
+    };
+  }
+
+  // ---- Wrappers for extracted functions that return values ----
+  async function loadTagDefsInternal(): Promise<void> {
+    tagDefs = await loadTagDefs(name);
+  }
+
+  async function refreshGameStatsMarkupInternal(acctIds: string[]): Promise<void> {
+    gameStatsByAccount = await refreshGameStatsMarkup(name, acctIds);
+  }
+
+  async function refreshGameStatsSupportInternal(): Promise<void> {
+    hasGameStatsSupport = await refreshGameStatsSupport(name);
+  }
+
+  async function swapToLogin(): Promise<void> {
+    await swapToLoginFn(getAccountActionsCtx());
   }
 
   // ---- Sort ----
@@ -415,47 +384,13 @@
     pushToast({ type: "success", message: $t("Toast_AccountSaved"), duration: 4000 });
   }
 
-  // ---- Game stats ----
-  async function loadTagDefs(): Promise<void> {
-    try {
-      const rows = await BasicService.ListTagDefinitions(name);
-      tagDefs = (rows as { id: string; name: string; color: string }[]).map((r) => ({ id: r.id, name: r.name, color: r.color }));
-    } catch { tagDefs = []; }
-  }
-
-  async function refreshGameStatsMarkup(acctIds: string[]): Promise<void> {
-    if (!name.trim() || acctIds.length === 0) { gameStatsByAccount = {}; return; }
-    try {
-      const pairs = await Promise.all(
-        acctIds.map(async (uid) => {
-          try { const m = await BasicService.GetUserStatsAllGamesMarkup(name, uid); return [uid, m ?? {}] as const; }
-          catch { return [uid, {}] as const; }
-        }),
-      );
-      gameStatsByAccount = Object.fromEntries(pairs) as Record<string, Record<string, Record<string, { statValue: string; indicatorMarkup: string }>>>;
-    } catch { gameStatsByAccount = {}; }
-  }
-
-  async function refreshGameStatsSupport(): Promise<void> {
-    try { const games = await BasicService.GetAvailableGames(name); hasGameStatsSupport = (games?.length ?? 0) > 0; }
-    catch { hasGameStatsSupport = false; }
-  }
-
-  function openGameStatsModal(rowId: string): void {
-    const acc = accountById(rowId);
-    void openAlertNoButton({
-      title: get(t)("Context_ManageGameStats"),
-      bodyComponent: GameStatsSetupModalBody,
-      bodyProps: {
-        platformKey: name,
-        uniqueId: rowId,
-        displayName: (acc ? adapter.name(acc) : rowId).trim(),
-        onApplied: () => void loadAccounts(),
-      },
-    });
-  }
-
   // ---- Load accounts ----
+  function deferNonCriticalAccountWork(ids: string[]): void {
+    void loadTagDefsInternal();
+    void refreshGameStatsMarkupInternal(ids);
+    void BasicService.StartGameStatsRefresh(name);
+  }
+
   async function loadAccounts(): Promise<void> {
     loadError = "";
     accountsLoading = true;
@@ -473,8 +408,12 @@
     const hadCachedAccounts = !!(cached && cached.accounts.length > 0);
     try {
       const list = await adapter.loadAccountsList();
-      const mergedList = mergeListIntoExisting(accounts, list);
-      const listChanged = applyLoadedAccounts(mergedList, prevById);
+      const mergedList = mergeListIntoExisting(adapter, accounts, list);
+      const state: ApplyLoadedAccountsState<TAccount> = {
+        avatarEpoch, accounts, accountIds, selectedId,
+      };
+      const listChanged = applyLoadedAccounts(adapter, name, mergedList, prevById, state, touchStatus);
+      ({ avatarEpoch, accounts, accountIds, selectedId } = state);
       accountsLoading = false;
       if (listChanged) deferNonCriticalAccountWork(accountIds);
 
@@ -482,8 +421,12 @@
         try {
           const enrich = await adapter.loadAccountsEnrichment();
           const enrichPrev = new Map(accounts.map((a) => [adapter.id(a), a]));
-          const merged = mergeEnrichmentIntoExisting(accounts, enrich);
-          const enrichChanged = applyLoadedAccounts(merged, enrichPrev);
+          const merged = mergeEnrichmentIntoExisting(adapter, accounts, enrich);
+          const enrichState: ApplyLoadedAccountsState<TAccount> = {
+            avatarEpoch, accounts, accountIds, selectedId,
+          };
+          const enrichChanged = applyLoadedAccounts(adapter, name, merged, enrichPrev, enrichState, touchStatus);
+          ({ avatarEpoch, accounts, accountIds, selectedId } = enrichState);
           if (enrichChanged) deferNonCriticalAccountWork(accountIds);
           await adapter.onAfterLoad?.(accounts, { hadCachedAccounts, enrichChanged });
         } catch {
@@ -500,36 +443,6 @@
         platformLiveSessionId.set({ platformKey: "", uniqueId: "" });
       }
     }
-  }
-
-  // ---- File drop intercept ----
-  async function fileDropIntercept(paths: string[]): Promise<boolean> {
-    const img = firstProfileImagePath(paths);
-    if (!img) return false;
-    try {
-      if (imagePick.open && imagePick.accountId.trim()) {
-        const target = imagePick.accountId.trim();
-        await adapter.changeImage(target, img);
-        await loadAccounts();
-        bumpAvatarEpoch(target);
-        pushToast({ type: "success", message: $t("Toast_AccountSaved"), duration: 4000 });
-        closeImagePick();
-        return true;
-      }
-      const hover = fileDragHoverRowId.trim();
-      if (hover) {
-        await adapter.changeImage(hover, img);
-        await loadAccounts();
-        bumpAvatarEpoch(hover);
-        pushToast({ type: "success", message: $t("Toast_AccountSaved"), duration: 4000 });
-        fileDragHoverRowId = "";
-        return true;
-      }
-    } catch (e) {
-      pushToast({ type: "error", message: formatToastWithError($t("Toast_SaveFailed"), e), duration: 8000 });
-      return true;
-    }
-    return false;
   }
 
   // ---- Apply real-time patches ----
@@ -549,74 +462,6 @@
     }
     setPlatformAccountsCache(name, { accounts, accountIds });
     if (targetId === selectedId) touchStatus();
-  }
-
-  // ---- Actions ----
-  async function reportSwitchFailure(e: unknown): Promise<void> {
-    await offerRestartIfNeedsAdmin(e, name);
-    if (isNeedsAdminError(e)) return;
-    pushToast({ type: "error", message: formatToastWithError($t("Toast_SwitchFailed"), e), duration: 8000 });
-  }
-
-  async function reportSaveFailure(e: unknown): Promise<void> {
-    await offerRestartIfNeedsAdmin(e, name);
-    if (isNeedsAdminError(e)) return;
-    pushToast({ type: "error", message: formatToastWithError($t("Toast_SaveFailed"), e), duration: 8000 });
-  }
-
-  async function swapToLogin(): Promise<void> {
-    if (!selectedId) return;
-    try {
-      await adapter.swapTo(selectedId);
-      scheduleAccountsRefresh();
-      pushToast({ type: "success", message: $t("Toast_AccountSwitched"), duration: 4000 });
-    } catch (e) { await reportSwitchFailure(e); }
-  }
-
-  async function launchPlatformForSelection(): Promise<void> {
-    const selected = accountById(selectedId);
-    if (selectedId && selected && !adapter.currentSession(selected)) {
-      try { await adapter.swapTo(selectedId); }
-      catch (e) { await reportSwitchFailure(e); return; }
-    }
-    try {
-      await adapter.launch();
-      scheduleAccountsRefresh();
-    } catch (e) { await reportLaunchFailure(e, name); }
-  }
-
-  async function runPlatformActionLocked(work: () => Promise<void>): Promise<void> {
-    if (isActionBusy) return;
-    isActionBusyValue = true;
-    platformActionBusy.set({ busy: true, platformKey: name });
-    try { await work(); }
-    finally {
-      isActionBusyValue = false;
-      platformActionBusy.set({ busy: false, platformKey: "" });
-      touchStatus();
-    }
-  }
-
-  async function handlePlatformActionKind(kind: "login" | "addNew" | "launch" | "saveCurrent"): Promise<void> {
-    await runPlatformActionLocked(async () => {
-      if (kind === "launch") { await launchPlatformForSelection(); return; }
-      if (kind === "addNew") {
-        try {
-          await adapter.addNew();
-          scheduleAccountsRefresh();
-          pushToast({ type: "success", message: $t("Toast_AccountSwitched"), duration: 4000 });
-        } catch (e) { await reportSwitchFailure(e); }
-        return;
-      }
-      if (kind === "saveCurrent") {
-        if (adapter.saveCurrent) {
-          actionBarStatus.set($t("Status_ActionBar_PreparingSave"));
-          await adapter.saveCurrent();
-        }
-        return;
-      }
-      if (kind === "login") { await swapToLogin(); }
-    });
   }
 
   // ---- Search ----
@@ -669,138 +514,26 @@
   }
 
   // ---- Context menu ----
-  function buildSharedItems(acc: TAccount, rowId: string): {
-    swapTo: MenuItemDef;
-    changeName: MenuItemDef;
-    createShortcut: MenuItemDef;
-    changeImage: MenuItemDef;
-    forget: MenuItemDef;
-    notes: MenuItemDef;
-    tags: MenuItemDef;
-    gameStats: MenuItemDef | null;
-  } {
-    const tr = get(t);
-    const imgUrl = (adapter.imageUrl(acc) ?? "").trim();
-    const manual = adapter.manualProfileImage(acc);
-    const openPick = () => { selectedId = rowId; touchStatus(); openImagePick(rowId); };
-
-    return {
-      swapTo: {
-        label: tr("Context_SwapTo"),
-        disabled: isActionBusy,
-        action: () => {
-          if (isActionBusy) return;
-          selectedId = rowId;
-          touchStatus();
-          void swapToLogin();
-        },
-      },
-      changeName: {
-        label: tr("Context_ChangeName"),
-        action: async () => {
-          const next = await openPrompt({
-            title: tr("Context_ChangeName"), body: "",
-            positiveLabel: tr("Ok"), negativeLabel: tr("Button_Cancel"),
-            initialValue: adapter.name(acc) ?? "",
-          });
-          if (next === null || !String(next).trim()) return;
-          try {
-            await adapter.rename(rowId, String(next).trim());
-            await loadAccounts();
-            pushToast({ type: "success", message: tr("Toast_AccountSaved"), duration: 3000 });
-          } catch (e) {
-            pushToast({ type: "error", message: formatToastWithError(tr("Toast_SaveFailed"), e), duration: 8000 });
-          }
-        },
-      },
-      createShortcut: {
-        label: tr("Context_CreateShortcut"),
-        action: async () => {
-          try {
-            const p = await Shortcuts.CreateAccountShortcut(
-              name, rowId, adapter.name(acc) ?? rowId, "", "", adapter.accountLogin(acc) ?? "",
-            );
-            pushToast({ type: "success", message: `${tr("Toast_ShortcutCreated")}\n${p}`, duration: 6000 });
-          } catch (e) {
-            pushToast({ type: "error", message: formatToastWithError(tr("Toast_SwitchFailed"), e), duration: 8000 });
-          }
-        },
-      },
-      changeImage: (!imgUrl || !manual)
-        ? { label: tr("Context_ChangeImage"), action: openPick }
-        : {
-            label: tr("Context_ChangeImage"), action: openPick,
-            children: [
-              { label: tr("Context_ChooseProfileImage"), action: openPick },
-              {
-                label: tr("Context_RemoveProfileImage"),
-                action: async () => {
-                  try {
-                    await adapter.clearManualImage(rowId);
-                    scheduleAccountsRefresh();
-                    pushToast({ type: "success", message: tr("Toast_AccountSaved"), duration: 3000 });
-                  } catch (e) {
-                    pushToast({ type: "error", message: formatToastWithError(tr("Toast_SaveFailed"), e), duration: 8000 });
-                  }
-                },
-              },
-            ],
-          },
-      forget: {
-        label: tr("Forget"),
-        action: async () => {
-          const ok = await openConfirm({
-            title: tr("Forget"), body: tr("Prompt_ForgetAccount", { platform: name }), style: "yesno",
-          });
-          if (!ok) return;
-          try {
-            await adapter.forget(rowId);
-            await loadAccounts();
-            pushToast({ type: "success", message: tr("Toast_AccountSaved"), duration: 3000 });
-          } catch (e) {
-            pushToast({ type: "error", message: formatToastWithError(tr("Toast_SaveFailed"), e), duration: 8000 });
-          }
-        },
-      },
-      notes: {
-        label: tr("Notes"),
-        action: async () => {
-          const cur = await adapter.getNote(rowId);
-          const note = await openPrompt({
-            title: tr("Notes"),
-            body: tr("Modal_Title_AccountNotes", { accountName: adapter.name(acc) ?? rowId }),
-            positiveLabel: tr("Ok"), negativeLabel: tr("Button_Cancel"),
-            initialValue: cur ?? "", multiline: true,
-          });
-          if (note === null) return;
-          try {
-            await adapter.setNote(rowId, String(note));
-            await loadAccounts();
-            pushToast({ type: "success", message: tr("Toast_AccountSaved"), duration: 3000 });
-          } catch (e) {
-            pushToast({ type: "error", message: formatToastWithError(tr("Toast_SaveFailed"), e), duration: 8000 });
-          }
-        },
-      },
-      tags: buildTagsSectionMenuItem({
-        platformKey: name, uniqueId: rowId,
-        assignedTags: (adapter.tags(acc) ?? []) as TagDefRow[],
-        tagDefs, tr,
-        afterChange: async () => { await loadAccounts(); await loadTagDefs(); },
-        onSuccess: () => pushToast({ type: "success", message: tr("Toast_AccountSaved"), duration: 2500 }),
-        onError: (e) => pushToast({ type: "error", message: formatToastWithError(tr("Toast_SaveFailed"), e), duration: 8000 }),
-      }),
-      gameStats: hasGameStatsSupport
-        ? { label: tr("Context_ManageGameStats"), action: () => openGameStatsModal(rowId) }
-        : null,
-    };
-  }
-
   function ctxMenu(rowId: string): () => MenuItemDef[] {
     return () => {
       const acc = accountById(rowId);
       if (!acc) return [];
-      const shared = buildSharedItems(acc, rowId);
+      const ctx: ContextMenuContext = {
+        name,
+        adapter,
+        get isActionBusy() { return isActionBusyValue; },
+        get hasGameStatsSupport() { return hasGameStatsSupport; },
+        tr: get(t),
+        get tagDefs() { return tagDefs; },
+        openImagePick,
+        swapToLogin,
+        loadAccounts,
+        scheduleAccountsRefresh,
+        loadTagDefs: loadTagDefsInternal,
+        openGameStatsModal: (rid: string) => openGameStatsModal(rid, adapter, name, accountById, () => void loadAccounts()),
+        onSelectedIdChanged: (id: string) => { selectedId = id; touchStatus(); },
+      };
+      const shared = buildSharedItems(acc, rowId, ctx);
       return adapter.buildMenu(acc, shared);
     };
   }
@@ -809,7 +542,7 @@
   onMount(() => {
     previousPage.set({ page: "home" });
     void preflightAdminForPlatform(name);
-    void refreshGameStatsSupport();
+    void refreshGameStatsSupportInternal();
     void loadAccounts();
     void GetPlatformExeIcon(name).then((u: string) => platformExeIconUrl.set(u ?? ""));
 
@@ -822,7 +555,7 @@
     offPlatformAction = platformAction.subscribe((v) => {
       if (!v || v.id === lastHandledActionId) return;
       lastHandledActionId = v.id;
-      void handlePlatformActionKind(v.kind);
+      void handlePlatformActionKind(v.kind, getAccountActionsCtx());
     });
 
     offAccountsRefresh = platformAccountsRefresh.subscribe((p) => {
@@ -838,10 +571,10 @@
       const p = ev.data as { platformKey?: string; uniqueId?: string };
       if ((p.platformKey ?? "").trim() !== name.trim()) return;
       const uid = (p.uniqueId ?? "").trim();
-      if (uid) void refreshGameStatsMarkup([uid]);
+      if (uid) void refreshGameStatsMarkupInternal([uid]);
     });
 
-    fileDropInterceptor.set(fileDropIntercept);
+    fileDropInterceptor.set((paths: string[]) => fileDropIntercept(paths, createFileDropCtx()));
   });
 
   onDestroy(() => {

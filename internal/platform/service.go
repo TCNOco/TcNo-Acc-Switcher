@@ -1,22 +1,15 @@
 package platform
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
 	"sync"
 
-	"TcNo-Acc-Switcher/internal/appclient"
-	"TcNo-Acc-Switcher/internal/exeicon"
 	"TcNo-Acc-Switcher/internal/stats"
-	"TcNo-Acc-Switcher/internal/winutil"
-
-	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
 type platformsFile struct {
@@ -32,10 +25,8 @@ type PlatformStartup struct {
 	PlatformAccountCounts map[string]int `json:"platformAccountCounts"`
 	Language              string         `json:"language"`
 	Theme                 string         `json:"theme,omitempty"`
-	// One-shot SPA route from CLI (e.g. open Steam page after elevated restart).
-	CliNavigateHint string `json:"cliNavigateHint,omitempty"`
+	CliNavigateHint       string         `json:"cliNavigateHint,omitempty"`
 
-	// --- Bundled settings to avoid individual Wails binding calls at startup ---
 	OfflineMode           bool   `json:"offlineMode"`
 	ProtocolEnabled       bool   `json:"protocolEnabled"`
 	ExitToTray            bool   `json:"exitToTray"`
@@ -55,6 +46,37 @@ type PlatformStartup struct {
 
 type PlatformService struct {
 	mu sync.RWMutex
+}
+
+func (p *PlatformService) withSettingsRead(fn func(s *AppSettings) error) error {
+	p.mu.RLock()
+	defer p.mu.RUnlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return err
+	}
+	return fn(&s)
+}
+
+func (p *PlatformService) withSettingsWrite(fn func(s *AppSettings) error) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return err
+	}
+	if err := fn(&s); err != nil {
+		return err
+	}
+	return saveSettingsAtomic(exeDir, s)
 }
 
 func (p *PlatformService) GetStartup() (PlatformStartup, error) {
@@ -149,93 +171,76 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 	}, nil
 }
 
-func (p *PlatformService) seedDisabledPlatformsForFirstLaunch(settings *AppSettings, raw []byte, names []string) {
-	if settings == nil {
-		return
-	}
-	disabled := make(map[string]struct{}, len(names))
-	foundCount := 0
-	for _, platformName := range names {
-		if p.platformDetected(settings, raw, platformName) {
-			foundCount++
-			continue
-		}
-		disabled[platformName] = struct{}{}
-	}
-	if foundCount == 0 {
-		disabled = make(map[string]struct{}, len(names))
-		for _, platformName := range names {
-			if strings.EqualFold(platformName, "Steam") {
-				continue
-			}
-			disabled[platformName] = struct{}{}
-		}
-	}
-	settings.DisabledPlatforms = setToSortedSlice(disabled)
+func (p *PlatformService) ReadSettings() (PlatformStartup, error) {
+	return p.GetStartup()
 }
 
-func (p *PlatformService) platformDetected(settings *AppSettings, raw []byte, platformName string) bool {
-	if settings == nil {
-		return false
-	}
-	if saved := strings.TrimSpace(settings.PlatformExePaths[platformName]); saved != "" {
-		if st, err := os.Stat(saved); err == nil && !st.IsDir() {
-			return true
-		}
-	}
-	if strings.EqualFold(platformName, "Steam") && resolveSteamExePath != nil {
-		if _, ok := resolveSteamExePath(); ok {
-			return true
-		}
-	}
-	entry, err := parsePlatformEntry(raw, platformName)
-	if err != nil {
-		return false
-	}
-	if entry.ExeLocationDefault.FirstExistingExe() != "" {
-		return true
-	}
-	exeName := primaryExeName(entry)
-	if exeName == "" {
-		return false
-	}
-	_, ok := findExeViaStartMenuShortcuts(entry, exeName)
-	return ok
+type SettingsBatchUpdate struct {
+	OfflineMode           *bool   `json:"offlineMode,omitempty"`
+	ProtocolEnabled       *bool   `json:"protocolEnabled,omitempty"`
+	ExitToTray            *bool   `json:"exitToTray,omitempty"`
+	DiscordRpc            *bool   `json:"discordRpc,omitempty"`
+	DiscordRpcShare       *bool   `json:"discordRpcShare,omitempty"`
+	MinimizeOnSwitch      *bool   `json:"minimizeOnSwitch,omitempty"`
+	StartTrayWithWindows  *bool   `json:"startTrayWithWindows,omitempty"`
+	StartProgramCentered  *bool   `json:"startProgramCentered,omitempty"`
+	AnimationsEnabled     *bool   `json:"animationsEnabled,omitempty"`
+	StatsEnabled          *bool   `json:"statsEnabled,omitempty"`
+	StatsShare            *bool   `json:"statsShare,omitempty"`
+	CrashReportAutoSubmit *bool   `json:"crashReportAutoSubmit,omitempty"`
+	Language              *string `json:"language,omitempty"`
+	Theme                 *string `json:"theme,omitempty"`
+	ThemeAccentPreset     *string `json:"themeAccentPreset,omitempty"`
+	ThemeAccentCustom     *string `json:"themeAccentCustom,omitempty"`
 }
 
-func (p *PlatformService) GetLanguage() (string, error) {
-	p.mu.RLock()
-	defer p.mu.RUnlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return "", err
-	}
-	settings, err := loadSettings(exeDir)
-	if err != nil {
-		return "", err
-	}
-	if settings.Language == "" {
-		return "en-US", nil
-	}
-	return settings.Language, nil
-}
-
-func (p *PlatformService) SetLanguage(code string) error {
+func (p *PlatformService) UpdateSettings(req SettingsBatchUpdate) error {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 	exeDir, err := ResolveExeDir()
 	if err != nil {
 		return err
 	}
-	settings, err := loadSettings(exeDir)
+	s, err := loadSettings(exeDir)
 	if err != nil {
 		return err
 	}
-	settings.Language = strings.TrimSpace(code)
-	if settings.Language == "" {
-		settings.Language = "en-US"
+	dirty := false
+	applyIfSet := func(ptr *bool, val *bool) {
+		if val != nil {
+			*ptr = *val
+			dirty = true
+		}
 	}
-	return saveSettingsAtomic(exeDir, settings)
+	applyStringIfSet := func(ptr *string, val *string) {
+		if val != nil {
+			*ptr = *val
+			dirty = true
+		}
+	}
+	applyIfSet(&s.OfflineMode, req.OfflineMode)
+	applyIfSet(&s.ProtocolEnabled, req.ProtocolEnabled)
+	applyIfSet(&s.ExitToTray, req.ExitToTray)
+	applyIfSet(&s.DiscordRpc, req.DiscordRpc)
+	applyIfSet(&s.DiscordRpcShare, req.DiscordRpcShare)
+	applyIfSet(&s.MinimizeOnSwitch, req.MinimizeOnSwitch)
+	applyIfSet(&s.StartTrayWithWindows, req.StartTrayWithWindows)
+	applyIfSet(&s.StartProgramCentered, req.StartProgramCentered)
+	applyIfSet(&s.AnimationsEnabled, req.AnimationsEnabled)
+	applyIfSet(&s.StatsEnabled, req.StatsEnabled)
+	applyIfSet(&s.StatsShare, req.StatsShare)
+	applyIfSet(&s.CrashReportAutoSubmit, req.CrashReportAutoSubmit)
+	applyStringIfSet(&s.Language, req.Language)
+	applyStringIfSet(&s.Theme, req.Theme)
+	applyStringIfSet(&s.ThemeAccentPreset, req.ThemeAccentPreset)
+	applyStringIfSet(&s.ThemeAccentCustom, req.ThemeAccentCustom)
+	if !dirty {
+		return nil
+	}
+	if req.StatsEnabled != nil {
+		stats.SetStatsCollectionEnabled(*req.StatsEnabled)
+	}
+	return saveSettingsAtomic(exeDir, s)
 }
 
 func sanitizeThemeID(id string) string {
@@ -299,354 +304,6 @@ func sanitizeHexColor(value string) string {
 	return strings.ToLower(s)
 }
 
-func (p *PlatformService) GetTheme() (string, error) {
-	p.mu.RLock()
-	defer p.mu.RUnlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return "", err
-	}
-	settings, err := loadSettings(exeDir)
-	if err != nil {
-		return "", err
-	}
-	return sanitizeThemeID(settings.Theme), nil
-}
-
-func (p *PlatformService) GetThemeAccentPreset() (string, error) {
-	p.mu.RLock()
-	defer p.mu.RUnlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return "", err
-	}
-	settings, err := loadSettings(exeDir)
-	if err != nil {
-		return "", err
-	}
-	return sanitizeThemeAccentPreset(settings.ThemeAccentPreset), nil
-}
-
-func (p *PlatformService) GetThemeAccentCustom() (string, error) {
-	p.mu.RLock()
-	defer p.mu.RUnlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return "", err
-	}
-	settings, err := loadSettings(exeDir)
-	if err != nil {
-		return "", err
-	}
-	return sanitizeHexColor(settings.ThemeAccentCustom), nil
-}
-
-func (p *PlatformService) GetWindowsAccentColor() string {
-	return CurrentWindowsAccentColor()
-}
-
-func (p *PlatformService) GetAppVersion() string {
-	return appVersionFromBuildConfig()
-}
-
-func (p *PlatformService) SetTheme(themeID string) error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return err
-	}
-	settings, err := loadSettings(exeDir)
-	if err != nil {
-		return err
-	}
-	nextTheme := sanitizeThemeID(themeID)
-	if settings.Theme != nextTheme {
-		settings.ThemeAccentPreset = ""
-		settings.ThemeAccentCustom = ""
-	}
-	settings.Theme = nextTheme
-	return saveSettingsAtomic(exeDir, settings)
-}
-
-func (p *PlatformService) SetThemeAccentPreset(preset string) error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return err
-	}
-	settings, err := loadSettings(exeDir)
-	if err != nil {
-		return err
-	}
-	settings.ThemeAccentPreset = sanitizeThemeAccentPreset(preset)
-	return saveSettingsAtomic(exeDir, settings)
-}
-
-func (p *PlatformService) SetThemeAccentCustom(color string) error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return err
-	}
-	settings, err := loadSettings(exeDir)
-	if err != nil {
-		return err
-	}
-	settings.ThemeAccentCustom = sanitizeHexColor(color)
-	return saveSettingsAtomic(exeDir, settings)
-}
-
-func (p *PlatformService) SaveHomeOrder(order []string) error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return err
-	}
-	settings, err := loadSettings(exeDir)
-	if err != nil {
-		return err
-	}
-	raw, err := LoadPlatformsJSON(exeDir)
-	if err != nil {
-		return err
-	}
-	allNames, err := parsePlatformNames(raw)
-	if err != nil {
-		return err
-	}
-	disabled := sliceToSet(settings.DisabledPlatforms)
-	enabled := make(map[string]struct{})
-	for _, n := range allNames {
-		if _, hid := disabled[n]; !hid {
-			enabled[n] = struct{}{}
-		}
-	}
-	if len(order) != len(enabled) {
-		return errors.New("order length does not match enabled platforms")
-	}
-	seen := make(map[string]struct{})
-	for _, n := range order {
-		if _, ok := enabled[n]; !ok {
-			return errors.New("invalid platform in order: " + n)
-		}
-		if _, dup := seen[n]; dup {
-			return errors.New("duplicate platform in order")
-		}
-		seen[n] = struct{}{}
-	}
-	settings.PlatformOrder = append([]string(nil), order...)
-	return saveSettingsAtomic(exeDir, settings)
-}
-
-func (p *PlatformService) SetDisabledPlatforms(disabled []string) error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return err
-	}
-	settings, err := loadSettings(exeDir)
-	if err != nil {
-		return err
-	}
-	raw, err := LoadPlatformsJSON(exeDir)
-	if err != nil {
-		return err
-	}
-	allNames, err := parsePlatformNames(raw)
-	if err != nil {
-		return err
-	}
-	valid := make(map[string]struct{}, len(allNames))
-	for _, n := range allNames {
-		valid[n] = struct{}{}
-	}
-	nextDis := make(map[string]struct{})
-	for _, n := range disabled {
-		n = strings.TrimSpace(n)
-		if n == "" {
-			continue
-		}
-		if _, ok := valid[n]; !ok {
-			continue
-		}
-		nextDis[n] = struct{}{}
-	}
-	prevDis := sliceToSet(settings.DisabledPlatforms)
-
-	var order []string
-	seen := make(map[string]struct{})
-	for _, n := range settings.PlatformOrder {
-		if _, d := nextDis[n]; d {
-			continue
-		}
-		if _, ok := valid[n]; !ok {
-			continue
-		}
-		order = append(order, n)
-		seen[n] = struct{}{}
-	}
-	var newlyEnabled []string
-	for _, n := range allNames {
-		_, was := prevDis[n]
-		_, now := nextDis[n]
-		if was && !now {
-			if _, ok := seen[n]; !ok {
-				newlyEnabled = append(newlyEnabled, n)
-			}
-		}
-	}
-	sortStringsFold(newlyEnabled)
-	for _, n := range newlyEnabled {
-		order = append(order, n)
-		seen[n] = struct{}{}
-	}
-	for _, n := range allNames {
-		if _, d := nextDis[n]; d {
-			continue
-		}
-		if _, ok := seen[n]; ok {
-			continue
-		}
-		order = append(order, n)
-	}
-	settings.DisabledPlatforms = setToSortedSlice(nextDis)
-	settings.PlatformOrder = order
-	return saveSettingsAtomic(exeDir, settings)
-}
-
-func (p *PlatformService) SetPlatformExePath(platformKey, exePath string) error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return err
-	}
-	settings, err := loadSettings(exeDir)
-	if err != nil {
-		return err
-	}
-	if settings.PlatformExePaths == nil {
-		settings.PlatformExePaths = map[string]string{}
-	}
-	exePath = strings.TrimSpace(exePath)
-	if exePath == "" {
-		delete(settings.PlatformExePaths, platformKey)
-	} else {
-		settings.PlatformExePaths[platformKey] = exePath
-	}
-	return saveSettingsAtomic(exeDir, settings)
-}
-
-func (p *PlatformService) PickPlatformsJSON() (string, error) {
-	app := application.Get()
-	if app == nil {
-		return "", errors.New("application not initialised")
-	}
-	sel, err := app.Dialog.OpenFile().
-		SetTitle("Locate Platforms.json").
-		AddFilter("JSON", "*.json").
-		PromptForSingleSelection()
-	if err != nil {
-		return "", err
-	}
-	return strings.TrimSpace(sel), nil
-}
-
-// PickProfileImageFile opens a native file picker for a single image or short video avatar file.
-func (p *PlatformService) PickProfileImageFile() (string, error) {
-	app := application.Get()
-	if app == nil {
-		return "", errors.New("application not initialised")
-	}
-	sel, err := app.Dialog.OpenFile().
-		SetTitle("Choose profile image").
-		AddFilter("Images", "*.png;*.jpg;*.jpeg;*.webp;*.gif").
-		AddFilter("Video avatars", "*.webm;*.mp4").
-		AddFilter("All supported", "*.png;*.jpg;*.jpeg;*.webp;*.gif;*.webm;*.mp4").
-		AddFilter("All files", "*.*").
-		PromptForSingleSelection()
-	if err != nil {
-		return "", err
-	}
-	return strings.TrimSpace(sel), nil
-}
-
-func (p *PlatformService) ApplyPlatformsJSONFile(sourcePath string) error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	sourcePath = strings.TrimSpace(sourcePath)
-	if sourcePath == "" {
-		return errors.New("empty path")
-	}
-	data, err := os.ReadFile(sourcePath)
-	if err != nil {
-		return err
-	}
-	if _, err := parsePlatformNames(data); err != nil {
-		return err
-	}
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return err
-	}
-	ud := UserDataDir(exeDir)
-	if err := os.MkdirAll(ud, 0o755); err != nil {
-		return err
-	}
-	dest := filepath.Join(ud, "Platforms.json")
-	if err := atomicWriteBytes(dest, data, 0o644); err != nil {
-		return err
-	}
-	settings, err := loadSettings(exeDir)
-	if err != nil {
-		return err
-	}
-	settings.PlatformsJSONPath = ""
-	settings.PlatformOrder = nil
-	invalidatePlatformsJSONCache()
-	return saveSettingsAtomic(exeDir, settings)
-}
-
-func (p *PlatformService) RestoreDefaultPlatformsJSON() error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	if len(embeddedPlatformsJSON) == 0 {
-		return errors.New("embedded platforms data missing")
-	}
-	names, err := parsePlatformNames(embeddedPlatformsJSON)
-	if err != nil {
-		return err
-	}
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return err
-	}
-	ud := UserDataDir(exeDir)
-	if err := os.MkdirAll(ud, 0o755); err != nil {
-		return err
-	}
-	dest := filepath.Join(ud, "Platforms.json")
-	if err := atomicWriteBytes(dest, bytes.Clone(embeddedPlatformsJSON), 0o644); err != nil {
-		return err
-	}
-	settings, err := loadSettings(exeDir)
-	if err != nil {
-		return err
-	}
-	settings.PlatformsJSONPath = ""
-	p.seedDisabledPlatformsForFirstLaunch(&settings, embeddedPlatformsJSON, names)
-	invalidatePlatformsJSONCache()
-	return saveSettingsAtomic(exeDir, settings)
-}
-
-// ResolvePlatformsJSONPath returns the path to the base Platforms.json file
-// (not merged with Platforms.custom.json). Use [LoadPlatformsJSON] to read the
-// effective configuration.
 func ResolvePlatformsJSONPath(exeDir string) (string, error) {
 	s, err := loadSettings(exeDir)
 	if err != nil {
@@ -753,806 +410,4 @@ func sortStringsFold(s []string) {
 	for i, v := range items {
 		s[i] = v.orig
 	}
-}
-
-func (p *PlatformService) GetPlatformSettings(platformKey string) (PlatformSettings, error) {
-	p.mu.RLock()
-	defer p.mu.RUnlock()
-	return LoadPlatformSettings(platformKey)
-}
-
-func (p *PlatformService) SavePlatformSettings(platformKey string, s PlatformSettings) error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	return SavePlatformSettings(platformKey, s)
-}
-
-func (p *PlatformService) ResetPlatformSettings(platformKey string) error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	return resetPlatformJSONToDefaults(platformKey)
-}
-
-func (p *PlatformService) GetPlatformInstallFolder(platformKey string) (string, error) {
-	p.mu.RLock()
-	defer p.mu.RUnlock()
-	return p.getPlatformInstallFolderUnlocked(platformKey)
-}
-
-func (p *PlatformService) OpenPlatformFolder(platformKey string) error {
-	p.mu.RLock()
-	folder, err := p.getPlatformInstallFolderUnlocked(platformKey)
-	p.mu.RUnlock()
-	if err != nil {
-		return err
-	}
-	folder = strings.TrimSpace(folder)
-	if folder == "" {
-		return fmt.Errorf("install location unknown for %s", strings.TrimSpace(platformKey))
-	}
-	st, err := os.Stat(folder)
-	if err != nil {
-		return err
-	}
-	if !st.IsDir() {
-		return fmt.Errorf("not a directory: %s", folder)
-	}
-	return OpenPathInFileManager(folder)
-}
-
-// getPlatformInstallFolderUnlocked: caller must hold p.mu.
-func (p *PlatformService) getPlatformInstallFolderUnlocked(platformKey string) (string, error) {
-	platformKey = strings.TrimSpace(platformKey)
-	if platformKey == "" {
-		return "", errors.New("empty platform")
-	}
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return "", err
-	}
-	settings, err := loadSettings(exeDir)
-	if err != nil {
-		return "", err
-	}
-	raw, err := LoadPlatformsJSON(exeDir)
-	if err != nil {
-		return "", err
-	}
-	entry, err := parsePlatformEntry(raw, platformKey)
-	if err != nil {
-		return "", err
-	}
-	exeName := primaryExeName(entry)
-
-	if strings.EqualFold(platformKey, "Steam") && resolveSteamExePath != nil {
-		if ex, ok := resolveSteamExePath(); ok {
-			return filepath.Dir(ex), nil
-		}
-	}
-
-	if saved := strings.TrimSpace(settings.PlatformExePaths[platformKey]); saved != "" {
-		if st, err := os.Stat(saved); err == nil && !st.IsDir() {
-			return filepath.Dir(saved), nil
-		}
-	}
-
-	defExisting := entry.ExeLocationDefault.FirstExistingExe()
-	if defExisting != "" {
-		return filepath.Dir(defExisting), nil
-	}
-
-	if found, ok := findExeViaStartMenuShortcuts(entry, exeName); ok {
-		return filepath.Dir(found), nil
-	}
-
-	if defExpanded := entry.ExeLocationDefault.FirstExpanded(); defExpanded != "" {
-		d := filepath.Dir(defExpanded)
-		if d != "." && !strings.HasSuffix(d, ":") {
-			return d, nil
-		}
-	}
-	return "", nil
-}
-
-func (p *PlatformService) ResolvePlatformExeFullPath(platformKey string) (string, error) {
-	p.mu.RLock()
-	defer p.mu.RUnlock()
-	return p.resolvePlatformExeFullPathUnlocked(platformKey)
-}
-
-func (p *PlatformService) resolvePlatformExeFullPathUnlocked(platformKey string) (string, error) {
-	platformKey = strings.TrimSpace(platformKey)
-	if platformKey == "" {
-		return "", errors.New("empty platform")
-	}
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return "", err
-	}
-	settings, err := loadSettings(exeDir)
-	if err != nil {
-		return "", err
-	}
-	if saved := strings.TrimSpace(settings.PlatformExePaths[platformKey]); saved != "" {
-		if st, err := os.Stat(saved); err == nil && !st.IsDir() {
-			return filepath.Clean(saved), nil
-		}
-	}
-	if strings.EqualFold(platformKey, "Steam") && resolveSteamExePath != nil {
-		if ex, ok := resolveSteamExePath(); ok {
-			return filepath.Clean(ex), nil
-		}
-	}
-	raw, err := LoadPlatformsJSON(exeDir)
-	if err != nil {
-		return "", err
-	}
-	entry, err := parsePlatformEntry(raw, platformKey)
-	if err != nil {
-		return "", err
-	}
-	exeName := primaryExeName(entry)
-	if exeName == "" {
-		return "", errors.New("could not determine executable name")
-	}
-	folder, err := p.getPlatformInstallFolderUnlocked(platformKey)
-	if err != nil {
-		return "", err
-	}
-	if strings.TrimSpace(folder) == "" {
-		return "", errors.New("install folder unknown")
-	}
-	return filepath.Join(folder, exeName), nil
-}
-
-func (p *PlatformService) GetPlatformExeIcon(platformKey string) (string, error) {
-	p.mu.RLock()
-	defer p.mu.RUnlock()
-	exe, err := p.resolvePlatformExeFullPathUnlocked(platformKey)
-	if err != nil || exe == "" {
-		return "", nil
-	}
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return "", nil
-	}
-	raw, err := LoadPlatformsJSON(exeDir)
-	if err == nil {
-		entry, err := parsePlatformEntry(raw, platformKey)
-		if err == nil {
-			d, err := ParseDescriptor(raw, platformKey)
-			if err == nil && d.Extras.SearchStartMenuForIcon {
-				if shortcutPath, ok := findStartMenuIconShortcut(entry); ok {
-					www, err := WwwrootDir()
-					if err == nil {
-						if u, err := exeicon.EnsureShortcutCached(platformKey, filepath.Base(exe), shortcutPath, www); err == nil {
-							return u, nil
-						}
-					}
-				}
-			}
-		}
-	}
-	www, err := WwwrootDir()
-	if err != nil {
-		return "", nil
-	}
-	u, err := exeicon.EnsureCached(platformKey, exe, www)
-	if err != nil {
-		return "", nil
-	}
-	return u, nil
-}
-
-func (p *PlatformService) LaunchPlatform(platformKey string) error {
-	platformKey = strings.TrimSpace(platformKey)
-	p.mu.RLock()
-	steamLauncher := launchSteamExe
-	basicLauncher := launchBasicPlatform
-	p.mu.RUnlock()
-	if strings.EqualFold(platformKey, "Steam") {
-		if steamLauncher == nil {
-			return errors.New("steam launcher not configured")
-		}
-		return steamLauncher()
-	}
-	if basicLauncher == nil {
-		return errors.New("basic launcher not configured")
-	}
-	return basicLauncher(platformKey)
-}
-
-func (p *PlatformService) LaunchPlatformAs(platformKey string, admin bool) error {
-	platformKey = strings.TrimSpace(platformKey)
-	p.mu.RLock()
-	steamLauncherAs := launchSteamExeAs
-	steamLauncher := launchSteamExe
-	basicLauncherAs := launchBasicPlatformAs
-	basicLauncher := launchBasicPlatform
-	p.mu.RUnlock()
-	if strings.EqualFold(platformKey, "Steam") {
-		if steamLauncherAs != nil {
-			return steamLauncherAs(admin)
-		}
-		if steamLauncher == nil {
-			return errors.New("steam launcher not configured")
-		}
-		return steamLauncher()
-	}
-	if basicLauncherAs != nil {
-		return basicLauncherAs(platformKey, admin)
-	}
-	if basicLauncher == nil {
-		return errors.New("basic launcher not configured")
-	}
-	return basicLauncher(platformKey)
-}
-
-func (p *PlatformService) HasShortcutMainExe(platformKey string) (bool, error) {
-	p.mu.RLock()
-	defer p.mu.RUnlock()
-	platformKey = strings.TrimSpace(platformKey)
-	if strings.EqualFold(platformKey, "Steam") {
-		return true, nil
-	}
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return false, err
-	}
-	raw, err := LoadPlatformsJSON(exeDir)
-	if err != nil {
-		return false, err
-	}
-	d, err := ParseDescriptor(raw, platformKey)
-	if err != nil {
-		return false, err
-	}
-	if d.Extras.ShortcutIncludeMainExe != nil && *d.Extras.ShortcutIncludeMainExe {
-		return true, nil
-	}
-	return false, nil
-}
-
-func (p *PlatformService) GetProtocolEnabled() (bool, error) {
-	p.mu.RLock()
-	defer p.mu.RUnlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return false, err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return false, err
-	}
-	return s.ProtocolEnabled, nil
-}
-
-func (p *PlatformService) GetOfflineMode() (bool, error) {
-	p.mu.RLock()
-	defer p.mu.RUnlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return false, err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return false, err
-	}
-	return s.OfflineMode, nil
-}
-
-func (p *PlatformService) GetStatsEnabled() (bool, error) {
-	p.mu.RLock()
-	defer p.mu.RUnlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return false, err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return false, err
-	}
-	return s.StatsEnabled, nil
-}
-
-func (p *PlatformService) GetStatsShare() (bool, error) {
-	p.mu.RLock()
-	defer p.mu.RUnlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return false, err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return false, err
-	}
-	return s.StatsShare, nil
-}
-
-func (p *PlatformService) SetProtocolEnabled(enabled bool) error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return err
-	}
-	self, err := os.Executable()
-	if err != nil {
-		return err
-	}
-	self = filepath.Clean(self)
-
-	if enabled {
-		if err := winutil.RegisterProtocol(self); err != nil {
-			return err
-		}
-	} else {
-		_ = winutil.UnregisterProtocol()
-	}
-
-	s.ProtocolEnabled = enabled
-	return saveSettingsAtomic(exeDir, s)
-}
-
-func (p *PlatformService) SetStatsEnabled(enabled bool) error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return err
-	}
-	s.StatsEnabled = enabled
-	stats.SetStatsCollectionEnabled(enabled)
-	return saveSettingsAtomic(exeDir, s)
-}
-
-func (p *PlatformService) SetStatsShare(enabled bool) error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return err
-	}
-	s.StatsShare = enabled
-	return saveSettingsAtomic(exeDir, s)
-}
-
-// GetStatsReport returns local statistics for display in the settings modal.
-func (p *PlatformService) GetStatsReport() (StatsReport, error) {
-	p.mu.RLock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		p.mu.RUnlock()
-		return StatsReport{}, err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		p.mu.RUnlock()
-		return StatsReport{}, err
-	}
-	share := s.StatsShare
-	p.mu.RUnlock()
-
-	data, err := stats.GetReportData()
-	if err != nil {
-		return StatsReport{}, err
-	}
-	return assembleStatsReport(data, share), nil
-}
-
-// ResetStatistics clears collected statistics and assigns a new anonymous UUID.
-func (p *PlatformService) ResetStatistics() error {
-	return stats.ResetStatistics()
-}
-
-// StatsRecordPageVisit increments the visit counter for a SPA route path (e.g. "/", "/settings").
-func (p *PlatformService) StatsRecordPageVisit(pagePath string) error {
-	return stats.RecordPageVisit(pagePath)
-}
-
-// StatsAddPageTime adds dwell time in seconds for a SPA route path.
-func (p *PlatformService) StatsAddPageTime(pagePath string, seconds int) error {
-	return stats.AddPageTime(pagePath, seconds)
-}
-
-func (p *PlatformService) SetOfflineMode(enabled bool) error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return err
-	}
-	s.OfflineMode = enabled
-	if enabled {
-		s.DiscordRpc = false
-		s.DiscordRpcShare = false
-	}
-	if err := saveSettingsAtomic(exeDir, s); err != nil {
-		return err
-	}
-	appclient.SetOfflineMode(enabled)
-	TriggerDiscordPresenceRefresh()
-	return nil
-}
-
-func (p *PlatformService) GetDiscordRpc() (bool, error) {
-	p.mu.RLock()
-	defer p.mu.RUnlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return false, err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return false, err
-	}
-	return s.DiscordRpc, nil
-}
-
-func (p *PlatformService) GetDiscordRpcShare() (bool, error) {
-	p.mu.RLock()
-	defer p.mu.RUnlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return false, err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return false, err
-	}
-	return s.DiscordRpc && s.DiscordRpcShare, nil
-}
-
-func (p *PlatformService) GetExitToTray() (bool, error) {
-	p.mu.RLock()
-	defer p.mu.RUnlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return false, err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return false, err
-	}
-	return s.ExitToTray, nil
-}
-
-func (p *PlatformService) GetMinimizeOnSwitch() (bool, error) {
-	p.mu.RLock()
-	defer p.mu.RUnlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return false, err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return false, err
-	}
-	return s.MinimizeOnSwitch, nil
-}
-
-func (p *PlatformService) GetStartTrayWithWindows() (bool, error) {
-	p.mu.RLock()
-	defer p.mu.RUnlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return false, err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return false, err
-	}
-	return s.StartTrayWithWindows, nil
-}
-
-func (p *PlatformService) GetStartProgramCentered() (bool, error) {
-	p.mu.RLock()
-	defer p.mu.RUnlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return false, err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return false, err
-	}
-	return s.StartProgramCentered, nil
-}
-
-func (p *PlatformService) GetAnimationsEnabled() (bool, error) {
-	p.mu.RLock()
-	defer p.mu.RUnlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return true, err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return true, err
-	}
-	return s.AnimationsEnabled, nil
-}
-
-func (p *PlatformService) GetDesktopHomeShortcutExists() (bool, error) {
-	return winutil.HomeDesktopShortcutExists(), nil
-}
-
-func (p *PlatformService) SetDiscordRpc(enabled bool) error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return err
-	}
-	if s.OfflineMode {
-		enabled = false
-	}
-	s.DiscordRpc = enabled
-	if !enabled {
-		s.DiscordRpcShare = false
-	}
-	if err := saveSettingsAtomic(exeDir, s); err != nil {
-		return err
-	}
-	TriggerDiscordPresenceRefresh()
-	return nil
-}
-
-func (p *PlatformService) SetDiscordRpcShare(enabled bool) error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return err
-	}
-	if s.OfflineMode || !s.DiscordRpc {
-		enabled = false
-	}
-	s.DiscordRpcShare = enabled
-	if err := saveSettingsAtomic(exeDir, s); err != nil {
-		return err
-	}
-	TriggerDiscordPresenceRefresh()
-	return nil
-}
-
-func (p *PlatformService) SetExitToTray(enabled bool) error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return err
-	}
-	s.ExitToTray = enabled
-	return saveSettingsAtomic(exeDir, s)
-}
-
-func (p *PlatformService) SetMinimizeOnSwitch(enabled bool) error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return err
-	}
-	s.MinimizeOnSwitch = enabled
-	return saveSettingsAtomic(exeDir, s)
-}
-
-func (p *PlatformService) SetStartTrayWithWindows(enabled bool) error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return err
-	}
-	prev := s.StartTrayWithWindows
-	s.StartTrayWithWindows = enabled
-	if err := saveSettingsAtomic(exeDir, s); err != nil {
-		return err
-	}
-	self, err := os.Executable()
-	if err != nil {
-		s.StartTrayWithWindows = prev
-		_ = saveSettingsAtomic(exeDir, s)
-		return err
-	}
-	self = filepath.Clean(self)
-	if err := winutil.SetRunAtStartupTray(self, enabled); err != nil {
-		s.StartTrayWithWindows = prev
-		_ = saveSettingsAtomic(exeDir, s)
-		return err
-	}
-	return nil
-}
-
-func (p *PlatformService) SetStartProgramCentered(enabled bool) error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return err
-	}
-	s.StartProgramCentered = enabled
-	return saveSettingsAtomic(exeDir, s)
-}
-
-func (p *PlatformService) SetAnimationsEnabled(enabled bool) error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return err
-	}
-	s.AnimationsEnabled = enabled
-	return saveSettingsAtomic(exeDir, s)
-}
-
-func (p *PlatformService) SetDesktopHomeShortcut(create bool) error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	return winutil.SetHomeDesktopShortcut(create)
-}
-
-func (p *PlatformService) GetUserDataLocation() (string, error) {
-	return GetUserDataLocation()
-}
-
-func (p *PlatformService) GetPortableUserDataLocation() (string, error) {
-	return GetPortableUserDataLocation()
-}
-
-func (p *PlatformService) MoveUserDataTo(destination string) error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	return MoveUserDataTo(destination)
-}
-
-func (p *PlatformService) MoveUserDataPortable() error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	return MoveUserDataPortable()
-}
-
-func (p *PlatformService) GetDefaultUserDataLocation() (string, error) {
-	return GetDefaultUserDataLocation()
-}
-
-func (p *PlatformService) MoveUserDataAppData() error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	return MoveUserDataAppData()
-}
-
-func (p *PlatformService) OpenUserDataFolder() error {
-	dir, err := GetUserDataLocation()
-	if err != nil {
-		return err
-	}
-	if err := os.MkdirAll(dir, 0o755); err != nil {
-		return err
-	}
-	return OpenPathInFileManager(dir)
-}
-
-
-// ReadSettings returns all app-level settings in a single call to avoid N Wails binding round-trips at startup.
-// Individual getters remain for incremental reads, but prefer this for bulk loads.
-func (p *PlatformService) ReadSettings() (PlatformStartup, error) {
-	return p.GetStartup()
-}
-
-// UpdateSettings applies multiple settings changes in a single read-modify-write cycle.
-// Fields with zero values are left unchanged. Only one disk write occurs regardless of how many fields are set.
-func (p *PlatformService) UpdateSettings(req SettingsBatchUpdate) error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	exeDir, err := ResolveExeDir()
-	if err != nil {
-		return err
-	}
-	s, err := loadSettings(exeDir)
-	if err != nil {
-		return err
-	}
-	dirty := false
-	applyIfSet := func(ptr *bool, val *bool) {
-		if val != nil {
-			*ptr = *val
-			dirty = true
-		}
-	}
-	applyStringIfSet := func(ptr *string, val *string) {
-		if val != nil {
-			*ptr = *val
-			dirty = true
-		}
-	}
-	applyIfSet(&s.OfflineMode, req.OfflineMode)
-	applyIfSet(&s.ProtocolEnabled, req.ProtocolEnabled)
-	applyIfSet(&s.ExitToTray, req.ExitToTray)
-	applyIfSet(&s.DiscordRpc, req.DiscordRpc)
-	applyIfSet(&s.DiscordRpcShare, req.DiscordRpcShare)
-	applyIfSet(&s.MinimizeOnSwitch, req.MinimizeOnSwitch)
-	applyIfSet(&s.StartTrayWithWindows, req.StartTrayWithWindows)
-	applyIfSet(&s.StartProgramCentered, req.StartProgramCentered)
-	applyIfSet(&s.AnimationsEnabled, req.AnimationsEnabled)
-	applyIfSet(&s.StatsEnabled, req.StatsEnabled)
-	applyIfSet(&s.StatsShare, req.StatsShare)
-	applyIfSet(&s.CrashReportAutoSubmit, req.CrashReportAutoSubmit)
-	applyStringIfSet(&s.Language, req.Language)
-	applyStringIfSet(&s.Theme, req.Theme)
-	applyStringIfSet(&s.ThemeAccentPreset, req.ThemeAccentPreset)
-	applyStringIfSet(&s.ThemeAccentCustom, req.ThemeAccentCustom)
-	if !dirty {
-		return nil
-	}
-	if req.StatsEnabled != nil {
-		stats.SetStatsCollectionEnabled(*req.StatsEnabled)
-	}
-	return saveSettingsAtomic(exeDir, s)
-}
-
-// SettingsBatchUpdate carries optional overrides for app-level settings.
-// nil pointers mean "don't change this field".
-type SettingsBatchUpdate struct {
-	OfflineMode           *bool   `json:"offlineMode,omitempty"`
-	ProtocolEnabled       *bool   `json:"protocolEnabled,omitempty"`
-	ExitToTray            *bool   `json:"exitToTray,omitempty"`
-	DiscordRpc            *bool   `json:"discordRpc,omitempty"`
-	DiscordRpcShare       *bool   `json:"discordRpcShare,omitempty"`
-	MinimizeOnSwitch      *bool   `json:"minimizeOnSwitch,omitempty"`
-	StartTrayWithWindows  *bool   `json:"startTrayWithWindows,omitempty"`
-	StartProgramCentered  *bool   `json:"startProgramCentered,omitempty"`
-	AnimationsEnabled     *bool   `json:"animationsEnabled,omitempty"`
-	StatsEnabled          *bool   `json:"statsEnabled,omitempty"`
-	StatsShare            *bool   `json:"statsShare,omitempty"`
-	CrashReportAutoSubmit *bool   `json:"crashReportAutoSubmit,omitempty"`
-	Language              *string `json:"language,omitempty"`
-	Theme                 *string `json:"theme,omitempty"`
-	ThemeAccentPreset     *string `json:"themeAccentPreset,omitempty"`
-	ThemeAccentCustom     *string `json:"themeAccentCustom,omitempty"`
 }

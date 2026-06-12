@@ -5,8 +5,10 @@
   import { t } from "../stores/i18n";
   import { activeModal, openConfirm, openFolderPicker } from "../stores/modal";
   import { pushToast } from "../stores/toast";
-  import { tooltip } from "../lib/actions/tooltip";
   import GeneralSettingsBlock from "../components/GeneralSettingsBlock.svelte";
+  import PlatformSettingsSteamSection from "../components/settings/PlatformSettingsSteamSection.svelte";
+  import PlatformSettingsGenericSection from "../components/settings/PlatformSettingsGenericSection.svelte";
+  import PlatformSettingsToolsSection from "../components/settings/PlatformSettingsToolsSection.svelte";
   import * as Wails from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import * as BasicService from "../../bindings/TcNo-Acc-Switcher/internal/basic/basicservice.js";
   import * as Shortcuts from "wails-shortcuts-service";
@@ -14,6 +16,13 @@
   import { requestPlatformAccountsRefresh } from "../stores/platformPage";
   import { PlatformSettings } from "../../bindings/TcNo-Acc-Switcher/internal/platform/models.js";
   import { Settings } from "../../bindings/TcNo-Acc-Switcher/internal/steam/models.js";
+  import {
+    ARG_SILENT,
+    ARG_VGUI,
+    hasLaunchArgFlag,
+    sanitizeSettingsPayload,
+    isClosingMethodForcedPayload,
+  } from "../lib/platformSettingsShared";
   import "../styles/Settings.scss";
 
   export let name: string;
@@ -30,9 +39,6 @@
   let genericPS: PlatformSettings | null = null;
   let installFolder = "";
   let loadError = "";
-  let closingOpen = false;
-  let startingOpen = false;
-  let stateOpen = false;
 
   let hasDesktopShortcut = false;
   let hasCachePaths = false;
@@ -46,42 +52,47 @@
 
   let saveTimer: ReturnType<typeof setTimeout> | undefined;
 
-  const ARG_SILENT = "-silent";
-  const ARG_VGUI = "-vgui";
+  $: silentOn =
+    isSteam && steamSettings
+      ? hasLaunchArgFlag(steamSettings.LaunchArguments ?? "", ARG_SILENT)
+      : false;
+  $: oldUiOn =
+    isSteam && steamSettings
+      ? hasLaunchArgFlag(steamSettings.LaunchArguments ?? "", ARG_VGUI)
+      : false;
 
-  function launchArgTokens(line: string): string[] {
-    return line.trim().split(/\s+/).filter((x) => x.length > 0);
+  function debouncedSaveSteam(): void {
+    if (!isSteam || !steamSettings) return;
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      void SaveSteamSettings(steamSettings!).catch(() => {});
+    }, 450);
   }
 
-  function hasLaunchArgFlag(line: string, flag: string): boolean {
-    const f = flag.trim().toLowerCase();
-    return launchArgTokens(line).some((t) => t.toLowerCase() === f);
+  function bumpSteamSettings(): void {
+    steamSettings = steamSettings;
   }
 
-  function withLaunchArgFlag(line: string, flag: string, on: boolean): string {
-    const f = flag.trim();
-    const lower = f.toLowerCase();
-    const parts = launchArgTokens(line).filter((t) => t.toLowerCase() !== lower);
-    if (on) parts.push(f);
-    return parts.join(" ");
+  function bumpGenericPlatformSettings(): void {
+    genericPS = genericPS;
   }
 
-  function isClosingMethodForcedPayload(raw: unknown): boolean {
-    if (!raw || typeof raw !== "object") return false;
-    const o = raw as Record<string, unknown>;
-    return o.ClosingMethodForced === true || o.closingMethodForced === true;
+  function debouncedSaveGeneric(): void {
+    if (isSteam || !genericPS) return;
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      void Wails.SavePlatformSettings(name, genericPS!).catch(() => {});
+    }, 450);
   }
 
-  function sanitizeSettingsPayload(raw: unknown): Record<string, unknown> {
-    const source = raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
-    const next: Record<string, unknown> = { ...source };
-    if (!Array.isArray(next.Shortcuts)) {
-      delete next.Shortcuts;
-    }
-    if (!next.AccountNotes || typeof next.AccountNotes !== "object" || Array.isArray(next.AccountNotes)) {
-      delete next.AccountNotes;
-    }
-    return next;
+  function onSteamSave(): void {
+    bumpSteamSettings();
+    debouncedSaveSteam();
+  }
+
+  function onGenericSave(): void {
+    bumpGenericPlatformSettings();
+    debouncedSaveGeneric();
   }
 
   async function refreshDesktopShortcutState(): Promise<void> {
@@ -108,29 +119,11 @@
     }
   }
 
-  function onSteamSilentChange(e: Event): void {
-    const el = e.currentTarget as HTMLInputElement;
-    const s = steamSettings;
-    if (!s) return;
-    s.LaunchArguments = withLaunchArgFlag(s.LaunchArguments ?? "", ARG_SILENT, el.checked);
-    bumpSteamSettings();
-    debouncedSaveSteam();
-  }
-
-  function onSteamOldUiChange(e: Event): void {
-    const el = e.currentTarget as HTMLInputElement;
-    const s = steamSettings;
-    if (!s) return;
-    s.LaunchArguments = withLaunchArgFlag(s.LaunchArguments ?? "", ARG_VGUI, el.checked);
-    bumpSteamSettings();
-    debouncedSaveSteam();
-  }
-
-  async function onToggleDesktopShortcut(e: Event): Promise<void> {
-    const el = e.currentTarget as HTMLInputElement;
-    const want = el.checked;
+  async function onToggleDesktopShortcut(): Promise<void> {
+    const was = hasDesktopShortcut;
+    hasDesktopShortcut = !was;
     try {
-      if (want) {
+      if (hasDesktopShortcut) {
         await Shortcuts.CreatePlatformShortcut(name);
         pushToast({
           type: "success",
@@ -142,9 +135,8 @@
         await Shortcuts.DeletePlatformShortcut(name);
         pushToast({ type: "success", title: "", message: $t("Done"), duration: 3000 });
       }
-      hasDesktopShortcut = want;
     } catch (err) {
-      el.checked = !want;
+      hasDesktopShortcut = was;
       pushToast({
         type: "error",
         title: "",
@@ -152,87 +144,6 @@
         duration: 8000,
       });
     }
-  }
-
-  const closingValues = ["Combined", "Close", "TaskKill", "Electron"] as const;
-  const startingValues = ["Default", "Direct"] as const;
-
-  function closingLabel(v: string): string {
-    if (v === "Combined") return "Combined (Best)";
-    if (v === "Close") return "Close";
-    if (v === "TaskKill") return "TaskKill (Old)";
-    if (v === "Electron") return "Electron / Discord (recommended)";
-    return v;
-  }
-
-  function startingLabel(v: string): string {
-    if (v === "Default") return "Default (Best)";
-    if (v === "Direct") return "Direct";
-    return v;
-  }
-
-  const overrideStates: { v: number; key: string }[] = [
-    { v: -1, key: "NoDefault" },
-    { v: 1, key: "Online" },
-    { v: 7, key: "Invisible" },
-    { v: 0, key: "Offline" },
-    { v: 2, key: "Busy" },
-    { v: 3, key: "Away" },
-    { v: 4, key: "Snooze" },
-    { v: 5, key: "LookingToTrade" },
-    { v: 6, key: "LookingToPlay" },
-  ];
-
-  function overrideLabel(v: number): string {
-    const row = overrideStates.find((x) => x.v === v);
-    return row ? $t(row.key) : $t("NoDefault");
-  }
-
-  $: silentOn =
-    isSteam && steamSettings
-      ? hasLaunchArgFlag(steamSettings.LaunchArguments ?? "", ARG_SILENT)
-      : false;
-  $: oldUiOn =
-    isSteam && steamSettings
-      ? hasLaunchArgFlag(steamSettings.LaunchArguments ?? "", ARG_VGUI)
-      : false;
-
-  function debouncedSaveSteam(): void {
-    if (!isSteam || !steamSettings) return;
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(() => {
-      void SaveSteamSettings(steamSettings!).catch(() => {});
-    }, 450);
-  }
-
-  /** Svelte 4 only invalidates on top-level assignment; bump after mutating nested fields. */
-  function bumpSteamSettings(): void {
-    steamSettings = steamSettings;
-  }
-
-  function bumpGenericPlatformSettings(): void {
-    genericPS = genericPS;
-  }
-
-  function debouncedSaveGeneric(): void {
-    if (isSteam || !genericPS) return;
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(() => {
-      void Wails.SavePlatformSettings(name, genericPS!).catch(() => {});
-    }, 450);
-  }
-
-  function getPullAccountImagesOnSwitch(): boolean {
-    const g = genericPS as unknown as Record<string, unknown> | null;
-    if (!g) return true;
-    return g.PullAccountImagesOnSwitch !== false;
-  }
-
-  function onPullAccountImagesOnSwitchChange(e: Event): void {
-    const g = genericPS as unknown as Record<string, unknown> | null;
-    if (!g) return;
-    g.PullAccountImagesOnSwitch = (e.currentTarget as HTMLInputElement).checked;
-    debouncedSaveGeneric();
   }
 
   async function refreshInstallFolder(): Promise<void> {
@@ -366,7 +277,6 @@
       await refreshDesktopShortcutState();
     }, $t("Toast_SettingsReset"));
   }
-
 
   async function onOpenFolder(): Promise<void> {
     try {
@@ -514,631 +424,52 @@
   <h1 class="SettingsHeader">{$t("Settings_Header_Platform", { platformName: name })}</h1>
 
   {#if isSteam && steamSettings}
-    <h2 class="SettingsHeader">{$t("Settings_Header_GeneralSettings")}</h2>
-    <div class="rowSetting">
-      <div class="form-check">
-        <input
-          id="ps-desktop-shortcut"
-          type="checkbox"
-          checked={hasDesktopShortcut}
-          on:change={onToggleDesktopShortcut}
-        />
-        <label class="form-check-label" for="ps-desktop-shortcut"></label>
-      </div>
-      <label for="ps-desktop-shortcut">{$t("Settings_Shortcut", { platform: name })}</label>
-    </div>
-    <div class="rowSetting">
-      <div class="form-check">
-        <input
-          id="ps-run-admin"
-          type="checkbox"
-          bind:checked={steamSettings.RunAsAdmin}
-          on:change={debouncedSaveSteam}
-        />
-        <label class="form-check-label" for="ps-run-admin"></label>
-      </div>
-      <label for="ps-run-admin">{$t("Settings_Admin", { platform: name })}</label>
-    </div>
-    <div class="rowSetting">
-      <div class="form-check">
-        <input
-          id="ps-autostart"
-          type="checkbox"
-          bind:checked={steamSettings.AutoStart}
-          on:change={debouncedSaveSteam}
-        />
-        <label class="form-check-label" for="ps-autostart"></label>
-      </div>
-      <label for="ps-autostart">{$t("Settings_AutoStart", { platform: name })}</label>
-    </div>
-    <div class="rowSetting">
-      <div class="form-check">
-        <input
-          id="ps-forget"
-          type="checkbox"
-          bind:checked={steamSettings.ForgetAccountEnabled}
-          on:change={debouncedSaveSteam}
-        />
-        <label class="form-check-label" for="ps-forget"></label>
-      </div>
-      <label for="ps-forget">{$t("Settings_ForgetAccountEnabled")}</label>
-    </div>
-    <div class="rowSetting">
-      <div class="form-check">
-        <input
-          id="ps-shortnotes"
-          type="checkbox"
-          bind:checked={steamSettings.ShowShortNotes}
-          on:change={debouncedSaveSteam}
-        />
-        <label class="form-check-label" for="ps-shortnotes"></label>
-      </div>
-      <label for="ps-shortnotes">{$t("Settings_ShowShortNotes")}</label>
-    </div>
-    
-    <h2 class="SettingsHeader">{$t("Settings_Header_AccountDisplay")}</h2>
-    <div class="rowSetting">
-      <div class="form-check">
-        <input
-          id="ps-show-user"
-          type="checkbox"
-          bind:checked={steamSettings.Steam_ShowAccUsername}
-          on:change={debouncedSaveSteam}
-        />
-        <label class="form-check-label" for="ps-show-user"></label>
-      </div>
-      <label for="ps-show-user">{$t("Steam_ShowAccUsername")}</label>
-    </div>
-    <div class="rowSetting">
-      <div class="form-check">
-        <input
-          id="ps-show-sid"
-          type="checkbox"
-          bind:checked={steamSettings.Steam_ShowSteamID}
-          on:change={debouncedSaveSteam}
-        />
-        <label class="form-check-label" for="ps-show-sid"></label>
-      </div>
-      <label for="ps-show-sid">{$t("Steam_ShowSteamID")}</label>
-    </div>
-    <div class="rowSetting">
-      <div class="form-check">
-        <input
-          id="ps-show-ll"
-          type="checkbox"
-          bind:checked={steamSettings.Steam_ShowLastLogin}
-          on:change={debouncedSaveSteam}
-        />
-        <label class="form-check-label" for="ps-show-ll"></label>
-      </div>
-      <label for="ps-show-ll">{$t("Steam_ShowLastLogin")}</label>
-    </div>
-    <div class="rowSetting">
-      <div class="form-check">
-        <input
-          id="ps-show-vac"
-          type="checkbox"
-          bind:checked={steamSettings.Steam_ShowVAC}
-          on:change={debouncedSaveSteam}
-        />
-        <label class="form-check-label" for="ps-show-vac"></label>
-      </div>
-      <label for="ps-show-vac">{$t("Steam_ShowVac")}</label>
-    </div>
-    <div class="rowSetting">
-      <div class="form-check">
-        <input
-          id="ps-show-ltd"
-          type="checkbox"
-          bind:checked={steamSettings.Steam_ShowLimited}
-          on:change={debouncedSaveSteam}
-        />
-        <label class="form-check-label" for="ps-show-ltd"></label>
-      </div>
-      <label for="ps-show-ltd">{$t("Steam_ShowLimited")}</label>
-    </div>
-    <div class="rowSetting">
-      <div class="form-check">
-        <input
-          id="ps-show-miniprofile"
-          type="checkbox"
-          bind:checked={steamSettings.Steam_ShowMiniProfile}
-          on:change={debouncedSaveSteam}
-        />
-        <label class="form-check-label" for="ps-show-miniprofile"></label>
-      </div>
-      <label for="ps-show-miniprofile" use:tooltip={{ text: $t("Tooltip_SteamShowMiniProfile"), placement: "right" }}
-        >{$t("Steam_ShowMiniProfile")}</label
-      >
-    </div>
-    <div class="rowSetting">
-      <div class="form-check">
-        <input
-          id="ps-show-avatar-frame"
-          type="checkbox"
-          bind:checked={steamSettings.Steam_ShowAvatarFrame}
-          on:change={debouncedSaveSteam}
-        />
-        <label class="form-check-label" for="ps-show-avatar-frame"></label>
-      </div>
-      <label for="ps-show-avatar-frame" use:tooltip={{ text: $t("Tooltip_SteamShowAvatarFrame"), placement: "right" }}
-        >{$t("Steam_ShowAvatarFrame")}</label
-      >
-    </div>
-
-    <h2 class="SettingsHeader">{$t("Settings_Header_TraySettings")}</h2>
-    <div class="rowSetting">
-      <div class="form-check">
-        <input
-          id="ps-tray-name"
-          type="checkbox"
-          bind:checked={steamSettings.Steam_TrayAccountName}
-          on:change={debouncedSaveSteam}
-        />
-        <label class="form-check-label" for="ps-tray-name"></label>
-      </div>
-      <label for="ps-tray-name">{$t("Steam_Tray_AccountName")}</label>
-    </div>
-    <div class="form-text tray-max-row">
-      <span>{$t("Settings_TrayMax")}</span>
-      <input
-        type="number"
-        min="0"
-        max="365"
-        bind:value={steamSettings.TrayAccNumber}
-        on:change={debouncedSaveSteam}
-      />
-    </div>
-
-    <h2 class="SettingsHeader">{$t("Settings_Header_LaunchOptions")}</h2>
-    <div class="rowSetting">
-      <div class="form-check">
-        <input
-          id="ps-silent"
-          type="checkbox"
-          disabled={!steamSettings.AutoStart}
-          checked={silentOn}
-          on:change={onSteamSilentChange}
-        />
-        <label class="form-check-label" for="ps-silent"></label>
-      </div>
-      <label for="ps-silent">{$t("Steam_StartSilent")}</label>
-    </div>
-    <div class="rowSetting">
-      <div class="form-check">
-        <input
-          id="ps-steam-switcher"
-          type="checkbox"
-          bind:checked={steamSettings.ShowSteamSwitcher}
-          on:change={debouncedSaveSteam}
-        />
-        <label class="form-check-label" for="ps-steam-switcher"></label>
-      </div>
-      <label for="ps-steam-switcher">{$t("Settings_ShowSteamSwitcher")}</label>
-    </div>
-    <div class="rowSetting">
-      <div class="form-check">
-        <input
-          id="ps-collect"
-          type="checkbox"
-          bind:checked={steamSettings.CollectInfo}
-          on:change={debouncedSaveSteam}
-        />
-        <label class="form-check-label" for="ps-collect"></label>
-      </div>
-      <label for="ps-collect">{$t("Settings_SteamCollectInfo")}</label>
-    </div>
-    <div class="rowSetting">
-      <div class="form-check">
-        <input
-          id="ps-oldui"
-          type="checkbox"
-          disabled={!steamSettings.AutoStart}
-          checked={oldUiOn}
-          on:change={onSteamOldUiChange}
-        />
-        <label class="form-check-label" for="ps-oldui"></label>
-      </div>
-      <label for="ps-oldui">{$t("Steam_OldUi")}</label>
-    </div>
-    <div class="rowSetting form-text launch-args-row">
-      <label for="ps-launch-args">{$t("Settings_LaunchArgumentsForPlatform", { platform: name })}</label>
-      <input
-        id="ps-launch-args"
-        type="text"
-        spellcheck="false"
-        autocomplete="off"
-        disabled={!steamSettings.AutoStart}
-        bind:value={steamSettings.LaunchArguments}
-        on:input={debouncedSaveSteam}
-      />
-      <p class="subtext">{$t("Settings_LaunchArguments_Hint")}</p>
-    </div>
-    <div class="rowSetting rowDropdown">
-      <span>{$t("Steam_OverrideDefaultState")}</span>
-      <div class="dropdown" class:show={stateOpen}>
-        <button type="button" class="dropdown-toggle" on:click={() => (stateOpen = !stateOpen)}>
-          {overrideLabel(steamSettings.Steam_OverrideState)}
-          <span class="caret" aria-hidden="true"></span>
-        </button>
-        {#if stateOpen}
-          <ul class="custom-dropdown-menu dropdown-menu">
-            {#each overrideStates as o}
-              <li>
-                <button
-                  type="button"
-                  class="dropdown-item"
-                  on:click={() => {
-                    const s = steamSettings;
-                    if (!s) return;
-                    s.Steam_OverrideState = o.v;
-                    bumpSteamSettings();
-                    stateOpen = false;
-                    debouncedSaveSteam();
-                  }}
-                >
-                  {$t(o.key)}
-                </button>
-              </li>
-            {/each}
-          </ul>
-        {/if}
-      </div>
-    </div>
-    <div class="form-text">
-      <span>{$t("Settings_ImageExpiry")}</span>
-      <input
-        type="number"
-        min="0"
-        max="365"
-        bind:value={steamSettings.Steam_ImageExpiryTime}
-        on:change={debouncedSaveSteam}
-      />
-    </div>
-    <div class="form-text">
-      <span>{$t("Settings_SteamAPIKey")}</span>
-      <input
-        type="text"
-        spellcheck="false"
-        bind:value={steamSettings.SteamWebApiKey}
-        on:change={debouncedSaveSteam}
-      />
-      <p class="subtext">{$t("Settings_SteamAPIKey_Note")}</p>
-    </div>
-    <h2 class="SettingsHeader">{$t("Settings_Header_ProcessManagement")}</h2>
-    {#if !closingMethodUiLocked}
-      <div class="rowSetting rowDropdown" use:tooltip={{ text: $t("Tooltip_ClosingMethod"), placement: "right" }}>
-        <span>{$t("Settings_Header_ClosingMethod", { platform: name })}</span>
-        <div class="dropdown" class:show={closingOpen}>
-          <button type="button" class="dropdown-toggle" on:click={() => (closingOpen = !closingOpen)}>
-            {closingLabel(steamSettings.ClosingMethod)}
-            <span class="caret" aria-hidden="true"></span>
-          </button>
-          {#if closingOpen}
-            <ul class="custom-dropdown-menu dropdown-menu">
-              {#each closingValues as v}
-                <li>
-                  <button
-                    type="button"
-                    class="dropdown-item"
-                    on:click={() => {
-                      const s = steamSettings;
-                      if (!s) return;
-                      s.ClosingMethod = v;
-                      bumpSteamSettings();
-                      closingOpen = false;
-                      debouncedSaveSteam();
-                    }}
-                  >
-                    {closingLabel(v)}
-                  </button>
-                </li>
-              {/each}
-            </ul>
-          {/if}
-        </div>
-      </div>
-    {/if}
-    <div class="rowSetting rowDropdown" use:tooltip={{ text: $t("Tooltip_StartingMethod"), placement: "right" }}>
-      <span>{$t("Settings_Header_StartingMethod", { platform: name })}</span>
-      <div class="dropdown" class:show={startingOpen}>
-        <button type="button" class="dropdown-toggle" on:click={() => (startingOpen = !startingOpen)}>
-          {startingLabel(steamSettings.StartingMethod)}
-          <span class="caret" aria-hidden="true"></span>
-        </button>
-        {#if startingOpen}
-          <ul class="custom-dropdown-menu dropdown-menu">
-            {#each startingValues as v}
-              <li>
-                <button
-                  type="button"
-                  class="dropdown-item"
-                  on:click={() => {
-                    const s = steamSettings;
-                    if (!s) return;
-                    s.StartingMethod = v;
-                    bumpSteamSettings();
-                    startingOpen = false;
-                    debouncedSaveSteam();
-                  }}
-                >
-                  {startingLabel(v)}
-                </button>
-              </li>
-            {/each}
-          </ul>
-        {/if}
-      </div>
-    </div>
+    <PlatformSettingsSteamSection
+      {name}
+      {steamSettings}
+      {hasDesktopShortcut}
+      {silentOn}
+      {oldUiOn}
+      {closingMethodUiLocked}
+      on:save={onSteamSave}
+      on:toggleDesktopShortcut={onToggleDesktopShortcut}
+    />
   {:else if !isSteam && genericPS}
-    <h2 class="SettingsHeader">{$t("Settings_Header_GeneralSettings")}</h2>
-    <div class="rowSetting">
-      <div class="form-check">
-        <input
-          id="gp-desktop-shortcut"
-          type="checkbox"
-          checked={hasDesktopShortcut}
-          on:change={onToggleDesktopShortcut}
-        />
-        <label class="form-check-label" for="gp-desktop-shortcut"></label>
-      </div>
-      <label for="gp-desktop-shortcut">{$t("Settings_Shortcut", { platform: name })}</label>
-    </div>
-    <div class="rowSetting">
-      <div class="form-check">
-        <input
-          id="gp-run-admin"
-          type="checkbox"
-          bind:checked={genericPS.RunAsAdmin}
-          on:change={debouncedSaveGeneric}
-        />
-        <label class="form-check-label" for="gp-run-admin"></label>
-      </div>
-      <label for="gp-run-admin">{$t("Settings_Admin", { platform: name })}</label>
-    </div>
-    <div class="rowSetting">
-      <div class="form-check">
-        <input
-          id="gp-autostart"
-          type="checkbox"
-          bind:checked={genericPS.AutoStart}
-          on:change={debouncedSaveGeneric}
-        />
-        <label class="form-check-label" for="gp-autostart"></label>
-      </div>
-      <label for="gp-autostart">{$t("Settings_AutoStart", { platform: name })}</label>
-    </div>
-    <div class="rowSetting">
-      <div class="form-check">
-        <input
-          id="gp-forget"
-          type="checkbox"
-          bind:checked={genericPS.ForgetAccountEnabled}
-          on:change={debouncedSaveGeneric}
-        />
-        <label class="form-check-label" for="gp-forget"></label>
-      </div>
-      <label for="gp-forget">{$t("Settings_ForgetAccountEnabled")}</label>
-    </div>
-    <div class="rowSetting">
-      <div class="form-check">
-        <input
-          id="gp-shortnotes"
-          type="checkbox"
-          bind:checked={genericPS.ShowShortNotes}
-          on:change={debouncedSaveGeneric}
-        />
-        <label class="form-check-label" for="gp-shortnotes"></label>
-      </div>
-      <label for="gp-shortnotes">{$t("Settings_ShowShortNotes")}</label>
-    </div>
-    <div class="rowSetting">
-      <div class="form-check">
-        <input
-          id="gp-show-lastused"
-          type="checkbox"
-          bind:checked={genericPS.ShowLastUsed}
-          on:change={debouncedSaveGeneric}
-        />
-        <label class="form-check-label" for="gp-show-lastused"></label>
-      </div>
-      <label for="gp-show-lastused">{$t("Settings_ShowLastUsed")}</label>
-    </div>
-    <h2 class="SettingsHeader">{$t("Settings_Header_LaunchOptions")}</h2>
-    <div class="rowSetting form-text launch-args-row">
-      <label for="gp-launch-args">{$t("Settings_LaunchArgumentsForPlatform", { platform: name })}</label>
-      <input
-        id="gp-launch-args"
-        type="text"
-        spellcheck="false"
-        autocomplete="off"
-        disabled={!genericPS.AutoStart}
-        bind:value={genericPS.LaunchArguments}
-        on:input={debouncedSaveGeneric}
-      />
-      <p class="subtext">{$t("Settings_LaunchArguments_Hint")}</p>
-    </div>
-    <h2 class="SettingsHeader">{$t("Settings_Header_ProcessManagement")}</h2>
-    {#if !closingMethodUiLocked}
-      <div class="rowSetting rowDropdown">
-        <span use:tooltip={{ text: $t("Tooltip_ClosingMethod"), placement: "right" }}
-          >{$t("Settings_Header_ClosingMethod", { platform: name })}</span
-        >
-        <div class="dropdown" class:show={closingOpen}>
-          <button type="button" class="dropdown-toggle" on:click={() => (closingOpen = !closingOpen)}>
-            {closingLabel(genericPS.ClosingMethod)}
-            <span class="caret" aria-hidden="true"></span>
-          </button>
-          {#if closingOpen}
-            <ul class="custom-dropdown-menu dropdown-menu">
-              {#each closingValues as v}
-                <li>
-                  <button
-                    type="button"
-                    class="dropdown-item"
-                    on:click={() => {
-                      const g = genericPS;
-                      if (!g) return;
-                      g.ClosingMethod = v;
-                      bumpGenericPlatformSettings();
-                      closingOpen = false;
-                      debouncedSaveGeneric();
-                    }}
-                  >
-                    {closingLabel(v)}
-                  </button>
-                </li>
-              {/each}
-            </ul>
-          {/if}
-        </div>
-      </div>
-    {/if}
-    <div class="rowSetting rowDropdown">
-      <span use:tooltip={{ text: $t("Tooltip_StartingMethod"), placement: "right" }}
-        >{$t("Settings_Header_StartingMethod", { platform: name })}</span
-      >
-      <div class="dropdown" class:show={startingOpen}>
-        <button type="button" class="dropdown-toggle" on:click={() => (startingOpen = !startingOpen)}>
-          {startingLabel(genericPS.StartingMethod)}
-          <span class="caret" aria-hidden="true"></span>
-        </button>
-        {#if startingOpen}
-          <ul class="custom-dropdown-menu dropdown-menu">
-            {#each startingValues as v}
-              <li>
-                <button
-                  type="button"
-                  class="dropdown-item"
-                  on:click={() => {
-                    const g = genericPS;
-                    if (!g) return;
-                    g.StartingMethod = v;
-                    bumpGenericPlatformSettings();
-                    startingOpen = false;
-                    debouncedSaveGeneric();
-                  }}
-                >
-                  {startingLabel(v)}
-                </button>
-              </li>
-            {/each}
-          </ul>
-        {/if}
-      </div>
-    </div>
-
-    <h2 class="SettingsHeader">{$t("Settings_Header_TraySettings")}</h2>
-    <div class="form-text tray-max-row">
-      <span>{$t("Settings_TrayMax")}</span>
-      <input
-        type="number"
-        min="0"
-        max="365"
-        bind:value={genericPS.TrayAccNumber}
-        on:change={debouncedSaveGeneric}
-      />
-    </div>
-    {#if hasRemoteProfileImages}
-      <h2 class="SettingsHeader">{$t("Settings_Header_ProfileImages")}</h2>
-      <div class="rowSetting">
-        <div class="form-check">
-          <input
-            id="gp-pull-account-images"
-            type="checkbox"
-            checked={getPullAccountImagesOnSwitch()}
-            on:change={onPullAccountImagesOnSwitchChange}
-          />
-          <label class="form-check-label" for="gp-pull-account-images"></label>
-        </div>
-        <label for="gp-pull-account-images">{$t("Settings_PullAccountImages")}</label>
-      </div>
-      <div class="form-text tray-max-row">
-        <span>{$t("Settings_ProfileImageExpiryDays")}</span>
-        <input
-          type="number"
-          min="1"
-          max="365"
-          bind:value={genericPS.ProfileImageExpiryDays}
-          on:change={debouncedSaveGeneric}
-        />
-      </div>
-      <div class="buttoncol">
-        <button type="button" on:click={() => void onRefreshBasicProfileImages()}>
-          {$t("Button_RefreshImages")}
-        </button>
-        <button type="button" on:click={() => void onClearBasicProfileImages()}>
-          {$t("Button_ClearCachedProfileImages")}
-        </button>
-      </div>
-    {/if}
+    <PlatformSettingsGenericSection
+      {name}
+      {genericPS}
+      {hasDesktopShortcut}
+      {closingMethodUiLocked}
+      {hasRemoteProfileImages}
+      on:save={onGenericSave}
+      on:toggleDesktopShortcut={onToggleDesktopShortcut}
+      on:refreshBasicProfileImages={onRefreshBasicProfileImages}
+      on:clearBasicProfileImages={onClearBasicProfileImages}
+    />
   {/if}
 
   {#if (isSteam && steamSettings) || (!isSteam && genericPS)}
-    <h2 class="SettingsHeader">{$t("Settings_Header_GeneralTools")}</h2>
-    <p class="install-loc">
-      {$t("Settings_CurrentLocation", { path: installFolder || "" })}
-    </p>
-    <div class="buttoncol">
-      <button type="button" on:click={onPickFolder}>{$t("Settings_PickFolder", { platform: name })}</button>
-      <button type="button" on:click={onReset}>{$t("Button_ResetSettings")}</button>
-    </div>
-    {#if hasCachePaths}
-      <div class="buttoncol">
-        {#if hasSavedProfileImageSources}
-          <button type="button" on:click={() => void onRefreshSavedBasicProfileImages()}>
-            {$t("Button_RefreshProfileImages")}
-          </button>
-          <button type="button" disabled={clearingCache} on:click={onClearCache}>
-            {$t("Platform_ClearCache")}
-          </button>
-        {:else}
-          <button type="button" disabled={clearingCache} on:click={onClearCache}>
-            {$t("Platform_ClearCache")}
-          </button>
-        {/if}
-      </div>
-    {/if}
-    {#if isSteam}
-      <div class="buttoncol">
-        <button type="button" on:click={onRefreshVac}>{$t("Steam_CheckVac")}</button>
-        <button type="button" on:click={onRefreshImages}>{$t("Button_RefreshImages")}</button>
-      </div>
-    {/if}
-
-    {#if hasBackupFolders}
-      <h2 class="SettingsHeader">{$t("Settings_Header_BackupRestore")}</h2>
-      {#if isSteam}
-        <div class="buttoncol">
-          <button type="button" disabled={backingUp} on:click={() => void onBackup(false)} use:tooltip={$t("Tooltip_Backup")}>
-            {$t("Button_Backup")}
-          </button>
-          <button type="button" disabled={backingUp} on:click={() => void onBackup(true)} use:tooltip={$t("Tooltip_BackupAll")}>
-            {$t("Button_BackupAll")}
-          </button>
-        </div>
-      {:else}
-        <div class="buttoncol">
-          <button type="button" disabled={backingUp} on:click={() => void onBackup(true)}>
-            {$t("Button_BackupAll")}
-          </button>
-        </div>
-      {/if}
-      <div class="buttoncol">
-        <button type="button" on:click={onOpenBackupFolder}>{$t("Button_OpenBackup")}</button>
-        <button type="button" disabled={restoringBackup} on:click={onRestoreLatestBackup}>
-          {$t("Button_Restore")}
-        </button>
-      </div>
-    {/if}
-
-    <h2 class="SettingsHeader">{$t("Settings_Header_OtherTools")}</h2>
-    <div class="buttoncol">
-      <button type="button" on:click={onOpenFolder}>{$t("Settings_OpenFolder", { platform: name })}</button>
-      <button type="button" on:click={() => route.set({ page: "steam-advanced-clearing" })}>
-        {$t("Button_AdvancedCleaning")}
-      </button>
-    </div>
+    <PlatformSettingsToolsSection
+      {name}
+      {isSteam}
+      {installFolder}
+      {hasCachePaths}
+      {hasBackupFolders}
+      {hasSavedProfileImageSources}
+      {clearingCache}
+      {backingUp}
+      {restoringBackup}
+      on:pickFolder={onPickFolder}
+      on:reset={onReset}
+      on:clearCache={onClearCache}
+      on:backup={(e) => onBackup(e.detail.everything)}
+      on:openBackupFolder={onOpenBackupFolder}
+      on:restoreLatestBackup={onRestoreLatestBackup}
+      on:refreshVac={onRefreshVac}
+      on:refreshImages={onRefreshImages}
+      on:refreshSavedBasicProfileImages={onRefreshSavedBasicProfileImages}
+      on:openFolder={onOpenFolder}
+    />
 
     <hr class="settings-divider" />
 
@@ -1161,42 +492,9 @@
     padding: 0.5rem 1rem;
   }
 
-  .install-loc {
-    color: var(--text-white-90);
-    font-size: 0.9rem;
-    margin: 0.5rem 0 1rem;
-    word-break: break-all;
-  }
-
   .settings-divider {
     border: 0;
     border-top: 1px solid var(--accent);
     margin: 2rem 0 1.5rem;
   }
-
-  .tray-max-row {
-    margin: 0.5rem 0 1rem;
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.35rem;
-  }
-
-  .subtext {
-    font-size: 0.8rem;
-    opacity: 0.85;
-    margin-top: 0.25rem;
-  }
-
-  .launch-args-row {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.35rem;
-  }
-
-  .launch-args-row input[type="text"] {
-    width: 100%;
-    max-width: 42rem;
-  }
-
 </style>

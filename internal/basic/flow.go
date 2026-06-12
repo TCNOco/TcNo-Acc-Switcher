@@ -5,15 +5,11 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"io"
-	"log/slog"
 	"os"
 	"path/filepath"
-	"sort"
 	"strings"
 	"time"
 
-	"TcNo-Acc-Switcher/internal/cli"
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
@@ -39,7 +35,11 @@ type FlowContext struct {
 	PathCtx     platform.PathTokenContext
 }
 
-// PrepareFlow resolves descriptor, settings, and install folder for a platform.
+const (
+	electronKillForegroundWait   = 20 * time.Second
+	electronKillForegroundSettle = 450 * time.Millisecond
+)
+
 func PrepareFlow(deps FlowDeps, platformKey string) (FlowContext, error) {
 	d, _, err := readDescriptor(platformKey)
 	if err != nil {
@@ -62,240 +62,6 @@ func PrepareFlow(deps FlowDeps, platformKey string) (FlowContext, error) {
 	}, nil
 }
 
-func killPlatformExes(deps FlowDeps, fc FlowContext) error {
-	closingMethod := winutil.ClosingMethod(fc.Settings.ClosingMethod)
-	if err := winutil.ErrIfCannotKill(fc.Descriptor.ExesToEnd, closingMethod); err != nil {
-		platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatformFailed", fc.PlatformKey)
-		return err
-	}
-	platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatform", fc.PlatformKey)
-	if err := winutil.KillByName(fc.Descriptor.ExesToEnd, closingMethod, electronBeforeKillSynth(deps, fc.PlatformKey, fc.Descriptor.ExesToEnd)); err != nil {
-		platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatformFailed", fc.PlatformKey)
-		return err
-	}
-	return nil
-}
-
-func logFlow() *slog.Logger {
-	return slog.Default().With("component", "basic-flow")
-}
-
-const (
-	electronKillForegroundWait   = 20 * time.Second
-	electronKillForegroundSettle = 450 * time.Millisecond
-)
-
-func primaryExeImageForKill(exes []string) string {
-	const svc = "SERVICE:"
-	for _, raw := range exes {
-		e := strings.TrimSpace(raw)
-		if e == "" || strings.HasPrefix(strings.ToUpper(e), strings.ToUpper(svc)) {
-			continue
-		}
-		base := filepath.Base(e)
-		if !strings.HasSuffix(strings.ToLower(base), ".exe") {
-			base = strings.TrimSpace(e) + ".exe"
-		}
-		return base
-	}
-	return ""
-}
-
-// electronBeforeKillSynth runs the same launch as the platform button, then waits for that exe to own the foreground.
-func electronBeforeKillSynth(deps FlowDeps, platformKey string, exes []string) func() error {
-	ps, err := platform.LoadPlatformSettings(platformKey)
-	if err != nil || winutil.ClosingMethod(ps.ClosingMethod) != winutil.ClosingElectron {
-		return nil
-	}
-	want := primaryExeImageForKill(exes)
-	if want == "" {
-		return nil
-	}
-	return func() error {
-		if err := launchBasicNoStatus(deps, platformKey, nil); err != nil {
-			return err
-		}
-		if !winutil.WaitForegroundForExe(want, electronKillForegroundWait) {
-			logFlow().Warn("electron kill: foreground wait timeout", "image", want)
-		}
-		time.Sleep(electronKillForegroundSettle)
-		return nil
-	}
-}
-
-// regDumpEntry is one value in reg.json. Legacy files used a plain JSON string per key.
-// For LoginFiles keys ending with :* (all values in a key), Values holds each value name → entry.
-type regDumpEntry struct {
-	V      string                  `json:"v,omitempty"`
-	T      uint32                  `json:"t,omitempty"`
-	Values map[string]regDumpEntry `json:"values,omitempty"`
-}
-
-func registryValueStringForDump(v any) string {
-	switch x := v.(type) {
-	case string:
-		return x
-	case []byte:
-		return winutil.HexEncodeBinary(x)
-	case uint32:
-		return fmt.Sprintf("%d", x)
-	case uint64:
-		return fmt.Sprintf("%d", x)
-	default:
-		return fmt.Sprint(x)
-	}
-}
-
-func regDumpFromJSON(data []byte) (map[string]regDumpEntry, error) {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return nil, err
-	}
-	out := make(map[string]regDumpEntry, len(raw))
-	for k, rm := range raw {
-		var s string
-		if err := json.Unmarshal(rm, &s); err == nil {
-			out[k] = regDumpEntry{V: s, T: 0}
-			continue
-		}
-		var e regDumpEntry
-		if err := json.Unmarshal(rm, &e); err != nil {
-			return nil, fmt.Errorf("reg.json key %q: %w", k, err)
-		}
-		out[k] = e
-	}
-	return out, nil
-}
-
-func splitRegistryPathValue(enc string) (keyPath, valueName string, ok bool) {
-	enc = strings.TrimSpace(enc)
-	idx := strings.LastIndex(enc, ":")
-	if idx <= 0 || idx >= len(enc)-1 {
-		return "", "", false
-	}
-	keyPath = enc[:idx]
-	valueName = enc[idx+1:]
-	if !strings.Contains(keyPath, `\`) {
-		return "", "", false
-	}
-	return keyPath, valueName, true
-}
-
-// splitRegistryKeyPathAndValueGlob is true when the value part uses * ? [ (but not the reserved whole-key name "*").
-func splitRegistryKeyPathAndValueGlob(enc string) (keyPath, glob string, ok bool) {
-	kp, v, ok := splitRegistryPathValue(enc)
-	if !ok || v == "*" || !hasGlobPattern(v) {
-		return "", "", false
-	}
-	return kp, v, true
-}
-
-func regDumpLookup(m map[string]regDumpEntry, descriptorKey string) (regDumpEntry, bool) {
-	k := strings.TrimSpace(descriptorKey)
-	if e, ok := m[k]; ok {
-		return e, true
-	}
-	base := stripREG(k)
-	if !isREG(k) {
-		if e, ok := m["REG:"+base]; ok {
-			return e, true
-		}
-	}
-	if isREG(k) {
-		if e, ok := m[base]; ok {
-			return e, true
-		}
-	}
-	// Concrete REG:path:value may be stored under REG:path:* or REG:path:ValueName_* bundle entries.
-	keyPath, valName, ok := splitRegistryPathValue(base)
-	if ok && valName != "" && valName != "*" {
-		for wildKey, bundle := range m {
-			if len(bundle.Values) == 0 {
-				continue
-			}
-			wb := strings.TrimSpace(stripREG(wildKey))
-			wkPath, wValPart, wok := splitRegistryPathValue(wb)
-			if !wok || !strings.EqualFold(wkPath, keyPath) {
-				continue
-			}
-			switch {
-			case wValPart == "*":
-				if ve, ok := bundle.Values[valName]; ok {
-					return ve, true
-				}
-			case hasGlobPattern(wValPart):
-				matched, err := filepath.Match(wValPart, valName)
-				if err != nil || !matched {
-					continue
-				}
-				if ve, ok := bundle.Values[valName]; ok {
-					return ve, true
-				}
-			}
-		}
-	}
-	return regDumpEntry{}, false
-}
-
-// firstValueNameMatchingGlob picks one value name in a reg.json bundle that matches valueNameGlob.
-// If several names match, the lexicographically smallest is used so behavior is stable.
-func firstValueNameMatchingGlob(values map[string]regDumpEntry, valueNameGlob string) string {
-	var names []string
-	for vn := range values {
-		ok, err := filepath.Match(valueNameGlob, vn)
-		if err != nil || !ok {
-			continue
-		}
-		names = append(names, vn)
-	}
-	if len(names) == 0 {
-		return ""
-	}
-	sort.Strings(names)
-	return names[0]
-}
-
-func writeRegistryFromRegDump(liveKey string, e regDumpEntry) error {
-	if len(e.Values) > 0 {
-		enc := stripREG(liveKey)
-		kp, valPart, ok := splitRegistryPathValue(enc)
-		if !ok {
-			return fmt.Errorf("registry dump has values map but key %q is not a valid registry path", liveKey)
-		}
-		if valPart != "*" && !hasGlobPattern(valPart) {
-			return fmt.Errorf("registry dump has values map but key %q must use value :* or a glob (* ? [)", liveKey)
-		}
-		for valName, ent := range e.Values {
-			full := "REG:" + kp + ":" + valName
-			if err := writeRegistryFromRegDump(full, ent); err != nil {
-				return err
-			}
-		}
-		return nil
-	}
-	enc := stripREG(liveKey)
-	v := strings.TrimSpace(e.V)
-	if v == "" {
-		if e.T != 0 {
-			return winutil.RegistryWriteHint(enc, "", e.T)
-		}
-		return nil
-	}
-	if strings.HasPrefix(strings.ToLower(v), "(hex)") {
-		switch e.T {
-		case winutil.RegValueTypeDWORD, winutil.RegValueTypeQWORD:
-			return winutil.RegistryWriteHint(enc, v, e.T)
-		default:
-			raw, err := parseHexReg(v)
-			if err != nil {
-				return err
-			}
-			return winutil.RegistryWriteHint(enc, raw, e.T)
-		}
-	}
-	return winutil.RegistryWriteHint(enc, v, e.T)
-}
-
 func readDescriptor(platformKey string) (platform.Descriptor, []byte, error) {
 	exeDir, err := platform.ResolveExeDir()
 	if err != nil {
@@ -316,7 +82,6 @@ func resolveExeFolder(deps FlowDeps, platformKey string) (string, error) {
 	return deps.PS.GetPlatformInstallFolder(platformKey)
 }
 
-// CurrentLiveUniqueID returns the UniqueID from the live install folder (same basis as AccountDTO.currentSession), or "" if unknown.
 func CurrentLiveUniqueID(deps FlowDeps, platformKey string) (string, error) {
 	platformKey = strings.TrimSpace(platformKey)
 	if platformKey == "" {
@@ -495,7 +260,6 @@ func saveCurrentAfterKill(deps FlowDeps, accountName string, fc FlowContext) err
 			res := gjson.GetBytes(data, jp)
 			selected := strings.TrimSpace(res.String())
 			if plain {
-				// Plain JSON_SELECT returns selected value directly (no split/select behavior).
 			} else if res.IsArray() && len(res.Array()) > 0 {
 				if first {
 					selected = strings.TrimSpace(res.Array()[0].String())
@@ -680,114 +444,6 @@ func ensureUniqueIDOnSave(platformKey string, d platform.Descriptor, ctx platfor
 	return ReadUniqueID(platformKey, d, ctx.PlatformFolder)
 }
 
-func finishActionBarStatus(err *error) {
-	if err != nil && *err != nil {
-		platform.EmitActionBarStatusI18n("Status_FailedLog")
-		return
-	}
-	platform.EmitActionBarStatus("")
-}
-
-func emitUpdatingFileStatus(path string) {
-	file := strings.TrimSpace(filepath.Base(path))
-	if file == "." || file == string(os.PathSeparator) {
-		file = ""
-	}
-	if file == "" {
-		file = strings.TrimSpace(path)
-	}
-	if file == "" {
-		platform.EmitActionBarStatusI18n("Status_CopyingFiles")
-		return
-	}
-	platform.EmitActionBarStatusI18nVars("Status_UpdatingFile", map[string]string{"file": file})
-}
-
-func wrapNeedsAdminIfPermission(err error) error {
-	if err == nil || winutil.IsNeedsAdmin(err) {
-		return err
-	}
-	if os.IsPermission(err) || strings.Contains(strings.ToLower(err.Error()), "access is denied") {
-		return winutil.NewNeedsAdminError(err.Error())
-	}
-	return err
-}
-
-func copyFile(src, dst string) error {
-	in, err := os.Open(src)
-	if err != nil {
-		return fmt.Errorf("open %s: %w", src, err)
-	}
-	defer in.Close()
-	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
-		return fmt.Errorf("mkdir %s: %w", filepath.Dir(dst), err)
-	}
-	out, err := os.Create(dst)
-	if err != nil {
-		return fmt.Errorf("create %s: %w", dst, err)
-	}
-	defer out.Close()
-	if _, err = io.Copy(out, in); err != nil {
-		return fmt.Errorf("copy %s -> %s: %w", src, dst, err)
-	}
-	logFlow().Debug("copied file", "src", src, "dst", dst)
-	return nil
-}
-
-func copyFileToDir(src, dir string) error {
-	return copyFile(src, filepath.Join(dir, filepath.Base(src)))
-}
-
-func copyDir(src, dst string) error {
-	logFlow().Debug("copy directory tree", "src", src, "dst", dst)
-	return filepath.WalkDir(src, func(path string, de os.DirEntry, err error) error {
-		if err != nil {
-			return fmt.Errorf("walk %s: %w", path, err)
-		}
-		rel, err := filepath.Rel(src, path)
-		if err != nil {
-			return fmt.Errorf("rel %s: %w", path, err)
-		}
-		t := filepath.Join(dst, rel)
-		if de.IsDir() {
-			if err := os.MkdirAll(t, 0o755); err != nil {
-				return fmt.Errorf("mkdir %s: %w", t, err)
-			}
-			return nil
-		}
-		return copyFile(path, t)
-	})
-}
-
-func hasGlobPattern(path string) bool {
-	return strings.ContainsAny(path, "*?[")
-}
-
-func globDestinationRoot(destRoot, cacheRel string) string {
-	cacheRel = strings.TrimSpace(cacheRel)
-	dst := filepath.Join(destRoot, filepath.FromSlash(cacheRel))
-	if strings.HasSuffix(cacheRel, "\\") || strings.HasSuffix(cacheRel, "/") {
-		return dst
-	}
-	return filepath.Dir(dst)
-}
-
-func globPatternBaseDir(path string) string {
-	path = strings.TrimSpace(path)
-	if path == "" {
-		return "."
-	}
-	idx := strings.IndexAny(path, "*?[")
-	if idx < 0 {
-		return filepath.Dir(path)
-	}
-	prefix := path[:idx]
-	if strings.HasSuffix(prefix, "\\") || strings.HasSuffix(prefix, "/") {
-		return filepath.Clean(prefix)
-	}
-	return filepath.Dir(prefix)
-}
-
 func Login(deps FlowDeps, fc FlowContext, accountName string) error {
 	closeSharedLevelDBHandles("Login.begin")
 	defer closeSharedLevelDBHandles("Login.end")
@@ -807,7 +463,6 @@ func Login(deps FlowDeps, fc FlowContext, accountName string) error {
 			return fmt.Errorf("reg.json: %w", err)
 		}
 	}
-	// Set UniqueIdFile from ids.json before restoring LoginFiles (update logged-in account)
 	if strings.EqualFold(strings.TrimSpace(fc.Descriptor.UniqueIdMethod), "REGKEY") {
 		platform.EmitActionBarStatusI18n("Status_UpdatingRegistry")
 		uidKey := strings.TrimSpace(fc.Descriptor.UniqueIdFile)
@@ -990,10 +645,6 @@ func Login(deps FlowDeps, fc FlowContext, accountName string) error {
 	return nil
 }
 
-func parseHexReg(s string) ([]byte, error) {
-	return winutil.ParseHexString(s)
-}
-
 func ClearCurrentLogin(deps FlowDeps, fc FlowContext) error {
 	ctx := fc.PathCtx
 	folder := fc.Folder
@@ -1063,84 +714,6 @@ func ClearCurrentLogin(deps FlowDeps, fc FlowContext) error {
 	return nil
 }
 
-func recordBasicTrayRecent(platformKey, uniqueID string) {
-	platformKey = strings.TrimSpace(platformKey)
-	uniqueID = strings.TrimSpace(uniqueID)
-	if platformKey == "" || uniqueID == "" {
-		return
-	}
-	ps, err := platform.LoadPlatformSettings(platformKey)
-	if err != nil || ps.TrayAccNumber <= 0 {
-		return
-	}
-	ids, err := readIDs(platformKey)
-	if err != nil {
-		return
-	}
-	syncBasicTrayKnownAccounts(platformKey, ids)
-	name := strings.TrimSpace(ids[uniqueID])
-	if name == "" {
-		name = uniqueID
-	}
-	idx, err := cli.LoadPlatformIndex()
-	if err != nil {
-		return
-	}
-	short := cli.ShortTokenForPlatform(idx, platformKey)
-	if short == "" {
-		return
-	}
-	arg := "+" + short + ":" + uniqueID
-	_ = tray.AddUser(platformKey, arg, name, ps.TrayAccNumber)
-	tray.RefreshMenuIfSet()
-}
-
-func syncBasicTrayKnownAccounts(platformKey string, ids map[string]string) {
-	platformKey = strings.TrimSpace(platformKey)
-	if platformKey == "" {
-		return
-	}
-	ps, err := platform.LoadPlatformSettings(platformKey)
-	if err != nil || ps.TrayAccNumber <= 0 {
-		return
-	}
-	idx, err := cli.LoadPlatformIndex()
-	if err != nil {
-		return
-	}
-	short := cli.ShortTokenForPlatform(idx, platformKey)
-	if short == "" {
-		return
-	}
-
-	argNames := make(map[string]string, len(ids))
-	for uniqueID, name := range ids {
-		uniqueID = strings.TrimSpace(uniqueID)
-		if uniqueID == "" {
-			continue
-		}
-		argNames["+"+short+":"+uniqueID] = strings.TrimSpace(name)
-	}
-	_ = tray.SyncPlatformUsers(platformKey, argNames, ps.TrayAccNumber)
-}
-
-func SyncAllTrayKnownAccounts() {
-	idx, err := cli.LoadPlatformIndex()
-	if err != nil {
-		return
-	}
-	for _, platformKey := range idx.OrderedNames {
-		if strings.EqualFold(strings.TrimSpace(platformKey), "Steam") {
-			continue
-		}
-		ids, err := readIDs(platformKey)
-		if err != nil {
-			continue
-		}
-		syncBasicTrayKnownAccounts(platformKey, ids)
-	}
-}
-
 func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []string) (err error) {
 	defer finishActionBarStatus(&err)
 	platform.EmitActionBarStatusI18n("Status_Init")
@@ -1172,8 +745,6 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 	if err != nil {
 		return err
 	}
-	// Persist live LoginFiles → account cache before clear/restore (must run per unique ID,
-	// not per display name — two accounts can legally share the same visible name).
 	if curErr == nil && strings.TrimSpace(cur) != "" {
 		if prevName, ok := ids[cur]; ok {
 			if !strings.EqualFold(strings.TrimSpace(cur), strings.TrimSpace(uniqueID)) {
@@ -1248,53 +819,6 @@ func AddNew(deps FlowDeps, platformKey string) (err error) {
 		return err
 	}
 	tray.MaybeHideMainWindow()
-	return nil
-}
-
-func launchBasicNoStatus(deps FlowDeps, platformKey string, extraLaunchArgs []string) error {
-	return launchBasicNoStatusAs(deps, platformKey, false, extraLaunchArgs)
-}
-
-func launchBasicNoStatusAs(deps FlowDeps, platformKey string, forceAdmin bool, extraLaunchArgs []string) error {
-	logFlow().Debug("launch begin", "platform", platformKey, "forceAdmin", forceAdmin, "extraArgs", len(extraLaunchArgs))
-	fc, err := PrepareFlow(deps, platformKey)
-	if err != nil {
-		logFlow().Warn("launch read descriptor failed", "platform", platformKey, "err", err)
-		return err
-	}
-	if deps.PS == nil {
-		return fmt.Errorf("platform service not set")
-	}
-	exe, err := deps.PS.ResolvePlatformExeFullPath(platformKey)
-	if err != nil || exe == "" {
-		logFlow().Warn("launch resolve exe failed", "platform", platformKey, "exe", exe, "err", err)
-		return fmt.Errorf("executable not found")
-	}
-	var args []string
-	if strings.TrimSpace(fc.Descriptor.ExeExtraArgs) != "" {
-		args = append(args, strings.Fields(fc.Descriptor.ExeExtraArgs)...)
-	}
-	args = append(args, platform.LaunchArgTokens(fc.Settings.LaunchArguments)...)
-	if len(extraLaunchArgs) > 0 {
-		args = append(args, extraLaunchArgs...)
-	}
-	admin := fc.Settings.RunAsAdmin
-	if forceAdmin {
-		admin = true
-	}
-	opts := winutil.StartOpts{
-		Admin:         admin,
-		Method:        winutil.StartingMethod(strings.TrimSpace(fc.Settings.StartingMethod)),
-		HideWindow:    false,
-		WorkingDir:    filepath.Dir(exe),
-		AsDesktopUser: winutil.IsProcessElevated() && !admin,
-	}
-	logFlow().Debug("start request", "platform", platformKey, "exe", exe, "args", len(args), "method", opts.Method, "admin", opts.Admin)
-	if err := winutil.Start(exe, args, opts); err != nil {
-		logFlow().Warn("start failed", "platform", platformKey, "exe", exe, "err", err)
-		return err
-	}
-	logFlow().Debug("start launched", "platform", platformKey, "exe", exe)
 	return nil
 }
 
