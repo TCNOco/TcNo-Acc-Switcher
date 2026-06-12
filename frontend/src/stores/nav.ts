@@ -1,5 +1,6 @@
 import { get, writable } from "svelte/store";
 import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
+import { setPlatformAccountCounts } from "./platformAccountsCache";
 import { type Route, serializeRoute, parseHash, validateRoute } from "./routeCodec";
 import type { PlatformStartup } from "../../bindings/TcNo-Acc-Switcher/internal/platform/models.js";
 
@@ -34,6 +35,7 @@ export async function resolveInitialRoute(): Promise<void> {
   let fromHash = parseHash(window.location.hash || "#/") || { page: "home" };
   try {
     const startup = await PlatformService.GetStartup();
+    setPlatformAccountCounts(startup.platformAccountCounts ?? {});
     let next = validateRoute(fromHash, startup);
     next = applyCliHint(startup, next);
     route.set(next);

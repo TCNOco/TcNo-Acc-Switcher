@@ -71,6 +71,7 @@ func init() {
 	platform.SetPlatformLaunchAs(func(forceAdmin bool) error { return steam.LaunchSteamOnlyAs(forceAdmin, nil) }, func(platformKey string, forceAdmin bool) error {
 		return basic.LaunchBasicAs(basic.FlowDeps{PS: platformSvc}, platformKey, forceAdmin, nil)
 	})
+	app.RegisterStartupAccountCounts()
 }
 
 func main() {

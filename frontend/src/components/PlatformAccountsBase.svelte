@@ -156,7 +156,11 @@
 
   $: reorderDisabled = tagFilterMode.kind !== "all";
 
-  $: skeletonCount = Math.max(1, Math.min(24, $platformAccountCounts[name] ?? 3));
+  $: knownAccountCount = $platformAccountCounts[name];
+  $: skeletonCount =
+    knownAccountCount !== undefined
+      ? Math.min(24, Math.max(0, knownAccountCount))
+      : 3;
   $: skeletonSlots = Array.from({ length: skeletonCount });
 
   $: {
@@ -629,7 +633,7 @@
         {#if tagDefs.length > 0}
           <TagFilterBar label={tagFilterBarLabel} onClick={onTagFilterBarClick} />
         {/if}
-        {#if accountsLoading && displayIds.length === 0}
+        {#if accountsLoading && displayIds.length === 0 && skeletonCount > 0}
           <div class="acc_list acc_list--skeleton" aria-busy="true" aria-label={$t("Button_Loading")}>
             {#each skeletonSlots as _, i (i)}
               <div class="acc_list_item acc_list_item--skeleton" aria-hidden="true">
