@@ -1,4 +1,4 @@
-import { get, writable } from "svelte/store";
+import { get } from "svelte/store";
 import * as PlatformService from "../../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
 import { offlineMode } from "../../stores/offlineMode";
 import { setUserOverride } from "../../stores/backgroundImage";
@@ -9,7 +9,7 @@ import {
   CUSTOM_THEME_ACCENT_KEY,
   WINDOWS_THEME_ACCENT_KEY,
 } from "./types";
-import type { ThemeOption, ResolvedThemeAccent } from "./types";
+import type { ResolvedThemeAccent } from "./types";
 import { getThemeOptionById, isKnownThemeId, styleLoaderPathForId, themeStyles } from "./catalog";
 import { normalizeHexColor } from "./color";
 import {
@@ -18,35 +18,19 @@ import {
   removeAccentOverlay,
   removeThemeGoogleFontLinks,
   applyAccentOverlay,
+  applyResolvedAccent,
+  validateAccentKey,
+  clearThemeAccentState,
   ensureWindowsAccentSubscription,
 } from "./dom";
 import { supportsWindowsThemeAccent } from "./dom";
-
-export const currentThemeId = writable<string>(DEFAULT_THEME_ID);
-export const currentThemeBgUrl = writable<string>("");
-export const currentThemeAccentKey = writable<string>("");
-export const currentThemeCustomAccentColor = writable<string>("");
-export const currentWindowsThemeAccentColor = writable<string>("");
+import { currentThemeId, currentThemeBgUrl, currentThemeAccentKey, currentThemeCustomAccentColor, currentWindowsThemeAccentColor } from "./stores";
 
 const THEME_STORAGE_KEY = "tcno:theme";
 const THEME_ACCENT_STORAGE_KEY = "tcno:theme-accent";
 const THEME_ACCENT_CUSTOM_STORAGE_KEY = "tcno:theme-accent-custom";
 
 let activeThemeRequestId = 0;
-
-function validateAccentKey(theme: ThemeOption, key: string): string {
-  const trimmed = key.trim();
-  if (!trimmed) {
-    return "";
-  }
-  if (trimmed === CUSTOM_THEME_ACCENT_KEY) {
-    return CUSTOM_THEME_ACCENT_KEY;
-  }
-  if (trimmed === WINDOWS_THEME_ACCENT_KEY && supportsWindowsThemeAccent()) {
-    return WINDOWS_THEME_ACCENT_KEY;
-  }
-  return theme.accents.some((option) => option.id === trimmed) ? trimmed : "";
-}
 
 export function resolveThemeAccent(
   themeId: string,
@@ -78,44 +62,6 @@ export function resolveThemeAccent(
       color: theme.defaultAccentColor,
     };
   return { ...preset, isCustom: false };
-}
-
-export function applyResolvedAccent(themeId: string, accentKey: string, customColor: string): void {
-  const theme = getThemeOptionById(themeId);
-  const validCustomColor = normalizeHexColor(customColor) ?? "";
-  const validAccentKey = validateAccentKey(theme, accentKey);
-
-  currentThemeCustomAccentColor.set(validCustomColor);
-
-  if (validAccentKey === CUSTOM_THEME_ACCENT_KEY && validCustomColor) {
-    currentThemeAccentKey.set(CUSTOM_THEME_ACCENT_KEY);
-    applyAccentOverlay(validCustomColor);
-    return;
-  }
-
-  if (validAccentKey === WINDOWS_THEME_ACCENT_KEY) {
-    currentThemeAccentKey.set(WINDOWS_THEME_ACCENT_KEY);
-    applyAccentOverlay(get(currentWindowsThemeAccentColor) || theme.defaultAccentColor);
-    return;
-  }
-
-  if (validAccentKey && validAccentKey !== theme.defaultAccentKey) {
-    const preset = theme.accents.find((option) => option.id === validAccentKey);
-    if (preset) {
-      currentThemeAccentKey.set(validAccentKey);
-      applyAccentOverlay(preset.color);
-      return;
-    }
-  }
-
-  currentThemeAccentKey.set("");
-  applyAccentOverlay(null);
-}
-
-function clearThemeAccentState(): void {
-  currentThemeAccentKey.set("");
-  currentThemeCustomAccentColor.set("");
-  applyAccentOverlay(null);
 }
 
 async function refreshWindowsThemeAccentColor(): Promise<string> {

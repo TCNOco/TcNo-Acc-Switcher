@@ -8,6 +8,8 @@ export {
   currentThemeAccentKey,
   currentThemeCustomAccentColor,
   currentWindowsThemeAccentColor,
+} from "./theme/stores";
+export {
   resolveThemeAccent,
   initTheme,
   setUserTheme,
