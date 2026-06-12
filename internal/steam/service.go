@@ -92,7 +92,7 @@ type AccountPatch struct {
 }
 
 type SteamService struct {
-	mu sync.Mutex
+	mu sync.RWMutex
 
 	refreshMu      sync.Mutex
 	refreshRunning bool
@@ -252,6 +252,8 @@ func (s *SteamService) migrateExePathFromAppSettings(exeDir string, st *Settings
 }
 
 func (s *SteamService) GetSteamAccounts() ([]AccountDTO, error) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
 	list, err := s.GetSteamAccountsList()
 	if err != nil {
 		return nil, err
@@ -273,6 +275,8 @@ func (s *SteamService) GetSteamAccounts() ([]AccountDTO, error) {
 }
 
 func (s *SteamService) SaveSteamAccountOrder(ids []string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	exeDir, err := platform.ResolveExeDir()
 	if err != nil {
 		return err
@@ -319,14 +323,20 @@ func (s *SteamService) SaveSteamAccountOrder(ids []string) error {
 }
 
 func (s *SteamService) GetSteamSettings() (Settings, error) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
 	return LoadSettings()
 }
 
 func (s *SteamService) SaveSteamSettings(st Settings) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	return SaveSettings(st)
 }
 
 func (s *SteamService) RefreshVACStatus() error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	if err := ClearVACProfileCaches(); err != nil {
 		return err
 	}
@@ -335,6 +345,8 @@ func (s *SteamService) RefreshVACStatus() error {
 }
 
 func (s *SteamService) RefreshAllSteamImages() error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	_ = ClearAllMiniprofileHTMLCache()
 	dir, err := profileimage.ProfileDir(PlatformKey)
 	if err != nil {
@@ -659,18 +671,26 @@ func (s *SteamService) GetSteamIDFormats(id64 string) (SteamIDFormats, error) {
 }
 
 func (s *SteamService) SwapToSteamAccount(steamID64 string, personaState int, extraLaunchArgs []string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	return SwapToAccount(strings.TrimSpace(steamID64), personaState, extraLaunchArgs)
 }
 
 func (s *SteamService) SteamAddNew() error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	return SwapToAccount("", -1, nil)
 }
 
 func (s *SteamService) LaunchSteam() error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	return LaunchSteamOnly(nil)
 }
 
 func (s *SteamService) ForgetSteamAccount(steamID64 string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	steamID64 = strings.TrimSpace(steamID64)
 	if steamID64 == "" {
 		return errors.New("empty steam id")
@@ -760,6 +780,8 @@ func (s *SteamService) OpenUserdataFolder(steamID64 string) error {
 }
 
 func (s *SteamService) LoginAndLaunchGame(steamID64 string, personaState int, appID string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	steamID64 = strings.TrimSpace(steamID64)
 	appID = strings.TrimSpace(appID)
 	if appID == "" {
