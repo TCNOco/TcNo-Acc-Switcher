@@ -10,6 +10,8 @@
   import ReorderPointerGrid from "./ReorderPointerGrid.svelte";
   import TagFilterBar from "./TagFilterBar.svelte";
   import AccountTagBubbles from "./AccountTagBubbles.svelte";
+  import AccountLiveSessionIndicator from "./AccountLiveSessionIndicator.svelte";
+  import AccountListSkeleton from "./AccountListSkeleton.svelte";
   import SearchOverlay, { type SearchResultRow } from "./SearchOverlay.svelte";
   import { route, previousPage, appBarTitle } from "../stores/nav";
   import {
@@ -35,7 +37,6 @@
     preflightAdminForPlatform,
     reportLaunchFailure,
   } from "../lib/adminFlow";
-  import { tooltip } from "../lib/actions/tooltip";
   import { contextMenu as ctxMenuAction } from "../lib/actions/contextMenu";
   import type { MenuItemDef } from "../stores/contextMenu";
   import { offlineMode, offlineSafeImageSrc, withAssetCacheBust } from "../stores/offlineMode";
@@ -161,7 +162,6 @@
     knownAccountCount !== undefined
       ? Math.min(24, Math.max(0, knownAccountCount))
       : 3;
-  $: skeletonSlots = Array.from({ length: skeletonCount });
 
   $: {
     if (selectedId && displayIds.length > 0 && !displayIds.includes(selectedId)) {
@@ -634,16 +634,7 @@
           <TagFilterBar label={tagFilterBarLabel} onClick={onTagFilterBarClick} />
         {/if}
         {#if accountsLoading && displayIds.length === 0 && skeletonCount > 0}
-          <div class="acc_list acc_list--skeleton" aria-busy="true" aria-label={$t("Button_Loading")}>
-            {#each skeletonSlots as _, i (i)}
-              <div class="acc_list_item acc_list_item--skeleton" aria-hidden="true">
-                <div class="acc_skeleton_avatar"></div>
-                <div class="acc_skeleton_lines">
-                  <div class="acc_skeleton_line acc_skeleton_line--name"></div>
-                </div>
-              </div>
-            {/each}
-          </div>
+          <AccountListSkeleton count={skeletonCount} />
         {:else}
         <ReorderPointerGrid
           items={displayIds}
@@ -684,9 +675,12 @@
                     items: ctxMenu(rid),
                     beforeOpen: () => { selectedId = rid; touchStatus(); },
                   }}
-                  use:tooltip={adapter.currentSession(acc)
-                    ? { text: $t("Tooltip_CurrentAccount"), placement: "right", boundary: acclistEl }
-                    : undefined}
+                >
+                  <AccountLiveSessionIndicator
+                    active={adapter.currentSession(acc)}
+                    tooltipText={$t("Tooltip_CurrentAccount")}
+                    boundary={acclistEl}
+                  />
                   on:dblclick|preventDefault={() => {
                     if (isActionBusy) return;
                     selectedId = rid;

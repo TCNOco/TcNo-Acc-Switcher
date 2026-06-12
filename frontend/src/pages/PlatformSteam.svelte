@@ -2,6 +2,7 @@
   import { onDestroy, onMount } from "svelte";
   import { get } from "svelte/store";
   import { Events } from "@wailsio/runtime";
+  import SteamAccountAvatar from "../components/SteamAccountAvatar.svelte";
   import PlatformAccountsBase from "../components/PlatformAccountsBase.svelte";
   import type { PlatformAccountAdapter, SharedMenuItems } from "../components/PlatformAccountAdapter";
   import type { TagDefRow } from "../lib/accountTagsContext";
@@ -20,10 +21,10 @@
   import * as Shortcuts from "wails-shortcuts-service";
   import { ListPayload } from "../../bindings/TcNo-Acc-Switcher/internal/shortcuts/models.js";
   import { offlineMode, offlineSafeImageSrc, withAssetCacheBust } from "../stores/offlineMode";
-  import { isProfileVideoUrl } from "../lib/profileImageDrop";
-  import { miniProfileHover } from "../lib/actions/miniProfileHover";
-  import { formatToastWithError, formatWailsError } from "../lib/formatWailsError";
+  import { formatToastWithError } from "../lib/formatWailsError";
   import * as BasicService from "../../bindings/TcNo-Acc-Switcher/internal/basic/basicservice.js";
+  import { buildSteamExtraMenu, type SteamMenuDeps } from "../lib/steam/contextMenuBuilder";
+  import type { SteamAccountRow } from "../lib/steam/types";
   import { reportLaunchFailure } from "../lib/adminFlow";
   import { fuzzyWordsMatch } from "../lib/searchFuzzy";
   import { formatLastLoginForLocale } from "../lib/formatLastLogin";
@@ -33,33 +34,11 @@
   const PROFILE_PLACEHOLDER = "/img/BasicDefault.webp";
   const SHORTCUT_ICON_FALLBACK = "/img/icons/file.svg";
 
-  const STEAM_USERDATA_ERR_KEYS = new Set([
-    "Toast_NoValidSteamId", "Toast_SameAccount", "Toast_NoFindSteamUserdata", "Toast_NoFindGameBackup",
-  ]);
 
   const STEAM_CONTEXT_MENU_HIDDEN_APP_IDS = new Set(["228980"]);
 
-  function mapSteamUserdataI18nError(err: unknown, tr: (k: string, v?: Record<string, string | number>) => string): string {
-    return formatWailsError(err, { translateMessage: (k) => tr(k), i18nFirstLineKeys: STEAM_USERDATA_ERR_KEYS });
-  }
 
-  type SteamAccountRow = InstanceType<typeof AccountDTO> & {
-    tags?: TagDefRow[]; syncError?: string; currentSession: boolean;
-    showShortNotes: boolean; note: string; staticImageUrl?: string;
-    avatarFrameUrl?: string; miniProfileHtml?: string; showMiniProfile?: boolean; showAvatarFrame?: boolean;
-  };
 
-  function steamListAvatarUrl(acc: SteamAccountRow, offline: boolean): string | undefined {
-    if (acc.avatarPending) return undefined;
-    const primary = acc.imageUrl?.trim() || undefined;
-    const fallback = acc.staticImageUrl?.trim() || undefined;
-    if (offline) {
-      if (fallback) return fallback;
-      if (primary && !isProfileVideoUrl(primary)) return primary;
-      return undefined;
-    }
-    return primary ?? fallback;
-  }
 
   type SteamAccountPatch = AccountPatch & {
     avatarFrameUrl?: string; miniProfileHtml?: string;
@@ -134,143 +113,19 @@
     } catch { gameDataBySteamId = {}; }
   }
 
-  async function clipboardWrite(text: string): Promise<void> {
-    try { await navigator.clipboard.writeText(text); pushToast({ type: "success", message: get(t)("Toast_Copied"), duration: 2500 }); }
-    catch { pushToast({ type: "error", message: get(t)("Toast_CopyFailed"), duration: 4000 }); }
+
+  function buildSteamExtraMenuAdapter(acc: SteamAccountRow, shared: SharedMenuItems): MenuItemDef[] {
+    return buildSteamExtraMenu(acc, shared, getSteamMenuDeps());
   }
 
-  function buildSteamExtraMenu(acc: SteamAccountRow, shared: SharedMenuItems): MenuItemDef[] {
-    const tr = get(t);
-    const rid = acc.steamId64;
-
-    const loginStates = [
-      { st: 7, lab: tr("Invisible") }, { st: 0, lab: tr("Offline") }, { st: 1, lab: tr("Online") },
-      { st: 2, lab: tr("Busy") }, { st: 3, lab: tr("Away") }, { st: 4, lab: tr("Snooze") },
-      { st: 5, lab: tr("LookingToTrade") }, { st: 6, lab: tr("LookingToPlay") },
-    ];
-
-    const loginAsChildren: MenuItemDef[] = [
-      { type: "search", label: tr("Context_Search") },
-      ...loginStates.map((x) => ({
-        label: x.lab,
-        action: async () => {
-          try { await SteamService.SwapToSteamAccount(rid, x.st, []); pushToast({ type: "success", message: tr("Toast_AccountSwitched"), duration: 4000 }); }
-          catch (e) { pushToast({ type: "error", message: formatToastWithError(tr("Toast_SwitchFailed"), e), duration: 8000 }); }
-        },
-      })),
-    ];
-
-    const copyChildren: MenuItemDef[] = [
-      { label: tr("Context_CommunityUrl"), action: () => void clipboardWrite(`https://steamcommunity.com/profiles/${rid}`) },
-      { label: tr("Context_CommunityUsername"), action: () => void clipboardWrite((acc.displayName ?? "").trim() || (acc.personaName ?? "").trim() || rid) },
-      { label: tr("Context_LoginUsername"), action: () => void clipboardWrite((acc.accountName ?? "").trim() || rid) },
-      {
-        label: tr("Context_CopySteamIdSubmenu"),
-        children: [
-          { label: tr("Context_Steam_Id64"), action: async () => {
-            try { const f = await SteamService.GetSteamIDFormats(rid); void clipboardWrite(f["ID64"] ?? rid); } catch { void clipboardWrite(rid); }
-          }},
-          { label: tr("Context_Steam_Id3"), action: async () => {
-            try { const f = await SteamService.GetSteamIDFormats(rid); void clipboardWrite(f["ID3"] ?? ""); } catch {}
-          }},
-          { label: tr("Context_Steam_Id32"), action: async () => {
-            try { const f = await SteamService.GetSteamIDFormats(rid); void clipboardWrite(f["ID32"] ?? ""); } catch {}
-          }},
-        ],
-      },
-    ];
-
-    const shortcutChildren: MenuItemDef[] = [
-      { type: "search", label: tr("Context_Search") },
-      ...loginStates.map((x) => ({
-        label: x.lab,
-        action: async () => {
-          try {
-            const p = await Shortcuts.CreateAccountShortcut("Steam", rid, acc.displayName?.trim() || acc.personaName?.trim() || rid, String(x.st), x.lab, (acc.accountName ?? "").trim());
-            pushToast({ type: "success", message: `${tr("Toast_ShortcutCreated")}\n${p}`, duration: 6000 });
-          } catch (e) { pushToast({ type: "error", message: formatToastWithError(get(t)("Toast_SwitchFailed"), e), duration: 8000 }); }
-        },
-      })),
-    ];
-
-    const gsets = gameDataBySteamId[rid];
-    const gameDataItems: MenuItemDef[] = [];
-    for (const g of installedGames) {
-      const aid = String(g.appId).trim();
-      const hasUser = gsets?.userdata.has(aid) ?? false;
-      const hasBackup = gsets?.backup.has(aid) ?? false;
-      if (!hasUser && !hasBackup) continue;
-      const children: MenuItemDef[] = [
-        { label: "Open folder", action: async () => {
-          try { await SteamService.OpenSteamGameDataFolder(rid, g.appId); }
-          catch (e) { pushToast({ type: "error", message: mapSteamUserdataI18nError(e, tr), duration: 8000 }); }
-        }},
-      ];
-      if (hasUser) {
-        children.push({ label: tr("Context_Game_CopySettingsFrom"), action: async () => {
-          try { await SteamService.CopySteamGameSettingsFrom(rid, g.appId); pushToast({ type: "success", message: tr("Toast_SettingsCopied"), duration: 5000 }); void refreshGameDataAppSets(steamIds); }
-          catch (e) { pushToast({ type: "error", message: mapSteamUserdataI18nError(e, tr), duration: 8000 }); }
-        }});
-      }
-      if (hasBackup) {
-        children.push({ label: tr("Context_Game_RestoreSettingsTo"), action: async () => {
-          try { await SteamService.RestoreSteamGameSettingsTo(rid, g.appId); pushToast({ type: "success", message: tr("Toast_GameDataRestored"), duration: 5000 }); void refreshGameDataAppSets(steamIds); }
-          catch (e) { pushToast({ type: "error", message: mapSteamUserdataI18nError(e, tr), duration: 8000 }); }
-        }});
-      }
-      if (hasUser) {
-        children.push({ label: tr("Context_Game_BackupData"), action: async () => {
-          try { const folder = await SteamService.BackupSteamGameData(rid, g.appId); pushToast({ type: "success", message: tr("Toast_GameBackupDone", { folderLocation: folder }), duration: 8000 }); void refreshGameDataAppSets(steamIds); }
-          catch (e) { pushToast({ type: "error", message: mapSteamUserdataI18nError(e, tr), duration: 8000 }); }
-        }});
-      }
-      gameDataItems.push({ label: g.name, children });
-    }
-
-    const gameChildren: MenuItemDef[] = gameDataItems.length === 0
-      ? [{ type: "item", label: tr("Context_GameData_NoFolders") }]
-      : [{ type: "search", label: tr("Context_Search") }, ...gameDataItems];
-
-    const launchChildren: MenuItemDef[] = [
-      { type: "search", label: tr("Context_Search") },
-      ...installedGames.map((g) => ({
-        label: g.name,
-        action: async () => {
-          try {
-            await SteamService.LoginAndLaunchGame(rid, -1, g.appId);
-            pushToast({
-              type: "success",
-              message: tr("Toast_StartedGame", { program: g.name }),
-              duration: 4000,
-            });
-          }
-          catch (e) { await reportLaunchFailure(e, name); }
-        },
-      })),
-    ];
-
-    return [
-      shared.swapTo,
-      { label: tr("Context_Game_LoginAndLaunch"), children: launchChildren },
-      { label: tr("Context_LoginAsSubmenu"), children: loginAsChildren },
-      { label: tr("Context_CopySubmenu"), children: copyChildren },
-      { ...shared.createShortcut, children: shortcutChildren },
-      shared.forget,
-      shared.notes,
-      shared.tags,
-      {
-        label: tr("Context_ManageSubmenu"),
-        children: ([
-          { label: tr("Context_GameDataSubmenu"), children: gameChildren },
-          shared.gameStats,
-          { label: tr("Context_Steam_OpenUserdata"), action: async () => {
-            try { await SteamService.OpenUserdataFolder(rid); }
-            catch (e) { pushToast({ type: "error", message: formatToastWithError(get(t)("Toast_LaunchFailed"), e), duration: 8000 }); }
-          }},
-          shared.changeImage,
-        ] as (MenuItemDef | null)[]).filter((x): x is MenuItemDef => x != null),
-      },
-    ];
+  function getSteamMenuDeps(): SteamMenuDeps {
+    return {
+      name,
+      installedGames,
+      gameDataBySteamId,
+      steamIds,
+      refreshGameDataAppSets,
+    };
   }
 
   let steamIds: string[] = [];
@@ -345,7 +200,7 @@
     setNote: (id: string, note: string) => BasicService.SetAccountNote("Steam", id, note),
     launch: () => SteamService.LaunchSteam(),
 
-    buildMenu: (_acc, shared) => buildSteamExtraMenu(_acc as SteamAccountRow, shared),
+    buildMenu: (_acc, shared) => buildSteamExtraMenuAdapter(_acc as SteamAccountRow, shared),
 
     updateEventName: "steam-account-updated",
     buildPatch: (raw: unknown) =>
@@ -438,44 +293,7 @@
 <div class="main-content platform-accounts-root" bind:this={steamMainEl}>
   <PlatformAccountsBase {name} {adapter}>
     <svelte:fragment slot="account-avatar" let:acc let:epoch let:fallback>
-      {@const a = acc}
-      {@const avatarSrc = offlineSafeImageSrc($offlineMode, withAssetCacheBust(steamListAvatarUrl(a, $offlineMode), epoch), fallback)}
-      {@const avatarIsVideo = !$offlineMode && isProfileVideoUrl(avatarSrc)}
-      <span class="steam-acc-avatar-wrap">
-        {#if avatarIsVideo}
-          <video
-            class="steam-acc-avatar"
-            class:status_vac={a.showVac && a.vac}
-            class:status_limited={a.showLimited && a.ltd}
-            src={avatarSrc}
-            autoplay loop muted playsinline
-            aria-hidden="true" draggable="false"
-            use:miniProfileHover={{
-              html: a.miniProfileHtml ?? "",
-              boundary: steamMainEl,
-              offline: $offlineMode,
-              enabled: !!(a.showMiniProfile && (a.miniProfileHtml ?? "").trim() !== ""),
-            }}
-          ></video>
-        {:else}
-          <img
-            class="steam-acc-avatar"
-            class:status_vac={a.showVac && a.vac}
-            class:status_limited={a.showLimited && a.ltd}
-            src={avatarSrc}
-            alt="" draggable="false"
-            use:miniProfileHover={{
-              html: a.miniProfileHtml ?? "",
-              boundary: steamMainEl,
-              offline: $offlineMode,
-              enabled: !!(a.showMiniProfile && (a.miniProfileHtml ?? "").trim() !== ""),
-            }}
-          />
-        {/if}
-        {#if a.showAvatarFrame && (a.avatarFrameUrl ?? "").trim() !== "" && !$offlineMode}
-          <img class="steam-acc-avatar-frame" src={offlineSafeImageSrc($offlineMode, a.avatarFrameUrl, fallback)} alt="" draggable="false" />
-        {/if}
-      </span>
+      <SteamAccountAvatar account={acc} {epoch} {fallback} boundary={steamMainEl} />
     </svelte:fragment>
 
     <svelte:fragment slot="account-before-name" let:acc>
