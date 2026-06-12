@@ -124,7 +124,7 @@
         suggestedName = await BasicService.SuggestedSaveAccountName(name);
       } catch (e) {
         await offerRestartIfNeedsAdmin(e, name);
-        if (isNeedsAdminError(e)) return;
+        if (isNeedsAdminError(e)) return false;
       }
       const displayName = await openPrompt({
         title: get(t)("Modal_SaveCurrent_Title"),
@@ -133,14 +133,16 @@
         negativeLabel: get(t)("Button_Cancel"),
         initialValue: suggestedName || "",
       });
-      if (displayName === null || !String(displayName).trim()) return;
+      if (displayName === null || !String(displayName).trim()) return false;
       try {
         await BasicService.SaveCurrent(name, String(displayName).trim());
         pushToast({ type: "success", message: get(t)("Toast_AccountSaved"), duration: 4000 });
+        return true;
       } catch (e) {
         await offerRestartIfNeedsAdmin(e, name);
-        if (isNeedsAdminError(e)) return;
+        if (isNeedsAdminError(e)) return false;
         pushToast({ type: "error", message: formatToastWithError(get(t)("Toast_SaveFailed"), e), duration: 8000 });
+        return false;
       }
     },
 

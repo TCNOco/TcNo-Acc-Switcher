@@ -79,7 +79,8 @@ export interface PlatformAccountAdapter<TAccount> {
   onCleanup?(): void;
 
   // ---- Optional extensions ----
-  saveCurrent?(): Promise<void>;
+  /** Resolves true when a new account was saved (false on cancel or failure). */
+  saveCurrent?(): Promise<boolean>;
   suggestedSaveName?(): Promise<string>;
   gameSearchRows?(query: string): SearchResultRow[];
   gameSearchHint?: string;
