@@ -8,6 +8,7 @@ import (
 	"sync"
 
 	"TcNo-Acc-Switcher/internal/basic"
+	"TcNo-Acc-Switcher/internal/crashlog"
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/stats"
@@ -94,6 +95,7 @@ func (s *Service) ScanShortcuts(platformKey string) error {
 	s.mu.Unlock()
 
 	go func() {
+		defer crashlog.Capture()
 		defer func() {
 			s.mu.Lock()
 			delete(s.scanBusy, platformKey)

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"TcNo-Acc-Switcher/internal/appclient"
+	"TcNo-Acc-Switcher/internal/crashlog"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 )
@@ -56,6 +57,7 @@ func queueGameStatsRefresh(platformKey, game, accountID string) {
 		return
 	}
 	go func() {
+		defer crashlog.Capture()
 		defer gameStatsRefreshPending.Delete(key)
 		if err := refreshGameStatsWorker(platformKey, game, accountID); err != nil {
 			gameStatsLog.Debug("background game stats refresh failed", "platform", platformKey, "game", game, "accountID", accountID, "err", err)
@@ -138,6 +140,7 @@ func (b *BasicService) StartGameStatsRefresh(platformKey string) {
 	}
 	liveID := currentLiveAccountID(b, platformKey)
 	go func() {
+		defer crashlog.Capture()
 		gameStatsState.mu.Lock()
 		if err := gameStatsState.ensureLoadedLocked(); err != nil {
 			gameStatsState.mu.Unlock()

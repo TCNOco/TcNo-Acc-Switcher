@@ -15,6 +15,7 @@ import (
 
 	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/basic"
+	"TcNo-Acc-Switcher/internal/crashlog"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/profileimage"
 	"TcNo-Acc-Switcher/internal/stats"
@@ -385,6 +386,7 @@ func (s *SteamService) StartSteamProfileRefresh() {
 		s.refreshTimer.Stop()
 	}
 	s.refreshTimer = time.AfterFunc(500*time.Millisecond, func() {
+		defer crashlog.Capture()
 		s.runProfileRefresh()
 	})
 	s.refreshMu.Unlock()
@@ -477,6 +479,7 @@ func (s *SteamService) runProfileRefresh() {
 		u := u
 		wg.Add(1)
 		go func() {
+			defer crashlog.Capture()
 			defer wg.Done()
 			_ = sem.Acquire(ctx, 1)
 			defer sem.Release(1)

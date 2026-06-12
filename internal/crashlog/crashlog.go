@@ -17,7 +17,6 @@ import (
 	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
-	"TcNo-Acc-Switcher/internal/stats"
 )
 
 const (
@@ -105,10 +104,6 @@ func Capture() {
 
 	if err := writeCrashDump(dump); err != nil {
 		slog.Warn("writing crash dump", "err", err)
-	}
-
-	if err := stats.IncrementCrashCount(); err != nil {
-		slog.Warn("incrementing crash count", "err", err)
 	}
 
 	os.Exit(1)

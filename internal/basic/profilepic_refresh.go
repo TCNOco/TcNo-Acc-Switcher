@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"TcNo-Acc-Switcher/internal/appclient"
+	"TcNo-Acc-Switcher/internal/crashlog"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/profileimage"
 
@@ -215,6 +216,7 @@ func (b *BasicService) runProfileImageRefresh(platformKey string) {
 		uid := uid
 		wg.Add(1)
 		go func() {
+			defer crashlog.Capture()
 			defer wg.Done()
 			_ = sem.Acquire(ctx, 1)
 			defer sem.Release(1)

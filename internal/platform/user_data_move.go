@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"TcNo-Acc-Switcher/internal/settingsfile"
+	"TcNo-Acc-Switcher/internal/crashlog"
 	"TcNo-Acc-Switcher/internal/winutil"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
@@ -194,6 +195,7 @@ func clearUserDataMovePending(exeDir string) {
 }
 
 func removeOldUserDataDirAfterExit(exeDir, from string) {
+	defer crashlog.Capture()
 	delays := []time.Duration{
 		250 * time.Millisecond,
 		500 * time.Millisecond,

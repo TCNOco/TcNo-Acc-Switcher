@@ -14,6 +14,7 @@ import (
 	"TcNo-Acc-Switcher/internal/basic"
 	"TcNo-Acc-Switcher/internal/buildmode"
 	"TcNo-Acc-Switcher/internal/cli"
+	"TcNo-Acc-Switcher/internal/crashlog"
 	"TcNo-Acc-Switcher/internal/discordrpc"
 	"TcNo-Acc-Switcher/internal/ipc"
 	"TcNo-Acc-Switcher/internal/paths"
@@ -217,6 +218,7 @@ func RunGUI(params RunGUIParams) {
 	steam.StartSteamAppListMonitor()
 
 	go func() {
+		defer crashlog.Capture()
 		for {
 			now := time.Now().Format(time.RFC1123)
 			app.Event.Emit("time", now)
@@ -225,6 +227,7 @@ func RunGUI(params RunGUIParams) {
 	}()
 
 	go func() {
+		defer crashlog.Capture()
 		last := ""
 		for {
 			current := platform.CurrentWindowsAccentColor()

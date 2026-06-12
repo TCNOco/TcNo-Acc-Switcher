@@ -10,6 +10,7 @@ import (
 	buildinfo "TcNo-Acc-Switcher/build"
 	"TcNo-Acc-Switcher/internal/api"
 	"TcNo-Acc-Switcher/internal/appclient"
+	"TcNo-Acc-Switcher/internal/crashlog"
 )
 
 type ratePayload struct {
@@ -56,6 +57,7 @@ func postJSON(url string, payload any) error {
 // SubmitRating sends a working/broken rating to the API asynchronously.
 func SubmitRating(platform string, working bool) {
 	go func() {
+		defer crashlog.Capture()
 		clientUUID, err := ClientUUID()
 		if err != nil {
 			slog.Warn("stability: client uuid", "err", err)

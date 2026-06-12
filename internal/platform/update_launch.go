@@ -11,6 +11,7 @@ import (
 	"github.com/wailsapp/wails/v3/pkg/updater"
 
 	"TcNo-Acc-Switcher/internal/appclient"
+	"TcNo-Acc-Switcher/internal/crashlog"
 	"TcNo-Acc-Switcher/internal/updatecheck"
 )
 
@@ -55,6 +56,7 @@ func (*PlatformService) NotifyLaunchUpdateCheck() {
 }
 
 func runLaunchUpdateCheck() {
+	defer crashlog.Capture()
 	time.Sleep(updatecheck.LaunchCheckDelay)
 
 	exeDir, err := ResolveExeDir()
@@ -79,6 +81,7 @@ func runLaunchUpdateCheck() {
 
 func (*PlatformService) CheckForUpdatesAndInstall() {
 	go func() {
+		defer crashlog.Capture()
 		app := application.Get()
 		if app == nil {
 			return
@@ -106,6 +109,7 @@ func EnableAutoRestartAfterUpdate(app *application.App) {
 	}
 	app.Event.On(updater.EventUpdateReady, func(*application.CustomEvent) {
 		go func() {
+			defer crashlog.Capture()
 			if err := app.Updater.Restart(context.Background()); err != nil {
 				app.Logger.Error("update: Restart", "error", err)
 			}

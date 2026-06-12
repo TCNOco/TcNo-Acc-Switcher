@@ -12,6 +12,8 @@ import (
 	"sync/atomic"
 	"time"
 
+	"TcNo-Acc-Switcher/internal/crashlog"
+
 	"github.com/Microsoft/go-winio"
 )
 
@@ -55,6 +57,7 @@ func StartGUIServer(handler func(argv []string)) (func(), error) {
 	}
 	var closed int32
 	go func() {
+		defer crashlog.Capture()
 		for {
 			c, err := l.Accept()
 			if err != nil {
@@ -66,6 +69,7 @@ func StartGUIServer(handler func(argv []string)) (func(), error) {
 				continue
 			}
 			go func(conn net.Conn) {
+				defer crashlog.Capture()
 				defer conn.Close()
 				_ = conn.SetReadDeadline(time.Now().Add(5 * time.Second))
 				line, err := bufio.NewReader(conn).ReadBytes('\n')

@@ -15,6 +15,7 @@ import (
 
 	buildinfo "TcNo-Acc-Switcher/build"
 	"TcNo-Acc-Switcher/internal/api"
+	"TcNo-Acc-Switcher/internal/crashlog"
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
 
@@ -67,6 +68,7 @@ var (
 func init() {
 	flushTicker = time.NewTicker(5 * time.Second)
 	go func() {
+		defer crashlog.Capture()
 		for range flushTicker.C {
 			mu.Lock()
 			if dirty {

@@ -11,6 +11,7 @@ import (
 	"github.com/wailsapp/wails/v3/pkg/application"
 
 	"TcNo-Acc-Switcher/internal/updatecheck"
+	"TcNo-Acc-Switcher/internal/crashlog"
 )
 
 const (
@@ -41,6 +42,7 @@ func emitPlatformsJSONUpdated(version string) {
 }
 
 func runLaunchPlatformsJSONCheck(exeDir string) {
+	defer crashlog.Capture()
 	ctx, cancel := context.WithTimeout(context.Background(), platformsUpdateTimeout)
 	defer cancel()
 

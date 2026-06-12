@@ -11,6 +11,7 @@ import (
 	"sync"
 	"time"
 
+	"TcNo-Acc-Switcher/internal/crashlog"
 	"TcNo-Acc-Switcher/internal/platform"
 
 	"github.com/syndtr/goleveldb/leveldb"
@@ -46,6 +47,7 @@ var sharedLevelDBStore = &levelDBStore{handles: map[string]*levelDBHandle{}}
 
 func init() {
 	go func() {
+		defer crashlog.Capture()
 		ticker := time.NewTicker(30 * time.Second)
 		defer ticker.Stop()
 		for range ticker.C {

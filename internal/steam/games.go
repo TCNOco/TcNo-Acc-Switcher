@@ -17,6 +17,7 @@ import (
 	"time"
 
 	"TcNo-Acc-Switcher/internal/appclient"
+	"TcNo-Acc-Switcher/internal/crashlog"
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
 
@@ -328,6 +329,7 @@ func tryStartAppNameMapRefresh(reason string) {
 	steamLog.Info("steam app name map background refresh queued", slog.String("reason", reason))
 
 	go func() {
+		defer crashlog.Capture()
 		defer func() {
 			steamAppNameMapRefreshMu.Lock()
 			steamAppNameMapRefreshing = false
@@ -348,6 +350,7 @@ func StartSteamAppListMonitor() {
 }
 
 func runSteamAppNameMapMonitor() {
+	defer crashlog.Capture()
 	cachePath, pathErr := appIdsUserPath()
 	_, cacheErr := getSteamAppNameMapCached()
 

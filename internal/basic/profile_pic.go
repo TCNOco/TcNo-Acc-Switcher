@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"TcNo-Acc-Switcher/internal/appclient"
+	"TcNo-Acc-Switcher/internal/crashlog"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/profileimage"
 )
@@ -141,6 +142,7 @@ func queueProfileImageDownload(platformKey, uid, remoteURL string, maxAge int) {
 	}
 	slog.Debug("profile image download queued", "platform", platformKey, "uid", uid, "url", remoteURL, "maxAgeDays", maxAge)
 	go func() {
+		defer crashlog.Capture()
 		if profileimage.HasManualProfileMarker(platformKey, uid) {
 			return
 		}
@@ -181,6 +183,7 @@ func queueProfileImageLocalCache(platformKey, uid, src string) {
 	}
 	slog.Debug("profile image local cache queued", "platform", platformKey, "uid", uid, "src", src)
 	go func() {
+		defer crashlog.Capture()
 		if profileimage.HasManualProfileMarker(platformKey, uid) {
 			return
 		}

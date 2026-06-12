@@ -16,6 +16,7 @@ import (
 	"golang.org/x/sys/windows"
 	"golang.org/x/sys/windows/svc"
 	"golang.org/x/sys/windows/svc/mgr"
+	"TcNo-Acc-Switcher/internal/crashlog"
 )
 
 const servicePrefix = "SERVICE:"
@@ -620,6 +621,7 @@ func KillByName(names []string, method ClosingMethod, beforeElectronSynth func()
 		}
 		wg.Add(1)
 		go func(raw string) {
+			defer crashlog.Capture()
 			defer wg.Done()
 			if strings.HasPrefix(strings.ToUpper(raw), strings.ToUpper(servicePrefix)) {
 				svcName := strings.TrimSpace(raw[len(servicePrefix):])
@@ -931,7 +933,10 @@ func Start(exe string, args []string, opts StartOpts) error {
 		return WrapIfElevationRequired(err)
 	}
 	slogWin().Debug("start launched", "exe", exe, "pid", cmd.Process.Pid)
-	go func() { _ = cmd.Wait() }()
+	go func() {
+		defer crashlog.Capture()
+		_ = cmd.Wait()
+	}()
 	return nil
 }
 
