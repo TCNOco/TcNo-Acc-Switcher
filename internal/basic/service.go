@@ -94,8 +94,6 @@ func (b *BasicService) SaveCurrent(platformKey, accountName string) error {
 
 // SuggestedSaveAccountName returns a platform-specific suggested display name for Save Current.
 func (b *BasicService) SuggestedSaveAccountName(platformKey string) (string, error) {
-	b.mu.Lock()
-	defer b.mu.Unlock()
 	defer closeSharedLevelDBHandles("SuggestedSaveAccountName.end")
 	platformKey = strings.TrimSpace(platformKey)
 	if platformKey == "" {

@@ -34,6 +34,23 @@ type PlatformStartup struct {
 	Theme                 string         `json:"theme,omitempty"`
 	// One-shot SPA route from CLI (e.g. open Steam page after elevated restart).
 	CliNavigateHint string `json:"cliNavigateHint,omitempty"`
+
+	// --- Bundled settings to avoid individual Wails binding calls at startup ---
+	OfflineMode           bool   `json:"offlineMode"`
+	ProtocolEnabled       bool   `json:"protocolEnabled"`
+	ExitToTray            bool   `json:"exitToTray"`
+	DiscordRpc            bool   `json:"discordRpc"`
+	DiscordRpcShare       bool   `json:"discordRpcShare"`
+	MinimizeOnSwitch      bool   `json:"minimizeOnSwitch"`
+	StartTrayWithWindows  bool   `json:"startTrayWithWindows"`
+	StartProgramCentered  bool   `json:"startProgramCentered"`
+	AnimationsEnabled     bool   `json:"animationsEnabled"`
+	StatsEnabled          bool   `json:"statsEnabled"`
+	StatsShare            bool   `json:"statsShare"`
+	CrashReportAutoSubmit bool   `json:"crashReportAutoSubmit"`
+	ThemeAccentPreset     string `json:"themeAccentPreset"`
+	ThemeAccentCustom     string `json:"themeAccentCustom"`
+	AppVersion            string `json:"appVersion"`
 }
 
 type PlatformService struct {
@@ -62,6 +79,21 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 				PlatformsFileMissing:  true,
 				PlatformAccountCounts: map[string]int{},
 				CliNavigateHint:       ConsumeStartupNavigateHint(),
+				OfflineMode:           settings.OfflineMode,
+				ProtocolEnabled:       settings.ProtocolEnabled,
+				ExitToTray:            settings.ExitToTray,
+				DiscordRpc:            settings.DiscordRpc,
+				DiscordRpcShare:       settings.DiscordRpcShare,
+				MinimizeOnSwitch:      settings.MinimizeOnSwitch,
+				StartTrayWithWindows:  settings.StartTrayWithWindows,
+				StartProgramCentered:  settings.StartProgramCentered,
+				AnimationsEnabled:     settings.AnimationsEnabled,
+				StatsEnabled:          settings.StatsEnabled,
+				StatsShare:            settings.StatsShare,
+				CrashReportAutoSubmit: settings.CrashReportAutoSubmit,
+				ThemeAccentPreset:     settings.ThemeAccentPreset,
+				ThemeAccentCustom:     settings.ThemeAccentCustom,
+				AppVersion:            appVersionFromBuildConfig(),
 			}, nil
 		}
 		return PlatformStartup{}, err
@@ -99,6 +131,21 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 		Language:              settings.Language,
 		Theme:                 sanitizeThemeID(settings.Theme),
 		CliNavigateHint:       nav,
+		OfflineMode:           settings.OfflineMode,
+		ProtocolEnabled:       settings.ProtocolEnabled,
+		ExitToTray:            settings.ExitToTray,
+		DiscordRpc:            settings.DiscordRpc,
+		DiscordRpcShare:       settings.DiscordRpcShare,
+		MinimizeOnSwitch:      settings.MinimizeOnSwitch,
+		StartTrayWithWindows:  settings.StartTrayWithWindows,
+		StartProgramCentered:  settings.StartProgramCentered,
+		AnimationsEnabled:     settings.AnimationsEnabled,
+		StatsEnabled:          settings.StatsEnabled,
+		StatsShare:            settings.StatsShare,
+		CrashReportAutoSubmit: settings.CrashReportAutoSubmit,
+		ThemeAccentPreset:     settings.ThemeAccentPreset,
+		ThemeAccentCustom:     settings.ThemeAccentCustom,
+		AppVersion:            appVersionFromBuildConfig(),
 	}, nil
 }
 
@@ -1429,4 +1476,83 @@ func (p *PlatformService) OpenUserDataFolder() error {
 		return err
 	}
 	return OpenPathInFileManager(dir)
+}
+
+
+// ReadSettings returns all app-level settings in a single call to avoid N Wails binding round-trips at startup.
+// Individual getters remain for incremental reads, but prefer this for bulk loads.
+func (p *PlatformService) ReadSettings() (PlatformStartup, error) {
+	return p.GetStartup()
+}
+
+// UpdateSettings applies multiple settings changes in a single read-modify-write cycle.
+// Fields with zero values are left unchanged. Only one disk write occurs regardless of how many fields are set.
+func (p *PlatformService) UpdateSettings(req SettingsBatchUpdate) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return err
+	}
+	dirty := false
+	applyIfSet := func(ptr *bool, val *bool) {
+		if val != nil {
+			*ptr = *val
+			dirty = true
+		}
+	}
+	applyStringIfSet := func(ptr *string, val *string) {
+		if val != nil {
+			*ptr = *val
+			dirty = true
+		}
+	}
+	applyIfSet(&s.OfflineMode, req.OfflineMode)
+	applyIfSet(&s.ProtocolEnabled, req.ProtocolEnabled)
+	applyIfSet(&s.ExitToTray, req.ExitToTray)
+	applyIfSet(&s.DiscordRpc, req.DiscordRpc)
+	applyIfSet(&s.DiscordRpcShare, req.DiscordRpcShare)
+	applyIfSet(&s.MinimizeOnSwitch, req.MinimizeOnSwitch)
+	applyIfSet(&s.StartTrayWithWindows, req.StartTrayWithWindows)
+	applyIfSet(&s.StartProgramCentered, req.StartProgramCentered)
+	applyIfSet(&s.AnimationsEnabled, req.AnimationsEnabled)
+	applyIfSet(&s.StatsEnabled, req.StatsEnabled)
+	applyIfSet(&s.StatsShare, req.StatsShare)
+	applyIfSet(&s.CrashReportAutoSubmit, req.CrashReportAutoSubmit)
+	applyStringIfSet(&s.Language, req.Language)
+	applyStringIfSet(&s.Theme, req.Theme)
+	applyStringIfSet(&s.ThemeAccentPreset, req.ThemeAccentPreset)
+	applyStringIfSet(&s.ThemeAccentCustom, req.ThemeAccentCustom)
+	if !dirty {
+		return nil
+	}
+	if req.StatsEnabled != nil {
+		stats.SetStatsCollectionEnabled(*req.StatsEnabled)
+	}
+	return saveSettingsAtomic(exeDir, s)
+}
+
+// SettingsBatchUpdate carries optional overrides for app-level settings.
+// nil pointers mean "don't change this field".
+type SettingsBatchUpdate struct {
+	OfflineMode           *bool   `json:"offlineMode,omitempty"`
+	ProtocolEnabled       *bool   `json:"protocolEnabled,omitempty"`
+	ExitToTray            *bool   `json:"exitToTray,omitempty"`
+	DiscordRpc            *bool   `json:"discordRpc,omitempty"`
+	DiscordRpcShare       *bool   `json:"discordRpcShare,omitempty"`
+	MinimizeOnSwitch      *bool   `json:"minimizeOnSwitch,omitempty"`
+	StartTrayWithWindows  *bool   `json:"startTrayWithWindows,omitempty"`
+	StartProgramCentered  *bool   `json:"startProgramCentered,omitempty"`
+	AnimationsEnabled     *bool   `json:"animationsEnabled,omitempty"`
+	StatsEnabled          *bool   `json:"statsEnabled,omitempty"`
+	StatsShare            *bool   `json:"statsShare,omitempty"`
+	CrashReportAutoSubmit *bool   `json:"crashReportAutoSubmit,omitempty"`
+	Language              *string `json:"language,omitempty"`
+	Theme                 *string `json:"theme,omitempty"`
+	ThemeAccentPreset     *string `json:"themeAccentPreset,omitempty"`
+	ThemeAccentCustom     *string `json:"themeAccentCustom,omitempty"`
 }

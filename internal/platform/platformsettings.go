@@ -253,20 +253,19 @@ func LoadPlatformSettings(platformKey string) (PlatformSettings, error) {
 		s.ClosingMethodForced = closingForced
 		return s, err
 	}
-	if gjson.GetBytes(data, "AlwaysSwapOnShortcut").Exists() {
-		s.AlwaysSwapOnShortcut = gjson.GetBytes(data, "AlwaysSwapOnShortcut").Bool()
+	parsed := gjson.ParseBytes(data)
+	if parsed.Get("AlwaysSwapOnShortcut").Exists() {
+		s.AlwaysSwapOnShortcut = parsed.Get("AlwaysSwapOnShortcut").Bool()
 	} else {
 		s.AlwaysSwapOnShortcut = true
 	}
-	if !gjson.GetBytes(data, "ShowLastUsed").Exists() {
+	if !parsed.Get("ShowLastUsed").Exists() {
 		s.ShowLastUsed = true
 	}
 	if s.AccountNotes == nil {
 		s.AccountNotes = map[string]string{}
 	}
-	// TrayAccNumber <= 0 disables tray MRU for this platform when explicitly set in JSON.
-	if gjson.GetBytes(data, "TrayAccNumber").Exists() {
-		// keep unmarshaled value (including 0)
+	if parsed.Get("TrayAccNumber").Exists() {
 	} else if s.TrayAccNumber <= 0 {
 		s.TrayAccNumber = 3
 	}
@@ -287,7 +286,7 @@ func LoadPlatformSettings(platformKey string) (PlatformSettings, error) {
 	if s.ProfileImageExpiryDays <= 0 {
 		s.ProfileImageExpiryDays = 7
 	}
-	if !gjson.GetBytes(data, "PullAccountImagesOnSwitch").Exists() {
+	if !parsed.Get("PullAccountImagesOnSwitch").Exists() {
 		s.PullAccountImagesOnSwitch = true
 	}
 	return s, nil
