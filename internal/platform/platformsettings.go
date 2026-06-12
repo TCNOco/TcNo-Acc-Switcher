@@ -8,13 +8,22 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"sync"
 	"unicode"
 
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/winutil"
-
-	"github.com/tidwall/gjson"
 )
+
+var (
+	platformSettingsCacheMu sync.RWMutex
+	platformSettingsCache   = map[string]platformSettingsCacheEntry{}
+)
+
+type platformSettingsCacheEntry struct {
+	settings PlatformSettings
+	err      error
+}
 
 type GameShortcutEntry struct {
 	FileName string `json:"fileName"`
@@ -229,8 +238,7 @@ func RemoveLaunchArgToken(line, flag string) string {
 	return strings.Join(out, " ")
 }
 
-// LoadPlatformSettings reads Settings/<Platform>Settings.json (Steam: SteamSettings.json); only fields on PlatformSettings are unmarshaled.
-func LoadPlatformSettings(platformKey string) (PlatformSettings, error) {
+func loadPlatformSettingsFromDisk(platformKey string) (PlatformSettings, error) {
 	defaultClosingMethod, closingForced := DescriptorClosingPolicy(platformKey)
 	path, err := platformSettingsJSONPath(platformKey)
 	if err != nil {
@@ -246,6 +254,15 @@ func LoadPlatformSettings(platformKey string) (PlatformSettings, error) {
 		}
 		return PlatformSettings{}, err
 	}
+
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		s := DefaultPlatformSettings()
+		s.ClosingMethod = defaultClosingMethod
+		s.ClosingMethodForced = closingForced
+		return s, err
+	}
+
 	var s PlatformSettings
 	if err := json.Unmarshal(data, &s); err != nil {
 		s := DefaultPlatformSettings()
@@ -253,21 +270,21 @@ func LoadPlatformSettings(platformKey string) (PlatformSettings, error) {
 		s.ClosingMethodForced = closingForced
 		return s, err
 	}
-	parsed := gjson.ParseBytes(data)
-	if parsed.Get("AlwaysSwapOnShortcut").Exists() {
-		s.AlwaysSwapOnShortcut = parsed.Get("AlwaysSwapOnShortcut").Bool()
-	} else {
+
+	if _, ok := raw["AlwaysSwapOnShortcut"]; !ok {
 		s.AlwaysSwapOnShortcut = true
 	}
-	if !parsed.Get("ShowLastUsed").Exists() {
+	if _, ok := raw["ShowLastUsed"]; !ok {
 		s.ShowLastUsed = true
+	}
+	if _, ok := raw["TrayAccNumber"]; !ok && s.TrayAccNumber <= 0 {
+		s.TrayAccNumber = 3
+	}
+	if _, ok := raw["PullAccountImagesOnSwitch"]; !ok {
+		s.PullAccountImagesOnSwitch = true
 	}
 	if s.AccountNotes == nil {
 		s.AccountNotes = map[string]string{}
-	}
-	if parsed.Get("TrayAccNumber").Exists() {
-	} else if s.TrayAccNumber <= 0 {
-		s.TrayAccNumber = 3
 	}
 	s.ClosingMethod = normalizeClosingMethodForOS(s.ClosingMethod)
 	if strings.TrimSpace(s.ClosingMethod) == "" {
@@ -286,10 +303,31 @@ func LoadPlatformSettings(platformKey string) (PlatformSettings, error) {
 	if s.ProfileImageExpiryDays <= 0 {
 		s.ProfileImageExpiryDays = 7
 	}
-	if !parsed.Get("PullAccountImagesOnSwitch").Exists() {
-		s.PullAccountImagesOnSwitch = true
-	}
 	return s, nil
+}
+
+// LoadPlatformSettings reads Settings/<Platform>Settings.json (Steam: SteamSettings.json); only fields on PlatformSettings are unmarshaled.
+// Results are cached in memory and invalidated by SavePlatformSettings / resetPlatformJSONToDefaults.
+func LoadPlatformSettings(platformKey string) (PlatformSettings, error) {
+	platformKey = strings.TrimSpace(platformKey)
+
+	platformSettingsCacheMu.RLock()
+	if entry, ok := platformSettingsCache[platformKey]; ok {
+		platformSettingsCacheMu.RUnlock()
+		return entry.settings, entry.err
+	}
+	platformSettingsCacheMu.RUnlock()
+
+	platformSettingsCacheMu.Lock()
+	defer platformSettingsCacheMu.Unlock()
+
+	if entry, ok := platformSettingsCache[platformKey]; ok {
+		return entry.settings, entry.err
+	}
+
+	s, err := loadPlatformSettingsFromDisk(platformKey)
+	platformSettingsCache[platformKey] = platformSettingsCacheEntry{settings: s, err: err}
+	return s, err
 }
 
 // SavePlatformSettings patches the JSON file without removing keys not present on PlatformSettings.
@@ -328,6 +366,9 @@ func SavePlatformSettings(platformKey string, s PlatformSettings) error {
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		return err
 	}
+	platformSettingsCacheMu.Lock()
+	delete(platformSettingsCache, platformKey)
+	platformSettingsCacheMu.Unlock()
 	return fsutil.WriteFileAtomic(path, out, 0o644)
 }
 
@@ -353,5 +394,8 @@ func resetPlatformJSONToDefaults(platformKey string) error {
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		return err
 	}
+	platformSettingsCacheMu.Lock()
+	delete(platformSettingsCache, strings.TrimSpace(platformKey))
+	platformSettingsCacheMu.Unlock()
 	return fsutil.WriteFileAtomic(path, data, 0o644)
 }
