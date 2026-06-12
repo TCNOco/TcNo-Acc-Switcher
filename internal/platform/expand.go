@@ -68,21 +68,23 @@ func ExpandPathTokens(s string, ctx PathTokenContext) string {
 	return s
 }
 
-const (
-	RegexSentinelEmail     = "EMAIL_REGEX"
-	RegexSentinelWinPath   = "WIN_FILEPATH_REGEX"
-	emailRegexPattern      = `[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}`
-	winFilepathRegexPattern = `(?:[a-zA-Z]:\\|\\\\)[^:*?"<>|\r\n]+`
+var (
+	emailRegex      = regexp.MustCompile(`[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}`)
+	winFilepathRegex = regexp.MustCompile(`(?:[a-zA-Z]:\\|\\\\)[^:*?"<>|\r\n]+`)
 )
 
-// ExpandRegex returns a compiled regexp for sentinel names or parses pattern as raw regex.
+const (
+	RegexSentinelEmail   = "EMAIL_REGEX"
+	RegexSentinelWinPath = "WIN_FILEPATH_REGEX"
+)
+
 func ExpandRegex(nameOrPattern string) (*regexp.Regexp, error) {
 	nameOrPattern = strings.TrimSpace(nameOrPattern)
 	switch nameOrPattern {
 	case RegexSentinelEmail:
-		return regexp.Compile(emailRegexPattern)
+		return emailRegex, nil
 	case RegexSentinelWinPath:
-		return regexp.Compile(winFilepathRegexPattern)
+		return winFilepathRegex, nil
 	case "":
 		return nil, nil
 	default:
