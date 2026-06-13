@@ -621,5 +621,9 @@
   "Modal_CrashReport_Body": "Sembra che si sia verificato un crash!\nVuoi inviare il tuo crash log per aiutare a eseguire il debug e risolvere i problemi?\n\nNota: Questo report potrebbe includere nomi utente, ID account e altre informazioni che hai inserito o che il programma ha raccolto.",
   "Toast_CrashReportSubmitFailed": "Impossibile inviare il report di crash.",
   "Toast_FeedbackThanks": "Grazie per il tuo feedback.",
-  "Toast_FeedbackSubmitFailed": "Impossibile inviare il feedback."
+  "Toast_FeedbackSubmitFailed": "Impossibile inviare il feedback.",
+  "Stats_Tags": "Etichette:",
+  "Stats_TaggedAccounts": "Account etichettati:",
+  "Stats_TotalTags": "Totale etichette:",
+  "Stats_TotalTaggedAccounts": "Totale account etichettati:"
 }

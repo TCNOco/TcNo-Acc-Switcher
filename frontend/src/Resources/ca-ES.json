@@ -621,5 +621,9 @@
   "Modal_CrashReport_Body": "Sembla que ha fallat!\nVols enviar el teu registre de fallades per ajudar a depurar i solucionar problemes?\n\nNota: Aquest informe pot incloure noms d'usuari, identificadors de compte i altra informació que hagis introduït o que el programa hagi recollit.",
   "Toast_CrashReportSubmitFailed": "No s'ha pogut enviar l'informe de fallada.",
   "Toast_FeedbackThanks": "Gràcies pels teus comentaris.",
-  "Toast_FeedbackSubmitFailed": "No s'han pogut enviar els comentaris."
+  "Toast_FeedbackSubmitFailed": "No s'han pogut enviar els comentaris.",
+  "Stats_Tags": "Etiquetes:",
+  "Stats_TaggedAccounts": "Comptes etiquetats:",
+  "Stats_TotalTags": "Total d'etiquetes:",
+  "Stats_TotalTaggedAccounts": "Total de comptes etiquetats:"
 }

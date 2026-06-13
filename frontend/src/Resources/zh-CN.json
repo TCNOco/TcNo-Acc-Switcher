@@ -621,5 +621,9 @@
   "Modal_CrashReport_Body": "看来程序崩溃了！\n您是否要提交崩溃日志来帮助调试和修复问题？\n\n注意：此报告可能包含您输入或程序收集的用户名、账户ID和其他信息。",
   "Toast_CrashReportSubmitFailed": "无法提交崩溃报告。",
   "Toast_FeedbackThanks": "感谢您的反馈。",
-  "Toast_FeedbackSubmitFailed": "无法提交反馈。"
+  "Toast_FeedbackSubmitFailed": "无法提交反馈。",
+  "Stats_Tags": "标签：",
+  "Stats_TaggedAccounts": "已标记账户：",
+  "Stats_TotalTags": "标签总数：",
+  "Stats_TotalTaggedAccounts": "已标记账户总数："
 }

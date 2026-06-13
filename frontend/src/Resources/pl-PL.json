@@ -621,5 +621,9 @@
   "Modal_CrashReport_Body": "Wygląda na to, że nastąpiła awaria!\nCzy chcesz przesłać dziennik awarii, aby pomóc w debugowaniu i naprawie problemów?\n\nUwaga: ten raport może zawierać nazwy użytkowników, identyfikatory kont i inne informacje, które wprowadziłeś lub które program zebrał.",
   "Toast_CrashReportSubmitFailed": "Nie można przesłać raportu o awarii.",
   "Toast_FeedbackThanks": "Dziękujemy za opinię.",
-  "Toast_FeedbackSubmitFailed": "Nie można przesłać opinii."
+  "Toast_FeedbackSubmitFailed": "Nie można przesłać opinii.",
+  "Stats_Tags": "Tagi:",
+  "Stats_TaggedAccounts": "Otagowane konta:",
+  "Stats_TotalTags": "Łączna liczba tagów:",
+  "Stats_TotalTaggedAccounts": "Łączna liczba otagowanych kont:"
 }

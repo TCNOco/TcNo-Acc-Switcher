@@ -621,5 +621,9 @@
   "Modal_CrashReport_Body": "נראה שקרסנו!\nהאם לשלוח את יומן הקריסה כדי לסייע בניפוי באגים ופתרון בעיות?\n\nהערה: דוח זה עלול לכלול שמות משתמש, מזהי חשבון ומידע אחר שהוזן או נאסף על ידי התוכנית.",
   "Toast_CrashReportSubmitFailed": "לא ניתן לשלוח את דוח הקריסה.",
   "Toast_FeedbackThanks": "תודה על המשוב.",
-  "Toast_FeedbackSubmitFailed": "לא ניתן לשלוח משוב."
+  "Toast_FeedbackSubmitFailed": "לא ניתן לשלוח משוב.",
+  "Stats_Tags": "תגיות:",
+  "Stats_TaggedAccounts": "חשבונות מתוייגים:",
+  "Stats_TotalTags": "סך תגיות:",
+  "Stats_TotalTaggedAccounts": "סך חשבונות מתוייגים:"
 }

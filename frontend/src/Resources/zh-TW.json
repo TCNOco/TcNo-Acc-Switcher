@@ -621,5 +621,9 @@
   "Modal_CrashReport_Body": "看來我們崩潰了！\n您要提交崩潰記錄以協助除錯和修正問題嗎？\n\n注意：此報告可能包含使用者名稱、帳戶 ID，以及您輸入或程式收集的其他資訊。",
   "Toast_CrashReportSubmitFailed": "無法提交崩潰報告。",
   "Toast_FeedbackThanks": "感謝您的回饋。",
-  "Toast_FeedbackSubmitFailed": "無法提交回饋。"
+  "Toast_FeedbackSubmitFailed": "無法提交回饋。",
+  "Stats_Tags": "標籤：",
+  "Stats_TaggedAccounts": "已標籤帳號：",
+  "Stats_TotalTags": "總標籤數：",
+  "Stats_TotalTaggedAccounts": "已標籤帳號總數："
 }

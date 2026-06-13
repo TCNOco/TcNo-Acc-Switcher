@@ -621,5 +621,9 @@
   "Modal_CrashReport_Body": "Det verkar som att vi kraschade!\nVill du skicka in din kraschlogg för att felsöka och åtgärda problem?\n\nObs! Den här rapporten kan innehålla användarnamn, konto-ID:n och annan information som du har angett eller som programmet har samlat in.",
   "Toast_CrashReportSubmitFailed": "Kunde inte skicka in kraschrapporten.",
   "Toast_FeedbackThanks": "Tack för din feedback.",
-  "Toast_FeedbackSubmitFailed": "Kunde inte skicka in feedback."
+  "Toast_FeedbackSubmitFailed": "Kunde inte skicka in feedback.",
+  "Stats_Tags": "Taggar:",
+  "Stats_TaggedAccounts": "Taggade konton:",
+  "Stats_TotalTags": "Totalt antal taggar:",
+  "Stats_TotalTaggedAccounts": "Totalt antal taggade konton:"
 }

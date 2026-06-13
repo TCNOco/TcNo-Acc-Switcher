@@ -621,5 +621,9 @@
   "Modal_CrashReport_Body": "Ser ud til at vi er crashet!\nVil du indsende din crashlog for at hjælpe med at debugge og løse problemer?\n\nBemærk: Denne rapport kan indeholde brugernavne, konto-id'er og andre oplysninger, du har indtastet, eller som programmet har indsamlet.",
   "Toast_CrashReportSubmitFailed": "Kunne ikke indsende crashrapporten.",
   "Toast_FeedbackThanks": "Tak for din feedback.",
-  "Toast_FeedbackSubmitFailed": "Kunne ikke indsende feedback."
+  "Toast_FeedbackSubmitFailed": "Kunne ikke indsende feedback.",
+  "Stats_Tags": "Mærker:",
+  "Stats_TaggedAccounts": "Mærkede konti:",
+  "Stats_TotalTags": "Mærker i alt:",
+  "Stats_TotalTaggedAccounts": "Mærkede konti i alt:"
 }

@@ -621,5 +621,9 @@
   "Modal_CrashReport_Body": "Zdá sa, že došlo k pádu!\nChcete odoslať svoj denník pádov, aby ste pomohli s ladením a opravou chýb?\n\nPoznámka: Toto hlásenie môže obsahovať používateľské mená, ID účtov a ďalšie informácie, ktoré ste zadali, alebo ktoré program zhromaždil.",
   "Toast_CrashReportSubmitFailed": "Nepodarilo sa odoslať hlásenie o páde.",
   "Toast_FeedbackThanks": "Ďakujeme za spätnú väzbu.",
-  "Toast_FeedbackSubmitFailed": "Nepodarilo sa odoslať spätnú väzbu."
+  "Toast_FeedbackSubmitFailed": "Nepodarilo sa odoslať spätnú väzbu.",
+  "Stats_Tags": "Značky:",
+  "Stats_TaggedAccounts": "Označené účty:",
+  "Stats_TotalTags": "Celkový počet značiek:",
+  "Stats_TotalTaggedAccounts": "Celkový počet označených účtov:"
 }

@@ -621,5 +621,9 @@
   "Modal_CrashReport_Body": "Het lijkt erop dat we gecrasht zijn!\nWil je je crashlog indienen om te helpen met het debuggen en oplossen van problemen?\n\nOpmerking: Dit rapport kan gebruikersnamen, account-ID's en andere informatie bevatten die je hebt ingevoerd of die het programma heeft verzameld.",
   "Toast_CrashReportSubmitFailed": "Kon het crashrapport niet indienen.",
   "Toast_FeedbackThanks": "Bedankt voor je feedback.",
-  "Toast_FeedbackSubmitFailed": "Kon feedback niet indienen."
+  "Toast_FeedbackSubmitFailed": "Kon feedback niet indienen.",
+  "Stats_Tags": "Labels:",
+  "Stats_TaggedAccounts": "Gelabelde accounts:",
+  "Stats_TotalTags": "Totaal labels:",
+  "Stats_TotalTaggedAccounts": "Totaal gelabelde accounts:"
 }

@@ -621,5 +621,9 @@
   "Modal_CrashReport_Body": "Arr! We be crashed!\nWould ye like to send yer crash log to help debug and fix issues?\n\nTake heed: This report may include usernames, account IDs and other info ye entered, or the program be collectin'.",
   "Toast_CrashReportSubmitFailed": "Could not send the crash report, matey.",
   "Toast_FeedbackThanks": "Thanks for yer feedback!",
-  "Toast_FeedbackSubmitFailed": "Could not send feedback."
+  "Toast_FeedbackSubmitFailed": "Could not send feedback.",
+  "Stats_Tags": "Flags:",
+  "Stats_TaggedAccounts": "Flagged crew:",
+  "Stats_TotalTags": "All flags:",
+  "Stats_TotalTaggedAccounts": "All flagged crew:"
 }

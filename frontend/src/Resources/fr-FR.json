@@ -621,5 +621,9 @@
   "Modal_CrashReport_Body": "On dirait que nous avons planté !\nSouhaitez-vous envoyer votre journal de plantage pour aider à déboguer et résoudre les problèmes ?\n\nNote : Ce rapport peut contenir des noms d'utilisateur, des identifiants de compte et d'autres informations que vous avez saisies ou que le programme a collectées.",
   "Toast_CrashReportSubmitFailed": "Impossible d'envoyer le rapport de plantage.",
   "Toast_FeedbackThanks": "Merci pour votre commentaire.",
-  "Toast_FeedbackSubmitFailed": "Impossible d'envoyer votre commentaire."
+  "Toast_FeedbackSubmitFailed": "Impossible d'envoyer votre commentaire.",
+  "Stats_Tags": "Étiquettes :",
+  "Stats_TaggedAccounts": "Comptes étiquetés :",
+  "Stats_TotalTags": "Total des étiquettes :",
+  "Stats_TotalTaggedAccounts": "Total des comptes étiquetés :"
 }

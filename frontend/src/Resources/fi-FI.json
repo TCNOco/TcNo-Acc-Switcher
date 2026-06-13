@@ -621,5 +621,9 @@
   "Modal_CrashReport_Body": "Näyttää siltä, että ohjelma kaatui!\nHaluatko lähettää kaatumislokisi auttaaksesi vianetsinnässä ja ongelmien korjaamisessa?\n\nHuomio: Tämä raportti voi sisältää käyttäjätunnuksia, tilin tunnuksia ja muita tietoja, joita olet syöttänyt tai ohjelma on kerännyt.",
   "Toast_CrashReportSubmitFailed": "Kaatumisraportin lähetys epäonnistui.",
   "Toast_FeedbackThanks": "Kiitos palautteestasi.",
-  "Toast_FeedbackSubmitFailed": "Palautteen lähetys epäonnistui."
+  "Toast_FeedbackSubmitFailed": "Palautteen lähetys epäonnistui.",
+  "Stats_Tags": "Tunnisteet:",
+  "Stats_TaggedAccounts": "Merkityt tilit:",
+  "Stats_TotalTags": "Tunnisteita yhteensä:",
+  "Stats_TotalTaggedAccounts": "Merkittyjä tilejä yhteensä:"
 }

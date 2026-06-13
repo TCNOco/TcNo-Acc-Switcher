@@ -621,5 +621,9 @@
   "Modal_CrashReport_Body": "クラッシュしたようです！\n問題のデバッグと修正に役立てるため、クラッシュログを送信しますか？\n\n注意: このレポートには、入力されたユーザー名、アカウントID、およびプログラムが収集したその他の情報が含まれる場合があります。",
   "Toast_CrashReportSubmitFailed": "クラッシュレポートを送信できませんでした。",
   "Toast_FeedbackThanks": "フィードバックありがとうございます。",
-  "Toast_FeedbackSubmitFailed": "フィードバックを送信できませんでした。"
+  "Toast_FeedbackSubmitFailed": "フィードバックを送信できませんでした。",
+  "Stats_Tags": "タグ:",
+  "Stats_TaggedAccounts": "タグ付きアカウント:",
+  "Stats_TotalTags": "合計タグ数:",
+  "Stats_TotalTaggedAccounts": "合計タグ付きアカウント数:"
 }

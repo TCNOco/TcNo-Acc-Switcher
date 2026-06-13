@@ -621,5 +621,9 @@
   "Modal_CrashReport_Body": "Parece que hemos fallado.\n¿Te gustaría enviar tu registro de fallos para ayudar a depurar y solucionar problemas?\n\nNota: Este informe puede incluir nombres de usuario, identificadores de cuenta y otra información que hayas introducido o que el programa haya recopilado.",
   "Toast_CrashReportSubmitFailed": "No se pudo enviar el informe de fallos.",
   "Toast_FeedbackThanks": "Gracias por tus comentarios.",
-  "Toast_FeedbackSubmitFailed": "No se pudo enviar los comentarios."
+  "Toast_FeedbackSubmitFailed": "No se pudo enviar los comentarios.",
+  "Stats_Tags": "Etiquetas:",
+  "Stats_TaggedAccounts": "Cuentas etiquetadas:",
+  "Stats_TotalTags": "Total de etiquetas:",
+  "Stats_TotalTaggedAccounts": "Total de cuentas etiquetadas:"
 }

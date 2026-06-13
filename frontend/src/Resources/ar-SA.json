@@ -621,5 +621,9 @@
   "Modal_CrashReport_Body": "يبدو أننا تعرضنا لعطل!\nهل ترغب في إرسال سجل الأعطال للمساعدة في تصحيح الأخطاء وإصلاح المشكلات؟\n\nملاحظة: قد يتضمن هذا التقرير أسماء المستخدمين ومعرفات الحسابات وغيرها من المعلومات التي قمت بإدخالها أو التي جمعها البرنامج.",
   "Toast_CrashReportSubmitFailed": "تعذّر إرسال تقرير العطل",
   "Toast_FeedbackThanks": "شكرًا على تعليقاتك",
-  "Toast_FeedbackSubmitFailed": "تعذّر إرسال التعليقات"
+  "Toast_FeedbackSubmitFailed": "تعذّر إرسال التعليقات",
+  "Stats_Tags": "الوسوم:",
+  "Stats_TaggedAccounts": "الحسابات الموسومة:",
+  "Stats_TotalTags": "إجمالي الوسوم:",
+  "Stats_TotalTaggedAccounts": "إجمالي الحسابات الموسومة:"
 }

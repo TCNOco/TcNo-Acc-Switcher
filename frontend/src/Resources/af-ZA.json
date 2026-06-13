@@ -621,5 +621,9 @@
   "Modal_CrashReport_Body": "Dit lyk of ons omgeval het!\nWil jy jou ongeluklog indien om te help met foutopsporing en die oplos van probleme?\n\nLet wel: Hierdie verslag mag gebruikersname, rekening-ID's en ander inligting bevat wat jy ingevoer het, of wat die program ingesamel het.",
   "Toast_CrashReportSubmitFailed": "Kon nie die ongelukverslag indien nie.",
   "Toast_FeedbackThanks": "Dankie vir jou terugvoer.",
-  "Toast_FeedbackSubmitFailed": "Kon nie terugvoer indien nie."
+  "Toast_FeedbackSubmitFailed": "Kon nie terugvoer indien nie.",
+  "Stats_Tags": "Merkers:",
+  "Stats_TaggedAccounts": "Gemerkte rekeninge:",
+  "Stats_TotalTags": "Totale merkers:",
+  "Stats_TotalTaggedAccounts": "Totale gemerkte rekeninge:"
 }

@@ -621,5 +621,9 @@
   "Modal_CrashReport_Body": "Sieht so aus, als wäre das Programm abgestürzt!\nMöchtest du dein Absturzprotokoll zur Fehlersuche und Fehlerbehebung senden?\n\nHinweis: Dieser Bericht kann Benutzernamen, Konto-IDs und andere Informationen enthalten, die du eingegeben hast oder die das Programm gesammelt hat.",
   "Toast_CrashReportSubmitFailed": "Der Absturzbericht konnte nicht gesendet werden.",
   "Toast_FeedbackThanks": "Danke für dein Feedback.",
-  "Toast_FeedbackSubmitFailed": "Das Feedback konnte nicht gesendet werden."
+  "Toast_FeedbackSubmitFailed": "Das Feedback konnte nicht gesendet werden.",
+  "Stats_Tags": "Schlagwörter:",
+  "Stats_TaggedAccounts": "Getaggte Konten:",
+  "Stats_TotalTags": "Schlagwörter insgesamt:",
+  "Stats_TotalTaggedAccounts": "Getaggte Konten insgesamt:"
 }

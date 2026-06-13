@@ -621,5 +621,9 @@
   "Modal_CrashReport_Body": "Görünüşe göre çöktük!\nSorunları ayıklamaya ve düzeltmeye yardımcı olması için çökme günlüğünü göndermek ister misiniz?\n\nNot: Bu rapor, girdiğiniz veya programın topladığı kullanıcı adları, hesap kimlikleri ve diğer bilgileri içerebilir.",
   "Toast_CrashReportSubmitFailed": "Çökme raporu gönderilemedi.",
   "Toast_FeedbackThanks": "Geri bildiriminiz için teşekkürler.",
-  "Toast_FeedbackSubmitFailed": "Geri bildirim gönderilemedi."
+  "Toast_FeedbackSubmitFailed": "Geri bildirim gönderilemedi.",
+  "Stats_Tags": "Etiketler:",
+  "Stats_TaggedAccounts": "Etiketlenmiş hesaplar:",
+  "Stats_TotalTags": "Toplam etiketler:",
+  "Stats_TotalTaggedAccounts": "Toplam etiketlenmiş hesaplar:"
 }

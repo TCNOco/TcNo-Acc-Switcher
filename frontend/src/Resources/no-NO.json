@@ -621,5 +621,9 @@
   "Modal_CrashReport_Body": "Ser ut til at vi krasjet!\nVil du sende inn krasjloggen for å hjelpe med feilsøking og problemløsning?\n\nMerk: Denne rapporten kan inneholde brukernavn, konto-IDer og annen informasjon du har oppgitt, eller som programmet har samlet inn.",
   "Toast_CrashReportSubmitFailed": "Kunne ikke sende inn krasjrapporten.",
   "Toast_FeedbackThanks": "Takk for tilbakemeldingen.",
-  "Toast_FeedbackSubmitFailed": "Kunne ikke sende inn tilbakemelding."
+  "Toast_FeedbackSubmitFailed": "Kunne ikke sende inn tilbakemelding.",
+  "Stats_Tags": "Tagger:",
+  "Stats_TaggedAccounts": "Taggede kontoer:",
+  "Stats_TotalTags": "Totalt antall tagger:",
+  "Stats_TotalTaggedAccounts": "Totalt antall taggede kontoer:"
 }

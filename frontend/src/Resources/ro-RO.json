@@ -621,5 +621,9 @@
   "Modal_CrashReport_Body": "Se pare că am întâmpinat o eroare!\nDoriți să trimiteți jurnalul de erori pentru a ajuta la depanarea și remedierea problemelor?\n\nNotă: Acest raport poate include nume de utilizator, ID-uri de cont și alte informații introduse de dvs. sau colectate de program.",
   "Toast_CrashReportSubmitFailed": "Nu s-a putut trimite raportul de eroare.",
   "Toast_FeedbackThanks": "Mulțumim pentru feedback.",
-  "Toast_FeedbackSubmitFailed": "Nu s-a putut trimite feedback-ul."
+  "Toast_FeedbackSubmitFailed": "Nu s-a putut trimite feedback-ul.",
+  "Stats_Tags": "Etichete:",
+  "Stats_TaggedAccounts": "Conturi etichetate:",
+  "Stats_TotalTags": "Total etichete:",
+  "Stats_TotalTaggedAccounts": "Total conturi etichetate:"
 }

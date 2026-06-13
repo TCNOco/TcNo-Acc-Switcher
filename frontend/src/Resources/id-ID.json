@@ -621,5 +621,9 @@
   "Modal_CrashReport_Body": "Sepertinya kami mengalami crash!\nApakah Anda ingin mengirim log crash Anda untuk membantu debug dan memperbaiki masalah?\n\nCatatan: Laporan ini mungkin menyertakan nama pengguna, ID akun, dan informasi lain yang telah Anda masukkan, atau yang telah dikumpulkan oleh program.",
   "Toast_CrashReportSubmitFailed": "Tidak dapat mengirim laporan crash.",
   "Toast_FeedbackThanks": "Terima kasih atas umpan balik Anda.",
-  "Toast_FeedbackSubmitFailed": "Tidak dapat mengirim umpan balik."
+  "Toast_FeedbackSubmitFailed": "Tidak dapat mengirim umpan balik.",
+  "Stats_Tags": "Tag:",
+  "Stats_TaggedAccounts": "Akun yang ditandai:",
+  "Stats_TotalTags": "Total tag:",
+  "Stats_TotalTaggedAccounts": "Total akun yang ditandai:"
 }

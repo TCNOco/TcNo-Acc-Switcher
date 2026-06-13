@@ -621,5 +621,9 @@
   "Modal_CrashReport_Body": "Izgleda da je došlo do pada!\nDa li želite da pošaljete svoj izveštaj o padu kako biste pomogli u otklanjanju grešaka i rešavanju problema?\n\nNapomena: Ovaj izveštaj može sadržati korisnička imena, ID-eve naloga i druge informacije koje ste uneli ili koje je program prikupio.",
   "Toast_CrashReportSubmitFailed": "Slanje izveštaja o padu nije uspelo.",
   "Toast_FeedbackThanks": "Hvala na povratnim informacijama.",
-  "Toast_FeedbackSubmitFailed": "Slanje povratnih informacija nije uspelo."
+  "Toast_FeedbackSubmitFailed": "Slanje povratnih informacija nije uspelo.",
+  "Stats_Tags": "Oznake:",
+  "Stats_TaggedAccounts": "Označeni nalozi:",
+  "Stats_TotalTags": "Ukupno oznaka:",
+  "Stats_TotalTaggedAccounts": "Ukupno označenih naloga:"
 }
