@@ -3,6 +3,7 @@ import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/plat
 import { setPlatformAccountCounts, setPlatformTagCounts } from "./platformAccountsCache";
 import { type Route, serializeRoute, parseHash, validateRoute } from "./routeCodec";
 import type { PlatformStartup } from "../../bindings/TcNo-Acc-Switcher/internal/platform/models.js";
+import { homeScreenData } from "./homeScreenData";
 
 export type { Route };
 
@@ -35,6 +36,7 @@ export async function resolveInitialRoute(): Promise<void> {
   let fromHash = parseHash(window.location.hash || "#/") || { page: "home" };
   try {
     const startup = await PlatformService.GetStartup();
+    homeScreenData.set(startup);
     setPlatformAccountCounts(startup.platformAccountCounts ?? {});
     setPlatformTagCounts((startup as Record<string, unknown>).platformTagCounts as Record<string, { tagCount?: number; taggedAccountCount?: number }> | undefined);
     let next = validateRoute(fromHash, startup);
@@ -116,6 +118,7 @@ export function applyNavigateJSON(json: string): void {
     }
     void PlatformService.GetStartup()
       .then((startup) => {
+        homeScreenData.set(startup);
         const v = validateRoute(obj, startup);
         route.set(v);
       })

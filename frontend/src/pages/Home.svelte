@@ -18,11 +18,12 @@
   import { closeSearchOverlay, searchOverlayCtrl } from "../stores/searchOverlay";
   import { setPlatformAccountCounts } from "../stores/platformAccountsCache";
   import { prefetchPlatformPages } from "../lib/pageLoaders";
+  import { homeScreenData } from "../stores/homeScreenData";
   import "../styles/HomePlatforms.scss";
 
-  let startup: PlatformStartup | null = null;
-  let homeOrder: string[] = [];
-  let disabledPlatformNames: string[] = [];
+  let startup: PlatformStartup | null = get(homeScreenData);
+  let homeOrder: string[] = startup?.homePlatformOrder ?? [];
+  let disabledPlatformNames: string[] = startup?.disabledPlatformNames ? [...startup.disabledPlatformNames] : [];
   let loadError: string | null = null;
 
   let navigating = false;
@@ -89,6 +90,7 @@
         await refreshStartup(true);
         return;
       }
+      homeScreenData.set(s);
       startup = s;
       homeOrder = s.homePlatformOrder ?? [];
       disabledPlatformNames = [...(s.disabledPlatformNames ?? [])];
