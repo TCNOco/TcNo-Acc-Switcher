@@ -211,13 +211,16 @@
     },
     applyPatch: (patch: unknown, account: SteamAccountRow) => {
       const p = patch as SteamAccountPatch;
-      const nextUrl = p.imageUrl || account.imageUrl;
+      const nextUrl = p.imageUrl != null ? String(p.imageUrl).trim() : account.imageUrl;
       const errMsg = typeof p.error === "string" ? p.error : account.syncError ?? "";
       const nextManual = typeof p.manualProfileImage === "boolean" ? p.manualProfileImage : (account.manualProfileImage ?? false);
       return {
         ...account,
-        imageUrl: nextUrl, vac: p.vac, ltd: p.ltd,
-        avatarPending: p.avatarPending, metaPending: p.metaPending,
+        imageUrl: nextUrl,
+        vac: typeof p.vac === "boolean" ? p.vac : account.vac,
+        ltd: typeof p.ltd === "boolean" ? p.ltd : account.ltd,
+        avatarPending: typeof p.avatarPending === "boolean" ? p.avatarPending : account.avatarPending,
+        metaPending: typeof p.metaPending === "boolean" ? p.metaPending : account.metaPending,
         manualProfileImage: nextManual, syncError: errMsg,
         displayName: typeof p.displayName === "string" && p.displayName.trim() !== "" ? p.displayName.trim() : account.displayName ?? "",
         staticImageUrl: typeof p.staticImageUrl === "string" && p.staticImageUrl.trim() !== "" ? p.staticImageUrl.trim() : account.staticImageUrl ?? "",

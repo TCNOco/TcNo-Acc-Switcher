@@ -99,6 +99,7 @@
   let overlayQueryDebounceTimer: ReturnType<typeof setTimeout> | null = null;
   let debouncedOverlayQuery = "";
   let avatarEpoch: Record<string, number> = {};
+  let rowVersions: Record<string, number> = {};
   let tagDefs: TagDefRow[] = [];
   let tagFilterMode: TagFilterMode = { kind: "all" };
   let imagePick = { open: false, accountId: "", displayName: "", manual: false };
@@ -475,7 +476,8 @@
     const next = adapter.applyPatch(patch, prev);
     if (accountRowEqual(prev, next)) return;
 
-    accounts = accounts.map((r, i) => (i === idx ? next : r));
+    Object.assign(prev as object, next as object);
+    rowVersions = { ...rowVersions, [targetId]: (rowVersions[targetId] ?? 0) + 1 };
     if (shouldBumpEpoch(prev as unknown as EpochCheckRow, next as unknown as EpochCheckRow)) {
       bumpAvatarEpoch(targetId);
     }
@@ -667,7 +669,7 @@
             {@const acc = accountMap.get(rid)}
             {@const radioId = `acc-${adapter.platformKey}-${rid}`}
             {#if acc}
-              {#key `${rid}-${avatarEpoch[rid] ?? 0}`}
+              {#key `${rid}-${avatarEpoch[rid] ?? 0}-${rowVersions[rid] ?? 0}`}
               <div class="acc_list_item_inner">
                 <input
                   type="radio"
