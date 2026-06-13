@@ -41,7 +41,6 @@
   import { contextMenu as ctxMenuAction } from "../lib/actions/contextMenu";
   import type { MenuItemDef } from "../stores/contextMenu";
   import { offlineMode, offlineSafeImageSrc, withAssetCacheBust } from "../stores/offlineMode";
-  import { fuzzyWordsMatch } from "../lib/searchFuzzy";
   import { formatLastLoginForLocale } from "../lib/formatLastLogin";
   import {
     openTagFilterMenu,
@@ -87,6 +86,7 @@
   let accounts: TAccount[] = [];
   let accountIds: string[] = [];
   $: accountMap = new Map(accounts.map((a) => [adapter.id(a), a] as const));
+  const searchHayCache = new Map<string, { v: number; text: string }>();
   let accountsLoading = false;
   let tagDefsLoading = false;
   let loadError = "";
@@ -489,9 +489,29 @@
   function buildAccountRows(q: string, epochs: Record<string, number>): SearchResultRow[] {
     const tr = get(t);
     const trimmed = q.trim();
-    const hay = (acc: TAccount) => fuzzyWordsMatch(trimmed, adapter.searchHay(acc, trimmed));
-    let list = trimmed ? accounts.filter((a) => hay(a)) : accounts.slice(0, SEARCH_MAX);
-    if (trimmed) list = list.slice(0, SEARCH_MAX);
+    const queryWords = trimmed ? trimmed.toLowerCase().split(/\s+/).filter(Boolean) : [];
+    const getHay = (acc: TAccount): string => {
+      const id = adapter.id(acc);
+      const ver = rowVersions[id] ?? 0;
+      const hit = searchHayCache.get(id);
+      if (hit && hit.v === ver) return hit.text;
+      const text = adapter.searchHay(acc, trimmed).toLowerCase();
+      searchHayCache.set(id, { v: ver, text });
+      return text;
+    };
+    const matches = (text: string) => queryWords.every((w) => text.includes(w));
+    let list: TAccount[];
+    if (!trimmed) {
+      list = accounts.slice(0, SEARCH_MAX);
+    } else {
+      list = [];
+      for (const a of accounts) {
+        if (matches(getHay(a))) {
+          list.push(a);
+          if (list.length >= SEARCH_MAX) break;
+        }
+      }
+    }
     return list.map((a) => ({
       key: `a:${adapter.id(a)}`,
       title: adapter.name(a) || adapter.id(a),
