@@ -17,10 +17,13 @@ import (
 	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
+
+	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
 const (
-	crashDumpFile = "CrashDump.json"
+	crashDumpFile  = "CrashDump.json"
+	toastEventName = "toast"
 )
 
 type CrashDump struct {
@@ -40,7 +43,10 @@ func exeDir() (string, error) {
 	return filepath.Dir(exe), nil
 }
 
-var crashDumpDirResolver = exeDir
+var (
+	crashDumpDirResolver = exeDir
+	osExit               = os.Exit // swapped in tests to verify CaptureFatal behavior
+)
 
 func crashDumpPath() (string, error) {
 	dir, err := crashDumpDirResolver()
@@ -80,13 +86,37 @@ func writeCrashDump(dump CrashDump) error {
 	return fsutil.WriteFileAtomic(path, payload, 0o644)
 }
 
-// Capture recovers from a panic, logs it, writes CrashDump.json, and exits.
+// Capture recovers from a panic, logs it, writes CrashDump.json, and returns.
+// Use this for background goroutines where the process should stay alive.
 func Capture() {
 	r := recover()
 	if r == nil {
 		return
 	}
 
+	captureAndWrite(r)
+
+	if app := application.Get(); app != nil {
+		_ = app.Event.Emit(toastEventName, map[string]any{
+			"type":     "error",
+			"title":    "Background task failed",
+			"message":  fmt.Sprintf("A background task crashed (%v). Restart if the app behaves oddly.", r),
+			"duration": 6000,
+		})
+	}
+}
+
+func CaptureFatal() {
+	r := recover()
+	if r == nil {
+		return
+	}
+
+	captureAndWrite(r)
+	osExit(1)
+}
+
+func captureAndWrite(r any) {
 	stack := string(debug.Stack())
 	slog.Error("panic recovered",
 		"error", r,
@@ -105,8 +135,6 @@ func Capture() {
 	if err := writeCrashDump(dump); err != nil {
 		slog.Warn("writing crash dump", "err", err)
 	}
-
-	os.Exit(1)
 }
 
 // HasPending reports whether a crash dump from a previous run is waiting locally.

@@ -107,7 +107,7 @@ func main() {
 	if crashlog.HasPending() && !startupSettings.OfflineMode && startupSettings.CrashReportAutoSubmit {
 		crashSubmitted = crashlog.SubmitPending()
 	}
-	defer crashlog.Capture()
+	defer crashlog.CaptureFatal()
 
 	if parsed.Kind == cli.KindHelp || parsed.Help {
 		fmt.Print(cli.HelpText())
