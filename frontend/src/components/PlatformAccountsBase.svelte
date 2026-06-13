@@ -74,6 +74,7 @@
   import {
     swapToLogin as swapToLoginFn,
     handlePlatformActionKind,
+    runPlatformActionLocked,
     type AccountActionsContext,
   } from "../lib/accounts/accountActions";
 
@@ -271,7 +272,9 @@
   }
 
   async function swapToLogin(): Promise<void> {
-    await swapToLoginFn(getAccountActionsCtx());
+    await runPlatformActionLocked(async () => {
+      await swapToLoginFn(getAccountActionsCtx());
+    }, getAccountActionsCtx());
   }
 
   // ---- Sort ----
