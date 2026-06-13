@@ -675,12 +675,6 @@
                     items: ctxMenu(rid),
                     beforeOpen: () => { selectedId = rid; touchStatus(); },
                   }}
-                >
-                  <AccountLiveSessionIndicator
-                    active={adapter.currentSession(acc)}
-                    tooltipText={$t("Tooltip_CurrentAccount")}
-                    boundary={acclistEl}
-                  />
                   on:dblclick|preventDefault={() => {
                     if (isActionBusy) return;
                     selectedId = rid;
@@ -688,6 +682,11 @@
                     void swapToLogin();
                   }}
                 >
+                  <AccountLiveSessionIndicator
+                    active={adapter.currentSession(acc)}
+                    tooltipText={$t("Tooltip_CurrentAccount")}
+                    boundary={acclistEl}
+                  />
                   {#if $accountProfileImageDropActive && !imagePick.open}
                     <div class="acc_profile_drop_overlay" class:acc_profile_drop_overlay--hover={fileDragHoverRowId === rid} aria-hidden="true">
                       <div class="acc_profile_drop_overlay__center">
