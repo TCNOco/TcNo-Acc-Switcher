@@ -5,6 +5,8 @@ export function shouldBumpEpoch(prev: EpochCheckRow | undefined, row: EpochCheck
   if ((prev.imageUrl ?? "").trim() !== (row.imageUrl ?? "").trim()) return true;
   if ((prev.manualProfileImage ?? false) !== (row.manualProfileImage ?? false)) return true;
   if ((prev.avatarPending ?? false) !== (row.avatarPending ?? false)) return true;
+  if ((prev.staticImageUrl ?? "").trim() !== (row.staticImageUrl ?? "").trim()) return true;
+  if ((prev.avatarFrameUrl ?? "").trim() !== (row.avatarFrameUrl ?? "").trim()) return true;
   return false;
 }
 

@@ -18,6 +18,7 @@ import (
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/shortcuts"
 	"TcNo-Acc-Switcher/internal/stability"
+	"TcNo-Acc-Switcher/internal/stats"
 	"TcNo-Acc-Switcher/internal/steam"
 	"TcNo-Acc-Switcher/internal/winutil"
 
@@ -103,6 +104,7 @@ func main() {
 
 	startupSettings, _ := loadStartupSettings()
 	syncOfflineModeFromSettings(startupSettings)
+	stats.SetStatsCollectionEnabled(startupSettings.StatsEnabled)
 
 	if crashlog.HasPending() && !startupSettings.OfflineMode && startupSettings.CrashReportAutoSubmit {
 		crashSubmitted = crashlog.SubmitPending()
