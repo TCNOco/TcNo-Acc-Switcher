@@ -38,7 +38,7 @@ export async function resolveInitialRoute(): Promise<void> {
     const startup = await PlatformService.GetStartup();
     homeScreenData.set(startup);
     setPlatformAccountCounts(startup.platformAccountCounts ?? {});
-    setPlatformTagCounts((startup as Record<string, unknown>).platformTagCounts as Record<string, { tagCount?: number; taggedAccountCount?: number }> | undefined);
+    setPlatformTagCounts(startup.platformTagCounts as Record<string, { tagCount?: number; taggedAccountCount?: number } | undefined>);
     let next = validateRoute(fromHash, startup);
     next = applyCliHint(startup, next);
     route.set(next);

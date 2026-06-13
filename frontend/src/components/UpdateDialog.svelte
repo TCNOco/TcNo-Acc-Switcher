@@ -51,9 +51,11 @@
   class="updateDialog__backdrop"
   transition:fade={{ duration: motionEnabled() ? 160 : 0 }}
   on:click={onBackdropClick}
+  on:keydown={onKeydown}
   role="dialog"
   aria-modal="true"
   aria-label={$t("Update")}
+  tabindex="-1"
 >
   <div
     class="updateDialog"
