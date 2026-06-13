@@ -40,6 +40,14 @@ func ResolveUserDataDir(exeDir string, s AppSettings) (string, error) {
 	if p := strings.TrimSpace(s.UserDataPath); p != "" {
 		return filepath.Clean(p), nil
 	}
+
+	resolvedUserDataMu.RLock()
+	cachedDir, cachedExe, initialized := resolvedUserDataDir, resolvedExeDir, pathsInitialized
+	resolvedUserDataMu.RUnlock()
+	if initialized && cachedExe == exeDir && cachedDir != "" {
+		return cachedDir, nil
+	}
+
 	portable := PortableUserDataDir(exeDir)
 	if st, err := os.Stat(portable); err == nil && st.IsDir() {
 		return portable, nil

@@ -39,6 +39,16 @@ func TestDiscover_prefersPortableOverAppData(t *testing.T) {
 }
 
 func TestDiscover_fallsBackToExeRoot(t *testing.T) {
+	orig := os.Getenv("APPDATA")
+	tmpAppData := filepath.Join(t.TempDir(), "appdata")
+	if err := os.MkdirAll(tmpAppData, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Setenv("APPDATA", tmpAppData); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = os.Setenv("APPDATA", orig) })
+
 	exeDir := t.TempDir()
 	legacy := filepath.Join(exeDir, FileName)
 	if err := os.WriteFile(legacy, []byte(`{"language":"legacy"}`), 0o644); err != nil {

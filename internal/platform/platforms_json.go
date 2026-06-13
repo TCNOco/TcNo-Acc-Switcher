@@ -35,12 +35,15 @@ func invalidatePlatformsJSONCache() {
 // When the default base Platforms.json is missing under the user data folder,
 // it is created from the embedded catalog (first run). An existing file is left
 // unchanged so a copy applied via the UI persists until you use Restore default.
+//
+// The returned slice is cached internally and shared across callers; it must be
+// treated as read-only. Callers that need to mutate the bytes should make a copy.
 func LoadPlatformsJSON(exeDir string) ([]byte, error) {
 	exeDir = filepath.Clean(exeDir)
 
 	platformsJSONCache.mu.RLock()
 	if platformsJSONCache.loaded && platformsJSONCache.exeDir == exeDir {
-		data := append([]byte(nil), platformsJSONCache.data...)
+		data := platformsJSONCache.data
 		platformsJSONCache.mu.RUnlock()
 		return data, nil
 	}
@@ -64,10 +67,10 @@ func LoadPlatformsJSON(exeDir string) ([]byte, error) {
 		if errors.Is(err, os.ErrNotExist) {
 			platformsJSONCache.mu.Lock()
 			platformsJSONCache.exeDir = exeDir
-			platformsJSONCache.data = append([]byte(nil), base...)
+			platformsJSONCache.data = bytes.Clone(base)
 			platformsJSONCache.loaded = true
 			platformsJSONCache.mu.Unlock()
-			return append([]byte(nil), base...), nil
+			return platformsJSONCache.data, nil
 		}
 		return nil, fmt.Errorf("read %s: %w", customPath, err)
 	}
@@ -77,10 +80,10 @@ func LoadPlatformsJSON(exeDir string) ([]byte, error) {
 	}
 	platformsJSONCache.mu.Lock()
 	platformsJSONCache.exeDir = exeDir
-	platformsJSONCache.data = append([]byte(nil), out...)
+	platformsJSONCache.data = bytes.Clone(out)
 	platformsJSONCache.loaded = true
 	platformsJSONCache.mu.Unlock()
-	return append([]byte(nil), out...), nil
+	return platformsJSONCache.data, nil
 }
 
 func seedEmbeddedPlatforms(exeDir string) error {

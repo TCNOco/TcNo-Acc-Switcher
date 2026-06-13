@@ -219,13 +219,16 @@
     touchStatus();
   }
 
+  const REFRESH_DEBOUNCE_MS = 300;
+
   function scheduleAccountsRefresh(): void {
     for (const t of refreshTimers) clearTimeout(t);
     refreshTimers = [];
-    void loadAccounts();
     refreshTimers.push(
-      setTimeout(() => void loadAccounts(), 700),
-      setTimeout(() => void loadAccounts(), 2200),
+      setTimeout(() => {
+        refreshTimers = [];
+        void loadAccounts();
+      }, REFRESH_DEBOUNCE_MS),
     );
   }
 

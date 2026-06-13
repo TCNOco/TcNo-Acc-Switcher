@@ -9,6 +9,8 @@ import (
 )
 
 func TestLoadSettings_migratesExeRootToPortableUserData(t *testing.T) {
+	setTestAppData(t)
+
 	dir := t.TempDir()
 	exeDir := filepath.Join(dir, "bin")
 	portable := PortableUserDataDir(exeDir)
@@ -38,6 +40,8 @@ func TestLoadSettings_migratesExeRootToPortableUserData(t *testing.T) {
 }
 
 func TestSaveSettings_customUserDataUsesExeRoot(t *testing.T) {
+	setTestAppData(t)
+
 	dir := t.TempDir()
 	exeDir := filepath.Join(dir, "bin")
 	if err := os.MkdirAll(exeDir, 0o755); err != nil {
