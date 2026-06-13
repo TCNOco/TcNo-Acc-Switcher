@@ -204,5 +204,7 @@
     width: 100%;
     max-width: none;
     margin: 0.35rem 0 0;
+    min-height: 280px;
+    max-height: calc(75vh - 11rem);
   }
 </style>

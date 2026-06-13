@@ -9,10 +9,11 @@
     MODAL_FRAME_MIN_H,
     MODAL_FRAME_MIN_W,
     MODAL_FRAME_MIN_W_FOLDER,
+    MODAL_FRAME_MIN_H_FOLDER,
     MODAL_RESIZE_EDGES,
     MODAL_RESIZE_CURSOR,
-    centerFrame,
     clampRect,
+    fitFrameToContent,
     getModalBounds,
     startModalDrag,
     startModalResize,
@@ -28,7 +29,7 @@
 
   $: modalMinSize = {
     minW: kind === "folder" ? MODAL_FRAME_MIN_W_FOLDER : MODAL_FRAME_MIN_W,
-    minH: MODAL_FRAME_MIN_H,
+    minH: kind === "folder" ? MODAL_FRAME_MIN_H_FOLDER : MODAL_FRAME_MIN_H,
   };
 
   let backdropEl: HTMLDivElement | undefined;
@@ -38,14 +39,66 @@
   let frameReady = false;
 
   let lastInitId = -1;
+  let contentResizeObserver: ResizeObserver | undefined;
+  let refitQueued = false;
 
   function initModalFrame(): void {
     if (!backdropEl || !modalFgEl) return;
-    const bounds = getModalBounds(backdropEl);
-    const naturalW = modalFgEl.offsetWidth;
-    const naturalH = modalFgEl.offsetHeight;
-    modalFrame = centerFrame(naturalW, naturalH, bounds, modalMinSize);
+    modalFrame = fitFrameToContent(
+      modalFgEl,
+      getModalBounds(backdropEl),
+      modalMinSize,
+    );
     frameReady = true;
+    attachContentObservers();
+  }
+
+  function refitModalFrame(): void {
+    if (!frameReady || !backdropEl || !modalFgEl) return;
+    contentResizeObserver?.disconnect();
+    const next = fitFrameToContent(
+      modalFgEl,
+      getModalBounds(backdropEl),
+      modalMinSize,
+    );
+    if (
+      next.width !== modalFrame.width ||
+      next.height !== modalFrame.height ||
+      next.left !== modalFrame.left ||
+      next.top !== modalFrame.top
+    ) {
+      modalFrame = next;
+    }
+    attachContentObservers();
+  }
+
+  function queueRefitModalFrame(): void {
+    if (!frameReady || refitQueued) return;
+    refitQueued = true;
+    requestAnimationFrame(() => {
+      refitQueued = false;
+      refitModalFrame();
+    });
+  }
+
+  function attachContentObservers(): void {
+    contentResizeObserver?.disconnect();
+    if (!modalFgEl) return;
+
+    const scroll = modalFgEl.querySelector(".modal-scroll");
+    if (!(scroll instanceof HTMLElement)) return;
+
+    contentResizeObserver = new ResizeObserver(() => queueRefitModalFrame());
+    for (const child of scroll.children) {
+      if (child instanceof HTMLElement) {
+        contentResizeObserver.observe(child);
+      }
+    }
+  }
+
+  function detachContentObservers(): void {
+    contentResizeObserver?.disconnect();
+    contentResizeObserver = undefined;
   }
 
   function reclampModalFrame(): void {
@@ -55,6 +108,7 @@
 
   $: if (modalId !== lastInitId) {
     lastInitId = modalId;
+    detachContentObservers();
     frameReady = false;
     void tick().then(() =>
       requestAnimationFrame(() => {
@@ -109,6 +163,7 @@
     return () => {
       window.removeEventListener("keydown", onKeydown);
       window.removeEventListener("resize", reclampModalFrame);
+      detachContentObservers();
     };
   });
 </script>
@@ -221,11 +276,23 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    width: auto;
+    width: max-content;
     min-width: min(320px, calc(100% - 2rem));
-    max-width: calc(100% - 2rem);
-    max-height: min(900px, calc(100% - 2rem));
+    max-width: min(80%, calc(100% - 2rem));
+    max-height: min(75%, calc(100% - 2rem));
     height: auto;
+
+    .modalFG-inner {
+      flex: none;
+      height: auto;
+      overflow: visible;
+    }
+
+    .modal-scroll {
+      flex: none;
+      min-height: auto;
+      overflow: visible;
+    }
   }
 
   .modalFG.modalFG--ready {

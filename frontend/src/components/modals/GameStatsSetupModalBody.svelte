@@ -536,8 +536,7 @@
     line-height: 1.4;
   }
   .gamestats-scroll {
-    max-height: min(60vh, 480px);
-    overflow: auto;
+    overflow: visible;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
