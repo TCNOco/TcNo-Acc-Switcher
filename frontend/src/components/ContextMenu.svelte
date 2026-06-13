@@ -213,15 +213,15 @@
 
   async function layoutAfterOpen(): Promise<void> {
     ctxMenuLog("layoutAfterOpen: start");
-    menuReady = false;
+    const st = get(contextMenu);
+    if (!st || !menuEl) return;
+    menuEl.style.left = `${st.x}px`;
+    menuEl.style.top = `${st.y}px`;
+    menuReady = true;
     await tick();
     await new Promise<void>((r) => requestAnimationFrame(() => r()));
-    await new Promise<void>((r) => requestAnimationFrame(() => r()));
     if (!get(contextMenu) || !menuEl) {
-      ctxMenuLog("layoutAfterOpen: aborted (no context or menuEl)", {
-        hasState: !!get(contextMenu),
-        menuEl: !!menuEl,
-      });
+      ctxMenuLog("layoutAfterOpen: aborted (no context or menuEl)");
       return;
     }
     applyAnchorLayout();
@@ -229,7 +229,6 @@
     observeSubmenus(menuEl);
     refreshFlyoutLayout(menuEl);
     submenuExpandEnabled.set(true);
-    menuReady = true;
     ctxMenuLog("layoutAfterOpen: done → submenuExpandEnabled=true", {
       submenuExpandEnabled: get(submenuExpandEnabled),
       menuRect: menuEl.getBoundingClientRect(),
@@ -379,13 +378,9 @@
     top: 0;
     margin: 0;
     z-index: 999999;
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity 0.08s ease;
   }
 
-  ul.ctx-menu-root.contextmenu.ctx-menu-root--ready {
-    visibility: visible;
-    opacity: 1;
+  ul.ctx-menu-root.contextmenu:not(.ctx-menu-root--ready) {
+    visibility: hidden;
   }
 </style>

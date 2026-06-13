@@ -127,10 +127,10 @@ button,
 
 .btnicontext,
 button {
-  transition: transform 0.08s ease-out, background 0.12s ease-out;
+  transition: filter 0.12s ease-out, background 0.12s ease-out;
 
   &:active:not(:disabled) {
-    transform: scale(0.97);
+    filter: brightness(0.85);
   }
 }
 
