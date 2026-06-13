@@ -178,7 +178,7 @@
 
   // ---- Helpers ----
   function accountById(id: string): TAccount | undefined {
-    return accounts.find((a) => adapter.id(a) === id);
+    return accountMap.get(id);
   }
 
   function slotKey(x: string | null | undefined): string {
@@ -186,7 +186,7 @@
   }
 
   function accountRowEqual(a: TAccount, b: TAccount): boolean {
-    return JSON.stringify(a) === JSON.stringify(b);
+    return adapter.visualKey(a) === adapter.visualKey(b);
   }
 
   function touchStatus(): void {

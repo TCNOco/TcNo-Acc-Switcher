@@ -36,6 +36,7 @@ export interface PlatformAccountAdapter<TAccount> {
   shouldShowLastUsed(a: TAccount): boolean;
   lastUsed(a: TAccount): string;
   accountLogin(a: TAccount): string;
+  visualKey(a: TAccount): string;
 
   // ---- I/O ----
   /** Fast list: ids, names, order, current session. */

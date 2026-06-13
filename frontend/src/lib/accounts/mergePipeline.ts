@@ -34,8 +34,8 @@ export function mergeEnrichmentIntoExisting<T>(
   });
 }
 
-function accountRowEqual<T>(a: T, b: T): boolean {
-  return JSON.stringify(a) === JSON.stringify(b);
+function accountRowEqual<T>(adapter: PlatformAccountAdapter<T>, a: T, b: T): boolean {
+  return adapter.visualKey(a) === adapter.visualKey(b);
 }
 
 export function rowsVisuallyChanged<T>(
@@ -45,7 +45,7 @@ export function rowsVisuallyChanged<T>(
 ): boolean {
   for (const row of rows) {
     const prev = prevById.get(adapter.id(row));
-    if (!prev || !accountRowEqual(prev, row)) return true;
+    if (!prev || !accountRowEqual(adapter, prev, row)) return true;
   }
   return false;
 }

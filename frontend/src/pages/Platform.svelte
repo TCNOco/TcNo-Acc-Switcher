@@ -50,6 +50,18 @@
     lastUsed: (a: BasicRow) => a.lastUsed ?? "",
     accountLogin: () => "",
 
+    visualKey: (a: BasicRow) => [
+      a.uniqueId,
+      a.displayName ?? "",
+      a.imageUrl ?? "",
+      a.avatarPending ?? false,
+      a.manualProfileImage ?? false,
+      a.currentSession ?? false,
+      a.note ?? "",
+      a.lastUsed ?? "",
+      (a.tags ?? []).map((t) => t.id).join(","),
+    ].join("|"),
+
     loadAccountsList: async () => {
       const rows = await BasicService.GetAccountsList(name);
       return rows.map((r: AccountListItemDTO) => ({

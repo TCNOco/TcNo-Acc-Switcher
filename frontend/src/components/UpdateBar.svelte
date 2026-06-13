@@ -16,8 +16,7 @@
   $: visible = showBanner && !dismissed;
 
   onMount(() => {
-    const off = Events.On("app-update-available", (ev) => {
-      const payload = ev.data as { message?: string; downloadUrl?: string } | undefined;
+    const off = Events.On("app-update-available", (payload: { message: string; downloadUrl: string }) => {
       showBanner = true;
       dismissed = false;
       dialogMessage = payload?.message ?? "";

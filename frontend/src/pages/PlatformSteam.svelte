@@ -147,6 +147,23 @@
     lastUsed: (a: SteamAccountRow) => a.lastLogin ?? "",
     accountLogin: (a: SteamAccountRow) => (a.accountName ?? "").trim(),
 
+    visualKey: (a: SteamAccountRow) => [
+      a.steamId64,
+      a.displayName ?? "",
+      a.accountName ?? "",
+      a.imageUrl ?? "",
+      a.staticImageUrl ?? "",
+      a.avatarFrameUrl ?? "",
+      a.avatarPending ?? false,
+      a.metaPending ?? false,
+      a.manualProfileImage ?? false,
+      a.currentSession ?? false,
+      a.vac ?? false,
+      a.ltd ?? false,
+      a.note ?? "",
+      (a.tags ?? []).map((t) => t.id).join(","),
+    ].join("|"),
+
     loadAccountsList: async () => {
       const rows = await SteamService.GetSteamAccountsList();
       return rows.map((r: SteamAccountListItemDTO) => ({
