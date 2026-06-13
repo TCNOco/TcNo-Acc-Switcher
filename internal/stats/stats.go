@@ -36,6 +36,8 @@ type SwitcherStat struct {
 	GameShortcuts       int       `json:"GameShortcuts"`
 	GameShortcutsHotbar int       `json:"GameShortcutsHotbar"`
 	GamesLaunched       int       `json:"GamesLaunched"`
+	Tags                int       `json:"Tags"`
+	TaggedAccounts      int       `json:"TaggedAccounts"`
 	FirstActive         time.Time `json:"FirstActive"`
 	LastActive          time.Time `json:"LastActive"`
 }
@@ -230,6 +232,8 @@ func generateTotalsLocked() {
 		total.GameShortcuts += v.GameShortcuts
 		total.GameShortcutsHotbar += v.GameShortcutsHotbar
 		total.GamesLaunched += v.GamesLaunched
+		total.Tags += v.Tags
+		total.TaggedAccounts += v.TaggedAccounts
 		if total.FirstActive.IsZero() || (!v.FirstActive.IsZero() && v.FirstActive.Before(total.FirstActive)) {
 			total.FirstActive = v.FirstActive
 		}

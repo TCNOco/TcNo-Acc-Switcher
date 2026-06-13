@@ -25,6 +25,24 @@ func SyncPlatformCounts(platformName string, accounts, gameShortcuts, gameShortc
 	return saveLocked()
 }
 
+// SyncPlatformTagCounts updates stored per-platform tag & tagged-account counters.
+func SyncPlatformTagCounts(platformName string, tags int, taggedAccounts int) error {
+	if !collectionEnabled() {
+		return nil
+	}
+	mu.Lock()
+	defer mu.Unlock()
+	if err := ensureLoadedLocked(); err != nil {
+		return err
+	}
+	p := ensurePlatformLocked(platformName)
+	row := state.SwitcherStats[p]
+	row.Tags = tags
+	row.TaggedAccounts = taggedAccounts
+	state.SwitcherStats[p] = row
+	return saveLocked()
+}
+
 // IncrementGamesLaunched records a game/app launch initiated from the shortcut bar (or equivalent).
 func IncrementGamesLaunched(platformName string) error {
 	if !collectionEnabled() {

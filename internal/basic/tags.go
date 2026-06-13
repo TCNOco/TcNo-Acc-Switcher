@@ -8,6 +8,8 @@ import (
 	"math"
 	"sort"
 	"strings"
+
+	"TcNo-Acc-Switcher/internal/stats"
 )
 
 const maxTagNameLen = 64
@@ -197,7 +199,11 @@ func ForgetAccountTagAssignments(platformKey, uniqueID string) error {
 	normalizeTagMaps(&f)
 	delete(f.AccountTags, uniqueID)
 	pruneUnusedTagDefinitions(&f)
-	return writeIdsFile(platformKey, f)
+	if err := writeIdsFile(platformKey, f); err != nil {
+		return err
+	}
+	_ = stats.SyncPlatformTagCounts(platformKey, len(f.Tags), len(f.AccountTags))
+	return nil
 }
 
 func tagNameOK(name string) (string, error) {

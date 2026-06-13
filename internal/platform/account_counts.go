@@ -15,3 +15,20 @@ func resolveStartupAccountCounts(platformNames []string, statsEnabled bool) map[
 	}
 	return startupAccountCountResolver(platformNames, statsEnabled)
 }
+
+
+
+// startupTagCountResolver returns per-platform tag & tagged-account totals for UI skeleton hints.
+var startupTagCountResolver func(platformNames []string, statsEnabled bool) map[string]PlatformTagCountInfo
+
+// SetStartupTagCountResolver wires startup tag totals from basic/steam (registered from main).
+func SetStartupTagCountResolver(fn func(platformNames []string, statsEnabled bool) map[string]PlatformTagCountInfo) {
+	startupTagCountResolver = fn
+}
+
+func resolveStartupTagCounts(platformNames []string, statsEnabled bool) map[string]PlatformTagCountInfo {
+	if startupTagCountResolver == nil {
+		return map[string]PlatformTagCountInfo{}
+	}
+	return startupTagCountResolver(platformNames, statsEnabled)
+}

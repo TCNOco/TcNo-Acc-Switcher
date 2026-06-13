@@ -10,6 +10,7 @@ import (
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/profileimage"
+	"TcNo-Acc-Switcher/internal/stats"
 	"TcNo-Acc-Switcher/internal/tray"
 	"TcNo-Acc-Switcher/internal/winutil"
 )
@@ -325,7 +326,11 @@ func (b *BasicService) AddTagToAccount(platformKey, uniqueID, tagID string) erro
 		return nil
 	}
 	f.AccountTags[uniqueID] = append(cur, tagID)
-	return writeIdsFile(platformKey, f)
+	if err := writeIdsFile(platformKey, f); err != nil {
+		return err
+	}
+	_ = stats.SyncPlatformTagCounts(platformKey, len(f.Tags), len(f.AccountTags))
+	return nil
 }
 
 func (b *BasicService) RemoveTagFromAccount(platformKey, uniqueID, tagID string) error {
@@ -359,7 +364,11 @@ func (b *BasicService) RemoveTagFromAccount(platformKey, uniqueID, tagID string)
 		f.AccountTags[uniqueID] = next
 	}
 	pruneUnusedTagDefinitions(&f)
-	return writeIdsFile(platformKey, f)
+	if err := writeIdsFile(platformKey, f); err != nil {
+		return err
+	}
+	_ = stats.SyncPlatformTagCounts(platformKey, len(f.Tags), len(f.AccountTags))
+	return nil
 }
 
 func (b *BasicService) CreateTagAndAddToAccount(platformKey, uniqueID, name string) (TagDefinitionDTO, error) {
@@ -396,5 +405,6 @@ func (b *BasicService) CreateTagAndAddToAccount(platformKey, uniqueID, name stri
 	if err := writeIdsFile(platformKey, f); err != nil {
 		return zero, err
 	}
+	_ = stats.SyncPlatformTagCounts(platformKey, len(f.Tags), len(f.AccountTags))
 	return TagDefinitionDTO{ID: id, Name: name, Color: color}, nil
 }

@@ -25,6 +25,7 @@
   import {
     getPlatformAccountsCache,
     platformAccountCounts,
+    platformTagCounts,
     setPlatformAccountsCache,
   } from "../stores/platformAccountsCache";
   import { pushToast } from "../stores/toast";
@@ -87,6 +88,7 @@
   let accountIds: string[] = [];
   $: accountMap = new Map(accounts.map((a) => [adapter.id(a), a] as const));
   let accountsLoading = false;
+  let tagDefsLoading = false;
   let loadError = "";
   let selectedId = "";
   let isActionBusyValue = false;
@@ -159,6 +161,8 @@
   $: reorderDisabled = tagFilterMode.kind !== "all";
 
   $: knownAccountCount = $platformAccountCounts[name];
+  $: knownTagCount = $platformTagCounts[name];
+  $: hasTags = knownTagCount ? knownTagCount.tagCount > 0 || knownTagCount.taggedAccountCount > 0 : false;
   $: skeletonCount =
     knownAccountCount !== undefined
       ? Math.min(24, Math.max(0, knownAccountCount))
@@ -260,7 +264,12 @@
 
   // ---- Wrappers for extracted functions that return values ----
   async function loadTagDefsInternal(): Promise<void> {
-    tagDefs = await loadTagDefs(name);
+    tagDefsLoading = true;
+    try {
+      tagDefs = await loadTagDefs(name);
+    } finally {
+      tagDefsLoading = false;
+    }
   }
 
   async function refreshGameStatsMarkupInternal(acctIds: string[]): Promise<void> {
@@ -633,8 +642,8 @@
         on:click={onAccountsAreaClick}
         on:dragleave={onAccListDragLeave}
       >
-        {#if tagDefs.length > 0}
-          <TagFilterBar label={tagFilterBarLabel} onClick={onTagFilterBarClick} />
+        {#if hasTags || tagDefs.length > 0}
+          <TagFilterBar label={tagFilterBarLabel} onClick={onTagFilterBarClick} disabled={tagDefs.length === 0} />
         {/if}
         {#if accountsLoading && displayIds.length === 0 && skeletonCount > 0}
           <AccountListSkeleton count={skeletonCount} />

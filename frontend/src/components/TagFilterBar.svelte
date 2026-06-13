@@ -1,9 +1,10 @@
 <script lang="ts">
   export let label = "";
   export let onClick: (ev: Event) => void = () => {};
+  export let disabled = false;
 </script>
 
-<button type="button" class="tag-filter-bar" on:click={onClick}>
+<button type="button" class="tag-filter-bar" class:tag-filter-bar--disabled={disabled} on:click={disabled ? undefined : onClick} disabled={disabled}>
   <span class="tag-filter-bar__label">{label}</span>
   <span class="tag-filter-bar__icon" aria-hidden="true">
     <svg
@@ -36,6 +37,10 @@
     }
   }
 
+  .tag-filter-bar--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
   .tag-filter-bar__label {
     flex: 1;

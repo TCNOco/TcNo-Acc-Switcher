@@ -12,6 +12,7 @@ import (
 // RegisterStartupAccountCounts wires per-platform account totals for GetStartup skeleton hints.
 func RegisterStartupAccountCounts() {
 	platform.SetStartupAccountCountResolver(resolveStartupAccountCounts)
+	platform.SetStartupTagCountResolver(resolveStartupTagCounts)
 }
 
 func resolveStartupAccountCounts(platformNames []string, statsEnabled bool) map[string]int {
@@ -31,6 +32,23 @@ func resolveStartupAccountCounts(platformNames []string, statsEnabled bool) map[
 			out[name] = steam.CountSavedAccounts()
 		} else {
 			out[name] = basic.CountSavedAccounts(name)
+		}
+	}
+	return out
+}
+
+
+
+func resolveStartupTagCounts(platformNames []string, statsEnabled bool) map[string]platform.PlatformTagCountInfo {
+	out := make(map[string]platform.PlatformTagCountInfo, len(platformNames))
+	for _, name := range platformNames {
+		name = strings.TrimSpace(name)
+		if name == "" {
+			continue
+		}
+		out[name] = platform.PlatformTagCountInfo{
+			TagCount:           basic.CountTags(name),
+			TaggedAccountCount: basic.CountTaggedAccounts(name),
 		}
 	}
 	return out

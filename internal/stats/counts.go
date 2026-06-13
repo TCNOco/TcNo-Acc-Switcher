@@ -38,3 +38,21 @@ func LookupPlatformAccountCount(platformName string) (int, bool) {
 	}
 	return row.Accounts, true
 }
+
+// LookupPlatformTagCount returns stored tag & tagged-account counts when the platform exists in Statistics.json.
+func LookupPlatformTagCount(platformName string) (tags int, taggedAccounts int, ok bool) {
+	platformName = strings.TrimSpace(platformName)
+	if platformName == "" || platformName == "_Total" {
+		return 0, 0, false
+	}
+	mu.Lock()
+	defer mu.Unlock()
+	if err := ensureLoadedLocked(); err != nil {
+		return 0, 0, false
+	}
+	row, found := state.SwitcherStats[platformName]
+	if !found {
+		return 0, 0, false
+	}
+	return row.Tags, row.TaggedAccounts, true
+}

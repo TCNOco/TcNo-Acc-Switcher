@@ -23,6 +23,7 @@ type PlatformStartup struct {
 	DisabledPlatformNames []string       `json:"disabledPlatformNames"`
 	PlatformsFileMissing  bool           `json:"platformsFileMissing"`
 	PlatformAccountCounts map[string]int `json:"platformAccountCounts"`
+	PlatformTagCounts     map[string]PlatformTagCountInfo `json:"platformTagCounts"`
 	Language              string         `json:"language"`
 	Theme                 string         `json:"theme,omitempty"`
 	CliNavigateHint       string         `json:"cliNavigateHint,omitempty"`
@@ -42,6 +43,12 @@ type PlatformStartup struct {
 	ThemeAccentPreset     string `json:"themeAccentPreset"`
 	ThemeAccentCustom     string `json:"themeAccentCustom"`
 	AppVersion            string `json:"appVersion"`
+}
+
+// PlatformTagCountInfo is a per-platform tag statistic (used in startup skeleton hints).
+type PlatformTagCountInfo struct {
+	TagCount           int `json:"tagCount"`
+	TaggedAccountCount int `json:"taggedAccountCount"`
 }
 
 type PlatformService struct {
@@ -100,6 +107,7 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 				Theme:                 sanitizeThemeID(settings.Theme),
 				PlatformsFileMissing:  true,
 				PlatformAccountCounts: map[string]int{},
+				PlatformTagCounts:     map[string]PlatformTagCountInfo{},
 				CliNavigateHint:       ConsumeStartupNavigateHint(),
 				OfflineMode:           settings.OfflineMode,
 				ProtocolEnabled:       settings.ProtocolEnabled,
@@ -141,12 +149,14 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 	sortStringsFold(disList)
 	nav := ConsumeStartupNavigateHint()
 	accountCounts := resolveStartupAccountCounts(names, settings.StatsEnabled)
+	tagCounts := resolveStartupTagCounts(names, settings.StatsEnabled)
 	return PlatformStartup{
 		HomePlatformOrder:     home,
 		AllPlatformNames:      names,
 		DisabledPlatformNames: disList,
 		PlatformsFileMissing:  false,
 		PlatformAccountCounts: accountCounts,
+		PlatformTagCounts:     tagCounts,
 		Language:              settings.Language,
 		Theme:                 sanitizeThemeID(settings.Theme),
 		CliNavigateHint:       nav,

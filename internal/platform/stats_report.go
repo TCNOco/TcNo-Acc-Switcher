@@ -16,6 +16,8 @@ type StatsSwitcherRow struct {
 	GameShortcuts       int    `json:"gameShortcuts"`
 	GameShortcutsHotbar int    `json:"gameShortcutsHotbar"`
 	GamesLaunched       int    `json:"gamesLaunched"`
+	Tags                int    `json:"tags"`
+	TaggedAccounts      int    `json:"taggedAccounts"`
 	FirstActive         string `json:"firstActive"`
 	LastActive          string `json:"lastActive"`
 }
@@ -37,8 +39,10 @@ type StatsReport struct {
 	MostUsedPlatform   string            `json:"mostUsedPlatform"`
 	TotalTimeInAppSec  int               `json:"totalTimeInAppSec"`
 	TotalSwitches      int               `json:"totalSwitches"`
-	TotalGamesLaunched int               `json:"totalGamesLaunched"`
-	UniqueDaysSwitched int               `json:"uniqueDaysSwitched"`
+	TotalGamesLaunched  int               `json:"totalGamesLaunched"`
+	TotalTags           int               `json:"totalTags"`
+	TotalTaggedAccounts int               `json:"totalTaggedAccounts"`
+	UniqueDaysSwitched  int               `json:"uniqueDaysSwitched"`
 	UUID               string            `json:"uuid"`
 	LastUpload         string            `json:"lastUpload"`
 	Switchers          []StatsSwitcherRow `json:"switchers"`
@@ -63,6 +67,8 @@ func assembleStatsReport(data stats.ReportData, shareEnabled bool) StatsReport {
 			GameShortcuts:       r.GameShortcuts,
 			GameShortcutsHotbar: r.GameShortcutsHotbar,
 			GamesLaunched:       r.GamesLaunched,
+			Tags:                r.Tags,
+			TaggedAccounts:      r.TaggedAccounts,
 			FirstActive:         formatStatsDateTime(r.FirstActive),
 			LastActive:          formatStatsDateTime(r.LastActive),
 		})
@@ -84,8 +90,10 @@ func assembleStatsReport(data stats.ReportData, shareEnabled bool) StatsReport {
 		MostUsedPlatform:   data.MostUsedPlatform,
 		TotalTimeInAppSec:  data.TotalTimeInAppSec,
 		TotalSwitches:      data.TotalSwitches,
-		TotalGamesLaunched: data.TotalGamesLaunched,
-		UniqueDaysSwitched: data.UniqueDaysSwitched,
+		TotalGamesLaunched:  data.TotalGamesLaunched,
+		TotalTags:           data.TotalTags,
+		TotalTaggedAccounts: data.TotalTaggedAccounts,
+		UniqueDaysSwitched:  data.UniqueDaysSwitched,
 		UUID:               data.UUID,
 		LastUpload:         formatStatsDateTime(data.LastUpload),
 		Switchers:          sw,

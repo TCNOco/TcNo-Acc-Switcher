@@ -15,6 +15,8 @@ type ReportSwitcherEntry struct {
 	GameShortcuts        int
 	GameShortcutsHotbar  int
 	GamesLaunched        int
+	Tags                 int
+	TaggedAccounts       int
 	FirstActive          time.Time
 	LastActive           time.Time
 }
@@ -35,6 +37,8 @@ type ReportData struct {
 	TotalTimeInAppSec    int
 	TotalSwitches        int
 	TotalGamesLaunched   int
+	TotalTags            int
+	TotalTaggedAccounts  int
 	UniqueDaysSwitched   int
 	UUID                 string
 	LastUpload           time.Time
@@ -64,6 +68,8 @@ func GetReportData() (ReportData, error) {
 			GameShortcuts:        v.GameShortcuts,
 			GameShortcutsHotbar:  v.GameShortcutsHotbar,
 			GamesLaunched:        v.GamesLaunched,
+			Tags:                 v.Tags,
+			TaggedAccounts:       v.TaggedAccounts,
 			FirstActive:          v.FirstActive,
 			LastActive:           v.LastActive,
 		})
@@ -99,8 +105,10 @@ func GetReportData() (ReportData, error) {
 		MostUsedPlatform:   state.MostUsedPlatform,
 		TotalTimeInAppSec:  pageTot.TotalTime,
 		TotalSwitches:      tot.Switches,
-		TotalGamesLaunched: tot.GamesLaunched,
-		UniqueDaysSwitched: tot.UniqueDays,
+		TotalGamesLaunched:  tot.GamesLaunched,
+		TotalTags:           tot.Tags,
+		TotalTaggedAccounts: tot.TaggedAccounts,
+		UniqueDaysSwitched:  tot.UniqueDays,
 		UUID:               state.Uuid,
 		LastUpload:         state.LastUpload,
 		Switchers:          sw,
