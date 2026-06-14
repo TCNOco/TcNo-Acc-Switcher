@@ -154,7 +154,9 @@ func saveCurrentAfterKill(deps FlowDeps, accountName string, fc FlowContext) err
 		delete(idsFileData.AccountTags, existingUID)
 		if oldDestRoot, derr := accountCacheDir(fc.PlatformKey, existingName); derr == nil {
 			logFlow().Debug("remove superseded account cache", "path", oldDestRoot)
-			_ = os.RemoveAll(oldDestRoot)
+			if rerr := fsutil.RemoveAllWithRetry(oldDestRoot, 2*time.Second, os.RemoveAll); rerr != nil {
+				logFlow().Warn("remove superseded account cache", "path", oldDestRoot, "err", rerr)
+			}
 		}
 		_ = profileimage.DeleteCached(fc.PlatformKey, existingUID)
 	}
@@ -168,7 +170,9 @@ func saveCurrentAfterKill(deps FlowDeps, accountName string, fc FlowContext) err
 		return err
 	}
 	logFlow().Debug("clear account cache before save", "path", destRoot)
-	_ = os.RemoveAll(destRoot)
+	if err := fsutil.RemoveAllWithRetry(destRoot, 2*time.Second, os.RemoveAll); err != nil {
+		return fmt.Errorf("clear account cache %s: %w", destRoot, err)
+	}
 	if err := os.MkdirAll(destRoot, 0o755); err != nil {
 		return fmt.Errorf("mkdir %s: %w", destRoot, err)
 	}
