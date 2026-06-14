@@ -76,7 +76,7 @@ func (b *BasicService) RefreshAllBasicProfileImages(platformKey string) error {
 		}
 		_ = profileimage.DeleteCached(platformKey, uid)
 	}
-	go b.runProfileImageRefresh(platformKey)
+	b.runProfileImageRefreshBypassCooldown(platformKey)
 	return nil
 }
 
@@ -123,23 +123,20 @@ func (b *BasicService) RefreshSavedBasicProfileImages(platformKey string) error 
 }
 
 func (b *BasicService) runProfileImageRefresh(platformKey string) {
-	b.imgRefreshMu.Lock()
-	if b.imgRefreshRunning {
-		b.imgRefreshQueued = true
-		b.imgRefreshMu.Unlock()
-		basicProfileImgLog.Debug("profile image refresh coalesced: already running")
+	platformKey = strings.TrimSpace(platformKey)
+	if platformKey == "" {
 		return
 	}
-	b.imgRefreshRunning = true
-	b.imgRefreshMu.Unlock()
-
+	if b.imgRefreshCooldown.shouldSkip(platformKey) {
+		basicProfileImgLog.Debug("profile image refresh rate-limited", "platform", platformKey)
+		return
+	}
+	if !b.imgRefreshCoalescer.tryClaim(platformKey) {
+		basicProfileImgLog.Debug("profile image refresh coalesced: already running", "platform", platformKey)
+		return
+	}
 	defer func() {
-		var again bool
-		b.imgRefreshMu.Lock()
-		b.imgRefreshRunning = false
-		again = b.imgRefreshQueued
-		b.imgRefreshQueued = false
-		b.imgRefreshMu.Unlock()
+		again := b.imgRefreshCoalescer.finish(platformKey)
 		if again {
 			go b.runProfileImageRefresh(platformKey)
 		}
@@ -261,6 +258,7 @@ func (b *BasicService) runProfileImageRefresh(platformKey string) {
 		}()
 	}
 	wg.Wait()
+	b.imgRefreshCooldown.markFinished(platformKey)
 	basicProfileImgLog.Info("profile image refresh finished", slog.String("platform", platformKey))
 }
 
@@ -291,4 +289,12 @@ func (b *BasicService) queueMissingSavedProfileImages(platformKey string) {
 			queueProfileImageDownload(platformKey, uid, src.RemoteURL, 0)
 		}
 	}
+}
+
+// runProfileImageRefreshBypassCooldown clears the per-platform cooldown and
+// triggers a background refresh. Used by explicit user actions such as
+// "Refresh all profile images" so the user's request is not silently dropped.
+func (b *BasicService) runProfileImageRefreshBypassCooldown(platformKey string) {
+	b.imgRefreshCooldown.reset(platformKey)
+	go b.runProfileImageRefresh(platformKey)
 }

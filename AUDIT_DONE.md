@@ -117,3 +117,16 @@
 ---
 
 *Archive last updated: 2026-06-13*
+
+### 2.20 `StartBasicProfileImageRefresh` has no rate limit
+- **File:** `internal/basic/profilepic_gate.go` (new), `internal/basic/profilepic_refresh.go`, `internal/basic/service.go`
+- **Fix:**
+  - New `perPlatformCoalescer` (one running + at most one queued follow-up per platform, per-process; state in-memory only).
+  - New `perPlatformCooldown` (configurable per-platform minimum interval between refresh starts; `markFinished` at end of `wg.Wait()`, `reset` for explicit user actions).
+  - Replaced the previous per-service `imgRefreshMu/Running/Queued` with the new per-platform gates. The old coalescer was buggy for cross-platform rapid switches (Y's request got lost behind X's run).
+  - `RefreshAllBasicProfileImages` uses a new `runProfileImageRefreshBypassCooldown` helper that resets the cooldown before spawning, so explicit "Refresh" buttons always run.
+  - 30s default cooldown (`imgRefreshMinInterval`); state does not persist across launches.
+- **Tests:** Added to `internal/basic/profilepic_gate_test.go` (9 cases):
+  - `perPlatformCoalescer`: second-during-run queues, different platforms independent, only one follow-up queued (and platform free to claim again after), 32-goroutine concurrent-claim race (exactly one wins).
+  - `perPlatformCooldown`: within-window skipped, after-window allowed, different platforms independent, bypass allows, reset clears cooldown.
+- **Verification:** `go test -count=1 ./...` passes; `go build ./...` clean (only pre-existing iOS subpackage error).

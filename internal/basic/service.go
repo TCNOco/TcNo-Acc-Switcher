@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 	"sync"
+	"time"
 
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
@@ -19,13 +20,23 @@ type BasicService struct {
 	mu sync.Mutex
 	PS *platform.PlatformService
 
-	imgRefreshMu      sync.Mutex
-	imgRefreshRunning bool
-	imgRefreshQueued  bool
+	imgRefreshCooldown    *perPlatformCooldown
+	imgRefreshCoalescer   *perPlatformCoalescer
+	imgRefreshClock       func() time.Time
 }
 
+// imgRefreshMinInterval is the per-platform cooldown between background
+// profile-image refresh scans. State is in-memory only and resets on process
+// restart.
+const imgRefreshMinInterval = 30 * time.Second
+
 func NewBasicService(ps *platform.PlatformService) *BasicService {
-	return &BasicService{PS: ps}
+	return &BasicService{
+		PS:                  ps,
+		imgRefreshCooldown:  newPerPlatformCooldown(imgRefreshMinInterval, time.Now),
+		imgRefreshCoalescer: newPerPlatformCoalescer(),
+		imgRefreshClock:     time.Now,
+	}
 }
 
 func (b *BasicService) deps() FlowDeps {
