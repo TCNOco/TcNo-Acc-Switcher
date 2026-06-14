@@ -14,7 +14,7 @@ environment:
   GOSUMDB: sum.golang.org
   # go.mod requires 1.26.3; AppVeyor VS2022 image may only ship C:\go (1.25.x).
   GOTOOLCHAIN: go1.26.3+auto
-  WAILS3_VERSION: v3.0.0-alpha.96
+  WAILS3_VERSION: v3.0.0-alpha.102
   DATEVERSION: $(APPVEYOR_REPO_TAG_NAME)
   SIGNPATH_ORGANIZATION_ID: "a2a88c4e-72da-4d2c-925e-91f41aff9d77"
   SIGNPATH_PROJECT_SLUG: "TcNo-Acc-Switcher"
