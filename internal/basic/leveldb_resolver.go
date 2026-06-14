@@ -32,6 +32,7 @@ type levelDBHandle struct {
 	db         *leveldb.DB
 	lastAccess time.Time
 	removeTemp func() // optional: remove temp dir used when opening a snapshot copy
+	refCount   int    // active readers; closeIdle skips handles with refCount > 0
 }
 
 type levelDBStore struct {
@@ -198,13 +199,21 @@ func (s *levelDBStore) readValueFresh(dbPath, key, jsonPath string) (string, err
 }
 
 func (s *levelDBStore) readValue(dbPath, key, jsonPath string) (string, error) {
+	db, release, err := s.acquire(dbPath)
+	if err != nil {
+		return "", err
+	}
+	defer release()
+	return readLevelDBValue(dbPath, db, key, jsonPath)
+}
+
+// acquire returns a live *leveldb.DB for dbPath. The release function must be
+// called when the caller is done; the underlying handle is kept open until all
+// releases are observed so concurrent closeIdle cannot close a busy handle.
+func (s *levelDBStore) acquire(dbPath string) (*leveldb.DB, func(), error) {
 	dbPath = filepath.Clean(strings.TrimSpace(dbPath))
 	if dbPath == "" {
-		return "", fmt.Errorf("empty leveldb path")
-	}
-	key = strings.TrimSpace(key)
-	if key == "" {
-		return "", fmt.Errorf("empty leveldb key")
+		return nil, nil, fmt.Errorf("empty leveldb path")
 	}
 	s.mu.Lock()
 	h, ok := s.handles[dbPath]
@@ -213,7 +222,7 @@ func (s *levelDBStore) readValue(dbPath, key, jsonPath string) (string, error) {
 		db, cleanup, err := openReadOnlyLevelDBWithTempCopyFallback(dbPath)
 		if err != nil {
 			s.mu.Unlock()
-			return "", fmt.Errorf("open leveldb %s: %w", dbPath, err)
+			return nil, nil, fmt.Errorf("open leveldb %s: %w", dbPath, err)
 		}
 		h = &levelDBHandle{db: db, lastAccess: time.Now(), removeTemp: cleanup}
 		s.handles[dbPath] = h
@@ -221,10 +230,22 @@ func (s *levelDBStore) readValue(dbPath, key, jsonPath string) (string, error) {
 		slog.Debug("leveldb reuse db handle", "dbPath", dbPath, "source", "cache-hit")
 	}
 	h.lastAccess = time.Now()
-	db := h.db
+	h.refCount++
+	handle := h
 	s.mu.Unlock()
-
-	return readLevelDBValue(dbPath, db, key, jsonPath)
+	released := false
+	release := func() {
+		s.mu.Lock()
+		defer s.mu.Unlock()
+		if released {
+			return
+		}
+		released = true
+		if handle.refCount > 0 {
+			handle.refCount--
+		}
+	}
+	return handle.db, release, nil
 }
 
 func readLevelDBValue(dbPath string, db *leveldb.DB, key, jsonPath string) (string, error) {
@@ -351,6 +372,11 @@ func (s *levelDBStore) closeIdle(maxIdle time.Duration) {
 	for p, h := range s.handles {
 		if h == nil || h.db == nil {
 			delete(s.handles, p)
+			continue
+		}
+		if h.refCount > 0 {
+			// Active reader; skip. Handle re-evaluated on next tick.
+			slog.Debug("leveldb skip busy handle", "dbPath", p, "refCount", h.refCount)
 			continue
 		}
 		if h.lastAccess.Before(cutoff) {

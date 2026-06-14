@@ -2,6 +2,7 @@ package basic
 
 import (
 	"path/filepath"
+	"sync"
 	"testing"
 	"time"
 
@@ -98,6 +99,151 @@ func TestLevelDBStoreCloseIdle(t *testing.T) {
 	if len(s.handles) != 0 {
 		t.Fatalf("expected handles to close, got %d", len(s.handles))
 	}
+}
+
+func TestLevelDBStoreCloseIdle_SkipsBusyHandles(t *testing.T) {
+	dir := t.TempDir()
+	dbPath := filepath.Join(dir, "ldb")
+	db, err := leveldb.OpenFile(dbPath, nil)
+	if err != nil {
+		t.Fatalf("open leveldb: %v", err)
+	}
+	if err := db.Put([]byte("k"), []byte("v"), nil); err != nil {
+		t.Fatalf("put: %v", err)
+	}
+	_ = db.Close()
+
+	s := &levelDBStore{handles: map[string]*levelDBHandle{}}
+	acquired, release, err := s.acquire(dbPath)
+	if err != nil {
+		t.Fatalf("acquire: %v", err)
+	}
+	defer s.closeAll()
+
+	s.mu.Lock()
+	for _, h := range s.handles {
+		h.lastAccess = time.Now().Add(-10 * time.Minute)
+	}
+	s.mu.Unlock()
+
+	// First closeIdle: handle is busy, must remain in the map.
+	s.closeIdle(2 * time.Minute)
+	if len(s.handles) != 1 {
+		t.Fatalf("expected busy handle to remain after closeIdle, got %d entries", len(s.handles))
+	}
+	if _, err := acquired.Get([]byte("k"), nil); err != nil {
+		t.Fatalf("busy handle should still serve reads; got err: %v", err)
+	}
+
+	release()
+
+	// After release, refCount is 0 and lastAccess is still in the past.
+	// The next closeIdle must close the handle.
+	s.closeIdle(2 * time.Minute)
+	if len(s.handles) != 0 {
+		t.Fatalf("expected handle to close after release + closeIdle, got %d entries", len(s.handles))
+	}
+	if _, err := acquired.Get([]byte("k"), nil); err == nil {
+		t.Fatalf("expected ErrClosed after release+closeIdle, got nil")
+	}
+}
+
+func TestLevelDBStoreAcquire_ReleaseIdempotent(t *testing.T) {
+	dir := t.TempDir()
+	dbPath := filepath.Join(dir, "ldb")
+	db, err := leveldb.OpenFile(dbPath, nil)
+	if err != nil {
+		t.Fatalf("open leveldb: %v", err)
+	}
+	_ = db.Close()
+
+	s := &levelDBStore{handles: map[string]*levelDBHandle{}}
+	_, release, err := s.acquire(dbPath)
+	if err != nil {
+		t.Fatalf("acquire: %v", err)
+	}
+	release()
+	release() // must not panic
+	s.closeAll() // ensure TempDir cleanup succeeds
+}
+
+// TestLevelDBStoreCloseIdle_ConcurrentReaders stress-tests the refcount guard:
+// a flurry of readValue calls run alongside repeated closeIdle passes.
+// The fix must prevent ErrClosed from leaking back to a live reader.
+func TestLevelDBStoreCloseIdle_ConcurrentReaders(t *testing.T) {
+	dir := t.TempDir()
+	dbPath := filepath.Join(dir, "ldb")
+	db, err := leveldb.OpenFile(dbPath, nil)
+	if err != nil {
+		t.Fatalf("open leveldb: %v", err)
+	}
+	if err := db.Put([]byte("k"), []byte("v"), nil); err != nil {
+		t.Fatalf("put: %v", err)
+	}
+	_ = db.Close()
+
+	s := &levelDBStore{handles: map[string]*levelDBHandle{}}
+	defer s.closeAll()
+
+	const (
+		readers      = 8
+		iterations   = 50
+		closeWorkers = 2
+	)
+	stop := make(chan struct{})
+	var wg sync.WaitGroup
+
+	// Close-idle loop: force all entries to look idle, then close.
+	for w := 0; w < closeWorkers; w++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			for {
+				select {
+				case <-stop:
+					return
+				default:
+				}
+				s.mu.Lock()
+				for _, h := range s.handles {
+					h.lastAccess = time.Now().Add(-time.Hour)
+				}
+				s.mu.Unlock()
+				s.closeIdle(2 * time.Minute)
+			}
+		}()
+	}
+
+	// Readers that acquire/release the handle repeatedly.
+	for r := 0; r < readers; r++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			for i := 0; i < iterations; i++ {
+				select {
+				case <-stop:
+					return
+				default:
+				}
+				val, err := s.readValue(dbPath, "k", "")
+				if err != nil {
+					t.Errorf("readValue: %v", err)
+					return
+				}
+				if val != "v" {
+					t.Errorf("unexpected value: %q", val)
+					return
+				}
+			}
+		}()
+	}
+
+	go func() {
+		// Give readers a moment to start, then signal stop.
+		time.Sleep(50 * time.Millisecond)
+		close(stop)
+	}()
+	wg.Wait()
 }
 
 func TestReadUniqueID_LEVELDB(t *testing.T) {
