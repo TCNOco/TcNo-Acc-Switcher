@@ -44,6 +44,7 @@ type RunGUIParams struct {
 	EmbeddedAssets   fs.FS
 	TrayIconPNG      []byte
 	UpdaterPublicKey []byte
+	Done             chan struct{}
 }
 
 func ResolvedLogLevel(p cli.Parsed) slog.Level {
@@ -135,13 +136,20 @@ func RunGUI(params RunGUIParams) {
 	if toast := strings.TrimSpace(params.StartupToast); toast != "" {
 		EmitToast("success", toast, "", 6000)
 	}
+	var ipcStop func()
 	app.OnShutdown(func() {
 		params.DiscordRPC.Stop()
+		if ipcStop != nil {
+			ipcStop()
+		}
+		if params.Done != nil {
+			close(params.Done)
+		}
 	})
 
 	disp := params.Dispatch
 
-	_, err := ipc.StartGUIServer(func(argv []string) {
+	ipcStop, err := ipc.StartGUIServer(func(argv []string) {
 		idx, idxErr := cli.LoadPlatformIndex()
 		idxPtr := idx
 		if idxErr != nil {

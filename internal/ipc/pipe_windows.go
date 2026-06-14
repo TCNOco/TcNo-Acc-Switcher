@@ -6,10 +6,11 @@ import (
 	"bufio"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
 	"log"
 	"net"
-	"sync/atomic"
 	"time"
 
 	"TcNo-Acc-Switcher/internal/crashlog"
@@ -48,49 +49,76 @@ func ForwardArgs(argv []string) error {
 	return err
 }
 
-// StartGUIServer listens for forwarded argv until the process exits.
+// StartGUIServer listens for forwarded argv until stop is called.
 // Returns a function that can be called to stop the listener.
 func StartGUIServer(handler func(argv []string)) (func(), error) {
 	l, err := winio.ListenPipe(PipePath, nil)
 	if err != nil {
 		return nil, err
 	}
-	var closed int32
+	stopCh := make(chan struct{})
 	go func() {
 		defer crashlog.Capture()
 		for {
 			c, err := l.Accept()
 			if err != nil {
-				if atomic.LoadInt32(&closed) != 0 {
+				if isClosedPipeErr(err) {
 					return
+				}
+				select {
+				case <-stopCh:
+					return
+				default:
 				}
 				log.Printf("ipc accept: %v", err)
-				time.Sleep(100 * time.Millisecond)
 				continue
 			}
-			go func(conn net.Conn) {
-				defer crashlog.Capture()
-				defer conn.Close()
-				_ = conn.SetReadDeadline(time.Now().Add(5 * time.Second))
-				line, err := bufio.NewReader(conn).ReadBytes('\n')
-				if err != nil {
-					log.Printf("ipc read: %v", err)
-					return
-				}
-				var env ArgsEnvelope
-				if err := json.Unmarshal(line, &env); err != nil {
-					log.Printf("ipc json: %v", err)
-					return
-				}
-				if handler != nil {
-					handler(env.Argv)
-				}
-			}(c)
+			go handleConn(c, handler)
 		}
 	}()
 	stop := func() {
-		atomic.StoreInt32(&closed, 1)
+		select {
+		case <-stopCh:
+			return
+		default:
+			close(stopCh)
+		}
 		_ = l.Close()
 	}
 	return stop, nil
+}
+
+func handleConn(conn net.Conn, handler func(argv []string)) {
+	defer crashlog.Capture()
+	defer conn.Close()
+	_ = conn.SetReadDeadline(time.Now().Add(5 * time.Second))
+	line, err := bufio.NewReader(conn).ReadBytes('\n')
+	if err != nil {
+		log.Printf("ipc read: %v", err)
+		return
+	}
+	var env ArgsEnvelope
+	if err := json.Unmarshal(line, &env); err != nil {
+		log.Printf("ipc json: %v", err)
+		return
+	}
+	if handler != nil {
+		handler(env.Argv)
+	}
+}
+
+func isClosedPipeErr(err error) bool {
+	if err == nil {
+		return false
+	}
+	if errors.Is(err, net.ErrClosed) || errors.Is(err, io.EOF) {
+		return true
+	}
+	var opErr *net.OpError
+	if errors.As(err, &opErr) {
+		if errors.Is(opErr.Err, net.ErrClosed) || errors.Is(opErr.Err, io.EOF) {
+			return true
+		}
+	}
+	return false
 }
