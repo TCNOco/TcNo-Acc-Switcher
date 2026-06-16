@@ -180,6 +180,7 @@ func saveCurrentAfterKill(deps FlowDeps, accountName string, fc FlowContext) err
 	regDump := map[string]regDumpEntry{}
 
 	platform.EmitActionBarStatusI18n("Status_CopyingFiles")
+	logLoginFilesOrder("saveCurrentAfterKill", fc)
 	for liveKey, cacheRel := range fc.Descriptor.LoginFiles {
 		liveKey = strings.TrimSpace(liveKey)
 		if isREG(liveKey) {
@@ -340,14 +341,14 @@ func saveCurrentAfterKill(deps FlowDeps, accountName string, fc FlowContext) err
 		}
 		if st.IsDir() {
 			if err := copyDir(src, dst); err != nil {
-				return err
+				return copyOpErr(fc.PlatformKey, "save", src, err)
 			}
 		} else {
 			if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
 				return fmt.Errorf("mkdir %s: %w", filepath.Dir(dst), err)
 			}
 			if err := copyFile(src, dst); err != nil {
-				return err
+				return copyOpErr(fc.PlatformKey, "save", src, err)
 			}
 		}
 	}
@@ -524,6 +525,7 @@ func Login(deps FlowDeps, fc FlowContext, accountName string) error {
 		}
 	}
 
+	logLoginFilesOrder("Login", fc)
 	for liveKey, cacheRel := range fc.Descriptor.LoginFiles {
 		liveKey = strings.TrimSpace(liveKey)
 		if isREG(liveKey) {
@@ -635,14 +637,14 @@ func Login(deps FlowDeps, fc FlowContext, accountName string) error {
 		}
 		if st.IsDir() {
 			if err := copyDir(src, dst); err != nil {
-				return err
+				return copyOpErr(fc.PlatformKey, "restore", src, err)
 			}
 		} else {
 			if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
 				return fmt.Errorf("mkdir %s: %w", filepath.Dir(dst), err)
 			}
 			if err := copyFile(src, dst); err != nil {
-				return err
+				return copyOpErr(fc.PlatformKey, "restore", src, err)
 			}
 		}
 	}
@@ -712,7 +714,9 @@ func ClearCurrentLogin(deps FlowDeps, fc FlowContext) error {
 				return err
 			}
 			logFlow().Debug("delete on session clear", "path", target)
-			_ = os.RemoveAll(target)
+			if rerr := fsutil.RemoveAllWithRetry(target, 2*time.Second, os.RemoveAll); rerr != nil {
+				logFlow().Warn("delete on session clear partial failure (target may be partially removed)", "path", target, "err", rerr)
+			}
 		}
 	}
 	return nil
@@ -738,7 +742,11 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 		strings.TrimSpace(cur) != "" &&
 		strings.EqualFold(strings.TrimSpace(cur), strings.TrimSpace(uniqueID)) &&
 		len(extraLaunchArgs) == 0 {
+		logFlow().Debug("swap short-circuit: already on requested account", "platform", platformKey, "uniqueID", uniqueID)
 		return nil
+	}
+	if curErr != nil {
+		logFlow().Warn("swap: current unique ID unreadable; will proceed without saving previous session", "platform", platformKey, "err", curErr)
 	}
 
 	if err := killPlatformExes(deps, fc); err != nil {

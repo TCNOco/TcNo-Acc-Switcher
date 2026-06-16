@@ -4,6 +4,7 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"TcNo-Acc-Switcher/internal/platform"
@@ -12,6 +13,18 @@ import (
 
 func logFlow() *slog.Logger {
 	return slog.Default().With("component", "basic-flow")
+}
+
+// logLoginFilesOrder emits the iteration order of LoginFiles for the given
+// caller. Used to diagnose non-deterministic restore/save order across runs.
+func logLoginFilesOrder(caller string, fc FlowContext) {
+	keys := make([]string, 0, len(fc.Descriptor.LoginFiles))
+	for k := range fc.Descriptor.LoginFiles {
+		keys = append(keys, k)
+	}
+	sorted := append([]string(nil), keys...)
+	sort.Strings(sorted)
+	logFlow().Debug("LoginFiles iteration order", "caller", caller, "iterated", keys, "sorted", sorted)
 }
 
 func finishActionBarStatus(err *error) {
