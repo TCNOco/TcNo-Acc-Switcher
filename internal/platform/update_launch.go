@@ -5,6 +5,7 @@ import (
 	"errors"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
@@ -15,14 +16,18 @@ import (
 	"TcNo-Acc-Switcher/internal/updatecheck"
 )
 
-var launchCheckOnce sync.Once
+var (
+	launchCheckOnce       sync.Once
+	updaterLastErrorStage atomic.Value // updater.Stage
+)
 
 const (
 	AppUpdateAvailableEvent = "app-update-available"
 	UpdateCheckFailedEvent  = "update-check-failed"
 
-	wailsUpdateCheckTimeout = 60 * time.Second
-	apiUpdateCheckTimeout   = 15 * time.Second
+	wailsUpdateCheckTimeout   = 60 * time.Second
+	apiUpdateCheckTimeout     = 15 * time.Second
+	periodicUpdateCheckPeriod = 6 * time.Hour
 )
 
 type UpdateAvailablePayload struct {
@@ -100,9 +105,9 @@ func (*PlatformService) CheckForUpdatesAndInstall() {
 	}()
 }
 
-// EnableAutoRestartAfterUpdate applies a staged update as soon as the Wails updater
-// reaches the ready state. CheckAndInstall only downloads and stages; Restart swaps
-// the binary and relaunches (see https://v3.wails.io/guides/updater/).
+// EnableAutoRestartAfterUpdate wires Wails updater behaviour after Init:
+// auto-restart when staged, retry after check-stage errors, and silent periodic
+// polling (Wails CheckInterval opens the update window on every failure).
 func EnableAutoRestartAfterUpdate(app *application.App) {
 	if app == nil {
 		return
@@ -115,6 +120,94 @@ func EnableAutoRestartAfterUpdate(app *application.App) {
 			}
 		}()
 	})
+	app.Event.On(updater.EventError, func(e *application.CustomEvent) {
+		if info, ok := e.Data.(updater.ErrorInfo); ok {
+			updaterLastErrorStage.Store(info.Stage)
+		}
+	})
+	// Wails' built-in "Try Again" emits user:install, which only re-downloads.
+	// After a check failure there is no pending release, so retry the full flow.
+	app.Event.On(updater.EventUserInstall, func(*application.CustomEvent) {
+		if app.Updater.State() != updater.StateError {
+			return
+		}
+		stage, _ := updaterLastErrorStage.Load().(updater.Stage)
+		if stage != updater.StageCheck {
+			return
+		}
+		if err := app.Updater.CheckAndInstall(context.Background()); err != nil {
+			app.Logger.Warn("update: retry check", "error", err)
+		}
+	})
+	go runPeriodicSilentUpdateCheck(app)
+}
+
+func runPeriodicSilentUpdateCheck(app *application.App) {
+	defer crashlog.Capture()
+	ticker := time.NewTicker(periodicUpdateCheckPeriod)
+	defer ticker.Stop()
+	for range ticker.C {
+		runSilentUpdateCheck(app)
+	}
+}
+
+func runSilentUpdateCheck(app *application.App) {
+	if app == nil || appclient.IsOfflineMode() {
+		return
+	}
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil || s.OfflineMode {
+		return
+	}
+
+	const maxAttempts = 3
+	retryDelays := []time.Duration{0, 30 * time.Second, 2 * time.Minute}
+	var lastErr error
+
+	for attempt := 0; attempt < maxAttempts; attempt++ {
+		if attempt > 0 {
+			time.Sleep(retryDelays[attempt])
+		}
+		ctx, cancel := context.WithTimeout(context.Background(), wailsUpdateCheckTimeout)
+		rel, err := app.Updater.Check(ctx)
+		cancel()
+		if err == nil {
+			if rel != nil {
+				if installErr := app.Updater.CheckAndInstall(context.Background()); installErr != nil {
+					app.Logger.Warn("update: periodic install", "error", installErr)
+				}
+			}
+			return
+		}
+		lastErr = err
+		if !isTransientNetworkError(err) {
+			break
+		}
+		if attempt+1 < maxAttempts {
+			app.Logger.Debug("update: periodic check retry", "attempt", attempt+1, "error", err)
+		}
+	}
+	if lastErr != nil && !errors.Is(lastErr, updater.ErrNotConfigured) {
+		app.Logger.Warn("update: periodic check failed", "error", lastErr)
+	}
+}
+
+func isTransientNetworkError(err error) bool {
+	if err == nil {
+		return false
+	}
+	msg := strings.ToLower(err.Error())
+	return strings.Contains(msg, "no such host") ||
+		strings.Contains(msg, "connection refused") ||
+		strings.Contains(msg, "connection reset") ||
+		strings.Contains(msg, "network is unreachable") ||
+		strings.Contains(msg, "i/o timeout") ||
+		strings.Contains(msg, "timeout") ||
+		strings.Contains(msg, "temporary failure in name resolution")
 }
 
 func wailsReleaseMessage(rel *updater.Release) string {

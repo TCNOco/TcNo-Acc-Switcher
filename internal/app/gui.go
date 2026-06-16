@@ -119,7 +119,6 @@ func RunGUI(params RunGUIParams) {
 				CurrentVersion: currentVersion,
 				Providers:      []updater.Provider{gh},
 				PublicKey:      params.UpdaterPublicKey,
-				CheckInterval:  6 * time.Hour,
 				Window:         updaterWindow,
 			}); err != nil {
 				app.Logger.Error("updater: init", "error", err)
