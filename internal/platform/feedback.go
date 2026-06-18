@@ -22,7 +22,7 @@ func (p *PlatformService) SubmitStabilityRating(platform string, working bool) e
 
 // SubmitFeedback sends a switch issue or feature suggestion to the API.
 // kind must be "switch_issue" or "feature_suggestion".
-func (p *PlatformService) SubmitFeedback(kind, platform, text string) error {
+func (p *PlatformService) SubmitFeedback(kind, platform, text string, attachLog bool) error {
 	if appclient.IsOfflineMode() {
 		return appclient.ErrOfflineMode
 	}
@@ -31,5 +31,5 @@ func (p *PlatformService) SubmitFeedback(kind, platform, text string) error {
 	if kind == "" || text == "" {
 		return nil
 	}
-	return stability.SubmitFeedback(kind, strings.TrimSpace(platform), text)
+	return stability.SubmitFeedback(kind, strings.TrimSpace(platform), text, attachLog)
 }

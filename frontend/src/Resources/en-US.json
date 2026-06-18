@@ -398,7 +398,7 @@
   "Modal_LocatePlatformFolder": "Select {platform} folder",
   "Modal_ConfirmAction": "Confirm action",
   "Modal_CrashReport_Title": "Crash detected",
-  "Modal_CrashReport_Body": "Looks like we crashed!\nWould you like to submit your crash log to help debug and fix issues?\n\nNote: This report may include usernames, account IDs and other information you have entered, or the program has collected.",
+  "Modal_CrashReport_Body": "Looks like we crashed!\nWould you like to submit your crash log to help debug and fix issues?\n\nA redacted session action log (file and registry operations) is included automatically. Usernames, IDs, and similar details are removed from the log as best we can before sending.",
   "Modal_AddNew": "Please enter a name for the {platform} account you're logged into.",
   "Modal_AddCurrentAccount": "Add current {platform} account",
   "Modal_SetImageHeader": "Set profile image",
@@ -611,6 +611,8 @@
   "Feedback_Suggestion_Title": "Suggest a feature or change",
   "Feedback_Suggestion_Body": "Enter an idea, change or fix in detail:",
   "Feedback_Submit": "Submit",
+  "Feedback_AttachLog": "Send log",
+  "Feedback_AttachLog_Hint": "Usernames, IDs, and similar details are removed from the log as best we can before sending.",
   "Feedback_DiscordLink": "Join the community Discord",
   "Toast_FeedbackThanks": "Thanks for your feedback.",
   "Toast_FeedbackSubmitFailed": "Could not submit feedback."

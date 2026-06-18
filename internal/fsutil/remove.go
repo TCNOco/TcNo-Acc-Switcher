@@ -4,6 +4,8 @@ import (
 	"errors"
 	"os"
 	"time"
+
+	"TcNo-Acc-Switcher/internal/actionlog"
 )
 
 // RemoveAllWithRetry calls os.RemoveAll with bounded exponential-backoff
@@ -26,6 +28,7 @@ func RemoveAllWithRetry(path string, total time.Duration, remove func(string) er
 	var lastErr error
 	for {
 		if err := remove(path); err == nil {
+			actionlog.Record("file:delete", path, "", nil)
 			return nil
 		} else {
 			lastErr = err
@@ -38,5 +41,6 @@ func RemoveAllWithRetry(path string, total time.Duration, remove func(string) er
 			backoff *= 2
 		}
 	}
+	actionlog.Record("file:delete", path, "", lastErr)
 	return lastErr
 }

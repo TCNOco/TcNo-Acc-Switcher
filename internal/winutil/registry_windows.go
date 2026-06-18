@@ -10,6 +10,8 @@ import (
 	"strconv"
 	"strings"
 
+	"TcNo-Acc-Switcher/internal/actionlog"
+
 	"golang.org/x/sys/windows/registry"
 )
 
@@ -19,15 +21,19 @@ import (
 func RegistryRead(encoded string) (any, uint32, error) {
 	k, sub, val, _, err := parseRegistryPath(encoded)
 	if err != nil {
+		actionlog.Record("registry:read", encoded, "", err)
 		return nil, 0, err
 	}
 	key, err := registry.OpenKey(k, sub, registry.QUERY_VALUE)
 	if err != nil {
+		actionlog.Record("registry:read", encoded, "", err)
 		return nil, 0, err
 	}
 	defer key.Close()
 
-	return readRegistryValueAt(key, val)
+	v, typ, err := readRegistryValueAt(key, val)
+	actionlog.Record("registry:read", encoded, formatRegistryValue(v), err)
+	return v, typ, err
 }
 
 // RegistryWrite writes a registry value. value may be string, uint32, []byte, or int.
@@ -43,10 +49,12 @@ func RegistryWrite(encoded string, value any) error {
 func RegistryWriteHint(encoded string, value any, savedType uint32) error {
 	k, sub, val, pathTyp, err := parseRegistryPath(encoded)
 	if err != nil {
+		actionlog.Record("registry:write", encoded, formatRegistryValue(value), err)
 		return err
 	}
 	key, _, err := registry.CreateKey(k, sub, registry.SET_VALUE)
 	if err != nil {
+		actionlog.Record("registry:write", encoded, formatRegistryValue(value), err)
 		return err
 	}
 	defer key.Close()
@@ -55,10 +63,14 @@ func RegistryWriteHint(encoded string, value any, savedType uint32) error {
 	if eff == 0 {
 		eff = savedType
 	}
+	var opErr error
 	if eff == 0 {
-		return registryWriteInferred(key, val, value)
+		opErr = registryWriteInferred(key, val, value)
+	} else {
+		opErr = registryWriteTyped(key, val, eff, value)
 	}
-	return registryWriteTyped(key, val, eff, value)
+	actionlog.Record("registry:write", encoded, formatRegistryValue(value), opErr)
+	return opErr
 }
 
 func registryWriteInferred(key registry.Key, val string, value any) error {
@@ -238,14 +250,43 @@ func deleteRegistryValueIfPresent(key registry.Key, val string) error {
 func RegistryDelete(encoded string) error {
 	k, sub, val, _, err := parseRegistryPath(encoded)
 	if err != nil {
+		actionlog.Record("registry:delete", encoded, "", err)
 		return err
 	}
 	key, err := registry.OpenKey(k, sub, registry.SET_VALUE|registry.WRITE)
 	if err != nil {
+		actionlog.Record("registry:delete", encoded, "", err)
 		return err
 	}
 	defer key.Close()
-	return key.DeleteValue(val)
+	err = key.DeleteValue(val)
+	actionlog.Record("registry:delete", encoded, "", err)
+	return err
+}
+
+func formatRegistryValue(v any) string {
+	if v == nil {
+		return ""
+	}
+	switch x := v.(type) {
+	case string:
+		return x
+	case []byte:
+		if len(x) == 0 {
+			return ""
+		}
+		return "(hex) " + hex.EncodeToString(x)
+	case uint32:
+		return strconv.FormatUint(uint64(x), 10)
+	case uint64:
+		return strconv.FormatUint(x, 10)
+	case int:
+		return strconv.Itoa(x)
+	case int64:
+		return strconv.FormatInt(x, 10)
+	default:
+		return fmt.Sprint(x)
+	}
 }
 
 // RegistryDeleteIsNotExist reports whether err indicates the registry value (or key) did not exist.

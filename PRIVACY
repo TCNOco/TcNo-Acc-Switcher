@@ -37,19 +37,15 @@ The TcNo Account Switcher functions through a Client (web client such as CEF or 
 There are a few types of logs that this program creates.
 
 ### Crash Logs
-Crash logs contain useful information for debugging, and improving the program. These crash logs contain: 
-  - The crash information including information like a stack trace.
-  - Possibly usernames, and account IDs as well as other data that the program may have been provided or has collected. 
+Crash logs contain useful information for debugging and improving the program. When submitted (manually or via auto-submit in Settings), a crash report includes:
+  - Stack trace, error message, app version, and OS information.
+  - A pruned session action log (file and registry operations from the current run).
+  - Account usernames, IDs, and similar details are removed from uploaded logs as best as possible before they leave your PC.
 
-### Log files
-- The log file. This log file contains every action in the program that run. Each function used logs the time it was accessed, actions like moving files and registry items, and more. There is no personally identifiable information included here where possible. For example, this file includes information like:
-  - What platform was being switched when before a crash, but not usernames of specific accounts.
-  - What files were deleted (or failed to be deleted) by the program
-  - While not intended, things like usernames can enter this file through being the cause of a crash (malformed text), included in filenames by platforms (such as a file named `userid.ext`) and so on
+### Session action log (in memory)
+During each run the program keeps an in-memory log of file and registry operations (successes and failures). This log is not written to disk. It may be included when you submit a crash report, or when you report a switch issue and leave **Send log** checked in the feedback form.
 
-For this reason crash logs and log files are not automatically submitted.
-
-When creating issues on GitHub, or contacting me through other places you may include these files AFTER you have double-checked for personal information. Redact as much as you see fit. These files will not be kept for longer than needed. If I don't control where they are hosted, for example Discord, it is up to you to remove them from those hosting platforms.
+This log is processed before submitting to replace usernames, account IDs and more with anonymous placeholders. Even with our best efforts some account names and data may slip through this filter.
 
 ## Statistics
 This is an optional feature. The user can have `Collect Statistics` enabled to view their own usage habits, but the user must also have `Share stats anonymously` enabled as well for submission to our servers. Change your choice in Settings > Statistics & Sharing at any time. Your statistics can also be viewed with the button next to this option.

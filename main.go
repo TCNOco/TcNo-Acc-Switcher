@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"TcNo-Acc-Switcher/internal/actionlog"
 	"TcNo-Acc-Switcher/internal/app"
 	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/basic"
@@ -101,6 +102,7 @@ func main() {
 
 	lvl := app.ResolvedLogLevel(parsed)
 	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: lvl})))
+	actionlog.Init()
 
 	startupSettings, _ := loadStartupSettings()
 	syncOfflineModeFromSettings(startupSettings)

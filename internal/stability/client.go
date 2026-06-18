@@ -11,6 +11,7 @@ import (
 	"TcNo-Acc-Switcher/internal/api"
 	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/crashlog"
+	"TcNo-Acc-Switcher/internal/logsanitize"
 )
 
 type ratePayload struct {
@@ -25,6 +26,7 @@ type feedbackPayload struct {
 	Platform string `json:"platform,omitempty"`
 	Text     string `json:"text"`
 	Version  string `json:"version"`
+	Log      string `json:"log,omitempty"`
 }
 
 func postJSON(url string, payload any) error {
@@ -74,7 +76,7 @@ func SubmitRating(platform string, working bool) {
 }
 
 // SubmitFeedback sends issue or suggestion text to the API.
-func SubmitFeedback(kind, platform, text string) error {
+func SubmitFeedback(kind, platform, text string, attachLog bool) error {
 	if appclient.IsOfflineMode() {
 		return appclient.ErrOfflineMode
 	}
@@ -82,11 +84,15 @@ func SubmitFeedback(kind, platform, text string) error {
 	if err != nil {
 		return err
 	}
-	return postJSON(api.FeedbackURL(), feedbackPayload{
+	payload := feedbackPayload{
 		UUID:     clientUUID,
 		Kind:     kind,
 		Platform: platform,
 		Text:     text,
 		Version:  buildinfo.Version(),
-	})
+	}
+	if attachLog && kind == "switch_issue" {
+		payload.Log = logsanitize.ActionLogForUpload()
+	}
+	return postJSON(api.FeedbackURL(), payload)
 }

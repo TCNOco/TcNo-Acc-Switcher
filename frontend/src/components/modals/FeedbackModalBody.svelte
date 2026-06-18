@@ -19,6 +19,7 @@
   const dispatch = createEventDispatcher<{ resolve: string | null }>();
 
   let value = "";
+  let sendLog = true;
   let feedbackEl: HTMLTextAreaElement | undefined;
 
   $: submitDisabled = value.trim().length === 0;
@@ -28,7 +29,7 @@
     const text = value.trim();
     const kind = mode === "issue" ? "switch_issue" : "feature_suggestion";
     try {
-      await PlatformService.SubmitFeedback(kind, platform, text);
+      await PlatformService.SubmitFeedback(kind, platform, text, mode === "issue" && sendLog);
       dispatch("resolve", text);
       pushToast({
         type: "success",
@@ -89,6 +90,13 @@
   <div id="feedback-char-count" class="modal-feedback-char-count" aria-live="polite">
     {value.length} / {FEEDBACK_MAX_LENGTH}
   </div>
+  {#if mode === "issue" && !$offlineMode}
+    <label class="modal-feedback-attach-log">
+      <input type="checkbox" bind:checked={sendLog} />
+      <span>{$t("Feedback_AttachLog")}</span>
+    </label>
+    <p class="modal-feedback-attach-log-hint">{$t("Feedback_AttachLog_Hint")}</p>
+  {/if}
   <div class="modal-inline-actions settingsCol inputAndButton">
     <span class="modal-actions-spacer"></span>
     <button type="button" class="btnicontext" on:click={cancel}>
@@ -122,6 +130,23 @@
     font-size: 0.85rem;
     color: var(--modal-muted-fg, var(--blackTernary, #a7abbe));
     text-align: right;
+  }
+
+  .modal-feedback-attach-log {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.75rem 0 0.25rem;
+    cursor: pointer;
+    color: var(--modal-body-fg, var(--whiteSecondary, #fff));
+    font-size: 0.95rem;
+  }
+
+  .modal-feedback-attach-log-hint {
+    margin: 0 0 0.5rem;
+    font-size: 0.85rem;
+    color: var(--modal-muted-fg, var(--blackTernary, #a7abbe));
+    line-height: 1.35;
   }
 
   .modal-feedback-footer {

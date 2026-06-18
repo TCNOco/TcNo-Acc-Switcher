@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"TcNo-Acc-Switcher/internal/actionlog"
 )
 
 func isSharingViolationErr(err error) bool {
@@ -28,6 +30,7 @@ func copyFile(src, dst string) error {
 		} else {
 			logFlow().Debug("copyFile: open source failed", "src", src, "dst", dst, "err", err)
 		}
+		actionlog.Record("file:copy", src, dst, err)
 		return fmt.Errorf("open %s: %w", src, err)
 	}
 	defer in.Close()
@@ -50,9 +53,11 @@ func copyFile(src, dst string) error {
 		} else {
 			logFlow().Debug("copyFile: io.Copy failed", "src", src, "dst", dst, "err", err)
 		}
+		actionlog.Record("file:copy", src, dst, err)
 		return fmt.Errorf("copy %s -> %s: %w", src, dst, err)
 	}
 	logFlow().Debug("copied file", "src", src, "dst", dst)
+	actionlog.Record("file:copy", src, dst, nil)
 	return nil
 }
 

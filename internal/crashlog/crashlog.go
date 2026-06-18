@@ -16,6 +16,7 @@ import (
 	"TcNo-Acc-Switcher/internal/api"
 	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/fsutil"
+	"TcNo-Acc-Switcher/internal/logsanitize"
 	"TcNo-Acc-Switcher/internal/paths"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
@@ -31,8 +32,10 @@ type CrashDump struct {
 	Error     string `json:"error"`
 	Version   string `json:"version"`
 	OS        string `json:"os"`
+	OSInfo    string `json:"osInfo"`
 	Timestamp string `json:"timestamp"`
 	UUID      string `json:"uuid"`
+	Log       string `json:"log"`
 }
 
 func exeDir() (string, error) {
@@ -128,8 +131,10 @@ func captureAndWrite(r any) {
 		Error:     fmt.Sprint(r),
 		Version:   buildinfo.Version(),
 		OS:        runtime.GOOS + "/" + runtime.GOARCH,
+		OSInfo:    osDisplayString(),
 		Timestamp: time.Now().UTC().Format(time.RFC3339),
 		UUID:      readStatsUUID(),
+		Log:       logsanitize.ActionLogForUpload(),
 	}
 
 	if err := writeCrashDump(dump); err != nil {

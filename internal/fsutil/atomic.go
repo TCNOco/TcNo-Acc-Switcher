@@ -3,6 +3,8 @@ package fsutil
 import (
 	"os"
 	"path/filepath"
+
+	"TcNo-Acc-Switcher/internal/actionlog"
 )
 
 // WriteFileAtomic writes data to path using a temp file in the same directory.
@@ -39,7 +41,9 @@ func WriteFileAtomic(path string, data []byte, perm os.FileMode) error {
 	}
 	if err := os.Rename(tmpPath, path); err != nil {
 		cleanup()
+		actionlog.Record("file:write", path, "", err)
 		return err
 	}
+	actionlog.Record("file:write", path, "", nil)
 	return nil
 }
