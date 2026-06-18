@@ -25,6 +25,9 @@ type Manager struct {
 	initialized bool
 	startedAt   time.Time
 	stopCh      chan struct{}
+
+	lastDetails string
+	lastState   string
 }
 
 func logRPC() *slog.Logger {
@@ -67,7 +70,6 @@ func (m *Manager) Stop() {
 }
 
 func (m *Manager) RefreshAsync() {
-	logRPC().Debug("refresh requested async")
 	go m.Refresh()
 }
 
@@ -75,18 +77,11 @@ func (m *Manager) Refresh() {
 	m.refreshMu.Lock()
 	defer m.refreshMu.Unlock()
 
-	logRPC().Debug("refresh begin")
 	settings, err := loadCurrentSettings()
 	if err != nil {
 		logRPC().Warn("refresh skipped: failed to load settings", "err", err)
 		return
 	}
-	logRPC().Debug("settings loaded",
-		"offlineMode", settings.OfflineMode,
-		"discordRpc", settings.DiscordRpc,
-		"discordRpcShare", settings.DiscordRpcShare,
-		"statsEnabled", settings.StatsEnabled,
-	)
 	if settings.OfflineMode || !settings.DiscordRpc {
 		logRPC().Info("refresh gate: rpc disabled", "offlineMode", settings.OfflineMode, "discordRpc", settings.DiscordRpc)
 		m.shutdown()
@@ -111,24 +106,31 @@ func (m *Manager) Refresh() {
 	if settings.StatsEnabled && settings.DiscordRpcShare {
 		if report, err := stats.GetReportData(); err == nil {
 			activity.State = fmt.Sprintf("Accounts Switched: %d", report.TotalSwitches)
-			logRPC().Debug("share state added", "totalSwitches", report.TotalSwitches)
 		} else {
 			logRPC().Warn("stats unavailable for rpc share state", "err", err)
 		}
+	}
+
+	if activity.Details == m.lastDetails && activity.State == m.lastState {
+		if err := richgo.SetActivity(activity); err != nil {
+			logRPC().Warn("set activity failed", "err", err)
+		}
+		return
 	}
 
 	if err := richgo.SetActivity(activity); err != nil {
 		logRPC().Warn("set activity failed", "err", err)
 		return
 	}
-	logRPC().Info("activity updated", "details", activity.Details, "state", activity.State)
+	m.lastDetails = activity.Details
+	m.lastState = activity.State
+	logRPC().Debug("activity updated", "details", activity.Details, "state", activity.State)
 }
 
 func (m *Manager) ensureStarted() error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	if m.initialized {
-		logRPC().Debug("rpc client already initialized")
 		return nil
 	}
 	if err := richgo.Login(clientID); err != nil {
@@ -145,9 +147,10 @@ func (m *Manager) shutdown() {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	if !m.initialized {
-		logRPC().Debug("shutdown skipped: rpc client not initialized")
 		return
 	}
+	m.lastDetails = ""
+	m.lastState = ""
 	if err := clearPresenceDiscord(); err != nil {
 		logRPC().Warn("clear presence before logout failed", "err", err)
 	} else {
@@ -165,10 +168,8 @@ func (m *Manager) runPeriodic(stopCh <-chan struct{}) {
 	for {
 		select {
 		case <-stopCh:
-			logRPC().Debug("periodic loop stopped")
 			return
 		case <-ticker.C:
-			logRPC().Debug("periodic refresh tick")
 			m.Refresh()
 		}
 	}
