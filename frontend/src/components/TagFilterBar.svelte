@@ -26,7 +26,7 @@
     width: 100%;
     margin: 0 0 0.5rem;
     padding: 0.4rem 0.5rem;
-    border: 1px solid var(--overlay-white-12);
+    border: 0px solid transparent;
     background: var(--backdrop-dark-20);
     color: inherit;
     font: inherit;
