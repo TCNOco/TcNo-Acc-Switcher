@@ -1,0 +1,21 @@
+# This theme's name (Shows in-app, can be different to folder name)
+name: Ayu Light
+accent: "#FFAA33"
+
+accents:
+  - name: Accent
+    color: "#FFAA33"
+  - name: Cyan
+    color: "#22A4E6"
+  - name: Green
+    color: "#86B300"
+  - name: Orange
+    color: "#FA8D3E"
+  - name: Pink
+    color: "#F07171"
+  - name: Purple
+    color: "#A37ACC"
+  - name: Red
+    color: "#E65050"
+  - name: Yellow
+    color: "#F2AE49"

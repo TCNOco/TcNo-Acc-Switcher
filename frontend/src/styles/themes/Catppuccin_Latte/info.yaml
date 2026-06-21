@@ -1,0 +1,33 @@
+# This theme's name (Shows in-app, can be different to folder name)
+name: Catppuccin Latte
+accent: "#1E66F5"
+
+accents:
+  - name: Rosewater
+    color: "#DC8A78"
+  - name: Flamingo
+    color: "#DD7878"
+  - name: Pink
+    color: "#EA76CB"
+  - name: Mauve
+    color: "#8839EF"
+  - name: Red
+    color: "#D20F39"
+  - name: Maroon
+    color: "#E64553"
+  - name: Peach
+    color: "#FE640B"
+  - name: Yellow
+    color: "#DF8E1D"
+  - name: Green
+    color: "#40A02B"
+  - name: Teal
+    color: "#179299"
+  - name: Sky
+    color: "#04A5E5"
+  - name: Sapphire
+    color: "#209FB5"
+  - name: Blue
+    color: "#1E66F5"
+  - name: Lavender
+    color: "#7287FD"

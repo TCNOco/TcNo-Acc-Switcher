@@ -1,0 +1,19 @@
+# This theme's name (Shows in-app, can be different to folder name)
+name: Monokai
+accent: "#FCE566"
+
+accents:
+  - name: Yellow
+    color: "#FCE566"
+  - name: Cyan
+    color: "#66D9EF"
+  - name: Green
+    color: "#A6E22E"
+  - name: Orange
+    color: "#FD971F"
+  - name: Pink
+    color: "#F92672"
+  - name: Purple
+    color: "#AE81FF"
+  - name: Red
+    color: "#F92672"

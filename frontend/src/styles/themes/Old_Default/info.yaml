@@ -1,0 +1,19 @@
+# This theme's name (Shows in-app, can be different to folder name)
+name: Old Default
+accent: "#FFAA00"
+
+accents:
+  - name: Cyan
+    color: "#00A5F8"
+  - name: Green
+    color: "#7CBD6E"
+  - name: Orange
+    color: "#FFAA33"
+  - name: Pink
+    color: "#E86890"
+  - name: Purple
+    color: "#9B8FD9"
+  - name: Red
+    color: "#E85D5D"
+  - name: Yellow
+    color: "#FFE566"

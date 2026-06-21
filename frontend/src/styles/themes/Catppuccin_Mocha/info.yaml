@@ -1,0 +1,33 @@
+# This theme's name (Shows in-app, can be different to folder name)
+name: Catppuccin Mocha
+accent: "#89B4FA"
+
+accents:
+  - name: Rosewater
+    color: "#F5E0DC"
+  - name: Flamingo
+    color: "#F2CDCD"
+  - name: Pink
+    color: "#F5C2E7"
+  - name: Mauve
+    color: "#CBA6F7"
+  - name: Red
+    color: "#F38BA8"
+  - name: Maroon
+    color: "#EBA0AC"
+  - name: Peach
+    color: "#FAB387"
+  - name: Yellow
+    color: "#F9E2AF"
+  - name: Green
+    color: "#A6E3A1"
+  - name: Teal
+    color: "#94E2D5"
+  - name: Sky
+    color: "#89DCEB"
+  - name: Sapphire
+    color: "#74C7EC"
+  - name: Blue
+    color: "#89B4FA"
+  - name: Lavender
+    color: "#B4BEFE"

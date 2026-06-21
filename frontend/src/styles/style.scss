@@ -1,0 +1,100 @@
+@use "animations";
+
+@font-face {
+    font-family: "Montserrat";
+    font-style: normal;
+    font-weight: 100 900;
+    src: url("/Montserrat-VariableFont_wght.woff2") format("woff2");
+    font-display: swap;
+}
+
+:root {
+    font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 12px;
+    line-height: 24px;
+    font-weight: 400;
+    color-scheme: light dark;
+    color: var(--white);
+    background-color: var(--document-canvas-bg);
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+    width: 0.75rem;
+    background: var(--scrollbar-track-bg);
+}
+
+::-webkit-scrollbar-track {
+    background: var(--scrollbar-track-bg);
+    border-radius: 0.5rem;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--accent);
+    border-radius: 20px;
+}
+
+body {
+    margin: 0;
+    display: flex;
+}
+
+
+#app {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+}
+
+.main-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    background: unset;
+}
+
+.main-spacing {
+    padding-top: var(--main-padding, .75rem);
+    padding-right: var(--main-padding, .75rem);
+    padding-left: var(--main-padding, .75rem);
+}
+
+::selection {
+    color: var(--black);
+    background: var(--accent);
+}
+
+/* ---------------------------------------- */
+/*                ANIMATIONS                */
+/* ---------------------------------------- */
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(var(--accentInt), 70%);
+    }
+
+    70% {
+        transform: scale(1.02);
+        box-shadow: 0 0 0 10px rgba(var(--accentInt), 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(var(--accentInt), 0);
+    }
+}

@@ -1,0 +1,23 @@
+# This theme's name (Shows in-app, can be different to folder name)
+name: Nord
+accent: "#5E81AC"
+
+accents:
+  - name: Frost 0
+    color: "#8FBCBB"
+  - name: Frost 1
+    color: "#88C0D0"
+  - name: Frost 2
+    color: "#81A1C1"
+  - name: Frost 3
+    color: "#5E81AC"
+  - name: Aurora 0
+    color: "#BF616A"
+  - name: Aurora 1
+    color: "#D08770"
+  - name: Aurora 2
+    color: "#EBCB8B"
+  - name: Aurora 3
+    color: "#A3BE8C"
+  - name: Aurora 4
+    color: "#B48EAD"

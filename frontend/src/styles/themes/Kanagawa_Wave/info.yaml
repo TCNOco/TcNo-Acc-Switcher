@@ -1,0 +1,21 @@
+# This theme's name (Shows in-app, can be different to folder name)
+name: Kanagawa Wave
+accent: "#7E9CD8"
+
+accents:
+  - name: Accent
+    color: "#7E9CD8"
+  - name: Cyan
+    color: "#7AA89F"
+  - name: Green
+    color: "#98BB6C"
+  - name: Orange
+    color: "#FFA066"
+  - name: Pink
+    color: "#D27E99"
+  - name: Purple
+    color: "#957FB8"
+  - name: Red
+    color: "#E46876"
+  - name: Yellow
+    color: "#E6C384"

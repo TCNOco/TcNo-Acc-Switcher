@@ -1,0 +1,33 @@
+# This theme's name (Shows in-app, can be different to folder name)
+name: Catppuccin Frappe
+accent: "#8CAAEE"
+
+accents:
+  - name: Rosewater
+    color: "#F2D5CF"
+  - name: Flamingo
+    color: "#EEBEBE"
+  - name: Pink
+    color: "#F4B8E4"
+  - name: Mauve
+    color: "#CA9EE6"
+  - name: Red
+    color: "#E78284"
+  - name: Maroon
+    color: "#EA999C"
+  - name: Peach
+    color: "#EF9F76"
+  - name: Yellow
+    color: "#E5C890"
+  - name: Green
+    color: "#A6D189"
+  - name: Teal
+    color: "#81C8BE"
+  - name: Sky
+    color: "#99D1DB"
+  - name: Sapphire
+    color: "#85C1DC"
+  - name: Blue
+    color: "#8CAAEE"
+  - name: Lavender
+    color: "#BABBF1"

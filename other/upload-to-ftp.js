@@ -6,10 +6,73 @@ import axios from 'axios';
 import pLimit from 'p-limit';
 import { globby } from 'globby';
 
-
 const currentDir = process.cwd();
 console.log('Current Directory:', currentDir);
 
+/*
+ * ============================================================================
+ * TODO: Migrate to Cloudflare R2
+ * Currently disabled. Original BunnyCDN upload logic preserved below.
+ * ============================================================================
+ */
+
+// import { S3Client, PutObjectCommand, DeleteObjectCommand, ListObjectsV2Command } from '@aws-sdk/client-s3';
+
+// const r2 = new S3Client({
+//   region: 'auto',
+//   endpoint: process.env.R2_ENDPOINT,
+//   credentials: {
+//     accessKeyId: process.env.R2_ACCESS_KEY_ID,
+//     secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+//   },
+// });
+
+// const options = {
+//   bucket: 'tcno-acc-switcher',
+//   cleanDestination: true,
+//   maxConcurrentUploads: 10,
+// };
+
+// export const deleteFile = async (targetDirectory) => {
+//   console.log(`DELETE: ${targetDirectory}`);
+//   await r2.send(new DeleteObjectCommand({
+//     Bucket: options.bucket,
+//     Key: targetDirectory,
+//   }));
+// };
+
+// export const uploadFile = async (sourcePath, targetPath) => {
+//   console.log(`UPLOAD: ${targetPath}`);
+//   const fileContent = fs.createReadStream(sourcePath);
+//   await r2.send(new PutObjectCommand({
+//     Bucket: options.bucket,
+//     Key: targetPath,
+//     Body: fileContent,
+//     ContentType: 'application/octet-stream',
+//   }));
+// };
+
+// export const uploadDirectory = async (sourceDirectory, targetDirectory, options = {}) => {
+//   // ... Cloudflare R2 implementation ...
+// };
+
+// async function uploadFiles() {
+//   try {
+//     // await uploadDirectory("bin", "Projects/AccSwitcher/latest", options);
+//     // await uploadFile('bin/hashes.json', 'Projects/AccSwitcher/latest/hashes.json');
+//     console.log('Upload skipped - pending Cloudflare R2 migration.');
+//   } catch (error) {
+//     console.error('Error during upload:', error);
+//     process.exit(1);
+//   }
+// }
+
+// uploadFiles();
+
+/*
+ * ============================================================================
+ * ORIGINAL BUNNYCDN IMPLEMENTATION (DISABLED)
+ * ============================================================================
 
 // Configure options
 const options = {
@@ -107,3 +170,5 @@ async function uploadFiles() {
 }
 
 uploadFiles();
+
+*/

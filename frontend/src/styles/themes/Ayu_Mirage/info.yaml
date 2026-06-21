@@ -1,0 +1,21 @@
+# This theme's name (Shows in-app, can be different to folder name)
+name: Ayu Mirage
+accent: "#FFCC66"
+
+accents:
+  - name: Accent
+    color: "#FFCC66"
+  - name: Cyan
+    color: "#73D0FF"
+  - name: Green
+    color: "#D5FF80"
+  - name: Orange
+    color: "#FFAD66"
+  - name: Pink
+    color: "#F28779"
+  - name: Purple
+    color: "#DFBFFF"
+  - name: Red
+    color: "#FF6666"
+  - name: Yellow
+    color: "#FFD173"

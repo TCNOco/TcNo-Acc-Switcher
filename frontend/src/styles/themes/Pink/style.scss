@@ -1,0 +1,509 @@
+/*
+    Pink theme — light mode
+    Main surfaces from palette; chrome strips/footer: deep rose; dark text on light.
+*/
+
+@use "../overlay_surfaces" as overlay;
+
+:root {
+    /* ── Palette primitives (single hex source per stop) ── */
+    --pink-shell: #f5bedb;
+    --pink-shell-fg: #736a6d;
+    --pink-shell-hover: #f1dde9;
+    --pink-field: #f5f5f5;
+    --pink-field-grad-from: #f5f0f3;
+    --pink-panel: #f5f0f3;
+    --pink-input: #f2f8fc;
+    --pink-muted: #f1dde9;
+    --pink-tile: #ede8fc;
+    --pink-track: #d6d1e8;
+    --pink-thumb: var(--pink-magenta);
+    --pink-magenta: #c2185b;
+    --pink-line: #e29ab8;
+    --pink-btn: #f5f0f3;
+    --pink-btn-hover: #f1dde9;
+    --pink-btn-active: #ede8fc;
+    --pink-ink: hsl(337, 100%, 15%);
+    --pink-ink-2: hsl(337, 100%, 50%);
+    --pink-close: #e57373;
+    --pink-platform-outline: rgba(158, 19, 72, 0.45);
+    --pink-on-shell-border-soft: rgba(255, 248, 250, 0.35);
+
+    /* ── Semantic tokens (Pink chrome & controls) ── */
+    --chrome-bg: var(--pink-shell);
+    --chrome-fg: var(--pink-shell-fg);
+    --button-fg: var(--pink-ink);
+    --button-border: var(--pink-magenta);
+    --button-border-hover: var(--pink-shell);
+    --button-active-bg: var(--pink-btn-active);
+    --surface-panel: var(--pink-panel);
+    --surface-soft: var(--pink-input);
+    --surface-muted: var(--pink-muted);
+    --surface-row-warm: var(--pink-tile);
+    --border-mid: var(--pink-line);
+    --border-panel-soft: var(--pink-track);
+    --scrollbar-thumb-bg: var(--pink-thumb);
+    --scrollbar-thumb-hover-bg: var(--pink-magenta);
+
+    --accent: #ff7ab3;
+    --accentHS: 334, 100%;
+    --accentL: 74%;
+    --accentInt: 255, 122, 179;
+    --cyan: var(--accent);
+    --cyanSecondary: #f1dde9;
+    --cyanLight: rgba(239, 115, 163, 0.18);
+
+    /* Panels / inputs (light rose tints) */
+    --code: var(--pink-line);
+    --code-background: #ebdeee;
+    --slightly-darker-code-background: #e2d7e7;
+    --darker-code-background: var(--pink-track);
+    --even-darker-code-background: #f2eef6;
+    --shadow: 0 4px 14px -4px rgba(80, 20, 50, 0.18);
+
+    /* "Black" = ink for text (light theme) */
+    --black: var(--pink-ink-2);
+    --blackSecondary: #6b5560;
+    --blackTernary: #957a86;
+    --blackLight: hsla(330, 12%, 22%, 0.08);
+
+    /* Primary copy — map to dark ink */
+    --white: var(--pink-ink-2);
+    --whiteSecondary: var(--pink-ink-2);
+    --whiteLight: hsla(330, 15%, 12%, 0.06);
+
+    --green: #2e7d4a;
+    --greenSecondary: #d1f0da;
+    --greenLight: hsla(142, 45%, 92%, 0.9);
+    --orange: #c65f12;
+    --orangeSecondary: #fde8d4;
+    --orangeLight: hsla(28, 85%, 92%, 0.8);
+    --pink: #d81b60;
+    --pinkSecondary: var(--pink-muted);
+    --pinkLight: hsla(340, 70%, 94%, 0.9);
+    --purple: #7b4fa3;
+    --purpleSecondary: #ede7f5;
+    --purpleLight: hsla(270, 35%, 94%, 0.9);
+    --red: #c62828;
+    --redSecondary: #ffebee;
+    --redLight: hsla(0, 60%, 94%, 0.9);
+    --yellow: #b8860b;
+    --yellowSecondary: #fff8e1;
+    --gradientDegree: 135deg;
+
+    /* Chrome + main fills */
+    --border-bar-bg: var(--pink-shell);
+    --border-bar-size: 7px;
+    --program-bg: #f5f5f5;
+    --mainContentBackground: #f5f5f5;
+    --footer-bg: var(--border-bar-bg);
+    --scrollbar-track-bg: var(--pink-track);
+    --button-bg: var(--pink-btn);
+    --button-bg-hover: var(--pink-btn-hover);
+    --tooltip-bg: var(--pink-ink);
+    --main-padding: 0.75rem;
+    --document-canvas-bg: var(--pink-field);
+
+    /* Shadows & overlays — warm tinted, work on light bg */
+    --shadow-color-heavy: rgba(40, 12, 28, 0.22);
+    --shadow-color-50: rgba(50, 18, 32, 0.14);
+    --shadow-color-45: rgba(50, 18, 32, 0.12);
+    --shadow-color-40: rgba(50, 18, 32, 0.1);
+    --shadow-color-35: rgba(50, 18, 32, 0.09);
+    --shadow-color-30: rgba(50, 18, 32, 0.08);
+    --backdrop-scrim-55: rgba(30, 10, 20, 0.42);
+    --backdrop-scrim-65: rgba(30, 10, 20, 0.52);
+    --black-alpha-12: rgba(40, 15, 25, 0.08);
+    --black-alpha-15: rgba(40, 15, 25, 0.1);
+
+    /* Legacy "white alpha" text tokens → dark text alpha on light */
+    --text-white-40: rgba(30, 18, 24, 0.45);
+    --text-white-50: rgba(30, 18, 24, 0.55);
+    --text-white-60: rgba(30, 18, 24, 0.65);
+    --text-white-65: rgba(30, 18, 24, 0.68);
+    --text-white-88: rgba(30, 18, 24, 0.88);
+    --text-white-90: rgba(30, 18, 24, 0.9);
+    --text-white-92: rgba(30, 18, 24, 0.92);
+
+    --overlay-white-06: rgba(255, 255, 255, 0.5);
+    --overlay-white-08: rgba(255, 255, 255, 0.55);
+    --overlay-white-12: rgba(255, 255, 255, 0.65);
+    --overlay-white-14: rgba(255, 255, 255, 0.72);
+    --overlay-white-15: rgba(255, 255, 255, 0.75);
+
+    --text-muted-gray: #5c4a52;
+    --text-subtle-gray: #7a6670;
+    --text-dim-gray: #8a7680;
+    --text-body-muted: #6d5a62;
+
+    --surface-glass-06-15: linear-gradient(145deg, rgba(255, 255, 255, 0.35), rgba(180, 80, 120, 0.08));
+
+    --surface-row-dark: var(--pink-tile);
+    --surface-steam-popover: var(--pink-panel);
+    --surface-context-submenu: var(--surface-panel);
+    --surface-context-row: var(--pink-muted);
+    --surface-search-result: rgba(242, 248, 252, 0.94);
+
+    --context-menu-hotkey: #5d4035;
+    --form-checkbox-border: var(--pink-magenta);
+    --input-number-border: #b06a84;
+    --window-close-hover: #e53935;
+    --window-control-hover-bg: var(--pink-shell-hover);
+    --tag-default-bg: var(--pink-magenta);
+
+    --accent-border-deep: var(--pink-magenta);
+    --text-on-bright-bg: var(--pink-ink-2);
+    --error-text-soft: #b71c1c;
+    --error-bg-dim: rgba(255, 200, 200, 0.55);
+    --error-bg-hover: rgba(255, 170, 170, 0.7);
+    --error-border-soft: rgba(200, 50, 50, 0.4);
+
+    --overlay-panel-bg: var(--pink-panel);
+    --overlay-scrim-deep: rgba(30, 12, 22, 0.48);
+    --accent-text-on-selection: var(--pink);
+    --accent-text-heading: var(--pink);
+
+    --greenInt: 46, 125, 74;
+    --orangeInt: 198, 95, 18;
+    --redInt: 198, 40, 40;
+
+    --ace-editor-bg: var(--pink-panel);
+    --ace-gutter-fg: rgb(120, 95, 105);
+    --ace-invisible: #a898a0;
+    --ace-muted-purple: #8b6b7a;
+    --ace-xml-pe: #9e8792;
+
+    /* Notifications (light cards) */
+    --notification-main-bg: var(--pink-panel);
+    --notification-info-border: var(--pink-magenta);
+    --notification-info-highlight: var(--pink-muted);
+    --notification-success-border: #2e7d4a;
+    --notification-success-highlight: #e8f5e9;
+    --notification-warning-border: #f57c00;
+    --notification-warning-highlight: #fff3e0;
+    --notification-error-border: #c62828;
+    --notification-error-highlight: #ffebee;
+
+    @include overlay.overlay-root-tokens(
+        $modal-bg: var(--surface-panel),
+        $modal-header-bg: var(--chrome-bg),
+        $modal-header-fg: var(--chrome-fg),
+        $modal-input-bg: var(--surface-soft),
+        $modal-input-border: var(--button-border),
+        $modal-body-fg: var(--pink-ink-2),
+        $modal-muted-fg: var(--blackTernary),
+        $overlay-thumb-bg: var(--surface-soft),
+        $overlay-thumb-border: var(--button-border),
+        $overlay-thumb-muted-fg: var(--blackTernary)
+    );
+}
+
+/* Main content — soft pink field */
+body,
+.programMain,
+.mainblock {
+    background: var(--program-bg);
+    color: var(--white);
+}
+
+/* Chrome strips — deep rose, light text */
+.headerbar,
+.resizeTopLeft,
+.resizeTop,
+.resizeTopRight,
+.resizeRight,
+.resizeBottomRight,
+.resizeBottom,
+.resizeBottomLeft,
+.resizeLeft {
+    background: var(--chrome-bg);
+    color: var(--chrome-fg);
+}
+
+#window-controls,
+#btnBack {
+    background: var(--chrome-bg);
+}
+
+.header_icon {
+    fill: var(--chrome-fg);
+}
+
+.win-btn-back svg {
+    fill: var(--chrome-fg);
+}
+
+#window-title,
+#window-title-modal {
+    color: var(--chrome-fg) !important;
+}
+
+#window-controls .icon,
+.modal-window-controls .icon {
+    filter: brightness(0) saturate(100%) opacity(0.72);
+}
+
+#window-controls .win-btn-close:hover .icon,
+.modal-window-controls .win-btn-close:hover .icon {
+    filter: none;
+}
+
+/* Primary buttons — light rose fill, dark text */
+button,
+.button {
+    background: var(--button-bg);
+    border-color: var(--button-border);
+    color: var(--button-fg);
+}
+
+.linkbtn {
+    color: var(--pink-magenta)!important;
+}
+
+button:hover,
+.button:hover {
+    background: var(--button-bg-hover);
+    border-color: var(--button-border-hover);
+}
+
+button:active,
+button:target,
+.button:active,
+.button:target {
+    background-color: var(--button-active-bg) !important;
+}
+
+#window-controls button:hover,
+#btnBack:hover {
+    background: var(--window-control-hover-bg);
+}
+
+.acc_list_actionbar {
+    background: var(--footer-bg);
+    color: var(--chrome-fg);
+}
+
+.acc_list_actionbar input {
+    color: var(--chrome-fg);
+}
+
+.platform_list_item {
+    background: var(--chrome-bg);
+    border: 1px solid var(--pink-platform-outline);
+    color: var(--pink-ink-2);
+    text-shadow: none;
+}
+
+.platform_list_item .fgImg use.icoFG {
+    fill: var(--pink-ink-2);
+}
+
+.icoGlass {
+    fill: rgba(255, 255, 255, 0%);
+}
+
+.icoBG {
+    background: var(--surface-row-warm);
+}
+
+.accountHover {
+    border: 0.1em solid var(--button-border);
+    background: var(--surface-muted);
+}
+
+.shortcuts,
+.shortcutDropdown,
+.shortcuts.expandShortcuts {
+    background: var(--surface-panel);
+    border-color: var(--button-border);
+}
+
+.shortcutPlaceholder {
+    background: var(--surface-muted);
+    border-color: var(--accent);
+}
+
+.modalFG {
+    background: var(--surface-panel);
+    border-color: var(--border-panel-soft);
+}
+
+#modal_contents {
+    background: var(--surface-panel);
+    color: var(--white);
+}
+
+#window-title-modal {
+    background: var(--chrome-bg);
+    color: var(--chrome-fg) !important;
+}
+
+#modal_contents button {
+    background: var(--button-bg);
+    border-color: var(--button-border);
+    color: var(--button-fg);
+}
+
+#modal_contents button:hover {
+    background: var(--button-bg-hover);
+    border-color: var(--button-border-hover);
+    color: var(--button-fg);
+}
+
+#modal_contents button:active {
+    border-color: var(--button-border-hover);
+    background-color: var(--button-active-bg);
+}
+
+.pathPicker {
+    background: var(--surface-panel);
+    color: var(--white);
+}
+
+.dropdown {
+    color: var(--chrome-bg);
+}
+
+.dropdown-menu {
+    background: var(--surface-panel);
+    border-color: var(--border-mid);
+}
+
+.dropdown-item {
+    color: var(--white);
+}
+
+.dropdown-item:hover {
+    background: var(--surface-muted) !important;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--scrollbar-track-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 0.3em;
+    background: var(--scrollbar-thumb-bg);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover-bg);
+}
+
+.show > .dropdown-toggle {
+    background: var(--button-bg) !important;
+}
+
+input[type="number"],
+input[type="text"],
+input[type="password"] {
+    background: var(--surface-soft);
+    border-color: var(--button-border);
+    color: var(--button-fg);
+}
+
+#modal_contents input[type="text"],
+#modal_contents input[type="password"] {
+    background: var(--surface-soft) !important;
+    color: var(--white);
+}
+
+.contextmenu {
+    background: var(--surface-panel);
+}
+
+.contextmenu li a,
+.contextmenu li span,
+.contextmenu li button {
+    color: var(--white);
+}
+
+.contextmenu li:hover {
+    border-left: 2px solid var(--chrome-bg);
+    background: var(--surface-muted);
+}
+
+.contextmenu li:hover .submenu {
+    background: var(--surface-panel);
+}
+
+.contextmenu,
+.contextmenu .submenu {
+    box-shadow: 0 4px 16px var(--shadow-color-35);
+}
+
+.platform_list_item:hover:not(:active) {
+    animation: none;
+}
+
+.btnClose-modal {
+    background: var(--pink-close);
+    color: var(--pink-ink-2);
+}
+
+input.acc:checked + label.acc {
+    border-color: var(--chrome-bg) !important;
+    background: var(--surface-muted);
+}
+
+label.acc.currentAcc {
+    border-color: #2e7d4a;
+    border-style: dashed;
+}
+
+/* Steam-style account labels — dark text on light card */
+label.acc {
+    color: var(--white);
+}
+
+label.acc h6,
+label.acc p {
+    color: var(--white);
+}
+
+/* Tooltips: dark panel, light label text */
+.tooltip .tooltip-inner {
+    color: var(--chrome-fg);
+}
+
+/* App modal title bar is deep rose — light title + controls text (tokens + fallback) */
+.modal-headerbar {
+    color: var(--modal-header-fg, var(--chrome-fg)) !important;
+}
+
+.modal-window-controls .win-btn {
+    color: var(--modal-header-fg, var(--chrome-fg));
+}
+
+.modal-window-controls .win-btn:hover {
+    color: var(--modal-header-fg, var(--chrome-fg));
+}
+
+/* Footer / action bar uses deep rose bg — light icon & label text */
+.actionbar {
+    color: var(--chrome-fg);
+}
+
+.actionbar button,
+.actionbar .button {
+    color: var(--chrome-fg);
+    border-color: var(--pink-on-shell-border-soft);
+}
+
+.actionbar button svg,
+.actionbar .button svg {
+    fill: var(--chrome-fg);
+    color: var(--chrome-fg);
+}
+
+#btnSettings,
+#btnHelp {
+    color: var(--chrome-fg);
+}
+
+#btnSettings i,
+#btnHelp i {
+    color: var(--chrome-fg);
+}
+
+@include overlay.overlay-component-overrides;

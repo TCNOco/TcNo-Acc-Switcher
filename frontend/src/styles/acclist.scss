@@ -1,0 +1,440 @@
+﻿/* DISABLED DRAGGING ON ITEMS: */
+
+.steam-acclist {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.steam-acclist :global(.acc_list.reorder-pointer-grid) {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto;
+  max-height: none;
+}
+
+.steam-acclist :global(.acc_list .reorder-pointer-grid__cell) {
+  min-height: 0;
+  height: 100%;
+}
+
+.steam-acclist :global(.acc_list_item--drag) {
+  cursor: grab;
+  touch-action: none;
+}
+
+.steam-acclist :global(.acc_list_item--ghost) {
+  position: fixed;
+  margin: 0;
+  z-index: 10000;
+  pointer-events: none;
+  opacity: 0.96;
+  cursor: grabbing;
+  box-shadow: 0 12px 36px var(--shadow-color-50);
+  left: 0;
+  top: 0;
+}
+
+.steam-acclist .steam_meta_badge.dim {
+  opacity: 0.55;
+}
+
+.steam-acclist .steam_meta_err {
+  font-size: 0.6em;
+  color: var(--red);
+  line-height: 1.15;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.steam-acclist .steam_meta_pending {
+  font-size: 0.6em;
+  opacity: 0.65;
+}
+
+.steam-acclist .acc_lastused {
+  margin: 0.15rem 0 0;
+  font-size: 0.72rem;
+  opacity: 0.75;
+}
+
+.steam-acclist label.acc p.steamId {
+  font-family: ui-monospace, monospace;
+  font-size: 0.7em;
+}
+
+.acc_list_actionbar,
+#acc_list,
+.headerbar,
+#window-title-modal {
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.acc_list {
+  gap: 4px;
+  display: grid;
+  position: relative;
+  grid-template-columns: repeat(auto-fill, 100px);
+  grid-auto-rows: minmax(min-content, max-content);
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.acc_list_item {
+  border: 0.1em solid transparent;
+  cursor: pointer;
+  position: relative;
+  .acc_note {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .acc_stat {
+    font-size: 0.8em;
+
+    sup {
+      margin-right: 0.4em;
+    }
+
+    img {
+      width: auto;
+      height: auto;
+    }
+  }
+}
+
+.acc_list_item--ghost,
+.placeHolderAcc {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.acc_list_item--ghost {
+  animation: none !important;
+  opacity: 1;
+}
+
+.placeHolderAcc {
+  width: 100px;
+  height: 135px;
+  border: 2px dashed var(--accent-border-strong);
+  background: var(--code-background);
+}
+
+.acc_list--skeleton {
+  pointer-events: none;
+}
+
+.acc_list_item--skeleton {
+  width: 100px;
+  min-height: 135px;
+  padding: 0.35rem 0.25rem 0.5rem;
+  border: 0.1em solid var(--accent-border-strong);
+  background: var(--code-background);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  cursor: default;
+  box-sizing: border-box;
+}
+
+.acc_skeleton_avatar,
+.acc_skeleton_line {
+  background: linear-gradient(
+    90deg,
+    var(--black-alpha-12, rgba(0, 0, 0, 0.12)) 0%,
+    var(--accent-border-strong, rgba(255, 255, 255, 0.18)) 50%,
+    var(--black-alpha-12, rgba(0, 0, 0, 0.12)) 100%
+  );
+  background-size: 200% 100%;
+  animation: accSkeletonShimmer 1.2s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+.acc_skeleton_avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 4px;
+}
+
+.acc_skeleton_lines {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.acc_skeleton_line {
+  height: 0.65rem;
+}
+
+.acc_skeleton_line--name {
+  width: 72%;
+}
+
+@keyframes accSkeletonShimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.placeHolderPlat {
+  border: 2px dashed var(--accent-border-strong);
+  background: var(--code-background);
+  width: 20vw;
+  height: 20vw;
+  max-width: 175px;
+  max-height: 175px;
+  display: inline-block;
+  margin: 10px;
+  vertical-align: middle;
+}
+
+.accountHover > label.acc {
+  border: 0.1em solid var(--accent-border-strong);
+  /* Seperate because added by sortable */
+  background: var(--code-background);
+}
+
+input.acc {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  display: none;
+  margin: 0;
+  padding: 0;
+}
+
+label.acc {
+  -moz-transition: all 50ms ease-in;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-transition: all 50ms ease-in;
+  -webkit-user-select: none;
+  user-select: none;
+  min-width: 100px;
+  max-width: 100px;
+  min-height: 135px;
+  height: 100%;
+  margin: -0.1em;
+  padding: 0.5em;
+  border-width: 0.1em;
+  border-style: solid;
+  border-color: transparent;
+  color: var(--whiteSecondary);
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, all 50ms ease-in;
+  line-height: 1em;
+
+  &.vac img {
+    border: 2px solid var(--red);
+  }
+
+  > img {
+    -webkit-user-drag: none;
+    display: inline-block;
+    width: 6em;
+    height: 6em;
+    margin-bottom: 0.5em;
+    border: 2px solid transparent;
+
+    &.status_vac {
+      border: 2px solid var(--red) !important;
+    }
+
+    &.status_limited {
+      border: 2px solid var(--yellow) !important;
+    }
+  }
+
+  .steam-acc-avatar-wrap {
+    position: relative;
+    display: inline-block;
+    width: 6em;
+    height: 6em;
+    margin-bottom: 0.75em;
+    vertical-align: top;
+  }
+
+  img.steam-acc-avatar,
+  video.steam-acc-avatar {
+    -webkit-user-drag: none;
+    display: block;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    border: 2px solid transparent;
+    object-fit: cover;
+
+    &.status_vac {
+      border: 2px solid var(--red) !important;
+    }
+
+    &.status_limited {
+      border: 2px solid var(--yellow) !important;
+    }
+  }
+
+  .steam-acc-avatar-frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+    margin: 0;
+    border: none !important;
+    box-sizing: border-box;
+    transform: scale(1.22);
+  }
+
+  h6 {
+    max-width: 9em;
+    margin: 0;
+    overflow: hidden;
+    font-size: 1em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  p {
+    max-width: 9em;
+    margin: 0 auto;
+    overflow: hidden;
+    color: var(--text-muted-gray);
+    font-size: 0.75em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+input.acc:checked + label.acc.currentAcc {
+  border-color: var(--green);
+  border-style: solid;
+}
+
+input.acc:checked + label.acc {
+  border-color: var(--accent);
+  background: var(--button-bg);
+}
+
+label.acc.currentAcc {
+  border-color: var(--green);
+  border-style: dashed;
+}
+
+.acc_list_actionbar {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 3.5em;
+  padding: 0.25em 0.25em;
+  overflow: hidden;
+  background: var(--surface-row-dark);
+  color: var(--whiteSecondary);
+  /* Status section */
+  input {
+    user-select: none;
+    width: inherit;
+    padding-left: 1em;
+    border: none;
+    outline: none;
+    background: none;
+    color: var(--text-muted-gray);
+    line-height: 3em;
+  }
+
+  input::selection {
+    user-select: none;
+    background: none;
+    color: var(--text-muted-gray);
+  }
+
+  > div {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    width: 100%;
+    height: 3em;
+  }
+}
+
+.acc_list_actionbar div .btn_login,
+.btn_close span {
+  padding: 0.25em 5em;
+}
+
+.statusBar {
+  position: relative;
+
+  div,
+  input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  input {
+    z-index: 1;
+  }
+
+  div {
+    z-index: 5;
+  }
+}
+
+label h6 svg {
+  fill: var(--whiteSecondary);
+  margin: 2px;
+}
+
+.battleNetIcon {
+  display: inline-block;
+  width: 15px;
+}
+
+.steam-miniprofile-popover {
+  max-width: min(360px, calc(100vw - 24px));
+  max-height: min(480px, calc(100vh - 24px));
+  overflow: auto;
+  border-radius: 4px;
+  box-shadow: 0 8px 28px var(--shadow-color-45);
+  background: var(--surface-steam-popover);
+  color: var(--whiteSecondary);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.steam-miniprofile-popover__inner {
+  padding: 0;
+}
+
+.steam-miniprofile-popover__inner .miniprofile_container {
+  transform-origin: top left;
+  max-width: 100%;
+}
+
+.steam-miniprofile-popover__inner img,
+.steam-miniprofile-popover__inner video {
+  max-width: 100%;
+  height: auto;
+  vertical-align: middle;
+}

@@ -1,0 +1,21 @@
+# This theme's name (Shows in-app, can be different to folder name)
+name: Kanagawa Lotus
+accent: "#4D699B"
+
+accents:
+  - name: Accent
+    color: "#4D699B"
+  - name: Cyan
+    color: "#597B75"
+  - name: Green
+    color: "#6F894E"
+  - name: Orange
+    color: "#CC6D00"
+  - name: Pink
+    color: "#B35B79"
+  - name: Purple
+    color: "#624C83"
+  - name: Red
+    color: "#C84053"
+  - name: Yellow
+    color: "#77713F"

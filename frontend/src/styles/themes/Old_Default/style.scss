@@ -1,0 +1,351 @@
+/*
+    Old Default theme
+    - Created by TroubleChute
+*/
+
+@use "../overlay_surfaces" as overlay;
+
+:root {
+    // All these extra accent steps and redefinitions are required for Windows accent options
+    --accent: #ffaa00; /* Must be HEX */
+    --accentHS: 40, 100%;
+    --accentL: 52%;
+    --accentInt: 255, 170, 0;
+    /* Historic blue paired with orange on home tiles */
+    --cyan: #00a5f8;
+    --cyanSecondary: #7dd3ff;
+    --cyanLight: hsla(200, 95%, 55%, 0.18);
+
+    --code: #3d4558;
+    --code-background: #21262f;
+    --slightly-darker-code-background: hsl(226, 16%, 10%);
+    --darker-code-background: #171920;
+    --even-darker-code-background: rgb(15, 16, 20);
+    --shadow: 0 4px 10px -6px #08090d;
+
+    --black: #1f2129;
+    --blackSecondary: #515164;
+    --blackTernary: #9aa3bd;
+    --blackLight: hsla(226, 12%, 18%, 0.06);
+
+    --white: #eceff8;
+    --whiteSecondary: #ffffff;
+    --whiteLight: hsla(226, 20%, 98%, 0.05);
+
+    --green: #7cbd6e;
+    --greenSecondary: #d1edcc;
+    --greenLight: hsla(113, 40%, 60%, 0.1);
+    --orange: #ffaa33;
+    --orangeSecondary: #ffe0b8;
+    --orangeLight: hsla(36, 100%, 70%, 0.12);
+    --pink: #e86890;
+    --pinkSecondary: #fac9d8;
+    --pinkLight: hsla(340, 72%, 70%, 0.1);
+    --purple: #9b8fd9;
+    --purpleSecondary: #e8e4ff;
+    --purpleLight: hsla(252, 45%, 75%, 0.1);
+    --red: #e85d5d;
+    --redSecondary: #fac8c8;
+    --redLight: hsla(0, 70%, 70%, 0.1);
+    --yellow: #ffe566;
+    --yellowSecondary: #fff6c2;
+    --gradientDegree: 135deg;
+
+    --border-bar-bg: var(--code);
+    --border-bar-size: 7px;
+    --program-bg: linear-gradient(90deg, #2a2c3c, #1e202c 100%);
+    --mainContentBackground: #28293a;
+    --footer-bg: #14151e;
+    --scrollbar-track-bg: #1f202d;
+    --button-bg: #333333;
+    --button-bg-hover: #444444;
+    --tooltip-bg: var(--even-darker-code-background);
+    --main-padding: 0.75rem;
+    --document-canvas-bg: #28293a;
+
+    --shadow-color-heavy: rgba(0, 0, 0, 0.82);
+    --shadow-color-50: rgba(0, 0, 0, 0.52);
+    --shadow-color-45: rgba(0, 0, 0, 0.46);
+    --shadow-color-40: rgba(0, 0, 0, 0.42);
+    --shadow-color-35: rgba(0, 0, 0, 0.37);
+    --shadow-color-30: rgba(0, 0, 0, 0.31);
+    --backdrop-scrim-55: rgba(6, 7, 10, 0.58);
+    --backdrop-scrim-65: rgba(6, 7, 10, 0.68);
+    --black-alpha-12: rgba(0, 0, 0, 0.14);
+    --black-alpha-15: rgba(0, 0, 0, 0.18);
+
+    --text-muted-gray: #d8dce8;
+    --text-subtle-gray: #959bb0;
+    --text-dim-gray: #676d87;
+    --text-body-muted: #79809a;
+
+    --surface-row-dark: #14151e;
+    --surface-steam-popover: #323648;
+    --surface-context-submenu: var(--code);
+    --surface-context-row: #1b2737;
+    --surface-search-result: rgba(55, 60, 75, 0.78);
+
+    --context-menu-hotkey: #5c4818;
+    --form-checkbox-border: #6272a4;
+    --window-control-hover-bg: #515b70;
+    --tag-default-bg: #4a5062;
+
+    --overlay-panel-bg: rgba(32, 35, 48, 0.95);
+    --overlay-scrim-deep: rgba(10, 11, 16, 0.74);
+
+    --greenInt: 124, 189, 110;
+    --orangeInt: 255, 170, 51;
+    --redInt: 232, 93, 93;
+    --text-on-bright-bg: #111111;
+
+    --ace-editor-bg: #282a36;
+    --ace-gutter-fg: rgb(130, 135, 155);
+    --ace-invisible: #5f667e;
+    --ace-muted-purple: #9fa4bc;
+    --ace-xml-pe: #4f5569;
+
+    --notification-main-bg: #333333;
+    --notification-info-border: var(--accent);
+    --notification-info-highlight: #ffe08a;
+    --notification-success-border: #69b06b;
+    --notification-success-highlight: #aed8b0;
+    --notification-warning-border: #e9a046;
+    --notification-warning-highlight: #f8d297;
+    --notification-error-border: #d94c4c;
+    --notification-error-highlight: #f0a8a8;
+
+    @include overlay.overlay-root-tokens(
+        $modal-bg: #14151e,
+        $modal-header-bg: #14151e,
+        $modal-input-bg: #212529,
+        $modal-input-border: #888888,
+        $overlay-thumb-bg: rgb(15, 16, 20),
+        $overlay-thumb-border: #888888
+    );
+}
+
+// Main UI
+.headerbar,
+.resizeTopLeft,
+.resizeTop,
+.resizeTopRight,
+.resizeRight,
+.resizeBottomRight,
+.resizeBottom,
+.resizeBottomLeft,
+.resizeLeft {
+    background: #14151E;
+}
+
+body,
+.programMain,
+.mainblock {
+    background: url("/img/noise.png"), linear-gradient( 90deg, #28293A, #28293A 100%);
+}
+
+#window-controls,
+#btnBack,
+#modalBtnBack {
+    background: #14151E;
+}
+
+#window-controls button:hover,
+#btnBack:hover,
+#modalBtnBack:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.acc_list_actionbar {
+    background: #222;
+}
+
+.shortcuts,
+.shortcutDropdown,
+.shortcuts.expandShortcuts {
+    background: #222;
+    border-color: #888;
+}
+
+.shortcutPlaceholder {
+    background: #222;
+}
+
+::-webkit-scrollbar-track {
+    background: #1F202D;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 0.3em;
+    background: #515164;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+button:active,
+button:target,
+.button:active,
+.button:target {
+    background-color: #222 !important;
+}
+
+.infoWindow .rightContent .linksList a:hover,
+.fancyLink:hover {
+    color: #FFDD00;
+}
+
+.infoWindow .rightContent .linksList a:active,
+.fancyLink:active {
+    color: #CC7700;
+}
+
+a:not([href]):not([class]),
+a:not([href]):not([class]):hover {
+    color: #FFAA00;
+}
+
+// Platform list
+.platform_list_item {
+    border: #FFAA00 1px solid;
+    -webkit-text-stroke: 1px #00A5F8;
+    color: transparent;
+    text-shadow: none;
+
+    .icoFG {
+        fill: #00A5F8;
+    }
+
+    .icoBG {
+        background: linear-gradient(0deg, rgba(31,37,48,1) 0%, rgba(31,37,48,1) 0%, rgba(32,33,35,1) 100%, rgba(0,212,255,1) 202123%);
+    }
+}
+
+.accountHover > label.acc {
+    border: 0.1 em solid #2777A4;
+    background: #28374E;
+}
+
+// Modal UI
+.modalFG {
+    background: #14151E;
+}
+
+#modal_contents {
+    background: #28293A;
+}
+
+#modal_contents input[type=text],
+#modal_contents input[type=password] {
+    background: #212529
+}
+
+#window-title-modal {
+    background: #14151E;
+}
+
+#modal_contents button {
+    border-color: #888;
+    background: #333;
+
+    &:hover {
+        border-color: #888;
+        background: #444;
+    }
+
+    &:active {
+        border-color: #FFAA00;
+        background: #222 !important;
+    }
+}
+.pathPicker {
+    background: #212529;
+
+    span.selected-path,
+    spanselected-path::before {
+        background-color: var(--accentDarker);
+    }
+
+    span:not(.c):hover {
+        color: var(--accentDark);
+    }
+}
+
+// Interactive UI
+input[type='checkbox'] + label {
+    border: 1px solid #FFF;
+}
+
+button,
+.button {
+    background: #333;
+    border-color: #888;
+
+    &:active {
+        background: #222;
+        border-color: var(--accent);
+    }
+
+    &:hover {
+        background: #444;
+        border-color: #888;
+    }
+}
+
+.dropdown {
+    color: white;
+
+    &-menu {
+        background: #333;
+        border-color: #888;
+        -webkit-box-shadow: 0 0 15px 3px rgba(0, 0, 0, .50);
+        -moz-box-shadow: 0 0 15px 3px rgba(0,0,0,.50);
+        box-shadow: 0 0 15px 3px rgba(0, 0, 0, .50);
+    }
+
+    &-item:hover {
+        background: #222 !important;
+    }
+}
+
+.show > .dropdown-toggle {
+    background: #222 !important;
+}
+
+input[type=number],
+input[type=text],
+input[type=password],
+textarea {
+    background: #212529;
+}
+
+#modal_contents input[type=text],
+#modal_contents input[type=password] {
+    background: #212529 !important;
+}
+
+div.clearingRight {
+    background: #222;
+}
+
+// Context menu
+.contextmenu {
+    background: #14151E;
+
+    li {
+        &:hover {
+            border-left: 2px solid #364E6E;
+            background: #1B2737;
+
+            .submenu {
+                background: #14151E;
+            }
+        }
+
+        a {
+            color: #B0BEC5;
+        }
+    }
+}
+
+@include overlay.overlay-component-overrides;

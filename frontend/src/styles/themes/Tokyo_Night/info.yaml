@@ -1,0 +1,19 @@
+# This theme's name (Shows in-app, can be different to folder name)
+name: Tokyo Night
+accent: "#C0CAF5"
+
+accents:
+  - name: Accent
+    color: "#C0CAF5"
+  - name: Green
+    color: "#9ECE6A"
+  - name: Orange
+    color: "#FF9E64"
+  - name: Pink
+    color: "#F7768E"
+  - name: Purple
+    color: "#BB9AF7"
+  - name: Red
+    color: "#F7768E"
+  - name: Yellow
+    color: "#E0AF68"

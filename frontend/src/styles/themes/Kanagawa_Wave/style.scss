@@ -1,0 +1,37 @@
+@use "../kanagawa" as kana;
+
+$palette: (
+  fg: #dcd7ba,
+  fg-dim: #c8c093,
+  comment: #727169,
+  accent: #7e9cd8,
+  cyan: #7aa89f,
+  green: #98bb6c,
+  orange: #ffa066,
+  pink: #d27e99,
+  purple: #957fb8,
+  red: #e46876,
+  yellow: #e6c384,
+  bg: #1f1f28,
+  bg-dim: #181820,
+  bg-deep: #16161d,
+  bg-panel: #2a2a37,
+  bg-hover: #363646,
+  bg-gutter: #2a2a37,
+  bg-search: #2d4f67,
+  bg-visual: #223249,
+  border: #938aa9,
+  nontext: #54546d,
+  surface-float: #16161d,
+);
+
+$meta: (
+  accent-hs: "218, 54%",
+  accent-l: "67%",
+  accent-int: "126, 156, 216",
+  green-int: "152, 187, 108",
+  orange-int: "255, 160, 102",
+  red-int: "228, 104, 118",
+);
+
+@include kana.theme($palette, $meta);

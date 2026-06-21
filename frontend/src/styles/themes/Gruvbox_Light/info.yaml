@@ -1,0 +1,21 @@
+# This theme's name (Shows in-app, can be different to folder name)
+name: Gruvbox Light
+accent: "#076678"
+
+accents:
+  - name: Accent
+    color: "#076678"
+  - name: Cyan
+    color: "#427B58"
+  - name: Green
+    color: "#79740E"
+  - name: Orange
+    color: "#AF3A03"
+  - name: Pink
+    color: "#8F3F71"
+  - name: Purple
+    color: "#8F3F71"
+  - name: Red
+    color: "#9D0006"
+  - name: Yellow
+    color: "#B57614"

@@ -1,0 +1,191 @@
+/*
+    Dracula Cyan (Default) theme
+    - Created by TroubleChute
+
+    This file is temporarily here before theming is implemented properly.
+*/
+:root {
+    --code: #263440;
+    --code-background: #131a20;
+    --slightly-darker-code-background: hsl(208, 25%, 6%);
+    --darker-code-background: #0f151a;
+    --even-darker-code-background: rgb(6, 8, 10);
+    --shadow: 0 4px 10px -6px #010101;
+    --black: #21222c;
+    --blackSecondary: #414558;
+    --blackTernary: #a7abbe;
+    --blackLight: hsla(230,15%,15%,5%);
+    --white: #f8f8f2;
+    --whiteSecondary: #fff;
+    --whiteLight: hsla(60,30%,96%,5%);
+    --cyan: #80ffea;
+    --cyanSecondary: #ccfff6;
+    --cyanLight: hsla(170,100%,75%,5%);
+    --green: #8aff80;
+    --greenSecondary: #d0ffcc;
+    --greenLight: hsla(115,100%,75%,5%);
+    --orange: #ffca80;
+    --orangeSecondary: #ffeacc;
+    --orangeLight: hsla(35,100%,75%,5%);
+    --pink: #ff80bf;
+    --pinkSecondary: #ffcce6;
+    --pinkLight: hsla(330,100%,75%,5%);
+    --purple: #9580ff;
+    --purpleSecondary: #d5ccff;
+    --purpleLight: hsl(250,100%,75%,5%);
+    --red: #ff9580;
+    --redSecondary: #ffd5cc;
+    --redLight: hsla(10,100%,75%,5%);
+    --yellow: #ffff80;
+    --yellowSecondary: #ffc;
+    --gradientDegree: 135deg;
+    --purple-cyan: linear-gradient(var(--gradientDegree),var(--purple) 0%,var(--cyan) 100%);
+    --yellow-pink: linear-gradient(var(--gradientDegree),var(--yellow) 0%,var(--pink) 100%);
+    --cyan-green: linear-gradient(var(--gradientDegree),var(--cyan) 0%,var(--green) 100%);
+    --pink-purple: linear-gradient(var(--gradientDegree),var(--pink) 0%,var(--purple) 100%);
+    --border-size: 0.1rem;
+
+    // All these extra accent steps and redefinitions are required for Windows accent options
+    // Elements that use these will be set by either Windows Accent or Theme
+    --accent: var(--cyan); /* Must be HEX */
+    --accentHS: 190, 100%; /* "H, S%" from accent as HSL */
+    --accentL: 50%; /* "L" from accent HSL */
+    --accentInt: 128, 254, 234; /* accent as "r, g, b" for default --cyan */
+    --border-bar-bg: var(--code);
+    --border-bar-size: 7px;
+    --program-bg: linear-gradient(90deg, #11181d, #0e1419 100%);
+    --mainContentBackground: #11181d;
+    --footer-bg: var(--black);
+    --scrollbar-track-bg: #1E2934;
+    --button-bg: #274560;
+    --button-bg-hover: #28374E;
+    --tooltip-bg: var(--even-darker-code-background);
+    --main-padding: .75rem;
+    --document-canvas-bg: #1b2636;
+
+    /* --- Shared neutral / shadow tokens --- */
+    --pure-black: #000;
+    --shadow-color-heavy: rgba(0, 0, 0, 0.84);
+    --shadow-color-50: rgba(0, 0, 0, 0.5);
+    --shadow-color-45: rgba(0, 0, 0, 0.45);
+    --shadow-color-40: rgba(0, 0, 0, 0.4);
+    --shadow-color-35: rgba(0, 0, 0, 0.35);
+    --shadow-color-30: rgba(0, 0, 0, 0.3);
+    --shadow-color-55-text: rgba(0, 0, 0, 0.55);
+    --shadow-color-60: rgba(0, 0, 0, 0.6);
+    --black-alpha-12: rgba(0, 0, 0, 0.12);
+    --black-alpha-15: rgba(0, 0, 0, 0.15);
+    --backdrop-scrim-55: rgba(0, 0, 0, 0.55);
+    --backdrop-scrim-65: rgba(0, 0, 0, 0.65);
+    --backdrop-dark-25: rgba(0, 0, 0, 0.25);
+    --backdrop-dark-20: rgba(0, 0, 0, 0.2);
+    --backdrop-dark-35: rgba(0, 0, 0, 0.35);
+    --overlay-white-06: rgba(255, 255, 255, 0.06);
+    --overlay-white-08: rgba(255, 255, 255, 0.08);
+    --overlay-white-12: rgba(255, 255, 255, 0.12);
+    --overlay-white-14: rgba(255, 255, 255, 0.14);
+    --overlay-white-15: rgba(255, 255, 255, 0.15);
+    --text-white-40: rgba(255, 255, 255, 0.4);
+    --text-white-50: rgba(255, 255, 255, 0.5);
+    --text-white-60: rgba(255, 255, 255, 0.6);
+    --text-white-65: rgba(255, 255, 255, 0.65);
+    --text-white-88: rgba(255, 255, 255, 0.88);
+    --text-white-90: rgba(255, 255, 255, 0.9);
+    --text-white-92: rgba(255, 255, 255, 0.92);
+    --text-muted-gray: #dddddd;
+    --text-subtle-gray: #b1b1b1;
+    --text-dim-gray: #6b6a6a;
+    --text-body-muted: #828282;
+    --tag-default-bg: #555555;
+    --surface-glass-06-15: linear-gradient(145deg, var(--overlay-white-08), rgba(0, 0, 0, 0.15));
+    --surface-row-dark: #252a2e;
+    --surface-steam-popover: #1b2838;
+    --surface-context-submenu: var(--code);
+    --surface-context-row: #1B2737;
+    --surface-search-result: rgba(50, 50, 50, 0.7);
+    --text-on-bright-bg: var(--pure-black);
+    --context-menu-hotkey: #402B00;
+    --form-checkbox-border: #6272a4;
+    --input-number-border: #888888;
+    --window-close-hover: #d51426;
+    --window-control-hover-bg: #3b4853;
+    --error-text-soft: #ffb4b4;
+    --error-bg-dim: rgba(60, 20, 20, 0.45);
+    --error-bg-hover: rgba(80, 28, 28, 0.65);
+    --error-border-soft: rgba(255, 140, 140, 0.45);
+    --success-solid: #009900;
+    --error-solid: #ff0000;
+    --success-soft-bg: #00990022;
+    --error-soft-bg: #ff000033;
+    --overlay-panel-bg: rgba(20, 32, 52, 0.95);
+    --overlay-scrim-deep: rgba(8, 12, 22, 0.72);
+
+    /* RGB tuples for tinted shadows / glows (match --green / --orange / --red) */
+    --greenInt: 138, 255, 128;
+    --orangeInt: 255, 202, 128;
+    --redInt: 255, 149, 128;
+
+    /* Accent-derived (user theme colour + brightness) */
+    --accent-border-deep: hsl(var(--accentHS), 100%, 9%);
+    --accent-text-bright: hsl(var(--accentHS), calc(var(--accentL) + 32%));
+    --accent-border-strong: hsl(var(--accentHS), 65%, 40%);
+    --accent-type-dim: hsl(var(--accentHS), calc(var(--accentL) - 12%));
+    --accent-overlay-border: rgba(var(--accentInt), 0.35);
+    --accent-overlay-border-strong: rgba(var(--accentInt), 0.55);
+    --accent-overlay-hover: rgba(var(--accentInt), 0.85);
+    --accent-fill-very-soft: rgba(var(--accentInt), 0.12);
+    --accent-fill-soft: rgba(var(--accentInt), 0.32);
+    --accent-fill-medium: rgba(var(--accentInt), 0.42);
+    --accent-fill-panel: rgba(var(--accentInt), 0.45);
+    --accent-highlight-row: rgba(var(--accentInt), 0.9);
+    --accent-text-on-selection: rgba(var(--accentInt), 0.95);
+    --accent-text-heading: rgba(var(--accentInt), 0.98);
+    --home-ico-gradient-end: rgba(var(--accentInt), 1);
+
+    /* Toasts, modals, stability prompt */
+    --notification-main-bg: var(--darker-code-background);
+    --notification-info-border: var(--accent);
+    --notification-info-highlight: var(--accent);
+    --notification-success-border: var(--green);
+    --notification-success-highlight: var(--green);
+    --notification-warning-border: var(--orange);
+    --notification-warning-highlight: var(--orange);
+    --notification-error-border: var(--red);
+    --notification-error-highlight: var(--red);
+    --notification-border-radius: 2px;
+    --notification-message-fg: var(--whiteSecondary);
+    --modal-bg: var(--mainContentBackground);
+    --modal-header-bg: var(--border-bar-bg);
+    --modal-header-fg: var(--whiteSecondary);
+    --modal-scrim: var(--backdrop-scrim-55);
+    --modal-input-bg: var(--even-darker-code-background);
+    --modal-input-border: var(--button-bg);
+    --modal-body-fg: var(--whiteSecondary);
+    --modal-muted-fg: var(--blackTernary);
+    --overlay-thumb-bg: var(--even-darker-code-background);
+    --overlay-thumb-border: var(--button-bg);
+    --overlay-thumb-muted-fg: var(--blackTernary);
+
+    /* Ace editor (Dracula-style; ties to main palette where close) */
+    --ace-editor-bg: #282a36;
+    --ace-gutter-fg: rgb(144, 145, 148);
+    --ace-step-green: rgb(198, 219, 174);
+    --ace-bracket-gold: #a29709;
+    --ace-invisible: #626680;
+    --ace-muted-purple: #9B859D;
+    --ace-orange-constant: #CF6A4C;
+    --ace-yellow-pale: #F9EE98;
+    --ace-brown-mid: #AC885B;
+    --ace-string: #f1fa8c;
+    --ace-regexp: #E9C062;
+    --ace-xml-pe: #494949;
+    --ace-warning-orange: #ffb86c;
+
+    /* Steam miniprofile (accent-tinted; was fixed cyan/blue ramps) */
+    --miniprofile-radial-glow: rgba(var(--accentInt), 0.45);
+    --miniprofile-radial-fade: rgba(var(--accentInt), 0.08);
+    --miniprofile-linear-top: rgba(var(--accentInt), 0.55);
+    --miniprofile-linear-mid: rgba(var(--accentInt), 0.14);
+    --miniprofile-linear-low: rgba(var(--accentInt), 0.1);
+}
+

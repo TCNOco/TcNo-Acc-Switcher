@@ -1,0 +1,292 @@
+/* ReSharper disable CssNotResolved */
+/* Text selection styling */
+::selection {
+    color: var(--context-menu-hotkey);
+    background: var(--accent);
+}
+
+.contextmenu {
+    background: var(--surface-context-submenu);
+    box-shadow: 10px 10px 5px -3px var(--shadow-color-30);
+    position: absolute;
+    width: 15em;
+    max-height: 30em;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    z-index: 999999;
+    box-sizing: border-box;
+
+    li {
+        box-sizing: border-box;
+        padding-left: 0.5em;
+        transition: background 0.2s ease;
+        position: relative;
+
+        /* Accent animates via transform (no border-width change → no wrap jump). */
+        &:not(.contextSearch):not(.ctx-pagination-li):not(.ctx-sep)::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transform-origin: left center;
+            transition: transform 0.2s ease;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        &.hasSubmenu::after {
+            content: "";
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0.4em;
+            height: 0.8em;
+            z-index: 2;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 512'%3E%3Cpath fill='%23fff' d='M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z'/%3E%3C/svg%3E")
+                no-repeat
+                center / contain;
+        }
+
+        &.hasSubmenu.hasSubmenu--parent-action > button.ctx-menu__parent-action {
+            padding-right: 1.85em;
+        }
+
+        a, span, button {
+            text-decoration: none;
+            transition: ease 0.2s;
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 0.4rem 0.85rem;
+            margin: 0;
+            border: none;
+            background: transparent;
+            color: var(--whiteSecondary);
+            font: inherit;
+            cursor: pointer;
+            position: relative;
+            z-index: 1;
+            overflow-wrap: break-word;
+        }
+
+        button:disabled,
+        button.ctx-menu__btn--disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+    }
+
+    .submenu {
+        display: none;
+        list-style: none;
+        box-shadow: 10px 10px 5px -3px var(--shadow-color-30);
+
+        li {
+            color: var(--whiteSecondary);
+            list-style: none;
+
+            a {
+                color: var(--whiteSecondary) !important;
+            }
+        }
+
+        /* In-flow footer row (valid <ul><li>…); avoids overlapping the last menu row */
+        li.ctx-pagination-li {
+            border-left: 2px solid transparent;
+            list-style: none;
+            margin-top: auto;
+            flex-shrink: 0;
+            padding-left: 0;
+
+            .paginationContainer {
+                width: 100%;
+                border-left: none;
+            }
+
+            .pagination {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                color: var(--whiteSecondary);
+
+                a,
+                button.paginationButton {
+                    padding: 0.4rem 0.85rem;
+                    width: 38px;
+                    text-align: center;
+                    border: none;
+                    background: transparent;
+                    color: inherit;
+                    font: inherit;
+                    cursor: pointer;
+                    margin: 0;
+
+                    &:hover {
+                        background: var(--surface-context-row);
+
+                        i,
+                        svg {
+                            color: var(--accent);
+                            fill: var(--accent);
+                        }
+                    }
+
+                    border-left: 0px solid var(--accent);
+                    transition: ease 0.075s;
+
+                    &:first-of-type:hover {
+                        transition: ease 0.075s;
+                        border-left: 2px solid var(--accent);
+                    }
+
+                    &:last-of-type:hover {
+                        transition: ease 0.075s;
+                        border-right: 2px solid var(--accent);
+                    }
+                }
+
+                span {
+                    border-bottom: 2px solid var(--accent);
+                    width: fit-content;
+                }
+            }
+        }
+
+        .contextSearch {
+            border-left: 2px solid transparent;
+            background: var(--even-darker-code-background);
+            padding-left: 0;
+            transition: border-left-color 0.2s ease, background 0.2s ease;
+
+            &:hover {
+                border-left-color: var(--accent);
+            }
+
+            &:has(.ctx-menu__search:focus-visible) {
+                border-left-color: var(--accent);
+            }
+
+            input {
+                background: transparent!important;
+                border: none!important;
+                margin: 0;
+                padding: 0.4em;
+                width: 100%;
+                outline: none;
+
+                &:placeholder-shown {
+                    opacity: 0.8;
+                }
+            }
+        }
+    }
+    /* Only second submenu has shortenable names - for now (Game names). Evertyhing else wrap. */
+    .submenu2 > li > a {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    li:hover:not(.contextSearch):not(.ctx-pagination-li):not(.ctx-sep)::before,
+    li:has(> .ctx-menu__btn:focus-visible):not(.contextSearch):not(.ctx-pagination-li):not(.ctx-sep)::before,
+    li.hasSubmenu:has(> .ctx-menu__label:focus-visible):not(.contextSearch):not(.ctx-pagination-li):not(.ctx-sep)::before {
+        transform: scaleX(1);
+    }
+
+    li:hover {
+        background: var(--surface-context-row);
+
+        a {
+            color: var(--whiteSecondary);
+        }
+    }
+
+    /* Keyboard focus — mirror hover when roving tabindex focuses controls / submenu rows */
+    li:has(> .ctx-menu__btn:focus-visible),
+    li.hasSubmenu:focus-visible,
+    li.hasSubmenu:has(> .ctx-menu__label:focus-visible) {
+        background: var(--surface-context-row);
+    }
+
+    /* Submenus open via JS (.submenu-expanded) after first paint; not CSS :hover alone. */
+    /*
+     Later sibling `li` rows stack above earlier ones by default — without z-index the flyout
+     sits UNDER those rows, so hit-testing picks a leaf row underneath and fires leaf trim → path [].
+    */
+    li.hasSubmenu.submenu-expanded {
+        z-index: 50;
+    }
+
+    li.hasSubmenu.submenu-expanded > .submenu {
+        display: block;
+        position: absolute;
+        top: 0;
+        right: -15em;
+        width: 15em;
+        padding: 0;
+        font-size: 1em;
+        /* Fixed width for the whole transition — do not animate width (was expand @keyframes),
+           or wrapping reflows every frame and jitters on long labels. */
+        animation: submenuFlyout 0.25s ease-out forwards;
+        opacity: 1;
+        background: var(--surface-context-submenu);
+        z-index: 51;
+
+        /* Only this flyout column (pagination is direct child of this ul), not ancestor menus that merely contain a nested paginated list (e.g. Manage → Game data). */
+        &:has(> li.ctx-pagination-li) {
+            display: flex;
+            flex-direction: column;
+            min-height: var(--ctx-root-column-height);
+        }
+    }
+
+    /* Invisible hit strip between parent column and submenu so brief gaps don’t collapse the branch */
+    li.hasSubmenu.submenu-expanded > .submenu::before {
+        content: "";
+        position: absolute;
+        left: -14px;
+        top: 0;
+        bottom: 0;
+        width: 14px;
+        z-index: 1;
+    }
+}
+.ctx-menu__search {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0.15rem 0 0.35rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid var(--overlay-white-15);
+  background: var(--backdrop-dark-35);
+  color: var(--whiteSecondary);
+  font: inherit;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--overlay-white-12);
+  margin: 0.25rem 0;
+}
+
+@keyframes submenuFlyout {
+  from {
+    opacity: 0.88;
+    transform: translateX(-0.45rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.filteredItem, .pagedOutItem {
+    display: none !important;
+}

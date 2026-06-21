@@ -1,0 +1,20 @@
+# This theme's name (Shows in-app, can be different to folder name)
+name: Pink
+accent: "#FF7AB3"
+background: background.webp
+
+accents:
+  - name: Accent
+    color: "#FF7AB3"
+  - name: Shell
+    color: "#F5BEDB"
+  - name: Shell Hover
+    color: "#F1DDE9"
+  - name: Tile
+    color: "#EDE8FC"
+  - name: Line
+    color: "#E29AB8"
+  - name: Magenta
+    color: "#C2185B"
+  - name: Close
+    color: "#E57373"

@@ -35,23 +35,24 @@
   
 **A Superfast open-source account switcher for Steam, Battle.net, Epic Games, Origin, Riot Games, Ubisoft, and more**.
 							     
-**Saves NO passwords** or any user information*. Most switchers, including Steam work purely off changing a file and a few registry keys.
+**Saves NO passwords** or any user information (besides what you choose to enter). Most switchers, including Steam work purely off changing a file and a few registry keys.
 *Wastes no time closing, switching and restarting Steam and other platforms.*<br />
 **NOTE:** Not created for cheating purposes. All it does is change accounts. Use it as you see fit, accepting responsibility.
 
 # How does it work?
-Simple. It swaps out files and registry values, pointing to your last logged in account while the program is closed. Think of it as freezing a platform like Steam in time, and replacing the "account block" with a previously frozen "account block", then unfreezing it. To Steam and your Steam account, it "looks" like you pulled your plug out and put it back in a week or so later, meanwhile you were playing on other accounts. Swapping the account block lets the program: Not interact with passwords, and not interact with 2-factor, so you can "Skip" both of those in the login process.
+Simple. It swaps out files and registry values that point to your last logged in account while the program is closed. Think of it as freezing a platform like Steam in time, and replacing the "account block" with a previously frozen "account block", then unfreezing it. To Steam and your Steam account, it "looks" like you pulled your plug out and put it back in a week or so later, meanwhile you were playing on other accounts. Swapping the account block lets the program: Not interact with passwords, and not interact with 2-factor, so you can "Skip" both of those in the login process.
 
-You can see (and edit) how account switching works by checking [Platforms.json](https://github.com/TCNOco/TcNo-Acc-Switcher/blob/ad1a0907f09d6a625b11e06bbb4947566e6be6b2/TcNo-Acc-Switcher-Server/Platforms.json).
+You can see (and edit) how account switching works by checking [Platforms.json](https://github.com/TCNOco/TcNo-Acc-Switcher/blob/go/Platforms.json).
 
 This software values your privacy. Please see the [Privacy Policy](https://github.com/TCNOco/TcNo-Acc-Switcher/blob/master/PRIVACY.md).
 
 ## HELP  WANTED
 
-This project is a massive time sink. For something completely open-source and free, I find myself with little time to develop. Consider supporting development on [Patreon](https://www.patreon.com/TroubleChute), [Ko-Fi](https://ko-fi.com/tcnoco) or preferrably YouTube as a Member on [TroubleChute](https://youtube.com/TroubleChute).
+This project is a massive time sink for something completely open-source and free. Consider supporting development on [Patreon](https://www.patreon.com/TroubleChute), [Ko-Fi](https://ko-fi.com/tcnoco) or as a YouTube Member on [TroubleChute](https://youtube.com/TroubleChute).
 
-Speak another language? [Help Translate this on Crowdin](https://crowdin.com/project/tcno-account-switcher).
-Code? Any and all help is appreciated. Specifically, currently the [build process for AppVeyor](https://github.com/TCNOco/TcNo-Acc-Switcher/tree/appveyor). Otherwise, [adding platforms](https://github.com/TCNOco/TcNo-Acc-Switcher/wiki/Help-code-a-platform) - No coding required!
+- Speak another language? [Help Translate this on Crowdin](https://crowdin.com/project/tcno-account-switcher).
+- Code? Any and all help is appreciated.
+- Help by [adding platforms](https://github.com/TCNOco/TcNo-Acc-Switcher/wiki/Help-code-a-platform) - No coding required!
 
 Please report any and all bugs, as well as steps to recreate them into the Issues section, or the `#bug-report` channel under `TCNO ACCOUNT SWITCHER` section on the [Community Discord](https://s.tcno.co/AccSwitcherDiscord).
 
@@ -59,7 +60,7 @@ Please report any and all bugs, as well as steps to recreate them into the Issue
 
 Albion Online, **[Battle.net](https://youtu.be/cvbo_VY05bo?list=PLsSFD61FiOVmAwChPSrIFkjDLoLsyqcU6)**, **Discord (+ PTB & Canary)**, **[Epic Games](https://www.youtube.com/watch?v=gd9oS6wiKmU&list=PLsSFD61FiOVmAwChPSrIFkjDLoLsyqcU6&index=7&t=26s)**, **[EA Desktop](https://youtu.be/BxUL27qVgaU?list=PLsSFD61FiOVmAwChPSrIFkjDLoLsyqcU6)**, **Escape from Tarkov**, **GeForce Now**, GOG Galaxy, **[Genshin Impact](https://youtu.be/WFt5DvKQ7pc?list=PLsSFD61FiOVmAwChPSrIFkjDLoLsyqcU6)**,  GeForce Now, Honkai StarRail, Magic Arena,  **[Origin](https://youtu.be/qRYra_fQt0I?list=PLsSFD61FiOVmAwChPSrIFkjDLoLsyqcU6)**, **OBS Studio**, Oculus, PS Remote Play, **Riot Games** ([Valorant](https://youtu.be/QyRwR7DbjQs?list=PLsSFD61FiOVmAwChPSrIFkjDLoLsyqcU6), League...), Rockstar, **[Steam](https://youtu.be/rLXGs1Yr3m8?list=PLsSFD61FiOVmAwChPSrIFkjDLoLsyqcU6)**, and **[Ubisoft Connect](https://youtu.be/XKBkIQaJzOA?list=PLsSFD61FiOVmAwChPSrIFkjDLoLsyqcU6)** - [YouTube Playlist](https://www.youtube.com/playlist?list=PLsSFD61FiOVmAwChPSrIFkjDLoLsyqcU6)
 	
-*This list may not be up-to-date as platforms can now be added a lot faster. The new version adds the ability to easily create and maintain platforms by editing a simple text file `Platforms.json`. If you'd like to learn more, see this [Wiki page](https://github.com/TCNOco/TcNo-Acc-Switcher/wiki/Help-code-a-platform).
+*This list may not be up-to-date - As we can add more easily in a simple text file - `Platforms.json`. If you'd like to learn more, see this [Wiki page](https://github.com/TCNOco/TcNo-Acc-Switcher/wiki/Help-code-a-platform).
 
 [TcNo Account Switcher Install Guide](https://www.youtube.com/watch?v=sjJ8OZ_urJY&list=PLsSFD61FiOVmAwChPSrIFkjDLoLsyqcU6&index=1&t=27s)
 
@@ -76,11 +77,10 @@ Albion Online, **[Battle.net](https://youtu.be/cvbo_VY05bo?list=PLsSFD61FiOVmAwC
 
 
 ## Required runtimes:
-**If you use the installer:** The required runtimes will automatically be downloaded and installed.
-**If you are NOT using the installer:** Run `_FIRST_RUN.exe` on a computer to bring up the same window as in the installer, where runtimes are downloaded and installed.
-**For manual runtime download and install**, see the [Wiki on this GitHub](https://github.com/TCNOco/TcNo-Acc-Switcher/wiki#1-installing-required-runtimes)
+As of today you don't need anything special! Go and [Wails](https://v3.wails.io/) allow us to build and release native binaries.
+You will need your systems already built-in Web Runtime - on Windows the [WebView2 Runtime](https://developer.microsoft.com/microsoft-edge/webview2/) should be installed already, otherwise you can download from the [here](https://developer.microsoft.com/microsoft-edge/webview2/).
 
-### Visit the [Wiki](https://github.com/TCNOco/TcNo-Acc-Switcher/wiki) for more info and steps for your first launch.
+### Lost? Visit the [Wiki](https://github.com/TCNOco/TcNo-Acc-Switcher/wiki) for more info
 
 ## Installation:
 #### Install Guide
@@ -91,12 +91,9 @@ Albion Online, **[Battle.net](https://youtu.be/cvbo_VY05bo?list=PLsSFD61FiOVmAwC
 </p>
     
 1. Download `TcNo.Account.Switcher.Installer...exe`
-2. Run the installer, and the application should launch when done. If not:
-Head into the folder where you installed the program and run `_FIRST_RUN.exe` to make sure required runtimes are installed, and then run `TcNo-Acc-Switcher.exe` to run the main program. The second is what shortcuts to the program should point to.
+2. Run the installer, and the application should launch when done.
 
-**For a portable installation (eg. on a USB) see [THIS](https://github.com/TCNOco/TcNo-Acc-Switcher/wiki#portable-eg-for-usb)** for steps on using the `.zip` or `.7z`.
-
-[See more info HERE](https://github.com/TCNOco/TcNo-Acc-Switcher/wiki#2-running-the-tcno-account-switcher)
+Want a portable install? Download and run `TcNo-Acc-Switcher.exe` directly (Do see info and steps on the [portable installs wiki page](https://github.com/TCNOco/TcNo-Acc-Switcher/wiki#portable-eg-for-usb))
 
 ## Screenshots
 
@@ -113,8 +110,14 @@ Head into the folder where you installed the program and run `_FIRST_RUN.exe` to
 </a>
 </p>
 
-### Looking for the legacy Steam only version?
-See this Wiki page: [Platform: Steam Legacy](https://github.com/TCNOco/TcNo-Acc-Switcher/wiki/Platform:-Steam-Legacy).
+#### Code Signing
+
+A special thanks to [SignPath.io](https://signpath.io/?utm_source=foundation&utm_medium=github&utm_campaign=tcno-acc-switcher) for providing a free code signing service and to the [SignPath Foundation](https://signpath.org/?utm_source=foundation&utm_medium=github&utm_campaign=tcno-acc-switcher) for a free code signing certificate to sign builds.
+<p>
+   <a href="https://signpath.io/?utm_source=foundation&utm_medium=github&utm_campaign=tcno-acc-switcher" target="_blank"><img src="/other/img/signpath_logo.webp"></a>
+</p>
+
+#### [Privacy Policy](https://github.com/TCNOco/TcNo-Acc-Switcher/blob/master/PRIVACY.md)
 
 #### Disclaimer
 
@@ -135,10 +138,3 @@ For the rest of the disclaimer, refer to the License (GNU General Public License
 https://github.com/TCNOCo/TcNo-Acc-Switcher/blob/master/LICENSE - See sections like 15, 16 and 17, as well as GitHub's
 'simplification' at the top of the above website.
 ```
-
-#### [Privacy Policy](https://github.com/TCNOco/TcNo-Acc-Switcher/blob/master/PRIVACY.md)
-
-Additional license information for included NuGet packages and other parts of code can be found in: [HERE](https://github.com/TCNOco/TcNo-Acc-Switcher/blob/master/TcNo-Acc-Switcher-Server/Additional%20Licenses.txt) `TcNo-Acc-Switcher-Server/Additional Licenses.txt`, and are copied to the build directory, as well as distributed with release versions of this software.
-
-<p align="center"><a target="_blank" align="center" href="https://www.jetbrains.com/?from=TcNo-Account-Switcher">
-  <img alt="JetBrains Support - Open Source License" src="/other/img/JetBrains_Banner.png" height=70"></a></p>

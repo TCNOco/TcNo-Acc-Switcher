@@ -1,0 +1,384 @@
+@use "sass:color";
+@use "sass:map";
+@use "overlay_surfaces" as overlay;
+
+@function kg($palette, $token) {
+  @return map.get($palette, $token);
+}
+
+@function pick($condition, $when-true, $when-false) {
+  @if $condition {
+    @return $when-true;
+  }
+
+  @return $when-false;
+}
+
+@mixin theme($palette, $meta, $is-light: false) {
+  $fg: kg($palette, fg);
+  $fg-dim: kg($palette, fg-dim);
+  $comment: kg($palette, comment);
+  $accent: kg($palette, accent);
+  $cyan: kg($palette, cyan);
+  $green: kg($palette, green);
+  $orange: kg($palette, orange);
+  $pink: kg($palette, pink);
+  $purple: kg($palette, purple);
+  $red: kg($palette, red);
+  $yellow: kg($palette, yellow);
+  $bg: kg($palette, bg);
+  $bg-dim: kg($palette, bg-dim);
+  $bg-deep: kg($palette, bg-deep);
+  $bg-panel: kg($palette, bg-panel);
+  $bg-hover: kg($palette, bg-hover);
+  $bg-gutter: kg($palette, bg-gutter);
+  $bg-search: kg($palette, bg-search);
+  $bg-visual: kg($palette, bg-visual);
+  $border: kg($palette, border);
+  $nontext: kg($palette, nontext);
+  $surface-float: kg($palette, surface-float);
+
+  $accent-hs: map.get($meta, accent-hs);
+  $accent-l: map.get($meta, accent-l);
+  $accent-int: map.get($meta, accent-int);
+  $green-int: map.get($meta, green-int);
+  $orange-int: map.get($meta, orange-int);
+  $red-int: map.get($meta, red-int);
+
+  $shadow-base: pick($is-light, $fg, $bg-deep);
+  $overlay-panel: pick($is-light, rgba($surface-float, 0.96), rgba($surface-float, 0.96));
+  $overlay-scrim: pick($is-light, rgba($fg, 0.22), rgba($bg-deep, 0.74));
+  $program-bg: pick($is-light, $bg, linear-gradient(180deg, $bg 0%, $bg-dim 100%));
+  $surface-context-row: pick($is-light, $bg-hover, color.mix($bg-hover, $bg-panel, 74%));
+  $surface-search-result: rgba($bg-search, pick($is-light, 0.92, 0.78));
+  $input-bg: pick($is-light, color.mix($surface-float, $bg, 76%), $bg-panel);
+  $input-border: pick($is-light, color.adjust($border, $lightness: -6%), $border);
+  $text-muted: pick($is-light, color.mix($comment, $fg, 38%), color.mix($comment, $fg, 44%));
+  $text-subtle: pick($is-light, color.mix($nontext, $fg, 52%), color.mix($nontext, $fg, 60%));
+  $tooltip-bg: pick($is-light, $border, $bg-deep);
+  $hotkey: pick($is-light, color.mix($orange, $fg, 22%), color.mix($orange, $bg, 36%));
+
+  :root {
+    --accent: #{$accent};
+    --accentHS: #{$accent-hs};
+    --accentL: #{$accent-l};
+    --accentInt: #{$accent-int};
+    --cyan: #{$cyan};
+    --cyanSecondary: #{color.mix($cyan, $bg, pick($is-light, 22%, 28%))};
+    --cyanLight: #{rgba($cyan, pick($is-light, 0.14, 0.18))};
+
+    --code: #{$bg-hover};
+    --code-background: #{$bg-deep};
+    --slightly-darker-code-background: #{pick($is-light, color.adjust($bg-deep, $lightness: -2%), color.adjust($bg-deep, $lightness: -1%))};
+    --darker-code-background: #{$bg-deep};
+    --even-darker-code-background: #{$input-bg};
+    --shadow: 0 4px 12px -6px #{rgba($shadow-base, pick($is-light, 0.2, 0.78))};
+
+    --black: #{pick($is-light, $fg, $bg)};
+    --blackSecondary: #{pick($is-light, $fg-dim, $bg-panel)};
+    --blackTernary: #{pick($is-light, $comment, $border)};
+    --blackLight: #{rgba($fg, pick($is-light, 0.08, 0.12))};
+
+    --white: #{$fg};
+    --whiteSecondary: #{$fg};
+    --whiteLight: #{rgba($fg, pick($is-light, 0.08, 0.06))};
+
+    --green: #{$green};
+    --greenSecondary: #{color.mix($green, $bg, pick($is-light, 18%, 28%))};
+    --greenLight: #{rgba($green, pick($is-light, 0.16, 0.12))};
+    --orange: #{$orange};
+    --orangeSecondary: #{color.mix($orange, $bg, pick($is-light, 18%, 28%))};
+    --orangeLight: #{rgba($orange, pick($is-light, 0.16, 0.12))};
+    --pink: #{$pink};
+    --pinkSecondary: #{color.mix($pink, $bg, pick($is-light, 18%, 24%))};
+    --pinkLight: #{rgba($pink, pick($is-light, 0.16, 0.12))};
+    --purple: #{$purple};
+    --purpleSecondary: #{color.mix($purple, $bg, pick($is-light, 18%, 26%))};
+    --purpleLight: #{rgba($purple, pick($is-light, 0.16, 0.12))};
+    --red: #{$red};
+    --redSecondary: #{color.mix($red, $bg, pick($is-light, 18%, 24%))};
+    --redLight: #{rgba($red, pick($is-light, 0.16, 0.12))};
+    --yellow: #{$yellow};
+    --yellowSecondary: #{color.mix($yellow, $bg, pick($is-light, 22%, 30%))};
+    --gradientDegree: 135deg;
+
+    --base-surface: #{$bg};
+    --chrome-bg: #{$bg-dim};
+    --mantle-surface: #{$bg-deep};
+    --surface-panel-bg: #{$bg-panel};
+    --surface0: #{$bg-panel};
+    --surface1: #{$bg-hover};
+    --surface2: #{$bg-gutter};
+    --border-bar-bg: #{$bg-dim};
+    --border-bar-size: 7px;
+    --program-bg: #{$program-bg};
+    --mainContentBackground: #{$bg};
+    --footer-bg: #{$bg-dim};
+    --scrollbar-track-bg: #{$bg-panel};
+    --button-bg: #{$bg-panel};
+    --button-bg-hover: #{$bg-hover};
+    --tooltip-bg: #{$tooltip-bg};
+    --main-padding: 0.75rem;
+    --document-canvas-bg: #{$bg};
+
+    --shadow-color-heavy: #{rgba($shadow-base, pick($is-light, 0.2, 0.86))};
+    --shadow-color-50: #{rgba($shadow-base, pick($is-light, 0.14, 0.5))};
+    --shadow-color-45: #{rgba($shadow-base, pick($is-light, 0.12, 0.45))};
+    --shadow-color-40: #{rgba($shadow-base, pick($is-light, 0.1, 0.4))};
+    --shadow-color-35: #{rgba($shadow-base, pick($is-light, 0.09, 0.35))};
+    --shadow-color-30: #{rgba($shadow-base, pick($is-light, 0.08, 0.3))};
+    --backdrop-scrim-55: #{rgba($shadow-base, pick($is-light, 0.34, 0.55))};
+    --backdrop-scrim-65: #{rgba($shadow-base, pick($is-light, 0.42, 0.65))};
+    --black-alpha-12: #{rgba($shadow-base, pick($is-light, 0.08, 0.12))};
+    --black-alpha-15: #{rgba($shadow-base, pick($is-light, 0.1, 0.15))};
+
+    --text-white-40: #{rgba($fg, pick($is-light, 0.45, 0.4))};
+    --text-white-50: #{rgba($fg, pick($is-light, 0.55, 0.5))};
+    --text-white-60: #{rgba($fg, pick($is-light, 0.65, 0.6))};
+    --text-white-65: #{rgba($fg, pick($is-light, 0.68, 0.65))};
+    --text-white-88: #{rgba($fg, 0.88)};
+    --text-white-90: #{rgba($fg, 0.9)};
+    --text-white-92: #{rgba($fg, 0.92)};
+
+    --overlay-white-06: rgba(255, 255, 255, #{pick($is-light, 0.5, 0.06)});
+    --overlay-white-08: rgba(255, 255, 255, #{pick($is-light, 0.55, 0.08)});
+    --overlay-white-12: rgba(255, 255, 255, #{pick($is-light, 0.65, 0.12)});
+    --overlay-white-14: rgba(255, 255, 255, #{pick($is-light, 0.72, 0.14)});
+    --overlay-white-15: rgba(255, 255, 255, #{pick($is-light, 0.75, 0.15)});
+
+    --text-muted-gray: #{$text-muted};
+    --text-subtle-gray: #{$text-subtle};
+    --text-dim-gray: #{$comment};
+    --text-body-muted: #{$text-muted};
+    --tag-default-bg: #{$border};
+    --surface-glass-06-15: linear-gradient(145deg, var(--overlay-white-08), #{rgba($shadow-base, pick($is-light, 0.08, 0.15))});
+    --surface-row-dark: #{$bg-panel};
+    --surface-steam-popover: #{$surface-float};
+    --surface-context-submenu: #{$bg-panel};
+    --surface-context-row: #{$surface-context-row};
+    --surface-search-result: #{$surface-search-result};
+    --text-on-bright-bg: #{$fg};
+    --context-menu-hotkey: #{$hotkey};
+    --form-checkbox-border: #{$border};
+    --input-number-border: #{$input-border};
+    --window-close-hover: #{$red};
+    --window-control-hover-bg: #{$bg-hover};
+    --error-text-soft: #{pick($is-light, color.adjust($red, $lightness: -12%), color.mix($red, $fg, 42%))};
+    --error-bg-dim: #{rgba($red, pick($is-light, 0.16, 0.24))};
+    --error-bg-hover: #{rgba($red, pick($is-light, 0.24, 0.34))};
+    --error-border-soft: #{rgba($red, pick($is-light, 0.28, 0.42))};
+    --overlay-panel-bg: #{$overlay-panel};
+    --overlay-scrim-deep: #{$overlay-scrim};
+
+    --greenInt: #{$green-int};
+    --orangeInt: #{$orange-int};
+    --redInt: #{$red-int};
+
+    --accent-border-deep: #{$border};
+    --accent-text-bright: #{$accent};
+    --accent-text-on-selection: #{$accent};
+    --accent-text-heading: #{$accent};
+    --home-ico-gradient-end: #{rgba($accent, 1)};
+
+    --ace-editor-bg: #{$bg-deep};
+    --ace-gutter-fg: #{$comment};
+    --ace-invisible: #{$nontext};
+    --ace-muted-purple: #{$purple};
+    --ace-xml-pe: #{$bg-gutter};
+
+    --notification-main-bg: #{$surface-float};
+    --notification-info-border: #{$accent};
+    --notification-info-highlight: #{$cyan};
+    --notification-success-border: #{$green};
+    --notification-success-highlight: #{$green};
+    --notification-warning-border: #{$orange};
+    --notification-warning-highlight: #{$orange};
+    --notification-error-border: #{$red};
+    --notification-error-highlight: #{$red};
+
+    @include overlay.overlay-root-tokens(
+      $modal-bg: var(--surface-panel-bg),
+      $modal-input-border: var(--form-checkbox-border)
+    );
+  }
+
+  body,
+  .programMain,
+  .mainblock {
+    background: var(--program-bg);
+    color: var(--white);
+  }
+
+  .headerbar,
+  .resizeTopLeft,
+  .resizeTop,
+  .resizeTopRight,
+  .resizeRight,
+  .resizeBottomRight,
+  .resizeBottom,
+  .resizeBottomLeft,
+  .resizeLeft,
+  #window-controls,
+  #btnBack {
+    background: var(--border-bar-bg);
+  }
+
+  .header_icon {
+    fill: var(--accent);
+  }
+
+  #window-title,
+  #window-title-modal,
+  .container {
+    color: var(--whiteSecondary);
+  }
+
+  button,
+  .button {
+    background: var(--button-bg);
+    border-color: var(--form-checkbox-border);
+    color: var(--whiteSecondary);
+  }
+
+  button:hover,
+  .button:hover,
+  #window-controls button:hover,
+  #btnBack:hover {
+    background: var(--button-bg-hover);
+    border-color: var(--accent);
+  }
+
+  button:active,
+  button:target,
+  .button:active,
+  .button:target,
+  .show > .dropdown-toggle {
+    background-color: var(--surface-context-row) !important;
+  }
+
+  .acc_list_actionbar {
+    background: var(--footer-bg);
+  }
+
+  .platform_list_item {
+    border: 1px solid var(--form-checkbox-border);
+    color: var(--whiteSecondary);
+    text-shadow: none;
+  }
+
+  .platform_list_item .icoFG,
+  .platform_list_item .fgImg use.icoFG {
+    fill: var(--whiteSecondary);
+  }
+
+  .icoGlass {
+    fill: rgba(255, 255, 255, 0);
+  }
+
+  .icoBG {
+    background: var(--surface-row-dark);
+  }
+
+  .accountHover {
+    border: 0.1em solid var(--form-checkbox-border);
+    background: var(--surface-row-dark);
+  }
+
+  .shortcuts,
+  .shortcutDropdown,
+  .shortcuts.expandShortcuts,
+  .shortcutPlaceholder,
+  .pathPicker,
+  .dropdown-menu,
+  .contextmenu,
+  .contextmenu .submenu,
+  .custom-dropdown-menu,
+  .modalFG,
+  #modal_contents {
+    background: var(--surface-panel-bg);
+    color: var(--whiteSecondary);
+  }
+
+  .shortcutPlaceholder {
+    background: var(--surface-context-row);
+  }
+
+  .shortcuts,
+  .shortcutDropdown,
+  .shortcuts.expandShortcuts {
+    border-color: var(--form-checkbox-border);
+  }
+
+  .dropdown {
+    color: var(--accent);
+  }
+
+  .dropdown-item {
+    color: var(--whiteSecondary);
+  }
+
+  .dropdown-item:hover,
+  .contextmenu li:hover {
+    background: var(--surface-context-row) !important;
+  }
+
+  .contextmenu li:hover {
+    border-left: 2px solid var(--accent);
+  }
+
+  .contextmenu li a,
+  .contextmenu li span,
+  .contextmenu li button {
+    color: var(--whiteSecondary);
+  }
+
+  .contextmenu,
+  .contextmenu .submenu {
+    box-shadow: 0 4px 16px var(--shadow-color-35);
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--scrollbar-track-bg);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 0.3em;
+    background: var(--surface1);
+    border: 1px solid var(--blackSecondary);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+  }
+
+  input[type="number"],
+  input[type="text"],
+  input[type="password"],
+  textarea,
+  #modal_contents input[type="text"],
+  #modal_contents input[type="password"] {
+    background: var(--even-darker-code-background) !important;
+    border-color: var(--input-number-border);
+    color: var(--whiteSecondary);
+  }
+
+  .platform_list_item:hover:not(:active) {
+    animation: none;
+  }
+
+  .btnClose-modal {
+    background: var(--red);
+  }
+
+  input.acc:checked + label.acc {
+    border-color: var(--accent) !important;
+    background: var(--surface-context-row);
+  }
+
+  label.acc.currentAcc {
+    border-color: var(--green);
+    border-style: dashed;
+  }
+
+  @include overlay.overlay-component-overrides;
+}

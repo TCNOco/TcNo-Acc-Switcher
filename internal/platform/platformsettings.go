@@ -1,0 +1,401 @@
+package platform
+
+import (
+	"encoding/json"
+	"errors"
+	"os"
+	"path/filepath"
+	"runtime"
+	"strconv"
+	"strings"
+	"sync"
+	"unicode"
+
+	"TcNo-Acc-Switcher/internal/fsutil"
+	"TcNo-Acc-Switcher/internal/winutil"
+)
+
+var (
+	platformSettingsCacheMu sync.RWMutex
+	platformSettingsCache   = map[string]platformSettingsCacheEntry{}
+)
+
+type platformSettingsCacheEntry struct {
+	settings PlatformSettings
+	err      error
+}
+
+type GameShortcutEntry struct {
+	FileName string `json:"fileName"`
+	Pinned   bool   `json:"pinned"`
+}
+
+// UnmarshalJSON accepts alternate JSON key casing for FileName and Pinned.
+func (e *GameShortcutEntry) UnmarshalJSON(data []byte) error {
+	if len(data) == 0 || string(data) == "null" {
+		return nil
+	}
+	var m map[string]any
+	if err := json.Unmarshal(data, &m); err != nil {
+		return err
+	}
+	*e = GameShortcutEntry{}
+	for _, k := range []string{"fileName", "FileName", "file_name"} {
+		if v, ok := m[k].(string); ok {
+			e.FileName = strings.TrimSpace(v)
+			if e.FileName != "" {
+				break
+			}
+		}
+	}
+	for _, k := range []string{"pinned", "Pinned"} {
+		switch v := m[k].(type) {
+		case bool:
+			e.Pinned = v
+			return nil
+		case float64:
+			e.Pinned = v != 0
+			return nil
+		case json.Number:
+			if i, err := v.Int64(); err == nil {
+				e.Pinned = i != 0
+				return nil
+			}
+		case string:
+			if b, err := strconv.ParseBool(strings.TrimSpace(v)); err == nil {
+				e.Pinned = b
+				return nil
+			}
+		}
+	}
+	return nil
+}
+
+func settingsDirUnderExe() (string, error) {
+	ud, err := EffectiveUserDataDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(ud, "Settings"), nil
+}
+
+type PlatformSettings struct {
+	RunAsAdmin                bool                `json:"RunAsAdmin"`
+	TrayAccNumber             int                 `json:"TrayAccNumber"`
+	ForgetAccountEnabled      bool                `json:"ForgetAccountEnabled"`
+	ClosingMethod             string              `json:"ClosingMethod"`
+	ClosingMethodForced       bool                `json:"ClosingMethodForced,omitempty"`
+	StartingMethod            string              `json:"StartingMethod"`
+	AutoStart                 bool                `json:"AutoStart"`
+	ShowShortNotes            bool                `json:"ShowShortNotes"`
+	ShowLastUsed              bool                `json:"ShowLastUsed"`
+	AccountNotes              map[string]string   `json:"AccountNotes"`
+	Shortcuts                 []GameShortcutEntry `json:"Shortcuts,omitempty"`
+	AlwaysSwapOnShortcut      bool                `json:"AlwaysSwapOnShortcut,omitempty"`
+	LaunchArguments           string              `json:"LaunchArguments,omitempty"`
+	ProfileImageExpiryDays    int                 `json:"ProfileImageExpiryDays,omitempty"`
+	PullAccountImagesOnSwitch bool                `json:"PullAccountImagesOnSwitch,omitempty"`
+}
+
+func DefaultPlatformSettings() PlatformSettings {
+	return PlatformSettings{
+		TrayAccNumber:             3,
+		ClosingMethod:             "Combined",
+		StartingMethod:            "Default",
+		AutoStart:                 true,
+		ShowShortNotes:            true,
+		ShowLastUsed:              true,
+		AccountNotes:              map[string]string{},
+		Shortcuts:                 []GameShortcutEntry{},
+		ForgetAccountEnabled:      false,
+		RunAsAdmin:                false,
+		AlwaysSwapOnShortcut:      true,
+		ProfileImageExpiryDays:    7,
+		PullAccountImagesOnSwitch: true,
+	}
+}
+
+// NormalizeClosingMethod normalizes a closing-method value for the current OS (for callers outside this package).
+func NormalizeClosingMethod(raw string) string {
+	return normalizeClosingMethodForOS(raw)
+}
+
+func normalizeClosingMethodForOS(raw string) string {
+	m := strings.TrimSpace(raw)
+	if strings.EqualFold(m, string(winutil.ClosingCombined)) {
+		return string(winutil.ClosingCombined)
+	}
+	if runtime.GOOS == "windows" {
+		if strings.EqualFold(m, string(winutil.ClosingClose)) {
+			return string(winutil.ClosingClose)
+		}
+		if strings.EqualFold(m, string(winutil.ClosingTaskKill)) {
+			return string(winutil.ClosingTaskKill)
+		}
+		if strings.EqualFold(m, string(winutil.ClosingElectron)) {
+			return string(winutil.ClosingElectron)
+		}
+	}
+	return string(winutil.ClosingCombined)
+}
+
+// DescriptorClosingPolicy returns the default closing method from Platforms.json Extras and whether the user may override it in settings.
+func DescriptorClosingPolicy(platformKey string) (defaultMethod string, force bool) {
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return string(winutil.ClosingCombined), false
+	}
+	raw, err := LoadPlatformsJSON(exeDir)
+	if err != nil {
+		return string(winutil.ClosingCombined), false
+	}
+	d, err := ParseDescriptor(raw, platformKey)
+	if err != nil {
+		return string(winutil.ClosingCombined), false
+	}
+	return normalizeClosingMethodForOS(d.Extras.ClosingMethod), d.Extras.ForceClosingMethod
+}
+
+func defaultClosingMethodForPlatform(platformKey string) string {
+	m, _ := DescriptorClosingPolicy(platformKey)
+	return m
+}
+
+func sanitizePlatformSettingsFilePrefix(platformKey string) string {
+	s := strings.TrimSpace(platformKey)
+	s = strings.ReplaceAll(s, " ", "")
+	var b strings.Builder
+	for _, r := range s {
+		switch {
+		case r < 32 || strings.ContainsRune(`<>:"/\|?*`, r):
+			continue
+		case unicode.IsLetter(r) || unicode.IsDigit(r) || r == '-' || r == '_':
+			b.WriteRune(r)
+		}
+	}
+	out := b.String()
+	if out == "" {
+		return "Platform"
+	}
+	return out
+}
+
+func platformSettingsJSONPath(platformKey string) (string, error) {
+	dir, err := settingsDirUnderExe()
+	if err != nil {
+		return "", err
+	}
+	key := strings.TrimSpace(platformKey)
+	if strings.EqualFold(key, "Steam") {
+		return filepath.Join(dir, "SteamSettings.json"), nil
+	}
+	return filepath.Join(dir, sanitizePlatformSettingsFilePrefix(key)+"Settings.json"), nil
+}
+
+func LaunchArgTokens(line string) []string {
+	return strings.Fields(strings.TrimSpace(line))
+}
+
+func HasLaunchArgToken(line, flag string) bool {
+	flag = strings.TrimSpace(flag)
+	if flag == "" {
+		return false
+	}
+	for _, t := range LaunchArgTokens(line) {
+		if strings.EqualFold(strings.TrimSpace(t), flag) {
+			return true
+		}
+	}
+	return false
+}
+
+func EnsureLaunchArg(line, flag string) string {
+	flag = strings.TrimSpace(flag)
+	if flag == "" {
+		return strings.TrimSpace(line)
+	}
+	if HasLaunchArgToken(line, flag) {
+		return strings.TrimSpace(line)
+	}
+	line = strings.TrimSpace(line)
+	if line == "" {
+		return flag
+	}
+	return line + " " + flag
+}
+
+func RemoveLaunchArgToken(line, flag string) string {
+	flag = strings.TrimSpace(flag)
+	if flag == "" {
+		return strings.TrimSpace(line)
+	}
+	var out []string
+	for _, t := range LaunchArgTokens(line) {
+		if !strings.EqualFold(strings.TrimSpace(t), flag) {
+			out = append(out, t)
+		}
+	}
+	return strings.Join(out, " ")
+}
+
+func loadPlatformSettingsFromDisk(platformKey string) (PlatformSettings, error) {
+	defaultClosingMethod, closingForced := DescriptorClosingPolicy(platformKey)
+	path, err := platformSettingsJSONPath(platformKey)
+	if err != nil {
+		return PlatformSettings{}, err
+	}
+	data, err := os.ReadFile(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			s := DefaultPlatformSettings()
+			s.ClosingMethod = defaultClosingMethod
+			s.ClosingMethodForced = closingForced
+			return s, nil
+		}
+		return PlatformSettings{}, err
+	}
+
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		s := DefaultPlatformSettings()
+		s.ClosingMethod = defaultClosingMethod
+		s.ClosingMethodForced = closingForced
+		return s, err
+	}
+
+	var s PlatformSettings
+	if err := json.Unmarshal(data, &s); err != nil {
+		s := DefaultPlatformSettings()
+		s.ClosingMethod = defaultClosingMethod
+		s.ClosingMethodForced = closingForced
+		return s, err
+	}
+
+	if _, ok := raw["AlwaysSwapOnShortcut"]; !ok {
+		s.AlwaysSwapOnShortcut = true
+	}
+	if _, ok := raw["ShowLastUsed"]; !ok {
+		s.ShowLastUsed = true
+	}
+	if _, ok := raw["TrayAccNumber"]; !ok && s.TrayAccNumber <= 0 {
+		s.TrayAccNumber = 3
+	}
+	if _, ok := raw["PullAccountImagesOnSwitch"]; !ok {
+		s.PullAccountImagesOnSwitch = true
+	}
+	if s.AccountNotes == nil {
+		s.AccountNotes = map[string]string{}
+	}
+	s.ClosingMethod = normalizeClosingMethodForOS(s.ClosingMethod)
+	if strings.TrimSpace(s.ClosingMethod) == "" {
+		s.ClosingMethod = defaultClosingMethod
+	}
+	if closingForced {
+		s.ClosingMethod = defaultClosingMethod
+	}
+	s.ClosingMethodForced = closingForced
+	if strings.TrimSpace(s.StartingMethod) == "" {
+		s.StartingMethod = "Default"
+	}
+	if s.Shortcuts == nil {
+		s.Shortcuts = []GameShortcutEntry{}
+	}
+	if s.ProfileImageExpiryDays <= 0 {
+		s.ProfileImageExpiryDays = 7
+	}
+	return s, nil
+}
+
+// LoadPlatformSettings reads Settings/<Platform>Settings.json (Steam: SteamSettings.json); only fields on PlatformSettings are unmarshaled.
+// Results are cached in memory and invalidated by SavePlatformSettings / resetPlatformJSONToDefaults.
+func LoadPlatformSettings(platformKey string) (PlatformSettings, error) {
+	platformKey = strings.TrimSpace(platformKey)
+
+	platformSettingsCacheMu.RLock()
+	if entry, ok := platformSettingsCache[platformKey]; ok {
+		platformSettingsCacheMu.RUnlock()
+		return entry.settings, entry.err
+	}
+	platformSettingsCacheMu.RUnlock()
+
+	platformSettingsCacheMu.Lock()
+	defer platformSettingsCacheMu.Unlock()
+
+	if entry, ok := platformSettingsCache[platformKey]; ok {
+		return entry.settings, entry.err
+	}
+
+	s, err := loadPlatformSettingsFromDisk(platformKey)
+	platformSettingsCache[platformKey] = platformSettingsCacheEntry{settings: s, err: err}
+	return s, err
+}
+
+// SavePlatformSettings patches the JSON file without removing keys not present on PlatformSettings.
+func SavePlatformSettings(platformKey string, s PlatformSettings) error {
+	s.ClosingMethodForced = false
+	path, err := platformSettingsJSONPath(platformKey)
+	if err != nil {
+		return err
+	}
+	if s.AccountNotes == nil {
+		s.AccountNotes = map[string]string{}
+	}
+	existing := map[string]any{}
+	if data, err := os.ReadFile(path); err == nil && len(data) > 0 {
+		_ = json.Unmarshal(data, &existing)
+	}
+	patch, err := json.Marshal(s)
+	if err != nil {
+		return err
+	}
+	var patchMap map[string]any
+	if err := json.Unmarshal(patch, &patchMap); err != nil {
+		return err
+	}
+	delete(existing, "ClosingMethodForced")
+	for k, v := range patchMap {
+		if k == "ClosingMethodForced" {
+			continue
+		}
+		existing[k] = v
+	}
+	out, err := json.MarshalIndent(existing, "", "  ")
+	if err != nil {
+		return err
+	}
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		return err
+	}
+	platformSettingsCacheMu.Lock()
+	delete(platformSettingsCache, platformKey)
+	platformSettingsCacheMu.Unlock()
+	return fsutil.WriteFileAtomic(path, out, 0o644)
+}
+
+// resetPlatformJSONToDefaults resets common settings; Steam uses SetSteamReset for a full reset.
+func resetPlatformJSONToDefaults(platformKey string) error {
+	platformKey = strings.TrimSpace(platformKey)
+	if strings.EqualFold(platformKey, "Steam") {
+		if resetSteamSettings == nil {
+			return errors.New("steam reset not configured")
+		}
+		return resetSteamSettings()
+	}
+	path, err := platformSettingsJSONPath(platformKey)
+	if err != nil {
+		return err
+	}
+	def := DefaultPlatformSettings()
+	def.ClosingMethod = defaultClosingMethodForPlatform(platformKey)
+	data, err := json.MarshalIndent(def, "", "  ")
+	if err != nil {
+		return err
+	}
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		return err
+	}
+	platformSettingsCacheMu.Lock()
+	delete(platformSettingsCache, strings.TrimSpace(platformKey))
+	platformSettingsCacheMu.Unlock()
+	return fsutil.WriteFileAtomic(path, data, 0o644)
+}

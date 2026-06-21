@@ -1,0 +1,701 @@
+﻿@use "sass:color";
+@use "../overlay_surfaces" as overlay;
+/*
+    Nord Default
+    - Created by Xapu1337
+*/
+
+$nordDark0: #2E3440;
+$nordDark1: #3B4252;
+$nordDark2: #434C5E;
+$nordDark3: #4C566A;
+$nordDark4: #D8DEE9;
+$nordDark5: #E5E9F0;
+$nordDark6: #ECEFF4;
+$nordDark0-10: color.adjust(#2E3440, $lightness: -10%);
+$nordDark1-10: color.adjust(#3B4252, $lightness: -10%);
+$nordDark2-10: color.adjust(#434C5E, $lightness: -10%);
+$nordDark3-10: color.adjust(#4C566A, $lightness: -10%);
+$nordDark4-10: color.adjust(#D8DEE9, $lightness: -10%);
+$nordDark5-10: color.adjust(#E5E9F0, $lightness: -10%);
+$nordDark6-10: color.adjust(#ECEFF4, $lightness: -10%);
+$nordFrost0: #8FBCBB;
+$nordFrost1: #88C0D0;
+$nordFrost2: #81A1C1;
+$nordFrost3: #5E81AC;
+$nordAuora0: #BF616A;
+$nordAuora1: #D08770;
+$nordAuora2: #EBCB8B;
+$nordAuora3: #A3BE8C;
+$nordAuora4: #B48EAD;
+:root {
+  --accent: $nordFrost3;
+  --accentHS: 213, 32%;
+  --accentL: 52%;
+  --accentInt: 94, 129, 172;
+  --cyan: #{$nordFrost1};
+  --cyanSecondary: #{$nordFrost0};
+  --cyanLight: hsla(193, 32%, 70%, 0.2);
+
+  --code: #{$nordDark2};
+  --code-background: #{$nordDark0};
+  --slightly-darker-code-background: #{color.adjust($nordDark0, $lightness: -4%)};
+  --darker-code-background: #{$nordDark0-10};
+  --even-darker-code-background: #{color.adjust($nordDark0, $lightness: -8%)};
+  --shadow: 0 4px 10px -6px #{color.adjust($nordDark0, $lightness: -18%)};
+
+  --black: #{$nordDark0};
+  --blackSecondary: #{$nordDark3};
+  --blackTernary: #{$nordDark4};
+  --blackLight: hsla(220, 16%, 30%, 0.06);
+
+  --white: #{$nordDark6};
+  --whiteSecondary: #ffffff;
+  --whiteLight: hsla(219, 30%, 98%, 0.06);
+
+  --green: #{$nordAuora3};
+  --greenSecondary: #cbe8bf;
+  --greenLight: hsla(118, 30%, 70%, 0.1);
+  --orange: #{$nordAuora1};
+  --orangeSecondary: #f2c6b8;
+  --orangeLight: hsla(25, 46%, 70%, 0.1);
+  --pink: #{$nordAuora4};
+  --pinkSecondary: #ebd5ef;
+  --pinkLight: hsla(279, 30%, 80%, 0.1);
+  --purple: #{$nordAuora4};
+  --purpleSecondary: #dcd0f4;
+  --purpleLight: hsla(279, 24%, 75%, 0.1);
+  --red: #{$nordAuora0};
+  --redSecondary: #f0bdc1;
+  --redLight: hsla(354, 45%, 70%, 0.1);
+  --yellow: #{$nordAuora2};
+  --yellowSecondary: #f7ecc4;
+  --gradientDegree: 135deg;
+
+  --border-bar-bg: #{$nordDark1};
+  --border-bar-size: 7px;
+  --program-bg: linear-gradient(90deg, #{$nordDark0}, #{$nordDark1} 100%);
+  --mainContentBackground: #{$nordDark0};
+  --footer-bg: #{$nordDark1};
+  --scrollbar-track-bg: #{$nordDark3};
+  --button-bg: #{$nordDark3};
+  --button-bg-hover: #{$nordDark2};
+  --tooltip-bg: #{color.adjust($nordDark0, $lightness: -12%)};
+  --main-padding: 0.75rem;
+  --document-canvas-bg: #{$nordDark0};
+
+  --shadow-color-heavy: rgba(20, 24, 32, 0.88);
+  --shadow-color-50: rgba(20, 24, 32, 0.52);
+  --shadow-color-45: rgba(20, 24, 32, 0.46);
+  --shadow-color-40: rgba(20, 24, 32, 0.42);
+  --shadow-color-35: rgba(20, 24, 32, 0.37);
+  --shadow-color-30: rgba(20, 24, 32, 0.32);
+  --backdrop-scrim-55: rgba(15, 18, 25, 0.58);
+  --backdrop-scrim-65: rgba(15, 18, 25, 0.68);
+  --black-alpha-12: rgba(12, 15, 20, 0.14);
+  --black-alpha-15: rgba(12, 15, 20, 0.18);
+
+  --text-muted-gray: #{color.adjust($nordDark4, $lightness: -12%)};
+  --text-subtle-gray: #{$nordDark3};
+  --text-dim-gray: #{$nordDark2};
+  --text-body-muted: #{color.adjust($nordDark4, $lightness: -22%)};
+
+  --surface-row-dark: #{$nordDark1};
+  --surface-steam-popover: #{color.adjust($nordDark0, $lightness: -3%)};
+  --surface-context-submenu: var(--code);
+  --surface-context-row: #{$nordDark1};
+  --surface-search-result: #{color.change($nordDark3, $alpha: 0.76)};
+
+  --context-menu-hotkey: #4a3528;
+  --form-checkbox-border: #{$nordFrost2};
+  --window-control-hover-bg: #{$nordDark2};
+  --tag-default-bg: #{$nordDark2};
+
+  --overlay-panel-bg: #{color.change($nordDark1, $alpha: 0.96)};
+  --overlay-scrim-deep: #{color.change($nordDark0, $alpha: 0.74)};
+
+  --greenInt: 163, 190, 140;
+  --orangeInt: 208, 135, 112;
+  --redInt: 191, 97, 106;
+  --text-on-bright-bg: #{$nordDark6};
+
+  --ace-editor-bg: #{$nordDark0};
+  --ace-gutter-fg: #{$nordDark3};
+  --ace-invisible: #{$nordDark3};
+  --ace-muted-purple: #{$nordAuora4};
+  --ace-xml-pe: #{$nordDark2};
+
+  --notification-main-bg: #1d2027;
+  --notification-info-border: #5e81ac;
+  --notification-info-highlight: #81a1c1;
+  --notification-success-border: #{$nordAuora3};
+  --notification-success-highlight: #c0daa9;
+  --notification-warning-border: #{$nordAuora1};
+  --notification-warning-highlight: #e9a590;
+  --notification-error-border: #{$nordAuora0};
+  --notification-error-highlight: #e07f88;
+  --notification-border-radius: 0.25rem;
+
+  @include overlay.overlay-root-tokens(
+    $modal-bg: #{$nordDark1},
+    $modal-header-bg: #{$nordDark3},
+    $modal-input-bg: #{$nordDark0},
+    $modal-input-border: #{$nordFrost2},
+    $overlay-thumb-bg: #{$nordDark0},
+    $overlay-thumb-border: #{$nordFrost2},
+    $notification-border-radius: 0.25rem
+  );
+}
+
+app {
+  border-radius: .125rem;
+}
+
+* {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  /* Rubik/Roboto load via info.yaml googleFontsCss when online; see themes.ts */
+  font-family: "Rubik", system-ui, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+  font-size: medium;
+}
+
+.button,
+button,
+button#modal_true,
+button#btnLogin {
+    background: $nordDark3;
+    color: $nordDark4;
+    font-size: smaller;
+    border-color: $nordDark1;
+    border-radius: 0.35rem;
+    &:hover {
+        background-color: $nordDark1;
+        border-radius: 0.5rem;
+        border-color: $nordDark2-10;
+    }
+}
+
+button:active,
+.button:active,
+.button:target,
+.show > .dropdown-toggle {
+  background: $nordDark1 !important;
+  border-color: $nordFrost3 !important;
+  border-radius: 0.2rem;
+}
+
+#btnClose:hover,
+#btnClose-modal:hover {
+  background: $nordAuora0 !important;
+}
+
+#btnClose:active,
+#btnClose-modal:active {
+  background: $nordAuora0 !important;
+}
+
+#btnClose:active .icon,
+#btnClose-modal:active .icon {
+  filter: invert(1);
+}
+
+#btnStartPlat, #shortcutDropdownBtn,
+.shortcutDropdown #btnOpenShortcutFolder {
+    min-width: 48px;
+    min-height: 48px;
+    max-width: 48px;
+    max-height: 48px;
+}
+
+.shortcutDropdown #btnOpenShortcutFolder {
+    right: -50px;
+}
+
+.shortcuts button,
+.shortcuts .button,
+.shortcuts .shortcutPlaceholder,
+.shortcutDropdown button,
+.shortcutDropdown .button,
+.shortcutDropdown .shortcutPlaceholder {
+    min-width: 40px;
+    min-height: 40px;
+    max-width: 40px;
+    max-height: 40px;
+    padding: 6px;
+}
+
+.advancedClearingButtonCol button {
+    font-size: 1em;
+}
+
+.shortcutPlaceholder {
+    background: $nordDark0;
+}
+
+.shortcuts, .shortcutDropdown {
+    border-radius: 0.5rem;
+    background: $nordDark0;
+    max-width: 262px;
+}
+
+.shortcuts {
+    border: .1em solid transparent;
+}
+
+.shortcutDropdown,
+.shortcuts.expandShortcuts {
+    border: .1em solid $nordFrost3;
+}
+
+.custom-dropdown-menu {
+    background: $nordDark0 !important;
+    border-radius: 0.5rem;
+    border: 3px solid $nordDark3;
+    top: 0.5rem !important;
+    font-size: medium;
+    max-height: 60vh;
+    overflow-y: auto;
+    box-shadow: none;
+}
+
+.fancyLink {
+  &:hover {
+    color: $nordFrost3;
+  }
+
+  &:active {
+    color: $nordFrost3;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: $nordDark1;
+  border-radius: 0.5rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: $nordDark0;
+  border-radius: 20px;
+  border: 1px solid $nordDark3;
+
+  &:hover {
+    background-color: $nordDark1;
+  }
+}
+
+.programMain {
+  background: $nordDark0;
+}
+
+label.form-check-label {
+  border-radius: 0.5rem;
+}
+
+input[type="checkbox"]:checked + label {
+  background: $nordAuora3;
+  border: 1px solid $nordDark4;
+}
+
+input[type="checkbox"] + label {
+  border: 1px solid $nordDark4;
+}
+
+input[type=number],
+input[type=text],
+input[type=password],
+textarea {
+    -moz-appearance: textfield;
+    display: inline-block;
+    margin: 0 0.5em 2px 0.5em;
+    padding: 0.5em;
+    border-radius: 0.5rem;
+    border-bottom: none;
+    outline: 0;
+    background: $nordDark0-10;
+    color: $nordDark6;
+}
+
+input[type=number] { border-bottom: 2px solid $nordFrost3; }
+
+input[type=number]:focus,
+input[type=text]:focus,
+input[type=password]:focus { border-bottom: 2px solid color.adjust($nordFrost3, $lightness: 10%); }
+
+
+#modal_contents input[type=text],
+#modal_contents input[type=password] {
+  margin: 0;
+  height: 43px;
+  padding-bottom: 2px;
+  border-bottom: 2px solid $nordFrost3;
+  background-color: $nordDark0-10 !important;
+  color: $nordDark6;
+}
+
+#modal_contents input[type=text]:focus,
+#modal_contents input[type=password]:focus {
+  border-bottom: 2px solid $nordFrost3;
+}
+
+.acc_list_actionbar {
+  position: fixed;
+  padding-left: 10px;
+  padding-right: 10px;
+  background: $nordDark0;
+  bottom: 7px;
+  left: 0;
+}
+
+.pathPicker {
+  background: $nordDark0;
+
+  span:not(.c):hover {
+    color: $nordFrost3 !important;
+  }
+
+  span.selected-path,
+  spanselected-path::before {
+    background-color: $nordFrost3;
+  }
+
+  div:not(:first-child) {
+    border-left: .1rem solid $nordDark0-10;
+    margin: .1rem;
+  }
+
+  span::before {
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    margin-right: .3em;
+    content: "";
+    margin-right: 7px;
+    color: $nordAuora2;
+  }
+
+  span.folder::before {
+    content: "";
+    margin-right: 5px;
+    color: $nordAuora2;
+  }
+
+  span.head::before {
+      content: "";
+      margin-right: 5px;
+  }
+
+  .c,.pathPicker .c::before {
+    color: $nordFrost1 !important;
+}
+
+
+}
+
+.acc_list_item,
+.platform_list_item {
+    font-size: small;
+
+}
+
+.platform_list {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  max-height: 100%;
+  display: block;
+  overflow-y: auto;
+}
+
+
+
+.platform_list_item {
+    border-radius: .2rem;
+    border: $nordFrost3 1px solid;
+    color: $nordDark4;
+    text-shadow: none;
+    overflow: hidden;
+    .icoFG {
+        fill: $nordDark4;
+    }
+
+    .icoBG {
+        background: linear-gradient(0deg,$nordDark0 0%,$nordDark1 100%)
+    }
+
+    &#SwitcherSteam svg,
+    &#SwitcherBattleNet svg,
+    &#SwitcherRiot svg {
+        border-radius: 25px;
+        filter: grayscale(100%);
+    }
+
+    &:hover {
+      border-radius: .35rem;
+
+    }
+
+    &#SwitcherSteam:hover svg,
+    &#SwitcherBattleNet:hover svg,
+    &#SwitcherRiot:hover svg {
+        border-radius: .25rem;
+    }
+
+    &:hover:not(:active) {
+        animation: effect 1s ease-in-out 0s infinite normal none running;
+        // animation: pulse 0s;
+        // transform: none;
+    }
+}
+
+.platform_list_item:hover:not(:active) {
+    animation: none;
+}
+
+.platformTable {
+  height: 100%;
+  width: 100%;
+  max-height: calc(100% - 42px);
+  position: relative;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+use.icoGlass {
+  display: none;
+}
+
+.modalFG {
+  background: $nordDark1;
+  border-radius: .5rem;
+  box-shadow: none;
+  z-index: 900;
+
+  animation: fade-in 0.3s ease-in-out 0s;
+  padding: 0px !important;
+}
+
+.folder_indicator {
+  display: none;
+}
+
+.folder_indicator_bg.found {
+  background: $nordAuora3;
+}
+
+.folder_indicator_bg.notfound {
+  background: $nordAuora0;
+}
+
+
+#modal_contents {
+  font-size: small;
+  background: $nordDark1-10;
+
+  a {
+    &:hover {
+      color: $nordFrost3;
+    }
+
+    &:active {
+      color: $nordFrost3;
+    }
+  }
+
+  padding: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+#modal_contents button {
+  width: auto;
+  margin: 0 0.25em;
+  padding: 0.25em 0.6em;
+  border-width: 0.1em;
+  border-style: solid;
+  cursor: pointer;
+  transition: ease-in-out 60ms;
+  background: $nordDark0;
+  font-size: smaller;
+  border-color: $nordDark1;
+  border-radius: 0.35rem !important;
+
+  &:hover {
+    background-color: $nordDark1-10;
+    border-radius: 0.5rem;
+    border-color: $nordDark2-10;
+  }
+
+  &:active {
+    background: $nordDark1-10 !important;
+  }
+}
+
+.form-text {
+  span {
+    font-size: medium !important;
+  }
+  input {
+    background-color: $nordDark1-10 !important;
+  }
+}
+button#select_location,
+button#LocateProgramExe,
+.folder_indicator_bg.notfound {
+  border-radius: 0.5rem;
+}
+
+.settingsCol.inputAndButton {
+  padding-top: .25rem;
+}
+
+#modal_contents .inputAndButton {
+  margin: 0;
+}
+
+#window-title-modal {
+  background: $nordDark3;
+}
+
+.headerbar,
+.resizeBottom,
+.resizeBottomRight,
+.resizeBottomLeft,
+#window-controls {
+  background: $nordDark0;
+  z-index: 500 !important;
+}
+
+#window-controls button:hover,
+#btnBack:hover,
+#modalBtnBack:hover,
+#btnRestore:hover,
+#btnMax:hover {
+    background: $nordFrost3;
+}
+
+.clearingRight {
+  background-color: $nordDark0-10 !important;
+  border-radius: 0.5rem;
+  border-bottom: 2px solid $nordFrost3 !important;
+}
+
+.resizeRight,
+.resizeLeft {
+  background: $nordDark0;
+}
+
+.btnClose-modal {
+  background: #BF616A;
+}
+
+.contextmenu,
+.submenu {
+  font-size: smaller;
+  background: $nordDark1-10 !important;
+  box-shadow: none;
+  border: 6px solid $nordDark0;
+  width: 15em;
+  margin: 0;
+  padding: 0;
+  border-radius: 0.15em;
+  list-style: none;
+  z-index: 999999;
+}
+.contextmenu .submenu {
+  box-shadow: none;
+}
+
+.accountHover > label.acc {
+    background-color: $nordDark3 !important;
+    border: $nordFrost3 1px solid;
+    border-radius: 0.35rem;
+    border-bottom: solid 2px $nordFrost2;
+}
+
+.accountHover {
+  label.acc.currentAcc {
+    border-style: solid;
+    border-color: $nordAuora3;
+    border-bottom: none;
+  }
+
+  input.acc:checked + label.acc {
+    border-bottom: none;
+  }
+
+}
+
+
+.placeHolderAcc {
+  background-color: $nordDark1;
+  border-style: dashed !important;
+  border: $nordFrost3 2px solid;
+  border-radius: 0.35rem;
+}
+
+.placeHolderPlat {
+    background-color: $nordDark1;
+    border: $nordFrost3 2px solid;
+    width: 20vw;
+    height: 20vw;
+    max-width: 175px;
+    max-height: 175px;
+    display: inline-block;
+    margin: 10px;
+    vertical-align: middle;
+}
+
+
+.contextmenu li:hover {
+    border-left: 2px solid $nordFrost3;
+    background: $nordDark0
+}
+
+input.acc:checked + label.acc {
+  border-color: $nordAuora3 !important;
+  background: $nordDark1;
+  border-radius: 0.3rem;
+}
+
+label.acc.currentAcc {
+  border-color: $nordAuora3;
+  border-style: dashed;
+  border-radius: 0.35rem;
+}
+
+
+@keyframes effect {
+  0% {
+    border: $nordFrost3 -1px solid;
+    transform: scale(1);
+  }
+
+  100% {
+    border: #0a0d1200 -20px solid;
+    transform: scale(1.25);
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    transform: translate(-50%, -40%);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%);
+    opacity: 1;
+  }
+}
+
+@include overlay.overlay-component-overrides;

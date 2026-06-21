@@ -1,0 +1,33 @@
+# This theme's name (Shows in-app, can be different to folder name)
+name: Catppuccin Macchiato
+accent: "#8AADF4"
+
+accents:
+  - name: Rosewater
+    color: "#F4DBD6"
+  - name: Flamingo
+    color: "#F0C6C6"
+  - name: Pink
+    color: "#F5BDE6"
+  - name: Mauve
+    color: "#C6A0F6"
+  - name: Red
+    color: "#ED8796"
+  - name: Maroon
+    color: "#EE99A0"
+  - name: Peach
+    color: "#F5A97F"
+  - name: Yellow
+    color: "#EED49F"
+  - name: Green
+    color: "#A6DA95"
+  - name: Teal
+    color: "#8BD5CA"
+  - name: Sky
+    color: "#91D7E3"
+  - name: Sapphire
+    color: "#7DC4E4"
+  - name: Blue
+    color: "#8AADF4"
+  - name: Lavender
+    color: "#B7BDF8"

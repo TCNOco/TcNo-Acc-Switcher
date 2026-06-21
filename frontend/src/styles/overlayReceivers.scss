@@ -1,0 +1,356 @@
+/* Full-screen file/profile overlay visuals — global so themes & Preview CSS can target classes */
+@keyframes overlayRecvFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes bgZoneSlideUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(2rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.acc-img-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--overlay-scrim-deep);
+  backdrop-filter: blur(4px);
+  animation: overlayRecvFadeIn 0.15s ease-out;
+}
+
+.acc-img-overlay__x {
+  position: fixed;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 10051;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: none;
+  border-radius: 8px;
+  background: var(--overlay-white-08);
+  color: var(--white);
+  font-size: 1.75rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:hover {
+    background: var(--overlay-white-14);
+  }
+}
+
+.acc-img-overlay__panel {
+  max-width: min(520px, 92vw);
+  padding: 1.75rem 1.5rem;
+  border-radius: 14px;
+  background: var(--overlay-panel-bg);
+  border: 1px solid var(--accent-overlay-border);
+  box-shadow: 0 12px 48px var(--shadow-color-45);
+  text-align: center;
+}
+
+.acc-img-overlay__title {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.acc-img-overlay__hint {
+  margin: 0 0 1.25rem;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: hsl(var(--accentHS), calc(var(--accentL) + 42%));
+  opacity: 0.88;
+}
+
+.acc-img-overlay__dropzone {
+  width: 100%;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  border: 2px dashed var(--accent-overlay-border-strong);
+  border-radius: 12px;
+  background: var(--accent-fill-panel);
+  color: var(--accent-text-on-selection);
+  cursor: pointer;
+  transition: border-color 0.12s ease, background 0.12s ease;
+  &:hover:not(:disabled) {
+    border-color: var(--accent-overlay-hover);
+    background: hsla(var(--accentHS), 40%, 16%, 0.75);
+  }
+  &:disabled {
+    opacity: 0.55;
+    cursor: default;
+  }
+}
+
+.acc-img-overlay__dropicon {
+  color: var(--accent-text-on-selection);
+  display: flex;
+}
+
+.acc-img-overlay__cta {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.acc-img-overlay__remove {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  border: 1px solid var(--error-border-soft);
+  background: var(--error-bg-dim);
+  color: var(--error-text-soft);
+  cursor: pointer;
+  &:hover:not(:disabled) {
+    background: var(--error-bg-hover);
+  }
+  &:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+}
+
+/* Inline staging on Preview CSS page */
+.acc-img-overlay--preview {
+  position: relative;
+  inset: auto;
+  z-index: 1;
+  min-height: 260px;
+  border-radius: 14px;
+  overflow: hidden;
+
+  .acc-img-overlay__x {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    z-index: 2;
+  }
+}
+
+.fileDropOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--overlay-scrim-deep);
+  backdrop-filter: blur(4px);
+  animation: overlayRecvFadeIn 0.15s ease-out;
+}
+
+.fileDropOverlay__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem 2.5rem;
+  max-width: min(420px, 90vw);
+  min-height: 140px;
+  border: 2px dashed var(--accent-line-muted);
+  border-radius: 12px;
+  background: var(--accent-fill-soft);
+  box-shadow: 0 8px 40px var(--shadow-color-35);
+  text-align: center;
+  color: var(--accent-text-on-selection);
+}
+
+.fileDropOverlay__icon {
+  color: var(--accent-text-heading);
+  width: 4.5rem;
+  height: 4.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+}
+
+.fileDropOverlay__text {
+  margin: 0;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--white);
+}
+
+.fileDropOverlay--preview {
+  position: relative;
+  inset: auto;
+  z-index: 1;
+  min-height: 240px;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.fileDropOverlay--incompatible {
+  .fileDropOverlay__inner {
+    border-color: var(--red);
+    border-style: solid;
+    background: hsla(0, 60%, 28%, 0.55);
+  }
+
+  .fileDropOverlay__icon {
+    color: var(--red);
+  }
+}
+
+/* Per-account row cue when dragging profile images onto the list (Platform / PlatformSteam) */
+label.acc.acc--profile-drop-target,
+label.acc.acc--drop-target {
+  position: relative;
+}
+
+.acc_profile_drop_overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: inherit;
+  border: 2px dashed var(--accent-line-muted);
+  background: var(--accent-fill-soft);
+  backdrop-filter: blur(2.5px);
+  -webkit-backdrop-filter: blur(2.5px);
+  pointer-events: none;
+  box-shadow: inset 0 1px 0 var(--overlay-white-06);
+  animation: overlayRecvFadeIn 0.15s ease-out both;
+}
+
+.acc_profile_drop_overlay--hover,
+.bg-drop-zone:hover,
+.bg-drop-zone--hovered {
+  border-color: var(--accent-overlay-hover);
+  background: var(--accent-fill-medium);
+}
+
+.acc_profile_drop_overlay__center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  max-width: 90%;
+  text-align: center;
+}
+
+.acc_profile_drop_overlay__icon {
+  width: clamp(2rem, 18%, 3rem);
+  height: clamp(2rem, 18%, 3rem);
+  color: var(--accent-text-heading);
+  filter: drop-shadow(0 1px 4px var(--shadow-color-40));
+
+  svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+}
+
+.acc_profile_drop_overlay__label {
+  font-size: clamp(0.68rem, 2.8vw, 0.82rem);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--accent-text-heading);
+  text-shadow: 0 1px 2px var(--shadow-color-55-text);
+}
+
+/* Background image drop zones */
+
+.bg-drop-zones {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10040;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-end;
+  pointer-events: none;
+  animation: bgZoneSlideUp 0.22s ease-out both;
+}
+
+.bg-drop-zone {
+  pointer-events: all;
+  width: 200px;
+  min-height: 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.75rem 1rem;
+  border: 2px dashed var(--accent-overlay-border-strong);
+  border-radius: 12px;
+  background: var(--accent-fill-panel);
+  color: var(--accent-text-on-selection);
+  cursor: copy;
+  transition:
+    border-color 0.12s ease,
+    background 0.12s ease,
+    transform 0.12s ease;
+  box-shadow: 0 4px 24px var(--shadow-color-35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  text-align: center;
+
+  &:hover,
+  &.bg-drop-zone--hovered {
+    transform: translateY(-3px);
+  }
+}
+
+.bg-drop-zone__icon {
+  color: var(--accent-text-on-selection);
+  width: 1.75rem;
+  height: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+}
+
+.bg-drop-zone__label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--white);
+  text-shadow: 0 1px 2px var(--shadow-color-55-text);
+  user-select: none;
+}

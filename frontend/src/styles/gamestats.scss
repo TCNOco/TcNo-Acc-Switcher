@@ -1,0 +1,79 @@
+/* Inline game stats under account rows (Platform + PlatformSteam). */
+.acc_inline_gamestats {
+  margin: 0.25rem 0 0;
+  font-size: 0.68rem;
+  line-height: 1.35;
+  opacity: 0.92;
+  max-width: 100%;
+  img {
+    // Disable image dragging
+    -webkit-user-drag: none;
+    user-drag: none;
+  }
+}
+
+.acc_inline_gamestats_metrics {
+  display: inline-flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.5rem;
+  min-width: 0;
+}
+
+.acc_inline_gamestats_metric {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.acc_inline_gamestats_ind {
+    sup {
+        font-size: 0.8em;
+    }
+}
+
+.acc_inline_gamestats_ind svg,
+.acc_inline_gamestats_val img {
+  max-height: 1.25em;
+  vertical-align: middle;
+}
+
+.apex-rank {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+
+  img {
+    max-height: 3em;
+    vertical-align: middle;
+  }
+
+  span {
+    white-space: nowrap;
+  }
+}
+
+.cs-premier {
+  position: relative;
+  width: 60px;
+
+  svg {
+    z-index: 0;
+  }
+
+  span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    font-size: 1.25em;
+    font-weight: 800;
+    color: #fff; // Must remain white
+    text-shadow: 0 0 6px var(--pure-black);
+    text-align: center;
+    line-height: 1;
+    white-space: nowrap;
+  }
+}

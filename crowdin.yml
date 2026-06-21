@@ -1,3 +1,6 @@
+base_path: "."
+preserve_hierarchy: true
+
 files:
-  - source: TcNo-Acc-Switcher-Server/Resources/en-US.yml
-    translation: /TcNo-Acc-Switcher-Server/Resources/%locale%.yml
+  - source: frontend/src/Resources/en-US.json
+    translation: /frontend/src/Resources/%locale%.json

@@ -1,0 +1,52 @@
+// Shared CSS custom properties for toasts, AppModal, and the stability prompt.
+// Include inside each theme's :root { … } block.
+
+@use "../modal_primary" as mp;
+
+@mixin overlay-root-tokens(
+  $modal-bg: var(--surface-panel-bg),
+  $modal-header-bg: var(--border-bar-bg),
+  $modal-header-fg: var(--whiteSecondary),
+  $modal-input-bg: var(--even-darker-code-background),
+  $modal-input-border: var(--form-checkbox-border),
+  $modal-body-fg: var(--whiteSecondary),
+  $modal-muted-fg: var(--blackTernary),
+  $overlay-thumb-bg: var(--even-darker-code-background),
+  $overlay-thumb-border: var(--form-checkbox-border),
+  $overlay-thumb-muted-fg: var(--blackTernary),
+  $notification-message-fg: var(--whiteSecondary),
+  $notification-border-radius: 2px
+) {
+  --accent-fill-very-soft: rgba(var(--accentInt), 0.12);
+  --accent-fill-soft: rgba(var(--accentInt), 0.32);
+  --accent-fill-medium: rgba(var(--accentInt), 0.42);
+
+  --notification-border-radius: #{$notification-border-radius};
+  --notification-message-fg: #{$notification-message-fg};
+
+  --modal-bg: #{$modal-bg};
+  --modal-header-bg: #{$modal-header-bg};
+  --modal-header-fg: #{$modal-header-fg};
+  --modal-scrim: var(--backdrop-scrim-55);
+  --modal-input-bg: #{$modal-input-bg};
+  --modal-input-border: #{$modal-input-border};
+  --modal-body-fg: #{$modal-body-fg};
+  --modal-muted-fg: #{$modal-muted-fg};
+
+  --overlay-thumb-bg: #{$overlay-thumb-bg};
+  --overlay-thumb-border: #{$overlay-thumb-border};
+  --overlay-thumb-muted-fg: #{$overlay-thumb-muted-fg};
+}
+
+// Optional per-theme tweaks for overlay UI (beyond CSS variables).
+@mixin overlay-component-overrides {
+  .toast__close:hover {
+    color: var(--notification-message-fg, var(--whiteSecondary));
+  }
+
+  .stability-prompt__link:hover {
+    color: var(--notification-message-fg, var(--whiteSecondary));
+  }
+
+  @include mp.modal-primary-button-rules;
+}

@@ -1,0 +1,161 @@
+{
+  "StatsDefinitions": {
+    "Apex Legends": {
+      "UniqueId": "AL",
+      "Indicator": "APEX",
+      "ProcessName": "r5apex_dx12.exe",
+      "Url": "https://api.tcno.co/sw/apexStats?player={Username}",
+      "Attribution": {
+        "Image": "img/gs/providers/apexlegendsstatus.webp",
+        "Dimensions": "253x90",
+        "Link": "https://apexlegendsstatus.com"
+      },
+      "Vars": {
+        "Username": {
+          "Display": "EA Username"
+        }
+      },
+      "Collect": {
+        "BR": {
+          "Source": "json",
+          "Path": "rankScore",
+          "ImageFromPath": "rankImg",
+          "ImageCacheDir": "gs/apex",
+          "Indicator": "",
+          "DisplayAs": "<div class='apex-rank'><img src=\"%img%\" alt=\"\"/><span>%x_fmt% BR</span></div>",
+          "DisplayFormat": "commaNumber",
+          "NoDisplayIf": "0",
+          "ToggleText": "Ranked Points"
+        },
+        "LVL": {
+          "Source": "json",
+          "Path": "level",
+          "DisplayAs": "LVL %x%",
+          "NoDisplayIf": "0",
+          "ToggleText": "Account Level"
+        }
+      }
+    },
+    "Counter-Strike 2": {
+      "UniqueId": "CSGO",
+      "Indicator": "",
+      "ProcessName": "cs2.exe",
+      "Url": "https://api-public.cs-prod.leetify.com/v2/profiles/{SteamId}",
+      "Attribution": {
+        "Image": "img/gs/providers/leetify.webp",
+        "Dimensions": "270x115",
+        "Link": "https://leetify.com"
+      },
+      "Vars": {
+        "SteamId": {
+          "Autofill": "%ACCOUNTID%",
+          "Display": "Steam Account ID",
+          "Placeholder": "7656119xxxxxxxxxx"
+        }
+      },
+      "Collect": {
+        "Premiere": {
+          "Source": "json",
+          "Path": "ranks.premier",
+          "Reducer": "firstMatchInArray",
+          "ReducerOptions": {
+            "arrayPath": "recent_matches",
+            "valuePath": "rank",
+            "allMatch": [
+              { "path": "data_source", "op": "eq", "value": "matchmaking" },
+              { "path": "rank", "op": "gt", "value": "20" }
+            ]
+          },
+          "DisplayAs": "<div class='cs-premier'><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100%\" height=\"100%\" viewBox=\"0 0 134 48\" fill-rule=\"evenodd\" stroke-linejoin=\"round\" stroke-miterlimit=\"2\"><use href=\"#B\"/><use href=\"#C\"/><g fill=\"%fill%\"><use href=\"#B\" fill-opacity=\".5\"/><path d=\"M31.331 3.075l-7.562 41.849h-3.814l7.562-41.849h3.814zm8.358 0l-7.562 41.849h-5.392l7.562-41.849h5.392zm11.815 0l-7.562 41.849h-7.621l7.562-41.849h7.621zm30.302 0l-7.562 41.849h-24.99l7.562-41.849h24.99z\" fill-opacity=\".5\"/><use href=\"#C\" fill-opacity=\".5\"/><path d=\"M15.377 0L6.703 48H0L8.674 0h6.703zm9.935 0l-8.674 48H9.935l8.674-48h6.703z\"/></g><defs ><path id=\"B\" d=\"M133.5 3.075l-7.562 41.849H15.377l7.562-41.849H133.5z\"/><path id=\"C\" d=\"M25.312 0l-8.674 48H0L8.674 0h16.638z\"/></defs></svg><span>%x_fmt%</span></div>",
+          "DisplayFormat": "commaNumber",
+          "DisplayPlaceholders": [
+            {
+              "key": "fill",
+              "ranges": [
+                { "min": 0, "max": 4999, "value": "#b3cad6" },
+                { "min": 5000, "max": 9999, "value": "#8abce8" },
+                { "min": 10000, "max": 14999, "value": "#667deb" },
+                { "min": 15000, "max": 19999, "value": "#bc6bfd" },
+                { "min": 20000, "max": 24999, "value": "#e612f1" },
+                { "min": 25000, "max": 29999, "value": "#ed4c47" },
+                { "min": 30000, "value": "#fad701" }
+              ],
+              "default": "#b3cad6"
+            }
+          ],
+          "NoDisplayIf": "0",
+          "ToggleText": "Premier Rank"
+        },
+        "CompRank": {
+          "Source": "json",
+          "Path": "ranks.competitive.#.rank",
+          "Reducer": "maxNumber",
+          "DisplayAs": "<img src=\"img/gs/cs/comp%x%.webp\" class=\"center\" style=\"max-height:3em\" alt=\"\"/>",
+          "DisplayFormat": "commaNumber",
+          "NoDisplayIf": "0",
+          "ToggleText": "Competitive Rank"
+        }
+      }
+    },
+    "Overwatch": {
+      "UniqueId": "OW",
+      "Indicator": "OW",
+      "ProcessName": "overwatch.exe",
+      "Url": "https://playoverwatch.com/en-us/career/pc/{BattleTag}",
+      "Attribution": {
+        "Text": "PlayOverwatch",
+        "Link": "https://playoverwatch.com"
+      },
+      "Vars": {
+        "BattleTag": {
+          "Autofill": "%ACCOUNTUSERNAME%|ReplaceLast('_','-')",
+          "Display": "Battle Tag",
+          "Placeholder": "ABCD-1234"
+        }
+      },
+      "Collect": {
+        "%PROFILEIMAGE%": {
+          "XPath": ".//img[@class='player-portrait']",
+          "Select": "attribute",
+          "SelectAttribute": "src"
+        },
+        "LVL": {
+          "XPath": ".//div[@class='player-level']/div[@class='u-vertical-center']",
+          "Select": "innerHtml",
+          "DisplayAs": "LVL %x%",
+          "NoDisplayIf": "LVL 0",
+          "ToggleText": "Level"
+        },
+        "TANK": {
+          "XPath": "(.//div[@data-ow-tooltip-text='Tank Skill Rating'])[1]/following-sibling::div[@class='competitive-rank-level']",
+          "Select": "innerText",
+          "DisplayAs": "%x%<sup>SR</sup>",
+          "NoDisplayIf": "0<sup>SR</sup>",
+          "Icon": "<h6 class=\"battlenetIcoOWTank\"><svg viewBox=\"0 0 60.325 60.325\" draggable=\"false\" class=\"battleNetIcon battlenetIcoOWTank\"><use href=\"img/icons/ico_BattleNetTankIcon.svg#icoBattleNetTank\"></use></svg>",
+          "ToggleText": "Tank SR"
+        },
+        "DMG": {
+          "XPath": "(.//div[@data-ow-tooltip-text='Damage Skill Rating'])[1]/following-sibling::div[@class='competitive-rank-level']",
+          "Select": "innerText",
+          "DisplayAs": "%x%<sup>SR</sup>",
+          "NoDisplayIf": "0<sup>SR</sup>",
+          "Icon": "<h6 class=\"battlenetIcoOWDamage\"><svg viewBox=\"0 0 60.325 60.325\" draggable=\"false\" class=\"battleNetIcon battlenetIcoOWDamage\"><use href=\"img/icons/ico_BattleNetDamageIcon.svg#icoBattleNetDamage\"></use></svg>",
+          "ToggleText": "Damage SR"
+        },
+        "SUPPORT": {
+          "XPath": "(.//div[@data-ow-tooltip-text='Support Skill Rating'])[1]/following-sibling::div[@class='competitive-rank-level']",
+          "Select": "innerText",
+          "DisplayAs": "%x%<sup>SR</sup>",
+          "NoDisplayIf": "0<sup>SR</sup>",
+          "Icon": "<h6 class=\"battlenetIcoOWSupport\"><svg viewBox=\"0 0 60.325 60.325\" draggable=\"false\" class=\"battleNetIcon battlenetIcoOWSupport\"><use href=\"img/icons/ico_BattleNetSupportIcon.svg#icoBattleNetSupport\"></use></svg>",
+          "ToggleText": "Support SR"
+        }
+      }
+    }
+  },
+  "PlatformCompatibilities": {
+    "EA Desktop": [ "Apex Legends" ],
+    "Steam": [ "Apex Legends", "Counter-Strike 2" ],
+    "BattleNet": [ "Overwatch" ]
+  }
+}

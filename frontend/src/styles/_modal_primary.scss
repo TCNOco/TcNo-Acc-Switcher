@@ -1,0 +1,38 @@
+// Filled accent button for modal preferred actions (Submit, Yes, Ok, …).
+// Included in the global bundle and at the end of each theme overlay.
+
+@mixin modal-primary-button-rules {
+  button.btnicontext.modal-primary,
+  .btnicontext.modal-primary {
+    background: var(--accent) !important;
+    border-color: var(--accent) !important;
+    color: var(--text-on-bright-bg, var(--whiteSecondary)) !important;
+    font-weight: 500;
+
+    svg {
+      fill: currentColor !important;
+      color: currentColor !important;
+    }
+
+    &:hover:not(:disabled) {
+      background: var(--accent) !important;
+      border-color: var(--accent) !important;
+      color: var(--text-on-bright-bg, var(--whiteSecondary)) !important;
+      filter: brightness(1.08);
+    }
+
+    &:active:not(:disabled),
+    &:target:not(:disabled) {
+      background: var(--accent) !important;
+      border-color: var(--accent) !important;
+      color: var(--text-on-bright-bg, var(--whiteSecondary)) !important;
+      filter: brightness(0.96);
+    }
+
+    &:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      filter: none;
+    }
+  }
+}
