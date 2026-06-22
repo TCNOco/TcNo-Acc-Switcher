@@ -1,10 +1,10 @@
-import type { PlatformAccountAdapter } from "../../components/PlatformAccountAdapter";
+import type { AccountCommands } from "../../components/PlatformAccountAdapter";
 import { firstProfileImagePath } from "../profileImageDrop";
 import { pushToast } from "../../stores/toast";
 import { formatToastWithError } from "../formatWailsError";
 
 export interface FileDropContext {
-  adapter: PlatformAccountAdapter<unknown>;
+  adapter: Pick<AccountCommands, "changeImage">;
   imagePick: { open: boolean; accountId: string; displayName: string; manual: boolean };
   fileDragHoverRowId: string;
   tr: (key: string, vars?: Record<string, string | number>) => string;

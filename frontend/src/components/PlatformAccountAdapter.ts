@@ -16,14 +16,7 @@ export interface SharedMenuItems {
   gameStats: MenuItemDef | null;
 }
 
-export interface PlatformAccountAdapter<TAccount> {
-  /** Stable key identifying the platform (e.g. "Steam", "Battle.net"). */
-  platformKey: string;
-
-  /** Default placeholder image when no profile image is available. */
-  profileFallback: string;
-
-  // ---- Field accessors ----
+export interface AccountRowProjection<TAccount> {
   id(a: TAccount): string;
   name(a: TAccount): string;
   imageUrl(a: TAccount): string | undefined;
@@ -37,12 +30,14 @@ export interface PlatformAccountAdapter<TAccount> {
   lastUsed(a: TAccount): string;
   accountLogin(a: TAccount): string;
   visualKey(a: TAccount): string;
+}
 
-  // ---- I/O ----
-  /** Fast list: ids, names, order, current session. */
+export interface AccountDataSource<TAccount> {
   loadAccountsList(): Promise<TAccount[]>;
-  /** Slower per-account metadata merged into the list after first paint. */
   loadAccountsEnrichment(): Promise<TAccount[]>;
+}
+
+export interface AccountCommands {
   swapTo(id: string): Promise<void>;
   saveOrder(ids: string[]): Promise<void>;
   addNew(): Promise<void>;
@@ -53,38 +48,52 @@ export interface PlatformAccountAdapter<TAccount> {
   getNote(id: string): Promise<string>;
   setNote(id: string, note: string): Promise<void>;
   launch(): Promise<void>;
+}
 
-  // ---- Context menu ----
-  /** Receive shared base items; return the full menu in the desired order. */
-  buildMenu(account: TAccount, shared: SharedMenuItems): MenuItemDef[];
-
-  // ---- Real-time update events ----
-  /** Wails event name subscriptions for account updates (e.g. "steam-account-updated"). */
+export interface AccountPatchStream<TAccount> {
   updateEventName: string;
-  /** Construct a typed patch object from the raw event payload. */
   buildPatch(raw: unknown): unknown;
-  /** Apply the patch to a single account row, returning the updated row. */
   applyPatch(patch: unknown, account: TAccount): TAccount;
-  /** Extract the account ID that a patch targets. */
   patchTargetId(patch: unknown): string;
+}
 
-  // ---- Search ----
-  /** Build the searchable text blob for an account. */
+export interface AccountSearchProjection<TAccount> {
   searchHay(account: TAccount, query: string): string;
+}
 
-  // ---- Lifecycle ----
+export interface AccountLifecycle<TAccount> {
   onAfterLoad?(
     accounts: TAccount[],
     ctx?: { hadCachedAccounts: boolean; enrichChanged: boolean },
   ): void | Promise<void>;
   onCleanup?(): void;
+}
 
-  // ---- Optional extensions ----
-  /** Resolves true when a new account was saved (false on cancel or failure). */
+export interface AccountPageExtensions {
   saveCurrent?(): Promise<boolean>;
   suggestedSaveName?(): Promise<string>;
   gameSearchRows?(query: string): SearchResultRow[];
   gameSearchHint?: string;
   loginAndLaunchGame?(accountId: string, appId: string): Promise<void>;
   extraSortKinds?: PlatformSortKind[];
+}
+
+export interface AccountMenuBuilder<TAccount> {
+  buildMenu(account: TAccount, shared: SharedMenuItems): MenuItemDef[];
+}
+
+export interface PlatformAccountAdapter<TAccount>
+  extends AccountRowProjection<TAccount>,
+    AccountDataSource<TAccount>,
+    AccountCommands,
+    AccountPatchStream<TAccount>,
+    AccountSearchProjection<TAccount>,
+    AccountLifecycle<TAccount>,
+    AccountPageExtensions,
+    AccountMenuBuilder<TAccount> {
+  /** Stable key identifying the platform (e.g. "Steam", "Battle.net"). */
+  platformKey: string;
+
+  /** Default placeholder image when no profile image is available. */
+  profileFallback: string;
 }

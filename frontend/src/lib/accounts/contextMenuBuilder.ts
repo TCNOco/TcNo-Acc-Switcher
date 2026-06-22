@@ -1,4 +1,4 @@
-import type { PlatformAccountAdapter, SharedMenuItems } from "../../components/PlatformAccountAdapter";
+import type { AccountCommands, AccountRowProjection, SharedMenuItems } from "../../components/PlatformAccountAdapter";
 import type { MenuItemDef } from "../../stores/contextMenu";
 import type { TagDefRow } from "../accountTagsContext";
 import { buildTagsSectionMenuItem } from "../accountTagsContext";
@@ -9,7 +9,7 @@ import * as Shortcuts from "wails-shortcuts-service";
 
 export interface ContextMenuContext {
   name: string;
-  adapter: PlatformAccountAdapter<unknown>;
+  adapter: AccountCommands & Pick<AccountRowProjection<unknown>, "name" | "imageUrl" | "manualProfileImage" | "tags" | "accountLogin">;
   isActionBusy: boolean;
   hasGameStatsSupport: boolean;
   tr: (key: string, vars?: Record<string, string | number>) => string;

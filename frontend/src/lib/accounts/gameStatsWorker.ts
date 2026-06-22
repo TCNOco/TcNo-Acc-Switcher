@@ -1,5 +1,5 @@
 import * as BasicService from "../../../bindings/TcNo-Acc-Switcher/internal/basic/basicservice.js";
-import type { PlatformAccountAdapter } from "../../components/PlatformAccountAdapter";
+import type { AccountRowProjection } from "../../components/PlatformAccountAdapter";
 import { openAlertNoButton } from "../../stores/modal";
 import { get } from "svelte/store";
 import { t } from "../../stores/i18n";
@@ -36,7 +36,7 @@ export async function refreshGameStatsSupport(name: string): Promise<boolean> {
 
 export function openGameStatsModal(
   rowId: string,
-  adapter: PlatformAccountAdapter<unknown>,
+  rows: Pick<AccountRowProjection<unknown>, "name">,
   name: string,
   accountById: (id: string) => unknown | undefined,
   onApplied: () => void,
@@ -48,7 +48,7 @@ export function openGameStatsModal(
     bodyProps: {
       platformKey: name,
       uniqueId: rowId,
-      displayName: (acc ? adapter.name(acc) : rowId).trim(),
+      displayName: (acc ? rows.name(acc) : rowId).trim(),
       onApplied,
     },
   });

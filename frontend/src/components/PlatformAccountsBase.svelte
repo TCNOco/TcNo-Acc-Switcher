@@ -55,14 +55,22 @@
   import "../styles/platformAccountsShared.scss";
 
   // ---- Extracted pure logic modules ----
-  import { shouldBumpEpoch } from "../lib/accounts/epochManager";
-  import type { EpochCheckRow } from "../lib/accounts/types";
   import {
     mergeListIntoExisting,
     mergeEnrichmentIntoExisting,
     applyLoadedAccounts,
     type ApplyLoadedAccountsState,
   } from "../lib/accounts/mergePipeline";
+  import {
+    applyAccountPatch,
+    buildAccountMap,
+    buildAccountSearchRows,
+    createImagePickState,
+    displayIdsForTagFilter,
+    sortAccountIds,
+    type AccountImagePickState,
+    type SearchHayCache,
+  } from "../lib/accounts/accountPageModel";
   import { buildSharedItems, type ContextMenuContext } from "../lib/accounts/contextMenuBuilder";
   import { fileDropIntercept, type FileDropContext } from "../lib/accounts/fileDropHandler";
   import {
@@ -85,8 +93,8 @@
 
   let accounts: TAccount[] = [];
   let accountIds: string[] = [];
-  $: accountMap = new Map(accounts.map((a) => [adapter.id(a), a] as const));
-  const searchHayCache = new Map<string, { v: number; text: string }>();
+  $: accountMap = buildAccountMap(accounts, adapter);
+  const searchHayCache: SearchHayCache = new Map();
   let accountsLoading = false;
   let tagDefsLoading = false;
   let loadError = "";
@@ -102,7 +110,7 @@
   let rowVersions: Record<string, number> = {};
   let tagDefs: TagDefRow[] = [];
   let tagFilterMode: TagFilterMode = { kind: "all" };
-  let imagePick = { open: false, accountId: "", displayName: "", manual: false };
+  let imagePick: AccountImagePickState = { open: false, accountId: "", displayName: "", manual: false };
   let fileDragHoverRowId = "";
   let offPlatformAction: (() => void) | undefined;
   let offAccountsRefresh: (() => void) | undefined;
@@ -146,18 +154,7 @@
         ? $t("Tags_Filter_Untagged")
         : tagFilterMode.name;
 
-  $: displayIds = (() => {
-    const ids = accountIds;
-    if (tagFilterMode.kind === "all") return ids;
-    if (tagFilterMode.kind === "untagged") {
-      return ids.filter((id) => (accountMap.get(id) ? (adapter.tags(accountMap.get(id)!) ?? []).length === 0 : true));
-    }
-    const tid = tagFilterMode.id;
-    return ids.filter((id) => {
-      const a = accountMap.get(id);
-      return a ? (adapter.tags(a) ?? []).some((x) => x.id === tid) : false;
-    });
-  })();
+  $: displayIds = displayIdsForTagFilter(accountIds, accountMap, adapter, tagFilterMode);
 
   $: reorderDisabled = tagFilterMode.kind !== "all";
 
@@ -183,10 +180,6 @@
 
   function slotKey(x: string | null | undefined): string {
     return x ?? "";
-  }
-
-  function accountRowEqual(a: TAccount, b: TAccount): boolean {
-    return adapter.visualKey(a) === adapter.visualKey(b);
   }
 
   function touchStatus(): void {
@@ -291,41 +284,9 @@
   }
 
   // ---- Sort ----
-  function displayKeyForSort(uid: string): string {
-    const a = accountById(uid);
-    return (a ? adapter.name(a) : uid).trim().toLowerCase();
-  }
-
-  function lastUsedMsForSort(uid: string): number {
-    const a = accountById(uid);
-    if (!a) return 0;
-    const t = Date.parse((adapter.lastUsed(a) ?? "").trim());
-    return Number.isNaN(t) ? 0 : t;
-  }
-
-  function accountNameSortKey(uid: string): string {
-    const a = accountById(uid);
-    return a ? adapter.accountLogin(a).trim().toLowerCase() : uid.toLowerCase();
-  }
-
   function applyPlatformSort(kind: PlatformSortKind): void {
-    const ids = [...accountIds];
-    const cmpAlpha = (x: string, y: string) => displayKeyForSort(x).localeCompare(displayKeyForSort(y));
-    const cmpUser = (x: string, y: string) => accountNameSortKey(x).localeCompare(accountNameSortKey(y));
-
-    switch (kind) {
-      case "alpha_asc": ids.sort(cmpAlpha); break;
-      case "alpha_desc": ids.sort((x, y) => -cmpAlpha(x, y)); break;
-      case "steam_user_asc": ids.sort(cmpUser); break;
-      case "steam_user_desc": ids.sort((x, y) => -cmpUser(x, y)); break;
-      case "lastused_new_old": case "date_new_old":
-        ids.sort((x, y) => lastUsedMsForSort(y) - lastUsedMsForSort(x) || cmpAlpha(x, y));
-        break;
-      case "lastused_old_new": case "date_old_new":
-        ids.sort((x, y) => lastUsedMsForSort(x) - lastUsedMsForSort(y) || cmpAlpha(x, y));
-        break;
-      default: return;
-    }
+    const ids = sortAccountIds(accountIds, accountById, adapter, kind);
+    if (!ids) return;
     accountIds = ids;
     adapter.saveOrder(ids).catch(() => {});
   }
@@ -376,13 +337,7 @@
   }
 
   function openImagePick(rowId: string): void {
-    const acc = accountById(rowId);
-    imagePick = {
-      open: true,
-      accountId: rowId,
-      displayName: (acc ? adapter.name(acc) : rowId).trim(),
-      manual: acc ? adapter.manualProfileImage(acc) : false,
-    };
+    imagePick = createImagePickState(rowId, accountById(rowId), adapter);
   }
 
   async function applyImageFromOverlay(path: string): Promise<void> {
@@ -469,62 +424,31 @@
   function applyPatchFromEvent(raw: unknown): void {
     const patch = adapter.buildPatch(raw);
     const targetId = adapter.patchTargetId(patch);
-    const idx = accounts.findIndex((r) => adapter.id(r) === targetId);
-    if (idx < 0) return;
-
-    const prev = accounts[idx];
-    const next = adapter.applyPatch(patch, prev);
-    if (accountRowEqual(prev, next)) return;
-
-    Object.assign(prev as object, next as object);
-    rowVersions = { ...rowVersions, [targetId]: (rowVersions[targetId] ?? 0) + 1 };
-    if (shouldBumpEpoch(prev as unknown as EpochCheckRow, next as unknown as EpochCheckRow)) {
-      bumpAvatarEpoch(targetId);
-    }
+    const prev = accountById(targetId);
+    if (!prev) return;
+    const result = applyAccountPatch(accounts, rowVersions, avatarEpoch, adapter, targetId, adapter.applyPatch(patch, prev));
+    if (!result.changed) return;
+    accounts = result.accounts;
+    rowVersions = result.rowVersions;
+    avatarEpoch = result.avatarEpoch;
     setPlatformAccountsCache(name, { accounts, accountIds });
     if (targetId === selectedId) touchStatus();
   }
 
   // ---- Search ----
   function buildAccountRows(q: string, epochs: Record<string, number>): SearchResultRow[] {
-    const tr = get(t);
-    const trimmed = q.trim();
-    const queryWords = trimmed ? trimmed.toLowerCase().split(/\s+/).filter(Boolean) : [];
-    const getHay = (acc: TAccount): string => {
-      const id = adapter.id(acc);
-      const ver = rowVersions[id] ?? 0;
-      const hit = searchHayCache.get(id);
-      if (hit && hit.v === ver) return hit.text;
-      const text = adapter.searchHay(acc, trimmed).toLowerCase();
-      searchHayCache.set(id, { v: ver, text });
-      return text;
-    };
-    const matches = (text: string) => queryWords.every((w) => text.includes(w));
-    let list: TAccount[];
-    if (!trimmed) {
-      list = accounts.slice(0, SEARCH_MAX);
-    } else {
-      list = [];
-      for (const a of accounts) {
-        if (matches(getHay(a))) {
-          list.push(a);
-          if (list.length >= SEARCH_MAX) break;
-        }
-      }
-    }
-    return list.map((a) => ({
-      key: `a:${adapter.id(a)}`,
-      title: adapter.name(a) || adapter.id(a),
-      badge: tr("Search_Section_Account"),
-      accountIconUrl: offlineSafeImageSrc(
-        get(offlineMode),
-        withAssetCacheBust(
-          adapter.imageUrl(a) && !adapter.imagePending(a) ? adapter.imageUrl(a) : undefined,
-          epochs[adapter.id(a)] ?? 0,
-        ),
-        adapter.profileFallback,
-      ),
-    }));
+    return buildAccountSearchRows({
+      accounts,
+      rows: adapter,
+      query: q,
+      max: SEARCH_MAX,
+      rowVersions,
+      avatarEpoch: epochs,
+      searchHayCache,
+      offlineMode: get(offlineMode),
+      profileFallback: adapter.profileFallback,
+      accountBadge: get(t)("Search_Section_Account"),
+    });
   }
 
   async function onSearchPick(ev: CustomEvent<SearchResultRow>): Promise<void> {

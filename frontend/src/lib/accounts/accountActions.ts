@@ -1,4 +1,4 @@
-import type { PlatformAccountAdapter } from "../../components/PlatformAccountAdapter";
+import type { AccountCommands, AccountPageExtensions, AccountRowProjection } from "../../components/PlatformAccountAdapter";
 import { pushToast } from "../../stores/toast";
 import { platformActionBusy } from "../../stores/platformPage";
 import { actionBarStatus } from "../../stores/fileDrop";
@@ -9,7 +9,7 @@ import { t } from "../../stores/i18n";
 
 export interface AccountActionsContext {
   name: string;
-  adapter: PlatformAccountAdapter<unknown>;
+  adapter: AccountCommands & Pick<AccountPageExtensions, "saveCurrent"> & Pick<AccountRowProjection<unknown>, "currentSession">;
   selectedId: string;
   isActionBusyValue: boolean;
   accountById: (id: string) => unknown | undefined;
