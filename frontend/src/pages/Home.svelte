@@ -6,7 +6,7 @@
   import { route, appBarTitle } from "../stores/nav";
   import { platformListSort, type PlatformSortKind } from "../stores/platformListSort";
   import { t } from "../stores/i18n";
-  import { openConfirm, openFolderPicker } from "../stores/modal";
+  import { openConfirm, openFeedbackModal, openFolderPicker } from "../stores/modal";
   import { pushToast } from "../stores/toast";
   import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import type { PlatformStartup } from "../../bindings/TcNo-Acc-Switcher/internal/platform/models.js";
@@ -15,6 +15,13 @@
   import type { MenuItemDef } from "../stores/contextMenu";
   import * as Shortcuts from "wails-shortcuts-service";
   import { fuzzyWordsMatch } from "../lib/searchFuzzy";
+  import {
+    commandRows,
+    isCommandQuery,
+    runCommand,
+    type CommandPaletteCommand,
+  } from "../lib/commandPalette";
+  import { checkForUpdatesManually } from "../lib/checkForUpdates";
   import { closeSearchOverlay, searchOverlayCtrl } from "../stores/searchOverlay";
   import { setPlatformAccountCounts } from "../stores/platformAccountsCache";
   import { prefetchPlatformPages } from "../lib/pageLoaders";
@@ -45,8 +52,11 @@
       debouncedOverlayQuery = q;
     }, 150);
   }
-  $: homeSearchPrimary = buildHomePrimary(debouncedOverlayQuery);
-  $: homeSearchDisabled = buildHomeDisabled(overlayQuery);
+  $: commandMode = isCommandQuery(overlayQuery);
+  $: homeSearchPrimary = commandMode
+    ? commandRows(overlayQuery, buildHomeCommands(), get(t)("Search_Section_Command"))
+    : buildHomePrimary(debouncedOverlayQuery);
+  $: homeSearchDisabled = commandMode ? [] : buildHomeDisabled(overlayQuery);
 
   $: if (startup && !startup.platformsFileMissing && !warmedPlatformPages) {
     warmedPlatformPages = true;
@@ -204,9 +214,39 @@
       }));
   }
 
+  function buildHomeCommands(): CommandPaletteCommand[] {
+    const tr = get(t);
+    return [
+      {
+        id: "open-settings",
+        title: tr("Command_OpenSettings"),
+        run: () => route.set({ page: "settings" }),
+      },
+      {
+        id: "manage-platforms",
+        title: tr("Command_ManagePlatforms"),
+        run: () => route.set({ page: "manage-platforms" }),
+      },
+      {
+        id: "check-updates",
+        title: tr("Command_CheckForUpdates"),
+        run: () => checkForUpdatesManually(),
+      },
+      {
+        id: "suggest-feature",
+        title: tr("Command_SuggestFeature"),
+        run: () => openFeedbackModal({ mode: "suggestion" }),
+      },
+    ];
+  }
+
   async function onSearchPick(ev: CustomEvent<SearchResultRow>): Promise<void> {
     const row = ev.detail;
     closeSearchOverlay();
+    if (row.key.startsWith("cmd:")) {
+      runCommand(buildHomeCommands(), row.key);
+      return;
+    }
     if (row.key.startsWith("p:")) {
       await openPlatform(row.key.slice(2));
       return;
@@ -307,6 +347,7 @@
       syncNonce={so.nonce}
       initialQuery={so.initialQuery}
       bind:query={overlayQuery}
+      placeholder={commandMode ? $t("Command_SearchPlaceholder") : $t("Context_Search")}
       primaryRows={homeSearchPrimary}
       categoryRows={homeSearchDisabled}
       categoryHint={$t("Search_Hint_EnablePlatform")}

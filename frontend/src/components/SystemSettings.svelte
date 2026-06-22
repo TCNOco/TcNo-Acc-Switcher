@@ -9,6 +9,12 @@
   import { offlineMode, setUserOfflineMode } from "../stores/offlineMode";
   import { openFeedbackModal } from "../stores/modal";
   import { animationsEnabled, loadAnimationsEnabled, setAnimationsEnabled } from "../stores/animationSettings";
+  import {
+    commandPaletteHotkey,
+    loadCommandPaletteHotkey,
+    setCommandPaletteHotkey,
+    type CommandPaletteHotkey,
+  } from "../stores/commandPalette";
   import { formatAppVersion } from "../lib/checkForUpdates";
   import { createToggle } from "../lib/useToggleSetting";
   import { openMoveUserDataModal, openUserDataFolder, onCheckForUpdates, openStatsModal } from "../lib/settingsOperations";
@@ -16,6 +22,8 @@
   let isWindows = false;
   let currentVersion = "";
   let userDataPath = "";
+
+  const commandPaletteHotkeyOptions: CommandPaletteHotkey[] = ["Ctrl+K", "Ctrl+P"];
 
   const userDataMoveLoading = writable(false);
   const updateCheckLoading = writable(false);
@@ -192,6 +200,7 @@
     void minimizeOnSwitch.init();
     void startProgramCentered.init();
     void animations.init();
+    void loadCommandPaletteHotkey();
     void PlatformService.GetAppVersion()
       .then((v) => { currentVersion = v || ""; })
       .catch(() => { currentVersion = ""; });
@@ -280,6 +289,22 @@
   <label for="settings-animations">{$t("Settings_AnimationsEnabled")}</label>
 </div>
 
+<div class="rowDropdown hotkey-row">
+  <span>{$t("Settings_CommandPaletteHotkey")}</span>
+  <div class="hotkey-segment" role="group" aria-label={$t("Settings_CommandPaletteHotkey")}>
+    {#each commandPaletteHotkeyOptions as hotkey}
+      <button
+        type="button"
+        class:active={$commandPaletteHotkey === hotkey}
+        aria-pressed={$commandPaletteHotkey === hotkey}
+        on:click={() => void setCommandPaletteHotkey(hotkey)}
+      >
+        {hotkey}
+      </button>
+    {/each}
+  </div>
+</div>
+
 {#if isWindows}
   <div class="rowSetting">
     <div class="form-check">
@@ -361,5 +386,32 @@
 
   .version-row {
     margin-top: 0.25rem;
+  }
+
+  .hotkey-row {
+    gap: 0.75rem;
+  }
+
+  .hotkey-segment {
+    display: inline-flex;
+    border: 1px solid var(--input-number-border);
+  }
+
+  .hotkey-segment button {
+    min-width: 5.5rem;
+    border: 0;
+    border-right: 1px solid var(--input-number-border);
+    border-radius: 0;
+    background: var(--even-darker-code-background);
+    color: var(--whiteSecondary);
+  }
+
+  .hotkey-segment button:last-child {
+    border-right: 0;
+  }
+
+  .hotkey-segment button.active {
+    background: var(--accent);
+    color: var(--text-on-bright-bg);
   }
 </style>

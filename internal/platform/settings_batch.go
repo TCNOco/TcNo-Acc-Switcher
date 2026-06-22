@@ -83,8 +83,21 @@ func applySettingsBatchUpdate(s *AppSettings, req SettingsBatchUpdate) settingsB
 		s.ThemeAccentCustom = sanitizeHexColor(*req.ThemeAccentCustom)
 		effects.dirty = true
 	}
+	if req.CommandPaletteHotkey != nil {
+		s.CommandPaletteHotkey = normalizeCommandPaletteHotkey(*req.CommandPaletteHotkey)
+		effects.dirty = true
+	}
 
 	return effects
+}
+
+func normalizeCommandPaletteHotkey(value string) string {
+	switch strings.ToLower(strings.ReplaceAll(strings.TrimSpace(value), " ", "")) {
+	case "ctrl+p", "control+p":
+		return "Ctrl+P"
+	default:
+		return "Ctrl+K"
+	}
 }
 
 func stringsDefault(value, fallback string) string {

@@ -33,6 +33,11 @@
     searchOverlayCtrl,
     searchOverlayPendingAppend,
   } from "./stores/searchOverlay";
+  import {
+    commandPaletteHotkey,
+    eventMatchesCommandPaletteHotkey,
+    loadCommandPaletteHotkey,
+  } from "./stores/commandPalette";
   import { platformActionBusy } from "./stores/platformPage";
   import { appBgInfo, platformBgInfo, userOverriddenAppBg } from "./stores/backgroundImage";
   import type { AppBackgroundInfo } from "./stores/backgroundImage";
@@ -108,6 +113,18 @@
     if (get(contextMenu)) {
       return;
     }
+    const hotkey = get(commandPaletteHotkey);
+    const isConfiguredCommandHotkey = eventMatchesCommandPaletteHotkey(e, hotkey);
+    const isFallbackCommandHotkey =
+      hotkey !== "Ctrl+P" && eventMatchesCommandPaletteHotkey(e, "Ctrl+P");
+    if (isConfiguredCommandHotkey || isFallbackCommandHotkey) {
+      if (isEditableTarget(e.target)) {
+        return;
+      }
+      e.preventDefault();
+      openSearchOverlay("> ");
+      return;
+    }
     if (e.ctrlKey || e.metaKey || e.altKey) {
       return;
     }
@@ -172,6 +189,7 @@
 
   onMount(() => {
     void loadAnimationsEnabled();
+    void loadCommandPaletteHotkey();
     // Load initial app background state.
     void PlatformService.GetAppBackground().then((info) => {
       appBgInfo.set(info);

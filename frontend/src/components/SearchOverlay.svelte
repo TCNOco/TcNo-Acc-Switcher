@@ -26,6 +26,7 @@
   export let syncNonce = 0;
   export let initialQuery = "";
   export let query = "";
+  export let placeholder = "";
   export let primaryRows: SearchResultRow[] = [];
   export let categoryRows: SearchResultRow[] = [];
   export let categoryHint = "";
@@ -132,7 +133,7 @@
         bind:value={query}
         type="text"
         class="searchOverlay_searchInput"
-        placeholder={$t("Context_Search")}
+        placeholder={placeholder || $t("Context_Search")}
         spellcheck="false"
         autocomplete="off"
         on:keydown={onInputKeydown}

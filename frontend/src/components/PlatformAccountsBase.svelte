@@ -51,6 +51,12 @@
   import { platformListSort, type PlatformSortKind } from "../stores/platformListSort";
   import { actionBarStatus, fileDropInterceptor, accountProfileImageDropActive } from "../stores/fileDrop";
   import type { PlatformAccountAdapter } from "./PlatformAccountAdapter";
+  import {
+    commandRows,
+    isCommandQuery,
+    runCommand,
+    type CommandPaletteCommand,
+  } from "../lib/commandPalette";
   import "../styles/gamestats.scss";
   import "../styles/platformAccountsShared.scss";
 
@@ -138,7 +144,10 @@
     route.set({ page: "platform", platformName: name });
   }
 
-  $: searchPrimary = buildAccountRows(debouncedOverlayQuery, avatarEpoch);
+  $: commandMode = isCommandQuery(overlayQuery);
+  $: searchPrimary = commandMode
+    ? commandRows(overlayQuery, buildPlatformCommands(), get(t)("Search_Section_Command"))
+    : buildAccountRows(debouncedOverlayQuery, avatarEpoch);
 
   $: selectedAccountStore.set({
     platformKey: name,
@@ -451,9 +460,52 @@
     });
   }
 
+  function buildPlatformCommands(): CommandPaletteCommand[] {
+    const tr = get(t);
+    const commands: CommandPaletteCommand[] = [
+      {
+        id: "login",
+        title: tr("Command_LoginSelected"),
+        run: () => handlePlatformActionKind("login", getAccountActionsCtx()),
+      },
+      {
+        id: "add-new",
+        title: tr("Command_AddNewAccount"),
+        run: () => handlePlatformActionKind("addNew", getAccountActionsCtx()),
+      },
+      {
+        id: "refresh-accounts",
+        title: tr("Command_RefreshAccounts"),
+        run: () => loadAccounts(),
+      },
+      {
+        id: "platform-settings",
+        title: tr("Command_OpenPlatformSettings", { platform: name }),
+        run: () => route.set({ page: "platform-settings", platformName: name }),
+      },
+      {
+        id: "home",
+        title: tr("Command_GoHome"),
+        run: () => route.set({ page: "home" }),
+      },
+    ];
+    if (name !== "Steam") {
+      commands.splice(2, 0, {
+        id: "save-current",
+        title: tr("Command_SaveCurrentAccount"),
+        run: () => handlePlatformActionKind("saveCurrent", getAccountActionsCtx()),
+      });
+    }
+    return commands;
+  }
+
   async function onSearchPick(ev: CustomEvent<SearchResultRow>): Promise<void> {
     const row = ev.detail;
     closeSearchOverlay();
+    if (row.key.startsWith("cmd:")) {
+      runCommand(buildPlatformCommands(), row.key);
+      return;
+    }
     if (row.key.startsWith("a:")) {
       const id = row.key.slice(2);
       selectedId = id;
@@ -571,11 +623,12 @@
         syncNonce={so.nonce}
         initialQuery={so.initialQuery}
         bind:query={overlayQuery}
+        placeholder={commandMode ? $t("Command_SearchPlaceholder") : $t("Context_Search")}
         primaryRows={searchPrimary}
         categoryRows={[]}
         categoryHint=""
-        gameRows={adapter.gameSearchRows?.(debouncedOverlayQuery) ?? []}
-        gameHint={adapter.gameSearchHint ?? ""}
+        gameRows={commandMode ? [] : (adapter.gameSearchRows?.(debouncedOverlayQuery) ?? [])}
+        gameHint={commandMode ? "" : (adapter.gameSearchHint ?? "")}
         on:close={() => closeSearchOverlay()}
         on:pick={(e) => void onSearchPick(e)}
       />

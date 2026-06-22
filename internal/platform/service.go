@@ -41,6 +41,7 @@ type PlatformStartup struct {
 	StatsEnabled          bool   `json:"statsEnabled"`
 	StatsShare            bool   `json:"statsShare"`
 	CrashReportAutoSubmit bool   `json:"crashReportAutoSubmit"`
+	CommandPaletteHotkey  string `json:"commandPaletteHotkey"`
 	ThemeAccentPreset     string `json:"themeAccentPreset"`
 	ThemeAccentCustom     string `json:"themeAccentCustom"`
 	AppVersion            string `json:"appVersion"`
@@ -122,6 +123,7 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 				StatsEnabled:          settings.StatsEnabled,
 				StatsShare:            settings.StatsShare,
 				CrashReportAutoSubmit: settings.CrashReportAutoSubmit,
+				CommandPaletteHotkey:  settings.CommandPaletteHotkey,
 				ThemeAccentPreset:     settings.ThemeAccentPreset,
 				ThemeAccentCustom:     settings.ThemeAccentCustom,
 				AppVersion:            appVersionFromBuildConfig(),
@@ -173,6 +175,7 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 		StatsEnabled:          settings.StatsEnabled,
 		StatsShare:            settings.StatsShare,
 		CrashReportAutoSubmit: settings.CrashReportAutoSubmit,
+		CommandPaletteHotkey:  settings.CommandPaletteHotkey,
 		ThemeAccentPreset:     settings.ThemeAccentPreset,
 		ThemeAccentCustom:     settings.ThemeAccentCustom,
 		AppVersion:            appVersionFromBuildConfig(),
@@ -200,6 +203,7 @@ type SettingsBatchUpdate struct {
 	Theme                 *string `json:"theme,omitempty"`
 	ThemeAccentPreset     *string `json:"themeAccentPreset,omitempty"`
 	ThemeAccentCustom     *string `json:"themeAccentCustom,omitempty"`
+	CommandPaletteHotkey  *string `json:"commandPaletteHotkey,omitempty"`
 }
 
 func (p *PlatformService) UpdateSettings(req SettingsBatchUpdate) error {

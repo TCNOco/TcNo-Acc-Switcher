@@ -26,6 +26,8 @@ type AppSettings struct {
 	// Stored without omitempty so false round-trips: omitted key plus normalize defaults would otherwise force true on load.
 	AnimationsEnabled bool `json:"animationsEnabled"`
 
+	CommandPaletteHotkey string `json:"commandPaletteHotkey,omitempty"`
+
 	PlatformOrder []string `json:"platformOrder"`
 
 	DisabledPlatforms []string `json:"disabledPlatforms"`
@@ -109,16 +111,17 @@ type AppBackgroundInfo struct {
 
 func defaultSettings() AppSettings {
 	return AppSettings{
-		Version:           1,
-		Language:          "en-US",
-		PlatformExePaths:  map[string]string{},
-		PlatformOrder:     nil,
-		DisabledPlatforms: nil,
-		StatsEnabled:      true,
-		StatsShare:        true,
-		DiscordRpc:        true,
-		DiscordRpcShare:   false,
-		AnimationsEnabled: true,
+		Version:              1,
+		Language:             "en-US",
+		PlatformExePaths:     map[string]string{},
+		PlatformOrder:        nil,
+		DisabledPlatforms:    nil,
+		StatsEnabled:         true,
+		StatsShare:           true,
+		DiscordRpc:           true,
+		DiscordRpcShare:      false,
+		AnimationsEnabled:    true,
+		CommandPaletteHotkey: "Ctrl+K",
 	}
 }
 
@@ -147,6 +150,7 @@ func normalizeAppSettingsDefaults(s *AppSettings, raw map[string]json.RawMessage
 	if _, ok := raw["animationsEnabled"]; !ok {
 		s.AnimationsEnabled = true
 	}
+	s.CommandPaletteHotkey = normalizeCommandPaletteHotkey(s.CommandPaletteHotkey)
 	if !s.DiscordRpc {
 		s.DiscordRpcShare = false
 	}
