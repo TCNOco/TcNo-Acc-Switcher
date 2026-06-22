@@ -82,8 +82,8 @@ func (d *Dispatch) RunList(p cli.Parsed, idx *cli.PlatformIndex) error {
 					return err
 				}
 				b, err := json.Marshal(struct {
-					Platform string            `json:"platform"`
-					Accounts []ListAccountRow  `json:"accounts"`
+					Platform string           `json:"platform"`
+					Accounts []ListAccountRow `json:"accounts"`
 				}{Platform: platNames[0], Accounts: rows})
 				if err != nil {
 					return err
@@ -144,45 +144,18 @@ func (d *Dispatch) RunList(p cli.Parsed, idx *cli.PlatformIndex) error {
 }
 
 func (d *Dispatch) accountRowsForPlatform(platformKey string) ([]ListAccountRow, error) {
-	if strings.EqualFold(strings.TrimSpace(platformKey), steam.PlatformKey) {
-		accs, err := d.SteamSvc.GetSteamAccounts()
-		if err != nil {
-			return nil, err
-		}
-		out := make([]ListAccountRow, 0, len(accs))
-		for _, a := range accs {
-			out = append(out, ListAccountRow{
-				UniqueID:     a.SteamID64,
-				DisplayName:  strings.TrimSpace(a.DisplayName),
-				LastLoggedIn: strings.TrimSpace(a.LastLogin),
-			})
-		}
-		return out, nil
-	}
-	accs, err := d.BasicSvc.GetAccounts(platformKey)
-	if err != nil {
-		return nil, err
-	}
-	out := make([]ListAccountRow, 0, len(accs))
-	for _, a := range accs {
-		out = append(out, ListAccountRow{
-			UniqueID:     a.UniqueID,
-			DisplayName:  strings.TrimSpace(a.DisplayName),
-			LastLoggedIn: strings.TrimSpace(a.LastUsed),
-		})
-	}
-	return out, nil
+	return d.commandAdapter(platformKey).AccountRows()
 }
 
 func (d *Dispatch) RunHeadless(p cli.Parsed) error {
 	switch p.Kind {
 	case cli.KindSwapSteam:
-		if err := d.SteamSvc.SwapToSteamAccount(p.SteamID64, p.PersonaState, p.PassthroughLaunchArgs); err != nil {
+		if err := d.commandAdapter(steam.PlatformKey).Swap(p.SteamID64, p.PersonaState, p.PassthroughLaunchArgs); err != nil {
 			return err
 		}
 		return d.LaunchAfterSwap(p)
 	case cli.KindSwapBasic:
-		if err := basic.SwapTo(basic.FlowDeps{PS: d.PlatformSvc}, p.PlatformKey, p.UniqueID, p.PassthroughLaunchArgs); err != nil {
+		if err := d.commandAdapter(p.PlatformKey).Swap(p.UniqueID, -1, p.PassthroughLaunchArgs); err != nil {
 			return err
 		}
 		return d.LaunchAfterSwap(p)
@@ -208,13 +181,8 @@ func (d *Dispatch) LaunchAfterSwap(p cli.Parsed) error {
 
 func (d *Dispatch) RunLogout(p cli.Parsed) error {
 	plat := strings.TrimSpace(p.LogoutPlatform)
-	if plat == "" || strings.EqualFold(plat, "Steam") {
-		return d.SteamSvc.SteamAddNew()
+	if plat == "" {
+		plat = steam.PlatformKey
 	}
-	deps := basic.FlowDeps{PS: d.PlatformSvc}
-	fc, err := basic.PrepareFlow(deps, plat)
-	if err != nil {
-		return err
-	}
-	return basic.ClearCurrentLogin(deps, fc)
+	return d.commandAdapter(plat).Logout()
 }
