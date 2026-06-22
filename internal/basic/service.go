@@ -19,6 +19,8 @@ import (
 type BasicService struct {
 	mu sync.Mutex
 	PS *platform.PlatformService
+	gameStatsActiveMu       sync.RWMutex
+	gameStatsActivePlatform string
 
 	imgRefreshCooldown    *perPlatformCooldown
 	imgRefreshCoalescer   *perPlatformCoalescer

@@ -30,6 +30,26 @@ var (
 	gameStatsRefreshPending sync.Map // string -> struct{}
 )
 
+func (b *BasicService) setGameStatsActivePlatform(platformKey string) {
+	if b == nil {
+		return
+	}
+	platformKey = strings.TrimSpace(platformKey)
+	b.gameStatsActiveMu.Lock()
+	b.gameStatsActivePlatform = platformKey
+	b.gameStatsActiveMu.Unlock()
+}
+
+func (b *BasicService) getGameStatsActivePlatform() string {
+	if b == nil {
+		return ""
+	}
+	b.gameStatsActiveMu.RLock()
+	active := strings.TrimSpace(b.gameStatsActivePlatform)
+	b.gameStatsActiveMu.RUnlock()
+	return active
+}
+
 func gameStatsRefreshKey(platformKey, game, accountID string) string {
 	return strings.TrimSpace(platformKey) + "\x00" + strings.TrimSpace(game) + "\x00" + strings.TrimSpace(accountID)
 }
@@ -138,6 +158,7 @@ func (b *BasicService) StartGameStatsRefresh(platformKey string) {
 	if platformKey == "" || appclient.IsOfflineMode() {
 		return
 	}
+	b.setGameStatsActivePlatform(platformKey)
 	liveID := currentLiveAccountID(b, platformKey)
 	go func() {
 		defer crashlog.Capture()
@@ -167,20 +188,12 @@ func (b *BasicService) runGameStatsProcessMonitor() {
 		if appclient.IsOfflineMode() {
 			return
 		}
-		refreshRunningProcessCache(true)
-		gameStatsState.mu.Lock()
-		if err := gameStatsState.ensureLoadedLocked(); err != nil {
-			gameStatsState.mu.Unlock()
+		activePlatform := b.getGameStatsActivePlatform()
+		if activePlatform == "" {
 			return
 		}
-		platforms := make([]string, 0, len(gameStatsState.compat))
-		for pk := range gameStatsState.compat {
-			platforms = append(platforms, pk)
-		}
-		gameStatsState.mu.Unlock()
-		for _, pk := range platforms {
-			b.StartGameStatsRefresh(pk)
-		}
+		refreshRunningProcessCache(true)
+		b.StartGameStatsRefresh(activePlatform)
 	}
 	tick()
 	ticker := time.NewTicker(gameStatsProcessCacheInterval)
