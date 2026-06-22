@@ -49,8 +49,8 @@
       `${tr("Stats_TotalSwitches")}${r.totalSwitches}`,
       `${tr("Stats_TotalGamesLaunched")}${r.totalGamesLaunched}`,
       `${tr("Stats_UniqueDaysLong")}${r.uniqueDaysSwitched}`,
-      `${tr("Stats_TotalTags")}${(r as Record<string, unknown>).totalTags ?? 0}`,
-      `${tr("Stats_TotalTaggedAccounts")}${(r as Record<string, unknown>).totalTaggedAccounts ?? 0}`,
+      `${tr("Stats_TotalTags")}${r.totalTags}`,
+      `${tr("Stats_TotalTaggedAccounts")}${r.totalTaggedAccounts}`,
     ];
     return lines.join("\n");
   }
@@ -70,9 +70,8 @@
       parts.push(`   - ${tr("Stats_GameShortcuts")}${sw.gameShortcuts}`);
       parts.push(`   - ${tr("Stats_GameShortcutsHotbar")}${sw.gameShortcutsHotbar}`);
       parts.push(`   - ${tr("Stats_GamesLaunched")}${sw.gamesLaunched}`);
-      const swAny = sw as Record<string, unknown>;
-      if (swAny.tags !== undefined) parts.push(`   - ${tr("Stats_Tags")}${swAny.tags}`);
-      if (swAny.taggedAccounts !== undefined) parts.push(`   - ${tr("Stats_TaggedAccounts")}${swAny.taggedAccounts}`);
+      parts.push(`   - ${tr("Stats_Tags")}${sw.tags}`);
+      parts.push(`   - ${tr("Stats_TaggedAccounts")}${sw.taggedAccounts}`);
     }
     parts.push(`${tr("Stats_PageStats")}`);
     for (const p of r.pages) {
