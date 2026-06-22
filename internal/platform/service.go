@@ -9,6 +9,7 @@ import (
 	"strings"
 	"sync"
 
+	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/stats"
 )
 
@@ -18,15 +19,15 @@ type platformsFile struct {
 }
 
 type PlatformStartup struct {
-	HomePlatformOrder     []string       `json:"homePlatformOrder"`
-	AllPlatformNames      []string       `json:"allPlatformNames"`
-	DisabledPlatformNames []string       `json:"disabledPlatformNames"`
-	PlatformsFileMissing  bool           `json:"platformsFileMissing"`
-	PlatformAccountCounts map[string]int `json:"platformAccountCounts"`
+	HomePlatformOrder     []string                        `json:"homePlatformOrder"`
+	AllPlatformNames      []string                        `json:"allPlatformNames"`
+	DisabledPlatformNames []string                        `json:"disabledPlatformNames"`
+	PlatformsFileMissing  bool                            `json:"platformsFileMissing"`
+	PlatformAccountCounts map[string]int                  `json:"platformAccountCounts"`
 	PlatformTagCounts     map[string]PlatformTagCountInfo `json:"platformTagCounts"`
-	Language              string         `json:"language"`
-	Theme                 string         `json:"theme,omitempty"`
-	CliNavigateHint       string         `json:"cliNavigateHint,omitempty"`
+	Language              string                          `json:"language"`
+	Theme                 string                          `json:"theme,omitempty"`
+	CliNavigateHint       string                          `json:"cliNavigateHint,omitempty"`
 
 	OfflineMode           bool   `json:"offlineMode"`
 	ProtocolEnabled       bool   `json:"protocolEnabled"`
@@ -212,42 +213,23 @@ func (p *PlatformService) UpdateSettings(req SettingsBatchUpdate) error {
 	if err != nil {
 		return err
 	}
-	dirty := false
-	applyIfSet := func(ptr *bool, val *bool) {
-		if val != nil {
-			*ptr = *val
-			dirty = true
-		}
-	}
-	applyStringIfSet := func(ptr *string, val *string) {
-		if val != nil {
-			*ptr = *val
-			dirty = true
-		}
-	}
-	applyIfSet(&s.OfflineMode, req.OfflineMode)
-	applyIfSet(&s.ProtocolEnabled, req.ProtocolEnabled)
-	applyIfSet(&s.ExitToTray, req.ExitToTray)
-	applyIfSet(&s.DiscordRpc, req.DiscordRpc)
-	applyIfSet(&s.DiscordRpcShare, req.DiscordRpcShare)
-	applyIfSet(&s.MinimizeOnSwitch, req.MinimizeOnSwitch)
-	applyIfSet(&s.StartTrayWithWindows, req.StartTrayWithWindows)
-	applyIfSet(&s.StartProgramCentered, req.StartProgramCentered)
-	applyIfSet(&s.AnimationsEnabled, req.AnimationsEnabled)
-	applyIfSet(&s.StatsEnabled, req.StatsEnabled)
-	applyIfSet(&s.StatsShare, req.StatsShare)
-	applyIfSet(&s.CrashReportAutoSubmit, req.CrashReportAutoSubmit)
-	applyStringIfSet(&s.Language, req.Language)
-	applyStringIfSet(&s.Theme, req.Theme)
-	applyStringIfSet(&s.ThemeAccentPreset, req.ThemeAccentPreset)
-	applyStringIfSet(&s.ThemeAccentCustom, req.ThemeAccentCustom)
-	if !dirty {
+	effects := applySettingsBatchUpdate(&s, req)
+	if !effects.dirty {
 		return nil
 	}
-	if req.StatsEnabled != nil {
-		stats.SetStatsCollectionEnabled(*req.StatsEnabled)
+	if err := saveSettingsAtomic(exeDir, s); err != nil {
+		return err
 	}
-	return saveSettingsAtomic(exeDir, s)
+	if effects.statsEnabled != nil {
+		stats.SetStatsCollectionEnabled(*effects.statsEnabled)
+	}
+	if effects.offlineMode != nil {
+		appclient.SetOfflineMode(*effects.offlineMode)
+	}
+	if effects.discordPresenceRefresh {
+		TriggerDiscordPresenceRefresh()
+	}
+	return nil
 }
 
 func sanitizeThemeID(id string) string {
