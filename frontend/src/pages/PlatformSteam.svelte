@@ -20,7 +20,7 @@
   } from "../../bindings/TcNo-Acc-Switcher/internal/steam/models.js";
   import * as Shortcuts from "wails-shortcuts-service";
   import { ListPayload } from "../../bindings/TcNo-Acc-Switcher/internal/shortcuts/models.js";
-  import { offlineMode, offlineSafeImageSrc, withAssetCacheBust } from "../stores/offlineMode";
+  import { offlineMode } from "../stores/offlineMode";
   import { formatToastWithError } from "../lib/formatWailsError";
   import * as BasicService from "../../bindings/TcNo-Acc-Switcher/internal/basic/basicservice.js";
   import { buildSteamExtraMenu } from "../lib/steam/contextMenuBuilder";
@@ -29,6 +29,7 @@
   import { reportLaunchFailure } from "../lib/adminFlow";
   import { fuzzyWordsMatch } from "../lib/searchFuzzy";
   import { formatLastLoginForLocale } from "../lib/formatLastLogin";
+  import { shortcutIconIndexes, steamGameIconUrl } from "../lib/shortcutAssets";
   import "../styles/miniprofile.scss";
   import "../styles/platformAccountsShared.scss";
 
@@ -55,50 +56,20 @@
   let steamMainEl: HTMLDivElement | null = null;
   let offShortcutsUpdated: (() => void) | undefined;
 
-  function safeFolderName(platformKey: string): string {
-    let b = "";
-    for (const r of platformKey.trim().toLowerCase()) {
-      if (r === " " || r === "/" || r === "\\") b += "_";
-      else if (/[a-z0-9\-_]/.test(r)) b += r;
-    }
-    return b || "unknown";
-  }
-
-  function normalizeGameSearchKey(s: string): string {
-    return s.toLowerCase().replace(/[™©®]/g, "").replace(/[^a-z0-9]+/g, " ").trim().replace(/\s+/g, " ");
-  }
-
-  function resolveShortcutIconUrl(o: Record<string, unknown>, stemLow: string, platFolder: string): string {
-    let iconRaw = String(o.iconUrl ?? o.IconURL ?? o.iconURL ?? "").trim();
-    if (!iconRaw) iconRaw = `/img/shortcuts/${platFolder}/${stemLow}.png`;
-    return offlineSafeImageSrc(get(offlineMode), iconRaw, SHORTCUT_ICON_FALLBACK);
-  }
-
   function applyShortcutIconsFromShortcutList(list: unknown[]): void {
-    const byAppId: Record<string, string> = {};
-    const byStemKey: Record<string, string> = {};
-    const platFolder = safeFolderName(name);
-    for (const raw of list) {
-      const o = (raw ?? {}) as Record<string, unknown>;
-      const fn = String(o.fileName ?? o.FileName ?? "").trim();
-      if (!fn) continue;
-      const stem = fn.replace(/\.(lnk|url)$/i, "").trim();
-      const stemLow = stem.toLowerCase();
-      const iconUrl = resolveShortcutIconUrl(o, stemLow, platFolder);
-      if (/^\d+$/.test(stem)) byAppId[stem] = iconUrl;
-      const nk = normalizeGameSearchKey(stem);
-      if (nk) byStemKey[nk] = iconUrl;
-    }
-    steamShortcutIconByAppId = byAppId;
-    steamShortcutIconByStemKey = byStemKey;
+    const indexes = shortcutIconIndexes(list, name, SHORTCUT_ICON_FALLBACK, get(offlineMode));
+    steamShortcutIconByAppId = indexes.byAppId;
+    steamShortcutIconByStemKey = indexes.byStemKey;
   }
 
   function resolveSteamGameSearchIcon(g: { appId: string; name: string }): string {
-    const id = String(g.appId).trim();
-    if (steamShortcutIconByAppId[id]) return steamShortcutIconByAppId[id];
-    const nk = normalizeGameSearchKey(g.name);
-    if (steamShortcutIconByStemKey[nk]) return steamShortcutIconByStemKey[nk];
-    return offlineSafeImageSrc(get(offlineMode), `/img/shortcuts/${safeFolderName(name)}/${id.toLowerCase()}.png`, SHORTCUT_ICON_FALLBACK);
+    return steamGameIconUrl(
+      g,
+      name,
+      { byAppId: steamShortcutIconByAppId, byStemKey: steamShortcutIconByStemKey },
+      SHORTCUT_ICON_FALLBACK,
+      get(offlineMode),
+    );
   }
 
   async function refreshGameDataAppSets(steamIds: string[]): Promise<void> {
