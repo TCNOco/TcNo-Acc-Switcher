@@ -13,6 +13,7 @@ import (
 	"sync"
 	"time"
 
+	"TcNo-Acc-Switcher/internal/accountlist"
 	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/basic"
 	"TcNo-Acc-Switcher/internal/crashlog"
@@ -30,15 +31,15 @@ const AccountUpdatedEvent = "steam-account-updated"
 type AccountDTO struct {
 	SteamID64 string `json:"steamId64"`
 
-	PersonaName   string `json:"personaName"`
-	AccountName   string `json:"accountName"`
-	DisplayName   string `json:"displayName"`
-	LastLogin     string `json:"lastLogin"`
-	Offline       bool   `json:"offline"`
+	PersonaName    string `json:"personaName"`
+	AccountName    string `json:"accountName"`
+	DisplayName    string `json:"displayName"`
+	LastLogin      string `json:"lastLogin"`
+	Offline        bool   `json:"offline"`
 	ImageURL       string `json:"imageUrl"`
 	StaticImageURL string `json:"staticImageUrl"`
 	AvatarPending  bool   `json:"avatarPending"`
-	MetaPending   bool   `json:"metaPending"`
+	MetaPending    bool   `json:"metaPending"`
 
 	Vac bool `json:"vac"`
 	Ltd bool `json:"ltd"`
@@ -74,7 +75,7 @@ type AccountPatch struct {
 	ImageURL       string `json:"imageUrl"`
 	StaticImageURL string `json:"staticImageUrl,omitempty"`
 	Vac            bool   `json:"vac"`
-	Ltd      bool   `json:"ltd"`
+	Ltd            bool   `json:"ltd"`
 
 	AvatarPending bool `json:"avatarPending"`
 	MetaPending   bool `json:"metaPending"`
@@ -262,14 +263,13 @@ func (s *SteamService) GetSteamAccounts() ([]AccountDTO, error) {
 	if err != nil {
 		return nil, err
 	}
-	enrichByID := make(map[string]SteamAccountEnrichmentDTO, len(enrich))
-	for _, row := range enrich {
-		enrichByID[row.SteamID64] = row
-	}
-	out := make([]AccountDTO, 0, len(list))
-	for _, row := range list {
-		out = append(out, mergeSteamAccountDTO(row, enrichByID[row.SteamID64]))
-	}
+	out := accountlist.Merge(
+		list,
+		enrich,
+		func(row SteamAccountListItemDTO) string { return row.SteamID64 },
+		func(row SteamAccountEnrichmentDTO) string { return row.SteamID64 },
+		mergeSteamAccountDTO,
+	)
 	syncSteamPlatformCounts(len(out))
 	return out, nil
 }

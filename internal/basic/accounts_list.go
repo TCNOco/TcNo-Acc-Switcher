@@ -2,9 +2,9 @@ package basic
 
 import (
 	"log/slog"
-	"sort"
 	"strings"
 
+	"TcNo-Acc-Switcher/internal/accountlist"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/profileimage"
 	"TcNo-Acc-Switcher/internal/stats"
@@ -78,22 +78,7 @@ func (b *BasicService) buildAccountListContext(platformKey string) (*accountList
 	}
 
 	ids := idf.IDs
-	seen := map[string]struct{}{}
-	var keys []string
-	for _, id := range order {
-		if _, ok := ids[id]; ok {
-			keys = append(keys, id)
-			seen[id] = struct{}{}
-		}
-	}
-	var missing []string
-	for id := range ids {
-		if _, ok := seen[id]; !ok {
-			missing = append(missing, id)
-		}
-	}
-	sort.Strings(missing)
-	keys = append(keys, missing...)
+	keys := accountlist.OrderedIDs(ids, order)
 
 	return &accountListContext{
 		platformKey:       platformKey,
@@ -204,16 +189,6 @@ func mergeBasicAccountDTO(list AccountListItemDTO, enrich AccountEnrichmentDTO) 
 }
 
 func syncBasicPlatformCounts(platformKey string, accountCount int, ps platform.PlatformSettings) {
-	sc, hot := 0, 0
-	for _, e := range ps.Shortcuts {
-		fn := strings.TrimSpace(e.FileName)
-		if fn == "" {
-			continue
-		}
-		sc++
-		if e.Pinned {
-			hot++
-		}
-	}
+	sc, hot := accountlist.ShortcutCounts(ps.Shortcuts)
 	_ = stats.SyncPlatformCounts(platformKey, accountCount, sc, hot)
 }

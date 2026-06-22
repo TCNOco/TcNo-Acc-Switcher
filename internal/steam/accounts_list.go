@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"strings"
 
+	"TcNo-Acc-Switcher/internal/accountlist"
 	"TcNo-Acc-Switcher/internal/basic"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/profileimage"
@@ -24,41 +25,41 @@ type SteamAccountListItemDTO struct {
 type SteamAccountEnrichmentDTO struct {
 	SteamID64 string `json:"steamId64"`
 
-	DisplayName     string `json:"displayName"`
-	LastLogin       string `json:"lastLogin"`
-	Offline         bool   `json:"offline"`
-	ImageURL        string `json:"imageUrl"`
-	StaticImageURL  string `json:"staticImageUrl"`
-	AvatarPending   bool   `json:"avatarPending"`
-	MetaPending     bool   `json:"metaPending"`
-	Vac             bool   `json:"vac"`
-	Ltd             bool   `json:"ltd"`
-	ShowSteamID     bool   `json:"showSteamId"`
-	ShowVAC         bool   `json:"showVac"`
-	ShowLimited     bool   `json:"showLimited"`
-	ShowLastLogin   bool   `json:"showLastLogin"`
-	ShowAccUsername bool   `json:"showAccUsername"`
-	CollectInfo     bool   `json:"collectInfo"`
-	ShowShortNotes  bool   `json:"showShortNotes"`
-	Note            string `json:"note"`
-	AvatarFrameURL  string `json:"avatarFrameUrl"`
-	MiniProfileHTML string `json:"miniProfileHtml"`
-	ShowMiniProfile bool   `json:"showMiniProfile"`
-	ShowAvatarFrame bool   `json:"showAvatarFrame"`
-	SyncError       string `json:"syncError"`
-	Tags            []basic.AccountTagDTO `json:"tags"`
-	ManualProfileImage bool `json:"manualProfileImage"`
+	DisplayName        string                `json:"displayName"`
+	LastLogin          string                `json:"lastLogin"`
+	Offline            bool                  `json:"offline"`
+	ImageURL           string                `json:"imageUrl"`
+	StaticImageURL     string                `json:"staticImageUrl"`
+	AvatarPending      bool                  `json:"avatarPending"`
+	MetaPending        bool                  `json:"metaPending"`
+	Vac                bool                  `json:"vac"`
+	Ltd                bool                  `json:"ltd"`
+	ShowSteamID        bool                  `json:"showSteamId"`
+	ShowVAC            bool                  `json:"showVac"`
+	ShowLimited        bool                  `json:"showLimited"`
+	ShowLastLogin      bool                  `json:"showLastLogin"`
+	ShowAccUsername    bool                  `json:"showAccUsername"`
+	CollectInfo        bool                  `json:"collectInfo"`
+	ShowShortNotes     bool                  `json:"showShortNotes"`
+	Note               string                `json:"note"`
+	AvatarFrameURL     string                `json:"avatarFrameUrl"`
+	MiniProfileHTML    string                `json:"miniProfileHtml"`
+	ShowMiniProfile    bool                  `json:"showMiniProfile"`
+	ShowAvatarFrame    bool                  `json:"showAvatarFrame"`
+	SyncError          string                `json:"syncError"`
+	Tags               []basic.AccountTagDTO `json:"tags"`
+	ManualProfileImage bool                  `json:"manualProfileImage"`
 }
 
 type steamListContext struct {
-	users             []LoginUser
-	activeSteamID     string
-	st                Settings
-	app               platform.AppSettings
-	effectiveCollect  bool
-	vacMap            map[string]VacEntry
-	vacKnown          map[string]struct{}
-	tagByUID          map[string][]basic.AccountTagDTO
+	users            []LoginUser
+	activeSteamID    string
+	st               Settings
+	app              platform.AppSettings
+	effectiveCollect bool
+	vacMap           map[string]VacEntry
+	vacKnown         map[string]struct{}
+	tagByUID         map[string][]basic.AccountTagDTO
 }
 
 func (s *SteamService) buildSteamListContext() (*steamListContext, error) {
@@ -258,16 +259,7 @@ func syncSteamPlatformCounts(accountCount int) {
 	psPlat, perr := platform.LoadPlatformSettings(PlatformKey)
 	sc, hot := 0, 0
 	if perr == nil {
-		for _, e := range psPlat.Shortcuts {
-			fn := strings.TrimSpace(e.FileName)
-			if fn == "" {
-				continue
-			}
-			sc++
-			if e.Pinned {
-				hot++
-			}
-		}
+		sc, hot = accountlist.ShortcutCounts(psPlat.Shortcuts)
 	}
 	_ = stats.SyncPlatformCounts(PlatformKey, accountCount, sc, hot)
 }

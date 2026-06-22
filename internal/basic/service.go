@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	"TcNo-Acc-Switcher/internal/accountlist"
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/profileimage"
@@ -17,14 +18,14 @@ import (
 )
 
 type BasicService struct {
-	mu sync.Mutex
-	PS *platform.PlatformService
+	mu                      sync.Mutex
+	PS                      *platform.PlatformService
 	gameStatsActiveMu       sync.RWMutex
 	gameStatsActivePlatform string
 
-	imgRefreshCooldown    *perPlatformCooldown
-	imgRefreshCoalescer   *perPlatformCoalescer
-	imgRefreshClock       func() time.Time
+	imgRefreshCooldown  *perPlatformCooldown
+	imgRefreshCoalescer *perPlatformCoalescer
+	imgRefreshClock     func() time.Time
 }
 
 // imgRefreshMinInterval is the per-platform cooldown between background
@@ -46,17 +47,17 @@ func (b *BasicService) deps() FlowDeps {
 }
 
 type AccountDTO struct {
-	PlatformKey    string          `json:"platformKey"`
-	UniqueID       string          `json:"uniqueId"`
-	DisplayName    string          `json:"displayName"`
-	ImageURL       string          `json:"imageUrl"`
-	AvatarPending  bool            `json:"avatarPending"`
-	ManualProfileImage bool `json:"manualProfileImage"`
-	Note           string          `json:"note"`
-	CurrentSession bool            `json:"currentSession"`
-	LastUsed       string          `json:"lastUsed"`
-	ShowLastUsed   bool            `json:"showLastUsed"`
-	Tags           []AccountTagDTO `json:"tags"`
+	PlatformKey        string          `json:"platformKey"`
+	UniqueID           string          `json:"uniqueId"`
+	DisplayName        string          `json:"displayName"`
+	ImageURL           string          `json:"imageUrl"`
+	AvatarPending      bool            `json:"avatarPending"`
+	ManualProfileImage bool            `json:"manualProfileImage"`
+	Note               string          `json:"note"`
+	CurrentSession     bool            `json:"currentSession"`
+	LastUsed           string          `json:"lastUsed"`
+	ShowLastUsed       bool            `json:"showLastUsed"`
+	Tags               []AccountTagDTO `json:"tags"`
 }
 
 func (b *BasicService) GetAccounts(platformKey string) ([]AccountDTO, error) {
@@ -68,14 +69,13 @@ func (b *BasicService) GetAccounts(platformKey string) ([]AccountDTO, error) {
 	if err != nil {
 		return nil, err
 	}
-	enrichByID := make(map[string]AccountEnrichmentDTO, len(enrich))
-	for _, row := range enrich {
-		enrichByID[row.UniqueID] = row
-	}
-	out := make([]AccountDTO, 0, len(list))
-	for _, row := range list {
-		out = append(out, mergeBasicAccountDTO(row, enrichByID[row.UniqueID]))
-	}
+	out := accountlist.Merge(
+		list,
+		enrich,
+		func(row AccountListItemDTO) string { return row.UniqueID },
+		func(row AccountEnrichmentDTO) string { return row.UniqueID },
+		mergeBasicAccountDTO,
+	)
 	if len(out) > 0 {
 		ps, perr := platform.LoadPlatformSettings(platformKey)
 		if perr == nil {
