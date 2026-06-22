@@ -23,7 +23,8 @@
   import { offlineMode, offlineSafeImageSrc, withAssetCacheBust } from "../stores/offlineMode";
   import { formatToastWithError } from "../lib/formatWailsError";
   import * as BasicService from "../../bindings/TcNo-Acc-Switcher/internal/basic/basicservice.js";
-  import { buildSteamExtraMenu, type SteamMenuDeps } from "../lib/steam/contextMenuBuilder";
+  import { buildSteamExtraMenu } from "../lib/steam/contextMenuBuilder";
+  import type { SteamMenuDeps } from "../lib/steam/menuCommands";
   import type { SteamAccountRow } from "../lib/steam/types";
   import { reportLaunchFailure } from "../lib/adminFlow";
   import { fuzzyWordsMatch } from "../lib/searchFuzzy";
