@@ -102,6 +102,24 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Verify release secrets
+        shell: pwsh
+        env:
+          SIGNPATH_API_TOKEN: ${{ secrets.SIGNPATH_API_TOKEN }}
+          UPDATER_KEY: ${{ secrets.UPDATER_KEY }}
+        run: |
+          $missing = @()
+          if ([string]::IsNullOrWhiteSpace($env:SIGNPATH_API_TOKEN)) {
+            $missing += 'SIGNPATH_API_TOKEN'
+          }
+          if ([string]::IsNullOrWhiteSpace($env:UPDATER_KEY)) {
+            $missing += 'UPDATER_KEY'
+          }
+          if ($missing.Count -gt 0) {
+            throw "Missing release secret(s): $($missing -join ', '). Add them to the 'release-signing' environment or repository Actions secrets."
+          }
+          Write-Host 'Release secrets are present.'
+
       - name: Setup Go
         uses: actions/setup-go@v6
         with:
