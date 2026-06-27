@@ -109,12 +109,21 @@ export function buildTagsSectionMenuItem(opts: {
               }),
           }),
         );
+  const removeAllTags =
+    assignedTags.length === 0
+      ? undefined
+      : () =>
+          void wrap(async () => {
+            for (const tg of assignedTags) {
+              await BasicService.RemoveTagFromAccount(platformKey, uniqueId, tg.id);
+            }
+          });
 
   return {
     label: tr("Tags_Section"),
     children: [
       { label: tr("Tags_Add"), children: addChildren },
-      { label: tr("Tags_Remove"), children: removeChildren },
+      { label: tr("Tags_Remove"), action: removeAllTags, children: removeChildren },
     ],
   };
 }
