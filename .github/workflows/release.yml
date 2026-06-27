@@ -219,7 +219,7 @@ jobs:
         id: upload-unsigned-installer
         uses: actions/upload-artifact@v7
         with:
-          path: build/windows/nsis/TcNo Account Switcher - Installer.exe
+          path: build/windows/nsis/TcNo Account Switcher Installer.exe
           archive: false
           if-no-files-found: error
           retention-days: 7
@@ -240,7 +240,7 @@ jobs:
 
       - name: Verify release artifacts
         shell: pwsh
-        run: .\ci\github-release.ps1 -Step VerifyReleaseArtifacts -SignedInstallerPath "$env:GITHUB_WORKSPACE\signed-installer\TcNo Account Switcher - Installer.exe"
+        run: .\ci\github-release.ps1 -Step VerifyReleaseArtifacts -SignedInstallerPath "$env:GITHUB_WORKSPACE\signed-installer\TcNo Account Switcher Installer.exe"
 
       - name: Publish draft GitHub release
         uses: softprops/action-gh-release@v3
@@ -251,7 +251,7 @@ jobs:
           body: Release ${{ github.ref_name }}
           fail_on_unmatched_files: true
           files: |
-            signed-installer/TcNo Account Switcher - Installer.exe
+            signed-installer/TcNo Account Switcher Installer.exe
             bin/TcNo-Acc-Switcher.exe
             bin/TcNo-Acc-Switcher.exe.sig
             bin/TcNo-Acc-Switcher.7z

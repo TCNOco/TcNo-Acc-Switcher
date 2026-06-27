@@ -90,7 +90,7 @@ You will need your systems already built-in Web Runtime - on Windows the [WebVie
 	</a>
 </p>
     
-1. Download `TcNo.Account.Switcher.Installer...exe`
+1. Download `TcNo Account Switcher Installer.exe`
 2. Run the installer, and the application should launch when done.
 
 Want a portable install? Download and run `TcNo-Acc-Switcher.exe` directly (Do see info and steps on the [portable installs wiki page](https://github.com/TCNOco/TcNo-Acc-Switcher/wiki#portable-eg-for-usb))
@@ -110,12 +110,14 @@ Want a portable install? Download and run `TcNo-Acc-Switcher.exe` directly (Do s
 </a>
 </p>
 
-#### Code Signing
+#### Special Thanks
 
-A special thanks to [SignPath.io](https://signpath.io/?utm_source=foundation&utm_medium=github&utm_campaign=tcno-acc-switcher) for providing a free code signing service and to the [SignPath Foundation](https://signpath.org/?utm_source=foundation&utm_medium=github&utm_campaign=tcno-acc-switcher) for a free code signing certificate to sign builds.
-<p>
-   <a href="https://signpath.io/?utm_source=foundation&utm_medium=github&utm_campaign=tcno-acc-switcher" target="_blank"><img src="/other/img/signpath_logo.webp"></a>
-</p>
+<table>
+  <tr>
+    <td><a href="https://signpath.io/?utm_source=foundation&utm_medium=github&utm_campaign=tcno-acc-switcher"><img src="https://signpath.org/assets/favicon-50x50.png" alt="SignPath" width="32" /></a></td>
+    <td>Free code signing on Windows provided by <a href="https://signpath.io/?utm_source=foundation&utm_medium=github&utm_campaign=tcno-acc-switcher">SignPath.io</a>, certificate by <a href="https://signpath.org/?utm_source=foundation&utm_medium=github&utm_campaign=tcno-acc-switcher">SignPath Foundation</a></td>
+  </tr>
+</table>
 
 #### [Privacy Policy](https://github.com/TCNOco/TcNo-Acc-Switcher/blob/master/PRIVACY.md)
 

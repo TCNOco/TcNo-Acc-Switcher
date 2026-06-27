@@ -34,7 +34,7 @@
 !define COMP_NAME "TroubleChute (Wesley Pyburn)"
 !define WEB_SITE "https://tcno.co"
 !define COPYRIGHT "TroubleChute (Wesley Pyburn) (C) 2026"
-!define DESCRIPTION "TcNo Account Switcher"
+!define DESCRIPTION "TcNo Account Switcher Installer"
 !define INSTALL_TYPE "SetShellVarContext current"
 !define REG_ROOT "HKCU"
 !define REG_APP_PATH "Software\Microsoft\Windows\CurrentVersion\App Paths\${PRODUCT_EXECUTABLE}"
@@ -55,7 +55,7 @@ VIAddVersionKey "FileVersion"  "${VERSION}"
 ;--------------------------------
 ;Version specific variables
 
-!define INSTALLER_NAME "TcNo Account Switcher - Installer.exe"
+!define INSTALLER_NAME "TcNo Account Switcher Installer.exe"
 !define INSTALL_DIR "$PROGRAMFILES64\TcNo Account Switcher"
 
 ;--------------------------------
