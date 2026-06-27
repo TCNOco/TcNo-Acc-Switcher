@@ -3,12 +3,12 @@
 Remove unused i18n keys from frontend/src/Resources/*.json.
 
 Usage:
-  python tools/remove_unused_i18n.py              # dry-run (default)
-  python tools/remove_unused_i18n.py --apply      # write changes
-  python tools/remove_unused_i18n.py --apply --prefix Installer_ --prefix Updater_
-  python tools/remove_unused_i18n.py --apply --prefix Installer_,Updater_,Installed_
-  python tools/remove_unused_i18n.py --apply --key Settings_WindowsAccent
-  python tools/remove_unused_i18n.py --apply --key Foo_,Bar_   # comma-separated
+  python other/tools/remove_unused_i18n.py              # dry-run (default)
+  python other/tools/remove_unused_i18n.py --apply      # write changes
+  python other/tools/remove_unused_i18n.py --apply --prefix Installer_ --prefix Updater_
+  python other/tools/remove_unused_i18n.py --apply --prefix Installer_,Updater_,Installed_
+  python other/tools/remove_unused_i18n.py --apply --key Settings_WindowsAccent
+  python other/tools/remove_unused_i18n.py --apply --key Foo_,Bar_   # comma-separated
 
 Keys are "unused" when the exact key string does not appear in:
   - frontend/src/**/*.{svelte,ts,js}
@@ -23,7 +23,7 @@ import json
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 RESOURCES = ROOT / "frontend" / "src" / "Resources"
 LOCALE_GLOB = "*.json"
 

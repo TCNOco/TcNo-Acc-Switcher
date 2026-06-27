@@ -157,7 +157,7 @@ jobs:
 
       - name: Prepare release version
         shell: pwsh
-        run: .\ci\github-release.ps1 -Step PrepareVersion
+        run: .\other\github-release.ps1 -Step PrepareVersion
 
       - name: Install frontend dependencies
         working-directory: frontend
@@ -213,7 +213,7 @@ jobs:
         shell: pwsh
         env:
           UPDATER_KEY: ${{ secrets.UPDATER_KEY }}
-        run: .\ci\github-release.ps1 -Step PackageInstaller -SignedExePath "$env:GITHUB_WORKSPACE\signed-exe\TcNo-Acc-Switcher.exe"
+        run: .\other\github-release.ps1 -Step PackageInstaller -SignedExePath "$env:GITHUB_WORKSPACE\signed-exe\TcNo-Acc-Switcher.exe"
 
       - name: Upload unsigned installer for SignPath
         id: upload-unsigned-installer
@@ -240,7 +240,7 @@ jobs:
 
       - name: Verify release artifacts
         shell: pwsh
-        run: .\ci\github-release.ps1 -Step VerifyReleaseArtifacts -SignedInstallerPath "$env:GITHUB_WORKSPACE\signed-installer\TcNo Account Switcher Installer.exe"
+        run: .\other\github-release.ps1 -Step VerifyReleaseArtifacts -SignedInstallerPath "$env:GITHUB_WORKSPACE\signed-installer\TcNo Account Switcher Installer.exe"
 
       - name: Publish draft GitHub release
         uses: softprops/action-gh-release@v3

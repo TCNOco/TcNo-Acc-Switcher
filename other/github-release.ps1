@@ -98,7 +98,7 @@ function Write-UpdaterSignature {
       [System.IO.File]::WriteAllBytes($keyPath, [System.Convert]::FromBase64String($normalized))
     }
 
-    $sigOutput = & go run (Join-Path $root 'cmd\sign-release\main.go') $keyPath $ExePath
+    $sigOutput = & go run (Join-Path $root 'other\sign-release\main.go') $keyPath $ExePath
     if ($LASTEXITCODE -ne 0) {
       throw "Ed25519 signing failed with exit code $LASTEXITCODE."
     }
