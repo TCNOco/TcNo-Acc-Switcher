@@ -335,8 +335,10 @@
     }
   }
 
-  function checkboxChecked(e: Event): boolean {
-    return Boolean((e.currentTarget as HTMLInputElement | null)?.checked);
+  function onSavedDataEncryptionClick(e: MouseEvent): void {
+    e.preventDefault();
+    if (get(securityLoading) || $securityStatus.operationBusy) return;
+    void onToggleSavedDataEncryption(!$securityStatus.savedAccountDataEncrypted);
   }
 
   async function onRetryQuarantine(id: string): Promise<void> {
@@ -463,7 +465,7 @@
               type="checkbox"
               checked={$securityStatus.savedAccountDataEncrypted}
               disabled={$securityLoading || $securityStatus.operationBusy}
-              on:change={(e) => void onToggleSavedDataEncryption(checkboxChecked(e))}
+              on:click={onSavedDataEncryptionClick}
             />
             <label class="form-check-label" for="security-encrypt-cache"></label>
           </span>
