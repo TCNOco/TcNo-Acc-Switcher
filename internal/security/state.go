@@ -123,10 +123,6 @@ func RemoveAppPassword(password string) error {
 	return defaultManager.removeAppPassword(password)
 }
 
-func ResetPasswordAndEncryptedSessions() error {
-	return defaultManager.resetPasswordAndEncryptedSessions()
-}
-
 func RequireUnlocked() error {
 	return defaultManager.requireUnlocked()
 }
@@ -263,29 +259,6 @@ func (m *manager) removeAppPassword(password string) error {
 		return err
 	}
 	if err := os.Remove(p); err != nil && !os.IsNotExist(err) {
-		_ = os.Remove(journal)
-		return err
-	}
-	_ = os.Remove(journal)
-	m.mu.Lock()
-	m.masterKey = nil
-	m.mu.Unlock()
-	emitStatusChanged()
-	return nil
-}
-
-func (m *manager) resetPasswordAndEncryptedSessions() error {
-	journal, err := writeJournal("reset-password", map[string]any{})
-	if err != nil {
-		return err
-	}
-	p, err := securityPath()
-	if err != nil {
-		_ = os.Remove(journal)
-		return err
-	}
-	_ = os.Remove(p)
-	if err := removeVaultAccounts(); err != nil {
 		_ = os.Remove(journal)
 		return err
 	}

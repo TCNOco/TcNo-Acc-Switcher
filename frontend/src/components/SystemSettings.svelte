@@ -18,7 +18,6 @@
     loadSecurityStatus,
     repairInterruptedRestore,
     removeAppPassword,
-    resetPasswordAndEncryptedSessions,
     retryQuarantineImport,
     securityStatus,
     setAppPassword,
@@ -340,27 +339,6 @@
     return Boolean((e.currentTarget as HTMLInputElement | null)?.checked);
   }
 
-  async function onResetPassword(): Promise<void> {
-    const ok = await openConfirm({
-      title: $t("Security_Reset_Title"),
-      body: $t("Security_Reset_Body"),
-      positiveLabel: $t("Security_Reset_Button"),
-      negativeLabel: $t("Button_Cancel"),
-      style: "okcancel",
-    });
-    if (!ok) return;
-    securityLoading.set(true);
-    try {
-      await resetPasswordAndEncryptedSessions();
-      await refreshSecurity();
-      pushToast({ type: "success", message: $t("Security_Reset_Done"), duration: 5000 });
-    } catch (e) {
-      pushToast({ type: "error", message: formatToastWithError($t("Toast_SaveFailed"), e), duration: 8000 });
-    } finally {
-      securityLoading.set(false);
-    }
-  }
-
   async function onRetryQuarantine(id: string): Promise<void> {
     const password = await promptSecurityPassword($t("Security_QuarantineRetry"), $t("Security_QuarantineRetryBody"));
     if (password === null) return;
@@ -502,20 +480,6 @@
         <label class="form-check-label" for="security-encrypt-cache"></label>
       </div>
       <label for="security-encrypt-cache">{$t("Security_EncryptSavedAccountData")}</label>
-    </div>
-  {/if}
-
-  {#if $securityStatus.appPasswordSet}
-    <div class="rowDropdown security-reset-row">
-      <span>{$t("Security_Reset_Hint")}</span>
-      <button
-        type="button"
-        class="btnicontext"
-        disabled={$securityLoading}
-        on:click={() => void onResetPassword()}
-      >
-        {$t("Security_Reset_ButtonShort")}
-      </button>
     </div>
   {/if}
 
@@ -706,10 +670,6 @@
     display: grid;
     gap: 0.25rem;
     margin-bottom: 0.35rem;
-  }
-
-  .security-reset-row {
-    align-items: center;
   }
 
   .security-warning {

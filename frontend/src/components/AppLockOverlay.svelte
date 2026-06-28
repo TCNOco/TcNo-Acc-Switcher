@@ -1,11 +1,6 @@
 <script lang="ts">
   import { t } from "../stores/i18n";
-  import { pushToast } from "../stores/toast";
-  import { formatToastWithError } from "../lib/formatWailsError";
-  import { openConfirm } from "../stores/modal";
   import {
-    loadSecurityStatus,
-    resetPasswordAndEncryptedSessions,
     securityStatus,
     securityStatusLoaded,
     unlockApp,
@@ -29,26 +24,6 @@
     }
   }
 
-  async function reset(): Promise<void> {
-    const ok = await openConfirm({
-      title: $t("Security_Reset_Title"),
-      body: $t("Security_Reset_Body"),
-      positiveLabel: $t("Security_Reset_Button"),
-      negativeLabel: $t("Button_Cancel"),
-      style: "okcancel",
-    });
-    if (!ok) return;
-    loading = true;
-    try {
-      await resetPasswordAndEncryptedSessions();
-      await loadSecurityStatus();
-      pushToast({ type: "success", message: $t("Security_Reset_Done"), duration: 5000 });
-    } catch (e) {
-      pushToast({ type: "error", message: formatToastWithError($t("Toast_SaveFailed"), e), duration: 8000 });
-    } finally {
-      loading = false;
-    }
-  }
 </script>
 
 {#if $securityStatusLoaded && $securityStatus.appLocked}
@@ -68,9 +43,6 @@
         <p class="app-lock-error">{error}</p>
       {/if}
       <div class="app-lock-actions">
-        <button type="button" class="fancyLink" disabled={loading} on:click={reset}>
-          {$t("Security_ForgotPassword")}
-        </button>
         <button type="submit" class="btnicontext modal-primary" disabled={loading}>
           {$t("Security_Unlock")}
         </button>
@@ -120,7 +92,7 @@
   .app-lock-actions {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     gap: 0.75rem;
   }
 </style>

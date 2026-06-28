@@ -16,10 +16,12 @@
   const dispatch = createEventDispatcher<{ resolve: string | null }>();
 
   let value = initialValue;
+  let lastInitialValue = initialValue;
   let inputEl: HTMLInputElement | HTMLTextAreaElement | undefined;
 
-  $: if (initialValue !== value) {
+  $: if (initialValue !== lastInitialValue) {
     value = initialValue;
+    lastInitialValue = initialValue;
   }
 
   function ok(): void {

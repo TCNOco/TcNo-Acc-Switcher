@@ -727,14 +727,6 @@ func removeAccountFromIDs(platformKey, uniqueID string) error {
 	return writeFileAtomicDurable(p, append(out, '\n'), 0o644)
 }
 
-func removeVaultAccounts() error {
-	root, err := vaultRoot()
-	if err != nil {
-		return err
-	}
-	return fsutil.RemoveAllWithRetry(filepath.Join(root, vaultAccountsDir), 2*time.Second, os.RemoveAll)
-}
-
 func writeJournal(kind string, payload map[string]any) (string, error) {
 	root, err := vaultRoot()
 	if err != nil {

@@ -30,10 +30,6 @@ func (s *SecurityService) DisableSavedAccountEncryption(password string) error {
 	return DisableSavedAccountEncryption(password)
 }
 
-func (s *SecurityService) ResetPasswordAndEncryptedSessions() error {
-	return ResetPasswordAndEncryptedSessions()
-}
-
 func (s *SecurityService) ListQuarantines() ([]QuarantineInfo, error) {
 	return ListQuarantines()
 }

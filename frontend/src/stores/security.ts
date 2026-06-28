@@ -61,12 +61,6 @@ export async function disableSavedAccountEncryption(password: string): Promise<v
   });
 }
 
-export async function resetPasswordAndEncryptedSessions(): Promise<void> {
-  await runSecurityProgress("Security_Progress_Reset", async () => {
-    await SecurityService.ResetPasswordAndEncryptedSessions();
-  });
-}
-
 export async function deleteQuarantine(id: string): Promise<void> {
   await SecurityService.DeleteQuarantine(id);
   await loadSecurityStatus();
