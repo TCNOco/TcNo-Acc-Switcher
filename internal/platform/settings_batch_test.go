@@ -65,3 +65,28 @@ func TestApplySettingsBatchUpdateStatsEffect(t *testing.T) {
 		t.Fatalf("stats effect = %#v", effects.statsEnabled)
 	}
 }
+
+func TestNormalizeCommandPaletteHotkey(t *testing.T) {
+	tests := []struct {
+		name  string
+		value string
+		want  string
+	}{
+		{name: "default for empty", value: "", want: "Ctrl+K"},
+		{name: "legacy control alias", value: "Control + p", want: "Ctrl+P"},
+		{name: "multiple modifiers", value: "ctrl+shift+k", want: "Ctrl+Shift+K"},
+		{name: "function key", value: "Alt+F4", want: "Alt+F4"},
+		{name: "single key rejected", value: "K", want: "Ctrl+K"},
+		{name: "escape rejected", value: "Ctrl+Escape", want: "Ctrl+K"},
+		{name: "duplicate modifier rejected", value: "Ctrl+Control+K", want: "Ctrl+K"},
+		{name: "extra key rejected", value: "Ctrl+K+P", want: "Ctrl+K"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := normalizeCommandPaletteHotkey(tt.value); got != tt.want {
+				t.Fatalf("normalizeCommandPaletteHotkey(%q) = %q, want %q", tt.value, got, tt.want)
+			}
+		})
+	}
+}

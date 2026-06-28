@@ -190,9 +190,7 @@
     }
     const hotkey = get(commandPaletteHotkey);
     const isConfiguredCommandHotkey = eventMatchesCommandPaletteHotkey(e, hotkey);
-    const isFallbackCommandHotkey =
-      hotkey !== "Ctrl+P" && eventMatchesCommandPaletteHotkey(e, "Ctrl+P");
-    if (isConfiguredCommandHotkey || isFallbackCommandHotkey) {
+    if (isConfiguredCommandHotkey) {
       if (isEditableTarget(e.target)) {
         return;
       }

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import { get, writable } from "svelte/store";
   import { t } from "../stores/i18n";
   import { pushToast } from "../stores/toast";
@@ -26,9 +26,9 @@
   } from "../stores/security";
   import {
     commandPaletteHotkey,
+    formatCommandPaletteHotkeyEvent,
     loadCommandPaletteHotkey,
     setCommandPaletteHotkey,
-    type CommandPaletteHotkey,
   } from "../stores/commandPalette";
   import { formatAppVersion } from "../lib/checkForUpdates";
   import { createToggle } from "../lib/useToggleSetting";
@@ -38,13 +38,46 @@
   let currentVersion = "";
   let userDataPath = "";
 
-  const commandPaletteHotkeyOptions: CommandPaletteHotkey[] = ["Ctrl+K", "Ctrl+P"];
-
   const userDataMoveLoading = writable(false);
   const updateCheckLoading = writable(false);
   const offlineLoading = writable(false);
   const securityLoading = writable(false);
   let quarantines: SecurityQuarantineInfo[] = [];
+  let commandPaletteHotkeyCaptureActive = false;
+
+  function stopCommandPaletteHotkeyCapture(): void {
+    if (!commandPaletteHotkeyCaptureActive) return;
+    commandPaletteHotkeyCaptureActive = false;
+    window.removeEventListener("keydown", onCommandPaletteHotkeyCaptureKeydown, true);
+  }
+
+  function startCommandPaletteHotkeyCapture(): void {
+    if (commandPaletteHotkeyCaptureActive) return;
+    commandPaletteHotkeyCaptureActive = true;
+    window.addEventListener("keydown", onCommandPaletteHotkeyCaptureKeydown, true);
+  }
+
+  function toggleCommandPaletteHotkeyCapture(): void {
+    if (commandPaletteHotkeyCaptureActive) {
+      stopCommandPaletteHotkeyCapture();
+      return;
+    }
+    startCommandPaletteHotkeyCapture();
+  }
+
+  function onCommandPaletteHotkeyCaptureKeydown(e: KeyboardEvent): void {
+    if (!commandPaletteHotkeyCaptureActive) return;
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.key === "Escape") {
+      stopCommandPaletteHotkeyCapture();
+      return;
+    }
+    const next = formatCommandPaletteHotkeyEvent(e);
+    if (!next) return;
+    stopCommandPaletteHotkeyCapture();
+    void setCommandPaletteHotkey(next);
+  }
 
   const exitToTray = createToggle(
     () => PlatformService.GetExitToTray(),
@@ -407,6 +440,10 @@
       void desktopHomeShortcut.init();
     }
   });
+
+  onDestroy(() => {
+    stopCommandPaletteHotkeyCapture();
+  });
 </script>
 
 <h2 class="SettingsHeader">{$t("Settings_Header_System")}</h2>
@@ -567,18 +604,15 @@
 
 <div class="rowDropdown hotkey-row">
   <span>{$t("Settings_CommandPaletteHotkey")}</span>
-  <div class="hotkey-segment" role="group" aria-label={$t("Settings_CommandPaletteHotkey")}>
-    {#each commandPaletteHotkeyOptions as hotkey}
-      <button
-        type="button"
-        class:active={$commandPaletteHotkey === hotkey}
-        aria-pressed={$commandPaletteHotkey === hotkey}
-        on:click={() => void setCommandPaletteHotkey(hotkey)}
-      >
-        {hotkey}
-      </button>
-    {/each}
-  </div>
+  <button
+    type="button"
+    class="btnicontext hotkey-button"
+    class:capturing={commandPaletteHotkeyCaptureActive}
+    aria-pressed={commandPaletteHotkeyCaptureActive}
+    on:click={toggleCommandPaletteHotkeyCapture}
+  >
+    {commandPaletteHotkeyCaptureActive ? $t("Settings_CommandPaletteHotkey_Prompt") : $commandPaletteHotkey}
+  </button>
 </div>
 
 {#if isWindows}
@@ -689,25 +723,11 @@
     flex-wrap: wrap;
   }
 
-  .hotkey-segment {
-    display: inline-flex;
-    border: 1px solid var(--input-number-border);
+  .hotkey-button {
+    min-width: 7rem;
   }
 
-  .hotkey-segment button {
-    min-width: 5.5rem;
-    border: 0;
-    border-right: 1px solid var(--input-number-border);
-    border-radius: 0;
-    background: var(--even-darker-code-background);
-    color: var(--whiteSecondary);
-  }
-
-  .hotkey-segment button:last-child {
-    border-right: 0;
-  }
-
-  .hotkey-segment button.active {
+  .hotkey-button.capturing {
     background: var(--accent);
     color: var(--text-on-bright-bg);
   }

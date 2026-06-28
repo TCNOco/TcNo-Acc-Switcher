@@ -1,6 +1,9 @@
 package platform
 
-import "strings"
+import (
+	"strconv"
+	"strings"
+)
 
 type settingsBatchEffects struct {
 	dirty                  bool
@@ -92,12 +95,111 @@ func applySettingsBatchUpdate(s *AppSettings, req SettingsBatchUpdate) settingsB
 }
 
 func normalizeCommandPaletteHotkey(value string) string {
-	switch strings.ToLower(strings.ReplaceAll(strings.TrimSpace(value), " ", "")) {
-	case "ctrl+p", "control+p":
-		return "Ctrl+P"
-	default:
-		return "Ctrl+K"
+	const fallback = "Ctrl+K"
+	compact := strings.ReplaceAll(strings.TrimSpace(value), " ", "")
+	parts := strings.Split(compact, "+")
+	if len(parts) < 2 {
+		return fallback
 	}
+	modifiers := map[string]bool{}
+	key := ""
+	for _, part := range parts {
+		if part == "" {
+			return fallback
+		}
+		if modifier := normalizeCommandPaletteModifier(part); modifier != "" {
+			if key != "" || modifiers[modifier] {
+				return fallback
+			}
+			modifiers[modifier] = true
+			continue
+		}
+		if key != "" {
+			return fallback
+		}
+		key = normalizeCommandPaletteKey(part)
+		if key == "" {
+			return fallback
+		}
+	}
+	if key == "" || (!modifiers["Ctrl"] && !modifiers["Alt"] && !modifiers["Shift"] && !modifiers["Meta"]) {
+		return fallback
+	}
+	out := make([]string, 0, 5)
+	for _, modifier := range []string{"Ctrl", "Alt", "Shift", "Meta"} {
+		if modifiers[modifier] {
+			out = append(out, modifier)
+		}
+	}
+	out = append(out, key)
+	return strings.Join(out, "+")
+}
+
+func normalizeCommandPaletteModifier(value string) string {
+	switch strings.ToLower(value) {
+	case "ctrl", "control":
+		return "Ctrl"
+	case "alt", "option":
+		return "Alt"
+	case "shift":
+		return "Shift"
+	case "meta", "cmd", "command", "win", "windows", "super":
+		return "Meta"
+	default:
+		return ""
+	}
+}
+
+func normalizeCommandPaletteKey(value string) string {
+	lower := strings.ToLower(strings.TrimSpace(value))
+	switch lower {
+	case "esc", "escape":
+		return ""
+	case "space", "spacebar":
+		return "Space"
+	case "enter", "return":
+		return "Enter"
+	case "tab":
+		return "Tab"
+	case "backspace":
+		return "Backspace"
+	case "delete", "del":
+		return "Delete"
+	case "insert", "ins":
+		return "Insert"
+	case "home":
+		return "Home"
+	case "end":
+		return "End"
+	case "pageup", "pgup":
+		return "PageUp"
+	case "pagedown", "pgdown":
+		return "PageDown"
+	case "arrowup", "up":
+		return "ArrowUp"
+	case "arrowdown", "down":
+		return "ArrowDown"
+	case "arrowleft", "left":
+		return "ArrowLeft"
+	case "arrowright", "right":
+		return "ArrowRight"
+	}
+	if len(lower) >= 2 && lower[0] == 'f' {
+		n, err := strconv.Atoi(lower[1:])
+		if err == nil && n >= 1 && n <= 24 {
+			return "F" + strconv.Itoa(n)
+		}
+	}
+	if len(value) == 1 {
+		ch := value[0]
+		if ch >= 'a' && ch <= 'z' {
+			return strings.ToUpper(value)
+		}
+		if (ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9') || strings.ContainsRune("`-=[]\\;',./", rune(ch)) {
+			return strings.ToUpper(value)
+		}
+	}
+	return ""
 }
 
 func stringsDefault(value, fallback string) string {

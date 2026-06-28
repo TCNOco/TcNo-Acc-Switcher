@@ -179,6 +179,7 @@
   "Settings_StartCentered": "Start program centered",
   "Settings_AnimationsEnabled": "Enable animations",
   "Settings_CommandPaletteHotkey": "Command palette hotkey",
+  "Settings_CommandPaletteHotkey_Prompt": "Press hotkey...",
   "Settings_OfflineMode": "Offline Mode (No network activity)",
   "Settings_WindowsAccent": "Windows Accent",
   "Settings_HelpTranslate": "[Help translate]",
