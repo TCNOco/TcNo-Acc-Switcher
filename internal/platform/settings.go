@@ -71,7 +71,8 @@ type AppSettings struct {
 	StatsShare bool `json:"statsShare,omitempty"`
 
 	// CrashReportAutoSubmit uploads pending crash dumps on launch without prompting.
-	CrashReportAutoSubmit bool `json:"crashReportAutoSubmit,omitempty"`
+	// Stored without omitempty so false round-trips: omitted key plus normalize defaults would otherwise force true on load.
+	CrashReportAutoSubmit bool `json:"crashReportAutoSubmit"`
 
 	// AppBgImage is the filename (under wwwroot/backgrounds/) of the app-wide background image.
 	AppBgImage string `json:"appBgImage,omitempty"`
@@ -111,17 +112,18 @@ type AppBackgroundInfo struct {
 
 func defaultSettings() AppSettings {
 	return AppSettings{
-		Version:              1,
-		Language:             "en-US",
-		PlatformExePaths:     map[string]string{},
-		PlatformOrder:        nil,
-		DisabledPlatforms:    nil,
-		StatsEnabled:         true,
-		StatsShare:           true,
-		DiscordRpc:           true,
-		DiscordRpcShare:      false,
-		AnimationsEnabled:    true,
-		CommandPaletteHotkey: "Ctrl+K",
+		Version:               1,
+		Language:              "en-US",
+		PlatformExePaths:      map[string]string{},
+		PlatformOrder:         nil,
+		DisabledPlatforms:     nil,
+		StatsEnabled:          true,
+		StatsShare:            true,
+		CrashReportAutoSubmit: true,
+		DiscordRpc:            true,
+		DiscordRpcShare:       false,
+		AnimationsEnabled:     true,
+		CommandPaletteHotkey:  "Ctrl+K",
 	}
 }
 
@@ -143,6 +145,9 @@ func normalizeAppSettingsDefaults(s *AppSettings, raw map[string]json.RawMessage
 	}
 	if _, ok := raw["statsShare"]; !ok {
 		s.StatsShare = true
+	}
+	if _, ok := raw["crashReportAutoSubmit"]; !ok {
+		s.CrashReportAutoSubmit = true
 	}
 	if _, ok := raw["discordRpc"]; !ok {
 		s.DiscordRpc = true

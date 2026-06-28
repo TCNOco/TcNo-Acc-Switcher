@@ -1,6 +1,9 @@
 package platform
 
-import "testing"
+import (
+	"encoding/json"
+	"testing"
+)
 
 func TestApplySettingsBatchUpdateOfflineDisablesDiscord(t *testing.T) {
 	on := true
@@ -63,6 +66,43 @@ func TestApplySettingsBatchUpdateStatsEffect(t *testing.T) {
 	}
 	if effects.statsEnabled == nil || *effects.statsEnabled {
 		t.Fatalf("stats effect = %#v", effects.statsEnabled)
+	}
+}
+
+func TestCrashReportAutoSubmitDefaultsOnWhenMissing(t *testing.T) {
+	settings := AppSettings{}
+
+	normalizeAppSettingsDefaults(&settings, map[string]json.RawMessage{})
+
+	if !settings.CrashReportAutoSubmit {
+		t.Fatal("CrashReportAutoSubmit should default to true when the key is absent")
+	}
+}
+
+func TestCrashReportAutoSubmitPreservesExplicitFalse(t *testing.T) {
+	settings := AppSettings{CrashReportAutoSubmit: false}
+
+	normalizeAppSettingsDefaults(&settings, map[string]json.RawMessage{
+		"crashReportAutoSubmit": json.RawMessage("false"),
+	})
+
+	if settings.CrashReportAutoSubmit {
+		t.Fatal("CrashReportAutoSubmit should preserve explicit false")
+	}
+}
+
+func TestCrashReportAutoSubmitFalseMarshals(t *testing.T) {
+	data, err := json.Marshal(AppSettings{CrashReportAutoSubmit: false})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		t.Fatal(err)
+	}
+	if _, ok := raw["crashReportAutoSubmit"]; !ok {
+		t.Fatal("CrashReportAutoSubmit false should be written so it can round-trip")
 	}
 }
 
