@@ -444,17 +444,32 @@
 </div>
 
 <div class="security-settings">
-  <div class="rowDropdown">
+  <div class="rowDropdown security-password-row">
     <span>{$t("Settings_Header_Security")}</span>
     {#if $securityStatus.appPasswordSet}
-      <button
-        type="button"
-        class="btnicontext"
-        disabled={$securityLoading}
-        on:click={() => void onRemoveAppPassword()}
-      >
-        {$t("Security_RemoveAppPassword")}
-      </button>
+      <span class="security-password-controls">
+        <button
+          type="button"
+          class="btnicontext"
+          disabled={$securityLoading}
+          on:click={() => void onRemoveAppPassword()}
+        >
+          {$t("Security_RemoveAppPassword")}
+        </button>
+        <span class="security-encryption-inline">
+          <span class="form-check">
+            <input
+              id="security-encrypt-cache"
+              type="checkbox"
+              checked={$securityStatus.savedAccountDataEncrypted}
+              disabled={$securityLoading || $securityStatus.operationBusy}
+              on:change={(e) => void onToggleSavedDataEncryption(checkboxChecked(e))}
+            />
+            <label class="form-check-label" for="security-encrypt-cache"></label>
+          </span>
+          <label for="security-encrypt-cache">{$t("Security_EncryptSavedAccountData")}</label>
+        </span>
+      </span>
     {:else}
       <button
         type="button"
@@ -466,22 +481,6 @@
       </button>
     {/if}
   </div>
-
-  {#if $securityStatus.appPasswordSet}
-    <div class="rowSetting">
-      <div class="form-check">
-        <input
-          id="security-encrypt-cache"
-          type="checkbox"
-          checked={$securityStatus.savedAccountDataEncrypted}
-          disabled={$securityLoading || $securityStatus.operationBusy}
-          on:change={(e) => void onToggleSavedDataEncryption(checkboxChecked(e))}
-        />
-        <label class="form-check-label" for="security-encrypt-cache"></label>
-      </div>
-      <label for="security-encrypt-cache">{$t("Security_EncryptSavedAccountData")}</label>
-    </div>
-  {/if}
 
   {#if $securityStatus.interruptedRestorePending}
     <div class="multilineSetting security-warning">
@@ -670,6 +669,23 @@
     display: grid;
     gap: 0.25rem;
     margin-bottom: 0.35rem;
+  }
+
+  .security-password-row {
+    align-items: center;
+  }
+
+  .security-password-controls,
+  .security-encryption-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .security-encryption-inline {
+    gap: 0.4rem;
   }
 
   .security-warning {

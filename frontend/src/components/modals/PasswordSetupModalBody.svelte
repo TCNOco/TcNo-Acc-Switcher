@@ -3,6 +3,7 @@
   import { createEventDispatcher } from "svelte";
   import { t } from "../../stores/i18n";
   import type { PasswordSetupResult } from "../../stores/modal";
+  import ModalBodyShell from "./ModalBodyShell.svelte";
 
   export let positiveLabel = "";
   export let negativeLabel = "";
@@ -13,6 +14,18 @@
   let confirm = "";
   let error = "";
   let passwordEl: HTMLInputElement | undefined;
+  let setupBodyHtml = "";
+
+  function escapeHtml(value: string): string {
+    return value
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll("\"", "&quot;")
+      .replaceAll("'", "&#39;");
+  }
+
+  $: setupBodyHtml = `<p>${escapeHtml($t("Security_SetPasswordIntro"))}</p><p>${escapeHtml($t("Security_SetPasswordEncryptionHint"))}</p>`;
 
   function cancel(): void {
     dispatch("resolve", null);
@@ -36,9 +49,8 @@
   });
 </script>
 
-<div class="modal-block password-setup-modal">
-  <p>{$t("Security_SetPasswordIntro")}</p>
-  <p>{$t("Security_SetPasswordEncryptionHint")}</p>
+<div class="modal-block">
+  <ModalBodyShell html={setupBodyHtml} />
 
   <label class="modal-field">
     <span>{$t("Security_Password")}</span>
@@ -69,20 +81,16 @@
 
   <div class="modal-inline-actions settingsCol inputAndButton">
     <span class="modal-actions-spacer"></span>
-    <button type="button" class="btnicontext" on:click={cancel}>
-      {negativeLabel}
-    </button>
     <button type="button" class="btnicontext modal-primary" on:click={submit}>
       {positiveLabel}
+    </button>
+    <button type="button" class="btnicontext" on:click={cancel}>
+      {negativeLabel}
     </button>
   </div>
 </div>
 
 <style lang="scss">
-  .password-setup-modal {
-    min-width: min(420px, 80vw);
-  }
-
   .modal-field {
     display: grid;
     gap: 0.35rem;
