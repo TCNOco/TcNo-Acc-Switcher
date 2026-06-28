@@ -23,6 +23,7 @@ export interface AccountRowProjection<TAccount> {
   imagePending(a: TAccount): boolean;
   currentSession(a: TAccount): boolean;
   manualProfileImage(a: TAccount): boolean;
+  savedDataBroken?(a: TAccount): boolean;
   tags(a: TAccount): TagDefRow[] | undefined;
   note(a: TAccount): string;
   shouldShowNote(a: TAccount): boolean;

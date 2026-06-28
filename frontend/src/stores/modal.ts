@@ -9,6 +9,8 @@ export type ModalBodyOptions = {
   bodyProps?: Record<string, unknown>;
 };
 
+export type PasswordSetupResult = { password: string };
+
 type ActiveModal =
   | (ModalBase & { kind: "alert"; title: string; dismissLabel?: string } & ModalBodyOptions)
   | (ModalBase & { kind: "alertNoButton"; title: string } & ModalBodyOptions)
@@ -29,6 +31,12 @@ type ActiveModal =
       positiveLabel?: string;
       negativeLabel?: string;
     } & ModalBodyOptions)
+  | (ModalBase & {
+      kind: "passwordSetup";
+      title: string;
+      positiveLabel?: string;
+      negativeLabel?: string;
+    })
   | (ModalBase & {
       kind: "folder";
       title: string;
@@ -141,6 +149,23 @@ export function openPrompt(
       inputType: opts.inputType ?? "text",
       multiline: opts.multiline,
       initialValue: opts.initialValue,
+      positiveLabel: opts.positiveLabel,
+      negativeLabel: opts.negativeLabel,
+    });
+  });
+}
+
+export function openPasswordSetupModal(opts: {
+  title: string;
+  positiveLabel?: string;
+  negativeLabel?: string;
+}): Promise<PasswordSetupResult | null> {
+  return new Promise((resolve) => {
+    resolver = resolve as (value: unknown) => void;
+    activeModal.set({
+      id: bumpId(),
+      kind: "passwordSetup",
+      title: opts.title,
       positiveLabel: opts.positiveLabel,
       negativeLabel: opts.negativeLabel,
     });

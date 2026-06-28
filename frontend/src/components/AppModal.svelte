@@ -5,6 +5,7 @@
   import AlertModalBody from "./modals/AlertModalBody.svelte";
   import ConfirmModalBody from "./modals/ConfirmModalBody.svelte";
   import PromptModalBody from "./modals/PromptModalBody.svelte";
+  import PasswordSetupModalBody from "./modals/PasswordSetupModalBody.svelte";
   import FolderPickerModalBody from "./modals/FolderPickerModalBody.svelte";
   import FeedbackModalBody from "./modals/FeedbackModalBody.svelte";
   import CrashReportModalBody from "./modals/CrashReportModalBody.svelte";
@@ -64,6 +65,12 @@
           positiveLabel={m.positiveLabel ?? $t("Ok")}
           multiline={m.multiline ?? false}
           inputType={m.inputType}
+          on:resolve={onResolve}
+        />
+      {:else if m.kind === "passwordSetup"}
+        <PasswordSetupModalBody
+          positiveLabel={m.positiveLabel ?? $t("Security_SetAppPassword")}
+          negativeLabel={m.negativeLabel ?? $t("Button_Cancel")}
           on:resolve={onResolve}
         />
       {:else if m.kind === "folder"}

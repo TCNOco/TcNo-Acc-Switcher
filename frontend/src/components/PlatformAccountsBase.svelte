@@ -287,6 +287,11 @@
   }
 
   async function swapToLogin(): Promise<void> {
+    const acc = accountById(selectedId);
+    if (acc && adapter.savedDataBroken?.(acc)) {
+      pushToast({ type: "error", message: $t("Security_AccountDataBroken"), duration: 6000 });
+      return;
+    }
     await runPlatformActionLocked(async () => {
       await swapToLoginFn(getAccountActionsCtx());
     }, getAccountActionsCtx());
@@ -681,6 +686,7 @@
                   for={radioId}
                   class="acc"
                   class:currentAcc={adapter.currentSession(acc)}
+                  class:acc--broken={adapter.savedDataBroken?.(acc) === true}
                   class:acc--profile-drop-target={$accountProfileImageDropActive && !imagePick.open}
                   class:acc--drop-target={fileDragHoverRowId === rid}
                   on:dragover={(e) => onAccDragOver(e, rid)}
@@ -691,6 +697,7 @@
                   }}
                   on:dblclick|preventDefault={() => {
                     if (isActionBusy) return;
+                    if (adapter.savedDataBroken?.(acc)) return;
                     selectedId = rid;
                     touchStatus();
                     void swapToLogin();
@@ -701,6 +708,9 @@
                     tooltipText={$t("Tooltip_CurrentAccount")}
                     boundary={acclistEl}
                   />
+                  {#if adapter.savedDataBroken?.(acc)}
+                    <span class="acc_broken_badge">{$t("Security_AccountDataBroken")}</span>
+                  {/if}
                   {#if $accountProfileImageDropActive && !imagePick.open}
                     <div class="acc_profile_drop_overlay" class:acc_profile_drop_overlay--hover={fileDragHoverRowId === rid} aria-hidden="true">
                       <div class="acc_profile_drop_overlay__center">

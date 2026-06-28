@@ -27,6 +27,7 @@
     tags?: TagDefRow[];
     manualProfileImage?: boolean;
     showLastUsed?: boolean;
+    savedDataBroken?: boolean;
     note?: string;
     lastUsed?: string;
   };
@@ -43,6 +44,7 @@
     imagePending: (a: BasicRow) => a.avatarPending ?? false,
     currentSession: (a: BasicRow) => a.currentSession ?? false,
     manualProfileImage: (a: BasicRow) => a.manualProfileImage ?? false,
+    savedDataBroken: (a: BasicRow) => a.savedDataBroken ?? false,
     tags: (a: BasicRow) => a.tags,
     note: (a: BasicRow) => a.note ?? "",
     shouldShowNote: (a: BasicRow) => !!(a.note ?? "").trim(),
@@ -57,6 +59,7 @@
       a.avatarPending ?? false,
       a.manualProfileImage ?? false,
       a.currentSession ?? false,
+      a.savedDataBroken ?? false,
       a.note ?? "",
       a.lastUsed ?? "",
       (a.tags ?? []).map((t) => t.id).join(","),
@@ -69,6 +72,7 @@
         uniqueId: r.uniqueId,
         displayName: r.displayName,
         currentSession: r.currentSession ?? false,
+        savedDataBroken: r.savedDataBroken ?? false,
       })) as BasicRow[];
     },
     loadAccountsEnrichment: async () => {
@@ -81,6 +85,7 @@
         note: r.note ?? "",
         lastUsed: r.lastUsed ?? "",
         showLastUsed: r.showLastUsed ?? false,
+        savedDataBroken: r.savedDataBroken ?? false,
         tags: r.tags,
       })) as BasicRow[];
     },

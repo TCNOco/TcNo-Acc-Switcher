@@ -7,8 +7,22 @@
   import { tooltip } from "../lib/actions/tooltip";
   import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import { offlineMode, setUserOfflineMode } from "../stores/offlineMode";
-  import { openFeedbackModal } from "../stores/modal";
+  import { openConfirm, openFeedbackModal, openPasswordSetupModal, openPrompt } from "../stores/modal";
   import { animationsEnabled, loadAnimationsEnabled, setAnimationsEnabled } from "../stores/animationSettings";
+  import {
+    deleteQuarantine,
+    disableSavedAccountEncryption,
+    enableSavedAccountEncryption,
+    isWeakPassword,
+    listQuarantines,
+    loadSecurityStatus,
+    removeAppPassword,
+    resetPasswordAndEncryptedSessions,
+    retryQuarantineImport,
+    securityStatus,
+    setAppPassword,
+    type SecurityQuarantineInfo,
+  } from "../stores/security";
   import {
     commandPaletteHotkey,
     loadCommandPaletteHotkey,
@@ -28,6 +42,8 @@
   const userDataMoveLoading = writable(false);
   const updateCheckLoading = writable(false);
   const offlineLoading = writable(false);
+  const securityLoading = writable(false);
+  let quarantines: SecurityQuarantineInfo[] = [];
 
   const exitToTray = createToggle(
     () => PlatformService.GetExitToTray(),
@@ -188,6 +204,162 @@
     }
   }
 
+  async function refreshSecurity(): Promise<void> {
+    try {
+      const status = await loadSecurityStatus();
+      quarantines = status.quarantineCount > 0 ? await listQuarantines() : [];
+    } catch {
+      quarantines = [];
+    }
+  }
+
+  async function promptSecurityPassword(title: string, body: string): Promise<string | null> {
+    return openPrompt({
+      title,
+      body,
+      inputType: "password",
+      positiveLabel: $t("Ok"),
+      negativeLabel: $t("Button_Cancel"),
+    });
+  }
+
+  async function onSetAppPassword(): Promise<void> {
+    if (get(securityLoading)) return;
+    const result = await openPasswordSetupModal({
+      title: $t("Security_SetAppPassword"),
+      positiveLabel: $t("Security_SetAppPassword"),
+      negativeLabel: $t("Button_Cancel"),
+    });
+    if (!result) return;
+    securityLoading.set(true);
+    try {
+      await setAppPassword(result.password);
+      await refreshSecurity();
+      pushToast({ type: "success", message: $t("Security_AppPasswordSet"), duration: 4000 });
+    } catch (e) {
+      pushToast({ type: "error", message: formatToastWithError($t("Toast_SaveFailed"), e), duration: 8000 });
+    } finally {
+      securityLoading.set(false);
+    }
+  }
+
+  async function onRemoveAppPassword(): Promise<void> {
+    if (get(securityLoading)) return;
+    const password = await promptSecurityPassword(
+      $t("Security_RemoveAppPassword"),
+      $t($securityStatus.savedAccountDataEncrypted ? "Security_RemovePasswordEncryptedBody" : "Security_CurrentPasswordBody"),
+    );
+    if (password === null) return;
+    securityLoading.set(true);
+    try {
+      await removeAppPassword(password);
+      await refreshSecurity();
+      pushToast({ type: "success", message: $t("Security_AppPasswordRemoved"), duration: 5000 });
+    } catch (e) {
+      pushToast({ type: "error", message: formatToastWithError($t("Security_PasswordActionFailed"), e), duration: 8000 });
+    } finally {
+      securityLoading.set(false);
+    }
+  }
+
+  async function onToggleSavedDataEncryption(next: boolean): Promise<void> {
+    if (get(securityLoading)) return;
+    const password = await promptSecurityPassword(
+      next ? $t("Security_EnableEncryption") : $t("Security_DisableEncryption"),
+      next ? $t("Security_EnableEncryptionBody") : $t("Security_DisableEncryptionBody"),
+    );
+    if (password === null) {
+      await refreshSecurity();
+      return;
+    }
+    if (next && isWeakPassword(password)) {
+      const ok = await openConfirm({
+        title: $t("Security_WeakPasswordTitle"),
+        body: $t("Security_WeakPasswordBody"),
+        positiveLabel: $t("Security_WeakPasswordContinue"),
+        negativeLabel: $t("Button_Cancel"),
+        style: "okcancel",
+      });
+      if (!ok) {
+        await refreshSecurity();
+        return;
+      }
+    }
+    securityLoading.set(true);
+    try {
+      if (next) {
+        await enableSavedAccountEncryption(password);
+      } else {
+        await disableSavedAccountEncryption(password);
+      }
+      await refreshSecurity();
+      pushToast({ type: "success", message: next ? $t("Security_EncryptionEnabled") : $t("Security_EncryptionDisabled"), duration: 5000 });
+    } catch (e) {
+      await refreshSecurity();
+      pushToast({ type: "error", message: formatToastWithError($t("Security_PasswordActionFailed"), e), duration: 8000 });
+    } finally {
+      securityLoading.set(false);
+    }
+  }
+
+  function checkboxChecked(e: Event): boolean {
+    return Boolean((e.currentTarget as HTMLInputElement | null)?.checked);
+  }
+
+  async function onResetPassword(): Promise<void> {
+    const ok = await openConfirm({
+      title: $t("Security_Reset_Title"),
+      body: $t("Security_Reset_Body"),
+      positiveLabel: $t("Security_Reset_Button"),
+      negativeLabel: $t("Button_Cancel"),
+      style: "okcancel",
+    });
+    if (!ok) return;
+    securityLoading.set(true);
+    try {
+      await resetPasswordAndEncryptedSessions();
+      await refreshSecurity();
+      pushToast({ type: "success", message: $t("Security_Reset_Done"), duration: 5000 });
+    } catch (e) {
+      pushToast({ type: "error", message: formatToastWithError($t("Toast_SaveFailed"), e), duration: 8000 });
+    } finally {
+      securityLoading.set(false);
+    }
+  }
+
+  async function onRetryQuarantine(id: string): Promise<void> {
+    const password = await promptSecurityPassword($t("Security_QuarantineRetry"), $t("Security_QuarantineRetryBody"));
+    if (password === null) return;
+    securityLoading.set(true);
+    try {
+      await retryQuarantineImport(id, password);
+      await refreshSecurity();
+      pushToast({ type: "success", message: $t("Security_QuarantineRetryDone"), duration: 5000 });
+    } catch (e) {
+      pushToast({ type: "error", message: formatToastWithError($t("Security_PasswordActionFailed"), e), duration: 8000 });
+    } finally {
+      securityLoading.set(false);
+    }
+  }
+
+  async function onDeleteQuarantine(id: string): Promise<void> {
+    const ok = await openConfirm({
+      title: $t("Security_QuarantineDelete"),
+      body: $t("Security_QuarantineDeleteBody"),
+      positiveLabel: $t("Security_QuarantineDelete"),
+      negativeLabel: $t("Button_Cancel"),
+      style: "okcancel",
+    });
+    if (!ok) return;
+    securityLoading.set(true);
+    try {
+      await deleteQuarantine(id);
+      await refreshSecurity();
+    } finally {
+      securityLoading.set(false);
+    }
+  }
+
   onMount(() => {
     isWindows = /windows/i.test(navigator.userAgent) || /win32/i.test(navigator.userAgent);
     void protocol.init();
@@ -207,6 +379,7 @@
     void PlatformService.GetUserDataLocation()
       .then((v) => { userDataPath = v || ""; })
       .catch(() => { userDataPath = ""; });
+    void refreshSecurity();
     if (isWindows) {
       void startTrayWithWindows.init();
       void desktopHomeShortcut.init();
@@ -231,6 +404,84 @@
       on:click={() => void openUserDataFolder()}
     >{$t("Settings_OpenUserDataFolder")}</button>
     </span>
+</div>
+
+<div class="security-settings">
+  <div class="rowDropdown">
+    <span>{$t("Settings_Header_Security")}</span>
+    {#if $securityStatus.appPasswordSet}
+      <button
+        type="button"
+        class="btnicontext"
+        disabled={$securityLoading}
+        on:click={() => void onRemoveAppPassword()}
+      >
+        {$t("Security_RemoveAppPassword")}
+      </button>
+    {:else}
+      <button
+        type="button"
+        class="btnicontext"
+        disabled={$securityLoading}
+        on:click={() => void onSetAppPassword()}
+      >
+        {$t("Security_SetAppPassword")}
+      </button>
+    {/if}
+  </div>
+
+  {#if $securityStatus.appPasswordSet}
+    <div class="rowSetting">
+      <div class="form-check">
+        <input
+          id="security-encrypt-cache"
+          type="checkbox"
+          checked={$securityStatus.savedAccountDataEncrypted}
+          disabled={$securityLoading || $securityStatus.operationBusy}
+          on:change={(e) => void onToggleSavedDataEncryption(checkboxChecked(e))}
+        />
+        <label class="form-check-label" for="security-encrypt-cache"></label>
+      </div>
+      <label for="security-encrypt-cache">{$t("Security_EncryptSavedAccountData")}</label>
+    </div>
+  {/if}
+
+  {#if $securityStatus.appPasswordSet}
+    <div class="rowDropdown security-reset-row">
+      <span>{$t("Security_Reset_Hint")}</span>
+      <button
+        type="button"
+        class="btnicontext"
+        disabled={$securityLoading}
+        on:click={() => void onResetPassword()}
+      >
+        {$t("Security_Reset_ButtonShort")}
+      </button>
+    </div>
+  {/if}
+
+  {#if $securityStatus.interruptedRestorePending}
+    <div class="multilineSetting security-warning">
+      <span>{$t("Security_InterruptedRestorePending")}</span>
+    </div>
+  {/if}
+
+  {#if quarantines.length > 0}
+    <div class="multilineSetting security-warning">
+      <span>{$t("Security_QuarantineStatus", { count: quarantines.length })}</span>
+      {#each quarantines as q}
+        <span class="security-quarantine-row">
+          <span>{q.accounts.join(", ")}</span>
+          <button type="button" class="btnicontext" disabled={$securityLoading} on:click={() => void onRetryQuarantine(q.id)}>
+            {$t("Security_QuarantineRetry")}
+          </button>
+          <button type="button" class="btnicontext" disabled={$securityLoading} on:click={() => void onDeleteQuarantine(q.id)}>
+            {$t("Security_QuarantineDelete")}
+          </button>
+        </span>
+      {/each}
+    </div>
+  {/if}
 </div>
 
 <div class="rowSetting">
@@ -390,6 +641,27 @@
 
   .hotkey-row {
     gap: 0.75rem;
+  }
+
+  .security-settings {
+    display: grid;
+    gap: 0.25rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .security-reset-row {
+    align-items: center;
+  }
+
+  .security-warning {
+    color: var(--whiteSecondary);
+  }
+
+  .security-quarantine-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
   }
 
   .hotkey-segment {

@@ -9,7 +9,7 @@ import * as Shortcuts from "wails-shortcuts-service";
 
 export interface ContextMenuContext {
   name: string;
-  adapter: AccountCommands & Pick<AccountRowProjection<unknown>, "name" | "imageUrl" | "manualProfileImage" | "tags" | "accountLogin">;
+  adapter: AccountCommands & Pick<AccountRowProjection<unknown>, "name" | "imageUrl" | "manualProfileImage" | "tags" | "accountLogin" | "savedDataBroken">;
   isActionBusy: boolean;
   hasGameStatsSupport: boolean;
   tr: (key: string, vars?: Record<string, string | number>) => string;
@@ -31,14 +31,15 @@ export function buildSharedItems(
   const { adapter, isActionBusy, tr, name, hasGameStatsSupport } = ctx;
   const imgUrl = (adapter.imageUrl(acc) ?? "").trim();
   const manual = adapter.manualProfileImage(acc);
+  const savedDataBroken = adapter.savedDataBroken?.(acc) === true;
   const openPick = () => { ctx.onSelectedIdChanged(rowId); ctx.openImagePick(rowId); };
 
   return {
     swapTo: {
-      label: tr("Context_SwapTo"),
-      disabled: isActionBusy,
+      label: savedDataBroken ? tr("Security_AccountDataBroken") : tr("Context_SwapTo"),
+      disabled: isActionBusy || savedDataBroken,
       action: () => {
-        if (isActionBusy) return;
+        if (isActionBusy || savedDataBroken) return;
         ctx.onSelectedIdChanged(rowId);
         void ctx.swapToLogin();
       },

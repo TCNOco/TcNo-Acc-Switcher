@@ -22,4 +22,5 @@ updater-key
 docs/RELEASING.md
 /.cache
 /.pnpm-store
+/.vite
 /.pnpm-store

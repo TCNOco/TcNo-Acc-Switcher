@@ -244,6 +244,11 @@ label.acc {
   transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, all 50ms ease-in;
   line-height: 1em;
 
+  &.acc--broken {
+    cursor: not-allowed;
+    opacity: 0.72;
+  }
+
   &.vac img {
     border: 2px solid var(--red);
   }
@@ -321,6 +326,17 @@ label.acc {
     overflow: hidden;
     color: var(--text-muted-gray);
     font-size: 0.75em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .acc_broken_badge {
+    display: block;
+    max-width: 9em;
+    margin: 0 auto 0.35rem;
+    overflow: hidden;
+    color: var(--red);
+    font-size: 0.72em;
     text-overflow: ellipsis;
     white-space: nowrap;
   }

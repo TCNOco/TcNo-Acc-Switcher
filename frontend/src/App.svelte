@@ -13,6 +13,8 @@
   import StabilityPrompt from './components/StabilityPrompt.svelte'
   import FileDropOverlay from './components/FileDropOverlay.svelte'
   import UserDataMoveOverlay from './components/UserDataMoveOverlay.svelte'
+  import AppLockOverlay from './components/AppLockOverlay.svelte'
+  import SecurityProgressOverlay from './components/SecurityProgressOverlay.svelte'
   import ContextMenu from './components/ContextMenu.svelte'
   import BackgroundDropZones from './components/BackgroundDropZones.svelte'
   import ActionBar from './components/ActionBar.svelte'
@@ -39,6 +41,7 @@
     loadCommandPaletteHotkey,
   } from "./stores/commandPalette";
   import { platformActionBusy } from "./stores/platformPage";
+  import { loadSecurityStatus, securityStatus } from "./stores/security";
   import { appBgInfo, platformBgInfo, userOverriddenAppBg } from "./stores/backgroundImage";
   import type { AppBackgroundInfo } from "./stores/backgroundImage";
   import { currentThemeBgUrl } from "./lib/themes";
@@ -103,6 +106,9 @@
   }
 
   function onGlobalKeydownCapture(e: KeyboardEvent): void {
+    if (get(securityStatus).appLocked) {
+      return;
+    }
     const r = get(route);
     if (r.page !== "home" && r.page !== "platform") {
       return;
@@ -148,6 +154,9 @@
   }
 
   function canHandleGlobalNavInput(target: EventTarget | null): boolean {
+    if (get(securityStatus).appLocked) {
+      return false;
+    }
     if (get(activeModal) || get(contextMenu)) {
       return false;
     }
@@ -188,6 +197,7 @@
   }
 
   onMount(() => {
+    void loadSecurityStatus();
     void loadAnimationsEnabled();
     void loadCommandPaletteHotkey();
     // Load initial app background state.
@@ -347,6 +357,8 @@
       {/if}
     </div>
     <BackgroundDropZones />
+    <AppLockOverlay />
+    <SecurityProgressOverlay />
     <AppModal />
     <Toast />
     <StabilityPrompt />
