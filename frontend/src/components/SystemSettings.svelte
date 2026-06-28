@@ -567,6 +567,16 @@
   <label for="settings-animations">{$t("Settings_AnimationsEnabled")}</label>
 </div>
 
+{#if isWindows}
+  <div class="rowSetting">
+    <div class="form-check">
+      <input id="gs-desktop-home" type="checkbox" checked={$desktopHomeShortcut.value} disabled={$desktopHomeShortcut.loading} on:change={() => void desktopHomeShortcut.toggle()} />
+      <label class="form-check-label" for="gs-desktop-home"></label>
+    </div>
+    <label for="gs-desktop-home">{$t("Settings_DesktopShortcut")}</label>
+  </div>
+{/if}
+
 <div class="rowDropdown hotkey-row">
   <span>{$t("Settings_CommandPaletteHotkey")}</span>
   <button
@@ -580,16 +590,6 @@
   </button>
 </div>
 
-{#if isWindows}
-  <div class="rowSetting">
-    <div class="form-check">
-      <input id="gs-desktop-home" type="checkbox" checked={$desktopHomeShortcut.value} disabled={$desktopHomeShortcut.loading} on:change={() => void desktopHomeShortcut.toggle()} />
-      <label class="form-check-label" for="gs-desktop-home"></label>
-    </div>
-    <label for="gs-desktop-home">{$t("Settings_DesktopShortcut")}</label>
-  </div>
-{/if}
-
 <div class="rowDropdown version-row">
   <span>{formatAppVersion(currentVersion || "0.0.0")}</span>
   <button
@@ -599,6 +599,9 @@
     on:click={() => void onCheckForUpdates(updateCheckLoading)}
   >
     {$t("Button_CheckForUpdates")}
+  </button>
+  <button type="button" class="btnicontext" on:click={() => void openFeedbackModal({ mode: "suggestion" })}>
+    {$t("Settings_SuggestFeature")}
   </button>
 </div>
 
@@ -645,12 +648,6 @@
     <label class="form-check-label" for="gs-discord-rpc-share"></label>
   </div>
   <label for="gs-discord-rpc-share">{$t("Settings_DiscordRpcShare")}</label>
-</div>
-
-<div class="rowSetting">
-  <button type="button" class="btnicontext" on:click={() => void openFeedbackModal({ mode: "suggestion" })}>
-    {$t("Settings_SuggestFeature")}
-  </button>
 </div>
 
 <style lang="scss">

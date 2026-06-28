@@ -97,7 +97,7 @@ func RunGUI(params RunGUIParams) {
 		} else if err := os.MkdirAll(cacheDir, 0o755); err != nil {
 			log.Printf("webview cache dir: %v", err)
 		} else {
-			appOpts.Windows.WebviewUserDataPath = cacheDir
+			configureWindowsWebViewCache(&appOpts, cacheDir)
 		}
 	}
 
