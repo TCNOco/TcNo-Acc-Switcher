@@ -394,6 +394,106 @@ func (b *BasicService) AddTagToAccount(platformKey, uniqueID, tagID string) erro
 	return nil
 }
 
+func (b *BasicService) AddTagToAccounts(platformKey string, uniqueIDs []string, name string) (TagDefinitionDTO, error) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	var zero TagDefinitionDTO
+	if err := security.RequireUnlocked(); err != nil {
+		return zero, err
+	}
+	platformKey = strings.TrimSpace(platformKey)
+	name, err := tagNameOK(name)
+	if err != nil {
+		return zero, err
+	}
+	if platformKey == "" {
+		return zero, fmt.Errorf("invalid tag parameters")
+	}
+	f, err := readIdsFile(platformKey)
+	if err != nil {
+		return zero, err
+	}
+	normalizeTagMaps(&f)
+	tagID := ""
+	tag := tagFileEntry{}
+	for id, def := range f.Tags {
+		if strings.EqualFold(strings.TrimSpace(def.Name), name) {
+			tagID = id
+			tag = def
+			break
+		}
+	}
+	if tagID == "" {
+		tagID, err = newTagID()
+		if err != nil {
+			return zero, err
+		}
+		color, err := randomSaturatedColorHex()
+		if err != nil {
+			return zero, err
+		}
+		tag = tagFileEntry{Name: name, Color: color}
+		f.Tags[tagID] = tag
+	}
+	addedToAny := false
+	seen := map[string]struct{}{}
+	for _, uid := range uniqueIDs {
+		uid = strings.TrimSpace(uid)
+		if uid == "" {
+			continue
+		}
+		if _, ok := seen[uid]; ok {
+			continue
+		}
+		seen[uid] = struct{}{}
+		if _, ok := f.IDs[uid]; !ok {
+			continue
+		}
+		cur := f.AccountTags[uid]
+		if containsTagID(cur, tagID) {
+			addedToAny = true
+			continue
+		}
+		f.AccountTags[uid] = append(cur, tagID)
+		addedToAny = true
+	}
+	if !addedToAny {
+		if len(uniqueIDs) == 0 {
+			delete(f.Tags, tagID)
+		}
+		return zero, fmt.Errorf("no matching accounts")
+	}
+	if err := writeIdsFile(platformKey, f); err != nil {
+		return zero, err
+	}
+	_ = stats.SyncPlatformTagCounts(platformKey, len(f.Tags), len(f.AccountTags))
+	return TagDefinitionDTO{ID: tagID, Name: strings.TrimSpace(tag.Name), Color: strings.TrimSpace(tag.Color)}, nil
+}
+
+func (b *BasicService) ClearAccountTags(platformKey string) error {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
+	platformKey = strings.TrimSpace(platformKey)
+	if platformKey == "" {
+		return fmt.Errorf("invalid tag parameters")
+	}
+	f, err := readIdsFile(platformKey)
+	if err != nil {
+		return err
+	}
+	normalizeTagMaps(&f)
+	f.AccountTags = map[string][]string{}
+	pruneUnusedTagDefinitions(&f)
+	if err := writeIdsFile(platformKey, f); err != nil {
+		return err
+	}
+	_ = stats.SyncPlatformTagCounts(platformKey, len(f.Tags), len(f.AccountTags))
+	return nil
+}
+
 func (b *BasicService) RemoveTagFromAccount(platformKey, uniqueID, tagID string) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()

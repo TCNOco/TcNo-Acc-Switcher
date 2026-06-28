@@ -21,6 +21,7 @@
     selectedAccount as selectedAccountStore,
     platformLiveSessionId,
     platformAccountsRefresh,
+    requestPlatformAccountsRefresh,
   } from "../stores/platformPage";
   import {
     getPlatformAccountsCache,
@@ -29,11 +30,11 @@
     setPlatformAccountsCache,
   } from "../stores/platformAccountsCache";
   import { pushToast } from "../stores/toast";
-  import { activeModal } from "../stores/modal";
+  import { activeModal, openConfirm, openPrompt } from "../stores/modal";
   import { locale, t } from "../stores/i18n";
   import * as BasicService from "../../bindings/TcNo-Acc-Switcher/internal/basic/basicservice.js";
   import { GetPlatformExeIcon } from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
-  import { formatWailsError } from "../lib/formatWailsError";
+  import { formatToastWithError, formatWailsError } from "../lib/formatWailsError";
   import {
     preflightAdminForPlatform,
     reportLaunchFailure,
@@ -373,6 +374,90 @@
     pushToast({ type: "success", message: $t("Toast_AccountSaved"), duration: 4000 });
   }
 
+  function visibleAccountIds(): string[] {
+    return displayIds.filter((id) => !!accountById(id));
+  }
+
+  async function clearAccountTagsForPlatform(): Promise<void> {
+    const ok = await openConfirm({
+      title: $t("Command_ClearAccountTags"),
+      body: $t("Command_ClearAccountTagsConfirm", { platform: name }),
+      positiveLabel: $t("Command_ClearAccountTags"),
+      negativeLabel: $t("Button_Cancel"),
+      style: "okcancel",
+    });
+    if (!ok) return;
+    try {
+      await BasicService.ClearAccountTags(name);
+      tagFilterMode = { kind: "all" };
+      await loadAccounts();
+      await loadTagDefsInternal();
+      pushToast({ type: "success", message: $t("Toast_AccountTagsCleared"), duration: 4000 });
+    } catch (e) {
+      pushToast({ type: "error", message: formatToastWithError($t("Toast_SaveFailed"), e), duration: 8000 });
+    }
+  }
+
+  async function tagVisibleAccounts(): Promise<void> {
+    const ids = visibleAccountIds();
+    if (ids.length === 0) {
+      pushToast({ type: "info", message: $t("Toast_NoVisibleAccounts"), duration: 4000 });
+      return;
+    }
+    const tagName = await openPrompt({
+      title: $t("Command_TagVisibleAccounts"),
+      body: $t("Command_TagVisibleAccountsPrompt", { count: ids.length }),
+      positiveLabel: $t("Tags_Add"),
+      negativeLabel: $t("Button_Cancel"),
+    });
+    const trimmed = String(tagName ?? "").trim();
+    if (tagName === null || !trimmed) return;
+    try {
+      await BasicService.AddTagToAccounts(name, ids, trimmed);
+      await loadAccounts();
+      await loadTagDefsInternal();
+      pushToast({
+        type: "success",
+        message: $t("Toast_TaggedVisibleAccounts", { count: ids.length, tag: trimmed }),
+        duration: 4000,
+      });
+    } catch (e) {
+      pushToast({ type: "error", message: formatToastWithError($t("Toast_SaveFailed"), e), duration: 8000 });
+    }
+  }
+
+  async function clearAllProfileImages(): Promise<void> {
+    const ok = await openConfirm({
+      title: $t("Command_ClearAllImages"),
+      body: $t("Command_ClearAllImagesConfirm", { platform: name }),
+      positiveLabel: $t("Command_ClearAllImages"),
+      negativeLabel: $t("Button_Cancel"),
+      style: "okcancel",
+    });
+    if (!ok) return;
+    try {
+      await BasicService.ClearAllBasicProfileImages(name);
+      requestPlatformAccountsRefresh(name);
+      for (const id of accountIds) bumpAvatarEpoch(id);
+      await loadAccounts();
+      pushToast({ type: "success", message: $t("Toast_ProfileImagesCleared"), duration: 4000 });
+    } catch (e) {
+      pushToast({ type: "error", message: formatToastWithError($t("Toast_SaveFailed"), e), duration: 8000 });
+    }
+  }
+
+  async function refreshAllProfileImages(): Promise<void> {
+    try {
+      await BasicService.RefreshAllBasicProfileImages(name);
+      requestPlatformAccountsRefresh(name);
+      for (const id of accountIds) bumpAvatarEpoch(id);
+      await loadAccounts();
+      pushToast({ type: "success", message: $t("Toast_ImagesRefreshing"), duration: 5000 });
+    } catch (e) {
+      pushToast({ type: "error", message: formatToastWithError($t("Toast_SaveFailed"), e), duration: 8000 });
+    }
+  }
+
   // ---- Load accounts ----
   function deferNonCriticalAccountWork(ids: string[]): void {
     void loadTagDefsInternal();
@@ -482,6 +567,26 @@
         id: "refresh-accounts",
         title: tr("Command_RefreshAccounts"),
         run: () => loadAccounts(),
+      },
+      {
+        id: "clear-account-tags",
+        title: tr("Command_ClearAccountTags"),
+        run: () => clearAccountTagsForPlatform(),
+      },
+      {
+        id: "tag-visible-accounts",
+        title: tr("Command_TagVisibleAccounts"),
+        run: () => tagVisibleAccounts(),
+      },
+      {
+        id: "clear-all-images",
+        title: tr("Command_ClearAllImages"),
+        run: () => clearAllProfileImages(),
+      },
+      {
+        id: "refresh-all-images",
+        title: tr("Command_RefreshAllImages"),
+        run: () => refreshAllProfileImages(),
       },
       {
         id: "platform-settings",

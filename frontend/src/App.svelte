@@ -195,7 +195,7 @@
         return;
       }
       e.preventDefault();
-      openSearchOverlay("> ");
+      openSearchOverlay(">");
       return;
     }
     if (e.ctrlKey || e.metaKey || e.altKey) {
