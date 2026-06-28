@@ -54,6 +54,15 @@ type savedSession struct {
 	BlobPath    string
 }
 
+type InterruptedRestoreInfo struct {
+	ID          string `json:"id"`
+	CreatedAt   string `json:"createdAt"`
+	PlatformKey string `json:"platformKey"`
+	UniqueID    string `json:"uniqueId"`
+	AccountName string `json:"accountName"`
+	JournalPath string `json:"journalPath"`
+}
+
 type AccountSave struct {
 	PlatformKey string
 	UniqueID    string
@@ -746,12 +755,76 @@ func writeJournal(kind string, payload map[string]any) (string, error) {
 }
 
 func hasInterruptedRestoreJournal() bool {
+	matches, err := interruptedRestoreJournalPaths()
+	return err == nil && len(matches) > 0
+}
+
+func ListInterruptedRestores() ([]InterruptedRestoreInfo, error) {
+	matches, err := interruptedRestoreJournalPaths()
+	if err != nil {
+		return nil, err
+	}
+	out := make([]InterruptedRestoreInfo, 0, len(matches))
+	for _, p := range matches {
+		var entry struct {
+			CreatedAt   string `json:"createdAt"`
+			PlatformKey string `json:"platformKey"`
+			UniqueID    string `json:"uniqueId"`
+			AccountName string `json:"accountName"`
+		}
+		if err := readJSON(p, &entry); err != nil {
+			out = append(out, InterruptedRestoreInfo{
+				ID:          strings.TrimSuffix(filepath.Base(p), filepath.Ext(p)),
+				JournalPath: filepath.ToSlash(filepath.Join(vaultJournalDir, filepath.Base(p))),
+			})
+			continue
+		}
+		out = append(out, InterruptedRestoreInfo{
+			ID:          strings.TrimSuffix(filepath.Base(p), filepath.Ext(p)),
+			CreatedAt:   entry.CreatedAt,
+			PlatformKey: entry.PlatformKey,
+			UniqueID:    entry.UniqueID,
+			AccountName: entry.AccountName,
+			JournalPath: filepath.ToSlash(filepath.Join(vaultJournalDir, filepath.Base(p))),
+		})
+	}
+	return out, nil
+}
+
+func RepairInterruptedRestore() error {
+	matches, err := interruptedRestoreJournalPaths()
+	if err != nil {
+		return err
+	}
+	journal, err := writeJournal("repair-interrupted", map[string]any{
+		"restoreJournals": len(matches),
+	})
+	if err != nil {
+		return err
+	}
+	CleanupTransientState()
+	for _, p := range matches {
+		if err := os.Remove(p); err != nil && !os.IsNotExist(err) {
+			_ = os.Remove(journal)
+			return err
+		}
+	}
+	_ = os.Remove(journal)
+	emitStatusChanged()
+	return nil
+}
+
+func interruptedRestoreJournalPaths() ([]string, error) {
 	root, err := vaultRoot()
 	if err != nil {
-		return false
+		return nil, err
 	}
-	matches, _ := filepath.Glob(filepath.Join(root, vaultJournalDir, "*restore*.json"))
-	return len(matches) > 0
+	matches, err := filepath.Glob(filepath.Join(root, vaultJournalDir, "*restore*.json"))
+	if err != nil {
+		return nil, err
+	}
+	sort.Strings(matches)
+	return matches, nil
 }
 
 func countQuarantines() int {

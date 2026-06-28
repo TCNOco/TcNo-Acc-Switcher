@@ -1,9 +1,10 @@
 import { derived, get, writable } from "svelte/store";
 import * as SecurityService from "../../bindings/TcNo-Acc-Switcher/internal/security/securityservice.js";
-import { QuarantineInfo, Status } from "../../bindings/TcNo-Acc-Switcher/internal/security/models.js";
+import { InterruptedRestoreInfo, QuarantineInfo, Status } from "../../bindings/TcNo-Acc-Switcher/internal/security/models.js";
 
 export type SecurityStatus = InstanceType<typeof Status>;
 export type SecurityQuarantineInfo = InstanceType<typeof QuarantineInfo>;
+export type SecurityInterruptedRestoreInfo = InstanceType<typeof InterruptedRestoreInfo>;
 
 function defaultStatus(): SecurityStatus {
   return new Status({
@@ -78,6 +79,16 @@ export async function listQuarantines(): Promise<SecurityQuarantineInfo[]> {
 export async function retryQuarantineImport(id: string, password: string): Promise<void> {
   await runSecurityProgress("Security_Progress_RetryQuarantine", async () => {
     await SecurityService.RetryQuarantineImport(id, password);
+  });
+}
+
+export async function listInterruptedRestores(): Promise<SecurityInterruptedRestoreInfo[]> {
+  return SecurityService.ListInterruptedRestores();
+}
+
+export async function repairInterruptedRestore(): Promise<void> {
+  await runSecurityProgress("Security_Progress_RepairInterruptedRestore", async () => {
+    await SecurityService.RepairInterruptedRestore();
   });
 }
 

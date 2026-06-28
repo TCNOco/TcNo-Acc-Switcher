@@ -16,6 +16,7 @@
     isWeakPassword,
     listQuarantines,
     loadSecurityStatus,
+    repairInterruptedRestore,
     removeAppPassword,
     resetPasswordAndEncryptedSessions,
     retryQuarantineImport,
@@ -360,6 +361,27 @@
     }
   }
 
+  async function onRepairInterruptedRestore(): Promise<void> {
+    const ok = await openConfirm({
+      title: $t("Security_InterruptedRestore_Title"),
+      body: $t("Security_InterruptedRestore_Body"),
+      positiveLabel: $t("Security_InterruptedRestore_Repair"),
+      negativeLabel: $t("Security_InterruptedRestore_Later"),
+      style: "yesno",
+    });
+    if (!ok) return;
+    securityLoading.set(true);
+    try {
+      await repairInterruptedRestore();
+      await refreshSecurity();
+      pushToast({ type: "success", message: $t("Security_InterruptedRestore_Repaired"), duration: 5000 });
+    } catch (e) {
+      pushToast({ type: "error", message: formatToastWithError($t("Security_InterruptedRestore_RepairFailed"), e), duration: 8000 });
+    } finally {
+      securityLoading.set(false);
+    }
+  }
+
   onMount(() => {
     isWindows = /windows/i.test(navigator.userAgent) || /win32/i.test(navigator.userAgent);
     void protocol.init();
@@ -463,6 +485,9 @@
   {#if $securityStatus.interruptedRestorePending}
     <div class="multilineSetting security-warning">
       <span>{$t("Security_InterruptedRestorePending")}</span>
+      <button type="button" class="btnicontext" disabled={$securityLoading} on:click={() => void onRepairInterruptedRestore()}>
+        {$t("Security_InterruptedRestore_Repair")}
+      </button>
     </div>
   {/if}
 

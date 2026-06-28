@@ -26,9 +26,10 @@
   import { NotifyLaunchUpdateCheck } from "../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import * as PlatformService from "../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import { pushToast } from "./stores/toast";
+  import { formatToastWithError } from "./lib/formatWailsError";
   import { registerSvgRenderBridge } from "./lib/svgRenderBridge";
   import { runCrashReportPromptIfNeeded } from "./lib/crashReportPrompt";
-  import { activeModal } from "./stores/modal";
+  import { activeModal, openConfirm } from "./stores/modal";
   import { contextMenu } from "./stores/contextMenu";
   import {
     openSearchOverlay,
@@ -41,7 +42,13 @@
     loadCommandPaletteHotkey,
   } from "./stores/commandPalette";
   import { platformActionBusy } from "./stores/platformPage";
-  import { loadSecurityStatus, securityStatus } from "./stores/security";
+  import {
+    listInterruptedRestores,
+    loadSecurityStatus,
+    repairInterruptedRestore,
+    securityStatus,
+    securityStatusLoaded,
+  } from "./stores/security";
   import { appBgInfo, platformBgInfo, userOverriddenAppBg } from "./stores/backgroundImage";
   import type { AppBackgroundInfo } from "./stores/backgroundImage";
   import { currentThemeBgUrl } from "./lib/themes";
@@ -68,6 +75,20 @@
 
   $: activeBg = resolveActiveBg($route, $appBgInfo, $platformBgInfo, $currentThemeBgUrl, $userOverriddenAppBg);
   $: showActionBar = $route.page === "home" || $route.page === "platform";
+
+  let restoreRepairPromptOpen = false;
+  let restoreRepairPromptDismissed = false;
+
+  $: if (
+    $securityStatusLoaded &&
+    !$securityStatus.appLocked &&
+    $securityStatus.interruptedRestorePending &&
+    !$activeModal &&
+    !restoreRepairPromptOpen &&
+    !restoreRepairPromptDismissed
+  ) {
+    void promptInterruptedRestoreRepair();
+  }
 
   /** Load/reload the platform background for the given platform name. */
   async function loadPlatformBg(platformName: string): Promise<void> {
@@ -103,6 +124,54 @@
       return true;
     }
     return t.closest("input, textarea, select, [contenteditable]") !== null;
+  }
+
+  function escapeHtml(value: string): string {
+    return value
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll("\"", "&quot;")
+      .replaceAll("'", "&#39;");
+  }
+
+  async function promptInterruptedRestoreRepair(): Promise<void> {
+    restoreRepairPromptOpen = true;
+    try {
+      const restores = await listInterruptedRestores().catch(() => []);
+      const labels = restores
+        .map((r) => [r.platformKey, r.accountName || r.uniqueId || r.journalPath].filter(Boolean).join(" / "))
+        .filter(Boolean);
+      const body = [
+        `<p>${escapeHtml($t("Security_InterruptedRestore_Body"))}</p>`,
+        labels.length
+          ? `<p>${escapeHtml($t("Security_InterruptedRestore_Affected"))}</p><ul>${labels
+              .map((label) => `<li>${escapeHtml(label)}</li>`)
+              .join("")}</ul>`
+          : "",
+      ].join("");
+      const ok = await openConfirm({
+        title: $t("Security_InterruptedRestore_Title"),
+        body,
+        positiveLabel: $t("Security_InterruptedRestore_Repair"),
+        negativeLabel: $t("Security_InterruptedRestore_Later"),
+        style: "yesno",
+      });
+      restoreRepairPromptDismissed = !ok;
+      if (!ok) return;
+      await repairInterruptedRestore();
+      pushToast({ type: "success", message: $t("Security_InterruptedRestore_Repaired"), duration: 5000 });
+      await loadSecurityStatus();
+    } catch (e) {
+      restoreRepairPromptDismissed = true;
+      pushToast({
+        type: "error",
+        message: formatToastWithError($t("Security_InterruptedRestore_RepairFailed"), e),
+        duration: 8000,
+      });
+    } finally {
+      restoreRepairPromptOpen = false;
+    }
   }
 
   function onGlobalKeydownCapture(e: KeyboardEvent): void {

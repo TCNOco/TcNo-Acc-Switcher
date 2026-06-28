@@ -11,6 +11,7 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
+	"time"
 
 	"TcNo-Acc-Switcher/internal/paths"
 
@@ -26,6 +27,9 @@ const (
 
 	securityVerifierAAD = "tcno-security-verifier-v1"
 	wrappedKeyAAD       = "tcno-security-vault-key-v1"
+
+	kdfTargetMillis = 300
+	kdfMaxTime      = 8
 )
 
 var (
@@ -45,11 +49,13 @@ type Status struct {
 }
 
 type KDFParams struct {
-	Algorithm string `json:"algorithm"`
-	Time      uint32 `json:"time"`
-	MemoryKB  uint32 `json:"memoryKb"`
-	Threads   uint8  `json:"threads"`
-	KeyLen    uint32 `json:"keyLen"`
+	Algorithm      string `json:"algorithm"`
+	Time           uint32 `json:"time"`
+	MemoryKB       uint32 `json:"memoryKb"`
+	Threads        uint8  `json:"threads"`
+	KeyLen         uint32 `json:"keyLen"`
+	TargetMillis   uint32 `json:"targetMillis,omitempty"`
+	MeasuredMillis uint32 `json:"measuredMillis,omitempty"`
 }
 
 type securityFile struct {
@@ -92,11 +98,12 @@ func emitStatusChanged() {
 
 func defaultKDFParams() KDFParams {
 	return KDFParams{
-		Algorithm: "argon2id",
-		Time:      2,
-		MemoryKB:  64 * 1024,
-		Threads:   1,
-		KeyLen:    vaultKeyBytes,
+		Algorithm:    "argon2id",
+		Time:         2,
+		MemoryKB:     64 * 1024,
+		Threads:      1,
+		KeyLen:       vaultKeyBytes,
+		TargetMillis: kdfTargetMillis,
 	}
 }
 
@@ -176,12 +183,11 @@ func (m *manager) setAppPassword(password string) error {
 	} else if ok {
 		return ErrPasswordAlreadySet
 	}
-	kdf := defaultKDFParams()
 	salt, err := randomBytes(16)
 	if err != nil {
 		return err
 	}
-	derived := deriveKey(password, salt, kdf)
+	kdf, derived := calibrateAndDeriveKey(password, salt)
 	master, err := randomBytes(vaultKeyBytes)
 	if err != nil {
 		return err
@@ -364,6 +370,11 @@ func unlockWithPassword(password string) ([]byte, error) {
 }
 
 func deriveKey(password string, salt []byte, p KDFParams) []byte {
+	p = normalizeKDFParams(p)
+	return argon2.IDKey([]byte(password), salt, p.Time, p.MemoryKB, p.Threads, p.KeyLen)
+}
+
+func normalizeKDFParams(p KDFParams) KDFParams {
 	def := defaultKDFParams()
 	if p.Algorithm == "" {
 		p.Algorithm = def.Algorithm
@@ -380,7 +391,52 @@ func deriveKey(password string, salt []byte, p KDFParams) []byte {
 	if p.KeyLen == 0 {
 		p.KeyLen = def.KeyLen
 	}
-	return argon2.IDKey([]byte(password), salt, p.Time, p.MemoryKB, p.Threads, p.KeyLen)
+	if p.TargetMillis == 0 {
+		p.TargetMillis = def.TargetMillis
+	}
+	return p
+}
+
+func calibrateAndDeriveKey(password string, salt []byte) (KDFParams, []byte) {
+	p := normalizeKDFParams(defaultKDFParams())
+	p.Time = 1
+	start := time.Now()
+	key := deriveKey(password, salt, p)
+	singleMillis := elapsedMillis(start)
+	target := p.TargetMillis
+	if target == 0 {
+		target = kdfTargetMillis
+	}
+	nextTime := uint32(1)
+	if singleMillis > 0 {
+		nextTime = (target + singleMillis - 1) / singleMillis
+	}
+	if nextTime < 1 {
+		nextTime = 1
+	}
+	if nextTime > kdfMaxTime {
+		nextTime = kdfMaxTime
+	}
+	p.Time = nextTime
+	if nextTime == 1 {
+		p.MeasuredMillis = singleMillis
+		return p, key
+	}
+	start = time.Now()
+	key = deriveKey(password, salt, p)
+	p.MeasuredMillis = elapsedMillis(start)
+	return p, key
+}
+
+func elapsedMillis(start time.Time) uint32 {
+	ms := time.Since(start).Milliseconds()
+	if ms < 1 {
+		return 1
+	}
+	if ms > int64(^uint32(0)) {
+		return ^uint32(0)
+	}
+	return uint32(ms)
 }
 
 func loadSecurityFile() (securityFile, bool, error) {

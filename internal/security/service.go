@@ -45,3 +45,11 @@ func (s *SecurityService) DeleteQuarantine(id string) error {
 func (s *SecurityService) RetryQuarantineImport(id, password string) error {
 	return RetryQuarantineImport(id, password)
 }
+
+func (s *SecurityService) ListInterruptedRestores() ([]InterruptedRestoreInfo, error) {
+	return ListInterruptedRestores()
+}
+
+func (s *SecurityService) RepairInterruptedRestore() error {
+	return RepairInterruptedRestore()
+}
