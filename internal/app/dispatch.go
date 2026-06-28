@@ -10,6 +10,7 @@ import (
 	"TcNo-Acc-Switcher/internal/basic"
 	"TcNo-Acc-Switcher/internal/cli"
 	"TcNo-Acc-Switcher/internal/platform"
+	"TcNo-Acc-Switcher/internal/security"
 	"TcNo-Acc-Switcher/internal/shortcuts"
 	"TcNo-Acc-Switcher/internal/steam"
 	"TcNo-Acc-Switcher/internal/winutil"
@@ -65,6 +66,9 @@ func (d *Dispatch) RunList(p cli.Parsed, idx *cli.PlatformIndex) error {
 		return nil
 
 	case cli.KindListAccounts:
+		if err := security.RequireUnlocked(); err != nil {
+			return err
+		}
 		var platNames []string
 		if strings.TrimSpace(p.ListAccountsPlatform) != "" {
 			platNames = []string{p.ListAccountsPlatform}
@@ -148,6 +152,9 @@ func (d *Dispatch) accountRowsForPlatform(platformKey string) ([]ListAccountRow,
 }
 
 func (d *Dispatch) RunHeadless(p cli.Parsed) error {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	switch p.Kind {
 	case cli.KindSwapSteam:
 		if err := d.commandAdapter(steam.PlatformKey).Swap(p.SteamID64, p.PersonaState, p.PassthroughLaunchArgs); err != nil {
@@ -167,6 +174,9 @@ func (d *Dispatch) RunHeadless(p cli.Parsed) error {
 }
 
 func (d *Dispatch) LaunchAfterSwap(p cli.Parsed) error {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	if strings.TrimSpace(p.RunAppID) != "" {
 		url := "steam://rungameid/" + strings.TrimSpace(p.RunAppID)
 		return winutil.Start("cmd.exe", []string{"/c", "start", "", url}, winutil.StartOpts{})
@@ -180,6 +190,9 @@ func (d *Dispatch) LaunchAfterSwap(p cli.Parsed) error {
 }
 
 func (d *Dispatch) RunLogout(p cli.Parsed) error {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	plat := strings.TrimSpace(p.LogoutPlatform)
 	if plat == "" {
 		plat = steam.PlatformKey

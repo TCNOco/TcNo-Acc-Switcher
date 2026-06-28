@@ -136,9 +136,9 @@ func saveAppNameMapToDisk(m map[string]string) error {
 }
 
 const (
-	steamAppArrayMirrorXZURL = "https://api.tcno.co/sw/SteamAppArrayXZ"
-	steamAppArrayMirrorURL   = "https://api.tcno.co/sw/SteamAppArray"
-	steamAppNameMapCacheTTL  = 24 * time.Hour
+	steamAppArrayMirrorXZURL    = "https://api.tcno.co/sw/SteamAppArrayXZ"
+	steamAppArrayMirrorURL      = "https://api.tcno.co/sw/SteamAppArray"
+	steamAppNameMapCacheTTL     = 24 * time.Hour
 	steamAppNameMapFetchTimeout = 10 * time.Minute
 	steamAppNameMapMaxJSONBytes = 32 << 20
 	steamAppNameMapMaxXZBytes   = 8 << 20
@@ -155,9 +155,9 @@ var steamAppNameMapSources = []steamAppNameMapSource{
 }
 
 var (
-	steamAppNameMapMu        sync.RWMutex
-	steamAppNameMapMem       map[string]string
-	steamAppNameMapRefreshMu sync.Mutex
+	steamAppNameMapMu         sync.RWMutex
+	steamAppNameMapMem        map[string]string
+	steamAppNameMapRefreshMu  sync.Mutex
 	steamAppNameMapRefreshing bool
 )
 

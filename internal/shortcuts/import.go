@@ -10,11 +10,15 @@ import (
 
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
+	"TcNo-Acc-Switcher/internal/security"
 )
 
 var ErrNoShortcutFilesInDrop = errors.New("Toast_ShortcutImportUnsupported")
 
 func (s *Service) ImportDroppedShortcuts(platformKey string, srcPaths []string) (int, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return 0, err
+	}
 	platformKey = strings.TrimSpace(platformKey)
 	if platformKey == "" {
 		return 0, fmt.Errorf("missing platform key")

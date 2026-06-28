@@ -15,6 +15,7 @@ import (
 	"TcNo-Acc-Switcher/internal/i18n"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/profileimage"
+	"TcNo-Acc-Switcher/internal/security"
 
 	"github.com/nfnt/resize"
 	"github.com/wailsapp/wails/v3/pkg/application"
@@ -155,6 +156,18 @@ func (m *Manager) rebuildMenuLocked() {
 	menu := application.NewMenu()
 	tr := m.trayTranslator()
 
+	if security.AppLocked() {
+		menu.Add(tr("Tray_Unlock", nil)).OnClick(func(_ *application.Context) {
+			m.showHome()
+		})
+		menu.Add(tr("Tray_Exit", nil)).OnClick(func(_ *application.Context) {
+			m.SetQuitting(true)
+			m.app.Quit()
+		})
+		m.systray.SetMenu(menu)
+		return
+	}
+
 	menu.Add("TcNo Account Switcher").OnClick(func(_ *application.Context) {
 		m.showHome()
 	})
@@ -235,6 +248,9 @@ func (m *Manager) showHome() {
 }
 
 func (m *Manager) handleAccountClick(platformKey, arg string) error {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	arg = strings.TrimSpace(arg)
 	if arg == "" {
 		return fmt.Errorf("empty tray arg")

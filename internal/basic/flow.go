@@ -14,6 +14,7 @@ import (
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/profileimage"
+	"TcNo-Acc-Switcher/internal/security"
 	"TcNo-Acc-Switcher/internal/stability"
 	"TcNo-Acc-Switcher/internal/stats"
 	"TcNo-Acc-Switcher/internal/tray"
@@ -103,6 +104,9 @@ func CurrentLiveUniqueID(deps FlowDeps, platformKey string) (string, error) {
 }
 
 func SaveCurrent(deps FlowDeps, platformKey, accountName string) (err error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	defer finishActionBarStatus(&err)
 	platform.EmitActionBarStatusI18n("Status_Init")
 	closeSharedLevelDBHandles("SaveCurrent.begin")
@@ -154,7 +158,7 @@ func saveCurrentAfterKill(deps FlowDeps, accountName string, fc FlowContext) err
 		delete(idsFileData.AccountTags, existingUID)
 		if oldDestRoot, derr := accountCacheDir(fc.PlatformKey, existingName); derr == nil {
 			logFlow().Debug("remove superseded account cache", "path", oldDestRoot)
-			if rerr := fsutil.RemoveAllWithRetry(oldDestRoot, 2*time.Second, os.RemoveAll); rerr != nil {
+			if rerr := security.RemoveAccountCache(fc.PlatformKey, existingUID, existingName, oldDestRoot); rerr != nil {
 				logFlow().Warn("remove superseded account cache", "path", oldDestRoot, "err", rerr)
 			}
 		}
@@ -165,10 +169,16 @@ func saveCurrentAfterKill(deps FlowDeps, accountName string, fc FlowContext) err
 		return err
 	}
 
-	destRoot, err := accountCacheDir(fc.PlatformKey, accountName)
+	normalDestRoot, err := accountCacheDir(fc.PlatformKey, accountName)
 	if err != nil {
 		return err
 	}
+	save, err := security.BeginAccountSave(fc.PlatformKey, uid, accountName, normalDestRoot)
+	if err != nil {
+		return err
+	}
+	defer security.CleanupAccountSave(save)
+	destRoot := save.DestRoot
 	logFlow().Debug("clear account cache before save", "path", destRoot)
 	if err := fsutil.RemoveAllWithRetry(destRoot, 2*time.Second, os.RemoveAll); err != nil {
 		return fmt.Errorf("clear account cache %s: %w", destRoot, err)
@@ -410,6 +420,10 @@ func saveCurrentAfterKill(deps FlowDeps, accountName string, fc FlowContext) err
 		logFlow().Debug("wrote registry dump cache", "path", regPath)
 	}
 
+	if err := security.CommitAccountSave(save, normalDestRoot); err != nil {
+		return err
+	}
+
 	ids, err := readIDs(fc.PlatformKey)
 	if err != nil {
 		return err
@@ -450,15 +464,33 @@ func ensureUniqueIDOnSave(platformKey string, d platform.Descriptor, ctx platfor
 }
 
 func Login(deps FlowDeps, fc FlowContext, accountName string) error {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	closeSharedLevelDBHandles("Login.begin")
 	defer closeSharedLevelDBHandles("Login.end")
 
 	ctx := fc.PathCtx
 	folder := fc.Folder
-	srcRoot, err := accountCacheDir(fc.PlatformKey, accountName)
+	normalSrcRoot, err := accountCacheDir(fc.PlatformKey, accountName)
 	if err != nil {
 		return err
 	}
+	var uniqueID string
+	if ids, err := readIDs(fc.PlatformKey); err == nil {
+		wantName := strings.TrimSpace(accountName)
+		for uid, name := range ids {
+			if strings.TrimSpace(name) == wantName {
+				uniqueID = strings.TrimSpace(uid)
+				break
+			}
+		}
+	}
+	srcRoot, cleanup, err := security.AccountRestoreDir(fc.PlatformKey, uniqueID, accountName, normalSrcRoot)
+	if err != nil {
+		return err
+	}
+	defer cleanup()
 	regData, _ := os.ReadFile(filepath.Join(srcRoot, "reg.json"))
 	var regDump map[string]regDumpEntry
 	if len(regData) > 0 {
@@ -723,6 +755,9 @@ func ClearCurrentLogin(deps FlowDeps, fc FlowContext) error {
 }
 
 func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []string) (err error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	defer finishActionBarStatus(&err)
 	platform.EmitActionBarStatusI18n("Status_Init")
 	closeSharedLevelDBHandles("SwapTo.begin")
@@ -800,12 +835,18 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 }
 
 func LaunchBasic(deps FlowDeps, platformKey string, extraLaunchArgs []string) error {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	defer platform.EmitActionBarStatus("")
 	platform.EmitActionBarStatusI18nPlatform("Status_StartingPlatform", platformKey)
 	return launchBasicNoStatus(deps, platformKey, extraLaunchArgs)
 }
 
 func AddNew(deps FlowDeps, platformKey string) (err error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	defer finishActionBarStatus(&err)
 	platform.EmitActionBarStatusI18n("Status_Init")
 	closeSharedLevelDBHandles("AddNew.begin")
@@ -835,6 +876,9 @@ func AddNew(deps FlowDeps, platformKey string) (err error) {
 }
 
 func LaunchBasicAs(deps FlowDeps, platformKey string, forceAdmin bool, extraLaunchArgs []string) error {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	defer platform.EmitActionBarStatus("")
 	platform.EmitActionBarStatusI18nPlatform("Status_StartingPlatform", platformKey)
 	return launchBasicNoStatusAs(deps, platformKey, forceAdmin, extraLaunchArgs)

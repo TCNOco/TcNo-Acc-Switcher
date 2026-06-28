@@ -20,3 +20,6 @@ updater-key
 /docs
 
 docs/RELEASING.md
+/.cache
+/.pnpm-store
+/.pnpm-store

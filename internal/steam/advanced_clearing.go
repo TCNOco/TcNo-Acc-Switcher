@@ -8,6 +8,7 @@ import (
 	"runtime"
 	"strings"
 
+	"TcNo-Acc-Switcher/internal/security"
 	"TcNo-Acc-Switcher/internal/winutil"
 )
 
@@ -57,6 +58,9 @@ func (s *SteamService) AdvancedClearingRegistrySupported() bool {
 
 // AdvancedClearingItems lists available actions for building the UI.
 func (s *SteamService) AdvancedClearingItems() ([]AdvancedClearingItem, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return nil, err
+	}
 	items := []AdvancedClearingItem{
 		{ID: acCloseSteam, Category: "general", WindowsOnly: false},
 		{ID: acClearLogs, Category: "general", WindowsOnly: false},
@@ -79,6 +83,9 @@ func (s *SteamService) AdvancedClearingItems() ([]AdvancedClearingItem, error) {
 
 // RunAdvancedClearingAction performs one advanced-clearing step and returns log lines.
 func (s *SteamService) RunAdvancedClearingAction(action string) (AdvancedClearResult, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return AdvancedClearResult{}, err
+	}
 	action = strings.TrimSpace(strings.ToLower(action))
 	var lines []string
 	appendLine := func(s string) { lines = append(lines, s) }

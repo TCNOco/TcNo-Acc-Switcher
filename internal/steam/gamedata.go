@@ -11,6 +11,7 @@ import (
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
+	"TcNo-Acc-Switcher/internal/security"
 )
 
 // Error messages match i18n keys; the Windows frontend maps them in PlatformSteam.
@@ -56,6 +57,9 @@ func steamBackupGamePath(steamID32, appID string) (string, error) {
 }
 
 func (s *SteamService) currentActiveSteamID64() (string, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return "", err
+	}
 	root, err := s.steamInstallRoot()
 	if err != nil {
 		return "", err
@@ -76,6 +80,9 @@ func CurrentLiveSteamID64() (string, error) {
 // CopySteamGameSettingsFrom copies <steam>/userdata/{source32}/{appID} into the current session
 // account folder, auto-backing up the destination tree into Backups/Steam first (legacy C# behavior).
 func (s *SteamService) CopySteamGameSettingsFrom(sourceSteamID64, appID string) error {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	appID, err := normalizeSteamAppID(appID)
 	if err != nil {
 		return err
@@ -138,6 +145,9 @@ func (s *SteamService) CopySteamGameSettingsFrom(sourceSteamID64, appID string) 
 
 // RestoreSteamGameSettingsTo restores from Backups/Steam/{id32}/{appID} into userdata.
 func (s *SteamService) RestoreSteamGameSettingsTo(steamID64, appID string) error {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	appID, err := normalizeSteamAppID(appID)
 	if err != nil {
 		return err
@@ -167,6 +177,9 @@ func (s *SteamService) RestoreSteamGameSettingsTo(steamID64, appID string) error
 
 // BackupSteamGameData copies live userdata for this game to Backups/Steam. Returns the backup path on success.
 func (s *SteamService) BackupSteamGameData(steamID64, appID string) (string, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return "", err
+	}
 	appID, err := normalizeSteamAppID(appID)
 	if err != nil {
 		return "", err
@@ -200,6 +213,9 @@ func (s *SteamService) BackupSteamGameData(steamID64, appID string) (string, err
 // OpenSteamGameDataFolder opens userdata/{id32}/{appID} when present,
 // otherwise falls back to Backups/Steam/{id32}/{appID} when present.
 func (s *SteamService) OpenSteamGameDataFolder(steamID64, appID string) error {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	appID, err := normalizeSteamAppID(appID)
 	if err != nil {
 		return err
@@ -241,6 +257,9 @@ type SteamGameDataAppIDSets struct {
 // GetSteamGameDataAppIDSets lists numeric subfolder names in userdata/{id32}/ and Backups/Steam/{id32}/
 // so the client can show Copy/Backup only when local game data exists, and Restore when a backup exists.
 func (s *SteamService) GetSteamGameDataAppIDSets(steamID64 string) (SteamGameDataAppIDSets, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return SteamGameDataAppIDSets{}, err
+	}
 	steamID64 = strings.TrimSpace(steamID64)
 	f, err := FormatsFromID64(steamID64)
 	if err != nil {

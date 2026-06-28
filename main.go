@@ -17,10 +17,12 @@ import (
 	"TcNo-Acc-Switcher/internal/discordrpc"
 	"TcNo-Acc-Switcher/internal/ipc"
 	"TcNo-Acc-Switcher/internal/platform"
+	"TcNo-Acc-Switcher/internal/security"
 	"TcNo-Acc-Switcher/internal/shortcuts"
 	"TcNo-Acc-Switcher/internal/stability"
 	"TcNo-Acc-Switcher/internal/stats"
 	"TcNo-Acc-Switcher/internal/steam"
+	"TcNo-Acc-Switcher/internal/tray"
 	"TcNo-Acc-Switcher/internal/winutil"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
@@ -39,6 +41,7 @@ var (
 	platformSvc = &platform.PlatformService{}
 	basicSvc    = basic.NewBasicService(platformSvc)
 	steamSvc    = steam.NewSteamService()
+	securitySvc = security.NewService()
 	discordRPC  = discordrpc.NewManager()
 
 	crashSubmitted bool
@@ -73,6 +76,13 @@ func init() {
 	platform.SetPlatformLaunchAs(func(forceAdmin bool) error { return steam.LaunchSteamOnlyAs(forceAdmin, nil) }, func(platformKey string, forceAdmin bool) error {
 		return basic.LaunchBasicAs(basic.FlowDeps{PS: platformSvc}, platformKey, forceAdmin, nil)
 	})
+	security.SetStatusChangedHook(func() {
+		if !security.AppLocked() {
+			basic.SyncAllTrayKnownAccounts()
+			steam.SyncTrayKnownAccounts()
+		}
+		tray.RefreshMenuIfSet()
+	})
 	app.RegisterStartupAccountCounts()
 }
 
@@ -86,6 +96,7 @@ func main() {
 		fmt.Fprintln(os.Stderr, "init data paths:", err)
 		os.Exit(1)
 	}
+	security.CleanupTransientState()
 
 	idx, idxErr := cli.LoadPlatformIndex()
 	idxPtr := idx
@@ -181,6 +192,7 @@ func serviceList() []application.Service {
 		application.NewService(platformSvc),
 		application.NewService(steamSvc),
 		application.NewService(basicSvc),
+		application.NewService(securitySvc),
 		application.NewService(shortcuts.NewService(platformSvc)),
 	}
 }

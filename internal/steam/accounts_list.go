@@ -9,6 +9,7 @@ import (
 	"TcNo-Acc-Switcher/internal/basic"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/profileimage"
+	"TcNo-Acc-Switcher/internal/security"
 	"TcNo-Acc-Switcher/internal/stats"
 )
 
@@ -133,6 +134,9 @@ func (s *SteamService) buildSteamListContext() (*steamListContext, error) {
 }
 
 func (s *SteamService) GetSteamAccountsList() ([]SteamAccountListItemDTO, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return nil, err
+	}
 	ctx, err := s.buildSteamListContext()
 	if err != nil {
 		return nil, err
@@ -156,6 +160,9 @@ func (s *SteamService) GetSteamAccountsList() ([]SteamAccountListItemDTO, error)
 }
 
 func (s *SteamService) GetSteamAccountsEnrichment() ([]SteamAccountEnrichmentDTO, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return nil, err
+	}
 	ctx, err := s.buildSteamListContext()
 	if err != nil {
 		return nil, err

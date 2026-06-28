@@ -19,6 +19,7 @@ import (
 	"TcNo-Acc-Switcher/internal/ipc"
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
+	"TcNo-Acc-Switcher/internal/security"
 	"TcNo-Acc-Switcher/internal/shortcuts"
 	"TcNo-Acc-Switcher/internal/stats"
 	"TcNo-Acc-Switcher/internal/steam"
@@ -211,8 +212,10 @@ func RunGUI(params RunGUIParams) {
 	})
 	trayMgr.RegisterCloseHook()
 	tray.SetMenuRefresh(trayMgr.RefreshMenu)
-	basic.SyncAllTrayKnownAccounts()
-	steam.SyncTrayKnownAccounts()
+	if !security.AppLocked() {
+		basic.SyncAllTrayKnownAccounts()
+		steam.SyncTrayKnownAccounts()
+	}
 	trayMgr.Start(params.TrayIconPNG)
 
 	basic.SetLiveAccountIDResolver(func(platformKey string) (string, error) {

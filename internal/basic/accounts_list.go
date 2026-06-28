@@ -7,15 +7,17 @@ import (
 	"TcNo-Acc-Switcher/internal/accountlist"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/profileimage"
+	"TcNo-Acc-Switcher/internal/security"
 	"TcNo-Acc-Switcher/internal/stats"
 )
 
 // AccountListItemDTO is the fast account list payload (ids, names, order, live session).
 type AccountListItemDTO struct {
-	PlatformKey    string `json:"platformKey"`
-	UniqueID       string `json:"uniqueId"`
-	DisplayName    string `json:"displayName"`
-	CurrentSession bool   `json:"currentSession"`
+	PlatformKey     string `json:"platformKey"`
+	UniqueID        string `json:"uniqueId"`
+	DisplayName     string `json:"displayName"`
+	CurrentSession  bool   `json:"currentSession"`
+	SavedDataBroken bool   `json:"savedDataBroken"`
 }
 
 // AccountEnrichmentDTO carries slower per-account metadata loaded after the list is shown.
@@ -28,6 +30,7 @@ type AccountEnrichmentDTO struct {
 	LastUsed           string          `json:"lastUsed"`
 	ShowLastUsed       bool            `json:"showLastUsed"`
 	Tags               []AccountTagDTO `json:"tags"`
+	SavedDataBroken    bool            `json:"savedDataBroken"`
 }
 
 type accountListContext struct {
@@ -97,6 +100,9 @@ func (b *BasicService) GetAccountsList(platformKey string) ([]AccountListItemDTO
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	defer closeSharedLevelDBHandles("GetAccountsList.end")
+	if err := security.RequireUnlocked(); err != nil {
+		return nil, err
+	}
 
 	ctx, err := b.buildAccountListContext(platformKey)
 	if err != nil {
@@ -107,12 +113,14 @@ func (b *BasicService) GetAccountsList(platformKey string) ([]AccountListItemDTO
 	}
 
 	out := make([]AccountListItemDTO, 0, len(ctx.keys))
+	encrypted := security.SavedAccountDataEncrypted()
 	for _, uid := range ctx.keys {
 		out = append(out, AccountListItemDTO{
-			PlatformKey:    ctx.platformKey,
-			UniqueID:       uid,
-			DisplayName:    ctx.ids[uid],
-			CurrentSession: ctx.liveUID != "" && strings.EqualFold(ctx.liveUID, uid),
+			PlatformKey:     ctx.platformKey,
+			UniqueID:        uid,
+			DisplayName:     ctx.ids[uid],
+			CurrentSession:  ctx.liveUID != "" && strings.EqualFold(ctx.liveUID, uid),
+			SavedDataBroken: encrypted && !security.AccountBlobValid(ctx.platformKey, uid),
 		})
 	}
 	if len(out) > 0 {
@@ -125,6 +133,9 @@ func (b *BasicService) GetAccountsEnrichment(platformKey string) ([]AccountEnric
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	defer closeSharedLevelDBHandles("GetAccountsEnrichment.end")
+	if err := security.RequireUnlocked(); err != nil {
+		return nil, err
+	}
 
 	ctx, err := b.buildAccountListContext(platformKey)
 	if err != nil {
@@ -135,6 +146,7 @@ func (b *BasicService) GetAccountsEnrichment(platformKey string) ([]AccountEnric
 	}
 
 	out := make([]AccountEnrichmentDTO, 0, len(ctx.keys))
+	encrypted := security.SavedAccountDataEncrypted()
 	for _, uid := range ctx.keys {
 		note := ""
 		if ctx.ps.AccountNotes != nil {
@@ -167,6 +179,7 @@ func (b *BasicService) GetAccountsEnrichment(platformKey string) ([]AccountEnric
 			LastUsed:           lu,
 			ShowLastUsed:       ctx.ps.ShowLastUsed,
 			Tags:               resolveTagsForAccount(ctx.idf, uid),
+			SavedDataBroken:    encrypted && !security.AccountBlobValid(ctx.platformKey, uid),
 		})
 	}
 	return out, nil
@@ -185,6 +198,7 @@ func mergeBasicAccountDTO(list AccountListItemDTO, enrich AccountEnrichmentDTO) 
 		LastUsed:           enrich.LastUsed,
 		ShowLastUsed:       enrich.ShowLastUsed,
 		Tags:               enrich.Tags,
+		SavedDataBroken:    list.SavedDataBroken || enrich.SavedDataBroken,
 	}
 }
 

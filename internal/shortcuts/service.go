@@ -11,6 +11,7 @@ import (
 	"TcNo-Acc-Switcher/internal/crashlog"
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
+	"TcNo-Acc-Switcher/internal/security"
 	"TcNo-Acc-Switcher/internal/stats"
 	"TcNo-Acc-Switcher/internal/steam"
 	"TcNo-Acc-Switcher/internal/winutil"
@@ -78,12 +79,15 @@ func (s *Service) emitUpdated(platformKey string) {
 }
 
 func (s *Service) ListShortcuts(platformKey string) ([]ShortcutDTO, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return nil, err
+	}
 	return s.buildDTOs(strings.TrimSpace(platformKey))
 }
 
 func (s *Service) ScanShortcuts(platformKey string) error {
 	platformKey = strings.TrimSpace(platformKey)
-	if platformKey == "" {
+	if platformKey == "" || security.AppLocked() {
 		return nil
 	}
 	s.mu.Lock()
@@ -107,6 +111,9 @@ func (s *Service) ScanShortcuts(platformKey string) error {
 }
 
 func (s *Service) RunShortcut(platformKey, fileName string, admin bool, selectedUniqueID string) error {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	platformKey = strings.TrimSpace(platformKey)
 	selectedUniqueID = strings.TrimSpace(selectedUniqueID)
 	if selectedUniqueID == "" {
@@ -145,26 +152,44 @@ func (s *Service) RunShortcut(platformKey, fileName string, admin bool, selected
 }
 
 func (s *Service) CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix, stateTitle, accountLogin string) (string, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return "", err
+	}
 	return CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix, stateTitle, accountLogin)
 }
 
 func (s *Service) CreateGameAccountShortcut(platformKey, uniqueID, accountDisplayName, accountLogin, gameFileName string) (string, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return "", err
+	}
 	return CreateGameAccountShortcut(platformKey, uniqueID, accountDisplayName, accountLogin, gameFileName)
 }
 
 func (s *Service) ResolveAccountShortcutStem(platformKey, uniqueID, displayName, accountLogin string) string {
+	if security.AppLocked() {
+		return ""
+	}
 	return ResolvedAccountShortcutStem(platformKey, uniqueID, displayName, accountLogin)
 }
 
 func (s *Service) CreatePlatformShortcut(platformKey string) (string, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return "", err
+	}
 	return CreatePlatformShortcut(platformKey)
 }
 
 func (s *Service) DeletePlatformShortcut(platformKey string) error {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	return DeletePlatformShortcut(platformKey)
 }
 
 func (s *Service) PlatformShortcutExists(platformKey string) (bool, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return false, err
+	}
 	return PlatformShortcutExists(platformKey)
 }
 
@@ -173,6 +198,9 @@ func (s *Service) ReportSVGRenderResult(id, pngBase64, errMsg string) {
 }
 
 func (s *Service) HideShortcut(platformKey, fileName string) error {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	if err := HideShortcut(platformKey, fileName); err != nil {
 		return err
 	}
@@ -181,6 +209,9 @@ func (s *Service) HideShortcut(platformKey, fileName string) error {
 }
 
 func (s *Service) SaveShortcutOrder(platformKey string, pinned, dropdown []string) error {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	platformKey = strings.TrimSpace(platformKey)
 	cur, err := loadEntries(platformKey)
 	if err != nil {
@@ -233,6 +264,9 @@ func (s *Service) SaveShortcutOrder(platformKey string, pinned, dropdown []strin
 }
 
 func (s *Service) OpenShortcutFolder(platformKey string) error {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	platformKey = strings.TrimSpace(platformKey)
 	root, err := paths.LoginCacheDir(platformKey)
 	if err != nil {

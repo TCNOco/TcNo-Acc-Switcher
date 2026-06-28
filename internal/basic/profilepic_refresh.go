@@ -11,6 +11,7 @@ import (
 	"TcNo-Acc-Switcher/internal/crashlog"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/profileimage"
+	"TcNo-Acc-Switcher/internal/security"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 	"golang.org/x/sync/semaphore"
@@ -42,6 +43,9 @@ func emitAccountImagePatch(p AccountImagePatch) {
 func (b *BasicService) PlatformUsesRemoteProfileImages(platformKey string) (bool, error) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
+	if err := security.RequireUnlocked(); err != nil {
+		return false, err
+	}
 	d, _, err := readDescriptor(strings.TrimSpace(platformKey))
 	if err != nil {
 		return false, err
@@ -53,11 +57,17 @@ func (b *BasicService) PlatformUsesRemoteProfileImages(platformKey string) (bool
 
 // StartBasicProfileImageRefresh downloads missing or stale remote profile images in the background (bounded concurrency).
 func (b *BasicService) StartBasicProfileImageRefresh(platformKey string) {
+	if security.AppLocked() {
+		return
+	}
 	go b.runProfileImageRefresh(strings.TrimSpace(platformKey))
 }
 
 // RefreshAllBasicProfileImages deletes cached remote profile images for every known account, then starts a background re-download (like Steam "Refresh images").
 func (b *BasicService) RefreshAllBasicProfileImages(platformKey string) error {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	platformKey = strings.TrimSpace(platformKey)
 	if platformKey == "" {
 		return nil
@@ -82,16 +92,25 @@ func (b *BasicService) RefreshAllBasicProfileImages(platformKey string) error {
 
 // ClearAllBasicProfileImages deletes all cached profile images for this platform.
 func (b *BasicService) ClearAllBasicProfileImages(platformKey string) error {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	return profileimage.DeletePlatformCached(strings.TrimSpace(platformKey))
 }
 
 // PlatformProfileImagesSavedPerAccount reports whether profile image source files are saved in account LoginFiles.
 func (b *BasicService) PlatformProfileImagesSavedPerAccount(platformKey string) bool {
+	if security.AppLocked() {
+		return false
+	}
 	return platformProfileImagesSavedPerAccount(platformKey)
 }
 
 // RefreshSavedBasicProfileImages clears and requeues profile image downloads from account-saved source files.
 func (b *BasicService) RefreshSavedBasicProfileImages(platformKey string) error {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	platformKey = strings.TrimSpace(platformKey)
 	if platformKey == "" || !platformProfileImagesSavedPerAccount(platformKey) {
 		return nil
@@ -124,6 +143,9 @@ func (b *BasicService) RefreshSavedBasicProfileImages(platformKey string) error 
 
 func (b *BasicService) runProfileImageRefresh(platformKey string) {
 	platformKey = strings.TrimSpace(platformKey)
+	if security.AppLocked() {
+		return
+	}
 	if platformKey == "" {
 		return
 	}

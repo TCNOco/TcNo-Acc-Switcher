@@ -12,6 +12,7 @@ import (
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/profileimage"
+	"TcNo-Acc-Switcher/internal/security"
 	"TcNo-Acc-Switcher/internal/stats"
 	"TcNo-Acc-Switcher/internal/tray"
 	"TcNo-Acc-Switcher/internal/winutil"
@@ -58,9 +59,13 @@ type AccountDTO struct {
 	LastUsed           string          `json:"lastUsed"`
 	ShowLastUsed       bool            `json:"showLastUsed"`
 	Tags               []AccountTagDTO `json:"tags"`
+	SavedDataBroken    bool            `json:"savedDataBroken"`
 }
 
 func (b *BasicService) GetAccounts(platformKey string) ([]AccountDTO, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return nil, err
+	}
 	list, err := b.GetAccountsList(platformKey)
 	if err != nil {
 		return nil, err
@@ -88,12 +93,18 @@ func (b *BasicService) GetAccounts(platformKey string) ([]AccountDTO, error) {
 func (b *BasicService) SwapToAccount(platformKey, uniqueID string, extraLaunchArgs []string) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	return SwapTo(b.deps(), strings.TrimSpace(platformKey), strings.TrimSpace(uniqueID), extraLaunchArgs)
 }
 
 func (b *BasicService) SaveCurrent(platformKey, accountName string) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	platformKey = strings.TrimSpace(platformKey)
 	accountName = strings.TrimSpace(accountName)
 	err := SaveCurrent(b.deps(), platformKey, accountName)
@@ -108,6 +119,9 @@ func (b *BasicService) SaveCurrent(platformKey, accountName string) error {
 
 // SuggestedSaveAccountName returns a platform-specific suggested display name for Save Current.
 func (b *BasicService) SuggestedSaveAccountName(platformKey string) (string, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return "", err
+	}
 	defer closeSharedLevelDBHandles("SuggestedSaveAccountName.end")
 	platformKey = strings.TrimSpace(platformKey)
 	if platformKey == "" {
@@ -143,18 +157,27 @@ func (b *BasicService) SuggestedSaveAccountName(platformKey string) (string, err
 func (b *BasicService) AddNew(platformKey string) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	return AddNew(b.deps(), strings.TrimSpace(platformKey))
 }
 
 func (b *BasicService) LaunchPlatform(platformKey string) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	return LaunchBasic(b.deps(), strings.TrimSpace(platformKey), nil)
 }
 
 func (b *BasicService) ForgetAccount(platformKey, uniqueID string) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	platformKey = strings.TrimSpace(platformKey)
 	uniqueID = strings.TrimSpace(uniqueID)
 	f, err := readIdsFile(platformKey)
@@ -177,7 +200,7 @@ func (b *BasicService) ForgetAccount(platformKey, uniqueID string) error {
 	if name != "" {
 		dir, err := accountCacheDir(platformKey, name)
 		if err == nil {
-			_ = os.RemoveAll(dir)
+			_ = security.RemoveAccountCache(platformKey, uniqueID, name, dir)
 		}
 	}
 	_ = profileimage.DeleteCached(platformKey, uniqueID)
@@ -187,12 +210,18 @@ func (b *BasicService) ForgetAccount(platformKey, uniqueID string) error {
 func (b *BasicService) SaveAccountOrder(platformKey string, order []string) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	return writeOrder(strings.TrimSpace(platformKey), order)
 }
 
 func (b *BasicService) SetAccountNote(platformKey, uniqueID, note string) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	ps, err := platform.LoadPlatformSettings(platformKey)
 	if err != nil {
 		return err
@@ -211,6 +240,9 @@ func (b *BasicService) SetAccountNote(platformKey, uniqueID, note string) error 
 func (b *BasicService) RenameAccount(platformKey, uniqueID, newName string) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	platformKey = strings.TrimSpace(platformKey)
 	uniqueID = strings.TrimSpace(uniqueID)
 	newName = paths.WindowsFileName(strings.TrimSpace(newName), 200)
@@ -232,7 +264,7 @@ func (b *BasicService) RenameAccount(platformKey, uniqueID, newName string) erro
 	if err := writeIDs(platformKey, ids); err != nil {
 		return err
 	}
-	if strings.TrimSpace(oldName) != "" {
+	if !security.SavedAccountDataEncrypted() && strings.TrimSpace(oldName) != "" {
 		oldDir, err := accountCacheDir(platformKey, oldName)
 		if err == nil {
 			newDir, err2 := accountCacheDir(platformKey, newName)
@@ -247,6 +279,9 @@ func (b *BasicService) RenameAccount(platformKey, uniqueID, newName string) erro
 func (b *BasicService) ChangeAccountImage(platformKey, uniqueID, sourcePath string) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	platformKey = strings.TrimSpace(platformKey)
 	uniqueID = strings.TrimSpace(uniqueID)
 	sourcePath = strings.TrimSpace(sourcePath)
@@ -270,6 +305,10 @@ func (b *BasicService) ClearManualAccountProfileImage(platformKey, uniqueID stri
 	platformKey = strings.TrimSpace(platformKey)
 	uniqueID = strings.TrimSpace(uniqueID)
 	b.mu.Lock()
+	if err := security.RequireUnlocked(); err != nil {
+		b.mu.Unlock()
+		return err
+	}
 	err := profileimage.DeleteCached(platformKey, uniqueID)
 	var accountName string
 	if err == nil {
@@ -293,6 +332,9 @@ func (b *BasicService) ClearManualAccountProfileImage(platformKey, uniqueID stri
 func (b *BasicService) GetAccountNote(platformKey, uniqueID string) (string, error) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
+	if err := security.RequireUnlocked(); err != nil {
+		return "", err
+	}
 	ps, err := platform.LoadPlatformSettings(strings.TrimSpace(platformKey))
 	if err != nil {
 		return "", err
@@ -306,6 +348,9 @@ func (b *BasicService) GetAccountNote(platformKey, uniqueID string) (string, err
 func (b *BasicService) ListTagDefinitions(platformKey string) ([]TagDefinitionDTO, error) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
+	if err := security.RequireUnlocked(); err != nil {
+		return nil, err
+	}
 	platformKey = strings.TrimSpace(platformKey)
 	if platformKey == "" {
 		return nil, nil
@@ -320,6 +365,9 @@ func (b *BasicService) ListTagDefinitions(platformKey string) ([]TagDefinitionDT
 func (b *BasicService) AddTagToAccount(platformKey, uniqueID, tagID string) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	platformKey = strings.TrimSpace(platformKey)
 	uniqueID = strings.TrimSpace(uniqueID)
 	tagID = strings.TrimSpace(tagID)
@@ -349,6 +397,9 @@ func (b *BasicService) AddTagToAccount(platformKey, uniqueID, tagID string) erro
 func (b *BasicService) RemoveTagFromAccount(platformKey, uniqueID, tagID string) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	platformKey = strings.TrimSpace(platformKey)
 	uniqueID = strings.TrimSpace(uniqueID)
 	tagID = strings.TrimSpace(tagID)
@@ -388,6 +439,9 @@ func (b *BasicService) CreateTagAndAddToAccount(platformKey, uniqueID, name stri
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	var zero TagDefinitionDTO
+	if err := security.RequireUnlocked(); err != nil {
+		return zero, err
+	}
 	platformKey = strings.TrimSpace(platformKey)
 	uniqueID = strings.TrimSpace(uniqueID)
 	name, err := tagNameOK(name)

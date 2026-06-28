@@ -21,6 +21,7 @@ import (
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
+	"TcNo-Acc-Switcher/internal/security"
 )
 
 type gameStatsFile struct {
@@ -66,16 +67,16 @@ type gameAttribution struct {
 }
 
 type gameDefinition struct {
-	UniqueID       string                        `json:"UniqueId"`
-	Indicator      string                        `json:"Indicator"`
-	URL            string                        `json:"Url"`
-	RequestCookies string                        `json:"RequestCookies"`
+	UniqueID       string `json:"UniqueId"`
+	Indicator      string `json:"Indicator"`
+	URL            string `json:"Url"`
+	RequestCookies string `json:"RequestCookies"`
 	// TTL is how long collected stats remain fresh before a background refresh (default 3h). JSON: seconds number or duration string ("3h", "30m").
 	TTL gameStatTTL `json:"TTL"`
 	// ProcessName is an optional exe base name (e.g. cs2.exe). When running, the signed-in account uses GameRunningTTL instead of TTL.
 	ProcessName string `json:"ProcessName"`
 	// GameRunningTTL applies while ProcessName is running for the current session account (default 30m).
-	GameRunningTTL gameStatTTL `json:"GameRunningTTL"`
+	GameRunningTTL gameStatTTL                   `json:"GameRunningTTL"`
 	Attribution    *gameAttribution              `json:"Attribution"`
 	Vars           map[string]gameStatVarDef     `json:"Vars"`
 	Collect        map[string]collectInstruction `json:"Collect"`
@@ -155,7 +156,7 @@ type collectInstruction struct {
 	// ImageFromPath is a JSON path (same document as Path) for a remote image URL cached under wwwroot/img/<ImageCacheDir>/.
 	ImageFromPath string `json:"ImageFromPath"`
 	ImageCacheDir string `json:"ImageCacheDir"`
-	NoDisplayIf string `json:"NoDisplayIf"`
+	NoDisplayIf   string `json:"NoDisplayIf"`
 	// Icon is raw HTML shown before the metric (Overwatch role icons). Takes precedence over Indicator.
 	Icon string `json:"Icon"`
 	// Indicator is optional short text wrapped in <sup>. nil = inherit game-level Indicator; "" = none; "APEX" = override.
@@ -387,6 +388,9 @@ func gameStatVarDefsToAutofillMap(defs map[string]gameStatVarDef) map[string]str
 }
 
 func (b *BasicService) GetAvailableGames(platformName string) ([]string, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return nil, err
+	}
 	gameStatsState.mu.Lock()
 	defer gameStatsState.mu.Unlock()
 	if err := gameStatsState.ensureLoadedLocked(); err != nil {
@@ -398,6 +402,9 @@ func (b *BasicService) GetAvailableGames(platformName string) ([]string, error) 
 }
 
 func (b *BasicService) GetEnabledGames(platformName, accountID string) ([]string, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return nil, err
+	}
 	gameStatsState.mu.Lock()
 	defer gameStatsState.mu.Unlock()
 	if err := gameStatsState.ensureLoadedLocked(); err != nil {
@@ -415,6 +422,9 @@ func (b *BasicService) GetEnabledGames(platformName, accountID string) ([]string
 }
 
 func (b *BasicService) GetDisabledGames(platformName, accountID string) ([]string, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return nil, err
+	}
 	gameStatsState.mu.Lock()
 	defer gameStatsState.mu.Unlock()
 	if err := gameStatsState.ensureLoadedLocked(); err != nil {
@@ -432,6 +442,9 @@ func (b *BasicService) GetDisabledGames(platformName, accountID string) ([]strin
 }
 
 func (b *BasicService) GetRequiredVars(game string) (map[string]string, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return nil, err
+	}
 	gameStatsState.mu.Lock()
 	defer gameStatsState.mu.Unlock()
 	if err := gameStatsState.ensureLoadedLocked(); err != nil {
@@ -460,6 +473,9 @@ func (b *BasicService) GetRequiredVars(game string) (map[string]string, error) {
 }
 
 func (b *BasicService) GetRequiredVarSpecs(game string) (map[string]GameStatVarSpecDTO, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return nil, err
+	}
 	gameStatsState.mu.Lock()
 	defer gameStatsState.mu.Unlock()
 	if err := gameStatsState.ensureLoadedLocked(); err != nil {
@@ -481,6 +497,9 @@ func (b *BasicService) GetRequiredVarSpecs(game string) (map[string]GameStatVarS
 }
 
 func (b *BasicService) GetExistingVars(game, accountID string) (map[string]string, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return nil, err
+	}
 	gameStatsState.mu.Lock()
 	defer gameStatsState.mu.Unlock()
 	if err := gameStatsState.ensureLoadedLocked(); err != nil {
@@ -513,6 +532,9 @@ func gameAttributionToDTO(a *gameAttribution) GameStatAttributionDTO {
 }
 
 func (b *BasicService) GetGameAttribution(game string) (GameStatAttributionDTO, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return GameStatAttributionDTO{}, err
+	}
 	gameStatsState.mu.Lock()
 	defer gameStatsState.mu.Unlock()
 	if err := gameStatsState.ensureLoadedLocked(); err != nil {
@@ -526,6 +548,9 @@ func (b *BasicService) GetGameAttribution(game string) (GameStatAttributionDTO, 
 }
 
 func (b *BasicService) GetAllMetrics(game string) (map[string]string, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return nil, err
+	}
 	gameStatsState.mu.Lock()
 	defer gameStatsState.mu.Unlock()
 	if err := gameStatsState.ensureLoadedLocked(); err != nil {
@@ -548,6 +573,9 @@ func (b *BasicService) GetAllMetrics(game string) (map[string]string, error) {
 }
 
 func (b *BasicService) GetHiddenMetrics(game, accountID string) (map[string]HiddenMetricToggleDTO, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return nil, err
+	}
 	gameStatsState.mu.Lock()
 	defer gameStatsState.mu.Unlock()
 	if err := gameStatsState.ensureLoadedLocked(); err != nil {
@@ -581,6 +609,9 @@ func (b *BasicService) GetHiddenMetrics(game, accountID string) (map[string]Hidd
 }
 
 func (b *BasicService) GetResolvedGameStatVars(platformName, game, accountID string) (map[string]string, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return nil, err
+	}
 	gameStatsState.mu.Lock()
 	defer gameStatsState.mu.Unlock()
 	if err := gameStatsState.ensureLoadedLocked(); err != nil {
@@ -614,6 +645,9 @@ func (b *BasicService) GetResolvedGameStatVars(platformName, game, accountID str
 }
 
 func (b *BasicService) SetGameVars(platformName, game, accountID string, vars map[string]string, hiddenMetrics []string) (bool, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return false, err
+	}
 	gameStatsState.mu.Lock()
 	defer gameStatsState.mu.Unlock()
 	if err := gameStatsState.ensureLoadedLocked(); err != nil {
@@ -668,6 +702,9 @@ func (b *BasicService) SetGameVars(platformName, game, accountID string, vars ma
 }
 
 func (b *BasicService) DisableGame(game, accountID string) error {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	gameStatsState.mu.Lock()
 	defer gameStatsState.mu.Unlock()
 	if err := gameStatsState.ensureLoadedLocked(); err != nil {
@@ -707,6 +744,9 @@ func collectIndicatorMarkup(ci collectInstruction, gameIndicator string) string 
 }
 
 func (b *BasicService) GetUserStatsAllGamesMarkup(platformName, accountID string) (map[string]map[string]StatValueAndIconDTO, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return nil, err
+	}
 	gameStatsState.mu.Lock()
 	if err := gameStatsState.ensureLoadedLocked(); err != nil {
 		gameStatsState.mu.Unlock()
@@ -855,6 +895,9 @@ func (m *gameStatsManager) refreshFromWebLocked(platformName, game, accountID st
 }
 
 func refreshGameStatsWorker(platformName, game, accountID string) error {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	gameStatsState.mu.Lock()
 	if err := gameStatsState.ensureLoadedLocked(); err != nil {
 		gameStatsState.mu.Unlock()
@@ -896,5 +939,8 @@ func refreshGameStatsWorker(platformName, game, accountID string) error {
 
 // RefreshGameStats downloads game statistics for one enabled game and updates the cache.
 func (b *BasicService) RefreshGameStats(platformName, game, accountID string) error {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	return refreshGameStatsWorker(platformName, game, accountID)
 }

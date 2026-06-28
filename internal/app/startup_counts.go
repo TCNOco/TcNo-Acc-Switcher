@@ -5,6 +5,7 @@ import (
 
 	"TcNo-Acc-Switcher/internal/basic"
 	"TcNo-Acc-Switcher/internal/platform"
+	"TcNo-Acc-Switcher/internal/security"
 	"TcNo-Acc-Switcher/internal/stats"
 	"TcNo-Acc-Switcher/internal/steam"
 )
@@ -17,6 +18,9 @@ func RegisterStartupAccountCounts() {
 
 func resolveStartupAccountCounts(platformNames []string, statsEnabled bool) map[string]int {
 	out := make(map[string]int, len(platformNames))
+	if security.AppLocked() {
+		return out
+	}
 	for _, name := range platformNames {
 		name = strings.TrimSpace(name)
 		if name == "" {
@@ -37,10 +41,11 @@ func resolveStartupAccountCounts(platformNames []string, statsEnabled bool) map[
 	return out
 }
 
-
-
 func resolveStartupTagCounts(platformNames []string, statsEnabled bool) map[string]platform.PlatformTagCountInfo {
 	out := make(map[string]platform.PlatformTagCountInfo, len(platformNames))
+	if security.AppLocked() {
+		return out
+	}
 	for _, name := range platformNames {
 		name = strings.TrimSpace(name)
 		if name == "" {

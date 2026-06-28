@@ -7,6 +7,7 @@ import (
 
 	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/crashlog"
+	"TcNo-Acc-Switcher/internal/security"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 )
@@ -155,7 +156,7 @@ func collectStaleGameStatsJobsForPlatform(platformKey, liveAccountID string) []g
 // StartGameStatsRefresh queues background downloads for enabled stats older than each game's TTL.
 func (b *BasicService) StartGameStatsRefresh(platformKey string) {
 	platformKey = strings.TrimSpace(platformKey)
-	if platformKey == "" || appclient.IsOfflineMode() {
+	if platformKey == "" || appclient.IsOfflineMode() || security.AppLocked() {
 		return
 	}
 	b.setGameStatsActivePlatform(platformKey)
@@ -185,7 +186,7 @@ func (b *BasicService) StartGameStatsProcessMonitor() {
 
 func (b *BasicService) runGameStatsProcessMonitor() {
 	tick := func() {
-		if appclient.IsOfflineMode() {
+		if appclient.IsOfflineMode() || security.AppLocked() {
 			return
 		}
 		activePlatform := b.getGameStatsActivePlatform()

@@ -9,6 +9,7 @@ import (
 
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/platform"
+	"TcNo-Acc-Switcher/internal/security"
 	"TcNo-Acc-Switcher/internal/stability"
 	"TcNo-Acc-Switcher/internal/stats"
 	"TcNo-Acc-Switcher/internal/tray"
@@ -24,6 +25,9 @@ var steamKillNames = []string{
 
 // SwapToAccount: empty steamID64 clears AutoLoginUser (Add New). personaState -1 uses Steam_OverrideState; < -1 skips localconfig persona edit. extraLaunchArgs append after settings argv.
 func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string) (err error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	defer func() {
 		if err != nil {
 			platform.EmitActionBarStatusI18n("Status_FailedLog")
@@ -126,6 +130,9 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 }
 
 func LaunchSteamOnly(extraLaunchArgs []string) error {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	defer platform.EmitActionBarStatus("")
 	platform.EmitActionBarStatusI18nPlatform("Status_StartingPlatform", "Steam")
 
@@ -165,6 +172,9 @@ func LaunchSteamOnly(extraLaunchArgs []string) error {
 }
 
 func LaunchSteamOnlyAs(forceAdmin bool, extraLaunchArgs []string) error {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	defer platform.EmitActionBarStatus("")
 	platform.EmitActionBarStatusI18nPlatform("Status_StartingPlatform", "Steam")
 
