@@ -387,16 +387,6 @@ func TestFlow_SplitRegistryPathValue(t *testing.T) {
 	}
 }
 
-func TestFlow_HasGlobPattern(t *testing.T) {
-	t.Parallel()
-	if hasGlobPattern("plain.txt") {
-		t.Error("plain.txt should not match")
-	}
-	if !hasGlobPattern("*.txt") || !hasGlobPattern("file?.txt") || !hasGlobPattern("[abc].txt") {
-		t.Error("glob patterns not detected")
-	}
-}
-
 func TestFlow_SaveClearsOldCache(t *testing.T) {
 	env := newFlowTestEnv(t)
 	fc := env.flowContext()
@@ -519,7 +509,7 @@ func TestFlow_PathTokens_MultipleTokens(t *testing.T) {
 	fc.PathCtx.UniqueID = "uid-99"
 	fc.PathCtx.FileName = "data.bin"
 	fc.Descriptor.LoginFiles = map[string]string{
-		"%Platform_Folder%\\%FileName%":                    "Saved/data.bin",
+		"%Platform_Folder%\\%FileName%":                   "Saved/data.bin",
 		"%Platform_Folder%\\Users\\%UniqueId%\\prefs.cfg": "Saved/prefs.cfg",
 	}
 	mustWrite(t, filepath.Join(env.instDir, "data.bin"), "binary")

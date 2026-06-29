@@ -116,14 +116,17 @@ func TestResolveGameStatsVarTemplates_DependencyChain(t *testing.T) {
 	}
 }
 
-func TestResolveGameStatsVarTemplates_Cyclic_NoPanic(t *testing.T) {
+func TestResolveGameStatsVarTemplates_CyclicValuesResolveEmpty(t *testing.T) {
 	def := map[string]string{
 		"A": "%B%",
 		"B": "%A%",
 	}
 	stored := map[string]string{}
 	ctx := GameStatVarContext{AccountID: "1", AccountUsername: "u"}
-	_ = ResolveGameStatsVarTemplates(def, stored, ctx)
+	got := ResolveGameStatsVarTemplates(def, stored, ctx)
+	if got["A"] != "" || got["B"] != "" {
+		t.Fatalf("cyclic vars should resolve empty, got %#v", got)
+	}
 }
 
 func TestTopoSortGameStatVars_OrderAndCycleFallback(t *testing.T) {

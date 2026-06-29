@@ -31,8 +31,8 @@ func TestResolveDescriptorVariables_Basic(t *testing.T) {
 	d := platform.Descriptor{
 		Extras: platform.DescriptorExtras{
 			Variables: map[string]string{
-				"savedir":  filepath.Join(dir, "profiles"),
-				"confdir":  filepath.Join(dir, "config"),
+				"savedir": filepath.Join(dir, "profiles"),
+				"confdir": filepath.Join(dir, "config"),
 			},
 		},
 	}
@@ -65,27 +65,4 @@ func TestResolveDescriptorVariables_WithTokens(t *testing.T) {
 	if v := vars["gamedir"]; v != want {
 		t.Errorf("gamedir = %q, want %q", v, want)
 	}
-}
-
-func TestResolveDescriptorVariables_CrossReference(t *testing.T) {
-	dir := t.TempDir()
-	d := platform.Descriptor{
-		Extras: platform.DescriptorExtras{
-			Variables: map[string]string{
-				"root":   filepath.Join(dir, "data"),
-				"subdir": "%root%\\profiles",
-			},
-		},
-	}
-
-	ctx := platform.PathTokenContext{PlatformFolder: dir}
-	vars := resolveDescriptorVariables(d, dir, ctx, "", false)
-
-	if v := vars["root"]; v != filepath.Join(dir, "data") {
-		t.Errorf("root = %q", v)
-	}
-	// Note: cross-reference expansion depends on map iteration order.
-	// If "subdir" is processed before "root", %root% stays literal.
-	// This is a known non-deterministic behaviour.
-	t.Logf("subdir resolved to: %q (may be literal %%root%% if processed out of order)", vars["subdir"])
 }

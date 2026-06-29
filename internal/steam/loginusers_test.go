@@ -211,26 +211,6 @@ func TestParseLoginUsers_CaseInsensitive(t *testing.T) {
 	}
 }
 
-func TestParseLoginUsers_NoUsersWrapper(t *testing.T) {
-	dir := t.TempDir()
-	path := filepath.Join(dir, "loginusers.vdf")
-
-	vdfContent := `"Store"
-{
-	"76561198000000010"
-	{
-		"AccountName"		"direct"
-		"PersonaName"		"Direct"
-		"Timestamp"		"1"
-	}
-}
-`
-	os.WriteFile(path, []byte(vdfContent), 0o644)
-
-	users, _ := ParseLoginUsers(path)
-	t.Logf("no-users-wrapper: got %d users (expected 0 or 1, parse falls through)", len(users))
-}
-
 func TestParseLoginUsers_VDFLastFallback(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "loginusers.vdf")

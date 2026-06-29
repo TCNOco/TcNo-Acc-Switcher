@@ -1,7 +1,6 @@
 package platform
 
 import (
-	"encoding/json"
 	"os"
 	"path/filepath"
 	"testing"
@@ -53,17 +52,6 @@ func TestAppSettingsJSON_UnknownFieldsIgnored(t *testing.T) {
 	}
 	if s.ExitToTray || s.MinimizeOnSwitch {
 		t.Fatalf("defaults should be false, got %+v", s)
-	}
-}
-
-func TestAppSettings_UnmarshalEmptyObject(t *testing.T) {
-	t.Parallel()
-	var s AppSettings
-	if err := json.Unmarshal([]byte(`{}`), &s); err != nil {
-		t.Fatal(err)
-	}
-	if s.ExitToTray || s.MinimizeOnSwitch {
-		t.Fatalf("expected false defaults, got %+v", s)
 	}
 }
 

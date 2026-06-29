@@ -33,6 +33,9 @@ func TestClearDirectoryContents_Missing(t *testing.T) {
 	dir := t.TempDir()
 	var lines []string
 	clearDirectoryContents(filepath.Join(dir, "nonexistent"), func(s string) { lines = append(lines, s) }, "nonexistent")
+	if len(lines) != 1 || lines[0] == "" {
+		t.Fatalf("expected missing-folder status line, got %#v", lines)
+	}
 }
 
 func TestClearTopLevelGlob(t *testing.T) {
@@ -105,6 +108,9 @@ func TestClearAllFilesRecursive_Missing(t *testing.T) {
 	t.Parallel()
 	var lines []string
 	clearAllFilesRecursive(filepath.Join(t.TempDir(), "nonexistent"), func(s string) { lines = append(lines, s) }, "nonexistent")
+	if len(lines) != 1 || lines[0] == "" {
+		t.Fatalf("expected missing-folder status line, got %#v", lines)
+	}
 }
 
 func TestTryRemoveFile(t *testing.T) {
@@ -125,6 +131,9 @@ func TestTryRemoveFile_Missing(t *testing.T) {
 	t.Parallel()
 	var lines []string
 	tryRemoveFile(filepath.Join(t.TempDir(), "no_such_file"), func(s string) { lines = append(lines, s) }, "missing")
+	if len(lines) != 1 || lines[0] == "" {
+		t.Fatalf("expected missing-file status line, got %#v", lines)
+	}
 }
 
 func TestClearSSFNFiles(t *testing.T) {
