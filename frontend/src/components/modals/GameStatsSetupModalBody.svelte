@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Browser } from "@wailsio/runtime";
   import { onMount } from "svelte";
   import { get } from "svelte/store";
   import * as BasicService from "../../../bindings/TcNo-Acc-Switcher/internal/basic/basicservice.js";
+  import { openExternalUrl } from "../../lib/openExternalUrl";
   import { t } from "../../stores/i18n";
   import { pushToast } from "../../stores/toast";
   import { formatToastWithError } from "../../lib/formatWailsError";
@@ -128,15 +128,7 @@
     if (!url.trim()) {
       return;
     }
-    if (get(offlineMode)) {
-      pushToast({
-        type: "info",
-        message: get(t)("Toast_OfflineModeNoLinks"),
-        duration: 5000,
-      });
-      return;
-    }
-    void Browser.OpenURL(url);
+    void openExternalUrl(url, { allowAnyHttps: true });
   }
 
   function normalizeHiddenToggles(

@@ -2,9 +2,10 @@
   import { onMount } from "svelte";
   import { tick } from "svelte";
   import { get } from "svelte/store";
-  import { Browser } from "@wailsio/runtime";
   import { route, previousPage, appBarTitle } from "../stores/nav";
   import { t } from "../stores/i18n";
+  import { openExternalUrl } from "../lib/openExternalUrl";
+  import { sanitizeHtml } from "../lib/sanitizeHtml";
   import { pushToast } from "../stores/toast";
   import { activeModal } from "../stores/modal";
   import { RunAdvancedClearingAction } from "../../bindings/TcNo-Acc-Switcher/internal/steam/steamservice.js";
@@ -126,7 +127,7 @@
   }
 
   function onWiki(): void {
-    void Browser.OpenURL(WIKI_URL);
+    void openExternalUrl(WIKI_URL);
   }
 
   function onClose(): void {
@@ -146,7 +147,7 @@
   <h2 class="SettingsHeader">{$t("Cleaning_ImportantInfoHeader")}</h2>
   <div class="steam-adv-info">
     <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-    {@html $t("Cleaning_ImportantInfo")}
+    {@html sanitizeHtml($t("Cleaning_ImportantInfo"), "inline")}
   </div>
 
   <div class="rowSetting steam-adv-ack">

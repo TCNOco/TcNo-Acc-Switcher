@@ -1,10 +1,9 @@
 <script lang="ts">
-  import { Browser } from "@wailsio/runtime";
-  import { get } from "svelte/store";
   import * as PlatformService from "../../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
+  import { formatToastWithError } from "../../lib/formatWailsError";
+  import { openExternalUrl } from "../../lib/openExternalUrl";
   import { t } from "../../stores/i18n";
   import { dismissModal } from "../../stores/modal";
-  import { offlineMode } from "../../stores/offlineMode";
   import { pushToast } from "../../stores/toast";
 
   export let message = "";
@@ -16,23 +15,20 @@
     loading = true;
     try {
       await PlatformService.CheckForUpdatesAndInstall();
-    } catch {
-      /* ignore */
+      dismissModal();
+    } catch (e) {
+      pushToast({
+        type: "error",
+        message: formatToastWithError($t("Toast_SaveFailed"), e),
+        duration: 8000,
+      });
+    } finally {
+      loading = false;
     }
-    loading = false;
-    dismissModal();
   }
 
   function openDownloadPage(): void {
-    if (get(offlineMode)) {
-      pushToast({
-        type: "info",
-        message: get(t)("Toast_OfflineModeNoLinks"),
-        duration: 5000,
-      });
-      return;
-    }
-    void Browser.OpenURL(downloadUrl);
+    void openExternalUrl(downloadUrl);
   }
 </script>
 

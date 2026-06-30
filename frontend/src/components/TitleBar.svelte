@@ -11,18 +11,17 @@
 
     const common = Events.Types.Common
 
-    async function refreshWindowState(reason: string) {
+    async function refreshWindowState() {
         const [min, max] = await Promise.all([
             Window.IsMinimised(),
             Window.IsMaximised(),
         ])
         minimised = min
         maximised = max
-        console.log('[TitleBar] synced', { reason, minimised, maximised })
     }
 
     onMount(() => {
-        void refreshWindowState('onMount')
+        void refreshWindowState()
 
         const tracked = [
             common.WindowMinimise,
@@ -36,13 +35,7 @@
 
         const unsubs = tracked.map((subscribedAs) =>
             Events.On(subscribedAs, (ev) => {
-                console.log('[TitleBar] event', {
-                    subscribedAs,
-                    name: ev.name,
-                    sender: ev.sender,
-                    data: ev.data,
-                })
-                void refreshWindowState(String(ev.name))
+                void refreshWindowState()
             })
         )
 

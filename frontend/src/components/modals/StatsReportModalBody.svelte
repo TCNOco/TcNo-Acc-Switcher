@@ -1,10 +1,9 @@
 <script lang="ts">
-  import { Browser } from "@wailsio/runtime";
   import { get } from "svelte/store";
   import * as PlatformService from "../../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice";
   import type { StatsReport } from "../../../bindings/TcNo-Acc-Switcher/internal/platform/models";
+  import { openExternalUrl } from "../../lib/openExternalUrl";
   import { t } from "../../stores/i18n";
-  import { offlineMode } from "../../stores/offlineMode";
   import { pushToast } from "../../stores/toast";
   import { openConfirm } from "../../stores/modal";
 
@@ -27,15 +26,7 @@
 
   function openStatsUrl(e: MouseEvent): void {
     e.preventDefault();
-    if (get(offlineMode)) {
-      pushToast({
-        type: "info",
-        message: get(t)("Toast_OfflineModeNoLinks"),
-        duration: 5000,
-      });
-      return;
-    }
-    void Browser.OpenURL(STATS_URL);
+    void openExternalUrl(STATS_URL);
   }
 
   function monoSummary(r: StatsReport, tr: (k: string, v?: Record<string, string | number>) => string): string {

@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { ComponentType, SvelteComponent } from "svelte";
+  import { sanitizeHtml } from "../../lib/sanitizeHtml";
 
   export let html: string | undefined = undefined;
   export let component: ComponentType<SvelteComponent> | undefined = undefined;
@@ -11,7 +12,7 @@
     <svelte:component this={component} {...componentProps ?? {}} />
   </div>
 {:else if html}
-  <div class="modal-html modal-text">{@html html}</div>
+  <div class="modal-html modal-text">{@html sanitizeHtml(html, "inline")}</div>
 {/if}
 
 <style lang="scss">

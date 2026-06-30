@@ -1,4 +1,5 @@
 import type { Action } from "svelte/action";
+import { sanitizeHtml } from "../sanitizeHtml";
 
 export type MiniProfileHoverParams =
   | undefined
@@ -131,7 +132,7 @@ export const miniProfileHover: Action<HTMLElement, MiniProfileHoverParams> = (no
 
     const inner = document.createElement("div");
     inner.className = "steam-miniprofile-popover__inner";
-    inner.innerHTML = parsed.html;
+    inner.innerHTML = sanitizeHtml(parsed.html, "miniProfile");
     pop.appendChild(inner);
     document.body.appendChild(pop);
 

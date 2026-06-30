@@ -1,12 +1,11 @@
 <script lang="ts">
-  import { Browser } from "@wailsio/runtime";
   import { get } from "svelte/store";
   import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import type { CrowdinTranslatorsList } from "../lib/crowdinTranslators";
+  import { openExternalUrl } from "../lib/openExternalUrl";
   import { t, availableLocales, locale, setUserLanguage } from "../stores/i18n";
   import { offlineMode } from "../stores/offlineMode";
   import { openAlertNoButton } from "../stores/modal";
-  import { pushToast } from "../stores/toast";
   import CrowdinTranslatorsModalBody from "./modals/CrowdinTranslatorsModalBody.svelte";
 
   const CROWDIN_URL = "https://crowdin.com/project/tcno-account-switcher";
@@ -27,15 +26,7 @@
 
   function openHelpTranslate(e: MouseEvent): void {
     e.preventDefault();
-    if (get(offlineMode)) {
-      pushToast({
-        type: "info",
-        message: get(t)("Toast_OfflineModeNoLinks"),
-        duration: 5000,
-      });
-      return;
-    }
-    void Browser.OpenURL(CROWDIN_URL);
+    void openExternalUrl(CROWDIN_URL);
   }
 
   async function openCreditsModal(): Promise<void> {

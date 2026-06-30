@@ -2,8 +2,8 @@
   import { tick, onMount } from "svelte";
   import { createEventDispatcher } from "svelte";
   import { get } from "svelte/store";
-  import { Browser } from "@wailsio/runtime";
   import * as PlatformService from "../../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
+  import { openExternalUrl } from "../../lib/openExternalUrl";
   import { t } from "../../stores/i18n";
   import { cancelActiveModal } from "../../stores/modal";
   import { offlineMode } from "../../stores/offlineMode";
@@ -51,15 +51,7 @@
 
   function openDiscordLink(e: MouseEvent): void {
     e.preventDefault();
-    if (get(offlineMode)) {
-      pushToast({
-        type: "info",
-        message: get(t)("Toast_OfflineModeNoLinks"),
-        duration: 5000,
-      });
-      return;
-    }
-    void Browser.OpenURL(DISCORD_URL);
+    void openExternalUrl(DISCORD_URL);
   }
 
   onMount(() => {

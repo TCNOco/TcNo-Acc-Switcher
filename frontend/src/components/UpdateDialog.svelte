@@ -3,8 +3,11 @@
   import { fly, fade } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
   import { motionEnabled } from "../lib/animation";
+  import { formatToastWithError } from "../lib/formatWailsError";
+  import { openExternalUrl } from "../lib/openExternalUrl";
   import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import { t } from "../stores/i18n";
+  import { pushToast } from "../stores/toast";
 
   export let message = "";
   export let downloadUrl = "";
@@ -21,15 +24,20 @@
     loading = true;
     try {
       await PlatformService.CheckForUpdatesAndInstall();
-    } catch {
-      /* ignore */
+      dismiss();
+    } catch (e) {
+      pushToast({
+        type: "error",
+        message: formatToastWithError($t("Toast_SaveFailed"), e),
+        duration: 8000,
+      });
+    } finally {
+      loading = false;
     }
-    loading = false;
-    dismiss();
   }
 
   function openDownloadPage() {
-    window.open(downloadUrl, "_blank");
+    void openExternalUrl(downloadUrl);
   }
 
   function onBackdropClick(e: MouseEvent) {

@@ -734,13 +734,13 @@ func collectIndicatorMarkup(ci collectInstruction, gameIndicator string) string 
 		if ind == "" {
 			return ""
 		}
-		return "<sup>" + ind + "</sup>"
+		return "<sup>" + htmlnet.EscapeString(ind) + "</sup>"
 	}
 	gameIndicator = strings.TrimSpace(gameIndicator)
 	if gameIndicator == "" {
 		return ""
 	}
-	return "<sup>" + gameIndicator + "</sup>"
+	return "<sup>" + htmlnet.EscapeString(gameIndicator) + "</sup>"
 }
 
 func (b *BasicService) GetUserStatsAllGamesMarkup(platformName, accountID string) (map[string]map[string]StatValueAndIconDTO, error) {

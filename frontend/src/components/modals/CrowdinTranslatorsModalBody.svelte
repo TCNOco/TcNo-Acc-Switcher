@@ -1,6 +1,7 @@
 <script lang="ts">
   import { t } from "../../stores/i18n";
   import type { CrowdinTranslatorsList } from "../../lib/crowdinTranslators";
+  import { sanitizeHtml } from "../../lib/sanitizeHtml";
 
   export let list: CrowdinTranslatorsList;
   export let loadError: string | undefined = undefined;
@@ -20,7 +21,7 @@
       />
     </svg>
   </h2>
-  <p class="crowdin__info">{@html $t("Modal_Crowdin_Info")}</p>
+  <p class="crowdin__info">{@html sanitizeHtml($t("Modal_Crowdin_Info"), "inline")}</p>
   <ul class="crowdin__list">
     {#if loadError}
       <li><b>{loadError}</b></li>

@@ -27,6 +27,7 @@
     commandPaletteHotkey,
     formatCommandPaletteHotkeyEvent,
     loadCommandPaletteHotkey,
+    normalizeCommandPaletteHotkey,
     setCommandPaletteHotkey,
   } from "../stores/commandPalette";
   import { formatAppVersion } from "../lib/checkForUpdates";
@@ -219,6 +220,54 @@
     () => !get(offlineMode) && get(discordRpc.value),
   );
 
+  type SettingsSnapshot = Awaited<ReturnType<typeof PlatformService.ReadSettings>>;
+
+  function applySettingsSnapshot(settings: SettingsSnapshot): void {
+    offlineMode.set(settings.offlineMode);
+    protocol.value.set(settings.protocolEnabled);
+    exitToTray.value.set(settings.exitToTray);
+    statsEnabled.value.set(settings.statsEnabled);
+    statsShare.value.set(settings.statsShare);
+    crashReportAutoSubmit.value.set(settings.crashReportAutoSubmit);
+    discordRpc.value.set(settings.discordRpc);
+    discordRpcShare.value.set(settings.discordRpcShare);
+    minimizeOnSwitch.value.set(settings.minimizeOnSwitch);
+    startTrayWithWindows.value.set(settings.startTrayWithWindows);
+    startProgramCentered.value.set(settings.startProgramCentered);
+    animationsEnabled.set(settings.animationsEnabled);
+    animations.value.set(settings.animationsEnabled);
+    commandPaletteHotkey.set(normalizeCommandPaletteHotkey(settings.commandPaletteHotkey));
+    currentVersion = settings.appVersion || "";
+  }
+
+  async function initSettingsIndividually(): Promise<void> {
+    void protocol.init();
+    void exitToTray.init();
+    void statsEnabled.init();
+    void statsShare.init();
+    void crashReportAutoSubmit.init();
+    void discordRpc.init();
+    void discordRpcShare.init();
+    void minimizeOnSwitch.init();
+    void startProgramCentered.init();
+    void animations.init();
+    void loadCommandPaletteHotkey();
+    void PlatformService.GetAppVersion()
+      .then((v) => { currentVersion = v || ""; })
+      .catch(() => { currentVersion = ""; });
+    if (isWindows) {
+      void startTrayWithWindows.init();
+    }
+  }
+
+  async function hydrateSettings(): Promise<void> {
+    try {
+      applySettingsSnapshot(await PlatformService.ReadSettings());
+    } catch {
+      await initSettingsIndividually();
+    }
+  }
+
   async function toggleOfflineMode(): Promise<void> {
     if (get(offlineLoading)) return;
     const next = !get(offlineMode);
@@ -397,26 +446,12 @@
 
   onMount(() => {
     isWindows = /windows/i.test(navigator.userAgent) || /win32/i.test(navigator.userAgent);
-    void protocol.init();
-    void exitToTray.init();
-    void statsEnabled.init();
-    void statsShare.init();
-    void crashReportAutoSubmit.init();
-    void discordRpc.init();
-    void discordRpcShare.init();
-    void minimizeOnSwitch.init();
-    void startProgramCentered.init();
-    void animations.init();
-    void loadCommandPaletteHotkey();
-    void PlatformService.GetAppVersion()
-      .then((v) => { currentVersion = v || ""; })
-      .catch(() => { currentVersion = ""; });
+    void hydrateSettings();
     void PlatformService.GetUserDataLocation()
       .then((v) => { userDataPath = v || ""; })
       .catch(() => { userDataPath = ""; });
     void refreshSecurity();
     if (isWindows) {
-      void startTrayWithWindows.init();
       void desktopHomeShortcut.init();
     }
   });

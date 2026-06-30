@@ -51,6 +51,7 @@
   import { closeSearchOverlay, searchOverlayCtrl } from "../stores/searchOverlay";
   import { platformListSort, type PlatformSortKind } from "../stores/platformListSort";
   import { actionBarStatus, fileDropInterceptor, accountProfileImageDropActive } from "../stores/fileDrop";
+  import { sanitizeHtml } from "../lib/sanitizeHtml";
   import type { PlatformAccountAdapter } from "./PlatformAccountAdapter";
   import {
     commandRows,
@@ -854,9 +855,9 @@
                           {#each Object.values(metrics) as dto}
                             <span class="acc_inline_gamestats_metric">
                               {#if dto.indicatorMarkup}
-                                <span class="acc_inline_gamestats_ind">{@html dto.indicatorMarkup}</span>
+                                <span class="acc_inline_gamestats_ind">{@html sanitizeHtml(dto.indicatorMarkup, "gameStats")}</span>
                               {/if}
-                              <span class="acc_inline_gamestats_val">{@html dto.statValue}</span>
+                              <span class="acc_inline_gamestats_val">{@html sanitizeHtml(dto.statValue, "gameStats")}</span>
                             </span>
                           {/each}
                         {/each}

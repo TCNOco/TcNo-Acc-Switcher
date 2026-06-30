@@ -1,11 +1,8 @@
 <script lang="ts">
-  import { Browser } from "@wailsio/runtime";
   import { onMount } from "svelte";
-  import { get } from "svelte/store";
   import * as PlatformService from "../../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
+  import { openExternalUrl } from "../../lib/openExternalUrl";
   import { t } from "../../stores/i18n";
-  import { offlineMode } from "../../stores/offlineMode";
-  import { pushToast } from "../../stores/toast";
   import { checkForUpdatesManually } from "../../lib/checkForUpdates";
 
   let currentVersion = "0.0.0";
@@ -22,15 +19,7 @@
 
   function openExternal(url: string, e: MouseEvent): void {
     e.preventDefault();
-    if (get(offlineMode)) {
-      pushToast({
-        type: "info",
-        message: get(t)("Toast_OfflineModeNoLinks"),
-        duration: 5000,
-      });
-      return;
-    }
-    void Browser.OpenURL(url);
+    void openExternalUrl(url);
   }
 
   async function onVersionClick(): Promise<void> {
