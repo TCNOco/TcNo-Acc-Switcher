@@ -40,9 +40,14 @@ func emitAppUpdateAvailable(message string) {
 	if app == nil {
 		return
 	}
+	const downloadURL = "https://github.com/TCNOco/TcNo-Acc-Switcher/releases/latest"
 	_ = app.Event.Emit(AppUpdateAvailableEvent, UpdateAvailablePayload{
 		Message:     message,
-		DownloadURL: "https://github.com/TCNOco/TcNo-Acc-Switcher/releases/latest",
+		DownloadURL: downloadURL,
+	})
+	NotifyNative("tcno-update-available", "TcNo Account Switcher", message, map[string]interface{}{
+		"type": "update-available",
+		"url":  downloadURL,
 	})
 }
 
@@ -111,7 +116,15 @@ func EnableAutoRestartAfterUpdate(app *application.App) {
 	if app == nil {
 		return
 	}
+	app.Event.On(updater.EventUpdateAvailable, func(*application.CustomEvent) {
+		NotifyNative("tcno-update-downloading", "TcNo Account Switcher", "An update is available. Downloading it now.", map[string]interface{}{
+			"type": "update-available",
+		})
+	})
 	app.Event.On(updater.EventUpdateReady, func(*application.CustomEvent) {
+		NotifyNative("tcno-update-ready", "TcNo Account Switcher", "Update installed. Restarting TcNo Account Switcher.", map[string]interface{}{
+			"type": "update-ready",
+		})
 		go func() {
 			defer crashlog.Capture()
 			if err := app.Updater.Restart(app.Context()); err != nil {

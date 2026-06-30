@@ -1,13 +1,24 @@
 import { writable, type Writable, derived } from "svelte/store";
 
-export type FileDropAcceptor = {
-  labelKey: string;
-  handle: (paths: string[]) => Promise<void>;
+export type FileDropTargetDetails = {
+  elementId: string;
+  classList: string[];
+  x: number;
+  y: number;
 };
 
-export type FileDropInterceptor = (paths: string[]) => Promise<boolean>;
+export type FileDropContext = {
+  target?: FileDropTargetDetails;
+};
 
-export type BgZoneDropInterceptor = (paths: string[]) => Promise<boolean>;
+export type FileDropAcceptor = {
+  labelKey: string;
+  handle: (paths: string[], context?: FileDropContext) => Promise<void>;
+};
+
+export type FileDropInterceptor = (paths: string[], context?: FileDropContext) => Promise<boolean>;
+
+export type BgZoneDropInterceptor = (paths: string[], context?: FileDropContext) => Promise<boolean>;
 
 export const actionBarStatus = writable("");
 

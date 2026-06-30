@@ -28,6 +28,7 @@ require (
 )
 
 require (
+	git.sr.ht/~jackmordaunt/go-toast/v2 v2.0.3 // indirect
 	github.com/adrg/xdg v0.5.3 // indirect
 	github.com/antchfx/xpath v1.3.6 // indirect
 	github.com/coder/websocket v1.8.14 // indirect

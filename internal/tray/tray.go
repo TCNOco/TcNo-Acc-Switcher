@@ -206,6 +206,10 @@ func (m *Manager) rebuildMenuLocked() {
 			item.OnClick(func(_ *application.Context) {
 				if err := m.handleAccountClick(plat, u.Arg); err != nil {
 					slog.Default().Warn("tray switch failed", slog.Any("err", err))
+					platform.NotifyNative("tcno-tray-switch-failed", "TcNo Account Switcher", err.Error(), map[string]interface{}{
+						"type":     "tray-switch-failed",
+						"platform": plat,
+					})
 				}
 				m.RefreshMenu()
 			})

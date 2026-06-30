@@ -58,7 +58,7 @@ func init() {
 	application.RegisterEvent[basic.GameStatsUpdatedPatch](basic.GameStatsUpdatedEvent)
 	application.RegisterEvent[string](platform.ActionBarStatusEvent)
 	application.RegisterEvent[shortcuts.ListPayload](shortcuts.UpdatedEvent)
-	application.RegisterEvent[[]string](shortcuts.FilesDroppedEvent)
+	application.RegisterEvent[shortcuts.FilesDroppedPayload](shortcuts.FilesDroppedEvent)
 	application.RegisterEvent[platform.UpdateAvailablePayload](platform.AppUpdateAvailableEvent)
 	application.RegisterEvent[bool](platform.UpdateCheckFailedEvent)
 	application.RegisterEvent[platform.PlatformsJSONUpdatePayload](platform.PlatformsJSONUpdateFoundEvent)

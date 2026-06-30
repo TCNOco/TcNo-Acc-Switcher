@@ -3,6 +3,7 @@
   import { get } from "svelte/store";
   import { Events } from "@wailsio/runtime";
   import { fileDropAcceptor, fileDropInterceptor, backgroundZoneInterceptor, accountProfileImageDropActive } from "../stores/fileDrop";
+  import type { FileDropContext, FileDropTargetDetails } from "../stores/fileDrop";
   import { getDragFileCategory, type DragFileCategory } from "../lib/profileImageDrop";
   import { t } from "../stores/i18n";
 
@@ -98,10 +99,37 @@
   }
 
   function normalizePaths(data: unknown): string[] {
-    if (!Array.isArray(data)) {
-      return [];
+    if (Array.isArray(data)) {
+      return data.filter((x): x is string => typeof x === "string" && x.trim() !== "");
     }
-    return data.filter((x): x is string => typeof x === "string" && x.trim() !== "");
+    if (typeof data === "object" && data !== null && "files" in data) {
+      return normalizePaths((data as { files?: unknown }).files);
+    }
+    return [];
+  }
+
+  function normalizeDropTarget(data: unknown): FileDropTargetDetails | undefined {
+    if (typeof data !== "object" || data === null || !("target" in data)) {
+      return undefined;
+    }
+    const target = (data as { target?: unknown }).target;
+    if (typeof target !== "object" || target === null) {
+      return undefined;
+    }
+    const raw = target as {
+      elementId?: unknown;
+      classList?: unknown;
+      x?: unknown;
+      y?: unknown;
+    };
+    return {
+      elementId: typeof raw.elementId === "string" ? raw.elementId : "",
+      classList: Array.isArray(raw.classList)
+        ? raw.classList.filter((x): x is string => typeof x === "string")
+        : [],
+      x: typeof raw.x === "number" ? raw.x : 0,
+      y: typeof raw.y === "number" ? raw.y : 0,
+    };
   }
 
   onMount(() => {
@@ -112,6 +140,7 @@
 
     offFilesDropped = Events.On(FILES_DROPPED, async (ev) => {
       const paths = normalizePaths(ev.data);
+      const context: FileDropContext = { target: normalizeDropTarget(ev.data) };
       accountProfileImageDropActive.set(false);
       overlayActive = false;
       if (paths.length === 0) {
@@ -120,7 +149,7 @@
       const bgIntercept = get(backgroundZoneInterceptor);
       if (bgIntercept) {
         try {
-          if (await bgIntercept(paths)) {
+          if (await bgIntercept(paths, context)) {
             return;
           }
         } catch {
@@ -130,7 +159,7 @@
       const intercept = get(fileDropInterceptor);
       if (intercept) {
         try {
-          if (await intercept(paths)) {
+          if (await intercept(paths, context)) {
             return;
           }
         } catch {
@@ -141,7 +170,7 @@
       if (!acceptor) {
         return;
       }
-      await acceptor.handle(paths);
+      await acceptor.handle(paths, context);
     });
   });
 

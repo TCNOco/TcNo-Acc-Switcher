@@ -5,6 +5,7 @@
   import { route } from "../stores/nav";
   import { shouldUseAccountProfileRowDropCue } from "../lib/profileImageDrop";
   import { backgroundZoneInterceptor } from "../stores/fileDrop";
+  import type { FileDropContext } from "../stores/fileDrop";
   import { appBgInfo, platformBgInfo } from "../stores/backgroundImage";
   import { pushToast } from "../stores/toast";
   import { formatToastWithError } from "../lib/formatWailsError";
@@ -13,6 +14,8 @@
   let dragActive = false;
 
   let hoveredZone: "app" | "platform" | null = null;
+  const appDropTargetId = "app-background-drop-zone";
+  const platformDropTargetId = "platform-background-drop-zone";
 
   $: showPlatformZone = isPlatformRoute($route);
   $: currentPlatformName = getPlatformName($route);
@@ -41,8 +44,13 @@
 
   function startDrag(): void {
     dragActive = true;
-    backgroundZoneInterceptor.set(async (paths: string[]) => {
-      const zone = hoveredZone;
+    backgroundZoneInterceptor.set(async (paths: string[], context?: FileDropContext) => {
+      const targetId = context?.target?.elementId ?? "";
+      const zone = targetId === appDropTargetId
+        ? "app"
+        : targetId === platformDropTargetId
+          ? "platform"
+          : hoveredZone;
       const platform = currentPlatformName;
       endDrag();
       if (!zone || paths.length === 0) return false;
@@ -142,7 +150,9 @@
   <div class="bg-drop-zones" aria-hidden="true">
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div
+      id={appDropTargetId}
       class="bg-drop-zone"
+      data-file-drop-target
       class:bg-drop-zone--hovered={hoveredZone === "app"}
       on:dragenter={() => onZoneDragEnter("app")}
       on:dragleave={(e) => onZoneDragLeave("app", e)}
@@ -159,7 +169,9 @@
     {#if showPlatformZone && currentPlatformName}
       <!-- svelte-ignore a11y-no-static-element-interactions -->
       <div
+        id={platformDropTargetId}
         class="bg-drop-zone"
+        data-file-drop-target
         class:bg-drop-zone--hovered={hoveredZone === "platform"}
         on:dragenter={() => onZoneDragEnter("platform")}
         on:dragleave={(e) => onZoneDragLeave("platform", e)}

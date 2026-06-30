@@ -30,6 +30,7 @@ import (
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 	"github.com/wailsapp/wails/v3/pkg/events"
+	"github.com/wailsapp/wails/v3/pkg/services/notifications"
 	"github.com/wailsapp/wails/v3/pkg/updater"
 	"github.com/wailsapp/wails/v3/pkg/updater/providers/github"
 )
@@ -59,6 +60,7 @@ func ResolvedLogLevel(p cli.Parsed) slog.Level {
 func RunGUI(params RunGUIParams) {
 	parsed := params.Parsed
 	guiSettings := params.GuiSettings
+	disp := params.Dispatch
 
 	if parsed.Kind == cli.KindOpenPage {
 		platform.SetStartupNavigateHint(parsed.RouteJSONForOpenPage())
@@ -77,15 +79,26 @@ func RunGUI(params RunGUIParams) {
 		wailsLvl = slog.LevelInfo
 	}
 	wailsLogger := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: wailsLvl}))
+	notifier := notifications.New()
+	platform.SetNativeNotifier(notifier)
+	services := append([]application.Service{}, params.Services...)
+	services = append(services, application.NewService(notifier))
 
+	var wailsApp *application.App
 	appOpts := application.Options{
 		Name:        "TcNo Account Switcher",
 		Description: "A Superfast open-source account switcher",
 		LogLevel:    wailsLvl,
 		Logger:      wailsLogger,
-		Services:    params.Services,
+		Services:    services,
 		Assets: application.AssetOptions{
 			Handler: newCompositeAssetHandler(params.EmbeddedAssets),
+		},
+		SingleInstance: &application.SingleInstanceOptions{
+			UniqueID: "co.tcno.acc-switcher",
+			OnSecondInstanceLaunch: func(data application.SecondInstanceData) {
+				handleForwardedCLI(wailsApp, disp, argvWithoutExecutable(data.Args))
+			},
 		},
 		Mac: application.MacOptions{
 			ApplicationShouldTerminateAfterLastWindowClosed: true,
@@ -101,9 +114,9 @@ func RunGUI(params RunGUIParams) {
 		}
 	}
 
-	app := application.New(appOpts)
-	if err := platform.SyncAutostartPreference(app, guiSettings.StartTrayWithWindows); err != nil {
-		app.Logger.Warn("autostart sync", "error", err)
+	wailsApp = application.New(appOpts)
+	if err := platform.SyncAutostartPreference(wailsApp, guiSettings.StartTrayWithWindows); err != nil {
+		wailsApp.Logger.Warn("autostart sync", "error", err)
 	}
 
 	currentVersion := buildinfo.Version()
@@ -115,19 +128,19 @@ func RunGUI(params RunGUIParams) {
 			AssetMatcher:  updatecheck.GitHubAssetMatcher,
 		}, ".exe.sig")
 		if err != nil {
-			app.Logger.Error("updater: provider", "error", err)
+			wailsApp.Logger.Error("updater: provider", "error", err)
 		} else {
 			updaterWindow := updatertheme.NewBuiltinWindow()
 			updatertheme.SetWindow(updaterWindow)
-			if err := app.Updater.Init(updater.Config{
+			if err := wailsApp.Updater.Init(updater.Config{
 				CurrentVersion: currentVersion,
 				Providers:      []updater.Provider{gh},
 				PublicKey:      params.UpdaterPublicKey,
 				Window:         updaterWindow,
 			}); err != nil {
-				app.Logger.Error("updater: init", "error", err)
+				wailsApp.Logger.Error("updater: init", "error", err)
 			} else {
-				platform.EnableAutoRestartAfterUpdate(app)
+				platform.EnableAutoRestartAfterUpdate(wailsApp)
 			}
 		}
 
@@ -140,7 +153,7 @@ func RunGUI(params RunGUIParams) {
 		EmitToast("success", toast, "", 6000)
 	}
 	var ipcStop func()
-	app.OnShutdown(func() {
+	wailsApp.OnShutdown(func() {
 		params.DiscordRPC.Stop()
 		if ipcStop != nil {
 			ipcStop()
@@ -150,25 +163,8 @@ func RunGUI(params RunGUIParams) {
 		}
 	})
 
-	disp := params.Dispatch
-
 	ipcStop, err := ipc.StartGUIServer(func(argv []string) {
-		idx, idxErr := cli.LoadPlatformIndex()
-		idxPtr := idx
-		if idxErr != nil {
-			idxPtr = nil
-		}
-		p, parseErr := cli.Parse(argv, idxPtr)
-		if parseErr != nil {
-			application.InvokeAsync(func() {
-				EmitToast("error", "CLI", parseErr.Error(), 0)
-			})
-			return
-		}
-
-		application.InvokeAsync(func() {
-			dispatchCLIInGUI(app, p, disp)
-		})
+		handleForwardedCLI(wailsApp, disp, argv)
 	})
 	if err != nil {
 		log.Printf("ipc server: %v", err)
@@ -207,16 +203,26 @@ func RunGUI(params RunGUIParams) {
 	if parsed.StartInTray {
 		winOpts.Hidden = true
 	}
-	win := app.Window.NewWithOptions(winOpts)
+	win := wailsApp.Window.NewWithOptions(winOpts)
+	registerNotificationResponseHandler(wailsApp, win, notifier)
 	win.OnWindowEvent(events.Common.WindowFilesDropped, func(event *application.WindowEvent) {
 		files := event.Context().DroppedFiles()
 		if len(files) == 0 {
 			return
 		}
-		app.Event.Emit(shortcuts.FilesDroppedEvent, files)
+		details := event.Context().DropTargetDetails()
+		wailsApp.Event.Emit(shortcuts.FilesDroppedEvent, shortcuts.FilesDroppedPayload{
+			Files: files,
+			Target: shortcuts.FileDropTargetDetails{
+				ElementID: details.ElementID,
+				ClassList: append([]string(nil), details.ClassList...),
+				X:         details.X,
+				Y:         details.Y,
+			},
+		})
 	})
 
-	trayMgr := tray.NewManager(app, win, tray.Deps{
+	trayMgr := tray.NewManager(wailsApp, win, tray.Deps{
 		SwapBasic: func(platformKey, uniqueID string) error {
 			return disp.BasicSvc.SwapToAccount(platformKey, uniqueID, nil)
 		},
@@ -241,7 +247,7 @@ func RunGUI(params RunGUIParams) {
 	params.Dispatch.BasicSvc.StartGameStatsProcessMonitor()
 	steam.StartSteamAppListMonitor()
 
-	ctx := app.Context()
+	ctx := wailsApp.Context()
 	go func() {
 		defer crashlog.Capture()
 		ticker := time.NewTicker(2 * time.Second)
@@ -256,15 +262,62 @@ func RunGUI(params RunGUIParams) {
 			current := platform.CurrentWindowsAccentColor()
 			if current != "" && current != last {
 				last = current
-				_ = app.Event.Emit(platform.WindowsAccentChangedEvent, current)
+				_ = wailsApp.Event.Emit(platform.WindowsAccentChangedEvent, current)
 			}
 		}
 	}()
 
-	err = app.Run()
+	err = wailsApp.Run()
 	if err != nil {
 		slog.Error("app run", "err", err)
 	}
+}
+
+func argvWithoutExecutable(args []string) []string {
+	if len(args) == 0 {
+		return nil
+	}
+	return append([]string(nil), args[1:]...)
+}
+
+func handleForwardedCLI(app *application.App, disp *Dispatch, argv []string) {
+	if app == nil || disp == nil {
+		return
+	}
+	idx, idxErr := cli.LoadPlatformIndex()
+	idxPtr := idx
+	if idxErr != nil {
+		idxPtr = nil
+	}
+	p, parseErr := cli.Parse(argv, idxPtr)
+	if parseErr != nil {
+		application.InvokeAsync(func() {
+			EmitToast("error", "CLI", parseErr.Error(), 0)
+		})
+		return
+	}
+	application.InvokeAsync(func() {
+		dispatchCLIInGUI(app, p, disp)
+	})
+}
+
+func registerNotificationResponseHandler(app *application.App, win *application.WebviewWindow, notifier *notifications.NotificationService) {
+	if notifier == nil {
+		return
+	}
+	notifier.OnNotificationResponse(func(result notifications.NotificationResult) {
+		if result.Error != nil {
+			if app != nil {
+				app.Logger.Warn("notification response", "error", result.Error)
+			}
+			return
+		}
+		application.InvokeAsync(func() {
+			if win != nil {
+				win.Show().Focus()
+			}
+		})
+	})
 }
 
 func dispatchCLIInGUI(app *application.App, p cli.Parsed, disp *Dispatch) {

@@ -1,3 +1,5 @@
+git.sr.ht/~jackmordaunt/go-toast/v2 v2.0.3 h1:N3IGoHHp9pb6mj1cbXbuaSXV/UMKwmbKLf53nQmtqMA=
+git.sr.ht/~jackmordaunt/go-toast/v2 v2.0.3/go.mod h1:QtOLZGz8olr4qH2vWK0QH0w0O4T9fEIjMuWpKUsH7nc=
 github.com/Jleagle/steam-go v0.0.0-20260527194636-a5837ecc04c4 h1:qXZGD16wMvdbebIHdRg3mDPTqGvn65IoKOylV7SUHJ4=
 github.com/Jleagle/steam-go v0.0.0-20260527194636-a5837ecc04c4/go.mod h1:aDdZaJ8sSVwFbuQM9sF2TAZUgZrw0W186VGPcNdZTlc=
 github.com/Microsoft/go-winio v0.6.2 h1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERoyfY=
