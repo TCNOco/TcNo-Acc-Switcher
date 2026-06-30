@@ -287,12 +287,7 @@ func (p *PlatformService) SetStartTrayWithWindows(enabled bool) error {
 	if err != nil {
 		return err
 	}
-	self, err := os.Executable()
-	if err != nil {
-		return err
-	}
-	self = filepath.Clean(self)
-	return winutil.SetRunAtStartupTray(self, enabled)
+	return SetAutostartPreference(enabled)
 }
 
 func (p *PlatformService) SetStartProgramCentered(enabled bool) error {

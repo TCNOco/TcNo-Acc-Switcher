@@ -84,25 +84,24 @@ func runLaunchUpdateCheck() {
 	updatecheck.RunLaunchAPICheck(context.Background(), exeDir, appVersionFromBuildConfig(), emitAppUpdateAvailable, emitUpdateCheckFailed)
 }
 
-func (*PlatformService) CheckForUpdatesAndInstall() {
-	go func() {
-		defer crashlog.Capture()
-		app := application.Get()
-		if app == nil {
-			return
-		}
-		exeDir, err := ResolveExeDir()
-		if err != nil {
-			return
-		}
-		s, err := loadSettings(exeDir)
-		if err != nil || s.OfflineMode {
-			return
-		}
-		if err := app.Updater.CheckAndInstall(context.Background()); err != nil {
-			app.Logger.Error("update: CheckAndInstall", "error", err)
-		}
-	}()
+func (*PlatformService) CheckForUpdatesAndInstall() error {
+	defer crashlog.Capture()
+	app := application.Get()
+	if app == nil {
+		return errors.New("application is not available")
+	}
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return err
+	}
+	if s.OfflineMode {
+		return nil
+	}
+	return app.Updater.CheckAndInstall(app.Context())
 }
 
 // EnableAutoRestartAfterUpdate wires Wails updater behaviour after Init:
@@ -115,7 +114,7 @@ func EnableAutoRestartAfterUpdate(app *application.App) {
 	app.Event.On(updater.EventUpdateReady, func(*application.CustomEvent) {
 		go func() {
 			defer crashlog.Capture()
-			if err := app.Updater.Restart(context.Background()); err != nil {
+			if err := app.Updater.Restart(app.Context()); err != nil {
 				app.Logger.Error("update: Restart", "error", err)
 			}
 		}()
@@ -135,23 +134,31 @@ func EnableAutoRestartAfterUpdate(app *application.App) {
 		if stage != updater.StageCheck {
 			return
 		}
-		if err := app.Updater.CheckAndInstall(context.Background()); err != nil {
-			app.Logger.Warn("update: retry check", "error", err)
-		}
+		go func() {
+			defer crashlog.Capture()
+			if err := app.Updater.CheckAndInstall(app.Context()); err != nil {
+				app.Logger.Warn("update: retry check", "error", err)
+			}
+		}()
 	})
-	go runPeriodicSilentUpdateCheck(app)
+	go runPeriodicSilentUpdateCheck(app.Context(), app)
 }
 
-func runPeriodicSilentUpdateCheck(app *application.App) {
+func runPeriodicSilentUpdateCheck(ctx context.Context, app *application.App) {
 	defer crashlog.Capture()
 	ticker := time.NewTicker(periodicUpdateCheckPeriod)
 	defer ticker.Stop()
-	for range ticker.C {
-		runSilentUpdateCheck(app)
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-ticker.C:
+			runSilentUpdateCheck(ctx, app)
+		}
 	}
 }
 
-func runSilentUpdateCheck(app *application.App) {
+func runSilentUpdateCheck(ctx context.Context, app *application.App) {
 	if app == nil || appclient.IsOfflineMode() {
 		return
 	}
@@ -170,14 +177,16 @@ func runSilentUpdateCheck(app *application.App) {
 
 	for attempt := 0; attempt < maxAttempts; attempt++ {
 		if attempt > 0 {
-			time.Sleep(retryDelays[attempt])
+			if !sleepUntilUpdateRetry(ctx, retryDelays[attempt]) {
+				return
+			}
 		}
-		ctx, cancel := context.WithTimeout(context.Background(), wailsUpdateCheckTimeout)
-		rel, err := app.Updater.Check(ctx)
+		checkCtx, cancel := context.WithTimeout(ctx, wailsUpdateCheckTimeout)
+		rel, err := app.Updater.Check(checkCtx)
 		cancel()
 		if err == nil {
 			if rel != nil {
-				if installErr := app.Updater.CheckAndInstall(context.Background()); installErr != nil {
+				if installErr := app.Updater.CheckAndInstall(ctx); installErr != nil {
 					app.Logger.Warn("update: periodic install", "error", installErr)
 				}
 			}
@@ -193,6 +202,20 @@ func runSilentUpdateCheck(app *application.App) {
 	}
 	if lastErr != nil && !errors.Is(lastErr, updater.ErrNotConfigured) {
 		app.Logger.Warn("update: periodic check failed", "error", lastErr)
+	}
+}
+
+func sleepUntilUpdateRetry(ctx context.Context, d time.Duration) bool {
+	if d <= 0 {
+		return true
+	}
+	timer := time.NewTimer(d)
+	defer timer.Stop()
+	select {
+	case <-ctx.Done():
+		return false
+	case <-timer.C:
+		return true
 	}
 }
 

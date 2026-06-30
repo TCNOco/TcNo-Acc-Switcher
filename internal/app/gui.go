@@ -102,6 +102,9 @@ func RunGUI(params RunGUIParams) {
 	}
 
 	app := application.New(appOpts)
+	if err := platform.SyncAutostartPreference(app, guiSettings.StartTrayWithWindows); err != nil {
+		app.Logger.Warn("autostart sync", "error", err)
+	}
 
 	currentVersion := buildinfo.Version()
 
@@ -172,16 +175,27 @@ func RunGUI(params RunGUIParams) {
 	}
 
 	winOpts := application.WebviewWindowOptions{
-		Title: "TcNo Account Switcher",
+		Name:      "main",
+		Title:     "TcNo Account Switcher",
+		MinWidth:  760,
+		MinHeight: 520,
 		Mac: application.MacWindow{
 			InvisibleTitleBarHeight: 50,
 			Backdrop:                application.MacBackdropTranslucent,
 			TitleBar:                application.MacTitleBarHiddenInset,
 		},
-		BackgroundColour: application.NewRGB(27, 38, 54),
-		URL:              "/",
-		Frameless:        true,
-		EnableFileDrop:   true,
+		BackgroundColour:           application.NewRGB(27, 38, 54),
+		URL:                        "/",
+		Frameless:                  true,
+		EnableFileDrop:             true,
+		DefaultContextMenuDisabled: true,
+		Permissions: map[application.PermissionType]application.Permission{
+			application.PermissionCamera:        application.PermissionDeny,
+			application.PermissionMicrophone:    application.PermissionDeny,
+			application.PermissionGeolocation:   application.PermissionDeny,
+			application.PermissionNotifications: application.PermissionDeny,
+			application.PermissionClipboardRead: application.PermissionDeny,
+		},
 	}
 	if guiSettings.StartProgramCentered {
 		winOpts.InitialPosition = application.WindowCentered
@@ -227,25 +241,23 @@ func RunGUI(params RunGUIParams) {
 	params.Dispatch.BasicSvc.StartGameStatsProcessMonitor()
 	steam.StartSteamAppListMonitor()
 
+	ctx := app.Context()
 	go func() {
 		defer crashlog.Capture()
-		for {
-			now := time.Now().Format(time.RFC1123)
-			app.Event.Emit("time", now)
-			time.Sleep(time.Second)
-		}
-	}()
-
-	go func() {
-		defer crashlog.Capture()
+		ticker := time.NewTicker(2 * time.Second)
+		defer ticker.Stop()
 		last := ""
 		for {
+			select {
+			case <-ctx.Done():
+				return
+			case <-ticker.C:
+			}
 			current := platform.CurrentWindowsAccentColor()
 			if current != "" && current != last {
 				last = current
 				_ = app.Event.Emit(platform.WindowsAccentChangedEvent, current)
 			}
-			time.Sleep(2 * time.Second)
 		}
 	}()
 

@@ -6,7 +6,6 @@ import (
 	"log"
 	"log/slog"
 	"os"
-	"path/filepath"
 
 	"TcNo-Acc-Switcher/internal/actionlog"
 	"TcNo-Acc-Switcher/internal/app"
@@ -52,7 +51,6 @@ func init() {
 
 	application.RegisterEvent[string]("navigate")
 
-	application.RegisterEvent[string]("time")
 	application.RegisterEvent[app.ToastPayload]("toast")
 	application.RegisterEvent[stability.StabilityPromptPayload]("stability-prompt")
 	application.RegisterEvent[steam.AccountPatch](steam.AccountUpdatedEvent)
@@ -161,8 +159,6 @@ func main() {
 
 	platform.RunUserDataMoveCleanup(exeDir, parsed.UserDataMoveFrom, parsed.UserDataMoveTo)
 
-	syncWindowsStartupFromSettings(startupSettings)
-
 	if parsed.NeedsHeadlessMutex() {
 		winutil.AttachParentConsole()
 		if herr := disp.RunHeadless(parsed); herr != nil {
@@ -207,14 +203,4 @@ func loadStartupSettings() (platform.AppSettings, error) {
 
 func syncOfflineModeFromSettings(s platform.AppSettings) {
 	appclient.SetOfflineMode(s.OfflineMode)
-}
-
-func syncWindowsStartupFromSettings(s platform.AppSettings) {
-	self, err := os.Executable()
-	if err != nil {
-		return
-	}
-	if err := winutil.SyncRunAtStartupTray(filepath.Clean(self), s.StartTrayWithWindows); err != nil {
-		log.Printf("windows startup tray sync: %v", err)
-	}
 }
