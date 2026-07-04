@@ -360,6 +360,9 @@ func (s *SteamService) RefreshAllSteamImages() error {
 	if err := security.RequireUnlocked(); err != nil {
 		return err
 	}
+	if err := ClearVACProfileCaches(); err != nil {
+		return err
+	}
 	_ = ClearAllMiniprofileHTMLCache()
 	dir, err := profileimage.ProfileDir(PlatformKey)
 	if err != nil {

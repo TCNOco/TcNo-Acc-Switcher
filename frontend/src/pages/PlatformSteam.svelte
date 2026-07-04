@@ -188,6 +188,8 @@
     getNote: (id: string) => BasicService.GetAccountNote("Steam", id),
     setNote: (id: string, note: string) => BasicService.SetAccountNote("Steam", id, note),
     launch: () => SteamService.LaunchSteam(),
+    refreshAccounts: () => SteamService.RefreshAllSteamImages(),
+    refreshAllProfileImages: () => SteamService.RefreshAllSteamImages(),
 
     buildMenu: (_acc, shared) => buildSteamExtraMenuAdapter(_acc as SteamAccountRow, shared),
 

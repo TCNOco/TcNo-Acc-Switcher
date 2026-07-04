@@ -19,7 +19,7 @@ tasks:
       - sh: pnpm --version
         msg: "Looks like pnpm isn't installed. Install Node.js, then run: npm install -g pnpm"
     cmds:
-      - pnpm install --frozen-lockfile
+      - pnpm install --frozen-lockfile --config.confirmModulesPurge=false
 
   build:frontend:
     label: build:frontend (DEV={{.DEV}})

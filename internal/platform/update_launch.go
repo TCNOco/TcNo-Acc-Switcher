@@ -78,6 +78,12 @@ func runLaunchUpdateCheck() {
 		return
 	}
 
+	currentVersion := appVersionFromBuildConfig()
+	apiResultCh := make(chan updatecheck.LaunchAPICheckResult, 1)
+	go func() {
+		apiResultCh <- updatecheck.FetchLaunchAPICheck(context.Background(), currentVersion)
+	}()
+
 	go runLaunchPlatformsJSONCheck(exeDir)
 
 	wailsCtx, wailsCancel := context.WithTimeout(context.Background(), wailsUpdateCheckTimeout)
@@ -86,7 +92,7 @@ func runLaunchUpdateCheck() {
 		return
 	}
 
-	updatecheck.RunLaunchAPICheck(context.Background(), exeDir, appVersionFromBuildConfig(), emitAppUpdateAvailable, emitUpdateCheckFailed)
+	updatecheck.HandleLaunchAPICheckResult(<-apiResultCh, exeDir, currentVersion, emitAppUpdateAvailable, emitUpdateCheckFailed)
 }
 
 func (*PlatformService) CheckForUpdatesAndInstall() error {

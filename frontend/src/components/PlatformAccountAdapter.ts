@@ -73,6 +73,8 @@ export interface AccountLifecycle<TAccount> {
 export interface AccountPageExtensions {
   saveCurrent?(): Promise<boolean>;
   suggestedSaveName?(): Promise<string>;
+  refreshAccounts?(): Promise<void>;
+  refreshAllProfileImages?(): Promise<void>;
   gameSearchRows?(query: string): SearchResultRow[];
   gameSearchHint?: string;
   loginAndLaunchGame?(accountId: string, appId: string): Promise<void>;

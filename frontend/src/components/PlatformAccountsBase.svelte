@@ -449,11 +449,28 @@
 
   async function refreshAllProfileImages(): Promise<void> {
     try {
-      await BasicService.RefreshAllBasicProfileImages(name);
+      if (adapter.refreshAllProfileImages) {
+        await adapter.refreshAllProfileImages();
+      } else {
+        await BasicService.RefreshAllBasicProfileImages(name);
+      }
       requestPlatformAccountsRefresh(name);
       for (const id of accountIds) bumpAvatarEpoch(id);
       await loadAccounts();
       pushToast({ type: "success", message: $t("Toast_ImagesRefreshing"), duration: 5000 });
+    } catch (e) {
+      pushToast({ type: "error", message: formatToastWithError($t("Toast_SaveFailed"), e), duration: 8000 });
+    }
+  }
+
+  async function refreshAccounts(): Promise<void> {
+    try {
+      if (adapter.refreshAccounts) {
+        await adapter.refreshAccounts();
+        requestPlatformAccountsRefresh(name);
+        for (const id of accountIds) bumpAvatarEpoch(id);
+      }
+      await loadAccounts();
     } catch (e) {
       pushToast({ type: "error", message: formatToastWithError($t("Toast_SaveFailed"), e), duration: 8000 });
     }
@@ -567,7 +584,7 @@
       {
         id: "refresh-accounts",
         title: tr("Command_RefreshAccounts"),
-        run: () => loadAccounts(),
+        run: () => refreshAccounts(),
       },
       {
         id: "clear-account-tags",

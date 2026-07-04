@@ -18,9 +18,14 @@ const (
 	LaunchCheckDelay = 700 * time.Millisecond
 )
 
-
 type failStateJSON struct {
 	At string `json:"at"`
+}
+
+type LaunchAPICheckResult struct {
+	Latest  string
+	Message string
+	Err     error
 }
 
 // ParseVersionClock parses a semver version string (e.g. "4.0.0" or "v4.0.0")
@@ -77,11 +82,11 @@ func FetchLatestVersion(ctx context.Context, client *http.Client, currentVersion
 	return version, message, nil
 }
 
-// RunLaunchAPICheck runs the tcno.co API check used as an updater fallback on launch.
-// Fail toasts are throttled to once per day.
-func RunLaunchAPICheck(ctx context.Context, exeDir string, currentVersion string, onUpdateAvailable func(message string), onCheckFailed func()) {
+// FetchLaunchAPICheck hits the tcno.co API endpoint used for launch telemetry
+// and update fallback data.
+func FetchLaunchAPICheck(ctx context.Context, currentVersion string) LaunchAPICheckResult {
 	if appclient.IsOfflineMode() {
-		return
+		return LaunchAPICheckResult{Err: appclient.ErrOfflineMode}
 	}
 	if ctx == nil {
 		ctx = context.Background()
@@ -90,6 +95,18 @@ func RunLaunchAPICheck(ctx context.Context, exeDir string, currentVersion string
 	defer cancel()
 
 	latest, message, err := FetchLatestVersion(ctx, appclient.Shared, currentVersion)
+	return LaunchAPICheckResult{
+		Latest:  latest,
+		Message: message,
+		Err:     err,
+	}
+}
+
+// HandleLaunchAPICheckResult applies launch fallback UI behaviour to an API
+// result that may already have been fetched for launch telemetry.
+// Fail toasts are throttled to once per day.
+func HandleLaunchAPICheckResult(result LaunchAPICheckResult, exeDir string, currentVersion string, onUpdateAvailable func(message string), onCheckFailed func()) {
+	err := result.Err
 	if err != nil {
 		if shouldEmitFailToast(exeDir) {
 			_ = writeFailTimestamp(exeDir)
@@ -99,12 +116,17 @@ func RunLaunchAPICheck(ctx context.Context, exeDir string, currentVersion string
 		}
 		return
 	}
-	if IsUpToDate(currentVersion, latest) {
+	if IsUpToDate(currentVersion, result.Latest) {
 		return
 	}
 	if onUpdateAvailable != nil {
-		onUpdateAvailable(message)
+		onUpdateAvailable(result.Message)
 	}
+}
+
+// RunLaunchAPICheck runs the tcno.co API check used as an updater fallback on launch.
+func RunLaunchAPICheck(ctx context.Context, exeDir string, currentVersion string, onUpdateAvailable func(message string), onCheckFailed func()) {
+	HandleLaunchAPICheckResult(FetchLaunchAPICheck(ctx, currentVersion), exeDir, currentVersion, onUpdateAvailable, onCheckFailed)
 }
 
 // RunManualCheck checks for updates on user request. Returns "available", "up-to-date", or "failed".
