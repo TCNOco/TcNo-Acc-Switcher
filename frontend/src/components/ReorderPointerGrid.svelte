@@ -5,6 +5,7 @@
     moveItem,
     previewSlots,
   } from "../lib/reorderList";
+  import { scrollbarWidthVar } from "../lib/actions/scrollbarWidthVar";
 
   /** Unique string ids; order is the canonical list. */
   export let items: string[] = [];
@@ -292,6 +293,10 @@
   class="reorder-pointer-grid {listClass}"
   role="list"
   aria-label={ariaLabel}
+  use:scrollbarWidthVar={{
+    enabled: listClass.includes("shortcutDropdownItems"),
+    targetSelector: ".shortcutDropdown",
+  }}
 >
   {#each displaySlots as slot, i (slot === null ? `gap-${i}` : slot)}
     {#if slot === null}

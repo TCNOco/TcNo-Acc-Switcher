@@ -169,7 +169,7 @@ button:active,
 }
 
 .shortcutDropdown #btnOpenShortcutFolder {
-    right: -50px;
+    right: calc(-50px - min(3px, var(--shortcut-scrollbar-width, 0px)));
 }
 
 .shortcuts button,
@@ -198,6 +198,10 @@ button:active,
     border-radius: 0.5rem;
     background: #131313;
     max-width: 262px;
+}
+
+.shortcutDropdown {
+    max-width: calc(262px + var(--shortcut-scrollbar-width, 0px));
 }
 
 .shortcuts {

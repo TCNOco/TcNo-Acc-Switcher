@@ -150,9 +150,21 @@
         font-weight: 500;
     }
     .title-left {
+        z-index: 1;
         height: 100%;
         display: flex;
         flex-direction: row;
+    }
+    .title-drag {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: calc(100% - 300px);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        pointer-events: none;
     }
     .win-btn-back {
         --wails-draggable: no-drag;
@@ -174,6 +186,7 @@
     }
     .window-controls {
         --wails-draggable: no-drag;
+        z-index: 1;
         display: grid;
         grid-template-columns: repeat(3, 46px);
         top: 0;

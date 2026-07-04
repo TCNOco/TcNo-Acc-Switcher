@@ -2,6 +2,7 @@
   import { t } from "../stores/i18n";
   import { tooltip } from "../lib/actions/tooltip";
   import { contextMenu } from "../lib/actions/contextMenu";
+  import { scrollbarWidthVar } from "../lib/actions/scrollbarWidthVar";
   import type { ShortcutDTO } from "../../bindings/TcNo-Acc-Switcher/internal/shortcuts/models.js";
   import type { MenuItemDef } from "../stores/contextMenu";
   import { offlineMode, offlineSafeImageSrc } from "../stores/offlineMode";
@@ -26,6 +27,10 @@
   class:expandShortcuts={expandClass}
   role="list"
   aria-label={$t("Stats_GameShortcuts")}
+  use:scrollbarWidthVar={{
+    enabled: zoneClass.includes("shortcutDropdownItems"),
+    targetSelector: ".shortcutDropdown",
+  }}
 >
   {#each displaySlots as slot, i (slot === null ? `${zone}g-${i}` : `${zone}-${i}-${slot}`)}
     {#if slot === null}

@@ -642,6 +642,7 @@ button .caret, .button .caret {
     box-shadow: 0px 8px 16px 0px var(--backdrop-dark-20);
     min-height: 36px;
     max-height: 260px;
+    max-width: calc(260px + var(--shortcut-scrollbar-width, 0px));
     /* Wide enough for several tiles per row; avoid a single 30px-wide column */
     min-width: 168px;
 
@@ -656,7 +657,7 @@ button .caret, .button .caret {
         min-height: 32px;
         min-width: 156px;
         width: max-content;
-        max-width: 260px;
+        max-width: calc(260px + var(--shortcut-scrollbar-width, 0px));
 
         img {
             pointer-events: none;
@@ -665,7 +666,7 @@ button .caret, .button .caret {
 
     #btnOpenShortcutFolder {
         position: absolute;
-        right: -38px;
+        right: calc(-38px - min(3px, var(--shortcut-scrollbar-width, 0px)));
         top: 50%;
         transform: translateY(calc(-50% - 1px));
         min-width: 36px;
