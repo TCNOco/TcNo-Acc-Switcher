@@ -41,6 +41,7 @@
   let lastInitId = -1;
   let contentResizeObserver: ResizeObserver | undefined;
   let refitQueued = false;
+  let userAdjustedFrame = false;
 
   function initModalFrame(): void {
     if (!backdropEl || !modalFgEl) return;
@@ -54,7 +55,7 @@
   }
 
   function refitModalFrame(): void {
-    if (!frameReady || !backdropEl || !modalFgEl) return;
+    if (!frameReady || !backdropEl || !modalFgEl || userAdjustedFrame) return;
     contentResizeObserver?.disconnect();
     const next = fitFrameToContent(
       modalFgEl,
@@ -73,7 +74,7 @@
   }
 
   function queueRefitModalFrame(): void {
-    if (!frameReady || refitQueued) return;
+    if (!frameReady || refitQueued || userAdjustedFrame) return;
     refitQueued = true;
     requestAnimationFrame(() => {
       refitQueued = false;
@@ -110,6 +111,7 @@
     lastInitId = modalId;
     detachContentObservers();
     frameReady = false;
+    userAdjustedFrame = false;
     void tick().then(() =>
       requestAnimationFrame(() => {
         if (!backdropEl) return;
@@ -124,6 +126,7 @@
       bounds: getModalBounds(backdropEl),
       minSize: modalMinSize,
       onUpdate: (rect) => {
+        userAdjustedFrame = true;
         modalFrame = rect;
       },
     });
@@ -137,6 +140,7 @@
       bounds: getModalBounds(backdropEl),
       minSize: modalMinSize,
       onUpdate: (rect) => {
+        userAdjustedFrame = true;
         modalFrame = rect;
       },
     });

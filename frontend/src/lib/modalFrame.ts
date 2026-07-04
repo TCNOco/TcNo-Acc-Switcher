@@ -228,7 +228,11 @@ function beginPointerSession(
   cursor: string,
 ): { startX: number; startY: number } {
   e.preventDefault();
-  target.setPointerCapture(e.pointerId);
+  try {
+    target.setPointerCapture(e.pointerId);
+  } catch {
+    /* Some WebView targets can lose capture eligibility between event dispatch and setup. */
+  }
   document.body.style.userSelect = "none";
   document.body.style.cursor = cursor;
   return { startX: e.clientX, startY: e.clientY };
@@ -278,14 +282,14 @@ export function startModalDrag(
   const onEnd = (ev: PointerEvent) => {
     if (ev.pointerId !== e.pointerId) return;
     endPointerSession(header, e.pointerId);
-    header.removeEventListener("pointermove", onMove);
-    header.removeEventListener("pointerup", onEnd);
-    header.removeEventListener("pointercancel", onEnd);
+    window.removeEventListener("pointermove", onMove);
+    window.removeEventListener("pointerup", onEnd);
+    window.removeEventListener("pointercancel", onEnd);
   };
 
-  header.addEventListener("pointermove", onMove);
-  header.addEventListener("pointerup", onEnd);
-  header.addEventListener("pointercancel", onEnd);
+  window.addEventListener("pointermove", onMove);
+  window.addEventListener("pointerup", onEnd);
+  window.addEventListener("pointercancel", onEnd);
 }
 
 export function startModalResize(
@@ -317,12 +321,12 @@ export function startModalResize(
   const onEnd = (ev: PointerEvent) => {
     if (ev.pointerId !== e.pointerId) return;
     endPointerSession(handle, e.pointerId);
-    handle.removeEventListener("pointermove", onMove);
-    handle.removeEventListener("pointerup", onEnd);
-    handle.removeEventListener("pointercancel", onEnd);
+    window.removeEventListener("pointermove", onMove);
+    window.removeEventListener("pointerup", onEnd);
+    window.removeEventListener("pointercancel", onEnd);
   };
 
-  handle.addEventListener("pointermove", onMove);
-  handle.addEventListener("pointerup", onEnd);
-  handle.addEventListener("pointercancel", onEnd);
+  window.addEventListener("pointermove", onMove);
+  window.addEventListener("pointerup", onEnd);
+  window.addEventListener("pointercancel", onEnd);
 }
