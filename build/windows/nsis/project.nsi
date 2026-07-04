@@ -15,6 +15,9 @@
 !ifndef INSTALLER_7Z
   !define INSTALLER_7Z "..\..\..\bin\TcNo-Acc-Switcher.7z"
 !endif
+!ifndef OPEN_SOURCE_LICENSES_TXT
+  !define OPEN_SOURCE_LICENSES_TXT "..\..\..\OPEN_SOURCE_LICENSES.txt"
+!endif
 
 ;--------------------------------
 ;Include Modern UI and helpers
@@ -227,6 +230,7 @@ Section "Main files" InstSec
   SetCompress auto
   Nsis7z::ExtractWithDetails "$INSTDIR\TcNo-Acc-Switcher.7z" "Decompressing %s..."
   Delete "$OUTDIR\TcNo-Acc-Switcher.7z"
+  File "/oname=OPEN_SOURCE_LICENSES.txt" "${OPEN_SOURCE_LICENSES_TXT}"
 
   ;Store installation folder
   WriteRegStr "${REG_ROOT}" "${REG_APP_PATH}" "" $INSTDIR

@@ -46,6 +46,7 @@ VIAddVersionKey "FileVersion"  "${VERSION}"
 !define INSTALLER_NAME "TcNo Account Switcher - Installer.exe"
 
 !define INSTALLER_7Z "..\..\TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher.7z"
+!define OPEN_SOURCE_LICENSES_TXT "..\..\OPEN_SOURCE_LICENSES.txt"
 
 !define INSTALL_DIR "$PROGRAMFILES64\TcNo Account Switcher"
 ;;;;!define INSTALL_DIR "$PROGRAMFILES\TcNo Account Switcher"
@@ -202,6 +203,7 @@ Section "Main files" InstSec
   SetCompress auto
   Nsis7z::ExtractWithDetails "$INSTDIR\TcNo-Acc-Switcher.7z" "Decompressing %s..."
   Delete "$OUTDIR\TcNo-Acc-Switcher.7z"  
+  File "/oname=OPEN_SOURCE_LICENSES.txt" "${OPEN_SOURCE_LICENSES_TXT}"
   
   ;Store installation folder
   WriteRegStr "${REG_ROOT}" "${REG_APP_PATH}" "" $INSTDIR

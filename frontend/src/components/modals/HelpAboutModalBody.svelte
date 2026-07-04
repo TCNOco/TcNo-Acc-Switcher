@@ -5,6 +5,8 @@
   import { t } from "../../stores/i18n";
   import { checkForUpdatesManually } from "../../lib/checkForUpdates";
 
+  const OPEN_SOURCE_LICENSES_URL = "https://github.com/TCNOco/TcNo-Acc-Switcher/blob/master/OPEN_SOURCE_LICENSES.txt";
+
   let currentVersion = "0.0.0";
 
   onMount(() => {
@@ -79,6 +81,12 @@
           <use href="img/icons/ico_doc.svg#icoDoc"></use>
         </svg>
         {$t("Modal_Info_Disclaimer")}
+      </a>
+      <a href={OPEN_SOURCE_LICENSES_URL} on:click={(e) => openExternal(OPEN_SOURCE_LICENSES_URL, e)}>
+        <svg viewBox="0 0 2084 2084" aria-hidden="true" class="modalIcoDoc">
+          <use href="img/icons/ico_doc.svg#icoDoc"></use>
+        </svg>
+        Open source licenses
       </a>
     </div>
   </div>
