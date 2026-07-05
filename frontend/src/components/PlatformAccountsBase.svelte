@@ -59,6 +59,12 @@
     runCommand,
     type CommandPaletteCommand,
   } from "../lib/commandPalette";
+  import { reorderItemByCommand, type ReorderCommand } from "../lib/reorderList";
+  import {
+    getShortcutCommandPaletteState,
+    runShortcutCommandPaletteAction,
+  } from "./GameShortcutBar.svelte";
+  import type { ShortcutReorderCommand } from "../lib/dragReorderShortcuts";
   import "../styles/gamestats.scss";
   import "../styles/platformAccountsShared.scss";
 
@@ -193,6 +199,46 @@
     return x ?? "";
   }
 
+  function compactText(value: string | null | undefined): string {
+    return String(value ?? "").replace(/\s+/g, " ").trim();
+  }
+
+  function accountDisplayLabel(acc: TAccount): string {
+    return compactText(adapter.name(acc)) || compactText(adapter.accountLogin(acc)) || adapter.id(acc);
+  }
+
+  function accountA11yDescription(acc: TAccount, id: string): string {
+    const tr = get(t);
+    const parts: string[] = [];
+    const label = accountDisplayLabel(acc);
+    if (selectedId === id) parts.push(tr("Status_SelectedAccount", { name: label }));
+    if (adapter.currentSession(acc)) parts.push(tr("Tooltip_CurrentAccount"));
+    if (adapter.savedDataBroken?.(acc)) parts.push(tr("Security_AccountDataBroken"));
+
+    const tags = (adapter.tags(acc) ?? []).map((tag) => compactText(tag.name)).filter(Boolean);
+    if (tags.length > 0) parts.push(`${tr("Tags_Section")}: ${tags.join(", ")}`);
+
+    if (adapter.shouldShowNote(acc)) {
+      const note = compactText(adapter.note(acc));
+      if (note) parts.push(`${tr("Notes")}: ${note}`);
+    }
+
+    if (adapter.shouldShowLastUsed(acc)) {
+      const lastUsed = compactText(formatLastLoginForLocale(adapter.lastUsed(acc), get(locale)));
+      if (lastUsed) parts.push(`${tr("Filter_Sort_LastUsed")}: ${lastUsed}`);
+    }
+
+    return parts.join(". ");
+  }
+
+  function accountGridLabel(id: string): string {
+    const acc = accountById(id);
+    if (!acc) return id;
+    const label = accountDisplayLabel(acc);
+    const description = accountA11yDescription(acc, id);
+    return description ? `${label}. ${description}` : label;
+  }
+
   function touchStatus(): void {
     if (isActionBusy) return;
     const acc = accountById(selectedId);
@@ -305,6 +351,51 @@
     if (!ids) return;
     accountIds = ids;
     adapter.saveOrder(ids).catch(() => {});
+  }
+
+  function accountDisplayName(id: string): string {
+    const acc = accountById(id);
+    return acc ? adapter.name(acc) || adapter.id(acc) : id;
+  }
+
+  async function applyAccountReorderCommand(id: string, command: ReorderCommand): Promise<void> {
+    if (reorderDisabled) return;
+    const result = reorderItemByCommand(accountIds, id, command);
+    if (!result.moved) return;
+    const previous = accountIds;
+    accountIds = result.items;
+    selectedId = id;
+    touchStatus();
+    try {
+      await adapter.saveOrder(result.items);
+      pushToast({
+        type: "success",
+        message: $t("Toast_MovedItemPosition", {
+          item: accountDisplayName(id),
+          position: result.position,
+          total: result.total,
+        }),
+        duration: 3500,
+      });
+    } catch (e) {
+      accountIds = previous;
+      pushToast({ type: "error", message: formatToastWithError($t("Toast_SaveFailed"), e), duration: 8000 });
+    }
+  }
+
+  function accountReorderMenu(id: string): MenuItemDef {
+    const index = accountIds.indexOf(id);
+    const canMoveLeft = !reorderDisabled && index > 0;
+    const canMoveRight = !reorderDisabled && index >= 0 && index < accountIds.length - 1;
+    return {
+      label: $t("Context_Reorder"),
+      children: [
+        { label: $t("Context_MoveLeft"), disabled: !canMoveLeft, action: () => { void applyAccountReorderCommand(id, "left"); } },
+        { label: $t("Context_MoveRight"), disabled: !canMoveRight, action: () => { void applyAccountReorderCommand(id, "right"); } },
+        { label: $t("Context_MoveToStart"), disabled: !canMoveLeft, action: () => { void applyAccountReorderCommand(id, "start"); } },
+        { label: $t("Context_MoveToEnd"), disabled: !canMoveRight, action: () => { void applyAccountReorderCommand(id, "end"); } },
+      ],
+    };
   }
 
   // ---- Tag filter ----
@@ -607,6 +698,26 @@
         run: () => refreshAllProfileImages(),
       },
       {
+        id: "move-selected-account-left",
+        title: tr("Command_MoveSelectedAccountLeft"),
+        run: () => { if (selectedId) void applyAccountReorderCommand(selectedId, "left"); },
+      },
+      {
+        id: "move-selected-account-right",
+        title: tr("Command_MoveSelectedAccountRight"),
+        run: () => { if (selectedId) void applyAccountReorderCommand(selectedId, "right"); },
+      },
+      {
+        id: "move-selected-account-start",
+        title: tr("Command_MoveSelectedAccountStart"),
+        run: () => { if (selectedId) void applyAccountReorderCommand(selectedId, "start"); },
+      },
+      {
+        id: "move-selected-account-end",
+        title: tr("Command_MoveSelectedAccountEnd"),
+        run: () => { if (selectedId) void applyAccountReorderCommand(selectedId, "end"); },
+      },
+      {
         id: "platform-settings",
         title: tr("Command_OpenPlatformSettings", { platform: name }),
         run: () => route.set({ page: "platform-settings", platformName: name }),
@@ -617,6 +728,47 @@
         run: () => route.set({ page: "home" }),
       },
     ];
+    const shortcutState = getShortcutCommandPaletteState(name);
+    const addShortcutCommand = (fileName: string, displayName: string, command: ShortcutReorderCommand, title: string) => {
+      commands.push({
+        id: `shortcut:${command}:${fileName}`,
+        title,
+        run: () => runShortcutCommandPaletteAction(name, fileName, command),
+      });
+    };
+    const addShortcutCommandsForZone = (
+      items: { fileName: string; displayName: string }[],
+      zone: "pinned" | "dropdown",
+    ) => {
+      items.forEach((item, index) => {
+        const label = item.displayName || item.fileName;
+        if (index > 0) {
+          addShortcutCommand(item.fileName, label, "left", tr("Command_MoveShortcutLeft", { name: label }));
+        }
+        if (index < items.length - 1) {
+          addShortcutCommand(item.fileName, label, "right", tr("Command_MoveShortcutRight", { name: label }));
+        }
+        if (zone === "pinned") {
+          addShortcutCommand(item.fileName, label, "unpin", tr("Command_UnpinShortcut", { name: label }));
+          addShortcutCommand(
+            item.fileName,
+            label,
+            "move-to-dropdown",
+            tr("Command_MoveShortcutToDropdown", { name: label }),
+          );
+        } else {
+          addShortcutCommand(item.fileName, label, "pin", tr("Command_PinShortcut", { name: label }));
+          addShortcutCommand(
+            item.fileName,
+            label,
+            "move-to-pinned",
+            tr("Command_MoveShortcutToPinned", { name: label }),
+          );
+        }
+      });
+    };
+    addShortcutCommandsForZone(shortcutState.pinned, "pinned");
+    addShortcutCommandsForZone(shortcutState.dropdown, "dropdown");
     if (name !== "Steam") {
       commands.splice(2, 0, {
         id: "save-current",
@@ -679,7 +831,7 @@
         onSelectedIdChanged: (id: string) => { selectedId = id; touchStatus(); },
       };
       const shared = buildSharedItems(acc, rowId, ctx);
-      return adapter.buildMenu(acc, shared);
+      return [...adapter.buildMenu(acc, shared), accountReorderMenu(rowId)];
     };
   }
 
@@ -786,6 +938,9 @@
           placeholderClass="acc_list_item placeHolderAcc"
           ghostClass="acc_list_item acc_list_item--ghost"
           ariaLabel="Accounts"
+          itemAriaLabel={accountGridLabel}
+          activeItem={selectedId || undefined}
+          selectOnArrow={true}
           on:reorder={(e) => { accountIds = e.detail.items; adapter.saveOrder(e.detail.items).catch(() => {}); }}
           on:itemclick={onItemClick}
         >
@@ -793,7 +948,10 @@
             {@const rid = slotKey(rowId)}
             {@const acc = accountMap.get(rid)}
             {@const radioId = `acc-${adapter.platformKey}-${rid}`}
+            {@const labelId = `${radioId}-label`}
+            {@const descId = `${radioId}-desc`}
             {#if acc}
+              {@const a11yDescription = accountA11yDescription(acc, rid)}
               {#key `${rid}-${avatarEpoch[rid] ?? 0}-${rowVersions[rid] ?? 0}`}
               <div class="acc_list_item_inner">
                 <input
@@ -802,7 +960,10 @@
                   id={radioId}
                   name={`${adapter.platformKey}-accounts`}
                   value={rid}
+                  tabindex="-1"
                   bind:group={selectedId}
+                  aria-labelledby={labelId}
+                  aria-describedby={a11yDescription ? descId : undefined}
                   on:change={touchStatus}
                 />
                 <label
@@ -857,7 +1018,11 @@
 
                   <slot name="account-before-name" {acc} />
 
-                  <h6 class="displayName">{adapter.name(acc)}</h6>
+                  <h6 id={labelId} class="displayName">{adapter.name(acc)}</h6>
+
+                  {#if a11yDescription}
+                    <span id={descId} class="sr-only">{a11yDescription}</span>
+                  {/if}
 
                   <AccountTagBubbles tags={adapter.tags(acc) ?? []} />
 

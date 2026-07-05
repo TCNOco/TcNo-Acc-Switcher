@@ -587,6 +587,7 @@ button .caret, .button .caret {
     }
 }
 #shortcutDropdownBtn {
+    border-color: var(--shortcut-button-border, var(--button-border, transparent));
     min-width: 36px;
     min-height: 36px;
     max-width: 36px;
@@ -598,7 +599,7 @@ button .caret, .button .caret {
     }
 
     &.flip {
-        border-color: var(--accent) !important;
+        border-color: var(--shortcut-active-border, var(--accent)) !important;
 
         i {
             transform: rotate(180deg);

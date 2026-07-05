@@ -5,6 +5,8 @@ import {
   moveItem,
   previewInsertGap,
   previewSlots,
+  reorderItemByCommand,
+  type ReorderCommand,
 } from "./reorderList";
 
 export type Zone = "pinned" | "dropdown";
@@ -47,6 +49,78 @@ export interface DragReorderCallbacks {
 }
 
 const dragThresholdPx = 8;
+
+export type ShortcutReorderCommand = ReorderCommand | "pin" | "unpin" | "move-to-pinned" | "move-to-dropdown";
+
+export type ShortcutReorderCommandResult = {
+  pins: string[];
+  drops: string[];
+  moved: boolean;
+  zone: Zone;
+  position: number;
+  total: number;
+};
+
+function moveShortcutAcrossZones(
+  pins: readonly string[],
+  drops: readonly string[],
+  id: string,
+  toZone: Zone,
+): ShortcutReorderCommandResult {
+  const source = pins.includes(id) ? "pinned" : drops.includes(id) ? "dropdown" : null;
+  const nextPins = pins.filter((entry) => entry !== id);
+  const nextDrops = drops.filter((entry) => entry !== id);
+  if (!source) {
+    return {
+      pins: [...pins],
+      drops: [...drops],
+      moved: false,
+      zone: toZone,
+      position: 0,
+      total: toZone === "pinned" ? pins.length : drops.length,
+    };
+  }
+  if (toZone === "pinned") {
+    nextPins.push(id);
+  } else {
+    nextDrops.push(id);
+  }
+  const target = toZone === "pinned" ? nextPins : nextDrops;
+  return {
+    pins: nextPins,
+    drops: nextDrops,
+    moved: source !== toZone,
+    zone: toZone,
+    position: target.indexOf(id) + 1,
+    total: target.length,
+  };
+}
+
+export function reorderShortcutByCommand(
+  pins: readonly string[],
+  drops: readonly string[],
+  zone: Zone,
+  id: string,
+  command: ShortcutReorderCommand,
+): ShortcutReorderCommandResult {
+  if (command === "pin" || command === "move-to-pinned") {
+    return moveShortcutAcrossZones(pins, drops, id, "pinned");
+  }
+  if (command === "unpin" || command === "move-to-dropdown") {
+    return moveShortcutAcrossZones(pins, drops, id, "dropdown");
+  }
+
+  const source = zone === "pinned" ? pins : drops;
+  const reordered = reorderItemByCommand(source, id, command);
+  return {
+    pins: zone === "pinned" ? reordered.items : [...pins],
+    drops: zone === "dropdown" ? reordered.items : [...drops],
+    moved: reordered.moved,
+    zone,
+    position: reordered.position,
+    total: reordered.total,
+  };
+}
 
 function pointInRect(
   x: number,

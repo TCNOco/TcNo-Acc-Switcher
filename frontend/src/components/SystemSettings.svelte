@@ -30,6 +30,11 @@
     normalizeCommandPaletteHotkey,
     setCommandPaletteHotkey,
   } from "../stores/commandPalette";
+  import {
+    applyControllerSupportEnabled,
+    loadControllerSupportEnabled,
+    setControllerSupportEnabled,
+  } from "../stores/controllerSupport";
   import { formatAppVersion } from "../lib/checkForUpdates";
   import { createToggle } from "../lib/useToggleSetting";
   import { openMoveUserDataModal, openUserDataFolder, onCheckForUpdates, openStatsModal } from "../lib/settingsOperations";
@@ -150,12 +155,18 @@
       await setAnimationsEnabled(next);
       pushToast({ type: "success", message: get(t)("Toast_SavedItem", { item: get(t)("Settings_AnimationsEnabled") }), duration: 3000 });
     } catch (e) {
-      animations.value.set(!next);
+      animations.value.set(get(animationsEnabled));
       pushToast({ type: "error", message: formatToastWithError($t("Toast_SaveFailed"), e), duration: 8000 });
     } finally {
       animations.loading.set(false);
     }
   };
+
+  const controllerSupport = createToggle(
+    () => loadControllerSupportEnabled(),
+    (v) => setControllerSupportEnabled(v),
+    get(t)("Settings_ControllerSupport"),
+  );
 
   const desktopHomeShortcut = createToggle(
     () => PlatformService.GetDesktopHomeShortcutExists(),
@@ -236,6 +247,7 @@
     startProgramCentered.value.set(settings.startProgramCentered);
     animationsEnabled.set(settings.animationsEnabled);
     animations.value.set(settings.animationsEnabled);
+    controllerSupport.value.set(applyControllerSupportEnabled(settings.controllerSupportEnabled));
     commandPaletteHotkey.set(normalizeCommandPaletteHotkey(settings.commandPaletteHotkey));
     currentVersion = settings.appVersion || "";
   }
@@ -251,6 +263,7 @@
     void minimizeOnSwitch.init();
     void startProgramCentered.init();
     void animations.init();
+    void controllerSupport.init();
     void loadCommandPaletteHotkey();
     void PlatformService.GetAppVersion()
       .then((v) => { currentVersion = v || ""; })
@@ -600,6 +613,20 @@
     <label class="form-check-label" for="settings-animations"></label>
   </div>
   <label for="settings-animations">{$t("Settings_AnimationsEnabled")}</label>
+</div>
+
+<div class="rowSetting">
+  <div class="form-check">
+    <input
+      type="checkbox"
+      id="settings-controller-support"
+      checked={$controllerSupport.value}
+      disabled={$controllerSupport.loading}
+      on:change={() => void controllerSupport.toggle()}
+    />
+    <label class="form-check-label" for="settings-controller-support"></label>
+  </div>
+  <label for="settings-controller-support">{$t("Settings_ControllerSupport")}</label>
 </div>
 
 {#if isWindows}

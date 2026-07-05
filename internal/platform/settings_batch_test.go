@@ -106,6 +106,45 @@ func TestCrashReportAutoSubmitFalseMarshals(t *testing.T) {
 	}
 }
 
+func TestControllerSupportDefaultsOnWhenMissing(t *testing.T) {
+	settings := AppSettings{}
+
+	normalizeAppSettingsDefaults(&settings, map[string]json.RawMessage{})
+
+	if !settings.ControllerSupportEnabled {
+		t.Fatal("ControllerSupportEnabled should default to true when the key is absent")
+	}
+}
+
+func TestControllerSupportPreservesExplicitFalse(t *testing.T) {
+	settings := AppSettings{ControllerSupportEnabled: false}
+
+	normalizeAppSettingsDefaults(&settings, map[string]json.RawMessage{
+		"controllerSupportEnabled": json.RawMessage("false"),
+	})
+
+	if settings.ControllerSupportEnabled {
+		t.Fatal("ControllerSupportEnabled should preserve explicit false")
+	}
+}
+
+func TestApplySettingsBatchUpdateControllerSupport(t *testing.T) {
+	off := false
+	settings := AppSettings{ControllerSupportEnabled: true}
+
+	effects := applySettingsBatchUpdate(&settings, SettingsBatchUpdate{ControllerSupportEnabled: &off})
+
+	if settings.ControllerSupportEnabled {
+		t.Fatal("ControllerSupportEnabled should be false")
+	}
+	if !effects.dirty {
+		t.Fatal("controller support update should mark settings dirty")
+	}
+	if effects.controllerSupport == nil || *effects.controllerSupport {
+		t.Fatalf("controller support effect = %#v, want explicit false", effects.controllerSupport)
+	}
+}
+
 func TestNormalizeCommandPaletteHotkey(t *testing.T) {
 	tests := []struct {
 		name  string

@@ -55,6 +55,8 @@
   })();
 
   let inputEl: HTMLInputElement | undefined;
+  $: pathInputLabel = dirsOnly ? $t("Modal_SetUserdata_ChooseFolder") : positiveLabel;
+  $: soughtFileId = "folder-picker-sought-file";
 
   function ok(): void {
     if (primaryDisabled) return;
@@ -99,11 +101,21 @@
       class="modal-input"
       spellcheck="false"
       autocomplete="off"
+      aria-label={pathInputLabel}
+      aria-describedby={soughtFilename.trim() ? soughtFileId : undefined}
+      aria-invalid={soughtMismatch ? "true" : undefined}
       on:keydown={(e) => e.key === "Enter" && !primaryDisabled && ok()}
     />
   </div>
   {#if soughtFilename.trim()}
-    <div class="folder_indicator_stack" class:indicator-warn={soughtMismatch}>
+    <div
+      id={soughtFileId}
+      class="folder_indicator_stack"
+      class:indicator-warn={soughtMismatch}
+      role="status"
+      aria-live="polite"
+      aria-label={soughtMismatch ? `${soughtFilename.trim()} ${$t("NotFound")}` : soughtFilename.trim()}
+    >
       <div
         class="folder_indicator"
         class:notfound={soughtMismatch}

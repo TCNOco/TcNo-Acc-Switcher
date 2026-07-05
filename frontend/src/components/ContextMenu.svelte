@@ -10,6 +10,7 @@
     submenuOpenPath,
     submenuExpandEnabled,
     type ContextMenuState,
+    type ContextMenuAnchorRect,
   } from "../stores/contextMenu";
   import ContextMenuNest from "./ContextMenuNest.svelte";
   const CTX_MENU_DEBUG = false;
@@ -42,6 +43,7 @@
   /** Element to restore focus when the menu closes (set when moving focus into the menu). */
   let priorFocusEl: HTMLElement | null = null;
   let flyoutRaf: number | null = null;
+  let focusAfterOpenTimers: ReturnType<typeof setTimeout>[] = [];
 
   function capturePriorFocus(menuRoot: HTMLElement): HTMLElement | null {
     const a = document.activeElement;
@@ -55,19 +57,66 @@
   }
 
   function expandSubmenuForLi(el: HTMLElement): void {
+    const path = submenuPathForLi(el);
+    if (!path) {
+      return;
+    }
+    submenuOpenPath.set(path);
+  }
+
+  function submenuPathForLi(el: HTMLElement): number[] | null {
     const li = el.closest("li.hasSubmenu") ?? (el.classList.contains("hasSubmenu") ? el : null);
     if (!li) {
-      return;
+      return null;
     }
     const raw = li.getAttribute("data-submenu-path");
     if (!raw) {
-      return;
+      return null;
     }
     try {
-      submenuOpenPath.set(JSON.parse(raw) as number[]);
+      return JSON.parse(raw) as number[];
     } catch {
-      /* ignore malformed path */
+      return null;
     }
+  }
+
+  function collapseSubmenuForLi(el: HTMLElement): void {
+    const path = submenuPathForLi(el);
+    if (!path) {
+      return;
+    }
+    submenuOpenPath.set(path.slice(0, -1));
+  }
+
+  function focusMenuIfNeeded(force = false): void {
+    if (!menuEl || !get(contextMenu)) {
+      return;
+    }
+    const active = document.activeElement;
+    if (force || !(active instanceof HTMLElement) || !menuEl.contains(active)) {
+      focusFirstNavigable(menuEl);
+    }
+  }
+
+  function clearFocusAfterOpenTimers(): void {
+    focusAfterOpenTimers.forEach((timer) => clearTimeout(timer));
+    focusAfterOpenTimers = [];
+  }
+
+  function scheduleMenuFocusAfterOpen(): void {
+    clearFocusAfterOpenTimers();
+    focusMenuIfNeeded(true);
+    requestAnimationFrame(() => focusMenuIfNeeded());
+    for (const delay of [0, 60, 160]) {
+      focusAfterOpenTimers.push(setTimeout(() => focusMenuIfNeeded(), delay));
+    }
+  }
+
+  function contextMenuKeyboardDeps() {
+    return {
+      expandSubmenuForLi,
+      collapseSubmenuForLi,
+    };
   }
 
   function onMenuKeydown(ev: KeyboardEvent): void {
@@ -75,7 +124,7 @@
       return;
     }
     const handled = handleContextMenuKeydown(ev, menuEl, {
-      expandSubmenuForLi,
+      ...contextMenuKeyboardDeps(),
     });
     if (handled) {
       ev.stopPropagation();
@@ -96,6 +145,10 @@
       closeContextMenu();
       return;
     }
+    if (menuEl && handleContextMenuKeydown(ev, menuEl, contextMenuKeyboardDeps())) {
+      ev.stopPropagation();
+      return;
+    }
     if (handleContextMenuQuickFilter(ev, menuEl)) {
       ev.preventDefault();
       ev.stopPropagation();
@@ -104,6 +157,29 @@
 
   function clamp(v: number, lo: number, hi: number): number {
     return Math.max(lo, Math.min(hi, v));
+  }
+
+  function layoutFromRect(
+    anchorRect: ContextMenuAnchorRect,
+    mw: number,
+    mh: number,
+  ): { left: number; top: number } {
+    const winW = window.innerWidth;
+    const winH = window.innerHeight;
+    const gap = 6;
+    const preferRightEdge = anchorRect.right - mw;
+    const preferAbove = anchorRect.top - mh - gap;
+    let left = anchorRect.left;
+    let top = anchorRect.bottom + gap;
+    if (left + mw + PAD > winW) {
+      left = preferRightEdge;
+    }
+    if (top + mh + PAD > winH) {
+      top = preferAbove;
+    }
+    left = clamp(left, PAD, Math.max(PAD, winW - mw - PAD));
+    top = clamp(top, PAD, Math.max(PAD, winH - mh - PAD));
+    return { left, top };
   }
 
   /**
@@ -206,7 +282,9 @@
     if (mw === 0 || mh === 0) {
       return;
     }
-    const { left, top } = layoutFromAnchor(st.x, st.y, mw, mh);
+    const { left, top } = st.anchorRect
+      ? layoutFromRect(st.anchorRect, mw, mh)
+      : layoutFromAnchor(st.x, st.y, mw, mh);
     menuEl.style.left = `${left}px`;
     menuEl.style.top = `${top}px`;
   }
@@ -234,7 +312,7 @@
       menuRect: menuEl.getBoundingClientRect(),
     });
     priorFocusEl = capturePriorFocus(menuEl);
-    focusFirstNavigable(menuEl);
+    scheduleMenuFocusAfterOpen();
   }
 
   function onWinResize(): void {
@@ -247,6 +325,7 @@
   }
 
   function detachObservers(): void {
+    clearFocusAfterOpenTimers();
     if (menuEl) {
       menuEl.style.removeProperty("--ctx-root-column-height");
     }
@@ -320,7 +399,7 @@
 
   onMount(() => {
     window.addEventListener("pointerdown", onDocPointerDown, true);
-    window.addEventListener("keydown", onKey);
+    window.addEventListener("keydown", onKey, true);
     window.addEventListener("resize", onWinResize);
 
     const unsub = submenuOpenPath.subscribe(() => {
@@ -341,7 +420,7 @@
 
     return () => {
       window.removeEventListener("pointerdown", onDocPointerDown, true);
-      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("keydown", onKey, true);
       window.removeEventListener("resize", onWinResize);
       unsub();
     };
@@ -362,6 +441,7 @@
     class="ctx-menu-root contextmenu"
     class:ctx-menu-root--ready={menuReady}
     role="menu"
+    aria-label="Context menu"
     tabindex="-1"
     in:scale={{ start: 0.97, duration: motionEnabled() ? DUR.fast : 0, easing: cubicOut }}
     on:keydown={onMenuKeydown}

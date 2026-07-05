@@ -32,7 +32,17 @@ export type ContextMenuState =
       x: number;
       y: number;
       items: MenuItemDef[];
+      anchorRect?: ContextMenuAnchorRect;
     };
+
+export type ContextMenuAnchorRect = {
+  left: number;
+  right: number;
+  top: number;
+  bottom: number;
+  width: number;
+  height: number;
+};
 
 export const contextMenu = writable<ContextMenuState>(null);
 
@@ -50,6 +60,18 @@ export function openContextMenu(x: number, y: number, items: MenuItemDef[]): voi
   submenuOpenPath.set([]);
   submenuExpandEnabled.set(false);
   contextMenu.set({ x, y, items });
+}
+
+export function openContextMenuAtRect(rect: ContextMenuAnchorRect, items: MenuItemDef[]): void {
+  ctxMenuLog("openContextMenuAtRect", { rect, itemCount: items.length });
+  submenuOpenPath.set([]);
+  submenuExpandEnabled.set(false);
+  contextMenu.set({
+    x: rect.left,
+    y: rect.bottom,
+    items,
+    anchorRect: { ...rect },
+  });
 }
 
 export function closeContextMenu(): void {

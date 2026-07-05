@@ -35,3 +35,18 @@ $meta: (
 );
 
 @include editor.theme($palette, $meta, true);
+
+:root {
+  --blackTernary: #585d62;
+  --text-muted-gray: #666b70;
+  --text-body-muted: #585d62;
+  --form-checkbox-border: #5f6670;
+  --input-number-border: #5f6670;
+  --preview-control-border: #5f6670;
+  --settings-header-border: #5f6670;
+  --shortcut-active-border: var(--accent);
+  --modal-placeholder-fg: #585d62;
+  --notification-success-border: #5f7f00;
+  --notification-warning-border: #9a551a;
+  --notification-info-border: #0065a8;
+}

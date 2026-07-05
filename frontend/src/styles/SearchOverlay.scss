@@ -10,8 +10,22 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 1rem;
+    box-sizing: border-box;
     z-index: 20050;
     animation: searchOverlay_fadeIn 0.15s ease-out;
+  }
+
+  .searchOverlay_srOnly {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
   
   @keyframes searchOverlay_fadeIn {
@@ -25,9 +39,11 @@
   .searchOverlay_content {
     width: 90%;
     max-width: 600px;
+    max-height: calc(100dvh - 2rem);
     display: flex;
     flex-direction: column;
     gap: 1em;
+    min-height: 0;
   }
   
   .searchOverlay_searchInput {
@@ -54,6 +70,12 @@
     display: flex;
     flex-direction: column;
     gap: 2px;
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
   }
   
   button.searchOverlay_resultItem {
@@ -139,6 +161,7 @@
     flex-direction: column;
     gap: 2px;
     margin-top: 0.25em;
+    min-height: 0;
   }
   
   .searchOverlay_categoryHint {

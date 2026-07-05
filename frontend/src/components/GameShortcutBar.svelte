@@ -1,5 +1,65 @@
+<script context="module" lang="ts">
+  import type { ShortcutReorderCommand as PaletteShortcutReorderCommand } from "../lib/dragReorderShortcuts";
+
+  export type ShortcutCommandPaletteItem = {
+    fileName: string;
+    displayName: string;
+  };
+
+  export type ShortcutCommandPaletteState = {
+    pinned: ShortcutCommandPaletteItem[];
+    dropdown: ShortcutCommandPaletteItem[];
+  };
+
+  type ShortcutCommandHandler = (fileName: string, command: PaletteShortcutReorderCommand) => Promise<void>;
+
+  const shortcutPaletteStateByPlatform = new Map<string, ShortcutCommandPaletteState>();
+  const shortcutCommandHandlerByPlatform = new Map<string, ShortcutCommandHandler>();
+
+  function cloneItems(items: ShortcutCommandPaletteItem[]): ShortcutCommandPaletteItem[] {
+    return items.map((item) => ({ ...item }));
+  }
+
+  export function getShortcutCommandPaletteState(platformName: string): ShortcutCommandPaletteState {
+    const state = shortcutPaletteStateByPlatform.get(platformName);
+    if (!state) {
+      return { pinned: [], dropdown: [] };
+    }
+    return {
+      pinned: cloneItems(state.pinned),
+      dropdown: cloneItems(state.dropdown),
+    };
+  }
+
+  export function setShortcutCommandPaletteState(platformName: string, state: ShortcutCommandPaletteState): void {
+    shortcutPaletteStateByPlatform.set(platformName, {
+      pinned: cloneItems(state.pinned),
+      dropdown: cloneItems(state.dropdown),
+    });
+  }
+
+  export function clearShortcutCommandPaletteState(platformName: string): void {
+    shortcutPaletteStateByPlatform.delete(platformName);
+    shortcutCommandHandlerByPlatform.delete(platformName);
+  }
+
+  export function registerShortcutCommandHandler(platformName: string, handler: ShortcutCommandHandler): void {
+    shortcutCommandHandlerByPlatform.set(platformName, handler);
+  }
+
+  export async function runShortcutCommandPaletteAction(
+    platformName: string,
+    fileName: string,
+    command: PaletteShortcutReorderCommand,
+  ): Promise<void> {
+    const handler = shortcutCommandHandlerByPlatform.get(platformName);
+    if (!handler) return;
+    await handler(fileName, command);
+  }
+</script>
+
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
+  import { onDestroy, onMount, tick } from "svelte";
   import { Events } from "@wailsio/runtime";
   import * as Shortcuts from "wails-shortcuts-service";
   import {
@@ -19,12 +79,24 @@
   import { tooltip } from "../lib/actions/tooltip";
   import { contextMenu } from "../lib/actions/contextMenu";
   import {
+    focusShortcutArrowNavigationTarget,
+    shortcutArrowNavigation,
+  } from "../lib/actions/shortcutArrowNavigation";
+  import {
     platformExeIconUrl,
     triggerPlatformAction,
   } from "../stores/platformPage";
+  import { pushToast } from "../stores/toast";
   import ShortcutZone from "./ShortcutZone.svelte";
   import "../styles/gameshortcutbar.scss";
-  import { createDragReorderController, computeDisplayPinned, computeDisplayDrop } from "../lib/dragReorderShortcuts";
+  import {
+    createDragReorderController,
+    computeDisplayPinned,
+    computeDisplayDrop,
+    reorderShortcutByCommand,
+    type ShortcutReorderCommand,
+    type Zone,
+  } from "../lib/dragReorderShortcuts";
   import { createShortcutFileDropAcceptor } from "../lib/shortcutFileDropAcceptor";
   import { ghostCloneMount } from "../lib/actions/ghostCloneMount";
 
@@ -108,6 +180,7 @@
 
   let pinListEl: HTMLDivElement | null = null;
   let dropListEl: HTMLDivElement | null = null;
+  let dropdownEl: HTMLDivElement | null = null;
 
   const dnd = createDragReorderController({
     getPins: () => pinNames,
@@ -115,7 +188,7 @@
     setPins: (p) => { pinNames = p; },
     setDrops: (d) => { dropNames = d; },
     isDropdownOpen: () => ddOpen,
-    onPersist: persist,
+    onPersist: async () => { await persist(); },
     afterDrag: armSuppressClickAfterDrag,
   });
 
@@ -124,6 +197,7 @@
 
   let suppressNextClick = false;
   let suppressClickExpire: ReturnType<typeof setTimeout> | null = null;
+  let registeredPlatformName = "";
 
   function armSuppressClickAfterDrag(): void {
     if (suppressClickExpire) {
@@ -203,11 +277,13 @@
     }
   }
 
-  async function persist(): Promise<void> {
+  async function persist(): Promise<boolean> {
     try {
       await Shortcuts.SaveShortcutOrder(platformName, pinNames, dropNames);
+      return true;
     } catch {
       await refreshFromServer();
+      return false;
     }
   }
 
@@ -248,12 +324,90 @@
     );
   }
 
+  function shortcutDisplayName(fn: string): string {
+    return meta[fn]?.displayName?.trim() || fn.replace(/\.(lnk|url)$/i, "").trim() || fn;
+  }
+
+  function buildShortcutCommandPaletteState(): ShortcutCommandPaletteState {
+    return {
+      pinned: pinNames.map((fileName) => ({
+        fileName,
+        displayName: shortcutDisplayName(fileName),
+      })),
+      dropdown: dropNames.map((fileName) => ({
+        fileName,
+        displayName: shortcutDisplayName(fileName),
+      })),
+    };
+  }
+
+  function shortcutZone(fn: string): Zone | null {
+    if (pinNames.includes(fn)) return "pinned";
+    if (dropNames.includes(fn)) return "dropdown";
+    return null;
+  }
+
+  async function applyShortcutReorderCommand(fn: string, command: ShortcutReorderCommand): Promise<void> {
+    const zone = shortcutZone(fn);
+    if (!zone) return;
+    const result = reorderShortcutByCommand(pinNames, dropNames, zone, fn, command);
+    if (!result.moved) return;
+    pinNames = result.pins;
+    dropNames = result.drops;
+    const saved = await persist();
+    if (!saved) return;
+    const listName = result.zone === "pinned" ? $t("Shortcut_ListPinned") : $t("Shortcut_ListDropdown");
+    pushToast({
+      type: "success",
+      message: $t("Toast_MovedItemToListPosition", {
+        item: shortcutDisplayName(fn),
+        list: listName,
+        position: result.position,
+        total: result.total,
+      }),
+      duration: 3500,
+    });
+  }
+
+  $: {
+    if (registeredPlatformName && registeredPlatformName !== platformName) {
+      clearShortcutCommandPaletteState(registeredPlatformName);
+      registeredPlatformName = "";
+    }
+    if (platformName) {
+      setShortcutCommandPaletteState(platformName, buildShortcutCommandPaletteState());
+      registerShortcutCommandHandler(platformName, applyShortcutReorderCommand);
+      registeredPlatformName = platformName;
+    }
+  }
+
+  function shortcutReorderMenu(fn: string) {
+    const zone = shortcutZone(fn);
+    const order = zone === "pinned" ? pinNames : zone === "dropdown" ? dropNames : [];
+    const index = order.indexOf(fn);
+    return {
+      canMoveLeft: index > 0,
+      canMoveRight: index >= 0 && index < order.length - 1,
+      canPin: zone === "dropdown",
+      canUnpin: zone === "pinned",
+      canMoveToPinned: zone === "dropdown",
+      canMoveToDropdown: zone === "pinned",
+      onMoveLeft: () => { void applyShortcutReorderCommand(fn, "left"); },
+      onMoveRight: () => { void applyShortcutReorderCommand(fn, "right"); },
+      onPin: () => { void applyShortcutReorderCommand(fn, "pin"); },
+      onUnpin: () => { void applyShortcutReorderCommand(fn, "unpin"); },
+      onMoveToPinned: () => { void applyShortcutReorderCommand(fn, "move-to-pinned"); },
+      onMoveToDropdown: () => { void applyShortcutReorderCommand(fn, "move-to-dropdown"); },
+    };
+  }
+
   function ctxMenuForFile(fn: string): () => import("../stores/contextMenu").MenuItemDef[] {
     const r = meta[fn];
     return buildShortcutContextMenu({
       platformName,
       fileName: fn,
       swapLabel: resolvedSwapAccountLabelForMenu,
+      reorder: () => shortcutReorderMenu(fn),
       onRunAsAdmin: () => {
         if (r)
           void runShortcut(
@@ -275,6 +429,21 @@
     () => platformName,
     () => { ddOpen = true; },
   );
+
+  async function focusDropdownShortcut(edge: "first" | "last" = "first"): Promise<void> {
+    await tick();
+    focusShortcutArrowNavigationTarget(dropdownEl ?? dropListEl, edge);
+  }
+
+  function onShortcutDropdownButtonKeydown(e: KeyboardEvent): void {
+    if (e.key !== "ArrowDown" && e.key !== "ArrowUp") {
+      return;
+    }
+    e.preventDefault();
+    e.stopPropagation();
+    ddOpen = true;
+    void focusDropdownShortcut(e.key === "ArrowUp" ? "last" : "first");
+  }
 
   let offEv: (() => void) | undefined;
   let teardownDnd: (() => void) | undefined;
@@ -319,6 +488,10 @@
   });
 
   onDestroy(() => {
+    if (registeredPlatformName) {
+      clearShortcutCommandPaletteState(registeredPlatformName);
+      registeredPlatformName = "";
+    }
     resolveSwapMenuLabelSeq++;
     fileDropAcceptor.update((cur) =>
       cur === shortcutFileDropAcceptor ? null : cur,
@@ -333,12 +506,13 @@
   });
 </script>
 
-<div class="gameShortcutBar">
+<div class="gameShortcutBar" use:shortcutArrowNavigation={{ capture: true }}>
   <ShortcutZone
     bind:el={pinListEl}
     zone="pinned"
     zoneClass="shortcuts shortcutDndGrid"
     expandClass={ddOpen && pinNames.length === 0 && dropNames.length > 0}
+    ariaLabel={$t("Stats_GameShortcutsHotbar")}
     displaySlots={displayPinned}
     {meta}
     contextMenuFor={ctxMenuForFile}
@@ -355,6 +529,7 @@
       aria-expanded={ddOpen}
       aria-label={$t("Tooltip_ExpandShortcuts")}
       on:click={() => (ddOpen = !ddOpen)}
+      on:keydown={onShortcutDropdownButtonKeydown}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -367,11 +542,12 @@
     </button>
 
     {#if ddOpen}
-      <div class="shortcutDropdown gameShortcuts open" id="shortcutDropdown">
+      <div bind:this={dropdownEl} class="shortcutDropdown gameShortcuts open" id="shortcutDropdown">
         <ShortcutZone
           bind:el={dropListEl}
           zone="dropdown"
           zoneClass="shortcutDropdownItems shortcutDndGrid"
+          ariaLabel={$t("Stats_GameShortcuts")}
           displaySlots={displayDrop}
           {meta}
           contextMenuFor={ctxMenuForFile}

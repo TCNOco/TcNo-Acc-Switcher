@@ -35,3 +35,8 @@ $meta: (
 );
 
 @include editor.theme($palette, $meta);
+
+:root {
+  --blackTernary: #9aa3ad;
+  --text-body-muted: #9aa3ad;
+}

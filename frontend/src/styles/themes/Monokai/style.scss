@@ -86,6 +86,8 @@
 
   --context-menu-hotkey: #5c4820;
   --form-checkbox-border: #756f62;
+  --input-number-border: #bcb7a7;
+  --preview-control-border: #bcb7a7;
   --window-control-hover-bg: #{color.adjust($color: #3f3f3f, $lightness: 14%)};
   --tag-default-bg: #595348;
 
@@ -96,6 +98,8 @@
   --orangeInt: 253, 151, 31;
   --redInt: 249, 38, 114;
   --text-on-bright-bg: #272822;
+  --accent-text-on-selection: #f8f8f2;
+  --accent-text-heading: #fffef9;
 
   --ace-editor-bg: #272822;
   --ace-gutter-fg: #90908a;
@@ -117,7 +121,7 @@
     $modal-bg: #131313,
     $modal-header-bg: #222222,
     $modal-input-bg: #131313,
-    $modal-input-border: #49483e,
+    $modal-input-border: #bcb7a7,
     $overlay-thumb-bg: #0b0b09,
     $overlay-thumb-border: #49483e,
     $notification-border-radius: 0.5rem
@@ -309,12 +313,12 @@ input[type="checkbox"] + label {
 .platform_list_item {
     border-radius: 40px;
     border: var(--accent) 0.1em solid;
-    color: #888888;
+    color: var(--preview-control-border);
     text-shadow: none;
     overflow: hidden;
 
     .icoFG {
-        fill: #888888;
+        fill: var(--preview-control-border);
     }
 
     .icoBG {
@@ -481,7 +485,7 @@ button#LocateProgramExe,
   font-size: smaller;
   background: #202020 !important;
   box-shadow: none;
-  border: 6px solid #131313;
+  border: 0;
   width: 15em;
   margin: 0;
   padding: 0;
@@ -528,19 +532,19 @@ label.acc {
     height: 101.9%;
 
     &.currentAcc {
-        border-color: var(--accent);
+        border-color: var(--shortcut-active-border, var(--accent));
         border-style: dashed;
         border-radius: 0.8rem;
     }
 }
 
 input.acc:checked + label.acc.currentAcc {
-    border-color: var(--accent);
+    border-color: var(--shortcut-active-border, var(--accent));
     border-style: solid;
 }
 
 input.acc:checked + label.acc {
-    border-color: var(--accent);
+    border-color: var(--shortcut-active-border, var(--accent));
     background: #3e3e3e;
     border-radius: 0.8rem;
 }

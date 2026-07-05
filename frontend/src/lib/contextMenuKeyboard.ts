@@ -4,9 +4,10 @@
 
 const SEL_ROW = ":scope > li:not(.row-hidden):not(.ctx-sep):not(.ctx-pagination-li)";
 
-export function focusFirstNavigable(menuRoot: HTMLElement): void {
+export function focusFirstNavigable(menuRoot: HTMLElement): HTMLElement | null {
   const first = firstNavigableInMenu(menuRoot);
   first?.focus();
+  return first;
 }
 
 export function restoreFocus(el: HTMLElement | null): void {
@@ -38,6 +39,14 @@ function focusTargetForRowLi(li: HTMLElement): HTMLElement | null {
     return null;
   }
   return btn ?? li;
+}
+
+function focusTargetForParentSubmenuLi(li: HTMLElement): HTMLElement | null {
+  if (!li.classList.contains("hasSubmenu")) {
+    return null;
+  }
+  const target = focusTargetForRowLi(li);
+  return target === li ? null : target;
 }
 
 /**
@@ -142,6 +151,8 @@ function owningHasSubmenuLi(el: HTMLElement): HTMLElement | null {
 export type KeyboardNavDeps = {
   /** Expand submenu path for row index at current depth — caller maps index from `li`. */
   expandSubmenuForLi: (liHasSubmenu: HTMLElement) => void;
+  /** Collapse the submenu owned by this row, if the caller tracks open submenu state. */
+  collapseSubmenuForLi?: (liHasSubmenu: HTMLElement) => void;
 };
 
 function navigateArrow(active: HTMLElement, menu: HTMLElement, key: "ArrowDown" | "ArrowUp"): void {
@@ -275,12 +286,13 @@ const KEY_HANDLERS: Record<string, KeyHandler> = {
     ev.stopPropagation();
     return true;
   },
-  ArrowLeft: (ev, a) => {
+  ArrowLeft: (ev, a, _m, d) => {
     const ownerLi = owningHasSubmenuLi(a);
     if (!ownerLi) return false;
     ev.preventDefault();
     ev.stopPropagation();
-    ownerLi.focus();
+    d.collapseSubmenuForLi?.(ownerLi);
+    focusTargetForParentSubmenuLi(ownerLi)?.focus();
     return true;
   },
   Enter: (ev, a, _m, d) => handleActivation(ev, a, d),
@@ -310,7 +322,15 @@ export function handleContextMenuKeydown(ev: KeyboardEvent, menuRoot: HTMLElemen
   if (!(menu instanceof HTMLElement) || !menu.classList.contains("ctx-menu-root")) return false;
 
   const active = document.activeElement as HTMLElement | null;
-  if (!active || !menu.contains(active)) return false;
+  if (!active || !menu.contains(active)) {
+    if (ev.key === "ArrowDown" || ev.key === "ArrowUp" || ev.key === "ArrowRight" || ev.key === "ArrowLeft") {
+      ev.preventDefault();
+      ev.stopPropagation();
+      focusFirstNavigable(menu);
+      return true;
+    }
+    return false;
+  }
 
   if (ev.key === "Escape") return false;
 

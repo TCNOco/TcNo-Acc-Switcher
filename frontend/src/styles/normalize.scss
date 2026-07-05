@@ -370,13 +370,16 @@
  /**
   * Remove default style
   */
-  button {
+ button {
      background: none;
      border: none;
      padding: 0;
      text-decoration: none;
      vertical-align: middle;
-     outline: none !important;
+ }
+
+ img {
+   forced-color-adjust: auto;
  }
  
  /**
@@ -385,7 +388,7 @@
   * Credit https://github.com/suitcss/base/
   * 1. Remove the margin in Firefox and Safari
   */
- button:focus {
+button:focus-visible {
    outline: 1px dotted;
    outline: 5px auto -webkit-focus-ring-color;
  }
@@ -418,9 +421,42 @@
   *
   * Details at https://github.com/twbs/bootstrap/pull/30562
   */
-  [role="button"] {
+ [role="button"] {
    cursor: pointer;
  }
+
+.input-modality-keyboard button:focus,
+.input-modality-keyboard a:focus,
+.input-modality-keyboard input:not([type="hidden"]):focus,
+.input-modality-keyboard textarea:focus,
+.input-modality-keyboard select:focus,
+.input-modality-keyboard [role="button"]:focus,
+.input-modality-keyboard [tabindex]:not([tabindex="-1"]):focus,
+.input-modality-controller button:focus,
+.input-modality-controller a:focus,
+.input-modality-controller input:not([type="hidden"]):focus,
+.input-modality-controller textarea:focus,
+.input-modality-controller select:focus,
+.input-modality-controller [role="button"]:focus,
+.input-modality-controller [tabindex]:not([tabindex="-1"]):focus {
+  --focus-ring-color: var(--whiteSecondary, var(--accent));
+  --focus-ring-offset-color: var(--mainContentBackground, var(--code-background, #111));
+  outline: 3px solid var(--focus-ring-color) !important;
+  outline-offset: 2px;
+  box-shadow:
+    0 0 0 2px var(--focus-ring-offset-color),
+    0 0 0 5px var(--focus-ring-color) !important;
+}
+
+.input-modality-pointer button:focus,
+.input-modality-pointer a:focus,
+.input-modality-pointer input:not([type="hidden"]):focus,
+.input-modality-pointer textarea:focus,
+.input-modality-pointer select:focus,
+.input-modality-pointer [role="button"]:focus,
+.input-modality-pointer [tabindex]:not([tabindex="-1"]):focus {
+  outline: none !important;
+}
  
  /**
   * Remove the inheritance of word-wrap in Safari.
@@ -589,6 +625,255 @@
   * 
   * Always hide an element with the `hidden` HTML attribute.
   */
- [hidden] {
+[hidden] {
    display: none !important;
  }
+
+@media (forced-colors: active) {
+  :root {
+    --accent: Highlight;
+    --white: CanvasText;
+    --whiteSecondary: CanvasText;
+    --black: Canvas;
+    --blackSecondary: CanvasText;
+    --blackTernary: GrayText;
+    --code: Canvas;
+    --code-background: Canvas;
+    --slightly-darker-code-background: Canvas;
+    --darker-code-background: Canvas;
+    --even-darker-code-background: Canvas;
+    --document-canvas-bg: Canvas;
+    --mainContentBackground: Canvas;
+    --program-bg: Canvas;
+    --footer-bg: Canvas;
+    --button-bg: ButtonFace;
+    --button-bg-hover: Highlight;
+    --tooltip-bg: Canvas;
+    --scrollbar-track-bg: Canvas;
+    --form-checkbox-border: ButtonText;
+    --input-number-border: CanvasText;
+    --preview-control-border: ButtonText;
+    --modal-bg: Canvas;
+    --modal-header-bg: ButtonFace;
+    --modal-header-fg: ButtonText;
+    --modal-scrim: Canvas;
+    --modal-input-bg: Canvas;
+    --modal-input-border: CanvasText;
+    --modal-body-fg: CanvasText;
+    --modal-muted-fg: GrayText;
+    --surface-row-dark: Canvas;
+    --surface-context-submenu: Canvas;
+    --surface-context-row: Highlight;
+    --surface-search-result: Canvas;
+    --notification-main-bg: Canvas;
+    --notification-message-fg: CanvasText;
+    --overlay-panel-bg: Canvas;
+    --overlay-scrim-deep: Canvas;
+    --overlay-thumb-bg: Canvas;
+    --overlay-thumb-border: CanvasText;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  body,
+  #app,
+  .container,
+  .main-content,
+  .settingsCol {
+    background: Canvas !important;
+    color: CanvasText !important;
+  }
+
+  ::selection {
+    background: Highlight !important;
+    color: HighlightText !important;
+  }
+
+  a,
+  button.fancyLink {
+    color: LinkText !important;
+    text-decoration: underline;
+  }
+
+  button,
+  .button,
+  .btnicontext,
+  [role="button"],
+  .dropdown-toggle,
+  .dropdown-item,
+  .custom-dropdown-item,
+  .modalTestButtons button,
+  #btnStartPlat,
+  #btnAddNew,
+  #btnSettings,
+  #btnHelp {
+    background: ButtonFace !important;
+    border: 1px solid ButtonText !important;
+    color: ButtonText !important;
+    forced-color-adjust: auto;
+  }
+
+  button:hover,
+  button:active,
+  .button:hover,
+  .button:active,
+  .dropdown-item:hover,
+  .dropdown-item:focus,
+  .dropdown-item.active,
+  .show > .dropdown-toggle,
+  [role="button"]:hover,
+  [role="button"]:active {
+    background: Highlight !important;
+    border-color: Highlight !important;
+    color: HighlightText !important;
+  }
+
+  button:disabled,
+  button[disabled],
+  .button[aria-disabled="true"],
+  [role="button"][aria-disabled="true"],
+  input:disabled,
+  select:disabled,
+  textarea:disabled {
+    background: Canvas !important;
+    border-color: GrayText !important;
+    color: GrayText !important;
+    cursor: not-allowed;
+    opacity: 1 !important;
+  }
+
+  input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+  textarea,
+  select,
+  .modal-input,
+  .ctx-menu__search,
+  .accent-custom-picker {
+    background: Canvas !important;
+    border: 1px solid CanvasText !important;
+    color: CanvasText !important;
+  }
+
+  input[type="checkbox"] + label {
+    background: Canvas !important;
+    border: 2px solid ButtonText !important;
+  }
+
+  input[type="checkbox"]:checked + label {
+    background: Highlight !important;
+    border-color: Highlight !important;
+    color: HighlightText !important;
+  }
+
+  button:focus-visible,
+  a:focus-visible,
+  input:not([type="hidden"]):focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  [role="button"]:focus-visible,
+  [tabindex]:not([tabindex="-1"]):focus-visible {
+    outline: 3px solid Highlight !important;
+    outline-offset: 3px;
+  }
+
+  input[type="checkbox"]:focus-visible + label,
+  input.acc:focus-visible + label.acc,
+  .acc_list_item:focus-visible label.acc,
+  .platform_list_item:focus-visible {
+    outline: 3px solid Highlight !important;
+    outline-offset: 3px;
+    border-color: Highlight !important;
+  }
+
+  .dropdown-menu,
+  .custom-dropdown-menu,
+  .contextmenu,
+  .contextmenu .submenu,
+  .searchOverlay_dialog,
+  .searchOverlay_resultList,
+  .modalFG,
+  .modalBG,
+  .acc-img-overlay__panel,
+  .app-lock-panel,
+  .toast,
+  .shortcuts,
+  .shortcutDropdown,
+  .shortcutDropdownItems,
+  .acc_list_actionbar {
+    background: Canvas !important;
+    border: 1px solid CanvasText !important;
+    color: CanvasText !important;
+  }
+
+  .modal-header,
+  .modalTitle,
+  .searchOverlay_header {
+    background: ButtonFace !important;
+    color: ButtonText !important;
+    border-color: ButtonText !important;
+  }
+
+  .contextmenu li:hover,
+  .contextmenu li:has(> .ctx-menu__btn:focus-visible),
+  .contextmenu li.hasSubmenu:focus-visible,
+  .contextmenu li.hasSubmenu:has(> .ctx-menu__label:focus-visible),
+  .searchOverlay_resultItem:hover,
+  .searchOverlay_resultItem.searchOverlay_selected {
+    background: Highlight !important;
+    color: HighlightText !important;
+  }
+
+  .contextmenu li:hover a,
+  .contextmenu li:hover span,
+  .contextmenu li:hover button,
+  .contextmenu li:has(> .ctx-menu__btn:focus-visible) a,
+  .contextmenu li:has(> .ctx-menu__btn:focus-visible) span,
+  .contextmenu li:has(> .ctx-menu__btn:focus-visible) button,
+  .searchOverlay_resultItem:hover *,
+  .searchOverlay_resultItem.searchOverlay_selected * {
+    color: HighlightText !important;
+    fill: HighlightText !important;
+  }
+
+  label.acc,
+  .acc_list_item,
+  .platform_list_item,
+  .placeHolderAcc,
+  .acc_list_item--skeleton,
+  .shortcutPlaceholder {
+    background: Canvas !important;
+    border-color: CanvasText !important;
+    color: CanvasText !important;
+  }
+
+  input.acc:checked + label.acc,
+  input.acc:checked + label.acc.currentAcc,
+  label.acc.currentAcc {
+    background: Highlight !important;
+    border-color: Highlight !important;
+    color: HighlightText !important;
+  }
+
+  label.acc.currentAcc {
+    border-style: dashed !important;
+  }
+
+  label.acc.acc--broken,
+  .steam-acclist .steam_meta_badge.dim,
+  .form-check .form-check-input:disabled ~ label,
+  .form-check .form-check-input[disabled] ~ label {
+    color: GrayText !important;
+    opacity: 1 !important;
+  }
+
+  svg,
+  svg *,
+  i {
+    color: currentColor !important;
+    fill: currentColor !important;
+  }
+}

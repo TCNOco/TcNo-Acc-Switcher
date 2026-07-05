@@ -4,6 +4,7 @@
   import { fade, scale } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
   import { DUR, motionEnabled } from "../../lib/animation";
+  import { modalFocus } from "../../lib/modalFocus";
   import { t } from "../../stores/i18n";
   import {
     MODAL_FRAME_MIN_H,
@@ -42,6 +43,7 @@
   let contentResizeObserver: ResizeObserver | undefined;
   let refitQueued = false;
   let userAdjustedFrame = false;
+  let titleId = "";
 
   function initModalFrame(): void {
     if (!backdropEl || !modalFgEl) return;
@@ -109,6 +111,7 @@
 
   $: if (modalId !== lastInitId) {
     lastInitId = modalId;
+    titleId = `modal-title-label-${modalId}`;
     detachContentObservers();
     frameReady = false;
     userAdjustedFrame = false;
@@ -154,18 +157,9 @@
     dispatch("cancel");
   }
 
-  function onKeydown(e: KeyboardEvent): void {
-    if (e.key === "Escape") {
-      e.preventDefault();
-      dispatch("cancel");
-    }
-  }
-
   onMount(() => {
-    window.addEventListener("keydown", onKeydown);
     window.addEventListener("resize", reclampModalFrame);
     return () => {
-      window.removeEventListener("keydown", onKeydown);
       window.removeEventListener("resize", reclampModalFrame);
       detachContentObservers();
     };
@@ -186,9 +180,10 @@
     class:modalFG--ready={frameReady}
     class:modalFilePicker={kind === "folder"}
     bind:this={modalFgEl}
+    use:modalFocus={{ onEscape: onCancel }}
     role="dialog"
     aria-modal="true"
-    aria-labelledby="modal-title-label"
+    aria-labelledby={titleId}
     style={frameReady
       ? `left:${modalFrame.left}px;top:${modalFrame.top}px;width:${modalFrame.width}px;height:${modalFrame.height}px`
       : undefined}
@@ -219,7 +214,7 @@
             <use href="img/TcNo_Logo_Flat.svg#logo"></use>
           </svg>
         </span>
-        <span id="modal-title-label" class="modal-title-drag">
+        <span id={titleId} class="modal-title-drag">
           {title}
         </span>
         <span class="modal-window-controls" role="toolbar">
@@ -229,12 +224,10 @@
             aria-label={$t("Button_Close")}
             on:click={onCancel}
           >
-            <img
-              class="icon"
-              srcset="img/icons/close-w-10.webp 1x, img/icons/close-w-12.webp 1.25x, img/icons/close-w-15.webp 1.5x, img/icons/close-w-15.webp 1.75x, img/icons/close-w-20.webp 2x, img/icons/close-w-20.webp 2.25x, img/icons/close-w-24.webp 2.5x, img/icons/close-w-30.webp 3x, img/icons/close-w-30.webp 3.5x"
-              draggable="false"
-              alt=""
-            />
+            <svg class="win-btn__glyph win-btn__glyph--close" viewBox="0 0 10 10" aria-hidden="true">
+              <path d="M2 2l6 6" />
+              <path d="M8 2L2 8" />
+            </svg>
           </button>
         </span>
       </header>
@@ -261,7 +254,7 @@
     flex-direction: column;
     position: absolute;
     background: var(--modal-bg, var(--mainContentBackground, var(--program-bg)));
-    border: var(--border-bar-size, 1px) solid var(--border-bar-bg);
+    border: var(--modal-frame-border-width, 1px) solid var(--modal-border, var(--border-bar-bg));
     box-shadow: 0 12px 40px var(--shadow-color-45);
     overflow: visible;
     box-sizing: border-box;
@@ -453,6 +446,21 @@
     &:hover {
       background: var(--window-control-hover-bg);
     }
+  }
+
+  .modal-window-controls .win-btn__glyph {
+    width: 10px;
+    height: 10px;
+    display: block;
+    overflow: visible;
+    color: currentColor;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.2;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+    vector-effect: non-scaling-stroke;
+    forced-color-adjust: auto;
   }
 
   .modal-window-controls .win-btn-close:hover {

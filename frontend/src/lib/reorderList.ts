@@ -27,6 +27,58 @@ export function moveItem<T>(order: readonly T[], from: number, to: number): T[] 
   return next;
 }
 
+export type ReorderCommand = "left" | "right" | "start" | "end";
+
+export type ReorderCommandResult<T> = {
+  items: T[];
+  moved: boolean;
+  fromIndex: number;
+  toIndex: number;
+  position: number;
+  total: number;
+};
+
+function indexForReorderCommand(length: number, from: number, command: ReorderCommand): number {
+  switch (command) {
+    case "left":
+      return Math.max(0, from - 1);
+    case "right":
+      return Math.min(length - 1, from + 1);
+    case "start":
+      return 0;
+    case "end":
+      return Math.max(0, length - 1);
+  }
+}
+
+export function reorderItemByCommand<T>(
+  order: readonly T[],
+  item: T,
+  command: ReorderCommand,
+): ReorderCommandResult<T> {
+  const fromIndex = order.indexOf(item);
+  if (fromIndex < 0) {
+    return {
+      items: [...order],
+      moved: false,
+      fromIndex: -1,
+      toIndex: -1,
+      position: 0,
+      total: order.length,
+    };
+  }
+  const toIndex = indexForReorderCommand(order.length, fromIndex, command);
+  const items = moveItem(order, fromIndex, toIndex);
+  return {
+    items,
+    moved: fromIndex !== toIndex,
+    fromIndex,
+    toIndex,
+    position: toIndex + 1,
+    total: order.length,
+  };
+}
+
 /**
  * Insert index into the list with `from` removed (short array), for left/right half hit-testing.
  */

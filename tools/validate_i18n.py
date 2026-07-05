@@ -64,8 +64,8 @@ def validate_locale(path: Path, source: dict[str, str]) -> list[str]:
         if key not in data:
             continue
         translated = data[key]
-        src_placeholders = sorted(placeholders(source_value))
-        dst_placeholders = sorted(placeholders(translated))
+        src_placeholders = placeholders(source_value)
+        dst_placeholders = placeholders(translated)
         if dst_placeholders != src_placeholders:
             errors.append(
                 f"{path.name}:{key}: placeholders {dst_placeholders} != {src_placeholders}"

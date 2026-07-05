@@ -9,6 +9,7 @@ type settingsBatchEffects struct {
 	dirty                  bool
 	statsEnabled           *bool
 	offlineMode            *bool
+	controllerSupport      *bool
 	discordPresenceRefresh bool
 }
 
@@ -58,6 +59,10 @@ func applySettingsBatchUpdate(s *AppSettings, req SettingsBatchUpdate) settingsB
 	applyBool(&s.StartTrayWithWindows, req.StartTrayWithWindows)
 	applyBool(&s.StartProgramCentered, req.StartProgramCentered)
 	applyBool(&s.AnimationsEnabled, req.AnimationsEnabled)
+	applyBool(&s.ControllerSupportEnabled, req.ControllerSupportEnabled)
+	if req.ControllerSupportEnabled != nil {
+		effects.controllerSupport = req.ControllerSupportEnabled
+	}
 	if req.StatsEnabled != nil {
 		s.StatsEnabled = *req.StatsEnabled
 		effects.statsEnabled = req.StatsEnabled

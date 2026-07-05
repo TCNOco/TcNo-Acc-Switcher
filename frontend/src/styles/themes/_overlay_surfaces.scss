@@ -20,6 +20,7 @@
   --accent-fill-very-soft: rgba(var(--accentInt), 0.12);
   --accent-fill-soft: rgba(var(--accentInt), 0.32);
   --accent-fill-medium: rgba(var(--accentInt), 0.42);
+  --accent-highlight-row: var(--accent-fill-medium);
 
   --notification-border-radius: #{$notification-border-radius};
   --notification-message-fg: #{$notification-message-fg};

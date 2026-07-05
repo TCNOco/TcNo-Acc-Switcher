@@ -16,11 +16,11 @@ $palette: (
   bg-dim: #12120f,
   bg-deep: #0d0c0c,
   bg-panel: #282727,
-  bg-hover: #393836,
+  bg-hover: #403d3a,
   bg-gutter: #282727,
   bg-search: #2d4f67,
   bg-visual: #223249,
-  border: #7a8382,
+  border: #878f8d,
   nontext: #625e5a,
   surface-float: #0d0c0c,
 );
@@ -35,3 +35,10 @@ $meta: (
 );
 
 @include kana.theme($palette, $meta);
+
+:root {
+  --accent-line-muted: rgba(197, 201, 197, 0.42);
+  --accent-overlay-hover: rgba(221, 214, 188, 0.72);
+  --accent-text-on-selection: #ddd6bc;
+  --accent-text-heading: #e6dec4;
+}

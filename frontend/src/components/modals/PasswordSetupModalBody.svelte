@@ -14,7 +14,9 @@
   let confirm = "";
   let error = "";
   let passwordEl: HTMLInputElement | undefined;
+  let confirmEl: HTMLInputElement | undefined;
   let setupBodyHtml = "";
+  const errorId = "password-setup-error";
 
   function escapeHtml(value: string): string {
     return value
@@ -35,6 +37,9 @@
     error = "";
     if (password !== confirm) {
       error = $t("Security_SetPasswordMismatch");
+      requestAnimationFrame(() => {
+        confirmEl?.focus();
+      });
       return;
     }
     dispatch("resolve", { password });
@@ -60,6 +65,8 @@
       type="password"
       class="modal-input"
       autocomplete="new-password"
+      aria-invalid={error ? "true" : undefined}
+      aria-describedby={error ? errorId : undefined}
       on:keydown={(e) => e.key === "Enter" && submit()}
     />
   </label>
@@ -67,16 +74,19 @@
   <label class="modal-field">
     <span>{$t("Security_ConfirmPassword")}</span>
     <input
+      bind:this={confirmEl}
       bind:value={confirm}
       type="password"
       class="modal-input"
       autocomplete="new-password"
+      aria-invalid={error ? "true" : undefined}
+      aria-describedby={error ? errorId : undefined}
       on:keydown={(e) => e.key === "Enter" && submit()}
     />
   </label>
 
   {#if error}
-    <p class="modal-error">{error}</p>
+    <p id={errorId} class="modal-error" role="alert">{error}</p>
   {/if}
 
   <div class="modal-inline-actions settingsCol inputAndButton">

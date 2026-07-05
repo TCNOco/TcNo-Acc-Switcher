@@ -60,7 +60,7 @@
   padding: 1.75rem 1.5rem;
   border-radius: 14px;
   background: var(--overlay-panel-bg);
-  border: 1px solid var(--accent-overlay-border);
+  border: 1px solid var(--preview-control-border, var(--accent-line-muted, var(--accent-overlay-border-strong)));
   box-shadow: 0 12px 48px var(--shadow-color-45);
   text-align: center;
 }
@@ -76,8 +76,7 @@
   margin: 0 0 1.25rem;
   font-size: 0.95rem;
   line-height: 1.45;
-  color: hsl(var(--accentHS), calc(var(--accentL) + 42%));
-  opacity: 0.88;
+  color: var(--whiteSecondary);
 }
 
 .acc-img-overlay__dropzone {
@@ -89,15 +88,15 @@
   justify-content: center;
   gap: 0.75rem;
   padding: 1.25rem;
-  border: 2px dashed var(--accent-overlay-border-strong);
+  border: 2px dashed var(--preview-control-border, var(--accent-line-muted, var(--accent-overlay-border-strong)));
   border-radius: 12px;
-  background: var(--accent-fill-panel);
-  color: var(--accent-text-on-selection);
+  background: var(--overlay-panel-bg);
+  color: var(--white);
   cursor: pointer;
   transition: border-color 0.12s ease, background 0.12s ease;
   &:hover:not(:disabled) {
     border-color: var(--accent-overlay-hover);
-    background: hsla(var(--accentHS), 40%, 16%, 0.75);
+    background: var(--surface-context-row, var(--overlay-panel-bg));
   }
   &:disabled {
     opacity: 0.55;
@@ -106,7 +105,7 @@
 }
 
 .acc-img-overlay__dropicon {
-  color: var(--accent-text-on-selection);
+  color: var(--accent-text-heading);
   display: flex;
 }
 
@@ -171,12 +170,12 @@
   padding: 2rem 2.5rem;
   max-width: min(420px, 90vw);
   min-height: 140px;
-  border: 2px dashed var(--accent-line-muted);
+  border: 2px dashed var(--preview-control-border, var(--accent-line-muted, var(--accent-overlay-border-strong)));
   border-radius: 12px;
-  background: var(--accent-fill-soft);
+  background: var(--overlay-panel-bg);
   box-shadow: 0 8px 40px var(--shadow-color-35);
   text-align: center;
-  color: var(--accent-text-on-selection);
+  color: var(--whiteSecondary);
 }
 
 .fileDropOverlay__icon {
@@ -238,8 +237,8 @@ label.acc.acc--drop-target {
   align-items: center;
   justify-content: center;
   border-radius: inherit;
-  border: 2px dashed var(--accent-line-muted);
-  background: var(--accent-fill-soft);
+  border: 2px dashed var(--preview-control-border, var(--accent-line-muted, var(--accent-overlay-border-strong)));
+  background: var(--overlay-panel-bg);
   backdrop-filter: blur(2.5px);
   -webkit-backdrop-filter: blur(2.5px);
   pointer-events: none;
@@ -251,7 +250,7 @@ label.acc.acc--drop-target {
 .bg-drop-zone:hover,
 .bg-drop-zone--hovered {
   border-color: var(--accent-overlay-hover);
-  background: var(--accent-fill-medium);
+  background: var(--surface-context-row, var(--overlay-panel-bg));
 }
 
 .acc_profile_drop_overlay__center {
@@ -281,7 +280,7 @@ label.acc.acc--drop-target {
   font-size: clamp(0.68rem, 2.8vw, 0.82rem);
   font-weight: 600;
   line-height: 1.25;
-  color: var(--accent-text-heading);
+  color: var(--whiteSecondary);
   text-shadow: 0 1px 2px var(--shadow-color-55-text);
 }
 
@@ -310,9 +309,9 @@ label.acc.acc--drop-target {
   justify-content: center;
   gap: 0.45rem;
   padding: 0.75rem 1rem;
-  border: 2px dashed var(--accent-overlay-border-strong);
+  border: 2px dashed var(--preview-control-border, var(--accent-line-muted, var(--accent-overlay-border-strong)));
   border-radius: 12px;
-  background: var(--accent-fill-panel);
+  background: var(--overlay-panel-bg);
   color: var(--accent-text-on-selection);
   cursor: copy;
   transition:
@@ -350,7 +349,7 @@ label.acc.acc--drop-target {
   font-size: 0.78rem;
   font-weight: 600;
   line-height: 1.3;
-  color: var(--white);
+  color: var(--whiteSecondary);
   text-shadow: 0 1px 2px var(--shadow-color-55-text);
   user-select: none;
 }

@@ -13,6 +13,11 @@ export async function loadAnimationsEnabled(): Promise<void> {
 }
 
 export async function setAnimationsEnabled(enabled: boolean): Promise<void> {
-  await PlatformService.SetAnimationsEnabled(enabled);
+  try {
+    await PlatformService.SetAnimationsEnabled(enabled);
+  } catch (e) {
+    animationsEnabled.set(enabled);
+    throw e;
+  }
   animationsEnabled.set(enabled);
 }

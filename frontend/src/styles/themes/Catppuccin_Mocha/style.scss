@@ -39,3 +39,8 @@ $meta: (
 );
 
 @include cat.theme($palette, $meta);
+
+:root {
+  --input-number-border: #9399b2;
+  --preview-control-border: #9399b2;
+}

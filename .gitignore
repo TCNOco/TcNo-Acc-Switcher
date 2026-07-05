@@ -24,3 +24,4 @@ docs/RELEASING.md
 /.pnpm-store
 /.vite
 /.pnpm-store
+/.codex-cache

@@ -12,6 +12,7 @@ import (
 	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/basic"
 	"TcNo-Acc-Switcher/internal/cli"
+	"TcNo-Acc-Switcher/internal/controllerinput"
 	"TcNo-Acc-Switcher/internal/crashlog"
 	"TcNo-Acc-Switcher/internal/discordrpc"
 	"TcNo-Acc-Switcher/internal/ipc"
@@ -37,11 +38,12 @@ var trayIconPNG []byte
 var updaterPublicKey []byte
 
 var (
-	platformSvc = &platform.PlatformService{}
-	basicSvc    = basic.NewBasicService(platformSvc)
-	steamSvc    = steam.NewSteamService()
-	securitySvc = security.NewService()
-	discordRPC  = discordrpc.NewManager()
+	platformSvc   = &platform.PlatformService{}
+	basicSvc      = basic.NewBasicService(platformSvc)
+	steamSvc      = steam.NewSteamService()
+	controllerSvc = controllerinput.NewService()
+	securitySvc   = security.NewService()
+	discordRPC    = discordrpc.NewManager()
 
 	crashSubmitted bool
 )
@@ -53,6 +55,7 @@ func init() {
 
 	application.RegisterEvent[app.ToastPayload]("toast")
 	application.RegisterEvent[stability.StabilityPromptPayload]("stability-prompt")
+	application.RegisterEvent[string](controllerinput.EventName)
 	application.RegisterEvent[steam.AccountPatch](steam.AccountUpdatedEvent)
 	application.RegisterEvent[basic.AccountImagePatch](basic.AccountImageUpdatedEvent)
 	application.RegisterEvent[basic.GameStatsUpdatedPatch](basic.GameStatsUpdatedEvent)
@@ -67,6 +70,7 @@ func init() {
 
 	platform.SetSteamLaunchHooks(steam.SaveFolderFromConfirmedExe, steam.ResolveSteamExePath)
 	platform.SetSteamReset(steam.ResetToDefaults)
+	platform.SetControllerSupportChangedHook(controllerSvc.SetEnabled)
 	platform.SetDiscordPresenceRefreshHook(discordRPC.RefreshAsync)
 	platform.SetPlatformLaunchers(func() error { return steam.LaunchSteamOnly(nil) }, func(platformKey string) error {
 		return basic.LaunchBasic(basic.FlowDeps{PS: platformSvc}, platformKey, nil)
@@ -187,6 +191,7 @@ func serviceList() []application.Service {
 		application.NewService(&FilesystemService{}),
 		application.NewService(platformSvc),
 		application.NewService(steamSvc),
+		application.NewService(controllerSvc),
 		application.NewService(basicSvc),
 		application.NewService(securitySvc),
 		application.NewService(shortcuts.NewService(platformSvc)),

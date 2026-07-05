@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, tick } from "svelte";
   import { get } from "svelte/store";
   import { route, previousPage, appBarTitle } from "../stores/nav";
   import { t } from "../stores/i18n";
@@ -22,6 +22,10 @@
   import ToastTypeIcon from "../components/ToastTypeIcon.svelte";
   import ReorderPointerGrid from "../components/ReorderPointerGrid.svelte";
   import ThemePickerControls from "../components/ThemePickerControls.svelte";
+  import {
+    focusShortcutArrowNavigationTarget,
+    shortcutArrowNavigation,
+  } from "../lib/actions/shortcutArrowNavigation";
 
   type PvAccRow = {
     name: string;
@@ -32,6 +36,14 @@
   };
 
   type PvShortcut = { label: string };
+  type PvPlatformEdgeState = {
+    id: string;
+    label: string;
+    className: string;
+    selected?: boolean;
+    current?: boolean;
+    disabled?: boolean;
+  };
 
   function textClass(name: string): string {
     const n = name.length;
@@ -44,6 +56,16 @@
     return x ?? "";
   }
 
+  function previewAccountGridLabel(id: string): string {
+    const acc = pvAccounts[id];
+    if (!acc) return id;
+    const parts = [acc.name, acc.steamId, acc.when];
+    if (acc.current) parts.push($t("Tooltip_CurrentAccount"));
+    if (acc.status === "vac") parts.push("VAC");
+    if (acc.status === "limited") parts.push("Limited");
+    return parts.filter(Boolean).join(". ");
+  }
+
   let platformIds = [
     "Steam",
     "GeForce Now",
@@ -51,6 +73,14 @@
     "Epic Games",
     "Ubisoft",
     "Discord",
+  ];
+
+  const platformEdgeStates: PvPlatformEdgeState[] = [
+    { id: "Steam", label: "Selected", className: "preview-platform-edge--selected", selected: true },
+    { id: "Epic Games", label: "Current", className: "preview-platform-edge--current", current: true },
+    { id: "Ubisoft", label: "Disabled", className: "preview-platform-edge--disabled", disabled: true },
+    { id: "Discord", label: "Hover", className: "preview-platform-edge--hover" },
+    { id: "BattleNet", label: "Drop target", className: "preview-platform-edge--drop-target platform_list_placeholder" },
   ];
 
   let accIds = ["pv-1", "pv-2", "pv-3", "pv-4", "pv-5"];
@@ -101,6 +131,7 @@
 
   let toastPermanent = false;
   let shortcutDdOpen = false;
+  let previewShortcutDropdownEl: HTMLDivElement | null = null;
   let settingsDdOpen = false;
   let modalLog: string[] = [];
 
@@ -128,6 +159,21 @@
       { label: tr("Context_SwapTo"), action: () => {} },
       { label: tr("Context_ChangeName"), action: () => {} },
     ];
+  }
+
+  async function focusPreviewDropdownShortcut(edge: "first" | "last" = "first"): Promise<void> {
+    await tick();
+    focusShortcutArrowNavigationTarget(previewShortcutDropdownEl, edge);
+  }
+
+  function onPreviewShortcutDropdownKeydown(e: KeyboardEvent): void {
+    if (e.key !== "ArrowDown" && e.key !== "ArrowUp") {
+      return;
+    }
+    e.preventDefault();
+    e.stopPropagation();
+    shortcutDdOpen = true;
+    void focusPreviewDropdownShortcut(e.key === "ArrowUp" ? "last" : "first");
   }
 
   function logModal(kind: string, detail: string) {
@@ -272,6 +318,10 @@
         placeholderClass="platform_list_item platform_list_placeholder"
         ghostClass="platform_list_item platform_list_item--ghost"
         ariaLabel={$t("Preview_Platforms")}
+        listRole="group"
+        itemRole="button"
+        itemAriaLabel={(id) => $t("Aria_OpenPlatform", { platform: id })}
+        itemActivatesOnSpace={true}
         on:reorder={(e) => {
           platformIds = e.detail.items;
         }}
@@ -324,6 +374,37 @@
     </footer>
   </div>
 
+  <div class="preview_element preview-platform-edge-wrap">
+    <h3 class="SettingsHeader preview-edge-subhead">Platform tile edge states</h3>
+    <div class="platform_list preview-platform-edge-list" role="listbox" aria-label="Platform tile edge states">
+      {#each platformEdgeStates as state}
+        <div
+          class={`platform_list_item platform_list_item--draggable preview-platform-edge ${state.className}`}
+          role="option"
+          aria-selected={state.selected ? "true" : "false"}
+          aria-current={state.current ? "page" : undefined}
+          aria-disabled={state.disabled ? "true" : undefined}
+          tabindex={state.disabled ? -1 : 0}
+        >
+          <div class="platform_tile_ctx" role="presentation">
+            <span class="preview-platform-state-badge">{state.label}</span>
+            <div class="fgText {textClass(state.id)}">
+              <p>{state.id.toUpperCase()}</p>
+            </div>
+            <div class="fgImg" aria-hidden="true">
+              <svg viewBox="0 0 500 500" aria-hidden="true">
+                <use href={platformIconFgHref(state.id)} class="icoFG" />
+              </svg>
+            </div>
+            <svg viewBox="0 0 2084 2084" class="icoBG" aria-hidden="true">
+              <use href="img/platform/glass.svg#GLASS" class="icoGlass" />
+            </svg>
+          </div>
+        </div>
+      {/each}
+    </div>
+  </div>
+
   <h2 class="SettingsHeader">{$t("Preview_Accounts")}</h2>
   <div class="preview_element preview_accounts_wrap">
     <div class="preview-acc-list-wrap" id="acc_list" aria-label={$t("Preview_Accounts")}>
@@ -334,10 +415,15 @@
         placeholderClass="acc_list_item placeHolderAcc"
         ghostClass="acc_list_item acc_list_item--ghost"
         ariaLabel={$t("Preview_Accounts")}
+        itemAriaLabel={previewAccountGridLabel}
+        activeItem={selectedPvAccId}
+        selectOnArrow={true}
         on:reorder={(e) => {
           accIds = e.detail.items;
         }}
-        on:itemclick={() => {}}
+        on:itemclick={(e) => {
+          selectedPvAccId = e.detail.id;
+        }}
       >
         <svelte:fragment slot="item" let:rowId>
           {@const rid = slotKey(rowId)}
@@ -351,6 +437,7 @@
                 id={radioId}
                 name="pv-accounts"
                 value={rid}
+                tabindex="-1"
                 bind:group={selectedPvAccId}
               />
               <label
@@ -384,7 +471,7 @@
         <input id="pvCurrentStatus" type="text" value="" readonly spellcheck="false" tabindex="-1" />
       </div>
       <div class="gameShortcuts">
-        <div class="preview_shortcut_bar">
+        <div class="preview_shortcut_bar" use:shortcutArrowNavigation={{ capture: true }}>
           <ReorderPointerGrid
             items={pinnedShortcutIds}
             listClass="shortcuts shortcutDndGrid"
@@ -414,6 +501,7 @@
               aria-expanded={shortcutDdOpen}
               aria-label={$t("Tooltip_ExpandShortcuts")}
               on:click={() => (shortcutDdOpen = !shortcutDdOpen)}
+              on:keydown={onPreviewShortcutDropdownKeydown}
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true"
                 ><path
@@ -422,7 +510,7 @@
               >
             </button>
             {#if shortcutDdOpen}
-              <div class="shortcutDropdown gameShortcuts open" id="shortcutDropdown">
+              <div bind:this={previewShortcutDropdownEl} class="shortcutDropdown gameShortcuts open" id="shortcutDropdown">
                 <ReorderPointerGrid
                   items={dropdownShortcutIds}
                   listClass="shortcutDropdownItems shortcutDndGrid"
@@ -470,14 +558,14 @@
               /></svg
             >
           </button>
-          <button type="button" class="square" aria-label={$t("Tooltip_Settings")}>
+          <button type="button" id="pvSettingsButton" class="square" aria-label={$t("Tooltip_Settings")}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true"
               ><path
                 d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8.2-74.3-7.8-109.2 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L88.7 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L67.3 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8.2 74.3 7.8 109.2 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"
               /></svg
             >
           </button>
-          <button type="button" class="square" aria-label={$t("Tooltip_Info")}>
+          <button type="button" id="pvInfoButton" class="square" aria-label={$t("Tooltip_Info")}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" aria-hidden="true"
               ><path
                 d="M202.021 0C122.202 0 70.503 32.703 29.914 91.026c-7.363 10.58-5.093 25.086 5.178 32.874l43.138 32.709c10.373 7.865 25.132 6.026 33.253-4.148 25.049-31.381 43.63-49.449 82.757-49.449 30.764 0 68.816 19.799 68.816 49.631 0 22.552-18.617 34.134-48.993 51.164-35.423 19.86-82.299 44.576-82.299 106.405V320c0 13.255 10.745 24 24 24h72.471c13.255 0 24-10.745 24-24v-5.773c0-42.86 125.268-44.645 125.268-160.627C377.504 66.256 286.902 0 202.021 0zM192 373.459c-38.196 0-69.271 31.075-69.271 69.271 0 38.195 31.075 69.27 69.271 69.27s69.271-31.075 69.271-69.271-31.075-69.27-69.271-69.27z"
@@ -485,6 +573,70 @@
             >
           </button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="preview_element preview-account-edge-wrap">
+    <h3 class="SettingsHeader preview-edge-subhead">Account row edge states</h3>
+    <div class="preview-account-edge-grid" aria-label="Account row edge states">
+      <div class="acc_list_item_inner preview_list_item preview-account-edge">
+        <input
+          type="radio"
+          class="acc"
+          id="pv-acc-edge-disabled"
+          name="pv-acc-edge"
+          value="disabled"
+          disabled
+          tabindex="-1"
+        />
+        <label for="pv-acc-edge-disabled" class="acc preview-account-edge--disabled" aria-disabled="true">
+          <img src="/img/BasicDefault.webp" alt="" draggable="false" />
+          <h6>Disabled account</h6>
+          <p class="streamerCensor steamId">76561198000000006</p>
+          <p>Unavailable</p>
+        </label>
+      </div>
+
+      <div class="acc_list_item_inner preview_list_item preview-account-edge">
+        <input type="radio" class="acc" id="pv-acc-edge-broken" name="pv-acc-edge" value="broken" tabindex="-1" />
+        <label for="pv-acc-edge-broken" class="acc acc--broken preview-account-edge--broken">
+          <img src="/img/BasicDefault.webp" alt="" draggable="false" />
+          <h6>Broken data</h6>
+          <span class="acc_broken_badge">Data needs repair</span>
+          <p class="streamerCensor steamId">76561198000000007</p>
+          <p>Missing fields</p>
+        </label>
+      </div>
+
+      <div class="acc_list_item_inner preview_list_item preview-account-edge">
+        <input type="radio" class="acc" id="pv-acc-edge-hover" name="pv-acc-edge" value="hover" tabindex="-1" />
+        <label for="pv-acc-edge-hover" class="acc preview-account-edge--hover">
+          <img src="/img/BasicDefault.webp" alt="" draggable="false" />
+          <h6>Hover account</h6>
+          <p class="streamerCensor steamId">76561198000000008</p>
+          <p>Hover state</p>
+        </label>
+      </div>
+
+      <div class="acc_list_item_inner preview_list_item preview-account-edge">
+        <input type="radio" class="acc" id="pv-acc-edge-drop" name="pv-acc-edge" value="drop" tabindex="-1" />
+        <label for="pv-acc-edge-drop" class="acc acc--profile-drop-target acc--drop-target preview-account-edge--drop-target">
+          <div class="acc_profile_drop_overlay acc_profile_drop_overlay--hover" aria-hidden="true">
+            <div class="acc_profile_drop_overlay__center">
+              <div class="acc_profile_drop_overlay__icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                  ><path fill="currentColor" d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z" /></svg
+                >
+              </div>
+              <span class="acc_profile_drop_overlay__label">{$t("Drop_SetAccountIcon")}</span>
+            </div>
+          </div>
+          <img src="/img/BasicDefault.webp" alt="" draggable="false" />
+          <h6>Drop target</h6>
+          <p class="streamerCensor steamId">76561198000000009</p>
+          <p>Profile image</p>
+        </label>
       </div>
     </div>
   </div>
@@ -713,6 +865,7 @@
       <button type="button" class="btnicontext" on:click={toastError}>Toast error</button>
       <button type="button" class="btnicontext" on:click={toastInfo}>Toast info</button>
       <button type="button" class="btnicontext" on:click={toastViaWindowNotification}>window.notification</button>
+      <button type="button" id="pvDisabledButton" class="btnicontext" disabled>Disabled button</button>
     </div>
   </div>
 
@@ -745,7 +898,7 @@
           </div>
           <div class="rowSetting">
             <div class="form-check">
-              <input id="pvStreamer" type="checkbox" checked disabled />
+              <input id="pvStreamer" class="form-check-input" type="checkbox" checked disabled />
               <label class="form-check-label" for="pvStreamer"></label>
             </div>
             <label for="pvStreamer">{$t("Settings_StreamerMode")}</label>
@@ -753,6 +906,18 @@
           <div class="rowSetting">
             <span>Example text</span>
             <input type="text" id="pvText" value="Read-only sample" readonly tabindex="-1" />
+          </div>
+          <div class="rowSetting">
+            <span>Placeholder text</span>
+            <input type="text" id="pvPlaceholderText" placeholder="Placeholder sample" readonly tabindex="-1" />
+          </div>
+          <div class="rowSetting">
+            <span>Invalid text</span>
+            <input type="text" id="pvInvalidText" value="Invalid sample" aria-invalid="true" readonly tabindex="-1" />
+          </div>
+          <div class="rowSetting">
+            <span>Disabled text</span>
+            <input type="text" id="pvDisabledText" value="Disabled sample" disabled tabindex="-1" />
           </div>
           <h2 class="SettingsHeader">{$t("Settings_Header_Program")}</h2>
           <div class="rowSetting rowDropdown">
@@ -778,7 +943,7 @@
           </div>
           <div class="rowSetting">
             <div class="form-check">
-              <input id="pvTray" type="checkbox" disabled />
+              <input id="pvTray" class="form-check-input" type="checkbox" disabled />
               <label class="form-check-label" for="pvTray"></label>
             </div>
             <label for="pvTray">{$t("Settings_ExitToTray")}</label>
@@ -880,6 +1045,69 @@
     margin-top: 0.25rem;
   }
 
+  .preview-edge-subhead {
+    margin: 0 0 0.65rem;
+    font-size: 1.05rem;
+    border-bottom: none;
+  }
+
+  .preview-platform-edge-wrap,
+  .preview-account-edge-wrap {
+    padding: 1em;
+  }
+
+  .preview-platform-edge-list {
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .preview-platform-edge {
+    overflow: hidden;
+  }
+
+  .preview-platform-state-badge {
+    position: absolute;
+    top: 0.4rem;
+    left: 0.4rem;
+    z-index: 2;
+    padding: 0.12rem 0.32rem;
+    border: 1px solid var(--preview-control-border, var(--accent));
+    border-radius: 2px;
+    background: var(--mainContentBackground, var(--code-background));
+    color: var(--white);
+    font-size: 0.68rem;
+    line-height: 1.2;
+    font-weight: 700;
+  }
+
+  .preview-platform-edge--selected {
+    border-width: 3px;
+    box-shadow: inset 0 0 0 2px var(--mainContentBackground, var(--code-background));
+  }
+
+  .preview-platform-edge--current {
+    border-width: 3px;
+    border-style: dashed;
+  }
+
+  .preview-platform-edge--disabled {
+    cursor: not-allowed;
+    opacity: 0.58;
+    filter: grayscale(0.65);
+  }
+
+  .preview-platform-edge--hover {
+    transform: scale(1.025);
+    box-shadow: 0 4px 18px var(--shadow-color-35);
+    filter: brightness(97%) saturate(1.1) contrast(102%);
+  }
+
+  .preview-platform-edge--drop-target {
+    border-color: var(--preview-control-border, var(--input-number-border, var(--accent))) !important;
+    border-width: 3px;
+    border-style: dashed;
+  }
+
   .preview_accounts_wrap {
     display: flex;
     flex-direction: column;
@@ -890,6 +1118,42 @@
 
   .preview_accounts_actionbar {
     overflow: visible;
+  }
+
+  .preview-account-edge-grid {
+    display: grid;
+    gap: 0.9rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 155px), 1fr));
+    justify-items: center;
+  }
+
+  .preview-account-edge {
+    width: 145px;
+    height: 135px;
+  }
+
+  .preview-account-edge--disabled {
+    cursor: not-allowed;
+    opacity: 0.58;
+    filter: grayscale(0.65);
+  }
+
+  .preview-account-edge--hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 18px var(--shadow-color-35);
+  }
+
+  .preview-account-edge--broken .acc_broken_badge {
+    display: inline-block;
+    margin: 0.15rem 0.35rem 0;
+    padding: 0.08rem 0.24rem;
+    border: 1px solid var(--whiteSecondary);
+    border-radius: 2px;
+    background: var(--mainContentBackground, var(--code-background));
+    color: var(--whiteSecondary);
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1.2;
   }
 
   /* Mirror .steam-acclist ghost/drag rules so preview account DnD matches Platform.svelte */
@@ -1017,16 +1281,20 @@
   }
 
   .preview-static-toast.toast--success {
-    border-color: var(--green);
+    border-color: var(--notification-border-contrast, var(--whiteSecondary));
+    border-left-color: var(--notification-success-border, var(--green));
   }
   .preview-static-toast.toast--warning {
-    border-color: var(--orange);
+    border-color: var(--notification-border-contrast, var(--whiteSecondary));
+    border-left-color: var(--notification-warning-border, var(--orange));
   }
   .preview-static-toast.toast--error {
-    border-color: var(--red);
+    border-color: var(--notification-border-contrast, var(--whiteSecondary));
+    border-left-color: var(--notification-error-border, var(--red));
   }
   .preview-static-toast.toast--info {
-    border-color: var(--accent);
+    border-color: var(--notification-border-contrast, var(--whiteSecondary));
+    border-left-color: var(--notification-info-border, var(--accent));
   }
 
   .preview-toast-live-heading {
@@ -1084,8 +1352,8 @@
     max-height: 11rem;
     overflow: auto;
     background: var(--even-darker-code-background);
-    border: 1px solid var(--button-bg);
-    color: var(--accent-text-bright);
+    border: 1px solid var(--preview-control-border, var(--input-number-border, var(--button-bg)));
+    color: var(--whiteSecondary);
     font-size: 11px;
     line-height: 1.45;
     white-space: pre-wrap;
@@ -1093,7 +1361,7 @@
   }
 
   .modalTestPlaceholder {
-    opacity: 0.65;
+    color: var(--whiteSecondary);
   }
 
   .modalTestButtons {

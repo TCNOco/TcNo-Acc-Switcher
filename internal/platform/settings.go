@@ -26,6 +26,10 @@ type AppSettings struct {
 	// Stored without omitempty so false round-trips: omitted key plus normalize defaults would otherwise force true on load.
 	AnimationsEnabled bool `json:"animationsEnabled"`
 
+	// ControllerSupportEnabled controls app-wide gamepad polling.
+	// Stored without omitempty so false round-trips: omitted key plus normalize defaults would otherwise force true on load.
+	ControllerSupportEnabled bool `json:"controllerSupportEnabled"`
+
 	CommandPaletteHotkey string `json:"commandPaletteHotkey,omitempty"`
 
 	PlatformOrder []string `json:"platformOrder"`
@@ -112,18 +116,19 @@ type AppBackgroundInfo struct {
 
 func defaultSettings() AppSettings {
 	return AppSettings{
-		Version:               1,
-		Language:              "en-US",
-		PlatformExePaths:      map[string]string{},
-		PlatformOrder:         nil,
-		DisabledPlatforms:     nil,
-		StatsEnabled:          true,
-		StatsShare:            true,
-		CrashReportAutoSubmit: true,
-		DiscordRpc:            true,
-		DiscordRpcShare:       false,
-		AnimationsEnabled:     true,
-		CommandPaletteHotkey:  "Ctrl+K",
+		Version:                  1,
+		Language:                 "en-US",
+		PlatformExePaths:         map[string]string{},
+		PlatformOrder:            nil,
+		DisabledPlatforms:        nil,
+		StatsEnabled:             true,
+		StatsShare:               true,
+		CrashReportAutoSubmit:    true,
+		DiscordRpc:               true,
+		DiscordRpcShare:          false,
+		AnimationsEnabled:        true,
+		ControllerSupportEnabled: true,
+		CommandPaletteHotkey:     "Ctrl+K",
 	}
 }
 
@@ -154,6 +159,9 @@ func normalizeAppSettingsDefaults(s *AppSettings, raw map[string]json.RawMessage
 	}
 	if _, ok := raw["animationsEnabled"]; !ok {
 		s.AnimationsEnabled = true
+	}
+	if _, ok := raw["controllerSupportEnabled"]; !ok {
+		s.ControllerSupportEnabled = true
 	}
 	s.CommandPaletteHotkey = normalizeCommandPaletteHotkey(s.CommandPaletteHotkey)
 	if !s.DiscordRpc {
@@ -270,10 +278,11 @@ func saveSettingsAtomic(exeDir string, s AppSettings) error {
 		s.PlatformExePaths = map[string]string{}
 	}
 	normalizeAppSettingsDefaults(&s, map[string]json.RawMessage{
-		"animationsEnabled": {},
-		"statsEnabled":      {},
-		"statsShare":        {},
-		"discordRpc":        {},
+		"animationsEnabled":        {},
+		"statsEnabled":             {},
+		"statsShare":               {},
+		"discordRpc":               {},
+		"controllerSupportEnabled": {},
 	})
 	path, err := resolveSettingsSavePath(exeDir, s)
 	if err != nil {

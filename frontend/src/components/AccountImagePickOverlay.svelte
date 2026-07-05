@@ -1,9 +1,7 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
-  import { get } from "svelte/store";
+  import { modalFocus } from "../lib/modalFocus";
   import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import { t } from "../stores/i18n";
-  import { activeModal } from "../stores/modal";
 
   /** When true, overlay is shown */
   export let open = false;
@@ -16,6 +14,8 @@
   export let onRemoveManual: () => Promise<void>;
 
   let busy = false;
+  let closeButtonEl: HTMLButtonElement | undefined;
+  let panelEl: HTMLDivElement | undefined;
 
   function close(): void {
     if (busy) {
@@ -57,35 +57,34 @@
     }
   }
 
-  function onKeydown(ev: KeyboardEvent): void {
-    if (!open) {
-      return;
-    }
-    if (ev.key === "Escape") {
-      if (get(activeModal)) {
-        return;
-      }
-      ev.preventDefault();
-      close();
-    }
-  }
-
-  onDestroy(() => {
-    /* parent clears open */
-  });
 </script>
-
-<svelte:window on:keydown={onKeydown} />
 
 {#if open}
   <!-- svelte-ignore a11y-click-events-have-key-events -->
   <!-- svelte-ignore a11y-no-static-element-interactions -->
   <!-- `self`: only backdrop clicks — panel/X/button children don't bubble as same target -->
-  <div class="acc-img-overlay" role="presentation" on:click|self={close}>
-    <button type="button" class="acc-img-overlay__x" aria-label={$t("Button_Close")} on:click={close}
+  <div
+    class="acc-img-overlay"
+    use:modalFocus={{ initialFocus: () => panelEl, onEscape: close }}
+    role="presentation"
+    on:click|self={close}
+  >
+    <button
+      bind:this={closeButtonEl}
+      type="button"
+      class="acc-img-overlay__x"
+      aria-label={$t("Button_Close")}
+      on:click={close}
       >&times;</button
     >
-    <div class="acc-img-overlay__panel" role="dialog" aria-modal="true" aria-labelledby="acc-img-overlay-title">
+    <div
+      bind:this={panelEl}
+      class="acc-img-overlay__panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="acc-img-overlay-title"
+      tabindex="-1"
+    >
       <h2 id="acc-img-overlay-title" class="acc-img-overlay__title">
         {$t("Overlay_ProfileImageTitle")}
       </h2>

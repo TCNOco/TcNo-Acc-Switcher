@@ -208,11 +208,12 @@ a:not([href]):not([class]):hover {
 // Platform list
 .platform_list_item {
     border: #FFAA00 1px solid;
-    -webkit-text-stroke: 1px #00A5F8;
-    color: transparent;
-    text-shadow: none;
+    color: var(--whiteSecondary);
+    -webkit-text-stroke: 0;
+    text-shadow: 0 1px 6px var(--shadow-color-50);
 
-    .icoFG {
+    .icoFG,
+    .fgImg use.icoFG {
         fill: #00A5F8;
     }
 

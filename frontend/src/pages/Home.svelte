@@ -14,18 +14,23 @@
   import { contextMenu } from "../lib/actions/contextMenu";
   import type { MenuItemDef } from "../stores/contextMenu";
   import * as Shortcuts from "wails-shortcuts-service";
-  import { fuzzyWordsMatch } from "../lib/searchFuzzy";
   import {
     commandRows,
     isCommandQuery,
     runCommand,
     type CommandPaletteCommand,
   } from "../lib/commandPalette";
+  import { reorderItemByCommand, type ReorderCommand } from "../lib/reorderList";
   import { checkForUpdatesManually } from "../lib/checkForUpdates";
   import { closeSearchOverlay, searchOverlayCtrl } from "../stores/searchOverlay";
   import { setPlatformAccountCounts } from "../stores/platformAccountsCache";
   import { prefetchPlatformPages } from "../lib/pageLoaders";
   import { homeScreenData } from "../stores/homeScreenData";
+  import {
+    buildHomeDisabledRows,
+    buildHomePrimaryRows,
+    classifyHomeSearchPick,
+  } from "../lib/homePageModel";
   import "../styles/HomePlatforms.scss";
 
   let startup: PlatformStartup | null = get(homeScreenData);
@@ -165,6 +170,33 @@
     void PlatformService.SaveHomeOrder(e.detail.items).catch(() => {});
   }
 
+  async function applyPlatformReorderCommand(platformName: string, command: ReorderCommand): Promise<void> {
+    const result = reorderItemByCommand(homeOrder, platformName, command);
+    if (!result.moved) return;
+    const previous = homeOrder;
+    homeOrder = result.items;
+    try {
+      await PlatformService.SaveHomeOrder(result.items);
+      pushToast({
+        type: "success",
+        message: $t("Toast_MovedItemPosition", {
+          item: platformName,
+          position: result.position,
+          total: result.total,
+        }),
+        duration: 3500,
+      });
+    } catch (e) {
+      homeOrder = previous;
+      pushToast({
+        type: "error",
+        title: "",
+        message: e instanceof Error ? e.message : String(e),
+        duration: 8000,
+      });
+    }
+  }
+
   function applyHomePlatformOrderSort(kind: PlatformSortKind): void {
     if (kind !== "alpha_asc" && kind !== "alpha_desc") {
       return;
@@ -178,45 +210,16 @@
   }
 
   function buildHomePrimary(q: string): SearchResultRow[] {
-    const tr = get(t);
-    const dis = new Set(disabledPlatformNames.map((x) => x.trim().toLowerCase()));
-    const enabled = homeOrder.filter((n) => !dis.has(n.trim().toLowerCase()));
-    const trimmed = q.trim();
-    let list = trimmed
-      ? enabled.filter((n) => fuzzyWordsMatch(trimmed, n))
-      : enabled.slice(0, SEARCH_MAX);
-    if (trimmed) {
-      list = list.slice(0, SEARCH_MAX);
-    }
-    return list.map((n) => ({
-      key: `p:${n}`,
-      title: n.toUpperCase(),
-      badge: tr("Search_Section_Platform"),
-      platformIconName: n,
-    }));
+    return buildHomePrimaryRows(homeOrder, disabledPlatformNames, q, get(t), SEARCH_MAX);
   }
 
   function buildHomeDisabled(q: string): SearchResultRow[] {
-    const tr = get(t);
-    const trimmed = q.trim();
-    if (!trimmed) {
-      return [];
-    }
-    return disabledPlatformNames
-      .filter((n) => fuzzyWordsMatch(trimmed, n))
-      .slice(0, SEARCH_MAX)
-      .map((n) => ({
-        key: `d:${n}`,
-        title: n.toUpperCase(),
-        badge: tr("Search_Section_DisabledPlatform"),
-        platformIconName: n,
-        isCategory: true,
-      }));
+    return buildHomeDisabledRows(disabledPlatformNames, q, get(t), SEARCH_MAX);
   }
 
   function buildHomeCommands(): CommandPaletteCommand[] {
     const tr = get(t);
-    return [
+    const commands: CommandPaletteCommand[] = [
       {
         id: "open-settings",
         title: tr("Command_OpenSettings"),
@@ -238,21 +241,47 @@
         run: () => openFeedbackModal({ mode: "suggestion" }),
       },
     ];
+    for (const platformName of homeOrder) {
+      commands.push(
+        {
+          id: `move-platform-left:${platformName}`,
+          title: tr("Command_MovePlatformLeft", { platform: platformName }),
+          run: () => { void applyPlatformReorderCommand(platformName, "left"); },
+        },
+        {
+          id: `move-platform-right:${platformName}`,
+          title: tr("Command_MovePlatformRight", { platform: platformName }),
+          run: () => { void applyPlatformReorderCommand(platformName, "right"); },
+        },
+        {
+          id: `move-platform-start:${platformName}`,
+          title: tr("Command_MovePlatformStart", { platform: platformName }),
+          run: () => { void applyPlatformReorderCommand(platformName, "start"); },
+        },
+        {
+          id: `move-platform-end:${platformName}`,
+          title: tr("Command_MovePlatformEnd", { platform: platformName }),
+          run: () => { void applyPlatformReorderCommand(platformName, "end"); },
+        },
+      );
+    }
+    return commands;
   }
 
   async function onSearchPick(ev: CustomEvent<SearchResultRow>): Promise<void> {
     const row = ev.detail;
     closeSearchOverlay();
-    if (row.key.startsWith("cmd:")) {
+    const pick = classifyHomeSearchPick(row.key);
+    if (pick.kind === "command") {
       runCommand(buildHomeCommands(), row.key);
       return;
     }
-    if (row.key.startsWith("p:")) {
-      await openPlatform(row.key.slice(2));
+    if (pick.kind === "platform") {
+      await openPlatform(pick.value);
       return;
     }
-    if (row.key.startsWith("d:")) {
-      const plat = row.key.slice(2);
+    if (pick.kind === "disabled") {
+      const plat = pick.value;
       try {
         const next = disabledPlatformNames.filter((x) => x !== plat);
         await PlatformService.SetDisabledPlatforms(next);
@@ -272,6 +301,9 @@
 
   function tileContextMenu(platformName: string): MenuItemDef[] {
     const tr = get(t);
+    const index = homeOrder.indexOf(platformName);
+    const canMoveLeft = index > 0;
+    const canMoveRight = index >= 0 && index < homeOrder.length - 1;
     return [
       {
         label: tr("Context_CreateShortcut"),
@@ -316,6 +348,15 @@
             }
           })();
         },
+      },
+      {
+        label: tr("Context_Reorder"),
+        children: [
+          { label: tr("Context_MoveLeft"), disabled: !canMoveLeft, action: () => { void applyPlatformReorderCommand(platformName, "left"); } },
+          { label: tr("Context_MoveRight"), disabled: !canMoveRight, action: () => { void applyPlatformReorderCommand(platformName, "right"); } },
+          { label: tr("Context_MoveToStart"), disabled: !canMoveLeft, action: () => { void applyPlatformReorderCommand(platformName, "start"); } },
+          { label: tr("Context_MoveToEnd"), disabled: !canMoveRight, action: () => { void applyPlatformReorderCommand(platformName, "end"); } },
+        ],
       },
     ];
   }
@@ -371,6 +412,10 @@
           placeholderClass="platform_list_item platform_list_placeholder"
           ghostClass="platform_list_item platform_list_item--ghost"
           ariaLabel={$t("Preview_Platforms")}
+          listRole="group"
+          itemRole="button"
+          itemAriaLabel={(id) => $t("Aria_OpenPlatform", { platform: id })}
+          itemActivatesOnSpace={true}
           on:reorder={onReorder}
           on:itemclick={(e) => void openPlatform(e.detail.id)}
         >

@@ -35,3 +35,36 @@ $meta: (
 );
 
 @include editor.theme($palette, $meta);
+
+:root {
+  --modal-placeholder-fg: #ebdbb2;
+  --modal-header-fg: #f9f5d7;
+  --modal-body-fg: #f2e5bc;
+  --notification-message-fg: #f2e5bc;
+}
+
+.acc-img-overlay__title,
+.fileDropOverlay__text {
+  color: #f9f5d7;
+}
+
+.acc-img-overlay__hint,
+.fileDropOverlay__inner,
+.acc_profile_drop_overlay__label,
+.bg-drop-zone {
+  color: #f2e5bc;
+}
+
+.searchOverlay_resultItem:hover {
+  box-shadow: inset 0 0 0 1px rgba(250, 189, 47, 0.72);
+}
+
+.searchOverlay_resultItem.searchOverlay_selected {
+  outline: 2px solid rgba(235, 219, 178, 0.34);
+  outline-offset: -2px;
+}
+
+.toast--warning {
+  border-left: 0.35rem solid var(--notification-warning-border);
+  padding-left: 0.9rem;
+}

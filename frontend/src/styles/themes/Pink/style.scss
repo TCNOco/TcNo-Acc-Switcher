@@ -8,18 +8,18 @@
 :root {
     /* ── Palette primitives (single hex source per stop) ── */
     --pink-shell: #f5bedb;
-    --pink-shell-fg: #736a6d;
+    --pink-shell-fg: #5a3444;
     --pink-shell-hover: #f1dde9;
     --pink-field: #f5f5f5;
     --pink-field-grad-from: #f5f0f3;
     --pink-panel: #f5f0f3;
-    --pink-input: #f2f8fc;
+    --pink-input: #fff2f7;
     --pink-muted: #f1dde9;
     --pink-tile: #ede8fc;
     --pink-track: #d6d1e8;
     --pink-thumb: var(--pink-magenta);
     --pink-magenta: #c2185b;
-    --pink-line: #e29ab8;
+    --pink-line: #b05f80;
     --pink-btn: #f5f0f3;
     --pink-btn-hover: #f1dde9;
     --pink-btn-active: #ede8fc;
@@ -34,7 +34,7 @@
     --chrome-fg: var(--pink-shell-fg);
     --button-fg: var(--pink-ink);
     --button-border: var(--pink-magenta);
-    --button-border-hover: var(--pink-shell);
+    --button-border-hover: var(--input-number-border);
     --button-active-bg: var(--pink-btn-active);
     --surface-panel: var(--pink-panel);
     --surface-soft: var(--pink-input);
@@ -62,14 +62,14 @@
     --shadow: 0 4px 14px -4px rgba(80, 20, 50, 0.18);
 
     /* "Black" = ink for text (light theme) */
-    --black: var(--pink-ink-2);
-    --blackSecondary: #6b5560;
-    --blackTernary: #957a86;
+    --black: var(--pink-ink);
+    --blackSecondary: #5e414d;
+    --blackTernary: #7a5a68;
     --blackLight: hsla(330, 12%, 22%, 0.08);
 
     /* Primary copy — map to dark ink */
-    --white: var(--pink-ink-2);
-    --whiteSecondary: var(--pink-ink-2);
+    --white: var(--pink-ink);
+    --whiteSecondary: var(--pink-ink);
     --whiteLight: hsla(330, 15%, 12%, 0.06);
 
     --green: #2e7d4a;
@@ -131,10 +131,10 @@
     --overlay-white-14: rgba(255, 255, 255, 0.72);
     --overlay-white-15: rgba(255, 255, 255, 0.75);
 
-    --text-muted-gray: #5c4a52;
-    --text-subtle-gray: #7a6670;
-    --text-dim-gray: #8a7680;
-    --text-body-muted: #6d5a62;
+    --text-muted-gray: #5d4651;
+    --text-subtle-gray: #745963;
+    --text-dim-gray: #886d77;
+    --text-body-muted: #634b56;
 
     --surface-glass-06-15: linear-gradient(145deg, rgba(255, 255, 255, 0.35), rgba(180, 80, 120, 0.08));
 
@@ -142,17 +142,23 @@
     --surface-steam-popover: var(--pink-panel);
     --surface-context-submenu: var(--surface-panel);
     --surface-context-row: var(--pink-muted);
-    --surface-search-result: rgba(242, 248, 252, 0.94);
+    --surface-search-result: rgba(255, 242, 247, 0.94);
 
     --context-menu-hotkey: #5d4035;
     --form-checkbox-border: var(--pink-magenta);
-    --input-number-border: #b06a84;
+    --input-number-border: #a05a75;
+    --preview-control-border: #a05a75;
+    --settings-header-border: var(--pink-magenta);
+    --shortcut-active-border: var(--pink-magenta);
     --window-close-hover: #e53935;
     --window-control-hover-bg: var(--pink-shell-hover);
     --tag-default-bg: var(--pink-magenta);
 
     --accent-border-deep: var(--pink-magenta);
-    --text-on-bright-bg: var(--pink-ink-2);
+    --text-on-bright-bg: var(--pink-ink);
+    --modal-placeholder-fg: var(--pink-ink);
+    --accent-line-muted: rgba(120, 62, 87, 0.55);
+
     --error-text-soft: #b71c1c;
     --error-bg-dim: rgba(255, 200, 200, 0.55);
     --error-bg-hover: rgba(255, 170, 170, 0.7);
@@ -175,11 +181,11 @@
 
     /* Notifications (light cards) */
     --notification-main-bg: var(--pink-panel);
-    --notification-info-border: var(--pink-magenta);
+    --notification-info-border: #8d2f5a;
     --notification-info-highlight: var(--pink-muted);
     --notification-success-border: #2e7d4a;
     --notification-success-highlight: #e8f5e9;
-    --notification-warning-border: #f57c00;
+    --notification-warning-border: #a94700;
     --notification-warning-highlight: #fff3e0;
     --notification-error-border: #c62828;
     --notification-error-highlight: #ffebee;
@@ -190,7 +196,7 @@
         $modal-header-fg: var(--chrome-fg),
         $modal-input-bg: var(--surface-soft),
         $modal-input-border: var(--button-border),
-        $modal-body-fg: var(--pink-ink-2),
+        $modal-body-fg: var(--whiteSecondary),
         $modal-muted-fg: var(--blackTernary),
         $overlay-thumb-bg: var(--surface-soft),
         $overlay-thumb-border: var(--button-border),
@@ -290,12 +296,12 @@ button:target,
 .platform_list_item {
     background: var(--chrome-bg);
     border: 1px solid var(--pink-platform-outline);
-    color: var(--pink-ink-2);
+    color: var(--whiteSecondary);
     text-shadow: none;
 }
 
 .platform_list_item .fgImg use.icoFG {
-    fill: var(--pink-ink-2);
+    fill: var(--whiteSecondary);
 }
 
 .icoGlass {
@@ -325,7 +331,7 @@ button:target,
 
 .modalFG {
     background: var(--surface-panel);
-    border-color: var(--border-panel-soft);
+    border-color: var(--modal-border, var(--border-bar-bg));
 }
 
 #modal_contents {
@@ -442,12 +448,12 @@ input[type="password"] {
 }
 
 input.acc:checked + label.acc {
-    border-color: var(--chrome-bg) !important;
+    border-color: var(--shortcut-active-border, var(--accent)) !important;
     background: var(--surface-muted);
 }
 
 label.acc.currentAcc {
-    border-color: #2e7d4a;
+    border-color: var(--shortcut-active-border, var(--accent));
     border-style: dashed;
 }
 
@@ -487,7 +493,7 @@ label.acc p {
 .actionbar button,
 .actionbar .button {
     color: var(--chrome-fg);
-    border-color: var(--pink-on-shell-border-soft);
+    border-color: var(--input-number-border);
 }
 
 .actionbar button svg,

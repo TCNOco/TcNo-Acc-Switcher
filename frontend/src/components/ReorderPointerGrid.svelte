@@ -6,6 +6,11 @@
     previewSlots,
   } from "../lib/reorderList";
   import { scrollbarWidthVar } from "../lib/actions/scrollbarWidthVar";
+  import {
+    nextGridNavigationId,
+    type GridNavigationCell,
+    type GridNavigationKey,
+  } from "../lib/gridNavigation";
 
   /** Unique string ids; order is the canonical list. */
   export let items: string[] = [];
@@ -19,6 +24,12 @@
   export let placeholderClass = "";
   export let ghostClass = "";
   export let ariaLabel: string | undefined = undefined;
+  export let listRole: "list" | "group" | undefined = "list";
+  export let itemRole: "listitem" | "button" = "listitem";
+  export let itemAriaLabel: ((id: string) => string) | undefined = undefined;
+  export let itemActivatesOnSpace = false;
+  export let activeItem: string | undefined = undefined;
+  export let selectOnArrow = false;
 
   const dispatch = createEventDispatcher<{
     reorder: { items: string[] };
@@ -55,6 +66,15 @@
   let draggingId: string | null = null;
 
   let listEl: HTMLDivElement | null = null;
+  let localActiveId = "";
+  let activeGridId = "";
+
+  $: activeGridId =
+    activeItem && itemsSnap.includes(activeItem)
+      ? activeItem
+      : localActiveId && itemsSnap.includes(localActiveId)
+        ? localActiveId
+        : (itemsSnap[0] ?? "");
 
   $: displaySlots =
     dragIndex === null
@@ -109,6 +129,7 @@
     el.removeAttribute("data-dnd-name");
     el.removeAttribute("tabindex");
     el.removeAttribute("role");
+    el.removeAttribute("aria-label");
     el.classList.remove("reorder-pointer-grid__cell");
     el.style.cursor = "grabbing";
     el.style.width = "100%";
@@ -261,6 +282,62 @@
     dispatch("itemclick", { id });
   }
 
+  function isGridNavigationKey(key: string): key is GridNavigationKey {
+    return key === "ArrowLeft" || key === "ArrowRight" || key === "ArrowUp" || key === "ArrowDown";
+  }
+
+  function cellsForKeyboardNavigation(): GridNavigationCell[] {
+    if (!listEl) return [];
+    return Array.from(listEl.querySelectorAll<HTMLElement>("[data-dnd-cell][data-dnd-name]"))
+      .map((cell, index) => {
+        const rect = cell.getBoundingClientRect();
+        return {
+          id: cell.dataset.dndName ?? "",
+          index,
+          left: rect.left,
+          right: rect.right,
+          top: rect.top,
+          bottom: rect.bottom,
+          width: rect.width,
+          height: rect.height,
+        };
+      })
+      .filter((cell) => cell.id && cell.width > 0 && cell.height > 0);
+  }
+
+  function focusCell(id: string): void {
+    if (!listEl) return;
+    const cell = Array.from(listEl.querySelectorAll<HTMLElement>("[data-dnd-cell][data-dnd-name]"))
+      .find((candidate) => candidate.dataset.dndName === id);
+    cell?.focus({ preventScroll: true });
+    cell?.scrollIntoView({ block: "nearest", inline: "nearest" });
+  }
+
+  function moveCellFocus(e: KeyboardEvent, id: string): boolean {
+    if (!isGridNavigationKey(e.key)) return false;
+    e.preventDefault();
+    e.stopPropagation();
+    const nextId = nextGridNavigationId(cellsForKeyboardNavigation(), id, e.key);
+    if (!nextId) return true;
+    localActiveId = nextId;
+    if (selectOnArrow) {
+      dispatch("itemclick", { id: nextId });
+    }
+    requestAnimationFrame(() => focusCell(nextId));
+    return true;
+  }
+
+  function onCellKeyDown(e: KeyboardEvent, id: string): void {
+    if (moveCellFocus(e, id)) {
+      return;
+    }
+    if (e.key !== "Enter" && !(itemActivatesOnSpace && (e.key === " " || e.code === "Space"))) {
+      return;
+    }
+    e.preventDefault();
+    onCellClick(id);
+  }
+
   let teardown: (() => void) | undefined;
 
   onMount(() => {
@@ -291,7 +368,7 @@
 <div
   bind:this={listEl}
   class="reorder-pointer-grid {listClass}"
-  role="list"
+  role={listRole}
   aria-label={ariaLabel}
   use:scrollbarWidthVar={{
     enabled: listClass.includes("shortcutDropdownItems"),
@@ -313,13 +390,15 @@
       <div
         class="reorder-pointer-grid__cell {itemClass}"
         class:dragging={draggingId === slot}
-        role="listitem"
-        tabindex="0"
+        role={itemRole}
+        aria-label={itemAriaLabel ? itemAriaLabel(slot) : undefined}
+        tabindex={slot === activeGridId ? 0 : -1}
         data-dnd-cell
         data-dnd-visual={i}
         data-dnd-name={slot}
+        on:focus={() => { localActiveId = slot; }}
         on:pointerdown={(e) => onCellPointerDown(e, slot)}
-        on:keydown={(e) => e.key === "Enter" && onCellClick(slot)}
+        on:keydown={(e) => onCellKeyDown(e, slot)}
         on:click={() => onCellClick(slot)}
       >
         <slot name="item" rowId={slot} index={i} />

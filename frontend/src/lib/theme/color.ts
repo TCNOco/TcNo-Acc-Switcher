@@ -63,11 +63,35 @@ export function rgbToHsl({ r, g, b }: { r: number; g: number; b: number }): { h:
   };
 }
 
+function relativeLuminance({ r, g, b }: { r: number; g: number; b: number }): number {
+  const channel = (value: number): number => {
+    const normalized = value / 255;
+    return normalized <= 0.03928 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4;
+  };
+
+  return (0.2126 * channel(r)) + (0.7152 * channel(g)) + (0.0722 * channel(b));
+}
+
+function contrastRatio(first: { r: number; g: number; b: number }, second: { r: number; g: number; b: number }): number {
+  const lighter = Math.max(relativeLuminance(first), relativeLuminance(second));
+  const darker = Math.min(relativeLuminance(first), relativeLuminance(second));
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
+function textColorForAccent(rgb: { r: number; g: number; b: number }): string {
+  const darkText = "#111111";
+  const lightText = "#f8f8f2";
+  const darkContrast = contrastRatio(rgb, hexToRgb(darkText));
+  const lightContrast = contrastRatio(rgb, hexToRgb(lightText));
+
+  return darkContrast >= lightContrast ? darkText : lightText;
+}
+
 export function buildAccentOverlayCss(color: string): string {
   const normalized = normalizeHexColor(color) ?? DEFAULT_THEME_OPTION.defaultAccentColor;
   const rgb = hexToRgb(normalized);
   const hsl = rgbToHsl(rgb);
-  const textOnBrightBg = hsl.l >= 58 ? "#111111" : "#f8f8f2";
+  const textOnBrightBg = textColorForAccent(rgb);
   return `
 :root {
   --accent: ${normalized};

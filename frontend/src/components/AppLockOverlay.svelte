@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { modalFocus } from "../lib/modalFocus";
   import { t } from "../stores/i18n";
   import {
     securityStatus,
@@ -9,6 +10,10 @@
   let password = "";
   let loading = false;
   let error = "";
+  let passwordEl: HTMLInputElement | undefined;
+  const titleId = "app-lock-title";
+  const passwordId = "app-lock-password";
+  const errorId = "app-lock-error";
 
   async function submit(): Promise<void> {
     if (loading) return;
@@ -19,6 +24,9 @@
       password = "";
     } catch (e) {
       error = $t("Security_UnlockFailed");
+      requestAnimationFrame(() => {
+        passwordEl?.focus();
+      });
     } finally {
       loading = false;
     }
@@ -28,7 +36,14 @@
 
 {#if $securityStatusLoaded && $securityStatus.appLocked}
   <div class="app-lock-overlay">
-    <form class="app-lock-panel" role="dialog" aria-modal="true" aria-labelledby="app-lock-title" on:submit|preventDefault={submit}>
+    <form
+      class="app-lock-panel"
+      use:modalFocus={{ initialFocus: () => passwordEl }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={titleId}
+      on:submit|preventDefault={submit}
+    >
       <div class="app-lock-panel-inner">
         <header class="app-lock-headerbar">
           <span class="app-lock-title-left">
@@ -44,7 +59,7 @@
               <use href="img/TcNo_Logo_Flat.svg#logo"></use>
             </svg>
           </span>
-          <span id="app-lock-title" class="app-lock-title-drag">
+          <span id={titleId} class="app-lock-title-drag">
             {$t("Security_Locked_Title")}
           </span>
           <span class="app-lock-title-right" aria-hidden="true"></span>
@@ -53,16 +68,22 @@
         <div class="app-lock-scroll">
           <div class="modal-block">
             <p class="app-lock-body">{$t("Security_Locked_Body")}</p>
-            <input
-              bind:value={password}
-              type="password"
-              autocomplete="current-password"
-              class="modal-input"
-              placeholder={$t("Security_Password")}
-              disabled={loading}
-            />
+            <label class="app-lock-field" for={passwordId}>
+              <span>{$t("Security_Password")}</span>
+              <input
+                id={passwordId}
+                bind:this={passwordEl}
+                bind:value={password}
+                type="password"
+                autocomplete="current-password"
+                class="modal-input"
+                disabled={loading}
+                aria-invalid={error ? "true" : undefined}
+                aria-describedby={error ? errorId : undefined}
+              />
+            </label>
             {#if error}
-              <p class="app-lock-error">{error}</p>
+              <p id={errorId} class="app-lock-error" role="alert">{error}</p>
             {/if}
             <div class="app-lock-actions modal-inline-actions settingsCol inputAndButton">
               <span class="modal-actions-spacer"></span>
@@ -155,6 +176,12 @@
     margin: 0 0 0.85rem;
     color: var(--white, #fff);
     line-height: 1.45;
+  }
+
+  .app-lock-field {
+    display: grid;
+    gap: 0.35rem;
+    margin-bottom: 0.75rem;
   }
 
   .app-lock-error {

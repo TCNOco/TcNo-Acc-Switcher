@@ -42,7 +42,8 @@
 }
 
 .toast--success {
-  border-color: var(--notification-success-border, var(--green, #8aff80));
+  border-color: var(--notification-border-contrast, var(--whiteSecondary, #f8f8f2));
+  border-left-color: var(--notification-success-border, var(--green, #8aff80));
   box-shadow:
     var(--shadow, 0 4px 14px var(--shadow-color-35)),
     0 0 0 1px rgba(var(--greenInt), 0.12);
@@ -56,7 +57,8 @@
 }
 
 .toast--warning {
-  border-color: var(--notification-warning-border, var(--orange, #ffca80));
+  border-color: var(--notification-border-contrast, var(--whiteSecondary, #f8f8f2));
+  border-left-color: var(--notification-warning-border, var(--orange, #ffca80));
   box-shadow:
     var(--shadow, 0 4px 14px var(--shadow-color-35)),
     0 0 0 1px rgba(var(--orangeInt), 0.12);
@@ -70,7 +72,8 @@
 }
 
 .toast--error {
-  border-color: var(--notification-error-border, var(--red, #ff9580));
+  border-color: var(--notification-border-contrast, var(--whiteSecondary, #f8f8f2));
+  border-left-color: var(--notification-error-border, var(--red, #ff9580));
   box-shadow:
     var(--shadow, 0 4px 14px var(--shadow-color-35)),
     0 0 0 1px rgba(var(--redInt), 0.12);
@@ -84,7 +87,8 @@
 }
 
 .toast--info {
-  border-color: var(--notification-info-border, var(--accent));
+  border-color: var(--notification-border-contrast, var(--whiteSecondary, #f8f8f2));
+  border-left-color: var(--notification-info-border, var(--accent));
   box-shadow:
     var(--shadow, 0 4px 14px var(--shadow-color-35)),
     0 0 0 1px var(--accent-fill-very-soft);
@@ -172,7 +176,7 @@
 .toast__message {
   font-size: 1rem;
   line-height: 1.35;
-  color: var(--blackTernary, #a7abbe);
+  color: var(--text-body-muted, var(--blackTernary, #a7abbe));
   word-break: break-word;
   white-space: pre-line;
 }

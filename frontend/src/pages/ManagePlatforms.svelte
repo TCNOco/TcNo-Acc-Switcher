@@ -70,19 +70,17 @@
 </script>
 
 <div class="main-content main-spacing">
+  <h1 class="SettingsHeader">{$t("Settings_Header_ExtraPlatforms")}</h1>
+
   {#if loadError}
     <p class="settings-err">{loadError}</p>
   {:else if !allNames.length}
     <span>{$t("Settings_NoPlatforms")}</span>
-    <div class="SettingsHeader mt-4">
-      <h1>{$t("Settings_Header_ExtraPlatforms")}</h1>
-    </div>
   {:else}
     {#if disabledSorted.length}
       <h2 class="SettingsHeader">{$t("Settings_ExtraPlatformsDisabled")}</h2>
       {#if !anyEnabled}
         <span>{$t("Settings_NoPlatforms")}</span>
-        <h1 class="SettingsHeader mt-4">{$t("Settings_Header_ExtraPlatforms")}</h1>
       {/if}
       <div class="rowSetting platformsCheckboxes">
         {#each disabledSorted as item (item)}
@@ -132,8 +130,4 @@
     color: var(--red);
     padding: 0.5rem;
   }
-  .mt-4 {
-    margin-top: 1.5rem;
-  }
-
 </style>

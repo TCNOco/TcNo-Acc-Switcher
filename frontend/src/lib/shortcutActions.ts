@@ -98,6 +98,20 @@ export function buildShortcutContextMenu(opts: {
   swapLabel: string;
   onRunAsAdmin: () => void;
   onHide: () => void;
+  reorder?: () => {
+    canMoveLeft: boolean;
+    canMoveRight: boolean;
+    canPin: boolean;
+    canUnpin: boolean;
+    canMoveToPinned: boolean;
+    canMoveToDropdown: boolean;
+    onMoveLeft: () => void;
+    onMoveRight: () => void;
+    onPin: () => void;
+    onUnpin: () => void;
+    onMoveToPinned: () => void;
+    onMoveToDropdown: () => void;
+  };
 }): () => MenuItemDef[] {
   return () => {
     const tr = get(t);
@@ -113,6 +127,22 @@ export function buildShortcutContextMenu(opts: {
     const swapLabel = hasSel
       ? tr("Context_CreateShortcut_SwapTo").replace("{name}", swapName)
       : tr("Context_CreateShortcut_SelectAccount");
+    const reorder = opts.reorder?.();
+    const reorderItems: MenuItemDef[] = reorder
+      ? [
+          {
+            label: tr("Context_Reorder"),
+            children: [
+              { label: tr("Context_MoveLeft"), disabled: !reorder.canMoveLeft || busy, action: reorder.onMoveLeft },
+              { label: tr("Context_MoveRight"), disabled: !reorder.canMoveRight || busy, action: reorder.onMoveRight },
+              { label: tr("Context_Pin"), disabled: !reorder.canPin || busy, action: reorder.onPin },
+              { label: tr("Context_Unpin"), disabled: !reorder.canUnpin || busy, action: reorder.onUnpin },
+              { label: tr("Context_MoveToPinned"), disabled: !reorder.canMoveToPinned || busy, action: reorder.onMoveToPinned },
+              { label: tr("Context_MoveToDropdown"), disabled: !reorder.canMoveToDropdown || busy, action: reorder.onMoveToDropdown },
+            ],
+          },
+        ]
+      : [];
 
     return [
       {
@@ -150,6 +180,7 @@ export function buildShortcutContextMenu(opts: {
         disabled: busy,
         action: opts.onRunAsAdmin,
       },
+      ...reorderItems,
       {
         label: tr("Context_Hide"),
         disabled: busy,

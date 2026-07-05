@@ -95,6 +95,23 @@
   border: 0.1em solid transparent;
   cursor: pointer;
   position: relative;
+
+  .input-modality-keyboard &:focus,
+  .input-modality-controller &:focus {
+    outline: 2px solid transparent;
+    outline-offset: 3px;
+  }
+
+  .input-modality-keyboard &:focus label.acc,
+  .input-modality-controller &:focus label.acc {
+    --custom-focus-ring-color: var(--focus-ring-color, var(--whiteSecondary, var(--accent)));
+    --custom-focus-ring-offset-color: var(--focus-ring-offset-color, var(--mainContentBackground, var(--code-background, #111)));
+    border-color: var(--custom-focus-ring-color) !important;
+    box-shadow:
+      0 0 0 2px var(--custom-focus-ring-offset-color),
+      0 0 0 5px var(--custom-focus-ring-color) !important;
+  }
+
   .acc_note {
     white-space: nowrap;
     overflow: hidden;
@@ -216,9 +233,39 @@
 input.acc {
   -moz-appearance: none;
   -webkit-appearance: none;
-  display: none;
+  position: absolute;
+  width: 1px;
+  height: 1px;
   margin: 0;
   padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  border: 0;
+  white-space: nowrap;
+}
+
+.input-modality-keyboard input.acc:focus + label.acc,
+.input-modality-controller input.acc:focus + label.acc {
+  --custom-focus-ring-color: var(--focus-ring-color, var(--whiteSecondary, var(--accent)));
+  --custom-focus-ring-offset-color: var(--focus-ring-offset-color, var(--mainContentBackground, var(--code-background, #111)));
+  border-color: var(--custom-focus-ring-color) !important;
+  box-shadow:
+    0 0 0 2px var(--custom-focus-ring-offset-color),
+    0 0 0 5px var(--custom-focus-ring-color) !important;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  border: 0;
+  white-space: nowrap;
 }
 
 label.acc {
@@ -266,7 +313,7 @@ label.acc {
     }
 
     &.status_limited {
-      border: 2px solid var(--yellow) !important;
+      border: 2px solid var(--preview-control-border, var(--form-checkbox-border, var(--yellow))) !important;
     }
   }
 
@@ -294,7 +341,7 @@ label.acc {
     }
 
     &.status_limited {
-      border: 2px solid var(--yellow) !important;
+      border: 2px solid var(--preview-control-border, var(--form-checkbox-border, var(--yellow))) !important;
     }
   }
 
@@ -343,17 +390,17 @@ label.acc {
 }
 
 input.acc:checked + label.acc.currentAcc {
-  border-color: var(--green);
+  border-color: var(--shortcut-active-border, var(--green));
   border-style: solid;
 }
 
 input.acc:checked + label.acc {
-  border-color: var(--accent);
+  border-color: var(--shortcut-active-border, var(--accent));
   background: var(--button-bg);
 }
 
 label.acc.currentAcc {
-  border-color: var(--green);
+  border-color: var(--shortcut-active-border, var(--green));
   border-style: dashed;
 }
 

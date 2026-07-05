@@ -5,6 +5,8 @@
   import { cubicOut } from "svelte/easing";
   import { Events } from "@wailsio/runtime";
   import { motionEnabled } from "./lib/animation";
+  import { applyAnimationClass } from "./lib/animationClass";
+  import { installInputModalityTracking } from "./lib/inputModality";
   import { animationsEnabled, loadAnimationsEnabled } from "./stores/animationSettings";
   import TitleBar from './components/TitleBar.svelte'
   import UpdateBar from './components/UpdateBar.svelte'
@@ -53,6 +55,8 @@
   import type { AppBackgroundInfo } from "./stores/backgroundImage";
   import { currentThemeBgUrl } from "./lib/themes";
   import { applyUserDataMoveProgress } from "./stores/userDataMove";
+  import { createControllerInputController } from "./lib/controllerInput";
+  import { controllerSupportEnabled, loadControllerSupportEnabled } from "./stores/controllerSupport";
 
   function resolveActiveBg(
     r: typeof $route,
@@ -274,6 +278,17 @@
 
     const offPageStats = installPageStatsTracking();
     const offSvgBridge = registerSvgRenderBridge();
+    const offInputModality = installInputModalityTracking();
+    let cleanupAnimationsClass = () => {};
+    const offAnimationsClass = animationsEnabled.subscribe((enabled) => {
+      cleanupAnimationsClass();
+      cleanupAnimationsClass = applyAnimationClass(enabled);
+    });
+    const controllerInput = createControllerInputController();
+    const offControllerSupport = controllerSupportEnabled.subscribe((enabled) => {
+      controllerInput.setEnabled(enabled);
+    });
+    void loadControllerSupportEnabled();
     const offNav = Events.On("navigate", (ev) => {
       const raw = typeof ev.data === "string" ? ev.data : "";
       applyNavigateJSON(raw);
@@ -376,6 +391,11 @@
       offPlatformsUpdated?.();
       offUserDataMoveProgress?.();
       offSvgBridge?.();
+      offInputModality();
+      offAnimationsClass();
+      cleanupAnimationsClass();
+      offControllerSupport();
+      controllerInput.destroy();
     };
   });
 </script>
@@ -384,6 +404,7 @@
   <FileDropOverlay />
   <UserDataMoveOverlay />
   <ContextMenu />
+  <a class="skip-link" href="#app-main">Skip to content</a>
   <TitleBar />
   <UpdateBar />
   <div class="page">
@@ -399,7 +420,7 @@
     {/key}
     <div class="page-content-wrapper">
       {#key $route.page + ("platformName" in $route ? $route.platformName : "")}
-        <div class="page-content">
+        <main id="app-main" class="page-content" tabindex="-1">
           {#await loadPageModule($route) then { default: Page }}
             {#if $route.page === "home"}
               <Page />
@@ -417,7 +438,7 @@
               <Page />
             {/if}
           {/await}
-        </div>
+        </main>
       {/key}
       {#if showActionBar}
         <ActionBar />
@@ -443,6 +464,22 @@
   .container.busyCursor,
   .container.busyCursor * {
     cursor: progress !important;
+  }
+  .skip-link {
+    position: absolute;
+    left: 1rem;
+    top: 1rem;
+    z-index: 1000000;
+    transform: translateY(calc(-100% - 1rem));
+    padding: 0.5rem 0.75rem;
+    background: var(--mainContentBackground);
+    color: var(--whiteSecondary);
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+    text-decoration: none;
+  }
+  .skip-link:focus-visible {
+    transform: translateY(0);
   }
   .page {
     position: relative;

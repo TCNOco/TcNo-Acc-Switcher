@@ -64,7 +64,7 @@
 </script>
 
 <div class="modal-block">
-  <p class="modal-feedback-body">
+  <p id="feedback-body" class="modal-feedback-body">
     {mode === "issue" ? $t("Feedback_Issue_Body") : $t("Feedback_Suggestion_Body")}
   </p>
   <div class="modal-input-row modal-feedback-input-row">
@@ -76,7 +76,8 @@
       maxlength={FEEDBACK_MAX_LENGTH}
       spellcheck="true"
       autocomplete="off"
-      aria-describedby="feedback-char-count"
+      aria-label={mode === "issue" ? $t("Feedback_Issue_Title") : $t("Feedback_Suggestion_Title")}
+      aria-describedby="feedback-body feedback-char-count"
     ></textarea>
   </div>
   <div id="feedback-char-count" class="modal-feedback-char-count" aria-live="polite">

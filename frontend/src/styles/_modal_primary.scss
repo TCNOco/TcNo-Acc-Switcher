@@ -5,8 +5,8 @@
   button.btnicontext.modal-primary,
   .btnicontext.modal-primary {
     background: var(--accent) !important;
-    border-color: var(--accent) !important;
-    color: var(--text-on-bright-bg, var(--whiteSecondary)) !important;
+    color: var(--text-on-bright-bg, var(--pure-black, #000)) !important;
+    border-color: currentColor !important;
     font-weight: 500;
 
     svg {
@@ -16,17 +16,28 @@
 
     &:hover:not(:disabled) {
       background: var(--accent) !important;
-      border-color: var(--accent) !important;
-      color: var(--text-on-bright-bg, var(--whiteSecondary)) !important;
+      color: var(--text-on-bright-bg, var(--pure-black, #000)) !important;
+      border-color: currentColor !important;
       filter: brightness(1.08);
     }
 
     &:active:not(:disabled),
     &:target:not(:disabled) {
       background: var(--accent) !important;
-      border-color: var(--accent) !important;
-      color: var(--text-on-bright-bg, var(--whiteSecondary)) !important;
+      color: var(--text-on-bright-bg, var(--pure-black, #000)) !important;
+      border-color: currentColor !important;
       filter: brightness(0.96);
+    }
+
+    .input-modality-keyboard &:focus,
+    .input-modality-controller &:focus {
+      --custom-focus-ring-color: var(--text-on-bright-bg, var(--pure-black, #000));
+      --custom-focus-ring-offset-color: var(--accent);
+      outline: 3px solid var(--custom-focus-ring-color) !important;
+      outline-offset: 3px;
+      box-shadow:
+        0 0 0 2px var(--custom-focus-ring-offset-color),
+        0 0 0 5px var(--custom-focus-ring-color) !important;
     }
 
     &:disabled {

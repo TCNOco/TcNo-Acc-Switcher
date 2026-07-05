@@ -17,7 +17,7 @@
   padding: 0 0.1em 0.5em 0;
   margin: 1.25rem 0 0.75rem;
   border: 0;
-  border-left: 3px solid var(--accent);
+  border-left: 3px solid var(--settings-header-border, var(--accent));
   padding: 0.15rem 0 0.15rem 0.65rem;
 }
 
@@ -32,8 +32,13 @@
 }
 
 div.form-text {
-  color: var(--whiteSecondary);
+  color: var(--text-body-muted);
   font-size: 12px !important;
+}
+
+div.form-text > label,
+div.form-text > span {
+  color: var(--whiteSecondary);
 }
 
 input[type="number"],
@@ -64,11 +69,42 @@ textarea {
   border-bottom: 2px solid var(--input-number-border);
 }
 
+input[type="number"]::placeholder,
+input[type="text"]::placeholder,
+input[type="password"]::placeholder,
+textarea::placeholder {
+  color: var(--modal-placeholder-fg, var(--whiteSecondary));
+  opacity: 1;
+}
+
 input[type="number"]:focus,
 input[type="text"]:focus,
 input[type="password"]:focus,
 textarea:focus {
   border-bottom: 2px solid var(--accent);
+}
+
+input[type="number"][aria-invalid="true"],
+input[type="text"][aria-invalid="true"],
+input[type="password"][aria-invalid="true"],
+textarea[aria-invalid="true"] {
+  border-bottom-color: var(--error-text-soft, var(--red, #ff5555));
+  border-bottom-style: double;
+  border-bottom-width: 3px;
+  box-shadow: inset 0 -1px 0 var(--error-text-soft, var(--red, #ff5555));
+}
+
+.input-modality-keyboard input[type="number"]:focus,
+.input-modality-keyboard input[type="text"]:focus,
+.input-modality-keyboard input[type="password"]:focus,
+.input-modality-keyboard textarea:focus,
+.input-modality-controller input[type="number"]:focus,
+.input-modality-controller input[type="text"]:focus,
+.input-modality-controller input[type="password"]:focus,
+.input-modality-controller textarea:focus {
+  box-shadow:
+    0 0 0 2px var(--mainContentBackground, var(--code-background, #111)),
+    0 0 0 4px var(--accent);
 }
 
 input[type="number"]::-webkit-outer-spin-button,
@@ -79,11 +115,18 @@ input::-webkit-inner-spin-button {
 
 label {
   padding: 0 0.5em;
+  color: var(--whiteSecondary);
+}
+
+.rowDropdown > span,
+.accent-custom-picker-row > span {
+  color: var(--whiteSecondary);
 }
 
 /* Checkbox */
 .form-check {
   display: inline-block;
+  position: relative;
   padding: 0;
 
   .form-check-input:disabled {
@@ -92,6 +135,8 @@ label {
 
   .form-check-input:disabled ~ label,
   .form-check-input[disabled] ~ label {
+    cursor: not-allowed;
+    filter: grayscale(0.6);
     opacity: 0.5;
   }
 
@@ -104,14 +149,19 @@ label {
     padding: 0 1rem 0 0.35rem;
   }
 
-  input {
-    display: none;
+  input[type="checkbox"] {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    opacity: 0;
+    z-index: 1;
+    cursor: pointer;
   }
 }
 
 input[type="checkbox"] {
   opacity: 0;
-  z-index: -1;
 }
 
 input[type="checkbox"] + label {
@@ -132,6 +182,15 @@ input[type="checkbox"] + label {
 input[type="checkbox"]:checked + label {
   border: 1px solid var(--form-checkbox-border);
   background: var(--accent);
+}
+
+input[type="checkbox"]:focus-visible + label {
+  --custom-focus-ring-color: var(--focus-ring-color, var(--whiteSecondary, var(--accent)));
+  --custom-focus-ring-offset-color: var(--focus-ring-offset-color, var(--mainContentBackground, var(--code-background, #111)));
+  border-color: var(--custom-focus-ring-color) !important;
+  box-shadow:
+    0 0 0 2px var(--custom-focus-ring-offset-color),
+    0 0 0 5px var(--custom-focus-ring-color) !important;
 }
 
 .settingsCol {
@@ -169,7 +228,7 @@ input[type="checkbox"]:checked + label {
     right: 0;
   }
 
-  button:focus {
+  button:focus:not(:focus-visible) {
     box-shadow: none;
   }
 
@@ -214,6 +273,12 @@ input[type="checkbox"]:checked + label {
   }
 }
 
+.preview-css-page {
+  .modalTestPlaceholder {
+    color: var(--modal-placeholder-fg, var(--whiteSecondary));
+  }
+}
+
 .theme-control-group {
   display: flex;
   flex-wrap: wrap;
@@ -253,7 +318,7 @@ input[type="checkbox"]:checked + label {
   min-width: 0.9rem;
   min-height: 0.9rem;
   flex: 0 0 0.9rem;
-  border: 1px solid var(--shadow-color-50);
+  border: 2px solid var(--text-on-bright-bg, currentColor);
   border-radius: 0.2rem;
   background: var(--accent-chip-color);
   box-shadow: inset 0 0 0 1px var(--overlay-white-12);
@@ -272,7 +337,7 @@ input[type="checkbox"]:checked + label {
   height: 2rem;
   margin: 0;
   padding: 0;
-  border: 1px solid var(--buttonBorder, var(--button-bg-hover));
+  border: 1px solid var(--button-border, var(--input-number-border, var(--button-bg-hover)));
   border-radius: 0.35rem;
   background: none;
   cursor: pointer;

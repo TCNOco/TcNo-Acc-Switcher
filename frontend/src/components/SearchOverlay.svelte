@@ -9,6 +9,56 @@
     isCategory?: boolean;
     categoryChecked?: boolean;
   };
+
+  export type SearchOverlayKeyResult =
+    | { type: "close" }
+    | { type: "move"; selectedIndex: number }
+    | { type: "pick"; selectedIndex: number }
+    | { type: "noop" };
+
+  export function resolveSearchOverlayKey(
+    key: string,
+    queryLength: number,
+    selectedIndex: number,
+    resultCount: number,
+  ): SearchOverlayKeyResult {
+    if (key === "Escape") {
+      return { type: "close" };
+    }
+    if (key === "ArrowDown") {
+      return {
+        type: "move",
+        selectedIndex: Math.min(selectedIndex + 1, Math.max(0, resultCount - 1)),
+      };
+    }
+    if (key === "ArrowUp") {
+      return {
+        type: "move",
+        selectedIndex: Math.max(selectedIndex - 1, 0),
+      };
+    }
+    if (key === "Enter" && resultCount > 0) {
+      return { type: "pick", selectedIndex };
+    }
+    if (key === "Backspace" && queryLength === 0) {
+      return { type: "close" };
+    }
+    return { type: "noop" };
+  }
+
+  export function searchOverlayOptionId(index: number): string {
+    return `searchOverlay_option_${index}`;
+  }
+
+  export function resolveSearchOverlayActiveDescendant(
+    selectedIndex: number,
+    resultCount: number,
+  ): string | undefined {
+    if (resultCount <= 0 || selectedIndex < 0 || selectedIndex >= resultCount) {
+      return undefined;
+    }
+    return searchOverlayOptionId(selectedIndex);
+  }
 </script>
 
 <script lang="ts">
@@ -34,18 +84,59 @@
   export let gameHint = "";
 
   let inputEl: HTMLInputElement | null = null;
+  let dialogEl: HTMLDivElement | null = null;
   let selectedIndex = 0;
   let appliedNonce = -1;
   let focusTimeout: ReturnType<typeof setTimeout> | null = null;
+  let openerEl: HTMLElement | null = null;
+
+  const searchDialogTitleId = "searchOverlay_dialogTitle";
+  const searchInputLabelId = "searchOverlay_inputLabel";
+  const searchResultsId = "searchOverlay_results";
+  const searchStatusId = "searchOverlay_status";
+  const searchCategoryHeadingId = "searchOverlay_categoryHeading";
+  const searchGameHeadingId = "searchOverlay_gameHeading";
 
   $: flatPrimary = primaryRows;
   $: flatCategory = categoryRows;
   $: flatGame = gameRows;
   $: combined = [...flatPrimary, ...flatCategory, ...flatGame];
+  $: hasResults = combined.length > 0;
+  $: selectedRow = combined[selectedIndex] ?? null;
+  $: activeDescendantId = resolveSearchOverlayActiveDescendant(selectedIndex, combined.length);
+  $: selectedSectionLabel =
+    selectedRow === null
+      ? ""
+      : selectedIndex < flatPrimary.length
+        ? ""
+        : selectedIndex < flatPrimary.length + flatCategory.length
+          ? categoryHint
+          : gameHint;
+  $: selectedAnnouncement =
+    selectedRow === null
+      ? ""
+      : [selectedRow.title, selectedRow.badge, selectedSectionLabel, selectedRow.categoryChecked ? "selected" : ""]
+          .filter(Boolean)
+          .join(", ");
+
+  function restoreOpenerFocus(): void {
+    if (!openerEl || typeof openerEl.focus !== "function") {
+      openerEl = null;
+      return;
+    }
+    try {
+      openerEl.focus({ preventScroll: true });
+    } catch {
+      openerEl.focus();
+    }
+    openerEl = null;
+  }
 
   /** `openSearchOverlay` always bumps `nonce`; drive reset off that to avoid ordering bugs with `prevOpen`. */
   $: if (open && syncNonce !== appliedNonce) {
     appliedNonce = syncNonce;
+    const active = document.activeElement;
+    openerEl = active instanceof HTMLElement && !dialogEl?.contains(active) ? active : openerEl;
     query = initialQuery;
     selectedIndex = 0;
     if (focusTimeout !== null) {
@@ -57,6 +148,14 @@
         focusTimeout = null;
         inputEl?.focus();
       }, 50);
+    });
+  }
+
+  $: if (!open && openerEl) {
+    void tick().then(() => {
+      if (!open) {
+        restoreOpenerFocus();
+      }
     });
   }
 
@@ -80,6 +179,13 @@
     selectedIndex = Math.max(0, combined.length - 1);
   }
 
+  $: if (open && activeDescendantId) {
+    void tick().then(() => {
+      const activeOption = document.getElementById(activeDescendantId);
+      activeOption?.scrollIntoView({ block: "nearest" });
+    });
+  }
+
   function onOverlayClick(): void {
     dispatch("close");
   }
@@ -89,23 +195,22 @@
   }
 
   function onInputKeydown(e: KeyboardEvent): void {
-    if (e.key === "Escape") {
+    const result = resolveSearchOverlayKey(e.key, query.length, selectedIndex, combined.length);
+    if (result.type === "close") {
       dispatch("close");
       e.preventDefault();
-    } else if (e.key === "ArrowDown") {
-      selectedIndex = Math.min(selectedIndex + 1, Math.max(0, combined.length - 1));
+      return;
+    }
+    if (result.type === "move") {
+      selectedIndex = result.selectedIndex;
       e.preventDefault();
-    } else if (e.key === "ArrowUp") {
-      selectedIndex = Math.max(selectedIndex - 1, 0);
-      e.preventDefault();
-    } else if (e.key === "Enter" && combined.length > 0) {
-      const row = combined[selectedIndex];
+      return;
+    }
+    if (result.type === "pick") {
+      const row = combined[result.selectedIndex];
       if (row) {
         pickRow(row);
       }
-      e.preventDefault();
-    } else if (e.key === "Backspace" && query.length === 0) {
-      dispatch("close");
       e.preventDefault();
     }
   }
@@ -124,27 +229,52 @@
 {#if open}
   <!-- svelte-ignore a11y-click-events-have-key-events -->
   <!-- svelte-ignore a11y-no-static-element-interactions -->
-  <div class="searchOverlay_overlay" on:click={onOverlayClick}>
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <!-- svelte-ignore a11y-no-static-element-interactions -->
-    <div class="searchOverlay_content" on:click|stopPropagation>
+  <div class="searchOverlay_overlay" role="presentation" on:click|self={onOverlayClick}>
+    <div
+      bind:this={dialogEl}
+      class="searchOverlay_content"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={searchDialogTitleId}
+    >
+      <h2 id={searchDialogTitleId} class="searchOverlay_srOnly">{$t("Context_Search")}</h2>
+      <label id={searchInputLabelId} class="searchOverlay_srOnly" for="searchOverlay_input">
+        {placeholder || $t("Context_Search")}
+      </label>
       <input
+        id="searchOverlay_input"
         bind:this={inputEl}
         bind:value={query}
         type="text"
         class="searchOverlay_searchInput"
         placeholder={placeholder || $t("Context_Search")}
+        role="combobox"
+        aria-labelledby={searchInputLabelId}
+        aria-controls={searchResultsId}
+        aria-expanded={hasResults}
+        aria-haspopup="listbox"
+        aria-autocomplete="list"
+        aria-activedescendant={activeDescendantId}
         spellcheck="false"
         autocomplete="off"
         on:keydown={onInputKeydown}
       />
-      {#if combined.length > 0}
-        <div class="searchOverlay_results">
+      <div id={searchStatusId} class="searchOverlay_srOnly" aria-live="polite">
+        {selectedAnnouncement}
+      </div>
+      {#if hasResults}
+        <div id={searchResultsId} class="searchOverlay_results" role="listbox" aria-label={$t("Context_Search")}>
           {#each flatPrimary as row, i (row.key)}
             <button
               type="button"
+              id={searchOverlayOptionId(combinedIndexFor(row, i, "p"))}
               class="searchOverlay_resultItem"
+              role="option"
+              tabindex="-1"
+              aria-label={[row.title, row.badge].filter(Boolean).join(", ")}
+              aria-selected={combinedIndexFor(row, i, "p") === selectedIndex}
               class:searchOverlay_selected={combinedIndexFor(row, i, "p") === selectedIndex}
+              on:mousedown|preventDefault
               on:click={() => pickRow(row)}
               on:mouseenter={() => (selectedIndex = combinedIndexFor(row, i, "p"))}
             >
@@ -162,16 +292,22 @@
             </button>
           {/each}
           {#if flatCategory.length > 0}
-            <div class="searchOverlay_categorySection">
+            <div class="searchOverlay_categorySection" role="group" aria-labelledby={searchCategoryHeadingId}>
               {#if categoryHint}
-                <span class="searchOverlay_categoryHint">{categoryHint}</span>
+                <span id={searchCategoryHeadingId} class="searchOverlay_categoryHint">{categoryHint}</span>
               {/if}
               {#each flatCategory as row, i (row.key)}
                 <button
                   type="button"
+                  id={searchOverlayOptionId(combinedIndexFor(row, i, "c"))}
                   class="searchOverlay_resultItem searchOverlay_categoryResultItem"
+                  role="option"
+                  tabindex="-1"
+                  aria-label={[row.title, row.badge, categoryHint, row.categoryChecked ? "selected" : ""].filter(Boolean).join(", ")}
+                  aria-selected={combinedIndexFor(row, i, "c") === selectedIndex}
                   class:searchOverlay_categoryChecked={row.categoryChecked}
                   class:searchOverlay_selected={combinedIndexFor(row, i, "c") === selectedIndex}
+                  on:mousedown|preventDefault
                   on:click={() => pickRow(row)}
                   on:mouseenter={() => (selectedIndex = combinedIndexFor(row, i, "c"))}
                 >
@@ -191,16 +327,22 @@
             </div>
           {/if}
           {#if flatGame.length > 0}
-            <div class="searchOverlay_categorySection">
+            <div class="searchOverlay_categorySection" role="group" aria-labelledby={searchGameHeadingId}>
               {#if gameHint}
-                <span class="searchOverlay_categoryHint">{gameHint}</span>
+                <span id={searchGameHeadingId} class="searchOverlay_categoryHint">{gameHint}</span>
               {/if}
               {#each flatGame as row, i (row.key)}
                 <button
                   type="button"
+                  id={searchOverlayOptionId(combinedIndexFor(row, i, "g"))}
                   class="searchOverlay_resultItem searchOverlay_categoryResultItem"
+                  role="option"
+                  tabindex="-1"
+                  aria-label={[row.title, row.badge, gameHint, row.categoryChecked ? "selected" : ""].filter(Boolean).join(", ")}
+                  aria-selected={combinedIndexFor(row, i, "g") === selectedIndex}
                   class:searchOverlay_categoryChecked={row.categoryChecked}
                   class:searchOverlay_selected={combinedIndexFor(row, i, "g") === selectedIndex}
+                  on:mousedown|preventDefault
                   on:click={() => pickRow(row)}
                   on:mouseenter={() => (selectedIndex = combinedIndexFor(row, i, "g"))}
                 >

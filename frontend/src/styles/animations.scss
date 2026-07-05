@@ -1,11 +1,15 @@
+@mixin reduce-motion {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
 /* Reduce motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    @include reduce-motion;
   }
 }
 
@@ -13,10 +17,16 @@
 .animations-disabled,
 .animations-disabled *,
 .animations-disabled *::before,
-.animations-disabled *::after {
-  animation-duration: 0.01ms !important;
-  animation-iteration-count: 1 !important;
-  transition-duration: 0.01ms !important;
+.animations-disabled *::after,
+:root.animations-disabled,
+:root.animations-disabled *,
+:root.animations-disabled *::before,
+:root.animations-disabled *::after,
+body.animations-disabled,
+body.animations-disabled *,
+body.animations-disabled *::before,
+body.animations-disabled *::after {
+  @include reduce-motion;
 }
 
 @keyframes fadeIn {

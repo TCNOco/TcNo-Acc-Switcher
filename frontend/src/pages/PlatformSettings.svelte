@@ -473,7 +473,7 @@
 
     <hr class="settings-divider" />
 
-    <h1 class="SettingsHeader">{$t("Settings_Header_AppWide")}</h1>
+    <h2 class="SettingsHeader">{$t("Settings_Header_AppWide")}</h2>
     <GeneralSettingsBlock />
   {/if}
 </div>

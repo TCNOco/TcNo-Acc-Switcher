@@ -8,14 +8,28 @@
     parentDisplayPath,
   } from "../../lib/fsPaths";
   import { formatUnknownError } from "../../lib/formatWailsError";
-  import { onDestroy } from "svelte";
+  import { getContext, onDestroy } from "svelte";
+  import { writable, type Writable } from "svelte/store";
   import { t } from "../../stores/i18n";
 
   type DirEntry = { name: string; path: string; isDir: boolean };
+  type TreeContext = {
+    activePath: Writable<string>;
+    setActivePath: (path: string) => void;
+    focusRelative: (currentPath: string, offset: number) => Promise<boolean>;
+    focusBoundary: (position: "first" | "last") => Promise<boolean>;
+    focusFirstChild: (parentPath: string) => Promise<boolean>;
+    focusParent: (parentPath: string | null | undefined) => Promise<boolean>;
+  };
+  const PATH_PICKER_TREE_CONTEXT = "path-picker-tree";
+  const inactivePath = writable("");
+  const tree = getContext<TreeContext | undefined>(PATH_PICKER_TREE_CONTEXT);
+  const activeTreePath = tree?.activePath ?? inactivePath;
 
   export let path: string;
   export let label: string;
   export let depth = 0;
+  export let parentPath: string | null = null;
   export let selectedPath: string;
   export let dirsOnly = true;
   export let soughtFilename = "";
@@ -116,25 +130,102 @@
     }
   }
 
+  function onTreeitemFocus(): void {
+    tree?.setActivePath(path);
+  }
+
+  function handleArrowRight(): void {
+    if (!isDir) return;
+    if (!expanded) {
+      expanded = true;
+      void loadChildren();
+      return;
+    }
+    void tree?.focusFirstChild(path);
+  }
+
+  function handleArrowLeft(): void {
+    const pNorm = normalizeDisplayPath(path);
+    if (isDir && expanded) {
+      handleDirCollapse(pNorm);
+      return;
+    }
+    void tree?.focusParent(parentPath);
+  }
+
   $: rowSelected = sameFsPath(selectedPath, path);
   $: rowAncestor = isStrictAncestorFolder(path, selectedPath);
   $: soughtNorm = soughtNameNorm(soughtFilename);
   $: rowSuggested =
     !isDir && soughtNorm !== "" && label.toLowerCase() === soughtNorm;
+  $: rowActive = sameFsPath($activeTreePath, path);
 
   onDestroy(() => {
     loadChildrenSeq++;
   });
 </script>
 
-<div class="pp-node" style:padding-left={depth === 0 ? "0" : "14px"}>
-  <div class="pp-row" class:selected-path={rowSelected} class:ancestor-of-selected={rowAncestor} class:suggested={rowSuggested}>
+<div
+  class="pp-node"
+  style:padding-left={depth === 0 ? "0" : "14px"}
+  role="treeitem"
+  tabindex={rowActive ? 0 : -1}
+  aria-level={depth + 1}
+  aria-selected={rowSelected}
+  aria-expanded={isDir ? expanded : undefined}
+  aria-busy={loading ? "true" : undefined}
+  data-path={normalizeDisplayPath(path)}
+  data-parent-path={parentPath ?? undefined}
+  data-is-dir={isDir ? "true" : "false"}
+  data-expanded={expanded ? "true" : "false"}
+  on:focus={onTreeitemFocus}
+  on:keydown={(e) => {
+    switch (e.key) {
+      case "Enter":
+      case " ":
+        e.preventDefault();
+        onLabelClick();
+        return;
+      case "ArrowDown":
+        e.preventDefault();
+        void tree?.focusRelative(path, 1);
+        return;
+      case "ArrowUp":
+        e.preventDefault();
+        void tree?.focusRelative(path, -1);
+        return;
+      case "ArrowRight":
+        e.preventDefault();
+        handleArrowRight();
+        return;
+      case "ArrowLeft":
+        e.preventDefault();
+        handleArrowLeft();
+        return;
+      case "Home":
+        e.preventDefault();
+        void tree?.focusBoundary("first");
+        return;
+      case "End":
+        e.preventDefault();
+        void tree?.focusBoundary("last");
+        return;
+    }
+  }}
+>
+  <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
+  <div
+    class="pp-row"
+    class:selected-path={rowSelected}
+    class:ancestor-of-selected={rowAncestor}
+    class:suggested={rowSuggested}
+    on:click|stopPropagation={onLabelClick}
+  >
     {#if isDir && showTwisty}
-      <button
-        type="button"
+      <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
+      <span
         class="pp-twisty"
-        aria-expanded={expanded}
-        aria-label={expanded ? $t("Aria_Collapse") : $t("Aria_Expand")}
+        aria-hidden="true"
         on:click|stopPropagation={onLabelClick}
       >
         <img
@@ -145,12 +236,12 @@
           height="20"
           draggable="false"
         />
-      </button>
+      </span>
     {:else if isDir}
-      <button
-        type="button"
+      <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
+      <span
         class="pp-twisty"
-        aria-label={displayLabel}
+        aria-hidden="true"
         on:click|stopPropagation={onLabelClick}
       >
         <img
@@ -161,12 +252,12 @@
           height="20"
           draggable="false"
         />
-      </button>
+      </span>
     {:else}
-      <button
-        type="button"
+      <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
+      <span
         class="pp-twisty"
-        aria-label={displayLabel}
+        aria-hidden="true"
         on:click|stopPropagation={onLabelClick}
       >
         <img
@@ -177,45 +268,39 @@
           height="20"
           draggable="false"
         />
-      </button>
+      </span>
     {/if}
     <span
       class="pp-label"
       class:selected-path={rowSelected}
       class:ancestor-of-selected={rowAncestor}
-      role="button"
-      tabindex="0"
-      on:click|stopPropagation={onLabelClick}
-      on:keydown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onLabelClick();
-        }
-      }}
     >{displayLabel}</span>
   </div>
   {#if expanded}
-    {#if loading}
-      <div class="pp-muted" style:padding-left="14px">…</div>
-    {/if}
-    {#if loadError}
-      <div class="pp-err" style:padding-left="14px">{loadError}</div>
-    {/if}
-    {#each children as c (c.path)}
-      {#if c.isDir || !dirsOnly}
-        <svelte:self
-          path={c.path}
-          label={c.name}
-          depth={depth + 1}
-          isDir={c.isDir}
-          {selectedPath}
-          {dirsOnly}
-          {soughtFilename}
-          {onPick}
-          {expandEpoch}
-        />
+    <div class="pp-node-group" role="group">
+      {#if loading}
+        <div class="pp-muted" style:padding-left="14px">…</div>
       {/if}
-    {/each}
+      {#if loadError}
+        <div class="pp-err" style:padding-left="14px">{loadError}</div>
+      {/if}
+      {#each children as c (c.path)}
+        {#if c.isDir || !dirsOnly}
+          <svelte:self
+            path={c.path}
+            label={c.name}
+            depth={depth + 1}
+            parentPath={path}
+            isDir={c.isDir}
+            {selectedPath}
+            {dirsOnly}
+            {soughtFilename}
+            {onPick}
+            {expandEpoch}
+          />
+        {/if}
+      {/each}
+    </div>
   {/if}
 </div>
 

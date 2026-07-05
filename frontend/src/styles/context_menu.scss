@@ -7,6 +7,7 @@
 
 .contextmenu {
     background: var(--surface-context-submenu);
+    border: 0;
     box-shadow: 10px 10px 5px -3px var(--shadow-color-30);
     position: absolute;
     width: 15em;
@@ -44,13 +45,14 @@
             position: absolute;
             right: 6px;
             top: 50%;
-            transform: translateY(-50%);
-            width: 0.4em;
-            height: 0.8em;
+            transform: translateY(-50%) rotate(-45deg);
+            width: 0.45em;
+            height: 0.45em;
             z-index: 2;
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 512'%3E%3Cpath fill='%23fff' d='M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z'/%3E%3C/svg%3E")
-                no-repeat
-                center / contain;
+            border-right: 0.14em solid currentColor;
+            border-bottom: 0.14em solid currentColor;
+            pointer-events: none;
+            forced-color-adjust: auto;
         }
 
         &.hasSubmenu.hasSubmenu--parent-action > button.ctx-menu__parent-action {
@@ -168,7 +170,8 @@
                 border-left-color: var(--accent);
             }
 
-            &:has(.ctx-menu__search:focus-visible) {
+            .input-modality-keyboard &:has(.ctx-menu__search:focus),
+            .input-modality-controller &:has(.ctx-menu__search:focus) {
                 border-left-color: var(--accent);
             }
 
@@ -194,8 +197,10 @@
     }
 
     li:hover:not(.contextSearch):not(.ctx-pagination-li):not(.ctx-sep)::before,
-    li:has(> .ctx-menu__btn:focus-visible):not(.contextSearch):not(.ctx-pagination-li):not(.ctx-sep)::before,
-    li.hasSubmenu:has(> .ctx-menu__label:focus-visible):not(.contextSearch):not(.ctx-pagination-li):not(.ctx-sep)::before {
+    .input-modality-keyboard & li:has(> .ctx-menu__btn:focus):not(.contextSearch):not(.ctx-pagination-li):not(.ctx-sep)::before,
+    .input-modality-keyboard & li.hasSubmenu:has(> .ctx-menu__label:focus):not(.contextSearch):not(.ctx-pagination-li):not(.ctx-sep)::before,
+    .input-modality-controller & li:has(> .ctx-menu__btn:focus):not(.contextSearch):not(.ctx-pagination-li):not(.ctx-sep)::before,
+    .input-modality-controller & li.hasSubmenu:has(> .ctx-menu__label:focus):not(.contextSearch):not(.ctx-pagination-li):not(.ctx-sep)::before {
         transform: scaleX(1);
     }
 
@@ -208,9 +213,12 @@
     }
 
     /* Keyboard focus — mirror hover when roving tabindex focuses controls / submenu rows */
-    li:has(> .ctx-menu__btn:focus-visible),
-    li.hasSubmenu:focus-visible,
-    li.hasSubmenu:has(> .ctx-menu__label:focus-visible) {
+    .input-modality-keyboard & li:has(> .ctx-menu__btn:focus),
+    .input-modality-keyboard & li.hasSubmenu:focus,
+    .input-modality-keyboard & li.hasSubmenu:has(> .ctx-menu__label:focus),
+    .input-modality-controller & li:has(> .ctx-menu__btn:focus),
+    .input-modality-controller & li.hasSubmenu:focus,
+    .input-modality-controller & li.hasSubmenu:has(> .ctx-menu__label:focus) {
         background: var(--surface-context-row);
     }
 
@@ -229,6 +237,7 @@
         top: 0;
         right: -15em;
         width: 15em;
+        border: 0;
         padding: 0;
         font-size: 1em;
         /* Fixed width for the whole transition — do not animate width (was expand @keyframes),

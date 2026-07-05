@@ -35,3 +35,16 @@ $meta: (
 );
 
 @include kana.theme($palette, $meta, true);
+
+:root {
+  --blackTernary: #504f58;
+  --whiteSecondary: #4c4b58;
+  --text-muted-gray: #504f58;
+  --text-body-muted: #504f58;
+  --form-checkbox-border: #5d556f;
+  --input-number-border: #5d556f;
+  --preview-control-border: #5d556f;
+  --modal-placeholder-fg: #4c4b58;
+  --notification-success-border: #52703b;
+  --notification-warning-border: #915000;
+}

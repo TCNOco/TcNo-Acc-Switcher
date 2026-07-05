@@ -39,3 +39,9 @@ $meta: (
 );
 
 @include cat.theme($palette, $meta);
+
+:root {
+  --text-muted-gray: #e0e6ff;
+  --input-number-border: #939ab7;
+  --preview-control-border: #b8c0e0;
+}

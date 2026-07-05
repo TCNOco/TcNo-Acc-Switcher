@@ -12,6 +12,7 @@
   export let zone: string;
   export let zoneClass = "";
   export let expandClass = false;
+  export let ariaLabel = "";
   export let displaySlots: (string | null)[] = [];
   export let meta: Record<string, ShortcutDTO> = {};
   export let contextMenuFor: (fn: string) => () => MenuItemDef[] = () => () => [];
@@ -26,7 +27,7 @@
   class={zoneClass}
   class:expandShortcuts={expandClass}
   role="list"
-  aria-label={$t("Stats_GameShortcuts")}
+  aria-label={ariaLabel || $t("Stats_GameShortcuts")}
   use:scrollbarWidthVar={{
     enabled: zoneClass.includes("shortcutDropdownItems"),
     targetSelector: ".shortcutDropdown",

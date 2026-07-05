@@ -277,6 +277,14 @@
     closeContextMenu();
   }
 
+  function itemDomId(idx: number): string {
+    return `ctx-menu-item-${[...pathPrefix, idx].join("-")}`;
+  }
+
+  function submenuDomId(idx: number): string {
+    return `ctx-menu-submenu-${[...pathPrefix, idx].join("-")}`;
+  }
+
 </script>
 
 {#if showSearchRow}
@@ -284,6 +292,7 @@
     <input
       type="search"
       class="ctx-menu__search"
+      aria-label={hasSearchMarker ? items[0]?.label || $t("Context_Search") : $t("Context_Search")}
       placeholder={hasSearchMarker ? items[0]?.label || $t("Context_Search") : $t("Context_Search")}
       bind:value={searchQuery}
       on:input={onSearchInput}
@@ -294,8 +303,8 @@
 {/if}
 
 {#if showCreateRow}
-  <li role="menuitem" on:pointerdown={stop}>
-    <button type="button" class="ctx-menu__btn" on:click={onCreateClick}
+  <li role="none" on:pointerdown={stop}>
+    <button type="button" class="ctx-menu__btn" role="menuitem" on:click={onCreateClick}
       >{$t("Context_CreateTag")} {trimmedSearchQuery}</button
     >
   </li>
@@ -316,12 +325,14 @@
     >
       {#if item.action}
         <button
+          id={itemDomId(idx)}
           type="button"
           class="ctx-menu__btn ctx-menu__parent-action"
           role="menuitem"
           tabindex="-1"
           aria-haspopup="true"
           aria-expanded={expandedIdxAtLevel === idx}
+          aria-controls={submenuDomId(idx)}
           disabled={item.disabled}
           aria-disabled={item.disabled ? "true" : undefined}
           on:pointermove={() => expandBranch(idx, "pointermove")}
@@ -329,25 +340,38 @@
           on:click={() => run(item)}>{item.label}</button
         >
       {:else}
-        <span
+        <button
+          id={itemDomId(idx)}
+          type="button"
           role="menuitem"
           tabindex="-1"
           aria-haspopup="true"
           aria-expanded={expandedIdxAtLevel === idx}
+          aria-controls={submenuDomId(idx)}
           class="ctx-menu__label"
           on:pointermove={() => expandBranch(idx, "pointermove")}
           on:mousemove={() => expandBranch(idx, "mousemove")}
-        >{item.label}</span>
+          on:click={() => expandBranch(idx, "click")}
+        >
+          {item.label}
+        </button>
       {/if}
-      <ul class={submenuClass(depth)} role="menu">
+      <ul
+        id={submenuDomId(idx)}
+        class={submenuClass(depth)}
+        role="menu"
+        aria-labelledby={itemDomId(idx)}
+      >
         <svelte:self items={item.children ?? []} depth={depth + 1} pathPrefix={[...pathPrefix, idx]} />
       </ul>
     </li>
   {:else}
-    <li role="menuitem" on:pointerenter={(e) => onLeafPointerEnter(e)}>
+    <li role="none" on:pointerenter={(e) => onLeafPointerEnter(e)}>
       <button
+        id={itemDomId(idx)}
         type="button"
         class="ctx-menu__btn"
+        role="menuitem"
         class:ctx-menu__btn--disabled={item.disabled}
         disabled={item.disabled}
         aria-disabled={item.disabled ? "true" : undefined}

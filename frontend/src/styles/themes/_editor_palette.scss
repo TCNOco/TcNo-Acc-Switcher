@@ -14,6 +14,10 @@
   @return $when-false;
 }
 
+@function accent-ink($fill) {
+  @return pick(color.channel($fill, "lightness", $space: hsl) > 55%, #000, #fff);
+}
+
 @mixin theme($palette, $meta, $is-light: false) {
   $fg: ep($palette, fg);
   $fg-dim: ep($palette, fg-dim);
@@ -157,7 +161,7 @@
     --surface-context-submenu: #{$bg-panel};
     --surface-context-row: #{$surface-context-row};
     --surface-search-result: #{$surface-search-result};
-    --text-on-bright-bg: #{$fg};
+    --text-on-bright-bg: #{accent-ink($accent)};
     --context-menu-hotkey: #{$hotkey};
     --form-checkbox-border: #{$border};
     --input-number-border: #{$input-border};
@@ -236,7 +240,7 @@
   button,
   .button {
     background: var(--button-bg);
-    border-color: var(--form-checkbox-border);
+    border-color: var(--button-bg);
     color: var(--whiteSecondary);
   }
 
@@ -371,12 +375,12 @@
   }
 
   input.acc:checked + label.acc {
-    border-color: var(--accent) !important;
+    border-color: var(--shortcut-active-border, var(--accent)) !important;
     background: var(--surface-context-row);
   }
 
   label.acc.currentAcc {
-    border-color: var(--green);
+    border-color: var(--shortcut-active-border, var(--green));
     border-style: dashed;
   }
 

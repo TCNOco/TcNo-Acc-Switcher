@@ -107,19 +107,29 @@
     </span>
     <span class="window-controls" role="toolbar">
         <button type="button" class="win-btn win-btn-min" aria-label={$t("Aria_WindowMinimize")} on:click={() => Window.Minimise()}>
-            <img class="icon" srcset="img/icons/min-w-10.webp 1x, img/icons/min-w-12.webp 1.25x, img/icons/min-w-15.webp 1.5x, img/icons/min-w-15.webp 1.75x, img/icons/min-w-20.webp 2x, img/icons/min-w-20.webp 2.25x, img/icons/min-w-24.webp 2.5x, img/icons/min-w-30.webp 3x, img/icons/min-w-30.webp 3.5x" draggable="false" alt="-">
+            <svg class="win-btn__glyph win-btn__glyph--min" viewBox="0 0 10 10" aria-hidden="true">
+                <path d="M1 5h8" />
+            </svg>
         </button>
         {#if maximised}
             <button type="button" class="win-btn win-btn-max" aria-label={$t("Aria_WindowRestore")} on:click={() => Window.Restore()}>
-                <img class="icon" srcset="img/icons/restore-w-10.webp 1x, img/icons/restore-w-12.webp 1.25x, img/icons/restore-w-15.webp 1.5x, img/icons/restore-w-15.webp 1.75x, img/icons/restore-w-20.webp 2x, img/icons/restore-w-20.webp 2.25x, img/icons/restore-w-24.webp 2.5x, img/icons/restore-w-30.webp 3x, img/icons/restore-w-30.webp 3.5x" draggable="false" alt="R">
+                <svg class="win-btn__glyph win-btn__glyph--restore" viewBox="0 0 10 10" aria-hidden="true">
+                    <path d="M2.5 1.5h5v5h-5z" />
+                    <path d="M4.5 3.5h4v5h-5v-4" />
+                </svg>
             </button>
         {:else}
             <button type="button" class="win-btn win-btn-max" aria-label={$t("Aria_WindowMaximize")} on:click={() => Window.Maximise()}>
-                <img class="icon" srcset="img/icons/max-w-10.webp 1x, img/icons/max-w-12.webp 1.25x, img/icons/max-w-15.webp 1.5x, img/icons/max-w-15.webp 1.75x, img/icons/max-w-20.webp 2x, img/icons/max-w-20.webp 2.25x, img/icons/max-w-24.webp 2.5x, img/icons/max-w-30.webp 3x, img/icons/max-w-30.webp 3.5x" draggable="false" alt="M">
+                <svg class="win-btn__glyph win-btn__glyph--max" viewBox="0 0 10 10" aria-hidden="true">
+                    <path d="M1.5 1.5h7v7h-7z" />
+                </svg>
             </button>
         {/if}
         <button type="button" class="win-btn win-btn-close" aria-label={$t("Aria_WindowClose")} on:click={() => Window.Close()}>
-            <img class="icon" srcset="img/icons/close-w-10.webp 1x, img/icons/close-w-12.webp 1.25x, img/icons/close-w-15.webp 1.5x, img/icons/close-w-15.webp 1.75x, img/icons/close-w-20.webp 2x, img/icons/close-w-20.webp 2.25x, img/icons/close-w-24.webp 2.5x, img/icons/close-w-30.webp 3x, img/icons/close-w-30.webp 3.5x" draggable="false" alt="X">
+            <svg class="win-btn__glyph win-btn__glyph--close" viewBox="0 0 10 10" aria-hidden="true">
+                <path d="M2 2l6 6" />
+                <path d="M8 2L2 8" />
+            </svg>
         </button>
     </span>
 </header>
@@ -207,6 +217,23 @@
         &:hover {
             background: var(--window-control-hover-bg);
         }
+    }
+    .win-btn__glyph {
+        width: 10px;
+        height: 10px;
+        display: block;
+        overflow: visible;
+        color: currentColor;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.2;
+        stroke-linecap: square;
+        stroke-linejoin: miter;
+        vector-effect: non-scaling-stroke;
+        forced-color-adjust: auto;
+    }
+    .win-btn__glyph--min {
+        stroke-linecap: butt;
     }
     .win-btn-close:hover {background: var(--window-close-hover);}
 </style>

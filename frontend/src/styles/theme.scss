@@ -107,6 +107,7 @@
     --context-menu-hotkey: #402B00;
     --form-checkbox-border: #6272a4;
     --input-number-border: #888888;
+    --preview-control-border: #a7abbe;
     --window-close-hover: #d51426;
     --window-control-hover-bg: #3b4853;
     --error-text-soft: #ffb4b4;
@@ -133,6 +134,7 @@
     --accent-overlay-border: rgba(var(--accentInt), 0.35);
     --accent-overlay-border-strong: rgba(var(--accentInt), 0.55);
     --accent-overlay-hover: rgba(var(--accentInt), 0.85);
+    --accent-line-muted: var(--accent-overlay-border-strong);
     --accent-fill-very-soft: rgba(var(--accentInt), 0.12);
     --accent-fill-soft: rgba(var(--accentInt), 0.32);
     --accent-fill-medium: rgba(var(--accentInt), 0.42);
@@ -155,6 +157,7 @@
     --notification-border-radius: 2px;
     --notification-message-fg: var(--whiteSecondary);
     --modal-bg: var(--mainContentBackground);
+    --modal-border: var(--border-bar-bg);
     --modal-header-bg: var(--border-bar-bg);
     --modal-header-fg: var(--whiteSecondary);
     --modal-scrim: var(--backdrop-scrim-55);
@@ -165,6 +168,38 @@
     --overlay-thumb-bg: var(--even-darker-code-background);
     --overlay-thumb-border: var(--button-bg);
     --overlay-thumb-muted-fg: var(--blackTernary);
+    --context-menu-border: var(--border-bar-bg);
+
+    /* Visual role contract: canonical aliases for themes and shared components. */
+    --role-page-bg: var(--program-bg, var(--mainContentBackground, #11181d));
+    --role-page-canvas: var(--document-canvas-bg, var(--mainContentBackground, #11181d));
+    --role-panel-bg: var(--mainContentBackground, var(--code, #263440));
+    --role-surface-raised-bg: var(--overlay-panel-bg, var(--code, #263440));
+    --role-field-bg: var(--modal-input-bg, var(--even-darker-code-background, #06080a));
+    --role-field-border: var(--modal-input-border, var(--button-bg, #274560));
+    --role-button-bg: var(--button-bg, #274560);
+    --role-button-hover-bg: var(--button-bg-hover, var(--button-bg, #274560));
+    --role-dropdown-bg: var(--surface-context-submenu, var(--code, #263440));
+    --role-dropdown-hover-bg: var(--surface-context-row, var(--button-bg-hover, #28374E));
+    --role-tile-bg: var(--surface-search-result, var(--overlay-white-08, rgba(255, 255, 255, 0.08)));
+    --role-tile-border: var(--accent-overlay-border, var(--button-bg, #274560));
+    --role-toast-bg: var(--notification-main-bg, var(--darker-code-background, #0f151a));
+    --role-toast-fg: var(--notification-message-fg, var(--whiteSecondary, #fff));
+    --role-modal-bg: var(--modal-bg, var(--mainContentBackground, #11181d));
+    --role-modal-fg: var(--modal-body-fg, var(--whiteSecondary, #fff));
+    --role-overlay-bg: var(--overlay-panel-bg, rgba(20, 32, 52, 0.95));
+    --role-overlay-scrim: var(--overlay-scrim-deep, var(--modal-scrim, rgba(0, 0, 0, 0.55)));
+    --role-selected-bg: var(--accent-highlight-row, rgba(var(--accentInt, 128, 254, 234), 0.9));
+    --role-selected-fg: var(--text-on-bright-bg, #000);
+    --role-disabled-fg: var(--text-white-40, rgba(255, 255, 255, 0.4));
+    --role-disabled-opacity: 0.55;
+    --role-warning: var(--notification-warning-highlight, var(--orange, #ffca80));
+    --role-error: var(--notification-error-highlight, var(--red, #ff9580));
+    --role-success: var(--notification-success-highlight, var(--green, #8aff80));
+    --role-info: var(--notification-info-highlight, var(--accent, #80ffea));
+    --role-text-muted: var(--modal-muted-fg, var(--blackTernary, #a7abbe));
+    --role-focus-ring: var(--accent, #80ffea);
+    --role-focus-ring-offset: var(--mainContentBackground, #11181d);
 
     /* Ace editor (Dracula-style; ties to main palette where close) */
     --ace-editor-bg: #282a36;

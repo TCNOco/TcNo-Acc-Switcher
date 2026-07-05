@@ -18,11 +18,29 @@
   let value = initialValue;
   let lastInitialValue = initialValue;
   let inputEl: HTMLInputElement | HTMLTextAreaElement | undefined;
+  let inputLabel = "";
+
+  function getPlainText(value: string | undefined): string {
+    if (!value) return "";
+    if (typeof DOMParser === "undefined") return "";
+    return new DOMParser().parseFromString(value, "text/html").body.textContent?.replace(/\s+/g, " ").trim() ?? "";
+  }
+
+  function getDialogTitle(): string {
+    const dialog = inputEl?.closest<HTMLElement>("[role='dialog']");
+    const labelId = dialog?.getAttribute("aria-labelledby");
+    if (!labelId) return "";
+    return document.getElementById(labelId)?.textContent?.trim() ?? "";
+  }
 
   $: if (initialValue !== lastInitialValue) {
     value = initialValue;
     lastInitialValue = initialValue;
   }
+
+  $: inputLabel = inputType === "password"
+    ? $t("Security_Password")
+    : getPlainText(html) || getDialogTitle() || (multiline ? "Text input" : "Input");
 
   function ok(): void {
     dispatch("resolve", value);
@@ -52,6 +70,7 @@
         type="password"
         class="modal-input"
         autocomplete="off"
+        aria-label={inputLabel}
         on:keydown={(e) => e.key === "Enter" && ok()}
       />
     {:else if multiline}
@@ -62,6 +81,7 @@
         rows="6"
         spellcheck="true"
         autocomplete="off"
+        aria-label={inputLabel}
       ></textarea>
     {:else}
       <input
@@ -70,6 +90,7 @@
         type="text"
         class="modal-input"
         autocomplete="off"
+        aria-label={inputLabel}
         on:keydown={(e) => e.key === "Enter" && ok()}
       />
     {/if}

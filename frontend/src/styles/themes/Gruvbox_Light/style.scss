@@ -35,3 +35,12 @@ $meta: (
 );
 
 @include editor.theme($palette, $meta, true);
+
+:root {
+  --blackTernary: #514944;
+  --text-muted-gray: #514944;
+  --text-body-muted: #514944;
+  --form-checkbox-border: #6d5f4d;
+  --input-number-border: #6d5f4d;
+  --preview-control-border: #6d5f4d;
+}
