@@ -1,7 +1,7 @@
 <script lang="ts">
   import { get } from "svelte/store";
   import { onDestroy, onMount } from "svelte";
-  import { route, previousPage, appBarTitle } from "../stores/nav";
+  import { route, previousPage, appBarTitle, navigateBackLikeButton } from "../stores/nav";
   import { t } from "../stores/i18n";
   import { activeModal, openConfirm, openFolderPicker } from "../stores/modal";
   import { pushToast } from "../stores/toast";
@@ -14,6 +14,7 @@
   import * as Shortcuts from "wails-shortcuts-service";
   import { SaveSteamSettings, GetSteamSettings, RefreshVACStatus, RefreshAllSteamImages } from "../../bindings/TcNo-Acc-Switcher/internal/steam/steamservice.js";
   import { requestPlatformAccountsRefresh } from "../stores/platformPage";
+  import { controllerSpatialNavigation } from "../lib/actions/controllerSpatialNavigation";
   import { PlatformSettings } from "../../bindings/TcNo-Acc-Switcher/internal/platform/models.js";
   import { Settings } from "../../bindings/TcNo-Acc-Switcher/internal/steam/models.js";
   import {
@@ -411,12 +412,12 @@
     if (get(activeModal)) {
       return;
     }
-    const prev = get(previousPage);
-    route.set(prev ?? { page: "home" });
+    e.preventDefault();
+    navigateBackLikeButton();
   }
 </script>
 
-<div class="main-content main-spacing platform-settings-scroll">
+<div class="main-content main-spacing platform-settings-scroll" use:controllerSpatialNavigation>
   {#if loadError}
     <p class="platform-settings-err">{loadError}</p>
   {/if}

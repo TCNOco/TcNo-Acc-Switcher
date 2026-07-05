@@ -102,6 +102,11 @@
     outline-offset: 3px;
   }
 
+  .input-modality-controller &:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
   .input-modality-keyboard &:focus label.acc,
   .input-modality-controller &:focus label.acc {
     --custom-focus-ring-color: var(--focus-ring-color, var(--whiteSecondary, var(--accent)));

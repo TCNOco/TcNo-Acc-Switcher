@@ -1,5 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
+  setInputModality,
+  markControllerInput,
+  getInputModality,
+} from "./inputModality";
+import {
   focusFirstNavigable,
   handleContextMenuKeydown,
   handleContextMenuQuickFilter,
@@ -17,6 +22,10 @@ class TestClassList {
     this.values.add(value);
   }
 
+  remove(...tokens: string[]): void {
+    tokens.forEach((token) => this.values.delete(token));
+  }
+
   contains(value: string): boolean {
     return this.values.has(value);
   }
@@ -24,6 +33,7 @@ class TestClassList {
 
 class TestElement {
   readonly classList: TestClassList;
+  readonly dataset: Record<string, string> = {};
   readonly children: TestElement[] = [];
   parentElement: TestElement | null = null;
 
@@ -87,6 +97,14 @@ class TestElement {
           !child.classList.contains("ctx-pagination-li"),
       ) as T[];
     }
+    if (selector === ":scope > li:not(.row-hidden):not(.ctx-sep)") {
+      return this.children.filter(
+        (child) =>
+          child.tagName === "LI" &&
+          !child.classList.contains("row-hidden") &&
+          !child.classList.contains("ctx-sep"),
+      ) as T[];
+    }
     if (selector.startsWith(":scope > ")) {
       return this.children.filter((child) => matchesSimpleSelector(child, selector.slice(":scope > ".length))) as T[];
     }
@@ -110,6 +128,10 @@ class TestElement {
     return descendants(this).filter((child) => matchesSimpleSelector(child, selector)) as T[];
   }
 
+  getAttribute(_name: string): string | null {
+    return null;
+  }
+
   dispatchEvent(_event: Event): boolean {
     return true;
   }
@@ -129,6 +151,7 @@ class TestLiElement extends TestElement {
 
 class TestButtonElement extends TestElement {
   disabled = false;
+  tabIndex = 0;
   readonly click = vi.fn();
 
   constructor(classes: string[] = []) {
@@ -206,11 +229,12 @@ function setupGlobals(active: TestElement | null = null): void {
   vi.stubGlobal("HTMLUListElement", TestUListElement);
   vi.stubGlobal("HTMLButtonElement", TestButtonElement);
   vi.stubGlobal("HTMLInputElement", TestInputElement);
-  vi.stubGlobal("document", { activeElement: active, body });
+  vi.stubGlobal("document", { activeElement: active, documentElement: body, body });
   vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) => {
     callback(0);
     return 1;
   });
+  setInputModality("keyboard");
 }
 
 function buildMenu() {
@@ -264,6 +288,20 @@ describe("context menu keyboard navigation", () => {
     expect(document.activeElement).toBe(menu.search);
   });
 
+  it("skips the search field when controller focus first enters a menu", () => {
+    const menu = buildMenu();
+    setupGlobals();
+    markControllerInput("xbox");
+
+    focusFirstNavigable(menu.root as unknown as HTMLElement);
+    expect(document.activeElement).toBe(menu.alpha);
+
+    const up = keyboardEvent("ArrowUp");
+    expect(handleContextMenuKeydown(up, menu.root as unknown as HTMLElement, navDeps())).toBe(true);
+    expect(document.activeElement).toBe(menu.search);
+    expect(getInputModality()).toBe("controller");
+  });
+
   it("wraps ArrowUp from search to the last row in the menu column", () => {
     const menu = buildMenu();
     setupGlobals(menu.search);
@@ -298,6 +336,20 @@ describe("context menu keyboard navigation", () => {
     expect(deps.expandSubmenuForLi).toHaveBeenCalledWith(menu.parentLi);
     expect(document.activeElement).toBe(menu.submenuSearch);
     expect(event.preventDefault).toHaveBeenCalled();
+  });
+
+  it("skips submenu search when controller focus expands a submenu", () => {
+    const menu = buildMenu();
+    const deps = navDeps();
+    setupGlobals(menu.parentAction);
+    markControllerInput("xbox");
+    menu.parentAction.focus();
+
+    const event = keyboardEvent("ArrowRight");
+    expect(handleContextMenuKeydown(event, menu.root as unknown as HTMLElement, deps)).toBe(true);
+
+    expect(deps.expandSubmenuForLi).toHaveBeenCalledWith(menu.parentLi);
+    expect(document.activeElement).toBe(menu.submenuLeaf);
   });
 
   it("returns focus to the parent row with ArrowLeft from a submenu", () => {
@@ -338,6 +390,42 @@ describe("context menu keyboard navigation", () => {
     menu.parentAction.focus();
     expect(handleContextMenuKeydown(keyboardEvent(" "), menu.root as unknown as HTMLElement, deps)).toBe(true);
     expect(menu.parentAction.click).toHaveBeenCalledTimes(1);
+  });
+
+  it("reaches enabled pagination controls while skipping disabled placeholders", () => {
+    const menu = buildMenu();
+    const previousPlaceholder = button(["paginationButton"]);
+    previousPlaceholder.disabled = true;
+    previousPlaceholder.tabIndex = -1;
+    const nextPage = button(["paginationButton"]);
+    menu.root.append(li(["ctx-pagination-li"], previousPlaceholder, nextPage));
+    setupGlobals(menu.omega);
+    menu.omega.focus();
+
+    expect(handleContextMenuKeydown(keyboardEvent("ArrowDown"), menu.root as unknown as HTMLElement, navDeps())).toBe(true);
+
+    expect(document.activeElement).toBe(nextPage);
+  });
+
+  it("moves between pagination controls and activates the focused page button", () => {
+    const menu = buildMenu();
+    const previousPage = button(["paginationButton"]);
+    const nextPage = button(["paginationButton"]);
+    menu.root.append(li(["ctx-pagination-li"], previousPage, nextPage));
+    setupGlobals(menu.omega);
+    menu.omega.focus();
+
+    expect(handleContextMenuKeydown(keyboardEvent("ArrowDown"), menu.root as unknown as HTMLElement, navDeps())).toBe(true);
+    expect(document.activeElement).toBe(previousPage);
+
+    expect(handleContextMenuKeydown(keyboardEvent("ArrowDown"), menu.root as unknown as HTMLElement, navDeps())).toBe(true);
+    expect(document.activeElement).toBe(nextPage);
+
+    expect(handleContextMenuKeydown(keyboardEvent("Enter"), menu.root as unknown as HTMLElement, navDeps())).toBe(true);
+    expect(nextPage.click).toHaveBeenCalledTimes(1);
+
+    expect(handleContextMenuKeydown(keyboardEvent("ArrowUp"), menu.root as unknown as HTMLElement, navDeps())).toBe(true);
+    expect(document.activeElement).toBe(previousPage);
   });
 
   it("leaves Escape for the caller to close the menu", () => {

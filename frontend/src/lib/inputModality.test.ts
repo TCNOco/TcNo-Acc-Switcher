@@ -1,8 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
+  getControllerGlyphScheme,
   getInputModality,
+  inferControllerGlyphScheme,
   installInputModalityTracking,
   markControllerInput,
+  markSyntheticControllerKeyEvent,
   setInputModality,
 } from "./inputModality";
 
@@ -69,13 +72,37 @@ describe("input modality", () => {
     cleanup();
   });
 
+  it("does not treat synthetic controller arrows as keyboard input", () => {
+    const { window } = installDom();
+    const cleanup = installInputModalityTracking();
+    const event = keyboardEvent("ArrowRight");
+
+    markControllerInput("xbox");
+    markSyntheticControllerKeyEvent(event);
+    window.dispatchEvent(event);
+
+    expect(getInputModality()).toBe("controller");
+    expect(getControllerGlyphScheme()).toBe("xbox");
+
+    cleanup();
+  });
+
   it("marks controller modality explicitly", () => {
     const { root } = installDom();
 
-    markControllerInput();
+    markControllerInput("playstation");
 
     expect(getInputModality()).toBe("controller");
+    expect(getControllerGlyphScheme()).toBe("playstation");
     expect(root.classList.contains("input-modality-controller")).toBe(true);
     expect(root.dataset.inputModality).toBe("controller");
+    expect(root.dataset.controllerScheme).toBe("playstation");
+  });
+
+  it("infers controller glyph schemes from common gamepad ids", () => {
+    expect(inferControllerGlyphScheme("Xbox Wireless Controller")).toBe("xbox");
+    expect(inferControllerGlyphScheme("Sony DualSense Wireless Controller")).toBe("playstation");
+    expect(inferControllerGlyphScheme("Nintendo Switch Pro Controller")).toBe("nintendo");
+    expect(inferControllerGlyphScheme("Unknown USB Controller")).toBe("generic");
   });
 });

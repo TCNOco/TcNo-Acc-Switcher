@@ -2,7 +2,9 @@
  * Keyboard navigation for `.ctx-menu-root` menus (arrow keys, Enter/Space, Escape handled elsewhere).
  */
 
-const SEL_ROW = ":scope > li:not(.row-hidden):not(.ctx-sep):not(.ctx-pagination-li)";
+import { getInputModality } from "./inputModality";
+
+const SEL_ROW = ":scope > li:not(.row-hidden):not(.ctx-sep)";
 
 export function focusFirstNavigable(menuRoot: HTMLElement): HTMLElement | null {
   const first = firstNavigableInMenu(menuRoot);
@@ -22,8 +24,11 @@ export function restoreFocus(el: HTMLElement | null): void {
 }
 
 /** Focus target for a row `li`: search row → input; submenu row → label `span` (or `li`); leaf → `button`. */
-function focusTargetForRowLi(li: HTMLElement): HTMLElement | null {
+function focusTargetForRowLi(li: HTMLElement, includeSearch = true): HTMLElement | null {
   if (li.classList.contains("contextSearch")) {
+    if (!includeSearch) {
+      return null;
+    }
     return li.querySelector<HTMLInputElement>("input.ctx-menu__search");
   }
   if (li.classList.contains("hasSubmenu")) {
@@ -41,6 +46,14 @@ function focusTargetForRowLi(li: HTMLElement): HTMLElement | null {
   return btn ?? li;
 }
 
+function paginationTargetsForRowLi(li: HTMLElement): HTMLElement[] {
+  if (!li.classList.contains("ctx-pagination-li")) {
+    return [];
+  }
+  return Array.from(li.querySelectorAll<HTMLButtonElement>("button.paginationButton"))
+    .filter((btn) => !btn.disabled && btn.getAttribute("aria-hidden") !== "true" && btn.tabIndex !== -1);
+}
+
 function focusTargetForParentSubmenuLi(li: HTMLElement): HTMLElement | null {
   if (!li.classList.contains("hasSubmenu")) {
     return null;
@@ -54,7 +67,10 @@ function focusTargetForParentSubmenuLi(li: HTMLElement): HTMLElement | null {
  * non-button child (e.g. label `span`). Returns null for `.hasSubmenu` rows.
  */
 function leafButtonForActiveRow(active: HTMLElement): HTMLButtonElement | null {
-  if (active instanceof HTMLButtonElement && active.classList.contains("ctx-menu__btn")) {
+  if (
+    active instanceof HTMLButtonElement
+    && (active.classList.contains("ctx-menu__btn") || active.classList.contains("paginationButton"))
+  ) {
     return active;
   }
   const rowLi = active.closest("li");
@@ -93,11 +109,16 @@ function isSubmenuRowExpandTarget(active: HTMLElement, rowLi: HTMLElement): bool
 }
 
 /** Direct navigable targets in document order under this `ul` (one column). */
-function navigableTargetsInColumn(ul: HTMLUListElement): HTMLElement[] {
+function navigableTargetsInColumn(ul: HTMLUListElement, includeSearch = true): HTMLElement[] {
   const rows = ul.querySelectorAll<HTMLElement>(SEL_ROW);
   const out: HTMLElement[] = [];
   rows.forEach((li) => {
-    const t = focusTargetForRowLi(li);
+    const paginationTargets = paginationTargetsForRowLi(li);
+    if (paginationTargets.length > 0) {
+      out.push(...paginationTargets);
+      return;
+    }
+    const t = focusTargetForRowLi(li, includeSearch);
     if (t) {
       out.push(t);
     }
@@ -111,7 +132,7 @@ function firstNavigableInMenu(menuRoot: HTMLElement): HTMLElement | null {
   if (!rootUl) {
     return null;
   }
-  const col = navigableTargetsInColumn(rootUl);
+  const col = navigableTargetsInColumn(rootUl, getInputModality() !== "controller");
   return col[0] ?? null;
 }
 
@@ -134,7 +155,7 @@ function firstNavigableInSubmenu(liHasSubmenu: HTMLElement): HTMLElement | null 
   if (!sub) {
     return null;
   }
-  const items = navigableTargetsInColumn(sub);
+  const items = navigableTargetsInColumn(sub, getInputModality() !== "controller");
   return items[0] ?? null;
 }
 

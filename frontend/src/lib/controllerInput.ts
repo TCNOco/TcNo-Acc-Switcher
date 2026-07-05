@@ -5,7 +5,15 @@ import { contextMenu, closeContextMenu } from "../stores/contextMenu";
 import { navigateBackLikeButton, navigateForward } from "../stores/nav";
 import { searchOverlayCtrl, openSearchOverlay, closeSearchOverlay } from "../stores/searchOverlay";
 import { securityStatus } from "../stores/security";
-import { markControllerInput } from "./inputModality";
+import {
+  inferControllerGlyphScheme,
+  getInputModality,
+  markControllerInput,
+  markSyntheticControllerKeyEvent,
+  type ControllerGlyphScheme,
+} from "./inputModality";
+import { moveFocusSpatially } from "./spatialFocus";
+import { focusControllerSpatialNavigationTarget } from "./actions/controllerSpatialNavigation";
 
 const BUTTON_A = 0;
 const BUTTON_B = 1;
@@ -25,21 +33,10 @@ const LEFT_STICK_Y = 1;
 const STICK_DEADZONE = 0.45;
 const INITIAL_REPEAT_MS = 280;
 const REPEAT_MS = 120;
+const CROSS_SOURCE_DUPLICATE_ACTION_SUPPRESS_MS = 180;
 const DISCOVERY_INTERVAL_MS = 1000;
-const FOCUSABLE_SELECTOR = [
-  "button",
-  "a[href]",
-  "input:not([type='hidden'])",
-  "select",
-  "textarea",
-  "summary",
-  "[tabindex]:not([tabindex='-1'])",
-  "[role='button']",
-  "[role='menuitem']",
-  "[role='option']",
-  "[role='tab']",
-].join(",");
-
+const CONTROLLER_SPATIAL_NAV_SELECTOR = "[data-controller-spatial-nav]";
+const PRIMARY_GRID_SELECTOR = ".platform_list [data-dnd-cell][data-dnd-name], .acc_list [data-dnd-cell][data-dnd-name]";
 export type ControllerAction =
   | "up"
   | "down"
@@ -57,8 +54,16 @@ export const CONTROLLER_ACTION_EVENT = "controller:action";
 type RepeatableAction = Extract<ControllerAction, "up" | "down" | "left" | "right">;
 
 type GamepadLike = Pick<Gamepad, "connected" | "axes"> & {
+  id?: string;
   buttons: readonly Pick<GamepadButton, "pressed" | "value">[];
 };
+
+type ParsedControllerAction = {
+  action: ControllerAction;
+  scheme?: ControllerGlyphScheme;
+};
+
+type ControllerActionSource = "native" | "poll";
 
 export type ControllerPollState = {
   held: Record<ControllerAction, boolean>;
@@ -84,13 +89,29 @@ function isControllerAction(value: unknown): value is ControllerAction {
   return typeof value === "string" && (ACTIONS as string[]).includes(value);
 }
 
-function parseNativeControllerAction(payload: unknown): ControllerAction | null {
+function isControllerGlyphScheme(value: unknown): value is ControllerGlyphScheme {
+  return value === "xbox" || value === "playstation" || value === "nintendo" || value === "generic";
+}
+
+function readControllerSchemePayload(payload: Record<string, unknown>): ControllerGlyphScheme | undefined {
+  const explicit = payload.scheme ?? payload.controllerScheme ?? payload.controllerType;
+  if (isControllerGlyphScheme(explicit)) {
+    return explicit;
+  }
+  const id = payload.id ?? payload.controllerId ?? payload.gamepadId;
+  return typeof id === "string" ? inferControllerGlyphScheme(id) : undefined;
+}
+
+function parseNativeControllerAction(payload: unknown): ParsedControllerAction | null {
   if (isControllerAction(payload)) {
-    return payload;
+    return { action: payload };
   }
   if (typeof payload === "object" && payload && "action" in payload) {
-    const action = (payload as { action?: unknown }).action;
-    return isControllerAction(action) ? action : null;
+    const record = payload as Record<string, unknown>;
+    const action = record.action;
+    return isControllerAction(action)
+      ? { action, scheme: readControllerSchemePayload(record) }
+      : null;
   }
   return null;
 }
@@ -191,6 +212,11 @@ export function advanceControllerPollState(
   return { state: nextState, actions };
 }
 
+function controllerSchemeForGamepads(gamepads: readonly (GamepadLike | null | undefined)[]): ControllerGlyphScheme | undefined {
+  const connected = gamepads.find((gamepad) => gamepad?.connected && gamepad.id);
+  return connected?.id ? inferControllerGlyphScheme(connected.id) : undefined;
+}
+
 function isEditableTarget(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) {
     return false;
@@ -209,6 +235,60 @@ function shouldPauseForTyping(): boolean {
   return isEditableTarget(document.activeElement);
 }
 
+function isInsideControllerSpatialNavigation(target: EventTarget | null): boolean {
+  return target instanceof HTMLElement && target.closest(CONTROLLER_SPATIAL_NAV_SELECTOR) instanceof HTMLElement;
+}
+
+function isVisibleControllerTarget(target: HTMLElement): boolean {
+  if (isDisabledControl(target)) return false;
+  if (target.getAttribute("tabindex") === "-1") return false;
+  if (target.matches("[hidden], [aria-hidden='true']")) return false;
+  return target.getClientRects().length > 0;
+}
+
+function focusControllerTarget(target: HTMLElement): void {
+  try {
+    target.focus({ preventScroll: true });
+  } catch {
+    target.focus();
+  }
+  target.scrollIntoView?.({ block: "nearest", inline: "nearest" });
+}
+
+function canPrimePrimaryGridFocus(action: ControllerAction): boolean {
+  return action === "up" || action === "down" || action === "left" || action === "right" || action === "activate" || action === "context";
+}
+
+function focusInitialPrimaryGridTarget(action: ControllerAction): boolean {
+  if (!canPrimePrimaryGridFocus(action)) return false;
+  if (get(activeModal) || get(contextMenu) || get(searchOverlayCtrl).open) return false;
+
+  const active = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  if (active?.closest(PRIMARY_GRID_SELECTOR)) return false;
+  if (active && active !== document.body && active !== document.documentElement && isVisibleControllerTarget(active)) {
+    return false;
+  }
+
+  const target = Array.from(document.querySelectorAll<HTMLElement>(PRIMARY_GRID_SELECTOR))
+    .find(isVisibleControllerTarget);
+  if (!target) return false;
+  focusControllerTarget(target);
+  return true;
+}
+
+function focusInitialControllerSpatialNavigationTarget(action: ControllerAction): boolean {
+  if (action !== "up" && action !== "down" && action !== "left" && action !== "right") return false;
+  if (get(activeModal) || get(contextMenu) || get(searchOverlayCtrl).open) return false;
+
+  const active = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  if (isInsideControllerSpatialNavigation(active)) return false;
+
+  const root = document.querySelector<HTMLElement>(CONTROLLER_SPATIAL_NAV_SELECTOR);
+  if (!root) return false;
+  const edge = action === "up" || action === "left" ? "last" : "first";
+  return focusControllerSpatialNavigationTarget(root, edge);
+}
+
 function isDisabledControl(target: HTMLElement): boolean {
   if ("disabled" in target && typeof (target as { disabled?: unknown }).disabled === "boolean") {
     return Boolean((target as { disabled?: boolean }).disabled);
@@ -219,6 +299,8 @@ function isDisabledControl(target: HTMLElement): boolean {
 function dispatchKeyboardActivation(target: HTMLElement, key: "Enter" | " "): boolean {
   const keydown = new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true });
   const keyup = new KeyboardEvent("keyup", { key, bubbles: true, cancelable: true });
+  markSyntheticControllerKeyEvent(keydown);
+  markSyntheticControllerKeyEvent(keyup);
   const allowed = target.dispatchEvent(keydown);
   target.dispatchEvent(keyup);
   return !allowed;
@@ -268,70 +350,16 @@ function dispatchDirectionalKey(key: "ArrowUp" | "ArrowDown" | "ArrowLeft" | "Ar
   const target = document.activeElement instanceof HTMLElement ? document.activeElement : document.body;
   const before = document.activeElement;
   const keydown = new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true });
+  markSyntheticControllerKeyEvent(keydown);
   const allowed = target.dispatchEvent(keydown);
   const keyup = new KeyboardEvent("keyup", { key, bubbles: true, cancelable: true });
+  markSyntheticControllerKeyEvent(keyup);
   target.dispatchEvent(keyup);
   return !allowed || document.activeElement !== before;
 }
 
-function isVisibleFocusable(target: HTMLElement): boolean {
-  if (isDisabledControl(target)) {
-    return false;
-  }
-  if (target.matches("[hidden], [aria-hidden='true']")) {
-    return false;
-  }
-  return target.getClientRects().length > 0;
-}
-
-function focusableCandidates(): HTMLElement[] {
-  return Array.from(document.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(isVisibleFocusable);
-}
-
 function focusByDirection(direction: RepeatableAction): void {
-  const candidates = focusableCandidates();
-  if (!candidates.length) {
-    return;
-  }
-
-  const active = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-  if (!active || !isVisibleFocusable(active)) {
-    const fallback = direction === "up" || direction === "left" ? candidates.at(-1) : candidates[0];
-    fallback?.focus({ preventScroll: true });
-    return;
-  }
-
-  const activeRect = active.getBoundingClientRect();
-  const activeCenterX = activeRect.left + activeRect.width / 2;
-  const activeCenterY = activeRect.top + activeRect.height / 2;
-
-  let best: { node: HTMLElement; score: number } | null = null;
-
-  for (const candidate of candidates) {
-    if (candidate === active) {
-      continue;
-    }
-    const rect = candidate.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    const dx = centerX - activeCenterX;
-    const dy = centerY - activeCenterY;
-
-    if (direction === "up" && dy >= -1) continue;
-    if (direction === "down" && dy <= 1) continue;
-    if (direction === "left" && dx >= -1) continue;
-    if (direction === "right" && dx <= 1) continue;
-
-    const primary = direction === "up" || direction === "down" ? Math.abs(dy) : Math.abs(dx);
-    const secondary = direction === "up" || direction === "down" ? Math.abs(dx) : Math.abs(dy);
-    const score = primary * 1000 + secondary;
-
-    if (!best || score < best.score) {
-      best = { node: candidate, score };
-    }
-  }
-
-  best?.node.focus({ preventScroll: true });
+  moveFocusSpatially(direction);
 }
 
 function openFocusedContextMenu(): void {
@@ -367,7 +395,21 @@ function handleBackAction(): void {
     closeSearchOverlay();
     return;
   }
+  if (dispatchEscapeKey()) {
+    return;
+  }
   navigateBackLikeButton();
+}
+
+function dispatchEscapeKey(): boolean {
+  const target = document.activeElement instanceof HTMLElement ? document.activeElement : document.body;
+  const keydown = new KeyboardEvent("keydown", { key: "Escape", bubbles: true, cancelable: true });
+  markSyntheticControllerKeyEvent(keydown);
+  const allowed = target.dispatchEvent(keydown);
+  const keyup = new KeyboardEvent("keyup", { key: "Escape", bubbles: true, cancelable: true });
+  markSyntheticControllerKeyEvent(keyup);
+  target.dispatchEvent(keyup);
+  return !allowed;
 }
 
 function canUseGlobalHistoryActions(): boolean {
@@ -380,8 +422,16 @@ function canUseGlobalHistoryActions(): boolean {
   return !get(searchOverlayCtrl).open;
 }
 
-function handleAction(action: ControllerAction): void {
-  markControllerInput();
+function handleAction(action: ControllerAction, scheme?: ControllerGlyphScheme): void {
+  const wasControllerInput = getInputModality() === "controller";
+  markControllerInput(scheme);
+
+  if (!wasControllerInput && focusInitialPrimaryGridTarget(action)) {
+    return;
+  }
+  if (focusInitialControllerSpatialNavigationTarget(action)) {
+    return;
+  }
 
   if (get(securityStatus).appLocked) {
     switch (action) {
@@ -398,43 +448,46 @@ function handleAction(action: ControllerAction): void {
     return;
   }
 
-  if (shouldPauseForTyping()) {
-    return;
-  }
-
   switch (action) {
     case "up":
+      if (shouldPauseForTyping() && !get(contextMenu) && !isInsideControllerSpatialNavigation(document.activeElement)) return;
       if (!dispatchDirectionalKey("ArrowUp")) {
         focusByDirection("up");
       }
       break;
     case "down":
+      if (shouldPauseForTyping() && !get(contextMenu) && !isInsideControllerSpatialNavigation(document.activeElement)) return;
       if (!dispatchDirectionalKey("ArrowDown")) {
         focusByDirection("down");
       }
       break;
     case "left":
+      if (shouldPauseForTyping() && !get(contextMenu) && !isInsideControllerSpatialNavigation(document.activeElement)) return;
       if (!dispatchDirectionalKey("ArrowLeft")) {
         focusByDirection("left");
       }
       break;
     case "right":
+      if (shouldPauseForTyping() && !get(contextMenu) && !isInsideControllerSpatialNavigation(document.activeElement)) return;
       if (!dispatchDirectionalKey("ArrowRight")) {
         focusByDirection("right");
       }
       break;
     case "activate":
+      if (shouldPauseForTyping() && !isInsideControllerSpatialNavigation(document.activeElement)) return;
       activateFocusedControl();
       break;
     case "back":
       handleBackAction();
       break;
     case "palette":
+      if (shouldPauseForTyping()) return;
       if (!get(activeModal) && !get(contextMenu)) {
         openSearchOverlay(">");
       }
       break;
     case "context":
+      if (shouldPauseForTyping()) return;
       if (!get(activeModal)) {
         openFocusedContextMenu();
       }
@@ -462,6 +515,23 @@ export function installControllerInput(): () => void {
   let frameId = 0;
   let discoveryTimerId = 0;
   let disposed = false;
+  const lastHandledByAction = Object.fromEntries(
+    ACTIONS.map((action) => [action, { at: Number.NEGATIVE_INFINITY, source: null as ControllerActionSource | null }]),
+  ) as Record<ControllerAction, { at: number; source: ControllerActionSource | null }>;
+
+  const handleDedupedAction = (
+    action: ControllerAction,
+    scheme: ControllerGlyphScheme | undefined,
+    source: ControllerActionSource,
+    now = performance.now(),
+  ): void => {
+    const last = lastHandledByAction[action];
+    if (last.source !== null && last.source !== source && now - last.at < CROSS_SOURCE_DUPLICATE_ACTION_SUPPRESS_MS) {
+      return;
+    }
+    lastHandledByAction[action] = { at: now, source };
+    handleAction(action, scheme);
+  };
 
   const getPads = (): readonly (GamepadLike | null | undefined)[] => {
     if (typeof navigator === "undefined" || typeof navigator.getGamepads !== "function") {
@@ -507,10 +577,13 @@ export function installControllerInput(): () => void {
       scheduleDiscovery();
       return;
     }
-    const next = advanceControllerPollState(state, getPads(), performance.now());
+    const now = performance.now();
+    const pads = getPads();
+    const scheme = controllerSchemeForGamepads(pads);
+    const next = advanceControllerPollState(state, pads, now);
     state = next.state;
     for (const action of next.actions) {
-      handleAction(action);
+      handleDedupedAction(action, scheme, "poll", now);
     }
     frameId = window.requestAnimationFrame(tick);
   };
@@ -539,11 +612,11 @@ export function installControllerInput(): () => void {
 
   // This installer is only active while App.svelte keeps controller support enabled.
   const offNativeControllerAction = Events.On(CONTROLLER_ACTION_EVENT, (event) => {
-    const action = parseNativeControllerAction(event.data);
-    if (!action) {
+    const parsed = parseNativeControllerAction(event.data);
+    if (!parsed) {
       return;
     }
-    handleAction(action);
+    handleDedupedAction(parsed.action, parsed.scheme, "native");
   });
 
   window.addEventListener("gamepadconnected", onGamepadStateChange);

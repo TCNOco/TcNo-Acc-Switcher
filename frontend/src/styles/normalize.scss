@@ -448,6 +448,12 @@ button:focus-visible {
     0 0 0 5px var(--focus-ring-color) !important;
 }
 
+.input-modality-keyboard .acc_list_item[tabindex]:not([tabindex="-1"]):focus,
+.input-modality-controller .acc_list_item[tabindex]:not([tabindex="-1"]):focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 .input-modality-pointer button:focus,
 .input-modality-pointer a:focus,
 .input-modality-pointer input:not([type="hidden"]):focus,
@@ -456,6 +462,115 @@ button:focus-visible {
 .input-modality-pointer [role="button"]:focus,
 .input-modality-pointer [tabindex]:not([tabindex="-1"]):focus {
   outline: none !important;
+}
+
+html.input-modality-controller {
+  --controller-action-prompt-glyph: "A";
+  --controller-action-prompt-bg: #107c10;
+  --controller-action-prompt-fg: #ffffff;
+  --controller-action-prompt-border: color-mix(in srgb, #ffffff 75%, #107c10);
+  --controller-back-prompt-glyph: "B";
+  --controller-back-prompt-bg: #d13438;
+  --controller-back-prompt-fg: #ffffff;
+  --controller-back-prompt-border: color-mix(in srgb, #ffffff 75%, #d13438);
+}
+
+html.input-modality-controller[data-controller-scheme="playstation"] {
+  --controller-action-prompt-glyph: "\00D7";
+  --controller-action-prompt-bg: color-mix(in srgb, #ffffff 92%, #2d7ff9);
+  --controller-action-prompt-fg: #2d7ff9;
+  --controller-action-prompt-border: #2d7ff9;
+  --controller-back-prompt-glyph: "\25CB";
+  --controller-back-prompt-bg: color-mix(in srgb, #ffffff 92%, #f0445e);
+  --controller-back-prompt-fg: #f0445e;
+  --controller-back-prompt-border: #f0445e;
+}
+
+html.input-modality-controller[data-controller-scheme="nintendo"] {
+  --controller-action-prompt-glyph: "A";
+  --controller-action-prompt-bg: #e60012;
+  --controller-action-prompt-fg: #ffffff;
+  --controller-action-prompt-border: color-mix(in srgb, #ffffff 75%, #e60012);
+  --controller-back-prompt-glyph: "B";
+  --controller-back-prompt-bg: #e60012;
+  --controller-back-prompt-fg: #ffffff;
+  --controller-back-prompt-border: color-mix(in srgb, #ffffff 75%, #e60012);
+}
+
+html.input-modality-controller[data-controller-scheme="generic"] {
+  --controller-action-prompt-glyph: "\2713";
+  --controller-action-prompt-bg: var(--accent);
+  --controller-action-prompt-fg: var(--text-on-bright-bg, var(--accent-text, #111));
+  --controller-action-prompt-border: var(--button-border, var(--accent));
+  --controller-back-prompt-glyph: "\2190";
+  --controller-back-prompt-bg: var(--accent);
+  --controller-back-prompt-fg: var(--text-on-bright-bg, var(--accent-text, #111));
+  --controller-back-prompt-border: var(--button-border, var(--accent));
+}
+
+.input-modality-controller .platform_list_item:focus,
+.input-modality-controller .acc_list_item:focus,
+.input-modality-controller .shortcutDndCell:focus-within,
+.input-modality-controller .searchOverlay_resultItem.searchOverlay_selected {
+  position: relative;
+  overflow: visible;
+}
+
+.input-modality-controller .acc_list_item:focus > .acc_list_item_inner {
+  position: relative;
+  overflow: visible;
+}
+
+.input-modality-controller .platform_list_item:focus::after,
+.input-modality-controller .acc_list_item:focus > .acc_list_item_inner::after,
+.input-modality-controller .shortcutDndCell:focus-within::after,
+.input-modality-controller .searchOverlay_resultItem.searchOverlay_selected::after {
+  content: var(--controller-action-prompt-glyph);
+  position: absolute;
+  top: -0.55rem;
+  right: -0.55rem;
+  z-index: 20;
+  width: 1.45rem;
+  height: 1.45rem;
+  min-width: 1.45rem;
+  min-height: 1.45rem;
+  border-radius: 50%;
+  border: 2px solid var(--controller-action-prompt-border);
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--controller-action-prompt-bg);
+  color: var(--controller-action-prompt-fg);
+  box-shadow: 0 3px 10px var(--shadow-color-45, rgba(0, 0, 0, 0.45));
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1;
+  pointer-events: none;
+  text-shadow: none;
+}
+
+.input-modality-controller .shortcutDndCell:focus-within::after {
+  top: -0.65rem;
+  right: -0.65rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  min-width: 1.2rem;
+  min-height: 1.2rem;
+  font-size: 0.72rem;
+}
+
+@media (forced-colors: active) {
+  .input-modality-controller .platform_list_item:focus::after,
+  .input-modality-controller .acc_list_item:focus > .acc_list_item_inner::after,
+  .input-modality-controller .shortcutDndCell:focus-within::after,
+  .input-modality-controller .searchOverlay_resultItem.searchOverlay_selected::after {
+    background: ButtonFace;
+    border-color: ButtonText;
+    color: ButtonText;
+    box-shadow: none;
+  }
 }
  
  /**

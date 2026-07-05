@@ -181,6 +181,7 @@
   let pinListEl: HTMLDivElement | null = null;
   let dropListEl: HTMLDivElement | null = null;
   let dropdownEl: HTMLDivElement | null = null;
+  let dropdownButtonEl: HTMLButtonElement | null = null;
 
   const dnd = createDragReorderController({
     getPins: () => pinNames,
@@ -445,6 +446,23 @@
     void focusDropdownShortcut(e.key === "ArrowUp" ? "last" : "first");
   }
 
+  function closeShortcutDropdownFromKeyboard(): void {
+    if (!ddOpen) {
+      return;
+    }
+    ddOpen = false;
+    dropdownButtonEl?.focus({ preventScroll: true });
+  }
+
+  function openShortcutDropdownFromHotbarUp(): void {
+    ddOpen = true;
+    void focusDropdownShortcut("last");
+  }
+
+  function canOpenShortcutDropdownFromUp(active: HTMLElement): boolean {
+    return active.closest(".shortcutDropdownWrap") instanceof HTMLElement;
+  }
+
   let offEv: (() => void) | undefined;
   let teardownDnd: (() => void) | undefined;
 
@@ -506,7 +524,17 @@
   });
 </script>
 
-<div class="gameShortcutBar" use:shortcutArrowNavigation={{ capture: true }}>
+<div
+  class="gameShortcutBar"
+  role="group"
+  aria-label={$t("Stats_GameShortcutsHotbar")}
+  use:shortcutArrowNavigation={{
+    capture: true,
+    onEscape: closeShortcutDropdownFromKeyboard,
+    canOpenDropdownFromUp: canOpenShortcutDropdownFromUp,
+    onHotbarUp: openShortcutDropdownFromHotbarUp,
+  }}
+>
   <ShortcutZone
     bind:el={pinListEl}
     zone="pinned"
@@ -522,6 +550,7 @@
 
   <div class="shortcutDropdownWrap">
     <button
+      bind:this={dropdownButtonEl}
       type="button"
       id="shortcutDropdownBtn"
       class="square"

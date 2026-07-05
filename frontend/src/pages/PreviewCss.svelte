@@ -132,6 +132,7 @@
   let toastPermanent = false;
   let shortcutDdOpen = false;
   let previewShortcutDropdownEl: HTMLDivElement | null = null;
+  let previewShortcutDropdownButtonEl: HTMLButtonElement | null = null;
   let settingsDdOpen = false;
   let modalLog: string[] = [];
 
@@ -174,6 +175,23 @@
     e.stopPropagation();
     shortcutDdOpen = true;
     void focusPreviewDropdownShortcut(e.key === "ArrowUp" ? "last" : "first");
+  }
+
+  function closePreviewShortcutDropdownFromKeyboard(): void {
+    if (!shortcutDdOpen) {
+      return;
+    }
+    shortcutDdOpen = false;
+    previewShortcutDropdownButtonEl?.focus({ preventScroll: true });
+  }
+
+  function openPreviewShortcutDropdownFromHotbarUp(): void {
+    shortcutDdOpen = true;
+    void focusPreviewDropdownShortcut("last");
+  }
+
+  function canOpenPreviewShortcutDropdownFromUp(active: HTMLElement): boolean {
+    return active.closest(".shortcutDropdownWrap") instanceof HTMLElement;
   }
 
   function logModal(kind: string, detail: string) {
@@ -471,79 +489,92 @@
         <input id="pvCurrentStatus" type="text" value="" readonly spellcheck="false" tabindex="-1" />
       </div>
       <div class="gameShortcuts">
-        <div class="preview_shortcut_bar" use:shortcutArrowNavigation={{ capture: true }}>
-          <ReorderPointerGrid
-            items={pinnedShortcutIds}
-            listClass="shortcuts shortcutDndGrid"
-            itemClass="shortcutDndCell"
-            placeholderClass="shortcutDndGap shortcutPlaceholder"
-            ghostClass="shortcutDndGhost"
-            ariaLabel={$t("Stats_GameShortcuts")}
-            on:reorder={(e) => {
-              pinnedShortcutIds = e.detail.items;
+        <div class="preview_shortcut_bar">
+          <div
+            class="gameShortcutBar"
+            role="group"
+            aria-label={$t("Stats_GameShortcutsHotbar")}
+            use:shortcutArrowNavigation={{
+              capture: true,
+              onEscape: closePreviewShortcutDropdownFromKeyboard,
+              canOpenDropdownFromUp: canOpenPreviewShortcutDropdownFromUp,
+              onHotbarUp: openPreviewShortcutDropdownFromHotbarUp,
             }}
-            on:itemclick={() => {}}
           >
-            <svelte:fragment slot="item" let:rowId>
-              {@const sid = slotKey(rowId)}
-              {@const meta = pvShortcutMeta[sid]}
-              <button type="button" class="HasContextMenu" aria-label={meta?.label ?? sid}>
-                <img src="/img/BasicDefault.webp" alt="" draggable="false" />
-              </button>
-            </svelte:fragment>
-          </ReorderPointerGrid>
-          <div class="shortcutDropdownWrap">
-            <button
-              type="button"
-              id="shortcutDropdownBtn"
-              class="square"
-              class:flip={shortcutDdOpen}
-              aria-expanded={shortcutDdOpen}
-              aria-label={$t("Tooltip_ExpandShortcuts")}
-              on:click={() => (shortcutDdOpen = !shortcutDdOpen)}
-              on:keydown={onPreviewShortcutDropdownKeydown}
+            <ReorderPointerGrid
+              items={pinnedShortcutIds}
+              listClass="shortcuts shortcutDndGrid"
+              itemClass="shortcutDndCell"
+              placeholderClass="shortcutDndGap shortcutPlaceholder"
+              ghostClass="shortcutDndGhost"
+              ariaLabel={$t("Stats_GameShortcuts")}
+              on:reorder={(e) => {
+                pinnedShortcutIds = e.detail.items;
+              }}
+              on:itemclick={() => {}}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true"
-                ><path
-                  d="M201.4 137.4c12.5-12.5 32.8-12.5 45.3 0l160 160c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L224 218.7 86.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160z"
-                /></svg
-              >
-            </button>
-            {#if shortcutDdOpen}
-              <div bind:this={previewShortcutDropdownEl} class="shortcutDropdown gameShortcuts open" id="shortcutDropdown">
-                <ReorderPointerGrid
-                  items={dropdownShortcutIds}
-                  listClass="shortcutDropdownItems shortcutDndGrid"
-                  itemClass="shortcutDndCell"
-                  placeholderClass="shortcutDndGap shortcutPlaceholder"
-                  ghostClass="shortcutDndGhost"
-                  ariaLabel={$t("Stats_GameShortcuts")}
-                  on:reorder={(e) => {
-                    dropdownShortcutIds = e.detail.items;
-                  }}
-                  on:itemclick={() => {}}
-                >
-                  <svelte:fragment slot="item" let:rowId>
-                    {@const sid = slotKey(rowId)}
-                    {@const meta = pvShortcutMeta[sid]}
-                    <button type="button" class="HasContextMenu" aria-label={meta?.label ?? sid}>
-                      <img src="/img/BasicDefault.webp" alt="" draggable="false" />
-                    </button>
-                  </svelte:fragment>
-                </ReorderPointerGrid>
-                <button type="button" id="btnOpenShortcutFolder" aria-label={$t("Tooltip_ShortcutFolder")}>
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true"
-                    ><path
-                      d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"
-                    /></svg
-                  >
+              <svelte:fragment slot="item" let:rowId>
+                {@const sid = slotKey(rowId)}
+                {@const meta = pvShortcutMeta[sid]}
+                <button type="button" class="HasContextMenu" aria-label={meta?.label ?? sid}>
+                  <img src="/img/BasicDefault.webp" alt="" draggable="false" />
                 </button>
-              </div>
-            {/if}
+              </svelte:fragment>
+            </ReorderPointerGrid>
+            <div class="shortcutDropdownWrap">
+              <button
+                bind:this={previewShortcutDropdownButtonEl}
+                type="button"
+                id="shortcutDropdownBtn"
+                class="square"
+                class:flip={shortcutDdOpen}
+                aria-expanded={shortcutDdOpen}
+                aria-label={$t("Tooltip_ExpandShortcuts")}
+                on:click={() => (shortcutDdOpen = !shortcutDdOpen)}
+                on:keydown={onPreviewShortcutDropdownKeydown}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true"
+                  ><path
+                    d="M201.4 137.4c12.5-12.5 32.8-12.5 45.3 0l160 160c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L224 218.7 86.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160z"
+                  /></svg
+                >
+              </button>
+              {#if shortcutDdOpen}
+                <div bind:this={previewShortcutDropdownEl} class="shortcutDropdown gameShortcuts open" id="shortcutDropdown">
+                  <ReorderPointerGrid
+                    items={dropdownShortcutIds}
+                    listClass="shortcutDropdownItems shortcutDndGrid"
+                    itemClass="shortcutDndCell"
+                    placeholderClass="shortcutDndGap shortcutPlaceholder"
+                    ghostClass="shortcutDndGhost"
+                    ariaLabel={$t("Stats_GameShortcuts")}
+                    on:reorder={(e) => {
+                      dropdownShortcutIds = e.detail.items;
+                    }}
+                    on:itemclick={() => {}}
+                  >
+                    <svelte:fragment slot="item" let:rowId>
+                      {@const sid = slotKey(rowId)}
+                      {@const meta = pvShortcutMeta[sid]}
+                      <button type="button" class="HasContextMenu" aria-label={meta?.label ?? sid}>
+                        <img src="/img/BasicDefault.webp" alt="" draggable="false" />
+                      </button>
+                    </svelte:fragment>
+                  </ReorderPointerGrid>
+                  <button type="button" id="btnOpenShortcutFolder" aria-label={$t("Tooltip_ShortcutFolder")}>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true"
+                      ><path
+                        d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"
+                      /></svg
+                    >
+                  </button>
+                </div>
+              {/if}
+            </div>
+            <button type="button" id="btnStartPlat" aria-label={$t("Button_Launch")}>
+              <img src="/img/platform/Steam.svg" alt="" draggable="false" />
+            </button>
           </div>
-          <button type="button" id="btnStartPlat" aria-label={$t("Button_Launch")}>
-            <img src="/img/platform/Steam.svg" alt="" draggable="false" />
-          </button>
           <button type="button" id="btnAddNew" class="btnicontext" aria-label={$t("Button_AddNew")}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true"
               ><path

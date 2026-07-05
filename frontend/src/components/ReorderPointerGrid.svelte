@@ -11,6 +11,7 @@
     type GridNavigationCell,
     type GridNavigationKey,
   } from "../lib/gridNavigation";
+  import { moveFocusSpatially, type SpatialDirection } from "../lib/spatialFocus";
 
   /** Unique string ids; order is the canonical list. */
   export let items: string[] = [];
@@ -286,6 +287,13 @@
     return key === "ArrowLeft" || key === "ArrowRight" || key === "ArrowUp" || key === "ArrowDown";
   }
 
+  function gridKeyDirection(key: GridNavigationKey): SpatialDirection {
+    if (key === "ArrowUp") return "up";
+    if (key === "ArrowDown") return "down";
+    if (key === "ArrowLeft") return "left";
+    return "right";
+  }
+
   function cellsForKeyboardNavigation(): GridNavigationCell[] {
     if (!listEl) return [];
     return Array.from(listEl.querySelectorAll<HTMLElement>("[data-dnd-cell][data-dnd-name]"))
@@ -315,10 +323,20 @@
 
   function moveCellFocus(e: KeyboardEvent, id: string): boolean {
     if (!isGridNavigationKey(e.key)) return false;
+    const nextId = nextGridNavigationId(cellsForKeyboardNavigation(), id, e.key);
+    if (!nextId) {
+      if (listEl?.closest(".shortcutDropdown.open")) {
+        e.preventDefault();
+        e.stopPropagation();
+        return true;
+      }
+      if (!moveFocusSpatially(gridKeyDirection(e.key))) return false;
+      e.preventDefault();
+      e.stopPropagation();
+      return true;
+    }
     e.preventDefault();
     e.stopPropagation();
-    const nextId = nextGridNavigationId(cellsForKeyboardNavigation(), id, e.key);
-    if (!nextId) return true;
     localActiveId = nextId;
     if (selectOnArrow) {
       dispatch("itemclick", { id: nextId });

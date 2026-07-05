@@ -1,9 +1,10 @@
 <script lang="ts">
   import { get } from "svelte/store";
   import { onMount } from "svelte";
-  import { route, previousPage, appBarTitle } from "../stores/nav";
+  import { previousPage, appBarTitle, navigateBackLikeButton } from "../stores/nav";
   import { activeModal } from "../stores/modal";
   import { t } from "../stores/i18n";
+  import { controllerSpatialNavigation } from "../lib/actions/controllerSpatialNavigation";
   import "../styles/Settings.scss";
 
   $: appBarTitle.set($t("Title_Settings"));
@@ -18,12 +19,12 @@
     if (get(activeModal)) {
       return;
     }
-    const prev = get(previousPage);
-    route.set(prev ?? { page: "home" });
+    e.preventDefault();
+    navigateBackLikeButton();
   }
 </script>
 
-<div class="main-content main-spacing">
+<div class="main-content main-spacing" use:controllerSpatialNavigation>
   <h1 class="SettingsHeader">{$t("Settings_Header_AppWide")}</h1>
 
   {#await import("../components/GeneralSettingsBlock.svelte") then { default: GeneralSettingsBlock }}

@@ -14,8 +14,10 @@ import (
 )
 
 const (
-	clientID      = "973188269405765682"
-	refreshPeriod = 30 * time.Second
+	clientID             = "973188269405765682"
+	refreshPeriod        = 30 * time.Second
+	discordLargeImageKey = "switcher"
+	discordSmallImageKey = "switcher_small"
 )
 
 type Manager struct {
@@ -95,8 +97,10 @@ func (m *Manager) Refresh() {
 	activity := richgo.Activity{
 		State:      "",
 		Details:    "Currently switching accounts",
-		LargeImage: "switcher",
+		LargeImage: discordLargeImageKey,
 		LargeText:  "TcNo Account Switcher",
+		SmallImage: discordSmallImageKey,
+		SmallText:  "TcNo Account Switcher",
 		Buttons: []*richgo.Button{
 			{Label: "Website", Url: "https://github.com/TCNOCo/TcNo-Acc-Switcher/"},
 		},

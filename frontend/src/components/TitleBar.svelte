@@ -4,10 +4,13 @@
     import { onMount } from 'svelte'
     import { appBarTitle } from '../stores/nav'
     import { activeModal } from '../stores/modal'
+    import { contextMenu } from '../stores/contextMenu'
+    import { searchOverlayCtrl } from '../stores/searchOverlay'
     import { Events, Window } from "@wailsio/runtime";
 
     let minimised = false
     let maximised = false
+    let escapeOwnedPopupOpen = false
 
     const common = Events.Types.Common
 
@@ -20,8 +23,15 @@
         maximised = max
     }
 
+    function refreshEscapeOwnedPopupOpen() {
+        escapeOwnedPopupOpen = !!document.querySelector(
+            ".shortcutDropdown.open, .dropdown-menu.show, .custom-dropdown-menu.show, [role='dialog']"
+        )
+    }
+
     onMount(() => {
         void refreshWindowState()
+        refreshEscapeOwnedPopupOpen()
 
         const tracked = [
             common.WindowMinimise,
@@ -38,9 +48,16 @@
                 void refreshWindowState()
             })
         )
+        const onUiStateChange = () => requestAnimationFrame(refreshEscapeOwnedPopupOpen)
+        window.addEventListener("focusin", onUiStateChange, true)
+        window.addEventListener("keydown", onUiStateChange, true)
+        window.addEventListener("pointerdown", onUiStateChange, true)
 
         return () => {
             for (const off of unsubs) off()
+            window.removeEventListener("focusin", onUiStateChange, true)
+            window.removeEventListener("keydown", onUiStateChange, true)
+            window.removeEventListener("pointerdown", onUiStateChange, true)
         }
     })
 
@@ -48,6 +65,7 @@
     let backSpin = ''
     let backTransition = ''
     $: backDisabled = !!$activeModal
+    $: backPromptHidden = backDisabled || !!$contextMenu || $searchOverlayCtrl.open || escapeOwnedPopupOpen
     $: titleLabel = (() => {
         if ($route.page === "manage-platforms") {
             return $t("Title_Platforms_Settings")
@@ -87,6 +105,7 @@
         <button
             type="button"
             class="win-btn win-btn-back"
+            class:win-btn-back--controller-prompt={!backPromptHidden}
             title={$t("Aria_WindowBack")}
             disabled={backDisabled}
             aria-disabled={backDisabled}
@@ -178,6 +197,7 @@
     }
     .win-btn-back {
         --wails-draggable: no-drag;
+        position: relative;
         svg {
             fill: var(--whiteSecondary);
             height: 0.8rem;
@@ -186,6 +206,40 @@
         &:disabled {
             opacity: 0.35;
             cursor: not-allowed;
+        }
+    }
+    :global(.input-modality-controller) .win-btn-back--controller-prompt::after {
+        content: var(--controller-back-prompt-glyph);
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        z-index: 3;
+        width: 1rem;
+        height: 1rem;
+        min-width: 1rem;
+        min-height: 1rem;
+        border-radius: 50%;
+        border: 2px solid var(--controller-back-prompt-border);
+        box-sizing: border-box;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--controller-back-prompt-bg);
+        color: var(--controller-back-prompt-fg);
+        box-shadow: 0 2px 7px var(--shadow-color-45, rgba(0, 0, 0, 0.45));
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 0.66rem;
+        font-weight: 800;
+        line-height: 1;
+        pointer-events: none;
+        text-shadow: none;
+    }
+    @media (forced-colors: active) {
+        :global(.input-modality-controller) .win-btn-back--controller-prompt::after {
+            background: ButtonFace;
+            border-color: ButtonText;
+            color: ButtonText;
+            box-shadow: none;
         }
     }
     .header_icon {

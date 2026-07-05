@@ -1,4 +1,5 @@
 import type { Action } from "svelte/action";
+import { moveFocusSpatially, type SpatialDirection } from "../spatialFocus";
 
 type ArrowKey = "ArrowLeft" | "ArrowRight" | "ArrowUp" | "ArrowDown";
 
@@ -6,6 +7,9 @@ export type ShortcutArrowNavigationOptions = {
   selector?: string;
   wrap?: boolean;
   capture?: boolean;
+  onEscape?: () => void;
+  canOpenDropdownFromUp?: (active: HTMLElement) => boolean;
+  onHotbarUp?: () => void;
 };
 
 const DEFAULT_SELECTOR = [
@@ -18,6 +22,13 @@ function isArrowKey(key: string): key is ArrowKey {
   return key === "ArrowLeft" || key === "ArrowRight" || key === "ArrowUp" || key === "ArrowDown";
 }
 
+function arrowDirection(key: ArrowKey): SpatialDirection {
+  if (key === "ArrowUp") return "up";
+  if (key === "ArrowDown") return "down";
+  if (key === "ArrowLeft") return "left";
+  return "right";
+}
+
 function activeElementFor(root: HTMLElement): Element | null {
   return root.ownerDocument?.activeElement ?? (typeof document === "undefined" ? null : document.activeElement);
 }
@@ -25,6 +36,10 @@ function activeElementFor(root: HTMLElement): Element | null {
 function isVisible(el: HTMLElement): boolean {
   const rect = typeof el.getBoundingClientRect === "function" ? el.getBoundingClientRect() : null;
   return !rect || rect.width > 0 || rect.height > 0;
+}
+
+function isInsideOpenDropdown(el: HTMLElement): boolean {
+  return el.closest?.(".shortcutDropdown.open") instanceof HTMLElement;
 }
 
 function focusableShortcutTargets(root: HTMLElement, selector = DEFAULT_SELECTOR): HTMLElement[] {
@@ -36,6 +51,10 @@ function focusableShortcutTargets(root: HTMLElement, selector = DEFAULT_SELECTOR
     if (el.getAttribute("aria-disabled") === "true") return false;
     return isVisible(el);
   });
+}
+
+function hotbarShortcutTargets(root: HTMLElement, selector = DEFAULT_SELECTOR): HTMLElement[] {
+  return focusableShortcutTargets(root, selector).filter((el) => !isInsideOpenDropdown(el));
 }
 
 function focusTarget(el: HTMLElement): void {
@@ -83,6 +102,36 @@ function nextIndex(current: number, total: number, key: ArrowKey, wrap: boolean)
   return next < 0 ? total - 1 : 0;
 }
 
+function centerX(el: HTMLElement): number {
+  const rect = el.getBoundingClientRect();
+  return rect.left + rect.width / 2;
+}
+
+function centerY(el: HTMLElement): number {
+  const rect = el.getBoundingClientRect();
+  return rect.top + rect.height / 2;
+}
+
+function verticalTarget(current: HTMLElement, targets: HTMLElement[], key: "ArrowUp" | "ArrowDown"): HTMLElement | null {
+  const currentCenterY = centerY(current);
+  const candidates = targets.filter((target) =>
+    key === "ArrowUp" ? centerY(target) < currentCenterY : centerY(target) > currentCenterY,
+  );
+
+  candidates.sort((a, b) => {
+    const aRect = a.getBoundingClientRect();
+    const bRect = b.getBoundingClientRect();
+    const fromRect = current.getBoundingClientRect();
+    const aPrimary = key === "ArrowUp" ? fromRect.top - aRect.bottom : aRect.top - fromRect.bottom;
+    const bPrimary = key === "ArrowUp" ? fromRect.top - bRect.bottom : bRect.top - fromRect.bottom;
+    const byPrimary = Math.max(0, aPrimary) - Math.max(0, bPrimary);
+    if (byPrimary !== 0) return byPrimary;
+    return Math.abs(centerX(current) - centerX(a)) - Math.abs(centerX(current) - centerX(b));
+  });
+
+  return candidates[0] ?? null;
+}
+
 export function focusShortcutArrowNavigationTarget(
   root: HTMLElement | null,
   edge: "first" | "last" = "first",
@@ -112,7 +161,9 @@ export function moveShortcutArrowFocus(
     return false;
   }
   const navRoot = dropdownRoot ?? root;
-  const targets = focusableShortcutTargets(navRoot, options.selector);
+  const targets = dropdownRoot
+    ? focusableShortcutTargets(navRoot, options.selector)
+    : hotbarShortcutTargets(navRoot, options.selector);
   if (targets.length === 0) return false;
 
   if ((active as HTMLElement).id === "shortcutDropdownBtn" && dropdownRoot) {
@@ -126,16 +177,60 @@ export function moveShortcutArrowFocus(
   const current = targets.indexOf(currentTarget);
   if (current < 0) return false;
 
+  if (ev.key === "ArrowUp" && !dropdownRoot && currentOptionsCanOpenDropdownFromUp(options, active as HTMLElement)) {
+    ev.preventDefault();
+    ev.stopPropagation();
+    options.onHotbarUp?.();
+    return true;
+  }
+
+  if (ev.key === "ArrowUp" || ev.key === "ArrowDown") {
+    const nextTarget = verticalTarget(currentTarget, targets, ev.key);
+    if (!nextTarget) {
+      if (dropdownRoot || !moveFocusSpatially(arrowDirection(ev.key))) return false;
+      ev.preventDefault();
+      ev.stopPropagation();
+      return true;
+    }
+    ev.preventDefault();
+    ev.stopPropagation();
+    focusTarget(nextTarget);
+    return true;
+  }
+
+  const next = nextIndex(current, targets.length, ev.key, options.wrap ?? false);
+  if (next === current) {
+    if (dropdownRoot || !moveFocusSpatially(arrowDirection(ev.key))) return false;
+    ev.preventDefault();
+    ev.stopPropagation();
+    return true;
+  }
+
   ev.preventDefault();
   ev.stopPropagation();
-  focusTarget(targets[nextIndex(current, targets.length, ev.key, options.wrap ?? false)]);
+  focusTarget(targets[next]);
   return true;
+}
+
+function currentOptionsHasHotbarUp(options: ShortcutArrowNavigationOptions): boolean {
+  return typeof options.onHotbarUp === "function";
+}
+
+function currentOptionsCanOpenDropdownFromUp(options: ShortcutArrowNavigationOptions, active: HTMLElement): boolean {
+  if (!currentOptionsHasHotbarUp(options)) return false;
+  return options.canOpenDropdownFromUp?.(active) ?? true;
 }
 
 export const shortcutArrowNavigation: Action<HTMLElement, ShortcutArrowNavigationOptions | undefined> = (node, options = {}) => {
   let currentOptions = options;
   let listenerCapture = currentOptions.capture ?? false;
   const onKeydown = (ev: KeyboardEvent) => {
+    if (ev.key === "Escape" && currentOptions.onEscape) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      currentOptions.onEscape();
+      return;
+    }
     moveShortcutArrowFocus(ev, node, currentOptions);
   };
 
