@@ -23,6 +23,7 @@
   --accent-highlight-row: var(--accent-fill-medium);
 
   --notification-border-radius: #{$notification-border-radius};
+  --notification-border: var(--modal-border, var(--border-bar-bg));
   --notification-message-fg: #{$notification-message-fg};
 
   --modal-bg: #{$modal-bg};

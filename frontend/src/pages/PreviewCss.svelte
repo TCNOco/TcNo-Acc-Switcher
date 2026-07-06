@@ -26,6 +26,7 @@
     focusShortcutArrowNavigationTarget,
     shortcutArrowNavigation,
   } from "../lib/actions/shortcutArrowNavigation";
+  import { controllerSpatialNavigation } from "../lib/actions/controllerSpatialNavigation";
 
   type PvAccRow = {
     name: string;
@@ -319,7 +320,7 @@
   }
 </script>
 
-<div class="main-content main-spacing preview-css-page">
+<div class="main-content main-spacing preview-css-page" use:controllerSpatialNavigation>
   <h1 class="SettingsHeader">{$t("Settings_PreviewCssHeader")}</h1>
   <p class="preview-css-intro">{$t("Settings_PreviewCss")}</p>
 
@@ -1312,19 +1313,19 @@
   }
 
   .preview-static-toast.toast--success {
-    border-color: var(--notification-border-contrast, var(--whiteSecondary));
+    border-color: var(--notification-border, var(--modal-border, var(--border-bar-bg, transparent)));
     border-left-color: var(--notification-success-border, var(--green));
   }
   .preview-static-toast.toast--warning {
-    border-color: var(--notification-border-contrast, var(--whiteSecondary));
+    border-color: var(--notification-border, var(--modal-border, var(--border-bar-bg, transparent)));
     border-left-color: var(--notification-warning-border, var(--orange));
   }
   .preview-static-toast.toast--error {
-    border-color: var(--notification-border-contrast, var(--whiteSecondary));
+    border-color: var(--notification-border, var(--modal-border, var(--border-bar-bg, transparent)));
     border-left-color: var(--notification-error-border, var(--red));
   }
   .preview-static-toast.toast--info {
-    border-color: var(--notification-border-contrast, var(--whiteSecondary));
+    border-color: var(--notification-border, var(--modal-border, var(--border-bar-bg, transparent)));
     border-left-color: var(--notification-info-border, var(--accent));
   }
 

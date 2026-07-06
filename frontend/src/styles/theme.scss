@@ -155,6 +155,7 @@
     --notification-error-border: var(--red);
     --notification-error-highlight: var(--red);
     --notification-border-radius: 2px;
+    --notification-border: var(--modal-border, var(--border-bar-bg));
     --notification-message-fg: var(--whiteSecondary);
     --modal-bg: var(--mainContentBackground);
     --modal-border: var(--border-bar-bg);

@@ -6,6 +6,7 @@
   import { get } from 'svelte/store'
   import { dismissToastById, pushToast, toastStore } from '../stores/toast'
   import { t as translate } from '../stores/i18n'
+  import { controllerSpatialNavigation } from '../lib/actions/controllerSpatialNavigation'
   import ToastTypeIcon from './ToastTypeIcon.svelte'
   import "../styles/toast.scss";
 
@@ -77,7 +78,7 @@
 
 <!-- Type icons: edit `ToastTypeIcon.svelte` (per-type {#if} branches + HTML comment there). -->
 <div class="toast-root" aria-live="polite" aria-relevant="additions text">
-  <div class="toast-stack">
+  <div class="toast-stack" use:controllerSpatialNavigation>
     {#each $toastStore as t (t.id)}
       <div
         class="toast {typeClass(t.type)}"

@@ -136,6 +136,34 @@ function pointInRect(
   );
 }
 
+function applyGhostSizing(el: HTMLElement): void {
+  el.style.width = "100%";
+  el.style.height = "100%";
+  el.style.boxSizing = "border-box";
+  el.style.margin = "0";
+  el.style.maxWidth = "none";
+  el.style.maxHeight = "none";
+}
+
+function normalizeGhostButton(el: HTMLElement): void {
+  applyGhostSizing(el);
+  el.style.minWidth = "0";
+  el.style.minHeight = "0";
+  el.style.display = "flex";
+  el.style.alignItems = "center";
+  el.style.justifyContent = "center";
+  el.style.padding = "3px";
+  el.style.overflow = "hidden";
+}
+
+function normalizeGhostMedia(el: HTMLElement): void {
+  applyGhostSizing(el);
+  el.style.objectFit = "contain";
+  el.style.objectPosition = "center";
+  el.style.display = "block";
+  el.style.flex = "0 0 auto";
+}
+
 /** Remove data attributes and style the cloned node for ghost display. */
 export function stripCellForGhostClone(el: HTMLElement): void {
   el.removeAttribute("data-dnd-cell");
@@ -146,17 +174,15 @@ export function stripCellForGhostClone(el: HTMLElement): void {
   el.removeAttribute("role");
   el.classList.remove("shortcutDndCell");
   el.style.cursor = "grabbing";
-  el.style.width = "100%";
-  el.style.height = "100%";
-  el.style.boxSizing = "border-box";
-  el.style.margin = "0";
-  el.style.maxWidth = "none";
-  el.style.maxHeight = "none";
+  applyGhostSizing(el);
+  el.style.overflow = "hidden";
   el.querySelectorAll("input").forEach((n) => n.remove());
   el.querySelectorAll("[id]").forEach((n) => n.removeAttribute("id"));
   el.querySelectorAll("label[for]").forEach((n) =>
     n.removeAttribute("for"),
   );
+  el.querySelectorAll<HTMLElement>("button, .button, [role='button']").forEach(normalizeGhostButton);
+  el.querySelectorAll<HTMLElement>("img, svg").forEach(normalizeGhostMedia);
 }
 
 /** Pure computation of the pinned display slots during drag. */

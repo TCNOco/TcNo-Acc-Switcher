@@ -5,6 +5,7 @@
   import { Events } from "@wailsio/runtime";
   import { t } from "../stores/i18n";
   import { openFeedbackModal } from "../stores/modal";
+  import { controllerSpatialNavigation } from "../lib/actions/controllerSpatialNavigation";
   import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import "../styles/toast.scss";
   import "../styles/stability-prompt.scss";
@@ -130,7 +131,7 @@
 </script>
 
 {#if visible}
-  <div class="stability-prompt-root" aria-live="polite">
+  <div class="stability-prompt-root" aria-live="polite" use:controllerSpatialNavigation>
     <div
       class="toast toast--info stability-prompt"
       role="status"

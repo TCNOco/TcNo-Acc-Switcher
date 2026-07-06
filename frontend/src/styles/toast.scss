@@ -42,7 +42,7 @@
 }
 
 .toast--success {
-  border-color: var(--notification-border-contrast, var(--whiteSecondary, #f8f8f2));
+  border-color: var(--notification-border, var(--modal-border, var(--border-bar-bg, transparent)));
   border-left-color: var(--notification-success-border, var(--green, #8aff80));
   box-shadow:
     var(--shadow, 0 4px 14px var(--shadow-color-35)),
@@ -57,7 +57,7 @@
 }
 
 .toast--warning {
-  border-color: var(--notification-border-contrast, var(--whiteSecondary, #f8f8f2));
+  border-color: var(--notification-border, var(--modal-border, var(--border-bar-bg, transparent)));
   border-left-color: var(--notification-warning-border, var(--orange, #ffca80));
   box-shadow:
     var(--shadow, 0 4px 14px var(--shadow-color-35)),
@@ -72,7 +72,7 @@
 }
 
 .toast--error {
-  border-color: var(--notification-border-contrast, var(--whiteSecondary, #f8f8f2));
+  border-color: var(--notification-border, var(--modal-border, var(--border-bar-bg, transparent)));
   border-left-color: var(--notification-error-border, var(--red, #ff9580));
   box-shadow:
     var(--shadow, 0 4px 14px var(--shadow-color-35)),
@@ -87,7 +87,7 @@
 }
 
 .toast--info {
-  border-color: var(--notification-border-contrast, var(--whiteSecondary, #f8f8f2));
+  border-color: var(--notification-border, var(--modal-border, var(--border-bar-bg, transparent)));
   border-left-color: var(--notification-info-border, var(--accent));
   box-shadow:
     var(--shadow, 0 4px 14px var(--shadow-color-35)),
