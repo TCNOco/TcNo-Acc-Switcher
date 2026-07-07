@@ -1,7 +1,7 @@
 Open Source Licenses
 ====================
 
-Generated: 2026-07-02T21:52:50Z
+Generated: 2026-07-07T15:20:35Z
 Generator: tools/collect_open_source_licenses.py
 Source cache: .cache/license-sources
 
@@ -27,7 +27,7 @@ Inputs
 
 Summary
 -------
-- Components inventoried: 382
+- Components inventoried: 379
 - Unique license/notice texts: 255
 - Components still missing license/notice text: 0
 License/Notice Texts
@@ -6658,8 +6658,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 --------------------------------------------------------------------------------
 
-github.com/Ladicle/tabwriter, github.com/ProtonMail/go-crypto, modernc.org/memory and
-modernc.org/token license:
+github.com/Ladicle/tabwriter, github.com/ProtonMail/go-crypto, golang.org/x/telemetry,
+modernc.org/memory and modernc.org/token license:
 
 Copyright (c) 2009 The Go Authors. All rights reserved.
 
@@ -8656,10 +8656,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 --------------------------------------------------------------------------------
 
-is-reference, locate-character, sander, sorcery and stackback license:
+@wailsio/runtime, is-reference, locate-character, sander, sorcery and stackback license:
 License text source: Open Source Initiative MIT License text (SPDX MIT):
 https://opensource.org/license/mit.
 License source notes:
+- @wailsio/runtime:
+frontend/node_modules/.pnpm/@wailsio+runtime@3.0.0-alpha.96/node_modules/@wailsio/runtime/package.json
+`license` field declares `MIT`.
 - is-reference: .cache/license-sources/npm/d8613119d2f98094-is-reference_3.0.3/package/package.json
 `license` field declares `MIT`.
 - locate-character:
@@ -9270,7 +9273,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 --------------------------------------------------------------------------------
 
-github.com/rogpeppe/go-internal and google.golang.org/protobuf license:
+google.golang.org/protobuf license:
 
 Copyright (c) 2018 The Go Authors. All rights reserved.
 
@@ -12958,8 +12961,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
 
 golang.org/x/crypto, golang.org/x/exp, golang.org/x/exp/typeparams, golang.org/x/image,
-golang.org/x/mod, golang.org/x/net, golang.org/x/sync, golang.org/x/sys, golang.org/x/telemetry,
-golang.org/x/term, golang.org/x/text, golang.org/x/tools, golang.org/x/tools/go/expect and
+golang.org/x/mod, golang.org/x/net, golang.org/x/sync, golang.org/x/sys, golang.org/x/term,
+golang.org/x/text, golang.org/x/tools, golang.org/x/tools/go/expect and
 golang.org/x/tools/go/packages/packagestest license:
 
 Copyright 2009 The Go Authors.
@@ -13941,8 +13944,7 @@ SOFTWARE.
 
 --------------------------------------------------------------------------------
 
-detect-libc, github.com/ebitengine/purego, github.com/go-logr/logr, github.com/skeema/knownhosts and
-gopkg.in/yaml.v2 license:
+detect-libc, github.com/go-logr/logr, github.com/skeema/knownhosts and gopkg.in/yaml.v2 license:
 Apache License Version 2.0, January 2004
 
                         http://www.apache.org/licenses/
@@ -15639,7 +15641,7 @@ SOFTWARE.
 
 --------------------------------------------------------------------------------
 
-@wailsio/runtime, github.com/wailsapp/wails/v3 and github.com/wailsapp/wails/webview2 license:
+github.com/wailsapp/wails/v3 license:
 MIT License
 
 Copyright (c) 2018-Present Lea Anthony
