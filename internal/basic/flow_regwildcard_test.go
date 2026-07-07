@@ -1,9 +1,6 @@
 package basic
 
-import (
-	"path/filepath"
-	"testing"
-)
+import "testing"
 
 func TestRegDumpLookupWildcardBundle(t *testing.T) {
 	m := map[string]regDumpEntry{
@@ -31,9 +28,6 @@ func TestRegDumpLookupValueNameGlobBundle(t *testing.T) {
 	e, ok := regDumpLookup(m, `REG:HKCU\Software\TestApp:LastLoginDate_h202577560`)
 	if !ok || e.V != "d1" {
 		t.Fatalf("lookup: ok=%v entry=%+v", ok, e)
-	}
-	if ok, _ := filepath.Match(`LastLoginDate_*`, "LastLoginDate_h202577560"); !ok {
-		t.Fatal("filepath.Match sanity")
 	}
 }
 
