@@ -10,6 +10,10 @@ export type ModalBodyOptions = {
 };
 
 export type PasswordSetupResult = { password: string };
+export type TagExpiryResult = {
+  scope: "account" | "all";
+  expiresAt: string;
+};
 
 type ActiveModal =
   | (ModalBase & { kind: "alert"; title: string; dismissLabel?: string } & ModalBodyOptions)
@@ -34,6 +38,16 @@ type ActiveModal =
   | (ModalBase & {
       kind: "passwordSetup";
       title: string;
+      positiveLabel?: string;
+      negativeLabel?: string;
+    })
+  | (ModalBase & {
+      kind: "tagExpiry";
+      title: string;
+      tagName: string;
+      initialScope?: "account" | "all";
+      initialDate?: string;
+      initialTime?: string;
       positiveLabel?: string;
       negativeLabel?: string;
     })
@@ -166,6 +180,31 @@ export function openPasswordSetupModal(opts: {
       id: bumpId(),
       kind: "passwordSetup",
       title: opts.title,
+      positiveLabel: opts.positiveLabel,
+      negativeLabel: opts.negativeLabel,
+    });
+  });
+}
+
+export function openTagExpiryModal(opts: {
+  title: string;
+  tagName: string;
+  initialScope?: "account" | "all";
+  initialDate?: string;
+  initialTime?: string;
+  positiveLabel?: string;
+  negativeLabel?: string;
+}): Promise<TagExpiryResult | null> {
+  return new Promise((resolve) => {
+    resolver = resolve as (value: unknown) => void;
+    activeModal.set({
+      id: bumpId(),
+      kind: "tagExpiry",
+      title: opts.title,
+      tagName: opts.tagName,
+      initialScope: opts.initialScope,
+      initialDate: opts.initialDate,
+      initialTime: opts.initialTime,
       positiveLabel: opts.positiveLabel,
       negativeLabel: opts.negativeLabel,
     });

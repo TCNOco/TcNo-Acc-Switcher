@@ -191,6 +191,7 @@ func (b *BasicService) ForgetAccount(platformKey, uniqueID string) error {
 	}
 	normalizeTagMaps(&f)
 	delete(f.AccountTags, uniqueID)
+	delete(f.AccountTagExpiries, uniqueID)
 	pruneUnusedTagDefinitions(&f)
 	if err := writeIdsFile(platformKey, f); err != nil {
 		return err
@@ -384,13 +385,19 @@ func (b *BasicService) AddTagToAccount(platformKey, uniqueID, tagID string) erro
 	}
 	cur := f.AccountTags[uniqueID]
 	if containsTagID(cur, tagID) {
+		clearAccountTagExpiry(&f, uniqueID, tagID)
+		if err := writeIdsFile(platformKey, f); err != nil {
+			return err
+		}
+		_ = stats.SyncPlatformTagCounts(platformKey, len(f.Tags), countTaggedAccounts(f))
 		return nil
 	}
 	f.AccountTags[uniqueID] = append(cur, tagID)
+	clearAccountTagExpiry(&f, uniqueID, tagID)
 	if err := writeIdsFile(platformKey, f); err != nil {
 		return err
 	}
-	_ = stats.SyncPlatformTagCounts(platformKey, len(f.Tags), len(f.AccountTags))
+	_ = stats.SyncPlatformTagCounts(platformKey, len(f.Tags), countTaggedAccounts(f))
 	return nil
 }
 
@@ -451,10 +458,12 @@ func (b *BasicService) AddTagToAccounts(platformKey string, uniqueIDs []string, 
 		}
 		cur := f.AccountTags[uid]
 		if containsTagID(cur, tagID) {
+			clearAccountTagExpiry(&f, uid, tagID)
 			addedToAny = true
 			continue
 		}
 		f.AccountTags[uid] = append(cur, tagID)
+		clearAccountTagExpiry(&f, uid, tagID)
 		addedToAny = true
 	}
 	if !addedToAny {
@@ -466,8 +475,13 @@ func (b *BasicService) AddTagToAccounts(platformKey string, uniqueIDs []string, 
 	if err := writeIdsFile(platformKey, f); err != nil {
 		return zero, err
 	}
-	_ = stats.SyncPlatformTagCounts(platformKey, len(f.Tags), len(f.AccountTags))
-	return TagDefinitionDTO{ID: tagID, Name: strings.TrimSpace(tag.Name), Color: strings.TrimSpace(tag.Color)}, nil
+	_ = stats.SyncPlatformTagCounts(platformKey, len(f.Tags), countTaggedAccounts(f))
+	return TagDefinitionDTO{
+		ID:        tagID,
+		Name:      strings.TrimSpace(tag.Name),
+		Color:     strings.TrimSpace(tag.Color),
+		ExpiresAt: strings.TrimSpace(tag.ExpiresAt),
+	}, nil
 }
 
 func (b *BasicService) ClearAccountTags(platformKey string) error {
@@ -486,11 +500,12 @@ func (b *BasicService) ClearAccountTags(platformKey string) error {
 	}
 	normalizeTagMaps(&f)
 	f.AccountTags = map[string][]string{}
+	f.AccountTagExpiries = map[string]map[string]string{}
 	pruneUnusedTagDefinitions(&f)
 	if err := writeIdsFile(platformKey, f); err != nil {
 		return err
 	}
-	_ = stats.SyncPlatformTagCounts(platformKey, len(f.Tags), len(f.AccountTags))
+	_ = stats.SyncPlatformTagCounts(platformKey, len(f.Tags), countTaggedAccounts(f))
 	return nil
 }
 
@@ -527,11 +542,12 @@ func (b *BasicService) RemoveTagFromAccount(platformKey, uniqueID, tagID string)
 	} else {
 		f.AccountTags[uniqueID] = next
 	}
+	clearAccountTagExpiry(&f, uniqueID, tagID)
 	pruneUnusedTagDefinitions(&f)
 	if err := writeIdsFile(platformKey, f); err != nil {
 		return err
 	}
-	_ = stats.SyncPlatformTagCounts(platformKey, len(f.Tags), len(f.AccountTags))
+	_ = stats.SyncPlatformTagCounts(platformKey, len(f.Tags), countTaggedAccounts(f))
 	return nil
 }
 
@@ -572,6 +588,153 @@ func (b *BasicService) CreateTagAndAddToAccount(platformKey, uniqueID, name stri
 	if err := writeIdsFile(platformKey, f); err != nil {
 		return zero, err
 	}
-	_ = stats.SyncPlatformTagCounts(platformKey, len(f.Tags), len(f.AccountTags))
+	_ = stats.SyncPlatformTagCounts(platformKey, len(f.Tags), countTaggedAccounts(f))
 	return TagDefinitionDTO{ID: id, Name: name, Color: color}, nil
+}
+
+func (b *BasicService) RemoveTagFromAllAccounts(platformKey, tagID string) error {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
+	platformKey = strings.TrimSpace(platformKey)
+	tagID = strings.TrimSpace(tagID)
+	if platformKey == "" || tagID == "" {
+		return fmt.Errorf("invalid tag parameters")
+	}
+	f, err := readIdsFile(platformKey)
+	if err != nil {
+		return err
+	}
+	normalizeTagMaps(&f)
+	for uid, cur := range f.AccountTags {
+		next := cur[:0]
+		for _, id := range cur {
+			if strings.EqualFold(strings.TrimSpace(id), tagID) {
+				continue
+			}
+			next = append(next, id)
+		}
+		if len(next) == 0 {
+			delete(f.AccountTags, uid)
+		} else {
+			f.AccountTags[uid] = next
+		}
+		clearAccountTagExpiry(&f, uid, tagID)
+	}
+	pruneUnusedTagDefinitions(&f)
+	if err := writeIdsFile(platformKey, f); err != nil {
+		return err
+	}
+	_ = stats.SyncPlatformTagCounts(platformKey, len(f.Tags), countTaggedAccounts(f))
+	return nil
+}
+
+func (b *BasicService) SetTagExpiry(platformKey, uniqueID, tagID, scope, expiresAt string) error {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
+	platformKey = strings.TrimSpace(platformKey)
+	if platformKey == "" {
+		return fmt.Errorf("invalid tag parameters")
+	}
+	f, err := readIdsFile(platformKey)
+	if err != nil {
+		return err
+	}
+	if err := setTagExpiryOnFile(&f, uniqueID, tagID, scope, expiresAt); err != nil {
+		return err
+	}
+	if err := writeIdsFile(platformKey, f); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (b *BasicService) PruneExpiredTags(platformKey string) (bool, error) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	if err := security.RequireUnlocked(); err != nil {
+		return false, err
+	}
+	platformKey = strings.TrimSpace(platformKey)
+	if platformKey == "" {
+		return false, fmt.Errorf("invalid tag parameters")
+	}
+	f, err := readIdsFile(platformKey)
+	if err != nil {
+		return false, err
+	}
+	if !pruneExpiredTagsInFile(&f, time.Now().UTC()) {
+		return false, nil
+	}
+	if err := writeIdsFile(platformKey, f); err != nil {
+		return false, err
+	}
+	_ = stats.SyncPlatformTagCounts(platformKey, len(f.Tags), countTaggedAccounts(f))
+	return true, nil
+}
+
+func (b *BasicService) ApplySpecialTag(platformKey, uniqueID, specialID string) (TagDefinitionDTO, error) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	var zero TagDefinitionDTO
+	if err := security.RequireUnlocked(); err != nil {
+		return zero, err
+	}
+	platformKey = strings.TrimSpace(platformKey)
+	uniqueID = strings.TrimSpace(uniqueID)
+	specialID = strings.TrimSpace(specialID)
+	if platformKey == "" || uniqueID == "" {
+		return zero, fmt.Errorf("invalid tag parameters")
+	}
+	if specialID != "cs2-drop-claimed" {
+		return zero, fmt.Errorf("unknown special tag")
+	}
+	f, err := readIdsFile(platformKey)
+	if err != nil {
+		return zero, err
+	}
+	normalizeTagMaps(&f)
+	tagName := "CS2 Drop Claimed"
+	tagID := ""
+	tag := tagFileEntry{}
+	for id, def := range f.Tags {
+		if strings.EqualFold(strings.TrimSpace(def.Name), tagName) {
+			tagID = id
+			tag = def
+			break
+		}
+	}
+	if tagID == "" {
+		tagID, err = newTagID()
+		if err != nil {
+			return zero, err
+		}
+		color, err := randomSaturatedColorHex()
+		if err != nil {
+			return zero, err
+		}
+		tag = tagFileEntry{Name: tagName, Color: color}
+	}
+	tag.ExpiresAt = nextCS2DropReset(time.Now().UTC()).Format(time.RFC3339)
+	f.Tags[tagID] = tag
+	cur := f.AccountTags[uniqueID]
+	if !containsTagID(cur, tagID) {
+		f.AccountTags[uniqueID] = append(cur, tagID)
+	}
+	clearAccountTagExpiry(&f, uniqueID, tagID)
+	if err := writeIdsFile(platformKey, f); err != nil {
+		return zero, err
+	}
+	_ = stats.SyncPlatformTagCounts(platformKey, len(f.Tags), countTaggedAccounts(f))
+	return TagDefinitionDTO{
+		ID:        tagID,
+		Name:      strings.TrimSpace(tag.Name),
+		Color:     strings.TrimSpace(tag.Color),
+		ExpiresAt: strings.TrimSpace(tag.ExpiresAt),
+	}, nil
 }

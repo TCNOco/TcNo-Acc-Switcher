@@ -33,10 +33,11 @@ func orderPath(platformKey string) (string, error) {
 }
 
 type idsFile struct {
-	IDs         map[string]string      `json:"ids"`
-	LastUsed    map[string]string      `json:"lastused"`
-	Tags        map[string]tagFileEntry `json:"tags,omitempty"`
-	AccountTags map[string][]string    `json:"accountTags,omitempty"`
+	IDs                map[string]string            `json:"ids"`
+	LastUsed           map[string]string            `json:"lastused"`
+	Tags               map[string]tagFileEntry      `json:"tags,omitempty"`
+	AccountTags        map[string][]string          `json:"accountTags,omitempty"`
+	AccountTagExpiries map[string]map[string]string `json:"accountTagExpiries,omitempty"`
 }
 
 func readIdsFile(platformKey string) (idsFile, error) {

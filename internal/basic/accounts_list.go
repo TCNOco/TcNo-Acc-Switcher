@@ -3,6 +3,7 @@ package basic
 import (
 	"log/slog"
 	"strings"
+	"time"
 
 	"TcNo-Acc-Switcher/internal/accountlist"
 	"TcNo-Acc-Switcher/internal/platform"
@@ -53,6 +54,12 @@ func (b *BasicService) buildAccountListContext(platformKey string) (*accountList
 	idf, err := readIdsFile(platformKey)
 	if err != nil {
 		return nil, err
+	}
+	if pruneExpiredTagsInFile(&idf, time.Now().UTC()) {
+		if err := writeIdsFile(platformKey, idf); err != nil {
+			return nil, err
+		}
+		_ = stats.SyncPlatformTagCounts(platformKey, len(idf.Tags), countTaggedAccounts(idf))
 	}
 	order, err := readOrder(platformKey)
 	if err != nil {

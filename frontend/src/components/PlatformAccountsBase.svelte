@@ -104,6 +104,10 @@
   export let adapter: PlatformAccountAdapter<TAccount>;
 
   const SEARCH_MAX = 5;
+  type BasicServiceWithTagExpiry = typeof BasicService & {
+    PruneExpiredTags?: (platformKey: string) => Promise<boolean>;
+  };
+  const tagExpiryService = BasicService as BasicServiceWithTagExpiry;
 
   let accounts: TAccount[] = [];
   let accountIds: string[] = [];
@@ -116,6 +120,8 @@
   let isActionBusyValue = false;
 
   let refreshTimers: ReturnType<typeof setTimeout>[] = [];
+  let tagExpiryTimer: ReturnType<typeof setTimeout> | undefined;
+  let tagExpiryPruneRunning = false;
   let acclistEl: HTMLDivElement | undefined;
   let overlayQuery = "";
   let overlayQueryDebounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -178,6 +184,13 @@
   $: knownAccountCount = $platformAccountCounts[name];
   $: knownTagCount = $platformTagCounts[name];
   $: hasTags = knownTagCount ? knownTagCount.tagCount > 0 || knownTagCount.taggedAccountCount > 0 : false;
+  $: {
+    void accounts;
+    void tagDefs;
+    void name;
+    void adapter;
+    scheduleTagExpiryPrune(soonestLoadedTagExpiryMs());
+  }
   $: skeletonCount =
     knownAccountCount !== undefined
       ? Math.min(24, Math.max(0, knownAccountCount))
@@ -468,6 +481,64 @@
 
   function visibleAccountIds(): string[] {
     return displayIds.filter((id) => !!accountById(id));
+  }
+
+  function parseTagExpiryMs(value: string | undefined): number | null {
+    if (!value) return null;
+    const parsed = Date.parse(value);
+    return Number.isNaN(parsed) ? null : parsed;
+  }
+
+  function minExpiryMs(current: number | null, value: string | undefined): number | null {
+    const expiryMs = parseTagExpiryMs(value);
+    if (expiryMs === null) return current;
+    return current === null ? expiryMs : Math.min(current, expiryMs);
+  }
+
+  function soonestLoadedTagExpiryMs(): number | null {
+    let soonest: number | null = null;
+    for (const tag of tagDefs) {
+      soonest = minExpiryMs(soonest, tag.expiresAt);
+    }
+    for (const account of accounts) {
+      for (const tag of adapter.tags(account) ?? []) {
+        soonest = minExpiryMs(soonest, tag.expiresAt);
+      }
+    }
+    return soonest;
+  }
+
+  function clearTagExpiryTimer(): void {
+    if (!tagExpiryTimer) return;
+    clearTimeout(tagExpiryTimer);
+    tagExpiryTimer = undefined;
+  }
+
+  function scheduleTagExpiryPrune(nextExpiryMs: number | null): void {
+    clearTagExpiryTimer();
+    const platformKey = name.trim();
+    if (!platformKey || nextExpiryMs === null || !tagExpiryService.PruneExpiredTags) return;
+    tagExpiryTimer = setTimeout(() => {
+      void pruneExpiredTagsForPlatform(platformKey);
+    }, Math.max(0, nextExpiryMs - Date.now()));
+  }
+
+  async function pruneExpiredTagsForPlatform(platformKey: string): Promise<void> {
+    const prune = tagExpiryService.PruneExpiredTags;
+    if (!prune || tagExpiryPruneRunning) return;
+    tagExpiryPruneRunning = true;
+    try {
+      const changed = await prune(platformKey);
+      if (changed) {
+        tagFilterMode = { kind: "all" };
+        await loadAccounts();
+        await loadTagDefsInternal();
+      }
+    } catch (e) {
+      pushToast({ type: "error", message: formatToastWithError($t("Toast_SaveFailed"), e), duration: 8000 });
+    } finally {
+      tagExpiryPruneRunning = false;
+    }
   }
 
   async function clearAccountTagsForPlatform(): Promise<void> {
@@ -877,6 +948,7 @@
   onDestroy(() => {
     for (const t of refreshTimers) clearTimeout(t);
     refreshTimers = [];
+    clearTagExpiryTimer();
     if (overlayQueryDebounceTimer) clearTimeout(overlayQueryDebounceTimer);
     selectedAccountStore.set({ platformKey: "", uniqueId: "", displayName: "", accountLogin: "" });
     platformLiveSessionId.set({ platformKey: "", uniqueId: "" });

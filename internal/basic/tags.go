@@ -8,6 +8,7 @@ import (
 	"math"
 	"sort"
 	"strings"
+	"time"
 
 	"TcNo-Acc-Switcher/internal/stats"
 )
@@ -16,21 +17,24 @@ const maxTagNameLen = 64
 
 // AccountTagDTO is a resolved tag on an account row (matches TagDefinitionDTO shape).
 type AccountTagDTO struct {
-	ID    string `json:"id"`
-	Name  string `json:"name"`
-	Color string `json:"color"`
+	ID        string `json:"id"`
+	Name      string `json:"name"`
+	Color     string `json:"color"`
+	ExpiresAt string `json:"expiresAt,omitempty"`
 }
 
 // TagDefinitionDTO is one row in the global tag list for a platform.
 type TagDefinitionDTO struct {
-	ID    string `json:"id"`
-	Name  string `json:"name"`
-	Color string `json:"color"`
+	ID        string `json:"id"`
+	Name      string `json:"name"`
+	Color     string `json:"color"`
+	ExpiresAt string `json:"expiresAt,omitempty"`
 }
 
 type tagFileEntry struct {
-	Name  string `json:"name"`
-	Color string `json:"color"`
+	Name      string `json:"name"`
+	Color     string `json:"color"`
+	ExpiresAt string `json:"expiresAt,omitempty"`
 }
 
 func normalizeTagMaps(f *idsFile) {
@@ -40,6 +44,9 @@ func normalizeTagMaps(f *idsFile) {
 	if f.AccountTags == nil {
 		f.AccountTags = map[string][]string{}
 	}
+	if f.AccountTagExpiries == nil {
+		f.AccountTagExpiries = map[string]map[string]string{}
+	}
 }
 
 func pruneUnusedTagDefinitions(f *idsFile) {
@@ -47,14 +54,20 @@ func pruneUnusedTagDefinitions(f *idsFile) {
 	used := make(map[string]struct{})
 	for uid, ids := range f.AccountTags {
 		clean := ids[:0]
+		seen := make(map[string]struct{}, len(ids))
+		expiryMap := f.AccountTagExpiries[uid]
 		for _, id := range ids {
 			id = strings.TrimSpace(id)
 			if id == "" {
 				continue
 			}
+			if _, ok := seen[id]; ok {
+				continue
+			}
 			if _, ok := f.Tags[id]; !ok {
 				continue
 			}
+			seen[id] = struct{}{}
 			if _, seen := used[id]; !seen {
 				used[id] = struct{}{}
 			}
@@ -62,8 +75,26 @@ func pruneUnusedTagDefinitions(f *idsFile) {
 		}
 		if len(clean) == 0 {
 			delete(f.AccountTags, uid)
+			delete(f.AccountTagExpiries, uid)
 		} else {
 			f.AccountTags[uid] = clean
+			if len(expiryMap) > 0 {
+				for id := range expiryMap {
+					if !containsTagID(clean, id) {
+						delete(expiryMap, id)
+					}
+				}
+			}
+			if len(expiryMap) == 0 {
+				delete(f.AccountTagExpiries, uid)
+			} else {
+				f.AccountTagExpiries[uid] = expiryMap
+			}
+		}
+	}
+	for uid := range f.AccountTagExpiries {
+		if len(f.AccountTags[uid]) == 0 {
+			delete(f.AccountTagExpiries, uid)
 		}
 	}
 	for id := range f.Tags {
@@ -118,7 +149,7 @@ func hslToRGB(h, s, l float64) (uint8, uint8, uint8) {
 	default:
 		rp, gp, bp = c, 0, x
 	}
-	return uint8(math.Round((rp+m)*255)), uint8(math.Round((gp+m)*255)), uint8(math.Round((bp+m)*255))
+	return uint8(math.Round((rp + m) * 255)), uint8(math.Round((gp + m) * 255)), uint8(math.Round((bp + m) * 255))
 }
 
 func clamp01(v float64) float64 {
@@ -133,7 +164,8 @@ func clamp01(v float64) float64 {
 
 func resolveTagsForAccount(f idsFile, uniqueID string) []AccountTagDTO {
 	normalizeTagMaps(&f)
-	ids := f.AccountTags[strings.TrimSpace(uniqueID)]
+	uniqueID = strings.TrimSpace(uniqueID)
+	ids := f.AccountTags[uniqueID]
 	if len(ids) == 0 {
 		return nil
 	}
@@ -148,9 +180,10 @@ func resolveTagsForAccount(f idsFile, uniqueID string) []AccountTagDTO {
 			continue
 		}
 		out = append(out, AccountTagDTO{
-			ID:    tid,
-			Name:  strings.TrimSpace(def.Name),
-			Color: strings.TrimSpace(def.Color),
+			ID:        tid,
+			Name:      strings.TrimSpace(def.Name),
+			Color:     strings.TrimSpace(def.Color),
+			ExpiresAt: effectiveAccountTagExpiry(f, uniqueID, tid),
 		})
 	}
 	return out
@@ -177,9 +210,10 @@ func listTagDefinitionsSorted(f idsFile) []TagDefinitionDTO {
 	out := make([]TagDefinitionDTO, 0, len(pairs))
 	for _, p := range pairs {
 		out = append(out, TagDefinitionDTO{
-			ID:    p.id,
-			Name:  strings.TrimSpace(p.t.Name),
-			Color: strings.TrimSpace(p.t.Color),
+			ID:        p.id,
+			Name:      strings.TrimSpace(p.t.Name),
+			Color:     strings.TrimSpace(p.t.Color),
+			ExpiresAt: strings.TrimSpace(p.t.ExpiresAt),
 		})
 	}
 	return out
@@ -198,11 +232,12 @@ func ForgetAccountTagAssignments(platformKey, uniqueID string) error {
 	}
 	normalizeTagMaps(&f)
 	delete(f.AccountTags, uniqueID)
+	delete(f.AccountTagExpiries, uniqueID)
 	pruneUnusedTagDefinitions(&f)
 	if err := writeIdsFile(platformKey, f); err != nil {
 		return err
 	}
-	_ = stats.SyncPlatformTagCounts(platformKey, len(f.Tags), len(f.AccountTags))
+	_ = stats.SyncPlatformTagCounts(platformKey, len(f.Tags), countTaggedAccounts(f))
 	return nil
 }
 
@@ -224,6 +259,208 @@ func containsTagID(slice []string, id string) bool {
 		}
 	}
 	return false
+}
+
+func countTaggedAccounts(f idsFile) int {
+	normalizeTagMaps(&f)
+	return len(f.AccountTags)
+}
+
+func normalizeExpiryString(expiresAt string) (string, error) {
+	expiresAt = strings.TrimSpace(expiresAt)
+	if expiresAt == "" {
+		return "", nil
+	}
+	ts, err := time.Parse(time.RFC3339, expiresAt)
+	if err != nil {
+		return "", err
+	}
+	return ts.UTC().Format(time.RFC3339), nil
+}
+
+func isExpiredAt(expiresAt string, now time.Time) (bool, bool) {
+	expiresAt = strings.TrimSpace(expiresAt)
+	if expiresAt == "" {
+		return false, false
+	}
+	ts, err := time.Parse(time.RFC3339, expiresAt)
+	if err != nil {
+		return false, true
+	}
+	return !ts.UTC().After(now.UTC()), false
+}
+
+func earlierExpiry(a, b string) string {
+	a = strings.TrimSpace(a)
+	b = strings.TrimSpace(b)
+	if a == "" {
+		return b
+	}
+	if b == "" {
+		return a
+	}
+	at, aerr := time.Parse(time.RFC3339, a)
+	bt, berr := time.Parse(time.RFC3339, b)
+	if aerr != nil {
+		return b
+	}
+	if berr != nil {
+		return a
+	}
+	if bt.Before(at) {
+		return bt.UTC().Format(time.RFC3339)
+	}
+	return at.UTC().Format(time.RFC3339)
+}
+
+func effectiveAccountTagExpiry(f idsFile, uniqueID, tagID string) string {
+	defExpiry := ""
+	if def, ok := f.Tags[tagID]; ok {
+		defExpiry = strings.TrimSpace(def.ExpiresAt)
+	}
+	accountExpiry := ""
+	if f.AccountTagExpiries != nil {
+		accountExpiry = strings.TrimSpace(f.AccountTagExpiries[uniqueID][tagID])
+	}
+	return earlierExpiry(defExpiry, accountExpiry)
+}
+
+func clearAccountTagExpiry(f *idsFile, uniqueID, tagID string) {
+	if f.AccountTagExpiries == nil {
+		return
+	}
+	expiryMap := f.AccountTagExpiries[uniqueID]
+	if len(expiryMap) == 0 {
+		delete(f.AccountTagExpiries, uniqueID)
+		return
+	}
+	delete(expiryMap, tagID)
+	if len(expiryMap) == 0 {
+		delete(f.AccountTagExpiries, uniqueID)
+		return
+	}
+	f.AccountTagExpiries[uniqueID] = expiryMap
+}
+
+func pruneExpiredTagsInFile(f *idsFile, now time.Time) bool {
+	normalizeTagMaps(f)
+	changed := false
+	expiredEverywhere := make(map[string]struct{})
+	for id, def := range f.Tags {
+		def.Name = strings.TrimSpace(def.Name)
+		def.Color = strings.TrimSpace(def.Color)
+		if expired, invalid := isExpiredAt(def.ExpiresAt, now); invalid {
+			def.ExpiresAt = ""
+			f.Tags[id] = def
+			changed = true
+			continue
+		} else if expired {
+			expiredEverywhere[id] = struct{}{}
+		}
+		f.Tags[id] = def
+	}
+	for uid, ids := range f.AccountTags {
+		expiryMap := f.AccountTagExpiries[uid]
+		next := ids[:0]
+		for _, id := range ids {
+			id = strings.TrimSpace(id)
+			if id == "" {
+				changed = true
+				continue
+			}
+			if _, ok := f.Tags[id]; !ok {
+				changed = true
+				continue
+			}
+			if _, ok := expiredEverywhere[id]; ok {
+				changed = true
+				clearAccountTagExpiry(f, uid, id)
+				continue
+			}
+			expiresAt := ""
+			if expiryMap != nil {
+				expiresAt = expiryMap[id]
+			}
+			if expired, invalid := isExpiredAt(expiresAt, now); invalid {
+				clearAccountTagExpiry(f, uid, id)
+				changed = true
+			} else if expired {
+				clearAccountTagExpiry(f, uid, id)
+				changed = true
+				continue
+			}
+			next = append(next, id)
+		}
+		if len(next) != len(ids) {
+			changed = true
+		}
+		if len(next) == 0 {
+			delete(f.AccountTags, uid)
+			delete(f.AccountTagExpiries, uid)
+			continue
+		}
+		f.AccountTags[uid] = next
+	}
+	beforeTags := len(f.Tags)
+	beforeAccounts := len(f.AccountTags)
+	beforeExpiries := len(f.AccountTagExpiries)
+	pruneUnusedTagDefinitions(f)
+	if len(f.Tags) != beforeTags || len(f.AccountTags) != beforeAccounts || len(f.AccountTagExpiries) != beforeExpiries {
+		changed = true
+	}
+	return changed
+}
+
+func setTagExpiryOnFile(f *idsFile, uniqueID, tagID, scope, expiresAt string) error {
+	normalizeTagMaps(f)
+	tagID = strings.TrimSpace(tagID)
+	uniqueID = strings.TrimSpace(uniqueID)
+	scope = strings.TrimSpace(scope)
+	normalized, err := normalizeExpiryString(expiresAt)
+	if err != nil {
+		return err
+	}
+	if _, ok := f.Tags[tagID]; !ok {
+		return fmt.Errorf("unknown tag id")
+	}
+	switch scope {
+	case "account":
+		if uniqueID == "" {
+			return fmt.Errorf("invalid tag parameters")
+		}
+		if !containsTagID(f.AccountTags[uniqueID], tagID) {
+			return fmt.Errorf("tag not assigned to account")
+		}
+		if normalized == "" {
+			clearAccountTagExpiry(f, uniqueID, tagID)
+			return nil
+		}
+		expiryMap := f.AccountTagExpiries[uniqueID]
+		if expiryMap == nil {
+			expiryMap = map[string]string{}
+		}
+		expiryMap[tagID] = normalized
+		f.AccountTagExpiries[uniqueID] = expiryMap
+		return nil
+	case "all":
+		def := f.Tags[tagID]
+		def.ExpiresAt = normalized
+		f.Tags[tagID] = def
+		return nil
+	default:
+		return fmt.Errorf("invalid tag expiry scope")
+	}
+}
+
+func nextCS2DropReset(now time.Time) time.Time {
+	now = now.UTC()
+	reset := time.Date(now.Year(), now.Month(), now.Day(), 1, 0, 0, 0, time.UTC)
+	daysUntil := (int(time.Wednesday) - int(reset.Weekday()) + 7) % 7
+	reset = reset.AddDate(0, 0, daysUntil)
+	if !reset.After(now) {
+		reset = reset.AddDate(0, 0, 7)
+	}
+	return reset
 }
 
 // BuildAccountTagMap returns resolved tag DTOs per unique account id (platform cache key).

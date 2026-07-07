@@ -6,6 +6,7 @@
   import ConfirmModalBody from "./modals/ConfirmModalBody.svelte";
   import PromptModalBody from "./modals/PromptModalBody.svelte";
   import PasswordSetupModalBody from "./modals/PasswordSetupModalBody.svelte";
+  import TagExpiryModalBody from "./modals/TagExpiryModalBody.svelte";
   import FolderPickerModalBody from "./modals/FolderPickerModalBody.svelte";
   import FeedbackModalBody from "./modals/FeedbackModalBody.svelte";
   import CrashReportModalBody from "./modals/CrashReportModalBody.svelte";
@@ -70,6 +71,16 @@
       {:else if m.kind === "passwordSetup"}
         <PasswordSetupModalBody
           positiveLabel={m.positiveLabel ?? $t("Security_SetAppPassword")}
+          negativeLabel={m.negativeLabel ?? $t("Button_Cancel")}
+          on:resolve={onResolve}
+        />
+      {:else if m.kind === "tagExpiry"}
+        <TagExpiryModalBody
+          tagName={m.tagName}
+          initialScope={m.initialScope ?? "account"}
+          initialDate={m.initialDate ?? ""}
+          initialTime={m.initialTime ?? ""}
+          positiveLabel={m.positiveLabel ?? $t("Ok")}
           negativeLabel={m.negativeLabel ?? $t("Button_Cancel")}
           on:resolve={onResolve}
         />
