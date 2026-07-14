@@ -17,7 +17,7 @@ env:
   GOPROXY: https://proxy.golang.org,direct
   GOSUMDB: sum.golang.org
   GOTOOLCHAIN: auto
-  WAILS3_VERSION: v3.0.0-alpha2.114
+  WAILS3_VERSION: v3.0.0-alpha2.117
   CANONICAL_REPOSITORY: TCNOco/TcNo-Acc-Switcher
   SIGNPATH_ORGANIZATION_ID: a2a88c4e-72da-4d2c-925e-91f41aff9d77
   SIGNPATH_PROJECT_SLUG: TcNo-Acc-Switcher

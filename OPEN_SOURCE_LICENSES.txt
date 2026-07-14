@@ -1,7 +1,7 @@
 Open Source Licenses
 ====================
 
-Generated: 2026-07-07T15:20:35Z
+Generated: 2026-07-14T23:51:15Z
 Generator: tools/collect_open_source_licenses.py
 Source cache: .cache/license-sources
 
@@ -8661,7 +8661,7 @@ License text source: Open Source Initiative MIT License text (SPDX MIT):
 https://opensource.org/license/mit.
 License source notes:
 - @wailsio/runtime:
-frontend/node_modules/.pnpm/@wailsio+runtime@3.0.0-alpha.96/node_modules/@wailsio/runtime/package.json
+frontend/node_modules/.pnpm/@wailsio+runtime@3.0.0-alpha.97/node_modules/@wailsio/runtime/package.json
 `license` field declares `MIT`.
 - is-reference: .cache/license-sources/npm/d8613119d2f98094-is-reference_3.0.3/package/package.json
 `license` field declares `MIT`.

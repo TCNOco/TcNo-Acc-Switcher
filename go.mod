@@ -17,7 +17,7 @@ require (
 	github.com/tidwall/gjson v1.19.0
 	github.com/tidwall/sjson v1.2.5
 	github.com/ulikunitz/xz v0.5.15
-	github.com/wailsapp/wails/v3 v3.0.0-alpha2.114
+	github.com/wailsapp/wails/v3 v3.0.0-alpha2.117
 	golang.org/x/crypto v0.53.0
 	golang.org/x/image v0.43.0
 	golang.org/x/net v0.56.0
