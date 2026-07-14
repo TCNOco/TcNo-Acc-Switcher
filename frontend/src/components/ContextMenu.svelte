@@ -23,6 +23,7 @@
     handleContextMenuKeydown,
     handleContextMenuQuickFilter,
   } from "../lib/contextMenuKeyboard";
+  import { submenuTopOffset } from "../lib/contextMenuLayout";
 
   /** Viewport padding — keep menu fully inside the window. */
   const PAD = 8;
@@ -201,11 +202,7 @@
     return { left, top };
   }
 
-  /**
-   * When a submenu extends past the viewport, shift the root menu (moveContextMenu in legacy).
-   */
-
-  function alignExpandedSubmenusToRoot(root: HTMLUListElement): void {
+  function fitExpandedSubmenusToViewport(root: HTMLUListElement): void {
     root.querySelectorAll("ul.submenu").forEach((sub) => {
       if (sub instanceof HTMLElement) {
         sub.style.removeProperty("top");
@@ -215,7 +212,6 @@
     if (expanded.length === 0) {
       return;
     }
-    const rt = root.getBoundingClientRect().top;
     expanded.forEach((sub) => {
       if (!(sub instanceof HTMLElement)) {
         return;
@@ -224,8 +220,13 @@
       if (!(li instanceof HTMLElement) || !li.classList.contains("hasSubmenu")) {
         return;
       }
-      const liT = li.getBoundingClientRect().top;
-      sub.style.top = `${Math.round(rt - liT)}px`;
+      const rect = sub.getBoundingClientRect();
+      sub.style.top = `${submenuTopOffset({
+        naturalTop: rect.top,
+        naturalBottom: rect.bottom,
+        viewportHeight: window.innerHeight,
+        padding: PAD,
+      })}px`;
     });
   }
 
@@ -238,23 +239,20 @@
   }
 
   function refreshFlyoutLayout(root: HTMLUListElement): void {
-    nudgeRootForSubmenus(root);
-    alignExpandedSubmenusToRoot(root);
     syncCtxRootColumnHeightVar(root);
+    fitExpandedSubmenusToViewport(root);
+    nudgeRootForSubmenus(root);
   }
 
   function nudgeRootForSubmenus(el: HTMLUListElement): void {
     const subs = el.querySelectorAll(".submenu");
     let shiftLeft = 0;
-    let shiftUp = 0;
     subs.forEach((sub) => {
       const r = sub.getBoundingClientRect();
       const rs = r.right - window.innerWidth;
-      const bs = r.bottom - window.innerHeight;
       if (rs > 0) shiftLeft = Math.max(shiftLeft, rs + 40);
-      if (bs > 0) shiftUp = Math.max(shiftUp, bs + 10);
     });
-    if (shiftLeft <= 0 && shiftUp <= 0) {
+    if (shiftLeft <= 0) {
       return;
     }
     const cur = el.getBoundingClientRect();
@@ -263,13 +261,7 @@
       PAD,
       Math.max(PAD, window.innerWidth - cur.width - PAD),
     );
-    const nextTop = clamp(
-      cur.top - shiftUp,
-      PAD,
-      Math.max(PAD, window.innerHeight - cur.height - PAD),
-    );
     el.style.left = `${nextLeft}px`;
-    el.style.top = `${nextTop}px`;
   }
 
   function applyAnchorLayout(): void {
