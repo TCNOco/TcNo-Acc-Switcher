@@ -75,11 +75,6 @@ Albion Online, **[Battle.net](https://youtu.be/cvbo_VY05bo?list=PLsSFD61FiOVmAwC
 
 \[For info on how any of these work, see the [Wiki](https://github.com/TCNOco/TcNo-Acc-Switcher/wiki)]
 
-
-## Required runtimes:
-As of today you don't need anything special! Go and [Wails](https://v3.wails.io/) allow us to build and release native binaries.
-You will need your systems already built-in Web Runtime - on Windows the [WebView2 Runtime](https://developer.microsoft.com/microsoft-edge/webview2/) should be installed already, otherwise you can download from the [here](https://developer.microsoft.com/microsoft-edge/webview2/).
-
 ### Lost? Visit the [Wiki](https://github.com/TCNOco/TcNo-Acc-Switcher/wiki) for more info
 
 ## Installation:

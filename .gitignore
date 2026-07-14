@@ -25,3 +25,8 @@ docs/RELEASING.md
 /.vite
 /.pnpm-store
 /.codex-cache
+.codex-state-matrix-rerun.json
+/.cursor
+/.codex
+/.fallow
+/.vscode
