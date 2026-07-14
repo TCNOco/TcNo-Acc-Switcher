@@ -1,6 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { get } from "svelte/store";
-import { contextMenu as contextMenuAction } from "./contextMenu";
+import {
+  contextMenu as contextMenuAction,
+  hasBrowserContextMenuModifier,
+  preventUnmodifiedBrowserContextMenu,
+} from "./contextMenu";
 import {
   closeContextMenu,
   contextMenu,
@@ -111,6 +115,49 @@ describe("contextMenu action", () => {
     });
 
     action?.destroy?.();
+  });
+
+  it.each([
+    ["Control", { ctrlKey: true }],
+    ["Shift", { shiftKey: true }],
+    ["Alt", { altKey: true }],
+    ["Meta", { metaKey: true }],
+  ])("leaves %s+right-click for the browser context menu", (_label, modifier) => {
+    const node = new FakeElement({
+      left: 10,
+      right: 30,
+      top: 20,
+      bottom: 40,
+      width: 20,
+      height: 20,
+    });
+    vi.stubGlobal("HTMLElement", FakeElement);
+    const event = mouseEvent("contextmenu", {
+      clientX: 120,
+      clientY: 240,
+      ...modifier,
+    });
+
+    const action = contextMenuAction(node as unknown as HTMLElement, () => [{ label: "Open" }]);
+    node.emit("contextmenu", event);
+
+    expect(hasBrowserContextMenuModifier(event)).toBe(true);
+    expect(event.preventDefault).not.toHaveBeenCalled();
+    expect(event.stopPropagation).not.toHaveBeenCalled();
+    expect(get(contextMenu)).toBeNull();
+
+    action?.destroy?.();
+  });
+
+  it("suppresses an unmodified browser menu outside app context-menu targets", () => {
+    const plainEvent = mouseEvent("contextmenu", {});
+    const modifiedEvent = mouseEvent("contextmenu", { ctrlKey: true });
+
+    preventUnmodifiedBrowserContextMenu(plainEvent);
+    preventUnmodifiedBrowserContextMenu(modifiedEvent);
+
+    expect(plainEvent.preventDefault).toHaveBeenCalledOnce();
+    expect(modifiedEvent.preventDefault).not.toHaveBeenCalled();
   });
 
   it("opens from the focused element rectangle on Shift+F10 and ContextMenu", () => {

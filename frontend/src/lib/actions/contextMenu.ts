@@ -12,6 +12,18 @@ export type ContextMenuBinding =
       beforeOpen?: () => void;
     };
 
+type ContextMenuModifiers = Pick<MouseEvent, "ctrlKey" | "shiftKey" | "altKey" | "metaKey">;
+
+export function hasBrowserContextMenuModifier(ev: ContextMenuModifiers): boolean {
+  return ev.ctrlKey || ev.shiftKey || ev.altKey || ev.metaKey;
+}
+
+export function preventUnmodifiedBrowserContextMenu(ev: MouseEvent): void {
+  if (!hasBrowserContextMenuModifier(ev)) {
+    ev.preventDefault();
+  }
+}
+
 function normalize(binding: ContextMenuBinding): {
   getter: ContextMenuItemsGetter;
   beforeOpen?: () => void;
@@ -56,7 +68,7 @@ export const contextMenu: Action<HTMLElement, ContextMenuBinding> = (node, bindi
   const listenerNodes = keyboardHost instanceof HTMLElement && keyboardHost !== node ? [node, keyboardHost] : [node];
 
   const onCtx = (ev: MouseEvent): void => {
-    if (ev.ctrlKey) {
+    if (hasBrowserContextMenuModifier(ev)) {
       return;
     }
     ev.preventDefault();

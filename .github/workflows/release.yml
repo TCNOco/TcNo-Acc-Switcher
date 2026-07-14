@@ -164,7 +164,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Generate Wails bindings
-        run: wails3 generate bindings -f "-tags production" -clean=true -ts
+        run: wails3 generate bindings -f "-tags production,devtools" -clean=true -ts
 
       - name: Build frontend
         working-directory: frontend
@@ -183,7 +183,7 @@ jobs:
           Push-Location build
           wails3 generate syso -arch amd64 -icon windows/icon.ico -manifest windows/wails.exe.manifest -info windows/info.json -out ..\wails_windows_amd64.syso
           Pop-Location
-          go build -tags production -trimpath -buildvcs=false -ldflags="-w -s -H windowsgui" -o bin\TcNo-Acc-Switcher.exe
+          go build -tags production,devtools -trimpath -buildvcs=false -ldflags="-w -s -H windowsgui" -o bin\TcNo-Acc-Switcher.exe
           Remove-Item -Force *.syso
 
       - name: Upload unsigned executable for SignPath

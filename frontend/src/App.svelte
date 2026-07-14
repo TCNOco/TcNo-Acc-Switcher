@@ -62,6 +62,7 @@
   import { applyUserDataMoveProgress } from "./stores/userDataMove";
   import { createControllerInputController } from "./lib/controllerInput";
   import { controllerSupportEnabled, loadControllerSupportEnabled } from "./stores/controllerSupport";
+  import { preventUnmodifiedBrowserContextMenu } from "./lib/actions/contextMenu";
 
   function resolveActiveBg(
     r: typeof $route,
@@ -408,10 +409,12 @@
     window.addEventListener("keydown", onGlobalKeydownCapture, true);
     window.addEventListener("keydown", onGlobalHistoryKeydownCapture, true);
     window.addEventListener("mouseup", onGlobalHistoryMouseUpCapture, true);
+    window.addEventListener("contextmenu", preventUnmodifiedBrowserContextMenu, true);
     return () => {
       window.removeEventListener("keydown", onGlobalKeydownCapture, true);
       window.removeEventListener("keydown", onGlobalHistoryKeydownCapture, true);
       window.removeEventListener("mouseup", onGlobalHistoryMouseUpCapture, true);
+      window.removeEventListener("contextmenu", preventUnmodifiedBrowserContextMenu, true);
       offPageStats();
       off?.();
       offNav?.();

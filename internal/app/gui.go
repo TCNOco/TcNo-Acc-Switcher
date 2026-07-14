@@ -57,6 +57,48 @@ func ResolvedLogLevel(p cli.Parsed) slog.Level {
 	return lvl
 }
 
+func mainWindowOptions(guiSettings platform.AppSettings, parsed cli.Parsed) application.WebviewWindowOptions {
+	winOpts := application.WebviewWindowOptions{
+		Name:      "main",
+		Title:     "TcNo Account Switcher",
+		MinWidth:  760,
+		MinHeight: 520,
+		Mac: application.MacWindow{
+			InvisibleTitleBarHeight: 50,
+			Backdrop:                application.MacBackdropTranslucent,
+			TitleBar:                application.MacTitleBarHiddenInset,
+		},
+		BackgroundColour:           application.NewRGB(27, 38, 54),
+		URL:                        "/",
+		Frameless:                  true,
+		EnableFileDrop:             true,
+		DevToolsEnabled:            true,
+		DefaultContextMenuDisabled: false,
+		KeyBindings: map[string]func(application.Window){
+			"Ctrl+Shift+I": func(window application.Window) { window.OpenDevTools() },
+			"F11":          func(window application.Window) { window.ToggleFullscreen() },
+		},
+		Permissions: map[application.PermissionType]application.Permission{
+			application.PermissionCamera:        application.PermissionDeny,
+			application.PermissionMicrophone:    application.PermissionDeny,
+			application.PermissionGeolocation:   application.PermissionDeny,
+			application.PermissionNotifications: application.PermissionDeny,
+			application.PermissionClipboardRead: application.PermissionDeny,
+		},
+	}
+	if guiSettings.StartProgramCentered {
+		winOpts.InitialPosition = application.WindowCentered
+	} else {
+		winOpts.InitialPosition = application.WindowXY
+		winOpts.X = 96
+		winOpts.Y = 96
+	}
+	if parsed.StartInTray {
+		winOpts.Hidden = true
+	}
+	return winOpts
+}
+
 func RunGUI(params RunGUIParams) {
 	parsed := params.Parsed
 	guiSettings := params.GuiSettings
@@ -170,39 +212,7 @@ func RunGUI(params RunGUIParams) {
 		log.Printf("ipc server: %v", err)
 	}
 
-	winOpts := application.WebviewWindowOptions{
-		Name:      "main",
-		Title:     "TcNo Account Switcher",
-		MinWidth:  760,
-		MinHeight: 520,
-		Mac: application.MacWindow{
-			InvisibleTitleBarHeight: 50,
-			Backdrop:                application.MacBackdropTranslucent,
-			TitleBar:                application.MacTitleBarHiddenInset,
-		},
-		BackgroundColour:           application.NewRGB(27, 38, 54),
-		URL:                        "/",
-		Frameless:                  true,
-		EnableFileDrop:             true,
-		DefaultContextMenuDisabled: true,
-		Permissions: map[application.PermissionType]application.Permission{
-			application.PermissionCamera:        application.PermissionDeny,
-			application.PermissionMicrophone:    application.PermissionDeny,
-			application.PermissionGeolocation:   application.PermissionDeny,
-			application.PermissionNotifications: application.PermissionDeny,
-			application.PermissionClipboardRead: application.PermissionDeny,
-		},
-	}
-	if guiSettings.StartProgramCentered {
-		winOpts.InitialPosition = application.WindowCentered
-	} else {
-		winOpts.InitialPosition = application.WindowXY
-		winOpts.X = 96
-		winOpts.Y = 96
-	}
-	if parsed.StartInTray {
-		winOpts.Hidden = true
-	}
+	winOpts := mainWindowOptions(guiSettings, parsed)
 	win := wailsApp.Window.NewWithOptions(winOpts)
 	registerNotificationResponseHandler(wailsApp, win, notifier)
 	win.OnWindowEvent(events.Common.WindowFilesDropped, func(event *application.WindowEvent) {
