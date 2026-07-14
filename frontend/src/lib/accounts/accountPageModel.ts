@@ -15,6 +15,18 @@ export type AccountImagePickState = {
 
 export type SearchHayCache = Map<string, { v: number; text: string }>;
 
+export type GameStatsByAccount = Record<
+  string,
+  Record<string, Record<string, { statValue: string; indicatorMarkup: string }>>
+>;
+
+export function mergeGameStatsByAccount(
+  current: GameStatsByAccount,
+  patch: GameStatsByAccount,
+): GameStatsByAccount {
+  return { ...current, ...patch };
+}
+
 export function buildAccountMap<T>(
   accounts: T[],
   rows: AccountRowProjection<T>,

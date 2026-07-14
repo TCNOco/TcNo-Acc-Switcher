@@ -81,6 +81,7 @@
     createImagePickState,
     displayIdsForTagFilter,
     hasActiveAccountTags,
+    mergeGameStatsByAccount,
     sortAccountIds,
     type AccountImagePickState,
     type SearchHayCache,
@@ -343,8 +344,11 @@
     }
   }
 
-  async function refreshGameStatsMarkupInternal(acctIds: string[]): Promise<void> {
-    gameStatsByAccount = await refreshGameStatsMarkup(name, acctIds);
+  async function refreshGameStatsMarkupInternal(acctIds: string[], mergePatch = false): Promise<void> {
+    const next = await refreshGameStatsMarkup(name, acctIds);
+    gameStatsByAccount = mergePatch
+      ? mergeGameStatsByAccount(gameStatsByAccount, next)
+      : next;
   }
 
   async function refreshGameStatsSupportInternal(): Promise<void> {
@@ -943,7 +947,7 @@
       const p = ev.data as { platformKey?: string; uniqueId?: string };
       if ((p.platformKey ?? "").trim() !== name.trim()) return;
       const uid = (p.uniqueId ?? "").trim();
-      if (uid) void refreshGameStatsMarkupInternal([uid]);
+      if (uid) void refreshGameStatsMarkupInternal([uid], true);
     });
 
     fileDropInterceptor.set((paths: string[]) => fileDropIntercept(paths, createFileDropCtx()));

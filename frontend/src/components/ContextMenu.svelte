@@ -23,7 +23,10 @@
     handleContextMenuKeydown,
     handleContextMenuQuickFilter,
   } from "../lib/contextMenuKeyboard";
-  import { submenuTopOffset } from "../lib/contextMenuLayout";
+  import {
+    submenuShouldFillRootHeight,
+    submenuTopOffset,
+  } from "../lib/contextMenuLayout";
 
   /** Viewport padding — keep menu fully inside the window. */
   const PAD = 8;
@@ -34,6 +37,7 @@
 
   let submenuObserveDebounce: ReturnType<typeof setTimeout> | null = null;
   let menuReady = false;
+  let layoutEpoch = 0;
 
   /**
    * Run attachObservers + layoutAfterOpen only once per open — the reactive block can fire many
@@ -206,12 +210,15 @@
     root.querySelectorAll("ul.submenu").forEach((sub) => {
       if (sub instanceof HTMLElement) {
         sub.style.removeProperty("top");
+        sub.style.removeProperty("height");
+        sub.style.removeProperty("max-height");
       }
     });
     const expanded = root.querySelectorAll("li.hasSubmenu.submenu-expanded > ul.submenu");
     if (expanded.length === 0) {
       return;
     }
+    const rootRect = root.getBoundingClientRect();
     expanded.forEach((sub) => {
       if (!(sub instanceof HTMLElement)) {
         return;
@@ -221,27 +228,53 @@
         return;
       }
       const rect = sub.getBoundingClientRect();
-      sub.style.top = `${submenuTopOffset({
+      const topOffset = submenuTopOffset({
         naturalTop: rect.top,
         naturalBottom: rect.bottom,
-        viewportHeight: window.innerHeight,
-        padding: PAD,
-      })}px`;
+        rootTop: rootRect.top,
+        rootBottom: rootRect.bottom,
+      });
+      const rows = Array.from(sub.children).filter((child): child is HTMLElement => child instanceof HTMLElement);
+      const itemHeights = rows
+        .filter((row) =>
+          !row.classList.contains("contextSearch") &&
+          !row.classList.contains("ctx-create-li") &&
+          !row.classList.contains("ctx-pagination-li")
+        )
+        .map((row) => row.getBoundingClientRect().height)
+        .filter((height) => height > 0);
+      const hasPagination = rows.some((row) => row.classList.contains("ctx-pagination-li"));
+      const rowHeight = itemHeights.length > 0 ? Math.min(...itemHeights) : 0;
+      if (hasPagination && submenuShouldFillRootHeight({
+        naturalTop: rect.top,
+        topOffset,
+        naturalHeight: rect.height,
+        rootTop: rootRect.top,
+        rootHeight: rootRect.height,
+        rowHeight,
+      })) {
+        sub.style.top = `${rootRect.top - rect.top}px`;
+        sub.style.height = `${rootRect.height}px`;
+        return;
+      }
+      sub.style.top = `${topOffset}px`;
     });
   }
 
-  /** Primary column height for `.submenu:has(.ctx-pagination-li)` (see context_menu.scss). */
-  function syncCtxRootColumnHeightVar(root: HTMLUListElement): void {
-    const h = root.offsetHeight;
-    if (h > 0) {
-      root.style.setProperty("--ctx-root-column-height", `${h}px`);
-    }
-  }
-
   function refreshFlyoutLayout(root: HTMLUListElement): void {
-    syncCtxRootColumnHeightVar(root);
     fitExpandedSubmenusToViewport(root);
     nudgeRootForSubmenus(root);
+  }
+
+  function onSubmenuPlanned(ev: Event): void {
+    if (
+      menuEl &&
+      ev.target instanceof Node &&
+      menuEl.contains(ev.target) &&
+      get(contextMenu)
+    ) {
+      refreshFlyoutLayout(menuEl);
+    }
   }
 
   function nudgeRootForSubmenus(el: HTMLUListElement): void {
@@ -296,7 +329,6 @@
     }
     applyAnchorLayout();
     void menuEl.offsetHeight;
-    observeSubmenus(menuEl);
     refreshFlyoutLayout(menuEl);
     submenuExpandEnabled.set(true);
     ctxMenuLog("layoutAfterOpen: done → submenuExpandEnabled=true", {
@@ -309,6 +341,7 @@
 
   function onWinResize(): void {
     if (get(contextMenu)) {
+      layoutEpoch++;
       applyAnchorLayout();
       if (menuEl) {
         refreshFlyoutLayout(menuEl);
@@ -318,9 +351,6 @@
 
   function detachObservers(): void {
     clearFocusAfterOpenTimers();
-    if (menuEl) {
-      menuEl.style.removeProperty("--ctx-root-column-height");
-    }
     resizeObs?.disconnect();
     resizeObs = null;
     mutationObs?.disconnect();
@@ -331,16 +361,6 @@
     }
   }
 
-  /** ResizeObserver does not support subtree; observe root + each .submenu (legacy submenu1/submenu2). */
-  function observeSubmenus(el: HTMLUListElement): void {
-    if (!resizeObs) {
-      return;
-    }
-    el.querySelectorAll(".submenu").forEach((sub) => {
-      resizeObs!.observe(sub);
-    });
-  }
-
   function attachObservers(el: HTMLUListElement): void {
     detachObservers();
     resizeObs = new ResizeObserver(() => {
@@ -349,7 +369,6 @@
       refreshFlyoutLayout(el);
     });
     resizeObs.observe(el);
-    observeSubmenus(el);
 
     mutationObs = new MutationObserver(() => {
       if (submenuObserveDebounce !== null) {
@@ -360,7 +379,6 @@
         if (!resizeObs || !menuEl || !get(contextMenu)) {
           return;
         }
-        observeSubmenus(menuEl);
         refreshFlyoutLayout(menuEl);
       }, 40);
     });
@@ -369,6 +387,7 @@
 
   $: if ($contextMenu && menuEl) {
     if (menuSetupFor !== $contextMenu) {
+      layoutEpoch++;
       menuSetupFor = $contextMenu;
       ctxMenuLog("setup once / open", {
         items: $contextMenu.items.length,
@@ -393,6 +412,7 @@
     window.addEventListener("pointerdown", onDocPointerDown, true);
     window.addEventListener("keydown", onKey, true);
     window.addEventListener("resize", onWinResize);
+    document.addEventListener("ctxsubmenuplanned", onSubmenuPlanned);
 
     const unsub = submenuOpenPath.subscribe(() => {
       if (!menuEl || !get(contextMenu)) {
@@ -414,6 +434,7 @@
       window.removeEventListener("pointerdown", onDocPointerDown, true);
       window.removeEventListener("keydown", onKey, true);
       window.removeEventListener("resize", onWinResize);
+      document.removeEventListener("ctxsubmenuplanned", onSubmenuPlanned);
       unsub();
     };
   });
@@ -438,7 +459,12 @@
     in:scale={{ start: 0.97, duration: motionEnabled() ? DUR.fast : 0, easing: cubicOut }}
     on:keydown={onMenuKeydown}
   >
-    <ContextMenuNest items={$contextMenu.items} depth={1} pathPrefix={[]} />
+    <ContextMenuNest
+      items={$contextMenu.items}
+      {layoutEpoch}
+      depth={1}
+      pathPrefix={[]}
+    />
   </ul>
 {/if}
 

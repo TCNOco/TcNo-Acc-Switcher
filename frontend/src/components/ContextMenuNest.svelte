@@ -1,17 +1,22 @@
 <script lang="ts">
   import type { MenuItemDef } from "../stores/contextMenu";
+  import { onDestroy, tick } from "svelte";
   import { get } from "svelte/store";
   import { closeContextMenu, submenuOpenPath, submenuExpandEnabled } from "../stores/contextMenu";
+  import {
+    balancedSubmenuPageRanges,
+    type SubmenuPageRange,
+  } from "../lib/contextMenuLayout";
   const CTX_MENU_DEBUG = false;
   function ctxMenuLog(...args: unknown[]): void {
     if (CTX_MENU_DEBUG) console.log("[ctx-menu]", ...args);
   }
   import { t } from "../stores/i18n";
 
-  /** Matches legacy Blazor ContextMenuItem.razor */
-  const ITEMS_PER_PAGE = 5;
+  const SEARCH_THRESHOLD = 5;
 
   export let items: MenuItemDef[] = [];
+  export let layoutEpoch = 0;
   /** submenu depth for CSS class */
   export let depth = 1;
   /** Path of indices from root down to this list's parent (empty at root column). */
@@ -22,6 +27,11 @@
 
   let searchQuery = "";
   let currentPage = 0;
+  let columnSentinel: HTMLLIElement | null = null;
+  let pageRanges: SubmenuPageRange[] = [];
+  let measuring = false;
+  let measuredSignature = "";
+  let measurementRun = 0;
 
 
 
@@ -75,7 +85,7 @@
    * no search strip on the root menu. `alwaysShowSearch` forces the search row for small lists.
    */
   $: showSearchRow =
-    paginateThisColumn && (tail.length > ITEMS_PER_PAGE || alwaysShowSearchFlyout);
+    paginateThisColumn && (tail.length > SEARCH_THRESHOLD || alwaysShowSearchFlyout);
   $: q = norm(searchQuery.trim());
   $: trimmedSearchQuery = searchQuery.trim();
   $: searchItem = items[0];
@@ -133,14 +143,108 @@
     return out;
   })();
 
-  $: pageCount = Math.max(1, Math.ceil(filteredTailEntries.length / ITEMS_PER_PAGE));
-  $: showPagination = paginateThisColumn && pageCount > 1;
-  $: pagedTailEntries = paginateThisColumn
-    ? filteredTailEntries.slice(
-        currentPage * ITEMS_PER_PAGE,
-        currentPage * ITEMS_PER_PAGE + ITEMS_PER_PAGE,
-      )
-    : filteredTailEntries;
+  function pathIsOpen(path: number[], openPath: number[]): boolean {
+    return path.length > 0 &&
+      path.length <= openPath.length &&
+      path.every((value, index) => openPath[index] === value);
+  }
+
+  $: columnVisible = paginateThisColumn && pathIsOpen(pathPrefix, $submenuOpenPath);
+  $: measurementSignature = [
+    layoutEpoch,
+    showSearchRow ? 1 : 0,
+    showCreateRow ? 1 : 0,
+    trimmedSearchQuery,
+    ...filteredTailEntries.map(({ item, idx }) => `${idx}:${item.type}:${item.label ?? ""}`),
+  ].join("|");
+
+  async function measureColumn(signature: string): Promise<void> {
+    const column = columnSentinel?.parentElement;
+    if (!(column instanceof HTMLUListElement)) {
+      measuredSignature = "";
+      return;
+    }
+
+    const run = ++measurementRun;
+    column.classList.add("ctx-submenu-measuring");
+    measuring = true;
+    await tick();
+
+    if (run !== measurementRun) {
+      return;
+    }
+    if (signature !== measuredSignature || !pathIsOpen(pathPrefix, get(submenuOpenPath))) {
+      column.classList.remove("ctx-submenu-measuring");
+      measuring = false;
+      measuredSignature = "";
+      return;
+    }
+
+    const root = column.closest(".ctx-menu-root");
+    if (!(root instanceof HTMLElement)) {
+      column.classList.remove("ctx-submenu-measuring");
+      measuring = false;
+      measuredSignature = "";
+      return;
+    }
+
+    const rows = Array.from(column.children).filter(
+      (child): child is HTMLElement => child instanceof HTMLElement,
+    );
+    const itemRows = rows.filter((row) => row.hasAttribute("data-page-measure-row"));
+    const searchRow = rows.find((row) => row.classList.contains("contextSearch"));
+    const createRow = rows.find((row) => row.classList.contains("ctx-create-li"));
+    const paginationRow = rows.find((row) => row.classList.contains("ctx-pagination-li"));
+    const fixedHeightWithoutPagination = [searchRow, createRow]
+      .reduce((height, row) => height + (row?.getBoundingClientRect().height ?? 0), 0);
+    const paginationHeight = paginationRow?.getBoundingClientRect().height ?? 0;
+    const fixedHeightWithPagination = fixedHeightWithoutPagination + paginationHeight;
+    const rootHeight = root.getBoundingClientRect().height;
+    const rowHeights = itemRows.map((row) => row.getBoundingClientRect().height);
+    const nextRanges = balancedSubmenuPageRanges(
+      rowHeights,
+      rootHeight - fixedHeightWithoutPagination,
+      rootHeight - fixedHeightWithPagination,
+    );
+    const usesPagination = nextRanges.length > 1;
+    const tallestPageHeight = nextRanges.reduce((tallest, range) => {
+      const height = rowHeights
+        .slice(range.start, range.end)
+        .reduce((total, rowHeight) => total + rowHeight, 0);
+      return Math.max(tallest, height);
+    }, 0);
+    const plannedHeight = Math.min(
+      rootHeight,
+      tallestPageHeight + (usesPagination ? fixedHeightWithPagination : fixedHeightWithoutPagination),
+    );
+
+    column.style.setProperty("--ctx-submenu-planned-height", `${plannedHeight}px`);
+    pageRanges = nextRanges;
+    currentPage = Math.min(currentPage, Math.max(0, nextRanges.length - 1));
+    measuring = false;
+    await tick();
+
+    if (run === measurementRun) {
+      column.dispatchEvent(new CustomEvent("ctxsubmenuplanned", { bubbles: true }));
+      column.classList.remove("ctx-submenu-measuring");
+    }
+  }
+
+  $: if (columnVisible && measurementSignature !== measuredSignature) {
+    measuredSignature = measurementSignature;
+    void measureColumn(measurementSignature);
+  }
+
+  $: pageCount = Math.max(1, pageRanges.length);
+  $: showPagination = paginateThisColumn && !measuring && pageCount > 1;
+  $: activeRange = pageRanges[currentPage];
+  $: pagedTailEntries = !paginateThisColumn || measuring
+    ? filteredTailEntries
+    : activeRange
+      ? filteredTailEntries.slice(activeRange.start, activeRange.end)
+      : filteredTailEntries.slice(0, SEARCH_THRESHOLD);
+  $: renderPagination = paginateThisColumn &&
+    ((measuring && filteredTailEntries.length > 1) || showPagination);
 
   $: if (currentPage >= pageCount) {
     currentPage = Math.max(0, pageCount - 1);
@@ -148,6 +252,11 @@
 
   function onSearchInput(): void {
     currentPage = 0;
+  }
+
+  function changePage(delta: number): void {
+    submenuOpenPath.set([...pathPrefix]);
+    currentPage = Math.max(0, Math.min(pageCount - 1, currentPage + delta));
   }
 
   function submenuClass(d: number): string {
@@ -285,7 +394,20 @@
     return `ctx-menu-submenu-${[...pathPrefix, idx].join("-")}`;
   }
 
+  onDestroy(() => {
+    measurementRun++;
+    columnSentinel?.parentElement?.classList.remove("ctx-submenu-measuring");
+  });
+
 </script>
+
+{#if paginateThisColumn}
+  <li
+    bind:this={columnSentinel}
+    class="ctx-column-sentinel"
+    role="none"
+  ></li>
+{/if}
 
 {#if showSearchRow}
   <li class="contextSearch" role="none" on:pointerdown={stop}>
@@ -303,7 +425,7 @@
 {/if}
 
 {#if showCreateRow}
-  <li role="none" on:pointerdown={stop}>
+  <li class="ctx-create-li" role="none" on:pointerdown={stop}>
     <button type="button" class="ctx-menu__btn" role="menuitem" on:click={onCreateClick}
       >{$t("Context_CreateTag")} {trimmedSearchQuery}</button
     >
@@ -312,13 +434,14 @@
 
 {#each pagedTailEntries as { item, idx } (idx)}
   {#if item.type === "separator"}
-    <li class="ctx-sep" role="separator"><hr /></li>
+    <li class="ctx-sep" role="separator" data-page-measure-row><hr /></li>
   {:else if item.children?.length}
     <li
       class="hasSubmenu"
       class:hasSubmenu--parent-action={!!item.action}
       class:submenu-expanded={expandedIdxAtLevel === idx}
       role="none"
+      data-page-measure-row
       data-submenu-path={JSON.stringify([...pathPrefix, idx])}
       on:pointerenter={() => expandBranch(idx, "pointerenter")}
       on:mouseenter={() => expandBranch(idx, "mouseenter")}
@@ -362,11 +485,16 @@
         role="menu"
         aria-labelledby={itemDomId(idx)}
       >
-        <svelte:self items={item.children ?? []} depth={depth + 1} pathPrefix={[...pathPrefix, idx]} />
+        <svelte:self
+          items={item.children ?? []}
+          {layoutEpoch}
+          depth={depth + 1}
+          pathPrefix={[...pathPrefix, idx]}
+        />
       </ul>
     </li>
   {:else}
-    <li role="none" on:pointerenter={(e) => onLeafPointerEnter(e)}>
+    <li role="none" data-page-measure-row on:pointerenter={(e) => onLeafPointerEnter(e)}>
       <button
         id={itemDomId(idx)}
         type="button"
@@ -381,8 +509,13 @@
   {/if}
 {/each}
 
-{#if showPagination}
-  <li class="ctx-pagination-li" role="none" on:pointerdown={stop}>
+{#if renderPagination}
+  <li
+    class="ctx-pagination-li"
+    role="none"
+    data-total-items={filteredTailEntries.length}
+    on:pointerdown={stop}
+  >
     <div class="paginationContainer">
       <div class="pagination">
       {#if currentPage >= 1}
@@ -391,9 +524,7 @@
           class="paginationButton"
           aria-label={$t("Aria_PreviousPage")}
           on:pointerdown={stop}
-          on:click={() => {
-            currentPage--;
-          }}
+          on:click={() => changePage(-1)}
         >
           <i aria-hidden="true">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" width="12" height="12">
@@ -430,9 +561,7 @@
           class="paginationButton"
           aria-label={$t("Aria_NextPage")}
           on:pointerdown={stop}
-          on:click={() => {
-            currentPage++;
-          }}
+          on:click={() => changePage(1)}
         >
           <i aria-hidden="true">
             <svg
