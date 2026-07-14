@@ -188,6 +188,7 @@
     getNote: (id: string) => BasicService.GetAccountNote("Steam", id),
     setNote: (id: string, note: string) => BasicService.SetAccountNote("Steam", id, note),
     launch: () => SteamService.LaunchSteam(),
+    refreshOnWindowFocus: true,
     refreshAccounts: () => SteamService.RefreshAllSteamImages(),
     refreshAllProfileImages: () => SteamService.RefreshAllSteamImages(),
 

@@ -54,6 +54,47 @@ func TestActiveSessionSteamID64(t *testing.T) {
 		}
 	})
 
+	t.Run("modern_auto_login", func(t *testing.T) {
+		users := []LoginUser{
+			{SteamID64: "111", AutoLogin: "0"},
+			{SteamID64: "222", AutoLogin: "1"},
+			{SteamID64: "333", AutoLogin: "0"},
+		}
+		if got := ActiveSessionSteamID64(users); got != "222" {
+			t.Errorf("got %q, want 222", got)
+		}
+	})
+
+	t.Run("auto_login_wins_over_stale_most_recent", func(t *testing.T) {
+		users := []LoginUser{
+			{SteamID64: "111", AutoLogin: "0", MostRecent: "1"},
+			{SteamID64: "222", AutoLogin: "1", MostRecent: "0"},
+		}
+		if got := ActiveSessionSteamID64(users); got != "222" {
+			t.Errorf("got %q, want 222", got)
+		}
+	})
+
+	t.Run("modern_zero_auto_login_does_not_use_legacy_marker", func(t *testing.T) {
+		users := []LoginUser{
+			{SteamID64: "111", AutoLogin: "0", MostRecent: "1"},
+			{SteamID64: "222", AutoLogin: "0", MostRecent: "0"},
+		}
+		if got := ActiveSessionSteamID64(users); got != "" {
+			t.Errorf("got %q, want empty", got)
+		}
+	})
+
+	t.Run("ambiguous_auto_login", func(t *testing.T) {
+		users := []LoginUser{
+			{SteamID64: "111", AutoLogin: "1"},
+			{SteamID64: "222", AutoLogin: "1"},
+		}
+		if got := ActiveSessionSteamID64(users); got != "" {
+			t.Errorf("got %q, want empty", got)
+		}
+	})
+
 	t.Run("zero_most_recent", func(t *testing.T) {
 		users := []LoginUser{
 			{SteamID64: "111", MostRecent: "0"},
@@ -147,6 +188,46 @@ func TestParseLoginUsers_Valid(t *testing.T) {
 	}
 	if users[1].MostRecent != "0" {
 		t.Errorf("user 1 MostRecent = %q", users[1].MostRecent)
+	}
+}
+
+func TestParseLoginUsers_ModernAutoLogin(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "loginusers.vdf")
+	vdfContent := `"users"
+{
+	"76561198000000001"
+	{
+		"AccountName" "player1"
+		"PersonaName" "Player One"
+		"Timestamp" "1700000000"
+		"AutoLogin" "0"
+	}
+	"76561198000000002"
+	{
+		"AccountName" "player2"
+		"PersonaName" "Player Two"
+		"Timestamp" "1800000000"
+		"AutoLogin" "1"
+	}
+}
+`
+	if err := os.WriteFile(path, []byte(vdfContent), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	users, err := ParseLoginUsers(path)
+	if err != nil {
+		t.Fatalf("ParseLoginUsers: %v", err)
+	}
+	if len(users) != 2 {
+		t.Fatalf("expected 2 users, got %d", len(users))
+	}
+	if users[1].AutoLogin != "1" {
+		t.Fatalf("AutoLogin = %q, want 1", users[1].AutoLogin)
+	}
+	if got := ActiveSessionSteamID64(users); got != "76561198000000002" {
+		t.Fatalf("active Steam ID = %q", got)
 	}
 }
 
@@ -293,8 +374,8 @@ func TestParseLoginUsers_MissingFile(t *testing.T) {
 func TestLoginUsers_SerializeRoundtrip(t *testing.T) {
 	t.Parallel()
 	users := []LoginUser{
-		{SteamID64: "76561198000000100", AccountName: "acct1", PersonaName: "One", Timestamp: "1000", WantsOffline: "0", MostRecent: "1", RememberPassword: "1"},
-		{SteamID64: "76561198000000200", AccountName: "acct2", PersonaName: "Two", Timestamp: "2000", WantsOffline: "1", MostRecent: "0", RememberPassword: "0", SkipOfflineWarn: "1"},
+		{SteamID64: "76561198000000100", AccountName: "acct1", PersonaName: "One", Timestamp: "1000", WantsOffline: "0", MostRecent: "1", AutoLogin: "1", RememberPassword: "1"},
+		{SteamID64: "76561198000000200", AccountName: "acct2", PersonaName: "Two", Timestamp: "2000", WantsOffline: "1", MostRecent: "0", AutoLogin: "0", RememberPassword: "0", SkipOfflineWarn: "1"},
 	}
 
 	kv := LoginUsersToKeyValue(users)
@@ -324,6 +405,9 @@ func TestLoginUsers_SerializeRoundtrip(t *testing.T) {
 		}
 		if parsed[i].MostRecent != u.MostRecent {
 			t.Errorf("user %d: MostRecent = %q", i, parsed[i].MostRecent)
+		}
+		if parsed[i].AutoLogin != u.AutoLogin {
+			t.Errorf("user %d: AutoLogin = %q", i, parsed[i].AutoLogin)
 		}
 		if parsed[i].RememberPassword != u.RememberPassword {
 			t.Errorf("user %d: RememberPassword = %q", i, parsed[i].RememberPassword)

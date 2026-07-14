@@ -17,7 +17,9 @@ type LoginUser struct {
 	Timestamp    string
 	WantsOffline string
 	// MostRecent is "1" when Steam marks this row as the active session (when present).
-	MostRecent       string
+	MostRecent string
+	// AutoLogin is the active-session marker in current Steam loginusers.vdf files.
+	AutoLogin        string
 	RememberPassword string
 	SkipOfflineWarn  string // SkipOfflineModeWarning
 }
@@ -89,6 +91,7 @@ func ParseLoginUsers(path string) ([]LoginUser, error) {
 			if mr == "" {
 				mr = childStringCI(u, "mostrecent")
 			}
+			auto := childStringCI(u, "AutoLogin")
 			rem := childStringCI(u, "RememberPassword")
 			if rem == "" {
 				rem = childStringCI(u, "rememberpassword")
@@ -104,6 +107,7 @@ func ParseLoginUsers(path string) ([]LoginUser, error) {
 				Timestamp:        ts,
 				WantsOffline:     off,
 				MostRecent:       mr,
+				AutoLogin:        auto,
 				RememberPassword: rem,
 				SkipOfflineWarn:  skip,
 			})
@@ -131,8 +135,28 @@ func ParseLoginUsers(path string) ([]LoginUser, error) {
 	return out, nil
 }
 
-// ActiveSessionSteamID64 returns the single SteamID64 with MostRecent=="1", else "" (ambiguous or none). Do not use Timestamp for current session.
+// ActiveSessionSteamID64 prefers current Steam's AutoLogin marker, then legacy MostRecent.
 func ActiveSessionSteamID64(users []LoginUser) string {
+	var autoLoginID string
+	nAutoLogin := 0
+	hasAutoLogin := false
+	for _, u := range users {
+		autoLogin := strings.TrimSpace(u.AutoLogin)
+		if autoLogin != "" {
+			hasAutoLogin = true
+		}
+		if autoLogin == "1" {
+			nAutoLogin++
+			autoLoginID = u.SteamID64
+		}
+	}
+	if hasAutoLogin {
+		if nAutoLogin == 1 && autoLoginID != "" {
+			return autoLoginID
+		}
+		return ""
+	}
+
 	var mostRecentID string
 	nMost := 0
 	for _, u := range users {

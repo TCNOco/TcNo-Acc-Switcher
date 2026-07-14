@@ -144,6 +144,8 @@ func TestWriteLoginUsersAndRegistry_FieldSwapping(t *testing.T) {
 	}
 }
 `
+	initialVDF = strings.Replace(initialVDF, `"RememberPassword"`, `"AutoLogin" "1"
+		"RememberPassword"`, 1)
 	os.WriteFile(loginPath, []byte(initialVDF), 0o644)
 
 	if err := writeLoginUsersAndRegistry(dir, "76561198000000100"); err != nil {
@@ -152,10 +154,10 @@ func TestWriteLoginUsersAndRegistry_FieldSwapping(t *testing.T) {
 
 	users, _ := ParseLoginUsers(loginPath)
 
-	checks := map[string]struct{ mr, rp string }{
-		"76561198000000100": {"1", "1"},
-		"76561198000000200": {"0", "0"},
-		"76561198000000300": {"0", "0"},
+	checks := map[string]struct{ mr, auto, rp string }{
+		"76561198000000100": {"1", "1", "1"},
+		"76561198000000200": {"0", "0", "0"},
+		"76561198000000300": {"0", "0", "0"},
 	}
 
 	for _, u := range users {
@@ -165,6 +167,9 @@ func TestWriteLoginUsersAndRegistry_FieldSwapping(t *testing.T) {
 		}
 		if u.MostRecent != want.mr {
 			t.Errorf("%s MostRecent = %q, want %q", u.SteamID64, u.MostRecent, want.mr)
+		}
+		if u.AutoLogin != want.auto {
+			t.Errorf("%s AutoLogin = %q, want %q", u.SteamID64, u.AutoLogin, want.auto)
 		}
 		if u.RememberPassword != want.rp {
 			t.Errorf("%s RememberPassword = %q, want %q", u.SteamID64, u.RememberPassword, want.rp)
@@ -207,6 +212,8 @@ func TestRemoveSteamAccountFromVDF_PreservesFields(t *testing.T) {
 	}
 }
 `
+	initialVDF = strings.Replace(initialVDF, `"RememberPassword"`, `"AutoLogin" "1"
+		"RememberPassword"`, 1)
 	os.WriteFile(loginPath, []byte(initialVDF), 0o644)
 
 	if err := RemoveSteamAccountFromVDF(dir, "76561198000000999"); err != nil {
@@ -230,6 +237,9 @@ func TestRemoveSteamAccountFromVDF_PreservesFields(t *testing.T) {
 	}
 	if u.MostRecent != "1" {
 		t.Errorf("MostRecent = %q, want 1", u.MostRecent)
+	}
+	if u.AutoLogin != "1" {
+		t.Errorf("AutoLogin = %q, want 1", u.AutoLogin)
 	}
 	if u.RememberPassword != "1" {
 		t.Errorf("RememberPassword = %q, want 1", u.RememberPassword)

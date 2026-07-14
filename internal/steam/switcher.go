@@ -236,12 +236,14 @@ func writeLoginUsersAndRegistry(steamRoot, selectedID64 string) error {
 	for i := range users {
 		u := &users[i]
 		u.MostRecent = "0"
+		u.AutoLogin = "0"
 		u.RememberPassword = "0"
 		if strings.TrimSpace(selectedID64) == "" {
 			continue
 		}
 		if u.SteamID64 == selectedID64 {
 			u.MostRecent = "1"
+			u.AutoLogin = "1"
 			u.RememberPassword = "1"
 			autoUser = u.AccountName
 		}

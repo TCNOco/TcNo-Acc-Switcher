@@ -89,6 +89,10 @@
   import { buildSharedItems, type ContextMenuContext } from "../lib/accounts/contextMenuBuilder";
   import { fileDropIntercept, type FileDropContext } from "../lib/accounts/fileDropHandler";
   import {
+    createLatestRequestGuard,
+    registerWindowFocusAccountRefresh,
+  } from "../lib/accounts/windowFocusRefresh";
+  import {
     loadTagDefs,
     refreshGameStatsMarkup,
     refreshGameStatsSupport,
@@ -138,8 +142,10 @@
   let offUpdateEvent: (() => void) | undefined;
   let offGameStatsUpdated: (() => void) | undefined;
   let offSort: (() => void) | undefined;
+  let offWindowFocus: (() => void) | undefined;
   let lastHandledActionId = 0;
   let lastHandledSortId = 0;
+  const accountLoadGuard = createLatestRequestGuard();
 
   let gameStatsByAccount: Record<string, Record<string, Record<string, { statValue: string; indicatorMarkup: string }>>> = {};
   let hasGameStatsSupport = false;
@@ -654,6 +660,7 @@
   }
 
   async function loadAccounts(): Promise<void> {
+    const loadRequest = accountLoadGuard.begin();
     loadError = "";
     accountsLoading = true;
 
@@ -670,6 +677,7 @@
     const hadCachedAccounts = !!(cached && cached.accounts.length > 0);
     try {
       const list = await adapter.loadAccountsList();
+      if (!accountLoadGuard.isCurrent(loadRequest)) return;
       const mergedList = mergeListIntoExisting(adapter, accounts, list);
       const state: ApplyLoadedAccountsState<TAccount> = {
         avatarEpoch, accounts, accountIds, selectedId,
@@ -682,6 +690,7 @@
       void (async () => {
         try {
           const enrich = await adapter.loadAccountsEnrichment();
+          if (!accountLoadGuard.isCurrent(loadRequest)) return;
           const enrichPrev = new Map(accounts.map((a) => [adapter.id(a), a]));
           const merged = mergeEnrichmentIntoExisting(adapter, accounts, enrich);
           const enrichState: ApplyLoadedAccountsState<TAccount> = {
@@ -692,10 +701,12 @@
           if (enrichChanged) deferNonCriticalAccountWork(accountIds);
           await adapter.onAfterLoad?.(accounts, { hadCachedAccounts, enrichChanged });
         } catch {
+          if (!accountLoadGuard.isCurrent(loadRequest)) return;
           await adapter.onAfterLoad?.(accounts, { hadCachedAccounts, enrichChanged: false });
         }
       })();
     } catch (e) {
+      if (!accountLoadGuard.isCurrent(loadRequest)) return;
       accountsLoading = false;
       if (!cached || cached.accounts.length === 0) {
         loadError = formatWailsError(e) || String(e);
@@ -950,10 +961,18 @@
       if (uid) void refreshGameStatsMarkupInternal([uid], true);
     });
 
+    if (adapter.refreshOnWindowFocus) {
+      offWindowFocus = registerWindowFocusAccountRefresh(
+        (handler) => Events.On("common:WindowFocus", handler),
+        loadAccounts,
+      );
+    }
+
     fileDropInterceptor.set((paths: string[]) => fileDropIntercept(paths, createFileDropCtx()));
   });
 
   onDestroy(() => {
+    accountLoadGuard.invalidate();
     for (const t of refreshTimers) clearTimeout(t);
     refreshTimers = [];
     clearTagExpiryTimer();
@@ -966,6 +985,7 @@
     offAccountsRefresh?.();
     offUpdateEvent?.();
     offGameStatsUpdated?.();
+    offWindowFocus?.();
     accountProfileImageDropActive.set(false);
     fileDropInterceptor.set(null);
     platformAccountsRefresh.set({ seq: 0, platformKey: "" });

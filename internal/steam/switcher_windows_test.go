@@ -150,6 +150,9 @@ func TestWriteLoginUsersAndRegistry_AddNew(t *testing.T) {
 		if u.MostRecent != "0" {
 			t.Errorf("all MostRecent should be 0, got %s=%s", u.SteamID64, u.MostRecent)
 		}
+		if u.AutoLogin != "0" {
+			t.Errorf("all AutoLogin should be 0, got %s=%s", u.SteamID64, u.AutoLogin)
+		}
 		if u.RememberPassword != "0" {
 			t.Errorf("all RememberPassword should be 0, got %s=%s", u.SteamID64, u.RememberPassword)
 		}

@@ -49,6 +49,7 @@ func LoginUsersToKeyValue(users []LoginUser) steamvdf.KeyValue {
 			{Key: "Timestamp", Value: u.Timestamp},
 			{Key: "WantsOfflineMode", Value: u.WantsOffline},
 			{Key: "MostRecent", Value: u.MostRecent},
+			{Key: "AutoLogin", Value: u.AutoLogin},
 			{Key: "RememberPassword", Value: u.RememberPassword},
 		}
 		if strings.TrimSpace(u.SkipOfflineWarn) != "" {
