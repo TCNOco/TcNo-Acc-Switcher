@@ -42,6 +42,10 @@ export function displayIdsForTagFilter<T>(
   });
 }
 
+export function hasActiveAccountTags<T>(accounts: T[], rows: AccountRowProjection<T>): boolean {
+  return accounts.some((account) => (rows.tags(account) ?? []).length > 0);
+}
+
 export function createImagePickState<T>(
   rowId: string,
   account: T | undefined,

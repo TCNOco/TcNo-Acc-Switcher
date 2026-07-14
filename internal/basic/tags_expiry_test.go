@@ -88,6 +88,43 @@ func TestBuildAccountListContextPrunesExpiredTagsOnLoad(t *testing.T) {
 	}
 }
 
+func TestBuildAccountTagMapPrunesExpiredGlobalTagFromAllAccounts(t *testing.T) {
+	newFlowTestEnv(t)
+	expired := time.Now().UTC().Add(-time.Hour).Format(time.RFC3339)
+	if err := writeIdsFile("Steam", idsFile{
+		IDs:      map[string]string{},
+		LastUsed: map[string]string{},
+		Tags: map[string]tagFileEntry{
+			"special": {Name: "CS2 Drop Claimed", Color: "#111111", ExpiresAt: expired},
+		},
+		AccountTags: map[string][]string{
+			"76561199141170487": {"special"},
+			"76561198189075601": {"special"},
+		},
+	}); err != nil {
+		t.Fatalf("write ids: %v", err)
+	}
+
+	tagsByAccount, err := BuildAccountTagMap("Steam")
+	if err != nil {
+		t.Fatalf("BuildAccountTagMap: %v", err)
+	}
+	if len(tagsByAccount) != 0 {
+		t.Fatalf("tagsByAccount = %#v, want no expired special tags", tagsByAccount)
+	}
+
+	f, err := readIdsFile("Steam")
+	if err != nil {
+		t.Fatalf("read ids: %v", err)
+	}
+	if len(f.AccountTags) != 0 {
+		t.Fatalf("AccountTags = %#v, want expired special tag removed from all accounts", f.AccountTags)
+	}
+	if len(f.Tags) != 0 {
+		t.Fatalf("Tags = %#v, want expired special tag definition pruned", f.Tags)
+	}
+}
+
 func TestSetTagExpiryStoresAccountAndGlobalExpiry(t *testing.T) {
 	newFlowTestEnv(t)
 	if err := writeIdsFile("TestPlatform", idsFile{

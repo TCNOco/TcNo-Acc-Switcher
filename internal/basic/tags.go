@@ -470,6 +470,12 @@ func BuildAccountTagMap(platformKey string) (map[string][]AccountTagDTO, error) 
 		return nil, err
 	}
 	normalizeTagMaps(&f)
+	if pruneExpiredTagsInFile(&f, time.Now().UTC()) {
+		if err := writeIdsFile(platformKey, f); err != nil {
+			return nil, err
+		}
+		_ = stats.SyncPlatformTagCounts(platformKey, len(f.Tags), countTaggedAccounts(f))
+	}
 	m := make(map[string][]AccountTagDTO)
 	for uid := range f.AccountTags {
 		t := resolveTagsForAccount(f, uid)

@@ -26,7 +26,6 @@
   import {
     getPlatformAccountsCache,
     platformAccountCounts,
-    platformTagCounts,
     setPlatformAccountsCache,
   } from "../stores/platformAccountsCache";
   import { pushToast } from "../stores/toast";
@@ -81,6 +80,7 @@
     buildAccountSearchRows,
     createImagePickState,
     displayIdsForTagFilter,
+    hasActiveAccountTags,
     sortAccountIds,
     type AccountImagePickState,
     type SearchHayCache,
@@ -182,8 +182,12 @@
   $: reorderDisabled = tagFilterMode.kind !== "all";
 
   $: knownAccountCount = $platformAccountCounts[name];
-  $: knownTagCount = $platformTagCounts[name];
-  $: hasTags = knownTagCount ? knownTagCount.tagCount > 0 || knownTagCount.taggedAccountCount > 0 : false;
+  $: hasActiveTags = hasActiveAccountTags(accounts, adapter);
+  $: {
+    if (!hasActiveTags && tagFilterMode.kind !== "all") {
+      tagFilterMode = { kind: "all" };
+    }
+  }
   $: {
     void accounts;
     void tagDefs;
@@ -996,7 +1000,7 @@
         on:click={onAccountsAreaClick}
         on:dragleave={onAccListDragLeave}
       >
-        {#if hasTags || tagDefs.length > 0}
+        {#if hasActiveTags}
           <TagFilterBar label={tagFilterBarLabel} onClick={onTagFilterBarClick} disabled={tagDefs.length === 0} />
         {/if}
         {#if accountsLoading && displayIds.length === 0 && skeletonCount > 0}
