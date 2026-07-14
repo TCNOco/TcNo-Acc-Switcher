@@ -1,6 +1,7 @@
 <script lang="ts">
   import { get } from "svelte/store";
   import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
+  import { viewportDropdown } from "../lib/actions/viewportDropdown";
   import type { CrowdinTranslatorsList } from "../lib/crowdinTranslators";
   import { openExternalUrl } from "../lib/openExternalUrl";
   import { t, availableLocales, locale, setUserLanguage } from "../stores/i18n";
@@ -60,7 +61,7 @@
       <span class="caret" aria-hidden="true"></span>
     </button>
     {#if open}
-      <ul class="custom-dropdown-menu dropdown-menu">
+      <ul class="custom-dropdown-menu dropdown-menu" use:viewportDropdown>
         {#each availableLocales as code}
           <li role="none">
             <button type="button" class="dropdown-item" on:click={() => void pick(code)}>

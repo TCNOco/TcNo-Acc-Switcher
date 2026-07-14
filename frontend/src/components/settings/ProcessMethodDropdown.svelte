@@ -1,6 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { tooltip as tooltipAction } from "../../lib/actions/tooltip";
+  import { viewportDropdown } from "../../lib/actions/viewportDropdown";
 
   export let values: readonly string[];
   export let current: string;
@@ -31,7 +32,7 @@
       <span class="caret" aria-hidden="true"></span>
     </button>
     {#if open}
-      <ul class="custom-dropdown-menu dropdown-menu">
+      <ul class="custom-dropdown-menu dropdown-menu" use:viewportDropdown>
         {#each values as v}
           <li>
             <button type="button" class="dropdown-item" on:click={() => select(v)}>

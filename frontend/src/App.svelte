@@ -54,6 +54,11 @@
   import { appBgInfo, platformBgInfo, userOverriddenAppBg } from "./stores/backgroundImage";
   import type { AppBackgroundInfo } from "./stores/backgroundImage";
   import { currentThemeBgUrl } from "./lib/themes";
+  import {
+    backgroundObjectPosition,
+    normalizeBackgroundAlignment,
+    normalizeBackgroundFit,
+  } from "./lib/backgroundDisplay";
   import { applyUserDataMoveProgress } from "./stores/userDataMove";
   import { createControllerInputController } from "./lib/controllerInput";
   import { controllerSupportEnabled, loadControllerSupportEnabled } from "./stores/controllerSupport";
@@ -72,7 +77,15 @@
     if (isPlatformPage && plat.hasImage) return plat;
     if (app.hasImage) return app;
     if (!userOverridden && themeBgUrl) {
-      return { hasImage: true, imageUrl: themeBgUrl, opacity: 1.0, blur: 0, themeBgOverride: false };
+      return {
+        hasImage: true,
+        imageUrl: themeBgUrl,
+        opacity: 1.0,
+        blur: 0,
+        alignment: "center",
+        fit: "cover",
+        themeBgOverride: false,
+      };
     }
     return null;
   }
@@ -100,7 +113,15 @@
       const info = await PlatformService.GetPlatformBackground(platformName);
       platformBgInfo.set(info);
     } catch {
-      platformBgInfo.set({ hasImage: false, imageUrl: "", opacity: 0.6, blur: 4.0, themeBgOverride: false });
+      platformBgInfo.set({
+        hasImage: false,
+        imageUrl: "",
+        opacity: 0.6,
+        blur: 4.0,
+        alignment: "center",
+        fit: "cover",
+        themeBgOverride: false,
+      });
     }
   }
 
@@ -112,7 +133,15 @@
     } else if (r.page === "steam-advanced-clearing") {
       void loadPlatformBg("Steam");
     } else {
-      platformBgInfo.set({ hasImage: false, imageUrl: "", opacity: 0.6, blur: 4.0, themeBgOverride: false });
+      platformBgInfo.set({
+        hasImage: false,
+        imageUrl: "",
+        opacity: 0.6,
+        blur: 4.0,
+        alignment: "center",
+        fit: "cover",
+        themeBgOverride: false,
+      });
     }
   }
 
@@ -410,12 +439,15 @@
   <div class="page">
     {#key activeBg?.imageUrl}
       {#if activeBg}
-        <div
+        <img
           class="bg-layer"
+          src={activeBg.imageUrl}
+          alt=""
+          aria-hidden="true"
           in:fade={{ duration: motionEnabled() ? 350 : 0, easing: cubicOut }}
           out:fade={{ duration: motionEnabled() ? 250 : 0, easing: cubicOut }}
-          style="background-image: url({JSON.stringify(activeBg.imageUrl)}); opacity: {activeBg.opacity}; filter: blur({activeBg.blur}px);"
-        ></div>
+          style="object-fit: {normalizeBackgroundFit(activeBg.fit)}; object-position: {backgroundObjectPosition(normalizeBackgroundAlignment(activeBg.alignment))}; opacity: {activeBg.opacity}; filter: blur({activeBg.blur}px);"
+        />
       {/if}
     {/key}
     <div class="page-content-wrapper">
@@ -497,9 +529,8 @@
     position: absolute;
     inset: -24px;
     z-index: -1;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    width: calc(100% + 48px);
+    height: calc(100% + 48px);
     pointer-events: none;
     will-change: opacity;
   }

@@ -532,16 +532,24 @@ func (s *SteamService) runProfileRefresh() {
 				ShowAvatarFrame: st.SteamShowAvatarFrame,
 			}
 
-			xctx, cancel := context.WithTimeout(ctx, 10*time.Second)
-			fields, err := FetchProfileXML(xctx, appclient.Shared, u.SteamID64)
-			cancel()
+			fields, err := fetchProfileXMLWithRetry(
+				ctx,
+				defaultProfileXMLRetryPolicy,
+				func(attemptCtx context.Context) (ProfileXMLFields, error) {
+					return FetchProfileXML(attemptCtx, appclient.Shared, u.SteamID64)
+				},
+				func(retryErr error) {
+					patch.Error, patch.MetaPending = profileRefreshErrorState(retryErr, true)
+					patch.AvatarPending = false
+					s.emit(patch)
+				},
+			)
 
 			if err != nil {
 				steamLog.Warn("community profile XML failed",
 					slog.String("steamId", tailSteamID(u.SteamID64)),
 					slog.Any("err", err))
-				patch.Error = err.Error()
-				patch.MetaPending = false
+				patch.Error, patch.MetaPending = profileRefreshErrorState(err, false)
 				patch.AvatarPending = false
 				s.emit(patch)
 				return

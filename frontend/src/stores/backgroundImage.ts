@@ -4,7 +4,15 @@ import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/plat
 
 export type { AppBackgroundInfo };
 
-const DEFAULT_BG: AppBackgroundInfo = { hasImage: false, imageUrl: "", opacity: 0.6, blur: 6.0, themeBgOverride: false };
+const DEFAULT_BG: AppBackgroundInfo = {
+  hasImage: false,
+  imageUrl: "",
+  opacity: 0.6,
+  blur: 6.0,
+  alignment: "center",
+  fit: "cover",
+  themeBgOverride: false,
+};
 
 /** App-wide background image state (updated reactively from backend). */
 export const appBgInfo = writable<AppBackgroundInfo>({ ...DEFAULT_BG });

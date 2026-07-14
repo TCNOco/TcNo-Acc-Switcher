@@ -308,7 +308,7 @@
       {@const a = acc}
       {#if a.syncError}
         <div class="steam_meta_err" title={a.syncError}>{a.syncError}</div>
-      {:else if a.avatarPending}
+      {:else if a.metaPending || a.avatarPending}
         <div class="steam_meta_pending">{$t("Status_Updating")}</div>
       {/if}
     </svelte:fragment>

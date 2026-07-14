@@ -38,6 +38,14 @@ type xmlProfileDoc struct {
 	AvatarFull          string   `xml:"avatarFull"`
 }
 
+type profileXMLHTTPError struct {
+	StatusCode int
+}
+
+func (e *profileXMLHTTPError) Error() string {
+	return fmt.Sprintf("profile XML HTTP %d", e.StatusCode)
+}
+
 func xmlCachePath(steamID64 string) (string, error) {
 	r, err := paths.LoginCacheDir("Steam")
 	if err != nil {
@@ -73,7 +81,7 @@ func FetchProfileXML(ctx context.Context, client *http.Client, steamID64 string)
 		}
 		defer resp.Body.Close()
 		if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-			return ProfileXMLFields{}, fmt.Errorf("profile XML HTTP %d", resp.StatusCode)
+			return ProfileXMLFields{}, &profileXMLHTTPError{StatusCode: resp.StatusCode}
 		}
 		data, err = io.ReadAll(io.LimitReader(resp.Body, 4<<20))
 		if err != nil {

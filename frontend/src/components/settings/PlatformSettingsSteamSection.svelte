@@ -1,5 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
+  import { viewportDropdown } from "../../lib/actions/viewportDropdown";
   import { t } from "../../stores/i18n";
   import {
     closingValues,
@@ -241,7 +242,7 @@
       <span class="caret" aria-hidden="true"></span>
     </button>
     {#if stateOpen}
-      <ul class="custom-dropdown-menu dropdown-menu">
+      <ul class="custom-dropdown-menu dropdown-menu" use:viewportDropdown>
         {#each overrideStates as o}
           <li>
             <button

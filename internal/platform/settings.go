@@ -87,6 +87,10 @@ type AppSettings struct {
 	// AppBgBlur is the blur radius in px for the app-wide background. 0 means use default (4.0).
 	AppBgBlur float64 `json:"appBgBlur,omitempty"`
 
+	AppBgAlignment string `json:"appBgAlignment,omitempty"`
+
+	AppBgFit string `json:"appBgFit,omitempty"`
+
 	// ThemeBgOverride is true when the user has explicitly set or cleared the app background,
 	// overriding any background image bundled with the active theme.
 	ThemeBgOverride bool `json:"themeBgOverride,omitempty"`
@@ -102,7 +106,9 @@ type PlatformBgSettings struct {
 	// Opacity is the opacity (0.0–1.0). 0 means use default (0.6).
 	Opacity float64 `json:"opacity,omitempty"`
 	// Blur is the blur radius in px. 0 means use default (4.0).
-	Blur float64 `json:"blur,omitempty"`
+	Blur      float64 `json:"blur,omitempty"`
+	Alignment string  `json:"alignment,omitempty"`
+	Fit       string  `json:"fit,omitempty"`
 }
 
 // AppBackgroundInfo is returned to the frontend with background image state.
@@ -111,6 +117,8 @@ type AppBackgroundInfo struct {
 	ImageURL        string  `json:"imageUrl"`
 	Opacity         float64 `json:"opacity"`
 	Blur            float64 `json:"blur"`
+	Alignment       string  `json:"alignment"`
+	Fit             string  `json:"fit"`
 	ThemeBgOverride bool    `json:"themeBgOverride"`
 }
 
@@ -129,6 +137,8 @@ func defaultSettings() AppSettings {
 		AnimationsEnabled:        true,
 		ControllerSupportEnabled: true,
 		CommandPaletteHotkey:     "Ctrl+K",
+		AppBgAlignment:           defaultBgAlignment,
+		AppBgFit:                 defaultBgFit,
 	}
 }
 
@@ -162,6 +172,13 @@ func normalizeAppSettingsDefaults(s *AppSettings, raw map[string]json.RawMessage
 	}
 	if _, ok := raw["controllerSupportEnabled"]; !ok {
 		s.ControllerSupportEnabled = true
+	}
+	s.AppBgAlignment = normalizeBackgroundAlignment(s.AppBgAlignment)
+	s.AppBgFit = normalizeBackgroundFit(s.AppBgFit)
+	for key, background := range s.PlatformBgs {
+		background.Alignment = normalizeBackgroundAlignment(background.Alignment)
+		background.Fit = normalizeBackgroundFit(background.Fit)
+		s.PlatformBgs[key] = background
 	}
 	s.CommandPaletteHotkey = normalizeCommandPaletteHotkey(s.CommandPaletteHotkey)
 	if !s.DiscordRpc {

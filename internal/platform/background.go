@@ -10,10 +10,12 @@ import (
 )
 
 const (
-	defaultBgOpacity float64 = 0.6
-	defaultBgBlur    float64 = 6.0
-	bgSubDir                 = "backgrounds"
-	bgMaxBytes       int64   = 50 << 20 // 50 MB
+	defaultBgOpacity   float64 = 0.6
+	defaultBgBlur      float64 = 6.0
+	defaultBgAlignment         = "center"
+	defaultBgFit               = "cover"
+	bgSubDir                   = "backgrounds"
+	bgMaxBytes         int64   = 50 << 20 // 50 MB
 )
 
 var bgAllowedExts = map[string]bool{
@@ -23,6 +25,8 @@ var bgAllowedExts = map[string]bool{
 	".webp": true,
 	".gif":  true,
 }
+
+var bgResolveSourcePath = resolveBackgroundSourcePath
 
 func bgSanitizeExt(fsPath string) (string, bool) {
 	ext := strings.ToLower(filepath.Ext(fsPath))
@@ -56,7 +60,14 @@ func bgCopyFile(src, dst string) error {
 	}
 	in, err := os.Open(src)
 	if err != nil {
-		return err
+		resolved, ok := bgResolveSourcePath(src)
+		if !ok || strings.EqualFold(filepath.Clean(resolved), src) {
+			return err
+		}
+		in, err = os.Open(resolved)
+		if err != nil {
+			return err
+		}
 	}
 	defer in.Close()
 
@@ -80,9 +91,49 @@ func bgCopyFile(src, dst string) error {
 	return err
 }
 
-func buildAppBgInfo(img string, opacity, blur float64, override bool) AppBackgroundInfo {
+func bgInstallFile(src, dir, prefix, ext string) (string, error) {
+	incoming := filepath.Join(dir, prefix+".incoming")
+	_ = os.Remove(incoming)
+	if err := bgCopyFile(src, incoming); err != nil {
+		return "", err
+	}
+	defer os.Remove(incoming)
+
+	if err := bgClearFiles(dir, prefix); err != nil {
+		return "", err
+	}
+	dstName := prefix + ext
+	if err := os.Rename(incoming, filepath.Join(dir, dstName)); err != nil {
+		return "", err
+	}
+	return dstName, nil
+}
+
+func normalizeBackgroundAlignment(alignment string) string {
+	value := strings.ToLower(strings.TrimSpace(alignment))
+	switch value {
+	case "left", "right", "top", "bottom":
+		return value
+	default:
+		return defaultBgAlignment
+	}
+}
+
+func normalizeBackgroundFit(fit string) string {
+	value := strings.ToLower(strings.TrimSpace(fit))
+	switch value {
+	case "contain", "fill", "none", "scale-down":
+		return value
+	default:
+		return defaultBgFit
+	}
+}
+
+func buildAppBgInfo(img string, opacity, blur float64, alignment, fit string, override bool) AppBackgroundInfo {
+	alignment = normalizeBackgroundAlignment(alignment)
+	fit = normalizeBackgroundFit(fit)
 	if img == "" {
-		return AppBackgroundInfo{Opacity: defaultBgOpacity, Blur: defaultBgBlur, ThemeBgOverride: override}
+		return AppBackgroundInfo{Opacity: defaultBgOpacity, Blur: defaultBgBlur, Alignment: alignment, Fit: fit, ThemeBgOverride: override}
 	}
 	op := opacity
 	if op <= 0 {
@@ -97,6 +148,8 @@ func buildAppBgInfo(img string, opacity, blur float64, override bool) AppBackgro
 		ImageURL:        "/" + bgSubDir + "/" + img,
 		Opacity:         op,
 		Blur:            bl,
+		Alignment:       alignment,
+		Fit:             fit,
 		ThemeBgOverride: override,
 	}
 }
@@ -114,7 +167,7 @@ func (p *PlatformService) GetAppBackground() (AppBackgroundInfo, error) {
 	if err != nil {
 		return AppBackgroundInfo{}, err
 	}
-	return buildAppBgInfo(s.AppBgImage, s.AppBgOpacity, s.AppBgBlur, s.ThemeBgOverride), nil
+	return buildAppBgInfo(s.AppBgImage, s.AppBgOpacity, s.AppBgBlur, s.AppBgAlignment, s.AppBgFit, s.ThemeBgOverride), nil
 }
 
 func (p *PlatformService) SetAppBackground(imagePath string) error {
@@ -134,12 +187,8 @@ func (p *PlatformService) SetAppBackground(imagePath string) error {
 	dir := bgDir(wwwroot)
 	prefix := bgAppPrefix()
 
-	if err := bgClearFiles(dir, prefix); err != nil {
-		return err
-	}
-
-	dstName := prefix + ext
-	if err := bgCopyFile(imagePath, filepath.Join(dir, dstName)); err != nil {
+	dstName, err := bgInstallFile(imagePath, dir, prefix, ext)
+	if err != nil {
 		return err
 	}
 
@@ -244,6 +293,36 @@ func (p *PlatformService) SetAppBackgroundBlur(blur float64) error {
 	return saveSettingsAtomic(exeDir, s)
 }
 
+func (p *PlatformService) SetAppBackgroundAlignment(alignment string) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return err
+	}
+	s.AppBgAlignment = normalizeBackgroundAlignment(alignment)
+	return saveSettingsAtomic(exeDir, s)
+}
+
+func (p *PlatformService) SetAppBackgroundFit(fit string) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return err
+	}
+	s.AppBgFit = normalizeBackgroundFit(fit)
+	return saveSettingsAtomic(exeDir, s)
+}
+
 // ---------- Per-platform background ----------
 
 func (p *PlatformService) GetPlatformBackground(platformKey string) (AppBackgroundInfo, error) {
@@ -252,7 +331,7 @@ func (p *PlatformService) GetPlatformBackground(platformKey string) (AppBackgrou
 
 	platformKey = strings.TrimSpace(platformKey)
 	if platformKey == "" {
-		return AppBackgroundInfo{Opacity: defaultBgOpacity, Blur: defaultBgBlur}, nil
+		return AppBackgroundInfo{Opacity: defaultBgOpacity, Blur: defaultBgBlur, Alignment: defaultBgAlignment, Fit: defaultBgFit}, nil
 	}
 	exeDir, err := ResolveExeDir()
 	if err != nil {
@@ -264,9 +343,9 @@ func (p *PlatformService) GetPlatformBackground(platformKey string) (AppBackgrou
 	}
 	ps, ok := s.PlatformBgs[platformKey]
 	if !ok {
-		return AppBackgroundInfo{Opacity: defaultBgOpacity, Blur: defaultBgBlur}, nil
+		return AppBackgroundInfo{Opacity: defaultBgOpacity, Blur: defaultBgBlur, Alignment: defaultBgAlignment, Fit: defaultBgFit}, nil
 	}
-	return buildAppBgInfo(ps.Image, ps.Opacity, ps.Blur, false), nil
+	return buildAppBgInfo(ps.Image, ps.Opacity, ps.Blur, ps.Alignment, ps.Fit, false), nil
 }
 
 func (p *PlatformService) SetPlatformBackground(platformKey, imagePath string) error {
@@ -290,12 +369,8 @@ func (p *PlatformService) SetPlatformBackground(platformKey, imagePath string) e
 	dir := bgDir(wwwroot)
 	prefix := bgPlatformPrefix(platformKey)
 
-	if err := bgClearFiles(dir, prefix); err != nil {
-		return err
-	}
-
-	dstName := prefix + ext
-	if err := bgCopyFile(imagePath, filepath.Join(dir, dstName)); err != nil {
+	dstName, err := bgInstallFile(imagePath, dir, prefix, ext)
+	if err != nil {
 		return err
 	}
 
@@ -402,6 +477,56 @@ func (p *PlatformService) SetPlatformBackgroundBlur(platformKey string, blur flo
 	}
 	ps := s.PlatformBgs[platformKey]
 	ps.Blur = blur
+	if s.PlatformBgs == nil {
+		s.PlatformBgs = make(map[string]PlatformBgSettings)
+	}
+	s.PlatformBgs[platformKey] = ps
+	return saveSettingsAtomic(exeDir, s)
+}
+
+func (p *PlatformService) SetPlatformBackgroundAlignment(platformKey, alignment string) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+
+	platformKey = strings.TrimSpace(platformKey)
+	if platformKey == "" {
+		return errors.New("platformKey is required")
+	}
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return err
+	}
+	ps := s.PlatformBgs[platformKey]
+	ps.Alignment = normalizeBackgroundAlignment(alignment)
+	if s.PlatformBgs == nil {
+		s.PlatformBgs = make(map[string]PlatformBgSettings)
+	}
+	s.PlatformBgs[platformKey] = ps
+	return saveSettingsAtomic(exeDir, s)
+}
+
+func (p *PlatformService) SetPlatformBackgroundFit(platformKey, fit string) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+
+	platformKey = strings.TrimSpace(platformKey)
+	if platformKey == "" {
+		return errors.New("platformKey is required")
+	}
+	exeDir, err := ResolveExeDir()
+	if err != nil {
+		return err
+	}
+	s, err := loadSettings(exeDir)
+	if err != nil {
+		return err
+	}
+	ps := s.PlatformBgs[platformKey]
+	ps.Fit = normalizeBackgroundFit(fit)
 	if s.PlatformBgs == nil {
 		s.PlatformBgs = make(map[string]PlatformBgSettings)
 	}
