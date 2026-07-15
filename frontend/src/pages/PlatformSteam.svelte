@@ -26,6 +26,7 @@
   import { buildSteamExtraMenu } from "../lib/steam/contextMenuBuilder";
   import type { SteamMenuDeps } from "../lib/steam/menuCommands";
   import type { SteamAccountRow } from "../lib/steam/types";
+  import { steamAccountVisualKey } from "../lib/steam/accountVisualKey";
   import { reportLaunchFailure } from "../lib/adminFlow";
   import { fuzzyWordsMatch } from "../lib/searchFuzzy";
   import { formatLastLoginForLocale } from "../lib/formatLastLogin";
@@ -119,22 +120,7 @@
     lastUsed: (a: SteamAccountRow) => a.lastLogin ?? "",
     accountLogin: (a: SteamAccountRow) => (a.accountName ?? "").trim(),
 
-    visualKey: (a: SteamAccountRow) => [
-      a.steamId64,
-      a.displayName ?? "",
-      a.accountName ?? "",
-      a.imageUrl ?? "",
-      a.staticImageUrl ?? "",
-      a.avatarFrameUrl ?? "",
-      a.avatarPending ?? false,
-      a.metaPending ?? false,
-      a.manualProfileImage ?? false,
-      a.currentSession ?? false,
-      a.vac ?? false,
-      a.ltd ?? false,
-      a.note ?? "",
-      (a.tags ?? []).map((t) => t.id).join(","),
-    ].join("|"),
+    visualKey: steamAccountVisualKey,
 
     loadAccountsList: async () => {
       const rows = await SteamService.GetSteamAccountsList();

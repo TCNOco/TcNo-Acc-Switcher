@@ -78,6 +78,14 @@ func InitDataPaths(exeDir string) error {
 	if err != nil {
 		return err
 	}
+	if changed, err := applyStatsInstallerPreference(&s); err != nil {
+		return err
+	} else if changed {
+		if err := saveSettingsAtomic(exeDir, s); err != nil {
+			return err
+		}
+		clearStatsInstallerPreference()
+	}
 	dir, err := ResolveUserDataDir(exeDir, s)
 	if err != nil {
 		return err

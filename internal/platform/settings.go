@@ -69,10 +69,12 @@ type AppSettings struct {
 	StartProgramCentered bool `json:"startProgramCentered,omitempty"`
 
 	// StatsEnabled toggles local anonymous statistics collection.
-	StatsEnabled bool `json:"statsEnabled,omitempty"`
+	// Stored without omitempty so an explicit opt-out survives a restart.
+	StatsEnabled bool `json:"statsEnabled"`
 
 	// StatsShare toggles anonymous statistics submission.
-	StatsShare bool `json:"statsShare,omitempty"`
+	// Stored without omitempty so an explicit opt-out survives a restart.
+	StatsShare bool `json:"statsShare"`
 
 	// CrashReportAutoSubmit uploads pending crash dumps on launch without prompting.
 	// Stored without omitempty so false round-trips: omitted key plus normalize defaults would otherwise force true on load.
@@ -232,6 +234,11 @@ func loadSettingsFromDisk(exeDir string) (AppSettings, error) {
 func loadSettingsFromDiskAt(exeDir string) (AppSettings, string, error) {
 	path, found := settingsfile.Discover(exeDir)
 	if !found {
+		if migrated, migratedPath, ok, err := migrateLegacyWindowSettings(exeDir); err != nil {
+			return AppSettings{}, "", err
+		} else if ok {
+			return migrated, migratedPath, nil
+		}
 		return defaultSettings(), "", nil
 	}
 	data, err := os.ReadFile(path)

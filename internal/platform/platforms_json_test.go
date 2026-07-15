@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"slices"
 	"testing"
 )
 
@@ -60,5 +61,36 @@ func TestLoadPlatformsJSON_mergesCustom(t *testing.T) {
 	}
 	if len(names) != 2 {
 		t.Fatalf("names: %v", names)
+	}
+}
+
+func TestLoadPlatformsJSON_restoresEmbeddedSteamToLegacyCatalog(t *testing.T) {
+	setTestAppData(t)
+	dir := t.TempDir()
+	userDataDir := PortableUserDataDir(dir)
+	if err := os.MkdirAll(userDataDir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := atomicWriteBytes(filepath.Join(userDataDir, settingsFileName), []byte(`{"version":1,"language":"en-US"}`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := atomicWriteBytes(filepath.Join(userDataDir, "Platforms.json"), []byte(`{"Version":"2025-11-09_00","Platforms":{"Epic Games":{"Identifiers":["e"]}}}`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	previous := append([]byte(nil), embeddedPlatformsJSON...)
+	t.Cleanup(func() { SetEmbeddedPlatformsJSON(previous) })
+	SetEmbeddedPlatformsJSON([]byte(`{"Version":"4.0.2","Platforms":{"Steam":{"Identifiers":["s","steam"]}}}`))
+
+	ResetPathSingletonsForTest(dir)
+	raw, err := LoadPlatformsJSON(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	names, err := parsePlatformNames(raw)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !slices.Contains(names, "Steam") || !slices.Contains(names, "Epic Games") {
+		t.Fatalf("legacy catalog was not augmented correctly: %v", names)
 	}
 }

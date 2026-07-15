@@ -1,7 +1,13 @@
 import { get, writable } from "svelte/store";
 import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
 import { setPlatformAccountCounts, setPlatformTagCounts } from "./platformAccountsCache";
-import { type Route, serializeRoute, parseHash, validateRoute } from "./routeCodec";
+import {
+  applySinglePlatformStartupRoute,
+  type Route,
+  serializeRoute,
+  parseHash,
+  validateRoute,
+} from "./routeCodec";
 import type { PlatformStartup } from "../../bindings/TcNo-Acc-Switcher/internal/platform/models.js";
 import { homeScreenData } from "./homeScreenData";
 
@@ -40,6 +46,7 @@ export async function resolveInitialRoute(): Promise<void> {
     setPlatformAccountCounts(startup.platformAccountCounts ?? {});
     setPlatformTagCounts(startup.platformTagCounts);
     let next = validateRoute(fromHash, startup);
+    next = applySinglePlatformStartupRoute(next, startup);
     next = applyCliHint(startup, next);
     route.set(next);
     syncRouteUrl(next);

@@ -78,3 +78,10 @@ export function validateRoute(r: Route, startup: PlatformStartup): Route {
       return r;
   }
 }
+
+export function applySinglePlatformStartupRoute(r: Route, startup: PlatformStartup): Route {
+  if (r.page !== "home" || startup.platformsFileMissing) return r;
+  const enabled = startup.homePlatformOrder ?? [];
+  if (enabled.length !== 1) return r;
+  return validateRoute({ page: "platform", platformName: enabled[0] }, startup);
+}

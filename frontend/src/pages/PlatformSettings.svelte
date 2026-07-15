@@ -52,6 +52,8 @@
   let closingMethodUiLocked = false;
 
   let saveTimer: ReturnType<typeof setTimeout> | undefined;
+  let steamSavePending = false;
+  let genericSavePending = false;
 
   $: silentOn =
     isSteam && steamSettings
@@ -64,10 +66,22 @@
 
   function debouncedSaveSteam(): void {
     if (!isSteam || !steamSettings) return;
+    steamSavePending = true;
     clearTimeout(saveTimer);
     saveTimer = setTimeout(() => {
-      void SaveSteamSettings(steamSettings!).catch(() => {});
+      void flushSteamSave();
     }, 450);
+  }
+
+  async function flushSteamSave(): Promise<void> {
+    clearTimeout(saveTimer);
+    saveTimer = undefined;
+    if (!isSteam || !steamSettings || !steamSavePending) return;
+    steamSavePending = false;
+    try {
+      await SaveSteamSettings(steamSettings);
+      requestPlatformAccountsRefresh(name);
+    } catch {}
   }
 
   function bumpSteamSettings(): void {
@@ -80,10 +94,22 @@
 
   function debouncedSaveGeneric(): void {
     if (isSteam || !genericPS) return;
+    genericSavePending = true;
     clearTimeout(saveTimer);
     saveTimer = setTimeout(() => {
-      void Wails.SavePlatformSettings(name, genericPS!).catch(() => {});
+      void flushGenericSave();
     }, 450);
+  }
+
+  async function flushGenericSave(): Promise<void> {
+    clearTimeout(saveTimer);
+    saveTimer = undefined;
+    if (isSteam || !genericPS || !genericSavePending) return;
+    genericSavePending = false;
+    try {
+      await Wails.SavePlatformSettings(name, genericPS);
+      requestPlatformAccountsRefresh(name);
+    } catch {}
   }
 
   function onSteamSave(): void {
@@ -175,7 +201,8 @@
   });
 
   onDestroy(() => {
-    clearTimeout(saveTimer);
+    if (isSteam) void flushSteamSave();
+    else void flushGenericSave();
   });
 
   async function onPickFolder(): Promise<void> {
