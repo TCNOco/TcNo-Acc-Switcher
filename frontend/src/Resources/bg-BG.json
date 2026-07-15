@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "Управление",
   "Context_GameDataSubmenu": "Данни за играта",
   "Context_GameData_NoFolders": "Все още няма инсталирано заглавие с локални данни за игра или запазено резервно копие за този акаунт.",
-  "Context_ManageGameStats": "Управление на статистиката за играта",
+  "Context_ManageGameStats": "Статистика за играта",
   "Context_Game_CopySettingsFrom": "Копиране на настройките към текущите",
   "Context_Game_RestoreSettingsTo": "Възстановяване на данните за играта",
   "Context_Game_BackupData": "Архивиране на данни за играта",

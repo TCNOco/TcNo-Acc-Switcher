@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "Verwalten",
   "Context_GameDataSubmenu": "Spieldaten",
   "Context_GameData_NoFolders": "Kein installierter Titel hat bislang lokale Spieldaten oder ein gespeichertes Backup für dieses Konto.",
-  "Context_ManageGameStats": "Spielstatistiken verwalten",
+  "Context_ManageGameStats": "Spielstatistiken",
   "Context_Game_CopySettingsFrom": "Einstellungen auf den aktuellen Stand kopieren",
   "Context_Game_RestoreSettingsTo": "Spieldaten wiederherstellen",
   "Context_Game_BackupData": "Spieldaten sichern",

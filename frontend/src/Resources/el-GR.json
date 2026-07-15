@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "ΔΙΑΧΕΙΡΙΣΗ",
   "Context_GameDataSubmenu": "Δεδομένα παιχνιδιού",
   "Context_GameData_NoFolders": "Κανένας εγκατεστημένος τίτλος δεν έχει τοπικά δεδομένα παιχνιδιού ή αποθηκευμένο αντίγραφο ασφαλείας για αυτόν τον λογαριασμό ακόμα.",
-  "Context_ManageGameStats": "Διαχείριση στατιστικών παιχνιδιών",
+  "Context_ManageGameStats": "Στατιστικά παιχνιδιών",
   "Context_Game_CopySettingsFrom": "Αντιγραφή ρυθμίσεων στο τρέχον",
   "Context_Game_RestoreSettingsTo": "Επαναφορά δεδομένων παιχνιδιού",
   "Context_Game_BackupData": "Εφεδρικά δεδομένα παιχνιδιού",

@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "관리",
   "Context_GameDataSubmenu": "게임 데이터",
   "Context_GameData_NoFolders": "이 계정에 대해 로컬 게임 데이터나 저장된 백업이 있는 설치된 타이틀이 없습니다.",
-  "Context_ManageGameStats": "게임 통계 관리",
+  "Context_ManageGameStats": "게임 통계",
   "Context_Game_CopySettingsFrom": "설정을 현재로 복사",
   "Context_Game_RestoreSettingsTo": "게임 데이터 복원",
   "Context_Game_BackupData": "게임 데이터 백업",

@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "Управљање",
   "Context_GameDataSubmenu": "Подаци о игри",
   "Context_GameData_NoFolders": "Ниједан инсталирани наслов још увек нема локалне податке игре или сачувану резервну копију за овај налог.",
-  "Context_ManageGameStats": "Управљање статистиком игара",
+  "Context_ManageGameStats": "Статистика игара",
   "Context_Game_CopySettingsFrom": "Копирај подешавања у текуће",
   "Context_Game_RestoreSettingsTo": "Обнови податке о игри",
   "Context_Game_BackupData": "Резервни подаци о игри",

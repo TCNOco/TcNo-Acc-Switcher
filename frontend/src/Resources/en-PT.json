@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "Command",
   "Context_GameDataSubmenu": "Game plunder",
   "Context_GameData_NoFolders": "No installed title has local game data or a stashed backup for this crew yet.",
-  "Context_ManageGameStats": "Manage game tallies",
+  "Context_ManageGameStats": "Game tallies",
   "Context_Game_CopySettingsFrom": "Copy settings t' current",
   "Context_Game_RestoreSettingsTo": "Bring back game data",
   "Context_Game_BackupData": "Stash game data",

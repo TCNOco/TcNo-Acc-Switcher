@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "Gestionare",
   "Context_GameDataSubmenu": "Date despre joc",
   "Context_GameData_NoFolders": "Niciun titlu instalat nu are date de joc locale sau o copie de rezervă salvată pentru acest cont încă.",
-  "Context_ManageGameStats": "Gestionați statisticile jocului",
+  "Context_ManageGameStats": "Statisticile jocului",
   "Context_Game_CopySettingsFrom": "Copiază setările în meniul curent",
   "Context_Game_RestoreSettingsTo": "Restaurează datele jocului",
   "Context_Game_BackupData": "Backup game data (Copiere de rezervă date joc)",

@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "प्रबंधन करें",
   "Context_GameDataSubmenu": "खेल डेटा",
   "Context_GameData_NoFolders": "इस खाते के लिए अभी तक कोई स्थापित शीर्षक के पास स्थानीय गेम डेटा या सहेजा गया बैकअप नहीं है।",
-  "Context_ManageGameStats": "खेल आँकड़े प्रबंधित करें",
+  "Context_ManageGameStats": "खेल के आँकड़े",
   "Context_Game_CopySettingsFrom": "वर्तमान सेटिंग की नक़ल करें",
   "Context_Game_RestoreSettingsTo": "खेल डेटा पुनर्स्थापित करें",
   "Context_Game_BackupData": "खेल डेटा बैकअप करें",

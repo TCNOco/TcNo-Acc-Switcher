@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "จัดการ",
   "Context_GameDataSubmenu": "ข้อมูลเกม",
   "Context_GameData_NoFolders": "ยังไม่มีรายการที่ติดตั้งที่มีข้อมูลเกมในเครื่องหรือข้อมูลสำรองที่บันทึกไว้สำหรับบัญชีนี้",
-  "Context_ManageGameStats": "จัดการสถิติเกม",
+  "Context_ManageGameStats": "สถิติเกม",
   "Context_Game_CopySettingsFrom": "คัดลอกการตั้งค่าไปยังปัจจุบัน",
   "Context_Game_RestoreSettingsTo": "คืนค่าข้อมูลเกม",
   "Context_Game_BackupData": "ข้อมูลเกมสำรอง",

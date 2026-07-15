@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "管理",
   "Context_GameDataSubmenu": "游戏数据",
   "Context_GameData_NoFolders": "此账户尚无任何已安装标题具有本地游戏数据或已保存备份。",
-  "Context_ManageGameStats": "管理游戏统计",
+  "Context_ManageGameStats": "游戏统计",
   "Context_Game_CopySettingsFrom": "将设置复制到当前账户",
   "Context_Game_RestoreSettingsTo": "还原游戏数据",
   "Context_Game_BackupData": "备份游戏数据",

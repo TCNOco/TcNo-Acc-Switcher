@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "مدیریت",
   "Context_GameDataSubmenu": "داده‌های بازی",
   "Context_GameData_NoFolders": "هیچ عنوان نصب شده‌ای داده بازی محلی یا پشتیبان ذخیره‌شده برای این حساب ندارد.",
-  "Context_ManageGameStats": "مدیریت آمار بازی",
+  "Context_ManageGameStats": "آمار بازی",
   "Context_Game_CopySettingsFrom": "کپی تنظیمات به حساب فعلی",
   "Context_Game_RestoreSettingsTo": "بازیابی اطلاعات بازی",
   "Context_Game_BackupData": "پشتیبان‌گیری از داده‌های بازی",

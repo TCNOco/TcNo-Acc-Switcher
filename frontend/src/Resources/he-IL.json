@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "נהל",
   "Context_GameDataSubmenu": "נתוני משחק",
   "Context_GameData_NoFolders": "לאף כותר מותקן אין עדיין נתוני משחק מקומיים או גיבוי שמור לחשבון זה.",
-  "Context_ManageGameStats": "נהל סטטיסטיקות משחק",
+  "Context_ManageGameStats": "סטטיסטיקות משחק",
   "Context_Game_CopySettingsFrom": "העתק הגדרות לנוכחי",
   "Context_Game_RestoreSettingsTo": "שחזר נתוני משחק",
   "Context_Game_BackupData": "גבה נתוני משחק",

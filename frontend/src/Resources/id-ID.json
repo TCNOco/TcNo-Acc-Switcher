@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "Kelola",
   "Context_GameDataSubmenu": "Data permainan",
   "Context_GameData_NoFolders": "Belum ada judul terinstal yang memiliki data game lokal atau cadangan tersimpan untuk akun ini.",
-  "Context_ManageGameStats": "Kelola statistik permainan",
+  "Context_ManageGameStats": "Statistik permainan",
   "Context_Game_CopySettingsFrom": "Salin pengaturan ke saat ini",
   "Context_Game_RestoreSettingsTo": "Pulihkan data game",
   "Context_Game_BackupData": "Cadangkan data game",

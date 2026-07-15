@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "Spravovat",
   "Context_GameDataSubmenu": "Herní data",
   "Context_GameData_NoFolders": "Zatím žádný nainstalovaný titul nemá pro tento účet lokální herní data nebo uloženou zálohu.",
-  "Context_ManageGameStats": "Spravovat statistiky hry",
+  "Context_ManageGameStats": "Statistiky hry",
   "Context_Game_CopySettingsFrom": "Kopírovat nastavení na aktuální",
   "Context_Game_RestoreSettingsTo": "Obnovit herní data",
   "Context_Game_BackupData": "Zálohovat herní data",

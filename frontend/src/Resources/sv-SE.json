@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "Hantera",
   "Context_GameDataSubmenu": "Speldata",
   "Context_GameData_NoFolders": "Ingen installerad titel har lokala speldata eller en sparad säkerhetskopia för detta konto ännu.",
-  "Context_ManageGameStats": "Hantera spelstatistik",
+  "Context_ManageGameStats": "Spelstatistik",
   "Context_Game_CopySettingsFrom": "Kopiera inställningarna till nuvarande",
   "Context_Game_RestoreSettingsTo": "Återställ speldata",
   "Context_Game_BackupData": "Säkerhetskopiera speldata",

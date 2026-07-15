@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "Yönetmek",
   "Context_GameDataSubmenu": "Oyun verileri",
   "Context_GameData_NoFolders": "Bu hesap için henüz hiçbir yüklü oyunun yerel oyun verisi veya kayıtlı yedeği bulunmuyor.",
-  "Context_ManageGameStats": "Oyun istatistiklerini yönet",
+  "Context_ManageGameStats": "Oyun istatistikleri",
   "Context_Game_CopySettingsFrom": "Ayarları şu anki ayarlara kopyala",
   "Context_Game_RestoreSettingsTo": "Oyun verilerini geri yükle",
   "Context_Game_BackupData": "Yedekleme oyunu verileri",

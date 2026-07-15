@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "管理(M)",
   "Context_GameDataSubmenu": "ゲームデータ",
   "Context_GameData_NoFolders": "このアカウントのインストール済みタイトルには、まだローカルゲームデータや保存済みバックアップがありません。",
-  "Context_ManageGameStats": "ゲームの統計情報を管理する",
+  "Context_ManageGameStats": "ゲーム統計",
   "Context_Game_CopySettingsFrom": "設定を現在のものにコピー",
   "Context_Game_RestoreSettingsTo": "ゲームデータを復元",
   "Context_Game_BackupData": "ゲームデータのバックアップ",

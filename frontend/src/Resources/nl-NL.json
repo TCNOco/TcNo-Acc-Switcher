@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "Beheren",
   "Context_GameDataSubmenu": "Spelgegevens",
   "Context_GameData_NoFolders": "Er is nog geen geïnstalleerde titel met lokale spelgegevens of een opgeslagen back-up voor dit account.",
-  "Context_ManageGameStats": "Spelstatistieken beheren",
+  "Context_ManageGameStats": "Spelstatistieken",
   "Context_Game_CopySettingsFrom": "Kopieer instellingen naar huidige",
   "Context_Game_RestoreSettingsTo": "Spelgegevens herstellen",
   "Context_Game_BackupData": "Back-up maken van spelgegevens",

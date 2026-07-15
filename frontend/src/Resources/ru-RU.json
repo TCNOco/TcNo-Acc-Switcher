@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "Управление",
   "Context_GameDataSubmenu": "Данные игры",
   "Context_GameData_NoFolders": "Ни одна установленная игра не имеет локальных данных или сохранённой резервной копии для этого аккаунта.",
-  "Context_ManageGameStats": "Управление статистикой игры",
+  "Context_ManageGameStats": "Статистика игры",
   "Context_Game_CopySettingsFrom": "Копировать настройки в текущие",
   "Context_Game_RestoreSettingsTo": "Восстановить данные игры",
   "Context_Game_BackupData": "Резервное копирование данных игры",

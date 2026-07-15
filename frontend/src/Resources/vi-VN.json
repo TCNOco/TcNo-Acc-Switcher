@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "Quản lý",
   "Context_GameDataSubmenu": "Dữ liệu trò chơi",
   "Context_GameData_NoFolders": "Chưa có tựa game đã cài đặt nào có dữ liệu trò chơi cục bộ hoặc bản sao lưu đã lưu cho tài khoản này.",
-  "Context_ManageGameStats": "Quản lý thống kê trò chơi",
+  "Context_ManageGameStats": "Thống kê trò chơi",
   "Context_Game_CopySettingsFrom": "Sao chép cài đặt vào tài khoản hiện tại",
   "Context_Game_RestoreSettingsTo": "Khôi phục dữ liệu trò chơi",
   "Context_Game_BackupData": "Sao lưu dữ liệu trò chơi",

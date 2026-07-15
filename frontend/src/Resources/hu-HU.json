@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "Kezelés",
   "Context_GameDataSubmenu": "Játékadatok",
   "Context_GameData_NoFolders": "Egyetlen telepített játékhoz sincs még helyi mentési adat vagy biztonsági mentés ehhez a fiókhoz.",
-  "Context_ManageGameStats": "Játékstatisztikák kezelése",
+  "Context_ManageGameStats": "Játékstatisztikák",
   "Context_Game_CopySettingsFrom": "Beállítások másolása az aktuálisba",
   "Context_Game_RestoreSettingsTo": "Játékadatok visszaállítása",
   "Context_Game_BackupData": "A játék adatainak biztonsági mentése",

@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "Hallinnoi",
   "Context_GameDataSubmenu": "Pelin tiedot",
   "Context_GameData_NoFolders": "Yhdelläkään asennetulla nimikkeellä ei vielä ole paikallista pelidataa tai tallennettua varmuuskopiota tälle tilille.",
-  "Context_ManageGameStats": "Hallitse pelitilastoja",
+  "Context_ManageGameStats": "Pelitilastot",
   "Context_Game_CopySettingsFrom": "Kopioi asetukset nykyiseen",
   "Context_Game_RestoreSettingsTo": "Palauta pelitiedot",
   "Context_Game_BackupData": "Varmuuskopioi pelitiedot",

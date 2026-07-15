@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "Керувати",
   "Context_GameDataSubmenu": "Дані гри",
   "Context_GameData_NoFolders": "Жодна встановлена гра не має локальних даних гри або збереженої резервної копії для цього облікового запису.",
-  "Context_ManageGameStats": "Керування ігровою статистикою",
+  "Context_ManageGameStats": "Ігрова статистика",
   "Context_Game_CopySettingsFrom": "Скопіювати налаштування до поточних",
   "Context_Game_RestoreSettingsTo": "Відновити дані гри",
   "Context_Game_BackupData": "Резервне копіювання ігрових даних",

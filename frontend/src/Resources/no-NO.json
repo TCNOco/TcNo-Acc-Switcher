@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "Administrer",
   "Context_GameDataSubmenu": "Spilldata",
   "Context_GameData_NoFolders": "Ingen installert tittel har lokale spilldata eller en lagret sikkerhetskopi for denne kontoen ennå.",
-  "Context_ManageGameStats": "Administrer spillstatistikk",
+  "Context_ManageGameStats": "Spillstatistikk",
   "Context_Game_CopySettingsFrom": "Kopier innstillinger til gjeldende",
   "Context_Game_RestoreSettingsTo": "Gjenopprett spilldata",
   "Context_Game_BackupData": "Sikkerhetskopier spilldata",

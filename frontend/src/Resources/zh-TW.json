@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "管理",
   "Context_GameDataSubmenu": "遊戲資料",
   "Context_GameData_NoFolders": "此帳戶尚無任何已安裝標題具有本機遊戲資料或已儲存備份。",
-  "Context_ManageGameStats": "管理遊戲統計",
+  "Context_ManageGameStats": "遊戲統計",
   "Context_Game_CopySettingsFrom": "將設定複製到目前帳戶",
   "Context_Game_RestoreSettingsTo": "還原遊戲資料",
   "Context_Game_BackupData": "備份遊戲資料",

@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "Gestionar",
   "Context_GameDataSubmenu": "Datos del juego",
   "Context_GameData_NoFolders": "Ningún título instalado tiene aún datos de juego locales ni una copia de seguridad guardada para esta cuenta.",
-  "Context_ManageGameStats": "Gestionar estadísticas del juego",
+  "Context_ManageGameStats": "Estadísticas del juego",
   "Context_Game_CopySettingsFrom": "Copiar ajustes al actual",
   "Context_Game_RestoreSettingsTo": "Restaurar datos del juego",
   "Context_Game_BackupData": "Copia de seguridad de los datos del juego",

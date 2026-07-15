@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "Bestuur",
   "Context_GameDataSubmenu": "Speldata",
   "Context_GameData_NoFolders": "Geen geïnstalleerde titel het plaaslike speletjiedata of 'n gestoorde rugsteun vir hierdie rekening nie.",
-  "Context_ManageGameStats": "Bestuur spelstatistieke",
+  "Context_ManageGameStats": "Spelstatistieke",
   "Context_Game_CopySettingsFrom": "Kopieer instellings na huidige",
   "Context_Game_RestoreSettingsTo": "Herstel speldata",
   "Context_Game_BackupData": "Rugsteun speletjiedata",

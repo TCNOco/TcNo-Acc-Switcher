@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "إدارة",
   "Context_GameDataSubmenu": "بيانات اللعبة",
   "Context_GameData_NoFolders": "لا يوجد عنوان مثبت يحتوي على بيانات لعبة محلية أو نسخة احتياطية محفوظة لهذا الحساب بعد.",
-  "Context_ManageGameStats": "إدارة إحصائيات اللعبة",
+  "Context_ManageGameStats": "إحصائيات اللعبة",
   "Context_Game_CopySettingsFrom": "نسخ الإعدادات إلى الحالي",
   "Context_Game_RestoreSettingsTo": "استعادة بيانات اللعبة",
   "Context_Game_BackupData": "نسخ احتياطي لبيانات اللعبة",

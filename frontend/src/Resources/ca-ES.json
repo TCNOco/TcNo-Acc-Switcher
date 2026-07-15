@@ -429,7 +429,7 @@
   "Context_ManageSubmenu": "Gestiona",
   "Context_GameDataSubmenu": "Dades del joc",
   "Context_GameData_NoFolders": "Cap títol instal·lat té dades de joc locals o una còpia de seguretat desada per a aquest compte encara.",
-  "Context_ManageGameStats": "Gestiona les estadístiques del joc",
+  "Context_ManageGameStats": "Estadístiques del joc",
   "Context_Game_CopySettingsFrom": "Copia els paràmetres a l'actual",
   "Context_Game_RestoreSettingsTo": "Restaura les dades del joc",
   "Context_Game_BackupData": "Còpia de seguretat de les dades del joc",
