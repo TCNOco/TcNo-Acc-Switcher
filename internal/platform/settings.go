@@ -9,7 +9,10 @@ import (
 	"TcNo-Acc-Switcher/internal/settingsfile"
 )
 
-const settingsFileName = settingsfile.FileName
+const (
+	settingsFileName         = settingsfile.FileName
+	defaultPrereleaseUpdates = true
+)
 
 // AppSettings is stored as indented JSON in the user data folder (default locations) or next to the executable when user data is custom.
 type AppSettings struct {
@@ -48,6 +51,10 @@ type AppSettings struct {
 
 	// OfflineMode blocks outbound HTTP (avatars, Steam APIs, etc.) when true.
 	OfflineMode bool `json:"offlineMode,omitempty"`
+
+	// PrereleaseUpdates includes GitHub pre-releases in update checks.
+	// Stored without omitempty so an explicit opt-out survives a restart.
+	PrereleaseUpdates bool `json:"prereleaseUpdates"`
 
 	// DiscordRpc enables Discord rich presence integration.
 	// Stored without omitempty so false round-trips: omitted key plus normalize defaults would otherwise force true on load.
@@ -133,6 +140,7 @@ func defaultSettings() AppSettings {
 		DisabledPlatforms:        nil,
 		StatsEnabled:             true,
 		StatsShare:               true,
+		PrereleaseUpdates:        defaultPrereleaseUpdates,
 		CrashReportAutoSubmit:    true,
 		DiscordRpc:               true,
 		DiscordRpcShare:          false,
@@ -162,6 +170,9 @@ func normalizeAppSettingsDefaults(s *AppSettings, raw map[string]json.RawMessage
 	}
 	if _, ok := raw["statsShare"]; !ok {
 		s.StatsShare = true
+	}
+	if _, ok := raw["prereleaseUpdates"]; !ok {
+		s.PrereleaseUpdates = defaultPrereleaseUpdates
 	}
 	if _, ok := raw["crashReportAutoSubmit"]; !ok {
 		s.CrashReportAutoSubmit = true
@@ -305,6 +316,7 @@ func saveSettingsAtomic(exeDir string, s AppSettings) error {
 		"animationsEnabled":        {},
 		"statsEnabled":             {},
 		"statsShare":               {},
+		"prereleaseUpdates":        {},
 		"discordRpc":               {},
 		"controllerSupportEnabled": {},
 	})

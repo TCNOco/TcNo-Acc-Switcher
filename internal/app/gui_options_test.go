@@ -36,3 +36,15 @@ func TestMainWindowOptionsPreserveStartupPlacement(t *testing.T) {
 		t.Fatal("Hidden = false, want true for tray startup")
 	}
 }
+
+func TestGitHubUpdaterConfigUsesPrereleasePreference(t *testing.T) {
+	stable := githubUpdaterConfig(platform.AppSettings{})
+	if stable.Prerelease {
+		t.Fatal("Prerelease = true, want false for an explicit opt-out")
+	}
+
+	preview := githubUpdaterConfig(platform.AppSettings{PrereleaseUpdates: true})
+	if !preview.Prerelease {
+		t.Fatal("Prerelease = false, want true when pre-release updates are enabled")
+	}
+}

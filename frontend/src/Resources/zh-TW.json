@@ -97,6 +97,7 @@
   "Settings_DiscordRpcShare": "分享總切換次數",
   "Settings_ViewStats": "檢視統計",
   "Settings_SuggestFeature": "建議功能/變更",
+  "Settings_PrereleaseUpdates": "預發佈更新",
   "Preview": "預覽",
   "Settings_ClearStats": "重設",
   "Settings_CurrentLocation": "目前安裝位置：{path}",

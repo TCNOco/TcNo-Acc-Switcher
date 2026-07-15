@@ -97,6 +97,7 @@
   "Settings_DiscordRpcShare": "แชร์สวิทช์ทั้งหมด",
   "Settings_ViewStats": "ดูสถิติ",
   "Settings_SuggestFeature": "แนะนำฟีเจอร์/การเปลี่ยนแปลง",
+  "Settings_PrereleaseUpdates": "อัปเดตก่อนเผยแพร่",
   "Preview": "ดูตัวอย่าง",
   "Settings_ClearStats": "รีเซ็ต",
   "Settings_CurrentLocation": "ตำแหน่งการติดตั้งปัจจุบัน: {path}",

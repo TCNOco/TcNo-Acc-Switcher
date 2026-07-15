@@ -99,6 +99,15 @@ func mainWindowOptions(guiSettings platform.AppSettings, parsed cli.Parsed) appl
 	return winOpts
 }
 
+func githubUpdaterConfig(guiSettings platform.AppSettings) github.Config {
+	return github.Config{
+		Repository:    "TCNOco/TcNo-Acc-Switcher",
+		Prerelease:    guiSettings.PrereleaseUpdates,
+		ChecksumAsset: "SHA256SUMS",
+		AssetMatcher:  updatecheck.GitHubAssetMatcher,
+	}
+}
+
 func RunGUI(params RunGUIParams) {
 	parsed := params.Parsed
 	guiSettings := params.GuiSettings
@@ -164,11 +173,7 @@ func RunGUI(params RunGUIParams) {
 	currentVersion := buildinfo.Version()
 
 	if currentVersion != "" && !guiSettings.OfflineMode {
-		gh, err := updatecheck.NewSignedGitHubProvider(github.Config{
-			Repository:    "TCNOco/TcNo-Acc-Switcher",
-			ChecksumAsset: "SHA256SUMS",
-			AssetMatcher:  updatecheck.GitHubAssetMatcher,
-		}, ".exe.sig")
+		gh, err := updatecheck.NewSignedGitHubProvider(githubUpdaterConfig(guiSettings), ".exe.sig")
 		if err != nil {
 			wailsApp.Logger.Error("updater: provider", "error", err)
 		} else {

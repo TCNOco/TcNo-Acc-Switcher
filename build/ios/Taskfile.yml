@@ -149,7 +149,7 @@ tasks:
       SDK_PATH:
         sh: xcrun --sdk iphonesimulator --show-sdk-path
     cmds:
-      - wails3 generate bindings -f '{{.BUILD_FLAGS}}' -clean=true
+      - wails3 generate bindings -f '{{.BUILD_FLAGS}}' -clean=true ./...
     env:
       GOOS: ios
       CGO_ENABLED: 1

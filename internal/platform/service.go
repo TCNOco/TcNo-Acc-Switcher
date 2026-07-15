@@ -41,6 +41,7 @@ type PlatformStartup struct {
 	ControllerSupportEnabled bool   `json:"controllerSupportEnabled"`
 	StatsEnabled             bool   `json:"statsEnabled"`
 	StatsShare               bool   `json:"statsShare"`
+	PrereleaseUpdates        bool   `json:"prereleaseUpdates"`
 	CrashReportAutoSubmit    bool   `json:"crashReportAutoSubmit"`
 	CommandPaletteHotkey     string `json:"commandPaletteHotkey"`
 	ThemeAccentPreset        string `json:"themeAccentPreset"`
@@ -124,6 +125,7 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 				ControllerSupportEnabled: settings.ControllerSupportEnabled,
 				StatsEnabled:             settings.StatsEnabled,
 				StatsShare:               settings.StatsShare,
+				PrereleaseUpdates:        settings.PrereleaseUpdates,
 				CrashReportAutoSubmit:    settings.CrashReportAutoSubmit,
 				CommandPaletteHotkey:     settings.CommandPaletteHotkey,
 				ThemeAccentPreset:        settings.ThemeAccentPreset,
@@ -177,6 +179,7 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 		ControllerSupportEnabled: settings.ControllerSupportEnabled,
 		StatsEnabled:             settings.StatsEnabled,
 		StatsShare:               settings.StatsShare,
+		PrereleaseUpdates:        settings.PrereleaseUpdates,
 		CrashReportAutoSubmit:    settings.CrashReportAutoSubmit,
 		CommandPaletteHotkey:     settings.CommandPaletteHotkey,
 		ThemeAccentPreset:        settings.ThemeAccentPreset,
@@ -202,6 +205,7 @@ type SettingsBatchUpdate struct {
 	ControllerSupportEnabled *bool   `json:"controllerSupportEnabled,omitempty"`
 	StatsEnabled             *bool   `json:"statsEnabled,omitempty"`
 	StatsShare               *bool   `json:"statsShare,omitempty"`
+	PrereleaseUpdates        *bool   `json:"prereleaseUpdates,omitempty"`
 	CrashReportAutoSubmit    *bool   `json:"crashReportAutoSubmit,omitempty"`
 	Language                 *string `json:"language,omitempty"`
 	Theme                    *string `json:"theme,omitempty"`

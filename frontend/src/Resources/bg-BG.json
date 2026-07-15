@@ -97,6 +97,7 @@
   "Settings_DiscordRpcShare": "Споделяне на общите превключватели",
   "Settings_ViewStats": "Преглед на статистиката",
   "Settings_SuggestFeature": "Предложете функция/промяна",
+  "Settings_PrereleaseUpdates": "Актуализации преди издаване",
   "Preview": "Преглед",
   "Settings_ClearStats": "Нулиране",
   "Settings_CurrentLocation": "Текущо местоположение за инсталиране: {path}",

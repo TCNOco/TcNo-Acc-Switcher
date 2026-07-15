@@ -92,3 +92,34 @@ func TestAppSettingsJSON_AnimationsEnabled(t *testing.T) {
 		t.Fatalf("expected AnimationsEnabled=true when omitted, got %+v", loaded2)
 	}
 }
+
+func TestAppSettingsJSON_PrereleaseUpdates(t *testing.T) {
+	t.Parallel()
+
+	dir := testExeDirWithPortable(t)
+	s := defaultSettings()
+	s.PrereleaseUpdates = false
+	if err := SaveAppSettings(dir, s); err != nil {
+		t.Fatal(err)
+	}
+	loaded, err := LoadAppSettings(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if loaded.PrereleaseUpdates {
+		t.Fatalf("expected PrereleaseUpdates=false after round-trip, got %+v", loaded)
+	}
+
+	dir2 := testExeDirWithPortable(t)
+	p := filepath.Join(PortableUserDataDir(dir2), settingsFileName)
+	if err := atomicWriteBytes(p, []byte(`{"version":1,"language":"en-US"}`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	loaded2, err := LoadAppSettings(dir2)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !loaded2.PrereleaseUpdates {
+		t.Fatalf("expected PrereleaseUpdates=true when omitted, got %+v", loaded2)
+	}
+}

@@ -97,6 +97,7 @@
   "Settings_DiscordRpcShare": "총 스위치 횟수 공유",
   "Settings_ViewStats": "통계 보기",
   "Settings_SuggestFeature": "기능/변경 제안",
+  "Settings_PrereleaseUpdates": "사전 출시 업데이트",
   "Preview": "미리 보기",
   "Settings_ClearStats": "리셋",
   "Settings_CurrentLocation": "현재 설치 위치: {path}",

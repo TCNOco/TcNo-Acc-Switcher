@@ -97,6 +97,7 @@
   "Settings_DiscordRpcShare": "Поделите укупан број прекидача",
   "Settings_ViewStats": "Прикажи статистику",
   "Settings_SuggestFeature": "Предложи функцију/измену",
+  "Settings_PrereleaseUpdates": "Ажурирања пре издања",
   "Preview": "Преглед",
   "Settings_ClearStats": "Ресетуј",
   "Settings_CurrentLocation": "Тренутна локација за инсталацију: {path}",

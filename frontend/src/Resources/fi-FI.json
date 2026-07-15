@@ -97,6 +97,7 @@
   "Settings_DiscordRpcShare": "Jaa vaihtojen kokonaismäärä",
   "Settings_ViewStats": "Näytä tilastot",
   "Settings_SuggestFeature": "Ehdota ominaisuutta/muutosta",
+  "Settings_PrereleaseUpdates": "Esijulkaisupäivitykset",
   "Preview": "Esikatselu",
   "Settings_ClearStats": "Nollaa",
   "Settings_CurrentLocation": "Nykyinen asennuspaikka: {path}",

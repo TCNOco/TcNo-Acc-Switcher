@@ -97,6 +97,7 @@
   "Settings_DiscordRpcShare": "Gesamtswitches teilen",
   "Settings_ViewStats": "Statistiken anzeigen",
   "Settings_SuggestFeature": "Feature/Änderung vorschlagen",
+  "Settings_PrereleaseUpdates": "Vorabversion-Updates",
   "Preview": "Vorschau",
   "Settings_ClearStats": "Zurücksetzen",
   "Settings_CurrentLocation": "Aktueller Installationsort: {path}",

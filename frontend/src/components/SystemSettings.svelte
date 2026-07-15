@@ -224,6 +224,12 @@
     () => get(statsEnabled.value),
   );
 
+  const prereleaseUpdates = createToggle(
+    () => PlatformService.GetPrereleaseUpdates(),
+    (v) => PlatformService.SetPrereleaseUpdates(v),
+    get(t)("Settings_PrereleaseUpdates"),
+  );
+
   const discordRpcShare = createToggle(
     () => PlatformService.GetDiscordRpcShare(),
     (v) => PlatformService.SetDiscordRpcShare(v),
@@ -239,6 +245,7 @@
     exitToTray.value.set(settings.exitToTray);
     statsEnabled.value.set(settings.statsEnabled);
     statsShare.value.set(settings.statsShare);
+    prereleaseUpdates.value.set(settings.prereleaseUpdates);
     crashReportAutoSubmit.value.set(settings.crashReportAutoSubmit);
     discordRpc.value.set(settings.discordRpc);
     discordRpcShare.value.set(settings.discordRpcShare);
@@ -257,6 +264,7 @@
     void exitToTray.init();
     void statsEnabled.init();
     void statsShare.init();
+    void prereleaseUpdates.init();
     void crashReportAutoSubmit.init();
     void discordRpc.init();
     void discordRpcShare.init();
@@ -665,6 +673,19 @@
   <button type="button" class="btnicontext" on:click={() => void openFeedbackModal({ mode: "suggestion" })}>
     {$t("Settings_SuggestFeature")}
   </button>
+  <div>
+    <div class="form-check">
+      <input
+        id="settings-prerelease-updates"
+        type="checkbox"
+        checked={$prereleaseUpdates.value}
+        disabled={$prereleaseUpdates.loading}
+        on:change={() => void prereleaseUpdates.toggle()}
+      />
+      <label class="form-check-label" for="settings-prerelease-updates"></label>
+    </div>
+    <label for="settings-prerelease-updates">{$t("Settings_PrereleaseUpdates")}</label>
+  </div>
 </div>
 
 <h2 class="SettingsHeader">{$t("Settings_Header_StatsSharing")}</h2>
@@ -720,6 +741,7 @@
 
   .version-row {
     margin-top: 0.25rem;
+    flex-wrap: wrap;
   }
 
   .hotkey-row {

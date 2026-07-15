@@ -69,6 +69,7 @@ func applySettingsBatchUpdate(s *AppSettings, req SettingsBatchUpdate) settingsB
 		effects.dirty = true
 	}
 	applyBool(&s.StatsShare, req.StatsShare)
+	applyBool(&s.PrereleaseUpdates, req.PrereleaseUpdates)
 	applyBool(&s.CrashReportAutoSubmit, req.CrashReportAutoSubmit)
 	if req.Language != nil {
 		s.Language = stringsDefault(*req.Language, "en-US")

@@ -97,6 +97,7 @@
   "Settings_DiscordRpcShare": "Поделиться общим количеством переключений",
   "Settings_ViewStats": "Посмотреть статистику",
   "Settings_SuggestFeature": "Предложить функцию/изменение",
+  "Settings_PrereleaseUpdates": "Предварительные обновления",
   "Preview": "Предварительный просмотр",
   "Settings_ClearStats": "Сбросить",
   "Settings_CurrentLocation": "Текущее расположение: {path}",

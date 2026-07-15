@@ -215,6 +215,13 @@ func (p *PlatformService) SetStatsShare(enabled bool) error {
 	})
 }
 
+func (p *PlatformService) SetPrereleaseUpdates(enabled bool) error {
+	return p.withSettingsWrite(func(s *AppSettings) error {
+		s.PrereleaseUpdates = enabled
+		return nil
+	})
+}
+
 func (p *PlatformService) SetOfflineMode(enabled bool) error {
 	err := p.withSettingsWrite(func(s *AppSettings) error {
 		s.OfflineMode = enabled

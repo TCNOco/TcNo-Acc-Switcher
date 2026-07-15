@@ -97,6 +97,7 @@
   "Settings_DiscordRpcShare": "Sdílet celkové přepínače",
   "Settings_ViewStats": "Zobrazit statistiky",
   "Settings_SuggestFeature": "Navrhnout funkci/změnu",
+  "Settings_PrereleaseUpdates": "Aktualizace před vydáním",
   "Preview": "Náhled",
   "Settings_ClearStats": "Resetovat",
   "Settings_CurrentLocation": "Aktuální umístění instalace: {path}",
