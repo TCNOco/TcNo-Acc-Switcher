@@ -22,6 +22,15 @@ export function computeViewportDropdownLayout(
   };
 }
 
+export function applyViewportDropdownLayout(
+  style: Pick<CSSStyleDeclaration, "setProperty">,
+  layout: ViewportDropdownLayout,
+): void {
+  style.setProperty("top", layout.placement === "below" ? "100%" : "auto", "important");
+  style.setProperty("bottom", layout.placement === "above" ? "100%" : "auto", "important");
+  style.setProperty("max-height", `${layout.maxHeight}px`);
+}
+
 export function viewportDropdown(node: HTMLElement) {
   let frame = 0;
 
@@ -36,9 +45,7 @@ export function viewportDropdown(node: HTMLElement) {
       menuHeight: Math.max(node.scrollHeight, node.getBoundingClientRect().height),
     });
 
-    node.style.top = layout.placement === "below" ? "100%" : "auto";
-    node.style.bottom = layout.placement === "above" ? "100%" : "auto";
-    node.style.maxHeight = `${layout.maxHeight}px`;
+    applyViewportDropdownLayout(node.style, layout);
   }
 
   function schedule(): void {

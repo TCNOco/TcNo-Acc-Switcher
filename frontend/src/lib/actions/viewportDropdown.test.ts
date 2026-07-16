@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { computeViewportDropdownLayout } from "./viewportDropdown";
+import { applyViewportDropdownLayout, computeViewportDropdownLayout } from "./viewportDropdown";
 
 describe("viewport dropdown layout", () => {
   it("opens above a trigger near the bottom of the viewport", () => {
@@ -27,5 +27,31 @@ describe("viewport dropdown layout", () => {
         { viewportHeight: 600, menuHeight: 180 },
       ),
     ).toEqual({ placement: "below", maxHeight: 360 });
+  });
+
+  it("keeps runtime placement authoritative over theme styles", () => {
+    const declarations: Array<[string, string, string]> = [];
+    const style = {
+      setProperty(name: string, value: string, priority = "") {
+        declarations.push([name, value, priority]);
+      },
+    };
+
+    applyViewportDropdownLayout(style, { placement: "above", maxHeight: 272 });
+
+    expect(declarations).toEqual([
+      ["top", "auto", "important"],
+      ["bottom", "100%", "important"],
+      ["max-height", "272px", ""],
+    ]);
+
+    declarations.length = 0;
+    applyViewportDropdownLayout(style, { placement: "below", maxHeight: 360 });
+
+    expect(declarations).toEqual([
+      ["top", "100%", "important"],
+      ["bottom", "auto", "important"],
+      ["max-height", "360px", ""],
+    ]);
   });
 });
