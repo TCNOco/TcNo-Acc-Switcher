@@ -277,9 +277,9 @@ export function buildTagsSectionMenuItem(opts: {
     label: tr("Tags_Section"),
     children: [
       { label: tr("Tags_Add"), children: addChildren },
+      { label: tr("Tags_AddSpecial"), children: specialChildren },
       { label: tr("Tags_Modify"), children: modifyChildren },
       { label: tr("Tags_Remove"), action: removeAllTags, children: removeChildren },
-      { label: tr("Tags_AddSpecial"), children: specialChildren },
     ],
   };
 }
