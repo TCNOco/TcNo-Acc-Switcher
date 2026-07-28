@@ -21,6 +21,20 @@ type PathStat struct {
 	IsDir  bool `json:"isDir"`
 }
 
+// FsRoot is a starting point offered by the path picker: a drive, or one of the
+// user's own folders. Kind drives the icon, so it names what the entry is
+// rather than how it should look.
+type FsRoot struct {
+	Path  string `json:"path"`
+	Label string `json:"label"`
+	Kind  string `json:"kind"`
+}
+
+const (
+	RootKindDrive        = "drive"
+	RootKindNetworkDrive = "network-drive"
+)
+
 func (f *FilesystemService) StatPath(raw string) PathStat {
 	p := strings.TrimSpace(raw)
 	if p == "" {
@@ -47,22 +61,35 @@ func (f *FilesystemService) StatPath(raw string) PathStat {
 	return PathStat{Exists: true, IsDir: fi.IsDir()}
 }
 
-func (f *FilesystemService) ListRoots() ([]string, error) {
-	if runtime.GOOS == "windows" {
-		var roots []string
-		for _, r := range "ABCDEFGHIJKLMNOPQRSTUVWXYZ" {
-			p := string(r) + `:\`
-			fi, err := os.Stat(p)
-			if err != nil || !fi.IsDir() {
-				continue
-			}
+// ListRoots returns every drive, followed by the user's own folders. The user
+// folders come last so the drives keep the order people expect to scan.
+func (f *FilesystemService) ListRoots() ([]FsRoot, error) {
+	return append(driveRoots(), userFolderRoots()...), nil
+}
 
-			v := string(r) + ":"
-			roots = append(roots, v+`\`)
+// userFolderRoots resolves the well-known user folders that exist, skipping
+// duplicates so a folder redirected onto another one is only offered once.
+func userFolderRoots() []FsRoot {
+	seen := make(map[string]struct{})
+	out := make([]FsRoot, 0, len(userFolderKinds))
+	for _, kind := range userFolderKinds {
+		path, err := userFolderPath(kind)
+		if err != nil || strings.TrimSpace(path) == "" {
+			continue
 		}
-		return roots, nil
+		path = filepath.Clean(path)
+		fi, err := os.Stat(path)
+		if err != nil || !fi.IsDir() {
+			continue
+		}
+		key := strings.ToLower(path)
+		if _, dup := seen[key]; dup {
+			continue
+		}
+		seen[key] = struct{}{}
+		out = append(out, FsRoot{Path: path, Label: filepath.Base(path), Kind: kind})
 	}
-	return []string{"/"}, nil
+	return out
 }
 
 func (f *FilesystemService) ListDir(dirPath string) ([]FsDirEntry, error) {

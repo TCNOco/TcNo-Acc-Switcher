@@ -29,4 +29,10 @@
   .modal-html :global(p:last-child) {
     margin-bottom: 0;
   }
+
+  /* For a body that reports why the previous attempt failed. */
+  .modal-html :global(.modal-warning) {
+    color: var(--role-error, var(--danger, #ff6b6b));
+    font-weight: 600;
+  }
 </style>

@@ -13,8 +13,6 @@ import (
 	"TcNo-Acc-Switcher/internal/steamguard/securefile"
 	"TcNo-Acc-Switcher/internal/steamguard/sessionrefresh"
 	"TcNo-Acc-Switcher/internal/steamguard/vault"
-
-	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
 const restoreStagePrefix = "SteamGuard-RestoreStage-"
@@ -36,9 +34,9 @@ type RestoreMergeAccount struct {
 }
 
 // RestoreMergePlan is the outcome of staging a backup for a merge.
-// State "canceled" is the folder picker being dismissed; "backup_password"
-// means the staged copy would not unlock with the supplied passwords — the
-// stage is kept, so a retry with the backup's own password skips the picker.
+// State "canceled" is an empty source, meaning no folder was chosen;
+// "backup_password" means the staged copy would not unlock with the supplied
+// passwords — the stage is kept, so a retry reuses it without a second copy.
 type RestoreMergePlan struct {
 	State    string                `json:"state"`
 	Accounts []RestoreMergeAccount `json:"accounts,omitempty"`
@@ -53,37 +51,19 @@ type RestoreMergeResult struct {
 	CapabilityRefreshRequired bool `json:"capabilityRefreshRequired"`
 }
 
-// PlanRestoreMerge stages an encrypted backup next to the vault and reports
-// its accounts against the live vault, without writing to either. A stage kept
-// by an earlier "backup_password" outcome is reused instead of asking for the
-// folder again.
-func (s *Service) PlanRestoreMerge(password, backupPassword, backupAppPassword string) (RestoreMergePlan, error) {
+// PlanRestoreMerge stages the encrypted backup at source next to the vault and
+// reports its accounts against the live vault, without writing to either. A
+// stage kept by an earlier "backup_password" outcome is reused, so a retry
+// neither re-copies the backup nor asks for the folder again.
+func (s *Service) PlanRestoreMerge(source, password, backupPassword, backupAppPassword string) (RestoreMergePlan, error) {
 	s.mu.Lock()
 	stage := s.restoreMergeStage
 	s.mu.Unlock()
 	if stage == "" {
-		app := application.Get()
-		if app == nil {
-			return RestoreMergePlan{}, errors.New("application not initialised")
-		}
-		dialog := app.Dialog.OpenFile().
-			SetTitle("Choose an encrypted Steam Guard backup folder").
-			CanChooseDirectories(true).
-			CanChooseFiles(false)
-		if owner := dialogOwnerWindow(); owner != nil {
-			dialog = dialog.AttachToWindow(owner)
-		}
-		source, err := dialog.PromptForSingleSelection()
-		logDialogOutcome("steam-guard-restore-merge-folder", strings.TrimSpace(source) != "", err)
-		if err != nil {
-			if dialogCancelled(err) {
-				return RestoreMergePlan{State: "canceled"}, nil
-			}
-			return RestoreMergePlan{}, err
-		}
 		if strings.TrimSpace(source) == "" {
 			return RestoreMergePlan{State: "canceled"}, nil
 		}
+		var err error
 		if stage, err = s.stageRestoreMerge(source); err != nil {
 			return RestoreMergePlan{}, err
 		}

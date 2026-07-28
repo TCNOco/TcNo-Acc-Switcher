@@ -6,7 +6,10 @@
     isStrictAncestorFolder,
     folderCoversSelected,
     parentDisplayPath,
+    shortcutRowKey,
+    treeRowKey,
   } from "../../lib/fsPaths";
+  import { folderNameMatches } from "../../lib/folderNamePattern";
   import { formatUnknownError } from "../../lib/formatWailsError";
   import { getContext, onDestroy } from "svelte";
   import { writable, type Writable } from "svelte/store";
@@ -14,28 +17,39 @@
 
   type DirEntry = { name: string; path: string; isDir: boolean };
   type TreeContext = {
-    activePath: Writable<string>;
-    setActivePath: (path: string) => void;
-    focusRelative: (currentPath: string, offset: number) => Promise<boolean>;
+    activeKey: Writable<string>;
+    setActiveKey: (key: string) => void;
+    focusRelative: (currentKey: string, offset: number) => Promise<boolean>;
     focusBoundary: (position: "first" | "last") => Promise<boolean>;
-    focusFirstChild: (parentPath: string) => Promise<boolean>;
-    focusParent: (parentPath: string | null | undefined) => Promise<boolean>;
+    focusFirstChild: (parentKey: string) => Promise<boolean>;
+    focusParent: (parentKey: string | null | undefined) => Promise<boolean>;
   };
   const PATH_PICKER_TREE_CONTEXT = "path-picker-tree";
-  const inactivePath = writable("");
+  const inactiveKey = writable("");
   const tree = getContext<TreeContext | undefined>(PATH_PICKER_TREE_CONTEXT);
-  const activeTreePath = tree?.activePath ?? inactivePath;
+  const activeTreeKey = tree?.activeKey ?? inactiveKey;
 
   export let path: string;
   export let label: string;
   export let depth = 0;
   export let parentPath: string | null = null;
+  export let parentKey: string | null = null;
   export let selectedPath: string;
   export let dirsOnly = true;
   export let soughtFilename = "";
+  /** Folder-name pattern to highlight, e.g. `TcNo-Acc-Switcher-SteamGuard*`. */
+  export let suggestedFolder = "";
   export let isDir = true;
   export let onPick: (p: string, entryIsDir: boolean) => void;
   export let expandEpoch = 0;
+  /** Root entries only: what this row is, which decides its icon. */
+  export let kind = "";
+  /**
+   * A shortcut to somewhere that already exists under a drive. Selecting it
+   * only fills in the path; expanding it here would show the same folder twice,
+   * once under the shortcut and again under the drive the tree expands to.
+   */
+  export let link = false;
 
   let expanded = false;
   let loading = false;
@@ -47,10 +61,29 @@
   let hasExpandableChildren = true;
   let loadChildrenSeq = 0;
 
-  $: displayLabel = depth === 0 ? normalizeDisplayPath(path) : label;
+  $: displayLabel = label || normalizeDisplayPath(path);
+
+  // A drive row already reads as its own path; a user folder shows its name, so
+  // the full location is worth having on hover.
+  $: rowTitle = depth === 0 && !sameFsPath(displayLabel, path) ? normalizeDisplayPath(path) : "";
+
+  const locationIcons: Record<string, string> = {
+    "network-drive": "img/icons/loc_network.svg",
+    home: "img/icons/loc_home.svg",
+    desktop: "img/icons/loc_desktop.svg",
+    documents: "img/icons/loc_documents.svg",
+    downloads: "img/icons/loc_downloads.svg",
+    pictures: "img/icons/loc_pictures.svg",
+    music: "img/icons/loc_music.svg",
+    videos: "img/icons/loc_videos.svg",
+  };
+
+  // A known location leads with what it is; the folder shrinks to a corner
+  // badge, where it still carries the open and closed state.
+  $: locationIconSrc = locationIcons[kind] ?? "";
 
   $: showTwisty =
-    isDir && (!listAttempted || !!loadError || hasExpandableChildren);
+    !link && isDir && (!listAttempted || !!loadError || hasExpandableChildren);
 
   $: expanderIconSrc = (() => {
     if (!expanded) return "img/icons/folder.svg";
@@ -61,7 +94,7 @@
 
   $: if (expandEpoch !== seenEpoch) {
     seenEpoch = expandEpoch;
-    if (isDir && selectedPath && folderCoversSelected(path, selectedPath)) {
+    if (!link && isDir && selectedPath && folderCoversSelected(path, selectedPath)) {
       if (!expanded) expanded = true;
       void loadChildren();
     }
@@ -119,6 +152,10 @@
 
   function onLabelClick(): void {
     const pNorm = normalizeDisplayPath(path);
+    if (link) {
+      onPick(pNorm, true);
+      return;
+    }
     if (isDir && expanded) {
       handleDirCollapse(pNorm);
       return;
@@ -131,34 +168,41 @@
   }
 
   function onTreeitemFocus(): void {
-    tree?.setActivePath(path);
+    tree?.setActiveKey(nodeKey);
   }
 
   function handleArrowRight(): void {
-    if (!isDir) return;
+    if (link || !isDir) return;
     if (!expanded) {
       expanded = true;
       void loadChildren();
       return;
     }
-    void tree?.focusFirstChild(path);
+    void tree?.focusFirstChild(childParentKey);
   }
 
   function handleArrowLeft(): void {
     const pNorm = normalizeDisplayPath(path);
-    if (isDir && expanded) {
+    if (!link && isDir && expanded) {
       handleDirCollapse(pNorm);
       return;
     }
-    void tree?.focusParent(parentPath);
+    void tree?.focusParent(parentKey);
   }
 
+  $: nodeKey = link ? shortcutRowKey(path) : treeRowKey(path);
+  $: childParentKey = treeRowKey(path);
   $: rowSelected = sameFsPath(selectedPath, path);
-  $: rowAncestor = isStrictAncestorFolder(path, selectedPath);
+  // A shortcut is a way in, not a step along the way: marking it as an ancestor
+  // would highlight the home folder for every path inside it.
+  $: rowAncestor = !link && isStrictAncestorFolder(path, selectedPath);
   $: soughtNorm = soughtNameNorm(soughtFilename);
-  $: rowSuggested =
-    !isDir && soughtNorm !== "" && label.toLowerCase() === soughtNorm;
-  $: rowActive = sameFsPath($activeTreePath, path);
+  // Folders are suggested by name pattern, files by the exact name being sought.
+  // A root is its own drive path, never a name worth matching.
+  $: rowSuggested = isDir
+    ? depth > 0 && folderNameMatches(label, suggestedFolder)
+    : soughtNorm !== "" && label.toLowerCase() === soughtNorm;
+  $: rowActive = $activeTreeKey === nodeKey;
 
   onDestroy(() => {
     loadChildrenSeq++;
@@ -172,8 +216,10 @@
   tabindex={rowActive ? 0 : -1}
   aria-level={depth + 1}
   aria-selected={rowSelected}
-  aria-expanded={isDir ? expanded : undefined}
+  aria-expanded={isDir && !link ? expanded : undefined}
   aria-busy={loading ? "true" : undefined}
+  data-key={nodeKey}
+  data-parent-key={parentKey ?? undefined}
   data-path={normalizeDisplayPath(path)}
   data-parent-path={parentPath ?? undefined}
   data-is-dir={isDir ? "true" : "false"}
@@ -188,11 +234,11 @@
         return;
       case "ArrowDown":
         e.preventDefault();
-        void tree?.focusRelative(path, 1);
+        void tree?.focusRelative(nodeKey, 1);
         return;
       case "ArrowUp":
         e.preventDefault();
-        void tree?.focusRelative(path, -1);
+        void tree?.focusRelative(nodeKey, -1);
         return;
       case "ArrowRight":
         e.preventDefault();
@@ -230,12 +276,15 @@
       >
         <img
           class="pp-row-icon"
-          src={expanderIconSrc}
+          src={locationIconSrc || expanderIconSrc}
           alt=""
           width="20"
           height="20"
           draggable="false"
         />
+        {#if locationIconSrc}
+          <img class="pp-row-badge" src={expanderIconSrc} alt="" width="12" height="12" draggable="false" />
+        {/if}
       </span>
     {:else if isDir}
       <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
@@ -246,12 +295,15 @@
       >
         <img
           class="pp-row-icon"
-          src="img/icons/folder.svg"
+          src={locationIconSrc || "img/icons/folder.svg"}
           alt=""
           width="20"
           height="20"
           draggable="false"
         />
+        {#if locationIconSrc}
+          <img class="pp-row-badge" src="img/icons/folder.svg" alt="" width="12" height="12" draggable="false" />
+        {/if}
       </span>
     {:else}
       <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
@@ -274,6 +326,7 @@
       class="pp-label"
       class:selected-path={rowSelected}
       class:ancestor-of-selected={rowAncestor}
+      title={rowTitle}
     >{displayLabel}</span>
   </div>
   {#if expanded}
@@ -291,10 +344,12 @@
             label={c.name}
             depth={depth + 1}
             parentPath={path}
+            parentKey={childParentKey}
             isDir={c.isDir}
             {selectedPath}
             {dirsOnly}
             {soughtFilename}
+            {suggestedFolder}
             {onPick}
             {expandEpoch}
           />
@@ -315,6 +370,7 @@
     min-height: 1.5em;
   }
   .pp-twisty {
+    position: relative;
     flex: 0 0 auto;
     width: 26px;
     height: 26px;
@@ -331,6 +387,19 @@
     &:hover {
       opacity: 1;
     }
+  }
+  /* The folder rides along in the corner so the row still reads as a folder,
+     and keeps showing whether it is open. */
+  .pp-row-badge {
+    position: absolute;
+    right: 0;
+    bottom: 1px;
+    width: 12px;
+    height: 12px;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    filter: drop-shadow(0 0 1.5px var(--program-bg, #000));
   }
   .pp-row-icon {
     width: 20px;

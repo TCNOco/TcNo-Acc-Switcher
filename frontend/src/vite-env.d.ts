@@ -61,6 +61,11 @@ declare module "wails-shortcuts-service" {
     admin: boolean,
     selectedUniqueID: string,
   ): CancellablePromise<void>
+
+  export function CloseShortcut(
+    platformKey: string,
+    fileName: string,
+  ): CancellablePromise<void>
   export function SaveShortcutOrder(
     platformKey: string,
     pinned: string[],

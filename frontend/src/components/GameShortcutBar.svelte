@@ -75,7 +75,7 @@
   import { t } from "../stores/i18n";
   import { HasShortcutMainExe } from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import { fileDropAcceptor } from "../stores/fileDrop";
-  import { runShortcut, hideShortcut, openShortcutFolder, buildShortcutContextMenu, buildPlatformContextMenu } from "../lib/shortcutActions";
+  import { runShortcut, closeShortcut, hideShortcut, openShortcutFolder, buildShortcutContextMenu, buildPlatformContextMenu } from "../lib/shortcutActions";
   import { tooltip } from "../lib/actions/tooltip";
   import { contextMenu } from "../lib/actions/contextMenu";
   import {
@@ -172,7 +172,7 @@
   let includeMainExe = false;
   let iconBroken = false;
 
-  $: ctxPlatformItems = buildPlatformContextMenu(platformName);
+  $: ctxPlatformItems = buildPlatformContextMenu(platformName, () => triggerPlatformAction("close"));
   let pinNames: string[] = [];
   let dropNames: string[] = [];
   let meta: Record<string, Row> = {};
@@ -420,6 +420,10 @@
             r.displayName,
           );
       },
+      // Only a shortcut that starts a program has something to close.
+      onClose: r?.targetExe
+        ? () => { void closeShortcut(platformName, fn, r.displayName); }
+        : undefined,
       onHide: () => {
         void hideShortcut(platformName, fn, () => refreshFromServer());
       },

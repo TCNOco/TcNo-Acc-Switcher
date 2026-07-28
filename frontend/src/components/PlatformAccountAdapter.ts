@@ -49,6 +49,8 @@ export interface AccountCommands {
   getNote(id: string): Promise<string>;
   setNote(id: string, note: string): Promise<void>;
   launch(): Promise<void>;
+  /** Ends the platform, the way switching accounts does. */
+  closePlatform(): Promise<void>;
 }
 
 export interface AccountPatchStream<TAccount> {

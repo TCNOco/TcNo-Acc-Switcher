@@ -71,6 +71,7 @@ function createContext(overrides: Partial<Parameters<typeof swapToLogin>[0]> = {
   const adapter = {
     swapTo: vi.fn(() => Promise.resolve()),
     launch: vi.fn(() => Promise.resolve()),
+    closePlatform: vi.fn(() => Promise.resolve()),
     addNew: vi.fn(() => Promise.resolve()),
     forget: vi.fn(() => Promise.resolve()),
     rename: vi.fn(() => Promise.resolve()),

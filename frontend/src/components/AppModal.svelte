@@ -97,6 +97,7 @@
           initialPath={m.initialPath ?? ""}
           dirsOnly={m.dirsOnly ?? true}
           soughtFilename={m.soughtFilename ?? ""}
+          suggestedFolder={m.suggestedFolder ?? ""}
           positiveLabel={m.positiveLabel ?? (!(m.dirsOnly ?? true) ? $t("Modal_Button_Select") : $t("Modal_SetUserdata_ChooseFolder"))}
           showPortableButton={m.showPortableButton ?? false}
           on:resolve={onResolve}

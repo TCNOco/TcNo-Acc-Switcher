@@ -89,6 +89,15 @@ button,
     background: var(--button-bg-hover);
     border-color: var(--button-bg);
   }
+
+  /* Without this a disabled button is indistinguishable from a live one, so a
+     click that does nothing reads as a broken feature. */
+  &:disabled,
+  &[disabled] {
+    cursor: not-allowed;
+    opacity: var(--role-disabled-opacity, 0.55);
+  }
+
   /* Button children */
   & span {
     line-height: 2.5em;

@@ -205,19 +205,24 @@
   <p class="steam-guard-copy-warning">{$t("SteamGuard_Settings_ManualCopyWarning")}</p>
 
   <div class="steam-guard-backup-row">
+    <!-- With no vault there is nothing to back up, so the action is hidden rather
+         than offered as a disabled button. Restoring stays available: it is how a
+         fresh install gets its accounts back. -->
+    {#if configured}
+      <button
+        type="button"
+        class="btnicontext"
+        disabled={busy}
+        aria-describedby={warningId}
+        on:click={() => void createBackup()}
+      >
+        {$t("SteamGuard_Settings_CreateBackup")}
+      </button>
+    {/if}
     <button
       type="button"
       class="btnicontext"
-      disabled={!configured || busy}
-      aria-describedby={warningId}
-      on:click={() => void createBackup()}
-    >
-      {$t("SteamGuard_Settings_CreateBackup")}
-    </button>
-    <button
-      type="button"
-      class="btnicontext"
-      disabled={!configured || busy}
+      disabled={!ready || busy}
       aria-describedby={warningId}
       on:click={() => void restoreFromBackup()}
     >
@@ -299,10 +304,6 @@
     user-select: text;
     background: var(--role-field-bg, rgb(0 0 0 / 20%));
     border: 1px solid var(--border-bar-bg);
-  }
-
-  .steam-guard-backup-row {
-    align-items: flex-start;
   }
 
   .steam-guard-backup-status {

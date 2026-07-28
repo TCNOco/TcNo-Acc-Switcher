@@ -133,6 +133,17 @@ func Open(root string, opts ...Option) (*Vault, error) {
 	if err != nil {
 		return nil, err
 	}
+	// Repair a generation folder that was created without its own rights, which
+	// is what a plain copy of the vault produced while protection did not carry
+	// down. Its path comes from the active file rather than from listing the
+	// vault, so this works on the very folder that cannot be read, and the
+	// owner keeps the right to fix its own directory.
+	if err := o.hardener.HardenDir(genPath); err != nil {
+		return nil, err
+	}
+	if err := o.hardener.HardenDir(filepath.Join(genPath, recordsName)); err != nil {
+		return nil, err
+	}
 	var h header
 	if err := readJSONFile(filepath.Join(genPath, headerName), maxHeader, &h); err != nil {
 		return nil, err
@@ -141,6 +152,51 @@ func Open(root string, opts ...Option) (*Vault, error) {
 		return nil, err
 	}
 	return &Vault{root: root, opts: o, active: active, header: h}, nil
+}
+
+// FolderInfo describes a vault folder that has not been opened.
+type FolderInfo struct {
+	// HasRecoveryWrapper reports that the outer layer is wrapped with a
+	// recovery password, which must be supplied to read the folder.
+	HasRecoveryWrapper bool
+}
+
+// Inspect reports what a vault folder needs before it can be unlocked. Unlike
+// Open it never writes: it skips journal recovery and directory hardening, so
+// it is safe to point at a backup the user owns and expects to stay untouched.
+func Inspect(root string) (FolderInfo, error) {
+	info, err := os.Stat(root)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return FolderInfo{}, ErrNotFound
+		}
+		return FolderInfo{}, err
+	}
+	if !info.IsDir() {
+		return FolderInfo{}, ErrInvalidFormat
+	}
+	active, err := readActive(root)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return FolderInfo{}, ErrNotFound
+		}
+		return FolderInfo{}, err
+	}
+	genPath, err := generationPath(root, active)
+	if err != nil {
+		return FolderInfo{}, err
+	}
+	var h header
+	if err := readJSONFile(filepath.Join(genPath, headerName), maxHeader, &h); err != nil {
+		if os.IsNotExist(err) {
+			return FolderInfo{}, ErrNotFound
+		}
+		return FolderInfo{}, err
+	}
+	if err := validateHeader(h); err != nil {
+		return FolderInfo{}, err
+	}
+	return FolderInfo{HasRecoveryWrapper: h.Recovery != nil}, nil
 }
 
 func validateHeader(h header) error {

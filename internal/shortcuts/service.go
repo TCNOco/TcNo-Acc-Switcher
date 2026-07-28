@@ -53,6 +53,7 @@ func (s *Service) buildDTOs(platformKey string) ([]ShortcutDTO, error) {
 			Pinned:        e.Pinned,
 			IsPlatformExe: false,
 			IsURL:         strings.HasSuffix(low, ".url"),
+			TargetExe:     shortcutTargetExe(platformKey, fn),
 		})
 	}
 	return out, nil

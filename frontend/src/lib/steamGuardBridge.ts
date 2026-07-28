@@ -14,7 +14,7 @@ import type {
 	SteamEnrollmentStatus,
 	SteamLoginResult,
 } from "./steamGuardModal";
-import { openAlert, openAlertNoButton, openPrompt, openPromptWithCheckbox, openSteamGuardModal } from "../stores/modal";
+import { openAlert, openAlertNoButton, openFolderPicker, openPrompt, openPromptWithCheckbox, openSteamGuardModal } from "../stores/modal";
 import SteamGuardRestoreModalBody from "../components/modals/SteamGuardRestoreModalBody.svelte";
 import { get } from "svelte/store";
 import { t } from "../stores/i18n";
@@ -747,6 +747,50 @@ async function runVerifiedBackup(): Promise<void> {
   }
 }
 
+/**
+ * Asks for the encrypted backup folder. Cancelling returns null; a folder that
+ * is not a Steam Guard backup is reported and asked for again, since the only
+ * useful answer to "wrong folder" is another folder.
+ */
+async function chooseRestoreBackupFolder(): Promise<{ source: string; info: SteamGuardModels.RestoreSourceInfo } | null> {
+	for (;;) {
+		const source = await openFolderPicker({
+			title: tr("SteamGuard_Restore_ChooseFolderTitle"),
+			body: `<p>${tr("SteamGuard_Restore_ChooseFolderBody")}</p>`,
+			dirsOnly: true,
+			// Any folder is allowed; this only points out the ones a verified
+			// backup wrote, which are named after the app.
+			suggestedFolder: "TcNo-Acc-Switcher-SteamGuard*",
+			positiveLabel: tr("SteamGuard_Continue"),
+			negativeLabel: tr("SteamGuard_Cancel"),
+		});
+		if (!source) return null;
+		try {
+			return { source, info: await SteamGuardService.InspectRestoreBackup(source) };
+		} catch (error) {
+			console.error("Steam Guard: chosen folder is not a backup", error);
+			await openAlert({
+				title: tr("SteamGuard_Restore_NotABackupTitle"),
+				body: tr("SteamGuard_Restore_NotABackupBody"),
+			});
+		}
+	}
+}
+
+/**
+ * A wrong password is the one failure worth re-asking about; everything else
+ * (an unreadable folder, a failed copy) will not be fixed by typing again.
+ */
+function isWrongPasswordError(error: unknown): boolean {
+	const message = error instanceof Error ? error.message : String(error ?? "");
+	return message.toLowerCase().includes("invalid steam guard vault password");
+}
+
+/**
+ * Restores a backup as the vault of an installation that has none: the folder
+ * is chosen first, then only the passwords that folder actually needs, retried
+ * until they are accepted or the user gives up.
+ */
 async function runRestore(): Promise<void> {
 	const status = await SteamGuardService.GetSettingsStatus();
 	if (status.vaultConfigured) {
@@ -756,52 +800,64 @@ async function runRestore(): Promise<void> {
 		});
 		return;
 	}
-	let steamGuardPassword = await openPrompt({
-		title: tr("SteamGuard_Restore_PasswordTitle"),
-		body: tr("SteamGuard_Restore_PasswordBody"),
-		inputType: "password",
-		positiveLabel: tr("SteamGuard_Continue"),
-		negativeLabel: tr("SteamGuard_Cancel"),
-	});
-	if (!steamGuardPassword) return;
-	let backupAppPassword = await openPrompt({
-		title: tr("SteamGuard_Restore_OuterTitle"),
-		body: tr("SteamGuard_Restore_OuterBody"),
-		inputType: "password",
-		positiveLabel: tr("SteamGuard_Restore_ChooseFolder"),
-		negativeLabel: tr("SteamGuard_Cancel"),
-	});
-	if (backupAppPassword === null) {
-		steamGuardPassword = "";
-		return;
-	}
-	let currentAppPassword = "";
-	if (usesSavedDataEncryption(status)) {
-		currentAppPassword = await openPrompt({
-			title: tr("SteamGuard_Restore_CurrentAppTitle"),
-			body: tr("SteamGuard_Restore_CurrentAppBody"),
-			inputType: "password",
-			positiveLabel: tr("SteamGuard_Restore_Confirm"),
-			negativeLabel: tr("SteamGuard_Cancel"),
-		}) ?? "";
-		if (!currentAppPassword) {
+	const chosen = await chooseRestoreBackupFolder();
+	if (!chosen) return;
+
+	let retry = "";
+	for (;;) {
+		let steamGuardPassword = "";
+		let backupAppPassword = "";
+		let currentAppPassword = "";
+		try {
+			steamGuardPassword = await openPrompt({
+				title: tr("SteamGuard_Restore_PasswordTitle"),
+				body: retry + tr("SteamGuard_Restore_PasswordBody"),
+				inputType: "password",
+				positiveLabel: tr("SteamGuard_Continue"),
+				negativeLabel: tr("SteamGuard_Cancel"),
+			}) ?? "";
+			if (!steamGuardPassword) return;
+			// Only a backup written with saved-data encryption carries an outer
+			// layer, so only those are asked for its password.
+			if (chosen.info.hasOuterLayer) {
+				const entered = await openPrompt({
+					title: tr("SteamGuard_Restore_OuterTitle"),
+					body: tr("SteamGuard_Restore_OuterBody"),
+					inputType: "password",
+					positiveLabel: tr("SteamGuard_Continue"),
+					negativeLabel: tr("SteamGuard_Cancel"),
+				});
+				if (entered === null) return;
+				backupAppPassword = entered;
+			}
+			if (usesSavedDataEncryption(status)) {
+				currentAppPassword = await openPrompt({
+					title: tr("SteamGuard_Restore_CurrentAppTitle"),
+					body: tr("SteamGuard_Restore_CurrentAppBody"),
+					inputType: "password",
+					positiveLabel: tr("SteamGuard_Restore_Confirm"),
+					negativeLabel: tr("SteamGuard_Cancel"),
+				}) ?? "";
+				if (!currentAppPassword) return;
+			}
+			const path = await SteamGuardService.RestoreVerifiedBackup(
+				chosen.source, steamGuardPassword, backupAppPassword, currentAppPassword,
+			);
+			if (path) {
+				await openAlert({
+					title: tr("SteamGuard_Restore_DoneTitle"),
+					body: `${tr("SteamGuard_Restore_DoneBody")}<br><code>${escapeHtml(path)}</code><br><br>${tr("SteamGuard_Restore_DoneFollowUp")}`,
+				});
+			}
+			return;
+		} catch (error) {
+			if (!isWrongPasswordError(error)) throw error;
+			retry = `<p class="modal-warning">${tr("SteamGuard_Restore_PasswordRetry")}</p>`;
+		} finally {
 			steamGuardPassword = "";
 			backupAppPassword = "";
-			return;
+			currentAppPassword = "";
 		}
-	}
-	try {
-		const path = await SteamGuardService.RestoreVerifiedBackup(steamGuardPassword, backupAppPassword, currentAppPassword);
-		if (path) {
-			await openAlert({
-				title: tr("SteamGuard_Restore_DoneTitle"),
-				body: `${tr("SteamGuard_Restore_DoneBody")}<br><code>${escapeHtml(path)}</code><br><br>${tr("SteamGuard_Restore_DoneFollowUp")}`,
-			});
-		}
-	} finally {
-		steamGuardPassword = "";
-		backupAppPassword = "";
-		currentAppPassword = "";
 	}
 }
 
@@ -809,25 +865,25 @@ async function runRestore(): Promise<void> {
  * Restores accounts from a backup into the configured vault. The backup is
  * staged and compared first; the user picks which accounts to bring across,
  * and a fresh verified backup of the current vault is written before anything
- * is replaced.
+ * is replaced. With no vault yet, the backup is restored as the new vault.
  */
 async function runRestoreMerge(): Promise<void> {
 	const status = await SteamGuardService.GetSettingsStatus();
-	if (!status.vaultConfigured) return;
-	let password = await openPrompt({
-		title: tr("SteamGuard_Restore_PasswordTitle"),
-		body: tr("SteamGuard_RestoreMerge_PasswordBody"),
-		inputType: "password",
-		positiveLabel: tr("SteamGuard_Restore_ChooseFolder"),
-		negativeLabel: tr("SteamGuard_Cancel"),
-	});
-	if (!password) return;
+	// Without a vault there is nothing to merge into; the recovery flow
+	// restores a backup as the new vault instead.
+	if (!status.vaultConfigured) {
+		await runRestore();
+		return;
+	}
+	const chosen = await chooseRestoreBackupFolder();
+	if (!chosen) return;
+	let password = "";
 	let backupPassword = "";
 	let backupAppPassword = "";
 	let currentAppPassword = "";
 	let staged = false;
 	try {
-		if (usesSavedDataEncryption(status)) {
+		if (chosen.info.hasOuterLayer) {
 			backupAppPassword = await openPrompt({
 				title: tr("SteamGuard_Restore_OuterTitle"),
 				body: tr("SteamGuard_Restore_OuterBody"),
@@ -836,6 +892,8 @@ async function runRestoreMerge(): Promise<void> {
 				negativeLabel: tr("SteamGuard_Cancel"),
 			}) ?? "";
 			if (!backupAppPassword) return;
+		}
+		if (usesSavedDataEncryption(status)) {
 			currentAppPassword = await openPrompt({
 				title: tr("SteamGuard_Restore_CurrentAppTitle"),
 				body: tr("SteamGuard_Restore_CurrentAppBody"),
@@ -845,22 +903,43 @@ async function runRestoreMerge(): Promise<void> {
 			}) ?? "";
 			if (!currentAppPassword) return;
 		}
-		let plan = await SteamGuardService.PlanRestoreMerge(password, backupPassword, backupAppPassword);
-		if (plan.state === "canceled") return;
-		staged = true;
-		// A backup made before a password change opens with its own password;
-		// the stage survives the retry so the folder is not picked again.
-		while (plan.state === "backup_password") {
-			const entered = await openPrompt({
-				title: tr("SteamGuard_RestoreMerge_BackupPasswordTitle"),
-				body: tr("SteamGuard_RestoreMerge_BackupPasswordBody"),
+		// Passwords are retried in place: a typo should cost neither the folder
+		// choice nor another copy of the backup, which the stage already holds.
+		let plan: SteamGuardModels.RestoreMergePlan | null = null;
+		let retry = "";
+		while (plan === null) {
+			password = await openPrompt({
+				title: tr("SteamGuard_Restore_PasswordTitle"),
+				body: retry + tr("SteamGuard_RestoreMerge_PasswordBody"),
 				inputType: "password",
 				positiveLabel: tr("SteamGuard_Continue"),
 				negativeLabel: tr("SteamGuard_Cancel"),
-			});
-			if (!entered) return;
-			backupPassword = entered;
-			plan = await SteamGuardService.PlanRestoreMerge(password, backupPassword, backupAppPassword);
+			}) ?? "";
+			if (!password) return;
+			// Planning stages the backup before it authenticates, so from here
+			// the stage exists and must be discarded on every exit.
+			staged = true;
+			try {
+				plan = await SteamGuardService.PlanRestoreMerge(chosen.source, password, backupPassword, backupAppPassword);
+				// A backup written before a password change opens with its own
+				// password; only the live vault rejects the one entered above.
+				while (plan.state === "backup_password") {
+					const entered = await openPrompt({
+						title: tr("SteamGuard_RestoreMerge_BackupPasswordTitle"),
+						body: tr("SteamGuard_RestoreMerge_BackupPasswordBody"),
+						inputType: "password",
+						positiveLabel: tr("SteamGuard_Continue"),
+						negativeLabel: tr("SteamGuard_Cancel"),
+					});
+					if (!entered) return;
+					backupPassword = entered;
+					plan = await SteamGuardService.PlanRestoreMerge(chosen.source, password, backupPassword, backupAppPassword);
+				}
+			} catch (error) {
+				if (!isWrongPasswordError(error)) throw error;
+				plan = null;
+				retry = `<p class="modal-warning">${tr("SteamGuard_Restore_PasswordRetry")}</p>`;
+			}
 		}
 		if (plan.state !== "ok") return;
 		const accounts = (plan.accounts ?? []).map((account) => ({

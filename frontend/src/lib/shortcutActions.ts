@@ -92,11 +92,37 @@ export async function openShortcutFolder(
   }
 }
 
+export async function closeShortcut(
+  platformName: string,
+  fileName: string,
+  displayName?: string,
+): Promise<void> {
+  const tr = get(t);
+  try {
+    await Shortcuts.CloseShortcut(platformName, fileName);
+    pushToast({
+      type: "success",
+      message: tr("Toast_ClosedProgram", {
+        program: shortcutProgramLabel(fileName, displayName),
+      }),
+      duration: 4000,
+    });
+  } catch (e) {
+    pushToast({
+      type: "error",
+      message: formatToastWithError(tr("Toast_CloseFailed"), e),
+      duration: 8000,
+    });
+  }
+}
+
 export function buildShortcutContextMenu(opts: {
   platformName: string;
   fileName: string;
   swapLabel: string;
   onRunAsAdmin: () => void;
+  /** Absent when the shortcut starts no program, which leaves nothing to close. */
+  onClose?: () => void;
   onHide: () => void;
   reorder?: () => {
     canMoveLeft: boolean;
@@ -180,6 +206,9 @@ export function buildShortcutContextMenu(opts: {
         disabled: busy,
         action: opts.onRunAsAdmin,
       },
+      ...(opts.onClose
+        ? [{ label: tr("Context_Exit"), disabled: busy, action: opts.onClose }]
+        : []),
       ...reorderItems,
       {
         label: tr("Context_Hide"),
@@ -192,6 +221,7 @@ export function buildShortcutContextMenu(opts: {
 
 export function buildPlatformContextMenu(
   platformName: string,
+  onClose?: () => void,
 ): () => MenuItemDef[] {
   return () => {
     const tr = get(t);
@@ -206,6 +236,7 @@ export function buildPlatformContextMenu(
           });
         },
       },
+      ...(onClose ? [{ label: tr("Context_Exit"), disabled: busy, action: onClose }] : []),
     ];
   };
 }

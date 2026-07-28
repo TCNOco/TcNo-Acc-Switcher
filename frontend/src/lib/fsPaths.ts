@@ -15,6 +15,19 @@ export function normalizeDisplayPath(p: string): string {
   return s;
 }
 
+/**
+ * Identifies a row in the path picker. A shortcut root points at a folder that
+ * also appears under its drive, so path alone does not tell the two rows apart:
+ * the prefix does, and keeps focus and scrolling on the row inside the tree.
+ */
+export function treeRowKey(path: string): string {
+  return "tree:" + normalizePathKey(path);
+}
+
+export function shortcutRowKey(path: string): string {
+  return "link:" + normalizePathKey(path);
+}
+
 function normalizePathKey(p: string): string {
   const d = normalizeDisplayPath(p);
   if (/^[a-zA-Z]:\\/.test(d) || d.startsWith("\\\\")) {

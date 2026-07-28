@@ -14,7 +14,7 @@ export async function openUserDataFolder(): Promise<void> {
   try {
     await PlatformService.OpenUserDataFolder();
   } catch (e) {
-    pushToast({ type: "error", message: formatToastWithError(get(t)("Toast_SaveFailed"), e), duration: 8000 });
+    pushToast({ type: "error", message: formatToastWithError(get(t)("Toast_UserDataMoveFailed"), e), duration: 8000 });
   }
 }
 

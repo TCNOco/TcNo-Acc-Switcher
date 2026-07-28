@@ -10,54 +10,61 @@ import (
 	"TcNo-Acc-Switcher/internal/steamguard/registry"
 	"TcNo-Acc-Switcher/internal/steamguard/securefile"
 	"TcNo-Acc-Switcher/internal/steamguard/vault"
-
-	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
 var ErrRestoreRequiresEmptyVault = errors.New("Steam Guard restore requires an empty vault")
 
-// RestoreVerifiedBackup restores a self-contained encrypted Steam Guard folder.
-// A backup app password is required only when the copied vault has an outer
-// layer; the current app password is required only when this installation has
-// app protection enabled.
-func (s *Service) RestoreVerifiedBackup(steamGuardPassword, backupAppPassword, currentAppPassword string) (string, error) {
-	app := application.Get()
-	if app == nil {
-		return "", errors.New("application not initialised")
-	}
-	dialog := app.Dialog.OpenFile().
-		SetTitle("Choose an encrypted Steam Guard backup folder").
-		CanChooseDirectories(true).
-		CanChooseFiles(false)
-	if owner := dialogOwnerWindow(); owner != nil {
-		dialog = dialog.AttachToWindow(owner)
-	}
-	source, err := dialog.PromptForSingleSelection()
-	logDialogOutcome("steam-guard-restore-folder", strings.TrimSpace(source) != "", err)
+// RestoreSourceInfo describes a chosen backup folder before any password is
+// collected, so the caller only asks for the passwords the folder actually needs.
+type RestoreSourceInfo struct {
+	HasOuterLayer bool `json:"hasOuterLayer"`
+}
+
+// InspectRestoreBackup reports what the folder needs to be restored. It only
+// reads: a folder the user picked is theirs, and must not be modified by being
+// looked at.
+func (s *Service) InspectRestoreBackup(source string) (RestoreSourceInfo, error) {
+	canonicalSource, err := canonicalRestoreSource(source)
 	if err != nil {
-		if dialogCancelled(err) {
-			// Cancel is a clean outcome: an empty path with no error.
-			return "", nil
-		}
-		return "", err
+		return RestoreSourceInfo{}, err
 	}
+	info, err := vault.Inspect(canonicalSource)
+	if err != nil {
+		return RestoreSourceInfo{}, err
+	}
+	return RestoreSourceInfo{HasOuterLayer: info.HasRecoveryWrapper}, nil
+}
+
+// RestoreVerifiedBackup restores a self-contained encrypted Steam Guard folder
+// from source. A backup app password is required only when the copied vault has
+// an outer layer; the current app password is required only when this
+// installation has app protection enabled.
+func (s *Service) RestoreVerifiedBackup(source, steamGuardPassword, backupAppPassword, currentAppPassword string) (string, error) {
 	if strings.TrimSpace(source) == "" {
-		return "", nil
+		return "", ErrInvalidBackupDestination
 	}
 	return s.restoreVerifiedBackupAt(source, steamGuardPassword, backupAppPassword, currentAppPassword)
+}
+
+func canonicalRestoreSource(source string) (string, error) {
+	source = filepath.Clean(strings.TrimSpace(source))
+	if source == "." || !filepath.IsAbs(source) {
+		return "", ErrInvalidBackupDestination
+	}
+	canonical, err := canonicalSafeDirectory(source)
+	if err != nil {
+		return "", errors.Join(ErrInvalidBackupDestination, err)
+	}
+	return canonical, nil
 }
 
 func (s *Service) restoreVerifiedBackupAt(source, steamGuardPassword, backupAppPassword, currentAppPassword string) (string, error) {
 	if strings.TrimSpace(steamGuardPassword) == "" {
 		return "", vault.ErrInvalidPassword
 	}
-	source = filepath.Clean(strings.TrimSpace(source))
-	if !filepath.IsAbs(source) {
-		return "", ErrInvalidBackupDestination
-	}
-	canonicalSource, err := canonicalSafeDirectory(source)
+	canonicalSource, err := canonicalRestoreSource(source)
 	if err != nil {
-		return "", errors.Join(ErrInvalidBackupDestination, err)
+		return "", err
 	}
 
 	s.mu.Lock()

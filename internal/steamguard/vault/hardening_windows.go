@@ -25,7 +25,11 @@ func hardenWindowsPath(path string) error {
 	if err != nil {
 		return fmt.Errorf("%w: get token user: %v", ErrHardeningUnsupported, err)
 	}
-	sddl := "D:P(A;;FA;;;SY)(A;;FA;;;" + user.User.Sid.String() + ")"
+	// OICI: the same two rights are inherited by anything created inside.
+	// Without it a protected directory hands its children an empty DACL, which
+	// locks out even the owner — a copy of the vault, or a folder made by any
+	// tool that does not harden explicitly, becomes unreadable.
+	sddl := "D:P(A;OICI;FA;;;SY)(A;OICI;FA;;;" + user.User.Sid.String() + ")"
 	sd, err := windows.SecurityDescriptorFromString(sddl)
 	if err != nil {
 		return fmt.Errorf("%w: build DACL: %v", ErrHardeningUnsupported, err)

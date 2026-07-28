@@ -2,7 +2,7 @@ import { get, writable } from "svelte/store";
 
 export const platformExeIconUrl = writable<string>("");
 
-export type PlatformActionKind = "login" | "addNew" | "launch" | "saveCurrent";
+export type PlatformActionKind = "login" | "addNew" | "launch" | "saveCurrent" | "close";
 
 export const platformAction = writable<{ id: number; kind: PlatformActionKind } | null>(null);
 

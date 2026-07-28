@@ -69,6 +69,7 @@ type ActiveModal =
       negativeLabel?: string;
       dirsOnly?: boolean;
       soughtFilename?: string;
+      suggestedFolder?: string;
       showPortableButton?: boolean;
     } & ModalBodyOptions)
   | (ModalBase & {
@@ -273,6 +274,8 @@ export function openFolderPicker(
     negativeLabel?: string;
     dirsOnly?: boolean;
     soughtFilename?: string;
+    /** Folder-name pattern to highlight, e.g. `TcNo-Acc-Switcher-SteamGuard*`. */
+    suggestedFolder?: string;
     showPortableButton?: boolean;
   } & ModalBodyOptions,
 ): Promise<string | null> {
@@ -290,6 +293,7 @@ export function openFolderPicker(
       negativeLabel: opts.negativeLabel,
       dirsOnly: opts.dirsOnly ?? true,
       soughtFilename: opts.soughtFilename,
+      suggestedFolder: opts.suggestedFolder,
       showPortableButton: opts.showPortableButton,
     });
   });

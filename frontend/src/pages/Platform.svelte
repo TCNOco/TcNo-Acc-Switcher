@@ -99,6 +99,7 @@
     getNote: (id: string) => BasicService.GetAccountNote(name, id),
     setNote: (id: string, note: string) => BasicService.SetAccountNote(name, id, note),
     launch: () => LaunchPlatform(name),
+    closePlatform: () => BasicService.ClosePlatform(name),
 
     buildMenu: (_a, shared) => [
       shared.swapTo,

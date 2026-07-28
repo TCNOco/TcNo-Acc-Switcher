@@ -2,8 +2,14 @@ package steamguard
 
 import (
 	"bytes"
+	"crypto/sha256"
 	"encoding/base64"
+	"encoding/hex"
+	"io/fs"
+	"os"
 	"path/filepath"
+	"sort"
+	"strings"
 	"testing"
 
 	"TcNo-Acc-Switcher/internal/steamguard/mafile"
@@ -87,4 +93,90 @@ func createRestoreSource(t *testing.T, password, recoveryPassword string) string
 		t.Fatal(err)
 	}
 	return source
+}
+
+func TestInspectRestoreBackupReportsOuterLayer(t *testing.T) {
+	useSettingsRoot(t)
+	service := newServiceForTest()
+	t.Cleanup(func() { _ = service.ServiceShutdown() })
+
+	plain := createRestoreSource(t, "plain backup password", "")
+	info, err := service.InspectRestoreBackup(plain)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if info.HasOuterLayer {
+		t.Fatal("single-layer backup reported an outer layer")
+	}
+
+	wrapped := createRestoreSource(t, "wrapped backup password", "backup recovery password")
+	info, err = service.InspectRestoreBackup(wrapped)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !info.HasOuterLayer {
+		t.Fatal("recovery-wrapped backup reported no outer layer")
+	}
+}
+
+// The folder belongs to the user, so looking at it must not change it: Open
+// would run journal recovery and harden the directory, Inspect must not.
+func TestInspectRestoreBackupLeavesTheFolderUntouched(t *testing.T) {
+	useSettingsRoot(t)
+	service := newServiceForTest()
+	t.Cleanup(func() { _ = service.ServiceShutdown() })
+
+	source := createRestoreSource(t, "untouched backup password", "")
+	before := treeDigest(t, source)
+	if _, err := service.InspectRestoreBackup(source); err != nil {
+		t.Fatal(err)
+	}
+	if after := treeDigest(t, source); after != before {
+		t.Fatalf("inspection modified the backup folder:\n%s\n%s", before, after)
+	}
+}
+
+func TestInspectRestoreBackupRejectsUnrelatedFolder(t *testing.T) {
+	useSettingsRoot(t)
+	service := newServiceForTest()
+	t.Cleanup(func() { _ = service.ServiceShutdown() })
+
+	folder := t.TempDir()
+	if err := os.WriteFile(filepath.Join(folder, "notes.txt"), []byte("not a vault"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := service.InspectRestoreBackup(folder); err == nil {
+		t.Fatal("a folder without a vault was accepted as a backup")
+	}
+}
+
+// treeDigest fingerprints every file path, size and content under root.
+func treeDigest(t *testing.T, root string) string {
+	t.Helper()
+	var entries []string
+	err := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		rel, err := filepath.Rel(root, path)
+		if err != nil {
+			return err
+		}
+		if d.IsDir() {
+			entries = append(entries, "d "+filepath.ToSlash(rel))
+			return nil
+		}
+		data, err := os.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		sum := sha256.Sum256(data)
+		entries = append(entries, "f "+filepath.ToSlash(rel)+" "+hex.EncodeToString(sum[:]))
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	sort.Strings(entries)
+	return strings.Join(entries, "\n")
 }

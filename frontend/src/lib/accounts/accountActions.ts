@@ -67,7 +67,7 @@ export async function runPlatformActionLocked(
 }
 
 export async function handlePlatformActionKind(
-  kind: "login" | "addNew" | "launch" | "saveCurrent",
+  kind: "login" | "addNew" | "launch" | "saveCurrent" | "close",
   ctx: AccountActionsContext,
 ): Promise<void> {
   await runPlatformActionLocked(async () => {
@@ -85,6 +85,18 @@ export async function handlePlatformActionKind(
         actionBarStatus.set(get(t)("Status_ActionBar_PreparingSave"));
         const saved = await ctx.adapter.saveCurrent();
         if (saved) ctx.scheduleAccountsRefresh();
+      }
+      return;
+    }
+    if (kind === "close") {
+      try {
+        await ctx.adapter.closePlatform();
+      } catch (e) {
+        pushToast({
+          type: "error",
+          message: formatToastWithError(get(t)("Toast_CloseFailed"), e),
+          duration: 8000,
+        });
       }
       return;
     }

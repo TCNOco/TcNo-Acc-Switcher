@@ -32,4 +32,7 @@ type ShortcutDTO struct {
 	Pinned        bool   `json:"pinned"`
 	IsPlatformExe bool   `json:"isPlatformExe"`
 	IsURL         bool   `json:"isUrl"`
+	// TargetExe is the program the shortcut starts, empty when it starts none.
+	// It decides whether closing the shortcut is offered at all.
+	TargetExe string `json:"targetExe"`
 }

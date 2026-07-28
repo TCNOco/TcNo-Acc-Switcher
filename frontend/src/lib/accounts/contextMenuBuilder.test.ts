@@ -53,6 +53,7 @@ function createContext(broken: boolean) {
     getNote: vi.fn(),
     setNote: vi.fn(),
     launch: vi.fn(),
+    closePlatform: vi.fn(),
     name: (account: FakeAccount) => account.name,
     imageUrl: () => "",
     manualProfileImage: () => false,

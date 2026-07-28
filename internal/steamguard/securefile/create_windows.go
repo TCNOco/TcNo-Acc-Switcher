@@ -78,7 +78,10 @@ func protectedSecurityAttributes() (*windows.SecurityAttributes, error) {
 	if err != nil {
 		return nil, errors.Join(ErrHardeningUnsupported, err)
 	}
-	sddl := "D:P(A;;FA;;;SY)(A;;FA;;;" + user.User.Sid.String() + ")"
+	// OICI: children inherit the same two rights. A protected directory whose
+	// rights stop at itself gives anything created inside an empty DACL, which
+	// shuts out the owner too.
+	sddl := "D:P(A;OICI;FA;;;SY)(A;OICI;FA;;;" + user.User.Sid.String() + ")"
 	descriptor, err := windows.SecurityDescriptorFromString(sddl)
 	if err != nil {
 		return nil, errors.Join(ErrHardeningUnsupported, err)

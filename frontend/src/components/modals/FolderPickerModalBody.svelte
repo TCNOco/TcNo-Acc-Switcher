@@ -16,6 +16,7 @@
   export let initialPath = "";
   export let dirsOnly = true;
   export let soughtFilename = "";
+  export let suggestedFolder = "";
   export let positiveLabel = "";
   export let showPortableButton = false;
 
@@ -160,6 +161,7 @@
     selectedPath={path}
     {dirsOnly}
     soughtFilename={soughtFilename.trim()}
+    suggestedFolder={suggestedFolder.trim()}
     onPick={pickTreePath}
   />
 </div>
