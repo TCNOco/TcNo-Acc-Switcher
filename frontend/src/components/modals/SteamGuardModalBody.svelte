@@ -1880,14 +1880,17 @@
 				<p>{authMessage || $t("SteamGuard_LoginAgain_TokenRejected")}</p>
 				<label class="steam-guard__field" for="steam-login-account"><span>{$t("SteamGuard_Field_SteamAccountName")}</span><input id="steam-login-account" class="modal-input" bind:value={authAccountName} autocomplete="username" disabled={busy} on:keydown={(event) => runOnEnter(event, beginCredentialLogin)} /></label>
 				<label class="steam-guard__field" for="steam-login-password"><span>{$t("SteamGuard_Field_SteamPassword")}</span><input id="steam-login-password" class="modal-input" bind:value={authPassword} type="password" autocomplete="current-password" disabled={busy} data-steamguard-autofocus on:keydown={(event) => runOnEnter(event, beginCredentialLogin)} /></label>
-				<div class="steam-guard__actions steam-guard__actions--end"><button type="button" class="btnicontext modal-primary" disabled={busy || !authAccountName.trim() || !authPassword} on:click={beginCredentialLogin}>{$t("SteamGuard_SignIn")}</button><button type="button" class="btnicontext" disabled={busy} on:click={cancelCredentialLogin}>{$t("SteamGuard_Cancel")}</button></div>
+				<!-- Cancel leaves the login-again flow entirely: with the refresh
+				     interstitial gone, staying on this screen at an idle stage strands
+				     the user on its "Refreshing…" fallback with nothing running. -->
+				<div class="steam-guard__actions steam-guard__actions--end"><button type="button" class="btnicontext modal-primary" disabled={busy || !authAccountName.trim() || !authPassword} on:click={beginCredentialLogin}>{$t("SteamGuard_SignIn")}</button><button type="button" class="btnicontext" disabled={busy} on:click={() => { void cancelCredentialLogin().then(backToAccount); }}>{$t("SteamGuard_Cancel")}</button></div>
 			</div>
 		{:else if authStage === "challenge" && authResult}
 			<form class="steam-guard__stack" on:submit|preventDefault={submitCredentialCode}>
 				<p>{authMessage}</p>
 				{#if authResult.canSubmitEmailCode && authResult.canSubmitDeviceCode}<fieldset class="steam-guard__challenge-options"><legend>{$t("SteamGuard_Challenge_CodeSource")}</legend><label><input type="radio" bind:group={authChallenge} value="email_code" /> {$t("SteamGuard_Challenge_EmailCode")}</label><label><input type="radio" bind:group={authChallenge} value="device_code" /> {$t("SteamGuard_Challenge_DeviceCode")}</label></fieldset>{/if}
 				<label class="steam-guard__field" for="steam-login-code"><span>{authChallenge === "email_code" ? $t("SteamGuard_Challenge_EmailCode") : $t("SteamGuard_Challenge_DeviceCode")}</span><input id="steam-login-code" class="modal-input" bind:value={authCode} autocomplete="one-time-code" disabled={busy} data-steamguard-autofocus on:keydown={(event) => runOnEnter(event, submitCredentialCode)} /></label>
-				<div class="steam-guard__actions steam-guard__actions--end"><button type="submit" class="btnicontext modal-primary" disabled={busy || !authCode}>{$t("SteamGuard_Challenge_Submit")}</button><button type="button" class="btnicontext" disabled={busy} on:click={cancelCredentialLogin}>{$t("SteamGuard_Cancel")}</button></div>
+				<div class="steam-guard__actions steam-guard__actions--end"><button type="submit" class="btnicontext modal-primary" disabled={busy || !authCode}>{$t("SteamGuard_Challenge_Submit")}</button><button type="button" class="btnicontext" disabled={busy} on:click={() => { void cancelCredentialLogin().then(backToAccount); }}>{$t("SteamGuard_Cancel")}</button></div>
 			</form>
 		{:else if authStage === "success"}
 			<div class="steam-guard__success">
@@ -1897,7 +1900,7 @@
 		{:else if authStage === "polling" || authStage === "refreshing"}
 			<p role="status">{authMessage}</p>
 			<div class="steam-guard__qr-progress" aria-hidden="true"></div>
-			{#if authHandle}<div class="steam-guard__actions steam-guard__actions--end"><button type="button" class="btnicontext" disabled={busy} on:click={pollCredentialLogin}>{$t("SteamGuard_CheckNow")}</button><button type="button" class="btnicontext" disabled={busy} on:click={cancelCredentialLogin}>{$t("SteamGuard_Cancel")}</button></div>{/if}
+			{#if authHandle}<div class="steam-guard__actions steam-guard__actions--end"><button type="button" class="btnicontext" disabled={busy} on:click={pollCredentialLogin}>{$t("SteamGuard_CheckNow")}</button><button type="button" class="btnicontext" disabled={busy} on:click={() => { void cancelCredentialLogin().then(backToAccount); }}>{$t("SteamGuard_Cancel")}</button></div>{/if}
 		{:else if authStage === "error"}
 			<p class="steam-guard__error" role="alert">{authMessage}</p>
 			<div class="steam-guard__actions steam-guard__actions--end"><button type="button" class="btnicontext modal-primary" disabled={busy} on:click={() => showCredentialForm("login_again", steamGuardAccountForState(state) ?? account)}>{$t("SteamGuard_SignInWithPassword")}</button><button type="button" class="btnicontext" disabled={busy} on:click={() => { void cancelCredentialLogin().then(backToAccount); }}>{$t("SteamGuard_Back")}</button></div>
@@ -2307,15 +2310,19 @@
   }
 
   /*
-   * No inner scroller and no flex clamp: the list contributes its full height to the frame
-   * measurement, and `.modal-scroll` is the single scrollbar once the frame hits its cap.
+   * Capped at four rows so a large vault does not turn the whole modal into a
+   * scroller; this list gets its own instead. The cap is a fixed rem value, not
+   * a percentage or anything frame-relative, so the pre-ready measuring pass
+   * still sees a deterministic height.
    */
   .steam-guard__accounts {
     display: flex;
     flex-direction: column;
     gap: $sg-1;
     margin: 0;
-    padding: 0;
+    padding: 0.15rem;
+    max-height: calc(5 * 3.5rem + 4 * #{$sg-1} + 2 * 0.15rem);
+    overflow-y: auto;
     list-style: none;
   }
 

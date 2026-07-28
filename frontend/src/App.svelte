@@ -93,7 +93,18 @@
     return null;
   }
 
-  $: activeBg = resolveActiveBg($route, $appBgInfo, $platformBgInfo, $currentThemeBgUrl, $userOverriddenAppBg);
+  // The backgrounds arrive async: the app background once at startup, the
+  // platform background on every transition. Until both have answered, hold
+  // whatever is already showing — recomputing meanwhile fell through to the
+  // theme background and flashed it over the user's wallpaper on every
+  // transition.
+  let activeBg: AppBackgroundInfo | null = null;
+  let appBgLoaded = false;
+  let platformBgPending = 0;
+  $: {
+    const next = resolveActiveBg($route, $appBgInfo, $platformBgInfo, $currentThemeBgUrl, $userOverriddenAppBg);
+    if (appBgLoaded && platformBgPending === 0) activeBg = next;
+  }
   $: showActionBar = $route.page === "home" || $route.page === "platform";
 
   let restoreRepairPromptOpen = false;
@@ -112,6 +123,7 @@
 
   /** Load/reload the platform background for the given platform name. */
   async function loadPlatformBg(platformName: string): Promise<void> {
+    platformBgPending += 1;
     try {
       const info = await PlatformService.GetPlatformBackground(platformName);
       platformBgInfo.set(info);
@@ -125,6 +137,8 @@
         fit: "cover",
         themeBgOverride: false,
       });
+    } finally {
+      platformBgPending -= 1;
     }
   }
 
@@ -303,10 +317,14 @@
     void loadSecurityStatus();
     void loadAnimationsEnabled();
     void loadCommandPaletteHotkey();
-    // Load initial app background state.
+    // Load initial app background state. Loaded-or-failed both count as
+    // settled: on failure there is no user wallpaper to protect, so the theme
+    // background may show.
     void PlatformService.GetAppBackground().then((info) => {
       appBgInfo.set(info);
-    }).catch(() => {});
+    }).catch(() => {}).finally(() => {
+      appBgLoaded = true;
+    });
 
 	    const offPageStats = installPageStatsTracking();
 	    const offSteamGuard = installSteamGuardBridge();

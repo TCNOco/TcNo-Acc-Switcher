@@ -231,7 +231,9 @@ body { background: #5a8fd8; color: #151515; font-size: 11px; }
   overflow: visible;
 }
 .title-drag, #window-title, #window-title-modal { color: #ffffff; font-weight: 700; }
-.header_icon { fill: #ffffff; filter: drop-shadow(1px 1px 0 #003399); height: 10px; margin: 10px; }
+/* Scoped with the bar: the icon's component style fills it with the theme ink
+   (near-black here), which vanishes against the Luna blue titlebar. */
+.headerbar .header_icon { fill: #ffffff; filter: drop-shadow(1px 1px 0 #003399); height: 10px; margin: 10px; }
 .window-controls { grid-template-columns: repeat(3, 21px); gap: 2px; height: 21px; padding: 4px 5px 0 0; }
 
 /* Luna orbs: a white 1px rim around a glossy blue sphere, the specular
@@ -345,7 +347,6 @@ input[type="checkbox"]:checked + label { border-color: $blue; background: linear
 input[type="checkbox"]:checked + label::after { border-color: #1b56b0; }
 input[type="checkbox"]:focus-visible + label { box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px var(--accent) !important; }
 
-.dropdown-toggle { height: 27px; min-height: 27px; }
 .dropdown-menu, .custom-dropdown-menu, .contextmenu, .contextmenu .submenu {
   padding: 2px;
   border: 1px solid #7f9db9;

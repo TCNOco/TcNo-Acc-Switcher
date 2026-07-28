@@ -128,6 +128,14 @@
     }
   }
 
+  async function restoreFromBackup(): Promise<void> {
+    try {
+      await steamGuardSettings.restoreFromBackup();
+    } catch (error) {
+      actionError(error);
+    }
+  }
+
   function formatVerifiedAt(value: string): string {
     const date = new Date(value);
     return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
@@ -205,6 +213,15 @@
       on:click={() => void createBackup()}
     >
       {$t("SteamGuard_Settings_CreateBackup")}
+    </button>
+    <button
+      type="button"
+      class="btnicontext"
+      disabled={!configured || busy}
+      aria-describedby={warningId}
+      on:click={() => void restoreFromBackup()}
+    >
+      {$t("SteamGuard_Settings_Restore")}
     </button>
     <span class="steam-guard-backup-status" role="status" aria-live="polite">
       {#if $steamGuardSettings.status.lastVerifiedBackup}

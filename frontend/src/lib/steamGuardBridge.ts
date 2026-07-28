@@ -14,7 +14,8 @@ import type {
 	SteamEnrollmentStatus,
 	SteamLoginResult,
 } from "./steamGuardModal";
-import { openAlert, openPrompt, openPromptWithCheckbox, openSteamGuardModal } from "../stores/modal";
+import { openAlert, openAlertNoButton, openPrompt, openPromptWithCheckbox, openSteamGuardModal } from "../stores/modal";
+import SteamGuardRestoreModalBody from "../components/modals/SteamGuardRestoreModalBody.svelte";
 import { get } from "svelte/store";
 import { t } from "../stores/i18n";
 import { pushToast } from "../stores/toast";
@@ -804,6 +805,108 @@ async function runRestore(): Promise<void> {
 	}
 }
 
+/**
+ * Restores accounts from a backup into the configured vault. The backup is
+ * staged and compared first; the user picks which accounts to bring across,
+ * and a fresh verified backup of the current vault is written before anything
+ * is replaced.
+ */
+async function runRestoreMerge(): Promise<void> {
+	const status = await SteamGuardService.GetSettingsStatus();
+	if (!status.vaultConfigured) return;
+	let password = await openPrompt({
+		title: tr("SteamGuard_Restore_PasswordTitle"),
+		body: tr("SteamGuard_RestoreMerge_PasswordBody"),
+		inputType: "password",
+		positiveLabel: tr("SteamGuard_Restore_ChooseFolder"),
+		negativeLabel: tr("SteamGuard_Cancel"),
+	});
+	if (!password) return;
+	let backupPassword = "";
+	let backupAppPassword = "";
+	let currentAppPassword = "";
+	let staged = false;
+	try {
+		if (usesSavedDataEncryption(status)) {
+			backupAppPassword = await openPrompt({
+				title: tr("SteamGuard_Restore_OuterTitle"),
+				body: tr("SteamGuard_Restore_OuterBody"),
+				inputType: "password",
+				positiveLabel: tr("SteamGuard_Continue"),
+				negativeLabel: tr("SteamGuard_Cancel"),
+			}) ?? "";
+			if (!backupAppPassword) return;
+			currentAppPassword = await openPrompt({
+				title: tr("SteamGuard_Restore_CurrentAppTitle"),
+				body: tr("SteamGuard_Restore_CurrentAppBody"),
+				inputType: "password",
+				positiveLabel: tr("SteamGuard_Continue"),
+				negativeLabel: tr("SteamGuard_Cancel"),
+			}) ?? "";
+			if (!currentAppPassword) return;
+		}
+		let plan = await SteamGuardService.PlanRestoreMerge(password, backupPassword, backupAppPassword);
+		if (plan.state === "canceled") return;
+		staged = true;
+		// A backup made before a password change opens with its own password;
+		// the stage survives the retry so the folder is not picked again.
+		while (plan.state === "backup_password") {
+			const entered = await openPrompt({
+				title: tr("SteamGuard_RestoreMerge_BackupPasswordTitle"),
+				body: tr("SteamGuard_RestoreMerge_BackupPasswordBody"),
+				inputType: "password",
+				positiveLabel: tr("SteamGuard_Continue"),
+				negativeLabel: tr("SteamGuard_Cancel"),
+			});
+			if (!entered) return;
+			backupPassword = entered;
+			plan = await SteamGuardService.PlanRestoreMerge(password, backupPassword, backupAppPassword);
+		}
+		if (plan.state !== "ok") return;
+		const accounts = (plan.accounts ?? []).map((account) => ({
+			steamId64: account.steamId64,
+			accountName: account.accountName,
+			exists: account.exists,
+			backupTokenExpiry: account.backupTokenExpiry ?? 0,
+			currentTokenExpiry: account.currentTokenExpiry ?? 0,
+		}));
+		if (accounts.length === 0) {
+			await openAlert({
+				title: tr("SteamGuard_RestoreMerge_ChooseTitle"),
+				body: tr("SteamGuard_RestoreMerge_Empty"),
+			});
+			return;
+		}
+		const selected = await new Promise<string[] | null>((resolve) => {
+			void openAlertNoButton({
+				title: tr("SteamGuard_RestoreMerge_ChooseTitle"),
+				bodyComponent: SteamGuardRestoreModalBody,
+				bodyProps: { accounts, onDone: resolve },
+			});
+		});
+		if (!selected || selected.length === 0) return;
+		const result = await SteamGuardService.CommitRestoreMerge(
+			password, backupPassword, backupAppPassword, currentAppPassword, selected,
+		);
+		staged = false;
+		await openAlert({
+			title: tr("SteamGuard_RestoreMerge_DoneTitle"),
+			body: `${tr("SteamGuard_RestoreMerge_DoneBody", { added: result.added, replaced: result.replaced })}` +
+				`<br><code>${escapeHtml(result.safetyBackupPath)}</code>`,
+		});
+	} finally {
+		if (staged) {
+			void SteamGuardService.CancelRestoreMerge().catch((error: unknown) => {
+				console.error("Steam Guard: restore stage could not be discarded", error);
+			});
+		}
+		password = "";
+		backupPassword = "";
+		backupAppPassword = "";
+		currentAppPassword = "";
+	}
+}
+
 async function runSteamGuardPasswordChange(currentPassword: string, newPassword: string): Promise<void> {
   const status = await SteamGuardService.GetSettingsStatus();
   let appPassword = "";
@@ -968,6 +1071,7 @@ export function installSteamGuardBridge(): () => void {
     lockNow: () => SteamGuardService.LockNow(),
     openFolder: () => SteamGuardService.OpenFolder(),
     createVerifiedBackup: runVerifiedBackup,
+    restoreFromBackup: runRestoreMerge,
   });
 
   configureSteamGuardDropAdapter({

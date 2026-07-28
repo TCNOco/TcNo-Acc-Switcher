@@ -231,7 +231,9 @@ button .caret, .button .caret {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 5px 0 2px 0;
+  /* Symmetric: the old 5px-top/2px-bottom nudged the dropdowns down, leaving a
+     plain button sharing the row sitting visibly higher. */
+  padding: 3px 0;
   margin-right: 1em;
   width: fit-content;
 }
@@ -251,8 +253,18 @@ button .caret, .button .caret {
 .dropdown-toggle {
   position: relative;
   z-index: 9;
-  height: 38px;
+  /* min-height, not a fixed height: 38px is the settings-control norm (the
+     settings components pin their buttons to it, beating any theme's own
+     button metrics), so toggles meet it too — but content can still grow. */
+  min-height: 38px;
   margin: 0;
+
+  /* The global `button span { line-height: 2.5em }` rule made a toggle whose
+     label happens to sit in a span (the accent picker) taller than one whose
+     label is bare text (the theme picker). Same line, same height. */
+  span {
+    line-height: inherit;
+  }
   &::after {
     display: inline-block;
     margin-left: .255em;
@@ -323,6 +335,9 @@ button .caret, .button .caret {
   padding: 0;
   max-height: 60vh;
   overflow-y: auto;
+  /* Never sideways: a long list's vertical scrollbar eats into the width and
+     otherwise summons a useless horizontal one under some themes. */
+  overflow-x: hidden;
 }
 
 .show > .dropdown-toggle {

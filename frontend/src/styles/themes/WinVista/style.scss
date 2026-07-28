@@ -271,7 +271,9 @@ body {
   overflow: visible;
 }
 
-.header_icon,
+/* Scoped with the bar: the icon's component style fills it with the theme ink
+   (near-black here), which vanishes against the dark glass titlebar. */
+.headerbar .header_icon,
 .modal-headerbar .header_icon,
 .app-lock-headerbar .header_icon {
   fill: #ffffff;

@@ -359,7 +359,6 @@ input[type="checkbox"]:checked + label { border-color: $deep $edge $edge $deep; 
 input[type="checkbox"]:checked + label::after { border-color: $amber; }
 input[type="checkbox"]:focus-visible + label { outline: 1px dotted $amber; outline-offset: 2px; }
 
-.dropdown-toggle { min-height: 25px; height: 25px; }
 .dropdown-menu, .custom-dropdown-menu, .contextmenu, .contextmenu .submenu {
   padding: 2px;
   border: 1px solid $deep;
@@ -691,6 +690,11 @@ button.confirmations-trade__item {
   border-left-color: $deep;
   background: $deep;
 }
+
+/* The engraved text-shadow suits light text on dark chrome; the filled accent
+   button carries dark ink on a bright fill, where a dark shadow reads as
+   smearing. */
+.btnicontext.modal-primary { text-shadow: none; }
 
 @media (prefers-reduced-motion: reduce) {
   button, .button, input[type="checkbox"] + label { transition: none; }

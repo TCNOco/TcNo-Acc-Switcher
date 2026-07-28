@@ -20,6 +20,7 @@ export interface SteamGuardSettingsAdapter {
   lockNow(): Promise<void>;
   openFolder(): Promise<void>;
   createVerifiedBackup(): Promise<void>;
+  restoreFromBackup(): Promise<void>;
 }
 
 export type SteamGuardSettingsOperation =
@@ -27,7 +28,8 @@ export type SteamGuardSettingsOperation =
   | "change-password"
   | "lock"
   | "open-folder"
-  | "backup";
+  | "backup"
+  | "restore";
 
 export type SteamGuardSettingsState = {
   availability: "loading" | "ready" | "unavailable" | "error";
@@ -44,6 +46,7 @@ export interface SteamGuardSettingsStore extends Readable<SteamGuardSettingsStat
   lockNow(): Promise<void>;
   openFolder(): Promise<void>;
   createVerifiedBackup(): Promise<void>;
+  restoreFromBackup(): Promise<void>;
 }
 
 const emptyStatus = (): SteamGuardSettingsStatus => ({
@@ -136,6 +139,9 @@ export function createSteamGuardSettingsStore(
     },
     createVerifiedBackup() {
       return run("backup", (service) => service.createVerifiedBackup());
+    },
+    restoreFromBackup() {
+      return run("restore", (service) => service.restoreFromBackup());
     },
   };
 }

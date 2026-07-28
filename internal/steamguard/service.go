@@ -135,6 +135,8 @@ type Service struct {
 	mu                         sync.Mutex
 	vault                      *vault.Vault
 	vaultOptions               []vault.Option
+	restoreMergeStage          string
+	restoreMergeSource         string
 	timeState                  *otp.TimeState
 	timeSync                   *timesync.Client
 	timeSyncCancel             context.CancelFunc

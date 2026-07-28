@@ -227,13 +227,17 @@ body {
 }
 
 .title-drag, #window-title, #window-title-modal { color: $light; font-weight: 700; }
-.header_icon { fill: $light; filter: none; height: 9px; margin: 7px; }
+/* Scoped with the bar: the icon's component style fills it with the theme ink
+   (black here), which vanishes against the navy titlebar. */
+.headerbar .header_icon { fill: $light; filter: none; height: 9px; margin: 7px; }
 /* 95 buttons are wider than tall, tucked 2px inside the navy bar, with the
-   close button set off from min/max by its own extra gap. */
-.window-controls { grid-template-columns: 18px 18px 20px; gap: 2px; height: 16px; margin: 4px 2px; }
+   close button set off from min/max by its own extra gap. Scoped under
+   .headerbar: the titlebar component's own styles paint these transparent at
+   higher specificity, which left black glyphs sitting straight on the navy. */
+.headerbar .window-controls { grid-template-columns: 18px 18px 20px; gap: 2px; height: 16px; margin: 4px 2px; }
 
-.win-btn,
-.win-btn-back {
+.headerbar .win-btn,
+.headerbar .win-btn-back {
   width: 18px;
   height: 16px;
   min-width: 18px;
@@ -247,19 +251,18 @@ body {
   color: $dark;
   box-shadow: inset 1px 1px 0 $mid, inset -1px -1px 0 $shadow;
 }
-.win-btn-close { margin-left: 2px; }
+.headerbar .win-btn-close { margin-left: 2px; background: $face; color: $dark; }
 
-.win-btn:hover, .win-btn-close:hover, .win-btn-back:hover { background: $face; }
-.win-btn:active, .win-btn-back:active {
+.headerbar .win-btn:hover, .headerbar .win-btn-close:hover, .headerbar .win-btn-back:hover { background: $face; }
+.headerbar .win-btn:active, .headerbar .win-btn-back:active {
   border-color: $dark $light $light $dark;
   box-shadow: inset 1px 1px 0 $shadow;
   transform: translate(1px, 1px);
   filter: none;
 }
 .win-btn__glyph { stroke-width: 1.7; }
-.win-btn-close { background: $face; color: $dark; }
-.win-btn-back { margin-left: 2px; }
-.win-btn-back svg { fill: $dark; }
+.headerbar .win-btn-back { margin-left: 2px; }
+.headerbar .win-btn-back svg { fill: $dark; }
 
 button,
 .button,
@@ -340,7 +343,6 @@ input[type="checkbox"]:checked + label { background: $light; border-color: $shad
 input[type="checkbox"]:checked + label::after { border-color: $dark; }
 input[type="checkbox"]:focus-visible + label { outline: 1px dotted $dark; outline-offset: 2px; box-shadow: inset 1px 1px $dark !important; }
 
-.dropdown-toggle { height: 24px; min-height: 24px; }
 .dropdown-menu, .custom-dropdown-menu, .contextmenu, .contextmenu .submenu {
   padding: 2px;
   border: 2px solid;

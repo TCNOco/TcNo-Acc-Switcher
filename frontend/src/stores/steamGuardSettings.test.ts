@@ -22,6 +22,7 @@ function adapter(status = configuredStatus()): SteamGuardSettingsAdapter {
     lockNow: vi.fn().mockResolvedValue(undefined),
     openFolder: vi.fn().mockResolvedValue(undefined),
     createVerifiedBackup: vi.fn().mockResolvedValue(undefined),
+    restoreFromBackup: vi.fn().mockResolvedValue(undefined),
   };
 }
 

@@ -166,7 +166,12 @@ export function measureModalNaturalSize(modalFg: HTMLElement): {
   const header = modalFg.querySelector(".modal-headerbar");
 
   if (scroll instanceof HTMLElement) {
-    const headerH = header instanceof HTMLElement ? header.offsetHeight : 0;
+    // offsetHeight ignores margins, and some themed headerbars (Win95,
+    // Steam2003) float in a 2px margin — unmeasured, that left every modal a
+    // few pixels short and permanently scrolling.
+    const headerH = header instanceof HTMLElement
+      ? header.offsetHeight + verticalMargins(header)
+      : 0;
     const scrollStyle = getComputedStyle(scroll);
     const padX =
       parseFloat(scrollStyle.paddingLeft) + parseFloat(scrollStyle.paddingRight);
@@ -204,6 +209,11 @@ export const modalAutoFitRequests = writable(0);
 
 export function requestModalAutoFit(): void {
   modalAutoFitRequests.update((count) => count + 1);
+}
+
+function verticalMargins(element: HTMLElement): number {
+  const style = getComputedStyle(element);
+  return (parseFloat(style.marginTop) || 0) + (parseFloat(style.marginBottom) || 0);
 }
 
 export function fitFrameToContent(
