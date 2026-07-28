@@ -4,6 +4,8 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+
+	"TcNo-Acc-Switcher/internal/winutil"
 )
 
 // OpenPathInFileManager opens a directory in the OS file manager (Explorer, Finder, xdg-open).
@@ -11,8 +13,7 @@ func OpenPathInFileManager(path string) error {
 	path = filepath.Clean(path)
 	switch runtime.GOOS {
 	case "windows":
-		cmd := exec.Command("explorer", path)
-		return cmd.Start()
+		return winutil.Start("explorer.exe", []string{path}, winutil.StartOpts{})
 	case "darwin":
 		return exec.Command("open", path).Start()
 	default:

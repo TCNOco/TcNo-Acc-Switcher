@@ -7,11 +7,10 @@ import (
 	"os/exec"
 	"strings"
 	"syscall"
-
-	"TcNo-Acc-Switcher/internal/crashlog"
 )
 
-// Start launches exe with args. Uses PowerShell Start-Process -Verb RunAs when opts.Admin.
+// Start launches exe with args, fully decoupled from this process (see [spawnDetached]).
+// Uses PowerShell Start-Process -Verb RunAs when opts.Admin.
 func Start(exe string, args []string, opts StartOpts) error {
 	if opts.AsDesktopUser && IsProcessElevated() {
 		slogWin().Debug("start request", "exe", exe, "mode", "desktop-user", "args", len(args), "admin", opts.Admin, "method", opts.Method)
@@ -31,23 +30,18 @@ func Start(exe string, args []string, opts StartOpts) error {
 		slogWin().Debug("start launched", "exe", exe, "mode", "elevated")
 		return nil
 	}
-	cmd := exec.Command(exe, args...)
-	if opts.WorkingDir != "" {
-		cmd.Dir = opts.WorkingDir
-	}
-	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: opts.HideWindow}
-	if err := cmd.Start(); err != nil {
+	pid, err := spawnDetached(exe, args, opts.WorkingDir, opts.HideWindow)
+	if err != nil {
 		slogWin().Warn("start failed", "exe", exe, "err", err)
 		return WrapIfElevationRequired(err)
 	}
-	slogWin().Debug("start launched", "exe", exe, "pid", cmd.Process.Pid)
-	go func() {
-		defer crashlog.Capture()
-		_ = cmd.Wait()
-	}()
+	slogWin().Debug("start launched", "exe", exe, "pid", pid)
 	return nil
 }
 
+// startElevated launches through the UAC broker: AppInfo creates the target, so the elevated
+// program is never our child and never in our job. Only the PowerShell shim is, and that gets
+// its own console and job breakaway so a crash here cannot abort a launch in progress.
 func startElevated(exe string, args []string, opts StartOpts) error {
 	var b strings.Builder
 	b.WriteString(`Start-Process -FilePath `)
@@ -62,6 +56,7 @@ func startElevated(exe string, args []string, opts StartOpts) error {
 	}
 	b.WriteString(` -Verb RunAs`)
 	cmd := exec.Command("powershell.exe", "-NoProfile", "-NonInteractive", "-WindowStyle", "Hidden", "-Command", b.String())
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true, CreationFlags: helperCreationFlags()}
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("start elevated: %w: %s", err, strings.TrimSpace(string(out)))
@@ -87,19 +82,25 @@ func psArgList(args []string) string {
 	return b.String()
 }
 
-// startAsDesktopUser avoids inheriting admin when the switcher is elevated.
-// Prefer CreateProcessWithTokenW (shell user token); fall back to cmd /c start if that fails.
+// startAsDesktopUser avoids inheriting admin when the switcher is elevated. Reparenting to the
+// shell drops elevation and leaves our process tree in one step, so it is tried first;
+// CreateProcessWithTokenW (shell user token) and cmd /c start remain as fallbacks. Every step
+// here runs as the desktop user - none may quietly degrade into an elevated launch.
 func startAsDesktopUser(exe string, args []string, opts StartOpts) error {
 	wd := strings.TrimSpace(opts.WorkingDir)
+	if pid, err := spawnReparented(exe, args, wd, opts.HideWindow); err == nil {
+		slogWin().Debug("start launched", "exe", exe, "mode", "shell-reparented", "pid", pid)
+		return nil
+	} else {
+		slogWin().Debug("shell reparent unavailable", "exe", exe, "err", err)
+	}
 	if tryRunAsDesktopUser(exe, args, wd, opts.HideWindow) {
 		return nil
 	}
 	slogWin().Debug("falling back to cmd start", "exe", exe)
 	cmdline := append([]string{"/c", "start", "", exe}, args...)
-	cmd := exec.Command("cmd.exe", cmdline...)
-	if wd != "" {
-		cmd.Dir = wd
+	if _, err := spawnDetached("cmd.exe", cmdline, wd, opts.HideWindow); err != nil {
+		return WrapIfElevationRequired(err)
 	}
-	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: opts.HideWindow}
-	return WrapIfElevationRequired(cmd.Start())
+	return nil
 }
