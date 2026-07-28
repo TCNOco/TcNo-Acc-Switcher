@@ -1,0 +1,410 @@
+import { get } from "svelte/store";
+import { t } from "../stores/i18n";
+
+export const STEAM_GUARD_CODE_LIFETIME_MS = 30_000;
+
+export type SteamGuardAccountRef = {
+  id: string;
+  username: string;
+  displayName?: string;
+  /**
+   * Switcher avatar handed in by the opener. Screens that run before the vault is
+   * unlocked cannot look this up, so carrying it avoids a placeholder there.
+   */
+  imageUrl?: string;
+  staticImageUrl?: string;
+};
+
+export type SteamGuardAccountSummary = SteamGuardAccountRef & {
+  locked: boolean;
+  /** Switcher avatar for the picker row; absent when the account is not in the switcher. */
+  imageUrl?: string;
+  staticImageUrl?: string;
+  vac?: boolean;
+  limited?: boolean;
+};
+
+export type SteamGuardCodeView = {
+  account: SteamGuardAccountRef;
+  code: string;
+  expiresAt: number;
+  timeStatus: "fresh" | "stale" | "untrusted" | "unavailable";
+  unlockPersistence: "cached" | "one_operation";
+};
+
+export type SteamGuardSensitiveGrant = {
+  capability: string;
+  lease: string;
+  accountId: string;
+};
+
+export type SteamGuardQRScanResult = {
+	state: "ready" | "no-code" | "multiple-codes" | "steam-not-found" | "no-window" | "unavailable" | "invalid-image" | "work-limit" | "canceled" | "busy" | "unsupported" | "capture-failed";
+	attempt?: string;
+	candidateCount?: number;
+};
+
+export type SteamGuardQRApproval = {
+	accountName: string;
+	deviceName?: string;
+	ipAddress?: string;
+	location?: string;
+	platform: string;
+	application: string;
+	persistence: string;
+	locationMismatch: boolean;
+	highUsageLogin: boolean;
+	previouslyUsedLocation: boolean;
+	requestorDeviceTrustCode?: number;
+};
+
+export type SteamAuthPurpose = "login_again" | "add_authenticator";
+
+export type SteamLoginResult = {
+	state: "refreshed" | "reauthentication_required";
+	refreshTokenRenewed: boolean;
+	capabilityRefreshRequired: boolean;
+	registryUpdated: boolean;
+};
+
+/**
+ * A refreshed session is done; anything else means Steam rejected the saved refresh token and
+ * the credential form must be shown directly — there is no intermediate confirmation step.
+ */
+export function steamLoginAgainNextStep(result: SteamLoginResult): "done" | "credentials" {
+	return result.state === "refreshed" ? "done" : "credentials";
+}
+
+export type SteamEnrollmentStatus = {
+	state: string;
+	confirmation: "sms" | "email" | "unknown";
+	phoneHint: string;
+	retryAfterSeconds: number;
+	hasRetryAfter: boolean;
+	pending: boolean;
+	resumed: boolean;
+	revocationViewAvailable: boolean;
+	capabilityRefreshRequired: boolean;
+	registryUpdated: boolean;
+};
+
+/**
+ * Whether an account's stored Steam session still works. This drives an affordance
+ * only, so an inconclusive answer stays false rather than pointing the user at a
+ * sign-in they may not need.
+ */
+export type SteamSessionState = {
+  needsLogin: boolean;
+  reason?: string;
+};
+
+/**
+ * Where an export went. An empty path is the save-dialog cancel. manifestSkipped
+ * means the maFile was written but its companion manifest was not, so SDA cannot
+ * import it yet — a warning rather than a failure.
+ */
+export type SteamMaFileExportResult = {
+  path: string;
+  manifestSkipped: boolean;
+};
+
+export type SteamCredentialResult = {
+	handle: string;
+	state: string;
+	challenges: string[];
+	canSubmitEmailCode: boolean;
+	canSubmitDeviceCode: boolean;
+	canPoll: boolean;
+	pollAfterMillis: number;
+	expiresAtUnix: number;
+	outcome?: "session_updated" | "enrollment_pending" | "enrollment_not_started";
+	enrollment?: SteamEnrollmentStatus;
+	capabilityRefreshRequired: boolean;
+	registryUpdated: boolean;
+};
+
+export type SteamRevocationView = {
+	code: string;
+	capabilityRefreshRequired: boolean;
+};
+
+export type SteamGuardVaultStatus = {
+	configured: boolean;
+	unlocked: boolean;
+	rememberForSession: boolean;
+	savedAccountDataEncrypted: boolean;
+};
+
+export type SteamCredentialStep = "code" | "poll" | "complete" | "failed" | "pending";
+
+export function steamCredentialStep(result: SteamCredentialResult): SteamCredentialStep {
+	if (result.outcome) return "complete";
+	if (["agreement_required", "canceled", "expired", "failed", "error"].includes(result.state)) return "failed";
+	if (result.state === "challenge_required" &&
+		!result.canSubmitEmailCode && !result.canSubmitDeviceCode && !result.canPoll) return "failed";
+	if (result.canSubmitEmailCode || result.canSubmitDeviceCode) return "code";
+	if (result.canPoll) return "poll";
+	return "pending";
+}
+
+export async function acknowledgeSteamRevocationThenRefresh<T>(
+	acknowledge: () => Promise<T>,
+	refreshCapability: (result: T) => Promise<void>,
+): Promise<T> {
+	const result = await acknowledge();
+	await refreshCapability(result);
+	return result;
+}
+
+export async function closeSteamGuardEnrollment(actions: {
+	cancelCredentials: () => Promise<void>;
+	clearSecrets: () => void;
+	dismiss: () => void;
+}): Promise<void> {
+	await actions.cancelCredentials();
+	actions.clearSecrets();
+	actions.dismiss();
+}
+
+export type SteamEnrollmentStep = "not-started" | "recovery" | "confirmation" | "complete" | "blocked";
+
+export function steamEnrollmentStep(status: SteamEnrollmentStatus): SteamEnrollmentStep {
+	if (status.state === "not_started") return "not-started";
+	if (!status.pending) return status.state === "complete" ? "complete" : "blocked";
+	return status.revocationViewAvailable ? "recovery" : "confirmation";
+}
+
+export type SteamGuardModalEntry =
+  | "account"
+  | "all-accounts"
+  | "import"
+  | "enrollment"
+  | "qr"
+  | "login-again";
+
+export type SteamGuardModalState =
+  | { screen: "loading"; account: SteamGuardAccountRef }
+  | { screen: "locked"; account: SteamGuardAccountRef }
+  | { screen: "account-code"; view: SteamGuardCodeView }
+  | { screen: "all-accounts"; accounts: SteamGuardAccountSummary[] }
+  | { screen: "import"; account?: SteamGuardAccountRef }
+  | { screen: "enrollment"; account: SteamGuardAccountRef }
+  | { screen: "qr"; account: SteamGuardAccountRef }
+  | { screen: "login-again"; account: SteamGuardAccountRef }
+  | { screen: "export-authorize"; account: SteamGuardAccountRef }
+  | { screen: "recovery"; account?: SteamGuardAccountRef; message: string }
+  | { screen: "error"; account?: SteamGuardAccountRef; message: string };
+
+export type SteamGuardModalAction =
+  | { type: "load-account"; account: SteamGuardAccountRef }
+  | { type: "lock-account"; account: SteamGuardAccountRef }
+  | { type: "show-code"; view: SteamGuardCodeView }
+  | { type: "show-all"; accounts: SteamGuardAccountSummary[] }
+  | { type: "show-import"; account?: SteamGuardAccountRef }
+  | { type: "show-enrollment"; account: SteamGuardAccountRef }
+  | { type: "show-qr"; account: SteamGuardAccountRef }
+  | { type: "show-login-again"; account: SteamGuardAccountRef }
+  | { type: "show-export-authorize"; account: SteamGuardAccountRef }
+  | { type: "show-recovery"; account?: SteamGuardAccountRef; message: string }
+  | { type: "fail"; account?: SteamGuardAccountRef; message: string };
+
+export type SteamGuardModalController = {
+  getCode: (accountId: string, capability: string) => Promise<SteamGuardCodeView | null>;
+  unlock: (
+    accountId: string,
+    password: string,
+    rememberForSession: boolean,
+    capability: string,
+  ) => Promise<SteamGuardCodeView>;
+  listAccounts?: (accountId: string, capability: string) => Promise<SteamGuardAccountSummary[]>;
+  copyCode?: (accountId: string, capability: string) => Promise<void> | void;
+	openConfirmations?: (accountId: string, capability: string) => Promise<void> | void;
+	  loginAgain?: (accountId: string, capability: string) => Promise<SteamLoginResult>;
+	  beginCredentialLogin?: (
+		accountId: string,
+		capability: string,
+		accountName: string,
+		password: string,
+		purpose: SteamAuthPurpose,
+	  ) => Promise<SteamCredentialResult>;
+	  submitCredentialCode?: (
+		accountId: string,
+		capability: string,
+		handle: string,
+		challenge: string,
+		code: string,
+	  ) => Promise<SteamCredentialResult>;
+	  pollCredentialLogin?: (
+		accountId: string,
+		capability: string,
+		handle: string,
+	  ) => Promise<SteamCredentialResult>;
+	  cancelCredentialLogin?: (accountId: string, capability: string, handle: string) => Promise<void>;
+	  /** Offline: reads the stored session only, so it costs no Steam request. */
+	  steamSessionLocalState?: (accountId: string, capability: string) => Promise<SteamSessionState>;
+	  /** Asks Steam whether it still accepts the stored session. Read-only. */
+	  probeSteamSession?: (accountId: string, capability: string) => Promise<SteamSessionState>;
+	  getSteamGuardVaultStatus?: () => Promise<SteamGuardVaultStatus>;
+	  initializeSteamGuardVault?: (password: string, appPassword: string) => Promise<void>;
+	  unlockSteamGuardVault?: (
+		accountId: string,
+		password: string,
+		rememberForSession: boolean,
+		capability: string,
+	  ) => Promise<void>;
+	  /** Resolves to the written path, or "" when the user cancelled the save dialog. */
+	  /** maFilePassword encrypts the file the way SDA does; empty exports plaintext. */
+	  exportMaFile?: (
+		accountId: string,
+		capability: string,
+		password: string,
+		maFilePassword: string,
+	  ) => Promise<SteamMaFileExportResult>;
+  importMaFile?: (accountId?: string) => Promise<void>;
+	  resumeSteamGuardEnrollment?: (accountId: string, capability: string) => Promise<SteamEnrollmentStatus>;
+	  revealSteamGuardRevocationCode?: (accountId: string, capability: string) => Promise<SteamRevocationView>;
+	  acknowledgeSteamGuardRevocationCode?: (
+		accountId: string,
+		capability: string,
+		code: string,
+	  ) => Promise<SteamEnrollmentStatus>;
+	  finalizeSteamGuardEnrollment?: (
+		accountId: string,
+		capability: string,
+		confirmationCode: string,
+	  ) => Promise<SteamEnrollmentStatus>;
+	  cancelSteamGuardEnrollment?: (accountId: string, capability: string) => Promise<void>;
+	  showEnrollmentBackupWarning?: () => Promise<void>;
+	  captureQrFromSteam?: (accountId: string, capability: string) => Promise<SteamGuardQRScanResult>;
+	  chooseQrScreenshot?: (accountId: string, capability: string) => Promise<SteamGuardQRScanResult | null>;
+	  decodeQrScreenshot?: (accountId: string, path: string, capability: string) => Promise<SteamGuardQRScanResult>;
+	  getQrApproval?: (accountId: string, attempt: string, capability: string) => Promise<SteamGuardQRApproval>;
+	  authorizeQrLogin?: (accountId: string, attempt: string, capability: string) => Promise<void>;
+	  dismissQrLogin?: (accountId: string, attempt: string, capability: string) => Promise<void>;
+	  selectQrRegion?: (accountId: string, capability: string) => Promise<SteamGuardQRScanResult>;
+	  cancelQrRegion?: (accountId: string, capability: string) => Promise<void>;
+  recover?: (accountId?: string) => Promise<void>;
+  requestSensitiveView?: (accountId: string) => Promise<SteamGuardSensitiveGrant>;
+  endSensitiveView?: (capability: string, lease: string) => Promise<void>;
+};
+
+/** Thrown when a sensitive-view grant is missing, malformed, or bound to another account. */
+export class SteamGuardCapabilityError extends Error {
+	constructor(message = "Steam Guard capability unavailable") {
+		super(message);
+		this.name = "SteamGuardCapabilityError";
+	}
+}
+
+export class SteamGuardContentProtectionLease {
+	private grant: SteamGuardSensitiveGrant | null = null;
+  private closed = false;
+
+  constructor(private readonly controller: SteamGuardModalController) {}
+
+	async acquire(accountId: string): Promise<void> {
+		if (this.closed) return;
+		if (!this.controller.requestSensitiveView) throw new SteamGuardCapabilityError();
+		const grant = await this.controller.requestSensitiveView(accountId);
+		if (!grant.capability || !grant.lease || grant.accountId !== accountId) {
+			throw new SteamGuardCapabilityError("Steam Guard returned a capability for another account");
+		}
+		if (this.closed) {
+			await this.controller.endSensitiveView?.(grant.capability, grant.lease);
+			return;
+		}
+		const previous = this.grant;
+		this.grant = grant;
+		if (previous) await this.controller.endSensitiveView?.(previous.capability, previous.lease);
+	}
+
+	capabilityFor(accountId: string): string {
+		return this.grant?.accountId === accountId ? this.grant.capability : "";
+	}
+
+	revoke(): void {
+		this.grant = null;
+	}
+
+  async close(): Promise<void> {
+    if (this.closed) return;
+    this.closed = true;
+		const grant = this.grant;
+		this.grant = null;
+		if (grant) await this.controller.endSensitiveView?.(grant.capability, grant.lease);
+	}
+}
+
+export function initialSteamGuardModalState(
+  account: SteamGuardAccountRef,
+  entry: SteamGuardModalEntry,
+): SteamGuardModalState {
+  if (entry === "import") return { screen: "import", account };
+  if (entry === "enrollment") return { screen: "enrollment", account };
+  if (entry === "qr") return { screen: "qr", account };
+  if (entry === "login-again") return { screen: "login-again", account };
+  return { screen: "loading", account };
+}
+
+export function reduceSteamGuardModal(
+  _state: SteamGuardModalState,
+  action: SteamGuardModalAction,
+): SteamGuardModalState {
+  switch (action.type) {
+    case "load-account":
+      return { screen: "loading", account: action.account };
+    case "lock-account":
+      return { screen: "locked", account: action.account };
+    case "show-code":
+      return { screen: "account-code", view: action.view };
+    case "show-all":
+      return { screen: "all-accounts", accounts: action.accounts };
+    case "show-import":
+      return { screen: "import", account: action.account };
+    case "show-enrollment":
+      return { screen: "enrollment", account: action.account };
+    case "show-qr":
+      return { screen: "qr", account: action.account };
+    case "show-login-again":
+      return { screen: "login-again", account: action.account };
+    case "show-export-authorize":
+      return { screen: "export-authorize", account: action.account };
+    case "show-recovery":
+      return { screen: "recovery", account: action.account, message: action.message };
+    case "fail":
+      return { screen: "error", account: action.account, message: action.message };
+  }
+}
+
+export function steamGuardCodeProgress(expiresAt: number, now: number): number {
+  if (!Number.isFinite(expiresAt) || !Number.isFinite(now)) return 0;
+  return Math.max(0, Math.min(1, (expiresAt - now) / STEAM_GUARD_CODE_LIFETIME_MS));
+}
+
+export function steamGuardCodeCanAutoRefresh(view: SteamGuardCodeView): boolean {
+  return view.unlockPersistence === "cached";
+}
+
+export function steamGuardQRFailureMessage(result: SteamGuardQRScanResult): string {
+	// Reads the locale at call time so a language switch applies to later scans.
+	const tr = get(t);
+	switch (result.state) {
+		case "steam-not-found": return tr("SteamGuard_QRFailure_SteamNotFound");
+		case "no-window": return tr("SteamGuard_QRFailure_NoWindow");
+		case "no-code": return tr("SteamGuard_QRFailure_NoCode");
+		case "multiple-codes": return tr("SteamGuard_QRFailure_MultipleCodes");
+		case "invalid-image": return tr("SteamGuard_QRFailure_InvalidImage");
+		case "work-limit": return tr("SteamGuard_QRFailure_WorkLimit");
+		case "canceled": return tr("SteamGuard_QRFailure_Canceled");
+		case "busy": return tr("SteamGuard_QRFailure_Busy");
+		case "unsupported": return tr("SteamGuard_QRFailure_Unsupported");
+		case "capture-failed": return tr("SteamGuard_QRFailure_CaptureFailed");
+		default: return tr("SteamGuard_QRFailure_Unavailable");
+	}
+}
+
+export function steamGuardAccountForState(state: SteamGuardModalState): SteamGuardAccountRef | undefined {
+  if (state.screen === "account-code") return state.view.account;
+  if (state.screen === "all-accounts") return undefined;
+  return state.account;
+}

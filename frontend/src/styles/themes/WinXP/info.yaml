@@ -1,0 +1,17 @@
+name: Windows XP Luna
+accent: "#245EDC"
+background: background.svg
+
+accents:
+  - name: Luna Blue
+    color: "#245EDC"
+  - name: Olive Green
+    color: "#6B8E23"
+  - name: Silver
+    color: "#6D6F87"
+  - name: Royale
+    color: "#315B8A"
+  - name: Zune Orange
+    color: "#D45500"
+  - name: Embedded Blue
+    color: "#0066CC"

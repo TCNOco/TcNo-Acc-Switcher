@@ -4,6 +4,7 @@
   import type { ComponentType, SvelteComponent } from "svelte";
   import ModalBodyShell from "./ModalBodyShell.svelte";
   import { t } from "../../stores/i18n";
+  import type { PromptWithCheckboxResult } from "../../stores/modal";
 
   export let html: string | undefined = undefined;
   export let component: ComponentType<SvelteComponent> | undefined = undefined;
@@ -12,13 +13,19 @@
   export let positiveLabel = "";
   export let multiline = false;
   export let inputType: "text" | "password" = "text";
+  export let checkboxLabel: string | undefined = undefined;
+  export let checkboxInitial = false;
+  export let returnCheckboxResult = false;
+  export let modalId = 0;
 
-  const dispatch = createEventDispatcher<{ resolve: string | null }>();
+  const dispatch = createEventDispatcher<{ resolve: string | PromptWithCheckboxResult | null }>();
 
   let value = initialValue;
+  let checked = checkboxInitial;
   let lastInitialValue = initialValue;
   let inputEl: HTMLInputElement | HTMLTextAreaElement | undefined;
   let inputLabel = "";
+  $: checkboxId = `modal-prompt-check-${modalId}`;
 
   function getPlainText(value: string | undefined): string {
     if (!value) return "";
@@ -43,7 +50,7 @@
     : getPlainText(html) || getDialogTitle() || (multiline ? "Text input" : "Input");
 
   function ok(): void {
-    dispatch("resolve", value);
+    dispatch("resolve", returnCheckboxResult ? { value, checked } : value);
   }
 
   onMount(() => {
@@ -95,6 +102,15 @@
       />
     {/if}
   </div>
+  {#if checkboxLabel}
+    <div class="modal-prompt-check">
+      <span class="form-check">
+        <input id={checkboxId} class="form-check-input" bind:checked type="checkbox" />
+        <label class="form-check-label" for={checkboxId} aria-hidden="true"></label>
+      </span>
+      <label class="modal-prompt-check__text" for={checkboxId}>{checkboxLabel}</label>
+    </div>
+  {/if}
   <div class="modal-inline-actions settingsCol inputAndButton">
     <span class="modal-actions-spacer"></span>
     <button type="button" class="btnicontext modal-primary" on:click={ok}>
@@ -102,3 +118,18 @@
     </button>
   </div>
 </div>
+
+<style lang="scss">
+  .modal-prompt-check {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    cursor: pointer;
+  }
+
+  .modal-prompt-check__text {
+    padding: 0;
+    cursor: pointer;
+  }
+</style>

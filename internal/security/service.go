@@ -18,6 +18,14 @@ func (s *SecurityService) UnlockApp(password string) error {
 	return UnlockApp(password)
 }
 
+func (s *SecurityService) ChangePassword(oldPassword, newPassword string) error {
+	return ChangePassword(oldPassword, newPassword)
+}
+
+func (s *SecurityService) Lock() error {
+	return Lock()
+}
+
 func (s *SecurityService) RemoveAppPassword(password string) error {
 	return RemoveAppPassword(password)
 }

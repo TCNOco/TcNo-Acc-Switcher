@@ -1,0 +1,700 @@
+@use "../overlay_surfaces" as overlay;
+@use "../windows_button_icons" as windows-icons;
+
+$deep: #151a12;
+$ink: #20271b;
+$recessed: #2b3426;
+$panel: #3d4934;
+$raised: #515e45;
+$edge: #718061;
+$edge-light: #879574;
+$text: #d1d8b8;
+$muted: #a5ad8d;
+$accent: #aab879;
+$amber: #d0af62;
+$red: #b96552;
+
+:root {
+  color-scheme: dark;
+  font-family: Tahoma, Verdana, Arial, sans-serif;
+
+  --accent: #{$accent};
+  --accentHS: 71, 30%;
+  --accentL: 60%;
+  --accentInt: 170, 184, 121;
+  --cyan: #78a590;
+  --cyanSecondary: #b9d4c8;
+  --cyanLight: rgba(120, 165, 144, 0.16);
+  --code: #dce2c4;
+  --code-background: #{$deep};
+  --slightly-darker-code-background: #{$recessed};
+  --darker-code-background: #{$ink};
+  --even-darker-code-background: #11150f;
+  --shadow: 2px 2px 0 #0c0f0a;
+  --black: #{$deep};
+  --blackSecondary: #{$ink};
+  --blackTernary: #{$recessed};
+  --blackLight: rgba(10, 13, 8, 0.32);
+  --white: #{$text};
+  --whiteSecondary: #{$text};
+  --whiteLight: rgba(226, 233, 201, 0.18);
+  --green: #9eaf70;
+  --greenSecondary: #cbd7a5;
+  --greenLight: rgba(158, 175, 112, 0.18);
+  --orange: #c47b48;
+  --orangeSecondary: #dec19e;
+  --orangeLight: rgba(196, 123, 72, 0.18);
+  --pink: #b87878;
+  --pinkSecondary: #dfb7b7;
+  --pinkLight: rgba(184, 120, 120, 0.18);
+  --purple: #9983a4;
+  --purpleSecondary: #c8bbce;
+  --purpleLight: rgba(153, 131, 164, 0.18);
+  --red: #{$red};
+  --redSecondary: #d9aaa0;
+  --redLight: rgba(185, 101, 82, 0.2);
+  --yellow: #{$amber};
+  --yellowSecondary: #e3d3a6;
+  --gradientDegree: 180deg;
+
+  --border-bar-bg: #{$raised};
+  --border-bar-size: 3px;
+  --program-bg: #{$panel};
+  --mainContentBackground: #{$recessed};
+  --footer-bg: #{$ink};
+  --scrollbar-track-bg: #{$ink};
+  --button-bg: #{$raised};
+  --button-bg-hover: #657451;
+  --tooltip-bg: #d8d2aa;
+  --main-padding: 0.7rem;
+  --document-canvas-bg: #{$deep};
+
+  --pure-black: #090b08;
+  --shadow-color-heavy: rgba(0, 0, 0, 0.78);
+  --shadow-color-50: rgba(0, 0, 0, 0.5);
+  --shadow-color-45: rgba(0, 0, 0, 0.45);
+  --shadow-color-40: rgba(0, 0, 0, 0.4);
+  --shadow-color-35: rgba(0, 0, 0, 0.35);
+  --shadow-color-30: rgba(0, 0, 0, 0.3);
+  --shadow-color-55-text: rgba(0, 0, 0, 0.55);
+  --shadow-color-60: rgba(0, 0, 0, 0.6);
+  --black-alpha-12: rgba(0, 0, 0, 0.12);
+  --black-alpha-15: rgba(0, 0, 0, 0.15);
+  --backdrop-scrim-55: rgba(6, 8, 5, 0.67);
+  --backdrop-scrim-65: rgba(6, 8, 5, 0.76);
+  --backdrop-dark-25: rgba(0, 0, 0, 0.25);
+  --backdrop-dark-20: rgba(0, 0, 0, 0.2);
+  --backdrop-dark-35: rgba(0, 0, 0, 0.35);
+  --overlay-white-06: rgba(224, 232, 198, 0.06);
+  --overlay-white-08: rgba(224, 232, 198, 0.08);
+  --overlay-white-12: rgba(224, 232, 198, 0.12);
+  --overlay-white-14: rgba(224, 232, 198, 0.14);
+  --overlay-white-15: rgba(224, 232, 198, 0.15);
+  --text-white-40: rgba(209, 216, 184, 0.4);
+  --text-white-50: rgba(209, 216, 184, 0.5);
+  --text-white-60: rgba(209, 216, 184, 0.6);
+  --text-white-65: rgba(209, 216, 184, 0.65);
+  --text-white-70: rgba(209, 216, 184, 0.7);
+  --text-white-88: rgba(209, 216, 184, 0.88);
+  --text-white-90: rgba(209, 216, 184, 0.9);
+  --text-white-92: rgba(209, 216, 184, 0.92);
+  --text-muted-gray: #{$muted};
+  --text-subtle-gray: #8f987b;
+  --text-dim-gray: #7b846a;
+  --text-body-muted: #{$muted};
+  --surface-panel-bg: #{$panel};
+  --surface-glass-06-15: #{$panel};
+  --surface-row-dark: #{$recessed};
+  --surface-steam-popover: #{$ink};
+  --surface-context-submenu: #{$panel};
+  --surface-context-row: #5c694b;
+  --surface-search-result: #{$recessed};
+  --context-menu-hotkey: #{$amber};
+  --form-checkbox-border: #{$edge};
+  --input-number-border: #{$edge};
+  --preview-control-border: #{$edge};
+  --shortcut-active-border: var(--accent);
+  --window-control-hover-bg: #657451;
+  --window-close-hover: #7e493e;
+  --tag-default-bg: #566247;
+  --error-text-soft: #e0a08f;
+  --error-bg-dim: #51332d;
+  --error-bg-hover: #654038;
+  --error-border-soft: #{$red};
+  --success-solid: #8fa565;
+  --error-solid: #{$red};
+  --success-soft-bg: #39472f;
+  --error-soft-bg: #51332d;
+  --overlay-panel-bg: #{$panel};
+  --overlay-scrim-deep: rgba(6, 8, 5, 0.74);
+  --greenInt: 158, 175, 112;
+  --orangeInt: 196, 123, 72;
+  --redInt: 185, 101, 82;
+  --text-on-bright-bg: #171b13;
+  --notification-main-bg: #{$panel};
+  --notification-info-border: #82936c;
+  --notification-info-highlight: #{$accent};
+  --notification-success-border: #83965e;
+  --notification-success-highlight: #a9ba78;
+  --notification-warning-border: #b3924d;
+  --notification-warning-highlight: #{$amber};
+  --notification-error-border: #965444;
+  --notification-error-highlight: #{$red};
+  --notification-border-radius: 0;
+  --modal-border: #0e110c;
+  --role-page-bg: #{$recessed};
+  --role-page-canvas: #{$deep};
+  --role-panel-bg: #{$panel};
+  --role-surface-raised-bg: #{$raised};
+  --role-field-bg: #{$deep};
+  --role-field-border: #{$edge};
+  --role-button-bg: #{$raised};
+  --role-button-hover-bg: #657451;
+  --role-dropdown-bg: #{$panel};
+  --role-dropdown-hover-bg: #5c694b;
+  --role-tile-bg: #{$panel};
+  --role-tile-border: #{$edge};
+  --role-toast-bg: #{$panel};
+  --role-toast-fg: #{$text};
+  --role-modal-bg: #{$panel};
+  --role-modal-fg: #{$text};
+  --role-overlay-bg: #{$panel};
+  --role-overlay-scrim: rgba(6, 8, 5, 0.7);
+  --role-selected-bg: #5c694b;
+  --role-selected-fg: #eef2d8;
+  --role-disabled-fg: #7f876e;
+  --role-disabled-opacity: 0.7;
+  --role-text-muted: #{$muted};
+  --role-focus-ring: #{$amber};
+  --role-focus-ring-offset: #{$deep};
+
+  @include overlay.overlay-root-tokens(
+    $modal-bg: #{$panel},
+    $modal-header-bg: #{$ink},
+    $modal-header-fg: #{$text},
+    $modal-input-bg: #{$deep},
+    $modal-input-border: #{$edge},
+    $modal-body-fg: #{$text},
+    $modal-muted-fg: #{$muted},
+    $overlay-thumb-bg: #{$raised},
+    $overlay-thumb-border: #{$edge},
+    $overlay-thumb-muted-fg: #{$muted},
+    $notification-message-fg: #{$text},
+    $notification-border-radius: 0
+  );
+}
+
+html, body, #app, .container, button, .button, input, select, textarea {
+  font-family: Tahoma, Verdana, Arial, sans-serif;
+}
+
+body {
+  background:
+    repeating-linear-gradient(135deg, rgba(150, 165, 110, 0.035) 0 2px, transparent 2px 6px),
+    $deep;
+  color: $text;
+  font-size: 11px;
+  text-rendering: geometricPrecision;
+}
+
+#app {
+  box-sizing: border-box;
+  border: 2px solid $deep;
+  background: $panel;
+  box-shadow: inset 0 0 0 1px $edge-light, inset 0 0 0 2px $ink;
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+.container, .programMain, .mainblock, .main-content {
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.015), rgba(0, 0, 0, 0.03)),
+    $recessed;
+  color: $text;
+}
+
+.page {
+  border: 1px solid $deep !important;
+  border-top-color: $edge !important;
+  background: $recessed;
+  box-shadow: inset 1px 1px 0 $ink;
+}
+
+.headerbar, .modal-headerbar, .app-lock-headerbar {
+  min-height: 28px;
+  height: 28px;
+  margin: 2px;
+  width: calc(100% - 4px);
+  border: 1px solid $deep;
+  border-top-color: $edge-light;
+  background:
+    repeating-linear-gradient(90deg, rgba(219, 229, 188, 0.035) 0 1px, transparent 1px 4px),
+    linear-gradient(180deg, #556249, #35402f 55%, #2b3426);
+  color: $text;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  text-shadow: 1px 1px 0 $deep;
+  box-shadow: inset 1px 1px 0 rgba(210, 220, 183, 0.17);
+}
+
+.title-drag, #window-title, #window-title-modal {
+  color: $text;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.header_icon { fill: $accent; filter: drop-shadow(1px 1px 0 $deep); height: 11px; margin: 7px; }
+.window-controls { grid-template-columns: repeat(3, 22px); gap: 1px; height: 22px; margin: 2px; }
+
+.win-btn, .win-btn-back {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  min-height: 22px;
+  margin: 0;
+  padding: 2px;
+  border: 1px solid $deep;
+  border-top-color: $edge-light;
+  border-left-color: $edge;
+  border-radius: 0;
+  background: linear-gradient(180deg, $raised, #3e4935);
+  color: $text;
+  box-shadow: inset 1px 1px 0 rgba(221, 230, 197, 0.12), 1px 1px 0 #11150f;
+}
+.win-btn:hover, .win-btn-back:hover { background: linear-gradient(180deg, #687755, #4b583f); }
+.win-btn:active, .win-btn-back:active {
+  border-color: $deep $edge $edge-light $deep;
+  background: $ink !important;
+  box-shadow: inset 1px 1px 0 #0e110c;
+  filter: none;
+  transform: translate(1px, 1px);
+}
+.win-btn-close { background: linear-gradient(180deg, #65493d, #49342d); }
+.win-btn-close:hover { background: linear-gradient(180deg, #875849, #5d3d34); }
+.win-btn-back { margin-left: 2px; }
+
+button, .button, button#modal_true, button#btnLogin {
+  min-height: 25px;
+  padding: 4px 10px;
+  border: 1px solid $deep;
+  border-top-color: $edge-light;
+  border-left-color: $edge;
+  border-radius: 0;
+  background: linear-gradient(180deg, #59674b, #45513c 55%, #3b4634);
+  color: $text;
+  box-shadow: inset 1px 1px 0 rgba(225, 233, 203, 0.12), 1px 1px 0 #12160f;
+  text-shadow: 1px 1px 0 $deep;
+}
+button:hover, .button:hover {
+  border-top-color: #98a77d;
+  background: linear-gradient(180deg, #6d7c58, #536145) !important;
+  color: #eef2d8;
+}
+button:active, button:target, .button:active, .button:target, .show > .dropdown-toggle {
+  border-color: $deep $edge $edge-light $deep;
+  background: $ink !important;
+  box-shadow: inset 1px 1px 1px #0b0d09;
+  filter: none;
+  transform: translate(1px, 1px);
+}
+button:disabled, button[disabled], .button[aria-disabled="true"], input:disabled, select:disabled, textarea:disabled {
+  border-color: #424b39 !important;
+  background: #343d2e !important;
+  color: #7f876e !important;
+  cursor: not-allowed;
+  opacity: 1;
+  text-shadow: 1px 1px 0 #151a12;
+}
+button:focus-visible, .button:focus-visible, a:focus-visible,
+input:not([type="hidden"]):focus-visible, select:focus-visible, textarea:focus-visible,
+[role="button"]:focus-visible, [tabindex]:not([tabindex="-1"]):focus-visible {
+  outline: 1px dotted $amber !important;
+  outline-offset: 2px;
+}
+
+input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+select, textarea, .modal-input {
+  min-height: 24px;
+  padding: 3px 5px;
+  border: 1px solid $edge !important;
+  border-top-color: $deep !important;
+  border-left-color: $deep !important;
+  border-radius: 0;
+  background: $deep !important;
+  color: $text;
+  caret-color: $amber;
+  box-shadow: inset 1px 1px 0 #090b08, inset -1px -1px 0 #4c5940;
+}
+input::placeholder, textarea::placeholder { color: #7f876e; opacity: 1; }
+
+input[type="checkbox"] + label {
+  width: 16px;
+  height: 16px;
+  border: 1px solid $edge;
+  border-top-color: $deep;
+  border-left-color: $deep;
+  border-radius: 0;
+  background: $ink;
+  box-shadow: inset 1px 1px 0 #0a0c08;
+  transition: none;
+}
+input[type="checkbox"] + label::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 5px;
+  height: 9px;
+  border: solid transparent;
+  border-width: 0 2px 2px 0;
+  transform: translate(-50%, -58%) rotate(45deg);
+  transform-origin: center;
+}
+input[type="checkbox"]:checked + label { border-color: $deep $edge $edge $deep; background: #36412e; }
+input[type="checkbox"]:checked + label::after { border-color: $amber; }
+input[type="checkbox"]:focus-visible + label { outline: 1px dotted $amber; outline-offset: 2px; }
+
+.dropdown-toggle { min-height: 25px; height: 25px; }
+.dropdown-menu, .custom-dropdown-menu, .contextmenu, .contextmenu .submenu {
+  padding: 2px;
+  border: 1px solid $deep;
+  border-top-color: $edge;
+  border-left-color: $edge;
+  border-radius: 0;
+  background: $panel;
+  color: $text;
+  box-shadow: 3px 3px 0 rgba(8, 10, 7, 0.72);
+}
+.dropdown-item, .custom-dropdown-item {
+  min-height: 21px;
+  margin: 0;
+  padding: 3px 18px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: $text;
+  box-shadow: none;
+  text-shadow: none;
+}
+.contextmenu li {
+  min-height: 21px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: $text;
+  box-shadow: none;
+  text-shadow: none;
+}
+.contextmenu li > a, .contextmenu li > span, .contextmenu li > button {
+  min-height: 21px;
+  margin: 0;
+  padding: 3px 18px;
+  border: 0 !important;
+  border-radius: 0;
+  background: transparent !important;
+  color: $text !important;
+  box-shadow: none !important;
+  filter: none;
+  text-shadow: none;
+  transform: none;
+}
+.contextmenu li > button:disabled, .contextmenu li > button.ctx-menu__btn--disabled {
+  border: 0 !important;
+  background: transparent !important;
+  color: #7f876e !important;
+  box-shadow: none !important;
+}
+.contextmenu .submenu, .contextmenu .submenu li { color: $text; }
+.contextmenu .submenu li > a, .contextmenu .submenu li > span, .contextmenu .submenu li > button { color: $text !important; }
+.dropdown-item:hover, .dropdown-item:focus, .dropdown-item.active,
+.custom-dropdown-item:hover, .custom-dropdown-item:focus, .contextmenu li:hover:not(.ctx-sep) {
+  background: #5c694b !important;
+  color: #f1f4dc;
+}
+.contextmenu li:hover:not(.ctx-sep) > a,
+.contextmenu li:hover:not(.ctx-sep) > span,
+.contextmenu li:hover:not(.ctx-sep) > button { color: #f1f4dc !important; }
+
+::-webkit-scrollbar { width: 15px; height: 15px; background: $ink; }
+::-webkit-scrollbar-track {
+  border: 1px solid $deep;
+  border-radius: 0;
+  background: repeating-linear-gradient(135deg, #252d20 0 2px, #2d3627 2px 4px);
+}
+::-webkit-scrollbar-thumb {
+  min-height: 22px;
+  border: 1px solid $deep;
+  border-top-color: $edge-light;
+  border-left-color: $edge;
+  border-radius: 0;
+  background: linear-gradient(90deg, #4b5840, #606e50 52%, #45503b);
+  box-shadow: inset 1px 1px 0 rgba(225, 233, 202, 0.12);
+}
+::-webkit-scrollbar-thumb:hover { background: #657451; }
+::-webkit-scrollbar-corner { background: $ink; }
+
+.settingsCol, .infoWindow, .shortcuts, .shortcutDropdown, .pathPicker, .acc_list_actionbar,
+.modalTestPanel, .preview_element {
+  border: 1px solid $deep;
+  border-top-color: $edge;
+  border-left-color: $edge;
+  border-radius: 0;
+  background: $panel;
+  color: $text;
+  box-shadow: inset 1px 1px 0 rgba(216, 225, 190, 0.07), 2px 2px 0 #11150f;
+}
+
+.actionbar, .acc_list_actionbar {
+  border-top: 1px solid $edge;
+  background:
+    repeating-linear-gradient(90deg, rgba(220, 228, 195, 0.025) 0 1px, transparent 1px 5px),
+    $ink;
+  color: $muted;
+}
+
+.platform_list_item, label.acc, .accountHover, .searchOverlay_resultItem,
+.placeHolderAcc, .acc_list_item--skeleton {
+  border: 1px solid $deep;
+  border-top-color: $edge;
+  border-left-color: $edge;
+  border-radius: 0;
+  background: linear-gradient(180deg, #4a573f, #384331);
+  color: $text;
+  text-shadow: 1px 1px 0 $deep;
+  box-shadow: inset 1px 1px 0 rgba(223, 231, 199, 0.08), 1px 1px 0 #11150f;
+}
+.platform_list_item:hover:not(:active), label.acc:hover, .accountHover:hover,
+.searchOverlay_resultItem:hover, .searchOverlay_resultItem.searchOverlay_selected {
+  border-color: $accent;
+  background: linear-gradient(180deg, #60704e, #46533b);
+}
+.platform_list_item .icoFG, .platform_list_item .fgImg use.icoFG { fill: var(--accent); }
+input.acc:checked + label.acc {
+  border-color: $accent !important;
+  background: #566448;
+  box-shadow: inset 0 0 0 1px #22291d, 0 0 0 1px rgba(170, 184, 121, 0.35);
+}
+.displayName, .platform_name, .actionbar__status { color: $text; }
+.acc_note, .last-used, .platform_desc { color: $muted; }
+
+.modalFG, #modal_contents, .app-lock-panel, .searchOverlay_dialog, .stability-prompt, .toast {
+  border: 2px solid $deep;
+  border-top-color: $edge-light;
+  border-left-color: $edge;
+  border-radius: 0;
+  background: $panel;
+  color: $text;
+  box-shadow: 4px 4px 0 rgba(7, 9, 6, 0.78);
+}
+.modal-header, .modalTitle, .searchOverlay_header {
+  margin: 2px;
+  border-bottom: 1px solid $deep;
+  background: linear-gradient(180deg, #536047, #343f2e);
+  color: $text;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-shadow: 1px 1px 0 $deep;
+}
+.toast { border-left: 4px solid var(--notification-info-border); }
+.toast__title, .toast__message, .toast__close { color: $text; }
+.toast__count { border-radius: 0; background: $deep; color: $amber; }
+.tooltip {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.tooltip .tooltip-inner {
+  border: 1px solid $deep;
+  border-top-color: $edge-light;
+  border-left-color: $edge;
+  border-radius: 0;
+  background: #d8d2aa;
+  color: #1a1d14;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.55);
+  font-size: 11px;
+  text-align: left;
+  text-shadow: none;
+}
+
+.SettingsHeader {
+  border-left: 0;
+  border-bottom: 1px solid $edge;
+  color: $text;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 0 $deep;
+}
+.SettingsHeader::before { content: "[ "; color: $amber; }
+.SettingsHeader::after { content: " ]"; color: $amber; }
+.fancyLink, a { color: #c3cc91; text-decoration: underline; }
+.fancyLink:hover, a:hover { color: #e0c577; }
+hr { border-top-color: #667354; }
+
+.progress, progress { border-radius: 0; background: $deep; }
+progress::-webkit-progress-bar { background: $deep; }
+progress::-webkit-progress-value { background: repeating-linear-gradient(90deg, $accent 0 7px, #71804f 7px 9px); }
+
+/* ---- Steam Guard ---- */
+
+/* Confirmations window: olive gradient buttons, recessed dark list, square
+   bevelled panels. */
+.confirmations-refresh,
+.confirmations-status button,
+.confirmations-actions button,
+.confirmations-batch button,
+.confirmations-detail__close {
+  border: 1px solid $deep;
+  border-top-color: $edge-light;
+  border-left-color: $edge;
+  border-radius: 0;
+  background: linear-gradient(180deg, #59674b, #45513c 55%, #3b4634);
+  box-shadow: inset 1px 1px 0 rgba(225, 233, 203, 0.12), 1px 1px 0 #12160f;
+  text-shadow: 1px 1px 0 $deep;
+}
+
+.confirmations-refresh:hover:not(:disabled),
+.confirmations-status button:hover:not(:disabled),
+.confirmations-actions button:hover:not(:disabled),
+.confirmations-batch button:hover:not(:disabled),
+.confirmations-detail__close:hover {
+  border-top-color: #98a77d;
+  background: linear-gradient(180deg, #6d7c58, #536145);
+  color: #eef2d8;
+}
+
+/* The decisions keep their colour fills; only the chrome squares up. */
+.confirmations-actions .confirmations-accept,
+.confirmations-actions .confirmations-deny,
+.confirmations-batch .confirmations-accept,
+.confirmations-batch .confirmations-deny {
+  border-color: $deep;
+  border-top-color: $edge-light;
+  border-left-color: $edge;
+  text-shadow: none;
+}
+
+.confirmations-workspace {
+  border: 1px solid $deep;
+  border-top-color: $edge;
+  border-left-color: $edge;
+  background: $panel;
+  box-shadow: inset 1px 1px 0 rgba(216, 225, 190, 0.07), 2px 2px 0 #11150f;
+}
+
+.confirmations-list { background: $ink; }
+.confirmations-list > .confirmations-row { border-bottom-color: $recessed; }
+.confirmations-list > .confirmations-row:hover { background: linear-gradient(180deg, #60704e, #46533b); }
+.confirmations-list > .confirmations-row.active {
+  background: #46533b;
+  box-shadow: inset 3px 0 $accent;
+}
+.confirmations-list > .confirmations-row.checked {
+  background: #566448;
+  box-shadow: inset 0 0 0 1px rgba(170, 184, 121, 0.35);
+}
+
+button.confirmations-row__icon,
+button.confirmations-row__icon img,
+.confirmations-row__check svg,
+.confirmations-detail__icon,
+.confirmations-empty__mark { border-radius: 0; }
+
+.confirmations-status,
+.confirmations-trade__side {
+  border-radius: 0;
+  background: $panel;
+  box-shadow: inset 1px 1px 0 rgba(216, 225, 190, 0.07);
+}
+
+button.confirmations-trade__item {
+  border: 1px solid $edge;
+  border-top-color: $deep;
+  border-left-color: $deep;
+  border-radius: 0;
+  background: $deep;
+}
+
+.confirmations-item-card {
+  border: 1px solid $deep;
+  border-top-color: $edge-light;
+  border-left-color: $edge;
+  border-radius: 0;
+  background: #d8d2aa;
+  color: #1a1d14;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.55);
+}
+
+/* Steam Guard modal: recessed code field, raised olive account rows. */
+.modalFG .steam-guard__code,
+.modalFG .steam-guard__recovery-code {
+  border: 1px solid $edge;
+  border-top-color: $deep;
+  border-left-color: $deep;
+  border-radius: 0;
+  background: $deep;
+  box-shadow: inset 1px 1px 0 #090b08, inset -1px -1px 0 #4c5940;
+}
+.modalFG .steam-guard__code:hover {
+  border-color: $accent;
+  background: $deep;
+}
+
+.modalFG .steam-guard__accounts button {
+  border: 1px solid $deep;
+  border-top-color: $edge;
+  border-left-color: $edge;
+  border-radius: 0;
+  background: linear-gradient(180deg, #4a573f, #384331);
+  text-shadow: 1px 1px 0 $deep;
+}
+.modalFG .steam-guard__accounts button:hover:not(:disabled) {
+  border-color: $accent;
+  background: linear-gradient(180deg, #60704e, #46533b);
+}
+
+.modalFG .steam-guard__qr-approval,
+.modalFG .steam-guard__challenge-options {
+  border: 1px solid $deep;
+  border-top-color: $edge;
+  border-left-color: $edge;
+  border-radius: 0;
+  background: $panel;
+  box-shadow: inset 1px 1px 0 rgba(216, 225, 190, 0.07);
+}
+
+.modalFG .steam-guard__qr-progress,
+.modalFG .steam-guard__qr-progress::after { border-radius: 0; }
+.modalFG .steam-guard__qr-progress { background: $deep; }
+.modalFG .steam-guard__qr-progress::after {
+  background: repeating-linear-gradient(90deg, $accent 0 7px, #71804f 7px 9px);
+}
+
+/* Settings card, framed like the other settings panels. */
+.steam-guard-settings.steam-guard-settings {
+  border: 1px solid $deep;
+  border-top-color: $edge;
+  border-left-color: $edge;
+  background: $panel;
+  box-shadow: inset 1px 1px 0 rgba(216, 225, 190, 0.07), 2px 2px 0 #11150f;
+}
+.steam-guard-settings.steam-guard-settings code {
+  border: 1px solid $edge;
+  border-top-color: $deep;
+  border-left-color: $deep;
+  background: $deep;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button, .button, input[type="checkbox"] + label { transition: none; }
+}
+
+@include overlay.overlay-component-overrides;
+@include windows-icons.themed-button-icons(steam);

@@ -39,8 +39,10 @@
 *Wastes no time closing, switching and restarting Steam and other platforms.*<br />
 **NOTE:** Not created for cheating purposes. All it does is change accounts. Use it as you see fit, accepting responsibility.
 
+The optional native Steam Guard feature stores encrypted authenticator secrets and uses Steam's mobile endpoints. Read the [Steam Guard backup and security guide](docs/steam-guard.md) before enabling it.
+
 # How does it work?
-Simple. It swaps out files and registry values that point to your last logged in account while the program is closed. Think of it as freezing a platform like Steam in time, and replacing the "account block" with a previously frozen "account block", then unfreezing it. To Steam and your Steam account, it "looks" like you pulled your plug out and put it back in a week or so later, meanwhile you were playing on other accounts. Swapping the account block lets the program: Not interact with passwords, and not interact with 2-factor, so you can "Skip" both of those in the login process.
+Simple. It swaps out files and registry values that point to your last logged in account while the program is closed. Think of it as freezing a platform like Steam in time, and replacing the "account block" with a previously frozen "account block", then unfreezing it. To Steam and your Steam account, it "looks" like you pulled your plug out and put it back in a week or so later, meanwhile you were playing on other accounts. Ordinary account switching still does not require a password or two-factor code; the optional Steam Guard feature is a separate, explicit workflow.
 
 You can see (and edit) how account switching works by checking [Platforms.json](https://github.com/TCNOco/TcNo-Acc-Switcher/blob/go/Platforms.json).
 

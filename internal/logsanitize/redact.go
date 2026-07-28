@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"sort"
 	"strings"
+
+	"TcNo-Acc-Switcher/internal/logredact"
 )
 
 type secretReplacement struct {
@@ -13,6 +15,7 @@ type secretReplacement struct {
 
 // Redact replaces known account identifiers in text with accountN aliases (best-effort).
 func Redact(text string) string {
+	text = logredact.RedactText(text)
 	reps := collectReplacements()
 	if len(reps) == 0 {
 		return text

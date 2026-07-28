@@ -1,0 +1,16 @@
+name: Windows 95
+accent: "#000080"
+
+accents:
+  - name: Navy
+    color: "#000080"
+  - name: Teal
+    color: "#008080"
+  - name: Forest
+    color: "#008000"
+  - name: Purple
+    color: "#800080"
+  - name: Maroon
+    color: "#800000"
+  - name: Cobalt
+    color: "#0000A8"

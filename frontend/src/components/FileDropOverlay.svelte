@@ -5,6 +5,7 @@
   import { fileDropAcceptor, fileDropInterceptor, backgroundZoneInterceptor, accountProfileImageDropActive } from "../stores/fileDrop";
   import type { FileDropContext, FileDropTargetDetails } from "../stores/fileDrop";
   import { getDragFileCategory, type DragFileCategory } from "../lib/profileImageDrop";
+  import { handleSteamGuardDrop } from "../stores/steamGuardDrop";
   import { t } from "../stores/i18n";
 
   const FILES_DROPPED = "files-dropped";
@@ -144,6 +145,9 @@
       accountProfileImageDropActive.set(false);
       overlayActive = false;
       if (paths.length === 0) {
+        return;
+      }
+      if (await handleSteamGuardDrop(paths)) {
         return;
       }
       const bgIntercept = get(backgroundZoneInterceptor);

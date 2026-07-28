@@ -3,24 +3,64 @@ package app
 import (
 	"testing"
 
+	"TcNo-Acc-Switcher/internal/buildmode"
 	"TcNo-Acc-Switcher/internal/cli"
 	"TcNo-Acc-Switcher/internal/platform"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
-func TestMainWindowOptionsExposeBrowserTools(t *testing.T) {
+func TestMainWindowOptionsApplyBuildBrowserPolicy(t *testing.T) {
 	opts := mainWindowOptions(platform.AppSettings{}, cli.Parsed{})
+	development := buildmode.IsDebugBuild()
 
-	if !opts.DevToolsEnabled {
-		t.Fatal("DevToolsEnabled = false, want true")
+	if opts.DevToolsEnabled != development {
+		t.Fatalf("DevToolsEnabled = %v, want %v", opts.DevToolsEnabled, development)
 	}
-	if opts.DefaultContextMenuDisabled {
-		t.Fatal("DefaultContextMenuDisabled = true, want false")
+	if opts.DefaultContextMenuDisabled == development {
+		t.Fatalf("DefaultContextMenuDisabled = %v for development=%v", opts.DefaultContextMenuDisabled, development)
 	}
-	for _, accelerator := range []string{"Ctrl+Shift+I", "F11"} {
-		if opts.KeyBindings[accelerator] == nil {
-			t.Fatalf("KeyBindings missing %q", accelerator)
+	if got := opts.KeyBindings["Ctrl+Shift+I"] != nil; got != development {
+		t.Fatalf("Ctrl+Shift+I present = %v, want %v", got, development)
+	}
+	if opts.KeyBindings["F11"] == nil {
+		t.Fatal("KeyBindings missing F11")
+	}
+}
+
+func TestApplyWindowSecurityPolicyForRelease(t *testing.T) {
+	opts := application.WebviewWindowOptions{
+		DevToolsEnabled:            true,
+		DefaultContextMenuDisabled: false,
+		KeyBindings: map[string]func(application.Window){
+			"Ctrl+Shift+I": func(application.Window) {},
+			"F11":          func(application.Window) {},
+		},
+	}
+
+	applyWindowSecurityPolicy(&opts, false)
+
+	if opts.DevToolsEnabled {
+		t.Fatal("DevToolsEnabled = true for release")
+	}
+	if !opts.DefaultContextMenuDisabled {
+		t.Fatal("DefaultContextMenuDisabled = false for release")
+	}
+	if opts.KeyBindings["Ctrl+Shift+I"] != nil {
+		t.Fatal("release key bindings expose DevTools")
+	}
+	if opts.KeyBindings["F11"] == nil {
+		t.Fatal("release policy removed non-Debug key binding")
+	}
+	for _, permission := range []application.PermissionType{
+		application.PermissionCamera,
+		application.PermissionMicrophone,
+		application.PermissionGeolocation,
+		application.PermissionNotifications,
+		application.PermissionClipboardRead,
+	} {
+		if opts.Permissions[permission] != application.PermissionDeny {
+			t.Fatalf("permission %v is not denied", permission)
 		}
 	}
 }

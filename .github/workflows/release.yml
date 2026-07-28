@@ -127,6 +127,9 @@ jobs:
           check-latest: true
           cache: true
 
+      - name: Verify Go dependency policy
+        run: go test ./internal/dependencypolicy
+
       - name: Setup Node
         uses: actions/setup-node@v6
         with:

@@ -31,9 +31,10 @@ function restoreFocus(target: HTMLElement | null): void {
   });
 }
 
+/** Resolved inside the frame so a body rendered after the action mounts still wins. */
 function focusInitialElement(node: HTMLElement, options: FocusTrapOptions): void {
-  const target = options.initialFocus?.() ?? getFocusableElements(node)[0] ?? node;
   requestAnimationFrame(() => {
+    const target = options.initialFocus?.() ?? getFocusableElements(node)[0] ?? node;
     target.focus({ preventScroll: true });
   });
 }

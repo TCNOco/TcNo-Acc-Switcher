@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { PlatformStartup } from "../../bindings/TcNo-Acc-Switcher/internal/platform/models.js";
-import { applySinglePlatformStartupRoute, type Route } from "./routeCodec";
+import { applySinglePlatformStartupRoute, parseHash, serializeRoute, type Route } from "./routeCodec";
 
 function startup(overrides: Partial<PlatformStartup> = {}): PlatformStartup {
   return {
@@ -34,5 +34,13 @@ describe("applySinglePlatformStartupRoute", () => {
   it("preserves an explicit startup route", () => {
     const route: Route = { page: "settings" };
     expect(applySinglePlatformStartupRoute(route, startup())).toBe(route);
+  });
+});
+
+describe("Steam confirmations route", () => {
+  it("round-trips the singleton window route without account data in the URL", () => {
+    const route: Route = { page: "steam-confirmations" };
+    expect(serializeRoute(route)).toBe("#/steam/confirmations");
+    expect(parseHash("#/steam/confirmations")).toEqual(route);
   });
 });

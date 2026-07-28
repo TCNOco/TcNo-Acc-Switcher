@@ -16,12 +16,14 @@ import (
 	"TcNo-Acc-Switcher/internal/crashlog"
 	"TcNo-Acc-Switcher/internal/discordrpc"
 	"TcNo-Acc-Switcher/internal/ipc"
+	"TcNo-Acc-Switcher/internal/logredact"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/security"
 	"TcNo-Acc-Switcher/internal/shortcuts"
 	"TcNo-Acc-Switcher/internal/stability"
 	"TcNo-Acc-Switcher/internal/stats"
 	"TcNo-Acc-Switcher/internal/steam"
+	"TcNo-Acc-Switcher/internal/steamguard"
 	"TcNo-Acc-Switcher/internal/tray"
 	"TcNo-Acc-Switcher/internal/winutil"
 
@@ -41,6 +43,7 @@ var (
 	platformSvc   = &platform.PlatformService{}
 	basicSvc      = basic.NewBasicService(platformSvc)
 	steamSvc      = steam.NewSteamService()
+	steamGuardSvc = steamguard.NewService()
 	controllerSvc = controllerinput.NewService()
 	securitySvc   = security.NewService()
 	discordRPC    = discordrpc.NewManager()
@@ -114,7 +117,7 @@ func main() {
 	}
 
 	lvl := app.ResolvedLogLevel(parsed)
-	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: lvl})))
+	slog.SetDefault(slog.New(logredact.NewHandler(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: lvl}))))
 	actionlog.Init()
 
 	startupSettings, _ := loadStartupSettings()
@@ -163,6 +166,10 @@ func main() {
 
 	platform.RunUserDataMoveCleanup(exeDir, parsed.UserDataMoveFrom, parsed.UserDataMoveTo)
 
+	// Before any Steam Guard window is created, so both the modal's sensitive
+	// views and the confirmations window see the same answer.
+	steamguard.ResolveCapturePolicy(parsed.AllowSteamGuardCapture)
+
 	if parsed.NeedsHeadlessMutex() {
 		winutil.AttachParentConsole()
 		if herr := disp.RunHeadless(parsed); herr != nil {
@@ -191,6 +198,7 @@ func serviceList() []application.Service {
 		application.NewService(&FilesystemService{}),
 		application.NewService(platformSvc),
 		application.NewService(steamSvc),
+		application.NewService(steamGuardSvc),
 		application.NewService(controllerSvc),
 		application.NewService(basicSvc),
 		application.NewService(securitySvc),

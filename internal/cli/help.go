@@ -34,6 +34,12 @@ Other:               -h, --help    Show this help
                      -v, --verbose Debug logging (same as --log-level=debug)
                      --log-level=  Logging: debug, info, warn, error (app + Wails; default info)
                      -tray, --tray Start with the main window hidden (tray / background)
+                     --allow-steamguard-capture
+                                   Let Steam Guard windows be screenshotted or recorded.
+                                   They are hidden from screen capture otherwise, which
+                                   keeps codes and trades out of screen shares.
+                                   TCNO_ALLOW_STEAMGUARD_CAPTURE=1 does the same, for
+                                   'wails3 dev', which cannot forward arguments.
 
 Second instance forwards arguments to the running GUI via a named pipe (Windows).
 `

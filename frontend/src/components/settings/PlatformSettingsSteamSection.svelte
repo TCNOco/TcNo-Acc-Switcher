@@ -12,6 +12,7 @@
   } from "../../lib/platformSettingsShared";
   import SharedSettingCheckbox from "./SharedSettingCheckbox.svelte";
   import ProcessMethodDropdown from "./ProcessMethodDropdown.svelte";
+  import SteamGuardSettingsSection from "./SteamGuardSettingsSection.svelte";
   import type { Settings } from "../../../bindings/TcNo-Acc-Switcher/internal/steam/models";
 
   export let name: string;
@@ -282,6 +283,8 @@
   />
   <p class="subtext">{$t("Settings_SteamAPIKey_Note")}</p>
 </div>
+<SteamGuardSettingsSection />
+
 <h2 class="SettingsHeader">{$t("Settings_Header_ProcessManagement")}</h2>
 {#if !closingMethodUiLocked}
   <ProcessMethodDropdown

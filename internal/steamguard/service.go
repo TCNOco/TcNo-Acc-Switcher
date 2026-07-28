@@ -1,0 +1,1508 @@
+package steamguard
+
+import (
+	"context"
+	"crypto/rand"
+	"crypto/subtle"
+	"encoding/base64"
+	"encoding/json"
+	"errors"
+	"io"
+	"log/slog"
+	"os"
+	"path/filepath"
+	"strconv"
+	"strings"
+	"sync"
+	"time"
+
+	"TcNo-Acc-Switcher/internal/platform"
+	"TcNo-Acc-Switcher/internal/security"
+	"TcNo-Acc-Switcher/internal/steamguard/authflow"
+	"TcNo-Acc-Switcher/internal/steamguard/capability"
+	"TcNo-Acc-Switcher/internal/steamguard/confirmationapi"
+	"TcNo-Acc-Switcher/internal/steamguard/enrollmentapi"
+	"TcNo-Acc-Switcher/internal/steamguard/enrollmentflow"
+	"TcNo-Acc-Switcher/internal/steamguard/mafile"
+	"TcNo-Acc-Switcher/internal/steamguard/otp"
+	"TcNo-Acc-Switcher/internal/steamguard/protocol"
+	"TcNo-Acc-Switcher/internal/steamguard/qrattempt"
+	"TcNo-Acc-Switcher/internal/steamguard/qrcapture"
+	"TcNo-Acc-Switcher/internal/steamguard/qrregion"
+	"TcNo-Acc-Switcher/internal/steamguard/registry"
+	"TcNo-Acc-Switcher/internal/steamguard/secureclipboard"
+	"TcNo-Acc-Switcher/internal/steamguard/securefile"
+	"TcNo-Acc-Switcher/internal/steamguard/sessionrefresh"
+	"TcNo-Acc-Switcher/internal/steamguard/timesync"
+	"TcNo-Acc-Switcher/internal/steamguard/vault"
+
+	"github.com/wailsapp/wails/v3/pkg/application"
+)
+
+var (
+	ErrFeatureDisabled = errors.New("Steam Guard integration is disabled")
+	ErrVaultNotReady   = errors.New("Steam Guard vault is not configured")
+	ErrAccountNotFound = errors.New("Steam Guard account not found")
+	ErrInvalidImport   = errors.New("invalid Steam Guard import")
+	ErrPathNotAbsolute = errors.New("Steam Guard import path must be absolute")
+	// ErrExportManifestExists reports an encrypted export whose maFile was written
+	// but whose companion manifest was not, because one already existed there and
+	// overwriting it would destroy the account list it holds.
+	ErrExportManifestExists      = errors.New("a manifest.json already exists beside the exported maFile, so it was left untouched")
+	ErrUnsupportedInput          = errors.New("unsupported Steam Guard import file")
+	ErrLegacyManifest            = errors.New("legacy SDA manifest is required")
+	ErrAppPassword               = errors.New("current app password is required")
+	ErrSensitiveView             = errors.New("Steam Guard sensitive view is unavailable")
+	ErrSensitiveLease            = errors.New("invalid Steam Guard sensitive view lease")
+	ErrPasswordReuse             = errors.New("Steam Guard password must differ from the app password")
+	ErrRetainedUnlockUnavailable = errors.New("protected memory is unavailable; only one-time Steam Guard code access is available")
+)
+
+const (
+	SensitiveViewGrantEvent   = "steamguard:sensitive-view-grant"
+	SensitiveViewRevokedEvent = "steamguard:sensitive-view-revoked"
+	mainWindowName            = "main"
+	modalCapabilityScope      = "steamguard-modal"
+)
+
+// serviceLogger is the component logger for the Steam Guard service layer. It
+// goes through the process-wide logredact handler; never pass secrets to it.
+func serviceLogger() *slog.Logger {
+	return slog.Default().With("component", "steamguard")
+}
+
+type SettingsStatus struct {
+	VaultConfigured            bool          `json:"vaultConfigured"`
+	Unlocked                   bool          `json:"unlocked"`
+	RememberPasswordForSession bool          `json:"rememberPasswordForSession"`
+	FolderPath                 string        `json:"folderPath"`
+	LastVerifiedBackup         *BackupStatus `json:"lastVerifiedBackup"`
+	AppPasswordSet             bool          `json:"appPasswordSet"`
+	SavedAccountDataEncrypted  bool          `json:"savedAccountDataEncrypted"`
+}
+
+type BackupStatus struct {
+	VerifiedAt string `json:"verifiedAt"`
+	Path       string `json:"path"`
+}
+
+type CodeView struct {
+	SteamID64         string            `json:"steamId64"`
+	AccountName       string            `json:"accountName"`
+	Code              string            `json:"code"`
+	ExpiresAt         int64             `json:"expiresAt"`
+	TimeStatus        string            `json:"timeStatus"`
+	UnlockPersistence UnlockPersistence `json:"unlockPersistence"`
+}
+
+type UnlockPersistence string
+
+const (
+	UnlockPersistenceCached       UnlockPersistence = "cached"
+	UnlockPersistenceOneOperation UnlockPersistence = "one_operation"
+)
+
+type AccountSummary struct {
+	SteamID64   string `json:"steamId64"`
+	AccountName string `json:"accountName"`
+}
+
+type SensitiveViewGrant struct {
+	Capability string `json:"capability"`
+	Lease      string `json:"lease"`
+	AccountID  string `json:"accountId"`
+	RequestID  string `json:"requestId"`
+}
+
+type sensitiveViewLease struct {
+	binding capability.Binding
+}
+
+type ImportResult struct {
+	Path            string   `json:"path"`
+	SteamID64       string   `json:"steamId64,omitempty"`
+	AccountName     string   `json:"accountName,omitempty"`
+	DiscardedFields []string `json:"discardedFields,omitempty"`
+	Imported        bool     `json:"imported"`
+	ErrorCode       string   `json:"errorCode,omitempty"`
+	// CapabilityRefreshRequired is true when this entry wrote to the vault.
+	// The write rotates the vault generation, so any capability the UI already
+	// holds is invalid and must be re-acquired.
+	CapabilityRefreshRequired bool `json:"capabilityRefreshRequired"`
+}
+
+type Service struct {
+	mu                         sync.Mutex
+	vault                      *vault.Vault
+	vaultOptions               []vault.Option
+	timeState                  *otp.TimeState
+	timeSync                   *timesync.Client
+	timeSyncCancel             context.CancelFunc
+	clipboard                  clipboardManager
+	contentProtectionMu        sync.Mutex
+	contentProtectionLeases    map[string]sensitiveViewLease
+	capabilities               *capability.Manager
+	setMainContentProtectionFn func(bool) error
+	emitMainWindowEventFn      func(string, any) error
+	confirmationWindowMu       sync.Mutex
+	confirmationAccountID      string
+	confirmationGeneration     string
+	confirmationInstanceID     string
+	confirmationRows           map[string]confirmationapi.Confirmation
+	confirmationCancel         context.CancelFunc
+	confirmationOperation      uint64
+	// A detail fetch gets its own cancel slot. Sharing the one above meant a
+	// ten-second poll landing mid-fetch cancelled the open trade, and the trade
+	// cancelled the poll right back.
+	confirmationDetailCancel    context.CancelFunc
+	confirmationDetailOperation uint64
+	// How many detail or item fetches are downloading icons right now. A refresh
+	// cannot know what they will produce, so it does not prune while any run.
+	confirmationDetailsInFlight int
+	confirmationClient          steamConfirmationClient
+	confirmationIcons           *confirmationIconCache
+	// Icons the open detail refers to. The list poll prunes everything it does
+	// not reference, which would otherwise clear the images under an open trade.
+	confirmationDetailIcons []string
+	// Item descriptions already fetched for the open window, keyed by
+	// appid/classid/instanceid, so hovering an item repeatedly costs one request.
+	confirmationItems         map[string]ConfirmationItemView
+	qrScanner                 steamQRScanner
+	qrRegionSelector          steamQRRegionSelector
+	qrRegionMu                sync.Mutex
+	qrRegionCancel            context.CancelFunc
+	qrRegionBinding           capability.Binding
+	qrRegionOperation         uint64
+	qrAttempts                *qrattempt.Manager
+	qrAuth                    steamQRAuthenticator
+	steamProtocol             *protocol.Client
+	resolveSteamExecutableFn  func() (string, bool)
+	authStateMu               sync.Mutex
+	authManager               steamCredentialAuthManager
+	newAuthManager            func() (steamCredentialAuthManager, error)
+	authOperations            map[string]steamAuthOperation
+	authManagerEpoch          uint64
+	authShutdown              bool
+	enrollmentManager         steamEnrollmentManager
+	newEnrollmentManager      func(*vault.Vault) steamEnrollmentManager
+	newSessionRefresher       func(*vault.Vault) steamSessionRefresher
+	revocationAcknowledgments map[string]revocationAcknowledgment
+	steamOperationCancels     map[string]steamBoundOperation
+	steamOperationSequence    uint64
+	registryUpsertFn          func(string, registry.State) error
+}
+
+type clipboardManager interface {
+	Copy(string, time.Duration) error
+	Clear() (bool, error)
+	Close() error
+}
+
+type lifecycleHook struct{ service *Service }
+
+func NewService() *Service {
+	steamProtocol := protocol.NewClient(protocol.Options{})
+	authenticationClient := protocol.NewAuthenticationClient(steamProtocol)
+	authAdapter := authflow.NewProtocolClient(authenticationClient)
+	timeState := otp.NewTimeState(nil)
+	s := &Service{
+		timeState:                  timeState,
+		timeSync:                   timesync.NewClient(),
+		clipboard:                  secureclipboard.New(),
+		contentProtectionLeases:    make(map[string]sensitiveViewLease),
+		capabilities:               capability.NewManager(),
+		confirmationRows:           make(map[string]confirmationapi.Confirmation),
+		confirmationClient:         newConfirmationClient(steamProtocol, timeState),
+		confirmationIcons:          newConfirmationIconCache(),
+		qrScanner:                  qrcapture.New(),
+		qrRegionSelector:           qrregion.New(),
+		qrAttempts:                 qrattempt.New(),
+		qrAuth:                     authenticationClient,
+		steamProtocol:              steamProtocol,
+		resolveSteamExecutableFn:   resolveSteamExecutable,
+		setMainContentProtectionFn: setMainContentProtection,
+		emitMainWindowEventFn:      emitMainWindowEvent,
+		authOperations:             make(map[string]steamAuthOperation),
+		revocationAcknowledgments:  make(map[string]revocationAcknowledgment),
+		steamOperationCancels:      make(map[string]steamBoundOperation),
+		registryUpsertFn:           registry.Upsert,
+	}
+	s.newAuthManager = func() (steamCredentialAuthManager, error) {
+		return authflow.New(authAdapter, authflow.Config{})
+	}
+	s.newEnrollmentManager = func(v *vault.Vault) steamEnrollmentManager {
+		return enrollmentflow.New(enrollmentapi.NewClient(steamProtocol), v)
+	}
+	s.newSessionRefresher = func(v *vault.Vault) steamSessionRefresher {
+		return sessionrefresh.New(authenticationClient, v)
+	}
+	security.SetSteamGuardLifecycleHook(lifecycleHook{service: s})
+	return s
+}
+
+func newServiceForTest(options ...vault.Option) *Service {
+	steamProtocol := protocol.NewClient(protocol.Options{})
+	authenticationClient := protocol.NewAuthenticationClient(steamProtocol)
+	authAdapter := authflow.NewProtocolClient(authenticationClient)
+	timeState := otp.NewTimeState(nil)
+	s := &Service{
+		vaultOptions:               options,
+		timeState:                  timeState,
+		timeSync:                   timesync.NewClient(),
+		clipboard:                  secureclipboard.New(),
+		contentProtectionLeases:    make(map[string]sensitiveViewLease),
+		capabilities:               capability.NewManager(),
+		confirmationRows:           make(map[string]confirmationapi.Confirmation),
+		confirmationClient:         newConfirmationClient(steamProtocol, timeState),
+		confirmationIcons:          newConfirmationIconCache(),
+		qrScanner:                  qrcapture.New(),
+		qrRegionSelector:           qrregion.New(),
+		qrAttempts:                 qrattempt.New(),
+		qrAuth:                     authenticationClient,
+		steamProtocol:              steamProtocol,
+		resolveSteamExecutableFn:   resolveSteamExecutable,
+		setMainContentProtectionFn: setMainContentProtection,
+		emitMainWindowEventFn:      emitMainWindowEvent,
+		authOperations:             make(map[string]steamAuthOperation),
+		revocationAcknowledgments:  make(map[string]revocationAcknowledgment),
+		steamOperationCancels:      make(map[string]steamBoundOperation),
+		registryUpsertFn:           registry.Upsert,
+	}
+	s.newAuthManager = func() (steamCredentialAuthManager, error) {
+		return authflow.New(authAdapter, authflow.Config{})
+	}
+	s.newEnrollmentManager = func(v *vault.Vault) steamEnrollmentManager {
+		return enrollmentflow.New(enrollmentapi.NewClient(steamProtocol), v)
+	}
+	s.newSessionRefresher = func(v *vault.Vault) steamSessionRefresher {
+		return sessionrefresh.New(authenticationClient, v)
+	}
+	return s
+}
+
+func (s *Service) ServiceStartup(ctx context.Context, _ application.ServiceOptions) error {
+	s.mu.Lock()
+	if s.timeSyncCancel != nil {
+		s.timeSyncCancel()
+	}
+	syncCtx, cancel := context.WithCancel(ctx)
+	s.timeSyncCancel = cancel
+	client := s.timeSync
+	state := s.timeState
+	s.mu.Unlock()
+	if client != nil && state != nil {
+		go runTimeSync(syncCtx, client, state)
+	}
+	registerLoginAgainHandoff()
+	return nil
+}
+
+func (s *Service) ServiceShutdown() error {
+	s.closeAuthenticationManager(true)
+	s.mu.Lock()
+	cancel := s.timeSyncCancel
+	s.timeSyncCancel = nil
+	clipboard := s.clipboard
+	steamProtocol := s.steamProtocol
+	s.mu.Unlock()
+	if cancel != nil {
+		cancel()
+	}
+	if steamProtocol != nil {
+		steamProtocol.CloseIdleConnections()
+	}
+	revocationErr := s.revokeLeases()
+	if clipboard != nil {
+		return errors.Join(revocationErr, clipboard.Close())
+	}
+	return revocationErr
+}
+
+// steamAlignedClock reports the timesync-corrected time. Confirmation
+// signatures must use the same clock Steam does, or the k hash is rejected.
+type steamAlignedClock struct{ state *otp.TimeState }
+
+func (c steamAlignedClock) Now() time.Time {
+	if c.state == nil {
+		return time.Now()
+	}
+	now, _ := c.state.Now()
+	return now
+}
+
+func newConfirmationClient(steamProtocol *protocol.Client, state *otp.TimeState) *confirmationapi.Client {
+	return confirmationapi.NewClient(confirmationapi.Options{
+		Protocol: steamProtocol, Clock: steamAlignedClock{state: state},
+	})
+}
+
+func runTimeSync(ctx context.Context, client *timesync.Client, state *otp.TimeState) {
+	const interval = 5 * time.Minute
+	log := slog.Default().With("component", "steamguard.timesync")
+	syncOnce(ctx, client, state, log)
+	ticker := time.NewTicker(interval)
+	defer ticker.Stop()
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-ticker.C:
+			syncOnce(ctx, client, state, log)
+		}
+	}
+}
+
+func syncOnce(ctx context.Context, client *timesync.Client, state *otp.TimeState, log *slog.Logger) {
+	result, err := client.Sync(ctx, state)
+	if err != nil {
+		if ctx.Err() == nil {
+			log.Warn("Steam time sync failed", "error", err, "freshness", state.Freshness())
+		}
+		return
+	}
+	log.Debug("Steam time synchronised", "offset", result.Offset, "roundTrip", result.RoundTrip)
+}
+
+func setMainContentProtection(enabled bool) error {
+	app := application.Get()
+	if app == nil || app.Window == nil {
+		return ErrSensitiveView
+	}
+	window, ok := app.Window.GetByName("main")
+	if !ok {
+		return ErrSensitiveView
+	}
+	// The lease still exists and is still released; only the exclusion is skipped,
+	// so nothing else about a sensitive view changes when capture is allowed.
+	window.SetContentProtection(enabled && contentProtectionEnabled())
+	return nil
+}
+
+func emitMainWindowEvent(name string, data any) error {
+	app := application.Get()
+	if app == nil || app.Window == nil {
+		return ErrSensitiveView
+	}
+	window, ok := app.Window.GetByName(mainWindowName)
+	if !ok {
+		return ErrSensitiveView
+	}
+	window.DispatchWailsEvent(&application.CustomEvent{Name: name, Sender: "native", Data: data})
+	return nil
+}
+
+// RequestSensitiveView enables content protection and delivers an account-bound
+// capability directly to the main window. The singleton service call itself
+// returns no bearer credential.
+func (s *Service) RequestSensitiveView(accountID, requestID string) error {
+	accountID = strings.TrimSpace(accountID)
+	requestID = strings.TrimSpace(requestID)
+	if _, err := strconv.ParseUint(accountID, 10, 64); err != nil || len(requestID) < 16 || len(requestID) > 128 {
+		return ErrSensitiveView
+	}
+	s.mu.Lock()
+	v, exists, err := s.openVaultLocked()
+	var generation string
+	if err == nil && exists {
+		generation = v.Generation()
+	}
+	s.mu.Unlock()
+	if err != nil {
+		return err
+	}
+	leaseBytes := make([]byte, 16)
+	if _, err := rand.Read(leaseBytes); err != nil {
+		return errors.Join(ErrSensitiveView, err)
+	}
+	lease := base64.RawURLEncoding.EncodeToString(leaseBytes)
+
+	s.contentProtectionMu.Lock()
+	defer s.contentProtectionMu.Unlock()
+	if s.setMainContentProtectionFn == nil || s.emitMainWindowEventFn == nil || s.capabilities == nil {
+		return ErrSensitiveView
+	}
+	if len(s.contentProtectionLeases) == 0 {
+		if err := s.setMainContentProtectionFn(true); err != nil {
+			return errors.Join(ErrSensitiveView, err)
+		}
+	}
+	if s.contentProtectionLeases == nil {
+		s.contentProtectionLeases = make(map[string]sensitiveViewLease)
+	}
+	binding := capability.Binding{
+		WindowName:      mainWindowName,
+		AccountID:       accountID,
+		Scope:           modalCapabilityScope,
+		LeaseID:         lease,
+		VaultGeneration: generation,
+	}
+	token, err := s.capabilities.Issue(binding)
+	if err != nil {
+		if len(s.contentProtectionLeases) == 0 {
+			_ = s.setMainContentProtectionFn(false)
+		}
+		return errors.Join(ErrSensitiveView, err)
+	}
+	s.contentProtectionLeases[lease] = sensitiveViewLease{binding: binding}
+	grant := SensitiveViewGrant{Capability: token, Lease: lease, AccountID: accountID, RequestID: requestID}
+	if err := s.emitMainWindowEventFn(SensitiveViewGrantEvent, grant); err != nil {
+		delete(s.contentProtectionLeases, lease)
+		s.capabilities.Revoke(token)
+		if len(s.contentProtectionLeases) == 0 {
+			_ = s.setMainContentProtectionFn(false)
+		}
+		return errors.Join(ErrSensitiveView, err)
+	}
+	return nil
+}
+
+func (s *Service) EndSensitiveView(token, lease string) error {
+	s.contentProtectionMu.Lock()
+	defer s.contentProtectionMu.Unlock()
+	if lease == "" || token == "" || s.capabilities == nil {
+		return ErrSensitiveLease
+	}
+	viewLease, ok := s.contentProtectionLeases[lease]
+	if !ok || s.capabilities.Validate(viewLease.binding, token) != nil {
+		return ErrSensitiveLease
+	}
+	s.cancelAuthenticationForBinding(viewLease.binding, token)
+	s.clearUnacknowledgedRevocationForCapability(viewLease.binding.AccountID, token)
+	s.cancelQRRegionSelection(lease)
+	delete(s.contentProtectionLeases, lease)
+	if len(s.contentProtectionLeases) != 0 {
+		s.capabilities.Revoke(token)
+		return s.revokeQRAttempt(viewLease.binding.AccountID)
+	}
+	if s.setMainContentProtectionFn == nil {
+		s.contentProtectionLeases[lease] = viewLease
+		return ErrSensitiveView
+	}
+	if err := s.setMainContentProtectionFn(false); err != nil {
+		s.contentProtectionLeases[lease] = viewLease
+		return errors.Join(ErrSensitiveView, err)
+	}
+	s.capabilities.Revoke(token)
+	return s.revokeQRAttempt(viewLease.binding.AccountID)
+}
+
+func (s *Service) revokeQRAttempt(accountID string) error {
+	if s.qrAttempts == nil {
+		return nil
+	}
+	return s.qrAttempts.RevokeAccount(accountID)
+}
+
+func (s *Service) GetSettingsStatus() (SettingsStatus, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	settings, err := LoadSettings()
+	if err != nil {
+		return SettingsStatus{}, err
+	}
+	securityStatus, err := security.GetStatus()
+	if err != nil {
+		return SettingsStatus{}, err
+	}
+	root, err := VaultFolderPath()
+	if err != nil {
+		return SettingsStatus{}, err
+	}
+	v, exists, err := s.openVaultLocked()
+	if err != nil {
+		return SettingsStatus{}, err
+	}
+	status := SettingsStatus{
+		VaultConfigured:            exists,
+		RememberPasswordForSession: settings.RememberPasswordForSession,
+		FolderPath:                 root,
+		AppPasswordSet:             securityStatus.AppPasswordSet,
+		SavedAccountDataEncrypted:  securityStatus.SavedAccountDataEncrypted,
+	}
+	if exists {
+		status.Unlocked = !v.IsLocked()
+	}
+	if settings.LastVerifiedBackup != "" {
+		status.LastVerifiedBackup = &BackupStatus{
+			VerifiedAt: settings.LastVerifiedBackup,
+			Path:       settings.LastVerifiedBackupPath,
+		}
+	}
+	return status, nil
+}
+
+func (s *Service) SetFeatureEnabled(enabled bool) error {
+	settings, err := LoadSettings()
+	if err != nil {
+		return err
+	}
+	settings.FeatureEnabled = enabled
+	if !enabled {
+		_ = s.revokeLeases()
+	}
+	return SaveSettings(settings)
+}
+
+func (s *Service) SetRememberPasswordForSession(enabled bool) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	settings, err := LoadSettings()
+	if err != nil {
+		return err
+	}
+	settings.RememberPasswordForSession = enabled
+	if err := SaveSettings(settings); err != nil {
+		return err
+	}
+	v, exists, err := s.openVaultLocked()
+	if err != nil || !exists || v.IsLocked() {
+		return err
+	}
+	mode := vault.FixedLease
+	if enabled {
+		mode = vault.ProcessLease
+	}
+	return v.SetLeaseMode(mode)
+}
+
+func (s *Service) Initialize(password, appPassword string) (string, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if strings.TrimSpace(password) == "" {
+		return "", vault.ErrInvalidPassword
+	}
+	outerKey, err := appOuterKeyForRecovery(appPassword)
+	if err != nil {
+		return "", err
+	}
+	defer security.WipeSecret(outerKey)
+	if len(outerKey) != 0 && samePassword(password, appPassword) {
+		return "", ErrPasswordReuse
+	}
+	root, err := VaultFolderPath()
+	if err != nil {
+		return "", err
+	}
+	if _, exists, err := s.openVaultLocked(); err != nil {
+		return "", err
+	} else if exists {
+		return "", vault.ErrAlreadyExists
+	}
+	v, err := vault.Create(root, password, s.vaultOptions...)
+	if err != nil {
+		return "", err
+	}
+	if len(outerKey) != 0 {
+		if err := v.EnableOuterWithRecovery(outerKey, appPassword); err != nil {
+			return "", err
+		}
+	}
+	s.vault = v
+	settings, err := LoadSettings()
+	if err != nil {
+		return "", err
+	}
+	settings.FeatureEnabled = true
+	if err := SaveSettings(settings); err != nil {
+		return "", err
+	}
+	return root, nil
+}
+
+func (s *Service) UnlockAccount(steamID64, password string, rememberForSession bool, token string) (CodeView, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	v, err := s.requireVaultLocked()
+	if err != nil {
+		return CodeView{}, err
+	}
+	if err := s.authorizeModalLocked(v, steamID64, token); err != nil {
+		return CodeView{}, err
+	}
+	if err := s.unlockVaultLocked(v, password, rememberForSession); err != nil {
+		if !errors.Is(err, vault.ErrOneOperationRequired) {
+			serviceLogger().Warn("Steam Guard vault unlock failed",
+				"steamId64", strings.TrimSpace(steamID64), "reason", unlockFailureReason(err), "error", err)
+			return CodeView{}, err
+		}
+		serviceLogger().Info("Steam Guard vault requires a one-operation unlock", "steamId64", strings.TrimSpace(steamID64))
+		if lockErr := v.Lock(); lockErr != nil {
+			return CodeView{}, errors.Join(ErrRetainedUnlockUnavailable, lockErr)
+		}
+		var view CodeView
+		operationErr := s.withOneOperationLocked(v, password, func(access *vault.OneOperationAccess) error {
+			var err error
+			view, err = s.codeFromReader(access, steamID64, UnlockPersistenceOneOperation)
+			return err
+		})
+		if operationErr != nil {
+			serviceLogger().Warn("Steam Guard one-operation unlock failed",
+				"steamId64", strings.TrimSpace(steamID64), "reason", unlockFailureReason(operationErr), "error", operationErr)
+			return CodeView{}, operationErr
+		}
+		return view, nil
+	}
+	return s.codeLocked(v, steamID64)
+}
+
+func (s *Service) GetCode(steamID64, token string) (*CodeView, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	v, err := s.requireVaultLocked()
+	if err != nil {
+		return nil, err
+	}
+	if err := s.authorizeModalLocked(v, steamID64, token); err != nil {
+		return nil, err
+	}
+	if v.IsLocked() {
+		return nil, nil
+	}
+	view, err := s.codeLocked(v, steamID64)
+	if err != nil {
+		return nil, err
+	}
+	return &view, nil
+}
+
+func (s *Service) CopyCode(steamID64, token string) error {
+	s.mu.Lock()
+	v, err := s.requireVaultLocked()
+	if err != nil {
+		s.mu.Unlock()
+		return err
+	}
+	if err := s.authorizeModalLocked(v, steamID64, token); err != nil {
+		s.mu.Unlock()
+		return err
+	}
+	if v.IsLocked() {
+		s.mu.Unlock()
+		return vault.ErrLocked
+	}
+	view, err := s.codeLocked(v, steamID64)
+	clipboard := s.clipboard
+	s.mu.Unlock()
+	if err != nil {
+		return err
+	}
+	if clipboard == nil {
+		return secureclipboard.ErrUnavailable
+	}
+	lifetime := time.Until(time.UnixMilli(view.ExpiresAt))
+	if lifetime > secureclipboard.MaxClipboardLife {
+		lifetime = secureclipboard.MaxClipboardLife
+	}
+	err = clipboard.Copy(view.Code, lifetime)
+	view.Code = ""
+	return err
+}
+
+func (s *Service) ListAccounts(accountID, token string) ([]AccountSummary, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	v, err := s.requireVaultLocked()
+	if err != nil {
+		return nil, err
+	}
+	if err := s.authorizeModalLocked(v, accountID, token); err != nil {
+		return nil, err
+	}
+	records, err := v.List()
+	if err != nil {
+		return nil, err
+	}
+	result := make([]AccountSummary, 0, len(records))
+	anchorFound := false
+	for _, record := range records {
+		if record.SteamID64 == accountID {
+			anchorFound = true
+		}
+		account, err := accountFromRecord(v, record.ID)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, AccountSummary{SteamID64: record.SteamID64, AccountName: account.AccountName})
+	}
+	if !anchorFound {
+		return nil, capability.ErrInvalidCapability
+	}
+	return result, nil
+}
+
+func (s *Service) ChangePassword(currentPassword, newPassword, appPassword string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if strings.TrimSpace(newPassword) == "" {
+		return vault.ErrInvalidPassword
+	}
+	securityStatus, err := security.GetStatus()
+	if err != nil {
+		return err
+	}
+	if securityStatus.SavedAccountDataEncrypted {
+		if appPassword == "" {
+			return ErrAppPassword
+		}
+		if err := security.VerifyAppPassword(appPassword); err != nil {
+			return err
+		}
+		if samePassword(newPassword, appPassword) {
+			return ErrPasswordReuse
+		}
+	}
+	v, err := s.requireVaultLocked()
+	if err != nil {
+		return err
+	}
+	if err := s.unlockVaultLocked(v, currentPassword, false); err != nil {
+		return err
+	}
+	settings, err := LoadSettings()
+	if err != nil {
+		return err
+	}
+	settings.LastVerifiedBackup = ""
+	settings.LastVerifiedBackupPath = ""
+	if err := SaveSettings(settings); err != nil {
+		return err
+	}
+	return v.ChangePassword(currentPassword, newPassword)
+}
+
+func (s *Service) LockNow() error { return s.revokeLeases() }
+
+func (s *Service) OpenFolder() error {
+	root, err := VaultFolderPath()
+	if err != nil {
+		return err
+	}
+	return platform.OpenPathInFileManager(root)
+}
+
+func (s *Service) PickMaFiles() ([]string, error) {
+	app := application.Get()
+	if app == nil {
+		return nil, errors.New("application not initialised")
+	}
+	dialog := app.Dialog.OpenFile().
+		SetTitle("Import Steam Desktop Authenticator maFiles").
+		AddFilter("Steam authenticator files", "*.maFile")
+	if owner := dialogOwnerWindow(); owner != nil {
+		dialog = dialog.AttachToWindow(owner)
+	}
+	selected, err := dialog.PromptForMultipleSelection()
+	logDialogOutcome("import-mafiles", len(selected) > 0, err)
+	if err != nil {
+		if dialogCancelled(err) {
+			return []string{}, nil
+		}
+		return nil, err
+	}
+	paths := make([]string, 0, len(selected))
+	for _, path := range selected {
+		path = strings.TrimSpace(path)
+		if path != "" && filepath.IsAbs(path) && strings.EqualFold(filepath.Ext(path), ".maFile") {
+			paths = append(paths, path)
+		}
+	}
+	return paths, nil
+}
+
+// MaFileExportResult reports where the export went. Path is empty when the user
+// cancelled the save dialog. ManifestSkipped means the maFile was written but its
+// companion manifest was not, so SDA cannot import it until one is supplied — a
+// warning, not a failure, and the two are worth telling apart.
+type MaFileExportResult struct {
+	Path            string `json:"path"`
+	ManifestSkipped bool   `json:"manifestSkipped"`
+}
+
+// ExportMaFile writes one account as an SDA maFile. password re-verifies the Steam
+// Guard vault before the secret leaves it. maFilePassword is optional: when set,
+// the file is encrypted the way SDA encrypts, and a manifest.json carrying the salt
+// and IV is written beside it, because SDA reads them from there.
+func (s *Service) ExportMaFile(steamID64, password, maFilePassword string, includeSessionTokens bool, token string) (MaFileExportResult, error) {
+	steamID64 = strings.TrimSpace(steamID64)
+	if steamID64 == "" {
+		return MaFileExportResult{}, ErrAccountNotFound
+	}
+	s.mu.Lock()
+	v, err := s.requireVaultLocked()
+	if err == nil {
+		err = s.authorizeModalLocked(v, steamID64, token)
+	}
+	s.mu.Unlock()
+	if err != nil {
+		return MaFileExportResult{}, err
+	}
+	app := application.Get()
+	if app == nil {
+		return MaFileExportResult{}, errors.New("application not initialised")
+	}
+	destination, err := app.Dialog.SaveFileWithOptions(&application.SaveFileDialogOptions{
+		Title:    "Export Steam Desktop Authenticator maFile",
+		Filename: steamID64 + ".maFile",
+		Filters: []application.FileFilter{{
+			DisplayName: "Steam authenticator file",
+			Pattern:     "*.maFile",
+		}},
+		Window: dialogOwnerWindow(),
+	}).
+		PromptForSingleSelection()
+	logDialogOutcome("export-mafile", strings.TrimSpace(destination) != "", err)
+	if err != nil {
+		if dialogCancelled(err) {
+			// Cancel is a clean outcome: an empty path with no error.
+			return MaFileExportResult{}, nil
+		}
+		return MaFileExportResult{}, err
+	}
+	if strings.TrimSpace(destination) == "" {
+		return MaFileExportResult{}, nil
+	}
+	destination = strings.TrimSpace(destination)
+	if !strings.EqualFold(filepath.Ext(destination), ".maFile") {
+		destination += ".maFile"
+	}
+	if !filepath.IsAbs(destination) {
+		return MaFileExportResult{}, ErrPathNotAbsolute
+	}
+
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	v, err = s.requireVaultLocked()
+	if err != nil {
+		return MaFileExportResult{}, err
+	}
+	if err := s.authorizeModalLocked(v, steamID64, token); err != nil {
+		return MaFileExportResult{}, err
+	}
+	if lockErr := v.Lock(); lockErr != nil {
+		serviceLogger().Warn("could not relock Steam Guard vault before export re-authentication", "error", lockErr)
+	}
+	if err := s.unlockVaultLocked(v, password, false); err != nil {
+		serviceLogger().Warn("maFile export re-authentication failed",
+			"steamId64", steamID64, "reason", unlockFailureReason(err), "error", err)
+		return MaFileExportResult{}, err
+	}
+	defer func() {
+		if lockErr := v.Lock(); lockErr != nil {
+			serviceLogger().Warn("could not relock Steam Guard vault after export", "error", lockErr)
+		}
+	}()
+	// The chosen destination is never logged; only the outcome is.
+	if err := exportAccountToPath(v, steamID64, destination, includeSessionTokens, maFilePassword); err != nil {
+		if errors.Is(err, ErrExportManifestExists) {
+			// The maFile itself was written; only its companion manifest was not.
+			serviceLogger().Info("maFile exported without a manifest", "steamId64", steamID64,
+				"encrypted", true)
+			return MaFileExportResult{Path: destination, ManifestSkipped: true}, nil
+		}
+		serviceLogger().Warn("maFile export failed", "steamId64", steamID64,
+			"includeSessionTokens", includeSessionTokens, "error", err)
+		return MaFileExportResult{}, err
+	}
+	serviceLogger().Info("maFile exported", "steamId64", steamID64,
+		"includeSessionTokens", includeSessionTokens, "encrypted", maFilePassword != "")
+	return MaFileExportResult{Path: destination}, nil
+}
+
+// writeLegacyExportManifest writes the manifest.json SDA needs beside an encrypted
+// maFile: SDA reads the salt and IV from there, not from the file itself, so an
+// encrypted export without it cannot be imported anywhere.
+//
+// It never overwrites an existing manifest. Exporting into a real SDA maFiles
+// folder would otherwise destroy the manifest listing every one of that user's
+// accounts, and losing those is unrecoverable.
+func writeLegacyExportManifest(destination, steamID64 string, export mafile.LegacyEncryptedExport) error {
+	steamID, err := strconv.ParseUint(steamID64, 10, 64)
+	if err != nil {
+		return err
+	}
+	manifestPath := filepath.Join(filepath.Dir(destination), "manifest.json")
+	if _, statErr := os.Stat(manifestPath); statErr == nil {
+		serviceLogger().Warn("kept the existing manifest.json beside an encrypted export",
+			"steamId64", steamID64)
+		return ErrExportManifestExists
+	} else if !errors.Is(statErr, os.ErrNotExist) {
+		return statErr
+	}
+	manifest, err := json.Marshal(map[string]any{
+		"encrypted": true,
+		"entries": []map[string]any{{
+			"filename":        filepath.Base(destination),
+			"steamid":         steamID,
+			"encryption_salt": export.Salt,
+			"encryption_iv":   export.IV,
+		}},
+	})
+	if err != nil {
+		return err
+	}
+	file, err := securefile.CreateNew(manifestPath)
+	if err != nil {
+		return err
+	}
+	if _, err := file.Write(manifest); err != nil {
+		_ = file.Close()
+		_ = os.Remove(manifestPath)
+		return err
+	}
+	if err := file.Sync(); err != nil {
+		_ = file.Close()
+		_ = os.Remove(manifestPath)
+		return err
+	}
+	return file.Close()
+}
+
+func exportAccountToPath(v *vault.Vault, steamID64, destination string, includeSessionTokens bool, maFilePassword string) error {
+	records, err := v.List()
+	if err != nil {
+		return err
+	}
+	var recordID string
+	for _, record := range records {
+		if record.SteamID64 == steamID64 {
+			recordID = record.ID
+			break
+		}
+	}
+	if recordID == "" {
+		return ErrAccountNotFound
+	}
+	account, err := accountFromRecord(v, recordID)
+	if err != nil {
+		return err
+	}
+	options := mafile.ExportOptions{IncludeTokens: includeSessionTokens}
+	var body []byte
+	var encrypted mafile.LegacyEncryptedExport
+	if maFilePassword == "" {
+		body, err = mafile.ExportPlaintext(account, options)
+	} else {
+		encrypted, err = mafile.ExportLegacyEncrypted(account, options, maFilePassword)
+		body = encrypted.Body
+	}
+	if err != nil {
+		return err
+	}
+	defer wipe(body)
+	file, err := securefile.CreateNew(destination)
+	if err != nil {
+		return err
+	}
+	committed := false
+	defer func() {
+		if !committed {
+			_ = file.Close()
+			_ = os.Remove(destination)
+		}
+	}()
+	if _, err := file.Write(body); err != nil {
+		return err
+	}
+	if err := file.Sync(); err != nil {
+		return err
+	}
+	if err := file.Close(); err != nil {
+		return err
+	}
+	committed = true
+	if maFilePassword == "" {
+		return nil
+	}
+	// The maFile is written and keeps its value even if the manifest cannot be:
+	// the caller reports that separately rather than discarding the export.
+	return writeLegacyExportManifest(destination, steamID64, encrypted)
+}
+
+func (s *Service) ImportPlaintext(paths []string, password string, rememberForSession bool) ([]ImportResult, error) {
+	return s.importFiles(paths, password, "", rememberForSession, false)
+}
+
+func (s *Service) ImportMaFiles(paths []string, password, legacyPassword string, rememberForSession bool) ([]ImportResult, error) {
+	return s.importFiles(paths, password, legacyPassword, rememberForSession, true)
+}
+
+func (s *Service) importFiles(paths []string, password, legacyPassword string, rememberForSession, allowLegacy bool) ([]ImportResult, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	settings, err := LoadSettings()
+	if err != nil {
+		return nil, err
+	}
+	if !settings.FeatureEnabled {
+		return nil, ErrFeatureDisabled
+	}
+	v, err := s.requireVaultLocked()
+	if err != nil {
+		return nil, err
+	}
+	rememberForSession = rememberForSession || settings.RememberPasswordForSession
+	if v.IsLocked() {
+		if err := s.unlockVaultLocked(v, password, rememberForSession); err != nil {
+			serviceLogger().Warn("Steam Guard import could not unlock the vault",
+				"reason", unlockFailureReason(err), "error", err)
+			return nil, err
+		}
+	} else if rememberForSession {
+		if err := v.SetLeaseMode(vault.ProcessLease); err != nil {
+			return nil, err
+		}
+	}
+	results := make([]ImportResult, 0, len(paths))
+	imported, failed := 0, 0
+	defer func() {
+		serviceLogger().Info("Steam Guard import finished",
+			"legacy", allowLegacy, "requested", len(paths), "imported", imported, "failed", failed)
+	}()
+	for _, source := range paths {
+		result := ImportResult{Path: source}
+		var steamID64, accountName string
+		var discarded []string
+		var importErr error
+		if allowLegacy {
+			steamID64, accountName, discarded, importErr = importMaFile(v, source, legacyPassword)
+		} else {
+			steamID64, accountName, discarded, importErr = importPlaintextFile(v, source)
+		}
+		if importErr != nil {
+			failed++
+			result.ErrorCode = importErrorCode(importErr)
+			// The source path is user data; only the error code is recorded.
+			serviceLogger().Warn("Steam Guard maFile import failed", "errorCode", result.ErrorCode)
+			results = append(results, result)
+			continue
+		}
+		imported++
+		result.SteamID64 = steamID64
+		result.AccountName = accountName
+		result.DiscardedFields = discarded
+		result.Imported = true
+		result.CapabilityRefreshRequired = true
+		if err := registry.Upsert(steamID64, registry.StateActive); err != nil {
+			serviceLogger().Warn("Steam Guard registry update failed after import", "steamId64", steamID64, "error", err)
+			return results, err
+		}
+		results = append(results, result)
+	}
+	return results, nil
+}
+
+func (h lifecycleHook) EnableOuter(key []byte, recoveryPassword string) error {
+	s := h.service
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	v, exists, err := s.openVaultLocked()
+	if err != nil || !exists {
+		return err
+	}
+	if v.HasRecoveryWrapper() {
+		return v.EnableOuter(key)
+	}
+	return v.EnableOuterWithRecovery(key, recoveryPassword)
+}
+
+func (h lifecycleHook) DisableOuter(key []byte) error {
+	s := h.service
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	v, exists, err := s.openVaultLocked()
+	if err != nil || !exists {
+		return err
+	}
+	return v.DisableOuter(key)
+}
+
+func (h lifecycleHook) ChangeOuterPassword(oldPassword, newPassword string) error {
+	s := h.service
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	v, exists, err := s.openVaultLocked()
+	if err != nil || !exists || !v.HasRecoveryWrapper() {
+		return err
+	}
+	return v.ChangeRecoveryPassword(oldPassword, newPassword)
+}
+
+func (h lifecycleHook) RevokeLeases() error { return h.service.revokeLeases() }
+
+func (s *Service) revokeLeases() error {
+	s.closeAuthenticationManager(false)
+	s.cancelQRRegionSelection("")
+	s.mu.Lock()
+	clipboard := s.clipboard
+	qrAttempts := s.qrAttempts
+	var vaultErr error
+	if s.vault != nil {
+		vaultErr = s.vault.Lock()
+	}
+	s.mu.Unlock()
+	s.resetConfirmationSession(false)
+
+	s.contentProtectionMu.Lock()
+	hadViews := len(s.contentProtectionLeases) != 0
+	clear(s.contentProtectionLeases)
+	if s.capabilities != nil {
+		s.capabilities.RevokeAll()
+	}
+	var protectionErr error
+	if hadViews {
+		if s.setMainContentProtectionFn == nil {
+			protectionErr = ErrSensitiveView
+		} else {
+			protectionErr = s.setMainContentProtectionFn(false)
+		}
+	}
+	emitter := s.emitMainWindowEventFn
+	s.contentProtectionMu.Unlock()
+
+	var eventErr error
+	if hadViews && emitter != nil {
+		eventErr = emitter(SensitiveViewRevokedEvent, nil)
+	}
+	var clipboardErr error
+	if clipboard != nil {
+		_, clipboardErr = clipboard.Clear()
+	}
+	var qrAttemptErr error
+	if qrAttempts != nil {
+		qrAttemptErr = qrAttempts.RevokeAll()
+	}
+	return errors.Join(vaultErr, protectionErr, eventErr, clipboardErr, qrAttemptErr)
+}
+
+func (s *Service) requireVaultLocked() (*vault.Vault, error) {
+	settings, err := LoadSettings()
+	if err != nil {
+		return nil, err
+	}
+	if !settings.FeatureEnabled {
+		return nil, ErrFeatureDisabled
+	}
+	v, exists, err := s.openVaultLocked()
+	if err != nil {
+		return nil, err
+	}
+	if !exists {
+		return nil, ErrVaultNotReady
+	}
+	return v, nil
+}
+
+func (s *Service) openVaultLocked() (*vault.Vault, bool, error) {
+	if s.vault != nil {
+		return s.vault, true, nil
+	}
+	root, err := VaultFolderPath()
+	if err != nil {
+		return nil, false, err
+	}
+	v, err := vault.Open(root, s.vaultOptions...)
+	if errors.Is(err, vault.ErrNotFound) {
+		return nil, false, nil
+	}
+	if err != nil {
+		return nil, false, err
+	}
+	s.vault = v
+	return v, true, nil
+}
+
+func appOuterKeyForRecovery(appPassword string) ([]byte, error) {
+	status, err := security.GetStatus()
+	if err != nil || !status.SavedAccountDataEncrypted {
+		return nil, err
+	}
+	if appPassword == "" {
+		return nil, ErrAppPassword
+	}
+	if err := security.VerifyAppPassword(appPassword); err != nil {
+		return nil, err
+	}
+	return security.DeriveSteamGuardOuterKey()
+}
+
+func (s *Service) unlockVaultLocked(v *vault.Vault, password string, remember bool) error {
+	if !remember {
+		settings, err := LoadSettings()
+		if err != nil {
+			return err
+		}
+		remember = settings.RememberPasswordForSession
+	}
+	mode := vault.FixedLease
+	if remember {
+		mode = vault.ProcessLease
+	}
+	status, err := security.GetStatus()
+	if err != nil {
+		return err
+	}
+	if !status.SavedAccountDataEncrypted {
+		return retainedUnlockError(v.Unlock(password, mode))
+	}
+	key, err := security.DeriveSteamGuardOuterKey()
+	if err != nil {
+		return err
+	}
+	defer security.WipeSecret(key)
+	return retainedUnlockError(v.UnlockWithOuter(password, key, mode))
+}
+
+// unlockFailureReason separates a wrong password from vault, secure-memory and
+// app-password problems. It never sees the password itself.
+func unlockFailureReason(err error) string {
+	switch {
+	case errors.Is(err, vault.ErrInvalidPassword):
+		return "invalid_password"
+	case errors.Is(err, vault.ErrInvalidOuterKey), errors.Is(err, vault.ErrOuterKeyRequired):
+		return "outer_key"
+	case errors.Is(err, vault.ErrLocked), errors.Is(err, vault.ErrLeaseExpired):
+		return "vault_locked"
+	case errors.Is(err, vault.ErrInvalidFormat):
+		return "vault_format"
+	case errors.Is(err, vault.ErrSecureMemory), errors.Is(err, vault.ErrOneOperationRequired),
+		errors.Is(err, vault.ErrOneOperationExpired):
+		return "secure_memory"
+	case errors.Is(err, ErrAppPassword):
+		return "app_password"
+	default:
+		return "vault_error"
+	}
+}
+
+func retainedUnlockError(err error) error {
+	if errors.Is(err, vault.ErrOneOperationRequired) {
+		return errors.Join(ErrRetainedUnlockUnavailable, err)
+	}
+	return err
+}
+
+func (s *Service) withOneOperationLocked(v *vault.Vault, password string, fn func(*vault.OneOperationAccess) error) error {
+	status, err := security.GetStatus()
+	if err != nil {
+		return err
+	}
+	if !status.SavedAccountDataEncrypted {
+		return v.WithOneOperation(password, fn)
+	}
+	key, err := security.DeriveSteamGuardOuterKey()
+	if err != nil {
+		return err
+	}
+	defer security.WipeSecret(key)
+	return v.WithOneOperationWithOuter(password, key, fn)
+}
+
+func (s *Service) authorizeModalLocked(v *vault.Vault, accountID, token string) error {
+	accountID = strings.TrimSpace(accountID)
+	if s.capabilities == nil || accountID == "" || token == "" {
+		return capability.ErrInvalidCapability
+	}
+	binding, err := s.capabilities.Resolve(token)
+	if err != nil {
+		return err
+	}
+	expected := capability.Binding{
+		WindowName:      mainWindowName,
+		AccountID:       accountID,
+		Scope:           modalCapabilityScope,
+		LeaseID:         binding.LeaseID,
+		VaultGeneration: v.Generation(),
+	}
+	if err := s.capabilities.Validate(expected, token); err != nil {
+		return err
+	}
+	s.contentProtectionMu.Lock()
+	lease, ok := s.contentProtectionLeases[binding.LeaseID]
+	s.contentProtectionMu.Unlock()
+	if !ok || lease.binding != expected {
+		return capability.ErrInvalidCapability
+	}
+	return nil
+}
+
+func (s *Service) codeLocked(v *vault.Vault, steamID64 string) (CodeView, error) {
+	return s.codeFromReader(v, steamID64, UnlockPersistenceCached)
+}
+
+type accountRecordReader interface {
+	ListRecords() ([]vault.RecordInfo, error)
+	GetRecord(string) ([]byte, error)
+}
+
+func (s *Service) codeFromReader(reader accountRecordReader, steamID64 string, persistence UnlockPersistence) (CodeView, error) {
+	steamID64 = strings.TrimSpace(steamID64)
+	records, err := reader.ListRecords()
+	if err != nil {
+		return CodeView{}, err
+	}
+	for _, record := range records {
+		if record.SteamID64 != steamID64 {
+			continue
+		}
+		account, err := accountFromReader(reader, record.ID)
+		if err != nil {
+			return CodeView{}, err
+		}
+		now, freshness := s.timeState.Now()
+		code, err := otp.Generate(account.SharedSecret, now)
+		if err != nil {
+			return CodeView{}, err
+		}
+		return CodeView{
+			SteamID64:         steamID64,
+			AccountName:       account.AccountName,
+			Code:              code.Value,
+			ExpiresAt:         time.Now().Add(code.ExpiresAt.Sub(now)).UnixMilli(),
+			TimeStatus:        timeStatus(freshness),
+			UnlockPersistence: persistence,
+		}, nil
+	}
+	return CodeView{}, ErrAccountNotFound
+}
+
+func accountFromRecord(v *vault.Vault, recordID string) (mafile.Account, error) {
+	return accountFromReader(v, recordID)
+}
+
+func accountFromReader(reader accountRecordReader, recordID string) (mafile.Account, error) {
+	raw, err := reader.GetRecord(recordID)
+	if err != nil {
+		return mafile.Account{}, err
+	}
+	defer wipe(raw)
+	parsed, err := mafile.ParsePlaintext(raw)
+	if err != nil {
+		return mafile.Account{}, errors.Join(ErrInvalidImport, err)
+	}
+	return parsed.Account, nil
+}
+
+func importPlaintextFile(v *vault.Vault, source string) (string, string, []string, error) {
+	raw, err := readImportFile(source)
+	if err != nil {
+		return "", "", nil, err
+	}
+	defer wipe(raw)
+	parsed, err := mafile.ParsePlaintext(raw)
+	if err != nil {
+		return "", "", nil, ErrInvalidImport
+	}
+	return commitImportedAccount(v, parsed)
+}
+
+func importMaFile(v *vault.Vault, source, legacyPassword string) (string, string, []string, error) {
+	raw, err := readImportFile(source)
+	if err != nil {
+		return "", "", nil, err
+	}
+	defer wipe(raw)
+	parsed, plainErr := mafile.ParsePlaintext(raw)
+	if plainErr == nil {
+		return commitImportedAccount(v, parsed)
+	}
+	manifestPath := filepath.Join(filepath.Dir(source), "manifest.json")
+	manifest, err := readBoundedRegularFile(manifestPath, mafile.MaxInputBytes)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return "", "", nil, ErrLegacyManifest
+		}
+		return "", "", nil, err
+	}
+	defer wipe(manifest)
+	parsed, err = mafile.ImportLegacyEncrypted(raw, manifest, filepath.Base(source), legacyPassword)
+	if err != nil {
+		return "", "", nil, err
+	}
+	return commitImportedAccount(v, parsed)
+}
+
+func readImportFile(source string) ([]byte, error) {
+	if !filepath.IsAbs(source) {
+		return nil, ErrPathNotAbsolute
+	}
+	if !strings.EqualFold(filepath.Ext(source), ".maFile") {
+		return nil, ErrUnsupportedInput
+	}
+	return readBoundedRegularFile(source, mafile.MaxInputBytes)
+}
+
+func readBoundedRegularFile(path string, maxBytes int64) ([]byte, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	info, err := f.Stat()
+	if err != nil || !info.Mode().IsRegular() || info.Size() <= 0 || info.Size() > maxBytes {
+		return nil, ErrInvalidImport
+	}
+	raw, err := io.ReadAll(io.LimitReader(f, maxBytes+1))
+	if err != nil || int64(len(raw)) > maxBytes {
+		wipe(raw)
+		return nil, ErrInvalidImport
+	}
+	return raw, nil
+}
+
+func commitImportedAccount(v *vault.Vault, parsed mafile.ParseResult) (string, string, []string, error) {
+	if parsed.Account.Session == nil || parsed.Account.Session.SteamID == 0 {
+		return "", "", nil, ErrInvalidImport
+	}
+	steamID64 := strconv.FormatUint(parsed.Account.Session.SteamID, 10)
+	canonical, err := mafile.ExportPlaintext(parsed.Account, mafile.ExportOptions{IncludeTokens: true})
+	if err != nil {
+		return "", "", nil, ErrInvalidImport
+	}
+	defer wipe(canonical)
+	if _, err := v.PutRecord(steamID64, canonical); err != nil {
+		return "", "", nil, err
+	}
+	return steamID64, parsed.Account.AccountName, parsed.DiscardedFields, nil
+}
+
+func importErrorCode(err error) string {
+	switch {
+	case errors.Is(err, ErrPathNotAbsolute):
+		return "path_not_absolute"
+	case errors.Is(err, ErrUnsupportedInput):
+		return "unsupported_input"
+	case errors.Is(err, ErrInvalidImport):
+		return "invalid_mafile"
+	case errors.Is(err, ErrLegacyManifest):
+		return "legacy_manifest_required"
+	case errors.Is(err, mafile.ErrWrongPasswordOrCorruptSource):
+		return "legacy_wrong_password_or_corrupt"
+	default:
+		return "read_failed"
+	}
+}
+
+func timeStatus(freshness otp.Freshness) string {
+	switch freshness {
+	case otp.FreshnessFresh:
+		return "fresh"
+	case otp.FreshnessStale:
+		return "stale"
+	case otp.FreshnessUntrusted:
+		return "untrusted"
+	default:
+		return "unavailable"
+	}
+}
+
+func wipe(value []byte) {
+	for i := range value {
+		value[i] = 0
+	}
+}
+
+func samePassword(left, right string) bool {
+	return subtle.ConstantTimeCompare([]byte(left), []byte(right)) == 1
+}
+
+var _ security.SteamGuardLifecycleHook = lifecycleHook{}

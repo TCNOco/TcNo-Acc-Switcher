@@ -1,0 +1,272 @@
+$icon-back: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M7 1 0 8l7 7 2-2-4-4h11V7H5l4-4z'/%3E%3C/svg%3E");
+$icon-minimize: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2 12h12v2H2z'/%3E%3C/svg%3E");
+$icon-maximize: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1 1h14v14H1zm3 4v7h8V5z'/%3E%3C/svg%3E");
+$icon-restore: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M4 1h11v11h-3v3H1V4h3zm2 3h6v6h1V3H6zM3 6v7h7V6z'/%3E%3C/svg%3E");
+$icon-close: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m2 3 1-1 5 5 5-5 1 1-5 5 5 5-1 1-5-5-5 5-1-1 5-5z'/%3E%3C/svg%3E");
+$icon-add: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M7 1h2v6h6v2H9v6H7V9H1V7h6z'/%3E%3C/svg%3E");
+$icon-save: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1 1h11l3 3v11H1zm3 1v4h7V2zm0 7v5h8V9z'/%3E%3C/svg%3E");
+$icon-login: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M9 2h6v12H9v-2h4V4H9zM7 4l4 4-4 4V9H1V7h6z'/%3E%3C/svg%3E");
+$icon-filter: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M1 2h14l-5.5 6v5l-3 2V8z'/%3E%3C/svg%3E");
+$icon-settings: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2 3h7v2H2zm10 0h2v2h-2zM2 7h2v2H2zm5 0h7v2H7zm-5 4h7v2H2zm10 0h2v2h-2z'/%3E%3Cpath d='M9 1h3v6H9zM4 5h3v6H4zm5 4h3v6H9z'/%3E%3C/svg%3E");
+$icon-info: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zm-1 6v6h2V6zm0-3v2h2V3z'/%3E%3C/svg%3E");
+$icon-expand: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m2 5 6 6 6-6-2-2-4 4-4-4z'/%3E%3C/svg%3E");
+$icon-folder-add: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M1 3h6l2 2h6v9H1z'/%3E%3Cpath d='M7 7h2v2h2v2H9v2H7v-2H5V9h2z'/%3E%3C/svg%3E");
+$icon-launch: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 1v14l12-7z'/%3E%3C/svg%3E");
+$icon-download: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M7 1h2v7l3-3 2 2-6 6-6-6 2-2 3 3zM1 14h14v2H1z'/%3E%3C/svg%3E");
+$icon-thumb-up: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M1 7h3v8H1zm4 0 3-6 2 1v4h4l1 2-2 7H5z'/%3E%3C/svg%3E");
+$icon-thumb-down: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M1 1h3v8H1zm4 0h8l2 7-1 2h-4v4l-2 1-3-6z'/%3E%3C/svg%3E");
+$icon-tag-filter: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M1 2h14v2H1zm3 5h8v2H4zm3 5h2v2H7z'/%3E%3C/svg%3E");
+$icon-previous: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m11 2-6 6 6 6 2-2-4-4 4-4z'/%3E%3C/svg%3E");
+$icon-next: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m5 2 6 6-6 6-2-2 4-4-4-4z'/%3E%3C/svg%3E");
+
+@mixin themed-button-icons($era) {
+  $fill: #111111;
+  $highlight: drop-shadow(1px 1px 0 #ffffff);
+  $size: 12px;
+
+  @if $era == xp {
+    $fill: #1854a5;
+    $highlight: drop-shadow(0 1px 0 #ffffff) drop-shadow(0 0 1px rgba(0, 57, 140, 0.5));
+    $size: 14px;
+  } @else if $era == steam {
+    $fill: #c7cfaa;
+    $highlight: drop-shadow(1px 1px 0 #161b12);
+    $size: 13px;
+  } @else if $era == win7 or $era == vista {
+    $fill: #215f86;
+    $highlight: drop-shadow(0 1px 0 #ffffff) drop-shadow(0 1px 1px rgba(20, 60, 85, 0.35));
+    $size: 14px;
+  }
+
+  .win-btn > .win-btn__glyph,
+  .win-btn-back > svg,
+  .actionbar__add > svg,
+  .actionbar__save > svg,
+  .actionbar__login > svg,
+  .actionbar__filter > svg,
+  .actionbar__manage > svg,
+  .actionbar__actions > .square:nth-last-child(2) > svg,
+  .actionbar__actions > .square:last-child > svg,
+  #btnOpenShortcutFolder > svg,
+  #shortcutDropdownBtn > svg,
+  .actionbar__launch > svg,
+  .toast__close > svg,
+  .updateBar__close > svg,
+  .updateDialog__close > svg,
+  .stability-prompt__thumb > svg,
+  .paginationButton > i,
+  .tag-filter-bar__icon,
+  .acc-img-overlay__dropicon {
+    display: none !important;
+  }
+
+  .win-btn::before,
+  .actionbar__add::before,
+  .actionbar__save::before,
+  .actionbar__filter::before,
+  .actionbar__manage::before,
+  .actionbar__actions > .square:nth-last-child(2)::before,
+  .actionbar__actions > .square:last-child::before,
+  #btnOpenShortcutFolder::before,
+  #shortcutDropdownBtn::before,
+  .actionbar__launch:has(> svg)::before,
+  .toast__close::before,
+  .updateBar__close::before,
+  .updateDialog__close::before,
+  .acc-img-overlay__x::before,
+  .acc-img-overlay__dropzone::before,
+  .stability-prompt__thumb::before,
+  .paginationButton::before,
+  .tag-filter-bar::after,
+  .actionbar__login::after {
+    content: "";
+    display: inline-block;
+    width: var(--windows-icon-size, #{$size});
+    height: var(--windows-icon-size, #{$size});
+    flex: 0 0 auto;
+    margin: var(--windows-icon-margin, 0 0.42em 0 0);
+    vertical-align: -0.14em;
+    background: var(--windows-icon-color, #{$fill});
+    filter: $highlight;
+    -webkit-mask: var(--windows-icon-mask) center / contain no-repeat;
+    mask: var(--windows-icon-mask) center / contain no-repeat;
+  }
+
+  .win-btn,
+  .square,
+  #btnOpenShortcutFolder,
+  .toast__close,
+  .updateBar__close,
+  .updateDialog__close,
+  .acc-img-overlay__x,
+  .stability-prompt__thumb,
+  .paginationButton {
+    --windows-icon-margin: 0;
+  }
+
+  .win-btn-back { --windows-icon-mask: #{$icon-back}; }
+  .win-btn-min { --windows-icon-mask: #{$icon-minimize}; }
+  .win-btn-max { --windows-icon-mask: #{$icon-maximize}; }
+  .win-btn-max:has(.win-btn__glyph--restore) { --windows-icon-mask: #{$icon-restore}; }
+  .win-btn-close,
+  .toast__close,
+  .updateBar__close,
+  .updateDialog__close,
+  .acc-img-overlay__x { --windows-icon-mask: #{$icon-close}; }
+  .actionbar__add,
+  .actionbar__manage { --windows-icon-mask: #{$icon-add}; }
+  .actionbar__save { --windows-icon-mask: #{$icon-save}; }
+  .actionbar__login { --windows-icon-mask: #{$icon-login}; }
+  .actionbar__filter { --windows-icon-mask: #{$icon-filter}; }
+  .actionbar__actions > .square:nth-last-child(2) { --windows-icon-mask: #{$icon-settings}; }
+  .actionbar__actions > .square:last-child { --windows-icon-mask: #{$icon-info}; }
+  #shortcutDropdownBtn { --windows-icon-mask: #{$icon-expand}; }
+  #btnOpenShortcutFolder { --windows-icon-mask: #{$icon-folder-add}; }
+  .actionbar__launch:has(> svg) { --windows-icon-mask: #{$icon-launch}; }
+  .acc-img-overlay__dropzone { --windows-icon-mask: #{$icon-download}; --windows-icon-size: 40px; --windows-icon-margin: 0 0 0.35rem; }
+  .stability-prompt__thumb--up { --windows-icon-mask: #{$icon-thumb-up}; }
+  .stability-prompt__thumb--down { --windows-icon-mask: #{$icon-thumb-down}; }
+  .tag-filter-bar { --windows-icon-mask: #{$icon-tag-filter}; --windows-icon-margin: 0 0 0 0.45rem; }
+  .paginationButton--prev { --windows-icon-mask: #{$icon-previous}; }
+  .paginationButton--next { --windows-icon-mask: #{$icon-next}; }
+
+  .actionbar__login::after { margin: 0 0 0 0.42em; }
+  #shortcutDropdownBtn.flip::before { transform: rotate(180deg); }
+  .acc-img-overlay__x { font-size: 0; }
+
+  @if $era == win95 {
+    .win-btn { --windows-icon-color: #000000; --windows-icon-size: 10px; }
+    .actionbar__add,
+    .actionbar__manage,
+    .actionbar__save,
+    .actionbar__login,
+    .actionbar__filter,
+    .tag-filter-bar,
+    #btnOpenShortcutFolder,
+    .actionbar__launch { --windows-icon-color: #000000; }
+  } @else if $era == xp {
+    .win-btn { --windows-icon-color: #ffffff; --windows-icon-size: 11px; }
+    .actionbar__add,
+    .actionbar__manage,
+    .actionbar__login,
+    .actionbar__launch,
+    .stability-prompt__thumb--up { --windows-icon-color: #27922d; }
+    .actionbar__filter,
+    #btnOpenShortcutFolder { --windows-icon-color: #d98200; }
+    .stability-prompt__thumb--down { --windows-icon-color: #c93824; }
+    .toast__close,
+    .updateBar__close,
+    .updateDialog__close,
+    .acc-img-overlay__x { --windows-icon-color: #b52b1e; }
+    .toast__close:hover,
+    .updateBar__close:hover,
+    .updateDialog__close:hover,
+    .acc-img-overlay__x:hover { --windows-icon-color: #ffffff; }
+  } @else if $era == steam {
+    .win-btn { --windows-icon-color: #d2d9b8; --windows-icon-size: 11px; }
+    .win-btn-close { --windows-icon-color: #d7bd70; }
+    .actionbar__add,
+    .actionbar__manage,
+    .actionbar__login,
+    .actionbar__launch,
+    .stability-prompt__thumb--up { --windows-icon-color: #b8c780; }
+    .actionbar__save,
+    .actionbar__filter,
+    #btnOpenShortcutFolder { --windows-icon-color: #d0b064; }
+    .stability-prompt__thumb--down,
+    .toast__close,
+    .updateBar__close,
+    .updateDialog__close,
+    .acc-img-overlay__x { --windows-icon-color: #bd725d; }
+    .toast__close:hover,
+    .updateBar__close:hover,
+    .updateDialog__close:hover,
+    .acc-img-overlay__x:hover { --windows-icon-color: #f0e4bd; }
+  } @else if $era == vista {
+    /* Vista's window buttons are dark glass, so every glyph is white. */
+    .win-btn { --windows-icon-color: #ffffff; --windows-icon-size: 11px; }
+    .actionbar__add,
+    .actionbar__manage,
+    .actionbar__login,
+    .actionbar__launch,
+    .stability-prompt__thumb--up { --windows-icon-color: #267c35; }
+    .stability-prompt__thumb--down { --windows-icon-color: #a83529; }
+    .actionbar__filter,
+    #btnOpenShortcutFolder { --windows-icon-color: #9a6800; }
+    .toast__close,
+    .updateBar__close,
+    .updateDialog__close,
+    .acc-img-overlay__x { --windows-icon-color: #8f2f24; }
+    .toast__close:hover,
+    .updateBar__close:hover,
+    .updateDialog__close:hover,
+    .acc-img-overlay__x:hover { --windows-icon-color: #ffffff; }
+  } @else {
+    .win-btn { --windows-icon-color: #173a50; --windows-icon-size: 11px; }
+    .win-btn-close { --windows-icon-color: #ffffff; }
+    .actionbar__add,
+    .actionbar__manage,
+    .actionbar__login,
+    .actionbar__launch,
+    .stability-prompt__thumb--up { --windows-icon-color: #267c35; }
+    .stability-prompt__thumb--down { --windows-icon-color: #a83529; }
+    .actionbar__filter,
+    #btnOpenShortcutFolder { --windows-icon-color: #9a6800; }
+    .toast__close,
+    .updateBar__close,
+    .updateDialog__close,
+    .acc-img-overlay__x { --windows-icon-color: #8f2f24; }
+    .toast__close:hover,
+    .updateBar__close:hover,
+    .updateDialog__close:hover,
+    .acc-img-overlay__x:hover { --windows-icon-color: #ffffff; }
+  }
+
+  .dropdown-toggle > .caret {
+    width: 0;
+    height: 0;
+    border: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid currentColor;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .dropdown-toggle::after {
+    content: none !important;
+    display: none !important;
+  }
+
+  .contextmenu li.hasSubmenu::after {
+    width: 6px;
+    height: 6px;
+    border-width: 0 2px 2px 0;
+    border-radius: 0;
+  }
+
+  @media (forced-colors: active) {
+    .win-btn::before,
+    .actionbar__add::before,
+    .actionbar__save::before,
+    .actionbar__filter::before,
+    .actionbar__login::after,
+    .actionbar__manage::before,
+    .actionbar__actions > .square:nth-last-child(2)::before,
+    .actionbar__actions > .square:last-child::before,
+    #btnOpenShortcutFolder::before,
+    #shortcutDropdownBtn::before,
+    .actionbar__launch:has(> svg)::before,
+    .toast__close::before,
+    .updateBar__close::before,
+    .updateDialog__close::before,
+    .acc-img-overlay__x::before,
+    .acc-img-overlay__dropzone::before,
+    .stability-prompt__thumb::before,
+    .paginationButton::before,
+    .tag-filter-bar::after {
+      background: ButtonText;
+      filter: none;
+    }
+  }
+}

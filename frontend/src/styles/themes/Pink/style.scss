@@ -190,6 +190,14 @@
     --notification-error-border: #c62828;
     --notification-error-highlight: #ffebee;
 
+    /* Steam Guard reads these as fills and borders (Accept/Deny buttons, status
+       borders, the empty-state mark). The pastel notification card backgrounds
+       above disappear against this theme's light page, so the role colours take
+       the saturated border inks instead. */
+    --role-success: var(--notification-success-border);
+    --role-error: var(--notification-error-border);
+    --role-warning: var(--notification-warning-border);
+
     @include overlay.overlay-root-tokens(
         $modal-bg: var(--surface-panel),
         $modal-header-bg: var(--chrome-bg),
@@ -510,6 +518,16 @@ label.acc p {
 #btnSettings i,
 #btnHelp i {
     color: var(--chrome-fg);
+}
+
+/* The Accept/Deny fills are deep saturated inks here, unlike the theme's usual
+   bright surfaces, so they need light text rather than --text-on-bright-bg's
+   dark pink ink. */
+.confirmations-actions .confirmations-accept,
+.confirmations-actions .confirmations-deny,
+.confirmations-batch .confirmations-accept,
+.confirmations-batch .confirmations-deny {
+    color: #fff;
 }
 
 @include overlay.overlay-component-overrides;

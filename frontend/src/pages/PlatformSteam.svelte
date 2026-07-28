@@ -27,10 +27,15 @@
   import type { SteamMenuDeps } from "../lib/steam/menuCommands";
   import type { SteamAccountRow } from "../lib/steam/types";
   import { steamAccountVisualKey } from "../lib/steam/accountVisualKey";
+  import { emitSteamGuardMenuRequest } from "../lib/steam/steamGuardMenuRequest";
   import { reportLaunchFailure } from "../lib/adminFlow";
   import { fuzzyWordsMatch } from "../lib/searchFuzzy";
   import { formatLastLoginForLocale } from "../lib/formatLastLogin";
   import { shortcutIconIndexes, steamGameIconUrl } from "../lib/shortcutAssets";
+  import {
+    clearSteamGuardActionAccount,
+    publishSteamGuardActionAccounts,
+  } from "../stores/steamGuardAction";
   import "../styles/miniprofile.scss";
   import "../styles/platformAccountsShared.scss";
 
@@ -98,6 +103,7 @@
       gameDataBySteamId,
       steamIds,
       refreshGameDataAppSets,
+      openSteamGuard: emitSteamGuardMenuRequest,
     };
   }
 
@@ -130,6 +136,8 @@
         displayName: r.displayName,
         accountName: r.accountName,
         currentSession: r.currentSession ?? false,
+        hasSteamGuard: r.hasSteamGuard ?? false,
+        steamGuardPending: r.steamGuardPending ?? false,
       })) as SteamAccountRow[];
     },
     loadAccountsEnrichment: async () => {
@@ -232,6 +240,7 @@
 
     onAfterLoad: async (accounts: SteamAccountRow[], ctx) => {
       steamIds = accounts.map((r) => r.steamId64);
+      publishSteamGuardActionAccounts(accounts);
       if (!ctx?.hadCachedAccounts || ctx.enrichChanged) {
         SteamService.StartSteamProfileRefresh();
       }
@@ -268,6 +277,7 @@
 
   onDestroy(() => {
     offShortcutsUpdated?.();
+    clearSteamGuardActionAccount();
   });
 </script>
 

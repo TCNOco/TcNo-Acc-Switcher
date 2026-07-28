@@ -30,3 +30,7 @@ docs/RELEASING.md
 /.codex
 /.fallow
 /.vscode
+/.codex-bin
+/.claude
+CLAUDE.md
+/.gocache

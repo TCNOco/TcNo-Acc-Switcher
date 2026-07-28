@@ -1,0 +1,18 @@
+name: Windows 7 Aero
+accent: "#3B78B5"
+
+accents:
+  - name: Aero Sky
+    color: "#3B78B5"
+  - name: Windows Blue
+    color: "#2672EC"
+  - name: Aqua
+    color: "#008C95"
+  - name: Leaf
+    color: "#6A8F22"
+  - name: Amber
+    color: "#D08400"
+  - name: Violet
+    color: "#8055A8"
+  - name: Rose
+    color: "#B73A5B"

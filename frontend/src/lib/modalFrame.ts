@@ -1,3 +1,5 @@
+import { writable } from "svelte/store";
+
 export type ModalFrameRect = {
   left: number;
   top: number;
@@ -21,6 +23,11 @@ export type ResizeEdge = "n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw";
 export const MODAL_FRAME_PAD = 16;
 export const MODAL_FRAME_MIN_W = 320;
 export const MODAL_FRAME_MIN_W_FOLDER = 720;
+/**
+ * Steam Guard's action rows wrap below a 402px inner width. The frame is
+ * border-box, so this is that width plus the 1px frame border on each side.
+ */
+export const MODAL_FRAME_MIN_W_STEAM_GUARD = 404;
 export const MODAL_FRAME_MIN_H = 160;
 export const MODAL_FRAME_MIN_H_FOLDER = 400;
 export const MODAL_FRAME_MAX_W_RATIO = 0.8;
@@ -134,7 +141,12 @@ function measureScrollContent(scroll: HTMLElement): { width: number; height: num
     if (!(node instanceof HTMLElement)) continue;
     childCount++;
     width = Math.max(width, node.scrollWidth, node.offsetWidth);
-    height += node.offsetHeight;
+    /*
+     * scrollHeight matters as much as offsetHeight: a body clamped by its own max-height (or
+     * with an inner scroller) reports the clamped box in offsetHeight, which would freeze the
+     * frame at whatever height it already had instead of growing to fit the real content.
+     */
+    height += Math.max(node.offsetHeight, node.scrollHeight);
   }
 
   if (childCount > 1) {
@@ -178,6 +190,20 @@ export function measureModalNaturalSize(modalFg: HTMLElement): {
     width: modalFg.offsetWidth,
     height: Math.max(modalFg.offsetHeight, modalFg.scrollHeight),
   };
+}
+
+/**
+ * Bumped by a modal body when it swaps to a different page, so the shell re-fits
+ * to the new content. A manual resize otherwise pins the frame for the modal's
+ * lifetime, which leaves a multi-page modal stuck at another page's size.
+ *
+ * A store rather than context: bodies are slot content declared by AppModal, so
+ * they are not descendants of ModalShell in the component tree.
+ */
+export const modalAutoFitRequests = writable(0);
+
+export function requestModalAutoFit(): void {
+  modalAutoFitRequests.update((count) => count + 1);
 }
 
 export function fitFrameToContent(

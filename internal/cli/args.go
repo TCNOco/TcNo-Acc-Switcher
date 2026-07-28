@@ -43,9 +43,14 @@ type Parsed struct {
 	ListAccountsPlatform  string   // KindListAccounts: empty = all platforms; else canonical name
 	LogLevelSet           bool     // true if --log-level was passed
 	LogLevel              slog.Level
-	UserDataMoveFrom      string   // --userdata-move-from= old path after relocation restart
-	UserDataMoveTo        string   // --userdata-move-to= new path after relocation restart
-	StartupToast          string   // --toast= i18n key emitted when GUI window is ready
+	UserDataMoveFrom      string // --userdata-move-from= old path after relocation restart
+	UserDataMoveTo        string // --userdata-move-to= new path after relocation restart
+	StartupToast          string // --toast= i18n key emitted when GUI window is ready
+	// AllowSteamGuardCapture drops the screen-capture protection on Steam Guard
+	// windows for this run, so they can be recorded or screenshotted. Off unless
+	// asked for: that protection is what keeps codes and trades out of screen
+	// shares and remote-desktop sessions.
+	AllowSteamGuardCapture bool // --allow-steamguard-capture
 }
 
 const steamPlatformName = "Steam"
@@ -112,6 +117,9 @@ func Parse(argv []string, idx *PlatformIndex) (Parsed, error) {
 			continue
 		case "--json", "-json":
 			p.OutputJSON = true
+			continue
+		case "--allow-steamguard-capture", "-allow-steamguard-capture":
+			p.AllowSteamGuardCapture = true
 			continue
 		}
 

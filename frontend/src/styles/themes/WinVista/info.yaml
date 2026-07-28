@@ -1,0 +1,17 @@
+name: Windows Vista Aero
+accent: "#4A9BC8"
+background: background.svg
+
+accents:
+  - name: Aero Sky
+    color: "#4A9BC8"
+  - name: Aurora Teal
+    color: "#2EA893"
+  - name: Frost
+    color: "#7FB0D0"
+  - name: Graphite
+    color: "#5C6C79"
+  - name: Ultimate Green
+    color: "#3F9C6B"
+  - name: Ruby
+    color: "#B5482F"

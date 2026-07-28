@@ -1,0 +1,618 @@
+@use "../overlay_surfaces" as overlay;
+@use "../windows_button_icons" as windows-icons;
+
+$face: #c0c0c0;
+$light: #ffffff;
+$mid: #dfdfdf;
+$shadow: #808080;
+$dark: #000000;
+$navy: #000080;
+
+:root {
+  color-scheme: light;
+  font-family: "MS Sans Serif", "Microsoft Sans Serif", Tahoma, sans-serif;
+
+  --accent: #000080;
+  --accentHS: 240, 100%;
+  --accentL: 25%;
+  --accentInt: 0, 0, 128;
+  --cyan: #008080;
+  --cyanSecondary: #b8ffff;
+  --cyanLight: rgba(0, 128, 128, 0.12);
+  --code: #{$face};
+  --code-background: #ffffff;
+  --slightly-darker-code-background: #{$mid};
+  --darker-code-background: #{$shadow};
+  --even-darker-code-background: #ffffff;
+  --shadow: 2px 2px 0 #000000;
+  --black: #000000;
+  --blackSecondary: #808080;
+  --blackTernary: #404040;
+  --blackLight: rgba(0, 0, 0, 0.08);
+  --white: #000000;
+  --whiteSecondary: #000000;
+  --whiteLight: rgba(255, 255, 255, 0.38);
+  --green: #008000;
+  --greenSecondary: #d7ffd7;
+  --greenLight: rgba(0, 128, 0, 0.12);
+  --orange: #c06000;
+  --orangeSecondary: #ffe2bf;
+  --orangeLight: rgba(192, 96, 0, 0.12);
+  --pink: #b03060;
+  --pinkSecondary: #ffd7e7;
+  --pinkLight: rgba(176, 48, 96, 0.12);
+  --purple: #800080;
+  --purpleSecondary: #f0cef0;
+  --purpleLight: rgba(128, 0, 128, 0.12);
+  --red: #a00000;
+  --redSecondary: #ffd0d0;
+  --redLight: rgba(160, 0, 0, 0.12);
+  --yellow: #808000;
+  --yellowSecondary: #ffffc8;
+  --gradientDegree: 135deg;
+
+  --border-bar-bg: #000080;
+  --border-bar-size: 4px;
+  --program-bg: #{$face};
+  --mainContentBackground: #{$face};
+  --footer-bg: #{$face};
+  --scrollbar-track-bg: #{$mid};
+  --button-bg: #{$face};
+  --button-bg-hover: #{$face};
+  --tooltip-bg: #ffffe1;
+  --main-padding: 0.75rem;
+  --document-canvas-bg: #008080;
+
+  --pure-black: #000000;
+  --shadow-color-heavy: rgba(0, 0, 0, 0.7);
+  --shadow-color-50: rgba(0, 0, 0, 0.5);
+  --shadow-color-45: rgba(0, 0, 0, 0.45);
+  --shadow-color-40: rgba(0, 0, 0, 0.4);
+  --shadow-color-35: rgba(0, 0, 0, 0.35);
+  --shadow-color-30: rgba(0, 0, 0, 0.3);
+  --shadow-color-55-text: rgba(0, 0, 0, 0.55);
+  --shadow-color-60: rgba(0, 0, 0, 0.6);
+  --black-alpha-12: rgba(0, 0, 0, 0.12);
+  --black-alpha-15: rgba(0, 0, 0, 0.15);
+  --backdrop-scrim-55: rgba(0, 0, 0, 0.55);
+  --backdrop-scrim-65: rgba(0, 0, 0, 0.65);
+  --backdrop-dark-25: rgba(0, 0, 0, 0.25);
+  --backdrop-dark-20: rgba(0, 0, 0, 0.2);
+  --backdrop-dark-35: rgba(0, 0, 0, 0.35);
+  --overlay-white-06: rgba(255, 255, 255, 0.18);
+  --overlay-white-08: rgba(255, 255, 255, 0.24);
+  --overlay-white-12: rgba(255, 255, 255, 0.34);
+  --overlay-white-14: rgba(255, 255, 255, 0.4);
+  --overlay-white-15: rgba(255, 255, 255, 0.45);
+  --text-white-40: rgba(0, 0, 0, 0.4);
+  --text-white-50: rgba(0, 0, 0, 0.5);
+  --text-white-60: rgba(0, 0, 0, 0.6);
+  --text-white-65: rgba(0, 0, 0, 0.65);
+  --text-white-70: rgba(0, 0, 0, 0.7);
+  --text-white-88: rgba(0, 0, 0, 0.88);
+  --text-white-90: rgba(0, 0, 0, 0.9);
+  --text-white-92: rgba(0, 0, 0, 0.92);
+  --text-muted-gray: #404040;
+  --text-subtle-gray: #606060;
+  --text-dim-gray: #808080;
+  --text-body-muted: #404040;
+  --surface-panel-bg: #{$face};
+  --surface-glass-06-15: #{$face};
+  --surface-row-dark: #{$mid};
+  --surface-steam-popover: #{$face};
+  --surface-context-submenu: #{$face};
+  --surface-context-row: #000080;
+  --surface-search-result: #{$mid};
+  --context-menu-hotkey: #800000;
+  --form-checkbox-border: #000000;
+  --input-number-border: #808080;
+  --preview-control-border: #000000;
+  --shortcut-active-border: var(--accent);
+  --window-control-hover-bg: #{$mid};
+  --window-close-hover: #{$face};
+  --tag-default-bg: #{$shadow};
+  --error-text-soft: #800000;
+  --error-bg-dim: #ffd0d0;
+  --error-bg-hover: #ffb0b0;
+  --error-border-soft: #800000;
+  --success-solid: #008000;
+  --error-solid: #a00000;
+  --success-soft-bg: #d7ffd7;
+  --error-soft-bg: #ffd0d0;
+  --overlay-panel-bg: #{$face};
+  --overlay-scrim-deep: rgba(0, 0, 0, 0.55);
+  --greenInt: 0, 128, 0;
+  --orangeInt: 192, 96, 0;
+  --redInt: 160, 0, 0;
+  --text-on-bright-bg: #ffffff;
+  --notification-main-bg: #{$face};
+  --notification-info-border: #000080;
+  --notification-info-highlight: #000080;
+  --notification-success-border: #008000;
+  --notification-success-highlight: #008000;
+  --notification-warning-border: #808000;
+  --notification-warning-highlight: #808000;
+  --notification-error-border: #a00000;
+  --notification-error-highlight: #a00000;
+  --notification-border-radius: 0;
+  --modal-border: #000000;
+  --role-page-bg: #{$face};
+  --role-page-canvas: #{$face};
+  --role-panel-bg: #{$face};
+  --role-surface-raised-bg: #{$mid};
+  --role-field-bg: #ffffff;
+  --role-field-border: #808080;
+  --role-button-bg: #{$face};
+  --role-button-hover-bg: #{$face};
+  --role-dropdown-bg: #{$face};
+  --role-dropdown-hover-bg: #000080;
+  --role-tile-bg: #{$mid};
+  --role-tile-border: #808080;
+  --role-toast-bg: #{$face};
+  --role-toast-fg: #000000;
+  --role-modal-bg: #{$face};
+  --role-modal-fg: #000000;
+  --role-overlay-bg: #{$face};
+  --role-overlay-scrim: rgba(0, 0, 0, 0.55);
+  --role-selected-bg: var(--accent);
+  --role-selected-fg: #ffffff;
+  --role-disabled-fg: #808080;
+  --role-disabled-opacity: 0.72;
+  --role-text-muted: #404040;
+  --role-focus-ring: #000000;
+  --role-focus-ring-offset: #ffffff;
+
+  @include overlay.overlay-root-tokens(
+    $modal-bg: #{$face},
+    $modal-header-bg: #000080,
+    $modal-header-fg: #ffffff,
+    $modal-input-bg: #ffffff,
+    $modal-input-border: #808080,
+    $modal-body-fg: #000000,
+    $modal-muted-fg: #404040,
+    $overlay-thumb-bg: #{$mid},
+    $overlay-thumb-border: #808080,
+    $overlay-thumb-muted-fg: #404040,
+    $notification-message-fg: #000000,
+    $notification-border-radius: 0
+  );
+}
+
+html, body, #app, .container, button, .button, input, select, textarea {
+  font-family: "MS Sans Serif", "Microsoft Sans Serif", Tahoma, sans-serif;
+}
+
+body {
+  background: #008080;
+  color: #000000;
+  font-size: 11px;
+  text-rendering: geometricPrecision;
+}
+
+#app {
+  box-sizing: border-box;
+  border: 2px solid;
+  border-color: $light $dark $dark $light;
+  background: $face;
+  box-shadow: inset 1px 1px 0 $mid, inset -1px -1px 0 $shadow;
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+.container, .programMain, .mainblock, .main-content { background: $face; color: $dark; }
+.page {
+  border: 2px solid !important;
+  border-color: $shadow $light $light $shadow !important;
+  background: $face;
+}
+
+.headerbar,
+.modal-headerbar,
+.app-lock-headerbar {
+  min-height: 24px;
+  height: 24px;
+  margin: 2px;
+  width: calc(100% - 4px);
+  background: $navy;
+  color: $light;
+  font-family: "MS Sans Serif", "Microsoft Sans Serif", Tahoma, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  text-shadow: none;
+  box-shadow: none;
+}
+
+.title-drag, #window-title, #window-title-modal { color: $light; font-weight: 700; }
+.header_icon { fill: $light; filter: none; height: 9px; margin: 7px; }
+/* 95 buttons are wider than tall, tucked 2px inside the navy bar, with the
+   close button set off from min/max by its own extra gap. */
+.window-controls { grid-template-columns: 18px 18px 20px; gap: 2px; height: 16px; margin: 4px 2px; }
+
+.win-btn,
+.win-btn-back {
+  width: 18px;
+  height: 16px;
+  min-width: 18px;
+  min-height: 16px;
+  margin: 0;
+  padding: 1px;
+  border: 2px solid;
+  border-color: $light $dark $dark $light;
+  border-radius: 0;
+  background: $face;
+  color: $dark;
+  box-shadow: inset 1px 1px 0 $mid, inset -1px -1px 0 $shadow;
+}
+.win-btn-close { margin-left: 2px; }
+
+.win-btn:hover, .win-btn-close:hover, .win-btn-back:hover { background: $face; }
+.win-btn:active, .win-btn-back:active {
+  border-color: $dark $light $light $dark;
+  box-shadow: inset 1px 1px 0 $shadow;
+  transform: translate(1px, 1px);
+  filter: none;
+}
+.win-btn__glyph { stroke-width: 1.7; }
+.win-btn-close { background: $face; color: $dark; }
+.win-btn-back { margin-left: 2px; }
+.win-btn-back svg { fill: $dark; }
+
+button,
+.button,
+button#modal_true,
+button#btnLogin {
+  min-height: 24px;
+  padding: 3px 9px;
+  border: 2px solid;
+  border-color: $light $dark $dark $light;
+  border-radius: 0;
+  background: $face;
+  color: $dark;
+  box-shadow: inset 1px 1px 0 $mid, inset -1px -1px 0 $shadow;
+  text-shadow: none;
+}
+
+button:hover, .button:hover { background: $face; border-color: $light $dark $dark $light; }
+button:active, button:target, .button:active, .button:target, .show > .dropdown-toggle {
+  border-color: $dark $light $light $dark;
+  background: $face !important;
+  box-shadow: inset 1px 1px 0 $shadow;
+  filter: none;
+  padding-top: 4px;
+  padding-left: 10px;
+}
+
+button:disabled, button[disabled], .button[aria-disabled="true"], input:disabled, select:disabled, textarea:disabled {
+  color: $shadow !important;
+  cursor: not-allowed;
+  opacity: 1;
+  text-shadow: 1px 1px $light;
+}
+
+button:focus-visible, .button:focus-visible, a:focus-visible,
+input:not([type="hidden"]):focus-visible, select:focus-visible, textarea:focus-visible,
+[role="button"]:focus-visible, [tabindex]:not([tabindex="-1"]):focus-visible {
+  outline: 1px dotted $dark !important;
+  outline-offset: -4px;
+}
+
+input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+select, textarea, .modal-input {
+  min-height: 23px;
+  padding: 3px 4px;
+  border: 2px solid !important;
+  border-color: $shadow $light $light $shadow !important;
+  border-radius: 0;
+  background: $light !important;
+  color: $dark;
+  box-shadow: inset 1px 1px 0 $dark;
+}
+
+input::placeholder, textarea::placeholder { color: $shadow; opacity: 1; }
+
+input[type="checkbox"] + label {
+  width: 16px;
+  height: 16px;
+  border: 2px solid;
+  border-color: $shadow $light $light $shadow;
+  border-radius: 0;
+  background: $light;
+  box-shadow: inset 1px 1px 0 $dark;
+  transition: none;
+}
+input[type="checkbox"] + label::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 5px;
+  height: 9px;
+  border: solid transparent;
+  border-width: 0 2px 2px 0;
+  transform: translate(-50%, -58%) rotate(45deg);
+  transform-origin: center;
+}
+input[type="checkbox"]:checked + label { background: $light; border-color: $shadow $light $light $shadow; }
+input[type="checkbox"]:checked + label::after { border-color: $dark; }
+input[type="checkbox"]:focus-visible + label { outline: 1px dotted $dark; outline-offset: 2px; box-shadow: inset 1px 1px $dark !important; }
+
+.dropdown-toggle { height: 24px; min-height: 24px; }
+.dropdown-menu, .custom-dropdown-menu, .contextmenu, .contextmenu .submenu {
+  padding: 2px;
+  border: 2px solid;
+  border-color: $light $dark $dark $light;
+  border-radius: 0;
+  background: $face;
+  color: $dark;
+  box-shadow: 1px 1px 0 $dark;
+}
+.dropdown-item, .custom-dropdown-item {
+  min-height: 20px;
+  margin: 0;
+  padding: 2px 18px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: $dark;
+  box-shadow: none;
+  text-shadow: none;
+}
+.contextmenu li {
+  min-height: 20px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: $dark;
+  box-shadow: none;
+  text-shadow: none;
+}
+.contextmenu li > a,
+.contextmenu li > span,
+.contextmenu li > button {
+  min-height: 20px;
+  margin: 0;
+  padding: 2px 18px;
+  border: 0 !important;
+  border-radius: 0;
+  background: transparent !important;
+  color: $dark !important;
+  box-shadow: none !important;
+  filter: none;
+  text-shadow: none;
+  transform: none;
+}
+.contextmenu li > button:disabled,
+.contextmenu li > button.ctx-menu__btn--disabled {
+  border: 0 !important;
+  background: transparent !important;
+  color: $shadow !important;
+  box-shadow: none !important;
+}
+.contextmenu .submenu,
+.contextmenu .submenu li {
+  color: $dark;
+}
+.contextmenu .submenu li > a,
+.contextmenu .submenu li > span,
+.contextmenu .submenu li > button {
+  color: $dark !important;
+}
+.dropdown-item:hover, .dropdown-item:focus, .dropdown-item.active,
+.custom-dropdown-item:hover, .custom-dropdown-item:focus, .contextmenu li:hover:not(.ctx-sep) {
+  background: var(--accent) !important;
+  color: $light;
+}
+.contextmenu li:hover:not(.ctx-sep) > a,
+.contextmenu li:hover:not(.ctx-sep) > span,
+.contextmenu li:hover:not(.ctx-sep) > button { color: $light !important; }
+
+::-webkit-scrollbar { width: 16px; height: 16px; background: $face; }
+::-webkit-scrollbar-track {
+  border: 1px solid $shadow;
+  border-radius: 0;
+  background: repeating-conic-gradient($light 0 25%, $mid 0 50%) 0 / 2px 2px;
+}
+::-webkit-scrollbar-thumb {
+  min-height: 20px;
+  border: 2px solid;
+  border-color: $light $dark $dark $light;
+  border-radius: 0;
+  background: $face;
+  box-shadow: inset 1px 1px $mid, inset -1px -1px $shadow;
+}
+::-webkit-scrollbar-thumb:hover { background: $face; }
+::-webkit-scrollbar-corner { background: $face; }
+
+.settingsCol, .infoWindow, .shortcuts, .shortcutDropdown, .pathPicker, .acc_list_actionbar {
+  border: 2px solid;
+  border-color: $light $shadow $shadow $light;
+  border-radius: 0;
+  background: $face;
+  color: $dark;
+  box-shadow: none;
+}
+
+.platform_list_item, label.acc, .accountHover, .searchOverlay_resultItem, .placeHolderAcc, .acc_list_item--skeleton {
+  border: 2px solid;
+  border-color: $light $shadow $shadow $light;
+  border-radius: 0;
+  background: $face;
+  color: $dark;
+  text-shadow: none;
+  box-shadow: 1px 1px 0 $dark;
+}
+.platform_list_item:hover:not(:active), label.acc:hover, .accountHover:hover,
+.searchOverlay_resultItem:hover, .searchOverlay_resultItem.searchOverlay_selected {
+  border-color: var(--accent);
+  background: $mid;
+}
+.platform_list_item .icoFG, .platform_list_item .fgImg use.icoFG { fill: var(--accent); }
+input.acc:checked + label.acc { border-color: var(--accent) !important; background: $mid; box-shadow: inset 0 0 0 1px var(--accent); }
+
+.modalFG, #modal_contents, .app-lock-panel, .searchOverlay_dialog, .stability-prompt, .toast {
+  border: 2px solid;
+  border-color: $light $dark $dark $light;
+  border-radius: 0;
+  background: $face;
+  color: $dark;
+  box-shadow: 2px 2px 0 $dark;
+}
+.modal-header, .modalTitle, .searchOverlay_header {
+  margin: 2px;
+  background: var(--accent);
+  color: $light;
+  font-weight: 700;
+  text-shadow: none;
+}
+.toast { border-left: 2px solid $light; }
+.toast__title, .toast__message, .toast__close { color: $dark; }
+.tooltip, [role="tooltip"] {
+  border: 1px solid $dark;
+  border-radius: 0;
+  background: #ffffe1;
+  color: $dark;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+}
+.SettingsHeader { border-left: 0; border-bottom: 1px solid $shadow; color: $dark; }
+.fancyLink, a { color: #000080; text-decoration: underline; }
+.fancyLink:hover, a:hover { color: #800080; }
+
+/* ---- Steam Guard ---- */
+
+/* Confirmations window: raised bevel buttons, a sunken white list, face panels. */
+.confirmations-refresh,
+.confirmations-status button,
+.confirmations-actions button,
+.confirmations-batch button,
+.confirmations-detail__close {
+  border: 2px solid;
+  border-color: $light $dark $dark $light;
+  border-radius: 0;
+  background: $face;
+  box-shadow: inset 1px 1px 0 $mid, inset -1px -1px 0 $shadow;
+}
+
+.confirmations-refresh:hover:not(:disabled),
+.confirmations-status button:hover:not(:disabled),
+.confirmations-actions button:hover:not(:disabled),
+.confirmations-batch button:hover:not(:disabled),
+.confirmations-detail__close:hover {
+  border-color: $light $dark $dark $light;
+  background: $face;
+}
+
+/* The decisions keep their colour; only the chrome squares up. */
+.confirmations-actions .confirmations-accept,
+.confirmations-actions .confirmations-deny,
+.confirmations-batch .confirmations-accept,
+.confirmations-batch .confirmations-deny {
+  border-color: $light $dark $dark $light;
+}
+
+.confirmations-workspace { background: $face; }
+
+.confirmations-list {
+  border: 2px solid;
+  border-color: $shadow $light $light $shadow;
+  background: #ffffff;
+}
+
+.confirmations-list > .confirmations-row { border-bottom-color: $mid; }
+.confirmations-list > .confirmations-row:hover { background: $mid; }
+.confirmations-list > .confirmations-row.active {
+  background: $mid;
+  box-shadow: inset 3px 0 var(--accent);
+}
+
+/* Marked rows take the navy selection, the way every 95 list marks one. */
+.confirmations-list > .confirmations-row.checked { background: $navy; }
+.confirmations-list > .confirmations-row.checked :is(span, strong, small) { color: #ffffff; }
+
+button.confirmations-row__icon,
+button.confirmations-row__icon img,
+.confirmations-row__check svg,
+.confirmations-detail__icon,
+.confirmations-empty__mark { border-radius: 0; }
+
+.confirmations-status,
+.confirmations-trade__side {
+  border: 2px solid;
+  border-color: $shadow $light $light $shadow;
+  border-radius: 0;
+  background: $face;
+}
+
+button.confirmations-trade__item {
+  border: 2px solid;
+  border-color: $shadow $light $light $shadow;
+  border-radius: 0;
+  background: #ffffff;
+}
+
+.confirmations-item-card {
+  border: 1px solid $dark;
+  border-radius: 0;
+  background: #ffffe1;
+  color: $dark;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+}
+
+/* Steam Guard modal: sunken white fields, raised bevel account rows. */
+.modalFG .steam-guard__code,
+.modalFG .steam-guard__recovery-code {
+  border: 2px solid;
+  border-color: $shadow $light $light $shadow;
+  border-radius: 0;
+  background: #ffffff;
+  box-shadow: inset 1px 1px 0 $dark;
+}
+.modalFG .steam-guard__code:hover { background: #ffffff; }
+
+.modalFG .steam-guard__accounts button {
+  border: 2px solid;
+  border-color: $light $dark $dark $light;
+  border-radius: 0;
+  background: $face;
+  box-shadow: inset 1px 1px 0 $mid, inset -1px -1px 0 $shadow;
+}
+.modalFG .steam-guard__accounts button:hover:not(:disabled) {
+  border-color: $light $dark $dark $light;
+  background: $face;
+}
+
+.modalFG .steam-guard__qr-approval,
+.modalFG .steam-guard__challenge-options {
+  border: 2px solid;
+  border-color: $shadow $light $light $shadow;
+  border-radius: 0;
+  background: $face;
+}
+
+.modalFG .steam-guard__qr-progress,
+.modalFG .steam-guard__qr-progress::after { border-radius: 0; }
+.modalFG .steam-guard__qr-progress { background: $shadow; }
+
+/* Settings card, framed like the other settings panels. */
+.steam-guard-settings.steam-guard-settings {
+  border: 2px solid;
+  border-color: $light $shadow $shadow $light;
+  background: $face;
+}
+.steam-guard-settings.steam-guard-settings code {
+  border: 2px solid;
+  border-color: $shadow $light $light $shadow;
+  background: #ffffff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button, .button, input[type="checkbox"] + label { transition: none; }
+}
+
+@include overlay.overlay-component-overrides;
+@include windows-icons.themed-button-icons(win95);

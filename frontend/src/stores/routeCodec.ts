@@ -7,7 +7,8 @@ export type Route =
   | { page: "manage-platforms" }
   | { page: "platform"; platformName: string }
   | { page: "platform-settings"; platformName: string }
-  | { page: "steam-advanced-clearing" };
+  | { page: "steam-advanced-clearing" }
+  | { page: "steam-confirmations" };
 
 export function serializeRoute(r: Route): string {
   switch (r.page) {
@@ -25,6 +26,8 @@ export function serializeRoute(r: Route): string {
       return "#/platform-settings/" + encodeURIComponent(r.platformName);
     case "steam-advanced-clearing":
       return "#/steam/advanced-clearing";
+    case "steam-confirmations":
+      return "#/steam/confirmations";
     default:
       return "#/";
   }
@@ -41,7 +44,9 @@ const ROUTE_PARSERS: Record<string, RouteParser> = {
   "manage-platforms":   () => ({ page: "manage-platforms" }),
   platform:             (p) => p[1] ? { page: "platform", platformName: decodeURIComponent(p[1]) } : null,
   "platform-settings":  (p) => p[1] ? { page: "platform-settings", platformName: decodeURIComponent(p[1]) } : null,
-  steam:                (p) => p[1]?.toLowerCase() === "advanced-clearing" ? { page: "steam-advanced-clearing" } : null,
+  steam:                (p) => p[1]?.toLowerCase() === "advanced-clearing"
+    ? { page: "steam-advanced-clearing" }
+    : p[1]?.toLowerCase() === "confirmations" ? { page: "steam-confirmations" } : null,
 };
 
 export function parseHash(hash: string): Route | null {
@@ -73,6 +78,7 @@ export function validateRoute(r: Route, startup: PlatformStartup): Route {
     case "platform-settings":
       return nameOk(r.platformName) ? r : { page: "home" };
     case "steam-advanced-clearing":
+    case "steam-confirmations":
       return nameOk("Steam") ? r : { page: "home" };
     default:
       return r;

@@ -4,18 +4,23 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
+	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
+	"runtime"
 	"sync"
 	"time"
 
+	"TcNo-Acc-Switcher/internal/passwordpolicy"
 	"TcNo-Acc-Switcher/internal/paths"
 
 	"golang.org/x/crypto/argon2"
+	"golang.org/x/crypto/hkdf"
 )
 
 const (
@@ -27,6 +32,7 @@ const (
 
 	securityVerifierAAD = "tcno-security-verifier-v1"
 	wrappedKeyAAD       = "tcno-security-vault-key-v1"
+	steamGuardOuterInfo = "tcno-acc-switcher/steam-guard/outer-key/v1"
 
 	kdfTargetMillis = 300
 	kdfMaxTime      = 8
@@ -37,6 +43,7 @@ var (
 	ErrPasswordNotSet     = errors.New("app password is not set")
 	ErrInvalidPassword    = errors.New("invalid app password")
 	ErrPasswordAlreadySet = errors.New("app password is already set")
+	ErrEmptyPassword      = errors.New("app password cannot be empty")
 )
 
 type Status struct {
@@ -70,16 +77,45 @@ type securityFile struct {
 }
 
 type manager struct {
-	mu            sync.Mutex
-	masterKey     []byte
-	operationBusy bool
+	mu               sync.Mutex
+	lifecycleMu      sync.Mutex
+	masterKey        []byte
+	operationBusy    bool
+	saveSecurityFile func(securityFile) error
+	removeFile       func(string) error
+}
+
+// SteamGuardLifecycleHook coordinates the app password with Steam Guard's
+// independent outer encryption layer. Implementations must not retain key.
+type SteamGuardLifecycleHook interface {
+	EnableOuter(key []byte, recoveryPassword string) error
+	DisableOuter(key []byte) error
+	ChangeOuterPassword(oldPassword, newPassword string) error
+	RevokeLeases() error
 }
 
 var (
-	defaultManager = &manager{}
-	statusHookMu   sync.Mutex
-	statusHook     func()
+	defaultManager   = &manager{}
+	statusHookMu     sync.Mutex
+	statusHook       func()
+	steamGuardHookMu sync.RWMutex
+	steamGuardHook   SteamGuardLifecycleHook
 )
+
+// SetSteamGuardLifecycleHook replaces the optional Steam Guard coordinator.
+// Passing nil removes it.
+func SetSteamGuardLifecycleHook(hook SteamGuardLifecycleHook) {
+	steamGuardHookMu.Lock()
+	steamGuardHook = hook
+	steamGuardHookMu.Unlock()
+}
+
+func currentSteamGuardHook() SteamGuardLifecycleHook {
+	steamGuardHookMu.RLock()
+	hook := steamGuardHook
+	steamGuardHookMu.RUnlock()
+	return hook
+}
 
 func SetStatusChangedHook(fn func()) {
 	statusHookMu.Lock()
@@ -119,6 +155,14 @@ func UnlockApp(password string) error {
 	return defaultManager.unlockApp(password)
 }
 
+func ChangePassword(oldPassword, newPassword string) error {
+	return defaultManager.changePassword(oldPassword, newPassword)
+}
+
+func Lock() error {
+	return defaultManager.lock()
+}
+
 func RemoveAppPassword(password string) error {
 	return defaultManager.removeAppPassword(password)
 }
@@ -136,6 +180,54 @@ func SavedAccountDataEncrypted() bool {
 	st, err := defaultManager.status()
 	return err == nil && st.SavedAccountDataEncrypted
 }
+
+// DeriveSteamGuardOuterKey derives a purpose-specific key from the unlocked
+// random app master key. The caller owns the returned buffer and must wipe it.
+func DeriveSteamGuardOuterKey() ([]byte, error) {
+	master, err := defaultManager.unlockedMasterKey()
+	if err != nil {
+		return nil, err
+	}
+	defer wipeBytes(master)
+	return deriveSteamGuardOuterKey(master)
+}
+
+// VerifyAppPassword authenticates a policy-eligible app password without
+// changing lock state. Steam Guard uses this before creating an outer layer.
+func VerifyAppPassword(password string) error {
+	sf, ok, err := loadSecurityFile()
+	if err != nil {
+		return err
+	}
+	if !ok {
+		return ErrPasswordNotSet
+	}
+	if err := passwordpolicy.ValidateNew(password); err != nil {
+		return err
+	}
+	key, err := unlockSecurityFileWithPassword(sf, password)
+	if err != nil {
+		return err
+	}
+	wipeBytes(key)
+	return nil
+}
+
+func deriveSteamGuardOuterKey(master []byte) ([]byte, error) {
+	if len(master) != vaultKeyBytes {
+		return nil, ErrLocked
+	}
+	key := make([]byte, vaultKeyBytes)
+	reader := hkdf.New(sha256.New, master, nil, []byte(steamGuardOuterInfo))
+	if _, err := io.ReadFull(reader, key); err != nil {
+		wipeBytes(key)
+		return nil, err
+	}
+	return key, nil
+}
+
+// WipeSecret clears a caller-owned derived secret buffer.
+func WipeSecret(secret []byte) { wipeBytes(secret) }
 
 func securityDir() (string, error) {
 	root, err := paths.DataRoot()
@@ -174,20 +266,30 @@ func (m *manager) status() (Status, error) {
 }
 
 func (m *manager) setAppPassword(password string) error {
+	m.lifecycleMu.Lock()
+	defer m.lifecycleMu.Unlock()
 	if _, ok, err := loadSecurityFile(); err != nil {
 		return err
 	} else if ok {
 		return ErrPasswordAlreadySet
+	}
+	if password == "" {
+		return ErrEmptyPassword
+	}
+	if err := passwordpolicy.ValidateNew(password); err != nil {
+		return err
 	}
 	salt, err := randomBytes(16)
 	if err != nil {
 		return err
 	}
 	kdf, derived := calibrateAndDeriveKey(password, salt)
+	defer wipeBytes(derived)
 	master, err := randomBytes(vaultKeyBytes)
 	if err != nil {
 		return err
 	}
+	defer wipeBytes(master)
 	verifierNonce, verifierCipher, err := sealWithKey(derived, []byte("tcno-security-ok"), []byte(securityVerifierAAD))
 	if err != nil {
 		return err
@@ -205,29 +307,131 @@ func (m *manager) setAppPassword(password string) error {
 		WrappedVaultKeyNonce:      encode(wrapNonce),
 		WrappedVaultKeyCiphertext: encode(wrapped),
 	}
-	if err := saveSecurityFile(sf); err != nil {
+	if err := m.save(sf); err != nil {
 		return err
 	}
-	m.mu.Lock()
-	m.masterKey = append([]byte(nil), master...)
-	m.mu.Unlock()
+	m.replaceMasterKey(append([]byte(nil), master...))
 	emitStatusChanged()
 	return nil
 }
 
 func (m *manager) unlockApp(password string) error {
-	key, err := unlockWithPassword(password)
+	m.lifecycleMu.Lock()
+	defer m.lifecycleMu.Unlock()
+	sf, ok, err := loadSecurityFile()
 	if err != nil {
 		return err
 	}
-	m.mu.Lock()
-	m.masterKey = key
-	m.mu.Unlock()
+	if !ok {
+		return ErrPasswordNotSet
+	}
+	key, err := unlockSecurityFileWithPassword(sf, password)
+	if err != nil {
+		return err
+	}
+	if sf.SavedAccountDataEncrypted {
+		outerKey, err := deriveSteamGuardOuterKey(key)
+		if err != nil {
+			wipeBytes(key)
+			return err
+		}
+		defer wipeBytes(outerKey)
+		if hook := currentSteamGuardHook(); hook != nil {
+			if err := hook.EnableOuter(outerKey, password); err != nil {
+				wipeBytes(key)
+				return err
+			}
+		}
+	}
+	m.replaceMasterKey(key)
 	emitStatusChanged()
 	return nil
 }
 
+func (m *manager) changePassword(oldPassword, newPassword string) error {
+	m.lifecycleMu.Lock()
+	defer m.lifecycleMu.Unlock()
+	if newPassword == "" {
+		return ErrEmptyPassword
+	}
+	if err := passwordpolicy.ValidateNew(newPassword); err != nil {
+		return err
+	}
+	sf, ok, err := loadSecurityFile()
+	if err != nil {
+		return err
+	}
+	if !ok {
+		return ErrPasswordNotSet
+	}
+	master, err := unlockSecurityFileWithPassword(sf, oldPassword)
+	if err != nil {
+		return err
+	}
+	defer wipeBytes(master)
+
+	salt, err := randomBytes(16)
+	if err != nil {
+		return err
+	}
+	kdf, derived := calibrateAndDeriveKey(newPassword, salt)
+	defer wipeBytes(derived)
+	verifierNonce, verifierCipher, err := sealWithKey(derived, []byte("tcno-security-ok"), []byte(securityVerifierAAD))
+	if err != nil {
+		return err
+	}
+	wrapNonce, wrapped, err := sealWithKey(derived, master, []byte(wrappedKeyAAD))
+	if err != nil {
+		return err
+	}
+	sf.KDF = kdf
+	sf.Salt = encode(salt)
+	sf.VerifierNonce = encode(verifierNonce)
+	sf.VerifierCiphertext = encode(verifierCipher)
+	sf.WrappedVaultKeyNonce = encode(wrapNonce)
+	sf.WrappedVaultKeyCiphertext = encode(wrapped)
+	hook := currentSteamGuardHook()
+	if hook != nil {
+		if err := hook.RevokeLeases(); err != nil {
+			return err
+		}
+		if sf.SavedAccountDataEncrypted {
+			if err := hook.ChangeOuterPassword(oldPassword, newPassword); err != nil {
+				return err
+			}
+		}
+	}
+	if err := m.save(sf); err != nil {
+		if hook != nil && sf.SavedAccountDataEncrypted {
+			return errors.Join(err, hook.ChangeOuterPassword(newPassword, oldPassword))
+		}
+		return err
+	}
+	m.replaceMasterKey(append([]byte(nil), master...))
+	emitStatusChanged()
+	return nil
+}
+
+func (m *manager) lock() error {
+	m.lifecycleMu.Lock()
+	defer m.lifecycleMu.Unlock()
+	if _, ok, err := loadSecurityFile(); err != nil {
+		return err
+	} else if !ok {
+		return ErrPasswordNotSet
+	}
+	m.replaceMasterKey(nil)
+	var revokeErr error
+	if hook := currentSteamGuardHook(); hook != nil {
+		revokeErr = hook.RevokeLeases()
+	}
+	emitStatusChanged()
+	return revokeErr
+}
+
 func (m *manager) removeAppPassword(password string) error {
+	m.lifecycleMu.Lock()
+	defer m.lifecycleMu.Unlock()
 	sf, ok, err := loadSecurityFile()
 	if err != nil {
 		return err
@@ -239,35 +443,59 @@ func (m *manager) removeAppPassword(password string) error {
 	if err != nil {
 		return err
 	}
+	defer wipeBytes(key)
 	journal, err := writeJournal("remove-password", map[string]any{
 		"encrypted": sf.SavedAccountDataEncrypted,
 	})
 	if err != nil {
 		return err
 	}
-	m.mu.Lock()
-	m.masterKey = key
-	m.mu.Unlock()
+	encryptionDisabled := false
+	rollback := func(cause error) error {
+		if encryptionDisabled {
+			cause = errors.Join(cause, EnableSavedAccountEncryption(password))
+		}
+		_ = os.Remove(journal)
+		return cause
+	}
+	hook := currentSteamGuardHook()
+	if hook != nil {
+		if err := hook.RevokeLeases(); err != nil {
+			return rollback(err)
+		}
+	}
+	m.replaceMasterKey(append([]byte(nil), key...))
 	if sf.SavedAccountDataEncrypted {
 		if err := disableSavedAccountEncryptionWithKey(password, key, true); err != nil {
-			_ = os.Remove(journal)
-			return err
+			return rollback(err)
 		}
+		encryptionDisabled = true
 	}
 	p, err := securityPath()
 	if err != nil {
-		return err
+		return rollback(err)
 	}
-	if err := os.Remove(p); err != nil && !os.IsNotExist(err) {
-		_ = os.Remove(journal)
-		return err
+	if err := m.remove(p); err != nil && !os.IsNotExist(err) {
+		return rollback(err)
 	}
 	_ = os.Remove(journal)
-	m.mu.Lock()
-	m.masterKey = nil
-	m.mu.Unlock()
+	m.replaceMasterKey(nil)
 	emitStatusChanged()
 	return nil
+}
+
+func (m *manager) save(sf securityFile) error {
+	if m.saveSecurityFile != nil {
+		return m.saveSecurityFile(sf)
+	}
+	return saveSecurityFile(sf)
+}
+
+func (m *manager) remove(path string) error {
+	if m.removeFile != nil {
+		return m.removeFile(path)
+	}
+	return os.Remove(path)
 }
 
 func (m *manager) requireUnlocked() error {
@@ -308,11 +536,16 @@ func unlockWithPassword(password string) ([]byte, error) {
 	if !ok {
 		return nil, ErrPasswordNotSet
 	}
+	return unlockSecurityFileWithPassword(sf, password)
+}
+
+func unlockSecurityFileWithPassword(sf securityFile, password string) ([]byte, error) {
 	salt, err := decode(sf.Salt)
 	if err != nil {
 		return nil, err
 	}
 	derived := deriveKey(password, salt, sf.KDF)
+	defer wipeBytes(derived)
 	verifierNonce, err := decode(sf.VerifierNonce)
 	if err != nil {
 		return nil, err
@@ -321,9 +554,11 @@ func unlockWithPassword(password string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	if _, err := openWithKey(derived, verifierNonce, verifierCipher, []byte(securityVerifierAAD)); err != nil {
+	verifier, err := openWithKey(derived, verifierNonce, verifierCipher, []byte(securityVerifierAAD))
+	if err != nil {
 		return nil, ErrInvalidPassword
 	}
+	wipeBytes(verifier)
 	wrapNonce, err := decode(sf.WrappedVaultKeyNonce)
 	if err != nil {
 		return nil, err
@@ -337,9 +572,25 @@ func unlockWithPassword(password string) ([]byte, error) {
 		return nil, ErrInvalidPassword
 	}
 	if len(master) != vaultKeyBytes {
+		wipeBytes(master)
 		return nil, fmt.Errorf("invalid vault key length")
 	}
 	return master, nil
+}
+
+func (m *manager) replaceMasterKey(key []byte) {
+	m.mu.Lock()
+	wipeBytes(m.masterKey)
+	m.masterKey = key
+	m.mu.Unlock()
+}
+
+// Go cannot guarantee erasure of compiler or runtime copies beyond this reachable buffer.
+func wipeBytes(buf []byte) {
+	for i := range buf {
+		buf[i] = 0
+	}
+	runtime.KeepAlive(buf)
 }
 
 func deriveKey(password string, salt []byte, p KDFParams) []byte {
@@ -395,6 +646,7 @@ func calibrateAndDeriveKey(password string, salt []byte) (KDFParams, []byte) {
 		p.MeasuredMillis = singleMillis
 		return p, key
 	}
+	wipeBytes(key)
 	start = time.Now()
 	key = deriveKey(password, salt, p)
 	p.MeasuredMillis = elapsedMillis(start)

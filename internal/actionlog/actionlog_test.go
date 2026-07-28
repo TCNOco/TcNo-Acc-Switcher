@@ -50,3 +50,24 @@ func TestRecord_failOutcome(t *testing.T) {
 		t.Fatalf("unexpected line: %q", got)
 	}
 }
+
+func TestRecord_redactsLabelledSecretsButKeepsAccountIdentifiers(t *testing.T) {
+	Init()
+	Record(
+		"steamguard:save",
+		"accountID=76561198123456789 username=ordinary_username",
+		`{"access_token":"ACTION_TOKEN_SENTINEL","account_name":"ordinary_username"}`,
+		errors.New("wrapped: identity_secret=ACTION_ERROR_SENTINEL"),
+	)
+	got := SnapshotPruned(100, 300)
+	for _, secret := range []string{"ACTION_TOKEN_SENTINEL", "ACTION_ERROR_SENTINEL"} {
+		if strings.Contains(got, secret) {
+			t.Fatalf("secret %q leaked in %q", secret, got)
+		}
+	}
+	for _, public := range []string{"76561198123456789", "ordinary_username"} {
+		if !strings.Contains(got, public) {
+			t.Fatalf("public identifier %q was removed from %q", public, got)
+		}
+	}
+}

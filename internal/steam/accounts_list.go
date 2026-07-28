@@ -11,15 +11,18 @@ import (
 	"TcNo-Acc-Switcher/internal/profileimage"
 	"TcNo-Acc-Switcher/internal/security"
 	"TcNo-Acc-Switcher/internal/stats"
+	steamguardregistry "TcNo-Acc-Switcher/internal/steamguard/registry"
 )
 
 // SteamAccountListItemDTO is the fast Steam account list payload.
 type SteamAccountListItemDTO struct {
-	SteamID64      string `json:"steamId64"`
-	PersonaName    string `json:"personaName"`
-	DisplayName    string `json:"displayName"`
-	AccountName    string `json:"accountName"`
-	CurrentSession bool   `json:"currentSession"`
+	SteamID64         string `json:"steamId64"`
+	PersonaName       string `json:"personaName"`
+	DisplayName       string `json:"displayName"`
+	AccountName       string `json:"accountName"`
+	CurrentSession    bool   `json:"currentSession"`
+	HasSteamGuard     bool   `json:"hasSteamGuard"`
+	SteamGuardPending bool   `json:"steamGuardPending"`
 }
 
 // SteamAccountEnrichmentDTO carries slower per-account Steam metadata.
@@ -142,21 +145,46 @@ func (s *SteamService) GetSteamAccountsList() ([]SteamAccountListItemDTO, error)
 		return nil, err
 	}
 
-	out := make([]SteamAccountListItemDTO, 0, len(ctx.users))
-	for _, u := range ctx.users {
-		persona := displayPersona(u)
-		out = append(out, SteamAccountListItemDTO{
-			SteamID64:      u.SteamID64,
-			PersonaName:    persona,
-			DisplayName:    persona,
-			AccountName:    strings.TrimSpace(u.AccountName),
-			CurrentSession: ctx.activeSteamID != "" && u.SteamID64 == ctx.activeSteamID,
-		})
-	}
+	states := loadSteamGuardAccountStates()
+	out := buildSteamAccountListItems(ctx.users, ctx.activeSteamID, states)
 	if len(out) > 0 {
 		syncSteamPlatformCounts(len(out))
 	}
 	return out, nil
+}
+
+func loadSteamGuardAccountStates() map[string]SteamGuardAccountState {
+	entries, err := steamguardregistry.Load()
+	if err != nil {
+		steamLog.Warn("Steam Guard account state unavailable", slog.Any("err", err))
+		return nil
+	}
+	states := make(map[string]SteamGuardAccountState, len(entries))
+	for _, entry := range entries {
+		states[entry.SteamID64] = SteamGuardAccountState{
+			HasSteamGuard: entry.State == steamguardregistry.StateActive,
+			Pending:       entry.State == steamguardregistry.StatePending,
+		}
+	}
+	return states
+}
+
+func buildSteamAccountListItems(users []LoginUser, activeSteamID string, states map[string]SteamGuardAccountState) []SteamAccountListItemDTO {
+	out := make([]SteamAccountListItemDTO, 0, len(users))
+	for _, u := range users {
+		persona := displayPersona(u)
+		guardState := states[u.SteamID64]
+		out = append(out, SteamAccountListItemDTO{
+			SteamID64:         u.SteamID64,
+			PersonaName:       persona,
+			DisplayName:       persona,
+			AccountName:       strings.TrimSpace(u.AccountName),
+			CurrentSession:    activeSteamID != "" && u.SteamID64 == activeSteamID,
+			HasSteamGuard:     guardState.HasSteamGuard,
+			SteamGuardPending: guardState.Pending,
+		})
+	}
+	return out
 }
 
 func (s *SteamService) GetSteamAccountsEnrichment() ([]SteamAccountEnrichmentDTO, error) {

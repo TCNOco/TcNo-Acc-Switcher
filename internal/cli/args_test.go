@@ -158,3 +158,17 @@ func TestParseDuplicateLogLevel(t *testing.T) {
 		t.Fatalf("want duplicate error, got %v", err)
 	}
 }
+
+func TestParseAllowSteamGuardCapture(t *testing.T) {
+	for _, arg := range []string{"--allow-steamguard-capture", "-allow-steamguard-capture"} {
+		parsed, err := Parse([]string{arg}, nil)
+		if err != nil || !parsed.AllowSteamGuardCapture {
+			t.Fatalf("%s: parsed = %#v, err = %v", arg, parsed.AllowSteamGuardCapture, err)
+		}
+	}
+	// Absent by default: capture stays blocked unless it is asked for.
+	parsed, err := Parse([]string{"--verbose"}, nil)
+	if err != nil || parsed.AllowSteamGuardCapture {
+		t.Fatalf("parsed = %#v, err = %v", parsed.AllowSteamGuardCapture, err)
+	}
+}

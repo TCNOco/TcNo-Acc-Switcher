@@ -12,6 +12,9 @@ import { initI18n } from './stores/i18n'
 import { initOfflineMode } from './stores/offlineMode'
 import { resolveInitialRoute, installHashSync } from './stores/nav'
 import { initTheme } from './lib/themes'
+import { installNavigationGuard } from './lib/navigationGuard'
+
+installNavigationGuard()
 
 const app = void (async () => {
   await initI18n()

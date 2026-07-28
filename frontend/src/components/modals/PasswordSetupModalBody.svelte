@@ -3,6 +3,7 @@
   import { createEventDispatcher } from "svelte";
   import { t } from "../../stores/i18n";
   import type { PasswordSetupResult } from "../../stores/modal";
+  import { passwordPolicyMessage, validateNewPassword } from "../../lib/passwordPolicy";
   import ModalBodyShell from "./ModalBodyShell.svelte";
 
   export let positiveLabel = "";
@@ -35,6 +36,14 @@
 
   function submit(): void {
     error = "";
+    const policyError = validateNewPassword(password);
+    if (policyError) {
+      error = passwordPolicyMessage(policyError);
+      requestAnimationFrame(() => {
+        passwordEl?.focus();
+      });
+      return;
+    }
     if (password !== confirm) {
       error = $t("Security_SetPasswordMismatch");
       requestAnimationFrame(() => {

@@ -1,6 +1,7 @@
 package app
 
 import (
+	"errors"
 	"io/fs"
 	"log"
 	"log/slog"
@@ -17,6 +18,7 @@ import (
 	"TcNo-Acc-Switcher/internal/crashlog"
 	"TcNo-Acc-Switcher/internal/discordrpc"
 	"TcNo-Acc-Switcher/internal/ipc"
+	"TcNo-Acc-Switcher/internal/logredact"
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/security"
@@ -68,24 +70,15 @@ func mainWindowOptions(guiSettings platform.AppSettings, parsed cli.Parsed) appl
 			Backdrop:                application.MacBackdropTranslucent,
 			TitleBar:                application.MacTitleBarHiddenInset,
 		},
-		BackgroundColour:           application.NewRGB(27, 38, 54),
-		URL:                        "/",
-		Frameless:                  true,
-		EnableFileDrop:             true,
-		DevToolsEnabled:            true,
-		DefaultContextMenuDisabled: false,
+		BackgroundColour: application.NewRGB(27, 38, 54),
+		URL:              "/",
+		Frameless:        true,
+		EnableFileDrop:   true,
 		KeyBindings: map[string]func(application.Window){
-			"Ctrl+Shift+I": func(window application.Window) { window.OpenDevTools() },
-			"F11":          func(window application.Window) { window.ToggleFullscreen() },
-		},
-		Permissions: map[application.PermissionType]application.Permission{
-			application.PermissionCamera:        application.PermissionDeny,
-			application.PermissionMicrophone:    application.PermissionDeny,
-			application.PermissionGeolocation:   application.PermissionDeny,
-			application.PermissionNotifications: application.PermissionDeny,
-			application.PermissionClipboardRead: application.PermissionDeny,
+			"F11": func(window application.Window) { window.ToggleFullscreen() },
 		},
 	}
+	applyWindowSecurityPolicy(&winOpts, buildmode.IsDebugBuild())
 	if guiSettings.StartProgramCentered {
 		winOpts.InitialPosition = application.WindowCentered
 	} else {
@@ -97,6 +90,29 @@ func mainWindowOptions(guiSettings platform.AppSettings, parsed cli.Parsed) appl
 		winOpts.Hidden = true
 	}
 	return winOpts
+}
+
+func applyWindowSecurityPolicy(options *application.WebviewWindowOptions, development bool) {
+	if options == nil {
+		return
+	}
+	options.DevToolsEnabled = development
+	options.DefaultContextMenuDisabled = !development
+	if options.KeyBindings == nil {
+		options.KeyBindings = make(map[string]func(application.Window))
+	}
+	if development {
+		options.KeyBindings["Ctrl+Shift+I"] = func(window application.Window) { window.OpenDevTools() }
+	} else {
+		delete(options.KeyBindings, "Ctrl+Shift+I")
+	}
+	options.Permissions = map[application.PermissionType]application.Permission{
+		application.PermissionCamera:        application.PermissionDeny,
+		application.PermissionMicrophone:    application.PermissionDeny,
+		application.PermissionGeolocation:   application.PermissionDeny,
+		application.PermissionNotifications: application.PermissionDeny,
+		application.PermissionClipboardRead: application.PermissionDeny,
+	}
 }
 
 func githubUpdaterConfig(guiSettings platform.AppSettings) github.Config {
@@ -129,12 +145,19 @@ func RunGUI(params RunGUIParams) {
 	if !parsed.LogLevelSet && wailsLvl < slog.LevelInfo {
 		wailsLvl = slog.LevelInfo
 	}
-	wailsLogger := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: wailsLvl}))
+	wailsLogger := slog.New(logredact.NewHandler(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: wailsLvl})))
 	notifier := notifications.New()
 	platform.SetNativeNotifier(notifier)
 	services := append([]application.Service{}, params.Services...)
 	services = append(services, application.NewService(notifier))
 
+	lifecycle := newSecurityLifecycle(func() error {
+		err := security.Lock()
+		if errors.Is(err, security.ErrPasswordNotSet) {
+			return nil
+		}
+		return err
+	})
 	var wailsApp *application.App
 	appOpts := application.Options{
 		Name:        "TcNo Account Switcher",
@@ -155,6 +178,7 @@ func RunGUI(params RunGUIParams) {
 			ApplicationShouldTerminateAfterLastWindowClosed: true,
 		},
 	}
+	configurePlatformSecurityLifecycle(&appOpts, lifecycle)
 	if runtime.GOOS == "windows" {
 		if cacheDir, err := paths.WebViewCacheDir(); err != nil {
 			log.Printf("webview cache dir: %v", err)
@@ -166,6 +190,7 @@ func RunGUI(params RunGUIParams) {
 	}
 
 	wailsApp = application.New(appOpts)
+	registerSecurityLifecycle(wailsApp, lifecycle)
 	if err := platform.SyncAutostartPreference(wailsApp, guiSettings.StartTrayWithWindows); err != nil {
 		wailsApp.Logger.Warn("autostart sync", "error", err)
 	}

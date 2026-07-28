@@ -17,6 +17,7 @@
   } from "../stores/modal";
   import { pushToast } from "../stores/toast";
   import { contextMenu } from "../lib/actions/contextMenu";
+  import { tooltip } from "../lib/actions/tooltip";
   import type { MenuItemDef } from "../stores/contextMenu";
   import { platformIconFgHref } from "../lib/platformIcon";
   import ToastTypeIcon from "../components/ToastTypeIcon.svelte";
@@ -321,13 +322,17 @@
 </script>
 
 <div class="main-content main-spacing preview-css-page" use:controllerSpatialNavigation>
-  <h1 class="SettingsHeader">{$t("Settings_PreviewCssHeader")}</h1>
-  <p class="preview-css-intro">{$t("Settings_PreviewCss")}</p>
+  <div class="preview-css-intro-theme">
+    <h1 class="SettingsHeader">{$t("Settings_PreviewCssHeader")}</h1>
+    <p class="preview-css-intro">{$t("Settings_PreviewCss")}</p>
 
-  <h2 class="SettingsHeader">{$t("Settings_Header_Theme")}</h2>
-  <ThemePickerControls />
+    <h2 class="SettingsHeader">{$t("Settings_Header_Theme")}</h2>
+    <ThemePickerControls />
+  </div>
 
-  <h2 class="SettingsHeader">{$t("Preview_Platforms")}</h2>
+  <div class="preview-css-grid">
+    <section class="preview-css-section">
+      <h2 class="SettingsHeader">{$t("Preview_Platforms")}</h2>
   <div class="preview_element preview_program_main">
     <div class="platformTable">
       <ReorderPointerGrid
@@ -423,8 +428,10 @@
       {/each}
     </div>
   </div>
+    </section>
 
-  <h2 class="SettingsHeader">{$t("Preview_Accounts")}</h2>
+    <section class="preview-css-section">
+      <h2 class="SettingsHeader">{$t("Preview_Accounts")}</h2>
   <div class="preview_element preview_accounts_wrap">
     <div class="preview-acc-list-wrap" id="acc_list" aria-label={$t("Preview_Accounts")}>
       <ReorderPointerGrid
@@ -576,19 +583,30 @@
               <img src="/img/platform/Steam.svg" alt="" draggable="false" />
             </button>
           </div>
-          <button type="button" id="btnAddNew" class="btnicontext" aria-label={$t("Button_AddNew")}>
+          <button type="button" id="btnAddNew" class="btnicontext actionbar__add" aria-label={$t("Button_AddNew")}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true"
               ><path
                 d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"
               /></svg
             >{$t("Button_AddNew")}</button
           >
+          <button type="button" class="btnicontext actionbar__save" aria-label={$t("Button_SaveCurrent")}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true">
+              <path d="M64 32h288l96 96v352H0V32zm32 64v96h224V96zm0 224v160h256V320z" />
+            </svg>
+            {$t("Button_SaveCurrent")}
+          </button>
           <button type="button" class="btnicontext actionbar__login" aria-label={$t("Button_Login")}>
             {$t("Button_Login")}<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
               <path
                 d="M217.9 105.9L340.7 228.7c7.2 7.2 11.3 17 11.3 27.3s-4.1 20.1-11.3 27.3L217.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9V160c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.5 24 9.9z"
               /></svg
             >
+          </button>
+          <button type="button" class="square actionbar__filter" aria-label={$t("Filter_Menu")}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
+              <path d="M0 32h512L320 240v192l-128 48V240z" />
+            </svg>
           </button>
           <button type="button" id="pvSettingsButton" class="square" aria-label={$t("Tooltip_Settings")}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true"
@@ -672,8 +690,10 @@
       </div>
     </div>
   </div>
+    </section>
 
-  <h2 class="SettingsHeader">{$t("Preview_OverlayDropReceivers")}</h2>
+    <section class="preview-css-section">
+      <h2 class="SettingsHeader">{$t("Preview_OverlayDropReceivers")}</h2>
   <div class="preview_element preview-overlay-drop-block">
     <p class="preview-overlay-drop-intro">{$t("Settings_PreviewOverlayDropReceivers")}</p>
     <div class="preview-overlay-drop-grid">
@@ -777,8 +797,100 @@
       </figure>
     </div>
   </div>
+    </section>
 
-  <h2 class="SettingsHeader">{$t("Preview_Notifications")}</h2>
+    <section class="preview-css-section">
+      <h2 class="SettingsHeader">Expanded right-click context menu</h2>
+      <div class="preview_element preview-context-menu-block">
+        <div class="preview-context-menu-stage">
+          <div class="preview-context-menu-canvas">
+            <ul
+              class="ctx-menu-root contextmenu preview-context-menu"
+              role="menu"
+              aria-label="Expanded right-click context menu"
+              tabindex="-1"
+            >
+              <li role="none">
+                <button type="button" class="ctx-menu__btn" role="menuitem" tabindex="-1">
+                  {$t("Context_SwapTo")}
+                </button>
+              </li>
+              <li class="hasSubmenu submenu-expanded" role="none">
+                <button
+                  type="button"
+                  class="ctx-menu__label"
+                  role="menuitem"
+                  aria-haspopup="true"
+                  aria-expanded="true"
+                  tabindex="-1"
+                >
+                  {$t("Context_ManageSubmenu")}
+                </button>
+                <ul class="submenu submenu1" role="menu" aria-label={$t("Context_ManageSubmenu")}>
+                  <li role="none">
+                    <button type="button" class="ctx-menu__btn" role="menuitem" tabindex="-1">
+                      {$t("Context_ChangeName")}
+                    </button>
+                  </li>
+                  <li role="none">
+                    <button type="button" class="ctx-menu__btn" role="menuitem" tabindex="-1">
+                      {$t("Context_CreateShortcut")}
+                    </button>
+                  </li>
+                  <li class="ctx-sep" role="separator"><hr /></li>
+                  <li role="none">
+                    <button
+                      type="button"
+                      class="ctx-menu__btn ctx-menu__btn--disabled"
+                      role="menuitem"
+                      aria-disabled="true"
+                      disabled
+                      tabindex="-1"
+                    >
+                      {$t("Context_CreateShortcut_SelectAccount")}
+                    </button>
+                  </li>
+                </ul>
+              </li>
+              <li class="ctx-sep" role="separator"><hr /></li>
+              <li role="none">
+                <button type="button" class="ctx-menu__btn" role="menuitem" tabindex="-1">
+                  {$t("Context_RemoveProfileImage")}
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="preview-css-section">
+      <h2 class="SettingsHeader">Tooltips</h2>
+      <div class="preview_element preview-tooltip-block">
+        <div class="preview-tooltip-stage">
+          <div
+            class="tooltip fade show preview-static-tooltip"
+            data-placement="top"
+            role="tooltip"
+            id="preview-static-tooltip"
+          >
+            <div class="tooltip-arrow"></div>
+            <div class="tooltip-inner">Always-visible tooltip preview</div>
+          </div>
+          <button
+            type="button"
+            class="btnicontext"
+            aria-describedby="preview-static-tooltip"
+            use:tooltip={{ text: "Live tooltip preview", placement: "top" }}
+          >
+            Hover or focus for live tooltip
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="preview-css-section">
+      <h2 class="SettingsHeader">{$t("Preview_Notifications")}</h2>
   <div class="preview_element">
     <div class="preview-static-toast-host">
       <div class="toast-stack preview-static-toast-stack">
@@ -884,7 +996,7 @@
       </div>
     </div>
   </div>
-  <h3 class="SettingsHeader preview-toast-live-heading">Live toasts</h3>
+      <h3 class="SettingsHeader preview-toast-live-heading">Live toasts</h3>
   <div class="modalTestPanel">
     <label class="toastPermanentRow">
       <input type="checkbox" class="toastPermanentCheckbox" bind:checked={toastPermanent} />
@@ -900,8 +1012,10 @@
       <button type="button" id="pvDisabledButton" class="btnicontext" disabled>Disabled button</button>
     </div>
   </div>
+    </section>
 
-  <h2 class="SettingsHeader">{$t("Preview_Modals")}</h2>
+    <section class="preview-css-section">
+      <h2 class="SettingsHeader">{$t("Preview_Modals")}</h2>
   <div class="modalTestPanel">
     <pre class="modalTestOutput" aria-live="polite"
       >{#if modalLog.length === 0}<span class="modalTestPlaceholder">{$t("Preview_Modals")} — run a test below.</span
@@ -918,8 +1032,10 @@
       <button type="button" class="btnicontext" on:click={() => void testFolderPickerWithFiles()}>Folder + files</button>
     </div>
   </div>
+    </section>
 
-  <h2 class="SettingsHeader">{$t("Preview_Settings")}</h2>
+    <section class="preview-css-section">
+      <h2 class="SettingsHeader">{$t("Preview_Settings")}</h2>
   <div class="preview_element">
     <div class="container mainblock">
       <div class="row">
@@ -984,11 +1100,39 @@
       </div>
     </div>
   </div>
+    </section>
+  </div>
 </div>
 
 <style lang="scss">
   .preview-css-page {
     padding-bottom: 2rem;
+  }
+
+  .preview-css-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    align-items: start;
+  }
+
+  .preview-css-section {
+    min-width: 0;
+  }
+
+  @media (min-width: 1600px) {
+    .preview-css-grid {
+      display: block;
+      column-count: 2;
+      column-gap: 1.5rem;
+    }
+
+    .preview-css-section {
+      width: 100%;
+      margin-bottom: 1.5rem;
+      break-inside: avoid-column;
+      page-break-inside: avoid;
+    }
   }
 
   .preview-css-toolbar {
@@ -1050,6 +1194,52 @@
 
   .preview-overlay-drop-block {
     padding: 1em;
+  }
+
+  .preview-context-menu-block {
+    padding: 1em;
+  }
+
+  .preview-context-menu-stage {
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: visible;
+    padding: 0.25rem 0.25rem 1rem;
+  }
+
+  .preview-context-menu-canvas {
+    position: relative;
+    width: 30em;
+    min-height: 12rem;
+  }
+
+  .preview-context-menu {
+    position: relative;
+    inset: auto;
+    display: block;
+    visibility: visible;
+    opacity: 1;
+    pointer-events: none;
+  }
+
+  .preview-tooltip-block {
+    padding: 1em;
+  }
+
+  .preview-tooltip-stage {
+    display: flex;
+    min-height: 8rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .preview-static-tooltip {
+    position: relative;
+    inset: auto;
+    opacity: 1;
+    pointer-events: none;
   }
 
   .preview_program_main {

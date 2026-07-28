@@ -1,5 +1,5 @@
 import { pushToast } from "../../stores/toast";
-import type { SteamAccountRow } from "./types";
+import type { SteamAccountRow, SteamGuardMenuRequest } from "./types";
 import { formatWailsError, formatToastWithError } from "../formatWailsError";
 import { reportLaunchFailure } from "../adminFlow";
 import * as SteamService from "../../../bindings/TcNo-Acc-Switcher/internal/steam/steamservice.js";
@@ -20,6 +20,7 @@ export interface SteamMenuDeps {
   gameDataBySteamId: Record<string, { userdata: Set<string>; backup: Set<string> }>;
   steamIds: string[];
   refreshGameDataAppSets: (ids: string[]) => Promise<void>;
+  openSteamGuard: (request: SteamGuardMenuRequest) => void;
 }
 
 function mapSteamUserdataI18nError(err: unknown, tr: Translate): string {

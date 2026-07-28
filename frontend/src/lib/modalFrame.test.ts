@@ -1,5 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { startModalDrag, startModalResize, type ModalFrameRect } from "./modalFrame";
+import {
+  measureModalNaturalSize,
+  startModalDrag,
+  startModalResize,
+  type ModalFrameRect,
+} from "./modalFrame";
 
 function pointerEvent(
   type: string,
@@ -34,6 +39,71 @@ function pointerTarget() {
     releasePointerCapture: vi.fn(),
   };
 }
+
+class FakeElement {
+  offsetWidth = 0;
+  offsetHeight = 0;
+  scrollWidth = 0;
+  scrollHeight = 0;
+  children: FakeElement[] = [];
+}
+
+/** Frame chrome with one body child; `body` sizes describe what the browser would report. */
+function fakeModal(body: Partial<FakeElement>): FakeElement {
+  const child = Object.assign(new FakeElement(), body);
+  const scroll = Object.assign(new FakeElement(), { children: [child] });
+  const header = Object.assign(new FakeElement(), { offsetHeight: 32 });
+  const modalFg = new FakeElement() as FakeElement & {
+    querySelector: (selector: string) => FakeElement | null;
+  };
+  modalFg.querySelector = (selector: string) =>
+    selector === ".modal-scroll" ? scroll : selector === ".modal-headerbar" ? header : null;
+  return modalFg;
+}
+
+function stubMeasurementGlobals(): void {
+  vi.stubGlobal("HTMLElement", FakeElement);
+  vi.stubGlobal("getComputedStyle", () => ({
+    paddingLeft: "24px",
+    paddingRight: "24px",
+    paddingTop: "20px",
+    paddingBottom: "20px",
+    borderLeftWidth: "1px",
+    borderRightWidth: "1px",
+    borderTopWidth: "1px",
+    borderBottomWidth: "1px",
+    rowGap: "normal",
+    gap: "normal",
+  }));
+}
+
+describe("measureModalNaturalSize", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("adds chrome to the body's own box", () => {
+    stubMeasurementGlobals();
+
+    expect(
+      measureModalNaturalSize(
+        fakeModal({ offsetWidth: 480, scrollWidth: 480, offsetHeight: 300, scrollHeight: 300 }) as unknown as HTMLElement,
+      ),
+    ).toEqual({ width: 530, height: 374 });
+  });
+
+  it("measures the overflowing content of a clamped body, not its clamped box", () => {
+    stubMeasurementGlobals();
+
+    // A body clamped by max-height (or holding an inner scroller) reports the clamped
+    // offsetHeight; without scrollHeight the frame would freeze at its current height.
+    expect(
+      measureModalNaturalSize(
+        fakeModal({ offsetWidth: 480, scrollWidth: 480, offsetHeight: 120, scrollHeight: 420 }) as unknown as HTMLElement,
+      ).height,
+    ).toBe(494);
+  });
+});
 
 describe("modalFrame pointer sessions", () => {
   afterEach(() => {

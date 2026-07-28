@@ -15,7 +15,7 @@ export const themeStyles = import.meta.glob("../../styles/themes/*/style.scss", 
 }) as Record<string, () => Promise<string>>;
 
 const themeBackgrounds = import.meta.glob(
-  "../../styles/themes/*/*.{jpg,jpeg,png,webp,gif}",
+  "../../styles/themes/*/*.{jpg,jpeg,png,webp,gif,svg}",
   { eager: true, import: "default" }
 ) as Record<string, string>;
 
@@ -49,7 +49,7 @@ export function styleLoaderPathForId(themeId: string): string | null {
 function sanitizeThemeBackgroundFilename(value: unknown): string | null {
   if (typeof value !== "string") return null;
   const trimmed = value.trim();
-  if (!/^[a-zA-Z0-9_-]+\.(jpe?g|png|webp|gif)$/i.test(trimmed)) return null;
+  if (!/^[a-zA-Z0-9_-]+\.(jpe?g|png|webp|gif|svg)$/i.test(trimmed)) return null;
   return trimmed;
 }
 

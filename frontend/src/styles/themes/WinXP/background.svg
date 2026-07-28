@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1f57c9"/>
+      <stop offset="0.35" stop-color="#3d7be0"/>
+      <stop offset="0.62" stop-color="#7cabef"/>
+      <stop offset="0.78" stop-color="#b9d5f6"/>
+      <stop offset="0.86" stop-color="#dfeafb"/>
+    </linearGradient>
+    <linearGradient id="hillFar" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8ec04d"/>
+      <stop offset="1" stop-color="#5d9a31"/>
+    </linearGradient>
+    <linearGradient id="hillMain" x1="0.15" y1="0" x2="0.6" y2="1">
+      <stop offset="0" stop-color="#a8d45f"/>
+      <stop offset="0.45" stop-color="#77b73e"/>
+      <stop offset="1" stop-color="#3f7f22"/>
+    </linearGradient>
+    <linearGradient id="hillShade" x1="0" y1="0" x2="1" y2="0.4">
+      <stop offset="0" stop-color="#2e6a1c"/>
+      <stop offset="1" stop-color="#4c8d28" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+    <filter id="softer" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="26"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="1000" fill="url(#sky)"/>
+
+  <!-- clouds -->
+  <g fill="#ffffff" filter="url(#soft)">
+    <g opacity="0.92">
+      <ellipse cx="270" cy="200" rx="150" ry="42"/>
+      <ellipse cx="365" cy="172" rx="95" ry="34"/>
+      <ellipse cx="180" cy="176" rx="80" ry="28"/>
+    </g>
+    <g opacity="0.85">
+      <ellipse cx="1210" cy="130" rx="180" ry="40"/>
+      <ellipse cx="1320" cy="104" rx="100" ry="30"/>
+      <ellipse cx="1105" cy="108" rx="85" ry="26"/>
+    </g>
+    <g opacity="0.8">
+      <ellipse cx="820" cy="300" rx="130" ry="30"/>
+      <ellipse cx="905" cy="278" rx="75" ry="24"/>
+    </g>
+    <g opacity="0.7">
+      <ellipse cx="1480" cy="330" rx="110" ry="24"/>
+      <ellipse cx="1545" cy="310" rx="60" ry="18"/>
+    </g>
+  </g>
+  <g fill="#ffffff" filter="url(#softer)" opacity="0.5">
+    <ellipse cx="560" cy="470" rx="230" ry="34"/>
+    <ellipse cx="1340" cy="520" rx="200" ry="30"/>
+  </g>
+
+  <!-- hills -->
+  <path fill="url(#hillFar)" d="M0 760 Q 260 640 640 700 T 1600 660 V 1000 H 0 Z"/>
+  <path fill="url(#hillMain)" d="M0 690 Q 420 560 760 680 Q 1080 790 1600 740 V 1000 H 0 Z"/>
+  <path fill="url(#hillShade)" opacity="0.55" d="M0 690 Q 300 600 560 660 Q 420 780 220 1000 H 0 Z"/>
+  <path fill="#569427" opacity="0.6" d="M900 730 Q 1220 660 1600 780 V 1000 H 760 Q 780 840 900 730 Z"/>
+</svg>

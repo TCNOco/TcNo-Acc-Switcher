@@ -29,6 +29,8 @@ function loaderFor(route: Route): () => Promise<PageModule> {
       return () => import("../pages/PlatformSettings.svelte");
     case "steam-advanced-clearing":
       return () => import("../pages/SteamAdvancedClearing.svelte");
+    case "steam-confirmations":
+      return () => import("../pages/SteamConfirmations.svelte");
     case "manage-platforms":
       return () => import("../pages/ManagePlatforms.svelte");
   }

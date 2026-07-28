@@ -85,6 +85,20 @@
         }
     }
 
+    li.ctx-sep {
+        display: flex;
+        align-items: center;
+        min-height: 0;
+        height: 0.5rem;
+        padding: 0;
+        background: transparent;
+
+        hr {
+            width: 100%;
+            margin: 0;
+        }
+    }
+
     .submenu {
         display: none;
         list-style: none;

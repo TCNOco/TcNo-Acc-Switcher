@@ -11,6 +11,7 @@
   import FeedbackModalBody from "./modals/FeedbackModalBody.svelte";
   import CrashReportModalBody from "./modals/CrashReportModalBody.svelte";
   import UpdateModalBody from "./modals/UpdateModalBody.svelte";
+  import SteamGuardModalBody from "./modals/SteamGuardModalBody.svelte";
 
   $: m = $activeModal;
 
@@ -66,6 +67,10 @@
           positiveLabel={m.positiveLabel ?? $t("Ok")}
           multiline={m.multiline ?? false}
           inputType={m.inputType}
+          checkboxLabel={m.checkboxLabel}
+          checkboxInitial={m.checkboxInitial ?? false}
+          returnCheckboxResult={m.returnCheckboxResult ?? false}
+          modalId={m.id}
           on:resolve={onResolve}
         />
       {:else if m.kind === "passwordSetup"}
@@ -110,6 +115,13 @@
         <UpdateModalBody
           message={m.message}
           downloadUrl={m.downloadUrl}
+        />
+      {:else if m.kind === "steamGuard"}
+        <SteamGuardModalBody
+          account={m.account}
+          entry={m.entry}
+          knownAccounts={m.knownAccounts}
+          controller={m.controller}
         />
       {/if}
     {/key}

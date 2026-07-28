@@ -1,0 +1,190 @@
+{
+  "_comment": "Keys whose value is intentionally identical to English. Suppressed from i18n_todo.py's still-English report. '*' applies to every locale; a locale code applies to that locale only. Add with: python tools/i18n_todo.py [locale] --ignore KEY [KEY ...]",
+  "*": [
+    "Context_Steam_Id",
+    "Context_Steam_Id3",
+    "Context_Steam_Id32",
+    "Context_Steam_Id64",
+    "Steam_ShowSteamID"
+  ],
+  "zh-CN": [
+    "Filter_Sort_AZ",
+    "Filter_Sort_ZA"
+  ],
+  "vi-VN": [
+    "Filter_Sort_AZ",
+    "Filter_Sort_ZA",
+    "Ok"
+  ],
+  "fr-FR": [
+    "Invisible",
+    "Modal_Info_Version",
+    "Ok",
+    "SteamGuard_Confirmations_Title",
+    "SteamGuard_Confirmations_TitleFor",
+    "SteamGuard_QR_Session",
+    "Tags_ExpiryDate"
+  ],
+  "ja-JP": [
+    "Ok"
+  ],
+  "pt-PT": [
+    "Offline",
+    "Online"
+  ],
+  "pt-BR": [
+    "Ok"
+  ],
+  "zh-TW": [
+    "Filter_Sort_AZ",
+    "Filter_Sort_ZA"
+  ],
+  "ro-RO": [
+    "Filter_Sort_AZ",
+    "Filter_Sort_ZA",
+    "Ok",
+    "Online",
+    "Settings_Header_Program"
+  ],
+  "hu-HU": [
+    "Filter_Sort_AZ",
+    "Filter_Sort_ZA",
+    "Search_Section_Platform",
+    "Settings_Header_Program"
+  ],
+  "no-NO": [
+    "ForName",
+    "Ok",
+    "Settings_Header_Program",
+    "Settings_Header_System",
+    "Tooltip_Info"
+  ],
+  "sk-SK": [
+    "Filter_Sort_AZ",
+    "Filter_Sort_ZA",
+    "Offline",
+    "Ok",
+    "Online",
+    "Settings_Header_Program"
+  ],
+  "tr-TR": [
+    "Filter_Sort_AZ",
+    "Filter_Sort_ZA",
+    "Search_Section_Platform",
+    "Settings_Header_Program"
+  ],
+  "af-ZA": [
+    "Filter_Sort_AZ",
+    "Filter_Sort_ZA",
+    "Ok",
+    "Search_Section_Platform",
+    "Security_InterruptedRestore_Later",
+    "Settings_Header_Program"
+  ],
+  "ca-ES": [
+    "Filter_Sort_AZ",
+    "Filter_Sort_ZA",
+    "Invisible",
+    "No",
+    "Notes",
+    "SteamAdvanced_LogError"
+  ],
+  "cs-CZ": [
+    "Offline",
+    "Ok",
+    "Online",
+    "Settings_Header_Program"
+  ],
+  "da-DK": [
+    "Modal_Info_Version",
+    "Offline",
+    "Ok",
+    "Online",
+    "Search_Section_Game",
+    "Search_Section_Platform",
+    "Settings_BgAlign_Top",
+    "Settings_Header_Program",
+    "Settings_Header_System",
+    "SteamGuard_Enrollment_Destination",
+    "SteamGuard_QR_Session",
+    "Tooltip_Info"
+  ],
+  "de-CH": [
+    "Filter_Sort_AZ",
+    "Filter_Sort_ZA",
+    "Modal_Info_Version",
+    "Offline",
+    "Online",
+    "Settings_Header_System",
+    "Tags_Section",
+    "Tooltip_Info"
+  ],
+  "de-DE": [
+    "Filter_Sort_AZ",
+    "Filter_Sort_ZA",
+    "Modal_Info_Version",
+    "Offline",
+    "Online",
+    "Settings_Header_System",
+    "Tags_Section",
+    "Tooltip_Info"
+  ],
+  "fi-FI": [
+    "Ok"
+  ],
+  "es-ES": [
+    "Error",
+    "Filter_Sort_AZ",
+    "Filter_Sort_ZA",
+    "Invisible",
+    "No",
+    "SteamAdvanced_LogError"
+  ],
+  "id-ID": [
+    "Filter_Sort_AZ",
+    "Filter_Sort_ZA",
+    "Settings_Header_Program",
+    "Tooltip_Info"
+  ],
+  "pl-PL": [
+    "Filter_Sort_AZ",
+    "Filter_Sort_ZA",
+    "Offline",
+    "Ok",
+    "Online",
+    "Settings_Header_Program",
+    "Settings_Header_System"
+  ],
+  "nl-NL": [
+    "Filter_Sort_AZ",
+    "Filter_Sort_ZA",
+    "Modal_Info_Disclaimer",
+    "Offline",
+    "Ok",
+    "Online",
+    "Search_Section_Account",
+    "Search_Section_Game",
+    "Search_Section_Platform",
+    "Security_InterruptedRestore_Later",
+    "Tags_Section",
+    "Website"
+  ],
+  "it-IT": [
+    "Button_Backup",
+    "Filter_Sort_AZ",
+    "Filter_Sort_ZA",
+    "Search_Section_Account",
+    "Search_Section_Game",
+    "Security_Password"
+  ],
+  "sv-SE": [
+    "Modal_Info_Version",
+    "Offline",
+    "Ok",
+    "Online",
+    "Settings_Header_Program",
+    "Settings_Header_System",
+    "SteamGuard_QR_Session",
+    "Tooltip_Info"
+  ]
+}

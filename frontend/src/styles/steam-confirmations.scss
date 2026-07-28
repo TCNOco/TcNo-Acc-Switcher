@@ -1,0 +1,767 @@
+.confirmations-page {
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(1180px, 100%);
+  max-width: 100%;
+  height: 100%;
+  min-height: 0;
+  margin: 0 auto;
+  // The confirmations window is 490px wide at its minimum, so the padding has to
+  // collapse rather than eat the content box.
+  padding: clamp(0.7rem, 2vw, 2rem);
+  color: var(--whiteSecondary);
+  overflow-x: hidden;
+}
+
+$confirmations-avatar: 4rem;
+
+.confirmations-toolbar {
+  display: flex;
+  align-items: center;
+  flex: none;
+  gap: 0.65rem;
+  margin-bottom: 0.9rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--role-tile-border);
+}
+
+.confirmations-identity-avatar {
+  display: flex;
+  flex: none;
+  width: $confirmations-avatar;
+  height: $confirmations-avatar;
+
+  img {
+    width: 100%;
+    height: 100%;
+    border-radius: 0.35rem;
+    object-fit: cover;
+  }
+}
+
+// The window title already names the account and the page, so this only has to
+// identify which account, the way the Steam Guard modal does.
+.confirmations-identity {
+  display: grid;
+  gap: 0.15rem;
+  flex: 1 1 auto;
+  min-width: 0;
+
+  strong,
+  small {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  strong { font-weight: 650; }
+  // The community name, not a footnote: `small`'s own 0.8em left it barely
+  // readable next to the login username it belongs to.
+  small { color: var(--role-text-muted); font-size: 0.85rem; }
+}
+
+// Sits with the refresh button rather than at the foot of the page, so the
+// freshness of the list is visible next to the control that changes it.
+.confirmations-updated {
+  flex: none;
+  margin-left: auto;
+  color: var(--role-text-muted);
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.confirmations-refresh,
+.confirmations-status button,
+.confirmations-actions button,
+.confirmations-batch button {
+  min-height: 2.5rem;
+  // UI.scss sets a global `button { width: max-content; margin: 0 0.25em }`;
+  // neutralise the margin so these rows own their own spacing.
+  margin: 0;
+  border: 1px solid var(--role-field-border);
+  border-radius: 0.45rem;
+  padding: 0.55rem 0.9rem;
+  background: var(--role-button-bg);
+  color: var(--whiteSecondary);
+  font-weight: 650;
+  cursor: pointer;
+
+  &:hover:not(:disabled) { background: var(--role-button-hover-bg); border-color: var(--accent); }
+  &:focus-visible { outline: 2px solid var(--role-focus-ring); outline-offset: 2px; }
+  &:disabled { cursor: not-allowed; opacity: var(--role-disabled-opacity); }
+}
+
+// A square the same size as the avatar it sits opposite. The label lives in the
+// tooltip and the accessible name, so the icon alone carries it.
+.confirmations-refresh {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: $confirmations-avatar;
+  height: $confirmations-avatar;
+  min-height: 0;
+  padding: 0;
+
+  svg { width: 1.25rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2; }
+  &[aria-busy="true"] svg { animation: confirmations-spin 0.9s linear infinite; }
+}
+
+.confirmations-status {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--role-warning);
+  border-radius: 0.5rem;
+  padding: 0.75rem 0.9rem;
+  background: var(--role-tile-bg);
+
+  span { font-weight: 700; }
+  // Carries the reason the refresh failed, so it has to be readable rather than
+  // relegated to `small`'s default.
+  small { flex: 1; color: var(--role-text-muted); font-size: 0.85rem; }
+  &--reauth, &--offline, &--stale-error { border-color: var(--role-error); }
+}
+
+.confirmations-loading,
+.confirmations-empty {
+  display: grid;
+  place-items: center;
+  min-height: min(22rem, 45vh);
+  align-content: center;
+  text-align: center;
+  color: var(--role-text-muted);
+}
+
+.confirmations-spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid var(--role-field-border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: confirmations-spin 0.9s linear infinite;
+}
+
+.confirmations-empty__mark {
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border: 1px solid var(--role-success);
+  border-radius: 50%;
+  color: var(--role-success);
+  font-size: 1.75rem;
+}
+
+.confirmations-empty h2 { margin: 1rem 0 0.25rem; color: var(--whiteSecondary); }
+.confirmations-empty p { margin: 0; }
+
+// Just the list now: the detail pane is a bottom bar on the page itself, so this
+// has no frame of its own and takes every row the header and that bar leave.
+.confirmations-workspace {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--role-panel-bg);
+}
+
+.confirmations-list {
+  // Scrolls for as long as there is content. Never horizontally: long titles wrap
+  // instead, so the window has no sideways scrollbar.
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--role-field-bg);
+
+  > .confirmations-row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    gap: 0 0.7rem;
+    border-bottom: 1px solid var(--role-tile-border);
+    padding: 0.9rem 1rem;
+
+    &:hover { background: var(--role-dropdown-hover-bg); }
+    &.active { background: var(--accent-fill-very-soft); box-shadow: inset 3px 0 var(--accent); }
+    // Marked for a batch decision. Stronger than the open row's tint: open is a
+    // place, marked is something about to be acted on.
+    &.checked { background: var(--accent-fill-soft); }
+  }
+}
+
+// Steam sends one image per confirmation: the item for a listing, the other
+// party's avatar for a trade. Sized to the identity avatar rather than to a
+// smaller value of its own: a row is never shorter than its three lines of
+// type, title and summary, so this has the height to spend and grew into it.
+//
+// Also the row's checkbox, the way the Steam app uses it: clicking the image
+// marks the row for a batch decision, and the mark is drawn over the image.
+button.confirmations-row__icon {
+  position: relative;
+  display: flex;
+  flex: none;
+  width: $confirmations-avatar;
+  height: $confirmations-avatar;
+  min-height: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 0.3rem;
+  padding: 0;
+  overflow: hidden;
+  background: transparent;
+  cursor: pointer;
+
+  img { width: 100%; height: 100%; border-radius: 0.3rem; object-fit: cover; }
+  &:focus-visible { outline: 2px solid var(--role-focus-ring); outline-offset: 2px; }
+}
+
+// The accent wash and checkmark over a marked image. Faintly on hover too, so
+// the image reads as clickable before it is ever clicked.
+.confirmations-row__check {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--accent-fill-medium);
+  opacity: 0;
+
+  svg {
+    box-sizing: border-box;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    padding: 0.25rem;
+    background: var(--accent);
+    fill: none;
+    stroke: var(--text-on-bright-bg, #000);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
+
+button.confirmations-row__icon:hover .confirmations-row__check { opacity: 0.45; }
+button.confirmations-row__icon[aria-checked="true"] .confirmations-row__check { opacity: 1; }
+
+// The rest of the row, and the button that opens the confirmation.
+button.confirmations-row__body {
+  display: grid;
+  // UI.scss centres every button's content (`justify-content: center`), and grid
+  // honours that too: the column shrank to its text and sat in the middle of the
+  // row. Stretch it back so the lines start at the left edge.
+  justify-content: stretch;
+  justify-items: start;
+  align-items: start;
+  gap: 0.3rem;
+  min-width: 0;
+  width: 100%;
+  min-height: 0;
+  // UI.scss gives every button `margin: 0 0.25em`; the row owns the spacing here.
+  margin: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--whiteSecondary);
+  text-align: left;
+  cursor: pointer;
+
+  // UI.scss gives every span inside a button `line-height: 2.5em`, which suits a
+  // one-line label on a real button and not a row of stacked text: it opened a
+  // gap taller than the lines themselves between the type, title and summary.
+  span { line-height: 1.35; }
+  span:not(.confirmations-row__type), small { color: var(--role-text-muted); }
+  small { font-size: 0.85rem; }
+  &:focus-visible { outline: 2px solid var(--role-focus-ring); outline-offset: -2px; }
+}
+
+// The other party's avatar on a trade, the item on a listing. Either way it is
+// the picture the confirmation is about, so it is not a thumbnail.
+.confirmations-detail__icon {
+  flex: none;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 0.35rem;
+  object-fit: cover;
+}
+
+.confirmations-detail > header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+
+  // A grid with one gap, rather than four stacked blocks each carrying its own
+  // margins: those left the type, the name and the level far apart.
+  > div {
+    display: grid;
+    gap: 0.1rem;
+    min-width: 0;
+  }
+}
+
+.confirmations-row__type,
+.confirmations-detail__type {
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+// The kind's icon sits on the label's line and shares its accent, so a glance
+// separates a trade from a listing before any of the text is read.
+.confirmations-row__type {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+
+  svg {
+    flex: none;
+    width: 0.95rem;
+    height: 0.95rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .confirmations-row__type-fill {
+    fill: currentColor;
+    stroke: none;
+  }
+}
+
+// The type and what the item is share one line, so the line has to be able to
+// give: the label keeps its width and the item's kind takes what is left.
+.confirmations-detail__type {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  min-width: 0;
+
+  > span:first-child { flex: none; }
+}
+
+// What the sale actually pays the seller, beside the price it is listed at. It
+// belongs on the heading rather than in a block of its own: the two are read
+// against each other, and a listing has only a few lines to spend.
+.confirmations-detail__headline-price {
+  color: var(--role-text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &::before { content: "· "; }
+}
+
+// Everything a listing says that is not a decision: what the buyer pays and how
+// the wider market looks. One line, and the first thing to lose room.
+.confirmations-detail__footnote {
+  overflow: hidden;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+// The game and kind of item, from Steam's own description of it. Not a second
+// heading: it reads as a note against the type, so it drops the uppercasing.
+.confirmations-detail__source {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--role-text-muted);
+  font-weight: 500;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  &::before { content: "· "; }
+}
+
+.confirmations-detail {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  overflow-y: auto;
+  background: var(--role-panel-bg, var(--program-bg));
+
+  // This is where a confirmation is actually checked, so its text is sized to be
+  // read rather than skimmed.
+  font-size: 0.95rem;
+
+  h2 {
+    margin: 0;
+    font-size: 1.15rem;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+  header p { margin: 0; color: var(--role-text-muted); }
+  dl { display: grid; gap: 0; }
+  dl div { display: grid; grid-template-columns: minmax(7rem, 0.35fr) 1fr; gap: 1rem; border-top: 1px solid var(--role-tile-border); padding: 0.7rem 0; }
+  dt { color: var(--role-text-muted); }
+  dd { margin: 0; overflow-wrap: anywhere; white-space: pre-wrap; }
+}
+
+// A trade takes the whole window: both sides of the exchange, the other party and
+// every item have to be checked, and that is the only thing being done meanwhile.
+.confirmations-detail--overlay {
+  // Absolute, not fixed: fixed covers the viewport, which put the close button and
+  // the item image underneath the window's own title bar.
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  padding: clamp(1rem, 2.5vw, 1.6rem);
+
+  dl { margin: 1.25rem 0; }
+}
+
+// Everything else is a headline and a few fields, so it sits under the list
+// rather than covering it — the list stays readable and there is no window of
+// empty space around three lines of text.
+.confirmations-detail--sheet {
+  flex: 0 1 auto;
+  margin-top: 0.9rem;
+  border-top: 1px solid var(--role-tile-border);
+  // Never more than half the window: the list it belongs to has to stay usable.
+  max-height: 50%;
+  padding: 0.9rem 0 0;
+
+  // The close button sits in this corner, so the header stops short of it.
+  > header { padding-right: 2.25rem; }
+  dl { margin: 0.75rem 0 0; }
+
+  // The item's name: what is actually being sold, so it is not dimmed like the
+  // line under it. Bounded rather than free-running — a long skin name would
+  // otherwise push the footnote out of a bar that is already capped in height.
+  // The footnote sets its own single-line rule and is excluded here.
+  header p:not(.confirmations-detail__footnote) {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    color: var(--whiteSecondary);
+  }
+}
+
+// Sits where the trade will appear, so the wait is visible rather than reading as
+// a confirmation with nothing in it.
+.confirmations-detail__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  min-height: 8rem;
+  color: var(--role-text-muted);
+
+  p { margin: 0; }
+
+  .confirmations-spinner {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-width: 2px;
+  }
+}
+
+// A listing's detail is a few fields, so the wait for it does not need a trade's
+// worth of room reserved for it.
+.confirmations-detail--sheet .confirmations-detail__loading { min-height: 3.5rem; }
+
+// Closes without deciding; the list keeps its place underneath.
+.confirmations-detail__close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin: 0;
+  border: 1px solid var(--role-field-border);
+  border-radius: 0.45rem;
+  padding: 0;
+  background: var(--role-button-bg);
+  color: var(--whiteSecondary);
+  cursor: pointer;
+
+  svg { width: 1.1rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  &:hover { background: var(--role-button-hover-bg); border-color: var(--accent); }
+  &:focus-visible { outline: 2px solid var(--role-focus-ring); outline-offset: 2px; }
+}
+
+// The sheet has no padding of its own to sit inside, so the button squares up
+// with the top-right corner of the bar itself.
+.confirmations-detail--sheet .confirmations-detail__close {
+  top: 0.9rem;
+  right: 0;
+  width: 1.9rem;
+  height: 1.9rem;
+}
+
+// The confirmation's own icon is the partner's avatar and its title their name, so
+// the header carries both and only the level and badge are added beside them.
+.confirmations-detail__partner-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--role-text-muted);
+  font-size: 0.95rem;
+
+  img { height: 1.9rem; }
+}
+
+// The title opens the other party's Steam profile in the user's own browser,
+// because confirming a trade means confirming who receives the items.
+button.confirmations-detail__profile {
+  min-height: 0;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:focus-visible { outline: 2px solid var(--role-focus-ring); outline-offset: 2px; }
+}
+
+.confirmations-trade {
+  display: grid;
+  gap: 0.9rem;
+  margin: 0.6rem 0 1rem;
+
+  h3 { margin: 0 0 0.5rem; font-size: 0.95rem; color: var(--whiteSecondary); font-weight: 650; }
+}
+
+// Items sit in their own tiles on a darker field, so each side of the trade reads
+// as one group.
+.confirmations-trade__side {
+  border: 1px solid var(--role-tile-border);
+  border-radius: 0.5rem;
+  padding: 0.65rem 0.7rem;
+  background: var(--role-field-bg);
+}
+
+// Items are what a trade is actually checked by, so the tiles get the room. At
+// the window's 490px this is four across, which beats six too small to read.
+.confirmations-trade__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.confirmations-trade__grid > li {
+  position: relative;
+}
+
+button.confirmations-trade__item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 1;
+  min-height: 0;
+  margin: 0;
+  border: 1px solid var(--role-tile-border);
+  border-radius: 0.4rem;
+  // Barely any: the image is the point, and the tile border already separates it
+  // from its neighbours.
+  padding: 0.1rem;
+  background: var(--role-tile-bg);
+  cursor: help;
+
+  img { width: 100%; height: 100%; object-fit: contain; }
+  &:hover { border-color: var(--accent); }
+  &:focus-visible { outline: 2px solid var(--role-focus-ring); outline-offset: 2px; }
+}
+
+// What Steam shows when an item is hovered on the community site: the name in its
+// rarity colour, the type, then every description line and categorised tag. This
+// is the fullest account of an item available, so a trade can be checked item by
+// item before it is confirmed.
+.confirmations-item-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 30;
+  display: grid;
+  gap: 0.25rem;
+  width: max-content;
+  max-width: min(20rem, calc(100% - 1rem));
+  // Never taller than the window it is placed in: beyond that there is nowhere
+  // left to put it.
+  max-height: calc(100% - 1rem);
+  overflow: hidden;
+  border: 1px solid var(--role-tile-border);
+  border-radius: 0.45rem;
+  padding: 0.6rem 0.7rem;
+  background: var(--role-panel-bg, var(--program-bg));
+  box-shadow: 0 10px 28px var(--shadow-color-45, rgb(0 0 0 / 45%));
+  color: var(--whiteSecondary);
+  font-size: 0.88rem;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  pointer-events: none;
+
+  strong { font-size: 1rem; }
+
+  &__type { color: var(--role-text-muted); }
+
+  &__tags {
+    display: grid;
+    gap: 0.15rem;
+    margin: 0.25rem 0 0;
+    padding: 0.35rem 0 0;
+    border-top: 1px solid var(--role-tile-border);
+    list-style: none;
+
+    em { color: var(--role-text-muted); font-style: normal; }
+  }
+}
+
+.confirmations-actions { display: flex; justify-content: flex-end; gap: 0.65rem; margin-top: auto; padding-top: 1rem; }
+// Filled, not outlined: these decide a real trade, so the choice should be
+// unmistakable. The text is the theme's own ink for a bright fill, which is what
+// these highlight colours are; --role-selected-fg is not it, because a theme can
+// pair that with a dark selection background instead.
+.confirmations-actions .confirmations-deny,
+.confirmations-actions .confirmations-accept,
+.confirmations-batch .confirmations-deny,
+.confirmations-batch .confirmations-accept {
+  color: var(--text-on-bright-bg, #000);
+  font-weight: 700;
+
+  &:hover:not(:disabled) { filter: brightness(1.08); }
+}
+
+.confirmations-actions .confirmations-deny,
+.confirmations-batch .confirmations-deny {
+  border-color: var(--role-error);
+  background: var(--role-error);
+
+  &:hover:not(:disabled) { border-color: var(--role-error); background: var(--role-error); }
+}
+
+.confirmations-actions .confirmations-accept,
+.confirmations-batch .confirmations-accept {
+  border-color: var(--role-success);
+  background: var(--role-success);
+
+  &:hover:not(:disabled) { border-color: var(--role-success); background: var(--role-success); }
+}
+
+// The batch decision bar, shown only while rows are marked. Last in the page so
+// an open detail bar sits above it, each behind its own rule. Select all and
+// clear are plain buttons on the left; the decisions keep their colours and the
+// right edge, where the single-confirmation ones also live.
+.confirmations-batch {
+  display: flex;
+  flex: none;
+  gap: 0.65rem;
+  margin-top: 0.9rem;
+  border-top: 1px solid var(--role-tile-border);
+  padding-top: 0.9rem;
+
+  .confirmations-deny { margin-left: auto; }
+
+  // The busy state of the button that was pressed: the whole batch goes out as
+  // one request, so no single row can carry the wait.
+  .confirmations-spinner {
+    width: 1rem;
+    height: 1rem;
+    margin-right: 0.45rem;
+    border-width: 2px;
+    border-color: currentColor;
+    border-top-color: transparent;
+  }
+}
+
+@keyframes confirmations-spin { to { transform: rotate(360deg); } }
+
+// The confirmations window opens at 490x700 with a 490x455 minimum, which lands
+// near 390x364 CSS px at 125% scaling. Everything below trims padding so nothing
+// overflows horizontally; the header, list and bottom bar stack at every width.
+@media (max-width: 720px) {
+  .confirmations-status { align-items: flex-start; flex-wrap: wrap; }
+  .confirmations-status small { flex-basis: 100%; }
+}
+
+@media (max-width: 560px) {
+  .confirmations-toolbar {
+    margin-bottom: 0.7rem;
+    padding-bottom: 0.7rem;
+  }
+
+  // The refresh button stays a square beside the account: the identity block
+  // shrinks instead, so it never needs its own row.
+  .confirmations-refresh {
+    flex: none;
+  }
+
+  .confirmations-status {
+    gap: 0.5rem;
+    padding: 0.6rem 0.7rem;
+
+    button { flex: 1 1 100%; }
+  }
+
+  .confirmations-list {
+    // No max-height: the row it occupies already bounds it, and clamping it left
+    // the list a few rows tall with dead space underneath.
+    > .confirmations-row { padding: 0.7rem 0.75rem; }
+  }
+
+  .confirmations-batch {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-top: 0.7rem;
+
+    button { flex: 1 1 8rem; }
+    .confirmations-deny { margin-left: 0; }
+  }
+
+  .confirmations-detail--overlay {
+    padding: 0.85rem 0.8rem;
+
+    dl { margin: 0.85rem 0; }
+  }
+
+  // Two columns cannot hold a label and a long value at this width.
+  .confirmations-detail dl div { grid-template-columns: 1fr; gap: 0.2rem; padding: 0.55rem 0; }
+
+  .confirmations-actions {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-top: 0.85rem;
+
+    button { flex: 1 1 8rem; }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confirmations-spinner,
+  .confirmations-refresh[aria-busy="true"] svg { animation: none; }
+}
+
+@media (forced-colors: active) {
+  .confirmations-workspace,
+  .confirmations-status,
+  .confirmations-list > .confirmations-row,
+  .confirmations-actions button,
+  .confirmations-batch button { border-color: CanvasText; }
+  .confirmations-list > .confirmations-row.active { outline: 2px solid Highlight; }
+  .confirmations-list > .confirmations-row.checked { outline: 2px solid Highlight; outline-offset: -2px; }
+}

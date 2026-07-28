@@ -5,6 +5,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"TcNo-Acc-Switcher/internal/logredact"
 )
 
 const (
@@ -41,8 +43,11 @@ func Record(op, target, value string, err error) {
 	errMsg := ""
 	if err != nil {
 		outcome = "fail"
-		errMsg = strings.TrimSpace(err.Error())
+		errMsg = strings.TrimSpace(logredact.FormatValue(err))
 	}
+	op = logredact.RedactText(op)
+	target = logredact.RedactText(target)
+	value = logredact.RedactText(value)
 	line := fmt.Sprintf("%s op=%s target=%q outcome=%s",
 		time.Now().UTC().Format(time.RFC3339Nano), op, target, outcome)
 	if value != "" {
@@ -75,7 +80,7 @@ func SnapshotPruned(firstN, lastN int) string {
 		lastN = 0
 	}
 	if firstN+lastN >= len(lines) {
-		return strings.Join(lines, "\n")
+		return logredact.RedactText(strings.Join(lines, "\n"))
 	}
 	head := lines[:firstN]
 	tail := lines[len(lines)-lastN:]
@@ -95,5 +100,5 @@ func SnapshotPruned(firstN, lastN int) string {
 		b.WriteByte('\n')
 		b.WriteString(ln)
 	}
-	return b.String()
+	return logredact.RedactText(b.String())
 }

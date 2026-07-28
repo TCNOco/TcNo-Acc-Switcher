@@ -1,6 +1,7 @@
 <script lang="ts">
   import { tick, onMount } from "svelte";
   import { createEventDispatcher } from "svelte";
+  import { get } from "svelte/store";
   import { fade, scale } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
   import { DUR, motionEnabled } from "../../lib/animation";
@@ -10,12 +11,14 @@
     MODAL_FRAME_MIN_H,
     MODAL_FRAME_MIN_W,
     MODAL_FRAME_MIN_W_FOLDER,
+    MODAL_FRAME_MIN_W_STEAM_GUARD,
     MODAL_FRAME_MIN_H_FOLDER,
     MODAL_RESIZE_EDGES,
     MODAL_RESIZE_CURSOR,
     clampRect,
     fitFrameToContent,
     getModalBounds,
+    modalAutoFitRequests,
     startModalDrag,
     startModalResize,
     type ModalFrameRect,
@@ -28,8 +31,14 @@
 
   const dispatch = createEventDispatcher<{ cancel: void }>();
 
+  function minFrameWidth(modalKind: string): number {
+    if (modalKind === "folder") return MODAL_FRAME_MIN_W_FOLDER;
+    if (modalKind === "steamGuard") return MODAL_FRAME_MIN_W_STEAM_GUARD;
+    return MODAL_FRAME_MIN_W;
+  }
+
   $: modalMinSize = {
-    minW: kind === "folder" ? MODAL_FRAME_MIN_W_FOLDER : MODAL_FRAME_MIN_W,
+    minW: minFrameWidth(kind),
     minH: kind === "folder" ? MODAL_FRAME_MIN_H_FOLDER : MODAL_FRAME_MIN_H,
   };
 
@@ -39,7 +48,26 @@
   let modalFrame: ModalFrameRect = { left: 0, top: 0, width: 0, height: 0 };
   let frameReady = false;
 
+  /**
+   * Keeps initial focus off the header close-X: an explicitly marked target wins, then the
+   * first enabled control of the body itself.
+   */
+  function preferredInitialFocus(): HTMLElement | null {
+    const scroll = modalFgEl?.querySelector(".modal-scroll");
+    if (!(scroll instanceof HTMLElement)) return null;
+    const marked = scroll.querySelector<HTMLElement>(
+      "[data-modal-autofocus], [data-steamguard-autofocus], [data-steamguard-focus]",
+    );
+    if (marked) return marked;
+    return scroll.querySelector<HTMLElement>(
+      "input:not([type='hidden']):not(:disabled), textarea:not(:disabled), select:not(:disabled), button:not(:disabled), a[href]",
+    );
+  }
+
   let lastInitId = -1;
+  // Seeded from the store: it outlives individual modals, so a stale count would
+  // fire a pointless fit on the next modal's first render.
+  let lastAutoFitRequest = get(modalAutoFitRequests);
   let contentResizeObserver: ResizeObserver | undefined;
   let refitQueued = false;
   let userAdjustedFrame = false;
@@ -107,6 +135,14 @@
   function reclampModalFrame(): void {
     if (!frameReady || !backdropEl) return;
     modalFrame = clampRect(modalFrame, getModalBounds(backdropEl), modalMinSize);
+  }
+
+  // A body that switched page asks for a fresh fit: the new page holds different
+  // content, so a size the user picked for the previous one no longer applies.
+  $: if ($modalAutoFitRequests !== lastAutoFitRequest) {
+    lastAutoFitRequest = $modalAutoFitRequests;
+    userAdjustedFrame = false;
+    void tick().then(() => queueRefitModalFrame());
   }
 
   $: if (modalId !== lastInitId) {
@@ -179,8 +215,9 @@
     class="modalFG"
     class:modalFG--ready={frameReady}
     class:modalFilePicker={kind === "folder"}
+    class:modalSteamGuard={kind === "steamGuard"}
     bind:this={modalFgEl}
-    use:modalFocus={{ onEscape: onCancel }}
+    use:modalFocus={{ onEscape: onCancel, initialFocus: preferredInitialFocus }}
     role="dialog"
     aria-modal="true"
     aria-labelledby={titleId}
@@ -297,6 +334,16 @@
     min-width: 0;
     max-width: none;
     max-height: none;
+  }
+
+  /*
+   * Steam Guard bodies size themselves per screen: the shell keeps the single scrollbar
+   * (`.modal-scroll` already scrolls) and only becomes a flex column so the body can centre
+   * itself vertically with auto margins when the frame is taller than the screen's content.
+   */
+  .modalFG.modalSteamGuard .modal-scroll {
+    display: flex;
+    flex-direction: column;
   }
 
   .modalFG.modalFilePicker:not(.modalFG--ready) {

@@ -1,5 +1,11 @@
 import type { ComponentType, SvelteComponent } from "svelte";
 import { get, writable } from "svelte/store";
+import type {
+  SteamGuardAccountRef,
+  SteamGuardAccountSummary,
+  SteamGuardModalController,
+  SteamGuardModalEntry,
+} from "../lib/steamGuardModal";
 
 type ModalBase = { id: number };
 
@@ -10,6 +16,7 @@ export type ModalBodyOptions = {
 };
 
 export type PasswordSetupResult = { password: string };
+export type PromptWithCheckboxResult = { value: string; checked: boolean };
 export type TagExpiryResult = {
   scope: "account" | "all";
   expiresAt: string;
@@ -34,6 +41,9 @@ type ActiveModal =
       initialValue?: string;
       positiveLabel?: string;
       negativeLabel?: string;
+      checkboxLabel?: string;
+      checkboxInitial?: boolean;
+      returnCheckboxResult?: boolean;
     } & ModalBodyOptions)
   | (ModalBase & {
       kind: "passwordSetup";
@@ -73,6 +83,14 @@ type ActiveModal =
     })
   | (ModalBase & {
       kind: "crashReport";
+    })
+  | (ModalBase & {
+      kind: "steamGuard";
+      title: string;
+      account: SteamGuardAccountRef;
+      entry: SteamGuardModalEntry;
+      knownAccounts: SteamGuardAccountSummary[];
+      controller: SteamGuardModalController;
     });
 
 export type CrashReportChoice = "no" | "yes" | "always";
@@ -165,6 +183,37 @@ export function openPrompt(
       initialValue: opts.initialValue,
       positiveLabel: opts.positiveLabel,
       negativeLabel: opts.negativeLabel,
+    });
+  });
+}
+
+export function openPromptWithCheckbox(
+  opts: {
+    title: string;
+    inputType?: "text" | "password";
+    initialValue?: string;
+    positiveLabel?: string;
+    negativeLabel?: string;
+    checkboxLabel: string;
+    checkboxInitial?: boolean;
+  } & ModalBodyOptions,
+): Promise<PromptWithCheckboxResult | null> {
+  return new Promise((resolve) => {
+    resolver = resolve as (value: unknown) => void;
+    activeModal.set({
+      id: bumpId(),
+      kind: "prompt",
+      title: opts.title,
+      body: opts.body,
+      bodyComponent: opts.bodyComponent,
+      bodyProps: opts.bodyProps,
+      inputType: opts.inputType ?? "text",
+      initialValue: opts.initialValue,
+      positiveLabel: opts.positiveLabel,
+      negativeLabel: opts.negativeLabel,
+      checkboxLabel: opts.checkboxLabel,
+      checkboxInitial: opts.checkboxInitial ?? false,
+      returnCheckboxResult: true,
     });
   });
 }
@@ -281,6 +330,58 @@ export function openCrashReportPrompt(): Promise<CrashReportChoice> {
       kind: "crashReport",
     });
   });
+}
+
+export type OpenSteamGuardModalOptions = {
+  account: SteamGuardAccountRef;
+  controller: SteamGuardModalController;
+  entry?: SteamGuardModalEntry;
+  knownAccounts?: SteamGuardAccountSummary[];
+  title?: string;
+};
+
+export function openSteamGuardModal(opts: OpenSteamGuardModalOptions): Promise<void> {
+  return new Promise((resolve) => {
+    resolver = () => resolve();
+    activeModal.set({
+      id: bumpId(),
+      kind: "steamGuard",
+      title: opts.title ?? "Steam Guard",
+      account: opts.account,
+      entry: opts.entry ?? "account",
+      knownAccounts: opts.knownAccounts ?? [],
+      controller: opts.controller,
+    });
+  });
+}
+
+export function openSteamGuardForAccount(
+  account: SteamGuardAccountRef,
+  controller: SteamGuardModalController,
+  knownAccounts: SteamGuardAccountSummary[] = [],
+): Promise<void> {
+  return openSteamGuardModal({ account, controller, knownAccounts, entry: "account" });
+}
+
+export function openSteamGuardImport(
+  account: SteamGuardAccountRef,
+  controller: SteamGuardModalController,
+): Promise<void> {
+  return openSteamGuardModal({ account, controller, entry: "import" });
+}
+
+export function openSteamGuardEnrollment(
+  account: SteamGuardAccountRef,
+  controller: SteamGuardModalController,
+): Promise<void> {
+  return openSteamGuardModal({ account, controller, entry: "enrollment" });
+}
+
+export function openSteamGuardQrLogin(
+  account: SteamGuardAccountRef,
+  controller: SteamGuardModalController,
+): Promise<void> {
+  return openSteamGuardModal({ account, controller, entry: "qr" });
 }
 
 export function cancelActiveModal(): void {

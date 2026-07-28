@@ -119,6 +119,7 @@ func CommitAccountSave(save AccountSave, normalDir string) error {
 	if err != nil {
 		return err
 	}
+	defer wipeBytes(key)
 	if err := writeAccountBlob(key, save.PlatformKey, save.UniqueID, save.AccountName, save.DestRoot); err != nil {
 		return err
 	}
@@ -148,6 +149,7 @@ func AccountRestoreDir(platformKey, uniqueID, accountName, normalDir string) (st
 	if err != nil {
 		return "", nil, err
 	}
+	defer wipeBytes(key)
 	dir, err := newStagingDir("restore", platformKey, uniqueID)
 	if err != nil {
 		return "", nil, err
@@ -205,11 +207,13 @@ func AccountBlobValid(platformKey, uniqueID string) bool {
 	if err != nil {
 		return false
 	}
+	defer wipeBytes(key)
 	p, err := accountBlobPath(platformKey, uniqueID)
 	if err != nil {
 		return false
 	}
-	_, err = decryptAccountBlobFile(key, p, platformKey, uniqueID)
+	plaintext, err := decryptAccountBlobFile(key, p, platformKey, uniqueID)
+	wipeBytes(plaintext)
 	return err == nil
 }
 
@@ -218,9 +222,7 @@ func EnableSavedAccountEncryption(password string) error {
 	if err != nil {
 		return err
 	}
-	defaultManager.mu.Lock()
-	defaultManager.masterKey = key
-	defaultManager.mu.Unlock()
+	defaultManager.replaceMasterKey(key)
 	defaultManager.setBusy(true)
 	defer defaultManager.setBusy(false)
 	if SavedAccountDataEncrypted() {
@@ -245,10 +247,33 @@ func EnableSavedAccountEncryption(password string) error {
 		}
 		written = append(written, s.BlobPath)
 	}
+	hook := currentSteamGuardHook()
+	var outerKey []byte
+	if hook != nil {
+		outerKey, err = deriveSteamGuardOuterKey(key)
+		if err != nil {
+			_ = os.Remove(journal)
+			return err
+		}
+		defer wipeBytes(outerKey)
+		if err := hook.EnableOuter(outerKey, password); err != nil {
+			for _, p := range written {
+				_ = os.Remove(p)
+			}
+			_ = os.Remove(journal)
+			return err
+		}
+	}
 	if err := updateSecurityFile(func(sf *securityFile) error {
 		sf.SavedAccountDataEncrypted = true
 		return nil
 	}); err != nil {
+		if hook != nil {
+			err = errors.Join(err, hook.DisableOuter(outerKey))
+		}
+		for _, p := range written {
+			_ = os.Remove(p)
+		}
 		_ = os.Remove(journal)
 		return err
 	}
@@ -265,6 +290,7 @@ func DisableSavedAccountEncryption(password string) error {
 	if err != nil {
 		return err
 	}
+	defer wipeBytes(key)
 	return disableSavedAccountEncryptionWithKey(password, key, false)
 }
 
@@ -278,6 +304,15 @@ func disableSavedAccountEncryptionWithKey(password string, key []byte, removingP
 	if err != nil {
 		return err
 	}
+	committed := false
+	defer func() {
+		if committed {
+			return
+		}
+		for _, session := range sessions {
+			_ = fsutil.RemoveAllWithRetry(session.PlainDir, 2*time.Second, os.RemoveAll)
+		}
+	}()
 	journal, err := writeJournal("disable-encryption", map[string]any{"sessions": len(sessions), "removePassword": removingPassword})
 	if err != nil {
 		return err
@@ -298,13 +333,31 @@ func disableSavedAccountEncryptionWithKey(password string, key []byte, removingP
 			_ = removeAccountFromIDs(f.Session.PlatformKey, f.Session.UniqueID)
 		}
 	}
+	hook := currentSteamGuardHook()
+	var outerKey []byte
+	if hook != nil {
+		outerKey, err = deriveSteamGuardOuterKey(key)
+		if err != nil {
+			_ = os.Remove(journal)
+			return err
+		}
+		defer wipeBytes(outerKey)
+		if err := hook.DisableOuter(outerKey); err != nil {
+			_ = os.Remove(journal)
+			return err
+		}
+	}
 	if err := updateSecurityFile(func(sf *securityFile) error {
 		sf.SavedAccountDataEncrypted = false
 		return nil
 	}); err != nil {
+		if hook != nil {
+			err = errors.Join(err, hook.EnableOuter(outerKey, password))
+		}
 		_ = os.Remove(journal)
 		return err
 	}
+	committed = true
 	emitStatusChanged()
 	for _, s := range sessions {
 		_ = os.Remove(s.BlobPath)

@@ -84,6 +84,10 @@
   display: grid;
   position: relative;
   grid-template-columns: repeat(auto-fill, 100px);
+  // Tiles keep their fixed width; the width left over once auto-fill has packed
+  // the row is spread between them instead of collecting as dead space on the
+  // right. gap stays the floor, so tiles never touch.
+  justify-content: space-between;
   grid-auto-rows: minmax(min-content, max-content);
   width: 100%;
   height: 100%;

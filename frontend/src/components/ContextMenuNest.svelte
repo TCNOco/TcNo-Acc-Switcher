@@ -521,7 +521,7 @@
       {#if currentPage >= 1}
         <button
           type="button"
-          class="paginationButton"
+          class="paginationButton paginationButton--prev"
           aria-label={$t("Aria_PreviousPage")}
           on:pointerdown={stop}
           on:click={() => changePage(-1)}
@@ -538,7 +538,7 @@
       {:else}
         <button
           type="button"
-          class="paginationButton"
+          class="paginationButton paginationButton--prev"
           style="visibility: hidden"
           aria-hidden="true"
           tabindex="-1"
@@ -558,7 +558,7 @@
       {#if currentPage < pageCount - 1}
         <button
           type="button"
-          class="paginationButton"
+          class="paginationButton paginationButton--next"
           aria-label={$t("Aria_NextPage")}
           on:pointerdown={stop}
           on:click={() => changePage(1)}
@@ -581,7 +581,7 @@
       {:else}
         <button
           type="button"
-          class="paginationButton"
+          class="paginationButton paginationButton--next"
           style="visibility: hidden"
           aria-hidden="true"
           tabindex="-1"

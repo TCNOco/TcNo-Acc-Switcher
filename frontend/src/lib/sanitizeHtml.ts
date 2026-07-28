@@ -65,7 +65,11 @@ function safeStyle(value: string): string {
   return v;
 }
 
-function safeUrl(value: string, { image = false, svgUse = false }: { image?: boolean; svgUse?: boolean } = {}): string {
+/**
+ * Resolves an attribute URL to a safe value, or "" to drop the attribute.
+ * Exported for tests: sanitizeHtml itself needs a DOM, this decision does not.
+ */
+export function safeUrl(value: string, { image = false, svgUse = false }: { image?: boolean; svgUse?: boolean } = {}): string {
   const v = value.trim();
   if (!v) {
     return "";
@@ -76,7 +80,12 @@ function safeUrl(value: string, { image = false, svgUse = false }: { image?: boo
   if (image && /^data:image\/(?:png|jpe?g|webp|gif);base64,[A-Za-z0-9+/=]+$/i.test(v)) {
     return v;
   }
-  if (/^\/?img\/[A-Za-z0-9_./%-]+$/i.test(v)) {
+  // Local asset paths may carry a cache-busting query (`?_tcv=<mtime>`): the backend
+  // adds one when it rewrites the mini profile's avatar, and dropping the query here
+  // used to drop the whole src, leaving a broken image. The query charset excludes
+  // quotes, angle brackets, colons and spaces, so it cannot escape the attribute or
+  // introduce a scheme.
+  if (/^\/?img\/[A-Za-z0-9_./%-]+(?:\?[A-Za-z0-9_=&.%-]*)?$/i.test(v)) {
     return v;
   }
   try {

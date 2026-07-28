@@ -16,6 +16,7 @@ import (
 	"TcNo-Acc-Switcher/internal/api"
 	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/fsutil"
+	"TcNo-Acc-Switcher/internal/logredact"
 	"TcNo-Acc-Switcher/internal/logsanitize"
 	"TcNo-Acc-Switcher/internal/paths"
 
@@ -82,6 +83,10 @@ func writeCrashDump(dump CrashDump) error {
 	if err != nil {
 		return err
 	}
+	dump.Stack = logredact.RedactText(dump.Stack)
+	dump.Error = logredact.RedactText(dump.Error)
+	dump.OSInfo = logredact.RedactText(dump.OSInfo)
+	dump.Log = logredact.RedactText(dump.Log)
 	payload, err := json.MarshalIndent(dump, "", "  ")
 	if err != nil {
 		return err
@@ -97,13 +102,13 @@ func Capture() {
 		return
 	}
 
-	captureAndWrite(r)
+	panicText := captureAndWrite(r)
 
 	if app := application.Get(); app != nil {
 		_ = app.Event.Emit(toastEventName, map[string]any{
 			"type":     "error",
 			"title":    "Background task failed",
-			"message":  fmt.Sprintf("A background task crashed (%v). Restart if the app behaves oddly.", r),
+			"message":  fmt.Sprintf("A background task crashed (%s). Restart if the app behaves oddly.", panicText),
 			"duration": 6000,
 		})
 	}
@@ -119,16 +124,17 @@ func CaptureFatal() {
 	osExit(1)
 }
 
-func captureAndWrite(r any) {
+func captureAndWrite(r any) string {
 	stack := string(debug.Stack())
+	panicText := logredact.FormatValue(r)
 	slog.Error("panic recovered",
-		"error", r,
+		"error", panicText,
 		"stack", stack,
 	)
 
 	dump := CrashDump{
 		Stack:     stack,
-		Error:     fmt.Sprint(r),
+		Error:     panicText,
 		Version:   buildinfo.Version(),
 		OS:        runtime.GOOS + "/" + runtime.GOARCH,
 		OSInfo:    osDisplayString(),
@@ -140,6 +146,7 @@ func captureAndWrite(r any) {
 	if err := writeCrashDump(dump); err != nil {
 		slog.Warn("writing crash dump", "err", err)
 	}
+	return panicText
 }
 
 // HasPending reports whether a crash dump from a previous run is waiting locally.
@@ -184,6 +191,20 @@ func SubmitPending() bool {
 			return false
 		}
 		slog.Warn("crashlog: reading pending dump", "err", err)
+		return false
+	}
+	var dump CrashDump
+	if err := json.Unmarshal(data, &dump); err != nil {
+		slog.Warn("crashlog: invalid pending dump")
+		return false
+	}
+	dump.Stack = logredact.RedactText(dump.Stack)
+	dump.Error = logredact.RedactText(dump.Error)
+	dump.OSInfo = logredact.RedactText(dump.OSInfo)
+	dump.Log = logredact.RedactText(dump.Log)
+	data, err = json.Marshal(dump)
+	if err != nil {
+		slog.Warn("crashlog: sanitizing pending dump")
 		return false
 	}
 

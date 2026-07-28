@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#04141c"/>
+      <stop offset="0.5" stop-color="#0a2a34"/>
+      <stop offset="1" stop-color="#123c40"/>
+    </linearGradient>
+    <linearGradient id="ribbonA" x1="0" y1="0" x2="1" y2="0.3">
+      <stop offset="0" stop-color="#1fd8a4" stop-opacity="0"/>
+      <stop offset="0.35" stop-color="#2ee6b0" stop-opacity="0.55"/>
+      <stop offset="0.65" stop-color="#37c9e8" stop-opacity="0.4"/>
+      <stop offset="1" stop-color="#2b8fd8" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="ribbonB" x1="0" y1="0" x2="1" y2="-0.2">
+      <stop offset="0" stop-color="#0f8f6e" stop-opacity="0"/>
+      <stop offset="0.4" stop-color="#25c890" stop-opacity="0.4"/>
+      <stop offset="0.7" stop-color="#48b7e0" stop-opacity="0.32"/>
+      <stop offset="1" stop-color="#3a6fd0" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="ribbonC" x1="0" y1="0" x2="1" y2="0.15">
+      <stop offset="0" stop-color="#8de6c8" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#b6f2dc" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#7ad4f0" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="blurA" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="22"/>
+    </filter>
+    <filter id="blurB" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="40"/>
+    </filter>
+    <filter id="blurC" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="5"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="1000" fill="url(#base)"/>
+
+  <!-- broad glow underlying the sweep -->
+  <ellipse cx="850" cy="560" rx="900" ry="330" fill="#0e5a54" opacity="0.5" filter="url(#blurB)"/>
+
+  <!-- aurora ribbons sweeping lower-left to upper-right -->
+  <path fill="url(#ribbonB)" filter="url(#blurB)"
+    d="M-100 800 C 350 720 620 640 900 500 C 1180 360 1400 300 1700 240 L 1700 420 C 1420 470 1180 540 920 660 C 660 780 320 850 -100 900 Z"/>
+  <path fill="url(#ribbonA)" filter="url(#blurA)"
+    d="M-100 720 C 300 660 640 560 940 420 C 1220 290 1440 240 1700 190 L 1700 280 C 1440 330 1220 390 950 520 C 680 650 300 740 -100 790 Z"/>
+  <path fill="url(#ribbonC)" filter="url(#blurC)" opacity="0.8"
+    d="M-100 700 C 320 640 660 540 960 400 C 1240 270 1460 220 1700 175 L 1700 190 C 1460 240 1240 300 970 430 C 680 570 320 670 -100 715 Z"/>
+  <path fill="url(#ribbonA)" filter="url(#blurA)" opacity="0.55"
+    d="M-100 560 C 340 520 680 440 980 320 C 1260 210 1480 170 1700 130 L 1700 200 C 1480 240 1260 290 990 400 C 700 520 340 590 -100 620 Z"/>
+
+  <!-- faint counter-sweep high in the frame -->
+  <path fill="url(#ribbonB)" filter="url(#blurB)" opacity="0.5"
+    d="M-100 300 C 400 320 800 260 1150 160 C 1350 100 1550 80 1700 80 L 1700 20 C 1450 20 1150 40 900 110 C 600 195 200 240 -100 230 Z"/>
+</svg>

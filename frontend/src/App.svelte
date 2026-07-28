@@ -63,6 +63,7 @@
   import { createControllerInputController } from "./lib/controllerInput";
   import { controllerSupportEnabled, loadControllerSupportEnabled } from "./stores/controllerSupport";
   import { preventUnmodifiedBrowserContextMenu } from "./lib/actions/contextMenu";
+  import { installSteamGuardBridge } from "./lib/steamGuardBridge";
 
   function resolveActiveBg(
     r: typeof $route,
@@ -74,7 +75,8 @@
     const isPlatformPage =
       r.page === "platform" ||
       r.page === "platform-settings" ||
-      r.page === "steam-advanced-clearing";
+      r.page === "steam-advanced-clearing" ||
+      r.page === "steam-confirmations";
     if (isPlatformPage && plat.hasImage) return plat;
     if (app.hasImage) return app;
     if (!userOverridden && themeBgUrl) {
@@ -131,7 +133,7 @@
     const r = $route;
     if (r.page === "platform" || r.page === "platform-settings") {
       void loadPlatformBg(r.platformName);
-    } else if (r.page === "steam-advanced-clearing") {
+    } else if (r.page === "steam-advanced-clearing" || r.page === "steam-confirmations") {
       void loadPlatformBg("Steam");
     } else {
       platformBgInfo.set({
@@ -306,7 +308,8 @@
       appBgInfo.set(info);
     }).catch(() => {});
 
-    const offPageStats = installPageStatsTracking();
+	    const offPageStats = installPageStatsTracking();
+	    const offSteamGuard = installSteamGuardBridge();
     const offSvgBridge = registerSvgRenderBridge();
     const offInputModality = installInputModalityTracking();
     let cleanupAnimationsClass = () => {};
@@ -415,7 +418,8 @@
       window.removeEventListener("keydown", onGlobalHistoryKeydownCapture, true);
       window.removeEventListener("mouseup", onGlobalHistoryMouseUpCapture, true);
       window.removeEventListener("contextmenu", preventUnmodifiedBrowserContextMenu, true);
-      offPageStats();
+	      offPageStats();
+	      offSteamGuard();
       off?.();
       offNav?.();
       offUpdateFail?.();
@@ -468,6 +472,8 @@
             {:else if $route.page === "platform-settings"}
               <Page name={$route.platformName} />
             {:else if $route.page === "steam-advanced-clearing"}
+              <Page />
+            {:else if $route.page === "steam-confirmations"}
               <Page />
             {:else if $route.page === "manage-platforms"}
               <Page />

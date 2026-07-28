@@ -1,0 +1,16 @@
+name: Steam 2003 — Olive
+accent: "#AAB879"
+
+accents:
+  - name: Army Olive
+    color: "#AAB879"
+  - name: Tracker Lime
+    color: "#BBC98A"
+  - name: Hazard Amber
+    color: "#D0AF62"
+  - name: HEV Orange
+    color: "#C47B48"
+  - name: Rust Red
+    color: "#B96552"
+  - name: Monitor Teal
+    color: "#78A590"

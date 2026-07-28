@@ -4,6 +4,7 @@ import type { MenuItemDef } from "../../stores/contextMenu";
 import type { SharedMenuItems } from "../../components/PlatformAccountAdapter";
 import type { SteamAccountRow } from "./types";
 import { createSteamMenuCommands, type SteamMenuDeps } from "./menuCommands";
+import { buildSteamGuardMenuItem } from "./steamGuardMenu";
 
 export function buildSteamExtraMenu(
   acc: SteamAccountRow,
@@ -14,6 +15,7 @@ export function buildSteamExtraMenu(
   const rid = acc.steamId64;
   const { installedGames, gameDataBySteamId } = deps;
   const commands = createSteamMenuCommands(acc, deps, tr);
+  const steamGuard = buildSteamGuardMenuItem(acc, deps.openSteamGuard, tr);
 
   const loginStates = [
     { st: 7, lab: tr("Invisible") }, { st: 0, lab: tr("Offline") }, { st: 1, lab: tr("Online") },
@@ -100,12 +102,11 @@ export function buildSteamExtraMenu(
 
   return [
     shared.swapTo,
+    steamGuard,
     { label: tr("Context_Game_LoginAndLaunch"), children: launchChildren },
     { label: tr("Context_LoginAsSubmenu"), children: loginAsChildren },
     { label: tr("Context_CopySubmenu"), children: copyChildren },
     { ...shared.createShortcut, children: shortcutChildren },
-    shared.forget,
-    shared.notes,
     shared.tags,
     {
       label: tr("Context_ManageSubmenu"),
@@ -117,6 +118,8 @@ export function buildSteamExtraMenu(
           action: () => void commands.openUserdataFolder(),
         },
         shared.changeImage,
+        shared.notes,
+        shared.forget,
       ] as (MenuItemDef | null)[]).filter((x): x is MenuItemDef => x != null),
     },
   ];
