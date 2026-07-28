@@ -19,6 +19,11 @@ RESOURCES = ROOT / "frontend" / "src" / "Resources"
 SOURCE_LOCALE = "en-US"
 
 
+def load_source() -> dict[str, str]:
+    with (RESOURCES / f"{SOURCE_LOCALE}.json").open(encoding="utf-8-sig") as f:
+        return {str(k): str(v) for k, v in json.load(f).items()}
+
+
 def load_patch(source: str) -> dict[str, str]:
     text = sys.stdin.read() if source == "-" else Path(source).read_text(encoding="utf-8")
     data = json.loads(text)
@@ -31,24 +36,67 @@ def line_pattern(key: str) -> re.Pattern[str]:
     return re.compile(rf'^(\s*){re.escape(json.dumps(key))}:\s*".*"(,?)$')
 
 
-def apply_patch(text: str, patch: dict[str, str]) -> tuple[str, list[str], list[str]]:
+def key_line_index(lines: list[str], key: str) -> int | None:
+    pattern = line_pattern(key)
+    for index, line in enumerate(lines):
+        if pattern.match(line):
+            return index
+    return None
+
+
+def insert_key(lines: list[str], key: str, value: str, source_order: list[str]) -> None:
+    """Insert a key the locale does not have yet, at the position en-US puts it."""
+    anchor = None
+    for previous in reversed(source_order[: source_order.index(key)]):
+        anchor = key_line_index(lines, previous)
+        if anchor is not None:
+            break
+
+    if anchor is None:  # nothing precedes it in this file; go straight after the brace.
+        anchor = next(i for i, line in enumerate(lines) if line.lstrip().startswith("{"))
+
+    indent = "  "
+    for line in lines[anchor : anchor + 2]:
+        stripped = line.lstrip()
+        if stripped.startswith('"'):
+            indent = line[: len(line) - len(stripped)]
+            break
+
+    # The last entry carries no trailing comma, so inserting after it moves the comma.
+    anchor_is_last = not lines[anchor].rstrip().endswith(",") and lines[anchor].lstrip().startswith('"')
+    if anchor_is_last:
+        lines[anchor] = lines[anchor].rstrip() + ","
+        comma = ""
+    else:
+        comma = "" if lines[anchor + 1].lstrip().startswith("}") else ","
+
+    lines.insert(anchor + 1, f"{indent}{json.dumps(key)}: {json.dumps(value, ensure_ascii=False)}{comma}")
+
+
+def apply_patch(
+    text: str,
+    patch: dict[str, str],
+    source_order: list[str],
+) -> tuple[str, list[str], list[str], list[str]]:
     lines = text.split("\n")
     applied: list[str] = []
-    missing: list[str] = []
+    inserted: list[str] = []
+    unknown: list[str] = []
 
     for key, value in patch.items():
-        pattern = line_pattern(key)
-        for index, line in enumerate(lines):
-            match = pattern.match(line)
-            if match:
-                indent, comma = match.group(1), match.group(2)
-                lines[index] = f"{indent}{json.dumps(key)}: {json.dumps(value, ensure_ascii=False)}{comma}"
-                applied.append(key)
-                break
-        else:
-            missing.append(key)
+        if key not in source_order:
+            unknown.append(key)
+            continue
+        index = key_line_index(lines, key)
+        if index is None:
+            insert_key(lines, key, value, source_order)
+            inserted.append(key)
+            continue
+        indent, comma = line_pattern(key).match(lines[index]).groups()
+        lines[index] = f"{indent}{json.dumps(key)}: {json.dumps(value, ensure_ascii=False)}{comma}"
+        applied.append(key)
 
-    return "\n".join(lines), applied, missing
+    return "\n".join(lines), applied, inserted, unknown
 
 
 def main() -> int:
@@ -72,34 +120,42 @@ def main() -> int:
         print("Empty patch; nothing to do.")
         return 0
 
+    source_order = list(load_source())
     original = path.read_text(encoding="utf-8")
     before = json.loads(original)
-    updated, applied, missing = apply_patch(original, patch)
+    updated, applied, inserted, unknown = apply_patch(original, patch, source_order)
 
     after = json.loads(updated)
-    if list(after) != list(before):
-        print("Refusing to write: key order or key set changed.", file=sys.stderr)
+    expected_order = [key for key in source_order if key in after]
+    if list(after) != expected_order:
+        print(f"Refusing to write: key order would not match {SOURCE_LOCALE}.json.", file=sys.stderr)
         return 1
-    unexpected = [k for k in after if after[k] != before[k] and k not in patch]
+    dropped = [key for key in before if key not in after]
+    if dropped:
+        print(f"Refusing to write: {len(dropped)} key(s) would be lost: {', '.join(dropped[:5])}", file=sys.stderr)
+        return 1
+    unexpected = [k for k in after if k in before and after[k] != before[k] and k not in patch]
     if unexpected:
         print(f"Refusing to write: {len(unexpected)} unrelated key(s) changed: {', '.join(unexpected[:5])}", file=sys.stderr)
         return 1
-    wrong = [k for k in applied if after[k] != patch[k]]
+    wrong = [k for k in applied + inserted if after[k] != patch[k]]
     if wrong:
         print(f"Refusing to write: {len(wrong)} key(s) did not round-trip: {', '.join(wrong[:5])}", file=sys.stderr)
         return 1
 
-    if missing:
-        print(f"{len(missing)} key(s) not found in {path.name}: {', '.join(missing[:10])}", file=sys.stderr)
+    if unknown:
+        print(f"{len(unknown)} key(s) not in {SOURCE_LOCALE}.json, skipped: {', '.join(unknown[:10])}", file=sys.stderr)
 
     unchanged = [k for k in applied if before[k] == patch[k]]
+    changed = len(applied) - len(unchanged)
+    summary = f"{changed} key(s) updated, {len(inserted)} inserted in {path.name} ({len(unchanged)} already identical)."
     if args.check:
-        print(f"Would update {len(applied) - len(unchanged)} key(s) in {path.name} ({len(unchanged)} already identical).")
-        return 1 if missing else 0
+        print(f"Would apply: {summary}")
+        return 1 if unknown else 0
 
     path.write_text(updated, encoding="utf-8", newline="\n")
-    print(f"Updated {len(applied) - len(unchanged)} key(s) in {path.name} ({len(unchanged)} already identical).")
-    return 1 if missing else 0
+    print(f"Applied: {summary}")
+    return 1 if unknown else 0
 
 
 if __name__ == "__main__":

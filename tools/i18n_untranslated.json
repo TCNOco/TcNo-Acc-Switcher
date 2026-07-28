@@ -8,94 +8,183 @@
     "Steam_ShowSteamID"
   ],
   "zh-CN": [
-    "Filter_Sort_AZ",
-    "Filter_Sort_ZA"
-  ],
-  "vi-VN": [
+    "Context_SteamGuard",
     "Filter_Sort_AZ",
     "Filter_Sort_ZA",
-    "Ok"
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle"
+  ],
+  "vi-VN": [
+    "Context_SteamGuard",
+    "Filter_Sort_AZ",
+    "Filter_Sort_ZA",
+    "Ok",
+    "Settings_DiscordRpc",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList"
   ],
   "fr-FR": [
+    "Context_SteamGuard",
     "Invisible",
     "Modal_Info_Version",
     "Ok",
+    "Settings_DiscordRpc",
     "SteamGuard_Confirmations_Title",
     "SteamGuard_Confirmations_TitleFor",
+    "SteamGuard_QR_Client",
     "SteamGuard_QR_Session",
-    "Tags_ExpiryDate"
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Tags_ExpiryDate",
+    "Title_AccountsList"
   ],
   "ja-JP": [
-    "Ok"
+    "Context_SteamGuard",
+    "Ok",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList"
   ],
   "pt-PT": [
+    "Context_SteamGuard",
     "Offline",
-    "Online"
+    "Online",
+    "Settings_DiscordRpc",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList"
   ],
   "pt-BR": [
-    "Ok"
+    "Context_SteamGuard",
+    "Ok",
+    "Settings_DiscordRpc",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList"
   ],
   "zh-TW": [
+    "Context_SteamGuard",
     "Filter_Sort_AZ",
-    "Filter_Sort_ZA"
+    "Filter_Sort_ZA",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList"
   ],
   "ro-RO": [
+    "Context_SteamGuard",
     "Filter_Sort_AZ",
     "Filter_Sort_ZA",
     "Ok",
     "Online",
-    "Settings_Header_Program"
+    "Settings_DiscordRpc",
+    "Settings_Header_Program",
+    "SteamGuard_QR_Client",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList"
   ],
   "hu-HU": [
+    "Context_SteamGuard",
     "Filter_Sort_AZ",
     "Filter_Sort_ZA",
     "Search_Section_Platform",
-    "Settings_Header_Program"
+    "Settings_DiscordRpc",
+    "Settings_Header_Program",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList"
   ],
   "no-NO": [
+    "Context_SteamGuard",
     "ForName",
     "Ok",
+    "Settings_DiscordRpc",
     "Settings_Header_Program",
     "Settings_Header_System",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList",
     "Tooltip_Info"
   ],
   "sk-SK": [
+    "Context_SteamGuard",
     "Filter_Sort_AZ",
     "Filter_Sort_ZA",
     "Offline",
     "Ok",
     "Online",
-    "Settings_Header_Program"
+    "Settings_DiscordRpc",
+    "Settings_Header_Program",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle"
   ],
   "tr-TR": [
+    "Context_SteamGuard",
     "Filter_Sort_AZ",
     "Filter_Sort_ZA",
     "Search_Section_Platform",
-    "Settings_Header_Program"
+    "Settings_DiscordRpc",
+    "Settings_Header_Program",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList"
   ],
   "af-ZA": [
+    "Context_SteamGuard",
     "Filter_Sort_AZ",
     "Filter_Sort_ZA",
     "Ok",
     "Search_Section_Platform",
     "Security_InterruptedRestore_Later",
-    "Settings_Header_Program"
+    "Settings_DiscordRpc",
+    "Settings_Header_Program",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList"
   ],
   "ca-ES": [
+    "Context_SteamGuard",
     "Filter_Sort_AZ",
     "Filter_Sort_ZA",
     "Invisible",
     "No",
     "Notes",
-    "SteamAdvanced_LogError"
+    "Settings_DiscordRpc",
+    "SteamAdvanced_LogError",
+    "SteamGuard_QR_Client",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList"
   ],
   "cs-CZ": [
+    "Context_SteamGuard",
     "Offline",
     "Ok",
     "Online",
-    "Settings_Header_Program"
+    "Settings_DiscordRpc",
+    "Settings_Header_Program",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList"
   ],
   "da-DK": [
+    "Context_SteamGuard",
     "Modal_Info_Version",
     "Offline",
     "Ok",
@@ -103,59 +192,105 @@
     "Search_Section_Game",
     "Search_Section_Platform",
     "Settings_BgAlign_Top",
+    "Settings_DiscordRpc",
     "Settings_Header_Program",
     "Settings_Header_System",
     "SteamGuard_Enrollment_Destination",
     "SteamGuard_QR_Session",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList",
     "Tooltip_Info"
   ],
   "de-CH": [
+    "Context_SteamGuard",
     "Filter_Sort_AZ",
     "Filter_Sort_ZA",
     "Modal_Info_Version",
     "Offline",
     "Online",
+    "Settings_DiscordRpc",
     "Settings_Header_System",
+    "SteamGuard_QR_Client",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
     "Tags_Section",
+    "Title_AccountsList",
     "Tooltip_Info"
   ],
   "de-DE": [
+    "Context_SteamGuard",
     "Filter_Sort_AZ",
     "Filter_Sort_ZA",
     "Modal_Info_Version",
     "Offline",
     "Online",
+    "Settings_DiscordRpc",
     "Settings_Header_System",
+    "SteamGuard_Confirmations_Level",
+    "SteamGuard_QR_Client",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
     "Tags_Section",
+    "Title_AccountsList",
     "Tooltip_Info"
   ],
   "fi-FI": [
-    "Ok"
+    "Context_SteamGuard",
+    "Ok",
+    "Settings_DiscordRpc",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList"
   ],
   "es-ES": [
+    "Context_SteamGuard",
     "Error",
     "Filter_Sort_AZ",
     "Filter_Sort_ZA",
     "Invisible",
     "No",
-    "SteamAdvanced_LogError"
+    "Settings_DiscordRpc",
+    "SteamAdvanced_LogError",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList"
   ],
   "id-ID": [
+    "Context_SteamGuard",
     "Filter_Sort_AZ",
     "Filter_Sort_ZA",
+    "Settings_DiscordRpc",
     "Settings_Header_Program",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList",
     "Tooltip_Info"
   ],
   "pl-PL": [
+    "Context_SteamGuard",
     "Filter_Sort_AZ",
     "Filter_Sort_ZA",
     "Offline",
     "Ok",
     "Online",
+    "Settings_DiscordRpc",
     "Settings_Header_Program",
-    "Settings_Header_System"
+    "Settings_Header_System",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList"
   ],
   "nl-NL": [
+    "Context_2Factor",
+    "Context_SteamGuard",
     "Filter_Sort_AZ",
     "Filter_Sort_ZA",
     "Modal_Info_Disclaimer",
@@ -166,25 +301,134 @@
     "Search_Section_Game",
     "Search_Section_Platform",
     "Security_InterruptedRestore_Later",
+    "Settings_DiscordRpc",
+    "SteamGuard_QR_Client",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
     "Tags_Section",
+    "Title_AccountsList",
     "Website"
   ],
   "it-IT": [
     "Button_Backup",
+    "Context_SteamGuard",
     "Filter_Sort_AZ",
     "Filter_Sort_ZA",
     "Search_Section_Account",
     "Search_Section_Game",
-    "Security_Password"
+    "Security_Password",
+    "Settings_DiscordRpc",
+    "SteamGuard_QR_Client",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList"
   ],
   "sv-SE": [
+    "Context_SteamGuard",
     "Modal_Info_Version",
     "Offline",
     "Ok",
     "Online",
+    "Settings_DiscordRpc",
     "Settings_Header_Program",
     "Settings_Header_System",
     "SteamGuard_QR_Session",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList",
     "Tooltip_Info"
+  ],
+  "ar-SA": [
+    "Context_SteamGuard",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList"
+  ],
+  "bg-BG": [
+    "Context_SteamGuard",
+    "Settings_DiscordRpc",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList"
+  ],
+  "el-GR": [
+    "Context_SteamGuard",
+    "Settings_DiscordRpc",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList"
+  ],
+  "en-PT": [
+    "Context_2Factor",
+    "Context_SteamGuard",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList"
+  ],
+  "sr-SP": [
+    "Context_SteamGuard",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList"
+  ],
+  "uk-UA": [
+    "Context_SteamGuard",
+    "Settings_DiscordRpc",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle"
+  ],
+  "fa-IR": [
+    "Context_SteamGuard",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList"
+  ],
+  "he-IL": [
+    "Context_SteamGuard",
+    "Settings_DiscordRpc",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList"
+  ],
+  "hi-IN": [
+    "Context_SteamGuard",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList"
+  ],
+  "ko-KR": [
+    "Context_SteamGuard",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList"
+  ],
+  "ru-RU": [
+    "Context_SteamGuard",
+    "Settings_DiscordRpc",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList"
+  ],
+  "th-TH": [
+    "Context_SteamGuard",
+    "Settings_DiscordRpc",
+    "SteamGuard_Settings_Title",
+    "SteamGuard_Title",
+    "SteamGuard_Vault_PasswordMismatchTitle",
+    "Title_AccountsList"
   ]
 }

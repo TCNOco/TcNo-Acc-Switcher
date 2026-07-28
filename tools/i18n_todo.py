@@ -41,9 +41,10 @@ MAX_ITEMS_CEILING = 60
 IGNORE_FILE = Path(__file__).resolve().parent / "i18n_untranslated.json"
 GLOBAL_SCOPE = "*"
 
-# A value identical to English in at least this share of locales is almost
-# always a proper noun or symbol ("Steam", "OK", "%"), not missed work.
-UNTRANSLATABLE_SHARE = 0.8
+# There is deliberately no "identical in most locales, so it must be a proper noun"
+# heuristic here. It cannot tell a proper noun from a key that simply has not been
+# translated anywhere yet, and it hid 15 real keys by scoring them 37/37 identical.
+# Untranslatable keys are recorded explicitly in IGNORE_FILE instead.
 
 
 def load_ignored() -> dict[str, list[str]]:
@@ -91,34 +92,20 @@ def looks_translatable(value: str) -> bool:
     return any(char.isalpha() for char in value)
 
 
-def untranslatable_keys(source: dict[str, str], locales: dict[str, dict[str, str]]) -> set[str]:
-    """Keys whose English value survives unchanged in nearly every locale."""
-    if not locales:
-        return set()
-    threshold = len(locales) * UNTRANSLATABLE_SHARE
-    keys: set[str] = set()
-    for key, english in source.items():
-        same = sum(1 for data in locales.values() if data.get(key) == english)
-        if same >= threshold:
-            keys.add(key)
-    return keys
-
-
 def work_for(
     source: dict[str, str],
     data: dict[str, str],
-    skip: set[str],
     ignored: set[str],
+    missing_only: bool,
 ) -> tuple[list[str], list[str], int]:
     """Missing keys, still-English keys, and how many the whitelist suppressed."""
     missing = [key for key in source if key not in data]
+    if missing_only:
+        return missing, [], 0
     verbatim = [
         key
         for key, english in source.items()
-        if key in data
-        and key not in skip
-        and data[key] == english
-        and looks_translatable(english)
+        if key in data and data[key] == english and looks_translatable(english)
     ]
     kept = [key for key in verbatim if key not in ignored]
     return missing, kept, len(verbatim) - len(kept)
@@ -216,7 +203,6 @@ def main() -> int:
 
     source = load_source_strings()
     all_locales = {path.stem: load_locale(path) for path in locale_paths()}
-    skip = set() if args.missing_only else untranslatable_keys(source, all_locales)
 
     if args.ignore:
         add_ignored(args.ignore, args.locale or GLOBAL_SCOPE, source)
@@ -233,8 +219,10 @@ def main() -> int:
     if not args.locale:
         rows = []
         for name, data in all_locales.items():
-            missing, verbatim, suppressed = work_for(source, data, skip, ignored_for(ignored_map, name))
-            rows.append((name, len(missing), 0 if args.missing_only else len(verbatim), suppressed))
+            missing, verbatim, suppressed = work_for(
+                source, data, ignored_for(ignored_map, name), args.missing_only
+            )
+            rows.append((name, len(missing), len(verbatim), suppressed))
         if args.json:
             print(json.dumps([{"locale": n, "missing": m, "english": e, "ignored": i} for n, m, e, i in rows], indent=2))
         else:
@@ -246,7 +234,7 @@ def main() -> int:
         return 1
 
     missing, verbatim, suppressed = work_for(
-        source, all_locales[args.locale], skip, ignored_for(ignored_map, args.locale)
+        source, all_locales[args.locale], ignored_for(ignored_map, args.locale), args.missing_only
     )
     keys = [(key, "missing") for key in missing]
     if not args.missing_only:
