@@ -43,7 +43,7 @@ func FetchMiniprofile(ctx context.Context, client *http.Client, steamID64 string
 		data, rerr := os.ReadFile(cachePath)
 		if rerr == nil && len(data) > 0 {
 			page = sanitizeMiniprofileHTML(string(data))
-			if strings.TrimSpace(page) != "" {
+			if strings.TrimSpace(page) != "" && miniprofileCachedAssetsLocal(page) {
 				fromDisk = true
 			}
 		}
@@ -173,6 +173,48 @@ func embedMiniprofileHTMLAssets(ctx context.Context, client *http.Client, steamI
 		}
 	}
 
+	// The avatar frame and the avatar itself are the two images every
+	// miniprofile carries, and the webview's CSP refuses their Steam URLs.
+	// The frame shares the accounts list's cache key, so it is usually a
+	// disk hit rather than a download.
+	if frame := findFirstDivWithClass(body, "playersection_avatar_frame"); frame != nil {
+		if img := firstDescendantElement(frame, "img"); img != nil {
+			if u := attrVal(img, "src"); strings.HasPrefix(strings.ToLower(u), "https://") && isSafeSteamAssetURL(u) {
+				res, derr := profileimage.DownloadIfNeeded(ctx, client, PlatformKey, steamID64+"_frame", u, maxAgeDays)
+				if derr == nil && res != nil {
+					setAttr(img, "src", res.PublicURL)
+					removeAttr(img, "srcset")
+				}
+			}
+		}
+	}
+	if mount := findMiniprofileAvatarMountPoint(body); mount != nil {
+		if img := firstDescendantElement(mount, "img"); img != nil {
+			if u := attrVal(img, "src"); strings.HasPrefix(strings.ToLower(u), "https://") && isSafeSteamAssetURL(u) {
+				// The switcher's own caches win when present — the full-quality
+				// static first, then the plain key if it holds an image (it can
+				// hold an animation, which an img cannot play). A distinct key
+				// otherwise, so the miniprofile's medium-size copy can never
+				// displace the full-size avatar the accounts list downloads.
+				local, ok := profileimage.FindCached(PlatformKey, steamStaticAvatarID(steamID64))
+				if !ok {
+					if u2, ok2 := profileimage.FindCached(PlatformKey, steamID64); ok2 && !isAnimatedProfilePublicURL(u2) {
+						local, ok = u2, true
+					}
+				}
+				if !ok {
+					if res, derr := profileimage.DownloadIfNeeded(ctx, client, PlatformKey, steamID64+"_mini", u, maxAgeDays); derr == nil && res != nil {
+						local, ok = res.PublicURL, true
+					}
+				}
+				if ok {
+					setAttr(img, "src", local)
+					removeAttr(img, "srcset")
+				}
+			}
+		}
+	}
+
 	var buf bytes.Buffer
 	for c := body.FirstChild; c != nil; c = c.NextSibling {
 		if err := html.Render(&buf, c); err != nil {
@@ -180,6 +222,54 @@ func embedMiniprofileHTMLAssets(ctx context.Context, client *http.Client, steamI
 		}
 	}
 	return strings.TrimSpace(buf.String()), nil
+}
+
+// miniprofileCachedAssetsLocal reports whether a cached fragment's frame and
+// avatar images already point at the app's own origin. Caches written before
+// those were localized still carry Steam URLs the webview's CSP refuses;
+// treating them as stale refetches and heals them.
+func miniprofileCachedAssetsLocal(fragment string) bool {
+	body, err := parseFragmentInBody(fragment)
+	if err != nil || body == nil {
+		return false
+	}
+	remote := func(img *html.Node) bool {
+		return img != nil && strings.HasPrefix(strings.ToLower(strings.TrimSpace(attrVal(img, "src"))), "https://")
+	}
+	if frame := findFirstDivWithClass(body, "playersection_avatar_frame"); frame != nil {
+		if remote(firstDescendantElement(frame, "img")) {
+			return false
+		}
+	}
+	if mount := findMiniprofileAvatarMountPoint(body); mount != nil {
+		if remote(firstDescendantElement(mount, "img")) {
+			return false
+		}
+	}
+	// Every locally-served asset must still exist: clearing the profiles
+	// folder leaves cached HTML pointing at deleted files, and only a refetch
+	// downloads them again.
+	usable := true
+	var walk func(*html.Node)
+	walk = func(n *html.Node) {
+		if !usable {
+			return
+		}
+		if n.Type == html.ElementNode {
+			switch strings.ToLower(n.Data) {
+			case "img", "video", "source":
+				if u := strings.TrimSpace(attrVal(n, "src")); strings.HasPrefix(u, "/img/") && !profileimage.LocalAssetExists(u) {
+					usable = false
+					return
+				}
+			}
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			walk(c)
+		}
+	}
+	walk(body)
+	return usable
 }
 
 func ExtractMiniprofileDisplayName(fragment string) string {
@@ -229,8 +319,12 @@ func ExtractMiniprofileAvatarMediaURL(fragment string) string {
 			return u
 		}
 	}
+	// The img fallback exists for animated GIF avatars only. A still avatar's
+	// img is the same picture the full-quality static download already fetches,
+	// just smaller — reporting it here doubled the download and put the worse
+	// copy on screen.
 	if img := firstDescendantElement(mount, "img"); img != nil {
-		if u := attrVal(img, "src"); isSafeSteamAssetURL(u) {
+		if u := attrVal(img, "src"); isSafeSteamAssetURL(u) && strings.HasSuffix(strings.ToLower(u), ".gif") {
 			return u
 		}
 	}

@@ -300,6 +300,35 @@ func FindCached(platformKey, accountID string) (publicURL string, ok bool) {
 	return "", false
 }
 
+// LocalAssetExists reports whether a /img/profiles/... public URL still has its
+// file on disk. Query strings (cache busters) are ignored; anything that is not
+// a plain filename under a platform folder reports false.
+func LocalAssetExists(publicURL string) bool {
+	u := strings.TrimSpace(publicURL)
+	if i := strings.IndexAny(u, "?#"); i >= 0 {
+		u = u[:i]
+	}
+	const prefix = "/img/profiles/"
+	if !strings.HasPrefix(u, prefix) {
+		return false
+	}
+	rest := u[len(prefix):]
+	slash := strings.IndexByte(rest, '/')
+	if slash <= 0 {
+		return false
+	}
+	platformFolder, name := rest[:slash], rest[slash+1:]
+	if name == "" || strings.ContainsAny(platformFolder+name, `/\`) || strings.Contains(name, "..") {
+		return false
+	}
+	www, err := paths.WwwrootDir()
+	if err != nil {
+		return false
+	}
+	st, err := os.Stat(filepath.Join(www, "img", "profiles", platformFolder, name))
+	return err == nil && !st.IsDir()
+}
+
 // FileOlderThanDays returns true if path exists and mod time is older than days (or file missing -> false).
 func FileOlderThanDays(path string, days int) bool {
 	if days <= 0 {

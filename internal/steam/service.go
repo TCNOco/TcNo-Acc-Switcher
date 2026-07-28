@@ -234,6 +234,10 @@ func downloadSteamAccountAvatars(
 		}
 	}
 
+	// No animated media: the full-quality static is the avatar. A plain-key
+	// leftover — an old medium-quality copy or a since-removed animation —
+	// would otherwise keep being found and shown instead of it.
+	_ = profileimage.DeleteCached(PlatformKey, steamID64)
 	return staticURL, staticURL, nil
 }
 
@@ -589,7 +593,11 @@ func (s *SteamService) runProfileRefresh() {
 					if n := ExtractMiniprofileDisplayName(miniHTML); n != "" {
 						patch.DisplayName = n
 					}
-					if st.SteamShowAvatarFrame && strings.TrimSpace(frameSrc) != "" {
+					if st.SteamShowAvatarFrame && strings.HasPrefix(strings.TrimSpace(frameSrc), "/img/") {
+						// The miniprofile embed already serves the frame from the app's
+						// own origin; there is nothing left to download.
+						patch.AvatarFrameURL = strings.TrimSpace(frameSrc)
+					} else if st.SteamShowAvatarFrame && strings.TrimSpace(frameSrc) != "" {
 						fctx, fcancel := context.WithTimeout(ctx, 15*time.Second)
 						res, derr := profileimage.DownloadIfNeeded(fctx, appclient.Shared, PlatformKey, u.SteamID64+"_frame", frameSrc, st.SteamImageExpiryTime)
 						fcancel()

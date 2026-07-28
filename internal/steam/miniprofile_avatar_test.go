@@ -38,6 +38,24 @@ func TestExtractMiniprofileAvatarMediaURL_gif(t *testing.T) {
 	}
 }
 
+// A still avatar's img is the same picture the full-quality static download
+// already fetches; reporting it doubled the download and showed the worse copy.
+func TestExtractMiniprofileAvatarMediaURL_stillImageIsNotMedia(t *testing.T) {
+	t.Parallel()
+
+	fragment := `<div class="miniprofile_container">
+<div class="miniprofile_playersection">
+<div class="playersection_avatar border_color_offline">
+<img src="https://avatars.akamai.steamstatic.com/10b3fa00991a8b1115df292256f5fd2d1240a6d6_medium.jpg"/>
+</div>
+</div>
+</div>`
+
+	if got := ExtractMiniprofileAvatarMediaURL(fragment); got != "" {
+		t.Fatalf("still avatar reported as media: %q", got)
+	}
+}
+
 func TestExtractMiniprofileDisplayName(t *testing.T) {
 	t.Parallel()
 
