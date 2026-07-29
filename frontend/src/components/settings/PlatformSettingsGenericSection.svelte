@@ -7,7 +7,9 @@
     closingLabel,
     startingLabel,
   } from "../../lib/platformSettingsShared";
-  import SharedSettingCheckbox from "./SharedSettingCheckbox.svelte";
+  import SettingsGroup from "./SettingsGroup.svelte";
+  import SettingsToggle from "./SettingsToggle.svelte";
+  import SettingsField from "./SettingsField.svelte";
   import ProcessMethodDropdown from "./ProcessMethodDropdown.svelte";
   import type { PlatformSettings } from "../../../bindings/TcNo-Acc-Switcher/internal/platform/models";
 
@@ -31,140 +33,116 @@
   }
 </script>
 
-<h2 class="SettingsHeader">{$t("Settings_Header_GeneralSettings")}</h2>
-<div class="rowSetting">
-  <div class="form-check">
-    <input
+
+<SettingsGroup title={$t("Settings_Header_GeneralSettings")}>
+  <div class="settings-grid">
+    <SettingsToggle
       id="gp-desktop-shortcut"
-      type="checkbox"
       checked={hasDesktopShortcut}
+      label={$t("Settings_Shortcut", { platform: name })}
       on:change={() => dispatch("toggleDesktopShortcut")}
     />
-    <label class="form-check-label" for="gp-desktop-shortcut"></label>
+    <SettingsToggle
+      id="gp-run-admin"
+      checked={genericPS.RunAsAdmin}
+      label={$t("Settings_Admin", { platform: name })}
+      on:change={() => {
+        genericPS.RunAsAdmin = !genericPS.RunAsAdmin;
+        dispatch("save");
+      }}
+    />
+    <SettingsToggle
+      id="gp-autostart"
+      checked={genericPS.AutoStart}
+      label={$t("Settings_AutoStart", { platform: name })}
+      on:change={() => {
+        genericPS.AutoStart = !genericPS.AutoStart;
+        dispatch("save");
+      }}
+    />
+    <SettingsToggle
+      id="gp-forget"
+      checked={genericPS.ForgetAccountEnabled}
+      label={$t("Settings_ForgetAccountEnabled")}
+      on:change={() => {
+        genericPS.ForgetAccountEnabled = !genericPS.ForgetAccountEnabled;
+        dispatch("save");
+      }}
+    />
+    <SettingsToggle
+      id="gp-shortnotes"
+      checked={genericPS.ShowShortNotes}
+      label={$t("Settings_ShowShortNotes")}
+      on:change={() => {
+        genericPS.ShowShortNotes = !genericPS.ShowShortNotes;
+        dispatch("save");
+      }}
+    />
+    <SettingsToggle
+      id="gp-show-lastused"
+      checked={genericPS.ShowLastUsed}
+      label={$t("Settings_ShowLastUsed")}
+      on:change={() => {
+        genericPS.ShowLastUsed = !genericPS.ShowLastUsed;
+        dispatch("save");
+      }}
+    />
   </div>
-  <label for="gp-desktop-shortcut">{$t("Settings_Shortcut", { platform: name })}</label>
-</div>
-<SharedSettingCheckbox
-  id="gp-run-admin"
-  checked={genericPS.RunAsAdmin}
-  label={$t("Settings_Admin", { platform: name })}
-  on:change={() => {
-    genericPS.RunAsAdmin = !genericPS.RunAsAdmin;
-    dispatch("save");
-  }}
-/>
-<SharedSettingCheckbox
-  id="gp-autostart"
-  checked={genericPS.AutoStart}
-  label={$t("Settings_AutoStart", { platform: name })}
-  on:change={() => {
-    genericPS.AutoStart = !genericPS.AutoStart;
-    dispatch("save");
-  }}
-/>
-<SharedSettingCheckbox
-  id="gp-forget"
-  checked={genericPS.ForgetAccountEnabled}
-  label={$t("Settings_ForgetAccountEnabled")}
-  on:change={() => {
-    genericPS.ForgetAccountEnabled = !genericPS.ForgetAccountEnabled;
-    dispatch("save");
-  }}
-/>
-<SharedSettingCheckbox
-  id="gp-shortnotes"
-  checked={genericPS.ShowShortNotes}
-  label={$t("Settings_ShowShortNotes")}
-  on:change={() => {
-    genericPS.ShowShortNotes = !genericPS.ShowShortNotes;
-    dispatch("save");
-  }}
-/>
-<SharedSettingCheckbox
-  id="gp-show-lastused"
-  checked={genericPS.ShowLastUsed}
-  label={$t("Settings_ShowLastUsed")}
-  on:change={() => {
-    genericPS.ShowLastUsed = !genericPS.ShowLastUsed;
-    dispatch("save");
-  }}
-/>
-<h2 class="SettingsHeader">{$t("Settings_Header_LaunchOptions")}</h2>
-<div class="rowSetting form-text launch-args-row">
-  <label for="gp-launch-args">{$t("Settings_LaunchArgumentsForPlatform", { platform: name })}</label>
-  <input
-    id="gp-launch-args"
-    type="text"
-    spellcheck="false"
-    autocomplete="off"
-    disabled={!genericPS.AutoStart}
-    bind:value={genericPS.LaunchArguments}
-    on:input={() => dispatch("save")}
-  />
-  <p class="subtext">{$t("Settings_LaunchArguments_Hint")}</p>
-</div>
-<h2 class="SettingsHeader">{$t("Settings_Header_ProcessManagement")}</h2>
-{#if !closingMethodUiLocked}
-  <ProcessMethodDropdown
-    values={closingValues}
-    current={genericPS.ClosingMethod}
-    label={$t("Settings_Header_ClosingMethod", { platform: name })}
-    labelFn={closingLabel}
-    tooltip={$t("Tooltip_ClosingMethod")}
-    on:select={(e) => {
-      genericPS.ClosingMethod = e.detail.value;
-      dispatch("save");
-    }}
-  />
-{/if}
-<ProcessMethodDropdown
-  values={startingValues}
-  current={genericPS.StartingMethod}
-  label={$t("Settings_Header_StartingMethod", { platform: name })}
-  labelFn={startingLabel}
-  tooltip={$t("Tooltip_StartingMethod")}
-  on:select={(e) => {
-    genericPS.StartingMethod = e.detail.value;
-    dispatch("save");
-  }}
-/>
+</SettingsGroup>
 
-<h2 class="SettingsHeader">{$t("Settings_Header_TraySettings")}</h2>
-<div class="form-text tray-max-row">
-  <span>{$t("Settings_TrayMax")}</span>
-  <input
-    type="number"
-    min="0"
-    max="365"
-    bind:value={genericPS.TrayAccNumber}
-    on:change={() => dispatch("save")}
-  />
-</div>
-{#if hasRemoteProfileImages}
-  <h2 class="SettingsHeader">{$t("Settings_Header_ProfileImages")}</h2>
-  <div class="rowSetting">
-    <div class="form-check">
-      <input
-        id="gp-pull-account-images"
-        type="checkbox"
-        checked={pullAccountImagesOnSwitch()}
-        on:change={handlePullAccountImagesChange}
-      />
-      <label class="form-check-label" for="gp-pull-account-images"></label>
-    </div>
-    <label for="gp-pull-account-images">{$t("Settings_PullAccountImages")}</label>
-  </div>
-  <div class="form-text tray-max-row">
-    <span>{$t("Settings_ProfileImageExpiryDays")}</span>
+<SettingsGroup title={$t("Settings_Header_LaunchOptions")}>
+  <SettingsField
+    label={$t("Settings_LaunchArgumentsForPlatform", { platform: name })}
+    forId="gp-launch-args"
+    note={$t("Settings_LaunchArguments_Hint")}
+    disabled={!genericPS.AutoStart}
+    wide
+  >
     <input
+      id="gp-launch-args"
+      type="text"
+      spellcheck="false"
+      autocomplete="off"
+      disabled={!genericPS.AutoStart}
+      bind:value={genericPS.LaunchArguments}
+      on:input={() => dispatch("save")}
+    />
+  </SettingsField>
+</SettingsGroup>
+
+<SettingsGroup title={$t("Settings_Header_TraySettings")}>
+  <SettingsField label={$t("Settings_TrayMax")} forId="gp-tray-max">
+    <input
+      id="gp-tray-max"
+      type="number"
+      min="0"
+      max="365"
+      bind:value={genericPS.TrayAccNumber}
+      on:change={() => dispatch("save")}
+    />
+  </SettingsField>
+</SettingsGroup>
+{#if hasRemoteProfileImages}
+<SettingsGroup title={$t("Settings_Header_ProfileImages")}>
+  <div class="settings-grid">
+    <SettingsToggle
+      id="gp-pull-account-images"
+      checked={pullAccountImagesOnSwitch()}
+      label={$t("Settings_PullAccountImages")}
+      on:change={handlePullAccountImagesChange}
+    />
+  </div>
+  <SettingsField label={$t("Settings_ProfileImageExpiryDays")} forId="gp-image-expiry">
+    <input
+      id="gp-image-expiry"
       type="number"
       min="1"
       max="365"
       bind:value={genericPS.ProfileImageExpiryDays}
       on:change={() => dispatch("save")}
     />
-  </div>
-  <div class="buttoncol">
+  </SettingsField>
+  <div class="settings-actions">
     <button type="button" on:click={() => dispatch("refreshBasicProfileImages")}>
       {$t("Button_RefreshImages")}
     </button>
@@ -172,4 +150,32 @@
       {$t("Button_ClearCachedProfileImages")}
     </button>
   </div>
+</SettingsGroup>
 {/if}
+
+<SettingsGroup title={$t("Settings_Header_ProcessManagement")}>
+  {#if !closingMethodUiLocked}
+    <ProcessMethodDropdown
+      values={closingValues}
+      current={genericPS.ClosingMethod}
+      label={$t("Settings_Header_ClosingMethod", { platform: name })}
+      labelFn={closingLabel}
+      tooltip={$t("Tooltip_ClosingMethod")}
+      on:select={(e) => {
+        genericPS.ClosingMethod = e.detail.value;
+        dispatch("save");
+      }}
+    />
+  {/if}
+  <ProcessMethodDropdown
+    values={startingValues}
+    current={genericPS.StartingMethod}
+    label={$t("Settings_Header_StartingMethod", { platform: name })}
+    labelFn={startingLabel}
+    tooltip={$t("Tooltip_StartingMethod")}
+    on:select={(e) => {
+      genericPS.StartingMethod = e.detail.value;
+      dispatch("save");
+    }}
+  />
+</SettingsGroup>

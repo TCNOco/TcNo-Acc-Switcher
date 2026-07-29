@@ -4,11 +4,13 @@
   import { t } from "../stores/i18n";
   import { pushToast } from "../stores/toast";
   import { formatToastWithError } from "../lib/formatWailsError";
-  import { tooltip } from "../lib/actions/tooltip";
   import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import { offlineMode, setUserOfflineMode } from "../stores/offlineMode";
   import { openConfirm, openFeedbackModal, openPasswordSetupModal, openPrompt } from "../stores/modal";
   import { animationsEnabled, loadAnimationsEnabled, setAnimationsEnabled } from "../stores/animationSettings";
+  import SettingsGroup from "./settings/SettingsGroup.svelte";
+  import SettingsToggle from "./settings/SettingsToggle.svelte";
+  import SettingsField from "./settings/SettingsField.svelte";
   import {
     deleteQuarantine,
     disableSavedAccountEncryption,
@@ -128,13 +130,15 @@
   );
   protocol.toggle = async () => {
     if (get(protocol.loading)) return;
-    const next = !get(protocol.value);
+    const prev = get(protocol.value);
+    const next = !prev;
     protocol.loading.set(true);
+    protocol.value.set(next);
     try {
       await PlatformService.SetProtocolEnabled(next);
-      protocol.value.set(next);
       pushToast({ type: "success", message: next ? $t("Toast_ProtocolEnabled") : $t("Toast_ProtocolDisabled"), duration: 6000 });
     } catch (e) {
+      protocol.value.set(prev);
       pushToast({ type: "error", message: formatToastWithError($t("Toast_SaveFailed"), e), duration: 8000 });
     } finally {
       protocol.loading.set(false);
@@ -184,11 +188,15 @@
     if (get(desktopHomeShortcut.loading)) return;
     const next = !get(desktopHomeShortcut.value);
     desktopHomeShortcut.loading.set(true);
+    desktopHomeShortcut.value.set(next);
     try {
       await PlatformService.SetDesktopHomeShortcut(next);
       await refreshDesktopShortcutState();
       pushToast({ type: "success", message: get(t)("Toast_SavedItem", { item: get(t)("Settings_DesktopShortcut") }), duration: 4000 });
     } catch (e) {
+      /* The shortcut either exists on disk or it doesn't — re-read rather than
+         assume the failed call left the previous state intact. */
+      await refreshDesktopShortcutState();
       pushToast({ type: "error", message: formatToastWithError($t("Toast_SaveFailed"), e), duration: 8000 });
     } finally {
       desktopHomeShortcut.loading.set(false);
@@ -203,14 +211,18 @@
   );
   discordRpc.toggle = async () => {
     if (get(discordRpc.loading) || get(offlineMode)) return;
-    const next = !get(discordRpc.value);
+    const prev = get(discordRpc.value);
+    const prevShare = get(discordRpcShare.value);
+    const next = !prev;
     discordRpc.loading.set(true);
+    discordRpc.value.set(next);
+    if (!next) discordRpcShare.value.set(false);
     try {
       await PlatformService.SetDiscordRpc(next);
-      discordRpc.value.set(next);
-      if (!next) discordRpcShare.value.set(false);
       pushToast({ type: "success", message: get(t)("Toast_SavedItem", { item: get(t)("Settings_DiscordRpc") }), duration: 4000 });
     } catch (e) {
+      discordRpc.value.set(prev);
+      discordRpcShare.value.set(prevShare);
       pushToast({ type: "error", message: formatToastWithError($t("Toast_SaveFailed"), e), duration: 8000 });
     } finally {
       discordRpc.loading.set(false);
@@ -289,18 +301,27 @@
     }
   }
 
+  /* `setUserOfflineMode` only writes the store once the backend call succeeds, so
+     this has the same stranded-checkbox problem as the toggles above. */
   async function toggleOfflineMode(): Promise<void> {
     if (get(offlineLoading)) return;
-    const next = !get(offlineMode);
+    const prev = get(offlineMode);
+    const prevRpc = get(discordRpc.value);
+    const prevRpcShare = get(discordRpcShare.value);
+    const next = !prev;
     offlineLoading.set(true);
+    offlineMode.set(next);
+    if (next) {
+      discordRpc.value.set(false);
+      discordRpcShare.value.set(false);
+    }
     try {
       await setUserOfflineMode(next);
-      if (next) {
-        discordRpc.value.set(false);
-        discordRpcShare.value.set(false);
-      }
       pushToast({ type: "success", message: next ? $t("Toast_OfflineModeEnabled") : $t("Toast_OfflineModeDisabled"), duration: 6000 });
     } catch (e) {
+      offlineMode.set(prev);
+      discordRpc.value.set(prevRpc);
+      discordRpcShare.value.set(prevRpcShare);
       pushToast({ type: "error", message: formatToastWithError($t("Toast_SaveFailed"), e), duration: 8000 });
     } finally {
       offlineLoading.set(false);
@@ -405,10 +426,9 @@
     }
   }
 
-  function onSavedDataEncryptionClick(e: MouseEvent): void {
-    e.preventDefault();
+  function onSavedDataEncryptionChange(next: boolean): void {
     if (get(securityLoading) || $securityStatus.operationBusy) return;
-    void onToggleSavedDataEncryption(!$securityStatus.savedAccountDataEncrypted);
+    void onToggleSavedDataEncryption(next);
   }
 
   async function onRetryQuarantine(id: string): Promise<void> {
@@ -482,308 +502,252 @@
   });
 </script>
 
-<h2 class="SettingsHeader">{$t("Settings_Header_System")}</h2>
+<SettingsGroup title={$t("Settings_Header_GeneralSettings")}>
+  <div class="settings-grid">
+    <SettingsToggle
+      id="gs-offline"
+      checked={$offlineMode}
+      disabled={$offlineLoading}
+      label={$t("Settings_OfflineMode")}
+      span
+      on:change={() => void toggleOfflineMode()}
+    />
+    <SettingsToggle
+      id="gs-min-switch"
+      checked={$minimizeOnSwitch.value}
+      disabled={$minimizeOnSwitch.loading}
+      label={$t("Settings_MinimizeOnSwitch")}
+      on:change={() => void minimizeOnSwitch.toggle()}
+    />
+    <SettingsToggle
+      id="gs-start-centered"
+      checked={$startProgramCentered.value}
+      disabled={$startProgramCentered.loading}
+      label={$t("Settings_StartCentered")}
+      on:change={() => void startProgramCentered.toggle()}
+    />
+    <SettingsToggle
+      id="settings-animations"
+      checked={$animations.value}
+      disabled={$animations.loading}
+      label={$t("Settings_AnimationsEnabled")}
+      on:change={() => void animations.toggle()}
+    />
+    <SettingsToggle
+      id="settings-controller-support"
+      checked={$controllerSupport.value}
+      disabled={$controllerSupport.loading}
+      label={$t("Settings_ControllerSupport")}
+      on:change={() => void controllerSupport.toggle()}
+    />
+    {#if isWindows}
+      <SettingsToggle
+        id="gs-desktop-home"
+        checked={$desktopHomeShortcut.value}
+        disabled={$desktopHomeShortcut.loading}
+        label={$t("Settings_DesktopShortcut")}
+        on:change={() => void desktopHomeShortcut.toggle()}
+      />
+    {/if}
+  </div>
 
-<div class="multilineSetting">
-  <span>{$t("Settings_CurrentDataLocation", { path: userDataPath || "…" })}</span>
-  <span>
+  <SettingsField label={$t("Settings_CommandPaletteHotkey")}>
+    <button
+      type="button"
+      class="btnicontext hotkey-button"
+      class:capturing={commandPaletteHotkeyCaptureActive}
+      aria-pressed={commandPaletteHotkeyCaptureActive}
+      on:click={toggleCommandPaletteHotkeyCapture}
+    >
+      {commandPaletteHotkeyCaptureActive ? $t("Settings_CommandPaletteHotkey_Prompt") : $commandPaletteHotkey}
+    </button>
+  </SettingsField>
+</SettingsGroup>
+
+<SettingsGroup title={$t("Settings_Header_System")}>
+  <p class="settings-note settings-path">{$t("Settings_CurrentDataLocation", { path: userDataPath || "…" })}</p>
+  <p class="settings-links">
     <button
       type="button"
       class="fancyLink"
       disabled={$userDataMoveLoading}
       on:click={() => void openMoveUserDataModal(userDataMoveLoading, userDataPath)}
     >{$t("Settings_SetDataLocation")}</button>
-    <button
-      type="button"
-      class="fancyLink"
-      on:click={() => void openUserDataFolder()}
-    >{$t("Settings_OpenUserDataFolder")}</button>
-    </span>
-</div>
+    <button type="button" class="fancyLink" on:click={() => void openUserDataFolder()}
+      >{$t("Settings_OpenUserDataFolder")}</button>
+  </p>
 
-<div class="security-settings">
-  <div class="rowDropdown security-password-row">
-    <span>{$t("Settings_Header_Security")}</span>
+  {#if isWindows}
+    <div class="settings-grid">
+      <SettingsToggle
+        id="gs-start-tray-win"
+        checked={$startTrayWithWindows.value}
+        disabled={$startTrayWithWindows.loading}
+        label={$t("Settings_Tray_StartWindows")}
+        on:change={() => void startTrayWithWindows.toggle()}
+      />
+      <SettingsToggle
+        id="gs-exit-tray"
+        checked={$exitToTray.value}
+        disabled={$exitToTray.loading}
+        label={$t("Settings_ExitToTray")}
+        on:change={() => void exitToTray.toggle()}
+      />
+      <SettingsToggle
+        id="gs-protocol"
+        checked={$protocol.value}
+        disabled={$protocol.loading}
+        label={$t("Settings_Protocol")}
+        span
+        on:change={() => void protocol.toggle()}
+      />
+    </div>
+  {/if}
+</SettingsGroup>
+
+<SettingsGroup title={$t("Settings_Header_Security")}>
+  <div class="settings-actions">
     {#if $securityStatus.appPasswordSet}
-      <span class="security-password-controls">
-        <button
-          type="button"
-          class="btnicontext"
-          disabled={$securityLoading}
-          on:click={() => void onRemoveAppPassword()}
-        >
-          {$t("Security_RemoveAppPassword")}
-        </button>
-        <span class="security-encryption-inline">
-          <span class="form-check">
-            <input
-              id="security-encrypt-cache"
-              type="checkbox"
-              checked={$securityStatus.savedAccountDataEncrypted}
-              disabled={$securityLoading || $securityStatus.operationBusy}
-              on:click={onSavedDataEncryptionClick}
-            />
-            <label class="form-check-label" for="security-encrypt-cache"></label>
-          </span>
-          <label for="security-encrypt-cache">{$t("Security_EncryptSavedAccountData")}</label>
-        </span>
-      </span>
+      <button type="button" class="btnicontext" disabled={$securityLoading} on:click={() => void onRemoveAppPassword()}>
+        {$t("Security_RemoveAppPassword")}
+      </button>
     {:else}
-      <button
-        type="button"
-        class="btnicontext"
-        disabled={$securityLoading}
-        on:click={() => void onSetAppPassword()}
-      >
+      <button type="button" class="btnicontext" disabled={$securityLoading} on:click={() => void onSetAppPassword()}>
         {$t("Security_SetAppPassword")}
       </button>
     {/if}
   </div>
 
+  {#if $securityStatus.appPasswordSet}
+    <div class="settings-grid">
+      <SettingsToggle
+        id="security-encrypt-cache"
+        checked={$securityStatus.savedAccountDataEncrypted}
+        disabled={$securityLoading || $securityStatus.operationBusy}
+        label={$t("Security_EncryptSavedAccountData")}
+        span
+        manual
+        on:change={(e) => onSavedDataEncryptionChange(e.detail)}
+      />
+    </div>
+  {/if}
+
   {#if $securityStatus.interruptedRestorePending}
-    <div class="multilineSetting security-warning">
+    <div class="settings-card settings-card--warn">
       <span>{$t("Security_InterruptedRestorePending")}</span>
-      <button type="button" class="btnicontext" disabled={$securityLoading} on:click={() => void onRepairInterruptedRestore()}>
-        {$t("Security_InterruptedRestore_Repair")}
-      </button>
+      <div class="settings-card__row">
+        <button type="button" class="btnicontext" disabled={$securityLoading} on:click={() => void onRepairInterruptedRestore()}>
+          {$t("Security_InterruptedRestore_Repair")}
+        </button>
+      </div>
     </div>
   {/if}
 
   {#if quarantines.length > 0}
-    <div class="multilineSetting security-warning">
+    <div class="settings-card settings-card--warn">
       <span>{$t("Security_QuarantineStatus", { count: quarantines.length })}</span>
       {#each quarantines as q}
-        <span class="security-quarantine-row">
-          <span>{q.accounts.join(", ")}</span>
+        <div class="settings-card__row">
+          <span class="settings-path">{q.accounts.join(", ")}</span>
           <button type="button" class="btnicontext" disabled={$securityLoading} on:click={() => void onRetryQuarantine(q.id)}>
             {$t("Security_QuarantineRetry")}
           </button>
           <button type="button" class="btnicontext" disabled={$securityLoading} on:click={() => void onDeleteQuarantine(q.id)}>
             {$t("Security_QuarantineDelete")}
           </button>
-        </span>
+        </div>
       {/each}
     </div>
   {/if}
-</div>
+</SettingsGroup>
 
-<div class="rowSetting">
-  <div class="form-check">
-    <input id="gs-offline" type="checkbox" checked={$offlineMode} disabled={$offlineLoading} on:change={() => void toggleOfflineMode()} />
-    <label class="form-check-label" for="gs-offline"></label>
-  </div>
-  <label for="gs-offline" use:tooltip={$t("Settings_OfflineMode")}>{$t("Settings_OfflineMode")}</label>
-</div>
-
-<div class="rowSetting">
-  <div class="form-check">
-    <input id="gs-min-switch" type="checkbox" checked={$minimizeOnSwitch.value} disabled={$minimizeOnSwitch.loading} on:change={() => void minimizeOnSwitch.toggle()} />
-    <label class="form-check-label" for="gs-min-switch"></label>
-  </div>
-  <label for="gs-min-switch" use:tooltip={$t("Settings_MinimizeOnSwitch")}>{$t("Settings_MinimizeOnSwitch")}</label>
-</div>
-
-{#if isWindows}
-  <div class="rowSetting">
-    <div class="form-check">
-      <input id="gs-start-tray-win" type="checkbox" checked={$startTrayWithWindows.value} disabled={$startTrayWithWindows.loading} on:change={() => void startTrayWithWindows.toggle()} />
-      <label class="form-check-label" for="gs-start-tray-win"></label>
-    </div>
-    <label for="gs-start-tray-win" use:tooltip={$t("Settings_Tray_StartWindows")}>{$t("Settings_Tray_StartWindows")}</label>
-
-    <div class="form-check">
-      <input id="gs-exit-tray" type="checkbox" checked={$exitToTray.value} disabled={$exitToTray.loading} on:change={() => void exitToTray.toggle()} />
-      <label class="form-check-label" for="gs-exit-tray"></label>
-    </div>
-    <label for="gs-exit-tray" use:tooltip={$t("Settings_ExitToTray")}>{$t("Settings_ExitToTray")}</label>
-  </div>
-
-  <div class="rowSetting">
-    <div class="form-check">
-      <input id="gs-protocol" type="checkbox" checked={$protocol.value} disabled={$protocol.loading} on:change={() => void protocol.toggle()} />
-      <label class="form-check-label" for="gs-protocol"></label>
-    </div>
-    <label for="gs-protocol" use:tooltip={$t("Settings_Protocol")}>{$t("Settings_Protocol")}</label>
-  </div>
-{/if}
-
-<div class="rowSetting">
-  <div class="form-check">
-    <input id="gs-start-centered" type="checkbox" checked={$startProgramCentered.value} disabled={$startProgramCentered.loading} on:change={() => void startProgramCentered.toggle()} />
-    <label class="form-check-label" for="gs-start-centered"></label>
-  </div>
-  <label for="gs-start-centered" use:tooltip={$t("Settings_StartCentered")}>{$t("Settings_StartCentered")}</label>
-</div>
-
-<div class="rowSetting">
-  <div class="form-check">
-    <input type="checkbox" id="settings-animations" checked={$animations.value} disabled={$animations.loading} on:change={() => void animations.toggle()} />
-    <label class="form-check-label" for="settings-animations"></label>
-  </div>
-  <label for="settings-animations">{$t("Settings_AnimationsEnabled")}</label>
-</div>
-
-<div class="rowSetting">
-  <div class="form-check">
-    <input
-      type="checkbox"
-      id="settings-controller-support"
-      checked={$controllerSupport.value}
-      disabled={$controllerSupport.loading}
-      on:change={() => void controllerSupport.toggle()}
-    />
-    <label class="form-check-label" for="settings-controller-support"></label>
-  </div>
-  <label for="settings-controller-support">{$t("Settings_ControllerSupport")}</label>
-</div>
-
-{#if isWindows}
-  <div class="rowSetting">
-    <div class="form-check">
-      <input id="gs-desktop-home" type="checkbox" checked={$desktopHomeShortcut.value} disabled={$desktopHomeShortcut.loading} on:change={() => void desktopHomeShortcut.toggle()} />
-      <label class="form-check-label" for="gs-desktop-home"></label>
-    </div>
-    <label for="gs-desktop-home">{$t("Settings_DesktopShortcut")}</label>
-  </div>
-{/if}
-
-<div class="rowDropdown hotkey-row">
-  <span>{$t("Settings_CommandPaletteHotkey")}</span>
-  <button
-    type="button"
-    class="btnicontext hotkey-button"
-    class:capturing={commandPaletteHotkeyCaptureActive}
-    aria-pressed={commandPaletteHotkeyCaptureActive}
-    on:click={toggleCommandPaletteHotkeyCapture}
-  >
-    {commandPaletteHotkeyCaptureActive ? $t("Settings_CommandPaletteHotkey_Prompt") : $commandPaletteHotkey}
-  </button>
-</div>
-
-<div class="rowDropdown version-row">
-  <span>{formatAppVersion(currentVersion || "0.0.0")}</span>
-  <button
-    type="button"
-    class="btnicontext"
-    disabled={$updateCheckLoading}
-    on:click={() => void onCheckForUpdates(updateCheckLoading)}
-  >
-    {$t("Button_CheckForUpdates")}
-  </button>
-  <button type="button" class="btnicontext" on:click={() => void openFeedbackModal({ mode: "suggestion" })}>
-    {$t("Settings_SuggestFeature")}
-  </button>
-  <div>
-    <div class="form-check">
-      <input
-        id="settings-prerelease-updates"
-        type="checkbox"
-        checked={$prereleaseUpdates.value}
-        disabled={$prereleaseUpdates.loading}
-        on:change={() => void prereleaseUpdates.toggle()}
+<SettingsGroup title={$t("Settings_Header_StatsSharing")}>
+  <div class="settings-grid">
+    <div class="settings-stack">
+      <SettingsToggle
+        id="gs-stats-enabled"
+        checked={$statsEnabled.value}
+        disabled={$statsEnabled.loading}
+        label={$t("Settings_CollectStats")}
+        on:change={() => void statsEnabled.toggle()}
       />
-      <label class="form-check-label" for="settings-prerelease-updates"></label>
+      <div class="settings-sub">
+        <SettingsToggle
+          id="gs-stats-share"
+          checked={$statsShare.value}
+          disabled={$statsShare.loading || !$statsEnabled.value}
+          label={$t("Settings_ShareStats")}
+          on:change={() => void statsShare.toggle()}
+        />
+      </div>
     </div>
-    <label for="settings-prerelease-updates">{$t("Settings_PrereleaseUpdates")}</label>
-  </div>
-</div>
 
-<h2 class="SettingsHeader">{$t("Settings_Header_StatsSharing")}</h2>
+    <div class="settings-stack">
+      <SettingsToggle
+        id="gs-discord-rpc"
+        checked={$discordRpc.value}
+        disabled={$discordRpc.loading || $offlineMode}
+        label={$t("Settings_DiscordRpc")}
+        on:change={() => void discordRpc.toggle()}
+      />
+      <div class="settings-sub">
+        <SettingsToggle
+          id="gs-discord-rpc-share"
+          checked={$discordRpcShare.value}
+          disabled={$discordRpcShare.loading || $offlineMode || !$discordRpc.value}
+          label={$t("Settings_DiscordRpcShare")}
+          on:change={() => void discordRpcShare.toggle()}
+        />
+      </div>
+    </div>
 
-<div class="rowSetting">
-  <div class="form-check">
-    <input
+    <SettingsToggle
       id="gs-crash-report-auto-submit"
-      type="checkbox"
       checked={$crashReportAutoSubmit.value}
       disabled={$crashReportAutoSubmit.loading || $offlineMode}
+      label={$t("Settings_CrashReportAutoSubmit")}
       on:change={() => void crashReportAutoSubmit.toggle()}
     />
-    <label class="form-check-label" for="gs-crash-report-auto-submit"></label>
   </div>
-  <label for="gs-crash-report-auto-submit">{$t("Settings_CrashReportAutoSubmit")}</label>
-</div>
 
-<div class="rowSetting">
-  <div class="form-check">
-    <input id="gs-stats-enabled" type="checkbox" checked={$statsEnabled.value} disabled={$statsEnabled.loading} on:change={() => void statsEnabled.toggle()} />
-    <label class="form-check-label" for="gs-stats-enabled"></label>
+  <div class="settings-actions">
+    <button type="button" class="btnicontext" on:click={() => void openStatsModal()}>
+      {$t("Settings_ViewStats")}
+    </button>
   </div>
-  <label for="gs-stats-enabled">{$t("Settings_CollectStats")}</label>
-  <div class="form-check">
-    <input id="gs-stats-share" type="checkbox" checked={$statsShare.value} disabled={$statsShare.loading || !$statsEnabled.value} on:change={() => void statsShare.toggle()} />
-    <label class="form-check-label" for="gs-stats-share"></label>
-  </div>
-  <label for="gs-stats-share">{$t("Settings_ShareStats")}</label>
-  <button type="button" class="btnicontext" on:click={() => void openStatsModal()}>
-    {$t("Settings_ViewStats")}
-  </button>
-</div>
+</SettingsGroup>
 
-<div class="rowSetting">
-  <div class="form-check">
-    <input id="gs-discord-rpc" type="checkbox" checked={$discordRpc.value} disabled={$discordRpc.loading || $offlineMode} on:change={() => void discordRpc.toggle()} />
-    <label class="form-check-label" for="gs-discord-rpc"></label>
+<SettingsGroup title={$t("Settings_Header_Program")}>
+  <SettingsField label={formatAppVersion(currentVersion || "0.0.0")}>
+    <button
+      type="button"
+      class="btnicontext"
+      disabled={$updateCheckLoading}
+      on:click={() => void onCheckForUpdates(updateCheckLoading)}
+    >
+      {$t("Button_CheckForUpdates")}
+    </button>
+    <SettingsToggle
+      id="settings-prerelease-updates"
+      checked={$prereleaseUpdates.value}
+      disabled={$prereleaseUpdates.loading}
+      label={$t("Settings_PrereleaseUpdates")}
+      on:change={() => void prereleaseUpdates.toggle()}
+    />
+  </SettingsField>
+
+  <div class="settings-actions">
+    <button type="button" class="btnicontext" on:click={() => void openFeedbackModal({ mode: "suggestion" })}>
+      {$t("Settings_SuggestFeature")}
+    </button>
   </div>
-  <label for="gs-discord-rpc">{$t("Settings_DiscordRpc")}</label>
-  <div class="form-check">
-    <input id="gs-discord-rpc-share" type="checkbox" checked={$discordRpcShare.value} disabled={$discordRpcShare.loading || $offlineMode || !$discordRpc.value} on:change={() => void discordRpcShare.toggle()} />
-    <label class="form-check-label" for="gs-discord-rpc-share"></label>
-  </div>
-  <label for="gs-discord-rpc-share">{$t("Settings_DiscordRpcShare")}</label>
-</div>
+</SettingsGroup>
 
 <style lang="scss">
-  button:not(.fancyLink) {
-    position: relative;
-    height: 38px;
-  }
-
-  .version-row {
-    margin-top: 0.25rem;
-    flex-wrap: wrap;
-  }
-
-  .hotkey-row {
-    gap: 0.75rem;
-  }
-
-  .security-settings {
-    display: grid;
-    gap: 0.25rem;
-    margin-bottom: 0.35rem;
-  }
-
-  .security-password-row {
-    align-items: center;
-  }
-
-  .security-password-controls,
-  .security-encryption-inline {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.65rem;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-  }
-
-  .security-encryption-inline {
-    gap: 0.4rem;
-  }
-
-  .security-warning {
-    color: var(--whiteSecondary);
-  }
-
-  .security-quarantine-row {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-  }
-
   .hotkey-button {
+    position: relative;
     min-width: 7rem;
+    height: 38px;
   }
 
   .hotkey-button.capturing {

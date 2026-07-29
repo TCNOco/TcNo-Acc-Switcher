@@ -111,6 +111,8 @@ $red: #b96552;
   --surface-search-result: #{$recessed};
   --context-menu-hotkey: #{$amber};
   --form-checkbox-border: #{$edge};
+  /* Matches this theme's smaller checkbox so dependent-setting connectors stay centred. */
+  --settings-checkbox-size: 16px;
   --input-number-border: #{$edge};
   --preview-control-border: #{$edge};
   --shortcut-active-border: var(--accent);

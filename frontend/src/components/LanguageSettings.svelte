@@ -2,12 +2,15 @@
   import { get } from "svelte/store";
   import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import { viewportDropdown } from "../lib/actions/viewportDropdown";
+  import { dropdownDismiss } from "../lib/actions/dropdownDismiss";
   import type { CrowdinTranslatorsList } from "../lib/crowdinTranslators";
   import { openExternalUrl } from "../lib/openExternalUrl";
   import { t, availableLocales, locale, setUserLanguage } from "../stores/i18n";
   import { offlineMode } from "../stores/offlineMode";
   import { openAlertNoButton } from "../stores/modal";
   import CrowdinTranslatorsModalBody from "./modals/CrowdinTranslatorsModalBody.svelte";
+  import SettingsGroup from "./settings/SettingsGroup.svelte";
+  import SettingsField from "./settings/SettingsField.svelte";
 
   const CROWDIN_URL = "https://crowdin.com/project/tcno-account-switcher";
 
@@ -52,31 +55,34 @@
   }
 </script>
 
-<h2 class="SettingsHeader">{$t("Settings_Header_Language")}</h2>
-<div class="rowDropdown">
-  <span>{$t("Header_ChooseLanguage")}</span>
-  <div class="dropdown" class:show={open}>
-    <button type="button" class="dropdown-toggle" on:click={() => (open = !open)}>
-      {currentLabel}
-      <span class="caret" aria-hidden="true"></span>
-    </button>
-    {#if open}
-      <ul class="custom-dropdown-menu dropdown-menu" use:viewportDropdown>
-        {#each availableLocales as code}
-          <li role="none">
-            <button type="button" class="dropdown-item" on:click={() => void pick(code)}>
-              {code} - {nameFor(code)}
-            </button>
-          </li>
-        {/each}
-      </ul>
-    {/if}
-  </div>
-  <a class="fancyLink" href={CROWDIN_URL} on:click={openHelpTranslate}>{$t("Settings_HelpTranslate")}</a>
-  <button type="button" class="fancyLink" on:click={() => void openCreditsModal()}
-    >{$t("Settings_ViewTranslators")}</button
-  >
-</div>
+<SettingsGroup title={$t("Settings_Header_Language")}>
+  <SettingsField label={$t("Header_ChooseLanguage")}>
+    <div class="dropdown" class:show={open} use:dropdownDismiss={open} on:dismiss={() => (open = false)}>
+      <button type="button" class="dropdown-toggle" on:click={() => (open = !open)}>
+        {currentLabel}
+        <span class="caret" aria-hidden="true"></span>
+      </button>
+      {#if open}
+        <ul class="custom-dropdown-menu dropdown-menu" use:viewportDropdown>
+          {#each availableLocales as code}
+            <li role="none">
+              <button type="button" class="dropdown-item" on:click={() => void pick(code)}>
+                {code} - {nameFor(code)}
+              </button>
+            </li>
+          {/each}
+        </ul>
+      {/if}
+    </div>
+  </SettingsField>
+
+  <p class="settings-links">
+    <a class="fancyLink" href={CROWDIN_URL} on:click={openHelpTranslate}>{$t("Settings_HelpTranslate")}</a>
+    <button type="button" class="fancyLink" on:click={() => void openCreditsModal()}
+      >{$t("Settings_ViewTranslators")}</button
+    >
+  </p>
+</SettingsGroup>
 
 <style lang="scss">
   .dropdown-toggle {

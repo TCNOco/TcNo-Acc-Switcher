@@ -34,17 +34,22 @@ export function createToggle(
 
   const toggle = async () => {
     if (get(loading) || (guard && !guard())) return;
-    const next = !get(value);
+    const prev = get(value);
+    const next = !prev;
     loading.set(true);
+    /* Optimistic, then revert on failure. The browser has already flipped the
+       checkbox and the input is rendered one-way from this store, so leaving the
+       store untouched would strand the box showing a state that was never saved. */
+    value.set(next);
     try {
       await setter(next);
-      value.set(next);
       pushToast({
         type: "success",
         message: get(t)("Toast_SavedItem", { item: toastLabel }),
         duration: 4000,
       });
     } catch (e) {
+      value.set(prev);
       pushToast({
         type: "error",
         message: formatWailsError(e),

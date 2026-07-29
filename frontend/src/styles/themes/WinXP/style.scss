@@ -118,6 +118,8 @@ $edge: #7f9db9;
   --surface-search-result: #f7f4e9;
   --context-menu-hotkey: #734b00;
   --form-checkbox-border: #7f9db9;
+  /* Matches this theme's smaller checkbox so dependent-setting connectors stay centred. */
+  --settings-checkbox-size: 17px;
   --input-number-border: #7f9db9;
   --preview-control-border: #245edc;
   --shortcut-active-border: var(--accent);

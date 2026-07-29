@@ -1,7 +1,8 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import { tooltip as tooltipAction } from "../../lib/actions/tooltip";
   import { viewportDropdown } from "../../lib/actions/viewportDropdown";
+  import { dropdownDismiss } from "../../lib/actions/dropdownDismiss";
+  import SettingsField from "./SettingsField.svelte";
 
   export let values: readonly string[];
   export let current: string;
@@ -24,9 +25,8 @@
   }
 </script>
 
-<div class="rowSetting rowDropdown" use:tooltipAction={tooltip || undefined}>
-  <span>{label}</span>
-  <div class="dropdown" class:show={open}>
+<SettingsField {label} {tooltip} {disabled}>
+  <div class="dropdown" class:show={open} use:dropdownDismiss={open} on:dismiss={() => (open = false)}>
     <button type="button" class="dropdown-toggle" on:click={toggle}>
       {labelFn(current)}
       <span class="caret" aria-hidden="true"></span>
@@ -43,4 +43,11 @@
       </ul>
     {/if}
   </div>
-</div>
+</SettingsField>
+
+<style lang="scss">
+  .dropdown-toggle {
+    position: relative;
+    height: 38px;
+  }
+</style>

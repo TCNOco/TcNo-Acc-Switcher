@@ -34,3 +34,4 @@ docs/RELEASING.md
 /.claude
 CLAUDE.md
 /.gocache
+internal/steamguard/DEPENDENCY_AUDIT.md

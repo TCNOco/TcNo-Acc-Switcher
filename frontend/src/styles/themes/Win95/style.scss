@@ -105,6 +105,8 @@ $navy: #000080;
   --surface-search-result: #{$mid};
   --context-menu-hotkey: #800000;
   --form-checkbox-border: #000000;
+  /* Matches this theme's smaller checkbox so dependent-setting connectors stay centred. */
+  --settings-checkbox-size: 16px;
   --input-number-border: #808080;
   --preview-control-border: #000000;
   --shortcut-active-border: var(--accent);

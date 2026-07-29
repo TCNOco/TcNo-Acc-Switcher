@@ -1,6 +1,7 @@
 <script lang="ts">
   import { tick } from "svelte";
   import { viewportDropdown } from "../lib/actions/viewportDropdown";
+  import { dropdownDismiss } from "../lib/actions/dropdownDismiss";
   import { t } from "../stores/i18n";
   import {
     currentThemeAccentKey,
@@ -71,7 +72,12 @@
 <div class="theme-control-group">
   <div class="rowDropdown">
     <span>{$t("Settings_CurrentStyle")}</span>
-    <div class="dropdown" class:show={themeOpen}>
+    <div
+      class="dropdown"
+      class:show={themeOpen}
+      use:dropdownDismiss={themeOpen}
+      on:dismiss={() => (themeOpen = false)}
+    >
       <button
         type="button"
         class="dropdown-toggle"
@@ -102,7 +108,12 @@
   {#if currentTheme && currentAccent}
     <div class="rowDropdown">
       <span>{$t("Settings_AccentColor")}</span>
-      <div class="dropdown accent-dropdown" class:show={accentOpen}>
+      <div
+        class="dropdown accent-dropdown"
+        class:show={accentOpen}
+        use:dropdownDismiss={accentOpen}
+        on:dismiss={() => (accentOpen = false)}
+      >
         <button
           type="button"
           class="dropdown-toggle accent-toggle"

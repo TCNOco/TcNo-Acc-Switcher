@@ -1,14 +1,15 @@
 <script lang="ts">
-  import { get } from "svelte/store";
   import { onDestroy, onMount } from "svelte";
   import { route, previousPage, appBarTitle, navigateBackLikeButton } from "../stores/nav";
   import { t } from "../stores/i18n";
-  import { activeModal, openConfirm, openFolderPicker } from "../stores/modal";
+  import { openConfirm, openFolderPicker } from "../stores/modal";
   import { pushToast } from "../stores/toast";
   import GeneralSettingsBlock from "../components/GeneralSettingsBlock.svelte";
+  import SettingsSearch from "../components/settings/SettingsSearch.svelte";
   import PlatformSettingsSteamSection from "../components/settings/PlatformSettingsSteamSection.svelte";
   import PlatformSettingsGenericSection from "../components/settings/PlatformSettingsGenericSection.svelte";
   import PlatformSettingsToolsSection from "../components/settings/PlatformSettingsToolsSection.svelte";
+  import { settingsFilter } from "../lib/settingsFilter";
   import * as Wails from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import * as BasicService from "../../bindings/TcNo-Acc-Switcher/internal/basic/basicservice.js";
   import * as Shortcuts from "wails-shortcuts-service";
@@ -54,6 +55,9 @@
   let saveTimer: ReturnType<typeof setTimeout> | undefined;
   let steamSavePending = false;
   let genericSavePending = false;
+
+  let query = "";
+  let visibleGroups = -1;
 
   $: silentOn =
     isSteam && steamSettings
@@ -432,97 +436,85 @@
     await runWithToast(() => RefreshAllSteamImages(), $t("Toast_ImagesRefreshing"));
   }
 
-  function onWindowKeyDown(e: KeyboardEvent): void {
-    if (e.key !== "Escape") {
-      return;
-    }
-    if (get(activeModal)) {
-      return;
-    }
-    e.preventDefault();
-    navigateBackLikeButton();
-  }
 </script>
 
-<div class="main-content main-spacing platform-settings-scroll" use:controllerSpatialNavigation>
-  {#if loadError}
-    <p class="platform-settings-err">{loadError}</p>
-  {/if}
+<div class="main-content settings-page" use:controllerSpatialNavigation>
+  <SettingsSearch bind:value={query} on:escape={() => navigateBackLikeButton()} />
 
-  <h1 class="SettingsHeader">{$t("Settings_Header_Platform", { platformName: name })}</h1>
+  <div
+    class="settings-sections"
+    use:settingsFilter={query}
+    on:filtered={(e) => (visibleGroups = e.detail)}
+  >
+    {#if loadError}
+      <p class="platform-settings-err">{loadError}</p>
+    {/if}
 
-  {#if isSteam && steamSettings}
-    <PlatformSettingsSteamSection
-      {name}
-      {steamSettings}
-      {hasDesktopShortcut}
-      {silentOn}
-      {oldUiOn}
-      {closingMethodUiLocked}
-      on:save={onSteamSave}
-      on:toggleDesktopShortcut={onToggleDesktopShortcut}
-    />
-  {:else if !isSteam && genericPS}
-    <PlatformSettingsGenericSection
-      {name}
-      {genericPS}
-      {hasDesktopShortcut}
-      {closingMethodUiLocked}
-      {hasRemoteProfileImages}
-      on:save={onGenericSave}
-      on:toggleDesktopShortcut={onToggleDesktopShortcut}
-      on:refreshBasicProfileImages={onRefreshBasicProfileImages}
-      on:clearBasicProfileImages={onClearBasicProfileImages}
-    />
-  {/if}
+    <h1 class="SettingsHeader">{$t("Settings_Header_Platform", { platformName: name })}</h1>
 
-  {#if (isSteam && steamSettings) || (!isSteam && genericPS)}
-    <PlatformSettingsToolsSection
-      {name}
-      {isSteam}
-      {installFolder}
-      {hasCachePaths}
-      {hasBackupFolders}
-      {hasSavedProfileImageSources}
-      {clearingCache}
-      {backingUp}
-      {restoringBackup}
-      on:pickFolder={onPickFolder}
-      on:reset={onReset}
-      on:clearCache={onClearCache}
-      on:backup={(e) => onBackup(e.detail.everything)}
-      on:openBackupFolder={onOpenBackupFolder}
-      on:restoreLatestBackup={onRestoreLatestBackup}
-      on:refreshVac={onRefreshVac}
-      on:refreshImages={onRefreshImages}
-      on:refreshSavedBasicProfileImages={onRefreshSavedBasicProfileImages}
-      on:openFolder={onOpenFolder}
-    />
+    {#if isSteam && steamSettings}
+      <PlatformSettingsSteamSection
+        {name}
+        {steamSettings}
+        {hasDesktopShortcut}
+        {silentOn}
+        {oldUiOn}
+        {closingMethodUiLocked}
+        on:save={onSteamSave}
+        on:toggleDesktopShortcut={onToggleDesktopShortcut}
+      />
+    {:else if !isSteam && genericPS}
+      <PlatformSettingsGenericSection
+        {name}
+        {genericPS}
+        {hasDesktopShortcut}
+        {closingMethodUiLocked}
+        {hasRemoteProfileImages}
+        on:save={onGenericSave}
+        on:toggleDesktopShortcut={onToggleDesktopShortcut}
+        on:refreshBasicProfileImages={onRefreshBasicProfileImages}
+        on:clearBasicProfileImages={onClearBasicProfileImages}
+      />
+    {/if}
 
-    <hr class="settings-divider" />
+    {#if (isSteam && steamSettings) || (!isSteam && genericPS)}
+      <PlatformSettingsToolsSection
+        {name}
+        {isSteam}
+        {installFolder}
+        {hasCachePaths}
+        {hasBackupFolders}
+        {hasSavedProfileImageSources}
+        {clearingCache}
+        {backingUp}
+        {restoringBackup}
+        on:pickFolder={onPickFolder}
+        on:reset={onReset}
+        on:clearCache={onClearCache}
+        on:backup={(e) => onBackup(e.detail.everything)}
+        on:openBackupFolder={onOpenBackupFolder}
+        on:restoreLatestBackup={onRestoreLatestBackup}
+        on:refreshVac={onRefreshVac}
+        on:refreshImages={onRefreshImages}
+        on:refreshSavedBasicProfileImages={onRefreshSavedBasicProfileImages}
+        on:openFolder={onOpenFolder}
+      />
 
-    <h2 class="SettingsHeader">{$t("Settings_Header_AppWide")}</h2>
-    <GeneralSettingsBlock />
+      <hr class="settings-divider" />
+
+      <h2 class="SettingsHeader">{$t("Settings_Header_AppWide")}</h2>
+      <GeneralSettingsBlock />
+    {/if}
+  </div>
+
+  {#if visibleGroups === 0}
+    <p class="settings-empty">{$t("Settings_SearchNoResults", { query })}</p>
   {/if}
 </div>
-<svelte:window on:keydown={onWindowKeyDown} />
 
 <style lang="scss">
-  .platform-settings-scroll {
-    overflow-y: auto;
-    flex: 1;
-    min-height: 0;
-    padding-bottom: 1rem;
-  }
-
   .platform-settings-err {
+    padding: 0.5rem 0.4rem;
     color: var(--red);
-    padding: 0.5rem 1rem;
-  }
-
-  .settings-divider {
-    border: 0;
-    border-top: 1px solid var(--accent);
-    margin: 2rem 0 1.5rem;
   }
 </style>

@@ -1,0 +1,330 @@
+/* Layout primitives shared by the App settings and platform settings pages.
+
+   Element+class selectors (`.settings-search > input.settings-search__input`)
+   are deliberate: theme stylesheets restyle bare `button`, `input` and `label`,
+   and load after this file. Specificity, not order, is what keeps these
+   controls looking the same across every theme. */
+
+:root {
+  /* Mirrors the box `input[type="checkbox"] + label` draws in Settings.scss.
+     Themes that resize that box override this, so the connector drawn under a
+     parent toggle stays centred on its checkbox. */
+  --settings-checkbox-size: 20px;
+  /* `.settings-toggle`'s own inline padding — the connector offset starts here. */
+  --settings-toggle-pad-x: 0.4rem;
+  /* Content column. Caps the toggle grid at three columns and, once the window
+     is wider than this, is what the page centres on. */
+  --settings-column: 64rem;
+}
+
+/* ── Page ───────────────────────────────────────────────────────────── */
+
+/* `.main-content` is on the same element; the extra class beats its padding
+   and display without having to care which stylesheet lands last. */
+.main-content.settings-page {
+  display: block;
+  padding: 0 var(--main-padding, 0.75rem) 1.5rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* The search bar, the sections and the empty state share one centred column, so
+   a wide window pads both sides instead of stranding everything on the left. */
+.settings-search,
+.settings-sections,
+.settings-empty {
+  width: 100%;
+  max-width: var(--settings-column);
+  margin-inline: auto;
+}
+
+.settings-divider {
+  margin: 2rem 0 1.5rem;
+  border: 0;
+  border-top: 1px solid var(--accent);
+}
+
+/* ── Search ─────────────────────────────────────────────────────────── */
+
+/* Scrolls away with the page rather than floating over it: pinned, it covered
+   settings and collided with any dropdown opening near the top. */
+.settings-search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-block: 0 0.85rem;
+  /* Inline padding matches a toggle row so the field lines up with the controls
+     below it rather than sitting a few pixels proud of them. */
+  padding: 0.6rem var(--settings-toggle-pad-x, 0.4rem);
+  border-bottom: 1px solid var(--border-bar-bg);
+}
+
+.settings-search__icon {
+  flex: 0 0 auto;
+  width: 0.9rem;
+  height: 0.9rem;
+  fill: var(--text-body-muted);
+}
+
+.settings-search > input.settings-search__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 30rem;
+  margin: 0;
+}
+
+.settings-search > button.settings-search__clear {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  box-shadow: none;
+  color: var(--whiteSecondary);
+  font-size: 1.25rem;
+  line-height: 1;
+
+  &:hover {
+    background: var(--overlay-white-08);
+  }
+}
+
+[data-filter-hidden] {
+  display: none !important;
+}
+
+.settings-empty {
+  padding: 2.5rem 0.4rem;
+  color: var(--text-body-muted);
+  text-align: center;
+}
+
+/* ── Groups ─────────────────────────────────────────────────────────── */
+
+.settings-group + .settings-group {
+  margin-top: 1.5rem;
+}
+
+.settings-subheader {
+  margin: 1.1rem 0 0.4rem;
+  padding: 0 0.4rem;
+  color: var(--whiteSecondary);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.settings-note {
+  margin: 0 0 0.5rem;
+  padding: 0 0.4rem;
+  color: var(--text-body-muted);
+  font-size: 0.85em;
+  line-height: 1.45;
+}
+
+.settings-path {
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+
+/* ── Toggle grid ────────────────────────────────────────────────────── */
+
+/* auto-fill, not auto-fit: at wide widths a half-empty last row should keep
+   its column width instead of stretching one toggle across the page. */
+.settings-grid {
+  display: grid;
+  /* auto-fill against the capped column keeps this at three across; past that
+     the eye travels further than the scan is worth. */
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 0 1.5rem;
+  align-items: start;
+}
+
+.settings-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+  min-height: 2.15rem;
+  padding: 0.15rem var(--settings-toggle-pad-x, 0.4rem);
+  border-radius: 3px;
+  transition: background 0.12s ease-out;
+
+  &:hover {
+    background: var(--overlay-white-06);
+  }
+
+  /* Labels long enough to wrap twice in a column read better across the page. */
+  &.is-span {
+    grid-column: 1 / -1;
+  }
+
+  &.is-disabled .settings-toggle__label {
+    cursor: not-allowed;
+    filter: grayscale(0.6);
+    opacity: var(--role-disabled-opacity, 0.55);
+  }
+}
+
+/* Flex, not the inherited inline-block: a 24px line box around the 20px
+   checkbox parks it below the row's centre, and the connector elbow lines up
+   against that centre. */
+.settings-toggle > .form-check {
+  display: flex;
+  align-items: center;
+}
+
+.settings-toggle__label {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-inline-start: 0.5rem;
+  line-height: 1.3;
+}
+
+/* ── Label + control fields ─────────────────────────────────────────── */
+
+.settings-field {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.85rem;
+  min-height: 2.5rem;
+  padding: 0.2rem 0.4rem;
+}
+
+.settings-field__label {
+  flex: 0 1 auto;
+  min-width: 0;
+  padding: 0;
+  color: var(--whiteSecondary);
+}
+
+/* Sits right after its label rather than pushed to the far edge: a control
+   stranded across a gap reads as belonging to no label in particular. */
+.settings-field__control {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+
+  input[type="number"] {
+    width: 5.5rem;
+    text-align: end;
+  }
+}
+
+.settings-field--wide .settings-field__control {
+  flex: 1 1 16rem;
+  min-width: 0;
+
+  input[type="text"],
+  input[type="password"] {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+.settings-field__note {
+  flex: 1 1 100%;
+  margin: 0;
+  color: var(--text-body-muted);
+  font-size: 0.8em;
+  line-height: 1.45;
+}
+
+.settings-field--disabled > .settings-field__label {
+  cursor: not-allowed;
+  opacity: var(--role-disabled-opacity, 0.55);
+}
+
+/* A control that only matters while its parent toggle is on, tied to it by an
+   elbow rather than sitting as a peer in the grid. */
+.settings-sub {
+  position: relative;
+  /* Drops from the centre of the parent's checkbox: its inline padding, plus
+     half the box, less half the connector's own width. */
+  margin-block: 0 0.25rem;
+  margin-inline-start: calc(
+    var(--settings-toggle-pad-x, 0.4rem) + var(--settings-checkbox-size, 20px) / 2 - 0.5px
+  );
+  padding-inline-start: 1.15rem;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    width: 1rem;
+    /* Half the row, so the turn meets the dependent's own checkbox at its
+       centre however far its label wraps. The half-pixel puts the stroke —
+       drawn inside this box — on that centre rather than just above it. */
+    height: calc(50% + 0.5px);
+    border-inline-start: 1px solid var(--overlay-white-12);
+    border-block-end: 1px solid var(--overlay-white-12);
+    border-end-start-radius: 5px;
+  }
+}
+
+/* Keeps a toggle and its dependents together in one grid cell. */
+.settings-stack {
+  display: grid;
+  gap: 0;
+  align-content: start;
+}
+
+/* ── Action button rows ─────────────────────────────────────────────── */
+
+.settings-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.35rem 0.4rem;
+}
+
+.settings-actions > button,
+.settings-actions > .button {
+  min-height: 34px;
+  margin: 0;
+}
+
+.settings-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 1.1rem;
+  margin: 0 0 0.6rem;
+  padding: 0 0.4rem;
+}
+
+/* ── Callout cards ──────────────────────────────────────────────────── */
+
+.settings-card {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.4rem 0.4rem 0.6rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--border-bar-bg);
+  border-radius: 4px;
+  background: var(--overlay-white-06);
+}
+
+.settings-card--warn {
+  border-color: var(--role-warning);
+  background: var(--orangeLight, var(--overlay-white-06));
+}
+
+.settings-card__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  align-items: center;
+}
+
+.settings-card__row > button {
+  min-height: 34px;
+  margin: 0;
+}

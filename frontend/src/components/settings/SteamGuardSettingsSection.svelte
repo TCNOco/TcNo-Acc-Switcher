@@ -146,7 +146,8 @@
   });
 </script>
 
-<section class="steam-guard-settings" aria-labelledby="steam-guard-settings-title">
+<!-- `settings-group` so the page's search treats this as one findable section. -->
+<section class="steam-guard-settings settings-group" aria-labelledby="steam-guard-settings-title">
   <div class="steam-guard-heading-row">
     <!-- h2 to match the sibling sections of the Steam settings page it lives on. -->
     <h2 id="steam-guard-settings-title" class="SettingsHeader">{$t("SteamGuard_Settings_Title")}</h2>
@@ -242,13 +243,17 @@
 </section>
 
 <style lang="scss">
+  /* Reads as one more settings section, so no box of its own — spacing comes
+     from `.settings-group + .settings-group` like every other section. */
   .steam-guard-settings {
     display: grid;
     gap: 0.75rem;
-    margin: 0.65rem 0 0.85rem;
-    padding: 0.85rem;
-    border: 1px solid var(--border-bar-bg);
-    background: color-mix(in srgb, var(--mainContentBackground, var(--program-bg)) 92%, var(--accent) 8%);
+  }
+
+  /* Content lines up with the toggles and fields in neighbouring sections. The
+     heading is excluded: it keeps the flush alignment its accent bar needs. */
+  .steam-guard-settings > :not(.steam-guard-heading-row) {
+    padding-inline: var(--settings-toggle-pad-x, 0.4rem);
   }
 
   .steam-guard-heading-row,

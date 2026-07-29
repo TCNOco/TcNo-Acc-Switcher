@@ -9,6 +9,7 @@
   import { currentThemeBgUrl } from "../lib/themes";
   import ThemePickerControls from "./ThemePickerControls.svelte";
   import BackgroundSettings from "./BackgroundSettings.svelte";
+  import SettingsGroup from "./settings/SettingsGroup.svelte";
 
   $: showResetToThemeBg = !!$currentThemeBgUrl && ($appBgInfo.hasImage || $userOverriddenAppBg);
 
@@ -30,42 +31,48 @@
   }
 </script>
 
-<h2 class="SettingsHeader">{$t("Settings_Header_Theme")}</h2>
-<div>
-  <ThemePickerControls>
-    <button
-      slot="after-controls"
-      type="button"
-      class="btnicontext"
-      on:click={() => route.set({ page: "preview-css" })}
-    >
-      {$t("PreviewCss")}
-    </button>
-  </ThemePickerControls>
-</div>
-
-{#if $appBgInfo.hasImage || showResetToThemeBg}
-  <div class="bg-settings-row">
-    {#if showResetToThemeBg}
-      <button type="button" class="btnicontext" on:click={() => void resetToThemeBg()}>
-        {$t("Settings_ResetToThemeBackground")}
+<SettingsGroup title={$t("Settings_Header_Theme")}>
+  <div class="theme-controls">
+    <ThemePickerControls>
+      <button
+        slot="after-controls"
+        type="button"
+        class="btnicontext"
+        on:click={() => route.set({ page: "preview-css" })}
+      >
+        {$t("PreviewCss")}
       </button>
-    {/if}
-    {#if $appBgInfo.hasImage}
-      <BackgroundSettings target="app" />
-    {/if}
+    </ThemePickerControls>
   </div>
-{/if}
 
-{#if $platformBgInfo.hasImage}
-  <div class="bg-settings-row">
-    <BackgroundSettings target="platform" />
-  </div>
-{/if}
+  {#if $appBgInfo.hasImage || showResetToThemeBg}
+    <div class="bg-settings-row theme-bg-row">
+      {#if showResetToThemeBg}
+        <button type="button" class="btnicontext" on:click={() => void resetToThemeBg()}>
+          {$t("Settings_ResetToThemeBackground")}
+        </button>
+      {/if}
+      {#if $appBgInfo.hasImage}
+        <BackgroundSettings target="app" />
+      {/if}
+    </div>
+  {/if}
+
+  {#if $platformBgInfo.hasImage}
+    <div class="bg-settings-row theme-bg-row">
+      <BackgroundSettings target="platform" />
+    </div>
+  {/if}
+</SettingsGroup>
 
 <style lang="scss">
   button {
     position: relative;
     height: 38px;
+  }
+
+  .theme-controls,
+  .theme-bg-row {
+    padding-inline: 0.4rem;
   }
 </style>

@@ -10,7 +10,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
+import time
+from contextlib import contextmanager
 from pathlib import Path
 
 sys.dont_write_bytecode = True  # importing a sibling tool must not litter tools/__pycache__.
@@ -62,6 +65,27 @@ def ignored_for(ignored: dict[str, list[str]], locale: str | None) -> set[str]:
     return keys
 
 
+@contextmanager
+def ignore_file_lock(timeout: float = 15.0):
+    """Serialise the read-modify-write below; concurrent locale agents share this file."""
+    lock = IGNORE_FILE.with_suffix(".lock")
+    deadline = time.monotonic() + timeout
+    while True:
+        try:
+            handle = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+            break
+        except FileExistsError:
+            if time.monotonic() > deadline:
+                lock.unlink(missing_ok=True)  # holder died; the lock outlived it.
+                continue
+            time.sleep(0.05)
+    try:
+        os.close(handle)
+        yield
+    finally:
+        lock.unlink(missing_ok=True)
+
+
 def add_ignored(keys: list[str], scope: str, source: dict[str, str]) -> None:
     unknown = [key for key in keys if key not in source]
     if unknown:
@@ -70,11 +94,12 @@ def add_ignored(keys: list[str], scope: str, source: dict[str, str]) -> None:
     if not keys:
         return
 
-    raw = json.loads(IGNORE_FILE.read_text(encoding="utf-8")) if IGNORE_FILE.exists() else {}
-    existing = set(raw.get(scope, []))
-    added = sorted(set(keys) - existing)
-    raw[scope] = sorted(existing | set(keys))
-    IGNORE_FILE.write_text(json.dumps(raw, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
+    with ignore_file_lock():
+        raw = json.loads(IGNORE_FILE.read_text(encoding="utf-8")) if IGNORE_FILE.exists() else {}
+        existing = set(raw.get(scope, []))
+        added = sorted(set(keys) - existing)
+        raw[scope] = sorted(existing | set(keys))
+        IGNORE_FILE.write_text(json.dumps(raw, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
     print(f"Ignoring {len(added)} new key(s) under {scope!r}: {', '.join(added) or '(none new)'}")
 
 

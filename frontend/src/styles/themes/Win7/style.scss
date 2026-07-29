@@ -117,6 +117,8 @@
 
   --context-menu-hotkey: #604300;
   --form-checkbox-border: #7c9db1;
+  /* Matches this theme's smaller checkbox so dependent-setting connectors stay centred. */
+  --settings-checkbox-size: 18px;
   --input-number-border: #7f9db9;
   --preview-control-border: #7f9db9;
   --shortcut-active-border: var(--accent);

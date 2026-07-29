@@ -1,34 +1,36 @@
 <script lang="ts">
-  import { get } from "svelte/store";
   import { onMount } from "svelte";
   import { previousPage, appBarTitle, navigateBackLikeButton } from "../stores/nav";
-  import { activeModal } from "../stores/modal";
   import { t } from "../stores/i18n";
   import { controllerSpatialNavigation } from "../lib/actions/controllerSpatialNavigation";
+  import { settingsFilter } from "../lib/settingsFilter";
+  import SettingsSearch from "../components/settings/SettingsSearch.svelte";
+  import GeneralSettingsBlock from "../components/GeneralSettingsBlock.svelte";
   import "../styles/Settings.scss";
 
+  let query = "";
+  let visibleGroups = -1;
+
   $: appBarTitle.set($t("Title_Settings"));
+
   onMount(() => {
     previousPage.set({ page: "home" });
   });
-
-  function onWindowKeyDown(e: KeyboardEvent): void {
-    if (e.key !== "Escape") {
-      return;
-    }
-    if (get(activeModal)) {
-      return;
-    }
-    e.preventDefault();
-    navigateBackLikeButton();
-  }
 </script>
 
-<div class="main-content main-spacing" use:controllerSpatialNavigation>
-  <h1 class="SettingsHeader">{$t("Settings_Header_AppWide")}</h1>
+<div class="main-content settings-page" use:controllerSpatialNavigation>
+  <SettingsSearch bind:value={query} on:escape={() => navigateBackLikeButton()} />
 
-  {#await import("../components/GeneralSettingsBlock.svelte") then { default: GeneralSettingsBlock }}
+  <div
+    class="settings-sections"
+    use:settingsFilter={query}
+    on:filtered={(e) => (visibleGroups = e.detail)}
+  >
+    <h1 class="SettingsHeader">{$t("Settings_Header_AppWide")}</h1>
     <GeneralSettingsBlock />
-  {/await}
+  </div>
+
+  {#if visibleGroups === 0}
+    <p class="settings-empty">{$t("Settings_SearchNoResults", { query })}</p>
+  {/if}
 </div>
-<svelte:window on:keydown={onWindowKeyDown} />
