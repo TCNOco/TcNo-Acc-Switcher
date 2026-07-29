@@ -212,9 +212,13 @@ body {
   background: $face;
 }
 
-.headerbar,
-.modal-headerbar,
-.app-lock-headerbar {
+/* Titlebar chrome must outgun the Svelte component-scoped styles
+   (.win-btn.s-x, .modal-window-controls .win-btn.s-x): the theme overlay's
+   position in <head> is not guaranteed, so ties lose nondeterministically.
+   $bar repeated gives these rules strictly higher specificity. */
+$bar: ":is(.headerbar, .modal-headerbar, .app-lock-headerbar)";
+
+#{$bar}#{$bar}#{$bar} {
   min-height: 24px;
   height: 24px;
   margin: 2px;
@@ -229,17 +233,16 @@ body {
 }
 
 .title-drag, #window-title, #window-title-modal { color: $light; font-weight: 700; }
-/* Scoped with the bar: the icon's component style fills it with the theme ink
-   (black here), which vanishes against the navy titlebar. */
-.headerbar .header_icon { fill: $light; filter: none; height: 9px; margin: 7px; }
+/* The icon's component style fills it with the theme ink (black here), which
+   vanishes against the navy titlebar. */
+#{$bar} .header_icon.header_icon.header_icon { fill: $light; filter: none; height: 9px; margin: 7px; }
 /* 95 buttons are wider than tall, tucked 2px inside the navy bar, with the
-   close button set off from min/max by its own extra gap. Scoped under
-   .headerbar: the titlebar component's own styles paint these transparent at
-   higher specificity, which left black glyphs sitting straight on the navy. */
-.headerbar .window-controls { grid-template-columns: 18px 18px 20px; gap: 2px; height: 16px; margin: 4px 2px; }
+   close button set off from min/max by its own extra gap. */
+#{$bar} .window-controls.window-controls,
+#{$bar} :is(.window-controls, .modal-window-controls) { grid-template-columns: 18px 18px 20px; gap: 2px; height: 16px; margin: 4px 2px; }
 
-.headerbar .win-btn,
-.headerbar .win-btn-back {
+#{$bar} .win-btn.win-btn.win-btn,
+#{$bar} .win-btn-back.win-btn-back.win-btn-back {
   width: 18px;
   height: 16px;
   min-width: 18px;
@@ -253,18 +256,29 @@ body {
   color: $dark;
   box-shadow: inset 1px 1px 0 $mid, inset -1px -1px 0 $shadow;
 }
-.headerbar .win-btn-close { margin-left: 2px; background: $face; color: $dark; }
+#{$bar} .win-btn-close.win-btn-close.win-btn-close { margin-left: 2px; background: $face; color: $dark; }
 
-.headerbar .win-btn:hover, .headerbar .win-btn-close:hover, .headerbar .win-btn-back:hover { background: $face; }
-.headerbar .win-btn:active, .headerbar .win-btn-back:active {
+#{$bar} .win-btn.win-btn.win-btn:hover,
+#{$bar} .win-btn-back.win-btn-back.win-btn-back:hover { background: $face; }
+#{$bar} .win-btn.win-btn.win-btn:active,
+#{$bar} .win-btn-back.win-btn-back.win-btn-back:active {
   border-color: $dark $light $light $dark;
   box-shadow: inset 1px 1px 0 $shadow;
   transform: translate(1px, 1px);
   filter: none;
 }
 .win-btn__glyph { stroke-width: 1.7; }
-.headerbar .win-btn-back { margin-left: 2px; }
-.headerbar .win-btn-back svg { fill: $dark; }
+/* The back button reads as a toolbar button, not a window control: near
+   bar-height with a larger arrow. */
+#{$bar} .win-btn-back.win-btn-back.win-btn-back {
+  margin: 0 0 0 2px;
+  width: 24px;
+  height: 20px;
+  min-width: 24px;
+  min-height: 20px;
+  --windows-icon-size: 13px;
+}
+#{$bar} .win-btn-back.win-btn-back svg { fill: $dark; }
 
 button,
 .button,
@@ -442,6 +456,13 @@ input[type="checkbox"]:focus-visible + label { outline: 1px dotted $dark; outlin
   box-shadow: none;
 }
 
+/* Modal action rows share .settingsCol but are plain rows, not framed panels. */
+.modal-inline-actions.modal-inline-actions {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
 .platform_list_item, label.acc, .accountHover, .searchOverlay_resultItem, .placeHolderAcc, .acc_list_item--skeleton {
   border: 2px solid;
   border-color: $light $shadow $shadow $light;
@@ -457,7 +478,16 @@ input[type="checkbox"]:focus-visible + label { outline: 1px dotted $dark; outlin
   background: $mid;
 }
 .platform_list_item .icoFG, .platform_list_item .fgImg use.icoFG { fill: var(--accent); }
+/* 95 chrome is flat: no glass sheen or soft drop shadows on the platform tiles. */
+.icoBG.icoBG { background: $mid; }
+.icoGlass.icoGlass { fill: transparent; }
+.platform_list_item .fgImg svg { filter: none; }
 input.acc:checked + label.acc { border-color: var(--accent) !important; background: $mid; box-shadow: inset 0 0 0 1px var(--accent); }
+
+/* The drop receiver fills with the navy selection colour; its label and icon
+   inherit theme ink (black/navy), which vanishes on it. */
+.acc_profile_drop_overlay--hover .acc_profile_drop_overlay__label,
+.acc_profile_drop_overlay--hover .acc_profile_drop_overlay__icon { color: $light; }
 
 .modalFG, #modal_contents, .app-lock-panel, .searchOverlay_dialog, .stability-prompt, .toast {
   border: 2px solid;

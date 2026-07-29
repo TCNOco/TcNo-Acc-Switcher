@@ -227,7 +227,13 @@ body {
   box-shadow: inset 1px 1px 0 $ink;
 }
 
-.headerbar, .modal-headerbar, .app-lock-headerbar {
+/* Titlebar chrome must outgun the Svelte component-scoped styles
+   (.win-btn.s-x, .modal-window-controls .win-btn.s-x): the theme overlay's
+   position in <head> is not guaranteed, so ties lose nondeterministically.
+   $bar repeated gives these rules strictly higher specificity. */
+$bar: ":is(.headerbar, .modal-headerbar, .app-lock-headerbar)";
+
+#{$bar}#{$bar}#{$bar} {
   min-height: 28px;
   height: 28px;
   margin: 2px;
@@ -250,10 +256,11 @@ body {
   font-weight: 700;
   text-transform: uppercase;
 }
-.header_icon { fill: $accent; filter: drop-shadow(1px 1px 0 $deep); height: 11px; margin: 7px; }
-.window-controls { grid-template-columns: repeat(3, 22px); gap: 1px; height: 22px; margin: 2px; }
+#{$bar} .header_icon.header_icon.header_icon { fill: $accent; filter: drop-shadow(1px 1px 0 $deep); height: 11px; margin: 7px; }
+#{$bar} :is(.window-controls, .modal-window-controls):is(.window-controls, .modal-window-controls) { grid-template-columns: repeat(3, 22px); gap: 1px; height: 22px; margin: 2px; }
 
-.win-btn, .win-btn-back {
+#{$bar} .win-btn.win-btn.win-btn,
+#{$bar} .win-btn-back.win-btn-back.win-btn-back {
   width: 22px;
   height: 22px;
   min-width: 22px;
@@ -268,17 +275,19 @@ body {
   color: $text;
   box-shadow: inset 1px 1px 0 rgba(221, 230, 197, 0.12), 1px 1px 0 #11150f;
 }
-.win-btn:hover, .win-btn-back:hover { background: linear-gradient(180deg, #687755, #4b583f); }
-.win-btn:active, .win-btn-back:active {
+#{$bar} .win-btn.win-btn.win-btn:hover,
+#{$bar} .win-btn-back.win-btn-back.win-btn-back:hover { background: linear-gradient(180deg, #687755, #4b583f); }
+#{$bar} .win-btn.win-btn.win-btn:active,
+#{$bar} .win-btn-back.win-btn-back.win-btn-back:active {
   border-color: $deep $edge $edge-light $deep;
   background: $ink !important;
   box-shadow: inset 1px 1px 0 #0e110c;
   filter: none;
   transform: translate(1px, 1px);
 }
-.win-btn-close { background: linear-gradient(180deg, #65493d, #49342d); }
-.win-btn-close:hover { background: linear-gradient(180deg, #875849, #5d3d34); }
-.win-btn-back { margin-left: 2px; }
+#{$bar} .win-btn-close.win-btn-close.win-btn-close { background: linear-gradient(180deg, #65493d, #49342d); }
+#{$bar} .win-btn-close.win-btn-close.win-btn-close:hover { background: linear-gradient(180deg, #875849, #5d3d34); }
+#{$bar} .win-btn-back.win-btn-back.win-btn-back { margin-left: 2px; }
 
 button, .button, button#modal_true, button#btnLogin {
   min-height: 25px;
@@ -452,6 +461,13 @@ input[type="checkbox"]:focus-visible + label { outline: 1px dotted $amber; outli
   box-shadow: inset 1px 1px 0 rgba(216, 225, 190, 0.07), 2px 2px 0 #11150f;
 }
 
+/* Modal action rows share .settingsCol but are plain rows, not framed panels. */
+.modal-inline-actions.modal-inline-actions {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
 .actionbar, .acc_list_actionbar {
   border-top: 1px solid $edge;
   background:
@@ -477,6 +493,11 @@ input[type="checkbox"]:focus-visible + label { outline: 1px dotted $amber; outli
   background: linear-gradient(180deg, #60704e, #46533b);
 }
 .platform_list_item .icoFG, .platform_list_item .fgImg use.icoFG { fill: var(--accent); }
+/* 2003 Steam is matte: no diagonal glass sheen on the platform tiles, and a
+   hard 1px engraved shadow instead of a soft glow. */
+.icoBG.icoBG { background: $ink; }
+.icoGlass.icoGlass { fill: transparent; }
+.platform_list_item .fgImg svg { filter: drop-shadow(1px 1px 0 rgba(9, 11, 8, 0.65)); }
 input.acc:checked + label.acc {
   border-color: $accent !important;
   background: #566448;

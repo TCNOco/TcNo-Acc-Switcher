@@ -1462,8 +1462,8 @@
     border-radius: 2px;
     border: 1px solid transparent;
     box-shadow: var(--shadow, 0 4px 14px var(--shadow-color-35));
-    background: var(--darker-code-background);
-    color: var(--white);
+    background: var(--role-toast-bg, var(--notification-main-bg, var(--darker-code-background)));
+    color: var(--role-toast-fg, var(--notification-message-fg, var(--white)));
     text-align: left;
   }
 
@@ -1496,7 +1496,7 @@
   .preview-static-toast .toast__message {
     font-size: 1rem;
     line-height: 1.35;
-    color: var(--whiteSecondary);
+    color: var(--role-toast-fg, var(--notification-message-fg, var(--whiteSecondary)));
     opacity: 0.92;
     word-break: break-word;
     white-space: pre-line;

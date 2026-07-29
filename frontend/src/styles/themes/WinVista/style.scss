@@ -247,9 +247,13 @@ body {
   background: var(--program-bg);
 }
 
-.headerbar,
-.modal-headerbar,
-.app-lock-headerbar,
+/* Titlebar chrome must outgun the Svelte component-scoped styles
+   (.win-btn.s-x, .modal-window-controls .win-btn.s-x): the theme overlay's
+   position in <head> is not guaranteed, so ties lose nondeterministically.
+   $bar repeated gives these rules strictly higher specificity. */
+$bar: ":is(.headerbar, .modal-headerbar, .app-lock-headerbar)";
+
+#{$bar}#{$bar}#{$bar},
 .resizeTopLeft,
 .resizeTop,
 .resizeTopRight,
@@ -268,16 +272,14 @@ body {
     0 1px 5px rgba(10, 26, 36, 0.5);
 }
 
-.headerbar {
+.headerbar.headerbar {
   min-height: 32px;
   overflow: visible;
 }
 
-/* Scoped with the bar: the icon's component style fills it with the theme ink
-   (near-black here), which vanishes against the dark glass titlebar. */
-.headerbar .header_icon,
-.modal-headerbar .header_icon,
-.app-lock-headerbar .header_icon {
+/* The icon's component style fills it with the theme ink (near-black here),
+   which vanishes against the dark glass titlebar. */
+#{$bar} .header_icon.header_icon.header_icon {
   fill: #ffffff;
   filter: drop-shadow(0 1px 1px rgba(8, 20, 28, 0.85));
 }
@@ -295,19 +297,22 @@ body {
 
 /* The aero trio is one joined block hanging off the top edge: no gaps, shared
    1px dividers, and only the two outer bottom corners rounded. */
-.window-controls {
+#{$bar} :is(.window-controls, .modal-window-controls):is(.window-controls, .modal-window-controls) {
   grid-template-columns: 29px 27px 45px;
   gap: 0;
   height: 19px;
   padding-right: 8px;
+  /* The trio hangs off the top edge of the bar, not centred in it. */
+  align-self: flex-start;
 }
 
 /* Vista's trio is darker glass than 7's: smoky, with white glyphs. */
-.win-btn,
-.modal-window-controls .win-btn {
+#{$bar} .win-btn.win-btn.win-btn {
   width: auto;
   height: 18px;
   min-width: 0;
+  /* The global button min-height would push these past the bar. */
+  min-height: 0;
   padding: 0;
   margin: 0;
   border: 1px solid rgba(18, 34, 44, 0.88);
@@ -321,19 +326,16 @@ body {
     0 1px 2px rgba(10, 26, 36, 0.4);
 }
 
-.win-btn-min,
-.modal-window-controls .win-btn-min {
+#{$bar} .win-btn-min.win-btn-min.win-btn-min {
   border-left-width: 1px;
   border-radius: 0 0 0 4px;
 }
 
-.win-btn-close,
-.modal-window-controls .win-btn-close {
+#{$bar} .win-btn-close.win-btn-close.win-btn-close {
   border-radius: 0 0 4px 0;
 }
 
-.win-btn:hover,
-.modal-window-controls .win-btn:hover {
+#{$bar} .win-btn.win-btn.win-btn:hover {
   border-color: #2a759f;
   background: var(--window-control-hover-bg);
   box-shadow:
@@ -341,14 +343,12 @@ body {
     0 0 7px rgba(80, 196, 245, 0.86);
 }
 
-.win-btn:active,
-.modal-window-controls .win-btn:active {
+#{$bar} .win-btn.win-btn.win-btn:active {
   background: linear-gradient(180deg, #75bddf 0%, #2f8fbd 52%, #8cd6ef 100%) !important;
   filter: none;
 }
 
-.win-btn-close,
-.modal-window-controls .win-btn-close {
+#{$bar} .win-btn-close.win-btn-close.win-btn-close {
   min-width: 45px;
   background: linear-gradient(180deg, #eeb4a7 0%, #d66e5a 44%, #a82f20 49%, #d86650 100%);
   border-color: #82352a;
@@ -356,8 +356,7 @@ body {
   text-shadow: 0 1px 1px rgba(80, 0, 0, 0.65);
 }
 
-.win-btn-close:hover,
-.modal-window-controls .win-btn-close:hover {
+#{$bar} .win-btn-close.win-btn-close.win-btn-close:hover {
   background: var(--window-close-hover);
   border-color: #8f1b0a;
   color: #ffffff;
@@ -366,17 +365,18 @@ body {
     0 0 9px rgba(239, 89, 56, 0.8);
 }
 
-.win-btn-close:active,
-.modal-window-controls .win-btn-close:active {
+#{$bar} .win-btn-close.win-btn-close.win-btn-close:active {
   background: linear-gradient(180deg, #b92b16 0%, #8e1808 58%, #d74a2e 100%) !important;
 }
 
-.win-btn-back {
+#{$bar} .win-btn-back.win-btn-back.win-btn-back {
   border: 0;
   border-radius: 50%;
   margin: 4px 0 0 6px;
   width: 24px;
   height: 24px;
+  min-width: 0;
+  min-height: 0;
   background: linear-gradient(180deg, #fafdff, #b9dcef 48%, #5d9fc5 52%, #b8e0f2);
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.74),
@@ -384,12 +384,12 @@ body {
     0 1px 3px rgba(25, 54, 75, 0.55);
 }
 
-.win-btn-back:hover {
+#{$bar} .win-btn-back.win-btn-back.win-btn-back:hover {
   background: linear-gradient(180deg, #ffffff, #d9f4ff 45%, #67c4ea 50%, #c8f0ff);
   box-shadow: 0 0 0 1px #397da6, 0 0 7px rgba(65, 185, 235, 0.78);
 }
 
-.win-btn-back svg {
+#{$bar} .win-btn-back.win-btn-back svg {
   fill: #163b53;
 }
 
@@ -629,6 +629,13 @@ input[type="checkbox"]:focus-visible + label {
   background: linear-gradient(145deg, #f7fbfd, #dceaf2);
 }
 
+/* Modal action rows share .settingsCol but are plain rows, not framed panels. */
+.modal-inline-actions.modal-inline-actions {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
 .platform_list_item,
 label.acc,
 .accountHover,
@@ -662,11 +669,11 @@ label.acc:hover,
   fill: var(--accent);
 }
 
-.icoGlass {
+.icoGlass.icoGlass {
   fill: rgba(255, 255, 255, 0.38);
 }
 
-.icoBG {
+.icoBG.icoBG {
   background: linear-gradient(180deg, #f7fbfd, #c7dce8);
 }
 
