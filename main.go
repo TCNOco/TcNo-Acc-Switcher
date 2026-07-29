@@ -16,6 +16,7 @@ import (
 	"TcNo-Acc-Switcher/internal/crashlog"
 	"TcNo-Acc-Switcher/internal/discordrpc"
 	"TcNo-Acc-Switcher/internal/ipc"
+	"TcNo-Acc-Switcher/internal/legacyinstall"
 	"TcNo-Acc-Switcher/internal/logredact"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/security"
@@ -149,6 +150,11 @@ func main() {
 		os.Exit(0)
 	}
 
+	if parsed.Kind == cli.KindCleanLegacyInstall {
+		winutil.AttachParentConsole()
+		os.Exit(legacyinstall.RunCleanupCommand(exeDir))
+	}
+
 	releaseSingleton, running, err := winutil.TryAcquireSingleton()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "singleton:", err)
@@ -178,6 +184,8 @@ func main() {
 		}
 		os.Exit(0)
 	}
+
+	legacyinstall.StartupCleanup(exeDir)
 
 	app.RunGUI(app.RunGUIParams{
 		Parsed:           parsed,

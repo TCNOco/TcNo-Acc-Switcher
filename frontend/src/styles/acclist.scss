@@ -305,10 +305,6 @@ label.acc {
     opacity: 0.72;
   }
 
-  &.vac img {
-    border: 2px solid var(--red);
-  }
-
   > img {
     -webkit-user-drag: none;
     display: inline-block;
@@ -316,14 +312,6 @@ label.acc {
     height: 6em;
     margin-bottom: 0.5em;
     border: 2px solid transparent;
-
-    &.status_vac {
-      border: 2px solid var(--red) !important;
-    }
-
-    &.status_limited {
-      border: 2px solid var(--preview-control-border, var(--form-checkbox-border, var(--yellow))) !important;
-    }
   }
 
   .steam-acc-avatar-wrap {
@@ -344,14 +332,6 @@ label.acc {
     margin: 0;
     border: 2px solid transparent;
     object-fit: cover;
-
-    &.status_vac {
-      border: 2px solid var(--red) !important;
-    }
-
-    &.status_limited {
-      border: 2px solid var(--preview-control-border, var(--form-checkbox-border, var(--yellow))) !important;
-    }
   }
 
   .steam-acc-avatar-frame {
@@ -365,6 +345,34 @@ label.acc {
     border: none !important;
     box-sizing: border-box;
     transform: scale(1.22);
+  }
+
+  // Bottom-right corner of the avatar, above the frame's z-order so a framed
+  // avatar cannot cover it. Bare glyph, no plate: the drop shadow is what keeps
+  // it legible over a light or busy profile picture.
+  .steam-acc-avatar-guard {
+    position: absolute;
+    right: 0.35em;
+    bottom: 0.35em;
+    z-index: 2;
+    display: block;
+    width: 1.1em;
+    height: 1.1em;
+    pointer-events: none;
+
+    svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      fill: var(--role-success, #4caf50);
+      filter: drop-shadow(0 0 0.12em rgba(0, 0, 0, 0.9));
+    }
+  }
+
+  // An unfinished setup is not protection: same glyph, deliberately not the
+  // colour that means "done".
+  .steam-acc-avatar-guard--pending svg {
+    fill: var(--role-warning, #c9992a);
   }
 
   h6 {
@@ -396,6 +404,20 @@ label.acc {
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+}
+
+// Ban state rides on the account name. It used to be a ring around the avatar,
+// but Steam supplies the avatar frame now and the two fought for the same
+// pixels. The `label.acc` half of each selector outranks themes that repaint
+// headings inside an account tile.
+label.acc .acc_name--vac,
+.acc_name--vac {
+  color: var(--red);
+}
+
+label.acc .acc_name--limited,
+.acc_name--limited {
+  color: var(--yellow);
 }
 
 input.acc:checked + label.acc.currentAcc {

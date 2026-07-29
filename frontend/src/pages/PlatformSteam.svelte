@@ -4,7 +4,7 @@
   import { Events } from "@wailsio/runtime";
   import SteamAccountAvatar from "../components/SteamAccountAvatar.svelte";
   import PlatformAccountsBase from "../components/PlatformAccountsBase.svelte";
-  import type { PlatformAccountAdapter, SharedMenuItems } from "../components/PlatformAccountAdapter";
+  import type { AccountNameStatus, PlatformAccountAdapter, SharedMenuItems } from "../components/PlatformAccountAdapter";
   import type { TagDefRow } from "../lib/accountTagsContext";
   import type { MenuItemDef } from "../stores/contextMenu";
   import type { PlatformSortKind } from "../stores/platformListSort";
@@ -51,6 +51,7 @@
   type SteamAccountPatch = AccountPatch & {
     avatarFrameUrl?: string; miniProfileHtml?: string;
     showMiniProfile?: boolean; showAvatarFrame?: boolean;
+    showSteamGuardLock?: boolean;
   };
 
   export let name: string;
@@ -125,6 +126,12 @@
     shouldShowLastUsed: (a: SteamAccountRow) => a.showLastLogin === true && !!(a.lastLogin ?? "").trim(),
     lastUsed: (a: SteamAccountRow) => a.lastLogin ?? "",
     accountLogin: (a: SteamAccountRow) => (a.accountName ?? "").trim(),
+    nameStatus: (a: SteamAccountRow): AccountNameStatus | null => {
+      // VAC outranks limited: it is the harder verdict, and an account can be both.
+      if (a.showVac === true && a.vac === true) return { kind: "vac", label: $t("Steam_Status_VacBanned") };
+      if (a.showLimited === true && a.ltd === true) return { kind: "limited", label: $t("Steam_Status_Limited") };
+      return null;
+    },
 
     visualKey: steamAccountVisualKey,
 
@@ -153,6 +160,8 @@
         metaPending: r.metaPending ?? false,
         vac: r.vac ?? false,
         ltd: r.ltd ?? false,
+        hasVisibleBan: r.hasVisibleBan ?? false,
+        banStatusHidden: r.banStatusHidden ?? false,
         showSteamId: r.showSteamId ?? false,
         showVac: r.showVac ?? false,
         showLimited: r.showLimited ?? false,
@@ -165,6 +174,7 @@
         miniProfileHtml: r.miniProfileHtml,
         showMiniProfile: r.showMiniProfile ?? false,
         showAvatarFrame: r.showAvatarFrame ?? false,
+        showSteamGuardLock: r.showSteamGuardLock ?? true,
         syncError: r.syncError ?? "",
         tags: r.tags,
         manualProfileImage: r.manualProfileImage ?? false,
@@ -215,6 +225,7 @@
         miniProfileHtml: typeof p.miniProfileHtml === "string" && p.miniProfileHtml.trim() !== "" ? p.miniProfileHtml.trim() : account.miniProfileHtml ?? "",
         showMiniProfile: typeof p.showMiniProfile === "boolean" ? p.showMiniProfile : account.showMiniProfile,
         showAvatarFrame: typeof p.showAvatarFrame === "boolean" ? p.showAvatarFrame : account.showAvatarFrame,
+        showSteamGuardLock: typeof p.showSteamGuardLock === "boolean" ? p.showSteamGuardLock : account.showSteamGuardLock,
       } as SteamAccountRow;
     },
 

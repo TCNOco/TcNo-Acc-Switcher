@@ -104,6 +104,9 @@ func RetryQuarantineImport(id, password string) error {
 	if recovery.Version != securityVersion {
 		return fmt.Errorf("unsupported quarantine recovery version %d", recovery.Version)
 	}
+	if err := validateKDFParams(recovery.KDF); err != nil {
+		return err
+	}
 	salt, err := decode(recovery.Salt)
 	if err != nil {
 		return err

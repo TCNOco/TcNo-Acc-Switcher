@@ -46,6 +46,8 @@ type AccountDTO struct {
 	Ltd bool `json:"ltd"`
 
 	ShowSteamID     bool   `json:"showSteamId"`
+	HasVisibleBan   bool   `json:"hasVisibleBan"`
+	BanStatusHidden bool   `json:"banStatusHidden"`
 	ShowVAC         bool   `json:"showVac"`
 	ShowLimited     bool   `json:"showLimited"`
 	ShowLastLogin   bool   `json:"showLastLogin"`
@@ -58,6 +60,9 @@ type AccountDTO struct {
 	MiniProfileHTML string `json:"miniProfileHtml"`
 	ShowMiniProfile bool   `json:"showMiniProfile"`
 	ShowAvatarFrame bool   `json:"showAvatarFrame"`
+	// ShowSteamGuardLock is the display setting, carried per row like the other
+	// Show* flags. Whether an account HAS Steam Guard is hasSteamGuard.
+	ShowSteamGuardLock bool `json:"showSteamGuardLock"`
 
 	SyncError string `json:"syncError"`
 
@@ -85,10 +90,11 @@ type AccountPatch struct {
 
 	DisplayName string `json:"displayName,omitempty"`
 
-	AvatarFrameURL  string `json:"avatarFrameUrl"`
-	MiniProfileHTML string `json:"miniProfileHtml"`
-	ShowMiniProfile bool   `json:"showMiniProfile"`
-	ShowAvatarFrame bool   `json:"showAvatarFrame"`
+	AvatarFrameURL     string `json:"avatarFrameUrl"`
+	MiniProfileHTML    string `json:"miniProfileHtml"`
+	ShowMiniProfile    bool   `json:"showMiniProfile"`
+	ShowAvatarFrame    bool   `json:"showAvatarFrame"`
+	ShowSteamGuardLock bool   `json:"showSteamGuardLock"`
 
 	Error string `json:"error"`
 }
@@ -529,11 +535,12 @@ func (s *SteamService) runProfileRefresh() {
 			vmMu.Unlock()
 
 			patch := AccountPatch{
-				SteamID64:       u.SteamID64,
-				Vac:             prev.Vac,
-				Ltd:             prev.Ltd,
-				ShowMiniProfile: st.SteamShowMiniProfile,
-				ShowAvatarFrame: st.SteamShowAvatarFrame,
+				SteamID64:          u.SteamID64,
+				Vac:                prev.Vac,
+				Ltd:                prev.Ltd,
+				ShowMiniProfile:    st.SteamShowMiniProfile,
+				ShowAvatarFrame:    st.SteamShowAvatarFrame,
+				ShowSteamGuardLock: st.SteamShowSteamGuardLock,
 			}
 
 			fields, err := fetchProfileXMLWithRetry(
@@ -575,6 +582,7 @@ func (s *SteamService) runProfileRefresh() {
 			patch.DisplayName = fields.CommunityDisplayName
 			patch.ShowMiniProfile = st.SteamShowMiniProfile
 			patch.ShowAvatarFrame = st.SteamShowAvatarFrame
+			patch.ShowSteamGuardLock = st.SteamShowSteamGuardLock
 
 			vmMu.Lock()
 			vm[u.SteamID64] = VacEntry{SteamID: u.SteamID64, Vac: patch.Vac, Ltd: patch.Ltd}
@@ -900,4 +908,35 @@ func (s *SteamService) ClearManualAccountProfileImage(steamID64 string) error {
 	}
 	s.StartSteamProfileRefresh()
 	return nil
+}
+
+// SetBanStatusHidden adds or removes one account from the list whose VAC or
+// limited status is not shown. The ban itself is untouched - this only stops
+// the switcher painting it on every visit, which is a display preference, not
+// an attempt to make the account look clean.
+func (s *SteamService) SetBanStatusHidden(steamID64 string, hidden bool) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
+	steamID64 = strings.TrimSpace(steamID64)
+	if steamID64 == "" {
+		return errors.New("empty steam id")
+	}
+	st, err := LoadSettings()
+	if err != nil {
+		return err
+	}
+	kept := make([]string, 0, len(st.HiddenBanStatus)+1)
+	for _, id := range st.HiddenBanStatus {
+		if id = strings.TrimSpace(id); id != "" && id != steamID64 {
+			kept = append(kept, id)
+		}
+	}
+	if hidden {
+		kept = append(kept, steamID64)
+	}
+	st.HiddenBanStatus = kept
+	return SaveSettings(st)
 }

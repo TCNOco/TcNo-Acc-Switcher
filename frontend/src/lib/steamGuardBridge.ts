@@ -22,6 +22,8 @@ import { pushToast } from "../stores/toast";
 import { configureSteamGuardDropAdapter } from "../stores/steamGuardDrop";
 import { configureSteamGuardSettingsAdapter } from "../stores/steamGuardSettings";
 import { passwordPolicyMessage, validateNewPassword } from "./passwordPolicy";
+import { escapeHtml } from "./html";
+import { extraFactorsNeeded } from "./steamGuardFactors";
 import { publishSteamGuardActionAccounts } from "../stores/steamGuardAction";
 import {
 	ConfirmationRequestError,
@@ -149,7 +151,7 @@ async function promptNewVaultPassword(): Promise<string | null> {
   const policyError = validateNewPassword(password);
   if (policyError) {
     password = "";
-    await openAlert({ title: tr("SteamGuard_Vault_PasswordAlertTitle"), body: passwordPolicyMessage(policyError) });
+    await openAlert({ title: tr("SteamGuard_Vault_PasswordAlertTitle"), body: passwordPolicyMessage(policyError, tr) });
     return null;
   }
   let confirmation = await openPrompt({
@@ -706,6 +708,39 @@ function installConfirmationsBridge(): () => void {
 	};
 }
 
+/**
+ * Collects the factors that have to accompany the password. Backing up, merging
+ * and restoring all re-derive a slot's key, so a vault whose only way in needs a
+ * password and a keyfile cannot be opened by the password alone.
+ *
+ * Returns null when the user cancels; an empty pair when nothing extra is
+ * needed, including when the vault's factors cannot be read - the operation then
+ * fails on its own terms rather than behind a prompt for something unnecessary.
+ */
+async function collectExtraVaultFactors(): Promise<{ keyfilePath: string; backupKey: string } | null> {
+  const none = { keyfilePath: "", backupKey: "" };
+  let needed: string[];
+  try {
+    needed = extraFactorsNeeded(await SteamGuardService.ListVaultFactors());
+  } catch {
+    return none;
+  }
+  if (needed.includes("keyfile")) {
+    const path = await SteamGuardService.PickVaultKeyfile();
+    return path ? { keyfilePath: path, backupKey: "" } : null;
+  }
+  if (needed.includes("recovery")) {
+    const code = await openPrompt({
+      title: tr("SteamGuard_Factor_BackupKey"),
+      body: tr("SteamGuard_Factors_BackupKeyPromptBody"),
+      positiveLabel: tr("SteamGuard_Continue"),
+      negativeLabel: tr("SteamGuard_Cancel"),
+    }) ?? "";
+    return code.trim() ? { keyfilePath: "", backupKey: code.trim() } : null;
+  }
+  return none;
+}
+
 async function runVerifiedBackup(): Promise<void> {
   const status = await SteamGuardService.GetSettingsStatus();
   let steamGuardPassword = await openPrompt({
@@ -732,8 +767,17 @@ async function runVerifiedBackup(): Promise<void> {
     }
   }
 
+  const extra = await collectExtraVaultFactors();
+  if (!extra) {
+    steamGuardPassword = "";
+    appPassword = "";
+    return;
+  }
+
   try {
-    const path = await SteamGuardService.CreateVerifiedBackup(steamGuardPassword, appPassword);
+    const path = await SteamGuardService.CreateVerifiedBackupWithFactors(
+      steamGuardPassword, appPassword, extra.keyfilePath, extra.backupKey,
+    );
     if (path) {
       await openAlert({
         title: tr("SteamGuard_Backup_VerifiedTitle"),
@@ -787,6 +831,16 @@ function isWrongPasswordError(error: unknown): boolean {
 }
 
 /**
+ * Whether the vault refused because a factor was missing rather than wrong. The
+ * recovery flow has no live vault to read the enrolled factors from, so what the
+ * backup needs is only discoverable from the failure it reports.
+ */
+function needsAnotherFactor(error: unknown): boolean {
+	const message = error instanceof Error ? error.message : String(error ?? "");
+	return message.toLowerCase().includes("requires an enrolled factor");
+}
+
+/**
  * Restores a backup as the vault of an installation that has none: the folder
  * is chosen first, then only the passwords that folder actually needs, retried
  * until they are accepted or the user gives up.
@@ -804,6 +858,9 @@ async function runRestore(): Promise<void> {
 	if (!chosen) return;
 
 	let retry = "";
+	// Carried across retries: once the keyfile has been picked, a later password
+	// typo should not ask for the file again.
+	let keyfilePath = "";
 	for (;;) {
 		let steamGuardPassword = "";
 		let backupAppPassword = "";
@@ -840,8 +897,9 @@ async function runRestore(): Promise<void> {
 				}) ?? "";
 				if (!currentAppPassword) return;
 			}
-			const path = await SteamGuardService.RestoreVerifiedBackup(
+			const path = await SteamGuardService.RestoreVerifiedBackupWithFactors(
 				chosen.source, steamGuardPassword, backupAppPassword, currentAppPassword,
+				keyfilePath, "",
 			);
 			if (path) {
 				await openAlert({
@@ -851,6 +909,15 @@ async function runRestore(): Promise<void> {
 			}
 			return;
 		} catch (error) {
+			if (needsAnotherFactor(error) && keyfilePath === "") {
+				// The backup was made from a vault that needs a keyfile as well.
+				keyfilePath = await SteamGuardService.PickVaultKeyfile();
+				if (!keyfilePath) return;
+				// The password was wiped by the finally below, so say why it is
+				// being asked for a second time.
+				retry = `<p class="modal-warning">${tr("SteamGuard_Restore_KeyfileChosen")}</p>`;
+				continue;
+			}
 			if (!isWrongPasswordError(error)) throw error;
 			retry = `<p class="modal-warning">${tr("SteamGuard_Restore_PasswordRetry")}</p>`;
 		} finally {
@@ -903,6 +970,15 @@ async function runRestoreMerge(): Promise<void> {
 			}) ?? "";
 			if (!currentAppPassword) return;
 		}
+		// Asked for once, outside the retry loop: the same keyfile opens the live
+		// vault and the backup, and re-picking it on every password typo would be
+		// a file dialog per attempt.
+		const extra = await collectExtraVaultFactors();
+		if (!extra) return;
+		const planMerge = () => SteamGuardService.PlanRestoreMergeWithFactors(
+			chosen.source, password, backupPassword, backupAppPassword,
+			extra.keyfilePath, extra.backupKey,
+		);
 		// Passwords are retried in place: a typo should cost neither the folder
 		// choice nor another copy of the backup, which the stage already holds.
 		let plan: SteamGuardModels.RestoreMergePlan | null = null;
@@ -920,7 +996,7 @@ async function runRestoreMerge(): Promise<void> {
 			// the stage exists and must be discarded on every exit.
 			staged = true;
 			try {
-				plan = await SteamGuardService.PlanRestoreMerge(chosen.source, password, backupPassword, backupAppPassword);
+				plan = await planMerge();
 				// A backup written before a password change opens with its own
 				// password; only the live vault rejects the one entered above.
 				while (plan.state === "backup_password") {
@@ -933,7 +1009,7 @@ async function runRestoreMerge(): Promise<void> {
 					});
 					if (!entered) return;
 					backupPassword = entered;
-					plan = await SteamGuardService.PlanRestoreMerge(chosen.source, password, backupPassword, backupAppPassword);
+					plan = await planMerge();
 				}
 			} catch (error) {
 				if (!isWrongPasswordError(error)) throw error;
@@ -964,8 +1040,9 @@ async function runRestoreMerge(): Promise<void> {
 			});
 		});
 		if (!selected || selected.length === 0) return;
-		const result = await SteamGuardService.CommitRestoreMerge(
-			password, backupPassword, backupAppPassword, currentAppPassword, selected,
+		const result = await SteamGuardService.CommitRestoreMergeWithFactors(
+			password, backupPassword, backupAppPassword, currentAppPassword,
+			extra.keyfilePath, extra.backupKey, selected,
 		);
 		staged = false;
 		await openAlert({
@@ -986,7 +1063,12 @@ async function runRestoreMerge(): Promise<void> {
 	}
 }
 
-async function runSteamGuardPasswordChange(currentPassword: string, newPassword: string): Promise<void> {
+async function runSteamGuardPasswordChange(
+  currentPassword: string,
+  newPassword: string,
+  keyfilePath = "",
+  backupKey = "",
+): Promise<void> {
   const status = await SteamGuardService.GetSettingsStatus();
   let appPassword = "";
   if (usesSavedDataEncryption(status)) {
@@ -1000,7 +1082,9 @@ async function runSteamGuardPasswordChange(currentPassword: string, newPassword:
     if (!appPassword) return;
   }
   try {
-    await SteamGuardService.ChangePassword(currentPassword, newPassword, appPassword);
+    await SteamGuardService.ChangePasswordWithFactors(
+      currentPassword, newPassword, appPassword, keyfilePath, backupKey,
+    );
     const updated = await SteamGuardService.GetSettingsStatus();
     await openAlert({
       title: tr("SteamGuard_PasswordChange_DoneTitle"),
@@ -1010,15 +1094,6 @@ async function runSteamGuardPasswordChange(currentPassword: string, newPassword:
   } finally {
     appPassword = "";
   }
-}
-
-function escapeHtml(value: string): string {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
 }
 
 const controller: SteamGuardModalController = {
@@ -1055,6 +1130,8 @@ const controller: SteamGuardModalController = {
 			unlocked: status.unlocked,
 			rememberForSession: status.rememberPasswordForSession,
 			savedAccountDataEncrypted: usesSavedDataEncryption(status),
+			hasSecurityKey: status.hasSecurityKey ?? false,
+			passwordOpens: status.passwordOpens ?? true,
 		};
 	},
 	async initializeSteamGuardVault(password, appPassword) {
@@ -1135,6 +1212,11 @@ const controller: SteamGuardModalController = {
 		async selectQrRegion(accountId, capability) {
 			return qrScanResult(await SteamGuardService.SelectQRRegion(accountId, capability));
 		},
+		unlockWithFactors: async (accountId, password, keyfilePath, backupKey, rememberForSession, capability) =>
+			codeView(await SteamGuardService.UnlockAccountWithFactors(
+				accountId, password, keyfilePath, backupKey, rememberForSession, capability,
+			)),
+		pickKeyfile: () => SteamGuardService.PickVaultKeyfile(),
 		cancelQrRegion: (accountId, capability) =>
 			SteamGuardService.CancelQRRegion(accountId, capability),
 		recover: async () => runRestore(),
@@ -1151,6 +1233,26 @@ export function installSteamGuardBridge(): () => void {
     openFolder: () => SteamGuardService.OpenFolder(),
     createVerifiedBackup: runVerifiedBackup,
     restoreFromBackup: runRestoreMerge,
+    listVaultFactors: () => SteamGuardService.ListVaultFactors(),
+    unlockForManagement: (password, keyfilePath, backupKey) =>
+      SteamGuardService.UnlockVaultForManagement(password, keyfilePath, backupKey),
+    pickKeyfile: () => SteamGuardService.PickVaultKeyfile(),
+    createBackupKey: (password) => SteamGuardService.CreateVaultBackupKey(password),
+    saveBackupKey: (code) => SteamGuardService.SaveVaultBackupKey(code),
+    enrollKeyfile: (password, keyfilePassword) =>
+      SteamGuardService.EnrollVaultKeyfile(password, keyfilePassword),
+    enrollSecurityKey: (password, name, keyPassword) =>
+      SteamGuardService.EnrollVaultSecurityKey(password, name, keyPassword),
+    enrollPassword: (password, newPassword) =>
+      SteamGuardService.EnrollVaultPassword(password, newPassword),
+    removeVaultFactor: (password, factorId) =>
+      SteamGuardService.RemoveVaultFactor(password, factorId),
+    renameVaultFactor: (password, factorId, name) =>
+      SteamGuardService.RenameVaultFactor(password, factorId, name),
+    securityKeyAvailable: async () => {
+      const support = await SteamGuardService.SecurityKeyAvailable();
+      return { available: support.available ?? false, reason: support.reason ?? "" };
+    },
   });
 
   configureSteamGuardDropAdapter({

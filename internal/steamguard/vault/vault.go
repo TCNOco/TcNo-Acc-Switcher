@@ -2,9 +2,9 @@ package vault
 
 import (
 	"bytes"
-	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"sort"
@@ -80,21 +80,16 @@ func Create(root, password string, opts ...Option) (*Vault, error) {
 		return nil, err
 	}
 	defer wipe(vaultKey)
-	salt, err := randomBytes(saltBytes)
+	h := header{Version: FormatVersion, VaultID: vaultID, KeyringID: keyringID}
+	factor, err := newPasswordFactor(o.kdf)
 	if err != nil {
 		return nil, err
 	}
-	passwordKey, err := derive(password, salt, o.kdf)
+	slot, err := buildSlot(h, "Password", []slotFactor{factor}, PasswordOnly(password), vaultKey)
 	if err != nil {
 		return nil, err
 	}
-	defer wipe(passwordKey)
-	wrapped, err := seal(passwordKey, vaultKey, aad(FormatVersion, vaultID, vaultID, "", "vault-key"))
-	if err != nil {
-		return nil, err
-	}
-	h := header{Version: FormatVersion, VaultID: vaultID, KeyringID: keyringID, KDF: o.kdf,
-		Salt: base64.RawStdEncoding.EncodeToString(salt), VaultKey: wrapped}
+	h.Slots = []keySlot{slot}
 	v := &Vault{root: root, opts: o, header: h}
 	ring := keyringPayload{Version: FormatVersion, Records: []recordEntry{}}
 	if err := v.commitGenerationLocked(vaultKey, nil, h, ring, nil); err != nil {
@@ -238,18 +233,67 @@ func validateHeader(h header) error {
 			return err
 		}
 	}
-	if err := validateKDF(h.KDF); err != nil {
-		return err
-	}
-	salt, err := decodeBounded(h.Salt, saltBytes)
-	if err != nil || len(salt) != saltBytes {
+	return validateSlots(h.Slots)
+}
+
+// maxSlots bounds how many derivations one header can ask an opener to attempt.
+const maxSlots = 32
+
+func validateSlots(slots []keySlot) error {
+	if len(slots) == 0 || len(slots) > maxSlots {
 		return ErrInvalidFormat
 	}
-	if _, err := decodeBounded(h.VaultKey.Nonce, 64); err != nil {
-		return err
-	}
-	if _, err := decodeBounded(h.VaultKey.Ciphertext, 256); err != nil {
-		return err
+	seen := make(map[string]bool, len(slots))
+	for _, slot := range slots {
+		if !validID(slot.ID) || seen[slot.ID] || len(slot.Factors) == 0 || len(slot.Factors) > 4 {
+			return ErrInvalidFormat
+		}
+		seen[slot.ID] = true
+		if len(slot.Label) > maxSlotLabel {
+			return ErrInvalidFormat
+		}
+		for _, factor := range slot.Factors {
+			salt, err := decodeBounded(factor.Salt, saltBytes)
+			if err != nil || len(salt) != saltBytes {
+				return ErrInvalidFormat
+			}
+			switch factor.Type {
+			case FactorPassword:
+				if factor.KDF == nil {
+					return ErrInvalidFormat
+				}
+				if err := validateKDF(*factor.KDF); err != nil {
+					return err
+				}
+			case FactorKeyfile, FactorRecoveryCode:
+				if factor.KDF != nil || !validID(factor.KeyfileID) {
+					return ErrInvalidFormat
+				}
+				if factor.CredentialID != "" || factor.RPID != "" {
+					return ErrInvalidFormat
+				}
+			case FactorSecurityKey:
+				if factor.KDF != nil || factor.KeyfileID != "" {
+					return ErrInvalidFormat
+				}
+				// The descriptors have to survive a backup unchanged, so they
+				// are bounded rather than free-form.
+				if _, err := decodeCredentialID(factor.CredentialID); err != nil {
+					return err
+				}
+				if factor.CredentialID == "" || factor.RPID == "" || len(factor.RPID) > 253 {
+					return ErrInvalidFormat
+				}
+			default:
+				return ErrInvalidFormat
+			}
+		}
+		if _, err := decodeBounded(slot.VaultKey.Nonce, 64); err != nil {
+			return err
+		}
+		if _, err := decodeBounded(slot.VaultKey.Ciphertext, 256); err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -257,28 +301,38 @@ func validateHeader(h header) error {
 // Unlock starts either a fixed five-minute lease or a process-session lease.
 // A secure-memory failure never leaves a plaintext cached key behind.
 func (v *Vault) Unlock(password string, mode LeaseMode) error {
-	return v.unlock(password, nil, mode)
+	return v.unlock(PasswordOnly(password), nil, mode)
+}
+
+// UnlockWith unlocks using whatever enrolled factors the caller holds.
+func (v *Vault) UnlockWith(creds Credentials, mode LeaseMode) error {
+	return v.unlock(creds, nil, mode)
 }
 
 // UnlockWithOuter unlocks a double-encrypted vault with the app-derived key.
 func (v *Vault) UnlockWithOuter(password string, outerKey []byte, mode LeaseMode) error {
-	return v.unlock(password, outerKey, mode)
+	return v.unlock(PasswordOnly(password), outerKey, mode)
 }
 
-func (v *Vault) unlock(password string, outerKey []byte, mode LeaseMode) error {
+// UnlockWithFactorsAndOuter is the double-encrypted counterpart to UnlockWith.
+func (v *Vault) UnlockWithFactorsAndOuter(creds Credentials, outerKey []byte, mode LeaseMode) error {
+	return v.unlock(creds, outerKey, mode)
+}
+
+func (v *Vault) unlock(creds Credentials, outerKey []byte, mode LeaseMode) error {
 	v.mu.Lock()
 	defer v.mu.Unlock()
-	return v.unlockLocked(password, outerKey, mode)
+	return v.unlockLocked(creds, outerKey, mode)
 }
 
-func (v *Vault) unlockLocked(password string, outerKey []byte, mode LeaseMode) error {
+func (v *Vault) unlockLocked(creds Credentials, outerKey []byte, mode LeaseMode) error {
 	if mode != FixedLease && mode != ProcessLease {
 		return ErrInvalidFormat
 	}
 	if v.header.OuterVersion != 0 && len(outerKey) != keyBytes {
 		return ErrOuterKeyRequired
 	}
-	key, err := v.unwrapVaultKey(password, v.header)
+	key, err := openVaultKey(v.header, creds)
 	if err != nil {
 		return err
 	}
@@ -329,6 +383,12 @@ func (v *Vault) unlockLocked(password string, outerKey []byte, mode LeaseMode) e
 // UnlockWithRecovery restores access using the two passwords contained in a
 // copied double-encrypted vault. It never exposes the recovered outer key.
 func (v *Vault) UnlockWithRecovery(vaultPassword, recoveryPassword string, mode LeaseMode) error {
+	return v.UnlockWithFactorsAndRecovery(PasswordOnly(vaultPassword), recoveryPassword, mode)
+}
+
+// UnlockWithFactorsAndRecovery is UnlockWithRecovery for a vault whose slots need
+// more than a password.
+func (v *Vault) UnlockWithFactorsAndRecovery(creds Credentials, recoveryPassword string, mode LeaseMode) error {
 	v.mu.Lock()
 	defer v.mu.Unlock()
 	outerKey, err := openRecoveryOuterKey(recoveryPassword, v.header)
@@ -336,7 +396,7 @@ func (v *Vault) UnlockWithRecovery(vaultPassword, recoveryPassword string, mode 
 		return err
 	}
 	defer wipe(outerKey)
-	return v.unlockLocked(vaultPassword, outerKey, mode)
+	return v.unlockLocked(creds, outerKey, mode)
 }
 
 func destroyHandle(handle securemem.Handle) error {
@@ -347,24 +407,23 @@ func destroyHandle(handle securemem.Handle) error {
 }
 
 func (v *Vault) unwrapVaultKey(password string, h header) ([]byte, error) {
-	salt, err := decodeBounded(h.Salt, saltBytes)
-	if err != nil || len(salt) != saltBytes {
-		return nil, ErrInvalidFormat
-	}
-	passwordKey, err := derive(password, salt, h.KDF)
+	return openVaultKey(h, PasswordOnly(password))
+}
+
+// VerifyCredentials reports whether these factors open some enrolled way in,
+// without changing the lock state. An already-unlocked vault will do as it is
+// told regardless of what the caller typed, so anything that asks the user to
+// prove themselves before changing who can open the vault has to check the
+// answer here rather than relying on the unlock path to do it.
+func (v *Vault) VerifyCredentials(creds Credentials) error {
+	v.mu.Lock()
+	defer v.mu.Unlock()
+	key, err := openVaultKey(v.header, creds)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	defer wipe(passwordKey)
-	key, err := openEnvelope(passwordKey, h.VaultKey, aad(h.Version, h.VaultID, h.VaultID, "", "vault-key"))
-	if err != nil {
-		return nil, ErrInvalidPassword
-	}
-	if len(key) != keyBytes {
-		wipe(key)
-		return nil, ErrInvalidFormat
-	}
-	return key, nil
+	wipe(key)
+	return nil
 }
 
 func (v *Vault) withKeyLocked(fn func([]byte) error) error {
@@ -855,9 +914,15 @@ func (v *Vault) configureRecoveryLocked(outerKey []byte, password string) error 
 // VerifyRecovery authenticates both password wrappers and every encrypted
 // record in the active generation without creating an unlock lease.
 func (v *Vault) VerifyRecovery(vaultPassword, recoveryPassword string) error {
+	return v.VerifyRecoveryWith(PasswordOnly(vaultPassword), recoveryPassword)
+}
+
+// VerifyRecoveryWith is VerifyRecovery for a vault whose slots need more than a
+// password.
+func (v *Vault) VerifyRecoveryWith(creds Credentials, recoveryPassword string) error {
 	v.mu.Lock()
 	defer v.mu.Unlock()
-	vaultKey, err := v.unwrapVaultKey(vaultPassword, v.header)
+	vaultKey, err := openVaultKey(v.header, creds)
 	if err != nil {
 		return err
 	}
@@ -1143,12 +1208,21 @@ func headersEqual(left, right header) bool {
 // vault-key wrapper is derived from the new password. Record keys are not
 // re-encrypted.
 func (v *Vault) ChangePassword(oldPassword, newPassword string) error {
+	return v.ChangePasswordWith(PasswordOnly(oldPassword), newPassword)
+}
+
+// ChangePasswordWith changes the password on a vault whose slots need more than
+// one factor. The other factors are carried into the rebuilt slot unchanged, so
+// a password-and-keyfile slot still needs the same keyfile afterwards.
+func (v *Vault) ChangePasswordWith(oldCreds Credentials, newPassword string) error {
 	if err := passwordpolicy.ValidateNew(newPassword); err != nil {
 		return errors.Join(ErrInvalidPassword, err)
 	}
 	v.mu.Lock()
 	defer v.mu.Unlock()
-	vaultKey, err := v.unwrapVaultKey(oldPassword, v.header)
+	newCreds := oldCreds
+	newCreds.Password = newPassword
+	vaultKey, err := openVaultKey(v.header, oldCreds)
 	if err != nil {
 		return err
 	}
@@ -1171,21 +1245,18 @@ func (v *Vault) ChangePassword(oldPassword, newPassword string) error {
 	if err != nil {
 		return v.revokeOnIntegrityLocked(err)
 	}
-	salt, err := randomBytes(saltBytes)
-	if err != nil {
-		return err
-	}
-	passwordKey, err := derive(newPassword, salt, v.opts.kdf)
-	if err != nil {
-		return err
-	}
-	defer wipe(passwordKey)
 	nextHeader := v.header
-	nextHeader.KDF = v.opts.kdf
-	nextHeader.Salt = base64.RawStdEncoding.EncodeToString(salt)
-	nextHeader.VaultKey, err = seal(passwordKey, vaultKey, aad(FormatVersion, nextHeader.VaultID, nextHeader.VaultID, "", "vault-key"))
+	var stillOnOldPassword []string
+	nextHeader.Slots, stillOnOldPassword, err = reissueSlots(v.header, oldCreds, newCreds, v.opts.kdf, vaultKey)
 	if err != nil {
 		return err
+	}
+	// Nothing is written if some way in would keep answering to the old
+	// password. Committing here would report a password change that did not
+	// happen, and the user would believe the old one was retired when anyone
+	// holding that keyfile or key could still use it.
+	if len(stillOnOldPassword) != 0 {
+		return fmt.Errorf("%w: %s", ErrPasswordStillInUse, strings.Join(stillOnOldPassword, ", "))
 	}
 	files, err := v.collectRecordFiles(ring, nil, outerKey)
 	if err != nil {
@@ -1198,6 +1269,84 @@ func (v *Vault) ChangePassword(oldPassword, newPassword string) error {
 		return errors.Join(ErrSecureMemory, err)
 	}
 	return nil
+}
+
+// Rekey re-wraps the vault key under new KDF parameters, keeping the same
+// password. The vault key itself, the per-record data keys and every record
+// ciphertext are unchanged: only the header envelope is rebuilt. A vault whose
+// outer layer is enabled must be unlocked, so that the new generation can be
+// re-sealed; use RekeyWithRecovery to rekey a copy that is still locked.
+func (v *Vault) Rekey(password string, params KDFParams) error {
+	return v.RekeyWith(PasswordOnly(password), params)
+}
+
+// RekeyWith rekeys a vault whose slots need more than a password. Every factor
+// the slot lists is re-derived under the new parameters, so a password-and-keyfile
+// slot still needs the same keyfile afterwards.
+func (v *Vault) RekeyWith(creds Credentials, params KDFParams) error {
+	v.mu.Lock()
+	defer v.mu.Unlock()
+	var outerKey []byte
+	if v.header.OuterVersion != 0 {
+		if v.outerLease == nil {
+			return ErrOuterKeyRequired
+		}
+		if err := v.outerLease.With(func(key []byte) error {
+			outerKey = append([]byte(nil), key...)
+			return nil
+		}); err != nil {
+			return errors.Join(ErrSecureMemory, ErrOneOperationRequired, err, v.destroyLeasesLocked())
+		}
+		defer wipe(outerKey)
+	}
+	return v.rekeyLocked(creds, outerKey, params)
+}
+
+// RekeyWithRecovery rekeys a double-encrypted vault that has not been
+// unlocked, recovering the outer key from the recovery wrapper. The recovered
+// key is never returned to the caller.
+func (v *Vault) RekeyWithRecovery(vaultPassword, recoveryPassword string, params KDFParams) error {
+	return v.RekeyWithRecoveryAndFactors(PasswordOnly(vaultPassword), recoveryPassword, params)
+}
+
+// RekeyWithRecoveryAndFactors is RekeyWithRecovery for a vault whose slots need
+// more than a password.
+func (v *Vault) RekeyWithRecoveryAndFactors(creds Credentials, recoveryPassword string, params KDFParams) error {
+	v.mu.Lock()
+	defer v.mu.Unlock()
+	outerKey, err := openRecoveryOuterKey(recoveryPassword, v.header)
+	if err != nil {
+		return err
+	}
+	defer wipe(outerKey)
+	return v.rekeyLocked(creds, outerKey, params)
+}
+
+func (v *Vault) rekeyLocked(creds Credentials, outerKey []byte, params KDFParams) error {
+	if err := validateKDF(params); err != nil {
+		return err
+	}
+	vaultKey, err := openVaultKey(v.header, creds)
+	if err != nil {
+		return err
+	}
+	defer wipe(vaultKey)
+	ring, err := v.loadKeyring(vaultKey, outerKey)
+	if err != nil {
+		return v.revokeOnIntegrityLocked(err)
+	}
+	nextHeader := v.header
+	// Skipped slots are not a problem here: rekeying only changes derivation
+	// cost, so a slot left alone keeps working with the same factors.
+	nextHeader.Slots, _, err = reissueSlots(v.header, creds, creds, params, vaultKey)
+	if err != nil {
+		return err
+	}
+	files, err := v.collectRecordFiles(ring, nil, outerKey)
+	if err != nil {
+		return v.revokeOnIntegrityLocked(err)
+	}
+	return v.commitGenerationLocked(vaultKey, outerKey, nextHeader, ring, files)
 }
 
 func (v *Vault) collectRecordFiles(ring keyringPayload, replacements map[string][]byte, outerKey []byte) (map[string][]byte, error) {

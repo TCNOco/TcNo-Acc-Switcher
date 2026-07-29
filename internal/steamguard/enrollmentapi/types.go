@@ -3,6 +3,7 @@
 package enrollmentapi
 
 import (
+	"fmt"
 	"runtime"
 	"time"
 )
@@ -116,7 +117,14 @@ type SteamError struct {
 	ResultCode int32
 }
 
-func (*SteamError) Error() string { return ErrSteamRejected.Error() }
+// Error carries Steam's result code. Without it every rejection reads the same,
+// and the code is the only thing that distinguishes "wrong confirmation code"
+// from "already has an authenticator" or a rate limit. It is a status number,
+// not account data, so it is safe to log.
+func (e *SteamError) Error() string {
+	return fmt.Sprintf("%s (Steam result code %d)", ErrSteamRejected.Error(), e.ResultCode)
+}
+
 func (*SteamError) Unwrap() error { return ErrSteamRejected }
 
 func wipe(value []byte) {

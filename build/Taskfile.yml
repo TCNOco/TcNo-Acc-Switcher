@@ -85,13 +85,17 @@ tasks:
     summary: Generates bindings for the frontend
     deps:
       - task: go:mod:tidy
+    # Listed per source root rather than a repo-wide `**/*.go`: the workspace-local
+    # caches (.cache, .codex-cache, .pnpm-store) and agent worktrees under .claude
+    # add ~63k matching files / 1.5 GB that Task would stat and checksum on every run.
     sources:
-      - "**/*.[jt]s"
-      - exclude: frontend/**/*
-      - frontend/bindings/**/*  # Rerun when switching between dev/production mode causes changes in output
-      - "**/*.go"
+      - "*.go"
+      - internal/**/*.go
+      - build/**/*.go
+      - other/**/*.go
       - go.mod
       - go.sum
+      - frontend/bindings/**/*  # Rerun when switching between dev/production mode causes changes in output
     generates:
       - frontend/bindings/**/*
     cmds:

@@ -27,12 +27,41 @@ type header struct {
 	Version      int              `json:"version"`
 	VaultID      string           `json:"vaultId"`
 	KeyringID    string           `json:"keyringId"`
-	KDF          KDFParams        `json:"kdf"`
-	Salt         string           `json:"salt"`
-	VaultKey     envelope         `json:"vaultKey"`
+	Slots        []keySlot        `json:"slots"`
 	OuterVersion int              `json:"outerVersion,omitempty"`
 	OuterProof   envelope         `json:"outerProof,omitempty"`
 	Recovery     *recoveryWrapper `json:"recovery,omitempty"`
+}
+
+// keySlot is one way to open the vault. Slots are alternatives: any single slot
+// opens it. Every factor within a slot is required, which makes the slot the
+// unit that expresses "password AND security key" — enrolling those as two
+// slots would instead mean "either one alone", which looks identical in a list
+// and is the easiest way to ship a vault that is weaker than it appears.
+type keySlot struct {
+	ID       string       `json:"id"`
+	Label    string       `json:"label"`
+	Factors  []slotFactor `json:"factors"`
+	VaultKey envelope     `json:"vaultKey"`
+}
+
+// slotFactor is one required input to a slot's key. Salt is per factor. KDF is
+// present only for factors derived from something the user types, and absent
+// for factors that already carry full entropy.
+type slotFactor struct {
+	Type      string     `json:"type"`
+	Salt      string     `json:"salt"`
+	KDF       *KDFParams `json:"kdf,omitempty"`
+	KeyfileID string     `json:"keyfileId,omitempty"`
+
+	// Security-key descriptors. None of this is secret, and all of it travels
+	// with a backup so an enrolled key still opens a copy on another machine.
+	// UV is fixed at enrolment: asserting with a different user-verification
+	// setting yields different bytes from the authenticator, so changing it
+	// would silently stop the slot opening.
+	CredentialID string `json:"credentialId,omitempty"`
+	RPID         string `json:"rpId,omitempty"`
+	UV           bool   `json:"uv,omitempty"`
 }
 
 type recoveryWrapper struct {

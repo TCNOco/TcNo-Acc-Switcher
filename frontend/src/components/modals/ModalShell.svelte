@@ -7,6 +7,7 @@
   import { DUR, motionEnabled } from "../../lib/animation";
   import { modalFocus } from "../../lib/modalFocus";
   import { t } from "../../stores/i18n";
+  import { modalBackAction } from "../../stores/modalBack";
   import {
     MODAL_FRAME_MIN_H,
     MODAL_FRAME_MIN_W,
@@ -30,6 +31,16 @@
   export let modalId = 0;
 
   const dispatch = createEventDispatcher<{ cancel: void }>();
+
+  /**
+   * Kinds whose body is a line or two of text and a button row. The frame has a
+   * minimum height, so these leave slack; centring puts it above and below
+   * rather than dumping it all under the content.
+   *
+   * Deliberately not every kind: the file picker, Steam Guard and the
+   * component-bodied dialogs fill the frame themselves.
+   */
+  const SHORT_BODY_KINDS = new Set(["alert", "confirm", "prompt"]);
 
   function minFrameWidth(modalKind: string): number {
     if (modalKind === "folder") return MODAL_FRAME_MIN_W_FOLDER;
@@ -216,6 +227,7 @@
     class:modalFG--ready={frameReady}
     class:modalFilePicker={kind === "folder"}
     class:modalSteamGuard={kind === "steamGuard"}
+    class:modalShortBody={SHORT_BODY_KINDS.has(kind)}
     bind:this={modalFgEl}
     use:modalFocus={{ onEscape: onCancel, initialFocus: preferredInitialFocus }}
     role="dialog"
@@ -239,6 +251,21 @@
       <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
       <header class="modal-headerbar" bind:this={headerEl} on:pointerdown={onHeaderPointerDown}>
         <span class="modal-title-left">
+          {#if $modalBackAction}
+            <!-- Sits where the window back button does, so leaving a screen is
+                 in the same place whether you are in a modal or not. The body
+                 publishes the action, so this mirrors that screen's own back,
+                 close or show-all control rather than adding a second meaning. -->
+            <button
+              type="button"
+              class="win-btn win-btn-back"
+              title={$modalBackAction.label}
+              aria-label={$modalBackAction.label}
+              on:click={() => $modalBackAction?.run()}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" aria-hidden="true"><path d="M34.52 239.03L228.87 44.69c9.37-9.37 24.57-9.37 33.94 0l22.67 22.67c9.36 9.36 9.37 24.52.04 33.9L131.49 256l154.02 154.75c9.34 9.38 9.32 24.54-.04 33.9l-22.67 22.67c-9.37 9.37-24.57 9.37-33.94 0L34.52 272.97c-9.37-9.37-9.37-24.57 0-33.94z" /></svg>
+            </button>
+          {/if}
           <svg
             class="header_icon"
             xmlns="http://www.w3.org/2000/svg"
@@ -344,6 +371,15 @@
   .modalFG.modalSteamGuard .modal-scroll {
     display: flex;
     flex-direction: column;
+  }
+
+  /* `safe` so that a body which turns out to be taller than the frame still
+     scrolls from its top: centred overflow otherwise puts the first line above
+     the scroll origin, out of reach. */
+  .modalFG.modalShortBody .modal-scroll {
+    display: flex;
+    flex-direction: column;
+    justify-content: safe center;
   }
 
   .modalFG.modalFilePicker:not(.modalFG--ready) {
@@ -475,6 +511,34 @@
     display: flex;
     height: 100%;
     cursor: default;
+  }
+
+  /* Geometry from the window controls, glyph from the titlebar back button, so
+     it reads as the same control in both places. */
+  .modal-title-left .win-btn-back {
+    --wails-draggable: no-drag;
+    border-radius: 0;
+    background: none;
+    border: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 100%;
+    padding: 0;
+    cursor: pointer;
+    color: var(--modal-header-fg, var(--whiteSecondary));
+
+    svg {
+      display: block;
+      height: 0.8rem;
+      fill: currentColor;
+    }
+
+    &:hover {
+      background: var(--window-control-hover-bg);
+    }
   }
 
   .modal-window-controls .win-btn {

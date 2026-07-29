@@ -26,6 +26,10 @@ const DefaultRequestTimeout = 20 * time.Second
 type APIClient interface {
 	AddAuthenticator(context.Context, enrollmentapi.AddRequest, time.Duration) (enrollmentapi.AddResult, error)
 	FinalizeAddAuthenticator(context.Context, enrollmentapi.FinalizeRequest, time.Duration) (enrollmentapi.FinalizeResult, error)
+	// QueryStatus reads the account's live two-factor state. It is used to tell
+	// an authenticator Steam has already activated from one that never got that
+	// far, without needing another confirmation code.
+	QueryStatus(context.Context, uint64, []byte, time.Duration) (enrollmentapi.StatusResult, error)
 }
 
 // recordVault is deliberately the narrow encrypted-storage boundary used by

@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"testing"
 
+	"TcNo-Acc-Switcher/internal/passwordpolicy"
 	"TcNo-Acc-Switcher/internal/paths"
 )
 
@@ -271,17 +272,22 @@ func TestPasswordSetupAndChangeRejectEmptyPassword(t *testing.T) {
 func TestNewAppPasswordPolicy(t *testing.T) {
 	resetSecurityTest(t)
 
-	if err := SetAppPassword("x"); err != nil {
-		t.Fatalf("SetAppPassword(one character) error = %v", err)
+	if err := SetAppPassword("x"); !errors.Is(err, passwordpolicy.ErrTooShort) {
+		t.Fatalf("SetAppPassword(one character) error = %v, want %v", err, passwordpolicy.ErrTooShort)
 	}
-	if err := VerifyAppPassword("x"); err != nil {
-		t.Fatalf("VerifyAppPassword(one character) error = %v", err)
+	if err := SetAppPassword("abcde"); err != nil {
+		t.Fatalf("SetAppPassword(minimum length) error = %v", err)
+	}
+	if err := VerifyAppPassword("abcde"); err != nil {
+		t.Fatalf("VerifyAppPassword(minimum length) error = %v", err)
 	}
 }
 
 func TestLegacyPasswordUnlockCompatibilityAndSteamGuardEligibility(t *testing.T) {
 	resetSecurityTest(t)
-	const legacyPassword = "short"
+	// Deliberately below the current minimum: this pins that raising the policy
+	// never rejects a password the user already has.
+	const legacyPassword = "abc"
 	writeLegacySecurityFile(t, legacyPassword)
 
 	if err := UnlockApp(legacyPassword); err != nil {
@@ -295,6 +301,57 @@ func TestLegacyPasswordUnlockCompatibilityAndSteamGuardEligibility(t *testing.T)
 	}
 	if err := VerifyAppPassword("replacement app password"); err != nil {
 		t.Fatalf("eligible replacement was rejected: %v", err)
+	}
+}
+
+// argon2.IDKey aborts the process when its single allocation fails, so KDF
+// parameters read off disk have to be rejected before derivation rather than
+// recovered from afterwards.
+func TestSecurityFileKDFParametersAreBounded(t *testing.T) {
+	hostile := []struct {
+		name string
+		kdf  KDFParams
+	}{
+		{name: "memory beyond the ceiling", kdf: KDFParams{Algorithm: "argon2id", Time: 1, MemoryKB: 8 * 1024 * 1024, Threads: 1, KeyLen: vaultKeyBytes}},
+		{name: "time beyond the ceiling", kdf: KDFParams{Algorithm: "argon2id", Time: 9999, MemoryKB: 64 * 1024, Threads: 1, KeyLen: vaultKeyBytes}},
+		{name: "threads beyond the ceiling", kdf: KDFParams{Algorithm: "argon2id", Time: 1, MemoryKB: 64 * 1024, Threads: 255, KeyLen: vaultKeyBytes}},
+		{name: "unsupported algorithm", kdf: KDFParams{Algorithm: "scrypt", Time: 1, MemoryKB: 64 * 1024, Threads: 1, KeyLen: vaultKeyBytes}},
+	}
+
+	for _, test := range hostile {
+		t.Run(test.name, func(t *testing.T) {
+			resetSecurityTest(t)
+			if err := saveSecurityFile(securityFile{
+				Version: securityVersion,
+				KDF:     test.kdf,
+				Salt:    encode(make([]byte, 16)),
+			}); err != nil {
+				t.Fatal(err)
+			}
+			if _, _, err := loadSecurityFile(); err == nil {
+				t.Fatal("loadSecurityFile accepted out-of-range KDF parameters")
+			}
+			if err := UnlockApp("any password at all"); err == nil {
+				t.Fatal("UnlockApp accepted out-of-range KDF parameters")
+			}
+		})
+	}
+}
+
+// The parameters this app actually writes must survive the bounds check, or
+// the fix locks every existing user out.
+func TestWrittenKDFParametersPassBounds(t *testing.T) {
+	if err := validateKDFParams(defaultKDFParams()); err != nil {
+		t.Fatalf("defaultKDFParams rejected: %v", err)
+	}
+	calibrated, key := calibrateAndDeriveKey("correct horse battery staple", make([]byte, 16))
+	wipeBytes(key)
+	if err := validateKDFParams(calibrated); err != nil {
+		t.Fatalf("calibrated params rejected: %v", err)
+	}
+	// A file written before TargetMillis existed leaves zero fields behind.
+	if err := validateKDFParams(KDFParams{Algorithm: "argon2id", Time: 1, MemoryKB: 8 * 1024, Threads: 1, KeyLen: vaultKeyBytes}); err != nil {
+		t.Fatalf("legacy params rejected: %v", err)
 	}
 }
 

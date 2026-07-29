@@ -3,8 +3,24 @@
   import { createEventDispatcher } from "svelte";
   import { t } from "../../stores/i18n";
   import type { PasswordSetupResult } from "../../stores/modal";
-  import { passwordPolicyMessage, validateNewPassword } from "../../lib/passwordPolicy";
+  import {
+    MIN_PASSWORD_LENGTH,
+    passwordPolicyMessage,
+    validateNewPassword,
+  } from "../../lib/passwordPolicy";
+  import { escapeHtml } from "../../lib/html";
+  import { openExternalUrl } from "../../lib/openExternalUrl";
   import ModalBodyShell from "./ModalBodyShell.svelte";
+
+  // A real handler, not an anchor inside setupBodyHtml: sanitizeHtml stamps
+  // target="_blank" on anchors and the navigation guard then refuses them, so
+  // an injected link would be silently dead.
+  const PASSWORD_HELP_URL =
+    "https://github.com/TCNOco/TcNo-Acc-Switcher/blob/master/docs/steam-guard-passwords-and-factors.md";
+
+  function openPasswordHelp(): void {
+    void openExternalUrl(PASSWORD_HELP_URL);
+  }
 
   export let positiveLabel = "";
   export let negativeLabel = "";
@@ -19,15 +35,6 @@
   let setupBodyHtml = "";
   const errorId = "password-setup-error";
 
-  function escapeHtml(value: string): string {
-    return value
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll("\"", "&quot;")
-      .replaceAll("'", "&#39;");
-  }
-
   $: setupBodyHtml = `<p>${escapeHtml($t("Security_SetPasswordIntro"))}</p><p>${escapeHtml($t("Security_SetPasswordEncryptionHint"))}</p>`;
 
   function cancel(): void {
@@ -38,7 +45,7 @@
     error = "";
     const policyError = validateNewPassword(password);
     if (policyError) {
-      error = passwordPolicyMessage(policyError);
+      error = passwordPolicyMessage(policyError, $t);
       requestAnimationFrame(() => {
         passwordEl?.focus();
       });
@@ -98,6 +105,13 @@
     <p id={errorId} class="modal-error" role="alert">{error}</p>
   {/if}
 
+  <p class="modal-help">
+    {$t("Security_PasswordHint", { count: MIN_PASSWORD_LENGTH })}
+    <button type="button" class="modal-link" on:click={openPasswordHelp}>
+      {$t("Security_PasswordLearnMore")}
+    </button>
+  </p>
+
   <div class="modal-inline-actions settingsCol inputAndButton">
     <span class="modal-actions-spacer"></span>
     <button type="button" class="btnicontext modal-primary" on:click={submit}>
@@ -119,5 +133,21 @@
   .modal-error {
     color: var(--danger, #ff6b6b);
     margin: 0.75rem 0 0;
+  }
+
+  .modal-help {
+    margin: 0.75rem 0 0;
+    opacity: 0.8;
+    font-size: 0.9em;
+  }
+
+  .modal-link {
+    background: none;
+    border: 0;
+    padding: 0;
+    font: inherit;
+    color: var(--accent, #4da3ff);
+    text-decoration: underline;
+    cursor: pointer;
   }
 </style>

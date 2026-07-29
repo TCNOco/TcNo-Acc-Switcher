@@ -186,6 +186,142 @@ Function .onInit
 FunctionEnd
 
 ;--------------------------------
+;Legacy C# install cleanup
+;
+;The C# release (4.x and earlier) used this same folder and the same main exe
+;name, so installing over it overwrites TcNo-Acc-Switcher.exe and strands
+;~250 MB of .NET assemblies, PDBs and asset folders. Deletion is by explicit
+;name: a "remove everything we didn't install" sweep would take a portable data
+;folder or the user's own files with it.
+;
+;Keep in sync with internal/legacyinstall/manifest.go, which does the same job
+;for installs that were already upgraded before this shipped.
+
+;Renames $INSTDIR\<FileName> to <FileName>.old, replacing any earlier backup.
+;Rename fails outright if the target exists, hence the Delete. The relative
+;jump skips exactly the two instructions below it.
+!macro SetAsideLegacyFile FileName
+  IfFileExists "$INSTDIR\${FileName}" 0 +3
+    Delete "$INSTDIR\${FileName}.old"
+    Rename "$INSTDIR\${FileName}" "$INSTDIR\${FileName}.old"
+!macroend
+
+Function CleanLegacyInstall
+  ;C#-only markers. Nothing is deleted unless one of these is present.
+  IfFileExists "$INSTDIR\TcNo-Acc-Switcher-Server.exe" legacy_found 0
+  IfFileExists "$INSTDIR\TcNo-Acc-Switcher-Server.dll" legacy_found 0
+  IfFileExists "$INSTDIR\TcNo-Acc-Switcher-Globals.dll" legacy_found 0
+  IfFileExists "$INSTDIR\_First_Run_Installer.exe" legacy_found 0
+  Return
+
+  legacy_found:
+  SetDetailsPrint both
+  DetailPrint "Removing files from the previous version..."
+  SetDetailsPrint listonly
+
+  ;TcNo-Acc-Switcher.exe is absent on purpose: the C# launcher shared the name
+  ;and is replaced by the extract below.
+  Delete "$INSTDIR\Additional Licenses.txt"
+  Delete "$INSTDIR\CefSharp.Wpf.dll"
+  Delete "$INSTDIR\Disclaimer.txt"
+  Delete "$INSTDIR\DiscordRPC.dll"
+  Delete "$INSTDIR\ExCSS.dll"
+  Delete "$INSTDIR\Gameloop.Vdf.JsonConverter.dll"
+  Delete "$INSTDIR\Gameloop.Vdf.dll"
+  Delete "$INSTDIR\HtmlAgilityPack.dll"
+  Delete "$INSTDIR\IconLib.dll"
+  Delete "$INSTDIR\Magick.NET-Q8-AnyCPU.dll"
+  Delete "$INSTDIR\Magick.NET.Core.dll"
+  Delete "$INSTDIR\Microsoft.Extensions.DependencyInjection.Abstractions.dll"
+  Delete "$INSTDIR\Microsoft.Extensions.Localization.Abstractions.dll"
+  Delete "$INSTDIR\Microsoft.Extensions.Localization.dll"
+  Delete "$INSTDIR\Microsoft.Extensions.Logging.Abstractions.dll"
+  Delete "$INSTDIR\Microsoft.Extensions.Options.dll"
+  Delete "$INSTDIR\Microsoft.Extensions.Primitives.dll"
+  Delete "$INSTDIR\Microsoft.IO.RecyclableMemoryStream.dll"
+  Delete "$INSTDIR\Microsoft.Web.WebView2.Core.dll"
+  Delete "$INSTDIR\Microsoft.Web.WebView2.Core.xml"
+  Delete "$INSTDIR\Microsoft.Web.WebView2.WinForms.dll"
+  Delete "$INSTDIR\Microsoft.Web.WebView2.WinForms.xml"
+  Delete "$INSTDIR\Microsoft.Web.WebView2.Wpf.dll"
+  Delete "$INSTDIR\Microsoft.Web.WebView2.Wpf.xml"
+  Delete "$INSTDIR\Newtonsoft.Json.dll"
+  Delete "$INSTDIR\Privacy Policy.txt"
+  Delete "$INSTDIR\SevenZipExtractor.dll"
+  Delete "$INSTDIR\SevenZipSharp.dll"
+  Delete "$INSTDIR\SharpScss.dll"
+  Delete "$INSTDIR\ShimSkiaSharp.dll"
+  Delete "$INSTDIR\SkiaSharp.dll"
+  Delete "$INSTDIR\SteamKit2.dll"
+  Delete "$INSTDIR\Svg.Custom.dll"
+  Delete "$INSTDIR\Svg.Model.dll"
+  Delete "$INSTDIR\Svg.Skia.dll"
+  Delete "$INSTDIR\System.IO.Hashing.dll"
+  Delete "$INSTDIR\System.Management.dll"
+  Delete "$INSTDIR\System.ServiceProcess.ServiceController.dll"
+  Delete "$INSTDIR\TcNo-Acc-Switcher-Globals.dll"
+  Delete "$INSTDIR\TcNo-Acc-Switcher-Globals.pdb"
+  Delete "$INSTDIR\TcNo-Acc-Switcher-Server.deps.json"
+  Delete "$INSTDIR\TcNo-Acc-Switcher-Server.dll"
+  Delete "$INSTDIR\TcNo-Acc-Switcher-Server.exe"
+  Delete "$INSTDIR\TcNo-Acc-Switcher-Server.pdb"
+  Delete "$INSTDIR\TcNo-Acc-Switcher-Server.runtimeconfig.json"
+  Delete "$INSTDIR\TcNo-Acc-Switcher-Server.staticwebassets.endpoints.json"
+  Delete "$INSTDIR\TcNo-Acc-Switcher-Server.staticwebassets.runtime.json"
+  Delete "$INSTDIR\TcNo-Acc-Switcher-Server_main.exe"
+  Delete "$INSTDIR\TcNo-Acc-Switcher-Tray.deps.json"
+  Delete "$INSTDIR\TcNo-Acc-Switcher-Tray.dll"
+  Delete "$INSTDIR\TcNo-Acc-Switcher-Tray.exe"
+  Delete "$INSTDIR\TcNo-Acc-Switcher-Tray.pdb"
+  Delete "$INSTDIR\TcNo-Acc-Switcher-Tray.runtimeconfig.json"
+  Delete "$INSTDIR\TcNo-Acc-Switcher-Tray_main.exe"
+  Delete "$INSTDIR\TcNo-Acc-Switcher-Updater.dll"
+  Delete "$INSTDIR\TcNo-Acc-Switcher.deps.json"
+  Delete "$INSTDIR\TcNo-Acc-Switcher.dll"
+  Delete "$INSTDIR\TcNo-Acc-Switcher.pdb"
+  Delete "$INSTDIR\TcNo-Acc-Switcher.runtimeconfig.json"
+  Delete "$INSTDIR\TcNo-Acc-Switcher_main.exe"
+  Delete "$INSTDIR\VCDiff.dll"
+  Delete "$INSTDIR\YamlDotNet.dll"
+  Delete "$INSTDIR\ZstdSharp.dll"
+  Delete "$INSTDIR\_First_Run_Installer.exe"
+  Delete "$INSTDIR\appsettings.Development.json"
+  Delete "$INSTDIR\appsettings.json"
+  Delete "$INSTDIR\protobuf-net.Core.dll"
+  Delete "$INSTDIR\protobuf-net.dll"
+  Delete "$INSTDIR\runas.dll"
+  Delete "$INSTDIR\runas.exe"
+  Delete "$INSTDIR\runas.runtimeconfig.json"
+  Delete "$INSTDIR\securifybv.PropertyStore.dll"
+  Delete "$INSTDIR\securifybv.ShellLink.dll"
+  Delete "$INSTDIR\temp.dll"
+  Delete "$INSTDIR\UpdateFinalizeLog.txt"
+
+  ;The C# catalogs are set aside rather than deleted. Nothing imports them -
+  ;they are frozen at the last C# release and would shadow the newer ones this
+  ;build ships - but a user may have edited one, and .old leaves the old
+  ;contents somewhere they can port changes across from by hand.
+  !insertmacro SetAsideLegacyFile "Platforms.json"
+  !insertmacro SetAsideLegacyFile "GameStats.json"
+
+  RMDir /r "$INSTDIR\Platforms"
+  RMDir /r "$INSTDIR\Resources"
+  RMDir /r "$INSTDIR\inc"
+  RMDir /r "$INSTDIR\originalwwwroot"
+  RMDir /r "$INSTDIR\runtimes"
+  RMDir /r "$INSTDIR\themes"
+  RMDir /r "$INSTDIR\updater"
+  RMDir /r "$INSTDIR\x64"
+  RMDir /r "$INSTDIR\x86"
+
+  ;The C# installer used a different uninstall key name, so without this the app
+  ;is listed twice in Add/Remove Programs.
+  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\TcNo-Acc-Switcher"
+
+  SetDetailsPrint both
+FunctionEnd
+
+;--------------------------------
 ;Installer Sections
 
 Section "Start Menu shortcuts" Shortcuts_StartMenu
@@ -203,6 +339,8 @@ Section "Main files" InstSec
   SetShellVarContext all
 
   SetOutPath "$INSTDIR"
+
+  Call CleanLegacyInstall
 
   ;--- WebView2 Runtime ---
   ReadRegStr $0 HKLM "SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}" "pv"

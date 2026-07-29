@@ -10,7 +10,9 @@ Use **Create Verified Backup** while the app is running. It copies one consisten
 
 Store a backup away from the PC. A disk failure, Windows reinstall, or stolen computer can remove both the working vault and a backup kept beside it. Keep Steam recovery codes and Steam's own account-recovery information separately.
 
-A backup remains encrypted. It does not bypass either password. Losing the Steam Guard password makes the inner vault unreadable. If saved-account encryption supplies an outer layer, losing the app password also makes that copy unreadable. TcNo Account Switcher cannot reset either password or ask Steam to recreate the stored secrets.
+A backup remains encrypted. It opens with whatever factors the vault had enrolled when the backup was made, and with nothing else. Losing every enrolled factor makes the copy unreadable. If saved-account encryption supplies an outer layer, losing the app password also makes that copy unreadable. TcNo Account Switcher cannot reset a password, reconstruct a keyfile, reissue a backup key, or ask Steam to recreate the stored secrets.
+
+A backup derives its key more slowly than the live vault, so creating and restoring one takes noticeably longer than an ordinary unlock. Restoring returns the vault to the live cost.
 
 ## Password and encryption layers
 
@@ -23,6 +25,8 @@ Every Steam Guard vault has its own password and encryption layer. It is indepen
 | App password set; saved-account encryption on | Encrypted once with the Steam Guard password and again with the app encryption layer |
 
 The two password prompts are managed separately. Setting or changing one does not silently replace the other.
+
+A Steam Guard password must be at least five characters, with no other requirements. A vault can also have a keyfile or a backup key enrolled alongside or instead of its password. See [Steam Guard passwords and factors](steam-guard-passwords-and-factors.md) for what each option protects and what cannot be recovered.
 
 With **Remember Steam Guard password for session** off, a successful unlock lasts five minutes and then locks again. Selecting the session option in settings or the unlock dialog keeps the vault unlocked until the app exits, the user locks it, or the protected session is revoked. The remembered key stays in process memory; it is not written as a plaintext password.
 

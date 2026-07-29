@@ -213,14 +213,14 @@ await PreviewCssContrastSampler.run({ prepare: true })
     },
     {
       section: "top",
-      label: "VAC account image ring",
-      selector: ".preview_accounts_wrap img.status_vac",
+      label: "VAC account name",
+      selector: ".preview_accounts_wrap h6.acc_name--vac",
       state: "vac",
     },
     {
       section: "top",
-      label: "Limited account image ring",
-      selector: ".preview_accounts_wrap img.status_limited",
+      label: "Limited account name",
+      selector: ".preview_accounts_wrap h6.acc_name--limited",
       state: "limited",
     },
     {

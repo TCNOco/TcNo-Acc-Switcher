@@ -87,7 +87,10 @@
             {/if}
             <div class="app-lock-actions modal-inline-actions settingsCol inputAndButton">
               <span class="modal-actions-spacer"></span>
-              <button type="submit" class="btnicontext modal-primary" disabled={loading}>
+              <!-- type="button" with an explicit handler: a submit button only
+                   acts through native form submission, which the navigation
+                   guard cancels, leaving the button dead to the mouse. -->
+              <button type="button" class="btnicontext modal-primary" disabled={loading} on:click={submit}>
                 {$t("Security_Unlock")}
               </button>
             </div>

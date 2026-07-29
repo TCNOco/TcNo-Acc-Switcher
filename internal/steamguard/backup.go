@@ -33,6 +33,20 @@ var (
 // CreateVerifiedBackup copies the encrypted vault into a new protected folder,
 // then independently opens and decrypts every copied record before reporting success.
 func (s *Service) CreateVerifiedBackup(steamGuardPassword, appPassword string) (string, error) {
+	return s.CreateVerifiedBackupWithFactors(steamGuardPassword, appPassword, "", "")
+}
+
+// CreateVerifiedBackupWithFactors backs up a vault whose slots need more than a
+// password. The backup copy is rekeyed to the deliberately expensive backup
+// parameters, which re-derives every factor of the slot, so the same keyfile or
+// backup key opens the copy as opens the original.
+func (s *Service) CreateVerifiedBackupWithFactors(steamGuardPassword, appPassword, keyfilePath, backupKey string) (string, error) {
+	creds, err := buildVaultCredentials(steamGuardPassword, keyfilePath, backupKey)
+	if err != nil {
+		return "", err
+	}
+	defer wipe(creds.Keyfile)
+	defer wipe(creds.RecoveryCode)
 	app := application.Get()
 	if app == nil {
 		return "", errors.New("application not initialised")
@@ -56,11 +70,15 @@ func (s *Service) CreateVerifiedBackup(steamGuardPassword, appPassword string) (
 	if strings.TrimSpace(parent) == "" {
 		return "", nil
 	}
-	return s.createVerifiedBackupAt(parent, steamGuardPassword, appPassword, time.Now().UTC())
+	return s.createVerifiedBackupAtWith(parent, creds, appPassword, time.Now().UTC())
 }
 
 func (s *Service) createVerifiedBackupAt(parent, steamGuardPassword, appPassword string, now time.Time) (string, error) {
-	if steamGuardPassword == "" {
+	return s.createVerifiedBackupAtWith(parent, vault.PasswordOnly(steamGuardPassword), appPassword, now)
+}
+
+func (s *Service) createVerifiedBackupAtWith(parent string, creds vault.Credentials, appPassword string, now time.Time) (string, error) {
+	if creds.Password == "" && len(creds.Keyfile) == 0 && len(creds.RecoveryCode) == 0 {
 		return "", vault.ErrInvalidPassword
 	}
 	parent = filepath.Clean(strings.TrimSpace(parent))
@@ -111,7 +129,12 @@ func (s *Service) createVerifiedBackupAt(parent, steamGuardPassword, appPassword
 	if err := copyBackupTree(canonicalSource, destination); err != nil {
 		return "", err
 	}
-	if err := verifyCopiedVault(destination, steamGuardPassword, appPassword, securityStatus, s.vaultOptions); err != nil {
+	if err := rekeyCopiedVault(destination, creds, appPassword, securityStatus, s.backupKDFParams(), s.vaultOptions); err != nil {
+		return "", err
+	}
+	// Verification runs after the rekey so that it proves the password still
+	// unwraps under the backup's new parameters, not the live vault's.
+	if err := verifyCopiedVault(destination, creds, appPassword, securityStatus, s.vaultOptions); err != nil {
 		return "", err
 	}
 	settings, err := LoadSettings()
@@ -252,7 +275,23 @@ func copyBackupFile(source, destination string, expected os.FileInfo) error {
 	return nil
 }
 
-func verifyCopiedVault(path, steamGuardPassword, appPassword string, appPasswordSet bool, options []vault.Option) error {
+// rekeyCopiedVault raises the KDF cost of a backup copy. A backup is opened
+// rarely and is the copy most likely to end up somewhere the live vault never
+// goes, so it earns a far more expensive derivation. Only the copy's header is
+// rewritten: the vault key, the per-record data keys and every record
+// ciphertext are carried across untouched.
+func rekeyCopiedVault(path string, creds vault.Credentials, appPassword string, appPasswordSet bool, params vault.KDFParams, options []vault.Option) error {
+	copyVault, err := vault.Open(path, options...)
+	if err != nil {
+		return err
+	}
+	if appPasswordSet {
+		return copyVault.RekeyWithRecoveryAndFactors(creds, appPassword, params)
+	}
+	return copyVault.RekeyWith(creds, params)
+}
+
+func verifyCopiedVault(path string, creds vault.Credentials, appPassword string, appPasswordSet bool, options []vault.Option) error {
 	copyVault, err := vault.Open(path, options...)
 	if err != nil {
 		return err
@@ -261,12 +300,12 @@ func verifyCopiedVault(path, steamGuardPassword, appPassword string, appPassword
 		if !copyVault.HasRecoveryWrapper() {
 			return vault.ErrInvalidFormat
 		}
-		return copyVault.VerifyRecovery(steamGuardPassword, appPassword)
+		return copyVault.VerifyRecoveryWith(creds, appPassword)
 	}
 	if copyVault.HasRecoveryWrapper() {
 		return vault.ErrOuterKeyRequired
 	}
-	if err := copyVault.Unlock(steamGuardPassword, vault.FixedLease); err != nil {
+	if err := copyVault.UnlockWith(creds, vault.FixedLease); err != nil {
 		return err
 	}
 	defer copyVault.Lock()

@@ -31,7 +31,11 @@ The account owner supplies passwords, imports, exports, recovery data, and Steam
 
 The design protects stored authenticator secrets against an offline copy of the vault when the attacker lacks the Steam Guard vault password. When an app password exists, the outer AEAD uses a key from the app password or app master-key domain, never the inner Steam Guard password key, even if the ordinary saved-data encryption setting is disabled. Authenticated keyring entries, generation lineage, and the active pointer detect record substitution, truncation, and unauthenticated rollback within the retained local history.
 
-Recovery backups remain self-contained: they carry the encrypted vault record and an authenticated recovery wrapper. Opening a backup requires the Steam Guard password. A double-layer backup also requires the app password; no third recovery secret exists.
+Recovery backups remain self-contained: they carry the encrypted vault record and an authenticated recovery wrapper. Opening a backup requires a factor combination the vault had enrolled when the copy was made. That is the Steam Guard password for a password-only vault, and otherwise any one of the enrolled slots. A double-layer backup also requires the app password.
+
+A backup's key derivation is deliberately more expensive than the live vault's, because a backup is opened rarely and is the copy most likely to leave the machine. Derivation parameters are read from the file being opened and rejected outside fixed bounds, so a supplied vault cannot force an unbounded allocation.
+
+A slot combining several factors requires all of them; separate slots are alternatives. Removing a factor from a slot in the header invalidates that slot rather than lowering what it requires.
 
 ## Unprotected cases and user-visible warnings
 

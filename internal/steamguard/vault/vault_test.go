@@ -155,14 +155,15 @@ func TestWrongPasswordAndLock(t *testing.T) {
 }
 
 func TestCreateAndChangeAcceptUserSelectedPasswords(t *testing.T) {
-	v, err := Create(t.TempDir(), "x", fastOptions()...)
+	v, err := Create(t.TempDir(), "abcde", fastOptions()...)
 	if err != nil {
-		t.Fatalf("Create(one character) error = %v", err)
+		t.Fatalf("Create(minimum length) error = %v", err)
 	}
-	if err := v.Unlock("x", FixedLease); err != nil {
+	if err := v.Unlock("abcde", FixedLease); err != nil {
 		t.Fatal(err)
 	}
-	if err := v.ChangePassword("x", "password"); err != nil {
+	// No composition rules: a common all-lowercase value is accepted.
+	if err := v.ChangePassword("abcde", "password"); err != nil {
 		t.Fatalf("ChangePassword(common value) error = %v", err)
 	}
 	if err := v.Unlock("password", FixedLease); err != nil {
@@ -170,6 +171,12 @@ func TestCreateAndChangeAcceptUserSelectedPasswords(t *testing.T) {
 	}
 	if _, err := Create(t.TempDir(), "", fastOptions()...); !errors.Is(err, ErrInvalidPassword) || !errors.Is(err, passwordpolicy.ErrEmpty) {
 		t.Fatalf("Create(empty) error = %v", err)
+	}
+	if _, err := Create(t.TempDir(), "abcd", fastOptions()...); !errors.Is(err, ErrInvalidPassword) || !errors.Is(err, passwordpolicy.ErrTooShort) {
+		t.Fatalf("Create(below minimum) error = %v", err)
+	}
+	if err := v.ChangePassword("password", "abcd"); !errors.Is(err, passwordpolicy.ErrTooShort) {
+		t.Fatalf("ChangePassword(below minimum) error = %v, want %v", err, passwordpolicy.ErrTooShort)
 	}
 }
 
@@ -495,13 +502,44 @@ func TestKDFBoundsCheckedOnOpen(t *testing.T) {
 	if err := readJSONFile(path, maxHeader, &h); err != nil {
 		t.Fatal(err)
 	}
-	h.KDF.MemoryKiB = maxMemoryKiB + 1
+	h.Slots[0].Factors[0].KDF.MemoryKiB = maxMemoryKiB + 1
 	raw, _ := marshalJSON(h)
 	if err := os.WriteFile(path, raw, 0o600); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := Open(v.root, fastOptions()...); !errors.Is(err, ErrKDFBounds) {
 		t.Fatalf("expected bounds error, got %v", err)
+	}
+}
+
+// Argon2 needs at least 8 blocks per lane. Parameters below that describe no
+// valid derivation, and a header carrying them must be refused rather than
+// handed to argon2.
+func TestKDFRejectsMemoryBelowLaneMinimum(t *testing.T) {
+	p := DefaultKDFParams()
+	p.MemoryKiB = minMemoryKiB
+	p.Lanes = maxLanes
+	if err := validateKDF(p); err != nil {
+		t.Fatalf("valid lane ratio rejected: %v", err)
+	}
+
+	p = KDFParams{Algorithm: "argon2id", MemoryKiB: 16, Passes: 1, Lanes: 8, KeyBytes: keyBytes}
+	if err := validateKDF(p); !errors.Is(err, ErrKDFBounds) {
+		t.Fatalf("memory below 8 blocks per lane accepted: %v", err)
+	}
+}
+
+// The write-side profiles must satisfy the read-side bounds, or the app
+// produces vaults it refuses to reopen.
+func TestWrittenKDFProfilesAreWithinReadBounds(t *testing.T) {
+	if err := validateKDF(DefaultKDFParams()); err != nil {
+		t.Fatalf("DefaultKDFParams rejected: %v", err)
+	}
+	if err := validateKDF(BackupKDFParams()); err != nil {
+		t.Fatalf("BackupKDFParams rejected: %v", err)
+	}
+	if BackupKDFMemoryKiB <= DefaultKDFMemoryKiB {
+		t.Fatal("backup profile is not more expensive than the live profile")
 	}
 }
 
@@ -518,7 +556,8 @@ func TestCorruptWrapperCiphertextAndTruncation(t *testing.T) {
 		if err := readJSONFile(path, maxHeader, &h); err != nil {
 			t.Fatal(err)
 		}
-		h.VaultKey.Ciphertext = h.VaultKey.Ciphertext[:len(h.VaultKey.Ciphertext)-2] + "AA"
+		slotKey := &h.Slots[0].VaultKey
+		slotKey.Ciphertext = slotKey.Ciphertext[:len(slotKey.Ciphertext)-2] + "AA"
 		raw, _ := marshalJSON(h)
 		if err := os.WriteFile(path, raw, 0o600); err != nil {
 			t.Fatal(err)
@@ -1009,7 +1048,7 @@ func TestRecoveryWrapperRoundTripAndPasswordRewrap(t *testing.T) {
 	if v.header.Recovery.Version != RecoveryVersion {
 		t.Fatalf("recovery version=%d", v.header.Recovery.Version)
 	}
-	if v.header.Recovery.Salt == v.header.Salt {
+	if v.header.Recovery.Salt == v.header.Slots[0].Factors[0].Salt {
 		t.Fatal("recovery and vault wrappers reused a salt")
 	}
 	if err := v.Lock(); err != nil {

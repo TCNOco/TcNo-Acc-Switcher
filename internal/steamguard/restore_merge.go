@@ -56,6 +56,19 @@ type RestoreMergeResult struct {
 // stage kept by an earlier "backup_password" outcome is reused, so a retry
 // neither re-copies the backup nor asks for the folder again.
 func (s *Service) PlanRestoreMerge(source, password, backupPassword, backupAppPassword string) (RestoreMergePlan, error) {
+	return s.PlanRestoreMergeWithFactors(source, password, backupPassword, backupAppPassword, "", "")
+}
+
+// PlanRestoreMergeWithFactors plans a merge where either vault needs more than a
+// password. The same keyfile and backup key are offered to both: the live vault
+// and the backup are the same vault at two points in time, so the factors
+// enrolled in one almost always open the other.
+func (s *Service) PlanRestoreMergeWithFactors(source, password, backupPassword, backupAppPassword, keyfilePath, backupKey string) (RestoreMergePlan, error) {
+	live, backup, err := mergeCredentials(password, backupPassword, keyfilePath, backupKey)
+	if err != nil {
+		return RestoreMergePlan{}, err
+	}
+	defer wipeMergeCredentials(live)
 	s.mu.Lock()
 	stage := s.restoreMergeStage
 	s.mu.Unlock()
@@ -63,12 +76,30 @@ func (s *Service) PlanRestoreMerge(source, password, backupPassword, backupAppPa
 		if strings.TrimSpace(source) == "" {
 			return RestoreMergePlan{State: "canceled"}, nil
 		}
-		var err error
 		if stage, err = s.stageRestoreMerge(source); err != nil {
 			return RestoreMergePlan{}, err
 		}
 	}
-	return s.planStagedRestoreMerge(stage, password, backupPassword, backupAppPassword)
+	return s.planStagedRestoreMerge(stage, live, backup, backupAppPassword)
+}
+
+// mergeCredentials builds the live and backup factor sets from one set of files.
+// They share the keyfile and backup-key material, so only the live set is wiped.
+func mergeCredentials(password, backupPassword, keyfilePath, backupKey string) (vault.Credentials, vault.Credentials, error) {
+	live, err := buildVaultCredentials(password, keyfilePath, backupKey)
+	if err != nil {
+		return vault.Credentials{}, vault.Credentials{}, err
+	}
+	backup := live
+	if strings.TrimSpace(backupPassword) != "" {
+		backup.Password = backupPassword
+	}
+	return live, backup, nil
+}
+
+func wipeMergeCredentials(creds vault.Credentials) {
+	wipe(creds.Keyfile)
+	wipe(creds.RecoveryCode)
 }
 
 // stageRestoreMerge copies the chosen backup into a protected staging folder
@@ -108,10 +139,10 @@ func (s *Service) stageRestoreMerge(source string) (string, error) {
 	return stage, nil
 }
 
-func (s *Service) planStagedRestoreMerge(stage, password, backupPassword, backupAppPassword string) (RestoreMergePlan, error) {
+func (s *Service) planStagedRestoreMerge(stage string, live, backup vault.Credentials, backupAppPassword string) (RestoreMergePlan, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	staged, err := s.openStagedRestoreMergeLocked(stage, password, backupPassword, backupAppPassword)
+	staged, err := s.openStagedRestoreMergeLocked(stage, backup, backupAppPassword)
 	if errors.Is(err, vault.ErrInvalidPassword) {
 		return RestoreMergePlan{State: "backup_password"}, nil
 	}
@@ -124,9 +155,10 @@ func (s *Service) planStagedRestoreMerge(stage, password, backupPassword, backup
 		return RestoreMergePlan{}, errors.Join(ErrRestoreMergeRequiresVault, err)
 	}
 	if v.IsLocked() {
-		if err := s.unlockVaultLocked(v, password, false); err != nil {
+		if err := s.unlockWithSecurityKeyFallbackLocked(v, &live); err != nil {
 			return RestoreMergePlan{}, err
 		}
+		defer wipe(live.SecurityKey)
 	}
 	liveExpiry := make(map[string]int64)
 	liveRecords, err := v.List()
@@ -172,6 +204,17 @@ func (s *Service) planStagedRestoreMerge(stage, password, backupPassword, backup
 // the live vault. The vault as it stands is first copied into a fresh verified
 // backup beside the source backup, so the pre-merge state stays recoverable.
 func (s *Service) CommitRestoreMerge(password, backupPassword, backupAppPassword, currentAppPassword string, steamIDs []string) (RestoreMergeResult, error) {
+	return s.CommitRestoreMergeWithFactors(password, backupPassword, backupAppPassword, currentAppPassword, "", "", steamIDs)
+}
+
+// CommitRestoreMergeWithFactors commits a merge where either vault needs more
+// than a password.
+func (s *Service) CommitRestoreMergeWithFactors(password, backupPassword, backupAppPassword, currentAppPassword, keyfilePath, backupKey string, steamIDs []string) (RestoreMergeResult, error) {
+	live, backup, err := mergeCredentials(password, backupPassword, keyfilePath, backupKey)
+	if err != nil {
+		return RestoreMergeResult{}, err
+	}
+	defer wipeMergeCredentials(live)
 	s.mu.Lock()
 	stage, source := s.restoreMergeStage, s.restoreMergeSource
 	s.mu.Unlock()
@@ -181,16 +224,16 @@ func (s *Service) CommitRestoreMerge(password, backupPassword, backupAppPassword
 	if len(steamIDs) == 0 {
 		return RestoreMergeResult{}, ErrRestoreMergeNoPlan
 	}
-	// The safety copy happens before anything is written; createVerifiedBackupAt
-	// manages its own locking, so it runs outside the merge's critical section.
-	safetyPath, err := s.createVerifiedBackupAt(source, password, currentAppPassword, time.Now().UTC())
+	// The safety copy happens before anything is written; the backup manages its
+	// own locking, so it runs outside the merge's critical section.
+	safetyPath, err := s.createVerifiedBackupAtWith(source, live, currentAppPassword, time.Now().UTC())
 	if err != nil {
 		return RestoreMergeResult{}, err
 	}
 
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	staged, err := s.openStagedRestoreMergeLocked(stage, password, backupPassword, backupAppPassword)
+	staged, err := s.openStagedRestoreMergeLocked(stage, backup, backupAppPassword)
 	if err != nil {
 		return RestoreMergeResult{}, err
 	}
@@ -200,9 +243,10 @@ func (s *Service) CommitRestoreMerge(password, backupPassword, backupAppPassword
 		return RestoreMergeResult{}, errors.Join(ErrRestoreMergeRequiresVault, err)
 	}
 	if v.IsLocked() {
-		if err := s.unlockVaultLocked(v, password, false); err != nil {
+		if err := s.unlockWithSecurityKeyFallbackLocked(v, &live); err != nil {
 			return RestoreMergeResult{}, err
 		}
+		defer wipe(live.SecurityKey)
 	}
 	liveRecords, err := v.List()
 	if err != nil {
@@ -285,15 +329,11 @@ func sweepRestoreMergeStages(parent string) {
 	}
 }
 
-// openStagedRestoreMergeLocked opens and unlocks the staged copy. The vault
-// password defaults to the live one — a backup made before a password change
-// needs its own, which the caller passes as backupPassword.
-func (s *Service) openStagedRestoreMergeLocked(stage, password, backupPassword, backupAppPassword string) (*vault.Vault, error) {
-	vaultPassword := backupPassword
-	if strings.TrimSpace(vaultPassword) == "" {
-		vaultPassword = password
-	}
-	if strings.TrimSpace(vaultPassword) == "" {
+// openStagedRestoreMergeLocked opens and unlocks the staged copy with the
+// backup's own factor set, which mergeCredentials derives from the live one when
+// the caller supplied no separate backup password.
+func (s *Service) openStagedRestoreMergeLocked(stage string, creds vault.Credentials, backupAppPassword string) (*vault.Vault, error) {
+	if strings.TrimSpace(creds.Password) == "" && len(creds.Keyfile) == 0 && len(creds.RecoveryCode) == 0 {
 		return nil, vault.ErrInvalidPassword
 	}
 	staged, err := vault.Open(stage, s.vaultOptions...)
@@ -301,9 +341,9 @@ func (s *Service) openStagedRestoreMergeLocked(stage, password, backupPassword, 
 		return nil, err
 	}
 	if staged.HasRecoveryWrapper() {
-		err = staged.UnlockWithRecovery(vaultPassword, backupAppPassword, vault.FixedLease)
+		err = staged.UnlockWithFactorsAndRecovery(creds, backupAppPassword, vault.FixedLease)
 	} else {
-		err = staged.Unlock(vaultPassword, vault.FixedLease)
+		err = staged.UnlockWith(creds, vault.FixedLease)
 	}
 	if err != nil {
 		return nil, err

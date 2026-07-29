@@ -113,6 +113,16 @@ export function buildSteamExtraMenu(
       children: ([
         { label: tr("Context_GameDataSubmenu"), children: gameChildren },
         shared.gameStats,
+        // Only for an account whose ban the settings would actually paint.
+        // Nothing to hide otherwise, and nothing to restore.
+        acc.hasVisibleBan
+          ? {
+              label: acc.banStatusHidden
+                ? tr("Context_Steam_ShowBanStatus")
+                : tr("Context_Steam_HideBanStatus"),
+              action: () => void commands.setBanStatusHidden(!acc.banStatusHidden),
+            }
+          : null,
         {
           label: tr("Context_Steam_OpenUserdata"),
           action: () => void commands.openUserdataFolder(),

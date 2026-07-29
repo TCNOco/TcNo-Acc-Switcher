@@ -180,6 +180,9 @@ func (e *Error) Error() string {
 	case ErrorProtocol:
 		return "Steam authentication failed: " + e.protocolCause()
 	case ErrorConsumer:
+		// Deliberately says nothing about why: a consumer error can carry vault
+		// paths or tokens, and this text is logged. Callers that need the reason
+		// classify it on their own side, before handing the error over.
 		return "Steam authentication credential transfer failed"
 	case ErrorClosed:
 		return "Steam authentication manager is closed"

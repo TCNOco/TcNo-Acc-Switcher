@@ -40,8 +40,14 @@ type Settings struct {
 	ShowSteamSwitcher bool `json:"ShowSteamSwitcher"`
 	CollectInfo       bool `json:"CollectInfo"`
 
-	SteamShowMiniProfile bool `json:"Steam_ShowMiniProfile"`
-	SteamShowAvatarFrame bool `json:"Steam_ShowAvatarFrame"`
+	// HiddenBanStatus lists SteamID64s whose VAC or limited status is not shown,
+	// however the global toggles are set. A ban on one account is not something
+	// the owner necessarily wants on screen every time they open the switcher.
+	HiddenBanStatus []string `json:"Steam_HiddenBanStatus,omitempty"`
+
+	SteamShowMiniProfile    bool `json:"Steam_ShowMiniProfile"`
+	SteamShowAvatarFrame    bool `json:"Steam_ShowAvatarFrame"`
+	SteamShowSteamGuardLock bool `json:"Steam_ShowSteamGuardLock"`
 }
 
 func defaultSettings() Settings {
@@ -60,6 +66,9 @@ func defaultSettings() Settings {
 		CollectInfo:          true,
 		SteamShowMiniProfile: true,
 		SteamShowAvatarFrame: true,
+		// On by default: the lock is the only place the account list says which
+		// accounts the app holds an authenticator for.
+		SteamShowSteamGuardLock: true,
 	}
 }
 
@@ -176,6 +185,12 @@ func LoadSettings() (Settings, error) {
 	}
 	if !gjson.GetBytes(data2, "Steam_ShowAvatarFrame").Exists() {
 		s.SteamShowAvatarFrame = true
+	}
+	// Absent in every settings file written before the lock existed, and a
+	// missing bool decodes to false, so it has to be defaulted on explicitly or
+	// existing installs would silently get the feature turned off.
+	if !gjson.GetBytes(data2, "Steam_ShowSteamGuardLock").Exists() {
+		s.SteamShowSteamGuardLock = true
 	}
 	return s, nil
 }

@@ -10,15 +10,33 @@ import (
 	"TcNo-Acc-Switcher/internal/steamguard/securemem"
 )
 
+// Factor types recorded in a slot. A slot lists every factor it requires.
 const (
-	FormatVersion     = 1
+	FactorPassword     = "password"
+	FactorKeyfile      = "keyfile"
+	FactorRecoveryCode = "recovery"
+	FactorSecurityKey  = "securitykey"
+)
+
+const (
+	FormatVersion     = 2
 	OuterLayerVersion = 1
 	RecoveryVersion   = 1
 	FixedLeaseLength  = 5 * time.Minute
 
-	DefaultKDFMemoryKiB uint32 = 64 * 1024
+	// Live-vault cost, paid on every unlock. RFC 9106's second recommended
+	// profile with memory raised fourfold.
+	DefaultKDFMemoryKiB uint32 = 256 * 1024
 	DefaultKDFPasses    uint32 = 3
 	DefaultKDFLanes     uint8  = 4
+
+	// Backup cost. A backup is opened rarely and is the copy most likely to
+	// leak, so it carries roughly ten times the live cost. Kept well under
+	// maxMemoryKiB: a backup that a low-memory machine cannot open years from
+	// now is a worse outcome than a backup that is merely expensive to attack,
+	// and an argon2 allocation failure kills the process rather than erroring.
+	BackupKDFMemoryKiB uint32 = 512 * 1024
+	BackupKDFPasses    uint32 = 4
 )
 
 var (
@@ -38,7 +56,31 @@ var (
 	ErrInvalidOuterKey         = errors.New("invalid Steam Guard outer encryption key")
 	ErrRecoveryNotConfigured   = errors.New("Steam Guard recovery wrapper is not configured")
 	ErrInvalidRecoveryPassword = errors.New("invalid Steam Guard recovery password")
+	ErrFactorRequired          = errors.New("Steam Guard vault requires an enrolled factor that was not supplied")
+	ErrLastSlot                = errors.New("the only remaining way to open the Steam Guard vault cannot be removed")
+	ErrPasswordStillInUse      = errors.New("the password was not changed: it is also used by ways in that were not supplied, and changing only the rest would leave the old password working")
+	ErrSlotNotFound            = errors.New("enrolled Steam Guard factor not found")
 )
+
+// errFactorUnavailable marks a slot the supplied credentials cannot even
+// attempt, as opposed to one that was attempted and refused. It never reaches
+// a caller: openVaultKey turns it into ErrFactorRequired or ErrInvalidPassword.
+var errFactorUnavailable = errors.New("slot factor material not supplied")
+
+// Credentials carries the factor material offered when opening a vault. Only
+// the factors a slot actually lists are consulted.
+// Credentials carries the factor material offered when opening a vault. Only
+// the factors a slot actually lists are consulted. SecurityKey is the value a
+// hardware authenticator returned, already evaluated: the vault never talks to
+// a device itself, which keeps every path here testable without one.
+type Credentials struct {
+	Password     string
+	Keyfile      []byte
+	RecoveryCode []byte
+	SecurityKey  []byte
+}
+
+func PasswordOnly(password string) Credentials { return Credentials{Password: password} }
 
 type KDFParams struct {
 	Algorithm string `json:"algorithm"`
@@ -48,11 +90,26 @@ type KDFParams struct {
 	KeyBytes  uint32 `json:"keyBytes"`
 }
 
+// DefaultKDFParams is fixed, never calibrated against the current machine:
+// parameters derived from local hardware produce a vault whose cost depends on
+// where it happened to be created, and lanes taken from the CPU count change
+// the derived key outright.
 func DefaultKDFParams() KDFParams {
 	return KDFParams{
 		Algorithm: "argon2id",
 		MemoryKiB: DefaultKDFMemoryKiB,
 		Passes:    DefaultKDFPasses,
+		Lanes:     DefaultKDFLanes,
+		KeyBytes:  32,
+	}
+}
+
+// BackupKDFParams is the cost applied to a verified backup's own header.
+func BackupKDFParams() KDFParams {
+	return KDFParams{
+		Algorithm: "argon2id",
+		MemoryKiB: BackupKDFMemoryKiB,
+		Passes:    BackupKDFPasses,
 		Lanes:     DefaultKDFLanes,
 		KeyBytes:  32,
 	}

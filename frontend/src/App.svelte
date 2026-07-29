@@ -31,6 +31,7 @@
   import { formatToastWithError } from "./lib/formatWailsError";
   import { registerSvgRenderBridge } from "./lib/svgRenderBridge";
   import { runCrashReportPromptIfNeeded } from "./lib/crashReportPrompt";
+  import { runLegacyInstallPromptIfNeeded } from "./lib/legacyInstallPrompt";
   import { activeModal, openConfirm } from "./stores/modal";
   import { contextMenu } from "./stores/contextMenu";
   import {
@@ -64,6 +65,7 @@
   import { controllerSupportEnabled, loadControllerSupportEnabled } from "./stores/controllerSupport";
   import { preventUnmodifiedBrowserContextMenu } from "./lib/actions/contextMenu";
   import { installSteamGuardBridge } from "./lib/steamGuardBridge";
+  import { escapeHtml } from "./lib/html";
 
   function resolveActiveBg(
     r: typeof $route,
@@ -174,15 +176,6 @@
       return true;
     }
     return t.closest("input, textarea, select, [contenteditable]") !== null;
-  }
-
-  function escapeHtml(value: string): string {
-    return value
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll("\"", "&quot;")
-      .replaceAll("'", "&#39;");
   }
 
   async function promptInterruptedRestoreRepair(): Promise<void> {
@@ -345,7 +338,11 @@
       applyNavigateJSON(raw);
     });
     void NotifyLaunchUpdateCheck();
-    void runCrashReportPromptIfNeeded();
+    // Sequenced, not parallel: both open a modal and the store holds one at a time.
+    void runCrashReportPromptIfNeeded()
+      .catch(() => {})
+      .then(() => runLegacyInstallPromptIfNeeded())
+      .catch(() => {});
 
     const schedulePrefetch = (): void => {
       prefetchCommonPages();

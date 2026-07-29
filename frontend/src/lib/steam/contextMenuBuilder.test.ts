@@ -6,7 +6,11 @@ import type { SteamMenuDeps } from "./menuCommands";
 import { buildSteamGuardMenuItem } from "./steamGuardMenu";
 import type { SteamAccountRow, SteamGuardMenuRequest } from "./types";
 
-vi.mock("./menuCommands", () => ({ createSteamMenuCommands: () => ({}) }));
+const setBanStatusHidden = vi.hoisted(() => vi.fn<(hidden: boolean) => Promise<void>>());
+
+vi.mock("./menuCommands", () => ({
+  createSteamMenuCommands: () => ({ setBanStatusHidden }),
+}));
 
 const labels: Record<string, string> = {
   Context_2Factor: "2-Factor",
@@ -116,5 +120,62 @@ describe("Steam account Manage submenu", () => {
     expect(menu).not.toContain(shared.notes);
     expect(menu).not.toContain(shared.forget);
     expect(manage?.children?.slice(-2)).toEqual([shared.notes, shared.forget]);
+  });
+});
+
+// The switcher paints VAC and limited status on the account name. A ban on one
+// account is not something the owner necessarily wants on screen every time, so
+// it can be hidden per account - but only where it would otherwise be shown.
+describe("Steam hide ban status menu item", () => {
+  const shared = (): SharedMenuItems => {
+    const item = (label: string): MenuItemDef => ({ label, action: vi.fn() });
+    return {
+      swapTo: item("Swap"),
+      changeName: item("Rename"),
+      createShortcut: item("Shortcut"),
+      changeImage: item("Image"),
+      forget: item("Forget"),
+      notes: item("Notes"),
+      tags: item("Tags"),
+      gameStats: null,
+    };
+  };
+
+  const deps = (): SteamMenuDeps => ({
+    name: "Steam",
+    installedGames: [],
+    gameDataBySteamId: {},
+    steamIds: [],
+    refreshGameDataAppSets: async () => {},
+    openSteamGuard: vi.fn(),
+  });
+
+  const manageOf = (acc: SteamAccountRow, items: SharedMenuItems): MenuItemDef => {
+    const menu = buildSteamExtraMenu(acc, items, deps());
+    const manage = menu.find((candidate) => candidate.children?.includes(items.changeImage));
+    if (!manage) throw new Error("missing Manage submenu");
+    return manage;
+  };
+
+  const labelsOf = (item: MenuItemDef): (string | undefined)[] =>
+    (item.children ?? []).map((candidate) => candidate.label);
+
+  it("offers nothing for an account with no ban the settings would show", () => {
+    const manage = manageOf(account({ hasVisibleBan: false }), shared());
+
+    expect(labelsOf(manage)).not.toContain("Context_Steam_HideBanStatus");
+    expect(labelsOf(manage)).not.toContain("Context_Steam_ShowBanStatus");
+  });
+
+  it("hides a shown ban, and offers to show it again once hidden", () => {
+    setBanStatusHidden.mockClear();
+    child(manageOf(account({ hasVisibleBan: true, banStatusHidden: false }), shared()),
+      "Context_Steam_HideBanStatus").action?.();
+    expect(setBanStatusHidden).toHaveBeenCalledWith(true);
+
+    setBanStatusHidden.mockClear();
+    child(manageOf(account({ hasVisibleBan: true, banStatusHidden: true }), shared()),
+      "Context_Steam_ShowBanStatus").action?.();
+    expect(setBanStatusHidden).toHaveBeenCalledWith(false);
   });
 });

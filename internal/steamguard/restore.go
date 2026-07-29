@@ -40,10 +40,23 @@ func (s *Service) InspectRestoreBackup(source string) (RestoreSourceInfo, error)
 // an outer layer; the current app password is required only when this
 // installation has app protection enabled.
 func (s *Service) RestoreVerifiedBackup(source, steamGuardPassword, backupAppPassword, currentAppPassword string) (string, error) {
+	return s.RestoreVerifiedBackupWithFactors(source, steamGuardPassword, backupAppPassword, currentAppPassword, "", "")
+}
+
+// RestoreVerifiedBackupWithFactors restores a backup whose slots need more than
+// a password. The factors are the ones enrolled in the backup, which are also
+// the ones the restored vault ends up with.
+func (s *Service) RestoreVerifiedBackupWithFactors(source, steamGuardPassword, backupAppPassword, currentAppPassword, keyfilePath, backupKey string) (string, error) {
 	if strings.TrimSpace(source) == "" {
 		return "", ErrInvalidBackupDestination
 	}
-	return s.restoreVerifiedBackupAt(source, steamGuardPassword, backupAppPassword, currentAppPassword)
+	creds, err := buildVaultCredentials(steamGuardPassword, keyfilePath, backupKey)
+	if err != nil {
+		return "", err
+	}
+	defer wipe(creds.Keyfile)
+	defer wipe(creds.RecoveryCode)
+	return s.restoreVerifiedBackupAtWith(source, creds, backupAppPassword, currentAppPassword)
 }
 
 func canonicalRestoreSource(source string) (string, error) {
@@ -59,7 +72,11 @@ func canonicalRestoreSource(source string) (string, error) {
 }
 
 func (s *Service) restoreVerifiedBackupAt(source, steamGuardPassword, backupAppPassword, currentAppPassword string) (string, error) {
-	if strings.TrimSpace(steamGuardPassword) == "" {
+	return s.restoreVerifiedBackupAtWith(source, vault.PasswordOnly(steamGuardPassword), backupAppPassword, currentAppPassword)
+}
+
+func (s *Service) restoreVerifiedBackupAtWith(source string, creds vault.Credentials, backupAppPassword, currentAppPassword string) (string, error) {
+	if strings.TrimSpace(creds.Password) == "" && len(creds.Keyfile) == 0 && len(creds.RecoveryCode) == 0 {
 		return "", vault.ErrInvalidPassword
 	}
 	canonicalSource, err := canonicalRestoreSource(source)
@@ -113,7 +130,7 @@ func (s *Service) restoreVerifiedBackupAt(source, steamGuardPassword, backupAppP
 		}
 	}()
 	hadOuter := restored.HasRecoveryWrapper()
-	if err := verifyCopiedVault(destination, steamGuardPassword, backupAppPassword, hadOuter, s.vaultOptions); err != nil {
+	if err := verifyCopiedVault(destination, creds, backupAppPassword, hadOuter, s.vaultOptions); err != nil {
 		return "", err
 	}
 	currentOuterKey, err := appOuterKeyForRecovery(currentAppPassword)
@@ -136,11 +153,19 @@ func (s *Service) restoreVerifiedBackupAt(source, steamGuardPassword, backupAppP
 		}
 	}
 	if len(currentOuterKey) != 0 {
-		err = restored.UnlockWithOuter(steamGuardPassword, currentOuterKey, vault.FixedLease)
+		err = restored.UnlockWithFactorsAndOuter(creds, currentOuterKey, vault.FixedLease)
 	} else {
-		err = restored.Unlock(steamGuardPassword, vault.FixedLease)
+		err = restored.UnlockWith(creds, vault.FixedLease)
 	}
 	if err != nil {
+		return "", err
+	}
+	// The copy carries the backup's deliberately expensive parameters. It is
+	// now the live vault and will be unlocked routinely, so bring the cost back
+	// down; leaving it would make every future unlock pay the backup rate. The
+	// lease taken above supplies the outer key, and this is another journalled
+	// generation, so an interruption is recovered on the next Open.
+	if err := restored.RekeyWith(creds, s.liveKDFParams()); err != nil {
 		return "", err
 	}
 	records, err := restored.List()

@@ -72,7 +72,7 @@ func TestRestoreMergeReplacesOnlySelectedAccounts(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	plan, err := service.planStagedRestoreMerge(stage, password, "", "")
+	plan, err := planStagedMerge(t, service, stage, password, "", "")
 	if err != nil || plan.State != "ok" || len(plan.Accounts) != 2 {
 		t.Fatalf("plan = %#v, %v", plan, err)
 	}
@@ -141,14 +141,14 @@ func TestRestoreMergeReportsBackupPasswordMismatch(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	plan, err := service.planStagedRestoreMerge(stage, password, "", "")
+	plan, err := planStagedMerge(t, service, stage, password, "", "")
 	if err != nil || plan.State != "backup_password" {
 		t.Fatalf("plan = %#v, %v", plan, err)
 	}
 	if service.restoreMergeStage == "" {
 		t.Fatal("stage discarded on password mismatch")
 	}
-	plan, err = service.planStagedRestoreMerge(stage, password, oldPassword, "")
+	plan, err = planStagedMerge(t, service, stage, password, oldPassword, "")
 	if err != nil || plan.State != "ok" || len(plan.Accounts) != 1 {
 		t.Fatalf("retry plan = %#v, %v", plan, err)
 	}
@@ -158,4 +158,14 @@ func TestRestoreMergeReportsBackupPasswordMismatch(t *testing.T) {
 	if _, err := os.Lstat(stage); !os.IsNotExist(err) {
 		t.Fatalf("stage folder survives cancel: %v", err)
 	}
+}
+
+// planStagedMerge plans with a password only, which is what these cases cover.
+func planStagedMerge(t *testing.T, service *Service, stage, password, backupPassword, backupAppPassword string) (RestoreMergePlan, error) {
+	t.Helper()
+	live, backup, err := mergeCredentials(password, backupPassword, "", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	return service.planStagedRestoreMerge(stage, live, backup, backupAppPassword)
 }

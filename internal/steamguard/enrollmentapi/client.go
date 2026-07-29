@@ -98,7 +98,8 @@ func (c *Client) FinalizeAddAuthenticator(ctx context.Context, request FinalizeR
 		return FinalizeResult{}, err
 	}
 	defer wipe(code)
-	message := marshalFinalizeRequest(request.Pending.SteamID, code, request.AuthenticatorTime, request.ConfirmationCode)
+	message := marshalFinalizeRequest(request.Pending.SteamID, code, request.AuthenticatorTime, request.ConfirmationCode,
+		request.Pending.Confirmation == ConfirmationSMS)
 	response, callErr := c.call(ctx, finalizeAuthenticatorEndpoint, request.Pending.AccessToken, message, timeout)
 	wipe(message)
 	if callErr != nil {
@@ -120,15 +121,17 @@ func (c *Client) FinalizeAddAuthenticator(ctx context.Context, request FinalizeR
 		}
 		return FinalizeResult{}, &SteamError{ResultCode: wireResult.status}
 	}
-	if wireResult.success && !wireResult.wantMore {
-		result.State = StateComplete
-		return result, nil
-	}
+	// status 1 is Steam's OK and is authoritative: the authenticator exists on
+	// the account by this point. success is not always set alongside it, and
+	// want_more is not even defined in the current response, so requiring them
+	// reported a completed enrollment as a rejection and stranded the user with
+	// a live authenticator the app had not recorded.
 	if wireResult.wantMore {
 		result.State = StateAuthenticatorCodeRetry
 		return result, nil
 	}
-	return FinalizeResult{}, &SteamError{ResultCode: wireResult.status}
+	result.State = StateComplete
+	return result, nil
 }
 
 func (c *Client) call(ctx context.Context, endpoint string, token, message []byte, timeout time.Duration) ([]byte, error) {

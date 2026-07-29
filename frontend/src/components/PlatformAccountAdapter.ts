@@ -5,6 +5,13 @@ import type { TagDefRow } from "../lib/accountTagsContext";
 
 export type GameStatMetricDTO = { statValue: string; indicatorMarkup: string };
 
+/**
+ * Ban state painted onto the account name. `label` is already localised — it is
+ * the tooltip and the screen-reader text, since the colour alone carries no
+ * meaning for anyone who cannot see it.
+ */
+export type AccountNameStatus = { kind: "vac" | "limited"; label: string };
+
 export interface SharedMenuItems {
   swapTo: MenuItemDef;
   changeName: MenuItemDef;
@@ -24,6 +31,7 @@ export interface AccountRowProjection<TAccount> {
   currentSession(a: TAccount): boolean;
   manualProfileImage(a: TAccount): boolean;
   savedDataBroken?(a: TAccount): boolean;
+  nameStatus?(a: TAccount): AccountNameStatus | null;
   tags(a: TAccount): TagDefRow[] | undefined;
   note(a: TAccount): string;
   shouldShowNote(a: TAccount): boolean;

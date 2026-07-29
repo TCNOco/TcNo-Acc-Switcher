@@ -237,6 +237,17 @@ func (m *Manager) Finalize(ctx context.Context, request FinalizeRequest) (Status
 		AuthenticatorTime: request.AuthenticatorTime,
 	}, m.timeout)
 	if err != nil {
+		// Adding an authenticator activates it on Steam; finalize only confirms
+		// the user saw the code. A refusal here can therefore arrive after the
+		// authenticator is already live - a confirmation code already spent, or
+		// a result this build cannot map - and the secrets for it are already on
+		// disk. Abandoning them would leave the account generating codes nobody
+		// holds, so check with Steam before giving up.
+		if committed, verifyErr := m.commitIfSteamAlreadyActivated(ctx, &record); committed {
+			return Status{State: enrollmentapi.StateComplete}, nil
+		} else if verifyErr != nil {
+			return Status{}, errors.Join(err, verifyErr)
+		}
 		return Status{}, err
 	}
 	if !validFinalizeState(result.State) {
@@ -271,6 +282,38 @@ func (m *Manager) Finalize(ctx context.Context, request FinalizeRequest) (Status
 		return Status{}, err
 	}
 	return recordStatus(&record, false), nil
+}
+
+// commitIfSteamAlreadyActivated stores the pending secrets when Steam reports
+// that the authenticator they belong to is the one active on the account.
+//
+// The token GID recorded when the authenticator was added is compared with the
+// GID Steam reports now. Equal means these exact secrets generate this
+// account's codes, which is a stronger statement than any finalize result: the
+// enrollment is finished whatever the finalize call said. Unequal, absent, or
+// unreachable means nothing is written, because committing secrets that are not
+// the live authenticator would leave the user holding codes Steam rejects while
+// the app claimed success.
+func (m *Manager) commitIfSteamAlreadyActivated(ctx context.Context, record *pendingRecord) (bool, error) {
+	if record == nil || record.TokenGID == "" || len(record.AccessToken) == 0 {
+		return false, nil
+	}
+	status, err := m.client.QueryStatus(ctx, record.SteamID, record.AccessToken, m.timeout)
+	if err != nil {
+		return false, err
+	}
+	if status.TokenGID == "" || status.TokenGID != record.TokenGID {
+		return false, nil
+	}
+	active, err := activeMaFile(record)
+	if err != nil {
+		return false, err
+	}
+	defer wipe(active)
+	if _, err := m.vault.PutRecord(steamIDString(record.SteamID), active); err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 // Cancel removes only a validated pending record. It never deletes an active

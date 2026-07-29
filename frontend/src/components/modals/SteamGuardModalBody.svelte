@@ -2,6 +2,11 @@
   import { onDestroy, onMount, tick } from "svelte";
   import { Events } from "@wailsio/runtime";
   import {
+    clearModalBackAction,
+    setModalBackAction,
+    type ModalBackAction,
+  } from "../../stores/modalBack";
+  import {
 	    initialSteamGuardModalState,
 	    acknowledgeSteamRevocationThenRefresh,
 		closeSteamGuardEnrollment,
@@ -71,6 +76,9 @@
    * leaving means closing rather than dropping into an account never chosen.
    */
   let pickerReturnAccount: SteamGuardAccountRef | null = null;
+  // Extra unlock factors. Only the keyfile's path is held here; Go reads it.
+  let unlockKeyfilePath = "";
+  let unlockBackupKey = "";
   let busy = false;
   let refreshing = false;
   let inlineError = "";
@@ -115,6 +123,10 @@
 	let revocationCode = "";
 	let revocationConfirmation = "";
 	let confirmationCode = "";
+	// Kept apart from authMessage, which the confirmation screen also uses for
+	// ordinary instructions. A rejection rendered through the same paragraph is
+	// indistinguishable from the guidance it replaces.
+	let confirmationError = "";
 	let exportPassword = "";
 	/** Optional: encrypts the exported maFile the way SDA does. Empty exports plaintext. */
 	let exportMaFilePassword = "";
@@ -231,6 +243,49 @@
     ? Math.max(0, Math.ceil((state.view.expiresAt - now) / 1_000))
 	    : 0;
 	$: oneOperationCode = state.screen === "account-code" && state.view.unlockPersistence === "one_operation";
+	// The headerbar back button mirrors whichever way out the current screen
+	// already offers, so there is one consistent place to leave any screen
+	// instead of a control whose meaning shifts. Suppressed while busy, and on
+	// the one-operation code screen, matching the controls it mirrors.
+	$: headerBackAction = ((): ModalBackAction | null => {
+		if (busy) return null;
+		switch (state.screen) {
+			case "account-code":
+				return oneOperationCode
+					? null
+					: { label: $t("SteamGuard_Code_ShowAllAccounts"), run: showAllAccounts };
+			case "all-accounts":
+				return {
+					label: pickerReturnAccount ? $t("SteamGuard_Back") : $t("Button_Close"),
+					run: leaveAllAccounts,
+				};
+			case "enrollment":
+				return {
+					label: enrollmentStage === "recovery" || enrollmentStage === "confirmation"
+						? $t("SteamGuard_CloseAndResume")
+						: $t("SteamGuard_Back"),
+					run: cancelEnrollment,
+				};
+			case "login-again":
+				return {
+					label: $t("SteamGuard_Back"),
+					run: () => { void cancelCredentialLogin().then(backToAccount); },
+				};
+			case "qr":
+				return { label: $t("SteamGuard_Back"), run: dismissQRLogin };
+			case "import":
+			case "export-authorize":
+			case "recovery":
+			case "error":
+				return steamGuardAccountForState(state)
+					? { label: $t("SteamGuard_Back"), run: backToAccount }
+					: null;
+			default:
+				return null;
+		}
+	})();
+	$: setModalBackAction(headerBackAction);
+	onDestroy(() => clearModalBackAction());
 	$: enrollmentRetrySeconds = Math.max(0, Math.ceil((enrollmentRetryAt - now) / 1_000));
 	$: exportAccount = steamGuardAccountForState(state) ?? account;
 	$: exportAccountSummary = summaryOf(exportAccount, false, knownSummaries, switcherProfiles);
@@ -240,6 +295,25 @@
 		? summaryOf(state.account, true, knownSummaries, switcherProfiles)
 		: null;
 	$: if (state.screen === "locked" && !openAllAccountsOnReady) void ensureSwitcherProfile(state.account);
+
+	// The unlock screen has to know a security key is enrolled before it can
+	// offer to use one, and only the enrolment path loaded this before.
+	let unlockStatusChecked = false;
+	$: if (state.screen === "locked" && !unlockStatusChecked) {
+		unlockStatusChecked = true;
+		void loadVaultStatusForUnlock();
+	}
+
+	async function loadVaultStatusForUnlock(): Promise<void> {
+		if (!controller.getSteamGuardVaultStatus) return;
+		try {
+			vaultStatus = await controller.getSteamGuardVaultStatus();
+		} catch (error) {
+			// Not knowing only costs the extra affordance; the password still works.
+			console.error("Steam Guard: vault status unavailable", error);
+		}
+	}
+
 	// The code screen shows the same identity as every other screen.
 	$: codeAccountSummary = state.screen === "account-code"
 		? summaryOf(state.view.account, false, knownSummaries, switcherProfiles)
@@ -346,8 +420,33 @@
     }
   }
 
+  async function pickUnlockKeyfile(): Promise<void> {
+    if (!controller.pickKeyfile || busy) return;
+    try {
+      const chosen = await controller.pickKeyfile();
+      if (chosen) unlockKeyfilePath = chosen;
+    } catch (error) {
+      console.error("Steam Guard: keyfile could not be read", error);
+      inlineError = withFailureReason($t("SteamGuard_Unlock_KeyfileRejected"), error);
+    }
+  }
+
+  /** Unlock with what is filled in. The backend still asks the device if some
+   *  enrolled way in needs one, so a key used with a password works from here. */
   async function unlockAccount(): Promise<void> {
-    if (busy || state.screen !== "locked" || password.length === 0) return;
+    return runUnlock(false);
+  }
+
+  /** Unlock by security key alone, which needs nothing typed in. */
+  async function unlockWithSecurityKey(): Promise<void> {
+    return runUnlock(true);
+  }
+
+  async function runUnlock(useSecurityKey: boolean): Promise<void> {
+    // A backup key opens the vault on its own, and a security key needs nothing
+    // typed at all, so an empty password is valid.
+    const hasFactor = unlockKeyfilePath !== "" || unlockBackupKey.trim() !== "" || useSecurityKey;
+    if (busy || state.screen !== "locked" || (password.length === 0 && !hasFactor)) return;
     const lockedAccount = state.account;
     busy = true;
     inlineError = "";
@@ -355,7 +454,11 @@
     let pending: Promise<import("../../lib/steamGuardModal").SteamGuardCodeView>;
     try {
 		const capability = await ensureCapability(lockedAccount);
-		pending = controller.unlock(lockedAccount.id, password, rememberForSession, capability);
+		pending = hasFactor && controller.unlockWithFactors
+			? controller.unlockWithFactors(
+				lockedAccount.id, password, unlockKeyfilePath, unlockBackupKey.trim(), rememberForSession, capability,
+			)
+			: controller.unlock(lockedAccount.id, password, rememberForSession, capability);
     } catch (error) {
       console.error("Steam Guard: unlock could not start", error);
       password = "";
@@ -365,6 +468,7 @@
       return;
     }
     password = "";
+    unlockBackupKey = "";
 
     try {
       await showReadyAccount(await pending);
@@ -595,7 +699,7 @@
 		if (!vaultStatus.configured) {
 			const policyError = validateNewPassword(vaultPassword);
 			if (policyError) {
-				inlineError = passwordPolicyMessage(policyError);
+				inlineError = passwordPolicyMessage(policyError, $t);
 				clearAuthSecrets();
 				focusCurrentScreen();
 				return;
@@ -613,6 +717,11 @@
 		}
 		busy = true;
 		inlineError = "";
+		// Creating a vault moves it to a new generation, and capabilities are
+		// bound to the generation they were issued against. This modal takes a
+		// capability when it opens, which for a first-time setup is before any
+		// vault exists, so that one is stale the moment the vault is created.
+		const vaultWasCreated = !vaultStatus.configured;
 		let pending: Promise<void>;
 		try {
 			if (vaultStatus.configured) {
@@ -645,6 +754,16 @@
 			busy = false;
 			return;
 		}
+		if (vaultWasCreated) {
+			try {
+				await contentProtection.acquire(currentAccount.id);
+			} catch (error) {
+				console.error("Steam Guard: capability could not be refreshed after vault creation", error);
+				inlineError = $t("SteamGuard_Error_SetupContinueFailed");
+				busy = false;
+				return;
+			}
+		}
 		vaultStatus = null;
 		enrollmentStage = "checking";
 		try {
@@ -667,6 +786,14 @@
 			? Date.now() + Math.max(0, status.retryAfterSeconds) * 1_000
 			: 0;
 		authMessage = "";
+		confirmationError = "";
+		// The sign-in is finished once enrollment takes over. The template
+		// tests authStage before enrollmentStage, so leaving it on "polling"
+		// keeps the sign-in progress screen on top of whichever enrollment
+		// screen is chosen below - including the one asking for the code Steam
+		// has just sent. Branches that genuinely need a sign-in screen set this
+		// again themselves.
+		authStage = "idle";
 		const step = steamEnrollmentStep(status);
 		if (step === "complete") {
 			enrollmentStage = "complete";
@@ -690,12 +817,14 @@
 			focusCurrentScreen();
 			return;
 		}
+		// These are refusals, not guidance, so they go to the error line rather
+		// than replacing the instructions that tell the user what to type.
 		if (status.state === "confirmation_code_rejected") {
-			authMessage = $t("SteamGuard_Error_ConfirmationCodeRejected");
+			confirmationError = $t("SteamGuard_Error_ConfirmationCodeRejected");
 		} else if (status.state === "authenticator_code_retry") {
-			authMessage = $t("SteamGuard_Error_AuthenticatorRetry");
+			confirmationError = $t("SteamGuard_Error_AuthenticatorRetry");
 		} else if (status.state === "rate_limited") {
-			authMessage = $t("SteamGuard_Error_RateLimitedRetry");
+			confirmationError = $t("SteamGuard_Error_RateLimitedRetry");
 		}
 		enrollmentStage = "confirmation";
 		focusCurrentScreen();
@@ -1030,6 +1159,7 @@
 		if (busy || state.screen !== "enrollment" || !controller.finalizeSteamGuardEnrollment || !confirmationCode) return;
 		const currentAccount = state.account;
 		busy = true;
+		confirmationError = "";
 		let pending: Promise<SteamEnrollmentStatus>;
 		try {
 			pending = controller.finalizeSteamGuardEnrollment(
@@ -1041,7 +1171,7 @@
 			console.error("Steam Guard: confirmation code could not be submitted", error);
 			confirmationCode = "";
 			busy = false;
-			authMessage = $t("SteamGuard_Error_ConfirmationSubmitFailed");
+			confirmationError = withFailureReason($t("SteamGuard_Error_ConfirmationSubmitFailed"), error);
 			return;
 		}
 		confirmationCode = "";
@@ -1057,7 +1187,7 @@
 			}
 		} catch (error) {
 			console.error("Steam Guard: confirmation code was rejected", error);
-			authMessage = $t("SteamGuard_Error_ConfirmationRejected");
+			confirmationError = withFailureReason($t("SteamGuard_Error_ConfirmationRejected"), error);
 		} finally {
 			busy = false;
 		}
@@ -1088,6 +1218,8 @@
 				unlocked: false,
 				rememberForSession: false,
 				savedAccountDataEncrypted: false,
+				hasSecurityKey: false,
+				passwordOpens: true,
 			};
 			rememberForSession = vaultStatus.rememberForSession;
 			enrollmentStage = "vault";
@@ -1460,6 +1592,41 @@
           on:keydown={(event) => runOnEnter(event, unlockAccount)}
         />
       </label>
+      <!-- A vault can have a keyfile or a backup key enrolled, and then the
+           password alone will not open it. Offered on every unlock rather than
+           only after a failure: the user knows what they enrolled, and a
+           password-only vault simply leaves these empty. -->
+      <details class="steam-guard__other-factors">
+        <summary>{$t("SteamGuard_Unlock_OtherWays")}</summary>
+        <label class="steam-guard__field" for="steam-guard-backup-key">
+          <span>{$t("SteamGuard_Factor_BackupKey")}</span>
+          <input
+            id="steam-guard-backup-key"
+            class="modal-input"
+            bind:value={unlockBackupKey}
+            autocomplete="off"
+            spellcheck="false"
+            placeholder={$t("SteamGuard_Unlock_BackupKeyHint")}
+            disabled={busy}
+            on:keydown={(event) => runOnEnter(event, unlockAccount)}
+          />
+        </label>
+        {#if controller.pickKeyfile}
+          <div class="steam-guard__keyfile-row">
+            <button type="button" class="btnicontext" disabled={busy} on:click={() => void pickUnlockKeyfile()}>
+              {$t("SteamGuard_Unlock_ChooseKeyfile")}
+            </button>
+            <span class="steam-guard__keyfile-name">
+              {unlockKeyfilePath ? unlockKeyfilePath.split(/[\\/]/).pop() : $t("SteamGuard_Unlock_NoKeyfile")}
+            </span>
+            {#if unlockKeyfilePath}
+              <button type="button" class="steam-guard__link" disabled={busy} on:click={() => { unlockKeyfilePath = ""; }}>
+                {$t("SteamGuard_Unlock_ClearKeyfile")}
+              </button>
+            {/if}
+          </div>
+        {/if}
+      </details>
       {#if inlineError}
         <p id="steam-guard-unlock-error" class="steam-guard__error" role="alert">{inlineError}</p>
       {/if}
@@ -1471,10 +1638,32 @@
           </span>
           <label for="steam-guard-remember-session">{$t("SteamGuard_RememberMe")}</label>
         </div>
-        <button class="btnicontext modal-primary" type="button" disabled={busy || password.length === 0} on:click={unlockAccount}>
-          <svg class="steam-guard__icon" viewBox={ICONS.key.box} aria-hidden="true"><path d={ICONS.key.path} /></svg>
-          {busy ? $t("SteamGuard_Unlocking") : $t("SteamGuard_Unlock")}
-        </button>
+        <div class="steam-guard__actions-group">
+          <!-- Its own button because it needs nothing typed in, which is the one
+               thing Unlock cannot allow without letting an empty form through.
+               Always shown, so the option is not a secret; disabled only once
+               the vault has said it has no key to ask for. -->
+          <button
+            class="btnicontext"
+            type="button"
+            disabled={busy || vaultStatus?.hasSecurityKey === false}
+            title={vaultStatus?.hasSecurityKey === false ? $t("SteamGuard_Unlock_NoSecurityKey") : ""}
+            on:click={() => void unlockWithSecurityKey()}
+          >
+            {$t("SteamGuard_Unlock_SecurityKey")}
+          </button>
+          <!-- A backup key opens the vault on its own, so requiring a password
+               here would make that factor unusable. -->
+          <button
+            class="btnicontext modal-primary"
+            type="button"
+            disabled={busy || (password.length === 0 && unlockKeyfilePath === "" && unlockBackupKey.trim() === "")}
+            on:click={unlockAccount}
+          >
+            <svg class="steam-guard__icon" viewBox={ICONS.key.box} aria-hidden="true"><path d={ICONS.key.path} /></svg>
+            {busy ? $t("SteamGuard_Unlocking") : $t("SteamGuard_Unlock")}
+          </button>
+        </div>
       </div>
     </form>
   {:else if state.screen === "account-code"}
@@ -1599,7 +1788,16 @@
                   <SteamAccountAvatar account={avatarRow(listedAccount)} fallback={PROFILE_FALLBACK} />
                 </span>
                 <span class="steam-guard__accounts-name">
-                  <span class="steam-guard__accounts-username">{listedAccount.username}</span>
+                  <span
+                    class="steam-guard__accounts-username"
+                    class:acc_name--vac={listedAccount.vac}
+                    class:acc_name--limited={!listedAccount.vac && listedAccount.limited}
+                    title={listedAccount.vac
+                      ? $t("Steam_Status_VacBanned")
+                      : listedAccount.limited
+                        ? $t("Steam_Status_Limited")
+                        : undefined}
+                  >{listedAccount.username}</span>
                   {#if listedAccount.displayName && listedAccount.displayName !== listedAccount.username}
                     <small class="steam-guard__accounts-display">{listedAccount.displayName}</small>
                   {/if}
@@ -1673,7 +1871,7 @@
 				{/if}
 				{#if inlineError}<p class="steam-guard__error" role="alert">{inlineError}</p>{/if}
 				<div class="steam-guard__actions steam-guard__actions--end">
-					<button type="button" class="btnicontext modal-primary" disabled={busy || !vaultPassword || (!vaultStatus.configured && !vaultPasswordConfirmation) || (!vaultStatus.configured && vaultStatus.savedAccountDataEncrypted && !vaultAppPassword)} on:click={submitVaultPreparation}>{vaultStatus.configured ? (busy ? $t("SteamGuard_Unlocking") : $t("SteamGuard_Unlock")) : (busy ? $t("SteamGuard_Vault_CreatingVault") : $t("SteamGuard_Vault_CreateVault"))}</button>
+					<button type="button" class="btnicontext modal-primary" aria-busy={busy} disabled={busy || !vaultPassword || (!vaultStatus.configured && !vaultPasswordConfirmation) || (!vaultStatus.configured && vaultStatus.savedAccountDataEncrypted && !vaultAppPassword)} on:click={submitVaultPreparation}>{#if busy}<span class="steam-guard__spinner" aria-hidden="true"></span>{/if}{vaultStatus.configured ? (busy ? $t("SteamGuard_Unlocking") : $t("SteamGuard_Unlock")) : (busy ? $t("SteamGuard_Vault_CreatingVault") : $t("SteamGuard_Vault_CreateVault"))}</button>
 					<button type="button" class="btnicontext" disabled={busy} on:click={cancelEnrollment}>{$t("SteamGuard_Back")}</button>
 				</div>
 			</form>
@@ -1689,7 +1887,7 @@
 					<input id="steam-enrollment-password" class="modal-input" bind:value={authPassword} type="password" autocomplete="current-password" disabled={busy} data-steamguard-autofocus on:keydown={(event) => runOnEnter(event, beginCredentialLogin)} />
 				</label>
 				<div class="steam-guard__actions steam-guard__actions--end">
-					<button type="submit" class="btnicontext modal-primary" disabled={busy || !authAccountName.trim() || !authPassword}>{$t("SteamGuard_SignIn")}</button>
+					<button type="button" class="btnicontext modal-primary" aria-busy={busy} disabled={busy || !authAccountName.trim() || !authPassword} on:click={beginCredentialLogin}>{#if busy}<span class="steam-guard__spinner" aria-hidden="true"></span>{/if}{busy ? $t("SteamGuard_Challenge_SigningIn") : $t("SteamGuard_SignIn")}</button>
 					<button type="button" class="btnicontext" disabled={busy} on:click={cancelCredentialLogin}>{$t("SteamGuard_Cancel")}</button>
 				</div>
 			</form>
@@ -1708,7 +1906,7 @@
 					<input id="steam-enrollment-code" class="modal-input" bind:value={authCode} autocomplete="one-time-code" disabled={busy} data-steamguard-autofocus on:keydown={(event) => runOnEnter(event, submitCredentialCode)} />
 				</label>
 				<div class="steam-guard__actions steam-guard__actions--end">
-					<button type="submit" class="btnicontext modal-primary" disabled={busy || !authCode}>{$t("SteamGuard_Challenge_Submit")}</button>
+					<button type="button" class="btnicontext modal-primary" aria-busy={busy} disabled={busy || !authCode} on:click={submitCredentialCode}>{#if busy}<span class="steam-guard__spinner" aria-hidden="true"></span>{/if}{busy ? $t("SteamGuard_Challenge_Submitting") : $t("SteamGuard_Challenge_Submit")}</button>
 					<button type="button" class="btnicontext" disabled={busy} on:click={cancelCredentialLogin}>{$t("SteamGuard_Cancel")}</button>
 				</div>
 			</form>
@@ -1730,7 +1928,7 @@
 				</label>
 				{#if authMessage}<p class="steam-guard__error" role="alert">{authMessage}</p>{/if}
 				<div class="steam-guard__actions steam-guard__actions--end">
-					<button type="submit" class="btnicontext modal-primary" disabled={busy || !revocationConfirmation}>{$t("SteamGuard_RecoveryCode_Saved")}</button>
+					<button type="button" class="btnicontext modal-primary" disabled={busy || !revocationConfirmation} on:click={acknowledgeRevocationCode}>{$t("SteamGuard_RecoveryCode_Saved")}</button>
 					<button type="button" class="btnicontext" disabled={busy} on:click={cancelEnrollment}>{$t("SteamGuard_CloseAndResume")}</button>
 				</div>
 			</form>
@@ -1742,12 +1940,13 @@
 				{#if enrollmentStatus?.phoneHint}<p class="steam-guard__hint">{$t("SteamGuard_Enrollment_Destination", { hint: enrollmentStatus.phoneHint })}</p>{/if}
 				<p class="steam-guard__hint">{$t("SteamGuard_Enrollment_CloseHint")}</p>
 				{#if enrollmentRetrySeconds > 0}<p class="steam-guard__warning" role="status">{$t("SteamGuard_Enrollment_RetryIn", { seconds: enrollmentRetrySeconds })}</p>{/if}
+				{#if confirmationError}<p class="steam-guard__error" role="alert">{confirmationError}</p>{/if}
 				<label class="steam-guard__field" for="steam-enrollment-confirmation">
 					<span>{$t("SteamGuard_Field_ConfirmationCode")}</span>
 					<input id="steam-enrollment-confirmation" class="modal-input" bind:value={confirmationCode} autocomplete="one-time-code" disabled={busy || enrollmentRetrySeconds > 0} data-steamguard-autofocus on:keydown={(event) => runOnEnter(event, finalizeEnrollment)} />
 				</label>
 				<div class="steam-guard__actions steam-guard__actions--end">
-					<button type="submit" class="btnicontext modal-primary" disabled={busy || !confirmationCode || enrollmentRetrySeconds > 0}>{$t("SteamGuard_Enrollment_Finish")}</button>
+					<button type="button" class="btnicontext modal-primary" aria-busy={busy} disabled={busy || !confirmationCode || enrollmentRetrySeconds > 0} on:click={finalizeEnrollment}>{#if busy}<span class="steam-guard__spinner" aria-hidden="true"></span>{/if}{busy ? $t("SteamGuard_Enrollment_Finishing") : $t("SteamGuard_Enrollment_Finish")}</button>
 					<button type="button" class="btnicontext" disabled={busy} on:click={cancelEnrollment}>{$t("SteamGuard_CloseAndResume")}</button>
 				</div>
 			</form>
@@ -1890,7 +2089,7 @@
 				<p>{authMessage}</p>
 				{#if authResult.canSubmitEmailCode && authResult.canSubmitDeviceCode}<fieldset class="steam-guard__challenge-options"><legend>{$t("SteamGuard_Challenge_CodeSource")}</legend><label><input type="radio" bind:group={authChallenge} value="email_code" /> {$t("SteamGuard_Challenge_EmailCode")}</label><label><input type="radio" bind:group={authChallenge} value="device_code" /> {$t("SteamGuard_Challenge_DeviceCode")}</label></fieldset>{/if}
 				<label class="steam-guard__field" for="steam-login-code"><span>{authChallenge === "email_code" ? $t("SteamGuard_Challenge_EmailCode") : $t("SteamGuard_Challenge_DeviceCode")}</span><input id="steam-login-code" class="modal-input" bind:value={authCode} autocomplete="one-time-code" disabled={busy} data-steamguard-autofocus on:keydown={(event) => runOnEnter(event, submitCredentialCode)} /></label>
-				<div class="steam-guard__actions steam-guard__actions--end"><button type="submit" class="btnicontext modal-primary" disabled={busy || !authCode}>{$t("SteamGuard_Challenge_Submit")}</button><button type="button" class="btnicontext" disabled={busy} on:click={() => { void cancelCredentialLogin().then(backToAccount); }}>{$t("SteamGuard_Cancel")}</button></div>
+				<div class="steam-guard__actions steam-guard__actions--end"><button type="button" class="btnicontext modal-primary" disabled={busy || !authCode} on:click={submitCredentialCode}>{$t("SteamGuard_Challenge_Submit")}</button><button type="button" class="btnicontext" disabled={busy} on:click={() => { void cancelCredentialLogin().then(backToAccount); }}>{$t("SteamGuard_Cancel")}</button></div>
 			</form>
 		{:else if authStage === "success"}
 			<div class="steam-guard__success">
@@ -1968,9 +2167,10 @@
             {$t("SteamGuard_Cancel")}
           </button>
           <button
-            type="submit"
+            type="button"
             class="btnicontext modal-primary"
             disabled={busy || !exportPassword || !controller.exportMaFile}
+            on:click={submitExport}
           >
             <svg class="steam-guard__icon" viewBox={ICONS.fileExport.box} aria-hidden="true"><path d={ICONS.fileExport.path} /></svg>
             {busy ? $t("SteamGuard_Export_Exporting") : $t("SteamGuard_Export_ChooseLocation")}
@@ -2247,6 +2447,13 @@
     gap: $sg-2;
   }
 
+  /* Buttons travel together against the split row's space-between. */
+  .steam-guard__actions-group {
+    display: flex;
+    align-items: center;
+    gap: $sg-1;
+  }
+
   .steam-guard__actions--stretch :global(button) {
     flex: 1;
   }
@@ -2520,6 +2727,53 @@
 		margin: 0;
 		min-height: 1.3rem;
 		text-align: center;
+	}
+
+	/* Shown inside a primary button while its action is in flight. The vault
+	   steps derive a key and the Steam steps wait on the network, both long
+	   enough that a button which only greys out reads as a click that did
+	   nothing. currentColor keeps it legible on any button in any theme. */
+	.steam-guard__spinner {
+		display: inline-block;
+		width: 0.9em;
+		height: 0.9em;
+		margin-right: 0.45em;
+		border: 2px solid currentColor;
+		border-top-color: transparent;
+		border-radius: 50%;
+		vertical-align: -0.1em;
+		animation: steam-guard-spin 0.8s linear infinite;
+	}
+
+	@keyframes steam-guard-spin {
+		to { transform: rotate(360deg); }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.steam-guard__spinner { animation-duration: 2.4s; }
+	}
+
+	.steam-guard__other-factors {
+		summary {
+			cursor: pointer;
+			opacity: 0.85;
+		}
+	}
+
+	.steam-guard__keyfile-row {
+		display: flex;
+		gap: 0.5rem;
+		align-items: center;
+		margin-top: 0.5rem;
+	}
+
+	.steam-guard__keyfile-name {
+		flex: 1 1 auto;
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		opacity: 0.8;
 	}
 
 	.steam-guard__qr-progress {

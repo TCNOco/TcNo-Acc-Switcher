@@ -85,6 +85,53 @@ func TestInitDataPathsMigratesLegacyStatistics(t *testing.T) {
 	}
 }
 
+// The C# catalogs are frozen at the last C# release and must never reach the
+// data folder, where they would shadow the ones this build ships.
+func TestMigrateDoesNotImportLegacyCatalogs(t *testing.T) {
+	dir := t.TempDir()
+	exeDir := filepath.Join(dir, "bin")
+	dataDir := filepath.Join(dir, "data")
+	if err := os.MkdirAll(exeDir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	for _, name := range []string{"Platforms.json", "GameStats.json"} {
+		if err := os.WriteFile(filepath.Join(exeDir, name), []byte(`{"stale":true}`), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	if err := migrateLegacyExeRootFiles(exeDir, dataDir); err != nil {
+		t.Fatal(err)
+	}
+	for _, name := range []string{"Platforms.json", "GameStats.json"} {
+		if _, err := os.Stat(filepath.Join(dataDir, name)); !os.IsNotExist(err) {
+			t.Errorf("%s must not be imported into the data folder, err=%v", name, err)
+		}
+	}
+}
+
+func TestLiftLegacyFileDropsGeneratedFile(t *testing.T) {
+	dir := t.TempDir()
+	src := filepath.Join(dir, "Statistics.json")
+	dst := filepath.Join(dir, "data", "Statistics.json")
+	if err := os.WriteFile(src, []byte(`{"Uuid":"old"}`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(dst, []byte(`{"Uuid":"current"}`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := liftLegacyFile(src, dst); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(src); !os.IsNotExist(err) {
+		t.Errorf("source should have been removed, err=%v", err)
+	}
+}
+
 func TestIsUnderSkippedUserData(t *testing.T) {
 	src := filepath.Join(`C:\`, "TcNo Account Switcher")
 	cases := []struct {

@@ -23,6 +23,7 @@ import (
 	"TcNo-Acc-Switcher/internal/steamguard/confirmationapi"
 	"TcNo-Acc-Switcher/internal/steamguard/enrollmentapi"
 	"TcNo-Acc-Switcher/internal/steamguard/enrollmentflow"
+	"TcNo-Acc-Switcher/internal/steamguard/hwkey"
 	"TcNo-Acc-Switcher/internal/steamguard/mafile"
 	"TcNo-Acc-Switcher/internal/steamguard/otp"
 	"TcNo-Acc-Switcher/internal/steamguard/protocol"
@@ -78,7 +79,12 @@ type SettingsStatus struct {
 	FolderPath                 string        `json:"folderPath"`
 	LastVerifiedBackup         *BackupStatus `json:"lastVerifiedBackup"`
 	AppPasswordSet             bool          `json:"appPasswordSet"`
-	SavedAccountDataEncrypted  bool          `json:"savedAccountDataEncrypted"`
+	// HasSecurityKey and PasswordOpens describe the ways into the vault, so the
+	// unlock screen can offer what will actually work rather than assuming a
+	// password. Both are read from the header and need no unlocking.
+	HasSecurityKey            bool `json:"hasSecurityKey"`
+	PasswordOpens             bool `json:"passwordOpens"`
+	SavedAccountDataEncrypted bool `json:"savedAccountDataEncrypted"`
 }
 
 type BackupStatus struct {
@@ -132,9 +138,15 @@ type ImportResult struct {
 }
 
 type Service struct {
-	mu                         sync.Mutex
-	vault                      *vault.Vault
-	vaultOptions               []vault.Option
+	mu           sync.Mutex
+	vault        *vault.Vault
+	vaultOptions []vault.Option
+	liveKDF      vault.KDFParams
+	backupKDF    vault.KDFParams
+	saveKeyfile  func(vault.Keyfile) (string, error)
+	// Substituted in tests with a deterministic fake, so every security-key
+	// path is exercised without hardware. Nil means the platform driver.
+	authenticator              hwkey.Authenticator
 	restoreMergeStage          string
 	restoreMergeSource         string
 	timeState                  *otp.TimeState
@@ -247,8 +259,19 @@ func newServiceForTest(options ...vault.Option) *Service {
 	authenticationClient := protocol.NewAuthenticationClient(steamProtocol)
 	authAdapter := authflow.NewProtocolClient(authenticationClient)
 	timeState := otp.NewTimeState(nil)
+	// Tests must not pay production KDF cost: a real derivation per vault
+	// creation dominates the package runtime. Caller-supplied options come
+	// after these, so a test can still pin its own parameters.
+	testKDF := vault.KDFParams{Algorithm: "argon2id", MemoryKiB: 8 * 1024, Passes: 1, Lanes: 1, KeyBytes: 32}
+	testBackupKDF := testKDF
+	testBackupKDF.MemoryKiB = 16 * 1024
+	options = append([]vault.Option{
+		vault.WithKDFParams(testKDF), vault.WithRecoveryKDFParams(testKDF),
+	}, options...)
 	s := &Service{
 		vaultOptions:               options,
+		liveKDF:                    testKDF,
+		backupKDF:                  testBackupKDF,
 		timeState:                  timeState,
 		timeSync:                   timesync.NewClient(),
 		clipboard:                  secureclipboard.New(),
@@ -523,6 +546,11 @@ func (s *Service) GetSettingsStatus() (SettingsStatus, error) {
 	}
 	if exists {
 		status.Unlocked = !v.IsLocked()
+		// Read from the header, which needs no unlocking - the unlock screen has
+		// to know a security key is enrolled before it can offer to use one.
+		factors := summariseFactors(v.ListSlots())
+		status.HasSecurityKey = factors.SecurityKeyCount > 0
+		status.PasswordOpens = factors.PasswordOpens
 	}
 	if settings.LastVerifiedBackup != "" {
 		status.LastVerifiedBackup = &BackupStatus{
@@ -600,6 +628,13 @@ func (s *Service) Initialize(password, appPassword string) (string, error) {
 		}
 	}
 	s.vault = v
+	// Create returns a locked vault, but a vault is only ever created in order
+	// to be used immediately: the 2-Factor flow goes straight from here into
+	// enrollment, which refuses a locked vault. Unlocking here also avoids
+	// asking for the password again moments after the user chose it.
+	if err := s.unlockVaultLocked(v, password, false); err != nil {
+		return "", err
+	}
 	settings, err := LoadSettings()
 	if err != nil {
 		return "", err
@@ -612,6 +647,66 @@ func (s *Service) Initialize(password, appPassword string) (string, error) {
 }
 
 func (s *Service) UnlockAccount(steamID64, password string, rememberForSession bool, token string) (CodeView, error) {
+	return s.unlockAccountWith(steamID64, vault.PasswordOnly(password), rememberForSession, token)
+}
+
+// UnlockAccountWithFactors unlocks a vault whose slots need more than a
+// password. keyfilePath is read here rather than in the frontend, so keyfile
+// material never crosses into the webview. Empty arguments are simply absent
+// factors, so this also serves a password-only vault.
+func (s *Service) UnlockAccountWithFactors(
+	steamID64, password, keyfilePath, backupKey string,
+	rememberForSession bool,
+	token string,
+) (CodeView, error) {
+	creds, err := buildVaultCredentials(password, keyfilePath, backupKey)
+	if err != nil {
+		return CodeView{}, err
+	}
+	defer wipe(creds.Keyfile)
+	defer wipe(creds.RecoveryCode)
+	return s.unlockAccountWith(steamID64, creds, rememberForSession, token)
+}
+
+// buildVaultCredentials turns what the user supplied into vault credentials.
+// A malformed backup key or keyfile is reported as such rather than being
+// passed on to fail later as a wrong password.
+func buildVaultCredentials(password, keyfilePath, backupKey string) (vault.Credentials, error) {
+	creds := vault.Credentials{Password: password}
+	if path := strings.TrimSpace(keyfilePath); path != "" {
+		if !filepath.IsAbs(path) {
+			return vault.Credentials{}, vault.ErrInvalidKeyfile
+		}
+		raw, err := os.ReadFile(path)
+		if err != nil {
+			return vault.Credentials{}, errors.Join(vault.ErrInvalidKeyfile, err)
+		}
+		defer wipe(raw)
+		keyfile, err := vault.ParseKeyfile(raw)
+		if err != nil {
+			return vault.Credentials{}, err
+		}
+		creds.Keyfile = keyfile.Secret
+	}
+	if code := strings.TrimSpace(backupKey); code != "" {
+		raw, err := vault.ParseRecoveryCode(code)
+		if err != nil {
+			wipe(creds.Keyfile)
+			return vault.Credentials{}, err
+		}
+		creds.RecoveryCode = raw
+	}
+	return creds, nil
+}
+
+// needsSecurityKey reports whether a failed unlock is the kind a security key
+// could still satisfy: a slot needing a factor that was not supplied, or one
+// whose supplied factors did not open it.
+func needsSecurityKey(err error) bool {
+	return errors.Is(err, vault.ErrFactorRequired) || errors.Is(err, vault.ErrInvalidPassword)
+}
+
+func (s *Service) unlockAccountWith(steamID64 string, creds vault.Credentials, rememberForSession bool, token string) (CodeView, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	v, err := s.requireVaultLocked()
@@ -621,7 +716,22 @@ func (s *Service) UnlockAccount(steamID64, password string, rememberForSession b
 	if err := s.authorizeModalLocked(v, steamID64, token); err != nil {
 		return CodeView{}, err
 	}
-	if err := s.unlockVaultLocked(v, password, rememberForSession); err != nil {
+	// Tried with what the caller supplied first, and only then with a security
+	// key. Prompting for a touch before knowing one is needed would interrupt
+	// every unlock of a vault that has a key enrolled as an alternative.
+	unlockErr := s.unlockVaultWithLocked(v, creds, rememberForSession)
+	if unlockErr != nil && len(creds.SecurityKey) == 0 && needsSecurityKey(unlockErr) {
+		if secret, keyErr := s.evaluateSecurityKey(v); keyErr == nil && len(secret) != 0 {
+			creds.SecurityKey = secret
+			unlockErr = s.unlockVaultWithLocked(v, creds, rememberForSession)
+			wipe(secret)
+			creds.SecurityKey = nil
+		} else if keyErr != nil {
+			serviceLogger().Warn("Steam Guard security key could not be used",
+				"steamId64", strings.TrimSpace(steamID64), "error", keyErr)
+		}
+	}
+	if err := unlockErr; err != nil {
 		if !errors.Is(err, vault.ErrOneOperationRequired) {
 			serviceLogger().Warn("Steam Guard vault unlock failed",
 				"steamId64", strings.TrimSpace(steamID64), "reason", unlockFailureReason(err), "error", err)
@@ -632,7 +742,7 @@ func (s *Service) UnlockAccount(steamID64, password string, rememberForSession b
 			return CodeView{}, errors.Join(ErrRetainedUnlockUnavailable, lockErr)
 		}
 		var view CodeView
-		operationErr := s.withOneOperationLocked(v, password, func(access *vault.OneOperationAccess) error {
+		operationErr := s.withOneOperationCredentialsLocked(v, creds, func(access *vault.OneOperationAccess) error {
 			var err error
 			view, err = s.codeFromReader(access, steamID64, UnlockPersistenceOneOperation)
 			return err
@@ -733,6 +843,14 @@ func (s *Service) ListAccounts(accountID, token string) ([]AccountSummary, error
 }
 
 func (s *Service) ChangePassword(currentPassword, newPassword, appPassword string) error {
+	return s.ChangePasswordWithFactors(currentPassword, newPassword, appPassword, "", "")
+}
+
+// ChangePasswordWithFactors changes the vault password on a vault whose slots
+// need more than a password. The other factors are unavoidable here: a slot's
+// key is derived from every factor it lists, so rebuilding the password part
+// still needs the keyfile that sits beside it.
+func (s *Service) ChangePasswordWithFactors(currentPassword, newPassword, appPassword, keyfilePath, backupKey string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	if strings.TrimSpace(newPassword) == "" {
@@ -757,8 +875,29 @@ func (s *Service) ChangePassword(currentPassword, newPassword, appPassword strin
 	if err != nil {
 		return err
 	}
-	if err := s.unlockVaultLocked(v, currentPassword, false); err != nil {
+	oldCreds, err := buildVaultCredentials(currentPassword, keyfilePath, backupKey)
+	if err != nil {
 		return err
+	}
+	defer wipe(oldCreds.Keyfile)
+	defer wipe(oldCreds.RecoveryCode)
+	// A closure, because the secret may be filled in below and the argument to a
+	// plain defer is evaluated where it is written.
+	defer func() { wipe(oldCreds.SecurityKey) }()
+	// Unlock with the full factor set, not the password alone: rebuilding the
+	// password part of a slot needs every other factor that slot lists.
+	if err := s.unlockWithSecurityKeyFallbackLocked(v, &oldCreds); err != nil {
+		return err
+	}
+	// A way in that pairs the password with a security key can only be re-keyed
+	// with the device present, and the unlock above will not have asked for it if
+	// the password alone opened some other slot. Asked for explicitly here, so
+	// the change succeeds instead of being refused for a factor the user is
+	// holding but was never prompted for.
+	if len(oldCreds.SecurityKey) == 0 && pairsPasswordWithSecurityKey(v.ListSlots()) {
+		if secret, keyErr := s.evaluateSecurityKey(v); keyErr == nil && len(secret) != 0 {
+			oldCreds.SecurityKey = secret
+		}
 	}
 	settings, err := LoadSettings()
 	if err != nil {
@@ -769,7 +908,7 @@ func (s *Service) ChangePassword(currentPassword, newPassword, appPassword strin
 	if err := SaveSettings(settings); err != nil {
 		return err
 	}
-	return v.ChangePassword(currentPassword, newPassword)
+	return v.ChangePasswordWith(oldCreds, newPassword)
 }
 
 func (s *Service) LockNow() error { return s.revokeLeases() }
@@ -1194,6 +1333,24 @@ func (s *Service) requireVaultLocked() (*vault.Vault, error) {
 	return v, nil
 }
 
+// backupKDFParams reports the cost applied to a verified backup's own header.
+// The zero value means the shipped profile, so only tests need to set it.
+func (s *Service) backupKDFParams() vault.KDFParams {
+	if s.backupKDF.Algorithm == "" {
+		return vault.BackupKDFParams()
+	}
+	return s.backupKDF
+}
+
+// liveKDFParams reports the cost a routinely unlocked vault carries. Restoring
+// a backup rekeys down to this.
+func (s *Service) liveKDFParams() vault.KDFParams {
+	if s.liveKDF.Algorithm == "" {
+		return vault.DefaultKDFParams()
+	}
+	return s.liveKDF
+}
+
 func (s *Service) openVaultLocked() (*vault.Vault, bool, error) {
 	if s.vault != nil {
 		return s.vault, true, nil
@@ -1228,6 +1385,10 @@ func appOuterKeyForRecovery(appPassword string) ([]byte, error) {
 }
 
 func (s *Service) unlockVaultLocked(v *vault.Vault, password string, remember bool) error {
+	return s.unlockVaultWithLocked(v, vault.PasswordOnly(password), remember)
+}
+
+func (s *Service) unlockVaultWithLocked(v *vault.Vault, creds vault.Credentials, remember bool) error {
 	if !remember {
 		settings, err := LoadSettings()
 		if err != nil {
@@ -1244,14 +1405,14 @@ func (s *Service) unlockVaultLocked(v *vault.Vault, password string, remember bo
 		return err
 	}
 	if !status.SavedAccountDataEncrypted {
-		return retainedUnlockError(v.Unlock(password, mode))
+		return retainedUnlockError(v.UnlockWith(creds, mode))
 	}
 	key, err := security.DeriveSteamGuardOuterKey()
 	if err != nil {
 		return err
 	}
 	defer security.WipeSecret(key)
-	return retainedUnlockError(v.UnlockWithOuter(password, key, mode))
+	return retainedUnlockError(v.UnlockWithFactorsAndOuter(creds, key, mode))
 }
 
 // unlockFailureReason separates a wrong password from vault, secure-memory and
@@ -1284,19 +1445,23 @@ func retainedUnlockError(err error) error {
 }
 
 func (s *Service) withOneOperationLocked(v *vault.Vault, password string, fn func(*vault.OneOperationAccess) error) error {
+	return s.withOneOperationCredentialsLocked(v, vault.PasswordOnly(password), fn)
+}
+
+func (s *Service) withOneOperationCredentialsLocked(v *vault.Vault, creds vault.Credentials, fn func(*vault.OneOperationAccess) error) error {
 	status, err := security.GetStatus()
 	if err != nil {
 		return err
 	}
 	if !status.SavedAccountDataEncrypted {
-		return v.WithOneOperation(password, fn)
+		return v.WithOneOperationCredentials(creds, fn)
 	}
 	key, err := security.DeriveSteamGuardOuterKey()
 	if err != nil {
 		return err
 	}
 	defer security.WipeSecret(key)
-	return v.WithOneOperationWithOuter(password, key, fn)
+	return v.WithOneOperationCredentialsAndOuter(creds, key, fn)
 }
 
 func (s *Service) authorizeModalLocked(v *vault.Vault, accountID, token string) error {

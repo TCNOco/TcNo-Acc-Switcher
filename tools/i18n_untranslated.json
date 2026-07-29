@@ -13,6 +13,7 @@
     "Filter_Sort_ZA",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle"
   ],
   "vi-VN": [
@@ -23,6 +24,7 @@
     "Settings_DiscordRpc",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList"
   ],
@@ -38,6 +40,7 @@
     "SteamGuard_QR_Session",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Tags_ExpiryDate",
     "Title_AccountsList"
@@ -47,6 +50,7 @@
     "Ok",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList"
   ],
@@ -57,6 +61,7 @@
     "Settings_DiscordRpc",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList"
   ],
@@ -66,6 +71,7 @@
     "Settings_DiscordRpc",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList"
   ],
@@ -75,6 +81,7 @@
     "Filter_Sort_ZA",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList"
   ],
@@ -89,6 +96,7 @@
     "SteamGuard_QR_Client",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList"
   ],
@@ -101,6 +109,7 @@
     "Settings_Header_Program",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList"
   ],
@@ -113,6 +122,7 @@
     "Settings_Header_System",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList",
     "Tooltip_Info"
@@ -128,6 +138,7 @@
     "Settings_Header_Program",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle"
   ],
   "tr-TR": [
@@ -139,6 +150,7 @@
     "Settings_Header_Program",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList"
   ],
@@ -153,6 +165,7 @@
     "Settings_Header_Program",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList"
   ],
@@ -168,6 +181,7 @@
     "SteamGuard_QR_Client",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList"
   ],
@@ -180,6 +194,7 @@
     "Settings_Header_Program",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList"
   ],
@@ -199,6 +214,7 @@
     "SteamGuard_QR_Session",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList",
     "Tooltip_Info"
@@ -212,9 +228,11 @@
     "Online",
     "Settings_DiscordRpc",
     "Settings_Header_System",
+    "SteamGuard_Factors_NameLabel",
     "SteamGuard_QR_Client",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Tags_Section",
     "Title_AccountsList",
@@ -230,9 +248,11 @@
     "Settings_DiscordRpc",
     "Settings_Header_System",
     "SteamGuard_Confirmations_Level",
+    "SteamGuard_Factors_NameLabel",
     "SteamGuard_QR_Client",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Tags_Section",
     "Title_AccountsList",
@@ -244,6 +264,7 @@
     "Settings_DiscordRpc",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList"
   ],
@@ -258,6 +279,7 @@
     "SteamAdvanced_LogError",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList"
   ],
@@ -269,6 +291,7 @@
     "Settings_Header_Program",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList",
     "Tooltip_Info"
@@ -285,6 +308,7 @@
     "Settings_Header_System",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList"
   ],
@@ -305,6 +329,7 @@
     "SteamGuard_QR_Client",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Tags_Section",
     "Title_AccountsList",
@@ -319,9 +344,11 @@
     "Search_Section_Game",
     "Security_Password",
     "Settings_DiscordRpc",
+    "SteamGuard_Factor_Password",
     "SteamGuard_QR_Client",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList"
   ],
@@ -337,6 +364,7 @@
     "SteamGuard_QR_Session",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList",
     "Tooltip_Info"
@@ -345,6 +373,7 @@
     "Context_SteamGuard",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList"
   ],
@@ -353,6 +382,7 @@
     "Settings_DiscordRpc",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList"
   ],
@@ -361,6 +391,7 @@
     "Settings_DiscordRpc",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList"
   ],
@@ -369,6 +400,7 @@
     "Context_SteamGuard",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList"
   ],
@@ -376,6 +408,7 @@
     "Context_SteamGuard",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList"
   ],
@@ -384,12 +417,14 @@
     "Settings_DiscordRpc",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle"
   ],
   "fa-IR": [
     "Context_SteamGuard",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList"
   ],
@@ -398,6 +433,7 @@
     "Settings_DiscordRpc",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList"
   ],
@@ -405,6 +441,7 @@
     "Context_SteamGuard",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList"
   ],
@@ -412,6 +449,7 @@
     "Context_SteamGuard",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList"
   ],
@@ -420,6 +458,7 @@
     "Settings_DiscordRpc",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList"
   ],
@@ -428,6 +467,7 @@
     "Settings_DiscordRpc",
     "SteamGuard_Settings_Title",
     "SteamGuard_Title",
+    "SteamGuard_Unlock_BackupKeyHint",
     "SteamGuard_Vault_PasswordMismatchTitle",
     "Title_AccountsList"
   ]

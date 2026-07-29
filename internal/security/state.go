@@ -36,6 +36,16 @@ const (
 
 	kdfTargetMillis = 300
 	kdfMaxTime      = 8
+
+	// Read bounds for KDF parameters loaded from disk. argon2.IDKey allocates
+	// the whole memory cost as one block and aborts the process if that fails,
+	// so an out-of-range value cannot be caught later — it has to be rejected
+	// before derivation. Wide enough to keep every parameter set this app has
+	// ever written openable.
+	minKDFMemoryKB uint32 = 8 * 1024
+	maxKDFMemoryKB uint32 = 1024 * 1024
+	maxKDFTime     uint32 = 16
+	maxKDFThreads  uint8  = 16
 )
 
 var (
@@ -133,10 +143,12 @@ func emitStatusChanged() {
 }
 
 func defaultKDFParams() KDFParams {
+	// Calibration tunes Time to hit TargetMillis, so raising memory buys
+	// hardness against parallel attackers without costing the user more time.
 	return KDFParams{
 		Algorithm:    "argon2id",
 		Time:         2,
-		MemoryKB:     64 * 1024,
+		MemoryKB:     256 * 1024,
 		Threads:      1,
 		KeyLen:       vaultKeyBytes,
 		TargetMillis: kdfTargetMillis,
@@ -202,7 +214,10 @@ func VerifyAppPassword(password string) error {
 	if !ok {
 		return ErrPasswordNotSet
 	}
-	if err := passwordpolicy.ValidateNew(password); err != nil {
+	// ValidateExisting, not ValidateNew: this password was set under whatever
+	// policy applied at the time, and rejecting it here would lock a legacy
+	// user out of every Steam Guard operation while the app still unlocks.
+	if err := passwordpolicy.ValidateExisting(password); err != nil {
 		return err
 	}
 	key, err := unlockSecurityFileWithPassword(sf, password)
@@ -598,6 +613,28 @@ func deriveKey(password string, salt []byte, p KDFParams) []byte {
 	return argon2.IDKey([]byte(password), salt, p.Time, p.MemoryKB, p.Threads, p.KeyLen)
 }
 
+// validateKDFParams bounds parameters that came from a file rather than from
+// this process. Callers must run it before any deriveKey on loaded params.
+func validateKDFParams(p KDFParams) error {
+	p = normalizeKDFParams(p)
+	if p.Algorithm != "argon2id" {
+		return fmt.Errorf("unsupported KDF algorithm %q", p.Algorithm)
+	}
+	if p.MemoryKB < minKDFMemoryKB || p.MemoryKB > maxKDFMemoryKB {
+		return fmt.Errorf("KDF memory %d KiB out of range", p.MemoryKB)
+	}
+	if p.Time < 1 || p.Time > maxKDFTime {
+		return fmt.Errorf("KDF time %d out of range", p.Time)
+	}
+	if p.Threads < 1 || p.Threads > maxKDFThreads {
+		return fmt.Errorf("KDF threads %d out of range", p.Threads)
+	}
+	if p.KeyLen != vaultKeyBytes {
+		return fmt.Errorf("KDF key length %d out of range", p.KeyLen)
+	}
+	return nil
+}
+
 func normalizeKDFParams(p KDFParams) KDFParams {
 	def := defaultKDFParams()
 	if p.Algorithm == "" {
@@ -682,6 +719,9 @@ func loadSecurityFile() (securityFile, bool, error) {
 	}
 	if sf.Version != securityVersion {
 		return securityFile{}, false, fmt.Errorf("unsupported security file version %d", sf.Version)
+	}
+	if err := validateKDFParams(sf.KDF); err != nil {
+		return securityFile{}, false, err
 	}
 	return sf, true, nil
 }

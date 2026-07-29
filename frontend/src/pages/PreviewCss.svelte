@@ -473,14 +473,11 @@
                 title={acc.current ? $t("Tooltip_CurrentAccount") : undefined}
                 use:contextMenu={noopAccMenu}
               >
-                <img
-                  src="/img/BasicDefault.webp"
-                  alt=""
-                  draggable="false"
-                  class:status_vac={acc.status === "vac"}
-                  class:status_limited={acc.status === "limited"}
-                />
-                <h6>{acc.name}</h6>
+                <img src="/img/BasicDefault.webp" alt="" draggable="false" />
+                <h6
+                  class:acc_name--vac={acc.status === "vac"}
+                  class:acc_name--limited={acc.status === "limited"}
+                >{acc.name}</h6>
                 <p class="streamerCensor steamId">{acc.steamId}</p>
                 <p>{acc.when}</p>
               </label>

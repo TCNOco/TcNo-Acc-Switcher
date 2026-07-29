@@ -21,16 +21,28 @@ type OneOperationAccess struct {
 // creating a cached unlock lease. Callers may use this after Unlock returns
 // ErrOneOperationRequired.
 func (v *Vault) WithOneOperation(password string, fn func(*OneOperationAccess) error) error {
-	return v.withOneOperation(password, nil, fn)
+	return v.withOneOperation(PasswordOnly(password), nil, fn)
 }
 
 // WithOneOperationWithOuter is the double-encrypted counterpart to
 // WithOneOperation. The supplied outer key is copied and wiped before return.
 func (v *Vault) WithOneOperationWithOuter(password string, outerKey []byte, fn func(*OneOperationAccess) error) error {
-	return v.withOneOperation(password, outerKey, fn)
+	return v.withOneOperation(PasswordOnly(password), outerKey, fn)
 }
 
-func (v *Vault) withOneOperation(password string, outerKey []byte, fn func(*OneOperationAccess) error) error {
+// WithOneOperationCredentials is WithOneOperation for a vault whose slots need
+// more than a password.
+func (v *Vault) WithOneOperationCredentials(creds Credentials, fn func(*OneOperationAccess) error) error {
+	return v.withOneOperation(creds, nil, fn)
+}
+
+// WithOneOperationCredentialsAndOuter combines enrolled factors with the
+// app-derived outer key.
+func (v *Vault) WithOneOperationCredentialsAndOuter(creds Credentials, outerKey []byte, fn func(*OneOperationAccess) error) error {
+	return v.withOneOperation(creds, outerKey, fn)
+}
+
+func (v *Vault) withOneOperation(creds Credentials, outerKey []byte, fn func(*OneOperationAccess) error) error {
 	if fn == nil {
 		return ErrInvalidOneOperation
 	}
@@ -39,7 +51,7 @@ func (v *Vault) withOneOperation(password string, outerKey []byte, fn func(*OneO
 	if v.header.OuterVersion != 0 && len(outerKey) != keyBytes {
 		return ErrOuterKeyRequired
 	}
-	vaultKey, err := v.unwrapVaultKey(password, v.header)
+	vaultKey, err := openVaultKey(v.header, creds)
 	if err != nil {
 		return err
 	}

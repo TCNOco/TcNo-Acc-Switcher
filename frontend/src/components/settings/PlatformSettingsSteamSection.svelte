@@ -151,6 +151,16 @@
         dispatch("save");
       }}
     />
+    <SettingsToggle
+      id="ps-show-steam-guard-lock"
+      checked={steamSettings.Steam_ShowSteamGuardLock}
+      label={$t("Steam_ShowSteamGuardLock")}
+      tooltip={$t("Tooltip_SteamShowSteamGuardLock")}
+      on:change={() => {
+        steamSettings.Steam_ShowSteamGuardLock = !steamSettings.Steam_ShowSteamGuardLock;
+        dispatch("save");
+      }}
+    />
   </div>
 
   <!-- Lives with the Limited indicator it changes the meaning of, not with the
@@ -261,17 +271,6 @@
 <SteamGuardSettingsSection />
 
 <SettingsGroup title={$t("Settings_Header_TraySettings")}>
-  <div class="settings-grid">
-    <SettingsToggle
-      id="ps-tray-name"
-      checked={steamSettings.Steam_TrayAccountName}
-      label={$t("Steam_Tray_AccountName")}
-      on:change={() => {
-        steamSettings.Steam_TrayAccountName = !steamSettings.Steam_TrayAccountName;
-        dispatch("save");
-      }}
-    />
-  </div>
   <SettingsField label={$t("Settings_TrayMax")} forId="ps-tray-max">
     <input
       id="ps-tray-max"
@@ -280,6 +279,15 @@
       max="365"
       bind:value={steamSettings.TrayAccNumber}
       on:change={() => dispatch("save")}
+    />
+    <SettingsToggle
+      id="ps-tray-name"
+      checked={steamSettings.Steam_TrayAccountName}
+      label={$t("Steam_Tray_AccountName")}
+      on:change={() => {
+        steamSettings.Steam_TrayAccountName = !steamSettings.Steam_TrayAccountName;
+        dispatch("save");
+      }}
     />
   </SettingsField>
 </SettingsGroup>

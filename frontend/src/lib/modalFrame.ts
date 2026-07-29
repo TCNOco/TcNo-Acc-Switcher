@@ -293,7 +293,9 @@ export function startModalDrag(
   if (e.button !== 0) return;
   const t = e.target;
   if (!(t instanceof Element)) return;
-  if (t.closest(".modal-window-controls")) return;
+  // A control inside the drag handle must not also drag the window: pressing it
+  // would begin a drag and the click would be lost.
+  if (t.closest(".modal-window-controls") || t.closest("button")) return;
 
   const startRect = { ...rect };
   const { startX, startY } = beginPointerSession(e, header, "grabbing");

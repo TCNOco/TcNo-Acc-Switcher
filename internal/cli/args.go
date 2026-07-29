@@ -21,6 +21,7 @@ const (
 	KindOpenPage
 	KindListPlatforms
 	KindListAccounts
+	KindCleanLegacyInstall
 )
 
 // Parsed is the normalized CLI result.
@@ -120,6 +121,14 @@ func Parse(argv []string, idx *PlatformIndex) (Parsed, error) {
 			continue
 		case "--allow-steamguard-capture", "-allow-steamguard-capture":
 			p.AllowSteamGuardCapture = true
+			continue
+		// Internal: the app spawns itself elevated with this to delete the old
+		// C# files from a write-protected install folder. Undocumented in
+		// HelpText, like the --userdata-move-* restart plumbing.
+		case "--clean-legacy-install", "-clean-legacy-install":
+			if err := mergePrimary(&p, Parsed{Kind: KindCleanLegacyInstall}); err != nil {
+				return Parsed{}, err
+			}
 			continue
 		}
 
@@ -588,6 +597,13 @@ func (p Parsed) IsListCommand() bool {
 	default:
 		return false
 	}
+}
+
+// RunsBeforeSingleton reports argv handled and exited before the singleton mutex
+// is taken. --clean-legacy-install belongs here because the running instance
+// spawns it elevated and waits: taking the mutex would deadlock the pair.
+func (p Parsed) RunsBeforeSingleton() bool {
+	return p.IsListCommand() || p.Kind == KindCleanLegacyInstall
 }
 
 // RouteJSONForOpenPage returns a JSON string for the Wails "navigate" event payload.

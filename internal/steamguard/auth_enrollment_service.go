@@ -365,6 +365,11 @@ func (s *Service) PollCredentialLogin(accountID, token, handle string) (SteamCre
 		return SteamCredentialResult{}, ErrSteamAuthenticationState
 	}
 	var enrollmentStatus *SteamEnrollmentStatus
+	// authflow sanitizes whatever the consumer returns, because a consumer error
+	// can carry vault paths or tokens. Sentinels with nothing sensitive in them
+	// are captured here instead, so the user is told "already enrolled" rather
+	// than a generic transfer failure that names no cause at all.
+	var enrollmentRefusal error
 	registryUpdated := false
 	consumeErr := manager.Consume(binding, handle, func(authorizedSteamID uint64, accountName, accessToken, refreshToken, guardData []byte, hadRemoteInteraction bool) error {
 		defer runtime.KeepAlive(guardData)
@@ -389,6 +394,9 @@ func (s *Service) PollCredentialLogin(accountID, token, handle string) (SteamCre
 			})
 			if err != nil {
 				authflowLogger().Warn("Steam Guard enrollment could not be started", "steamId64", accountID, "error", err)
+				if errors.Is(err, enrollmentflow.ErrAlreadyEnrolled) {
+					enrollmentRefusal = enrollmentflow.ErrAlreadyEnrolled
+				}
 				return err
 			}
 			projected := enrollmentResult(status)
@@ -406,6 +414,9 @@ func (s *Service) PollCredentialLogin(accountID, token, handle string) (SteamCre
 	if consumeErr != nil {
 		authflowLogger().Warn("Steam credential login could not be applied",
 			"steamId64", accountID, "purpose", string(operation.purpose), "error", consumeErr)
+		if enrollmentRefusal != nil {
+			return SteamCredentialResult{}, enrollmentRefusal
+		}
 		return SteamCredentialResult{}, consumeErr
 	}
 	result.Handle = ""

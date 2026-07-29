@@ -14,6 +14,8 @@ export type SteamAccountRow = InstanceType<typeof AccountDTO> & {
   showAvatarFrame?: boolean;
   hasSteamGuard: boolean;
   steamGuardPending: boolean;
+  /** Display setting, not a property of the account. */
+  showSteamGuardLock?: boolean;
 };
 
 export type SteamGuardMenuAction = "open" | "all" | "add" | "import";

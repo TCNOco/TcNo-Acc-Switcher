@@ -115,15 +115,19 @@ func InitDataPaths(exeDir string) error {
 	return nil
 }
 
+// migrateLegacyExeRootFiles carries over what the C# build left beside the exe.
+//
+// Statistics.json is the only file that comes across: it holds the install's
+// identity. Its Platforms.json and GameStats.json are catalogs frozen at the
+// last C# release, and importing either would shadow the newer one this build
+// ships, so they are set aside as <name>.old instead - by the installer, or by
+// internal/legacyinstall for installs it never ran for. A user who edited one
+// can copy their changes across by hand.
 func migrateLegacyExeRootFiles(exeDir, userDataDir string) error {
-	for _, name := range []string{"Statistics.json", "Platforms.json"} {
-		src := filepath.Join(exeDir, name)
-		dst := filepath.Join(userDataDir, name)
-		if err := liftLegacyFile(src, dst); err != nil {
-			return err
-		}
-	}
-	return nil
+	return liftLegacyFile(
+		filepath.Join(exeDir, "Statistics.json"),
+		filepath.Join(userDataDir, "Statistics.json"),
+	)
 }
 
 func liftLegacyFile(src, dst string) error {

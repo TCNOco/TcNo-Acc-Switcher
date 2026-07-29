@@ -3,6 +3,7 @@
   import { offlineMode, offlineSafeImageSrc, withAssetCacheBust } from "../stores/offlineMode";
   import { isProfileVideoUrl } from "../lib/profileImageDrop";
   import { miniProfileHover } from "../lib/actions/miniProfileHover";
+  import { t } from "../stores/i18n";
   import type { SteamAccountRow } from "../lib/steam/types";
 
   export let account: SteamAccountRow;
@@ -29,14 +30,21 @@
     fallback,
   );
   $: avatarIsVideo = !$offlineMode && isProfileVideoUrl(avatarSrc);
+  // Defaults to shown: the flag arrives with account enrichment, so it is
+  // briefly undefined on first paint and the lock should not flicker off.
+  $: guardBadgeLabel = account.showSteamGuardLock === false
+    ? ""
+    : account.hasSteamGuard
+      ? $t("SteamGuard_Badge_Stored")
+      : account.steamGuardPending
+        ? $t("SteamGuard_Badge_Unfinished")
+        : "";
 </script>
 
 <span class="steam-acc-avatar-wrap">
   {#if avatarIsVideo}
     <video
       class="steam-acc-avatar"
-      class:status_vac={account.showVac && account.vac}
-      class:status_limited={account.showLimited && account.ltd}
       src={avatarSrc}
       autoplay loop muted playsinline
       aria-hidden="true" draggable="false"
@@ -50,8 +58,6 @@
   {:else}
     <img
       class="steam-acc-avatar"
-      class:status_vac={account.showVac && account.vac}
-      class:status_limited={account.showLimited && account.ltd}
       src={avatarSrc}
       alt="" draggable="false"
       use:miniProfileHover={{
@@ -64,5 +70,19 @@
   {/if}
   {#if account.showAvatarFrame && (account.avatarFrameUrl ?? "").trim() !== "" && !$offlineMode}
     <img class="steam-acc-avatar-frame" src={offlineSafeImageSrc($offlineMode, account.avatarFrameUrl ?? "", fallback)} alt="" draggable="false" />
+  {/if}
+  <!-- Sits above the avatar frame so a framed avatar does not hide it. A pending
+       setup gets its own look: it is not protection yet, and showing the same
+       badge would claim an authenticator the account cannot actually use. -->
+  {#if guardBadgeLabel}
+    <span
+      class="steam-acc-avatar-guard"
+      class:steam-acc-avatar-guard--pending={account.steamGuardPending && !account.hasSteamGuard}
+      role="img"
+      aria-label={guardBadgeLabel}
+      title={guardBadgeLabel}
+    >
+      <svg viewBox="0 0 448 512" aria-hidden="true"><path d="M400 224h-24v-72C376 68.2 307.8 0 224 0S72 68.2 72 152v72H48c-26.5 0-48 21.5-48 48v192c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V272c0-26.5-21.5-48-48-48zm-104 0H152v-72c0-39.7 32.3-72 72-72s72 32.3 72 72v72z" /></svg>
+    </span>
   {/if}
 </span>

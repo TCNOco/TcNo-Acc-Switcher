@@ -133,6 +133,10 @@ export type SteamGuardVaultStatus = {
 	unlocked: boolean;
 	rememberForSession: boolean;
 	savedAccountDataEncrypted: boolean;
+	/** A security key is enrolled, so unlocking can ask the device for it. */
+	hasSecurityKey: boolean;
+	/** Some way in needs nothing but the password. */
+	passwordOpens: boolean;
 };
 
 export type SteamCredentialStep = "code" | "poll" | "complete" | "failed" | "pending";
@@ -216,6 +220,18 @@ export type SteamGuardModalController = {
     rememberForSession: boolean,
     capability: string,
   ) => Promise<SteamGuardCodeView>;
+  /** Unlock for a vault whose slots need more than a password. The keyfile is
+   *  passed as a path: only Go reads its contents. */
+  unlockWithFactors?: (
+    accountId: string,
+    password: string,
+    keyfilePath: string,
+    backupKey: string,
+    rememberForSession: boolean,
+    capability: string,
+  ) => Promise<SteamGuardCodeView>;
+  /** Returns the chosen keyfile path, or "" if the user cancelled. */
+  pickKeyfile?: () => Promise<string>;
   listAccounts?: (accountId: string, capability: string) => Promise<SteamGuardAccountSummary[]>;
   copyCode?: (accountId: string, capability: string) => Promise<void> | void;
 	openConfirmations?: (accountId: string, capability: string) => Promise<void> | void;

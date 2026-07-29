@@ -1,4 +1,5 @@
 import { pushToast } from "../../stores/toast";
+import { requestPlatformAccountsRefresh } from "../../stores/platformPage";
 import type { SteamAccountRow, SteamGuardMenuRequest } from "./types";
 import { formatWailsError, formatToastWithError } from "../formatWailsError";
 import { reportLaunchFailure } from "../adminFlow";
@@ -126,6 +127,17 @@ export function createSteamMenuCommands(acc: SteamAccountRow, deps: SteamMenuDep
         pushToast({ type: "success", message: tr("Toast_StartedGame", { program: gameName }), duration: 4000 });
       } catch (e) {
         await reportLaunchFailure(e, deps.name);
+      }
+    },
+
+    // Hiding is a display preference, so the row has to repaint: the ban flags
+    // are computed server-side and only come back with the account list.
+    async setBanStatusHidden(hidden: boolean): Promise<void> {
+      try {
+        await SteamService.SetBanStatusHidden(rid, hidden);
+        requestPlatformAccountsRefresh(deps.name);
+      } catch (e) {
+        pushToast({ type: "error", message: formatToastWithError(tr("Toast_SaveFailed"), e), duration: 8000 });
       }
     },
 

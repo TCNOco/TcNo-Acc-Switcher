@@ -29,15 +29,20 @@ type SteamAccountListItemDTO struct {
 type SteamAccountEnrichmentDTO struct {
 	SteamID64 string `json:"steamId64"`
 
-	DisplayName        string                `json:"displayName"`
-	LastLogin          string                `json:"lastLogin"`
-	Offline            bool                  `json:"offline"`
-	ImageURL           string                `json:"imageUrl"`
-	StaticImageURL     string                `json:"staticImageUrl"`
-	AvatarPending      bool                  `json:"avatarPending"`
-	MetaPending        bool                  `json:"metaPending"`
-	Vac                bool                  `json:"vac"`
-	Ltd                bool                  `json:"ltd"`
+	DisplayName    string `json:"displayName"`
+	LastLogin      string `json:"lastLogin"`
+	Offline        bool   `json:"offline"`
+	ImageURL       string `json:"imageUrl"`
+	StaticImageURL string `json:"staticImageUrl"`
+	AvatarPending  bool   `json:"avatarPending"`
+	MetaPending    bool   `json:"metaPending"`
+	Vac            bool   `json:"vac"`
+	Ltd            bool   `json:"ltd"`
+	// HasVisibleBan reports a ban the global settings are set to show, whether
+	// or not this account is hidden. It is what decides that the context menu
+	// has anything to offer; BanStatusHidden decides which way it reads.
+	HasVisibleBan      bool                  `json:"hasVisibleBan"`
+	BanStatusHidden    bool                  `json:"banStatusHidden"`
 	ShowSteamID        bool                  `json:"showSteamId"`
 	ShowVAC            bool                  `json:"showVac"`
 	ShowLimited        bool                  `json:"showLimited"`
@@ -50,6 +55,7 @@ type SteamAccountEnrichmentDTO struct {
 	MiniProfileHTML    string                `json:"miniProfileHtml"`
 	ShowMiniProfile    bool                  `json:"showMiniProfile"`
 	ShowAvatarFrame    bool                  `json:"showAvatarFrame"`
+	ShowSteamGuardLock bool                  `json:"showSteamGuardLock"`
 	SyncError          string                `json:"syncError"`
 	Tags               []basic.AccountTagDTO `json:"tags"`
 	ManualProfileImage bool                  `json:"manualProfileImage"`
@@ -63,6 +69,7 @@ type steamListContext struct {
 	effectiveCollect bool
 	vacMap           map[string]VacEntry
 	vacKnown         map[string]struct{}
+	hiddenBans       map[string]struct{}
 	tagByUID         map[string][]basic.AccountTagDTO
 }
 
@@ -122,6 +129,13 @@ func (s *SteamService) buildSteamListContext() (*steamListContext, error) {
 		}
 	}
 
+	hiddenBans := make(map[string]struct{}, len(st.HiddenBanStatus))
+	for _, id := range st.HiddenBanStatus {
+		if id = strings.TrimSpace(id); id != "" {
+			hiddenBans[id] = struct{}{}
+		}
+	}
+
 	tagByUID, _ := basic.BuildAccountTagMap(PlatformKey)
 
 	return &steamListContext{
@@ -132,6 +146,7 @@ func (s *SteamService) buildSteamListContext() (*steamListContext, error) {
 		effectiveCollect: st.CollectInfo && !app.OfflineMode,
 		vacMap:           vm,
 		vacKnown:         vacKnown,
+		hiddenBans:       hiddenBans,
 		tagByUID:         tagByUID,
 	}, nil
 }
@@ -215,6 +230,8 @@ func (s *SteamService) GetSteamAccountsEnrichment() ([]SteamAccountEnrichmentDTO
 		if ctx.st.AccountNotes != nil {
 			note = ctx.st.AccountNotes[u.SteamID64]
 		}
+		_, banHidden := ctx.hiddenBans[u.SteamID64]
+		bans := banDisplayFor(v, ctx.st.SteamShowVAC, ctx.st.SteamShowLimited, banHidden)
 
 		miniHTML := ApplySteamManualAvatarMiniprofile(miniHTMLForName, u.SteamID64)
 		frameURL := ""
@@ -238,9 +255,11 @@ func (s *SteamService) GetSteamAccountsEnrichment() ([]SteamAccountEnrichmentDTO
 			MetaPending:        metaPending,
 			Vac:                v.Vac,
 			Ltd:                v.Ltd,
+			HasVisibleBan:      bans.HasVisibleBan,
+			BanStatusHidden:    bans.Hidden,
 			ShowSteamID:        ctx.st.SteamShowSteamID,
-			ShowVAC:            ctx.st.SteamShowVAC,
-			ShowLimited:        ctx.st.SteamShowLimited,
+			ShowVAC:            bans.ShowVAC,
+			ShowLimited:        bans.ShowLimited,
 			ShowLastLogin:      ctx.st.SteamShowLastLogin,
 			ShowAccUsername:    ctx.st.SteamShowAccUsername,
 			CollectInfo:        ctx.st.CollectInfo,
@@ -250,11 +269,36 @@ func (s *SteamService) GetSteamAccountsEnrichment() ([]SteamAccountEnrichmentDTO
 			MiniProfileHTML:    miniHTML,
 			ShowMiniProfile:    ctx.st.SteamShowMiniProfile,
 			ShowAvatarFrame:    ctx.st.SteamShowAvatarFrame,
+			ShowSteamGuardLock: ctx.st.SteamShowSteamGuardLock,
 			Tags:               ctx.tagByUID[u.SteamID64],
 			ManualProfileImage: isManualAvatar,
 		})
 	}
 	return out, nil
+}
+
+// banDisplay is what the account list says about one account's bans.
+type banDisplay struct {
+	// ShowVAC and ShowLimited gate every place a ban is painted - the name
+	// colour, the avatar, the Steam Guard summary, the re-render key. Hiding is
+	// applied here rather than at each of them, so they cannot disagree.
+	ShowVAC     bool
+	ShowLimited bool
+	// HasVisibleBan reports a ban the global settings are set to show, ignoring
+	// whether this account is hidden. It is what decides that the context menu
+	// has anything to offer, and stays true once hidden so the offer can be
+	// reversed.
+	HasVisibleBan bool
+	Hidden        bool
+}
+
+func banDisplayFor(v VacEntry, showVAC, showLimited, hidden bool) banDisplay {
+	return banDisplay{
+		ShowVAC:       showVAC && !hidden,
+		ShowLimited:   showLimited && !hidden,
+		HasVisibleBan: (v.Vac && showVAC) || (v.Ltd && showLimited),
+		Hidden:        hidden,
+	}
 }
 
 func mergeSteamAccountDTO(list SteamAccountListItemDTO, enrich SteamAccountEnrichmentDTO) AccountDTO {
@@ -271,6 +315,8 @@ func mergeSteamAccountDTO(list SteamAccountListItemDTO, enrich SteamAccountEnric
 		MetaPending:        enrich.MetaPending,
 		Vac:                enrich.Vac,
 		Ltd:                enrich.Ltd,
+		HasVisibleBan:      enrich.HasVisibleBan,
+		BanStatusHidden:    enrich.BanStatusHidden,
 		ShowSteamID:        enrich.ShowSteamID,
 		ShowVAC:            enrich.ShowVAC,
 		ShowLimited:        enrich.ShowLimited,
@@ -283,6 +329,7 @@ func mergeSteamAccountDTO(list SteamAccountListItemDTO, enrich SteamAccountEnric
 		MiniProfileHTML:    enrich.MiniProfileHTML,
 		ShowMiniProfile:    enrich.ShowMiniProfile,
 		ShowAvatarFrame:    enrich.ShowAvatarFrame,
+		ShowSteamGuardLock: enrich.ShowSteamGuardLock,
 		SyncError:          enrich.SyncError,
 		CurrentSession:     list.CurrentSession,
 		Tags:               enrich.Tags,

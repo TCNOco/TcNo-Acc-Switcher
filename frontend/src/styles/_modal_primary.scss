@@ -8,6 +8,9 @@
     color: var(--text-on-bright-bg, var(--pure-black, #000)) !important;
     border-color: currentColor !important;
     font-weight: 500;
+    // Short labels - Ok, Yes - would otherwise render barely wider than the
+    // word, which reads as cramped next to a full-width dialog.
+    min-width: 5.5rem;
 
     svg {
       fill: currentColor !important;

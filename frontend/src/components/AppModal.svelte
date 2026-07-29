@@ -15,12 +15,23 @@
 
   $: m = $activeModal;
 
+  // What the open modal renders from. Only ever assigned a real modal, so the
+  // markup below can dereference it freely.
+  //
+  // `m` alone is not safe to read inside the block: when a modal body changes
+  // its own state in the same tick that dismisses the modal, Svelte flushes the
+  // still-mounted slot after the store has gone null, and a dereference there
+  // throws out of the update loop - which stops every component on the page
+  // updating, not just this one. The page then looks frozen rather than broken.
+  let shown: NonNullable<typeof m> | null = null;
+  $: if (m) shown = m;
+
   $: modalTitle = (() => {
-    if (!m) return "";
-    if (m.kind === "update") return $t("Heading_UpdateAvailable");
-    if (m.kind === "feedback") return m.mode === "issue" ? $t("Feedback_Issue_Title") : $t("Feedback_Suggestion_Title");
-    if (m.kind === "crashReport") return $t("Modal_CrashReport_Title");
-    return m.title;
+    if (!shown) return "";
+    if (shown.kind === "update") return $t("Heading_UpdateAvailable");
+    if (shown.kind === "feedback") return shown.mode === "issue" ? $t("Feedback_Issue_Title") : $t("Feedback_Suggestion_Title");
+    if (shown.kind === "crashReport") return $t("Modal_CrashReport_Title");
+    return shown.title;
   })();
 
   function onResolveAlert(): void {
@@ -32,97 +43,97 @@
   }
 </script>
 
-{#if m}
+{#if m && shown}
   <ModalShell
-    kind={m.kind}
+    kind={shown.kind}
     title={modalTitle}
-    modalId={m.id}
+    modalId={shown.id}
     on:cancel={cancelActiveModal}
   >
-    {#key m.id}
-      {#if m.kind === "alert" || m.kind === "alertNoButton"}
+    {#key shown.id}
+      {#if shown.kind === "alert" || shown.kind === "alertNoButton"}
         <AlertModalBody
-          dismissLabel={m.kind === "alert" ? (m.dismissLabel ?? $t("Ok")) : undefined}
-          html={m.body}
-          component={m.bodyComponent}
-          componentProps={m.bodyProps}
+          dismissLabel={shown.kind === "alert" ? (shown.dismissLabel ?? $t("Ok")) : undefined}
+          html={shown.body}
+          component={shown.bodyComponent}
+          componentProps={shown.bodyProps}
           on:resolve={onResolveAlert}
         />
-      {:else if m.kind === "confirm"}
+      {:else if shown.kind === "confirm"}
         <ConfirmModalBody
-          html={m.body}
-          component={m.bodyComponent}
-          componentProps={m.bodyProps}
-          positiveLabel={m.positiveLabel ?? (m.style === "yesno" ? $t("Yes") : $t("Ok"))}
-          negativeLabel={m.negativeLabel ?? $t("No")}
-          style={m.style}
+          html={shown.body}
+          component={shown.bodyComponent}
+          componentProps={shown.bodyProps}
+          positiveLabel={shown.positiveLabel ?? (shown.style === "yesno" ? $t("Yes") : $t("Ok"))}
+          negativeLabel={shown.negativeLabel ?? $t("No")}
+          style={shown.style}
           on:resolve={onResolve}
         />
-      {:else if m.kind === "prompt"}
+      {:else if shown.kind === "prompt"}
         <PromptModalBody
-          html={m.body}
-          component={m.bodyComponent}
-          componentProps={m.bodyProps}
-          initialValue={m.initialValue ?? ""}
-          positiveLabel={m.positiveLabel ?? $t("Ok")}
-          multiline={m.multiline ?? false}
-          inputType={m.inputType}
-          checkboxLabel={m.checkboxLabel}
-          checkboxInitial={m.checkboxInitial ?? false}
-          returnCheckboxResult={m.returnCheckboxResult ?? false}
-          modalId={m.id}
+          html={shown.body}
+          component={shown.bodyComponent}
+          componentProps={shown.bodyProps}
+          initialValue={shown.initialValue ?? ""}
+          positiveLabel={shown.positiveLabel ?? $t("Ok")}
+          multiline={shown.multiline ?? false}
+          inputType={shown.inputType}
+          checkboxLabel={shown.checkboxLabel}
+          checkboxInitial={shown.checkboxInitial ?? false}
+          returnCheckboxResult={shown.returnCheckboxResult ?? false}
+          modalId={shown.id}
           on:resolve={onResolve}
         />
-      {:else if m.kind === "passwordSetup"}
+      {:else if shown.kind === "passwordSetup"}
         <PasswordSetupModalBody
-          positiveLabel={m.positiveLabel ?? $t("Security_SetAppPassword")}
-          negativeLabel={m.negativeLabel ?? $t("Button_Cancel")}
+          positiveLabel={shown.positiveLabel ?? $t("Security_SetAppPassword")}
+          negativeLabel={shown.negativeLabel ?? $t("Button_Cancel")}
           on:resolve={onResolve}
         />
-      {:else if m.kind === "tagExpiry"}
+      {:else if shown.kind === "tagExpiry"}
         <TagExpiryModalBody
-          tagName={m.tagName}
-          initialScope={m.initialScope ?? "account"}
-          initialDate={m.initialDate ?? ""}
-          initialTime={m.initialTime ?? ""}
-          positiveLabel={m.positiveLabel ?? $t("Ok")}
-          negativeLabel={m.negativeLabel ?? $t("Button_Cancel")}
+          tagName={shown.tagName}
+          initialScope={shown.initialScope ?? "account"}
+          initialDate={shown.initialDate ?? ""}
+          initialTime={shown.initialTime ?? ""}
+          positiveLabel={shown.positiveLabel ?? $t("Ok")}
+          negativeLabel={shown.negativeLabel ?? $t("Button_Cancel")}
           on:resolve={onResolve}
         />
-      {:else if m.kind === "folder"}
+      {:else if shown.kind === "folder"}
         <FolderPickerModalBody
-          html={m.body}
-          component={m.bodyComponent}
-          componentProps={m.bodyProps}
-          initialPath={m.initialPath ?? ""}
-          dirsOnly={m.dirsOnly ?? true}
-          soughtFilename={m.soughtFilename ?? ""}
-          suggestedFolder={m.suggestedFolder ?? ""}
-          positiveLabel={m.positiveLabel ?? (!(m.dirsOnly ?? true) ? $t("Modal_Button_Select") : $t("Modal_SetUserdata_ChooseFolder"))}
-          showPortableButton={m.showPortableButton ?? false}
+          html={shown.body}
+          component={shown.bodyComponent}
+          componentProps={shown.bodyProps}
+          initialPath={shown.initialPath ?? ""}
+          dirsOnly={shown.dirsOnly ?? true}
+          soughtFilename={shown.soughtFilename ?? ""}
+          suggestedFolder={shown.suggestedFolder ?? ""}
+          positiveLabel={shown.positiveLabel ?? (!(shown.dirsOnly ?? true) ? $t("Modal_Button_Select") : $t("Modal_SetUserdata_ChooseFolder"))}
+          showPortableButton={shown.showPortableButton ?? false}
           on:resolve={onResolve}
         />
-      {:else if m.kind === "feedback"}
+      {:else if shown.kind === "feedback"}
         <FeedbackModalBody
-          mode={m.mode}
-          platform={m.platform ?? ""}
+          mode={shown.mode}
+          platform={shown.platform ?? ""}
           on:resolve={onResolve}
         />
-      {:else if m.kind === "crashReport"}
+      {:else if shown.kind === "crashReport"}
         <CrashReportModalBody
           on:resolve={onResolve}
         />
-      {:else if m.kind === "update"}
+      {:else if shown.kind === "update"}
         <UpdateModalBody
-          message={m.message}
-          downloadUrl={m.downloadUrl}
+          message={shown.message}
+          downloadUrl={shown.downloadUrl}
         />
-      {:else if m.kind === "steamGuard"}
+      {:else if shown.kind === "steamGuard"}
         <SteamGuardModalBody
-          account={m.account}
-          entry={m.entry}
-          knownAccounts={m.knownAccounts}
-          controller={m.controller}
+          account={shown.account}
+          entry={shown.entry}
+          knownAccounts={shown.knownAccounts}
+          controller={shown.controller}
         />
       {/if}
     {/key}

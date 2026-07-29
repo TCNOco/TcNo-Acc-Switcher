@@ -239,6 +239,10 @@
     if (adapter.currentSession(acc)) parts.push(tr("Tooltip_CurrentAccount"));
     if (adapter.savedDataBroken?.(acc)) parts.push(tr("Security_AccountDataBroken"));
 
+    // The name colour is the only visual cue for a ban, so it has to be spoken too.
+    const nameStatus = adapter.nameStatus?.(acc);
+    if (nameStatus) parts.push(nameStatus.label);
+
     const tags = (adapter.tags(acc) ?? []).map((tag) => compactText(tag.name)).filter(Boolean);
     if (tags.length > 0) parts.push(`${tr("Tags_Section")}: ${tags.join(", ")}`);
 
@@ -1052,6 +1056,7 @@
             {@const descId = `${radioId}-desc`}
             {#if acc}
               {@const a11yDescription = accountA11yDescription(acc, rid)}
+              {@const nameStatus = adapter.nameStatus?.(acc) ?? null}
               {#key `${rid}-${avatarEpoch[rid] ?? 0}-${rowVersions[rid] ?? 0}`}
               <div class="acc_list_item_inner">
                 <input
@@ -1118,7 +1123,13 @@
 
                   <slot name="account-before-name" {acc} />
 
-                  <h6 id={labelId} class="displayName">{adapter.name(acc)}</h6>
+                  <h6
+                    id={labelId}
+                    class="displayName"
+                    class:acc_name--vac={nameStatus?.kind === "vac"}
+                    class:acc_name--limited={nameStatus?.kind === "limited"}
+                    title={nameStatus?.label}
+                  >{adapter.name(acc)}</h6>
 
                   {#if a11yDescription}
                     <span id={descId} class="sr-only">{a11yDescription}</span>

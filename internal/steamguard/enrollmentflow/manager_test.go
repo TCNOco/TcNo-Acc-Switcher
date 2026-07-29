@@ -26,8 +26,11 @@ type fakeAPI struct {
 	addErr         error
 	finalizeResult enrollmentapi.FinalizeResult
 	finalizeErr    error
+	statusResult   enrollmentapi.StatusResult
+	statusErr      error
 	addCalls       int
 	finalizeCalls  int
+	statusCalls    int
 }
 
 func (f *fakeAPI) AddAuthenticator(context.Context, enrollmentapi.AddRequest, time.Duration) (enrollmentapi.AddResult, error) {
@@ -42,6 +45,13 @@ func (f *fakeAPI) FinalizeAddAuthenticator(context.Context, enrollmentapi.Finali
 	defer f.mu.Unlock()
 	f.finalizeCalls++
 	return f.finalizeResult, f.finalizeErr
+}
+
+func (f *fakeAPI) QueryStatus(context.Context, uint64, []byte, time.Duration) (enrollmentapi.StatusResult, error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.statusCalls++
+	return f.statusResult, f.statusErr
 }
 
 func (f *fakeAPI) counts() (int, int) {
