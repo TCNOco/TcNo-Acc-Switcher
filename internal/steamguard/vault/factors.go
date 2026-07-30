@@ -49,8 +49,12 @@ func NewKeyfile() (Keyfile, error) {
 
 // Encode renders the file the user saves. The warning is part of the file
 // because the file will outlive any explanation shown when it was created.
+//
+// Assembled as bytes rather than through a strings.Builder: a string holding the
+// encoded secret cannot be wiped afterwards, so building one here would leave a
+// copy behind that the caller has no way to reach.
 func (k Keyfile) Encode() []byte {
-	var b strings.Builder
+	var b bytes.Buffer
 	b.WriteString(keyfileMagic + "\n")
 	b.WriteString("\n")
 	b.WriteString("Anyone holding this file, together with the other factors it was\n")
@@ -58,8 +62,13 @@ func (k Keyfile) Encode() []byte {
 	b.WriteString("Losing it may make that vault permanently unreadable.\n")
 	b.WriteString("\n")
 	fmt.Fprintf(&b, "id: %s\n", k.ID)
-	fmt.Fprintf(&b, "key: %s\n", base64.RawStdEncoding.EncodeToString(k.Secret))
-	return []byte(b.String())
+	b.WriteString("key: ")
+	encoded := make([]byte, base64.RawStdEncoding.EncodedLen(len(k.Secret)))
+	base64.RawStdEncoding.Encode(encoded, k.Secret)
+	b.Write(encoded)
+	wipe(encoded)
+	b.WriteString("\n")
+	return b.Bytes()
 }
 
 func ParseKeyfile(data []byte) (Keyfile, error) {
@@ -325,9 +334,10 @@ func (v *Vault) RemoveSlot(id string) error {
 	})
 }
 
-// maxSlotLabel bounds a slot's display name in bytes, matching what
-// validateSlots accepts when reading a header back.
-const maxSlotLabel = 64
+// MaxSlotLabelBytes bounds a slot's display name, matching what validateSlots
+// accepts when reading a header back. Exported because a caller that builds a
+// label has to measure it the same way, in bytes, before it reaches a header.
+const MaxSlotLabelBytes = 64
 
 // RenameSlot changes what a way in is called. Only the label moves: it is not
 // covered by slotAAD, so nothing is re-derived and no factor has to be presented
@@ -335,7 +345,7 @@ const maxSlotLabel = 64
 // otherwise indistinguishable, and removing the wrong one is discovered by
 // finding out which device stopped working.
 func (v *Vault) RenameSlot(id, label string) error {
-	if len(label) == 0 || len(label) > maxSlotLabel {
+	if len(label) == 0 || len(label) > MaxSlotLabelBytes {
 		return ErrInvalidFormat
 	}
 	v.mu.Lock()

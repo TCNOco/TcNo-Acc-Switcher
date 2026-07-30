@@ -160,15 +160,18 @@ func TestReissueSlotsLeavesOtherFactorsIntact(t *testing.T) {
 	h.Slots = []keySlot{passwordSlot, keyfileSlot}
 
 	const replacement = "a different vault password"
-	var skipped []string
-	h.Slots, skipped, err = reissueSlots(h, PasswordOnly(slotTestPassword), PasswordOnly(replacement), slotTestKDF(), vaultKey)
+	outcome, err := reissueSlots(h, PasswordOnly(slotTestPassword), PasswordOnly(replacement), slotTestKDF(), vaultKey)
 	if err != nil {
 		t.Fatal(err)
 	}
+	h.Slots = outcome.slots
 	// The keyfile slot has no password factor, so nothing is left behind on the
 	// old password and the change is safe to commit.
-	if len(skipped) != 0 {
-		t.Fatalf("reported %v as still using the old password", skipped)
+	if len(outcome.stillOnOldPassword) != 0 {
+		t.Fatalf("reported %v as still using the old password", outcome.stillOnOldPassword)
+	}
+	if outcome.passwordReissued != 1 {
+		t.Fatalf("reissued %d password slots, want 1", outcome.passwordReissued)
 	}
 	if _, err := openVaultKey(h, PasswordOnly(replacement)); err != nil {
 		t.Fatalf("new password did not open the vault: %v", err)

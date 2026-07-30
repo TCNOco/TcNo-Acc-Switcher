@@ -249,7 +249,7 @@ func validateSlots(slots []keySlot) error {
 			return ErrInvalidFormat
 		}
 		seen[slot.ID] = true
-		if len(slot.Label) > maxSlotLabel {
+		if len(slot.Label) > MaxSlotLabelBytes {
 			return ErrInvalidFormat
 		}
 		for _, factor := range slot.Factors {
@@ -265,11 +265,18 @@ func validateSlots(slots []keySlot) error {
 				if err := validateKDF(*factor.KDF); err != nil {
 					return err
 				}
+				// A password factor describes no device and no file. Left
+				// unchecked these are free-form strings that slotAAD folds in
+				// between its NUL separators, where a crafted value can spell
+				// out the encoding of a different factor list entirely.
+				if factor.KeyfileID != "" || factor.CredentialID != "" || factor.RPID != "" || factor.UV {
+					return ErrInvalidFormat
+				}
 			case FactorKeyfile, FactorRecoveryCode:
 				if factor.KDF != nil || !validID(factor.KeyfileID) {
 					return ErrInvalidFormat
 				}
-				if factor.CredentialID != "" || factor.RPID != "" {
+				if factor.CredentialID != "" || factor.RPID != "" || factor.UV {
 					return ErrInvalidFormat
 				}
 			case FactorSecurityKey:
@@ -281,7 +288,7 @@ func validateSlots(slots []keySlot) error {
 				if _, err := decodeCredentialID(factor.CredentialID); err != nil {
 					return err
 				}
-				if factor.CredentialID == "" || factor.RPID == "" || len(factor.RPID) > 253 {
+				if factor.CredentialID == "" || !validRPID(factor.RPID) {
 					return ErrInvalidFormat
 				}
 			default:
@@ -404,10 +411,6 @@ func destroyHandle(handle securemem.Handle) error {
 		return nil
 	}
 	return handle.Destroy()
-}
-
-func (v *Vault) unwrapVaultKey(password string, h header) ([]byte, error) {
-	return openVaultKey(h, PasswordOnly(password))
 }
 
 // VerifyCredentials reports whether these factors open some enrolled way in,
@@ -1246,17 +1249,28 @@ func (v *Vault) ChangePasswordWith(oldCreds Credentials, newPassword string) err
 		return v.revokeOnIntegrityLocked(err)
 	}
 	nextHeader := v.header
-	var stillOnOldPassword []string
-	nextHeader.Slots, stillOnOldPassword, err = reissueSlots(v.header, oldCreds, newCreds, v.opts.kdf, vaultKey)
+	outcome, err := reissueSlots(v.header, oldCreds, newCreds, v.opts.kdf, vaultKey)
 	if err != nil {
 		return err
+	}
+	nextHeader.Slots = outcome.slots
+	if outcome.passwordSlots == 0 {
+		return ErrNoPasswordEnrolled
 	}
 	// Nothing is written if some way in would keep answering to the old
 	// password. Committing here would report a password change that did not
 	// happen, and the user would believe the old one was retired when anyone
 	// holding that keyfile or key could still use it.
-	if len(stillOnOldPassword) != 0 {
-		return fmt.Errorf("%w: %s", ErrPasswordStillInUse, strings.Join(stillOnOldPassword, ", "))
+	if len(outcome.stillOnOldPassword) != 0 {
+		return fmt.Errorf("%w: %s", ErrPasswordStillInUse, strings.Join(outcome.stillOnOldPassword, ", "))
+	}
+	// The vault key can be recovered by a factor that is not the password at
+	// all — a backup key, a security key — and that opens every path below
+	// without anything having checked the password being retired. Rebuilding
+	// no password slot means none of them opened, so the old one was never
+	// proven and is about to survive a change reported as successful.
+	if outcome.passwordReissued == 0 {
+		return ErrInvalidPassword
 	}
 	files, err := v.collectRecordFiles(ring, nil, outerKey)
 	if err != nil {
@@ -1338,10 +1352,11 @@ func (v *Vault) rekeyLocked(creds Credentials, outerKey []byte, params KDFParams
 	nextHeader := v.header
 	// Skipped slots are not a problem here: rekeying only changes derivation
 	// cost, so a slot left alone keeps working with the same factors.
-	nextHeader.Slots, _, err = reissueSlots(v.header, creds, creds, params, vaultKey)
+	outcome, err := reissueSlots(v.header, creds, creds, params, vaultKey)
 	if err != nil {
 		return err
 	}
+	nextHeader.Slots = outcome.slots
 	files, err := v.collectRecordFiles(ring, nil, outerKey)
 	if err != nil {
 		return v.revokeOnIntegrityLocked(err)
@@ -1422,6 +1437,9 @@ func (v *Vault) commitGenerationLocked(key, outerKey []byte, nextHeader header, 
 	if err != nil {
 		return err
 	}
+	// The keyring plaintext names every account in the vault. Every path that
+	// decrypts one wipes its copy; the path that writes one has to as well.
+	defer wipe(ringRaw)
 	ringEnv, err := seal(key, ringRaw, aad(FormatVersion, nextHeader.VaultID, nextHeader.KeyringID, "", "keyring"))
 	if err != nil {
 		return err

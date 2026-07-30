@@ -60,6 +60,7 @@ var (
 	ErrLastSlot                = errors.New("the only remaining way to open the Steam Guard vault cannot be removed")
 	ErrPasswordStillInUse      = errors.New("the password was not changed: it is also used by ways in that were not supplied, and changing only the rest would leave the old password working")
 	ErrSlotNotFound            = errors.New("enrolled Steam Guard factor not found")
+	ErrNoPasswordEnrolled      = errors.New("this Steam Guard vault has no password to change")
 )
 
 // errFactorUnavailable marks a slot the supplied credentials cannot even
@@ -67,8 +68,6 @@ var (
 // a caller: openVaultKey turns it into ErrFactorRequired or ErrInvalidPassword.
 var errFactorUnavailable = errors.New("slot factor material not supplied")
 
-// Credentials carries the factor material offered when opening a vault. Only
-// the factors a slot actually lists are consulted.
 // Credentials carries the factor material offered when opening a vault. Only
 // the factors a slot actually lists are consulted. SecurityKey is the value a
 // hardware authenticator returned, already evaluated: the vault never talks to
@@ -78,6 +77,17 @@ type Credentials struct {
 	Keyfile      []byte
 	RecoveryCode []byte
 	SecurityKey  []byte
+
+	// KeyfileID and SecurityKeyID say which enrolled factor the material above
+	// belongs to. Both are optional: empty means "unknown, try it anyway".
+	// Supplied, a slot naming a different keyfile or credential counts as one
+	// whose material was never offered, rather than one that was offered the
+	// wrong material. The difference matters when retiring a password: a slot
+	// that failed to open because the wrong keyfile was supplied is still on
+	// the old password, while one that failed because it holds a password of
+	// its own is not, and only the identity tells them apart.
+	KeyfileID     string
+	SecurityKeyID string
 }
 
 func PasswordOnly(password string) Credentials { return Credentials{Password: password} }

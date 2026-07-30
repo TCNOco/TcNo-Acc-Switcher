@@ -192,6 +192,26 @@ func syncDir(path string) {
 
 func validID(s string) bool { return idPattern.MatchString(s) }
 
+// validRPID accepts a relying-party identifier as a hostname and nothing else.
+// The value is handed to the platform WebAuthn call as a UTF-16 string, and an
+// interior NUL panics inside the driver rather than failing as a bad header —
+// so a vault restored from a tampered backup would look valid right up until it
+// took the app down. It is also one of the fields slotAAD separates with NULs.
+func validRPID(s string) bool {
+	if s == "" || len(s) > 253 {
+		return false
+	}
+	for _, r := range s {
+		switch {
+		case r >= 'a' && r <= 'z', r >= 'A' && r <= 'Z', r >= '0' && r <= '9':
+		case r == '-' || r == '.':
+		default:
+			return false
+		}
+	}
+	return true
+}
+
 func generationPath(root, id string) (string, error) {
 	if !validID(id) {
 		return "", ErrInvalidFormat

@@ -159,7 +159,7 @@ func factorMaterial(factor slotFactor, creds Credentials) ([]byte, error) {
 		case FactorSecurityKey:
 			secret = creds.SecurityKey
 		}
-		if len(secret) == 0 {
+		if len(secret) == 0 || !factorIdentityMatches(factor, creds) {
 			return nil, errFactorUnavailable
 		}
 		mac := hmac.New(sha256.New, secret)
@@ -167,6 +167,20 @@ func factorMaterial(factor slotFactor, creds Credentials) ([]byte, error) {
 		return mac.Sum(nil), nil
 	}
 	return nil, ErrInvalidFormat
+}
+
+// factorIdentityMatches reports whether the material offered for this factor is
+// the material this factor was enrolled with, where the caller knew which it
+// held. An unidentified credential matches anything, which is what every caller
+// did before identity was carried at all.
+func factorIdentityMatches(factor slotFactor, creds Credentials) bool {
+	switch factor.Type {
+	case FactorKeyfile:
+		return creds.KeyfileID == "" || factor.KeyfileID == "" || creds.KeyfileID == factor.KeyfileID
+	case FactorSecurityKey:
+		return creds.SecurityKeyID == "" || factor.CredentialID == "" || creds.SecurityKeyID == factor.CredentialID
+	}
+	return true
 }
 
 // slotSatisfiable reports whether every factor the slot lists has material
@@ -191,6 +205,9 @@ func slotSatisfiable(slot keySlot, creds Credentials) bool {
 				return false
 			}
 		default:
+			return false
+		}
+		if !factorIdentityMatches(factor, creds) {
 			return false
 		}
 	}
@@ -275,39 +292,54 @@ func newPasswordFactor(params KDFParams) (slotFactor, error) {
 	}, nil
 }
 
-// reissueSlots rebuilds every slot oldCreds can open, re-deriving its password
-// factor under params and newCreds. Slots that oldCreds cannot open — other
-// enrolled factors — are carried across untouched, so changing a password does
-// not silently revoke a security key.
+// reissueOutcome reports what a reissue did with each slot, so a caller retiring
+// a password can tell whether the old one was ever proven rather than assuming
+// a commit that touched something touched the right thing.
+type reissueOutcome struct {
+	slots []keySlot
+	// stillOnOldPassword names password-bearing slots carried across because
+	// their material was not offered. They keep answering to the old password.
+	stillOnOldPassword []string
+	// passwordSlots counts slots listing a password factor, and
+	// passwordReissued how many of those were actually rebuilt. Reissuing none
+	// of them means nothing ever checked the old password.
+	passwordSlots    int
+	passwordReissued int
+}
+
 // reissueSlots rebuilds every slot it can open with oldCreds so its password
 // factors derive from newCreds instead. Slots it cannot open are carried across
-// untouched, and the labels of those that list a password are returned: they
-// still answer to the old password, and a caller retiring that password has to
-// say so rather than report success.
+// untouched, so changing a password does not silently revoke a security key.
 //
-// Only slots skipped for want of material are reported. A slot whose envelope
-// simply did not open had every factor present and holds a different password of
-// its own, which this change was never about.
-func reissueSlots(h header, oldCreds, newCreds Credentials, params KDFParams, vaultKey []byte) ([]keySlot, []string, error) {
-	next := make([]keySlot, 0, len(h.Slots))
-	var stillOnOldPassword []string
+// A slot skipped for want of material is reported in stillOnOldPassword: it
+// still answers to the old password and the caller has to say so rather than
+// report success. A slot whose envelope simply did not open is not, because it
+// holds a password of its own that this change was never about — a distinction
+// that only holds because credentials carry factor identity, so "the wrong
+// keyfile was supplied" arrives here as material never offered.
+func reissueSlots(h header, oldCreds, newCreds Credentials, params KDFParams, vaultKey []byte) (reissueOutcome, error) {
+	outcome := reissueOutcome{slots: make([]keySlot, 0, len(h.Slots))}
 	reissued := 0
 	for _, slot := range h.Slots {
+		usesPassword := slotUsesPassword(slot)
+		if usesPassword {
+			outcome.passwordSlots++
+		}
 		kek, err := deriveSlotKey(h, slot, oldCreds)
 		if errors.Is(err, errFactorUnavailable) {
-			next = append(next, slot)
-			if slotUsesPassword(slot) {
-				stillOnOldPassword = append(stillOnOldPassword, slot.Label)
+			outcome.slots = append(outcome.slots, slot)
+			if usesPassword {
+				outcome.stillOnOldPassword = append(outcome.stillOnOldPassword, slot.Label)
 			}
 			continue
 		}
 		if err != nil {
-			return nil, nil, err
+			return reissueOutcome{}, err
 		}
 		existing, openErr := openEnvelope(kek, slot.VaultKey, slotAAD(h, slot))
 		wipe(kek)
 		if openErr != nil {
-			next = append(next, slot)
+			outcome.slots = append(outcome.slots, slot)
 			continue
 		}
 		wipe(existing)
@@ -319,21 +351,24 @@ func reissueSlots(h header, oldCreds, newCreds Credentials, params KDFParams, va
 			}
 			replacement, err := newPasswordFactor(params)
 			if err != nil {
-				return nil, nil, err
+				return reissueOutcome{}, err
 			}
 			factors = append(factors, replacement)
 		}
 		rebuilt, err := buildSlot(h, slot.Label, factors, newCreds, vaultKey)
 		if err != nil {
-			return nil, nil, err
+			return reissueOutcome{}, err
 		}
-		next = append(next, rebuilt)
+		outcome.slots = append(outcome.slots, rebuilt)
 		reissued++
+		if usesPassword {
+			outcome.passwordReissued++
+		}
 	}
 	if reissued == 0 {
-		return nil, nil, ErrInvalidPassword
+		return reissueOutcome{}, ErrInvalidPassword
 	}
-	return next, stillOnOldPassword, nil
+	return outcome, nil
 }
 
 func slotUsesPassword(slot keySlot) bool {
