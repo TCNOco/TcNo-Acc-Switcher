@@ -1,6 +1,6 @@
 import { Events } from "@wailsio/runtime";
 import { get } from "svelte/store";
-import { activeModal, cancelActiveModal } from "../stores/modal";
+import { activeModal, cancelActiveModal, modalBusy } from "../stores/modal";
 import { contextMenu, closeContextMenu } from "../stores/contextMenu";
 import { navigateBackLikeButton, navigateForward } from "../stores/nav";
 import { searchOverlayCtrl, openSearchOverlay, closeSearchOverlay } from "../stores/searchOverlay";
@@ -384,7 +384,12 @@ function openFocusedContextMenu(): void {
 
 function handleBackAction(): void {
   if (get(activeModal)) {
-    cancelActiveModal();
+    // Same guard as Escape and the close button: a modal waiting on a security
+    // key or a native dialog cannot be torn down, or the prompt outlives the
+    // window that asked for it.
+    if (!get(modalBusy)) {
+      cancelActiveModal();
+    }
     return;
   }
   if (get(contextMenu)) {

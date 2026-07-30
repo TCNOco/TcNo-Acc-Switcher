@@ -14,7 +14,7 @@ import type {
 	SteamEnrollmentStatus,
 	SteamLoginResult,
 } from "./steamGuardModal";
-import { openAlert, openAlertNoButton, openFolderPicker, openPrompt, openPromptWithCheckbox, openSteamGuardModal } from "../stores/modal";
+import { dismissSteamGuardModal, openAlert, openAlertNoButton, openFolderPicker, openPrompt, openPromptWithCheckbox, openSteamGuardModal } from "../stores/modal";
 import SteamGuardRestoreModalBody from "../components/modals/SteamGuardRestoreModalBody.svelte";
 import { get } from "svelte/store";
 import { t } from "../stores/i18n";
@@ -403,6 +403,9 @@ export async function loadSteamGuardSwitcherProfile(
 
 async function showEnrollmentBackupWarning(): Promise<void> {
 	const status = await SteamGuardService.GetSettingsStatus();
+	// Called from inside the Steam Guard modal, which this alert would otherwise
+	// replace: close it on its own terms first so its promise settles.
+	dismissSteamGuardModal();
 	await openAlert({
 		title: tr("SteamGuard_Enrollment_AddedTitle"),
 		body: `${tr("SteamGuard_BackupReminder")}<br><code>` +
@@ -1183,6 +1186,9 @@ const controller: SteamGuardModalController = {
 		});
   },
   async importMaFile() {
+    // The import drives its own prompts, so the modal that started it has to be
+    // settled and closed first rather than replaced part-way through.
+    dismissSteamGuardModal();
     await runImport();
   },
 	exportMaFile: (accountId, capability, password, maFilePassword) =>
@@ -1219,7 +1225,11 @@ const controller: SteamGuardModalController = {
 		pickKeyfile: () => SteamGuardService.PickVaultKeyfile(),
 		cancelQrRegion: (accountId, capability) =>
 			SteamGuardService.CancelQRRegion(accountId, capability),
-		recover: async () => runRestore(),
+		recover: async () => {
+			// Same as the import: the restore flow owns the modal slot from here.
+			dismissSteamGuardModal();
+			await runRestore();
+		},
 };
 
 export function installSteamGuardBridge(): () => void {
@@ -1256,7 +1266,12 @@ export function installSteamGuardBridge(): () => void {
   });
 
   configureSteamGuardDropAdapter({
-    importMaFiles: (paths) => runImport(paths),
+    // A dropped maFile is imported whatever is on screen, including the Steam
+    // Guard modal, whose slot the import's own prompts would take over.
+    importMaFiles: (paths) => {
+      dismissSteamGuardModal();
+      return runImport(paths);
+    },
     decodeQrScreenshot: async () => {
       throw new Error("Steam QR decoding is not available in this checkpoint");
     },

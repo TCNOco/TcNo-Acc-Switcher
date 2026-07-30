@@ -665,6 +665,7 @@
   "SteamGuard_Enrollment_RetryIn": "Try again in {seconds} seconds.",
   "SteamGuard_Enrollment_Finish": "Finish setup",
   "SteamGuard_Enrollment_Complete": "Steam Guard was added to this account.",
+  "SteamGuard_Enrollment_BackupReminder": "Always keep a verified backup of the full Steam Guard folder. Without one, this authenticator is lost with this PC.",
   "SteamGuard_Enrollment_ShowBackupFolder": "Show backup folder",
   "SteamGuard_Enrollment_ViewCode": "View code",
   "SteamGuard_Enrollment_AddedTitle": "Steam Guard added",

@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { t } from "../../stores/i18n";
   import { pushToast } from "../../stores/toast";
-  import { formatToastWithError } from "../../lib/formatWailsError";
+  import { formatToastWithError, formatUnknownError } from "../../lib/formatWailsError";
   import { passwordPolicyMessage, validateNewPassword } from "../../lib/passwordPolicy";
   import { escapeHtml } from "../../lib/html";
   import { passwordIsUsed } from "../../lib/steamGuardFactors";
@@ -243,13 +243,19 @@
         await steamGuardSettings.unlockForManagement(auth.password, auth.keyfilePath, auth.backupKey);
         return auth;
       } catch (failure) {
-        error = messageOf(failure) || $t("SteamGuard_Factors_AuthRejected");
+        error = withFailureReason($t("SteamGuard_Factors_AuthRejected"), failure);
       }
     }
   }
 
-  function messageOf(error: unknown): string {
-    return error instanceof Error ? error.message : String(error ?? "");
+  /**
+   * The translated line plus the reason the vault gave. A Go error is never
+   * empty, so showing its message alone left the retry banner untranslated -
+   * and, for a Wails JSON-object message, showing the raw blob.
+   */
+  function withFailureReason(message: string, error: unknown): string {
+    const reason = formatUnknownError(error).split("\n")[0]?.trim() ?? "";
+    return reason ? `${message} ${reason}` : message;
   }
 
   // Changing the password re-keys every way in that uses it, so a keyfile that

@@ -106,9 +106,25 @@ function bumpId(): number {
 
 export const activeModal = writable<ActiveModal | null>(null);
 
+/**
+ * Set by a modal body while an operation it cannot cancel is in flight. Escape,
+ * the backdrop and the close button respect it, the same way a body already
+ * withholds its back action: tearing a modal down mid-ceremony leaves the
+ * native security-key prompt on screen with nothing left to answer it.
+ */
+export const modalBusy = writable(false);
+
+export function setModalBusy(busy: boolean): void {
+  modalBusy.set(busy);
+}
+
 export function dismissModal(result?: unknown): void {
   const r = resolver;
   resolver = null;
+  // Cleared with the modal that raised it. A body that leaks the flag - an
+  // operation that throws past its reset - would otherwise leave every later
+  // modal refusing Escape, and the flag is what makes Escape the way out.
+  modalBusy.set(false);
   activeModal.set(null);
   r?.(result);
 }
@@ -386,6 +402,17 @@ export function openSteamGuardQrLogin(
   controller: SteamGuardModalController,
 ): Promise<void> {
   return openSteamGuardModal({ account, controller, entry: "qr" });
+}
+
+/**
+ * Settles and closes the Steam Guard modal when it is the one open. There is one
+ * slot and one resolver here, so a dialog opened from inside the live modal
+ * replaces it and overwrites the resolver, leaving the opener's promise pending
+ * for good. Flows that open their own dialogs close it deliberately first.
+ */
+export function dismissSteamGuardModal(): void {
+  if (get(activeModal)?.kind !== "steamGuard") return;
+  dismissModal();
 }
 
 export function cancelActiveModal(): void {

@@ -25,7 +25,9 @@
   $: wantsPassword = password.length > 0 || confirmation.length > 0;
 
   function onEnter(event: KeyboardEvent): void {
-    if (event.key !== "Enter") return;
+    // isComposing: committing an IME composition sends Enter, which must not
+    // submit a half-composed name or password.
+    if (event.key !== "Enter" || event.isComposing) return;
     event.preventDefault();
     submit();
   }

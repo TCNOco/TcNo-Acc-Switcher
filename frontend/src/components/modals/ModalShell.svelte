@@ -7,6 +7,7 @@
   import { DUR, motionEnabled } from "../../lib/animation";
   import { modalFocus } from "../../lib/modalFocus";
   import { t } from "../../stores/i18n";
+  import { modalBusy } from "../../stores/modal";
   import { modalBackAction } from "../../stores/modalBack";
   import {
     MODAL_FRAME_MIN_H,
@@ -197,10 +198,15 @@
   }
 
   function onBackdropDown(e: MouseEvent): void {
+    if ($modalBusy) return;
     if (e.target === backdropEl) dispatch("cancel");
   }
 
+  // Escape, the backdrop and the close button are all the same way out, and a
+  // body that has withheld its back action because it is mid-operation cannot
+  // survive any of them: the work carries on with nothing left to report to.
   function onCancel(): void {
+    if ($modalBusy) return;
     dispatch("cancel");
   }
 
@@ -286,6 +292,7 @@
             type="button"
             class="win-btn win-btn-close"
             aria-label={$t("Button_Close")}
+            disabled={$modalBusy}
             on:click={onCancel}
           >
             <svg class="win-btn__glyph win-btn__glyph--close" viewBox="0 0 10 10" aria-hidden="true">
@@ -557,6 +564,12 @@
     &:hover {
       background: var(--window-control-hover-bg);
     }
+
+    &:disabled {
+      cursor: default;
+      opacity: 0.4;
+      background: none;
+    }
   }
 
   .modal-window-controls .win-btn__glyph {
@@ -574,7 +587,7 @@
     forced-color-adjust: auto;
   }
 
-  .modal-window-controls .win-btn-close:hover {
+  .modal-window-controls .win-btn-close:hover:not(:disabled) {
     background: var(--window-close-hover);
   }
 

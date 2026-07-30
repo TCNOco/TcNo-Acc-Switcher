@@ -65,7 +65,9 @@
   }
 
   function onEnter(event: KeyboardEvent): void {
-    if (event.key !== "Enter") return;
+    // isComposing: committing an IME composition sends Enter, and submitting
+    // half-composed text here spends an authentication attempt on it.
+    if (event.key !== "Enter" || event.isComposing) return;
     event.preventDefault();
     submit();
   }

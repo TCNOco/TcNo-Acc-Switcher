@@ -37,7 +37,7 @@
   } from "../../lib/steamGuardModal";
 	  import { t } from "../../stores/i18n";
 	  import { setSteamGuardDropTarget } from "../../stores/steamGuardDrop";
-	  import { dismissModal } from "../../stores/modal";
+	  import { dismissModal, setModalBusy } from "../../stores/modal";
 	  import { passwordPolicyMessage, validateNewPassword } from "../../lib/passwordPolicy";
 	  import { pushToast } from "../../stores/toast";
 	  import { formatToastWithError, formatUnknownError } from "../../lib/formatWailsError";
@@ -285,7 +285,14 @@
 		}
 	})();
 	$: setModalBackAction(headerBackAction);
-	onDestroy(() => clearModalBackAction());
+	// Escape, the backdrop and the close button mean the same thing as that back
+	// button, so they answer to the same busy state: a pending unlock can be
+	// waiting on a security-key prompt this modal has no way to call off.
+	$: setModalBusy(busy);
+	onDestroy(() => {
+		clearModalBackAction();
+		setModalBusy(false);
+	});
 	$: enrollmentRetrySeconds = Math.max(0, Math.ceil((enrollmentRetryAt - now) / 1_000));
 	$: exportAccount = steamGuardAccountForState(state) ?? account;
 	$: exportAccountSummary = summaryOf(exportAccount, false, knownSummaries, switcherProfiles);
@@ -571,9 +578,9 @@
       await action();
       announce(successMessage);
     } catch (error) {
-      console.error("Steam Guard: action failed", error);
-      const currentAccount = steamGuardAccountForState(state);
-      transition({ type: "fail", account: currentAccount, message: $t("SteamGuard_Error_ActionFailed") });
+      // These actions close this modal to run their own dialogs, so a failure
+      // has no screen of ours left to land on.
+      reportFailure($t("SteamGuard_Error_ActionFailed"), error);
     } finally {
       busy = false;
     }
@@ -1178,13 +1185,10 @@
 		try {
 			const status = await pending;
 			await refreshCapabilityIfRequired(currentAccount, status.capabilityRefreshRequired);
+			// No backup dialog from here: it replaces this modal, so it destroyed
+			// the completion screen the moment that screen appeared. The screen
+			// carries the reminder itself and offers the folder on demand.
 			await prepareEnrollment(currentAccount, status);
-			if (!status.pending) {
-				busy = false;
-				await controller.showEnrollmentBackupWarning?.().catch((error: unknown) => {
-					console.error("Steam Guard: backup reminder could not be shown", error);
-				});
-			}
 		} catch (error) {
 			console.error("Steam Guard: confirmation code was rejected", error);
 			confirmationError = withFailureReason($t("SteamGuard_Error_ConfirmationRejected"), error);
@@ -1952,6 +1956,10 @@
 			</form>
 		{:else if enrollmentStage === "complete"}
 			<p>{$t("SteamGuard_Enrollment_Complete")}</p>
+			<!-- The reminder is shown here rather than in a dialog of its own: that
+			     dialog takes the modal slot, which meant closing this screen before
+			     it could be read. The folder path is one button away. -->
+			<p class="steam-guard__warning">{$t("SteamGuard_Enrollment_BackupReminder")}</p>
 			<div class="steam-guard__actions steam-guard__actions--end">
 				<button type="button" class="btnicontext modal-primary" disabled={!controller.showEnrollmentBackupWarning} on:click={() => controller.showEnrollmentBackupWarning?.()}>{$t("SteamGuard_Enrollment_ShowBackupFolder")}</button>
 				<button type="button" class="btnicontext" on:click={backToAccount}>{$t("SteamGuard_Enrollment_ViewCode")}</button>
