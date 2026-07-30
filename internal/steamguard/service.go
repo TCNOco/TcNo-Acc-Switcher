@@ -146,7 +146,14 @@ type Service struct {
 	saveKeyfile  func(vault.Keyfile) (string, error)
 	// Substituted in tests with a deterministic fake, so every security-key
 	// path is exercised without hardware. Nil means the platform driver.
-	authenticator              hwkey.Authenticator
+	authenticator hwkey.Authenticator
+	// managementVerified is when the last verified management authentication
+	// stops covering the factor change it was asked for. An unlocked vault does
+	// not authorise anything on its own: the lease can last the whole session.
+	managementVerified time.Time
+	// restoreInProgress marks the window where the live vault folder exists but
+	// is not yet a vault this process may adopt.
+	restoreInProgress          bool
 	restoreMergeStage          string
 	restoreMergeSource         string
 	timeState                  *otp.TimeState
@@ -562,15 +569,27 @@ func (s *Service) GetSettingsStatus() (SettingsStatus, error) {
 }
 
 func (s *Service) SetFeatureEnabled(enabled bool) error {
-	settings, err := LoadSettings()
-	if err != nil {
+	// Locked around the read-modify-write only. revokeLeases takes s.mu itself,
+	// and every other writer of this file holds it - without that a toggle
+	// landing mid password-change put back the verified-backup stamp the change
+	// had just cleared, and the screen then claimed a backup the new password
+	// cannot open.
+	if err := func() error {
+		s.mu.Lock()
+		defer s.mu.Unlock()
+		settings, err := LoadSettings()
+		if err != nil {
+			return err
+		}
+		settings.FeatureEnabled = enabled
+		return SaveSettings(settings)
+	}(); err != nil {
 		return err
 	}
-	settings.FeatureEnabled = enabled
 	if !enabled {
 		_ = s.revokeLeases()
 	}
-	return SaveSettings(settings)
+	return nil
 }
 
 func (s *Service) SetRememberPasswordForSession(enabled bool) error {
@@ -687,6 +706,9 @@ func buildVaultCredentials(password, keyfilePath, backupKey string) (vault.Crede
 			return vault.Credentials{}, err
 		}
 		creds.Keyfile = keyfile.Secret
+		// Carried, not discarded: it is what lets the vault tell a stale keyfile
+		// from a way in that simply has a password of its own.
+		creds.KeyfileID = keyfile.ID
 	}
 	if code := strings.TrimSpace(backupKey); code != "" {
 		raw, err := vault.ParseRecoveryCode(code)
@@ -721,14 +743,20 @@ func (s *Service) unlockAccountWith(steamID64 string, creds vault.Credentials, r
 	// every unlock of a vault that has a key enrolled as an alternative.
 	unlockErr := s.unlockVaultWithLocked(v, creds, rememberForSession)
 	if unlockErr != nil && len(creds.SecurityKey) == 0 && needsSecurityKey(unlockErr) {
-		if secret, keyErr := s.evaluateSecurityKey(v); keyErr == nil && len(secret) != 0 {
+		if credID, secret, keyErr := s.evaluateSecurityKeyLocked(v); keyErr == nil && len(secret) != 0 {
 			creds.SecurityKey = secret
+			creds.SecurityKeyID = credID
 			unlockErr = s.unlockVaultWithLocked(v, creds, rememberForSession)
 			wipe(secret)
 			creds.SecurityKey = nil
+			creds.SecurityKeyID = ""
 		} else if keyErr != nil {
 			serviceLogger().Warn("Steam Guard security key could not be used",
 				"steamId64", strings.TrimSpace(steamID64), "error", keyErr)
+			// Joined, not just logged: where the key was the only thing offered
+			// there is no password to have been rejected, and reporting one made
+			// a cancelled prompt read as a typo over an empty field.
+			unlockErr = joinSecurityKeyFailure(unlockErr, keyErr, creds)
 		}
 	}
 	if err := unlockErr; err != nil {
@@ -895,20 +923,44 @@ func (s *Service) ChangePasswordWithFactors(currentPassword, newPassword, appPas
 	// the change succeeds instead of being refused for a factor the user is
 	// holding but was never prompted for.
 	if len(oldCreds.SecurityKey) == 0 && pairsPasswordWithSecurityKey(v.ListSlots()) {
-		if secret, keyErr := s.evaluateSecurityKey(v); keyErr == nil && len(secret) != 0 {
+		if credID, secret, keyErr := s.evaluateSecurityKeyLocked(v); keyErr == nil && len(secret) != 0 {
 			oldCreds.SecurityKey = secret
+			oldCreds.SecurityKeyID = credID
+		}
+		// The ceremony above runs with s.mu released, so Lock Now or the app
+		// lock can have closed the vault while the user was reaching for their
+		// key. Said plainly here rather than surfacing further down as a missing
+		// outer key, which names nothing the user can act on.
+		if _, err := s.reopenedVaultLocked(); err != nil {
+			return err
 		}
 	}
+	if err := v.ChangePasswordWith(oldCreds, newPassword); err != nil {
+		return err
+	}
+	// Cleared only once the change is committed. Clearing it first meant a
+	// refused change still told the user their verified backup no longer counted.
+	//
+	// Best effort from here: the password HAS changed. Returning a bookkeeping
+	// error would report a failure the user then acts on by keeping the old
+	// password, which no longer opens anything.
+	if err := clearVerifiedBackupStamp(); err != nil {
+		serviceLogger().Warn("Steam Guard password changed but the verified-backup stamp could not be cleared", "error", err)
+	}
+	return nil
+}
+
+// clearVerifiedBackupStamp forgets the last verified backup, which a password
+// change invalidates: the backup still opens with the password it was taken
+// under, and that is no longer the vault's.
+func clearVerifiedBackupStamp() error {
 	settings, err := LoadSettings()
 	if err != nil {
 		return err
 	}
 	settings.LastVerifiedBackup = ""
 	settings.LastVerifiedBackupPath = ""
-	if err := SaveSettings(settings); err != nil {
-		return err
-	}
-	return v.ChangePasswordWith(oldCreds, newPassword)
+	return SaveSettings(settings)
 }
 
 func (s *Service) LockNow() error { return s.revokeLeases() }
@@ -1280,6 +1332,9 @@ func (s *Service) revokeLeases() error {
 	if s.vault != nil {
 		vaultErr = s.vault.Lock()
 	}
+	// Locking the vault retires the authentication that opened it: the next
+	// factor change has to be asked for again.
+	s.closeManagementGateLocked()
 	s.mu.Unlock()
 	s.resetConfirmationSession(false)
 
@@ -1354,6 +1409,14 @@ func (s *Service) liveKDFParams() vault.KDFParams {
 func (s *Service) openVaultLocked() (*vault.Vault, bool, error) {
 	if s.vault != nil {
 		return s.vault, true, nil
+	}
+	// A restore builds the live vault folder in place and deletes it again if any
+	// later step fails. It can release s.mu in between - a security key enrolled
+	// in the backup has to be asked - and opening the half-built folder in that
+	// window would cache a vault this process then keeps forever, over a
+	// directory that no longer exists.
+	if s.restoreInProgress {
+		return nil, false, ErrRestoreInProgress
 	}
 	root, err := VaultFolderPath()
 	if err != nil {

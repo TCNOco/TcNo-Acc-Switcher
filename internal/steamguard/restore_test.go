@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/hex"
+	"errors"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -35,6 +36,66 @@ func TestRestoreVerifiedBackupIntoEmptyVault(t *testing.T) {
 	view, err := service.UnlockAccount(qrTestAccountID, password, false, grant.Capability)
 	if err != nil || view.AccountName != "restored_account" || len(view.Code) != 5 {
 		t.Fatalf("restored view = %#v, %v", view, err)
+	}
+}
+
+// A restore builds the live vault folder in place and deletes it again if a
+// later step fails, and it releases the service lock in between to ask a
+// security key enrolled in the backup. Opening that folder in the window would
+// cache a vault over a directory about to be removed, leaving the process
+// convinced a vault exists and refusing to restore or create one until it is
+// restarted - so the half-built folder must not be openable at all.
+func TestVaultIsNotOpenableDuringARestore(t *testing.T) {
+	useSettingsRoot(t)
+	const password = "restored Steam Guard password"
+	source := createRestoreSource(t, password, "")
+	service := newServiceForTest()
+	service.setMainContentProtectionFn = func(bool) error { return nil }
+	t.Cleanup(func() { _ = service.ServiceShutdown() })
+
+	// Restore the source once so a complete, openable vault exists at the live
+	// path: the window this guards is exactly when one does.
+	if _, err := service.restoreVerifiedBackupAt(source, password, "", ""); err != nil {
+		t.Fatal(err)
+	}
+	service.vault = nil
+
+	service.mu.Lock()
+	service.restoreInProgress = true
+	_, exists, err := service.openVaultLocked()
+	service.restoreInProgress = false
+	cached := service.vault
+	service.mu.Unlock()
+
+	if !errors.Is(err, ErrRestoreInProgress) {
+		t.Fatalf("opening the vault mid-restore: err = %v, exists = %v, want %v", err, exists, ErrRestoreInProgress)
+	}
+	if cached != nil {
+		t.Fatal("a vault opened mid-restore was cached, and the restore may still delete that folder")
+	}
+}
+
+// A restore that fails part-way must leave nothing behind that stops the user
+// simply trying again.
+func TestFailedRestoreCanBeRetried(t *testing.T) {
+	useSettingsRoot(t)
+	const password = "restored Steam Guard password"
+	source := createRestoreSource(t, password, "")
+	service := newServiceForTest()
+	service.setMainContentProtectionFn = func(bool) error { return nil }
+	t.Cleanup(func() { _ = service.ServiceShutdown() })
+
+	if _, err := service.restoreVerifiedBackupAt(source, "not the backup password", "", ""); err == nil {
+		t.Fatal("a restore with the wrong password reported success")
+	}
+	if service.vault != nil {
+		t.Fatal("the failed restore left a vault cached over the deleted folder")
+	}
+	if service.restoreInProgress {
+		t.Fatal("the failed restore left the in-progress flag set")
+	}
+	if _, err := service.restoreVerifiedBackupAt(source, password, "", ""); err != nil {
+		t.Fatalf("retry after a failed restore: %v", err)
 	}
 }
 

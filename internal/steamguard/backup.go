@@ -78,9 +78,6 @@ func (s *Service) createVerifiedBackupAt(parent, steamGuardPassword, appPassword
 }
 
 func (s *Service) createVerifiedBackupAtWith(parent string, creds vault.Credentials, appPassword string, now time.Time) (string, error) {
-	if creds.Password == "" && len(creds.Keyfile) == 0 && len(creds.RecoveryCode) == 0 {
-		return "", vault.ErrInvalidPassword
-	}
 	parent = filepath.Clean(strings.TrimSpace(parent))
 	if !filepath.IsAbs(parent) {
 		return "", ErrInvalidBackupDestination
@@ -92,8 +89,14 @@ func (s *Service) createVerifiedBackupAtWith(parent string, creds vault.Credenti
 
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	if _, err := s.requireVaultLocked(); err != nil {
+	v, err := s.requireVaultLocked()
+	if err != nil {
 		return "", err
+	}
+	s.fillSecurityKeyLocked(v, &creds)
+	defer wipe(creds.SecurityKey)
+	if !credentialsSupplied(creds) {
+		return "", vault.ErrInvalidPassword
 	}
 	source, err := VaultFolderPath()
 	if err != nil {

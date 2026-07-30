@@ -12,7 +12,10 @@ import (
 	"TcNo-Acc-Switcher/internal/steamguard/vault"
 )
 
-var ErrRestoreRequiresEmptyVault = errors.New("Steam Guard restore requires an empty vault")
+var (
+	ErrRestoreRequiresEmptyVault = errors.New("Steam Guard restore requires an empty vault")
+	ErrRestoreInProgress         = errors.New("a Steam Guard restore is in progress")
+)
 
 // RestoreSourceInfo describes a chosen backup folder before any password is
 // collected, so the caller only asks for the passwords the folder actually needs.
@@ -76,9 +79,6 @@ func (s *Service) restoreVerifiedBackupAt(source, steamGuardPassword, backupAppP
 }
 
 func (s *Service) restoreVerifiedBackupAtWith(source string, creds vault.Credentials, backupAppPassword, currentAppPassword string) (string, error) {
-	if strings.TrimSpace(creds.Password) == "" && len(creds.Keyfile) == 0 && len(creds.RecoveryCode) == 0 {
-		return "", vault.ErrInvalidPassword
-	}
 	canonicalSource, err := canonicalRestoreSource(source)
 	if err != nil {
 		return "", err
@@ -110,9 +110,17 @@ func (s *Service) restoreVerifiedBackupAtWith(source string, creds vault.Credent
 	if err := securefile.CreateDirectoryNew(destination); err != nil {
 		return "", err
 	}
+	// From here the live vault path exists but is not yet a vault. The lock is
+	// released further down to ask a security key enrolled in the backup, and
+	// anything that opened this folder in that window would hold a vault the
+	// failure path below deletes out from under it.
+	s.restoreInProgress = true
 	committed := false
 	defer func() {
+		s.restoreInProgress = false
 		if !committed {
+			// Nothing may keep a handle on a folder that is about to go.
+			s.vault = nil
 			removeCreatedBackup(parent, destination)
 		}
 	}()
@@ -129,6 +137,15 @@ func (s *Service) restoreVerifiedBackupAtWith(source string, creds vault.Credent
 			_ = restored.Lock()
 		}
 	}()
+	// Asked once the backup's own header is readable, so a key enrolled in the
+	// backup can open it. Checked here rather than up front because whether
+	// anything was supplied is not knowable until the copy says which factors it
+	// wants: on a key-only vault the user has nothing to type.
+	s.fillSecurityKeyLocked(restored, &creds)
+	defer wipe(creds.SecurityKey)
+	if !credentialsSupplied(creds) {
+		return "", vault.ErrInvalidPassword
+	}
 	hadOuter := restored.HasRecoveryWrapper()
 	if err := verifyCopiedVault(destination, creds, backupAppPassword, hadOuter, s.vaultOptions); err != nil {
 		return "", err

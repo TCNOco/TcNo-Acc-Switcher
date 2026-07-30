@@ -9,6 +9,7 @@ import (
 	"slices"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"TcNo-Acc-Switcher/internal/passwordpolicy"
 	"TcNo-Acc-Switcher/internal/steamguard/hwkey"
@@ -22,6 +23,8 @@ var (
 	ErrBackupKeyMissing        = errors.New("a backup key must be saved before enrolling this factor")
 	ErrPasswordAlreadyEnrolled = errors.New("the password already opens this Steam Guard vault on its own")
 	ErrKeyfileAlreadyEnrolled  = errors.New("a keyfile is already enrolled; remove it before adding another")
+	ErrFactorNotRemovable      = errors.New("this way into the Steam Guard vault cannot be removed")
+	ErrManagementAuthRequired  = errors.New("changing Steam Guard factors needs the vault password or another way in")
 )
 
 // VaultFactor is one enrolled way to open the vault, for display. Requires
@@ -250,29 +253,51 @@ func (s *Service) EnrollVaultSecurityKey(password, name, keyPassword string) err
 		return ErrBackupKeyMissing
 	}
 	// Validated before the device is touched, so a typo does not cost the user a
-	// key ceremony and leave a slot nothing can open.
+	// key ceremony and leave a slot nothing can open. The label counts too: it is
+	// bounded in bytes by the header, and a name in a non-Latin script used to
+	// pass here and be refused as a corrupt vault after two touches.
 	if keyPassword != "" {
 		if err := passwordpolicy.ValidateNew(keyPassword); err != nil {
 			return err
 		}
 	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), securityKeyTimeout)
-	defer cancel()
-	device := s.securityKeyAuthenticator()
-	cred, err := device.Enroll(ctx, hwkey.RPID, "Steam Guard vault")
-	if err != nil {
-		return err
+	label := uniqueFactorName(name, "Security key", slots)
+	if len(label) > vault.MaxSlotLabelBytes {
+		return vault.ErrInvalidFormat
 	}
-	// Derived immediately, so a key that enrols but cannot produce a secret
-	// fails before a slot exists that nothing can open.
-	_, secret, err := device.Evaluate(ctx, []hwkey.Credential{cred})
+
+	// The ceremony waits on the user twice. Held under the service lock it
+	// blocked Lock Now, app-lock and every other Steam Guard call for as long as
+	// nobody touched the key.
+	var cred hwkey.Credential
+	var secret []byte
+	s.promptWithoutServiceLock(func() {
+		device := s.securityKeyAuthenticator()
+		// A deadline each. Sharing one meant a slow first ceremony - a new key
+		// being given a PIN - spent the budget the second one needs, and the
+		// credential is already written to the hardware by then: the enrolment
+		// fails leaving an orphaned credential on the key.
+		enrolCtx, cancelEnrol := context.WithTimeout(context.Background(), securityKeyTimeout)
+		defer cancelEnrol()
+		if cred, err = device.Enroll(enrolCtx, hwkey.RPID, "Steam Guard vault"); err != nil {
+			return
+		}
+		// Derived immediately, so a key that enrols but cannot produce a secret
+		// fails before a slot exists that nothing can open.
+		evalCtx, cancelEval := context.WithTimeout(context.Background(), securityKeyTimeout)
+		defer cancelEval()
+		_, secret, err = device.Evaluate(evalCtx, []hwkey.Credential{cred})
+	})
 	if err != nil {
 		return err
 	}
 	defer wipe(secret)
 	if len(secret) != hwkey.SecretLength {
 		return fmt.Errorf("%w: security key returned no usable key material", hwkey.ErrUnavailable)
+	}
+	// Re-read: the vault can have been locked while the ceremony was up.
+	if v, err = s.reopenedVaultLocked(); err != nil {
+		return err
 	}
 
 	kinds := []string{vault.FactorSecurityKey}
@@ -282,7 +307,7 @@ func (s *Service) EnrollVaultSecurityKey(password, name, keyPassword string) err
 		creds.Password = keyPassword
 	}
 	if _, err := v.AddSlot(vault.SlotSpec{
-		Label:        uniqueFactorName(name, "Security key", slots),
+		Label:        label,
 		Kinds:        kinds,
 		Creds:        creds,
 		CredentialID: cred.ID,
@@ -307,13 +332,26 @@ func factorName(name, fallback string) string {
 	if cleaned == "" {
 		return fallback
 	}
-	if runes := []rune(cleaned); len(runes) > maxFactorNameRunes {
-		return string(runes[:maxFactorNameRunes])
-	}
-	return cleaned
+	return truncateToBytes(cleaned, maxFactorNameBytes)
 }
 
-const maxFactorNameRunes = 60
+// maxFactorNameBytes leaves room inside the vault's own label limit for the
+// " (12)" a duplicate name picks up. Bytes, not runes: the vault counts bytes,
+// so a rune cap let a name in Japanese through here and had it rejected as a
+// corrupt vault - after the user had already touched their security key twice.
+const maxFactorNameBytes = vault.MaxSlotLabelBytes - 8
+
+// truncateToBytes cuts a string to a byte budget without splitting a rune.
+func truncateToBytes(s string, max int) string {
+	if len(s) <= max {
+		return s
+	}
+	cut := max
+	for cut > 0 && !utf8.RuneStart(s[cut]) {
+		cut--
+	}
+	return s[:cut]
+}
 
 // uniqueFactorName keeps two keys from sharing a row label. Two rows reading
 // "Security key" with a Remove link each is a coin flip the user only discovers
@@ -336,30 +374,41 @@ func uniqueFactorName(name, fallback string, existing []vault.SlotInfo) string {
 	return base
 }
 
-// evaluateSecurityKey offers every enrolled credential at once and returns the
-// secret of whichever key is actually attached. Several keys can be enrolled -
-// a spare kept elsewhere is the point - and the user is holding one of them, so
-// the driver is asked to match rather than being interrogated per credential.
-func (s *Service) evaluateSecurityKey(v *vault.Vault) ([]byte, error) {
+// evaluateSecurityKeyLocked offers every enrolled credential at once and returns
+// the secret of whichever key is actually attached, along with the handle that
+// answered. Several keys can be enrolled - a spare kept elsewhere is the point -
+// and the user is holding one of them, so the driver is asked to match rather
+// than being interrogated per credential.
+//
+// Callers hold s.mu. It is released for the ceremony itself: the prompt waits on
+// a person, and holding the service lock across it made Lock Now, app-lock and
+// every other Steam Guard call wait with them - so the vault stayed open on an
+// unattended machine for exactly as long as nobody answered. Vault state can
+// change while it is released, so callers re-read it afterwards rather than
+// trusting anything they read before.
+func (s *Service) evaluateSecurityKeyLocked(v *vault.Vault) (string, []byte, error) {
 	refs := v.SecurityKeys()
 	if len(refs) == 0 {
-		return nil, nil
+		return "", nil, nil
 	}
 	device := s.securityKeyAuthenticator()
-	if ok, reason := device.Available(context.Background()); !ok {
-		return nil, fmt.Errorf("%w: %s", hwkey.ErrUnavailable, reason)
-	}
 	creds := make([]hwkey.Credential, 0, len(refs))
 	for _, ref := range refs {
 		creds = append(creds, hwkey.Credential{ID: ref.CredentialID, RPID: ref.RPID, UV: ref.UV})
 	}
+
+	s.mu.Unlock()
+	defer s.mu.Lock()
+	if ok, reason := device.Available(context.Background()); !ok {
+		return "", nil, fmt.Errorf("%w: %s", hwkey.ErrUnavailable, reason)
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), securityKeyTimeout)
 	defer cancel()
-	_, secret, err := device.Evaluate(ctx, creds)
+	answered, secret, err := device.Evaluate(ctx, creds)
 	if err != nil {
-		return nil, err
+		return "", nil, err
 	}
-	return secret, nil
+	return answered.ID, secret, nil
 }
 
 // PickVaultKeyfile asks the user for their keyfile and returns its path. Only
@@ -517,9 +566,23 @@ func (s *Service) EnrollVaultKeyfile(password, keyfilePassword string) (string, 
 	if save == nil {
 		save = saveKeyfileDialog
 	}
-	path, err := save(keyfile)
+	// The save dialog waits on the user with no timeout of its own. Holding the
+	// service lock across it left the vault open and unlockable - Lock Now and
+	// app-lock both wait on this mutex - for as long as the dialog sat there.
+	var path string
+	s.promptWithoutServiceLock(func() { path, err = save(keyfile) })
 	if err != nil {
 		return "", err
+	}
+	// Re-read after the lock was open: the vault can have been locked, or a
+	// keyfile enrolled, while the dialog was up.
+	if v, err = s.reopenedVaultLocked(); err != nil {
+		_ = os.Remove(path)
+		return "", err
+	}
+	if summariseFactors(v.ListSlots()).HasKeyfile {
+		_ = os.Remove(path)
+		return "", ErrKeyfileAlreadyEnrolled
 	}
 
 	kinds := []string{vault.FactorKeyfile}
@@ -594,8 +657,15 @@ func passwordOnlySlotIDs(slots []vault.SlotInfo) []string {
 	return ids
 }
 
-// RemoveVaultFactor drops one enrolled way in. The vault refuses to remove the
-// last one.
+// RemoveVaultFactor drops one enrolled way in.
+//
+// The vault itself refuses only to remove the very last slot. The rules that
+// stop a user stranding themselves in practice - do not leave a paper backup key
+// as the only way in, do not take the backup key away while a losable factor is
+// enrolled - are decided here, and they are decided here rather than only in the
+// settings screen because the outcome of getting them wrong is a vault nobody
+// can read. Enrolment already enforces its half server-side; removal is the
+// direction that loses data.
 func (s *Service) RemoveVaultFactor(password, slotID string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -603,7 +673,19 @@ func (s *Service) RemoveVaultFactor(password, slotID string) error {
 	if err != nil {
 		return err
 	}
-	if err := v.RemoveSlot(strings.TrimSpace(slotID)); err != nil {
+	slotID = strings.TrimSpace(slotID)
+	for _, factor := range summariseFactors(v.ListSlots()).Factors {
+		if factor.ID != slotID || factor.Removable {
+			continue
+		}
+		// The last way in has a sentinel of its own that callers already match;
+		// only the practical-lockout rules need the new one.
+		if factor.Blocks == blockLastWayIn {
+			return vault.ErrLastSlot
+		}
+		return fmt.Errorf("%w: %s", ErrFactorNotRemovable, factor.Blocks)
+	}
+	if err := v.RemoveSlot(slotID); err != nil {
 		return err
 	}
 	serviceLogger().Info("Steam Guard factor removed")
@@ -617,14 +699,92 @@ func (s *Service) unlockedVaultLocked(password string) (*vault.Vault, error) {
 	return s.unlockedVaultWithLocked(vault.Credentials{Password: password})
 }
 
-// unlockedVaultWithLocked returns an unlocked vault, unlocking with the supplied
-// factors if the lease has lapsed.
+// managementWindow is how long a verified management authentication stays good
+// for the actions that follow it, refreshed each time it is used.
+//
+// It has to outlive the dialogs the user walks through between authenticating
+// and the change landing, and those are paced by a person: adding a keyfile can
+// mint a backup key first and stop to have it written down. Two minutes cut that
+// flow in half. What it still bounds is the case it exists for - an unlocked
+// vault, remembered for the whole session, answering factor changes to a caller
+// that never presented anything.
+const managementWindow = 10 * time.Minute
+
+// credentialsSupplied reports whether the caller offered anything at all to
+// check. Nothing to check is not the same as a wrong answer: a vault with no
+// password is managed with an empty one.
+func credentialsSupplied(creds vault.Credentials) bool {
+	return creds.Password != "" || len(creds.Keyfile) != 0 ||
+		len(creds.RecoveryCode) != 0 || len(creds.SecurityKey) != 0
+}
+
+// reopenedVaultLocked returns the vault to a caller that already authorised for
+// it and then ran a prompt with s.mu released. Authorisation happened before the
+// prompt and is not asked for again: the user has been standing in a dialog, and
+// the management window can have lapsed while they were. What does have to be
+// rechecked is that the vault is still open, because Lock Now or the app lock
+// can have fired while the lock was free.
+func (s *Service) reopenedVaultLocked() (*vault.Vault, error) {
+	v, exists, err := s.openVaultLocked()
+	if err != nil {
+		return nil, err
+	}
+	if !exists {
+		return nil, vault.ErrNotFound
+	}
+	if v.IsLocked() {
+		return nil, vault.ErrLocked
+	}
+	return v, nil
+}
+
+// withServiceLock runs fn under s.mu, for a caller that reached a vault-mutating
+// step from a path that does not already hold it. fn must not take s.mu itself.
+func (s *Service) withServiceLock(fn func() error) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return fn()
+}
+
+// promptWithoutServiceLock runs a call that waits on the user - a native dialog,
+// an authenticator ceremony - with s.mu released, retaking it before returning.
+// Callers hold s.mu and must re-read any vault state they cared about: it can
+// have changed while the lock was open.
+func (s *Service) promptWithoutServiceLock(fn func()) {
+	s.mu.Unlock()
+	defer s.mu.Lock()
+	fn()
+}
+
+func (s *Service) openManagementGateLocked() {
+	s.managementVerified = time.Now().Add(managementWindow)
+}
+
+func (s *Service) closeManagementGateLocked() {
+	s.managementVerified = time.Time{}
+}
+
+func (s *Service) managementGateOpenLocked() bool {
+	return !s.managementVerified.IsZero() && time.Now().Before(s.managementVerified)
+}
+
+// unlockedVaultWithLocked returns an unlocked vault to a caller that is about to
+// change which factors exist, having established that the caller can actually
+// present a way in.
 //
 // Management has to accept every factor, not just the password. The unlock lease
 // is five minutes, so by the time someone reaches the settings screen the vault
 // is usually locked again, and on a vault whose slot needs a password and a
 // keyfile a password alone cannot reopen it - which made every factor action
 // impossible once the first combined factor was enrolled.
+//
+// An already-open vault is not authorisation. With "remember for session" the
+// lease lasts the whole session, so returning the vault to anyone who asked let
+// a caller with no credentials at all mint a backup key, or drop a factor. The
+// gate is what proves someone was asked; the credentials are checked directly
+// when the caller has any, and the gate covers the case where the answer was
+// given to UnlockVaultForManagement a moment ago and cannot be repeated here
+// without prompting the user for a second key touch.
 func (s *Service) unlockedVaultWithLocked(creds vault.Credentials) (*vault.Vault, error) {
 	v, exists, err := s.openVaultLocked()
 	if err != nil {
@@ -633,13 +793,29 @@ func (s *Service) unlockedVaultWithLocked(creds vault.Credentials) (*vault.Vault
 	if !exists {
 		return nil, vault.ErrNotFound
 	}
-	if !v.IsLocked() {
+	if v.IsLocked() {
+		if err := s.unlockWithSecurityKeyFallbackLocked(v, &creds); err != nil {
+			return nil, err
+		}
+		defer wipe(creds.SecurityKey)
+		s.openManagementGateLocked()
 		return v, nil
 	}
-	if err := s.unlockWithSecurityKeyFallbackLocked(v, &creds); err != nil {
+	// Checked before the credentials so the common path - the settings screen
+	// authenticating and then acting - never raises a second device prompt.
+	// Using it refreshes it: a flow that keeps working is a user still present,
+	// and several actions can follow one authentication.
+	if s.managementGateOpenLocked() {
+		s.openManagementGateLocked()
+		return v, nil
+	}
+	if !credentialsSupplied(creds) {
+		return nil, ErrManagementAuthRequired
+	}
+	if err := s.verifyCredentialsLocked(v, creds); err != nil {
 		return nil, err
 	}
-	defer wipe(creds.SecurityKey)
+	s.openManagementGateLocked()
 	return v, nil
 }
 
@@ -650,12 +826,13 @@ func (s *Service) verifyCredentialsLocked(v *vault.Vault, creds vault.Credential
 	if err == nil || len(creds.SecurityKey) != 0 || !needsSecurityKey(err) {
 		return err
 	}
-	secret, keyErr := s.evaluateSecurityKey(v)
+	credID, secret, keyErr := s.evaluateSecurityKeyLocked(v)
 	if keyErr != nil || len(secret) == 0 {
-		return err
+		return joinSecurityKeyFailure(err, keyErr, creds)
 	}
 	defer wipe(secret)
 	creds.SecurityKey = secret
+	creds.SecurityKeyID = credID
 	return v.VerifyCredentials(creds)
 }
 
@@ -669,12 +846,51 @@ func (s *Service) unlockWithSecurityKeyFallbackLocked(v *vault.Vault, creds *vau
 	if err == nil || len(creds.SecurityKey) != 0 || !needsSecurityKey(err) {
 		return err
 	}
-	secret, keyErr := s.evaluateSecurityKey(v)
+	credID, secret, keyErr := s.evaluateSecurityKeyLocked(v)
 	if keyErr != nil || len(secret) == 0 {
-		return err
+		return joinSecurityKeyFailure(err, keyErr, *creds)
 	}
 	creds.SecurityKey = secret
+	creds.SecurityKeyID = credID
 	return s.unlockVaultWithLocked(v, *creds, false)
+}
+
+// fillSecurityKeyLocked adds an enrolled security key's secret to creds when
+// what the caller supplied does not open v on its own.
+//
+// Backup and restore rekey a copy of the header, which re-derives every factor
+// of every slot the credentials can open. The security-key descriptors travel
+// with a backup exactly so an enrolled key still opens a copy on another
+// machine - but neither path ever asked the device, so a vault whose only
+// interactive way in is a key could be backed up only by transcribing the paper
+// backup key with the key sitting in the port. Failure is silent on purpose:
+// the caller reports what the credentials could not do, not that a key it may
+// not have was not offered.
+func (s *Service) fillSecurityKeyLocked(v *vault.Vault, creds *vault.Credentials) {
+	if len(creds.SecurityKey) != 0 {
+		return
+	}
+	if err := v.VerifyCredentials(*creds); err == nil || !needsSecurityKey(err) {
+		return
+	}
+	credID, secret, keyErr := s.evaluateSecurityKeyLocked(v)
+	if keyErr != nil || len(secret) == 0 {
+		return
+	}
+	creds.SecurityKey = secret
+	creds.SecurityKeyID = credID
+}
+
+// joinSecurityKeyFailure reports why the key was no help when the key was the
+// only thing that could have helped. The unlock error underneath describes a
+// password that was never typed, so a cancelled prompt or an unenrolled key
+// reached the user as "password not accepted"; where the caller supplied
+// something else to be wrong about, that error is still the honest one.
+func joinSecurityKeyFailure(unlockErr, keyErr error, creds vault.Credentials) error {
+	if keyErr == nil || credentialsSupplied(creds) {
+		return unlockErr
+	}
+	return errors.Join(unlockErr, keyErr)
 }
 
 // RenameVaultFactor changes what a way in is called in the list. Nothing about
@@ -708,6 +924,11 @@ func excludeSlot(slots []vault.SlotInfo, id string) []vault.SlotInfo {
 // present, so the factor actions that follow work from an open vault instead of
 // each having to re-authenticate. Enrolling and removing factors need the vault
 // key, and the password is only one of the ways to reach it.
+//
+// This is the gate the settings screen puts in front of every factor change. The
+// vault may well already be open from an earlier action, in which case unlocking
+// proves nothing and the credentials are checked directly instead - an answer
+// that is never checked is worse than not asking.
 func (s *Service) UnlockVaultForManagement(password, keyfilePath, backupKey string) error {
 	creds, err := buildVaultCredentials(password, keyfilePath, backupKey)
 	if err != nil {
@@ -717,15 +938,27 @@ func (s *Service) UnlockVaultForManagement(password, keyfilePath, backupKey stri
 	defer wipe(creds.RecoveryCode)
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	v, err := s.unlockedVaultWithLocked(creds)
+	v, exists, err := s.openVaultLocked()
 	if err != nil {
 		return err
 	}
-	// This is the gate the settings screen puts in front of every factor change,
-	// and the vault may well already be open from an earlier action - in which
-	// case unlocking proved nothing. An answer that is never checked is worse
-	// than not asking, so it is checked here.
-	return s.verifyCredentialsLocked(v, creds)
+	if !exists {
+		return vault.ErrNotFound
+	}
+	if v.IsLocked() {
+		// Unlocking with these credentials is itself the proof, so the answer is
+		// not demanded a second time. It used to be, and on a key-only vault
+		// that meant two Windows Hello prompts for one management action,
+		// because the evaluated secret was wiped before it could be reused.
+		if err := s.unlockWithSecurityKeyFallbackLocked(v, &creds); err != nil {
+			return err
+		}
+		defer wipe(creds.SecurityKey)
+	} else if err := s.verifyCredentialsLocked(v, creds); err != nil {
+		return err
+	}
+	s.openManagementGateLocked()
+	return nil
 }
 
 // saveKeyfileDialog writes the keyfile itself rather than handing the secret to
@@ -756,7 +989,9 @@ func saveKeyfileDialog(keyfile vault.Keyfile) (string, error) {
 	if !filepath.IsAbs(path) {
 		return "", ErrInvalidBackupDestination
 	}
-	if err := os.WriteFile(path, keyfile.Encode(), 0o600); err != nil {
+	encoded := keyfile.Encode()
+	defer wipe(encoded)
+	if err := os.WriteFile(path, encoded, 0o600); err != nil {
 		return "", err
 	}
 	return path, nil

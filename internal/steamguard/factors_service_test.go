@@ -31,6 +31,17 @@ func newFactorService(t *testing.T) (*Service, string) {
 	return service, password
 }
 
+// evaluateSecurityKey calls the service helper the way production does, holding
+// the service lock. The helper releases that lock for the device ceremony, so
+// calling it without one panics rather than misbehaving quietly.
+func evaluateSecurityKey(t *testing.T, service *Service) ([]byte, error) {
+	t.Helper()
+	service.mu.Lock()
+	defer service.mu.Unlock()
+	_, secret, err := service.evaluateSecurityKeyLocked(service.vault)
+	return secret, err
+}
+
 // Losing the only keyfile with nothing else enrolled makes the vault
 // permanently unreadable, so a backup key has to exist first.
 func TestKeyfileEnrolmentRequiresABackupKeyFirst(t *testing.T) {
@@ -283,7 +294,7 @@ func TestSecurityKeyEnrolAndUnlock(t *testing.T) {
 	if err := service.vault.Lock(); err != nil {
 		t.Fatal(err)
 	}
-	secret, err := service.evaluateSecurityKey(service.vault)
+	secret, err := evaluateSecurityKey(t, service)
 	if err != nil || len(secret) != hwkey.SecretLength {
 		t.Fatalf("evaluate returned %d bytes, err = %v", len(secret), err)
 	}
@@ -312,7 +323,7 @@ func TestSecurityKeyFromAnotherDeviceIsRejected(t *testing.T) {
 	// it produces no secret rather than the wrong one - and that has to read as
 	// "wrong key", never as a rejected password.
 	service.authenticator = &hwkey.Fake{Seed: []byte("someone else's key")}
-	secret, err := service.evaluateSecurityKey(service.vault)
+	secret, err := evaluateSecurityKey(t, service)
 	if !errors.Is(err, hwkey.ErrNoDevice) {
 		t.Fatalf("another device's key: err = %v, want %v", err, hwkey.ErrNoDevice)
 	}
@@ -356,7 +367,7 @@ func TestASecondSecurityKeyOpensTheVaultOnItsOwn(t *testing.T) {
 	if err := service.vault.Lock(); err != nil {
 		t.Fatal(err)
 	}
-	secret, err := service.evaluateSecurityKey(service.vault)
+	secret, err := evaluateSecurityKey(t, service)
 	if err != nil {
 		t.Fatalf("the attached key was not recognised: %v", err)
 	}
@@ -600,6 +611,72 @@ func TestChangePasswordRefusesToLeaveTheOldOneWorking(t *testing.T) {
 	}
 }
 
+// The vault key can be recovered by a factor that is not the password, so every
+// step of a password change can succeed without anything having checked the
+// password being retired. The change has to be refused, not reported as done:
+// otherwise the old password keeps working and the new one opens nothing.
+func TestChangePasswordRefusesAWrongOldPassword(t *testing.T) {
+	service, password := newFactorService(t)
+	code, err := service.CreateVaultBackupKey(password)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	const next = "a replacement Steam Guard password"
+	// The backup key opens the vault, so the vault key is in hand throughout -
+	// only the password slot fails to open, and it fails silently.
+	err = service.ChangePasswordWithFactors("not the current password", next, "", "", code)
+	if !errors.Is(err, vault.ErrInvalidPassword) {
+		t.Fatalf("change password with a wrong current password: err = %v, want %v", err, vault.ErrInvalidPassword)
+	}
+	if err := service.LockNow(); err != nil {
+		t.Fatal(err)
+	}
+	if err := service.UnlockVaultForManagement(next, "", ""); err == nil {
+		t.Fatal("the refused password change was committed anyway")
+	}
+	if err := service.UnlockVaultForManagement(password, "", ""); err != nil {
+		t.Fatalf("the refused change disturbed the old password: %v", err)
+	}
+}
+
+// A combined way in that fails to open because the wrong keyfile was supplied is
+// still on the old password. Only the keyfile's identity separates that from a
+// way in holding a password of its own, which is legitimately left alone.
+func TestChangePasswordRefusesAStaleKeyfile(t *testing.T) {
+	service, password := newFactorService(t)
+	if _, err := service.CreateVaultBackupKey(password); err != nil {
+		t.Fatal(err)
+	}
+	// The keyfile slot carries the same password as the password-only slot, so
+	// retiring the password has to retire it there too.
+	if _, err := service.EnrollVaultKeyfile(password, password); err != nil {
+		t.Fatal(err)
+	}
+
+	// A different keyfile: well-formed, parses, and is not the enrolled one.
+	other, err := vault.NewKeyfile()
+	if err != nil {
+		t.Fatal(err)
+	}
+	stalePath := filepath.Join(t.TempDir(), "stale-keyfile.txt")
+	if err := os.WriteFile(stalePath, other.Encode(), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	const next = "a replacement Steam Guard password"
+	err = service.ChangePasswordWithFactors(password, next, "", stalePath, "")
+	if !errors.Is(err, vault.ErrPasswordStillInUse) {
+		t.Fatalf("change password with a stale keyfile: err = %v, want %v", err, vault.ErrPasswordStillInUse)
+	}
+	if err := service.LockNow(); err != nil {
+		t.Fatal(err)
+	}
+	if err := service.UnlockVaultForManagement(password, "", ""); err != nil {
+		t.Fatalf("the refused change disturbed the old password: %v", err)
+	}
+}
+
 // The test above only covered a vault still unlocked from enrolment. The unlock
 // lease is five minutes, so in practice the settings screen is reached with the
 // vault locked - and a password alone cannot reopen a password-and-keyfile slot,
@@ -692,7 +769,7 @@ func TestEveryEnrolledFactorOpensTheVaultOnItsOwn(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	secret, err := service.evaluateSecurityKey(service.vault)
+	secret, err := evaluateSecurityKey(t, service)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -812,7 +889,7 @@ func TestChangePasswordAsksTheSecurityKeyItNeeds(t *testing.T) {
 	if err := service.LockNow(); err != nil {
 		t.Fatal(err)
 	}
-	secret, err := service.evaluateSecurityKey(service.vault)
+	secret, err := evaluateSecurityKey(t, service)
 	if err != nil {
 		t.Fatal(err)
 	}

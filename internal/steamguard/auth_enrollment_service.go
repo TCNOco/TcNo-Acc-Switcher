@@ -379,7 +379,21 @@ func (s *Service) PollCredentialLogin(accountID, token, handle string) (SteamCre
 		}
 		switch operation.purpose {
 		case SteamAuthPurposeLoginAgain:
-			if err := updateMafileSession(v, steamID, accountName, accessToken, refreshToken); err != nil {
+			// Under the service lock: the poll that gets here ran with it
+			// released, and ExportMaFile relocks the vault around its export.
+			// A login landing inside that window failed to store the session
+			// Steam had just authorised, and the tokens cannot be replayed -
+			// the user has to redo the whole credential and 2FA ceremony.
+			//
+			// Only this branch is covered. The enrollmentflow calls below and in
+			// Resume/Acknowledge/Finalize write the vault with s.mu unheld too,
+			// and cannot simply be wrapped: they make network calls, and holding
+			// the service lock across those is what stopped Lock Now working.
+			// Closing that properly means enrollmentflow taking the lock around
+			// its own writes.
+			if err := s.withServiceLock(func() error {
+				return updateMafileSession(v, steamID, accountName, accessToken, refreshToken)
+			}); err != nil {
 				return err
 			}
 			registryUpdated = s.upsertRegistry(accountID, registry.StateActive)
