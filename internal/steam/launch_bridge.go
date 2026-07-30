@@ -13,12 +13,10 @@ func SaveFolderFromConfirmedExe(exeFullPath string) error {
 	if err != nil {
 		return err
 	}
-	st, err := LoadSettings()
-	if err != nil {
-		return err
-	}
-	st.FolderPath = NormalizeFolderPath(filepath.Dir(exeFullPath))
-	if err := SaveSettings(st); err != nil {
+	if err := UpdateSettings(func(st *Settings) error {
+		st.FolderPath = NormalizeFolderPath(filepath.Dir(exeFullPath))
+		return nil
+	}); err != nil {
 		return err
 	}
 	app, err := platform.LoadAppSettings(exeDir)

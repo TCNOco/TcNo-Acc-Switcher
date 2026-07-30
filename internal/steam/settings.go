@@ -195,6 +195,24 @@ func LoadSettings() (Settings, error) {
 	return s, nil
 }
 
+// UpdateSettings runs a load-mutate-save cycle over SteamSettings.json while
+// holding the shared platform settings file lock, so a writer in another lock
+// domain - shortcuts, the launch bridge, platform's merge patch - cannot land
+// between the read and the write and lose the fields either side changed.
+//
+// mutate must not call UpdateSettings or platform.SavePlatformSettings.
+func UpdateSettings(mutate func(*Settings) error) error {
+	defer platform.LockPlatformSettingsFile()()
+	s, err := LoadSettings()
+	if err != nil {
+		return err
+	}
+	if err := mutate(&s); err != nil {
+		return err
+	}
+	return SaveSettings(s)
+}
+
 // SaveSettings writes Settings/SteamSettings.json.
 func SaveSettings(s Settings) error {
 	path, err := settingsPath()

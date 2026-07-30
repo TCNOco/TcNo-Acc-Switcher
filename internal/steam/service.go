@@ -924,19 +924,17 @@ func (s *SteamService) SetBanStatusHidden(steamID64 string, hidden bool) error {
 	if steamID64 == "" {
 		return errors.New("empty steam id")
 	}
-	st, err := LoadSettings()
-	if err != nil {
-		return err
-	}
-	kept := make([]string, 0, len(st.HiddenBanStatus)+1)
-	for _, id := range st.HiddenBanStatus {
-		if id = strings.TrimSpace(id); id != "" && id != steamID64 {
-			kept = append(kept, id)
+	return UpdateSettings(func(st *Settings) error {
+		kept := make([]string, 0, len(st.HiddenBanStatus)+1)
+		for _, id := range st.HiddenBanStatus {
+			if id = strings.TrimSpace(id); id != "" && id != steamID64 {
+				kept = append(kept, id)
+			}
 		}
-	}
-	if hidden {
-		kept = append(kept, steamID64)
-	}
-	st.HiddenBanStatus = kept
-	return SaveSettings(st)
+		if hidden {
+			kept = append(kept, steamID64)
+		}
+		st.HiddenBanStatus = kept
+		return nil
+	})
 }

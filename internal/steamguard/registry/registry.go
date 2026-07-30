@@ -12,6 +12,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
@@ -27,6 +28,12 @@ const (
 var (
 	ErrInvalidIndex = errors.New("invalid Steam Guard registration index")
 	ErrRootNotReady = errors.New("Steam Guard vault root is not ready")
+
+	// writeMu serializes the load-mutate-save cycles below. Callers span lock
+	// domains - the enrollment and background scan paths hold no service mutex at
+	// all - so two concurrent writes would otherwise drop an entry or a state
+	// transition, silently losing the lock icon until some later write rewrote it.
+	writeMu sync.Mutex
 )
 
 type State string
@@ -124,6 +131,8 @@ func Upsert(steamID64 string, state State) error {
 	if !validSteamID(steamID64) || !validState(state) {
 		return ErrInvalidIndex
 	}
+	writeMu.Lock()
+	defer writeMu.Unlock()
 	entries, err := Load()
 	if err != nil {
 		return err
@@ -150,6 +159,8 @@ func Remove(steamID64 string) error {
 	if !validSteamID(steamID64) {
 		return ErrInvalidIndex
 	}
+	writeMu.Lock()
+	defer writeMu.Unlock()
 	entries, err := Load()
 	if err != nil {
 		return err

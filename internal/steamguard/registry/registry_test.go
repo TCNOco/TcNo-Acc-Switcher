@@ -5,6 +5,8 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strconv"
+	"sync"
 	"testing"
 
 	"TcNo-Acc-Switcher/internal/paths"
@@ -52,6 +54,36 @@ func TestUpsertStatusRemove(t *testing.T) {
 	}
 	if runtime.GOOS != "windows" && info.Mode().Perm()&0o077 != 0 {
 		t.Fatalf("index mode = %o", info.Mode().Perm())
+	}
+}
+
+func TestConcurrentUpsertKeepsEveryEntry(t *testing.T) {
+	root := useTempRoot(t)
+	if err := os.MkdirAll(filepath.Join(root, "SteamGuard"), 0o700); err != nil {
+		t.Fatal(err)
+	}
+	const count = 16
+	var wg sync.WaitGroup
+	errs := make([]error, count)
+	for i := 0; i < count; i++ {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			errs[i] = Upsert(strconv.FormatUint(76561198000000001+uint64(i), 10), StateActive)
+		}(i)
+	}
+	wg.Wait()
+	for i, err := range errs {
+		if err != nil {
+			t.Fatalf("Upsert %d: %v", i, err)
+		}
+	}
+	entries, err := Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(entries) != count {
+		t.Fatalf("entries = %d, want %d", len(entries), count)
 	}
 }
 

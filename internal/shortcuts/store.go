@@ -26,12 +26,10 @@ func loadEntries(platformKey string) ([]platform.GameShortcutEntry, error) {
 func saveEntries(platformKey string, entries []platform.GameShortcutEntry) error {
 	platformKey = strings.TrimSpace(platformKey)
 	if strings.EqualFold(platformKey, "Steam") {
-		st, err := steam.LoadSettings()
-		if err != nil {
-			return err
-		}
-		st.Shortcuts = entries
-		return steam.SaveSettings(st)
+		return steam.UpdateSettings(func(st *steam.Settings) error {
+			st.Shortcuts = entries
+			return nil
+		})
 	}
 	ps, err := platform.LoadPlatformSettings(platformKey)
 	if err != nil {

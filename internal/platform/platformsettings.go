@@ -18,7 +18,22 @@ import (
 var (
 	platformSettingsCacheMu sync.RWMutex
 	platformSettingsCache   = map[string]platformSettingsCacheEntry{}
+
+	// platformSettingsFileMu serializes read-modify-write cycles over
+	// Settings/<Platform>Settings.json. SteamSettings.json is rewritten both by the
+	// merge patch in SavePlatformSettings and by the steam package's typed save, so
+	// the lock lives in the lower package for both sides to share it; without it two
+	// interleaved cycles silently drop one side's fields.
+	platformSettingsFileMu sync.Mutex
 )
+
+// LockPlatformSettingsFile acquires the platform settings file lock and returns
+// its unlock function. Exported for steam.UpdateSettings; nothing called while
+// holding it may re-enter SavePlatformSettings.
+func LockPlatformSettingsFile() func() {
+	platformSettingsFileMu.Lock()
+	return platformSettingsFileMu.Unlock
+}
 
 type platformSettingsCacheEntry struct {
 	settings PlatformSettings
@@ -332,6 +347,7 @@ func LoadPlatformSettings(platformKey string) (PlatformSettings, error) {
 
 // SavePlatformSettings patches the JSON file without removing keys not present on PlatformSettings.
 func SavePlatformSettings(platformKey string, s PlatformSettings) error {
+	defer LockPlatformSettingsFile()()
 	s.ClosingMethodForced = false
 	path, err := platformSettingsJSONPath(platformKey)
 	if err != nil {
