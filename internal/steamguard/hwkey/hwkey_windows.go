@@ -8,12 +8,16 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"runtime"
 	"strings"
+	"time"
+	"unsafe"
 
 	webauthn "github.com/go-ctap/ctaphid/pkg/webauthntypes"
 	"github.com/go-ctap/winhello"
 	"github.com/go-ctap/winhello/hiddenwindow"
 	"github.com/ldclabs/cose/iana"
+	"golang.org/x/sys/windows"
 )
 
 // Windows routes security keys through webauthn.dll. Talking to the device
@@ -47,11 +51,17 @@ func (a windowsAuthenticator) Enroll(ctx context.Context, rpID, userName string)
 	if ok, reason := a.Available(ctx); !ok {
 		return Credential{}, fmt.Errorf("%w: %s", ErrUnavailable, reason)
 	}
+	if err := ctx.Err(); err != nil {
+		return Credential{}, errors.Join(ErrCancelled, err)
+	}
 	window, err := hiddenwindow.New(slog.New(slog.DiscardHandler), "TcNo Account Switcher")
 	if err != nil {
 		return Credential{}, err
 	}
 	defer window.Close()
+
+	timeout, cancellationID, release := bindToContext(ctx)
+	defer release()
 
 	result, err := winhello.MakeCredential(
 		window.WindowHandle(),
@@ -77,6 +87,8 @@ func (a windowsAuthenticator) Enroll(ctx context.Context, rpID, userName string)
 			},
 		},
 		&winhello.AuthenticatorMakeCredentialOptions{
+			Timeout:                 timeout,
+			CancellationID:          cancellationID,
 			AuthenticatorAttachment: winhello.WinHelloAuthenticatorAttachmentCrossPlatform,
 			// Pinned, not preferred. The authenticator derives a different
 			// secret with and without user verification, so anything that could
@@ -120,7 +132,7 @@ func (a windowsAuthenticator) Evaluate(ctx context.Context, creds []Credential) 
 		if len(group) == 0 {
 			continue
 		}
-		cred, secret, err := a.assertGroup(group, uvRequired)
+		cred, secret, err := a.assertGroup(ctx, group, uvRequired)
 		if err == nil {
 			return cred, secret, nil
 		}
@@ -134,7 +146,12 @@ func (a windowsAuthenticator) Evaluate(ctx context.Context, creds []Credential) 
 	return Credential{}, nil, lastErr
 }
 
-func (a windowsAuthenticator) assertGroup(creds []Credential, uvRequired bool) (Credential, []byte, error) {
+func (a windowsAuthenticator) assertGroup(ctx context.Context, creds []Credential, uvRequired bool) (Credential, []byte, error) {
+	// Reported as cancelled so Evaluate stops here rather than putting a second
+	// prompt in front of a caller that has already given up.
+	if err := ctx.Err(); err != nil {
+		return Credential{}, nil, errors.Join(ErrCancelled, err)
+	}
 	descriptors := make([]webauthn.PublicKeyCredentialDescriptor, 0, len(creds))
 	// evalByCredential is keyed by the standard base64url form of the handle,
 	// with padding, which is not the form stored in the header.
@@ -166,6 +183,9 @@ func (a windowsAuthenticator) assertGroup(creds []Credential, uvRequired bool) (
 	if !uvRequired {
 		uv = winhello.WinHelloUserVerificationRequirementDiscouraged
 	}
+	timeout, cancellationID, release := bindToContext(ctx)
+	defer release()
+
 	assertion, err := winhello.GetAssertion(
 		window.WindowHandle(),
 		// Every credential shares the relying party; it is a constant.
@@ -178,6 +198,8 @@ func (a windowsAuthenticator) assertGroup(creds []Credential, uvRequired bool) (
 			},
 		},
 		&winhello.AuthenticatorGetAssertionOptions{
+			Timeout:                     timeout,
+			CancellationID:              cancellationID,
 			AuthenticatorAttachment:     winhello.WinHelloAuthenticatorAttachmentCrossPlatform,
 			UserVerificationRequirement: uv,
 			CredentialHints: []webauthn.PublicKeyCredentialHint{
@@ -228,13 +250,101 @@ func assertionSecret(assertion *winhello.WinHelloGetAssertionResponse) []byte {
 	return outputs.PRF.Results.First
 }
 
+// defaultKeyTimeout bounds a prompt from a caller that set no deadline.
+// webauthn.dll reads a zero timeout as "no preference" and leaves the prompt up
+// for as long as the user ignores it, holding the operation lock with it.
+const defaultKeyTimeout = 2 * time.Minute
+
+// keyTimeout is the bound Windows enforces itself. GetAssertion and
+// MakeCredential block inside the DLL, so this still applies when nothing
+// manages to cancel.
+func keyTimeout(ctx context.Context) time.Duration {
+	deadline, ok := ctx.Deadline()
+	if !ok {
+		return defaultKeyTimeout
+	}
+	// An almost-expired deadline must not round down to zero milliseconds,
+	// which Windows reads as no timeout at all.
+	if remaining := time.Until(deadline); remaining > time.Second {
+		return remaining
+	}
+	return time.Second
+}
+
+// bindToContext gives one prompt a deadline Windows enforces and a path for a
+// cancelled context to reach it. The prompt blocks inside webauthn.dll, so
+// cancellation can only arrive from another goroutine.
+//
+// release has to run once the prompt returns, or the watcher outlives it and
+// cancels whichever prompt comes next.
+func bindToContext(ctx context.Context) (timeout time.Duration, cancellationID *windows.GUID, release func()) {
+	timeout = keyTimeout(ctx)
+	id, err := winhello.CancellationID()
+	if err != nil || id == nil {
+		// Best effort: without an ID the prompt still ends, at the timeout above.
+		return timeout, nil, func() {}
+	}
+	done := make(chan struct{})
+	go func() {
+		select {
+		case <-ctx.Done():
+			cancelKeyOperation(id)
+		case <-done:
+		}
+	}()
+	return timeout, id, func() { close(done) }
+}
+
+var (
+	modWebAuthn                        = windows.NewLazySystemDLL("webauthn.dll")
+	procWebAuthNCancelCurrentOperation = modWebAuthn.NewProc("WebAuthNCancelCurrentOperation")
+)
+
+// cancelKeyOperation stops the prompt started with this cancellation ID.
+// winhello.CancelCurrentOperation cannot: the Windows parameter is an in-value
+// naming which operation to stop, and the library passes a zeroed GUID that
+// matches nothing.
+func cancelKeyOperation(id *windows.GUID) {
+	// LazyProc.Call panics when the export is missing, and this runs on a
+	// goroutine where that would take the process down. The prompt still ends at
+	// its timeout.
+	if err := procWebAuthNCancelCurrentOperation.Find(); err != nil {
+		return
+	}
+	procWebAuthNCancelCurrentOperation.Call(uintptr(unsafe.Pointer(id)))
+	runtime.KeepAlive(id)
+}
+
+// Windows wraps these Win32 codes into HRESULTs before webauthn.dll returns
+// them; x/sys exports only the unwrapped halves.
+const (
+	hresultCancelled = windows.Handle(0x80070000 | uint32(windows.ERROR_CANCELLED))
+	hresultTimeout   = windows.Handle(0x80070000 | uint32(windows.ERROR_TIMEOUT))
+)
+
 // translateWindowsError maps the platform's failures onto reasons the caller can
 // act on. Windows reports a cancelled prompt and an absent key the same way, so
 // both read as "no key" rather than pretending to know which.
+//
+// The HRESULT is the only stable signal. syscall.Errno.Error() asks Windows for
+// the English message and falls back to the system language when the English
+// resources are absent, which is normal on a single-language install, so
+// matching the text alone loses cancelled-versus-no-device there.
 func translateWindowsError(err error) error {
 	if err == nil {
 		return nil
 	}
+	var errno windows.Errno
+	if errors.As(err, &errno) {
+		switch windows.Handle(errno) {
+		case windows.NTE_USER_CANCELLED, hresultCancelled:
+			return errors.Join(ErrCancelled, err)
+		case windows.NTE_NOT_FOUND, windows.NTE_DEVICE_NOT_FOUND, hresultTimeout:
+			return errors.Join(ErrNoDevice, err)
+		}
+	}
+	// Failures that never reached webauthn.dll, and HRESULTs not listed above,
+	// have only their text to go on.
 	message := strings.ToLower(err.Error())
 	switch {
 	case strings.Contains(message, "cancel"):
