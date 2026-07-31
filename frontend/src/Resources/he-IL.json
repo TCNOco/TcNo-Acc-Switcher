@@ -256,8 +256,6 @@
   "SteamGuard_Settings_CopyPath": "העתק נתיב",
   "SteamGuard_Settings_PathCopied": "נתיב תיקיית Steam Guard הועתק.",
   "SteamGuard_Settings_OpenFolder": "פתח תיקייה",
-  "SteamGuard_Settings_BackupWarning": "שמור תמיד גיבוי של תיקיית Steam Guard שלך. הנתיב המלא של התיקייה מוצג למטה.",
-  "SteamGuard_Settings_ManualCopyWarning": "העתקה ידנית שנעשית בזמן שהאפליקציה כותבת עלולה להיות לא עקבית. השתמש ביצירת גיבוי מאומת כשניתן.",
   "SteamGuard_Settings_CreateBackup": "צור גיבוי מאומת",
   "SteamGuard_Settings_BackupCreated": "גיבוי Steam Guard מאומת נוצר.",
   "SteamGuard_Settings_LastBackup": "גיבוי מאומת אחרון: {time} ב-{path}",

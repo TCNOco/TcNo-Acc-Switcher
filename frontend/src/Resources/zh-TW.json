@@ -256,8 +256,6 @@
   "SteamGuard_Settings_CopyPath": "複製路徑",
   "SteamGuard_Settings_PathCopied": "已複製 Steam Guard 資料夾路徑。",
   "SteamGuard_Settings_OpenFolder": "開啟資料夾",
-  "SteamGuard_Settings_BackupWarning": "請務必保留 Steam Guard 資料夾的備份。完整資料夾路徑顯示於下方。",
-  "SteamGuard_Settings_ManualCopyWarning": "在應用程式寫入時手動複製可能導致資料不一致。請盡量使用「建立已驗證備份」。",
   "SteamGuard_Settings_CreateBackup": "建立已驗證備份",
   "SteamGuard_Settings_BackupCreated": "已建立已驗證的 Steam Guard 備份。",
   "SteamGuard_Settings_LastBackup": "上次已驗證備份：{time}，位於 {path}",

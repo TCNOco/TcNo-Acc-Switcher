@@ -256,8 +256,6 @@
   "SteamGuard_Settings_CopyPath": "คัดลอกเส้นทาง",
   "SteamGuard_Settings_PathCopied": "คัดลอกเส้นทางโฟลเดอร์ Steam Guard แล้ว",
   "SteamGuard_Settings_OpenFolder": "เปิดโฟลเดอร์",
-  "SteamGuard_Settings_BackupWarning": "ควรสำรองข้อมูลโฟลเดอร์ Steam Guard ของคุณไว้เสมอ เส้นทางแบบเต็มของโฟลเดอร์แสดงอยู่ด้านล่าง",
-  "SteamGuard_Settings_ManualCopyWarning": "การคัดลอกด้วยตนเองขณะที่แอปกำลังเขียนข้อมูลอาจไม่สมบูรณ์ ควรใช้สร้างข้อมูลสำรองที่ตรวจสอบแล้วเมื่อเป็นไปได้",
   "SteamGuard_Settings_CreateBackup": "สร้างข้อมูลสำรองที่ตรวจสอบแล้ว",
   "SteamGuard_Settings_BackupCreated": "สร้างข้อมูลสำรอง Steam Guard ที่ตรวจสอบแล้วเรียบร้อย",
   "SteamGuard_Settings_LastBackup": "ข้อมูลสำรองที่ตรวจสอบแล้วล่าสุด: {time} ที่ {path}",

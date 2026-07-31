@@ -256,8 +256,6 @@
   "SteamGuard_Settings_CopyPath": "Копирај путању",
   "SteamGuard_Settings_PathCopied": "Путања Steam Guard фасцикле је копирана.",
   "SteamGuard_Settings_OpenFolder": "Отвори фасциклу",
-  "SteamGuard_Settings_BackupWarning": "Увек чувајте резервну копију своје Steam Guard фасцикле. Пуна путања фасцикле је приказана испод.",
-  "SteamGuard_Settings_ManualCopyWarning": "Ручна копија направљена док апликација уписује податке може бити неисправна. Користите „Направи проверену резервну копију“ кад је то могуће.",
   "SteamGuard_Settings_CreateBackup": "Направи проверену резервну копију",
   "SteamGuard_Settings_BackupCreated": "Проверена Steam Guard резервна копија је направљена.",
   "SteamGuard_Settings_LastBackup": "Последња проверена резервна копија: {time} на {path}",

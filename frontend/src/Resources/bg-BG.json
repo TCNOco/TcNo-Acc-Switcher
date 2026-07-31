@@ -256,8 +256,6 @@
   "SteamGuard_Settings_CopyPath": "Копиране на пътя",
   "SteamGuard_Settings_PathCopied": "Пътят до папката на Steam Guard е копиран.",
   "SteamGuard_Settings_OpenFolder": "Отваряне на папката",
-  "SteamGuard_Settings_BackupWarning": "Винаги пазете резервно копие на папката на Steam Guard. Пълният път до папката е показан по-долу.",
-  "SteamGuard_Settings_ManualCopyWarning": "Ръчно копие, направено докато приложението записва, може да е несъгласувано. Използвайте „Създаване на проверено резервно копие“, когато е възможно.",
   "SteamGuard_Settings_CreateBackup": "Създаване на проверено резервно копие",
   "SteamGuard_Settings_BackupCreated": "Провереното резервно копие на Steam Guard е създадено.",
   "SteamGuard_Settings_LastBackup": "Последно проверено резервно копие: {time} в {path}",

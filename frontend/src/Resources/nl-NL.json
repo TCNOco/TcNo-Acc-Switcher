@@ -256,8 +256,6 @@
   "SteamGuard_Settings_CopyPath": "Pad kopiëren",
   "SteamGuard_Settings_PathCopied": "Pad naar Steam Guard-map gekopieerd.",
   "SteamGuard_Settings_OpenFolder": "Map openen",
-  "SteamGuard_Settings_BackupWarning": "Bewaar altijd een back-up van je Steam Guard-map. Het volledige mappad staat hieronder.",
-  "SteamGuard_Settings_ManualCopyWarning": "Een handmatige kopie terwijl de app aan het schrijven is kan inconsistent zijn. Gebruik waar mogelijk Geverifieerde back-up maken.",
   "SteamGuard_Settings_CreateBackup": "Geverifieerde back-up maken",
   "SteamGuard_Settings_BackupCreated": "Geverifieerde Steam Guard-back-up gemaakt.",
   "SteamGuard_Settings_LastBackup": "Laatste geverifieerde back-up: {time} in {path}",

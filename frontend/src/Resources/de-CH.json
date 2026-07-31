@@ -256,8 +256,6 @@
   "SteamGuard_Settings_CopyPath": "Pfad kopieren",
   "SteamGuard_Settings_PathCopied": "Pfad des Steam-Guard-Ordners kopiert.",
   "SteamGuard_Settings_OpenFolder": "Ordner öffnen",
-  "SteamGuard_Settings_BackupWarning": "Bewahren Sie immer eine Sicherung Ihres Steam-Guard-Ordners auf. Der vollständige Ordnerpfad wird unten angezeigt.",
-  "SteamGuard_Settings_ManualCopyWarning": "Eine manuelle Kopie, die erstellt wird, während die App schreibt, kann inkonsistent sein. Verwenden Sie wenn möglich «Verifizierte Sicherung erstellen».",
   "SteamGuard_Settings_CreateBackup": "Verifizierte Sicherung erstellen",
   "SteamGuard_Settings_BackupCreated": "Verifizierte Steam-Guard-Sicherung erstellt.",
   "SteamGuard_Settings_LastBackup": "Letzte verifizierte Sicherung: {time} unter {path}",

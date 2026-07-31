@@ -256,8 +256,6 @@
   "SteamGuard_Settings_CopyPath": "Kopiera sökväg",
   "SteamGuard_Settings_PathCopied": "Sökvägen till Steam Guard-mappen kopierades.",
   "SteamGuard_Settings_OpenFolder": "Öppna mapp",
-  "SteamGuard_Settings_BackupWarning": "Ha alltid en säkerhetskopia av din Steam Guard-mapp. Den fullständiga sökvägen visas nedan.",
-  "SteamGuard_Settings_ManualCopyWarning": "En manuell kopia som görs medan appen skriver kan bli inkonsekvent. Använd Skapa verifierad säkerhetskopia när det är möjligt.",
   "SteamGuard_Settings_CreateBackup": "Skapa verifierad säkerhetskopia",
   "SteamGuard_Settings_BackupCreated": "Verifierad Steam Guard-säkerhetskopia skapad.",
   "SteamGuard_Settings_LastBackup": "Senaste verifierade säkerhetskopia: {time} i {path}",

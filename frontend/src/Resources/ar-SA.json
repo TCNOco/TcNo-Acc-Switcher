@@ -256,8 +256,6 @@
   "SteamGuard_Settings_CopyPath": "نسخ المسار",
   "SteamGuard_Settings_PathCopied": "تم نسخ مسار مجلد Steam Guard.",
   "SteamGuard_Settings_OpenFolder": "فتح المجلد",
-  "SteamGuard_Settings_BackupWarning": "احتفظ دائمًا بنسخة احتياطية من مجلد Steam Guard. المسار الكامل للمجلد معروض أدناه.",
-  "SteamGuard_Settings_ManualCopyWarning": "قد تكون النسخة اليدوية المأخوذة أثناء كتابة التطبيق غير متسقة. استخدم إنشاء نسخة احتياطية متحقق منها كلما أمكن.",
   "SteamGuard_Settings_CreateBackup": "إنشاء نسخة احتياطية متحقق منها",
   "SteamGuard_Settings_BackupCreated": "تم إنشاء نسخة احتياطية متحقق منها لـ Steam Guard.",
   "SteamGuard_Settings_LastBackup": "آخر نسخة احتياطية متحقق منها: {time} في {path}",

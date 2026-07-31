@@ -256,8 +256,6 @@
   "SteamGuard_Settings_CopyPath": "Sao chép đường dẫn",
   "SteamGuard_Settings_PathCopied": "Đã sao chép đường dẫn thư mục Steam Guard.",
   "SteamGuard_Settings_OpenFolder": "Mở thư mục",
-  "SteamGuard_Settings_BackupWarning": "Luôn giữ bản sao lưu thư mục Steam Guard của bạn. Đường dẫn đầy đủ của thư mục hiển thị bên dưới.",
-  "SteamGuard_Settings_ManualCopyWarning": "Bản sao thủ công tạo trong lúc ứng dụng đang ghi có thể không nhất quán. Hãy dùng Tạo bản sao lưu đã xác minh khi có thể.",
   "SteamGuard_Settings_CreateBackup": "Tạo bản sao lưu đã xác minh",
   "SteamGuard_Settings_BackupCreated": "Đã tạo bản sao lưu Steam Guard đã xác minh.",
   "SteamGuard_Settings_LastBackup": "Bản sao lưu đã xác minh gần nhất: {time} tại {path}",

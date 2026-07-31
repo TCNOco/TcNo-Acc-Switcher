@@ -256,8 +256,6 @@
   "SteamGuard_Settings_CopyPath": "کپی مسیر",
   "SteamGuard_Settings_PathCopied": "مسیر پوشه Steam Guard کپی شد.",
   "SteamGuard_Settings_OpenFolder": "باز کردن پوشه",
-  "SteamGuard_Settings_BackupWarning": "همیشه یک نسخه پشتیبان از پوشه Steam Guard خود نگه دارید. مسیر کامل پوشه در زیر نمایش داده شده است.",
-  "SteamGuard_Settings_ManualCopyWarning": "کپی دستی هنگام نوشتن برنامه ممکن است ناسازگار باشد. در صورت امکان از «ایجاد پشتیبان تأییدشده» استفاده کنید.",
   "SteamGuard_Settings_CreateBackup": "ایجاد پشتیبان تأییدشده",
   "SteamGuard_Settings_BackupCreated": "پشتیبان تأییدشده Steam Guard ایجاد شد.",
   "SteamGuard_Settings_LastBackup": "آخرین پشتیبان تأییدشده: {time} در {path}",

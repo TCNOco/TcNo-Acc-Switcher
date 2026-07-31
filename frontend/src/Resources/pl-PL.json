@@ -256,8 +256,6 @@
   "SteamGuard_Settings_CopyPath": "Kopiuj ścieżkę",
   "SteamGuard_Settings_PathCopied": "Skopiowano ścieżkę folderu Steam Guard.",
   "SteamGuard_Settings_OpenFolder": "Otwórz folder",
-  "SteamGuard_Settings_BackupWarning": "Zawsze przechowuj kopię zapasową folderu Steam Guard. Pełna ścieżka folderu jest widoczna poniżej.",
-  "SteamGuard_Settings_ManualCopyWarning": "Ręczna kopia wykonana podczas zapisu przez aplikację może być niespójna. Jeśli to możliwe, użyj opcji Utwórz zweryfikowaną kopię zapasową.",
   "SteamGuard_Settings_CreateBackup": "Utwórz zweryfikowaną kopię zapasową",
   "SteamGuard_Settings_BackupCreated": "Utworzono zweryfikowaną kopię zapasową Steam Guard.",
   "SteamGuard_Settings_LastBackup": "Ostatnia zweryfikowana kopia zapasowa: {time} w {path}",

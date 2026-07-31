@@ -256,8 +256,6 @@
   "SteamGuard_Settings_CopyPath": "Kopioi polku",
   "SteamGuard_Settings_PathCopied": "Steam Guard -kansion polku kopioitu.",
   "SteamGuard_Settings_OpenFolder": "Avaa kansio",
-  "SteamGuard_Settings_BackupWarning": "Pidä aina varmuuskopio Steam Guard -kansiostasi. Kansion koko polku näkyy alla.",
-  "SteamGuard_Settings_ManualCopyWarning": "Sovelluksen kirjoittaessa tehty manuaalinen kopio voi olla epäyhtenäinen. Käytä mieluiten Luo varmennettu varmuuskopio -toimintoa.",
   "SteamGuard_Settings_CreateBackup": "Luo varmennettu varmuuskopio",
   "SteamGuard_Settings_BackupCreated": "Varmennettu Steam Guard -varmuuskopio luotu.",
   "SteamGuard_Settings_LastBackup": "Viimeisin varmennettu varmuuskopio: {time} sijainnissa {path}",

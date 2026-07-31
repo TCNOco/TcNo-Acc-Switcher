@@ -256,8 +256,6 @@
   "SteamGuard_Settings_CopyPath": "Kopírovať cestu",
   "SteamGuard_Settings_PathCopied": "Cesta k priečinku Steam Guard bola skopírovaná.",
   "SteamGuard_Settings_OpenFolder": "Otvoriť priečinok",
-  "SteamGuard_Settings_BackupWarning": "Vždy si uchovávajte zálohu priečinka Steam Guard. Úplná cesta k priečinku je zobrazená nižšie.",
-  "SteamGuard_Settings_ManualCopyWarning": "Manuálna kópia vytvorená počas zápisu aplikácie môže byť nekonzistentná. Ak je to možné, použite Vytvoriť overenú zálohu.",
   "SteamGuard_Settings_CreateBackup": "Vytvoriť overenú zálohu",
   "SteamGuard_Settings_BackupCreated": "Overená záloha Steam Guard bola vytvorená.",
   "SteamGuard_Settings_LastBackup": "Posledná overená záloha: {time} v {path}",

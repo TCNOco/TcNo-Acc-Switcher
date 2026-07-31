@@ -256,8 +256,6 @@
   "SteamGuard_Settings_CopyPath": "Копіювати шлях",
   "SteamGuard_Settings_PathCopied": "Шлях до теки Steam Guard скопійовано.",
   "SteamGuard_Settings_OpenFolder": "Відкрити теку",
-  "SteamGuard_Settings_BackupWarning": "Завжди зберігайте резервну копію теки Steam Guard. Повний шлях до теки показано нижче.",
-  "SteamGuard_Settings_ManualCopyWarning": "Ручна копія, зроблена під час запису застосунком, може бути неузгодженою. За можливості використовуйте «Створити перевірену копію».",
   "SteamGuard_Settings_CreateBackup": "Створити перевірену копію",
   "SteamGuard_Settings_BackupCreated": "Перевірену резервну копію Steam Guard створено.",
   "SteamGuard_Settings_LastBackup": "Остання перевірена копія: {time} у {path}",

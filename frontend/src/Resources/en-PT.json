@@ -256,8 +256,6 @@
   "SteamGuard_Settings_CopyPath": "Plunder path",
   "SteamGuard_Settings_PathCopied": "Steam Guard chest path be copied.",
   "SteamGuard_Settings_OpenFolder": "Open chest",
-  "SteamGuard_Settings_BackupWarning": "Always keep a backup o' yer Steam Guard chest, matey. The full chest path be shown below.",
-  "SteamGuard_Settings_ManualCopyWarning": "A copy made by hand while the app be writin' can come out garbled. Use Create Verified Backup when ye can.",
   "SteamGuard_Settings_CreateBackup": "Forge a Verified Backup",
   "SteamGuard_Settings_BackupCreated": "Verified Steam Guard backup stashed, aye.",
   "SteamGuard_Settings_LastBackup": "Last verified backup, she be: {time} at {path}",

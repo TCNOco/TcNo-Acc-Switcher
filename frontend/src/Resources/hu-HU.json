@@ -256,8 +256,6 @@
   "SteamGuard_Settings_CopyPath": "Útvonal másolása",
   "SteamGuard_Settings_PathCopied": "A Steam Guard mappa elérési útja másolva.",
   "SteamGuard_Settings_OpenFolder": "Mappa megnyitása",
-  "SteamGuard_Settings_BackupWarning": "Mindig tarts biztonsági mentést a Steam Guard mappádról. A mappa teljes elérési útja alább látható.",
-  "SteamGuard_Settings_ManualCopyWarning": "Az alkalmazás írása közben készített kézi másolat inkonzisztens lehet. Ha lehet, használd az Ellenőrzött mentés készítése funkciót.",
   "SteamGuard_Settings_CreateBackup": "Ellenőrzött mentés készítése",
   "SteamGuard_Settings_BackupCreated": "Ellenőrzött Steam Guard mentés létrehozva.",
   "SteamGuard_Settings_LastBackup": "Utolsó ellenőrzött mentés: {time}, itt: {path}",

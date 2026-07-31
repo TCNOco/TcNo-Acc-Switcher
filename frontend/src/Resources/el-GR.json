@@ -256,8 +256,6 @@
   "SteamGuard_Settings_CopyPath": "Αντιγραφή διαδρομής",
   "SteamGuard_Settings_PathCopied": "Η διαδρομή του φακέλου Steam Guard αντιγράφηκε.",
   "SteamGuard_Settings_OpenFolder": "Άνοιγμα φακέλου",
-  "SteamGuard_Settings_BackupWarning": "Διατηρείτε πάντα ένα αντίγραφο ασφαλείας του φακέλου Steam Guard. Η πλήρης διαδρομή του φακέλου εμφανίζεται παρακάτω.",
-  "SteamGuard_Settings_ManualCopyWarning": "Ένα χειροκίνητο αντίγραφο που δημιουργείται ενώ η εφαρμογή γράφει δεδομένα μπορεί να είναι ασυνεπές. Χρησιμοποιήστε τη Δημιουργία επαληθευμένου αντιγράφου ασφαλείας όποτε είναι δυνατόν.",
   "SteamGuard_Settings_CreateBackup": "Δημιουργία επαληθευμένου αντιγράφου ασφαλείας",
   "SteamGuard_Settings_BackupCreated": "Δημιουργήθηκε επαληθευμένο αντίγραφο ασφαλείας του Steam Guard.",
   "SteamGuard_Settings_LastBackup": "Τελευταίο επαληθευμένο αντίγραφο ασφαλείας: {time} στο {path}",

@@ -256,8 +256,6 @@
   "SteamGuard_Settings_CopyPath": "Copiază calea",
   "SteamGuard_Settings_PathCopied": "Calea folderului Steam Guard a fost copiată.",
   "SteamGuard_Settings_OpenFolder": "Deschide folderul",
-  "SteamGuard_Settings_BackupWarning": "Păstrează întotdeauna o copie de rezervă a folderului Steam Guard. Calea completă a folderului este afișată mai jos.",
-  "SteamGuard_Settings_ManualCopyWarning": "O copie manuală făcută în timp ce aplicația scrie poate fi inconsistentă. Folosește Creează copie de rezervă verificată când este posibil.",
   "SteamGuard_Settings_CreateBackup": "Creează copie de rezervă verificată",
   "SteamGuard_Settings_BackupCreated": "Copie de rezervă verificată Steam Guard creată.",
   "SteamGuard_Settings_LastBackup": "Ultima copie de rezervă verificată: {time} la {path}",

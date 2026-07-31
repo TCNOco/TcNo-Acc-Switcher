@@ -256,8 +256,6 @@
   "SteamGuard_Settings_CopyPath": "Kopieer pad",
   "SteamGuard_Settings_PathCopied": "Steam Guard-gidspad gekopieer.",
   "SteamGuard_Settings_OpenFolder": "Maak gids oop",
-  "SteamGuard_Settings_BackupWarning": "Hou altyd 'n rugsteun van jou Steam Guard-gids. Die volle gidspad word hieronder gewys.",
-  "SteamGuard_Settings_ManualCopyWarning": "'n Handmatige kopie wat gemaak word terwyl die app skryf, kan inkonsekwent wees. Gebruik Skep geverifieerde rugsteun waar moontlik.",
   "SteamGuard_Settings_CreateBackup": "Skep geverifieerde rugsteun",
   "SteamGuard_Settings_BackupCreated": "Geverifieerde Steam Guard-rugsteun geskep.",
   "SteamGuard_Settings_LastBackup": "Laaste geverifieerde rugsteun: {time} by {path}",

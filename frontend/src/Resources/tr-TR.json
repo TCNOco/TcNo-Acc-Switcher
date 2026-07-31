@@ -256,8 +256,6 @@
   "SteamGuard_Settings_CopyPath": "Yolu kopyala",
   "SteamGuard_Settings_PathCopied": "Steam Guard klasör yolu kopyalandı.",
   "SteamGuard_Settings_OpenFolder": "Klasörü aç",
-  "SteamGuard_Settings_BackupWarning": "Steam Guard klasörünüzün her zaman bir yedeğini bulundurun. Klasörün tam yolu aşağıda gösterilmiştir.",
-  "SteamGuard_Settings_ManualCopyWarning": "Uygulama yazma işlemi yaparken alınan elle kopya tutarsız olabilir. Mümkün olduğunda Doğrulanmış Yedek Oluştur'u kullanın.",
   "SteamGuard_Settings_CreateBackup": "Doğrulanmış Yedek Oluştur",
   "SteamGuard_Settings_BackupCreated": "Doğrulanmış Steam Guard yedeği oluşturuldu.",
   "SteamGuard_Settings_LastBackup": "Son doğrulanmış yedek: {time}, konum: {path}",

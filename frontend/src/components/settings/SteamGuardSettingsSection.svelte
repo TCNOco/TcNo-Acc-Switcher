@@ -532,10 +532,6 @@
     {/if}
   </div>
 
-  <p id={warningId} class="steam-guard-warning">
-    {$t("SteamGuard_Settings_BackupWarning")}
-  </p>
-
   <div class="steam-guard-control-row">
     <span class="form-check">
       <input
@@ -576,7 +572,9 @@
     </span>
   </div>
 
-  <p class="steam-guard-copy-warning">{$t("SteamGuard_Settings_ManualCopyWarning")}</p>
+  <!-- Sits with the two buttons it is about, rather than at the top of the
+       section where it read as a caption for the folder path. -->
+  <p id={warningId} class="steam-guard-warning">{$t("SteamGuard_Settings_KeepVerifiedBackup")}</p>
 
   <div class="steam-guard-backup-row">
     <!-- With no vault there is nothing to back up, so the action is hidden rather
@@ -772,7 +770,6 @@
   }
 
   .steam-guard-service-state,
-  .steam-guard-copy-warning,
   .steam-guard-backup-status {
     color: var(--whiteSecondary);
     font-size: 0.85rem;

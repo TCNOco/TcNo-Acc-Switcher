@@ -256,8 +256,6 @@
   "SteamGuard_Settings_CopyPath": "Salin jalur",
   "SteamGuard_Settings_PathCopied": "Jalur folder Steam Guard disalin.",
   "SteamGuard_Settings_OpenFolder": "Buka folder",
-  "SteamGuard_Settings_BackupWarning": "Selalu simpan cadangan folder Steam Guard Anda. Jalur folder lengkap ditampilkan di bawah.",
-  "SteamGuard_Settings_ManualCopyWarning": "Salinan manual yang dibuat saat aplikasi sedang menulis bisa tidak konsisten. Gunakan Buat Cadangan Terverifikasi jika memungkinkan.",
   "SteamGuard_Settings_CreateBackup": "Buat Cadangan Terverifikasi",
   "SteamGuard_Settings_BackupCreated": "Cadangan Steam Guard terverifikasi dibuat.",
   "SteamGuard_Settings_LastBackup": "Cadangan terverifikasi terakhir: {time} di {path}",

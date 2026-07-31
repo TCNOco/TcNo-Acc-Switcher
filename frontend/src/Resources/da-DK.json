@@ -256,8 +256,6 @@
   "SteamGuard_Settings_CopyPath": "Kopiér sti",
   "SteamGuard_Settings_PathCopied": "Sti til Steam Guard-mappen kopieret.",
   "SteamGuard_Settings_OpenFolder": "Åbn mappe",
-  "SteamGuard_Settings_BackupWarning": "Hav altid en sikkerhedskopi af din Steam Guard-mappe. Den fulde mappesti vises nedenfor.",
-  "SteamGuard_Settings_ManualCopyWarning": "En manuel kopi lavet, mens appen skriver, kan være inkonsistent. Brug Opret verificeret sikkerhedskopi, når det er muligt.",
   "SteamGuard_Settings_CreateBackup": "Opret verificeret sikkerhedskopi",
   "SteamGuard_Settings_BackupCreated": "Verificeret Steam Guard-sikkerhedskopi oprettet.",
   "SteamGuard_Settings_LastBackup": "Seneste verificerede sikkerhedskopi: {time} i {path}",

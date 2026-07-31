@@ -256,8 +256,6 @@
   "SteamGuard_Settings_CopyPath": "Copiar caminho",
   "SteamGuard_Settings_PathCopied": "Caminho da pasta do Steam Guard copiado.",
   "SteamGuard_Settings_OpenFolder": "Abrir pasta",
-  "SteamGuard_Settings_BackupWarning": "Sempre mantenha um backup da sua pasta do Steam Guard. O caminho completo da pasta é mostrado abaixo.",
-  "SteamGuard_Settings_ManualCopyWarning": "Uma cópia manual feita enquanto o aplicativo está gravando pode ficar inconsistente. Use Criar backup verificado sempre que possível.",
   "SteamGuard_Settings_CreateBackup": "Criar backup verificado",
   "SteamGuard_Settings_BackupCreated": "Backup verificado do Steam Guard criado.",
   "SteamGuard_Settings_LastBackup": "Último backup verificado: {time} em {path}",

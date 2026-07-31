@@ -256,8 +256,6 @@
   "SteamGuard_Settings_CopyPath": "复制路径",
   "SteamGuard_Settings_PathCopied": "已复制 Steam Guard 文件夹路径。",
   "SteamGuard_Settings_OpenFolder": "打开文件夹",
-  "SteamGuard_Settings_BackupWarning": "请务必备份您的 Steam Guard 文件夹。完整的文件夹路径显示在下方。",
-  "SteamGuard_Settings_ManualCopyWarning": "在应用写入数据时手动复制可能导致数据不一致。请尽量使用“创建验证备份”。",
   "SteamGuard_Settings_CreateBackup": "创建验证备份",
   "SteamGuard_Settings_BackupCreated": "已创建经验证的 Steam Guard 备份。",
   "SteamGuard_Settings_LastBackup": "上次验证备份：{time}，位于 {path}",

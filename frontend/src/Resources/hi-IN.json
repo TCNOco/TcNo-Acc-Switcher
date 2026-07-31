@@ -256,8 +256,6 @@
   "SteamGuard_Settings_CopyPath": "पथ कॉपी करें",
   "SteamGuard_Settings_PathCopied": "Steam Guard फ़ोल्डर का पथ कॉपी हो गया।",
   "SteamGuard_Settings_OpenFolder": "फ़ोल्डर खोलें",
-  "SteamGuard_Settings_BackupWarning": "अपने Steam Guard फ़ोल्डर का बैकअप हमेशा रखें। फ़ोल्डर का पूरा पथ नीचे दिखाया गया है।",
-  "SteamGuard_Settings_ManualCopyWarning": "ऐप के लिखते समय की गई मैनुअल कॉपी असंगत हो सकती है। जब संभव हो, सत्यापित बैकअप बनाएँ का उपयोग करें।",
   "SteamGuard_Settings_CreateBackup": "सत्यापित बैकअप बनाएँ",
   "SteamGuard_Settings_BackupCreated": "सत्यापित Steam Guard बैकअप बन गया।",
   "SteamGuard_Settings_LastBackup": "अंतिम सत्यापित बैकअप: {time} पर {path}",
