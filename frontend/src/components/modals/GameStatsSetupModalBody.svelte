@@ -178,7 +178,7 @@
         BasicService.GetExistingVars(game, uniqueId),
         BasicService.GetResolvedGameStatVars(platformKey, game, uniqueId),
         BasicService.GetHiddenMetrics(game, uniqueId),
-        BasicService.GetGameAttribution(game),
+        BasicService.GetGameAttribution(game, uniqueId),
       ]);
       requiredSpecs = normalizeVarSpecs(req as Record<
         string,

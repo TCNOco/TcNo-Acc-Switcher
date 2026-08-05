@@ -95,7 +95,29 @@
           "NoDisplayIf": "0",
           "ToggleText": "Competitive Rank"
         }
-      }
+      },
+      "Fallbacks": [
+        {
+          "Url": "https://api.tcno.co/sw/csrepStats?steamid={SteamId}",
+          "Attribution": {
+            "Image": null,
+            "Dimensions": null,
+            "Text": "CSRep.gg",
+            "Link": "https://csrep.gg"
+          },
+          "Collect": {
+            "Premiere": {
+              "Path": "premier",
+              "Reducer": "",
+              "ReducerOptions": null
+            },
+            "CompRank": {
+              "Path": "compRank",
+              "Reducer": ""
+            }
+          }
+        }
+      ]
     },
     "Overwatch": {
       "UniqueId": "OW",
