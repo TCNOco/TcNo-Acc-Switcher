@@ -158,32 +158,24 @@ func resolveSteamAvatarDisplay(staticURL, primaryURL string) (imageURL, fallback
 	return imageURL, fallbackStatic
 }
 
-func steamAvatarPending(steamID64, miniProfileHTML string, useMiniProfile bool, maxAgeDays int, isManual bool) bool {
+// steamAvatarPending takes its cache queries through a Lookup so a read-only
+// caller can serve the whole list from one directory read, while a caller that
+// downloads avatars as it goes keeps observing the live filesystem.
+func steamAvatarPending(avatars profileimage.Lookup, steamID64, miniProfileHTML string, useMiniProfile bool, maxAgeDays int, isManual bool) bool {
 	if isManual {
-		if p, ok := profileimage.CachedFilePath(PlatformKey, steamID64); ok {
-			return profileimage.FileOlderThanDays(p, maxAgeDays)
-		}
-		return true
+		return avatars.OlderThanDays(steamID64, maxAgeDays)
 	}
 	if useMiniProfile {
-		staticPath, hasStatic := profileimage.CachedFilePath(PlatformKey, steamStaticAvatarID(steamID64))
-		if !hasStatic || profileimage.FileOlderThanDays(staticPath, maxAgeDays) {
+		if avatars.OlderThanDays(steamStaticAvatarID(steamID64), maxAgeDays) {
 			return true
 		}
 		mediaSrc := ExtractMiniprofileAvatarMediaURL(miniProfileHTML)
 		if mediaSrc == "" {
 			return false
 		}
-		primaryPath, hasPrimary := profileimage.CachedFilePath(PlatformKey, steamID64)
-		if !hasPrimary {
-			return true
-		}
-		return profileimage.FileOlderThanDays(primaryPath, maxAgeDays)
+		return avatars.OlderThanDays(steamID64, maxAgeDays)
 	}
-	if p, ok := profileimage.CachedFilePath(PlatformKey, steamID64); ok {
-		return profileimage.FileOlderThanDays(p, maxAgeDays)
-	}
-	return true
+	return avatars.OlderThanDays(steamID64, maxAgeDays)
 }
 
 func downloadSteamAccountAvatars(
@@ -646,7 +638,9 @@ func (s *SteamService) runProfileRefresh() {
 				}
 			}
 
-			if !steamAvatarPending(u.SteamID64, patch.MiniProfileHTML, useMiniProfile, st.SteamImageExpiryTime, false) {
+			// Live lookups, not a snapshot: this path downloads avatars as it
+			// runs, so it has to see what it just wrote.
+			if !steamAvatarPending(profileimage.DirectLookup(PlatformKey), u.SteamID64, patch.MiniProfileHTML, useMiniProfile, st.SteamImageExpiryTime, false) {
 				primaryURL, _ := profileimage.FindCached(PlatformKey, u.SteamID64)
 				staticURL, _ := profileimage.FindCached(PlatformKey, steamStaticAvatarID(u.SteamID64))
 				patch.ImageURL, patch.StaticImageURL = resolveSteamAvatarDisplay(staticURL, primaryURL)

@@ -211,17 +211,25 @@ func (s *SteamService) GetSteamAccountsEnrichment() ([]SteamAccountEnrichmentDTO
 		return nil, err
 	}
 
+	// Every avatar variant this loop asks about (primary, static, frame) lives
+	// in the same platform directory, so one read answers all of them for all
+	// accounts. Probing per account costs upwards of thirty stat calls each.
+	avatars, err := profileimage.NewSnapshot(PlatformKey)
+	if err != nil {
+		return nil, err
+	}
+
 	out := make([]SteamAccountEnrichmentDTO, 0, len(ctx.users))
 	for _, u := range ctx.users {
 		v := ctx.vacMap[u.SteamID64]
-		primaryURL, _ := profileimage.FindCached(PlatformKey, u.SteamID64)
-		staticURL, _ := profileimage.FindCached(PlatformKey, steamStaticAvatarID(u.SteamID64))
+		primaryURL, _ := avatars.FindCached(u.SteamID64)
+		staticURL, _ := avatars.FindCached(steamStaticAvatarID(u.SteamID64))
 		displayURL, fallbackStatic := resolveSteamAvatarDisplay(staticURL, primaryURL)
-		isManualAvatar := profileimage.HasManualProfileMarker(PlatformKey, u.SteamID64)
+		isManualAvatar := avatars.HasManualProfileMarker(u.SteamID64)
 		miniHTMLForName := ReadCachedMiniprofileHTML(u.SteamID64)
 		var avatarPending bool
 		if ctx.effectiveCollect {
-			avatarPending = steamAvatarPending(u.SteamID64, miniHTMLForName, ctx.st.SteamShowMiniProfile, ctx.st.SteamImageExpiryTime, isManualAvatar)
+			avatarPending = steamAvatarPending(avatars, u.SteamID64, miniHTMLForName, ctx.st.SteamShowMiniProfile, ctx.st.SteamImageExpiryTime, isManualAvatar)
 		}
 		_, vacCached := ctx.vacKnown[u.SteamID64]
 		metaPending := ctx.effectiveCollect && !vacCached
@@ -235,7 +243,7 @@ func (s *SteamService) GetSteamAccountsEnrichment() ([]SteamAccountEnrichmentDTO
 
 		miniHTML := ApplySteamManualAvatarMiniprofile(miniHTMLForName, u.SteamID64)
 		frameURL := ""
-		if fu, ok := profileimage.FindCached(PlatformKey, u.SteamID64+"_frame"); ok {
+		if fu, ok := avatars.FindCached(u.SteamID64 + "_frame"); ok {
 			frameURL = fu
 		}
 

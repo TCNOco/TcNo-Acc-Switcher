@@ -152,6 +152,14 @@ func (b *BasicService) GetAccountsEnrichment(platformKey string) ([]AccountEnric
 		return nil, nil
 	}
 
+	// One directory read answers every account's avatar and manual-marker
+	// question. The per-account lookups cost about fifteen syscalls each, which
+	// dominates this call once an install has more than a handful of accounts.
+	avatars, err := profileimage.NewSnapshot(ctx.platformKey)
+	if err != nil {
+		return nil, err
+	}
+
 	out := make([]AccountEnrichmentDTO, 0, len(ctx.keys))
 	encrypted := security.SavedAccountDataEncrypted()
 	for _, uid := range ctx.keys {
@@ -161,16 +169,15 @@ func (b *BasicService) GetAccountsEnrichment(platformKey string) ([]AccountEnric
 		}
 		img := ""
 		pending := false
-		if u, ok := profileimage.FindCached(ctx.platformKey, uid); ok {
+		if u, ok := avatars.FindCached(uid); ok {
 			img = u
 		}
+		manual := avatars.HasManualProfileMarker(uid)
 		if ctx.remoteProfilePics {
-			if profileimage.HasManualProfileMarker(ctx.platformKey, uid) {
+			if manual {
 				pending = false
-			} else if p, ok := profileimage.CachedFilePath(ctx.platformKey, uid); ok {
-				pending = profileimage.FileOlderThanDays(p, ctx.maxAge)
 			} else {
-				pending = true
+				pending = avatars.OlderThanDays(uid, ctx.maxAge)
 			}
 		}
 		lu := ""
@@ -181,7 +188,7 @@ func (b *BasicService) GetAccountsEnrichment(platformKey string) ([]AccountEnric
 			UniqueID:           uid,
 			ImageURL:           img,
 			AvatarPending:      pending,
-			ManualProfileImage: profileimage.HasManualProfileMarker(ctx.platformKey, uid),
+			ManualProfileImage: manual,
 			Note:               note,
 			LastUsed:           lu,
 			ShowLastUsed:       ctx.ps.ShowLastUsed,
