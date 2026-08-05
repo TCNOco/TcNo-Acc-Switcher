@@ -247,7 +247,9 @@ func (s *SteamService) GetSteamAccountsEnrichment() ([]SteamAccountEnrichmentDTO
 			frameURL = fu
 		}
 
-		displayName := CachedCommunityDisplayName(u.SteamID64)
+		// Reuses the miniprofile HTML read above; CachedCommunityDisplayName
+		// would otherwise read and re-parse the same file a second time.
+		displayName := communityDisplayNameFrom(miniHTMLForName, u.SteamID64)
 		if displayName == "" {
 			displayName = displayPersona(u)
 		}
