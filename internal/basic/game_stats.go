@@ -80,6 +80,25 @@ type gameDefinition struct {
 	Attribution    *gameAttribution              `json:"Attribution"`
 	Vars           map[string]gameStatVarDef     `json:"Vars"`
 	Collect        map[string]collectInstruction `json:"Collect"`
+	// Fallbacks are alternative sources tried in order when the primary one fails. Each is
+	// merged over this definition, so it only restates what differs. See game_stats_fallback.go.
+	Fallbacks []json.RawMessage `json:"Fallbacks"`
+
+	// raw is this definition's own JSON, kept so Fallbacks can be merged over it.
+	raw json.RawMessage
+	// resolved holds the merged Fallbacks, built once at load.
+	resolved []gameDefinition
+}
+
+func (d *gameDefinition) UnmarshalJSON(data []byte) error {
+	type alias gameDefinition
+	var obj alias
+	if err := json.Unmarshal(data, &obj); err != nil {
+		return err
+	}
+	*d = gameDefinition(obj)
+	d.raw = append(json.RawMessage(nil), data...)
+	return nil
 }
 
 type gameStatVarDef struct {
@@ -168,6 +187,10 @@ type userGameStat struct {
 	Collected     map[string]string `json:"Collected"`
 	HiddenMetrics []string          `json:"HiddenMetrics"`
 	LastUpdated   time.Time         `json:"LastUpdated"`
+	// FallbackIndex is the stat source that last worked for this account: 0 for the primary
+	// definition, 1..n for Fallbacks[0..n-1]. Refreshes start there instead of retrying a
+	// source known to fail. Disabling the game drops the whole row, which resets it.
+	FallbackIndex int `json:"FallbackIndex,omitempty"`
 }
 
 type HiddenMetricToggleDTO struct {
@@ -250,20 +273,12 @@ func (m *gameStatsManager) ensureLoadedLocked() error {
 		m.compat = map[string][]string{}
 	}
 	for game, def := range m.defs {
-		if def.Vars == nil {
-			def.Vars = map[string]gameStatVarDef{}
+		normalizeGameDefinition(&def)
+		if err := def.resolveFallbacks(); err != nil {
+			return fmt.Errorf("game %q: %w", game, err)
 		}
-		if def.Collect == nil {
-			def.Collect = map[string]collectInstruction{}
-		}
-		for key, ci := range def.Collect {
-			if strings.TrimSpace(ci.DisplayAs) == "" {
-				ci.DisplayAs = "%x%"
-			}
-			if strings.TrimSpace(ci.ToggleText) == "" {
-				ci.ToggleText = key
-			}
-			def.Collect[key] = ci
+		for i := range def.resolved {
+			normalizeGameDefinition(&def.resolved[i])
 		}
 		m.defs[game] = def
 		if _, ok := m.cacheByGame[game]; !ok {
@@ -272,11 +287,31 @@ func (m *gameStatsManager) ensureLoadedLocked() error {
 		if err := m.loadGameCacheLocked(game); err != nil {
 			return err
 		}
-		gameStatsLog.Debug("loaded game definition", "game", game, "vars", len(def.Vars), "collect", len(def.Collect))
+		gameStatsLog.Debug("loaded game definition", "game", game, "vars", len(def.Vars), "collect", len(def.Collect), "fallbacks", len(def.resolved))
 	}
 	m.loaded = true
 	gameStatsLog.Info("game stats config loaded", "games", len(m.defs), "platformCompat", len(m.compat))
 	return nil
+}
+
+// normalizeGameDefinition fills in per-definition defaults. Applied to the primary definition
+// and to every resolved fallback, since those are merged from raw JSON.
+func normalizeGameDefinition(def *gameDefinition) {
+	if def.Vars == nil {
+		def.Vars = map[string]gameStatVarDef{}
+	}
+	if def.Collect == nil {
+		def.Collect = map[string]collectInstruction{}
+	}
+	for key, ci := range def.Collect {
+		if strings.TrimSpace(ci.DisplayAs) == "" {
+			ci.DisplayAs = "%x%"
+		}
+		if strings.TrimSpace(ci.ToggleText) == "" {
+			ci.ToggleText = key
+		}
+		def.Collect[key] = ci
+	}
 }
 
 func resolveGameStatsConfigPath() (string, error) {
@@ -346,6 +381,7 @@ func cloneUserGameStat(u userGameStat) userGameStat {
 		Collected:     cloneStringMap(u.Collected),
 		HiddenMetrics: append([]string(nil), u.HiddenMetrics...),
 		LastUpdated:   u.LastUpdated,
+		FallbackIndex: u.FallbackIndex,
 	}
 }
 
@@ -531,7 +567,9 @@ func gameAttributionToDTO(a *gameAttribution) GameStatAttributionDTO {
 	}
 }
 
-func (b *BasicService) GetGameAttribution(game string) (GameStatAttributionDTO, error) {
+// GetGameAttribution returns the credit for the stat source currently backing this account,
+// which differs from the primary one once a fallback has taken over.
+func (b *BasicService) GetGameAttribution(game, accountID string) (GameStatAttributionDTO, error) {
 	if err := security.RequireUnlocked(); err != nil {
 		return GameStatAttributionDTO{}, err
 	}
@@ -540,9 +578,13 @@ func (b *BasicService) GetGameAttribution(game string) (GameStatAttributionDTO, 
 	if err := gameStatsState.ensureLoadedLocked(); err != nil {
 		return GameStatAttributionDTO{}, err
 	}
-	def, ok := gameStatsState.defs[strings.TrimSpace(game)]
+	game = strings.TrimSpace(game)
+	def, ok := gameStatsState.defs[game]
 	if !ok {
 		return GameStatAttributionDTO{}, nil
+	}
+	if row, ok := gameStatsState.cacheByGame[game][strings.TrimSpace(accountID)]; ok {
+		def = def.variantAt(row.FallbackIndex)
 	}
 	return gameAttributionToDTO(def.Attribution), nil
 }
@@ -681,6 +723,8 @@ func (b *BasicService) SetGameVars(platformName, game, accountID string, vars ma
 	}
 	existing.Vars = cloneStringMap(vars)
 	existing.HiddenMetrics = normalizeHiddenMetrics(hiddenMetrics, def.Collect)
+	// Reconfiguring the account re-runs the whole source chain from the top.
+	existing.FallbackIndex = 0
 	if existing.LastUpdated.IsZero() {
 		existing.LastUpdated = time.Now()
 	}
@@ -766,6 +810,8 @@ func (b *BasicService) GetUserStatsAllGamesMarkup(platformName, accountID string
 		if !ok {
 			continue
 		}
+		// Display against the source that produced these numbers, not the primary definition.
+		def = def.variantAt(row.FallbackIndex)
 		hidden := map[string]struct{}{}
 		for _, k := range row.HiddenMetrics {
 			hidden[k] = struct{}{}
@@ -822,27 +868,36 @@ func fetchAndParseGameStats(urlStr, requestCookies, platformName, game, accountI
 	return rawHTML, collected, nil
 }
 
-func (m *gameStatsManager) refreshPrepareLocked(platformName, game, accountID string) (def gameDefinition, urlStr string, err error) {
+// gameStatsVariant is one candidate stat source with its URL already resolved. Its position
+// in the slice is the variant index stored as userGameStat.FallbackIndex.
+type gameStatsVariant struct {
+	def gameDefinition
+	url string
+}
+
+// refreshPrepareLocked resolves every variant of a game definition for one account, and the
+// index the chain should start at (the source that last worked).
+func (m *gameStatsManager) refreshPrepareLocked(platformName, game, accountID string) (variants []gameStatsVariant, startIdx int, err error) {
 	if appclient.IsOfflineMode() {
-		return gameDefinition{}, "", appclient.ErrOfflineMode
+		return nil, 0, appclient.ErrOfflineMode
 	}
 	platformName = strings.TrimSpace(platformName)
 	game = strings.TrimSpace(game)
 	accountID = strings.TrimSpace(accountID)
 	if game == "" || accountID == "" {
-		return gameDefinition{}, "", fmt.Errorf("missing game or account id")
+		return nil, 0, fmt.Errorf("missing game or account id")
 	}
 	def, ok := m.defs[game]
 	if !ok {
-		return gameDefinition{}, "", fmt.Errorf("unknown game stats definition")
+		return nil, 0, fmt.Errorf("unknown game stats definition")
 	}
 	row, ok := m.cacheByGame[game][accountID]
 	if !ok {
-		return gameDefinition{}, "", fmt.Errorf("stats not enabled for this account")
+		return nil, 0, fmt.Errorf("stats not enabled for this account")
 	}
 	idf, err := readIdsFile(platformName)
 	if err != nil {
-		return gameDefinition{}, "", err
+		return nil, 0, err
 	}
 	username := strings.TrimSpace(idf.IDs[accountID])
 	display := username
@@ -850,12 +905,94 @@ func (m *gameStatsManager) refreshPrepareLocked(platformName, game, accountID st
 		display = accountID
 	}
 	ctx := GameStatVarContext{AccountID: accountID, AccountUsername: display, Username: username}
-	resolved := ResolveGameStatsVarTemplates(gameStatVarDefsToAutofillMap(def.Vars), row.Vars, ctx)
-	urlStr = substituteGameStatsURL(def.URL, resolved)
-	return def, urlStr, nil
+	count := def.variantCount()
+	variants = make([]gameStatsVariant, 0, count)
+	for i := 0; i < count; i++ {
+		// Each variant may declare its own Vars, so resolve per variant rather than once.
+		v := def.variantAt(i)
+		resolved := ResolveGameStatsVarTemplates(gameStatVarDefsToAutofillMap(v.Vars), row.Vars, ctx)
+		variants = append(variants, gameStatsVariant{
+			def: v,
+			url: substituteGameStatsURL(v.URL, resolved),
+		})
+	}
+	return variants, clampFallbackIndex(row.FallbackIndex, count), nil
 }
 
-func (m *gameStatsManager) refreshSaveLocked(platformName, game, accountID string, rawHTML []byte, collected map[string]string) error {
+// gameStatsChainResult is the outcome of trying a definition's variants in order.
+type gameStatsChainResult struct {
+	// index is the variant that produced stats, or -1 when none did.
+	index     int
+	rawHTML   []byte
+	collected map[string]string
+	// emptyRaw is the last body that fetched and parsed but yielded no metrics, kept so the
+	// debug dump still happens when nothing in the chain worked.
+	emptyRaw   []byte
+	emptyIndex int
+	hadEmpty   bool
+	// allNotFound is true only when every variant failed with 404/410, which is the one case
+	// where the account's stats row should be dropped.
+	allNotFound bool
+	err         error
+}
+
+// attemptGameStatsChain tries each variant until one returns metrics. It performs network
+// calls, so it must run without the manager lock held.
+func attemptGameStatsChain(platformName, game, accountID string, variants []gameStatsVariant, startIdx int) gameStatsChainResult {
+	res := gameStatsChainResult{index: -1, allNotFound: len(variants) > 0}
+	for _, i := range fallbackAttemptOrder(startIdx, len(variants)) {
+		v := variants[i]
+		rawHTML, collected, err := fetchAndParseGameStats(v.url, v.def.RequestCookies, platformName, game, accountID, v.def)
+		if err != nil {
+			res.err = err
+			if !isGameStatsResourceNotFound(err) {
+				res.allNotFound = false
+			}
+			if len(variants) > 1 {
+				gameStatsLog.Info("game stats source failed, trying next", "game", game, "accountID", accountID, "variant", i, "err", err)
+			}
+			continue
+		}
+		if len(collected) == 0 {
+			res.err = fmt.Errorf("no statistics extracted")
+			res.emptyRaw, res.emptyIndex, res.hadEmpty = rawHTML, i, true
+			res.allNotFound = false
+			continue
+		}
+		res.index, res.rawHTML, res.collected, res.err = i, rawHTML, collected, nil
+		res.allNotFound = false
+		return res
+	}
+	return res
+}
+
+// applyChainResultLocked persists a chain outcome. The stats row is dropped only once every
+// variant has been tried and all of them reported the resource does not exist.
+func (m *gameStatsManager) applyChainResultLocked(platformName, game, accountID string, res gameStatsChainResult) error {
+	if res.index >= 0 {
+		return m.refreshSaveLocked(platformName, game, accountID, res.index, res.rawHTML, res.collected)
+	}
+	if res.hadEmpty {
+		return m.refreshSaveLocked(platformName, game, accountID, res.emptyIndex, res.emptyRaw, nil)
+	}
+	if res.allNotFound {
+		g := strings.TrimSpace(game)
+		acct := strings.TrimSpace(accountID)
+		if rows := m.cacheByGame[g]; rows != nil {
+			if _, ok := rows[acct]; ok {
+				delete(rows, acct)
+				m.cacheByGame[g] = rows
+				if saveErr := m.saveGameCacheLocked(g); saveErr != nil {
+					return saveErr
+				}
+				gameStatsLog.Info("game stats disabled after every source returned not-found", "game", g, "accountID", acct)
+			}
+		}
+	}
+	return res.err
+}
+
+func (m *gameStatsManager) refreshSaveLocked(platformName, game, accountID string, fallbackIndex int, rawHTML []byte, collected map[string]string) error {
 	g := strings.TrimSpace(game)
 	acct := strings.TrimSpace(accountID)
 	rows := m.cacheByGame[g]
@@ -877,21 +1014,19 @@ func (m *gameStatsManager) refreshSaveLocked(platformName, game, accountID strin
 	row.Collected = collected
 	row.LastUpdated = time.Now()
 	row.Vars = cloneStringMap(row.Vars)
+	row.FallbackIndex = fallbackIndex
 	m.cacheByGame[g][acct] = row
-	gameStatsLog.Info("refresh game stats success", "platform", platformName, "game", game, "accountID", accountID, "collected", len(collected))
+	gameStatsLog.Info("refresh game stats success", "platform", platformName, "game", game, "accountID", accountID, "collected", len(collected), "variant", fallbackIndex)
 	return m.saveGameCacheLocked(g)
 }
 
 func (m *gameStatsManager) refreshFromWebLocked(platformName, game, accountID string) error {
-	def, urlStr, err := m.refreshPrepareLocked(platformName, game, accountID)
+	variants, startIdx, err := m.refreshPrepareLocked(platformName, game, accountID)
 	if err != nil {
 		return err
 	}
-	rawHTML, collected, err := fetchAndParseGameStats(urlStr, def.RequestCookies, platformName, game, accountID, def)
-	if err != nil {
-		return err
-	}
-	return m.refreshSaveLocked(platformName, game, accountID, rawHTML, collected)
+	res := attemptGameStatsChain(platformName, game, accountID, variants, startIdx)
+	return m.applyChainResultLocked(platformName, game, accountID, res)
 }
 
 func refreshGameStatsWorker(platformName, game, accountID string) error {
@@ -903,36 +1038,17 @@ func refreshGameStatsWorker(platformName, game, accountID string) error {
 		gameStatsState.mu.Unlock()
 		return err
 	}
-	def, urlStr, err := gameStatsState.refreshPrepareLocked(platformName, game, accountID)
+	variants, startIdx, err := gameStatsState.refreshPrepareLocked(platformName, game, accountID)
 	if err != nil {
 		gameStatsState.mu.Unlock()
 		return err
 	}
-	requestCookies := def.RequestCookies
 	gameStatsState.mu.Unlock()
 
-	rawHTML, collected, err := fetchAndParseGameStats(urlStr, requestCookies, platformName, game, accountID, def)
-	if err != nil {
-		if isGameStatsResourceNotFound(err) {
-			gameStatsState.mu.Lock()
-			g := strings.TrimSpace(game)
-			acct := strings.TrimSpace(accountID)
-			if rows := gameStatsState.cacheByGame[g]; rows != nil {
-				delete(rows, acct)
-				gameStatsState.cacheByGame[g] = rows
-				if saveErr := gameStatsState.saveGameCacheLocked(g); saveErr != nil {
-					gameStatsState.mu.Unlock()
-					return saveErr
-				}
-				gameStatsLog.Info("game stats disabled after not-found response", "game", g, "accountID", acct)
-			}
-			gameStatsState.mu.Unlock()
-		}
-		return err
-	}
+	res := attemptGameStatsChain(platformName, game, accountID, variants, startIdx)
 
 	gameStatsState.mu.Lock()
-	err = gameStatsState.refreshSaveLocked(platformName, game, accountID, rawHTML, collected)
+	err = gameStatsState.applyChainResultLocked(platformName, game, accountID, res)
 	gameStatsState.mu.Unlock()
 	return err
 }

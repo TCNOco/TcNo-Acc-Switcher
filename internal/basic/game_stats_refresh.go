@@ -104,7 +104,7 @@ func collectStaleGameStatsJobs(platformKey, accountID, liveAccountID string) []g
 		if !ok {
 			continue
 		}
-		if gameStatRowExpired(row, gameStatEffectiveTTL(def, accountID, liveAccountID)) {
+		if gameStatRowExpired(row, gameStatEffectiveTTL(def.variantAt(row.FallbackIndex), accountID, liveAccountID)) {
 			jobs = append(jobs, gameStatsRefreshJob{platformKey: platformKey, game: game, accountID: accountID})
 		}
 	}
@@ -139,7 +139,7 @@ func collectStaleGameStatsJobsForPlatform(platformKey, liveAccountID string) []g
 			if _, ok := idf.IDs[accountID]; !ok {
 				continue
 			}
-			if !gameStatRowExpired(row, gameStatEffectiveTTL(def, accountID, liveAccountID)) {
+			if !gameStatRowExpired(row, gameStatEffectiveTTL(def.variantAt(row.FallbackIndex), accountID, liveAccountID)) {
 				continue
 			}
 			key := gameStatsRefreshKey(platformKey, game, accountID)

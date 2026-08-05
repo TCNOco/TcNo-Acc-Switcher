@@ -12,6 +12,8 @@ import (
 	"path/filepath"
 	"unicode/utf8"
 
+	"TcNo-Acc-Switcher/internal/pixelconv"
+
 	"golang.org/x/text/encoding/charmap"
 )
 
@@ -200,18 +202,14 @@ func bmpStride(width, bpp int) int {
 	return ((width*bpp + 31) / 32) * 4
 }
 
+// decodeXOR32 walks the DIB bottom-up into the top-down destination. The
+// caller has already checked that base+stride*h fits in data.
 func decodeXOR32(img *image.NRGBA, data []byte, base, stride, w, h int) {
+	rowBytes := w * 4
 	for vy := 0; vy < h; vy++ {
-		bmpRow := h - 1 - vy
-		row := base + bmpRow*stride
-		for vx := 0; vx < w; vx++ {
-			o := row + vx*4
-			b := data[o]
-			g := data[o+1]
-			r := data[o+2]
-			a := data[o+3]
-			img.SetNRGBA(vx, vy, color.NRGBA{R: r, G: g, B: b, A: a})
-		}
+		row := base + (h-1-vy)*stride
+		out := vy * img.Stride
+		pixelconv.BGRAToNRGBA(img.Pix[out:out+rowBytes], data[row:row+rowBytes])
 	}
 }
 
@@ -282,19 +280,33 @@ func decodeXOR1(img *image.NRGBA, data []byte, base, stride, w, h int, pal []col
 	}
 }
 
+// applyANDMask clears alpha wherever the 1bpp AND plane has a set bit.
+//
+// The plane is read bottom-up to match the XOR readers. Both planes belong to
+// one DIB whose single positive biHeight covers them stacked, and a positive
+// biHeight means a bottom-up bitmap with its origin at the lower left, so the
+// two planes cannot differ in row order.
+//
+// A 32bpp icon normally carries transparency in its alpha channel and ships an
+// all-zero AND plane, so whole zero mask bytes are skipped instead of being
+// tested bit by bit, and set bits write the alpha byte directly rather than
+// reading and rewriting a whole pixel.
 func applyANDMask(img *image.NRGBA, data []byte, base, stride, w, h int) {
+	maskBytes := (w + 7) / 8
 	for vy := 0; vy < h; vy++ {
-		row := base + vy*stride
-		for vx := 0; vx < w; vx++ {
-			bit := uint(vx % 8)
-			b := data[row+vx/8]
-			andSet := (b>>(7-bit))&1 != 0
-			if !andSet {
+		row := base + (h-1-vy)*stride
+		out := vy * img.Stride
+		for i := 0; i < maskBytes; i++ {
+			bits := data[row+i]
+			if bits == 0 {
 				continue
 			}
-			c := img.NRGBAAt(vx, vy)
-			c.A = 0
-			img.SetNRGBA(vx, vy, c)
+			last := min((i+1)*8, w)
+			for vx := i * 8; vx < last; vx++ {
+				if bits&(0x80>>uint(vx%8)) != 0 {
+					img.Pix[out+vx*4+3] = 0
+				}
+			}
 		}
 	}
 }

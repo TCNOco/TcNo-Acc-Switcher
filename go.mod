@@ -1,6 +1,6 @@
 module TcNo-Acc-Switcher
 
-go 1.26.4
+go 1.26.5
 
 require (
 	github.com/Jleagle/steam-go v0.0.0-20260702210647-a0025544c8f4

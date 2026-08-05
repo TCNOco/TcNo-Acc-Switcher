@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"TcNo-Acc-Switcher/internal/pixelconv"
 	"TcNo-Acc-Switcher/internal/steam"
 	"TcNo-Acc-Switcher/internal/steamguard/capability"
 	"TcNo-Acc-Switcher/internal/steamguard/mafile"
@@ -450,12 +451,9 @@ func normalizeBGRAFrame(width, height, stride int, source []byte) (*qrimage.Fram
 		Stride: stride,
 		Pixels: make([]byte, len(source)),
 	}
-	for offset := 0; offset < len(source); offset += 4 {
-		destination.Pixels[offset] = source[offset+2]
-		destination.Pixels[offset+1] = source[offset+1]
-		destination.Pixels[offset+2] = source[offset]
-		destination.Pixels[offset+3] = 0xff
-	}
+	// GDI leaves the capture's alpha byte undefined, so it is forced opaque
+	// rather than carried through.
+	pixelconv.BGRAToNRGBAOpaque(destination.Pixels, source)
 	return destination, true
 }
 
