@@ -1,0 +1,10 @@
+# Line endings are pinned here rather than left to each machine's core.autocrlf.
+# Git's own default is autocrlf=true on Windows, which checks text files out as
+# CRLF; a clone on such a machine would otherwise rewrite the working copy and
+# turn any later one-line edit into a whole-file diff.
+* text=auto eol=lf
+
+# Batch files are read by cmd.exe, which is the one consumer here that is
+# happier with CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf
