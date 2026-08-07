@@ -43,7 +43,10 @@
   let resolvedValues: Record<string, string> = {};
   let hiddenToggles: Record<string, { hidden: boolean; toggleText: string }> = {};
   let hiddenPicked = new Set<string>();
-  let attribution: { header: string; image: string; text: string; link: string; dimensions: string } | null = null;
+  type Attribution = { header: string; image: string; text: string; link: string; dimensions: string };
+  // Every source a game can draw on, primary first — listed whether or not it is the one
+  // currently in use, so the fallbacks are discoverable before they ever kick in.
+  let attributions: Attribution[] = [];
 
   const defaultAttributionHeader = "Data source:";
 
@@ -77,7 +80,7 @@
 
   function normalizeAttribution(
     src: { header?: string; image?: string; text?: string; link?: string; dimensions?: string } | null | undefined,
-  ): { header: string; image: string; text: string; link: string; dimensions: string } | null {
+  ): Attribution | null {
     const link = String(src?.link ?? "").trim();
     if (!link) {
       return null;
@@ -90,6 +93,15 @@
       link,
       dimensions: String(src?.dimensions ?? "").trim(),
     };
+  }
+
+  function normalizeAttributions(
+    src: ReadonlyArray<{ header?: string; image?: string; text?: string; link?: string; dimensions?: string } | undefined> | null | undefined,
+  ): Attribution[] {
+    if (!Array.isArray(src)) {
+      return [];
+    }
+    return src.map((a) => normalizeAttribution(a)).filter((a): a is Attribution => a !== null);
   }
 
   function parseAttributionDimensions(raw: string): { width: number; height: number } | null {
@@ -111,6 +123,17 @@
       return "";
     }
     return `width:${parsed.width}px;max-width:100%;aspect-ratio:${parsed.width}/${parsed.height};height:auto;`;
+  }
+
+  // Caps a logo at half the row so two sit side by side, but never above its own declared
+  // size — an undersized logo blown up to fill half the modal looks worse than a small one.
+  // Keep the 0.375rem in step with half the .attribution-list gap.
+  function attributionItemStyle(dimensions: string): string {
+    const parsed = parseAttributionDimensions(dimensions);
+    if (!parsed) {
+      return "";
+    }
+    return `max-width:min(calc(50% - 0.375rem), ${parsed.width}px);`;
   }
 
   function attributionImageSrc(imagePath: string): string {
@@ -171,14 +194,14 @@
     editGame = game;
     screen = "vars";
     busy = true;
-    attribution = null;
+    attributions = [];
     try {
       const [req, exist, res, hid, attr] = await Promise.all([
         BasicService.GetRequiredVarSpecs(game),
         BasicService.GetExistingVars(game, uniqueId),
         BasicService.GetResolvedGameStatVars(platformKey, game, uniqueId),
         BasicService.GetHiddenMetrics(game, uniqueId),
-        BasicService.GetGameAttribution(game, uniqueId),
+        BasicService.GetGameAttributions(game),
       ]);
       requiredSpecs = normalizeVarSpecs(req as Record<
         string,
@@ -211,8 +234,8 @@
           .filter(([, v]) => v?.hidden)
           .map(([k]) => k),
       );
-      attribution = normalizeAttribution(
-        attr as { header?: string; image?: string; text?: string; link?: string; dimensions?: string },
+      attributions = normalizeAttributions(
+        attr as ReadonlyArray<{ header?: string; image?: string; text?: string; link?: string; dimensions?: string }>,
       );
     } catch (e) {
       pushToast({
@@ -404,16 +427,25 @@
       </div>
     {/if}
   {:else}
-    <p class="modal-lead">
-      {tr("Modal_GameVars_Header", {
-        game: editGame,
-        username: displayName || uniqueId,
-        platform: platformKey,
-      })}
-    </p>
     {#if busy}
-      <p class="muted">…</p>
+      <!-- The prompt to fill in the form goes with the form: saving fetches stats over
+           the network, and a source chain can try more than one provider before it
+           lands, so this is regularly a multi-second wait with nothing left to enter. -->
+      <div class="gamestats-busy" role="status" aria-live="polite">
+        <span class="gamestats-spinner" aria-hidden="true"></span>
+        <span>
+          {tr("Stats_FetchingFromWeb", { game: editGame ?? "" })}
+          <span class="muted gamestats-busy-hint">{tr("Stats_FetchingHint")}</span>
+        </span>
+      </div>
     {:else}
+      <p class="modal-lead">
+        {tr("Modal_GameVars_Header", {
+          game: editGame,
+          username: displayName || uniqueId,
+          platform: platformKey,
+        })}
+      </p>
       <div class="gamestats-scroll">
         {#each Object.entries(requiredLabels) as [varKey, rawLabel]}
           {@const spec = requiredSpecs[varKey]}
@@ -457,37 +489,47 @@
           {/each}
         {/if}
 
-        {#if attribution}
+        {#if attributions.length > 0}
           <div class="gamestats-attribution">
-            <h6 class="gamestats-sub">{attribution.header}</h6>
+            <h6 class="gamestats-sub">
+              {attributions.length > 1 ? tr("Stats_DataSources") : attributions[0].header}
+            </h6>
             <div class="attribution-inset">
-              {#if attribution.image}
-                <button
-                  type="button"
-                  class="attribution-image-btn"
-                  title={attribution.link}
-                  on:click={() => openAttributionLink(attribution?.link ?? "")}
-                >
-                  <img
-                    src={attributionImageSrc(attribution.image)}
-                    alt=""
-                    draggable="false"
-                    class:has-dimensions={Boolean(parseAttributionDimensions(attribution.dimensions))}
-                    style={attributionImageStyle(attribution.dimensions)}
-                  />
-                </button>
-              {:else if attribution.text}
-                <p class="attribution-text">
-                  <strong>{tr("Stats_MetricsProvidedBy")}</strong>
-                  <button
-                    type="button"
-                    class="linkbtn attribution-link"
-                    on:click={() => openAttributionLink(attribution?.link ?? "")}
-                  >
-                    {attribution.text}
-                  </button>
-                </p>
-              {/if}
+              <div class="attribution-list">
+                {#each attributions as source (source.link + source.image + source.text)}
+                  {#if source.image}
+                    <button
+                      type="button"
+                      class="attribution-image-btn"
+                      title={source.text || source.link}
+                      style={attributionItemStyle(source.dimensions)}
+                      on:click={() => openAttributionLink(source.link)}
+                    >
+                      <img
+                        src={attributionImageSrc(source.image)}
+                        alt={source.text}
+                        draggable="false"
+                        class:has-dimensions={Boolean(parseAttributionDimensions(source.dimensions))}
+                        style={attributionImageStyle(source.dimensions)}
+                      />
+                    </button>
+                  {:else if source.text}
+                    <p class="attribution-text">
+                      {#if attributions.length === 1}
+                        <strong>{tr("Stats_MetricsProvidedBy")}</strong>
+                      {/if}
+                      <button
+                        type="button"
+                        class="linkbtn attribution-link"
+                        title={source.link}
+                        on:click={() => openAttributionLink(source.link)}
+                      >
+                        {source.text}
+                      </button>
+                    </p>
+                  {/if}
+                {/each}
+              </div>
             </div>
             <p class="attribution-note">{tr("Stats_MetricsAffiliationNote")}</p>
           </div>
@@ -501,7 +543,7 @@
             on:click={() => {
               screen = "list";
               editGame = "";
-              attribution = null;
+              attributions = [];
             }}
           >
             {tr("Button_Back")}
@@ -533,6 +575,38 @@
     flex-direction: column;
     gap: 0.5rem;
     --gamestats-row-indent: calc(1rem + 0.35rem);
+  }
+  /* The form and its buttons are replaced while a save is in flight, so this is the
+     only thing on screen — it has to read as work in progress, not a dead modal. */
+  .gamestats-busy {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.75rem 0;
+    line-height: 1.4;
+  }
+  .gamestats-busy-hint {
+    display: block;
+    font-size: 0.85em;
+  }
+  .gamestats-spinner {
+    flex: none;
+    width: 1.1em;
+    height: 1.1em;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: gamestats-spin 0.8s linear infinite;
+  }
+  @keyframes gamestats-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .gamestats-spinner {
+      animation-duration: 2.4s;
+    }
   }
   .gamestats-sub {
     margin: 0.5rem 0 0.15rem;
@@ -598,6 +672,18 @@
   .attribution-inset {
     padding-left: var(--gamestats-row-indent);
   }
+  /* Sources sit side by side and wrap once they no longer fit. Keep the gap in step with
+     the 0.375rem half-gap that attributionItemStyle subtracts from its 50% cap. */
+  .attribution-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .attribution-list .attribution-text {
+    flex: 0 1 auto;
+    max-width: calc(50% - 0.375rem);
+  }
   .attribution-text {
     margin: 0;
     font-size: 0.85rem;
@@ -621,6 +707,10 @@
     background: transparent;
     cursor: pointer;
     line-height: 0;
+    flex: 0 1 auto;
+    /* Fallback for a logo that declares no Dimensions; attributionItemStyle overrides
+       this inline with the tighter of the half-row cap and the logo's own width. */
+    max-width: calc(50% - 0.375rem);
     img {
       max-height: 2.25rem;
       width: auto;

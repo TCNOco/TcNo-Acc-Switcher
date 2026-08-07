@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"regexp"
 	"testing"
 )
 
@@ -170,6 +171,102 @@ func TestResolveFallbacksInheritsUnspecifiedFields(t *testing.T) {
 	}
 }
 
+// Every source is credited up front, so a fallback is discoverable before it activates.
+func TestCollectVariantAttributionsListsEverySourceInTryOrder(t *testing.T) {
+	t.Parallel()
+	raw := []byte(`{
+		"Attribution": {"Image": "leetify.webp", "Dimensions": "270x115", "Link": "https://leetify.com"},
+		"Fallbacks": [
+			{"Attribution": {"Image": "csrep.webp", "Dimensions": "270x80", "Text": "CSRep.gg", "Link": "https://csrep.gg"}},
+			{"Attribution": {"Image": null, "Dimensions": null, "Text": "Third", "Link": "https://third.example"}}
+		]
+	}`)
+	var def gameDefinition
+	if err := json.Unmarshal(raw, &def); err != nil {
+		t.Fatal(err)
+	}
+	if err := def.resolveFallbacks(); err != nil {
+		t.Fatal(err)
+	}
+
+	got := collectVariantAttributions(def)
+	if len(got) != 3 {
+		t.Fatalf("expected 3 sources, got %d: %+v", len(got), got)
+	}
+	if got[0].Image != "leetify.webp" || got[0].Link != "https://leetify.com" {
+		t.Fatalf("primary must come first: %+v", got[0])
+	}
+	if got[1].Image != "csrep.webp" || got[1].Dimensions != "270x80" {
+		t.Fatalf("first fallback: %+v", got[1])
+	}
+	if got[2].Image != "" || got[2].Text != "Third" {
+		t.Fatalf("second fallback: %+v", got[2])
+	}
+}
+
+// A fallback that only swaps the URL inherits the primary's credit; listing it twice would
+// show the same logo side by side with itself.
+func TestCollectVariantAttributionsDedupesInheritedCredit(t *testing.T) {
+	t.Parallel()
+	raw := []byte(`{
+		"Attribution": {"Image": "leetify.webp", "Link": "https://leetify.com"},
+		"Fallbacks": [{"Url": "https://mirror.example"}]
+	}`)
+	var def gameDefinition
+	if err := json.Unmarshal(raw, &def); err != nil {
+		t.Fatal(err)
+	}
+	if err := def.resolveFallbacks(); err != nil {
+		t.Fatal(err)
+	}
+	if got := collectVariantAttributions(def); len(got) != 1 {
+		t.Fatalf("inherited credit should collapse to one entry, got %d: %+v", len(got), got)
+	}
+}
+
+func TestCollectVariantAttributionsSkipsEmptyCredit(t *testing.T) {
+	t.Parallel()
+	var def gameDefinition
+	if err := json.Unmarshal([]byte(`{"Url": "https://example.com"}`), &def); err != nil {
+		t.Fatal(err)
+	}
+	if got := collectVariantAttributions(def); len(got) != 0 {
+		t.Fatalf("a definition with no attribution should credit nothing: %+v", got)
+	}
+}
+
+func TestShippedCS2CreditsBothSources(t *testing.T) {
+	t.Parallel()
+	raw, err := os.ReadFile(filepath.Join("..", "..", "GameStats.json"))
+	if err != nil {
+		t.Skipf("GameStats.json unavailable: %v", err)
+	}
+	var cfg gameStatsFile
+	if err := json.Unmarshal(raw, &cfg); err != nil {
+		t.Fatal(err)
+	}
+	def := cfg.StatsDefinitions["Counter-Strike 2"]
+	if err := def.resolveFallbacks(); err != nil {
+		t.Fatal(err)
+	}
+	got := collectVariantAttributions(def)
+	if len(got) != 2 {
+		t.Fatalf("CS2 should credit Leetify and CSRep, got %d: %+v", len(got), got)
+	}
+	if got[0].Link != "https://leetify.com" || got[1].Link != "https://csrep.gg" {
+		t.Fatalf("credits out of order: %+v", got)
+	}
+	// Both need a parseable size, or the modal cannot cap them against their own width.
+	for _, a := range got {
+		if a.Image == "" {
+			continue
+		}
+		if !regexp.MustCompile(`^\d+x\d+$`).MatchString(a.Dimensions) {
+			t.Fatalf("logo %q needs WxH dimensions, got %q", a.Image, a.Dimensions)
+		}
+	}
+}
+
 func TestVariantAtOutOfRangeFallsBackToPrimary(t *testing.T) {
 	t.Parallel()
 	def := gameDefinition{URL: "primary", resolved: []gameDefinition{{URL: "fb0"}}}
@@ -246,8 +343,11 @@ func TestShippedCS2FallbackResolves(t *testing.T) {
 	if _, ok := fb.Vars["SteamId"]; !ok {
 		t.Fatalf("fallback lost the SteamId var: %+v", fb.Vars)
 	}
-	if fb.Attribution == nil || fb.Attribution.Image != "" || fb.Attribution.Text != "CSRep.gg" {
+	if fb.Attribution == nil || fb.Attribution.Link != "https://csrep.gg" || fb.Attribution.Text != "CSRep.gg" {
 		t.Fatalf("fallback should credit CSRep, not Leetify: %+v", fb.Attribution)
+	}
+	if fb.Attribution.Image == def.Attribution.Image {
+		t.Fatalf("fallback must not inherit the primary's logo: %q", fb.Attribution.Image)
 	}
 
 	prem, ok := fb.Collect["Premiere"]

@@ -567,26 +567,45 @@ func gameAttributionToDTO(a *gameAttribution) GameStatAttributionDTO {
 	}
 }
 
-// GetGameAttribution returns the credit for the stat source currently backing this account,
-// which differs from the primary one once a fallback has taken over.
-func (b *BasicService) GetGameAttribution(game, accountID string) (GameStatAttributionDTO, error) {
+// GetGameAttributions returns the credit for every stat source a game can draw on — the
+// primary definition first, then each fallback in the order they are tried. All of them are
+// listed regardless of which is currently active, so the sources are visible up front rather
+// than only appearing once a fallback takes over. Variants that inherit the primary's
+// attribution collapse into one entry, so a source is credited once however many share it.
+func (b *BasicService) GetGameAttributions(game string) ([]GameStatAttributionDTO, error) {
 	if err := security.RequireUnlocked(); err != nil {
-		return GameStatAttributionDTO{}, err
+		return nil, err
 	}
 	gameStatsState.mu.Lock()
 	defer gameStatsState.mu.Unlock()
 	if err := gameStatsState.ensureLoadedLocked(); err != nil {
-		return GameStatAttributionDTO{}, err
+		return nil, err
 	}
-	game = strings.TrimSpace(game)
-	def, ok := gameStatsState.defs[game]
+	def, ok := gameStatsState.defs[strings.TrimSpace(game)]
 	if !ok {
-		return GameStatAttributionDTO{}, nil
+		return []GameStatAttributionDTO{}, nil
 	}
-	if row, ok := gameStatsState.cacheByGame[game][strings.TrimSpace(accountID)]; ok {
-		def = def.variantAt(row.FallbackIndex)
+	return collectVariantAttributions(def), nil
+}
+
+// collectVariantAttributions lists each variant's credit in try order, dropping duplicates
+// (a fallback that does not override Attribution inherits the primary's) and entries with
+// nothing to show.
+func collectVariantAttributions(def gameDefinition) []GameStatAttributionDTO {
+	out := []GameStatAttributionDTO{}
+	seen := map[GameStatAttributionDTO]struct{}{}
+	for i := 0; i < def.variantCount(); i++ {
+		dto := gameAttributionToDTO(def.variantAt(i).Attribution)
+		if strings.TrimSpace(dto.Image) == "" && strings.TrimSpace(dto.Text) == "" {
+			continue
+		}
+		if _, dup := seen[dto]; dup {
+			continue
+		}
+		seen[dto] = struct{}{}
+		out = append(out, dto)
 	}
-	return gameAttributionToDTO(def.Attribution), nil
+	return out
 }
 
 func (b *BasicService) GetAllMetrics(game string) (map[string]string, error) {

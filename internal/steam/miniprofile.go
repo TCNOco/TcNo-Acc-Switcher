@@ -311,11 +311,14 @@ func ExtractMiniprofileAvatarMediaURL(fragment string) string {
 	if mount == nil {
 		return ""
 	}
+	// Every branch reports a URL the caller will download, so a local path left by
+	// a previously localized fragment must not qualify — it would be handed to the
+	// HTTP client as if it were remote.
 	if v := firstDescendantElement(mount, "video"); v != nil {
-		if u, _ := pickNameplateSource(v); u != "" {
+		if u, _ := pickNameplateSource(v); isRemoteSteamAssetURL(u) {
 			return u
 		}
-		if u := attrVal(v, "src"); isSafeSteamAssetURL(u) {
+		if u := attrVal(v, "src"); isRemoteSteamAssetURL(u) {
 			return u
 		}
 	}
@@ -324,7 +327,7 @@ func ExtractMiniprofileAvatarMediaURL(fragment string) string {
 	// just smaller — reporting it here doubled the download and put the worse
 	// copy on screen.
 	if img := firstDescendantElement(mount, "img"); img != nil {
-		if u := attrVal(img, "src"); isSafeSteamAssetURL(u) && strings.HasSuffix(strings.ToLower(u), ".gif") {
+		if u := attrVal(img, "src"); isRemoteSteamAssetURL(u) && strings.HasSuffix(strings.ToLower(u), ".gif") {
 			return u
 		}
 	}

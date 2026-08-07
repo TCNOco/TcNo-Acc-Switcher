@@ -100,8 +100,8 @@
         {
           "Url": "https://api.tcno.co/sw/csrepStats?steamid={SteamId}",
           "Attribution": {
-            "Image": null,
-            "Dimensions": null,
+            "Image": "img/gs/providers/csrep.webp",
+            "Dimensions": "270x80",
             "Text": "CSRep.gg",
             "Link": "https://csrep.gg"
           },

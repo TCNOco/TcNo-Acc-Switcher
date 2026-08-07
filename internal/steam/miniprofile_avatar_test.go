@@ -56,6 +56,45 @@ func TestExtractMiniprofileAvatarMediaURL_stillImageIsNotMedia(t *testing.T) {
 	}
 }
 
+// A cached fragment has had its asset URLs rewritten to the app's own origin. Those
+// paths are safe to render but are not fetchable, and the sole consumer of this
+// function downloads whatever it returns — reporting one produced a failed request
+// ("unsupported protocol scheme") on every refresh.
+func TestExtractMiniprofileAvatarMediaURL_localizedPathIsNotMedia(t *testing.T) {
+	t.Parallel()
+
+	gifImg := `<div class="miniprofile_container">
+<div class="miniprofile_playersection">
+<div class="playersection_avatar border_color_online">
+<img src="/img/profiles/steam/76561198044414346_mini.gif"/>
+</div>
+</div>
+</div>`
+	if got := ExtractMiniprofileAvatarMediaURL(gifImg); got != "" {
+		t.Fatalf("localized gif path reported as downloadable media: %q", got)
+	}
+
+	video := `<div class="miniprofile_container">
+<div class="playerAvatarAutoSizeInner">
+<video class="avatar" autoplay muted loop playsinline>
+<source src="/img/profiles/steam/76561198044414346_mini.webm" type="video/webm"/>
+</video>
+</div>
+</div>`
+	if got := ExtractMiniprofileAvatarMediaURL(video); got != "" {
+		t.Fatalf("localized video path reported as downloadable media: %q", got)
+	}
+
+	videoSrc := `<div class="miniprofile_container">
+<div class="playerAvatarAutoSizeInner">
+<video class="avatar" src="/img/profiles/steam/76561198044414346_mini.webm"></video>
+</div>
+</div>`
+	if got := ExtractMiniprofileAvatarMediaURL(videoSrc); got != "" {
+		t.Fatalf("localized video src reported as downloadable media: %q", got)
+	}
+}
+
 func TestExtractMiniprofileDisplayName(t *testing.T) {
 	t.Parallel()
 

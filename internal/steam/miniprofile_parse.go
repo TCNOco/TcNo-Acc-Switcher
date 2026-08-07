@@ -70,6 +70,14 @@ func isSafeSteamAssetURL(u string) bool {
 		strings.Contains(lu, "akamaihd.net")
 }
 
+// isRemoteSteamAssetURL reports whether u is a Steam-hosted URL that can actually be
+// fetched. isSafeSteamAssetURL also accepts the app's own /img/profiles/steam/ paths,
+// which are safe to render but are not downloadable sources — a cached miniprofile
+// fragment has had its asset URLs rewritten to exactly those paths.
+func isRemoteSteamAssetURL(u string) bool {
+	return isSafeSteamAssetURL(u) && strings.HasPrefix(strings.ToLower(strings.TrimSpace(u)), "https://")
+}
+
 func parseFragmentInBody(fragment string) (*html.Node, error) {
 	wrapped := "<!DOCTYPE html><html><head></head><body>" + fragment + "</body></html>"
 	doc, err := html.Parse(strings.NewReader(wrapped))
