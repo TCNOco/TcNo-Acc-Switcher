@@ -7,6 +7,21 @@ import (
 	"TcNo-Acc-Switcher/internal/steam/accountstore"
 )
 
+// knownAccountsForRoot is the account list every caller should use: Steam's
+// current rows plus the ones only the switcher remembers. A loginusers.vdf that
+// is missing or corrupt costs the accounts Steam still knew about, not all of
+// them, so it is a warning rather than a failure.
+func knownAccountsForRoot(steamRoot string) []LoginUser {
+	loginPath := LoginUsersPath(steamRoot)
+	users, err := ParseLoginUsers(loginPath)
+	if err != nil {
+		steamLog.Warn("ParseLoginUsers failed; falling back to the account store",
+			slog.String("path", loginPath), slog.Any("err", err))
+		users = nil
+	}
+	return syncKnownAccounts(users)
+}
+
 // syncKnownAccounts folds the current loginusers.vdf rows into the persistent
 // account store and returns what the switcher should show: every vdf row in
 // Steam's own order, then every stored account Steam no longer knows about.

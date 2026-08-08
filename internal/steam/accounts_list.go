@@ -120,18 +120,9 @@ func (s *SteamService) buildSteamListContext() (*steamListContext, error) {
 		return nil, fmt.Errorf("steam install folder not found")
 	}
 
-	loginPath := LoginUsersPath(root)
-	users, err := ParseLoginUsers(loginPath)
-	if err != nil {
-		// A missing or corrupt loginusers.vdf is precisely what the account
-		// store exists to survive, so it must not fail the list.
-		steamLog.Warn("ParseLoginUsers failed; falling back to the account store",
-			slog.String("path", loginPath), slog.Any("err", err))
-		users = nil
-	}
 	// Before MergeOrder, so accounts Steam has forgotten still take their saved
 	// place in the list rather than always trailing it.
-	users = syncKnownAccounts(users)
+	users := knownAccountsForRoot(root)
 
 	order, err := LoadOrder()
 	if err != nil {

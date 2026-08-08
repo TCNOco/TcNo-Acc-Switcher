@@ -53,6 +53,29 @@ func SaveOrder(ids []string) error {
 	return fsutil.WriteFileAtomic(p, data, 0o644)
 }
 
+// removeFromOrder drops one id from the saved order. MergeOrder merely ignores
+// ids it does not recognise, so without this a forgotten account would sit in
+// order.json forever and reclaim its old position if it were ever re-added.
+func removeFromOrder(steamID64 string) error {
+	saved, err := LoadOrder()
+	if err != nil {
+		return err
+	}
+	next := make([]string, 0, len(saved))
+	found := false
+	for _, id := range saved {
+		if id == steamID64 {
+			found = true
+			continue
+		}
+		next = append(next, id)
+	}
+	if !found {
+		return nil
+	}
+	return SaveOrder(next)
+}
+
 // MergeOrder applies saved order: listed ids first (that exist), then remaining in input order.
 func MergeOrder(saved []string, users []LoginUser) []LoginUser {
 	byID := make(map[string]LoginUser, len(users))

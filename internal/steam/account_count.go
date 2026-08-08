@@ -4,7 +4,9 @@ import (
 	"TcNo-Acc-Switcher/internal/platform"
 )
 
-// CountSavedAccounts returns the number of Steam accounts in loginusers.vdf, or 0 when unavailable.
+// CountSavedAccounts returns the number of Steam accounts the switcher knows,
+// or 0 when unavailable. It counts the same union the account list shows, not
+// just the rows Steam currently has.
 func CountSavedAccounts() int {
 	exeDir, err := platform.ResolveExeDir()
 	if err != nil {
@@ -26,9 +28,5 @@ func CountSavedAccounts() int {
 	if err != nil || root == "" {
 		return 0
 	}
-	users, err := ParseLoginUsers(LoginUsersPath(root))
-	if err != nil {
-		return 0
-	}
-	return len(users)
+	return len(knownAccountsForRoot(root))
 }

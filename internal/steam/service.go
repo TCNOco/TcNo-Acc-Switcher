@@ -21,6 +21,7 @@ import (
 	"TcNo-Acc-Switcher/internal/profileimage"
 	"TcNo-Acc-Switcher/internal/security"
 	"TcNo-Acc-Switcher/internal/stats"
+	"TcNo-Acc-Switcher/internal/steam/accountstore"
 	"TcNo-Acc-Switcher/internal/winutil"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
@@ -311,10 +312,10 @@ func (s *SteamService) SaveSteamAccountOrder(ids []string) error {
 	if err != nil {
 		return err
 	}
-	users, err := ParseLoginUsers(LoginUsersPath(root))
-	if err != nil {
-		return err
-	}
+	// The same union the list was built from. Validating against loginusers.vdf
+	// alone would reject every reorder as soon as one account lived only in the
+	// store, since the count could never match.
+	users := knownAccountsForRoot(root)
 	valid := make(map[string]struct{}, len(users))
 	for _, u := range users {
 		valid[u.SteamID64] = struct{}{}
@@ -515,13 +516,7 @@ func (s *SteamService) runProfileRefresh() {
 		steamLog.Error("steam root empty after ResolveInstallFolder")
 		return
 	}
-	users, err := ParseLoginUsers(LoginUsersPath(root))
-	if err != nil {
-		steamLog.Warn("ParseLoginUsers failed in refresh; falling back to the account store",
-			slog.Any("err", err))
-		users = nil
-	}
-	users = syncKnownAccounts(users)
+	users := knownAccountsForRoot(root)
 	if len(users) == 0 {
 		steamLog.Warn("no Steam accounts to refresh")
 		return
@@ -796,8 +791,19 @@ func (s *SteamService) ForgetSteamAccount(steamID64 string) error {
 	if root == "" {
 		return fmt.Errorf("steam install folder not found")
 	}
+	// The store first: it is now the thing that decides whether the account is
+	// listed, so a failure here has to abort before Steam's file is touched.
+	// Otherwise the row would come back on the next refresh and look like the
+	// Forget silently did nothing.
+	if err := accountstore.Remove(steamID64); err != nil {
+		return err
+	}
 	if err := RemoveSteamAccountFromVDF(root, steamID64); err != nil {
 		return err
+	}
+	if err := removeFromOrder(steamID64); err != nil {
+		steamLog.Warn("could not prune the forgotten account from the saved order",
+			slog.String("steamId", tailSteamID(steamID64)), slog.Any("err", err))
 	}
 	_ = profileimage.DeleteCached(PlatformKey, steamID64)
 	_ = profileimage.DeleteCached(PlatformKey, steamStaticAvatarID(steamID64))

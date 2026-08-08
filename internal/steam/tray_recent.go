@@ -72,10 +72,9 @@ func SyncTrayKnownAccounts() {
 	if err != nil || root == "" {
 		return
 	}
-	users, err := ParseLoginUsers(LoginUsersPath(root))
-	if err != nil {
-		return
-	}
+	// The union, not just Steam's rows: pruning against loginusers.vdf alone
+	// would drop tray entries for accounts the switcher still lists.
+	users := knownAccountsForRoot(root)
 	argNames := make(map[string]string, len(users))
 	for _, u := range users {
 		id := strings.TrimSpace(u.SteamID64)

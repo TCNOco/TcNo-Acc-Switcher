@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"TcNo-Acc-Switcher/internal/paths"
+	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/steam/accountstore"
 )
 
@@ -156,5 +157,145 @@ func TestKnownAccountAsLoginUser(t *testing.T) {
 	}
 	if _, ok := knownAccountAsLoginUser(knownIDB); ok {
 		t.Error("an account the switcher has never seen should not materialise")
+	}
+}
+
+// steamTestEnv scaffolds the exe dir, data root and a fake Steam install so the
+// service methods that resolve the install folder can run.
+// Do NOT call t.Parallel() in tests using this - it sets global path singletons.
+type steamTestEnv struct {
+	exeDir   string
+	steamDir string
+}
+
+func newSteamTestEnv(t *testing.T) *steamTestEnv {
+	t.Helper()
+	exeDir := t.TempDir()
+	steamDir := t.TempDir()
+	platform.ResetPathSingletonsForTest(exeDir)
+	paths.ResetForTest(filepath.Join(exeDir, "TcNo Account Switcher"))
+	if err := os.MkdirAll(filepath.Join(steamDir, "config"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	// main injects the embedded copy at startup, so under test nothing seeds
+	// this and LoadPlatformsJSON would fail before the Steam root is resolved.
+	userData := platform.UserDataDir(exeDir)
+	if err := os.MkdirAll(userData, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(userData, "Platforms.json"),
+		[]byte(`{"Version":"test","Platforms":{"Steam":{"ExeLocationDefault":[]}}}`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	st, err := LoadSettings()
+	if err != nil {
+		t.Fatalf("LoadSettings: %v", err)
+	}
+	st.FolderPath = steamDir
+	if err := SaveSettings(st); err != nil {
+		t.Fatalf("SaveSettings: %v", err)
+	}
+	return &steamTestEnv{exeDir: exeDir, steamDir: steamDir}
+}
+
+func (e *steamTestEnv) writeLoginUsers(t *testing.T, body string) {
+	t.Helper()
+	path := filepath.Join(e.steamDir, "config", "loginusers.vdf")
+	if err := os.WriteFile(path, []byte(body), 0o644); err != nil {
+		t.Fatal(err)
+	}
+}
+
+const oneAccountVDF = `"users"
+{
+	"76561198000000100"
+	{
+		"AccountName"		"acct_a"
+		"PersonaName"		"Persona A"
+		"Timestamp"		"1700000000"
+	}
+}
+`
+
+// Reordering validated against loginusers.vdf alone: the count can never match
+// once an account lives only in the store, so every reorder was rejected.
+func TestSaveSteamAccountOrderAcceptsStoreOnlyAccounts(t *testing.T) {
+	env := newSteamTestEnv(t)
+	env.writeLoginUsers(t, oneAccountVDF)
+
+	if err := accountstore.Upsert(accountstore.Record{
+		SteamID64:   knownIDB,
+		AccountName: "vault_only",
+		Source:      accountstore.SourceSteamGuard,
+	}); err != nil {
+		t.Fatal(err)
+	}
+
+	svc := NewSteamService()
+	if err := svc.SaveSteamAccountOrder([]string{knownIDB, knownIDA}); err != nil {
+		t.Fatalf("SaveSteamAccountOrder: %v", err)
+	}
+
+	order, err := LoadOrder()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(order) != 2 || order[0] != knownIDB || order[1] != knownIDA {
+		t.Fatalf("order = %v, want [%s %s]", order, knownIDB, knownIDA)
+	}
+}
+
+func TestCountSavedAccountsIncludesStoreOnlyAccounts(t *testing.T) {
+	env := newSteamTestEnv(t)
+	env.writeLoginUsers(t, oneAccountVDF)
+
+	if err := accountstore.Upsert(accountstore.Record{
+		SteamID64:   knownIDB,
+		AccountName: "vault_only",
+		Source:      accountstore.SourceSteamGuard,
+	}); err != nil {
+		t.Fatal(err)
+	}
+	if got := CountSavedAccounts(); got != 2 {
+		t.Fatalf("CountSavedAccounts = %d, want 2", got)
+	}
+}
+
+// Forget is the only way an account leaves. If it cleared the vdf row but not
+// the store, the account would reappear on the next refresh.
+func TestForgetSteamAccountRemovesItFromTheStoreAndOrder(t *testing.T) {
+	env := newSteamTestEnv(t)
+	env.writeLoginUsers(t, oneAccountVDF)
+
+	svc := NewSteamService()
+	if err := accountstore.Upsert(accountstore.Record{
+		SteamID64:   knownIDB,
+		AccountName: "vault_only",
+		Source:      accountstore.SourceSteamGuard,
+	}); err != nil {
+		t.Fatal(err)
+	}
+	if err := SaveOrder([]string{knownIDB, knownIDA}); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := svc.ForgetSteamAccount(knownIDB); err != nil {
+		t.Fatalf("ForgetSteamAccount: %v", err)
+	}
+	stopRefreshTimer(svc)
+
+	if _, ok, err := accountstore.Get(knownIDB); err != nil || ok {
+		t.Fatalf("forgotten account still stored: ok=%v err=%v", ok, err)
+	}
+	remaining := knownAccountsForRoot(env.steamDir)
+	if len(remaining) != 1 || remaining[0].SteamID64 != knownIDA {
+		t.Fatalf("remaining = %+v, want only %s", remaining, knownIDA)
+	}
+	order, err := LoadOrder()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(order) != 1 || order[0] != knownIDA {
+		t.Fatalf("order = %v, want the forgotten id pruned", order)
 	}
 }
