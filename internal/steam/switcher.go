@@ -227,9 +227,35 @@ func buildSteamArgs(st Settings, extraLaunchArgs []string) []string {
 
 func writeLoginUsersAndRegistry(steamRoot, selectedID64 string) error {
 	loginPath := LoginUsersPath(steamRoot)
+	selected := strings.TrimSpace(selectedID64)
+
 	users, err := ParseLoginUsers(loginPath)
 	if err != nil {
-		return err
+		// A file Steam or a cleaning tool deleted is the case the account store
+		// exists for: start from nothing and re-create the target row below.
+		// Any other read failure may mean a file that is there but unreadable,
+		// and overwriting that would destroy the user's remaining accounts.
+		if !os.IsNotExist(err) {
+			return err
+		}
+		users = nil
+	}
+
+	// A switch target Steam has never seen - a Steam Guard login-only account,
+	// or one whose row was wiped - is re-created from the switcher's own store,
+	// so the flag pass and the AutoLoginUser handoff below have a row to act on.
+	if selected != "" && !hasLoginUser(users, selected) {
+		u, ok := knownAccountAsLoginUser(selected)
+		if !ok {
+			return fmt.Errorf("steam account %s is unknown to Steam and to the switcher", selected)
+		}
+		if strings.TrimSpace(u.AccountName) == "" {
+			steamLog.Warn("re-created Steam account has no login name; Steam will open its account chooser",
+				slog.String("steamId", tailSteamID(selected)))
+		}
+		steamLog.Info("re-creating a loginusers.vdf row from the account store",
+			slog.String("steamId", tailSteamID(selected)))
+		users = append(users, u)
 	}
 
 	var autoUser string
@@ -238,10 +264,10 @@ func writeLoginUsersAndRegistry(steamRoot, selectedID64 string) error {
 		u.MostRecent = "0"
 		u.AutoLogin = "0"
 		u.RememberPassword = "0"
-		if strings.TrimSpace(selectedID64) == "" {
+		if selected == "" {
 			continue
 		}
-		if u.SteamID64 == selectedID64 {
+		if strings.TrimSpace(u.SteamID64) == selected {
 			u.MostRecent = "1"
 			u.AutoLogin = "1"
 			u.RememberPassword = "1"
@@ -300,17 +326,40 @@ func setShowSteamSwitcher(steamRoot string, show bool) error {
 	return fsutil.WriteFileAtomic(path, []byte(strings.Join(out, "\n")), 0o644)
 }
 
+func hasLoginUser(users []LoginUser, steamID64 string) bool {
+	for _, u := range users {
+		if strings.TrimSpace(u.SteamID64) == steamID64 {
+			return true
+		}
+	}
+	return false
+}
+
 func RemoveSteamAccountFromVDF(steamRoot, steamID64 string) error {
 	loginPath := LoginUsersPath(steamRoot)
+	steamID64 = strings.TrimSpace(steamID64)
 	users, err := ParseLoginUsers(loginPath)
 	if err != nil {
+		// Nothing to remove from a file that is not there. Forgetting the
+		// account still has to clear the store and the caches.
+		if os.IsNotExist(err) {
+			return nil
+		}
 		return err
 	}
-	var kept []LoginUser
+	kept := make([]LoginUser, 0, len(users))
+	removed := false
 	for _, u := range users {
-		if u.SteamID64 != steamID64 {
-			kept = append(kept, u)
+		if strings.TrimSpace(u.SteamID64) == steamID64 {
+			removed = true
+			continue
 		}
+		kept = append(kept, u)
+	}
+	if !removed {
+		// Rewriting would churn the .vdf_last backup and re-serialise every
+		// surviving row to no effect.
+		return nil
 	}
 	if data, err := os.ReadFile(loginPath); err == nil && len(data) > 0 {
 		_ = fsutil.WriteFileAtomic(strings.TrimSuffix(loginPath, ".vdf")+".vdf_last", data, 0o644)

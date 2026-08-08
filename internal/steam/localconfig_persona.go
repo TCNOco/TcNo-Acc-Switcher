@@ -47,7 +47,7 @@ func setPersonaStateLocalConfig(steamRoot, id64 string, ePersonaState int) error
 	}
 	rawForParse := []byte(collapsedText)
 
-	kv, err := steamvdf.ReadBytes(rawForParse)
+	kv, err := readVDFBytes(rawForParse)
 	if err == nil {
 		kvRoot := kv
 		if kv.Key == "" && len(kv.Children) > 0 {

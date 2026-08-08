@@ -123,9 +123,15 @@ func (s *SteamService) buildSteamListContext() (*steamListContext, error) {
 	loginPath := LoginUsersPath(root)
 	users, err := ParseLoginUsers(loginPath)
 	if err != nil {
-		steamLog.Error("ParseLoginUsers failed", slog.String("path", loginPath), slog.Any("err", err))
-		return nil, err
+		// A missing or corrupt loginusers.vdf is precisely what the account
+		// store exists to survive, so it must not fail the list.
+		steamLog.Warn("ParseLoginUsers failed; falling back to the account store",
+			slog.String("path", loginPath), slog.Any("err", err))
+		users = nil
 	}
+	// Before MergeOrder, so accounts Steam has forgotten still take their saved
+	// place in the list rather than always trailing it.
+	users = syncKnownAccounts(users)
 
 	order, err := LoadOrder()
 	if err != nil {

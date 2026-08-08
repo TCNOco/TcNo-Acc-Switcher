@@ -47,7 +47,7 @@ func ParseLoginUsers(path string) ([]LoginUser, error) {
 			return nil, err
 		}
 		raw = bytes.TrimPrefix(raw, []byte{0xef, 0xbb, 0xbf})
-		kv, err := steamvdf.ReadBytes(raw)
+		kv, err := readVDFBytes(raw)
 		if err != nil {
 			return nil, err
 		}

@@ -527,3 +527,25 @@ func TestSetShowSteamSwitcher_NoExistingLine(t *testing.T) {
 		t.Error("AlwaysShowUserChooser should not have been added when missing")
 	}
 }
+
+// The VDF library panics on truncated input. Every caller here reads a file
+// another program owns, so that has to arrive as an error.
+func TestParseLoginUsersMalformedFileErrorsInsteadOfPanicking(t *testing.T) {
+	t.Parallel()
+	dir := t.TempDir()
+	path := filepath.Join(dir, "loginusers.vdf")
+	if err := os.WriteFile(path, []byte(`"users" { "76561198000000100" { "AccountName"`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := ParseLoginUsers(path); err == nil {
+		t.Fatal("a truncated loginusers.vdf should return an error")
+	}
+}
+
+func TestParseLoginUsersMissingFileReportsNotExist(t *testing.T) {
+	t.Parallel()
+	_, err := ParseLoginUsers(filepath.Join(t.TempDir(), "loginusers.vdf"))
+	if !os.IsNotExist(err) {
+		t.Fatalf("err = %v, want an os.IsNotExist error so callers can tell absent from corrupt", err)
+	}
+}

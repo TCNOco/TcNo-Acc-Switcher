@@ -517,11 +517,13 @@ func (s *SteamService) runProfileRefresh() {
 	}
 	users, err := ParseLoginUsers(LoginUsersPath(root))
 	if err != nil {
-		steamLog.Error("ParseLoginUsers failed in refresh", slog.Any("err", err))
-		return
+		steamLog.Warn("ParseLoginUsers failed in refresh; falling back to the account store",
+			slog.Any("err", err))
+		users = nil
 	}
+	users = syncKnownAccounts(users)
 	if len(users) == 0 {
-		steamLog.Warn("no Steam users to refresh (loginusers empty)")
+		steamLog.Warn("no Steam accounts to refresh")
 		return
 	}
 

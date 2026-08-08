@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"testing"
 
+	"TcNo-Acc-Switcher/internal/paths"
+	"TcNo-Acc-Switcher/internal/steam/accountstore"
 	"TcNo-Acc-Switcher/internal/winutil"
 )
 
@@ -170,6 +172,159 @@ func TestWriteLoginUsersAndRegistry_AddNew(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------------
+// writeLoginUsersAndRegistry — accounts Steam does not know about
+// ---------------------------------------------------------------------------
+
+func seedStoredAccount(t *testing.T, rec accountstore.Record) {
+	t.Helper()
+	paths.ResetForTest(t.TempDir())
+	if err := accountstore.Upsert(rec); err != nil {
+		t.Fatalf("seed account store: %v", err)
+	}
+	t.Cleanup(func() {
+		_ = winutil.RegistryDelete(steamTestRegBase + ":AutoLoginUser")
+		_ = winutil.RegistryDelete(steamTestRegBase + ":RememberPassword")
+	})
+}
+
+// A Steam Guard login-only account has never been in loginusers.vdf. Switching
+// to it must add the row alongside the accounts Steam already knows.
+func TestWriteLoginUsersAndRegistry_AppendsStoredAccount(t *testing.T) {
+	seedStoredAccount(t, accountstore.Record{
+		SteamID64:   "76561198000000200",
+		AccountName: "vault_only",
+		PersonaName: "Vault Only",
+		Timestamp:   "1690000000",
+		Source:      accountstore.SourceSteamGuard,
+	})
+
+	dir := t.TempDir()
+	configDir := filepath.Join(dir, "config")
+	os.MkdirAll(configDir, 0o755)
+	loginPath := filepath.Join(configDir, "loginusers.vdf")
+	os.WriteFile(loginPath, []byte(`"users"
+{
+	"76561198000000100"
+	{
+		"AccountName"		"player1"
+		"PersonaName"		"Player One"
+		"Timestamp"		"1700000000"
+		"AutoLogin"		"1"
+		"RememberPassword"		"1"
+	}
+}
+`), 0o644)
+
+	if err := writeLoginUsersAndRegistry(dir, "76561198000000200"); err != nil {
+		t.Fatalf("writeLoginUsersAndRegistry: %v", err)
+	}
+
+	users, err := ParseLoginUsers(loginPath)
+	if err != nil {
+		t.Fatalf("ParseLoginUsers: %v", err)
+	}
+	if len(users) != 2 {
+		t.Fatalf("got %d rows, want the existing account plus the re-created one", len(users))
+	}
+	if active := ActiveSessionSteamID64(users); active != "76561198000000200" {
+		t.Errorf("ActiveSessionSteamID64 = %q, want the re-created account", active)
+	}
+	for _, u := range users {
+		switch u.SteamID64 {
+		case "76561198000000200":
+			if u.AccountName != "vault_only" || u.PersonaName != "Vault Only" {
+				t.Errorf("re-created row = %+v, want the stored names", u)
+			}
+			if u.Timestamp != "1690000000" {
+				t.Errorf("re-created Timestamp = %q, want the stored one", u.Timestamp)
+			}
+		case "76561198000000100":
+			if u.AccountName != "player1" || u.PersonaName != "Player One" {
+				t.Errorf("existing row was damaged: %+v", u)
+			}
+			if u.AutoLogin != "0" || u.RememberPassword != "0" {
+				t.Errorf("existing row still claims the session: %+v", u)
+			}
+		}
+	}
+
+	regAutoUser, _, err := winutil.RegistryRead(steamTestRegBase + ":AutoLoginUser")
+	if err != nil {
+		t.Fatalf("RegistryRead AutoLoginUser: %v", err)
+	}
+	if regAutoUser != "vault_only" {
+		t.Errorf("AutoLoginUser = %q, want vault_only", regAutoUser)
+	}
+}
+
+// Advanced Clearing deletes loginusers.vdf outright. A switch must rebuild it.
+func TestWriteLoginUsersAndRegistry_RebuildsDeletedFile(t *testing.T) {
+	seedStoredAccount(t, accountstore.Record{
+		SteamID64:   "76561198000000100",
+		AccountName: "player1",
+		PersonaName: "Player One",
+		Source:      accountstore.SourceVDF,
+	})
+
+	dir := t.TempDir()
+	os.MkdirAll(filepath.Join(dir, "config"), 0o755)
+
+	if err := writeLoginUsersAndRegistry(dir, "76561198000000100"); err != nil {
+		t.Fatalf("writeLoginUsersAndRegistry: %v", err)
+	}
+
+	users, err := ParseLoginUsers(filepath.Join(dir, "config", "loginusers.vdf"))
+	if err != nil {
+		t.Fatalf("ParseLoginUsers: %v", err)
+	}
+	if len(users) != 1 || users[0].AccountName != "player1" {
+		t.Fatalf("got %+v, want the single re-created account", users)
+	}
+	if users[0].AutoLogin != "1" || users[0].RememberPassword != "1" {
+		t.Errorf("re-created row is not set up for login: %+v", users[0])
+	}
+}
+
+// An unreadable file is not the same as an absent one: overwriting it would
+// destroy whatever accounts it still holds.
+func TestWriteLoginUsersAndRegistry_KeepsUnreadableFile(t *testing.T) {
+	seedStoredAccount(t, accountstore.Record{
+		SteamID64:   "76561198000000100",
+		AccountName: "player1",
+		Source:      accountstore.SourceVDF,
+	})
+
+	dir := t.TempDir()
+	configDir := filepath.Join(dir, "config")
+	os.MkdirAll(configDir, 0o755)
+	loginPath := filepath.Join(configDir, "loginusers.vdf")
+	const body = `"users" { "76561198000000100" { "AccountName"`
+	os.WriteFile(loginPath, []byte(body), 0o644)
+
+	if err := writeLoginUsersAndRegistry(dir, "76561198000000100"); err == nil {
+		t.Fatal("a corrupt loginusers.vdf should abort the switch, not be replaced")
+	}
+	raw, err := os.ReadFile(loginPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(raw) != body {
+		t.Fatalf("corrupt loginusers.vdf was rewritten:\n%s", raw)
+	}
+}
+
+func TestWriteLoginUsersAndRegistry_UnknownAccountFails(t *testing.T) {
+	paths.ResetForTest(t.TempDir())
+
+	dir := t.TempDir()
+	os.MkdirAll(filepath.Join(dir, "config"), 0o755)
+
+	if err := writeLoginUsersAndRegistry(dir, "76561198000000999"); err == nil {
+		t.Fatal("switching to an account neither Steam nor the switcher knows should fail")
+	}
+}
+
+// ---------------------------------------------------------------------------
 // RemoveSteamAccountFromVDF
 // ---------------------------------------------------------------------------
 
@@ -213,5 +368,48 @@ func TestRemoveSteamAccountFromVDF(t *testing.T) {
 	backupPath := filepath.Join(configDir, "loginusers.vdf_last")
 	if _, err := os.Stat(backupPath); err != nil {
 		t.Errorf(".vdf_last backup not created: %v", err)
+	}
+}
+
+// Forgetting a store-only account reaches a file that has no such row. That is
+// not an error, and it must not churn the backup either.
+func TestRemoveSteamAccountFromVDF_NoMatchLeavesFileAlone(t *testing.T) {
+	dir := t.TempDir()
+	configDir := filepath.Join(dir, "config")
+	os.MkdirAll(configDir, 0o755)
+
+	loginPath := filepath.Join(configDir, "loginusers.vdf")
+	body := `"users"
+{
+	"76561198000000100"
+	{
+		"AccountName"		"keep"
+		"PersonaName"		"Keep"
+		"Timestamp"		"1"
+	}
+}
+`
+	os.WriteFile(loginPath, []byte(body), 0o644)
+
+	if err := RemoveSteamAccountFromVDF(dir, "76561198000000999"); err != nil {
+		t.Fatalf("RemoveSteamAccountFromVDF: %v", err)
+	}
+	raw, err := os.ReadFile(loginPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(raw) != body {
+		t.Errorf("file was rewritten for a no-op removal:\n%s", raw)
+	}
+	if _, err := os.Stat(filepath.Join(configDir, "loginusers.vdf_last")); err == nil {
+		t.Error("a no-op removal should not create a backup")
+	}
+}
+
+func TestRemoveSteamAccountFromVDF_MissingFile(t *testing.T) {
+	dir := t.TempDir()
+	os.MkdirAll(filepath.Join(dir, "config"), 0o755)
+	if err := RemoveSteamAccountFromVDF(dir, "76561198000000100"); err != nil {
+		t.Fatalf("removing from a deleted loginusers.vdf: %v", err)
 	}
 }
