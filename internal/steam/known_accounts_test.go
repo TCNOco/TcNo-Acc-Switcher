@@ -223,7 +223,7 @@ func TestSaveSteamAccountOrderAcceptsStoreOnlyAccounts(t *testing.T) {
 	env := newSteamTestEnv(t)
 	env.writeLoginUsers(t, oneAccountVDF)
 
-	if err := accountstore.Upsert(accountstore.Record{
+	if _, err := accountstore.Upsert(accountstore.Record{
 		SteamID64:   knownIDB,
 		AccountName: "vault_only",
 		Source:      accountstore.SourceSteamGuard,
@@ -249,7 +249,7 @@ func TestCountSavedAccountsIncludesStoreOnlyAccounts(t *testing.T) {
 	env := newSteamTestEnv(t)
 	env.writeLoginUsers(t, oneAccountVDF)
 
-	if err := accountstore.Upsert(accountstore.Record{
+	if _, err := accountstore.Upsert(accountstore.Record{
 		SteamID64:   knownIDB,
 		AccountName: "vault_only",
 		Source:      accountstore.SourceSteamGuard,
@@ -268,7 +268,7 @@ func TestForgetSteamAccountRemovesItFromTheStoreAndOrder(t *testing.T) {
 	env.writeLoginUsers(t, oneAccountVDF)
 
 	svc := NewSteamService()
-	if err := accountstore.Upsert(accountstore.Record{
+	if _, err := accountstore.Upsert(accountstore.Record{
 		SteamID64:   knownIDB,
 		AccountName: "vault_only",
 		Source:      accountstore.SourceSteamGuard,

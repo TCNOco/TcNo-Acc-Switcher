@@ -182,10 +182,9 @@ func Save(records []Record) error {
 	return save(records)
 }
 
-// Upsert merges one record into the store.
-func Upsert(rec Record) error {
-	_, err := UpsertMany([]Record{rec})
-	return err
+// Upsert merges one record into the store, reporting whether it moved.
+func Upsert(rec Record) (changed bool, err error) {
+	return UpsertMany([]Record{rec})
 }
 
 // UpsertMany merges records in a single load-save cycle and reports whether the

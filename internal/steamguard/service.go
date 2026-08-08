@@ -51,21 +51,29 @@ import (
 // one place the login name reaches the list - without it a login-only account
 // or a freshly imported maFile produces no tile at all. Seeding the store also
 // means a later switch can rebuild the account's loginusers.vdf row.
+//
+// An empty accountName is fine: the store merges field-wise, so callers that
+// only have the ID cannot erase a name an earlier sighting recorded.
 func (s *Service) rememberSteamAccount(steamID64, accountName string) {
 	steamID64 = strings.TrimSpace(steamID64)
 	if steamID64 == "" {
 		return
 	}
-	if err := accountstore.Upsert(accountstore.Record{
+	changed, err := accountstore.Upsert(accountstore.Record{
 		SteamID64:   steamID64,
 		AccountName: strings.TrimSpace(accountName),
 		Source:      accountstore.SourceSteamGuard,
-	}); err != nil {
+	})
+	if err != nil {
 		serviceLogger().Warn("Steam account store update failed",
 			"steamId64", steamID64, "error", err)
 		return
 	}
-	steam.RequestProfileRefresh()
+	// Every registry write comes through here, so only ask for a refresh when
+	// the store actually moved; an unchanged record has nothing new to fetch.
+	if changed {
+		steam.RequestProfileRefresh()
+	}
 }
 
 var (
@@ -1371,8 +1379,10 @@ func (s *Service) importFiles(paths []string, password, legacyPassword string, r
 			serviceLogger().Warn("Steam Guard registry update failed after import", "steamId64", steamID64, "error", err)
 			return results, err
 		}
-		// An imported maFile can be for an account Steam has never signed in on
-		// this machine, so the store is what makes it appear in the list.
+		// Import writes the registration index directly rather than through
+		// upsertRegistry, so unlike the enrollment paths this call is the only
+		// thing putting the account in the list - an imported maFile is often
+		// for an account Steam has never signed in on this machine.
 		s.rememberSteamAccount(steamID64, accountName)
 		results = append(results, result)
 	}

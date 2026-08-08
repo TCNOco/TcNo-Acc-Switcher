@@ -178,7 +178,7 @@ func TestWriteLoginUsersAndRegistry_AddNew(t *testing.T) {
 func seedStoredAccount(t *testing.T, rec accountstore.Record) {
 	t.Helper()
 	paths.ResetForTest(t.TempDir())
-	if err := accountstore.Upsert(rec); err != nil {
+	if _, err := accountstore.Upsert(rec); err != nil {
 		t.Fatalf("seed account store: %v", err)
 	}
 	t.Cleanup(func() {

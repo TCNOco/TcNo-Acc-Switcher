@@ -427,6 +427,8 @@ func (s *Service) PollCredentialLogin(accountID, token, handle string) (SteamCre
 			// account that re-authenticates is still login-only; promoting it to
 			// active would put a lock icon on an account with no code behind it.
 			registryUpdated = s.upsertRegistry(accountID, s.registryStateForRecord(v, accountID, registry.StateActive))
+			// upsertRegistry already guaranteed a store record; this is the only
+			// point that knows the login name to put on it.
 			s.rememberSteamAccount(accountID, string(accountName))
 			return nil
 		case SteamAuthPurposeLoginOnly:
@@ -436,9 +438,9 @@ func (s *Service) PollCredentialLogin(accountID, token, handle string) (SteamCre
 				return err
 			}
 			registryUpdated = s.upsertRegistry(accountID, registry.StateLoginOnly)
-			// A login-only account may have no loginusers.vdf row at all. This
-			// is what puts it in the switcher's list and lets a switch add it
-			// to Steam's file later.
+			// A login-only account may have no loginusers.vdf row at all, so the
+			// name matters more here than anywhere: it is what the tile shows,
+			// and what a later switch writes into Steam's file as AutoLoginUser.
 			s.rememberSteamAccount(accountID, string(accountName))
 			return nil
 		case SteamAuthPurposeAddAuthenticator:
@@ -890,6 +892,12 @@ func (s *Service) upsertRegistry(accountID string, state registry.State) bool {
 		serviceLogger().Warn("Steam Guard registry update failed", "state", state, "error", err)
 		return false
 	}
+	// The registration index and the switcher's account store answer different
+	// questions about the same account, and they must not disagree about which
+	// accounts exist. Seeding here means no enrollment path can leave a vault
+	// record the Steam list has never heard of, whatever route it took to get
+	// one. Callers that know the login name pass it separately.
+	s.rememberSteamAccount(accountID, "")
 	return true
 }
 

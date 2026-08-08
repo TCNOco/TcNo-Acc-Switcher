@@ -79,7 +79,7 @@ func TestUpsertManyReportsChangeOnlyWhenSomethingMoved(t *testing.T) {
 // must not blank the persona and last-login date a vdf sync recorded.
 func TestUpsertEmptyFieldsPreserveStoredValues(t *testing.T) {
 	useTempRoot(t)
-	if err := Upsert(Record{
+	if _, err := Upsert(Record{
 		SteamID64:   idA,
 		AccountName: "acct_a",
 		PersonaName: "Persona A",
@@ -88,7 +88,7 @@ func TestUpsertEmptyFieldsPreserveStoredValues(t *testing.T) {
 	}); err != nil {
 		t.Fatal(err)
 	}
-	if err := Upsert(Record{SteamID64: idA, AccountName: "acct_a", Source: SourceSteamGuard}); err != nil {
+	if _, err := Upsert(Record{SteamID64: idA, AccountName: "acct_a", Source: SourceSteamGuard}); err != nil {
 		t.Fatal(err)
 	}
 
@@ -109,10 +109,10 @@ func TestUpsertEmptyFieldsPreserveStoredValues(t *testing.T) {
 
 func TestUpsertNonEmptyFieldsOverwrite(t *testing.T) {
 	useTempRoot(t)
-	if err := Upsert(Record{SteamID64: idA, PersonaName: "Old", Source: SourceVDF}); err != nil {
+	if _, err := Upsert(Record{SteamID64: idA, PersonaName: "Old", Source: SourceVDF}); err != nil {
 		t.Fatal(err)
 	}
-	if err := Upsert(Record{SteamID64: idA, PersonaName: "New", Timestamp: "1700000001"}); err != nil {
+	if _, err := Upsert(Record{SteamID64: idA, PersonaName: "New", Timestamp: "1700000001"}); err != nil {
 		t.Fatal(err)
 	}
 
