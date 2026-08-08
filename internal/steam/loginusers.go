@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"strings"
 
+	"TcNo-Acc-Switcher/internal/vdfsafe"
+
 	"github.com/Jleagle/steam-go/steamvdf"
 )
 
@@ -47,7 +49,7 @@ func ParseLoginUsers(path string) ([]LoginUser, error) {
 			return nil, err
 		}
 		raw = bytes.TrimPrefix(raw, []byte{0xef, 0xbb, 0xbf})
-		kv, err := readVDFBytes(raw)
+		kv, err := vdfsafe.ReadBytes(raw)
 		if err != nil {
 			return nil, err
 		}

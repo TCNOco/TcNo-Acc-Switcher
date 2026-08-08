@@ -12,6 +12,7 @@ import (
 
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/settingsfile"
+	"TcNo-Acc-Switcher/internal/vdfsafe"
 )
 
 type idsFile struct {
@@ -134,7 +135,7 @@ func parseLoginUsers(path string) ([]steamLoginUser, error) {
 		}
 	}
 	raw = bytes.TrimPrefix(raw, []byte{0xef, 0xbb, 0xbf})
-	kv, err := steamvdf.ReadBytes(raw)
+	kv, err := vdfsafe.ReadBytes(raw)
 	if err != nil {
 		return nil, err
 	}

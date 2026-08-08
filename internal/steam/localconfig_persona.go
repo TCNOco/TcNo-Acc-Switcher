@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"TcNo-Acc-Switcher/internal/fsutil"
+	"TcNo-Acc-Switcher/internal/vdfsafe"
 
 	"github.com/Jleagle/steam-go/steamid"
 	"github.com/Jleagle/steam-go/steamvdf"
@@ -47,7 +48,7 @@ func setPersonaStateLocalConfig(steamRoot, id64 string, ePersonaState int) error
 	}
 	rawForParse := []byte(collapsedText)
 
-	kv, err := readVDFBytes(rawForParse)
+	kv, err := vdfsafe.ReadBytes(rawForParse)
 	if err == nil {
 		kvRoot := kv
 		if kv.Key == "" && len(kv.Children) > 0 {
