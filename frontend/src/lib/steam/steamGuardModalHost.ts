@@ -20,6 +20,7 @@ function accountFromRequest(request: SteamGuardMenuRequest): SteamGuardAccountRe
 function entryFromRequest(request: SteamGuardMenuRequest): SteamGuardModalEntry {
   if (request.action === "all") return "all-accounts";
   if (request.action === "setup") return "setup";
+  if (request.action === "add") return "add-account";
   return "account";
 }
 

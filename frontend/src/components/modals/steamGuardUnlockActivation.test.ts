@@ -94,8 +94,10 @@ describe("Steam Guard unlock activation", () => {
     expect(check).toContain('transition({ type: "show-enrollment"');
 
     // And hands the page back once the vault exists, rather than continuing into
-    // an enrollment the user never asked for.
-    const submitted = fragmentAfter("if (vaultSetupOnly) {", 300);
+    // an enrollment the user never asked for. Which page depends on where the
+    // errand came from: adding an account is not an account's setup page.
+    const submitted = fragmentAfter("if (vaultSetupOnly) {", 700);
+    expect(submitted).toContain('transition({ type: "show-add-account"');
     expect(submitted).toContain('transition({ type: "show-setup"');
   });
 

@@ -31,8 +31,10 @@ export type SteamAccountRow = InstanceType<typeof AccountDTO> & {
  * "open" is an account the vault already holds; "setup" is one it does not, and
  * lands on the page offering the ways to add it. The context menu picks between
  * them so there is a single Steam Guard entry rather than a submenu of flows.
+ * "add" belongs to no account at all - it is how an account that is in neither
+ * the vault nor the switcher gets in - so its request carries empty ids.
  */
-export type SteamGuardMenuAction = "open" | "all" | "setup";
+export type SteamGuardMenuAction = "open" | "all" | "setup" | "add";
 
 export type SteamGuardMenuRequest = {
   action: SteamGuardMenuAction;

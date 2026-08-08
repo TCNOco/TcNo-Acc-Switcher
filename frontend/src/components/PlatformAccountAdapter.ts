@@ -117,6 +117,12 @@ export interface AccountPageExtensions {
 
 export interface AccountMenuBuilder<TAccount> {
   buildMenu(account: TAccount, shared: SharedMenuItems): MenuItemDef[];
+  /**
+   * Right-click on empty space in the list, which belongs to no account. Return
+   * nothing and no menu opens, which is the default for platforms that have
+   * nothing to offer there.
+   */
+  buildBackgroundMenu?(): MenuItemDef[];
 }
 
 export interface PlatformAccountAdapter<TAccount>

@@ -157,7 +157,14 @@
   }
 
   function openSteamGuardAccounts(): void {
-    if (!steamGuardShortcut) return;
+    // With an empty vault there is no account to open the picker on, and that is
+    // exactly when the user needs a way to add one.
+    if (!steamGuardShortcut) {
+      emitSteamGuardMenuRequest({
+        action: "add", steamId64: "", accountName: "", displayName: "", pending: false,
+      });
+      return;
+    }
     emitSteamGuardMenuRequest({
       action: "all",
       ...steamGuardShortcut,
@@ -204,7 +211,7 @@
           <path d="M217.9 105.9L340.7 228.7c7.2 7.2 11.3 17 11.3 27.3s-4.1 20.1-11.3 27.3L217.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9V160c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.5 24 9.9z"/></svg>
         </button
       >
-      {#if steamGuardShortcut}
+      {#if platformName === "Steam"}
         <button
           class="square actionbar__steam-guard"
           type="button"

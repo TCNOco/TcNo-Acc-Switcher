@@ -4,6 +4,7 @@ import {
 	  acknowledgeSteamRevocationThenRefresh,
 	  closeSteamGuardEnrollment,
   reduceSteamGuardModal,
+  isPendingAccountId,
   SteamGuardCapabilityError,
   SteamGuardContentProtectionLease,
 	  steamLoginAgainNextStep,
@@ -366,5 +367,32 @@ describe("Steam Guard picker row state", () => {
 		expect(steamGuardRowState(summary({}))).toBe("ready");
 		expect(steamGuardRowState(summary({ sessionStatus: "unknown" }))).toBe("unverified");
 		expect(steamGuardRowState(summary({ kind: "login-only" }))).toBe("login-only");
+	});
+});
+
+describe("add-account screen", () => {
+	it("opens straight onto the screen when that is the entry", () => {
+		const state = initialSteamGuardModalState({ id: "", username: "" }, "add-account");
+		expect(state.screen).toBe("add-account");
+	});
+
+	// The screen exists before any attempt does, and carries the pending id once
+	// one is minted so the credential steps have an identity to run under.
+	it("carries the pending attempt once one exists", () => {
+		const empty = reduceSteamGuardModal(
+			{ screen: "loading", account: { id: "1", username: "a" } },
+			{ type: "show-add-account" },
+		);
+		expect(empty).toEqual({ screen: "add-account", account: undefined });
+
+		const pending = { id: "pending:0123456789abcdef0123456789abcdef", username: "new_account" };
+		const withAttempt = reduceSteamGuardModal(empty, { type: "show-add-account", account: pending });
+		expect(steamGuardAccountForState(withAttempt)?.id).toBe(pending.id);
+	});
+
+	it("recognises a pending id without mistaking a SteamID64 for one", () => {
+		expect(isPendingAccountId("pending:0123456789abcdef0123456789abcdef")).toBe(true);
+		expect(isPendingAccountId("76561198000000100")).toBe(false);
+		expect(isPendingAccountId("")).toBe(false);
 	});
 });

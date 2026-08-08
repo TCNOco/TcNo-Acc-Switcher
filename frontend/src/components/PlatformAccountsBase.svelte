@@ -944,6 +944,16 @@
     };
   }
 
+  /**
+   * Right-click on empty space. The row menu stops propagation, so this only
+   * fires where no account was clicked; a platform with nothing to offer there
+   * returns no items and the action opens nothing.
+   */
+  function backgroundMenu(): MenuItemDef[] {
+    if (isActionBusyValue) return [];
+    return adapter.buildBackgroundMenu?.() ?? [];
+  }
+
   // ---- Lifecycle ----
   onMount(() => {
     previousPage.set({ page: "home" });
@@ -1052,6 +1062,7 @@
         bind:this={acclistEl}
         on:click={onAccountsAreaClick}
         on:dragleave={onAccListDragLeave}
+        use:ctxMenuAction={backgroundMenu}
       >
         {#if hasActiveTags}
           <TagFilterBar label={tagFilterBarLabel} onClick={onTagFilterBarClick} disabled={tagDefs.length === 0} />

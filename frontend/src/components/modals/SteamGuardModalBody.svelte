@@ -118,6 +118,9 @@
 	let promotingLoginOnly = false;
 	/** The vault form is being shown for its own sake, before the setup page's choice. */
 	let vaultSetupOnly = false;
+	/** The vault errand came from the add-account screen, which is not an
+	 *  account's setup page, so that is where preparing it hands back. */
+	let vaultSetupForAddAccount = false;
 	let authResult: SteamCredentialResult | null = null;
 	/** One stored-code attempt per sign-in: a code Steam rejected must not be resubmitted. */
 	let storedDeviceCodeTried = false;
@@ -908,8 +911,8 @@
    * open, so this needs no vault gate of its own; the entry points that can be
    * reached without one prepare the vault before the modal opens.
    */
-  function showAddAccount(): void {
-    if (busy) return;
+  async function showAddAccount(): Promise<void> {
+    if (busy || !controller.newAddAccountAttempt) return;
     setupReturn = null;
     clearAuthTimer();
     clearAuthSecrets();
@@ -921,7 +924,33 @@
     authStage = "idle";
     authMessage = "";
     inlineError = "";
-    transition({ type: "show-add-account" });
+    busy = true;
+    try {
+      // Minted once per visit rather than per button press: it is the identity
+      // this screen runs under, including for the vault form below, which needs
+      // something a capability can be bound to and has no account to use.
+      const pendingId = await controller.newAddAccountAttempt();
+      const pendingRef = { id: pendingId, username: "" };
+      const status = await controller.getSteamGuardVaultStatus?.();
+      if (status && (!status.configured || !status.unlocked)) {
+        // This is the one screen reachable with no vault at all - it is how the
+        // first account gets in - so it has to be able to create or open one.
+        vaultSetupOnly = true;
+        vaultSetupForAddAccount = true;
+        vaultStatus = status;
+        rememberForSession = status.rememberForSession;
+        enrollmentStage = "vault";
+        transition({ type: "show-enrollment", account: pendingRef });
+        return;
+      }
+      transition({ type: "show-add-account", account: pendingRef });
+    } catch (error) {
+      console.error("Steam Guard: add-account screen could not be opened", error);
+      transition({ type: "fail", message: withFailureReason($t("SteamGuard_Error_SignInStartFailed"), error) });
+    } finally {
+      busy = false;
+      focusCurrentScreen();
+    }
   }
 
   /**
@@ -936,9 +965,11 @@
     busy = true;
     inlineError = "";
     authPurpose = purpose;
-    let pendingId = "";
+    let pendingId = state.account?.id ?? "";
     try {
-      pendingId = await controller.newAddAccountAttempt();
+      // Normally the attempt from showAddAccount; a fresh one only when a
+      // previous sign-in on this screen already spent it.
+      if (!pendingId) pendingId = await controller.newAddAccountAttempt();
     } catch (error) {
       console.error("Steam Guard: add-account attempt could not be started", error);
       authStage = "error";
@@ -1327,6 +1358,14 @@
 			enrollmentStage = "idle";
 			authMessage = "";
 			busy = false;
+			if (vaultSetupForAddAccount) {
+				vaultSetupForAddAccount = false;
+				// currentAccount is the pending attempt this screen runs under, so
+				// the sign-in below continues on the identity the vault was just
+				// opened against.
+				transition({ type: "show-add-account", account: currentAccount });
+				return;
+			}
 			transition({ type: "show-setup", account: currentAccount });
 			return;
 		}
@@ -2604,7 +2643,7 @@
         </button>
         <!-- The other way in that needs no account picked first: signing in
              names the account, the same way an maFile carries its own name. -->
-        <button type="button" class="steam-guard__link" disabled={busy} on:click={showAddAccount}>
+        <button type="button" class="steam-guard__link" disabled={busy} on:click={() => void showAddAccount()}>
           <svg class="steam-guard__icon" viewBox={ICONS.plus.box} aria-hidden="true"><path d={ICONS.plus.path} /></svg>
           {$t("SteamGuard_AddAccount_Link")}
         </button>
@@ -2668,7 +2707,7 @@
       {:else}
         <p class="steam-guard__error" role="alert">{authMessage}</p>
         <div class="steam-guard__actions steam-guard__actions--end">
-          <button type="button" class="btnicontext modal-primary" disabled={busy} on:click={showAddAccount}>{$t("SteamGuard_TryAgain")}</button>
+          <button type="button" class="btnicontext modal-primary" disabled={busy} on:click={() => void showAddAccount()}>{$t("SteamGuard_TryAgain")}</button>
           <button type="button" class="btnicontext" disabled={busy} on:click={showAllAccounts}>{$t("SteamGuard_Back")}</button>
         </div>
       {/if}

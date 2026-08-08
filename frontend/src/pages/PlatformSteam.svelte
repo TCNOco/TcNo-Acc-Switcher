@@ -218,6 +218,14 @@
     refreshAllProfileImages: () => SteamService.RefreshAllSteamImages(),
 
     buildMenu: (_acc, shared) => buildSteamExtraMenuAdapter(_acc as SteamAccountRow, shared),
+    // Right-click on empty space. Adding an account belongs to no row, and this
+    // is the only way in that works when the list is empty.
+    buildBackgroundMenu: () => [{
+      label: $t("Context_NewAccount"),
+      action: () => emitSteamGuardMenuRequest({
+        action: "add", steamId64: "", accountName: "", displayName: "", pending: false,
+      }),
+    }],
 
     updateEventName: "steam-account-updated",
 
