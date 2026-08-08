@@ -15,6 +15,7 @@ type SteamGuardAccountSource = {
   displayName?: string;
   personaName?: string;
   hasSteamGuard?: boolean;
+  steamGuardLoginOnly?: boolean;
   imageUrl?: string;
   staticImageUrl?: string;
 };
@@ -22,7 +23,12 @@ type SteamGuardAccountSource = {
 export function steamGuardActionAccountFrom(
   accounts: SteamGuardAccountSource[],
 ): SteamGuardActionAccount | null {
-  const account = accounts.find((candidate) => candidate.hasSteamGuard === true);
+  // The toolbar entry opens the vault, and a login-only record is in the vault
+  // just as much as an authenticator is. Authenticators still win the tie so the
+  // default target is one that can actually produce a code.
+  const account =
+    accounts.find((candidate) => candidate.hasSteamGuard === true)
+    ?? accounts.find((candidate) => candidate.steamGuardLoginOnly === true);
   const steamId64 = account?.steamId64?.trim() ?? "";
   if (!account || !steamId64) return null;
 

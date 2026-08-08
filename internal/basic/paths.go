@@ -6,11 +6,41 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
 )
+
+// idsFileMu serializes the read-modify-write cycles over ids.json.
+//
+// Every mutation reads the whole file, edits a map and writes it back, and the
+// writers span lock domains: BasicService.mu covers only the UI path, while the
+// expiry prune, ForgetAccountTagAssignments, SwapTo and the CS2 cooldown sweep
+// all write with no service lock at all. Without this, a background writer
+// landing between a UI read and its write silently drops the user's edit.
+//
+// Callers take it around the whole load-mutate-save, not just the save - the
+// mutex is only useful if the read is inside it.
+var idsFileMu sync.Mutex
+
+// withIdsFile runs a read-modify-write over ids.json under idsFileMu. mutate
+// reports whether anything changed; the file is written only when it did.
+func withIdsFile(platformKey string, mutate func(*idsFile) (bool, error)) error {
+	idsFileMu.Lock()
+	defer idsFileMu.Unlock()
+	f, err := readIdsFile(platformKey)
+	if err != nil {
+		return err
+	}
+	normalizeTagMaps(&f)
+	changed, err := mutate(&f)
+	if err != nil || !changed {
+		return err
+	}
+	return writeIdsFile(platformKey, f)
+}
 
 func loginCacheRoot(platformKey string) (string, error) {
 	return paths.LoginCacheDir(platformKey)

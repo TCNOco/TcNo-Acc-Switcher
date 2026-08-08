@@ -301,12 +301,12 @@ func TestCollectStatsFromHTML_ApexRankDisplay(t *testing.T) {
 	def := gameDefinition{
 		Collect: map[string]collectInstruction{
 			"BR": {
-				Source:          "json",
-				Path:            "rankScore",
-				ImageFromPath:   "rankImg",
-				ImageCacheDir:   "gs/apex",
-				DisplayFormat:   "commaNumber",
-				DisplayAs:       `<div class='apex-rank'><img src="%img%" alt=""/><span>%x_fmt% BR</span></div>`,
+				Source:        "json",
+				Path:          "rankScore",
+				ImageFromPath: "rankImg",
+				ImageCacheDir: "gs/apex",
+				DisplayFormat: "commaNumber",
+				DisplayAs:     `<div class='apex-rank'><img src="%img%" alt=""/><span>%x_fmt% BR</span></div>`,
 			},
 		},
 	}

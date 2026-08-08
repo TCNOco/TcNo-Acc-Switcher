@@ -28,6 +28,13 @@ type steamConfirmationClient interface {
 	List(context.Context, confirmationapi.Credentials) ([]confirmationapi.Confirmation, error)
 	FetchDetails(context.Context, confirmationapi.Credentials, confirmationapi.Confirmation) (confirmationapi.Details, error)
 	FetchItemClass(context.Context, confirmationapi.Credentials, string, string, string) (confirmationapi.ItemClass, error)
+	// FetchCS2GCPD is not a confirmations call, but it shares this client's
+	// cookie-authenticated community transport, and being on the interface is
+	// what lets the cooldown sweep be tested without a network.
+	FetchCS2GCPD(context.Context, confirmationapi.Credentials) ([]byte, error)
+	// FetchCS2StorePage is here for the same reason, and is the only request in
+	// the sweep that leaves steamcommunity.com.
+	FetchCS2StorePage(context.Context, confirmationapi.Credentials) ([]byte, error)
 	Decide(context.Context, confirmationapi.Credentials, confirmationapi.Confirmation, confirmationapi.Decision) error
 	DecideBatch(context.Context, confirmationapi.Credentials, []confirmationapi.Confirmation, confirmationapi.Decision) error
 	CloseIdleConnections()

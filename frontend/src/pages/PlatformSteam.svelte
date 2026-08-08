@@ -3,6 +3,7 @@
   import { get } from "svelte/store";
   import { Events } from "@wailsio/runtime";
   import SteamAccountAvatar from "../components/SteamAccountAvatar.svelte";
+  import { cs2CooldownRemaining, cs2CooldownTooltip } from "../lib/steam/cs2Cooldown";
   import PlatformAccountsBase from "../components/PlatformAccountsBase.svelte";
   import type { AccountNameStatus, PlatformAccountAdapter, SharedMenuItems } from "../components/PlatformAccountAdapter";
   import type { TagDefRow } from "../lib/accountTagsContext";
@@ -28,6 +29,10 @@
   import type { SteamAccountRow } from "../lib/steam/types";
   import { steamAccountVisualKey } from "../lib/steam/accountVisualKey";
   import { emitSteamGuardMenuRequest } from "../lib/steam/steamGuardMenuRequest";
+  import {
+    refreshSteamGuardVaultUnlocked,
+    steamGuardVaultUnlockedNow,
+  } from "../lib/steam/steamGuardQuickCopy";
   import { reportLaunchFailure } from "../lib/adminFlow";
   import { fuzzyWordsMatch } from "../lib/searchFuzzy";
   import { formatLastLoginForLocale } from "../lib/formatLastLogin";
@@ -94,6 +99,8 @@
 
 
   function buildSteamExtraMenuAdapter(acc: SteamAccountRow, shared: SharedMenuItems): MenuItemDef[] {
+    // This menu is built from the cached vault state; the refresh is for the next one.
+    void refreshSteamGuardVaultUnlocked();
     return buildSteamExtraMenu(acc, shared, getSteamMenuDeps());
   }
 
@@ -105,6 +112,7 @@
       steamIds,
       refreshGameDataAppSets,
       openSteamGuard: emitSteamGuardMenuRequest,
+      steamGuardVaultUnlocked: steamGuardVaultUnlockedNow(),
     };
   }
 
@@ -133,18 +141,27 @@
       return null;
     },
 
+    extraA11yStatus: (a: SteamAccountRow): string[] => {
+      if (a.showCs2Cooldown === false) return [];
+      const cooldown = cs2CooldownRemaining(a.cs2CooldownExpiresAt, a.cs2CooldownPermanent, Date.now());
+      return cooldown ? [cs2CooldownTooltip(cooldown, $t)] : [];
+    },
+
     visualKey: steamAccountVisualKey,
 
     loadAccountsList: async () => {
       const rows = await SteamService.GetSteamAccountsList();
+      // No displayName here on purpose — it is enrichment-owned. This row is spread over the
+      // existing one, so carrying the key at all would overwrite the community name already on
+      // screen with the vdf persona until the enrichment round-trip lands.
       return rows.map((r: SteamAccountListItemDTO) => ({
         steamId64: r.steamId64,
         personaName: r.personaName,
-        displayName: r.displayName,
         accountName: r.accountName,
         currentSession: r.currentSession ?? false,
         hasSteamGuard: r.hasSteamGuard ?? false,
         steamGuardPending: r.steamGuardPending ?? false,
+        steamGuardLoginOnly: r.steamGuardLoginOnly ?? false,
       })) as SteamAccountRow[];
     },
     loadAccountsEnrichment: async () => {
@@ -178,6 +195,9 @@
         syncError: r.syncError ?? "",
         tags: r.tags,
         manualProfileImage: r.manualProfileImage ?? false,
+        cs2CooldownExpiresAt: r.cs2CooldownExpiresAt ?? "",
+        cs2CooldownPermanent: r.cs2CooldownPermanent ?? false,
+        showCs2Cooldown: r.showCs2Cooldown ?? true,
       })) as SteamAccountRow[];
     },
     swapTo: (id: string) => SteamService.SwapToSteamAccount(id, -1, []),
@@ -200,6 +220,29 @@
     buildMenu: (_acc, shared) => buildSteamExtraMenuAdapter(_acc as SteamAccountRow, shared),
 
     updateEventName: "steam-account-updated",
+
+    // Its own event rather than an AccountPatch: that DTO's vac/ltd/imageUrl
+    // fields carry no omitempty, so a cooldown-only patch would arrive with all
+    // of them at their zero value and the merge would apply them.
+    extraUpdateEvents: [
+      {
+        name: "steam-cs2-cooldown-updated",
+        targetId: (raw: unknown) => ((raw as { steamId64?: string })?.steamId64 ?? "").trim(),
+        apply: (raw: unknown, account: SteamAccountRow) => {
+          const p = raw as {
+            cs2CooldownExpiresAt?: string;
+            cs2CooldownPermanent?: boolean;
+            tags?: SteamAccountRow["tags"];
+          };
+          return {
+            ...account,
+            cs2CooldownExpiresAt: p.cs2CooldownExpiresAt ?? "",
+            cs2CooldownPermanent: p.cs2CooldownPermanent === true,
+            tags: p.tags ?? [],
+          } as SteamAccountRow;
+        },
+      },
+    ],
     buildPatch: (raw: unknown) =>
       raw instanceof AccountPatch ? raw : AccountPatch.createFrom(raw as Record<string, unknown>),
     patchTargetId: (patch: unknown) => {
@@ -208,7 +251,11 @@
     },
     applyPatch: (patch: unknown, account: SteamAccountRow) => {
       const p = patch as SteamAccountPatch;
-      const nextUrl = p.imageUrl != null ? String(p.imageUrl).trim() : account.imageUrl;
+      // AccountPatch.imageUrl has no omitempty and the generated constructor defaults it to "",
+      // so a patch that never touched the avatar still arrives carrying a blank. Treat blank as
+      // "not carried", like the string fields below — nothing clears an avatar by sending "".
+      const patchUrl = typeof p.imageUrl === "string" ? p.imageUrl.trim() : "";
+      const nextUrl = patchUrl !== "" ? patchUrl : account.imageUrl;
       const errMsg = typeof p.error === "string" ? p.error : account.syncError ?? "";
       const nextManual = typeof p.manualProfileImage === "boolean" ? p.manualProfileImage : (account.manualProfileImage ?? false);
       return {
@@ -257,6 +304,7 @@
         SteamService.StartSteamProfileRefresh();
       }
       try { await refreshGameDataAppSets(steamIds); } catch {}
+      void refreshSteamGuardVaultUnlocked();
     },
   } satisfies PlatformAccountAdapter<SteamAccountRow>;
 
@@ -285,6 +333,7 @@
         applyShortcutIconsFromShortcutList(p.shortcuts ?? []);
       } catch {}
     });
+
   });
 
   onDestroy(() => {
@@ -305,6 +354,10 @@
         <p class="streamerCensor">{a.accountName}</p>
       {/if}
     </svelte:fragment>
+
+    <!-- No account-after-name fragment: the cooldown and Prime states are
+         managed tags drawn by AccountTagBubbles, and the CS2 rank is a game
+         stats metric drawn in the stats row with every other game's. -->
 
     <svelte:fragment slot="account-after-stats" let:acc>
       {@const a = acc}

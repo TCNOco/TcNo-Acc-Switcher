@@ -22,6 +22,24 @@ function unlockActionsRow(): string {
   return source.slice(start, end);
 }
 
+/** The headerbar back action's branch for one screen, bounded by the next case. */
+function headerBackCase(screen: string): string {
+  const start = source.indexOf(`case "${screen}":`, source.indexOf("headerBackAction"));
+  expect(start).toBeGreaterThanOrEqual(0);
+  const end = source.indexOf("\t\t\tcase ", start + 1);
+  expect(end).toBeGreaterThan(start);
+  return source.slice(start, end);
+}
+
+/** The vault create/unlock form, bounded by its own closing tag. */
+function vaultPreparationForm(): string {
+  const start = source.indexOf('on:submit|preventDefault={submitVaultPreparation}');
+  expect(start).toBeGreaterThanOrEqual(0);
+  const end = source.indexOf("</form>", start);
+  expect(end).toBeGreaterThan(start);
+  return source.slice(start, end);
+}
+
 describe("Steam Guard unlock activation", () => {
   it("directly handles Enter and click for account unlock", () => {
     const password = fragmentAfter('id="steam-guard-password"');
@@ -55,13 +73,43 @@ describe("Steam Guard unlock activation", () => {
     expect(unlock).toBeGreaterThan(remember);
   });
 
+  // Dismissing without navigating left the header button clearing the QR status
+  // line and then doing nothing at all on every click after that.
+  it("leaves the QR screen from the headerbar back button", () => {
+    const qr = headerBackCase("qr");
+    expect(qr).toContain("void dismissQRLogin().then(backToAccount)");
+    // The approval stage still steps back to the scan view, mirroring its Cancel.
+    expect(qr).toContain('qrStage === "approval" && qrApproval');
+    expect(qr).toContain('$t("SteamGuard_Cancel")');
+  });
+
+  // Every way the setup page offers to store an account needs an open vault.
+  // Asking after the choice meant picking an maFile, choosing the file, and then
+  // being sent back to do both again once the vault was finally open.
+  it("opens or creates the vault before the setup page's choice", () => {
+    const check = fragmentAfter("async function ensureVaultForSetup", 700);
+    expect(check).toContain("if (status.configured && status.unlocked) return;");
+    expect(check).toContain("vaultSetupOnly = true");
+    expect(check).toContain('enrollmentStage = "vault"');
+    expect(check).toContain('transition({ type: "show-enrollment"');
+
+    // And hands the page back once the vault exists, rather than continuing into
+    // an enrollment the user never asked for.
+    const submitted = fragmentAfter("if (vaultSetupOnly) {", 300);
+    expect(submitted).toContain('transition({ type: "show-setup"');
+  });
+
   it("directly handles Enter and click for vault unlock", () => {
     const password = fragmentAfter('id="steam-enrollment-vault-password"');
     expect(password).toContain("runOnEnter(event, submitVaultPreparation)");
 
-    const error = fragmentAfter('{#if inlineError}<p class="steam-guard__error"', 1_400);
-    expect(error).toContain('type="button"');
-    expect(error).toContain("on:click={submitVaultPreparation}");
-    expect(error).toContain('$t("SteamGuard_Unlocking")');
+    // Anchored inside the vault form rather than on the first inline-error block
+    // in the file: other screens show inline errors too, and whichever appears
+    // earliest would otherwise be asserted instead of this one.
+    const form = vaultPreparationForm();
+    expect(form).toContain('{#if inlineError}<p class="steam-guard__error"');
+    expect(form).toContain('type="button"');
+    expect(form).toContain("on:click={submitVaultPreparation}");
+    expect(form).toContain('$t("SteamGuard_Unlocking")');
   });
 });

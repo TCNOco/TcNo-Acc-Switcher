@@ -24,8 +24,10 @@
     handleContextMenuQuickFilter,
   } from "../lib/contextMenuKeyboard";
   import {
+    scaleFromComputedTransform,
     submenuShouldFillRootHeight,
     submenuTopOffset,
+    toLayoutPx,
   } from "../lib/contextMenuLayout";
 
   /** Viewport padding — keep menu fully inside the window. */
@@ -219,6 +221,11 @@
       return;
     }
     const rootRect = root.getBoundingClientRect();
+    /* Rects are rendered geometry — during the menu's scale-in they are 3% short of the box these
+       offsets get written into. Normalize distances from the root, never absolute coordinates:
+       the transform-origin term only cancels in a difference. */
+    const scale = scaleFromComputedTransform(getComputedStyle(root).transform);
+    const rootHeight = toLayoutPx(rootRect.height, scale);
     expanded.forEach((sub) => {
       if (!(sub instanceof HTMLElement)) {
         return;
@@ -228,11 +235,12 @@
         return;
       }
       const rect = sub.getBoundingClientRect();
+      const naturalTop = toLayoutPx(rect.top - rootRect.top, scale);
       const topOffset = submenuTopOffset({
-        naturalTop: rect.top,
-        naturalBottom: rect.bottom,
-        rootTop: rootRect.top,
-        rootBottom: rootRect.bottom,
+        naturalTop,
+        naturalBottom: toLayoutPx(rect.bottom - rootRect.top, scale),
+        rootTop: 0,
+        rootBottom: rootHeight,
       });
       const rows = Array.from(sub.children).filter((child): child is HTMLElement => child instanceof HTMLElement);
       const itemHeights = rows
@@ -241,20 +249,20 @@
           !row.classList.contains("ctx-create-li") &&
           !row.classList.contains("ctx-pagination-li")
         )
-        .map((row) => row.getBoundingClientRect().height)
+        .map((row) => toLayoutPx(row.getBoundingClientRect().height, scale))
         .filter((height) => height > 0);
       const hasPagination = rows.some((row) => row.classList.contains("ctx-pagination-li"));
       const rowHeight = itemHeights.length > 0 ? Math.min(...itemHeights) : 0;
       if (hasPagination && submenuShouldFillRootHeight({
-        naturalTop: rect.top,
+        naturalTop,
         topOffset,
-        naturalHeight: rect.height,
-        rootTop: rootRect.top,
-        rootHeight: rootRect.height,
+        naturalHeight: toLayoutPx(rect.height, scale),
+        rootTop: 0,
+        rootHeight,
         rowHeight,
       })) {
-        sub.style.top = `${rootRect.top - rect.top}px`;
-        sub.style.height = `${rootRect.height}px`;
+        sub.style.top = `${-naturalTop}px`;
+        sub.style.height = `${rootHeight}px`;
         return;
       }
       sub.style.top = `${topOffset}px`;
@@ -264,6 +272,23 @@
   function refreshFlyoutLayout(root: HTMLUListElement): void {
     fitExpandedSubmenusToViewport(root);
     nudgeRootForSubmenus(root);
+  }
+
+  /**
+   * `nudgeRootForSubmenus` asks a viewport question, so unlike the vertical fit it cannot be
+   * normalized — it reads a flyout that is still sliding in under `submenuFlyout`. Re-fit once that
+   * keyframe lands, or a flyout opened at the right edge keeps the few pixels it was short by.
+   */
+  function onMenuAnimationEnd(ev: AnimationEvent): void {
+    if (ev.animationName === "submenuFlyout" && menuEl && get(contextMenu)) {
+      refreshFlyoutLayout(menuEl);
+    }
+  }
+
+  function onMenuIntroEnd(): void {
+    if (menuEl && get(contextMenu)) {
+      refreshFlyoutLayout(menuEl);
+    }
   }
 
   function onSubmenuPlanned(ev: Event): void {
@@ -457,6 +482,8 @@
     aria-label="Context menu"
     tabindex="-1"
     in:scale={{ start: 0.97, duration: motionEnabled() ? DUR.fast : 0, easing: cubicOut }}
+    on:introend={onMenuIntroEnd}
+    on:animationend={onMenuAnimationEnd}
     on:keydown={onMenuKeydown}
   >
     <ContextMenuNest

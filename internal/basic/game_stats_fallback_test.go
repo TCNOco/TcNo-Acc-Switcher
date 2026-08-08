@@ -105,7 +105,8 @@ func TestResolveFallbacksInheritsUnspecifiedFields(t *testing.T) {
 				"ReducerOptions": {"arrayPath": "recent_matches"},
 				"DisplayAs": "<div>%x_fmt%</div>",
 				"NoDisplayIf": "0",
-				"ToggleText": "Premier Rank"
+				"ToggleText": "Premier Rank",
+				"Tooltip": "i18n:Tooltip_Cs2PremierRating"
 			}
 		},
 		"Fallbacks": [
@@ -156,6 +157,9 @@ func TestResolveFallbacksInheritsUnspecifiedFields(t *testing.T) {
 	}
 	if prem.ReducerOptions != nil {
 		t.Fatalf("null should clear reducer options: %+v", prem.ReducerOptions)
+	}
+	if prem.Tooltip != "i18n:Tooltip_Cs2PremierRating" {
+		t.Fatalf("tooltip should be inherited: %+v", prem)
 	}
 	if prem.Source != "json" || prem.DisplayAs != "<div>%x_fmt%</div>" || prem.NoDisplayIf != "0" || prem.ToggleText != "Premier Rank" {
 		t.Fatalf("display config should be inherited: %+v", prem)
@@ -235,6 +239,31 @@ func TestCollectVariantAttributionsSkipsEmptyCredit(t *testing.T) {
 	}
 }
 
+func TestCollectVariantAttributionsSkipsHiddenCredit(t *testing.T) {
+	t.Parallel()
+	// The shape the shipped CS2 definition uses: a first-party primary that asks not to
+	// be credited, and fallbacks that opt back in rather than inheriting the flag.
+	raw := []byte(`{
+		"Attribution": {"Text": "Steam", "Link": "https://steamcommunity.com", "Hidden": true},
+		"Fallbacks": [
+			{"Attribution": {"Image": "leetify.webp", "Dimensions": "270x115", "Text": null, "Link": "https://leetify.com", "Hidden": false}},
+			{"Url": "https://mirror.example"}
+		]
+	}`)
+	var def gameDefinition
+	if err := json.Unmarshal(raw, &def); err != nil {
+		t.Fatal(err)
+	}
+	if err := def.resolveFallbacks(); err != nil {
+		t.Fatal(err)
+	}
+	got := collectVariantAttributions(def)
+	// The second fallback restates nothing, so it inherits Hidden along with the rest.
+	if len(got) != 1 || got[0].Link != "https://leetify.com" {
+		t.Fatalf("only the opted-in fallback should be credited: %+v", got)
+	}
+}
+
 func TestShippedCS2CreditsBothSources(t *testing.T) {
 	t.Parallel()
 	raw, err := os.ReadFile(filepath.Join("..", "..", "GameStats.json"))
@@ -250,6 +279,9 @@ func TestShippedCS2CreditsBothSources(t *testing.T) {
 		t.Fatal(err)
 	}
 	got := collectVariantAttributions(def)
+	// Steam still carries its own attribution block - without one it would silently
+	// inherit Leetify's logo - but it is Hidden: Valve's own numbers need no credit,
+	// and listing it only shrinks the two logos that do.
 	if len(got) != 2 {
 		t.Fatalf("CS2 should credit Leetify and CSRep, got %d: %+v", len(got), got)
 	}
@@ -331,11 +363,22 @@ func TestShippedCS2FallbackResolves(t *testing.T) {
 	for i := range def.resolved {
 		normalizeGameDefinition(&def.resolved[i])
 	}
-	if def.variantCount() != 2 {
-		t.Fatalf("expected one CS2 fallback, got %d variants", def.variantCount())
+	if def.variantCount() != 3 {
+		t.Fatalf("expected the GCPD, Leetify and CSRep variants, got %d", def.variantCount())
+	}
+	// The authenticated variant is served by a collector, not a URL, and Fetch
+	// must not leak into the public-API variants behind it.
+	if primary := def.variantAt(0); primary.Fetch == "" {
+		t.Fatal("primary variant lost its collector")
+	}
+	if leetify := def.variantAt(1); leetify.Fetch != "" {
+		t.Fatalf("Leetify inherited Fetch = %q", leetify.Fetch)
 	}
 
-	fb := def.variantAt(1)
+	fb := def.variantAt(2)
+	if fb.Fetch != "" {
+		t.Fatalf("CSRep inherited Fetch = %q", fb.Fetch)
+	}
 	if fb.URL != "https://api.tcno.co/sw/csrepStats?steamid={SteamId}" {
 		t.Fatalf("fallback url: %q", fb.URL)
 	}

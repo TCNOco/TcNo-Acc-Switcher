@@ -41,6 +41,10 @@ type State string
 const (
 	StatePending State = "pending"
 	StateActive  State = "active"
+	// StateLoginOnly is an account whose vault record holds a Steam session but
+	// no authenticator. It has no code to show and no confirmations to approve,
+	// but it is in the vault and can be signed in again.
+	StateLoginOnly State = "login_only"
 )
 
 type Entry struct {
@@ -101,7 +105,7 @@ func Load() ([]Entry, error) {
 	}
 	seen := make(map[string]struct{}, len(stored.Entries))
 	for _, entry := range stored.Entries {
-		if !validSteamID(entry.SteamID64) || !validState(entry.State) {
+		if !validSteamID(entry.SteamID64) || entry.State == "" {
 			return nil, ErrInvalidIndex
 		}
 		if _, exists := seen[entry.SteamID64]; exists {
@@ -125,6 +129,11 @@ func Status(steamID64 string) (hasSteamGuard, pending bool) {
 	}
 	return false, false
 }
+
+// InVault reports whether the account has any vault record at all, whatever its
+// state. An unrecognised state still counts: the record exists, this build just
+// cannot say what it holds.
+func (e Entry) InVault() bool { return e.State != "" }
 
 func Upsert(steamID64 string, state State) error {
 	steamID64 = strings.TrimSpace(steamID64)
@@ -203,7 +212,14 @@ func sortEntries(entries []Entry) {
 	sort.Slice(entries, func(i, j int) bool { return entries[i].SteamID64 < entries[j].SteamID64 })
 }
 
-func validState(state State) bool { return state == StatePending || state == StateActive }
+// validState gates what this build may WRITE. Reading is deliberately more
+// tolerant: Load keeps an unrecognised state verbatim and save round-trips it,
+// so an index written by a newer build degrades to "no icon" for the accounts it
+// does not understand instead of failing the whole file - which would have
+// blanked every account's Steam Guard state, not just the unfamiliar ones.
+func validState(state State) bool {
+	return state == StatePending || state == StateActive || state == StateLoginOnly
+}
 
 func validSteamID(value string) bool {
 	if value == "" || value != strings.TrimSpace(value) {

@@ -5,6 +5,7 @@ import type { SharedMenuItems } from "../../components/PlatformAccountAdapter";
 import type { SteamAccountRow } from "./types";
 import { createSteamMenuCommands, type SteamMenuDeps } from "./menuCommands";
 import { buildSteamGuardMenuItem } from "./steamGuardMenu";
+import { steamGuardCodeRemaining } from "./steamGuardCodePeriod";
 
 export function buildSteamExtraMenu(
   acc: SteamAccountRow,
@@ -32,6 +33,15 @@ export function buildSteamExtraMenu(
   ];
 
   const copyChildren: MenuItemDef[] = [
+    // Only an open vault can produce a code, and only an authenticator has one.
+    // The underline counts the code down so the click lands on a live code.
+    ...(deps.steamGuardVaultUnlocked && acc.hasSteamGuard
+      ? [{
+          label: tr("Context_CopySteamGuardCode"),
+          action: () => void commands.copySteamGuardCode(),
+          progress: steamGuardCodeRemaining,
+        }]
+      : []),
     { label: tr("Context_CommunityUrl"), action: () => commands.copyCommunityUrl() },
     { label: tr("Context_CommunityUsername"), action: () => commands.copyCommunityUsername() },
     { label: tr("Context_LoginUsername"), action: () => commands.copyLoginUsername() },

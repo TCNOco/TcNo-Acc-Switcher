@@ -34,9 +34,13 @@ export function setInputModality(modality: InputModality): void {
   currentModality = modality;
   const root = rootElement();
   if (!root) return;
-  root.classList.remove(...Object.values(MODALITY_CLASSES));
-  root.classList.add(MODALITY_CLASSES[modality]);
-  root.dataset.inputModality = modality;
+  // Every pointerdown re-asserts "pointer". Rewriting the same class churns the attribute for
+  // nothing, and shows up as a change to anything watching the DOM.
+  if (root.dataset.inputModality !== modality) {
+    root.classList.remove(...Object.values(MODALITY_CLASSES));
+    root.classList.add(MODALITY_CLASSES[modality]);
+    root.dataset.inputModality = modality;
+  }
   if (!root.dataset.controllerScheme) {
     root.dataset.controllerScheme = currentControllerGlyphScheme;
   }

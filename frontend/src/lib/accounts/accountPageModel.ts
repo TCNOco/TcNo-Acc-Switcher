@@ -1,5 +1,5 @@
 import type { SearchResultRow } from "../../components/SearchOverlay.svelte";
-import type { AccountRowProjection, AccountSearchProjection } from "../../components/PlatformAccountAdapter";
+import type { AccountRowProjection, AccountSearchProjection, GameStatMetricDTO } from "../../components/PlatformAccountAdapter";
 import type { TagFilterMode } from "../accountTagsContext";
 import type { PlatformSortKind } from "../../stores/platformListSort";
 import { offlineSafeImageSrc, withAssetCacheBust } from "../../stores/offlineMode";
@@ -17,7 +17,7 @@ export type SearchHayCache = Map<string, { v: number; text: string }>;
 
 export type GameStatsByAccount = Record<
   string,
-  Record<string, Record<string, { statValue: string; indicatorMarkup: string }>>
+  Record<string, Record<string, GameStatMetricDTO>>
 >;
 
 export function mergeGameStatsByAccount(
@@ -45,6 +45,15 @@ export function displayIdsForTagFilter<T>(
     return accountIds.filter((id) => {
       const account = accountMap.get(id);
       return account ? (rows.tags(account) ?? []).length === 0 : true;
+    });
+  }
+
+  if (tagFilterMode.kind === "notTag") {
+    // An account we cannot resolve is kept: "not tagged X" is the inclusive
+    // reading, and dropping unknown rows would silently shrink the list.
+    return accountIds.filter((id) => {
+      const account = accountMap.get(id);
+      return account ? !(rows.tags(account) ?? []).some((tag) => tag.id === tagFilterMode.id) : true;
     });
   }
 

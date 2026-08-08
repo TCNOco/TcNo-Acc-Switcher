@@ -1,5 +1,5 @@
 import * as BasicService from "../../../bindings/TcNo-Acc-Switcher/internal/basic/basicservice.js";
-import type { AccountRowProjection } from "../../components/PlatformAccountAdapter";
+import type { AccountRowProjection, GameStatMetricDTO } from "../../components/PlatformAccountAdapter";
 import { openAlertNoButton } from "../../stores/modal";
 import { get } from "svelte/store";
 import { t } from "../../stores/i18n";
@@ -16,7 +16,7 @@ export async function loadTagDefs(name: string): Promise<TagDefRow[]> {
 export async function refreshGameStatsMarkup(
   name: string,
   acctIds: string[],
-): Promise<Record<string, Record<string, Record<string, { statValue: string; indicatorMarkup: string }>>>> {
+): Promise<Record<string, Record<string, Record<string, GameStatMetricDTO>>>> {
   if (!name.trim() || acctIds.length === 0) { return {}; }
   try {
     const pairs = await Promise.all(
@@ -25,7 +25,7 @@ export async function refreshGameStatsMarkup(
         catch { return [uid, {}] as const; }
       }),
     );
-    return Object.fromEntries(pairs) as Record<string, Record<string, Record<string, { statValue: string; indicatorMarkup: string }>>>;
+    return Object.fromEntries(pairs) as Record<string, Record<string, Record<string, GameStatMetricDTO>>>;
   } catch { return {}; }
 }
 

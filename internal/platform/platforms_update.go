@@ -10,8 +10,8 @@ import (
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 
-	"TcNo-Acc-Switcher/internal/updatecheck"
 	"TcNo-Acc-Switcher/internal/crashlog"
+	"TcNo-Acc-Switcher/internal/updatecheck"
 )
 
 const (

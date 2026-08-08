@@ -103,8 +103,7 @@ describe("Steam Guard maFile import", () => {
 		steamService.GetSteamAccountsList.mockResolvedValueOnce([
 			{
 				steamId64: "76561198000000001",
-				displayName: "Current <Persona>",
-				personaName: "Older Persona",
+				personaName: "Current <Persona>",
 				accountName: "login_name",
 			},
 		]);
@@ -192,7 +191,6 @@ describe("Steam Guard account picker rows", () => {
 	const switcherAccounts = [{
 		steamId64: "76561198000000001",
 		accountName: "vault_user",
-		displayName: "Vault Display",
 		personaName: "Vault Persona",
 	}];
 	const enrichment = [{
@@ -217,7 +215,7 @@ describe("Steam Guard account picker rows", () => {
 		expect(rows[0]).toMatchObject({
 			id: "76561198000000001",
 			username: "vault_user",
-			displayName: "Vault Display",
+			displayName: "Vault Persona",
 			imageUrl: "/img/avatar.png",
 			staticImageUrl: "/img/avatar-static.png",
 			vac: true,
@@ -257,5 +255,24 @@ describe("Steam Guard account picker rows", () => {
 		});
 
 		expect(rows.map((row) => row.locked)).toEqual([false, true]);
+	});
+
+	// Go decides the session verdict for every row while it is decrypting the list
+	// anyway, so the picker can show it without opening each account. A verdict this
+	// build does not recognise must not become a claim about the session.
+	it("carries the session verdict through, and degrades an unknown one", () => {
+		const rows = mergeSteamGuardAccountRows({
+			summaries: [
+				{ steamId64: "1", accountName: "a", sessionStatus: "needs_login" },
+				{ steamId64: "2", accountName: "b", sessionStatus: "valid" },
+				{ steamId64: "3", accountName: "c" },
+				{ steamId64: "4", accountName: "d", sessionStatus: "from_a_newer_build" },
+			],
+			vaultUnlocked: true,
+			activeAccountId: "1",
+		});
+
+		expect(rows.map((row) => row.sessionStatus))
+			.toEqual(["needs-login", "valid", "unknown", "unknown"]);
 	});
 });

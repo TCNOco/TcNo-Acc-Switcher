@@ -13,10 +13,11 @@ import (
 
 	"TcNo-Acc-Switcher/internal/steamguard/enrollmentapi"
 	"TcNo-Acc-Switcher/internal/steamguard/mafile"
+	"TcNo-Acc-Switcher/internal/steamguard/vaultrecord"
 )
 
 const (
-	pendingKind               = "steamguard-enrollment-pending"
+	pendingKind               = vaultrecord.KindStringEnrollmentPending
 	pendingVersion            = 2
 	legacyPendingVersion      = 1
 	maxPendingBytes           = 32 << 10
@@ -29,12 +30,17 @@ const (
 var deviceIDPattern = regexp.MustCompile(`^android:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$`)
 
 type pendingRecord struct {
-	Kind                   string                         `json:"kind"`
-	Version                int                            `json:"version"`
-	State                  enrollmentapi.State            `json:"state"`
-	RequestID              []byte                         `json:"requestId"`
-	SteamID                uint64                         `json:"steamId"`
-	AccessToken            []byte                         `json:"accessToken"`
+	Kind        string              `json:"kind"`
+	Version     int                 `json:"version"`
+	State       enrollmentapi.State `json:"state"`
+	RequestID   []byte              `json:"requestId"`
+	SteamID     uint64              `json:"steamId"`
+	AccessToken []byte              `json:"accessToken"`
+	// Optional, and deliberately not version-gated: decoding is additive, so a
+	// record written before this field existed still reads. Bumping pendingVersion
+	// would strand exactly those in-progress enrollments for no benefit, since
+	// DisallowUnknownFields already stops an older build reading a newer record.
+	RefreshToken           []byte                         `json:"refreshToken,omitempty"`
 	DeviceID               string                         `json:"deviceId"`
 	SharedSecret           []byte                         `json:"sharedSecret"`
 	IdentitySecret         []byte                         `json:"identitySecret"`
@@ -110,6 +116,7 @@ func (p *pendingRecord) destroy() {
 	}
 	wipe(p.RequestID)
 	wipe(p.AccessToken)
+	wipe(p.RefreshToken)
 	wipe(p.SharedSecret)
 	wipe(p.IdentitySecret)
 	wipe(p.Secret1)
@@ -227,6 +234,7 @@ func readUniqueJSONValue(dec *json.Decoder, depth int) bool {
 func validPendingRecord(p *pendingRecord) bool {
 	if p == nil || p.Kind != pendingKind || p.Version != pendingVersion || !validPendingState(p.State) ||
 		!validSteamID(p.SteamID) || len(p.RequestID) != 16 || !validToken(p.AccessToken) ||
+		(len(p.RefreshToken) != 0 && !validToken(p.RefreshToken)) ||
 		!deviceIDPattern.MatchString(p.DeviceID) || len(p.SharedSecret) != 20 ||
 		len(p.IdentitySecret) != 20 || len(p.Secret1) != 20 || !validRevocationCode(p.RevocationCode) ||
 		len(p.URI) == 0 || len(p.URI) > 1024 || !utf8.Valid(p.URI) || !bytes.HasPrefix(p.URI, []byte("otpauth://totp/Steam:")) ||
@@ -342,8 +350,9 @@ func activeMaFile(record *pendingRecord) ([]byte, error) {
 		DeviceID:       record.DeviceID,
 		FullyEnrolled:  true,
 		Session: &mafile.SessionData{
-			SteamID:     record.SteamID,
-			AccessToken: string(record.AccessToken),
+			SteamID:      record.SteamID,
+			AccessToken:  string(record.AccessToken),
+			RefreshToken: string(record.RefreshToken),
 		},
 	}
 	return mafile.ExportPlaintext(account, mafile.ExportOptions{IncludeTokens: true})

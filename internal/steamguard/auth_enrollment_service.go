@@ -17,11 +17,13 @@ import (
 	"TcNo-Acc-Switcher/internal/steamguard/capability"
 	"TcNo-Acc-Switcher/internal/steamguard/enrollmentapi"
 	"TcNo-Acc-Switcher/internal/steamguard/enrollmentflow"
+	"TcNo-Acc-Switcher/internal/steamguard/loginrecord"
 	"TcNo-Acc-Switcher/internal/steamguard/mafile"
 	"TcNo-Acc-Switcher/internal/steamguard/protocol"
 	"TcNo-Acc-Switcher/internal/steamguard/registry"
 	"TcNo-Acc-Switcher/internal/steamguard/sessionrefresh"
 	"TcNo-Acc-Switcher/internal/steamguard/vault"
+	"TcNo-Acc-Switcher/internal/steamguard/vaultrecord"
 )
 
 var (
@@ -77,6 +79,11 @@ type SteamAuthPurpose string
 const (
 	SteamAuthPurposeLoginAgain       SteamAuthPurpose = "login_again"
 	SteamAuthPurposeAddAuthenticator SteamAuthPurpose = "add_authenticator"
+	// SteamAuthPurposeLoginOnly stores the session and nothing else: no
+	// authenticator is added, so the account gets no codes and no confirmations.
+	// It exists so an account can be authenticated for account-private lookups
+	// without the user handing over their authenticator.
+	SteamAuthPurposeLoginOnly SteamAuthPurpose = "login_only"
 )
 
 type SteamLoginResult struct {
@@ -167,10 +174,30 @@ type steamBoundOperation struct {
 // UnlockSteamGuardVault unlocks the vault for an account that does not have an
 // active authenticator record yet. The password is not retained by this layer.
 func (s *Service) UnlockSteamGuardVault(accountID, password string, rememberForSession bool, token string) error {
-	passwordBytes := []byte(password)
+	return s.UnlockSteamGuardVaultWithFactors(accountID, password, "", "", rememberForSession, token)
+}
+
+// UnlockSteamGuardVaultWithFactors opens the vault itself, accepting every way
+// in the vault supports rather than a password alone.
+//
+// The account-level UnlockAccountWithFactors cannot serve the screens that add
+// an account, because the account is not in the vault yet - it has nothing to
+// return a code for. Without this, a vault protected by a keyfile, a backup key
+// or a security key could not be unlocked from those screens at all.
+func (s *Service) UnlockSteamGuardVaultWithFactors(
+	accountID, password, keyfilePath, backupKey string,
+	rememberForSession bool,
+	token string,
+) error {
+	creds, err := buildVaultCredentials(password, keyfilePath, backupKey)
 	password = ""
-	defer wipe(passwordBytes)
 	defer runtime.KeepAlive(password)
+	if err != nil {
+		return err
+	}
+	defer wipe(creds.Keyfile)
+	defer wipe(creds.RecoveryCode)
+
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	v, err := s.requireVaultLocked()
@@ -180,7 +207,7 @@ func (s *Service) UnlockSteamGuardVault(accountID, password string, rememberForS
 	if err := s.authorizeModalLocked(v, strings.TrimSpace(accountID), token); err != nil {
 		return err
 	}
-	if err := s.unlockVaultLocked(v, string(passwordBytes), rememberForSession); err != nil {
+	if err := s.unlockVaultWithLocked(v, creds, rememberForSession); err != nil {
 		serviceLogger().Warn("Steam Guard vault unlock failed",
 			"steamId64", strings.TrimSpace(accountID), "reason", unlockFailureReason(err), "error", err)
 		return err
@@ -392,19 +419,35 @@ func (s *Service) PollCredentialLogin(accountID, token, handle string) (SteamCre
 			// Closing that properly means enrollmentflow taking the lock around
 			// its own writes.
 			if err := s.withServiceLock(func() error {
-				return updateMafileSession(v, steamID, accountName, accessToken, refreshToken)
+				return updateRecordSession(v, steamID, accountName, accessToken, refreshToken)
 			}); err != nil {
 				return err
 			}
-			registryUpdated = s.upsertRegistry(accountID, registry.StateActive)
+			// Signing in again must not change what the record IS. A login-only
+			// account that re-authenticates is still login-only; promoting it to
+			// active would put a lock icon on an account with no code behind it.
+			registryUpdated = s.upsertRegistry(accountID, s.registryStateForRecord(v, accountID, registry.StateActive))
+			return nil
+		case SteamAuthPurposeLoginOnly:
+			if err := s.withServiceLock(func() error {
+				return putLoginOnlyRecord(v, steamID, accountName, accessToken, refreshToken)
+			}); err != nil {
+				return err
+			}
+			registryUpdated = s.upsertRegistry(accountID, registry.StateLoginOnly)
 			return nil
 		case SteamAuthPurposeAddAuthenticator:
 			manager := s.enrollmentFlow(v)
 			if manager == nil {
 				return ErrSteamAuthenticationState
 			}
+			// A login-only record is a stored session, and enrolling is exactly
+			// how it stops being one, so it is not the "already enrolled" this
+			// refusal is for. Every other occupant still is, and Start says so.
 			status, err := manager.Start(ctx, enrollmentflow.StartRequest{
-				SteamID: authorizedSteamID, AccessToken: accessToken, AuthenticatorTime: uint64(s.authenticatorTime()),
+				SteamID: authorizedSteamID, AccessToken: accessToken, RefreshToken: refreshToken,
+				AuthenticatorTime: uint64(s.authenticatorTime()),
+				ReplaceLoginOnly:  isLoginOnlyRecord(v, accountID),
 			})
 			if err != nil {
 				authflowLogger().Warn("Steam Guard enrollment could not be started", "steamId64", accountID, "error", err)
@@ -899,7 +942,11 @@ func passwordAuthRequest(accountName string) protocol.PasswordCredentialsRequest
 	}
 }
 
-func updateMafileSession(v *vault.Vault, steamID uint64, accountName, accessToken, refreshToken []byte) error {
+// updateRecordSession writes freshly issued tokens back onto an existing record,
+// in whichever shape that record already has. A login-only record must stay
+// login-only: re-exporting it as a maFile would fail validation, because it has
+// no authenticator secrets to export.
+func updateRecordSession(v *vault.Vault, steamID uint64, accountName, accessToken, refreshToken []byte) error {
 	if v == nil || !utf8.Valid(accountName) || !validBearerBytes(accessToken) || (len(refreshToken) != 0 && !validBearerBytes(refreshToken)) {
 		return ErrSteamAuthenticationState
 	}
@@ -919,6 +966,32 @@ func updateMafileSession(v *vault.Vault, steamID uint64, accountName, accessToke
 	}
 	if recordID == "" {
 		return ErrAccountNotFound
+	}
+	loaded, err := recordFromVault(v, recordID)
+	if err != nil {
+		return ErrSteamAuthenticationState
+	}
+	if loaded.Kind == vaultrecord.KindLoginOnly {
+		defer loaded.destroy()
+		if loaded.Login.SteamID != steamID {
+			return ErrSteamAuthenticationState
+		}
+		login := loaded.Login
+		if len(accountName) != 0 {
+			login.AccountName = string(accountName)
+		}
+		login.AccessToken = string(accessToken)
+		if len(refreshToken) != 0 {
+			login.RefreshToken = string(refreshToken)
+		}
+		canonical, encodeErr := loginrecord.Encode(login)
+		if encodeErr != nil {
+			wipe(canonical)
+			return ErrSteamAuthenticationState
+		}
+		defer wipe(canonical)
+		_, err = v.PutRecord(wanted, canonical)
+		return err
 	}
 	account, err := accountFromRecord(v, recordID)
 	if err != nil || account.Session == nil || account.Session.SteamID != steamID {
@@ -967,7 +1040,8 @@ func canonicalSteamID(accountID string) (uint64, error) {
 }
 
 func validSteamAuthPurpose(purpose SteamAuthPurpose) bool {
-	return purpose == SteamAuthPurposeLoginAgain || purpose == SteamAuthPurposeAddAuthenticator
+	return purpose == SteamAuthPurposeLoginAgain || purpose == SteamAuthPurposeAddAuthenticator ||
+		purpose == SteamAuthPurposeLoginOnly
 }
 
 func validAccountName(value string) bool {

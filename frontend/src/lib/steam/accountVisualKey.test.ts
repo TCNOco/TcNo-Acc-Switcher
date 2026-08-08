@@ -22,6 +22,12 @@ describe("steamAccountVisualKey", () => {
     ["avatar-frame preference", { showAvatarFrame: true }],
     ["last-login preference", { showLastLogin: true }],
     ["Steam ID preference", { showSteamId: true }],
+    // Anything the tile draws has to be in the key: applyAccountPatch bails
+    // when it is unchanged, so a missing field silently never repaints.
+    ["Steam Guard lock preference", { showSteamGuardLock: true }],
+    ["CS2 cooldown", { cs2CooldownExpiresAt: "2026-08-14T09:30:00Z" }],
+    ["permanent CS2 cooldown", { cs2CooldownPermanent: true }],
+    ["CS2 cooldown preference", { showCs2Cooldown: true }],
   ] as const)("changes for %s", (_name, change) => {
     expect(steamAccountVisualKey(row(change))).not.toBe(steamAccountVisualKey(row()));
   });

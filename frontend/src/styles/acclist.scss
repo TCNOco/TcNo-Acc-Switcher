@@ -64,6 +64,18 @@
   opacity: 0.75;
 }
 
+// Matches .acc_lastused deliberately: the colour comes from label.acc p, but the
+// size and opacity are what actually make the two lines look like siblings.
+// white-space is normal so "Permanent cooldown" wraps rather than clipping — the
+// abbreviated durations fit one line at this width on their own.
+.steam-acclist .acc_cooldown {
+  margin: 0.1rem 0 0;
+  font-size: 0.72rem;
+  line-height: 1.15;
+  white-space: normal;
+  opacity: 0.75;
+}
+
 .steam-acclist label.acc p.steamId {
   font-family: ui-monospace, monospace;
   font-size: 0.7em;

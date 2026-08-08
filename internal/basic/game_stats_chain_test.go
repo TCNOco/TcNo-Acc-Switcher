@@ -186,17 +186,18 @@ func TestChainTreatsEmptyResultAsFailureAndKeepsTheBodyForDebugging(t *testing.T
 // the tcno-api csrepStats endpoint returns, through the inherited display markup.
 func TestShippedCS2FallbackParsesCsrepPayload(t *testing.T) {
 	def := loadShippedCS2Definition(t)
-	if def.variantCount() != 2 {
-		t.Fatalf("expected a CS2 fallback, got %d variants", def.variantCount())
+	// Variant 0 is the authenticated GCPD collector; 1 and 2 are the public APIs.
+	if def.variantCount() != 3 {
+		t.Fatalf("expected the CS2 chain to be GCPD, Leetify and CSRep, got %d variants", def.variantCount())
 	}
 
-	// Primary stands in for Leetify answering 404 for an account that never signed up.
+	// Leetify stands in answering 404 for an account that never signed up.
 	var leetifyHits, csrepHits int32
 	leetify := statusServer(t, http.StatusNotFound, `{"StatusCode":404}`, &leetifyHits)
 	csrep := statusServer(t, http.StatusOK, `{"premier":15234,"compRank":18}`, &csrepHits)
 	res := attemptGameStatsChain("Steam", "Counter-Strike 2", "acct", []gameStatsVariant{
-		{def: def.variantAt(0), url: leetify},
-		{def: def.variantAt(1), url: csrep},
+		{def: def.variantAt(1), url: leetify},
+		{def: def.variantAt(2), url: csrep},
 	}, 0)
 
 	if res.index != 1 {
@@ -230,7 +231,7 @@ func TestShippedCS2FallbackHidesZeroedMetric(t *testing.T) {
 	var hits int32
 	url := statusServer(t, http.StatusOK, `{"premier":0,"compRank":16}`, &hits)
 	res := attemptGameStatsChain("Steam", "Counter-Strike 2", "acct",
-		[]gameStatsVariant{{def: def.variantAt(1), url: url}}, 0)
+		[]gameStatsVariant{{def: def.variantAt(2), url: url}}, 0)
 
 	if res.index != 0 {
 		t.Fatalf("the only source should have succeeded: index=%d err=%v", res.index, res.err)

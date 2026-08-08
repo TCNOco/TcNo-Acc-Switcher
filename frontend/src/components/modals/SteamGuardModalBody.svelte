@@ -14,6 +14,7 @@
     SteamGuardCapabilityError,
     SteamGuardContentProtectionLease,
 	    steamGuardAccountForState,
+	    steamGuardRowState,
 	    steamGuardCodeCanAutoRefresh,
 		    steamGuardCodeProgress,
 			steamGuardQRFailureMessage,
@@ -21,6 +22,7 @@
 			steamEnrollmentStep,
 			steamLoginAgainNextStep,
 	    type SteamGuardAccountRef,
+	    type SteamGuardAccountKind,
 	    type SteamGuardAccountSummary,
 	    type SteamGuardCodeView,
 	    type SteamGuardModalAction,
@@ -44,6 +46,7 @@
 	  import { requestModalAutoFit } from "../../lib/modalFrame";
 	  import { controllerSpatialNavigation } from "../../lib/actions/controllerSpatialNavigation";
 	  import SteamAccountAvatar from "../SteamAccountAvatar.svelte";
+  import SteamGuardVaultFactors from "./SteamGuardVaultFactors.svelte";
 	  import { loadSteamGuardSwitcherProfile } from "../../lib/steamGuardBridge";
 	  import type { SteamAccountRow } from "../../lib/steam/types";
 
@@ -76,6 +79,12 @@
    * leaving means closing rather than dropping into an account never chosen.
    */
   let pickerReturnAccount: SteamGuardAccountRef | null = null;
+  /**
+   * The account whose setup page sent the user into an add flow, or null when
+   * that flow was reached some other way. Backing out of an add flow returns
+   * here rather than closing the modal.
+   */
+  let setupReturn: SteamGuardAccountRef | null = null;
   // Extra unlock factors. Only the keyfile's path is held here; Go reads it.
   let unlockKeyfilePath = "";
   let unlockBackupKey = "";
@@ -101,12 +110,20 @@
 	let authHandle = "";
 	let authChallenge = "";
 	let authMessage = "";
+	/** Why the sign-in form is being shown, when it is not the usual reason. */
+	let credentialsHint = "";
+	/** The enrollment screen is promoting a login-only account, not adding a new one. */
+	let promotingLoginOnly = false;
+	/** The vault form is being shown for its own sake, before the setup page's choice. */
+	let vaultSetupOnly = false;
 	let authResult: SteamCredentialResult | null = null;
 	/** One stored-code attempt per sign-in: a code Steam rejected must not be resubmitted. */
 	let storedDeviceCodeTried = false;
 	let lastPageKey = "";
 	/** Highlights Login Again when the stored Steam session will not work. */
 	let sessionNeedsLogin = false;
+	/** Second click of the inline Remove confirmation; reset on every transition. */
+	let removeConfirming = false;
 	let sessionCheckedAccount = "";
 	let authPollTimer: ReturnType<typeof setTimeout> | undefined;
 	/** Seconds the success screen shows before returning to the account's code. */
@@ -120,6 +137,9 @@
 	let vaultPassword = "";
 	let vaultPasswordConfirmation = "";
 	let vaultAppPassword = "";
+	/** Extra ways into an existing vault, offered beside the password. */
+	let vaultKeyfilePath = "";
+	let vaultBackupKey = "";
 	let revocationCode = "";
 	let revocationConfirmation = "";
 	let confirmationCode = "";
@@ -167,6 +187,17 @@
 	 * actually carries an avatar wins, so a picker row or opener-supplied image is never
 	 * shadowed by an avatar-less one; otherwise the usual precedence applies.
 	 */
+	/**
+	 * Fallback summary for an account we have no vault listing for. "authenticator"
+	 * is the safe default: it is what every account was before login-only existed,
+	 * and this only builds an identity for display, never a decision about which
+	 * screen to open — that reads the real listing via knownKindOf. With no listing
+	 * there is no session verdict either, hence "unknown".
+	 */
+	function refSummary(target: SteamGuardAccountRef, locked: boolean): SteamGuardAccountSummary {
+		return { ...target, locked, kind: "authenticator", sessionStatus: "unknown" };
+	}
+
 	function summaryOf(
 		target: SteamGuardAccountRef,
 		locked: boolean,
@@ -176,9 +207,9 @@
 		const candidates = [
 			summaries.find((summary) => summary.id === target.id),
 			profiles[target.id],
-			{ ...target, locked },
+			refSummary(target, locked),
 		];
-		return candidates.find(hasAvatar) ?? candidates.find(Boolean) ?? { ...target, locked };
+		return candidates.find(hasAvatar) ?? candidates.find(Boolean) ?? refSummary(target, locked);
 	}
 
 	/**
@@ -260,20 +291,38 @@
 					run: leaveAllAccounts,
 				};
 			case "enrollment":
-				return {
-					label: enrollmentStage === "recovery" || enrollmentStage === "confirmation"
-						? $t("SteamGuard_CloseAndResume")
-						: $t("SteamGuard_Back"),
-					run: cancelEnrollment,
-				};
+				// Once Steam holds a pending authenticator, leaving is "close and
+				// resume" and nothing behind this screen can undo it. Before that it
+				// is an ordinary back, to whichever page sent the user here.
+				return enrollmentStage === "recovery" || enrollmentStage === "confirmation"
+					? { label: $t("SteamGuard_CloseAndResume"), run: cancelEnrollment }
+					: { label: $t("SteamGuard_Back"), run: () => { void cancelSetup(); } };
 			case "login-again":
 				return {
 					label: $t("SteamGuard_Back"),
 					run: () => { void cancelCredentialLogin().then(backToAccount); },
 				};
+			case "login-only":
+				return { label: $t("SteamGuard_Code_ShowAllAccounts"), run: showAllAccounts };
+			case "login-only-setup":
+				return { label: $t("SteamGuard_Back"), run: () => { void cancelSetup(); } };
+			case "setup":
+				return { label: $t("SteamGuard_Code_ShowAllAccounts"), run: showAllAccounts };
 			case "qr":
-				return { label: $t("SteamGuard_Back"), run: dismissQRLogin };
+				// Two ways out, matching the two controls the screen shows: an
+				// approval waiting to be answered is cancelled back to the scan
+				// view, anything else leaves for the account screen. Dismissing
+				// alone stranded the header button on the scan view, where it
+				// cleared the status line and then had nothing left to do.
+				return qrStage === "approval" && qrApproval
+					? { label: $t("SteamGuard_Cancel"), run: () => { void dismissQRLogin(); } }
+					: { label: $t("SteamGuard_Back"), run: () => { void dismissQRLogin().then(backToAccount); } };
 			case "import":
+				// Reachable without an account, from the picker, and that way in
+				// needs a way out too.
+				return state.account
+					? { label: $t("SteamGuard_Back"), run: backFromImport }
+					: { label: $t("SteamGuard_Code_ShowAllAccounts"), run: backFromImport };
 			case "export-authorize":
 			case "recovery":
 			case "error":
@@ -324,8 +373,29 @@
 	// The code screen shows the same identity as every other screen.
 	$: codeAccountSummary = state.screen === "account-code"
 		? summaryOf(state.view.account, false, knownSummaries, switcherProfiles)
-		: { ...account, locked: false };
+		: refSummary(account, false);
 	$: if (state.screen === "account-code") void ensureSwitcherProfile(state.view.account);
+
+	// The setup screen shows the same identity block as a stored account, from the
+	// row that opened it: nothing about this account is in the vault to read.
+	$: setupAccountSummary = state.screen === "setup"
+		? summaryOf(state.account, false, knownSummaries, switcherProfiles)
+		: refSummary(account, false);
+	$: if (state.screen === "setup") void ensureSwitcherProfile(state.account);
+	// Once per modal: after the vault is created this lands back here, and asking
+	// again would only confirm what the creation already settled.
+	let setupVaultChecked = false;
+	$: if (state.screen === "setup" && !setupVaultChecked) {
+		setupVaultChecked = true;
+		void ensureVaultForSetup(state.account);
+	}
+	$: loginOnlyAccountSummary = state.screen === "login-only"
+		? summaryOf(state.account, false, knownSummaries, switcherProfiles)
+		: refSummary(account, false);
+	$: if (state.screen === "login-only") void ensureSwitcherProfile(state.account);
+	// Login again is the only recovery this screen offers, so it earns the same
+	// highlight it gets on the code screen when the stored session has lapsed.
+	$: if (state.screen === "login-only") void checkSessionNeedsLogin(state.account);
 	// The export screen shows the same identity as everywhere else, so it needs the
 	// same switcher lookup behind it.
 	$: if (state.screen === "export-authorize") void ensureSwitcherProfile(exportAccount);
@@ -354,6 +424,7 @@
   function transition(action: SteamGuardModalAction, moveFocus = true): void {
     state = reduceSteamGuardModal(state, action);
     inlineError = "";
+    removeConfirming = false;
     if (moveFocus) focusCurrentScreen();
   }
 
@@ -402,6 +473,54 @@
     }
   }
 
+  /** The vault listing's verdict on a record's shape, defaulting to authenticator. */
+  function knownKindOf(accountId: string): SteamGuardAccountKind {
+    return knownSummaries.find((summary) => summary.id === accountId)?.kind ?? "authenticator";
+  }
+
+  /**
+   * The single way to land on an account.
+   *
+   * A login-only record has no shared secret, so getCode fails on it. Every path
+   * that opens an account goes through here rather than calling loadAccount, so
+   * a new screen never has to remember which of them still take the code path.
+   */
+  async function openAccountScreen(target: SteamGuardAccountRef): Promise<void> {
+    let kind = knownKindOf(target.id);
+    // An account we have never listed is not "an authenticator", it is unknown -
+    // and defaulting to authenticator sends a secret-less record to getCode,
+    // which fails with a dead end. This is the ordinary case straight after
+    // adding an account, since that flow never had a reason to list them.
+    let listed = knownSummaries.some((summary) => summary.id === target.id);
+    if (!listed) {
+      try {
+        await accountSummaries(target);
+        kind = knownKindOf(target.id);
+        listed = knownSummaries.some((summary) => summary.id === target.id);
+      } catch (error) {
+        console.error("Steam Guard: account list could not be refreshed", error);
+        // Unknown because the list could not be read, not because the vault is
+        // without it. The code path below has its own recovery for that.
+        listed = true;
+      }
+    }
+    // Nothing is stored for it, so there is no account screen to open. This is
+    // also what makes the setup flows' Back work: they lead here, and an account
+    // still not in the vault lands back on the page that offers to add it.
+    if (!listed) {
+      transition({ type: "show-setup", account: target });
+      return;
+    }
+    // The vault holds it now, so the setup page it may have come from is no
+    // longer a place to go back to.
+    setupReturn = null;
+    if (kind === "login-only") {
+      await loadLoginOnlyAccount(target);
+      return;
+    }
+    await loadAccount(target);
+  }
+
   async function loadAccount(nextAccount: SteamGuardAccountRef): Promise<void> {
     if (busy) return;
     transition({ type: "load-account", account: nextAccount });
@@ -417,9 +536,50 @@
       }
     } catch (error) {
       console.error("Steam Guard: account could not be loaded", error);
+      // A record with no authenticator cannot answer getCode. Re-read the
+      // listing before giving up: if that is all this was, it belongs on the
+      // login-only screen, not on an error one.
+      let reroute = false;
+      try {
+        await accountSummaries(nextAccount);
+        reroute = knownKindOf(nextAccount.id) === "login-only";
+      } catch (listError) {
+        console.error("Steam Guard: account list could not be refreshed", listError);
+      }
+      if (reroute) {
+        busy = false;
+        await loadLoginOnlyAccount(nextAccount);
+        return;
+      }
       transition({
         type: "fail",
         account: nextAccount,
+        message: $t("SteamGuard_Error_AccountNotLoaded"),
+      });
+    } finally {
+      busy = false;
+    }
+  }
+
+  /** The login-only counterpart of loadAccount: no code to fetch, so none is asked for. */
+  async function loadLoginOnlyAccount(target: SteamGuardAccountRef): Promise<void> {
+    if (busy) return;
+    transition({ type: "load-account", account: target });
+    busy = true;
+    try {
+      await contentProtection.acquire(target.id);
+      await ensureCapability(target);
+      const status = await controller.getSteamGuardVaultStatus?.();
+      if (status && !status.unlocked) {
+        transition({ type: "lock-account", account: target });
+        return;
+      }
+      transition({ type: "show-login-only", account: target });
+    } catch (error) {
+      console.error("Steam Guard: login-only account could not be opened", error);
+      transition({
+        type: "fail",
+        account: target,
         message: $t("SteamGuard_Error_AccountNotLoaded"),
       });
     } finally {
@@ -457,6 +617,37 @@
     const lockedAccount = state.account;
     busy = true;
     inlineError = "";
+
+    // A login-only record has no code, so controller.unlock - which resolves to a
+    // code view - has nothing to return for it. Unlock the vault itself instead.
+    //
+    // An account we have not listed takes the same path: while the vault is
+    // locked its kind is unknowable, and guessing "authenticator" would report a
+    // correct password as rejected. Opening the vault first costs one extra step
+    // and then openAccountScreen can read the real kind.
+    const kindUnknown = !knownSummaries.some((summary) => summary.id === lockedAccount.id);
+    if ((kindUnknown || knownKindOf(lockedAccount.id) === "login-only") && controller.unlockSteamGuardVault) {
+      try {
+        const capability = await ensureCapability(lockedAccount);
+        await controller.unlockSteamGuardVault(
+          lockedAccount.id, password, rememberForSession, capability, unlockKeyfilePath, unlockBackupKey.trim(),
+        );
+        password = "";
+        unlockBackupKey = "";
+        unlockKeyfilePath = "";
+        busy = false;
+        await openAccountScreen(lockedAccount);
+        return;
+      } catch (error) {
+        console.error("Steam Guard: vault unlock was rejected", error);
+        password = "";
+        inlineError = $t("SteamGuard_Error_PasswordRejected");
+        focusCurrentScreen();
+      } finally {
+        busy = false;
+      }
+      return;
+    }
 
     let pending: Promise<import("../../lib/steamGuardModal").SteamGuardCodeView>;
     try {
@@ -538,7 +729,12 @@
     try {
       const currentAccount = steamGuardAccountForState(state) ?? account;
       // Opened from an account, so leaving the picker goes back to that account.
-      pickerReturnAccount = currentAccount;
+      // Screens holding no account of their own are not places to go back to:
+      // the setup page is a placeholder, and an import started from the picker
+      // has nothing behind it but the picker itself.
+      pickerReturnAccount = state.screen === "setup"
+        ? null
+        : steamGuardAccountForState(state) ?? null;
       transition({ type: "show-all", accounts: await accountSummaries(currentAccount) });
     } catch (error) {
       console.error("Steam Guard: account list could not be loaded", error);
@@ -548,10 +744,41 @@
     }
   }
 
+  /**
+   * Deletes a login-only vault record. Only ever offered for that kind: an
+   * authenticator's secrets exist nowhere else, and Go refuses one regardless.
+   * The account's stored CS2 cooldown is left behind on purpose - it describes
+   * the account, not the vault record.
+   */
+  async function confirmRemoveLoginOnly(): Promise<void> {
+    if (state.screen !== "login-only" || busy || !controller.removeLoginOnlyAccount) return;
+    const target = state.account;
+    busy = true;
+    try {
+      const capability = await ensureCapability(target);
+      await controller.removeLoginOnlyAccount(target.id, capability);
+      removeConfirming = false;
+      announce($t("SteamGuard_LoginOnly_Removed"));
+      // The record is gone, so returning to it would fail; show what is left.
+      // The controller republishes toolbar availability for us.
+      pickerReturnAccount = null;
+      busy = false;
+      await showAllAccounts();
+      return;
+    } catch (error) {
+      console.error("Steam Guard: login-only account could not be removed", error);
+      removeConfirming = false;
+      inlineError = $t("SteamGuard_Error_LoginOnlyRemoveFailed");
+      busy = false;
+      return;
+    }
+    busy = false;
+  }
+
   /** Leaves the account picker the way the user entered it. */
   function leaveAllAccounts(): void {
     if (pickerReturnAccount) {
-      void loadAccount(pickerReturnAccount);
+      void openAccountScreen(pickerReturnAccount);
       return;
     }
     dismissModal();
@@ -588,13 +815,15 @@
 
   function backToAccount(): void {
     const currentAccount = steamGuardAccountForState(state) ?? account;
-    void loadAccount(currentAccount);
+    void openAccountScreen(currentAccount);
   }
 
 	/** One click: refresh the saved session, and only ask for a password if Steam rejects it. */
 	function showLoginAgainState(): void {
-		if (state.screen !== "account-code") return;
-		transition({ type: "show-login-again", account: state.view.account }, false);
+		if (state.screen !== "account-code" && state.screen !== "login-only") return;
+		const currentAccount = steamGuardAccountForState(state);
+		if (!currentAccount) return;
+		transition({ type: "show-login-again", account: currentAccount }, false);
 		void startLoginAgain();
 	}
 
@@ -610,6 +839,64 @@
 			});
 		}
 	}
+
+  /**
+   * The three ways to start holding an account, from the setup screen. Each one
+   * hands off to the flow that already exists for it; this screen only chooses.
+   */
+  function startSetupLoginOnly(): void {
+    if (state.screen !== "setup" || busy) return;
+    setupReturn = state.account;
+    transition({ type: "show-login-only-setup", account: state.account });
+    void startLoginOnlySetup();
+  }
+
+  function startSetupImport(): void {
+    if (state.screen !== "setup" || busy) return;
+    setupReturn = state.account;
+    transition({ type: "show-import", account: state.account });
+  }
+
+  function startSetupEnrollment(): void {
+    if (state.screen !== "setup" || busy) return;
+    setupReturn = state.account;
+    transition({ type: "show-enrollment", account: state.account });
+    void startEnrollment();
+  }
+
+  /**
+   * Back to the page that offered this flow, when that is where it came from.
+   *
+   * Remembered rather than worked out on the way back: working it out means
+   * listing the vault, and these screens are reachable with the vault still
+   * locked - the one state a listing cannot answer in.
+   */
+  function returnToSetup(): boolean {
+    const target = setupReturn;
+    if (!target) return false;
+    setupReturn = null;
+    transition({ type: "show-setup", account: target });
+    return true;
+  }
+
+  /** An maFile names its own account, so this one needs no account chosen first. */
+  function importFromAllAccounts(): void {
+    if (state.screen !== "all-accounts" || busy) return;
+    setupReturn = null;
+    transition({ type: "show-import" });
+  }
+
+  /** Import has three ways in - the setup page, an account, the picker. */
+  function backFromImport(): void {
+    if (state.screen !== "import" || busy) return;
+    if (returnToSetup()) return;
+    const target = state.account;
+    if (target) {
+      void openAccountScreen(target);
+      return;
+    }
+    void showAllAccounts();
+  }
 
   function startImport(): void {
     if (state.screen !== "import") return;
@@ -645,11 +932,14 @@
 		vaultPassword = "";
 		vaultPasswordConfirmation = "";
 		vaultAppPassword = "";
+		vaultBackupKey = "";
+		vaultKeyfilePath = "";
 		exportPassword = "";
 	}
 
 	function showCredentialForm(purpose: SteamAuthPurpose, currentAccount: SteamGuardAccountRef): void {
 		clearAuthTimer();
+		credentialsHint = "";
 		authPurpose = purpose;
 		authStage = "credentials";
 		authAccountName = currentAccount.username;
@@ -658,9 +948,142 @@
 		authMessage = "";
 		authResult = null;
 		storedDeviceCodeTried = false;
-		if (purpose === "add_authenticator") enrollmentStage = "idle";
+		// Login-only shares the enrollment screen's credential stages but none of
+		// its authenticator stages, so it must not inherit a stale enrollmentStage.
+		if (purpose === "add_authenticator" || purpose === "login_only") enrollmentStage = "idle";
 		clearAuthSecrets();
 		focusCurrentScreen();
+	}
+
+	/**
+	 * Sign-in that stores the session and nothing else. It reuses the enrollment
+	 * screen's vault and credential stages; the authenticator stages never fire
+	 * because enrollmentStage stays idle for this purpose.
+	 */
+	async function startLoginOnlySetup(): Promise<void> {
+		if (state.screen !== "login-only-setup" || busy) return;
+		const currentAccount = state.account;
+		busy = true;
+		inlineError = "";
+		enrollmentStage = "checking";
+		authMessage = $t("SteamGuard_Enrollment_CheckingVault");
+		try {
+			const status = await controller.getSteamGuardVaultStatus?.();
+			if (status && (!status.configured || !status.unlocked)) {
+				vaultStatus = status;
+				rememberForSession = status.rememberForSession;
+				enrollmentStage = "vault";
+				authMessage = "";
+				focusCurrentScreen();
+				return;
+			}
+			enrollmentStage = "idle";
+			authMessage = "";
+			showCredentialForm("login_only", currentAccount);
+		} catch (error) {
+			console.error("Steam Guard: login-only sign-in could not be started", error);
+			enrollmentStage = "error";
+			authMessage = $t("SteamGuard_Error_SetupResumeFailed");
+		} finally {
+			busy = false;
+		}
+	}
+
+	/**
+	 * Back out of whichever setup screen is showing, to the page that offered it.
+	 * Only for the stages before Steam has been asked for anything - once an
+	 * enrollment is pending, leaving means "close and resume", not "back".
+	 */
+	async function cancelSetup(): Promise<void> {
+		if (busy) return;
+		await cancelCredentialLogin();
+		clearAuthSecrets();
+		enrollmentStatus = null;
+		vaultStatus = null;
+		enrollmentStage = "idle";
+		authStage = "idle";
+		authMessage = "";
+		promotingLoginOnly = false;
+		vaultSetupOnly = false;
+		if (returnToSetup()) return;
+		// Nothing behind it, which is every way in that is not the setup page.
+		dismissModal();
+	}
+
+	function restartSetup(): void {
+		if (state.screen === "login-only-setup") {
+			void startLoginOnlySetup();
+			return;
+		}
+		void startEnrollment();
+	}
+
+	/**
+	 * Turns a login-only account into a full Steam Guard one.
+	 *
+	 * The record already holds the session a fresh sign-in would produce, so Go
+	 * starts the enrollment from it and this lands straight on the screen asking
+	 * for Steam's confirmation code — no password, no second 2FA ceremony. Only a
+	 * session Steam will no longer accept falls back to the credential form, and
+	 * that is the same form the ordinary add flow uses, with the name filled in.
+	 */
+	async function promoteLoginOnly(): Promise<void> {
+		if (state.screen !== "login-only" || busy || !controller.promoteLoginOnlyAccount) return;
+		const currentAccount = state.account;
+		transition({ type: "show-enrollment", account: currentAccount });
+		promotingLoginOnly = true;
+		busy = true;
+		inlineError = "";
+		authStage = "idle";
+		enrollmentStage = "checking";
+		authMessage = $t("SteamGuard_Promote_Starting");
+		try {
+			// The vault can have relocked since this account was opened, and the
+			// stored session cannot be read through a locked one. Asking here keeps
+			// the unlock inline instead of failing the promotion outright.
+			const status = await controller.getSteamGuardVaultStatus?.();
+			if (status && (!status.configured || !status.unlocked)) {
+				vaultStatus = status;
+				rememberForSession = status.rememberForSession;
+				enrollmentStage = "vault";
+				authMessage = "";
+				focusCurrentScreen();
+				return;
+			}
+			await runLoginOnlyPromotion(currentAccount);
+		} catch (error) {
+			failLoginOnlyPromotion(error);
+		} finally {
+			busy = false;
+		}
+	}
+
+	async function runLoginOnlyPromotion(currentAccount: SteamGuardAccountRef): Promise<void> {
+		if (!controller.promoteLoginOnlyAccount) return;
+		authMessage = $t("SteamGuard_Promote_Starting");
+		const capability = await ensureCapability(currentAccount);
+		const promotion = await controller.promoteLoginOnlyAccount(currentAccount.id, capability);
+		promotingLoginOnly = false;
+		await refreshCapabilityIfRequired(currentAccount, promotion.capabilityRefreshRequired);
+		if (promotion.needsLogin) {
+			showCredentialForm("add_authenticator", currentAccount);
+			credentialsHint = $t("SteamGuard_Promote_SignInAgain");
+			return;
+		}
+		if (!promotion.enrollment) throw new Error("Enrollment status unavailable");
+		await prepareEnrollment(currentAccount, promotion.enrollment);
+	}
+
+	/**
+	 * Leaves the flag cleared, so Try Again takes the ordinary add-authenticator
+	 * route. That route enrolls over a login-only record too, and asking for a
+	 * password beats retrying whatever Steam just refused.
+	 */
+	function failLoginOnlyPromotion(error: unknown): void {
+		console.error("Steam Guard: login-only account could not be promoted", error);
+		promotingLoginOnly = false;
+		enrollmentStage = "error";
+		authMessage = withFailureReason($t("SteamGuard_Error_PromoteFailed"), error);
 	}
 
 	async function startEnrollment(): Promise<void> {
@@ -690,6 +1113,36 @@
 		}
 	}
 
+	/**
+	 * Every way the setup page offers to store an account needs an open vault, so
+	 * one that is missing or locked is dealt with before the choice rather than
+	 * after it. Picking an maFile, choosing the file, and only then being asked
+	 * for the vault password means doing the whole thing twice.
+	 *
+	 * The same form covers both: it creates a vault or opens one, per its status.
+	 */
+	async function ensureVaultForSetup(currentAccount: SteamGuardAccountRef): Promise<void> {
+		if (busy || !controller.getSteamGuardVaultStatus) return;
+		busy = true;
+		try {
+			const status = await controller.getSteamGuardVaultStatus();
+			if (status.configured && status.unlocked) return;
+			vaultSetupOnly = true;
+			vaultStatus = status;
+			rememberForSession = status.rememberForSession;
+			authStage = "idle";
+			enrollmentStage = "vault";
+			authMessage = "";
+			transition({ type: "show-enrollment", account: currentAccount });
+		} catch (error) {
+			// Not knowing costs nothing here: the page still works, and the flow
+			// the user picks checks the vault for itself.
+			console.error("Steam Guard: vault status unavailable for setup", error);
+		} finally {
+			busy = false;
+		}
+	}
+
 	async function resumeEnrollment(currentAccount: SteamGuardAccountRef): Promise<void> {
 		const capability = await ensureCapability(currentAccount);
 		authMessage = $t("SteamGuard_Enrollment_CheckingSetup");
@@ -701,8 +1154,15 @@
 	}
 
 	async function submitVaultPreparation(): Promise<void> {
-		if (busy || state.screen !== "enrollment" || enrollmentStage !== "vault" || !vaultStatus || !vaultPassword) return;
-		const currentAccount = state.account;
+		if (busy || enrollmentStage !== "vault" || !vaultStatus) return;
+		if (state.screen !== "enrollment" && state.screen !== "login-only-setup") return;
+		// A backup key opens the vault alone and a security key needs nothing
+		// typed at all, so an empty password is valid when unlocking. Creating a
+		// vault still requires one.
+		const hasVaultFactor = vaultKeyfilePath !== "" || vaultBackupKey.trim() !== "";
+		if (!vaultPassword && (!vaultStatus.configured || !hasVaultFactor)) return;
+		const currentAccount = steamGuardAccountForState(state) ?? account;
+		const forLoginOnly = state.screen === "login-only-setup";
 		if (!vaultStatus.configured) {
 			const policyError = validateNewPassword(vaultPassword);
 			if (policyError) {
@@ -738,6 +1198,8 @@
 					vaultPassword,
 					rememberForSession,
 					await ensureCapability(currentAccount),
+					vaultKeyfilePath,
+					vaultBackupKey.trim(),
 				);
 			} else {
 				if (!controller.initializeSteamGuardVault) throw new Error("Steam Guard vault setup unavailable");
@@ -772,6 +1234,37 @@
 			}
 		}
 		vaultStatus = null;
+		// The vault is open; continue into whichever flow was started. Login
+		// only stores a session and adds no authenticator, so resuming
+		// enrollment here would drop the user into the wrong ceremony.
+		if (forLoginOnly) {
+			enrollmentStage = "idle";
+			authMessage = "";
+			busy = false;
+			showCredentialForm("login_only", currentAccount);
+			return;
+		}
+		// The vault was the whole errand - it was missing or locked, and nothing
+		// has been chosen for this account yet. Hand back the page that asks.
+		if (vaultSetupOnly) {
+			vaultSetupOnly = false;
+			enrollmentStage = "idle";
+			authMessage = "";
+			busy = false;
+			transition({ type: "show-setup", account: currentAccount });
+			return;
+		}
+		if (promotingLoginOnly) {
+			enrollmentStage = "checking";
+			try {
+				await runLoginOnlyPromotion(currentAccount);
+			} catch (error) {
+				failLoginOnlyPromotion(error);
+			} finally {
+				busy = false;
+			}
+			return;
+		}
 		enrollmentStage = "checking";
 		try {
 			await resumeEnrollment(currentAccount);
@@ -950,7 +1443,19 @@
 			return;
 		}
 		try {
-			const local = await controller.steamSessionLocalState?.(currentAccount.id, capability);
+			// Renew before judging. An account left alone for a day has a lapsed
+			// access token and a refresh token still good for months, so asking the
+			// stored session alone reports a sign-in the user does not need.
+			const renewed = controller.ensureFreshSession
+				? await controller.ensureFreshSession(currentAccount.id, capability)
+				: undefined;
+			if (renewed?.capabilityRefreshRequired) {
+				// The renewal wrote to the vault, so the generation moved and this
+				// capability with it; the probe below needs the new one.
+				await refreshCapabilityIfRequired(currentAccount, true);
+				capability = capabilityFor(currentAccount);
+			}
+			const local = renewed ?? await controller.steamSessionLocalState?.(currentAccount.id, capability);
 			if (local?.needsLogin) sessionNeedsLogin = true;
 		} catch (error) {
 			console.warn("Steam Guard: stored session could not be read", error);
@@ -980,7 +1485,7 @@
 			if (successCountdown > 0) return;
 			clearAuthTimer();
 			authStage = "idle";
-			void loadAccount(currentAccount);
+			void openAccountScreen(currentAccount);
 		}, 1_000);
 	}
 
@@ -1413,17 +1918,67 @@
 	}
 
 	/**
-	 * "Login again" goes straight to the password form, with the warning shown on
-	 * it. No silent-refresh interstitial: every automatic renewal has already been
-	 * tried by the time a user reaches this, and a token refresh can "succeed"
-	 * while leaving a session Steam still refuses — reporting success and
-	 * stopping there was a lie.
+	 * One click: renew the saved session, and only ask for a password if that fails.
+	 *
+	 * Steam's access token lapses in about a day while the refresh token stored
+	 * beside it lasts months, so most arrivals here need no password at all. Going
+	 * straight to the form asked for one every day and told the user their refresh
+	 * token had been rejected without ever having offered it to Steam.
+	 *
+	 * A renewal can still mint a token for a session Steam goes on to refuse, so
+	 * success is confirmed against Steam before it is reported.
 	 */
-	function startLoginAgain(): void {
+	async function startLoginAgain(): Promise<void> {
 		if (state.screen !== "login-again" || busy) return;
 		const currentAccount = state.account;
-		showCredentialForm("login_again", currentAccount);
-		authMessage = $t("SteamGuard_LoginAgain_TokenRejected");
+		const renew = controller.loginAgain;
+		if (!renew) {
+			showCredentialForm("login_again", currentAccount);
+			authMessage = $t("SteamGuard_LoginAgain_TokenRejected");
+			return;
+		}
+		busy = true;
+		authStage = "refreshing";
+		authMessage = $t("SteamGuard_LoginAgain_Refreshing");
+		try {
+			const result = await renew(currentAccount.id, await ensureCapability(currentAccount));
+			await refreshCapabilityIfRequired(currentAccount, result.capabilityRefreshRequired);
+			if (steamLoginAgainNextStep(result) === "done" && await renewedSessionWorks(currentAccount)) {
+				announce($t("SteamGuard_LoginAgain_RefreshedAnnounce"));
+				startLoginSuccessCountdown(currentAccount);
+				return;
+			}
+			showCredentialForm("login_again", currentAccount);
+			// Steam refusing the renewed session is a different fact from Steam
+			// refusing the refresh token, and the user can act on the difference.
+			authMessage = $t(result.state === "refreshed"
+				? "SteamGuard_LoginAgain_RefreshFailed"
+				: "SteamGuard_LoginAgain_TokenRejected");
+		} catch (error) {
+			console.error("Steam Guard: the saved Steam session could not be renewed", error);
+			showCredentialForm("login_again", currentAccount);
+			authMessage = $t("SteamGuard_LoginAgain_RefreshFailed");
+		} finally {
+			busy = false;
+		}
+	}
+
+	/**
+	 * A renewed access token is not proof the session works — Steam can issue one
+	 * and still refuse to use it. Only a definite refusal counts against it: an
+	 * unavailable or failing probe leaves the renewal standing rather than sending
+	 * the user to a password form on no evidence.
+	 */
+	async function renewedSessionWorks(currentAccount: SteamGuardAccountRef): Promise<boolean> {
+		const probe = controller.probeSteamSession;
+		if (!probe) return true;
+		try {
+			const probed = await probe(currentAccount.id, capabilityFor(currentAccount));
+			return probed?.needsLogin !== true;
+		} catch (error) {
+			console.warn("Steam Guard: the renewed session could not be checked with Steam", error);
+			return true;
+		}
 	}
 
 	/** Authorizes the plaintext export from inside the modal so the sensitive-view lease survives. */
@@ -1464,7 +2019,7 @@
 				reportSuccess($t("SteamGuard_Export_Success"));
 			}
 			busy = false;
-			await loadAccount(currentAccount);
+			await openAccountScreen(currentAccount);
 		} catch (error) {
 			console.error("Steam Guard: maFile export failed", error);
 			exportError = $t("SteamGuard_Export_Failed");
@@ -1504,7 +2059,7 @@
 			announce($t("SteamGuard_Announce_Locked"));
 		});
 			if (entry === "account" || entry === "all-accounts") {
-				void loadAccount(account);
+				void openAccountScreen(account);
 			} else {
 				void contentProtection.acquire(account.id).then(async () => {
 					if (entry === "qr") void scanSteamWindow();
@@ -1570,7 +2125,7 @@
       {#if !openAllAccountsOnReady}
         <div class="steam-guard__identity">
           <span class="steam-guard__identity-avatar">
-            <SteamAccountAvatar account={avatarRow(lockedAccountSummary ?? { ...state.account, locked: true })} fallback={PROFILE_FALLBACK} />
+            <SteamAccountAvatar account={avatarRow(lockedAccountSummary ?? refSummary(state.account, true))} fallback={PROFILE_FALLBACK} />
           </span>
           <span class="steam-guard__identity-name">
             <span class="steam-guard__identity-display">{state.account.username}</span>
@@ -1600,37 +2155,14 @@
            password alone will not open it. Offered on every unlock rather than
            only after a failure: the user knows what they enrolled, and a
            password-only vault simply leaves these empty. -->
-      <details class="steam-guard__other-factors">
-        <summary>{$t("SteamGuard_Unlock_OtherWays")}</summary>
-        <label class="steam-guard__field" for="steam-guard-backup-key">
-          <span>{$t("SteamGuard_Factor_BackupKey")}</span>
-          <input
-            id="steam-guard-backup-key"
-            class="modal-input"
-            bind:value={unlockBackupKey}
-            autocomplete="off"
-            spellcheck="false"
-            placeholder={$t("SteamGuard_Unlock_BackupKeyHint")}
-            disabled={busy}
-            on:keydown={(event) => runOnEnter(event, unlockAccount)}
-          />
-        </label>
-        {#if controller.pickKeyfile}
-          <div class="steam-guard__keyfile-row">
-            <button type="button" class="btnicontext" disabled={busy} on:click={() => void pickUnlockKeyfile()}>
-              {$t("SteamGuard_Unlock_ChooseKeyfile")}
-            </button>
-            <span class="steam-guard__keyfile-name">
-              {unlockKeyfilePath ? unlockKeyfilePath.split(/[\\/]/).pop() : $t("SteamGuard_Unlock_NoKeyfile")}
-            </span>
-            {#if unlockKeyfilePath}
-              <button type="button" class="steam-guard__link" disabled={busy} on:click={() => { unlockKeyfilePath = ""; }}>
-                {$t("SteamGuard_Unlock_ClearKeyfile")}
-              </button>
-            {/if}
-          </div>
-        {/if}
-      </details>
+      <SteamGuardVaultFactors
+        idPrefix="steam-guard"
+        bind:backupKey={unlockBackupKey}
+        bind:keyfilePath={unlockKeyfilePath}
+        {busy}
+        pickKeyfile={controller.pickKeyfile}
+        onSubmit={unlockAccount}
+      />
       {#if inlineError}
         <p id="steam-guard-unlock-error" class="steam-guard__error" role="alert">{inlineError}</p>
       {/if}
@@ -1780,14 +2312,134 @@
         </button>
       </div>
     </section>
+  {:else if state.screen === "setup"}
+    <!-- A placeholder page: this account is in no vault record, so there is no
+         code, no session and nothing to manage. It exists to name the account
+         being added and offer the three ways to start holding it. -->
+    <section class="steam-guard__stack">
+      <div class="steam-guard__identity" data-steamguard-focus tabindex="-1">
+        <span class="steam-guard__identity-avatar">
+          <SteamAccountAvatar account={avatarRow(setupAccountSummary)} fallback={PROFILE_FALLBACK} />
+        </span>
+        <span class="steam-guard__identity-name">
+          <span class="steam-guard__identity-display">{setupAccountSummary.username}</span>
+          {#if setupAccountSummary.displayName && setupAccountSummary.displayName !== setupAccountSummary.username}
+            <small>{setupAccountSummary.displayName}</small>
+          {/if}
+        </span>
+      </div>
+      <p class="steam-guard__hint">{$t("SteamGuard_Setup_Body")}</p>
+      {#if inlineError}<p class="steam-guard__error" role="alert">{inlineError}</p>{/if}
+      <div class="steam-guard__grid" use:controllerSpatialNavigation>
+        <button type="button" class="btnicontext" disabled={busy} on:click={startSetupLoginOnly}>
+          <svg class="steam-guard__icon" viewBox={ICONS.key.box} aria-hidden="true"><path d={ICONS.key.path} /></svg>
+          {$t("SteamGuard_Setup_JustLogin")}
+        </button>
+        <button
+          type="button"
+          class="btnicontext"
+          disabled={busy || !controller.importMaFile}
+          on:click={startSetupImport}
+        >
+          <svg class="steam-guard__icon" viewBox={ICONS.fileExport.box} aria-hidden="true"><path d={ICONS.fileExport.path} /></svg>
+          {$t("SteamGuard_Import_Title")}
+        </button>
+        <button
+          type="button"
+          class="btnicontext"
+          disabled={busy || !controller.resumeSteamGuardEnrollment}
+          on:click={startSetupEnrollment}
+        >
+          <svg class="steam-guard__icon" viewBox={ICONS.shield.box} aria-hidden="true"><path d={ICONS.shield.path} /></svg>
+          <!-- Just the feature's name here: the three buttons are already read as
+               ways to add this account, so "Add" on one of them says nothing. -->
+          {$t("SteamGuard_Title")}
+        </button>
+      </div>
+      <div class="steam-guard__footer">
+        <button type="button" class="steam-guard__link" disabled={busy} on:click={showAllAccounts}>
+          <svg class="steam-guard__icon" viewBox={ICONS.list.box} aria-hidden="true"><path d={ICONS.list.path} /></svg>
+          {$t("SteamGuard_Code_ShowAllAccounts")}
+        </button>
+      </div>
+    </section>
+  {:else if state.screen === "login-only"}
+    <!-- No code tile, and no Confirmations, QR or Export: this record holds a
+         session and nothing else. They are absent rather than disabled, because
+         they are not unavailable right now, they do not apply to this account. -->
+    <section class="steam-guard__stack">
+      <div class="steam-guard__identity" data-steamguard-focus tabindex="-1">
+        <span class="steam-guard__identity-avatar">
+          <SteamAccountAvatar account={avatarRow(loginOnlyAccountSummary)} fallback={PROFILE_FALLBACK} />
+        </span>
+        <span class="steam-guard__identity-name">
+          <span class="steam-guard__identity-display">{loginOnlyAccountSummary.username}</span>
+          {#if loginOnlyAccountSummary.displayName && loginOnlyAccountSummary.displayName !== loginOnlyAccountSummary.username}
+            <small>{loginOnlyAccountSummary.displayName}</small>
+          {/if}
+        </span>
+      </div>
+      <p class="steam-guard__hint">{$t("SteamGuard_LoginOnly_Body")}</p>
+      {#if inlineError}<p class="steam-guard__error" role="alert">{inlineError}</p>{/if}
+      <div class="steam-guard__grid" use:controllerSpatialNavigation>
+        <button
+          type="button"
+          class="btnicontext"
+          class:steam-guard__suggested={sessionNeedsLogin}
+          disabled={busy}
+          on:click={showLoginAgainState}
+        >
+          <svg class="steam-guard__icon" viewBox={ICONS.key.box} aria-hidden="true"><path d={ICONS.key.path} /></svg>
+          {$t("SteamGuard_Code_LoginAgain")}
+        </button>
+        <!-- The way out of being login-only. Not offered when the backend cannot
+             promote: the stored session is what makes this one click instead of
+             a second sign-in. -->
+        <button
+          type="button"
+          class="btnicontext"
+          disabled={busy || !controller.promoteLoginOnlyAccount}
+          on:click={promoteLoginOnly}
+        >
+          <svg class="steam-guard__icon" viewBox={ICONS.shield.box} aria-hidden="true"><path d={ICONS.shield.path} /></svg>
+          {$t("SteamGuard_Enrollment_Add")}
+        </button>
+        <!-- Two-step inline rather than a confirm dialog: openConfirm takes the
+             single modal slot and would tear this modal down mid-flow. -->
+        {#if removeConfirming}
+          <button type="button" class="btnicontext modal-danger" disabled={busy} on:click={confirmRemoveLoginOnly}>
+            {$t("SteamGuard_LoginOnly_RemoveConfirm")}
+          </button>
+          <button type="button" class="btnicontext" disabled={busy} on:click={() => (removeConfirming = false)}>
+            {$t("SteamGuard_Cancel")}
+          </button>
+        {:else}
+          <button
+            type="button"
+            class="btnicontext"
+            disabled={busy || !controller.removeLoginOnlyAccount}
+            on:click={() => (removeConfirming = true)}
+          >
+            {$t("SteamGuard_LoginOnly_Remove")}
+          </button>
+        {/if}
+      </div>
+      <div class="steam-guard__footer">
+        <button type="button" class="steam-guard__link" disabled={busy} on:click={showAllAccounts}>
+          <svg class="steam-guard__icon" viewBox={ICONS.list.box} aria-hidden="true"><path d={ICONS.list.path} /></svg>
+          {$t("SteamGuard_Code_ShowAllAccounts")}
+        </button>
+      </div>
+    </section>
   {:else if state.screen === "all-accounts"}
     <section class="steam-guard__stack steam-guard__stack--fill">
       <h2 class="steam-guard__heading" data-steamguard-focus tabindex="-1">{$t("SteamGuard_AllAccounts_Title")}</h2>
       {#if state.accounts.length > 0}
         <ul class="steam-guard__accounts" use:controllerSpatialNavigation>
           {#each state.accounts as listedAccount (listedAccount.id)}
+            {@const rowState = steamGuardRowState(listedAccount)}
             <li>
-              <button type="button" disabled={busy} on:click={() => loadAccount(listedAccount)}>
+              <button type="button" disabled={busy} on:click={() => openAccountScreen(listedAccount)}>
                 <span class="steam-guard__accounts-avatar">
                   <SteamAccountAvatar account={avatarRow(listedAccount)} fallback={PROFILE_FALLBACK} />
                 </span>
@@ -1806,7 +2458,32 @@
                     <small class="steam-guard__accounts-display">{listedAccount.displayName}</small>
                   {/if}
                 </span>
-                <small class="steam-guard__accounts-state">{listedAccount.locked ? $t("SteamGuard_AllAccounts_Locked") : $t("SteamGuard_AllAccounts_Ready")}</small>
+                <!-- A locked login-only row still reads "Locked": that is a
+                     state the user has to act on, and it outranks the kind. So
+                     does a lapsed session, which is why "Login" comes before
+                     the kind too. "Ready" is only claimed for a session
+                     this build could actually read; an unreadable one keeps the
+                     plain, unbadged word rather than promising a live session. -->
+                {#if rowState === "locked"}
+                  <small class="steam-guard__accounts-state">{$t("SteamGuard_AllAccounts_Locked")}</small>
+                {:else if rowState === "login-again"}
+                  <small
+                    class="steam-guard__accounts-state steam-guard__accounts-state--badge
+                           steam-guard__accounts-state--login-again"
+                    >{$t("SteamGuard_AllAccounts_LoginAgain")}</small
+                  >
+                {:else if rowState === "login-only"}
+                  <small class="steam-guard__accounts-state steam-guard__accounts-state--login-only"
+                    >{$t("SteamGuard_AllAccounts_LoginOnly")}</small
+                  >
+                {:else}
+                  <small
+                    class="steam-guard__accounts-state"
+                    class:steam-guard__accounts-state--badge={rowState === "ready"}
+                    class:steam-guard__accounts-state--ready={rowState === "ready"}
+                    >{$t("SteamGuard_AllAccounts_Ready")}</small
+                  >
+                {/if}
               </button>
             </li>
           {/each}
@@ -1818,6 +2495,12 @@
         <button type="button" class="steam-guard__link" disabled={busy} on:click={leaveAllAccounts}>
           <svg class="steam-guard__icon" viewBox={ICONS.back.box} aria-hidden="true"><path d={ICONS.back.path} /></svg>
           {pickerReturnAccount ? $t("SteamGuard_Back") : $t("Button_Close")}
+        </button>
+        <!-- The one way into the vault that needs no account picked first: an
+             maFile carries its own identity. -->
+        <button type="button" class="steam-guard__link" disabled={busy} on:click={importFromAllAccounts}>
+          <svg class="steam-guard__icon" viewBox={ICONS.fileExport.box} aria-hidden="true"><path d={ICONS.fileExport.path} /></svg>
+          {$t("SteamGuard_Import_Title")}
         </button>
       </div>
     </section>
@@ -1833,10 +2516,12 @@
           disabled={!controller.importMaFile || busy}
           on:click={startImport}
         >{$t("SteamGuard_Import_Choose")}</button>
-        {#if state.account}<button type="button" class="btnicontext" on:click={backToAccount}>{$t("SteamGuard_Back")}</button>{/if}
+        <button type="button" class="btnicontext" disabled={busy} on:click={backFromImport}>
+          {state.account ? $t("SteamGuard_Back") : $t("SteamGuard_Code_ShowAllAccounts")}
+        </button>
       </div>
     </section>
-  {:else if state.screen === "enrollment"}
+  {:else if state.screen === "enrollment" || state.screen === "login-only-setup"}
     <section class="steam-guard__stack">
       <h2 class="steam-guard__account" data-steamguard-focus tabindex="-1">{state.account.username}</h2>
 		{#if enrollmentStage === "checking" || authStage === "refreshing"}
@@ -1859,6 +2544,17 @@
 						</span>
 						<label for="steam-enrollment-remember-session">{$t("SteamGuard_RememberMe")}</label>
 					</div>
+					<!-- Same ways in as the account unlock screen. Without these a vault
+					     protected by a keyfile or a backup key could not be opened from
+					     the screens that add an account. -->
+					<SteamGuardVaultFactors
+						idPrefix="steam-enrollment"
+						bind:backupKey={vaultBackupKey}
+						bind:keyfilePath={vaultKeyfilePath}
+						{busy}
+						pickKeyfile={controller.pickKeyfile}
+						onSubmit={submitVaultPreparation}
+					/>
 				{:else}
 					<p class="steam-guard__hint">{$t("SteamGuard_Enrollment_VaultHint")}</p>
 					<label class="steam-guard__field" for="steam-enrollment-vault-confirmation">
@@ -1875,13 +2571,27 @@
 				{/if}
 				{#if inlineError}<p class="steam-guard__error" role="alert">{inlineError}</p>{/if}
 				<div class="steam-guard__actions steam-guard__actions--end">
-					<button type="button" class="btnicontext modal-primary" aria-busy={busy} disabled={busy || !vaultPassword || (!vaultStatus.configured && !vaultPasswordConfirmation) || (!vaultStatus.configured && vaultStatus.savedAccountDataEncrypted && !vaultAppPassword)} on:click={submitVaultPreparation}>{#if busy}<span class="steam-guard__spinner" aria-hidden="true"></span>{/if}{vaultStatus.configured ? (busy ? $t("SteamGuard_Unlocking") : $t("SteamGuard_Unlock")) : (busy ? $t("SteamGuard_Vault_CreatingVault") : $t("SteamGuard_Vault_CreateVault"))}</button>
-					<button type="button" class="btnicontext" disabled={busy} on:click={cancelEnrollment}>{$t("SteamGuard_Back")}</button>
+					{#if vaultStatus.configured}
+						<!-- Its own button: a security key needs nothing typed, which the
+						     primary button cannot allow without accepting an empty form. -->
+						<button
+							type="button"
+							class="btnicontext"
+							disabled={busy || vaultStatus.hasSecurityKey === false}
+							title={vaultStatus.hasSecurityKey === false ? $t("SteamGuard_Unlock_NoSecurityKey") : ""}
+							on:click={() => void submitVaultPreparation()}
+						>{$t("SteamGuard_Unlock_SecurityKey")}</button>
+					{/if}
+					<button type="button" class="btnicontext modal-primary" aria-busy={busy} disabled={busy || (!vaultPassword && !vaultKeyfilePath && !vaultBackupKey.trim()) || (!vaultStatus.configured && !vaultPasswordConfirmation) || (!vaultStatus.configured && vaultStatus.savedAccountDataEncrypted && !vaultAppPassword)} on:click={submitVaultPreparation}>{#if busy}<span class="steam-guard__spinner" aria-hidden="true"></span>{/if}{vaultStatus.configured ? (busy ? $t("SteamGuard_Unlocking") : $t("SteamGuard_Unlock")) : (busy ? $t("SteamGuard_Vault_CreatingVault") : $t("SteamGuard_Vault_CreateVault"))}</button>
+					<button type="button" class="btnicontext" disabled={busy} on:click={cancelSetup}>{$t("SteamGuard_Back")}</button>
 				</div>
 			</form>
 		{:else if authStage === "credentials"}
 			<form class="steam-guard__stack" on:submit|preventDefault={beginCredentialLogin}>
-				<p>{$t("SteamGuard_Enrollment_CredentialsBody")}</p>
+				<!-- Its own field rather than authMessage: that one carries the
+				     sign-in progress text, which would replace this the moment the
+				     form is submitted. -->
+				<p>{credentialsHint || $t("SteamGuard_Enrollment_CredentialsBody")}</p>
 				<label class="steam-guard__field" for="steam-enrollment-account">
 					<span>{$t("SteamGuard_Field_SteamAccountName")}</span>
 					<input id="steam-enrollment-account" class="modal-input" bind:value={authAccountName} autocomplete="username" disabled={busy} on:keydown={(event) => runOnEnter(event, beginCredentialLogin)} />
@@ -1972,15 +2682,21 @@
 		{:else if enrollmentStage === "error" || authStage === "error"}
 			<p class="steam-guard__error" role="alert">{authMessage}</p>
 			<div class="steam-guard__actions steam-guard__actions--end">
-				<button type="button" class="btnicontext modal-primary" disabled={busy} on:click={startEnrollment}>{$t("SteamGuard_TryAgain")}</button>
-				<button type="button" class="btnicontext" disabled={busy} on:click={cancelEnrollment}>{$t("SteamGuard_Back")}</button>
+				<button type="button" class="btnicontext modal-primary" disabled={busy} on:click={restartSetup}>{$t("SteamGuard_TryAgain")}</button>
+				<button type="button" class="btnicontext" disabled={busy} on:click={cancelSetup}>{$t("SteamGuard_Back")}</button>
+			</div>
+		{:else if state.screen === "login-only-setup"}
+			<p>{$t("SteamGuard_LoginOnly_SetupBody")}</p>
+			<div class="steam-guard__actions steam-guard__actions--end">
+				<button type="button" class="btnicontext modal-primary" disabled={busy} on:click={startLoginOnlySetup}>{$t("SteamGuard_SignIn")}</button>
+				<button type="button" class="btnicontext" disabled={busy} on:click={cancelSetup}>{$t("SteamGuard_Back")}</button>
 			</div>
 		{:else}
 			<p>{$t("SteamGuard_Enrollment_IntroBody")}</p>
 			<div class="steam-guard__actions steam-guard__actions--end">
 				<button type="button" class="btnicontext modal-primary" disabled={!controller.resumeSteamGuardEnrollment || busy} on:click={startEnrollment}>{$t("SteamGuard_Enrollment_Add")}</button>
 				<button type="button" class="btnicontext" disabled={busy} on:click={showQrState}>{$t("SteamGuard_LoginWithQR")}</button>
-				<button type="button" class="btnicontext" disabled={busy} on:click={backToAccount}>{$t("SteamGuard_Back")}</button>
+				<button type="button" class="btnicontext" disabled={busy} on:click={cancelSetup}>{$t("SteamGuard_Back")}</button>
 			</div>
 		{/if}
     </section>
@@ -2087,9 +2803,10 @@
 				<p>{authMessage || $t("SteamGuard_LoginAgain_TokenRejected")}</p>
 				<label class="steam-guard__field" for="steam-login-account"><span>{$t("SteamGuard_Field_SteamAccountName")}</span><input id="steam-login-account" class="modal-input" bind:value={authAccountName} autocomplete="username" disabled={busy} on:keydown={(event) => runOnEnter(event, beginCredentialLogin)} /></label>
 				<label class="steam-guard__field" for="steam-login-password"><span>{$t("SteamGuard_Field_SteamPassword")}</span><input id="steam-login-password" class="modal-input" bind:value={authPassword} type="password" autocomplete="current-password" disabled={busy} data-steamguard-autofocus on:keydown={(event) => runOnEnter(event, beginCredentialLogin)} /></label>
-				<!-- Cancel leaves the login-again flow entirely: with the refresh
-				     interstitial gone, staying on this screen at an idle stage strands
-				     the user on its "Refreshing…" fallback with nothing running. -->
+				<!-- Cancel leaves the login-again flow entirely: the renewal that
+				     precedes this form has already finished by the time it shows, so
+				     staying on this screen would strand the user on its "Refreshing…"
+				     fallback with nothing running. -->
 				<div class="steam-guard__actions steam-guard__actions--end"><button type="button" class="btnicontext modal-primary" disabled={busy || !authAccountName.trim() || !authPassword} on:click={beginCredentialLogin}>{$t("SteamGuard_SignIn")}</button><button type="button" class="btnicontext" disabled={busy} on:click={() => { void cancelCredentialLogin().then(backToAccount); }}>{$t("SteamGuard_Cancel")}</button></div>
 			</div>
 		{:else if authStage === "challenge" && authResult}
@@ -2496,6 +3213,10 @@
   .steam-guard__footer {
     display: flex;
     justify-content: center;
+    /* Wraps rather than squeezing: a translated pair of links is easily wider
+       than a narrow modal, and a clipped one cannot be clicked. */
+    flex-wrap: wrap;
+    gap: $sg-half;
     padding-top: $sg-half;
   }
 
@@ -2605,10 +3326,52 @@
     padding-left: $sg-1;
   }
 
+  /*
+   * Two lines by construction, not by a hard-coded break: min-content is the
+   * narrowest box that still fits the longest word, so every locale wraps at its
+   * own word boundaries instead of at one guessed for English. Two lines at
+   * 0.82rem x 1.15 fit the row's 3.5rem min-height, so nothing grows.
+   */
+  .steam-guard__accounts-state--login-only {
+    width: min-content;
+    text-align: center;
+    white-space: normal;
+    line-height: 1.15;
+  }
+
   .steam-guard__accounts-display,
   .steam-guard__accounts-state {
     color: var(--whiteSecondary, #d7d7d7);
     font-size: 0.82rem;
+  }
+
+  /*
+   * Below the shared colour rule on purpose: a single-class variant has the same
+   * specificity, so a badge colour declared above it would be overridden.
+   *
+   * A state worth acting on reads as a badge rather than as a word. Its own
+   * symmetric padding replaces the base rule's padding-left - the row's 0.75rem
+   * gap already separates it from the name - and the min-width keeps every badge
+   * the same size, so the column does not jitter as rows change state. The width
+   * is sized for the one-word labels; a longer translation grows the badge.
+   */
+  .steam-guard__accounts-state--badge {
+    min-width: 3.5rem;
+    padding: 0.15rem 0.45rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    color: var(--white, #fff);
+    text-align: center;
+  }
+
+  .steam-guard__accounts-state--ready {
+    border-color: var(--green, #4caf50);
+    background: color-mix(in srgb, var(--green, #4caf50) 22%, transparent);
+  }
+
+  .steam-guard__accounts-state--login-again {
+    border-color: var(--role-warning, #ffd166);
+    background: color-mix(in srgb, var(--role-warning, #ffd166) 22%, transparent);
   }
 
   .steam-guard__identity {
@@ -2761,29 +3524,6 @@
 		.steam-guard__spinner { animation-duration: 2.4s; }
 	}
 
-	.steam-guard__other-factors {
-		summary {
-			cursor: pointer;
-			opacity: 0.85;
-		}
-	}
-
-	.steam-guard__keyfile-row {
-		display: flex;
-		gap: 0.5rem;
-		align-items: center;
-		margin-top: 0.5rem;
-	}
-
-	.steam-guard__keyfile-name {
-		flex: 1 1 auto;
-		min-width: 0;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-		opacity: 0.8;
-	}
-
 	.steam-guard__qr-progress {
 		width: 100%;
 		height: 0.2rem;
@@ -2844,7 +3584,10 @@
 
   @media (forced-colors: active) {
     .steam-guard__code,
-    .steam-guard__accounts button {
+    .steam-guard__accounts button,
+    /* The tint would otherwise survive on a row repainted to Canvas. The words
+       still tell the states apart. */
+    .steam-guard__accounts-state--badge {
       border-color: CanvasText;
       background: Canvas;
       color: CanvasText;

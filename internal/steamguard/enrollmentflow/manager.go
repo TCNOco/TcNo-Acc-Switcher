@@ -9,6 +9,7 @@ import (
 
 	"TcNo-Acc-Switcher/internal/steamguard/enrollmentapi"
 	"TcNo-Acc-Switcher/internal/steamguard/vault"
+	"TcNo-Acc-Switcher/internal/steamguard/vaultrecord"
 )
 
 type Manager struct {
@@ -52,12 +53,19 @@ func (m *Manager) Start(ctx context.Context, request StartRequest) (Status, erro
 	lock.Lock()
 	defer lock.Unlock()
 
-	if status, found, occupied, err := m.existingLocked(request.SteamID); err != nil {
+	slot, err := m.existingLocked(request.SteamID)
+	if err != nil {
 		return Status{}, err
-	} else if found {
+	}
+	if slot.resumable {
+		status := slot.status
 		status.Resumed = true
 		return status, nil
-	} else if occupied {
+	}
+	// Enrolling replaces whatever holds the slot, and for an authenticator that is
+	// an unrecoverable loss. A session-only record is the one shape worth
+	// replacing - it holds no secrets - and only when the caller asked for it.
+	if slot.occupied && !(request.ReplaceLoginOnly && slot.kind == vaultrecord.KindLoginOnly) {
 		return Status{}, ErrAlreadyEnrolled
 	}
 
@@ -84,6 +92,10 @@ func (m *Manager) Start(ctx context.Context, request StartRequest) (Status, erro
 		return Status{}, err
 	}
 	defer record.destroy()
+	// Carried from the login, not from the API response: Steam does not repeat the
+	// refresh token here, and an authenticator persisted without one can only ever
+	// be recovered with a password.
+	record.RefreshToken = append([]byte(nil), request.RefreshToken...)
 	record.PhoneHint = cleanPhoneHint(record.PhoneHint)
 	record.RetryAfterSeconds = retrySeconds(int64(result.RetryAfter / time.Second))
 	record.HasRetryAfter = result.HasRetryAfter
@@ -105,32 +117,45 @@ func (m *Manager) Resume(steamID uint64) (Status, error) {
 	lock := m.accountLock(steamID)
 	lock.Lock()
 	defer lock.Unlock()
-	status, found, _, err := m.existingLocked(steamID)
+	slot, err := m.existingLocked(steamID)
 	if err != nil {
 		return Status{}, err
 	}
-	if !found {
+	if !slot.resumable {
 		return Status{}, ErrNoPendingEnrollment
 	}
+	status := slot.status
 	status.Resumed = true
 	return status, nil
 }
 
-func (m *Manager) existingLocked(steamID uint64) (Status, bool, bool, error) {
+// slotState is what the account's single record slot currently holds.
+type slotState struct {
+	// status is meaningful only when resumable: an enrollment to carry on with.
+	status    Status
+	resumable bool
+	// occupied is a record that is not a resumable enrollment, with kind naming
+	// its shape. Enrolling over one replaces it.
+	occupied bool
+	kind     vaultrecord.Kind
+}
+
+func (m *Manager) existingLocked(steamID uint64) (slotState, error) {
 	_, raw, found, err := m.loadRecord(steamID)
 	if err != nil || !found {
-		return Status{}, false, found, err
+		return slotState{occupied: found, kind: vaultrecord.KindUnknown}, err
 	}
 	defer wipe(raw)
+	kind := vaultrecord.Sniff(raw)
 	record, err := decodePending(raw)
 	if err != nil {
-		return Status{}, false, true, nil
+		return slotState{occupied: true, kind: kind}, nil
 	}
 	defer record.destroy()
 	if record.SteamID != steamID {
-		return Status{}, false, true, ErrInvalidPendingState
+		return slotState{occupied: true, kind: kind}, ErrInvalidPendingState
 	}
-	return recordStatus(&record, true), true, true, nil
+	return slotState{status: recordStatus(&record, true), resumable: true, occupied: true, kind: kind}, nil
 }
 
 // RevealRevocationCode returns the recovery code while it remains

@@ -46,14 +46,16 @@ func deepMergeJSON(base, override json.RawMessage) (json.RawMessage, error) {
 	return json.Marshal(out)
 }
 
-// jsonObjectWithoutKey drops one top-level key, so a parent's own Fallbacks list is not
+// jsonObjectWithoutKey drops top-level keys, so a parent's own Fallbacks list is not
 // inherited by the variants derived from it.
-func jsonObjectWithoutKey(raw json.RawMessage, key string) (json.RawMessage, error) {
+func jsonObjectWithoutKey(raw json.RawMessage, keys ...string) (json.RawMessage, error) {
 	var obj map[string]json.RawMessage
 	if err := json.Unmarshal(raw, &obj); err != nil || obj == nil {
 		return append(json.RawMessage(nil), raw...), nil
 	}
-	delete(obj, key)
+	for _, key := range keys {
+		delete(obj, key)
+	}
 	return json.Marshal(obj)
 }
 
@@ -67,7 +69,11 @@ func (d *gameDefinition) resolveFallbacks() error {
 	if len(d.raw) == 0 {
 		return fmt.Errorf("game definition has Fallbacks but no source JSON")
 	}
-	base, err := jsonObjectWithoutKey(d.raw, "Fallbacks")
+	// Fetch is dropped alongside Fallbacks: it names the fetcher for one specific
+	// source, so inheriting it into a fallback with a different Url would point
+	// every fallback at the same collector and quietly collapse the chain to one
+	// source. A fallback that genuinely wants a collector states its own.
+	base, err := jsonObjectWithoutKey(d.raw, "Fallbacks", "Fetch")
 	if err != nil {
 		return err
 	}

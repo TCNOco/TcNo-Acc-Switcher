@@ -15,8 +15,6 @@ func CountSavedAccounts(platformKey string) int {
 	return len(f.IDs)
 }
 
-
-
 // CountTags returns the number of tag definitions stored for a platform (from ids.json).
 func CountTags(platformKey string) int {
 	platformKey = strings.TrimSpace(platformKey)

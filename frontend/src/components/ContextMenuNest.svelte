@@ -1,10 +1,13 @@
 <script lang="ts">
   import type { MenuItemDef } from "../stores/contextMenu";
+  import ContextMenuProgress from "./ContextMenuProgress.svelte";
   import { onDestroy, tick } from "svelte";
   import { get } from "svelte/store";
   import { closeContextMenu, submenuOpenPath, submenuExpandEnabled } from "../stores/contextMenu";
   import {
     balancedSubmenuPageRanges,
+    scaleFromComputedTransform,
+    toLayoutPx,
     type SubmenuPageRange,
   } from "../lib/contextMenuLayout";
   const CTX_MENU_DEBUG = false;
@@ -188,6 +191,9 @@
       return;
     }
 
+    // Every rect below is read through the root menu's scale-in transform when a submenu opens in
+    // the same frame the menu appears; the page split is scale-invariant, the written height is not.
+    const scale = scaleFromComputedTransform(getComputedStyle(root).transform);
     const rows = Array.from(column.children).filter(
       (child): child is HTMLElement => child instanceof HTMLElement,
     );
@@ -218,15 +224,20 @@
       tallestPageHeight + (usesPagination ? fixedHeightWithPagination : fixedHeightWithoutPagination),
     );
 
-    column.style.setProperty("--ctx-submenu-planned-height", `${plannedHeight}px`);
+    column.style.setProperty(
+      "--ctx-submenu-planned-height",
+      `${toLayoutPx(plannedHeight, scale)}px`,
+    );
     pageRanges = nextRanges;
     currentPage = Math.min(currentPage, Math.max(0, nextRanges.length - 1));
     measuring = false;
     await tick();
 
     if (run === measurementRun) {
-      column.dispatchEvent(new CustomEvent("ctxsubmenuplanned", { bubbles: true }));
+      // Drop the measuring class first: the listener fits the flyout synchronously, and while the
+      // class is on, the column is still `height: auto` rather than the box just planned for it.
       column.classList.remove("ctx-submenu-measuring");
+      column.dispatchEvent(new CustomEvent("ctxsubmenuplanned", { bubbles: true }));
     }
   }
 
@@ -505,6 +516,9 @@
         aria-disabled={item.disabled ? "true" : undefined}
         tabindex={item.disabled ? -1 : undefined}
         on:click={() => run(item)}>{item.label}</button>
+      {#if item.progress}
+        <ContextMenuProgress progress={item.progress} />
+      {/if}
     </li>
   {/if}
 {/each}

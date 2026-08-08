@@ -14,11 +14,25 @@ export type SteamAccountRow = InstanceType<typeof AccountDTO> & {
   showAvatarFrame?: boolean;
   hasSteamGuard: boolean;
   steamGuardPending: boolean;
+  /**
+   * Vault record holding a Steam session but no authenticator. Deliberately not
+   * hasSteamGuard: there is no code to show, so the lock icon would be a lie.
+   */
+  steamGuardLoginOnly?: boolean;
   /** Display setting, not a property of the account. */
   showSteamGuardLock?: boolean;
+  /** RFC3339 UTC instant, empty when there is no CS2 cooldown. */
+  cs2CooldownExpiresAt?: string;
+  cs2CooldownPermanent?: boolean;
+  showCs2Cooldown?: boolean;
 };
 
-export type SteamGuardMenuAction = "open" | "all" | "add" | "import";
+/**
+ * "open" is an account the vault already holds; "setup" is one it does not, and
+ * lands on the page offering the ways to add it. The context menu picks between
+ * them so there is a single Steam Guard entry rather than a submenu of flows.
+ */
+export type SteamGuardMenuAction = "open" | "all" | "setup";
 
 export type SteamGuardMenuRequest = {
   action: SteamGuardMenuAction;

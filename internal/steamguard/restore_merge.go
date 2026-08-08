@@ -8,11 +8,13 @@ import (
 	"strings"
 	"time"
 
+	"TcNo-Acc-Switcher/internal/steamguard/loginrecord"
 	"TcNo-Acc-Switcher/internal/steamguard/mafile"
 	"TcNo-Acc-Switcher/internal/steamguard/registry"
 	"TcNo-Acc-Switcher/internal/steamguard/securefile"
 	"TcNo-Acc-Switcher/internal/steamguard/sessionrefresh"
 	"TcNo-Acc-Switcher/internal/steamguard/vault"
+	"TcNo-Acc-Switcher/internal/steamguard/vaultrecord"
 )
 
 const restoreStagePrefix = "SteamGuard-RestoreStage-"
@@ -182,7 +184,7 @@ func (s *Service) planStagedRestoreMerge(stage string, live, backup vault.Creden
 		if getErr != nil {
 			return RestoreMergePlan{}, getErr
 		}
-		parsed, parseErr := mafile.ParsePlaintext(plaintext)
+		summary, parseErr := describeBackupRecord(plaintext)
 		wipe(plaintext)
 		if parseErr != nil {
 			return RestoreMergePlan{}, parseErr
@@ -190,9 +192,9 @@ func (s *Service) planStagedRestoreMerge(stage string, live, backup vault.Creden
 		currentExpiry, exists := liveExpiry[record.SteamID64]
 		accounts = append(accounts, RestoreMergeAccount{
 			SteamID64:          record.SteamID64,
-			AccountName:        parsed.Account.AccountName,
+			AccountName:        summary.accountName,
 			Exists:             exists,
-			BackupTokenExpiry:  sessionTokenExpiry(parsed.Account.Session),
+			BackupTokenExpiry:  summary.tokenExpiry,
 			CurrentTokenExpiry: currentExpiry,
 		})
 	}
@@ -273,16 +275,12 @@ func (s *Service) CommitRestoreMergeWithFactors(password, backupPassword, backup
 		if getErr != nil {
 			return result, getErr
 		}
-		parsed, parseErr := mafile.ParsePlaintext(plaintext)
+		steamID64, state, commitErr := commitBackupRecord(v, plaintext)
 		wipe(plaintext)
-		if parseErr != nil {
-			return result, parseErr
-		}
-		steamID64, _, _, commitErr := commitImportedAccount(v, parsed)
 		if commitErr != nil {
 			return result, commitErr
 		}
-		if err := registry.Upsert(steamID64, registry.StateActive); err != nil {
+		if err := registry.Upsert(steamID64, state); err != nil {
 			return result, err
 		}
 		if _, was := existing[steamID64]; was {
@@ -356,12 +354,90 @@ func recordTokenExpiry(v *vault.Vault, recordID string) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	parsed, parseErr := mafile.ParsePlaintext(plaintext)
-	wipe(plaintext)
-	if parseErr != nil {
-		return 0, parseErr
+	defer wipe(plaintext)
+	summary, err := describeBackupRecord(plaintext)
+	if err != nil {
+		return 0, err
 	}
-	return sessionTokenExpiry(parsed.Account.Session), nil
+	return summary.tokenExpiry, nil
+}
+
+// backupRecordSummary is the non-secret view of a staged record the merge plan
+// shows the user.
+type backupRecordSummary struct {
+	kind        vaultrecord.Kind
+	accountName string
+	tokenExpiry int64
+}
+
+// describeBackupRecord reads whichever shape a staged record holds.
+//
+// A backup can legitimately contain login-only records, and before this existed
+// a single one of them aborted the whole plan or commit - taking every other
+// account in the backup with it.
+func describeBackupRecord(plaintext []byte) (backupRecordSummary, error) {
+	switch kind := vaultrecord.Sniff(plaintext); kind {
+	case vaultrecord.KindLoginOnly:
+		login, err := loginrecord.Decode(plaintext)
+		if err != nil {
+			return backupRecordSummary{}, err
+		}
+		defer login.Destroy()
+		expiry := int64(0)
+		if at, ok := sessionrefresh.AccessTokenExpiry(login.AccessToken); ok {
+			expiry = at.Unix()
+		}
+		return backupRecordSummary{kind: kind, accountName: login.AccountName, tokenExpiry: expiry}, nil
+	case vaultrecord.KindMaFile:
+		parsed, err := mafile.ParsePlaintext(plaintext)
+		if err != nil {
+			return backupRecordSummary{}, err
+		}
+		defer clearMafileAccount(&parsed.Account)
+		return backupRecordSummary{
+			kind:        kind,
+			accountName: parsed.Account.AccountName,
+			tokenExpiry: sessionTokenExpiry(parsed.Account.Session),
+		}, nil
+	default:
+		return backupRecordSummary{}, ErrInvalidImport
+	}
+}
+
+// commitBackupRecord writes a staged record into the live vault in its own
+// shape, and reports the registry state that shape implies.
+func commitBackupRecord(v *vault.Vault, plaintext []byte) (string, registry.State, error) {
+	switch vaultrecord.Sniff(plaintext) {
+	case vaultrecord.KindLoginOnly:
+		login, err := loginrecord.Decode(plaintext)
+		if err != nil {
+			return "", "", err
+		}
+		defer login.Destroy()
+		canonical, err := loginrecord.Encode(login)
+		if err != nil {
+			wipe(canonical)
+			return "", "", err
+		}
+		defer wipe(canonical)
+		steamID64 := strconv.FormatUint(login.SteamID, 10)
+		if _, err := v.PutRecord(steamID64, canonical); err != nil {
+			return "", "", err
+		}
+		return steamID64, registry.StateLoginOnly, nil
+	case vaultrecord.KindMaFile:
+		parsed, err := mafile.ParsePlaintext(plaintext)
+		if err != nil {
+			return "", "", err
+		}
+		steamID64, _, _, err := commitImportedAccount(v, parsed)
+		if err != nil {
+			return "", "", err
+		}
+		return steamID64, registry.StateActive, nil
+	default:
+		return "", "", ErrInvalidImport
+	}
 }
 
 // sessionTokenExpiry reads the access token's expiry offline; 0 when the copy

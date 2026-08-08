@@ -39,6 +39,8 @@
     reportLaunchFailure,
   } from "../lib/adminFlow";
   import { contextMenu as ctxMenuAction } from "../lib/actions/contextMenu";
+  import { tooltip as tooltipAction } from "../lib/actions/tooltip";
+  import { resolveGameStatTooltip } from "../lib/accounts/gameStatTooltip";
   import type { MenuItemDef } from "../stores/contextMenu";
   import { offlineMode, offlineSafeImageSrc, withAssetCacheBust } from "../stores/offlineMode";
   import { formatLastLoginForLocale } from "../lib/formatLastLogin";
@@ -51,7 +53,7 @@
   import { platformListSort, type PlatformSortKind } from "../stores/platformListSort";
   import { actionBarStatus, fileDropInterceptor, accountProfileImageDropActive } from "../stores/fileDrop";
   import { sanitizeHtml } from "../lib/sanitizeHtml";
-  import type { PlatformAccountAdapter } from "./PlatformAccountAdapter";
+  import type { GameStatMetricDTO, PlatformAccountAdapter } from "./PlatformAccountAdapter";
   import {
     commandRows,
     isCommandQuery,
@@ -140,6 +142,7 @@
   let offPlatformAction: (() => void) | undefined;
   let offAccountsRefresh: (() => void) | undefined;
   let offUpdateEvent: (() => void) | undefined;
+  const offExtraUpdateEvents: (() => void)[] = [];
   let offGameStatsUpdated: (() => void) | undefined;
   let offSort: (() => void) | undefined;
   let offWindowFocus: (() => void) | undefined;
@@ -147,7 +150,7 @@
   let lastHandledSortId = 0;
   const accountLoadGuard = createLatestRequestGuard();
 
-  let gameStatsByAccount: Record<string, Record<string, Record<string, { statValue: string; indicatorMarkup: string }>>> = {};
+  let gameStatsByAccount: Record<string, Record<string, Record<string, GameStatMetricDTO>>> = {};
   let hasGameStatsSupport = false;
 
   // Reactive declarations
@@ -182,7 +185,9 @@
       ? $t("Tags_All")
       : tagFilterMode.kind === "untagged"
         ? $t("Tags_Filter_Untagged")
-        : tagFilterMode.name;
+        : tagFilterMode.kind === "notTag"
+          ? $t("Tags_Filter_WithoutName", { name: tagFilterMode.name })
+          : tagFilterMode.name;
 
   $: displayIds = displayIdsForTagFilter(accountIds, accountMap, adapter, tagFilterMode);
 
@@ -254,6 +259,11 @@
     if (adapter.shouldShowLastUsed(acc)) {
       const lastUsed = compactText(formatLastLoginForLocale(adapter.lastUsed(acc), get(locale)));
       if (lastUsed) parts.push(`${tr("Filter_Sort_LastUsed")}: ${lastUsed}`);
+    }
+
+    for (const line of adapter.extraA11yStatus?.(acc) ?? []) {
+      const spoken = compactText(line);
+      if (spoken) parts.push(spoken);
     }
 
     return parts.join(". ");
@@ -364,6 +374,7 @@
   async function refreshGameStatsSupportInternal(): Promise<void> {
     hasGameStatsSupport = await refreshGameStatsSupport(name);
   }
+
 
   async function swapToLogin(): Promise<void> {
     const acc = accountById(selectedId);
@@ -728,7 +739,11 @@
     const targetId = adapter.patchTargetId(patch);
     const prev = accountById(targetId);
     if (!prev) return;
-    const result = applyAccountPatch(accounts, rowVersions, avatarEpoch, adapter, targetId, adapter.applyPatch(patch, prev));
+    applyRowUpdate(targetId, adapter.applyPatch(patch, prev));
+  }
+
+  function applyRowUpdate(targetId: string, next: TAccount): void {
+    const result = applyAccountPatch(accounts, rowVersions, avatarEpoch, adapter, targetId, next);
     if (!result.changed) return;
     accounts = result.accounts;
     rowVersions = result.rowVersions;
@@ -958,6 +973,15 @@
       applyPatchFromEvent(ev.data);
     });
 
+    for (const extra of adapter.extraUpdateEvents ?? []) {
+      offExtraUpdateEvents.push(Events.On(extra.name, (ev) => {
+        const targetId = extra.targetId(ev.data);
+        const prev = targetId ? accountById(targetId) : undefined;
+        if (!prev) return;
+        applyRowUpdate(targetId, extra.apply(ev.data, prev));
+      }));
+    }
+
     offGameStatsUpdated = Events.On("basic-game-stats-updated", (ev) => {
       const p = ev.data as { platformKey?: string; uniqueId?: string };
       if ((p.platformKey ?? "").trim() !== name.trim()) return;
@@ -988,6 +1012,7 @@
     offSort?.();
     offAccountsRefresh?.();
     offUpdateEvent?.();
+    for (const off of offExtraUpdateEvents.splice(0)) off();
     offGameStatsUpdated?.();
     offWindowFocus?.();
     accountProfileImageDropActive.set(false);
@@ -1135,6 +1160,11 @@
                     <span id={descId} class="sr-only">{a11yDescription}</span>
                   {/if}
 
+                  <!-- Sits directly under the community name. Placed after the
+                       sr-only span so the label/description pair stays adjacent
+                       to the heading it belongs to. -->
+                  <slot name="account-after-name" {acc} />
+
                   <AccountTagBubbles tags={adapter.tags(acc) ?? []} />
 
                   {#if adapter.shouldShowNote(acc)}
@@ -1146,7 +1176,11 @@
                       <span class="acc_inline_gamestats_metrics">
                         {#each Object.values(gameStatsByAccount[rid]) as metrics}
                           {#each Object.values(metrics) as dto}
-                            <span class="acc_inline_gamestats_metric">
+                            {@const statTip = resolveGameStatTooltip(dto.tooltip, $t)}
+                            <span
+                              class="acc_inline_gamestats_metric"
+                              use:tooltipAction={statTip ? { text: statTip, boundary: acclistEl } : undefined}
+                            >
                               {#if dto.indicatorMarkup}
                                 <span class="acc_inline_gamestats_ind">{@html sanitizeHtml(dto.indicatorMarkup, "gameStats")}</span>
                               {/if}

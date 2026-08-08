@@ -15,14 +15,55 @@ export type SteamGuardAccountRef = {
   staticImageUrl?: string;
 };
 
+/**
+ * Which shape the vault record has. A discriminant rather than a boolean because
+ * the vault has grown a third shape once already.
+ */
+export type SteamGuardAccountKind = "authenticator" | "login-only";
+
+/**
+ * What the account's stored Steam session looks like, decided by Go from the
+ * record alone. "unknown" is a real answer, not a placeholder: a token this build
+ * cannot read says nothing either way, so the row claims nothing either.
+ */
+export type SteamGuardSessionStatus = "unknown" | "valid" | "needs-login";
+
 export type SteamGuardAccountSummary = SteamGuardAccountRef & {
   locked: boolean;
+  /**
+   * Required, not optional, on purpose: every construction site has to be
+   * visited, or one of them silently defaults to "authenticator" and the picker
+   * sends a secret-less record to the code screen.
+   */
+  kind: SteamGuardAccountKind;
+  /** Required for the same reason as kind: a default would assert a session state. */
+  sessionStatus: SteamGuardSessionStatus;
   /** Switcher avatar for the picker row; absent when the account is not in the switcher. */
   imageUrl?: string;
   staticImageUrl?: string;
   vac?: boolean;
   limited?: boolean;
 };
+
+export function isLoginOnlySummary(summary: { kind?: SteamGuardAccountKind }): boolean {
+  return summary.kind === "login-only";
+}
+
+export type SteamGuardRowState = "locked" | "login-again" | "login-only" | "ready" | "unverified";
+
+/**
+ * What a picker row's state badge says. Locked outranks everything: it is what the
+ * user has to act on first. A lapsed session outranks the record's kind for the
+ * same reason - a login-only account that cannot sign in is nothing but a sign-in
+ * prompt. An undecidable session falls back to "unverified", which still reads
+ * "Ready" (the vault is open, the account is usable) but claims nothing about Steam.
+ */
+export function steamGuardRowState(summary: SteamGuardAccountSummary): SteamGuardRowState {
+  if (summary.locked) return "locked";
+  if (summary.sessionStatus === "needs-login") return "login-again";
+  if (isLoginOnlySummary(summary)) return "login-only";
+  return summary.sessionStatus === "valid" ? "ready" : "unverified";
+}
 
 export type SteamGuardCodeView = {
   account: SteamGuardAccountRef;
@@ -58,10 +99,10 @@ export type SteamGuardQRApproval = {
 	requestorDeviceTrustCode?: number;
 };
 
-export type SteamAuthPurpose = "login_again" | "add_authenticator";
+export type SteamAuthPurpose = "login_again" | "add_authenticator" | "login_only";
 
 export type SteamLoginResult = {
-	state: "refreshed" | "reauthentication_required";
+	state: "refreshed" | "reauthentication_required" | "removed";
 	refreshTokenRenewed: boolean;
 	capabilityRefreshRequired: boolean;
 	registryUpdated: boolean;
@@ -96,6 +137,16 @@ export type SteamEnrollmentStatus = {
 export type SteamSessionState = {
   needsLogin: boolean;
   reason?: string;
+};
+
+/**
+ * A session verdict taken after a renewal was attempted, so needsLogin means the
+ * stored refresh token could not produce a working session — not merely that the
+ * short-lived access token lapsed. The renewal writes to the vault, so
+ * capabilityRefreshRequired means the caller's capability has to be re-acquired.
+ */
+export type SteamSessionRefreshState = SteamSessionState & {
+  capabilityRefreshRequired: boolean;
 };
 
 /**
@@ -170,6 +221,23 @@ export async function closeSteamGuardEnrollment(actions: {
 	actions.dismiss();
 }
 
+/**
+ * The outcome of promoting a login-only account to a full authenticator.
+ *
+ * needsLogin is not a failure: the stored session is simply too old to authorize
+ * the enrollment, so the caller collects a password and takes the ordinary
+ * add-authenticator route instead. accountName is the record's stored login
+ * name, so that form starts already filled in.
+ */
+export type SteamGuardPromotion = {
+  needsLogin: boolean;
+  reason: string;
+  accountName: string;
+  enrollment?: SteamEnrollmentStatus;
+  capabilityRefreshRequired: boolean;
+  registryUpdated: boolean;
+};
+
 export type SteamEnrollmentStep = "not-started" | "recovery" | "confirmation" | "complete" | "blocked";
 
 export function steamEnrollmentStep(status: SteamEnrollmentStatus): SteamEnrollmentStep {
@@ -184,7 +252,9 @@ export type SteamGuardModalEntry =
   | "import"
   | "enrollment"
   | "qr"
-  | "login-again";
+  | "login-again"
+  | "login-only-setup"
+  | "setup";
 
 export type SteamGuardModalState =
   | { screen: "loading"; account: SteamGuardAccountRef }
@@ -195,6 +265,13 @@ export type SteamGuardModalState =
   | { screen: "enrollment"; account: SteamGuardAccountRef }
   | { screen: "qr"; account: SteamGuardAccountRef }
   | { screen: "login-again"; account: SteamGuardAccountRef }
+  // A login-only record has no shared secret, so it can never reach
+  // account-code. These two screens are its whole surface.
+  | { screen: "login-only"; account: SteamGuardAccountRef }
+  | { screen: "login-only-setup"; account: SteamGuardAccountRef }
+  // An account the vault does not hold yet. Nothing is stored for it, so this
+  // screen only offers the three ways to start storing one.
+  | { screen: "setup"; account: SteamGuardAccountRef }
   | { screen: "export-authorize"; account: SteamGuardAccountRef }
   | { screen: "recovery"; account?: SteamGuardAccountRef; message: string }
   | { screen: "error"; account?: SteamGuardAccountRef; message: string };
@@ -208,6 +285,9 @@ export type SteamGuardModalAction =
   | { type: "show-enrollment"; account: SteamGuardAccountRef }
   | { type: "show-qr"; account: SteamGuardAccountRef }
   | { type: "show-login-again"; account: SteamGuardAccountRef }
+  | { type: "show-login-only"; account: SteamGuardAccountRef }
+  | { type: "show-login-only-setup"; account: SteamGuardAccountRef }
+  | { type: "show-setup"; account: SteamGuardAccountRef }
   | { type: "show-export-authorize"; account: SteamGuardAccountRef }
   | { type: "show-recovery"; account?: SteamGuardAccountRef; message: string }
   | { type: "fail"; account?: SteamGuardAccountRef; message: string };
@@ -233,6 +313,17 @@ export type SteamGuardModalController = {
   /** Returns the chosen keyfile path, or "" if the user cancelled. */
   pickKeyfile?: () => Promise<string>;
   listAccounts?: (accountId: string, capability: string) => Promise<SteamGuardAccountSummary[]>;
+  /**
+   * Login-only records only. An authenticator's secrets exist nowhere else, so
+   * removing one would be an unrecoverable loss; Go re-checks the record kind
+   * under its own lock, and this gate is only UX.
+   */
+  removeLoginOnlyAccount?: (accountId: string, capability: string) => Promise<SteamLoginResult>;
+  /**
+   * Login-only records only. Starts enrollment from the session the record
+   * already holds, so the user is only asked for what Steam insists on.
+   */
+  promoteLoginOnlyAccount?: (accountId: string, capability: string) => Promise<SteamGuardPromotion>;
   copyCode?: (accountId: string, capability: string) => Promise<void> | void;
 	openConfirmations?: (accountId: string, capability: string) => Promise<void> | void;
 	  loginAgain?: (accountId: string, capability: string) => Promise<SteamLoginResult>;
@@ -258,15 +349,30 @@ export type SteamGuardModalController = {
 	  cancelCredentialLogin?: (accountId: string, capability: string, handle: string) => Promise<void>;
 	  /** Offline: reads the stored session only, so it costs no Steam request. */
 	  steamSessionLocalState?: (accountId: string, capability: string) => Promise<SteamSessionState>;
+	  /**
+	   * Renews a lapsed session from the stored refresh token before reporting on it,
+	   * so a day-old access token does not ask for a password the refresh token can
+	   * still avoid. May write to the vault; see capabilityRefreshRequired.
+	   */
+	  ensureFreshSession?: (accountId: string, capability: string) => Promise<SteamSessionRefreshState>;
 	  /** Asks Steam whether it still accepts the stored session. Read-only. */
 	  probeSteamSession?: (accountId: string, capability: string) => Promise<SteamSessionState>;
 	  getSteamGuardVaultStatus?: () => Promise<SteamGuardVaultStatus>;
 	  initializeSteamGuardVault?: (password: string, appPassword: string) => Promise<void>;
+	  /**
+	   * Unlocks the vault itself rather than one account, for the screens that
+	   * ADD an account - the account is not in the vault yet, so the
+	   * account-level unlock has nothing to return. keyfilePath and backupKey
+	   * are optional but must be offered: a vault protected by either cannot be
+	   * opened by a password alone.
+	   */
 	  unlockSteamGuardVault?: (
 		accountId: string,
 		password: string,
 		rememberForSession: boolean,
 		capability: string,
+		keyfilePath?: string,
+		backupKey?: string,
 	  ) => Promise<void>;
 	  /** Resolves to the written path, or "" when the user cancelled the save dialog. */
 	  /** maFilePassword encrypts the file the way SDA does; empty exports plaintext. */
@@ -359,6 +465,8 @@ export function initialSteamGuardModalState(
   if (entry === "enrollment") return { screen: "enrollment", account };
   if (entry === "qr") return { screen: "qr", account };
   if (entry === "login-again") return { screen: "login-again", account };
+  if (entry === "login-only-setup") return { screen: "login-only-setup", account };
+  if (entry === "setup") return { screen: "setup", account };
   return { screen: "loading", account };
 }
 
@@ -383,6 +491,12 @@ export function reduceSteamGuardModal(
       return { screen: "qr", account: action.account };
     case "show-login-again":
       return { screen: "login-again", account: action.account };
+    case "show-login-only":
+      return { screen: "login-only", account: action.account };
+    case "show-login-only-setup":
+      return { screen: "login-only-setup", account: action.account };
+    case "show-setup":
+      return { screen: "setup", account: action.account };
     case "show-export-authorize":
       return { screen: "export-authorize", account: action.account };
     case "show-recovery":

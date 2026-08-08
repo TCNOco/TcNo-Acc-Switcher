@@ -13,9 +13,6 @@ vi.mock("./menuCommands", () => ({
 }));
 
 const labels: Record<string, string> = {
-  Context_2Factor: "2-Factor",
-  Context_AddSteamGuard: "Add Steam Guard",
-  Context_ImportMaFile: "Import maFile",
   Context_SteamGuard: "Steam Guard",
 };
 
@@ -43,31 +40,36 @@ function child(item: MenuItemDef, label: string): MenuItemDef {
 }
 
 describe("Steam Guard context menu", () => {
-  it("shows the exact 2-Factor submenu for an account without an authenticator", () => {
+  // One entry, whatever the account's state: the submenu that named three flows
+  // up front is gone, and the setup page offers them instead.
+  it("sends an account the vault does not hold to the setup page", () => {
     const open = vi.fn<(request: SteamGuardMenuRequest) => void>();
-    const item = buildSteamGuardMenuItem(account({ steamGuardPending: true }), open, tr);
-
-    expect(item.label).toBe("2-Factor");
-    expect(item.children?.map(({ label }) => label)).toEqual(["Add Steam Guard", "Import maFile"]);
-
-    child(item, "Add Steam Guard").action?.();
-    child(item, "Import maFile").action?.();
-    expect(open.mock.calls.map(([request]) => request.action)).toEqual(["add", "import"]);
-    expect(open.mock.calls[0]?.[0]).toEqual({
-      action: "add",
-      steamId64: "76561198000000001",
-      accountName: "login",
-      displayName: "Display",
-      pending: true,
-    });
-  });
-
-  it("shows one Steam Guard action for an account with an authenticator", () => {
-    const open = vi.fn<(request: SteamGuardMenuRequest) => void>();
-    const item = buildSteamGuardMenuItem(account({ hasSteamGuard: true }), open, tr);
+    const item = buildSteamGuardMenuItem(account(), open, tr);
 
     expect(item.label).toBe("Steam Guard");
     expect(item.children).toBeUndefined();
+    item.action?.();
+    expect(open).toHaveBeenCalledWith({
+      action: "setup",
+      steamId64: "76561198000000001",
+      accountName: "login",
+      displayName: "Display",
+      pending: false,
+    });
+  });
+
+  // Every shape the vault stores opens on the account itself. A half-finished
+  // enrollment and a session-only record are records too, and offering to add
+  // one that is already there is how a pending enrollment got orphaned.
+  it.each([
+    ["an authenticator", { hasSteamGuard: true }],
+    ["a pending enrollment", { steamGuardPending: true }],
+    ["a login-only record", { steamGuardLoginOnly: true }],
+  ] as const)("opens %s directly", (_label, overrides) => {
+    const open = vi.fn<(request: SteamGuardMenuRequest) => void>();
+    const item = buildSteamGuardMenuItem(account(overrides), open, tr);
+
+    expect(item.label).toBe("Steam Guard");
     item.action?.();
     expect(open).toHaveBeenCalledWith(expect.objectContaining({
       action: "open",
@@ -92,6 +94,47 @@ describe("Steam Guard context menu", () => {
   });
 });
 
+// Copying a code needs an open vault and an authenticator, and the row carries a
+// countdown so the user can see whether the code is about to roll over.
+describe("Copy Steam Guard code row", () => {
+  const shared = (): SharedMenuItems => {
+    const item = (label: string): MenuItemDef => ({ label, action: vi.fn() });
+    return {
+      swapTo: item("Swap"),
+      changeName: item("Rename"),
+      createShortcut: item("Shortcut"),
+      changeImage: item("Image"),
+      forget: item("Forget"),
+      notes: item("Notes"),
+      tags: item("Tags"),
+      gameStats: null,
+    };
+  };
+
+  const deps = (steamGuardVaultUnlocked: boolean): SteamMenuDeps => ({
+    name: "Steam",
+    installedGames: [],
+    gameDataBySteamId: {},
+    steamIds: [],
+    refreshGameDataAppSets: async () => {},
+    openSteamGuard: vi.fn(),
+    steamGuardVaultUnlocked,
+  });
+
+  const copyRow = (acc: SteamAccountRow, unlocked: boolean): MenuItemDef | undefined => {
+    const menu = buildSteamExtraMenu(acc, shared(), deps(unlocked));
+    const copy = menu.find((candidate) => candidate.label === "Context_CopySubmenu");
+    return copy?.children?.find((candidate) => candidate.label === "Context_CopySteamGuardCode");
+  };
+
+  it("offers a counted-down code only for an authenticator in an open vault", () => {
+    expect(copyRow(account({ hasSteamGuard: true }), true)?.progress).toBeDefined();
+    expect(copyRow(account({ hasSteamGuard: true }), false)).toBeUndefined();
+    expect(copyRow(account({ hasSteamGuard: false }), true)).toBeUndefined();
+    expect(copyRow(account({ steamGuardPending: true }), true)).toBeUndefined();
+  });
+});
+
 describe("Steam account Manage submenu", () => {
   it("contains Notes and Forget instead of exposing them at the root", () => {
     const item = (label: string): MenuItemDef => ({ label, action: vi.fn() });
@@ -112,6 +155,7 @@ describe("Steam account Manage submenu", () => {
       steamIds: [account().steamId64],
       refreshGameDataAppSets: async () => {},
       openSteamGuard: vi.fn(),
+      steamGuardVaultUnlocked: false,
     };
 
     const menu = buildSteamExtraMenu(account(), shared, deps);
@@ -148,6 +192,7 @@ describe("Steam hide ban status menu item", () => {
     steamIds: [],
     refreshGameDataAppSets: async () => {},
     openSteamGuard: vi.fn(),
+    steamGuardVaultUnlocked: false,
   });
 
   const manageOf = (acc: SteamAccountRow, items: SharedMenuItems): MenuItemDef => {

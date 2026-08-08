@@ -3,6 +3,7 @@ import { requestPlatformAccountsRefresh } from "../../stores/platformPage";
 import type { SteamAccountRow, SteamGuardMenuRequest } from "./types";
 import { formatWailsError, formatToastWithError } from "../formatWailsError";
 import { reportLaunchFailure } from "../adminFlow";
+import { copySteamGuardCodeNow, refreshSteamGuardVaultUnlocked } from "./steamGuardQuickCopy";
 import * as SteamService from "../../../bindings/TcNo-Acc-Switcher/internal/steam/steamservice.js";
 import * as Shortcuts from "wails-shortcuts-service";
 
@@ -22,6 +23,8 @@ export interface SteamMenuDeps {
   steamIds: string[];
   refreshGameDataAppSets: (ids: string[]) => Promise<void>;
   openSteamGuard: (request: SteamGuardMenuRequest) => void;
+  /** Last known vault state. Only an open vault can hand out a code. */
+  steamGuardVaultUnlocked: boolean;
 }
 
 function mapSteamUserdataI18nError(err: unknown, tr: Translate): string {
@@ -80,6 +83,23 @@ export function createSteamMenuCommands(acc: SteamAccountRow, deps: SteamMenuDep
         void clipboardWrite(formats[format] ?? (format === "ID64" ? rid : ""), tr);
       } catch {
         if (format === "ID64") void clipboardWrite(rid, tr);
+      }
+    },
+
+    // The code never reaches the page: Go writes it to the secure clipboard,
+    // which clears it again when it expires.
+    async copySteamGuardCode(): Promise<void> {
+      try {
+        await copySteamGuardCodeNow(rid);
+        pushToast({ type: "success", message: tr("SteamGuard_Code_Copied"), duration: 2500 });
+      } catch (e) {
+        pushToast({
+          type: "error",
+          message: formatToastWithError(tr("SteamGuard_Error_CodeCopyFailed"), e),
+          duration: 8000,
+        });
+        // A locked vault is the likeliest reason, so stop offering the row.
+        void refreshSteamGuardVaultUnlocked();
       }
     },
 

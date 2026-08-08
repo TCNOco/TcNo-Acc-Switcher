@@ -1,3 +1,36 @@
+/**
+ * Rects carry every ancestor transform; CSS lengths do not. The menu scales in (`in:scale`), so a
+ * rect read while that animation is live is 3% short of the box the menu settles into — divide the
+ * scale back out before writing the value to a style, or the flyout is sized for a height it never
+ * has and its last rows paint outside it. Only *differences* may be normalized this way: the
+ * transform-origin term cancels in a subtraction, never in an absolute viewport coordinate.
+ */
+export function scaleFromComputedTransform(transform: string): number {
+  const matrix = /^matrix(3d)?\(([^)]*)\)$/.exec(transform ?? "");
+  if (!matrix) {
+    return 1;
+  }
+  const is3d = matrix[1] === "3d";
+  const parts = matrix[2]!.split(",").map((value) => Number.parseFloat(value));
+  if (parts.length !== (is3d ? 16 : 6) || parts.some((value) => !Number.isFinite(value))) {
+    return 1;
+  }
+  // Rotated or skewed: no single factor undoes it, and a wrong divisor is worse than none.
+  if (parts[1]! !== 0 || (is3d ? parts[4]! : parts[2]!) !== 0) {
+    return 1;
+  }
+  const scaleY = is3d ? parts[5]! : parts[3]!;
+  return scaleY > 0 ? scaleY : 1;
+}
+
+/** Converts a rect-derived length back into the CSS pixels a style property is written in. */
+export function toLayoutPx(renderedValue: number, scale: number): number {
+  if (!Number.isFinite(scale) || scale <= 0 || scale === 1) {
+    return renderedValue;
+  }
+  return renderedValue / scale;
+}
+
 export type SubmenuVerticalLayout = {
   naturalTop: number;
   naturalBottom: number;

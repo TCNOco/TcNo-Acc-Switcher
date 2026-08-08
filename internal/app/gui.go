@@ -25,6 +25,7 @@ import (
 	"TcNo-Acc-Switcher/internal/shortcuts"
 	"TcNo-Acc-Switcher/internal/stats"
 	"TcNo-Acc-Switcher/internal/steam"
+	"TcNo-Acc-Switcher/internal/steamguard"
 	"TcNo-Acc-Switcher/internal/tray"
 	"TcNo-Acc-Switcher/internal/updatecheck"
 	"TcNo-Acc-Switcher/internal/updatertheme"
@@ -284,6 +285,11 @@ func RunGUI(params RunGUIParams) {
 		}
 		return basic.CurrentLiveUniqueID(basic.FlowDeps{PS: params.Dispatch.PlatformSvc}, platformKey)
 	})
+	// Lets the CS2 stats chain prefer the ranks the Steam Guard sweep already
+	// read from Valve, falling through to the public APIs for accounts it has
+	// nothing for. Registered here for the same reason as the resolver above:
+	// internal/basic cannot import internal/steamguard.
+	steamguard.RegisterCS2RankCollector()
 	params.Dispatch.BasicSvc.StartGameStatsProcessMonitor()
 	steam.StartSteamAppListMonitor()
 

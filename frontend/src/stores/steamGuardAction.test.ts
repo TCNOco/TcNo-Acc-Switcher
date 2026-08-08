@@ -55,6 +55,35 @@ describe("Steam Guard action-bar account", () => {
     });
   });
 
+  it("offers a login-only account when it is the only one in the vault", () => {
+    // The toolbar entry opens the vault, and a login-only record is in the vault
+    // just as much as an authenticator is.
+    expect(steamGuardActionAccountFrom([
+      {
+        steamId64: "76561198000000005",
+        accountName: "session_only",
+        hasSteamGuard: false,
+        steamGuardLoginOnly: true,
+      },
+    ])).toMatchObject({ steamId64: "76561198000000005" });
+  });
+
+  it("prefers an authenticator over a login-only account", () => {
+    // The default target should be one that can actually produce a code.
+    expect(steamGuardActionAccountFrom([
+      {
+        steamId64: "76561198000000005",
+        accountName: "session_only",
+        steamGuardLoginOnly: true,
+      },
+      {
+        steamId64: "76561198000000006",
+        accountName: "guarded_user",
+        hasSteamGuard: true,
+      },
+    ])).toMatchObject({ steamId64: "76561198000000006" });
+  });
+
   it("publishes and clears action-bar availability", () => {
     publishSteamGuardActionAccounts([
       {

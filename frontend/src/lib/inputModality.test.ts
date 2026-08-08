@@ -15,12 +15,15 @@ afterEach(() => {
 
 class FakeClassList {
   private classes = new Set<string>();
+  writes = 0;
 
   add(...tokens: string[]): void {
+    this.writes++;
     tokens.forEach((token) => this.classes.add(token));
   }
 
   remove(...tokens: string[]): void {
+    this.writes++;
     tokens.forEach((token) => this.classes.delete(token));
   }
 
@@ -57,6 +60,22 @@ describe("input modality", () => {
     expect(getInputModality()).toBe("keyboard");
     expect(root.classList.contains("input-modality-keyboard")).toBe(true);
     expect(root.dataset.inputModality).toBe("keyboard");
+
+    cleanup();
+  });
+
+  it("leaves the class alone when the modality has not changed", () => {
+    const { window, root } = installDom();
+    const classList = root.classList as unknown as FakeClassList;
+    const cleanup = installInputModalityTracking();
+
+    window.dispatchEvent(new Event("pointerdown"));
+    const afterFirst = classList.writes;
+    window.dispatchEvent(new Event("pointerdown"));
+    window.dispatchEvent(new Event("mousedown"));
+
+    expect(classList.writes).toBe(afterFirst);
+    expect(root.classList.contains("input-modality-pointer")).toBe(true);
 
     cleanup();
   });

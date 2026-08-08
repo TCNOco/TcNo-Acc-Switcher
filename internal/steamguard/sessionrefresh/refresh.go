@@ -14,16 +14,18 @@ import (
 	"sync"
 	"time"
 
+	"TcNo-Acc-Switcher/internal/steamguard/loginrecord"
 	"TcNo-Acc-Switcher/internal/steamguard/mafile"
 	"TcNo-Acc-Switcher/internal/steamguard/protocol"
 	"TcNo-Acc-Switcher/internal/steamguard/vault"
+	"TcNo-Acc-Switcher/internal/steamguard/vaultrecord"
 )
 
 const (
 	DefaultRequestTimeout = 20 * time.Second
 	maxRequestTimeout     = 20 * time.Second
 	maxTokenBytes         = 8192
-	pendingKind           = "steamguard-enrollment-pending"
+	pendingKind           = vaultrecord.KindStringEnrollmentPending
 )
 
 // Code is a stable, secret-free error classification.
@@ -200,27 +202,58 @@ func (r *Refresher) refresh(ctx context.Context, steamID uint64) (Result, error)
 	}
 	defer wipe(raw)
 
-	parsed, parseErr := mafile.ParsePlaintext(raw)
-	if parseErr != nil {
-		if pendingRecord(raw) {
-			return Result{}, ErrPending
-		}
-		return Result{}, ErrCorruptRecord
-	}
-	account := parsed.Account
-	if account.Session == nil || account.Session.SteamID != steamID || record.SteamID64 != strconv.FormatUint(steamID, 10) {
-		clearAccount(&account)
+	// Both stored shapes carry a refresh token, and both must be written back in
+	// the shape they came in: a login-only record has no authenticator secrets,
+	// so re-exporting it as a maFile would fail validation and lose the session.
+	if record.SteamID64 != strconv.FormatUint(steamID, 10) {
 		return Result{}, ErrWrongAccount
 	}
-	defer clearAccount(&account)
-	if !validToken(account.Session.RefreshToken) {
+	var (
+		account      mafile.Account
+		login        loginrecord.Record
+		isLoginOnly  bool
+		refreshToken string
+	)
+	switch vaultrecord.Sniff(raw) {
+	case vaultrecord.KindLoginOnly:
+		decoded, decodeErr := loginrecord.Decode(raw)
+		if decodeErr != nil {
+			return Result{}, ErrCorruptRecord
+		}
+		if decoded.SteamID != steamID {
+			decoded.Destroy()
+			return Result{}, ErrWrongAccount
+		}
+		login = decoded
+		isLoginOnly = true
+		refreshToken = decoded.RefreshToken
+		defer login.Destroy()
+	case vaultrecord.KindEnrollmentPending:
+		return Result{}, ErrPending
+	default:
+		parsed, parseErr := mafile.ParsePlaintext(raw)
+		if parseErr != nil {
+			if pendingRecord(raw) {
+				return Result{}, ErrPending
+			}
+			return Result{}, ErrCorruptRecord
+		}
+		account = parsed.Account
+		if account.Session == nil || account.Session.SteamID != steamID {
+			clearAccount(&account)
+			return Result{}, ErrWrongAccount
+		}
+		defer clearAccount(&account)
+		refreshToken = account.Session.RefreshToken
+	}
+	if !validToken(refreshToken) {
 		return Result{}, ErrNoRefreshToken
 	}
 	if err := contextError(ctx.Err()); err != nil {
 		return Result{}, err
 	}
 
-	refreshBuffer := append([]byte(nil), account.Session.RefreshToken...)
+	refreshBuffer := append([]byte(nil), refreshToken...)
 	defer wipe(refreshBuffer)
 	request := protocol.GenerateAccessTokenRequest{
 		SteamID:      steamID,
@@ -255,12 +288,24 @@ func (r *Refresher) refresh(ctx context.Context, steamID uint64) (Result, error)
 		return Result{}, ErrInvalidResponse
 	}
 
-	account.Session.AccessToken = result.AccessToken
 	renewed := result.RefreshToken != ""
-	if renewed {
-		account.Session.RefreshToken = result.RefreshToken
+	var (
+		canonical []byte
+		exportErr error
+	)
+	if isLoginOnly {
+		login.AccessToken = result.AccessToken
+		if renewed {
+			login.RefreshToken = result.RefreshToken
+		}
+		canonical, exportErr = loginrecord.Encode(login)
+	} else {
+		account.Session.AccessToken = result.AccessToken
+		if renewed {
+			account.Session.RefreshToken = result.RefreshToken
+		}
+		canonical, exportErr = mafile.ExportPlaintext(account, mafile.ExportOptions{IncludeTokens: true})
 	}
-	canonical, exportErr := mafile.ExportPlaintext(account, mafile.ExportOptions{IncludeTokens: true})
 	if exportErr != nil {
 		wipe(canonical)
 		return Result{}, ErrCorruptRecord

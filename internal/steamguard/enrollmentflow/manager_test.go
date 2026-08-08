@@ -149,7 +149,10 @@ func testPending() *enrollmentapi.PendingEnrollment {
 }
 
 func startRequest() StartRequest {
-	return StartRequest{SteamID: testSteamID, AccessToken: []byte("access-token-secret"), AuthenticatorTime: 1_700_000_000}
+	return StartRequest{
+		SteamID: testSteamID, AccessToken: []byte("access-token-secret"),
+		RefreshToken: []byte("refresh-token-secret"), AuthenticatorTime: 1_700_000_000,
+	}
 }
 
 func TestStartPersistsSecretStateAndResumeReturnsOnlyProjection(t *testing.T) {
@@ -345,6 +348,12 @@ func TestFinalizeCommitsCanonicalActiveMaFile(t *testing.T) {
 		parsed.Account.Session == nil || parsed.Account.Session.SteamID != testSteamID ||
 		parsed.Account.Session.AccessToken != "access-token-secret" {
 		t.Fatalf("unexpected active maFile: %#v", parsed.Account)
+	}
+	// Carried from the login through the pending record: an account finalized
+	// without it can never renew its own session, and asks for a password every
+	// time its access token lapses.
+	if parsed.Account.Session.RefreshToken != "refresh-token-secret" {
+		t.Fatal("the refresh token did not survive enrollment; this account can never renew")
 	}
 	if _, err := manager.Resume(testSteamID); !errors.Is(err, ErrNoPendingEnrollment) {
 		t.Fatalf("resume after completion error = %v", err)

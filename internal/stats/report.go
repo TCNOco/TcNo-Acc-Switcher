@@ -8,17 +8,17 @@ import (
 
 // ReportSwitcherEntry is one platform row for the stats UI (excluding aggregate _Total).
 type ReportSwitcherEntry struct {
-	Platform             string
-	Accounts             int
-	Switches             int
-	UniqueDays           int
-	GameShortcuts        int
-	GameShortcutsHotbar  int
-	GamesLaunched        int
-	Tags                 int
-	TaggedAccounts       int
-	FirstActive          time.Time
-	LastActive           time.Time
+	Platform            string
+	Accounts            int
+	Switches            int
+	UniqueDays          int
+	GameShortcuts       int
+	GameShortcutsHotbar int
+	GamesLaunched       int
+	Tags                int
+	TaggedAccounts      int
+	FirstActive         time.Time
+	LastActive          time.Time
 }
 
 // ReportPageEntry is one tracked route for the stats UI (excluding aggregate _Total).
@@ -30,20 +30,20 @@ type ReportPageEntry struct {
 
 // ReportData is a snapshot of stored statistics for presentation.
 type ReportData struct {
-	FirstLaunch          time.Time
-	LaunchCount          int
-	CrashCount           int
-	MostUsedPlatform     string
-	TotalTimeInAppSec    int
-	TotalSwitches        int
-	TotalGamesLaunched   int
-	TotalTags            int
-	TotalTaggedAccounts  int
-	UniqueDaysSwitched   int
-	UUID                 string
-	LastUpload           time.Time
-	Switchers            []ReportSwitcherEntry
-	Pages                []ReportPageEntry
+	FirstLaunch         time.Time
+	LaunchCount         int
+	CrashCount          int
+	MostUsedPlatform    string
+	TotalTimeInAppSec   int
+	TotalSwitches       int
+	TotalGamesLaunched  int
+	TotalTags           int
+	TotalTaggedAccounts int
+	UniqueDaysSwitched  int
+	UUID                string
+	LastUpload          time.Time
+	Switchers           []ReportSwitcherEntry
+	Pages               []ReportPageEntry
 }
 
 // GetReportData loads statistics, refreshes totals, and returns sorted slices for the UI.
@@ -61,17 +61,17 @@ func GetReportData() (ReportData, error) {
 			continue
 		}
 		sw = append(sw, ReportSwitcherEntry{
-			Platform:             k,
-			Accounts:             v.Accounts,
-			Switches:             v.Switches,
-			UniqueDays:           v.UniqueDays,
-			GameShortcuts:        v.GameShortcuts,
-			GameShortcutsHotbar:  v.GameShortcutsHotbar,
-			GamesLaunched:        v.GamesLaunched,
-			Tags:                 v.Tags,
-			TaggedAccounts:       v.TaggedAccounts,
-			FirstActive:          v.FirstActive,
-			LastActive:           v.LastActive,
+			Platform:            k,
+			Accounts:            v.Accounts,
+			Switches:            v.Switches,
+			UniqueDays:          v.UniqueDays,
+			GameShortcuts:       v.GameShortcuts,
+			GameShortcutsHotbar: v.GameShortcutsHotbar,
+			GamesLaunched:       v.GamesLaunched,
+			Tags:                v.Tags,
+			TaggedAccounts:      v.TaggedAccounts,
+			FirstActive:         v.FirstActive,
+			LastActive:          v.LastActive,
 		})
 	}
 	sort.Slice(sw, func(i, j int) bool {
@@ -99,20 +99,20 @@ func GetReportData() (ReportData, error) {
 	pageTot := state.PageStats["_Total"]
 
 	return ReportData{
-		FirstLaunch:        state.FirstLaunch,
-		LaunchCount:        state.LaunchCount,
-		CrashCount:         state.CrashCount,
-		MostUsedPlatform:   state.MostUsedPlatform,
-		TotalTimeInAppSec:  pageTot.TotalTime,
-		TotalSwitches:      tot.Switches,
+		FirstLaunch:         state.FirstLaunch,
+		LaunchCount:         state.LaunchCount,
+		CrashCount:          state.CrashCount,
+		MostUsedPlatform:    state.MostUsedPlatform,
+		TotalTimeInAppSec:   pageTot.TotalTime,
+		TotalSwitches:       tot.Switches,
 		TotalGamesLaunched:  tot.GamesLaunched,
 		TotalTags:           tot.Tags,
 		TotalTaggedAccounts: tot.TaggedAccounts,
 		UniqueDaysSwitched:  tot.UniqueDays,
-		UUID:               state.Uuid,
-		LastUpload:         state.LastUpload,
-		Switchers:          sw,
-		Pages:              pg,
+		UUID:                state.Uuid,
+		LastUpload:          state.LastUpload,
+		Switchers:           sw,
+		Pages:               pg,
 	}, nil
 }
 

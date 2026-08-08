@@ -3,7 +3,12 @@ import type { PlatformSortKind } from "../stores/platformListSort";
 import type { SearchResultRow } from "./SearchOverlay.svelte";
 import type { TagDefRow } from "../lib/accountTagsContext";
 
-export type GameStatMetricDTO = { statValue: string; indicatorMarkup: string };
+export type GameStatMetricDTO = {
+  statValue: string;
+  indicatorMarkup: string;
+  /** Raw `Tooltip` from the game definition — plain text or `i18n:<Key>`. */
+  tooltip?: string;
+};
 
 /**
  * Ban state painted onto the account name. `label` is already localised — it is
@@ -32,6 +37,12 @@ export interface AccountRowProjection<TAccount> {
   manualProfileImage(a: TAccount): boolean;
   savedDataBroken?(a: TAccount): boolean;
   nameStatus?(a: TAccount): AccountNameStatus | null;
+  /**
+   * Extra spoken status lines for things only the platform knows about. A
+   * render-time snapshot, not a live region: rewriting the description every
+   * second would make a screen reader unusable.
+   */
+  extraA11yStatus?(a: TAccount): string[];
   tags(a: TAccount): TagDefRow[] | undefined;
   note(a: TAccount): string;
   shouldShowNote(a: TAccount): boolean;
@@ -63,6 +74,18 @@ export interface AccountCommands {
 
 export interface AccountPatchStream<TAccount> {
   updateEventName: string;
+  /**
+   * Additional per-account update events, each with its own payload shape.
+   *
+   * Separate from updateEventName because buildPatch funnels through one DTO:
+   * a payload that is not that DTO would come out with every other field at its
+   * zero value and the merge would apply them, blanking what it did not carry.
+   */
+  extraUpdateEvents?: {
+    name: string;
+    targetId(raw: unknown): string;
+    apply(raw: unknown, account: TAccount): TAccount;
+  }[];
   buildPatch(raw: unknown): unknown;
   applyPatch(patch: unknown, account: TAccount): TAccount;
   patchTargetId(patch: unknown): string;

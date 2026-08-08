@@ -15,7 +15,7 @@ const (
 	seIncreaseQuotaPrivilege = "SeIncreaseQuotaPrivilege"
 	sePrivilegeEnabled       = uint32(0x00000002)
 	tokenDupRights           = uint32(0x0002) // TOKEN_DUPLICATE
-	duplicateTokenRights     = uint32(0x18B) // minimal for CreateProcessWithTokenW
+	duplicateTokenRights     = uint32(0x18B)  // minimal for CreateProcessWithTokenW
 )
 
 var (

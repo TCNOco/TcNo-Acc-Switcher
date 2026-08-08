@@ -11,16 +11,16 @@ import (
 	"strings"
 	"time"
 
-	"TcNo-Acc-Switcher/internal/settingsfile"
 	"TcNo-Acc-Switcher/internal/crashlog"
+	"TcNo-Acc-Switcher/internal/settingsfile"
 	"TcNo-Acc-Switcher/internal/winutil"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
 const (
-	UserDataMoveProgressEvent    = "userdata-move-progress"
-	userDataMovePendingFileName  = "userdata-move.pending.json"
+	UserDataMoveProgressEvent     = "userdata-move-progress"
+	userDataMovePendingFileName   = "userdata-move.pending.json"
 	userDataMoveRemoveMaxAttempts = 12
 )
 

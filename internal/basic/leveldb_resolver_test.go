@@ -163,7 +163,7 @@ func TestLevelDBStoreAcquire_ReleaseIdempotent(t *testing.T) {
 		t.Fatalf("acquire: %v", err)
 	}
 	release()
-	release() // must not panic
+	release()    // must not panic
 	s.closeAll() // ensure TempDir cleanup succeeds
 }
 

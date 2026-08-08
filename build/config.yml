@@ -41,6 +41,14 @@ dev_mode:
       - node_modules
       - frontend
       - bin
+      - .gocache
+      - .claude
+      - .codegraph
+      - .task
+      - .vite
+      - .cache
+      - .pnpm-store
+      - wiki
     file:
       - .DS_Store
       - .gitignore

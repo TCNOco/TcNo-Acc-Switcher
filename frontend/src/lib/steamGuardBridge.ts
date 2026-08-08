@@ -3,6 +3,7 @@ import * as SteamGuardModels from "../../bindings/TcNo-Acc-Switcher/internal/ste
 import * as SteamService from "../../bindings/TcNo-Acc-Switcher/internal/steam/steamservice.js";
 import { Events } from "@wailsio/runtime";
 import { bindSteamGuardMenuToModal } from "./steam/steamGuardModalHost";
+import { configureSteamGuardQuickCopy } from "./steam/steamGuardQuickCopy";
 import type {
   SteamGuardAccountRef,
   SteamGuardAccountSummary,
@@ -25,6 +26,7 @@ import { passwordPolicyMessage, validateNewPassword } from "./passwordPolicy";
 import { escapeHtml } from "./html";
 import { extraFactorsNeeded } from "./steamGuardFactors";
 import { publishSteamGuardActionAccounts } from "../stores/steamGuardAction";
+import { requestPlatformAccountsRefresh } from "../stores/platformPage";
 import {
 	ConfirmationRequestError,
 	configureSteamConfirmationsWindow,
@@ -40,7 +42,7 @@ function tr(key: string, vars?: Record<string, string | number>): string {
 }
 
 function loginResult(result: SteamGuardModels.SteamLoginResult): SteamLoginResult {
-	if (result.state !== "refreshed" && result.state !== "reauthentication_required") {
+	if (result.state !== "refreshed" && result.state !== "reauthentication_required" && result.state !== "removed") {
 		throw new Error("Invalid Steam login response");
 	}
 	return {
@@ -93,9 +95,14 @@ function credentialResult(result: SteamGuardModels.SteamCredentialResult): Steam
 }
 
 function authPurpose(purpose: SteamAuthPurpose): SteamGuardModels.SteamAuthPurpose {
-	return purpose === "login_again"
-		? SteamGuardModels.SteamAuthPurpose.SteamAuthPurposeLoginAgain
-		: SteamGuardModels.SteamAuthPurpose.SteamAuthPurposeAddAuthenticator;
+	switch (purpose) {
+		case "login_again":
+			return SteamGuardModels.SteamAuthPurpose.SteamAuthPurposeLoginAgain;
+		case "login_only":
+			return SteamGuardModels.SteamAuthPurpose.SteamAuthPurposeLoginOnly;
+		default:
+			return SteamGuardModels.SteamAuthPurpose.SteamAuthPurposeAddAuthenticator;
+	}
 }
 
 function usesSavedDataEncryption(status: unknown): boolean {
@@ -204,8 +211,7 @@ async function importedAccountSummary(
   const labels = imported.map((result) => {
     const steamId64 = (result.steamId64 ?? "").trim();
     const matched = switcherBySteamId.get(steamId64);
-    return matched?.displayName?.trim()
-      || matched?.personaName?.trim()
+    return matched?.personaName?.trim()
       || matched?.accountName?.trim()
       || (result.accountName ?? "").trim()
       || steamId64
@@ -318,7 +324,12 @@ export async function runImport(initialPaths?: string[]): Promise<void> {
   }
 }
 
-type PickerSummary = { steamId64?: string; accountName?: string };
+type PickerSummary = {
+  steamId64?: string;
+  accountName?: string;
+  kind?: string;
+  sessionStatus?: string;
+};
 type PickerSwitcherAccount = {
   steamId64?: string;
   accountName?: string;
@@ -362,8 +373,17 @@ export function mergeSteamGuardAccountRows(source: {
     return {
       id: steamId64,
       username,
-      displayName: matched?.displayName?.trim() || matched?.personaName?.trim() || username,
+      displayName: matched?.personaName?.trim() || username,
       locked: !source.vaultUnlocked && steamId64 !== source.activeAccountId,
+      // Anything other than the login-only marker is treated as an
+      // authenticator, so an unfamiliar kind from a newer build degrades to the
+      // existing behaviour rather than to a screen that cannot act.
+      kind: summary.kind === "login-only" ? "login-only" : "authenticator",
+      // Only the two verdicts this build knows are trusted; anything else, including
+      // a value from a newer build, degrades to "unknown" and shows what it always did.
+      sessionStatus: summary.sessionStatus === "needs_login"
+        ? "needs-login"
+        : summary.sessionStatus === "valid" ? "valid" : "unknown",
       imageUrl: enriched?.imageUrl?.trim() || undefined,
       staticImageUrl: enriched?.staticImageUrl?.trim() || undefined,
       vac: enriched?.showVac === true && enriched.vac === true,
@@ -1112,6 +1132,39 @@ const controller: SteamGuardModalController = {
 	copyCode: (accountId, capability) => SteamGuardService.CopyCode(accountId, capability),
 	openConfirmations: (accountId, capability) => SteamGuardService.OpenConfirmations(accountId, capability),
 	loginAgain: (accountId, capability) => SteamGuardService.LoginAgain(accountId, capability).then(loginResult),
+	async removeLoginOnlyAccount(accountId, capability) {
+		const result = loginResult(await SteamGuardService.RemoveLoginOnlyAccount(accountId, capability));
+		try {
+			// Republish so the toolbar entry disappears if that was the last vault
+			// account, and so the account row drops its login-only marker.
+			publishSteamGuardActionAccounts(await SteamService.GetSteamAccountsList());
+			requestPlatformAccountsRefresh("Steam");
+		} catch {
+			// The Steam page republishes availability on its next account load.
+		}
+		return result;
+	},
+	async promoteLoginOnlyAccount(accountId, capability) {
+		const result = await SteamGuardService.PromoteLoginOnlyAccount(accountId, capability);
+		const promotion = {
+			needsLogin: result.needsLogin === true,
+			reason: result.reason ?? "",
+			accountName: result.accountName ?? "",
+			enrollment: result.enrollment ? enrollmentStatus(result.enrollment) : undefined,
+			capabilityRefreshRequired: result.capabilityRefreshRequired === true,
+			registryUpdated: result.registryUpdated === true,
+		};
+		if (promotion.registryUpdated) {
+			try {
+				// The record stopped being login-only, so the row's marker is stale.
+				publishSteamGuardActionAccounts(await SteamService.GetSteamAccountsList());
+				requestPlatformAccountsRefresh("Steam");
+			} catch {
+				// The Steam page republishes availability on its next account load.
+			}
+		}
+		return promotion;
+	},
 	beginCredentialLogin: (accountId, capability, accountName, password, purpose) =>
 		SteamGuardService.BeginCredentialLogin(accountId, capability, accountName, password, authPurpose(purpose)).then(credentialResult),
 	submitCredentialCode: (accountId, capability, handle, challenge, code) =>
@@ -1123,6 +1176,13 @@ const controller: SteamGuardModalController = {
 	steamSessionLocalState: (accountId, capability) =>
 		SteamGuardService.SteamSessionLocalState(accountId, capability)
 			.then((state) => ({ needsLogin: state.needsLogin === true, reason: state.reason })),
+	ensureFreshSession: (accountId, capability) =>
+		SteamGuardService.EnsureFreshSession(accountId, capability)
+			.then((state) => ({
+				needsLogin: state.needsLogin === true,
+				reason: state.reason,
+				capabilityRefreshRequired: state.capabilityRefreshRequired === true,
+			})),
 	probeSteamSession: (accountId, capability) =>
 		SteamGuardService.ProbeSteamSession(accountId, capability)
 			.then((state) => ({ needsLogin: state.needsLogin === true, reason: state.reason })),
@@ -1141,8 +1201,10 @@ const controller: SteamGuardModalController = {
 		await SteamGuardService.Initialize(password, appPassword);
 		await SteamGuardService.SetFeatureEnabled(true);
 	},
-	unlockSteamGuardVault: (accountId, password, rememberForSession, capability) =>
-		SteamGuardService.UnlockSteamGuardVault(accountId, password, rememberForSession, capability),
+	unlockSteamGuardVault: (accountId, password, rememberForSession, capability, keyfilePath, backupKey) =>
+		SteamGuardService.UnlockSteamGuardVaultWithFactors(
+			accountId, password, keyfilePath ?? "", backupKey ?? "", rememberForSession, capability,
+		),
 	resumeSteamGuardEnrollment: (accountId, capability) =>
 		SteamGuardService.ResumeSteamGuardEnrollment(accountId, capability).then(enrollmentStatus),
 	revealSteamGuardRevocationCode: (accountId, capability) =>
@@ -1280,6 +1342,11 @@ export function installSteamGuardBridge(): () => void {
     },
   });
 
+  configureSteamGuardQuickCopy({
+    controller,
+    vaultUnlocked: async () => (await SteamGuardService.GetSettingsStatus()).unlocked ?? false,
+  });
+
   const unbindMenu = bindSteamGuardMenuToModal(controller);
   return () => {
 		uninstallConfirmations();
@@ -1287,5 +1354,6 @@ export function installSteamGuardBridge(): () => void {
     unbindMenu();
     configureSteamGuardDropAdapter(null);
     configureSteamGuardSettingsAdapter(null);
+    configureSteamGuardQuickCopy(null);
   };
 }

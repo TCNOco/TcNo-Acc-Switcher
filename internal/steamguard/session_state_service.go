@@ -9,6 +9,7 @@ import (
 	"TcNo-Acc-Switcher/internal/steamguard/mafile"
 	"TcNo-Acc-Switcher/internal/steamguard/sessionrefresh"
 	"TcNo-Acc-Switcher/internal/steamguard/vault"
+	"TcNo-Acc-Switcher/internal/steamguard/vaultrecord"
 )
 
 // accessTokenSkew treats a token about to lapse as lapsed, so the answer does not
@@ -32,17 +33,42 @@ func (s *Service) SteamSessionLocalState(accountID, token string) (SteamSessionS
 	if err != nil {
 		return SteamSessionState{}, err
 	}
-	account, err := accountForSteamID64(v, accountID)
+	// Both record shapes carry a session, and a login-only account needs this
+	// affordance more than an authenticator one does - re-signing in is the only
+	// thing its screen offers.
+	record, err := recordForSteamID64(v, accountID)
 	if err != nil {
 		return SteamSessionState{}, err
 	}
-	if account.Session == nil || account.Session.AccessToken == "" {
+	defer record.destroy()
+	accessToken := record.AccessToken()
+	if accessToken == "" {
 		return SteamSessionState{NeedsLogin: true, Reason: "no_session"}, nil
 	}
-	if sessionrefresh.AccessTokenExpired(account.Session.AccessToken, time.Now(), accessTokenSkew) {
+	if sessionrefresh.AccessTokenExpired(accessToken, time.Now(), accessTokenSkew) {
 		return SteamSessionState{NeedsLogin: true, Reason: "token_expired"}, nil
 	}
 	return SteamSessionState{}, nil
+}
+
+// localSessionStatus is SteamSessionLocalState's verdict for a record already in
+// hand, for the listing path: same skew, so a row and the screen it opens cannot
+// contradict each other. A token this build cannot read stays unknown rather than
+// being reported as lapsed, and a half-finished enrollment has no session to judge.
+func localSessionStatus(kind vaultrecord.Kind, accessToken string, now time.Time) SessionStatus {
+	if kind == vaultrecord.KindEnrollmentPending {
+		return SessionStatusUnknown
+	}
+	if accessToken == "" {
+		return SessionStatusNeedsLogin
+	}
+	if _, readable := sessionrefresh.AccessTokenExpiry(accessToken); !readable {
+		return SessionStatusUnknown
+	}
+	if sessionrefresh.AccessTokenExpired(accessToken, now, accessTokenSkew) {
+		return SessionStatusNeedsLogin
+	}
+	return SessionStatusValid
 }
 
 // ProbeSteamSession asks Steam the same question the confirmations page asks, and
@@ -91,8 +117,9 @@ func (s *Service) ProbeSteamSession(accountID, token string) (SteamSessionState,
 	return SteamSessionState{}, nil
 }
 
-// accountForSteamID64 loads the vault record for a SteamID64. Callers must already
-// hold an authorized, unlocked vault.
+// accountForSteamID64 loads the authenticator for a SteamID64. Callers must already
+// hold an authorized, unlocked vault. A login-only account yields
+// ErrNotAuthenticator, since every caller here needs a shared or identity secret.
 func accountForSteamID64(v *vault.Vault, steamID64 string) (mafile.Account, error) {
 	records, err := v.List()
 	if err != nil {
@@ -104,4 +131,19 @@ func accountForSteamID64(v *vault.Vault, steamID64 string) (mafile.Account, erro
 		}
 	}
 	return mafile.Account{}, ErrAccountNotFound
+}
+
+// recordForSteamID64 loads whichever record shape the vault holds for a
+// SteamID64, for the few callers that handle more than one.
+func recordForSteamID64(v *vault.Vault, steamID64 string) (loadedRecord, error) {
+	records, err := v.List()
+	if err != nil {
+		return loadedRecord{}, err
+	}
+	for _, record := range records {
+		if record.SteamID64 == steamID64 {
+			return recordFromVault(v, record.ID)
+		}
+	}
+	return loadedRecord{}, ErrAccountNotFound
 }

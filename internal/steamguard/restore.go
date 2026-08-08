@@ -10,6 +10,7 @@ import (
 	"TcNo-Acc-Switcher/internal/steamguard/registry"
 	"TcNo-Acc-Switcher/internal/steamguard/securefile"
 	"TcNo-Acc-Switcher/internal/steamguard/vault"
+	"TcNo-Acc-Switcher/internal/steamguard/vaultrecord"
 )
 
 var (
@@ -191,11 +192,16 @@ func (s *Service) restoreVerifiedBackupAtWith(source string, creds vault.Credent
 	}
 	for _, record := range records {
 		plaintext, getErr := restored.Get(record.ID)
-		wipe(plaintext)
 		if getErr != nil {
+			wipe(plaintext)
 			return "", getErr
 		}
-		if err := registry.Upsert(record.SteamID64, registry.StateActive); err != nil {
+		// The state has to match what the record actually holds. Restoring
+		// everything as "active" put a lock icon on half-finished enrollments
+		// and, now, on login-only accounts that have no code behind them.
+		state := registryStateForKind(vaultrecord.Sniff(plaintext))
+		wipe(plaintext)
+		if err := registry.Upsert(record.SteamID64, state); err != nil {
 			return "", err
 		}
 	}

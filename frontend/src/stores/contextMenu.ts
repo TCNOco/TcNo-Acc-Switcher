@@ -1,4 +1,4 @@
-import { writable } from "svelte/store";
+import { writable, type Readable } from "svelte/store";
 const CTX_MENU_DEBUG = false;
 function ctxMenuLog(...args: unknown[]): void {
   if (CTX_MENU_DEBUG) console.log("[ctx-menu]", ...args);
@@ -24,6 +24,12 @@ export type MenuItemDef = {
   onSearchCanCreate?: (query: string) => boolean;
   /** On `type: "search"`: action for clicking synthetic `Create: <query>` row. */
   onSearchCreate?: (query: string) => void;
+  /**
+   * Leaf rows only: a fraction counting 1 → 0, drawn as a shrinking underline that
+   * turns yellow then red as it runs out. For rows whose action is only worth
+   * clicking while something is still valid.
+   */
+  progress?: Readable<number>;
 };
 
 export type ContextMenuState =

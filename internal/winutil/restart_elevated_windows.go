@@ -23,8 +23,8 @@ func RegisterSingletonReleaser(f func()) {
 }
 
 var (
-	modshell32          = windows.NewLazySystemDLL("shell32.dll")
-	procShellExecuteW   = modshell32.NewProc("ShellExecuteW")
+	modshell32        = windows.NewLazySystemDLL("shell32.dll")
+	procShellExecuteW = modshell32.NewProc("ShellExecuteW")
 )
 
 // RestartElevated re-launches the current executable with verb "runas" (UAC), forwards extraArgs,

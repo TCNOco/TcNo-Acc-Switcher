@@ -7,10 +7,10 @@ import (
 )
 
 var (
-	kernel32           = syscall.NewLazyDLL("kernel32.dll")
-	procAttachConsole  = kernel32.NewProc("AttachConsole")
-	procAllocConsole   = kernel32.NewProc("AllocConsole")
-	procFreeConsole    = kernel32.NewProc("FreeConsole")
+	kernel32          = syscall.NewLazyDLL("kernel32.dll")
+	procAttachConsole = kernel32.NewProc("AttachConsole")
+	procAllocConsole  = kernel32.NewProc("AllocConsole")
+	procFreeConsole   = kernel32.NewProc("FreeConsole")
 )
 
 // AttachParentConsole attaches to the parent process console (CLI from cmd).

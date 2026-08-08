@@ -182,6 +182,47 @@
   </SettingsField>
 </SettingsGroup>
 
+<!-- Everything here needs an authenticated Steam session, so it is grouped apart
+     from the display toggles that work on any account. -->
+<SettingsGroup title={$t("Settings_Header_SteamGuardAuth")}>
+  <!-- One row: the three are alternatives of the same kind, and stacked they
+       read as three unrelated features. Each is independent - any one being on
+       is enough for the account check to run. -->
+  <p class="cs2-states-label">{$t("Settings_ShowStates")}</p>
+  <div class="settings-grid cs2-states">
+    <SettingsToggle
+      id="ps-collect-cs2-cooldown"
+      checked={steamSettings.Steam_CollectCS2Cooldowns}
+      label={$t("Steam_State_Cs2Cooldown")}
+      tooltip={$t("Tooltip_SteamShowCs2Cooldown")}
+      on:change={() => {
+        steamSettings.Steam_CollectCS2Cooldowns = !steamSettings.Steam_CollectCS2Cooldowns;
+        dispatch("save");
+      }}
+    />
+    <SettingsToggle
+      id="ps-show-cs2-rank"
+      checked={steamSettings.Steam_ShowCS2Rank}
+      label={$t("Steam_State_Cs2Rank")}
+      tooltip={$t("Tooltip_SteamShowCs2Rank")}
+      on:change={() => {
+        steamSettings.Steam_ShowCS2Rank = !steamSettings.Steam_ShowCS2Rank;
+        dispatch("save");
+      }}
+    />
+    <SettingsToggle
+      id="ps-show-cs2-prime"
+      checked={steamSettings.Steam_ShowCS2PrimeTag}
+      label={$t("Steam_State_Cs2Prime")}
+      tooltip={$t("Tooltip_SteamShowCs2PrimeTag")}
+      on:change={() => {
+        steamSettings.Steam_ShowCS2PrimeTag = !steamSettings.Steam_ShowCS2PrimeTag;
+        dispatch("save");
+      }}
+    />
+  </div>
+</SettingsGroup>
+
 <SettingsGroup title={$t("Settings_Header_LaunchOptions")}>
   <div class="settings-grid">
     <SettingsToggle
@@ -348,5 +389,20 @@
   .dropdown-toggle {
     position: relative;
     height: 38px;
+  }
+
+  /* Lines up with the toggles below it, which the grid pads by the same amount. */
+  .cs2-states-label {
+    margin: 0 0 0.35rem;
+    padding-inline: var(--settings-toggle-pad-x, 0.4rem);
+    color: var(--whiteSecondary);
+  }
+
+  /* Sized to the labels rather than the grid's fixed columns, so the three sit
+     together instead of spreading across the panel. */
+  .cs2-states {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 1.25rem;
   }
 </style>

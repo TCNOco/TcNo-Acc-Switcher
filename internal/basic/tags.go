@@ -246,18 +246,191 @@ func ForgetAccountTagAssignments(platformKey, uniqueID string) error {
 	if platformKey == "" || uniqueID == "" {
 		return nil
 	}
-	f, err := readIdsFile(platformKey)
+	var tagCount, tagged int
+	if err := withIdsFile(platformKey, func(f *idsFile) (bool, error) {
+		delete(f.AccountTags, uniqueID)
+		delete(f.AccountTagExpiries, uniqueID)
+		pruneUnusedTagDefinitions(f)
+		tagCount, tagged = len(f.Tags), countTaggedAccounts(*f)
+		return true, nil
+	}); err != nil {
+		return err
+	}
+	_ = stats.SyncPlatformTagCounts(platformKey, tagCount, tagged)
+	return nil
+}
+
+// ManagedTagCS2Cooldown is applied and removed by the CS2 cooldown sweep, never
+// by the user. It exists so the tag filter can answer "which accounts can I
+// actually queue on right now" across the whole list.
+const ManagedTagCS2Cooldown = "CS2 Cooldown"
+
+// ManagedTagCS2Prime and ManagedTagCS2NonPrime mark CS2 Prime ownership. They
+// are tags rather than a tile badge so the list can be filtered by them, the
+// same reason the cooldown is a tag. Exactly one of the pair is ever assigned;
+// an account whose Prime state is not known carries neither.
+const (
+	ManagedTagCS2Prime    = "CS2 Prime"
+	ManagedTagCS2NonPrime = "CS2 Non-Prime"
+)
+
+// ManagedTagNames is every tag the app applies on its own. The UI reads it to
+// keep them out of the menus that would let a user remove one by hand.
+func ManagedTagNames() []string {
+	return []string{ManagedTagCS2Cooldown, ManagedTagCS2Prime, ManagedTagCS2NonPrime}
+}
+
+// managedTagColors are fixed rather than random. RemoveTagFromAccount prunes a
+// definition the moment its last account loses it, so a managed tag is created
+// and destroyed repeatedly - a colour that changed each time would look broken.
+var managedTagColors = map[string]string{
+	ManagedTagCS2Cooldown: "#c94f4f",
+	ManagedTagCS2Prime:    "#c8a11e",
+	ManagedTagCS2NonPrime: "#6b7280",
+}
+
+const managedTagFallbackColor = "#c94f4f"
+
+func managedTagColorFor(name string) string {
+	if color, ok := managedTagColors[strings.TrimSpace(name)]; ok {
+		return color
+	}
+	return managedTagFallbackColor
+}
+
+// ClearManagedTag removes an app-managed tag from every account on a platform.
+//
+// The switch that turns such a tag off has to undo it everywhere, not just stop
+// applying it: the tag is not removable by hand, so anything left behind would
+// be stuck on the account until the feature was turned back on.
+func ClearManagedTag(platformKey, name string) error {
+	platformKey = strings.TrimSpace(platformKey)
+	name = strings.TrimSpace(name)
+	if platformKey == "" || name == "" {
+		return nil
+	}
+	return withIdsFile(platformKey, func(f *idsFile) (bool, error) {
+		tagID := ""
+		for id, def := range f.Tags {
+			if strings.EqualFold(strings.TrimSpace(def.Name), name) {
+				tagID = id
+				break
+			}
+		}
+		if tagID == "" {
+			return false, nil
+		}
+		changed := false
+		for uid, ids := range f.AccountTags {
+			remaining := make([]string, 0, len(ids))
+			for _, id := range ids {
+				if id != tagID {
+					remaining = append(remaining, id)
+				}
+			}
+			if len(remaining) == len(ids) {
+				continue
+			}
+			changed = true
+			if len(remaining) == 0 {
+				delete(f.AccountTags, uid)
+			} else {
+				f.AccountTags[uid] = remaining
+			}
+			clearAccountTagExpiry(f, uid, tagID)
+		}
+		if !changed {
+			return false, nil
+		}
+		pruneUnusedTagDefinitions(f)
+		return true, nil
+	})
+}
+
+// SetManagedTag applies or removes an app-managed tag on one account.
+//
+// Package-level because the callers are background sweeps that hold no
+// *BasicService; ForgetAccountTagAssignments above is the same shape. uniqueID
+// is whatever the platform's account list keys by - for Steam, the SteamID64.
+//
+// expiresAt is an RFC3339 instant written to AccountTagExpiries, i.e. scoped to
+// THIS account. It must never be written to the definition: a definition-level
+// expiry is shared, and pruneExpiredTagsInFile strips such a tag from every
+// account at once. Empty means the tag stays until removed.
+func SetManagedTag(platformKey, uniqueID, name string, on bool, expiresAt string) error {
+	platformKey = strings.TrimSpace(platformKey)
+	uniqueID = strings.TrimSpace(uniqueID)
+	name = strings.TrimSpace(name)
+	if platformKey == "" || uniqueID == "" || name == "" {
+		return nil
+	}
+	normalizedExpiry, err := normalizeExpiryString(expiresAt)
 	if err != nil {
 		return err
 	}
-	normalizeTagMaps(&f)
-	delete(f.AccountTags, uniqueID)
-	delete(f.AccountTagExpiries, uniqueID)
-	pruneUnusedTagDefinitions(&f)
-	if err := writeIdsFile(platformKey, f); err != nil {
+
+	var tagCount, tagged int
+	if err := withIdsFile(platformKey, func(f *idsFile) (bool, error) {
+		tagID := ""
+		for id, def := range f.Tags {
+			if strings.EqualFold(strings.TrimSpace(def.Name), name) {
+				tagID = id
+				break
+			}
+		}
+
+		if !on {
+			if tagID == "" {
+				return false, nil
+			}
+			remaining := make([]string, 0, len(f.AccountTags[uniqueID]))
+			for _, id := range f.AccountTags[uniqueID] {
+				if id != tagID {
+					remaining = append(remaining, id)
+				}
+			}
+			if len(remaining) == len(f.AccountTags[uniqueID]) {
+				return false, nil
+			}
+			if len(remaining) == 0 {
+				delete(f.AccountTags, uniqueID)
+			} else {
+				f.AccountTags[uniqueID] = remaining
+			}
+			clearAccountTagExpiry(f, uniqueID, tagID)
+			pruneUnusedTagDefinitions(f)
+			tagCount, tagged = len(f.Tags), countTaggedAccounts(*f)
+			return true, nil
+		}
+
+		if tagID == "" {
+			tagID, err = newTagID()
+			if err != nil {
+				return false, err
+			}
+			// Definition ExpiresAt stays empty on purpose - see the doc comment.
+			f.Tags[tagID] = tagFileEntry{Name: name, Color: managedTagColorFor(name)}
+		}
+		if !containsTagID(f.AccountTags[uniqueID], tagID) {
+			f.AccountTags[uniqueID] = append(f.AccountTags[uniqueID], tagID)
+		}
+		// Always re-write the expiry, never only on first assignment: every add
+		// path clears it, so a re-apply would otherwise leave the tag permanent.
+		clearAccountTagExpiry(f, uniqueID, tagID)
+		if normalizedExpiry != "" {
+			if f.AccountTagExpiries[uniqueID] == nil {
+				f.AccountTagExpiries[uniqueID] = map[string]string{}
+			}
+			f.AccountTagExpiries[uniqueID][tagID] = normalizedExpiry
+		}
+		tagCount, tagged = len(f.Tags), countTaggedAccounts(*f)
+		return true, nil
+	}); err != nil {
 		return err
 	}
-	_ = stats.SyncPlatformTagCounts(platformKey, len(f.Tags), countTaggedAccounts(f))
+	if tagCount > 0 || tagged > 0 {
+		_ = stats.SyncPlatformTagCounts(platformKey, tagCount, tagged)
+	}
 	return nil
 }
 

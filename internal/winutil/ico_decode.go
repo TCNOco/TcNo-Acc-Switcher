@@ -18,14 +18,14 @@ import (
 )
 
 const (
-	bmpHeaderSize      = 40 // BITMAPINFOHEADER
-	biRgb              = 0
-	biBitfields        = 3
-	biPng              = 5
-	pngMagicLen        = 8
-	pngMagic0          = 0x89
-	maxICOImageBytes   = 10 << 20
-	maxICOEntryCount   = 512
+	bmpHeaderSize    = 40 // BITMAPINFOHEADER
+	biRgb            = 0
+	biBitfields      = 3
+	biPng            = 5
+	pngMagicLen      = 8
+	pngMagic0        = 0x89
+	maxICOImageBytes = 10 << 20
+	maxICOEntryCount = 512
 )
 
 var pngMagic = []byte{0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a}

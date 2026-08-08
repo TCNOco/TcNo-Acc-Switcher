@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 	"strings"
+	"time"
 
 	"TcNo-Acc-Switcher/internal/accountlist"
 	"TcNo-Acc-Switcher/internal/basic"
@@ -11,18 +12,26 @@ import (
 	"TcNo-Acc-Switcher/internal/profileimage"
 	"TcNo-Acc-Switcher/internal/security"
 	"TcNo-Acc-Switcher/internal/stats"
+	"TcNo-Acc-Switcher/internal/steamguard/cs2cooldown"
 	steamguardregistry "TcNo-Acc-Switcher/internal/steamguard/registry"
 )
 
 // SteamAccountListItemDTO is the fast Steam account list payload.
+//
+// No DisplayName: that is the community name, and only the enrichment pass
+// knows it. This payload can only see the loginusers.vdf persona, so sending it
+// as a display name would let a list refresh overwrite the real one on screen.
 type SteamAccountListItemDTO struct {
 	SteamID64         string `json:"steamId64"`
 	PersonaName       string `json:"personaName"`
-	DisplayName       string `json:"displayName"`
 	AccountName       string `json:"accountName"`
 	CurrentSession    bool   `json:"currentSession"`
 	HasSteamGuard     bool   `json:"hasSteamGuard"`
 	SteamGuardPending bool   `json:"steamGuardPending"`
+	// SteamGuardLoginOnly is a vault record with a session but no authenticator.
+	// The toolbar entry keys off it so an account list containing only
+	// login-only records can still reach the Steam Guard window.
+	SteamGuardLoginOnly bool `json:"steamGuardLoginOnly"`
 }
 
 // SteamAccountEnrichmentDTO carries slower per-account Steam metadata.
@@ -59,6 +68,13 @@ type SteamAccountEnrichmentDTO struct {
 	SyncError          string                `json:"syncError"`
 	Tags               []basic.AccountTagDTO `json:"tags"`
 	ManualProfileImage bool                  `json:"manualProfileImage"`
+
+	// CS2CooldownExpiresAt is RFC3339 UTC, empty when there is no cooldown. An
+	// absolute instant rather than a remaining duration, so the tile can count
+	// it down live without asking again.
+	CS2CooldownExpiresAt string `json:"cs2CooldownExpiresAt"`
+	CS2CooldownPermanent bool   `json:"cs2CooldownPermanent"`
+	ShowCS2Cooldown      bool   `json:"showCs2Cooldown"`
 }
 
 type steamListContext struct {
@@ -71,6 +87,7 @@ type steamListContext struct {
 	vacKnown         map[string]struct{}
 	hiddenBans       map[string]struct{}
 	tagByUID         map[string][]basic.AccountTagDTO
+	cooldowns        map[string]cs2cooldown.Entry
 }
 
 func (s *SteamService) buildSteamListContext() (*steamListContext, error) {
@@ -138,6 +155,14 @@ func (s *SteamService) buildSteamListContext() (*steamListContext, error) {
 
 	tagByUID, _ := basic.BuildAccountTagMap(PlatformKey)
 
+	// A corrupt cooldown cache must not fail the account list; an empty map just
+	// means no cooldown lines until the next sweep rewrites the file.
+	cooldowns, err := cs2cooldown.Load()
+	if err != nil {
+		steamLog.Warn("CS2 cooldown cache unavailable", slog.Any("err", err))
+		cooldowns = map[string]cs2cooldown.Entry{}
+	}
+
 	return &steamListContext{
 		users:            users,
 		activeSteamID:    activeSteamID,
@@ -148,6 +173,7 @@ func (s *SteamService) buildSteamListContext() (*steamListContext, error) {
 		vacKnown:         vacKnown,
 		hiddenBans:       hiddenBans,
 		tagByUID:         tagByUID,
+		cooldowns:        cooldowns,
 	}, nil
 }
 
@@ -179,6 +205,7 @@ func loadSteamGuardAccountStates() map[string]SteamGuardAccountState {
 		states[entry.SteamID64] = SteamGuardAccountState{
 			HasSteamGuard: entry.State == steamguardregistry.StateActive,
 			Pending:       entry.State == steamguardregistry.StatePending,
+			LoginOnly:     entry.State == steamguardregistry.StateLoginOnly,
 		}
 	}
 	return states
@@ -190,13 +217,13 @@ func buildSteamAccountListItems(users []LoginUser, activeSteamID string, states 
 		persona := displayPersona(u)
 		guardState := states[u.SteamID64]
 		out = append(out, SteamAccountListItemDTO{
-			SteamID64:         u.SteamID64,
-			PersonaName:       persona,
-			DisplayName:       persona,
-			AccountName:       strings.TrimSpace(u.AccountName),
-			CurrentSession:    activeSteamID != "" && u.SteamID64 == activeSteamID,
-			HasSteamGuard:     guardState.HasSteamGuard,
-			SteamGuardPending: guardState.Pending,
+			SteamID64:           u.SteamID64,
+			PersonaName:         persona,
+			AccountName:         strings.TrimSpace(u.AccountName),
+			CurrentSession:      activeSteamID != "" && u.SteamID64 == activeSteamID,
+			HasSteamGuard:       guardState.HasSteamGuard,
+			SteamGuardPending:   guardState.Pending,
+			SteamGuardLoginOnly: guardState.LoginOnly,
 		})
 	}
 	return out
@@ -219,6 +246,7 @@ func (s *SteamService) GetSteamAccountsEnrichment() ([]SteamAccountEnrichmentDTO
 		return nil, err
 	}
 
+	now := time.Now()
 	out := make([]SteamAccountEnrichmentDTO, 0, len(ctx.users))
 	for _, u := range ctx.users {
 		v := ctx.vacMap[u.SteamID64]
@@ -254,6 +282,15 @@ func (s *SteamService) GetSteamAccountsEnrichment() ([]SteamAccountEnrichmentDTO
 			displayName = displayPersona(u)
 		}
 
+		// Only send a cooldown that is still running. An entry whose expiry has
+		// passed is history, and the frontend would drop it anyway.
+		cooldownExpiry, cooldownPermanent := "", false
+		if entry, ok := ctx.cooldowns[u.SteamID64]; ok && entry.Active(now) {
+			cooldownPermanent = entry.Permanent
+			if !entry.Permanent {
+				cooldownExpiry = time.Unix(entry.CooldownExpiresAt, 0).UTC().Format(time.RFC3339)
+			}
+		}
 		out = append(out, SteamAccountEnrichmentDTO{
 			SteamID64:          u.SteamID64,
 			DisplayName:        displayName,
@@ -282,6 +319,12 @@ func (s *SteamService) GetSteamAccountsEnrichment() ([]SteamAccountEnrichmentDTO
 			ShowSteamGuardLock: ctx.st.SteamShowSteamGuardLock,
 			Tags:               ctx.tagByUID[u.SteamID64],
 			ManualProfileImage: isManualAvatar,
+
+			CS2CooldownExpiresAt: cooldownExpiry,
+			CS2CooldownPermanent: cooldownPermanent,
+			ShowCS2Cooldown:      ctx.st.SteamCollectCS2Cooldowns,
+			// Both settings gate this: the rank is a by-product of the cooldown
+			// sweep, so with collection off there is nothing keeping it current.
 		})
 	}
 	return out, nil
@@ -344,6 +387,10 @@ func mergeSteamAccountDTO(list SteamAccountListItemDTO, enrich SteamAccountEnric
 		CurrentSession:     list.CurrentSession,
 		Tags:               enrich.Tags,
 		ManualProfileImage: enrich.ManualProfileImage,
+
+		CS2CooldownExpiresAt: enrich.CS2CooldownExpiresAt,
+		CS2CooldownPermanent: enrich.CS2CooldownPermanent,
+		ShowCS2Cooldown:      enrich.ShowCS2Cooldown,
 	}
 }
 

@@ -36,6 +36,9 @@ import (
 	"TcNo-Acc-Switcher/internal/steamguard/sessionrefresh"
 	"TcNo-Acc-Switcher/internal/steamguard/timesync"
 	"TcNo-Acc-Switcher/internal/steamguard/vault"
+	"TcNo-Acc-Switcher/internal/steamguard/vaultrecord"
+
+	"TcNo-Acc-Switcher/internal/steam"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 )
@@ -108,9 +111,37 @@ const (
 	UnlockPersistenceOneOperation UnlockPersistence = "one_operation"
 )
 
+// AccountKind names a vault record's shape for the UI. A discriminant rather
+// than a boolean because the vault has grown a third shape once already.
+type AccountKind = string
+
+const (
+	AccountKindAuthenticator AccountKind = "authenticator"
+	AccountKindLoginOnly     AccountKind = "login-only"
+	AccountKindPending       AccountKind = "pending"
+)
+
+// SessionStatus is what the stored Steam session looks like from here, without
+// asking Steam. Unknown is deliberately the zero value: an unreadable token is
+// not evidence of anything, and must not be shown as either working or lapsed.
+type SessionStatus = string
+
+const (
+	SessionStatusUnknown    SessionStatus = ""
+	SessionStatusValid      SessionStatus = "valid"
+	SessionStatusNeedsLogin SessionStatus = "needs_login"
+)
+
 type AccountSummary struct {
 	SteamID64   string `json:"steamId64"`
 	AccountName string `json:"accountName"`
+	// Kind decides which actions the picker offers. A login-only account has no
+	// shared secret, so asking it for a code would fail.
+	Kind AccountKind `json:"kind"`
+	// SessionStatus lets the picker show which accounts need a fresh sign-in
+	// without opening each one. Decided from the decrypted record alone: no Steam
+	// request, no vault write, so listing costs no more than it did.
+	SessionStatus SessionStatus `json:"sessionStatus"`
 }
 
 type SensitiveViewGrant struct {
@@ -165,13 +196,17 @@ type Service struct {
 	capabilities               *capability.Manager
 	setMainContentProtectionFn func(bool) error
 	emitMainWindowEventFn      func(string, any) error
-	confirmationWindowMu       sync.Mutex
-	confirmationAccountID      string
-	confirmationGeneration     string
-	confirmationInstanceID     string
-	confirmationRows           map[string]confirmationapi.Confirmation
-	confirmationCancel         context.CancelFunc
-	confirmationOperation      uint64
+	// emitCooldownFn publishes a CS2 cooldown change to the account list. Left
+	// nil in tests so the emission can be asserted rather than dispatched.
+	emitCooldownFn         func(steam.CS2CooldownPatch)
+	cooldownSweep          cooldownSweepState
+	confirmationWindowMu   sync.Mutex
+	confirmationAccountID  string
+	confirmationGeneration string
+	confirmationInstanceID string
+	confirmationRows       map[string]confirmationapi.Confirmation
+	confirmationCancel     context.CancelFunc
+	confirmationOperation  uint64
 	// A detail fetch gets its own cancel slot. Sharing the one above meant a
 	// ten-second poll landing mid-fetch cancelled the open trade, and the trade
 	// cancelled the poll right back.
@@ -243,11 +278,13 @@ func NewService() *Service {
 		resolveSteamExecutableFn:   resolveSteamExecutable,
 		setMainContentProtectionFn: setMainContentProtection,
 		emitMainWindowEventFn:      emitMainWindowEvent,
+		emitCooldownFn:             steam.EmitCS2CooldownPatch,
 		authOperations:             make(map[string]steamAuthOperation),
 		revocationAcknowledgments:  make(map[string]revocationAcknowledgment),
 		steamOperationCancels:      make(map[string]steamBoundOperation),
 		registryUpsertFn:           registry.Upsert,
 	}
+	s.cooldownSweep.wake = make(chan struct{}, 1)
 	s.newAuthManager = func() (steamCredentialAuthManager, error) {
 		return authflow.New(authAdapter, authflow.Config{})
 	}
@@ -300,6 +337,9 @@ func newServiceForTest(options ...vault.Option) *Service {
 		steamOperationCancels:      make(map[string]steamBoundOperation),
 		registryUpsertFn:           registry.Upsert,
 	}
+	// Left with a nil emitCooldownFn on purpose: tests assert the emission
+	// rather than dispatching it into an application that is not running.
+	s.cooldownSweep.wake = make(chan struct{}, 1)
 	s.newAuthManager = func() (steamCredentialAuthManager, error) {
 		return authflow.New(authAdapter, authflow.Config{})
 	}
@@ -325,12 +365,14 @@ func (s *Service) ServiceStartup(ctx context.Context, _ application.ServiceOptio
 	if client != nil && state != nil {
 		go runTimeSync(syncCtx, client, state)
 	}
+	s.startCooldownSweeper(ctx)
 	registerLoginAgainHandoff()
 	return nil
 }
 
 func (s *Service) ServiceShutdown() error {
 	s.closeAuthenticationManager(true)
+	s.stopCooldownSweeper()
 	s.mu.Lock()
 	cancel := s.timeSyncCancel
 	s.timeSyncCancel = nil
@@ -854,20 +896,45 @@ func (s *Service) ListAccounts(accountID, token string) ([]AccountSummary, error
 	}
 	result := make([]AccountSummary, 0, len(records))
 	anchorFound := false
+	// One instant for the whole list, so two rows whose tokens lapse in the same
+	// second cannot disagree about which side of the boundary they fell.
+	now := time.Now()
 	for _, record := range records {
 		if record.SteamID64 == accountID {
 			anchorFound = true
 		}
-		account, err := accountFromRecord(v, record.ID)
+		loaded, err := recordFromVault(v, record.ID)
 		if err != nil {
-			return nil, err
+			// One unreadable record must not blank the whole picker. Before the
+			// vault held more than one record shape this returned the error, so
+			// a single half-finished enrollment hid every other account.
+			serviceLogger().Warn("skipping unreadable vault record",
+				"steamId64", record.SteamID64, "error", err)
+			continue
 		}
-		result = append(result, AccountSummary{SteamID64: record.SteamID64, AccountName: account.AccountName})
+		result = append(result, AccountSummary{
+			SteamID64:     record.SteamID64,
+			AccountName:   loaded.AccountName(),
+			Kind:          summaryKind(loaded.Kind),
+			SessionStatus: localSessionStatus(loaded.Kind, loaded.AccessToken(), now),
+		})
+		loaded.destroy()
 	}
 	if !anchorFound {
 		return nil, capability.ErrInvalidCapability
 	}
 	return result, nil
+}
+
+func summaryKind(kind vaultrecord.Kind) AccountKind {
+	switch kind {
+	case vaultrecord.KindLoginOnly:
+		return AccountKindLoginOnly
+	case vaultrecord.KindEnrollmentPending:
+		return AccountKindPending
+	default:
+		return AccountKindAuthenticator
+	}
 }
 
 func (s *Service) ChangePassword(currentPassword, newPassword, appPassword string) error {
@@ -1468,14 +1535,22 @@ func (s *Service) unlockVaultWithLocked(v *vault.Vault, creds vault.Credentials,
 		return err
 	}
 	if !status.SavedAccountDataEncrypted {
-		return retainedUnlockError(v.UnlockWith(creds, mode))
+		unlockErr := retainedUnlockError(v.UnlockWith(creds, mode))
+		if unlockErr == nil {
+			s.signalCooldownSweep()
+		}
+		return unlockErr
 	}
 	key, err := security.DeriveSteamGuardOuterKey()
 	if err != nil {
 		return err
 	}
 	defer security.WipeSecret(key)
-	return retainedUnlockError(v.UnlockWithFactorsAndOuter(creds, key, mode))
+	unlockErr := retainedUnlockError(v.UnlockWithFactorsAndOuter(creds, key, mode))
+	if unlockErr == nil {
+		s.signalCooldownSweep()
+	}
+	return unlockErr
 }
 
 // unlockFailureReason separates a wrong password from vault, secure-memory and
@@ -1599,12 +1674,25 @@ func accountFromRecord(v *vault.Vault, recordID string) (mafile.Account, error) 
 	return accountFromReader(v, recordID)
 }
 
+// accountFromReader decrypts a record that must hold an authenticator.
+//
+// The vault stores three record shapes. Every caller of this function needs a
+// shared or identity secret, so the other two shapes are turned into errors here
+// rather than at each call site - that way code generation, confirmations, QR
+// approval and maFile export all decline a login-only account correctly without
+// any of them knowing the kind exists.
 func accountFromReader(reader accountRecordReader, recordID string) (mafile.Account, error) {
 	raw, err := reader.GetRecord(recordID)
 	if err != nil {
 		return mafile.Account{}, err
 	}
 	defer wipe(raw)
+	switch vaultrecord.Sniff(raw) {
+	case vaultrecord.KindLoginOnly:
+		return mafile.Account{}, ErrNotAuthenticator
+	case vaultrecord.KindEnrollmentPending:
+		return mafile.Account{}, ErrRecordPending
+	}
 	parsed, err := mafile.ParsePlaintext(raw)
 	if err != nil {
 		return mafile.Account{}, errors.Join(ErrInvalidImport, err)

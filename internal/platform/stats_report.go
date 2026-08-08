@@ -31,22 +31,22 @@ type StatsPageRow struct {
 
 // StatsReport is returned to the SPA for the statistics modal.
 type StatsReport struct {
-	ShareEnabled       bool              `json:"shareEnabled"`
-	OsDisplay          string            `json:"osDisplay"`
-	FirstLaunch        string            `json:"firstLaunch"`
-	LaunchCount        int               `json:"launchCount"`
-	CrashCount         int               `json:"crashCount"`
-	MostUsedPlatform   string            `json:"mostUsedPlatform"`
-	TotalTimeInAppSec  int               `json:"totalTimeInAppSec"`
-	TotalSwitches      int               `json:"totalSwitches"`
-	TotalGamesLaunched  int               `json:"totalGamesLaunched"`
-	TotalTags           int               `json:"totalTags"`
-	TotalTaggedAccounts int               `json:"totalTaggedAccounts"`
-	UniqueDaysSwitched  int               `json:"uniqueDaysSwitched"`
-	UUID               string            `json:"uuid"`
-	LastUpload         string            `json:"lastUpload"`
-	Switchers          []StatsSwitcherRow `json:"switchers"`
-	Pages              []StatsPageRow    `json:"pages"`
+	ShareEnabled        bool               `json:"shareEnabled"`
+	OsDisplay           string             `json:"osDisplay"`
+	FirstLaunch         string             `json:"firstLaunch"`
+	LaunchCount         int                `json:"launchCount"`
+	CrashCount          int                `json:"crashCount"`
+	MostUsedPlatform    string             `json:"mostUsedPlatform"`
+	TotalTimeInAppSec   int                `json:"totalTimeInAppSec"`
+	TotalSwitches       int                `json:"totalSwitches"`
+	TotalGamesLaunched  int                `json:"totalGamesLaunched"`
+	TotalTags           int                `json:"totalTags"`
+	TotalTaggedAccounts int                `json:"totalTaggedAccounts"`
+	UniqueDaysSwitched  int                `json:"uniqueDaysSwitched"`
+	UUID                string             `json:"uuid"`
+	LastUpload          string             `json:"lastUpload"`
+	Switchers           []StatsSwitcherRow `json:"switchers"`
+	Pages               []StatsPageRow     `json:"pages"`
 }
 
 func formatStatsDateTime(t time.Time) string {
@@ -82,21 +82,21 @@ func assembleStatsReport(data stats.ReportData, shareEnabled bool) StatsReport {
 		})
 	}
 	return StatsReport{
-		ShareEnabled:       shareEnabled,
-		OsDisplay:          winutil.OSDisplayString(),
-		FirstLaunch:        formatStatsDateTime(data.FirstLaunch),
-		LaunchCount:        data.LaunchCount,
-		CrashCount:         data.CrashCount,
-		MostUsedPlatform:   data.MostUsedPlatform,
-		TotalTimeInAppSec:  data.TotalTimeInAppSec,
-		TotalSwitches:      data.TotalSwitches,
+		ShareEnabled:        shareEnabled,
+		OsDisplay:           winutil.OSDisplayString(),
+		FirstLaunch:         formatStatsDateTime(data.FirstLaunch),
+		LaunchCount:         data.LaunchCount,
+		CrashCount:          data.CrashCount,
+		MostUsedPlatform:    data.MostUsedPlatform,
+		TotalTimeInAppSec:   data.TotalTimeInAppSec,
+		TotalSwitches:       data.TotalSwitches,
 		TotalGamesLaunched:  data.TotalGamesLaunched,
 		TotalTags:           data.TotalTags,
 		TotalTaggedAccounts: data.TotalTaggedAccounts,
 		UniqueDaysSwitched:  data.UniqueDaysSwitched,
-		UUID:               data.UUID,
-		LastUpload:         formatStatsDateTime(data.LastUpload),
-		Switchers:          sw,
-		Pages:              pg,
+		UUID:                data.UUID,
+		LastUpload:          formatStatsDateTime(data.LastUpload),
+		Switchers:           sw,
+		Pages:               pg,
 	}
 }

@@ -208,8 +208,8 @@
         <button
           class="square actionbar__steam-guard"
           type="button"
-          aria-label={$t("Context_2Factor")}
-          use:tooltip={$t("Context_2Factor")}
+          aria-label={$t("Context_SteamGuard")}
+          use:tooltip={$t("Context_SteamGuard")}
           on:click={openSteamGuardAccounts}
           >
             <svg viewBox="0 0 24 24" aria-hidden="true">

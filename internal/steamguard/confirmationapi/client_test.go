@@ -440,3 +440,27 @@ func TestCredentialFormattingIsRedacted(t *testing.T) {
 		t.Fatalf("credential formatter leaked a secret: %s", formatted)
 	}
 }
+
+// The CS2 endpoints are unsigned GETs added after the confirmation calls, so
+// they do not share their code path and could lose the offline gate without any
+// other test noticing. Offline is a user promise that the app makes no network
+// requests, and the store page is the only one that leaves steamcommunity.com.
+func TestCS2RequestsAreRefusedOffline(t *testing.T) {
+	for name, call := range map[string]func(*Client) ([]byte, error){
+		"gcpd": func(c *Client) ([]byte, error) {
+			return c.FetchCS2GCPD(context.Background(), testCredentials())
+		},
+		"store page": func(c *Client) ([]byte, error) {
+			return c.FetchCS2StorePage(context.Background(), testCredentials())
+		},
+	} {
+		t.Run(name, func(t *testing.T) {
+			transport := &queuedTransport{}
+			_, err := call(testClient(transport, func() bool { return true }))
+			assertFailure(t, err, FailureOffline)
+			if len(transport.requests) != 0 {
+				t.Fatal("offline request reached transport")
+			}
+		})
+	}
+}

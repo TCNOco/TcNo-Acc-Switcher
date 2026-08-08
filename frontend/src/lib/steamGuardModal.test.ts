@@ -11,9 +11,11 @@ import {
 		  steamGuardCodeCanAutoRefresh,
 		  steamGuardCodeProgress,
 	  steamGuardQRFailureMessage,
+	  steamGuardRowState,
 	  steamCredentialStep,
 	  steamEnrollmentStep,
   type SteamGuardAccountRef,
+  type SteamGuardAccountSummary,
   type SteamGuardCodeView,
 	  type SteamGuardModalState,
 	  type SteamCredentialResult,
@@ -37,6 +39,10 @@ describe("Steam Guard modal state", () => {
     ["enrollment", "enrollment"],
     ["qr", "qr"],
     ["login-again", "login-again"],
+    ["login-only-setup", "login-only-setup"],
+    // An account the vault does not hold. It must not start on "loading": that
+    // path asks for a code the account has no record to produce.
+    ["setup", "setup"],
   ] as const)("opens the %s entry on the %s screen", (entry, screen) => {
     expect(initialSteamGuardModalState(account, entry).screen).toBe(screen);
   });
@@ -74,7 +80,7 @@ describe("Steam Guard modal state", () => {
 
     state = reduceSteamGuardModal(state, {
       type: "show-all",
-      accounts: [{ ...account, locked: false }],
+      accounts: [{ ...account, locked: false, kind: "authenticator", sessionStatus: "valid" }],
     });
     expect(state.screen).toBe("all-accounts");
 
@@ -329,5 +335,36 @@ describe("Steam enrollment resume projection", () => {
 		[{ state: "rate_limited", pending: false }, "blocked"],
 	] as const)("maps non-pending enrollment state", (values, step) => {
 		expect(steamEnrollmentStep(status(values))).toBe(step);
+	});
+});
+
+// The picker row shows one badge, so the states have to be ranked. What the user
+// must act on comes first; a claim about the Steam session is only made when the
+// stored token actually said something.
+describe("Steam Guard picker row state", () => {
+	const summary = (values: Partial<SteamGuardAccountSummary>): SteamGuardAccountSummary => ({
+		...account,
+		locked: false,
+		kind: "authenticator",
+		sessionStatus: "valid",
+		...values,
+	});
+
+	it("puts locked ahead of every other state", () => {
+		expect(steamGuardRowState(summary({ locked: true }))).toBe("locked");
+		expect(steamGuardRowState(summary({ locked: true, kind: "login-only" }))).toBe("locked");
+		expect(steamGuardRowState(summary({ locked: true, sessionStatus: "needs-login" }))).toBe("locked");
+	});
+
+	it("puts a lapsed session ahead of the record's kind", () => {
+		expect(steamGuardRowState(summary({ sessionStatus: "needs-login" }))).toBe("login-again");
+		expect(steamGuardRowState(summary({ kind: "login-only", sessionStatus: "needs-login" })))
+			.toBe("login-again");
+	});
+
+	it("names a working session ready, and an unreadable one unverified", () => {
+		expect(steamGuardRowState(summary({}))).toBe("ready");
+		expect(steamGuardRowState(summary({ sessionStatus: "unknown" }))).toBe("unverified");
+		expect(steamGuardRowState(summary({ kind: "login-only" }))).toBe("login-only");
 	});
 });

@@ -48,6 +48,23 @@ type Settings struct {
 	SteamShowMiniProfile    bool `json:"Steam_ShowMiniProfile"`
 	SteamShowAvatarFrame    bool `json:"Steam_ShowAvatarFrame"`
 	SteamShowSteamGuardLock bool `json:"Steam_ShowSteamGuardLock"`
+
+	// SteamCollectCS2Cooldowns gates reading each vault account's CS2
+	// competitive cooldown while the Steam Guard vault happens to be unlocked,
+	// and showing it on the account tile.
+	SteamCollectCS2Cooldowns bool `json:"Steam_CollectCS2Cooldowns"`
+
+	// SteamShowCS2Rank shows the Premier and Competitive ranks the cooldown sweep
+	// already read, for accounts with no CS2 game stats configured. Costs nothing
+	// extra: the ranks ride along in the same response as the cooldown.
+	SteamShowCS2Rank bool `json:"Steam_ShowCS2Rank"`
+
+	// SteamShowCS2PrimeTag shows a Prime pill on vault accounts.
+	//
+	// Off by default, unlike its neighbours: Prime is not in the GCPD response the
+	// sweep already fetches, so each account costs one additional request to the
+	// store's licenses page.
+	SteamShowCS2PrimeTag bool `json:"Steam_ShowCS2PrimeTag"`
 }
 
 func defaultSettings() Settings {
@@ -68,7 +85,9 @@ func defaultSettings() Settings {
 		SteamShowAvatarFrame: true,
 		// On by default: the lock is the only place the account list says which
 		// accounts the app holds an authenticator for.
-		SteamShowSteamGuardLock: true,
+		SteamShowSteamGuardLock:  true,
+		SteamCollectCS2Cooldowns: true,
+		SteamShowCS2Rank:         true,
 	}
 }
 
@@ -192,6 +211,14 @@ func LoadSettings() (Settings, error) {
 	if !gjson.GetBytes(data2, "Steam_ShowSteamGuardLock").Exists() {
 		s.SteamShowSteamGuardLock = true
 	}
+	if !gjson.GetBytes(data2, "Steam_CollectCS2Cooldowns").Exists() {
+		s.SteamCollectCS2Cooldowns = true
+	}
+	if !gjson.GetBytes(data2, "Steam_ShowCS2Rank").Exists() {
+		s.SteamShowCS2Rank = true
+	}
+	// Steam_ShowCS2PrimeTag is deliberately absent here: it defaults off, which is
+	// what a missing bool already decodes to.
 	return s, nil
 }
 

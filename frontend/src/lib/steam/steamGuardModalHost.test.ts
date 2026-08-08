@@ -22,8 +22,7 @@ describe("Steam Guard menu modal host", () => {
   it.each([
     ["open", "account"],
     ["all", "all-accounts"],
-    ["add", "enrollment"],
-    ["import", "import"],
+    ["setup", "setup"],
   ] as const)("maps %s requests to the %s entry", (action, entry) => {
     unsubscribe = bindSteamGuardMenuToModal(controller);
 

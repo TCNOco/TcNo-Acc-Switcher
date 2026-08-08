@@ -5,7 +5,10 @@ import { openTagExpiryModal } from "../stores/modal";
 export type TagFilterMode =
   | { kind: "all" }
   | { kind: "untagged" }
-  | { kind: "tag"; id: string; name: string };
+  | { kind: "tag"; id: string; name: string }
+  // The inverse of "tag". Answering "which accounts are NOT on cooldown" needs a
+  // negative filter; a positive one can only ever list the affected accounts.
+  | { kind: "notTag"; id: string; name: string };
 
 export type TagDefRow = {
   id: string;
@@ -50,10 +53,40 @@ export function accountTagBubbleLabel(name: string): string {
   return name.trim() === SPECIAL_TAG_CS2_DROP_CLAIMED_NAME ? SPECIAL_TAG_CS2_DROP_CLAIMED_BUBBLE_NAME : name;
 }
 
+/**
+ * Tags the app manages itself. Matched by name because the Go tag DTO carries no
+ * special id — the same duplication SPECIAL_TAG_CS2_DROP_CLAIMED_NAME already
+ * lives with.
+ */
+export const MANAGED_TAG_CS2_COOLDOWN_NAME = "CS2 Cooldown";
+export const MANAGED_TAG_CS2_PRIME_NAME = "CS2 Prime";
+export const MANAGED_TAG_CS2_NON_PRIME_NAME = "CS2 Non-Prime";
+
+const MANAGED_TAG_NAMES: ReadonlySet<string> = new Set([
+  MANAGED_TAG_CS2_COOLDOWN_NAME,
+  MANAGED_TAG_CS2_PRIME_NAME,
+  MANAGED_TAG_CS2_NON_PRIME_NAME,
+]);
+
+/**
+ * App-managed tags, which the user cannot remove by hand.
+ *
+ * Narrower than isSpecialTag: "CS2 Drop Claimed" is applied by the user and so
+ * stays removable, while this one is applied and withdrawn by the cooldown
+ * sweep. Removing it would only make it vanish until the next refresh, so it is
+ * turned off in Steam settings instead - which clears it from every account.
+ */
+export function isManagedTag(tag: Pick<TagDefRow, "name">): boolean {
+  return MANAGED_TAG_NAMES.has(tag.name.trim());
+}
+
 export function isSpecialTag(tag: Pick<TagDefRow, "name" | "specialID">): boolean {
   return (
     tag.specialID === SPECIAL_TAG_CS2_DROP_CLAIMED_ID ||
-    tag.name.trim() === SPECIAL_TAG_CS2_DROP_CLAIMED_NAME
+    tag.name.trim() === SPECIAL_TAG_CS2_DROP_CLAIMED_NAME ||
+    // Kept out of the Modify submenu: the sweep reapplies these, so editing one
+    // by hand would just be fighting the next refresh.
+    isManagedTag(tag)
   );
 }
 
@@ -124,6 +157,9 @@ export function buildTagsSectionMenuItem(opts: {
 }): MenuItemDef {
   const { platformKey, uniqueId, assignedTags, tagDefs, tr, afterChange, onSuccess, onError } = opts;
   const assignedIds = new Set(assignedTags.map((t) => t.id));
+  // tagList stays complete: it backs the "does this name already exist" check,
+  // and hiding a managed tag from that would let the user create a second tag
+  // with the same name. Only the rows offered for adding are filtered.
   const tagList = tagDefs;
   const editableAssignedTags = assignedTags.filter((tg) => !isSpecialTag(tg));
   const defaultExpiry = buildDefaultExpiryValues();
@@ -177,8 +213,11 @@ export function buildTagsSectionMenuItem(opts: {
         });
       },
     },
+    // Managed tags are never offered: the app applies and withdraws them on its
+    // own, so adding one by hand would only last until the next sweep. The
+    // Steam settings checkbox is their only control.
     ...tagList
-      .filter((d) => !assignedIds.has(d.id))
+      .filter((d) => !assignedIds.has(d.id) && !isManagedTag(d))
       .map(
         (d): MenuItemDef => ({
           label: d.name,
@@ -190,74 +229,72 @@ export function buildTagsSectionMenuItem(opts: {
       ),
   ];
 
-  const removeChildren: MenuItemDef[] =
-    assignedTags.length === 0
-      ? [{ label: tr("Tags_RemoveEmpty"), disabled: true }]
-      : assignedTags.map(
-          (tg): MenuItemDef => ({
-            label: tg.name,
-            action: () =>
-              void wrap(async () => {
-                await BasicService.RemoveTagFromAccount(platformKey, uniqueId, tg.id);
-              }),
-          }),
-        );
+  // Managed tags are not offered for removal, here or under Remove all - the
+  // sweep would reapply them. Special tags the user applied themselves stay
+  // removable; only the app-managed ones are withheld.
+  const removableTags = assignedTags.filter((tg) => !isManagedTag(tg));
+  const removeChildren: MenuItemDef[] = removableTags.map(
+    (tg): MenuItemDef => ({
+      label: tg.name,
+      action: () =>
+        void wrap(async () => {
+          await BasicService.RemoveTagFromAccount(platformKey, uniqueId, tg.id);
+        }),
+    }),
+  );
   const removeAllTags =
-    assignedTags.length === 0
+    removableTags.length === 0
       ? undefined
       : () =>
           void wrap(async () => {
-            for (const tg of assignedTags) {
+            for (const tg of removableTags) {
               await BasicService.RemoveTagFromAccount(platformKey, uniqueId, tg.id);
             }
           });
 
-  const modifyChildren: MenuItemDef[] =
-    editableAssignedTags.length === 0
-      ? [{ label: tr("Tags_ModifyEmpty"), disabled: true }]
-      : editableAssignedTags.map(
-          (tg): MenuItemDef => ({
-            label: tg.name,
-            children: [
-              {
-                label: tr("Tags_AddExpiry"),
-                action: async () => {
-                  const result = await openTagExpiryModal({
-                    title: tr("Tags_AddExpiry"),
-                    tagName: tg.name,
-                    initialScope: "account",
-                    initialDate: defaultExpiry.date,
-                    initialTime: defaultExpiry.time,
-                    positiveLabel: tr("Tags_SaveExpiry"),
-                    negativeLabel: tr("Button_Cancel"),
-                  });
-                  if (!result) {
-                    return;
-                  }
-                  void wrap(async () => {
-                    await requiredMethod(tagService.SetTagExpiry, "SetTagExpiry")(
-                      platformKey,
-                      uniqueId,
-                      tg.id,
-                      result.scope,
-                      result.expiresAt,
-                    );
-                  });
-                },
-              },
-              {
-                label: tr("Tags_RemoveAll"),
-                action: () =>
-                  void wrap(async () => {
-                    await requiredMethod(tagService.RemoveTagFromAllAccounts, "RemoveTagFromAllAccounts")(
-                      platformKey,
-                      tg.id,
-                    );
-                  }),
-              },
-            ],
-          }),
-        );
+  const modifyChildren: MenuItemDef[] = editableAssignedTags.map(
+    (tg): MenuItemDef => ({
+      label: tg.name,
+      children: [
+        {
+          label: tr("Tags_AddExpiry"),
+          action: async () => {
+            const result = await openTagExpiryModal({
+              title: tr("Tags_AddExpiry"),
+              tagName: tg.name,
+              initialScope: "account",
+              initialDate: defaultExpiry.date,
+              initialTime: defaultExpiry.time,
+              positiveLabel: tr("Tags_SaveExpiry"),
+              negativeLabel: tr("Button_Cancel"),
+            });
+            if (!result) {
+              return;
+            }
+            void wrap(async () => {
+              await requiredMethod(tagService.SetTagExpiry, "SetTagExpiry")(
+                platformKey,
+                uniqueId,
+                tg.id,
+                result.scope,
+                result.expiresAt,
+              );
+            });
+          },
+        },
+        {
+          label: tr("Tags_RemoveAll"),
+          action: () =>
+            void wrap(async () => {
+              await requiredMethod(tagService.RemoveTagFromAllAccounts, "RemoveTagFromAllAccounts")(
+                platformKey,
+                tg.id,
+              );
+            }),
+        },
+      ],
+    }),
+  );
 
   const specialChildren: MenuItemDef[] = [
     {
@@ -278,8 +315,13 @@ export function buildTagsSectionMenuItem(opts: {
     children: [
       { label: tr("Tags_Add"), children: addChildren },
       { label: tr("Tags_AddSpecial"), children: specialChildren },
-      { label: tr("Tags_Modify"), children: modifyChildren },
-      { label: tr("Tags_Remove"), action: removeAllTags, children: removeChildren },
+      // Nothing assigned means nothing to modify or remove — hide rather than show dead entries.
+      ...(modifyChildren.length > 0
+        ? [{ label: tr("Tags_Modify"), children: modifyChildren }]
+        : []),
+      ...(removeChildren.length > 0
+        ? [{ label: tr("Tags_Remove"), action: removeAllTags, children: removeChildren }]
+        : []),
     ],
   };
 }
@@ -311,6 +353,21 @@ export function openTagFilterMenu(opts: {
         action: () => onPick({ kind: "tag", id: d.id, name: d.name }),
       }),
     ),
+    // Grouped under one submenu rather than doubling the flat list: with several
+    // tags the inverses would otherwise bury the ordinary ones.
+    ...(tagDefs.length > 0
+      ? [
+          {
+            label: tr("Tags_Filter_Without"),
+            children: tagDefs.map(
+              (d): MenuItemDef => ({
+                label: d.name,
+                action: () => onPick({ kind: "notTag", id: d.id, name: d.name }),
+              }),
+            ),
+          } satisfies MenuItemDef,
+        ]
+      : []),
   ];
   openContextMenu(x, y, items);
 }

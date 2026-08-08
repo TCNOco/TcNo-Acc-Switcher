@@ -83,6 +83,35 @@
             opacity: 0.45;
             cursor: not-allowed;
         }
+
+        /* Underline counting a time-limited row down. Full bleed along the row's
+           own bottom edge, not the button's text box - the row is what the hover
+           background paints, so that is the edge the line belongs on. Scaled
+           rather than resized so the 100ms ticks stay smooth and never reflow. */
+        span.ctx-menu__progress {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: auto;
+            height: 2px;
+            padding: 0;
+            background: var(--accent);
+            transform: scaleX(var(--ctx-progress, 0));
+            transform-origin: left center;
+            transition: transform 0.1s linear, background 0.3s ease;
+            pointer-events: none;
+            cursor: default;
+            z-index: 2;
+        }
+
+        span.ctx-menu__progress--warn {
+            background: #e0b23c;
+        }
+
+        span.ctx-menu__progress--low {
+            background: #d9534f;
+        }
     }
 
     li.ctx-sep {

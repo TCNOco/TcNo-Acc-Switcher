@@ -55,6 +55,19 @@ func gameStatsRefreshKey(platformKey, game, accountID string) string {
 	return strings.TrimSpace(platformKey) + "\x00" + strings.TrimSpace(game) + "\x00" + strings.TrimSpace(accountID)
 }
 
+// EmitGameStatsUpdated tells an open account list that one account's inline
+// stats markup may have changed. Exported for producers outside this package -
+// a standalone stats provider updates its source without going through the
+// refresh queue, so nothing else would announce it.
+func EmitGameStatsUpdated(platformKey, uniqueID string) {
+	platformKey = strings.TrimSpace(platformKey)
+	uniqueID = strings.TrimSpace(uniqueID)
+	if platformKey == "" || uniqueID == "" {
+		return
+	}
+	emitGameStatsUpdated(GameStatsUpdatedPatch{PlatformKey: platformKey, UniqueID: uniqueID})
+}
+
 func emitGameStatsUpdated(p GameStatsUpdatedPatch) {
 	app := application.Get()
 	if app == nil {

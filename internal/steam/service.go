@@ -73,6 +73,11 @@ type AccountDTO struct {
 
 	// ManualProfileImage: user-set avatar not replaced by refresh until removed.
 	ManualProfileImage bool `json:"manualProfileImage"`
+
+	// CS2CooldownExpiresAt is RFC3339 UTC, empty when there is no cooldown.
+	CS2CooldownExpiresAt string `json:"cs2CooldownExpiresAt"`
+	CS2CooldownPermanent bool   `json:"cs2CooldownPermanent"`
+	ShowCS2Cooldown      bool   `json:"showCs2Cooldown"`
 }
 
 type AccountPatch struct {
@@ -340,7 +345,26 @@ func (s *SteamService) GetSteamSettings() (Settings, error) {
 func (s *SteamService) SaveSteamSettings(st Settings) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	return SaveSettings(st)
+	if err := SaveSettings(st); err != nil {
+		return err
+	}
+	// Turning a state off has to take its tags with it. They cannot be removed by
+	// hand, so without this they would sit on the account permanently.
+	stale := map[string]bool{
+		basic.ManagedTagCS2Cooldown: !st.SteamCollectCS2Cooldowns,
+		basic.ManagedTagCS2Prime:    !st.SteamShowCS2PrimeTag,
+		basic.ManagedTagCS2NonPrime: !st.SteamShowCS2PrimeTag,
+	}
+	for tag, drop := range stale {
+		if !drop {
+			continue
+		}
+		if err := basic.ClearManagedTag(PlatformKey, tag); err != nil {
+			steamLog.Warn("could not clear a managed CS2 tag",
+				slog.String("tag", tag), slog.Any("err", err))
+		}
+	}
+	return nil
 }
 
 func (s *SteamService) RefreshVACStatus() error {

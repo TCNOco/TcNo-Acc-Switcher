@@ -42,9 +42,18 @@ type recordVault interface {
 }
 
 type StartRequest struct {
-	SteamID           uint64
+	SteamID uint64
+	// AccessToken authorizes the enrollment call itself. RefreshToken is not used
+	// for it: it is carried through so the finished authenticator can renew its own
+	// session later, which an account enrolled without one can never do.
 	AccessToken       []byte
+	RefreshToken      []byte
 	AuthenticatorTime uint64
+	// ReplaceLoginOnly permits enrolling over a session-only record, which is how
+	// a login-only account is promoted to a real authenticator. It narrows the
+	// refusal rather than lifting it: any other occupant is still ErrAlreadyEnrolled,
+	// because enrolling over an authenticator destroys secrets held nowhere else.
+	ReplaceLoginOnly bool
 }
 
 type FinalizeRequest struct {

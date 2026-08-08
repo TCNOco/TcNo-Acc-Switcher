@@ -91,25 +91,27 @@ func (f *authServiceCredentialManager) Consume(_ authflow.Binding, _ string, con
 func (f *authServiceCredentialManager) Close() { f.closed = true }
 
 type authServiceEnrollmentManager struct {
-	startStatus      enrollmentflow.Status
-	startCalls       int
-	startAccessToken []byte
-	resumeStatus     enrollmentflow.Status
-	revealCode       string
-	revealCalls      int
-	ackCalls         int
-	ackCodeRef       []byte
-	finalizeStatuses []enrollmentflow.Status
-	finalizeErrors   []error
-	finalizeCalls    int
-	finalizeCodeRef  []byte
-	cancelCalls      int
-	mutateAck        func() error
+	startStatus           enrollmentflow.Status
+	startCalls            int
+	startAccessToken      []byte
+	startReplaceLoginOnly bool
+	resumeStatus          enrollmentflow.Status
+	revealCode            string
+	revealCalls           int
+	ackCalls              int
+	ackCodeRef            []byte
+	finalizeStatuses      []enrollmentflow.Status
+	finalizeErrors        []error
+	finalizeCalls         int
+	finalizeCodeRef       []byte
+	cancelCalls           int
+	mutateAck             func() error
 }
 
 func (f *authServiceEnrollmentManager) Start(_ context.Context, request enrollmentflow.StartRequest) (enrollmentflow.Status, error) {
 	f.startCalls++
 	f.startAccessToken = append([]byte(nil), request.AccessToken...)
+	f.startReplaceLoginOnly = request.ReplaceLoginOnly
 	return f.startStatus, nil
 }
 
@@ -429,6 +431,10 @@ func newAuthServiceFixture(t *testing.T) (*Service, string, SensitiveViewGrant) 
 	if err := service.vault.Unlock("correct horse battery staple", vault.ProcessLease); err != nil {
 		t.Fatal(err)
 	}
+	// A ProcessLease pins protected memory until the vault is locked. Left held,
+	// leases accumulate across tests until Windows refuses further VirtualLock
+	// calls with "insufficient quota" and unrelated tests start failing.
+	t.Cleanup(func() { _ = service.vault.Lock() })
 	account := mafile.Account{
 		SharedSecret:   base64.StdEncoding.EncodeToString(bytes.Repeat([]byte{0x31}, 20)),
 		IdentitySecret: base64.StdEncoding.EncodeToString(bytes.Repeat([]byte{0x32}, 20)),

@@ -13,10 +13,10 @@ import (
 	"time"
 	"unsafe"
 
+	"TcNo-Acc-Switcher/internal/crashlog"
 	"golang.org/x/sys/windows"
 	"golang.org/x/sys/windows/svc"
 	"golang.org/x/sys/windows/svc/mgr"
-	"TcNo-Acc-Switcher/internal/crashlog"
 )
 
 const servicePrefix = "SERVICE:"

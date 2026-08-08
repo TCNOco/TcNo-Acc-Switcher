@@ -19,8 +19,7 @@ function accountFromRequest(request: SteamGuardMenuRequest): SteamGuardAccountRe
 
 function entryFromRequest(request: SteamGuardMenuRequest): SteamGuardModalEntry {
   if (request.action === "all") return "all-accounts";
-  if (request.action === "add") return "enrollment";
-  if (request.action === "import") return "import";
+  if (request.action === "setup") return "setup";
   return "account";
 }
 

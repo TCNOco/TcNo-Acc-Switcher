@@ -16,7 +16,7 @@ const (
 	// MultiDecisionEndpoint decides several confirmations in one POST, the way
 	// the Steam app submits a multi-select.
 	MultiDecisionEndpoint = CommunityOrigin + "/mobileconf/multiajaxop"
-	RequestTimeout   = 15 * time.Second
+	RequestTimeout        = 15 * time.Second
 	// MobileUserAgent matches the Steam mobile app's HTTP client. Steam serves
 	// mobileconf only to that fingerprint.
 	MobileUserAgent = "okhttp/3.12.12"

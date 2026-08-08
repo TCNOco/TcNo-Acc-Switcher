@@ -64,6 +64,10 @@ type gameAttribution struct {
 	Text       string `json:"Text"`
 	Link       string `json:"Link"`
 	Dimensions string `json:"Dimensions"`
+	// Hidden keeps a source out of the credits list — for a first-party source that
+	// needs no crediting. Fallbacks inherit it like any other key, so one that does
+	// want crediting must set "Hidden": false.
+	Hidden bool `json:"Hidden"`
 }
 
 type gameDefinition struct {
@@ -71,6 +75,12 @@ type gameDefinition struct {
 	Indicator      string `json:"Indicator"`
 	URL            string `json:"Url"`
 	RequestCookies string `json:"RequestCookies"`
+	// Fetch names a registered GameStatsCollector to use instead of fetching Url.
+	// It is how a source that needs per-account credentials participates in the
+	// chain without those credentials passing through this file - see
+	// RegisterGameStatsCollector. An unknown name leaves the variant with no
+	// fetcher, which fails it and advances the chain.
+	Fetch string `json:"Fetch"`
 	// TTL is how long collected stats remain fresh before a background refresh (default 3h). JSON: seconds number or duration string ("3h", "30m").
 	TTL gameStatTTL `json:"TTL"`
 	// ProcessName is an optional exe base name (e.g. cs2.exe). When running, the signed-in account uses GameRunningTTL instead of TTL.
@@ -180,6 +190,9 @@ type collectInstruction struct {
 	Icon string `json:"Icon"`
 	// Indicator is optional short text wrapped in <sup>. nil = inherit game-level Indicator; "" = none; "APEX" = override.
 	Indicator *string `json:"Indicator"`
+	// Tooltip is hover text for the metric. Plain text, or "i18n:<Key>" to look the
+	// text up in the active language (falling back to the key when it is unknown).
+	Tooltip string `json:"Tooltip"`
 }
 
 type userGameStat struct {
@@ -201,6 +214,8 @@ type HiddenMetricToggleDTO struct {
 type StatValueAndIconDTO struct {
 	StatValue       string `json:"statValue"`
 	IndicatorMarkup string `json:"indicatorMarkup"`
+	// Tooltip is the raw configured value, resolved for language by the frontend.
+	Tooltip string `json:"tooltip"`
 }
 
 type gameStatsManager struct {
@@ -589,13 +604,17 @@ func (b *BasicService) GetGameAttributions(game string) ([]GameStatAttributionDT
 }
 
 // collectVariantAttributions lists each variant's credit in try order, dropping duplicates
-// (a fallback that does not override Attribution inherits the primary's) and entries with
-// nothing to show.
+// (a fallback that does not override Attribution inherits the primary's), entries marked
+// Hidden, and entries with nothing to show.
 func collectVariantAttributions(def gameDefinition) []GameStatAttributionDTO {
 	out := []GameStatAttributionDTO{}
 	seen := map[GameStatAttributionDTO]struct{}{}
 	for i := 0; i < def.variantCount(); i++ {
-		dto := gameAttributionToDTO(def.variantAt(i).Attribution)
+		attr := def.variantAt(i).Attribution
+		if attr != nil && attr.Hidden {
+			continue
+		}
+		dto := gameAttributionToDTO(attr)
 		if strings.TrimSpace(dto.Image) == "" && strings.TrimSpace(dto.Text) == "" {
 			continue
 		}
@@ -827,6 +846,12 @@ func (b *BasicService) GetUserStatsAllGamesMarkup(platformName, accountID string
 		}
 		row, ok := gameStatsState.cacheByGame[game][accountID]
 		if !ok {
+			// No configured row. A first-party provider may still have something
+			// for this account - rendered through the same path, so it lands in
+			// the same row as any other game's metrics.
+			if stats := standaloneStatsMarkup(platformName, game, accountID, def); len(stats) > 0 {
+				out[game] = stats
+			}
 			continue
 		}
 		// Display against the source that produced these numbers, not the primary definition.
@@ -848,6 +873,7 @@ func (b *BasicService) GetUserStatsAllGamesMarkup(platformName, accountID string
 			statsByKey[key] = StatValueAndIconDTO{
 				StatValue:       value,
 				IndicatorMarkup: indicator,
+				Tooltip:         strings.TrimSpace(def.Collect[key].Tooltip),
 			}
 		}
 		if len(statsByKey) > 0 {
@@ -861,13 +887,27 @@ func (b *BasicService) GetUserStatsAllGamesMarkup(platformName, accountID string
 	return out, nil
 }
 
-func fetchAndParseGameStats(urlStr, requestCookies, platformName, game, accountID string, def gameDefinition) (rawHTML []byte, collected map[string]string, err error) {
-	gameStatsLog.Info("refresh game stats begin", "platform", platformName, "game", game, "accountID", accountID, "url", urlStr)
+func fetchAndParseGameStats(fetch GameStatsCollector, urlStr, requestCookies, platformName, game, accountID string, def gameDefinition) (rawHTML []byte, collected map[string]string, err error) {
+	// A variant that names a collector must not silently fall back to fetching
+	// its (usually empty) Url - that would surface as a confusing transport
+	// error instead of the real cause.
+	if wanted := strings.TrimSpace(def.Fetch); wanted != "" && fetch == nil {
+		return nil, nil, fmt.Errorf("game stats collector %q is not registered", wanted)
+	}
+	source := urlStr
+	if fetch != nil {
+		source = "collector:" + strings.TrimSpace(def.Fetch)
+	}
+	gameStatsLog.Info("refresh game stats begin", "platform", platformName, "game", game, "accountID", accountID, "url", source)
 	reqCtx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
-	rawHTML, err = fetchGameStatsHTML(reqCtx, urlStr, requestCookies)
+	if fetch != nil {
+		rawHTML, err = fetch(reqCtx, accountID)
+	} else {
+		rawHTML, err = fetchGameStatsHTML(reqCtx, urlStr, requestCookies)
+	}
 	if err != nil {
-		gameStatsLog.Warn("refresh game stats fetch failed", "platform", platformName, "game", game, "accountID", accountID, "url", urlStr, "err", err)
+		gameStatsLog.Warn("refresh game stats fetch failed", "platform", platformName, "game", game, "accountID", accountID, "url", source, "err", err)
 		return nil, nil, err
 	}
 	if msg := strings.TrimSpace(gjson.GetBytes(rawHTML, "Error").String()); msg != "" {
@@ -892,6 +932,9 @@ func fetchAndParseGameStats(urlStr, requestCookies, platformName, game, accountI
 type gameStatsVariant struct {
 	def gameDefinition
 	url string
+	// fetch replaces the HTTP GET when the definition names a registered
+	// collector. Nil for the ordinary URL-fetched variants.
+	fetch GameStatsCollector
 }
 
 // refreshPrepareLocked resolves every variant of a game definition for one account, and the
@@ -931,11 +974,22 @@ func (m *gameStatsManager) refreshPrepareLocked(platformName, game, accountID st
 		v := def.variantAt(i)
 		resolved := ResolveGameStatsVarTemplates(gameStatVarDefsToAutofillMap(v.Vars), row.Vars, ctx)
 		variants = append(variants, gameStatsVariant{
-			def: v,
-			url: substituteGameStatsURL(v.URL, resolved),
+			def:   v,
+			url:   substituteGameStatsURL(v.URL, resolved),
+			fetch: gameStatsCollectorFor(v.Fetch),
 		})
 	}
-	return variants, clampFallbackIndex(row.FallbackIndex, count), nil
+	startIdx = clampFallbackIndex(row.FallbackIndex, count)
+	// A collector-backed first variant is always attempted first, whatever the
+	// chain last settled on. It costs a local read rather than a request, so
+	// remembering past it buys nothing - and without this, a row that remembered
+	// a remote source before the collector existed would never reach it. That
+	// also makes inserting a collector variant safe without migrating stored
+	// FallbackIndex values.
+	if len(variants) > 0 && variants[0].fetch != nil {
+		startIdx = 0
+	}
+	return variants, startIdx, nil
 }
 
 // gameStatsChainResult is the outcome of trying a definition's variants in order.
@@ -961,7 +1015,7 @@ func attemptGameStatsChain(platformName, game, accountID string, variants []game
 	res := gameStatsChainResult{index: -1, allNotFound: len(variants) > 0}
 	for _, i := range fallbackAttemptOrder(startIdx, len(variants)) {
 		v := variants[i]
-		rawHTML, collected, err := fetchAndParseGameStats(v.url, v.def.RequestCookies, platformName, game, accountID, v.def)
+		rawHTML, collected, err := fetchAndParseGameStats(v.fetch, v.url, v.def.RequestCookies, platformName, game, accountID, v.def)
 		if err != nil {
 			res.err = err
 			if !isGameStatsResourceNotFound(err) {

@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
   balancedSubmenuPageRanges,
+  scaleFromComputedTransform,
   submenuShouldFillRootHeight,
   submenuTopOffset,
+  toLayoutPx,
 } from "./contextMenuLayout";
 
 describe("context menu submenu layout", () => {
@@ -48,6 +50,40 @@ describe("context menu submenu layout", () => {
         rootBottom: 500,
       }),
     ).toBe(0);
+  });
+});
+
+describe("context menu transform normalization", () => {
+  it("reads the scale a menu is measured through mid intro", () => {
+    expect(scaleFromComputedTransform("matrix(0.97, 0, 0, 0.97, 0, 0)")).toBe(0.97);
+    expect(scaleFromComputedTransform("matrix3d(0.97, 0, 0, 0, 0, 0.97, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)"))
+      .toBe(0.97);
+  });
+
+  it("corrects nothing it cannot correct", () => {
+    expect(scaleFromComputedTransform("none")).toBe(1);
+    expect(scaleFromComputedTransform("")).toBe(1);
+    expect(scaleFromComputedTransform("matrix(0.7, 0.7, -0.7, 0.7, 0, 0)")).toBe(1);
+    expect(scaleFromComputedTransform("translateY(4px)")).toBe(1);
+    expect(scaleFromComputedTransform("matrix(0, 0, 0, 0, 0, 0)")).toBe(1);
+  });
+
+  it("restores the height a flyout is really given", () => {
+    expect(toLayoutPx(293.2734375, 0.97)).toBe(302.34375);
+    expect(toLayoutPx(302.34375, 1)).toBe(302.34375);
+  });
+
+  it("places a flyout the same whether it is measured mid intro or settled", () => {
+    const settled = { naturalTop: 100.78125, naturalBottom: 403.125, rootTop: 0, rootBottom: 302.34375 };
+    const scale = 0.97;
+    const midIntro = submenuTopOffset({
+      naturalTop: toLayoutPx(settled.naturalTop * scale, scale),
+      naturalBottom: toLayoutPx(settled.naturalBottom * scale, scale),
+      rootTop: 0,
+      rootBottom: toLayoutPx(settled.rootBottom * scale, scale),
+    });
+
+    expect(midIntro).toBe(submenuTopOffset(settled));
   });
 });
 

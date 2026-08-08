@@ -502,8 +502,17 @@
     fill: var(--modal-header-fg, var(--whiteSecondary));
   }
 
+  /* Centred on the bar, not on the space left between the flanking controls, so
+     the title sits where the window titlebar puts it instead of drifting right
+     by half the back button. Taken out of the flow for that, which is also why
+     the reserve below is a fixed number: the widest flank is the back button
+     plus the icon, and the themes only ever make these controls smaller. */
   .modal-title-drag {
-    flex: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: calc(100% - 200px);
     font-family: "Segoe UI", sans-serif;
     font-size: 12px;
     font-weight: 500;
@@ -511,7 +520,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    padding: 0 8px;
+    pointer-events: none;
   }
 
   .modal-window-controls {

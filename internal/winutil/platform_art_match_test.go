@@ -19,7 +19,7 @@ func TestEmbeddedPathIsUnderPlatformArt(t *testing.T) {
 func TestPlatformArtStemMatchesKey(t *testing.T) {
 	cases := []struct {
 		stem, key string
-		want       bool
+		want      bool
 	}{
 		{"BattleNet", "BattleNet", true},
 		{"BattleNet", "Battle.net", true},

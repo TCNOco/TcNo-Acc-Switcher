@@ -17,6 +17,8 @@ vi.mock("../stores/modal", () => ({
 import {
   buildTagsSectionMenuItem,
   formatTagExpiryCountdown,
+  MANAGED_TAG_CS2_COOLDOWN_NAME,
+  MANAGED_TAG_CS2_PRIME_NAME,
   SPECIAL_TAG_CS2_DROP_CLAIMED_NAME,
   tagHasExpiry,
   type TagDefRow,
@@ -24,12 +26,12 @@ import {
 
 const tr = (key: string) => key;
 
-function buildMenu(assignedTags: TagDefRow[]): MenuItemDef {
+function buildMenu(assignedTags: TagDefRow[], tagDefs: TagDefRow[] = assignedTags): MenuItemDef {
   return buildTagsSectionMenuItem({
     platformKey: "Steam",
     uniqueId: "76561199141170487",
     assignedTags,
-    tagDefs: assignedTags,
+    tagDefs,
     tr,
     afterChange: vi.fn(),
     onSuccess: vi.fn(),
@@ -59,13 +61,53 @@ describe("buildTagsSectionMenuItem", () => {
     expect(remove.children?.map((item) => item.label)).toContain(SPECIAL_TAG_CS2_DROP_CLAIMED_NAME);
   });
 
-  it("shows the empty modify state when only special tags are assigned", () => {
+  it("hides the modify submenu when only special tags are assigned", () => {
     const menu = buildMenu([
       { id: "special-random-id", name: SPECIAL_TAG_CS2_DROP_CLAIMED_NAME, color: "#993333" },
     ]);
 
-    const modify = childByLabel(menu, "Tags_Modify");
-    expect(modify.children).toEqual([{ label: "Tags_ModifyEmpty", disabled: true }]);
+    expect(menu.children?.map((item) => item.label)).not.toContain("Tags_Modify");
+    expect(menu.children?.map((item) => item.label)).toContain("Tags_Remove");
+  });
+
+  it("never offers to add an app-managed tag", () => {
+    // Only the Steam settings checkbox applies these. Offering one under Add
+    // would create a tag the next sweep immediately takes back.
+    const menu = buildMenu([], [
+      { id: "normal", name: "Trade", color: "#336699" },
+      { id: "managed", name: MANAGED_TAG_CS2_COOLDOWN_NAME, color: "#c94f4f" },
+      { id: "managed-prime", name: MANAGED_TAG_CS2_PRIME_NAME, color: "#c8a11e" },
+    ]);
+
+    const add = childByLabel(menu, "Tags_Add");
+    const labels = add.children?.filter((item) => item.type !== "search").map((item) => item.label);
+    expect(labels).toEqual(["Trade"]);
+  });
+
+  it("never offers to remove the app-managed cooldown tag", () => {
+    // The sweep reapplies it, so removing it by hand only hides it until the
+    // next refresh. It is turned off in Steam settings instead.
+    const menu = buildMenu([
+      { id: "normal", name: "Trade", color: "#336699" },
+      { id: "managed", name: MANAGED_TAG_CS2_COOLDOWN_NAME, color: "#c94f4f" },
+    ]);
+
+    const remove = childByLabel(menu, "Tags_Remove");
+    expect(remove.children?.map((item) => item.label)).toEqual(["Trade"]);
+  });
+
+  it("hides the remove submenu when only the managed tag is assigned", () => {
+    const menu = buildMenu([
+      { id: "managed", name: MANAGED_TAG_CS2_COOLDOWN_NAME, color: "#c94f4f" },
+    ]);
+
+    expect(menu.children?.map((item) => item.label)).not.toContain("Tags_Remove");
+  });
+
+  it("hides both modify and remove when no tags are assigned", () => {
+    const menu = buildMenu([]);
+
+    expect(menu.children?.map((item) => item.label)).toEqual(["Tags_Add", "Tags_AddSpecial"]);
   });
 });
 
