@@ -285,6 +285,53 @@ func TestWriteLoginUsersAndRegistry_RebuildsDeletedFile(t *testing.T) {
 	}
 }
 
+// AutoLoginUser is the login name, so a stored account without one cannot be
+// preselected. That has to degrade to Steam's account chooser with the row
+// present, not fail the switch.
+func TestWriteLoginUsersAndRegistry_NoAccountNameFallsBackToChooser(t *testing.T) {
+	seedStoredAccount(t, accountstore.Record{
+		SteamID64: "76561198000000300",
+		Source:    accountstore.SourceSteamGuard,
+	})
+
+	dir := t.TempDir()
+	configDir := filepath.Join(dir, "config")
+	os.MkdirAll(configDir, 0o755)
+	loginPath := filepath.Join(configDir, "loginusers.vdf")
+	os.WriteFile(loginPath, []byte(`"users"
+{
+	"76561198000000100"
+	{
+		"AccountName"		"player1"
+		"PersonaName"		"Player One"
+	}
+}
+`), 0o644)
+
+	if err := writeLoginUsersAndRegistry(dir, "76561198000000300"); err != nil {
+		t.Fatalf("a nameless stored account should still switch: %v", err)
+	}
+
+	users, err := ParseLoginUsers(loginPath)
+	if err != nil {
+		t.Fatalf("ParseLoginUsers: %v", err)
+	}
+	// No junk row: a nameless entry could never be auto-logged-in and would be
+	// dropped on the next read, so Steam's file keeps only the real account.
+	if len(users) != 1 || users[0].SteamID64 != "76561198000000100" {
+		t.Fatalf("got %+v, want the named account untouched", users)
+	}
+	if users[0].AutoLogin != "0" || users[0].RememberPassword != "0" {
+		t.Errorf("the other account still claims the session: %+v", users[0])
+	}
+
+	// An empty AutoLoginUser write removes the value, which is what makes Steam
+	// show the chooser instead of signing the previous account back in.
+	if _, _, err := winutil.RegistryRead(steamTestRegBase + ":AutoLoginUser"); err == nil {
+		t.Error("AutoLoginUser should be cleared when no login name is known")
+	}
+}
+
 // "Add New" against an account-less install leaves a zero-byte file behind.
 // That parses to no users rather than an error, so a later switch must still
 // be able to rebuild the row.

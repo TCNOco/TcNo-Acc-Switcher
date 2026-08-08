@@ -299,3 +299,74 @@ func TestForgetSteamAccountRemovesItFromTheStoreAndOrder(t *testing.T) {
 		t.Fatalf("order = %v, want the forgotten id pruned", order)
 	}
 }
+
+// The whole point of the store, asserted through the call the UI actually
+// makes: a loginusers.vdf the parser cannot read must cost the accounts Steam
+// still knew about, not the entire list.
+func TestGetSteamAccountsListSurvivesABrokenLoginUsers(t *testing.T) {
+	env := newSteamTestEnv(t)
+	env.writeLoginUsers(t, oneAccountVDF)
+
+	svc := NewSteamService()
+	if _, err := svc.GetSteamAccountsList(); err != nil {
+		t.Fatalf("seeding list build: %v", err)
+	}
+
+	env.writeLoginUsers(t, `"users" { "76561198000000100" { "AccountName"`)
+	list, err := svc.GetSteamAccountsList()
+	if err != nil {
+		t.Fatalf("GetSteamAccountsList after corruption: %v", err)
+	}
+	if len(list) != 1 || list[0].SteamID64 != knownIDA {
+		t.Fatalf("got %+v, want the account restored from the store", list)
+	}
+	if list[0].AccountName != "acct_a" || list[0].PersonaName != "Persona A" {
+		t.Errorf("restored row lost its names: %+v", list[0])
+	}
+	if list[0].CurrentSession {
+		t.Error("a store-only row must not claim to be the live session")
+	}
+}
+
+// Advanced Clearing deletes the file rather than corrupting it.
+func TestGetSteamAccountsListSurvivesADeletedLoginUsers(t *testing.T) {
+	env := newSteamTestEnv(t)
+	env.writeLoginUsers(t, oneAccountVDF)
+
+	svc := NewSteamService()
+	if _, err := svc.GetSteamAccountsList(); err != nil {
+		t.Fatalf("seeding list build: %v", err)
+	}
+
+	if err := os.Remove(filepath.Join(env.steamDir, "config", "loginusers.vdf")); err != nil {
+		t.Fatal(err)
+	}
+	list, err := svc.GetSteamAccountsList()
+	if err != nil {
+		t.Fatalf("GetSteamAccountsList after deletion: %v", err)
+	}
+	if len(list) != 1 || list[0].SteamID64 != knownIDA {
+		t.Fatalf("got %+v, want the account restored from the store", list)
+	}
+}
+
+// Steam's own rows come first and keep their order; the ones only the switcher
+// remembers follow. MergeOrder runs after this and can still reorder the lot.
+func TestSyncKnownAccountsPutsVDFRowsFirst(t *testing.T) {
+	useTempAccountStore(t)
+	syncKnownAccounts([]LoginUser{
+		{SteamID64: knownIDA, AccountName: "acct_a"},
+		{SteamID64: knownIDB, AccountName: "acct_b"},
+	})
+
+	got := syncKnownAccounts([]LoginUser{{SteamID64: knownIDB, AccountName: "acct_b"}})
+	if len(got) != 2 {
+		t.Fatalf("got %d accounts, want 2", len(got))
+	}
+	if got[0].SteamID64 != knownIDB {
+		t.Errorf("got[0] = %s, want the loginusers.vdf row %s first", got[0].SteamID64, knownIDB)
+	}
+	if got[1].SteamID64 != knownIDA {
+		t.Errorf("got[1] = %s, want the store-only row %s after", got[1].SteamID64, knownIDA)
+	}
+}

@@ -249,15 +249,18 @@ func writeLoginUsersAndRegistry(steamRoot, selectedID64 string) error {
 		if !ok {
 			return fmt.Errorf("steam account %s is unknown to Steam and to the switcher", selected)
 		}
-		steamLog.Info("re-creating a loginusers.vdf row from the account store",
-			slog.String("steamId", tailSteamID(selected)))
-		if strings.TrimSpace(u.AccountName) == "" {
-			// AutoLoginUser is the login name, so without one there is nothing to
-			// preselect and Steam falls back to asking which account to use.
-			steamLog.Warn("re-created Steam account has no login name; Steam will open its account chooser",
+		// A row with neither name is junk: AutoLoginUser is the login name, so
+		// Steam cannot preselect it, and ParseLoginUsers drops nameless rows on
+		// the next read anyway. Leave Steam's file alone and let the cleared
+		// AutoLoginUser below put Steam on its account chooser instead.
+		if strings.TrimSpace(u.AccountName) == "" && strings.TrimSpace(u.PersonaName) == "" {
+			steamLog.Warn("stored Steam account has no login or persona name; Steam will open its account chooser",
 				slog.String("steamId", tailSteamID(selected)))
+		} else {
+			steamLog.Info("re-creating a loginusers.vdf row from the account store",
+				slog.String("steamId", tailSteamID(selected)))
+			users = append(users, u)
 		}
-		users = append(users, u)
 	}
 
 	var autoUser string
