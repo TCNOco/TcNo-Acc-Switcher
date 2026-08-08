@@ -72,6 +72,10 @@ func init() {
 	application.RegisterEvent[platform.PlatformsJSONUpdatePayload](platform.PlatformsJSONUpdatedEvent)
 	application.RegisterEvent[platform.UserDataMoveProgressPayload](platform.UserDataMoveProgressEvent)
 
+	// Steam Guard enrollment adds accounts to the Steam account store from a
+	// package that holds no SteamService; this is how it asks for their avatars.
+	steam.RegisterProfileRefreshTrigger(steamSvc.StartSteamProfileRefresh)
+
 	platform.SetSteamLaunchHooks(steam.SaveFolderFromConfirmedExe, steam.ResolveSteamExePath)
 	platform.SetSteamReset(steam.ResetToDefaults)
 	platform.SetControllerSupportChangedHook(controllerSvc.SetEnabled)

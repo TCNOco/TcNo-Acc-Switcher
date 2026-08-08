@@ -94,6 +94,29 @@ function credentialResult(result: SteamGuardModels.SteamCredentialResult): Steam
 	};
 }
 
+// Steam Guard adds and removes accounts behind the Steam page's back and the
+// backend emits no broadcast for it, so asking for the reload is this side's
+// job. Republishing alone only refreshes the toolbar's view of availability;
+// the page itself needs requestPlatformAccountsRefresh to redraw the list.
+async function republishSteamAccounts(): Promise<void> {
+	try {
+		publishSteamGuardActionAccounts(await SteamService.GetSteamAccountsList());
+		requestPlatformAccountsRefresh("Steam");
+	} catch {
+		// The Steam page republishes availability on its next account load.
+	}
+}
+
+// A credential login that set registryUpdated wrote a vault record. For a
+// login-only add that is a brand new account row, which the Steam page has no
+// way to know about; without this it shows up only on the next window focus.
+async function refreshAccountsIfRegistryUpdated(
+	result: SteamCredentialResult,
+): Promise<SteamCredentialResult> {
+	if (result.registryUpdated) await republishSteamAccounts();
+	return result;
+}
+
 function authPurpose(purpose: SteamAuthPurpose): SteamGuardModels.SteamAuthPurpose {
 	switch (purpose) {
 		case "login_again":
@@ -304,6 +327,9 @@ export async function runImport(initialPaths?: string[]): Promise<void> {
       try {
         switcherAccounts = await SteamService.GetSteamAccountsList();
         publishSteamGuardActionAccounts(switcherAccounts);
+        // An imported maFile can be for an account Steam never signed in here,
+        // so the list has a new row to draw, not just a new lock icon.
+        requestPlatformAccountsRefresh("Steam");
       } catch {
         // The Steam page will republish availability on its next account load.
       }
@@ -1134,14 +1160,9 @@ const controller: SteamGuardModalController = {
 	loginAgain: (accountId, capability) => SteamGuardService.LoginAgain(accountId, capability).then(loginResult),
 	async removeLoginOnlyAccount(accountId, capability) {
 		const result = loginResult(await SteamGuardService.RemoveLoginOnlyAccount(accountId, capability));
-		try {
-			// Republish so the toolbar entry disappears if that was the last vault
-			// account, and so the account row drops its login-only marker.
-			publishSteamGuardActionAccounts(await SteamService.GetSteamAccountsList());
-			requestPlatformAccountsRefresh("Steam");
-		} catch {
-			// The Steam page republishes availability on its next account load.
-		}
+		// So the toolbar entry disappears if that was the last vault account, and
+		// so the account row drops its login-only marker.
+		await republishSteamAccounts();
 		return result;
 	},
 	async promoteLoginOnlyAccount(accountId, capability) {
@@ -1155,22 +1176,20 @@ const controller: SteamGuardModalController = {
 			registryUpdated: result.registryUpdated === true,
 		};
 		if (promotion.registryUpdated) {
-			try {
-				// The record stopped being login-only, so the row's marker is stale.
-				publishSteamGuardActionAccounts(await SteamService.GetSteamAccountsList());
-				requestPlatformAccountsRefresh("Steam");
-			} catch {
-				// The Steam page republishes availability on its next account load.
-			}
+			// The record stopped being login-only, so the row's marker is stale.
+			await republishSteamAccounts();
 		}
 		return promotion;
 	},
 	beginCredentialLogin: (accountId, capability, accountName, password, purpose) =>
-		SteamGuardService.BeginCredentialLogin(accountId, capability, accountName, password, authPurpose(purpose)).then(credentialResult),
+		SteamGuardService.BeginCredentialLogin(accountId, capability, accountName, password, authPurpose(purpose))
+			.then(credentialResult).then(refreshAccountsIfRegistryUpdated),
 	submitCredentialCode: (accountId, capability, handle, challenge, code) =>
-		SteamGuardService.SubmitCredentialCode(accountId, capability, handle, challenge, code).then(credentialResult),
+		SteamGuardService.SubmitCredentialCode(accountId, capability, handle, challenge, code)
+			.then(credentialResult).then(refreshAccountsIfRegistryUpdated),
 	pollCredentialLogin: (accountId, capability, handle) =>
-		SteamGuardService.PollCredentialLogin(accountId, capability, handle).then(credentialResult),
+		SteamGuardService.PollCredentialLogin(accountId, capability, handle)
+			.then(credentialResult).then(refreshAccountsIfRegistryUpdated),
 	cancelCredentialLogin: (accountId, capability, handle) =>
 		SteamGuardService.CancelCredentialLogin(accountId, capability, handle),
 	steamSessionLocalState: (accountId, capability) =>
@@ -1216,11 +1235,7 @@ const controller: SteamGuardModalController = {
 			const status = enrollmentStatus(
 				await SteamGuardService.FinalizeSteamGuardEnrollment(accountId, capability, confirmationCode),
 			);
-			try {
-				publishSteamGuardActionAccounts(await SteamService.GetSteamAccountsList());
-			} catch {
-				// The Steam page will republish availability on its next account load.
-			}
+			await republishSteamAccounts();
 			return status;
 		},
 	showEnrollmentBackupWarning,

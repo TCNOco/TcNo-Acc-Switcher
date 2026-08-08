@@ -427,6 +427,7 @@ func (s *Service) PollCredentialLogin(accountID, token, handle string) (SteamCre
 			// account that re-authenticates is still login-only; promoting it to
 			// active would put a lock icon on an account with no code behind it.
 			registryUpdated = s.upsertRegistry(accountID, s.registryStateForRecord(v, accountID, registry.StateActive))
+			s.rememberSteamAccount(accountID, string(accountName))
 			return nil
 		case SteamAuthPurposeLoginOnly:
 			if err := s.withServiceLock(func() error {
@@ -435,6 +436,10 @@ func (s *Service) PollCredentialLogin(accountID, token, handle string) (SteamCre
 				return err
 			}
 			registryUpdated = s.upsertRegistry(accountID, registry.StateLoginOnly)
+			// A login-only account may have no loginusers.vdf row at all. This
+			// is what puts it in the switcher's list and lets a switch add it
+			// to Steam's file later.
+			s.rememberSteamAccount(accountID, string(accountName))
 			return nil
 		case SteamAuthPurposeAddAuthenticator:
 			manager := s.enrollmentFlow(v)

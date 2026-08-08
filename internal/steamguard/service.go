@@ -39,9 +39,34 @@ import (
 	"TcNo-Acc-Switcher/internal/steamguard/vaultrecord"
 
 	"TcNo-Acc-Switcher/internal/steam"
+	"TcNo-Acc-Switcher/internal/steam/accountstore"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 )
+
+// rememberSteamAccount makes a vault account visible in the Steam account list
+// straight away, whether or not Steam has a loginusers.vdf row for it.
+//
+// The registration index next door holds the ID and state only, so this is the
+// one place the login name reaches the list - without it a login-only account
+// or a freshly imported maFile produces no tile at all. Seeding the store also
+// means a later switch can rebuild the account's loginusers.vdf row.
+func (s *Service) rememberSteamAccount(steamID64, accountName string) {
+	steamID64 = strings.TrimSpace(steamID64)
+	if steamID64 == "" {
+		return
+	}
+	if err := accountstore.Upsert(accountstore.Record{
+		SteamID64:   steamID64,
+		AccountName: strings.TrimSpace(accountName),
+		Source:      accountstore.SourceSteamGuard,
+	}); err != nil {
+		serviceLogger().Warn("Steam account store update failed",
+			"steamId64", steamID64, "error", err)
+		return
+	}
+	steam.RequestProfileRefresh()
+}
 
 var (
 	ErrFeatureDisabled = errors.New("Steam Guard integration is disabled")
@@ -1346,6 +1371,9 @@ func (s *Service) importFiles(paths []string, password, legacyPassword string, r
 			serviceLogger().Warn("Steam Guard registry update failed after import", "steamId64", steamID64, "error", err)
 			return results, err
 		}
+		// An imported maFile can be for an account Steam has never signed in on
+		// this machine, so the store is what makes it appear in the list.
+		s.rememberSteamAccount(steamID64, accountName)
 		results = append(results, result)
 	}
 	return results, nil
