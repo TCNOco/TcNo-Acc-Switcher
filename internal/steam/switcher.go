@@ -249,12 +249,14 @@ func writeLoginUsersAndRegistry(steamRoot, selectedID64 string) error {
 		if !ok {
 			return fmt.Errorf("steam account %s is unknown to Steam and to the switcher", selected)
 		}
+		steamLog.Info("re-creating a loginusers.vdf row from the account store",
+			slog.String("steamId", tailSteamID(selected)))
 		if strings.TrimSpace(u.AccountName) == "" {
+			// AutoLoginUser is the login name, so without one there is nothing to
+			// preselect and Steam falls back to asking which account to use.
 			steamLog.Warn("re-created Steam account has no login name; Steam will open its account chooser",
 				slog.String("steamId", tailSteamID(selected)))
 		}
-		steamLog.Info("re-creating a loginusers.vdf row from the account store",
-			slog.String("steamId", tailSteamID(selected)))
 		users = append(users, u)
 	}
 

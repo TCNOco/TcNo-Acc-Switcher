@@ -285,6 +285,34 @@ func TestWriteLoginUsersAndRegistry_RebuildsDeletedFile(t *testing.T) {
 	}
 }
 
+// "Add New" against an account-less install leaves a zero-byte file behind.
+// That parses to no users rather than an error, so a later switch must still
+// be able to rebuild the row.
+func TestWriteLoginUsersAndRegistry_RebuildsEmptyFile(t *testing.T) {
+	seedStoredAccount(t, accountstore.Record{
+		SteamID64:   "76561198000000100",
+		AccountName: "player1",
+		Source:      accountstore.SourceVDF,
+	})
+
+	dir := t.TempDir()
+	configDir := filepath.Join(dir, "config")
+	os.MkdirAll(configDir, 0o755)
+	loginPath := filepath.Join(configDir, "loginusers.vdf")
+	os.WriteFile(loginPath, nil, 0o644)
+
+	if err := writeLoginUsersAndRegistry(dir, "76561198000000100"); err != nil {
+		t.Fatalf("writeLoginUsersAndRegistry: %v", err)
+	}
+	users, err := ParseLoginUsers(loginPath)
+	if err != nil {
+		t.Fatalf("ParseLoginUsers: %v", err)
+	}
+	if len(users) != 1 || users[0].AccountName != "player1" {
+		t.Fatalf("got %+v, want the single re-created account", users)
+	}
+}
+
 // An unreadable file is not the same as an absent one: overwriting it would
 // destroy whatever accounts it still holds.
 func TestWriteLoginUsersAndRegistry_KeepsUnreadableFile(t *testing.T) {
