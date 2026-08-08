@@ -19,6 +19,7 @@
 		    steamGuardCodeProgress,
 			steamGuardQRFailureMessage,
 			steamCredentialStep,
+			isPendingAccountId,
 			steamEnrollmentStep,
 			steamLoginAgainNextStep,
 	    type SteamGuardAccountRef,
@@ -59,6 +60,7 @@
 		image: { box: "0 0 512 512", path: "M464 448H48c-26.51 0-48-21.49-48-48V112c0-26.51 21.49-48 48-48h416c26.51 0 48 21.49 48 48v288c0 26.51-21.49 48-48 48zM112 120c-30.928 0-56 25.072-56 56s25.072 56 56 56 56-25.072 56-56-25.072-56-56-56zM64 384h384V272l-87.515-87.515c-4.686-4.686-12.284-4.686-16.971 0L208 320l-55.515-55.515c-4.686-4.686-12.284-4.686-16.971 0L64 336v48z" },
 		crop: { box: "0 0 512 512", path: "M488 352h-40V96c0-17.67-14.33-32-32-32H192v64h192v256h-32V128H160V0H96v64H24C10.745 64 0 74.745 0 88v48c0 13.255 10.745 24 24 24h72v264c0 13.255 10.745 24 24 24h232v64h64v-64h72c13.255 0 24-10.745 24-24v-48c0-13.255-10.745-24-24-24z" },
 		list: { box: "0 0 512 512", path: "M48 48a48 48 0 1 0 0 96 48 48 0 1 0 0-96zm448 32H176c-8.8 0-16-7.2-16-16V48c0-8.8 7.2-16 16-16h320c8.8 0 16 7.2 16 16v16c0 8.8-7.2 16-16 16zM48 208a48 48 0 1 0 0 96 48 48 0 1 0 0-96zm448 32H176c-8.8 0-16-7.2-16-16v-16c0-8.8 7.2-16 16-16h320c8.8 0 16 7.2 16 16v16c0 8.8-7.2 16-16 16zM48 368a48 48 0 1 0 0 96 48 48 0 1 0 0-96zm448 32H176c-8.8 0-16-7.2-16-16v-16c0-8.8 7.2-16 16-16h320c8.8 0 16 7.2 16 16v16c0 8.8-7.2 16-16 16z" },
+		plus: { box: "0 0 448 512", path: "M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" },
 		back: { box: "0 0 448 512", path: "M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z" },
 	} as const;
 
@@ -265,6 +267,28 @@
 		const capability = contentProtection.capabilityFor(currentAccount.id);
 		if (!capability) throw new SteamGuardCapabilityError();
 		return capability;
+	}
+
+	/**
+	 * Which set of sign-in endpoints the running flow belongs to. The add-account
+	 * screen drives the very same state machine, but against a pending id that
+	 * only the add endpoints accept - Steam has not yet said which account the
+	 * credentials belong to, so there is no SteamID64 to key on.
+	 */
+	function credentialApi(currentAccount: SteamGuardAccountRef) {
+		return isPendingAccountId(currentAccount.id)
+			? {
+				begin: controller.beginAddAccountLogin,
+				submit: controller.submitAddAccountCode,
+				poll: controller.pollAddAccountLogin,
+				cancel: controller.cancelAddAccountLogin,
+			}
+			: {
+				begin: controller.beginCredentialLogin,
+				submit: controller.submitCredentialCode,
+				poll: controller.pollCredentialLogin,
+				cancel: controller.cancelCredentialLogin,
+			};
 	}
 
   $: codeProgress = state.screen === "account-code"
@@ -879,6 +903,58 @@
     return true;
   }
 
+  /**
+   * Adding an account by signing in. The picker only renders with the vault
+   * open, so this needs no vault gate of its own; the entry points that can be
+   * reached without one prepare the vault before the modal opens.
+   */
+  function showAddAccount(): void {
+    if (busy) return;
+    setupReturn = null;
+    clearAuthTimer();
+    clearAuthSecrets();
+    authAccountName = "";
+    authHandle = "";
+    authChallenge = "";
+    authResult = null;
+    storedDeviceCodeTried = false;
+    authStage = "idle";
+    authMessage = "";
+    inlineError = "";
+    transition({ type: "show-add-account" });
+  }
+
+  /**
+   * Both buttons run one sign-in; the purpose only decides what is stored at the
+   * end of it. A fresh attempt id is minted per press because Go issues one per
+   * sign-in, and a second press must not reuse the first one id.
+   */
+  async function beginAddAccount(purpose: SteamAuthPurpose): Promise<void> {
+    if (busy || state.screen !== "add-account") return;
+    if (!authAccountName.trim() || !authPassword) return;
+    if (!controller.newAddAccountAttempt) return;
+    busy = true;
+    inlineError = "";
+    authPurpose = purpose;
+    let pendingId = "";
+    try {
+      pendingId = await controller.newAddAccountAttempt();
+    } catch (error) {
+      console.error("Steam Guard: add-account attempt could not be started", error);
+      authStage = "error";
+      authMessage = withFailureReason($t("SteamGuard_Error_SignInStartFailed"), error);
+      busy = false;
+      return;
+    }
+    const named = authAccountName.trim();
+    // From here the flow is identical to any other credential sign-in; the
+    // pending id stands in for the SteamID64 nobody knows yet.
+    transition({ type: "show-add-account", account: { id: pendingId, username: named, displayName: named } });
+    authStage = "credentials";
+    busy = false;
+    await beginCredentialLogin();
+  }
+
   /** An maFile names its own account, so this one needs no account chosen first. */
   function importFromAllAccounts(): void {
     if (state.screen !== "all-accounts" || busy) return;
@@ -1331,13 +1407,15 @@
 	}
 
 	async function beginCredentialLogin(): Promise<void> {
-		if (busy || !controller.beginCredentialLogin || authAccountName.trim().length === 0 || authPassword.length === 0) return;
+		if (busy || authAccountName.trim().length === 0 || authPassword.length === 0) return;
 		const currentAccount = steamGuardAccountForState(state) ?? account;
+		const begin = credentialApi(currentAccount).begin;
+		if (!begin) return;
 		busy = true;
 		authMessage = $t("SteamGuard_Challenge_SigningIn");
 		let pending: Promise<SteamCredentialResult>;
 		try {
-			pending = controller.beginCredentialLogin(
+			pending = begin(
 				currentAccount.id,
 				await ensureCapability(currentAccount),
 				authAccountName.trim(),
@@ -1511,7 +1589,16 @@
 		}
 		if (step === "complete") {
 			authHandle = "";
-			await refreshCapabilityIfRequired(currentAccount, result.capabilityRefreshRequired);
+			// The add ran under a pending id. Everything from here is keyed on the
+			// account Steam named - including the enrollment steps below, which
+			// only ever accept a real SteamID64 - so swap identity and take a
+			// capability for it, whether or not the result asked for a refresh.
+			const rekeyed = isPendingAccountId(currentAccount.id) && !!result.steamId64;
+			if (rekeyed) {
+				const named = authAccountName.trim();
+				currentAccount = { id: result.steamId64 as string, username: named, displayName: named };
+			}
+			await refreshCapabilityIfRequired(currentAccount, result.capabilityRefreshRequired || rekeyed);
 			if (result.outcome === "enrollment_pending") {
 				const status = result.enrollment ?? await controller.resumeSteamGuardEnrollment?.(
 					currentAccount.id,
@@ -1530,6 +1617,14 @@
 			}
 			announce($t("SteamGuard_LoginAgain_RefreshedAnnounce"));
 			busy = false;
+			if (rekeyed) {
+				// A freshly added account: the list is where it can be seen to have
+				// arrived, and where another can be added straight after.
+				clearAuthSecrets();
+				authStage = "idle";
+				await showAllAccounts();
+				return;
+			}
 			startLoginSuccessCountdown(currentAccount);
 			return;
 		}
@@ -1556,12 +1651,14 @@
 	}
 
 	async function submitCredentialCode(): Promise<void> {
-		if (busy || !controller.submitCredentialCode || !authHandle || !authChallenge || !authCode) return;
+		if (busy || !authHandle || !authChallenge || !authCode) return;
 		const currentAccount = steamGuardAccountForState(state) ?? account;
+		const submit = credentialApi(currentAccount).submit;
+		if (!submit) return;
 		busy = true;
 		let pending: Promise<SteamCredentialResult>;
 		try {
-			pending = controller.submitCredentialCode(
+			pending = submit(
 				currentAccount.id,
 				await ensureCapability(currentAccount),
 				authHandle,
@@ -1587,13 +1684,15 @@
 	}
 
 	async function pollCredentialLogin(): Promise<void> {
-		if (busy || !controller.pollCredentialLogin || !authHandle) return;
+		if (busy || !authHandle) return;
 		const currentAccount = steamGuardAccountForState(state) ?? account;
+		const poll = credentialApi(currentAccount).poll;
+		if (!poll) return;
 		busy = true;
 		try {
 			await handleCredentialResult(
 				currentAccount,
-				await controller.pollCredentialLogin(
+				await poll(
 					currentAccount.id,
 					await ensureCapability(currentAccount),
 					authHandle,
@@ -1614,10 +1713,11 @@
 		const handle = authHandle;
 		authHandle = "";
 		clearAuthSecrets();
-		if (handle && controller.cancelCredentialLogin) {
+		const cancel = credentialApi(currentAccount).cancel;
+		if (handle && cancel) {
 			const capability = capabilityFor(currentAccount);
 			if (capability) {
-				await controller.cancelCredentialLogin(currentAccount.id, capability, handle).catch((error: unknown) => {
+				await cancel(currentAccount.id, capability, handle).catch((error: unknown) => {
 					console.error("Steam Guard: pending Steam sign-in could not be canceled", error);
 				});
 			}
@@ -2502,7 +2602,76 @@
           <svg class="steam-guard__icon" viewBox={ICONS.fileExport.box} aria-hidden="true"><path d={ICONS.fileExport.path} /></svg>
           {$t("SteamGuard_Import_Title")}
         </button>
+        <!-- The other way in that needs no account picked first: signing in
+             names the account, the same way an maFile carries its own name. -->
+        <button type="button" class="steam-guard__link" disabled={busy} on:click={showAddAccount}>
+          <svg class="steam-guard__icon" viewBox={ICONS.plus.box} aria-hidden="true"><path d={ICONS.plus.path} /></svg>
+          {$t("SteamGuard_AddAccount_Link")}
+        </button>
       </div>
+    </section>
+  {:else if state.screen === "add-account"}
+    <section class="steam-guard__stack">
+      <h2 class="steam-guard__heading" data-steamguard-focus tabindex="-1">{$t("SteamGuard_AddAccount_Title")}</h2>
+      {#if authStage === "idle"}
+        <form class="steam-guard__stack" on:submit|preventDefault={() => void beginAddAccount(authPurpose)}>
+          <p>{$t("SteamGuard_AddAccount_Body")}</p>
+          <label class="steam-guard__field" for="steam-add-account">
+            <span>{$t("SteamGuard_Field_SteamAccountName")}</span>
+            <input id="steam-add-account" class="modal-input" bind:value={authAccountName} autocomplete="username" disabled={busy} data-steamguard-autofocus />
+          </label>
+          <label class="steam-guard__field" for="steam-add-password">
+            <span>{$t("SteamGuard_Field_SteamPassword")}</span>
+            <input id="steam-add-password" class="modal-input" bind:value={authPassword} type="password" autocomplete="current-password" disabled={busy} />
+          </label>
+          {#if inlineError}<p class="steam-guard__error" role="alert">{inlineError}</p>{/if}
+          <p class="steam-guard__hint">{$t("SteamGuard_AddAccount_As")}</p>
+          <div class="steam-guard__actions steam-guard__actions--end">
+            <button type="button" class="btnicontext modal-primary" aria-busy={busy} disabled={busy || !authAccountName.trim() || !authPassword} on:click={() => void beginAddAccount("login_only")}>
+              {#if busy}<span class="steam-guard__spinner" aria-hidden="true"></span>{/if}{$t("SteamGuard_AddAccount_AsLoginOnly")}
+            </button>
+            <button type="button" class="btnicontext modal-primary" aria-busy={busy} disabled={busy || !authAccountName.trim() || !authPassword} on:click={() => void beginAddAccount("add_authenticator")}>
+              {#if busy}<span class="steam-guard__spinner" aria-hidden="true"></span>{/if}{$t("SteamGuard_AddAccount_AsSteamGuard")}
+            </button>
+            <button type="button" class="btnicontext" disabled={busy} on:click={showAllAccounts}>{$t("SteamGuard_Back")}</button>
+          </div>
+        </form>
+      {:else if authStage === "credentials"}
+        <p role="status">{authMessage || $t("SteamGuard_Challenge_SigningIn")}</p>
+        <div class="steam-guard__qr-progress" aria-hidden="true"></div>
+      {:else if authStage === "challenge" && authResult}
+        <form class="steam-guard__stack" on:submit|preventDefault={submitCredentialCode}>
+          <p>{authMessage}</p>
+          {#if authResult.canSubmitEmailCode && authResult.canSubmitDeviceCode}
+            <fieldset class="steam-guard__challenge-options">
+              <legend>{$t("SteamGuard_Challenge_CodeSource")}</legend>
+              <label><input type="radio" bind:group={authChallenge} value="email_code" /> {$t("SteamGuard_Challenge_EmailCode")}</label>
+              <label><input type="radio" bind:group={authChallenge} value="device_code" /> {$t("SteamGuard_Challenge_DeviceCode")}</label>
+            </fieldset>
+          {/if}
+          <label class="steam-guard__field" for="steam-add-code">
+            <span>{authChallenge === "email_code" ? $t("SteamGuard_Challenge_EmailCode") : $t("SteamGuard_Challenge_DeviceCode")}</span>
+            <input id="steam-add-code" class="modal-input" bind:value={authCode} autocomplete="one-time-code" disabled={busy} data-steamguard-autofocus on:keydown={(event) => runOnEnter(event, submitCredentialCode)} />
+          </label>
+          <div class="steam-guard__actions steam-guard__actions--end">
+            <button type="button" class="btnicontext modal-primary" aria-busy={busy} disabled={busy || !authCode} on:click={submitCredentialCode}>{#if busy}<span class="steam-guard__spinner" aria-hidden="true"></span>{/if}{busy ? $t("SteamGuard_Challenge_Submitting") : $t("SteamGuard_Challenge_Submit")}</button>
+            <button type="button" class="btnicontext" disabled={busy} on:click={cancelCredentialLogin}>{$t("SteamGuard_Cancel")}</button>
+          </div>
+        </form>
+      {:else if authStage === "polling"}
+        <p role="status">{authMessage}</p>
+        <div class="steam-guard__qr-progress" aria-hidden="true"></div>
+        <div class="steam-guard__actions steam-guard__actions--end">
+          <button type="button" class="btnicontext" disabled={busy} on:click={pollCredentialLogin}>{$t("SteamGuard_CheckNow")}</button>
+          <button type="button" class="btnicontext" disabled={busy} on:click={cancelCredentialLogin}>{$t("SteamGuard_Cancel")}</button>
+        </div>
+      {:else}
+        <p class="steam-guard__error" role="alert">{authMessage}</p>
+        <div class="steam-guard__actions steam-guard__actions--end">
+          <button type="button" class="btnicontext modal-primary" disabled={busy} on:click={showAddAccount}>{$t("SteamGuard_TryAgain")}</button>
+          <button type="button" class="btnicontext" disabled={busy} on:click={showAllAccounts}>{$t("SteamGuard_Back")}</button>
+        </div>
+      {/if}
     </section>
   {:else if state.screen === "import"}
     <section class="steam-guard__stack">

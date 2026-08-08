@@ -15,6 +15,7 @@ import type {
 	SteamEnrollmentStatus,
 	SteamLoginResult,
 } from "./steamGuardModal";
+import { PENDING_ACCOUNT_ID_PREFIX } from "./steamGuardModal";
 import { dismissSteamGuardModal, openAlert, openAlertNoButton, openFolderPicker, openPrompt, openPromptWithCheckbox, openSteamGuardModal } from "../stores/modal";
 import SteamGuardRestoreModalBody from "../components/modals/SteamGuardRestoreModalBody.svelte";
 import { get } from "svelte/store";
@@ -91,6 +92,7 @@ function credentialResult(result: SteamGuardModels.SteamCredentialResult): Steam
 		enrollment: result.enrollment ? enrollmentStatus(result.enrollment) : undefined,
 		capabilityRefreshRequired: result.capabilityRefreshRequired,
 		registryUpdated: result.registryUpdated,
+		steamId64: result.steamId64 || undefined,
 	};
 }
 
@@ -465,6 +467,12 @@ async function requestSensitiveView(accountId: string): Promise<{
   accountId: string;
 }> {
   const requestId = crypto.randomUUID();
+  // An add-account attempt runs under a pending id rather than a SteamID64, and
+  // RequestSensitiveView gates on the id being numeric. The grant that comes
+  // back is identical either way, so only the request call differs.
+  const request = accountId.startsWith(PENDING_ACCOUNT_ID_PREFIX)
+    ? SteamGuardService.RequestAddAccountView
+    : SteamGuardService.RequestSensitiveView;
   return new Promise((resolve, reject) => {
     let settled = false;
     const finish = (error?: unknown, grant?: { capability: string; lease: string; accountId: string }): void => {
@@ -486,7 +494,7 @@ async function requestSensitiveView(accountId: string): Promise<{
       finish(undefined, { capability: data.capability, lease: data.lease, accountId });
     });
     const timeout = setTimeout(() => finish(new Error("Steam Guard capability request timed out")), 5_000);
-    void SteamGuardService.RequestSensitiveView(accountId, requestId).catch((error) => finish(error));
+    void request(accountId, requestId).catch((error) => finish(error));
   });
 }
 
@@ -1192,6 +1200,20 @@ const controller: SteamGuardModalController = {
 			.then(credentialResult).then(refreshAccountsIfRegistryUpdated),
 	cancelCredentialLogin: (accountId, capability, handle) =>
 		SteamGuardService.CancelCredentialLogin(accountId, capability, handle),
+	newAddAccountAttempt: () => SteamGuardService.NewAddAccountAttempt(),
+	requestAddAccountView: (pendingId, requestId) =>
+		SteamGuardService.RequestAddAccountView(pendingId, requestId),
+	beginAddAccountLogin: (pendingId, capability, accountName, password, purpose) =>
+		SteamGuardService.BeginAddAccountLogin(pendingId, capability, accountName, password, authPurpose(purpose))
+			.then(credentialResult).then(refreshAccountsIfRegistryUpdated),
+	submitAddAccountCode: (pendingId, capability, handle, challenge, code) =>
+		SteamGuardService.SubmitAddAccountCode(pendingId, capability, handle, challenge, code)
+			.then(credentialResult).then(refreshAccountsIfRegistryUpdated),
+	pollAddAccountLogin: (pendingId, capability, handle) =>
+		SteamGuardService.PollAddAccountLogin(pendingId, capability, handle)
+			.then(credentialResult).then(refreshAccountsIfRegistryUpdated),
+	cancelAddAccountLogin: (pendingId, capability, handle) =>
+		SteamGuardService.CancelAddAccountLogin(pendingId, capability, handle),
 	steamSessionLocalState: (accountId, capability) =>
 		SteamGuardService.SteamSessionLocalState(accountId, capability)
 			.then((state) => ({ needsLogin: state.needsLogin === true, reason: state.reason })),

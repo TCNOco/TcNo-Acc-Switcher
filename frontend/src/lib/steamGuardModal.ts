@@ -101,6 +101,18 @@ export type SteamGuardQRApproval = {
 
 export type SteamAuthPurpose = "login_again" | "add_authenticator" | "login_only";
 
+/**
+ * Marks an account id that is a single-use add-account attempt rather than a
+ * SteamID64. Go issues these and is the only thing that accepts them; this side
+ * only needs to know which of the two capability endpoints to ask, and which
+ * controller methods to drive. Must match pendingAddPrefix in Go.
+ */
+export const PENDING_ACCOUNT_ID_PREFIX = "pending:";
+
+export function isPendingAccountId(id: string): boolean {
+	return id.startsWith(PENDING_ACCOUNT_ID_PREFIX);
+}
+
 export type SteamLoginResult = {
 	state: "refreshed" | "reauthentication_required" | "removed";
 	refreshTokenRenewed: boolean;
@@ -172,6 +184,10 @@ export type SteamCredentialResult = {
 	enrollment?: SteamEnrollmentStatus;
 	capabilityRefreshRequired: boolean;
 	registryUpdated: boolean;
+	/** Set once Steam names the account. An add-account attempt has no other way
+	 *  to learn its SteamID64, and any enrollment that follows is keyed on the
+	 *  real id, never the pending one it logged in under. */
+	steamId64?: string;
 };
 
 export type SteamRevocationView = {
@@ -254,7 +270,8 @@ export type SteamGuardModalEntry =
   | "qr"
   | "login-again"
   | "login-only-setup"
-  | "setup";
+  | "setup"
+  | "add-account";
 
 export type SteamGuardModalState =
   | { screen: "loading"; account: SteamGuardAccountRef }
@@ -272,6 +289,10 @@ export type SteamGuardModalState =
   // An account the vault does not hold yet. Nothing is stored for it, so this
   // screen only offers the three ways to start storing one.
   | { screen: "setup"; account: SteamGuardAccountRef }
+  // An account nobody has named yet. It runs under a pending id until Steam
+  // says which account the credentials belong to, so the ref only exists once
+  // an attempt has been started.
+  | { screen: "add-account"; account?: SteamGuardAccountRef }
   | { screen: "export-authorize"; account: SteamGuardAccountRef }
   | { screen: "recovery"; account?: SteamGuardAccountRef; message: string }
   | { screen: "error"; account?: SteamGuardAccountRef; message: string };
@@ -288,6 +309,7 @@ export type SteamGuardModalAction =
   | { type: "show-login-only"; account: SteamGuardAccountRef }
   | { type: "show-login-only-setup"; account: SteamGuardAccountRef }
   | { type: "show-setup"; account: SteamGuardAccountRef }
+  | { type: "show-add-account"; account?: SteamGuardAccountRef }
   | { type: "show-export-authorize"; account: SteamGuardAccountRef }
   | { type: "show-recovery"; account?: SteamGuardAccountRef; message: string }
   | { type: "fail"; account?: SteamGuardAccountRef; message: string };
@@ -347,6 +369,34 @@ export type SteamGuardModalController = {
 		handle: string,
 	  ) => Promise<SteamCredentialResult>;
 	  cancelCredentialLogin?: (accountId: string, capability: string, handle: string) => Promise<void>;
+	  /**
+	   * Adding an account nobody has named yet. Steam does not say which account
+	   * the credentials belong to until it authorises them, so these run under a
+	   * single-use pending id from newAddAccountAttempt instead of a SteamID64,
+	   * and the real id arrives on the result as steamId64.
+	   */
+	  newAddAccountAttempt?: () => Promise<string>;
+	  requestAddAccountView?: (pendingId: string, requestId: string) => Promise<void>;
+	  beginAddAccountLogin?: (
+		pendingId: string,
+		capability: string,
+		accountName: string,
+		password: string,
+		purpose: SteamAuthPurpose,
+	  ) => Promise<SteamCredentialResult>;
+	  submitAddAccountCode?: (
+		pendingId: string,
+		capability: string,
+		handle: string,
+		challenge: string,
+		code: string,
+	  ) => Promise<SteamCredentialResult>;
+	  pollAddAccountLogin?: (
+		pendingId: string,
+		capability: string,
+		handle: string,
+	  ) => Promise<SteamCredentialResult>;
+	  cancelAddAccountLogin?: (pendingId: string, capability: string, handle: string) => Promise<void>;
 	  /** Offline: reads the stored session only, so it costs no Steam request. */
 	  steamSessionLocalState?: (accountId: string, capability: string) => Promise<SteamSessionState>;
 	  /**
@@ -467,6 +517,7 @@ export function initialSteamGuardModalState(
   if (entry === "login-again") return { screen: "login-again", account };
   if (entry === "login-only-setup") return { screen: "login-only-setup", account };
   if (entry === "setup") return { screen: "setup", account };
+  if (entry === "add-account") return { screen: "add-account" };
   return { screen: "loading", account };
 }
 
@@ -497,6 +548,8 @@ export function reduceSteamGuardModal(
       return { screen: "login-only-setup", account: action.account };
     case "show-setup":
       return { screen: "setup", account: action.account };
+    case "show-add-account":
+      return { screen: "add-account", account: action.account };
     case "show-export-authorize":
       return { screen: "export-authorize", account: action.account };
     case "show-recovery":
