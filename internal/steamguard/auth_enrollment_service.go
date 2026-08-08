@@ -106,6 +106,11 @@ type SteamCredentialResult struct {
 	Enrollment                *SteamEnrollmentStatus `json:"enrollment,omitempty"`
 	CapabilityRefreshRequired bool                   `json:"capabilityRefreshRequired"`
 	RegistryUpdated           bool                   `json:"registryUpdated"`
+	// SteamID64 is set once Steam has authorised the login. An add-account
+	// attempt runs under a pending id and has no other way to learn which
+	// account it just signed in, so this is what the caller re-keys to before
+	// continuing into the enrollment steps, which stay strictly SteamID-keyed.
+	SteamID64 string `json:"steamId64,omitempty"`
 }
 
 type SteamEnrollmentStatus struct {
@@ -156,6 +161,21 @@ type steamSessionRefresher interface {
 type steamAuthOperation struct {
 	binding authflow.Binding
 	purpose SteamAuthPurpose
+}
+
+// steamFlowAuthorizer re-derives the vault, binding and expected SteamID at
+// every step of a credential login. Each entry point supplies its own, which is
+// what keeps the two identity models apart: the account path always resolves a
+// real SteamID64 through canonicalSteamID, and the add-account path only ever
+// accepts a pending id this service issued. Neither can be entered with the
+// other's identifier, and the shared bodies below never see the difference
+// beyond the expected SteamID being zero for an add.
+type steamFlowAuthorizer func() (*vault.Vault, authflow.Binding, uint64, error)
+
+func (s *Service) accountFlowAuthorizer(accountID, token string) steamFlowAuthorizer {
+	return func() (*vault.Vault, authflow.Binding, uint64, error) {
+		return s.authorizeSteamFlow(accountID, token)
+	}
 }
 
 type revocationAcknowledgment struct {
@@ -283,7 +303,14 @@ func (s *Service) BeginCredentialLogin(accountID, token, accountName, password s
 			"validAccountName", validAccountName(accountName), "hasPassword", len(passwordBytes) > 0)
 		return SteamCredentialResult{}, ErrSteamAuthenticationPurpose
 	}
-	_, binding, _, err := s.authorizeSteamFlow(accountID, token)
+	return s.beginLogin(s.accountFlowAuthorizer(accountID, token), accountID, accountName, passwordBytes, purpose)
+}
+
+// beginLogin is the body shared by BeginCredentialLogin and
+// BeginAddAccountLogin. key identifies the attempt for logging and for the
+// per-attempt busy lock; the authorizer decides what that key is allowed to be.
+func (s *Service) beginLogin(authorize steamFlowAuthorizer, key, accountName string, passwordBytes []byte, purpose SteamAuthPurpose) (SteamCredentialResult, error) {
+	_, binding, _, err := authorize()
 	if err != nil {
 		return SteamCredentialResult{}, err
 	}
@@ -291,18 +318,18 @@ func (s *Service) BeginCredentialLogin(accountID, token, accountName, password s
 	if err != nil {
 		return SteamCredentialResult{}, err
 	}
-	ctx, finish, err := s.startBoundSteamOperation(accountID)
+	ctx, finish, err := s.startBoundSteamOperation(key)
 	if err != nil {
 		return SteamCredentialResult{}, err
 	}
 	defer finish()
-	authflowLogger().Debug("beginning Steam credential login", "steamId64", accountID, "purpose", string(purpose))
+	authflowLogger().Debug("beginning Steam credential login", "steamId64", key, "purpose", string(purpose))
 	status, err := manager.Begin(ctx, binding, passwordAuthRequest(accountName), passwordBytes)
 	if err != nil {
-		logAuthflowFailure("begin", accountID, err)
+		logAuthflowFailure("begin", key, err)
 		return SteamCredentialResult{}, err
 	}
-	if _, currentBinding, _, authorizeErr := s.authorizeSteamFlow(accountID, token); authorizeErr != nil || currentBinding != binding {
+	if _, currentBinding, _, authorizeErr := authorize(); authorizeErr != nil || currentBinding != binding {
 		s.cancelAuthflowSession(manager, binding, status.Handle, "begin-reauthorize")
 		if authorizeErr != nil {
 			return SteamCredentialResult{}, authorizeErr
@@ -321,7 +348,7 @@ func (s *Service) BeginCredentialLogin(accountID, token, accountName, password s
 	s.authOperations[status.Handle] = steamAuthOperation{binding: binding, purpose: purpose}
 	s.authStateMu.Unlock()
 	authflowLogger().Info("Steam credential login started",
-		"steamId64", accountID, "purpose", string(purpose), "state", string(status.State))
+		"steamId64", key, "purpose", string(purpose), "state", string(status.State))
 	return credentialResult(status), nil
 }
 
@@ -339,51 +366,59 @@ func (s *Service) SubmitCredentialCode(accountID, token, handle, challenge, code
 	code = ""
 	defer wipe(codeBytes)
 	defer runtime.KeepAlive(code)
+	return s.submitLoginCode(s.accountFlowAuthorizer(accountID, token), accountID, handle, challenge, codeBytes)
+}
+
+func (s *Service) submitLoginCode(authorize steamFlowAuthorizer, key, handle, challenge string, codeBytes []byte) (SteamCredentialResult, error) {
 	challengeType, ok := submittedAuthChallenge(challenge)
 	if !ok {
 		return SteamCredentialResult{}, ErrSteamAuthenticationState
 	}
-	manager, _, binding, err := s.authenticationOperation(accountID, token, handle)
+	manager, _, binding, err := s.authenticationOperation(authorize, handle)
 	if err != nil {
 		return SteamCredentialResult{}, err
 	}
-	ctx, finish, err := s.startBoundSteamOperation(accountID)
+	ctx, finish, err := s.startBoundSteamOperation(key)
 	if err != nil {
 		return SteamCredentialResult{}, err
 	}
 	defer finish()
 	status, err := manager.SubmitCode(ctx, binding, handle, challengeType, codeBytes)
 	if err != nil {
-		logAuthflowFailure("submit-code", accountID, err)
+		logAuthflowFailure("submit-code", key, err)
 		return SteamCredentialResult{}, err
 	}
 	authflowLogger().Info("Steam credential challenge submitted",
-		"steamId64", accountID, "challenge", string(challengeType), "state", string(status.State))
+		"steamId64", key, "challenge", string(challengeType), "state", string(status.State))
 	return credentialResult(status), nil
 }
 
 func (s *Service) PollCredentialLogin(accountID, token, handle string) (SteamCredentialResult, error) {
-	manager, operation, binding, err := s.authenticationOperation(accountID, token, handle)
+	return s.pollLogin(s.accountFlowAuthorizer(accountID, token), accountID, handle)
+}
+
+func (s *Service) pollLogin(authorize steamFlowAuthorizer, key, handle string) (SteamCredentialResult, error) {
+	manager, operation, binding, err := s.authenticationOperation(authorize, handle)
 	if err != nil {
 		return SteamCredentialResult{}, err
 	}
-	ctx, finish, err := s.startBoundSteamOperation(accountID)
+	ctx, finish, err := s.startBoundSteamOperation(key)
 	if err != nil {
 		return SteamCredentialResult{}, err
 	}
 	defer finish()
 	status, err := manager.Poll(ctx, binding, handle)
 	if err != nil {
-		logAuthflowFailure("poll", accountID, err)
+		logAuthflowFailure("poll", key, err)
 		return SteamCredentialResult{}, err
 	}
 	result := credentialResult(status)
 	if status.State != authflow.StateAuthorizedReady {
-		authflowLogger().Debug("Steam credential login still pending", "steamId64", accountID, "state", string(status.State))
+		authflowLogger().Debug("Steam credential login still pending", "steamId64", key, "state", string(status.State))
 		return result, nil
 	}
 
-	v, currentBinding, steamID, err := s.authorizeSteamFlow(accountID, token)
+	v, currentBinding, expectedSteamID, err := authorize()
 	if err != nil || currentBinding != binding {
 		s.cancelAuthflowSession(manager, binding, handle, "poll-reauthorize")
 		if err != nil {
@@ -391,6 +426,9 @@ func (s *Service) PollCredentialLogin(accountID, token, handle string) (SteamCre
 		}
 		return SteamCredentialResult{}, ErrSteamAuthenticationState
 	}
+	// Set once Steam answers. For an account flow it can only ever equal the id
+	// we came in with; for an add it is the whole point of the exercise.
+	var authorizedAccountID string
 	var enrollmentStatus *SteamEnrollmentStatus
 	// authflow sanitizes whatever the consumer returns, because a consumer error
 	// can carry vault paths or tokens. Sentinels with nothing sensitive in them
@@ -401,9 +439,18 @@ func (s *Service) PollCredentialLogin(accountID, token, handle string) (SteamCre
 	consumeErr := manager.Consume(binding, handle, func(authorizedSteamID uint64, accountName, accessToken, refreshToken, guardData []byte, hadRemoteInteraction bool) error {
 		defer runtime.KeepAlive(guardData)
 		defer runtime.KeepAlive(hadRemoteInteraction)
-		if authorizedSteamID != steamID {
+		// An add-account attempt has no id to compare against - canonicalSteamID
+		// guarantees a real account's id is never zero, so zero means "the caller
+		// could not have known it yet" - and Steam's answer is then authoritative.
+		// Anything else must match exactly.
+		if expectedSteamID != 0 && authorizedSteamID != expectedSteamID {
 			return ErrSteamAuthenticationState
 		}
+		// Everything below keys off what Steam authorised rather than what was
+		// asked for. They are identical on the account path by the check above.
+		steamID := authorizedSteamID
+		accountID := strconv.FormatUint(steamID, 10)
+		authorizedAccountID = accountID
 		switch operation.purpose {
 		case SteamAuthPurposeLoginAgain:
 			// Under the service lock: the poll that gets here ran with it
@@ -477,7 +524,7 @@ func (s *Service) PollCredentialLogin(accountID, token, handle string) (SteamCre
 	s.removeAuthenticationOperation(handle)
 	if consumeErr != nil {
 		authflowLogger().Warn("Steam credential login could not be applied",
-			"steamId64", accountID, "purpose", string(operation.purpose), "error", consumeErr)
+			"steamId64", key, "purpose", string(operation.purpose), "error", consumeErr)
 		if enrollmentRefusal != nil {
 			return SteamCredentialResult{}, enrollmentRefusal
 		}
@@ -485,6 +532,7 @@ func (s *Service) PollCredentialLogin(accountID, token, handle string) (SteamCre
 	}
 	result.Handle = ""
 	result.Outcome = "session_updated"
+	result.SteamID64 = authorizedAccountID
 	result.RegistryUpdated = registryUpdated
 	result.CapabilityRefreshRequired = true
 	if operation.purpose == SteamAuthPurposeAddAuthenticator {
@@ -498,22 +546,26 @@ func (s *Service) PollCredentialLogin(accountID, token, handle string) (SteamCre
 		}
 	}
 	authflowLogger().Info("Steam credential login authorized",
-		"steamId64", accountID, "purpose", string(operation.purpose), "outcome", result.Outcome)
+		"steamId64", authorizedAccountID, "purpose", string(operation.purpose), "outcome", result.Outcome)
 	return result, nil
 }
 
 func (s *Service) CancelCredentialLogin(accountID, token, handle string) error {
-	manager, _, binding, err := s.authenticationOperation(accountID, token, handle)
+	return s.cancelLogin(s.accountFlowAuthorizer(accountID, token), accountID, handle)
+}
+
+func (s *Service) cancelLogin(authorize steamFlowAuthorizer, key, handle string) error {
+	manager, _, binding, err := s.authenticationOperation(authorize, handle)
 	if err != nil {
 		return err
 	}
 	err = manager.Cancel(binding, handle)
 	s.removeAuthenticationOperation(handle)
 	if err != nil {
-		logAuthflowFailure("cancel", accountID, err)
+		logAuthflowFailure("cancel", key, err)
 		return err
 	}
-	authflowLogger().Debug("Steam credential login cancelled", "steamId64", accountID)
+	authflowLogger().Debug("Steam credential login cancelled", "steamId64", key)
 	return nil
 }
 
@@ -738,8 +790,8 @@ func (s *Service) authenticationManager() (steamCredentialAuthManager, uint64, e
 	return s.authManager, s.authManagerEpoch, nil
 }
 
-func (s *Service) authenticationOperation(accountID, token, handle string) (steamCredentialAuthManager, steamAuthOperation, authflow.Binding, error) {
-	_, binding, _, err := s.authorizeSteamFlow(accountID, token)
+func (s *Service) authenticationOperation(authorize steamFlowAuthorizer, handle string) (steamCredentialAuthManager, steamAuthOperation, authflow.Binding, error) {
+	_, binding, _, err := authorize()
 	if err != nil {
 		return nil, steamAuthOperation{}, authflow.Binding{}, err
 	}

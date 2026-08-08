@@ -279,6 +279,10 @@ type Service struct {
 	steamOperationCancels     map[string]steamBoundOperation
 	steamOperationSequence    uint64
 	registryUpsertFn          func(string, registry.State) error
+	// pendingAdds are the in-flight add-account attempts, keyed by the pending
+	// id issued for each. See add_account_service.go.
+	pendingAddMu sync.Mutex
+	pendingAdds  map[string]pendingAdd
 }
 
 type clipboardManager interface {
@@ -503,8 +507,20 @@ func emitMainWindowEvent(name string, data any) error {
 // returns no bearer credential.
 func (s *Service) RequestSensitiveView(accountID, requestID string) error {
 	accountID = strings.TrimSpace(accountID)
+	if _, err := strconv.ParseUint(accountID, 10, 64); err != nil {
+		return ErrSensitiveView
+	}
+	return s.issueSensitiveView(accountID, requestID)
+}
+
+// issueSensitiveView is the body shared with RequestAddAccountView. The callers
+// own the identity check - this one only ever sees an id its caller has already
+// vouched for - so that an add-account attempt cannot borrow the numeric gate
+// above, nor an arbitrary string the numeric gate.
+func (s *Service) issueSensitiveView(accountID, requestID string) error {
+	accountID = strings.TrimSpace(accountID)
 	requestID = strings.TrimSpace(requestID)
-	if _, err := strconv.ParseUint(accountID, 10, 64); err != nil || len(requestID) < 16 || len(requestID) > 128 {
+	if accountID == "" || len(requestID) < 16 || len(requestID) > 128 {
 		return ErrSensitiveView
 	}
 	s.mu.Lock()
