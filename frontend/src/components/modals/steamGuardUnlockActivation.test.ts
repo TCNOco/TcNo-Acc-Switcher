@@ -115,3 +115,34 @@ describe("Steam Guard unlock activation", () => {
     expect(form).toContain('$t("SteamGuard_Unlocking")');
   });
 });
+
+describe("adding an account", () => {
+  // The list's background menu and the toolbar open this screen directly, so
+  // nothing has minted an attempt or checked there is a vault to store into.
+  // Without the mount gate the first sign-in failed against a missing vault.
+  it("prepares the attempt and the vault when opened directly", () => {
+    const mount = fragmentAfter('state.screen === "add-account" && !state.account', 200);
+    expect(mount).toContain("addAccountPrepared = true");
+    expect(mount).toContain("showAddAccount()");
+
+    const prepare = fragmentAfter("async function showAddAccount", 1_200);
+    expect(prepare).toContain("newAddAccountAttempt()");
+    expect(prepare).toContain("!status.configured || !status.unlocked");
+    expect(prepare).toContain("vaultSetupForAddAccount = true");
+  });
+
+  // Polling spends the attempt, so anything afterwards has to be authorised
+  // under the account Steam named or it has no usable identity left.
+  it("re-points the screen at the named account before leaving it", () => {
+    const done = fragmentAfter("// A freshly added account", 600);
+    expect(done).toContain('transition({ type: "show-add-account", account: currentAccount })');
+    expect(done).toContain("showAllAccounts()");
+  });
+
+  // A pending attempt, and an account created seconds ago, are not where the
+  // user came from, so the picker offers Close rather than Back to them.
+  it("is not a place the account picker returns to", () => {
+    const picker = fragmentAfter("pickerReturnAccount = state.screen", 200);
+    expect(picker).toContain('state.screen === "add-account"');
+  });
+});

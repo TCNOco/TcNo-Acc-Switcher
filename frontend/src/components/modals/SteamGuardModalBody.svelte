@@ -387,6 +387,16 @@
 		void loadVaultStatusForUnlock();
 	}
 
+	// Opening straight onto the add screen - from the account list's background
+	// menu or the toolbar - skips showAddAccount, which is what mints the attempt
+	// and makes sure there is a vault to store anything in. Once prepared the
+	// screen carries an account, so this cannot re-enter.
+	let addAccountPrepared = false;
+	$: if (state.screen === "add-account" && !state.account && !addAccountPrepared) {
+		addAccountPrepared = true;
+		void showAddAccount();
+	}
+
 	async function loadVaultStatusForUnlock(): Promise<void> {
 		if (!controller.getSteamGuardVaultStatus) return;
 		try {
@@ -759,7 +769,10 @@
       // Screens holding no account of their own are not places to go back to:
       // the setup page is a placeholder, and an import started from the picker
       // has nothing behind it but the picker itself.
-      pickerReturnAccount = state.screen === "setup"
+      // Screens holding no account of their own are not places to go back to.
+      // The add screen's account is a pending attempt or one just created, and
+      // neither is where the user came from.
+      pickerReturnAccount = state.screen === "setup" || state.screen === "add-account"
         ? null
         : steamGuardAccountForState(state) ?? null;
       transition({ type: "show-all", accounts: await accountSummaries(currentAccount) });
@@ -1658,9 +1671,12 @@
 			busy = false;
 			if (rekeyed) {
 				// A freshly added account: the list is where it can be seen to have
-				// arrived, and where another can be added straight after.
+				// arrived, and where another can be added straight after. Re-point
+				// the screen at the named account first - the pending attempt was
+				// spent by the poll, so nothing can be authorised under it again.
 				clearAuthSecrets();
 				authStage = "idle";
+				transition({ type: "show-add-account", account: currentAccount });
 				await showAllAccounts();
 				return;
 			}
