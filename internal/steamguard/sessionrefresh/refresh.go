@@ -119,11 +119,15 @@ type TokenClient interface {
 }
 
 // UnlockedVault is the narrow encrypted-storage boundary used by Refresher.
-// Implementations must provide an atomic PutRecord operation.
+// Implementations must provide atomic PutRecord and PutRecords operations.
 type UnlockedVault interface {
 	ListRecords() ([]vault.RecordInfo, error)
 	GetRecord(id string) ([]byte, error)
 	PutRecord(steamID64 string, plaintext []byte) (string, error)
+	// PutRecords commits every update in one generation, all or nothing. A
+	// batch must cost exactly one generation switch, because each one
+	// invalidates every capability outstanding against the vault.
+	PutRecords(updates []vault.RecordUpdate) error
 }
 
 var _ UnlockedVault = (*vault.Vault)(nil)
@@ -202,110 +206,29 @@ func (r *Refresher) refresh(ctx context.Context, steamID uint64) (Result, error)
 	}
 	defer wipe(raw)
 
-	// Both stored shapes carry a refresh token, and both must be written back in
-	// the shape they came in: a login-only record has no authenticator secrets,
-	// so re-exporting it as a maFile would fail validation and lose the session.
 	if record.SteamID64 != strconv.FormatUint(steamID, 10) {
 		return Result{}, ErrWrongAccount
 	}
-	var (
-		account      mafile.Account
-		login        loginrecord.Record
-		isLoginOnly  bool
-		refreshToken string
-	)
-	switch vaultrecord.Sniff(raw) {
-	case vaultrecord.KindLoginOnly:
-		decoded, decodeErr := loginrecord.Decode(raw)
-		if decodeErr != nil {
-			return Result{}, ErrCorruptRecord
-		}
-		if decoded.SteamID != steamID {
-			decoded.Destroy()
-			return Result{}, ErrWrongAccount
-		}
-		login = decoded
-		isLoginOnly = true
-		refreshToken = decoded.RefreshToken
-		defer login.Destroy()
-	case vaultrecord.KindEnrollmentPending:
-		return Result{}, ErrPending
-	default:
-		parsed, parseErr := mafile.ParsePlaintext(raw)
-		if parseErr != nil {
-			if pendingRecord(raw) {
-				return Result{}, ErrPending
-			}
-			return Result{}, ErrCorruptRecord
-		}
-		account = parsed.Account
-		if account.Session == nil || account.Session.SteamID != steamID {
-			clearAccount(&account)
-			return Result{}, ErrWrongAccount
-		}
-		defer clearAccount(&account)
-		refreshToken = account.Session.RefreshToken
+	decoded, err := decodeRecord(raw, steamID)
+	if err != nil {
+		return Result{}, err
 	}
-	if !validToken(refreshToken) {
+	defer decoded.destroy()
+	if !validToken(decoded.refreshToken()) {
 		return Result{}, ErrNoRefreshToken
 	}
 	if err := contextError(ctx.Err()); err != nil {
 		return Result{}, err
 	}
 
-	refreshBuffer := append([]byte(nil), refreshToken...)
-	defer wipe(refreshBuffer)
-	request := protocol.GenerateAccessTokenRequest{
-		SteamID:      steamID,
-		RefreshToken: string(refreshBuffer),
-		Renewal:      protocol.RenewalAllow,
-	}
-	requestCtx, cancel := context.WithTimeout(ctx, r.timeout)
-	result, remoteErr := r.client.GenerateAccessTokenForApp(requestCtx, request, r.timeout)
-	requestContextErr := requestCtx.Err()
-	cancel()
-	request.RefreshToken = ""
-	runtime.KeepAlive(request)
-	if err := contextError(requestContextErr); err != nil {
-		clearTokenResult(&result)
+	result, err := r.exchange(ctx, steamID, decoded.refreshToken())
+	if err != nil {
 		return Result{}, err
 	}
-	if remoteErr != nil {
-		clearTokenResult(&result)
-		if err := contextError(remoteErr); err != nil {
-			return Result{}, err
-		}
-		var protocolErr *protocol.Error
-		if errors.As(remoteErr, &protocolErr) &&
-			(protocolErr.Code == protocol.CodeInvalidResponse || protocolErr.Code == protocol.CodeResponseTooLarge) {
-			return Result{}, ErrInvalidResponse
-		}
-		return Result{}, ErrRemote
-	}
 	defer clearTokenResult(&result)
-	if result.State != protocol.AuthResultTokenIssued || !validToken(result.AccessToken) ||
-		(result.RefreshToken != "" && !validToken(result.RefreshToken)) {
-		return Result{}, ErrInvalidResponse
-	}
 
 	renewed := result.RefreshToken != ""
-	var (
-		canonical []byte
-		exportErr error
-	)
-	if isLoginOnly {
-		login.AccessToken = result.AccessToken
-		if renewed {
-			login.RefreshToken = result.RefreshToken
-		}
-		canonical, exportErr = loginrecord.Encode(login)
-	} else {
-		account.Session.AccessToken = result.AccessToken
-		if renewed {
-			account.Session.RefreshToken = result.RefreshToken
-		}
-		canonical, exportErr = mafile.ExportPlaintext(account, mafile.ExportOptions{IncludeTokens: true})
-	}
+	canonical, exportErr := decoded.apply(result)
 	if exportErr != nil {
 		wipe(canonical)
 		return Result{}, ErrCorruptRecord
@@ -321,6 +244,303 @@ func (r *Refresher) refresh(ctx context.Context, steamID uint64) (Result, error)
 		return Result{}, ErrPersist
 	}
 	return Result{SteamID: steamID, RefreshTokenRenewed: renewed}, nil
+}
+
+// RefreshBatch renews several accounts and writes every success back in a
+// single vault generation.
+//
+// A generation switch invalidates every capability outstanding against the
+// vault, so refreshing N accounts one Refresh at a time costs N invalidations -
+// the reason a background sweep is forbidden from refreshing at all. One commit
+// for the whole batch is what makes a sweep-sized refresh affordable.
+//
+// An account that cannot be loaded, decoded or renewed is dropped from the
+// batch rather than failing it: one lapsed refresh token must not deny every
+// other account its new session. Only a bad request, a locked vault, a done
+// context or a failed commit returns an error, and a failed commit leaves every
+// record on the generation it was already on.
+func (r *Refresher) RefreshBatch(ctx context.Context, steamIDs []uint64) ([]Result, error) {
+	if r == nil || r.client == nil || r.vault == nil || ctx == nil ||
+		r.timeout <= 0 || r.timeout > maxRequestTimeout {
+		return nil, ErrInvalidRequest
+	}
+	if len(steamIDs) == 0 {
+		return nil, nil
+	}
+	if err := contextError(ctx.Err()); err != nil {
+		return nil, err
+	}
+	log := logger()
+
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	if err := contextError(ctx.Err()); err != nil {
+		return nil, err
+	}
+
+	loaded, err := r.loadBatch(ctx, steamIDs, log)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		for _, entry := range loaded {
+			entry.destroy()
+		}
+	}()
+
+	updates := make([]vault.RecordUpdate, 0, len(loaded))
+	defer func() {
+		for i := range updates {
+			wipe(updates[i].Plaintext)
+		}
+	}()
+	results := make([]Result, 0, len(loaded))
+	for _, entry := range loaded {
+		if err := contextError(ctx.Err()); err != nil {
+			return nil, err
+		}
+		result, exchangeErr := r.exchange(ctx, entry.steamID, entry.decoded.refreshToken())
+		if exchangeErr != nil {
+			// One account's own deadline is indistinguishable from the parent's
+			// here, so the parent context is what decides whether a slow or
+			// rejected account ends the batch or is merely dropped from it.
+			if parentErr := contextError(ctx.Err()); parentErr != nil {
+				return nil, parentErr
+			}
+			logDropped(log, entry.steamID, exchangeErr)
+			continue
+		}
+		// Encoded in the same pass as the exchange rather than in a later one, so
+		// the issued tokens are cleared as soon as they are inside the batch.
+		canonical, exportErr := entry.decoded.apply(result)
+		renewed := result.RefreshToken != ""
+		clearTokenResult(&result)
+		if exportErr != nil {
+			wipe(canonical)
+			logDropped(log, entry.steamID, ErrCorruptRecord)
+			continue
+		}
+		updates = append(updates, vault.RecordUpdate{
+			SteamID64: strconv.FormatUint(entry.steamID, 10),
+			Plaintext: canonical,
+		})
+		results = append(results, Result{SteamID: entry.steamID, RefreshTokenRenewed: renewed})
+	}
+
+	if len(updates) > 0 {
+		if err := contextError(ctx.Err()); err != nil {
+			return nil, err
+		}
+		if putErr := r.vault.PutRecords(updates); putErr != nil {
+			if errors.Is(putErr, vault.ErrLocked) || errors.Is(putErr, vault.ErrLeaseExpired) {
+				return nil, ErrVaultLocked
+			}
+			return nil, ErrPersist
+		}
+	}
+	log.Info("Steam sessions refreshed in one vault generation",
+		"requested", len(steamIDs), "refreshed", len(results), "skipped", len(steamIDs)-len(results))
+	return results, nil
+}
+
+// batchEntry is one account's decoded record, held from the load phase until
+// the batch is written.
+type batchEntry struct {
+	steamID uint64
+	raw     []byte
+	decoded decodedRecord
+}
+
+func (e *batchEntry) destroy() {
+	wipe(e.raw)
+	e.raw = nil
+	e.decoded.destroy()
+}
+
+// loadBatch reads and decodes every account that can take part in the batch,
+// before any network work starts.
+//
+// Repeats in steamIDs are collapsed: vault.PutRecords rejects a batch naming
+// one account twice, so a caller's duplicate would otherwise sink the lot.
+func (r *Refresher) loadBatch(ctx context.Context, steamIDs []uint64, log *slog.Logger) ([]*batchEntry, error) {
+	loaded := make([]*batchEntry, 0, len(steamIDs))
+	abort := func(err error) ([]*batchEntry, error) {
+		for _, entry := range loaded {
+			entry.destroy()
+		}
+		return nil, err
+	}
+	seen := make(map[uint64]struct{}, len(steamIDs))
+	for _, steamID := range steamIDs {
+		if _, repeat := seen[steamID]; repeat {
+			continue
+		}
+		seen[steamID] = struct{}{}
+		if err := contextError(ctx.Err()); err != nil {
+			return abort(err)
+		}
+		if !validSteamID(steamID) {
+			logDropped(log, steamID, ErrInvalidRequest)
+			continue
+		}
+		record, raw, err := r.loadActiveRecord(ctx, steamID)
+		if err != nil {
+			// A locked vault or a done context would fail every remaining account
+			// too, so they end the batch instead of emptying it one row at a time.
+			if errors.Is(err, ErrVaultLocked) || errors.Is(err, ErrCanceled) || errors.Is(err, ErrTimedOut) {
+				return abort(err)
+			}
+			logDropped(log, steamID, err)
+			continue
+		}
+		entry := &batchEntry{steamID: steamID, raw: raw}
+		if record.SteamID64 != strconv.FormatUint(steamID, 10) {
+			entry.destroy()
+			logDropped(log, steamID, ErrWrongAccount)
+			continue
+		}
+		decoded, decodeErr := decodeRecord(raw, steamID)
+		if decodeErr != nil {
+			entry.destroy()
+			logDropped(log, steamID, decodeErr)
+			continue
+		}
+		entry.decoded = decoded
+		if !validToken(decoded.refreshToken()) {
+			entry.destroy()
+			logDropped(log, steamID, ErrNoRefreshToken)
+			continue
+		}
+		loaded = append(loaded, entry)
+	}
+	return loaded, nil
+}
+
+// logDropped records why one account left the batch. The batch itself reports
+// only counts, so this is the sole place a per-account reason appears - as the
+// stable Code, never a token or a transport detail.
+func logDropped(log *slog.Logger, steamID uint64, err error) {
+	log.Debug("account dropped from Steam session batch", "steamId64", steamID, "code", failureCode(err))
+}
+
+// decodedRecord is one vault record in the shape it was stored in.
+//
+// Both shapes carry a refresh token, and both must be written back the way they
+// arrived: a login-only record has no authenticator secrets, so re-exporting it
+// as a maFile would fail validation and lose the session.
+type decodedRecord struct {
+	account     mafile.Account
+	login       loginrecord.Record
+	isLoginOnly bool
+}
+
+// decodeRecord decodes raw as whichever shape it holds. Anything it decoded is
+// destroyed before it returns an error, so a rejected record leaves nothing
+// behind for the caller to clean up.
+func decodeRecord(raw []byte, steamID uint64) (decodedRecord, error) {
+	switch vaultrecord.Sniff(raw) {
+	case vaultrecord.KindLoginOnly:
+		login, err := loginrecord.Decode(raw)
+		if err != nil {
+			return decodedRecord{}, ErrCorruptRecord
+		}
+		if login.SteamID != steamID {
+			login.Destroy()
+			return decodedRecord{}, ErrWrongAccount
+		}
+		return decodedRecord{login: login, isLoginOnly: true}, nil
+	case vaultrecord.KindEnrollmentPending:
+		return decodedRecord{}, ErrPending
+	default:
+		parsed, err := mafile.ParsePlaintext(raw)
+		if err != nil {
+			if pendingRecord(raw) {
+				return decodedRecord{}, ErrPending
+			}
+			return decodedRecord{}, ErrCorruptRecord
+		}
+		account := parsed.Account
+		if account.Session == nil || account.Session.SteamID != steamID {
+			clearAccount(&account)
+			return decodedRecord{}, ErrWrongAccount
+		}
+		return decodedRecord{account: account}, nil
+	}
+}
+
+func (d *decodedRecord) refreshToken() string {
+	if d.isLoginOnly {
+		return d.login.RefreshToken
+	}
+	if d.account.Session == nil {
+		return ""
+	}
+	return d.account.Session.RefreshToken
+}
+
+// apply folds the issued credentials into the record and re-encodes it in its
+// stored shape. An empty result.RefreshToken means Steam chose not to rotate
+// it, and the stored one has to survive.
+func (d *decodedRecord) apply(result protocol.TokenResult) ([]byte, error) {
+	if d.isLoginOnly {
+		d.login.AccessToken = result.AccessToken
+		if result.RefreshToken != "" {
+			d.login.RefreshToken = result.RefreshToken
+		}
+		return loginrecord.Encode(d.login)
+	}
+	d.account.Session.AccessToken = result.AccessToken
+	if result.RefreshToken != "" {
+		d.account.Session.RefreshToken = result.RefreshToken
+	}
+	return mafile.ExportPlaintext(d.account, mafile.ExportOptions{IncludeTokens: true})
+}
+
+func (d *decodedRecord) destroy() {
+	d.login.Destroy()
+	clearAccount(&d.account)
+}
+
+// exchange renews one account's tokens. A successful result is the caller's to
+// clearTokenResult; a failed one is already cleared and classified.
+func (r *Refresher) exchange(ctx context.Context, steamID uint64, refreshToken string) (protocol.TokenResult, error) {
+	refreshBuffer := append([]byte(nil), refreshToken...)
+	defer wipe(refreshBuffer)
+	request := protocol.GenerateAccessTokenRequest{
+		SteamID:      steamID,
+		RefreshToken: string(refreshBuffer),
+		Renewal:      protocol.RenewalAllow,
+	}
+	requestCtx, cancel := context.WithTimeout(ctx, r.timeout)
+	result, remoteErr := r.client.GenerateAccessTokenForApp(requestCtx, request, r.timeout)
+	requestContextErr := requestCtx.Err()
+	cancel()
+	request.RefreshToken = ""
+	runtime.KeepAlive(request)
+	// Checked before remoteErr: a result that arrives after the deadline must not
+	// reach the vault, however well-formed it looks.
+	if err := contextError(requestContextErr); err != nil {
+		clearTokenResult(&result)
+		return protocol.TokenResult{}, err
+	}
+	if remoteErr != nil {
+		clearTokenResult(&result)
+		if err := contextError(remoteErr); err != nil {
+			return protocol.TokenResult{}, err
+		}
+		var protocolErr *protocol.Error
+		if errors.As(remoteErr, &protocolErr) &&
+			(protocolErr.Code == protocol.CodeInvalidResponse || protocolErr.Code == protocol.CodeResponseTooLarge) {
+			return protocol.TokenResult{}, ErrInvalidResponse
+		}
+		return protocol.TokenResult{}, ErrRemote
+	}
+	if result.State != protocol.AuthResultTokenIssued || !validToken(result.AccessToken) ||
+		(result.RefreshToken != "" && !validToken(result.RefreshToken)) {
+		clearTokenResult(&result)
+		return protocol.TokenResult{}, ErrInvalidResponse
+	}
+	return result, nil
 }
 
 func (r *Refresher) loadActiveRecord(ctx context.Context, steamID uint64) (vault.RecordInfo, []byte, error) {

@@ -7,13 +7,17 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"reflect"
+	"strings"
 	"sync"
 	"testing"
 	"time"
 
+	"TcNo-Acc-Switcher/internal/steamguard/loginrecord"
 	"TcNo-Acc-Switcher/internal/steamguard/mafile"
 	"TcNo-Acc-Switcher/internal/steamguard/protocol"
 	"TcNo-Acc-Switcher/internal/steamguard/vault"
+	"TcNo-Acc-Switcher/internal/steamguard/vaultrecord"
 )
 
 const testSteamID = uint64(76561198000000013)
@@ -41,13 +45,16 @@ func (f *fakeClient) GenerateAccessTokenForApp(ctx context.Context, request prot
 }
 
 type fakeVault struct {
-	mu      sync.Mutex
-	records []vault.RecordInfo
-	data    map[string][]byte
-	listErr error
-	getErr  error
-	putErr  error
-	puts    int
+	mu            sync.Mutex
+	records       []vault.RecordInfo
+	data          map[string][]byte
+	listErr       error
+	getErr        error
+	putErr        error
+	putRecordsErr error
+	puts          int
+	batches       int
+	lastBatch     []vault.RecordUpdate
 }
 
 func (f *fakeVault) ListRecords() ([]vault.RecordInfo, error) {
@@ -81,6 +88,46 @@ func (f *fakeVault) PutRecord(steamID64 string, plaintext []byte) (string, error
 	return "", errors.New("unexpected insert")
 }
 
+// PutRecords mirrors the production vault: it rejects a malformed batch whole
+// and copies each plaintext, because the caller wipes its own buffers as soon
+// as this returns.
+func (f *fakeVault) PutRecords(updates []vault.RecordUpdate) error {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.batches++
+	seen := map[string]bool{}
+	for _, update := range updates {
+		if update.SteamID64 == "" || seen[update.SteamID64] {
+			return vault.ErrInvalidFormat
+		}
+		seen[update.SteamID64] = true
+	}
+	if f.putRecordsErr != nil {
+		return f.putRecordsErr
+	}
+	f.lastBatch = nil
+	for _, update := range updates {
+		f.lastBatch = append(f.lastBatch, vault.RecordUpdate{
+			SteamID64: update.SteamID64,
+			Plaintext: append([]byte(nil), update.Plaintext...),
+		})
+	}
+	for _, update := range f.lastBatch {
+		stored := false
+		for _, record := range f.records {
+			if record.SteamID64 == update.SteamID64 {
+				f.data[record.ID] = append([]byte(nil), update.Plaintext...)
+				stored = true
+				break
+			}
+		}
+		if !stored {
+			return errors.New("unexpected insert")
+		}
+	}
+	return nil
+}
+
 func activeAccount(t *testing.T, steamID uint64, accessToken, refreshToken string) []byte {
 	t.Helper()
 	account := mafile.Account{
@@ -107,6 +154,44 @@ func oneRecordVault(t *testing.T, raw []byte) *fakeVault {
 		records: []vault.RecordInfo{{ID: "record-1", SteamID64: fmt.Sprint(testSteamID)}},
 		data:    map[string][]byte{"record-1": append([]byte(nil), raw...)},
 	}
+}
+
+func loginOnlyRecord(t *testing.T, steamID uint64, accessToken, refreshToken string) []byte {
+	t.Helper()
+	raw, err := loginrecord.Encode(loginrecord.New(steamID, "session-only-account", accessToken, refreshToken))
+	if err != nil {
+		t.Fatal(err)
+	}
+	return raw
+}
+
+func batchRecordID(steamID uint64) string { return "record-" + fmt.Sprint(steamID) }
+
+func batchVault(t *testing.T, records map[uint64][]byte) *fakeVault {
+	t.Helper()
+	storage := &fakeVault{data: map[string][]byte{}}
+	for steamID, raw := range records {
+		id := batchRecordID(steamID)
+		storage.records = append(storage.records, vault.RecordInfo{ID: id, SteamID64: fmt.Sprint(steamID)})
+		storage.data[id] = append([]byte(nil), raw...)
+	}
+	return storage
+}
+
+// perAccountClient answers each account differently, which is what separates a
+// batch that survives one bad account from one that does not.
+func perAccountClient(answer func(steamID uint64) (protocol.TokenResult, error)) *fakeClient {
+	return &fakeClient{call: func(_ context.Context, request protocol.GenerateAccessTokenRequest, _ time.Duration) (protocol.TokenResult, error) {
+		return answer(request.SteamID)
+	}}
+}
+
+func issuedFor(steamID uint64) (protocol.TokenResult, error) {
+	return protocol.TokenResult{
+		State:        protocol.AuthResultTokenIssued,
+		AccessToken:  fmt.Sprintf("new-access-%d", steamID),
+		RefreshToken: fmt.Sprintf("new-refresh-%d", steamID),
+	}, nil
 }
 
 func TestRefreshRenewsAndCanonicallyPersistsTokens(t *testing.T) {
@@ -354,6 +439,241 @@ func TestInvalidConfigurationIsRejectedBeforeStorage(t *testing.T) {
 	for _, refresher := range tests {
 		if _, err := refresher.Refresh(context.Background(), testSteamID); !errors.Is(err, ErrInvalidRequest) {
 			t.Fatalf("invalid configuration returned %v", err)
+		}
+		if _, err := refresher.RefreshBatch(context.Background(), []uint64{testSteamID}); !errors.Is(err, ErrInvalidRequest) {
+			t.Fatalf("invalid configuration returned %v from RefreshBatch", err)
+		}
+	}
+	if storage.batches != 0 || storage.puts != 0 {
+		t.Fatal("a rejected configuration reached storage")
+	}
+}
+
+// The count is the behaviour under test: every generation switch invalidates
+// every outstanding capability, so a batch has to cost exactly one.
+func TestRefreshBatchWritesEveryAccountInOneVaultCommit(t *testing.T) {
+	ids := []uint64{testSteamID, testSteamID + 1, testSteamID + 2}
+	storage := batchVault(t, map[uint64][]byte{
+		ids[0]: activeAccount(t, ids[0], "old-access-0", "old-refresh-0"),
+		ids[1]: activeAccount(t, ids[1], "old-access-1", "old-refresh-1"),
+		ids[2]: activeAccount(t, ids[2], "old-access-2", "old-refresh-2"),
+	})
+
+	// The repeated ID proves the batch collapses it: the vault rejects a batch
+	// that names one account twice, which would sink an otherwise good sweep.
+	results, err := New(perAccountClient(issuedFor), storage).
+		RefreshBatch(context.Background(), append(append([]uint64(nil), ids...), ids[1]))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if storage.batches != 1 || len(storage.lastBatch) != len(ids) {
+		t.Fatalf("batch cost %d commits carrying %d updates, want 1 and %d",
+			storage.batches, len(storage.lastBatch), len(ids))
+	}
+	if storage.puts != 0 {
+		t.Fatal("batch fell back to per-account writes")
+	}
+	if len(results) != len(ids) {
+		t.Fatalf("got %d results, want %d", len(results), len(ids))
+	}
+	for i, steamID := range ids {
+		if results[i].SteamID != steamID || !results[i].RefreshTokenRenewed {
+			t.Fatalf("result %d = %+v", i, results[i])
+		}
+		parsed, parseErr := mafile.ParsePlaintext(storage.data[batchRecordID(steamID)])
+		if parseErr != nil {
+			t.Fatal(parseErr)
+		}
+		if parsed.Account.Session.AccessToken != fmt.Sprintf("new-access-%d", steamID) ||
+			parsed.Account.Session.RefreshToken != fmt.Sprintf("new-refresh-%d", steamID) {
+			t.Fatalf("account %d kept its old credentials", steamID)
+		}
+	}
+}
+
+// A login-only record has no authenticator secrets, so writing it back as a
+// maFile would fail validation and lose the session.
+func TestRefreshBatchWritesEachRecordBackInItsStoredShape(t *testing.T) {
+	authenticator, session := testSteamID, testSteamID+1
+	storage := batchVault(t, map[uint64][]byte{
+		authenticator: activeAccount(t, authenticator, "old-access", "old-refresh"),
+		session:       loginOnlyRecord(t, session, "old-access", "old-refresh"),
+	})
+
+	results, err := New(perAccountClient(issuedFor), storage).
+		RefreshBatch(context.Background(), []uint64{authenticator, session})
+	if err != nil || len(results) != 2 {
+		t.Fatalf("results = %+v, err = %v", results, err)
+	}
+
+	storedAuthenticator := storage.data[batchRecordID(authenticator)]
+	if kind := vaultrecord.Sniff(storedAuthenticator); kind != vaultrecord.KindMaFile {
+		t.Fatalf("authenticator was rewritten as %s", kind)
+	}
+	parsed, err := mafile.ParsePlaintext(storedAuthenticator)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if parsed.Account.SharedSecret != "AQEBAQEBAQEBAQEBAQEBAQEBAQE=" || parsed.Account.IdentitySecret == "" {
+		t.Fatal("authenticator secrets did not survive the batch")
+	}
+	if parsed.Account.Session.AccessToken != fmt.Sprintf("new-access-%d", authenticator) ||
+		parsed.Account.Session.RefreshToken != fmt.Sprintf("new-refresh-%d", authenticator) {
+		t.Fatal("authenticator session was not renewed")
+	}
+
+	storedSession := storage.data[batchRecordID(session)]
+	if kind := vaultrecord.Sniff(storedSession); kind != vaultrecord.KindLoginOnly {
+		t.Fatalf("login-only record was rewritten as %s", kind)
+	}
+	record, err := loginrecord.Decode(storedSession)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if record.AccessToken != fmt.Sprintf("new-access-%d", session) ||
+		record.RefreshToken != fmt.Sprintf("new-refresh-%d", session) ||
+		record.AccountName != "session-only-account" {
+		t.Fatalf("login-only record did not round-trip: %+v", record.AccountName)
+	}
+}
+
+func TestRefreshBatchDropsAFailedAccountAndWritesTheRest(t *testing.T) {
+	ids := []uint64{testSteamID, testSteamID + 1, testSteamID + 2}
+	failing := ids[1]
+	original := activeAccount(t, failing, "old-access-1", "old-refresh-1")
+	storage := batchVault(t, map[uint64][]byte{
+		ids[0]:  activeAccount(t, ids[0], "old-access-0", "old-refresh-0"),
+		failing: original,
+		ids[2]:  activeAccount(t, ids[2], "old-access-2", "old-refresh-2"),
+	})
+	client := perAccountClient(func(steamID uint64) (protocol.TokenResult, error) {
+		if steamID == failing {
+			return protocol.TokenResult{}, errors.New("Steam rejected old-refresh-1")
+		}
+		return issuedFor(steamID)
+	})
+
+	results, err := New(client, storage).RefreshBatch(context.Background(), ids)
+	if err != nil {
+		t.Fatalf("one account's failure sank the batch: %v", err)
+	}
+	if storage.batches != 1 || len(storage.lastBatch) != 2 {
+		t.Fatalf("batch cost %d commits carrying %d updates, want 1 and 2",
+			storage.batches, len(storage.lastBatch))
+	}
+	if len(results) != 2 {
+		t.Fatalf("got %d results, want 2", len(results))
+	}
+	for _, result := range results {
+		if result.SteamID == failing {
+			t.Fatal("failed account was reported as refreshed")
+		}
+	}
+	if !bytes.Equal(storage.data[batchRecordID(failing)], original) {
+		t.Fatal("failed account's record was rewritten")
+	}
+	for _, steamID := range []uint64{ids[0], ids[2]} {
+		parsed, parseErr := mafile.ParsePlaintext(storage.data[batchRecordID(steamID)])
+		if parseErr != nil || parsed.Account.Session.AccessToken != fmt.Sprintf("new-access-%d", steamID) {
+			t.Fatalf("account %d was not written alongside the failure", steamID)
+		}
+	}
+}
+
+func TestRefreshBatchSkipsUnrefreshableRecordsWithoutFailing(t *testing.T) {
+	good, pending, noRefreshToken := testSteamID, testSteamID+1, testSteamID+2
+	pendingRaw := []byte(`{"kind":"steamguard-enrollment-pending","version":1,"accessToken":"secret"}`)
+	storage := batchVault(t, map[uint64][]byte{
+		good:           activeAccount(t, good, "old-access", "old-refresh"),
+		pending:        pendingRaw,
+		noRefreshToken: activeAccount(t, noRefreshToken, "old-access", ""),
+	})
+
+	results, err := New(perAccountClient(issuedFor), storage).
+		RefreshBatch(context.Background(), []uint64{good, pending, noRefreshToken})
+	if err != nil {
+		t.Fatalf("a skipped record failed the batch: %v", err)
+	}
+	if len(results) != 1 || results[0].SteamID != good {
+		t.Fatalf("results = %+v, want only %d", results, good)
+	}
+	if storage.batches != 1 || len(storage.lastBatch) != 1 {
+		t.Fatalf("batch cost %d commits carrying %d updates, want 1 and 1",
+			storage.batches, len(storage.lastBatch))
+	}
+	if !bytes.Equal(storage.data[batchRecordID(pending)], pendingRaw) {
+		t.Fatal("pending enrollment was overwritten")
+	}
+}
+
+func TestRefreshBatchCommitFailureLeavesEveryRecordUnchanged(t *testing.T) {
+	for _, test := range []struct {
+		name   string
+		putErr error
+		want   error
+	}{
+		{name: "transaction", putErr: errors.New("simulated batch failure"), want: ErrPersist},
+		{name: "locked", putErr: vault.ErrLocked, want: ErrVaultLocked},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			ids := []uint64{testSteamID, testSteamID + 1}
+			originals := map[uint64][]byte{
+				ids[0]: activeAccount(t, ids[0], "old-access-0", "old-refresh-0"),
+				ids[1]: activeAccount(t, ids[1], "old-access-1", "old-refresh-1"),
+			}
+			storage := batchVault(t, originals)
+			storage.putRecordsErr = test.putErr
+
+			results, err := New(perAccountClient(issuedFor), storage).RefreshBatch(context.Background(), ids)
+			if !errors.Is(err, test.want) {
+				t.Fatalf("got %v, want %v", err, test.want)
+			}
+			if results != nil {
+				t.Fatalf("a failed commit returned %d results", len(results))
+			}
+			for _, steamID := range ids {
+				if !bytes.Equal(storage.data[batchRecordID(steamID)], originals[steamID]) {
+					t.Fatalf("failed commit changed account %d", steamID)
+				}
+			}
+			for _, secret := range []string{"old-refresh-0", "new-refresh-0", "new-access-0"} {
+				if bytes.Contains([]byte(err.Error()), []byte(secret)) {
+					t.Fatal("typed error disclosed a bearer credential")
+				}
+			}
+		})
+	}
+}
+
+// Result is what crosses back out of the package, so it must not be able to
+// carry a token even if a future field is added carelessly.
+func TestRefreshBatchResultsCarryNoBearerCredentials(t *testing.T) {
+	ids := []uint64{testSteamID, testSteamID + 1}
+	storage := batchVault(t, map[uint64][]byte{
+		ids[0]: activeAccount(t, ids[0], "old-access-0", "old-refresh-0"),
+		ids[1]: loginOnlyRecord(t, ids[1], "old-access-1", "old-refresh-1"),
+	})
+
+	results, err := New(perAccountClient(issuedFor), storage).RefreshBatch(context.Background(), ids)
+	if err != nil || len(results) != 2 {
+		t.Fatalf("results = %+v, err = %v", results, err)
+	}
+	rendered := fmt.Sprintf("%#v", results)
+	secrets := []string{"old-access-0", "old-refresh-0", "old-access-1", "old-refresh-1"}
+	for _, steamID := range ids {
+		secrets = append(secrets, fmt.Sprintf("new-access-%d", steamID), fmt.Sprintf("new-refresh-%d", steamID))
+	}
+	for _, secret := range secrets {
+		if strings.Contains(rendered, secret) {
+			t.Fatalf("returned results disclosed %q", secret)
+		}
+	}
+	resultType := reflect.TypeOf(Result{})
+	for i := 0; i < resultType.NumField(); i++ {
+		switch resultType.Field(i).Type.Kind() {
+		case reflect.Uint64, reflect.Bool:
+		default:
+			t.Fatalf("Result.%s can hold a credential", resultType.Field(i).Name)
 		}
 	}
 }
