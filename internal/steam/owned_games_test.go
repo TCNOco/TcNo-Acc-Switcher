@@ -46,7 +46,7 @@ func useOwnedGamesRoot(t *testing.T, installed []InstalledGameInfo) {
 		steamAppNameMapMem = nil
 		steamAppNameMapMu.Unlock()
 	})
-	ownedGamesInstalledFn = func() []InstalledGameInfo { return installed }
+	ownedGamesInstalledFn = func(map[string]string) []InstalledGameInfo { return installed }
 	ownedGamesWarmFn = func(context.Context, []string) map[string]string { return nil }
 }
 

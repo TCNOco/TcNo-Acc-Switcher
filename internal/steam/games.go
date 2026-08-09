@@ -483,11 +483,28 @@ func BuildInstalledGamesList(ctx context.Context, steamRoot string) ([]Installed
 		return nil, err
 	}
 
+	// Resolved after the scan so an unreadable Steam root never costs a blocking
+	// app name map download.
 	names, err := ensureAppNameMap(ctx)
 	if err != nil {
 		names = map[string]string{}
 	}
+	return namedInstalledGames(installed, names), nil
+}
 
+// buildInstalledGamesListWithNames is BuildInstalledGamesList for a caller that
+// already holds the name map. ensureAppNameMap hands back a full copy of the
+// catalogue - ~180k entries, several megabytes - so a screen that needs names
+// twice resolves once and threads the map through instead.
+func buildInstalledGamesListWithNames(steamRoot string, names map[string]string) ([]InstalledGameInfo, error) {
+	installed, err := installedAppIDs(steamRoot)
+	if err != nil {
+		return nil, err
+	}
+	return namedInstalledGames(installed, names), nil
+}
+
+func namedInstalledGames(installed map[string]struct{}, names map[string]string) []InstalledGameInfo {
 	var list []InstalledGameInfo
 	for id := range installed {
 		nm := strings.TrimSpace(names[id])
@@ -499,5 +516,5 @@ func BuildInstalledGamesList(ctx context.Context, steamRoot string) ([]Installed
 	sort.Slice(list, func(i, j int) bool {
 		return strings.ToLower(list[i].Name) < strings.ToLower(list[j].Name)
 	})
-	return list, nil
+	return list
 }
