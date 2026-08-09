@@ -588,53 +588,12 @@ func (v *Vault) PutRecord(steamID64 string, plaintext []byte) (string, error) {
 		if err != nil {
 			return err
 		}
-		recordID, filename := "", ""
-		for _, entry := range ring.Records {
-			if entry.SteamID64 == steamID64 {
-				recordID = entry.ID
-				break
-			}
-		}
-		if recordID == "" {
-			recordID, err = randomID()
-			if err != nil {
-				return err
-			}
-		}
-		filename, err = randomID()
+		staged := map[string][]byte{}
+		recordID, err := v.stageRecordLocked(vaultKey, &ring, staged, steamID64, plaintext)
 		if err != nil {
 			return err
 		}
-		dataKey, err := randomBytes(keyBytes)
-		if err != nil {
-			return err
-		}
-		defer wipe(dataKey)
-		wrapped, err := seal(vaultKey, dataKey, aad(FormatVersion, v.header.VaultID, recordID, steamID64, "data-key"))
-		if err != nil {
-			return err
-		}
-		ciphertext, err := seal(dataKey, plaintext, aad(FormatVersion, v.header.VaultID, recordID, steamID64, "record"))
-		if err != nil {
-			return err
-		}
-		rf := recordFile{Version: FormatVersion, RecordID: recordID, Ciphertext: ciphertext}
-		raw, err := marshalJSON(rf)
-		if err != nil {
-			return err
-		}
-		replaced := false
-		for i := range ring.Records {
-			if ring.Records[i].ID == recordID {
-				ring.Records[i] = recordEntry{ID: recordID, SteamID64: steamID64, Filename: filename, WrappedKey: wrapped}
-				replaced = true
-				break
-			}
-		}
-		if !replaced {
-			ring.Records = append(ring.Records, recordEntry{ID: recordID, SteamID64: steamID64, Filename: filename, WrappedKey: wrapped})
-		}
-		files, err := v.collectRecordFiles(ring, map[string][]byte{filename: raw}, outerKey)
+		files, err := v.collectRecordFiles(ring, staged, outerKey)
 		if err != nil {
 			return err
 		}
@@ -645,6 +604,116 @@ func (v *Vault) PutRecord(steamID64 string, plaintext []byte) (string, error) {
 		return nil
 	})
 	return result, err
+}
+
+// RecordUpdate is one account's new plaintext in a batched write.
+type RecordUpdate struct {
+	SteamID64 string
+	Plaintext []byte
+}
+
+// PutRecords replaces several accounts in a single generation.
+//
+// Every write here rotates the generation, and a rotation invalidates every
+// outstanding capability. Doing that once per account turns a routine batch -
+// refreshing expired access tokens for a whole vault - into one rotation per
+// row, which is why the background sweeps are otherwise forbidden from writing
+// at all. One commit for the whole batch is what makes such a batch affordable.
+//
+// It is all-or-nothing: the new generation is written, verified and only then
+// made active, so a failure part-way leaves every record on the old one.
+func (v *Vault) PutRecords(updates []RecordUpdate) error {
+	if len(updates) == 0 {
+		return nil
+	}
+	seen := make(map[string]bool, len(updates))
+	for _, update := range updates {
+		steamID64 := strings.TrimSpace(update.SteamID64)
+		// A duplicate would stage two record files for one account and leave the
+		// keyring pointing at whichever won, orphaning the other.
+		if steamID64 == "" || len(update.Plaintext) > maxPlainBytes || seen[steamID64] {
+			return ErrInvalidFormat
+		}
+		seen[steamID64] = true
+	}
+
+	v.mu.Lock()
+	defer v.mu.Unlock()
+	return v.withKeysLocked(func(vaultKey, outerKey []byte) error {
+		ring, err := v.loadKeyring(vaultKey, outerKey)
+		if err != nil {
+			return err
+		}
+		staged := make(map[string][]byte, len(updates))
+		for _, update := range updates {
+			if _, err := v.stageRecordLocked(vaultKey, &ring, staged, strings.TrimSpace(update.SteamID64), update.Plaintext); err != nil {
+				return err
+			}
+		}
+		files, err := v.collectRecordFiles(ring, staged, outerKey)
+		if err != nil {
+			return err
+		}
+		return v.commitGenerationLocked(vaultKey, outerKey, v.header, ring, files)
+	})
+}
+
+// stageRecordLocked seals one record and folds it into the pending keyring and
+// file set without committing. Callers hold v.mu and are inside withKeysLocked.
+//
+// Each call mints a fresh filename and data key even when replacing an existing
+// account, so a rewritten record never lands on the path its previous
+// ciphertext occupied.
+func (v *Vault) stageRecordLocked(vaultKey []byte, ring *keyringPayload, staged map[string][]byte, steamID64 string, plaintext []byte) (string, error) {
+	recordID := ""
+	for _, entry := range ring.Records {
+		if entry.SteamID64 == steamID64 {
+			recordID = entry.ID
+			break
+		}
+	}
+	var err error
+	if recordID == "" {
+		if recordID, err = randomID(); err != nil {
+			return "", err
+		}
+	}
+	filename, err := randomID()
+	if err != nil {
+		return "", err
+	}
+	dataKey, err := randomBytes(keyBytes)
+	if err != nil {
+		return "", err
+	}
+	defer wipe(dataKey)
+	wrapped, err := seal(vaultKey, dataKey, aad(FormatVersion, v.header.VaultID, recordID, steamID64, "data-key"))
+	if err != nil {
+		return "", err
+	}
+	ciphertext, err := seal(dataKey, plaintext, aad(FormatVersion, v.header.VaultID, recordID, steamID64, "record"))
+	if err != nil {
+		return "", err
+	}
+	raw, err := marshalJSON(recordFile{Version: FormatVersion, RecordID: recordID, Ciphertext: ciphertext})
+	if err != nil {
+		return "", err
+	}
+
+	entry := recordEntry{ID: recordID, SteamID64: steamID64, Filename: filename, WrappedKey: wrapped}
+	replaced := false
+	for i := range ring.Records {
+		if ring.Records[i].ID == recordID {
+			ring.Records[i] = entry
+			replaced = true
+			break
+		}
+	}
+	if !replaced {
+		ring.Records = append(ring.Records, entry)
+	}
+	staged[filename] = raw
+	return recordID, nil
 }
 
 // Put is a shorthand for PutRecord.
