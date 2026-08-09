@@ -366,6 +366,8 @@
   }
 
   async function refreshGameStatsMarkupInternal(acctIds: string[], mergePatch = false): Promise<void> {
+    // An empty id list resolves to {}, which would blank every row's stats.
+    if (acctIds.length === 0) return;
     const next = await refreshGameStatsMarkup(name, acctIds);
     gameStatsByAccount = mergePatch
       ? mergeGameStatsByAccount(gameStatsByAccount, next)
@@ -669,7 +671,15 @@
   }
 
   // ---- Load accounts ----
+  // Game stats markup and tag defs live only in this component, so a remount starts
+  // with neither. The account cache outlives the page, so a reload after navigating
+  // back finds nothing changed - this tracks whether the fetch has happened at all,
+  // rather than leaving every row stat-less and untagged until the list next changes.
+  let nonCriticalWorkStarted = false;
+
   function deferNonCriticalAccountWork(ids: string[]): void {
+    if (ids.length === 0) return;
+    nonCriticalWorkStarted = true;
     void loadTagDefsInternal();
     void refreshGameStatsMarkupInternal(ids);
     void BasicService.StartGameStatsRefresh(name);
@@ -701,7 +711,7 @@
       const listChanged = applyLoadedAccounts(adapter, name, mergedList, prevById, state, touchStatus);
       ({ avatarEpoch, accounts, accountIds, selectedId } = state);
       accountsLoading = false;
-      if (listChanged) deferNonCriticalAccountWork(accountIds);
+      if (listChanged || !nonCriticalWorkStarted) deferNonCriticalAccountWork(accountIds);
 
       void (async () => {
         try {
@@ -714,7 +724,7 @@
           };
           const enrichChanged = applyLoadedAccounts(adapter, name, merged, enrichPrev, enrichState, touchStatus);
           ({ avatarEpoch, accounts, accountIds, selectedId } = enrichState);
-          if (enrichChanged) deferNonCriticalAccountWork(accountIds);
+          if (enrichChanged || !nonCriticalWorkStarted) deferNonCriticalAccountWork(accountIds);
           await adapter.onAfterLoad?.(accounts, { hadCachedAccounts, enrichChanged });
         } catch {
           if (!accountLoadGuard.isCurrent(loadRequest)) return;
@@ -937,7 +947,12 @@
         loadAccounts,
         scheduleAccountsRefresh,
         loadTagDefs: loadTagDefsInternal,
-        openGameStatsModal: (rid: string) => openGameStatsModal(rid, adapter, name, accountById, () => void loadAccounts()),
+        openGameStatsModal: (rid: string) => openGameStatsModal(rid, adapter, name, accountById, () => {
+          // Enabling or disabling a game leaves the account list identical, so the
+          // reload alone would never refetch this row's stats.
+          void refreshGameStatsMarkupInternal([rid], true);
+          void loadAccounts();
+        }),
         onSelectedIdChanged: (id: string) => { selectedId = id; touchStatus(); },
       };
       const shared = buildSharedItems(acc, rowId, ctx);
