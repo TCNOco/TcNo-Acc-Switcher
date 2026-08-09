@@ -37,6 +37,7 @@ type Descriptor struct {
 	PathListToClear          []string               `json:"PathListToClear,omitempty"`
 	LoginFiles               map[string]string      `json:"LoginFiles,omitempty"`
 	AllFilesRequired         bool                   `json:"AllFilesRequired"`
+	DisabledByDefault        bool                   `json:"DisabledByDefault"`
 	ExitBeforeInteract       bool                   `json:"ExitBeforeInteract"`
 	ExitBeforeSave           bool                   `json:"ExitBeforeSave"`
 	RegDeleteOnClear         bool                   `json:"RegDeleteOnClear"`

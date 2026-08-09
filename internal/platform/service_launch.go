@@ -1,6 +1,7 @@
 package platform
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -249,13 +250,42 @@ func (p *PlatformService) HasShortcutMainExe(platformKey string) (bool, error) {
 	return false, nil
 }
 
+// disabledByDefaultPlatforms lists platforms whose descriptors set DisabledByDefault.
+// They are still fully supported; being installed just is not reason enough to put
+// them on the home screen, so the user adds them from Manage platforms instead.
+func disabledByDefaultPlatforms(raw []byte) map[string]struct{} {
+	var file platformsFile
+	if err := json.Unmarshal(raw, &file); err != nil {
+		return nil
+	}
+	out := make(map[string]struct{})
+	for name, blob := range file.Platforms {
+		var d Descriptor
+		if err := json.Unmarshal(blob, &d); err != nil {
+			continue
+		}
+		if d.DisabledByDefault {
+			out[name] = struct{}{}
+		}
+	}
+	return out
+}
+
 func (p *PlatformService) seedDisabledPlatformsForFirstLaunch(settings *AppSettings, raw []byte, names []string) {
 	if settings == nil {
 		return
 	}
+	optOut := disabledByDefaultPlatforms(raw)
 	disabled := make(map[string]struct{}, len(names))
 	foundCount := 0
 	for _, platformName := range names {
+		// Opt-out platforms never count as found: a machine with only these
+		// installed has detected nothing worth seeding, so the Steam fallback
+		// below should still fire rather than leaving the home screen empty.
+		if _, skip := optOut[platformName]; skip {
+			disabled[platformName] = struct{}{}
+			continue
+		}
 		if p.platformDetected(settings, raw, platformName) {
 			foundCount++
 			continue

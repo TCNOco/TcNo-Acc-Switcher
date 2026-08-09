@@ -25,6 +25,7 @@
         "%AppData%\\obs-studio\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
       },
       "AllFilesRequired": true,
+      "DisabledByDefault": true,
       "UniqueIdFile": "%AppData%\\obs-studio\\TcNoAccSwitcher-ID.instance",
       "UniqueIdMethod": "CREATE_ID_FILE"
     },
@@ -117,6 +118,7 @@
         "%AppData%\\discord\\Preferences": "Preferences",
         "%AppData%\\discord\\TransportSecurity": "TransportSecurity"
       },
+      "DisabledByDefault": true,
       "ExitBeforeInteract": true,
       "ExitBeforeSave": true,
       "Extras": {
@@ -168,6 +170,7 @@
         "%AppData%\\discordcanary\\Preferences": "Preferences",
         "%AppData%\\discordcanary\\TransportSecurity": "TransportSecurity"
       },
+      "DisabledByDefault": true,
       "ExitBeforeInteract": true,
       "ExitBeforeSave": true,
       "Extras": {
@@ -219,6 +222,7 @@
         "%AppData%\\discordptb\\Preferences": "Preferences",
         "%AppData%\\discordptb\\TransportSecurity": "TransportSecurity"
       },
+      "DisabledByDefault": true,
       "ExitBeforeInteract": true,
       "ExitBeforeSave": true,
       "Extras": {
@@ -353,6 +357,7 @@
         ],
         "BuiltInUsernameFile": "%LocalAppData%\\NVIDIA Corporation\\GeForceNOW\\CefCache\\Default\\Cache\\Cache_Data\\data_*"
       },
+      "DisabledByDefault": true,
       "ExitBeforeInteract": true,
       "ExitBeforeSave": true,
       "UniqueIdFile": "%LocalAppData%\\NVIDIA Corporation\\GeForceNOW\\TcNoAccSwitcher-ID.instance",
@@ -479,6 +484,7 @@
         "%LocalAppData%\\Sony Corporation\\PS Remote Play\\setting.cache": "setting.cache",
         "%LocalAppData%\\Sony Corporation\\PS Remote Play\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
       },
+      "DisabledByDefault": true,
       "ExitBeforeInteract": true,
       "UniqueIdFile": "%LocalAppData%\\Sony Corporation\\PS Remote Play\\TcNoAccSwitcher-ID.instance",
       "UniqueIdMethod": "CREATE_ID_FILE"
