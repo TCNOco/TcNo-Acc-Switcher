@@ -90,8 +90,12 @@
     return accountById.get(steamId64)?.displayName || steamId64;
   }
 
-  function ownerAvatar(steamId64: string): string {
-    return accountById.get(steamId64)?.avatarUrl || PROFILE_PLACEHOLDER;
+  function ownerAvatar(steamId64: string, offline: boolean): string {
+    return offlineSafeImageSrc(
+      offline,
+      accountById.get(steamId64)?.avatarUrl ?? "",
+      PROFILE_PLACEHOLDER,
+    );
   }
 
   function gameIcon(game: OwnedGameRow): string {
@@ -138,14 +142,13 @@
     );
     accounts = list.map((row: SteamAccountListItemDTO) => {
       const extra = enrichById.get(row.steamId64);
-      const avatarUrl = offlineSafeImageSrc(
-        get(offlineMode),
-        resolveAvatarUrl(
-          extra?.imageUrl ?? "",
-          extra?.staticImageUrl ?? "",
-          extra?.avatarPending ?? false,
-        ),
-        PROFILE_PLACEHOLDER,
+      // Stored raw, not offline-safed here: accounts load once and offline mode
+      // can be switched on afterwards, which would leave these avatars pointing
+      // at remote URLs the guard exists to suppress. Consumers apply it.
+      const avatarUrl = resolveAvatarUrl(
+        extra?.imageUrl ?? "",
+        extra?.staticImageUrl ?? "",
+        extra?.avatarPending ?? false,
       );
       return {
         steamId64: row.steamId64,
@@ -353,7 +356,7 @@
                   {#each owners.shown as steamId64 (steamId64)}
                     <img
                       class="steamGames__ownerAvatar"
-                      src={ownerAvatar(steamId64)}
+                      src={ownerAvatar(steamId64, $offlineMode)}
                       alt=""
                       draggable="false"
                       use:tooltipAction={{ text: ownerLabel(steamId64), boundary: listEl }}

@@ -24,6 +24,9 @@ type fakeOwnedGamesClient struct {
 	apps  map[string][]uint32
 	errs  map[string]error
 	calls []string
+	// afterFetch runs once each request has been answered, so a test can change
+	// the world - offline mode, say - between two accounts of one sweep.
+	afterFetch func()
 }
 
 func newFakeOwnedGamesClient() *fakeOwnedGamesClient {
@@ -32,12 +35,18 @@ func newFakeOwnedGamesClient() *fakeOwnedGamesClient {
 
 func (f *fakeOwnedGamesClient) FetchOwnedApps(_ context.Context, c confirmationapi.Credentials) ([]uint32, error) {
 	f.mu.Lock()
-	defer f.mu.Unlock()
 	f.calls = append(f.calls, c.SteamID)
-	if err, ok := f.errs[c.SteamID]; ok {
+	err, failed := f.errs[c.SteamID]
+	apps, known := f.apps[c.SteamID]
+	afterFetch := f.afterFetch
+	f.mu.Unlock()
+	if afterFetch != nil {
+		afterFetch()
+	}
+	if failed {
 		return nil, err
 	}
-	if apps, ok := f.apps[c.SteamID]; ok {
+	if known {
 		return apps, nil
 	}
 	return []uint32{730}, nil
@@ -346,6 +355,79 @@ func TestOwnedGamesSweepIsANoOpWhenItMayNotRun(t *testing.T) {
 				t.Fatalf("made %d requests while %s, want 0", got, testCase.name)
 			}
 		})
+	}
+}
+
+func TestOwnedGamesSweepStopsWhenOfflineSwitchesOnMidSweep(t *testing.T) {
+	// Offline mode is a promise the app makes for as long as it is on, not only
+	// at the moment a sweep starts.
+	service, fake, _ := newOwnedGamesFixture(t)
+	t.Cleanup(func() { appclient.SetOfflineMode(false) })
+	fake.afterFetch = func() { appclient.SetOfflineMode(true) }
+
+	service.sweepOwnedGames(context.Background())
+
+	if got := fake.callCount(); got != 1 {
+		t.Fatalf("made %d requests, want 1: the sweep continued after offline mode was switched on", got)
+	}
+}
+
+func TestOwnedGamesSweepRenewsNoSessionsWhileOffline(t *testing.T) {
+	// A renewal is a Steam token call per account, and it runs between the
+	// sweep's entry check and its per-account loop.
+	service, _, _ := newOwnedGamesFixture(t)
+	appclient.SetOfflineMode(true)
+	t.Cleanup(func() { appclient.SetOfflineMode(false) })
+	service.newSessionRefresher = func(*vault.Vault) steamSessionRefresher {
+		panic("offline mode must not reach a Steam token call")
+	}
+
+	service.refreshLapsedOwnedGamesSessions(context.Background(), []uint64{loginOnlySteamID})
+}
+
+func TestOwnedGamesSweepIntervalFollowsTheVaultLease(t *testing.T) {
+	service, _, _ := newOwnedGamesFixture(t)
+	if err := service.vault.SetLeaseMode(vault.FixedLease); err != nil {
+		t.Fatal(err)
+	}
+	if got := service.ownedGamesSweepIntervalNow(); got != ownedGamesSweepInterval {
+		t.Fatalf("interval under a fixed lease = %s, want %s", got, ownedGamesSweepInterval)
+	}
+	if err := service.vault.SetLeaseMode(vault.ProcessLease); err != nil {
+		t.Fatal(err)
+	}
+	if got := service.ownedGamesSweepIntervalNow(); got != ownedGamesRememberedSweepInterval {
+		t.Fatalf("interval under a remembered password = %s, want %s", got, ownedGamesRememberedSweepInterval)
+	}
+	if err := service.vault.Lock(); err != nil {
+		t.Fatal(err)
+	}
+	if got := service.ownedGamesSweepIntervalNow(); got != ownedGamesSweepInterval {
+		t.Fatalf("interval with a locked vault = %s, want %s", got, ownedGamesSweepInterval)
+	}
+}
+
+func TestOwnedGamesSweepDueFollowsALeaseChangedMidSession(t *testing.T) {
+	// Remember-password can be switched on long after the sweeper goroutine
+	// started, and the shorter interval has to reach the sweeper already waiting
+	// out the longer one.
+	service, _, _ := newOwnedGamesFixture(t)
+	if err := service.vault.SetLeaseMode(vault.FixedLease); err != nil {
+		t.Fatal(err)
+	}
+	now := time.Now()
+	service.ownedGamesSweep.mu.Lock()
+	service.ownedGamesSweep.lastSweep = now.Add(-ownedGamesRememberedSweepInterval - time.Minute)
+	service.ownedGamesSweep.mu.Unlock()
+
+	if service.ownedGamesSweepDue(now) {
+		t.Fatal("a sweep came due inside the 24h interval a fixed lease calls for")
+	}
+	if err := service.vault.SetLeaseMode(vault.ProcessLease); err != nil {
+		t.Fatal(err)
+	}
+	if !service.ownedGamesSweepDue(now) {
+		t.Fatal("remembering the password mid-session did not shorten the interval")
 	}
 }
 

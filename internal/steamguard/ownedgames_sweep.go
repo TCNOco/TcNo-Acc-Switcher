@@ -15,6 +15,7 @@ import (
 	"TcNo-Acc-Switcher/internal/steam/ownedgames"
 	"TcNo-Acc-Switcher/internal/steamguard/confirmationapi"
 	"TcNo-Acc-Switcher/internal/steamguard/sessionrefresh"
+	"TcNo-Acc-Switcher/internal/steamguard/vault"
 )
 
 const (
@@ -22,6 +23,20 @@ const (
 	// library only changes when someone buys a game. A cooldown ticks down on its
 	// own; ownership does not.
 	ownedGamesSweepInterval = 24 * time.Hour
+
+	// ownedGamesRememberedSweepInterval applies while the vault key is held under
+	// a ProcessLease, which is what remembering the password for the session
+	// unlocks under. Under the default FixedLease the vault relocks after five
+	// minutes and the unlock trigger does the work; a remembered password makes
+	// unlocks rare, so the ticker is the only thing that ever fires. It is equal
+	// to the per-account floor, so the shorter cadence still cannot cost an
+	// account more than one request per floor.
+	ownedGamesRememberedSweepInterval = 6 * time.Hour
+
+	// ownedGamesSweepPoll bounds how long the sweeper waits before re-reading the
+	// interval. Remember-password can be switched on halfway through a session,
+	// and the sweeper must not sit out the 24h wait it started under.
+	ownedGamesSweepPoll = 15 * time.Minute
 
 	// ownedGamesAccountFloor is the minimum gap between two requests for the same
 	// account. Much longer than the cooldown sweep's 90s for the same reason the
@@ -99,7 +114,7 @@ func (s *Service) signalOwnedGamesSweep() {
 
 func (s *Service) runOwnedGamesSweeper(ctx context.Context) {
 	defer crashlog.Capture()
-	ticker := time.NewTicker(ownedGamesSweepInterval)
+	ticker := time.NewTicker(ownedGamesSweepPoll)
 	defer ticker.Stop()
 	for {
 		select {
@@ -107,9 +122,46 @@ func (s *Service) runOwnedGamesSweeper(ctx context.Context) {
 			return
 		case <-s.ownedGamesSweep.wake:
 		case <-ticker.C:
+			if !s.ownedGamesSweepDue(time.Now()) {
+				continue
+			}
 		}
 		s.sweepOwnedGames(ctx)
 	}
+}
+
+// ownedGamesSweepDue reports whether the interval in effect right now has passed
+// since the last sweep.
+//
+// The interval is read per poll rather than once at startup: enabling
+// remember-password mid-session moves the vault onto a ProcessLease, and the
+// shorter cadence has to reach the sweeper that is already running under the
+// longer one.
+func (s *Service) ownedGamesSweepDue(now time.Time) bool {
+	s.ownedGamesSweep.mu.Lock()
+	last := s.ownedGamesSweep.lastSweep
+	s.ownedGamesSweep.mu.Unlock()
+	return last.IsZero() || now.Sub(last) >= s.ownedGamesSweepIntervalNow()
+}
+
+func (s *Service) ownedGamesSweepIntervalNow() time.Duration {
+	if s.vaultLeaseMode() == vault.ProcessLease {
+		return ownedGamesRememberedSweepInterval
+	}
+	return ownedGamesSweepInterval
+}
+
+// vaultLeaseMode reports how the vault key is held right now. It reads the
+// already-open vault rather than requireVaultLocked: a poll must not open a
+// vault this process has had no reason to touch.
+func (s *Service) vaultLeaseMode() vault.LeaseMode {
+	s.mu.Lock()
+	v := s.vault
+	s.mu.Unlock()
+	if v == nil {
+		return 0
+	}
+	return v.LeaseMode()
 }
 
 // sweepOwnedGames reads every vault account's Steam library into the plaintext
@@ -239,6 +291,15 @@ func ownedGamesDue(stored map[string]ownedgames.Entry, steamID64 string, now tim
 // only ever fill for accounts someone happened to open by hand.
 func (s *Service) refreshLapsedOwnedGamesSessions(ctx context.Context, lapsed []uint64) {
 	log := ownedGamesLogger()
+
+	// Re-tested here rather than relying on the check at the top of the sweep:
+	// collecting targets is not instant, and a renewal is a Steam token call per
+	// account. RefreshBatch gates itself as well, so a flip during the batch stops
+	// it too.
+	if appclient.IsOfflineMode() {
+		log.Debug("session refresh skipped: offline mode", "accounts", len(lapsed))
+		return
+	}
 
 	s.mu.Lock()
 	v, err := s.requireVaultLocked()

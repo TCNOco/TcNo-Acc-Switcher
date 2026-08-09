@@ -13,6 +13,7 @@ import (
 	"testing"
 	"time"
 
+	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/steamguard/loginrecord"
 	"TcNo-Acc-Switcher/internal/steamguard/mafile"
 	"TcNo-Acc-Switcher/internal/steamguard/protocol"
@@ -674,6 +675,87 @@ func TestRefreshBatchResultsCarryNoBearerCredentials(t *testing.T) {
 		case reflect.Uint64, reflect.Bool:
 		default:
 			t.Fatalf("Result.%s can hold a credential", resultType.Field(i).Name)
+		}
+	}
+}
+
+// A renewal is a Steam token call on a transport of its own, which no HTTP
+// client-level offline gate covers. These three go through appclient rather
+// than the offline field so they also prove the production wiring.
+func TestRefreshMakesNoTokenCallWhileOffline(t *testing.T) {
+	storage := oneRecordVault(t, activeAccount(t, testSteamID, "old-access", "old-refresh"))
+	client := &fakeClient{result: protocol.TokenResult{
+		State: protocol.AuthResultTokenIssued, AccessToken: "new-access", RefreshToken: "new-refresh",
+	}}
+	appclient.SetOfflineMode(true)
+	t.Cleanup(func() { appclient.SetOfflineMode(false) })
+
+	if _, err := New(client, storage).Refresh(context.Background(), testSteamID); !errors.Is(err, ErrOffline) {
+		t.Fatalf("got %v, want ErrOffline", err)
+	}
+	if client.calls != 0 {
+		t.Fatalf("offline refresh made %d token calls", client.calls)
+	}
+	if storage.puts != 0 {
+		t.Fatal("offline refresh wrote to the vault")
+	}
+}
+
+func TestRefreshBatchMakesNoTokenCallsWhileOffline(t *testing.T) {
+	ids := []uint64{testSteamID, testSteamID + 1}
+	storage := batchVault(t, map[uint64][]byte{
+		ids[0]: activeAccount(t, ids[0], "old-access-0", "old-refresh-0"),
+		ids[1]: activeAccount(t, ids[1], "old-access-1", "old-refresh-1"),
+	})
+	client := perAccountClient(issuedFor)
+	appclient.SetOfflineMode(true)
+	t.Cleanup(func() { appclient.SetOfflineMode(false) })
+
+	results, err := New(client, storage).RefreshBatch(context.Background(), ids)
+	if !errors.Is(err, ErrOffline) {
+		t.Fatalf("got %v, want ErrOffline", err)
+	}
+	if results != nil {
+		t.Fatalf("offline batch returned %d results", len(results))
+	}
+	if client.calls != 0 || storage.batches != 0 {
+		t.Fatalf("offline batch made %d token calls and %d commits", client.calls, storage.batches)
+	}
+}
+
+func TestRefreshBatchStopsWhenOfflineSwitchesOnMidBatch(t *testing.T) {
+	ids := []uint64{testSteamID, testSteamID + 1, testSteamID + 2}
+	originals := map[uint64][]byte{
+		ids[0]: activeAccount(t, ids[0], "old-access-0", "old-refresh-0"),
+		ids[1]: activeAccount(t, ids[1], "old-access-1", "old-refresh-1"),
+		ids[2]: activeAccount(t, ids[2], "old-access-2", "old-refresh-2"),
+	}
+	storage := batchVault(t, originals)
+	t.Cleanup(func() { appclient.SetOfflineMode(false) })
+	client := perAccountClient(func(steamID uint64) (protocol.TokenResult, error) {
+		appclient.SetOfflineMode(true)
+		return issuedFor(steamID)
+	})
+
+	results, err := New(client, storage).RefreshBatch(context.Background(), ids)
+	if err != nil {
+		t.Fatalf("an offline switch mid-batch failed the whole batch: %v", err)
+	}
+	if client.calls != 1 {
+		t.Fatalf("made %d token calls, want 1: the batch kept going while offline", client.calls)
+	}
+	// What was renewed before the switch is still committed: dropping it would
+	// waste a generation switch that has already been paid for.
+	if len(results) != 1 || results[0].SteamID != ids[0] {
+		t.Fatalf("results = %+v, want only %d", results, ids[0])
+	}
+	if storage.batches != 1 || len(storage.lastBatch) != 1 {
+		t.Fatalf("batch cost %d commits carrying %d updates, want 1 and 1",
+			storage.batches, len(storage.lastBatch))
+	}
+	for _, steamID := range []uint64{ids[1], ids[2]} {
+		if !bytes.Equal(storage.data[batchRecordID(steamID)], originals[steamID]) {
+			t.Fatalf("account %d was rewritten without being renewed", steamID)
 		}
 	}
 }

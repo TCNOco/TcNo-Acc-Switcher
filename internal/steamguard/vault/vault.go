@@ -502,6 +502,20 @@ func (v *Vault) SetLeaseMode(mode LeaseMode) error {
 	return nil
 }
 
+// LeaseMode reports how the cached vault key is currently held, or 0 when the
+// vault is locked or its fixed lease has run out. It exposes no key material -
+// the only thing it distinguishes is a five-minute FixedLease from the
+// ProcessLease a remembered password unlocks under, which is what background
+// work needs to know to pick its cadence.
+func (v *Vault) LeaseMode() LeaseMode {
+	v.mu.Lock()
+	defer v.mu.Unlock()
+	if v.lease == nil || (v.leaseMode == FixedLease && !v.opts.clock.Now().Before(v.leaseExpiry)) {
+		return 0
+	}
+	return v.leaseMode
+}
+
 func (v *Vault) destroyLeasesLocked() error {
 	err := errors.Join(destroyHandle(v.lease), destroyHandle(v.outerLease))
 	v.lease = nil

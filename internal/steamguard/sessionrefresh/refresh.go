@@ -14,6 +14,7 @@ import (
 	"sync"
 	"time"
 
+	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/steamguard/loginrecord"
 	"TcNo-Acc-Switcher/internal/steamguard/mafile"
 	"TcNo-Acc-Switcher/internal/steamguard/protocol"
@@ -46,6 +47,7 @@ const (
 	CodeRemote          Code = "remote_failure"
 	CodeInvalidResponse Code = "invalid_token_response"
 	CodePersist         Code = "persist_failure"
+	CodeOffline         Code = "offline"
 )
 
 // Error deliberately omits wrapped transport, filesystem, and token details.
@@ -84,6 +86,8 @@ func (e *Error) Error() string {
 		return "Steam returned an invalid session refresh response"
 	case CodePersist:
 		return "refreshed Steam session could not be saved"
+	case CodeOffline:
+		return "Steam session refresh is unavailable offline"
 	default:
 		return "Steam session refresh failed"
 	}
@@ -111,6 +115,7 @@ var (
 	ErrRemote          = &Error{Code: CodeRemote}
 	ErrInvalidResponse = &Error{Code: CodeInvalidResponse}
 	ErrPersist         = &Error{Code: CodePersist}
+	ErrOffline         = &Error{Code: CodeOffline}
 )
 
 // TokenClient is the only Steam protocol operation needed by Refresher.
@@ -141,20 +146,27 @@ type Result struct {
 // Refresher serializes read/exchange/write operations made through one
 // instance. The vault itself makes each final generation switch atomic.
 type Refresher struct {
-	client  TokenClient
-	vault   UnlockedVault
+	client TokenClient
+	vault  UnlockedVault
+	// offline gates every renewal; see exchange for why it is re-read per account.
+	offline func() bool
 	timeout time.Duration
 	mu      sync.Mutex
 }
 
 func New(client TokenClient, unlockedVault UnlockedVault) *Refresher {
-	return &Refresher{client: client, vault: unlockedVault, timeout: DefaultRequestTimeout}
+	return NewWithTimeout(client, unlockedVault, DefaultRequestTimeout)
 }
 
 // NewWithTimeout is intended for callers whose parent context has a shorter
 // deadline. Durations above the protocol maximum are rejected at Refresh.
 func NewWithTimeout(client TokenClient, unlockedVault UnlockedVault, timeout time.Duration) *Refresher {
-	return &Refresher{client: client, vault: unlockedVault, timeout: timeout}
+	return &Refresher{
+		client:  client,
+		vault:   unlockedVault,
+		offline: appclient.IsOfflineMode,
+		timeout: timeout,
+	}
 }
 
 // logger records the Steam ID and the stable error Code only. Access and
@@ -186,7 +198,7 @@ func (r *Refresher) Refresh(ctx context.Context, steamID uint64) (Result, error)
 }
 
 func (r *Refresher) refresh(ctx context.Context, steamID uint64) (Result, error) {
-	if r == nil || r.client == nil || r.vault == nil || ctx == nil ||
+	if r == nil || r.client == nil || r.vault == nil || r.offline == nil || ctx == nil ||
 		!validSteamID(steamID) || r.timeout <= 0 || r.timeout > maxRequestTimeout {
 		return Result{}, ErrInvalidRequest
 	}
@@ -260,7 +272,7 @@ func (r *Refresher) refresh(ctx context.Context, steamID uint64) (Result, error)
 // context or a failed commit returns an error, and a failed commit leaves every
 // record on the generation it was already on.
 func (r *Refresher) RefreshBatch(ctx context.Context, steamIDs []uint64) ([]Result, error) {
-	if r == nil || r.client == nil || r.vault == nil || ctx == nil ||
+	if r == nil || r.client == nil || r.vault == nil || r.offline == nil || ctx == nil ||
 		r.timeout <= 0 || r.timeout > maxRequestTimeout {
 		return nil, ErrInvalidRequest
 	}
@@ -269,6 +281,11 @@ func (r *Refresher) RefreshBatch(ctx context.Context, steamIDs []uint64) ([]Resu
 	}
 	if err := contextError(ctx.Err()); err != nil {
 		return nil, err
+	}
+	// Checked before the load phase as well as per account: an offline batch would
+	// otherwise decrypt every record in the list to make no request at all.
+	if r.offline() {
+		return nil, ErrOffline
 	}
 	log := logger()
 
@@ -306,6 +323,13 @@ func (r *Refresher) RefreshBatch(ctx context.Context, steamIDs []uint64) ([]Resu
 			// rejected account ends the batch or is merely dropped from it.
 			if parentErr := contextError(ctx.Err()); parentErr != nil {
 				return nil, parentErr
+			}
+			if errors.Is(exchangeErr, ErrOffline) {
+				// Offline was switched on mid-batch. Every account left would be
+				// refused the same way, so the rest are dropped rather than walked
+				// through, and what has already been renewed is still committed.
+				log.Info("Steam session batch stopped: offline mode", "refreshed", len(results))
+				break
 			}
 			logDropped(log, entry.steamID, exchangeErr)
 			continue
@@ -504,6 +528,12 @@ func (d *decodedRecord) destroy() {
 // exchange renews one account's tokens. A successful result is the caller's to
 // clearTokenResult; a failed one is already cleared and classified.
 func (r *Refresher) exchange(ctx context.Context, steamID uint64, refreshToken string) (protocol.TokenResult, error) {
+	// The single gate every renewal passes through, so a batch re-tests it once
+	// per account: offline can be switched on while a sweep-sized batch is still
+	// working through its list.
+	if r.offline() {
+		return protocol.TokenResult{}, ErrOffline
+	}
 	refreshBuffer := append([]byte(nil), refreshToken...)
 	defer wipe(refreshBuffer)
 	request := protocol.GenerateAccessTokenRequest{

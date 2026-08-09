@@ -6,7 +6,9 @@
     pickSteamGamesAccount,
     steamGamesBarAccounts,
     steamGamesLaunchOnSwitch,
+    type SteamGamesBarAccount,
   } from "../stores/steamGamesBar";
+  import { offlineMode, offlineSafeImageSrc } from "../stores/offlineMode";
   import "../styles/gameshortcutbar.scss";
   import "../styles/steamGames.scss";
 
@@ -17,12 +19,21 @@
    */
   const MAX_PINNED_TILES = 8;
 
+  const PROFILE_PLACEHOLDER = "/img/BasicDefault.webp";
+
   let ddOpen = false;
 
   $: pinned = $steamGamesBarAccounts.slice(0, MAX_PINNED_TILES);
   $: overflow = $steamGamesBarAccounts.slice(MAX_PINNED_TILES);
   $: isActionBusy = $platformActionBusy.busy;
   $: if (overflow.length === 0) ddOpen = false;
+
+  // The store carries the raw avatar URL, so the offline guard has to be applied
+  // on render: accounts are loaded once and offline mode can be switched on long
+  // after, which would otherwise leave these tiles fetching remote images.
+  function avatarSrc(account: SteamGamesBarAccount, offline: boolean): string {
+    return offlineSafeImageSrc(offline, account.avatarUrl, PROFILE_PLACEHOLDER);
+  }
 
   function pick(steamId64: string): void {
     if (isActionBusy) return;
@@ -47,7 +58,7 @@
           disabled={isActionBusy}
           on:click={() => pick(account.steamId64)}
         >
-          <img src={account.avatarUrl} alt="" draggable="false" />
+          <img src={avatarSrc(account, $offlineMode)} alt="" draggable="false" />
         </button>
       </div>
     {/each}
@@ -83,7 +94,7 @@
                   disabled={isActionBusy}
                   on:click={() => pick(account.steamId64)}
                 >
-                  <img src={account.avatarUrl} alt="" draggable="false" />
+                  <img src={avatarSrc(account, $offlineMode)} alt="" draggable="false" />
                 </button>
               </div>
             {/each}

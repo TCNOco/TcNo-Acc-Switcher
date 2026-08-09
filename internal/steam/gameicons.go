@@ -2,7 +2,6 @@ package steam
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"io"
 	"log/slog"
@@ -245,6 +244,11 @@ func EnsureGameIcon(ctx context.Context, appID string) (string, error) {
 		}
 	}
 
+	// Below the librarycache copy on purpose: offline mode blocks the network,
+	// not the disk, and art Steam has already downloaded still resolves. Tested
+	// per app id rather than once per warm pass, so a pass of a few thousand
+	// icons stops downloading the moment offline is switched on. Nothing is
+	// marked missing here - being offline says nothing about what the CDN holds.
 	if appclient.IsOfflineMode() {
 		steamLog.Debug("steam game icon download skipped: offline mode", slog.String("appId", id))
 		return "", nil
@@ -281,9 +285,9 @@ func downloadGameIcon(ctx context.Context, id string) ([]byte, error) {
 
 	resp, err := gameIconClient.Do(req)
 	if err != nil {
-		if errors.Is(err, appclient.ErrOfflineMode) {
-			return nil, nil
-		}
+		// Offline mode included, deliberately: reporting it as nil, nil would file
+		// the app id under "no artwork anywhere" for the whole miss TTL, so the
+		// icon would still be absent hours after the user came back online.
 		return nil, err
 	}
 	defer resp.Body.Close()
