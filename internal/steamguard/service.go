@@ -965,7 +965,7 @@ func (s *Service) ListAccounts(accountID, token string) ([]AccountSummary, error
 			SteamID64:     record.SteamID64,
 			AccountName:   loaded.AccountName(),
 			Kind:          summaryKind(loaded.Kind),
-			SessionStatus: localSessionStatus(loaded.Kind, loaded.AccessToken(), now),
+			SessionStatus: localSessionStatus(loaded.Kind, loaded.AccessToken(), loaded.RefreshToken(), now),
 		})
 		loaded.destroy()
 	}

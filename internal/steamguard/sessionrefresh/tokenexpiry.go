@@ -48,3 +48,26 @@ func AccessTokenExpired(token string, now time.Time, skew time.Duration) bool {
 	}
 	return !expiry.After(now.Add(skew))
 }
+
+// RefreshTokenUsable reports whether a stored refresh token can still mint a new
+// access token without the user signing in again.
+//
+// Steam issues both as JWTs, so this is the same local expiry read - but the two
+// run on very different clocks, an access token lasting about a day against a
+// refresh token's months. That difference is the point: an account whose access
+// token lapsed overnight is not an account that needs a password, and reporting
+// it as one is what made stale sessions look like sign-outs.
+//
+// An unreadable token counts as usable. Absence of a claim this build can parse
+// is not evidence of expiry, and the cost of being wrong is one refused refresh
+// that falls back to the sign-in already on offer - against sending every user
+// with a token shape we did not anticipate to a sign-in they do not need.
+func RefreshTokenUsable(token string, now time.Time, skew time.Duration) bool {
+	if strings.TrimSpace(token) == "" {
+		return false
+	}
+	if _, readable := AccessTokenExpiry(token); !readable {
+		return true
+	}
+	return !AccessTokenExpired(token, now, skew)
+}

@@ -27,7 +27,17 @@ func seedLoginOnlyRecordWithToken(
 	accountName, accessToken string,
 ) string {
 	t.Helper()
-	record := loginrecord.New(steamID, accountName, accessToken, "refresh-token-for-tests")
+	return seedLoginOnlyRecordWithTokens(t, v, steamID, accountName, accessToken, "refresh-token-for-tests")
+}
+
+func seedLoginOnlyRecordWithTokens(
+	t *testing.T,
+	v *vault.Vault,
+	steamID uint64,
+	accountName, accessToken, refreshToken string,
+) string {
+	t.Helper()
+	record := loginrecord.New(steamID, accountName, accessToken, refreshToken)
 	raw, err := loginrecord.Encode(record)
 	if err != nil {
 		t.Fatal(err)
@@ -81,10 +91,15 @@ func TestListAccountsReturnsEveryRecordShape(t *testing.T) {
 // whose session has lapsed is visible without opening it.
 func TestListAccountsReportsSessionStatusPerRow(t *testing.T) {
 	service, anchorID, _ := newAuthServiceFixture(t)
-	expiredID := seedLoginOnlyRecordWithToken(t, service.vault, loginOnlySteamID, "expired_session",
-		accessTokenExpiringAt(time.Now().Add(-time.Hour)))
+	// Both tokens gone: the only row here that genuinely needs a password.
+	expiredID := seedLoginOnlyRecordWithTokens(t, service.vault, loginOnlySteamID, "expired_session",
+		accessTokenExpiringAt(time.Now().Add(-time.Hour)), accessTokenExpiringAt(time.Now().Add(-time.Hour)))
 	liveID := seedLoginOnlyRecordWithToken(t, service.vault, loginOnlySteamID+1, "live_session",
 		accessTokenExpiringAt(time.Now().Add(24*time.Hour)))
+	// The ordinary overnight case: the access token aged out, the refresh token
+	// beside it has months left, and opening the row renews it with no password.
+	renewableID := seedLoginOnlyRecordWithTokens(t, service.vault, loginOnlySteamID+2, "renewable_session",
+		accessTokenExpiringAt(time.Now().Add(-time.Hour)), accessTokenExpiringAt(time.Now().Add(200*24*time.Hour)))
 	grant := issueSensitiveGrant(t, service, anchorID, "request-session-status-list")
 
 	summaries, err := service.ListAccounts(anchorID, grant.Capability)
@@ -98,8 +113,9 @@ func TestListAccountsReportsSessionStatusPerRow(t *testing.T) {
 	// A login-only record cannot hold an empty access token (loginrecord rejects
 	// one), so the no-session case is covered against the classifier instead.
 	for id, want := range map[string]SessionStatus{
-		expiredID: SessionStatusNeedsLogin,
-		liveID:    SessionStatusValid,
+		expiredID:   SessionStatusNeedsLogin,
+		liveID:      SessionStatusValid,
+		renewableID: SessionStatusValid,
 	} {
 		if got := byID[id].SessionStatus; got != want {
 			t.Fatalf("summary %s status = %q, want %q", id, got, want)

@@ -42,33 +42,48 @@ func (s *Service) SteamSessionLocalState(accountID, token string) (SteamSessionS
 	}
 	defer record.destroy()
 	accessToken := record.AccessToken()
+	refreshToken := record.RefreshToken()
+	now := time.Now()
+	if accessToken != "" && !sessionrefresh.AccessTokenExpired(accessToken, now, accessTokenSkew) {
+		return SteamSessionState{}, nil
+	}
+	// A lapsed access token beside a live refresh token is not a sign-in. Opening
+	// the account runs EnsureFreshSession, which mints a new one from the refresh
+	// token without the user doing anything - so offering a sign-in here would ask
+	// for a password the app does not need.
+	if sessionrefresh.RefreshTokenUsable(refreshToken, now, accessTokenSkew) {
+		return SteamSessionState{}, nil
+	}
 	if accessToken == "" {
 		return SteamSessionState{NeedsLogin: true, Reason: "no_session"}, nil
 	}
-	if sessionrefresh.AccessTokenExpired(accessToken, time.Now(), accessTokenSkew) {
-		return SteamSessionState{NeedsLogin: true, Reason: "token_expired"}, nil
-	}
-	return SteamSessionState{}, nil
+	return SteamSessionState{NeedsLogin: true, Reason: "token_expired"}, nil
 }
 
 // localSessionStatus is SteamSessionLocalState's verdict for a record already in
 // hand, for the listing path: same skew, so a row and the screen it opens cannot
 // contradict each other. A token this build cannot read stays unknown rather than
 // being reported as lapsed, and a half-finished enrollment has no session to judge.
-func localSessionStatus(kind vaultrecord.Kind, accessToken string, now time.Time) SessionStatus {
+//
+// The refresh token is what keeps a row from claiming a sign-in is needed every
+// time an access token ages out overnight. Judging on the access token alone let
+// the shorter of the two clocks decide how often the user was told to log in.
+func localSessionStatus(kind vaultrecord.Kind, accessToken, refreshToken string, now time.Time) SessionStatus {
 	if kind == vaultrecord.KindEnrollmentPending {
 		return SessionStatusUnknown
 	}
-	if accessToken == "" {
-		return SessionStatusNeedsLogin
+	if accessToken != "" {
+		if _, readable := sessionrefresh.AccessTokenExpiry(accessToken); !readable {
+			return SessionStatusUnknown
+		}
+		if !sessionrefresh.AccessTokenExpired(accessToken, now, accessTokenSkew) {
+			return SessionStatusValid
+		}
 	}
-	if _, readable := sessionrefresh.AccessTokenExpiry(accessToken); !readable {
-		return SessionStatusUnknown
+	if sessionrefresh.RefreshTokenUsable(refreshToken, now, accessTokenSkew) {
+		return SessionStatusValid
 	}
-	if sessionrefresh.AccessTokenExpired(accessToken, now, accessTokenSkew) {
-		return SessionStatusNeedsLogin
-	}
-	return SessionStatusValid
+	return SessionStatusNeedsLogin
 }
 
 // ProbeSteamSession asks Steam the same question the confirmations page asks, and
