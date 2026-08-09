@@ -122,7 +122,7 @@ func TestRestoreOuterBackupWithoutCurrentAppPassword(t *testing.T) {
 
 func createRestoreSource(t *testing.T, password, recoveryPassword string) string {
 	t.Helper()
-	source := filepath.Join(t.TempDir(), "verified-backup")
+	source := filepath.Join(tempDir(t), "verified-backup")
 	backup, err := vault.Create(source, password)
 	if err != nil {
 		t.Fatal(err)
@@ -202,7 +202,7 @@ func TestInspectRestoreBackupRejectsUnrelatedFolder(t *testing.T) {
 	service := newServiceForTest()
 	t.Cleanup(func() { _ = service.ServiceShutdown() })
 
-	folder := t.TempDir()
+	folder := tempDir(t)
 	if err := os.WriteFile(filepath.Join(folder, "notes.txt"), []byte("not a vault"), 0o600); err != nil {
 		t.Fatal(err)
 	}

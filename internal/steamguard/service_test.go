@@ -60,7 +60,7 @@ func TestServiceImportRestartLockAndCode(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	source := filepath.Join(t.TempDir(), "76561198000000000.maFile")
+	source := filepath.Join(tempDir(t), "76561198000000000.maFile")
 	if err := os.WriteFile(source, plain, 0o600); err != nil {
 		t.Fatal(err)
 	}
@@ -109,7 +109,7 @@ func TestServiceImportRestartLockAndCode(t *testing.T) {
 		t.Fatalf("clipboard copy = %q for %s", clipboard.code, clipboard.lifetime)
 	}
 	if runtime.GOOS == "windows" {
-		exportPath := filepath.Join(t.TempDir(), "export.maFile")
+		exportPath := filepath.Join(tempDir(t), "export.maFile")
 		if err := exportAccountToPath(service.vault, "76561198000000000", exportPath, false, ""); err != nil {
 			t.Fatal(err)
 		}
@@ -129,7 +129,7 @@ func TestServiceImportRestartLockAndCode(t *testing.T) {
 
 		// Encrypted export: the body is ciphertext and the salt and IV go to the
 		// manifest beside it, which is the only place SDA looks for them.
-		encryptedDir := t.TempDir()
+		encryptedDir := tempDir(t)
 		encryptedPath := filepath.Join(encryptedDir, "76561198000000000.maFile")
 		if err := exportAccountToPath(service.vault, "76561198000000000", encryptedPath, false, "mafile-password"); err != nil {
 			t.Fatal(err)
@@ -342,7 +342,7 @@ func TestServiceImportFailsClosedPerFile(t *testing.T) {
 	if _, err := service.Initialize("correct horse battery staple", ""); err != nil {
 		t.Fatal(err)
 	}
-	bad := filepath.Join(t.TempDir(), "bad.maFile")
+	bad := filepath.Join(tempDir(t), "bad.maFile")
 	if err := os.WriteFile(bad, []byte(`{"shared_secret":"not-secret"}`), 0o600); err != nil {
 		t.Fatal(err)
 	}
@@ -583,7 +583,7 @@ func TestServiceImportsPasswordlessLegacySDAFileWithAdjacentManifest(t *testing.
 	salt := []byte("12345678")
 	iv := []byte("1234567890abcdef")
 	sealed := legacyEncryptForServiceTest(t, plain, legacyPassword, salt, iv)
-	dir := t.TempDir()
+	dir := tempDir(t)
 	filename := "76561198000000001.maFile"
 	source := filepath.Join(dir, filename)
 	if err := os.WriteFile(source, sealed, 0o600); err != nil {

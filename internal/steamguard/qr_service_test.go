@@ -68,7 +68,7 @@ func TestDecodeQRScreenshotRejectsLockedVaultAndRevokesStaleAttempt(t *testing.T
 	}
 	binding := qrattempt.Binding{AccountID: qrTestAccountID, VaultGeneration: service.vault.Generation()}
 
-	invalid, err := service.DecodeQRScreenshot(qrTestAccountID, filepath.Join(t.TempDir(), "missing.png"), grant.Capability)
+	invalid, err := service.DecodeQRScreenshot(qrTestAccountID, filepath.Join(tempDir(t), "missing.png"), grant.Capability)
 	if err != nil || invalid.State != QRScanInvalidImage {
 		t.Fatalf("invalid scan = %#v, %v", invalid, err)
 	}
@@ -326,7 +326,7 @@ func setupQRService(t *testing.T) (*Service, SensitiveViewGrant) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	path := filepath.Join(t.TempDir(), qrTestAccountID+".maFile")
+	path := filepath.Join(tempDir(t), qrTestAccountID+".maFile")
 	if err := os.WriteFile(path, plaintext, 0o600); err != nil {
 		t.Fatal(err)
 	}
@@ -346,7 +346,7 @@ func writeQRPNG(t *testing.T, payload string) string {
 	if err != nil {
 		t.Fatal(err)
 	}
-	path := filepath.Join(t.TempDir(), "steam-login.png")
+	path := filepath.Join(tempDir(t), "steam-login.png")
 	file, err := os.Create(path)
 	if err != nil {
 		t.Fatal(err)

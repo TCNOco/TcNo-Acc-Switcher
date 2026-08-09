@@ -16,7 +16,7 @@ const collectorAccount = "76561198000000077"
 
 func useCollectorRoot(t *testing.T) {
 	t.Helper()
-	paths.ResetForTest(t.TempDir())
+	paths.ResetForTest(tempDir(t))
 }
 
 func fullEntry() cs2ranks.Entry {

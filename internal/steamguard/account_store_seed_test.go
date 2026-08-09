@@ -12,7 +12,7 @@ const seedSteamID = "76561198000000100"
 
 func newRegistrySeedService(t *testing.T) *Service {
 	t.Helper()
-	paths.ResetForTest(t.TempDir())
+	paths.ResetForTest(tempDir(t))
 	return &Service{registryUpsertFn: func(string, registry.State) error { return nil }}
 }
 
@@ -60,7 +60,7 @@ func TestUpsertRegistryDoesNotClobberAStoredName(t *testing.T) {
 // A failed registry write must not leave a store record behind, or the list
 // would show an account the vault never actually took.
 func TestUpsertRegistryFailureLeavesTheStoreUntouched(t *testing.T) {
-	paths.ResetForTest(t.TempDir())
+	paths.ResetForTest(tempDir(t))
 	s := &Service{registryUpsertFn: func(string, registry.State) error { return registry.ErrInvalidIndex }}
 
 	if s.upsertRegistry(seedSteamID, registry.StateActive) {

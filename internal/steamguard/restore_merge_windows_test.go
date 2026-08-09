@@ -32,7 +32,7 @@ func mergeTestPlaintext(t *testing.T, accountName string, steamID uint64) []byte
 
 func mergeTestBackup(t *testing.T, password string, accounts map[uint64]string) string {
 	t.Helper()
-	source := filepath.Join(t.TempDir(), "verified-backup")
+	source := filepath.Join(tempDir(t), "verified-backup")
 	backup, err := vault.Create(source, password)
 	if err != nil {
 		t.Fatal(err)

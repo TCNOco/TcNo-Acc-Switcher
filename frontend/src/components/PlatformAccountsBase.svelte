@@ -948,17 +948,12 @@
   /**
    * Right-click on empty space. The row menu stops propagation, so this only
    * fires where no account was clicked. Every platform gets the action bar's
-   * filter entries here; anything the adapter adds (Steam's New Account) follows
-   * below a separator.
+   * filter entries here, followed by anything the adapter adds (Steam's New
+   * Account).
    */
   function backgroundMenu(): MenuItemDef[] {
     if (isActionBusyValue) return [];
-    const items = buildFilterMenuItems(name);
-    const platformItems = adapter.buildBackgroundMenu?.() ?? [];
-    if (platformItems.length > 0) {
-      items.push({ type: "separator" }, ...platformItems);
-    }
-    return items;
+    return [...buildFilterMenuItems(name), ...(adapter.buildBackgroundMenu?.() ?? [])];
   }
 
   // ---- Lifecycle ----

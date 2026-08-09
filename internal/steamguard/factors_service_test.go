@@ -20,7 +20,7 @@ func newFactorService(t *testing.T) (*Service, string) {
 	if _, err := service.Initialize(password, ""); err != nil {
 		t.Fatal(err)
 	}
-	saved := filepath.Join(t.TempDir(), "keyfile.txt")
+	saved := filepath.Join(tempDir(t), "keyfile.txt")
 	service.saveKeyfile = func(k vault.Keyfile) (string, error) {
 		return saved, os.WriteFile(saved, k.Encode(), 0o600)
 	}
@@ -659,7 +659,7 @@ func TestChangePasswordRefusesAStaleKeyfile(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	stalePath := filepath.Join(t.TempDir(), "stale-keyfile.txt")
+	stalePath := filepath.Join(tempDir(t), "stale-keyfile.txt")
 	if err := os.WriteFile(stalePath, other.Encode(), 0o600); err != nil {
 		t.Fatal(err)
 	}

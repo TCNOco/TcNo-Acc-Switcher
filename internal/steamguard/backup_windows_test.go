@@ -30,7 +30,7 @@ func TestCreateVerifiedBackupCopiesAndDecryptsEveryRecord(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	parent := t.TempDir()
+	parent := tempDir(t)
 	now := time.Date(2026, time.July, 22, 12, 34, 56, 0, time.UTC)
 	destination, err := service.createVerifiedBackupAt(parent, password, "", now)
 	if err != nil {
@@ -84,7 +84,7 @@ func TestBackupCarriesHarderKDFThanLiveVault(t *testing.T) {
 	}
 	liveMemory := readVaultKDFMemoryKiB(t, liveRoot)
 
-	destination, err := service.createVerifiedBackupAt(t.TempDir(), password, "",
+	destination, err := service.createVerifiedBackupAt(tempDir(t), password, "",
 		time.Date(2026, time.July, 22, 12, 34, 56, 0, time.UTC))
 	if err != nil {
 		t.Fatal(err)
@@ -122,7 +122,7 @@ func TestRestoreRekeysBackupParametersDownToLiveCost(t *testing.T) {
 	useSettingsRoot(t)
 	const password = "restored Steam Guard password"
 	sourceKDF := vault.KDFParams{Algorithm: "argon2id", MemoryKiB: 32 * 1024, Passes: 2, Lanes: 1, KeyBytes: 32}
-	source := filepath.Join(t.TempDir(), "verified-backup")
+	source := filepath.Join(tempDir(t), "verified-backup")
 	backup, err := vault.Create(source, password, vault.WithKDFParams(sourceKDF))
 	if err != nil {
 		t.Fatal(err)
@@ -199,7 +199,7 @@ func TestCreateVerifiedBackupDeletesFailedOutput(t *testing.T) {
 	if _, err := service.vault.Put("76561198000000000", []byte("record")); err != nil {
 		t.Fatal(err)
 	}
-	parent := t.TempDir()
+	parent := tempDir(t)
 	if _, err := service.createVerifiedBackupAt(parent, "wrong password", "", time.Now()); !errors.Is(err, vault.ErrInvalidPassword) {
 		t.Fatalf("wrong password error = %v", err)
 	}
@@ -239,7 +239,7 @@ func TestCreateVerifiedBackupAuthenticatesRecoveryWrapper(t *testing.T) {
 	if _, err := service.vault.Put("76561198000000000", []byte("double-encrypted record")); err != nil {
 		t.Fatal(err)
 	}
-	parent := t.TempDir()
+	parent := tempDir(t)
 	if _, err := service.createVerifiedBackupAt(parent, steamGuardPassword, "wrong app password", time.Now()); err == nil {
 		t.Fatal("wrong app password verified backup")
 	}
@@ -283,7 +283,7 @@ func TestBackupAndRestoreWorkOnAVaultThatNeedsAKeyfile(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	parent := t.TempDir()
+	parent := tempDir(t)
 	if _, err := service.createVerifiedBackupAt(parent, password, "", time.Now().UTC()); !errors.Is(err, vault.ErrFactorRequired) {
 		t.Fatalf("backed up a combined vault with the password alone: %v", err)
 	}

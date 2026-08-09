@@ -12,7 +12,7 @@ import (
 
 func useSettingsRoot(t *testing.T) string {
 	t.Helper()
-	root := t.TempDir()
+	root := tempDir(t)
 	paths.ResetForTest(root)
 	return root
 }

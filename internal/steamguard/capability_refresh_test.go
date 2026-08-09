@@ -231,7 +231,7 @@ func writeImportableMaFile(t *testing.T, steamID uint64) string {
 	if err != nil {
 		t.Fatal(err)
 	}
-	path := filepath.Join(t.TempDir(), fmt.Sprintf("%d.maFile", steamID))
+	path := filepath.Join(tempDir(t), fmt.Sprintf("%d.maFile", steamID))
 	if err := os.WriteFile(path, plain, 0o600); err != nil {
 		t.Fatal(err)
 	}
