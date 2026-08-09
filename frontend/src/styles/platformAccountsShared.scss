@@ -7,6 +7,26 @@
   flex: 1;
 }
 
+/* `.main-content` is on the same element and brings `overflow: auto` with it.
+   The list inside owns the only scrollbar here, so the root must never become a
+   second scroll container — anything that escapes the list, such as the
+   absolutely positioned search overlay, would otherwise scroll the page behind
+   it. Compound selector so the tie against `.main-content` is settled by
+   specificity rather than by which stylesheet happens to land last. */
+.main-content.platform-accounts-root {
+  overflow: hidden;
+}
+
+/* PlatformSteam swaps between two views that each bring their own
+   `.main-content.platform-accounts-root`. This is only the box they share —
+   it must pass its height straight through and never scroll. */
+.platform-page-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+}
+
 .platform-accounts-hint {
   margin: 0.75rem 1rem 0;
   font-size: 0.85rem;
@@ -17,6 +37,17 @@
 .platform-accounts-root .platformTableHost {
   position: relative;
   flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* `.platformTable`'s own layout ships in Home's chunk, which is not loaded when
+   the app opens straight onto a platform page. Without this the account list
+   sits in a plain block, keeps its full content height, and the overflow lands
+   on the root — which now clips rather than scrolls. */
+.platform-accounts-root .platformTable {
+  flex: 1 1 auto;
   min-height: 0;
   display: flex;
   flex-direction: column;

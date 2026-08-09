@@ -1,17 +1,7 @@
 /* Steam platform page, GAMES tab: the game list and the action bar's account strip. */
 
 /* Same chain as the account list: host → table → scroller, every level a flex
-   column that may shrink. It is restated here rather than leaned on from
-   platformAccountsShared.scss, which rides in a lazily loaded chunk while this
-   file is in the always-loaded one. Without it the list keeps its full content
-   height and the overflow lands on `.main-content`, which is `overflow: auto` —
-   so the whole page scrolls, titlebar and action bar included. */
-.main-content:has(> .steamGames__host) {
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-}
-
+   column that may shrink, so the list keeps the only scrollbar on the page. */
 .steamGames__host {
   flex: 1 1 auto;
   min-height: 0;
@@ -20,7 +10,7 @@
 }
 
 /* Clips here and not on the host: the search overlay is an absolutely positioned
-   child of the host and is allowed to be taller than it. */
+   sibling of this box, and clipping it to the list's width would cut it off. */
 .steamGames__table {
   flex: 1 1 auto;
   min-height: 0;

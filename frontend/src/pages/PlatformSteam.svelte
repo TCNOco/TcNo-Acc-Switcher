@@ -353,7 +353,9 @@
   });
 </script>
 
-<div class="main-content platform-accounts-root" bind:this={steamMainEl}>
+<!-- Not a `.main-content` itself: both tabs render one of their own, and stacking
+     two would put a second `overflow: auto` box above the list. -->
+<div class="platform-page-shell" bind:this={steamMainEl}>
   {#if $steamPageTab === "games"}
     <SteamGamesView {name} />
   {:else}

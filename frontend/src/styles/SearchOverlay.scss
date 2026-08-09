@@ -36,10 +36,14 @@
       opacity: 1;
     }
   }
+  /* Bounded by the host the overlay is positioned against, not by the viewport:
+     the host is shorter than the window, so a dvh cap let the dialog grow past
+     it and spill its overflow onto whichever ancestor still scrolled. The
+     results list inside has its own scrollbar, so nothing is lost. */
   .searchOverlay_content {
     width: 90%;
     max-width: 600px;
-    max-height: calc(100dvh - 2rem);
+    max-height: 100%;
     display: flex;
     flex-direction: column;
     gap: 1em;
