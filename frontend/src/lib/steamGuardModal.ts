@@ -591,3 +591,30 @@ export function steamGuardAccountForState(state: SteamGuardModalState): SteamGua
   if (state.screen === "all-accounts") return undefined;
   return state.account;
 }
+
+/**
+ * The account a vault listing runs under. Go refuses to list the vault unless
+ * the capability's account is one of the records in it, and reports that refusal
+ * as an invalid capability - so an anchor the vault does not hold reads as "the
+ * accounts could not be loaded" rather than as the wrong account being asked for.
+ *
+ * Two screens hold exactly such an account: the add screen runs under a pending
+ * attempt id, which by design no other call accepts, and the setup page names an
+ * account precisely because the vault does not have it yet.
+ *
+ * `listed` is the last successful listing, the only proof of what the vault
+ * holds, so a candidate it confirms wins over one merely in hand. With no
+ * listing yet the first usable candidate is the only shot there is; with neither
+ * there is no listing to be had, and the caller has to leave some other way.
+ */
+export function steamGuardListingAnchor(
+  candidates: readonly (SteamGuardAccountRef | null | undefined)[],
+  listed: readonly SteamGuardAccountSummary[],
+): SteamGuardAccountRef | null {
+  const usable = candidates.filter((candidate): candidate is SteamGuardAccountRef =>
+    !!candidate && candidate.id.trim() !== "" && !isPendingAccountId(candidate.id));
+  return usable.find((candidate) => listed.some((summary) => summary.id === candidate.id))
+    ?? listed[0]
+    ?? usable[0]
+    ?? null;
+}

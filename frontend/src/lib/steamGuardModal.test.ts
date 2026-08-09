@@ -9,6 +9,7 @@ import {
   SteamGuardContentProtectionLease,
 	  steamLoginAgainNextStep,
 	  steamGuardAccountForState,
+	  steamGuardListingAnchor,
 		  steamGuardCodeCanAutoRefresh,
 		  steamGuardCodeProgress,
 	  steamGuardQRFailureMessage,
@@ -394,5 +395,40 @@ describe("add-account screen", () => {
 		expect(isPendingAccountId("pending:0123456789abcdef0123456789abcdef")).toBe(true);
 		expect(isPendingAccountId("76561198000000100")).toBe(false);
 		expect(isPendingAccountId("")).toBe(false);
+	});
+});
+
+describe("Steam Guard listing anchor", () => {
+	const listed: SteamGuardAccountSummary[] = [
+		{ id: "76561198000000001", username: "first", locked: false, kind: "authenticator", sessionStatus: "valid" },
+		{ id: "76561198000000002", username: "second", locked: false, kind: "login-only", sessionStatus: "valid" },
+	];
+	const pending: SteamGuardAccountRef = { id: "pending:0123456789abcdef0123456789abcdef", username: "" };
+
+	// The reported bug: Back from Add Account listed the vault under the attempt
+	// the screen was running on, which Go refuses - it is not a vault record - and
+	// the refusal surfaced as "accounts could not be loaded".
+	it("never anchors on a pending add attempt", () => {
+		expect(steamGuardListingAnchor([pending], listed)?.id).toBe("76561198000000001");
+		expect(steamGuardListingAnchor([pending, null, { id: "", username: "" }], listed)?.id)
+			.toBe("76561198000000001");
+	});
+
+	// The setup page names an account precisely because the vault does not hold
+	// it, so it is no more listable an anchor than a pending attempt.
+	it("prefers a record the last listing confirmed over one merely in hand", () => {
+		const notInVault: SteamGuardAccountRef = { id: "76561198000000999", username: "unstored" };
+		expect(steamGuardListingAnchor([notInVault], listed)?.id).toBe("76561198000000001");
+		expect(steamGuardListingAnchor([listed[1], notInVault], listed)?.id).toBe("76561198000000002");
+	});
+
+	// No listing has succeeded yet, so there is nothing to confirm against and
+	// the account in hand is the only anchor there is.
+	it("falls back to the candidate when nothing has been listed", () => {
+		expect(steamGuardListingAnchor([account], [])?.id).toBe(account.id);
+	});
+
+	it("has no anchor when every candidate is pending or empty and nothing is listed", () => {
+		expect(steamGuardListingAnchor([pending, { id: " ", username: "" }, null], [])).toBeNull();
 	});
 });

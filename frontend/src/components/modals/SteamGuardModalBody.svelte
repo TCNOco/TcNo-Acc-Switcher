@@ -14,6 +14,7 @@
     SteamGuardCapabilityError,
     SteamGuardContentProtectionLease,
 	    steamGuardAccountForState,
+	    steamGuardListingAnchor,
 	    steamGuardRowState,
 	    steamGuardCodeCanAutoRefresh,
 		    steamGuardCodeProgress,
@@ -374,6 +375,13 @@
 		clearModalBackAction();
 		setModalBusy(false);
 	});
+	// Whose vault record the picker is listed under, and so also whether there is
+	// a picker to go back to at all: with nothing to anchor a listing on, the
+	// screens that offer it are leaving the modal instead.
+	$: listingAnchor = steamGuardListingAnchor(
+		[steamGuardAccountForState(state), pickerReturnAccount, account],
+		knownSummaries,
+	);
 	$: enrollmentRetrySeconds = Math.max(0, Math.ceil((enrollmentRetryAt - now) / 1_000));
 	$: exportAccount = steamGuardAccountForState(state) ?? account;
 	$: exportAccountSummary = summaryOf(exportAccount, false, knownSummaries, switcherProfiles);
@@ -793,9 +801,17 @@
 
   async function showAllAccounts(): Promise<void> {
     if (busy) return;
+    // Not the screen's own account: the add screen's is a pending attempt and
+    // the setup page's is an account the vault does not hold, and listing under
+    // either is refused. With no anchor at all there is no list to show, and
+    // nothing behind this screen either - the way out is out of the modal.
+    const anchor = listingAnchor;
+    if (!anchor) {
+      dismissModal();
+      return;
+    }
     busy = true;
     try {
-      const currentAccount = steamGuardAccountForState(state) ?? account;
       // Opened from an account, so leaving the picker goes back to that account.
       // Screens holding no account of their own are not places to go back to:
       // the setup page is a placeholder, an import started from the picker has
@@ -804,8 +820,8 @@
       pickerReturnAccount = state.screen === "setup" || state.screen === "add-account"
         ? null
         : steamGuardAccountForState(state) ?? null;
-      pickerIdentity = currentAccount;
-      transition({ type: "show-all", accounts: await accountSummaries(currentAccount) });
+      pickerIdentity = anchor;
+      transition({ type: "show-all", accounts: await accountSummaries(anchor) });
     } catch (error) {
       console.error("Steam Guard: account list could not be loaded", error);
       transition({ type: "fail", message: $t("SteamGuard_Error_AccountsNotLoaded") });
@@ -2731,9 +2747,12 @@
           {#if inlineError}<p class="steam-guard__error" role="alert">{inlineError}</p>{/if}
           <p class="steam-guard__hint">{$t("SteamGuard_AddAccount_As")}</p>
           <div class="steam-guard__actions steam-guard__actions--split">
+            <!-- The add screen is reachable with nothing behind it - the toolbar
+                 and the list's background menu both open it directly - and with
+                 no account list to return to this button leaves the modal. -->
             <button type="button" class="btnicontext" disabled={busy} on:click={showAllAccounts}>
               <svg class="steam-guard__icon" viewBox={ICONS.back.box} aria-hidden="true"><path d={ICONS.back.path} /></svg>
-              {$t("SteamGuard_Back")}
+              {listingAnchor ? $t("SteamGuard_Back") : $t("Button_Close")}
             </button>
             <div class="steam-guard__actions-group">
               <button type="button" class="btnicontext modal-primary" aria-busy={busy} disabled={busy || !authAccountName.trim() || !authPassword} on:click={() => void beginAddAccount("login_only")}>
@@ -2778,7 +2797,7 @@
         <p class="steam-guard__error" role="alert">{authMessage}</p>
         <div class="steam-guard__actions steam-guard__actions--end">
           <button type="button" class="btnicontext modal-primary" disabled={busy} on:click={() => void showAddAccount()}>{$t("SteamGuard_TryAgain")}</button>
-          <button type="button" class="btnicontext" disabled={busy} on:click={showAllAccounts}>{$t("SteamGuard_Back")}</button>
+          <button type="button" class="btnicontext" disabled={busy} on:click={showAllAccounts}>{listingAnchor ? $t("SteamGuard_Back") : $t("Button_Close")}</button>
         </div>
       {/if}
     </section>

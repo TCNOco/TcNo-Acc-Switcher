@@ -941,6 +941,11 @@ func (s *Service) CopyCode(steamID64, token string) error {
 	return err
 }
 
+// ListAccounts returns every vault record, anchored on one the caller already
+// holds a capability for: knowing a SteamID64 the vault has is the price of
+// reading the rest. An anchor the vault does not hold - a pending add attempt,
+// or an account still on its setup page - is refused as an invalid capability
+// even when the capability itself is sound, so the two cases are logged apart.
 func (s *Service) ListAccounts(accountID, token string) ([]AccountSummary, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -982,6 +987,11 @@ func (s *Service) ListAccounts(accountID, token string) ([]AccountSummary, error
 		loaded.destroy()
 	}
 	if !anchorFound {
+		// Deliberately the same error as a bad capability: telling the two apart
+		// would answer "is this account in the vault?" for any id a capability
+		// can be minted for, which is every numeric one.
+		serviceLogger().Warn("refusing to list accounts: the anchor is not a vault record",
+			"accountId", accountID)
 		return nil, capability.ErrInvalidCapability
 	}
 	// The vault is the only place a restored account's login name exists, and it

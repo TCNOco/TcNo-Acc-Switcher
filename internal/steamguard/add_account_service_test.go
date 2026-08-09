@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"TcNo-Acc-Switcher/internal/steam/accountstore"
+	"TcNo-Acc-Switcher/internal/steamguard/capability"
 	"TcNo-Acc-Switcher/internal/steamguard/enrollmentapi"
 	"TcNo-Acc-Switcher/internal/steamguard/enrollmentflow"
 	"TcNo-Acc-Switcher/internal/steamguard/registry"
@@ -296,6 +297,24 @@ func TestAddAccountRejectsAForeignCapability(t *testing.T) {
 
 	if _, err := service.BeginAddAccountLogin(first, foreign.Capability, "new_account", "pw", SteamAuthPurposeLoginOnly); err == nil {
 		t.Fatal("a capability bound to another attempt was accepted")
+	}
+}
+
+// Leaving the add screen lists the vault, and doing that under the attempt the
+// screen ran on is refused: a pending id is never a vault record, so it can
+// never be the anchor. The frontend has to pick an account the vault holds -
+// this is the boundary that makes it have to.
+func TestListAccountsRefusesAPendingAnchor(t *testing.T) {
+	service, _, _ := newAuthServiceFixture(t)
+
+	pendingID, err := service.NewAddAccountAttempt()
+	if err != nil {
+		t.Fatal(err)
+	}
+	grant := issuePendingGrant(t, service, pendingID, "request-add-back-to-list")
+
+	if _, err := service.ListAccounts(pendingID, grant.Capability); !errors.Is(err, capability.ErrInvalidCapability) {
+		t.Fatalf("ListAccounts(pending) err = %v, want ErrInvalidCapability", err)
 	}
 }
 

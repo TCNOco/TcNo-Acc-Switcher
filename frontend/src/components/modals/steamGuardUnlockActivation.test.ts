@@ -22,6 +22,15 @@ function unlockActionsRow(): string {
   return source.slice(start, end);
 }
 
+/** A function's body up to a marker inside it, rather than a hand-sized window. */
+function functionBodyBefore(signature: string, end: string): string {
+  const start = source.indexOf(signature);
+  expect(start).toBeGreaterThanOrEqual(0);
+  const stop = source.indexOf(end, start);
+  expect(stop).toBeGreaterThan(start);
+  return source.slice(start, stop);
+}
+
 /** The headerbar back action's branch for one screen, bounded by the next case. */
 function headerBackCase(screen: string): string {
   const start = source.indexOf(`case "${screen}":`, source.indexOf("headerBackAction"));
@@ -155,5 +164,16 @@ describe("adding an account", () => {
   it("is not a place the account picker returns to", () => {
     const picker = fragmentAfter("pickerReturnAccount = state.screen", 200);
     expect(picker).toContain('state.screen === "add-account"');
+  });
+
+  // Back listed the vault under the screen's own account, which here is the
+  // pending attempt: Go refuses an anchor it holds no record for, and the
+  // refusal landed on an error screen with no way off it.
+  it("leaves through an anchor the vault actually holds", () => {
+    const back = functionBodyBefore("async function showAllAccounts", "} catch (error)");
+    expect(back).toContain("const anchor = listingAnchor;");
+    expect(back).toContain("if (!anchor) {\n      dismissModal();");
+    expect(back).toContain("accountSummaries(anchor)");
+    expect(back).not.toContain("steamGuardAccountForState(state) ?? account");
   });
 });
