@@ -1,5 +1,34 @@
 /* Steam platform page, GAMES tab: the game list and the action bar's account strip. */
 
+/* Same chain as the account list: host → table → scroller, every level a flex
+   column that may shrink. It is restated here rather than leaned on from
+   platformAccountsShared.scss, which rides in a lazily loaded chunk while this
+   file is in the always-loaded one. Without it the list keeps its full content
+   height and the overflow lands on `.main-content`, which is `overflow: auto` —
+   so the whole page scrolls, titlebar and action bar included. */
+.main-content:has(> .steamGames__host) {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.steamGames__host {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Clips here and not on the host: the search overlay is an absolutely positioned
+   child of the host and is allowed to be taller than it. */
+.steamGames__table {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 .steamGames {
   flex: 1 1 auto;
   min-height: 0;
@@ -47,7 +76,10 @@
   flex: 0 0 auto;
   width: 32px;
   height: 32px;
-  object-fit: contain;
+  /* Steam's client icon is already square, so cover is a no-op for it. It exists
+     for the fallback: apps with no cached icon fall back to 460x215 header art,
+     which contain would letterbox into a 32x15 strip. */
+  object-fit: cover;
   border-radius: 3px;
 }
 
@@ -101,19 +133,30 @@
   min-width: 0;
 }
 
+/* The tickbox itself is the app-wide `.form-check` treatment (Settings.scss draws it
+   on the empty label next to the input); this only fits the text to the action bar. */
 .steamGamesBar__launch {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
+  flex: 0 0 auto;
   white-space: nowrap;
   font-size: 0.88rem;
   font-weight: 600;
-  cursor: pointer;
 
-  input {
+  label {
     margin: 0;
     cursor: pointer;
   }
+}
+
+/* Stands in for the tiles when there is nothing to switch to, so the empty strip
+   reads as a state rather than a missing control. */
+.steamGamesBar__hint {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 0.82rem;
+  opacity: 0.75;
 }
 
 .steamGamesBar__more {

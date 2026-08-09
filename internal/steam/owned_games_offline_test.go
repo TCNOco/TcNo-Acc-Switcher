@@ -28,16 +28,7 @@ func (d *offlineIconDoer) Do(req *http.Request) (*http.Response, error) {
 // install and pass or fail does not depend on what is installed.
 func useEmptyLibraryCache(t *testing.T) {
 	t.Helper()
-	empty := t.TempDir()
-	gameIconLibraryMu.Lock()
-	prevDir, prevTime := gameIconLibraryDir, gameIconLibraryTime
-	gameIconLibraryDir, gameIconLibraryTime = empty, time.Now()
-	gameIconLibraryMu.Unlock()
-	t.Cleanup(func() {
-		gameIconLibraryMu.Lock()
-		gameIconLibraryDir, gameIconLibraryTime = prevDir, prevTime
-		gameIconLibraryMu.Unlock()
-	})
+	useLibraryCache(t, t.TempDir())
 }
 
 // forgetGameIconMisses keeps the process-wide negative cache from leaking one

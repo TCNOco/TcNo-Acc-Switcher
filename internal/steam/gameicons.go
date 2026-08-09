@@ -3,6 +3,8 @@ package steam
 import (
 	"context"
 	"fmt"
+	"image"
+	_ "image/jpeg"
 	"io"
 	"log/slog"
 	"net/http"
@@ -22,12 +24,22 @@ import (
 )
 
 const (
-	gameIconURLDir  = "/img/gameicons/"
+	// One level below img/gameicons on purpose. Earlier builds cached 460x215
+	// header art as img/gameicons/<appid>.jpg; those files are still on disk and
+	// must never be served into a slot that now promises a square icon, so the
+	// new scheme takes its own directory and the old one is pruned.
+	gameIconURLDir  = "/img/gameicons/square/"
 	gameIconCDNBase = "https://cdn.cloudflare.steamstatic.com/steam/apps/"
 
-	// Header art runs 30-250 KB; the ceiling only exists so a broken or hostile
-	// response cannot be streamed into the cache directory unbounded.
+	// Client icons are about 1 KB and header art 30-250 KB; the ceiling only
+	// exists so a broken or hostile response cannot be streamed into the cache
+	// directory unbounded.
 	gameIconMaxBytes = 4 << 20
+
+	// image.DecodeConfig only needs the JPEG headers, which sit in the first few
+	// KiB. The cap stops a corrupt file from being walked to its end once per
+	// candidate, per app, across a whole library.
+	gameIconDimensionScanBytes = 128 << 10
 
 	gameIconWarmConcurrency = 5
 
@@ -72,7 +84,7 @@ func defaultGameIconCacheDir() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(www, "img", "gameicons"), nil
+	return filepath.Join(www, "img", "gameicons", "square"), nil
 }
 
 // gameIconCacheDir is a var because paths.WwwrootDir memoises process-wide and
@@ -113,16 +125,24 @@ func steamLibraryCacheDir() string {
 	return dir
 }
 
-// Header-shaped art only. The portrait capsule and hero images Steam also caches
-// have a completely different aspect ratio, and mixing them into one grid with
-// the CDN fallback (which is header.jpg) looks broken.
-var gameIconLibraryNames = []string{"header.jpg", "library_header.jpg"}
+// Header-shaped art, used only when no square icon exists. The portrait capsule
+// and hero images Steam also caches are further from square still, so they are
+// not candidates at all.
+var gameIconHeaderNames = []string{"header.jpg", "library_header.jpg"}
 
-// findLibraryCacheIcon picks the best artwork Steam has already cached for appID.
-// Current clients store <librarycache>/<appid>/header.jpg, with localised copies
-// under a per-language sha1-named subfolder; builds before the library rework
-// wrote flat <appid>_header.jpg / <appid>_icon.jpg files instead. Missing folders
-// are normal, not an error.
+// Steam names the cached client icon after the app's img_icon_url hash. The file
+// is byte-identical to what the community CDN serves at
+// steamcommunity/public/images/apps/<appid>/<img_icon_url>.jpg.
+var reLibraryIconName = regexp.MustCompile(`^[0-9a-f]{40}\.jpg$`)
+
+// findLibraryCacheIcon picks the best artwork Steam has already cached for appID,
+// preferring a square icon over header-shaped art.
+//
+// Current clients store <librarycache>/<appid>/<img_icon_url>.jpg (the 32x32
+// client icon) alongside header.jpg and the hero and portrait art, with
+// localised header copies under a per-language sha1-named subfolder. Builds
+// before the library rework wrote flat <appid>_icon.jpg / <appid>_header.jpg
+// files instead. Missing folders are normal, not an error.
 func findLibraryCacheIcon(libraryCacheDir, appID string) string {
 	id, ok := normalizeAppID(appID)
 	if !ok || strings.TrimSpace(libraryCacheDir) == "" {
@@ -130,40 +150,117 @@ func findLibraryCacheIcon(libraryCacheDir, appID string) string {
 	}
 
 	appDir := filepath.Join(libraryCacheDir, id)
-	for _, name := range gameIconLibraryNames {
+	// One read serves both passes below, and os.ReadDir sorts by name, so an app
+	// with several cached variants always resolves to the same file instead of
+	// flickering between them.
+	entries, _ := os.ReadDir(appDir)
+
+	if p := findSquareClientIcon(appDir, entries); p != "" {
+		return p
+	}
+	// The legacy flat layout kept the square icon under its own name.
+	if p := filepath.Join(libraryCacheDir, id+"_icon.jpg"); isSquareGameIconFile(p) {
+		return p
+	}
+
+	for _, name := range gameIconHeaderNames {
 		if p := filepath.Join(appDir, name); isGameIconFile(p) {
 			return p
 		}
 	}
-
-	// Localised variants live one sha1-named folder deep. os.ReadDir sorts by
-	// name, so a game with several languages cached always resolves to the same
-	// file instead of flickering between them.
-	if subs, err := os.ReadDir(appDir); err == nil {
-		for _, name := range gameIconLibraryNames {
-			for _, e := range subs {
-				if !e.IsDir() {
-					continue
-				}
-				if p := filepath.Join(appDir, e.Name(), name); isGameIconFile(p) {
-					return p
-				}
+	for _, name := range gameIconHeaderNames {
+		for _, e := range entries {
+			if !e.IsDir() {
+				continue
+			}
+			if p := filepath.Join(appDir, e.Name(), name); isGameIconFile(p) {
+				return p
 			}
 		}
 	}
-
-	for _, suffix := range []string{"_header.jpg", "_icon.jpg"} {
-		if p := filepath.Join(libraryCacheDir, id+suffix); isGameIconFile(p) {
-			return p
-		}
+	if p := filepath.Join(libraryCacheDir, id+"_header.jpg"); isGameIconFile(p) {
+		return p
 	}
 	return ""
+}
+
+// findSquareClientIcon returns the smallest square icon cached in appDir, or ""
+// when there is none.
+//
+// A few dozen app folders hold more than one square asset - the 32x32 client
+// icon beside a variant that runs to thousands of pixels - and the smallest is
+// the one meant for a list row. The shape is measured rather than inferred from
+// the name or the file size, because only the shape is what this has to promise.
+func findSquareClientIcon(appDir string, entries []os.DirEntry) string {
+	best, bestWidth := "", 0
+	for _, e := range entries {
+		if e.IsDir() || !reLibraryIconName.MatchString(e.Name()) {
+			continue
+		}
+		path := filepath.Join(appDir, e.Name())
+		width, square := squareImageWidth(path)
+		if !square || (best != "" && width >= bestWidth) {
+			continue
+		}
+		best, bestWidth = path, width
+	}
+	return best
+}
+
+// squareImageWidth reports the edge length of path when it is a readable square
+// image. Anything unreadable, empty or off-square comes back as not square.
+func squareImageWidth(path string) (int, bool) {
+	f, err := os.Open(path)
+	if err != nil {
+		return 0, false
+	}
+	defer f.Close()
+	cfg, _, err := image.DecodeConfig(io.LimitReader(f, gameIconDimensionScanBytes))
+	if err != nil || cfg.Width <= 0 || cfg.Width != cfg.Height {
+		return 0, false
+	}
+	return cfg.Width, true
+}
+
+func isSquareGameIconFile(path string) bool {
+	if !isGameIconFile(path) {
+		return false
+	}
+	_, square := squareImageWidth(path)
+	return square
 }
 
 func isGameIconFile(path string) bool {
 	st, err := os.Stat(path)
 	return err == nil && !st.IsDir() && st.Size() > 0
 }
+
+// pruneLegacyGameIcons deletes the flat img/gameicons/<appid>.jpg cache the
+// header-art scheme left behind.
+//
+// Those files are 460x215 banners that nothing reads any more, and a full
+// library of them is a few hundred MB sitting in wwwroot forever. Only names
+// that are exactly an app id are touched, and failures are ignored: this is
+// housekeeping, not a step the icon path depends on.
+func pruneLegacyGameIcons(squareDir string) {
+	parent := filepath.Dir(squareDir)
+	entries, err := os.ReadDir(parent)
+	if err != nil {
+		return
+	}
+	for _, e := range entries {
+		if e.IsDir() {
+			continue
+		}
+		name, ok := strings.CutSuffix(e.Name(), ".jpg")
+		if !ok || !reGameAppID.MatchString(name) {
+			continue
+		}
+		_ = os.Remove(filepath.Join(parent, e.Name()))
+	}
+}
+
+var pruneLegacyGameIconsOnce sync.Once
 
 func readGameIconFile(path string) ([]byte, error) {
 	f, err := os.Open(path)
@@ -206,10 +303,10 @@ func markGameIconMissing(id string) {
 }
 
 // EnsureGameIcon resolves a Steam app id to an icon cached under
-// wwwroot/img/gameicons and returns the URL the frontend renders it from.
-// Steam's own librarycache is preferred over the CDN. An app id with no artwork
-// anywhere is not an error: the URL comes back empty and the caller draws its
-// placeholder.
+// wwwroot/img/gameicons/square and returns the URL the frontend renders it from.
+// Steam's own librarycache is preferred over the CDN, and a square client icon
+// over header art. An app id with no artwork anywhere is not an error: the URL
+// comes back empty and the caller draws its placeholder.
 func EnsureGameIcon(ctx context.Context, appID string) (string, error) {
 	id, ok := normalizeAppID(appID)
 	if !ok {
@@ -219,6 +316,7 @@ func EnsureGameIcon(ctx context.Context, appID string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	pruneLegacyGameIconsOnce.Do(func() { pruneLegacyGameIcons(dir) })
 	dest := filepath.Join(dir, id+".jpg")
 	if isGameIconFile(dest) {
 		return GameIconURL(id), nil
@@ -271,9 +369,14 @@ func EnsureGameIcon(ctx context.Context, appID string) (string, error) {
 	return GameIconURL(id), nil
 }
 
-// downloadGameIcon returns nil, nil when the CDN has no header art for this app.
-// That is the ordinary outcome for tools, demos and delisted apps, so it stays at
-// debug level rather than being reported as a failure.
+// downloadGameIcon fetches header art, the only artwork the CDN will serve from
+// an app id alone. Steam's square icon lives at a per-app img_icon_url hash that
+// nothing here stores, so this is deliberately the last resort below every local
+// square asset, and the games view crops it to its square slot.
+//
+// It returns nil, nil when the CDN has no header art for this app. That is the
+// ordinary outcome for tools, demos and delisted apps, so it stays at debug
+// level rather than being reported as a failure.
 func downloadGameIcon(ctx context.Context, id string) ([]byte, error) {
 	url := gameIconCDNBase + id + "/header.jpg"
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
