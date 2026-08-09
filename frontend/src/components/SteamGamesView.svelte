@@ -31,6 +31,7 @@
   import { reportLaunchFailure } from "../lib/adminFlow";
   import { isProfileVideoUrl } from "../lib/profileImageDrop";
   import {
+    chunkOwnedGames,
     filterOwnedGames,
     gameOwnerAccounts,
     sortOwnedGames,
@@ -46,6 +47,8 @@
   const MAX_OWNER_AVATARS = 5;
   const GAMES_REFRESH_DEBOUNCE_MS = 400;
   const SEARCH_MAX = 8;
+  /** Rows per `content-visibility` block — see `chunkOwnedGames`. */
+  const ROWS_PER_CHUNK = 25;
 
   export let name: string;
 
@@ -79,6 +82,7 @@
   $: accountById = new Map(accounts.map((a) => [a.steamId64, a]));
   $: hasVaultAccounts = accounts.some((a) => a.inVault);
   $: sortedGames = sortOwnedGames(games, sortKind);
+  $: gameChunks = chunkOwnedGames(sortedGames, ROWS_PER_CHUNK);
   $: selectedGame = sortedGames.find((g) => g.appId === selectedAppId) ?? null;
 
   $: barTiles = gameOwnerAccounts(selectedGame, accountById).map(
@@ -353,48 +357,54 @@
       {/if}
     {:else}
       <ul class="steamGames__list" aria-label={$t("Steam_Tab_Games")}>
-        {#each sortedGames as game (game.appId)}
-          {@const owners = splitGameOwners(game.owners, MAX_OWNER_AVATARS)}
-          <li class="steamGames__row">
-            <button
-              type="button"
-              class="steamGames__rowBtn"
-              data-app-id={game.appId}
-              aria-pressed={game.appId === selectedAppId}
-              on:click={() => selectGame(game.appId)}
-            >
-              <img class="steamGames__icon" src={gameIcon(game)} alt="" draggable="false" on:error={onGameIconError} />
-              <span class="steamGames__name">{game.name}</span>
-              <span class="steamGames__owners">
-                {#if game.owners.length === 0}
-                  <span
-                    class="steamGames__ownerUnknown"
-                    use:tooltipAction={{ text: $t("Steam_Games_OwnerUnknown"), boundary: listEl }}
-                  >?</span>
-                {:else}
-                  {#each owners.shown as steamId64 (steamId64)}
-                    <img
-                      class="steamGames__ownerAvatar"
-                      src={ownerAvatar(steamId64, $offlineMode)}
-                      alt=""
-                      draggable="false"
-                      use:tooltipAction={{ text: ownerLabel(steamId64), boundary: listEl }}
-                    />
-                  {/each}
-                  {#if owners.overflow > 0}
-                    <span
-                      class="steamGames__ownerOverflow"
-                      use:tooltipAction={{ text: ownersTooltip(game.owners), boundary: listEl }}
-                    >+{owners.overflow}</span>
-                  {/if}
-                {/if}
-              </span>
-              <span class="sr-only">
-                {game.owners.length === 0
-                  ? $t("Steam_Games_OwnerUnknown")
-                  : $t("Steam_Games_OwnedBy", { names: game.owners.map(ownerLabel).join(", ") })}
-              </span>
-            </button>
+        <!-- The blocks carry the containment; they are not list items themselves, so
+             the rows inside them keep the listitem role the `li` used to provide. -->
+        {#each gameChunks as chunk (chunk.index)}
+          <li class="steamGames__chunk" role="presentation" style="--steamGames-chunk-rows: {chunk.rows.length}">
+            {#each chunk.rows as game (game.appId)}
+              {@const owners = splitGameOwners(game.owners, MAX_OWNER_AVATARS)}
+              <div class="steamGames__row" role="listitem">
+                <button
+                  type="button"
+                  class="steamGames__rowBtn"
+                  data-app-id={game.appId}
+                  aria-pressed={game.appId === selectedAppId}
+                  on:click={() => selectGame(game.appId)}
+                >
+                  <img class="steamGames__icon" src={gameIcon(game)} alt="" draggable="false" on:error={onGameIconError} />
+                  <span class="steamGames__name">{game.name}</span>
+                  <span class="steamGames__owners">
+                    {#if game.owners.length === 0}
+                      <span
+                        class="steamGames__ownerUnknown"
+                        use:tooltipAction={{ text: $t("Steam_Games_OwnerUnknown"), boundary: listEl }}
+                      >?</span>
+                    {:else}
+                      {#each owners.shown as steamId64 (steamId64)}
+                        <img
+                          class="steamGames__ownerAvatar"
+                          src={ownerAvatar(steamId64, $offlineMode)}
+                          alt=""
+                          draggable="false"
+                          use:tooltipAction={{ text: ownerLabel(steamId64), boundary: listEl }}
+                        />
+                      {/each}
+                      {#if owners.overflow > 0}
+                        <span
+                          class="steamGames__ownerOverflow"
+                          use:tooltipAction={{ text: ownersTooltip(game.owners), boundary: listEl }}
+                        >+{owners.overflow}</span>
+                      {/if}
+                    {/if}
+                  </span>
+                  <span class="sr-only">
+                    {game.owners.length === 0
+                      ? $t("Steam_Games_OwnerUnknown")
+                      : $t("Steam_Games_OwnedBy", { names: game.owners.map(ownerLabel).join(", ") })}
+                  </span>
+                </button>
+              </div>
+            {/each}
           </li>
         {/each}
       </ul>

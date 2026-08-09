@@ -36,7 +36,29 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--steamGames-row-gap);
+
+  /* Row height is fully determined: the 32px icon is the tallest thing in the row and
+     the name never wraps, so this is the exact box, not an approximation. Keeping it
+     as a token lets the block placeholders below stay right when the root font
+     size changes. */
+  --steamGames-row-gap: 2px;
+  --steamGames-row-height: calc(32px + 0.6rem + 2px);
+}
+
+/* Blocks of rows the renderer can skip wholesale. An off-screen block costs one box
+   instead of a box per row, which is what keeps a forced style recalc or layout — a
+   context menu opening is enough to force both — off the whole library. */
+.steamGames__chunk {
+  display: flex;
+  flex-direction: column;
+  gap: var(--steamGames-row-gap);
+  content-visibility: auto;
+  contain-intrinsic-size: auto
+    calc(
+      var(--steamGames-chunk-rows) *
+        (var(--steamGames-row-height) + var(--steamGames-row-gap)) - var(--steamGames-row-gap)
+    );
 }
 
 .steamGames__rowBtn {

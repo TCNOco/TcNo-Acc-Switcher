@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  chunkOwnedGames,
   filterOwnedGames,
   gameOwnerAccounts,
   sortOwnedGames,
@@ -114,5 +115,30 @@ describe("gameOwnerAccounts", () => {
 
   it("drops owners with no account behind them", () => {
     expect(gameOwnerAccounts(game("x", ["a", "gone", "b"]), accounts).map((v) => v.steamId64)).toEqual(["a", "b"]);
+  });
+});
+
+describe("chunkOwnedGames", () => {
+  const rows = Array.from({ length: 7 }, (_, i) => game("g" + i));
+
+  it("keeps every row, in order, across the blocks", () => {
+    const chunks = chunkOwnedGames(rows, 3);
+    expect(chunks.map((c) => c.rows.length)).toEqual([3, 3, 1]);
+    expect(chunks.flatMap((c) => c.rows.map((r) => r.name))).toEqual(rows.map((r) => r.name));
+  });
+
+  // The block index is the keyed-each key, so it has to count from zero regardless of size.
+  it("indexes blocks from zero", () => {
+    expect(chunkOwnedGames(rows, 3).map((c) => c.index)).toEqual([0, 1, 2]);
+  });
+
+  it("has nothing to render for an empty library", () => {
+    expect(chunkOwnedGames([], 50)).toEqual([]);
+  });
+
+  // A zero or negative size would otherwise loop forever building empty blocks.
+  it("falls back to one block when the size is not positive", () => {
+    expect(chunkOwnedGames(rows, 0)).toEqual([{ index: 0, rows }]);
+    expect(chunkOwnedGames(rows, -5)).toEqual([{ index: 0, rows }]);
   });
 });

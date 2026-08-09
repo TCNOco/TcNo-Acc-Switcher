@@ -56,6 +56,28 @@ export function filterOwnedGames(games: OwnedGameRow[], query: string): OwnedGam
   return games.filter((game) => fuzzyWordsMatch(trimmed, game.name));
 }
 
+/**
+ * Rows grouped into fixed-size blocks so the list can hand the renderer a handful of
+ * `content-visibility: auto` boxes instead of one per game. A 2000-game library is
+ * ~20k DOM nodes, and every style recalc or layout the page is forced into — opening
+ * a context menu is enough — walks all of them. Per-row containment still leaves 2000
+ * boxes to size and intersection-test; per-block containment leaves a few dozen.
+ */
+export type OwnedGameChunk = {
+  /** Stable across re-sorts of the same library length, so blocks update in place. */
+  index: number;
+  rows: OwnedGameRow[];
+};
+
+export function chunkOwnedGames(games: OwnedGameRow[], size: number): OwnedGameChunk[] {
+  if (size <= 0) return games.length > 0 ? [{ index: 0, rows: games }] : [];
+  const out: OwnedGameChunk[] = [];
+  for (let i = 0; i < games.length; i += size) {
+    out.push({ index: out.length, rows: games.slice(i, i + size) });
+  }
+  return out;
+}
+
 export type OwnerSplit = {
   shown: string[];
   /** How many owners the row hides behind the "+N" badge. */
