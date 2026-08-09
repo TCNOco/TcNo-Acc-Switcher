@@ -1063,5 +1063,7 @@
   "Steam_Games_LaunchOnSwitch": "Launch",
   "Steam_Games_LaunchOnSwitch_Tooltip": "Also start the selected game after switching account",
   "Steam_Games_AccountStrip": "Switch to account",
-  "Steam_Games_MoreAccounts": "More accounts"
+  "Steam_Games_MoreAccounts": "More accounts",
+  "Steam_Games_StripPickGame": "Pick a game",
+  "Steam_Games_StripOwnersUnknown": "Owners unknown"
 }

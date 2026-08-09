@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { filterOwnedGames, sortOwnedGames, splitGameOwners, type OwnedGameRow } from "./ownedGames";
+import {
+  filterOwnedGames,
+  gameOwnerAccounts,
+  sortOwnedGames,
+  splitGameOwners,
+  type OwnedGameRow,
+} from "./ownedGames";
 
 function game(name: string, owners: string[] = []): OwnedGameRow {
   return { appId: name, name, iconUrl: "", owners };
@@ -83,5 +89,30 @@ describe("splitGameOwners", () => {
 
   it("hides every owner when there is no room", () => {
     expect(splitGameOwners(["a", "b"], 0)).toEqual({ shown: [], overflow: 2 });
+  });
+});
+
+describe("gameOwnerAccounts", () => {
+  const accounts = new Map([
+    ["a", { steamId64: "a" }],
+    ["b", { steamId64: "b" }],
+    ["c", { steamId64: "c" }],
+  ]);
+
+  it("keeps the owner order the row shows", () => {
+    expect(gameOwnerAccounts(game("x", ["c", "a"]), accounts).map((v) => v.steamId64)).toEqual(["c", "a"]);
+  });
+
+  it("offers nothing when no game is selected", () => {
+    expect(gameOwnerAccounts(null, accounts)).toEqual([]);
+  });
+
+  // Empty owners means ownership was never resolved, not that every account qualifies.
+  it("offers nothing for a game whose ownership is unknown", () => {
+    expect(gameOwnerAccounts(game("x"), accounts)).toEqual([]);
+  });
+
+  it("drops owners with no account behind them", () => {
+    expect(gameOwnerAccounts(game("x", ["a", "gone", "b"]), accounts).map((v) => v.steamId64)).toEqual(["a", "b"]);
   });
 });

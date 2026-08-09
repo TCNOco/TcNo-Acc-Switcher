@@ -19,7 +19,7 @@
   import {
     clearSteamGamesBar,
     setSteamGamesAccountPickHandler,
-    steamGamesBarAccounts,
+    steamGamesBar,
     steamGamesLaunchOnSwitch,
     type SteamGamesBarAccount,
   } from "../stores/steamGamesBar";
@@ -32,6 +32,7 @@
   import { isProfileVideoUrl } from "../lib/profileImageDrop";
   import {
     filterOwnedGames,
+    gameOwnerAccounts,
     sortOwnedGames,
     splitGameOwners,
     type OwnedGameRow,
@@ -77,6 +78,18 @@
   $: hasVaultAccounts = accounts.some((a) => a.inVault);
   $: sortedGames = sortOwnedGames(games, sortKind);
   $: selectedGame = sortedGames.find((g) => g.appId === selectedAppId) ?? null;
+
+  $: barTiles = gameOwnerAccounts(selectedGame, accountById).map(
+    ({ steamId64, displayName, avatarUrl }): SteamGamesBarAccount => ({
+      steamId64,
+      displayName,
+      avatarUrl,
+    }),
+  );
+  $: steamGamesBar.set({
+    accounts: barTiles,
+    reason: barTiles.length > 0 ? "" : selectedGame ? "owners-unknown" : "no-game",
+  });
 
   $: {
     const q = overlayQuery;
@@ -161,13 +174,6 @@
         inVault: (row.hasSteamGuard ?? false) || (row.steamGuardLoginOnly ?? false),
       };
     });
-    steamGamesBarAccounts.set(
-      accounts.map(({ steamId64, displayName, avatarUrl }): SteamGamesBarAccount => ({
-        steamId64,
-        displayName,
-        avatarUrl,
-      })),
-    );
     accountsLoaded = true;
   }
 
@@ -302,7 +308,7 @@
   });
 </script>
 
-<div class="platformTableHost">
+<div class="platformTableHost steamGames__host">
   <SearchOverlay
     open={so.open}
     syncNonce={so.nonce}
@@ -317,6 +323,7 @@
     on:close={() => closeSearchOverlay()}
     on:pick={onSearchPick}
   />
+  <div class="platformTable steamGames__table">
   <div
     class="steamGames"
     bind:this={listEl}
@@ -380,5 +387,6 @@
         {/each}
       </ul>
     {/if}
+  </div>
   </div>
 </div>

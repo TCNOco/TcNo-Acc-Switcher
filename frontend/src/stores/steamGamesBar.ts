@@ -6,11 +6,23 @@ export type SteamGamesBarAccount = {
   avatarUrl: string;
 };
 
+/** Why the strip is showing no tiles. Empty while it has some. */
+export type SteamGamesBarEmptyReason = "" | "no-game" | "owners-unknown";
+
+export type SteamGamesBarState = {
+  accounts: SteamGamesBarAccount[];
+  reason: SteamGamesBarEmptyReason;
+};
+
 /** Checked: picking an account also starts the selected game. */
 export const steamGamesLaunchOnSwitch = writable(true);
 
-/** Accounts the games view publishes for the action bar to draw as avatar tiles. */
-export const steamGamesBarAccounts = writable<SteamGamesBarAccount[]>([]);
+/**
+ * Tiles the action bar draws, published by the games view. Only the selected game's
+ * owners belong here — clicking a tile switches to that account, so an account that
+ * cannot play the selected game has no business being offered.
+ */
+export const steamGamesBar = writable<SteamGamesBarState>({ accounts: [], reason: "no-game" });
 
 type AccountPickHandler = (steamId64: string) => void;
 
@@ -25,6 +37,6 @@ export function pickSteamGamesAccount(steamId64: string): void {
 }
 
 export function clearSteamGamesBar(): void {
-  steamGamesBarAccounts.set([]);
+  steamGamesBar.set({ accounts: [], reason: "no-game" });
   pickHandler = null;
 }

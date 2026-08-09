@@ -67,3 +67,22 @@ export function splitGameOwners(owners: string[], max: number): OwnerSplit {
   if (owners.length <= max) return { shown: owners, overflow: 0 };
   return { shown: owners.slice(0, max), overflow: owners.length - max };
 }
+
+/**
+ * The accounts that can play the selected game, in the order the row lists them.
+ * No game, or a game whose ownership was never resolved, yields nothing rather than
+ * every account — the caller offers these as one-click switches. Owner ids with no
+ * account behind them are dropped: a tile with no name or avatar is not clickable.
+ */
+export function gameOwnerAccounts<T>(
+  game: Pick<OwnedGameRow, "owners"> | null | undefined,
+  accountsById: Map<string, T>,
+): T[] {
+  if (!game) return [];
+  const out: T[] = [];
+  for (const steamId64 of game.owners) {
+    const account = accountsById.get(steamId64);
+    if (account) out.push(account);
+  }
+  return out;
+}
