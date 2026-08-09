@@ -90,22 +90,24 @@ func (s *SteamService) GetOwnedGamesList() ([]OwnedGameDTO, error) {
 	}
 
 	// Resolved once for the whole screen: the map is a copy of the entire Steam
-	// catalogue, and the installed-games half needs the same one.
+	// catalogue, and the installed-games half needs the same one. The local appinfo
+	// cache is read once here for the same reason.
 	names, err := ensureAppNameMap(context.Background())
 	if err != nil {
 		names = map[string]string{}
 	}
+	local := appInfoNamesFn()
 
 	list := make([]OwnedGameDTO, 0, len(owners))
 	for appID, ids := range owners {
 		sort.Strings(ids)
 		list = append(list, OwnedGameDTO{
 			AppID:  appID,
-			Name:   ownedGameName(names, appID),
+			Name:   ownedGameName(names, local, appID),
 			Owners: ids,
 		})
 	}
-	for _, installed := range ownedGamesInstalledFn(names) {
+	for _, installed := range ownedGamesInstalledFn(names, local) {
 		if _, owned := owners[installed.AppID]; owned {
 			continue
 		}
@@ -153,12 +155,12 @@ func sortOwnedGames(list []OwnedGameDTO) {
 // installedGamesForOwnedList lists the games on this machine, named from the map
 // the caller already resolved. A missing or unreadable Steam install is not an
 // error here: the stored libraries stand on their own.
-func installedGamesForOwnedList(names map[string]string) []InstalledGameInfo {
+func installedGamesForOwnedList(names, local map[string]string) []InstalledGameInfo {
 	root, err := installRoot()
 	if err != nil || strings.TrimSpace(root) == "" {
 		return nil
 	}
-	installed, err := buildInstalledGamesListWithNames(root, names)
+	installed, err := buildInstalledGamesListWithNames(root, names, local)
 	if err != nil {
 		steamLog.Debug("steam installed games unavailable for owned games list", slog.Any("err", err))
 		return nil
@@ -167,12 +169,10 @@ func installedGamesForOwnedList(names map[string]string) []InstalledGameInfo {
 }
 
 // ownedGameName matches what BuildInstalledGamesList does for an app the name
-// map has never heard of, so the two halves of the list read alike.
-func ownedGameName(names map[string]string, appID string) string {
-	if name := strings.TrimSpace(names[appID]); name != "" {
-		return name
-	}
-	return "App " + appID
+// map has never heard of, so the two halves of the list read alike. There is no
+// appmanifest step here: an owned app that is not installed has no manifest.
+func ownedGameName(names, local map[string]string, appID string) string {
+	return resolveAppName(names, local, appID)
 }
 
 // applyLocalGameIcons fills in every icon that resolves from disk, and leaves

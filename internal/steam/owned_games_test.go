@@ -40,14 +40,18 @@ func useOwnedGamesRoot(t *testing.T, installed []InstalledGameInfo) {
 	}
 
 	installedFn, warmFn, localFn := ownedGamesInstalledFn, ownedGamesWarmFn, ownedGamesLocalIconsFn
+	appInfoFn := appInfoNamesFn
 	t.Cleanup(func() {
 		ownedGamesInstalledFn, ownedGamesWarmFn = installedFn, warmFn
 		ownedGamesLocalIconsFn = localFn
+		appInfoNamesFn = appInfoFn
 		steamAppNameMapMu.Lock()
 		steamAppNameMapMem = nil
 		steamAppNameMapMu.Unlock()
 	})
-	ownedGamesInstalledFn = func(map[string]string) []InstalledGameInfo { return installed }
+	// Keeps whatever this machine's Steam client has cached out of the assertions.
+	appInfoNamesFn = func() map[string]string { return nil }
+	ownedGamesInstalledFn = func(map[string]string, map[string]string) []InstalledGameInfo { return installed }
 	ownedGamesWarmFn = func(context.Context, []string) map[string]string { return nil }
 	// Stands in for a librarycache that has art for everything, so the join is
 	// tested rather than whatever Steam happens to have cached on this machine.

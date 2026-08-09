@@ -32,6 +32,12 @@ type InstalledGameInfo struct {
 
 var reAppManifest = regexp.MustCompile(`(?i)^appmanifest_(\d+)\.acf$`)
 var reQuotedPath = regexp.MustCompile(`"(?i)path"\s+"([^"]+)"`)
+var reManifestName = regexp.MustCompile(`(?i)"name"\s+"([^"]*)"`)
+
+// manifestNameMaxBytes bounds the read for one app's name. An appmanifest is a few
+// KiB and the name sits near the top, so this is generous; the cap is here because
+// the file is on disk Steam owns, not ours.
+const manifestNameMaxBytes = 64 << 10
 
 func steamAppsDirs(steamRoot string) ([]string, error) {
 	steamRoot = filepath.Clean(steamRoot)
@@ -68,12 +74,20 @@ func platformExpandPath(s string) string {
 	return os.ExpandEnv(s)
 }
 
-func installedAppIDs(steamRoot string) (map[string]struct{}, error) {
+// installedAppIDs maps each installed app id to the name Steam wrote in its
+// appmanifest, or "" when the file has none.
+//
+// The manifest is the only name source that covers apps the store will not talk
+// about at all - tools, redistributables, dedicated servers, hard-delisted games -
+// because it is written by the client that installed them rather than by the store.
+// The catalogue map has no entry for those at any point, so reading the file the
+// scan already found is what keeps them from rendering as "App <id>".
+func installedAppIDs(steamRoot string) (map[string]string, error) {
 	dirs, err := steamAppsDirs(steamRoot)
 	if err != nil {
 		return nil, err
 	}
-	ids := map[string]struct{}{}
+	ids := map[string]string{}
 	for _, dir := range dirs {
 		ents, err := os.ReadDir(dir)
 		if err != nil {
@@ -87,10 +101,35 @@ func installedAppIDs(steamRoot string) (map[string]struct{}, error) {
 			if len(m) < 2 {
 				continue
 			}
-			ids[m[1]] = struct{}{}
+			// A second library folder listing the same app must not blank a name
+			// already read from the first.
+			name := manifestName(filepath.Join(dir, e.Name()))
+			if existing, seen := ids[m[1]]; seen && name == "" {
+				name = existing
+			}
+			ids[m[1]] = name
 		}
 	}
 	return ids, nil
+}
+
+// manifestName reads the "name" field out of one appmanifest. An unreadable or
+// nameless manifest is not an error: the caller falls back to the catalogue map.
+func manifestName(path string) string {
+	f, err := os.Open(path)
+	if err != nil {
+		return ""
+	}
+	defer f.Close()
+	raw, err := io.ReadAll(io.LimitReader(f, manifestNameMaxBytes))
+	if err != nil {
+		return ""
+	}
+	m := reManifestName.FindSubmatch(raw)
+	if len(m) < 2 {
+		return ""
+	}
+	return strings.TrimSpace(string(m[1]))
 }
 
 func loginCacheSteamDir() (string, error) {
@@ -476,6 +515,18 @@ func ensureAppNameMap(ctx context.Context) (map[string]string, error) {
 	return getSteamAppNameMapCached()
 }
 
+// resolveAppName is the shared fallback chain for an app with no manifest name:
+// catalogue map, then the Steam client's appinfo cache, then the bare id.
+func resolveAppName(names, local map[string]string, appID string) string {
+	if nm := strings.TrimSpace(names[appID]); nm != "" {
+		return nm
+	}
+	if nm := strings.TrimSpace(local[appID]); nm != "" {
+		return nm
+	}
+	return "App " + appID
+}
+
 // BuildInstalledGamesList resolves names for installed ids using AppIdsUser.json.
 func BuildInstalledGamesList(ctx context.Context, steamRoot string) ([]InstalledGameInfo, error) {
 	installed, err := installedAppIDs(steamRoot)
@@ -489,27 +540,35 @@ func BuildInstalledGamesList(ctx context.Context, steamRoot string) ([]Installed
 	if err != nil {
 		names = map[string]string{}
 	}
-	return namedInstalledGames(installed, names), nil
+	return namedInstalledGames(installed, names, appInfoNamesFn()), nil
 }
 
 // buildInstalledGamesListWithNames is BuildInstalledGamesList for a caller that
 // already holds the name map. ensureAppNameMap hands back a full copy of the
 // catalogue - ~180k entries, several megabytes - so a screen that needs names
-// twice resolves once and threads the map through instead.
-func buildInstalledGamesListWithNames(steamRoot string, names map[string]string) ([]InstalledGameInfo, error) {
+// twice resolves once and threads the map through instead. The appinfo cache is
+// threaded for the same reason.
+func buildInstalledGamesListWithNames(steamRoot string, names, local map[string]string) ([]InstalledGameInfo, error) {
 	installed, err := installedAppIDs(steamRoot)
 	if err != nil {
 		return nil, err
 	}
-	return namedInstalledGames(installed, names), nil
+	return namedInstalledGames(installed, names, local), nil
 }
 
-func namedInstalledGames(installed map[string]struct{}, names map[string]string) []InstalledGameInfo {
+// namedInstalledGames resolves each installed app's display name.
+//
+// The appmanifest wins because it is the record Steam wrote for this exact install,
+// so it is right even for an app the store has never listed. The catalogue map comes
+// next, then the client's appinfo cache as the straggler net, and only then the id.
+// ownedGameName applies the same order minus the manifest, which exists only for an
+// app that is installed, so both halves of the games list read alike.
+func namedInstalledGames(installed map[string]string, names, local map[string]string) []InstalledGameInfo {
 	var list []InstalledGameInfo
-	for id := range installed {
-		nm := strings.TrimSpace(names[id])
+	for id, manifestName := range installed {
+		nm := strings.TrimSpace(manifestName)
 		if nm == "" {
-			nm = "App " + id
+			nm = resolveAppName(names, local, id)
 		}
 		list = append(list, InstalledGameInfo{AppID: id, Name: nm})
 	}

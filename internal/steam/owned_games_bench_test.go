@@ -156,7 +156,7 @@ func benchGameName(rng *rand.Rand) string {
 	return b.String()
 }
 
-func useOwnedGamesBenchRoot(b *testing.B, data *ownedGamesBenchData, installed func(map[string]string) []InstalledGameInfo) {
+func useOwnedGamesBenchRoot(b *testing.B, data *ownedGamesBenchData, installed func(map[string]string, map[string]string) []InstalledGameInfo) {
 	b.Helper()
 	paths.ResetForTest(b.TempDir())
 
@@ -180,6 +180,7 @@ func useOwnedGamesBenchRoot(b *testing.B, data *ownedGamesBenchData, installed f
 	}
 
 	installedFn, warmFn, localFn := ownedGamesInstalledFn, ownedGamesWarmFn, ownedGamesLocalIconsFn
+	appInfoFn := appInfoNamesFn
 	b.Cleanup(func() {
 		// The artwork pass reads ownedGamesWarmFn inside its goroutine, so
 		// restoring the real WarmGameIcons while one is still in flight would put
@@ -189,14 +190,16 @@ func useOwnedGamesBenchRoot(b *testing.B, data *ownedGamesBenchData, installed f
 		}
 		ownedGamesInstalledFn, ownedGamesWarmFn = installedFn, warmFn
 		ownedGamesLocalIconsFn = localFn
+		appInfoNamesFn = appInfoFn
 		steamAppNameMapMu.Lock()
 		steamAppNameMapMem = nil
 		steamAppNameMapMu.Unlock()
 	})
 	ownedGamesInstalledFn = installed
 	ownedGamesWarmFn = func(context.Context, []string) map[string]string { return nil }
-	// Keeps the machine's own librarycache out of the measurement.
+	// Keeps the machine's own librarycache and appinfo cache out of the measurement.
 	ownedGamesLocalIconsFn = func([]string) map[string]string { return nil }
+	appInfoNamesFn = func() map[string]string { return nil }
 }
 
 // BenchmarkGetOwnedGamesList is the whole screen-open path with the local
@@ -204,7 +207,7 @@ func useOwnedGamesBenchRoot(b *testing.B, data *ownedGamesBenchData, installed f
 // join, one app name map clone and the final sort.
 func BenchmarkGetOwnedGamesList(b *testing.B) {
 	data := newOwnedGamesBenchData()
-	useOwnedGamesBenchRoot(b, data, func(map[string]string) []InstalledGameInfo { return data.installed })
+	useOwnedGamesBenchRoot(b, data, func(map[string]string, map[string]string) []InstalledGameInfo { return data.installed })
 	svc := NewSteamService()
 	b.ReportMetric(float64(data.union), "ownedApps")
 	b.ResetTimer()
@@ -231,13 +234,10 @@ func BenchmarkGetOwnedGamesListWithInstalledBuild(b *testing.B) {
 	for _, game := range data.installed {
 		ids = append(ids, game.AppID)
 	}
-	useOwnedGamesBenchRoot(b, data, func(names map[string]string) []InstalledGameInfo {
+	useOwnedGamesBenchRoot(b, data, func(names, local map[string]string) []InstalledGameInfo {
 		list := make([]InstalledGameInfo, 0, len(ids))
 		for _, id := range ids {
-			nm := strings.TrimSpace(names[id])
-			if nm == "" {
-				nm = "App " + id
-			}
+			nm := resolveAppName(names, local, id)
 			list = append(list, InstalledGameInfo{AppID: id, Name: nm})
 		}
 		sort.Slice(list, func(i, j int) bool {
@@ -257,7 +257,7 @@ func BenchmarkGetOwnedGamesListWithInstalledBuild(b *testing.B) {
 
 func BenchmarkOwnedGamesStoreLoad(b *testing.B) {
 	data := newOwnedGamesBenchData()
-	useOwnedGamesBenchRoot(b, data, func(map[string]string) []InstalledGameInfo { return data.installed })
+	useOwnedGamesBenchRoot(b, data, func(map[string]string, map[string]string) []InstalledGameInfo { return data.installed })
 	b.ResetTimer()
 	b.ReportAllocs()
 	for b.Loop() {
@@ -273,7 +273,7 @@ func BenchmarkOwnedGamesStoreLoad(b *testing.B) {
 
 func BenchmarkOwnedGamesEnsureAppNameMap(b *testing.B) {
 	data := newOwnedGamesBenchData()
-	useOwnedGamesBenchRoot(b, data, func(map[string]string) []InstalledGameInfo { return data.installed })
+	useOwnedGamesBenchRoot(b, data, func(map[string]string, map[string]string) []InstalledGameInfo { return data.installed })
 	ctx := context.Background()
 	b.ResetTimer()
 	b.ReportAllocs()
@@ -290,7 +290,7 @@ func BenchmarkOwnedGamesEnsureAppNameMap(b *testing.B) {
 
 func BenchmarkOwnedGamesAppNameMapLoadFromDisk(b *testing.B) {
 	data := newOwnedGamesBenchData()
-	useOwnedGamesBenchRoot(b, data, func(map[string]string) []InstalledGameInfo { return data.installed })
+	useOwnedGamesBenchRoot(b, data, func(map[string]string, map[string]string) []InstalledGameInfo { return data.installed })
 	b.ResetTimer()
 	b.ReportAllocs()
 	for b.Loop() {
@@ -405,7 +405,7 @@ func BenchmarkOwnedGamesBuildDTOs(b *testing.B) {
 			sort.Strings(ids)
 			list = append(list, OwnedGameDTO{
 				AppID:   appID,
-				Name:    ownedGameName(data.names, appID),
+				Name:    ownedGameName(data.names, nil, appID),
 				IconURL: GameIconURL(appID),
 				Owners:  ids,
 			})
@@ -439,7 +439,7 @@ func benchDTOList(data *ownedGamesBenchData) []OwnedGameDTO {
 	owners := benchOwners(data)
 	list := make([]OwnedGameDTO, 0, len(owners)+len(data.installed))
 	for appID, ids := range owners {
-		list = append(list, OwnedGameDTO{AppID: appID, Name: ownedGameName(data.names, appID), Owners: ids})
+		list = append(list, OwnedGameDTO{AppID: appID, Name: ownedGameName(data.names, nil, appID), Owners: ids})
 	}
 	for _, installed := range data.installed {
 		if _, owned := owners[installed.AppID]; owned {
