@@ -103,14 +103,18 @@ export function ownersTooltipText(
 
 export type OwnerSplit = {
   shown: string[];
-  /** How many owners the row hides behind the "+N" badge. */
-  overflow: number;
+  /**
+   * The owners the row hides behind the "+N" badge, in row order. The ids rather
+   * than a count, because the badge's tooltip has to name exactly these and no
+   * others - the rest already have an avatar beside it.
+   */
+  hidden: string[];
 };
 
 export function splitGameOwners(owners: string[], max: number): OwnerSplit {
-  if (max <= 0) return { shown: [], overflow: owners.length };
-  if (owners.length <= max) return { shown: owners, overflow: 0 };
-  return { shown: owners.slice(0, max), overflow: owners.length - max };
+  if (max <= 0) return { shown: [], hidden: owners };
+  if (owners.length <= max) return { shown: owners, hidden: [] };
+  return { shown: owners.slice(0, max), hidden: owners.slice(max) };
 }
 
 /**

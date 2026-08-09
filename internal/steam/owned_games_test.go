@@ -122,3 +122,29 @@ func TestGetOwnedGamesListJoinsOwnersAndInstalledGames(t *testing.T) {
 		}
 	}
 }
+
+func TestGameStorePageURL(t *testing.T) {
+	if got := gameStorePageURL("1091500"); got != "https://store.steampowered.com/app/1091500/" {
+		t.Fatalf("gameStorePageURL(1091500) = %q", got)
+	}
+	// The result is handed to cmd.exe, so anything that could carry a shell
+	// metacharacter, a second URL or a path escape has to come back empty rather
+	// than be trimmed into shape.
+	for _, appID := range []string{
+		"",
+		"   ",
+		"0",
+		"0730",
+		"73a0",
+		"730 & calc.exe",
+		"730/../../etc",
+		"730%2F",
+		"-730",
+		"12345678901",
+		"https://evil.example/",
+	} {
+		if got := gameStorePageURL(appID); got != "" {
+			t.Fatalf("gameStorePageURL(%q) = %q, want it refused", appID, got)
+		}
+	}
+}

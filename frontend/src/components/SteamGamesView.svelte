@@ -299,6 +299,32 @@
     e.stopPropagation();
   }
 
+  async function openStorePage(appId: string): Promise<void> {
+    try {
+      await SteamService.OpenGameStorePage(appId);
+    } catch (e) {
+      pushToast({
+        type: "error",
+        message: formatToastWithError($t("Steam_Games_OpenStoreFailed"), e),
+        duration: 8000,
+      });
+    }
+  }
+
+  /**
+   * Right-click on a game row. The action stops propagation, so this shadows
+   * backgroundMenu wherever a row is the target - which on a full list is
+   * everywhere except a few pixels of scroller padding, and nowhere at all by
+   * keyboard. It therefore has to carry the background entries too, or a long
+   * library would put Refresh games out of reach.
+   */
+  function gameMenu(appId: string): () => MenuItemDef[] {
+    return () => [
+      { label: $t("Steam_Games_OpenStore"), action: () => { void openStorePage(appId); } },
+      ...backgroundMenu(),
+    ];
+  }
+
   function backgroundMenu(): MenuItemDef[] {
     return [
       ...buildFilterMenuItems(name),
@@ -391,7 +417,14 @@
           <li class="steamGames__chunk" role="presentation" style="--steamGames-chunk-rows: {chunk.rows.length}">
             {#each chunk.rows as game (game.appId)}
               {@const owners = splitGameOwners(game.owners, MAX_OWNER_AVATARS)}
-              <div class="steamGames__row" role="listitem">
+              <div
+                class="steamGames__row"
+                role="listitem"
+                use:ctxMenuAction={{
+                  items: gameMenu(game.appId),
+                  beforeOpen: () => selectGame(game.appId),
+                }}
+              >
                 <button
                   type="button"
                   class="steamGames__rowBtn"
@@ -417,14 +450,18 @@
                           use:tooltipAction={{ text: ownerDisplayName(accountById, steamId64), boundary: listEl }}
                         />
                       {/each}
-                      {#if owners.overflow > 0}
+                      {#if owners.hidden.length > 0}
+                        <!-- Only the owners with no avatar in this row: the badge counts
+                             them, so naming the visible ones again would not say who "+N" is. -->
                         <span
                           class="steamGames__ownerOverflow"
-                          use:tooltipAction={{ text: ownersTooltipText(accountById, game.owners, $t("Steam_Games_OwnerUnknown"), "\n"), boundary: listEl }}
-                        >+{owners.overflow}</span>
+                          use:tooltipAction={{ text: ownersTooltipText(accountById, owners.hidden, $t("Steam_Games_OwnerUnknown"), "\n"), boundary: listEl }}
+                        >+{owners.hidden.length}</span>
                       {/if}
                     {/if}
                   </span>
+                  <!-- Every owner, deliberately: this is the whole row read aloud, and the
+                       avatars the "+N" badge counts against were never announced. -->
                   <span class="sr-only">
                     {game.owners.length === 0
                       ? $t("Steam_Games_OwnerUnknown")

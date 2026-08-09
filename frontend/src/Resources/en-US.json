@@ -1056,6 +1056,8 @@
   "Steam_Games_Empty": "No games found yet.",
   "Steam_Games_LoadFailed": "Could not load the list of games.",
   "Steam_Games_Refresh": "Refresh games",
+  "Steam_Games_OpenStore": "Open store",
+  "Steam_Games_OpenStoreFailed": "Could not open the store page.",
   "Steam_Games_Refreshing": "Re-reading each account's library…",
   "Steam_Games_OwnerUnknown": "Installed on this PC. Which accounts own it is unknown.",
   "Steam_Games_OwnedBy": "Owned by {names}",

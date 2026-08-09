@@ -83,15 +83,35 @@ describe("filterOwnedGames", () => {
 
 describe("splitGameOwners", () => {
   it("shows everything when it fits", () => {
-    expect(splitGameOwners(["a", "b"], 3)).toEqual({ shown: ["a", "b"], overflow: 0 });
+    expect(splitGameOwners(["a", "b"], 3)).toEqual({ shown: ["a", "b"], hidden: [] });
   });
 
-  it("counts the remainder past the cap", () => {
-    expect(splitGameOwners(["a", "b", "c", "d"], 2)).toEqual({ shown: ["a", "b"], overflow: 2 });
+  it("keeps the remainder past the cap, in order", () => {
+    expect(splitGameOwners(["a", "b", "c", "d"], 2)).toEqual({ shown: ["a", "b"], hidden: ["c", "d"] });
   });
 
   it("hides every owner when there is no room", () => {
-    expect(splitGameOwners(["a", "b"], 0)).toEqual({ shown: [], overflow: 2 });
+    expect(splitGameOwners(["a", "b"], 0)).toEqual({ shown: [], hidden: ["a", "b"] });
+  });
+});
+
+// What the "+N" badge's tooltip is built from: the badge counts the owners with no
+// avatar in the row, so naming the visible ones again would not say who "+N" is.
+describe("the +N badge tooltip", () => {
+  const accounts = new Map([
+    ["a", { displayName: "Ann" }],
+    ["b", { displayName: "Bob" }],
+    ["c", { displayName: "Cal" }],
+  ]);
+  const badgeTooltip = (owners: string[], max: number) =>
+    ownersTooltipText(accounts, splitGameOwners(owners, max).hidden, "unknown", "\n");
+
+  it("names only the owners the row could not show", () => {
+    expect(badgeTooltip(["a", "b", "c"], 1)).toBe("Bob\nCal");
+  });
+
+  it("still falls back to the id for an owner with no account", () => {
+    expect(badgeTooltip(["a", "gone"], 1)).toBe("gone");
   });
 });
 

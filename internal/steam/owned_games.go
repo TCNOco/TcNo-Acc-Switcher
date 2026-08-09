@@ -3,6 +3,7 @@ package steam
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log/slog"
 	"slices"
 	"sort"
@@ -15,6 +16,7 @@ import (
 	"TcNo-Acc-Switcher/internal/crashlog"
 	"TcNo-Acc-Switcher/internal/security"
 	"TcNo-Acc-Switcher/internal/steam/ownedgames"
+	"TcNo-Acc-Switcher/internal/winutil"
 )
 
 // ownedGamesIconWarmTimeout bounds the background artwork pass. A library of a
@@ -216,6 +218,38 @@ func startOwnedGamesIconWarm(list []OwnedGameDTO) {
 		defer cancel()
 		ownedGamesWarmFn(ctx, appIDs)
 	}()
+}
+
+// The trailing slash is what Steam's own links carry; the store redirects it to
+// the titled URL.
+const gameStorePageURLBase = "https://store.steampowered.com/app/"
+
+// gameStorePageURL builds the store page URL for appID, or "" when appID is not
+// a bare decimal app id.
+func gameStorePageURL(appID string) string {
+	id, ok := normalizeAppID(appID)
+	if !ok {
+		return ""
+	}
+	return gameStorePageURLBase + id + "/"
+}
+
+// OpenGameStorePage opens one game's Steam store page in the default browser.
+//
+// It takes an app id and builds the URL itself rather than accepting a URL from
+// the frontend. The string ends up on a shell command line, so a caller-supplied
+// one would turn this into a general "open anything" binding; validating to
+// digits alone also rules out the shell metacharacters a URL can otherwise
+// carry. Anything that is not a bare app id is refused rather than sanitised.
+func (s *SteamService) OpenGameStorePage(appID string) error {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
+	url := gameStorePageURL(appID)
+	if url == "" {
+		return fmt.Errorf("steam store page: invalid app id %q", appID)
+	}
+	return winutil.Start("cmd.exe", []string{"/c", "start", "", url}, winutil.StartOpts{})
 }
 
 // RefreshOwnedGames asks the Steam Guard sweep to re-read every account's
