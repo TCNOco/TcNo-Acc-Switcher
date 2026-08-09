@@ -64,10 +64,39 @@ describe("buildFilterMenuItems", () => {
     expect(labels(sortChildren("Steam"))).toEqual([
       "Filter_Sort_AZ",
       "Filter_Sort_ZA",
-      "Filter_Sort_LastUsed",
       "Filter_Sort_OwnedCount",
     ]);
     expect(labels(sortChildren("Epic Games"))).not.toContain("Filter_Sort_OwnedCount");
+  });
+
+  // A game has one name, so there is no second ordering to nest under either direction.
+  it("flattens the alphabetical entries on the games tab", () => {
+    steamPageTab.set("games");
+    const [az, za] = sortChildren("Steam");
+    expect(az?.children).toBeUndefined();
+    expect(za?.children).toBeUndefined();
+
+    az?.action?.();
+    expect(get(platformListSort)?.kind).toBe("alpha_asc");
+    za?.action?.();
+    expect(get(platformListSort)?.kind).toBe("alpha_desc");
+  });
+
+  // sortOwnedGames has no timestamp to read, so a last-used entry would do nothing.
+  it("drops last-used ordering on the games tab", () => {
+    expect(labels(sortChildren("Steam"))).toContain("Filter_Sort_LastUsed");
+
+    steamPageTab.set("games");
+    expect(labels(sortChildren("Steam"))).not.toContain("Filter_Sort_LastUsed");
+  });
+
+  // The games tab must not reach back into the account list's menu shape.
+  it("leaves the account variant nested when the tab flips back", () => {
+    steamPageTab.set("games");
+    steamPageTab.set("switcher");
+    const [az, za] = sortChildren("Steam");
+    expect(labels(az?.children ?? [])).toEqual(["Filter_Sort_AZ", "Filter_Sort_Username"]);
+    expect(labels(za?.children ?? [])).toEqual(["Filter_Sort_ZA", "Filter_Sort_Username"]);
   });
 
   it("fires both owner-count directions", () => {

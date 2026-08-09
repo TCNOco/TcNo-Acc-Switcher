@@ -60,7 +60,12 @@
   </div>
 
   {#if pinned.length > 0}
-    <div class="shortcuts shortcutDndGrid" role="list" aria-label={$t("Steam_Games_AccountStrip")}>
+    <div
+      class="shortcuts shortcutDndGrid"
+      class:steamGamesBar__tiles--noDropdown={overflow.length === 0}
+      role="list"
+      aria-label={$t("Steam_Games_AccountStrip")}
+    >
       {#each pinned as account (account.steamId64)}
         <div class="shortcutDndCell" role="listitem">
           <button

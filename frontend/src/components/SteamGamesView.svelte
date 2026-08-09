@@ -62,7 +62,9 @@
   let gamesLoading = true;
   let loadError = "";
   let selectedAppId = "";
-  let sortKind: PlatformSortKind = "alpha_asc";
+  // Most-owned first is the point of this tab. Local to the games list — the account
+  // switcher keeps its own default and only shares the `platformListSort` signal.
+  let sortKind: PlatformSortKind = "owned_count_desc";
   let listEl: HTMLDivElement | undefined;
   let overlayQuery = "";
   let overlayQueryDebounceTimer: ReturnType<typeof setTimeout> | null = null;
