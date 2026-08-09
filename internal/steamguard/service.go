@@ -1345,12 +1345,16 @@ func (s *Service) ImportMaFiles(paths []string, password, legacyPassword string,
 func (s *Service) importFiles(paths []string, password, legacyPassword string, rememberForSession, allowLegacy bool) ([]ImportResult, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	settings, err := LoadSettings()
+	enabled, err := s.featureEnabledLocked()
 	if err != nil {
 		return nil, err
 	}
-	if !settings.FeatureEnabled {
+	if !enabled {
 		return nil, ErrFeatureDisabled
+	}
+	settings, err := LoadSettings()
+	if err != nil {
+		return nil, err
 	}
 	v, err := s.requireVaultLocked()
 	if err != nil {
@@ -1498,12 +1502,54 @@ func (s *Service) revokeLeases() error {
 	return errors.Join(vaultErr, protectionErr, eventErr, clipboardErr, qrAttemptErr)
 }
 
-func (s *Service) requireVaultLocked() (*vault.Vault, error) {
+// adoptVaultWithoutSettingsLocked turns the integration on when a vault is
+// present but no Steam Guard settings file is.
+//
+// The flag lives in Settings/SteamGuard.json, outside the SteamGuard folder, so
+// copying that folder in - or restoring it by any route other than
+// RestoreVerifiedBackup, which sets the flag itself - leaves a vault full of
+// accounts that every call then refuses to touch. A vault existing is the
+// user's opt-in; there is no decision to override, because no settings file
+// means no decision was ever recorded. One that says false is left alone.
+func (s *Service) adoptVaultWithoutSettingsLocked() (bool, error) {
+	if settingsFileExists() {
+		return false, nil
+	}
+	_, exists, err := s.openVaultLocked()
+	if err != nil || !exists {
+		return false, err
+	}
 	settings, err := LoadSettings()
+	if err != nil {
+		return false, err
+	}
+	settings.FeatureEnabled = true
+	if err := SaveSettings(settings); err != nil {
+		return false, err
+	}
+	serviceLogger().Info("adopted a Steam Guard vault that arrived without settings")
+	return true, nil
+}
+
+// featureEnabledLocked reports whether the integration may run, adopting a
+// vault that arrived without settings rather than refusing it.
+func (s *Service) featureEnabledLocked() (bool, error) {
+	settings, err := LoadSettings()
+	if err != nil {
+		return false, err
+	}
+	if settings.FeatureEnabled {
+		return true, nil
+	}
+	return s.adoptVaultWithoutSettingsLocked()
+}
+
+func (s *Service) requireVaultLocked() (*vault.Vault, error) {
+	enabled, err := s.featureEnabledLocked()
 	if err != nil {
 		return nil, err
 	}
-	if !settings.FeatureEnabled {
+	if !enabled {
 		return nil, ErrFeatureDisabled
 	}
 	v, exists, err := s.openVaultLocked()

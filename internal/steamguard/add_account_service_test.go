@@ -2,6 +2,7 @@ package steamguard
 
 import (
 	"errors"
+	"os"
 	"strconv"
 	"strings"
 	"testing"
@@ -314,5 +315,68 @@ func TestListAccountsRecoversNamesIntoTheAccountStore(t *testing.T) {
 	}
 	if rec.AccountName != "test_account" {
 		t.Errorf("AccountName = %q, want the name recovered from the vault", rec.AccountName)
+	}
+}
+
+// The feature flag lives outside the SteamGuard folder, so copying that folder
+// in brings a vault full of accounts and no record that the integration was
+// ever wanted. Every call then refused it.
+func TestVaultCopiedInWithoutSettingsIsAdopted(t *testing.T) {
+	useSettingsRoot(t)
+	service := newServiceForTest()
+	t.Cleanup(func() { _ = service.ServiceShutdown() })
+
+	if _, err := service.Initialize("correct horse battery staple", ""); err != nil {
+		t.Fatal(err)
+	}
+	// Exactly the copied-folder state: a vault on disk, no settings file.
+	path, err := settingsPath()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Remove(path); err != nil {
+		t.Fatal(err)
+	}
+	if settingsFileExists() {
+		t.Fatal("settings file still present")
+	}
+
+	if _, err := service.requireVaultLocked(); err != nil {
+		t.Fatalf("a copied-in vault should be usable: %v", err)
+	}
+	// And the adoption is recorded, so it is decided once rather than inferred
+	// on every call.
+	settings, err := LoadSettings()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !settings.FeatureEnabled {
+		t.Error("adoption was not persisted")
+	}
+}
+
+// Turning the integration off is a decision. A vault sitting there is not a
+// reason to undo it.
+func TestFeatureTurnedOffIsNotOverriddenByAnExistingVault(t *testing.T) {
+	useSettingsRoot(t)
+	service := newServiceForTest()
+	t.Cleanup(func() { _ = service.ServiceShutdown() })
+
+	if _, err := service.Initialize("correct horse battery staple", ""); err != nil {
+		t.Fatal(err)
+	}
+	if err := service.SetFeatureEnabled(false); err != nil {
+		t.Fatal(err)
+	}
+
+	if _, err := service.requireVaultLocked(); !errors.Is(err, ErrFeatureDisabled) {
+		t.Fatalf("err = %v, want ErrFeatureDisabled", err)
+	}
+	settings, err := LoadSettings()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if settings.FeatureEnabled {
+		t.Error("a deliberate off was overridden")
 	}
 }
