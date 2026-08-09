@@ -8,6 +8,7 @@ import (
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/steam/accountstore"
+	steamguardregistry "TcNo-Acc-Switcher/internal/steamguard/registry"
 )
 
 const (
@@ -368,5 +369,47 @@ func TestSyncKnownAccountsPutsVDFRowsFirst(t *testing.T) {
 	}
 	if got[1].SteamID64 != knownIDA {
 		t.Errorf("got[1] = %s, want the store-only row %s after", got[1].SteamID64, knownIDA)
+	}
+}
+
+// Restoring a SteamGuard folder (or swapping one in by hand) puts accounts in
+// the vault and its registration index without going through any of the code
+// paths that seed the account store. Those accounts have to reach the list too,
+// or the restore looks like it silently dropped them.
+func TestGetSteamAccountsListIncludesRestoredVaultAccounts(t *testing.T) {
+	env := newSteamTestEnv(t)
+	env.writeLoginUsers(t, oneAccountVDF)
+
+	root, err := steamguardregistry.RootPath()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.MkdirAll(root, 0o700); err != nil {
+		t.Fatal(err)
+	}
+	if err := steamguardregistry.Upsert(knownIDB, steamguardregistry.StateActive); err != nil {
+		t.Fatal(err)
+	}
+
+	svc := NewSteamService()
+	list, err := svc.GetSteamAccountsList()
+	if err != nil {
+		t.Fatalf("GetSteamAccountsList: %v", err)
+	}
+	byID := make(map[string]SteamAccountListItemDTO, len(list))
+	for _, row := range list {
+		byID[row.SteamID64] = row
+	}
+	restored, ok := byID[knownIDB]
+	if !ok {
+		t.Fatalf("restored vault account missing from %+v", list)
+	}
+	if !restored.HasSteamGuard {
+		t.Error("restored account should carry its Steam Guard state")
+	}
+	// And it must be persisted, so the profile refresh picks it up for a name
+	// and an avatar rather than it vanishing on the next build.
+	if _, stored, err := accountstore.Get(knownIDB); err != nil || !stored {
+		t.Errorf("restored account was not imported into the store: ok=%v err=%v", stored, err)
 	}
 }

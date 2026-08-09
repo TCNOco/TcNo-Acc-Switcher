@@ -297,3 +297,22 @@ func TestAddAccountRejectsAForeignCapability(t *testing.T) {
 		t.Fatal("a capability bound to another attempt was accepted")
 	}
 }
+
+// Restoring a SteamGuard folder brings accounts the switcher has never seen.
+// The vault is the only place their login name exists, so listing them - which
+// is what opening the picker does - is what recovers it.
+func TestListAccountsRecoversNamesIntoTheAccountStore(t *testing.T) {
+	service, anchorID, grant := newAuthServiceFixture(t)
+
+	if _, err := service.ListAccounts(anchorID, grant.Capability); err != nil {
+		t.Fatalf("ListAccounts: %v", err)
+	}
+
+	rec, ok, err := accountstore.Get(anchorID)
+	if err != nil || !ok {
+		t.Fatalf("listed account was not stored: ok=%v err=%v", ok, err)
+	}
+	if rec.AccountName != "test_account" {
+		t.Errorf("AccountName = %q, want the name recovered from the vault", rec.AccountName)
+	}
+}

@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"TcNo-Acc-Switcher/internal/steam/accountstore"
+	steamguardregistry "TcNo-Acc-Switcher/internal/steamguard/registry"
 )
 
 // knownAccountsForRoot is the account list every caller should use: Steam's
@@ -38,8 +39,17 @@ func syncKnownAccounts(users []LoginUser) []LoginUser {
 		return users
 	}
 
-	if _, err := accountstore.UpsertMany(recordsFromLoginUsers(users)); err != nil {
+	incoming := recordsFromLoginUsers(users)
+	incoming = append(incoming, recordsFromSteamGuardRegistry()...)
+	if changed, err := accountstore.UpsertMany(incoming); err != nil {
 		steamLog.Warn("could not update the Steam account store", slog.Any("err", err))
+	} else if changed {
+		// The upsert can add accounts the load above could not see - a restored
+		// Steam Guard folder is exactly that - and they belong in this build of
+		// the list, not only the next one.
+		if reloaded, err := accountstore.Load(); err == nil {
+			stored = reloaded
+		}
 	}
 
 	present := make(map[string]struct{}, len(users))
@@ -74,6 +84,32 @@ func recordsFromLoginUsers(users []LoginUser) []accountstore.Record {
 			SkipOfflineWarn: u.SkipOfflineWarn,
 			Source:          accountstore.SourceVDF,
 		})
+	}
+	return out
+}
+
+// recordsFromSteamGuardRegistry imports accounts that exist only in the Steam
+// Guard registration index. Restoring a backup, or swapping the SteamGuard
+// folder in by hand, puts accounts there without passing through any of the
+// paths that seed the store, and an account the switcher cannot see is one the
+// restore looks to have dropped.
+//
+// The index holds no name, so these arrive bare; the profile refresh fills in a
+// community name and an avatar, and opening the Steam Guard picker contributes
+// the login name from the unlocked vault.
+func recordsFromSteamGuardRegistry() []accountstore.Record {
+	entries, err := steamguardregistry.Load()
+	if err != nil {
+		steamLog.Warn("Steam Guard account state unavailable", slog.Any("err", err))
+		return nil
+	}
+	out := make([]accountstore.Record, 0, len(entries))
+	for _, entry := range entries {
+		id := strings.TrimSpace(entry.SteamID64)
+		if id == "" {
+			continue
+		}
+		out = append(out, accountstore.Record{SteamID64: id, Source: accountstore.SourceSteamGuard})
 	}
 	return out
 }

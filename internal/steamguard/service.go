@@ -972,6 +972,13 @@ func (s *Service) ListAccounts(accountID, token string) ([]AccountSummary, error
 	if !anchorFound {
 		return nil, capability.ErrInvalidCapability
 	}
+	// The vault is the only place a restored account's login name exists, and it
+	// has just been read. Without this the switcher shows those accounts nameless
+	// until Steam answers with a community name, and login-only records - which
+	// may have no Steam profile to answer with - stay nameless indefinitely.
+	for _, summary := range result {
+		s.rememberSteamAccount(summary.SteamID64, summary.AccountName)
+	}
 	return result, nil
 }
 
