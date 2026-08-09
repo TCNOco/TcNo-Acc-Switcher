@@ -57,8 +57,9 @@ var ownedGamesWarming atomic.Bool
 // the process, one into whatever Steam is installed on the machine and one onto
 // the network, and neither belongs in a unit test.
 var (
-	ownedGamesInstalledFn = installedGamesForOwnedList
-	ownedGamesWarmFn      = WarmGameIcons
+	ownedGamesInstalledFn  = installedGamesForOwnedList
+	ownedGamesWarmFn       = WarmGameIcons
+	ownedGamesLocalIconsFn = EnsureLocalGameIcons
 )
 
 // GetOwnedGamesList joins every vault account's stored library into one list of
@@ -97,10 +98,9 @@ func (s *SteamService) GetOwnedGamesList() ([]OwnedGameDTO, error) {
 	for appID, ids := range owners {
 		sort.Strings(ids)
 		list = append(list, OwnedGameDTO{
-			AppID:   appID,
-			Name:    ownedGameName(names, appID),
-			IconURL: GameIconURL(appID),
-			Owners:  ids,
+			AppID:  appID,
+			Name:   ownedGameName(names, appID),
+			Owners: ids,
 		})
 	}
 	for _, installed := range ownedGamesInstalledFn(names) {
@@ -108,12 +108,12 @@ func (s *SteamService) GetOwnedGamesList() ([]OwnedGameDTO, error) {
 			continue
 		}
 		list = append(list, OwnedGameDTO{
-			AppID:   installed.AppID,
-			Name:    installed.Name,
-			IconURL: GameIconURL(installed.AppID),
-			Owners:  []string{},
+			AppID:  installed.AppID,
+			Name:   installed.Name,
+			Owners: []string{},
 		})
 	}
+	applyLocalGameIcons(list)
 	sortOwnedGames(list)
 
 	startOwnedGamesIconWarm(list)
@@ -173,9 +173,34 @@ func ownedGameName(names map[string]string, appID string) string {
 	return "App " + appID
 }
 
-// startOwnedGamesIconWarm caches artwork off the UI path. GetOwnedGamesList
-// hands back the URL an icon will be served at whether or not it is cached yet,
-// so the view paints immediately and fills in on its next repaint.
+// applyLocalGameIcons fills in every icon that resolves from disk, and leaves
+// the rest empty.
+//
+// GameIconURL only builds a path. Handing one out for a file that is not there
+// yet is what made the whole list render as broken images: the background warm
+// mixes instant librarycache copies with CDN requests for the app ids that have
+// no local art, so on a real library it had cached 51 of 4139 available icons
+// while every row already pointed at a 404. The local pass is disk-bound and
+// measured in hundreds of milliseconds for a library of this size, so it runs
+// here, before the first paint. A row with no icon yet keeps an empty URL and
+// the view draws its placeholder until the background pass fetches one.
+func applyLocalGameIcons(list []OwnedGameDTO) {
+	if len(list) == 0 {
+		return
+	}
+	appIDs := make([]string, 0, len(list))
+	for _, game := range list {
+		appIDs = append(appIDs, game.AppID)
+	}
+	icons := ownedGamesLocalIconsFn(appIDs)
+	for i := range list {
+		list[i].IconURL = icons[list[i].AppID]
+	}
+}
+
+// startOwnedGamesIconWarm caches artwork off the UI path, for the app ids
+// applyLocalGameIcons could not resolve from disk. Those need the CDN, so the
+// view paints without them and fills in on its next repaint.
 func startOwnedGamesIconWarm(list []OwnedGameDTO) {
 	if len(list) == 0 || !ownedGamesWarming.CompareAndSwap(false, true) {
 		return

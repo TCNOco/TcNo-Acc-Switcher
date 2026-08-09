@@ -179,7 +179,7 @@ func useOwnedGamesBenchRoot(b *testing.B, data *ownedGamesBenchData, installed f
 		b.Fatal(err)
 	}
 
-	installedFn, warmFn := ownedGamesInstalledFn, ownedGamesWarmFn
+	installedFn, warmFn, localFn := ownedGamesInstalledFn, ownedGamesWarmFn, ownedGamesLocalIconsFn
 	b.Cleanup(func() {
 		// The artwork pass reads ownedGamesWarmFn inside its goroutine, so
 		// restoring the real WarmGameIcons while one is still in flight would put
@@ -188,12 +188,15 @@ func useOwnedGamesBenchRoot(b *testing.B, data *ownedGamesBenchData, installed f
 			runtime.Gosched()
 		}
 		ownedGamesInstalledFn, ownedGamesWarmFn = installedFn, warmFn
+		ownedGamesLocalIconsFn = localFn
 		steamAppNameMapMu.Lock()
 		steamAppNameMapMem = nil
 		steamAppNameMapMu.Unlock()
 	})
 	ownedGamesInstalledFn = installed
 	ownedGamesWarmFn = func(context.Context, []string) map[string]string { return nil }
+	// Keeps the machine's own librarycache out of the measurement.
+	ownedGamesLocalIconsFn = func([]string) map[string]string { return nil }
 }
 
 // BenchmarkGetOwnedGamesList is the whole screen-open path with the local

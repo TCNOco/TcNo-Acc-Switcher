@@ -115,6 +115,15 @@
     return offlineSafeImageSrc($offlineMode, game.iconUrl, GAME_ICON_FALLBACK);
   }
 
+  // offlineSafeImageSrc only covers an empty or remote URL. A cached icon can
+  // also be swept off disk between the list being built and the row painting,
+  // and a 404 would otherwise leave the webview's broken-image glyph in place.
+  function onGameIconError(event: Event): void {
+    const img = event.currentTarget as HTMLImageElement;
+    if (img.getAttribute("src") === GAME_ICON_FALLBACK) return;
+    img.src = GAME_ICON_FALLBACK;
+  }
+
   function ownersTooltip(owners: string[]): string {
     if (owners.length === 0) return $t("Steam_Games_OwnerUnknown");
     return owners.map(ownerLabel).join("\n");
@@ -308,6 +317,7 @@
   });
 </script>
 
+<div class="main-content platform-accounts-root">
 <div class="platformTableHost steamGames__host">
   <SearchOverlay
     open={so.open}
@@ -351,7 +361,7 @@
               aria-pressed={game.appId === selectedAppId}
               on:click={() => selectGame(game.appId)}
             >
-              <img class="steamGames__icon" src={gameIcon(game)} alt="" draggable="false" />
+              <img class="steamGames__icon" src={gameIcon(game)} alt="" draggable="false" on:error={onGameIconError} />
               <span class="steamGames__name">{game.name}</span>
               <span class="steamGames__owners">
                 {#if game.owners.length === 0}
@@ -389,4 +399,5 @@
     {/if}
   </div>
   </div>
+</div>
 </div>

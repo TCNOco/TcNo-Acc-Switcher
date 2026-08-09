@@ -3,6 +3,7 @@ package steam
 import (
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	"TcNo-Acc-Switcher/internal/platform"
@@ -66,4 +67,57 @@ func installRoot() (string, error) {
 // LoginUsersPath returns .../config/loginusers.vdf under the Steam root.
 func LoginUsersPath(steamRoot string) string {
 	return filepath.Join(steamRoot, "config", "loginusers.vdf")
+}
+
+// steamRootCandidates lists every place Steam might be installed, in the order
+// ResolveInstallFolder trusts them and without duplicates.
+//
+// ResolveInstallFolder has to commit to one answer, and it returns
+// SteamSettings.FolderPath whether or not anything is there - the user needs to
+// see the path they configured in order to correct it. That default ships as
+// C:\Program Files (x86)\Steam, so on a machine with Steam elsewhere the
+// configured value is a dead path that outranks the two sources that would have
+// found the real one. Callers that can test a root for themselves walk this list
+// instead and skip the ones that do not hold what they need.
+func steamRootCandidates() []string {
+	var out []string
+	add := func(p string) {
+		if p = strings.TrimSpace(p); p == "" {
+			return
+		}
+		p = filepath.Clean(p)
+		if !slices.Contains(out, p) {
+			out = append(out, p)
+		}
+	}
+
+	if st, err := LoadSettings(); err == nil {
+		add(st.FolderPath)
+	}
+	exeDir, err := platform.ResolveExeDir()
+	if err != nil {
+		return out
+	}
+	if app, err := platform.LoadAppSettings(exeDir); err == nil {
+		if exe := strings.TrimSpace(app.PlatformExePaths[platformName]); exe != "" {
+			if dir := filepath.Dir(exe); dir != "" && dir != "." {
+				add(dir)
+			}
+		}
+	}
+	raw, err := platform.LoadPlatformsJSON(exeDir)
+	if err != nil {
+		return out
+	}
+	entry, err := platform.ParsePlatformEntry(raw, platformName)
+	if err != nil {
+		return out
+	}
+	if found := entry.ExeLocationDefault.FirstExistingExe(); found != "" {
+		add(filepath.Dir(found))
+	}
+	if exp := entry.ExeLocationDefault.FirstExpanded(); exp != "" {
+		add(filepath.Dir(exp))
+	}
+	return out
 }

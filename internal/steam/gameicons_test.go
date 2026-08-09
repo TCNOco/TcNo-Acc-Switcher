@@ -198,8 +198,9 @@ func TestFindLibraryCacheIconPrefersSquareClientIcon(t *testing.T) {
 
 func TestFindLibraryCacheIconPrefersTheSmallestSquareAsset(t *testing.T) {
 	lc := t.TempDir()
-	// A few dozen app folders hold a second, far larger square asset next to the
-	// client icon. The list row wants the icon, not the poster.
+	// 25 of 5947 app folders measured on a real install hold a second, far larger
+	// square asset next to the client icon. The list row wants the icon, not the
+	// multi-megabyte poster.
 	small := strings.Repeat("b", 40) + ".jpg"
 	large := strings.Repeat("1", 40) + ".jpg"
 	writeIconFile(t, filepath.Join(lc, "570", small), squareJPEG(t, 32))
@@ -208,6 +209,42 @@ func TestFindLibraryCacheIconPrefersTheSmallestSquareAsset(t *testing.T) {
 	// The larger asset sorts first by name, so name order alone would pick it.
 	got := findLibraryCacheIcon(lc, "570")
 	if want := filepath.Join(lc, "570", small); got != want {
+		t.Fatalf("got %q, want %q", got, want)
+	}
+}
+
+// The naming rule against a real Steam install: the icon is the 40-hex-character
+// img_icon_url hash, and every other name in an app folder is one of a fixed
+// descriptive set. None of those may be mistaken for the icon.
+func TestFindLibraryCacheIconPicksTheHashNamedFileOverEveryDescriptiveName(t *testing.T) {
+	lc := t.TempDir()
+	icon := "d35ba90713ca5f8eeae581cf126e8ac38774a87c.jpg"
+	writeIconFile(t, filepath.Join(lc, "727480", icon), squareJPEG(t, 32))
+	writeIconFile(t, filepath.Join(lc, "727480", "header.jpg"), encodeJPEG(t, 460, 215))
+	writeIconFile(t, filepath.Join(lc, "727480", "library_600x900.jpg"), encodeJPEG(t, 600, 900))
+	writeIconFile(t, filepath.Join(lc, "727480", "library_hero.jpg"), encodeJPEG(t, 1024, 550))
+	writeIconFile(t, filepath.Join(lc, "727480", "library_hero_blur.jpg"), encodeJPEG(t, 1024, 550))
+	writeIconFile(t, filepath.Join(lc, "727480", "library_header.jpg"), encodeJPEG(t, 460, 215))
+	writeIconFile(t, filepath.Join(lc, "727480", "logo.png"), squareJPEG(t, 256))
+
+	got := findLibraryCacheIcon(lc, "727480")
+	if want := filepath.Join(lc, "727480", icon); got != want {
+		t.Fatalf("got %q, want %q", got, want)
+	}
+}
+
+// A hash-shaped name is the rule; a merely long one is not. logo.png is square
+// on plenty of apps, so "longest name wins" would pick the wrong file outright.
+func TestFindLibraryCacheIconIgnoresLongNonHashNames(t *testing.T) {
+	lc := t.TempDir()
+	writeIconFile(t, filepath.Join(lc, "440", strings.Repeat("z", 48)+".jpg"), squareJPEG(t, 32))
+	writeIconFile(t, filepath.Join(lc, "440", strings.Repeat("a", 39)+".jpg"), squareJPEG(t, 32))
+	writeIconFile(t, filepath.Join(lc, "440", strings.Repeat("A", 40)+".jpg"), squareJPEG(t, 32))
+	writeIconFile(t, filepath.Join(lc, "440", "header.jpg"), encodeJPEG(t, 460, 215))
+
+	// Non-hex, too short and upper-case hex are all rejected, so the header wins.
+	got := findLibraryCacheIcon(lc, "440")
+	if want := filepath.Join(lc, "440", "header.jpg"); got != want {
 		t.Fatalf("got %q, want %q", got, want)
 	}
 }
@@ -316,6 +353,85 @@ func TestEnsureGameIconCachesTheLocalSquareIcon(t *testing.T) {
 	}
 	if n := doer.calls.Load(); n != 0 {
 		t.Fatalf("local icon made %d HTTP requests", n)
+	}
+}
+
+// The regression behind "every game image is broken": the list handed out a URL
+// per row from a path builder, while the files were still being fetched in the
+// background. Only ids whose bytes are actually on disk may report a URL.
+func TestEnsureLocalGameIconsOnlyReportsIconsThatExist(t *testing.T) {
+	dir, doer := useTempIconCache(t)
+	lc := t.TempDir()
+	useLibraryCache(t, lc)
+
+	// 730 is already cached, 570 resolves from librarycache, 440 has only art
+	// this must never promote, and 220 has no folder at all.
+	writeIconFile(t, filepath.Join(dir, "730.jpg"), jpegBytes())
+	writeIconFile(t, filepath.Join(lc, "570", strings.Repeat("a", 40)+".jpg"), squareJPEG(t, 32))
+	writeIconFile(t, filepath.Join(lc, "440", "library_600x900.jpg"), encodeJPEG(t, 600, 900))
+
+	got := EnsureLocalGameIcons([]string{"730", "570", "440", "220", "570", "../evil", ""})
+
+	want := map[string]string{
+		"730": "/img/gameicons/square/730.jpg",
+		"570": "/img/gameicons/square/570.jpg",
+	}
+	if len(got) != len(want) {
+		t.Fatalf("got %v, want %v", got, want)
+	}
+	for id, url := range want {
+		if got[id] != url {
+			t.Fatalf("got[%s] = %q, want %q", id, got[id], url)
+		}
+	}
+	// The copy has to have landed, not just been promised.
+	if !isGameIconFile(filepath.Join(dir, "570.jpg")) {
+		t.Fatal("570 reported a URL but nothing was written")
+	}
+	for _, id := range []string{"440", "220"} {
+		if isGameIconFile(filepath.Join(dir, id+".jpg")) {
+			t.Fatalf("%s was cached from art that is not a square icon", id)
+		}
+	}
+	if n := doer.calls.Load(); n != 0 {
+		t.Fatalf("local pass made %d HTTP requests", n)
+	}
+}
+
+// The Steam root is not hardcoded anywhere on the icon path, and the first
+// candidate is not trusted blindly: SteamSettings.FolderPath ships as
+// C:\Program Files (x86)\Steam and stays that way until the user changes it, so
+// on a machine with Steam on another drive or a portable install the real root
+// is the one further down the platform-config chain.
+func TestSteamLibraryCacheDirSkipsARootWithoutALibraryCache(t *testing.T) {
+	base := t.TempDir()
+	configured := filepath.Join(base, "Program Files (x86)", "Steam")
+	actual := filepath.Join(base, "D_drive", "SteamLibrary", "Steam")
+	if err := os.MkdirAll(filepath.Join(actual, "appcache", "librarycache"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.MkdirAll(configured, 0o755); err != nil {
+		t.Fatal(err)
+	}
+
+	prev := steamRootCandidatesFn
+	steamRootCandidatesFn = func() []string { return []string{configured, actual} }
+	t.Cleanup(func() { steamRootCandidatesFn = prev })
+	// Clear the TTL cache both ways so this neither reads nor leaves a memo.
+	useLibraryCache(t, "")
+	gameIconLibraryMu.Lock()
+	gameIconLibraryTime = time.Time{}
+	gameIconLibraryMu.Unlock()
+
+	if got, want := steamLibraryCacheDir(), filepath.Join(actual, "appcache", "librarycache"); got != want {
+		t.Fatalf("got %q, want %q", got, want)
+	}
+}
+
+func TestEnsureLocalGameIconsEmptyInput(t *testing.T) {
+	useTempIconCache(t)
+	if got := EnsureLocalGameIcons(nil); len(got) != 0 {
+		t.Fatalf("got %v", got)
 	}
 }
 

@@ -39,15 +39,25 @@ func useOwnedGamesRoot(t *testing.T, installed []InstalledGameInfo) {
 		t.Fatal(err)
 	}
 
-	installedFn, warmFn := ownedGamesInstalledFn, ownedGamesWarmFn
+	installedFn, warmFn, localFn := ownedGamesInstalledFn, ownedGamesWarmFn, ownedGamesLocalIconsFn
 	t.Cleanup(func() {
 		ownedGamesInstalledFn, ownedGamesWarmFn = installedFn, warmFn
+		ownedGamesLocalIconsFn = localFn
 		steamAppNameMapMu.Lock()
 		steamAppNameMapMem = nil
 		steamAppNameMapMu.Unlock()
 	})
 	ownedGamesInstalledFn = func(map[string]string) []InstalledGameInfo { return installed }
 	ownedGamesWarmFn = func(context.Context, []string) map[string]string { return nil }
+	// Stands in for a librarycache that has art for everything, so the join is
+	// tested rather than whatever Steam happens to have cached on this machine.
+	ownedGamesLocalIconsFn = func(appIDs []string) map[string]string {
+		out := make(map[string]string, len(appIDs))
+		for _, id := range appIDs {
+			out[id] = GameIconURL(id)
+		}
+		return out
+	}
 }
 
 func TestGetOwnedGamesListJoinsOwnersAndInstalledGames(t *testing.T) {
