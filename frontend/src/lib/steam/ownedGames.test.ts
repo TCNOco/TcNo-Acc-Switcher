@@ -23,6 +23,43 @@ describe("sortOwnedGames", () => {
   });
 });
 
+describe("sortOwnedGames by owner count", () => {
+  const games = [
+    game("delta", ["a"]),
+    game("alpha", ["a", "b", "c"]),
+    game("Charlie", ["a", "b"]),
+    game("bravo", ["a", "b"]),
+    game("zulu"),
+    game("echo"),
+  ];
+  const names = (kind: "owned_count_asc" | "owned_count_desc") =>
+    sortOwnedGames(games, kind).map((g) => g.name);
+
+  it("orders by how many accounts own the game", () => {
+    expect(names("owned_count_asc")).toEqual(["delta", "bravo", "Charlie", "alpha", "echo", "zulu"]);
+    expect(names("owned_count_desc")).toEqual(["alpha", "bravo", "Charlie", "delta", "echo", "zulu"]);
+  });
+
+  it("breaks equal counts by name, case-insensitively and the same way in both directions", () => {
+    for (const kind of ["owned_count_asc", "owned_count_desc"] as const) {
+      const order = names(kind);
+      expect(order.indexOf("bravo")).toBeLessThan(order.indexOf("Charlie"));
+    }
+  });
+
+  it("keeps ownership-unknown games in one block at the end of both directions", () => {
+    for (const kind of ["owned_count_asc", "owned_count_desc"] as const) {
+      expect(names(kind).slice(-2)).toEqual(["echo", "zulu"]);
+    }
+  });
+
+  // Unknown is not zero: an owned game still outranks it when counts run low-to-high.
+  it("does not rank unknown ownership as zero owners", () => {
+    const rows = [game("unknown"), game("owned", ["a"])];
+    expect(sortOwnedGames(rows, "owned_count_asc").map((g) => g.name)).toEqual(["owned", "unknown"]);
+  });
+});
+
 describe("filterOwnedGames", () => {
   const games = [game("Half-Life 2"), game("Portal 2"), game("Team Fortress 2")];
 

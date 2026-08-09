@@ -8,7 +8,11 @@ export type PlatformSortKind =
   | "lastused_new_old"
   | "lastused_old_new"
   | "date_new_old"
-  | "date_old_new";
+  | "date_old_new"
+  // Steam's games tab only. Account lists have no owner count, so `sortAccountIds`
+  // drops through to its default and leaves the list untouched.
+  | "owned_count_asc"
+  | "owned_count_desc";
 
 type PlatformListSortSignal = { id: number; kind: PlatformSortKind };
 

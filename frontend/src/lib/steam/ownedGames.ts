@@ -9,21 +9,42 @@ export type OwnedGameRow = {
   owners: string[];
 };
 
+const byName = (a: OwnedGameRow, b: OwnedGameRow) =>
+  a.name.trim().toLowerCase().localeCompare(b.name.trim().toLowerCase());
+
 /**
- * The games list carries no timestamps, so only the shared sort menu's alphabetical
- * entries mean anything here and every other kind leaves the order untouched. Steam's
- * by-username variants fall back to the game name for the same reason.
+ * An empty `owners` list means ownership was never resolved, not that nobody owns the
+ * game, so ranking those rows as zero would mix guesses in with real counts. They keep
+ * to one block at the end of both directions instead. The name tie-break stays
+ * ascending whichever way the counts run, so an equal-count run reads the same in both.
+ */
+function byOwnerCount(direction: 1 | -1) {
+  return (a: OwnedGameRow, b: OwnedGameRow) => {
+    const aUnknown = a.owners.length === 0;
+    const bUnknown = b.owners.length === 0;
+    if (aUnknown !== bUnknown) return aUnknown ? 1 : -1;
+    if (aUnknown) return byName(a, b);
+    return direction * (a.owners.length - b.owners.length) || byName(a, b);
+  };
+}
+
+/**
+ * The games list carries no timestamps, so beyond the alphabetical and owner-count
+ * entries every kind leaves the order untouched. Steam's by-username variants fall
+ * back to the game name for the same reason.
  */
 export function sortOwnedGames(games: OwnedGameRow[], kind: PlatformSortKind): OwnedGameRow[] {
-  const cmp = (a: OwnedGameRow, b: OwnedGameRow) =>
-    a.name.trim().toLowerCase().localeCompare(b.name.trim().toLowerCase());
   switch (kind) {
     case "alpha_asc":
     case "steam_user_asc":
-      return [...games].sort(cmp);
+      return [...games].sort(byName);
     case "alpha_desc":
     case "steam_user_desc":
-      return [...games].sort((a, b) => -cmp(a, b));
+      return [...games].sort((a, b) => -byName(a, b));
+    case "owned_count_asc":
+      return [...games].sort(byOwnerCount(1));
+    case "owned_count_desc":
+      return [...games].sort(byOwnerCount(-1));
     default:
       return games;
   }

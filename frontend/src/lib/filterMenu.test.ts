@@ -1,5 +1,8 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
+import { get } from "svelte/store";
 import { buildFilterMenuItems } from "./filterMenu";
+import { platformListSort } from "../stores/platformListSort";
+import { resetSteamPageTab, steamPageTab } from "../stores/steamPageTab";
 
 /** Untranslated `t` echoes the key back, so labels assert as resource keys. */
 function labels(items: { label?: string }[]): string[] {
@@ -12,6 +15,10 @@ function sortChildren(platformName: string) {
 }
 
 describe("buildFilterMenuItems", () => {
+  afterEach(() => {
+    resetSteamPageTab();
+  });
+
   it("always leads with Search then Sort By", () => {
     for (const platformName of ["", "Steam", "Epic Games"]) {
       expect(labels(buildFilterMenuItems(platformName))).toEqual([
@@ -47,5 +54,30 @@ describe("buildFilterMenuItems", () => {
     expect(labels(za?.children ?? [])).toEqual(["Filter_Sort_ZA", "Filter_Sort_Username"]);
     expect(az?.action).toBeTypeOf("function");
     expect(za?.action).toBeTypeOf("function");
+  });
+
+  // Only game rows have owners to count, and Steam's two tabs share this one menu.
+  it("offers owner-count ordering on Steam's games tab only", () => {
+    expect(labels(sortChildren("Steam"))).not.toContain("Filter_Sort_OwnedCount");
+
+    steamPageTab.set("games");
+    expect(labels(sortChildren("Steam"))).toEqual([
+      "Filter_Sort_AZ",
+      "Filter_Sort_ZA",
+      "Filter_Sort_LastUsed",
+      "Filter_Sort_OwnedCount",
+    ]);
+    expect(labels(sortChildren("Epic Games"))).not.toContain("Filter_Sort_OwnedCount");
+  });
+
+  it("fires both owner-count directions", () => {
+    steamPageTab.set("games");
+    const owned = sortChildren("Steam").at(-1)?.children ?? [];
+    expect(labels(owned)).toEqual(["Filter_Sort_Ascending", "Filter_Sort_Descending"]);
+
+    owned[0]?.action?.();
+    expect(get(platformListSort)?.kind).toBe("owned_count_asc");
+    owned[1]?.action?.();
+    expect(get(platformListSort)?.kind).toBe("owned_count_desc");
   });
 });
