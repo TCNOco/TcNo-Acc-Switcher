@@ -1,8 +1,7 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
+  import { onDestroy, onMount, tick } from "svelte";
   import { get } from "svelte/store";
   import { Events } from "@wailsio/runtime";
-  import SearchOverlay, { type SearchResultRow } from "./SearchOverlay.svelte";
   import * as SteamService from "../../bindings/TcNo-Acc-Switcher/internal/steam/steamservice.js";
   import type {
     SteamAccountEnrichmentDTO,
@@ -13,7 +12,8 @@
   import { pushToast } from "../stores/toast";
   import { actionBarStatus } from "../stores/fileDrop";
   import { platformActionBusy, requestPlatformAccountsRefresh } from "../stores/platformPage";
-  import { closeSearchOverlay, searchOverlayCtrl } from "../stores/searchOverlay";
+  import { closeSearchOverlay } from "../stores/searchOverlay";
+  import { setSteamGamesSearchFocusHandler } from "../stores/steamGamesSearch";
   import { platformListSort, type PlatformSortKind } from "../stores/platformListSort";
   import { offlineMode, offlineSafeImageSrc } from "../stores/offlineMode";
   import {
@@ -34,6 +34,8 @@
     chunkOwnedGames,
     filterOwnedGames,
     gameOwnerAccounts,
+    ownerDisplayName,
+    ownersTooltipText,
     sortOwnedGames,
     splitGameOwners,
     type OwnedGameRow,
@@ -46,9 +48,17 @@
   /** Owner avatars drawn inline before the row collapses the rest into "+N". */
   const MAX_OWNER_AVATARS = 5;
   const GAMES_REFRESH_DEBOUNCE_MS = 400;
-  const SEARCH_MAX = 8;
   /** Rows per `content-visibility` block — see `chunkOwnedGames`. */
   const ROWS_PER_CHUNK = 25;
+  const SEARCH_INPUT_ID = "steamGames_search";
+  /**
+   * Filtering itself is trivial, but a query that changes the row count by a thousand
+   * makes the browser build that many rows: at 2000 games the icon and owner-avatar
+   * `img` elements alone cost ~125ms, and the whole re-render ~250ms. Well past a
+   * frame, so the list settles once a burst of typing stops. The field is never
+   * debounced — only what the list derives from it.
+   */
+  const FILTER_DEBOUNCE_MS = 120;
 
   export let name: string;
 
@@ -69,20 +79,22 @@
   // switcher keeps its own default and only shares the `platformListSort` signal.
   let sortKind: PlatformSortKind = "owned_count_desc";
   let listEl: HTMLDivElement | undefined;
-  let overlayQuery = "";
-  let overlayQueryDebounceTimer: ReturnType<typeof setTimeout> | null = null;
-  let debouncedOverlayQuery = "";
+  let searchEl: HTMLInputElement | undefined;
+  let query = "";
+  let appliedQuery = "";
+  let filterTimer: ReturnType<typeof setTimeout> | null = null;
   let gamesRefreshTimer: ReturnType<typeof setTimeout> | null = null;
   let offGamesUpdated: (() => void) | undefined;
   let offSort: (() => void) | undefined;
   let lastHandledSortId = 0;
   let busy = false;
 
-  $: so = $searchOverlayCtrl;
   $: accountById = new Map(accounts.map((a) => [a.steamId64, a]));
   $: hasVaultAccounts = accounts.some((a) => a.inVault);
   $: sortedGames = sortOwnedGames(games, sortKind);
-  $: gameChunks = chunkOwnedGames(sortedGames, ROWS_PER_CHUNK);
+  $: scheduleFilter(query);
+  $: visibleGames = filterOwnedGames(sortedGames, appliedQuery);
+  $: gameChunks = chunkOwnedGames(visibleGames, ROWS_PER_CHUNK);
   $: selectedGame = sortedGames.find((g) => g.appId === selectedAppId) ?? null;
 
   $: barTiles = gameOwnerAccounts(selectedGame, accountById).map(
@@ -97,22 +109,18 @@
     reason: barTiles.length > 0 ? "" : selectedGame ? "owners-unknown" : "no-game",
   });
 
-  $: {
-    const q = overlayQuery;
-    if (overlayQueryDebounceTimer) clearTimeout(overlayQueryDebounceTimer);
-    overlayQueryDebounceTimer = setTimeout(() => { debouncedOverlayQuery = q; }, 150);
-  }
-
-  $: searchRows = buildGameSearchRows(debouncedOverlayQuery);
-
-  function ownerLabel(steamId64: string): string {
-    return accountById.get(steamId64)?.displayName || steamId64;
-  }
-
-  function ownerAvatar(steamId64: string, offline: boolean): string {
+  // These take the account map rather than closing over it so that Svelte tracks it
+  // as a dependency of every markup expression that calls them. Accounts resolve
+  // after the games list does, and a call that only mentioned `steamId64` left the
+  // row showing the raw id — the action or interpolation never re-ran.
+  function ownerAvatar(
+    byId: Map<string, GamesAccount>,
+    steamId64: string,
+    offline: boolean,
+  ): string {
     return offlineSafeImageSrc(
       offline,
-      accountById.get(steamId64)?.avatarUrl ?? "",
+      byId.get(steamId64)?.avatarUrl ?? "",
       PROFILE_PLACEHOLDER,
     );
   }
@@ -128,11 +136,6 @@
     const img = event.currentTarget as HTMLImageElement;
     if (img.getAttribute("src") === GAME_ICON_FALLBACK) return;
     img.src = GAME_ICON_FALLBACK;
-  }
-
-  function ownersTooltip(owners: string[]): string {
-    if (owners.length === 0) return $t("Steam_Games_OwnerUnknown");
-    return owners.map(ownerLabel).join("\n");
   }
 
   function selectGame(appId: string): void {
@@ -266,27 +269,34 @@
     }
   }
 
-  function buildGameSearchRows(query: string): SearchResultRow[] {
-    const trimmed = query.trim();
-    if (!trimmed) return [];
-    return filterOwnedGames(sortedGames, trimmed)
-      .slice(0, SEARCH_MAX)
-      .map((game): SearchResultRow => ({
-        key: `g:${game.appId}`,
-        title: game.name,
-        badge: $t("Search_Section_Game"),
-        accountIconUrl: gameIcon(game),
-      }));
+  /**
+   * Type-anywhere, routed here by App rather than to the search overlay. The caller
+   * has already swallowed the keystroke, so it is appended by hand; appending before
+   * the focus lands is what keeps the first character from being dropped when the
+   * user types faster than focus moves.
+   */
+  async function focusSearch(append: string): Promise<void> {
+    query += append;
+    await tick();
+    searchEl?.focus();
+    const end = searchEl?.value.length ?? 0;
+    searchEl?.setSelectionRange(end, end);
   }
 
-  function onSearchPick(ev: CustomEvent<SearchResultRow>): void {
-    const row = ev.detail;
-    closeSearchOverlay();
-    if (!row.key.startsWith("g:")) return;
-    selectGame(row.key.slice(2));
-    listEl
-      ?.querySelector<HTMLElement>(`[data-app-id="${CSS.escape(row.key.slice(2))}"]`)
-      ?.scrollIntoView({ block: "nearest" });
+  function scheduleFilter(q: string): void {
+    if (q === appliedQuery) return;
+    if (filterTimer) clearTimeout(filterTimer);
+    filterTimer = setTimeout(() => {
+      filterTimer = null;
+      appliedQuery = q;
+    }, FILTER_DEBOUNCE_MS);
+  }
+
+  function onSearchKeydown(e: KeyboardEvent): void {
+    if (e.key !== "Escape" || query === "") return;
+    query = "";
+    e.preventDefault();
+    e.stopPropagation();
   }
 
   function backgroundMenu(): MenuItemDef[] {
@@ -298,6 +308,11 @@
 
   onMount(() => {
     setSteamGamesAccountPickHandler((steamId64) => { void pickAccount(steamId64); });
+    setSteamGamesSearchFocusHandler((append) => { void focusSearch(append); });
+    // The overlay belongs to the switcher tab and is not mounted here. Toggling tabs
+    // while it was open would otherwise leave the store open with nothing rendering
+    // it, and App would keep routing keystrokes into it.
+    closeSearchOverlay();
     void loadGames();
     void loadAccounts().catch(() => { accounts = []; accountsLoaded = true; });
 
@@ -316,7 +331,8 @@
     offGamesUpdated?.();
     offSort?.();
     if (gamesRefreshTimer) clearTimeout(gamesRefreshTimer);
-    if (overlayQueryDebounceTimer) clearTimeout(overlayQueryDebounceTimer);
+    if (filterTimer) clearTimeout(filterTimer);
+    setSteamGamesSearchFocusHandler(null);
     clearSteamGamesBar();
     actionBarStatus.set("");
     platformActionBusy.set({ busy: false, platformKey: "" });
@@ -325,20 +341,30 @@
 
 <div class="main-content platform-accounts-root">
 <div class="platformTableHost steamGames__host">
-  <SearchOverlay
-    open={so.open}
-    syncNonce={so.nonce}
-    initialQuery={so.initialQuery}
-    bind:query={overlayQuery}
-    placeholder={$t("Context_Search")}
-    primaryRows={searchRows}
-    categoryRows={[]}
-    categoryHint=""
-    gameRows={[]}
-    gameHint=""
-    on:close={() => closeSearchOverlay()}
-    on:pick={onSearchPick}
-  />
+  <div class="steamGames__search">
+    <label class="sr-only" for={SEARCH_INPUT_ID}>{$t("Steam_Games_SearchLabel")}</label>
+    <input
+      id={SEARCH_INPUT_ID}
+      bind:this={searchEl}
+      bind:value={query}
+      type="search"
+      class="steamGames__searchInput"
+      placeholder={$t("Steam_Games_SearchLabel")}
+      spellcheck="false"
+      autocomplete="off"
+      on:keydown={onSearchKeydown}
+    />
+    <button
+      type="button"
+      class="steamGames__searchBtn"
+      aria-label={$t("Filter_Search")}
+      on:click={() => searchEl?.focus()}
+    >
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+        <path d="M15.5 14h-.79l-.28-.27a6.47 6.47 0 0 0 1.57-4.23A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5Zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14Z" />
+      </svg>
+    </button>
+  </div>
   <div class="platformTable steamGames__table">
   <div
     class="steamGames"
@@ -351,8 +377,10 @@
     {#if accountsLoaded && !hasVaultAccounts}
       <p class="platform-accounts-hint steamGames__intro">{$t("Steam_Games_NoVaultAccounts")}</p>
     {/if}
-    {#if sortedGames.length === 0}
-      {#if !gamesLoading && !loadError && accountsLoaded && hasVaultAccounts}
+    {#if visibleGames.length === 0}
+      {#if sortedGames.length > 0}
+        <p class="platform-accounts-hint">{$t("Steam_Games_SearchNoMatch")}</p>
+      {:else if !gamesLoading && !loadError && accountsLoaded && hasVaultAccounts}
         <p class="platform-accounts-hint">{$t("Steam_Games_Empty")}</p>
       {/if}
     {:else}
@@ -383,16 +411,16 @@
                       {#each owners.shown as steamId64 (steamId64)}
                         <img
                           class="steamGames__ownerAvatar"
-                          src={ownerAvatar(steamId64, $offlineMode)}
+                          src={ownerAvatar(accountById, steamId64, $offlineMode)}
                           alt=""
                           draggable="false"
-                          use:tooltipAction={{ text: ownerLabel(steamId64), boundary: listEl }}
+                          use:tooltipAction={{ text: ownerDisplayName(accountById, steamId64), boundary: listEl }}
                         />
                       {/each}
                       {#if owners.overflow > 0}
                         <span
                           class="steamGames__ownerOverflow"
-                          use:tooltipAction={{ text: ownersTooltip(game.owners), boundary: listEl }}
+                          use:tooltipAction={{ text: ownersTooltipText(accountById, game.owners, $t("Steam_Games_OwnerUnknown"), "\n"), boundary: listEl }}
                         >+{owners.overflow}</span>
                       {/if}
                     {/if}
@@ -400,7 +428,9 @@
                   <span class="sr-only">
                     {game.owners.length === 0
                       ? $t("Steam_Games_OwnerUnknown")
-                      : $t("Steam_Games_OwnedBy", { names: game.owners.map(ownerLabel).join(", ") })}
+                      : $t("Steam_Games_OwnedBy", {
+                          names: ownersTooltipText(accountById, game.owners, "", ", "),
+                        })}
                   </span>
                 </button>
               </div>

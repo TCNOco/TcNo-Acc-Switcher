@@ -4,6 +4,7 @@ import { activeModal, cancelActiveModal, modalBusy } from "../stores/modal";
 import { contextMenu, closeContextMenu } from "../stores/contextMenu";
 import { navigateBackLikeButton, navigateForward } from "../stores/nav";
 import { searchOverlayCtrl, openSearchOverlay, closeSearchOverlay } from "../stores/searchOverlay";
+import { focusSteamGamesSearch } from "../stores/steamGamesSearch";
 import { securityStatus } from "../stores/security";
 import {
   inferControllerGlyphScheme,
@@ -487,7 +488,7 @@ function handleAction(action: ControllerAction, scheme?: ControllerGlyphScheme):
       break;
     case "palette":
       if (shouldPauseForTyping()) return;
-      if (!get(activeModal) && !get(contextMenu)) {
+      if (!get(activeModal) && !get(contextMenu) && !focusSteamGamesSearch()) {
         openSearchOverlay(">");
       }
       break;

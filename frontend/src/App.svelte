@@ -39,6 +39,7 @@
     searchOverlayCtrl,
     searchOverlayPendingAppend,
   } from "./stores/searchOverlay";
+  import { focusSteamGamesSearch } from "./stores/steamGamesSearch";
   import {
     commandPaletteHotkey,
     eventMatchesCommandPaletteHotkey,
@@ -238,6 +239,12 @@
         return;
       }
       e.preventDefault();
+      // The Steam games tab has no overlay to open, so the hotkey lands on its
+      // inline bar. The overlay it used to raise there listed nothing but games
+      // anyway, and never the commands the ">" prefix asks for.
+      if (focusSteamGamesSearch()) {
+        return;
+      }
       openSearchOverlay(">");
       return;
     }
@@ -260,6 +267,9 @@
       return;
     }
     e.preventDefault();
+    if (focusSteamGamesSearch(e.key)) {
+      return;
+    }
     openSearchOverlay(e.key);
   }
 

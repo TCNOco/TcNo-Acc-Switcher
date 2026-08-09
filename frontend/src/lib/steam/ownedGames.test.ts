@@ -3,6 +3,8 @@ import {
   chunkOwnedGames,
   filterOwnedGames,
   gameOwnerAccounts,
+  ownerDisplayName,
+  ownersTooltipText,
   sortOwnedGames,
   splitGameOwners,
   type OwnedGameRow,
@@ -115,6 +117,41 @@ describe("gameOwnerAccounts", () => {
 
   it("drops owners with no account behind them", () => {
     expect(gameOwnerAccounts(game("x", ["a", "gone", "b"]), accounts).map((v) => v.steamId64)).toEqual(["a", "b"]);
+  });
+});
+
+describe("ownerDisplayName", () => {
+  const accounts = new Map([["76561198000000001", { displayName: "Wesley" }]]);
+
+  it("names a known owner", () => {
+    expect(ownerDisplayName(accounts, "76561198000000001")).toBe("Wesley");
+  });
+
+  // Games load before accounts do, so an unresolved id is the normal first paint.
+  it("falls back to the id while the account list is still loading", () => {
+    expect(ownerDisplayName(new Map(), "76561198000000001")).toBe("76561198000000001");
+    expect(ownerDisplayName(new Map([["76561198000000001", { displayName: "" }]]), "76561198000000001"))
+      .toBe("76561198000000001");
+  });
+});
+
+describe("ownersTooltipText", () => {
+  const accounts = new Map([
+    ["a", { displayName: "Ann" }],
+    ["b", { displayName: "Bob" }],
+  ]);
+
+  it("joins every owner's name with the given separator", () => {
+    expect(ownersTooltipText(accounts, ["a", "b"], "unknown", "\n")).toBe("Ann\nBob");
+    expect(ownersTooltipText(accounts, ["a", "b"], "unknown", ", ")).toBe("Ann, Bob");
+  });
+
+  it("uses the unknown text when ownership was never resolved", () => {
+    expect(ownersTooltipText(accounts, [], "unknown", ", ")).toBe("unknown");
+  });
+
+  it("keeps unresolved ids in place alongside resolved names", () => {
+    expect(ownersTooltipText(accounts, ["a", "c"], "unknown", ", ")).toBe("Ann, c");
   });
 });
 

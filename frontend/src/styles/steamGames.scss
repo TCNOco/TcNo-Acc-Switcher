@@ -9,8 +9,65 @@
   flex-direction: column;
 }
 
-/* Clips here and not on the host: the search overlay is an absolutely positioned
-   sibling of this box, and clipping it to the list's width would cut it off. */
+/* Full-width bar above the list. The input and the button read as one control, so
+   the border lives on the wrapper and neither child draws one of its own. */
+.steamGames__search {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: stretch;
+  margin: 0.25rem 0.5rem 0;
+  background: var(--even-darker-code-background);
+  border-bottom: 2px solid var(--input-number-border);
+
+  &:focus-within {
+    border-bottom-color: var(--accent);
+  }
+}
+
+.steamGames__searchInput {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  padding: 0.45em 0.6em;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--whiteSecondary);
+  font: inherit;
+
+  &::placeholder {
+    color: var(--modal-placeholder-fg, var(--whiteSecondary));
+    opacity: 0.7;
+  }
+
+  /* The native affordance is a themed grey "x" this app cannot restyle, and Escape
+     already clears the field. */
+  &::-webkit-search-cancel-button {
+    appearance: none;
+  }
+}
+
+.steamGames__searchBtn {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.2rem;
+  margin: 0;
+  padding: 0 0.6rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  opacity: 0.8;
+
+  &:hover {
+    opacity: 1;
+    background: var(--button-bg-hover, var(--button-bg));
+  }
+}
+
+/* Clips here and not on the host: the search bar is a sibling of this box and must
+   keep its own height rather than be squeezed by the list's overflow. */
 .steamGames__table {
   flex: 1 1 auto;
   min-height: 0;

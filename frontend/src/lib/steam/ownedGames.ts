@@ -78,6 +78,29 @@ export function chunkOwnedGames(games: OwnedGameRow[], size: number): OwnedGameC
   return out;
 }
 
+/**
+ * The name to show for an owner, falling back to the raw SteamID64 while the account
+ * list is still loading. Takes the map rather than reading one from a closure so that
+ * callers in Svelte markup declare it as a dependency: accounts resolve after the
+ * games list does, and a call that mentioned only the id never re-ran.
+ */
+export function ownerDisplayName(
+  accountsById: Map<string, { displayName: string }>,
+  steamId64: string,
+): string {
+  return accountsById.get(steamId64)?.displayName || steamId64;
+}
+
+export function ownersTooltipText(
+  accountsById: Map<string, { displayName: string }>,
+  owners: string[],
+  unknownText: string,
+  separator: string,
+): string {
+  if (owners.length === 0) return unknownText;
+  return owners.map((id) => ownerDisplayName(accountsById, id)).join(separator);
+}
+
 export type OwnerSplit = {
   shown: string[];
   /** How many owners the row hides behind the "+N" badge. */

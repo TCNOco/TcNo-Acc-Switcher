@@ -1,6 +1,7 @@
 import { get } from "svelte/store";
 import { t } from "../stores/i18n";
 import { openSearchOverlay } from "../stores/searchOverlay";
+import { focusSteamGamesSearch } from "../stores/steamGamesSearch";
 import { triggerPlatformSort } from "../stores/platformListSort";
 import { steamPageTab } from "../stores/steamPageTab";
 import type { MenuItemDef } from "../stores/contextMenu";
@@ -125,7 +126,12 @@ export function buildFilterMenuItems(platformName: string): MenuItemDef[] {
   return [
     {
       label: tr("Filter_Search"),
-      action: () => openSearchOverlay(""),
+      // The games list filters in place through its own bar; the overlay is not
+      // mounted on that tab, so this focuses the bar instead of opening nothing.
+      action: () => {
+        if (focusSteamGamesSearch()) return;
+        openSearchOverlay("");
+      },
     },
     {
       label: tr("Filter_SortBy"),

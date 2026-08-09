@@ -1065,5 +1065,7 @@
   "Steam_Games_AccountStrip": "Switch to account",
   "Steam_Games_MoreAccounts": "More accounts",
   "Steam_Games_StripPickGame": "Pick a game",
-  "Steam_Games_StripOwnersUnknown": "Owners unknown"
+  "Steam_Games_StripOwnersUnknown": "Owners unknown",
+  "Steam_Games_SearchLabel": "Search games…",
+  "Steam_Games_SearchNoMatch": "No games match your search."
 }
