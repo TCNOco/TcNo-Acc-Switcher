@@ -182,10 +182,14 @@
   height: 24px;
   padding: 0 0.25rem;
   border-radius: 12px;
-  display: inline-flex;
+  /* flex, not inline-flex: as an inline-level box it sat on the row's baseline,
+     and the inherited line-height made its line box taller than the 24px badge,
+     which pushed the digits above centre. */
+  display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.72rem;
+  line-height: 1;
+  font-size: 0.8rem;
   font-weight: 600;
   background: var(--button-bg);
   opacity: 0.85;
