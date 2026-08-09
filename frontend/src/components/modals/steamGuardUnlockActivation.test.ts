@@ -125,10 +125,21 @@ describe("adding an account", () => {
     expect(mount).toContain("addAccountPrepared = true");
     expect(mount).toContain("showAddAccount()");
 
-    const prepare = fragmentAfter("async function showAddAccount", 1_200);
+    const prepare = fragmentAfter("async function showAddAccount", 1_800);
     expect(prepare).toContain("newAddAccountAttempt()");
     expect(prepare).toContain("!status.configured || !status.unlocked");
     expect(prepare).toContain("vaultSetupForAddAccount = true");
+    // The capture guard has to be up before either password is typed, and the
+    // attempt is the only identity there is to bind it to.
+    expect(prepare).toContain("contentProtection.acquire(pendingId)");
+  });
+
+  // Acquiring on mount used the id from the menu request, which for an add is
+  // empty: it threw, and no lease meant no capture protection either.
+  it("does not take a capability before an attempt exists", () => {
+    const mount = fragmentAfter('} else if (entry === "add-account") {', 400);
+    expect(mount).not.toContain("contentProtection.acquire(account.id)");
+    expect(mount).toContain("focusCurrentScreen()");
   });
 
   // Polling spends the attempt, so anything afterwards has to be authorised

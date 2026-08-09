@@ -10,6 +10,8 @@ export type ContextMenuBinding =
       items: ContextMenuItemsGetter;
       /** Runs after preventDefault/stopPropagation; before building items (e.g. sync selection). */
       beforeOpen?: () => void;
+      /** See ContextMenuOptions.paginate — false draws short flyouts in full. */
+      paginate?: boolean;
     };
 
 type ContextMenuModifiers = Pick<MouseEvent, "ctrlKey" | "shiftKey" | "altKey" | "metaKey">;
@@ -27,11 +29,12 @@ export function preventUnmodifiedBrowserContextMenu(ev: MouseEvent): void {
 function normalize(binding: ContextMenuBinding): {
   getter: ContextMenuItemsGetter;
   beforeOpen?: () => void;
+  paginate?: boolean;
 } {
   if (typeof binding === "function") {
     return { getter: binding };
   }
-  return { getter: binding.items, beforeOpen: binding.beforeOpen };
+  return { getter: binding.items, beforeOpen: binding.beforeOpen, paginate: binding.paginate };
 }
 
 function isKeyboardContextMenuEvent(ev: KeyboardEvent): boolean {
@@ -50,7 +53,11 @@ function rectFromElement(el: HTMLElement): ContextMenuAnchorRect {
   };
 }
 
-function openMenu(getter: ContextMenuItemsGetter, beforeOpen: (() => void) | undefined, open: (items: MenuItemDef[]) => void): void {
+function openMenu(
+  getter: ContextMenuItemsGetter,
+  beforeOpen: (() => void) | undefined,
+  open: (items: MenuItemDef[]) => void,
+): void {
   beforeOpen?.();
   const items = getter?.() ?? [];
   if (!items.length) {
@@ -63,7 +70,8 @@ function openMenu(getter: ContextMenuItemsGetter, beforeOpen: (() => void) | und
 export const contextMenu: Action<HTMLElement, ContextMenuBinding> = (node, binding) => {
   let getter: ContextMenuItemsGetter;
   let beforeOpen: (() => void) | undefined;
-  ({ getter, beforeOpen } = normalize(binding));
+  let paginate: boolean | undefined;
+  ({ getter, beforeOpen, paginate } = normalize(binding));
   const keyboardHost = node.closest("[data-dnd-cell]");
   const listenerNodes = keyboardHost instanceof HTMLElement && keyboardHost !== node ? [node, keyboardHost] : [node];
 
@@ -73,7 +81,7 @@ export const contextMenu: Action<HTMLElement, ContextMenuBinding> = (node, bindi
     }
     ev.preventDefault();
     ev.stopPropagation();
-    openMenu(getter, beforeOpen, (items) => openContextMenu(ev.clientX, ev.clientY, items));
+    openMenu(getter, beforeOpen, (items) => openContextMenu(ev.clientX, ev.clientY, items, { paginate }));
   };
 
   const onKeyDown = (ev: KeyboardEvent): void => {
@@ -83,7 +91,7 @@ export const contextMenu: Action<HTMLElement, ContextMenuBinding> = (node, bindi
     const target = ev.target instanceof HTMLElement ? ev.target : node;
     ev.preventDefault();
     ev.stopPropagation();
-    openMenu(getter, beforeOpen, (items) => openContextMenuAtRect(rectFromElement(target), items));
+    openMenu(getter, beforeOpen, (items) => openContextMenuAtRect(rectFromElement(target), items, { paginate }));
   };
 
   listenerNodes.forEach((listenerNode) => {
@@ -92,7 +100,7 @@ export const contextMenu: Action<HTMLElement, ContextMenuBinding> = (node, bindi
   });
   return {
     update(next: ContextMenuBinding) {
-      ({ getter, beforeOpen } = normalize(next));
+      ({ getter, beforeOpen, paginate } = normalize(next));
     },
     destroy() {
       listenerNodes.forEach((listenerNode) => {

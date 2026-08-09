@@ -98,6 +98,11 @@
   let now = Date.now();
   let clockTimer: ReturnType<typeof setInterval> | undefined;
   let offRevoked: (() => void) | undefined;
+  let offAccountUpdated: (() => void) | undefined;
+  /** Whose capability the open picker was listed under. Once the picker is
+   *  showing, the state holds no account of its own to re-derive it from. */
+  let pickerIdentity: SteamGuardAccountRef | null = null;
+  let pickerRefreshTimer: ReturnType<typeof setTimeout> | undefined;
 	let qrStage: "idle" | "scanning" | "approval" | "authorizing" | "authorized" | "error" = "idle";
 	let qrMessage = "";
 	let qrAttempt = "";
@@ -760,6 +765,32 @@
 		announce($t("SteamGuard_Announce_UnlockToContinue"));
 	}
 
+  /**
+   * Picker rows carry the switcher's avatar and community name, which for an
+   * account added seconds ago are still downloading. The account list emits a
+   * patch when they land, so the picker follows instead of showing the login
+   * name against a blank image until it is reopened.
+   */
+  async function refreshPickerRows(): Promise<void> {
+    if (state.screen !== "all-accounts" || busy || !pickerIdentity) return;
+    try {
+      const rows = await accountSummaries(pickerIdentity);
+      if (state.screen === "all-accounts") transition({ type: "show-all", accounts: rows });
+    } catch (error) {
+      // What is on screen is still correct, only its images are stale.
+      console.error("Steam Guard: account rows could not be refreshed", error);
+    }
+  }
+
+  /** Coalesced: a refreshed account emits several patches as each asset lands. */
+  function schedulePickerRefresh(): void {
+    if (pickerRefreshTimer) clearTimeout(pickerRefreshTimer);
+    pickerRefreshTimer = setTimeout(() => {
+      pickerRefreshTimer = undefined;
+      void refreshPickerRows();
+    }, 400);
+  }
+
   async function showAllAccounts(): Promise<void> {
     if (busy) return;
     busy = true;
@@ -767,14 +798,13 @@
       const currentAccount = steamGuardAccountForState(state) ?? account;
       // Opened from an account, so leaving the picker goes back to that account.
       // Screens holding no account of their own are not places to go back to:
-      // the setup page is a placeholder, and an import started from the picker
-      // has nothing behind it but the picker itself.
-      // Screens holding no account of their own are not places to go back to.
-      // The add screen's account is a pending attempt or one just created, and
-      // neither is where the user came from.
+      // the setup page is a placeholder, an import started from the picker has
+      // nothing behind it but the picker itself, and the add screen holds either
+      // a pending attempt or an account created seconds ago.
       pickerReturnAccount = state.screen === "setup" || state.screen === "add-account"
         ? null
         : steamGuardAccountForState(state) ?? null;
+      pickerIdentity = currentAccount;
       transition({ type: "show-all", accounts: await accountSummaries(currentAccount) });
     } catch (error) {
       console.error("Steam Guard: account list could not be loaded", error);
@@ -944,6 +974,10 @@
       // something a capability can be bound to and has no account to use.
       const pendingId = await controller.newAddAccountAttempt();
       const pendingRef = { id: pendingId, username: "" };
+      // A Steam password, and possibly a vault password, are about to be typed
+      // here, so the capture guard goes up before the form does. The pending id
+      // is what it binds to; there is no account yet.
+      await contentProtection.acquire(pendingId);
       const status = await controller.getSteamGuardVaultStatus?.();
       if (status && (!status.configured || !status.unlocked)) {
         // This is the one screen reachable with no vault at all - it is how the
@@ -2202,6 +2236,10 @@
   }
 
   onMount(() => {
+			offAccountUpdated = Events.On("steam-account-updated", () => {
+				if (state.screen !== "all-accounts") return;
+				schedulePickerRefresh();
+			});
 			offRevoked = Events.On("steamguard:sensitive-view-revoked", () => {
 				contentProtection.revoke();
 				const currentAccount = steamGuardAccountForState(state) ?? account;
@@ -2215,6 +2253,12 @@
 		});
 			if (entry === "account" || entry === "all-accounts") {
 				void openAccountScreen(account);
+			} else if (entry === "add-account") {
+				// Nothing to bind a capability to yet: the id arrives with the
+				// attempt, which the reactive gate mints. Acquiring here with the
+				// empty id the menu request carries is what failed, and it failed
+				// before any lease existed - so the capture guard never went up.
+				focusCurrentScreen();
 			} else {
 				void contentProtection.acquire(account.id).then(async () => {
 					if (entry === "qr") void scanSteamWindow();
@@ -2247,6 +2291,8 @@
 			console.error("Steam Guard: modal teardown failed", error);
 		});
 		offRevoked?.();
+		offAccountUpdated?.();
+		if (pickerRefreshTimer) clearTimeout(pickerRefreshTimer);
     setSteamGuardDropTarget("none");
     if (clockTimer) clearInterval(clockTimer);
     if (statusTimer) clearTimeout(statusTimer);
@@ -2668,6 +2714,9 @@
   {:else if state.screen === "add-account"}
     <section class="steam-guard__stack">
       <h2 class="steam-guard__heading" data-steamguard-focus tabindex="-1">{$t("SteamGuard_AddAccount_Title")}</h2>
+      <!-- Which account is being signed in. By the code step the form is gone,
+           and without this there is nothing on screen saying what was typed. -->
+      {#if state.account?.username}<p class="steam-guard__account">{state.account.username}</p>{/if}
       {#if authStage === "idle"}
         <form class="steam-guard__stack" on:submit|preventDefault={() => void beginAddAccount(authPurpose)}>
           <p>{$t("SteamGuard_AddAccount_Body")}</p>
@@ -2681,14 +2730,19 @@
           </label>
           {#if inlineError}<p class="steam-guard__error" role="alert">{inlineError}</p>{/if}
           <p class="steam-guard__hint">{$t("SteamGuard_AddAccount_As")}</p>
-          <div class="steam-guard__actions steam-guard__actions--end">
-            <button type="button" class="btnicontext modal-primary" aria-busy={busy} disabled={busy || !authAccountName.trim() || !authPassword} on:click={() => void beginAddAccount("login_only")}>
-              {#if busy}<span class="steam-guard__spinner" aria-hidden="true"></span>{/if}{$t("SteamGuard_AddAccount_AsLoginOnly")}
+          <div class="steam-guard__actions steam-guard__actions--split">
+            <button type="button" class="btnicontext" disabled={busy} on:click={showAllAccounts}>
+              <svg class="steam-guard__icon" viewBox={ICONS.back.box} aria-hidden="true"><path d={ICONS.back.path} /></svg>
+              {$t("SteamGuard_Back")}
             </button>
-            <button type="button" class="btnicontext modal-primary" aria-busy={busy} disabled={busy || !authAccountName.trim() || !authPassword} on:click={() => void beginAddAccount("add_authenticator")}>
-              {#if busy}<span class="steam-guard__spinner" aria-hidden="true"></span>{/if}{$t("SteamGuard_AddAccount_AsSteamGuard")}
-            </button>
-            <button type="button" class="btnicontext" disabled={busy} on:click={showAllAccounts}>{$t("SteamGuard_Back")}</button>
+            <div class="steam-guard__actions-group">
+              <button type="button" class="btnicontext modal-primary" aria-busy={busy} disabled={busy || !authAccountName.trim() || !authPassword} on:click={() => void beginAddAccount("login_only")}>
+                {#if busy}<span class="steam-guard__spinner" aria-hidden="true"></span>{:else}<svg class="steam-guard__icon" viewBox={ICONS.key.box} aria-hidden="true"><path d={ICONS.key.path} /></svg>{/if}{$t("SteamGuard_AddAccount_AsLoginOnly")}
+              </button>
+              <button type="button" class="btnicontext modal-primary" aria-busy={busy} disabled={busy || !authAccountName.trim() || !authPassword} on:click={() => void beginAddAccount("add_authenticator")}>
+                {#if busy}<span class="steam-guard__spinner" aria-hidden="true"></span>{:else}<svg class="steam-guard__icon" viewBox={ICONS.shield.box} aria-hidden="true"><path d={ICONS.shield.path} /></svg>{/if}{$t("SteamGuard_AddAccount_AsSteamGuard")}
+              </button>
+            </div>
           </div>
         </form>
       {:else if authStage === "credentials"}

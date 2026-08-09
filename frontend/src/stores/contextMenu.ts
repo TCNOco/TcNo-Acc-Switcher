@@ -39,7 +39,17 @@ export type ContextMenuState =
       y: number;
       items: MenuItemDef[];
       anchorRect?: ContextMenuAnchorRect;
+      paginate?: boolean;
     };
+
+export type ContextMenuOptions = {
+  /**
+   * Flyout columns page themselves against the root column's height, so a short root menu
+   * splits a handful of rows across a page each. Set false on menus whose submenus are
+   * always short enough to draw in full.
+   */
+  paginate?: boolean;
+};
 
 export type ContextMenuAnchorRect = {
   left: number;
@@ -61,14 +71,23 @@ export const submenuOpenPath = writable<number[]>([]);
  */
 export const submenuExpandEnabled = writable(false);
 
-export function openContextMenu(x: number, y: number, items: MenuItemDef[]): void {
+export function openContextMenu(
+  x: number,
+  y: number,
+  items: MenuItemDef[],
+  options: ContextMenuOptions = {},
+): void {
   ctxMenuLog("openContextMenu", { x, y, itemCount: items.length });
   submenuOpenPath.set([]);
   submenuExpandEnabled.set(false);
-  contextMenu.set({ x, y, items });
+  contextMenu.set({ x, y, items, paginate: options.paginate });
 }
 
-export function openContextMenuAtRect(rect: ContextMenuAnchorRect, items: MenuItemDef[]): void {
+export function openContextMenuAtRect(
+  rect: ContextMenuAnchorRect,
+  items: MenuItemDef[],
+  options: ContextMenuOptions = {},
+): void {
   ctxMenuLog("openContextMenuAtRect", { rect, itemCount: items.length });
   submenuOpenPath.set([]);
   submenuExpandEnabled.set(false);
@@ -77,6 +96,7 @@ export function openContextMenuAtRect(rect: ContextMenuAnchorRect, items: MenuIt
     y: rect.bottom,
     items,
     anchorRect: { ...rect },
+    paginate: options.paginate,
   });
 }
 

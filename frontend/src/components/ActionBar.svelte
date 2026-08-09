@@ -10,8 +10,7 @@
   import GameShortcutBar from "./GameShortcutBar.svelte";
   import { openContextMenu } from "../stores/contextMenu";
   import type { MenuItemDef } from "../stores/contextMenu";
-  import { openSearchOverlay } from "../stores/searchOverlay";
-  import { triggerPlatformSort } from "../stores/platformListSort";
+  import { buildFilterMenuItems } from "../lib/filterMenu";
   import { prefetchPage } from "../lib/pageLoaders";
   import { steamGuardActionAccount } from "../stores/steamGuardAction";
   import { emitSteamGuardMenuRequest } from "../lib/steam/steamGuardMenuRequest";
@@ -45,99 +44,7 @@
   }
 
   function filterMenuItems(): MenuItemDef[] {
-    const tr = get(t);
-    const cur = get(route);
-
-    if (cur.page === "home") {
-      return [
-        {
-          label: tr("Filter_Search"),
-          action: () => openSearchOverlay(""),
-        },
-        {
-          label: tr("Filter_SortBy"),
-          children: [
-            {
-              label: tr("Filter_Sort_AZ"),
-              action: () => triggerPlatformSort("alpha_asc"),
-            },
-            {
-              label: tr("Filter_Sort_ZA"),
-              action: () => triggerPlatformSort("alpha_desc"),
-            },
-          ],
-        },
-      ];
-    }
-
-    const steam = platformName === "Steam";
-    const sortAlphaBlock: MenuItemDef[] = steam
-      ? ([
-          {
-            label: tr("Filter_Sort_AZ"),
-            action: () => triggerPlatformSort("alpha_asc"),
-            children: [
-              {
-                label: tr("Filter_Sort_AZ"),
-                action: () => triggerPlatformSort("alpha_asc"),
-              },
-              {
-                label: tr("Filter_Sort_Username"),
-                action: () => triggerPlatformSort("steam_user_asc"),
-              },
-            ],
-          },
-          {
-            label: tr("Filter_Sort_ZA"),
-            action: () => triggerPlatformSort("alpha_desc"),
-            children: [
-              {
-                label: tr("Filter_Sort_ZA"),
-                action: () => triggerPlatformSort("alpha_desc"),
-              },
-              {
-                label: tr("Filter_Sort_Username"),
-                action: () => triggerPlatformSort("steam_user_desc"),
-              },
-            ],
-          },
-        ] as MenuItemDef[])
-      : [
-          {
-            label: tr("Filter_Sort_AZ"),
-            action: () => triggerPlatformSort("alpha_asc"),
-          },
-          {
-            label: tr("Filter_Sort_ZA"),
-            action: () => triggerPlatformSort("alpha_desc"),
-          },
-        ];
-    const sortChildren: MenuItemDef[] = [
-      ...sortAlphaBlock,
-      {
-        label: tr("Filter_Sort_LastUsed"),
-        children: [
-          {
-            label: tr("Filter_Sort_NewOld"),
-            action: () => triggerPlatformSort("lastused_new_old"),
-          },
-          {
-            label: tr("Filter_Sort_OldNew"),
-            action: () => triggerPlatformSort("lastused_old_new"),
-          },
-        ],
-      },
-    ];
-    return [
-      {
-        label: tr("Filter_Search"),
-        action: () => openSearchOverlay(""),
-      },
-      {
-        label: tr("Filter_SortBy"),
-        children: sortChildren,
-      },
-    ];
+    return buildFilterMenuItems(get(route).page === "home" ? "" : platformName);
   }
 
   function onFilterClick(): void {
@@ -146,7 +53,8 @@
       return;
     }
     const rct = el.getBoundingClientRect();
-    openContextMenu(rct.left, rct.bottom + 4, filterMenuItems());
+    // Two rows deep, so the root column is too short to page its own flyouts sensibly.
+    openContextMenu(rct.left, rct.bottom + 4, filterMenuItems(), { paginate: false });
   }
 
   function showHelpModal() {

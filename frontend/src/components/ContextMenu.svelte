@@ -491,6 +491,7 @@
       {layoutEpoch}
       depth={1}
       pathPrefix={[]}
+      paginate={$contextMenu.paginate !== false}
     />
   </ul>
 {/if}

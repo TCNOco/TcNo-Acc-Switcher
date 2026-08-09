@@ -39,6 +39,7 @@
     reportLaunchFailure,
   } from "../lib/adminFlow";
   import { contextMenu as ctxMenuAction } from "../lib/actions/contextMenu";
+  import { buildFilterMenuItems } from "../lib/filterMenu";
   import { tooltip as tooltipAction } from "../lib/actions/tooltip";
   import { resolveGameStatTooltip } from "../lib/accounts/gameStatTooltip";
   import type { MenuItemDef } from "../stores/contextMenu";
@@ -946,12 +947,18 @@
 
   /**
    * Right-click on empty space. The row menu stops propagation, so this only
-   * fires where no account was clicked; a platform with nothing to offer there
-   * returns no items and the action opens nothing.
+   * fires where no account was clicked. Every platform gets the action bar's
+   * filter entries here; anything the adapter adds (Steam's New Account) follows
+   * below a separator.
    */
   function backgroundMenu(): MenuItemDef[] {
     if (isActionBusyValue) return [];
-    return adapter.buildBackgroundMenu?.() ?? [];
+    const items = buildFilterMenuItems(name);
+    const platformItems = adapter.buildBackgroundMenu?.() ?? [];
+    if (platformItems.length > 0) {
+      items.push({ type: "separator" }, ...platformItems);
+    }
+    return items;
   }
 
   // ---- Lifecycle ----
@@ -1062,7 +1069,7 @@
         bind:this={acclistEl}
         on:click={onAccountsAreaClick}
         on:dragleave={onAccListDragLeave}
-        use:ctxMenuAction={backgroundMenu}
+        use:ctxMenuAction={{ items: backgroundMenu, paginate: false }}
       >
         {#if hasActiveTags}
           <TagFilterBar label={tagFilterBarLabel} onClick={onTagFilterBarClick} disabled={tagDefs.length === 0} />

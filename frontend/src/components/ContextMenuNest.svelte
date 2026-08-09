@@ -24,9 +24,12 @@
   export let depth = 1;
   /** Path of indices from root down to this list's parent (empty at root column). */
   export let pathPrefix: number[] = [];
+  /** False draws every flyout row at once; see ContextMenuOptions.paginate. */
+  export let paginate = true;
 
-  /** Pagination/search paging only in flyout columns — not the root menu. */
-  $: paginateThisColumn = pathPrefix.length > 0;
+  /** Search row and paging are flyout-column concerns — the root list has neither. */
+  $: isFlyoutColumn = pathPrefix.length > 0;
+  $: paginateThisColumn = isFlyoutColumn && paginate;
 
   let searchQuery = "";
   let currentPage = 0;
@@ -88,7 +91,7 @@
    * no search strip on the root menu. `alwaysShowSearch` forces the search row for small lists.
    */
   $: showSearchRow =
-    paginateThisColumn && (tail.length > SEARCH_THRESHOLD || alwaysShowSearchFlyout);
+    isFlyoutColumn && (tail.length > SEARCH_THRESHOLD || alwaysShowSearchFlyout);
   $: q = norm(searchQuery.trim());
   $: trimmedSearchQuery = searchQuery.trim();
   $: searchItem = items[0];
@@ -499,6 +502,7 @@
         <svelte:self
           items={item.children ?? []}
           {layoutEpoch}
+          {paginate}
           depth={depth + 1}
           pathPrefix={[...pathPrefix, idx]}
         />
