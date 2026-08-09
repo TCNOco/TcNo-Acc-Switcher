@@ -41,6 +41,28 @@ func ResolveInstallFolder(exeDir string, s Settings, app platform.AppSettings, p
 	return "", nil
 }
 
+// installRoot resolves the Steam install root for callers that have no
+// SteamService to hand. Each call re-reads settings from disk.
+func installRoot() (string, error) {
+	exeDir, err := platform.ResolveExeDir()
+	if err != nil {
+		return "", err
+	}
+	app, err := platform.LoadAppSettings(exeDir)
+	if err != nil {
+		return "", err
+	}
+	st, err := LoadSettings()
+	if err != nil {
+		return "", err
+	}
+	raw, err := platform.LoadPlatformsJSON(exeDir)
+	if err != nil {
+		return "", err
+	}
+	return ResolveInstallFolder(exeDir, st, app, raw)
+}
+
 // LoginUsersPath returns .../config/loginusers.vdf under the Steam root.
 func LoginUsersPath(steamRoot string) string {
 	return filepath.Join(steamRoot, "config", "loginusers.vdf")

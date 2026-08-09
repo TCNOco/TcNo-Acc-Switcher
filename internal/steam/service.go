@@ -817,23 +817,7 @@ func (s *SteamService) ForgetSteamAccount(steamID64 string) error {
 }
 
 func (s *SteamService) steamInstallRoot() (string, error) {
-	exeDir, err := platform.ResolveExeDir()
-	if err != nil {
-		return "", err
-	}
-	app, err := platform.LoadAppSettings(exeDir)
-	if err != nil {
-		return "", err
-	}
-	st, err := LoadSettings()
-	if err != nil {
-		return "", err
-	}
-	raw, err := platform.LoadPlatformsJSON(exeDir)
-	if err != nil {
-		return "", err
-	}
-	return ResolveInstallFolder(exeDir, st, app, raw)
+	return installRoot()
 }
 
 func (s *SteamService) GetInstalledGames() ([]InstalledGameInfo, error) {
