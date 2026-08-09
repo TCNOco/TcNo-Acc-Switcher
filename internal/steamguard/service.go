@@ -231,8 +231,12 @@ type Service struct {
 	emitMainWindowEventFn      func(string, any) error
 	// emitCooldownFn publishes a CS2 cooldown change to the account list. Left
 	// nil in tests so the emission can be asserted rather than dispatched.
-	emitCooldownFn         func(steam.CS2CooldownPatch)
-	cooldownSweep          cooldownSweepState
+	emitCooldownFn func(steam.CS2CooldownPatch)
+	cooldownSweep  cooldownSweepState
+	// emitOwnedGamesFn publishes a library change to an open games view. Left
+	// nil in tests for the same reason as emitCooldownFn.
+	emitOwnedGamesFn       func(steam.OwnedGamesPatch)
+	ownedGamesSweep        ownedGamesSweepState
 	confirmationWindowMu   sync.Mutex
 	confirmationAccountID  string
 	confirmationGeneration string
@@ -316,12 +320,14 @@ func NewService() *Service {
 		setMainContentProtectionFn: setMainContentProtection,
 		emitMainWindowEventFn:      emitMainWindowEvent,
 		emitCooldownFn:             steam.EmitCS2CooldownPatch,
+		emitOwnedGamesFn:           steam.EmitOwnedGamesPatch,
 		authOperations:             make(map[string]steamAuthOperation),
 		revocationAcknowledgments:  make(map[string]revocationAcknowledgment),
 		steamOperationCancels:      make(map[string]steamBoundOperation),
 		registryUpsertFn:           registry.Upsert,
 	}
 	s.cooldownSweep.wake = make(chan struct{}, 1)
+	s.ownedGamesSweep.wake = make(chan struct{}, 1)
 	s.newAuthManager = func() (steamCredentialAuthManager, error) {
 		return authflow.New(authAdapter, authflow.Config{})
 	}
@@ -374,9 +380,11 @@ func newServiceForTest(options ...vault.Option) *Service {
 		steamOperationCancels:      make(map[string]steamBoundOperation),
 		registryUpsertFn:           registry.Upsert,
 	}
-	// Left with a nil emitCooldownFn on purpose: tests assert the emission
-	// rather than dispatching it into an application that is not running.
+	// Left with a nil emitCooldownFn and emitOwnedGamesFn on purpose: tests
+	// assert the emission rather than dispatching it into an application that is
+	// not running.
 	s.cooldownSweep.wake = make(chan struct{}, 1)
+	s.ownedGamesSweep.wake = make(chan struct{}, 1)
 	s.newAuthManager = func() (steamCredentialAuthManager, error) {
 		return authflow.New(authAdapter, authflow.Config{})
 	}
@@ -403,6 +411,8 @@ func (s *Service) ServiceStartup(ctx context.Context, _ application.ServiceOptio
 		go runTimeSync(syncCtx, client, state)
 	}
 	s.startCooldownSweeper(ctx)
+	s.startOwnedGamesSweeper(ctx)
+	steam.SetOwnedGamesSweepHook(s.signalOwnedGamesSweep)
 	registerLoginAgainHandoff()
 	return nil
 }
@@ -410,6 +420,8 @@ func (s *Service) ServiceStartup(ctx context.Context, _ application.ServiceOptio
 func (s *Service) ServiceShutdown() error {
 	s.closeAuthenticationManager(true)
 	s.stopCooldownSweeper()
+	steam.SetOwnedGamesSweepHook(nil)
+	s.stopOwnedGamesSweeper()
 	s.mu.Lock()
 	cancel := s.timeSyncCancel
 	s.timeSyncCancel = nil
@@ -1685,6 +1697,7 @@ func (s *Service) unlockVaultWithLocked(v *vault.Vault, creds vault.Credentials,
 		unlockErr := retainedUnlockError(v.UnlockWith(creds, mode))
 		if unlockErr == nil {
 			s.signalCooldownSweep()
+			s.signalOwnedGamesSweep()
 		}
 		return unlockErr
 	}
@@ -1696,6 +1709,7 @@ func (s *Service) unlockVaultWithLocked(v *vault.Vault, creds vault.Credentials,
 	unlockErr := retainedUnlockError(v.UnlockWithFactorsAndOuter(creds, key, mode))
 	if unlockErr == nil {
 		s.signalCooldownSweep()
+		s.signalOwnedGamesSweep()
 	}
 	return unlockErr
 }

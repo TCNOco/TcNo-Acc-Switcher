@@ -35,6 +35,10 @@ type steamConfirmationClient interface {
 	// FetchCS2StorePage is here for the same reason, and is the only request in
 	// the sweep that leaves steamcommunity.com.
 	FetchCS2StorePage(context.Context, confirmationapi.Credentials) ([]byte, error)
+	// FetchOwnedApps is here for the same reason again - it is the owned games
+	// sweep's only request. Unlike the rest it is token-authenticated against the
+	// Web API rather than cookie-authenticated against the community site.
+	FetchOwnedApps(context.Context, confirmationapi.Credentials) ([]uint32, error)
 	Decide(context.Context, confirmationapi.Credentials, confirmationapi.Confirmation, confirmationapi.Decision) error
 	DecideBatch(context.Context, confirmationapi.Credentials, []confirmationapi.Confirmation, confirmationapi.Decision) error
 	CloseIdleConnections()

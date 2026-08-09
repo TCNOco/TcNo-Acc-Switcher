@@ -57,6 +57,10 @@ func (f *fakeCooldownClient) FetchCS2StorePage(context.Context, confirmationapi.
 	panic("sweep must not fetch the store page unless Prime collection is enabled")
 }
 
+func (f *fakeCooldownClient) FetchOwnedApps(context.Context, confirmationapi.Credentials) ([]uint32, error) {
+	panic("cooldown sweep must not fetch owned apps")
+}
+
 func (f *fakeCooldownClient) callCount() int {
 	f.mu.Lock()
 	defer f.mu.Unlock()

@@ -1,0 +1,332 @@
+package steamguard
+
+import (
+	"context"
+	"errors"
+	"log/slog"
+	"strconv"
+	"sync"
+	"time"
+
+	"TcNo-Acc-Switcher/internal/appclient"
+	"TcNo-Acc-Switcher/internal/crashlog"
+	"TcNo-Acc-Switcher/internal/security"
+	"TcNo-Acc-Switcher/internal/steam"
+	"TcNo-Acc-Switcher/internal/steam/ownedgames"
+	"TcNo-Acc-Switcher/internal/steamguard/confirmationapi"
+	"TcNo-Acc-Switcher/internal/steamguard/sessionrefresh"
+)
+
+const (
+	// ownedGamesSweepInterval is four times the cooldown sweep's, because a
+	// library only changes when someone buys a game. A cooldown ticks down on its
+	// own; ownership does not.
+	ownedGamesSweepInterval = 24 * time.Hour
+
+	// ownedGamesAccountFloor is the minimum gap between two requests for the same
+	// account. Much longer than the cooldown sweep's 90s for the same reason the
+	// interval is: the unlock trigger fires on every unlock, and re-reading a
+	// library that changes monthly on each one is pure noise.
+	ownedGamesAccountFloor = 6 * time.Hour
+
+	// ownedGamesSweepFloor is the minimum gap between whole sweeps.
+	ownedGamesSweepFloor = 90 * time.Second
+
+	// ownedGamesStagger paces the sweep. Steam is not a CDN and the protocol
+	// client has no rate limiter, so the discipline is entirely ours.
+	ownedGamesStagger = 2 * time.Second
+
+	// Longer than the cooldown request timeout: this is the one call whose
+	// response grows with the size of the account.
+	ownedGamesRequestTimeout = 60 * time.Second
+)
+
+func ownedGamesLogger() *slog.Logger {
+	return slog.Default().With("component", "steamguard.ownedgames")
+}
+
+// ownedGamesTarget is one account's credentials, lifted out of the vault before
+// any network work starts.
+//
+// tokenLapsed and refreshUsable are verdicts rather than tokens: both are
+// decided while the record is still decrypted, so the refresh token never has to
+// leave collectOwnedGamesTargets.
+type ownedGamesTarget struct {
+	steamID64     string
+	accessToken   string
+	tokenLapsed   bool
+	refreshUsable bool
+}
+
+type ownedGamesSweepState struct {
+	mu        sync.Mutex
+	running   bool
+	lastSweep time.Time
+	cancel    context.CancelFunc
+	// wake is buffered so signalOwnedGamesSweep can be called with s.mu held.
+	wake chan struct{}
+}
+
+func (s *Service) startOwnedGamesSweeper(ctx context.Context) {
+	s.ownedGamesSweep.mu.Lock()
+	if s.ownedGamesSweep.cancel != nil {
+		s.ownedGamesSweep.cancel()
+	}
+	sweepCtx, cancel := context.WithCancel(ctx)
+	s.ownedGamesSweep.cancel = cancel
+	s.ownedGamesSweep.mu.Unlock()
+	go s.runOwnedGamesSweeper(sweepCtx)
+}
+
+func (s *Service) stopOwnedGamesSweeper() {
+	s.ownedGamesSweep.mu.Lock()
+	cancel := s.ownedGamesSweep.cancel
+	s.ownedGamesSweep.cancel = nil
+	s.ownedGamesSweep.mu.Unlock()
+	if cancel != nil {
+		cancel()
+	}
+}
+
+// signalOwnedGamesSweep asks for a sweep. It is called from inside the unlock
+// path with s.mu held, so it must never block.
+func (s *Service) signalOwnedGamesSweep() {
+	select {
+	case s.ownedGamesSweep.wake <- struct{}{}:
+	default:
+	}
+}
+
+func (s *Service) runOwnedGamesSweeper(ctx context.Context) {
+	defer crashlog.Capture()
+	ticker := time.NewTicker(ownedGamesSweepInterval)
+	defer ticker.Stop()
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-s.ownedGamesSweep.wake:
+		case <-ticker.C:
+		}
+		s.sweepOwnedGames(ctx)
+	}
+}
+
+// sweepOwnedGames reads every vault account's Steam library into the plaintext
+// owned games store, so the games view can render long after the vault relocks.
+//
+// Unlike the cooldown sweep this one does write to the vault - it renews lapsed
+// sessions first. See refreshLapsedOwnedGamesSessions for why that is affordable
+// here and nowhere else.
+func (s *Service) sweepOwnedGames(ctx context.Context) {
+	log := ownedGamesLogger()
+
+	s.ownedGamesSweep.mu.Lock()
+	if s.ownedGamesSweep.running {
+		s.ownedGamesSweep.mu.Unlock()
+		log.Debug("sweep skipped: already running")
+		return
+	}
+	if since := time.Since(s.ownedGamesSweep.lastSweep); !s.ownedGamesSweep.lastSweep.IsZero() && since < ownedGamesSweepFloor {
+		s.ownedGamesSweep.mu.Unlock()
+		log.Debug("sweep skipped: rate limited", "since", since)
+		return
+	}
+	s.ownedGamesSweep.running = true
+	s.ownedGamesSweep.mu.Unlock()
+	defer func() {
+		s.ownedGamesSweep.mu.Lock()
+		s.ownedGamesSweep.running = false
+		s.ownedGamesSweep.lastSweep = time.Now()
+		s.ownedGamesSweep.mu.Unlock()
+	}()
+
+	if ctx.Err() != nil || security.AppLocked() || appclient.IsOfflineMode() {
+		log.Debug("sweep skipped: app locked, offline, or cancelled")
+		return
+	}
+	guardSettings, err := LoadSettings()
+	if err != nil || !guardSettings.FeatureEnabled {
+		log.Debug("sweep skipped: Steam Guard feature disabled")
+		return
+	}
+	if s.confirmationClient == nil {
+		return
+	}
+
+	targets := s.collectOwnedGamesTargets(time.Now())
+	if len(targets) == 0 {
+		return
+	}
+	stored, err := ownedgames.Load()
+	if err != nil {
+		log.Warn("owned games store unreadable; starting from empty", "error", err)
+		stored = map[string]ownedgames.Entry{}
+	}
+
+	// Only accounts that are actually due are worth renewing: a lapsed session
+	// still inside its per-account floor would otherwise drag the whole vault
+	// through a generation switch to fetch a library nobody is going to read.
+	var lapsed []uint64
+	for _, target := range targets {
+		if !target.tokenLapsed || !target.refreshUsable ||
+			!ownedGamesDue(stored, target.steamID64, time.Now()) {
+			continue
+		}
+		steamID, parseErr := strconv.ParseUint(target.steamID64, 10, 64)
+		if parseErr != nil {
+			continue
+		}
+		lapsed = append(lapsed, steamID)
+	}
+	if len(lapsed) > 0 {
+		s.refreshLapsedOwnedGamesSessions(ctx, lapsed)
+		// The batch rewrote the vault, so every token lifted before it is the old
+		// one. Re-collecting is what makes the renewal worth doing at all.
+		targets = s.collectOwnedGamesTargets(time.Now())
+	}
+
+	log.Info("owned games sweep started", "accounts", len(targets))
+	checked := 0
+	for _, target := range targets {
+		if ctx.Err() != nil {
+			return
+		}
+		if appclient.IsOfflineMode() || security.AppLocked() {
+			return
+		}
+		now := time.Now()
+		if !ownedGamesDue(stored, target.steamID64, now) {
+			continue
+		}
+		// A locally readable expiry saves a request that would only be answered
+		// with an empty library, which is indistinguishable from owning nothing.
+		if target.accessToken == "" || target.tokenLapsed {
+			log.Debug("skipping account with no usable session", "steamId64", target.steamID64)
+			continue
+		}
+		// Staggered here, not at the top of the loop: the stagger exists to space
+		// out requests to Steam, and an account skipped above makes none.
+		if checked > 0 {
+			select {
+			case <-ctx.Done():
+				return
+			case <-time.After(ownedGamesStagger):
+			}
+		}
+		s.fetchAndStoreOwnedGames(ctx, target, now)
+		checked++
+	}
+	log.Info("owned games sweep finished", "checked", checked)
+}
+
+// ownedGamesDue reports whether an account is outside its per-account floor.
+// Shared by the renewal pass and the fetch loop so the two cannot disagree about
+// which accounts this sweep is for.
+func ownedGamesDue(stored map[string]ownedgames.Entry, steamID64 string, now time.Time) bool {
+	entry, ok := stored[steamID64]
+	return !ok || now.Sub(time.Unix(entry.CheckedAt, 0)) >= ownedGamesAccountFloor
+}
+
+// refreshLapsedOwnedGamesSessions renews every lapsed account in one batch.
+//
+// This is the one deliberate difference from the cooldown sweep, which is
+// forbidden from writing at all. Each vault generation switch invalidates every
+// capability outstanding against it, including the one an open Steam Guard
+// window holds - so N accounts refreshed one at a time cost N invalidations,
+// while RefreshBatch costs exactly one for the whole list. An access token lasts
+// about a day and this sweep runs daily, so without the renewal the store would
+// only ever fill for accounts someone happened to open by hand.
+func (s *Service) refreshLapsedOwnedGamesSessions(ctx context.Context, lapsed []uint64) {
+	log := ownedGamesLogger()
+
+	s.mu.Lock()
+	v, err := s.requireVaultLocked()
+	newRefresher := s.newSessionRefresher
+	s.mu.Unlock()
+	if err != nil || v == nil || v.IsLocked() || newRefresher == nil {
+		log.Debug("session refresh skipped: no unlocked vault", "accounts", len(lapsed))
+		return
+	}
+
+	results, err := newRefresher(v).RefreshBatch(ctx, lapsed)
+	if err != nil {
+		log.Warn("owned games session refresh failed", "accounts", len(lapsed), "error", err)
+		return
+	}
+	log.Info("owned games sessions refreshed in one vault generation",
+		"requested", len(lapsed), "refreshed", len(results))
+}
+
+func (s *Service) fetchAndStoreOwnedGames(ctx context.Context, target ownedGamesTarget, now time.Time) {
+	log := ownedGamesLogger()
+	requestCtx, cancel := context.WithTimeout(ctx, ownedGamesRequestTimeout)
+	appIDs, err := s.confirmationClient.FetchOwnedApps(requestCtx, confirmationapi.Credentials{
+		SteamID:     target.steamID64,
+		AccessToken: target.accessToken,
+	})
+	cancel()
+	if err != nil {
+		var apiErr *confirmationapi.Error
+		if errors.As(err, &apiErr) && apiErr.Kind == confirmationapi.FailureReauth {
+			// Steam answers a caller it will not authorise with an empty library
+			// rather than an error, so this is the token being refused, not an
+			// account that owns nothing. Storing either would leave the account
+			// permanently blank in the games view.
+			log.Debug("owned games request was refused", "steamId64", target.steamID64)
+			return
+		}
+		log.Debug("owned games fetch failed", "steamId64", target.steamID64, "error", err)
+		return
+	}
+	if err := ownedgames.Put(target.steamID64, appIDs, now); err != nil {
+		log.Warn("owned games could not be stored", "steamId64", target.steamID64, "error", err)
+		return
+	}
+	s.emitOwnedGamesUpdate(target.steamID64, len(appIDs))
+}
+
+// collectOwnedGamesTargets lifts every account's credentials out of the vault in
+// one pass.
+//
+// Splitting the sweep this way is what makes it robust: the service lock is held
+// for a few milliseconds of decryption and nothing else, so lease expiry, a
+// generation rotation, Lock Now or an app lock partway through cannot break a
+// sweep that is already running - it simply has no vault work left to do.
+func (s *Service) collectOwnedGamesTargets(now time.Time) []ownedGamesTarget {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	v, err := s.requireVaultLocked()
+	if err != nil || v.IsLocked() {
+		return nil
+	}
+	records, err := v.List()
+	if err != nil {
+		return nil
+	}
+	targets := make([]ownedGamesTarget, 0, len(records))
+	for _, record := range records {
+		loaded, err := recordFromVault(v, record.ID)
+		if err != nil {
+			continue
+		}
+		accessToken := loaded.AccessToken()
+		target := ownedGamesTarget{
+			steamID64:   record.SteamID64,
+			accessToken: accessToken,
+			tokenLapsed: accessToken == "" ||
+				sessionrefresh.AccessTokenExpired(accessToken, now, accessTokenSkew),
+			refreshUsable: sessionrefresh.RefreshTokenUsable(loaded.RefreshToken(), now, accessTokenSkew),
+		}
+		loaded.destroy()
+		targets = append(targets, target)
+	}
+	return targets
+}
+
+func (s *Service) emitOwnedGamesUpdate(steamID64 string, appCount int) {
+	if s.emitOwnedGamesFn == nil {
+		return
+	}
+	s.emitOwnedGamesFn(steam.OwnedGamesPatch{SteamID64: steamID64, AppCount: appCount})
+}

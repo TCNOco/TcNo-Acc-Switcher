@@ -156,6 +156,10 @@ type steamEnrollmentManager interface {
 
 type steamSessionRefresher interface {
 	Refresh(context.Context, uint64) (sessionrefresh.Result, error)
+	// RefreshBatch is what makes the owned games sweep affordable: renewing a
+	// whole vault's worth of lapsed sessions one Refresh at a time would rotate
+	// the vault generation once per account.
+	RefreshBatch(context.Context, []uint64) ([]sessionrefresh.Result, error)
 }
 
 type steamAuthOperation struct {
