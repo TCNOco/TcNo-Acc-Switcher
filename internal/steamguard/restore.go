@@ -204,6 +204,12 @@ func (s *Service) restoreVerifiedBackupAtWith(source string, creds vault.Credent
 		if err := registry.Upsert(record.SteamID64, state); err != nil {
 			return "", err
 		}
+		// The switcher has never heard of these accounts. Seeding here rather
+		// than leaving it to the next account-list build is what gets them a
+		// name and an avatar right after the restore instead of on the next
+		// visit to the Steam page. The name is not available - the plaintext
+		// was wiped above - so the picker supplies it later.
+		s.rememberSteamAccount(record.SteamID64, "")
 	}
 	if err := restored.Lock(); err != nil {
 		return "", err

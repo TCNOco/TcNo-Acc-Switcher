@@ -413,3 +413,41 @@ func TestGetSteamAccountsListIncludesRestoredVaultAccounts(t *testing.T) {
 		t.Errorf("restored account was not imported into the store: ok=%v err=%v", stored, err)
 	}
 }
+
+// An account that arrives behind the app's back has no name and no avatar, and
+// nothing else asks for them: the profile refresh runs on a page load or a user
+// action, and a swapped-in folder is neither.
+func TestSyncKnownAccountsAsksForAProfileRefreshOnlyOnDiscovery(t *testing.T) {
+	useTempAccountStore(t)
+	requests := 0
+	RegisterProfileRefreshTrigger(func() { requests++ })
+	t.Cleanup(func() { RegisterProfileRefreshTrigger(nil) })
+
+	syncKnownAccounts([]LoginUser{{SteamID64: knownIDA, AccountName: "acct_a"}})
+	if requests != 1 {
+		t.Fatalf("requests = %d after first sight of an account, want 1", requests)
+	}
+
+	// Steady state: the same accounts on every window focus must not queue a
+	// refresh each time.
+	syncKnownAccounts([]LoginUser{{SteamID64: knownIDA, AccountName: "acct_a"}})
+	if requests != 1 {
+		t.Fatalf("requests = %d after an unchanged sync, want it left at 1", requests)
+	}
+
+	// A restored Steam Guard folder: new to the store, absent from the vdf.
+	root, err := steamguardregistry.RootPath()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.MkdirAll(root, 0o700); err != nil {
+		t.Fatal(err)
+	}
+	if err := steamguardregistry.Upsert(knownIDB, steamguardregistry.StateActive); err != nil {
+		t.Fatal(err)
+	}
+	syncKnownAccounts([]LoginUser{{SteamID64: knownIDA, AccountName: "acct_a"}})
+	if requests != 2 {
+		t.Fatalf("requests = %d after a restored account appeared, want 2", requests)
+	}
+}

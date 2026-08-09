@@ -283,6 +283,9 @@ func (s *Service) CommitRestoreMergeWithFactors(password, backupPassword, backup
 		if err := registry.Upsert(steamID64, state); err != nil {
 			return result, err
 		}
+		// As in restore.go: put merged-in accounts on the switcher's list now,
+		// rather than whenever the Steam page is next opened.
+		s.rememberSteamAccount(steamID64, "")
 		if _, was := existing[steamID64]; was {
 			result.Replaced++
 		} else {

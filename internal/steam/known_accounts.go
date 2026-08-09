@@ -39,17 +39,37 @@ func syncKnownAccounts(users []LoginUser) []LoginUser {
 		return users
 	}
 
+	known := make(map[string]struct{}, len(stored))
+	for _, rec := range stored {
+		known[rec.SteamID64] = struct{}{}
+	}
+
 	incoming := recordsFromLoginUsers(users)
 	incoming = append(incoming, recordsFromSteamGuardRegistry()...)
 	if changed, err := accountstore.UpsertMany(incoming); err != nil {
 		steamLog.Warn("could not update the Steam account store", slog.Any("err", err))
 	} else if changed {
-		// The upsert can add accounts the load above could not see - a restored
-		// Steam Guard folder is exactly that - and they belong in this build of
-		// the list, not only the next one.
+		// The upsert can add accounts the load above could not see - a Steam
+		// Guard folder swapped in behind the app's back is exactly that - and
+		// they belong in this build of the list, not only the next one.
 		if reloaded, err := accountstore.Load(); err == nil {
 			stored = reloaded
 		}
+	}
+
+	discovered := 0
+	for _, rec := range stored {
+		if _, had := known[rec.SteamID64]; !had {
+			discovered++
+		}
+	}
+	if discovered > 0 {
+		// An account nobody has fetched yet has no name and no avatar, and
+		// nothing else is going to ask: the profile refresh runs on a page load
+		// or a user action, and a folder appearing underneath the app is
+		// neither. The next pass finds nothing new, so this cannot cycle.
+		steamLog.Info("importing accounts the switcher had not seen", slog.Int("count", discovered))
+		RequestProfileRefresh()
 	}
 
 	present := make(map[string]struct{}, len(users))
