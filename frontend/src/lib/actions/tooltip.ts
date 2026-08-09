@@ -170,6 +170,7 @@ export const tooltip: Action<HTMLElement, TooltipParams> = (node, param) => {
     const hide = () => {
         clearShow()
         clearHide()
+        unbindWhileVisible()
         if (!tip) return
         tip.classList.remove('show')
         const el = tip
@@ -189,6 +190,7 @@ export const tooltip: Action<HTMLElement, TooltipParams> = (node, param) => {
         if (!parsed?.text) return
         clearHide()
         if (tip?.classList.contains('show')) return
+        bindWhileVisible()
 
         if (!tip) {
             tip = buildTooltip(parsed.text, parsed.placement)
@@ -240,13 +242,32 @@ export const tooltip: Action<HTMLElement, TooltipParams> = (node, param) => {
         if (e.key === 'Escape') hide()
     }
 
+    // Bound only while this instance has a tip up. Lists mount thousands of these at
+    // once — a Steam library renders one per owner avatar — and keeping the window
+    // and document listeners for the whole lifetime made every scroll, resize and
+    // keystroke fan out to every row, and every re-render re-register the lot.
+    let boundWhileVisible = false
+
+    function bindWhileVisible() {
+        if (boundWhileVisible) return
+        boundWhileVisible = true
+        window.addEventListener('scroll', onScrollOrResize, true)
+        window.addEventListener('resize', onScrollOrResize)
+        document.addEventListener('keydown', onKeydown)
+    }
+
+    function unbindWhileVisible() {
+        if (!boundWhileVisible) return
+        boundWhileVisible = false
+        window.removeEventListener('scroll', onScrollOrResize, true)
+        window.removeEventListener('resize', onScrollOrResize)
+        document.removeEventListener('keydown', onKeydown)
+    }
+
     node.addEventListener('mouseenter', onMouseEnter)
     node.addEventListener('mouseleave', onMouseLeave)
     node.addEventListener('focusin', onFocusIn)
     node.addEventListener('focusout', onFocusOut)
-    window.addEventListener('scroll', onScrollOrResize, true)
-    window.addEventListener('resize', onScrollOrResize)
-    document.addEventListener('keydown', onKeydown)
 
     return {
         update(newParam: TooltipParams) {
@@ -269,13 +290,11 @@ export const tooltip: Action<HTMLElement, TooltipParams> = (node, param) => {
         destroy() {
             clearShow()
             clearHide()
+            unbindWhileVisible()
             node.removeEventListener('mouseenter', onMouseEnter)
             node.removeEventListener('mouseleave', onMouseLeave)
             node.removeEventListener('focusin', onFocusIn)
             node.removeEventListener('focusout', onFocusOut)
-            window.removeEventListener('scroll', onScrollOrResize, true)
-            window.removeEventListener('resize', onScrollOrResize)
-            document.removeEventListener('keydown', onKeydown)
             tip?.remove()
             tip = null
         },
