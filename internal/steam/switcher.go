@@ -69,6 +69,13 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 		}
 	}
 
+	// Before anything is closed: a switch that cannot produce a login name has
+	// nothing to write, and finding that out after the kill left the user with
+	// Steam restarted and no account selected.
+	if err := preflightSwitchTarget(root, strings.TrimSpace(steamID64)); err != nil {
+		return err
+	}
+
 	platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatform", "Steam")
 	if err := winutil.ErrIfCannotKill(steamKillNames, winutil.ClosingMethod(st.ClosingMethod)); err != nil {
 		platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatformFailed", "Steam")

@@ -1,12 +1,48 @@
 package steam
 
 import (
+	"errors"
+	"fmt"
 	"log/slog"
+	"os"
 	"strings"
+	"sync"
 
 	"TcNo-Acc-Switcher/internal/steam/accountstore"
 	steamguardregistry "TcNo-Acc-Switcher/internal/steamguard/registry"
 )
+
+var (
+	accountNameResolverMu sync.Mutex
+	accountNameResolver   func(steamID64 string) (string, bool)
+)
+
+// RegisterAccountNameResolver supplies a way to look up an account's Steam login
+// name when the switcher knows only its SteamID64.
+//
+// The account store learns names from loginusers.vdf, so an account that only
+// ever existed in a restored Steam Guard vault has none - and the login name is
+// the one thing Steam cannot sign in without, because AutoLoginUser is it. The
+// vault does hold it, but reading the vault is the Steam Guard package's job, so
+// it registers this at startup. Unregistered, and for a locked vault, callers
+// simply get no name.
+func RegisterAccountNameResolver(fn func(steamID64 string) (string, bool)) {
+	accountNameResolverMu.Lock()
+	defer accountNameResolverMu.Unlock()
+	accountNameResolver = fn
+}
+
+func resolveAccountName(steamID64 string) (string, bool) {
+	accountNameResolverMu.Lock()
+	fn := accountNameResolver
+	accountNameResolverMu.Unlock()
+	if fn == nil {
+		return "", false
+	}
+	name, ok := fn(steamID64)
+	name = strings.TrimSpace(name)
+	return name, ok && name != ""
+}
 
 // knownAccountsForRoot is the account list every caller should use: Steam's
 // current rows plus the ones only the switcher remembers. A loginusers.vdf that
@@ -163,5 +199,51 @@ func knownAccountAsLoginUser(steamID64 string) (LoginUser, bool) {
 	if !ok {
 		return LoginUser{}, false
 	}
-	return loginUserFromRecord(rec), true
+	u := loginUserFromRecord(rec)
+	if strings.TrimSpace(u.AccountName) != "" {
+		return u, true
+	}
+	// Imported from the Steam Guard registration index, which stores no name.
+	// Ask the vault, and keep what it says: the next switch then works whether
+	// or not the vault happens to be open.
+	name, found := resolveAccountName(rec.SteamID64)
+	if !found {
+		return u, true
+	}
+	u.AccountName = name
+	if _, err := accountstore.Upsert(accountstore.Record{SteamID64: rec.SteamID64, AccountName: name}); err != nil {
+		steamLog.Warn("could not record a recovered Steam login name",
+			slog.String("steamId", tailSteamID(rec.SteamID64)), slog.Any("err", err))
+	}
+	return u, true
+}
+
+// ErrSwitchTargetHasNoLoginName is a switch to an account whose Steam login name
+// nothing can supply. Steam signs in by login name, so there is nothing useful
+// to write; saying so beats closing Steam and reopening it unchanged.
+var ErrSwitchTargetHasNoLoginName = errors.New("steam login name unknown: unlock Steam Guard once so the account can be signed in")
+
+// preflightSwitchTarget refuses a switch that could not work, BEFORE Steam is
+// closed for it. The row is written after the kill, so without this check a
+// nameless account tore down the running session and put nothing in its place.
+func preflightSwitchTarget(steamRoot, selected string) error {
+	if selected == "" {
+		return nil
+	}
+	users, err := ParseLoginUsers(LoginUsersPath(steamRoot))
+	if err != nil && !os.IsNotExist(err) {
+		// Unreadable is the switch path's own problem to report later.
+		return nil
+	}
+	if hasLoginUser(users, selected) {
+		return nil
+	}
+	u, ok := knownAccountAsLoginUser(selected)
+	if !ok {
+		return fmt.Errorf("steam account %s is unknown to Steam and to the switcher", selected)
+	}
+	if strings.TrimSpace(u.AccountName) == "" {
+		return ErrSwitchTargetHasNoLoginName
+	}
+	return nil
 }

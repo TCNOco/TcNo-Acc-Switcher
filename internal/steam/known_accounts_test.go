@@ -1,6 +1,7 @@
 package steam
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 	"testing"
@@ -449,5 +450,69 @@ func TestSyncKnownAccountsAsksForAProfileRefreshOnlyOnDiscovery(t *testing.T) {
 	syncKnownAccounts([]LoginUser{{SteamID64: knownIDA, AccountName: "acct_a"}})
 	if requests != 2 {
 		t.Fatalf("requests = %d after a restored account appeared, want 2", requests)
+	}
+}
+
+// A restored Steam Guard vault gives the switcher a SteamID64 and nothing else.
+// Steam signs in by login name, so without recovering one the switch had
+// nothing to write - it closed Steam and reopened it unchanged.
+func TestKnownAccountAsLoginUserRecoversTheLoginNameFromTheVault(t *testing.T) {
+	useTempAccountStore(t)
+	if _, err := accountstore.Upsert(accountstore.Record{
+		SteamID64: knownIDB,
+		Source:    accountstore.SourceSteamGuard,
+	}); err != nil {
+		t.Fatal(err)
+	}
+
+	RegisterAccountNameResolver(func(id string) (string, bool) {
+		if id == knownIDB {
+			return "vault_login", true
+		}
+		return "", false
+	})
+	t.Cleanup(func() { RegisterAccountNameResolver(nil) })
+
+	u, ok := knownAccountAsLoginUser(knownIDB)
+	if !ok || u.AccountName != "vault_login" {
+		t.Fatalf("got %+v ok=%v, want the login name from the vault", u, ok)
+	}
+
+	// Kept, so the next switch does not depend on the vault being open.
+	RegisterAccountNameResolver(nil)
+	again, ok := knownAccountAsLoginUser(knownIDB)
+	if !ok || again.AccountName != "vault_login" {
+		t.Fatalf("got %+v ok=%v, want the recovered name remembered", again, ok)
+	}
+}
+
+// The row is written after Steam is killed, so a switch that cannot work has to
+// be refused before that rather than after.
+func TestPreflightRefusesASwitchThatCannotSignIn(t *testing.T) {
+	env := newSteamTestEnv(t)
+	env.writeLoginUsers(t, oneAccountVDF)
+	if _, err := accountstore.Upsert(accountstore.Record{
+		SteamID64: knownIDB,
+		Source:    accountstore.SourceSteamGuard,
+	}); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := preflightSwitchTarget(env.steamDir, knownIDB); !errors.Is(err, ErrSwitchTargetHasNoLoginName) {
+		t.Fatalf("err = %v, want ErrSwitchTargetHasNoLoginName", err)
+	}
+	// An account Steam already lists is fine, and so is Add New.
+	if err := preflightSwitchTarget(env.steamDir, knownIDA); err != nil {
+		t.Errorf("switching to a listed account: %v", err)
+	}
+	if err := preflightSwitchTarget(env.steamDir, ""); err != nil {
+		t.Errorf("Add New: %v", err)
+	}
+
+	// With a name recoverable, the same switch is allowed.
+	RegisterAccountNameResolver(func(string) (string, bool) { return "vault_login", true })
+	t.Cleanup(func() { RegisterAccountNameResolver(nil) })
+	if err := preflightSwitchTarget(env.steamDir, knownIDB); err != nil {
+		t.Errorf("switch with a recoverable name: %v", err)
 	}
 }

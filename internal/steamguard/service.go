@@ -982,6 +982,46 @@ func (s *Service) ListAccounts(accountID, token string) ([]AccountSummary, error
 	return result, nil
 }
 
+// RegisterAccountNameResolver wires the vault into the switcher's lookup for an
+// account it knows only by SteamID64. Package-level rather than a method, so it
+// does not become a bound frontend call.
+func RegisterAccountNameResolver(s *Service) {
+	steam.RegisterAccountNameResolver(s.accountNameForSteamID)
+}
+
+// accountNameForSteamID reads the login name out of the vault. Only a name: the
+// same string loginusers.vdf holds in plain text for every other account. An
+// unopened or locked vault simply has no answer.
+func (s *Service) accountNameForSteamID(steamID64 string) (string, bool) {
+	steamID64 = strings.TrimSpace(steamID64)
+	if steamID64 == "" {
+		return "", false
+	}
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	v, exists, err := s.openVaultLocked()
+	if err != nil || !exists || v.IsLocked() {
+		return "", false
+	}
+	records, err := v.List()
+	if err != nil {
+		return "", false
+	}
+	for _, record := range records {
+		if record.SteamID64 != steamID64 {
+			continue
+		}
+		loaded, err := recordFromVault(v, record.ID)
+		if err != nil {
+			return "", false
+		}
+		name := strings.TrimSpace(loaded.AccountName())
+		loaded.destroy()
+		return name, name != ""
+	}
+	return "", false
+}
+
 func summaryKind(kind vaultrecord.Kind) AccountKind {
 	switch kind {
 	case vaultrecord.KindLoginOnly:

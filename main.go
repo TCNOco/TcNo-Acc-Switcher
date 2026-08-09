@@ -75,6 +75,9 @@ func init() {
 	// Steam Guard enrollment adds accounts to the Steam account store from a
 	// package that holds no SteamService; this is how it asks for their avatars.
 	steam.RegisterProfileRefreshTrigger(steamSvc.StartSteamProfileRefresh)
+	// An account restored from a Steam Guard vault is known only by SteamID64
+	// until the vault is asked for its login name.
+	steamguard.RegisterAccountNameResolver(steamGuardSvc)
 
 	platform.SetSteamLaunchHooks(steam.SaveFolderFromConfirmedExe, steam.ResolveSteamExePath)
 	platform.SetSteamReset(steam.ResetToDefaults)
