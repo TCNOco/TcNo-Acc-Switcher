@@ -8,6 +8,8 @@
   import { openAlertNoButton } from "../stores/modal";
   import HelpAboutModalBody from "./modals/HelpAboutModalBody.svelte";
   import GameShortcutBar from "./GameShortcutBar.svelte";
+  import SteamGamesAccountBar from "./SteamGamesAccountBar.svelte";
+  import { steamPageTab } from "../stores/steamPageTab";
   import { openContextMenu } from "../stores/contextMenu";
   import type { MenuItemDef } from "../stores/contextMenu";
   import { buildFilterMenuItems } from "../lib/filterMenu";
@@ -21,6 +23,7 @@
   $: platformName = isPlatformPage ? (r as Extract<Route, { page: "platform" }>).platformName : "";
   $: showSaveCurrent = !!platformName && platformName !== "Steam";
   $: steamGuardShortcut = platformName === "Steam" ? $steamGuardActionAccount : null;
+  $: steamGamesMode = platformName === "Steam" && $steamPageTab === "games";
   $: isActionBusy = $platformActionBusy.busy;
   let filterBtn: HTMLButtonElement | undefined;
 
@@ -85,6 +88,9 @@
 <span class="actionbar__status">{$actionBarStatus}</span>
   <div class="actionbar__actions">
     {#if isPlatformPage}
+      {#if steamGamesMode}
+        <SteamGamesAccountBar />
+      {:else}
       <GameShortcutBar platformName={platformName} />
       <button class="btnicontext actionbar__add" type="button" aria-label={$t("Button_AddNew")} use:tooltip={$t("Tooltip_AddNew")} disabled={isActionBusy} on:click={() => triggerPlatformAction("addNew")}
         ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true"
@@ -119,6 +125,7 @@
           <path d="M217.9 105.9L340.7 228.7c7.2 7.2 11.3 17 11.3 27.3s-4.1 20.1-11.3 27.3L217.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9V160c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.5 24 9.9z"/></svg>
         </button
       >
+      {/if}
       {#if platformName === "Steam"}
         <button
           class="square actionbar__steam-guard"

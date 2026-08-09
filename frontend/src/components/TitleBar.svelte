@@ -6,6 +6,7 @@
     import { activeModal } from '../stores/modal'
     import { contextMenu } from '../stores/contextMenu'
     import { searchOverlayCtrl } from '../stores/searchOverlay'
+    import { steamPageTab, toggleSteamPageTab } from '../stores/steamPageTab'
     import { Events, Window } from "@wailsio/runtime";
 
     let minimised = false
@@ -85,6 +86,11 @@
         return $appBarTitle
     })()
 
+    $: showSteamTab = $route.page === "platform" && $route.platformName === "Steam"
+    // The button names where a click goes, not where you are: with one control the
+    // destination is the only label that says what pressing it does.
+    $: steamTabLabel = $steamPageTab === "games" ? $t("Steam_Tab_Switcher") : $t("Steam_Tab_Games")
+
     function backClick() {
         if ($route.page === 'home') {
             const axis = possibleAnimations[Math.floor(Math.random() * possibleAnimations.length)]
@@ -122,6 +128,15 @@
         <svg class="header_icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 768 264" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2">
             <use href="img/TcNo_Logo_Flat.svg#logo"></use>
         </svg>
+        {#if showSteamTab}
+            <button
+                type="button"
+                class="header_tab"
+                title={$t("Steam_Tab_SwitchTo", { tab: steamTabLabel })}
+                aria-label={$t("Steam_Tab_SwitchTo", { tab: steamTabLabel })}
+                on:click={toggleSteamPageTab}
+            >{steamTabLabel}</button>
+        {/if}
     </span>
     <span id="title-label" class="title-drag">
         {titleLabel}
@@ -249,6 +264,26 @@
         margin: 12px;
         display: block;
         fill: var(--whiteSecondary);
+    }
+    .header_tab {
+        --wails-draggable: no-drag;
+        align-self: center;
+        margin: 0 0 0 0.25rem;
+        padding: 2px 10px;
+        border: 1px solid var(--button-bg);
+        border-radius: 3px;
+        background: var(--button-bg);
+        color: var(--whiteSecondary);
+        font-family: inherit;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        line-height: 1.4;
+
+        &:hover {
+            background: var(--button-bg-hover, var(--button-bg));
+            border-color: var(--accent);
+        }
     }
     .window-controls {
         --wails-draggable: no-drag;

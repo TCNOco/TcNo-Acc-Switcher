@@ -1045,5 +1045,20 @@
   "Feedback_AttachLog_Hint": "Usernames, IDs, and similar details are removed from the log as best we can before sending.",
   "Feedback_DiscordLink": "Join the community Discord",
   "Toast_FeedbackThanks": "Thanks for your feedback.",
-  "Toast_FeedbackSubmitFailed": "Could not submit feedback."
+  "Toast_FeedbackSubmitFailed": "Could not submit feedback.",
+  "Steam_Tab_Switcher": "SWITCHER",
+  "Steam_Tab_Games": "GAMES",
+  "Steam_Tab_SwitchTo": "Switch to {tab}",
+  "Steam_Games_NoVaultAccounts": "Here you can swap to accounts based on the games they own. Right-click an account and choose Steam Guard to get started. Either choose Login Only, or use me as a mobile authenticator to get started.",
+  "Steam_Games_Empty": "No games found yet.",
+  "Steam_Games_LoadFailed": "Could not load the list of games.",
+  "Steam_Games_Refresh": "Refresh games",
+  "Steam_Games_Refreshing": "Re-reading each account's library…",
+  "Steam_Games_OwnerUnknown": "Installed on this PC. Which accounts own it is unknown.",
+  "Steam_Games_OwnedBy": "Owned by {names}",
+  "Steam_Games_PickGameFirst": "Pick a game first, or untick Launch to only switch account.",
+  "Steam_Games_LaunchOnSwitch": "Launch",
+  "Steam_Games_LaunchOnSwitch_Tooltip": "Also start the selected game after switching account",
+  "Steam_Games_AccountStrip": "Switch to account",
+  "Steam_Games_MoreAccounts": "More accounts"
 }

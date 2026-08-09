@@ -5,6 +5,7 @@
   import SteamAccountAvatar from "../components/SteamAccountAvatar.svelte";
   import { cs2CooldownRemaining, cs2CooldownTooltip } from "../lib/steam/cs2Cooldown";
   import PlatformAccountsBase from "../components/PlatformAccountsBase.svelte";
+  import SteamGamesView from "../components/SteamGamesView.svelte";
   import type { AccountNameStatus, PlatformAccountAdapter, SharedMenuItems } from "../components/PlatformAccountAdapter";
   import type { TagDefRow } from "../lib/accountTagsContext";
   import type { MenuItemDef } from "../stores/contextMenu";
@@ -41,6 +42,7 @@
     clearSteamGuardActionAccount,
     publishSteamGuardActionAccounts,
   } from "../stores/steamGuardAction";
+  import { resetSteamPageTab, steamPageTab } from "../stores/steamPageTab";
   import "../styles/miniprofile.scss";
   import "../styles/platformAccountsShared.scss";
 
@@ -347,10 +349,14 @@
   onDestroy(() => {
     offShortcutsUpdated?.();
     clearSteamGuardActionAccount();
+    resetSteamPageTab();
   });
 </script>
 
 <div class="main-content platform-accounts-root" bind:this={steamMainEl}>
+  {#if $steamPageTab === "games"}
+    <SteamGamesView {name} />
+  {:else}
   <PlatformAccountsBase {name} {adapter}>
     <svelte:fragment slot="account-avatar" let:acc let:epoch let:fallback>
       <SteamAccountAvatar account={acc} {epoch} {fallback} boundary={steamMainEl} />
@@ -383,4 +389,5 @@
       {/if}
     </svelte:fragment>
   </PlatformAccountsBase>
+  {/if}
 </div>
