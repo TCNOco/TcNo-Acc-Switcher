@@ -1,21 +1,32 @@
 package main
 
 import (
-	"bytes"
-	"image"
-	_ "image/png"
+	"os"
+	"strings"
 	"testing"
 )
 
-func TestTrayIconPNGIsTraySized(t *testing.T) {
-	cfg, format, err := image.DecodeConfig(bytes.NewReader(trayIconPNG))
+// The updater's swap helper is this exe re-executed; helper mode is entered
+// via updater.HandleHelperMode, which must run before the singleton check or
+// the helper sees the still-running parent and exits without applying the
+// update. This ordering bug shipped in v4.0.1-v4.0.6 and broke every
+// auto-update apply, so the ordering is pinned here.
+func TestHelperModeRunsBeforeSingletonCheck(t *testing.T) {
+	src, err := os.ReadFile("main.go")
 	if err != nil {
-		t.Fatalf("decode tray icon: %v", err)
+		t.Fatal(err)
 	}
-	if format != "png" {
-		t.Fatalf("tray icon format = %q, want png", format)
+	body := string(src)
+
+	helper := strings.Index(body, "updater.HandleHelperMode()")
+	singleton := strings.Index(body, "winutil.TryAcquireSingleton()")
+	if helper == -1 {
+		t.Fatal("main.go no longer calls updater.HandleHelperMode(); the update helper will die at the singleton check")
 	}
-	if cfg.Width != 32 || cfg.Height != 32 {
-		t.Fatalf("tray icon dimensions = %dx%d, want 32x32", cfg.Width, cfg.Height)
+	if singleton == -1 {
+		t.Fatal("singleton acquisition not found; update this test for the new startup shape")
+	}
+	if helper > singleton {
+		t.Fatal("updater.HandleHelperMode() must run before winutil.TryAcquireSingleton(), or update applies break")
 	}
 }

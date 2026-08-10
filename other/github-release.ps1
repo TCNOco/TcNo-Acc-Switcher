@@ -87,10 +87,7 @@ function Write-UpdaterSignature {
   }
 
   $keyPath = Join-Path ([System.IO.Path]::GetTempPath()) 'tcno-updater-key'
-  # .sig2, not .sig: pre-4.0.7 clients choke on any release carrying a
-  # .exe.sig asset (embedded-key parse bug); the new suffix lets them fall
-  # back to digest verification. See internal/app/gui.go.
-  $sigPath = Join-Path $root 'bin\TcNo-Acc-Switcher.exe.sig2'
+  $sigPath = Join-Path $root 'bin\TcNo-Acc-Switcher.exe.sig'
   $keyMaterial = $env:UPDATER_KEY.Trim().Trim('"').Trim("'")
 
   try {
@@ -197,7 +194,7 @@ function Test-ReleaseArtifacts {
   $required = @(
     $InstallerPath,
     (Join-Path $root 'bin\TcNo-Acc-Switcher.exe'),
-    (Join-Path $root 'bin\TcNo-Acc-Switcher.exe.sig2'),
+    (Join-Path $root 'bin\TcNo-Acc-Switcher.exe.sig'),
     (Join-Path $root 'bin\TcNo-Acc-Switcher.7z'),
     (Join-Path $root 'bin\SHA256SUMS')
   )

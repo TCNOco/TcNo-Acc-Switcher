@@ -259,6 +259,6 @@ jobs:
           files: |
             signed-installer/TcNo Account Switcher Installer.exe
             bin/TcNo-Acc-Switcher.exe
-            bin/TcNo-Acc-Switcher.exe.sig2
+            bin/TcNo-Acc-Switcher.exe.sig
             bin/TcNo-Acc-Switcher.7z
             bin/SHA256SUMS

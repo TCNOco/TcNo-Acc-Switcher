@@ -31,7 +31,7 @@ func newTestProvider(release *updater.Release, apiBase string) *signedGitHubProv
 		inner:     &stubProvider{release: release},
 		owner:     "owner",
 		repo:      "repo",
-		sigSuffix: ".exe.sig2",
+		sigSuffix: ".exe.sig",
 		apiBase:   apiBase,
 	}
 }
@@ -42,7 +42,7 @@ func TestSignedProviderAttachesSignature(t *testing.T) {
 	srv = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/repos/owner/repo/releases/tags/v1.2.3":
-			fmt.Fprintf(w, `{"assets":[{"name":"TcNo-Acc-Switcher.exe.sig2","browser_download_url":"%s/sig"}]}`, srv.URL)
+			fmt.Fprintf(w, `{"assets":[{"name":"TcNo-Acc-Switcher.exe.sig","browser_download_url":"%s/sig"}]}`, srv.URL)
 		case "/sig":
 			fmt.Fprintln(w, base64.StdEncoding.EncodeToString(sig))
 		default:

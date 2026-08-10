@@ -29,6 +29,7 @@ import (
 	"TcNo-Acc-Switcher/internal/winutil"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
+	"github.com/wailsapp/wails/v3/pkg/updater"
 )
 
 //go:embed all:frontend/dist
@@ -100,6 +101,14 @@ func init() {
 }
 
 func main() {
+	// MUST be the first statement in main. The updater's Restart re-executes
+	// this exe as its swap helper; Wails only enters helper mode inside
+	// application.New, which is after the singleton check below — the helper
+	// would see the still-running parent, forward its args and exit without
+	// ever swapping the binary (the app "vanishes" and stays on the old
+	// version). In helper mode this call never returns.
+	updater.HandleHelperMode()
+
 	exeDir, err := platform.ResolveExeDir()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "exe dir:", err)
