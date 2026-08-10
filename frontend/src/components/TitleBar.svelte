@@ -269,7 +269,15 @@
         --wails-draggable: no-drag;
         align-self: center;
         margin: 0 0 0 0.25rem;
-        padding: 2px 10px;
+        /* Centre the label on the box rather than leaving it on a line box.
+           line-height 1.4 split the leading 3px above and 3.4px below, and an
+           all-caps label puts no glyphs in the descender space, so the text sat
+           visibly high inside a button whose own box was already centred. */
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 20px;
+        padding: 0 10px;
         border: 1px solid var(--button-bg);
         border-radius: 3px;
         background: var(--button-bg);
@@ -278,7 +286,7 @@
         font-size: 11px;
         font-weight: 700;
         letter-spacing: 0.06em;
-        line-height: 1.4;
+        line-height: 1;
 
         &:hover {
             background: var(--button-bg-hover, var(--button-bg));
