@@ -51,6 +51,9 @@ export function buildSteamExtraMenu(
         { label: tr("Context_Steam_Id64"), action: () => void commands.copySteamId("ID64") },
         { label: tr("Context_Steam_Id3"), action: () => void commands.copySteamId("ID3") },
         { label: tr("Context_Steam_Id32"), action: () => void commands.copySteamId("ID32") },
+        // Same number as SteamID32, under the name Steam itself uses for it.
+        { label: tr("Context_Steam_FriendCode"), action: () => void commands.copySteamId("FriendCode") },
+        { label: tr("Context_Steam_Cs2FriendCode"), action: () => void commands.copySteamId("CS2FriendCode") },
       ],
     },
   ];

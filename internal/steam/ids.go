@@ -12,6 +12,12 @@ type SteamIDFormats struct {
 	ID3    string
 	STEAMx string
 	ID32   string
+	// FriendCode is what Steam's own "Add a Friend" page calls a friend code.
+	// Same value as ID32, carried separately because that is the name users
+	// go looking for.
+	FriendCode string
+	// CS2FriendCode is the in-game code Counter-Strike 2 shows, e.g. "SUCVS-FADA".
+	CS2FriendCode string
 }
 
 // FormatsFromID64 parses decimal SteamID64 and returns display formats.
@@ -25,9 +31,11 @@ func FormatsFromID64(id64 string) (SteamIDFormats, error) {
 	low := acc & 1
 	high := acc >> 1
 	return SteamIDFormats{
-		ID64:   sid.String(),
-		ID3:    fmt.Sprintf("[U:1:%d]", acc),
-		STEAMx: fmt.Sprintf("STEAM_%d:%d:%d", u, low, high),
-		ID32:   fmt.Sprintf("%d", acc),
+		ID64:          sid.String(),
+		ID3:           fmt.Sprintf("[U:1:%d]", acc),
+		STEAMx:        fmt.Sprintf("STEAM_%d:%d:%d", u, low, high),
+		ID32:          fmt.Sprintf("%d", acc),
+		FriendCode:    fmt.Sprintf("%d", acc),
+		CS2FriendCode: CS2FriendCode(acc),
 	}, nil
 }

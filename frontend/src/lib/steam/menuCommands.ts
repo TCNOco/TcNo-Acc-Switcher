@@ -16,6 +16,9 @@ const STEAM_USERDATA_ERR_KEYS = new Set([
 
 type Translate = (key: string, vars?: Record<string, string | number>) => string;
 
+/** Keys of the Go SteamIDFormats struct the copy submenu can hand to the clipboard. */
+export type SteamIdCopyFormat = "ID64" | "ID3" | "STEAMx" | "ID32" | "FriendCode" | "CS2FriendCode";
+
 export interface SteamMenuDeps {
   name: string;
   installedGames: { appId: string; name: string }[];
@@ -77,7 +80,7 @@ export function createSteamMenuCommands(acc: SteamAccountRow, deps: SteamMenuDep
       void clipboardWrite(loginName || rid, tr);
     },
 
-    async copySteamId(format: "ID64" | "ID3" | "ID32"): Promise<void> {
+    async copySteamId(format: SteamIdCopyFormat): Promise<void> {
       try {
         const formats = await SteamService.GetSteamIDFormats(rid);
         void clipboardWrite(formats[format] ?? (format === "ID64" ? rid : ""), tr);

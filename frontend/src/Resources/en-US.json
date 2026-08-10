@@ -901,6 +901,8 @@
   "Context_Steam_Id3": "SteamID3 [U:1:~]",
   "Context_Steam_Id32": "SteamID32",
   "Context_Steam_Id64": "SteamID64 7656~",
+  "Context_Steam_FriendCode": "Steam Friend Code",
+  "Context_Steam_Cs2FriendCode": "CS2 Friend Code",
   "Context_Steam_OpenUserdata": "Open userdata",
   "Context_ManageSubmenu": "Manage",
   "Context_GameDataSubmenu": "Game data",

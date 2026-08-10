@@ -7,9 +7,10 @@ import { buildSteamGuardMenuItem } from "./steamGuardMenu";
 import type { SteamAccountRow, SteamGuardMenuRequest } from "./types";
 
 const setBanStatusHidden = vi.hoisted(() => vi.fn<(hidden: boolean) => Promise<void>>());
+const copySteamId = vi.hoisted(() => vi.fn<(format: string) => Promise<void>>());
 
 vi.mock("./menuCommands", () => ({
-  createSteamMenuCommands: () => ({ setBanStatusHidden }),
+  createSteamMenuCommands: () => ({ setBanStatusHidden, copySteamId }),
 }));
 
 const labels: Record<string, string> = {
@@ -132,6 +133,53 @@ describe("Copy Steam Guard code row", () => {
     expect(copyRow(account({ hasSteamGuard: true }), false)).toBeUndefined();
     expect(copyRow(account({ hasSteamGuard: false }), true)).toBeUndefined();
     expect(copyRow(account({ steamGuardPending: true }), true)).toBeUndefined();
+  });
+});
+
+// Every row here reads one field off the Go SteamIDFormats struct, so a renamed
+// or dropped field turns into a silently empty clipboard rather than an error.
+describe("Copy SteamID submenu", () => {
+  const shared = (): SharedMenuItems => {
+    const item = (label: string): MenuItemDef => ({ label, action: vi.fn() });
+    return {
+      swapTo: item("Swap"),
+      changeName: item("Rename"),
+      createShortcut: item("Shortcut"),
+      changeImage: item("Image"),
+      forget: item("Forget"),
+      notes: item("Notes"),
+      tags: item("Tags"),
+      gameStats: null,
+    };
+  };
+
+  const deps: SteamMenuDeps = {
+    name: "Steam",
+    installedGames: [],
+    gameDataBySteamId: {},
+    steamIds: [],
+    refreshGameDataAppSets: async () => {},
+    openSteamGuard: vi.fn(),
+    steamGuardVaultUnlocked: false,
+  };
+
+  const idSubmenu = (): MenuItemDef => {
+    const menu = buildSteamExtraMenu(account(), shared(), deps);
+    const copy = menu.find((candidate) => candidate.label === "Context_CopySubmenu");
+    if (!copy) throw new Error("missing Copy submenu");
+    return child(copy, "Context_CopySteamIdSubmenu");
+  };
+
+  it.each([
+    ["Context_Steam_Id64", "ID64"],
+    ["Context_Steam_Id3", "ID3"],
+    ["Context_Steam_Id32", "ID32"],
+    ["Context_Steam_FriendCode", "FriendCode"],
+    ["Context_Steam_Cs2FriendCode", "CS2FriendCode"],
+  ])("copies %s as %s", (label, format) => {
+    copySteamId.mockClear();
+    child(idSubmenu(), label).action?.();
+    expect(copySteamId).toHaveBeenCalledWith(format);
   });
 });
 
