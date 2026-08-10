@@ -170,14 +170,16 @@
   }
 
   /**
-   * The avatar the switcher already has. A video avatar cannot render inside a
-   * 30px tile the way an image does, so the static copy wins when there is one.
+   * The avatar the switcher already has. These tiles are plain `img` elements, so
+   * a video avatar has to resolve to its static copy or to nothing at all - handing
+   * a webm to an `img` leaves an empty box, which is worse than the placeholder.
+   * A manually dropped video has no static copy by design.
    */
   function resolveAvatarUrl(imageUrl: string, staticImageUrl: string, pending: boolean): string {
     if (pending) return "";
     const primary = imageUrl.trim();
     const fallback = staticImageUrl.trim();
-    if (isProfileVideoUrl(primary) && fallback) return fallback;
+    if (isProfileVideoUrl(primary)) return fallback;
     return primary || fallback;
   }
 

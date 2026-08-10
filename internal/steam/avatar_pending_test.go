@@ -43,11 +43,11 @@ func (f fakeLookup) OlderThanDays(id string, days int) bool {
 // explicit "is it cached" check followed by an age check, which the rewrite
 // collapsed into a single OlderThanDays call per branch.
 func steamAvatarPendingOriginal(avatars profileimage.Lookup, steamID64, miniProfileHTML string, useMiniProfile bool, maxAgeDays int, isManual bool) bool {
+	// Not part of the oracle: nothing ever downloads a manual avatar, so the
+	// age check the original applied here could only ever be answered "pending"
+	// forever. TestManualAvatarIsNeverPending pins the replacement rule.
 	if isManual {
-		if _, ok := avatars.CachedFilePath(steamID64); ok {
-			return avatars.OlderThanDays(steamID64, maxAgeDays)
-		}
-		return true
+		return false
 	}
 	if useMiniProfile {
 		staticID := steamStaticAvatarID(steamID64)
@@ -112,5 +112,52 @@ func TestSteamAvatarPendingMatchesOriginalLogic(t *testing.T) {
 	}
 	if want := 2 * 2 * 2 * 2 * 2 * 2 * 3 * 2; checked != want {
 		t.Fatalf("covered %d combinations, expected the full table of %d", checked, want)
+	}
+}
+
+// TestManualAvatarIsNeverPending pins the rule that broke the tiles: a manual
+// avatar that had aged past the expiry was reported pending by every list
+// build, while the background refresh went on emitting "not pending" for it,
+// because nothing ever re-downloads a manual avatar to reset its age. The two
+// answers flipped the flag against each other on every window focus, and the
+// tile fell back to the placeholder each time.
+func TestManualAvatarIsNeverPending(t *testing.T) {
+	const id = "76561198000000001"
+	staticID := steamStaticAvatarID(id)
+
+	for _, cached := range []bool{false, true} {
+		for _, stale := range []bool{false, true} {
+			for _, useMini := range []bool{false, true} {
+				for _, days := range []int{-1, 0, 7} {
+					lookup := fakeLookup{
+						cached: map[string]bool{id: cached, staticID: cached},
+						stale:  map[string]bool{id: stale, staticID: stale},
+						manual: map[string]bool{id: true},
+					}
+					if steamAvatarPending(lookup, id, "", useMini, days, true) {
+						t.Fatalf("manual avatar reported pending (cached=%v stale=%v mini=%v days=%d)",
+							cached, stale, useMini, days)
+					}
+				}
+			}
+		}
+	}
+}
+
+// TestManualAvatarDisplayIgnoresLeftoverStatic covers the second half of the
+// same flicker: ChangeAccountImage only deletes the main stem, so the Steam
+// avatar's <id>_static survives a drop. Offering it as the manual avatar's
+// static form would both paint the replaced image and disagree with the
+// refresh, which resolves the manual URL alone.
+func TestManualAvatarDisplayIgnoresLeftoverStatic(t *testing.T) {
+	const manual = "/img/profiles/steam/76561198000000001.png"
+	const video = "/img/profiles/steam/76561198000000001.webm"
+
+	if img, static := resolveManualAvatarDisplay(manual); img != manual || static != manual {
+		t.Fatalf("manual image: got (%q, %q), want (%q, %q)", img, static, manual, manual)
+	}
+	// A video has no static form, so there is nothing to hand an <img> offline.
+	if img, static := resolveManualAvatarDisplay(video); img != video || static != "" {
+		t.Fatalf("manual video: got (%q, %q), want (%q, \"\")", img, static, video)
 	}
 }
