@@ -200,6 +200,10 @@
         height: 100%;
         display: flex;
         flex-direction: row;
+        /* The logo is 10px tall inside 12px margins, so it needs 34px in a 32px
+           row. Stretched, it overflowed and settled a pixel low while every
+           sibling sat centred; centring honours the margins symmetrically. */
+        align-items: center;
     }
     .title-drag {
         position: absolute;
