@@ -199,7 +199,12 @@ func RunGUI(params RunGUIParams) {
 	currentVersion := buildinfo.Version()
 
 	if currentVersion != "" && !guiSettings.OfflineMode {
-		gh, err := updatecheck.NewSignedGitHubProvider(githubUpdaterConfig(guiSettings), ".exe.sig")
+		// ".exe.sig2", not ".exe.sig": clients v4.0.1-v4.0.6 match ".exe.sig"
+		// and then fail to parse the embedded OpenSSH-format key, bricking
+		// their auto-update. Publishing under a suffix they don't match makes
+		// them fall back to SHA256SUMS digest verification and update again.
+		// Do not rename back while any of those versions are in the wild.
+		gh, err := updatecheck.NewSignedGitHubProvider(githubUpdaterConfig(guiSettings), ".exe.sig2")
 		if err != nil {
 			wailsApp.Logger.Error("updater: provider", "error", err)
 		} else {
@@ -208,7 +213,7 @@ func RunGUI(params RunGUIParams) {
 			if err := wailsApp.Updater.Init(updater.Config{
 				CurrentVersion: currentVersion,
 				Providers:      []updater.Provider{gh},
-				PublicKey:      params.UpdaterPublicKey,
+				PublicKey:      updatecheck.NormalizePublicKey(params.UpdaterPublicKey),
 				Window:         updaterWindow,
 			}); err != nil {
 				wailsApp.Logger.Error("updater: init", "error", err)

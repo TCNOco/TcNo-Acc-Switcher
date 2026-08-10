@@ -10,7 +10,7 @@ import (
 func TestGitHubAssetMatcher_explicitWindowsExe(t *testing.T) {
 	assets := []github.ReleaseAsset{
 		{Name: "TcNo-Acc-Switcher.7z"},
-		{Name: "TcNo-Acc-Switcher.exe.sig"},
+		{Name: "TcNo-Acc-Switcher.exe.sig2"},
 		{Name: "TcNo-Acc-Switcher.exe"},
 		{Name: "TcNo.Account.Switcher.-.Installer.exe"},
 	}

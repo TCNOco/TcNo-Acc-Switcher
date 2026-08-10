@@ -87,7 +87,10 @@ function Write-UpdaterSignature {
   }
 
   $keyPath = Join-Path ([System.IO.Path]::GetTempPath()) 'tcno-updater-key'
-  $sigPath = Join-Path $root 'bin\TcNo-Acc-Switcher.exe.sig'
+  # .sig2, not .sig: pre-4.0.7 clients choke on any release carrying a
+  # .exe.sig asset (embedded-key parse bug); the new suffix lets them fall
+  # back to digest verification. See internal/app/gui.go.
+  $sigPath = Join-Path $root 'bin\TcNo-Acc-Switcher.exe.sig2'
   $keyMaterial = $env:UPDATER_KEY.Trim().Trim('"').Trim("'")
 
   try {
@@ -108,6 +111,11 @@ function Write-UpdaterSignature {
 
     $sigOutput | Out-File -Encoding ascii $sigPath
     Write-Host "Ed25519 signature created at $sigPath."
+
+    & go run (Join-Path $root 'other\verify-release\main.go') (Join-Path $root 'updater-key.pub') $ExePath $sigPath
+    if ($LASTEXITCODE -ne 0) {
+      throw 'Ed25519 signature does not verify against updater-key.pub; UPDATER_KEY and the embedded public key are out of sync.'
+    }
   } finally {
     Remove-Item -Force $keyPath -ErrorAction SilentlyContinue
   }
@@ -189,7 +197,7 @@ function Test-ReleaseArtifacts {
   $required = @(
     $InstallerPath,
     (Join-Path $root 'bin\TcNo-Acc-Switcher.exe'),
-    (Join-Path $root 'bin\TcNo-Acc-Switcher.exe.sig'),
+    (Join-Path $root 'bin\TcNo-Acc-Switcher.exe.sig2'),
     (Join-Path $root 'bin\TcNo-Acc-Switcher.7z'),
     (Join-Path $root 'bin\SHA256SUMS')
   )

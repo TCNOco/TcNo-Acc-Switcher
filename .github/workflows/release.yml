@@ -130,6 +130,9 @@ jobs:
       - name: Verify Go dependency policy
         run: go test ./internal/dependencypolicy
 
+      - name: Verify updater signing key
+        run: go test ./internal/updatecheck
+
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
@@ -256,6 +259,6 @@ jobs:
           files: |
             signed-installer/TcNo Account Switcher Installer.exe
             bin/TcNo-Acc-Switcher.exe
-            bin/TcNo-Acc-Switcher.exe.sig
+            bin/TcNo-Acc-Switcher.exe.sig2
             bin/TcNo-Acc-Switcher.7z
             bin/SHA256SUMS

@@ -14,10 +14,11 @@ import (
 )
 
 type signedGitHubProvider struct {
-	inner     *github.Provider
+	inner     updater.Provider
 	owner     string
 	repo      string
 	sigSuffix string
+	apiBase   string
 }
 
 func NewSignedGitHubProvider(cfg github.Config, sigSuffix string) (updater.Provider, error) {
@@ -34,6 +35,7 @@ func NewSignedGitHubProvider(cfg github.Config, sigSuffix string) (updater.Provi
 		owner:     parts[0],
 		repo:      parts[1],
 		sigSuffix: sigSuffix,
+		apiBase:   "https://api.github.com",
 	}, nil
 }
 
@@ -45,9 +47,11 @@ func (p *signedGitHubProvider) Check(ctx context.Context, req updater.CheckReque
 		return r, err
 	}
 
+	// Fail closed: every release publishes a signature, so a release we
+	// cannot fetch one for must not install unverified.
 	sig, err := p.fetchSignature(ctx, r.Version)
 	if err != nil {
-		return r, nil
+		return nil, fmt.Errorf("updater: fetch release signature: %w", err)
 	}
 
 	if r.Verification == nil {
@@ -65,7 +69,7 @@ func (p *signedGitHubProvider) Download(ctx context.Context, r *updater.Release,
 
 func (p *signedGitHubProvider) fetchSignature(ctx context.Context, version string) ([]byte, error) {
 	tag := "v" + version
-	url := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases/tags/%s", p.owner, p.repo, tag)
+	url := fmt.Sprintf("%s/repos/%s/%s/releases/tags/%s", p.apiBase, p.owner, p.repo, tag)
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
