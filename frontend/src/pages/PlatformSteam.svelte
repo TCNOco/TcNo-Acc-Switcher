@@ -69,6 +69,10 @@
   let gameDataBySteamId: Record<string, { userdata: Set<string>; backup: Set<string> }> = {};
   let steamMainEl: HTMLDivElement | null = null;
   let offShortcutsUpdated: (() => void) | undefined;
+  // Sticky: the games list is built once per visit to this page and then only hidden.
+  let gamesTabOpened = false;
+  $: gamesTab = $steamPageTab === "games";
+  $: if (gamesTab) gamesTabOpened = true;
 
   function applyShortcutIconsFromShortcutList(list: unknown[]): void {
     const indexes = shortcutIconIndexes(list, name, SHORTCUT_ICON_FALLBACK, get(offlineMode));
@@ -354,11 +358,18 @@
 </script>
 
 <!-- Not a `.main-content` itself: both tabs render one of their own, and stacking
-     two would put a second `overflow: auto` box above the list. -->
+     two would put a second `overflow: auto` box above the list. The games list stays
+     in the tree while the switcher shows, so exactly one of the two is ever
+     displayed — see `.steamGames--hidden`. -->
 <div class="platform-page-shell" bind:this={steamMainEl}>
-  {#if $steamPageTab === "games"}
-    <SteamGamesView {name} />
-  {:else}
+  <!-- The games list is kept mounted and hidden rather than swapped out: a 2000-game
+       library costs ~400ms of DOM to build, which is the whole of the blank the tab
+       switch used to show. The switcher below still swaps — it paints from the
+       accounts cache in a single flush. -->
+  {#if gamesTabOpened}
+    <SteamGamesView {name} active={gamesTab} />
+  {/if}
+  {#if !gamesTab}
   <PlatformAccountsBase {name} {adapter}>
     <svelte:fragment slot="account-avatar" let:acc let:epoch let:fallback>
       <SteamAccountAvatar account={acc} {epoch} {fallback} boundary={steamMainEl} />

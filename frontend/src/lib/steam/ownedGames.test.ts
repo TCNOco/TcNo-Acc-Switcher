@@ -3,6 +3,7 @@ import {
   chunkOwnedGames,
   filterOwnedGames,
   gameOwnerAccounts,
+  ownedGamesSignature,
   ownerDisplayName,
   ownersTooltipText,
   sortOwnedGames,
@@ -197,5 +198,31 @@ describe("chunkOwnedGames", () => {
   it("falls back to one block when the size is not positive", () => {
     expect(chunkOwnedGames(rows, 0)).toEqual([{ index: 0, rows }]);
     expect(chunkOwnedGames(rows, -5)).toEqual([{ index: 0, rows }]);
+  });
+});
+
+describe("ownedGamesSignature", () => {
+  const rows = [game("Portal", ["a", "b"]), game("Doom", ["c"])];
+
+  it("is stable for an unchanged library", () => {
+    expect(ownedGamesSignature(rows)).toBe(ownedGamesSignature(rows.map((r) => ({ ...r }))));
+  });
+
+  // Every field below is drawn by a row, so a refresh that changes one has to re-render.
+  it("changes when anything a row draws changes", () => {
+    const base = ownedGamesSignature(rows);
+    expect(ownedGamesSignature([{ ...rows[0], name: "Portal 2" }, rows[1]])).not.toBe(base);
+    expect(ownedGamesSignature([{ ...rows[0], appId: "other" }, rows[1]])).not.toBe(base);
+    expect(ownedGamesSignature([{ ...rows[0], iconUrl: "/x.jpg" }, rows[1]])).not.toBe(base);
+    expect(ownedGamesSignature([{ ...rows[0], owners: ["a"] }, rows[1]])).not.toBe(base);
+    expect(ownedGamesSignature([rows[1], rows[0]])).not.toBe(base);
+    expect(ownedGamesSignature(rows.slice(0, 1))).not.toBe(base);
+  });
+
+  // Adjacent free-form fields: without a terminator these two would hash alike.
+  it("does not confuse a field boundary with its contents", () => {
+    expect(ownedGamesSignature([{ appId: "ab", name: "c", iconUrl: "", owners: [] }])).not.toBe(
+      ownedGamesSignature([{ appId: "a", name: "bc", iconUrl: "", owners: [] }]),
+    );
   });
 });

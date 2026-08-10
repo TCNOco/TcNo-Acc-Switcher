@@ -1,5 +1,12 @@
 /* Steam platform page, GAMES tab: the game list and the action bar's account strip. */
 
+/* The list is hidden rather than unmounted while the switcher tab shows, so that
+   coming back does not rebuild thousands of rows. `display: none` keeps it out of
+   layout and paint entirely; the class needs `.main-content`'s specificity to win. */
+.main-content.steamGames--hidden {
+  display: none;
+}
+
 /* Same chain as the account list: host → table → scroller, every level a flex
    column that may shrink, so the list keeps the only scrollbar on the page. */
 .steamGames__host {

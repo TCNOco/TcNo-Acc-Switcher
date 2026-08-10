@@ -34,6 +34,7 @@
     chunkOwnedGames,
     filterOwnedGames,
     gameOwnerAccounts,
+    ownedGamesSignature,
     ownerDisplayName,
     ownersTooltipText,
     sortOwnedGames,
@@ -61,6 +62,13 @@
   const FILTER_DEBOUNCE_MS = 120;
 
   export let name: string;
+  /**
+   * False while the switcher tab is showing. The view stays mounted and only hides:
+   * rebuilding it costs ~400ms of DOM for a 2000-game library against ~5ms to show it
+   * again. Everything it publishes outside itself therefore hangs off this flag rather
+   * than off the component lifecycle.
+   */
+  export let active = true;
 
   type GamesAccount = {
     steamId64: string;
@@ -88,6 +96,13 @@
   let offSort: (() => void) | undefined;
   let lastHandledSortId = 0;
   let busy = false;
+  let activated = false;
+  let mounted = false;
+  // Content fingerprints of what is already on screen. A refresh that returns the same
+  // library must not reassign `games`: the rows are keyed, so Svelte would still walk
+  // 2000 blocks and thousands of attributes to conclude nothing moved.
+  let gamesSig = "";
+  let accountsSig = "";
 
   $: accountById = new Map(accounts.map((a) => [a.steamId64, a]));
   $: hasVaultAccounts = accounts.some((a) => a.inVault);
@@ -104,10 +119,13 @@
       avatarUrl,
     }),
   );
-  $: steamGamesBar.set({
-    accounts: barTiles,
-    reason: barTiles.length > 0 ? "" : selectedGame ? "owners-unknown" : "no-game",
-  });
+  $: if (active) {
+    steamGamesBar.set({
+      accounts: barTiles,
+      reason: barTiles.length > 0 ? "" : selectedGame ? "owners-unknown" : "no-game",
+    });
+  }
+  $: if (mounted) syncActivation(active);
 
   // These take the account map rather than closing over it so that Svelte tracks it
   // as a dependency of every markup expression that calls them. Accounts resolve
@@ -171,7 +189,7 @@
     const enrichById = new Map(
       enrichment.map((row: SteamAccountEnrichmentDTO) => [row.steamId64, row]),
     );
-    accounts = list.map((row: SteamAccountListItemDTO) => {
+    const next = list.map((row: SteamAccountListItemDTO) => {
       const extra = enrichById.get(row.steamId64);
       // Stored raw, not offline-safed here: accounts load once and offline mode
       // can be switched on afterwards, which would leave these avatars pointing
@@ -192,21 +210,34 @@
         inVault: (row.hasSteamGuard ?? false) || (row.steamGuardLoginOnly ?? false),
       };
     });
+    // Every row reads the account map for its owner avatars and tooltips, so a fresh
+    // array with identical contents would touch thousands of them for nothing.
+    const sig = JSON.stringify(next);
+    if (sig !== accountsSig) {
+      accountsSig = sig;
+      accounts = next;
+    }
     accountsLoaded = true;
   }
 
   async function loadGames(): Promise<void> {
     try {
       const rows = await SteamService.GetOwnedGamesList();
-      games = rows.map((row: OwnedGameDTO) => ({
+      const next = rows.map((row: OwnedGameDTO) => ({
         appId: row.appId,
         name: row.name,
         iconUrl: row.iconUrl,
         owners: row.owners ?? [],
       }));
+      const sig = ownedGamesSignature(next);
+      if (sig !== gamesSig) {
+        gamesSig = sig;
+        games = next;
+      }
       loadError = "";
     } catch (e) {
       games = [];
+      gamesSig = "";
       loadError = formatToastWithError($t("Steam_Games_LoadFailed"), e);
     } finally {
       gamesLoading = false;
@@ -332,16 +363,42 @@
     ];
   }
 
-  onMount(() => {
+  function syncActivation(next: boolean): void {
+    if (next === activated) return;
+    activated = next;
+    if (next) activate(); else deactivate();
+  }
+
+  function activate(): void {
     setSteamGamesAccountPickHandler((steamId64) => { void pickAccount(steamId64); });
     setSteamGamesSearchFocusHandler((append) => { void focusSearch(append); });
     // The overlay belongs to the switcher tab and is not mounted here. Toggling tabs
     // while it was open would otherwise leave the store open with nothing rendering
     // it, and App would keep routing keystrokes into it.
     closeSearchOverlay();
+    touchStatus();
+    // The rows already on screen are last time's. Both refreshes replace them only
+    // when the payload differs, so returning to an unchanged library costs nothing
+    // beyond the round trip — and one that changed while the switcher was showing
+    // still lands, whether or not the backend announced it.
     void loadGames();
-    void loadAccounts().catch(() => { accounts = []; accountsLoaded = true; });
+    void loadAccounts().catch(() => { accountsLoaded = true; });
+  }
 
+  function deactivate(): void {
+    // Nothing here may keep answering for the page: type-anywhere has to fall back to
+    // the search overlay, and the strip belongs to whichever tab is showing.
+    setSteamGamesSearchFocusHandler(null);
+    clearSteamGamesBar();
+    actionBarStatus.set("");
+  }
+
+  onMount(() => {
+    syncActivation(active);
+    mounted = true;
+
+    // Subscribed while hidden as well, so a library that changes on the switcher tab
+    // is already redrawn by the time the games tab comes back.
     offGamesUpdated = Events.On("steam-owned-games-updated", () => {
       scheduleGamesRefresh();
     });
@@ -349,6 +406,9 @@
     offSort = platformListSort.subscribe((sig) => {
       if (!sig || sig.id <= lastHandledSortId) return;
       lastHandledSortId = sig.id;
+      // While hidden the sort belongs to the switcher list; swallow the signal rather
+      // than reordering behind the user's back.
+      if (!active) return;
       sortKind = sig.kind;
     });
   });
@@ -365,7 +425,7 @@
   });
 </script>
 
-<div class="main-content platform-accounts-root">
+<div class="main-content platform-accounts-root" class:steamGames--hidden={!active}>
 <div class="platformTableHost steamGames__host">
   <div class="steamGames__search">
     <label class="sr-only" for={SEARCH_INPUT_ID}>{$t("Steam_Games_SearchLabel")}</label>

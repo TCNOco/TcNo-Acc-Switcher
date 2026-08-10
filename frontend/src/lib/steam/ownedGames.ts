@@ -57,6 +57,34 @@ export function filterOwnedGames(games: OwnedGameRow[], query: string): OwnedGam
 }
 
 /**
+ * A fingerprint of everything a row draws, so a reload that returns the same library
+ * can be dropped instead of reassigned. The list survives tab switches now, and
+ * handing Svelte an equal-but-new array still walks 2000 keyed blocks and every
+ * attribute under them. Hashed rather than joined: the joined form of a 2000-game
+ * library is ~450KB of string per refresh.
+ */
+export function ownedGamesSignature(games: OwnedGameRow[]): string {
+  let hash = 2166136261;
+  const feed = (s: string) => {
+    for (let i = 0; i < s.length; i++) {
+      hash ^= s.charCodeAt(i);
+      hash = Math.imul(hash, 16777619);
+    }
+    // Field terminator: without it "ab"+"c" and "a"+"bc" hash alike, and appId and
+    // name are adjacent free-form strings.
+    hash ^= 0x1f;
+    hash = Math.imul(hash, 16777619);
+  };
+  for (const game of games) {
+    feed(game.appId);
+    feed(game.name);
+    feed(game.iconUrl);
+    for (const owner of game.owners) feed(owner);
+  }
+  return `${games.length}:${hash >>> 0}`;
+}
+
+/**
  * Rows grouped into fixed-size blocks so the list can hand the renderer a handful of
  * `content-visibility: auto` boxes instead of one per game. A 2000-game library is
  * ~20k DOM nodes, and every style recalc or layout the page is forced into — opening
