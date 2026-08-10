@@ -272,7 +272,6 @@
     .header_tab {
         --wails-draggable: no-drag;
         align-self: center;
-        margin: 0 0 0 0.25rem;
         /* Centre the label on the box rather than leaving it on a line box.
            line-height 1.4 split the leading 3px above and 3.4px below, and an
            all-caps label puts no glyphs in the descender space, so the text sat
