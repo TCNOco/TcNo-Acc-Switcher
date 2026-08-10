@@ -2,6 +2,8 @@
   import * as PlatformService from "../../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import { formatToastWithError } from "../../lib/formatWailsError";
   import { openExternalUrl } from "../../lib/openExternalUrl";
+  import { renderReleaseNotes } from "../../lib/releaseNotes";
+  import { sanitizeHtml } from "../../lib/sanitizeHtml";
   import { t } from "../../stores/i18n";
   import { dismissModal } from "../../stores/modal";
   import { pushToast } from "../../stores/toast";
@@ -30,10 +32,24 @@
   function openDownloadPage(): void {
     void openExternalUrl(downloadUrl);
   }
+
+  // The navigation guard neutralizes every anchor in injected HTML, so
+  // release-notes links have to be routed through openExternalUrl here.
+  function onNotesClick(e: MouseEvent): void {
+    const anchor = e.target instanceof Element ? e.target.closest("a[href]") : null;
+    if (!anchor) {
+      return;
+    }
+    e.preventDefault();
+    void openExternalUrl((anchor as HTMLAnchorElement).href);
+  }
 </script>
 
 {#if message}
-  <div class="modal-text update-message">{message}</div>
+  <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
+  <div class="modal-text update-message" on:click={onNotesClick}>
+    {@html sanitizeHtml(renderReleaseNotes(message), "inline")}
+  </div>
 {/if}
 
 <div class="update-actions">
@@ -48,7 +64,38 @@
 <style lang="scss">
   .update-message {
     margin: 0;
-    white-space: pre-wrap;
+    max-height: 45vh;
+    overflow-y: auto;
+
+    /* Rendered release-notes markup comes from @html, so scoping needs :global. */
+    :global(p) {
+      margin: 0 0 0.5em;
+    }
+
+    :global(ul),
+    :global(ol) {
+      margin: 0 0 0.5em;
+      padding-left: 1.2em;
+    }
+
+    :global(li) {
+      margin-bottom: 0.2em;
+    }
+
+    :global(> :last-child) {
+      margin-bottom: 0;
+    }
+
+    :global(code) {
+      font-size: 0.85em;
+      background: rgb(255 255 255 / 8%);
+      border-radius: 4px;
+      padding: 0.1em 0.35em;
+    }
+
+    :global(a) {
+      color: var(--accent);
+    }
   }
 
   .update-actions {
