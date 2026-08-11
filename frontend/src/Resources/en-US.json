@@ -112,6 +112,8 @@
   "Toast_SettingsReset": "Settings were reset.",
   "Toast_PlatformPathUpdated": "Platform executable path was updated.",
   "Toast_ImagesRefreshing": "Profile images are being refreshed.",
+  "Toast_RefreshingAccounts": "Refreshing profile images, names and game stats.",
+  "Toast_RefreshAccountsFailed": "Could not refresh accounts.",
   "Toast_ProfileImagesCleared": "Profile images cleared.",
   "Toast_AccountTagsCleared": "Account tags cleared.",
   "Toast_TaggedVisibleAccounts": "Tagged {count} visible account(s) with {tag}.",
