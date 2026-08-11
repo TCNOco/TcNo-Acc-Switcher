@@ -35,8 +35,9 @@ type ViewOptions struct {
 	DataPath string
 	// DevTools enables the content view's developer tools. Off in production.
 	DevTools bool
-	// ReservedTop is the height in physical pixels of the toolbar drawn above
-	// the view by the host window's own webview.
+	// ReservedTop is how far down the host window's client area the view
+	// starts, in physical pixels. It covers everything drawn above the page:
+	// the application's title bar as well as the toolbar.
 	ReservedTop int
 	// Cookies are planted before the first navigation, which is what makes the
 	// window browse as the account.
@@ -73,8 +74,14 @@ type View interface {
 	Stop() error
 	Back() error
 	Forward() error
-	// SetBounds positions the view inside the host window, in physical pixels.
-	SetBounds(x, y, width, height int) error
+	// SetTopInset re-lays the view out to fill its host window below top,
+	// measured in physical pixels from the top of the client area.
+	//
+	// The view measures the window itself rather than being handed a size. The
+	// host reports geometry in device-independent pixels while the native view
+	// wants physical ones, and having one side convert for the other is how the
+	// two end up disagreeing on a scaled display.
+	SetTopInset(top int) error
 	// Close releases the view and its native resources.
 	Close()
 }

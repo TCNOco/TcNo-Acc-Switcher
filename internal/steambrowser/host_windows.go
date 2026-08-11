@@ -10,6 +10,7 @@ import (
 	"sync"
 
 	"TcNo-Acc-Switcher/internal/webview2"
+	"TcNo-Acc-Switcher/internal/webview2/w32"
 )
 
 // Supported reports whether this build can open session windows.
@@ -23,8 +24,10 @@ func Supported() bool { return true }
 // window.go's main-thread dispatch; nothing in this file dispatches for itself,
 // so that the whole sequence a caller performs stays on one thread.
 type windowsView struct {
-	chromium *webview2.Chromium
-	platform Platform
+	chromium   *webview2.Chromium
+	platform   Platform
+	hostWindow uintptr
+	topInset   int
 
 	// mu guards the cached state the event handlers write and the state
 	// reporter reads. Handlers arrive on the UI thread, but the reporter is
@@ -53,6 +56,7 @@ func newView(options ViewOptions) (View, error) {
 
 	view := &windowsView{
 		platform:    options.Platform,
+		hostWindow:  options.NativeWindow,
 		onState:     options.OnState,
 		onNewWindow: options.OnNewWindow,
 	}
@@ -82,7 +86,18 @@ func newView(options ViewOptions) (View, error) {
 		return nil, err
 	}
 
-	view.SetBounds(0, options.ReservedTop, 0, 0)
+	view.topInset = options.ReservedTop
+	if err := view.SetTopInset(options.ReservedTop); err != nil {
+		chromium.Close()
+		return nil, err
+	}
+	// Embed leaves the controller hidden; without this the window shows the
+	// toolbar over an empty background and nothing else.
+	if err := chromium.Show(); err != nil {
+		chromium.Close()
+		return nil, fmt.Errorf("steambrowser: show content view: %w", err)
+	}
+
 	if options.InitialURL != "" {
 		if err := view.Navigate(options.InitialURL); err != nil {
 			chromium.Close()
@@ -198,21 +213,33 @@ func (v *windowsView) Forward() error {
 	return view2.GoForward()
 }
 
-// SetBounds places the view under the toolbar. Width or height of zero means
-// "fill the host window", which is what a resize passes once it has measured.
-func (v *windowsView) SetBounds(x, y, width, height int) error {
+// SetTopInset fills the host window below top.
+//
+// The client rect is read from the window itself, so only the inset has to
+// cross from the host's device-independent pixels into physical ones. Deriving
+// the width and height here as well would mean converting them too, and a
+// scaled display is exactly where that goes wrong.
+func (v *windowsView) SetTopInset(top int) error {
 	if v.chromium == nil {
 		return errors.New("steambrowser: content view is gone")
 	}
-	if width <= 0 || height <= 0 {
-		v.chromium.Resize()
-		return nil
+	if top < 0 {
+		top = 0
+	}
+	v.topInset = top
+
+	client, err := w32.GetClientRect(v.hostWindow)
+	if err != nil {
+		return fmt.Errorf("steambrowser: measure host window: %w", err)
+	}
+	if int32(top) > client.Bottom {
+		top = int(client.Bottom)
 	}
 	v.chromium.ResizeWithBounds(&webview2.Rect{
-		Left:   int32(x),
-		Top:    int32(y),
-		Right:  int32(x + width),
-		Bottom: int32(y + height),
+		Left:   client.Left,
+		Top:    client.Top + int32(top),
+		Right:  client.Right,
+		Bottom: client.Bottom,
 	})
 	return nil
 }

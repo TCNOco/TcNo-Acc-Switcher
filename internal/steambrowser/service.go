@@ -14,10 +14,10 @@ import (
 // StateEvent is emitted to a session window whenever its page changes.
 const StateEvent = "steambrowser:state"
 
-// defaultChromeHeight is the toolbar's height in device-independent pixels, used
-// until the window's own chrome reports its measured height. Being wrong for a
-// frame only misplaces the content view briefly; being absent would overlap it
-// with the toolbar.
+// defaultChromeHeight is how far down the window the page starts, in
+// device-independent pixels, used until the window's own chrome measures itself.
+// It has to clear the application's title bar as well as the toolbar, so it is
+// the toolbar's bottom edge rather than its height.
 const defaultChromeHeight = 76
 
 // SessionSource hands out a usable web session for an account.
@@ -175,9 +175,12 @@ func (s *Service) openOnMainThread(id string, credentials WebSession, site Site,
 	return nil
 }
 
-// SetChromeHeight lets a window's toolbar report its measured height, in CSS
-// pixels, so the content view sits exactly beneath it whatever the theme or
-// font size does.
+// SetChromeHeight lets a window's toolbar report where the page should start,
+// in CSS pixels measured from the top of the window.
+//
+// It is the toolbar's bottom edge, not its height, because the application's
+// own title bar sits above it. Measuring rather than assuming also keeps the
+// content view in place when the theme or font size moves the toolbar.
 func (s *Service) SetChromeHeight(sessionID string, height int) error {
 	if height <= 0 || height > 400 {
 		return fmt.Errorf("steambrowser: implausible chrome height %d", height)
@@ -194,9 +197,9 @@ func (s *Service) SetChromeHeight(sessionID string, height int) error {
 	return nil
 }
 
-// layout puts the content view under the toolbar and fills the rest of the
-// window. Wails reports sizes in device-independent pixels while WebView2 takes
-// physical ones, so everything is scaled by the window's DPI.
+// layout puts the content view below the window's chrome. Only the inset is
+// converted here; the view measures the window's own client area, which avoids
+// both sides having to agree on device-independent versus physical pixels.
 func (s *Service) layout(sessionID string, window application.Window) {
 	current, err := s.sessions.get(sessionID)
 	if err != nil || current.view == nil {
@@ -209,13 +212,7 @@ func (s *Service) layout(sessionID string, window application.Window) {
 		height = defaultChromeHeight
 	}
 
-	width, windowHeight := window.Size()
-	top := scaleForWindow(window, height)
-	body := scaleForWindow(window, windowHeight) - top
-	if body < 0 {
-		body = 0
-	}
-	_ = current.view.SetBounds(0, top, scaleForWindow(window, width), body)
+	_ = current.view.SetTopInset(scaleForWindow(window, height))
 }
 
 func (s *Service) publish(sessionID string, state ViewState) {

@@ -105,14 +105,17 @@
   }
 
   /**
-   * Tell the host how tall this toolbar is, so the content view sits exactly
-   * beneath it. Reported rather than assumed, because the height moves with the
-   * theme and the user's font size.
+   * Tell the host where the page should start: the toolbar's bottom edge,
+   * measured from the top of the window.
+   *
+   * Its own height would not be enough, because the application's title bar
+   * sits above it. Measuring rather than assuming also survives the theme or
+   * font size moving the toolbar.
    */
   function reportHeight(): void {
     if (!toolbar) return;
-    const height = Math.ceil(toolbar.getBoundingClientRect().height);
-    if (height > 0) void SteamBrowser.SetChromeHeight(sessionId, height).catch(() => {});
+    const bottom = Math.ceil(toolbar.getBoundingClientRect().bottom);
+    if (bottom > 0) void SteamBrowser.SetChromeHeight(sessionId, bottom).catch(() => {});
   }
 
   let observer: ResizeObserver | undefined;
@@ -137,94 +140,108 @@
 </script>
 
 <div class="sb" class:sb--untrusted={untrusted}>
-  <header
-    class="sb__bar"
-    role="toolbar"
-    tabindex="-1"
-    aria-label={$t("SteamBrowser_Address")}
-    bind:this={toolbar}
-    class:sb__bar--dropping={dragging}
-    on:dragover|preventDefault={() => (dragging = true)}
-    on:dragleave={() => (dragging = false)}
-    on:drop={onDrop}
-  >
-    <div class="sb__nav">
-      <button
-        type="button" class="sb__btn" disabled={!state.canGoBack}
-        on:click={goBack} title={$t("SteamBrowser_Back")} aria-label={$t("SteamBrowser_Back")}
-      >◀</button>
-      <button
-        type="button" class="sb__btn" disabled={!state.canGoForward}
-        on:click={goForward} title={$t("SteamBrowser_Forward")} aria-label={$t("SteamBrowser_Forward")}
-      >▶</button>
-      {#if state.loading}
+  <!-- Header and popover share a wrapper so the popover hangs off the toolbar's
+       bottom edge rather than the full height of the page area. -->
+  <div class="sb__chrome">
+    <header
+      class="sb__bar"
+      role="toolbar"
+      tabindex="-1"
+      aria-label={$t("SteamBrowser_Address")}
+      bind:this={toolbar}
+      class:sb__bar--dropping={dragging}
+      on:dragover|preventDefault={() => (dragging = true)}
+      on:dragleave={() => (dragging = false)}
+      on:drop={onDrop}
+    >
+      <div class="sb__nav">
         <button
-          type="button" class="sb__btn" on:click={stop}
-          title={$t("SteamBrowser_Stop")} aria-label={$t("SteamBrowser_Stop")}
-        >✕</button>
-      {:else}
+          type="button" class="sb__btn" disabled={!state.canGoBack}
+          on:click={goBack} title={$t("SteamBrowser_Back")} aria-label={$t("SteamBrowser_Back")}
+        >◀</button>
         <button
-          type="button" class="sb__btn" on:click={reload}
-          title={$t("SteamBrowser_Reload")} aria-label={$t("SteamBrowser_Reload")}
-        >⟳</button>
-      {/if}
-    </div>
+          type="button" class="sb__btn" disabled={!state.canGoForward}
+          on:click={goForward} title={$t("SteamBrowser_Forward")} aria-label={$t("SteamBrowser_Forward")}
+        >▶</button>
+        {#if state.loading}
+          <button
+            type="button" class="sb__btn" on:click={stop}
+            title={$t("SteamBrowser_Stop")} aria-label={$t("SteamBrowser_Stop")}
+          >✕</button>
+        {:else}
+          <button
+            type="button" class="sb__btn" on:click={reload}
+            title={$t("SteamBrowser_Reload")} aria-label={$t("SteamBrowser_Reload")}
+          >⟳</button>
+        {/if}
+      </div>
 
-    <div class="sb__address" class:sb__address--trusted={state.trusted}>
-      <button
-        type="button"
-        class="sb__lock"
-        class:sb__lock--secure={state.secure}
-        disabled={!state.secure}
-        on:click={toggleCertificate}
-        title={state.secure ? $t("SteamBrowser_Cert_View") : $t("SteamBrowser_NotSecure")}
-        aria-label={state.secure ? $t("SteamBrowser_Cert_View") : $t("SteamBrowser_NotSecure")}
-      >{state.secure ? "🔒" : "⚠"}</button>
-      <input
-        bind:this={addressInput}
-        class="sb__url"
-        type="text"
-        spellcheck="false"
-        autocomplete="off"
-        value={displayed}
-        on:input={(e) => (draft = e.currentTarget.value)}
-        on:keydown={onAddressKey}
-        on:focus={(e) => e.currentTarget.select()}
-        aria-label={$t("SteamBrowser_Address")}
+      <div class="sb__address" class:sb__address--trusted={state.trusted}>
+        <button
+          type="button"
+          class="sb__lock"
+          class:sb__lock--secure={state.secure}
+          disabled={!state.secure}
+          on:click={toggleCertificate}
+          title={state.secure ? $t("SteamBrowser_Cert_View") : $t("SteamBrowser_NotSecure")}
+          aria-label={state.secure ? $t("SteamBrowser_Cert_View") : $t("SteamBrowser_NotSecure")}
+        >{state.secure ? "🔒" : "⚠"}</button>
+        <input
+          bind:this={addressInput}
+          class="sb__url"
+          type="text"
+          spellcheck="false"
+          autocomplete="off"
+          value={displayed}
+          on:input={(e) => (draft = e.currentTarget.value)}
+          on:keydown={onAddressKey}
+          on:focus={(e) => e.currentTarget.select()}
+          aria-label={$t("SteamBrowser_Address")}
+        />
+      </div>
+    </header>
+
+    {#if showCertificate}
+      <CertificatePopover
+        {certificate}
+        error={certificateError}
+        on:close={() => (showCertificate = false)}
       />
-    </div>
-  </header>
-
-  {#if showCertificate}
-    <CertificatePopover
-      {certificate}
-      error={certificateError}
-      on:close={() => (showCertificate = false)}
-    />
-  {/if}
+    {/if}
+  </div>
 </div>
 
 <style lang="scss">
+  // The toolbar flows in the normal page position, under the application's
+  // title bar. It must not be fixed at the top of the window: that put it
+  // behind the title bar and left the resize edges unreachable.
+  //
+  // Nothing below it is drawn. That area belongs to the native content view,
+  // which is placed in front of this window's own webview.
   .sb {
-    position: fixed;
-    inset: 0;
-    // Only the toolbar is painted. Everything below is the native content view,
-    // which sits in front of this window's webview.
-    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
   }
 
-  // An untrusted page outlines the whole window, not just the address.
+  // An untrusted page outlines the whole window, not just the address. The
+  // outline is inset by a pixel so it does not sit on the resize edge.
   .sb--untrusted::after {
     content: "";
     position: fixed;
-    inset: 0;
+    inset: 1px;
     border: 2px solid var(--danger, #d9534f);
     pointer-events: none;
     z-index: 5;
   }
 
+  // Anchors the certificate popover to the toolbar's bottom edge.
+  .sb__chrome {
+    position: relative;
+    flex: 0 0 auto;
+  }
+
   .sb__bar {
-    pointer-events: auto;
     display: flex;
     align-items: center;
     gap: 8px;

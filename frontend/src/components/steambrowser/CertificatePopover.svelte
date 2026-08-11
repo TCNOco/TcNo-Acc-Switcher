@@ -66,7 +66,7 @@
   .cert {
     pointer-events: auto;
     position: absolute;
-    top: 48px;
+    top: 100%;
     left: 96px;
     z-index: 10;
     width: min(460px, calc(100vw - 32px));
