@@ -255,6 +255,18 @@ func (v *windowsView) SetTopInset(top int) error {
 		top = int(client.Bottom)
 	}
 
+	// The host window is frameless, so its resize handles are a strip inside the
+	// client area rather than a non-client border. A child window covering the
+	// client area to its edges takes the mouse first and the window stops being
+	// resizable, so the sides and bottom stop short by that strip. The top does
+	// not need it: the toolbar is already above.
+	//
+	// A maximised window has no resize handles, so it gets the full width.
+	edge := int32(0)
+	if !windowMaximised(v.hostWindow) {
+		edge = int32(resizeBorder())
+	}
+
 	// PutBounds rather than Chromium.ResizeWithBounds: that path logs a failure
 	// and carries on, which is how an off-thread call left the window showing a
 	// toolbar over nothing with no error anywhere the caller could see it.
@@ -263,10 +275,16 @@ func (v *windowsView) SetTopInset(top int) error {
 		return errors.New("steambrowser: content view has no controller")
 	}
 	bounds := w32.Rect{
-		Left:   client.Left,
+		Left:   client.Left + edge,
 		Top:    client.Top + int32(top),
-		Right:  client.Right,
-		Bottom: client.Bottom,
+		Right:  client.Right - edge,
+		Bottom: client.Bottom - edge,
+	}
+	if bounds.Right < bounds.Left {
+		bounds.Right = bounds.Left
+	}
+	if bounds.Bottom < bounds.Top {
+		bounds.Bottom = bounds.Top
 	}
 	if err := controller.PutBounds(bounds); err != nil {
 		return fmt.Errorf("steambrowser: place content view: %w", err)
@@ -275,7 +293,7 @@ func (v *windowsView) SetTopInset(top int) error {
 	// position in the z-order is re-asserted every time it is placed.
 	v.raise()
 	logger().Debug("content view placed",
-		"hwnd", v.contentWindow, "top", bounds.Top,
+		"hwnd", v.contentWindow, "top", bounds.Top, "resizeEdge", edge,
 		"width", bounds.Right-bounds.Left, "height", bounds.Bottom-bounds.Top,
 		"visible", windowVisible(v.contentWindow))
 	return nil
