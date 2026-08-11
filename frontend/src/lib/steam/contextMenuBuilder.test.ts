@@ -5,6 +5,7 @@ import { buildSteamExtraMenu } from "./contextMenuBuilder";
 import type { SteamMenuDeps } from "./menuCommands";
 import { buildSteamGuardMenuItem } from "./steamGuardMenu";
 import type { SteamAccountRow, SteamGuardMenuRequest } from "./types";
+import type { SteamBrowserSite } from "./steamBrowserSites";
 
 const setBanStatusHidden = vi.hoisted(() => vi.fn<(hidden: boolean) => Promise<void>>());
 const copySteamId = vi.hoisted(() => vi.fn<(format: string) => Promise<void>>());
@@ -17,6 +18,7 @@ const labels: Record<string, string> = {
   Context_SteamGuard: "Steam Guard",
   Context_Steam_OpenStore: "Steam Store",
   Context_Steam_OpenCommunity: "Steam Community",
+  Context_Steam_OpenChat: "Steam Chat",
 };
 
 const tr = (key: string) => labels[key] ?? key;
@@ -82,25 +84,24 @@ describe("Steam Guard context menu", () => {
 
   // The browsing entries hang off the same row rather than replacing its click,
   // so the usual Steam Guard flow still opens on it.
-  it("offers Store and Community without taking over the row's own action", () => {
+  it("offers the sites without taking over the row's own action", () => {
     const open = vi.fn<(request: SteamGuardMenuRequest) => void>();
-    const openBrowser = vi.fn<(account: SteamAccountRow, site: "store" | "community") => void>();
+    const openBrowser = vi.fn<(account: SteamAccountRow, site: SteamBrowserSite) => void>();
     const item = buildSteamGuardMenuItem(
       account({ hasSteamGuard: true }),
       { openSteamGuard: open, openBrowser, vaultUnlocked: true },
       tr,
     );
 
-    expect(item.children?.map((c) => c.label)).toEqual(["Steam Store", "Steam Community"]);
+    expect(item.children?.map((c) => c.label)).toEqual(["Steam Store", "Steam Community", "Steam Chat"]);
     item.action?.();
     expect(open).toHaveBeenCalledWith(expect.objectContaining({ action: "open" }));
 
-    item.children?.[0].action?.();
-    expect(openBrowser).toHaveBeenCalledWith(
-      expect.objectContaining({ steamId64: "76561198000000001" }), "store");
-    item.children?.[1].action?.();
-    expect(openBrowser).toHaveBeenCalledWith(
-      expect.objectContaining({ steamId64: "76561198000000001" }), "community");
+    const named = expect.objectContaining({ steamId64: "76561198000000001" });
+    for (const [index, site] of (["store", "community", "chat"] as const).entries()) {
+      item.children?.[index].action?.();
+      expect(openBrowser).toHaveBeenCalledWith(named, site);
+    }
   });
 
   // A session-only record holds the same tokens an authenticator does, so it
@@ -111,7 +112,7 @@ describe("Steam Guard context menu", () => {
       { openSteamGuard: vi.fn(), openBrowser: vi.fn(), vaultUnlocked: true },
       tr,
     );
-    expect(item.children).toHaveLength(2);
+    expect(item.children).toHaveLength(3);
   });
 
   // Minting a session needs the vault open, and an account it does not hold has
@@ -325,5 +326,99 @@ describe("Steam hide ban status menu item", () => {
     child(manageOf(account({ hasVisibleBan: true, banStatusHidden: true }), shared()),
       "Context_Steam_ShowBanStatus").action?.();
     expect(setBanStatusHidden).toHaveBeenCalledWith(false);
+  });
+});
+
+// Steam holds a Personal Game Data page for a few of its own titles, under the
+// account's profile. Reaching one means opening it as the account, so it rides
+// on the same session the Steam Guard browsing entries do.
+describe("Personal Game Data rows", () => {
+  const shared = (): SharedMenuItems => {
+    const item = (label: string): MenuItemDef => ({ label, action: vi.fn() });
+    return {
+      swapTo: item("Swap"),
+      changeName: item("Rename"),
+      createShortcut: item("Shortcut"),
+      changeImage: item("Image"),
+      forget: item("Forget"),
+      notes: item("Notes"),
+      tags: item("Tags"),
+      gameStats: null,
+    };
+  };
+
+  const held = account({ hasSteamGuard: true });
+
+  const deps = (overrides: Partial<SteamMenuDeps> = {}): SteamMenuDeps => ({
+    name: "Steam",
+    installedGames: [
+      { appId: "730", name: "Counter-Strike 2" },
+      { appId: "440", name: "Team Fortress 2" },
+      { appId: "570", name: "Dota 2" },
+      { appId: "252950", name: "Rocket League" },
+    ],
+    gameDataBySteamId: {},
+    steamIds: [],
+    refreshGameDataAppSets: async () => {},
+    openSteamGuard: vi.fn(),
+    openSteamBrowser: vi.fn(),
+    steamGuardVaultUnlocked: true,
+    ...overrides,
+  });
+
+  const gameDataMenu = (acc: SteamAccountRow, d: SteamMenuDeps): MenuItemDef => {
+    const menu = buildSteamExtraMenu(acc, shared(), d);
+    const manage = menu.find((candidate) => candidate.label === "Context_ManageSubmenu");
+    if (!manage) throw new Error("missing Manage submenu");
+    return child(manage, "Context_GameDataSubmenu");
+  };
+
+  const gameNames = (item: MenuItemDef): (string | undefined)[] =>
+    (item.children ?? []).filter((c) => c.type !== "search").map((c) => c.label);
+
+  it.each([
+    ["Counter-Strike 2", "gamedata-730"],
+    ["Team Fortress 2", "gamedata-440"],
+    ["Dota 2", "gamedata-570"],
+  ] as const)("opens %s on its own page", (game, site) => {
+    const openSteamBrowser = vi.fn<(acc: SteamAccountRow, site: SteamBrowserSite) => void>();
+    const menu = gameDataMenu(held, deps({ openSteamBrowser }));
+
+    child(child(menu, game), "Context_Steam_PersonalGameData").action?.();
+    expect(openSteamBrowser).toHaveBeenCalledWith(held, site);
+  });
+
+  // The page belongs to Steam, not to userdata, so a game with no local files
+  // and no backup still has one - but nothing else to offer.
+  it("lists a game with a page even when it has no local data", () => {
+    const menu = gameDataMenu(held, deps());
+    expect(gameNames(menu)).toEqual(["Counter-Strike 2", "Team Fortress 2", "Dota 2"]);
+    expect((child(menu, "Dota 2").children ?? []).map((c) => c.label))
+      .toEqual(["Context_Steam_PersonalGameData"]);
+  });
+
+  // Same gate as the browsing entries: a session is needed to open the page as
+  // the account, and without one there is nothing to show.
+  it.each([
+    ["the vault is locked", held, { steamGuardVaultUnlocked: false }],
+    ["the build cannot browse", held, { openSteamBrowser: undefined }],
+    ["the account is not held", account(), {}],
+  ] as const)("offers nothing when %s", (_label, acc, overrides) => {
+    const menu = gameDataMenu(acc, deps(overrides));
+    // Down to the empty placeholder the submenu shows when it has no rows.
+    expect(menu.children?.map((c) => c.label)).toEqual(["Context_GameData_NoFolders"]);
+  });
+
+  // A game Steam has no page for is still listed only when it has local data,
+  // which is what the submenu was for before any of this.
+  it("leaves a game with neither a page nor local data out", () => {
+    const menu = gameDataMenu(held, deps({
+      gameDataBySteamId: {
+        [held.steamId64]: { userdata: new Set(["252950"]), backup: new Set() },
+      },
+    }));
+    expect(gameNames(menu)).toContain("Rocket League");
+    expect((child(menu, "Rocket League").children ?? []).map((c) => c.label))
+      .toEqual(["Open folder", "Context_Game_CopySettingsFrom", "Context_Game_BackupData"]);
   });
 });

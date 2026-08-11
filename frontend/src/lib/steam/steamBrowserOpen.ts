@@ -1,8 +1,9 @@
 import { SteamGuardCapabilityError, SteamGuardContentProtectionLease } from "../steamGuardModal";
 import type { SteamGuardModalController } from "../steamGuardModal";
 import * as SteamBrowser from "../../../bindings/TcNo-Acc-Switcher/internal/steambrowser/service.js";
+import type { SteamBrowserSite } from "./steamBrowserSites";
 
-export type SteamBrowserSite = "store" | "community";
+export type { SteamBrowserSite };
 
 let controller: SteamGuardModalController | null = null;
 let supported: boolean | null = null;

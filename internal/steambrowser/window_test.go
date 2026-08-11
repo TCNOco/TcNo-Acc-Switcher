@@ -27,11 +27,45 @@ func TestSiteDestination(t *testing.T) {
 		t.Errorf("community destination %q does not name the account", community)
 	}
 
+	chat, err := SiteChat.Destination(testSteamID)
+	if err != nil {
+		t.Fatalf("chat destination: %v", err)
+	}
+	if !IsTrusted(PlatformSteam, chat) {
+		t.Errorf("chat destination %q is not trusted", chat)
+	}
+
 	if _, err := SiteCommunity.Destination("not-a-steam-id"); err == nil {
 		t.Error("a bad Steam ID produced a community destination")
 	}
-	if _, err := Site("chat").Destination(testSteamID); err == nil {
+	if _, err := Site("friends").Destination(testSteamID); err == nil {
 		t.Error("an unknown site produced a destination")
+	}
+}
+
+// The game data pages live under the account's own profile, so each one has to
+// name both the account and the game it belongs to. Getting the app id wrong
+// lands on another game's page, which looks like it worked.
+func TestGameDataDestinations(t *testing.T) {
+	for site, app := range map[Site]string{
+		SiteGameDataCS2:   "730",
+		SiteGameDataTF2:   "440",
+		SiteGameDataDota2: "570",
+	} {
+		destination, err := site.Destination(testSteamID)
+		if err != nil {
+			t.Fatalf("%s destination: %v", site, err)
+		}
+		if !IsTrusted(PlatformSteam, destination) {
+			t.Errorf("%s destination %q is not trusted", site, destination)
+		}
+		want := "https://steamcommunity.com/profiles/" + testSteamID + "/gcpd/" + app + "/"
+		if destination != want {
+			t.Errorf("%s destination = %q, want %q", site, destination, want)
+		}
+		if _, err := site.Destination("not-a-steam-id"); err == nil {
+			t.Errorf("%s produced a destination for a bad Steam ID", site)
+		}
 	}
 }
 

@@ -19,11 +19,28 @@ func windowName(sessionID string) string {
 	return "steam-browser:" + sessionID
 }
 
-func windowTitle(accountName string, site Site) string {
-	label := "Steam Store"
-	if site == SiteCommunity {
-		label = "Steam Community"
+// siteLabel names a destination in a window title. Not translated, unlike the
+// UI that offers these: the title belongs to a window the operating system also
+// labels, and the strings here are Steam's own product names.
+func siteLabel(site Site) string {
+	switch site {
+	case SiteCommunity:
+		return "Steam Community"
+	case SiteChat:
+		return "Steam Chat"
+	case SiteGameDataCS2:
+		return "Counter-Strike 2 Game Data"
+	case SiteGameDataTF2:
+		return "Team Fortress 2 Game Data"
+	case SiteGameDataDota2:
+		return "Dota 2 Game Data"
+	default:
+		return "Steam Store"
 	}
+}
+
+func windowTitle(accountName string, site Site) string {
+	label := siteLabel(site)
 	accountName = strings.TrimSpace(accountName)
 	if accountName == "" {
 		return label

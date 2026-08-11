@@ -52,6 +52,7 @@
   import SteamGuardVaultFactors from "./SteamGuardVaultFactors.svelte";
 	  import { loadSteamGuardSwitcherProfile } from "../../lib/steamGuardBridge";
 	  import type { SteamAccountRow } from "../../lib/steam/types";
+	  import type { SteamBrowserSite } from "../../lib/steam/steamBrowserSites";
 
 	/** Font Awesome Free v5.15.4 solid glyphs, inlined like the rest of the app's icons. */
 	const ICONS = {
@@ -898,7 +899,7 @@
   // Opens a browser window signed in as the account this modal is showing. It
   // works from both the authenticator and the session-only screen, which hold
   // the same tokens; only the id differs by screen.
-  async function openBrowser(site: "store" | "community"): Promise<void> {
+  async function openBrowser(site: SteamBrowserSite): Promise<void> {
     const open = controller.openSteamBrowser;
     if (!open || busy) return;
     const account =
@@ -2575,6 +2576,10 @@
 							<svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>
 							{$t("SteamGuard_Browse_Community")}
 						</button>
+						<button type="button" class="btnicontext" disabled={busy} on:click={() => openBrowser("chat")}>
+							<svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>
+							{$t("SteamGuard_Browse_Chat")}
+						</button>
 					</div>
 				{/if}
 			{/if}
@@ -2714,6 +2719,10 @@
           <button type="button" class="btnicontext" disabled={busy} on:click={() => openBrowser("community")}>
             <svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>
             {$t("SteamGuard_Browse_Community")}
+          </button>
+          <button type="button" class="btnicontext" disabled={busy} on:click={() => openBrowser("chat")}>
+            <svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>
+            {$t("SteamGuard_Browse_Chat")}
           </button>
         </div>
       {/if}

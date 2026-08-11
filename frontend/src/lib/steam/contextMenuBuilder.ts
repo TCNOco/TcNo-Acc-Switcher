@@ -4,7 +4,8 @@ import type { MenuItemDef } from "../../stores/contextMenu";
 import type { SharedMenuItems } from "../../components/PlatformAccountAdapter";
 import type { SteamAccountRow } from "./types";
 import { createSteamMenuCommands, type SteamMenuDeps } from "./menuCommands";
-import { buildSteamGuardMenuItem } from "./steamGuardMenu";
+import { buildSteamGuardMenuItem, heldInSteamGuardVault } from "./steamGuardMenu";
+import { gameDataSite } from "./steamBrowserSites";
 import { steamGuardCodeRemaining } from "./steamGuardCodePeriod";
 
 export function buildSteamExtraMenu(
@@ -70,19 +71,31 @@ export function buildSteamExtraMenu(
     })),
   ];
 
+  // Steam's own Personal Game Data pages, which need a session window to open as
+  // the account. Same condition as the browsing entries on the Steam Guard row:
+  // an account the vault holds, with the vault open, on a build that can browse.
+  const browse = deps.steamGuardVaultUnlocked && heldInSteamGuardVault(acc)
+    ? deps.openSteamBrowser
+    : undefined;
+
   const gsets = gameDataBySteamId[rid];
   const gameDataItems: MenuItemDef[] = [];
   for (const g of installedGames) {
     const aid = String(g.appId).trim();
     const hasUser = gsets?.userdata.has(aid) ?? false;
     const hasBackup = gsets?.backup.has(aid) ?? false;
-    if (!hasUser && !hasBackup) continue;
-    const children: MenuItemDef[] = [
-      {
+    const gcpd = browse ? gameDataSite(aid) : undefined;
+    // A game with a page but no local files still earns an entry; that page is
+    // held by Steam, not in userdata, so having neither folder says nothing
+    // about it.
+    if (!hasUser && !hasBackup && !gcpd) continue;
+    const children: MenuItemDef[] = [];
+    if (hasUser || hasBackup) {
+      children.push({
         label: "Open folder",
         action: () => void commands.openGameDataFolder(g.appId),
-      },
-    ];
+      });
+    }
     if (hasUser) {
       children.push({
         label: tr("Context_Game_CopySettingsFrom"),
@@ -99,6 +112,12 @@ export function buildSteamExtraMenu(
       children.push({
         label: tr("Context_Game_BackupData"),
         action: () => void commands.backupGameData(g.appId),
+      });
+    }
+    if (browse && gcpd) {
+      children.push({
+        label: tr("Context_Steam_PersonalGameData"),
+        action: () => browse(acc, gcpd),
       });
     }
     gameDataItems.push({ label: g.name, children });

@@ -21,11 +21,23 @@ var (
 )
 
 // Site is one of the destinations a session window can be opened on.
+//
+// The set is closed, and the frontend names a member of it rather than a URL or
+// an app id. That is what keeps a value crossing the boundary from choosing the
+// page: an unknown site is refused here, so nothing outside this file can send a
+// window carrying an account's session somewhere of its own choosing.
 type Site string
 
 const (
 	SiteStore     Site = "store"
 	SiteCommunity Site = "community"
+	SiteChat      Site = "chat"
+	// Steam publishes a Personal Game Data page per game, but only for a handful
+	// of its own titles. One site each, rather than a site taking an app id,
+	// because these three are the whole list.
+	SiteGameDataCS2   Site = "gamedata-730"
+	SiteGameDataTF2   Site = "gamedata-440"
+	SiteGameDataDota2 Site = "gamedata-570"
 )
 
 // Destination is the landing page for a site. Community deliberately lands on
@@ -35,14 +47,29 @@ func (s Site) Destination(steamID64 string) (string, error) {
 	switch s {
 	case SiteStore:
 		return "https://store.steampowered.com/", nil
+	case SiteChat:
+		return "https://steamcommunity.com/chat/", nil
 	case SiteCommunity:
-		if !validSteamID64(steamID64) {
-			return "", fmt.Errorf("%w: bad Steam ID", ErrInvalidSession)
-		}
-		return "https://steamcommunity.com/profiles/" + steamID64 + "/", nil
+		return profilePage(steamID64, "")
+	case SiteGameDataCS2:
+		return profilePage(steamID64, "gcpd/730/")
+	case SiteGameDataTF2:
+		return profilePage(steamID64, "gcpd/440/")
+	case SiteGameDataDota2:
+		return profilePage(steamID64, "gcpd/570/")
 	default:
 		return "", fmt.Errorf("steambrowser: unknown site %q", s)
 	}
+}
+
+// profilePage builds a page under the account's own profile. The Steam ID is
+// checked here rather than at each call site because this is where it is
+// interpolated into a URL.
+func profilePage(steamID64, suffix string) (string, error) {
+	if !validSteamID64(steamID64) {
+		return "", fmt.Errorf("%w: bad Steam ID", ErrInvalidSession)
+	}
+	return "https://steamcommunity.com/profiles/" + steamID64 + "/" + suffix, nil
 }
 
 // session is one open window: its content view, and the identity it belongs to.

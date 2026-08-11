@@ -1,5 +1,6 @@
 import { get } from "svelte/store";
 import { t } from "../stores/i18n";
+import type { SteamBrowserSite } from "./steam/steamBrowserSites";
 
 export const STEAM_GUARD_CODE_LIFETIME_MS = 30_000;
 
@@ -353,7 +354,7 @@ export type SteamGuardModalController = {
 	 * session-browser support, which hides the buttons rather than offering
 	 * something that cannot work.
 	 */
-	openSteamBrowser?: (accountId: string, site: "store" | "community", capability: string) => Promise<{ needsLogin: boolean }>;
+	openSteamBrowser?: (accountId: string, site: SteamBrowserSite, capability: string) => Promise<{ needsLogin: boolean }>;
 	  loginAgain?: (accountId: string, capability: string) => Promise<SteamLoginResult>;
 	  beginCredentialLogin?: (
 		accountId: string,

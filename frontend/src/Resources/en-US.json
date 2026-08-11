@@ -1095,8 +1095,11 @@
   "SteamBrowser_Cert_SeparateConnection": "Read over a separate connection to this site, not the one this page was loaded over.",
   "Context_Steam_OpenStore": "Steam Store",
   "Context_Steam_OpenCommunity": "Steam Community",
+  "Context_Steam_OpenChat": "Steam Chat",
+  "Context_Steam_PersonalGameData": "Personal Game Data",
   "SteamGuard_Browse_Store": "Store",
   "SteamGuard_Browse_Community": "Community",
+  "SteamGuard_Browse_Chat": "Chat",
   "SteamGuard_Error_BrowserOpenFailed": "Could not open the browser window",
   "SteamBrowser_Trusted_Hint": "{host} is a trusted Steam site.",
   "SteamBrowser_Untrusted_Hint": "{host} is not Steam or another trusted site. Take the same care you would in any browser, and do not enter your Steam password or authenticator codes here."

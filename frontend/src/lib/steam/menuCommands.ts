@@ -1,6 +1,7 @@
 import { pushToast } from "../../stores/toast";
 import { requestPlatformAccountsRefresh } from "../../stores/platformPage";
 import type { SteamAccountRow, SteamGuardMenuRequest } from "./types";
+import type { SteamBrowserSite } from "./steamBrowserSites";
 import { formatWailsError, formatToastWithError } from "../formatWailsError";
 import { reportLaunchFailure } from "../adminFlow";
 import { copySteamGuardCodeNow, refreshSteamGuardVaultUnlocked } from "./steamGuardQuickCopy";
@@ -31,7 +32,7 @@ export interface SteamMenuDeps {
    * no session-browser support, which hides the entries rather than offering
    * something that cannot work.
    */
-  openSteamBrowser?: (account: SteamAccountRow, site: "store" | "community") => void;
+  openSteamBrowser?: (account: SteamAccountRow, site: SteamBrowserSite) => void;
   /** Last known vault state. Only an open vault can hand out a code. */
   steamGuardVaultUnlocked: boolean;
 }
