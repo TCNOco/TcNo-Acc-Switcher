@@ -669,7 +669,7 @@
   "Context_NewAccount": "New Account",
   "SteamGuard_Import_Body": "Choose an SDA maFile, or drag one or more onto the TcNo Account Switcher window to import them all at once.",
   "SteamGuard_Setup_Body": "Add Steam Guard to manage Confirmations, generate codes and more — or choose Just Login to enable functionality like collecting CS2 Rank, Cooldown and related info.",
-  "SteamGuard_Setup_JustLogin": "Just Login",
+  "SteamGuard_Setup_JustLogin": "Login only",
   "SteamGuard_Import_Choose": "Choose maFile",
   "SteamGuard_Import_Started": "maFile import started.",
   "SteamGuard_Import_LegacyTitle": "SDA password required",

@@ -144,21 +144,23 @@ func setShortcutAppUserModelID(lnkPath, appID string) error {
 	}
 
 	iid := ole.NewGUID("{886D8EEB-8CF2-4446-8D02-CDBA1DBDCF99}")
-	var punk uintptr
+	// Typed out-param: COM writes the interface pointer straight into ps.
+	// Holding it as uintptr and converting back tripped go vet's
+	// unsafe.Pointer check.
+	var ps *iPropertyStore
 	hr, _, _ := procSHGetPropertyStoreFromParsingName.Call(
 		uintptr(unsafe.Pointer(pathPtr)),
 		0,
 		gpsReadWrite,
 		uintptr(unsafe.Pointer(iid)),
-		uintptr(unsafe.Pointer(&punk)),
+		uintptr(unsafe.Pointer(&ps)),
 	)
 	if e := hresultErr(hr); e != nil {
 		return fmt.Errorf("SHGetPropertyStoreFromParsingName: %w", e)
 	}
-	if punk == 0 {
+	if ps == nil {
 		return fmt.Errorf("SHGetPropertyStoreFromParsingName: nil store")
 	}
-	ps := (*iPropertyStore)(unsafe.Pointer(punk))
 	defer ps.release()
 
 	pv, err := initPropVariantFromString(appID)
