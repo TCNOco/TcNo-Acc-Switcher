@@ -20,6 +20,20 @@ const StateEvent = "steambrowser:state"
 // the toolbar's bottom edge rather than its height.
 const defaultChromeHeight = 76
 
+// ErrNeedsLogin reports an account whose stored session can no longer be
+// renewed. It is an expected outcome rather than a failure, so OpenBrowser
+// turns it into a result the caller can act on: the answer is to offer the
+// sign-in screen, not to show an error.
+var ErrNeedsLogin = errors.New("steambrowser: the account must sign in again")
+
+// OpenResult is what opening a window produced.
+type OpenResult struct {
+	// SessionID names the new window. Empty when NeedsLogin is set.
+	SessionID string `json:"sessionId"`
+	// NeedsLogin asks the caller to put the user through the sign-in screen.
+	NeedsLogin bool `json:"needsLogin"`
+}
+
 // SessionSource hands out a usable web session for an account.
 //
 // It is an interface so this package does not depend on the Steam Guard vault,
@@ -74,12 +88,12 @@ func (s *Service) Available() bool { return Supported() }
 //
 // The session is fully materialised into cookies here. Once the window is open
 // it holds no vault handle, so re-locking the vault leaves it working.
-func (s *Service) OpenBrowser(accountID, site, modalToken string) (string, error) {
+func (s *Service) OpenBrowser(accountID, site, modalToken string) (OpenResult, error) {
 	if !Supported() {
-		return "", ErrUnsupportedPlatform
+		return OpenResult{}, ErrUnsupportedPlatform
 	}
 	if s.source == nil {
-		return "", errors.New("steambrowser: no session source")
+		return OpenResult{}, errors.New("steambrowser: no session source")
 	}
 	accountID = strings.TrimSpace(accountID)
 
@@ -87,26 +101,31 @@ func (s *Service) OpenBrowser(accountID, site, modalToken string) (string, error
 	log.Info("opening a session browser window")
 
 	session, err := s.source.BrowserSession(accountID, modalToken)
+	if errors.Is(err, ErrNeedsLogin) {
+		// Not a failure: the account simply has no session left to browse with.
+		log.Info("account must sign in again before a window can open")
+		return OpenResult{NeedsLogin: true}, nil
+	}
 	if err != nil {
 		log.Warn("no usable session for this account", "error", err)
-		return "", err
+		return OpenResult{}, err
 	}
 	destination, err := Site(site).Destination(session.SteamID64)
 	if err != nil {
-		return "", err
+		return OpenResult{}, err
 	}
 	cookies, err := SessionCookies(session.SteamID64, session.AccessToken, session.SessionID)
 	if err != nil {
-		return "", err
+		return OpenResult{}, err
 	}
 	profile, err := ProfileName(session.SteamID64)
 	if err != nil {
-		return "", err
+		return OpenResult{}, err
 	}
 
 	id, err := s.sessions.reserve()
 	if err != nil {
-		return "", err
+		return OpenResult{}, err
 	}
 
 	// Window creation and the content view both touch UI-thread-only state: Wails
@@ -120,10 +139,10 @@ func (s *Service) OpenBrowser(accountID, site, modalToken string) (string, error
 	if openErr != nil {
 		s.sessions.release(id)
 		log.Error("could not open the session browser window", "window", id, "error", openErr)
-		return "", openErr
+		return OpenResult{}, openErr
 	}
 	log.Info("session browser window open", "window", id, "open", s.sessions.count())
-	return id, nil
+	return OpenResult{SessionID: id}, nil
 }
 
 func (s *Service) openOnMainThread(id string, credentials WebSession, site Site, destination, profile string, cookies []Cookie) error {

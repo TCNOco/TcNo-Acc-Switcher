@@ -1,7 +1,7 @@
 package steamguard
 
 import (
-	"errors"
+	"fmt"
 	"strconv"
 
 	"TcNo-Acc-Switcher/internal/steambrowser"
@@ -9,7 +9,12 @@ import (
 
 // ErrBrowserSessionNeedsLogin reports an account whose stored session can no
 // longer be renewed, so the user has to sign in before a window can open.
-var ErrBrowserSessionNeedsLogin = errors.New("steamguard: sign in again to open a browser window")
+//
+// It wraps steambrowser.ErrNeedsLogin so the browser can recognise it and offer
+// the sign-in screen, rather than surfacing this as an error the user can only
+// read and dismiss.
+var ErrBrowserSessionNeedsLogin = fmt.Errorf(
+	"steamguard: sign in again to open a browser window: %w", steambrowser.ErrNeedsLogin)
 
 // browserSessionSource adapts the vault to what the session browser needs.
 //

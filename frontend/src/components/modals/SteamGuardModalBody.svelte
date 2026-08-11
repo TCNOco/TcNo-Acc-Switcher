@@ -895,7 +895,14 @@
     busy = true;
     try {
       const capability = await ensureCapability(account);
-      await open(account.id, site, capability);
+      const result = await open(account.id, site, capability);
+      // A session too old to renew is not an error to read and dismiss; the
+      // only thing to do about it is sign in, so go straight there.
+      if (result?.needsLogin) {
+        busy = false;
+        showLoginAgainState();
+        return;
+      }
     } catch (error) {
       reportFailure($t("SteamGuard_Error_BrowserOpenFailed"), error);
     } finally {

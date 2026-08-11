@@ -31,7 +31,7 @@ export interface SteamMenuDeps {
    * no session-browser support, which hides the entries rather than offering
    * something that cannot work.
    */
-  openSteamBrowser?: (steamId64: string, site: "store" | "community") => void;
+  openSteamBrowser?: (account: SteamAccountRow, site: "store" | "community") => void;
   /** Last known vault state. Only an open vault can hand out a code. */
   steamGuardVaultUnlocked: boolean;
 }

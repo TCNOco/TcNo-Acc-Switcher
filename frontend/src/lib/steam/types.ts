@@ -34,7 +34,7 @@ export type SteamAccountRow = InstanceType<typeof AccountDTO> & {
  * "add" belongs to no account at all - it is how an account that is in neither
  * the vault nor the switcher gets in - so its request carries empty ids.
  */
-export type SteamGuardMenuAction = "open" | "all" | "setup" | "add";
+export type SteamGuardMenuAction = "open" | "all" | "setup" | "add" | "login-again";
 
 export type SteamGuardMenuRequest = {
   action: SteamGuardMenuAction;

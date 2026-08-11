@@ -84,7 +84,7 @@ describe("Steam Guard context menu", () => {
   // so the usual Steam Guard flow still opens on it.
   it("offers Store and Community without taking over the row's own action", () => {
     const open = vi.fn<(request: SteamGuardMenuRequest) => void>();
-    const openBrowser = vi.fn<(steamId64: string, site: "store" | "community") => void>();
+    const openBrowser = vi.fn<(account: SteamAccountRow, site: "store" | "community") => void>();
     const item = buildSteamGuardMenuItem(
       account({ hasSteamGuard: true }),
       { openSteamGuard: open, openBrowser, vaultUnlocked: true },
@@ -96,9 +96,11 @@ describe("Steam Guard context menu", () => {
     expect(open).toHaveBeenCalledWith(expect.objectContaining({ action: "open" }));
 
     item.children?.[0].action?.();
-    expect(openBrowser).toHaveBeenCalledWith("76561198000000001", "store");
+    expect(openBrowser).toHaveBeenCalledWith(
+      expect.objectContaining({ steamId64: "76561198000000001" }), "store");
     item.children?.[1].action?.();
-    expect(openBrowser).toHaveBeenCalledWith("76561198000000001", "community");
+    expect(openBrowser).toHaveBeenCalledWith(
+      expect.objectContaining({ steamId64: "76561198000000001" }), "community");
   });
 
   // A session-only record holds the same tokens an authenticator does, so it

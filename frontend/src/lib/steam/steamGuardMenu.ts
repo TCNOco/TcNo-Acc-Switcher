@@ -3,7 +3,7 @@ import type { SteamAccountRow, SteamGuardMenuRequest } from "./types";
 
 type Translate = (key: string, vars?: Record<string, string | number>) => string;
 type OpenSteamGuard = (request: SteamGuardMenuRequest) => void;
-type OpenBrowser = (steamId64: string, site: "store" | "community") => void;
+type OpenBrowser = (account: SteamAccountRow, site: "store" | "community") => void;
 
 export type SteamGuardMenuDeps = {
   openSteamGuard: OpenSteamGuard;
@@ -45,8 +45,8 @@ export function buildSteamGuardMenuItem(
   if (inVault && deps.vaultUnlocked && deps.openBrowser) {
     const open = deps.openBrowser;
     item.children = [
-      { label: tr("Context_Steam_OpenStore"), action: () => open(acc.steamId64, "store") },
-      { label: tr("Context_Steam_OpenCommunity"), action: () => open(acc.steamId64, "community") },
+      { label: tr("Context_Steam_OpenStore"), action: () => open(acc, "store") },
+      { label: tr("Context_Steam_OpenCommunity"), action: () => open(acc, "community") },
     ];
   }
   return item;

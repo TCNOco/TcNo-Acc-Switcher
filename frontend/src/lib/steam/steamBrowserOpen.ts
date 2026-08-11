@@ -34,8 +34,14 @@ export async function steamBrowserAvailable(): Promise<boolean> {
  * user has the vault open for this account, which is what the backend checks
  * before handing out a session. It is held for the single open call, because
  * the window's session is minted once and then outlives the vault entirely.
+ *
+ * Returns whether the account has to sign in again. That is an ordinary
+ * outcome, not a failure: the caller's answer is the sign-in screen.
  */
-export async function openSteamBrowserNow(steamId64: string, site: SteamBrowserSite): Promise<void> {
+export async function openSteamBrowserNow(
+  steamId64: string,
+  site: SteamBrowserSite,
+): Promise<{ needsLogin: boolean }> {
   const current = controller;
   if (!current) throw new Error("Steam Guard is unavailable");
 
@@ -44,7 +50,8 @@ export async function openSteamBrowserNow(steamId64: string, site: SteamBrowserS
     await lease.acquire(steamId64);
     const capability = lease.capabilityFor(steamId64);
     if (!capability) throw new SteamGuardCapabilityError();
-    await SteamBrowser.OpenBrowser(steamId64, site, capability);
+    const result = await SteamBrowser.OpenBrowser(steamId64, site, capability);
+    return { needsLogin: result.needsLogin === true };
   } finally {
     await lease.close();
   }

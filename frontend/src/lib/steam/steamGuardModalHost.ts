@@ -21,6 +21,7 @@ function entryFromRequest(request: SteamGuardMenuRequest): SteamGuardModalEntry 
   if (request.action === "all") return "all-accounts";
   if (request.action === "setup") return "setup";
   if (request.action === "add") return "add-account";
+  if (request.action === "login-again") return "login-again";
   return "account";
 }
 

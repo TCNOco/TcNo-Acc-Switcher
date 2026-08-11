@@ -340,14 +340,31 @@
   // Hidden rather than shown-and-failing on a build with no session browser.
   let steamBrowserSupported = false;
 
-  function openSteamBrowserFromMenu(steamId64: string, site: SteamBrowserSite): void {
-    void openSteamBrowserNow(steamId64, site).catch((error) => {
-      pushToast({
-        type: "error",
-        message: formatToastWithError($t("SteamGuard_Error_BrowserOpenFailed"), error),
-        duration: 8000,
+  function openSteamBrowserFromMenu(account: SteamAccountRow, site: SteamBrowserSite): void {
+    void openSteamBrowserNow(account.steamId64, site)
+      .then((result) => {
+        // A session too old to renew is not an error to read and dismiss. Open
+        // the Steam Guard window on the sign-in screen, which is the only thing
+        // that can be done about it.
+        if (!result.needsLogin) return;
+        emitSteamGuardMenuRequest({
+          action: "login-again",
+          steamId64: account.steamId64,
+          accountName: (account.accountName ?? "").trim(),
+          displayName:
+            account.displayName?.trim() || account.personaName?.trim() || account.steamId64,
+          pending: account.steamGuardPending === true,
+          imageUrl: account.imageUrl?.trim() || undefined,
+          staticImageUrl: account.staticImageUrl?.trim() || undefined,
+        });
+      })
+      .catch((error) => {
+        pushToast({
+          type: "error",
+          message: formatToastWithError($t("SteamGuard_Error_BrowserOpenFailed"), error),
+          duration: 8000,
+        });
       });
-    });
   }
 
   onMount(() => {
