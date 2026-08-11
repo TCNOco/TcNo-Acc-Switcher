@@ -43,6 +43,11 @@
     publishSteamGuardActionAccounts,
   } from "../stores/steamGuardAction";
   import { resetSteamPageTab, steamPageTab } from "../stores/steamPageTab";
+  import {
+    openSteamBrowserNow,
+    steamBrowserAvailable,
+    type SteamBrowserSite,
+  } from "../lib/steam/steamBrowserOpen";
   import "../styles/miniprofile.scss";
   import "../styles/platformAccountsShared.scss";
 
@@ -118,6 +123,7 @@
       steamIds,
       refreshGameDataAppSets,
       openSteamGuard: emitSteamGuardMenuRequest,
+      openSteamBrowser: steamBrowserSupported ? openSteamBrowserFromMenu : undefined,
       steamGuardVaultUnlocked: steamGuardVaultUnlockedNow(),
     };
   }
@@ -331,7 +337,22 @@
     },
   } satisfies PlatformAccountAdapter<SteamAccountRow>;
 
+  // Hidden rather than shown-and-failing on a build with no session browser.
+  let steamBrowserSupported = false;
+
+  function openSteamBrowserFromMenu(steamId64: string, site: SteamBrowserSite): void {
+    void openSteamBrowserNow(steamId64, site).catch((error) => {
+      pushToast({
+        type: "error",
+        message: formatToastWithError($t("SteamGuard_Error_BrowserOpenFailed"), error),
+        duration: 8000,
+      });
+    });
+  }
+
   onMount(() => {
+    void steamBrowserAvailable().then((ok) => (steamBrowserSupported = ok));
+
     void (async () => {
       try {
         const rows = await SteamService.GetInstalledGames();

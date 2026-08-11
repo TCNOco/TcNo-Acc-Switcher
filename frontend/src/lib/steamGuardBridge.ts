@@ -16,6 +16,8 @@ import type {
 	SteamLoginResult,
 } from "./steamGuardModal";
 import { PENDING_ACCOUNT_ID_PREFIX } from "./steamGuardModal";
+import { configureSteamBrowser } from "./steam/steamBrowserOpen";
+import * as SteamBrowserService from "../../bindings/TcNo-Acc-Switcher/internal/steambrowser/service.js";
 import { dismissSteamGuardModal, openAlert, openAlertNoButton, openFolderPicker, openPrompt, openPromptWithCheckbox, openSteamGuardModal } from "../stores/modal";
 import SteamGuardRestoreModalBody from "../components/modals/SteamGuardRestoreModalBody.svelte";
 import { get } from "svelte/store";
@@ -1165,6 +1167,9 @@ const controller: SteamGuardModalController = {
 	},
 	copyCode: (accountId, capability) => SteamGuardService.CopyCode(accountId, capability),
 	openConfirmations: (accountId, capability) => SteamGuardService.OpenConfirmations(accountId, capability),
+	openSteamBrowser: async (accountId, site, capability) => {
+		await SteamBrowserService.OpenBrowser(accountId, site, capability);
+	},
 	loginAgain: (accountId, capability) => SteamGuardService.LoginAgain(accountId, capability).then(loginResult),
 	async removeLoginOnlyAccount(accountId, capability) {
 		const result = loginResult(await SteamGuardService.RemoveLoginOnlyAccount(accountId, capability));
@@ -1383,6 +1388,9 @@ export function installSteamGuardBridge(): () => void {
     controller,
     vaultUnlocked: async () => (await SteamGuardService.GetSettingsStatus()).unlocked ?? false,
   });
+  // The session browser authorises through the same controller, so it opens a
+  // window straight from the context menu without the Steam Guard window.
+  configureSteamBrowser(controller);
 
   const unbindMenu = bindSteamGuardMenuToModal(controller);
   return () => {
@@ -1392,5 +1400,6 @@ export function installSteamGuardBridge(): () => void {
     configureSteamGuardDropAdapter(null);
     configureSteamGuardSettingsAdapter(null);
     configureSteamGuardQuickCopy(null);
+    configureSteamBrowser(null);
   };
 }

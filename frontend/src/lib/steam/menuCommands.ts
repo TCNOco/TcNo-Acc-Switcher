@@ -26,6 +26,12 @@ export interface SteamMenuDeps {
   steamIds: string[];
   refreshGameDataAppSets: (ids: string[]) => Promise<void>;
   openSteamGuard: (request: SteamGuardMenuRequest) => void;
+  /**
+   * Opens a browser window signed in as an account. Absent when the build has
+   * no session-browser support, which hides the entries rather than offering
+   * something that cannot work.
+   */
+  openSteamBrowser?: (steamId64: string, site: "store" | "community") => void;
   /** Last known vault state. Only an open vault can hand out a code. */
   steamGuardVaultUnlocked: boolean;
 }

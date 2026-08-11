@@ -348,6 +348,12 @@ export type SteamGuardModalController = {
   promoteLoginOnlyAccount?: (accountId: string, capability: string) => Promise<SteamGuardPromotion>;
   copyCode?: (accountId: string, capability: string) => Promise<void> | void;
 	openConfirmations?: (accountId: string, capability: string) => Promise<void> | void;
+	/**
+	 * Opens a browser window signed in as the account. Absent on a build with no
+	 * session-browser support, which hides the buttons rather than offering
+	 * something that cannot work.
+	 */
+	openSteamBrowser?: (accountId: string, site: "store" | "community", capability: string) => Promise<void> | void;
 	  loginAgain?: (accountId: string, capability: string) => Promise<SteamLoginResult>;
 	  beginCredentialLogin?: (
 		accountId: string,

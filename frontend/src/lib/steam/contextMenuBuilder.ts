@@ -16,7 +16,11 @@ export function buildSteamExtraMenu(
   const rid = acc.steamId64;
   const { installedGames, gameDataBySteamId } = deps;
   const commands = createSteamMenuCommands(acc, deps, tr);
-  const steamGuard = buildSteamGuardMenuItem(acc, deps.openSteamGuard, tr);
+  const steamGuard = buildSteamGuardMenuItem(acc, {
+    openSteamGuard: deps.openSteamGuard,
+    openBrowser: deps.openSteamBrowser,
+    vaultUnlocked: deps.steamGuardVaultUnlocked,
+  }, tr);
 
   const loginStates = [
     { st: 7, lab: tr("Invisible") }, { st: 0, lab: tr("Offline") }, { st: 1, lab: tr("Online") },
