@@ -161,17 +161,22 @@ func (s *Service) openOnMainThread(id string, credentials WebSession, site Site,
 	})
 
 	window.OnWindowEvent(events.Common.WindowDidResize, func(*application.WindowEvent) {
-		s.layout(id, window)
+		s.layout(id)
 	})
 	window.OnWindowEvent(events.Common.WindowClosing, func(*application.WindowEvent) {
-		if closing := s.sessions.remove(id); closing != nil && closing.view != nil {
-			closing.view.Close()
-		}
+		closing := s.sessions.remove(id)
 		s.mu.Lock()
 		delete(s.heights, id)
 		s.mu.Unlock()
+		if closing == nil || closing.view == nil {
+			return
+		}
+		// Releasing the view is a COM call, so it belongs on the main thread for
+		// the same reason layout does.
+		view := closing.view
+		application.InvokeAsync(view.Close)
 	})
-	s.layout(id, window)
+	s.layout(id)
 	return nil
 }
 
@@ -189,30 +194,46 @@ func (s *Service) SetChromeHeight(sessionID string, height int) error {
 	s.heights[sessionID] = height
 	s.mu.Unlock()
 
-	application.InvokeSync(func() {
-		if window, ok := application.Get().Window.GetByName(windowName(sessionID)); ok {
-			s.layout(sessionID, window)
-		}
-	})
+	s.layout(sessionID)
 	return nil
 }
 
 // layout puts the content view below the window's chrome. Only the inset is
 // converted here; the view measures the window's own client area, which avoids
 // both sides having to agree on device-independent versus physical pixels.
-func (s *Service) layout(sessionID string, window application.Window) {
-	current, err := s.sessions.get(sessionID)
-	if err != nil || current.view == nil {
-		return
-	}
-	s.mu.Lock()
-	height := s.heights[sessionID]
-	s.mu.Unlock()
-	if height <= 0 {
-		height = defaultChromeHeight
-	}
-
-	_ = current.view.SetTopInset(scaleForWindow(window, height))
+//
+// The work is queued onto the main thread rather than run here. The native view
+// is COM and refuses calls from any other thread, and layout is reached from
+// three places on two different threads: window creation is already on the main
+// thread, while a resize event and the toolbar's own measurement are not.
+// InvokeAsync is the one that is safe from both — InvokeSync blocks until the
+// main thread runs the callback, which is a deadlock when the caller is the main
+// thread.
+func (s *Service) layout(sessionID string) {
+	application.InvokeAsync(func() {
+		current, err := s.sessions.get(sessionID)
+		if err != nil || current.view == nil {
+			return
+		}
+		app := application.Get()
+		if app == nil || app.Window == nil {
+			return
+		}
+		window, ok := app.Window.GetByName(windowName(sessionID))
+		if !ok || window == nil {
+			return
+		}
+		s.mu.Lock()
+		height := s.heights[sessionID]
+		s.mu.Unlock()
+		if height <= 0 {
+			height = defaultChromeHeight
+		}
+		if err := current.view.SetTopInset(scaleForWindow(window, height)); err != nil {
+			application.Get().Logger.Warn("steam browser layout failed",
+				"session", sessionID, "error", err)
+		}
+	})
 }
 
 func (s *Service) publish(sessionID string, state ViewState) {

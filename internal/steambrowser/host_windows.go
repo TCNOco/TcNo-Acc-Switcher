@@ -235,12 +235,22 @@ func (v *windowsView) SetTopInset(top int) error {
 	if int32(top) > client.Bottom {
 		top = int(client.Bottom)
 	}
-	v.chromium.ResizeWithBounds(&webview2.Rect{
+
+	// PutBounds rather than Chromium.ResizeWithBounds: that path logs a failure
+	// and carries on, which is how an off-thread call left the window showing a
+	// toolbar over nothing with no error anywhere the caller could see it.
+	controller := v.chromium.GetController()
+	if controller == nil {
+		return errors.New("steambrowser: content view has no controller")
+	}
+	if err := controller.PutBounds(w32.Rect{
 		Left:   client.Left,
 		Top:    client.Top + int32(top),
 		Right:  client.Right,
 		Bottom: client.Bottom,
-	})
+	}); err != nil {
+		return fmt.Errorf("steambrowser: place content view: %w", err)
+	}
 	return nil
 }
 
