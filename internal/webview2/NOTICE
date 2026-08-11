@@ -1,0 +1,52 @@
+This package is a vendored subset of the WebView2 COM binding from Wails v3.
+
+    Source:  github.com/wailsapp/wails/v3 v3.0.0-beta.6
+             internal/webview2/pkg/edge          -> internal/webview2
+             internal/webview2/pkg/combridge     -> internal/webview2/combridge
+             internal/webview2/webviewloader     -> internal/webview2/loader
+             internal/webview2/internal/w32      -> internal/webview2/w32
+    License: MIT
+    Copyright (c) 2018-Present Lea Anthony
+
+It is vendored rather than imported because Wails places it under internal/,
+which Go's import rules put out of reach of this module. No new third-party code
+enters the binary as a result: golang.org/x/sys and github.com/jchv/go-winloader
+were already dependencies, the latter indirectly through Wails itself.
+
+Vendored from pkg/edge and not from pkg/webview2. The latter is generated code
+that nothing in Wails imports, and it flattens COM inheritance: an interface's
+vtable is declared as IUnknown plus its own methods, omitting every inherited
+slot. Because ICoreWebView2Environment10 derives from ICoreWebView2Environment9,
+seventeen slots are missing there and calls land on unrelated methods.
+
+Local changes:
+
+  ICoreWebView2CookieManager.GetCookies         (corrected in place)
+      Now takes the completion handler the IDL declares. Upstream passed an
+      out-parameter where the handler belongs, which the runtime dereferences as
+      an interface pointer and faults on.
+
+  Chromium.ProfileName                          (added field, chromium.go)
+      When set, the controller is created through CreateControllerWithProfile so
+      the view gets its own cookie jar. One Chromium per browser window, all
+      sharing a DataPath, is how callers open several accounts at once.
+
+  ICoreWebView2GetCookiesCompletedHandler.go    (added)
+      The handler type the corrected GetCookies needs.
+
+  profile.go                                    (added)
+      ICoreWebView2Environment10 and ICoreWebView2ControllerOptions, which name a
+      profile at controller creation. Absent upstream.
+
+  environment.go                                (added)
+      Profile-name validation, and why environments are not created directly.
+
+  navigation.go, navigation_handlers.go         (added)
+      Source, title, history and new-window plumbing for a URL bar and its
+      back/forward buttons.
+
+Vtable slot layouts in the added files were derived from the WebView2 IDL, at
+v3/internal/webview2/scripts/WebView2.1.0.2592.51.idl in the Wails repository,
+rather than inferred. A wrong slot does not fail loudly, so profile_test.go
+exercises the corrected and added interfaces against the real runtime and
+asserts that two profiles cannot see each other's cookies.
