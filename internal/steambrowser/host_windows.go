@@ -5,6 +5,8 @@ package steambrowser
 import (
 	"errors"
 	"fmt"
+	"net/url"
+	"strings"
 	"sync"
 
 	"TcNo-Acc-Switcher/internal/webview2"
@@ -248,10 +250,36 @@ func (v *windowsView) DocumentTitleChanged(*webview2.ICoreWebView2, uintptr) uin
 	return 0
 }
 
-func (v *windowsView) NavigationStarting(*webview2.ICoreWebView2, *webview2.IUnknown) uintptr {
+// NavigationStarting refuses anything that is not http or https before it
+// loads. A session window carries an account's cookies, so file:, javascript:
+// and any registered protocol handler have no business running in one, whether
+// they arrive from a link, a redirect or a script.
+func (v *windowsView) NavigationStarting(_ *webview2.ICoreWebView2, raw *webview2.IUnknown) uintptr {
+	if args := webview2.NavigationStartingArgs(raw); args != nil {
+		url, err := args.GetUri()
+		if err == nil && !navigableScheme(url) {
+			_ = args.PutCancel(true)
+			return 0
+		}
+	}
 	loading := true
 	v.refresh(&loading)
 	return 0
+}
+
+// navigableScheme reports a scheme a session window may load. An empty or
+// unparseable URL is refused rather than assumed harmless.
+func navigableScheme(rawURL string) bool {
+	parsed, err := url.Parse(rawURL)
+	if err != nil {
+		return false
+	}
+	switch strings.ToLower(parsed.Scheme) {
+	case "http", "https":
+		return true
+	default:
+		return false
+	}
 }
 
 func (v *windowsView) NavigationCompleted(*webview2.ICoreWebView2, *webview2.ICoreWebView2NavigationCompletedEventArgs) uintptr {
