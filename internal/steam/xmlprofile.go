@@ -3,6 +3,7 @@ package steam
 import (
 	"context"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -46,6 +47,34 @@ func (e *profileXMLHTTPError) Error() string {
 	return fmt.Sprintf("profile XML HTTP %d", e.StatusCode)
 }
 
+// profileXMLBodyError marks a 200 response whose body is not a profile document.
+//
+// A captive portal, an ISP interception page or a truncated read all land here,
+// and none of them say anything about the account - so it is a distinct type
+// from a real HTTP status, and the refresh treats it as worth retrying.
+type profileXMLBodyError struct {
+	err error
+}
+
+func (e *profileXMLBodyError) Error() string { return "profile XML unreadable: " + e.err.Error() }
+
+func (e *profileXMLBodyError) Unwrap() error { return e.err }
+
+// parseProfileXMLDoc reads a body as a community profile, reporting anything
+// that is not one as a body error rather than a fact about the account.
+func parseProfileXMLDoc(data []byte) (xmlProfileDoc, error) {
+	var doc xmlProfileDoc
+	if err := xml.Unmarshal(data, &doc); err != nil {
+		return xmlProfileDoc{}, &profileXMLBodyError{err: err}
+	}
+	// A profile always identifies itself; a private one says so instead. A body
+	// with neither parsed as XML by accident and carries nothing usable.
+	if strings.TrimSpace(doc.SteamID64) == "" && len(doc.PrivacyMessage) == 0 {
+		return xmlProfileDoc{}, &profileXMLBodyError{err: errors.New("no steamID64 in profile document")}
+	}
+	return doc, nil
+}
+
 func xmlCachePath(steamID64 string) (string, error) {
 	r, err := paths.LoginCacheDir("Steam")
 	if err != nil {
@@ -63,11 +92,13 @@ func FetchProfileXML(ctx context.Context, client *http.Client, steamID64 string)
 	url := fmt.Sprintf("https://steamcommunity.com/profiles/%s?xml=1", steamID64)
 
 	var data []byte
+	cached := false
 	if st, err := os.Stat(cache); err == nil && !st.IsDir() && time.Since(st.ModTime()) < xmlCacheTTL {
 		data, err = os.ReadFile(cache)
 		if err != nil {
 			data = nil
 		}
+		cached = len(data) > 0
 	}
 	if len(data) == 0 {
 		req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
@@ -87,13 +118,23 @@ func FetchProfileXML(ctx context.Context, client *http.Client, steamID64 string)
 		if err != nil {
 			return ProfileXMLFields{}, err
 		}
-		_ = os.MkdirAll(filepath.Dir(cache), 0o755)
-		_ = fsutil.WriteFileAtomic(cache, data, 0o644)
 	}
 
-	var doc xmlProfileDoc
-	if err := xml.Unmarshal(data, &doc); err != nil {
+	// Parsed before it is cached, and the cache is dropped when it stops
+	// parsing. Writing first meant one interception page - the classic answer
+	// from a network that has resumed but not finished connecting - pinned
+	// itself over the real profile for the whole 24h lifetime, so every retry
+	// re-read the same unusable body instead of asking Steam again.
+	doc, err := parseProfileXMLDoc(data)
+	if err != nil {
+		if cached {
+			_ = os.Remove(cache)
+		}
 		return ProfileXMLFields{}, err
+	}
+	if !cached {
+		_ = os.MkdirAll(filepath.Dir(cache), 0o755)
+		_ = fsutil.WriteFileAtomic(cache, data, 0o644)
 	}
 	if len(doc.PrivacyMessage) > 0 && strings.TrimSpace(doc.PrivacyMessage[0]) != "" {
 		return ProfileXMLFields{SteamID64: doc.SteamID64, Private: true}, nil

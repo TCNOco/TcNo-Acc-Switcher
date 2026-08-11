@@ -22,6 +22,41 @@ var defaultProfileXMLRetryPolicy = profileXMLRetryPolicy{
 	Delay:          500 * time.Millisecond,
 }
 
+// profileRefreshRetryDelays is the backoff between whole refresh rounds after
+// Steam could not be reached at all.
+//
+// The policy above only covers the attempts for one account inside one round.
+// What went wrong for users is the round itself: a machine resuming from sleep
+// runs the refresh before its network adapter is up, every account fails at
+// once, and with the account list already cached nothing ever asks for another
+// round - so the failure sat on every tile until something unrelated happened
+// to trigger one.
+var profileRefreshRetryDelays = []time.Duration{
+	30 * time.Second,
+	time.Minute,
+	2 * time.Minute,
+	5 * time.Minute,
+	15 * time.Minute,
+}
+
+// profileRefreshQuietFailures is how many consecutive unreachable rounds pass
+// before the tiles say so. The first one is the resume-from-sleep case and
+// clears itself within the minute, so reporting it is noise the user cannot act
+// on; a network that is genuinely gone still gets said out loud.
+const profileRefreshQuietFailures = 2
+
+// profileRefreshRetryDelay is the wait after `failures` consecutive unreachable
+// rounds, counting the first as 1.
+func profileRefreshRetryDelay(failures int) time.Duration {
+	if failures < 1 {
+		failures = 1
+	}
+	if failures > len(profileRefreshRetryDelays) {
+		failures = len(profileRefreshRetryDelays)
+	}
+	return profileRefreshRetryDelays[failures-1]
+}
+
 func fetchProfileXMLWithRetry(
 	ctx context.Context,
 	policy profileXMLRetryPolicy,
@@ -98,5 +133,17 @@ func isTransientProfileRefreshError(err error) bool {
 	if errors.As(err, &httpErr) {
 		return httpErr.StatusCode == 408 || httpErr.StatusCode == 425 || httpErr.StatusCode == 429 || httpErr.StatusCode >= 500
 	}
-	return false
+	// Everything net/http reports before it has a response arrives as a
+	// *url.Error: DNS lookup, dial, TLS. A DNS "no such host" is the one that
+	// matters here - it reports neither Timeout nor Temporary, so it used to be
+	// treated as a verdict about the account and painted on every tile at once.
+	// It is nothing of the sort; on a machine that has just woken it means the
+	// adapter is not up yet, and the only right answer is to try again.
+	var urlErr *url.Error
+	if errors.As(err, &urlErr) {
+		return true
+	}
+	// A body that did not parse says the same thing from one layer up.
+	var bodyErr *profileXMLBodyError
+	return errors.As(err, &bodyErr)
 }

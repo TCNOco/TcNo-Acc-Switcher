@@ -954,6 +954,13 @@ func (s *Service) upsertRegistry(accountID string, state registry.State) bool {
 	// record the Steam list has never heard of, whatever route it took to get
 	// one. Callers that know the login name pass it separately.
 	s.rememberSteamAccount(accountID, "")
+	// An account that can now be signed in for is one the sweeps have never
+	// checked, so the cooldown sweep is forced past its rate limit rather than
+	// leaving the new tile blank until the next unlock. A pending enrollment has
+	// no session yet and nothing to fetch with.
+	if state != registry.StatePending {
+		s.signalSteamDataRefresh(true)
+	}
 	return true
 }
 

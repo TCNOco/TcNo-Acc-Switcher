@@ -235,8 +235,11 @@ type Service struct {
 	cooldownSweep  cooldownSweepState
 	// emitOwnedGamesFn publishes a library change to an open games view. Left
 	// nil in tests for the same reason as emitCooldownFn.
-	emitOwnedGamesFn       func(steam.OwnedGamesPatch)
-	ownedGamesSweep        ownedGamesSweepState
+	emitOwnedGamesFn func(steam.OwnedGamesPatch)
+	ownedGamesSweep  ownedGamesSweepState
+	// steamDataRefresh rate limits the whole-platform refresh that an unlock or
+	// a new account kicks off.
+	steamDataRefresh       steamDataRefreshState
 	confirmationWindowMu   sync.Mutex
 	confirmationAccountID  string
 	confirmationGeneration string
@@ -1475,6 +1478,9 @@ func (s *Service) importFiles(paths []string, password, legacyPassword string, r
 		s.rememberSteamAccount(steamID64, accountName)
 		results = append(results, result)
 	}
+	if imported > 0 {
+		s.signalSteamDataRefresh(true)
+	}
 	return results, nil
 }
 
@@ -1706,8 +1712,7 @@ func (s *Service) unlockVaultWithLocked(v *vault.Vault, creds vault.Credentials,
 	if !status.SavedAccountDataEncrypted {
 		unlockErr := retainedUnlockError(v.UnlockWith(creds, mode))
 		if unlockErr == nil {
-			s.signalCooldownSweep()
-			s.signalOwnedGamesSweep()
+			s.signalSteamDataRefresh(false)
 		}
 		return unlockErr
 	}
@@ -1718,8 +1723,7 @@ func (s *Service) unlockVaultWithLocked(v *vault.Vault, creds vault.Credentials,
 	defer security.WipeSecret(key)
 	unlockErr := retainedUnlockError(v.UnlockWithFactorsAndOuter(creds, key, mode))
 	if unlockErr == nil {
-		s.signalCooldownSweep()
-		s.signalOwnedGamesSweep()
+		s.signalSteamDataRefresh(false)
 	}
 	return unlockErr
 }

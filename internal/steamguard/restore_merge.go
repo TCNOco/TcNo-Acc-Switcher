@@ -294,6 +294,9 @@ func (s *Service) CommitRestoreMergeWithFactors(password, backupPassword, backup
 		result.CapabilityRefreshRequired = true
 	}
 	s.discardRestoreMergeStageLocked()
+	if result.Added+result.Replaced > 0 {
+		s.signalSteamDataRefresh(true)
+	}
 	serviceLogger().Info("Steam Guard restore merge committed",
 		"added", result.Added, "replaced", result.Replaced)
 	return result, nil

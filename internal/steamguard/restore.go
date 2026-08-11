@@ -211,6 +211,9 @@ func (s *Service) restoreVerifiedBackupAtWith(source string, creds vault.Credent
 		// was wiped above - so the picker supplies it later.
 		s.rememberSteamAccount(record.SteamID64, "")
 	}
+	if len(records) > 0 {
+		s.signalSteamDataRefresh(true)
+	}
 	if err := restored.Lock(); err != nil {
 		return "", err
 	}

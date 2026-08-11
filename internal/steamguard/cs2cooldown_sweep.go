@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log/slog"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"TcNo-Acc-Switcher/internal/appclient"
@@ -60,6 +61,10 @@ type cooldownSweepState struct {
 	cancel    context.CancelFunc
 	// wake is buffered so signalCooldownSweep can be called with s.mu held.
 	wake chan struct{}
+	// forced survives a skipped sweep so a wake that must not be rate limited -
+	// an account joining the vault - still gets one. Atomic rather than under
+	// mu: signalCooldownSweep already runs with the service lock held.
+	forced atomic.Bool
 }
 
 func (s *Service) startCooldownSweeper(ctx context.Context) {
@@ -85,7 +90,15 @@ func (s *Service) stopCooldownSweeper() {
 
 // signalCooldownSweep asks for a sweep. It is called from inside the unlock
 // path with s.mu held, so it must never block.
-func (s *Service) signalCooldownSweep() {
+//
+// force skips the whole-sweep floor. An account that has just joined the vault
+// has never been checked, so the floor - which exists to stop repeated unlocks
+// re-checking the same accounts - would otherwise be answering a question that
+// was not asked.
+func (s *Service) signalCooldownSweep(force bool) {
+	if force {
+		s.cooldownSweep.forced.Store(true)
+	}
 	select {
 	case s.cooldownSweep.wake <- struct{}{}:
 	default:
@@ -116,19 +129,24 @@ func (s *Service) runCooldownSweeper(ctx context.Context) {
 func (s *Service) sweepCS2Cooldowns(ctx context.Context) {
 	log := cooldownLogger()
 
+	// Read, not consumed: a sweep that is skipped below must leave the request
+	// standing, or the account it was raised for is never checked.
+	forced := s.cooldownSweep.forced.Load()
+
 	s.cooldownSweep.mu.Lock()
 	if s.cooldownSweep.running {
 		s.cooldownSweep.mu.Unlock()
 		log.Debug("sweep skipped: already running")
 		return
 	}
-	if since := time.Since(s.cooldownSweep.lastSweep); !s.cooldownSweep.lastSweep.IsZero() && since < cooldownSweepFloor {
+	if since := time.Since(s.cooldownSweep.lastSweep); !forced && !s.cooldownSweep.lastSweep.IsZero() && since < cooldownSweepFloor {
 		s.cooldownSweep.mu.Unlock()
 		log.Debug("sweep skipped: rate limited", "since", since)
 		return
 	}
 	s.cooldownSweep.running = true
 	s.cooldownSweep.mu.Unlock()
+	s.cooldownSweep.forced.Store(false)
 	defer func() {
 		s.cooldownSweep.mu.Lock()
 		s.cooldownSweep.running = false
@@ -266,6 +284,12 @@ func (s *Service) fetchAndStoreCooldown(
 	// event rather than by the cooldown patch. Without this a new rank waits for
 	// the next full page load.
 	basic.EmitGameStatsUpdated(steam.PlatformKey, target.steamID64)
+	// ...and the row itself is re-run, because the ranks just stored are what
+	// variant 0 of the CS2 chain reads. Announcing the change without it only
+	// re-reads the cache entry a third-party provider last wrote, so an account
+	// with CS2 stats configured kept yesterday's number until its own cache
+	// lifetime expired hours later.
+	basic.QueueGameStatsRefresh(steam.PlatformKey, CS2GameName, target.steamID64)
 	return nil
 }
 

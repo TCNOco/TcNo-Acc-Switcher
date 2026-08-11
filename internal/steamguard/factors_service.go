@@ -954,6 +954,9 @@ func (s *Service) UnlockVaultForManagement(password, keyfilePath, backupKey stri
 			return err
 		}
 		defer wipe(creds.SecurityKey)
+		// This route into an open vault bypasses unlockVaultWithLocked, so the
+		// sweeps that every other unlock wakes would otherwise sleep through it.
+		s.signalSteamDataRefresh(false)
 	} else if err := s.verifyCredentialsLocked(v, creds); err != nil {
 		return err
 	}

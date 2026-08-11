@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"TcNo-Acc-Switcher/internal/accountlist"
@@ -112,6 +113,10 @@ type SteamService struct {
 	refreshRunning bool
 	refreshQueued  bool
 	refreshTimer   *time.Timer
+	// refreshRetry re-runs a round that could not reach Steam; refreshFailures
+	// is how many consecutive rounds have failed that way.
+	refreshRetry    *time.Timer
+	refreshFailures int
 }
 
 func NewSteamService() *SteamService {
@@ -462,11 +467,58 @@ func (s *SteamService) StartSteamProfileRefresh() {
 	if s.refreshTimer != nil {
 		s.refreshTimer.Stop()
 	}
+	// A round starting now supersedes one that was only scheduled because the
+	// last one failed.
+	s.cancelProfileRefreshRetryLocked()
 	s.refreshTimer = time.AfterFunc(500*time.Millisecond, func() {
 		defer crashlog.Capture()
 		s.runProfileRefresh()
 	})
 	s.refreshMu.Unlock()
+}
+
+// cancelProfileRefreshRetryLocked drops a scheduled retry. Callers hold refreshMu.
+func (s *SteamService) cancelProfileRefreshRetryLocked() {
+	if s.refreshRetry != nil {
+		s.refreshRetry.Stop()
+		s.refreshRetry = nil
+	}
+}
+
+// profileRefreshQuiet reports whether an unreachable account should keep the
+// tile it already has instead of replacing it with an error the next retry is
+// about to clear.
+func (s *SteamService) profileRefreshQuiet() bool {
+	s.refreshMu.Lock()
+	defer s.refreshMu.Unlock()
+	return s.refreshFailures < profileRefreshQuietFailures
+}
+
+// noteProfileRefreshOutcome records whether Steam answered this round and, when
+// it did not, schedules the next one.
+//
+// Without this a failed round is terminal: every trigger for a refresh is an
+// event elsewhere in the app (an account added, a setting changed, the list
+// loading for the first time), and a machine sitting idle after a resume
+// produces none of them.
+func (s *SteamService) noteProfileRefreshOutcome(unreachable bool) {
+	s.refreshMu.Lock()
+	s.cancelProfileRefreshRetryLocked()
+	if !unreachable {
+		s.refreshFailures = 0
+		s.refreshMu.Unlock()
+		return
+	}
+	s.refreshFailures++
+	failures := s.refreshFailures
+	delay := profileRefreshRetryDelay(failures)
+	s.refreshRetry = time.AfterFunc(delay, func() {
+		defer crashlog.Capture()
+		s.StartSteamProfileRefresh()
+	})
+	s.refreshMu.Unlock()
+	steamLog.Info("profile refresh could not reach Steam; retrying",
+		slog.Int("consecutiveFailures", failures), slog.Duration("in", delay))
 }
 
 func (s *SteamService) runProfileRefresh() {
@@ -550,6 +602,11 @@ func (s *SteamService) runProfileRefresh() {
 	ctx := context.Background()
 	sem := semaphore.NewWeighted(5)
 	var wg sync.WaitGroup
+	// One verdict for the whole round: every account is talking to the same
+	// Steam over the same adapter, so if any of them could not reach it the
+	// round is worth repeating.
+	var unreachable atomic.Bool
+	quiet := s.profileRefreshQuiet()
 
 	for _, u := range users {
 		u := u
@@ -592,6 +649,15 @@ func (s *SteamService) runProfileRefresh() {
 				steamLog.Warn("community profile XML failed",
 					slog.String("steamId", tailSteamID(u.SteamID64)),
 					slog.Any("err", err))
+				if isTransientProfileRefreshError(err) {
+					unreachable.Store(true)
+					if quiet {
+						patch.Error, patch.MetaPending = "", true
+						patch.AvatarPending = false
+						s.emit(patch)
+						return
+					}
+				}
 				patch.Error, patch.MetaPending = profileRefreshErrorState(err, false)
 				patch.AvatarPending = false
 				s.emit(patch)
@@ -709,13 +775,24 @@ func (s *SteamService) runProfileRefresh() {
 				steamLog.Warn("avatar download failed",
 					slog.String("steamId", tailSteamID(u.SteamID64)),
 					slog.Any("err", err))
-				patch.Error = err.Error()
+				// Same treatment as the profile fetch above, and for the same
+				// reason: this is the avatar CDN being unreachable, not
+				// anything the user can read a Go transport error about.
+				transient := isTransientProfileRefreshError(err)
+				if transient {
+					unreachable.Store(true)
+				}
+				patch.Error = ""
+				if !transient || !quiet {
+					patch.Error, _ = profileRefreshErrorState(err, false)
+				}
 				patch.AvatarPending = false
 			}
 			s.emit(patch)
 		}()
 	}
 	wg.Wait()
+	s.noteProfileRefreshOutcome(unreachable.Load())
 
 	rows := make([]VacEntry, 0, len(users))
 	for _, u := range users {

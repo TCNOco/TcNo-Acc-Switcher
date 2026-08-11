@@ -385,10 +385,52 @@ func TestSignalCooldownSweepDoesNotBlock(t *testing.T) {
 	// would deadlock the whole service.
 	service := newServiceForTest()
 	for i := 0; i < 10; i++ {
-		service.signalCooldownSweep()
+		service.signalCooldownSweep(i%2 == 0)
 	}
 	if len(service.cooldownSweep.wake) != 1 {
 		t.Fatalf("wake channel holds %d signals, want 1", len(service.cooldownSweep.wake))
+	}
+}
+
+// An account that has just joined the vault has never been checked, so the
+// floor - which exists to stop repeated unlocks re-checking the same accounts -
+// must not be what answers for it.
+func TestForcedSweepIgnoresTheSweepFloor(t *testing.T) {
+	service, fake, _ := newSweepFixture(t)
+	service.cooldownSweep.mu.Lock()
+	service.cooldownSweep.lastSweep = time.Now()
+	service.cooldownSweep.mu.Unlock()
+
+	service.sweepCS2Cooldowns(context.Background())
+	if got := fake.callCount(); got != 0 {
+		t.Fatalf("made %d requests inside the floor, want 0", got)
+	}
+
+	service.signalCooldownSweep(true)
+	service.sweepCS2Cooldowns(context.Background())
+	if fake.callCount() == 0 {
+		t.Fatal("a forced sweep was still rate limited")
+	}
+	if service.cooldownSweep.forced.Load() {
+		t.Fatal("the force request must be consumed by the sweep it ran")
+	}
+}
+
+// A sweep that could not run has to leave the request standing, or the account
+// it was raised for is never checked.
+func TestForceSurvivesASkippedSweep(t *testing.T) {
+	service, fake, _ := newSweepFixture(t)
+	service.cooldownSweep.mu.Lock()
+	service.cooldownSweep.running = true
+	service.cooldownSweep.mu.Unlock()
+
+	service.signalCooldownSweep(true)
+	service.sweepCS2Cooldowns(context.Background())
+	if got := fake.callCount(); got != 0 {
+		t.Fatalf("made %d requests while another sweep was running, want 0", got)
+	}
+	if !service.cooldownSweep.forced.Load() {
+		t.Fatal("the force request was thrown away by a sweep that never ran")
 	}
 }
 
