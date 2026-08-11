@@ -660,7 +660,7 @@
   "SteamGuard_LoginOnly_RemoveConfirm": "Remove account?",
   "SteamGuard_LoginOnly_Removed": "Account removed.",
   "SteamGuard_Import_Title": "Import maFile",
-  "SteamGuard_AddAccount_Link": "+ Add Account",
+  "SteamGuard_AddAccount_Link": "Add Account",
   "SteamGuard_AddAccount_Title": "Add a Steam account",
   "SteamGuard_AddAccount_Body": "Sign in with your Steam username and password. Steam decides which account that is, so nothing needs to be set up here first.",
   "SteamGuard_AddAccount_As": "Add account as:",
