@@ -43,6 +43,7 @@
     publishSteamGuardActionAccounts,
   } from "../stores/steamGuardAction";
   import { resetSteamPageTab, steamPageTab } from "../stores/steamPageTab";
+  import { activeModal } from "../stores/modal";
   import {
     openSteamBrowserNow,
     steamBrowserAvailable,
@@ -339,6 +340,21 @@
 
   // Hidden rather than shown-and-failing on a build with no session browser.
   let steamBrowserSupported = false;
+
+  // The vault-unlocked flag the context menu reads is a cache: a menu is built
+  // synchronously, so it can only report what was known last time. It is
+  // refreshed while building one, which means the refresh lands for the next
+  // menu - and the first right-click after unlocking the vault was missing
+  // everything that flag gates.
+  //
+  // Unlocking happens in the Steam Guard window, so the cache is refreshed as
+  // that window closes, which is before the user can reach a menu again.
+  let steamGuardWasOpen = false;
+  $: {
+    const steamGuardOpen = $activeModal?.kind === "steamGuard";
+    if (steamGuardWasOpen && !steamGuardOpen) void refreshSteamGuardVaultUnlocked();
+    steamGuardWasOpen = steamGuardOpen;
+  }
 
   function openSteamBrowserFromMenu(account: SteamAccountRow, site: SteamBrowserSite): void {
     void openSteamBrowserNow(account.steamId64, site)
