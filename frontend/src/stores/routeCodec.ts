@@ -8,7 +8,8 @@ export type Route =
   | { page: "platform"; platformName: string }
   | { page: "platform-settings"; platformName: string }
   | { page: "steam-advanced-clearing" }
-  | { page: "steam-confirmations" };
+  | { page: "steam-confirmations" }
+  | { page: "steam-browser"; sessionId: string };
 
 export function serializeRoute(r: Route): string {
   switch (r.page) {
@@ -28,6 +29,8 @@ export function serializeRoute(r: Route): string {
       return "#/steam/advanced-clearing";
     case "steam-confirmations":
       return "#/steam/confirmations";
+    case "steam-browser":
+      return "#/steam/browser/" + encodeURIComponent(r.sessionId);
     default:
       return "#/";
   }
@@ -44,9 +47,16 @@ const ROUTE_PARSERS: Record<string, RouteParser> = {
   "manage-platforms":   () => ({ page: "manage-platforms" }),
   platform:             (p) => p[1] ? { page: "platform", platformName: decodeURIComponent(p[1]) } : null,
   "platform-settings":  (p) => p[1] ? { page: "platform-settings", platformName: decodeURIComponent(p[1]) } : null,
-  steam:                (p) => p[1]?.toLowerCase() === "advanced-clearing"
-    ? { page: "steam-advanced-clearing" }
-    : p[1]?.toLowerCase() === "confirmations" ? { page: "steam-confirmations" } : null,
+  steam:                (p) => {
+    switch (p[1]?.toLowerCase()) {
+      case "advanced-clearing": return { page: "steam-advanced-clearing" };
+      case "confirmations":     return { page: "steam-confirmations" };
+      // The session id names which open window this chrome belongs to, so the
+      // toolbar's commands reach the right content view.
+      case "browser":           return p[2] ? { page: "steam-browser", sessionId: decodeURIComponent(p[2]) } : null;
+      default:                  return null;
+    }
+  },
 };
 
 export function parseHash(hash: string): Route | null {

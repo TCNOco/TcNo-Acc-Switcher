@@ -500,6 +500,8 @@
               <Page />
             {:else if $route.page === "steam-confirmations"}
               <Page />
+            {:else if $route.page === "steam-browser"}
+              <Page />
             {:else if $route.page === "manage-platforms"}
               <Page />
             {/if}
