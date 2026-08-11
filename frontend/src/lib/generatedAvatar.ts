@@ -101,6 +101,8 @@ interface Palette {
   inks: Colour[];
   accent: Colour;
   glow: Colour;
+  /** Pale ground with dark ink. Roughly one avatar in six, for range. */
+  light: boolean;
 }
 
 function css([h, s, l]: Colour, a = 1): string {
@@ -110,17 +112,30 @@ function css([h, s, l]: Colour, a = 1): string {
 function buildPalette(rng: Rng): Palette {
   const hue = rng.int(0, 359);
   const harmony = rng.pick(HARMONIES);
-  // Dark grounds keep bright ink readable and stop a wall of avatars from glaring.
-  const depth = rng.range(7, 17);
-  const sat = rng.range(35, 70);
+  const light = rng.chance(0.17);
+  // Ink lightness is chosen against the ground rather than absolutely, so every
+  // shape reads at 64px. An all-dark set was the first version's failure: it
+  // turned a wall of avatars into a wall of murk.
+  const groundL = light ? rng.range(72, 88) : rng.range(12, 27);
+  const groundS = light ? rng.range(14, 38) : rng.range(30, 62);
+  const inkL: [number, number] = light ? [26, 52] : [55, 82];
   return {
-    bgFrom: [hue + rng.range(-12, 12), sat, depth],
-    bgTo: [hue + rng.pick(harmony) + rng.range(-10, 10), sat * 0.8, depth * rng.range(0.45, 0.85)],
+    bgFrom: [hue + rng.range(-14, 14), groundS, groundL],
+    bgTo: [
+      hue + rng.pick(harmony) + rng.range(-12, 12),
+      groundS * rng.range(0.7, 1.15),
+      groundL * rng.range(light ? 0.92 : 0.5, light ? 1.06 : 0.95),
+    ],
     inks: harmony.map(
-      (offset): Colour => [hue + offset + rng.range(-6, 6), rng.range(58, 92), rng.range(48, 76)],
+      (offset): Colour => [
+        hue + offset + rng.range(-8, 8),
+        rng.range(62, 95),
+        rng.range(inkL[0], inkL[1]),
+      ],
     ),
-    accent: [hue + rng.pick([150, 180, 210]), rng.range(75, 95), rng.range(60, 80)],
-    glow: [hue + rng.range(-40, 40), rng.range(60, 85), rng.range(50, 66)],
+    accent: [hue + rng.pick([120, 150, 180, 210]), rng.range(78, 97), light ? rng.range(22, 40) : rng.range(62, 84)],
+    glow: [hue + rng.range(-50, 50), rng.range(65, 90), light ? rng.range(60, 75) : rng.range(48, 66)],
+    light,
   };
 }
 
@@ -335,27 +350,118 @@ const bloom: Composition = (ctx, rng, p, s) => {
 };
 
 const mesh: Composition = (ctx, rng, p, s) => {
-  const blobs = rng.int(3, 5);
+  const blobs = rng.int(4, 6);
   for (let i = 0; i < blobs; i++) {
-    const x = s * rng.range(-0.1, 1.1);
-    const y = s * rng.range(-0.1, 1.1);
-    const r = s * rng.range(0.28, 0.62);
+    const x = s * rng.range(-0.05, 1.05);
+    const y = s * rng.range(-0.05, 1.05);
+    const r = s * rng.range(0.3, 0.66);
     const grad = ctx.createRadialGradient(x, y, 0, x, y, r);
     const colour = rng.pick(p.inks);
-    grad.addColorStop(0, css(colour, rng.range(0.35, 0.7)));
+    grad.addColorStop(0, css(colour, rng.range(0.75, 1)));
+    grad.addColorStop(0.5, css(colour, rng.range(0.3, 0.55)));
     grad.addColorStop(1, css(colour, 0));
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, s, s);
   }
-  // A couple of hard edges so the whole thing does not read as a smudge.
-  for (let i = 0; i < rng.int(1, 3); i++) {
-    ctx.globalAlpha = rng.range(0.4, 0.85);
-    ctx.strokeStyle = css(p.accent);
-    ctx.lineWidth = s * rng.range(0.008, 0.02);
+  // Hard edges over the gradients, or the whole thing reads as a smudge.
+  for (let i = 0; i < rng.int(2, 4); i++) {
+    ctx.globalAlpha = rng.range(0.75, 1);
+    ctx.strokeStyle = css(rng.chance(0.5) ? p.accent : rng.pick(p.inks));
+    ctx.lineWidth = s * rng.range(0.016, 0.045);
     ctx.beginPath();
-    ctx.arc(s * rng.range(0.2, 0.8), s * rng.range(0.2, 0.8), s * rng.range(0.1, 0.35), 0, Math.PI * 2);
+    ctx.arc(s * rng.range(0.2, 0.8), s * rng.range(0.2, 0.8), s * rng.range(0.12, 0.38), 0, Math.PI * 2);
     ctx.stroke();
   }
+  ctx.globalAlpha = 1;
+};
+
+const rays: Composition = (ctx, rng, p, s) => {
+  const spokes = rng.int(5, 14);
+  const cx = s * rng.range(0.1, 0.9);
+  const cy = s * rng.range(0.1, 0.9);
+  const spin = rng.range(0, Math.PI * 2);
+  const spread = (Math.PI * 2) / spokes;
+  for (let i = 0; i < spokes; i++) {
+    ctx.globalAlpha = rng.range(0.45, 0.9);
+    ctx.fillStyle = css(rng.pick(p.inks));
+    const from = spin + i * spread;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, s * 1.5, from, from + spread * rng.range(0.3, 0.85));
+    ctx.closePath();
+    ctx.fill();
+  }
+  ctx.globalAlpha = rng.range(0.7, 1);
+  ctx.fillStyle = css(p.accent);
+  dot(ctx, cx, cy, s * rng.range(0.05, 0.14));
+  ctx.globalAlpha = 1;
+};
+
+const target: Composition = (ctx, rng, p, s) => {
+  const cx = s * rng.range(0.3, 0.7);
+  const cy = s * rng.range(0.3, 0.7);
+  const bands = rng.int(4, 8);
+  const reach = s * rng.range(0.6, 0.95);
+  for (let i = bands; i > 0; i--) {
+    ctx.globalAlpha = rng.range(0.7, 1);
+    ctx.fillStyle = css(rng.pick(p.inks));
+    dot(ctx, cx, cy, (i / bands) * reach);
+  }
+  if (rng.chance(0.5)) {
+    // Slice the rings so the result is not just a bullseye every time.
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    const from = rng.range(0, Math.PI * 2);
+    ctx.arc(cx, cy, s * 1.5, from, from + rng.range(0.5, 2.2));
+    ctx.closePath();
+    ctx.fill();
+    ctx.globalCompositeOperation = "source-over";
+  }
+  ctx.globalAlpha = 1;
+};
+
+const confetti: Composition = (ctx, rng, p, s) => {
+  const count = rng.int(14, 30);
+  for (let i = 0; i < count; i++) {
+    ctx.globalAlpha = rng.range(0.5, 1);
+    ctx.fillStyle = css(rng.pick(p.inks));
+    const x = s * rng.range(0.05, 0.95);
+    const y = s * rng.range(0.05, 0.95);
+    const size = s * rng.range(0.03, 0.11);
+    switch (rng.int(0, 2)) {
+      case 0:
+        dot(ctx, x, y, size);
+        break;
+      case 1:
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(rng.range(0, Math.PI));
+        ctx.fillRect(-size, -size * rng.range(0.2, 0.6), size * 2, size * rng.range(0.4, 1.2));
+        ctx.restore();
+        break;
+      default:
+        polygon(ctx, x, y, size * 1.3, 3, rng.range(0, Math.PI * 2));
+        ctx.fill();
+    }
+  }
+  ctx.globalAlpha = 1;
+};
+
+const weave: Composition = (ctx, rng, p, s) => {
+  const bars = rng.int(3, 6);
+  const draw = (vertical: boolean): void => {
+    for (let i = 0; i < bars; i++) {
+      const thickness = s * rng.range(0.05, 0.16);
+      const at = s * rng.range(0, 1) - thickness / 2;
+      ctx.globalAlpha = rng.range(0.55, 0.95);
+      ctx.fillStyle = css(rng.pick(p.inks));
+      if (vertical) ctx.fillRect(at, -s * 0.1, thickness, s * 1.2);
+      else ctx.fillRect(-s * 0.1, at, s * 1.2, thickness);
+    }
+  };
+  draw(true);
+  draw(false);
   ctx.globalAlpha = 1;
 };
 
@@ -402,7 +508,9 @@ const prism: Composition = (ctx, rng, p, s) => {
   ctx.globalAlpha = 1;
 };
 
-const COMPOSITIONS: readonly Composition[] = [orbits, shards, bauhaus, strata, bloom, mesh, glyph, prism];
+const COMPOSITIONS: readonly Composition[] = [
+  orbits, shards, bauhaus, strata, bloom, mesh, glyph, prism, rays, target, confetti, weave,
+];
 
 // ---- Grain ------------------------------------------------------------------
 
@@ -494,7 +602,7 @@ function paintBackground(ctx: Ctx, rng: Rng, p: Palette, s: number): void {
 function paintFilaments(ctx: Ctx, rng: Rng, p: Palette, s: number): void {
   const count = rng.int(1, 3);
   for (let i = 0; i < count; i++) {
-    ctx.globalAlpha = rng.range(0.2, 0.5);
+    ctx.globalAlpha = rng.range(p.light ? 0.35 : 0.2, p.light ? 0.7 : 0.5);
     ctx.strokeStyle = css(rng.chance(0.5) ? p.accent : rng.pick(p.inks));
     ctx.lineWidth = s * rng.range(0.004, 0.014);
     ctx.beginPath();
@@ -509,24 +617,37 @@ function paintFilaments(ctx: Ctx, rng: Rng, p: Palette, s: number): void {
   ctx.globalAlpha = 1;
 }
 
+/**
+ * Two passes at different scales: a coarse one that carries the visible tooth and
+ * a fine one that breaks up the gradients. Both reuse the single cached tile —
+ * per-pixel noise per avatar would be the most expensive thing on the page.
+ */
 function paintGrain(ctx: Ctx, rng: Rng, s: number): void {
   const tile = getGrainTile();
   if (!tile) return;
   const pattern = ctx.createPattern(tile, "repeat");
   if (!pattern) return;
-  ctx.save();
-  ctx.globalCompositeOperation = "overlay";
-  ctx.globalAlpha = rng.range(0.16, 0.34);
-  ctx.translate(rng.range(-64, 0), rng.range(-64, 0));
-  ctx.fillStyle = pattern;
-  ctx.fillRect(0, 0, s + 64, s + 64);
-  ctx.restore();
+  const passes: [number, number, GlobalCompositeOperation][] = [
+    [1, rng.range(0.3, 0.5), "overlay"],
+    [rng.range(2, 3.5), rng.range(0.12, 0.24), "soft-light"],
+  ];
+  for (const [scale, alpha, mode] of passes) {
+    ctx.save();
+    ctx.globalCompositeOperation = mode;
+    ctx.globalAlpha = alpha;
+    ctx.scale(scale, scale);
+    ctx.translate(rng.range(-64, 0), rng.range(-64, 0));
+    ctx.fillStyle = pattern;
+    ctx.fillRect(0, 0, s / scale + 128, s / scale + 128);
+    ctx.restore();
+  }
 }
 
-function paintVignette(ctx: Ctx, s: number): void {
-  const grad = ctx.createRadialGradient(s / 2, s / 2, s * 0.3, s / 2, s / 2, s * 0.75);
+function paintVignette(ctx: Ctx, p: Palette, s: number): void {
+  const grad = ctx.createRadialGradient(s / 2, s / 2, s * 0.34, s / 2, s / 2, s * 0.78);
   grad.addColorStop(0, "rgba(0,0,0,0)");
-  grad.addColorStop(1, "rgba(0,0,0,0.38)");
+  // A pale ground darkened at the edges just looks dirty; lift it instead.
+  grad.addColorStop(1, p.light ? "rgba(255,255,255,0.22)" : "rgba(0,0,0,0.26)");
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, s, s);
 }
@@ -548,11 +669,12 @@ function render(seed: string): string {
   paintBackground(ctx, rng, palette, s);
 
   // A soft off-centre glow under the composition gives the flat shapes some depth.
+  // Kept weak: turned up, it swallows whatever is drawn on top of it.
   const glow = ctx.createRadialGradient(
     s * rng.range(0.15, 0.85), s * rng.range(0.15, 0.85), 0,
     s / 2, s / 2, s * rng.range(0.6, 1),
   );
-  glow.addColorStop(0, css(palette.glow, 0.4));
+  glow.addColorStop(0, css(palette.glow, rng.range(0.16, 0.3)));
   glow.addColorStop(1, css(palette.glow, 0));
   ctx.fillStyle = glow;
   ctx.fillRect(0, 0, s, s);
@@ -567,14 +689,19 @@ function render(seed: string): string {
     ctx.rotate(rng.range(-0.5, 0.5));
     ctx.translate(-s / 2, -s / 2);
   }
-  ctx.globalCompositeOperation = rng.pick(["source-over", "source-over", "screen", "overlay", "soft-light"]);
+  // Blend modes are picked per ground. "screen" and "soft-light" over a pale
+  // ground erase the composition entirely, which is how the first version ended
+  // up with blank tiles.
+  ctx.globalCompositeOperation = palette.light
+    ? rng.pick(["source-over", "source-over", "source-over", "multiply"])
+    : rng.pick(["source-over", "source-over", "source-over", "screen", "overlay"]);
   rng.pick(COMPOSITIONS)(ctx, rng, palette, s);
   ctx.restore();
 
   ctx.globalCompositeOperation = "source-over";
   paintFilaments(ctx, rng, palette, s);
   paintGrain(ctx, rng, s);
-  paintVignette(ctx, s);
+  paintVignette(ctx, palette, s);
 
   // WebP holds grain at a fraction of PNG's size, and these are never transparent.
   const webp = canvas.toDataURL("image/webp", 0.86);
