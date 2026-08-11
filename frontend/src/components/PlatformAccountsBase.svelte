@@ -44,7 +44,9 @@
   import { resolveGameStatTooltip } from "../lib/accounts/gameStatTooltip";
   import { contextMenu as contextMenuState, type MenuItemDef } from "../stores/contextMenu";
   import { securityStatus } from "../stores/security";
-  import { offlineMode, offlineSafeImageSrc, withAssetCacheBust } from "../stores/offlineMode";
+  import { offlineMode } from "../stores/offlineMode";
+  import { avatarSalt, censoredName, censorName, streamerMode } from "../stores/streamerMode";
+  import { accountAvatarSrc } from "../lib/accountAvatarSrc";
   import { formatLastLoginForLocale } from "../lib/formatLastLogin";
   import {
     openTagFilterMenu,
@@ -234,8 +236,14 @@
     return String(value ?? "").replace(/\s+/g, " ").trim();
   }
 
+  /* Feeds the screen reader, the action bar and modal titles. Censored for the
+     same reason the tile is: a narrator reading the SteamID out is still a leak,
+     and these strings surface in tooltips a capture card picks up. */
   function accountDisplayLabel(acc: TAccount): string {
-    return compactText(adapter.name(acc)) || compactText(adapter.accountLogin(acc)) || adapter.id(acc);
+    const name = compactText(adapter.name(acc));
+    if (name) return censorName(name, get(streamerMode));
+    if (get(streamerMode)) return get(t)("StreamerMode_HiddenAccount");
+    return compactText(adapter.accountLogin(acc)) || adapter.id(acc);
   }
 
   function accountA11yDescription(acc: TAccount, id: string): string {
@@ -282,7 +290,7 @@
   function touchStatus(): void {
     if (isActionBusy) return;
     const acc = accountById(selectedId);
-    actionBarStatus.set(acc ? $t("Status_SelectedAccount", { name: adapter.name(acc) || adapter.id(acc) }) : "");
+    actionBarStatus.set(acc ? $t("Status_SelectedAccount", { name: accountDisplayLabel(acc) }) : "");
   }
 
   function clearSelection(): void {
@@ -808,6 +816,9 @@
       searchHayCache,
       offlineMode: get(offlineMode),
       profileFallback: adapter.profileFallback,
+      platformKey: adapter.platformKey,
+      streamer: get(streamerMode),
+      avatarSalt: get(avatarSalt),
       accountBadge: get(t)("Search_Section_Account"),
     });
   }
@@ -1199,10 +1210,17 @@
 
                   <slot name="account-avatar" {acc} epoch={avatarEpoch[rid] ?? 0} fallback={adapter.profileFallback}>
                     <img
-                      src={offlineSafeImageSrc($offlineMode, withAssetCacheBust(
-                        adapter.imageUrl(acc) && !adapter.imagePending(acc) ? adapter.imageUrl(acc) : undefined,
-                        avatarEpoch[rid] ?? 0,
-                      ), adapter.profileFallback)}
+                      src={accountAvatarSrc({
+                        streamer: $streamerMode,
+                        salt: $avatarSalt,
+                        platformKey: adapter.platformKey,
+                        accountKey: adapter.accountLogin(acc) || rid,
+                        imageUrl: adapter.imageUrl(acc),
+                        pending: adapter.imagePending(acc),
+                        epoch: avatarEpoch[rid] ?? 0,
+                        offline: $offlineMode,
+                        fallback: adapter.profileFallback,
+                      })}
                       alt="" draggable="false"
                     />
                   </slot>
@@ -1215,7 +1233,7 @@
                     class:acc_name--vac={nameStatus?.kind === "vac"}
                     class:acc_name--limited={nameStatus?.kind === "limited"}
                     title={nameStatus?.label}
-                  >{adapter.name(acc)}</h6>
+                  >{$censoredName(adapter.name(acc))}</h6>
 
                   {#if a11yDescription}
                     <span id={descId} class="sr-only">{a11yDescription}</span>

@@ -16,6 +16,8 @@
   import { setSteamGamesSearchFocusHandler } from "../stores/steamGamesSearch";
   import { platformListSort, type PlatformSortKind } from "../stores/platformListSort";
   import { offlineMode, offlineSafeImageSrc } from "../stores/offlineMode";
+  import { avatarSalt, censoredName, streamerMode } from "../stores/streamerMode";
+  import { accountAvatarSrc } from "../lib/accountAvatarSrc";
   import {
     clearSteamGamesBar,
     setSteamGamesAccountPickHandler,
@@ -135,12 +137,20 @@
     byId: Map<string, GamesAccount>,
     steamId64: string,
     offline: boolean,
+    streamer: boolean,
+    salt: string,
   ): string {
-    return offlineSafeImageSrc(
+    return accountAvatarSrc({
+      streamer,
+      salt,
+      platformKey: "Steam",
+      accountKey: steamId64,
+      imageUrl: byId.get(steamId64)?.avatarUrl ?? "",
+      pending: false,
+      epoch: 0,
       offline,
-      byId.get(steamId64)?.avatarUrl ?? "",
-      PROFILE_PLACEHOLDER,
-    );
+      fallback: PROFILE_PLACEHOLDER,
+    });
   }
 
   function gameIcon(game: OwnedGameRow): string {
@@ -506,10 +516,10 @@
                       {#each owners.shown as steamId64 (steamId64)}
                         <img
                           class="steamGames__ownerAvatar"
-                          src={ownerAvatar(accountById, steamId64, $offlineMode)}
+                          src={ownerAvatar(accountById, steamId64, $offlineMode, $streamerMode, $avatarSalt)}
                           alt=""
                           draggable="false"
-                          use:tooltipAction={{ text: ownerDisplayName(accountById, steamId64), boundary: listEl }}
+                          use:tooltipAction={{ text: $censoredName(ownerDisplayName(accountById, steamId64)), boundary: listEl }}
                         />
                       {/each}
                       {#if owners.hidden.length > 0}

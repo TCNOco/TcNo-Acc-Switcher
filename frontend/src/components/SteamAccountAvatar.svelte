@@ -1,6 +1,8 @@
 <script lang="ts">
   import { get } from "svelte/store";
-  import { offlineMode, offlineSafeImageSrc, withAssetCacheBust } from "../stores/offlineMode";
+  import { offlineMode } from "../stores/offlineMode";
+  import { avatarSalt, streamerMode } from "../stores/streamerMode";
+  import { accountAvatarSrc } from "../lib/accountAvatarSrc";
   import { isProfileVideoUrl } from "../lib/profileImageDrop";
   import { miniProfileHover } from "../lib/actions/miniProfileHover";
   import { t } from "../stores/i18n";
@@ -13,7 +15,6 @@
 
   function steamListAvatarUrl(): string | undefined {
     const acc = account;
-    if (acc.avatarPending) return undefined;
     const primary = acc.imageUrl?.trim() || undefined;
     const fb = acc.staticImageUrl?.trim() || undefined;
     if ($offlineMode) {
@@ -24,12 +25,22 @@
     return primary ?? fb;
   }
 
-  $: avatarSrc = offlineSafeImageSrc(
-    $offlineMode,
-    withAssetCacheBust(steamListAvatarUrl(), epoch),
+  $: avatarSrc = accountAvatarSrc({
+    streamer: $streamerMode,
+    salt: $avatarSalt,
+    platformKey: "Steam",
+    accountKey: account.accountName || account.steamId64 || "",
+    imageUrl: steamListAvatarUrl(),
+    pending: account.avatarPending === true,
+    epoch,
+    offline: $offlineMode,
     fallback,
-  );
-  $: avatarIsVideo = !$offlineMode && isProfileVideoUrl(avatarSrc);
+  });
+  $: avatarIsVideo = !$offlineMode && !$streamerMode && isProfileVideoUrl(avatarSrc);
+  // The hover card is a slab of the account's Steam profile — persona name, level,
+  // games. Exactly what streamer mode exists to keep off the screen.
+  $: miniProfileEnabled =
+    !$streamerMode && !!(account.showMiniProfile && (account.miniProfileHtml ?? "").trim() !== "");
   // Defaults to shown: the flag arrives with account enrichment, so it is
   // briefly undefined on first paint and the lock should not flicker off.
   $: guardBadgeLabel = account.showSteamGuardLock === false
@@ -52,7 +63,7 @@
         html: account.miniProfileHtml ?? "",
         boundary,
         offline: $offlineMode,
-        enabled: !!(account.showMiniProfile && (account.miniProfileHtml ?? "").trim() !== ""),
+        enabled: miniProfileEnabled,
       }}
     ></video>
   {:else}
@@ -64,12 +75,12 @@
         html: account.miniProfileHtml ?? "",
         boundary,
         offline: $offlineMode,
-        enabled: !!(account.showMiniProfile && (account.miniProfileHtml ?? "").trim() !== ""),
+        enabled: miniProfileEnabled,
       }}
     />
   {/if}
-  {#if account.showAvatarFrame && (account.avatarFrameUrl ?? "").trim() !== "" && !$offlineMode}
-    <img class="steam-acc-avatar-frame" src={offlineSafeImageSrc($offlineMode, account.avatarFrameUrl ?? "", fallback)} alt="" draggable="false" />
+  {#if account.showAvatarFrame && (account.avatarFrameUrl ?? "").trim() !== "" && !$offlineMode && !$streamerMode}
+    <img class="steam-acc-avatar-frame" src={account.avatarFrameUrl ?? ""} alt="" draggable="false" />
   {/if}
   <!-- Sits above the avatar frame so a framed avatar does not hide it. A pending
        setup gets its own look: it is not protection yet, and showing the same

@@ -4,6 +4,7 @@
   import { fade } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
   import { Events } from "@wailsio/runtime";
+  import { initStreamerMode } from "./stores/streamerMode";
   import { motionEnabled } from "./lib/animation";
   import { applyAnimationClass } from "./lib/animationClass";
   import { installInputModalityTracking } from "./lib/inputModality";
@@ -320,6 +321,10 @@
   onMount(() => {
     void loadSecurityStatus();
     void loadAnimationsEnabled();
+    // Resolves after the first paint; the html class it sets is what censors the
+    // account lists, so hydrate it before any of them can mount.
+    let offStreamerMode: (() => void) | undefined;
+    void initStreamerMode().then((off) => { offStreamerMode = off; });
     void loadCommandPaletteHotkey();
     // Load initial app background state. Loaded-or-failed both count as
     // settled: on failure there is no user wallpaper to protect, so the theme
@@ -452,6 +457,7 @@
       offPlatformsFound?.();
       offPlatformsUpdated?.();
       offUserDataMoveProgress?.();
+      offStreamerMode?.();
       offSvgBridge?.();
       offInputModality();
       offAnimationsClass();

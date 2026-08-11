@@ -81,6 +81,13 @@
   font-size: 0.7em;
 }
 
+// Streamer mode. The identifier leaves the layout entirely rather than being
+// blurred or blanked out: a blur is still a picture of the thing being hidden, and
+// a placeholder row tells a chat exactly how many characters to guess at.
+:root.streamer-mode .streamerCensor {
+  display: none;
+}
+
 .acc_list_actionbar,
 #acc_list,
 .headerbar,

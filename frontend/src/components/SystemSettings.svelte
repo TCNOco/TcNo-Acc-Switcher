@@ -6,6 +6,11 @@
   import { formatToastWithError } from "../lib/formatWailsError";
   import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import { offlineMode, setUserOfflineMode } from "../stores/offlineMode";
+  import {
+    setAutoStreamerMode,
+    setStreamerMode,
+    streamerState,
+  } from "../stores/streamerMode";
   import { openConfirm, openFeedbackModal, openPasswordSetupModal, openPrompt } from "../stores/modal";
   import { animationsEnabled, loadAnimationsEnabled, setAnimationsEnabled } from "../stores/animationSettings";
   import SettingsGroup from "./settings/SettingsGroup.svelte";
@@ -102,6 +107,18 @@
     () => PlatformService.GetStartTrayWithWindows(),
     (v) => PlatformService.SetStartTrayWithWindows(v),
     get(t)("Settings_Tray_StartWindows"),
+  );
+
+  const streamerMode = createToggle(
+    () => PlatformService.GetStreamerMode(),
+    (v) => setStreamerMode(v),
+    get(t)("Settings_StreamerMode"),
+  );
+
+  const autoStreamerMode = createToggle(
+    () => PlatformService.GetAutoStreamerMode(),
+    (v) => setAutoStreamerMode(v),
+    get(t)("Settings_AutoStreamerMode"),
   );
 
   const startProgramCentered = createToggle(
@@ -264,6 +281,8 @@
     minimizeOnSwitch.value.set(settings.minimizeOnSwitch);
     startTrayWithWindows.value.set(settings.startTrayWithWindows);
     startProgramCentered.value.set(settings.startProgramCentered);
+    streamerMode.value.set(settings.streamerMode);
+    autoStreamerMode.value.set(settings.autoStreamerMode);
     animationsEnabled.set(settings.animationsEnabled);
     animations.value.set(settings.animationsEnabled);
     controllerSupport.value.set(applyControllerSupportEnabled(settings.controllerSupportEnabled));
@@ -282,6 +301,8 @@
     void discordRpcShare.init();
     void minimizeOnSwitch.init();
     void startProgramCentered.init();
+    void streamerMode.init();
+    void autoStreamerMode.init();
     void animations.init();
     void controllerSupport.init();
     void loadCommandPaletteHotkey();
@@ -526,6 +547,31 @@
       label={$t("Settings_StartCentered")}
       on:change={() => void startProgramCentered.toggle()}
     />
+    <div class="settings-stack">
+      <SettingsToggle
+        id="gs-streamer-mode"
+        checked={$streamerMode.value}
+        disabled={$streamerMode.loading}
+        label={$t("Settings_StreamerMode")}
+        tooltip={$t("Settings_StreamerMode_Tooltip")}
+        on:change={() => void streamerMode.toggle()}
+      />
+      <div class="settings-sub">
+        <SettingsToggle
+          id="gs-auto-streamer-mode"
+          checked={$autoStreamerMode.value}
+          disabled={$autoStreamerMode.loading}
+          label={$t("Settings_AutoStreamerMode")}
+          tooltip={$t("Settings_AutoStreamerMode_Tooltip")}
+          on:change={() => void autoStreamerMode.toggle()}
+        />
+      </div>
+      {#if $streamerState.autoEnabled && $streamerState.autoActive}
+        <p class="settings-note">
+          {$t("Settings_AutoStreamerMode_Active", { app: $streamerState.detectedExe })}
+        </p>
+      {/if}
+    </div>
     <SettingsToggle
       id="settings-animations"
       checked={$animations.value}

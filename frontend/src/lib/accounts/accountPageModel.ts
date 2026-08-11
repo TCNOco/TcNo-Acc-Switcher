@@ -2,7 +2,8 @@ import type { SearchResultRow } from "../../components/SearchOverlay.svelte";
 import type { AccountRowProjection, AccountSearchProjection, GameStatMetricDTO } from "../../components/PlatformAccountAdapter";
 import type { TagFilterMode } from "../accountTagsContext";
 import type { PlatformSortKind } from "../../stores/platformListSort";
-import { offlineSafeImageSrc, withAssetCacheBust } from "../../stores/offlineMode";
+import { censorName } from "../../stores/streamerMode";
+import { accountAvatarSrc } from "../accountAvatarSrc";
 import { shouldBumpEpoch } from "./epochManager";
 import type { EpochCheckRow } from "./types";
 
@@ -173,6 +174,9 @@ export function buildAccountSearchRows<T>(
     offlineMode: boolean;
     profileFallback: string;
     accountBadge: string;
+    platformKey: string;
+    streamer: boolean;
+    avatarSalt: string;
   },
 ): SearchResultRow[] {
   const trimmed = params.query.trim();
@@ -193,20 +197,24 @@ export function buildAccountSearchRows<T>(
 
   return accounts.map((account) => {
     const id = params.rows.id(account);
+    const name = params.rows.name(account);
     return {
       key: `a:${id}`,
-      title: params.rows.name(account) || id,
+      // Falling back to the raw id would put the identifier straight back on screen
+      // in the one place the account list itself is hidden behind an overlay.
+      title: censorName(name, params.streamer) || (params.streamer ? "" : id),
       badge: params.accountBadge,
-      accountIconUrl: offlineSafeImageSrc(
-        params.offlineMode,
-        withAssetCacheBust(
-          params.rows.imageUrl(account) && !params.rows.imagePending(account)
-            ? params.rows.imageUrl(account)
-            : undefined,
-          params.avatarEpoch[id] ?? 0,
-        ),
-        params.profileFallback,
-      ),
+      accountIconUrl: accountAvatarSrc({
+        streamer: params.streamer,
+        salt: params.avatarSalt,
+        platformKey: params.platformKey,
+        accountKey: params.rows.accountLogin(account) || id,
+        imageUrl: params.rows.imageUrl(account),
+        pending: params.rows.imagePending(account),
+        epoch: params.avatarEpoch[id] ?? 0,
+        offline: params.offlineMode,
+        fallback: params.profileFallback,
+      }),
     };
   });
 }
