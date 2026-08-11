@@ -9,6 +9,7 @@
   import { onDestroy, onMount } from "svelte";
   import { t } from "../stores/i18n";
   import { route } from "../stores/nav";
+  import { pageFrameAlert } from "../stores/pageFrameAlert";
   import { pushToast } from "../stores/toast";
   import * as SteamBrowser from "../../bindings/TcNo-Acc-Switcher/internal/steambrowser/service.js";
   import type { ViewState, Certificate } from "../../bindings/TcNo-Acc-Switcher/internal/steambrowser/models.js";
@@ -36,6 +37,9 @@
   // Off the whitelist the whole window is framed, not just the bar, so it reads
   // at a glance even when the address is scrolled out of view.
   $: untrusted = !!state.url && !state.trusted;
+  // The frame is the application shell's, so the warning is raised rather than
+  // drawn: this component owns nothing that reaches the window's edges.
+  $: pageFrameAlert.set(untrusted);
 
   // Names the site's host and nothing more. The rest of an address can carry
   // tokens and identifiers, and a tooltip is the wrong place to put them: it
@@ -152,6 +156,7 @@
   onDestroy(() => {
     observer?.disconnect();
     offState?.();
+    pageFrameAlert.set(false);
   });
 </script>
 
@@ -251,13 +256,14 @@
     min-height: 0;
   }
 
-  // Off the whitelist the window gets a red frame.
+  // Backs the red frame the application shell draws, so the two meet with no
+  // seam.
   //
-  // It is painted as this element's background rather than as a border, because
-  // the content view covers everything here except the strip left clear for the
-  // window's resize edges. Only that strip shows through, so the frame ends up
-  // exactly as thick as the strip without CSS having to know how wide the
-  // system made it.
+  // The shell's border is a themed width in CSS pixels; the strip the content
+  // view leaves clear is the system's resize border, in physical ones. Neither
+  // knows the other, so whichever is narrower would leave a hairline of ordinary
+  // background between the red border and the page. Painting this element red
+  // fills it, whatever the two widths turn out to be.
   .sb--untrusted {
     background: var(--danger, #d9534f);
   }

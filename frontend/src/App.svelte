@@ -46,6 +46,7 @@
     loadCommandPaletteHotkey,
   } from "./stores/commandPalette";
   import { platformActionBusy } from "./stores/platformPage";
+  import { pageFrameAlert } from "./stores/pageFrameAlert";
   import {
     listInterruptedRestores,
     loadSecurityStatus,
@@ -468,7 +469,7 @@
   <a class="skip-link" href="#app-main">Skip to content</a>
   <TitleBar />
   <UpdateBar />
-  <div class="page">
+  <div class="page" class:page--alert={$pageFrameAlert}>
     {#key activeBg?.imageUrl}
       {#if activeBg}
         <img
@@ -560,6 +561,12 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
+  }
+  /* The frame the window already draws, turned into a warning. Raised by the
+     Steam Guard session browser when its page leaves the trusted list; see
+     pageFrameAlert for why the warning has to live out here. */
+  .page--alert {
+    border-color: var(--danger, #d9534f);
   }
   .bg-layer {
     position: absolute;
