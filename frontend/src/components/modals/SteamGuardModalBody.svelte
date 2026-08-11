@@ -60,6 +60,7 @@
 		fileExport: { box: "0 0 576 512", path: "M384 121.941V128H256V0h6.059c6.365 0 12.47 2.529 16.971 7.029l97.941 97.941A24.005 24.005 0 0 1 384 121.941zM248 160c-13.2 0-24-10.8-24-24V0H24C10.745 0 0 10.745 0 24v464c0 13.255 10.745 24 24 24h336c13.255 0 24-10.745 24-24V160H248zm189.75 42.938l-96 96c-15.121 15.12-40.971 4.393-40.971-16.971V240h-64v-64h64v-41.967c0-21.346 25.833-32.104 40.971-16.971l96 96c9.373 9.373 9.373 24.569 0 33.938z" },
 		image: { box: "0 0 512 512", path: "M464 448H48c-26.51 0-48-21.49-48-48V112c0-26.51 21.49-48 48-48h416c26.51 0 48 21.49 48 48v288c0 26.51-21.49 48-48 48zM112 120c-30.928 0-56 25.072-56 56s25.072 56 56 56 56-25.072 56-56-25.072-56-56-56zM64 384h384V272l-87.515-87.515c-4.686-4.686-12.284-4.686-16.971 0L208 320l-55.515-55.515c-4.686-4.686-12.284-4.686-16.971 0L64 336v48z" },
 		crop: { box: "0 0 512 512", path: "M488 352h-40V96c0-17.67-14.33-32-32-32H192v64h192v256h-32V128H160V0H96v64H24C10.745 64 0 74.745 0 88v48c0 13.255 10.745 24 24 24h72v264c0 13.255 10.745 24 24 24h232v64h64v-64h72c13.255 0 24-10.745 24-24v-48c0-13.255-10.745-24-24-24z" },
+		globe: { box: "0 0 496 512", path: "M336.5 160C322 70.7 287.8 8 248 8s-74 62.7-88.5 152h177zM152 256c0 22.2 1.2 43.5 3.3 64h185.3c2.1-20.5 3.3-41.8 3.3-64s-1.2-43.5-3.3-64H155.3c-2.1 20.5-3.3 41.8-3.3 64zm324.7-96c-28.6-67.9-86.5-120.4-158-141.6 24.4 33.8 41.2 84.7 50 141.6h108zM177.2 18.4C105.8 39.6 47.8 92.1 19.3 160h108c8.7-56.9 25.5-107.8 49.9-141.6zM487.4 192H372.7c2.1 21 3.3 42.5 3.3 64s-1.2 43-3.3 64h114.6c5.5-20.5 8.6-41.8 8.6-64s-3.1-43.5-8.5-64zM120 256c0-21.5 1.2-43 3.3-64H8.6C3.2 212.5 0 233.8 0 256s3.2 43.5 8.6 64h114.6c-2-21-3.2-42.5-3.2-64zm39.5 96c14.5 89.3 48.7 152 88.5 152s74-62.7 88.5-152h-177zm159.3 141.6c71.4-21.2 129.4-73.7 158-141.6h-108c-8.8 56.9-25.6 107.8-50 141.6zM19.3 352c28.6 67.9 86.5 120.4 158 141.6-24.4-33.8-41.2-84.7-50-141.6h-108z" },
 		list: { box: "0 0 512 512", path: "M48 48a48 48 0 1 0 0 96 48 48 0 1 0 0-96zm448 32H176c-8.8 0-16-7.2-16-16V48c0-8.8 7.2-16 16-16h320c8.8 0 16 7.2 16 16v16c0 8.8-7.2 16-16 16zM48 208a48 48 0 1 0 0 96 48 48 0 1 0 0-96zm448 32H176c-8.8 0-16-7.2-16-16v-16c0-8.8 7.2-16 16-16h320c8.8 0 16 7.2 16 16v16c0 8.8-7.2 16-16 16zM48 368a48 48 0 1 0 0 96 48 48 0 1 0 0-96zm448 32H176c-8.8 0-16-7.2-16-16v-16c0-8.8 7.2-16 16-16h320c8.8 0 16 7.2 16 16v16c0 8.8-7.2 16-16 16z" },
 		plus: { box: "0 0 448 512", path: "M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" },
 		back: { box: "0 0 448 512", path: "M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z" },
@@ -878,6 +879,34 @@
 			await controller.openConfirmations(currentAccount.id, capability);
     } catch (error) {
       reportFailure($t("SteamGuard_Error_ConfirmationsOpenFailed"), error);
+    }
+  }
+
+  // Opens a browser window signed in as the account this modal is showing. It
+  // works from both the authenticator and the session-only screen, which hold
+  // the same tokens; only the id differs by screen.
+  async function openBrowser(site: "store" | "community"): Promise<void> {
+    const open = controller.openSteamBrowser;
+    if (!open || busy) return;
+    const account =
+      state.screen === "account-code" ? state.view.account :
+      state.screen === "login-only" ? loginOnlyAccountSummary : null;
+    if (!account?.id) return;
+    busy = true;
+    try {
+      const capability = await ensureCapability(account);
+      const result = await open(account.id, site, capability);
+      // A session too old to renew is not an error to read and dismiss; the
+      // only thing to do about it is sign in, so go straight there.
+      if (result?.needsLogin) {
+        busy = false;
+        showLoginAgainState();
+        return;
+      }
+    } catch (error) {
+      reportFailure($t("SteamGuard_Error_BrowserOpenFailed"), error);
+    } finally {
+      busy = false;
     }
   }
 
@@ -2516,6 +2545,18 @@
 						{$t("SteamGuard_Code_ExportMaFile")}
 					</button>
 				</div>
+				{#if controller.openSteamBrowser}
+					<div class="steam-guard__browse" use:controllerSpatialNavigation>
+						<button type="button" class="btnicontext" disabled={busy} on:click={() => openBrowser("store")}>
+							<svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>
+							{$t("SteamGuard_Browse_Store")}
+						</button>
+						<button type="button" class="btnicontext" disabled={busy} on:click={() => openBrowser("community")}>
+							<svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>
+							{$t("SteamGuard_Browse_Community")}
+						</button>
+					</div>
+				{/if}
 			{/if}
       <div class="steam-guard__footer">
         <button
@@ -2573,6 +2614,20 @@
           {$t("SteamGuard_Title")}
         </button>
       </div>
+      <!-- A session-only record holds the same tokens an authenticator does, so
+           it browses identically. This is the one capability it does not lack. -->
+      {#if controller.openSteamBrowser}
+        <div class="steam-guard__browse" use:controllerSpatialNavigation>
+          <button type="button" class="btnicontext" disabled={busy} on:click={() => openBrowser("store")}>
+            <svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>
+            {$t("SteamGuard_Browse_Store")}
+          </button>
+          <button type="button" class="btnicontext" disabled={busy} on:click={() => openBrowser("community")}>
+            <svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>
+            {$t("SteamGuard_Browse_Community")}
+          </button>
+        </div>
+      {/if}
       <div class="steam-guard__footer">
         <button type="button" class="steam-guard__link" disabled={busy} on:click={showAllAccounts}>
           <svg class="steam-guard__icon" viewBox={ICONS.list.box} aria-hidden="true"><path d={ICONS.list.path} /></svg>
@@ -3494,6 +3549,25 @@
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: $sg-1;
+  }
+
+  // The browsing pair sits under the three-up grid. They are sized to their
+  // labels and centred rather than stretched across columns, which made two
+  // buttons in a three-column grid look oversized and off to one side.
+  .steam-guard__browse {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: $sg-1;
+  }
+
+  .steam-guard__browse :global(button) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: $sg-half;
+    min-height: 2.75rem;
+    padding-inline: $sg-2;
   }
 
   .steam-guard__grid :global(button) {

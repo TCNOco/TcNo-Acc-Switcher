@@ -217,6 +217,26 @@ func ForceGameStatsRefresh(platformKey string) {
 	queuePlatformGameStatsRefresh(platformKey, "", true)
 }
 
+// RefreshAllGameStats is ForceGameStatsRefresh for the account page, which asks
+// for it when the user presses F5.
+//
+// It marks the platform active on the way through, the way StartGameStatsRefresh
+// does, so the process monitor keeps working on it afterwards - a refresh the
+// user asked for is also the clearest statement of which platform they are
+// looking at.
+func (b *BasicService) RefreshAllGameStats(platformKey string) error {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
+	platformKey = strings.TrimSpace(platformKey)
+	if platformKey == "" {
+		return nil
+	}
+	b.setGameStatsActivePlatform(platformKey)
+	ForceGameStatsRefresh(platformKey)
+	return nil
+}
+
 func queuePlatformGameStatsRefresh(platformKey, liveAccountID string, force bool) {
 	go func() {
 		defer crashlog.Capture()

@@ -15,6 +15,8 @@ vi.mock("./menuCommands", () => ({
 
 const labels: Record<string, string> = {
   Context_SteamGuard: "Steam Guard",
+  Context_Steam_OpenStore: "Steam Store",
+  Context_Steam_OpenCommunity: "Steam Community",
 };
 
 const tr = (key: string) => labels[key] ?? key;
@@ -45,7 +47,7 @@ describe("Steam Guard context menu", () => {
   // up front is gone, and the setup page offers them instead.
   it("sends an account the vault does not hold to the setup page", () => {
     const open = vi.fn<(request: SteamGuardMenuRequest) => void>();
-    const item = buildSteamGuardMenuItem(account(), open, tr);
+    const item = buildSteamGuardMenuItem(account(), { openSteamGuard: open, vaultUnlocked: false }, tr);
 
     expect(item.label).toBe("Steam Guard");
     expect(item.children).toBeUndefined();
@@ -68,7 +70,7 @@ describe("Steam Guard context menu", () => {
     ["a login-only record", { steamGuardLoginOnly: true }],
   ] as const)("opens %s directly", (_label, overrides) => {
     const open = vi.fn<(request: SteamGuardMenuRequest) => void>();
-    const item = buildSteamGuardMenuItem(account(overrides), open, tr);
+    const item = buildSteamGuardMenuItem(account(overrides), { openSteamGuard: open, vaultUnlocked: false }, tr);
 
     expect(item.label).toBe("Steam Guard");
     item.action?.();
@@ -78,13 +80,66 @@ describe("Steam Guard context menu", () => {
     }));
   });
 
+  // The browsing entries hang off the same row rather than replacing its click,
+  // so the usual Steam Guard flow still opens on it.
+  it("offers Store and Community without taking over the row's own action", () => {
+    const open = vi.fn<(request: SteamGuardMenuRequest) => void>();
+    const openBrowser = vi.fn<(account: SteamAccountRow, site: "store" | "community") => void>();
+    const item = buildSteamGuardMenuItem(
+      account({ hasSteamGuard: true }),
+      { openSteamGuard: open, openBrowser, vaultUnlocked: true },
+      tr,
+    );
+
+    expect(item.children?.map((c) => c.label)).toEqual(["Steam Store", "Steam Community"]);
+    item.action?.();
+    expect(open).toHaveBeenCalledWith(expect.objectContaining({ action: "open" }));
+
+    item.children?.[0].action?.();
+    expect(openBrowser).toHaveBeenCalledWith(
+      expect.objectContaining({ steamId64: "76561198000000001" }), "store");
+    item.children?.[1].action?.();
+    expect(openBrowser).toHaveBeenCalledWith(
+      expect.objectContaining({ steamId64: "76561198000000001" }), "community");
+  });
+
+  // A session-only record holds the same tokens an authenticator does, so it
+  // browses identically.
+  it("offers browsing for a login-only record", () => {
+    const item = buildSteamGuardMenuItem(
+      account({ steamGuardLoginOnly: true }),
+      { openSteamGuard: vi.fn(), openBrowser: vi.fn(), vaultUnlocked: true },
+      tr,
+    );
+    expect(item.children).toHaveLength(2);
+  });
+
+  // Minting a session needs the vault open, and an account it does not hold has
+  // no session at all, so neither can offer browsing.
+  it.each([
+    ["the vault is locked", { hasSteamGuard: true }, { vaultUnlocked: false, withBrowser: true }],
+    ["the account is not held", {}, { vaultUnlocked: true, withBrowser: true }],
+    ["the build cannot browse", { hasSteamGuard: true }, { vaultUnlocked: true, withBrowser: false }],
+  ] as const)("hides browsing when %s", (_label, overrides, opts) => {
+    const item = buildSteamGuardMenuItem(
+      account(overrides),
+      {
+        openSteamGuard: vi.fn(),
+        openBrowser: opts.withBrowser ? vi.fn() : undefined,
+        vaultUnlocked: opts.vaultUnlocked,
+      },
+      tr,
+    );
+    expect(item.children).toBeUndefined();
+  });
+
   // The unlock screen runs while the vault is locked, so it cannot look the avatar
   // up itself: the already-loaded row has to carry it.
   it("carries the row's avatar so the locked unlock screen shows no placeholder", () => {
     const open = vi.fn<(request: SteamGuardMenuRequest) => void>();
     buildSteamGuardMenuItem(
       account({ hasSteamGuard: true, imageUrl: " /img/a.jpg ", staticImageUrl: " /img/a_static.jpg " }),
-      open,
+      { openSteamGuard: open, vaultUnlocked: false },
       tr,
     ).action?.();
 

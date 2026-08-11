@@ -79,7 +79,8 @@ type ownedGamesSweepState struct {
 	lastSweep time.Time
 	cancel    context.CancelFunc
 	// wake is buffered so signalOwnedGamesSweep can be called with s.mu held.
-	wake chan struct{}
+	wake  chan struct{}
+	retry sweepRetry
 }
 
 func (s *Service) startOwnedGamesSweeper(ctx context.Context) {
@@ -194,6 +195,9 @@ func (s *Service) sweepOwnedGames(ctx context.Context) {
 	}()
 
 	if ctx.Err() != nil || security.AppLocked() || appclient.IsOfflineMode() {
+		// Nothing a retry would fix, so a pending one is dropped rather than
+		// left to wake a sweep that will bail here again.
+		s.ownedGamesSweep.retry.cancel()
 		log.Debug("sweep skipped: app locked, offline, or cancelled")
 		return
 	}
@@ -240,6 +244,10 @@ func (s *Service) sweepOwnedGames(ctx context.Context) {
 
 	log.Info("owned games sweep started", "accounts", len(targets))
 	checked := 0
+	// As in the cooldown sweep: one unreachable account means the network is
+	// down for all of them, and a day-long cadence is far too long to wait it
+	// out.
+	unreachable := false
 	for _, target := range targets {
 		if ctx.Err() != nil {
 			return
@@ -266,10 +274,16 @@ func (s *Service) sweepOwnedGames(ctx context.Context) {
 			case <-time.After(ownedGamesStagger):
 			}
 		}
-		s.fetchAndStoreOwnedGames(ctx, target, now)
+		if retryableSweepFailure(s.fetchAndStoreOwnedGames(ctx, target, now)) {
+			unreachable = true
+		}
 		checked++
 	}
 	log.Info("owned games sweep finished", "checked", checked)
+	if delay, failures := s.ownedGamesSweep.retry.note(unreachable, s.signalOwnedGamesSweep); delay > 0 {
+		log.Info("owned games sweep could not reach Steam; retrying",
+			"consecutiveFailures", failures, "in", delay)
+	}
 }
 
 // ownedGamesDue reports whether an account is outside its per-account floor.
@@ -319,7 +333,9 @@ func (s *Service) refreshLapsedOwnedGamesSessions(ctx context.Context, lapsed []
 		"requested", len(lapsed), "refreshed", len(results))
 }
 
-func (s *Service) fetchAndStoreOwnedGames(ctx context.Context, target ownedGamesTarget, now time.Time) {
+// fetchAndStoreOwnedGames reads one account's library. The returned error is for
+// the sweep's retry decision only - every outcome is already logged here.
+func (s *Service) fetchAndStoreOwnedGames(ctx context.Context, target ownedGamesTarget, now time.Time) error {
 	log := ownedGamesLogger()
 	requestCtx, cancel := context.WithTimeout(ctx, ownedGamesRequestTimeout)
 	appIDs, err := s.confirmationClient.FetchOwnedApps(requestCtx, confirmationapi.Credentials{
@@ -335,16 +351,17 @@ func (s *Service) fetchAndStoreOwnedGames(ctx context.Context, target ownedGames
 			// account that owns nothing. Storing either would leave the account
 			// permanently blank in the games view.
 			log.Debug("owned games request was refused", "steamId64", target.steamID64)
-			return
+			return err
 		}
 		log.Debug("owned games fetch failed", "steamId64", target.steamID64, "error", err)
-		return
+		return err
 	}
 	if err := ownedgames.Put(target.steamID64, appIDs, now); err != nil {
 		log.Warn("owned games could not be stored", "steamId64", target.steamID64, "error", err)
-		return
+		return err
 	}
 	s.emitOwnedGamesUpdate(target.steamID64, len(appIDs))
+	return nil
 }
 
 // collectOwnedGamesTargets lifts every account's credentials out of the vault in

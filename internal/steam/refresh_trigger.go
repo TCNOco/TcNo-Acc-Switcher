@@ -5,6 +5,9 @@ import "sync"
 var (
 	refreshTriggerMu sync.Mutex
 	refreshTrigger   func()
+
+	guardSweepMu      sync.Mutex
+	guardSweepTrigger func(force bool)
 )
 
 // RegisterProfileRefreshTrigger points RequestProfileRefresh at the app's
@@ -26,5 +29,31 @@ func RequestProfileRefresh() {
 	refreshTriggerMu.Unlock()
 	if fn != nil {
 		fn()
+	}
+}
+
+// RegisterSteamGuardSweepTrigger points RequestSteamGuardSweep at the Steam
+// Guard service's authenticated sweeps. Left unregistered - in tests, or with
+// the feature switched off - the request is a no-op.
+func RegisterSteamGuardSweepTrigger(fn func(force bool)) {
+	guardSweepMu.Lock()
+	defer guardSweepMu.Unlock()
+	guardSweepTrigger = fn
+}
+
+// RequestSteamGuardSweep asks for the CS2 cooldown, rank and Prime sweep and the
+// owned games sweep to run now.
+//
+// This is the only way to reach the figures that need a signed-in session.
+// Nothing the Steam service itself can do produces a CS2 rank: it comes from an
+// authenticated GCPD read, so a refresh that does not come through here leaves
+// the rank at whatever the last sweep managed - which, if that sweep ran while
+// the network was down, is nothing at all.
+func RequestSteamGuardSweep(force bool) {
+	guardSweepMu.Lock()
+	fn := guardSweepTrigger
+	guardSweepMu.Unlock()
+	if fn != nil {
+		fn(force)
 	}
 }

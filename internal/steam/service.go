@@ -405,6 +405,21 @@ func (s *SteamService) RefreshVACStatus() error {
 	return nil
 }
 
+// RefreshSteamGuardData asks the authenticated sweeps to re-read every vault
+// account now: CS2 cooldown, rank and Prime, and the owned games library.
+//
+// Separate from RefreshAllSteamImages because nothing in this package can
+// produce those figures - they need a signed-in session, which only the Steam
+// Guard service holds. With the feature off there is simply nothing to sweep,
+// so that is success, not an error to put in front of the user.
+func (s *SteamService) RefreshSteamGuardData() error {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
+	RequestSteamGuardSweep(true)
+	return nil
+}
+
 func (s *SteamService) RefreshAllSteamImages() error {
 	s.mu.Lock()
 	defer s.mu.Unlock()

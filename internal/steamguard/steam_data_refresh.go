@@ -34,13 +34,24 @@ type steamDataRefreshState struct {
 // download that the unlock a minute ago already did. It never blocks, because
 // the unlock path calls it with s.mu held.
 func (s *Service) signalSteamDataRefresh(force bool) {
-	s.signalCooldownSweep(force)
-	s.signalOwnedGamesSweep()
+	s.signalSteamGuardSweeps(force)
 	if !s.steamDataRefreshDue() {
 		return
 	}
 	basic.ForceGameStatsRefresh(steam.PlatformKey)
 	steam.RequestProfileRefresh()
+}
+
+// signalSteamGuardSweeps wakes only the two sweeps that need a signed-in
+// session, without the bulk stats and profile download around them.
+//
+// This is what the account page's refresh reaches: it already re-fetches images,
+// names and game stats itself, but a CS2 rank is not something it can ask for -
+// the number comes from an authenticated GCPD read, and this is the only way to
+// start one.
+func (s *Service) signalSteamGuardSweeps(force bool) {
+	s.signalCooldownSweep(force)
+	s.signalOwnedGamesSweep()
 }
 
 func (s *Service) steamDataRefreshDue() bool {

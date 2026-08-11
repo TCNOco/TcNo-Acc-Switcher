@@ -42,7 +42,8 @@
   import { buildFilterMenuItems } from "../lib/filterMenu";
   import { tooltip as tooltipAction } from "../lib/actions/tooltip";
   import { resolveGameStatTooltip } from "../lib/accounts/gameStatTooltip";
-  import type { MenuItemDef } from "../stores/contextMenu";
+  import { contextMenu as contextMenuState, type MenuItemDef } from "../stores/contextMenu";
+  import { securityStatus } from "../stores/security";
   import { offlineMode, offlineSafeImageSrc, withAssetCacheBust } from "../stores/offlineMode";
   import { formatLastLoginForLocale } from "../lib/formatLastLogin";
   import {
@@ -298,6 +299,18 @@
   }
 
   function onWindowKeyDown(e: KeyboardEvent): void {
+    if (e.key === "F5") {
+      // Nothing else claims F5: Wails turns WebView2's own accelerator keys off,
+      // and App.svelte's global handler ignores any key whose name is longer
+      // than one character. So the accounts page is free to mean "fetch it all
+      // again" by it, which is what everyone presses F5 expecting.
+      if (get(securityStatus).appLocked) return;
+      if (get(activeModal) || get(contextMenuState) || get(searchOverlayCtrl).open) return;
+      if (imagePick.open) return;
+      e.preventDefault();
+      void refreshAccounts();
+      return;
+    }
     if (e.key !== "Escape") return;
     if (get(activeModal)) return;
     if (imagePick.open) { e.preventDefault(); closeImagePick(); return; }
@@ -657,16 +670,36 @@
     }
   }
 
+  let refreshingEverything = false;
+
+  /**
+   * Everything the page shows that came from somewhere else: avatars, names,
+   * ban state, and every enabled game's stats. This is what F5 means here.
+   *
+   * The platform's own half goes through the adapter - Steam drops its cached
+   * profile XML, miniprofile HTML and automated avatars so the next fetch has to
+   * ask Steam again. Game stats are refreshed for every platform, ignoring the
+   * per-game cache lifetime, because "I pressed refresh and the number did not
+   * move" is the whole reason someone presses it.
+   */
   async function refreshAccounts(): Promise<void> {
+    if (refreshingEverything) return;
+    refreshingEverything = true;
     try {
       if (adapter.refreshAccounts) {
         await adapter.refreshAccounts();
-        requestPlatformAccountsRefresh(name);
-        for (const id of accountIds) bumpAvatarEpoch(id);
+      } else {
+        await BasicService.RefreshAllBasicProfileImages(name);
       }
+      await BasicService.RefreshAllGameStats(name);
+      requestPlatformAccountsRefresh(name);
+      for (const id of accountIds) bumpAvatarEpoch(id);
       await loadAccounts();
+      pushToast({ type: "success", message: $t("Toast_RefreshingAccounts"), duration: 5000 });
     } catch (e) {
-      pushToast({ type: "error", message: formatToastWithError($t("Toast_SaveFailed"), e), duration: 8000 });
+      pushToast({ type: "error", message: formatToastWithError($t("Toast_RefreshAccountsFailed"), e), duration: 8000 });
+    } finally {
+      refreshingEverything = false;
     }
   }
 

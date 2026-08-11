@@ -107,38 +107,55 @@ func (i *ICoreWebView2_2) GetCanGoForward() (bool, error) {
 	return boolProperty(i.vtbl.GetCanGoForward, unsafe.Pointer(i))
 }
 
-func (i *ICoreWebView2_2) AddSourceChanged(handler *ICoreWebView2SourceChangedEventHandler, token *_EventRegistrationToken) error {
-	return addEventHandler(i.vtbl.AddSourceChanged, unsafe.Pointer(i), unsafe.Pointer(handler), token)
+func (i *ICoreWebView2_2) AddSourceChanged(handler *ICoreWebView2SourceChangedEventHandler) error {
+	return addEventHandler(i.vtbl.AddSourceChanged, unsafe.Pointer(i), unsafe.Pointer(handler))
 }
 
-func (i *ICoreWebView2_2) AddHistoryChanged(handler *ICoreWebView2HistoryChangedEventHandler, token *_EventRegistrationToken) error {
-	return addEventHandler(i.vtbl.AddHistoryChanged, unsafe.Pointer(i), unsafe.Pointer(handler), token)
+func (i *ICoreWebView2_2) AddHistoryChanged(handler *ICoreWebView2HistoryChangedEventHandler) error {
+	return addEventHandler(i.vtbl.AddHistoryChanged, unsafe.Pointer(i), unsafe.Pointer(handler))
 }
 
-func (i *ICoreWebView2_2) AddDocumentTitleChanged(handler *ICoreWebView2DocumentTitleChangedEventHandler, token *_EventRegistrationToken) error {
-	return addEventHandler(i.vtbl.AddDocumentTitleChanged, unsafe.Pointer(i), unsafe.Pointer(handler), token)
+func (i *ICoreWebView2_2) AddDocumentTitleChanged(handler *ICoreWebView2DocumentTitleChangedEventHandler) error {
+	return addEventHandler(i.vtbl.AddDocumentTitleChanged, unsafe.Pointer(i), unsafe.Pointer(handler))
 }
 
-func (i *ICoreWebView2_2) AddNewWindowRequested(handler *ICoreWebView2NewWindowRequestedEventHandler, token *_EventRegistrationToken) error {
-	return addEventHandler(i.vtbl.AddNewWindowRequested, unsafe.Pointer(i), unsafe.Pointer(handler), token)
+func (i *ICoreWebView2_2) AddNewWindowRequested(handler *ICoreWebView2NewWindowRequestedEventHandler) error {
+	return addEventHandler(i.vtbl.AddNewWindowRequested, unsafe.Pointer(i), unsafe.Pointer(handler))
 }
 
-func (i *ICoreWebView2_2) AddNavigationStarting(handler *ICoreWebView2NavigationStartingEventHandler, token *_EventRegistrationToken) error {
-	return addEventHandler(i.vtbl.AddNavigationStarting, unsafe.Pointer(i), unsafe.Pointer(handler), token)
+func (i *ICoreWebView2_2) AddNavigationStarting(handler *ICoreWebView2NavigationStartingEventHandler) error {
+	return addEventHandler(i.vtbl.AddNavigationStarting, unsafe.Pointer(i), unsafe.Pointer(handler))
 }
 
-func (i *ICoreWebView2_2) AddNavigationCompleted(handler *ICoreWebView2NavigationCompletedEventHandler, token *_EventRegistrationToken) error {
-	return addEventHandler(i.vtbl.AddNavigationCompleted, unsafe.Pointer(i), unsafe.Pointer(handler), token)
+func (i *ICoreWebView2_2) AddNavigationCompleted(handler *ICoreWebView2NavigationCompletedEventHandler) error {
+	return addEventHandler(i.vtbl.AddNavigationCompleted, unsafe.Pointer(i), unsafe.Pointer(handler))
 }
 
-func addEventHandler(proc ComProc, this, handler unsafe.Pointer, token *_EventRegistrationToken) error {
+// addEventHandler subscribes handler and discards the registration token. These
+// subscriptions last as long as the view, which is torn down wholesale, so there
+// is nothing a caller would unsubscribe individually.
+func addEventHandler(proc ComProc, this, handler unsafe.Pointer) error {
+	var token _EventRegistrationToken
 	hr, _, _ := proc.Call(
 		uintptr(this),
 		uintptr(handler),
-		uintptr(unsafe.Pointer(token)),
+		uintptr(unsafe.Pointer(&token)),
 	)
 	if hr != 0 {
 		return windows.Errno(hr)
 	}
 	return nil
+}
+
+// GetSettings returns the view's settings object.
+func (i *ICoreWebView2_2) GetSettings() (*ICoreWebView2Settings, error) {
+	var settings *ICoreWebView2Settings
+	hr, _, _ := i.vtbl.GetSettings.Call(
+		uintptr(unsafe.Pointer(i)),
+		uintptr(unsafe.Pointer(&settings)),
+	)
+	if hr != 0 {
+		return nil, windows.Errno(hr)
+	}
+	return settings, nil
 }

@@ -43,6 +43,12 @@
     publishSteamGuardActionAccounts,
   } from "../stores/steamGuardAction";
   import { resetSteamPageTab, steamPageTab } from "../stores/steamPageTab";
+  import { activeModal } from "../stores/modal";
+  import {
+    openSteamBrowserNow,
+    steamBrowserAvailable,
+    type SteamBrowserSite,
+  } from "../lib/steam/steamBrowserOpen";
   import "../styles/miniprofile.scss";
   import "../styles/platformAccountsShared.scss";
 
@@ -118,6 +124,7 @@
       steamIds,
       refreshGameDataAppSets,
       openSteamGuard: emitSteamGuardMenuRequest,
+      openSteamBrowser: steamBrowserSupported ? openSteamBrowserFromMenu : undefined,
       steamGuardVaultUnlocked: steamGuardVaultUnlockedNow(),
     };
   }
@@ -220,7 +227,16 @@
     launch: () => SteamService.LaunchSteam(),
     closePlatform: () => SteamService.CloseSteam(),
     refreshOnWindowFocus: true,
-    refreshAccounts: () => SteamService.RefreshAllSteamImages(),
+    // Two calls, because Steam answers to two different clients here.
+    // RefreshAllSteamImages drops the cached profile XML, miniprofile HTML and
+    // avatars, which is everything the public community pages can tell us.
+    // The CS2 rank, cooldown and Prime state are not on those pages at all -
+    // they come from an authenticated GCPD read that only the Steam Guard sweep
+    // can make, so without the second call a refresh can never move them.
+    refreshAccounts: async () => {
+      await SteamService.RefreshAllSteamImages();
+      await SteamService.RefreshSteamGuardData();
+    },
     refreshAllProfileImages: () => SteamService.RefreshAllSteamImages(),
 
     buildMenu: (_acc, shared) => buildSteamExtraMenuAdapter(_acc as SteamAccountRow, shared),
@@ -322,7 +338,54 @@
     },
   } satisfies PlatformAccountAdapter<SteamAccountRow>;
 
+  // Hidden rather than shown-and-failing on a build with no session browser.
+  let steamBrowserSupported = false;
+
+  // The vault-unlocked flag the context menu reads is a cache: a menu is built
+  // synchronously, so it can only report what was known last time. It is
+  // refreshed while building one, which means the refresh lands for the next
+  // menu - and the first right-click after unlocking the vault was missing
+  // everything that flag gates.
+  //
+  // Unlocking happens in the Steam Guard window, so the cache is refreshed as
+  // that window closes, which is before the user can reach a menu again.
+  let steamGuardWasOpen = false;
+  $: {
+    const steamGuardOpen = $activeModal?.kind === "steamGuard";
+    if (steamGuardWasOpen && !steamGuardOpen) void refreshSteamGuardVaultUnlocked();
+    steamGuardWasOpen = steamGuardOpen;
+  }
+
+  function openSteamBrowserFromMenu(account: SteamAccountRow, site: SteamBrowserSite): void {
+    void openSteamBrowserNow(account.steamId64, site)
+      .then((result) => {
+        // A session too old to renew is not an error to read and dismiss. Open
+        // the Steam Guard window on the sign-in screen, which is the only thing
+        // that can be done about it.
+        if (!result.needsLogin) return;
+        emitSteamGuardMenuRequest({
+          action: "login-again",
+          steamId64: account.steamId64,
+          accountName: (account.accountName ?? "").trim(),
+          displayName:
+            account.displayName?.trim() || account.personaName?.trim() || account.steamId64,
+          pending: account.steamGuardPending === true,
+          imageUrl: account.imageUrl?.trim() || undefined,
+          staticImageUrl: account.staticImageUrl?.trim() || undefined,
+        });
+      })
+      .catch((error) => {
+        pushToast({
+          type: "error",
+          message: formatToastWithError($t("SteamGuard_Error_BrowserOpenFailed"), error),
+          duration: 8000,
+        });
+      });
+  }
+
   onMount(() => {
+    void steamBrowserAvailable().then((ok) => (steamBrowserSupported = ok));
+
     void (async () => {
       try {
         const rows = await SteamService.GetInstalledGames();

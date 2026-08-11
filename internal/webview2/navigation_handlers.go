@@ -240,3 +240,61 @@ var _newWindowFn = _ICoreWebView2NewWindowRequestedEventHandlerVtbl{
 func NewICoreWebView2NewWindowRequestedEventHandler(impl _ICoreWebView2NewWindowRequestedEventHandlerImpl) *ICoreWebView2NewWindowRequestedEventHandler {
 	return &ICoreWebView2NewWindowRequestedEventHandler{vtbl: &_newWindowFn, impl: impl}
 }
+
+// --- NavigationStarting args ---
+//
+// The binding passes these as a bare IUnknown, so the interface is declared here
+// to reach Uri and Cancel. Slot order is from the IDL, where the type derives
+// straight from IUnknown.
+
+type iCoreWebView2NavigationStartingEventArgsVtbl struct {
+	_IUnknownVtbl
+	GetUri             ComProc
+	GetIsUserInitiated ComProc
+	GetIsRedirected    ComProc
+	GetRequestHeaders  ComProc
+	GetCancel          ComProc
+	PutCancel          ComProc
+	GetNavigationId    ComProc
+}
+
+// ICoreWebView2NavigationStartingEventArgs describes a navigation about to
+// begin, and can refuse it.
+type ICoreWebView2NavigationStartingEventArgs struct {
+	vtbl *iCoreWebView2NavigationStartingEventArgsVtbl
+}
+
+// NavigationStartingArgs reinterprets the IUnknown a NavigationStarting handler
+// receives. The runtime always passes this interface; the binding simply does
+// not name it.
+func NavigationStartingArgs(args *IUnknown) *ICoreWebView2NavigationStartingEventArgs {
+	if args == nil {
+		return nil
+	}
+	return (*ICoreWebView2NavigationStartingEventArgs)(unsafe.Pointer(args))
+}
+
+func (i *ICoreWebView2NavigationStartingEventArgs) GetUri() (string, error) {
+	var uri *uint16
+	hr, _, _ := i.vtbl.GetUri.Call(
+		uintptr(unsafe.Pointer(i)),
+		uintptr(unsafe.Pointer(&uri)),
+	)
+	if hr != 0 {
+		return "", windows.Errno(hr)
+	}
+	return windows.UTF16PtrToString(uri), nil
+}
+
+// PutCancel refuses the navigation. The page stays where it is.
+func (i *ICoreWebView2NavigationStartingEventArgs) PutCancel(cancel bool) error {
+	var value int32
+	if cancel {
+		value = 1
+	}
+	hr, _, _ := i.vtbl.PutCancel.Call(uintptr(unsafe.Pointer(i)), uintptr(value))
+	if hr != 0 {
+		return windows.Errno(hr)
+	}
+	return nil
+}

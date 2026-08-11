@@ -151,3 +151,27 @@ func WebViewCacheDir() (string, error) {
 	})
 	return webviewCacheDir, webviewCacheDirErr
 }
+
+var (
+	steamBrowserDirOnce sync.Once
+	steamBrowserDir     string
+	steamBrowserDirErr  error
+)
+
+// SteamBrowserDir returns {DataRoot}/SteamBrowser/, the WebView2 user data folder
+// the Steam Guard session windows use. Each account gets its own profile beneath
+// it, which is what keeps two accounts' sessions apart.
+//
+// It is kept separate from WebViewCacheDir so the application's own profile and
+// the accounts' browsing data can be reasoned about, and cleared, independently.
+func SteamBrowserDir() (string, error) {
+	steamBrowserDirOnce.Do(func() {
+		r, err := DataRoot()
+		if err != nil {
+			steamBrowserDirErr = err
+			return
+		}
+		steamBrowserDir = filepath.Join(r, "SteamBrowser")
+	})
+	return steamBrowserDir, steamBrowserDirErr
+}
