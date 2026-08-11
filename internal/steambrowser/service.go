@@ -157,7 +157,11 @@ func (s *Service) openOnMainThread(id string, credentials WebSession, site Site,
 		window.Close()
 		return errors.New("steambrowser: host window has no native handle")
 	}
-	logger().Debug("host window created", "window", id, "hwnd", nativeWindow, "destination", destination)
+	// Host only, never a whole address: everywhere else in this package logs the
+	// same way, because an address can carry tokens and identifiers in its path
+	// and query, and a log outlives the window.
+	logger().Debug("host window created",
+		"window", id, "hwnd", nativeWindow, "host", Classify(PlatformSteam, destination).Host)
 
 	view, err := newView(ViewOptions{
 		NativeWindow: nativeWindow,

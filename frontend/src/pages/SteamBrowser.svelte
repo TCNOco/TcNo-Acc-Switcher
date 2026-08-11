@@ -33,9 +33,18 @@
   let dragging = false;
 
   $: displayed = draft ?? state.url;
-  // Off the whitelist the whole window is outlined, not just the bar, so it
-  // reads at a glance even when the address is scrolled out of view.
+  // Off the whitelist the whole window is framed, not just the bar, so it reads
+  // at a glance even when the address is scrolled out of view.
   $: untrusted = !!state.url && !state.trusted;
+
+  // Names the site's host and nothing more. The rest of an address can carry
+  // tokens and identifiers, and a tooltip is the wrong place to put them: it
+  // outlives a glance, follows the pointer around, and lands in screenshots.
+  $: addressHint = !state.url
+    ? ""
+    : state.trusted
+      ? $t("SteamBrowser_Trusted_Hint", { host: state.host })
+      : $t("SteamBrowser_Untrusted_Hint", { host: state.host });
 
   function report(next: ViewState): void {
     state = next;
@@ -176,7 +185,12 @@
         {/if}
       </div>
 
-      <div class="sb__address" class:sb__address--trusted={state.trusted}>
+      <div
+      class="sb__address"
+      class:sb__address--trusted={state.trusted}
+      class:sb__address--untrusted={untrusted}
+      title={addressHint}
+    >
         <button
           type="button"
           class="sb__lock"
@@ -221,18 +235,23 @@
   .sb {
     display: flex;
     flex-direction: column;
+    // Fills the page area rather than wrapping the toolbar. The area below the
+    // toolbar is never drawn - the content view covers it - but the element has
+    // to reach the window's edges for the untrusted frame to show in the strip
+    // left clear around it.
+    flex: 1 1 auto;
     min-height: 0;
   }
 
-  // An untrusted page outlines the whole window, not just the address. The
-  // outline is inset by a pixel so it does not sit on the resize edge.
-  .sb--untrusted::after {
-    content: "";
-    position: fixed;
-    inset: 1px;
-    border: 2px solid var(--danger, #d9534f);
-    pointer-events: none;
-    z-index: 5;
+  // Off the whitelist the window gets a red frame.
+  //
+  // It is painted as this element's background rather than as a border, because
+  // the content view covers everything here except the strip left clear for the
+  // window's resize edges. Only that strip shows through, so the frame ends up
+  // exactly as thick as the strip without CSS having to know how wide the
+  // system made it.
+  .sb--untrusted {
+    background: var(--danger, #d9534f);
   }
 
   // Anchors the certificate popover to the toolbar's bottom edge.
@@ -277,6 +296,10 @@
   .sb__address--trusted {
     border-color: var(--success, #3fa45b);
     background: color-mix(in srgb, var(--success, #3fa45b) 12%, var(--input-bg, #101a28));
+  }
+
+  .sb__address--untrusted {
+    border-color: var(--danger, #d9534f);
   }
 
   .sb__lock {
