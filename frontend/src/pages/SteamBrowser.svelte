@@ -26,7 +26,7 @@
   /** The address the user is editing, or null when the bar mirrors the page. */
   let draft: string | null = null;
   let addressInput: HTMLInputElement | undefined;
-  let toolbar: HTMLElement | undefined;
+  let chrome: HTMLElement | undefined;
   let certificate: Certificate | null = null;
   let certificateError = "";
   let showCertificate = false;
@@ -47,11 +47,17 @@
       : $t("SteamBrowser_Untrusted_Hint", { host: state.host });
 
   function report(next: ViewState): void {
+    const moved = next.url !== state.url;
     state = next;
     // A navigation the user did not type discards their half-typed address.
     if (document.activeElement !== addressInput) draft = null;
-    showCertificate = false;
-    certificate = null;
+    // Only a new page invalidates the certificate on show. State also arrives
+    // when a page changes its own title, and closing the panel under the user
+    // for that would look like the lock icon refusing to stay open.
+    if (moved) {
+      showCertificate = false;
+      certificate = null;
+    }
   }
 
   async function run(action: () => Promise<unknown>, failureKey: string): Promise<void> {
@@ -114,16 +120,17 @@
   }
 
   /**
-   * Tell the host where the page should start: the toolbar's bottom edge,
+   * Tell the host where the page should start: the chrome's bottom edge,
    * measured from the top of the window.
    *
-   * Its own height would not be enough, because the application's title bar
-   * sits above it. Measuring rather than assuming also survives the theme or
-   * font size moving the toolbar.
+   * The toolbar's own height would not be enough, because the application's
+   * title bar sits above it. Measuring rather than assuming also survives the
+   * theme or font size moving the toolbar, and covers the certificate panel,
+   * which adds to the chrome while it is open.
    */
   function reportHeight(): void {
-    if (!toolbar) return;
-    const bottom = Math.ceil(toolbar.getBoundingClientRect().bottom);
+    if (!chrome) return;
+    const bottom = Math.ceil(chrome.getBoundingClientRect().bottom);
     if (bottom > 0) void SteamBrowser.SetChromeHeight(sessionId, bottom).catch(() => {});
   }
 
@@ -133,7 +140,7 @@
   onMount(() => {
     reportHeight();
     observer = new ResizeObserver(reportHeight);
-    if (toolbar) observer.observe(toolbar);
+    if (chrome) observer.observe(chrome);
 
     offState = Events.On("steambrowser:state", (event: { data: ViewState }) => {
       if (event?.data) report(event.data);
@@ -149,15 +156,15 @@
 </script>
 
 <div class="sb" class:sb--untrusted={untrusted}>
-  <!-- Header and popover share a wrapper so the popover hangs off the toolbar's
-       bottom edge rather than the full height of the page area. -->
-  <div class="sb__chrome">
+  <!-- Toolbar and certificate panel share a wrapper, and the wrapper is what is
+       measured. Everything below it belongs to the page, so anything drawn
+       there would be behind the content view and invisible. -->
+  <div class="sb__chrome" bind:this={chrome}>
     <header
       class="sb__bar"
       role="toolbar"
       tabindex="-1"
       aria-label={$t("SteamBrowser_Address")}
-      bind:this={toolbar}
       class:sb__bar--dropping={dragging}
       on:dragover|preventDefault={() => (dragging = true)}
       on:dragleave={() => (dragging = false)}
@@ -196,6 +203,7 @@
           class="sb__lock"
           class:sb__lock--secure={state.secure}
           disabled={!state.secure}
+          aria-expanded={showCertificate}
           on:click={toggleCertificate}
           title={state.secure ? $t("SteamBrowser_Cert_View") : $t("SteamBrowser_NotSecure")}
           aria-label={state.secure ? $t("SteamBrowser_Cert_View") : $t("SteamBrowser_NotSecure")}
@@ -254,9 +262,12 @@
     background: var(--danger, #d9534f);
   }
 
-  // Anchors the certificate popover to the toolbar's bottom edge.
+  // Everything the window draws for itself. Its bottom edge is where the
+  // content view starts, so the certificate panel has to live inside it and in
+  // normal flow: an overlay hanging below the toolbar would be covered by the
+  // content view, which is a native window in front of this one and cannot be
+  // drawn over from here. Opening the panel pushes the page down instead.
   .sb__chrome {
-    position: relative;
     flex: 0 0 auto;
   }
 
