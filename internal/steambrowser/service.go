@@ -83,8 +83,12 @@ func (s *Service) OpenBrowser(accountID, site, modalToken string) (string, error
 	}
 	accountID = strings.TrimSpace(accountID)
 
+	log := logger().With("steamId64", accountID, "site", site)
+	log.Info("opening a session browser window")
+
 	session, err := s.source.BrowserSession(accountID, modalToken)
 	if err != nil {
+		log.Warn("no usable session for this account", "error", err)
 		return "", err
 	}
 	destination, err := Site(site).Destination(session.SteamID64)
@@ -115,8 +119,10 @@ func (s *Service) OpenBrowser(accountID, site, modalToken string) (string, error
 	})
 	if openErr != nil {
 		s.sessions.release(id)
+		log.Error("could not open the session browser window", "window", id, "error", openErr)
 		return "", openErr
 	}
+	log.Info("session browser window open", "window", id, "open", s.sessions.count())
 	return id, nil
 }
 
@@ -132,6 +138,7 @@ func (s *Service) openOnMainThread(id string, credentials WebSession, site Site,
 		window.Close()
 		return errors.New("steambrowser: host window has no native handle")
 	}
+	logger().Debug("host window created", "window", id, "hwnd", nativeWindow, "destination", destination)
 
 	view, err := newView(ViewOptions{
 		NativeWindow: nativeWindow,
@@ -230,14 +237,16 @@ func (s *Service) layout(sessionID string) {
 			height = defaultChromeHeight
 		}
 		if err := current.view.SetTopInset(scaleForWindow(window, height)); err != nil {
-			application.Get().Logger.Warn("steam browser layout failed",
-				"session", sessionID, "error", err)
+			logger().Warn("could not lay the content view out", "window", sessionID, "error", err)
 		}
 	})
 }
 
 func (s *Service) publish(sessionID string, state ViewState) {
 	s.sessions.setState(sessionID, state)
+	logger().Debug("page changed",
+		"window", sessionID, "host", state.Host,
+		"trusted", state.Trusted, "loading", state.Loading)
 	app := application.Get()
 	if app == nil || app.Window == nil {
 		return
@@ -263,6 +272,8 @@ func (s *Service) handleNewWindow(sessionID, url string) {
 		return
 	}
 	if !IsTrusted(current.platform, url) {
+		logger().Info("handing an untrusted link to the system browser",
+			"window", sessionID, "host", Classify(current.platform, url).Host)
 		if app := application.Get(); app != nil && app.Browser != nil {
 			_ = app.Browser.OpenURL(url)
 		}

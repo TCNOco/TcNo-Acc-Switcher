@@ -27,7 +27,10 @@ type windowsView struct {
 	chromium   *webview2.Chromium
 	platform   Platform
 	hostWindow uintptr
-	topInset   int
+	// contentWindow is the child window WebView2 created for this view. It is
+	// tracked so the view can be kept in front of the host's own webview.
+	contentWindow uintptr
+	topInset      int
 
 	// mu guards the cached state the event handlers write and the state
 	// reporter reads. Handlers arrive on the UI thread, but the reporter is
@@ -69,8 +72,19 @@ func newView(options ViewOptions) (View, error) {
 	chromium.Debug = options.DevTools
 	view.chromium = chromium
 
+	// Snapshot the host's children so the one WebView2 adds can be told apart
+	// from the host's own webview afterwards.
+	before := childWindows(options.NativeWindow)
 	if !chromium.Embed(options.NativeWindow) {
 		return nil, errors.New("steambrowser: could not create the content view")
+	}
+	view.contentWindow = newChildWindow(before, childWindows(options.NativeWindow))
+	log := logger().With("profile", options.Profile)
+	if view.contentWindow == 0 {
+		log.Warn("content view window not identified; it cannot be kept in front of the host webview")
+	} else {
+		log.Debug("content view created",
+			"hwnd", view.contentWindow, "class", windowClassName(view.contentWindow))
 	}
 	if env := chromium.Environment(); env == nil || !env.SupportsProfiles() {
 		chromium.Close()
@@ -97,6 +111,11 @@ func newView(options ViewOptions) (View, error) {
 		chromium.Close()
 		return nil, fmt.Errorf("steambrowser: show content view: %w", err)
 	}
+	view.raise()
+	log.Info("content view ready",
+		"hwnd", view.contentWindow,
+		"visible", windowVisible(view.contentWindow),
+		"topInset", options.ReservedTop)
 
 	if options.InitialURL != "" {
 		if err := view.Navigate(options.InitialURL); err != nil {
@@ -243,15 +262,35 @@ func (v *windowsView) SetTopInset(top int) error {
 	if controller == nil {
 		return errors.New("steambrowser: content view has no controller")
 	}
-	if err := controller.PutBounds(w32.Rect{
+	bounds := w32.Rect{
 		Left:   client.Left,
 		Top:    client.Top + int32(top),
 		Right:  client.Right,
 		Bottom: client.Bottom,
-	}); err != nil {
+	}
+	if err := controller.PutBounds(bounds); err != nil {
 		return fmt.Errorf("steambrowser: place content view: %w", err)
 	}
+	// The host re-lays its own webview out on resize, so the content view's
+	// position in the z-order is re-asserted every time it is placed.
+	v.raise()
+	logger().Debug("content view placed",
+		"hwnd", v.contentWindow, "top", bounds.Top,
+		"width", bounds.Right-bounds.Left, "height", bounds.Bottom-bounds.Top,
+		"visible", windowVisible(v.contentWindow))
 	return nil
+}
+
+// raise keeps the content view in front of the host window's own webview. They
+// are siblings, and a content view that slips behind is invisible while still
+// reporting a loaded page - which reads as a page that never loads.
+func (v *windowsView) raise() {
+	if v.contentWindow == 0 {
+		return
+	}
+	if err := raiseWindow(v.contentWindow); err != nil {
+		logger().Warn("could not raise the content view", "error", err)
+	}
 }
 
 func (v *windowsView) Close() {
