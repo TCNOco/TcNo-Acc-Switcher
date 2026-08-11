@@ -311,8 +311,32 @@
   .sb__lock:disabled { cursor: default; color: var(--warning, #d9a441); }
 
   .sb__url {
-    flex: 1; min-width: 0;
-    border: 0; outline: none; background: transparent;
-    color: var(--text, #e6edf5); font-size: 13px;
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: var(--text, #e6edf5);
+    font-size: 13px;
+  }
+
+  // The shared text-input styling underlines a focused input and rings it. Both
+  // change the input's box, so the address jumped upwards the moment it was
+  // clicked. Selector is chained through the parent because those rules carry a
+  // :focus of their own and would otherwise win.
+  .sb__address .sb__url:focus,
+  .sb__address .sb__url:focus-visible {
+    border: 0;
+    outline: 0;
+    box-shadow: none;
+  }
+
+  // Focus is shown on the pill instead, as a ring. It is drawn with a shadow so
+  // it takes no space and nothing shifts, and it leaves the border colour alone
+  // so a focused address still reads as trusted or not.
+  .sb__address:focus-within {
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent, #4c8dff) 55%, transparent);
   }
 </style>
