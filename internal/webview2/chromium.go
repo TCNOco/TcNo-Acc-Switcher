@@ -359,7 +359,9 @@ func (e *Chromium) EnvironmentCompleted(res uintptr, env *ICoreWebView2Environme
 	if e.ProfileName != "" {
 		// A named profile has to be supplied at controller creation, so it cannot go
 		// through the plain CreateCoreWebView2Controller path.
-		err = CreateControllerWithProfile(env, e.hwnd, e.ProfileName, e)
+		// e.controllerCompleted, not a fresh handler: it is retained on the
+		// Chromium, and the runtime calls back into it asynchronously.
+		err = createControllerWithProfile(env, e.hwnd, e.ProfileName, e.controllerCompleted)
 	} else if !e.CompositionControllerEnabled {
 		err = env.CreateCoreWebView2Controller(e.hwnd, e.controllerCompleted)
 	} else {

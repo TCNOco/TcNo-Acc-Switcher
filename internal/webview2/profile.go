@@ -120,17 +120,22 @@ func (e *ICoreWebView2Environment) SupportsProfiles() bool {
 	return e.GetICoreWebView2Environment10() != nil
 }
 
-// CreateControllerWithProfile starts a content view on hwnd whose cookies, storage
-// and cache are isolated to the named profile.
+// createControllerWithProfile starts a content view on hwnd whose cookies,
+// storage and cache are isolated to the named profile.
 //
-// Completion is asynchronous: impl is invoked once the controller exists, so the
-// caller must be pumping messages. The controller handed to impl is owned by the
-// runtime for the duration of that call and must be AddRef'd to outlive it.
-func CreateControllerWithProfile(
+// Completion is asynchronous, so the caller must be pumping messages, and the
+// handler has to outlive this call. It is taken as an argument rather than
+// built here for that reason: the caller holds it in a field the garbage
+// collector can see, whereas one created here would be unreachable the moment
+// this returns and freed under the runtime.
+//
+// The controller handed to the handler is owned by the runtime for the duration
+// of that call and must be AddRef'd to outlive it.
+func createControllerWithProfile(
 	env *ICoreWebView2Environment,
 	hwnd uintptr,
 	profile string,
-	impl _ICoreWebView2CreateCoreWebView2ControllerCompletedHandlerImpl,
+	handler *iCoreWebView2CreateCoreWebView2ControllerCompletedHandler,
 ) error {
 	if env == nil {
 		return errors.New("webview2: nil environment")
@@ -150,7 +155,6 @@ func CreateControllerWithProfile(
 	if err := options.PutProfileName(profile); err != nil {
 		return fmt.Errorf("webview2: set profile %q: %w", profile, err)
 	}
-	handler := newICoreWebView2CreateCoreWebView2ControllerCompletedHandler(impl)
 	if err := env10.CreateCoreWebView2ControllerWithOptions(hwnd, options, handler); err != nil {
 		return fmt.Errorf("webview2: create controller for profile %q: %w", profile, err)
 	}

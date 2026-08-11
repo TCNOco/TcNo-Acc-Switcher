@@ -46,6 +46,14 @@ type windowsView struct {
 	onState     func(ViewState)
 	onNewWindow func(string)
 
+	// handlers holds the event-handler objects for the view's lifetime.
+	//
+	// They are handed to WebView2 as raw pointers, which Go's garbage collector
+	// cannot see. Without a reference here they become unreachable the moment
+	// subscribe returns, and the next event the runtime raises calls into freed
+	// memory - an access violation minutes later, once a collection has run.
+	handlers []any
+
 	closeOnce sync.Once
 }
 
@@ -191,31 +199,45 @@ func (v *windowsView) webview() (*webview2.ICoreWebView2_2, func(), error) {
 	return view2, func() { view2.Release() }, nil
 }
 
-// subscribe wires the events the toolbar is driven by. The handler objects are
-// kept on the view because the runtime holds only raw pointers to them; letting
-// Go collect one would leave the runtime calling into freed memory.
+// subscribe wires the events the toolbar is driven by.
+//
+// Every handler is kept in v.handlers. WebView2 stores them as raw pointers the
+// garbage collector cannot see, so a handler that is only referenced by the
+// runtime is collectable the moment this returns.
 func (v *windowsView) subscribe() error {
 	view2, release, err := v.webview()
 	if err != nil {
 		return err
 	}
 	defer release()
-	if err := view2.AddSourceChanged(webview2.NewICoreWebView2SourceChangedEventHandler(v)); err != nil {
+
+	sourceChanged := webview2.NewICoreWebView2SourceChangedEventHandler(v)
+	historyChanged := webview2.NewICoreWebView2HistoryChangedEventHandler(v)
+	titleChanged := webview2.NewICoreWebView2DocumentTitleChangedEventHandler(v)
+	navigationStarting := webview2.NewICoreWebView2NavigationStartingEventHandler(v)
+	navigationCompleted := webview2.NewICoreWebView2NavigationCompletedEventHandler(v)
+	newWindowRequested := webview2.NewICoreWebView2NewWindowRequestedEventHandler(v)
+	v.handlers = append(v.handlers,
+		sourceChanged, historyChanged, titleChanged,
+		navigationStarting, navigationCompleted, newWindowRequested,
+	)
+
+	if err := view2.AddSourceChanged(sourceChanged); err != nil {
 		return fmt.Errorf("steambrowser: subscribe to source changes: %w", err)
 	}
-	if err := view2.AddHistoryChanged(webview2.NewICoreWebView2HistoryChangedEventHandler(v)); err != nil {
+	if err := view2.AddHistoryChanged(historyChanged); err != nil {
 		return fmt.Errorf("steambrowser: subscribe to history changes: %w", err)
 	}
-	if err := view2.AddDocumentTitleChanged(webview2.NewICoreWebView2DocumentTitleChangedEventHandler(v)); err != nil {
+	if err := view2.AddDocumentTitleChanged(titleChanged); err != nil {
 		return fmt.Errorf("steambrowser: subscribe to title changes: %w", err)
 	}
-	if err := view2.AddNavigationStarting(webview2.NewICoreWebView2NavigationStartingEventHandler(v)); err != nil {
+	if err := view2.AddNavigationStarting(navigationStarting); err != nil {
 		return fmt.Errorf("steambrowser: subscribe to navigation start: %w", err)
 	}
-	if err := view2.AddNavigationCompleted(webview2.NewICoreWebView2NavigationCompletedEventHandler(v)); err != nil {
+	if err := view2.AddNavigationCompleted(navigationCompleted); err != nil {
 		return fmt.Errorf("steambrowser: subscribe to navigation completion: %w", err)
 	}
-	if err := view2.AddNewWindowRequested(webview2.NewICoreWebView2NewWindowRequestedEventHandler(v)); err != nil {
+	if err := view2.AddNewWindowRequested(newWindowRequested); err != nil {
 		return fmt.Errorf("steambrowser: subscribe to new-window requests: %w", err)
 	}
 	return nil
@@ -351,6 +373,8 @@ func (v *windowsView) Close() {
 			v.chromium.Close()
 			v.chromium = nil
 		}
+		// Only now that nothing can raise an event into them.
+		v.handlers = nil
 	})
 }
 
