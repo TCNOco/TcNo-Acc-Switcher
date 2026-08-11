@@ -26,6 +26,7 @@
 	    type SteamGuardAccountRef,
 	    type SteamGuardAccountKind,
 	    type SteamGuardAccountSummary,
+	    type SteamGuardSessionStatus,
 	    type SteamGuardCodeView,
 	    type SteamGuardModalAction,
     type SteamGuardModalController,
@@ -132,8 +133,20 @@
 	/** One stored-code attempt per sign-in: a code Steam rejected must not be resubmitted. */
 	let storedDeviceCodeTried = false;
 	let lastPageKey = "";
+	/**
+	 * What the account's stored Steam session turned out to be. "unknown" until
+	 * the check answers, and it stays there when the check could not reach one:
+	 * a failure to ask is not a verdict.
+	 */
+	let sessionVerdict: SteamGuardSessionStatus = "unknown";
 	/** Highlights Login Again when the stored Steam session will not work. */
-	let sessionNeedsLogin = false;
+	$: sessionNeedsLogin = sessionVerdict === "needs-login";
+	/**
+	 * Browsing rides on that session, so it is offered only once something has
+	 * said the session works. An undecided one hides it rather than opening a
+	 * window that would land on a signed-out page.
+	 */
+	$: canBrowse = sessionVerdict === "valid";
 	/** Second click of the inline Remove confirmation; reset on every transition. */
 	let removeConfirming = false;
 	let sessionCheckedAccount = "";
@@ -1637,12 +1650,16 @@
 	 * The stored session answers first because it costs nothing; Steam is then asked
 	 * the same question the confirmations page asks, which also catches a session
 	 * revoked before its expiry. Neither step is allowed to raise a false alarm: only
-	 * a definite refusal sets the flag, and every failure leaves it as it was.
+	 * a definite answer moves the verdict, and every failure leaves it undecided.
+	 *
+	 * The verdict is published after the local step rather than at the end, so what
+	 * it gates does not wait on a request to Steam for an answer already known
+	 * offline. The probe can still turn it down afterwards.
 	 */
 	async function checkSessionNeedsLogin(currentAccount: SteamGuardAccountRef): Promise<void> {
 		if (!currentAccount.id || sessionCheckedAccount === currentAccount.id) return;
 		sessionCheckedAccount = currentAccount.id;
-		sessionNeedsLogin = false;
+		sessionVerdict = "unknown";
 
 		let capability = "";
 		try {
@@ -1665,14 +1682,14 @@
 				capability = capabilityFor(currentAccount);
 			}
 			const local = renewed ?? await controller.steamSessionLocalState?.(currentAccount.id, capability);
-			if (local?.needsLogin) sessionNeedsLogin = true;
+			if (local) sessionVerdict = local.needsLogin ? "needs-login" : "valid";
 		} catch (error) {
 			console.warn("Steam Guard: stored session could not be read", error);
 		}
-		if (sessionNeedsLogin) return;
+		if (sessionVerdict === "needs-login") return;
 		try {
 			const probed = await controller.probeSteamSession?.(currentAccount.id, capability);
-			if (probed?.needsLogin) sessionNeedsLogin = true;
+			if (probed) sessionVerdict = probed.needsLogin ? "needs-login" : "valid";
 		} catch (error) {
 			console.warn("Steam Guard: session could not be checked with Steam", error);
 		}
@@ -1686,7 +1703,7 @@
 		clearAuthTimer();
 		// The session just changed, so the old verdict no longer describes it.
 		sessionCheckedAccount = "";
-		sessionNeedsLogin = false;
+		sessionVerdict = "unknown";
 		authStage = "success";
 		successCountdown = LOGIN_SUCCESS_SECONDS;
 		successTimer = setInterval(() => {
@@ -2545,7 +2562,10 @@
 						{$t("SteamGuard_Code_ExportMaFile")}
 					</button>
 				</div>
-				{#if controller.openSteamBrowser}
+				<!-- Only once the session has been found to work: a window opened on a
+				     lapsed one lands on a signed-out page, and Login Again above is
+				     already the thing to do about that. -->
+				{#if controller.openSteamBrowser && canBrowse}
 					<div class="steam-guard__browse" use:controllerSpatialNavigation>
 						<button type="button" class="btnicontext" disabled={busy} on:click={() => openBrowser("store")}>
 							<svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>
@@ -2614,20 +2634,6 @@
           {$t("SteamGuard_Title")}
         </button>
       </div>
-      <!-- A session-only record holds the same tokens an authenticator does, so
-           it browses identically. This is the one capability it does not lack. -->
-      {#if controller.openSteamBrowser}
-        <div class="steam-guard__browse" use:controllerSpatialNavigation>
-          <button type="button" class="btnicontext" disabled={busy} on:click={() => openBrowser("store")}>
-            <svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>
-            {$t("SteamGuard_Browse_Store")}
-          </button>
-          <button type="button" class="btnicontext" disabled={busy} on:click={() => openBrowser("community")}>
-            <svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>
-            {$t("SteamGuard_Browse_Community")}
-          </button>
-        </div>
-      {/if}
       <div class="steam-guard__footer">
         <button type="button" class="steam-guard__link" disabled={busy} on:click={showAllAccounts}>
           <svg class="steam-guard__icon" viewBox={ICONS.list.box} aria-hidden="true"><path d={ICONS.list.path} /></svg>
@@ -2696,6 +2702,21 @@
           </button>
         {/if}
       </div>
+      <!-- A session-only record holds the same tokens an authenticator does, so
+           it browses identically. This is the one capability it does not lack -
+           as long as the session is still one Steam accepts. -->
+      {#if controller.openSteamBrowser && canBrowse}
+        <div class="steam-guard__browse" use:controllerSpatialNavigation>
+          <button type="button" class="btnicontext" disabled={busy} on:click={() => openBrowser("store")}>
+            <svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>
+            {$t("SteamGuard_Browse_Store")}
+          </button>
+          <button type="button" class="btnicontext" disabled={busy} on:click={() => openBrowser("community")}>
+            <svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>
+            {$t("SteamGuard_Browse_Community")}
+          </button>
+        </div>
+      {/if}
       <div class="steam-guard__footer">
         <button type="button" class="steam-guard__link" disabled={busy} on:click={showAllAccounts}>
           <svg class="steam-guard__icon" viewBox={ICONS.list.box} aria-hidden="true"><path d={ICONS.list.path} /></svg>
