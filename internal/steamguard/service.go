@@ -416,6 +416,7 @@ func (s *Service) ServiceStartup(ctx context.Context, _ application.ServiceOptio
 	s.startCooldownSweeper(ctx)
 	s.startOwnedGamesSweeper(ctx)
 	steam.SetOwnedGamesSweepHook(s.signalOwnedGamesSweep)
+	steam.RegisterSteamGuardSweepTrigger(s.signalSteamGuardSweeps)
 	registerLoginAgainHandoff()
 	return nil
 }
@@ -424,6 +425,7 @@ func (s *Service) ServiceShutdown() error {
 	s.closeAuthenticationManager(true)
 	s.stopCooldownSweeper()
 	steam.SetOwnedGamesSweepHook(nil)
+	steam.RegisterSteamGuardSweepTrigger(nil)
 	s.stopOwnedGamesSweeper()
 	s.mu.Lock()
 	cancel := s.timeSyncCancel

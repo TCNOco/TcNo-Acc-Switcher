@@ -65,6 +65,7 @@ type cooldownSweepState struct {
 	// an account joining the vault - still gets one. Atomic rather than under
 	// mu: signalCooldownSweep already runs with the service lock held.
 	forced atomic.Bool
+	retry  sweepRetry
 }
 
 func (s *Service) startCooldownSweeper(ctx context.Context) {
@@ -155,6 +156,9 @@ func (s *Service) sweepCS2Cooldowns(ctx context.Context) {
 	}()
 
 	if ctx.Err() != nil || security.AppLocked() || appclient.IsOfflineMode() {
+		// Nothing a retry would fix, so a pending one is dropped rather than
+		// left to wake a sweep that will bail here again.
+		s.cooldownSweep.retry.cancel()
 		log.Debug("sweep skipped: app locked, offline, or cancelled")
 		return
 	}
@@ -188,6 +192,10 @@ func (s *Service) sweepCS2Cooldowns(ctx context.Context) {
 	log.Info("CS2 cooldown sweep started", "accounts", len(targets))
 
 	checked := 0
+	// One verdict for the whole sweep: every account goes to the same Steam over
+	// the same adapter, so any of them reporting "temporarily failed" means the
+	// sweep is worth repeating rather than left until the six-hour tick.
+	unreachable := false
 	for _, target := range targets {
 		if ctx.Err() != nil {
 			return
@@ -216,15 +224,25 @@ func (s *Service) sweepCS2Cooldowns(ctx context.Context) {
 			case <-time.After(cooldownAccountStagger):
 			}
 		}
-		if s.fetchAndStoreCooldown(ctx, target, now, steamSettings.SteamShowCS2PrimeTag) == errCooldownRateLimited {
+		err := s.fetchAndStoreCooldown(ctx, target, now, steamSettings.SteamShowCS2PrimeTag)
+		if err == errCooldownRateLimited {
 			// Walking the rest of the list into the same wall is exactly the
 			// pattern that earns a longer ban. The next unlock retries.
 			log.Warn("CS2 cooldown sweep aborted: rate limited by Steam", "checked", checked)
 			return
 		}
+		if retryableSweepFailure(err) {
+			unreachable = true
+		}
 		checked++
 	}
 	log.Info("CS2 cooldown sweep finished", "checked", checked)
+	if delay, failures := s.cooldownSweep.retry.note(unreachable, func() {
+		s.signalCooldownSweep(true)
+	}); delay > 0 {
+		log.Info("CS2 cooldown sweep could not reach Steam; retrying",
+			"consecutiveFailures", failures, "in", delay)
+	}
 }
 
 var errCooldownRateLimited = errors.New("rate limited")

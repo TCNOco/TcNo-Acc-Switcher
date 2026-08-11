@@ -220,7 +220,16 @@
     launch: () => SteamService.LaunchSteam(),
     closePlatform: () => SteamService.CloseSteam(),
     refreshOnWindowFocus: true,
-    refreshAccounts: () => SteamService.RefreshAllSteamImages(),
+    // Two calls, because Steam answers to two different clients here.
+    // RefreshAllSteamImages drops the cached profile XML, miniprofile HTML and
+    // avatars, which is everything the public community pages can tell us.
+    // The CS2 rank, cooldown and Prime state are not on those pages at all -
+    // they come from an authenticated GCPD read that only the Steam Guard sweep
+    // can make, so without the second call a refresh can never move them.
+    refreshAccounts: async () => {
+      await SteamService.RefreshAllSteamImages();
+      await SteamService.RefreshSteamGuardData();
+    },
     refreshAllProfileImages: () => SteamService.RefreshAllSteamImages(),
 
     buildMenu: (_acc, shared) => buildSteamExtraMenuAdapter(_acc as SteamAccountRow, shared),
