@@ -143,6 +143,30 @@ func IsExeRunning(exeName string) bool {
 	return err == nil && ok
 }
 
+// SnapshotMatchingPIDs maps the PID of every running process whose lowercase image
+// base name is in want to that name. One pass over the process table, for callers
+// that need a starting point before switching to event-driven tracking.
+func SnapshotMatchingPIDs(want map[string]struct{}) (map[uint32]string, error) {
+	if len(want) == 0 {
+		return nil, nil
+	}
+	all, err := snapshotProcesses()
+	if err != nil {
+		return nil, err
+	}
+	out := make(map[uint32]string)
+	for _, p := range all {
+		base := strings.ToLower(normalizeExeBase(p.ExeBase))
+		if base == "" {
+			continue
+		}
+		if _, ok := want[base]; ok {
+			out[p.PID] = base
+		}
+	}
+	return out, nil
+}
+
 func utf16FixedToString(b []uint16) string {
 	n := 0
 	for n < len(b) && b[n] != 0 {

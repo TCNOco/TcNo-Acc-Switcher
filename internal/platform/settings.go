@@ -75,6 +75,13 @@ type AppSettings struct {
 	// StartProgramCentered places the main window in the center of the screen when the app opens.
 	StartProgramCentered bool `json:"startProgramCentered,omitempty"`
 
+	// StreamerMode censors account identifiers and profile images unconditionally.
+	StreamerMode bool `json:"streamerMode,omitempty"`
+
+	// AutoStreamerMode turns censoring on for as long as broadcasting software is
+	// running, without touching the StreamerMode override.
+	AutoStreamerMode bool `json:"autoStreamerMode,omitempty"`
+
 	// StatsEnabled toggles local anonymous statistics collection.
 	// Stored without omitempty so an explicit opt-out survives a restart.
 	StatsEnabled bool `json:"statsEnabled"`

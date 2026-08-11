@@ -8,6 +8,7 @@ import (
 
 	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/stats"
+	"TcNo-Acc-Switcher/internal/streamer"
 	"TcNo-Acc-Switcher/internal/winutil"
 )
 
@@ -302,6 +303,28 @@ func (p *PlatformService) SetStartProgramCentered(enabled bool) error {
 		s.StartProgramCentered = enabled
 		return nil
 	})
+}
+
+func (p *PlatformService) SetStreamerMode(enabled bool) error {
+	if err := p.withSettingsWrite(func(s *AppSettings) error {
+		s.StreamerMode = enabled
+		return nil
+	}); err != nil {
+		return err
+	}
+	streamer.SetManual(enabled)
+	return nil
+}
+
+func (p *PlatformService) SetAutoStreamerMode(enabled bool) error {
+	if err := p.withSettingsWrite(func(s *AppSettings) error {
+		s.AutoStreamerMode = enabled
+		return nil
+	}); err != nil {
+		return err
+	}
+	streamer.SetAutoEnabled(enabled)
+	return nil
 }
 
 func (p *PlatformService) SetAnimationsEnabled(enabled bool) error {

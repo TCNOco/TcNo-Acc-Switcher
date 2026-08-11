@@ -26,6 +26,7 @@ import (
 	"TcNo-Acc-Switcher/internal/stats"
 	"TcNo-Acc-Switcher/internal/steam"
 	"TcNo-Acc-Switcher/internal/steamguard"
+	"TcNo-Acc-Switcher/internal/streamer"
 	"TcNo-Acc-Switcher/internal/tray"
 	"TcNo-Acc-Switcher/internal/updatecheck"
 	"TcNo-Acc-Switcher/internal/updatertheme"
@@ -141,6 +142,10 @@ func RunGUI(params RunGUIParams) {
 	}
 	go stats.MustTryUploadDaily(guiSettings.StatsEnabled, guiSettings.StatsShare, guiSettings.OfflineMode)
 	params.DiscordRPC.Start()
+	// Before the window exists, so a broadcaster that is already running has been
+	// adopted by the time the first account list paints.
+	platform.InitStreamerMode(guiSettings)
+	defer streamer.Shutdown()
 
 	wailsLvl := ResolvedLogLevel(parsed)
 	if !parsed.LogLevelSet && wailsLvl < slog.LevelInfo {

@@ -37,6 +37,8 @@ type PlatformStartup struct {
 	MinimizeOnSwitch         bool   `json:"minimizeOnSwitch"`
 	StartTrayWithWindows     bool   `json:"startTrayWithWindows"`
 	StartProgramCentered     bool   `json:"startProgramCentered"`
+	StreamerMode             bool   `json:"streamerMode"`
+	AutoStreamerMode         bool   `json:"autoStreamerMode"`
 	AnimationsEnabled        bool   `json:"animationsEnabled"`
 	ControllerSupportEnabled bool   `json:"controllerSupportEnabled"`
 	StatsEnabled             bool   `json:"statsEnabled"`
@@ -121,6 +123,8 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 				MinimizeOnSwitch:         settings.MinimizeOnSwitch,
 				StartTrayWithWindows:     settings.StartTrayWithWindows,
 				StartProgramCentered:     settings.StartProgramCentered,
+				StreamerMode:             settings.StreamerMode,
+				AutoStreamerMode:         settings.AutoStreamerMode,
 				AnimationsEnabled:        settings.AnimationsEnabled,
 				ControllerSupportEnabled: settings.ControllerSupportEnabled,
 				StatsEnabled:             settings.StatsEnabled,
@@ -175,6 +179,8 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 		MinimizeOnSwitch:         settings.MinimizeOnSwitch,
 		StartTrayWithWindows:     settings.StartTrayWithWindows,
 		StartProgramCentered:     settings.StartProgramCentered,
+		StreamerMode:             settings.StreamerMode,
+		AutoStreamerMode:         settings.AutoStreamerMode,
 		AnimationsEnabled:        settings.AnimationsEnabled,
 		ControllerSupportEnabled: settings.ControllerSupportEnabled,
 		StatsEnabled:             settings.StatsEnabled,

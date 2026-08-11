@@ -34,3 +34,8 @@ func SnapshotRunningExeBasenames() (map[string]struct{}, error) {
 func IsExeRunning(_ string) bool {
 	return false
 }
+
+// SnapshotMatchingPIDs is Windows-only; returns nothing elsewhere.
+func SnapshotMatchingPIDs(_ map[string]struct{}) (map[uint32]string, error) {
+	return nil, nil
+}
