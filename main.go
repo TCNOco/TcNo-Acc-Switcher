@@ -11,6 +11,7 @@ import (
 	"TcNo-Acc-Switcher/internal/app"
 	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/basic"
+	"TcNo-Acc-Switcher/internal/buildmode"
 	"TcNo-Acc-Switcher/internal/cli"
 	"TcNo-Acc-Switcher/internal/controllerinput"
 	"TcNo-Acc-Switcher/internal/crashlog"
@@ -18,12 +19,14 @@ import (
 	"TcNo-Acc-Switcher/internal/ipc"
 	"TcNo-Acc-Switcher/internal/legacyinstall"
 	"TcNo-Acc-Switcher/internal/logredact"
+	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/security"
 	"TcNo-Acc-Switcher/internal/shortcuts"
 	"TcNo-Acc-Switcher/internal/stability"
 	"TcNo-Acc-Switcher/internal/stats"
 	"TcNo-Acc-Switcher/internal/steam"
+	"TcNo-Acc-Switcher/internal/steambrowser"
 	"TcNo-Acc-Switcher/internal/steamguard"
 	"TcNo-Acc-Switcher/internal/tray"
 	"TcNo-Acc-Switcher/internal/winutil"
@@ -46,9 +49,13 @@ var (
 	basicSvc      = basic.NewBasicService(platformSvc)
 	steamSvc      = steam.NewSteamService()
 	steamGuardSvc = steamguard.NewService()
-	controllerSvc = controllerinput.NewService()
-	securitySvc   = security.NewService()
-	discordRPC    = discordrpc.NewManager()
+	// The browser windows draw their session from the vault, so the Steam Guard
+	// service is their session source. Its data path is resolved at startup,
+	// where a failure can be reported.
+	steamBrowserSvc *steambrowser.Service
+	controllerSvc   = controllerinput.NewService()
+	securitySvc     = security.NewService()
+	discordRPC      = discordrpc.NewManager()
 
 	crashSubmitted bool
 )
@@ -218,6 +225,16 @@ func main() {
 }
 
 func serviceList() []application.Service {
+	// Built here rather than in the var block because the data path can fail, and
+	// a failure is worth logging rather than swallowing. Without it the service
+	// still registers and reports itself unavailable, so the UI hides the entry
+	// points instead of offering something that cannot work.
+	browserDataPath, err := paths.SteamBrowserDir()
+	if err != nil {
+		log.Printf("steam browser data path: %v", err)
+	}
+	steamBrowserSvc = steambrowser.NewService(steamguard.NewBrowserSessionSource(steamGuardSvc), browserDataPath, buildmode.IsDebugBuild())
+
 	return []application.Service{
 		application.NewService(&FilesystemService{}),
 		application.NewService(platformSvc),
@@ -227,6 +244,7 @@ func serviceList() []application.Service {
 		application.NewService(basicSvc),
 		application.NewService(securitySvc),
 		application.NewService(shortcuts.NewService(platformSvc)),
+		application.NewService(steamBrowserSvc),
 	}
 }
 
