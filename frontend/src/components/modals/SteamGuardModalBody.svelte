@@ -2508,18 +2508,6 @@
 						{$t("SteamGuard_Code_ViewConfirmations")}
 					</button>
 				</div>
-				{#if controller.openSteamBrowser}
-					<div class="steam-guard__grid" use:controllerSpatialNavigation>
-						<button type="button" class="btnicontext" disabled={busy} on:click={() => openBrowser("store")}>
-							<svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>
-							{$t("SteamGuard_Browse_Store")}
-						</button>
-						<button type="button" class="btnicontext" disabled={busy} on:click={() => openBrowser("community")}>
-							<svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>
-							{$t("SteamGuard_Browse_Community")}
-						</button>
-					</div>
-				{/if}
 				<div class="steam-guard__grid" use:controllerSpatialNavigation>
 					<button
 						type="button"
@@ -2550,6 +2538,18 @@
 						{$t("SteamGuard_Code_ExportMaFile")}
 					</button>
 				</div>
+				{#if controller.openSteamBrowser}
+					<div class="steam-guard__browse" use:controllerSpatialNavigation>
+						<button type="button" class="btnicontext" disabled={busy} on:click={() => openBrowser("store")}>
+							<svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>
+							{$t("SteamGuard_Browse_Store")}
+						</button>
+						<button type="button" class="btnicontext" disabled={busy} on:click={() => openBrowser("community")}>
+							<svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>
+							{$t("SteamGuard_Browse_Community")}
+						</button>
+					</div>
+				{/if}
 			{/if}
       <div class="steam-guard__footer">
         <button
@@ -2607,6 +2607,20 @@
           {$t("SteamGuard_Title")}
         </button>
       </div>
+      <!-- A session-only record holds the same tokens an authenticator does, so
+           it browses identically. This is the one capability it does not lack. -->
+      {#if controller.openSteamBrowser}
+        <div class="steam-guard__browse" use:controllerSpatialNavigation>
+          <button type="button" class="btnicontext" disabled={busy} on:click={() => openBrowser("store")}>
+            <svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>
+            {$t("SteamGuard_Browse_Store")}
+          </button>
+          <button type="button" class="btnicontext" disabled={busy} on:click={() => openBrowser("community")}>
+            <svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>
+            {$t("SteamGuard_Browse_Community")}
+          </button>
+        </div>
+      {/if}
       <div class="steam-guard__footer">
         <button type="button" class="steam-guard__link" disabled={busy} on:click={showAllAccounts}>
           <svg class="steam-guard__icon" viewBox={ICONS.list.box} aria-hidden="true"><path d={ICONS.list.path} /></svg>
@@ -2632,20 +2646,6 @@
       </div>
       <p class="steam-guard__hint">{$t("SteamGuard_LoginOnly_Body")}</p>
       {#if inlineError}<p class="steam-guard__error" role="alert">{inlineError}</p>{/if}
-      <!-- A session-only record holds the same tokens an authenticator does, so
-           it browses identically. This is the one capability it does not lack. -->
-      {#if controller.openSteamBrowser}
-        <div class="steam-guard__grid" use:controllerSpatialNavigation>
-          <button type="button" class="btnicontext" disabled={busy} on:click={() => openBrowser("store")}>
-            <svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>
-            {$t("SteamGuard_Browse_Store")}
-          </button>
-          <button type="button" class="btnicontext" disabled={busy} on:click={() => openBrowser("community")}>
-            <svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>
-            {$t("SteamGuard_Browse_Community")}
-          </button>
-        </div>
-      {/if}
       <div class="steam-guard__grid" use:controllerSpatialNavigation>
         <button
           type="button"
@@ -3542,6 +3542,25 @@
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: $sg-1;
+  }
+
+  // The browsing pair sits under the three-up grid. They are sized to their
+  // labels and centred rather than stretched across columns, which made two
+  // buttons in a three-column grid look oversized and off to one side.
+  .steam-guard__browse {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: $sg-1;
+  }
+
+  .steam-guard__browse :global(button) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: $sg-half;
+    min-height: 2.75rem;
+    padding-inline: $sg-2;
   }
 
   .steam-guard__grid :global(button) {

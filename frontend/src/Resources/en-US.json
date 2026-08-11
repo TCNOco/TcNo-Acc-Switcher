@@ -1095,7 +1095,7 @@
   "SteamBrowser_Cert_SeparateConnection": "Read over a separate connection to this site, not the one this page was loaded over.",
   "Context_Steam_OpenStore": "Steam Store",
   "Context_Steam_OpenCommunity": "Steam Community",
-  "SteamGuard_Browse_Store": "Open Store",
-  "SteamGuard_Browse_Community": "Open Community",
+  "SteamGuard_Browse_Store": "Store",
+  "SteamGuard_Browse_Community": "Community",
   "SteamGuard_Error_BrowserOpenFailed": "Could not open the browser window"
 }
