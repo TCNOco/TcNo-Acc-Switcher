@@ -82,6 +82,9 @@ type View interface {
 	// wants physical ones, and having one side convert for the other is how the
 	// two end up disagreeing on a scaled display.
 	SetTopInset(top int) error
+	// OpenDevTools opens the engine's inspector for this view. Available only
+	// where the build enabled it.
+	OpenDevTools() error
 	// Close releases the view and its native resources.
 	Close()
 }

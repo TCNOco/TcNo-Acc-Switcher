@@ -359,6 +359,17 @@ func (s *Service) Certificate(ctx context.Context, sessionID string) (Certificat
 	return FetchCertificate(ctx, current.state.URL)
 }
 
+// OpenDevTools opens the inspector for a window's page, which is the only way
+// to see why a site behaves differently here than in a browser. Refused unless
+// the build enabled developer tools, so a release build cannot be talked into
+// handing over a page's console.
+func (s *Service) OpenDevTools(sessionID string) error {
+	if !s.devTools {
+		return errors.New("steambrowser: developer tools are not enabled in this build")
+	}
+	return s.command(sessionID, View.OpenDevTools)
+}
+
 // TrustedDomains lets the UI explain what the green URL bar means.
 func (s *Service) TrustedDomains() []string {
 	return TrustedDomains(PlatformSteam)

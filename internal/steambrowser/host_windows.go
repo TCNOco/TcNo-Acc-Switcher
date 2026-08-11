@@ -67,9 +67,6 @@ func newView(options ViewOptions) (View, error) {
 	chromium := webview2.NewChromium()
 	chromium.DataPath = options.DataPath
 	chromium.ProfileName = options.Profile
-	// The content view shows a remote site, so it gets none of the capabilities
-	// the application's own windows deny, and no developer tools in production.
-	chromium.Debug = options.DevTools
 	view.chromium = chromium
 
 	// Snapshot the host's children so the one WebView2 adds can be told apart
@@ -96,6 +93,10 @@ func newView(options ViewOptions) (View, error) {
 		return nil, err
 	}
 	if err := view.subscribe(); err != nil {
+		chromium.Close()
+		return nil, err
+	}
+	if err := view.applySettings(options.DevTools); err != nil {
 		chromium.Close()
 		return nil, err
 	}
@@ -144,33 +145,61 @@ func (v *windowsView) plantCookies(cookies []Cookie) error {
 		if err != nil {
 			return fmt.Errorf("steambrowser: build cookie %s for %s: %w", c.Name, c.Domain, err)
 		}
+		if err := cookie.PutIsSecure(c.Secure); err != nil {
+			return fmt.Errorf("steambrowser: mark cookie %s secure: %w", c.Name, err)
+		}
+		if err := cookie.PutIsHttpOnly(c.HTTPOnly); err != nil {
+			return fmt.Errorf("steambrowser: mark cookie %s http-only: %w", c.Name, err)
+		}
+		if err := cookie.PutSameSite(sameSiteKind(c.SameSite)); err != nil {
+			return fmt.Errorf("steambrowser: set same-site on cookie %s: %w", c.Name, err)
+		}
 		if err := jar.AddOrUpdateCookie(cookie); err != nil {
 			return fmt.Errorf("steambrowser: write cookie %s for %s: %w", c.Name, c.Domain, err)
 		}
+		cookie.Release()
 	}
 	return nil
 }
 
-func (v *windowsView) webview() (*webview2.ICoreWebView2_2, error) {
+// sameSiteKind maps to COREWEBVIEW2_COOKIE_SAME_SITE_KIND, whose values the IDL
+// gives as NONE, LAX, STRICT in that order.
+func sameSiteKind(policy SameSite) int32 {
+	if policy == SameSiteNone {
+		return 0
+	}
+	return 1
+}
+
+// webview returns the view's ICoreWebView2_2, and a function to release it.
+//
+// QueryInterface hands back a counted reference. Every call here happens on a
+// navigation, a title change or a history change, so dropping the reference
+// instead of releasing it leaks one per event on a busy page.
+func (v *windowsView) webview() (*webview2.ICoreWebView2_2, func(), error) {
+	if v.chromium == nil {
+		return nil, nil, errors.New("steambrowser: content view is gone")
+	}
 	view := v.chromium.GetWebView()
 	if view == nil {
-		return nil, errors.New("steambrowser: content view is gone")
+		return nil, nil, errors.New("steambrowser: content view is gone")
 	}
 	view2, err := view.QueryInterface2()
 	if err != nil {
-		return nil, fmt.Errorf("steambrowser: ICoreWebView2_2: %w", err)
+		return nil, nil, fmt.Errorf("steambrowser: ICoreWebView2_2: %w", err)
 	}
-	return view2, nil
+	return view2, func() { view2.Release() }, nil
 }
 
 // subscribe wires the events the toolbar is driven by. The handler objects are
 // kept on the view because the runtime holds only raw pointers to them; letting
 // Go collect one would leave the runtime calling into freed memory.
 func (v *windowsView) subscribe() error {
-	view2, err := v.webview()
+	view2, release, err := v.webview()
 	if err != nil {
 		return err
 	}
+	defer release()
 	if err := view2.AddSourceChanged(webview2.NewICoreWebView2SourceChangedEventHandler(v)); err != nil {
 		return fmt.Errorf("steambrowser: subscribe to source changes: %w", err)
 	}
@@ -193,42 +222,47 @@ func (v *windowsView) subscribe() error {
 }
 
 func (v *windowsView) Navigate(url string) error {
-	view2, err := v.webview()
+	view2, release, err := v.webview()
 	if err != nil {
 		return err
 	}
+	defer release()
 	return view2.Navigate(url)
 }
 
 func (v *windowsView) Reload() error {
-	view2, err := v.webview()
+	view2, release, err := v.webview()
 	if err != nil {
 		return err
 	}
+	defer release()
 	return view2.Reload()
 }
 
 func (v *windowsView) Stop() error {
-	view2, err := v.webview()
+	view2, release, err := v.webview()
 	if err != nil {
 		return err
 	}
+	defer release()
 	return view2.Stop()
 }
 
 func (v *windowsView) Back() error {
-	view2, err := v.webview()
+	view2, release, err := v.webview()
 	if err != nil {
 		return err
 	}
+	defer release()
 	return view2.GoBack()
 }
 
 func (v *windowsView) Forward() error {
-	view2, err := v.webview()
+	view2, release, err := v.webview()
 	if err != nil {
 		return err
 	}
+	defer release()
 	return view2.GoForward()
 }
 
@@ -404,10 +438,11 @@ func (v *windowsView) NewWindowRequested(_ *webview2.ICoreWebView2, args *webvie
 // refresh re-reads the page's current state and reports it. loading is passed
 // only by the navigation events, which know it; the others leave it as it was.
 func (v *windowsView) refresh(loading *bool) {
-	view2, err := v.webview()
+	view2, release, err := v.webview()
 	if err != nil {
 		return
 	}
+	defer release()
 	url, _ := view2.GetSource()
 	title, _ := view2.GetDocumentTitle()
 	canBack, _ := view2.GetCanGoBack()
@@ -425,4 +460,43 @@ func (v *windowsView) refresh(loading *bool) {
 	if report != nil {
 		report(state)
 	}
+}
+
+// applySettings decides what the remote page is allowed to do.
+//
+// Developer tools follow the build: on in a debug build, where they are the
+// only way to see why a page misbehaves, and off in a release one, where they
+// would hand a page's console to anyone who reaches this window.
+//
+// The default context menu stays on, unlike everywhere else in the application.
+// It is what supplies "open link in new window", which is how a link reaches
+// another session window rather than a chromeless popup.
+func (v *windowsView) applySettings(devTools bool) error {
+	view2, release, err := v.webview()
+	if err != nil {
+		return err
+	}
+	defer release()
+
+	settings, err := view2.GetSettings()
+	if err != nil {
+		return fmt.Errorf("steambrowser: read view settings: %w", err)
+	}
+	if err := settings.PutAreDevToolsEnabled(devTools); err != nil {
+		return fmt.Errorf("steambrowser: set developer tools: %w", err)
+	}
+	if err := settings.PutAreDefaultContextMenusEnabled(true); err != nil {
+		return fmt.Errorf("steambrowser: set context menu: %w", err)
+	}
+	return nil
+}
+
+// OpenDevTools opens the content view's developer tools, for working out why a
+// page behaves differently here than in a browser.
+func (v *windowsView) OpenDevTools() error {
+	if v.chromium == nil {
+		return errors.New("steambrowser: content view is gone")
+	}
+	v.chromium.OpenDevToolsWindow()
+	return nil
 }

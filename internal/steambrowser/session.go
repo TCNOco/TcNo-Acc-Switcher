@@ -12,6 +12,17 @@ import (
 // ErrInvalidSession rejects credentials that could not produce a working window.
 var ErrInvalidSession = errors.New("steambrowser: invalid Steam session")
 
+// SameSite is a cookie's cross-site policy, named rather than numbered so each
+// backend maps it to its own engine's enum.
+type SameSite int
+
+const (
+	// SameSiteLax is sent on same-site requests and top-level navigations.
+	SameSiteLax SameSite = iota
+	// SameSiteNone is sent on cross-site requests too, and requires Secure.
+	SameSiteNone
+)
+
 // Cookie is one cookie to plant before the first navigation. It is deliberately
 // free of any webview type so the host backends can each translate it.
 type Cookie struct {
@@ -19,6 +30,11 @@ type Cookie struct {
 	Value  string
 	Domain string
 	Path   string
+	// Secure restricts the cookie to https. Required for SameSiteNone.
+	Secure bool
+	// HTTPOnly hides the cookie from page scripts.
+	HTTPOnly bool
+	SameSite SameSite
 }
 
 // sessionDomains are the hosts a Steam web session has to be planted on.
@@ -53,16 +69,38 @@ func SessionCookies(steamID64, accessToken, sessionID string) ([]Cookie, error) 
 	cookies := make([]Cookie, 0, len(sessionDomains)*5)
 	for _, domain := range sessionDomains {
 		cookies = append(cookies,
-			Cookie{Name: "steamLoginSecure", Value: login, Domain: domain, Path: "/"},
+			// Secure and SameSite=None are what Steam itself sets, and they are
+			// load bearing rather than cosmetic. Steam's pages pull resources
+			// across its own domains - a community page reaches store.steampowered
+			// .com for the header - and those are cross-site requests. Under a
+			// cookie API's usual Lax default the session is not sent with them, so
+			// the page half-loads and waits on requests that will never come back
+			// signed in.
+			Cookie{
+				Name: "steamLoginSecure", Value: login, Domain: domain, Path: "/",
+				Secure: true, HTTPOnly: true, SameSite: SameSiteNone,
+			},
 			// sessionid pairs with the CSRF token in Steam's own forms. Steam accepts
 			// any well-formed value, and every request from this window carries the
-			// same one.
-			Cookie{Name: "sessionid", Value: sessionID, Domain: domain, Path: "/"},
-			Cookie{Name: "Steam_Language", Value: "english", Domain: domain, Path: "/"},
+			// same one. Not HTTPOnly: Steam's own scripts read it.
+			Cookie{
+				Name: "sessionid", Value: sessionID, Domain: domain, Path: "/",
+				Secure: true, SameSite: SameSiteNone,
+			},
+			Cookie{
+				Name: "Steam_Language", Value: "english", Domain: domain, Path: "/",
+				Secure: true, SameSite: SameSiteLax,
+			},
 			// Without a birth date the store interposes an age gate on mature-rated
 			// apps and serves none of the page.
-			Cookie{Name: "birthtime", Value: "283996801", Domain: domain, Path: "/"},
-			Cookie{Name: "lastagecheckage", Value: "1-January-1979", Domain: domain, Path: "/"},
+			Cookie{
+				Name: "birthtime", Value: "283996801", Domain: domain, Path: "/",
+				Secure: true, SameSite: SameSiteLax,
+			},
+			Cookie{
+				Name: "lastagecheckage", Value: "1-January-1979", Domain: domain, Path: "/",
+				Secure: true, SameSite: SameSiteLax,
+			},
 		)
 	}
 	return cookies, nil

@@ -146,3 +146,16 @@ func addEventHandler(proc ComProc, this, handler unsafe.Pointer) error {
 	}
 	return nil
 }
+
+// GetSettings returns the view's settings object.
+func (i *ICoreWebView2_2) GetSettings() (*ICoreWebView2Settings, error) {
+	var settings *ICoreWebView2Settings
+	hr, _, _ := i.vtbl.GetSettings.Call(
+		uintptr(unsafe.Pointer(i)),
+		uintptr(unsafe.Pointer(&settings)),
+	)
+	if hr != 0 {
+		return nil, windows.Errno(hr)
+	}
+	return settings, nil
+}

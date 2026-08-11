@@ -49,6 +49,55 @@ func TestSessionCookiesCoverEveryDomain(t *testing.T) {
 	}
 }
 
+// Steam's pages fetch across steamcommunity.com and store.steampowered.com, which
+// are cross-site to each other. A session cookie left on a cookie API's usual Lax
+// default is not sent with those, and the page hangs waiting on requests that
+// come back signed out.
+func TestSessionCookiesAreSentCrossSite(t *testing.T) {
+	cookies, err := SessionCookies(testSteamID, testToken, testSession)
+	if err != nil {
+		t.Fatalf("SessionCookies: %v", err)
+	}
+	seen := 0
+	for _, c := range cookies {
+		if c.Name != "steamLoginSecure" && c.Name != "sessionid" {
+			continue
+		}
+		seen++
+		if c.SameSite != SameSiteNone {
+			t.Errorf("%s on %s has SameSite %v, want SameSiteNone", c.Name, c.Domain, c.SameSite)
+		}
+		// SameSite=None is only honoured on a secure cookie.
+		if !c.Secure {
+			t.Errorf("%s on %s is not Secure, so SameSiteNone would be dropped", c.Name, c.Domain)
+		}
+	}
+	if seen != len(sessionDomains)*2 {
+		t.Errorf("checked %d session cookies, want %d", seen, len(sessionDomains)*2)
+	}
+}
+
+// Steam's own scripts read sessionid, so hiding it from them would break the
+// pages that post back.
+func TestSessionIDStaysReadableByScripts(t *testing.T) {
+	cookies, err := SessionCookies(testSteamID, testToken, testSession)
+	if err != nil {
+		t.Fatalf("SessionCookies: %v", err)
+	}
+	for _, c := range cookies {
+		switch c.Name {
+		case "sessionid":
+			if c.HTTPOnly {
+				t.Errorf("sessionid on %s is HttpOnly", c.Domain)
+			}
+		case "steamLoginSecure":
+			if !c.HTTPOnly {
+				t.Errorf("steamLoginSecure on %s is readable by page scripts", c.Domain)
+			}
+		}
+	}
+}
+
 // The mobile marker asks Steam for its mobile shell; these windows are meant to
 // look like the desktop site.
 func TestSessionCookiesOmitMobileClient(t *testing.T) {
