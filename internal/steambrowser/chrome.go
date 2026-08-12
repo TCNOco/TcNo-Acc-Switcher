@@ -5,6 +5,8 @@ import (
 	"net/url"
 	"strings"
 
+	"TcNo-Acc-Switcher/internal/screenprivacy"
+
 	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
@@ -49,7 +51,7 @@ func windowTitle(accountName string, site Site) string {
 }
 
 func chromeWindowOptions(sessionID, title string) application.WebviewWindowOptions {
-	return application.WebviewWindowOptions{
+	options := application.WebviewWindowOptions{
 		Name:      windowName(sessionID),
 		Title:     title,
 		URL:       "/#/steam/browser/" + sessionID,
@@ -72,6 +74,9 @@ func chromeWindowOptions(sessionID, title string) application.WebviewWindowOptio
 			application.PermissionClipboardRead: application.PermissionDeny,
 		},
 	}
+	// A Steam sign-in page is the last thing that should land in a recording.
+	screenprivacy.Apply(&options)
+	return options
 }
 
 // scaleForWindow converts device-independent pixels to physical ones. Wails

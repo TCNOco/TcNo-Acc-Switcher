@@ -7,6 +7,8 @@ import (
 	"strings"
 	"sync"
 
+	"TcNo-Acc-Switcher/internal/screenprivacy"
+
 	"github.com/wailsapp/wails/v3/pkg/application"
 	"github.com/wailsapp/wails/v3/pkg/events"
 )
@@ -152,6 +154,7 @@ func (s *Service) openOnMainThread(id string, credentials WebSession, site Site,
 	}
 
 	window := app.Window.NewWithOptions(chromeWindowOptions(id, windowTitle(credentials.AccountName, site)))
+	screenprivacy.Follow(window)
 	nativeWindow := uintptr(window.NativeWindow())
 	if nativeWindow == 0 {
 		window.Close()

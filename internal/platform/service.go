@@ -39,6 +39,7 @@ type PlatformStartup struct {
 	StartProgramCentered     bool   `json:"startProgramCentered"`
 	StreamerMode             bool   `json:"streamerMode"`
 	AutoStreamerMode         bool   `json:"autoStreamerMode"`
+	HideFromScreenshots      bool   `json:"hideFromScreenshots"`
 	AnimationsEnabled        bool   `json:"animationsEnabled"`
 	ControllerSupportEnabled bool   `json:"controllerSupportEnabled"`
 	StatsEnabled             bool   `json:"statsEnabled"`
@@ -125,6 +126,7 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 				StartProgramCentered:     settings.StartProgramCentered,
 				StreamerMode:             settings.StreamerMode,
 				AutoStreamerMode:         settings.AutoStreamerMode,
+				HideFromScreenshots:      settings.HideFromScreenshots,
 				AnimationsEnabled:        settings.AnimationsEnabled,
 				ControllerSupportEnabled: settings.ControllerSupportEnabled,
 				StatsEnabled:             settings.StatsEnabled,
@@ -181,6 +183,7 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 		StartProgramCentered:     settings.StartProgramCentered,
 		StreamerMode:             settings.StreamerMode,
 		AutoStreamerMode:         settings.AutoStreamerMode,
+		HideFromScreenshots:      settings.HideFromScreenshots,
 		AnimationsEnabled:        settings.AnimationsEnabled,
 		ControllerSupportEnabled: settings.ControllerSupportEnabled,
 		StatsEnabled:             settings.StatsEnabled,

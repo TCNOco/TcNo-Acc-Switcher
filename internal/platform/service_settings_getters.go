@@ -168,6 +168,15 @@ func (p *PlatformService) GetAutoStreamerMode() (bool, error) {
 	return val, err
 }
 
+func (p *PlatformService) GetHideFromScreenshots() (bool, error) {
+	var val bool
+	err := p.withSettingsRead(func(s *AppSettings) error {
+		val = s.HideFromScreenshots
+		return nil
+	})
+	return val, err
+}
+
 func (p *PlatformService) GetAnimationsEnabled() (bool, error) {
 	var val bool
 	err := p.withSettingsRead(func(s *AppSettings) error {

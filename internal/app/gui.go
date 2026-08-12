@@ -21,6 +21,7 @@ import (
 	"TcNo-Acc-Switcher/internal/logredact"
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
+	"TcNo-Acc-Switcher/internal/screenprivacy"
 	"TcNo-Acc-Switcher/internal/security"
 	"TcNo-Acc-Switcher/internal/shortcuts"
 	"TcNo-Acc-Switcher/internal/stats"
@@ -81,6 +82,9 @@ func mainWindowOptions(guiSettings platform.AppSettings, parsed cli.Parsed) appl
 		},
 	}
 	applyWindowSecurityPolicy(&winOpts, buildmode.IsDebugBuild())
+	// Stamped at creation rather than after: a window that opens capturable and is
+	// protected a frame later has already been recorded.
+	screenprivacy.Apply(&winOpts)
 	if guiSettings.StartProgramCentered {
 		winOpts.InitialPosition = application.WindowCentered
 	} else {
@@ -145,6 +149,7 @@ func RunGUI(params RunGUIParams) {
 	// Before the window exists, so a broadcaster that is already running has been
 	// adopted by the time the first account list paints.
 	platform.InitStreamerMode(guiSettings)
+	screenprivacy.SetEnabled(guiSettings.HideFromScreenshots)
 	defer streamer.Shutdown()
 
 	wailsLvl := ResolvedLogLevel(parsed)
@@ -254,6 +259,7 @@ func RunGUI(params RunGUIParams) {
 
 	winOpts := mainWindowOptions(guiSettings, parsed)
 	win := wailsApp.Window.NewWithOptions(winOpts)
+	screenprivacy.Follow(win)
 	registerNotificationResponseHandler(wailsApp, win, notifier)
 	win.OnWindowEvent(events.Common.WindowFilesDropped, func(event *application.WindowEvent) {
 		files := event.Context().DroppedFiles()

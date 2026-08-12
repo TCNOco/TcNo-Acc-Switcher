@@ -82,6 +82,10 @@ type AppSettings struct {
 	// running, without touching the StreamerMode override.
 	AutoStreamerMode bool `json:"autoStreamerMode,omitempty"`
 
+	// HideFromScreenshots excludes the app's windows from screen capture for as
+	// long as it is on, the way the Steam Guard windows always are.
+	HideFromScreenshots bool `json:"hideFromScreenshots,omitempty"`
+
 	// StatsEnabled toggles local anonymous statistics collection.
 	// Stored without omitempty so an explicit opt-out survives a restart.
 	StatsEnabled bool `json:"statsEnabled"`

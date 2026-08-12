@@ -121,6 +121,12 @@
     get(t)("Settings_AutoStreamerMode"),
   );
 
+  const hideFromScreenshots = createToggle(
+    () => PlatformService.GetHideFromScreenshots(),
+    (v) => PlatformService.SetHideFromScreenshots(v),
+    get(t)("Settings_HideFromScreenshots"),
+  );
+
   const startProgramCentered = createToggle(
     () => PlatformService.GetStartProgramCentered(),
     (v) => PlatformService.SetStartProgramCentered(v),
@@ -283,6 +289,7 @@
     startProgramCentered.value.set(settings.startProgramCentered);
     streamerMode.value.set(settings.streamerMode);
     autoStreamerMode.value.set(settings.autoStreamerMode);
+    hideFromScreenshots.value.set(settings.hideFromScreenshots);
     animationsEnabled.set(settings.animationsEnabled);
     animations.value.set(settings.animationsEnabled);
     controllerSupport.value.set(applyControllerSupportEnabled(settings.controllerSupportEnabled));
@@ -303,6 +310,9 @@
     void startProgramCentered.init();
     void streamerMode.init();
     void autoStreamerMode.init();
+    if (isWindows) {
+      void hideFromScreenshots.init();
+    }
     void animations.init();
     void controllerSupport.init();
     void loadCommandPaletteHotkey();
@@ -572,6 +582,17 @@
         </p>
       {/if}
     </div>
+    {#if isWindows}
+      <SettingsToggle
+        id="gs-hide-from-screenshots"
+        checked={$hideFromScreenshots.value}
+        disabled={$hideFromScreenshots.loading}
+        label={$t("Settings_HideFromScreenshots")}
+        tooltip={$t("Settings_HideFromScreenshots_Tooltip")}
+        span
+        on:change={() => void hideFromScreenshots.toggle()}
+      />
+    {/if}
     <SettingsToggle
       id="settings-animations"
       checked={$animations.value}
