@@ -41,10 +41,19 @@ func NewBrowserSessionSource(service *Service) steambrowser.SessionSource {
 // window cannot be opened without the user having unlocked the vault for this
 // account.
 func (b browserSessionSource) BrowserSession(accountID, modalToken string) (steambrowser.WebSession, error) {
-	// Renew first. A window's cookies are minted once and then outlive the vault
-	// lock, so it is worth opening with a fresh token rather than one about to
-	// lapse mid-session.
-	refreshed, err := b.service.EnsureFreshSession(accountID, modalToken)
+	// Authorized once, up front. Renewing writes to the vault and rotates the
+	// generation this very capability is bound to, so checking it again afterwards
+	// would reject the caller for a side effect of its own call — which is what
+	// used to fail the first window an account opened after its token went stale.
+	v, _, steamID, err := b.service.authorizeSteamFlow(accountID, modalToken)
+	if err != nil {
+		return steambrowser.WebSession{}, err
+	}
+
+	// Renew before reading. A window's cookies are minted once and then outlive the
+	// vault lock, so it is worth opening with a fresh token rather than one about
+	// to lapse mid-session.
+	refreshed, err := b.service.ensureFreshSessionAuthorized(v, accountID, steamID)
 	if err != nil {
 		return steambrowser.WebSession{}, err
 	}
@@ -52,10 +61,6 @@ func (b browserSessionSource) BrowserSession(accountID, modalToken string) (stea
 		return steambrowser.WebSession{}, ErrBrowserSessionNeedsLogin
 	}
 
-	v, _, steamID, err := b.service.authorizeSteamFlow(accountID, modalToken)
-	if err != nil {
-		return steambrowser.WebSession{}, err
-	}
 	record, err := recordForSteamID64(v, accountID)
 	if err != nil {
 		return steambrowser.WebSession{}, err
@@ -82,5 +87,8 @@ func (b browserSessionSource) BrowserSession(accountID, modalToken string) (stea
 		AccountName: record.AccountName(),
 		AccessToken: accessToken,
 		SessionID:   sessionID,
+		// A renewal rotated the generation, so the modal that opened this window is
+		// holding a capability its next call would be rejected for.
+		CapabilityRefreshRequired: refreshed.CapabilityRefreshRequired,
 	}, nil
 }

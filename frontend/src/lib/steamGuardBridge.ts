@@ -1169,7 +1169,10 @@ const controller: SteamGuardModalController = {
 	openConfirmations: (accountId, capability) => SteamGuardService.OpenConfirmations(accountId, capability),
 	openSteamBrowser: async (accountId, site, capability) => {
 		const result = await SteamBrowserService.OpenBrowser(accountId, site, capability);
-		return { needsLogin: result.needsLogin === true };
+		return {
+			needsLogin: result.needsLogin === true,
+			capabilityRefreshRequired: result.capabilityRefreshRequired === true,
+		};
 	},
 	loginAgain: (accountId, capability) => SteamGuardService.LoginAgain(accountId, capability).then(loginResult),
 	async removeLoginOnlyAccount(accountId, capability) {

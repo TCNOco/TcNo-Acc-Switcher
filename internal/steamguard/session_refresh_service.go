@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"TcNo-Acc-Switcher/internal/steamguard/sessionrefresh"
+	"TcNo-Acc-Switcher/internal/steamguard/vault"
 )
 
 // SteamSessionRefreshState is SteamSessionState plus what a renewal did to the
@@ -34,6 +35,18 @@ func (s *Service) EnsureFreshSession(accountID, token string) (SteamSessionRefre
 	if err != nil {
 		return SteamSessionRefreshState{}, err
 	}
+	return s.ensureFreshSessionAuthorized(v, accountID, steamID)
+}
+
+// ensureFreshSessionAuthorized is the body of EnsureFreshSession for callers that
+// have already proved their capability and hold the vault.
+//
+// It exists because a renewal writes to the vault, and that write rotates the
+// generation the caller's capability is bound to. Anything that needs both to
+// renew a session and to read the result — opening a browser window does — has to
+// authorize once up front and work from the handle it got, or the second
+// authorization is rejected by the very side effect the first one produced.
+func (s *Service) ensureFreshSessionAuthorized(v *vault.Vault, accountID string, steamID uint64) (SteamSessionRefreshState, error) {
 	record, err := recordForSteamID64(v, accountID)
 	if err != nil {
 		return SteamSessionRefreshState{}, err

@@ -910,6 +910,10 @@
     try {
       const capability = await ensureCapability(account);
       const result = await open(account.id, site, capability);
+      // Opening a window renews a lapsed session, and that write rotates the
+      // vault generation this modal's capability is bound to. Without this the
+      // next thing the user clicked failed instead.
+      await refreshCapabilityIfRequired(account, result?.capabilityRefreshRequired === true);
       // A session too old to renew is not an error to read and dismiss; the
       // only thing to do about it is sign in, so go straight there.
       if (result?.needsLogin) {

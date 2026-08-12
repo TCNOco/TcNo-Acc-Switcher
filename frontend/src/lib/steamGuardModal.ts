@@ -354,7 +354,11 @@ export type SteamGuardModalController = {
 	 * session-browser support, which hides the buttons rather than offering
 	 * something that cannot work.
 	 */
-	openSteamBrowser?: (accountId: string, site: SteamBrowserSite, capability: string) => Promise<{ needsLogin: boolean }>;
+	openSteamBrowser?: (
+		accountId: string,
+		site: SteamBrowserSite,
+		capability: string,
+	) => Promise<{ needsLogin: boolean; capabilityRefreshRequired: boolean }>;
 	  loginAgain?: (accountId: string, capability: string) => Promise<SteamLoginResult>;
 	  beginCredentialLogin?: (
 		accountId: string,

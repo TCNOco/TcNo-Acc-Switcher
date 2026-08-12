@@ -34,6 +34,10 @@ type OpenResult struct {
 	SessionID string `json:"sessionId"`
 	// NeedsLogin asks the caller to put the user through the sign-in screen.
 	NeedsLogin bool `json:"needsLogin"`
+	// CapabilityRefreshRequired reports that opening the window wrote to the Steam
+	// Guard vault, so the modal that asked for it must take a fresh capability
+	// before its next call.
+	CapabilityRefreshRequired bool `json:"capabilityRefreshRequired"`
 }
 
 // SessionSource hands out a usable web session for an account.
@@ -54,6 +58,9 @@ type WebSession struct {
 	AccountName string
 	AccessToken string
 	SessionID   string
+	// CapabilityRefreshRequired reports that producing this session wrote to the
+	// caller's store, invalidating the capability it was requested with.
+	CapabilityRefreshRequired bool
 }
 
 // Service opens and drives the session browser windows.
@@ -144,7 +151,7 @@ func (s *Service) OpenBrowser(accountID, site, modalToken string) (OpenResult, e
 		return OpenResult{}, openErr
 	}
 	log.Info("session browser window open", "window", id, "open", s.sessions.count())
-	return OpenResult{SessionID: id}, nil
+	return OpenResult{SessionID: id, CapabilityRefreshRequired: session.CapabilityRefreshRequired}, nil
 }
 
 func (s *Service) openOnMainThread(id string, credentials WebSession, site Site, destination, profile string, cookies []Cookie) error {
