@@ -180,6 +180,9 @@ func (s *Service) reconcile(platformKey string) error {
 		}
 		full := filepath.Join(shortDir, fn)
 		_ = winutil.ExtractShortcutIcon(full, outPath)
+		if fi, err := os.Stat(outPath); err != nil || fi.IsDir() || fi.Size() < minShortcutIconBytes {
+			_ = ensureSteamShortcutIcon(platformKey, full, outPath, www)
+		}
 	}
 
 	// Main exe icon (Steam always; basic when ShortcutIncludeMainExe)

@@ -439,6 +439,18 @@ func ensureGameIconLocal(id string, squareOnly bool) (string, error) {
 	return GameIconURL(id), nil
 }
 
+// EnsureLocalGameIcon caches appID's icon from Steam's own librarycache,
+// falling back to header art when the app has no square client icon. Disk only,
+// so unlike EnsureGameIcon it is safe to call from a path that must not block on
+// the network. Returns "" when Steam has no artwork cached for the app.
+func EnsureLocalGameIcon(appID string) (string, error) {
+	id, ok := normalizeAppID(appID)
+	if !ok {
+		return "", fmt.Errorf("steam game icon: invalid app id %q", appID)
+	}
+	return ensureGameIconLocal(id, false)
+}
+
 // EnsureGameIcon resolves a Steam app id to an icon cached under
 // wwwroot/img/gameicons/square and returns the URL the frontend renders it from.
 // Steam's own librarycache is preferred over the CDN, and a square client icon
