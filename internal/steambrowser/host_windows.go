@@ -45,6 +45,7 @@ type windowsView struct {
 
 	onState     func(ViewState)
 	onNewWindow func(string)
+	onDownload  func(string)
 
 	// handlers holds the event-handler objects for the view's lifetime.
 	//
@@ -70,6 +71,7 @@ func newView(options ViewOptions) (View, error) {
 		hostWindow:  options.NativeWindow,
 		onState:     options.OnState,
 		onNewWindow: options.OnNewWindow,
+		onDownload:  options.OnDownload,
 	}
 
 	chromium := webview2.NewChromium()
@@ -239,6 +241,35 @@ func (v *windowsView) subscribe() error {
 	}
 	if err := view2.AddNewWindowRequested(newWindowRequested); err != nil {
 		return fmt.Errorf("steambrowser: subscribe to new-window requests: %w", err)
+	}
+	return v.subscribeDownloads()
+}
+
+// subscribeDownloads wires the download event, which lives on a later interface
+// than everything else this view uses.
+//
+// A runtime too old to offer it is not fatal. The window works; downloads land
+// in WebView2's own flyout instead of the user's browser, which is the behaviour
+// this whole path exists to replace rather than something it depends on.
+func (v *windowsView) subscribeDownloads() error {
+	if v.chromium == nil {
+		return errors.New("steambrowser: content view is gone")
+	}
+	view := v.chromium.GetWebView()
+	if view == nil {
+		return errors.New("steambrowser: content view is gone")
+	}
+	view4, err := view.QueryInterface4()
+	if err != nil {
+		logger().Warn("downloads cannot be handed to the browser: this WebView2 runtime is too old", "error", err)
+		return nil
+	}
+	defer view4.Release()
+
+	downloadStarting := webview2.NewICoreWebView2DownloadStartingEventHandler(v)
+	v.handlers = append(v.handlers, downloadStarting)
+	if err := view4.AddDownloadStarting(downloadStarting); err != nil {
+		return fmt.Errorf("steambrowser: subscribe to downloads: %w", err)
 	}
 	return nil
 }
@@ -455,6 +486,44 @@ func (v *windowsView) NewWindowRequested(_ *webview2.ICoreWebView2, args *webvie
 	}
 	if v.onNewWindow != nil {
 		v.onNewWindow(url)
+	}
+	return 0
+}
+
+// DownloadStarting refuses the transfer and hands the address to the host, which
+// gives it to the user's own browser.
+//
+// The address is read before anything is cancelled: a download this window
+// cannot pass on - a blob or a data URL, which mean nothing outside the page
+// that made them - is left to proceed rather than dropped with nowhere to go.
+func (v *windowsView) DownloadStarting(_ *webview2.ICoreWebView2, args *webview2.ICoreWebView2DownloadStartingEventArgs) uintptr {
+	if args == nil {
+		return 0
+	}
+	operation, err := args.GetDownloadOperation()
+	if err != nil || operation == nil {
+		logger().Warn("a download could not be read and was left to the content view", "error", err)
+		return 0
+	}
+	defer operation.Release()
+
+	url, err := operation.GetUri()
+	if err != nil || !navigableScheme(url) {
+		return 0
+	}
+	// Handled as well as cancelled: cancelling alone still raises the flyout,
+	// which would announce a download that is not happening here.
+	if err := args.PutHandled(true); err != nil {
+		logger().Warn("could not suppress the download flyout", "error", err)
+	}
+	if err := args.PutCancel(true); err != nil {
+		// Refusing to cancel means the file is coming down here anyway, so it must
+		// not also be handed to the browser and fetched twice.
+		logger().Warn("a download could not be cancelled and stays in this window", "error", err)
+		return 0
+	}
+	if v.onDownload != nil {
+		v.onDownload(url)
 	}
 	return 0
 }

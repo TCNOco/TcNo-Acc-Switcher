@@ -45,6 +45,11 @@ Local changes:
       Source, title, history and new-window plumbing for a URL bar and its
       back/forward buttons.
 
+  download.go                                   (added)
+      ICoreWebView2_4 and the DownloadStarting event, so a host can refuse a
+      download rather than take WebView2's default of a transfer into the
+      profile's folder and a flyout over the page. Absent upstream.
+
 Vtable slot layouts in the added files were derived from the WebView2 IDL, at
 v3/internal/webview2/scripts/WebView2.1.0.2592.51.idl in the Wails repository,
 rather than inferred. A wrong slot does not fail loudly, so profile_test.go

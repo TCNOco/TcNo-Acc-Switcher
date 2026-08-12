@@ -160,7 +160,7 @@ func (s *Service) openOnMainThread(id string, credentials WebSession, site Site,
 		return errors.New("steambrowser: application is not running")
 	}
 
-	window := app.Window.NewWithOptions(chromeWindowOptions(id, windowTitle(credentials.AccountName, site)))
+	window := app.Window.NewWithOptions(chromeWindowOptions(id, windowTitle(credentials.AccountName, site, destination)))
 	screenprivacy.Follow(window)
 	nativeWindow := uintptr(window.NativeWindow())
 	if nativeWindow == 0 {
@@ -184,6 +184,7 @@ func (s *Service) openOnMainThread(id string, credentials WebSession, site Site,
 		Platform:     PlatformSteam,
 		OnState:      func(state ViewState) { s.publish(id, state) },
 		OnNewWindow:  func(url string) { s.handleNewWindow(id, url) },
+		OnDownload:   func(url string) { s.handleDownload(id, url) },
 	})
 	if err != nil {
 		window.Close()
@@ -295,32 +296,50 @@ func (s *Service) publish(sessionID string, state ViewState) {
 	})
 }
 
-// handleNewWindow routes a middle-click or popup. A trusted target opens as
-// another session window for the same account; anything else goes to the user's
-// own browser, so a page cannot pull an untrusted site into a window that is
-// wearing this account's session.
+// handleNewWindow routes a middle-click or a popup into another session window
+// on the same account.
+//
+// Trusted or not, it stays in the app. A link is a navigation like any other, and
+// this window already lets the user type or drop an address that leaves the
+// trusted list — what an untrusted page gets is the red frame, not exile.
+// Sending them out was also breaking what these popups are most often for: a
+// "Sign in with Steam" window opened in the system browser signs in as whoever
+// that browser is, which is exactly the account this window is not.
+//
+// The new window reuses this one's account rather than asking the vault again,
+// which would need a modal token the page cannot have. The system browser stays
+// as the fallback for a window that could not be opened at all.
 func (s *Service) handleNewWindow(sessionID, url string) {
 	current, err := s.sessions.get(sessionID)
 	if err != nil {
 		return
 	}
-	if !IsTrusted(current.platform, url) {
-		logger().Info("handing an untrusted link to the system browser",
-			"window", sessionID, "host", Classify(current.platform, url).Host)
-		if app := application.Get(); app != nil && app.Browser != nil {
-			_ = app.Browser.OpenURL(url)
-		}
-		return
-	}
-	// Reuse this window's own account rather than asking the vault again, which
-	// would need a modal token the page cannot have.
 	go func() {
 		if _, err := s.openLinked(current, url); err != nil {
+			logger().Warn("a linked window could not be opened; handing it to the system browser",
+				"window", sessionID, "host", Classify(current.platform, url).Host, "error", err)
 			if app := application.Get(); app != nil && app.Browser != nil {
 				_ = app.Browser.OpenURL(url)
 			}
 		}
 	}()
+}
+
+// handleDownload gives a download to the user's own browser, where their
+// downloads folder, their history and their prompts already are.
+//
+// The session's cookies do not go with it, so a file behind a sign-in will not
+// come down this way. That is the trade: a session window is for browsing as an
+// account, and it has nowhere to put a file or anything to show a failed
+// transfer in.
+func (s *Service) handleDownload(sessionID, url string) {
+	logger().Info("handing a download to the system browser",
+		"window", sessionID, "host", Classify(PlatformSteam, url).Host)
+	if app := application.Get(); app != nil && app.Browser != nil {
+		if err := app.Browser.OpenURL(url); err != nil {
+			logger().Warn("the system browser refused a download", "window", sessionID, "error", err)
+		}
+	}
 }
 
 // Navigate sends a window to a URL the user typed or dropped. A value with no

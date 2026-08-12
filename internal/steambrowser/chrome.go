@@ -41,8 +41,17 @@ func siteLabel(site Site) string {
 	}
 }
 
-func windowTitle(accountName string, site Site) string {
+// windowTitle names a window after the account and where it was opened on.
+//
+// A window that opens off the trusted list is captioned with its host instead of
+// the site it was linked from. The caption is a trust signal like the frame is,
+// and a popup from a Steam page carrying "Steam Community" over somebody else's
+// site would be the wrong one.
+func windowTitle(accountName string, site Site, destination string) string {
 	label := siteLabel(site)
+	if trust := Classify(PlatformSteam, destination); !trust.Trusted && trust.Host != "" {
+		label = trust.Host
+	}
 	accountName = strings.TrimSpace(accountName)
 	if accountName == "" {
 		return label

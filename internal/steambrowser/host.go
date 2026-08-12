@@ -53,6 +53,11 @@ type ViewOptions struct {
 	// view never opens one itself; returning tells the host what happened, and
 	// the request is always suppressed in the content view.
 	OnNewWindow func(url string)
+	// OnDownload is called instead of downloading. A session window is for
+	// browsing as an account, not for collecting files: it has no download UI,
+	// no downloads folder of its own, and nothing to show a failed transfer in.
+	// The transfer is cancelled before it starts and handed on here.
+	OnDownload func(url string)
 }
 
 // View is one account's content area, the part of the window showing the site.
