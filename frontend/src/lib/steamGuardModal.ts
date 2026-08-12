@@ -1,5 +1,6 @@
 import { get } from "svelte/store";
 import { t } from "../stores/i18n";
+import { formatWailsError } from "./formatWailsError";
 import type { SteamBrowserSite } from "./steam/steamBrowserSites";
 
 export const STEAM_GUARD_CODE_LIFETIME_MS = 30_000;
@@ -477,6 +478,32 @@ export class SteamGuardCapabilityError extends Error {
 		super(message);
 		this.name = "SteamGuardCapabilityError";
 	}
+}
+
+/**
+ * Go's ErrInvalidCapability, which is what a capability bound to a superseded
+ * vault generation is refused with.
+ *
+ * Matched as text because that is all the error is by the time it has crossed
+ * the binding boundary. The Go side pins this exact wording in a test for that
+ * reason - see internal/steamguard/capability/manager_test.go.
+ */
+const STALE_CAPABILITY_MESSAGE = "invalid Steam Guard window capability";
+
+/**
+ * Whether a failed call was refused for the capability rather than for what it
+ * was asked to do.
+ *
+ * This is recoverable, and usually not the caller's doing: every vault write
+ * rotates the generation a capability is bound to, and the owned-games sweep
+ * writes on its own schedule for accounts nobody has open. Re-acquiring and
+ * trying once more is what keeps that invisible.
+ */
+export function isStaleCapabilityError(error: unknown): boolean {
+	// formatWailsError rather than formatUnknownError: a bound method's rejection
+	// reaches here as an Error, a plain object or a JSON string depending on where
+	// it was raised, and only this one unwraps all three.
+	return formatWailsError(error).includes(STALE_CAPABILITY_MESSAGE);
 }
 
 export class SteamGuardContentProtectionLease {

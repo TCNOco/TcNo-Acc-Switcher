@@ -7,6 +7,19 @@ import (
 	"testing"
 )
 
+// The frontend recognises this refusal by its text, because a message is all
+// the error is once it has crossed the Wails binding. Recognising it is what
+// lets the Steam Guard window acquire a fresh capability and retry, instead of
+// showing the user a failure for a background vault write they never made - see
+// isStaleCapabilityError in frontend/src/lib/steamGuardModal.ts. Rewording this
+// breaks that silently: nothing the compiler checks connects the two.
+func TestInvalidCapabilityMessageIsTheContractWithTheFrontend(t *testing.T) {
+	const wanted = "invalid Steam Guard window capability"
+	if got := ErrInvalidCapability.Error(); got != wanted {
+		t.Fatalf("ErrInvalidCapability = %q, want %q", got, wanted)
+	}
+}
+
 func TestIssueValidateAndRevoke(t *testing.T) {
 	m := NewManager()
 	m.random = bytes.NewReader(bytes.Repeat([]byte{0x7a}, tokenBytes))

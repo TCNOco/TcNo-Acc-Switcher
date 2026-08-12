@@ -13,6 +13,7 @@
     reduceSteamGuardModal,
     SteamGuardCapabilityError,
     SteamGuardContentProtectionLease,
+    isStaleCapabilityError,
 	    steamGuardAccountForState,
 	    steamGuardListingAnchor,
 	    steamGuardRowState,
@@ -291,6 +292,39 @@
 		const capability = contentProtection.capabilityFor(currentAccount.id);
 		if (!capability) throw new SteamGuardCapabilityError();
 		return capability;
+	}
+
+	/**
+	 * Runs a call that needs the capability, re-acquiring once if the backend
+	 * refuses the one in hand.
+	 *
+	 * The capability is bound to the vault's generation, and every vault write
+	 * rotates it - including writes this modal never asked for. The owned-games
+	 * sweep renews lapsed sessions in the background, on accounts the user may
+	 * not even have open, and that one batch invalidates the capability of every
+	 * window holding one (see refreshLapsedOwnedGamesSessions in Go, which says
+	 * as much). Nothing tells the modal, so the first sign of it is a call
+	 * rejected for a capability that worked a second earlier - which is what left
+	 * the browse buttons dead until the modal was reopened.
+	 *
+	 * Retrying the call itself is safe for the ones that use this: each checks the
+	 * capability before it does anything, so a rejected attempt did nothing to
+	 * repeat.
+	 */
+	async function withCapability<T>(
+		currentAccount: SteamGuardAccountRef,
+		run: (capability: string) => Promise<T>,
+	): Promise<T> {
+		try {
+			return await run(await ensureCapability(currentAccount));
+		} catch (error) {
+			if (!isStaleCapabilityError(error)) throw error;
+			console.warn("Steam Guard: the capability was superseded; acquiring a new one", error);
+			await contentProtection.acquire(currentAccount.id);
+			const refreshed = contentProtection.capabilityFor(currentAccount.id);
+			if (!refreshed) throw new SteamGuardCapabilityError();
+			return await run(refreshed);
+		}
 	}
 
 	/**
@@ -772,9 +806,10 @@
   async function copyCurrentCode(): Promise<void> {
     if (state.screen !== "account-code" || state.view.unlockPersistence === "one_operation") return;
     try {
-      if (!controller.copyCode) throw new Error("Secure clipboard unavailable");
-		const capability = await ensureCapability(state.view.account);
-		await controller.copyCode(state.view.account.id, capability);
+      const copy = controller.copyCode;
+      if (!copy) throw new Error("Secure clipboard unavailable");
+      const target = state.view.account;
+      await withCapability(target, async (capability) => { await copy(target.id, capability); });
       reportSuccess($t("SteamGuard_Code_Copied"));
     } catch (error) {
       reportFailure($t("SteamGuard_Error_CodeCopyFailed"), error);
@@ -886,11 +921,13 @@
   }
 
   async function showConfirmations(): Promise<void> {
-		if (state.screen !== "account-code" || !controller.openConfirmations) return;
+		const openWindow = controller.openConfirmations;
+		if (state.screen !== "account-code" || !openWindow) return;
 		const currentAccount = state.view.account;
 		try {
-			const capability = await ensureCapability(currentAccount);
-			await controller.openConfirmations(currentAccount.id, capability);
+			await withCapability(currentAccount, async (capability) => {
+				await openWindow(currentAccount.id, capability);
+			});
     } catch (error) {
       reportFailure($t("SteamGuard_Error_ConfirmationsOpenFailed"), error);
     }
@@ -908,8 +945,7 @@
     if (!account?.id) return;
     busy = true;
     try {
-      const capability = await ensureCapability(account);
-      const result = await open(account.id, site, capability);
+      const result = await withCapability(account, (capability) => open(account.id, site, capability));
       // Opening a window renews a lapsed session, and that write rotates the
       // vault generation this modal's capability is bound to. Without this the
       // next thing the user clicked failed instead.

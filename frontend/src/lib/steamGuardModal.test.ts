@@ -5,6 +5,7 @@ import {
 	  closeSteamGuardEnrollment,
   reduceSteamGuardModal,
   isPendingAccountId,
+  isStaleCapabilityError,
   SteamGuardCapabilityError,
   SteamGuardContentProtectionLease,
 	  steamLoginAgainNextStep,
@@ -430,5 +431,31 @@ describe("Steam Guard listing anchor", () => {
 
 	it("has no anchor when every candidate is pending or empty and nothing is listed", () => {
 		expect(steamGuardListingAnchor([pending, { id: " ", username: "" }, null], [])).toBeNull();
+	});
+});
+
+// A capability is bound to the vault's generation, and a background write rotates
+// it under an open window. Telling that refusal apart from a real failure is what
+// lets the window re-acquire and retry instead of showing the user an error, so it
+// has to survive every shape the error arrives in from the Wails binding.
+describe("recognising a superseded capability", () => {
+	const message = "invalid Steam Guard window capability";
+
+	it("recognises the refusal however the binding wrapped it", () => {
+		expect(isStaleCapabilityError(new Error(message))).toBe(true);
+		// What a bound method's error actually looks like: the message is a JSON
+		// object, and the sentinel is wrapped by the Go call that hit it.
+		expect(isStaleCapabilityError(new Error(JSON.stringify({
+			message: `steamguard: open a browser window: ${message}`,
+			kind: "RuntimeError",
+		})))).toBe(true);
+		expect(isStaleCapabilityError({ message })).toBe(true);
+	});
+
+	it("leaves every other failure to be reported", () => {
+		expect(isStaleCapabilityError(new Error("network unreachable"))).toBe(false);
+		expect(isStaleCapabilityError(new SteamGuardCapabilityError())).toBe(false);
+		expect(isStaleCapabilityError(null)).toBe(false);
+		expect(isStaleCapabilityError(undefined)).toBe(false);
 	});
 });
