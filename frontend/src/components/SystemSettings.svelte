@@ -535,14 +535,25 @@
 
 <SettingsGroup title={$t("Settings_Header_GeneralSettings")}>
   <div class="settings-grid">
+    <!-- Offline mode no longer spans the row: it and the capture exclusion are the
+         two "cut this machine off" switches, and they read as a pair side by side. -->
     <SettingsToggle
       id="gs-offline"
       checked={$offlineMode}
       disabled={$offlineLoading}
       label={$t("Settings_OfflineMode")}
-      span
       on:change={() => void toggleOfflineMode()}
     />
+    {#if isWindows}
+      <SettingsToggle
+        id="gs-hide-from-screenshots"
+        checked={$hideFromScreenshots.value}
+        disabled={$hideFromScreenshots.loading}
+        label={$t("Settings_HideFromScreenshots")}
+        tooltip={$t("Settings_HideFromScreenshots_Tooltip")}
+        on:change={() => void hideFromScreenshots.toggle()}
+      />
+    {/if}
     <SettingsToggle
       id="gs-min-switch"
       checked={$minimizeOnSwitch.value}
@@ -582,17 +593,6 @@
         </p>
       {/if}
     </div>
-    {#if isWindows}
-      <SettingsToggle
-        id="gs-hide-from-screenshots"
-        checked={$hideFromScreenshots.value}
-        disabled={$hideFromScreenshots.loading}
-        label={$t("Settings_HideFromScreenshots")}
-        tooltip={$t("Settings_HideFromScreenshots_Tooltip")}
-        span
-        on:change={() => void hideFromScreenshots.toggle()}
-      />
-    {/if}
     <SettingsToggle
       id="settings-animations"
       checked={$animations.value}
