@@ -535,25 +535,14 @@
 
 <SettingsGroup title={$t("Settings_Header_GeneralSettings")}>
   <div class="settings-grid">
-    <!-- Offline mode no longer spans the row: it and the capture exclusion are the
-         two "cut this machine off" switches, and they read as a pair side by side. -->
     <SettingsToggle
       id="gs-offline"
       checked={$offlineMode}
       disabled={$offlineLoading}
       label={$t("Settings_OfflineMode")}
+      span
       on:change={() => void toggleOfflineMode()}
     />
-    {#if isWindows}
-      <SettingsToggle
-        id="gs-hide-from-screenshots"
-        checked={$hideFromScreenshots.value}
-        disabled={$hideFromScreenshots.loading}
-        label={$t("Settings_HideFromScreenshots")}
-        tooltip={$t("Settings_HideFromScreenshots_Tooltip")}
-        on:change={() => void hideFromScreenshots.toggle()}
-      />
-    {/if}
     <SettingsToggle
       id="gs-min-switch"
       checked={$minimizeOnSwitch.value}
@@ -568,31 +557,6 @@
       label={$t("Settings_StartCentered")}
       on:change={() => void startProgramCentered.toggle()}
     />
-    <div class="settings-stack">
-      <SettingsToggle
-        id="gs-streamer-mode"
-        checked={$streamerMode.value}
-        disabled={$streamerMode.loading}
-        label={$t("Settings_StreamerMode")}
-        tooltip={$t("Settings_StreamerMode_Tooltip")}
-        on:change={() => void streamerMode.toggle()}
-      />
-      <div class="settings-sub">
-        <SettingsToggle
-          id="gs-auto-streamer-mode"
-          checked={$autoStreamerMode.value}
-          disabled={$autoStreamerMode.loading}
-          label={$t("Settings_AutoStreamerMode")}
-          tooltip={$t("Settings_AutoStreamerMode_Tooltip")}
-          on:change={() => void autoStreamerMode.toggle()}
-        />
-      </div>
-      {#if $streamerState.autoEnabled && $streamerState.autoActive}
-        <p class="settings-note">
-          {$t("Settings_AutoStreamerMode_Active", { app: $streamerState.detectedExe })}
-        </p>
-      {/if}
-    </div>
     <SettingsToggle
       id="settings-animations"
       checked={$animations.value}
@@ -629,6 +593,46 @@
       {commandPaletteHotkeyCaptureActive ? $t("Settings_CommandPaletteHotkey_Prompt") : $commandPaletteHotkey}
     </button>
   </SettingsField>
+</SettingsGroup>
+
+<SettingsGroup title={$t("Settings_Header_Privacy")}>
+  <div class="settings-grid">
+    {#if isWindows}
+      <SettingsToggle
+        id="gs-hide-from-screenshots"
+        checked={$hideFromScreenshots.value}
+        disabled={$hideFromScreenshots.loading}
+        label={$t("Settings_HideFromScreenshots")}
+        tooltip={$t("Settings_HideFromScreenshots_Tooltip")}
+        on:change={() => void hideFromScreenshots.toggle()}
+      />
+    {/if}
+    <div class="settings-stack">
+      <SettingsToggle
+        id="gs-streamer-mode"
+        checked={$streamerMode.value}
+        disabled={$streamerMode.loading}
+        label={$t("Settings_StreamerMode")}
+        tooltip={$t("Settings_StreamerMode_Tooltip")}
+        on:change={() => void streamerMode.toggle()}
+      />
+      <div class="settings-sub">
+        <SettingsToggle
+          id="gs-auto-streamer-mode"
+          checked={$autoStreamerMode.value}
+          disabled={$autoStreamerMode.loading}
+          label={$t("Settings_AutoStreamerMode")}
+          tooltip={$t("Settings_AutoStreamerMode_Tooltip")}
+          on:change={() => void autoStreamerMode.toggle()}
+        />
+      </div>
+      {#if $streamerState.autoEnabled && $streamerState.autoActive}
+        <p class="settings-note">
+          {$t("Settings_AutoStreamerMode_Active", { app: $streamerState.detectedExe })}
+        </p>
+      {/if}
+    </div>
+  </div>
 </SettingsGroup>
 
 <SettingsGroup title={$t("Settings_Header_System")}>

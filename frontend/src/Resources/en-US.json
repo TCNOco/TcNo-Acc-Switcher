@@ -87,6 +87,7 @@
   "Settings_SteamAPIKey_Note": "Setting an API key will make the Limited indicator (yellow account name) show for accounts that are Community Banned instead.",
   "Settings_Header_AppWide": "App settings",
   "Settings_Header_GeneralSettings": "General settings",
+  "Settings_Header_Privacy": "Privacy",
   "Settings_Header_AccountDisplay": "Account Display settings",
   "Settings_Header_SteamGuardAuth": "Steam Guard/Auth",
   "Settings_Header_ExtraPlatforms": "Platform Settings",
