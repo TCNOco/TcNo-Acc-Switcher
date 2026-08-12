@@ -573,6 +573,7 @@
   "Context_SteamGuard": "Steam Guard",
   "SteamGuard_Badge_Stored": "Steam Guard isch für das Konto gspeicheret",
   "SteamGuard_Badge_Unfinished": "D Steam Guard Iirichtig für das Konto isch nöd fertig",
+  "SteamGuard_Badge_LoginOnly": "Dä Account isch aagmäldet, aber es isch kei Authenticator gspeicheret",
   "SteamGuard_Title": "Steam Guard",
   "SteamGuard_LoginAgain": "Erneut anmelden",
   "SteamGuard_Confirmations_Title": "Bestätigungen",

@@ -573,6 +573,7 @@
   "Context_SteamGuard": "Steam Guard",
   "SteamGuard_Badge_Stored": "Steam Guard er lagret for denne kontoen",
   "SteamGuard_Badge_Unfinished": "Steam Guard-oppsettet for denne kontoen er uferdig",
+  "SteamGuard_Badge_LoginOnly": "Denne kontoen er pålogget, men ingen autentisator er lagret",
   "SteamGuard_Title": "Steam Guard",
   "SteamGuard_LoginAgain": "Logg inn på nytt",
   "SteamGuard_Confirmations_Title": "Bekreftelser",

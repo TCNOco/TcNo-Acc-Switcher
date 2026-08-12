@@ -573,6 +573,7 @@
   "Context_SteamGuard": "Steam Guard",
   "SteamGuard_Badge_Stored": "此账户的 Steam Guard 已存储",
   "SteamGuard_Badge_Unfinished": "此账户的 Steam Guard 设置尚未完成",
+  "SteamGuard_Badge_LoginOnly": "此账户已登录，但未存储任何验证器",
   "SteamGuard_Title": "Steam Guard",
   "SteamGuard_LoginAgain": "重新登录",
   "SteamGuard_Confirmations_Title": "确认请求",

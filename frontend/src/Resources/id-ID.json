@@ -573,6 +573,7 @@
   "Context_SteamGuard": "Steam Guard",
   "SteamGuard_Badge_Stored": "Steam Guard tersimpan untuk akun ini",
   "SteamGuard_Badge_Unfinished": "Penyiapan Steam Guard untuk akun ini belum selesai",
+  "SteamGuard_Badge_LoginOnly": "Akun ini sudah masuk, tetapi tidak ada autentikator yang tersimpan",
   "SteamGuard_Title": "Steam Guard",
   "SteamGuard_LoginAgain": "Masuk lagi",
   "SteamGuard_Confirmations_Title": "Konfirmasi",

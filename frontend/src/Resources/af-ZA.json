@@ -573,6 +573,7 @@
   "Context_SteamGuard": "Steam Guard",
   "SteamGuard_Badge_Stored": "Steam Guard word vir hierdie rekening gestoor",
   "SteamGuard_Badge_Unfinished": "Steam Guard-opstelling vir hierdie rekening is onvoltooid",
+  "SteamGuard_Badge_LoginOnly": "Hierdie rekening is aangemeld, maar geen verifikator is gestoor nie",
   "SteamGuard_Title": "Steam Guard",
   "SteamGuard_LoginAgain": "Meld weer aan",
   "SteamGuard_Confirmations_Title": "Bevestigings",

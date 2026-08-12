@@ -573,6 +573,7 @@
   "Context_SteamGuard": "Steam Guard",
   "SteamGuard_Badge_Stored": "Steam Guard be stowed fer this account",
   "SteamGuard_Badge_Unfinished": "Steam Guard riggin' fer this account be unfinished",
+  "SteamGuard_Badge_LoginOnly": "This account be signed aboard, but no authenticator be stowed in the hold",
   "SteamGuard_Title": "Steam Guard",
   "SteamGuard_LoginAgain": "Board again",
   "SteamGuard_Confirmations_Title": "Confirmations, arr",

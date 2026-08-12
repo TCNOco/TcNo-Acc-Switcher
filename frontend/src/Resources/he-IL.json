@@ -573,6 +573,7 @@
   "Context_SteamGuard": "Steam Guard",
   "SteamGuard_Badge_Stored": "Steam Guard שמור לחשבון זה",
   "SteamGuard_Badge_Unfinished": "הגדרת Steam Guard לחשבון זה לא הושלמה",
+  "SteamGuard_Badge_LoginOnly": "חשבון זה מחובר, אך לא שמור בו מאמת",
   "SteamGuard_Title": "Steam Guard",
   "SteamGuard_LoginAgain": "התחבר שוב",
   "SteamGuard_Confirmations_Title": "אישורים",

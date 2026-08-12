@@ -573,6 +573,7 @@
   "Context_SteamGuard": "Steam Guard",
   "SteamGuard_Badge_Stored": "Steam Guard مخزّن لهذا الحساب",
   "SteamGuard_Badge_Unfinished": "إعداد Steam Guard لهذا الحساب غير مكتمل",
+  "SteamGuard_Badge_LoginOnly": "هذا الحساب مسجّل الدخول، لكن لا يوجد مصادق مخزّن",
   "SteamGuard_Title": "Steam Guard",
   "SteamGuard_LoginAgain": "تسجيل الدخول مجددًا",
   "SteamGuard_Confirmations_Title": "التأكيدات",

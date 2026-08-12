@@ -573,6 +573,7 @@
   "Context_SteamGuard": "Steam Guard",
   "SteamGuard_Badge_Stored": "Steam Guard je pro tento účet uložen",
   "SteamGuard_Badge_Unfinished": "Nastavení Steam Guard pro tento účet není dokončeno",
+  "SteamGuard_Badge_LoginOnly": "Tento účet je přihlášen, ale není uložen žádný autentifikátor",
   "SteamGuard_Title": "Steam Guard",
   "SteamGuard_LoginAgain": "Přihlásit se znovu",
   "SteamGuard_Confirmations_Title": "Potvrzení",

@@ -573,6 +573,7 @@
   "Context_SteamGuard": "Steam Guard",
   "SteamGuard_Badge_Stored": "Bu hesap için Steam Guard saklanıyor",
   "SteamGuard_Badge_Unfinished": "Bu hesap için Steam Guard kurulumu tamamlanmadı",
+  "SteamGuard_Badge_LoginOnly": "Bu hesapta oturum açılmış, ancak kayıtlı bir doğrulayıcı yok",
   "SteamGuard_Title": "Steam Guard",
   "SteamGuard_LoginAgain": "Tekrar giriş yap",
   "SteamGuard_Confirmations_Title": "Onaylar",

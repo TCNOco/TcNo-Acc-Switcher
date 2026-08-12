@@ -573,6 +573,7 @@
   "Context_SteamGuard": "Steam Guard",
   "SteamGuard_Badge_Stored": "Steam Guard is stored for this account",
   "SteamGuard_Badge_Unfinished": "Steam Guard setup for this account is unfinished",
+  "SteamGuard_Badge_LoginOnly": "This account is signed in, but no authenticator is stored",
   "SteamGuard_Title": "Steam Guard",
   "SteamGuard_LoginAgain": "Login again",
   "SteamGuard_Confirmations_Title": "Confirmations",

@@ -573,6 +573,7 @@
   "Context_SteamGuard": "Steam Guard",
   "SteamGuard_Badge_Stored": "इस खाते के लिए Steam Guard संग्रहीत है",
   "SteamGuard_Badge_Unfinished": "इस खाते के लिए Steam Guard सेटअप अधूरा है",
+  "SteamGuard_Badge_LoginOnly": "यह खाता साइन इन है, लेकिन कोई प्रमाणक संग्रहीत नहीं है",
   "SteamGuard_Title": "Steam Guard",
   "SteamGuard_LoginAgain": "फिर से लॉगिन करें",
   "SteamGuard_Confirmations_Title": "पुष्टियाँ",

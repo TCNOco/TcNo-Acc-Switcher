@@ -573,6 +573,7 @@
   "Context_SteamGuard": "Steam Guard",
   "SteamGuard_Badge_Stored": "O Steam Guard está armazenado para esta conta",
   "SteamGuard_Badge_Unfinished": "A configuração do Steam Guard desta conta está incompleta",
+  "SteamGuard_Badge_LoginOnly": "Esta conta está conectada, mas nenhum autenticador está armazenado",
   "SteamGuard_Title": "Steam Guard",
   "SteamGuard_LoginAgain": "Entrar novamente",
   "SteamGuard_Confirmations_Title": "Confirmações",

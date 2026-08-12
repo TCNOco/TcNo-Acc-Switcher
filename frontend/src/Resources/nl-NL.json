@@ -573,6 +573,7 @@
   "Context_SteamGuard": "Steam Guard",
   "SteamGuard_Badge_Stored": "Steam Guard is opgeslagen voor dit account",
   "SteamGuard_Badge_Unfinished": "De Steam Guard-installatie voor dit account is niet voltooid",
+  "SteamGuard_Badge_LoginOnly": "Dit account is aangemeld, maar er is geen authenticator opgeslagen",
   "SteamGuard_Title": "Steam Guard",
   "SteamGuard_LoginAgain": "Opnieuw inloggen",
   "SteamGuard_Confirmations_Title": "Bevestigingen",

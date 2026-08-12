@@ -573,6 +573,7 @@
   "Context_SteamGuard": "Steam Guard",
   "SteamGuard_Badge_Stored": "Steam Guard är lagrad för det här kontot",
   "SteamGuard_Badge_Unfinished": "Steam Guard-konfigurationen för det här kontot är inte klar",
+  "SteamGuard_Badge_LoginOnly": "Det här kontot är inloggat, men ingen autentiserare är lagrad",
   "SteamGuard_Title": "Steam Guard",
   "SteamGuard_LoginAgain": "Logga in igen",
   "SteamGuard_Confirmations_Title": "Bekräftelser",

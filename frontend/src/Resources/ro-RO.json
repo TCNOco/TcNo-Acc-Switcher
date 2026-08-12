@@ -573,6 +573,7 @@
   "Context_SteamGuard": "Steam Guard",
   "SteamGuard_Badge_Stored": "Steam Guard este stocat pentru acest cont",
   "SteamGuard_Badge_Unfinished": "Configurarea Steam Guard pentru acest cont este neterminată",
+  "SteamGuard_Badge_LoginOnly": "Acest cont este autentificat, dar nu este stocat niciun autentificator",
   "SteamGuard_Title": "Steam Guard",
   "SteamGuard_LoginAgain": "Autentifică-te din nou",
   "SteamGuard_Confirmations_Title": "Confirmări",

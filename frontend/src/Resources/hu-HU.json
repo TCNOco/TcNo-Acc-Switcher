@@ -573,6 +573,7 @@
   "Context_SteamGuard": "Steam Guard",
   "SteamGuard_Badge_Stored": "Ehhez a fiókhoz Steam Guard van tárolva",
   "SteamGuard_Badge_Unfinished": "Ennek a fióknak a Steam Guard beállítása befejezetlen",
+  "SteamGuard_Badge_LoginOnly": "Ez a fiók be van jelentkezve, de nincs hozzá hitelesítő tárolva",
   "SteamGuard_Title": "Steam Guard",
   "SteamGuard_LoginAgain": "Újra bejelentkezés",
   "SteamGuard_Confirmations_Title": "Megerősítések",

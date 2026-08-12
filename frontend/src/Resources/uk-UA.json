@@ -573,6 +573,7 @@
   "Context_SteamGuard": "Steam Guard",
   "SteamGuard_Badge_Stored": "Steam Guard збережено для цього акаунта",
   "SteamGuard_Badge_Unfinished": "Налаштування Steam Guard для цього акаунта не завершено",
+  "SteamGuard_Badge_LoginOnly": "У цей обліковий запис виконано вхід, але автентифікатор не збережено",
   "SteamGuard_Title": "Steam Guard",
   "SteamGuard_LoginAgain": "Увійти знову",
   "SteamGuard_Confirmations_Title": "Підтвердження",

@@ -573,6 +573,7 @@
   "Context_SteamGuard": "Steam Guard",
   "SteamGuard_Badge_Stored": "이 계정의 Steam Guard가 저장되어 있습니다",
   "SteamGuard_Badge_Unfinished": "이 계정의 Steam Guard 설정이 완료되지 않았습니다",
+  "SteamGuard_Badge_LoginOnly": "이 계정은 로그인되어 있지만 저장된 인증기가 없습니다",
   "SteamGuard_Title": "Steam Guard",
   "SteamGuard_LoginAgain": "다시 로그인",
   "SteamGuard_Confirmations_Title": "승인 대기",

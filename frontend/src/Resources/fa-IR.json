@@ -573,6 +573,7 @@
   "Context_SteamGuard": "Steam Guard",
   "SteamGuard_Badge_Stored": "Steam Guard برای این حساب ذخیره شده است",
   "SteamGuard_Badge_Unfinished": "راه‌اندازی Steam Guard برای این حساب ناتمام است",
+  "SteamGuard_Badge_LoginOnly": "این حساب وارد شده است، اما هیچ احراز هویت‌گری ذخیره نشده است",
   "SteamGuard_Title": "Steam Guard",
   "SteamGuard_LoginAgain": "ورود دوباره",
   "SteamGuard_Confirmations_Title": "تأییدیه‌ها",

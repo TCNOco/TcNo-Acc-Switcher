@@ -573,6 +573,7 @@
   "Context_SteamGuard": "Steam Guard",
   "SteamGuard_Badge_Stored": "Το Steam Guard είναι αποθηκευμένο για αυτόν τον λογαριασμό",
   "SteamGuard_Badge_Unfinished": "Η ρύθμιση του Steam Guard για αυτόν τον λογαριασμό δεν έχει ολοκληρωθεί",
+  "SteamGuard_Badge_LoginOnly": "Αυτός ο λογαριασμός είναι συνδεδεμένος, αλλά δεν έχει αποθηκευτεί επαληθευτής",
   "SteamGuard_Title": "Steam Guard",
   "SteamGuard_LoginAgain": "Σύνδεση ξανά",
   "SteamGuard_Confirmations_Title": "Επιβεβαιώσεις",

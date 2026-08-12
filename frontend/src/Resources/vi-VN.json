@@ -573,6 +573,7 @@
   "Context_SteamGuard": "Steam Guard",
   "SteamGuard_Badge_Stored": "Steam Guard đã được lưu cho tài khoản này",
   "SteamGuard_Badge_Unfinished": "Thiết lập Steam Guard cho tài khoản này chưa hoàn tất",
+  "SteamGuard_Badge_LoginOnly": "Tài khoản này đã đăng nhập, nhưng chưa lưu trình xác thực nào",
   "SteamGuard_Title": "Steam Guard",
   "SteamGuard_LoginAgain": "Đăng nhập lại",
   "SteamGuard_Confirmations_Title": "Xác nhận",

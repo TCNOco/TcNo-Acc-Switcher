@@ -573,6 +573,7 @@
   "Context_SteamGuard": "Steam Guard",
   "SteamGuard_Badge_Stored": "Steam Guard ถูกเก็บไว้สำหรับบัญชีนี้",
   "SteamGuard_Badge_Unfinished": "การตั้งค่า Steam Guard สำหรับบัญชีนี้ยังไม่เสร็จสิ้น",
+  "SteamGuard_Badge_LoginOnly": "บัญชีนี้เข้าสู่ระบบแล้ว แต่ไม่มีตัวยืนยันตัวตนที่บันทึกไว้",
   "SteamGuard_Title": "Steam Guard",
   "SteamGuard_LoginAgain": "เข้าสู่ระบบอีกครั้ง",
   "SteamGuard_Confirmations_Title": "การยืนยัน",

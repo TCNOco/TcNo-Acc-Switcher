@@ -573,6 +573,7 @@
   "Context_SteamGuard": "Steam Guard",
   "SteamGuard_Badge_Stored": "Steam Guard сохранён для этого аккаунта",
   "SteamGuard_Badge_Unfinished": "Настройка Steam Guard для этого аккаунта не завершена",
+  "SteamGuard_Badge_LoginOnly": "Этот аккаунт авторизован, но аутентификатор не сохранён",
   "SteamGuard_Title": "Steam Guard",
   "SteamGuard_LoginAgain": "Войти снова",
   "SteamGuard_Confirmations_Title": "Подтверждения",

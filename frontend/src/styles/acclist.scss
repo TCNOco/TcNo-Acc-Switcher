@@ -388,9 +388,10 @@ label.acc {
     }
   }
 
-  // An unfinished setup is not protection: same glyph, deliberately not the
-  // colour that means "done".
-  .steam-acc-avatar-guard--pending svg {
+  // An unfinished setup is not protection, and neither is a record holding only
+  // a session: same glyph, deliberately not the colour that means "done".
+  .steam-acc-avatar-guard--pending svg,
+  .steam-acc-avatar-guard--login-only svg {
     fill: var(--role-warning, #c9992a);
   }
 

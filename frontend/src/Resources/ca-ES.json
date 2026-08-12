@@ -573,6 +573,7 @@
   "Context_SteamGuard": "Steam Guard",
   "SteamGuard_Badge_Stored": "El Steam Guard està desat per a aquest compte",
   "SteamGuard_Badge_Unfinished": "La configuració del Steam Guard d'aquest compte no està acabada",
+  "SteamGuard_Badge_LoginOnly": "Aquest compte té la sessió iniciada, però no hi ha cap autenticador emmagatzemat",
   "SteamGuard_Title": "Steam Guard",
   "SteamGuard_LoginAgain": "Torna a iniciar sessió",
   "SteamGuard_Confirmations_Title": "Confirmacions",

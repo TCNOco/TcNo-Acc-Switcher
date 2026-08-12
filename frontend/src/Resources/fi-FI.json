@@ -573,6 +573,7 @@
   "Context_SteamGuard": "Steam Guard",
   "SteamGuard_Badge_Stored": "Steam Guard on tallennettu tälle tilille",
   "SteamGuard_Badge_Unfinished": "Tämän tilin Steam Guard -määritys on kesken",
+  "SteamGuard_Badge_LoginOnly": "Tälle tilille on kirjauduttu sisään, mutta todennussovellusta ei ole tallennettu",
   "SteamGuard_Title": "Steam Guard",
   "SteamGuard_LoginAgain": "Kirjaudu uudelleen",
   "SteamGuard_Confirmations_Title": "Vahvistukset",

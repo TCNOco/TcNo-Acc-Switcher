@@ -6,6 +6,7 @@
   import { isProfileVideoUrl } from "../lib/profileImageDrop";
   import { miniProfileHover } from "../lib/actions/miniProfileHover";
   import { t } from "../stores/i18n";
+  import { steamGuardBadge } from "../lib/steam/steamGuardBadge";
   import type { SteamAccountRow } from "../lib/steam/types";
 
   export let account: SteamAccountRow;
@@ -41,15 +42,8 @@
   // games. Exactly what streamer mode exists to keep off the screen.
   $: miniProfileEnabled =
     !$streamerMode && !!(account.showMiniProfile && (account.miniProfileHtml ?? "").trim() !== "");
-  // Defaults to shown: the flag arrives with account enrichment, so it is
-  // briefly undefined on first paint and the lock should not flicker off.
-  $: guardBadgeLabel = account.showSteamGuardLock === false
-    ? ""
-    : account.hasSteamGuard
-      ? $t("SteamGuard_Badge_Stored")
-      : account.steamGuardPending
-        ? $t("SteamGuard_Badge_Unfinished")
-        : "";
+  $: guardBadge = steamGuardBadge(account);
+  $: guardBadgeLabel = guardBadge ? $t(guardBadge.labelKey) : "";
 </script>
 
 <span class="steam-acc-avatar-wrap">
@@ -83,12 +77,14 @@
     <img class="steam-acc-avatar-frame" src={account.avatarFrameUrl ?? ""} alt="" draggable="false" />
   {/if}
   <!-- Sits above the avatar frame so a framed avatar does not hide it. A pending
-       setup gets its own look: it is not protection yet, and showing the same
-       badge would claim an authenticator the account cannot actually use. -->
-  {#if guardBadgeLabel}
+       setup and a login-only record get their own look: neither is protection,
+       and showing the same badge would claim an authenticator the account
+       cannot actually use. -->
+  {#if guardBadge}
     <span
       class="steam-acc-avatar-guard"
-      class:steam-acc-avatar-guard--pending={account.steamGuardPending && !account.hasSteamGuard}
+      class:steam-acc-avatar-guard--pending={guardBadge.variant === "pending"}
+      class:steam-acc-avatar-guard--login-only={guardBadge.variant === "login-only"}
       role="img"
       aria-label={guardBadgeLabel}
       title={guardBadgeLabel}

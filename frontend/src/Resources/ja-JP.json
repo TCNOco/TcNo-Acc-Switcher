@@ -573,6 +573,7 @@
   "Context_SteamGuard": "Steam Guard",
   "SteamGuard_Badge_Stored": "このアカウントのSteam Guardは保存済みです",
   "SteamGuard_Badge_Unfinished": "このアカウントのSteam Guard設定は未完了です",
+  "SteamGuard_Badge_LoginOnly": "このアカウントはサインインしていますが、認証器は保存されていません",
   "SteamGuard_Title": "Steam Guard",
   "SteamGuard_LoginAgain": "再ログイン",
   "SteamGuard_Confirmations_Title": "承認",

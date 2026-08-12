@@ -573,6 +573,7 @@
   "Context_SteamGuard": "Steam Guard",
   "SteamGuard_Badge_Stored": "Steam Guard је сачуван за овај налог",
   "SteamGuard_Badge_Unfinished": "Steam Guard подешавање за овај налог није завршено",
+  "SteamGuard_Badge_LoginOnly": "Овај налог је пријављен, али аутентификатор није сачуван",
   "SteamGuard_Title": "Steam Guard",
   "SteamGuard_LoginAgain": "Пријави се поново",
   "SteamGuard_Confirmations_Title": "Потврде",
