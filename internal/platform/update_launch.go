@@ -122,9 +122,12 @@ func EnableAutoRestartAfterUpdate(app *application.App) {
 	if app == nil {
 		return
 	}
-	app.Event.On(updater.EventUpdateAvailable, func(*application.CustomEvent) {
-		NotifyNative("tcno-update-downloading", "TcNo Account Switcher", "An update is available. Downloading it now.", map[string]interface{}{
-			"type": "update-available",
+	// Bound to the download, not to EventUpdateAvailable: a check that only
+	// finds a release does not download anything, and announcing a download
+	// there told users an update was being applied behind their back.
+	app.Event.On(updater.EventDownloadStarted, func(*application.CustomEvent) {
+		NotifyNative("tcno-update-downloading", "TcNo Account Switcher", "Downloading the update.", map[string]interface{}{
+			"type": "update-downloading",
 		})
 	})
 	app.Event.On(updater.EventUpdateReady, func(*application.CustomEvent) {
@@ -205,9 +208,11 @@ func runSilentUpdateCheck(ctx context.Context, app *application.App) {
 		cancel()
 		if err == nil {
 			if rel != nil {
-				if installErr := app.Updater.CheckAndInstall(ctx); installErr != nil {
-					app.Logger.Warn("update: periodic install", "error", installErr)
-				}
+				// Notify only. CheckAndInstall would open the updater window
+				// and start downloading straight away — Wails has no "ask
+				// first" mode, so consent comes from the in-app update bar,
+				// whose Update Now button calls CheckForUpdatesAndInstall.
+				emitAppUpdateAvailable(wailsReleaseMessage(rel))
 			}
 			return
 		}
