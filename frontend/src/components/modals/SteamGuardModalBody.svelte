@@ -542,9 +542,9 @@
   }
 
   async function accountSummaries(currentAccount: SteamGuardAccountRef): Promise<SteamGuardAccountSummary[]> {
-    const capability = await ensureCapability(currentAccount);
-    const summaries = controller.listAccounts
-      ? await controller.listAccounts(currentAccount.id, capability)
+    const list = controller.listAccounts;
+    const summaries = list
+      ? await withCapability(currentAccount, (capability) => list(currentAccount.id, capability))
       : knownAccounts;
     knownSummaries = summaries;
     return summaries;
@@ -783,8 +783,11 @@
     const currentAccount = state.view.account;
     refreshing = true;
     try {
-		const capability = await ensureCapability(currentAccount);
-		const view = await controller.getCode(currentAccount.id, capability);
+		// This one runs itself, every thirty seconds, so a superseded capability
+		// here does not wait for the user to do anything: it drops a working code
+		// screen to an error screen on its own.
+		const view = await withCapability(currentAccount,
+			(capability) => controller.getCode(currentAccount.id, capability));
       if (view) {
         transition({ type: "show-code", view }, false);
         announce($t("SteamGuard_Announce_NewCodeReady"));
