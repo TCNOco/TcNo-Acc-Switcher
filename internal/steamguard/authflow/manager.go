@@ -353,6 +353,22 @@ func (m *Manager) Status(binding Binding, handle string) (Status, error) {
 	return m.statusLocked(entry, now), nil
 }
 
+// Rebind moves every live session onto a new vault generation. A sign-in the
+// user is halfway through - waiting on an emailed code, say - outlives a
+// background renewal of stored session tokens, and that renewal changes nothing
+// about who the session belongs to. Its caller must rebind the matching
+// capability in the same pass, or the next call mismatches on the other side.
+func (m *Manager) Rebind(generation string) {
+	if !validBoundedString(generation) {
+		return
+	}
+	m.mu.Lock()
+	for _, entry := range m.sessions {
+		entry.binding.VaultGeneration = generation
+	}
+	m.mu.Unlock()
+}
+
 // Cancel revokes a session. If a call is active, its context is canceled and
 // the protocol session is destroyed as soon as the call releases it.
 func (m *Manager) Cancel(binding Binding, handle string) error {

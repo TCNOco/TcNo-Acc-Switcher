@@ -50,6 +50,43 @@ func TestIssueValidateAndRevoke(t *testing.T) {
 	}
 }
 
+func TestRebindMovesTheGenerationWithoutReissuingTheToken(t *testing.T) {
+	m := NewManager()
+	binding := Binding{WindowName: "main", AccountID: "7656119", Scope: "modal", LeaseID: "lease", VaultGeneration: "before"}
+	token, err := m.Issue(binding)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	m.Rebind(" after ")
+
+	// The point of the whole exercise: the window holds the same token string
+	// across a background write and its next call is authorized against the
+	// generation that write committed.
+	after := binding
+	after.VaultGeneration = "after"
+	if err := m.Validate(after, token); err != nil {
+		t.Fatalf("validate against the carried generation = %v", err)
+	}
+	if err := m.Validate(binding, token); !errors.Is(err, ErrInvalidCapability) {
+		t.Fatalf("validate against the replaced generation = %v, want ErrInvalidCapability", err)
+	}
+
+	// An empty generation is a caller bug, not an instruction to unbind every
+	// grant from the vault state it was issued against.
+	m.Rebind("")
+	if err := m.Validate(after, token); err != nil {
+		t.Fatalf("validate after an empty rebind = %v", err)
+	}
+
+	// Rebinding must not resurrect what was handed back.
+	m.Revoke(token)
+	m.Rebind("later")
+	if err := m.Validate(Binding{WindowName: "main", AccountID: "7656119", Scope: "modal", LeaseID: "lease", VaultGeneration: "later"}, token); !errors.Is(err, ErrInvalidCapability) {
+		t.Fatalf("validate after revoke and rebind = %v, want ErrInvalidCapability", err)
+	}
+}
+
 func TestIssueRotatesAndConcurrentValidation(t *testing.T) {
 	m := NewManager()
 	firstBinding := Binding{WindowName: "main", AccountID: "one", Scope: "modal", LeaseID: "lease-one"}

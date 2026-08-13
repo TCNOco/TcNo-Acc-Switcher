@@ -297,12 +297,12 @@ func ownedGamesDue(stored map[string]ownedgames.Entry, steamID64 string, now tim
 // refreshLapsedOwnedGamesSessions renews every lapsed account in one batch.
 //
 // This is the one deliberate difference from the cooldown sweep, which is
-// forbidden from writing at all. Each vault generation switch invalidates every
-// capability outstanding against it, including the one an open Steam Guard
-// window holds - so N accounts refreshed one at a time cost N invalidations,
-// while RefreshBatch costs exactly one for the whole list. An access token lasts
-// about a day and this sweep runs daily, so without the renewal the store would
-// only ever fill for accounts someone happened to open by hand.
+// forbidden from writing at all. N accounts refreshed one at a time cost N
+// generation switches and N full vault rewrites, while RefreshBatch costs one
+// for the whole list; the capabilities open windows hold are then carried onto
+// that generation instead of being orphaned. An access token lasts about a day
+// and this sweep runs daily, so without the renewal the store would only ever
+// fill for accounts someone happened to open by hand.
 func (s *Service) refreshLapsedOwnedGamesSessions(ctx context.Context, lapsed []uint64) {
 	log := ownedGamesLogger()
 
@@ -329,6 +329,11 @@ func (s *Service) refreshLapsedOwnedGamesSessions(ctx context.Context, lapsed []
 		log.Warn("owned games session refresh failed", "accounts", len(lapsed), "error", err)
 		return
 	}
+	// Carry the open windows across rather than leaving them holding a
+	// capability bound to the generation this batch just replaced. Renewing
+	// session tokens grants nobody anything they did not already have, and the
+	// user has no way to know a sweep is why their next click was refused.
+	s.carryCapabilitiesAcross(v.Generation())
 	log.Info("owned games sessions refreshed in one vault generation",
 		"requested", len(lapsed), "refreshed", len(results))
 }

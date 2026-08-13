@@ -460,7 +460,13 @@ export type SteamGuardModalController = {
 	  cancelSteamGuardEnrollment?: (accountId: string, capability: string) => Promise<void>;
 	  showEnrollmentBackupWarning?: () => Promise<void>;
 	  captureQrFromSteam?: (accountId: string, capability: string) => Promise<SteamGuardQRScanResult>;
-	  chooseQrScreenshot?: (accountId: string, capability: string) => Promise<SteamGuardQRScanResult | null>;
+	  /**
+	   * Opens the native file picker and returns the chosen path, or "" if the
+	   * user cancelled. Deliberately separate from decoding: the decode needs a
+	   * capability and may have to be retried on a fresh one, and reopening the
+	   * picker to do that would make the user choose the file twice.
+	   */
+	  pickQrScreenshot?: () => Promise<string>;
 	  decodeQrScreenshot?: (accountId: string, path: string, capability: string) => Promise<SteamGuardQRScanResult>;
 	  getQrApproval?: (accountId: string, attempt: string, capability: string) => Promise<SteamGuardQRApproval>;
 	  authorizeQrLogin?: (accountId: string, attempt: string, capability: string) => Promise<void>;

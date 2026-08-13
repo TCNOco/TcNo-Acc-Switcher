@@ -92,6 +92,27 @@ func (m *Manager) Revoke(token string) {
 	m.mu.Unlock()
 }
 
+// Rebind moves every live grant onto a new vault generation, leaving the issued
+// tokens themselves valid.
+//
+// Only for a write that changes no authority - a background renewal of stored
+// Steam session tokens. It does not alter who may read what, so the windows
+// holding a capability across it must survive. A write that re-keys the vault or
+// changes which records exist still has to orphan the capabilities bound to the
+// generation it replaced, and must not call this.
+func (m *Manager) Rebind(generation string) {
+	generation = strings.TrimSpace(generation)
+	if generation == "" {
+		return
+	}
+	m.mu.Lock()
+	for digest, binding := range m.grants {
+		binding.VaultGeneration = generation
+		m.grants[digest] = binding
+	}
+	m.mu.Unlock()
+}
+
 func (m *Manager) RevokeWindow(windowName string) {
 	windowName = strings.TrimSpace(windowName)
 	m.mu.Lock()

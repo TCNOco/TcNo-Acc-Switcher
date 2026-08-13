@@ -321,8 +321,11 @@ func (s *Service) GetQRApproval(accountID, attempt, token string) (QRApprovalVie
 		logQRFailure("approval-info", binding.AccountID, "", err)
 		return QRApprovalView{}, err
 	}
+	// Same as finishQRScan: the account must still be the one the inspection ran
+	// against, but a generation carried forward by a session-token sweep is not a
+	// reason to refuse an approval the user is looking at.
 	current, err := s.authorizeQRBinding(accountID, token)
-	if err != nil || current != binding {
+	if err != nil || current.AccountID != binding.AccountID {
 		if err != nil {
 			return QRApprovalView{}, err
 		}
@@ -511,8 +514,18 @@ func (s *Service) cancelQRRegionSelection(leaseID string) {
 // only; it never records candidate payloads.
 func (s *Service) finishQRScan(source, accountID, token string, original qrattempt.Binding, candidates []qrimage.Candidate) (QRScanResult, error) {
 	defer clearQRCandidates(candidates)
+	// Re-authorized rather than trusted from the start of the scan: a capture can
+	// take as long as the user takes to drag a box or pick a file, and the vault
+	// may have been locked or the account removed in that time.
+	//
+	// Only the account is held against the binding the scan opened with. The
+	// generation is deliberately not: a background session-token sweep carries
+	// live capabilities onto the generation it commits, so the two legitimately
+	// differ here, and demanding they match refused scans whose pixels were
+	// already captured and decoded. Any write that does not carry capabilities
+	// across has already failed the token above.
 	current, err := s.authorizeQRBinding(accountID, token)
-	if err != nil || current != original {
+	if err != nil || current.AccountID != original.AccountID {
 		if err != nil {
 			logQRFailure(source, original.AccountID, "", err)
 			return QRScanResult{}, err

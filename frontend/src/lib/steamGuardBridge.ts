@@ -1308,10 +1308,8 @@ const controller: SteamGuardModalController = {
 	async captureQrFromSteam(accountId, capability) {
 		return qrScanResult(await SteamGuardService.ScanSteamQR(accountId, capability));
 	},
-	async chooseQrScreenshot(accountId, capability) {
-		const path = await SteamGuardService.PickQRScreenshot();
-		if (!path) return null;
-		return qrScanResult(await SteamGuardService.DecodeQRScreenshot(accountId, path, capability));
+	async pickQrScreenshot() {
+		return (await SteamGuardService.PickQRScreenshot()) ?? "";
 	},
 	async decodeQrScreenshot(accountId, path, capability) {
 		return qrScanResult(await SteamGuardService.DecodeQRScreenshot(accountId, path, capability));

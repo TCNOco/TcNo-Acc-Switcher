@@ -2053,8 +2053,10 @@
 		qrApproval = null;
 		qrAttempt = "";
 		try {
-			const capability = await ensureCapability(currentAccount);
-			await handleQRScanResult(currentAccount, capability, await controller.captureQrFromSteam(currentAccount.id, capability));
+			const scan = controller.captureQrFromSteam;
+			await withCapability(currentAccount, (capability) =>
+				scan(currentAccount.id, capability).then((result) =>
+					handleQRScanResult(currentAccount, capability, result)));
 		} catch (error) {
 			console.error("Steam Guard: Steam could not be scanned for a QR code", error);
 			qrStage = "error";
@@ -2065,16 +2067,25 @@
   }
 
   async function chooseQrScreenshot(): Promise<void> {
-    if (state.screen !== "qr" || busy || !controller.chooseQrScreenshot) return;
+    if (state.screen !== "qr" || busy || !controller.pickQrScreenshot || !controller.decodeQrScreenshot) return;
 		const currentAccount = state.account;
+		const decode = controller.decodeQrScreenshot;
 		busy = true;
 		qrStage = "scanning";
 		qrMessage = $t("SteamGuard_QR_ReadingScreenshot");
 		try {
-			const capability = await ensureCapability(currentAccount);
-			const result = await controller.chooseQrScreenshot(currentAccount.id, capability);
-			if (result) await handleQRScanResult(currentAccount, capability, result);
-			else resetQRState();
+			// The picker runs outside withCapability so a retry re-reads the file
+			// already chosen rather than asking for it again. It needs no
+			// capability of its own: the image never leaves Go until the decode,
+			// which is the call that checks one.
+			const path = await controller.pickQrScreenshot();
+			if (!path) {
+				resetQRState();
+				return;
+			}
+			await withCapability(currentAccount, (capability) =>
+				decode(currentAccount.id, path, capability).then((result) =>
+					handleQRScanResult(currentAccount, capability, result)));
 		} catch (error) {
 			console.error("Steam Guard: screenshot could not be read", error);
 			qrStage = "error";
@@ -2087,12 +2098,14 @@
 	async function decodeDroppedQRScreenshot(path: string): Promise<void> {
 		if (state.screen !== "qr" || busy || !controller.decodeQrScreenshot) return;
 		const currentAccount = state.account;
+		const decode = controller.decodeQrScreenshot;
 		busy = true;
 		qrStage = "scanning";
 		qrMessage = $t("SteamGuard_QR_ReadingDropped");
 		try {
-			const capability = await ensureCapability(currentAccount);
-			await handleQRScanResult(currentAccount, capability, await controller.decodeQrScreenshot(currentAccount.id, path, capability));
+			await withCapability(currentAccount, (capability) =>
+				decode(currentAccount.id, path, capability).then((result) =>
+					handleQRScanResult(currentAccount, capability, result)));
 		} finally {
 			busy = false;
 		}
@@ -2185,6 +2198,11 @@
 		qrApproval = null;
 		qrAttempt = "";
 		try {
+			// The only QR flow that does not go through withCapability. Its capability
+			// is checked again after the drag, so a retry would put the overlay back up
+			// and ask for the same box a second time - worse than saying so. Sweeps no
+			// longer rotate a live capability out from under it (carryCapabilitiesAcross
+			// in Go), which is what used to land here.
 			const capability = await ensureCapability(currentAccount);
 			await handleQRScanResult(
 				currentAccount,
@@ -2194,7 +2212,11 @@
 		} catch (error) {
 			console.error("Steam Guard: screen region could not be scanned", error);
 			qrStage = "error";
-			qrMessage = $t("SteamGuard_QR_RegionFailed");
+			// Not the same failure: the region was read fine, the vault moved under it.
+			// "Could not be scanned safely" sends the user off inspecting their screen.
+			qrMessage = isStaleCapabilityError(error)
+				? $t("SteamGuard_QR_VaultChanged")
+				: $t("SteamGuard_QR_RegionFailed");
 		} finally {
 			qrRegionSelecting = false;
 			busy = false;
@@ -3186,7 +3208,7 @@
 				<button
 					type="button"
 					class="btnicontext"
-					disabled={!controller.chooseQrScreenshot || busy}
+					disabled={!controller.pickQrScreenshot || !controller.decodeQrScreenshot || busy}
 					on:click={chooseQrScreenshot}
 				>
 					<svg class="steam-guard__icon" viewBox={ICONS.image.box} aria-hidden="true"><path d={ICONS.image.path} /></svg>

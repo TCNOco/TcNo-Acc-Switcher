@@ -626,6 +626,68 @@ func (s *Service) EndSensitiveView(token, lease string) error {
 	return s.revokeQRAttempt(viewLease.binding.AccountID)
 }
 
+// carryCapabilitiesAcross moves every live window capability, and the flow state
+// keyed alongside it, onto the vault generation a background session-token
+// renewal has just committed.
+//
+// The generation a capability is bound to exists so a token cannot be spent
+// against a vault state it was never authorised for. Renewing stored Steam
+// session tokens produces no such state: the key is the same, the same records
+// exist, and the same person may read them. Orphaning the open windows'
+// capabilities over it only ever surfaced as "invalid Steam Guard window
+// capability" on whatever the user clicked next - and worst on the flows that
+// sit waiting on the user, where a QR region drag or a file picker straddles the
+// sweep and the scan is refused after the work is already done.
+//
+// Only the session-token sweeps may call this. Every other write - a re-key, an
+// import, a record removed - must keep rotating capabilities out.
+//
+// The three locks are taken one at a time on purpose: confirmationAccount holds
+// confirmationWindowMu while it takes s.mu, and authorizeModalLocked holds s.mu
+// while it takes contentProtectionMu, so nesting any two of these here would
+// close a cycle.
+func (s *Service) carryCapabilitiesAcross(generation string) {
+	generation = strings.TrimSpace(generation)
+	if generation == "" || s.capabilities == nil {
+		return
+	}
+
+	s.contentProtectionMu.Lock()
+	for lease, view := range s.contentProtectionLeases {
+		view.binding.VaultGeneration = generation
+		s.contentProtectionLeases[lease] = view
+	}
+	s.contentProtectionMu.Unlock()
+
+	s.confirmationWindowMu.Lock()
+	if s.confirmationInstanceID != "" {
+		s.confirmationGeneration = generation
+	}
+	s.confirmationWindowMu.Unlock()
+
+	s.authStateMu.Lock()
+	for handle, operation := range s.authOperations {
+		operation.binding.VaultGeneration = generation
+		s.authOperations[handle] = operation
+	}
+	manager := s.authManager
+	s.authStateMu.Unlock()
+	// Optional rather than part of steamCredentialAuthManager: the operations
+	// above and the manager's own entries are two halves of one binding, so a
+	// fake that implements neither simply keeps today's behaviour.
+	if rebinder, ok := manager.(interface{ Rebind(string) }); ok {
+		rebinder.Rebind(generation)
+	}
+
+	if s.qrAttempts != nil {
+		// A scanned code outlives the scan: the user still has to read who is
+		// asking and press Approve, and that gap is wider than the sweep.
+		s.qrAttempts.Rebind(generation)
+	}
+
+	s.capabilities.Rebind(generation)
+}
+
 func (s *Service) revokeQRAttempt(accountID string) error {
 	if s.qrAttempts == nil {
 		return nil

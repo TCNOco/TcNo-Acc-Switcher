@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "This account needs to log in again before it can approve Steam QR requests.",
   "SteamGuard_QR_ApprovalRejected": "Steam did not accept the approval. Scan the QR code again.",
   "SteamGuard_QR_RegionFailed": "The selected screen region could not be scanned safely.",
+  "SteamGuard_QR_VaultChanged": "The vault changed while that was running. Try again.",
   "SteamGuard_LoginAgain_Refreshing": "Refreshing the existing Steam session…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam rejected the saved refresh token. Sign in to replace this account's Steam session.",
   "SteamGuard_LoginAgain_RefreshFailed": "The Steam session could not be refreshed.",

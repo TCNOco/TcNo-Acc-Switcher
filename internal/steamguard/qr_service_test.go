@@ -12,6 +12,7 @@ import (
 	"testing"
 	"time"
 
+	"TcNo-Acc-Switcher/internal/steamguard/capability"
 	"TcNo-Acc-Switcher/internal/steamguard/mafile"
 	"TcNo-Acc-Switcher/internal/steamguard/protocol"
 	"TcNo-Acc-Switcher/internal/steamguard/qr"
@@ -159,6 +160,108 @@ func TestSelectQRRegionIsBusyAndCapabilityRevocationCancelsActiveSelection(t *te
 	}
 }
 
+// A region drag lasts as long as the user takes over it, so a background
+// session-token sweep lands in the middle of one sooner or later. Before the
+// capabilities were carried across, the scan was refused after the pixels had
+// already been captured and decoded - the user dragged a box and was told the
+// region "could not be scanned safely".
+func TestQRFlowSurvivesABackgroundSessionRefreshMidSelection(t *testing.T) {
+	service, grant := setupQRService(t)
+	frame, _ := makeQRRegionFrame(t, qrTestChallenge)
+	selector := &fakeQRRegionSelector{frame: frame, started: make(chan struct{}), release: make(chan struct{})}
+	service.qrRegionSelector = selector
+	service.qrAuth = &fakeSteamQRAuthenticator{}
+
+	before := service.vault.Generation()
+	resultCh := make(chan QRScanResult, 1)
+	errCh := make(chan error, 1)
+	go func() {
+		result, err := service.SelectQRRegion(qrTestAccountID, grant.Capability)
+		resultCh <- result
+		errCh <- err
+	}()
+	select {
+	case <-selector.started:
+	case <-time.After(time.Second):
+		t.Fatal("region selector did not start")
+	}
+
+	renewSessionTokensLikeASweep(t, service)
+	if service.vault.Generation() == before {
+		t.Fatal("the simulated sweep did not rotate the vault generation")
+	}
+	close(selector.release)
+
+	var result QRScanResult
+	select {
+	case result = <-resultCh:
+		if err := <-errCh; err != nil {
+			t.Fatalf("region scan across a sweep: %v", err)
+		}
+	case <-time.After(time.Second):
+		t.Fatal("region selection did not finish")
+	}
+	if result.State != QRScanReady || result.Attempt == "" {
+		t.Fatalf("region scan across a sweep = %#v", result)
+	}
+
+	// The capability the modal still holds has to keep working, and so does the
+	// attempt it just produced: the user reads the approval panel and presses
+	// Approve well after the sweep has committed.
+	if _, err := service.GetQRApproval(qrTestAccountID, result.Attempt, grant.Capability); err != nil {
+		t.Fatalf("approval after a sweep: %v", err)
+	}
+	if err := service.AuthorizeQRLogin(qrTestAccountID, result.Attempt, grant.Capability); err != nil {
+		t.Fatalf("authorize after a sweep: %v", err)
+	}
+}
+
+// A vault write that re-keys or changes which records exist must still orphan
+// the capabilities bound to the generation it replaced. Only the session-token
+// sweeps get to carry them across.
+func TestAnOrdinaryVaultWriteStillInvalidatesTheCapability(t *testing.T) {
+	service, grant := setupQRService(t)
+	renewSessionTokensWithoutCarrying(t, service)
+
+	_, err := service.ScanSteamQR(qrTestAccountID, grant.Capability)
+	if !errors.Is(err, capability.ErrInvalidCapability) {
+		t.Fatalf("scan after an uncarried write = %v, want ErrInvalidCapability", err)
+	}
+}
+
+// renewSessionTokensLikeASweep rewrites the account exactly as RefreshBatch does
+// - one PutRecords, one generation - and then carries the open capabilities onto
+// it, which is the sweep's contract.
+func renewSessionTokensLikeASweep(t *testing.T, service *Service) {
+	t.Helper()
+	renewSessionTokensWithoutCarrying(t, service)
+	service.carryCapabilitiesAcross(service.vault.Generation())
+}
+
+func renewSessionTokensWithoutCarrying(t *testing.T, service *Service) {
+	t.Helper()
+	records, err := service.vault.List()
+	if err != nil {
+		t.Fatal(err)
+	}
+	updates := make([]vault.RecordUpdate, 0, len(records))
+	for _, record := range records {
+		account, err := accountFromRecord(service.vault, record.ID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		account.Session.AccessToken = "mobile-access-token-0002"
+		plaintext, err := mafile.ExportPlaintext(account, mafile.ExportOptions{IncludeTokens: true})
+		if err != nil {
+			t.Fatal(err)
+		}
+		updates = append(updates, vault.RecordUpdate{SteamID64: record.SteamID64, Plaintext: plaintext})
+	}
+	if err := service.vault.PutRecords(updates); err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestSelectQRRegionMapsSafePlatformFailures(t *testing.T) {
 	tests := []struct {
 		name  string
@@ -254,11 +357,22 @@ type fakeQRRegionSelector struct {
 	err           error
 	started       chan struct{}
 	waitForCancel bool
+	// release holds the selection open the way a real user does, then completes
+	// it normally - what waitForCancel cannot do, since it only ever cancels.
+	release chan struct{}
 }
 
 func (f *fakeQRRegionSelector) Select(ctx context.Context) (qrregion.Frame, error) {
 	if f.started != nil {
 		close(f.started)
+	}
+	if f.release != nil {
+		select {
+		case <-f.release:
+		case <-ctx.Done():
+			return qrregion.Frame{}, ctx.Err()
+		}
+		return f.frame, f.err
 	}
 	if f.waitForCancel {
 		<-ctx.Done()

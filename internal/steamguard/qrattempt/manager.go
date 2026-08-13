@@ -172,6 +172,22 @@ func (m *Manager) Create(binding Binding, payload []byte, ttl time.Duration) (ID
 	return id, nil
 }
 
+// Rebind moves every live attempt onto a new vault generation. A scanned code
+// is held while the user reads who is asking and decides whether to approve, and
+// a background renewal of stored session tokens landing in that gap must not
+// silently strand the attempt. It changes neither the account an attempt belongs
+// to nor its single-use lifetime; only the snapshot it is stamped against.
+func (m *Manager) Rebind(generation string) {
+	if strings.TrimSpace(generation) == "" {
+		return
+	}
+	m.mu.Lock()
+	for _, entry := range m.byID {
+		entry.binding.VaultGeneration = generation
+	}
+	m.mu.Unlock()
+}
+
 // Consume atomically removes one matching attempt before exposing its mutable
 // payload to fn. The attempt is single-use even when fn fails or panics. The
 // callback must not retain the supplied slice. Callback errors are returned
