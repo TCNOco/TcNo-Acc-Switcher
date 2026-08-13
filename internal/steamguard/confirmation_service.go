@@ -406,6 +406,9 @@ func logConfirmationFailure(log *slog.Logger, operation, steamID64, state string
 		if apiErr.StatusCode != 0 {
 			attributes = append(attributes, "status", apiErr.StatusCode)
 		}
+		if apiErr.Detail != "" {
+			attributes = append(attributes, "detail", apiErr.Detail)
+		}
 		if apiErr.HasRetryAfter {
 			attributes = append(attributes, "retryAfter", apiErr.RetryAfter)
 		}

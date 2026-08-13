@@ -74,6 +74,11 @@ func logTransportFailure(operation string, err error) {
 		if apiErr.StatusCode != 0 {
 			attributes = append(attributes, "status", apiErr.StatusCode)
 		}
+		// Without this, a refused redirect and a refused session are the same
+		// line: kind=reauth, no status, nothing to tell them apart.
+		if apiErr.Detail != "" {
+			attributes = append(attributes, "detail", apiErr.Detail)
+		}
 	}
 	clientLogger().Warn("mobileconf request failed", append(attributes, "error", err)...)
 }
@@ -346,7 +351,10 @@ func classifyProtocolError(err error) error {
 	if !errors.As(err, &protocolErr) {
 		return &Error{Kind: FailureFailed}
 	}
-	result := &Error{StatusCode: protocolErr.StatusCode, RetryAfter: protocolErr.RetryAfter, HasRetryAfter: protocolErr.HasRetryAfter}
+	result := &Error{
+		StatusCode: protocolErr.StatusCode, RetryAfter: protocolErr.RetryAfter,
+		HasRetryAfter: protocolErr.HasRetryAfter, Detail: protocolErr.Detail,
+	}
 	switch {
 	case protocolErr.Code == protocol.CodeCanceled:
 		result.Kind = FailureCanceled

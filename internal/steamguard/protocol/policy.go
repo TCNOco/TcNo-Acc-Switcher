@@ -33,20 +33,28 @@ func validateEndpoint(raw string, route Route) (*url.URL, *Error) {
 	return u, nil
 }
 
+// validateRedirect labels which check rejected a hop. The labels are fixed
+// strings, never any part of the Location - but knowing whether a redirect was
+// refused for its host, its shape or its count is the difference between
+// diagnosing a failure from one log line and guessing at it.
 func validateRedirect(u *url.URL) *Error {
 	if u == nil || !u.IsAbs() || u.Opaque != "" || u.Hostname() == "" || u.User != nil || u.Fragment != "" {
-		return protocolError(CodeRedirectDenied, StateDenied)
+		return redirectDenied("shape")
 	}
 	if !strings.EqualFold(u.Scheme, "https") {
-		return protocolError(CodeRedirectDenied, StateDenied)
+		return redirectDenied("scheme")
 	}
 	if port := u.Port(); port != "" && port != "443" {
-		return protocolError(CodeRedirectDenied, StateDenied)
+		return redirectDenied("port")
 	}
 	if !redirectHostAllowed(strings.ToLower(u.Hostname())) {
-		return protocolError(CodeRedirectDenied, StateDenied)
+		return redirectDenied("host")
 	}
 	return nil
+}
+
+func redirectDenied(reason string) *Error {
+	return &Error{Code: CodeRedirectDenied, State: StateDenied, Detail: "redirect_" + reason}
 }
 
 func hostAllowed(host string, route Route) bool {

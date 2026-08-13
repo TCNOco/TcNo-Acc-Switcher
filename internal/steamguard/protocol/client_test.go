@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 	"strings"
 	"sync/atomic"
 	"testing"
@@ -231,6 +232,118 @@ func TestDoStillDeniesRedirectsWithoutAllowRedirects(t *testing.T) {
 		PreserveHeadersOnRedirect: true,
 	})
 	assertProtocolCode(t, err, CodeRedirectDenied)
+}
+
+// Every redirect refusal collapses to the same Kind by the time it reaches a
+// caller, so the label is the only thing that says which check fired. Getting
+// this wrong costs a debugging round trip per failure.
+func TestDoLabelsWhyARedirectWasDenied(t *testing.T) {
+	t.Parallel()
+
+	cases := map[string]struct {
+		location string
+		allow    bool
+		want     string
+	}{
+		"not allowed":  {"https://steamcommunity.com/id/vanity/x", false, "redirect_disabled"},
+		"offsite host": {"https://evil.example.com/x", true, "redirect_host"},
+		"downgraded":   {"http://steamcommunity.com/x", true, "redirect_scheme"},
+		"odd port":     {"https://steamcommunity.com:8443/x", true, "redirect_port"},
+	}
+	for name, tc := range cases {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+			client := NewClient(Options{Transport: roundTripFunc(func(request *http.Request) (*http.Response, error) {
+				return response(request, http.StatusFound, http.Header{"Location": {tc.location}}, nil), nil
+			})})
+			_, err := client.Do(context.Background(), Request{
+				Method:                    http.MethodGet,
+				Endpoint:                  "https://steamcommunity.com/profiles/1/tradeoffers/privacy",
+				Route:                     RouteRequest,
+				Timeout:                   time.Second,
+				AllowRedirects:            tc.allow,
+				PreserveHeadersOnRedirect: true,
+			})
+			var protocolErr *Error
+			if !errors.As(err, &protocolErr) {
+				t.Fatalf("err = %v, want *Error", err)
+			}
+			if protocolErr.Code != CodeRedirectDenied {
+				t.Fatalf("code = %v, want %v", protocolErr.Code, CodeRedirectDenied)
+			}
+			if protocolErr.Detail != tc.want {
+				t.Fatalf("detail = %q, want %q", protocolErr.Detail, tc.want)
+			}
+		})
+	}
+}
+
+// Steam may answer with a bare path. Go resolves a relative Location against the
+// URL it came from before any policy runs, so it arrives as an absolute same-host
+// URL and is followed with the session intact - it is not a malformed redirect.
+func TestDoResolvesARelativeRedirectAgainstItsOrigin(t *testing.T) {
+	t.Parallel()
+
+	var calls atomic.Int32
+	client := NewClient(Options{Transport: roundTripFunc(func(request *http.Request) (*http.Response, error) {
+		switch calls.Add(1) {
+		case 1:
+			return response(request, http.StatusFound, http.Header{
+				"Location": {"/id/vanity/tradeoffers/privacy"},
+			}, nil), nil
+		case 2:
+			if request.URL.String() != "https://steamcommunity.com/id/vanity/tradeoffers/privacy" {
+				t.Fatalf("resolved to %s", request.URL)
+			}
+			if request.Header.Get("Cookie") != "session=secret" {
+				t.Fatalf("cookie did not survive: %#v", request.Header)
+			}
+			return response(request, http.StatusNoContent, nil, nil), nil
+		default:
+			return nil, errors.New("too many requests")
+		}
+	})})
+
+	if _, err := client.Do(context.Background(), Request{
+		Method:                    http.MethodGet,
+		Endpoint:                  "https://steamcommunity.com/profiles/1/tradeoffers/privacy",
+		Route:                     RouteRequest,
+		Header:                    http.Header{"Cookie": {"session=secret"}},
+		Timeout:                   time.Second,
+		AllowRedirects:            true,
+		PreserveHeadersOnRedirect: true,
+	}); err != nil {
+		t.Fatal(err)
+	}
+}
+
+// A chain that never settles is refused by count, and says so. This is the one
+// refusal a same-host, correctly-followed redirect can still hit.
+func TestDoLabelsARedirectLoopByItsLimit(t *testing.T) {
+	t.Parallel()
+
+	client := NewClient(Options{Transport: roundTripFunc(func(request *http.Request) (*http.Response, error) {
+		// Always somewhere else on the same host, so every other check passes.
+		return response(request, http.StatusFound, http.Header{
+			"Location": {"https://steamcommunity.com/id/vanity/" + strconv.Itoa(len(request.URL.Path))},
+		}, nil), nil
+	})})
+
+	_, err := client.Do(context.Background(), Request{
+		Method:                    http.MethodGet,
+		Endpoint:                  "https://steamcommunity.com/profiles/1/tradeoffers/privacy",
+		Route:                     RouteRequest,
+		Timeout:                   time.Second,
+		AllowRedirects:            true,
+		PreserveHeadersOnRedirect: true,
+	})
+	var protocolErr *Error
+	if !errors.As(err, &protocolErr) {
+		t.Fatalf("err = %v, want *Error", err)
+	}
+	if protocolErr.Detail != "redirect_limit" {
+		t.Fatalf("detail = %q, want redirect_limit", protocolErr.Detail)
+	}
 }
 
 func TestDoRejectsOversizedResponse(t *testing.T) {

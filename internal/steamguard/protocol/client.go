@@ -170,11 +170,14 @@ func (c *Client) Do(ctx context.Context, request Request) (Response, error) {
 	httpClient := &http.Client{
 		Transport: c.transport,
 		CheckRedirect: func(next *http.Request, via []*http.Request) error {
-			if !request.AllowRedirects || len(via) > MaxRedirects {
-				return protocolError(CodeRedirectDenied, StateDenied)
+			if !request.AllowRedirects {
+				return redirectDenied("disabled")
+			}
+			if len(via) > MaxRedirects {
+				return redirectDenied("limit")
 			}
 			if next.Method != http.MethodGet && next.Method != http.MethodHead {
-				return protocolError(CodeRedirectDenied, StateDenied)
+				return redirectDenied("method")
 			}
 			if redirectErr := validateRedirect(next.URL); redirectErr != nil {
 				return redirectErr
@@ -281,6 +284,9 @@ func classifyRequestError(ctx context.Context, err error) error {
 	}
 	var protocolErr *Error
 	if errors.As(err, &protocolErr) {
+		// Rebuilt rather than returned, so the transport error underneath - which
+		// carries the URL - is left behind. Every field has to be carried across
+		// by hand for that to be safe, and Detail was being dropped.
 		return &Error{
 			Code:          protocolErr.Code,
 			State:         protocolErr.State,
@@ -289,6 +295,7 @@ func classifyRequestError(ctx context.Context, err error) error {
 			HasEResult:    protocolErr.HasEResult,
 			RetryAfter:    protocolErr.RetryAfter,
 			HasRetryAfter: protocolErr.HasRetryAfter,
+			Detail:        protocolErr.Detail,
 		}
 	}
 	return protocolError(CodeTransport, StateRetryable)

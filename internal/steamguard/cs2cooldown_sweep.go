@@ -267,6 +267,9 @@ func logCooldownFetchFailure(log *slog.Logger, steamID64 string, err error) {
 	if apiErr.StatusCode != 0 {
 		attributes = append(attributes, "status", apiErr.StatusCode)
 	}
+	if apiErr.Detail != "" {
+		attributes = append(attributes, "detail", apiErr.Detail)
+	}
 	switch apiErr.Kind {
 	case confirmationapi.FailureOffline, confirmationapi.FailureCanceled:
 		// The app going offline or shutting down mid-sweep. Says nothing about

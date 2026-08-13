@@ -68,6 +68,9 @@ func (e *Error) Error() string {
 	case CodeHostDenied:
 		return "steam protocol: host denied"
 	case CodeRedirectDenied:
+		if e.Detail != "" {
+			return "steam protocol: redirect denied (" + e.Detail + ")"
+		}
 		return "steam protocol: redirect denied"
 	case CodeRequestTooLarge:
 		return "steam protocol: request body too large"
