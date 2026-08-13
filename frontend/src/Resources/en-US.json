@@ -1112,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "Chat",
   "SteamGuard_Error_BrowserOpenFailed": "Could not open the browser window",
   "SteamBrowser_Trusted_Hint": "{host} is a trusted Steam site.",
-  "SteamBrowser_Untrusted_Hint": "{host} is not Steam or another trusted site. Take the same care you would in any browser, and do not enter your Steam password or authenticator codes here."
+  "SteamBrowser_Untrusted_Hint": "{host} is not Steam or another trusted site. Take the same care you would in any browser, and do not enter your Steam password or authenticator codes here.",
+  "Context_Steam_TradeLink": "Trade Link",
+  "SteamGuard_TradeLink_Fetching": "Getting trade link from Steam…",
+  "SteamGuard_TradeLink_NeedsLogin": "Sign in to this account again to get its trade link.",
+  "SteamGuard_TradeLink_RateLimited": "Steam is rate limiting this. Try again in a minute.",
+  "SteamGuard_TradeLink_Offline": "Offline mode is on, so the trade link cannot be fetched.",
+  "SteamGuard_TradeLink_Unavailable": "Steam did not return a trade link for this account. Check its trade URL on Steam.",
+  "SteamGuard_Error_TradeLinkFailed": "Could not get the trade link"
 }

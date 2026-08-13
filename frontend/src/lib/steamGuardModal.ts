@@ -115,6 +115,20 @@ export function isPendingAccountId(id: string): boolean {
 	return id.startsWith(PENDING_ACCOUNT_ID_PREFIX);
 }
 
+/**
+ * One reading of an account's trade URL.
+ *
+ * "unavailable" is a page Steam served and answered, that carried no trade URL
+ * this build could read — a different thing from a failed request, and it needs
+ * different words on screen.
+ */
+export type SteamTradeLink = {
+	state: "ok" | "reauth" | "rate-limit" | "offline" | "canceled" | "unavailable" | "error";
+	url: string;
+	needsLogin: boolean;
+	retryAfterMs: number;
+};
+
 export type SteamLoginResult = {
 	state: "refreshed" | "reauthentication_required" | "removed";
 	refreshTokenRenewed: boolean;
@@ -360,6 +374,12 @@ export type SteamGuardModalController = {
 		site: SteamBrowserSite,
 		capability: string,
 	) => Promise<{ needsLogin: boolean; capabilityRefreshRequired: boolean }>;
+	/**
+	 * Reads the account's current trade URL from Steam. Never cached: the user can
+	 * rotate the token from Steam's own settings at any time, and nothing tells
+	 * this app when they did.
+	 */
+	getTradeLink?: (accountId: string, capability: string) => Promise<SteamTradeLink>;
 	  loginAgain?: (accountId: string, capability: string) => Promise<SteamLoginResult>;
 	  beginCredentialLogin?: (
 		accountId: string,

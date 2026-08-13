@@ -14,6 +14,7 @@ import type {
 	SteamCredentialResult,
 	SteamEnrollmentStatus,
 	SteamLoginResult,
+	SteamTradeLink,
 } from "./steamGuardModal";
 import { PENDING_ACCOUNT_ID_PREFIX } from "./steamGuardModal";
 import { configureSteamBrowser } from "./steam/steamBrowserOpen";
@@ -54,6 +55,20 @@ function loginResult(result: SteamGuardModels.SteamLoginResult): SteamLoginResul
 		capabilityRefreshRequired: result.capabilityRefreshRequired,
 		registryUpdated: result.registryUpdated,
 	};
+}
+
+const tradeLinkStates: readonly SteamTradeLink["state"][] = [
+	"ok", "reauth", "rate-limit", "offline", "canceled", "unavailable", "error",
+];
+
+/**
+ * Narrows Go's state string. An unknown value is a newer backend than this
+ * build, and the safe reading of "I do not know what happened" is a failure, not
+ * a link.
+ */
+function tradeLinkState(state: string): SteamTradeLink["state"] {
+	const known = tradeLinkStates.find((candidate) => candidate === state);
+	return known ?? "error";
 }
 
 function enrollmentStatus(result: SteamGuardModels.SteamEnrollmentStatus): SteamEnrollmentStatus {
@@ -1172,6 +1187,17 @@ const controller: SteamGuardModalController = {
 		return {
 			needsLogin: result.needsLogin === true,
 			capabilityRefreshRequired: result.capabilityRefreshRequired === true,
+		};
+	},
+	getTradeLink: async (accountId, capability) => {
+		const result = await SteamGuardService.GetSteamTradeLink(accountId, capability);
+		return {
+			// Go owns the vocabulary; anything this build does not know is an error
+			// rather than something to render raw.
+			state: tradeLinkState(result.state),
+			url: result.url ?? "",
+			needsLogin: result.needsLogin === true,
+			retryAfterMs: result.retryAfterMs ?? 0,
 		};
 	},
 	loginAgain: (accountId, capability) => SteamGuardService.LoginAgain(accountId, capability).then(loginResult),

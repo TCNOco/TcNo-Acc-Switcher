@@ -1,10 +1,11 @@
-import { pushToast } from "../../stores/toast";
+import { dismissToastById, pushToast } from "../../stores/toast";
 import { requestPlatformAccountsRefresh } from "../../stores/platformPage";
 import type { SteamAccountRow, SteamGuardMenuRequest } from "./types";
 import type { SteamBrowserSite } from "./steamBrowserSites";
 import { formatWailsError, formatToastWithError } from "../formatWailsError";
 import { reportLaunchFailure } from "../adminFlow";
-import { copySteamGuardCodeNow, refreshSteamGuardVaultUnlocked } from "./steamGuardQuickCopy";
+import type { SteamTradeLink } from "../steamGuardModal";
+import { copySteamGuardCodeNow, fetchTradeLinkNow, refreshSteamGuardVaultUnlocked } from "./steamGuardQuickCopy";
 import * as SteamService from "../../../bindings/TcNo-Acc-Switcher/internal/steam/steamservice.js";
 import * as Shortcuts from "wails-shortcuts-service";
 
@@ -35,6 +36,30 @@ export interface SteamMenuDeps {
   openSteamBrowser?: (account: SteamAccountRow, site: SteamBrowserSite) => void;
   /** Last known vault state. Only an open vault can hand out a code. */
   steamGuardVaultUnlocked: boolean;
+}
+
+/**
+ * Long enough to cover the request, so the progress toast is dismissed by the
+ * answer rather than by its own timer. The Go side gives up at 20s.
+ */
+const tradeLinkFetchToastMs = 25000;
+
+/** Words each way a trade link can fail to arrive, so none of them read as "no link". */
+function tradeLinkFailureMessage(result: SteamTradeLink, tr: Translate): string {
+  switch (result.state) {
+    case "reauth":
+      return tr("SteamGuard_TradeLink_NeedsLogin");
+    case "rate-limit":
+      return tr("SteamGuard_TradeLink_RateLimited");
+    case "offline":
+      return tr("SteamGuard_TradeLink_Offline");
+    // A page Steam answered that carried no link. Nothing here is retryable, and
+    // the account's own settings page is where it would be fixed.
+    case "unavailable":
+      return tr("SteamGuard_TradeLink_Unavailable");
+    default:
+      return tr("SteamGuard_Error_TradeLinkFailed");
+  }
 }
 
 function mapSteamUserdataI18nError(err: unknown, tr: Translate): string {
@@ -109,6 +134,38 @@ export function createSteamMenuCommands(acc: SteamAccountRow, deps: SteamMenuDep
           duration: 8000,
         });
         // A locked vault is the likeliest reason, so stop offering the row.
+        void refreshSteamGuardVaultUnlocked();
+      }
+    },
+
+    // Read from Steam on every click rather than remembered. The token in a trade
+    // URL is rotated whenever the user presses "Create New URL" on Steam's own
+    // settings page, and nothing tells this app when that happened - so a
+    // remembered link is one that silently stops working.
+    async copyTradeLink(): Promise<void> {
+      const pending = pushToast({
+        type: "info",
+        message: tr("SteamGuard_TradeLink_Fetching"),
+        duration: tradeLinkFetchToastMs,
+      });
+      try {
+        const result = await fetchTradeLinkNow(rid);
+        dismissToastById(pending);
+        if (result.state === "ok" && result.url) {
+          await clipboardWrite(result.url, tr);
+          return;
+        }
+        pushToast({ type: "error", message: tradeLinkFailureMessage(result, tr), duration: 8000 });
+        // A rejected session is the likeliest reason the vault can no longer
+        // answer, so stop offering the rows that depend on it.
+        if (result.needsLogin) void refreshSteamGuardVaultUnlocked();
+      } catch (e) {
+        dismissToastById(pending);
+        pushToast({
+          type: "error",
+          message: formatToastWithError(tr("SteamGuard_Error_TradeLinkFailed"), e),
+          duration: 8000,
+        });
         void refreshSteamGuardVaultUnlocked();
       }
     },

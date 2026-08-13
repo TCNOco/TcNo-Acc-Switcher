@@ -9,9 +9,10 @@ import type { SteamBrowserSite } from "./steamBrowserSites";
 
 const setBanStatusHidden = vi.hoisted(() => vi.fn<(hidden: boolean) => Promise<void>>());
 const copySteamId = vi.hoisted(() => vi.fn<(format: string) => Promise<void>>());
+const copyTradeLink = vi.hoisted(() => vi.fn<() => Promise<void>>());
 
 vi.mock("./menuCommands", () => ({
-  createSteamMenuCommands: () => ({ setBanStatusHidden, copySteamId }),
+  createSteamMenuCommands: () => ({ setBanStatusHidden, copySteamId, copyTradeLink }),
 }));
 
 const labels: Record<string, string> = {
@@ -189,6 +190,71 @@ describe("Copy Steam Guard code row", () => {
     expect(copyRow(account({ hasSteamGuard: true }), false)).toBeUndefined();
     expect(copyRow(account({ hasSteamGuard: false }), true)).toBeUndefined();
     expect(copyRow(account({ steamGuardPending: true }), true)).toBeUndefined();
+  });
+});
+
+// Steam only shows an account its own trade URL, and only over that account's
+// session, so the row is worth offering exactly when the vault can supply one.
+describe("Copy Trade Link", () => {
+  const shared = (): SharedMenuItems => {
+    const item = (label: string): MenuItemDef => ({ label, action: vi.fn() });
+    return {
+      swapTo: item("Swap"),
+      changeName: item("Rename"),
+      createShortcut: item("Shortcut"),
+      changeImage: item("Image"),
+      forget: item("Forget"),
+      notes: item("Notes"),
+      tags: item("Tags"),
+      gameStats: null,
+    };
+  };
+
+  const deps = (steamGuardVaultUnlocked: boolean): SteamMenuDeps => ({
+    name: "Steam",
+    installedGames: [],
+    gameDataBySteamId: {},
+    steamIds: [],
+    refreshGameDataAppSets: async () => {},
+    openSteamGuard: vi.fn(),
+    steamGuardVaultUnlocked,
+  });
+
+  const copySubmenu = (acc: SteamAccountRow, unlocked: boolean): MenuItemDef => {
+    const menu = buildSteamExtraMenu(acc, shared(), deps(unlocked));
+    const copy = menu.find((candidate) => candidate.label === "Context_CopySubmenu");
+    if (!copy) throw new Error("missing Copy submenu");
+    return copy;
+  };
+
+  const tradeRow = (acc: SteamAccountRow, unlocked: boolean): MenuItemDef | undefined =>
+    copySubmenu(acc, unlocked).children?.find((c) => c.label === "Context_Steam_TradeLink");
+
+  it.each([
+    ["a full authenticator", { hasSteamGuard: true }, true, true],
+    ["a login-only record", { steamGuardLoginOnly: true }, true, true],
+    // In the vault, but whether it holds a usable session is not guaranteed.
+    ["a half-finished enrollment", { steamGuardPending: true }, true, false],
+    ["an account the vault does not hold", {}, true, false],
+    ["a locked vault", { hasSteamGuard: true }, false, false],
+  ] as const)("%s: offered = %o", (_name, overrides, unlocked, offered) => {
+    expect(tradeRow(account(overrides), unlocked) !== undefined).toBe(offered);
+  });
+
+  it("sits last in the Copy submenu, directly above the SteamID rows", () => {
+    const labels = (copySubmenu(account({ hasSteamGuard: true }), true).children ?? [])
+      .map((c) => c.label);
+    expect(labels.slice(-2)).toEqual(["Context_Steam_TradeLink", "Context_CopySteamIdSubmenu"]);
+  });
+
+  it("fetches on click rather than carrying a remembered link", () => {
+    copyTradeLink.mockClear();
+    // Building the menu must not reach Steam: menus are built on every
+    // right-click, and the link is only wanted when the row is actually used.
+    const row = tradeRow(account({ hasSteamGuard: true }), true);
+    expect(copyTradeLink).not.toHaveBeenCalled();
+    row?.action?.();
+    expect(copyTradeLink).toHaveBeenCalledTimes(1);
   });
 });
 

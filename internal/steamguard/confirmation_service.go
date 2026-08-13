@@ -39,6 +39,11 @@ type steamConfirmationClient interface {
 	// sweep's only request. Unlike the rest it is token-authenticated against the
 	// Web API rather than cookie-authenticated against the community site.
 	FetchOwnedApps(context.Context, confirmationapi.Credentials) ([]uint32, error)
+	// FetchTradeOfferPrivacyPage shares the cookie transport too. Valve exposes
+	// an account's trade URL nowhere else: the protobuf method that carries it,
+	// Econ.GetTradeOfferAccessToken, is client-only and is not routed on the
+	// public Web API.
+	FetchTradeOfferPrivacyPage(context.Context, confirmationapi.Credentials) ([]byte, error)
 	Decide(context.Context, confirmationapi.Credentials, confirmationapi.Confirmation, confirmationapi.Decision) error
 	DecideBatch(context.Context, confirmationapi.Credentials, []confirmationapi.Confirmation, confirmationapi.Decision) error
 	CloseIdleConnections()

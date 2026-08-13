@@ -63,17 +63,27 @@ function popOneOccurrence(id: string, nextDurationMs: number): void {
   })
 }
 
-/** Show or merge a toast (same type + title + message refreshes the timer and increments count). */
-export function pushToast(input: ToastInput): void {
+/**
+ * Show or merge a toast (same type + title + message refreshes the timer and increments count).
+ *
+ * Returns the row's id — the merged row's id when this call merged into one — so
+ * a caller announcing work in progress can dismiss it the moment the work
+ * finishes, instead of leaving a stale "working on it" on screen until it times
+ * out under the result that replaced it.
+ */
+export function pushToast(input: ToastInput): string {
   const durationMs = resolvedDurationMs(input)
   const title = (input.title ?? '').trim()
   const message = (input.message ?? '').trim()
   const key = contentKey({ type: input.type, title, message })
 
+  // Svelte runs the updater synchronously, so the id is set by the time we return.
+  let pushedId = ''
   update((list) => {
     const idx = list.findIndex((t) => contentKey(t) === key)
     if (idx >= 0) {
       const cur = list[idx]
+      pushedId = cur.id
       scheduleRemoval(cur.id, durationMs)
       const next = list.slice()
       next[idx] = {
@@ -82,10 +92,11 @@ export function pushToast(input: ToastInput): void {
       }
       return next
     }
-    const id = crypto.randomUUID()
-    scheduleRemoval(id, durationMs)
-    return [...list, { id, type: input.type, title, message, count: 1 }]
+    pushedId = crypto.randomUUID()
+    scheduleRemoval(pushedId, durationMs)
+    return [...list, { id: pushedId, type: input.type, title, message, count: 1 }]
   })
+  return pushedId
 }
 
 /**

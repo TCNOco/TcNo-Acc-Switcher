@@ -61,6 +61,10 @@ func (f *fakeCooldownClient) FetchOwnedApps(context.Context, confirmationapi.Cre
 	panic("cooldown sweep must not fetch owned apps")
 }
 
+func (f *fakeCooldownClient) FetchTradeOfferPrivacyPage(context.Context, confirmationapi.Credentials) ([]byte, error) {
+	panic("cooldown sweep must not fetch the trade offer privacy page")
+}
+
 func (f *fakeCooldownClient) callCount() int {
 	f.mu.Lock()
 	defer f.mu.Unlock()

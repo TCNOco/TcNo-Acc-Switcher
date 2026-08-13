@@ -50,6 +50,15 @@ export function buildSteamExtraMenu(
     { label: tr("Context_CommunityUrl"), action: () => commands.copyCommunityUrl() },
     { label: tr("Context_CommunityUsername"), action: () => commands.copyCommunityUsername() },
     { label: tr("Context_LoginUsername"), action: () => commands.copyLoginUsername() },
+    // Steam only shows an account its own trade URL, so this needs the session
+    // the vault holds. A half-finished enrollment is excluded deliberately: it is
+    // in the vault, but whether it holds a usable session is not guaranteed.
+    ...(deps.steamGuardVaultUnlocked && (acc.hasSteamGuard || acc.steamGuardLoginOnly === true)
+      ? [{
+          label: tr("Context_Steam_TradeLink"),
+          action: () => void commands.copyTradeLink(),
+        }]
+      : []),
     {
       label: tr("Context_CopySteamIdSubmenu"),
       children: [

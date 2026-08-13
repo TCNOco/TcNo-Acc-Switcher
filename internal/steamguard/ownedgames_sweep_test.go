@@ -78,6 +78,10 @@ func (f *fakeOwnedGamesClient) FetchCS2StorePage(context.Context, confirmationap
 	panic("owned games sweep must not fetch the store page")
 }
 
+func (f *fakeOwnedGamesClient) FetchTradeOfferPrivacyPage(context.Context, confirmationapi.Credentials) ([]byte, error) {
+	panic("owned games sweep must not fetch the trade offer privacy page")
+}
+
 func (f *fakeOwnedGamesClient) List(context.Context, confirmationapi.Credentials) ([]confirmationapi.Confirmation, error) {
 	panic("owned games sweep must not list confirmations")
 }
