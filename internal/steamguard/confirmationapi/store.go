@@ -59,9 +59,7 @@ func (c *Client) FetchCS2StorePage(ctx context.Context, credentials Credentials)
 // for the same reason GCPD keeps it, though the Prime flag itself is matched on
 // a CSS class rather than on translated text.
 func storeCookie(credentials Credentials) string {
-	return "steamLoginSecure=" + credentials.SteamID + "%7C%7C" + credentials.AccessToken +
-		"; sessionid=" + credentials.SessionID +
-		"; Steam_Language=english" +
+	return desktopSessionCookie(credentials) +
 		// Without a birth date the store interposes an age gate on a mature-rated
 		// app and serves none of the purchase sections.
 		"; birthtime=283996801; lastagecheckage=1-January-1979"

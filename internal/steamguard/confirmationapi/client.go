@@ -298,6 +298,20 @@ func confirmationCookie(credentials Credentials) string {
 		"; mobileClient=android; mobileClientVersion=777777%203.6.4"
 }
 
+// desktopSessionCookie is the same session without the mobile client markers.
+//
+// mobileClient=android asks Steam for its mobile shell. That is right for
+// mobileconf, which is a mobile-app endpoint, and harmless on a data page like
+// GCPD - but on an account settings page the mobile shell bounces the request
+// until the redirect budget runs out. internal/steambrowser leaves the marker
+// off its windows for the same reason, in its own words: these are meant to
+// look like the desktop site.
+func desktopSessionCookie(credentials Credentials) string {
+	return "steamLoginSecure=" + credentials.SteamID + "%7C%7C" + credentials.AccessToken +
+		"; sessionid=" + credentials.SessionID +
+		"; Steam_Language=english"
+}
+
 func validateCredentials(credentials Credentials) error {
 	steamID, err := strconv.ParseUint(credentials.SteamID, 10, 64)
 	if err != nil || steamID == 0 || strconv.FormatUint(steamID, 10) != credentials.SteamID {

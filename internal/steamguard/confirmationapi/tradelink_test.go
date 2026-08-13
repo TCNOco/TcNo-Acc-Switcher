@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"strings"
 	"testing"
+
+	"TcNo-Acc-Switcher/internal/steamguard/protocol"
 )
 
 func TestFetchTradeOfferPrivacyPageBuildsTheExactRequest(t *testing.T) {
@@ -34,13 +36,20 @@ func TestFetchTradeOfferPrivacyPageBuildsTheExactRequest(t *testing.T) {
 	for _, want := range []string{
 		"steamLoginSecure=76561198000000000%7C%7CeyJhbGciOiJIUzI1NiJ9.payload.signature",
 		"sessionid=0123456789ABCDEF0123456789ABCDEF",
+		"Steam_Language=english",
 	} {
 		if !strings.Contains(cookie, want) {
 			t.Fatalf("Cookie = %q, missing %q", cookie, want)
 		}
 	}
-	if request.Header.Get("User-Agent") != MobileUserAgent {
-		t.Fatalf("User-Agent = %q", request.Header.Get("User-Agent"))
+	// Under the mobile shell Steam bounces this page between forms until the
+	// redirect budget runs out, and that reads as a refused session on an account
+	// that is signed in perfectly well.
+	if strings.Contains(cookie, "mobileClient") {
+		t.Fatalf("mobile client marker asks for the mobile shell: %q", cookie)
+	}
+	if request.Header.Get("User-Agent") != protocol.UserAgent {
+		t.Fatalf("User-Agent = %q, want the desktop agent", request.Header.Get("User-Agent"))
 	}
 	if strings.Contains(request.URL.String(), testCredentials().AccessToken) {
 		t.Fatal("access token leaked into URL")

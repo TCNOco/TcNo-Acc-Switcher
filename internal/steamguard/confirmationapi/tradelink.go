@@ -40,9 +40,14 @@ func (c *Client) FetchTradeOfferPrivacyPage(ctx context.Context, credentials Cre
 		return nil, &Error{Kind: FailureInvalid}
 	}
 
+	// Asked for as the desktop site, not as the Steam app. This is an account
+	// settings page, and under the mobile shell Steam bounces it between forms
+	// until the redirect budget runs out - which read, from the outside, as a
+	// refused session on an account whose session was fine. The store page next
+	// door is fetched the same way for the same reason.
 	headers := make(http.Header)
-	headers.Set("User-Agent", MobileUserAgent)
-	headers.Set("Cookie", webCookie(credentials))
+	headers.Set("User-Agent", protocol.UserAgent)
+	headers.Set("Cookie", desktopSessionCookie(credentials))
 	// Steam canonicalises /profiles/<id64>/... to /id/<vanity>/... for any account
 	// with a custom URL, so a large share of real accounts answer this with a 302
 	// rather than the page. Following it needs the cookies, or the hop lands on
