@@ -907,7 +907,7 @@
   "Context_CommunityUsername": "커뮤니티 사용자 이름",
   "Context_LoginUsername": "로그인 사용자 이름",
   "Context_CopySteamGuardCode": "Steam Guard 코드",
-  "Context_CopySteamIdSubmenu": "SteamID 복사",
+  "Context_CopySteamIdSubmenu": "SteamID",
   "Context_Steam_Id": "SteamID [STEAM0:~]",
   "Context_Steam_Id3": "SteamID3 [U:1:~]",
   "Context_Steam_Id32": "SteamID32",

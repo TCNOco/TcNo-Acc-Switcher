@@ -1,6 +1,7 @@
 {
   "_comment": "Keys whose value is intentionally identical to English. Suppressed from i18n_todo.py's still-English report. '*' applies to every locale; a locale code applies to that locale only. Add with: python tools/i18n_todo.py [locale] --ignore KEY [KEY ...]",
   "*": [
+    "Context_CopySteamIdSubmenu",
     "Context_Steam_Id",
     "Context_Steam_Id3",
     "Context_Steam_Id32",

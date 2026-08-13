@@ -907,7 +907,7 @@
   "Context_CommunityUsername": "اسم مستخدم المجتمع",
   "Context_LoginUsername": "اسم مستخدم تسجيل الدخول",
   "Context_CopySteamGuardCode": "رمز Steam Guard",
-  "Context_CopySteamIdSubmenu": "انسخ SteamID",
+  "Context_CopySteamIdSubmenu": "SteamID",
   "Context_Steam_Id": "معرف Steam [STEAM0:~]",
   "Context_Steam_Id3": "معرف Steam 3 [U:1:~]",
   "Context_Steam_Id32": "SteamID 32",

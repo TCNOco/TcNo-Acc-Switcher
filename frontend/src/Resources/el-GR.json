@@ -907,7 +907,7 @@
   "Context_CommunityUsername": "Όνομα χρήστη κοινότητας",
   "Context_LoginUsername": "Όνομα χρήστη σύνδεσης",
   "Context_CopySteamGuardCode": "Κωδικός Steam Guard",
-  "Context_CopySteamIdSubmenu": "Αντιγραφή SteamID",
+  "Context_CopySteamIdSubmenu": "SteamID",
   "Context_Steam_Id": "Αναγνωριστικό Steam [STEAM0:~]",
   "Context_Steam_Id3": "SteamID3 [U:1:~]",
   "Context_Steam_Id32": "SteamID32",
