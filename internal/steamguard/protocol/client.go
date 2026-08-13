@@ -11,6 +11,7 @@ import (
 	"math"
 	"net"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -46,6 +47,18 @@ type Request struct {
 	Timeout          time.Duration
 	MaxResponseBytes int64
 	AllowRedirects   bool
+	// PreserveHeadersOnRedirect carries the request's own headers - including
+	// Cookie - onto a redirect that stays on the exact host the request started
+	// on. Off by default, and ignored without AllowRedirects.
+	//
+	// It exists for Steam's own canonicalising redirects: an authenticated GET of
+	// /profiles/<id64>/... is answered with a 302 to /id/<vanity>/... for any
+	// account with a custom URL, and a followed request stripped of its cookies
+	// lands on the login page. Same host is the whole guarantee - a redirect one
+	// hop sideways to another allowlisted Steam host still gets the scrubbed
+	// headers, so a session cookie can never be replayed to an origin that did
+	// not issue it.
+	PreserveHeadersOnRedirect bool
 }
 
 // Response omits headers except for parsed Retry-After and Steam EResult
@@ -151,6 +164,8 @@ func (c *Client) Do(ctx context.Context, request Request) (Response, error) {
 	}
 	httpRequest.Header.Set("User-Agent", userAgent)
 	httpRequest.Header.Set("Accept-Encoding", "identity")
+	// Read from the validated endpoint, not from a header a caller could set.
+	originHost := strings.ToLower(endpoint.Hostname())
 
 	httpClient := &http.Client{
 		Transport: c.transport,
@@ -163,6 +178,10 @@ func (c *Client) Do(ctx context.Context, request Request) (Response, error) {
 			}
 			if redirectErr := validateRedirect(next.URL); redirectErr != nil {
 				return redirectErr
+			}
+			if request.PreserveHeadersOnRedirect && sameHost(next.URL, originHost) {
+				next.Header = httpRequest.Header.Clone()
+				return nil
 			}
 			next.Header = make(http.Header)
 			next.Header.Set("User-Agent", userAgent)
@@ -224,6 +243,13 @@ func (c *Client) Do(ctx context.Context, request Request) (Response, error) {
 		RetryAfter:    retryAfter,
 		HasRetryAfter: hasRetryAfter,
 	}, nil
+}
+
+// sameHost reports whether a redirect target is the very host the request
+// started on. Hostname() drops any port, which validateEndpoint has already
+// pinned to 443 or empty on both ends.
+func sameHost(target *url.URL, originHost string) bool {
+	return target != nil && strings.ToLower(target.Hostname()) == originHost && originHost != ""
 }
 
 func parseEResult(header http.Header) (int, bool, *Error) {

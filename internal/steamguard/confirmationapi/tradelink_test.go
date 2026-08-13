@@ -86,12 +86,68 @@ func TestFetchTradeOfferPrivacyPageRejectsUnusableCredentials(t *testing.T) {
 	}
 }
 
+// Any account with a custom URL is answered with a 302 to /id/<vanity>/..., so
+// this is the ordinary path for a large share of accounts, not an edge case.
+// The hop has to carry the cookies or it lands on the login page and a live
+// session is reported as "sign in again".
+func TestFetchTradeOfferPrivacyPageFollowsTheVanityRedirect(t *testing.T) {
+	transport := &queuedTransport{responses: []*http.Response{
+		jsonResponse(http.StatusFound, "", http.Header{
+			"Location": {"https://steamcommunity.com/id/vanity/tradeoffers/privacy"},
+		}),
+		htmlResponse(http.StatusOK, "<html>the page</html>"),
+	}}
+	client := testClient(transport, func() bool { return false })
+
+	body, err := client.FetchTradeOfferPrivacyPage(context.Background(), testCredentials())
+	if err != nil {
+		t.Fatalf("FetchTradeOfferPrivacyPage: %v", err)
+	}
+	if string(body) != "<html>the page</html>" {
+		t.Fatalf("body = %q", body)
+	}
+	if len(transport.requests) != 2 {
+		t.Fatalf("made %d requests, want 2", len(transport.requests))
+	}
+	followed := transport.requests[1]
+	if followed.URL.String() != "https://steamcommunity.com/id/vanity/tradeoffers/privacy" {
+		t.Fatalf("followed %s", followed.URL)
+	}
+	if !strings.Contains(followed.Header.Get("Cookie"), "steamLoginSecure=") {
+		t.Fatalf("session cookie did not survive the hop: %q", followed.Header.Get("Cookie"))
+	}
+	// Still a read, on the hop as much as on the first request.
+	if followed.Method != http.MethodGet {
+		t.Fatalf("followed with %s, want GET", followed.Method)
+	}
+}
+
+// Steam redirects a rejected session to its own login page, on the same host.
+// Following it is right: the body that comes back is what tells the parser the
+// session is dead, rather than a bare 302 that could mean either thing.
+func TestFetchTradeOfferPrivacyPageFollowsALoginRedirectToItsBody(t *testing.T) {
+	transport := &queuedTransport{responses: []*http.Response{
+		jsonResponse(http.StatusFound, "", http.Header{
+			"Location": {"https://steamcommunity.com/login/home/?goto=tradeoffers"},
+		}),
+		htmlResponse(http.StatusOK, "<html><title>Sign In</title></html>"),
+	}}
+	client := testClient(transport, func() bool { return false })
+
+	body, err := client.FetchTradeOfferPrivacyPage(context.Background(), testCredentials())
+	if err != nil {
+		t.Fatalf("FetchTradeOfferPrivacyPage: %v", err)
+	}
+	if !strings.Contains(string(body), "Sign In") {
+		t.Fatalf("body = %q", body)
+	}
+}
+
 func TestFetchTradeOfferPrivacyPageClassifiesFailures(t *testing.T) {
 	cases := map[string]struct {
 		response *http.Response
 		want     FailureKind
 	}{
-		"redirect":    {htmlResponse(http.StatusFound, ""), FailureReauth},
 		"unauthentic": {htmlResponse(http.StatusUnauthorized, ""), FailureReauth},
 		"rate limit":  {htmlResponse(http.StatusTooManyRequests, ""), FailureRateLimit},
 	}

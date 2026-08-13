@@ -123,6 +123,116 @@ func TestDoScrubsHeadersOnAllowedRedirect(t *testing.T) {
 	}
 }
 
+// Steam answers /profiles/<id64>/... with a 302 to /id/<vanity>/... for any
+// account with a custom URL. Following that hop without the cookies lands on
+// the login page, so a live session reads as "sign in again".
+func TestDoCarriesHeadersAcrossASameHostRedirectWhenAsked(t *testing.T) {
+	t.Parallel()
+
+	var calls atomic.Int32
+	client := NewClient(Options{Transport: roundTripFunc(func(request *http.Request) (*http.Response, error) {
+		switch calls.Add(1) {
+		case 1:
+			return response(request, http.StatusFound, http.Header{
+				"Location": {"https://steamcommunity.com/id/vanity/tradeoffers/privacy"},
+			}, nil), nil
+		case 2:
+			if request.Header.Get("Cookie") != "session=secret" {
+				t.Fatalf("cookie did not survive the hop: %#v", request.Header)
+			}
+			if request.Header.Get("User-Agent") != "okhttp/3.12.12" {
+				t.Fatalf("User-Agent = %q", request.Header.Get("User-Agent"))
+			}
+			return response(request, http.StatusNoContent, nil, nil), nil
+		default:
+			return nil, errors.New("too many requests")
+		}
+	})})
+
+	result, err := client.Do(context.Background(), Request{
+		Method:   http.MethodGet,
+		Endpoint: "https://steamcommunity.com/profiles/76561198000000000/tradeoffers/privacy",
+		Route:    RouteRequest,
+		Header: http.Header{
+			"Cookie":     {"session=secret"},
+			"User-Agent": {"okhttp/3.12.12"},
+		},
+		Timeout:                   time.Second,
+		AllowRedirects:            true,
+		PreserveHeadersOnRedirect: true,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.StatusCode != http.StatusNoContent {
+		t.Fatalf("status = %d", result.StatusCode)
+	}
+}
+
+// Same host is the entire guarantee. A hop to another allowlisted Steam host is
+// still an origin that did not issue the cookie, so it gets the scrubbed set.
+func TestDoScrubsHeadersAcrossHostsEvenWhenPreserving(t *testing.T) {
+	t.Parallel()
+
+	for _, target := range []string{
+		"https://store.steampowered.com/login/settoken",
+		"https://help.steampowered.com/wizard",
+		"https://login.steampowered.com/jwt",
+	} {
+		t.Run(target, func(t *testing.T) {
+			t.Parallel()
+			var calls atomic.Int32
+			client := NewClient(Options{Transport: roundTripFunc(func(request *http.Request) (*http.Response, error) {
+				switch calls.Add(1) {
+				case 1:
+					return response(request, http.StatusFound, http.Header{"Location": {target}}, nil), nil
+				case 2:
+					if request.Header.Get("Cookie") != "" {
+						t.Fatalf("cookie replayed to %s: %#v", target, request.Header)
+					}
+					return response(request, http.StatusNoContent, nil, nil), nil
+				default:
+					return nil, errors.New("too many requests")
+				}
+			})})
+
+			if _, err := client.Do(context.Background(), Request{
+				Method:                    http.MethodGet,
+				Endpoint:                  "https://steamcommunity.com/profiles/1/tradeoffers/privacy",
+				Route:                     RouteRequest,
+				Header:                    http.Header{"Cookie": {"session=secret"}},
+				Timeout:                   time.Second,
+				AllowRedirects:            true,
+				PreserveHeadersOnRedirect: true,
+			}); err != nil {
+				t.Fatal(err)
+			}
+		})
+	}
+}
+
+// The flag means nothing on its own: without AllowRedirects a 302 is still a
+// denied redirect, so it cannot quietly widen anything it is set on.
+func TestDoStillDeniesRedirectsWithoutAllowRedirects(t *testing.T) {
+	t.Parallel()
+
+	client := NewClient(Options{Transport: roundTripFunc(func(request *http.Request) (*http.Response, error) {
+		return response(request, http.StatusFound, http.Header{
+			"Location": {"https://steamcommunity.com/id/vanity/tradeoffers/privacy"},
+		}, nil), nil
+	})})
+
+	_, err := client.Do(context.Background(), Request{
+		Method:                    http.MethodGet,
+		Endpoint:                  "https://steamcommunity.com/profiles/1/tradeoffers/privacy",
+		Route:                     RouteRequest,
+		Header:                    http.Header{"Cookie": {"session=secret"}},
+		Timeout:                   time.Second,
+		PreserveHeadersOnRedirect: true,
+	})
+	assertProtocolCode(t, err, CodeRedirectDenied)
+}
+
 func TestDoRejectsOversizedResponse(t *testing.T) {
 	t.Parallel()
 

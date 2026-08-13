@@ -43,9 +43,17 @@ func (c *Client) FetchTradeOfferPrivacyPage(ctx context.Context, credentials Cre
 	headers := make(http.Header)
 	headers.Set("User-Agent", MobileUserAgent)
 	headers.Set("Cookie", webCookie(credentials))
+	// Steam canonicalises /profiles/<id64>/... to /id/<vanity>/... for any account
+	// with a custom URL, so a large share of real accounts answer this with a 302
+	// rather than the page. Following it needs the cookies, or the hop lands on
+	// the login page and a perfectly good session reads as "sign in again" - which
+	// is exactly what it did. Same host only; a redirect anywhere else is still
+	// scrubbed, and a redirect to /login/ is followed and then recognised from the
+	// body it returns.
 	response, err := c.protocol.Do(ctx, protocol.Request{
 		Method: http.MethodGet, Endpoint: parsed.String(), Route: protocol.RouteRequest,
 		Header: headers, Timeout: RequestTimeout, MaxResponseBytes: maxTradeLinkBytes,
+		AllowRedirects: true, PreserveHeadersOnRedirect: true,
 	})
 	if err != nil {
 		classified := classifyProtocolError(err)
