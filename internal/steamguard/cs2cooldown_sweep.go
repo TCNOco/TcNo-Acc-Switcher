@@ -247,6 +247,42 @@ func (s *Service) sweepCS2Cooldowns(ctx context.Context) {
 
 var errCooldownRateLimited = errors.New("rate limited")
 
+// logCooldownFetchFailure records why one account was not read, at a level that
+// matches how surprising it is.
+//
+// This was a flat Debug line, and that is how a vanity-URL redirect went
+// unnoticed: every account with a custom Steam URL failed here, the sweep
+// counted them as checked, and nothing above Debug ever said otherwise. Only the
+// app's own state is quiet now; anything else names its kind and status, so a
+// failure with no status - a request that got no answer at all, the shape a
+// denied redirect has - is legible rather than invisible.
+func logCooldownFetchFailure(log *slog.Logger, steamID64 string, err error) {
+	attributes := []any{"steamId64", steamID64}
+	var apiErr *confirmationapi.Error
+	if !errors.As(err, &apiErr) {
+		log.Warn("cooldown fetch failed", append(attributes, "error", err)...)
+		return
+	}
+	attributes = append(attributes, "kind", string(apiErr.Kind))
+	if apiErr.StatusCode != 0 {
+		attributes = append(attributes, "status", apiErr.StatusCode)
+	}
+	switch apiErr.Kind {
+	case confirmationapi.FailureOffline, confirmationapi.FailureCanceled:
+		// The app going offline or shutting down mid-sweep. Says nothing about
+		// the account.
+		log.Debug("cooldown fetch skipped", attributes...)
+	case confirmationapi.FailureReauth:
+		// The stored session was refused. Expected on its own - the locally
+		// readable expiry is checked first, so reaching here means Steam
+		// disagreed - but worth seeing, because it is also where a redirect the
+		// transport would not follow ends up.
+		log.Info("cooldown fetch needs re-authentication", attributes...)
+	default:
+		log.Warn("cooldown fetch failed", append(attributes, "error", err)...)
+	}
+}
+
 func (s *Service) fetchAndStoreCooldown(
 	ctx context.Context, target cooldownTarget, now time.Time, collectPrime bool,
 ) error {
@@ -264,7 +300,7 @@ func (s *Service) fetchAndStoreCooldown(
 		if errors.As(err, &apiErr) && apiErr.Kind == confirmationapi.FailureRateLimit {
 			return errCooldownRateLimited
 		}
-		log.Debug("cooldown fetch failed", "steamId64", target.steamID64, "error", err)
+		logCooldownFetchFailure(log, target.steamID64, err)
 		return err
 	}
 

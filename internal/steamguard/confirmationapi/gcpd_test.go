@@ -89,16 +89,51 @@ func TestFetchCS2GCPDRejectsUnusableCredentials(t *testing.T) {
 	}
 }
 
+// Every account with a custom Steam URL is answered with a 302 to /id/<vanity>/,
+// cookie or no cookie. Denying that hop meant this page was never read for those
+// accounts, and the sweep counted them as checked - so cooldowns, ranks and
+// Prime silently never arrived for them.
+func TestFetchCS2GCPDFollowsTheVanityRedirect(t *testing.T) {
+	transport := &queuedTransport{responses: []*http.Response{
+		jsonResponse(http.StatusFound, "", http.Header{
+			"Location": {"https://steamcommunity.com/id/vanity/gcpd/730?tab=matchmaking"},
+		}),
+		htmlResponse(http.StatusOK, "<html>Personal Game Data</html>"),
+	}}
+	client := testClient(transport, func() bool { return false })
+
+	body, err := client.FetchCS2GCPD(context.Background(), testCredentials())
+	if err != nil {
+		t.Fatalf("FetchCS2GCPD: %v", err)
+	}
+	if string(body) != "<html>Personal Game Data</html>" {
+		t.Fatalf("body = %q", body)
+	}
+	if len(transport.requests) != 2 {
+		t.Fatalf("made %d requests, want 2", len(transport.requests))
+	}
+	followed := transport.requests[1]
+	if !strings.Contains(followed.Header.Get("Cookie"), "steamLoginSecure=") {
+		t.Fatalf("session cookie did not survive the hop: %q", followed.Header.Get("Cookie"))
+	}
+	// The parser reads the cooldown table by its English header, so the language
+	// pin has to survive the hop too or a localised render reads as "no cooldown".
+	if !strings.Contains(followed.Header.Get("Cookie"), "Steam_Language=english") {
+		t.Fatalf("language pin did not survive the hop: %q", followed.Header.Get("Cookie"))
+	}
+}
+
 func TestFetchCS2GCPDClassifiesFailures(t *testing.T) {
 	cases := map[string]struct {
 		response *http.Response
 		want     FailureKind
 	}{
-		// A dead session redirects to the login page; redirects are denied, so
-		// it surfaces as reauth rather than a body we might misparse.
-		"redirect":    {htmlResponse(http.StatusFound, ""), FailureReauth},
-		"unauthentic": {htmlResponse(http.StatusUnauthorized, ""), FailureReauth},
-		"rate limit":  {htmlResponse(http.StatusTooManyRequests, ""), FailureRateLimit},
+		// Redirects are followed now, but only ones that say where to. A 3xx with
+		// no Location is not a hop, so it still surfaces as reauth rather than as
+		// a body we might misparse.
+		"redirect without a target": {htmlResponse(http.StatusFound, ""), FailureReauth},
+		"unauthentic":               {htmlResponse(http.StatusUnauthorized, ""), FailureReauth},
+		"rate limit":                {htmlResponse(http.StatusTooManyRequests, ""), FailureRateLimit},
 	}
 	for name, tc := range cases {
 		transport := &queuedTransport{responses: []*http.Response{tc.response}}

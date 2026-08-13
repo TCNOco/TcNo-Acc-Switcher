@@ -2,6 +2,8 @@ package steamguard
 
 import (
 	"context"
+	"errors"
+	"log/slog"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -12,6 +14,56 @@ import (
 	"TcNo-Acc-Switcher/internal/steamguard/confirmationapi"
 	"TcNo-Acc-Switcher/internal/steamguard/cs2cooldown"
 )
+
+// capturingHandler records the level of every log record, which is the whole
+// point of the behaviour under test.
+type capturingHandler struct {
+	mu      sync.Mutex
+	records []slog.Record
+}
+
+func (h *capturingHandler) Enabled(context.Context, slog.Level) bool { return true }
+
+func (h *capturingHandler) Handle(_ context.Context, record slog.Record) error {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	h.records = append(h.records, record)
+	return nil
+}
+
+func (h *capturingHandler) WithAttrs([]slog.Attr) slog.Handler { return h }
+func (h *capturingHandler) WithGroup(string) slog.Handler      { return h }
+
+// A vanity-URL redirect used to land here as a flat Debug line, so every account
+// with a custom Steam URL failed in total silence while the sweep counted it as
+// checked. Anything that is not the app's own state must now be visible.
+func TestCooldownFetchFailureIsVisibleUnlessItIsTheAppsOwnState(t *testing.T) {
+	cases := map[string]struct {
+		err  error
+		want slog.Level
+	}{
+		// The shape a denied redirect has: refused, with no status, because
+		// nothing was ever answered.
+		"redirect denied": {&confirmationapi.Error{Kind: confirmationapi.FailureReauth}, slog.LevelInfo},
+		"session refused": {&confirmationapi.Error{Kind: confirmationapi.FailureReauth, StatusCode: 401}, slog.LevelInfo},
+		"offline":         {&confirmationapi.Error{Kind: confirmationapi.FailureOffline}, slog.LevelDebug},
+		"canceled":        {&confirmationapi.Error{Kind: confirmationapi.FailureCanceled}, slog.LevelDebug},
+		"broken":          {&confirmationapi.Error{Kind: confirmationapi.FailureFailed}, slog.LevelWarn},
+		"not classified":  {errors.New("something else"), slog.LevelWarn},
+	}
+	for name, tc := range cases {
+		t.Run(name, func(t *testing.T) {
+			handler := &capturingHandler{}
+			logCooldownFetchFailure(slog.New(handler), "76561198000000001", tc.err)
+			if len(handler.records) != 1 {
+				t.Fatalf("logged %d records, want 1", len(handler.records))
+			}
+			if handler.records[0].Level != tc.want {
+				t.Fatalf("level = %v, want %v", handler.records[0].Level, tc.want)
+			}
+		})
+	}
+}
 
 // fakeCooldownClient stands in for the community transport. Everything except
 // FetchCS2GCPD panics: the sweep must not reach any other endpoint.

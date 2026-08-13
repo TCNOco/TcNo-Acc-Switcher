@@ -66,9 +66,18 @@ func (c *Client) FetchCS2GCPDTab(ctx context.Context, credentials Credentials, t
 	headers := make(http.Header)
 	headers.Set("User-Agent", MobileUserAgent)
 	headers.Set("Cookie", webCookie(credentials))
+	// Steam canonicalises /profiles/<id64>/... to /id/<vanity>/... for any account
+	// with a custom URL, and does it before looking at the session - a request
+	// carrying a cookie is redirected just the same. Denying that redirect meant
+	// this page was never read for those accounts, and because the sweep treats a
+	// refused session as unremarkable, it recorded them as checked and moved on.
+	// The hop must carry the cookies or it lands on the login page, which is the
+	// same silence by a longer route. Same host only; a genuinely rejected session
+	// still redirects to /login/ on this host and is recognised from the body.
 	response, err := c.protocol.Do(ctx, protocol.Request{
 		Method: http.MethodGet, Endpoint: parsed.String(), Route: protocol.RouteRequest,
 		Header: headers, Timeout: RequestTimeout, MaxResponseBytes: maxGCPDBytes,
+		AllowRedirects: true, PreserveHeadersOnRedirect: true,
 	})
 	if err != nil {
 		classified := classifyProtocolError(err)
