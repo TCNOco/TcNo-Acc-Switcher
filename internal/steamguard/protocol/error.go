@@ -27,6 +27,17 @@ const (
 	CodeEntropy          Code = "entropy_failure"
 )
 
+// Redirect refusal labels, exported because a caller has to tell them apart.
+//
+// Only DetailRedirectDisabled says anything about the session: an endpoint that
+// answers a signed request inline, redirecting at all, is Steam sending it to a
+// login page. Every other label is this client's own policy declining a hop,
+// and reads as a broken request rather than a rejected account.
+const (
+	DetailRedirectDisabled = "redirect_disabled"
+	DetailRedirectLimit    = "redirect_limit"
+)
+
 // State tells callers whether an operation can be retried or needs user action.
 type State string
 

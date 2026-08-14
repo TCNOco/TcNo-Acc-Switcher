@@ -22,7 +22,13 @@ const (
 	MaxResponseBodyBytes = 4 << 20
 	MaxRequestTimeout    = 2 * time.Minute
 	MaxRedirects         = 3
-	UserAgent            = "TcNo Account Switcher"
+	// MaxRedirectBudget is the most a request may raise MaxRedirects to. Steam
+	// reaches an account settings page through several handoffs a browser never
+	// shows - a vanity canonicalisation, a session hop, a bounce onto the login
+	// host - and three is short enough to refuse a chain that was going to
+	// settle. Still far under a browser's twenty.
+	MaxRedirectBudget = 10
+	UserAgent         = "TcNo Account Switcher"
 )
 
 // Options permits transport replacement for tests. Policy and size limits are
@@ -59,6 +65,17 @@ type Request struct {
 	// headers, so a session cookie can never be replayed to an origin that did
 	// not issue it.
 	PreserveHeadersOnRedirect bool
+	// MaxRedirects raises this request's hop budget, up to MaxRedirectBudget.
+	// Zero selects the package default. Ignored without AllowRedirects.
+	MaxRedirects int
+	// OnRedirect observes each hop this follows, as scheme://host/path with the
+	// query removed. It runs only for hops that passed every policy check, so it
+	// never names a destination this refused - the error says that one was, and
+	// which check did it.
+	//
+	// Called synchronously from the redirect check, so it must not block. For a
+	// caller that has to see where a chain went; nil disables it.
+	OnRedirect func(hop int, target string)
 }
 
 // Response omits headers except for parsed Retry-After and Steam EResult
@@ -135,6 +152,13 @@ func (c *Client) Do(ctx context.Context, request Request) (Response, error) {
 	if limit < 0 || limit > MaxResponseBodyBytes {
 		return Response{}, protocolError(CodeInvalidRequest, StateInvalid)
 	}
+	budget := MaxRedirects
+	if request.MaxRedirects != 0 {
+		if request.MaxRedirects < 0 || request.MaxRedirects > MaxRedirectBudget {
+			return Response{}, protocolError(CodeInvalidRequest, StateInvalid)
+		}
+		budget = request.MaxRedirects
+	}
 
 	endpoint, policyErr := validateEndpoint(request.Endpoint, request.Route)
 	if policyErr != nil {
@@ -167,13 +191,22 @@ func (c *Client) Do(ctx context.Context, request Request) (Response, error) {
 	// Read from the validated endpoint, not from a header a caller could set.
 	originHost := strings.ToLower(endpoint.Hostname())
 
+	// Only a chain that carries the caller's cookies has anywhere to put the ones
+	// Steam sets along the way, so nothing else pays for the wrapper.
+	transport := c.transport
+	var carried *carriedCookies
+	if request.AllowRedirects && request.PreserveHeadersOnRedirect {
+		carried = newCarriedCookies(originHost, transport)
+		transport = carried
+	}
+
 	httpClient := &http.Client{
-		Transport: c.transport,
+		Transport: transport,
 		CheckRedirect: func(next *http.Request, via []*http.Request) error {
 			if !request.AllowRedirects {
 				return redirectDenied("disabled")
 			}
-			if len(via) > MaxRedirects {
+			if len(via) > budget {
 				return redirectDenied("limit")
 			}
 			if next.Method != http.MethodGet && next.Method != http.MethodHead {
@@ -184,11 +217,17 @@ func (c *Client) Do(ctx context.Context, request Request) (Response, error) {
 			}
 			if request.PreserveHeadersOnRedirect && sameHost(next.URL, originHost) {
 				next.Header = httpRequest.Header.Clone()
-				return nil
+				if cookie := carried.header(httpRequest.Header.Get("Cookie")); cookie != "" {
+					next.Header.Set("Cookie", cookie)
+				}
+			} else {
+				next.Header = make(http.Header)
+				next.Header.Set("User-Agent", userAgent)
+				next.Header.Set("Accept-Encoding", "identity")
 			}
-			next.Header = make(http.Header)
-			next.Header.Set("User-Agent", userAgent)
-			next.Header.Set("Accept-Encoding", "identity")
+			if request.OnRedirect != nil {
+				request.OnRedirect(len(via), redirectTarget(next.URL))
+			}
 			return nil
 		},
 	}

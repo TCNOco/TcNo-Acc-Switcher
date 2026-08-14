@@ -376,8 +376,17 @@ func classifyProtocolError(err error) error {
 		result.Kind = FailureTimeout
 	case protocolErr.Code == protocol.CodeRateLimited || protocolErr.StatusCode == http.StatusTooManyRequests:
 		result.Kind = FailureRateLimit
-	case protocolErr.Code == protocol.CodeRedirectDenied ||
-		protocolErr.StatusCode == http.StatusUnauthorized || protocolErr.StatusCode == http.StatusForbidden ||
+	case protocolErr.Code == protocol.CodeRedirectDenied:
+		// Only one redirect refusal is a verdict on the session: an endpoint that
+		// answers a signed request inline, redirecting at all, is Steam sending it
+		// to a login page. The rest are this client's own policy - a chain it would
+		// not follow to the end, a host it would not visit - and calling those
+		// reauth sends the user off to fix a session that was never the problem.
+		result.Kind = FailureFailed
+		if protocolErr.Detail == protocol.DetailRedirectDisabled {
+			result.Kind = FailureReauth
+		}
+	case protocolErr.StatusCode == http.StatusUnauthorized || protocolErr.StatusCode == http.StatusForbidden ||
 		(protocolErr.StatusCode >= http.StatusMultipleChoices && protocolErr.StatusCode < http.StatusBadRequest):
 		result.Kind = FailureReauth
 	case protocolErr.State == protocol.StateRetryable:

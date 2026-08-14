@@ -55,10 +55,16 @@ func (c *Client) FetchTradeOfferPrivacyPage(ctx context.Context, credentials Cre
 	// is exactly what it did. Same host only; a redirect anywhere else is still
 	// scrubbed, and a redirect to /login/ is followed and then recognised from the
 	// body it returns.
+	//
+	// The budget is raised because Steam's own route to this page is longer than
+	// the default three hops - the canonicalisation, then the session handoff,
+	// then the page - and refusing partway through reads as a rejected session
+	// too.
 	response, err := c.protocol.Do(ctx, protocol.Request{
 		Method: http.MethodGet, Endpoint: parsed.String(), Route: protocol.RouteRequest,
 		Header: headers, Timeout: RequestTimeout, MaxResponseBytes: maxTradeLinkBytes,
 		AllowRedirects: true, PreserveHeadersOnRedirect: true,
+		MaxRedirects: protocol.MaxRedirectBudget, OnRedirect: logTradeLinkHop,
 	})
 	if err != nil {
 		classified := classifyProtocolError(err)
@@ -66,4 +72,12 @@ func (c *Client) FetchTradeOfferPrivacyPage(ctx context.Context, credentials Cre
 		return nil, classified
 	}
 	return response.Body, nil
+}
+
+// logTradeLinkHop records where the chain went. A failure here only ever said
+// that the budget ran out, which does not distinguish Steam bouncing between two
+// pages from Steam walking off to the login host - and those want opposite
+// fixes. Host and path only; the query never reaches it.
+func logTradeLinkHop(hop int, target string) {
+	clientLogger().Debug("trade link request redirected", "hop", hop, "target", target)
 }

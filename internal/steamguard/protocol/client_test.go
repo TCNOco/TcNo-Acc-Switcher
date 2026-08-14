@@ -346,6 +346,213 @@ func TestDoLabelsARedirectLoopByItsLimit(t *testing.T) {
 	}
 }
 
+// The labels are compared across package boundaries, where only the string
+// exists. If the builder and the constant ever disagree, a redirect refusal
+// silently changes meaning for every caller reading it.
+func TestRedirectLabelsMatchTheirExportedNames(t *testing.T) {
+	t.Parallel()
+
+	if got := redirectDenied("disabled").Detail; got != DetailRedirectDisabled {
+		t.Fatalf("disabled label = %q, want %q", got, DetailRedirectDisabled)
+	}
+	if got := redirectDenied("limit").Detail; got != DetailRedirectLimit {
+		t.Fatalf("limit label = %q, want %q", got, DetailRedirectLimit)
+	}
+}
+
+// Steam hands out a session cookie partway through and redirects back to the
+// page that wanted it. With nothing carrying that cookie the destination asks
+// again, and the chain only ends when the budget does.
+func TestDoCarriesACookieSetPartwayThroughAChain(t *testing.T) {
+	t.Parallel()
+
+	var calls atomic.Int32
+	client := NewClient(Options{Transport: roundTripFunc(func(request *http.Request) (*http.Response, error) {
+		switch calls.Add(1) {
+		case 1:
+			return response(request, http.StatusFound, http.Header{
+				"Location":   {"https://steamcommunity.com/id/vanity/tradeoffers/privacy"},
+				"Set-Cookie": {"sessionid=fresh; Path=/", "steamCountry=NL; Path=/"},
+			}, nil), nil
+		case 2:
+			cookie := request.Header.Get("Cookie")
+			// Replaced in place, not appended: two sessionid pairs is a different
+			// request from the one Steam asked for.
+			if cookie != "steamLoginSecure=token; sessionid=fresh; steamCountry=NL" {
+				t.Fatalf("cookie = %q", cookie)
+			}
+			return response(request, http.StatusNoContent, nil, nil), nil
+		default:
+			return nil, errors.New("too many requests")
+		}
+	})})
+
+	if _, err := client.Do(context.Background(), Request{
+		Method:                    http.MethodGet,
+		Endpoint:                  "https://steamcommunity.com/profiles/1/tradeoffers/privacy",
+		Route:                     RouteRequest,
+		Header:                    http.Header{"Cookie": {"steamLoginSecure=token; sessionid=stale"}},
+		Timeout:                   time.Second,
+		AllowRedirects:            true,
+		PreserveHeadersOnRedirect: true,
+	}); err != nil {
+		t.Fatal(err)
+	}
+}
+
+// A cookie picked up mid-chain is still the origin's, so it goes no further than
+// the origin does.
+func TestDoDoesNotCarryACollectedCookieToAnotherHost(t *testing.T) {
+	t.Parallel()
+
+	var calls atomic.Int32
+	client := NewClient(Options{Transport: roundTripFunc(func(request *http.Request) (*http.Response, error) {
+		switch calls.Add(1) {
+		case 1:
+			return response(request, http.StatusFound, http.Header{
+				"Location":   {"https://store.steampowered.com/login/"},
+				"Set-Cookie": {"sessionid=fresh; Path=/"},
+			}, nil), nil
+		case 2:
+			if request.Header.Get("Cookie") != "" {
+				t.Fatalf("cookie replayed offsite: %#v", request.Header)
+			}
+			return response(request, http.StatusNoContent, nil, nil), nil
+		default:
+			return nil, errors.New("too many requests")
+		}
+	})})
+
+	if _, err := client.Do(context.Background(), Request{
+		Method:                    http.MethodGet,
+		Endpoint:                  "https://steamcommunity.com/profiles/1/tradeoffers/privacy",
+		Route:                     RouteRequest,
+		Header:                    http.Header{"Cookie": {"steamLoginSecure=token"}},
+		Timeout:                   time.Second,
+		AllowRedirects:            true,
+		PreserveHeadersOnRedirect: true,
+	}); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestDoHonoursARaisedRedirectBudget(t *testing.T) {
+	t.Parallel()
+
+	const hops = 5
+	var calls atomic.Int32
+	client := NewClient(Options{Transport: roundTripFunc(func(request *http.Request) (*http.Response, error) {
+		if hop := int(calls.Add(1)); hop <= hops {
+			return response(request, http.StatusFound, http.Header{
+				"Location": {"https://steamcommunity.com/id/vanity/" + strconv.Itoa(hop)},
+			}, nil), nil
+		}
+		return response(request, http.StatusNoContent, nil, nil), nil
+	})})
+
+	if _, err := client.Do(context.Background(), Request{
+		Method:                    http.MethodGet,
+		Endpoint:                  "https://steamcommunity.com/profiles/1/tradeoffers/privacy",
+		Route:                     RouteRequest,
+		Timeout:                   time.Second,
+		AllowRedirects:            true,
+		PreserveHeadersOnRedirect: true,
+		MaxRedirects:              MaxRedirectBudget,
+	}); err != nil {
+		t.Fatal(err)
+	}
+}
+
+// The budget is a ceiling a caller may raise to, never past. A request asking
+// for more is refused before the transport runs rather than quietly clamped.
+func TestDoRejectsARedirectBudgetBeyondTheCeiling(t *testing.T) {
+	t.Parallel()
+
+	for _, budget := range []int{-1, MaxRedirectBudget + 1} {
+		t.Run(strconv.Itoa(budget), func(t *testing.T) {
+			t.Parallel()
+			var calls atomic.Int32
+			client := NewClient(Options{Transport: roundTripFunc(func(*http.Request) (*http.Response, error) {
+				calls.Add(1)
+				return nil, errors.New("transport must not run")
+			})})
+			_, err := client.Do(context.Background(), Request{
+				Method:         http.MethodGet,
+				Endpoint:       "https://steamcommunity.com/profiles/1/tradeoffers/privacy",
+				Route:          RouteRequest,
+				Timeout:        time.Second,
+				AllowRedirects: true,
+				MaxRedirects:   budget,
+			})
+			assertProtocolCode(t, err, CodeInvalidRequest)
+			if calls.Load() != 0 {
+				t.Fatalf("transport called %d times", calls.Load())
+			}
+		})
+	}
+}
+
+// The whole point of the callback is a log line, so it must carry no query: a
+// signed Steam request keeps its signature there.
+func TestDoReportsFollowedHopsWithoutTheirQuery(t *testing.T) {
+	t.Parallel()
+
+	var calls atomic.Int32
+	client := NewClient(Options{Transport: roundTripFunc(func(request *http.Request) (*http.Response, error) {
+		switch calls.Add(1) {
+		case 1:
+			return response(request, http.StatusFound, http.Header{
+				"Location": {"https://steamcommunity.com/login/home/?goto=privacy&k=signature"},
+			}, nil), nil
+		default:
+			return response(request, http.StatusNoContent, nil, nil), nil
+		}
+	})})
+
+	var hops []string
+	if _, err := client.Do(context.Background(), Request{
+		Method:                    http.MethodGet,
+		Endpoint:                  "https://steamcommunity.com/profiles/1/tradeoffers/privacy",
+		Route:                     RouteRequest,
+		Timeout:                   time.Second,
+		AllowRedirects:            true,
+		PreserveHeadersOnRedirect: true,
+		OnRedirect:                func(hop int, target string) { hops = append(hops, strconv.Itoa(hop)+" "+target) },
+	}); err != nil {
+		t.Fatal(err)
+	}
+	if len(hops) != 1 || hops[0] != "1 https://steamcommunity.com/login/home/" {
+		t.Fatalf("hops = %#v", hops)
+	}
+}
+
+// A refused hop is named by the error, not handed to a logger: its destination
+// is whatever the response asked for, and this is the one case where that is
+// somewhere policy said no to.
+func TestDoDoesNotReportARefusedHop(t *testing.T) {
+	t.Parallel()
+
+	client := NewClient(Options{Transport: roundTripFunc(func(request *http.Request) (*http.Response, error) {
+		return response(request, http.StatusFound, http.Header{
+			"Location": {"https://evil.example/collect?token=secret"},
+		}, nil), nil
+	})})
+
+	var hops int
+	_, err := client.Do(context.Background(), Request{
+		Method:         http.MethodGet,
+		Endpoint:       "https://steamcommunity.com/profiles/1/tradeoffers/privacy",
+		Route:          RouteRequest,
+		Timeout:        time.Second,
+		AllowRedirects: true,
+		OnRedirect:     func(int, string) { hops++ },
+	})
+	assertProtocolCode(t, err, CodeRedirectDenied)
+	if hops != 0 {
+		t.Fatalf("reported %d refused hops", hops)
+	}
+}
+
 func TestDoRejectsOversizedResponse(t *testing.T) {
 	t.Parallel()
 
