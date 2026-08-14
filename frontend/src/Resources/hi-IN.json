@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "Steam QR अनुरोध स्वीकृत करने से पहले इस खाते को फिर से लॉगिन करना होगा।",
   "SteamGuard_QR_ApprovalRejected": "Steam ने स्वीकृति स्वीकार नहीं की। QR कोड फिर से स्कैन करें।",
   "SteamGuard_QR_RegionFailed": "चयनित स्क्रीन क्षेत्र सुरक्षित रूप से स्कैन नहीं किया जा सका।",
+  "SteamGuard_QR_VaultChanged": "वह चलते समय वॉल्ट बदल गया। फिर से कोशिश करें।",
   "SteamGuard_LoginAgain_Refreshing": "मौजूदा Steam सत्र रिफ़्रेश हो रहा है…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam ने सहेजा गया रिफ़्रेश टोकन अस्वीकार कर दिया। इस खाते के Steam सत्र को बदलने के लिए साइन इन करें।",
   "SteamGuard_LoginAgain_RefreshFailed": "Steam सत्र रिफ़्रेश नहीं किया जा सका।",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "चैट",
   "SteamGuard_Error_BrowserOpenFailed": "ब्राउज़र विंडो नहीं खोली जा सकी",
   "SteamBrowser_Trusted_Hint": "{host} एक विश्वसनीय Steam साइट है।",
-  "SteamBrowser_Untrusted_Hint": "{host} Steam या कोई अन्य विश्वसनीय साइट नहीं है। वैसी ही सावधानी बरतें जैसी किसी भी ब्राउज़र में बरतते हैं, और यहाँ अपना Steam पासवर्ड या प्रमाणक कोड दर्ज न करें।"
+  "SteamBrowser_Untrusted_Hint": "{host} Steam या कोई अन्य विश्वसनीय साइट नहीं है। वैसी ही सावधानी बरतें जैसी किसी भी ब्राउज़र में बरतते हैं, और यहाँ अपना Steam पासवर्ड या प्रमाणक कोड दर्ज न करें।",
+  "Context_Steam_TradeLink": "ट्रेड लिंक",
+  "SteamGuard_TradeLink_Fetching": "Steam से ट्रेड लिंक प्राप्त किया जा रहा है…",
+  "SteamGuard_TradeLink_NeedsLogin": "इस खाते का ट्रेड लिंक पाने के लिए इसमें फिर से साइन इन करें।",
+  "SteamGuard_TradeLink_RateLimited": "Steam इस पर दर सीमा लगा रहा है। एक मिनट में फिर से कोशिश करें।",
+  "SteamGuard_TradeLink_Offline": "ऑफ़लाइन मोड चालू है, इसलिए ट्रेड लिंक प्राप्त नहीं किया जा सकता।",
+  "SteamGuard_TradeLink_Unavailable": "Steam ने इस खाते के लिए कोई ट्रेड लिंक नहीं दिया। Steam पर इसका ट्रेड URL जाँचें।",
+  "SteamGuard_Error_TradeLinkFailed": "ट्रेड लिंक प्राप्त नहीं हो सका"
 }

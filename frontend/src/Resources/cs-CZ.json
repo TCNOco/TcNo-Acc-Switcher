@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "Tento účet se musí znovu přihlásit, než bude moci schvalovat žádosti Steam QR.",
   "SteamGuard_QR_ApprovalRejected": "Steam schválení nepřijal. Naskenujte QR kód znovu.",
   "SteamGuard_QR_RegionFailed": "Vybranou oblast obrazovky se nepodařilo bezpečně naskenovat.",
+  "SteamGuard_QR_VaultChanged": "Trezor se během této operace změnil. Zkuste to znovu.",
   "SteamGuard_LoginAgain_Refreshing": "Obnovování stávající relace Steam…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam odmítl uložený obnovovací token. Přihlaste se a nahraďte relaci Steam tohoto účtu.",
   "SteamGuard_LoginAgain_RefreshFailed": "Relaci Steam se nepodařilo obnovit.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "Chat",
   "SteamGuard_Error_BrowserOpenFailed": "Okno prohlížeče se nepodařilo otevřít",
   "SteamBrowser_Trusted_Hint": "{host} je důvěryhodný web Steamu.",
-  "SteamBrowser_Untrusted_Hint": "{host} není Steam ani jiný důvěryhodný web. Buďte stejně opatrní jako v běžném prohlížeči a nezadávejte zde své heslo ke Steamu ani kódy autentifikátoru."
+  "SteamBrowser_Untrusted_Hint": "{host} není Steam ani jiný důvěryhodný web. Buďte stejně opatrní jako v běžném prohlížeči a nezadávejte zde své heslo ke Steamu ani kódy autentifikátoru.",
+  "Context_Steam_TradeLink": "Odkaz pro výměny",
+  "SteamGuard_TradeLink_Fetching": "Získávání odkazu pro výměny ze Steamu…",
+  "SteamGuard_TradeLink_NeedsLogin": "Znovu se přihlaste k tomuto účtu, abyste získali jeho odkaz pro výměny.",
+  "SteamGuard_TradeLink_RateLimited": "Steam tuto akci omezuje. Zkuste to znovu za minutu.",
+  "SteamGuard_TradeLink_Offline": "Je zapnutý režim offline, takže odkaz pro výměny nelze získat.",
+  "SteamGuard_TradeLink_Unavailable": "Steam pro tento účet nevrátil odkaz pro výměny. Zkontrolujte jeho URL pro výměny na Steamu.",
+  "SteamGuard_Error_TradeLinkFailed": "Nepodařilo se získat odkaz pro výměny"
 }

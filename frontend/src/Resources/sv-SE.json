@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "Det här kontot behöver logga in igen innan det kan godkänna Steam-QR-förfrågningar.",
   "SteamGuard_QR_ApprovalRejected": "Steam godtog inte godkännandet. Skanna QR-koden igen.",
   "SteamGuard_QR_RegionFailed": "Det valda skärmområdet kunde inte skannas säkert.",
+  "SteamGuard_QR_VaultChanged": "Valvet ändrades medan detta pågick. Försök igen.",
   "SteamGuard_LoginAgain_Refreshing": "Uppdaterar den befintliga Steam-sessionen…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam avvisade den sparade uppdateringstoken. Logga in för att ersätta det här kontots Steam-session.",
   "SteamGuard_LoginAgain_RefreshFailed": "Steam-sessionen kunde inte uppdateras.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "Chatt",
   "SteamGuard_Error_BrowserOpenFailed": "Kunde inte öppna webbläsarfönstret",
   "SteamBrowser_Trusted_Hint": "{host} är en betrodd Steam-webbplats.",
-  "SteamBrowser_Untrusted_Hint": "{host} är inte Steam eller någon annan betrodd webbplats. Var lika försiktig som i vilken webbläsare som helst, och ange inte ditt Steam-lösenord eller autentiseringskoder här."
+  "SteamBrowser_Untrusted_Hint": "{host} är inte Steam eller någon annan betrodd webbplats. Var lika försiktig som i vilken webbläsare som helst, och ange inte ditt Steam-lösenord eller autentiseringskoder här.",
+  "Context_Steam_TradeLink": "Byteslänk",
+  "SteamGuard_TradeLink_Fetching": "Hämtar byteslänk från Steam…",
+  "SteamGuard_TradeLink_NeedsLogin": "Logga in på detta konto igen för att hämta dess byteslänk.",
+  "SteamGuard_TradeLink_RateLimited": "Steam begränsar antalet förfrågningar. Försök igen om en minut.",
+  "SteamGuard_TradeLink_Offline": "Offlineläget är på, så byteslänken kan inte hämtas.",
+  "SteamGuard_TradeLink_Unavailable": "Steam returnerade ingen byteslänk för detta konto. Kontrollera dess bytes-URL på Steam.",
+  "SteamGuard_Error_TradeLinkFailed": "Kunde inte hämta byteslänken"
 }

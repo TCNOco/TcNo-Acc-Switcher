@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "Aquest compte necessita tornar a iniciar sessió abans de poder aprovar sol·licituds QR de Steam.",
   "SteamGuard_QR_ApprovalRejected": "Steam no ha acceptat l'aprovació. Torna a escanejar el codi QR.",
   "SteamGuard_QR_RegionFailed": "No s'ha pogut escanejar de manera segura la regió de pantalla seleccionada.",
+  "SteamGuard_QR_VaultChanged": "La caixa forta ha canviat mentre això s'executava. Torneu-ho a provar.",
   "SteamGuard_LoginAgain_Refreshing": "S'està actualitzant la sessió de Steam existent…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam ha rebutjat el testimoni d'actualització desat. Inicia sessió per substituir la sessió de Steam d'aquest compte.",
   "SteamGuard_LoginAgain_RefreshFailed": "No s'ha pogut actualitzar la sessió de Steam.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "Xat",
   "SteamGuard_Error_BrowserOpenFailed": "No s'ha pogut obrir la finestra del navegador",
   "SteamBrowser_Trusted_Hint": "{host} és un lloc de Steam de confiança.",
-  "SteamBrowser_Untrusted_Hint": "{host} no és Steam ni cap altre lloc de confiança. Ves amb el mateix compte que en qualsevol navegador i no hi introdueixis la contrasenya de Steam ni els codis de l'autenticador."
+  "SteamBrowser_Untrusted_Hint": "{host} no és Steam ni cap altre lloc de confiança. Ves amb el mateix compte que en qualsevol navegador i no hi introdueixis la contrasenya de Steam ni els codis de l'autenticador.",
+  "Context_Steam_TradeLink": "Enllaç d'intercanvi",
+  "SteamGuard_TradeLink_Fetching": "S'està obtenint l'enllaç d'intercanvi de Steam…",
+  "SteamGuard_TradeLink_NeedsLogin": "Torneu a iniciar la sessió en aquest compte per obtenir-ne l'enllaç d'intercanvi.",
+  "SteamGuard_TradeLink_RateLimited": "Steam està limitant la freqüència de peticions. Torneu-ho a provar d'aquí a un minut.",
+  "SteamGuard_TradeLink_Offline": "El mode fora de línia està activat; no es pot obtenir l'enllaç d'intercanvi.",
+  "SteamGuard_TradeLink_Unavailable": "Steam no ha retornat cap enllaç d'intercanvi per a aquest compte. Comproveu-ne l'URL d'intercanvi a Steam.",
+  "SteamGuard_Error_TradeLinkFailed": "No s'ha pogut obtenir l'enllaç d'intercanvi"
 }

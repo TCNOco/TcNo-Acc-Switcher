@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "This account needs t' board again afore it can approve Steam QR requests.",
   "SteamGuard_QR_ApprovalRejected": "Steam did nah accept the approval. Scan the QR code again.",
   "SteamGuard_QR_RegionFailed": "The selected screen region could nah be scanned safely.",
+  "SteamGuard_QR_VaultChanged": "Th' vault shifted while that be runnin'. Give it another go, matey.",
   "SteamGuard_LoginAgain_Refreshing": "Refreshin' the existing Steam session…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam rejected the stashed refresh token. Board again t' replace this account's Steam session.",
   "SteamGuard_LoginAgain_RefreshFailed": "The Steam session could nah be refreshed.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "Parley",
   "SteamGuard_Error_BrowserOpenFailed": "Couldn't hoist th' browser porthole open",
   "SteamBrowser_Trusted_Hint": "{host} be a trusted Steam port.",
-  "SteamBrowser_Untrusted_Hint": "{host} ain't Steam nor another trusted port. Take th' same care ye would in any browser, an' don't be enterin' yer Steam password or authenticator codes here."
+  "SteamBrowser_Untrusted_Hint": "{host} ain't Steam nor another trusted port. Take th' same care ye would in any browser, an' don't be enterin' yer Steam password or authenticator codes here.",
+  "Context_Steam_TradeLink": "Tradin' Link",
+  "SteamGuard_TradeLink_Fetching": "Fetchin' th' tradin' link from Steam…",
+  "SteamGuard_TradeLink_NeedsLogin": "Sign in t' this account once more t' fetch its tradin' link.",
+  "SteamGuard_TradeLink_RateLimited": "Steam be throttlin' this, arr. Try again in a minute.",
+  "SteamGuard_TradeLink_Offline": "Offline mode be on, so th' tradin' link can't be plundered.",
+  "SteamGuard_TradeLink_Unavailable": "Steam gave up no tradin' link fer this account. Check its trade URL on Steam, matey.",
+  "SteamGuard_Error_TradeLinkFailed": "Couldn't plunder th' tradin' link"
 }

@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "此帳號需要重新登入才能核准 Steam QR Code 請求。",
   "SteamGuard_QR_ApprovalRejected": "Steam 未接受此核准。請再次掃描 QR Code。",
   "SteamGuard_QR_RegionFailed": "無法安全掃描所選的螢幕區域。",
+  "SteamGuard_QR_VaultChanged": "執行期間保險庫已變更。請再試一次。",
   "SteamGuard_LoginAgain_Refreshing": "正在重新整理現有的 Steam 工作階段…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam 拒絕了已儲存的重新整理權杖。請登入以更換此帳號的 Steam 工作階段。",
   "SteamGuard_LoginAgain_RefreshFailed": "無法重新整理 Steam 工作階段。",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "聊天",
   "SteamGuard_Error_BrowserOpenFailed": "無法開啟瀏覽器視窗",
   "SteamBrowser_Trusted_Hint": "{host} 是受信任的 Steam 網站。",
-  "SteamBrowser_Untrusted_Hint": "{host} 不是 Steam，也不是其他受信任的網站。請像使用任何瀏覽器一樣保持警覺，切勿在此輸入您的 Steam 密碼或驗證器代碼。"
+  "SteamBrowser_Untrusted_Hint": "{host} 不是 Steam，也不是其他受信任的網站。請像使用任何瀏覽器一樣保持警覺，切勿在此輸入您的 Steam 密碼或驗證器代碼。",
+  "Context_Steam_TradeLink": "交易連結",
+  "SteamGuard_TradeLink_Fetching": "正在從 Steam 取得交易連結…",
+  "SteamGuard_TradeLink_NeedsLogin": "請重新登入此帳號以取得其交易連結。",
+  "SteamGuard_TradeLink_RateLimited": "Steam 正在限制此操作的頻率。請稍後再試。",
+  "SteamGuard_TradeLink_Offline": "已開啟離線模式，因此無法取得交易連結。",
+  "SteamGuard_TradeLink_Unavailable": "Steam 未回傳此帳號的交易連結。請在 Steam 上檢查其交易網址。",
+  "SteamGuard_Error_TradeLinkFailed": "無法取得交易連結"
 }

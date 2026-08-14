@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "Dit account moet opnieuw inloggen voordat het Steam QR-verzoeken kan goedkeuren.",
   "SteamGuard_QR_ApprovalRejected": "Steam accepteerde de goedkeuring niet. Scan de QR-code opnieuw.",
   "SteamGuard_QR_RegionFailed": "Het geselecteerde schermgebied kon niet veilig worden gescand.",
+  "SteamGuard_QR_VaultChanged": "De kluis is gewijzigd terwijl dat bezig was. Probeer het opnieuw.",
   "SteamGuard_LoginAgain_Refreshing": "Bestaande Steam-sessie vernieuwen…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam heeft het opgeslagen vernieuwingstoken geweigerd. Log in om de Steam-sessie van dit account te vervangen.",
   "SteamGuard_LoginAgain_RefreshFailed": "De Steam-sessie kon niet worden vernieuwd.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "Chat",
   "SteamGuard_Error_BrowserOpenFailed": "Kon het browservenster niet openen",
   "SteamBrowser_Trusted_Hint": "{host} is een vertrouwde Steam-site.",
-  "SteamBrowser_Untrusted_Hint": "{host} is geen Steam of andere vertrouwde site. Wees net zo voorzichtig als in elke andere browser en voer hier nooit je Steam-wachtwoord of authenticatorcodes in."
+  "SteamBrowser_Untrusted_Hint": "{host} is geen Steam of andere vertrouwde site. Wees net zo voorzichtig als in elke andere browser en voer hier nooit je Steam-wachtwoord of authenticatorcodes in.",
+  "Context_Steam_TradeLink": "Ruillink",
+  "SteamGuard_TradeLink_Fetching": "Ruillink ophalen van Steam…",
+  "SteamGuard_TradeLink_NeedsLogin": "Meld je opnieuw aan bij dit account om de ruillink op te halen.",
+  "SteamGuard_TradeLink_RateLimited": "Steam beperkt dit tijdelijk. Probeer het over een minuut opnieuw.",
+  "SteamGuard_TradeLink_Offline": "De offlinemodus is ingeschakeld, dus de ruillink kan niet worden opgehaald.",
+  "SteamGuard_TradeLink_Unavailable": "Steam gaf geen ruillink terug voor dit account. Controleer de ruil-URL op Steam.",
+  "SteamGuard_Error_TradeLinkFailed": "Kon de ruillink niet ophalen"
 }

@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "Denne kontoen må logge inn på nytt før den kan godkjenne Steam-QR-forespørsler.",
   "SteamGuard_QR_ApprovalRejected": "Steam godtok ikke godkjenningen. Skann QR-koden på nytt.",
   "SteamGuard_QR_RegionFailed": "Det valgte skjermområdet kunne ikke skannes trygt.",
+  "SteamGuard_QR_VaultChanged": "Hvelvet ble endret mens dette pågikk. Prøv igjen.",
   "SteamGuard_LoginAgain_Refreshing": "Oppdaterer den eksisterende Steam-økten…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam avviste det lagrede oppdateringstokenet. Logg inn for å erstatte denne kontoens Steam-økt.",
   "SteamGuard_LoginAgain_RefreshFailed": "Steam-økten kunne ikke oppdateres.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "Chat",
   "SteamGuard_Error_BrowserOpenFailed": "Kunne ikke åpne nettleservinduet",
   "SteamBrowser_Trusted_Hint": "{host} er et klarert Steam-nettsted.",
-  "SteamBrowser_Untrusted_Hint": "{host} er ikke Steam eller et annet klarert nettsted. Vær like forsiktig som i en vanlig nettleser, og ikke skriv inn Steam-passordet eller autentiseringskodene dine her."
+  "SteamBrowser_Untrusted_Hint": "{host} er ikke Steam eller et annet klarert nettsted. Vær like forsiktig som i en vanlig nettleser, og ikke skriv inn Steam-passordet eller autentiseringskodene dine her.",
+  "Context_Steam_TradeLink": "Byttelenke",
+  "SteamGuard_TradeLink_Fetching": "Henter byttelenke fra Steam…",
+  "SteamGuard_TradeLink_NeedsLogin": "Logg inn på denne kontoen igjen for å hente byttelenken.",
+  "SteamGuard_TradeLink_RateLimited": "Steam begrenser antall forespørsler. Prøv igjen om et minutt.",
+  "SteamGuard_TradeLink_Offline": "Frakoblet modus er på, så byttelenken kan ikke hentes.",
+  "SteamGuard_TradeLink_Unavailable": "Steam returnerte ingen byttelenke for denne kontoen. Sjekk bytte-URL-en på Steam.",
+  "SteamGuard_Error_TradeLinkFailed": "Kunne ikke hente byttelenken"
 }

@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "Denne konto skal logge ind igen, før den kan godkende Steam QR-anmodninger.",
   "SteamGuard_QR_ApprovalRejected": "Steam accepterede ikke godkendelsen. Scan QR-koden igen.",
   "SteamGuard_QR_RegionFailed": "Det valgte skærmområde kunne ikke scannes sikkert.",
+  "SteamGuard_QR_VaultChanged": "Boksen blev ændret, mens handlingen kørte. Prøv igen.",
   "SteamGuard_LoginAgain_Refreshing": "Opdaterer den eksisterende Steam-session…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam afviste det gemte opdateringstoken. Log ind for at erstatte denne kontos Steam-session.",
   "SteamGuard_LoginAgain_RefreshFailed": "Steam-sessionen kunne ikke opdateres.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "Chat",
   "SteamGuard_Error_BrowserOpenFailed": "Kunne ikke åbne browservinduet",
   "SteamBrowser_Trusted_Hint": "{host} er et betroet Steam-websted.",
-  "SteamBrowser_Untrusted_Hint": "{host} er ikke Steam eller et andet betroet websted. Udvis samme forsigtighed som i enhver anden browser, og indtast ikke din Steam-adgangskode eller autentificeringskoder her."
+  "SteamBrowser_Untrusted_Hint": "{host} er ikke Steam eller et andet betroet websted. Udvis samme forsigtighed som i enhver anden browser, og indtast ikke din Steam-adgangskode eller autentificeringskoder her.",
+  "Context_Steam_TradeLink": "Byttelink",
+  "SteamGuard_TradeLink_Fetching": "Henter byttelink fra Steam…",
+  "SteamGuard_TradeLink_NeedsLogin": "Log ind på denne konto igen for at hente dens byttelink.",
+  "SteamGuard_TradeLink_RateLimited": "Steam begrænser antallet af forespørgsler. Prøv igen om et minut.",
+  "SteamGuard_TradeLink_Offline": "Offlinetilstand er slået til, så byttelinket kan ikke hentes.",
+  "SteamGuard_TradeLink_Unavailable": "Steam returnerede ikke et byttelink for denne konto. Tjek dens bytte-URL på Steam.",
+  "SteamGuard_Error_TradeLinkFailed": "Kunne ikke hente byttelinket"
 }

@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "Questo account deve accedere di nuovo prima di poter approvare le richieste QR di Steam.",
   "SteamGuard_QR_ApprovalRejected": "Steam non ha accettato l'approvazione. Scansiona di nuovo il codice QR.",
   "SteamGuard_QR_RegionFailed": "Impossibile scansionare in sicurezza l'area dello schermo selezionata.",
+  "SteamGuard_QR_VaultChanged": "Il vault è cambiato durante l'operazione. Riprova.",
   "SteamGuard_LoginAgain_Refreshing": "Aggiornamento della sessione Steam esistente…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam ha rifiutato il token di aggiornamento salvato. Accedi per sostituire la sessione Steam di questo account.",
   "SteamGuard_LoginAgain_RefreshFailed": "Impossibile aggiornare la sessione Steam.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "Chat",
   "SteamGuard_Error_BrowserOpenFailed": "Impossibile aprire la finestra del browser",
   "SteamBrowser_Trusted_Hint": "{host} è un sito Steam attendibile.",
-  "SteamBrowser_Untrusted_Hint": "{host} non è Steam né un altro sito attendibile. Presta la stessa attenzione che useresti in qualsiasi browser e non inserire qui la password di Steam o i codici dell'autenticatore."
+  "SteamBrowser_Untrusted_Hint": "{host} non è Steam né un altro sito attendibile. Presta la stessa attenzione che useresti in qualsiasi browser e non inserire qui la password di Steam o i codici dell'autenticatore.",
+  "Context_Steam_TradeLink": "Link di scambio",
+  "SteamGuard_TradeLink_Fetching": "Recupero del link di scambio da Steam…",
+  "SteamGuard_TradeLink_NeedsLogin": "Accedi di nuovo a questo account per ottenere il suo link di scambio.",
+  "SteamGuard_TradeLink_RateLimited": "Steam sta limitando le richieste. Riprova tra un minuto.",
+  "SteamGuard_TradeLink_Offline": "La modalità offline è attiva, quindi non è possibile recuperare il link di scambio.",
+  "SteamGuard_TradeLink_Unavailable": "Steam non ha restituito un link di scambio per questo account. Controlla il suo URL di scambio su Steam.",
+  "SteamGuard_Error_TradeLinkFailed": "Impossibile ottenere il link di scambio"
 }

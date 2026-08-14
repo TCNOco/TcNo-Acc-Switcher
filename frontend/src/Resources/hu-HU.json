@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "Ennek a fióknak újra be kell jelentkeznie, mielőtt jóváhagyhat Steam QR-kéréseket.",
   "SteamGuard_QR_ApprovalRejected": "A Steam nem fogadta el a jóváhagyást. Olvasd be újra a QR-kódot.",
   "SteamGuard_QR_RegionFailed": "A kijelölt képernyőterületet nem sikerült biztonságosan beolvasni.",
+  "SteamGuard_QR_VaultChanged": "A széf megváltozott a művelet közben. Próbáld újra.",
   "SteamGuard_LoginAgain_Refreshing": "A meglévő Steam munkamenet frissítése…",
   "SteamGuard_LoginAgain_TokenRejected": "A Steam elutasította a mentett frissítési tokent. Jelentkezz be a fiók Steam munkamenetének cseréjéhez.",
   "SteamGuard_LoginAgain_RefreshFailed": "A Steam munkamenetet nem sikerült frissíteni.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "Csevegés",
   "SteamGuard_Error_BrowserOpenFailed": "Nem sikerült megnyitni a böngészőablakot",
   "SteamBrowser_Trusted_Hint": "{host} megbízható Steam-webhely.",
-  "SteamBrowser_Untrusted_Hint": "{host} nem a Steam vagy más megbízható webhely. Járj el ugyanolyan óvatosan, mint bármely böngészőben, és ne add meg itt a Steam-jelszavadat vagy hitelesítő kódjaidat."
+  "SteamBrowser_Untrusted_Hint": "{host} nem a Steam vagy más megbízható webhely. Járj el ugyanolyan óvatosan, mint bármely böngészőben, és ne add meg itt a Steam-jelszavadat vagy hitelesítő kódjaidat.",
+  "Context_Steam_TradeLink": "Cserelink",
+  "SteamGuard_TradeLink_Fetching": "Cserelink lekérése a Steamtől…",
+  "SteamGuard_TradeLink_NeedsLogin": "Jelentkezz be újra ebbe a fiókba a cserelink lekéréséhez.",
+  "SteamGuard_TradeLink_RateLimited": "A Steam korlátozza a kérések számát. Próbáld újra egy perc múlva.",
+  "SteamGuard_TradeLink_Offline": "Az offline mód be van kapcsolva, ezért a cserelink nem kérhető le.",
+  "SteamGuard_TradeLink_Unavailable": "A Steam nem adott vissza cserelinket ehhez a fiókhoz. Ellenőrizd a csere-URL-t a Steamen.",
+  "SteamGuard_Error_TradeLinkFailed": "Nem sikerült lekérni a cserelinket"
 }

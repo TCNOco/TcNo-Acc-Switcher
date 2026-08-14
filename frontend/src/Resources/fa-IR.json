@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "این حساب باید دوباره وارد شود تا بتواند درخواست‌های QR استیم را تأیید کند.",
   "SteamGuard_QR_ApprovalRejected": "Steam این تأیید را نپذیرفت. کد QR را دوباره اسکن کنید.",
   "SteamGuard_QR_RegionFailed": "ناحیه انتخاب‌شده صفحه به‌صورت ایمن اسکن نشد.",
+  "SteamGuard_QR_VaultChanged": "گاوصندوق در حین اجرای این عملیات تغییر کرد. دوباره تلاش کنید.",
   "SteamGuard_LoginAgain_Refreshing": "در حال تازه‌سازی نشست موجود Steam…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam توکن تازه‌سازی ذخیره‌شده را رد کرد. برای جایگزینی نشست Steam این حساب وارد شوید.",
   "SteamGuard_LoginAgain_RefreshFailed": "نشست Steam تازه‌سازی نشد.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "چت",
   "SteamGuard_Error_BrowserOpenFailed": "باز کردن پنجره مرورگر ممکن نبود",
   "SteamBrowser_Trusted_Hint": "{host} یک سایت مورد اعتماد Steam است.",
-  "SteamBrowser_Untrusted_Hint": "{host} نه Steam است و نه سایت مورد اعتماد دیگری. همان احتیاطی را به خرج دهید که در هر مرورگری می‌کنید و رمز عبور Steam یا کدهای احراز هویت خود را اینجا وارد نکنید."
+  "SteamBrowser_Untrusted_Hint": "{host} نه Steam است و نه سایت مورد اعتماد دیگری. همان احتیاطی را به خرج دهید که در هر مرورگری می‌کنید و رمز عبور Steam یا کدهای احراز هویت خود را اینجا وارد نکنید.",
+  "Context_Steam_TradeLink": "لینک تبادل",
+  "SteamGuard_TradeLink_Fetching": "در حال دریافت لینک تبادل از Steam…",
+  "SteamGuard_TradeLink_NeedsLogin": "برای دریافت لینک تبادل، دوباره وارد این حساب شوید.",
+  "SteamGuard_TradeLink_RateLimited": "Steam تعداد درخواست‌ها را محدود کرده است. یک دقیقه دیگر دوباره تلاش کنید.",
+  "SteamGuard_TradeLink_Offline": "حالت آفلاین فعال است، بنابراین لینک تبادل قابل دریافت نیست.",
+  "SteamGuard_TradeLink_Unavailable": "Steam لینک تبادلی برای این حساب برنگرداند. آدرس تبادل آن را در Steam بررسی کنید.",
+  "SteamGuard_Error_TradeLinkFailed": "دریافت لینک تبادل ممکن نشد"
 }

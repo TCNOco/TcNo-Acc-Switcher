@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "To konto musi zalogować się ponownie, zanim będzie mogło zatwierdzać żądania QR Steam.",
   "SteamGuard_QR_ApprovalRejected": "Steam nie zaakceptował zatwierdzenia. Zeskanuj kod QR ponownie.",
   "SteamGuard_QR_RegionFailed": "Nie udało się bezpiecznie zeskanować zaznaczonego obszaru ekranu.",
+  "SteamGuard_QR_VaultChanged": "Sejf zmienił się w trakcie tej operacji. Spróbuj ponownie.",
   "SteamGuard_LoginAgain_Refreshing": "Odświeżanie istniejącej sesji Steam…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam odrzucił zapisany token odświeżania. Zaloguj się, aby zastąpić sesję Steam tego konta.",
   "SteamGuard_LoginAgain_RefreshFailed": "Nie udało się odświeżyć sesji Steam.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "Czat",
   "SteamGuard_Error_BrowserOpenFailed": "Nie udało się otworzyć okna przeglądarki",
   "SteamBrowser_Trusted_Hint": "{host} to zaufana witryna Steam.",
-  "SteamBrowser_Untrusted_Hint": "{host} nie jest witryną Steam ani inną zaufaną witryną. Zachowaj taką samą ostrożność jak w każdej przeglądarce i nie wpisuj tutaj hasła Steam ani kodów uwierzytelniających."
+  "SteamBrowser_Untrusted_Hint": "{host} nie jest witryną Steam ani inną zaufaną witryną. Zachowaj taką samą ostrożność jak w każdej przeglądarce i nie wpisuj tutaj hasła Steam ani kodów uwierzytelniających.",
+  "Context_Steam_TradeLink": "Link wymiany",
+  "SteamGuard_TradeLink_Fetching": "Pobieranie linku wymiany ze Steam…",
+  "SteamGuard_TradeLink_NeedsLogin": "Zaloguj się ponownie na to konto, aby pobrać jego link wymiany.",
+  "SteamGuard_TradeLink_RateLimited": "Steam ogranicza liczbę żądań. Spróbuj ponownie za minutę.",
+  "SteamGuard_TradeLink_Offline": "Tryb offline jest włączony, więc nie można pobrać linku wymiany.",
+  "SteamGuard_TradeLink_Unavailable": "Steam nie zwrócił linku wymiany dla tego konta. Sprawdź jego adres URL wymiany na Steam.",
+  "SteamGuard_Error_TradeLinkFailed": "Nie udało się pobrać linku wymiany"
 }

@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "此账户需要重新登录后才能批准 Steam 二维码请求。",
   "SteamGuard_QR_ApprovalRejected": "Steam 未接受此次授权。请重新扫描二维码。",
   "SteamGuard_QR_RegionFailed": "无法安全扫描所选屏幕区域。",
+  "SteamGuard_QR_VaultChanged": "操作期间保管库发生了变化。请重试。",
   "SteamGuard_LoginAgain_Refreshing": "正在刷新现有的 Steam 会话…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam 拒绝了保存的刷新令牌。请登录以替换此账户的 Steam 会话。",
   "SteamGuard_LoginAgain_RefreshFailed": "无法刷新 Steam 会话。",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "聊天",
   "SteamGuard_Error_BrowserOpenFailed": "无法打开浏览器窗口",
   "SteamBrowser_Trusted_Hint": "{host} 是受信任的 Steam 网站。",
-  "SteamBrowser_Untrusted_Hint": "{host} 不是 Steam 或其他受信任的网站。请像在任何浏览器中一样保持警惕，不要在此输入您的 Steam 密码或验证器代码。"
+  "SteamBrowser_Untrusted_Hint": "{host} 不是 Steam 或其他受信任的网站。请像在任何浏览器中一样保持警惕，不要在此输入您的 Steam 密码或验证器代码。",
+  "Context_Steam_TradeLink": "交易链接",
+  "SteamGuard_TradeLink_Fetching": "正在从 Steam 获取交易链接…",
+  "SteamGuard_TradeLink_NeedsLogin": "请重新登录此账户以获取其交易链接。",
+  "SteamGuard_TradeLink_RateLimited": "Steam 正在限制此操作的频率。请一分钟后再试。",
+  "SteamGuard_TradeLink_Offline": "离线模式已开启，因此无法获取交易链接。",
+  "SteamGuard_TradeLink_Unavailable": "Steam 未返回此账户的交易链接。请在 Steam 上检查其交易 URL。",
+  "SteamGuard_Error_TradeLinkFailed": "无法获取交易链接"
 }

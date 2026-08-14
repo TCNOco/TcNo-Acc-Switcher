@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "Esta conta precisa entrar novamente antes de poder aprovar solicitações de QR do Steam.",
   "SteamGuard_QR_ApprovalRejected": "O Steam não aceitou a aprovação. Escaneie o código QR novamente.",
   "SteamGuard_QR_RegionFailed": "Não foi possível escanear com segurança a região da tela selecionada.",
+  "SteamGuard_QR_VaultChanged": "O cofre mudou enquanto isso estava em andamento. Tente novamente.",
   "SteamGuard_LoginAgain_Refreshing": "Atualizando a sessão existente do Steam…",
   "SteamGuard_LoginAgain_TokenRejected": "O Steam rejeitou o token de atualização salvo. Entre para substituir a sessão do Steam desta conta.",
   "SteamGuard_LoginAgain_RefreshFailed": "Não foi possível atualizar a sessão do Steam.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "Bate-papo",
   "SteamGuard_Error_BrowserOpenFailed": "Não foi possível abrir a janela do navegador",
   "SteamBrowser_Trusted_Hint": "{host} é um site confiável da Steam.",
-  "SteamBrowser_Untrusted_Hint": "{host} não é a Steam nem outro site confiável. Tenha o mesmo cuidado que teria em qualquer navegador e não insira sua senha da Steam ou códigos do autenticador aqui."
+  "SteamBrowser_Untrusted_Hint": "{host} não é a Steam nem outro site confiável. Tenha o mesmo cuidado que teria em qualquer navegador e não insira sua senha da Steam ou códigos do autenticador aqui.",
+  "Context_Steam_TradeLink": "Link de troca",
+  "SteamGuard_TradeLink_Fetching": "Obtendo link de troca do Steam…",
+  "SteamGuard_TradeLink_NeedsLogin": "Entre nesta conta novamente para obter o link de troca dela.",
+  "SteamGuard_TradeLink_RateLimited": "O Steam está limitando essas solicitações. Tente novamente em um minuto.",
+  "SteamGuard_TradeLink_Offline": "O modo offline está ativado, então o link de troca não pode ser obtido.",
+  "SteamGuard_TradeLink_Unavailable": "O Steam não retornou um link de troca para esta conta. Verifique a URL de troca dela no Steam.",
+  "SteamGuard_Error_TradeLinkFailed": "Não foi possível obter o link de troca"
 }

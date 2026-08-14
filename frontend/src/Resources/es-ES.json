@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "Esta cuenta necesita iniciar sesión de nuevo antes de poder aprobar solicitudes QR de Steam.",
   "SteamGuard_QR_ApprovalRejected": "Steam no aceptó la aprobación. Escanea el código QR de nuevo.",
   "SteamGuard_QR_RegionFailed": "No se pudo escanear de forma segura la región de pantalla seleccionada.",
+  "SteamGuard_QR_VaultChanged": "El almacén cambió mientras esto se ejecutaba. Inténtalo de nuevo.",
   "SteamGuard_LoginAgain_Refreshing": "Actualizando la sesión de Steam existente…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam rechazó el token de actualización guardado. Inicia sesión para reemplazar la sesión de Steam de esta cuenta.",
   "SteamGuard_LoginAgain_RefreshFailed": "No se pudo actualizar la sesión de Steam.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "Chat",
   "SteamGuard_Error_BrowserOpenFailed": "No se pudo abrir la ventana del navegador",
   "SteamBrowser_Trusted_Hint": "{host} es un sitio de Steam de confianza.",
-  "SteamBrowser_Untrusted_Hint": "{host} no es Steam ni otro sitio de confianza. Ten el mismo cuidado que en cualquier navegador y no introduzcas aquí tu contraseña de Steam ni tus códigos del autenticador."
+  "SteamBrowser_Untrusted_Hint": "{host} no es Steam ni otro sitio de confianza. Ten el mismo cuidado que en cualquier navegador y no introduzcas aquí tu contraseña de Steam ni tus códigos del autenticador.",
+  "Context_Steam_TradeLink": "Enlace de intercambio",
+  "SteamGuard_TradeLink_Fetching": "Obteniendo el enlace de intercambio de Steam…",
+  "SteamGuard_TradeLink_NeedsLogin": "Inicia sesión de nuevo en esta cuenta para obtener su enlace de intercambio.",
+  "SteamGuard_TradeLink_RateLimited": "Steam está limitando las solicitudes. Inténtalo de nuevo en un minuto.",
+  "SteamGuard_TradeLink_Offline": "El modo sin conexión está activado, por lo que no se puede obtener el enlace de intercambio.",
+  "SteamGuard_TradeLink_Unavailable": "Steam no devolvió un enlace de intercambio para esta cuenta. Comprueba su URL de intercambio en Steam.",
+  "SteamGuard_Error_TradeLinkFailed": "No se pudo obtener el enlace de intercambio"
 }

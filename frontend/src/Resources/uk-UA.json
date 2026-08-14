@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "Цьому акаунту потрібно увійти знову, перш ніж він зможе схвалювати QR-запити Steam.",
   "SteamGuard_QR_ApprovalRejected": "Steam не прийняв схвалення. Скануйте QR-код ще раз.",
   "SteamGuard_QR_RegionFailed": "Вибрану область екрана не вдалося безпечно просканувати.",
+  "SteamGuard_QR_VaultChanged": "Сховище змінилося під час виконання. Спробуйте ще раз.",
   "SteamGuard_LoginAgain_Refreshing": "Оновлення наявного сеансу Steam…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam відхилив збережений токен оновлення. Увійдіть, щоб замінити сеанс Steam цього акаунта.",
   "SteamGuard_LoginAgain_RefreshFailed": "Не вдалося оновити сеанс Steam.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "Чат",
   "SteamGuard_Error_BrowserOpenFailed": "Не вдалося відкрити вікно браузера",
   "SteamBrowser_Trusted_Hint": "{host} — довірений сайт Steam.",
-  "SteamBrowser_Untrusted_Hint": "{host} не є Steam чи іншим довіреним сайтом. Будьте так само обережні, як у будь-якому браузері, і не вводьте тут свій пароль Steam чи коди автентифікатора."
+  "SteamBrowser_Untrusted_Hint": "{host} не є Steam чи іншим довіреним сайтом. Будьте так само обережні, як у будь-якому браузері, і не вводьте тут свій пароль Steam чи коди автентифікатора.",
+  "Context_Steam_TradeLink": "Посилання для обміну",
+  "SteamGuard_TradeLink_Fetching": "Отримання посилання для обміну зі Steam…",
+  "SteamGuard_TradeLink_NeedsLogin": "Увійдіть у цей обліковий запис ще раз, щоб отримати його посилання для обміну.",
+  "SteamGuard_TradeLink_RateLimited": "Steam обмежує частоту запитів. Спробуйте ще раз за хвилину.",
+  "SteamGuard_TradeLink_Offline": "Увімкнено автономний режим, тому посилання для обміну неможливо отримати.",
+  "SteamGuard_TradeLink_Unavailable": "Steam не повернув посилання для обміну для цього облікового запису. Перевірте його URL-адресу обміну в Steam.",
+  "SteamGuard_Error_TradeLinkFailed": "Не вдалося отримати посилання для обміну"
 }

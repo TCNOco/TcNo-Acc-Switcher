@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "Tämän tilin on kirjauduttava uudelleen ennen kuin se voi hyväksyä Steamin QR-pyyntöjä.",
   "SteamGuard_QR_ApprovalRejected": "Steam ei hyväksynyt valtuutusta. Skannaa QR-koodi uudelleen.",
   "SteamGuard_QR_RegionFailed": "Valittua näytön aluetta ei voitu skannata turvallisesti.",
+  "SteamGuard_QR_VaultChanged": "Holvi muuttui toiminnon aikana. Yritä uudelleen.",
   "SteamGuard_LoginAgain_Refreshing": "Päivitetään nykyistä Steam-istuntoa…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam hylkäsi tallennetun päivitystunnisteen. Kirjaudu sisään korvataksesi tämän tilin Steam-istunnon.",
   "SteamGuard_LoginAgain_RefreshFailed": "Steam-istuntoa ei voitu päivittää.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "Keskustelu",
   "SteamGuard_Error_BrowserOpenFailed": "Selainikkunaa ei voitu avata",
   "SteamBrowser_Trusted_Hint": "{host} on luotettu Steam-sivusto.",
-  "SteamBrowser_Untrusted_Hint": "{host} ei ole Steam eikä muu luotettu sivusto. Noudata samaa varovaisuutta kuin missä tahansa selaimessa, äläkä syötä tänne Steam-salasanaasi tai todennuskoodejasi."
+  "SteamBrowser_Untrusted_Hint": "{host} ei ole Steam eikä muu luotettu sivusto. Noudata samaa varovaisuutta kuin missä tahansa selaimessa, äläkä syötä tänne Steam-salasanaasi tai todennuskoodejasi.",
+  "Context_Steam_TradeLink": "Vaihtolinkki",
+  "SteamGuard_TradeLink_Fetching": "Haetaan vaihtolinkkiä Steamista…",
+  "SteamGuard_TradeLink_NeedsLogin": "Kirjaudu tälle tilille uudelleen saadaksesi sen vaihtolinkin.",
+  "SteamGuard_TradeLink_RateLimited": "Steam rajoittaa pyyntöjä. Yritä uudelleen minuutin kuluttua.",
+  "SteamGuard_TradeLink_Offline": "Offline-tila on käytössä, joten vaihtolinkkiä ei voi hakea.",
+  "SteamGuard_TradeLink_Unavailable": "Steam ei palauttanut vaihtolinkkiä tälle tilille. Tarkista tilin vaihto-URL Steamissa.",
+  "SteamGuard_Error_TradeLinkFailed": "Vaihtolinkkiä ei voitu hakea"
 }

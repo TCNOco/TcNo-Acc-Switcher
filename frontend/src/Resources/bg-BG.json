@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "Този акаунт трябва да влезе отново, преди да може да одобрява Steam QR заявки.",
   "SteamGuard_QR_ApprovalRejected": "Steam не прие одобрението. Сканирайте QR кода отново.",
   "SteamGuard_QR_RegionFailed": "Избраната екранна област не можа да бъде сканирана безопасно.",
+  "SteamGuard_QR_VaultChanged": "Трезорът се промени, докато това се изпълняваше. Опитайте отново.",
   "SteamGuard_LoginAgain_Refreshing": "Обновяване на съществуващата Steam сесия…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam отхвърли запазения токен за обновяване. Влезте, за да замените Steam сесията на този акаунт.",
   "SteamGuard_LoginAgain_RefreshFailed": "Steam сесията не можа да бъде обновена.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "Чат",
   "SteamGuard_Error_BrowserOpenFailed": "Прозорецът на браузъра не можа да бъде отворен",
   "SteamBrowser_Trusted_Hint": "{host} е доверен сайт на Steam.",
-  "SteamBrowser_Untrusted_Hint": "{host} не е Steam или друг доверен сайт. Бъдете също толкова внимателни, колкото във всеки браузър, и не въвеждайте тук паролата си за Steam или кодове от удостоверителя."
+  "SteamBrowser_Untrusted_Hint": "{host} не е Steam или друг доверен сайт. Бъдете също толкова внимателни, колкото във всеки браузър, и не въвеждайте тук паролата си за Steam или кодове от удостоверителя.",
+  "Context_Steam_TradeLink": "Връзка за размяна",
+  "SteamGuard_TradeLink_Fetching": "Получаване на връзката за размяна от Steam…",
+  "SteamGuard_TradeLink_NeedsLogin": "Влезте отново в този акаунт, за да получите връзката му за размяна.",
+  "SteamGuard_TradeLink_RateLimited": "Steam ограничава честотата на заявките. Опитайте отново след минута.",
+  "SteamGuard_TradeLink_Offline": "Офлайн режимът е включен, затова връзката за размяна не може да бъде получена.",
+  "SteamGuard_TradeLink_Unavailable": "Steam не върна връзка за размяна за този акаунт. Проверете URL адреса за размяна в Steam.",
+  "SteamGuard_Error_TradeLinkFailed": "Връзката за размяна не можа да бъде получена"
 }

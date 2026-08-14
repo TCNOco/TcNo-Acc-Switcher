@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "Akun ini perlu masuk lagi sebelum dapat menyetujui permintaan QR Steam.",
   "SteamGuard_QR_ApprovalRejected": "Steam tidak menerima persetujuan. Pindai kode QR lagi.",
   "SteamGuard_QR_RegionFailed": "Area layar yang dipilih tidak dapat dipindai dengan aman.",
+  "SteamGuard_QR_VaultChanged": "Vault berubah saat proses berlangsung. Coba lagi.",
   "SteamGuard_LoginAgain_Refreshing": "Menyegarkan sesi Steam yang ada…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam menolak token penyegaran yang tersimpan. Masuk untuk mengganti sesi Steam akun ini.",
   "SteamGuard_LoginAgain_RefreshFailed": "Sesi Steam tidak dapat disegarkan.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "Obrolan",
   "SteamGuard_Error_BrowserOpenFailed": "Tidak dapat membuka jendela browser",
   "SteamBrowser_Trusted_Hint": "{host} adalah situs Steam tepercaya.",
-  "SteamBrowser_Untrusted_Hint": "{host} bukan Steam atau situs tepercaya lainnya. Berhati-hatilah seperti di browser mana pun, dan jangan masukkan kata sandi Steam atau kode autentikator Anda di sini."
+  "SteamBrowser_Untrusted_Hint": "{host} bukan Steam atau situs tepercaya lainnya. Berhati-hatilah seperti di browser mana pun, dan jangan masukkan kata sandi Steam atau kode autentikator Anda di sini.",
+  "Context_Steam_TradeLink": "Tautan Trade",
+  "SteamGuard_TradeLink_Fetching": "Mengambil tautan trade dari Steam…",
+  "SteamGuard_TradeLink_NeedsLogin": "Masuk lagi ke akun ini untuk mendapatkan tautan trade-nya.",
+  "SteamGuard_TradeLink_RateLimited": "Steam sedang membatasi permintaan ini. Coba lagi dalam satu menit.",
+  "SteamGuard_TradeLink_Offline": "Mode offline aktif, jadi tautan trade tidak dapat diambil.",
+  "SteamGuard_TradeLink_Unavailable": "Steam tidak memberikan tautan trade untuk akun ini. Periksa URL trade-nya di Steam.",
+  "SteamGuard_Error_TradeLinkFailed": "Tidak dapat mengambil tautan trade"
 }

@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "Acest cont trebuie să se autentifice din nou înainte de a putea aproba cereri QR Steam.",
   "SteamGuard_QR_ApprovalRejected": "Steam nu a acceptat aprobarea. Scanează codul QR din nou.",
   "SteamGuard_QR_RegionFailed": "Regiunea de ecran selectată nu a putut fi scanată în siguranță.",
+  "SteamGuard_QR_VaultChanged": "Seiful s-a schimbat în timpul operațiunii. Încearcă din nou.",
   "SteamGuard_LoginAgain_Refreshing": "Se reîmprospătează sesiunea Steam existentă…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam a respins tokenul de reîmprospătare salvat. Conectează-te pentru a înlocui sesiunea Steam a acestui cont.",
   "SteamGuard_LoginAgain_RefreshFailed": "Sesiunea Steam nu a putut fi reîmprospătată.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "Chat",
   "SteamGuard_Error_BrowserOpenFailed": "Fereastra browserului nu a putut fi deschisă",
   "SteamBrowser_Trusted_Hint": "{host} este un site Steam de încredere.",
-  "SteamBrowser_Untrusted_Hint": "{host} nu este Steam sau alt site de încredere. Ai aceeași grijă ca în orice browser și nu introduce aici parola Steam sau codurile de autentificare."
+  "SteamBrowser_Untrusted_Hint": "{host} nu este Steam sau alt site de încredere. Ai aceeași grijă ca în orice browser și nu introduce aici parola Steam sau codurile de autentificare.",
+  "Context_Steam_TradeLink": "Link de schimb",
+  "SteamGuard_TradeLink_Fetching": "Se obține linkul de schimb de la Steam…",
+  "SteamGuard_TradeLink_NeedsLogin": "Conectează-te din nou la acest cont pentru a obține linkul de schimb.",
+  "SteamGuard_TradeLink_RateLimited": "Steam limitează temporar aceste cereri. Încearcă din nou într-un minut.",
+  "SteamGuard_TradeLink_Offline": "Modul offline este activat, deci linkul de schimb nu poate fi obținut.",
+  "SteamGuard_TradeLink_Unavailable": "Steam nu a returnat un link de schimb pentru acest cont. Verifică URL-ul de schimb pe Steam.",
+  "SteamGuard_Error_TradeLinkFailed": "Nu s-a putut obține linkul de schimb"
 }

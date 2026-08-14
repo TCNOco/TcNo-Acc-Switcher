@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "Овај налог мора поново да се пријави пре него што може да одобрава Steam QR захтеве.",
   "SteamGuard_QR_ApprovalRejected": "Steam није прихватио одобрење. Скенирајте QR код поново.",
   "SteamGuard_QR_RegionFailed": "Изабрану област екрана није било могуће безбедно скенирати.",
+  "SteamGuard_QR_VaultChanged": "Трезор се променио док је то било у току. Покушајте поново.",
   "SteamGuard_LoginAgain_Refreshing": "Освежавање постојеће Steam сесије…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam је одбио сачувани токен за освежавање. Пријавите се да замените Steam сесију овог налога.",
   "SteamGuard_LoginAgain_RefreshFailed": "Steam сесију није било могуће освежити.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "Ћаскање",
   "SteamGuard_Error_BrowserOpenFailed": "Није могуће отворити прозор прегледача",
   "SteamBrowser_Trusted_Hint": "{host} је поуздан Steam сајт.",
-  "SteamBrowser_Untrusted_Hint": "{host} није Steam нити други поуздан сајт. Будите опрезни као у сваком прегледачу и не уносите овде своју Steam лозинку ни кодове аутентификатора."
+  "SteamBrowser_Untrusted_Hint": "{host} није Steam нити други поуздан сајт. Будите опрезни као у сваком прегледачу и не уносите овде своју Steam лозинку ни кодове аутентификатора.",
+  "Context_Steam_TradeLink": "Линк за размену",
+  "SteamGuard_TradeLink_Fetching": "Преузимање линка за размену са Steam-а…",
+  "SteamGuard_TradeLink_NeedsLogin": "Пријавите се поново на овај налог да бисте добили његов линк за размену.",
+  "SteamGuard_TradeLink_RateLimited": "Steam ограничава број захтева. Покушајте поново за минут.",
+  "SteamGuard_TradeLink_Offline": "Офлајн режим је укључен, па се линк за размену не може преузети.",
+  "SteamGuard_TradeLink_Unavailable": "Steam није вратио линк за размену за овај налог. Проверите његов URL за размену на Steam-у.",
+  "SteamGuard_Error_TradeLinkFailed": "Није могуће добити линк за размену"
 }

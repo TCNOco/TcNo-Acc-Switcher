@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "このアカウントでSteam QRリクエストを許可するには、再度ログインする必要があります。",
   "SteamGuard_QR_ApprovalRejected": "Steamが許可を受け付けませんでした。QRコードをもう一度スキャンしてください。",
   "SteamGuard_QR_RegionFailed": "選択した画面範囲を安全にスキャンできませんでした。",
+  "SteamGuard_QR_VaultChanged": "実行中に保管庫が変更されました。もう一度お試しください。",
   "SteamGuard_LoginAgain_Refreshing": "既存のSteamセッションを更新中…",
   "SteamGuard_LoginAgain_TokenRejected": "Steamが保存済みの更新トークンを拒否しました。サインインしてこのアカウントのSteamセッションを置き換えてください。",
   "SteamGuard_LoginAgain_RefreshFailed": "Steamセッションを更新できませんでした。",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "チャット",
   "SteamGuard_Error_BrowserOpenFailed": "ブラウザーウィンドウを開けませんでした",
   "SteamBrowser_Trusted_Hint": "{host} は信頼された Steam のサイトです。",
-  "SteamBrowser_Untrusted_Hint": "{host} は Steam やその他の信頼されたサイトではありません。通常のブラウザーと同じ注意を払い、ここでは Steam のパスワードや認証コードを入力しないでください。"
+  "SteamBrowser_Untrusted_Hint": "{host} は Steam やその他の信頼されたサイトではありません。通常のブラウザーと同じ注意を払い、ここでは Steam のパスワードや認証コードを入力しないでください。",
+  "Context_Steam_TradeLink": "トレードリンク",
+  "SteamGuard_TradeLink_Fetching": "Steamからトレードリンクを取得中…",
+  "SteamGuard_TradeLink_NeedsLogin": "トレードリンクを取得するには、このアカウントにもう一度サインインしてください。",
+  "SteamGuard_TradeLink_RateLimited": "Steamがレート制限をかけています。1分ほど待ってからもう一度お試しください。",
+  "SteamGuard_TradeLink_Offline": "オフラインモードが有効のため、トレードリンクを取得できません。",
+  "SteamGuard_TradeLink_Unavailable": "Steamからこのアカウントのトレードリンクが返されませんでした。SteamでトレードURLを確認してください。",
+  "SteamGuard_Error_TradeLinkFailed": "トレードリンクを取得できませんでした"
 }

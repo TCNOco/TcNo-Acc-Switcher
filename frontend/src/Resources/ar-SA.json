@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "يحتاج هذا الحساب إلى تسجيل الدخول مجددًا قبل أن يتمكن من الموافقة على طلبات QR الخاصة بـ Steam.",
   "SteamGuard_QR_ApprovalRejected": "لم يقبل Steam الموافقة. امسح رمز QR مجددًا.",
   "SteamGuard_QR_RegionFailed": "تعذر مسح منطقة الشاشة المحددة بأمان.",
+  "SteamGuard_QR_VaultChanged": "تغيّرت الخزنة أثناء تنفيذ ذلك. حاول مرة أخرى.",
   "SteamGuard_LoginAgain_Refreshing": "جارٍ تحديث جلسة Steam الحالية…",
   "SteamGuard_LoginAgain_TokenRejected": "رفض Steam رمز التحديث المحفوظ. سجل الدخول لاستبدال جلسة Steam لهذا الحساب.",
   "SteamGuard_LoginAgain_RefreshFailed": "تعذر تحديث جلسة Steam.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "الدردشة",
   "SteamGuard_Error_BrowserOpenFailed": "تعذّر فتح نافذة المتصفح",
   "SteamBrowser_Trusted_Hint": "{host} هو موقع Steam موثوق.",
-  "SteamBrowser_Untrusted_Hint": "{host} ليس Steam ولا موقعًا موثوقًا آخر. توخَّ الحذر نفسه الذي تتوخاه في أي متصفح، ولا تُدخل كلمة مرور Steam أو رموز المصادقة هنا."
+  "SteamBrowser_Untrusted_Hint": "{host} ليس Steam ولا موقعًا موثوقًا آخر. توخَّ الحذر نفسه الذي تتوخاه في أي متصفح، ولا تُدخل كلمة مرور Steam أو رموز المصادقة هنا.",
+  "Context_Steam_TradeLink": "رابط التبادل",
+  "SteamGuard_TradeLink_Fetching": "جارٍ جلب رابط التبادل من Steam…",
+  "SteamGuard_TradeLink_NeedsLogin": "سجّل الدخول إلى هذا الحساب مرة أخرى للحصول على رابط التبادل الخاص به.",
+  "SteamGuard_TradeLink_RateLimited": "يقوم Steam بتقييد معدل هذه العملية. حاول مرة أخرى بعد دقيقة.",
+  "SteamGuard_TradeLink_Offline": "وضع عدم الاتصال مفعّل، لذا لا يمكن جلب رابط التبادل.",
+  "SteamGuard_TradeLink_Unavailable": "لم يُرجع Steam رابط تبادل لهذا الحساب. تحقق من عنوان التبادل الخاص به على Steam.",
+  "SteamGuard_Error_TradeLinkFailed": "تعذر الحصول على رابط التبادل"
 }

@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "Dieses Konto muss sich erneut anmelden, bevor es Steam-QR-Anfragen genehmigen kann.",
   "SteamGuard_QR_ApprovalRejected": "Steam hat die Genehmigung nicht akzeptiert. Scannen Sie den QR-Code erneut.",
   "SteamGuard_QR_RegionFailed": "Der ausgewählte Bildschirmbereich konnte nicht sicher gescannt werden.",
+  "SteamGuard_QR_VaultChanged": "Der Tresor wurde währenddessen geändert. Erneut versuchen.",
   "SteamGuard_LoginAgain_Refreshing": "Bestehende Steam-Sitzung wird aktualisiert…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam hat das gespeicherte Aktualisierungs-Token abgelehnt. Melden Sie sich an, um die Steam-Sitzung dieses Kontos zu ersetzen.",
   "SteamGuard_LoginAgain_RefreshFailed": "Die Steam-Sitzung konnte nicht aktualisiert werden.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "Chat",
   "SteamGuard_Error_BrowserOpenFailed": "Das Browserfenster konnte nicht geöffnet werden",
   "SteamBrowser_Trusted_Hint": "{host} ist eine vertrauenswürdige Steam-Website.",
-  "SteamBrowser_Untrusted_Hint": "{host} ist nicht Steam oder eine andere vertrauenswürdige Website. Seien Sie so vorsichtig wie in jedem Browser und geben Sie hier weder Ihr Steam-Passwort noch Authenticator-Codes ein."
+  "SteamBrowser_Untrusted_Hint": "{host} ist nicht Steam oder eine andere vertrauenswürdige Website. Seien Sie so vorsichtig wie in jedem Browser und geben Sie hier weder Ihr Steam-Passwort noch Authenticator-Codes ein.",
+  "Context_Steam_TradeLink": "Tauschlink",
+  "SteamGuard_TradeLink_Fetching": "Tauschlink wird von Steam abgerufen…",
+  "SteamGuard_TradeLink_NeedsLogin": "Zum Abrufen des Tauschlinks erneut mit diesem Konto anmelden.",
+  "SteamGuard_TradeLink_RateLimited": "Steam begrenzt derzeit die Anfragen. In einer Minute erneut versuchen.",
+  "SteamGuard_TradeLink_Offline": "Der Offlinemodus ist aktiv, daher kann der Tauschlink nicht abgerufen werden.",
+  "SteamGuard_TradeLink_Unavailable": "Steam hat für dieses Konto keinen Tauschlink zurückgegeben. Tausch-URL des Kontos auf Steam prüfen.",
+  "SteamGuard_Error_TradeLinkFailed": "Tauschlink konnte nicht abgerufen werden"
 }

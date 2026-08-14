@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "Этому аккаунту нужно войти заново, прежде чем он сможет подтверждать QR-запросы Steam.",
   "SteamGuard_QR_ApprovalRejected": "Steam не принял подтверждение. Отсканируйте QR-код снова.",
   "SteamGuard_QR_RegionFailed": "Не удалось безопасно отсканировать выбранную область экрана.",
+  "SteamGuard_QR_VaultChanged": "Хранилище изменилось во время выполнения. Попробуйте ещё раз.",
   "SteamGuard_LoginAgain_Refreshing": "Обновление текущего сеанса Steam…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam отклонил сохранённый токен обновления. Войдите, чтобы заменить сеанс Steam этого аккаунта.",
   "SteamGuard_LoginAgain_RefreshFailed": "Не удалось обновить сеанс Steam.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "Чат",
   "SteamGuard_Error_BrowserOpenFailed": "Не удалось открыть окно браузера",
   "SteamBrowser_Trusted_Hint": "{host} — доверенный сайт Steam.",
-  "SteamBrowser_Untrusted_Hint": "{host} не является Steam или другим доверенным сайтом. Будьте так же осторожны, как в любом браузере, и не вводите здесь пароль Steam или коды аутентификатора."
+  "SteamBrowser_Untrusted_Hint": "{host} не является Steam или другим доверенным сайтом. Будьте так же осторожны, как в любом браузере, и не вводите здесь пароль Steam или коды аутентификатора.",
+  "Context_Steam_TradeLink": "Ссылка на обмен",
+  "SteamGuard_TradeLink_Fetching": "Получение ссылки на обмен из Steam…",
+  "SteamGuard_TradeLink_NeedsLogin": "Войдите в этот аккаунт снова, чтобы получить его ссылку на обмен.",
+  "SteamGuard_TradeLink_RateLimited": "Steam ограничивает частоту запросов. Попробуйте снова через минуту.",
+  "SteamGuard_TradeLink_Offline": "Включён автономный режим, поэтому ссылку на обмен получить нельзя.",
+  "SteamGuard_TradeLink_Unavailable": "Steam не вернул ссылку на обмен для этого аккаунта. Проверьте ссылку на обмен этого аккаунта в Steam.",
+  "SteamGuard_Error_TradeLinkFailed": "Не удалось получить ссылку на обмен"
 }

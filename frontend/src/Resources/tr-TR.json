@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "Bu hesabın Steam QR isteklerini onaylayabilmesi için tekrar giriş yapması gerekiyor.",
   "SteamGuard_QR_ApprovalRejected": "Steam onayı kabul etmedi. QR kodunu tekrar tarayın.",
   "SteamGuard_QR_RegionFailed": "Seçilen ekran bölgesi güvenle taranamadı.",
+  "SteamGuard_QR_VaultChanged": "Bu işlem sürerken kasa değişti. Tekrar deneyin.",
   "SteamGuard_LoginAgain_Refreshing": "Mevcut Steam oturumu yenileniyor…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam, kayıtlı yenileme belirtecini reddetti. Bu hesabın Steam oturumunu değiştirmek için giriş yapın.",
   "SteamGuard_LoginAgain_RefreshFailed": "Steam oturumu yenilenemedi.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "Sohbet",
   "SteamGuard_Error_BrowserOpenFailed": "Tarayıcı penceresi açılamadı",
   "SteamBrowser_Trusted_Hint": "{host} güvenilir bir Steam sitesidir.",
-  "SteamBrowser_Untrusted_Hint": "{host} Steam veya başka bir güvenilir site değildir. Herhangi bir tarayıcıda göstereceğiniz özeni gösterin ve buraya Steam parolanızı veya doğrulayıcı kodlarınızı girmeyin."
+  "SteamBrowser_Untrusted_Hint": "{host} Steam veya başka bir güvenilir site değildir. Herhangi bir tarayıcıda göstereceğiniz özeni gösterin ve buraya Steam parolanızı veya doğrulayıcı kodlarınızı girmeyin.",
+  "Context_Steam_TradeLink": "Takas Bağlantısı",
+  "SteamGuard_TradeLink_Fetching": "Takas bağlantısı Steam'den alınıyor…",
+  "SteamGuard_TradeLink_NeedsLogin": "Takas bağlantısını almak için bu hesapla yeniden oturum açın.",
+  "SteamGuard_TradeLink_RateLimited": "Steam bu isteği sınırlıyor. Bir dakika sonra tekrar deneyin.",
+  "SteamGuard_TradeLink_Offline": "Çevrimdışı mod açık olduğundan takas bağlantısı alınamıyor.",
+  "SteamGuard_TradeLink_Unavailable": "Steam bu hesap için bir takas bağlantısı döndürmedi. Steam'deki takas URL'sini kontrol edin.",
+  "SteamGuard_Error_TradeLinkFailed": "Takas bağlantısı alınamadı"
 }

@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "חשבון זה צריך להתחבר שוב לפני שיוכל לאשר בקשות QR של Steam.",
   "SteamGuard_QR_ApprovalRejected": "Steam לא קיבל את האישור. סרוק את קוד ה-QR שוב.",
   "SteamGuard_QR_RegionFailed": "לא ניתן היה לסרוק את אזור המסך שנבחר באופן בטוח.",
+  "SteamGuard_QR_VaultChanged": "הכספת השתנתה בזמן הפעולה. יש לנסות שוב.",
   "SteamGuard_LoginAgain_Refreshing": "מרענן את הפעלת Steam הקיימת…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam דחה את אסימון הרענון השמור. התחבר כדי להחליף את הפעלת Steam של חשבון זה.",
   "SteamGuard_LoginAgain_RefreshFailed": "לא ניתן היה לרענן את הפעלת Steam.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "צ'אט",
   "SteamGuard_Error_BrowserOpenFailed": "לא ניתן היה לפתוח את חלון הדפדפן",
   "SteamBrowser_Trusted_Hint": "{host} הוא אתר Steam מהימן.",
-  "SteamBrowser_Untrusted_Hint": "{host} אינו Steam או אתר מהימן אחר. נהגו באותה זהירות כמו בכל דפדפן, ואל תזינו כאן את סיסמת Steam או קודי אימות."
+  "SteamBrowser_Untrusted_Hint": "{host} אינו Steam או אתר מהימן אחר. נהגו באותה זהירות כמו בכל דפדפן, ואל תזינו כאן את סיסמת Steam או קודי אימות.",
+  "Context_Steam_TradeLink": "קישור החלפה",
+  "SteamGuard_TradeLink_Fetching": "מאחזר את קישור ההחלפה מ-Steam…",
+  "SteamGuard_TradeLink_NeedsLogin": "יש להתחבר לחשבון זה שוב כדי לקבל את קישור ההחלפה שלו.",
+  "SteamGuard_TradeLink_RateLimited": "Steam מגביל את קצב הבקשות. יש לנסות שוב בעוד דקה.",
+  "SteamGuard_TradeLink_Offline": "מצב לא מקוון פעיל, ולכן לא ניתן לאחזר את קישור ההחלפה.",
+  "SteamGuard_TradeLink_Unavailable": "Steam לא החזיר קישור החלפה עבור חשבון זה. יש לבדוק את כתובת ההחלפה שלו ב-Steam.",
+  "SteamGuard_Error_TradeLinkFailed": "לא ניתן היה לקבל את קישור ההחלפה"
 }

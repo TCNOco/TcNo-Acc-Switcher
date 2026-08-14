@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "Dieses Konto muss sich erneut anmelden, bevor es Steam-QR-Anfragen genehmigen kann.",
   "SteamGuard_QR_ApprovalRejected": "Steam hat die Genehmigung nicht akzeptiert. Scannen Sie den QR-Code erneut.",
   "SteamGuard_QR_RegionFailed": "Der ausgewählte Bildschirmbereich konnte nicht sicher gescannt werden.",
+  "SteamGuard_QR_VaultChanged": "Dr Tresor het sich gänderet, während das gloffe isch. Probiers nomol.",
   "SteamGuard_LoginAgain_Refreshing": "Bestehende Steam-Sitzung wird aktualisiert…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam hat den gespeicherten Aktualisierungs-Token abgelehnt. Melden Sie sich an, um die Steam-Sitzung dieses Kontos zu ersetzen.",
   "SteamGuard_LoginAgain_RefreshFailed": "Die Steam-Sitzung konnte nicht aktualisiert werden.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "Chat",
   "SteamGuard_Error_BrowserOpenFailed": "S Browserfänschter hät nöd chönne göffnet wärde",
   "SteamBrowser_Trusted_Hint": "{host} isch e vertrauenswürdigi Steam-Siitä.",
-  "SteamBrowser_Untrusted_Hint": "{host} isch nöd Steam oder e anderi vertrauenswürdigi Siitä. Bis gliich vorsichtig wie i jedem Browser und gib da dis Steam-Passwort oder dini Authenticator-Codes nöd i."
+  "SteamBrowser_Untrusted_Hint": "{host} isch nöd Steam oder e anderi vertrauenswürdigi Siitä. Bis gliich vorsichtig wie i jedem Browser und gib da dis Steam-Passwort oder dini Authenticator-Codes nöd i.",
+  "Context_Steam_TradeLink": "Trade-Link",
+  "SteamGuard_TradeLink_Fetching": "Hol dr Trade-Link vo Steam…",
+  "SteamGuard_TradeLink_NeedsLogin": "Mäld di nomol bi dem Konto aa, zum dr Trade-Link z hole.",
+  "SteamGuard_TradeLink_RateLimited": "Steam bremst das grad us. Probiers i ere Minute nomol.",
+  "SteamGuard_TradeLink_Offline": "Dr Offline-Modus isch aa, drum cha dr Trade-Link nöd gholt wärde.",
+  "SteamGuard_TradeLink_Unavailable": "Steam het für das Konto kei Trade-Link zruggäh. Lueg d Trade-URL uf Steam aa.",
+  "SteamGuard_Error_TradeLinkFailed": "Dr Trade-Link het nöd chönne gholt wärde"
 }

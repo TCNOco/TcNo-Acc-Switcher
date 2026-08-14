@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "Esta conta precisa de iniciar sessão novamente antes de poder aprovar pedidos QR da Steam.",
   "SteamGuard_QR_ApprovalRejected": "A Steam não aceitou a aprovação. Digitalize o código QR novamente.",
   "SteamGuard_QR_RegionFailed": "Não foi possível digitalizar em segurança a região do ecrã selecionada.",
+  "SteamGuard_QR_VaultChanged": "O cofre foi alterado enquanto a operação decorria. Tente novamente.",
   "SteamGuard_LoginAgain_Refreshing": "A atualizar a sessão Steam existente…",
   "SteamGuard_LoginAgain_TokenRejected": "A Steam rejeitou o token de atualização guardado. Inicie sessão para substituir a sessão Steam desta conta.",
   "SteamGuard_LoginAgain_RefreshFailed": "Não foi possível atualizar a sessão Steam.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "Chat",
   "SteamGuard_Error_BrowserOpenFailed": "Não foi possível abrir a janela do navegador",
   "SteamBrowser_Trusted_Hint": "{host} é um site Steam de confiança.",
-  "SteamBrowser_Untrusted_Hint": "{host} não é a Steam nem outro site de confiança. Tenha o mesmo cuidado que teria em qualquer navegador e não introduza aqui a sua palavra-passe da Steam nem códigos do autenticador."
+  "SteamBrowser_Untrusted_Hint": "{host} não é a Steam nem outro site de confiança. Tenha o mesmo cuidado que teria em qualquer navegador e não introduza aqui a sua palavra-passe da Steam nem códigos do autenticador.",
+  "Context_Steam_TradeLink": "Link de troca",
+  "SteamGuard_TradeLink_Fetching": "A obter o link de troca do Steam…",
+  "SteamGuard_TradeLink_NeedsLogin": "Inicie sessão novamente nesta conta para obter o seu link de troca.",
+  "SteamGuard_TradeLink_RateLimited": "O Steam está a limitar estes pedidos. Tente novamente dentro de um minuto.",
+  "SteamGuard_TradeLink_Offline": "O modo offline está ativado, pelo que não é possível obter o link de troca.",
+  "SteamGuard_TradeLink_Unavailable": "O Steam não devolveu um link de troca para esta conta. Verifique o URL de troca no Steam.",
+  "SteamGuard_Error_TradeLinkFailed": "Não foi possível obter o link de troca"
 }

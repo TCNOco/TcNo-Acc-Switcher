@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "Ce compte doit se reconnecter avant de pouvoir approuver des demandes QR Steam.",
   "SteamGuard_QR_ApprovalRejected": "Steam n'a pas accepté l'approbation. Scannez le code QR à nouveau.",
   "SteamGuard_QR_RegionFailed": "La zone d'écran sélectionnée n'a pas pu être analysée en toute sécurité.",
+  "SteamGuard_QR_VaultChanged": "Le coffre-fort a été modifié pendant l'opération. Réessayez.",
   "SteamGuard_LoginAgain_Refreshing": "Actualisation de la session Steam existante…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam a rejeté le jeton d'actualisation enregistré. Connectez-vous pour remplacer la session Steam de ce compte.",
   "SteamGuard_LoginAgain_RefreshFailed": "La session Steam n'a pas pu être actualisée.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "Chat",
   "SteamGuard_Error_BrowserOpenFailed": "Impossible d'ouvrir la fenêtre du navigateur",
   "SteamBrowser_Trusted_Hint": "{host} est un site Steam de confiance.",
-  "SteamBrowser_Untrusted_Hint": "{host} n'est pas Steam ni un autre site de confiance. Faites preuve de la même prudence que dans n'importe quel navigateur et n'entrez jamais votre mot de passe Steam ni vos codes d'authentification ici."
+  "SteamBrowser_Untrusted_Hint": "{host} n'est pas Steam ni un autre site de confiance. Faites preuve de la même prudence que dans n'importe quel navigateur et n'entrez jamais votre mot de passe Steam ni vos codes d'authentification ici.",
+  "Context_Steam_TradeLink": "Lien d'échange",
+  "SteamGuard_TradeLink_Fetching": "Récupération du lien d'échange depuis Steam…",
+  "SteamGuard_TradeLink_NeedsLogin": "Reconnectez-vous à ce compte pour obtenir son lien d'échange.",
+  "SteamGuard_TradeLink_RateLimited": "Steam limite le nombre de requêtes. Réessayez dans une minute.",
+  "SteamGuard_TradeLink_Offline": "Le mode hors ligne est activé, le lien d'échange ne peut donc pas être récupéré.",
+  "SteamGuard_TradeLink_Unavailable": "Steam n'a pas renvoyé de lien d'échange pour ce compte. Vérifiez son URL d'échange sur Steam.",
+  "SteamGuard_Error_TradeLinkFailed": "Impossible d'obtenir le lien d'échange"
 }

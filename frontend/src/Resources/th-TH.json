@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "บัญชีนี้ต้องเข้าสู่ระบบอีกครั้งก่อนจึงจะอนุมัติคำขอ QR ของ Steam ได้",
   "SteamGuard_QR_ApprovalRejected": "Steam ไม่ยอมรับการอนุมัติ สแกนรหัส QR อีกครั้ง",
   "SteamGuard_QR_RegionFailed": "ไม่สามารถสแกนพื้นที่หน้าจอที่เลือกได้อย่างปลอดภัย",
+  "SteamGuard_QR_VaultChanged": "ห้องนิรภัยมีการเปลี่ยนแปลงขณะกำลังดำเนินการ โปรดลองอีกครั้ง",
   "SteamGuard_LoginAgain_Refreshing": "กำลังรีเฟรชเซสชัน Steam ที่มีอยู่…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam ปฏิเสธโทเคนรีเฟรชที่บันทึกไว้ เข้าสู่ระบบเพื่อแทนที่เซสชัน Steam ของบัญชีนี้",
   "SteamGuard_LoginAgain_RefreshFailed": "ไม่สามารถรีเฟรชเซสชัน Steam ได้",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "แชท",
   "SteamGuard_Error_BrowserOpenFailed": "ไม่สามารถเปิดหน้าต่างเบราว์เซอร์ได้",
   "SteamBrowser_Trusted_Hint": "{host} เป็นไซต์ Steam ที่เชื่อถือได้",
-  "SteamBrowser_Untrusted_Hint": "{host} ไม่ใช่ Steam หรือไซต์ที่เชื่อถือได้อื่น ๆ โปรดใช้ความระมัดระวังเช่นเดียวกับในเบราว์เซอร์ทั่วไป และอย่ากรอกรหัสผ่าน Steam หรือรหัสยืนยันตัวตนของคุณที่นี่"
+  "SteamBrowser_Untrusted_Hint": "{host} ไม่ใช่ Steam หรือไซต์ที่เชื่อถือได้อื่น ๆ โปรดใช้ความระมัดระวังเช่นเดียวกับในเบราว์เซอร์ทั่วไป และอย่ากรอกรหัสผ่าน Steam หรือรหัสยืนยันตัวตนของคุณที่นี่",
+  "Context_Steam_TradeLink": "ลิงก์แลกเปลี่ยน",
+  "SteamGuard_TradeLink_Fetching": "กำลังดึงลิงก์แลกเปลี่ยนจาก Steam…",
+  "SteamGuard_TradeLink_NeedsLogin": "ลงชื่อเข้าใช้บัญชีนี้อีกครั้งเพื่อรับลิงก์แลกเปลี่ยน",
+  "SteamGuard_TradeLink_RateLimited": "Steam กำลังจำกัดอัตราการเรียกใช้งาน โปรดลองอีกครั้งในอีกสักครู่",
+  "SteamGuard_TradeLink_Offline": "โหมดออฟไลน์เปิดอยู่ จึงไม่สามารถดึงลิงก์แลกเปลี่ยนได้",
+  "SteamGuard_TradeLink_Unavailable": "Steam ไม่ได้ส่งลิงก์แลกเปลี่ยนสำหรับบัญชีนี้กลับมา โปรดตรวจสอบ URL แลกเปลี่ยนของบัญชีบน Steam",
+  "SteamGuard_Error_TradeLinkFailed": "ไม่สามารถดึงลิงก์แลกเปลี่ยนได้"
 }

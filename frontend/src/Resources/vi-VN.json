@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "Tài khoản này cần đăng nhập lại trước khi có thể chấp thuận yêu cầu QR Steam.",
   "SteamGuard_QR_ApprovalRejected": "Steam không chấp nhận yêu cầu chấp thuận. Hãy quét lại mã QR.",
   "SteamGuard_QR_RegionFailed": "Không thể quét an toàn vùng màn hình đã chọn.",
+  "SteamGuard_QR_VaultChanged": "Kho lưu trữ đã thay đổi trong khi thao tác đang chạy. Hãy thử lại.",
   "SteamGuard_LoginAgain_Refreshing": "Đang làm mới phiên Steam hiện có…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam từ chối refresh token đã lưu. Hãy đăng nhập để thay phiên Steam của tài khoản này.",
   "SteamGuard_LoginAgain_RefreshFailed": "Không thể làm mới phiên Steam.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "Trò chuyện",
   "SteamGuard_Error_BrowserOpenFailed": "Không thể mở cửa sổ trình duyệt",
   "SteamBrowser_Trusted_Hint": "{host} là một trang Steam đáng tin cậy.",
-  "SteamBrowser_Untrusted_Hint": "{host} không phải Steam hay một trang đáng tin cậy khác. Hãy cẩn trọng như khi dùng bất kỳ trình duyệt nào, và đừng nhập mật khẩu Steam hay mã xác thực của bạn ở đây."
+  "SteamBrowser_Untrusted_Hint": "{host} không phải Steam hay một trang đáng tin cậy khác. Hãy cẩn trọng như khi dùng bất kỳ trình duyệt nào, và đừng nhập mật khẩu Steam hay mã xác thực của bạn ở đây.",
+  "Context_Steam_TradeLink": "Liên kết trao đổi",
+  "SteamGuard_TradeLink_Fetching": "Đang lấy liên kết trao đổi từ Steam…",
+  "SteamGuard_TradeLink_NeedsLogin": "Đăng nhập lại tài khoản này để lấy liên kết trao đổi của nó.",
+  "SteamGuard_TradeLink_RateLimited": "Steam đang giới hạn tần suất yêu cầu. Hãy thử lại sau một phút.",
+  "SteamGuard_TradeLink_Offline": "Chế độ ngoại tuyến đang bật nên không thể lấy liên kết trao đổi.",
+  "SteamGuard_TradeLink_Unavailable": "Steam không trả về liên kết trao đổi cho tài khoản này. Hãy kiểm tra URL trao đổi của tài khoản trên Steam.",
+  "SteamGuard_Error_TradeLinkFailed": "Không thể lấy liên kết trao đổi"
 }

@@ -773,6 +773,7 @@
   "SteamGuard_QR_NeedsLogin": "Hierdie rekening moet weer aanmeld voordat dit Steam QR-versoeke kan goedkeur.",
   "SteamGuard_QR_ApprovalRejected": "Steam het nie die goedkeuring aanvaar nie. Skandeer die QR-kode weer.",
   "SteamGuard_QR_RegionFailed": "Die gekose skermarea kon nie veilig geskandeer word nie.",
+  "SteamGuard_QR_VaultChanged": "Die kluis het verander terwyl dit besig was. Probeer weer.",
   "SteamGuard_LoginAgain_Refreshing": "Verfris die bestaande Steam-sessie…",
   "SteamGuard_LoginAgain_TokenRejected": "Steam het die gestoorde verfristeken verwerp. Teken aan om hierdie rekening se Steam-sessie te vervang.",
   "SteamGuard_LoginAgain_RefreshFailed": "Die Steam-sessie kon nie verfris word nie.",
@@ -1111,5 +1112,12 @@
   "SteamGuard_Browse_Chat": "Klets",
   "SteamGuard_Error_BrowserOpenFailed": "Kon nie die blaaiervenster oopmaak nie",
   "SteamBrowser_Trusted_Hint": "{host} is 'n vertroude Steam-werf.",
-  "SteamBrowser_Untrusted_Hint": "{host} is nie Steam of 'n ander vertroude werf nie. Wees net so versigtig soos in enige blaaier, en moenie jou Steam-wagwoord of stawingskodes hier invoer nie."
+  "SteamBrowser_Untrusted_Hint": "{host} is nie Steam of 'n ander vertroude werf nie. Wees net so versigtig soos in enige blaaier, en moenie jou Steam-wagwoord of stawingskodes hier invoer nie.",
+  "Context_Steam_TradeLink": "Ruilskakel",
+  "SteamGuard_TradeLink_Fetching": "Kry ruilskakel vanaf Steam…",
+  "SteamGuard_TradeLink_NeedsLogin": "Meld weer by hierdie rekening aan om sy ruilskakel te kry.",
+  "SteamGuard_TradeLink_RateLimited": "Steam beperk tans hierdie versoeke. Probeer weer oor 'n minuut.",
+  "SteamGuard_TradeLink_Offline": "Vanlynmodus is aan, dus kan die ruilskakel nie opgehaal word nie.",
+  "SteamGuard_TradeLink_Unavailable": "Steam het nie 'n ruilskakel vir hierdie rekening teruggegee nie. Kontroleer sy ruil-URL op Steam.",
+  "SteamGuard_Error_TradeLinkFailed": "Kon nie die ruilskakel kry nie"
 }
