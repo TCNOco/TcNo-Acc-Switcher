@@ -191,12 +191,15 @@ func main() {
 
 	releaseSingleton, running, err := winutil.TryAcquireSingleton()
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "singleton:", err)
+		// No console is attached on the GUI path, so slog is the only way these
+		// two reach the user at all: they are the "it just does not start" and
+		// "it vanished" reports, and both used to exit without a trace.
+		slog.Error("startup aborted: could not acquire the single-instance lock", "err", err)
 		os.Exit(1)
 	}
 	if running {
 		if ferr := ipc.ForwardArgs(os.Args[1:]); ferr != nil {
-			fmt.Fprintln(os.Stderr, "another instance is running; IPC forward failed:", ferr)
+			slog.Error("another instance is running and forwarding the command to it failed", "err", ferr)
 			os.Exit(1)
 		}
 		os.Exit(0)
