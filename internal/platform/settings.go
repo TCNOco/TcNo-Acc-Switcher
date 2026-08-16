@@ -111,6 +111,11 @@ type AppSettings struct {
 
 	AppBgFit string `json:"appBgFit,omitempty"`
 
+	// AppBgLuma caches how bright AppBgImage is, measured once when the image is
+	// set. Cached rather than recomputed on launch because decoding a 4K photo to
+	// answer "is this dark?" on every start would be wasteful.
+	AppBgLuma BackgroundLuma `json:"appBgLuma,omitempty"`
+
 	// ThemeBgOverride is true when the user has explicitly set or cleared the app background,
 	// overriding any background image bundled with the active theme.
 	ThemeBgOverride bool `json:"themeBgOverride,omitempty"`
@@ -129,6 +134,8 @@ type PlatformBgSettings struct {
 	Blur      float64 `json:"blur,omitempty"`
 	Alignment string  `json:"alignment,omitempty"`
 	Fit       string  `json:"fit,omitempty"`
+	// Luma caches how bright Image is, measured once when the image is set.
+	Luma BackgroundLuma `json:"luma,omitempty"`
 }
 
 // AppBackgroundInfo is returned to the frontend with background image state.
@@ -140,6 +147,9 @@ type AppBackgroundInfo struct {
 	Alignment       string  `json:"alignment"`
 	Fit             string  `json:"fit"`
 	ThemeBgOverride bool    `json:"themeBgOverride"`
+	// Luma is unset (Measured false) for backgrounds chosen before the app started
+	// measuring them; the frontend samples those on a canvas instead.
+	Luma BackgroundLuma `json:"luma"`
 }
 
 func defaultSettings() AppSettings {

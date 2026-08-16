@@ -65,13 +65,27 @@ func TestNormalizeAppSettingsDefaultsSanitizesBackgroundLayout(t *testing.T) {
 }
 
 func TestBuildAppBgInfoAlwaysReturnsNormalizedBackgroundLayout(t *testing.T) {
-	info := buildAppBgInfo("", 0, 0, "Top", "contain", false)
+	info := buildAppBgInfo("", 0, 0, "Top", "contain", false, BackgroundLuma{})
 	if info.Alignment != "top" || info.Fit != "contain" {
 		t.Fatalf("background info layout = %q/%q, want top/contain", info.Alignment, info.Fit)
 	}
 
-	info = buildAppBgInfo("app-bg.webp", 0.5, 2, "diagonal", "crop", true)
+	info = buildAppBgInfo("app-bg.webp", 0.5, 2, "diagonal", "crop", true, BackgroundLuma{})
 	if info.Alignment != defaultBgAlignment || info.Fit != defaultBgFit {
 		t.Fatalf("invalid background info layout = %q/%q, want %q/%q", info.Alignment, info.Fit, defaultBgAlignment, defaultBgFit)
+	}
+}
+
+func TestBuildAppBgInfoCarriesMeasuredLuma(t *testing.T) {
+	luma := BackgroundLuma{Measured: true, Mean: 0.12, Low: 0.04, High: 0.31}
+	info := buildAppBgInfo("app-bg.png", 0.5, 2, "top", "cover", true, luma)
+	if info.Luma != luma {
+		t.Fatalf("luma = %+v, want %+v", info.Luma, luma)
+	}
+
+	// No image means no background to measure, so the luma must not leak through
+	// and convince the UI it knows how bright a picture that is not showing is.
+	if info := buildAppBgInfo("", 0, 0, "top", "cover", false, luma); info.Luma.Measured {
+		t.Fatalf("luma = %+v, want unmeasured when there is no image", info.Luma)
 	}
 }

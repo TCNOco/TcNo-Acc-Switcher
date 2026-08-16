@@ -129,7 +129,7 @@ func normalizeBackgroundFit(fit string) string {
 	}
 }
 
-func buildAppBgInfo(img string, opacity, blur float64, alignment, fit string, override bool) AppBackgroundInfo {
+func buildAppBgInfo(img string, opacity, blur float64, alignment, fit string, override bool, luma BackgroundLuma) AppBackgroundInfo {
 	alignment = normalizeBackgroundAlignment(alignment)
 	fit = normalizeBackgroundFit(fit)
 	if img == "" {
@@ -151,7 +151,19 @@ func buildAppBgInfo(img string, opacity, blur float64, alignment, fit string, ov
 		Alignment:       alignment,
 		Fit:             fit,
 		ThemeBgOverride: override,
+		Luma:            luma,
 	}
+}
+
+// measureInstalledBg samples the copy that was just installed under wwwroot. A
+// failure is not fatal: the frontend falls back to sampling the image on a canvas,
+// so a format we cannot decode costs adaptive text colour, not the background.
+func measureInstalledBg(dir, name string) BackgroundLuma {
+	luma, err := computeBackgroundLuma(filepath.Join(dir, name))
+	if err != nil {
+		return BackgroundLuma{}
+	}
+	return luma
 }
 
 //  ---------- App-wide background ----------
@@ -167,7 +179,7 @@ func (p *PlatformService) GetAppBackground() (AppBackgroundInfo, error) {
 	if err != nil {
 		return AppBackgroundInfo{}, err
 	}
-	return buildAppBgInfo(s.AppBgImage, s.AppBgOpacity, s.AppBgBlur, s.AppBgAlignment, s.AppBgFit, s.ThemeBgOverride), nil
+	return buildAppBgInfo(s.AppBgImage, s.AppBgOpacity, s.AppBgBlur, s.AppBgAlignment, s.AppBgFit, s.ThemeBgOverride, s.AppBgLuma), nil
 }
 
 func (p *PlatformService) SetAppBackground(imagePath string) error {
@@ -201,6 +213,7 @@ func (p *PlatformService) SetAppBackground(imagePath string) error {
 		return err
 	}
 	s.AppBgImage = dstName
+	s.AppBgLuma = measureInstalledBg(dir, dstName)
 	s.ThemeBgOverride = true
 	if s.AppBgOpacity <= 0 {
 		s.AppBgOpacity = defaultBgOpacity
@@ -232,6 +245,7 @@ func (p *PlatformService) ClearAppBackground() error {
 	s.AppBgImage = ""
 	s.AppBgOpacity = 0
 	s.AppBgBlur = 0
+	s.AppBgLuma = BackgroundLuma{}
 	s.ThemeBgOverride = true
 	return saveSettingsAtomic(exeDir, s)
 }
@@ -345,7 +359,7 @@ func (p *PlatformService) GetPlatformBackground(platformKey string) (AppBackgrou
 	if !ok {
 		return AppBackgroundInfo{Opacity: defaultBgOpacity, Blur: defaultBgBlur, Alignment: defaultBgAlignment, Fit: defaultBgFit}, nil
 	}
-	return buildAppBgInfo(ps.Image, ps.Opacity, ps.Blur, ps.Alignment, ps.Fit, false), nil
+	return buildAppBgInfo(ps.Image, ps.Opacity, ps.Blur, ps.Alignment, ps.Fit, false, ps.Luma), nil
 }
 
 func (p *PlatformService) SetPlatformBackground(platformKey, imagePath string) error {
@@ -384,6 +398,7 @@ func (p *PlatformService) SetPlatformBackground(platformKey, imagePath string) e
 	}
 	ps := s.PlatformBgs[platformKey]
 	ps.Image = dstName
+	ps.Luma = measureInstalledBg(dir, dstName)
 	if ps.Opacity <= 0 {
 		ps.Opacity = defaultBgOpacity
 	}

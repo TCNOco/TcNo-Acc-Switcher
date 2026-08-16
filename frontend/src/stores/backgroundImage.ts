@@ -4,6 +4,13 @@ import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/plat
 
 export type { AppBackgroundInfo };
 
+/**
+ * Brightness for a background nobody has measured — either there is no image, or
+ * it was chosen before the app started sampling them. Consumers treat this as
+ * "unknown" and fall back to sampling the loaded image on a canvas.
+ */
+export const UNMEASURED_LUMA = { measured: false } as const;
+
 const DEFAULT_BG: AppBackgroundInfo = {
   hasImage: false,
   imageUrl: "",
@@ -12,6 +19,7 @@ const DEFAULT_BG: AppBackgroundInfo = {
   alignment: "center",
   fit: "cover",
   themeBgOverride: false,
+  luma: UNMEASURED_LUMA,
 };
 
 /** App-wide background image state (updated reactively from backend). */

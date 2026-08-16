@@ -55,7 +55,7 @@
     securityStatus,
     securityStatusLoaded,
   } from "./stores/security";
-  import { appBgInfo, platformBgInfo, userOverriddenAppBg } from "./stores/backgroundImage";
+  import { appBgInfo, platformBgInfo, userOverriddenAppBg, UNMEASURED_LUMA } from "./stores/backgroundImage";
   import type { AppBackgroundInfo } from "./stores/backgroundImage";
   import { currentThemeBgUrl } from "./lib/themes";
   import {
@@ -94,6 +94,9 @@
         alignment: "center",
         fit: "cover",
         themeBgOverride: false,
+        // A theme's bundled background never goes through the backend's measure
+        // step, so its brightness is sampled on the client instead.
+        luma: UNMEASURED_LUMA,
       };
     }
     return null;
@@ -142,6 +145,7 @@
         alignment: "center",
         fit: "cover",
         themeBgOverride: false,
+        luma: UNMEASURED_LUMA,
       });
     } finally {
       platformBgPending -= 1;
@@ -168,6 +172,7 @@
         alignment: "center",
         fit: "cover",
         themeBgOverride: false,
+        luma: UNMEASURED_LUMA,
       });
     }
   }
