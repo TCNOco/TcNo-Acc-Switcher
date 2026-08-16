@@ -110,10 +110,7 @@ func resolveShortcutPath(platformKey, fileName string) (string, error) {
 }
 
 func desktopRoots() []string {
-	var out []string
-	if up := strings.TrimSpace(os.Getenv("USERPROFILE")); up != "" {
-		out = append(out, filepath.Join(up, "Desktop"))
-	}
+	out := winutil.DesktopSearchDirs()
 	if pub := strings.TrimSpace(os.Getenv("PUBLIC")); pub != "" {
 		out = append(out, filepath.Join(pub, "Desktop"))
 	}

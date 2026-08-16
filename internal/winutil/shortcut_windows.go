@@ -21,8 +21,15 @@ func WriteShortcutLnk(shortcutPath, targetExe, arguments, workingDir, descriptio
 	if shortcutPath == "" || targetExe == "" {
 		return fmt.Errorf("shortcut path or target empty")
 	}
-	if err := os.MkdirAll(filepath.Dir(shortcutPath), 0o755); err != nil {
-		return err
+	// Never MkdirAll the parent: after OneDrive Known Folder Move %UserProfile%\Desktop is gone, and
+	// re-creating it lets the COM save succeed into a folder no shell surface ever shows.
+	dir := filepath.Dir(shortcutPath)
+	st, err := os.Stat(dir)
+	if err != nil {
+		return fmt.Errorf("shortcut folder unavailable: %w", err)
+	}
+	if !st.IsDir() {
+		return fmt.Errorf("shortcut folder is not a directory: %s", dir)
 	}
 
 	runtime.LockOSThread()

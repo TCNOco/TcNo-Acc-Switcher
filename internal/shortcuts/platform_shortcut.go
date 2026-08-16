@@ -11,34 +11,30 @@ import (
 	"TcNo-Acc-Switcher/internal/winutil"
 )
 
-// platformSwitcherLnkPath returns the Desktop path for the "open this platform in TcNo" shortcut.
-func platformSwitcherLnkPath(platformKey string) (string, error) {
+// platformSwitcherLnkName returns the .lnk basename for the "open this platform in TcNo" shortcut.
+func platformSwitcherLnkName(platformKey string) (string, error) {
 	platformKey = strings.TrimSpace(platformKey)
 	if platformKey == "" {
 		return "", fmt.Errorf("missing platform")
 	}
-	desktop := filepath.Join(os.Getenv("USERPROFILE"), "Desktop")
-	if desktop == "" || strings.TrimSpace(os.Getenv("USERPROFILE")) == "" {
-		return "", fmt.Errorf("desktop path unknown")
-	}
-	base := "TcNo - " + sanitizeShortcutFileName(platformKey) + " Switcher"
-	return filepath.Join(desktop, base+".lnk"), nil
+	return "TcNo - " + sanitizeShortcutFileName(platformKey) + " Switcher.lnk", nil
 }
 
-// PlatformShortcutExists reports whether the platform switcher .lnk exists on the user's Desktop.
+// PlatformShortcutExists reports whether the platform switcher .lnk exists on any of the user's
+// Desktop folders — a shortcut written before or after a Known Folder Move still counts.
 func PlatformShortcutExists(platformKey string) (bool, error) {
-	p, err := platformSwitcherLnkPath(platformKey)
+	name, err := platformSwitcherLnkName(platformKey)
 	if err != nil {
 		return false, err
 	}
-	_, err = os.Stat(p)
-	if err != nil {
-		if os.IsNotExist(err) {
-			return false, nil
+	for _, dir := range winutil.DesktopSearchDirs() {
+		if _, err := os.Stat(filepath.Join(dir, name)); err == nil {
+			return true, nil
+		} else if !os.IsNotExist(err) {
+			return false, err
 		}
-		return false, err
 	}
-	return true, nil
+	return false, nil
 }
 
 // CreatePlatformShortcut writes a Desktop .lnk targeting this exe; arguments open the platform page in the app.
@@ -54,10 +50,15 @@ func CreatePlatformShortcut(platformKey string) (string, error) {
 	}
 	self = filepath.Clean(self)
 
-	outPath, err := platformSwitcherLnkPath(platformKey)
+	name, err := platformSwitcherLnkName(platformKey)
 	if err != nil {
 		return "", err
 	}
+	desktop, err := winutil.DesktopWriteDir()
+	if err != nil {
+		return "", err
+	}
+	outPath := filepath.Join(desktop, name)
 
 	icon := ""
 	if root, err := paths.DataRoot(); err == nil {
@@ -81,14 +82,16 @@ func CreatePlatformShortcut(platformKey string) (string, error) {
 	return outPath, nil
 }
 
-// DeletePlatformShortcut removes the Desktop .lnk for this platform if it exists.
+// DeletePlatformShortcut removes the platform .lnk from every Desktop folder it may have landed in.
 func DeletePlatformShortcut(platformKey string) error {
-	p, err := platformSwitcherLnkPath(platformKey)
+	name, err := platformSwitcherLnkName(platformKey)
 	if err != nil {
 		return err
 	}
-	if err := os.Remove(p); err != nil && !os.IsNotExist(err) {
-		return err
+	for _, dir := range winutil.DesktopSearchDirs() {
+		if err := os.Remove(filepath.Join(dir, name)); err != nil && !os.IsNotExist(err) {
+			return err
+		}
 	}
 	return nil
 }

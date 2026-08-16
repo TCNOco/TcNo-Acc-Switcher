@@ -26,9 +26,9 @@ func CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix, stat
 	}
 	self = filepath.Clean(self)
 
-	desktop := filepath.Join(os.Getenv("USERPROFILE"), "Desktop")
-	if desktop == "" {
-		return "", fmt.Errorf("desktop path unknown")
+	desktop, err := winutil.DesktopWriteDir()
+	if err != nil {
+		return "", err
 	}
 
 	title := accountShortcutDesktopBaseName(platformKey, uniqueID, displayName, stateSuffix, stateTitle, accountLogin)

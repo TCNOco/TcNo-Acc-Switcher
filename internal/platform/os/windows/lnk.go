@@ -33,7 +33,6 @@ func OrderedLnkPathsForTitle(title string) []string {
 
 	smApp := filepath.Join(os.Getenv("APPDATA"), `Microsoft\Windows\Start Menu\Programs`)
 	smCommon := filepath.Join(os.Getenv("ProgramData"), `Microsoft\Windows\Start Menu\Programs`)
-	desktop := filepath.Join(os.Getenv("USERPROFILE"), "Desktop")
 
 	walk := func(root string) {
 		_ = filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
@@ -49,7 +48,11 @@ func OrderedLnkPathsForTitle(title string) []string {
 	walk(smApp)
 	walk(smCommon)
 
-	if ents, err := os.ReadDir(desktop); err == nil {
+	for _, desktop := range winutil.DesktopSearchDirs() {
+		ents, err := os.ReadDir(desktop)
+		if err != nil {
+			continue
+		}
 		for _, e := range ents {
 			if e.IsDir() {
 				continue
