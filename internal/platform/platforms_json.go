@@ -8,6 +8,8 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
+
+	"TcNo-Acc-Switcher/internal/updatecheck"
 )
 
 var (
@@ -33,8 +35,11 @@ func invalidatePlatformsJSONCache() {
 // a top-level "Platforms" object.
 //
 // When the default base Platforms.json is missing under the user data folder,
-// it is created from the embedded catalog (first run). An existing file is left
-// unchanged so a copy applied via the UI persists until you use Restore default.
+// it is created from the embedded catalog (first run). An existing file is
+// replaced only when the embedded catalog carries a newer Version, matching the
+// rule the background update already uses; otherwise it is left alone. Keep
+// local edits in Platforms.custom.json, which merges over the base and is never
+// overwritten.
 //
 // The returned slice is cached internally and shared across callers; it must be
 // treated as read-only. Callers that need to mutate the bytes should make a copy.
@@ -105,12 +110,36 @@ func seedEmbeddedPlatforms(exeDir string) error {
 		return err
 	}
 	dest := filepath.Join(ud, "Platforms.json")
-	if st, err := os.Stat(dest); err == nil && !st.IsDir() {
-		return nil
-	} else if err != nil && !errors.Is(err, os.ErrNotExist) {
+	st, err := os.Stat(dest)
+	switch {
+	case err == nil && !st.IsDir():
+		if !embeddedPlatformsSupersede(dest) {
+			return nil
+		}
+	case err != nil && !errors.Is(err, os.ErrNotExist):
 		return err
 	}
 	return atomicWriteBytes(dest, bytes.Clone(embeddedPlatformsJSON), 0o644)
+}
+
+// embeddedPlatformsSupersede reports whether the embedded catalog is newer than
+// the copy already at path.
+//
+// A local file that is unreadable or carries no Version counts as older on
+// purpose: the pre-v4 C# releases wrote their catalog to this same location
+// without a Version field, so an in-place upgrade would otherwise pin the user
+// to a pre-rewrite catalog forever and no descriptor fix would ever reach them.
+func embeddedPlatformsSupersede(path string) bool {
+	embeddedVer, err := updatecheck.ParsePlatformsJSONVersion(embeddedPlatformsJSON)
+	if err != nil {
+		return false
+	}
+	local, err := os.ReadFile(path)
+	if err != nil {
+		return true
+	}
+	localVer, _ := updatecheck.ParsePlatformsJSONVersion(local)
+	return updatecheck.IsVersionNewer(embeddedVer, localVer)
 }
 
 func mergePlatformsJSON(base, overlay []byte) ([]byte, error) {

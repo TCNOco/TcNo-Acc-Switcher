@@ -64,7 +64,10 @@ func TestLoadPlatformsJSON_mergesCustom(t *testing.T) {
 	}
 }
 
-func TestLoadPlatformsJSON_restoresEmbeddedSteamToLegacyCatalog(t *testing.T) {
+// loadCatalogWithEmbedded seeds a user-data catalog and settings file, swaps the
+// embedded catalog, and returns the platform names LoadPlatformsJSON resolves.
+func loadCatalogWithEmbedded(t *testing.T, localCatalog, embedded string) []string {
+	t.Helper()
 	setTestAppData(t)
 	dir := t.TempDir()
 	userDataDir := PortableUserDataDir(dir)
@@ -74,12 +77,12 @@ func TestLoadPlatformsJSON_restoresEmbeddedSteamToLegacyCatalog(t *testing.T) {
 	if err := atomicWriteBytes(filepath.Join(userDataDir, settingsFileName), []byte(`{"version":1,"language":"en-US"}`), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	if err := atomicWriteBytes(filepath.Join(userDataDir, "Platforms.json"), []byte(`{"Version":"2025-11-09_00","Platforms":{"Epic Games":{"Identifiers":["e"]}}}`), 0o644); err != nil {
+	if err := atomicWriteBytes(filepath.Join(userDataDir, "Platforms.json"), []byte(localCatalog), 0o644); err != nil {
 		t.Fatal(err)
 	}
 	previous := append([]byte(nil), embeddedPlatformsJSON...)
 	t.Cleanup(func() { SetEmbeddedPlatformsJSON(previous) })
-	SetEmbeddedPlatformsJSON([]byte(`{"Version":"4.0.2","Platforms":{"Steam":{"Identifiers":["s","steam"]}}}`))
+	SetEmbeddedPlatformsJSON([]byte(embedded))
 
 	ResetPathSingletonsForTest(dir)
 	raw, err := LoadPlatformsJSON(dir)
@@ -90,7 +93,44 @@ func TestLoadPlatformsJSON_restoresEmbeddedSteamToLegacyCatalog(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !slices.Contains(names, "Steam") || !slices.Contains(names, "Epic Games") {
-		t.Fatalf("legacy catalog was not augmented correctly: %v", names)
+	return names
+}
+
+// The C# releases wrote a date-tagged catalog to the same path v4 uses. Without
+// this, an in-place upgrade keeps a pre-rewrite catalog forever and no
+// descriptor fix ever reaches the user.
+func TestLoadPlatformsJSON_supersedesLegacyDateTaggedCatalog(t *testing.T) {
+	names := loadCatalogWithEmbedded(t,
+		`{"Version":"2025-11-09_00","Platforms":{"Epic Games":{"Identifiers":["e"]}}}`,
+		`{"Version":"4.0.4","Platforms":{"Steam":{"Identifiers":["s","steam"]}}}`)
+
+	if slices.Contains(names, "Epic Games") {
+		t.Errorf("legacy catalog survived instead of being superseded: %v", names)
+	}
+	if !slices.Contains(names, "Steam") {
+		t.Errorf("embedded catalog was not seeded: %v", names)
+	}
+}
+
+// A catalog with no Version at all is also pre-rewrite and must be replaced.
+func TestLoadPlatformsJSON_supersedesVersionlessCatalog(t *testing.T) {
+	names := loadCatalogWithEmbedded(t,
+		`{"Platforms":{"Epic Games":{"Identifiers":["e"]}}}`,
+		`{"Version":"4.0.4","Platforms":{"Steam":{"Identifiers":["s","steam"]}}}`)
+
+	if slices.Contains(names, "Epic Games") {
+		t.Errorf("version-less catalog survived instead of being superseded: %v", names)
+	}
+}
+
+// A catalog that is already current must not be clobbered, or a user who
+// applied their own via the UI loses it on every launch.
+func TestLoadPlatformsJSON_keepsCurrentCatalog(t *testing.T) {
+	names := loadCatalogWithEmbedded(t,
+		`{"Version":"4.0.4","Platforms":{"Steam":{"Identifiers":["s"]},"Epic Games":{"Identifiers":["e"]}}}`,
+		`{"Version":"4.0.4","Platforms":{"Steam":{"Identifiers":["s","steam"]}}}`)
+
+	if !slices.Contains(names, "Epic Games") {
+		t.Errorf("a current catalog was overwritten: %v", names)
 	}
 }
