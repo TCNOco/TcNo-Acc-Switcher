@@ -1,7 +1,7 @@
-import type { ComponentType, SvelteComponent } from "svelte";
+import type { Component } from "svelte";
 import type { Route } from "../stores/routeCodec";
 
-type PageModule = { default: ComponentType<SvelteComponent> };
+type PageModule = { default: Component<any> };
 
 function cacheKey(route: Route): string {
   if ("platformName" in route && route.platformName) {

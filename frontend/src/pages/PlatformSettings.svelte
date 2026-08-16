@@ -155,11 +155,11 @@
     hasDesktopShortcut = !was;
     try {
       if (hasDesktopShortcut) {
-        await Shortcuts.CreatePlatformShortcut(name);
+        const res = await Shortcuts.CreatePlatformShortcut(name);
         pushToast({
           type: "success",
           title: "",
-          message: $t("Toast_ShortcutCreated"),
+          message: $t(res.alreadyExisted ? "Toast_ShortcutAlreadyExists" : "Toast_ShortcutCreated"),
           duration: 5000,
         });
       } else {

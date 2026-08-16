@@ -1,4 +1,4 @@
-import type { ComponentType, SvelteComponent } from "svelte";
+import type { Component } from "svelte";
 import { get, writable } from "svelte/store";
 import type {
   SteamGuardAccountRef,
@@ -11,7 +11,7 @@ type ModalBase = { id: number };
 
 export type ModalBodyOptions = {
   body?: string;
-  bodyComponent?: ComponentType<SvelteComponent>;
+  bodyComponent?: Component<any>;
   bodyProps?: Record<string, unknown>;
 };
 

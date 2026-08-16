@@ -1,4 +1,4 @@
-import type { ComponentType, SvelteComponent } from "svelte";
+import type { Component } from "svelte";
 import { openAlertNoButton } from "../stores/modal";
 
 /**
@@ -17,7 +17,7 @@ import { openAlertNoButton } from "../stores/modal";
  */
 export function modalResult<T>(
   title: string,
-  bodyComponent: ComponentType<SvelteComponent>,
+  bodyComponent: Component<any>,
   bodyProps: Record<string, unknown>,
 ): Promise<T | null> {
   let settle: (value: T | null) => void = () => {};

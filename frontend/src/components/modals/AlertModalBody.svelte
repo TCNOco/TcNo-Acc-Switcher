@@ -1,12 +1,12 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import type { ComponentType, SvelteComponent } from "svelte";
+  import type { Component } from "svelte";
   import ModalBodyShell from "./ModalBodyShell.svelte";
   import { t } from "../../stores/i18n";
 
   export let dismissLabel: string | undefined = undefined;
   export let html: string | undefined = undefined;
-  export let component: ComponentType<SvelteComponent> | undefined = undefined;
+  export let component: Component<any> | undefined = undefined;
   export let componentProps: Record<string, unknown> | undefined = undefined;
 
   const dispatch = createEventDispatcher<{ resolve: void }>();

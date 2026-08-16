@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { ComponentType, SvelteComponent } from "svelte";
+  import type { Component } from "svelte";
   import { sanitizeHtml } from "../../lib/sanitizeHtml";
 
   export let html: string | undefined = undefined;
-  export let component: ComponentType<SvelteComponent> | undefined = undefined;
+  export let component: Component<any> | undefined = undefined;
   export let componentProps: Record<string, unknown> | undefined = undefined;
 </script>
 

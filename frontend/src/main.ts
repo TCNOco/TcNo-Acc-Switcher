@@ -1,3 +1,4 @@
+import { mount } from 'svelte'
 import App from './App.svelte'
 import './styles/context_menu.scss'
 import './styles/normalize.scss'
@@ -22,7 +23,7 @@ const app = void (async () => {
   await initTheme()
   await resolveInitialRoute()
   installHashSync()
-  new App({ target: document.getElementById('app')! })
+  mount(App, { target: document.getElementById('app')! })
 })()
 
 export default app

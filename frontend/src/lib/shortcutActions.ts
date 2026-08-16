@@ -10,6 +10,7 @@ import {
 import { LaunchPlatformAs } from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
 import { reportLaunchFailure } from "./adminFlow";
 import { formatToastWithError } from "./formatWailsError";
+import { pushShortcutCreatedToast } from "./shortcutToast";
 
 function shortcutProgramLabel(fileName: string, displayName?: string): string {
   const label = String(displayName ?? "").trim();
@@ -177,18 +178,14 @@ export function buildShortcutContextMenu(opts: {
         action: async () => {
           if (!hasSel) return;
           try {
-            const p = await Shortcuts.CreateGameAccountShortcut(
+            const res = await Shortcuts.CreateGameAccountShortcut(
               opts.platformName,
               sel.uniqueId,
               sel.displayName,
               sel.accountLogin,
               opts.fileName,
             );
-            pushToast({
-              type: "success",
-              message: `${tr("Toast_ShortcutCreated")}\n${p}`,
-              duration: 8000,
-            });
+            pushShortcutCreatedToast(res, tr, 8000);
           } catch (e: unknown) {
             pushToast({
               type: "error",

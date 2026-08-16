@@ -4,6 +4,7 @@ import type { SteamAccountRow, SteamGuardMenuRequest } from "./types";
 import type { SteamBrowserSite } from "./steamBrowserSites";
 import { formatWailsError, formatToastWithError } from "../formatWailsError";
 import { reportLaunchFailure } from "../adminFlow";
+import { pushShortcutCreatedToast } from "../shortcutToast";
 import type { SteamTradeLink } from "../steamGuardModal";
 import { copySteamGuardCodeNow, fetchTradeLinkNow, refreshSteamGuardVaultUnlocked } from "./steamGuardQuickCopy";
 import * as SteamService from "../../../bindings/TcNo-Acc-Switcher/internal/steam/steamservice.js";
@@ -93,8 +94,8 @@ export function createSteamMenuCommands(acc: SteamAccountRow, deps: SteamMenuDep
 
     async createShortcut(personaState: number, label: string): Promise<void> {
       try {
-        const path = await Shortcuts.CreateAccountShortcut("Steam", rid, accountDisplay, String(personaState), label, loginName);
-        pushToast({ type: "success", message: `${tr("Toast_ShortcutCreated")}\n${path}`, duration: 6000 });
+        const res = await Shortcuts.CreateAccountShortcut("Steam", rid, accountDisplay, String(personaState), label, loginName);
+        pushShortcutCreatedToast(res, tr);
       } catch (e) {
         pushToast({ type: "error", message: formatToastWithError(tr("Toast_SwitchFailed"), e), duration: 8000 });
       }

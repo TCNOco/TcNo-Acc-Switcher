@@ -310,11 +310,11 @@
         action: () => {
           void (async () => {
             try {
-              await Shortcuts.CreatePlatformShortcut(platformName);
+              const res = await Shortcuts.CreatePlatformShortcut(platformName);
               pushToast({
                 type: "success",
                 title: "",
-                message: tr("Toast_ShortcutCreated"),
+                message: tr(res.alreadyExisted ? "Toast_ShortcutAlreadyExists" : "Toast_ShortcutCreated"),
                 duration: 5000,
               });
             } catch (e) {

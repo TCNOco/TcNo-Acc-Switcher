@@ -5,6 +5,7 @@ import { buildTagsSectionMenuItem } from "../accountTagsContext";
 import { openConfirm, openPrompt } from "../../stores/modal";
 import { pushToast } from "../../stores/toast";
 import { formatToastWithError } from "../formatWailsError";
+import { pushShortcutCreatedToast } from "../shortcutToast";
 import * as Shortcuts from "wails-shortcuts-service";
 
 export interface ContextMenuContext {
@@ -66,10 +67,10 @@ export function buildSharedItems(
       label: tr("Context_CreateShortcut"),
       action: async () => {
         try {
-          const p = await Shortcuts.CreateAccountShortcut(
+          const res = await Shortcuts.CreateAccountShortcut(
             name, rowId, adapter.name(acc) ?? rowId, "", "", adapter.accountLogin(acc) ?? "",
           );
-          pushToast({ type: "success", message: `${tr("Toast_ShortcutCreated")}\n${p}`, duration: 6000 });
+          pushShortcutCreatedToast(res, tr);
         } catch (e) {
           pushToast({ type: "error", message: formatToastWithError(tr("Toast_SwitchFailed"), e), duration: 8000 });
         }

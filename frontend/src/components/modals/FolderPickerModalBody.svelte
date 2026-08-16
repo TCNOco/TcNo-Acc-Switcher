@@ -1,7 +1,7 @@
 <script lang="ts">
   import { tick, onMount } from "svelte";
   import { createEventDispatcher } from "svelte";
-  import type { ComponentType, SvelteComponent } from "svelte";
+  import type { Component } from "svelte";
   import ModalBodyShell from "./ModalBodyShell.svelte";
   import PathPickerTree from "./PathPickerTree.svelte";
   import { t } from "../../stores/i18n";
@@ -11,7 +11,7 @@
   import { tooltip } from "../../lib/actions/tooltip";
 
   export let html: string | undefined = undefined;
-  export let component: ComponentType<SvelteComponent> | undefined = undefined;
+  export let component: Component<any> | undefined = undefined;
   export let componentProps: Record<string, unknown> | undefined = undefined;
   export let initialPath = "";
   export let dirsOnly = true;
