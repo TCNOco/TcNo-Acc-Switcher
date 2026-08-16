@@ -116,6 +116,41 @@ function filterGroup(group: HTMLElement, tokens: string[]): boolean {
   return visible > 0;
 }
 
+const isHeading = (el: Element): boolean => /^H[1-6]$/.test(el.tagName);
+const isRule = (el: Element): boolean => el.tagName === "HR";
+
+/**
+ * Hides the page's own headings and dividers once the groups they introduce are
+ * gone. These sit beside the groups rather than inside them — "Steam settings"
+ * above a rule, "App settings" below it — so `filterGroup` never reaches them,
+ * and a search matching one app-wide toggle used to leave both headings and the
+ * rule stranded above it.
+ */
+function hidePageChrome(root: HTMLElement): void {
+  const children = [...root.children] as HTMLElement[];
+
+  // A heading owns the run of siblings up to the next heading or rule.
+  for (const [i, el] of children.entries()) {
+    if (!isHeading(el)) continue;
+    let hasVisible = false;
+    for (const next of children.slice(i + 1)) {
+      if (isHeading(next) || isRule(next)) break;
+      if (!next.hasAttribute(HIDDEN_ATTR)) {
+        hasVisible = true;
+        break;
+      }
+    }
+    setHidden(el, !hasVisible);
+  }
+
+  // After the headings, so one that just went away cannot keep a rule alive.
+  for (const [i, el] of children.entries()) {
+    if (!isRule(el)) continue;
+    const visible = (c: HTMLElement) => !c.hasAttribute(HIDDEN_ATTR);
+    setHidden(el, !(children.slice(0, i).some(visible) && children.slice(i + 1).some(visible)));
+  }
+}
+
 /** @returns number of sections still showing, or -1 when not filtering. */
 export function applySettingsFilter(root: HTMLElement, query: string): number {
   clearFilter(root);
@@ -126,6 +161,7 @@ export function applySettingsFilter(root: HTMLElement, query: string): number {
   for (const group of root.querySelectorAll<HTMLElement>(".settings-group")) {
     if (filterGroup(group, tokens)) visibleGroups += 1;
   }
+  hidePageChrome(root);
   return visibleGroups;
 }
 

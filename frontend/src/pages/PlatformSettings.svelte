@@ -502,7 +502,9 @@
 
       <hr class="settings-divider" />
 
-      <h2 class="SettingsHeader">{$t("Settings_Header_AppWide")}</h2>
+      <!-- h1, like the platform heading above the rule: both name a page-level
+           section, and h2 is what the groups inside them use. -->
+      <h1 class="SettingsHeader">{$t("Settings_Header_AppWide")}</h1>
       <GeneralSettingsBlock />
     {/if}
   </div>
