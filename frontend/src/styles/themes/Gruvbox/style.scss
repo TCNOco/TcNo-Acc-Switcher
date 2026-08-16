@@ -41,6 +41,10 @@ $meta: (
   --modal-header-fg: #f9f5d7;
   --modal-body-fg: #f2e5bc;
   --notification-message-fg: #f2e5bc;
+
+  /* Grid status text. This theme's --green/--orange/--red are tuned as
+     accents; as small text on the grid surface they fall under AA. */
+  --role-status-bad: #fc6d5d;
 }
 
 .acc-img-overlay__title,

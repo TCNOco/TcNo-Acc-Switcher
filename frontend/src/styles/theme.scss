@@ -202,6 +202,31 @@
     --role-focus-ring: var(--accent, #80ffea);
     --role-focus-ring-offset: var(--mainContentBackground, #11181d);
 
+    /* Data grid. Separate from --role-field-* so a theme can frame a grid
+       without disturbing inputs, and from --role-tile-border so grid lines are
+       not drawn in the accent colour. Lines derive from the muted text colour,
+       which every theme tunes against its own surface. */
+    --role-table-bg: var(--role-panel-bg);
+    /* Tinted off the surface rather than equal to it: --role-panel-bg is the
+       page background in most themes, so an untinted header would not read as
+       a header at all. */
+    --role-table-head-bg: color-mix(in srgb, var(--role-text-muted) 9%, var(--role-panel-bg));
+    --role-table-border: color-mix(in srgb, var(--role-text-muted) 45%, transparent);
+    --role-table-line: color-mix(in srgb, var(--role-text-muted) 22%, transparent);
+    --role-table-row-hover-bg: color-mix(in srgb, var(--role-text-muted) 10%, transparent);
+    --role-table-row-alt-bg: transparent;
+    --role-table-radius: 4px;
+    --role-table-shadow: none;
+    --role-table-head-shadow: none;
+
+    /* Status text inside a grid. --role-success and friends are tuned as
+       accents and borders; several themes' greens are too light to read as
+       small text on their own surface, so a theme may override these without
+       shifting its accents. */
+    --role-status-good: var(--green, #8aff80);
+    --role-status-warn: var(--orange, #ffca80);
+    --role-status-bad: var(--red, #ff9580);
+
     /* Ace editor (Dracula-style; ties to main palette where close) */
     --ace-editor-bg: #282a36;
     --ace-gutter-fg: rgb(144, 145, 148);

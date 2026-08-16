@@ -202,6 +202,11 @@
     $notification-message-fg: #263844,
     $notification-border-radius: 6px
   );
+
+  /* Grid status text. This theme's --green/--orange/--red are tuned as
+     accents; as small text on the grid surface they fall under AA. */
+  --role-status-good: #3f7114;
+  --role-status-warn: #905700;
 }
 
 html,
@@ -989,3 +994,22 @@ button.confirmations-trade__item {
 
 @include overlay.overlay-component-overrides;
 @include windows-icons.themed-button-icons(vista);
+
+/* Server picker grid: Vista's glass list - white rows, cool header, soft edge. */
+:root {
+  --role-table-bg: #ffffff;
+  --role-table-head-bg: linear-gradient(180deg, #f4f9fc 0%, #e4eef4 100%);
+  --role-table-border: #9db8c8;
+  --role-table-line: rgba(124, 157, 177, 0.28);
+  --role-table-row-hover-bg: rgba(74, 155, 200, 0.12);
+  --role-table-radius: 3px;
+  --role-table-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.serverpicker-row--head.serverpicker-row--head {
+  border-bottom: 1px solid #bcd4e1;
+}
+
+.serverpicker-sort.serverpicker-sort:hover {
+  color: #1d5f88;
+}

@@ -122,6 +122,10 @@
         $overlay-thumb-bg: rgb(15, 16, 20),
         $overlay-thumb-border: #888888
     );
+
+  /* Grid status text. This theme's --green/--orange/--red are tuned as
+     accents; as small text on the grid surface they fall under AA. */
+  --role-status-bad: #ec7a7a;
 }
 
 // Main UI

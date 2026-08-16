@@ -210,6 +210,10 @@
         $overlay-thumb-border: var(--button-border),
         $overlay-thumb-muted-fg: var(--blackTernary)
     );
+
+  /* Grid status text. This theme's --green/--orange/--red are tuned as
+     accents; as small text on the grid surface they fall under AA. */
+  --role-status-warn: #a24e0f;
 }
 
 /* Main content — soft pink field */

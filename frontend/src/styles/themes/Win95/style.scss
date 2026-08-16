@@ -178,6 +178,11 @@ $navy: #000080;
     $notification-message-fg: #000000,
     $notification-border-radius: 0
   );
+
+  /* Grid status text. This theme's --green/--orange/--red are tuned as
+     accents; as small text on the grid surface they fall under AA. */
+  --role-status-good: #005200;
+  --role-status-warn: #6c3600;
 }
 
 html, body, #app, .container, button, .button, input, select, textarea {
@@ -650,3 +655,36 @@ button.confirmations-trade__item {
 
 @include overlay.overlay-component-overrides;
 @include windows-icons.themed-button-icons(win95);
+
+/* Server picker grid: an Explorer details pane. Sunken white list, raised
+   column headers, square corners, no shadows. */
+:root {
+  --role-table-bg: #{$light};
+  --role-table-head-bg: #{$face};
+  --role-table-border: #{$shadow};
+  --role-table-line: #{$mid};
+  --role-table-row-hover-bg: rgba(0, 0, 128, 0.1);
+  --role-table-radius: 0;
+}
+
+.serverpicker-table.serverpicker-table {
+  border: 2px solid !important;
+  border-color: $shadow $light $light $shadow !important;
+  box-shadow: inset 1px 1px 0 $dark;
+}
+
+.serverpicker-row--head.serverpicker-row--head {
+  border-bottom: 1px solid $shadow;
+}
+
+.serverpicker-sort.serverpicker-sort {
+  border: 1px solid;
+  border-color: $light $shadow $shadow $light;
+  background: $face;
+
+  &:hover { background: $face; }
+  &:active {
+    border-color: $shadow $light $light $shadow;
+    background: $face;
+  }
+}

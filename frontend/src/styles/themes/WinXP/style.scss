@@ -191,6 +191,11 @@ $edge: #7f9db9;
     $notification-message-fg: #151515,
     $notification-border-radius: 5px
   );
+
+  /* Grid status text. This theme's --green/--orange/--red are tuned as
+     accents; as small text on the grid surface they fall under AA. */
+  --role-status-good: #32721a;
+  --role-status-warn: #9d5100;
 }
 
 html, body, #app, .container, button, .button, input, select, textarea {
@@ -611,3 +616,25 @@ button.confirmations-trade__item {
 
 @include overlay.overlay-component-overrides;
 @include windows-icons.themed-button-icons(xp);
+
+/* Server picker grid: an XP list view - white rows, cream header band,
+   square corners. */
+:root {
+  --role-table-bg: #ffffff;
+  --role-table-head-bg: #{$cream};
+  --role-table-border: #{$edge};
+  --role-table-line: rgba(127, 157, 185, 0.35);
+  --role-table-row-hover-bg: rgba(36, 94, 220, 0.12);
+  --role-table-radius: 0;
+}
+
+.serverpicker-row--head.serverpicker-row--head {
+  border-bottom: 1px solid $edge;
+}
+
+.serverpicker-sort.serverpicker-sort {
+  border-right: 1px solid rgba(127, 157, 185, 0.55);
+  background: linear-gradient(180deg, #ffffff 0%, #f3f1e6 55%, #e6e2d2 100%);
+
+  &:hover { color: $blue-dark; }
+}

@@ -148,6 +148,11 @@ $nordAuora4: #B48EAD;
     $overlay-thumb-border: #{$nordFrost2},
     $notification-border-radius: 0.25rem
   );
+
+  /* Grid status text. This theme's --green/--orange/--red are tuned as
+     accents; as small text on the grid surface they fall under AA. */
+  --role-status-warn: #d89a87;
+  --role-status-bad: #d5979d;
 }
 
 app {

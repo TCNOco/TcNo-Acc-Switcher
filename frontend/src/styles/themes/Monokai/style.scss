@@ -126,6 +126,10 @@
     $overlay-thumb-border: #49483e,
     $notification-border-radius: 0.5rem
   );
+
+  /* Grid status text. This theme's --green/--orange/--red are tuned as
+     accents; as small text on the grid surface they fall under AA. */
+  --role-status-bad: #fa5a94;
 }
 
 * {

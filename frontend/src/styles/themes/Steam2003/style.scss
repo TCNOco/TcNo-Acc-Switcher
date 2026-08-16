@@ -184,6 +184,12 @@ $red: #b96552;
     $notification-message-fg: #{$text},
     $notification-border-radius: 0
   );
+
+  /* Grid status text. This theme's --green/--orange/--red are tuned as
+     accents; as small text on the grid surface they fall under AA. */
+  --role-status-good: #b9c598;
+  --role-status-warn: #dfb89c;
+  --role-status-bad: #dfb8af;
 }
 
 html, body, #app, .container, button, .button, input, select, textarea {
@@ -725,3 +731,24 @@ button.confirmations-trade__item {
 
 @include overlay.overlay-component-overrides;
 @include windows-icons.themed-button-icons(steam);
+
+/* Server picker grid: the old Steam friends list - recessed dark panel with a
+   raised header strip and hard corners. */
+:root {
+  --role-table-bg: #{$ink};
+  --role-table-head-bg: #{$raised};
+  --role-table-border: #{$edge};
+  --role-table-line: rgba(113, 128, 97, 0.45);
+  --role-table-row-hover-bg: rgba(170, 184, 121, 0.12);
+  --role-table-radius: 0;
+  --role-table-shadow: inset 1px 1px 0 #{$deep};
+}
+
+.serverpicker-row--head.serverpicker-row--head {
+  border-bottom: 1px solid $edge-light;
+  box-shadow: inset 0 1px 0 rgba(224, 232, 198, 0.14);
+}
+
+.serverpicker-sort.serverpicker-sort:hover {
+  background: rgba(224, 232, 198, 0.1);
+}

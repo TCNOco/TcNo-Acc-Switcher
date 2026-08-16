@@ -43,4 +43,8 @@ $meta: (
   --form-checkbox-border: #6d5f4d;
   --input-number-border: #6d5f4d;
   --preview-control-border: #6d5f4d;
+
+  /* Grid status text. This theme's --green/--orange/--red are tuned as
+     accents; as small text on the grid surface they fall under AA. */
+  --role-status-good: #6a660c;
 }

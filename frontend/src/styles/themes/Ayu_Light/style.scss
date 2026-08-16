@@ -49,4 +49,10 @@ $meta: (
   --notification-success-border: #5f7f00;
   --notification-warning-border: #9a551a;
   --notification-info-border: #0065a8;
+
+  /* Grid status text. This theme's --green/--orange/--red are tuned as
+     accents; as small text on the grid surface they fall under AA. */
+  --role-status-good: #567300;
+  --role-status-warn: #9b5726;
+  --role-status-bad: #b84040;
 }

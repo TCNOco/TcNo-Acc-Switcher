@@ -34,7 +34,9 @@
   padding: 0.6rem 0.75rem;
   border: 1px solid var(--role-warning);
   border-radius: 4px;
-  background: var(--role-panel-bg, transparent);
+  /* Not --role-panel-bg: in most themes that is the page background, so the
+     banner would be a floating border with nothing behind it. */
+  background: color-mix(in srgb, var(--role-warning) 12%, var(--role-panel-bg));
 
   span {
     flex: 1 1 16rem;
@@ -114,8 +116,12 @@
   flex: 1 1 auto;
   flex-direction: column;
   min-height: 0;
-  border: 1px solid var(--form-checkbox-border);
-  border-radius: 4px;
+  /* An explicit surface, not the page: a theme background image behind the
+     rows makes the numbers unreadable. */
+  border: 1px solid var(--role-table-border);
+  border-radius: var(--role-table-radius);
+  background: var(--role-table-bg);
+  box-shadow: var(--role-table-shadow);
   overflow: auto;
 }
 
@@ -127,10 +133,18 @@
      The last three are fixed and sized to their headers, so "Packet loss"
      cannot wrap; Server takes the slack because it holds the longest text. */
   grid-template-columns: 4.5rem minmax(10rem, 1fr) minmax(6rem, 9rem) 5.5rem 7.5rem;
-  border-bottom: 1px solid var(--form-checkbox-border);
+  border-bottom: 1px solid var(--role-table-line);
 
   &:last-child {
     border-bottom: none;
+  }
+
+  &:nth-of-type(even):not(.serverpicker-row--head) {
+    background: var(--role-table-row-alt-bg);
+  }
+
+  &:not(.serverpicker-row--head):hover {
+    background: var(--role-table-row-hover-bg);
   }
 
   &.is-blocked .serverpicker-name {
@@ -147,7 +161,9 @@
   top: 0;
   z-index: 1;
   padding: 0 0.6rem;
-  background: var(--mainContentBackground, var(--role-panel-bg, inherit));
+  border-bottom-color: var(--role-table-border);
+  background: var(--role-table-head-bg);
+  box-shadow: var(--role-table-head-shadow);
   font-weight: 700;
 
   > span {
@@ -174,9 +190,12 @@
   white-space: nowrap;
   cursor: pointer;
 
-  &:hover,
-  &.is-active {
-    color: var(--accent);
+  /* The active column is marked by the triangle and aria-sort, not by colour:
+     recolouring the label to --accent drops it under AA on the themes whose
+     accent is a light tint. Hover uses a background instead, for the same
+     reason. */
+  &:hover {
+    background: var(--role-table-row-hover-bg);
   }
 }
 
@@ -222,7 +241,7 @@
   flex: 0 0 auto;
   width: 22px;
   height: 16px;
-  border: 1px solid var(--form-checkbox-border);
+  border: 1px solid var(--role-table-border);
   object-fit: cover;
 }
 
@@ -263,15 +282,15 @@
 }
 
 .q-good {
-  color: var(--role-success);
+  color: var(--role-status-good);
 }
 
 .q-fair {
-  color: var(--role-warning);
+  color: var(--role-status-warn);
 }
 
 .q-poor {
-  color: var(--role-error);
+  color: var(--role-status-bad);
 }
 
 .q-unknown {
