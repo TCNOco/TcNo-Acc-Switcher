@@ -16,11 +16,18 @@ import (
 const gpsReadWrite = 0x2
 
 var (
-	modPropsys                            = windows.NewLazySystemDLL("propsys.dll")
 	modShell32                            = windows.NewLazySystemDLL("shell32.dll")
-	procInitPropVariantFromString         = modPropsys.NewProc("InitPropVariantFromString")
-	procPropVariantClear                  = modPropsys.NewProc("PropVariantClear")
+	modShlwapi                            = windows.NewLazySystemDLL("shlwapi.dll")
+	procSHStrDupW                         = modShlwapi.NewProc("SHStrDupW")
 	procSHGetPropertyStoreFromParsingName = modShell32.NewProc("SHGetPropertyStoreFromParsingName")
+)
+
+// VT_LPWSTR, and the offset of the PROPVARIANT union past vt plus its three
+// reserved WORDs. The union is 8 bytes in on both 386 and amd64; only its own
+// width differs, which is what propVariantSize carries.
+const (
+	vtLPWSTR               = 31
+	propVariantValueOffset = 8
 )
 
 type propertyKey struct {
@@ -81,19 +88,37 @@ func hresultErr(hr uintptr) error {
 	return ole.NewError(hr)
 }
 
+// initPropVariantFromString builds a VT_LPWSTR PROPVARIANT.
+//
+// It deliberately does not call propsys.dll!InitPropVariantFromString. That
+// name is an inline helper in propvarutil.h rather than a dependable export,
+// and LazyProc.Call panics outright when a proc is missing — which is how a
+// missing export surfaced as a crash while creating a shortcut. The inline
+// version is only SHStrDupW plus a vt assignment, so do exactly that.
 func initPropVariantFromString(s string) (propVariant, error) {
 	var pv propVariant
 	ws, err := windows.UTF16PtrFromString(s)
 	if err != nil {
 		return pv, err
 	}
-	hr, _, _ := procInitPropVariantFromString.Call(
+	if err := procSHStrDupW.Find(); err != nil {
+		return pv, fmt.Errorf("SHStrDupW unavailable: %w", err)
+	}
+	// SHStrDupW allocates the copy with CoTaskMemAlloc, which is what
+	// PROPVARIANT ownership requires and what clearPropVariant frees.
+	var dup *uint16
+	hr, _, _ := procSHStrDupW.Call(
 		uintptr(unsafe.Pointer(ws)),
-		uintptr(unsafe.Pointer(&pv)),
+		uintptr(unsafe.Pointer(&dup)),
 	)
 	if e := hresultErr(hr); e != nil {
-		return pv, e
+		return pv, fmt.Errorf("SHStrDupW: %w", e)
 	}
+	if dup == nil {
+		return pv, fmt.Errorf("SHStrDupW: nil string")
+	}
+	*(*uint16)(unsafe.Pointer(&pv.data[0])) = vtLPWSTR
+	*(**uint16)(unsafe.Pointer(&pv.data[propVariantValueOffset])) = dup
 	return pv, nil
 }
 
@@ -101,7 +126,12 @@ func clearPropVariant(pv *propVariant) {
 	if pv == nil {
 		return
 	}
-	procPropVariantClear.Call(uintptr(unsafe.Pointer(pv)))
+	// Frees what initPropVariantFromString allocated. Not PropVariantClear:
+	// we own the only field set, so there is nothing to dispatch on.
+	if p := *(**uint16)(unsafe.Pointer(&pv.data[propVariantValueOffset])); p != nil {
+		windows.CoTaskMemFree(unsafe.Pointer(p))
+	}
+	*pv = propVariant{}
 }
 
 func setShortcutAppUserModelID(lnkPath, appID string) error {
@@ -141,6 +171,10 @@ func setShortcutAppUserModelID(lnkPath, appID string) error {
 	pathPtr, err := windows.UTF16PtrFromString(lnkPath)
 	if err != nil {
 		return err
+	}
+
+	if err := procSHGetPropertyStoreFromParsingName.Find(); err != nil {
+		return fmt.Errorf("SHGetPropertyStoreFromParsingName unavailable: %w", err)
 	}
 
 	iid := ole.NewGUID("{886D8EEB-8CF2-4446-8D02-CDBA1DBDCF99}")
