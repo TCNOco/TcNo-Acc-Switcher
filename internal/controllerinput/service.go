@@ -22,6 +22,7 @@ type Service struct {
 	baseCtx context.Context
 	cancel  context.CancelFunc
 	enabled bool
+	visible bool
 	state   pollState
 	reader  stateReader
 	clock   func() time.Time
@@ -31,8 +32,11 @@ type Service struct {
 func NewService() *Service {
 	return &Service{
 		state: newPollState(),
-		clock: time.Now,
-		emit:  emitAction,
+		// Starts true so a caller that never reports window visibility polls
+		// exactly as it did before.
+		visible: true,
+		clock:   time.Now,
+		emit:    emitAction,
 	}
 }
 
@@ -59,10 +63,28 @@ func (s *Service) ServiceShutdown() error {
 func (s *Service) SetEnabled(enabled bool) {
 	s.mu.Lock()
 	s.enabled = enabled
-	baseCtx := s.baseCtx
-	hasLoop := s.cancel != nil
-	reader := s.reader
-	if !enabled {
+	s.mu.Unlock()
+	s.syncLoop()
+}
+
+// SetWindowVisible suspends polling while the window is hidden or minimised.
+// Controller input only ever drives that window's UI, so a window sitting in the
+// tray would be polling XInput for nobody.
+func (s *Service) SetWindowVisible(visible bool) {
+	s.mu.Lock()
+	if s.visible == visible {
+		s.mu.Unlock()
+		return
+	}
+	s.visible = visible
+	s.mu.Unlock()
+	s.syncLoop()
+}
+
+// syncLoop brings the poll goroutine in line with enabled && visible.
+func (s *Service) syncLoop() {
+	s.mu.Lock()
+	if !s.enabled || !s.visible {
 		s.state = newPollState()
 		cancel := s.cancel
 		s.cancel = nil
@@ -72,11 +94,12 @@ func (s *Service) SetEnabled(enabled bool) {
 		}
 		return
 	}
-	if hasLoop || baseCtx == nil || reader == nil {
+	reader := s.reader
+	if s.cancel != nil || s.baseCtx == nil || reader == nil {
 		s.mu.Unlock()
 		return
 	}
-	ctx, cancel := context.WithCancel(baseCtx)
+	ctx, cancel := context.WithCancel(s.baseCtx)
 	s.cancel = cancel
 	s.state = newPollState()
 	s.mu.Unlock()
@@ -110,11 +133,11 @@ func (s *Service) pollOnce(reader stateReader) {
 
 	s.mu.Lock()
 	s.state = nextState
-	enabled := s.enabled
+	active := s.enabled && s.visible
 	emit := s.emit
 	s.mu.Unlock()
 
-	if !enabled {
+	if !active {
 		return
 	}
 	for _, action := range actions {
@@ -137,7 +160,9 @@ func (s *Service) stop() {
 func (s *Service) clearCancel() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	if !s.enabled {
+	// Only when nothing wants a loop: a hide/show pair that outran this goroutine
+	// has already installed a newer cancel that must not be dropped.
+	if !s.enabled || !s.visible {
 		s.cancel = nil
 	}
 }

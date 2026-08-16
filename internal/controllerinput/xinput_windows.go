@@ -8,11 +8,6 @@ import (
 	"golang.org/x/sys/windows"
 )
 
-const (
-	maxControllers          = 4
-	errorDeviceNotConnected = 1167
-)
-
 type xinputGamepad struct {
 	Buttons      uint16
 	LeftTrigger  byte
@@ -29,7 +24,8 @@ type xinputState struct {
 }
 
 type xinputReader struct {
-	proc *windows.LazyProc
+	proc    *windows.LazyProc
+	backoff slotBackoff
 }
 
 func newStateReader() stateReader {
@@ -43,23 +39,27 @@ func newStateReader() stateReader {
 
 func (r *xinputReader) Snapshots() []snapshot {
 	out := make([]snapshot, 0, maxControllers)
-	for i := uint32(0); i < maxControllers; i++ {
-		var state xinputState
-		code := r.getState(i, &state)
-		if code == 0 {
-			out = append(out, snapshot{
-				Connected: true,
-				Buttons:   state.Gamepad.Buttons,
-				ThumbLX:   state.Gamepad.ThumbLX,
-				ThumbLY:   state.Gamepad.ThumbLY,
-			})
-			continue
-		}
-		if code == errorDeviceNotConnected {
+	for i := 0; i < maxControllers; i++ {
+		if !r.backoff.due(i) {
 			out = append(out, snapshot{})
 			continue
 		}
-		out = append(out, snapshot{})
+		var state xinputState
+		code := r.getState(uint32(i), &state)
+		r.backoff.record(i, code == 0)
+		if code != 0 {
+			// XInput documents only ERROR_SUCCESS and ERROR_DEVICE_NOT_CONNECTED
+			// here, and anything else it could fail with would not clear inside
+			// one 16ms tick either, so every failure backs the slot off.
+			out = append(out, snapshot{})
+			continue
+		}
+		out = append(out, snapshot{
+			Connected: true,
+			Buttons:   state.Gamepad.Buttons,
+			ThumbLX:   state.Gamepad.ThumbLX,
+			ThumbLY:   state.Gamepad.ThumbLY,
+		})
 	}
 	return out
 }

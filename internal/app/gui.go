@@ -15,6 +15,7 @@ import (
 	"TcNo-Acc-Switcher/internal/basic"
 	"TcNo-Acc-Switcher/internal/buildmode"
 	"TcNo-Acc-Switcher/internal/cli"
+	"TcNo-Acc-Switcher/internal/controllerinput"
 	"TcNo-Acc-Switcher/internal/crashlog"
 	"TcNo-Acc-Switcher/internal/discordrpc"
 	"TcNo-Acc-Switcher/internal/ipc"
@@ -46,6 +47,7 @@ type RunGUIParams struct {
 	Services         []application.Service
 	Dispatch         *Dispatch
 	DiscordRPC       *discordrpc.Manager
+	ControllerInput  *controllerinput.Service
 	CrashSubmitted   bool
 	StartupToast     string
 	EmbeddedAssets   fs.FS
@@ -261,6 +263,7 @@ func RunGUI(params RunGUIParams) {
 	win := wailsApp.Window.NewWithOptions(winOpts)
 	screenprivacy.Follow(win)
 	registerNotificationResponseHandler(wailsApp, win, notifier)
+	registerControllerInputVisibility(win, params.ControllerInput, !winOpts.Hidden)
 	win.OnWindowEvent(events.Common.WindowFilesDropped, func(event *application.WindowEvent) {
 		files := event.Context().DroppedFiles()
 		if len(files) == 0 {
@@ -360,6 +363,35 @@ func handleForwardedCLI(app *application.App, disp *Dispatch, argv []string) {
 	application.InvokeAsync(func() {
 		dispatchCLIInGUI(app, p, disp)
 	})
+}
+
+// registerControllerInputVisibility keeps the gamepad poll off while the window
+// is in the tray or minimised, where nothing can act on what it reads.
+//
+// The starting state comes from the window options rather than win.IsVisible():
+// that call dispatches to the main thread, which is not pumping until Run().
+// WindowFocus is in the resume set as a backstop — whichever route brought the
+// window back, one the user is interacting with is on screen.
+func registerControllerInputVisibility(win *application.WebviewWindow, svc *controllerinput.Service, initiallyVisible bool) {
+	if win == nil || svc == nil {
+		return
+	}
+	svc.SetWindowVisible(initiallyVisible)
+	for _, gone := range []events.WindowEventType{
+		events.Common.WindowHide,
+		events.Common.WindowMinimise,
+	} {
+		win.OnWindowEvent(gone, func(*application.WindowEvent) { svc.SetWindowVisible(false) })
+	}
+	for _, back := range []events.WindowEventType{
+		events.Common.WindowShow,
+		events.Common.WindowUnMinimise,
+		events.Common.WindowRestore,
+		events.Common.WindowMaximise,
+		events.Common.WindowFocus,
+	} {
+		win.OnWindowEvent(back, func(*application.WindowEvent) { svc.SetWindowVisible(true) })
+	}
 }
 
 func registerNotificationResponseHandler(app *application.App, win *application.WebviewWindow, notifier *notifications.NotificationService) {

@@ -220,6 +220,7 @@ func main() {
 		Services:         serviceList(),
 		Dispatch:         disp,
 		DiscordRPC:       discordRPC,
+		ControllerInput:  controllerSvc,
 		CrashSubmitted:   crashSubmitted,
 		StartupToast:     parsed.StartupToast,
 		EmbeddedAssets:   assets,
