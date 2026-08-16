@@ -152,16 +152,16 @@ func (s *Service) RunShortcut(platformKey, fileName string, admin bool, selected
 	return RunShortcut(platformKey, fileName, admin)
 }
 
-func (s *Service) CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix, stateTitle, accountLogin string) (string, error) {
+func (s *Service) CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix, stateTitle, accountLogin string) (ShortcutResult, error) {
 	if err := security.RequireUnlocked(); err != nil {
-		return "", err
+		return ShortcutResult{}, err
 	}
 	return CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix, stateTitle, accountLogin)
 }
 
-func (s *Service) CreateGameAccountShortcut(platformKey, uniqueID, accountDisplayName, accountLogin, gameFileName string) (string, error) {
+func (s *Service) CreateGameAccountShortcut(platformKey, uniqueID, accountDisplayName, accountLogin, gameFileName string) (ShortcutResult, error) {
 	if err := security.RequireUnlocked(); err != nil {
-		return "", err
+		return ShortcutResult{}, err
 	}
 	return CreateGameAccountShortcut(platformKey, uniqueID, accountDisplayName, accountLogin, gameFileName)
 }
@@ -173,9 +173,9 @@ func (s *Service) ResolveAccountShortcutStem(platformKey, uniqueID, displayName,
 	return ResolvedAccountShortcutStem(platformKey, uniqueID, displayName, accountLogin)
 }
 
-func (s *Service) CreatePlatformShortcut(platformKey string) (string, error) {
+func (s *Service) CreatePlatformShortcut(platformKey string) (ShortcutResult, error) {
 	if err := security.RequireUnlocked(); err != nil {
-		return "", err
+		return ShortcutResult{}, err
 	}
 	return CreatePlatformShortcut(platformKey)
 }

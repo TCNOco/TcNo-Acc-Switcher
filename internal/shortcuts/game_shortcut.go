@@ -17,35 +17,35 @@ import (
 var steamRungameIDRE = regexp.MustCompile(`(?i)steam://rungameid/(\d+)`)
 
 // CreateGameAccountShortcut: steam://rungameid .url tiles use --run-appid; otherwise --run-shortcut.
-func CreateGameAccountShortcut(platformKey, uniqueID, accountDisplayName, accountLogin, gameFileName string) (string, error) {
+func CreateGameAccountShortcut(platformKey, uniqueID, accountDisplayName, accountLogin, gameFileName string) (ShortcutResult, error) {
 	platformKey = strings.TrimSpace(platformKey)
 	uniqueID = strings.TrimSpace(uniqueID)
 	gameFileName = filepath.Base(strings.TrimSpace(gameFileName))
 	if platformKey == "" || uniqueID == "" {
-		return "", fmt.Errorf("missing platform or account id")
+		return ShortcutResult{}, fmt.Errorf("missing platform or account id")
 	}
 	if gameFileName == "" || !isShortcutFile(gameFileName) {
-		return "", fmt.Errorf("invalid game shortcut name")
+		return ShortcutResult{}, fmt.Errorf("invalid game shortcut name")
 	}
 
 	root, err := paths.LoginCacheDir(platformKey)
 	if err != nil {
-		return "", err
+		return ShortcutResult{}, err
 	}
 	cacheFull := filepath.Join(root, "Shortcuts", gameFileName)
 	if st, err := os.Stat(cacheFull); err != nil || st.IsDir() {
-		return "", fmt.Errorf("game shortcut not found in cache")
+		return ShortcutResult{}, fmt.Errorf("game shortcut not found in cache")
 	}
 
 	self, err := os.Executable()
 	if err != nil {
-		return "", err
+		return ShortcutResult{}, err
 	}
 	self = filepath.Clean(self)
 
 	desktop, err := winutil.DesktopWriteDir()
 	if err != nil {
-		return "", err
+		return ShortcutResult{}, err
 	}
 
 	title := gameAccountShortcutDesktopBaseName(platformKey, uniqueID, accountDisplayName, accountLogin, gameFileName)
@@ -62,11 +62,11 @@ func CreateGameAccountShortcut(platformKey, uniqueID, accountDisplayName, accoun
 	} else {
 		idx, err := cli.LoadPlatformIndex()
 		if err != nil {
-			return "", err
+			return ShortcutResult{}, err
 		}
 		short := cli.ShortTokenForPlatform(idx, platformKey)
 		if short == "" {
-			return "", fmt.Errorf("platform %q has no CLI short token", platformKey)
+			return ShortcutResult{}, fmt.Errorf("platform %q has no CLI short token", platformKey)
 		}
 		argv = "+" + short + ":" + uniqueID + " --run-shortcut=" + url.QueryEscape(gameFileName)
 	}
@@ -76,10 +76,13 @@ func CreateGameAccountShortcut(platformKey, uniqueID, accountDisplayName, accoun
 	workDir := filepath.Dir(self)
 	desc := fmt.Sprintf("TcNo Account Switcher - %s - %s", platformKey, title)
 	appID := winutil.ShortcutAppUserModelID(platformKey, uniqueID, gameFileName)
-	if err := winutil.WriteShortcutLnk(outPath, self, argv, workDir, desc, icon, appID); err != nil {
-		return "", err
+	if shortcutAlreadyMatches(outPath, self, argv) {
+		return ShortcutResult{Path: outPath, AlreadyExisted: true}, nil
 	}
-	return outPath, nil
+	if err := winutil.WriteShortcutLnk(outPath, self, argv, workDir, desc, icon, appID); err != nil {
+		return ShortcutResult{}, err
+	}
+	return ShortcutResult{Path: outPath}, nil
 }
 
 func steamRungameIDFromURLFile(path string) (string, bool) {

@@ -38,25 +38,25 @@ func PlatformShortcutExists(platformKey string) (bool, error) {
 }
 
 // CreatePlatformShortcut writes a Desktop .lnk targeting this exe; arguments open the platform page in the app.
-func CreatePlatformShortcut(platformKey string) (string, error) {
+func CreatePlatformShortcut(platformKey string) (ShortcutResult, error) {
 	platformKey = strings.TrimSpace(platformKey)
 	if platformKey == "" {
-		return "", fmt.Errorf("missing platform")
+		return ShortcutResult{}, fmt.Errorf("missing platform")
 	}
 
 	self, err := os.Executable()
 	if err != nil {
-		return "", err
+		return ShortcutResult{}, err
 	}
 	self = filepath.Clean(self)
 
 	name, err := platformSwitcherLnkName(platformKey)
 	if err != nil {
-		return "", err
+		return ShortcutResult{}, err
 	}
 	desktop, err := winutil.DesktopWriteDir()
 	if err != nil {
-		return "", err
+		return ShortcutResult{}, err
 	}
 	outPath := filepath.Join(desktop, name)
 
@@ -76,10 +76,13 @@ func CreatePlatformShortcut(platformKey string) (string, error) {
 	desc := fmt.Sprintf("TcNo Account Switcher - %s", platformKey)
 	argv := platformKey
 	appID := winutil.ShortcutAppUserModelID("platform", platformKey)
-	if err := winutil.WriteShortcutLnk(outPath, self, argv, workDir, desc, icon, appID); err != nil {
-		return "", err
+	if shortcutAlreadyMatches(outPath, self, argv) {
+		return ShortcutResult{Path: outPath, AlreadyExisted: true}, nil
 	}
-	return outPath, nil
+	if err := winutil.WriteShortcutLnk(outPath, self, argv, workDir, desc, icon, appID); err != nil {
+		return ShortcutResult{}, err
+	}
+	return ShortcutResult{Path: outPath}, nil
 }
 
 // DeletePlatformShortcut removes the platform .lnk from every Desktop folder it may have landed in.

@@ -463,6 +463,7 @@
   "Toast_RestartAsAdmin": "Please start as Admin and try again.",
   "Toast_CreateShortcutFailed": "Could not create shortcut",
   "Toast_ShortcutCreated": "Shortcut created!",
+  "Toast_ShortcutAlreadyExists": "That shortcut already exists.",
   "Toast_ShortcutImported": "Added {count} shortcut(s)",
   "Toast_ShortcutImportUnsupported": "Only .lnk and .url files can be dropped here",
   "Toast_ShortcutImportFailed": "Could not import shortcut",

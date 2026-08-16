@@ -13,22 +13,22 @@ import (
 )
 
 // CreateAccountShortcut builds a Desktop .lnk; for Steam, stateSuffix is persona argv index and stateTitle is an optional filename segment.
-func CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix, stateTitle, accountLogin string) (string, error) {
+func CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix, stateTitle, accountLogin string) (ShortcutResult, error) {
 	platformKey = strings.TrimSpace(platformKey)
 	uniqueID = strings.TrimSpace(uniqueID)
 	if platformKey == "" || uniqueID == "" {
-		return "", fmt.Errorf("missing platform or account id")
+		return ShortcutResult{}, fmt.Errorf("missing platform or account id")
 	}
 
 	self, err := os.Executable()
 	if err != nil {
-		return "", err
+		return ShortcutResult{}, err
 	}
 	self = filepath.Clean(self)
 
 	desktop, err := winutil.DesktopWriteDir()
 	if err != nil {
-		return "", err
+		return ShortcutResult{}, err
 	}
 
 	title := accountShortcutDesktopBaseName(platformKey, uniqueID, displayName, stateSuffix, stateTitle, accountLogin)
@@ -44,11 +44,11 @@ func CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix, stat
 	} else {
 		idx, err := cli.LoadPlatformIndex()
 		if err != nil {
-			return "", err
+			return ShortcutResult{}, err
 		}
 		short := cli.ShortTokenForPlatform(idx, platformKey)
 		if short == "" {
-			return "", fmt.Errorf("platform %q has no CLI short token", platformKey)
+			return ShortcutResult{}, fmt.Errorf("platform %q has no CLI short token", platformKey)
 		}
 		argv = "+" + short + ":" + uniqueID
 	}
@@ -77,10 +77,13 @@ func CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix, stat
 	workDir := filepath.Dir(self)
 	desc := fmt.Sprintf("TcNo Account Switcher - %s - %s", platformKey, title)
 	appID := winutil.ShortcutAppUserModelID(platformKey, uniqueID, stateSuffix)
-	if err := winutil.WriteShortcutLnk(outPath, self, argv, workDir, desc, icon, appID); err != nil {
-		return "", err
+	if shortcutAlreadyMatches(outPath, self, argv) {
+		return ShortcutResult{Path: outPath, AlreadyExisted: true}, nil
 	}
-	return outPath, nil
+	if err := winutil.WriteShortcutLnk(outPath, self, argv, workDir, desc, icon, appID); err != nil {
+		return ShortcutResult{}, err
+	}
+	return ShortcutResult{Path: outPath}, nil
 }
 
 func shortcutFilenameFallback(platformKey, uniqueID, accountLogin string) string {
