@@ -34,7 +34,7 @@
       "ExeLocationDefault": "%ProgramFiles(x86)%\\Epic Games\\Launcher\\Portal\\Binaries\\Win32\\EpicGamesLauncher.exe",
       "GetPathFromShortcutNamed": "Epic Games Launcher",
       "ExesToEnd": [ "EpicGamesLauncher.exe" ],
-      "PathListToClear": [ "JSON_EMPTY_VALUE::%AppData%\\Battle.net\\Battle.net.config::Client.SavedAccountNames" ],
+      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
         "%LocalAppData%\\EpicGamesLauncher\\Saved\\Config\\WindowsEditor\\GameUserSettings.ini": "GameUserSettings.ini",
         "REG:HKCU\\Software\\Epic Games\\Unreal Engine\\Identifiers:AccountId": "UNIQUE_ID"
