@@ -103,6 +103,17 @@
     --surface-context-submenu: var(--code);
     --surface-context-row: #1B2737;
     --surface-search-result: rgba(50, 50, 50, 0.7);
+
+    /* Sheet that lifts page content off a wallpaper. The tint follows the theme's
+       own panel colour, so a light theme veils with light and a dark one with
+       dark — one shared grey would fight half the catalogue. Themes whose era had
+       no glass (95, Luna) turn the blur down and the opacity up. */
+    --page-surface-tint: var(--code-background);
+    --page-surface-strong: color-mix(in srgb, var(--page-surface-tint) 88%, transparent);
+    --page-surface-soft: color-mix(in srgb, var(--page-surface-tint) 60%, transparent);
+    --page-surface-blur: 18px;
+    --page-surface-saturate: 1.15;
+
     --text-on-bright-bg: var(--pure-black);
     --context-menu-hotkey: #402B00;
     --form-checkbox-border: #6272a4;

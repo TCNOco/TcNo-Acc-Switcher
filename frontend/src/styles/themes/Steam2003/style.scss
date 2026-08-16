@@ -103,6 +103,11 @@ $red: #b96552;
   --text-dim-gray: #7b846a;
   --text-body-muted: #{$muted};
   --surface-panel-bg: #{$panel};
+  /* The 2003 client was opaque olive panels over the desktop, never translucent. */
+  --page-surface-tint: #{$panel};
+  --page-surface-strong: color-mix(in srgb, #{$panel} 96%, transparent);
+  --page-surface-blur: 2px;
+  --page-surface-saturate: 1;
   --surface-glass-06-15: #{$panel};
   --surface-row-dark: #{$recessed};
   --surface-steam-popover: #{$ink};

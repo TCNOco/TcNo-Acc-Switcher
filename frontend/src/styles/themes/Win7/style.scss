@@ -108,6 +108,12 @@
   --text-dim-gray: #7c8a94;
   --text-body-muted: #4e606d;
   --surface-panel-bg: var(--aero-panel);
+  /* Aero is the one era that really was glass, so this leans into it: let more
+     wallpaper through than other themes and blur it hard, the way a Win7 pane did. */
+  --page-surface-tint: var(--aero-panel);
+  --page-surface-strong: color-mix(in srgb, var(--aero-panel) 78%, transparent);
+  --page-surface-blur: 26px;
+  --page-surface-saturate: 1.4;
   --surface-glass-06-15: linear-gradient(145deg, rgba(255, 255, 255, 0.88), rgba(176, 207, 226, 0.62));
   --surface-row-dark: #d6e7f1;
   --surface-steam-popover: #eaf3f8;

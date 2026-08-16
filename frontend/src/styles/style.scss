@@ -75,6 +75,16 @@ body {
     background: transparent;
 }
 
+/* ...except the settings pages, which are dense small text rather than a grid of
+   tiles. Bare body copy over someone's wallpaper is the readability complaint
+   this answers, so they take the veil back as glass: tinted enough to carry text,
+   blurred so the picture still reads as a picture behind it. */
+.page--has-bg .main-content.settings-page {
+    background: var(--page-surface-strong);
+    backdrop-filter: blur(var(--page-surface-blur)) saturate(var(--page-surface-saturate));
+    -webkit-backdrop-filter: blur(var(--page-surface-blur)) saturate(var(--page-surface-saturate));
+}
+
 .main-spacing {
     padding-top: var(--main-padding, .75rem);
     padding-right: var(--main-padding, .75rem);

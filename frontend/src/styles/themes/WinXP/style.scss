@@ -110,6 +110,12 @@ $edge: #7f9db9;
   --text-dim-gray: #8b8b82;
   --text-body-muted: #59616b;
   --surface-panel-bg: #f7f4e9;
+  /* Luna panels were flat cream, not glass. Nearly opaque over Bliss, with only
+     enough blur to soften the hill rather than to look like Aero. */
+  --page-surface-tint: #{$cream};
+  --page-surface-strong: color-mix(in srgb, #{$cream} 95%, transparent);
+  --page-surface-blur: 4px;
+  --page-surface-saturate: 1;
   --surface-glass-06-15: linear-gradient(145deg, #ffffff, #e5e0cc);
   --surface-row-dark: #d6e5fa;
   --surface-steam-popover: #f4f1e6;

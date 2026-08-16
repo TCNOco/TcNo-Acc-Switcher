@@ -97,6 +97,12 @@ $navy: #000080;
   --text-dim-gray: #808080;
   --text-body-muted: #404040;
   --surface-panel-bg: #{$face};
+  /* 95 had no translucency anywhere. The settings sheet is the flat face grey a
+     dialog would be, and no blur at all — glass here would read as the wrong OS. */
+  --page-surface-tint: #{$face};
+  --page-surface-strong: #{$face};
+  --page-surface-blur: 0px;
+  --page-surface-saturate: 1;
   --surface-glass-06-15: #{$face};
   --surface-row-dark: #{$mid};
   --surface-steam-popover: #{$face};
