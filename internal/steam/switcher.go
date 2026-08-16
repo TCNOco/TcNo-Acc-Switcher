@@ -57,6 +57,10 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 	if err != nil {
 		return err
 	}
+	// The root the account list was built from, not just the configured one: a
+	// swap has to write the same loginusers.vdf the listed accounts were read
+	// out of, or it would create a second one beside a Steam nobody runs.
+	root = accountsRoot(root)
 	if root == "" {
 		return fmt.Errorf("steam install folder not found")
 	}

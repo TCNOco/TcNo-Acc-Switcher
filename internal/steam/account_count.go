@@ -28,5 +28,5 @@ func CountSavedAccounts() int {
 	if err != nil || root == "" {
 		return 0
 	}
-	return len(knownAccountsForRoot(root))
+	return len(knownAccountsForRoot(accountsRoot(root)))
 }

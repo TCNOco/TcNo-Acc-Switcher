@@ -336,10 +336,11 @@ func (s *SteamService) SaveSteamAccountOrder(ids []string) error {
 	if err != nil {
 		return err
 	}
-	// The same union the list was built from. Validating against loginusers.vdf
-	// alone would reject every reorder as soon as one account lived only in the
-	// store, since the count could never match.
-	users := knownAccountsForRoot(root)
+	// The same union the list was built from, off the same root - both the list
+	// and this count the whole union, so disagreeing on the root would reject
+	// every reorder. Validating against loginusers.vdf alone would reject them
+	// too, as soon as one account lived only in the store.
+	users := knownAccountsForRoot(accountsRoot(root))
 	valid := make(map[string]struct{}, len(users))
 	for _, u := range users {
 		valid[u.SteamID64] = struct{}{}
@@ -602,7 +603,7 @@ func (s *SteamService) runProfileRefresh() {
 		steamLog.Error("steam root empty after ResolveInstallFolder")
 		return
 	}
-	users := knownAccountsForRoot(root)
+	users := knownAccountsForRoot(accountsRoot(root))
 	if len(users) == 0 {
 		steamLog.Warn("no Steam accounts to refresh")
 		return

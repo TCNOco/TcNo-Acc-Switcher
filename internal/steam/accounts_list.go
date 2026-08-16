@@ -115,6 +115,11 @@ func (s *SteamService) buildSteamListContext() (*steamListContext, error) {
 		steamLog.Error("ResolveInstallFolder failed", slog.Any("err", err))
 		return nil, err
 	}
+	// ResolveInstallFolder has to commit to one answer and hands back
+	// SteamSettings.FolderPath whether or not Steam is there - and that ships as a
+	// Windows default, so on a machine with Steam on another drive it is a dead
+	// path outranking the sources that would have found the real one.
+	root = accountsRoot(root)
 	if root == "" {
 		steamLog.Error("steam install folder not found after resolution")
 		return nil, fmt.Errorf("steam install folder not found")
@@ -123,6 +128,13 @@ func (s *SteamService) buildSteamListContext() (*steamListContext, error) {
 	// Before MergeOrder, so accounts Steam has forgotten still take their saved
 	// place in the list rather than always trailing it.
 	users := knownAccountsForRoot(root)
+	// No login file anywhere and nothing remembered either. Returning the empty
+	// list here would render as an install with no accounts on it, which is the
+	// one thing this is not: it is Steam sitting somewhere nobody told us about.
+	if len(users) == 0 && !LoginUsersFileExists(root) {
+		steamLog.Error("no Steam loginusers.vdf at any candidate root", slog.String("checked", LoginUsersPath(root)))
+		return nil, fmt.Errorf("%w (looked in %s) - pick your Steam folder in Steam's settings", ErrSteamNotFound, LoginUsersPath(root))
+	}
 
 	order, err := LoadOrder()
 	if err != nil {

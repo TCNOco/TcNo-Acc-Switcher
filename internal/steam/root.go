@@ -1,6 +1,7 @@
 package steam
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 	"slices"
@@ -120,4 +121,34 @@ func steamRootCandidates() []string {
 		add(filepath.Dir(exp))
 	}
 	return out
+}
+
+// A var because resolving the candidates reads the app's settings and
+// Platforms.json off disk, which a unit test has no business doing.
+var steamRootCandidatesFn = steamRootCandidates
+
+// ErrSteamNotFound reports that no candidate root held a loginusers.vdf. A
+// sentinel because "no accounts" and "Steam is somewhere the switcher cannot
+// see" look identical on screen, and only the second is worth telling the user
+// about.
+var ErrSteamNotFound = errors.New("could not find Steam's loginusers.vdf")
+
+// accountsRoot narrows a resolved install folder to one that actually holds
+// config/loginusers.vdf, walking the rest of the candidate chain when it does
+// not. Returns resolved unchanged when nothing better exists, so an install
+// that has simply never been logged into keeps the folder the user configured.
+//
+// Every path that reads or writes account state has to agree on this. The list
+// and the order validation count the same union, so two roots would make every
+// reorder look like it named accounts that do not exist.
+func accountsRoot(resolved string) string {
+	if resolved != "" && LoginUsersFileExists(resolved) {
+		return resolved
+	}
+	for _, root := range steamRootCandidatesFn() {
+		if LoginUsersFileExists(root) {
+			return root
+		}
+	}
+	return resolved
 }

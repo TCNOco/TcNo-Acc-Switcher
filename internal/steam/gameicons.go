@@ -110,10 +110,6 @@ var (
 	gameIconLibraryTime time.Time
 )
 
-// A var for the same reason gameIconCacheDir is: resolving it reads the app's
-// settings and Platforms.json off disk, which a unit test has no business doing.
-var steamRootCandidatesFn = steamRootCandidates
-
 // steamLibraryCacheDir returns <steamRoot>/appcache/librarycache, or "" when no
 // configured Steam root has one (Steam not installed, settings unreadable).
 //
