@@ -15,12 +15,16 @@
   const fallbackTagBg = "#555555";
 
   let nowMs = Date.now();
-  let expiryTimer: number | null = null;
+  // Plain holder, not component state: `syncExpiryTimer` is called from a
+  // reactive block and both reads and writes this handle. Svelte 5 tracks those
+  // runtime reads as dependencies of the block, so a reactive `let` here made
+  // the write re-trigger the block for as long as any tag carried an expiry.
+  const expiry: { timer: number | null } = { timer: null };
 
   function clearExpiryTimer(): void {
-    if (expiryTimer != null) {
-      window.clearInterval(expiryTimer);
-      expiryTimer = null;
+    if (expiry.timer != null) {
+      window.clearInterval(expiry.timer);
+      expiry.timer = null;
     }
   }
 
@@ -28,8 +32,8 @@
     if (typeof window === "undefined") {
       return;
     }
-    if (enabled && expiryTimer == null) {
-      expiryTimer = window.setInterval(() => {
+    if (enabled && expiry.timer == null) {
+      expiry.timer = window.setInterval(() => {
         nowMs = Date.now();
       }, 1000);
     } else if (!enabled) {
@@ -45,7 +49,9 @@
     return $t("Tags_ExpiryCountdown", { countdown });
   }
 
-  $: syncExpiryTimer(tags.some(tagHasExpiry));
+  $: {
+    syncExpiryTimer(tags.some(tagHasExpiry));
+  }
 
   onDestroy(clearExpiryTimer);
 </script>

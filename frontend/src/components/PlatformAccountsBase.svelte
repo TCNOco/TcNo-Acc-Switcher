@@ -131,7 +131,12 @@
   let isActionBusyValue = false;
 
   let refreshTimers: ReturnType<typeof setTimeout>[] = [];
-  let tagExpiryTimer: ReturnType<typeof setTimeout> | undefined;
+  // Deliberately a plain holder rather than component state: the reactive block
+  // that calls scheduleTagExpiryPrune reaches this handle through a function,
+  // which both reads and writes it. Svelte 5 tracks those runtime reads as
+  // dependencies of the block, so a reactive `let` re-triggered the block on
+  // every write and hung the page whenever a tag carried an expiry.
+  const tagExpiry: { timer: ReturnType<typeof setTimeout> | undefined } = { timer: undefined };
   let tagExpiryPruneRunning = false;
   let acclistEl: HTMLDivElement | undefined;
   let overlayQuery = "";
@@ -168,8 +173,16 @@
     overlayQueryDebounceTimer = setTimeout(() => { debouncedOverlayQuery = q; }, 150);
   }
 
+  // Only write when the route is not already here. This used to set a brand-new
+  // route object on every pass; the store flows back down through App as our
+  // `name` prop, so under Svelte 5 that fed itself and spun the whole page's
+  // reactive graph forever.
   $: if (name) {
-    route.set({ page: "platform", platformName: name });
+    const cur = get(route);
+    const alreadyHere = cur.page === "platform" && cur.platformName === name;
+    if (!alreadyHere) {
+      route.set({ page: "platform", platformName: name });
+    }
   }
 
   $: commandMode = isCommandQuery(overlayQuery);
@@ -562,16 +575,16 @@
   }
 
   function clearTagExpiryTimer(): void {
-    if (!tagExpiryTimer) return;
-    clearTimeout(tagExpiryTimer);
-    tagExpiryTimer = undefined;
+    if (!tagExpiry.timer) return;
+    clearTimeout(tagExpiry.timer);
+    tagExpiry.timer = undefined;
   }
 
   function scheduleTagExpiryPrune(nextExpiryMs: number | null): void {
     clearTagExpiryTimer();
     const platformKey = name.trim();
     if (!platformKey || nextExpiryMs === null || !tagExpiryService.PruneExpiredTags) return;
-    tagExpiryTimer = setTimeout(() => {
+    tagExpiry.timer = setTimeout(() => {
       void pruneExpiredTagsForPlatform(platformKey);
     }, Math.max(0, nextExpiryMs - Date.now()));
   }

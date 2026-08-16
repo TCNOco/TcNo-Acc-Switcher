@@ -175,8 +175,15 @@
     }
   });
 
+  // Clamp only when it actually moves. Callers may hand us a freshly built
+  // `gameRows`/`primaryRows` array on every pass, so `combined` changes identity
+  // constantly; an unconditional self-assignment here re-entered the update
+  // cycle forever under Svelte 5 and hung the page.
   $: if (selectedIndex >= combined.length) {
-    selectedIndex = Math.max(0, combined.length - 1);
+    const clamped = Math.max(0, combined.length - 1);
+    if (clamped !== selectedIndex) {
+      selectedIndex = clamped;
+    }
   }
 
   $: if (open && activeDescendantId) {
