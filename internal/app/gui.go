@@ -2,6 +2,7 @@ package app
 
 import (
 	"errors"
+	"io"
 	"io/fs"
 	"log"
 	"log/slog"
@@ -48,6 +49,7 @@ type RunGUIParams struct {
 	Dispatch         *Dispatch
 	DiscordRPC       *discordrpc.Manager
 	ControllerInput  *controllerinput.Service
+	LogWriter        io.Writer
 	CrashSubmitted   bool
 	StartupToast     string
 	EmbeddedAssets   fs.FS
@@ -158,7 +160,7 @@ func RunGUI(params RunGUIParams) {
 	if !parsed.LogLevelSet && wailsLvl < slog.LevelInfo {
 		wailsLvl = slog.LevelInfo
 	}
-	wailsLogger := slog.New(logredact.NewHandler(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: wailsLvl})))
+	wailsLogger := slog.New(logredact.NewHandler(slog.NewTextHandler(params.LogWriter, &slog.HandlerOptions{Level: wailsLvl})))
 	notifier := notifications.New()
 	platform.SetNativeNotifier(notifier)
 	services := append([]application.Service{}, params.Services...)

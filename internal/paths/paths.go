@@ -50,6 +50,25 @@ func SettingsDir() (string, error) {
 	return settingsDir, settingsDirErr
 }
 
+var (
+	logDirOnce sync.Once
+	logDir     string
+	logDirErr  error
+)
+
+// LogDir returns the directory holding the app's on-disk logs.
+func LogDir() (string, error) {
+	logDirOnce.Do(func() {
+		r, err := DataRoot()
+		if err != nil {
+			logDirErr = err
+			return
+		}
+		logDir = filepath.Join(r, "Logs")
+	})
+	return logDir, logDirErr
+}
+
 func SanitizePathSegment(name string) string {
 	out := WindowsFileName(name, 0)
 	if out == "" {

@@ -145,7 +145,14 @@ func main() {
 	}
 
 	lvl := app.ResolvedLogLevel(parsed)
-	slog.SetDefault(slog.New(logredact.NewHandler(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: lvl}))))
+	logSink, logSinkErr := app.OpenLogSink()
+	if logSink != nil {
+		defer logSink.Close()
+	}
+	slog.SetDefault(slog.New(logredact.NewHandler(slog.NewTextHandler(app.LogWriter(logSink), &slog.HandlerOptions{Level: lvl}))))
+	if logSinkErr != nil {
+		slog.Warn("on-disk log unavailable; logging to stderr only", "err", logSinkErr)
+	}
 	actionlog.Init()
 
 	startupSettings, _ := loadStartupSettings()
@@ -221,6 +228,7 @@ func main() {
 		Dispatch:         disp,
 		DiscordRPC:       discordRPC,
 		ControllerInput:  controllerSvc,
+		LogWriter:        app.LogWriter(logSink),
 		CrashSubmitted:   crashSubmitted,
 		StartupToast:     parsed.StartupToast,
 		EmbeddedAssets:   assets,
