@@ -99,7 +99,10 @@ func startAsDesktopUser(exe string, args []string, opts StartOpts) error {
 	}
 	slogWin().Debug("falling back to cmd start", "exe", exe)
 	cmdline := append([]string{"/c", "start", "", exe}, args...)
-	if _, err := spawnDetached("cmd.exe", cmdline, wd, opts.HideWindow); err != nil {
+	// The shim is always hidden regardless of opts.HideWindow: `start` (no /B) builds its own
+	// STARTUPINFO for the target, so cmd's console is a separate window that only ever shows up
+	// as a stray popup - worse under Windows Terminal, which keeps it around.
+	if _, err := spawnDetached("cmd.exe", cmdline, wd, true); err != nil {
 		return WrapIfElevationRequired(err)
 	}
 	return nil

@@ -41,7 +41,7 @@ func RunShortcut(platformKey, fileName string, admin bool) error {
 	} else if winutil.IsProcessElevated() {
 		startErr = winutil.Start("explorer.exe", []string{full}, winutil.StartOpts{})
 	} else {
-		startErr = winutil.Start("cmd.exe", []string{"/C", "start", "", full}, winutil.StartOpts{})
+		startErr = winutil.Start("cmd.exe", []string{"/C", "start", "", full}, winutil.StartOpts{HideWindow: true})
 	}
 	if startErr == nil {
 		_ = stats.IncrementGamesLaunched(platformKey)

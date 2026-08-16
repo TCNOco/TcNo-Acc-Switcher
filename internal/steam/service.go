@@ -985,7 +985,7 @@ func (s *SteamService) LoginAndLaunchGame(steamID64 string, personaState int, ap
 		}
 	}
 	url := "steam://rungameid/" + appID
-	if err := winutil.Start("cmd.exe", []string{"/c", "start", "", url}, winutil.StartOpts{}); err != nil {
+	if err := winutil.Start("cmd.exe", []string{"/c", "start", "", url}, winutil.StartOpts{HideWindow: true}); err != nil {
 		return err
 	}
 	_ = stats.IncrementGamesLaunched(PlatformKey)

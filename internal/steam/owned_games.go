@@ -249,7 +249,7 @@ func (s *SteamService) OpenGameStorePage(appID string) error {
 	if url == "" {
 		return fmt.Errorf("steam store page: invalid app id %q", appID)
 	}
-	return winutil.Start("cmd.exe", []string{"/c", "start", "", url}, winutil.StartOpts{})
+	return winutil.Start("cmd.exe", []string{"/c", "start", "", url}, winutil.StartOpts{HideWindow: true})
 }
 
 // RefreshOwnedGames asks the Steam Guard sweep to re-read every account's

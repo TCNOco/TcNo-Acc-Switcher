@@ -179,7 +179,7 @@ func (d *Dispatch) LaunchAfterSwap(p cli.Parsed) error {
 	}
 	if strings.TrimSpace(p.RunAppID) != "" {
 		url := "steam://rungameid/" + strings.TrimSpace(p.RunAppID)
-		return winutil.Start("cmd.exe", []string{"/c", "start", "", url}, winutil.StartOpts{})
+		return winutil.Start("cmd.exe", []string{"/c", "start", "", url}, winutil.StartOpts{HideWindow: true})
 	}
 	fn := strings.TrimSpace(p.RunShortcutFile)
 	pk := strings.TrimSpace(p.PlatformKey)

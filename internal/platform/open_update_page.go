@@ -14,7 +14,7 @@ const updateDownloadPageURL = "https://github.com/TCNOco/TcNo-Acc-Switcher/relea
 func (p *PlatformService) OpenUpdateDownloadPage() error {
 	switch runtime.GOOS {
 	case "windows":
-		return winutil.Start("cmd.exe", []string{"/c", "start", "", updateDownloadPageURL}, winutil.StartOpts{})
+		return winutil.Start("cmd.exe", []string{"/c", "start", "", updateDownloadPageURL}, winutil.StartOpts{HideWindow: true})
 	case "darwin":
 		return exec.Command("open", updateDownloadPageURL).Start()
 	default:
