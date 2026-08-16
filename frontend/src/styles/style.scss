@@ -67,6 +67,14 @@ body {
     background: unset;
 }
 
+/* The background layer sits at z-index -1 inside .page, so any in-flow fill on
+   the page root paints straight over it — which is how the Windows themes hide
+   both their own bundled background and a user's wallpaper. Only while a
+   background is actually showing; with none, the theme's fill stands. */
+.page--has-bg .main-content {
+    background: transparent;
+}
+
 .main-spacing {
     padding-top: var(--main-padding, .75rem);
     padding-right: var(--main-padding, .75rem);

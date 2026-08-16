@@ -480,7 +480,7 @@
   <a class="skip-link" href="#app-main">Skip to content</a>
   <TitleBar />
   <UpdateBar />
-  <div class="page" class:page--alert={$pageFrameAlert}>
+  <div class="page" class:page--alert={$pageFrameAlert} class:page--has-bg={!!activeBg}>
     {#key activeBg?.imageUrl}
       {#if activeBg}
         <img
