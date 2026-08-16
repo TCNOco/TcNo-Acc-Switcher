@@ -229,6 +229,16 @@
   }
 }
 
+/* Last control belongs to the row but not to the group beside the label — the
+   version line's "Suggest a feature" button sits away from the update controls. */
+.settings-field--spread .settings-field__control {
+  flex: 1 1 auto;
+
+  > :last-child {
+    margin-inline-start: auto;
+  }
+}
+
 .settings-field__note {
   flex: 1 1 100%;
   margin: 0;

@@ -789,7 +789,7 @@
 </SettingsGroup>
 
 <SettingsGroup title={$t("Settings_Header_Program")}>
-  <SettingsField label={formatAppVersion(currentVersion || "0.0.0")}>
+  <SettingsField label={formatAppVersion(currentVersion || "0.0.0")} spread>
     <button
       type="button"
       class="btnicontext"
@@ -805,13 +805,10 @@
       label={$t("Settings_PrereleaseUpdates")}
       on:change={() => void prereleaseUpdates.toggle()}
     />
-  </SettingsField>
-
-  <div class="settings-actions">
     <button type="button" class="btnicontext" on:click={() => void openFeedbackModal({ mode: "suggestion" })}>
       {$t("Settings_SuggestFeature")}
     </button>
-  </div>
+  </SettingsField>
 </SettingsGroup>
 
 <style lang="scss">
