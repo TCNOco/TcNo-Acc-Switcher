@@ -168,6 +168,9 @@
 
   > span {
     padding: 0;
+    > button {
+      padding: 0 0.6rem;
+    }
   }
 }
 
@@ -332,7 +335,17 @@
   margin: 0.75rem 0 0;
 }
 
+/* Height comes from the same span-wrapped label .btn_close uses, not a
+   min-height: the global `button span { line-height: 2.5em }` makes a
+   span-wrapped label taller than bare text, so matching the markup is what
+   keeps the two footer buttons the same size (see the note at UI.scss:271). */
 .serverpicker-bulk {
   margin: 0;
-  min-height: 34px;
+
+  /* Matches .btn_close span's vertical padding (Settings.scss:27); only the
+     5em horizontal padding, which is there to set that button's width, is
+     dropped. */
+  span {
+    padding: 0.25em 2em;
+  }
 }

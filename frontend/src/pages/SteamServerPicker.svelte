@@ -465,7 +465,7 @@
       disabled={!elevated || busy || visible.length === 0}
       on:click={() => void applyBulk()}
     >
-      {$t(nextBulk === "disable" ? "ServerPicker_DisableAll" : "ServerPicker_EnableAll")}
+      <span>{$t(nextBulk === "disable" ? "ServerPicker_DisableAll" : "ServerPicker_EnableAll")}</span>
     </button>
     <button type="button" class="btn_close" on:click={onClose}><span>{$t("Button_Close")}</span></button>
   </div>
