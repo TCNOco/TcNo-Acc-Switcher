@@ -15,6 +15,14 @@
   const fallbackTagBg = "#555555";
 
   let nowMs = Date.now();
+  /**
+   * The countdown is only ever read by the hover tooltip and the aria-label —
+   * the bubble itself shows the tag name, which does not change. Ticking once a
+   * second regardless meant every account with an expiring tag rewrote
+   * attributes nobody was looking at, on every row, forever. Tick only while
+   * this row is actually hovered or focused.
+   */
+  let countdownVisible = false;
   // Plain holder, not component state: `syncExpiryTimer` is called from a
   // reactive block and both reads and writes this handle. Svelte 5 tracks those
   // runtime reads as dependencies of the block, so a reactive `let` here made
@@ -49,15 +57,35 @@
     return $t("Tags_ExpiryCountdown", { countdown });
   }
 
+  /** Refresh before the first tick so a tooltip opening now is not a second stale. */
+  function showCountdown(): void {
+    nowMs = Date.now();
+    countdownVisible = true;
+  }
+
+  function hideCountdown(): void {
+    countdownVisible = false;
+  }
+
   $: {
-    syncExpiryTimer(tags.some(tagHasExpiry));
+    syncExpiryTimer(countdownVisible && tags.some(tagHasExpiry));
   }
 
   onDestroy(clearExpiryTimer);
 </script>
 
 {#if tags.length > 0}
-  <div class="acc_tag_bubbles">
+  <!-- These handlers add no interaction; they only start and stop the countdown
+       refresh while it can actually be read. Keyboard users get the same thing
+       through focusin/focusout. -->
+  <!-- svelte-ignore a11y-no-static-element-interactions -->
+  <div
+    class="acc_tag_bubbles"
+    on:mouseenter={showCountdown}
+    on:mouseleave={hideCountdown}
+    on:focusin={showCountdown}
+    on:focusout={hideCountdown}
+  >
     {#each tags as tg (tg.id)}
       <span
         class="acc_tag_bubble"
