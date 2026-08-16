@@ -69,6 +69,18 @@ async function refreshWindowsThemeAccentColor(): Promise<string> {
     currentWindowsThemeAccentColor.set("");
     return "";
   }
+  // The backend only emits windows-accent-changed when the colour differs from the
+  // last one it sent, so a slow WebView2 start can subscribe after the only emit and
+  // never learn the colour. Pull it once here instead of waiting for an event.
+  try {
+    const color = normalizeHexColor(await PlatformService.GetWindowsAccentColor()) ?? "";
+    if (color) {
+      currentWindowsThemeAccentColor.set(color);
+      return color;
+    }
+  } catch {
+    /* offline / early boot */
+  }
   return get(currentWindowsThemeAccentColor);
 }
 
