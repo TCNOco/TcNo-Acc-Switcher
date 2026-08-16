@@ -154,6 +154,29 @@
     void promptInterruptedRestoreRepair();
   }
 
+  /**
+   * One shared instance rather than a literal per call. `platformBgInfo` is
+   * written from a reactive block and read by another; a fresh object each pass
+   * meant the store always looked changed, and under Svelte 5 the two blocks
+   * drove each other forever. Identity is the signal that nothing moved.
+   */
+  const NO_PLATFORM_BG: AppBackgroundInfo = {
+    hasImage: false,
+    imageUrl: "",
+    opacity: 0.6,
+    blur: 4.0,
+    alignment: "center",
+    fit: "cover",
+    themeBgOverride: false,
+    luma: UNMEASURED_LUMA,
+  };
+
+  function clearPlatformBg(): void {
+    if (get(platformBgInfo) !== NO_PLATFORM_BG) {
+      platformBgInfo.set(NO_PLATFORM_BG);
+    }
+  }
+
   /** Load/reload the platform background for the given platform name. */
   async function loadPlatformBg(platformName: string): Promise<void> {
     platformBgPending += 1;
@@ -161,16 +184,7 @@
       const info = await PlatformService.GetPlatformBackground(platformName);
       platformBgInfo.set(info);
     } catch {
-      platformBgInfo.set({
-        hasImage: false,
-        imageUrl: "",
-        opacity: 0.6,
-        blur: 4.0,
-        alignment: "center",
-        fit: "cover",
-        themeBgOverride: false,
-        luma: UNMEASURED_LUMA,
-      });
+      clearPlatformBg();
     } finally {
       platformBgPending -= 1;
     }
@@ -188,16 +202,7 @@
     ) {
       void loadPlatformBg("Steam");
     } else {
-      platformBgInfo.set({
-        hasImage: false,
-        imageUrl: "",
-        opacity: 0.6,
-        blur: 4.0,
-        alignment: "center",
-        fit: "cover",
-        themeBgOverride: false,
-        luma: UNMEASURED_LUMA,
-      });
+      clearPlatformBg();
     }
   }
 

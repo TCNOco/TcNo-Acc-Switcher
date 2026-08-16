@@ -13,8 +13,47 @@ import { homeScreenData } from "./homeScreenData";
 
 export type { Route };
 
-export const route = writable<Route>({ page: "home" });
-export const previousPage = writable<Route | null>(null);
+const _route = writable<Route>({ page: "home" });
+
+/**
+ * Writes that do not change the route are dropped.
+ *
+ * Pages set their own route on mount, and App re-evaluates
+ * `loadPageModule($route)` inside an `{#await}` whenever the store changes. A
+ * fresh object for the same route therefore remounted the page, whose `onMount`
+ * set the route again — an unbounded remount loop under Svelte 5. Comparing by
+ * serialised form keeps identity stable whenever the destination is unchanged,
+ * which every consumer of this store relies on.
+ */
+export const route = {
+  subscribe: _route.subscribe,
+  set: (v: Route): void => {
+    if (serializeRoute(get(_route)) !== serializeRoute(v)) {
+      _route.set(v);
+    }
+  },
+  update: (fn: (v: Route) => Route): void => {
+    _route.update((cur) => {
+      const next = fn(cur);
+      return serializeRoute(cur) === serializeRoute(next) ? cur : next;
+    });
+  },
+};
+const _previousPage = writable<Route | null>(null);
+
+/** Same no-op guard as `route`: pages set this from reactive blocks too. */
+export const previousPage = {
+  subscribe: _previousPage.subscribe,
+  set: (v: Route | null): void => {
+    const cur = get(_previousPage);
+    const same =
+      cur === v ||
+      (cur !== null && v !== null && serializeRoute(cur) === serializeRoute(v));
+    if (!same) {
+      _previousPage.set(v);
+    }
+  },
+};
 export const appBarTitle = writable("TcNo Account Switcher");
 let historyIndex = 0;
 let historyMaxIndex = 0;
