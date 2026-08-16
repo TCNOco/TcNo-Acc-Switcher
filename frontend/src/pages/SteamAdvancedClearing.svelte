@@ -217,7 +217,7 @@
   </div>
 
   <div class="buttoncol col_close steam-adv-footer">
-    <button type="button" class="fancyLinkBtn" on:click={onWiki}>{$t("Button_WikiInfo")}</button>
+    <button type="button" class="fancyLink fancyLinkBtn" on:click={onWiki}>{$t("Button_WikiInfo")}</button>
     <button type="button" class="btn_close" on:click={onClose}><span>{$t("Button_Close")}</span></button>
   </div>
 </div>
@@ -321,20 +321,13 @@
     width: auto;
   }
 
+  /* The width is spelled out because `.buttoncol button` sizes its buttons to
+     half the row, which is not a width a link should have. */
   .fancyLinkBtn {
     position: relative;
-    width: auto !important;
-    background: transparent;
-    border: none;
-    color: var(--accent);
-    text-decoration: underline;
-    cursor: pointer;
-    font: inherit;
+    width: auto;
     padding: 0.35rem 0.5rem;
-  }
-
-  .fancyLinkBtn:hover {
-    filter: brightness(1.15);
+    text-decoration: underline;
   }
 
   .steam-adv-footer {

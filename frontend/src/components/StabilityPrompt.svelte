@@ -200,7 +200,7 @@
                 <div>{$t("Stability_ThanksReportLine1")}</div>
                 <div>
                   {$t("Stability_ThanksReportAskPrefix")}
-                  <button type="button" class="stability-prompt__link" on:click={onReportIssue}>
+                  <button type="button" class="fancyLink stability-prompt__link" on:click={onReportIssue}>
                     {$t("Stability_ReportIssue")}
                   </button>{$t("Stability_ThanksReportAskSuffix")}
                 </div>

@@ -449,7 +449,7 @@
             {#if selected.trade?.partner?.profileUrl}
               <button
                 type="button"
-                class="confirmations-detail__profile"
+                class="fancyLink confirmations-detail__profile"
                 title={$t("SteamGuard_Confirmations_ViewProfile")}
                 on:click={() => openProfile(selected.trade?.partner?.profileUrl ?? "")}
               >{selected.title}</button>

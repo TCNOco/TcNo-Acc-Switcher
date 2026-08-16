@@ -92,7 +92,7 @@
   </div>
 </div>
 <div class="versionIdentifier">
-  <span>{$t("Modal_Info_Version")}: <button type="button" class="version-link" on:click={() => void onVersionClick()}>{currentVersion}</button></span>
+  <span>{$t("Modal_Info_Version")}: <button type="button" class="fancyLink version-link" on:click={() => void onVersionClick()}>{currentVersion}</button></span>
 </div>
 
 <style lang="scss">
@@ -153,16 +153,6 @@
   }
 
   .version-link {
-    background: none;
-    border: none;
-    padding: 0;
-    font: inherit;
-    color: var(--accent, #f90);
     text-decoration: underline;
-    cursor: pointer;
-
-    &:hover {
-      opacity: 0.85;
-    }
   }
 </style>

@@ -116,16 +116,10 @@
   transform: scale(1.18);
 }
 
-.stability-prompt__link {
-  display: inline;
-  margin: 0;
-  padding: 0;
-  border: none;
-  background: none;
-  color: var(--accent);
-  font: inherit;
+// fancyLink carries the link look and the reset that stops a theme skinning it
+// as a button; the class is doubled up so this out-specifies the shared hover.
+button.fancyLink.stability-prompt__link {
   text-decoration: underline;
-  cursor: pointer;
 
   &:hover {
     color: var(--whiteSecondary, #fff);

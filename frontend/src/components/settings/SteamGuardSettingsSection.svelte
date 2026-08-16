@@ -630,7 +630,7 @@
           class="steam-guard-way"
         >{way.name}{#if way.note}<span class="steam-guard-factor-note">{way.note}</span>{/if}{#if way.action}<button
             type="button"
-            class="steam-guard-factor-remove"
+            class="fancyLink steam-guard-factor-remove"
             disabled={busy || way.action.disabled}
             title={way.action.title}
             on:click={way.action.run}
@@ -740,26 +740,12 @@
 
   /* Reads as a link but stays a button: it performs an action, and the app-wide
      navigation guard cancels anchor clicks, so an <a> here would do nothing.
-     display and width are reset because the global button rule sets
-     `display: flex; width: max-content`, which makes it block-level - that is
-     what put it on a line of its own with a gap under it. */
+     fancyLink carries the link look and the reset that keeps a theme from
+     skinning it as one; only the spacing, weight and underline are local. */
   .steam-guard-factor-remove {
-    display: inline;
-    width: auto;
     margin: 0 0 0 0.35em;
     font-weight: 400;
-    background: none;
-    border: 0;
-    padding: 0;
-    font: inherit;
-    color: var(--accent, #4da3ff);
     text-decoration: underline;
-    cursor: pointer;
-
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
   }
 
   .steam-guard-control-row,
@@ -820,7 +806,9 @@
     overflow-wrap: anywhere;
   }
 
-  button {
+  /* The settings-control height, which a link-styled button is not: it would
+     stand a line of text in a 38px box. */
+  button:not(.fancyLink) {
     min-height: 38px;
   }
 

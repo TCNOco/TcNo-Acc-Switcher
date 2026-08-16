@@ -46,7 +46,9 @@
     color: var(--notification-message-fg, var(--whiteSecondary));
   }
 
-  .stability-prompt__link:hover {
+  // Matches the selector in stability-prompt.scss so a theme can still choose
+  // the hover ink.
+  button.fancyLink.stability-prompt__link:hover {
     color: var(--notification-message-fg, var(--whiteSecondary));
   }
 

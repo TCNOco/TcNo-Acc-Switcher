@@ -107,7 +107,7 @@
 
   <p class="modal-help">
     {$t("Security_PasswordHint", { count: MIN_PASSWORD_LENGTH })}
-    <button type="button" class="modal-link" on:click={openPasswordHelp}>
+    <button type="button" class="fancyLink modal-link" on:click={openPasswordHelp}>
       {$t("Security_PasswordLearnMore")}
     </button>
   </p>
@@ -144,12 +144,6 @@
   }
 
   .modal-link {
-    background: none;
-    border: 0;
-    padding: 0;
-    font: inherit;
-    color: var(--accent, #4da3ff);
     text-decoration: underline;
-    cursor: pointer;
   }
 </style>

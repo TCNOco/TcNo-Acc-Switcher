@@ -57,13 +57,13 @@
               <span class="security-keys__note">{$t("SteamGuard_Factors_AlsoNeedsPassword")}</span>
             {/if}
           </span>
-          <button type="button" class="security-keys__link" disabled={busy}
+          <button type="button" class="fancyLink security-keys__link" disabled={busy}
             on:click={() => finish(() => onRename(row.id, row.label))}>
             {$t("SteamGuard_Factors_Rename")}
           </button>
           <button
             type="button"
-            class="security-keys__link security-keys__link--remove"
+            class="fancyLink security-keys__link security-keys__link--remove"
             disabled={busy || !row.removable}
             title={row.removable ? "" : blockReason(row)}
             on:click={() => finish(() => onRemove(row.id, row.label))}
@@ -144,24 +144,23 @@
     opacity: 0.75;
   }
 
-  /* Same resets as every other link-styled button here: the global button rule
-     sets display, width and a horizontal margin that this must not inherit. */
+  /* fancyLink supplies the link look; these sit in a flex row and take the
+     surrounding ink rather than the accent. */
   .security-keys__link {
-    display: inline;
     flex: 0 0 auto;
-    width: auto;
     margin: 0;
-    padding: 0;
-    border: 0;
-    background: none;
     color: inherit;
-    cursor: pointer;
-    font: inherit;
     font-size: 0.85em;
     text-decoration: underline;
 
+    /* fancyLink tints itself on hover; these keep the row's ink, and the remove
+       variant keeps its red. */
+    &:hover,
+    &:active {
+      color: inherit;
+    }
+
     &:disabled {
-      cursor: not-allowed;
       opacity: 0.45;
       text-decoration: none;
     }

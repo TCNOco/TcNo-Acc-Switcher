@@ -21,31 +21,28 @@ a {
   }
 }
 
+/* A button that runs an action but has to read as a link. An <a> cannot do the
+   job: the app-wide navigation guard cancels anchor clicks. */
 button.fancyLink {
-  background: transparent;
-  border: none;
   border-radius: 0;
-  box-shadow: none;
   color: var(--accent);
+  cursor: pointer;
   display: inline;
   font: inherit;
   height: auto;
   margin: 1px 0;
+  min-height: 0;
   padding: 0;
   text-align: inherit;
   text-decoration: none;
   width: auto;
 
   &:hover {
-    background: transparent;
-    border-color: transparent;
     color: hsl(var(--accentHS), calc(var(--accentL) - 5%));
   }
 
   &:active,
   &:target {
-    background: transparent;
-    border-color: transparent;
     color: hsl(var(--accentHS), calc(var(--accentL) - 10%));
   }
 
@@ -53,6 +50,25 @@ button.fancyLink {
     cursor: not-allowed;
     opacity: 0.5;
   }
+}
+
+/* Themes skin every bare `button` with a bevel, a min-height and a forced hover
+   fill, and a theme sheet is appended to <head> at runtime — so it loads after
+   this file and wins every tie. Each state is therefore spelled out, to outrank
+   the themes' own `button:hover` and friends, and the fill is forced because
+   theirs is. Paint only: the layout stays in the rule above, so a component can
+   still give its own link a size. */
+button.fancyLink,
+button.fancyLink:hover,
+button.fancyLink:active,
+button.fancyLink:target,
+button.fancyLink:disabled {
+  background: transparent !important;
+  border: 0;
+  box-shadow: none;
+  filter: none;
+  text-shadow: none;
+  transform: none;
 }
 
 /* Buttons */
@@ -134,8 +150,10 @@ button,
   }
 }
 
+/* The press-darken is a button gesture; a link-styled button opts out of it
+   rather than having to out-specify it. */
 .btnicontext,
-button {
+button:not(.fancyLink) {
   transition: filter 0.12s ease-out, background 0.12s ease-out;
 
   &:active:not(:disabled) {

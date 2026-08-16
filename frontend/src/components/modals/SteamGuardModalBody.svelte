@@ -2651,7 +2651,7 @@
       <div class="steam-guard__footer">
         <button
           type="button"
-          class="steam-guard__link"
+          class="fancyLink steam-guard__link"
 	          disabled={busy || oneOperationCode}
           on:click={showAllAccounts}
         >
@@ -2705,7 +2705,7 @@
         </button>
       </div>
       <div class="steam-guard__footer">
-        <button type="button" class="steam-guard__link" disabled={busy} on:click={showAllAccounts}>
+        <button type="button" class="fancyLink steam-guard__link" disabled={busy} on:click={showAllAccounts}>
           <svg class="steam-guard__icon" viewBox={ICONS.list.box} aria-hidden="true"><path d={ICONS.list.path} /></svg>
           {$t("SteamGuard_Code_ShowAllAccounts")}
         </button>
@@ -2792,7 +2792,7 @@
         </div>
       {/if}
       <div class="steam-guard__footer">
-        <button type="button" class="steam-guard__link" disabled={busy} on:click={showAllAccounts}>
+        <button type="button" class="fancyLink steam-guard__link" disabled={busy} on:click={showAllAccounts}>
           <svg class="steam-guard__icon" viewBox={ICONS.list.box} aria-hidden="true"><path d={ICONS.list.path} /></svg>
           {$t("SteamGuard_Code_ShowAllAccounts")}
         </button>
@@ -2859,19 +2859,19 @@
         <p>{$t("SteamGuard_AllAccounts_Empty")}</p>
       {/if}
       <div class="steam-guard__footer">
-        <button type="button" class="steam-guard__link" disabled={busy} on:click={leaveAllAccounts}>
+        <button type="button" class="fancyLink steam-guard__link" disabled={busy} on:click={leaveAllAccounts}>
           <svg class="steam-guard__icon" viewBox={ICONS.back.box} aria-hidden="true"><path d={ICONS.back.path} /></svg>
           {pickerReturnAccount ? $t("SteamGuard_Back") : $t("Button_Close")}
         </button>
         <!-- The one way into the vault that needs no account picked first: an
              maFile carries its own identity. -->
-        <button type="button" class="steam-guard__link" disabled={busy} on:click={importFromAllAccounts}>
+        <button type="button" class="fancyLink steam-guard__link" disabled={busy} on:click={importFromAllAccounts}>
           <svg class="steam-guard__icon" viewBox={ICONS.fileExport.box} aria-hidden="true"><path d={ICONS.fileExport.path} /></svg>
           {$t("SteamGuard_Import_Title")}
         </button>
         <!-- The other way in that needs no account picked first: signing in
              names the account, the same way an maFile carries its own name. -->
-        <button type="button" class="steam-guard__link" disabled={busy} on:click={() => void showAddAccount()}>
+        <button type="button" class="fancyLink steam-guard__link" disabled={busy} on:click={() => void showAddAccount()}>
           <svg class="steam-guard__icon" viewBox={ICONS.plus.box} aria-hidden="true"><path d={ICONS.plus.path} /></svg>
           {$t("SteamGuard_AddAccount_Link")}
         </button>
@@ -3279,7 +3279,7 @@
 			<p role="status">{$t("SteamGuard_LoginAgain_Refreshing")}</p>
 			<div class="steam-guard__qr-progress" aria-hidden="true"></div>
 			<div class="steam-guard__footer">
-				<button type="button" class="steam-guard__link" disabled={busy} on:click={backToAccount}>
+				<button type="button" class="fancyLink steam-guard__link" disabled={busy} on:click={backToAccount}>
 					<svg class="steam-guard__icon" viewBox={ICONS.back.box} aria-hidden="true"><path d={ICONS.back.path} /></svg>
 					{$t("SteamGuard_Back")}
 				</button>
@@ -3686,23 +3686,23 @@
     padding-top: $sg-half;
   }
 
+  /* A link with a touch target: fancyLink strips the button chrome the themes
+     paint on, the size and ink are this row's own. */
   .steam-guard__link {
     display: inline-flex;
     align-items: center;
     gap: $sg-1;
-    width: auto;
     min-height: 2.75rem;
     padding: $sg-1 $sg-1;
-    border: 0;
     border-radius: 0.25rem;
-    background: transparent;
     color: var(--whiteSecondary, #d7d7d7);
     text-decoration: underline;
-    cursor: pointer;
   }
 
+  /* fancyLink forces the fill off so no theme can paint a button here; taking
+     the highlight back needs the same force. */
   .steam-guard__link:hover:not(:disabled) {
-    background: var(--role-dropdown-hover-bg, rgb(255 255 255 / 12%));
+    background: var(--role-dropdown-hover-bg, rgb(255 255 255 / 12%)) !important;
     color: var(--white, #fff);
   }
 

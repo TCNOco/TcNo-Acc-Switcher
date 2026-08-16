@@ -63,7 +63,7 @@
         {keyfilePath ? keyfilePath.split(/[\\/]/).pop() : $t("SteamGuard_Unlock_NoKeyfile")}
       </span>
       {#if keyfilePath}
-        <button type="button" class="steam-guard__link" disabled={busy} on:click={() => { keyfilePath = ""; }}>
+        <button type="button" class="fancyLink steam-guard__link" disabled={busy} on:click={() => { keyfilePath = ""; }}>
           {$t("SteamGuard_Unlock_ClearKeyfile")}
         </button>
       {/if}
@@ -111,18 +111,16 @@
     opacity: 0.8;
   }
 
+  /* A link with a touch target: fancyLink strips the button chrome the themes
+     paint on, the size and ink are this row's own. */
   .steam-guard__link {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    width: auto;
     min-height: 2.75rem;
     padding: 0.5rem;
-    border: 0;
     border-radius: 0.25rem;
-    background: transparent;
     color: var(--whiteSecondary, #d7d7d7);
     text-decoration: underline;
-    cursor: pointer;
   }
 </style>
