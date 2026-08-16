@@ -1,6 +1,20 @@
+/**
+ * Explorer's "Copy as path" wraps the path in double quotes. Nothing downstream
+ * takes them off - the Go side only trims and cleans - so a pasted path is
+ * rejected, and the quote also hides the drive letter from the Windows checks
+ * below. Only a matched pair is removed, so a lone quote is left as typed.
+ */
+export function stripSurroundingQuotes(p: string): string {
+  const s = p.trim();
+  if (s.length >= 2 && s.startsWith('"') && s.endsWith('"')) {
+    return s.slice(1, -1).trim();
+  }
+  return s;
+}
+
 export function normalizeDisplayPath(p: string): string {
   if (!p) return p;
-  let s = p.trim();
+  let s = stripSurroundingQuotes(p);
   const isWin = /^[a-zA-Z]:[\\/]/.test(s) || s.startsWith("\\\\");
   if (isWin) {
     s = s.replace(/\//g, "\\");

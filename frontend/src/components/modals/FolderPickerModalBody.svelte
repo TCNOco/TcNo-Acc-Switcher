@@ -7,7 +7,7 @@
   import { t } from "../../stores/i18n";
   import { FOLDER_PICKER_APPDATA, FOLDER_PICKER_PORTABLE } from "../../stores/modal";
   import * as FilesystemService from "../../../bindings/TcNo-Acc-Switcher/filesystemservice";
-  import { normalizeDisplayPath } from "../../lib/fsPaths";
+  import { normalizeDisplayPath, stripSurroundingQuotes } from "../../lib/fsPaths";
   import { tooltip } from "../../lib/actions/tooltip";
 
   export let html: string | undefined = undefined;
@@ -26,13 +26,15 @@
   let statSeq = 0;
   let pathStat: { exists: boolean; isDir: boolean } | null = null;
 
-  $: if (!path.trim()) {
+  $: enteredPath = stripSurroundingQuotes(path);
+
+  $: if (!enteredPath) {
     statSeq++;
     pathStat = null;
   }
 
-  $: if (path.trim()) {
-    const p = path.trim();
+  $: if (enteredPath) {
+    const p = enteredPath;
     const seq = ++statSeq;
     void FilesystemService.StatPath(p).then((st: { exists: boolean; isDir: boolean }) => {
       if (seq === statSeq) {
@@ -41,13 +43,8 @@
     });
   }
 
-  $: soughtMismatch =
-    !!soughtFilename.trim() &&
-    !path.toLowerCase().includes(soughtFilename.trim().toLowerCase());
-
   $: primaryDisabled = (() => {
-    const v = path.trim();
-    if (!v) return true;
+    if (!enteredPath) return true;
     if (!pathStat) return true;
     if (dirsOnly) {
       return !pathStat.exists || !pathStat.isDir;
@@ -55,13 +52,21 @@
     return !pathStat.exists || pathStat.isDir;
   })();
 
+  // The indicator turns green only when Select is actually usable. Matching the
+  // name alone once let a path that no longer exists - or a folder - read as
+  // "found" while Select stayed disabled and Enter did nothing.
+  $: soughtMismatch =
+    !!soughtFilename.trim() &&
+    (primaryDisabled ||
+      !enteredPath.toLowerCase().includes(soughtFilename.trim().toLowerCase()));
+
   let inputEl: HTMLInputElement | undefined;
   $: pathInputLabel = dirsOnly ? $t("Modal_SetUserdata_ChooseFolder") : positiveLabel;
   $: soughtFileId = "folder-picker-sought-file";
 
   function ok(): void {
     if (primaryDisabled) return;
-    const v = normalizeDisplayPath(path.trim());
+    const v = normalizeDisplayPath(enteredPath);
     if (!v) return;
     dispatch("resolve", v);
   }
@@ -161,7 +166,7 @@
     </button>
   </div>
   <PathPickerTree
-    selectedPath={path}
+    selectedPath={enteredPath}
     {dirsOnly}
     soughtFilename={soughtFilename.trim()}
     suggestedFolder={suggestedFolder.trim()}
