@@ -1,8 +1,12 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
+  import { get } from "svelte/store";
   import { viewportDropdown } from "../../lib/actions/viewportDropdown";
   import { dropdownDismiss } from "../../lib/actions/dropdownDismiss";
   import { t } from "../../stores/i18n";
+  import { route } from "../../stores/nav";
+  import { offlineMode } from "../../stores/offlineMode";
+  import { openAlert } from "../../stores/modal";
   import {
     closingValues,
     startingValues,
@@ -33,6 +37,19 @@
   function overrideLabel(v: number): string {
     const row = overrideStates.find((x) => x.v === v);
     return row ? $t(row.key) : $t("NoDefault");
+  }
+
+  // The picker needs Steam's relay list from the network, so offline mode has
+  // nothing to show it. Say so rather than opening an empty page.
+  async function openServerPicker(): Promise<void> {
+    if (get(offlineMode)) {
+      await openAlert({
+        title: $t("ServerPicker_Offline_Title"),
+        body: $t("ServerPicker_Offline_Body"),
+      });
+      return;
+    }
+    route.set({ page: "steam-server-picker" });
   }
 </script>
 
@@ -81,6 +98,11 @@
         dispatch("save");
       }}
     />
+  </div>
+  <div class="settings-actions">
+    <button type="button" on:click={() => void openServerPicker()}>
+      {$t("ServerPicker_Button")}
+    </button>
   </div>
 </SettingsGroup>
 

@@ -606,10 +606,20 @@ func (p Parsed) RunsBeforeSingleton() bool {
 	return p.IsListCommand() || p.Kind == KindCleanLegacyInstall
 }
 
+// SubPageRoutes maps --open-page values that name a sub-page rather than a
+// platform. A restart-as-admin from one of those pages has to land back where
+// the user was, and "Steam" alone would drop them on the account list.
+var SubPageRoutes = map[string]string{
+	"steam/serverpicker": `{"page":"steam-server-picker"}`,
+}
+
 // RouteJSONForOpenPage returns a JSON string for the Wails "navigate" event payload.
 func (p Parsed) RouteJSONForOpenPage() string {
 	if p.Kind != KindOpenPage || strings.TrimSpace(p.OpenPage) == "" {
 		return ""
+	}
+	if route, ok := SubPageRoutes[strings.ToLower(strings.TrimSpace(p.OpenPage))]; ok {
+		return route
 	}
 	name := strings.ReplaceAll(p.OpenPage, `\`, `\\`)
 	name = strings.ReplaceAll(name, `"`, `\"`)

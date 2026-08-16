@@ -9,6 +9,7 @@ export type Route =
   | { page: "platform-settings"; platformName: string }
   | { page: "steam-advanced-clearing" }
   | { page: "steam-confirmations" }
+  | { page: "steam-server-picker" }
   | { page: "steam-browser"; sessionId: string };
 
 export function serializeRoute(r: Route): string {
@@ -29,6 +30,8 @@ export function serializeRoute(r: Route): string {
       return "#/steam/advanced-clearing";
     case "steam-confirmations":
       return "#/steam/confirmations";
+    case "steam-server-picker":
+      return "#/steam/server-picker";
     case "steam-browser":
       return "#/steam/browser/" + encodeURIComponent(r.sessionId);
     default:
@@ -51,6 +54,7 @@ const ROUTE_PARSERS: Record<string, RouteParser> = {
     switch (p[1]?.toLowerCase()) {
       case "advanced-clearing": return { page: "steam-advanced-clearing" };
       case "confirmations":     return { page: "steam-confirmations" };
+      case "server-picker":     return { page: "steam-server-picker" };
       // The session id names which open window this chrome belongs to, so the
       // toolbar's commands reach the right content view.
       case "browser":           return p[2] ? { page: "steam-browser", sessionId: decodeURIComponent(p[2]) } : null;
@@ -89,6 +93,7 @@ export function validateRoute(r: Route, startup: PlatformStartup): Route {
       return nameOk(r.platformName) ? r : { page: "home" };
     case "steam-advanced-clearing":
     case "steam-confirmations":
+    case "steam-server-picker":
       return nameOk("Steam") ? r : { page: "home" };
     default:
       return r;

@@ -20,6 +20,8 @@ function routeToStatsPath(r: Route): string {
       return "/platform-settings/" + r.platformName;
     case "steam-advanced-clearing":
       return "/steam/advanced-clearing";
+    case "steam-server-picker":
+      return "/steam/server-picker";
     default:
       return "/";
   }

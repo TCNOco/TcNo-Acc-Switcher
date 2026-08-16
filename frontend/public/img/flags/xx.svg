@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-hidden="true">
+  <title>Unknown region</title>
+  <rect width="640" height="480" fill="#5b6478"/>
+  <g fill="none" stroke="#c8cedd" stroke-width="18">
+    <circle cx="320" cy="240" r="150"/>
+    <path d="M170 240h300"/>
+    <path d="M320 90c70 60 70 240 0 300-70-60-70-240 0-300z"/>
+    <path d="M205 145c65 40 165 40 230 0M205 335c65-40 165-40 230 0"/>
+  </g>
+</svg>

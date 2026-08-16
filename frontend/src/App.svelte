@@ -81,7 +81,8 @@
       r.page === "platform" ||
       r.page === "platform-settings" ||
       r.page === "steam-advanced-clearing" ||
-      r.page === "steam-confirmations";
+      r.page === "steam-confirmations" ||
+      r.page === "steam-server-picker";
     if (isPlatformPage && plat.hasImage) return plat;
     if (app.hasImage) return app;
     if (!userOverridden && themeBgUrl) {
@@ -152,7 +153,11 @@
     const r = $route;
     if (r.page === "platform" || r.page === "platform-settings") {
       void loadPlatformBg(r.platformName);
-    } else if (r.page === "steam-advanced-clearing" || r.page === "steam-confirmations") {
+    } else if (
+      r.page === "steam-advanced-clearing" ||
+      r.page === "steam-confirmations" ||
+      r.page === "steam-server-picker"
+    ) {
       void loadPlatformBg("Steam");
     } else {
       platformBgInfo.set({
@@ -506,6 +511,8 @@
             {:else if $route.page === "steam-advanced-clearing"}
               <Page />
             {:else if $route.page === "steam-confirmations"}
+              <Page />
+            {:else if $route.page === "steam-server-picker"}
               <Page />
             {:else if $route.page === "steam-browser"}
               <Page />

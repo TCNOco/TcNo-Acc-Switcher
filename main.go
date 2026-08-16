@@ -22,6 +22,7 @@ import (
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/security"
+	"TcNo-Acc-Switcher/internal/serverpicker"
 	"TcNo-Acc-Switcher/internal/shortcuts"
 	"TcNo-Acc-Switcher/internal/stability"
 	"TcNo-Acc-Switcher/internal/stats"
@@ -55,6 +56,7 @@ var (
 	steamBrowserSvc *steambrowser.Service
 	controllerSvc   = controllerinput.NewService()
 	securitySvc     = security.NewService()
+	serverPickerSvc = serverpicker.NewService()
 	discordRPC      = discordrpc.NewManager()
 
 	crashSubmitted bool
@@ -79,6 +81,8 @@ func init() {
 	application.RegisterEvent[platform.PlatformsJSONUpdatePayload](platform.PlatformsJSONUpdateFoundEvent)
 	application.RegisterEvent[platform.PlatformsJSONUpdatePayload](platform.PlatformsJSONUpdatedEvent)
 	application.RegisterEvent[platform.UserDataMoveProgressPayload](platform.UserDataMoveProgressEvent)
+	application.RegisterEvent[serverpicker.PingResult](serverpicker.PingEvent)
+	application.RegisterEvent[string](serverpicker.PingDoneEvent)
 
 	// Steam Guard enrollment adds accounts to the Steam account store from a
 	// package that holds no SteamService; this is how it asks for their avatars.
@@ -245,6 +249,7 @@ func serviceList() []application.Service {
 		application.NewService(securitySvc),
 		application.NewService(shortcuts.NewService(platformSvc)),
 		application.NewService(steamBrowserSvc),
+		application.NewService(serverPickerSvc),
 	}
 }
 

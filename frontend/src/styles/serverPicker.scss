@@ -1,0 +1,319 @@
+/* Steam Server Picker page. Colours come from the theme role contract in
+   theme.scss, so ping/loss buckets track whichever of the 22 themes is active. */
+
+/* The page owns the viewport height and only the table scrolls, so the footer
+   buttons sit at the bottom instead of riding up under a short server list. */
+.serverpicker-root {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  padding-bottom: 0.75rem;
+
+  /* .SettingsHeader's 1.25rem top margin is spacing between stacked settings
+     groups; as this page's first element it is just a gap at the top. Scoped
+     here so every other page keeps it. */
+  > .SettingsHeader {
+    margin-top: 0;
+  }
+}
+
+.serverpicker-note {
+  margin: 0 0 0.75rem;
+  color: var(--role-text-muted);
+  font-size: 0.85rem;
+}
+
+.serverpicker-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--role-warning);
+  border-radius: 4px;
+  background: var(--role-panel-bg, transparent);
+
+  span {
+    flex: 1 1 16rem;
+  }
+
+  button {
+    margin: 0;
+    min-height: 32px;
+  }
+}
+
+.serverpicker-error {
+  margin-bottom: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--role-error);
+  border-radius: 4px;
+  color: var(--role-error);
+}
+
+.serverpicker-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.serverpicker-select {
+  min-width: 11rem;
+  height: 34px;
+  padding: 0 0.5rem;
+  border: 1px solid var(--form-checkbox-border);
+  border-radius: 3px;
+  background: var(--role-field-bg, transparent);
+  color: inherit;
+}
+
+.serverpicker-search {
+  flex: 1 1 12rem;
+  min-width: 8rem;
+  height: 34px;
+  padding: 0 0.6rem;
+  border: 1px solid var(--form-checkbox-border);
+  border-radius: 3px;
+  background: var(--role-field-bg, transparent);
+  color: inherit;
+}
+
+.serverpicker-refresh {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  margin: 0;
+  padding: 0;
+
+  &.is-busy svg {
+    animation: serverpicker-spin 1s linear infinite;
+  }
+}
+
+@keyframes serverpicker-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .serverpicker-refresh.is-busy svg {
+    animation: none;
+  }
+}
+
+.serverpicker-table {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  border: 1px solid var(--form-checkbox-border);
+  border-radius: 4px;
+  overflow: auto;
+}
+
+.serverpicker-row {
+  display: grid;
+  align-items: center;
+  padding: 0.3rem 0.6rem;
+  /* Enabled | Server name | Server ID | Ping | Packet loss.
+     The last three are fixed and sized to their headers, so "Packet loss"
+     cannot wrap; Server takes the slack because it holds the longest text. */
+  grid-template-columns: 4.5rem minmax(10rem, 1fr) minmax(6rem, 9rem) 5.5rem 7.5rem;
+  border-bottom: 1px solid var(--form-checkbox-border);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &.is-blocked .serverpicker-name {
+    opacity: 0.55;
+    text-decoration: line-through;
+  }
+}
+
+/* Keeps the body rows' horizontal padding so headings sit on the same left
+   edge as the values beneath them, and drops the vertical padding so the
+   heading strip stays tight. */
+.serverpicker-row--head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 0 0.6rem;
+  background: var(--mainContentBackground, var(--role-panel-bg, inherit));
+  font-weight: 700;
+
+  > span {
+    padding: 0;
+  }
+}
+
+.serverpicker-sort {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.3rem;
+  width: 100%;
+  min-height: 28px;
+  /* No horizontal padding: any would offset the heading from the column it
+     labels. Vertical keeps the hit target usable. */
+  margin: 0;
+  padding: 0.2rem;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover,
+  &.is-active {
+    color: var(--accent);
+  }
+}
+
+/* Oversized against the 12px base text: at matching size a triangle this small
+   reads as a speck. Fixed width so the heading does not shift sideways when the
+   mark appears. */
+.serverpicker-sortmark {
+  width: 0.75em;
+  font-size: 1.25em;
+  line-height: 1;
+}
+
+.serverpicker-row--member {
+  opacity: 0.85;
+  font-size: 0.9em;
+
+  /* Indent the name only. Indenting the row would shift its grid, so a
+     member's ping and loss would no longer line up under its parent's. */
+  .serverpicker-cell--name {
+    padding-left: 1.1rem;
+  }
+}
+
+.serverpicker-cell--check {
+  display: flex;
+  align-items: center;
+}
+
+.serverpicker-cell--name {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.serverpicker-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.serverpicker-flag {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 16px;
+  border: 1px solid var(--form-checkbox-border);
+  object-fit: cover;
+}
+
+.serverpicker-expander {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.3rem;
+  height: 24px;
+  margin: 0;
+  padding: 0 0.45rem;
+  font-size: 0.95em;
+  line-height: 1;
+}
+
+.serverpicker-count {
+  opacity: 0.85;
+}
+
+/* A filled triangle, not a guillemet: at this size a stroked glyph reads as a
+   stray punctuation mark rather than a control. */
+.serverpicker-chevron {
+  display: inline-block;
+  font-size: 1.5em;
+  line-height: 1;
+  transition: transform 0.15s ease;
+
+  &.is-open {
+    transform: rotate(90deg);
+  }
+}
+
+.serverpicker-mono {
+  overflow: hidden;
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.q-good {
+  color: var(--role-success);
+}
+
+.q-fair {
+  color: var(--role-warning);
+}
+
+.q-poor {
+  color: var(--role-error);
+}
+
+.q-unknown {
+  color: var(--role-text-muted);
+}
+
+.serverpicker-spinner {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  border: 2px solid var(--role-text-muted);
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: serverpicker-spin 0.7s linear infinite;
+  vertical-align: -2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .serverpicker-spinner {
+    animation-duration: 2.4s;
+  }
+}
+
+.serverpicker-empty {
+  padding: 1.5rem 0.75rem;
+  color: var(--role-text-muted);
+  text-align: center;
+}
+
+.serverpicker-footer {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  /* .buttoncol ships a 48px bottom margin for scrolling pages; here it would
+     float the row off the bottom edge. */
+  margin: 0.75rem 0 0;
+}
+
+.serverpicker-bulk {
+  margin: 0;
+  min-height: 34px;
+}

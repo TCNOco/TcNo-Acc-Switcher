@@ -171,6 +171,12 @@ BUNDLED_ASSET_LICENSES = (
         "license_file": "frontend/public/Montserrat-OFL.txt",
         "evidence": "bundled asset license file",
     },
+    {
+        "name": "flag-icons",
+        "version": "7.5.0 (4x3 SVG subset bundled in frontend/public/img/flags)",
+        "license_file": "frontend/public/img/flags/flag-icons-LICENSE.txt",
+        "evidence": "bundled asset license file",
+    },
 )
 
 
