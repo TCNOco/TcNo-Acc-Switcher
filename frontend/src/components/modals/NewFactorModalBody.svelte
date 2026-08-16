@@ -87,9 +87,11 @@
 
   <div class="new-factor__actions">
     <button type="button" class="btnicontext" on:click={() => finish(null)}>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.6 2.9 12 10.3l7.4-7.4 1.7 1.7L13.7 12l7.4 7.4-1.7 1.7L12 13.7l-7.4 7.4-1.7-1.7L10.3 12 2.9 4.6z"/></svg>
       {$t("Button_Cancel")}
     </button>
     <button type="button" class="btnicontext modal-positive" on:click={submit}>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.2 12.0 5.6 9.6l3.8 3.8L18.4 4.4l2.4 2.4L9.4 18.2z"/></svg>
       {confirmLabel || $t("Ok")}
     </button>
   </div>

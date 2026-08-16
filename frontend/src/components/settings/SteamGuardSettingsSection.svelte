@@ -551,6 +551,7 @@
            offers an action that would do nothing. -->
       {#if configured && $steamGuardSettings.status.unlocked}
         <button type="button" class="btnicontext" disabled={busy} on:click={() => void lockNow()}>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true"><path d="M400 224h-24v-72C376 68.2 307.8 0 224 0S72 68.2 72 152v72H48c-26.5 0-48 21.5-48 48v192c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V272c0-26.5-21.5-48-48-48zm-104 0H152v-72c0-39.7 32.3-72 72-72s72 32.3 72 72v72z" /></svg>
           {$t("SteamGuard_Settings_LockNow")}
         </button>
       {/if}
@@ -564,9 +565,11 @@
     </code>
     <span class="steam-guard-actions">
       <button type="button" class="btnicontext" disabled={!ready || !path || busy} aria-describedby={pathId} on:click={() => void copyPath()}>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true"><path d="M320 448v40c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24V120c0-13.255 10.745-24 24-24h72v296c0 30.879 25.121 56 56 56h168zm0-344V0H152c-13.255 0-24 10.745-24 24v368c0 13.255 10.745 24 24 24h272c13.255 0 24-10.745 24-24V128H344c-13.2 0-24-10.8-24-24zm120.971-31.029L375.029 7.029A24 24 0 0 0 358.059 0H352v96h96v-6.059a24 24 0 0 0-7.029-16.97z" /></svg>
         {$t("SteamGuard_Settings_CopyPath")}
       </button>
       <button type="button" class="btnicontext" disabled={!ready || !path || busy} aria-describedby={pathId} on:click={() => void openFolder()}>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 5.5A1.5 1.5 0 0 1 3.5 4h5.2a1.5 1.5 0 0 1 1.06.44L12 6.5h5.5A1.5 1.5 0 0 1 19 8v2.6H6.4L4.3 19.9A1.5 1.5 0 0 1 2 18.6ZM8 12.2h14l-3.1 9.6H5.9Z"/></svg>
         {$t("SteamGuard_Settings_OpenFolder")}
       </button>
     </span>
@@ -588,6 +591,7 @@
         aria-describedby={warningId}
         on:click={() => void createBackup()}
       >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M2 3.5A1.5 1.5 0 0 1 3.5 2h17A1.5 1.5 0 0 1 22 3.5v3A1.5 1.5 0 0 1 20.5 8h-17A1.5 1.5 0 0 1 2 6.5Zm1.5 6.1h17v10A2.4 2.4 0 0 1 18.1 22H5.9a2.4 2.4 0 0 1-2.4-2.4Zm5.7 2.8h5.6v2.4H9.2Z"/></svg>
         {$t("SteamGuard_Settings_CreateBackup")}
       </button>
     {/if}
@@ -598,6 +602,7 @@
       aria-describedby={warningId}
       on:click={() => void restoreFromBackup()}
     >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.4 15.2A6.6 6.6 0 1 1 21.6 15.2 6.6 6.6 0 1 1 8.4 15.2zM13.9 16.3h5.8v-2.2h-3.6V10.4h-2.2zM16.69 3.69A10 10 0 0 0 3.61 12.85L5.7 12.92A7.9 7.9 0 0 1 16.04 5.69zM2.16 12.8L4.49 17.89 7.16 12.98z"/></svg>
       {$t("SteamGuard_Settings_Restore")}
     </button>
     <span class="steam-guard-backup-status" role="status" aria-live="polite">
@@ -636,14 +641,17 @@
       <span class="steam-guard-actions">
         {#if factorStatus && !factorStatus.passwordOpens}
           <button type="button" class="btnicontext" disabled={busy} on:click={() => void enrollPassword()}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 6A6 6 0 1 1 7 18 6 6 0 1 1 7 6ZM7 9.4A2.6 2.6 0 1 0 7 14.6 2.6 2.6 0 1 0 7 9.4ZM11 10.2H22.5V17.5H19.8V13.8H17.3V18.5H14.8V13.8H11Z"/></svg>
             {$t("SteamGuard_Factors_AddPassword")}
           </button>
         {:else}
           <button type="button" class="btnicontext" disabled={!configured || busy} on:click={() => void changePassword()}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.73 2.73 21.27 6.27 11.27 16.27 5.61 18.39 7.73 12.73Z"/></svg>
             {$t("SteamGuard_Settings_ChangePassword")}
           </button>
         {/if}
         <button type="button" class="btnicontext" disabled={busy} on:click={() => void createBackupKey()}>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 6A6 6 0 1 1 7 18 6 6 0 1 1 7 6ZM7 9.4A2.6 2.6 0 1 0 7 14.6 2.6 2.6 0 1 0 7 9.4ZM11 10.2H22.5V17.5H19.8V13.8H17.3V18.5H14.8V13.8H11Z"/></svg>
           {factorStatus?.hasBackupKey
             ? $t("SteamGuard_Factors_ReplaceBackupKey")
             : $t("SteamGuard_Factors_CreateBackupKey")}
@@ -653,11 +661,13 @@
              vault. Removal happens from its row above. -->
         {#if !factorStatus?.hasKeyfile}
           <button type="button" class="btnicontext" disabled={busy} on:click={() => void enrollKeyfile()}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M6.5 2h7.1L20 8.4v11.1A2.5 2.5 0 0 1 17.5 22h-11A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Zm1 9.5h9v2h-9Zm0 3.6h9v2h-9Zm0 3.6h6v2h-6Z"/></svg>
             {$t("SteamGuard_Factors_AddKeyfile")}
           </button>
         {/if}
         {#if securityKeySupport?.available}
           <button type="button" class="btnicontext" disabled={busy} on:click={() => void openSecurityKeys()}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.6 21.5 5.2V11.4C21.5 16.6 17.6 20.6 12 22.4 6.4 20.6 2.5 16.6 2.5 11.4V5.2Z"/></svg>
             {$t("SteamGuard_Factors_SecurityKeysTitle")}
           </button>
         {/if}

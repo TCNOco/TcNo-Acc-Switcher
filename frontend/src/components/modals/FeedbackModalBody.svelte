@@ -93,6 +93,7 @@
   <div class="modal-inline-actions settingsCol inputAndButton">
     <span class="modal-actions-spacer"></span>
     <button type="button" class="btnicontext" on:click={cancel}>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.6 2.9 12 10.3l7.4-7.4 1.7 1.7L13.7 12l7.4 7.4-1.7 1.7L12 13.7l-7.4 7.4-1.7-1.7L10.3 12 2.9 4.6z"/></svg>
       {$t("Button_Cancel")}
     </button>
     <button
@@ -101,6 +102,7 @@
       disabled={submitDisabled}
       on:click={submit}
     >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
       {$t("Feedback_Submit")}
     </button>
   </div>

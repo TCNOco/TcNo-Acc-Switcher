@@ -301,7 +301,7 @@
   {#if !elevated}
     <div class="serverpicker-banner" role="status">
       <span>{$t("ServerPicker_NeedsAdmin")}</span>
-      <button type="button" on:click={() => void offerRestart()}>{$t("ServerPicker_RestartAsAdmin")}</button>
+      <button type="button" class="btnicontext" on:click={() => void offerRestart()}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.6 21.5 5.2V11.4C21.5 16.6 17.6 20.6 12 22.4 6.4 20.6 2.5 16.6 2.5 11.4V5.2Z"/></svg>{$t("ServerPicker_RestartAsAdmin")}</button>
     </div>
   {/if}
 

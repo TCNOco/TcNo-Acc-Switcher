@@ -590,6 +590,7 @@
       aria-pressed={commandPaletteHotkeyCaptureActive}
       on:click={toggleCommandPaletteHotkeyCapture}
     >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4.5h16a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3H4a3 3 0 0 1-3-3v-9a3 3 0 0 1 3-3zM4 7h4v2H4zm6 0h4v2h-4zm6 0h4v2h-4zM4 11h4v2H4zm6 0h4v2h-4zm6 0h4v2h-4zM7 15h10v2H7z" fill-rule="evenodd"/></svg>
       {commandPaletteHotkeyCaptureActive ? $t("Settings_CommandPaletteHotkey_Prompt") : $commandPaletteHotkey}
     </button>
   </SettingsField>
@@ -680,10 +681,12 @@
   <div class="settings-actions">
     {#if $securityStatus.appPasswordSet}
       <button type="button" class="btnicontext" disabled={$securityLoading} on:click={() => void onRemoveAppPassword()}>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 10V8A5.5 5.5 0 0 1 13.5 8V13H10.5V8A2.5 2.5 0 0 0 5.5 8V10ZM9.8 11H20.2A1.8 1.8 0 0 1 22 12.8V20.7A1.8 1.8 0 0 1 20.2 22.5H9.8A1.8 1.8 0 0 1 8 20.7V12.8A1.8 1.8 0 0 1 9.8 11Z"/></svg>
         {$t("Security_RemoveAppPassword")}
       </button>
     {:else}
       <button type="button" class="btnicontext" disabled={$securityLoading} on:click={() => void onSetAppPassword()}>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 6A6 6 0 1 1 7 18 6 6 0 1 1 7 6ZM7 9.4A2.6 2.6 0 1 0 7 14.6 2.6 2.6 0 1 0 7 9.4ZM11 10.2H22.5V17.5H19.8V13.8H17.3V18.5H14.8V13.8H11Z"/></svg>
         {$t("Security_SetAppPassword")}
       </button>
     {/if}
@@ -708,6 +711,7 @@
       <span>{$t("Security_InterruptedRestorePending")}</span>
       <div class="settings-card__row">
         <button type="button" class="btnicontext" disabled={$securityLoading} on:click={() => void onRepairInterruptedRestore()}>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5.41 2.59A6 6 0 1 1 2.59 5.41L5.67 8.49A2 2 0 0 0 8.49 5.67zM12.3 8.56L21.5 18.1A2.4 2.4 0 0 1 18.1 21.5L8.9 11.96z"/></svg>
           {$t("Security_InterruptedRestore_Repair")}
         </button>
       </div>
@@ -721,9 +725,11 @@
         <div class="settings-card__row">
           <span class="settings-path">{q.accounts.join(", ")}</span>
           <button type="button" class="btnicontext" disabled={$securityLoading} on:click={() => void onRetryQuarantine(q.id)}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true"><path d="M463.5 224H472c13.3 0 24-10.7 24-24V72c0-9.7-5.8-18.5-14.8-22.2s-19.3-1.7-26.2 5.2L413.4 96.6c-87.6-86.5-228.7-86.2-315.8 1c-87.5 87.5-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3c62.2-62.2 162.7-62.5 225.3-1l-30.4 30.4c-6.9 6.9-8.9 17.2-5.2 26.2s12.5 14.8 22.2 14.8H463.5z"/></svg>
             {$t("Security_QuarantineRetry")}
           </button>
           <button type="button" class="btnicontext" disabled={$securityLoading} on:click={() => void onDeleteQuarantine(q.id)}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M9.5 2h5a1.5 1.5 0 0 1 1.5 1.5V4h4.5a1.2 1.2 0 0 1 1.2 1.2v1.6A1.2 1.2 0 0 1 20.5 8h-17A1.2 1.2 0 0 1 2.3 6.8V5.2A1.2 1.2 0 0 1 3.5 4H8v-.5A1.5 1.5 0 0 1 9.5 2ZM4.9 9.4H19.1L18.1 20.2A2 2 0 0 1 16.11 22H7.89A2 2 0 0 1 5.9 20.2L4.9 9.4ZM9.3 12.2h1.9v7.2H9.3zM12.8 12.2h1.9v7.2h-1.9z"/></svg>
             {$t("Security_QuarantineDelete")}
           </button>
         </div>
@@ -783,6 +789,7 @@
 
   <div class="settings-actions">
     <button type="button" class="btnicontext" on:click={() => void openStatsModal()}>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 13h3a1 1 0 0 1 1 1v6.5a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1V14a1 1 0 0 1 1-1zM10.5 5.5h3a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1v-14a1 1 0 0 1 1-1zM17.5 9.5h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1v-10a1 1 0 0 1 1-1z"/></svg>
       {$t("Settings_ViewStats")}
     </button>
   </div>
@@ -796,6 +803,7 @@
       disabled={$updateCheckLoading}
       on:click={() => void onCheckForUpdates(updateCheckLoading)}
     >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true"><path d="M463.5 224H472c13.3 0 24-10.7 24-24V72c0-9.7-5.8-18.5-14.8-22.2s-19.3-1.7-26.2 5.2L413.4 96.6c-87.6-86.5-228.7-86.2-315.8 1c-87.5 87.5-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3c62.2-62.2 162.7-62.5 225.3-1l-30.4 30.4c-6.9 6.9-8.9 17.2-5.2 26.2s12.5 14.8 22.2 14.8H463.5z"/></svg>
       {$t("Button_CheckForUpdates")}
     </button>
     <SettingsToggle
@@ -806,6 +814,7 @@
       on:change={() => void prereleaseUpdates.toggle()}
     />
     <button type="button" class="btnicontext" on:click={() => void openFeedbackModal({ mode: "suggestion" })}>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5c-4.2 0-7.5 3.3-7.5 7.3 0 2.5 1.3 4.3 2.4 5.6.6.7 1 1.3 1.2 1.9h7.8c.2-.6.6-1.2 1.2-1.9 1.1-1.3 2.4-3.1 2.4-5.6 0-4-3.3-7.3-7.5-7.3zM8.2 18.2h7.6v2.4H8.2v-2.4zm1 3.6h5.6c-.6 1.3-1.6 2.2-2.8 2.2s-2.2-.9-2.8-2.2z"/></svg>
       {$t("Settings_SuggestFeature")}
     </button>
   </SettingsField>

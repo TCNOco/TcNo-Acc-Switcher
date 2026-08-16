@@ -126,6 +126,7 @@
 
   <div class="stats-report__actions">
     <button type="button" class="btnicontext" disabled={resetBusy} on:click={() => void onReset()}>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M9.5 2h5a1.5 1.5 0 0 1 1.5 1.5V4h4.5a1.2 1.2 0 0 1 1.2 1.2v1.6A1.2 1.2 0 0 1 20.5 8h-17A1.2 1.2 0 0 1 2.3 6.8V5.2A1.2 1.2 0 0 1 3.5 4H8v-.5A1.5 1.5 0 0 1 9.5 2ZM4.9 9.4H19.1L18.1 20.2A2 2 0 0 1 16.11 22H7.89A2 2 0 0 1 5.9 20.2L4.9 9.4ZM9.3 12.2h1.9v7.2H9.3zM12.8 12.2h1.9v7.2h-1.9z"/></svg>
       {$t("Settings_ClearStats")}
     </button>
   </div>

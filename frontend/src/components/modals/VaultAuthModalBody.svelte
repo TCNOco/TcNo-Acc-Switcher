@@ -134,10 +134,12 @@
             {keyfilePath ? keyfileName(keyfilePath) : $t("SteamGuard_Unlock_NoKeyfile")}
           </span>
           <button type="button" class="btnicontext" disabled={picking} on:click={() => void chooseKeyfile()}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M6.5 2h7.1L20 8.4v11.1A2.5 2.5 0 0 1 17.5 22h-11A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Zm1 9.5h9v2h-9Zm0 3.6h9v2h-9Zm0 3.6h6v2h-6Z"/></svg>
             {$t("SteamGuard_Unlock_ChooseKeyfile")}
           </button>
           {#if keyfilePath}
             <button type="button" class="btnicontext" on:click={() => { keyfilePath = ""; }}>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.6 2.9 12 10.3l7.4-7.4 1.7 1.7L13.7 12l7.4 7.4-1.7 1.7L12 13.7l-7.4 7.4-1.7-1.7L10.3 12 2.9 4.6z"/></svg>
               {$t("Button_Cancel")}
             </button>
           {/if}
@@ -162,6 +164,7 @@
 
   <div class="vault-auth__actions">
     <button type="button" class="btnicontext" on:click={() => finish(null)}>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.6 2.9 12 10.3l7.4-7.4 1.7 1.7L13.7 12l7.4 7.4-1.7 1.7L12 13.7l-7.4 7.4-1.7-1.7L10.3 12 2.9 4.6z"/></svg>
       {$t("Button_Cancel")}
     </button>
     <!-- Always shown, so the option is not conditional on the user noticing
@@ -173,9 +176,11 @@
       title={securityKeyBlocked && !usesSecurityKey ? $t("SteamGuard_Unlock_NoSecurityKey") : ""}
       on:click={submitWithSecurityKey}
     >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.6 21.5 5.2V11.4C21.5 16.6 17.6 20.6 12 22.4 6.4 20.6 2.5 16.6 2.5 11.4V5.2Z"/></svg>
       {$t("SteamGuard_Unlock_SecurityKey")}
     </button>
     <button type="button" class="btnicontext modal-positive" disabled={!canSubmit} on:click={submit}>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.2 12.0 5.6 9.6l3.8 3.8L18.4 4.4l2.4 2.4L9.4 18.2z"/></svg>
       {confirmLabel || $t("Ok")}
     </button>
   </div>

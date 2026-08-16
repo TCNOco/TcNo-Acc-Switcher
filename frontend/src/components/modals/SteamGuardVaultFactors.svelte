@@ -56,6 +56,7 @@
   {#if pickKeyfile}
     <div class="steam-guard__keyfile-row">
       <button type="button" class="btnicontext" disabled={busy} on:click={() => void chooseKeyfile()}>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M6.5 2h7.1L20 8.4v11.1A2.5 2.5 0 0 1 17.5 22h-11A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Zm1 9.5h9v2h-9Zm0 3.6h9v2h-9Zm0 3.6h6v2h-6Z"/></svg>
         {$t("SteamGuard_Unlock_ChooseKeyfile")}
       </button>
       <span class="steam-guard__keyfile-name">

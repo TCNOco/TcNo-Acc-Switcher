@@ -87,9 +87,11 @@
       title={addBlockedReason}
       on:click={() => finish(onAdd)}
     >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2A10 10 0 1 0 12 22A10 10 0 1 0 12 2ZM10 6L14 6L14 10L18 10L18 14L14 14L14 18L10 18L10 14L6 14L6 10L10 10Z"/></svg>
       {$t("SteamGuard_Factors_AddSecurityKey")}
     </button>
     <button type="button" class="btnicontext modal-positive" on:click={() => finish(onClose)}>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.2 12.0 5.6 9.6l3.8 3.8L18.4 4.4l2.4 2.4L9.4 18.2z"/></svg>
       {$t("SteamGuard_Close")}
     </button>
   </div>

@@ -158,7 +158,8 @@
     <span class="steam-adv-ack-text">{$t("Cleaning_Understand")}</span>
   </div>
 
-  <button type="button" disabled={!acceptedRisk || busy} on:click={() => void runAction("close_steam")}>
+  <button type="button" class="btnicontext" disabled={!acceptedRisk || busy} on:click={() => void runAction("close_steam")}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.35 6.25A8.2 8.2 0 1 1 7.65 6.25L9.03 8.45A5.6 5.6 0 1 0 14.97 8.45zM12 2.2a1.4 1.4 0 0 1 1.4 1.4v6a1.4 1.4 0 0 1-2.8 0v-6A1.4 1.4 0 0 1 12 2.2z"/></svg>
     {$t("Cleaning_Button_KillProcess", { platform: "Steam" })}
   </button>
 
@@ -210,7 +211,7 @@
         {/if}
       </div>
       <div class="steam-adv-log-actions">
-        <button type="button" class="steam-adv-clear-log" on:click={clearLog}>{$t("Button_ClearLog")}</button>
+        <button type="button" class="steam-adv-clear-log btnicontext" on:click={clearLog}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M14.12 3.22 19.78 8.88 9.66 19 7.28 19 2.81 14.53ZM8.89 8.45 14.55 14.11 16.11 12.55 10.45 6.89ZM2 19h20v2.6H2z"/></svg>{$t("Button_ClearLog")}</button>
       </div>
     </div>
   </div>

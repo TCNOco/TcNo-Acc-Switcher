@@ -137,6 +137,7 @@
         class="btnicontext"
         on:click={appData}
       >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 5.5A1.5 1.5 0 0 1 3.5 4h5.2a1.5 1.5 0 0 1 1.06.44L12 6.5h8.5A1.5 1.5 0 0 1 22 8v10.5a1.5 1.5 0 0 1-1.5 1.5h-17A1.5 1.5 0 0 1 2 18.5Z"/></svg>
         AppData
       </button>
       <button
@@ -145,6 +146,7 @@
         use:tooltip={$t("Tooltip_PortableMode")}
         on:click={portable}
       >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M2 3.5A1.5 1.5 0 0 1 3.5 2h17A1.5 1.5 0 0 1 22 3.5v3A1.5 1.5 0 0 1 20.5 8h-17A1.5 1.5 0 0 1 2 6.5Zm1.5 6.1h17v10A2.4 2.4 0 0 1 18.1 22H5.9a2.4 2.4 0 0 1-2.4-2.4Zm5.7 2.8h5.6v2.4H9.2Z"/></svg>
         {$t("Button_PortableMode")}
       </button>
     {/if}
@@ -154,6 +156,7 @@
       disabled={primaryDisabled}
       on:click={ok}
     >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.2 12.0 5.6 9.6l3.8 3.8L18.4 4.4l2.4 2.4L9.4 18.2z"/></svg>
       {positiveLabel}
     </button>
   </div>
