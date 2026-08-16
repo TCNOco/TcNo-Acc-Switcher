@@ -53,7 +53,7 @@
   box-shadow: none;
   font-weight: 900;
   color: var(--platform-tile-fg, var(--accent-text-heading, var(--accent)));
-  text-shadow: 2px 2px 10px var(--shadow-color-60);
+  text-shadow: var(--platform-tile-shadow, 2px 2px 10px var(--shadow-color-60));
   text-align: center;
 
   position: relative;

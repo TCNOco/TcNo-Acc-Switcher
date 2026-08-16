@@ -63,7 +63,12 @@ export function rgbToHsl({ r, g, b }: { r: number; g: number; b: number }): { h:
   };
 }
 
-function relativeLuminance({ r, g, b }: { r: number; g: number; b: number }): number {
+/**
+ * WCAG relative luminance, 0 (black) to 1 (white). Mirrors relativeLuminance in
+ * internal/platform/background_luma.go — the two must agree, or a background
+ * measured by the backend would be judged differently from one sampled here.
+ */
+export function relativeLuminance({ r, g, b }: { r: number; g: number; b: number }): number {
   const channel = (value: number): number => {
     const normalized = value / 255;
     return normalized <= 0.03928 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4;
@@ -72,7 +77,8 @@ function relativeLuminance({ r, g, b }: { r: number; g: number; b: number }): nu
   return (0.2126 * channel(r)) + (0.7152 * channel(g)) + (0.0722 * channel(b));
 }
 
-function contrastRatio(first: { r: number; g: number; b: number }, second: { r: number; g: number; b: number }): number {
+/** WCAG contrast ratio between two colours, 1 (identical) to 21 (black on white). */
+export function contrastRatio(first: { r: number; g: number; b: number }, second: { r: number; g: number; b: number }): number {
   const lighter = Math.max(relativeLuminance(first), relativeLuminance(second));
   const darker = Math.min(relativeLuminance(first), relativeLuminance(second));
   return (lighter + 0.05) / (darker + 0.05);

@@ -85,6 +85,33 @@ body {
     -webkit-backdrop-filter: blur(var(--page-surface-blur)) saturate(var(--page-surface-saturate));
 }
 
+/* ── Text that sits straight on the wallpaper ────────────────────────────
+   `data-backdrop` appears only once the background has actually been measured,
+   so a theme keeps its own colours until there is evidence to overrule them.
+   Its value is the ink polarity: light text means a dark picture underneath. */
+:root[data-backdrop] .page--has-bg {
+    --platform-tile-fg: var(--auto-ink);
+}
+
+/* The picture varies too much for one colour to win everywhere — a photo of
+   bright sky over dark ground defeats white and black alike. So the text stops
+   relying on the pixels behind it and carries its own contrast in a halo. */
+:root[data-backdrop-busy="true"] .page--has-bg {
+    --platform-tile-shadow:
+        0 1px 2px var(--auto-ink-scrim),
+        0 0 8px var(--auto-ink-scrim),
+        0 0 16px var(--auto-ink-scrim);
+}
+
+/* Forced-colours mode picks every colour itself; adapting to a wallpaper there
+   would fight the user's own high-contrast choice. */
+@media (forced-colors: active) {
+    :root[data-backdrop] .page--has-bg {
+        --platform-tile-fg: CanvasText;
+        --platform-tile-shadow: none;
+    }
+}
+
 .main-spacing {
     padding-top: var(--main-padding, .75rem);
     padding-right: var(--main-padding, .75rem);

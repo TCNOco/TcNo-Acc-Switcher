@@ -58,6 +58,8 @@
   import { appBgInfo, platformBgInfo, userOverriddenAppBg, UNMEASURED_LUMA } from "./stores/backgroundImage";
   import type { AppBackgroundInfo } from "./stores/backgroundImage";
   import { currentThemeBgUrl } from "./lib/themes";
+  import { currentThemeId } from "./lib/theme/stores";
+  import { syncBackdropInk, applyBackdropInk } from "./lib/theme/backdropDom";
   import {
     backgroundObjectPosition,
     normalizeBackgroundAlignment,
@@ -115,6 +117,28 @@
     if (appBgLoaded && platformBgPending === 0) activeBg = next;
   }
   $: showActionBar = $route.page === "home" || $route.page === "platform";
+
+  // Content sitting straight on the wallpaper needs a text colour chosen for that
+  // wallpaper, not for the theme. Re-derived whenever the background changes, and
+  // again when the theme does, since the theme colour is half of what the image is
+  // composited against.
+  let bgLayerEl: HTMLImageElement | null = null;
+  $: {
+    void $currentThemeId;
+    if (activeBg?.hasImage) {
+      syncBackdropInk(activeBg.luma, activeBg.opacity, bgLayerEl);
+    } else {
+      applyBackdropInk(null);
+    }
+  }
+
+  /** Backgrounds the backend never measured get sampled once the image decodes. */
+  function onBgLayerLoad(event: Event): void {
+    bgLayerEl = event.currentTarget as HTMLImageElement;
+    if (activeBg?.hasImage && !activeBg.luma?.measured) {
+      syncBackdropInk(activeBg.luma, activeBg.opacity, bgLayerEl);
+    }
+  }
 
   let restoreRepairPromptOpen = false;
   let restoreRepairPromptDismissed = false;
@@ -495,6 +519,7 @@
           aria-hidden="true"
           in:fade={{ duration: motionEnabled() ? 350 : 0, easing: cubicOut }}
           out:fade={{ duration: motionEnabled() ? 250 : 0, easing: cubicOut }}
+          on:load={onBgLayerLoad}
           style="object-fit: {normalizeBackgroundFit(activeBg.fit)}; object-position: {backgroundObjectPosition(normalizeBackgroundAlignment(activeBg.alignment))}; opacity: {activeBg.opacity}; filter: blur({activeBg.blur}px);"
         />
       {/if}
