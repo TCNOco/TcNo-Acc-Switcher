@@ -101,7 +101,9 @@ $red: #b96552;
   --text-muted-gray: #{$muted};
   --text-subtle-gray: #8f987b;
   --text-dim-gray: #7b846a;
-  --text-body-muted: #{$muted};
+  /* Lifted off $muted: as note text on the settings sheet it needs 4.5:1, which
+     the palette's own muted olive misses. $muted still drives everything else. */
+  --text-body-muted: #bac0a8;
   --surface-panel-bg: #{$panel};
   /* The 2003 client was opaque olive panels over the desktop, never translucent. */
   --page-surface-tint: #{$panel};
