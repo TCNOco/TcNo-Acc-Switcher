@@ -58,13 +58,11 @@
         if (zone === "app") {
           await PlatformService.SetAppBackground(paths[0]);
           const appInfo = await PlatformService.GetAppBackground();
-          if (appInfo.imageUrl) appInfo.imageUrl += `?t=${Date.now()}`;
           appBgInfo.set(appInfo); // appInfo.themeBgOverride is true — backend auto-sets it
           pushToast({ type: "success", message: get(t)("Toast_AppBgSet"), duration: 4000 });
         } else if (zone === "platform" && platform) {
           await PlatformService.SetPlatformBackground(platform, paths[0]);
           const platInfo = await PlatformService.GetPlatformBackground(platform);
-          if (platInfo.imageUrl) platInfo.imageUrl += `?t=${Date.now()}`;
           platformBgInfo.set(platInfo);
           pushToast({
             type: "success",

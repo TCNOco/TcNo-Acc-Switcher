@@ -109,6 +109,33 @@ func bgInstallFile(src, dir, prefix, ext string) (string, error) {
 	return dstName, nil
 }
 
+// bgInstallDir is where installed background images live, or "" when wwwroot cannot be
+// resolved. That only costs the cache-busting token below, so it is not worth failing a
+// background read over.
+func bgInstallDir() string {
+	wwwroot, err := WwwrootDir()
+	if err != nil {
+		return ""
+	}
+	return bgDir(wwwroot)
+}
+
+// bgCacheToken identifies the bytes currently installed under name. Installed files are
+// named prefix+ext, so replacing an image with one of the same type reuses the filename —
+// and, without a token, the URL, leaving the WebView free to keep serving the image it
+// already cached. Size and mtime both change on install and neither changes while the
+// image does not, so the URL stays cacheable until the image is actually replaced.
+func bgCacheToken(dir, name string) string {
+	if dir == "" || name == "" {
+		return ""
+	}
+	st, err := os.Stat(filepath.Join(dir, name))
+	if err != nil {
+		return ""
+	}
+	return fmt.Sprintf("%d-%d", st.ModTime().UnixNano(), st.Size())
+}
+
 func normalizeBackgroundAlignment(alignment string) string {
 	value := strings.ToLower(strings.TrimSpace(alignment))
 	switch value {
@@ -129,7 +156,7 @@ func normalizeBackgroundFit(fit string) string {
 	}
 }
 
-func buildAppBgInfo(img string, opacity, blur float64, alignment, fit string, override bool, luma BackgroundLuma) AppBackgroundInfo {
+func buildAppBgInfo(img string, opacity, blur float64, alignment, fit string, override bool, luma BackgroundLuma, cacheToken string) AppBackgroundInfo {
 	alignment = normalizeBackgroundAlignment(alignment)
 	fit = normalizeBackgroundFit(fit)
 	if img == "" {
@@ -143,9 +170,13 @@ func buildAppBgInfo(img string, opacity, blur float64, alignment, fit string, ov
 	if bl < 0 {
 		bl = defaultBgBlur
 	}
+	url := "/" + bgSubDir + "/" + img
+	if cacheToken != "" {
+		url += "?_tcv=" + cacheToken
+	}
 	return AppBackgroundInfo{
 		HasImage:        true,
-		ImageURL:        "/" + bgSubDir + "/" + img,
+		ImageURL:        url,
 		Opacity:         op,
 		Blur:            bl,
 		Alignment:       alignment,
@@ -179,7 +210,7 @@ func (p *PlatformService) GetAppBackground() (AppBackgroundInfo, error) {
 	if err != nil {
 		return AppBackgroundInfo{}, err
 	}
-	return buildAppBgInfo(s.AppBgImage, s.AppBgOpacity, s.AppBgBlur, s.AppBgAlignment, s.AppBgFit, s.ThemeBgOverride, s.AppBgLuma), nil
+	return buildAppBgInfo(s.AppBgImage, s.AppBgOpacity, s.AppBgBlur, s.AppBgAlignment, s.AppBgFit, s.ThemeBgOverride, s.AppBgLuma, bgCacheToken(bgInstallDir(), s.AppBgImage)), nil
 }
 
 func (p *PlatformService) SetAppBackground(imagePath string) error {
@@ -359,7 +390,7 @@ func (p *PlatformService) GetPlatformBackground(platformKey string) (AppBackgrou
 	if !ok {
 		return AppBackgroundInfo{Opacity: defaultBgOpacity, Blur: defaultBgBlur, Alignment: defaultBgAlignment, Fit: defaultBgFit}, nil
 	}
-	return buildAppBgInfo(ps.Image, ps.Opacity, ps.Blur, ps.Alignment, ps.Fit, false, ps.Luma), nil
+	return buildAppBgInfo(ps.Image, ps.Opacity, ps.Blur, ps.Alignment, ps.Fit, false, ps.Luma, bgCacheToken(bgInstallDir(), ps.Image)), nil
 }
 
 func (p *PlatformService) SetPlatformBackground(platformKey, imagePath string) error {
