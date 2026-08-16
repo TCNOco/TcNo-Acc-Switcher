@@ -12,9 +12,11 @@ savePrefix: ''
 overrides:
   '@parcel/watcher': 2.5.6
   esbuild: 0.21.5
-  svelte-preprocess: 5.1.4
+  # Transitive-only security bumps; both satisfy their parents' ranges
+  # (vite wants postcss ^8.4.43, postcss wants nanoid ^3.3.16).
+  nanoid: 3.3.18
+  postcss: 8.5.26
 
 allowBuilds:
   '@parcel/watcher@2.5.6': true
   esbuild@0.21.5: true
-  svelte-preprocess@5.1.4: true
