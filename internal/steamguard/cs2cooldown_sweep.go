@@ -147,11 +147,22 @@ func (s *Service) sweepCS2Cooldowns(ctx context.Context) {
 	}
 	s.cooldownSweep.running = true
 	s.cooldownSweep.mu.Unlock()
-	s.cooldownSweep.forced.Store(false)
+	// Stamped only once the vault has actually handed over accounts to read.
+	//
+	// The floor exists to space out requests to Steam, and every bail below makes
+	// none - the commonest by far being a locked vault, which yields no targets.
+	// Stamping those anyway is what made unlocking the vault appear to do nothing:
+	// the account page's refresh a moment earlier had already found the vault
+	// locked, done no work, and put the next ninety seconds out of bounds, so the
+	// unlock - the one event that changes what a sweep can answer - was turned
+	// away as rate limited and no rank ever moved.
+	swept := false
 	defer func() {
 		s.cooldownSweep.mu.Lock()
 		s.cooldownSweep.running = false
-		s.cooldownSweep.lastSweep = time.Now()
+		if swept {
+			s.cooldownSweep.lastSweep = time.Now()
+		}
 		s.cooldownSweep.mu.Unlock()
 	}()
 
@@ -184,6 +195,12 @@ func (s *Service) sweepCS2Cooldowns(ctx context.Context) {
 	if len(targets) == 0 {
 		return
 	}
+	swept = true
+	// Consumed here rather than at the top, for the same reason: a force raised so
+	// a newly added account gets checked has to survive a run that never reached
+	// one, or the add is answered by a sweep that does nothing and the request is
+	// gone.
+	s.cooldownSweep.forced.Store(false)
 	stored, err := cs2cooldown.Load()
 	if err != nil {
 		log.Warn("cooldown store unreadable; starting from empty", "error", err)

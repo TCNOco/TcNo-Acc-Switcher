@@ -490,6 +490,35 @@ func TestForceSurvivesASkippedSweep(t *testing.T) {
 	}
 }
 
+// A locked vault yields no targets, so the sweep makes no requests - and must
+// therefore not spend the floor that spaces them out. Stamping it anyway is what
+// made unlocking the vault do nothing: the account page's refresh moments earlier
+// had already found the vault locked and put the next ninety seconds out of
+// bounds, so the unlock was turned away as rate limited and no rank moved.
+func TestSweepWithNothingToReadSpendsNeitherTheFloorNorTheForce(t *testing.T) {
+	service, fake, _ := newSweepFixture(t)
+	setCS2Settings(t, true, true, false)
+	if err := service.vault.Lock(); err != nil {
+		t.Fatal(err)
+	}
+	service.signalCooldownSweep(true)
+
+	service.sweepCS2Cooldowns(context.Background())
+
+	if got := fake.callCount(); got != 0 {
+		t.Fatalf("made %d requests against a locked vault, want 0", got)
+	}
+	service.cooldownSweep.mu.Lock()
+	last := service.cooldownSweep.lastSweep
+	service.cooldownSweep.mu.Unlock()
+	if !last.IsZero() {
+		t.Fatal("a sweep that read nothing still spent the whole-sweep floor")
+	}
+	if !service.cooldownSweep.forced.Load() {
+		t.Fatal("a sweep that read nothing still consumed the force request")
+	}
+}
+
 func TestSweepSkipsWhenAnotherIsRunning(t *testing.T) {
 	service, fake, _ := newSweepFixture(t)
 	service.cooldownSweep.mu.Lock()
