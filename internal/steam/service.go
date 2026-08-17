@@ -262,6 +262,19 @@ func downloadSteamAccountAvatars(
 		}
 	}
 
+	// An absent fragment is not the same statement as a fragment carrying no
+	// animation. The first means the miniprofile could not be read at all - a
+	// refusal, a deferral behind the rate limit, a cache that was just wiped - and
+	// retiring a cached animation on the strength of it is exactly how one
+	// transient 500 reset every tile to its static image. Only a fragment we
+	// actually hold is allowed to answer the question.
+	if strings.TrimSpace(miniProfileHTML) == "" {
+		if cached, ok := profileimage.FindCached(PlatformKey, steamID64); ok {
+			return cached, staticURL, nil
+		}
+		return staticURL, staticURL, nil
+	}
+
 	// No animated media: the full-quality static is the avatar. A plain-key
 	// leftover — an old medium-quality copy or a since-removed animation —
 	// would otherwise keep being found and shown instead of it.
@@ -537,6 +550,19 @@ func (s *SteamService) noteProfileRefreshOutcome(unreachable bool) {
 		slog.Int("consecutiveFailures", failures), slog.Duration("in", delay))
 }
 
+// profileRefreshConcurrency is how many accounts are refreshed at once.
+//
+// Set from where the avatar CDN stops giving anything back. Measured against it:
+// concurrency 5 returned 7.6 requests a second, 8 returned 10.2, and 12 returned
+// 10.3 while median latency went from 711ms to 979ms. Past eight the extra
+// requests only queue, so eight is the knee and there is nothing above it to win.
+//
+// Nothing else in the round objects: profile XML cleared 26 requests a second on
+// its own, and the miniprofile endpoint - which does object, strongly - is held
+// to its own budget by miniprofileLimiter rather than by throttling everything
+// around it.
+const profileRefreshConcurrency = 8
+
 func (s *SteamService) runProfileRefresh() {
 	if security.AppLocked() {
 		return
@@ -609,14 +635,15 @@ func (s *SteamService) runProfileRefresh() {
 		return
 	}
 
-	steamLog.Info("refreshing Steam profiles", slog.Int("accounts", len(users)), slog.Int("concurrency", 5))
+	steamLog.Info("refreshing Steam profiles",
+		slog.Int("accounts", len(users)), slog.Int("concurrency", profileRefreshConcurrency))
 
 	vacRows, _ := LoadVacCache(st.SteamImageExpiryTime)
 	vm := vacMap(vacRows)
 	var vmMu sync.Mutex
 
 	ctx := context.Background()
-	sem := semaphore.NewWeighted(5)
+	sem := semaphore.NewWeighted(profileRefreshConcurrency)
 	var wg sync.WaitGroup
 	// One verdict for the whole round: every account is talking to the same
 	// Steam over the same adapter, so if any of them could not reach it the
@@ -710,6 +737,13 @@ func (s *SteamService) runProfileRefresh() {
 					steamLog.Warn("miniprofile fetch failed",
 						slog.String("steamId", tailSteamID(u.SteamID64)),
 						slog.Any("err", mErr))
+					// The last good fragment is kept rather than left empty. A
+					// refusal says nothing about the account, but an empty fragment
+					// says something quite specific further down - it is how
+					// "this account has no animated avatar" is expressed - and one
+					// transient 500 from a rate limit was enough to delete the
+					// cached animation and reset every tile to its static image.
+					patch.MiniProfileHTML = ReadCachedMiniprofileHTML(u.SteamID64)
 				} else {
 					patch.MiniProfileHTML = miniHTML
 					if n := ExtractMiniprofileDisplayName(miniHTML); n != "" {

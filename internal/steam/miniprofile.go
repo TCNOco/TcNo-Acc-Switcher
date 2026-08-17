@@ -50,6 +50,11 @@ func FetchMiniprofile(ctx context.Context, client *http.Client, steamID64 string
 	}
 	url := fmt.Sprintf("https://steamcommunity.com/miniprofile/%s", id32)
 	if !fromDisk {
+		// Only the cache miss is metered. A fragment served from disk costs Steam
+		// nothing and must not spend from a budget of fifteen a minute.
+		if lerr := miniprofileLimiter.acquire(ctx); lerr != nil {
+			return "", "", lerr
+		}
 		req, rerr := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 		if rerr != nil {
 			return "", "", rerr
@@ -61,6 +66,16 @@ func FetchMiniprofile(ctx context.Context, client *http.Client, steamID64 string
 		}
 		defer resp.Body.Close()
 		if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+			if isMiniprofileRefusal(resp.StatusCode) {
+				// Every account behind this one is about to ask the same question
+				// and get the same answer, so the endpoint stands down as a whole
+				// rather than each of them finding out for itself.
+				miniprofileLimiter.penalise(miniprofilePenalty)
+				steamLog.Warn("miniprofile endpoint refused; standing down",
+					slog.String("steamId", tailSteamID(steamID64)),
+					slog.Int("status", resp.StatusCode),
+					slog.Duration("for", miniprofilePenalty))
+			}
 			return "", "", fmt.Errorf("miniprofile HTTP %d", resp.StatusCode)
 		}
 		body, rerr := io.ReadAll(io.LimitReader(resp.Body, 2<<20))
