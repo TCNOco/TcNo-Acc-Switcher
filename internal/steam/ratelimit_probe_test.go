@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"sort"
+	"strconv"
 	"strings"
 	"sync"
 	"testing"
@@ -36,9 +37,26 @@ const (
 	probeMaxDuration = 3 * time.Minute
 	// probeStepRequests is per rung of the ladder. Enough to be more than noise,
 	// few enough that a rung which is already over the line is cheap.
-	probeStepRequests  = 24
+	probeStepRequests  = 40
 	probeRequestBudget = 15 * time.Second
 )
+
+// Profile XML is served with Cache-Control: public,max-age=3600, so asking for
+// the same account twice inside the hour is answered by the Akamai edge and
+// never reaches Steam. A first pass at this probe cycled three accounts and
+// reported no refusal at 456 requests a second - which was the CDN's throughput
+// for three cached objects, and said nothing whatever about a rate limit.
+//
+// So every request carries a nonce and is therefore an origin fetch. That is not
+// what the app does for one account, but it is what the app does across a list:
+// a dozen accounts are a dozen distinct URLs, and each is origin work. Set
+// TCNO_PROBE_CACHE=allow to drop the nonce and measure the cached path instead -
+// worth knowing, since it is what a second refresh within the hour actually pays.
+//
+// freshWindow below is the check on all of this: Expires-Date equal to the full
+// max-age means the response was generated for us, and anything less means the
+// edge answered from a copy it already had.
+const probeMaxAge = time.Hour
 
 // probeConcurrencies is the ladder. It starts below what the app does today and
 // ends well above it, so the answer is bracketed rather than merely bounded.
@@ -50,6 +68,17 @@ type probeOutcome struct {
 	ok          int
 	elapsed     time.Duration
 	latencies   []time.Duration
+	// origin counts responses Steam generated for us rather than the edge
+	// replaying one it held. A rung that is mostly not origin is measuring Akamai.
+	// cacheKnown is how many responses carried the headers needed to tell, since
+	// not every endpoint does and "unknown" must not be reported as "cached".
+	origin     int
+	cacheKnown int
+	// statuses is every status seen, because a rung reported only as "ok=20 of 40"
+	// says nothing about what the other twenty were - and the first run of this
+	// probe against the miniprofile endpoint produced exactly that, leaving the
+	// interesting half of the result unrecoverable.
+	statuses map[int]int
 	// refusal is the first response that looked like a limit rather than an
 	// answer. Its presence ends the whole probe.
 	refusal *probeRefusal
@@ -81,13 +110,15 @@ func (o probeOutcome) percentile(p float64) time.Duration {
 
 // isRefusal separates "Steam declined to serve this" from "that profile does not
 // exist". A 404 is an answer about an account; the rest are answers about us.
+//
+// Every 5xx counts, and that is not over-broad: the miniprofile endpoint states
+// its limit as a plain 500, so a set naming only the polite codes - 429, 503 -
+// watched twenty refusals in a row go by and called the rung clean.
 func isRefusal(status int) bool {
-	switch status {
-	case http.StatusTooManyRequests, http.StatusForbidden,
-		http.StatusServiceUnavailable, http.StatusBadGateway, http.StatusGatewayTimeout:
+	if status >= 500 {
 		return true
 	}
-	return false
+	return status == http.StatusTooManyRequests || status == http.StatusForbidden
 }
 
 func probeIDs(t *testing.T) []string {
@@ -128,6 +159,42 @@ func probeURL(t *testing.T, steamID64 string) string {
 	}
 }
 
+func probeCacheAllowed() bool {
+	return strings.EqualFold(strings.TrimSpace(os.Getenv("TCNO_PROBE_CACHE")), "allow")
+}
+
+// bustCache appends a nonce so the edge has nothing to replay.
+func bustCache(url string, sequence int) string {
+	if probeCacheAllowed() {
+		return url
+	}
+	separator := "?"
+	if strings.Contains(url, "?") {
+		separator = "&"
+	}
+	return fmt.Sprintf("%s%stcnoprobe=%d-%d", url, separator, time.Now().UnixNano(), sequence)
+}
+
+// servedFromOrigin reports whether Steam generated this response rather than the
+// edge replaying one. A cached copy has already spent part of its lifetime, so
+// its remaining freshness is short of the full max-age.
+//
+// known is false when the response carries no such pair to compare - the
+// miniprofile endpoint is one - and the caller must then say "unknown" rather
+// than "cached", which is a different claim and a wrong one.
+func servedFromOrigin(header http.Header) (origin, known bool) {
+	date, err := http.ParseTime(header.Get("Date"))
+	if err != nil {
+		return false, false
+	}
+	expires, err := http.ParseTime(header.Get("Expires"))
+	if err != nil {
+		return false, false
+	}
+	// A second of slack: Date and Expires are whole seconds and can straddle a tick.
+	return expires.Sub(date) >= probeMaxAge-time.Second, true
+}
+
 // probeClient pools as many connections as the widest rung, so the ladder
 // measures Steam rather than our own connection reuse.
 func probeClient() *http.Client {
@@ -138,36 +205,64 @@ func probeClient() *http.Client {
 	return &http.Client{Transport: transport, Timeout: probeRequestBudget}
 }
 
-func probeOnce(ctx context.Context, client *http.Client, url string) (time.Duration, int, *probeRefusal) {
+type probeResult struct {
+	latency    time.Duration
+	status     int
+	origin     bool
+	cacheKnown bool
+	refusal    *probeRefusal
+}
+
+func probeOnce(ctx context.Context, client *http.Client, url string) probeResult {
 	started := time.Now()
 	request, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		return 0, 0, &probeRefusal{transport: err}
+		return probeResult{refusal: &probeRefusal{transport: err}}
 	}
 	request.Header.Set("User-Agent", "TcNo Account Switcher")
 	response, err := client.Do(request)
 	if err != nil {
-		return time.Since(started), 0, &probeRefusal{transport: err}
+		return probeResult{latency: time.Since(started), refusal: &probeRefusal{transport: err}}
 	}
 	defer response.Body.Close()
 	body, _ := io.ReadAll(io.LimitReader(response.Body, 4096))
 	latency := time.Since(started)
+	origin, cacheKnown := servedFromOrigin(response.Header)
+	result := probeResult{
+		latency: latency, status: response.StatusCode, origin: origin, cacheKnown: cacheKnown,
+	}
 	if !isRefusal(response.StatusCode) {
-		return latency, response.StatusCode, nil
+		return result
 	}
 	head := strings.Join(strings.Fields(string(body)), " ")
 	if len(head) > 200 {
 		head = head[:200]
 	}
-	return latency, response.StatusCode, &probeRefusal{
+	result.refusal = &probeRefusal{
 		status:     response.StatusCode,
 		retryAfter: response.Header.Get("Retry-After"),
 		bodyHead:   head,
 	}
+	return result
+}
+
+// statusHistogram renders the rung's statuses lowest first, so an unexpected one
+// is impossible to miss. Status 0 is a transport error.
+func (o probeOutcome) statusHistogram() string {
+	codes := make([]int, 0, len(o.statuses))
+	for code := range o.statuses {
+		codes = append(codes, code)
+	}
+	sort.Ints(codes)
+	parts := make([]string, 0, len(codes))
+	for _, code := range codes {
+		parts = append(parts, fmt.Sprintf("%d:%d", code, o.statuses[code]))
+	}
+	return strings.Join(parts, " ")
 }
 
 func probeRung(ctx context.Context, client *http.Client, urls []string, concurrency, requests int) probeOutcome {
-	outcome := probeOutcome{concurrency: concurrency}
+	outcome := probeOutcome{concurrency: concurrency, statuses: map[int]int{}}
 	var mu sync.Mutex
 	var wg sync.WaitGroup
 	slots := make(chan struct{}, concurrency)
@@ -191,21 +286,28 @@ func probeRung(ctx context.Context, client *http.Client, urls []string, concurre
 		go func(url string) {
 			defer wg.Done()
 			defer func() { <-slots }()
-			latency, status, refusal := probeOnce(ctx, client, url)
+			result := probeOnce(ctx, client, url)
 			mu.Lock()
 			defer mu.Unlock()
 			outcome.requests++
-			outcome.latencies = append(outcome.latencies, latency)
-			if refusal != nil {
+			outcome.latencies = append(outcome.latencies, result.latency)
+			outcome.statuses[result.status]++
+			if result.cacheKnown {
+				outcome.cacheKnown++
+				if result.origin {
+					outcome.origin++
+				}
+			}
+			if result.refusal != nil {
 				if outcome.refusal == nil {
-					outcome.refusal = refusal
+					outcome.refusal = result.refusal
 				}
 				return
 			}
-			if status >= 200 && status < 300 {
+			if result.status >= 200 && result.status < 300 {
 				outcome.ok++
 			}
-		}(urls[i%len(urls)])
+		}(bustCache(urls[i%len(urls)], i))
 	}
 	wg.Wait()
 	outcome.elapsed = time.Since(started)
@@ -227,13 +329,29 @@ func TestSteamCommunityRateLimitProbe(t *testing.T) {
 	client := probeClient()
 	defer client.CloseIdleConnections()
 
-	t.Logf("probing %d URLs, ladder %v, at most %d requests over %s",
-		len(urls), probeConcurrencies, probeMaxRequests, probeMaxDuration)
+	// TCNO_PROBE_MAX narrows the whole run. Once an endpoint is known to refuse,
+	// the useful question is where the transition is, and answering it with sixty
+	// requests rather than the full budget is both faster and better manners.
+	budget := probeMaxRequests
+	if raw := strings.TrimSpace(os.Getenv("TCNO_PROBE_MAX")); raw != "" {
+		parsed, err := strconv.Atoi(raw)
+		if err != nil || parsed <= 0 {
+			t.Fatalf("TCNO_PROBE_MAX must be a positive integer, got %q", raw)
+		}
+		budget = parsed
+	}
+
+	mode := "cache-busted (origin)"
+	if probeCacheAllowed() {
+		mode = "cache allowed (edge may answer)"
+	}
+	t.Logf("probing %d URLs %s, ladder %v, at most %d requests over %s",
+		len(urls), mode, probeConcurrencies, budget, probeMaxDuration)
 
 	spent := 0
 	var lastClean *probeOutcome
 	for _, concurrency := range probeConcurrencies {
-		remaining := probeMaxRequests - spent
+		remaining := budget - spent
 		if remaining <= 0 {
 			t.Logf("request budget spent after %d requests; ladder stopped early", spent)
 			break
@@ -245,10 +363,28 @@ func TestSteamCommunityRateLimitProbe(t *testing.T) {
 
 		outcome := probeRung(ctx, client, urls, concurrency, requests)
 		spent += outcome.requests
-		t.Logf("concurrency=%-2d requests=%-3d ok=%-3d rate=%5.1f/s p50=%-8s p95=%s",
-			outcome.concurrency, outcome.requests, outcome.ok, outcome.rate(),
+		origin := fmt.Sprintf("%d", outcome.origin)
+		if outcome.cacheKnown == 0 {
+			origin = "n/a"
+		}
+		t.Logf("concurrency=%-2d requests=%-3d ok=%-3d origin=%-3s rate=%5.1f/s p50=%-8s p95=%-8s status[%s]",
+			outcome.concurrency, outcome.requests, outcome.ok, origin, outcome.rate(),
 			outcome.percentile(0.50).Round(time.Millisecond),
-			outcome.percentile(0.95).Round(time.Millisecond))
+			outcome.percentile(0.95).Round(time.Millisecond),
+			outcome.statusHistogram())
+		// Not every non-2xx is a refusal, and one that is neither is the shape most
+		// likely to be misread as a clean rung.
+		if other := outcome.requests - outcome.ok; other > 0 && outcome.refusal == nil {
+			t.Logf("  NOTE: %d/%d responses were neither 2xx nor a recognised refusal; see the status column",
+				other, outcome.requests)
+		}
+		// Said per rung rather than once at the end, because a rung the edge
+		// answered is not evidence about a limit and must not read like it. Only
+		// claimed where the headers actually settle the question.
+		if cached := outcome.cacheKnown - outcome.origin; !probeCacheAllowed() && cached > 0 {
+			t.Logf("  WARNING: %d/%d responses came from cache; this rung does not measure Steam",
+				cached, outcome.requests)
+		}
 
 		if outcome.refusal != nil {
 			r := outcome.refusal
@@ -278,5 +414,7 @@ func TestSteamCommunityRateLimitProbe(t *testing.T) {
 	if lastClean != nil {
 		t.Logf("no refusal within budget; cleared concurrency=%d at %.1f req/s over %d requests",
 			lastClean.concurrency, lastClean.rate(), spent)
+		t.Log("this is 'not right now', not 'no limit': Steam publishes none, and " +
+			"community throttling varies by time of day and by edge")
 	}
 }
