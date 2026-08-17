@@ -5,6 +5,7 @@
   import { cubicOut } from "svelte/easing";
   import { Events } from "@wailsio/runtime";
   import { initStreamerMode } from "./stores/streamerMode";
+  import { initScreenCovered } from "./stores/screenCovered";
   import { motionEnabled } from "./lib/animation";
   import { applyAnimationClass } from "./lib/animationClass";
   import { installInputModalityTracking } from "./lib/inputModality";
@@ -364,6 +365,9 @@
     // account lists, so hydrate it before any of them can mount.
     let offStreamerMode: (() => void) | undefined;
     void initStreamerMode().then((off) => { offStreamerMode = off; });
+    // Lets the account list drop its animated avatar frames while a game holds
+    // the screen. Hydrates once, then follows the backend's WinEvent hooks.
+    initScreenCovered();
     void loadCommandPaletteHotkey();
     // Load initial app background state. Loaded-or-failed both count as
     // settled: on failure there is no user wallpaper to protect, so the theme

@@ -76,6 +76,8 @@ func init() {
 	application.RegisterEvent[string](platform.ActionBarStatusEvent)
 	application.RegisterEvent[shortcuts.ListPayload](shortcuts.UpdatedEvent)
 	application.RegisterEvent[shortcuts.FilesDroppedPayload](shortcuts.FilesDroppedEvent)
+	application.RegisterEvent[bool](platform.ScreenCoveredEvent)
+	application.RegisterEvent[bool](platform.GameRunningEvent)
 	application.RegisterEvent[platform.UpdateAvailablePayload](platform.AppUpdateAvailableEvent)
 	application.RegisterEvent[bool](platform.UpdateCheckFailedEvent)
 	application.RegisterEvent[platform.PlatformsJSONUpdatePayload](platform.PlatformsJSONUpdateFoundEvent)

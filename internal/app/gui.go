@@ -312,6 +312,9 @@ func RunGUI(params RunGUIParams) {
 	steamguard.RegisterCS2RankCollector()
 	params.Dispatch.BasicSvc.StartGameStatsProcessMonitor()
 	steam.StartSteamAppListMonitor()
+	// Suspends the account list's animated avatar frames while a game is holding
+	// the screen. Event-driven, so an idle machine pays nothing for it.
+	platform.StartScreenCoverWatch()
 
 	ctx := wailsApp.Context()
 	go func() {

@@ -366,6 +366,13 @@ label.acc {
     transform: scale(1.22);
   }
 
+  // Only one of the pair is ever shown. `display: none` is deliberate rather
+  // than opacity or visibility: it is what makes Chromium stop decoding an
+  // animated frame, which is the entire point of freezing one.
+  .steam-acc-avatar-frame--paused {
+    display: none;
+  }
+
   // Bottom-right corner of the avatar, above the frame's z-order so a framed
   // avatar cannot cover it. Bare glyph, no plate: the drop shadow is what keeps
   // it legible over a light or busy profile picture.
