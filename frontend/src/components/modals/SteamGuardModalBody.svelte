@@ -3547,10 +3547,13 @@
     text-align: left;
   }
 
+  /* Centred with grid alignment, not auto margins: `.steam-guard :global(button)`
+     above carries one more element in its selector, so its `margin: 0` won and
+     dropped the code to the start of its column. */
   .steam-guard__code {
     position: relative;
+    justify-self: center;
     width: min(18rem, 100%);
-    margin: 0.3rem auto 0;
     padding: 1rem 1.25rem 1.1rem;
     border: 1px solid var(--modal-border, var(--border-bar-bg));
     border-radius: 0.25rem;
