@@ -308,7 +308,8 @@ func (s *Service) sweepCS2Cooldowns(ctx context.Context) {
 			append([]any{"checked", checked}, rateLimitDetail...)...)
 		return
 	}
-	log.Info("CS2 cooldown sweep finished", "checked", checked)
+	log.Info("CS2 cooldown sweep finished",
+		"checked", checked, "elapsed", time.Since(started).Round(time.Millisecond))
 	if delay, failures := s.cooldownSweep.retry.note(unreachable.Load(), func() {
 		s.signalCooldownSweep(true)
 	}); delay > 0 {
@@ -404,7 +405,9 @@ func (s *Service) fetchAndStoreCooldown(
 		SessionID:   target.sessionID,
 	}
 	requestCtx, cancel := context.WithTimeout(ctx, cooldownRequestTimeout)
+	gcpdStarted := time.Now()
 	body, err := s.confirmationClient.FetchCS2GCPD(requestCtx, credentials)
+	gcpdTook := time.Since(gcpdStarted)
 	cancel()
 	if err != nil {
 		var apiErr *confirmationapi.Error
@@ -437,7 +440,19 @@ func (s *Service) fetchAndStoreCooldown(
 		log.Warn("cooldown could not be stored", "steamId64", target.steamID64, "error", err)
 		return err
 	}
+	primeStarted := time.Now()
 	primeState := s.primeStateFor(ctx, credentials, result, collectPrime)
+	// Two timings rather than one, because they answer different questions: the
+	// GCPD read is what every account pays, while the store page is the second
+	// request only an unsettled Prime verdict costs. A sweep that runs long
+	// because half the accounts are buying a Prime answer is a different problem
+	// from one where Steam is simply slow, and the totals alone cannot tell them
+	// apart. Measured from the sweep itself, so no probe and no vault password.
+	log.Debug("cooldown account read",
+		"steamId64", target.steamID64,
+		"gcpd", gcpdTook.Round(time.Millisecond),
+		"storePage", time.Since(primeStarted).Round(time.Millisecond),
+		"bodyBytes", len(body))
 	s.storeRanks(target.steamID64, result, primeState, now)
 	s.syncCooldownTag(target.steamID64, result)
 	// Read back rather than reusing primeState: storeRanks carries the previous
