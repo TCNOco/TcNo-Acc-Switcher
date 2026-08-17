@@ -55,50 +55,29 @@
     !$streamerMode && !!(account.showMiniProfile && (account.miniProfileHtml ?? "").trim() !== "");
   $: guardBadge = steamGuardBadge(account);
   $: guardBadgeLabel = guardBadge ? $t(guardBadge.labelKey) : "";
-  // The frame is always rendered when the account has one; suspending only
-  // freezes it, so it never disappears from a list the user can still see.
+  /**
+   * Steam's avatar frames are APNGs, and suspending one means taking it out of
+   * the document — there is no way to pause an animated <img>, and removing it is
+   * what stops Chromium decoding it.
+   *
+   * It used to be replaced by a canvas holding a still of itself, so the
+   * decoration stayed put and merely stopped moving. That still was always wrong.
+   * drawImage hands back an animated PNG's default image and nothing else: five
+   * captures spread across three seconds of a running animation came back
+   * byte-identical, and in these files the default image is frame 0 — which for a
+   * lightning border is the peak of the flash, several times thicker than the
+   * frame that was on screen a moment earlier. No browser API exposes the current
+   * frame, so an accurate still cannot be produced from the page at all.
+   *
+   * Showing nothing is at least honest, and it costs little: a frame is only
+   * suspended when the user is looking somewhere else.
+   */
   $: showAvatarFrame =
     account.showAvatarFrame === true &&
     (account.avatarFrameUrl ?? "").trim() !== "" &&
     !$offlineMode &&
-    !$streamerMode;
-  $: framePaused = showAvatarFrame && $animationsSuspended;
-
-  let frameImgEl: HTMLImageElement | undefined;
-  let frameCanvasEl: HTMLCanvasElement | undefined;
-
-  /**
-   * Copy whatever the frame is showing right now onto the canvas that replaces
-   * it. Runs while the <img> is still painted — Svelte applies reactive
-   * statements before it patches the DOM, so the element has not been hidden yet.
-   */
-  function captureFrame(): void {
-    const img = frameImgEl;
-    const canvas = frameCanvasEl;
-    if (!img || !canvas || !img.complete || img.naturalWidth === 0) {
-      return;
-    }
-    if (canvas.width !== img.naturalWidth || canvas.height !== img.naturalHeight) {
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-    }
-    try {
-      canvas.getContext("2d")?.drawImage(img, 0, 0);
-    } catch {
-      /* A frame that taints the canvas is not worth failing the render over. */
-    }
-  }
-
-  /** A frame that finishes loading while already suspended still needs a still. */
-  function onFrameLoad(): void {
-    if (framePaused) {
-      captureFrame();
-    }
-  }
-
-  $: if (framePaused) {
-    captureFrame();
-  }
+    !$streamerMode &&
+    !$animationsSuspended;
 </script>
 
 <span class="steam-acc-avatar-wrap">
@@ -128,28 +107,13 @@
       }}
     />
   {/if}
-  <!-- Frozen rather than removed while a game is running. There is no way to
-       pause an APNG or animated GIF in an <img>, but Chromium stops decoding one
-       that is display:none — so the last painted frame is copied to a canvas and
-       shown in its place. The decoration stays exactly where it was, it simply
-       stops moving. Removing it outright was wrong: with the game on a second
-       monitor the list is still on screen. -->
   {#if showAvatarFrame}
     <img
-      bind:this={frameImgEl}
       class="steam-acc-avatar-frame"
-      class:steam-acc-avatar-frame--paused={framePaused}
       src={account.avatarFrameUrl ?? ""}
       alt=""
       draggable="false"
-      on:load={onFrameLoad}
     />
-    <canvas
-      bind:this={frameCanvasEl}
-      class="steam-acc-avatar-frame"
-      class:steam-acc-avatar-frame--paused={!framePaused}
-      aria-hidden="true"
-    ></canvas>
   {/if}
   <!-- Sits above the avatar frame so a framed avatar does not hide it. A pending
        setup and a login-only record get their own look: neither is protection,
