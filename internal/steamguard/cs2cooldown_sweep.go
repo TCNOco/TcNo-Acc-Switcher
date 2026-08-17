@@ -3,6 +3,7 @@ package steamguard
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log/slog"
 	"sync"
 	"sync/atomic"
@@ -228,6 +229,13 @@ func (s *Service) sweepCS2Cooldowns(ctx context.Context) {
 	// earns a longer ban, so the first account to be turned away stops the launcher
 	// dead. Reads in flight are left to finish - they were already sent.
 	var rateLimited atomic.Bool
+	// What Steam said when it refused, and how much this sweep had asked of it
+	// first. Written once under rateLimitOnce and read after wg.Wait, so the
+	// WaitGroup is the ordering. This is the only evidence of where the
+	// authenticated limit sits that does not involve walking into it deliberately.
+	var rateLimitOnce sync.Once
+	var rateLimitDetail []any
+	started := time.Now()
 	var wg sync.WaitGroup
 	slots := make(chan struct{}, cooldownSweepConcurrency)
 	defer wg.Wait()
@@ -275,24 +283,29 @@ func (s *Service) sweepCS2Cooldowns(ctx context.Context) {
 			return
 		}
 		checked++
+		checkedSoFar := checked
 		wg.Add(1)
-		go func(target cooldownTarget, now time.Time) {
+		go func(target cooldownTarget, now time.Time, checkedSoFar int) {
 			defer crashlog.Capture()
 			defer wg.Done()
 			defer func() { <-slots }()
 			err := s.fetchAndStoreCooldown(ctx, target, now, steamSettings.SteamShowCS2PrimeTag)
-			if err == errCooldownRateLimited {
+			if errors.Is(err, errCooldownRateLimited) {
+				rateLimitOnce.Do(func() {
+					rateLimitDetail = rateLimitEvidence(err, checkedSoFar, time.Since(started))
+				})
 				rateLimited.Store(true)
 				return
 			}
 			if retryableSweepFailure(err) {
 				unreachable.Store(true)
 			}
-		}(target, now)
+		}(target, now, checkedSoFar)
 	}
 	wg.Wait()
 	if rateLimited.Load() {
-		log.Warn("CS2 cooldown sweep aborted: rate limited by Steam", "checked", checked)
+		log.Warn("CS2 cooldown sweep aborted: rate limited by Steam",
+			append([]any{"checked", checked}, rateLimitDetail...)...)
 		return
 	}
 	log.Info("CS2 cooldown sweep finished", "checked", checked)
@@ -305,6 +318,37 @@ func (s *Service) sweepCS2Cooldowns(ctx context.Context) {
 }
 
 var errCooldownRateLimited = errors.New("rate limited")
+
+// rateLimitEvidence turns a refusal into the numbers needed to pace against it:
+// what Steam answered with, how long it asked us to wait, and how much this sweep
+// had already spent when it was cut off.
+//
+// The last two are the point. Steam publishes no limit for these endpoints, so
+// the only honest way to learn one is to record every time we meet it during
+// ordinary use - deliberately probing an authenticated endpoint to find the wall
+// is how an account earns a longer ban rather than a shorter one.
+func rateLimitEvidence(err error, requests int, elapsed time.Duration) []any {
+	evidence := []any{
+		"requestsBeforeRefusal", requests,
+		"elapsedBeforeRefusal", elapsed.Round(time.Millisecond),
+		"stagger", cooldownAccountStagger,
+		"concurrency", cooldownSweepConcurrency,
+	}
+	var apiErr *confirmationapi.Error
+	if !errors.As(err, &apiErr) {
+		return evidence
+	}
+	if apiErr.StatusCode != 0 {
+		evidence = append(evidence, "status", apiErr.StatusCode)
+	}
+	if apiErr.HasRetryAfter {
+		evidence = append(evidence, "retryAfter", apiErr.RetryAfter)
+	}
+	if apiErr.Detail != "" {
+		evidence = append(evidence, "detail", apiErr.Detail)
+	}
+	return evidence
+}
 
 // logCooldownFetchFailure records why one account was not read, at a level that
 // matches how surprising it is.
@@ -328,6 +372,11 @@ func logCooldownFetchFailure(log *slog.Logger, steamID64 string, err error) {
 	}
 	if apiErr.Detail != "" {
 		attributes = append(attributes, "detail", apiErr.Detail)
+	}
+	// Steam only ever states a limit by asking us to wait, so the one header that
+	// carries a number must not be the one thing the log drops.
+	if apiErr.HasRetryAfter {
+		attributes = append(attributes, "retryAfter", apiErr.RetryAfter)
 	}
 	switch apiErr.Kind {
 	case confirmationapi.FailureOffline, confirmationapi.FailureCanceled:
@@ -360,7 +409,11 @@ func (s *Service) fetchAndStoreCooldown(
 	if err != nil {
 		var apiErr *confirmationapi.Error
 		if errors.As(err, &apiErr) && apiErr.Kind == confirmationapi.FailureRateLimit {
-			return errCooldownRateLimited
+			// Wrapped, not replaced: the sentinel is what the sweep switches on,
+			// but the status and any Retry-After behind it are the only direct
+			// evidence of where Steam's limit actually sits. Collapsing them to a
+			// bare sentinel meant every real rate limit taught us nothing.
+			return fmt.Errorf("%w: %w", errCooldownRateLimited, err)
 		}
 		logCooldownFetchFailure(log, target.steamID64, err)
 		return err
