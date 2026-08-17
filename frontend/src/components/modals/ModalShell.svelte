@@ -340,10 +340,20 @@
     overflow: hidden;
   }
 
+  /*
+   * Centred with `translate`, not `transform`. Svelte's `scale` transition snapshots
+   * `getComputedStyle(node).transform` when the modal mounts — while it is still
+   * un-ready — and replays that snapshot for the whole animation. A transform-based
+   * centre resolved to a pixel matrix of half the un-ready size, and because an
+   * animation outranks a normal declaration, `.modalFG--ready`'s `transform: none`
+   * could not clear it: the modal sat up and to the left until the animation ended,
+   * then snapped to centre. `translate` is its own property, so the snapshot is
+   * `none` and the animation only ever scales.
+   */
   .modalFG:not(.modalFG--ready) {
     left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%);
+    translate: -50% -50%;
     width: max-content;
     min-width: min(320px, calc(100% - 2rem));
     max-width: min(80%, calc(100% - 2rem));
@@ -364,7 +374,7 @@
   }
 
   .modalFG.modalFG--ready {
-    transform: none;
+    translate: none;
     min-width: 0;
     max-width: none;
     max-height: none;
