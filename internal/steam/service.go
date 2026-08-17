@@ -458,14 +458,24 @@ func (s *SteamService) RefreshAllSteamImages() error {
 		}
 		return err
 	}
-	if err := profileimage.DeleteAutomatedProfileCaches(PlatformKey); err != nil {
+	// Aged rather than deleted, so every tile keeps the face it already has until
+	// its replacement has actually arrived.
+	if err := profileimage.MarkAutomatedProfileCachesStale(PlatformKey); err != nil {
 		return err
 	}
 	s.StartSteamProfileRefresh()
 	return nil
 }
 
-func clearExpiredSteamProfileAssets(steamID64 string, maxAgeDays int) {
+// dropStaleMiniprofileFragment retires the cached miniprofile fragment once the
+// assets it points at are due for replacement.
+//
+// It no longer deletes those assets. DownloadIfNeeded already re-fetches anything
+// past its expiry and now retires the file it supersedes, so removing them here
+// bought nothing - and it cost the list its faces for the whole of the round,
+// which is precisely what a refresh looked like to the user: every tile blank,
+// then slowly filling back in.
+func dropStaleMiniprofileFragment(steamID64 string, maxAgeDays int) {
 	ids := []string{
 		steamID64,
 		steamStaticAvatarID(steamID64),
@@ -473,17 +483,16 @@ func clearExpiredSteamProfileAssets(steamID64 string, maxAgeDays int) {
 		steamID64 + "_nameplate",
 		steamID64 + "_featuredbadge",
 	}
-	removed := deleteMiniprofileCacheIfOlder(steamID64, maxAgeDays)
+	expired := deleteMiniprofileCacheIfOlder(steamID64, maxAgeDays)
 	for _, id := range ids {
 		if id == steamID64 && profileimage.HasManualProfileMarker(PlatformKey, steamID64) {
 			continue
 		}
 		if p, ok := profileimage.CachedFilePath(PlatformKey, id); ok && profileimage.FileOlderThanDays(p, maxAgeDays) {
-			_ = profileimage.DeleteCached(PlatformKey, id)
-			removed = true
+			expired = true
 		}
 	}
-	if removed {
+	if expired {
 		deleteMiniprofileCache(steamID64)
 	}
 }
@@ -660,7 +669,7 @@ func (s *SteamService) runProfileRefresh() {
 			_ = sem.Acquire(ctx, 1)
 			defer sem.Release(1)
 
-			clearExpiredSteamProfileAssets(u.SteamID64, st.SteamImageExpiryTime)
+			dropStaleMiniprofileFragment(u.SteamID64, st.SteamImageExpiryTime)
 
 			vmMu.Lock()
 			prev := vm[u.SteamID64]

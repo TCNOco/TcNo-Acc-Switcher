@@ -47,6 +47,7 @@
   import { offlineMode } from "../stores/offlineMode";
   import { avatarSalt, censoredName, censorName, streamerMode } from "../stores/streamerMode";
   import { accountAvatarSrc } from "../lib/accountAvatarSrc";
+  import { avatarSwapped, heldAvatarSrc } from "../lib/accounts/heldAvatarSrc";
   import { formatLastLoginForLocale } from "../lib/formatLastLogin";
   import {
     openTagFilterMenu,
@@ -1223,7 +1224,7 @@
 
                   <slot name="account-avatar" {acc} epoch={avatarEpoch[rid] ?? 0} fallback={adapter.profileFallback}>
                     <img
-                      src={accountAvatarSrc({
+                      src={heldAvatarSrc(rid, accountAvatarSrc({
                         streamer: $streamerMode,
                         salt: $avatarSalt,
                         platformKey: adapter.platformKey,
@@ -1233,7 +1234,7 @@
                         epoch: avatarEpoch[rid] ?? 0,
                         offline: $offlineMode,
                         fallback: adapter.profileFallback,
-                      })}
+                      }), $avatarSwapped)}
                       alt="" draggable="false"
                     />
                   </slot>

@@ -110,7 +110,11 @@ func TestFetchProfileXMLWithRetryPreservesPermanentError(t *testing.T) {
 	}
 }
 
-func TestRefreshAllSteamImagesClearsProfileMetadataCaches(t *testing.T) {
+// The metadata caches are dropped so they are read again; the images are not.
+// An avatar deleted the instant the user presses refresh leaves the tile blank
+// for as long as the round takes, which is what a refresh looked like from the
+// outside - the whole list emptying and filling back in one face at a time.
+func TestRefreshAllSteamImagesClearsMetadataButKeepsImages(t *testing.T) {
 	paths.ResetForTest(t.TempDir())
 
 	const steamID = "76561198000000000"
@@ -147,7 +151,20 @@ func TestRefreshAllSteamImagesClearsProfileMetadataCaches(t *testing.T) {
 	assertMissing(t, xmlPath)
 	assertMissing(t, miniPath)
 	assertMissing(t, vacPath)
-	assertMissing(t, imagePath)
+	assertStale(t, imagePath)
+}
+
+// assertStale checks a cache file survived but is due for replacement, which is
+// what lets it keep rendering while its download runs.
+func assertStale(t *testing.T, path string) {
+	t.Helper()
+	info, err := os.Stat(path)
+	if err != nil {
+		t.Fatalf("expected %s to survive the refresh, stat err=%v", path, err)
+	}
+	if !profileimage.FileOlderThanDays(path, 1) {
+		t.Fatalf("expected %s to be aged out so the next round replaces it, mtime=%s", path, info.ModTime())
+	}
 }
 
 func writeTestFile(t *testing.T, path string, contents string) {

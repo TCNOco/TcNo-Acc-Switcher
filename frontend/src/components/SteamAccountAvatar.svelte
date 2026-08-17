@@ -4,6 +4,7 @@
   import { avatarSalt, streamerMode } from "../stores/streamerMode";
   import { animationsSuspended } from "../stores/screenCovered";
   import { accountAvatarSrc } from "../lib/accountAvatarSrc";
+  import { avatarSwapped, heldAvatarSrc } from "../lib/accounts/heldAvatarSrc";
   import { isProfileVideoUrl } from "../lib/profileImageDrop";
   import { miniProfileHover } from "../lib/actions/miniProfileHover";
   import { t } from "../stores/i18n";
@@ -41,7 +42,13 @@
     offline: $offlineMode,
     fallback,
   });
-  $: avatarIsVideo = !$offlineMode && !$animationsSuspended && !$streamerMode && isProfileVideoUrl(avatarSrc);
+  // $avatarSwapped is passed for its dependency rather than its value: the src
+  // held for each account lives in a plain map, which Svelte cannot observe.
+  $: displaySrc = heldAvatarSrc(account.steamId64 || "", avatarSrc, $avatarSwapped);
+  // Computed from what is actually painted, not from what was asked for. While a
+  // held image is still on screen the two differ, and reading the wrong one puts
+  // an image URL inside a <video>.
+  $: avatarIsVideo = !$offlineMode && !$animationsSuspended && !$streamerMode && isProfileVideoUrl(displaySrc);
   // The hover card is a slab of the account's Steam profile — persona name, level,
   // games. Exactly what streamer mode exists to keep off the screen.
   $: miniProfileEnabled =
@@ -98,7 +105,7 @@
   {#if avatarIsVideo}
     <video
       class="steam-acc-avatar"
-      src={avatarSrc}
+      src={displaySrc}
       autoplay loop muted playsinline
       aria-hidden="true" draggable="false"
       use:miniProfileHover={{
@@ -111,7 +118,7 @@
   {:else}
     <img
       class="steam-acc-avatar"
-      src={avatarSrc}
+      src={displaySrc}
       alt="" draggable="false"
       use:miniProfileHover={{
         html: account.miniProfileHtml ?? "",

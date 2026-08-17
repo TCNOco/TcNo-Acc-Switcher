@@ -92,6 +92,66 @@ func MainAvatarStemFromCacheStem(cacheStem string) string {
 	return cacheStem
 }
 
+// MarkAutomatedProfileCachesStale ages every automated cache file out instead of
+// removing it, so the next refresh re-downloads each one and replaces it in place.
+//
+// Deleting them up front is what made a refresh blank the whole list: the file
+// behind every <img> vanished the moment the user pressed refresh and did not
+// come back until its own download finished, which on a cold cache is most of a
+// minute for a dozen accounts. An aged file still exists, still renders, and is
+// atomically overwritten the instant its replacement arrives - so the list keeps
+// showing the old faces and swaps them one at a time as the new ones land.
+//
+// Manual avatars are left entirely alone, as they are by the delete pass: they
+// have no remote source to refresh from.
+func MarkAutomatedProfileCachesStale(platformKey string) error {
+	platformKey = strings.TrimSpace(platformKey)
+	if platformKey == "" {
+		return nil
+	}
+	dir, err := ProfileDir(platformKey)
+	if err != nil {
+		return err
+	}
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil
+		}
+		return err
+	}
+	// Comfortably beyond any expiry setting, so every caller agrees the file is
+	// due without needing to know what the setting is.
+	stale := time.Unix(0, 0)
+	for _, e := range entries {
+		if e.IsDir() {
+			continue
+		}
+		name := e.Name()
+		if strings.HasSuffix(name, ManualProfileMarkerSuffix) {
+			continue
+		}
+		path := filepath.Join(dir, name)
+		ext := filepath.Ext(name)
+		if _, ok := knownProfileImageExts[strings.ToLower(ext)]; !ok {
+			// Not an image, so nothing renders it and nothing will replace it.
+			_ = os.Remove(path)
+			continue
+		}
+		if HasManualProfileMarker(platformKey, MainAvatarStemFromCacheStem(strings.TrimSuffix(name, ext))) {
+			continue
+		}
+		_ = os.Chtimes(path, stale, stale)
+	}
+	return nil
+}
+
+// knownProfileImageExts is every extension a cached avatar or asset can have.
+var knownProfileImageExts = map[string]struct{}{
+	".jpg": {}, ".jpeg": {}, ".png": {}, ".webp": {},
+	".gif": {}, ".webm": {}, ".mp4": {},
+}
+
 // DeleteAutomatedProfileCaches removes avatar cache files whose main account stem is not manual-locked,
 // removes all auxiliary Steam assets (_frame etc.), always keeps "*.manual_profile" files.
 func DeleteAutomatedProfileCaches(platformKey string) error {
@@ -464,6 +524,17 @@ func DownloadIfNeeded(ctx context.Context, client *http.Client, platformKey, acc
 	}
 	if err := fsutil.WriteFileAtomic(dest, data, 0o644); err != nil {
 		return nil, err
+	}
+	// The superseded file goes only once its replacement is safely written, and
+	// only when the extension changed - the same name is overwritten in place.
+	//
+	// This is what lets callers stop deleting a cache before refreshing it. Two
+	// files under one stem is the problem the old delete-first pass existed to
+	// avoid, since FindCached walks a fixed extension order and would keep serving
+	// a stale .jpg after an avatar became a .webm. Retiring the loser here solves
+	// that without any window where the account has no image at all.
+	if existingPath != "" && existingPath != dest {
+		_ = os.Remove(existingPath)
 	}
 	slog.Debug("profileimage download saved", "platform", platformKey, "accountID", accountID, "dest", dest, "bytes", len(data), "ext", ext)
 
