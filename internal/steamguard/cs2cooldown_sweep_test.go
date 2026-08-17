@@ -74,6 +74,9 @@ type fakeCooldownClient struct {
 	calls     []string
 	inFlight  int32
 	maxFlight int32
+	// onCall runs outside mu, so a test may hold one account's request open while
+	// it waits for another to arrive.
+	onCall func()
 }
 
 func newFakeCooldownClient() *fakeCooldownClient {
@@ -91,12 +94,19 @@ func (f *fakeCooldownClient) FetchCS2GCPD(ctx context.Context, c confirmationapi
 	defer atomic.AddInt32(&f.inFlight, -1)
 
 	f.mu.Lock()
-	defer f.mu.Unlock()
 	f.calls = append(f.calls, c.SteamID)
-	if err, ok := f.errs[c.SteamID]; ok {
+	err, failing := f.errs[c.SteamID]
+	body, canned := f.bodies[c.SteamID]
+	gate := f.onCall
+	f.mu.Unlock()
+
+	if gate != nil {
+		gate()
+	}
+	if failing {
 		return nil, err
 	}
-	if body, ok := f.bodies[c.SteamID]; ok {
+	if canned {
 		return body, nil
 	}
 	return []byte(cleanGCPDPage), nil
@@ -336,11 +346,40 @@ func TestSweepSkipsAccountsCheckedRecently(t *testing.T) {
 	}
 }
 
-func TestSweepIsSerial(t *testing.T) {
+// The point of the cap is that the sweep overlaps accounts at all. A serial
+// sweep satisfies the cap too, so this holds one account's read open and waits
+// for a second to arrive on top of it.
+func TestSweepReadsAccountsConcurrently(t *testing.T) {
+	service, fake, _ := newSweepFixture(t)
+	both := make(chan struct{})
+	var once sync.Once
+	fake.onCall = func() {
+		if atomic.LoadInt32(&fake.inFlight) >= 2 {
+			once.Do(func() { close(both) })
+			return
+		}
+		select {
+		case <-both:
+		case <-time.After(10 * time.Second):
+		}
+	}
+
+	service.sweepCS2Cooldowns(context.Background())
+
+	select {
+	case <-both:
+	default:
+		t.Fatal("no two accounts were ever read at the same time")
+	}
+}
+
+// Concurrent, but only up to the cap: the stagger and the cap together are the
+// whole of the sweep's rate discipline, since the protocol client has none.
+func TestSweepStaysWithinItsConcurrencyCap(t *testing.T) {
 	service, fake, _ := newSweepFixture(t)
 	service.sweepCS2Cooldowns(context.Background())
-	if got := atomic.LoadInt32(&fake.maxFlight); got > 1 {
-		t.Fatalf("max concurrent requests = %d, want 1", got)
+	if got := atomic.LoadInt32(&fake.maxFlight); got > cooldownSweepConcurrency {
+		t.Fatalf("max concurrent requests = %d, want at most %d", got, cooldownSweepConcurrency)
 	}
 }
 

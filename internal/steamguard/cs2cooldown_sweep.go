@@ -39,6 +39,17 @@ const (
 	// protocol client has no rate limiter, so the discipline is entirely ours.
 	cooldownAccountStagger = 2 * time.Second
 
+	// cooldownSweepConcurrency is how many accounts may be waiting on Steam at
+	// once. The stagger above still decides when each request starts; this only
+	// stops the sweep holding the next account back until the last one answered.
+	//
+	// A GCPD read is slow, and a Prime verdict can cost a second request on top,
+	// so strictly serial the last rank in a dozen-account vault landed minutes
+	// after the refresh that asked for it - and the rank is the thing the user is
+	// watching. Three at a time is still a fraction of what the account list's own
+	// image refresh asks of Steam in the same moment.
+	cooldownSweepConcurrency = 3
+
 	cooldownRequestTimeout = 30 * time.Second
 )
 
@@ -212,13 +223,21 @@ func (s *Service) sweepCS2Cooldowns(ctx context.Context) {
 	// One verdict for the whole sweep: every account goes to the same Steam over
 	// the same adapter, so any of them reporting "temporarily failed" means the
 	// sweep is worth repeating rather than left until the six-hour tick.
-	unreachable := false
+	var unreachable atomic.Bool
+	// Walking the rest of the list into the same wall is exactly the pattern that
+	// earns a longer ban, so the first account to be turned away stops the launcher
+	// dead. Reads in flight are left to finish - they were already sent.
+	var rateLimited atomic.Bool
+	var wg sync.WaitGroup
+	slots := make(chan struct{}, cooldownSweepConcurrency)
+	defer wg.Wait()
+
 	for _, target := range targets {
-		if ctx.Err() != nil {
-			return
+		if ctx.Err() != nil || rateLimited.Load() {
+			break
 		}
 		if appclient.IsOfflineMode() || security.AppLocked() {
-			return
+			break
 		}
 		now := time.Now()
 		if entry, ok := stored[target.steamID64]; ok && now.Sub(time.Unix(entry.CheckedAt, 0)) < cooldownAccountFloor {
@@ -241,20 +260,43 @@ func (s *Service) sweepCS2Cooldowns(ctx context.Context) {
 			case <-time.After(cooldownAccountStagger):
 			}
 		}
-		err := s.fetchAndStoreCooldown(ctx, target, now, steamSettings.SteamShowCS2PrimeTag)
-		if err == errCooldownRateLimited {
-			// Walking the rest of the list into the same wall is exactly the
-			// pattern that earns a longer ban. The next unlock retries.
-			log.Warn("CS2 cooldown sweep aborted: rate limited by Steam", "checked", checked)
+		// Re-read after the wait, not only at the top: with several reads in flight
+		// the verdict usually arrives while this account was being paced, and this
+		// is the last moment it can still stop a request being sent.
+		if rateLimited.Load() {
+			break
+		}
+		// Taken by the launcher rather than inside the goroutine, so a run of slow
+		// answers holds the next request back instead of queueing goroutines behind
+		// a semaphore the stagger keeps feeding.
+		select {
+		case slots <- struct{}{}:
+		case <-ctx.Done():
 			return
 		}
-		if retryableSweepFailure(err) {
-			unreachable = true
-		}
 		checked++
+		wg.Add(1)
+		go func(target cooldownTarget, now time.Time) {
+			defer crashlog.Capture()
+			defer wg.Done()
+			defer func() { <-slots }()
+			err := s.fetchAndStoreCooldown(ctx, target, now, steamSettings.SteamShowCS2PrimeTag)
+			if err == errCooldownRateLimited {
+				rateLimited.Store(true)
+				return
+			}
+			if retryableSweepFailure(err) {
+				unreachable.Store(true)
+			}
+		}(target, now)
+	}
+	wg.Wait()
+	if rateLimited.Load() {
+		log.Warn("CS2 cooldown sweep aborted: rate limited by Steam", "checked", checked)
+		return
 	}
 	log.Info("CS2 cooldown sweep finished", "checked", checked)
-	if delay, failures := s.cooldownSweep.retry.note(unreachable, func() {
+	if delay, failures := s.cooldownSweep.retry.note(unreachable.Load(), func() {
 		s.signalCooldownSweep(true)
 	}); delay > 0 {
 		log.Info("CS2 cooldown sweep could not reach Steam; retrying",

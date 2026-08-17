@@ -106,8 +106,13 @@ func NewTransport() *http.Transport {
 		Proxy:                  nil,
 		DialContext:            (&net.Dialer{Timeout: 10 * time.Second, KeepAlive: 30 * time.Second}).DialContext,
 		ForceAttemptHTTP2:      true,
-		MaxIdleConns:           8,
-		MaxIdleConnsPerHost:    2,
+		// Sized for the sweeps rather than for a single request: the CS2 sweep now
+		// reads several accounts at once and the owned games sweep runs alongside
+		// it, all against steamcommunity.com. At two idle slots most of those paid
+		// for a fresh TCP and TLS handshake. This bounds pooling, not policy - what
+		// the transport is allowed to talk to is decided above and below it.
+		MaxIdleConns:           16,
+		MaxIdleConnsPerHost:    6,
 		IdleConnTimeout:        30 * time.Second,
 		TLSHandshakeTimeout:    10 * time.Second,
 		ResponseHeaderTimeout:  15 * time.Second,
