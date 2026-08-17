@@ -93,20 +93,53 @@ func (r cs2ProbeRung) percentile(p float64) time.Duration {
 	return sorted[int(float64(len(sorted)-1)*p)]
 }
 
-// readSecret takes one line from stdin without echoing it.
+// secretInput picks where a typed secret is read from, and returns a closer.
+//
+// go test hands the test binary a stdin that is already at EOF, so prompting on
+// stdin is answered instantly with nothing - which is exactly what the first
+// version of this did. The three cases are told apart rather than guessed at:
+//
+//   - stdin is a pipe or a file: the caller redirected it on purpose, so honour
+//     it and a piped password still works.
+//   - stdin is itself the console: use it.
+//   - anything else, which is go test's NUL: open the console's own input, which
+//     is unaffected by whatever stdin was wired to.
+func secretInput() (*os.File, func()) {
+	none := func() {}
+	handle := windows.Handle(os.Stdin.Fd())
+	if kind, err := windows.GetFileType(handle); err == nil && kind != windows.FILE_TYPE_CHAR {
+		return os.Stdin, none
+	}
+	var mode uint32
+	if windows.GetConsoleMode(handle, &mode) == nil {
+		return os.Stdin, none
+	}
+	console, err := os.OpenFile("CONIN$", os.O_RDWR, 0)
+	if err != nil {
+		return os.Stdin, none
+	}
+	return console, func() { _ = console.Close() }
+}
+
+// readSecret takes one line from the console without echoing it.
 func readSecret(prompt string) (string, error) {
+	source, closeSource := secretInput()
+	defer closeSource()
 	fmt.Fprint(os.Stderr, prompt)
 	defer fmt.Fprintln(os.Stderr)
-	handle := windows.Handle(os.Stdin.Fd())
+	// Echo off, but line input left on so backspace still works and the read
+	// returns on Enter.
+	handle := windows.Handle(source.Fd())
 	var mode uint32
 	if err := windows.GetConsoleMode(handle, &mode); err == nil {
 		if windows.SetConsoleMode(handle, mode&^windows.ENABLE_ECHO_INPUT) == nil {
 			defer func() { _ = windows.SetConsoleMode(handle, mode) }()
 		}
 	}
-	line, err := bufio.NewReader(os.Stdin).ReadString('\n')
+	line, err := bufio.NewReader(source).ReadString('\n')
 	if err != nil && strings.TrimSpace(line) == "" {
-		return "", err
+		return "", fmt.Errorf("%w (no console and nothing on stdin; pipe the password in, "+
+			"or build the binary with `go test -c` and run it directly)", err)
 	}
 	return strings.TrimRight(line, "\r\n"), nil
 }
