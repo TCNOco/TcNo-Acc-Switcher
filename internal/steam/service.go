@@ -58,10 +58,13 @@ type AccountDTO struct {
 	ShowShortNotes  bool   `json:"showShortNotes"`
 	Note            string `json:"note"`
 
-	AvatarFrameURL  string `json:"avatarFrameUrl"`
-	MiniProfileHTML string `json:"miniProfileHtml"`
-	ShowMiniProfile bool   `json:"showMiniProfile"`
-	ShowAvatarFrame bool   `json:"showAvatarFrame"`
+	AvatarFrameURL string `json:"avatarFrameUrl"`
+	// AvatarFrameStillURL is a single frame cut from an animated frame, shown
+	// while animations are suspended. Empty when the frame does not animate.
+	AvatarFrameStillURL string `json:"avatarFrameStillUrl"`
+	MiniProfileHTML     string `json:"miniProfileHtml"`
+	ShowMiniProfile     bool   `json:"showMiniProfile"`
+	ShowAvatarFrame     bool   `json:"showAvatarFrame"`
 	// ShowSteamGuardLock is the display setting, carried per row like the other
 	// Show* flags. Whether an account HAS Steam Guard is hasSteamGuard.
 	ShowSteamGuardLock bool `json:"showSteamGuardLock"`
@@ -97,11 +100,12 @@ type AccountPatch struct {
 
 	DisplayName string `json:"displayName,omitempty"`
 
-	AvatarFrameURL     string `json:"avatarFrameUrl"`
-	MiniProfileHTML    string `json:"miniProfileHtml"`
-	ShowMiniProfile    bool   `json:"showMiniProfile"`
-	ShowAvatarFrame    bool   `json:"showAvatarFrame"`
-	ShowSteamGuardLock bool   `json:"showSteamGuardLock"`
+	AvatarFrameURL      string `json:"avatarFrameUrl"`
+	AvatarFrameStillURL string `json:"avatarFrameStillUrl"`
+	MiniProfileHTML     string `json:"miniProfileHtml"`
+	ShowMiniProfile     bool   `json:"showMiniProfile"`
+	ShowAvatarFrame     bool   `json:"showAvatarFrame"`
+	ShowSteamGuardLock  bool   `json:"showSteamGuardLock"`
 
 	Error string `json:"error"`
 }
@@ -777,6 +781,13 @@ func (s *SteamService) runProfileRefresh() {
 						if fu, ok := profileimage.FindCached(PlatformKey, u.SteamID64+"_frame"); ok {
 							patch.AvatarFrameURL = fu
 						}
+					}
+					// However the frame arrived, an animated one needs a still cut
+					// from it: the page cannot freeze an APNG, and the only frame it
+					// can reach on its own is the loudest one.
+					if patch.AvatarFrameURL != "" {
+						patch.AvatarFrameStillURL = profileimage.EnsureAnimatedStill(
+							PlatformKey, u.SteamID64+"_frame")
 					}
 				}
 			}

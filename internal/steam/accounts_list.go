@@ -50,24 +50,25 @@ type SteamAccountEnrichmentDTO struct {
 	// HasVisibleBan reports a ban the global settings are set to show, whether
 	// or not this account is hidden. It is what decides that the context menu
 	// has anything to offer; BanStatusHidden decides which way it reads.
-	HasVisibleBan      bool                  `json:"hasVisibleBan"`
-	BanStatusHidden    bool                  `json:"banStatusHidden"`
-	ShowSteamID        bool                  `json:"showSteamId"`
-	ShowVAC            bool                  `json:"showVac"`
-	ShowLimited        bool                  `json:"showLimited"`
-	ShowLastLogin      bool                  `json:"showLastLogin"`
-	ShowAccUsername    bool                  `json:"showAccUsername"`
-	CollectInfo        bool                  `json:"collectInfo"`
-	ShowShortNotes     bool                  `json:"showShortNotes"`
-	Note               string                `json:"note"`
-	AvatarFrameURL     string                `json:"avatarFrameUrl"`
-	MiniProfileHTML    string                `json:"miniProfileHtml"`
-	ShowMiniProfile    bool                  `json:"showMiniProfile"`
-	ShowAvatarFrame    bool                  `json:"showAvatarFrame"`
-	ShowSteamGuardLock bool                  `json:"showSteamGuardLock"`
-	SyncError          string                `json:"syncError"`
-	Tags               []basic.AccountTagDTO `json:"tags"`
-	ManualProfileImage bool                  `json:"manualProfileImage"`
+	HasVisibleBan       bool                  `json:"hasVisibleBan"`
+	BanStatusHidden     bool                  `json:"banStatusHidden"`
+	ShowSteamID         bool                  `json:"showSteamId"`
+	ShowVAC             bool                  `json:"showVac"`
+	ShowLimited         bool                  `json:"showLimited"`
+	ShowLastLogin       bool                  `json:"showLastLogin"`
+	ShowAccUsername     bool                  `json:"showAccUsername"`
+	CollectInfo         bool                  `json:"collectInfo"`
+	ShowShortNotes      bool                  `json:"showShortNotes"`
+	Note                string                `json:"note"`
+	AvatarFrameURL      string                `json:"avatarFrameUrl"`
+	AvatarFrameStillURL string                `json:"avatarFrameStillUrl"`
+	MiniProfileHTML     string                `json:"miniProfileHtml"`
+	ShowMiniProfile     bool                  `json:"showMiniProfile"`
+	ShowAvatarFrame     bool                  `json:"showAvatarFrame"`
+	ShowSteamGuardLock  bool                  `json:"showSteamGuardLock"`
+	SyncError           string                `json:"syncError"`
+	Tags                []basic.AccountTagDTO `json:"tags"`
+	ManualProfileImage  bool                  `json:"manualProfileImage"`
 
 	// CS2CooldownExpiresAt is RFC3339 UTC, empty when there is no cooldown. An
 	// absolute instant rather than a remaining duration, so the tile can count
@@ -282,9 +283,14 @@ func (s *SteamService) GetSteamAccountsEnrichment() ([]SteamAccountEnrichmentDTO
 		bans := banDisplayFor(v, ctx.st.SteamShowVAC, ctx.st.SteamShowLimited, banHidden)
 
 		miniHTML := ApplySteamManualAvatarMiniprofile(miniHTMLForName, u.SteamID64)
-		frameURL := ""
+		frameURL, frameStillURL := "", ""
 		if fu, ok := avatars.FindCached(u.SteamID64 + "_frame"); ok {
 			frameURL = fu
+			// Through the same snapshot as the frame itself, so the whole list
+			// still costs one directory read rather than one stat per account.
+			if su, ok := avatars.FindCached(u.SteamID64 + "_frame" + profileimage.AnimatedStillSuffix); ok {
+				frameStillURL = su
+			}
 		}
 
 		// Reuses the miniprofile HTML read above; CachedCommunityDisplayName
@@ -304,33 +310,34 @@ func (s *SteamService) GetSteamAccountsEnrichment() ([]SteamAccountEnrichmentDTO
 			}
 		}
 		out = append(out, SteamAccountEnrichmentDTO{
-			SteamID64:          u.SteamID64,
-			DisplayName:        displayName,
-			LastLogin:          formatLastLogin(u.Timestamp),
-			Offline:            strings.TrimSpace(u.WantsOffline) == "1",
-			ImageURL:           displayURL,
-			StaticImageURL:     fallbackStatic,
-			AvatarPending:      avatarPending,
-			MetaPending:        metaPending,
-			Vac:                v.Vac,
-			Ltd:                v.Ltd,
-			HasVisibleBan:      bans.HasVisibleBan,
-			BanStatusHidden:    bans.Hidden,
-			ShowSteamID:        ctx.st.SteamShowSteamID,
-			ShowVAC:            bans.ShowVAC,
-			ShowLimited:        bans.ShowLimited,
-			ShowLastLogin:      ctx.st.SteamShowLastLogin,
-			ShowAccUsername:    ctx.st.SteamShowAccUsername,
-			CollectInfo:        ctx.st.CollectInfo,
-			ShowShortNotes:     ctx.st.ShowShortNotes,
-			Note:               note,
-			AvatarFrameURL:     frameURL,
-			MiniProfileHTML:    miniHTML,
-			ShowMiniProfile:    ctx.st.SteamShowMiniProfile,
-			ShowAvatarFrame:    ctx.st.SteamShowAvatarFrame,
-			ShowSteamGuardLock: ctx.st.SteamShowSteamGuardLock,
-			Tags:               ctx.tagByUID[u.SteamID64],
-			ManualProfileImage: isManualAvatar,
+			SteamID64:           u.SteamID64,
+			DisplayName:         displayName,
+			LastLogin:           formatLastLogin(u.Timestamp),
+			Offline:             strings.TrimSpace(u.WantsOffline) == "1",
+			ImageURL:            displayURL,
+			StaticImageURL:      fallbackStatic,
+			AvatarPending:       avatarPending,
+			MetaPending:         metaPending,
+			Vac:                 v.Vac,
+			Ltd:                 v.Ltd,
+			HasVisibleBan:       bans.HasVisibleBan,
+			BanStatusHidden:     bans.Hidden,
+			ShowSteamID:         ctx.st.SteamShowSteamID,
+			ShowVAC:             bans.ShowVAC,
+			ShowLimited:         bans.ShowLimited,
+			ShowLastLogin:       ctx.st.SteamShowLastLogin,
+			ShowAccUsername:     ctx.st.SteamShowAccUsername,
+			CollectInfo:         ctx.st.CollectInfo,
+			ShowShortNotes:      ctx.st.ShowShortNotes,
+			Note:                note,
+			AvatarFrameURL:      frameURL,
+			AvatarFrameStillURL: frameStillURL,
+			MiniProfileHTML:     miniHTML,
+			ShowMiniProfile:     ctx.st.SteamShowMiniProfile,
+			ShowAvatarFrame:     ctx.st.SteamShowAvatarFrame,
+			ShowSteamGuardLock:  ctx.st.SteamShowSteamGuardLock,
+			Tags:                ctx.tagByUID[u.SteamID64],
+			ManualProfileImage:  isManualAvatar,
 
 			CS2CooldownExpiresAt: cooldownExpiry,
 			CS2CooldownPermanent: cooldownPermanent,
@@ -368,37 +375,38 @@ func banDisplayFor(v VacEntry, showVAC, showLimited, hidden bool) banDisplay {
 
 func mergeSteamAccountDTO(list SteamAccountListItemDTO, enrich SteamAccountEnrichmentDTO) AccountDTO {
 	return AccountDTO{
-		SteamID64:          list.SteamID64,
-		PersonaName:        list.PersonaName,
-		AccountName:        list.AccountName,
-		DisplayName:        enrich.DisplayName,
-		LastLogin:          enrich.LastLogin,
-		Offline:            enrich.Offline,
-		ImageURL:           enrich.ImageURL,
-		StaticImageURL:     enrich.StaticImageURL,
-		AvatarPending:      enrich.AvatarPending,
-		MetaPending:        enrich.MetaPending,
-		Vac:                enrich.Vac,
-		Ltd:                enrich.Ltd,
-		HasVisibleBan:      enrich.HasVisibleBan,
-		BanStatusHidden:    enrich.BanStatusHidden,
-		ShowSteamID:        enrich.ShowSteamID,
-		ShowVAC:            enrich.ShowVAC,
-		ShowLimited:        enrich.ShowLimited,
-		ShowLastLogin:      enrich.ShowLastLogin,
-		ShowAccUsername:    enrich.ShowAccUsername,
-		CollectInfo:        enrich.CollectInfo,
-		ShowShortNotes:     enrich.ShowShortNotes,
-		Note:               enrich.Note,
-		AvatarFrameURL:     enrich.AvatarFrameURL,
-		MiniProfileHTML:    enrich.MiniProfileHTML,
-		ShowMiniProfile:    enrich.ShowMiniProfile,
-		ShowAvatarFrame:    enrich.ShowAvatarFrame,
-		ShowSteamGuardLock: enrich.ShowSteamGuardLock,
-		SyncError:          enrich.SyncError,
-		CurrentSession:     list.CurrentSession,
-		Tags:               enrich.Tags,
-		ManualProfileImage: enrich.ManualProfileImage,
+		SteamID64:           list.SteamID64,
+		PersonaName:         list.PersonaName,
+		AccountName:         list.AccountName,
+		DisplayName:         enrich.DisplayName,
+		LastLogin:           enrich.LastLogin,
+		Offline:             enrich.Offline,
+		ImageURL:            enrich.ImageURL,
+		StaticImageURL:      enrich.StaticImageURL,
+		AvatarPending:       enrich.AvatarPending,
+		MetaPending:         enrich.MetaPending,
+		Vac:                 enrich.Vac,
+		Ltd:                 enrich.Ltd,
+		HasVisibleBan:       enrich.HasVisibleBan,
+		BanStatusHidden:     enrich.BanStatusHidden,
+		ShowSteamID:         enrich.ShowSteamID,
+		ShowVAC:             enrich.ShowVAC,
+		ShowLimited:         enrich.ShowLimited,
+		ShowLastLogin:       enrich.ShowLastLogin,
+		ShowAccUsername:     enrich.ShowAccUsername,
+		CollectInfo:         enrich.CollectInfo,
+		ShowShortNotes:      enrich.ShowShortNotes,
+		Note:                enrich.Note,
+		AvatarFrameURL:      enrich.AvatarFrameURL,
+		AvatarFrameStillURL: enrich.AvatarFrameStillURL,
+		MiniProfileHTML:     enrich.MiniProfileHTML,
+		ShowMiniProfile:     enrich.ShowMiniProfile,
+		ShowAvatarFrame:     enrich.ShowAvatarFrame,
+		ShowSteamGuardLock:  enrich.ShowSteamGuardLock,
+		SyncError:           enrich.SyncError,
+		CurrentSession:      list.CurrentSession,
+		Tags:                enrich.Tags,
+		ManualProfileImage:  enrich.ManualProfileImage,
 
 		CS2CooldownExpiresAt: enrich.CS2CooldownExpiresAt,
 		CS2CooldownPermanent: enrich.CS2CooldownPermanent,

@@ -55,29 +55,32 @@
     !$streamerMode && !!(account.showMiniProfile && (account.miniProfileHtml ?? "").trim() !== "");
   $: guardBadge = steamGuardBadge(account);
   $: guardBadgeLabel = guardBadge ? $t(guardBadge.labelKey) : "";
-  /**
-   * Steam's avatar frames are APNGs, and suspending one means taking it out of
-   * the document — there is no way to pause an animated <img>, and removing it is
-   * what stops Chromium decoding it.
-   *
-   * It used to be replaced by a canvas holding a still of itself, so the
-   * decoration stayed put and merely stopped moving. That still was always wrong.
-   * drawImage hands back an animated PNG's default image and nothing else: five
-   * captures spread across three seconds of a running animation came back
-   * byte-identical, and in these files the default image is frame 0 — which for a
-   * lightning border is the peak of the flash, several times thicker than the
-   * frame that was on screen a moment earlier. No browser API exposes the current
-   * frame, so an accurate still cannot be produced from the page at all.
-   *
-   * Showing nothing is at least honest, and it costs little: a frame is only
-   * suspended when the user is looking somewhere else.
-   */
+  // The frame is always rendered when the account has one; suspending only stops
+  // it moving, so it never disappears from a list the user can still see.
   $: showAvatarFrame =
     account.showAvatarFrame === true &&
     (account.avatarFrameUrl ?? "").trim() !== "" &&
     !$offlineMode &&
-    !$streamerMode &&
-    !$animationsSuspended;
+    !$streamerMode;
+  /**
+   * Suspending swaps the APNG for a still cut from it by the backend.
+   *
+   * The page cannot produce that still itself. There is no way to pause an
+   * animated <img>, and drawImage only ever hands back the default image — five
+   * captures spread across three seconds of a running animation came back
+   * byte-identical. In these frames the default image is frame 0, which on a
+   * lightning border is the peak of the flash and several times thicker than
+   * whatever was on screen a moment earlier, so freezing onto a canvas made the
+   * border visibly swell. profileimage.StillFromAPNG picks the median frame
+   * instead, which is what the border looks like for most of its cycle.
+   *
+   * A frame with no still is one that does not animate, so leaving it running
+   * costs nothing.
+   */
+  $: frameSrc =
+    $animationsSuspended && (account.avatarFrameStillUrl ?? "").trim() !== ""
+      ? (account.avatarFrameStillUrl ?? "")
+      : (account.avatarFrameUrl ?? "");
 </script>
 
 <span class="steam-acc-avatar-wrap">
@@ -108,12 +111,7 @@
     />
   {/if}
   {#if showAvatarFrame}
-    <img
-      class="steam-acc-avatar-frame"
-      src={account.avatarFrameUrl ?? ""}
-      alt=""
-      draggable="false"
-    />
+    <img class="steam-acc-avatar-frame" src={frameSrc} alt="" draggable="false" />
   {/if}
   <!-- Sits above the avatar frame so a framed avatar does not hide it. A pending
        setup and a login-only record get their own look: neither is protection,

@@ -9,6 +9,7 @@ export type SteamAccountRow = InstanceType<typeof AccountDTO> & {
   note: string;
   staticImageUrl?: string;
   avatarFrameUrl?: string;
+  avatarFrameStillUrl?: string;
   miniProfileHtml?: string;
   showMiniProfile?: boolean;
   showAvatarFrame?: boolean;
@@ -54,6 +55,7 @@ export type SteamGuardMenuRequest = {
 
 export type SteamAccountPatch = AccountPatch & {
   avatarFrameUrl?: string;
+  avatarFrameStillUrl?: string;
   miniProfileHtml?: string;
   showMiniProfile?: boolean;
   showAvatarFrame?: boolean;

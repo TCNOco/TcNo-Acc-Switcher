@@ -62,7 +62,7 @@
 
 
   type SteamAccountPatch = AccountPatch & {
-    avatarFrameUrl?: string; miniProfileHtml?: string;
+    avatarFrameUrl?: string; avatarFrameStillUrl?: string; miniProfileHtml?: string;
     showMiniProfile?: boolean; showAvatarFrame?: boolean;
     showSteamGuardLock?: boolean;
   };
@@ -201,6 +201,7 @@
         showShortNotes: r.showShortNotes ?? false,
         note: r.note ?? "",
         avatarFrameUrl: r.avatarFrameUrl,
+        avatarFrameStillUrl: r.avatarFrameStillUrl,
         miniProfileHtml: r.miniProfileHtml,
         showMiniProfile: r.showMiniProfile ?? false,
         showAvatarFrame: r.showAvatarFrame ?? false,
@@ -299,6 +300,7 @@
         displayName: typeof p.displayName === "string" && p.displayName.trim() !== "" ? p.displayName.trim() : account.displayName ?? "",
         staticImageUrl: typeof p.staticImageUrl === "string" && p.staticImageUrl.trim() !== "" ? p.staticImageUrl.trim() : account.staticImageUrl ?? "",
         avatarFrameUrl: typeof p.avatarFrameUrl === "string" && p.avatarFrameUrl.trim() !== "" ? p.avatarFrameUrl.trim() : account.avatarFrameUrl ?? "",
+        avatarFrameStillUrl: typeof p.avatarFrameStillUrl === "string" && p.avatarFrameStillUrl.trim() !== "" ? p.avatarFrameStillUrl.trim() : account.avatarFrameStillUrl ?? "",
         miniProfileHtml: typeof p.miniProfileHtml === "string" && p.miniProfileHtml.trim() !== "" ? p.miniProfileHtml.trim() : account.miniProfileHtml ?? "",
         showMiniProfile: typeof p.showMiniProfile === "boolean" ? p.showMiniProfile : account.showMiniProfile,
         showAvatarFrame: typeof p.showAvatarFrame === "boolean" ? p.showAvatarFrame : account.showAvatarFrame,
