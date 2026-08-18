@@ -26,6 +26,16 @@ Local changes:
       out-parameter where the handler belongs, which the runtime dereferences as
       an interface pointer and faults on.
 
+  Recoverable view creation                     (changed, chromium.go)
+      CreateCoreWebView2ControllerCompleted, the GetCoreWebView2 failure inside
+      initializeController, and Embed's pre-pump failures now return instead of
+      exiting the process. WebView2 aborts creation with E_ABORT whenever the
+      host window is destroyed first, which is what closing a session window
+      before it finishes opening does; upstream calls errorCallback, which
+      os.Exit(1)s, so the whole application went down with the window. Embed's
+      nested pump gained a failure exit and Embed now returns false, the path
+      its caller already tests.
+
   Chromium.ProfileName                          (added field, chromium.go)
       When set, the controller is created through CreateControllerWithProfile so
       the view gets its own cookie jar. One Chromium per browser window, all

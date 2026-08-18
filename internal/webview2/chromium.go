@@ -55,11 +55,15 @@ type Chromium struct {
 		Bottom int32
 	}
 
-	controller                       *ICoreWebView2Controller
-	compositionController            *ICoreWebView2CompositionController
-	compositionController4           *ICoreWebView2CompositionController4
-	webview                          *ICoreWebView2
-	inited                           uintptr
+	controller             *ICoreWebView2Controller
+	compositionController  *ICoreWebView2CompositionController
+	compositionController4 *ICoreWebView2CompositionController4
+	webview                *ICoreWebView2
+	inited                 uintptr
+	// createFailed is the pump's second exit condition. It cannot share inited,
+	// which IsReady answers with and Focus trusts to mean the controller is
+	// fully built.
+	createFailed                     uintptr
 	envCompleted                     *iCoreWebView2CreateCoreWebView2EnvironmentCompletedHandler
 	controllerCompleted              *iCoreWebView2CreateCoreWebView2ControllerCompletedHandler
 	compositionControllerCompleted   *iCoreWebView2CreateCoreWebView2CompositionControllerCompletedHandler
@@ -193,7 +197,10 @@ func (e *Chromium) Embed(hwnd uintptr) bool {
 		currentExePath := make([]uint16, windows.MAX_PATH)
 		_, err = windows.GetModuleFileName(windows.Handle(0), &currentExePath[0], windows.MAX_PATH)
 		if err != nil {
-			e.errorCallback(err)
+			// Falling through builds the data path out of a zeroed buffer and
+			// lands the profile on %AppData% itself.
+			log.Printf("[WebView2] could not derive a data path: %v", err)
+			return false
 		}
 		currentExeName := filepath.Base(windows.UTF16ToString(currentExePath))
 		dataPath = filepath.Join(os.Getenv("AppData"), currentExeName)
@@ -201,23 +208,32 @@ func (e *Chromium) Embed(hwnd uintptr) bool {
 
 	if e.BrowserPath != "" {
 		if _, err = os.Stat(e.BrowserPath); errors.Is(err, os.ErrNotExist) {
-			e.errorCallback(fmt.Errorf("browser path '%s' does not exist", e.BrowserPath))
+			log.Printf("[WebView2] browser path %q does not exist", e.BrowserPath)
+			return false
 		}
 	}
 
 	browserArgs := strings.Join(e.AdditionalBrowserArgs, " ")
 	if err := createCoreWebView2EnvironmentWithOptions(e.BrowserPath, dataPath, e.envCompleted, browserArgs); err != nil {
-		e.errorCallback(fmt.Errorf("error calling Webview2Loader: %s", err.Error()))
+		// No environment means EnvironmentCompleted never runs, so nothing ever
+		// sets inited and the pump below would block until WM_QUIT.
+		log.Printf("[WebView2] could not create the environment: %v", err)
+		return false
 	}
 
 	e.webview2RuntimeVersion, err = webviewloader.GetAvailableCoreWebView2BrowserVersionString(e.BrowserPath)
 	if err != nil {
-		e.errorCallback(fmt.Errorf("error getting Webview2 runtime version: %s", err.Error()))
+		// Not fatal, and not a reason to return: the environment creation above
+		// has already been submitted and its completion would fire into an
+		// abandoned Chromium. A blank version only degrades - HasCapability
+		// answers false and GetCookieManager refuses, which the caller turns
+		// into a clean error once Embed returns.
+		log.Printf("[WebView2] could not read the runtime version: %v", err)
 	}
 
 	var msg w32.Msg
 	for {
-		if atomic.LoadUintptr(&e.inited) != 0 {
+		if atomic.LoadUintptr(&e.inited) != 0 || atomic.LoadUintptr(&e.createFailed) != 0 {
 			break
 		}
 		r, _, _ := w32.User32GetMessageW.Call(
@@ -227,10 +243,25 @@ func (e *Chromium) Embed(hwnd uintptr) bool {
 			0,
 		)
 		if r == 0 {
+			// WM_QUIT has been taken off the queue here. The Wails main loop
+			// ends on its own GetMessage returning 0 and would never see it
+			// otherwise, leaving a process that cannot exit.
+			w32.User32PostQuitMessage.Call(msg.WParam)
+			break
+		}
+		// GetMessage reports failure as a 32-bit -1, which reaches us
+		// zero-extended, so the comparison has to narrow first.
+		if int32(r) == -1 {
+			log.Printf("[WebView2] Embed message loop failed")
 			break
 		}
 		w32.User32TranslateMessage.Call(uintptr(unsafe.Pointer(&msg)))
 		w32.User32DispatchMessageW.Call(uintptr(unsafe.Pointer(&msg)))
+	}
+	if !e.IsReady() {
+		// Every exit above other than a completed controller leaves e.webview
+		// nil, which Init would dereference.
+		return false
 	}
 	e.Init("window.external={invoke:s=>window.chrome.webview.postMessage(s)}")
 	return true
@@ -297,6 +328,10 @@ func (e *Chromium) NavigateToString(content string) {
 }
 
 func (e *Chromium) Init(script string) {
+	if e.webview == nil || e.shuttingDown {
+		return
+	}
+
 	err := e.webview.AddScriptToExecuteOnDocumentCreated(script, nil)
 	if err != nil {
 		log.Printf("[WebView2] Init script registration failed: %v", err)
@@ -377,8 +412,21 @@ func (e *Chromium) EnvironmentCompleted(res uintptr, env *ICoreWebView2Environme
 }
 
 func (e *Chromium) CreateCoreWebView2ControllerCompleted(res uintptr, controller *ICoreWebView2Controller) uintptr {
-	if int32(res) < 0 {
-		e.errorCallback(fmt.Errorf("error creating controller with %08x: %s", res, syscall.Errno(res)))
+	if int32(res) < 0 || controller == nil {
+		// WebView2 aborts creation with E_ABORT when the host window is
+		// destroyed before it finishes, which is what a session window closed
+		// while it is still opening looks like. The completion arrives from
+		// inside the DestroyWindow that caused it, so there is no controller
+		// and initializeController below would dereference nil. Losing the one
+		// view is recoverable - Embed reports it and the caller takes the
+		// window down; killing the process (errorCallback) is not.
+		if int32(res) < 0 {
+			log.Printf("[WebView2] controller creation failed with %08x: %s", res, syscall.Errno(res))
+		} else {
+			log.Printf("[WebView2] controller creation completed without a controller")
+		}
+		atomic.StoreUintptr(&e.createFailed, 1)
+		return 0
 	}
 
 	return e.initializeController(controller)
@@ -509,7 +557,12 @@ func (e *Chromium) initializeController(controller *ICoreWebView2Controller) uin
 	var token _EventRegistrationToken
 	e.webview, err = e.controller.GetCoreWebView2()
 	if err != nil {
-		e.errorCallback(err)
+		// A controller created against a window that is already going away can
+		// still refuse to hand back its view, and nothing below runs without
+		// one - the next line dereferences it.
+		log.Printf("[WebView2] could not get the core view from the controller: %v", err)
+		atomic.StoreUintptr(&e.createFailed, 1)
+		return 0
 	}
 
 	e.webview.AddRef()
