@@ -109,7 +109,7 @@ func (s *SteamService) RunAdvancedClearingAction(action string) (AdvancedClearRe
 		if err := winutil.ErrIfCannotKill(steamKillNames, method); err != nil {
 			return AdvancedClearResult{}, err
 		}
-		if err := winutil.KillByName(steamKillNames, method, nil); err != nil {
+		if err := winutil.KillByNameWithOpts(steamKillNames, method, nativeQuitOpts(root)); err != nil {
 			appendLine("Warning: " + err.Error())
 		}
 		appendLine(advancedClearingI18nLine("SteamAdvanced_ClosedSteam"))

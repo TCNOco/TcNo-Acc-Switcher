@@ -25,7 +25,7 @@ func (s *SteamService) CloseSteam() error {
 		return err
 	}
 	platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatform", PlatformKey)
-	if err := winutil.KillByName(steamKillNames, method, nil); err != nil {
+	if err := winutil.KillByNameWithOpts(steamKillNames, method, nativeQuitOpts("")); err != nil {
 		platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatformFailed", PlatformKey)
 		return err
 	}

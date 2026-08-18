@@ -16,6 +16,8 @@ const electronExitMaxWait = 35 * time.Second
 
 const (
 	electronPollInterval = 35 * time.Millisecond
+	// maxWaitObjects is the WaitForMultipleObjects handle limit (MAXIMUM_WAIT_OBJECTS).
+	maxWaitObjects = 64
 )
 
 const (

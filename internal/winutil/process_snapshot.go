@@ -198,46 +198,70 @@ func waitForImageExit(exeImage string, maxWait, poll time.Duration, targetCount 
 		}
 		emitStatus(key, vars)
 	}
-	var cachedPIDs []uint32
-	for time.Now().Before(deadline) {
-		if len(cachedPIDs) == 0 {
-			var err error
-			cachedPIDs, err = allPIDsForImageName(exeImage)
-			if err != nil {
-				time.Sleep(300 * time.Millisecond)
-				return
-			}
-			if len(cachedPIDs) == 0 {
-				return
-			}
-		}
+	pids, err := allPIDsForImageName(exeImage)
+	if err != nil || len(pids) == 0 {
+		return
+	}
 
-		stillRunning := false
-		remaining := cachedPIDs[:0]
-		for _, pid := range cachedPIDs {
-			h, err := windows.OpenProcess(windows.SYNCHRONIZE, false, pid)
-			if err != nil {
-				if err == windows.ERROR_ACCESS_DENIED {
-					stillRunning = true
-					remaining = append(remaining, pid)
-				}
-				continue
+	// Wait on the real process handles instead of re-reading the process table. The wait
+	// returns the instant the last process dies, so poll no longer bounds how fast we notice
+	// an exit - it only bounds how often the "waiting for X" status line is refreshed.
+	var handles []windows.Handle
+	var unwaitable []uint32
+	for _, pid := range pids {
+		h, err := windows.OpenProcess(windows.SYNCHRONIZE, false, pid)
+		if err != nil {
+			// ERROR_ACCESS_DENIED means it is alive but we cannot wait on it; anything
+			// else means it is already gone.
+			if err == windows.ERROR_ACCESS_DENIED {
+				unwaitable = append(unwaitable, pid)
 			}
-			r, _ := windows.WaitForSingleObject(h, 0)
+			continue
+		}
+		handles = append(handles, h)
+	}
+	defer func() {
+		for _, h := range handles {
 			windows.CloseHandle(h)
-			if r == windows.WAIT_OBJECT_0 {
-				continue
-			}
-			stillRunning = true
-			remaining = append(remaining, pid)
 		}
-		cachedPIDs = remaining
+	}()
 
-		if !stillRunning {
+	if poll <= 0 {
+		poll = 100 * time.Millisecond
+	}
+	for {
+		remaining := time.Until(deadline)
+		if remaining <= 0 {
 			return
 		}
+		chunk := poll
+		if chunk > remaining {
+			chunk = remaining
+		}
+		if len(handles) > 0 {
+			// WaitForMultipleObjects caps at 64 handles; wait them down in batches. With
+			// waitAll set, a batch returns as soon as every handle in it is signalled.
+			batch := handles
+			if len(batch) > maxWaitObjects {
+				batch = batch[:maxWaitObjects]
+			}
+			r, err := windows.WaitForMultipleObjects(batch, true, uint32(chunk/time.Millisecond))
+			if err == nil && r != uint32(windows.WAIT_TIMEOUT) {
+				handles = handles[len(batch):]
+				continue
+			}
+		} else if len(unwaitable) > 0 {
+			time.Sleep(chunk)
+		}
+		if len(handles) == 0 {
+			if len(unwaitable) == 0 {
+				return
+			}
+			if live, err := allPIDsForImageName(exeImage); err == nil && len(live) == 0 {
+				return
+			}
+		}
 		reportWaitStatus()
-		time.Sleep(poll)
 	}
 }
 

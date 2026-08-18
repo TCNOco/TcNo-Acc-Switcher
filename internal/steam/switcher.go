@@ -85,7 +85,7 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 		platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatformFailed", "Steam")
 		return err
 	}
-	if err := winutil.KillByName(steamKillNames, winutil.ClosingMethod(st.ClosingMethod), nil); err != nil {
+	if err := winutil.KillByNameWithOpts(steamKillNames, winutil.ClosingMethod(st.ClosingMethod), nativeQuitOpts(root)); err != nil {
 		steamLog.Warn("kill steam processes", slog.Any("err", err))
 	}
 
