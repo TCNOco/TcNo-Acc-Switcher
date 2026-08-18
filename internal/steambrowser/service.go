@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strings"
 	"sync"
+	"sync/atomic"
 
 	"TcNo-Acc-Switcher/internal/screenprivacy"
 
@@ -27,6 +28,10 @@ const defaultChromeHeight = 76
 // turns it into a result the caller can act on: the answer is to offer the
 // sign-in screen, not to show an error.
 var ErrNeedsLogin = errors.New("steambrowser: the account must sign in again")
+
+// errClosedWhileOpening reports the user shutting a session window before it
+// finished opening. Expected, not a fault.
+var errClosedWhileOpening = errors.New("steambrowser: the window was closed before it finished opening")
 
 // OpenResult is what opening a window produced.
 type OpenResult struct {
@@ -147,7 +152,11 @@ func (s *Service) OpenBrowser(accountID, site, modalToken string) (OpenResult, e
 	})
 	if openErr != nil {
 		s.sessions.release(id)
-		log.Error("could not open the session browser window", "window", id, "error", openErr)
+		if errors.Is(openErr, errClosedWhileOpening) {
+			log.Info("session browser window was closed while opening", "window", id)
+		} else {
+			log.Error("could not open the session browser window", "window", id, "error", openErr)
+		}
 		return OpenResult{}, openErr
 	}
 	log.Info("session browser window open", "window", id, "open", s.sessions.count())
@@ -173,6 +182,17 @@ func (s *Service) openOnMainThread(id string, credentials WebSession, site Site,
 	logger().Debug("host window created",
 		"window", id, "hwnd", nativeWindow, "host", Classify(PlatformSteam, destination).Host)
 
+	// Wails snapshots a window's close listeners when it emits, so the handler
+	// registered further down cannot see a close that arrives while the view is
+	// still being built - and newView blocks on a message pump that dispatches
+	// exactly that close. Watch from here instead, or the window is torn down
+	// with a session that was never registered and an id held for the life of
+	// the process.
+	var closedEarly atomic.Bool
+	unwatch := window.OnWindowEvent(events.Common.WindowClosing, func(*application.WindowEvent) {
+		closedEarly.Store(true)
+	})
+
 	view, err := newView(ViewOptions{
 		NativeWindow: nativeWindow,
 		Profile:      profile,
@@ -187,8 +207,18 @@ func (s *Service) openOnMainThread(id string, credentials WebSession, site Site,
 		OnDownload:   func(url string) { s.handleDownload(id, url) },
 	})
 	if err != nil {
+		unwatch()
 		window.Close()
 		return err
+	}
+
+	if closedEarly.Load() {
+		unwatch()
+		view.Close()
+		// Wails marks a window destroyed before it destroys the handle, so this
+		// is a guarded no-op once the teardown has already run.
+		window.Close()
+		return errClosedWhileOpening
 	}
 
 	s.sessions.add(&session{
@@ -217,6 +247,9 @@ func (s *Service) openOnMainThread(id string, credentials WebSession, site Site,
 		view := closing.view
 		application.InvokeAsync(view.Close)
 	})
+	// Only now: dropping the watcher any earlier leaves a close landing in the
+	// gap seen by neither handler.
+	unwatch()
 	s.layout(id)
 	return nil
 }

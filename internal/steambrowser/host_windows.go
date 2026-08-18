@@ -83,6 +83,7 @@ func newView(options ViewOptions) (View, error) {
 	// from the host's own webview afterwards.
 	before := childWindows(options.NativeWindow)
 	if !chromium.Embed(options.NativeWindow) {
+		chromium.Close()
 		return nil, errors.New("steambrowser: could not create the content view")
 	}
 	view.contentWindow = newChildWindow(before, childWindows(options.NativeWindow))
