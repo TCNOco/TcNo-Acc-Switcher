@@ -17,11 +17,39 @@ func killPlatformExes(deps FlowDeps, fc FlowContext) error {
 		return err
 	}
 	platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatform", fc.PlatformKey)
-	if err := winutil.KillByName(fc.Descriptor.ExesToEnd, closingMethod, electronBeforeKillSynth(deps, fc.PlatformKey, fc.Descriptor.ExesToEnd)); err != nil {
+	opts := winutil.KillOpts{
+		NativeQuit:          descriptorNativeQuit(deps, fc),
+		BeforeElectronSynth: electronBeforeKillSynth(deps, fc.PlatformKey, fc.Descriptor.ExesToEnd),
+	}
+	if err := winutil.KillByNameWithOpts(fc.Descriptor.ExesToEnd, closingMethod, opts); err != nil {
 		platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatformFailed", fc.PlatformKey)
 		return err
 	}
 	return nil
+}
+
+// descriptorNativeQuit turns Extras.QuitArgs into the platform's own quit command, or nil when
+// the descriptor declares none. The arguments are always applied to the executable this platform
+// already launches, so a descriptor can choose how to close a launcher but never what to run.
+func descriptorNativeQuit(deps FlowDeps, fc FlowContext) func() error {
+	args := platform.LaunchArgTokens(fc.Descriptor.Extras.QuitArgs)
+	if len(args) == 0 || deps.PS == nil {
+		return nil
+	}
+	platformKey := fc.PlatformKey
+	return func() error {
+		exe, err := deps.PS.ResolvePlatformExeFullPath(platformKey)
+		if err != nil || strings.TrimSpace(exe) == "" {
+			return fmt.Errorf("quit args set but executable not found")
+		}
+		// Detached like every other launch: a quit helper must not be able to take the
+		// switcher down with it. Never elevated - a UAC prompt to close a launcher would
+		// be worse than the force-kill this degrades to.
+		return winutil.Start(exe, args, winutil.StartOpts{
+			HideWindow: true,
+			WorkingDir: filepath.Dir(exe),
+		})
+	}
 }
 
 func primaryExeImageForKill(exes []string) string {

@@ -135,7 +135,11 @@ func (b *BasicService) SuggestedSaveAccountName(platformKey string) (string, err
 				return "", err
 			}
 			slog.Debug("suggested save name pre-kill", "platform", platformKey, "reason", "ExitBeforeSave")
-			_ = winutil.KillByName(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod), electronBeforeKillSynth(b.deps(), platformKey, d.ExesToEnd))
+			opts := winutil.KillOpts{
+				NativeQuit:          descriptorNativeQuit(b.deps(), FlowContext{PlatformKey: platformKey, Descriptor: d}),
+				BeforeElectronSynth: electronBeforeKillSynth(b.deps(), platformKey, d.ExesToEnd),
+			}
+			_ = winutil.KillByNameWithOpts(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod), opts)
 		}
 	}
 	folder, _ := resolveExeFolder(b.deps(), platformKey)

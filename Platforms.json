@@ -654,6 +654,7 @@
       "UniqueIdFile": "%Platform_Folder%\\config\\loginusers.vdf",
       "UniqueIdMethod": "STEAM",
       "Extras": {
+        "QuitArgs": "-shutdown",
         "BackupFolders": {
           "%Platform_Folder%\\config": "config",
           "%Platform_Folder%\\userdata": "userdata"
@@ -680,5 +681,5 @@
   },
   "Platform-WIP": {
   },
-  "Version": "4.0.5"
+  "Version": "4.0.6"
 }

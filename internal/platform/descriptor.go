@@ -26,6 +26,14 @@ type DescriptorExtras struct {
 	BackupFileTypesIgnore   []string          `json:"BackupFileTypesIgnore,omitempty"`
 	ClosingMethod           string            `json:"ClosingMethod,omitempty"`
 	ForceClosingMethod      bool              `json:"ForceClosingMethod,omitempty"`
+	// QuitArgs are passed to the platform's own executable to ask it to shut itself down,
+	// e.g. "-shutdown" for Steam. Use it when the platform ignores WM_CLOSE - a launcher that
+	// minimises to tray on close never exits, so the graceful window expires on every switch
+	// and the client is force-killed instead. Same tokenising as ExeExtraArgs.
+	//
+	// Only ever run against the executable this descriptor already launches, never an
+	// arbitrary path: it must not be able to widen what a catalog can spawn.
+	QuitArgs string `json:"QuitArgs,omitempty"`
 }
 
 type Descriptor struct {

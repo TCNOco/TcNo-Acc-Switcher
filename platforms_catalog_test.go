@@ -72,3 +72,25 @@ func TestPlatformsClearOnlyOwnPaths(t *testing.T) {
 		}
 	}
 }
+
+// TestSteamDeclaresQuitArgs pins the catalog half of the native-quit wiring. Steam ignores
+// WM_CLOSE - its main window close means minimise to tray - so without this argument the
+// graceful window expires on every switch and the client is force-killed ~5s later. The code
+// falls back to the same value, so a missing field costs speed silently rather than failing.
+func TestSteamDeclaresQuitArgs(t *testing.T) {
+	t.Parallel()
+
+	var catalog struct {
+		Platforms map[string]struct {
+			Extras struct {
+				QuitArgs string `json:"QuitArgs"`
+			} `json:"Extras"`
+		} `json:"Platforms"`
+	}
+	if err := json.Unmarshal(embeddedPlatformsJSON, &catalog); err != nil {
+		t.Fatalf("parse catalog: %v", err)
+	}
+	if got := strings.TrimSpace(catalog.Platforms["Steam"].Extras.QuitArgs); got != "-shutdown" {
+		t.Fatalf("Steam Extras.QuitArgs = %q, want %q", got, "-shutdown")
+	}
+}
