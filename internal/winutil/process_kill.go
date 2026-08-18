@@ -120,13 +120,17 @@ func KillByNameWithOpts(names []string, method ClosingMethod, opts KillOpts) err
 				waitForElectronImageExit(base, electronExitMaxWait, len(names))
 				forceKillIfStillRunning(base)
 			case ClosingClose:
-				join := requestGracefulProcessExit(base, nativeQuitSent)
-				waitForImageExit(base, gracefulExitMaxWait, 100*time.Millisecond, len(names))
+				delivered, join := requestGracefulProcessExit(base, nativeQuitSent)
+				if delivered {
+					waitForImageExit(base, gracefulExitMaxWait, 100*time.Millisecond, len(names))
+				}
 				join()
 				forceKillIfStillRunning(base)
 			default: // Combined
-				join := requestGracefulProcessExit(base, nativeQuitSent)
-				waitForImageExit(base, gracefulCombinedExitMaxWait, 100*time.Millisecond, len(names))
+				delivered, join := requestGracefulProcessExit(base, nativeQuitSent)
+				if delivered {
+					waitForImageExit(base, gracefulCombinedExitMaxWait, 100*time.Millisecond, len(names))
+				}
 				join()
 				forceKillIfStillRunning(base)
 			}
@@ -155,20 +159,31 @@ func forceKillIfStillRunning(exeImage string) {
 // critical path. When a native quit command was already sent, both are skipped - asking Steam to
 // minimise to tray while it is shutting down is at best useless.
 //
+// delivered reports whether the graceful signal reached anything that could act on it. A target
+// with no top-level windows - a background service such as EABackgroundService.exe, which has
+// none at all - cannot receive WM_CLOSE, so waiting out the graceful window for it is waiting for
+// a reply to a message that was never delivered. Callers skip the wait and go straight to the
+// force kill, which is the same outcome the timeout would have reached anyway.
+//
 // The returned join must be called before the caller finishes with exeImage. A taskkill still in
 // flight after KillByName returns would land on the process the switch has just relaunched.
-func requestGracefulProcessExit(exeImage string, nativeQuitSent bool) (join func()) {
+func requestGracefulProcessExit(exeImage string, nativeQuitSent bool) (delivered bool, join func()) {
 	if nativeQuitSent {
-		return func() {}
+		// The platform's own quit command is the signal; there is something to wait for.
+		return true, func() {}
 	}
-	postWMCloseToMatchingProcesses(exeImage)
+	posted := postWMCloseToMatchingProcesses(exeImage)
+	if posted == 0 {
+		log.Printf("winutil: image=%s has no top-level windows; skipping graceful wait", exeImage)
+		return false, func() {}
+	}
 	done := make(chan struct{})
 	go func() {
 		defer crashlog.Capture()
 		defer close(done)
 		_ = taskKillIM(exeImage, false)
 	}()
-	return func() { <-done }
+	return true, func() { <-done }
 }
 
 // postWMCloseToMatchingProcesses asks every top-level HWND owned by a matching PID to quit,
@@ -178,25 +193,41 @@ func requestGracefulProcessExit(exeImage string, nativeQuitSent bool) (join func
 // The settle pause is paid once for the whole batch rather than once per PID. Steam runs 8-9
 // processes during a switch, so the per-PID form cost 1.6-1.8s of pure sleep before anything
 // had been asked to close.
-func postWMCloseToMatchingProcesses(exeImage string) {
+//
+// It returns how many top-level windows were reached, so the caller can tell a windowless
+// target from one that was asked to close and is thinking about it.
+func postWMCloseToMatchingProcesses(exeImage string) (posted int) {
 	pids, err := allPIDsForImageName(exeImage)
 	if err != nil {
 		log.Printf("winutil: list pids image=%s err=%v", exeImage, err)
-		return
+		return 0
 	}
 	if len(pids) == 0 {
-		return
+		return 0
 	}
 	for _, pid := range pids {
-		postGracefulQuitPass(pid)
+		posted += postGracefulQuitPass(pid)
 	}
 	time.Sleep(gracefulQuitSettle)
+	second := 0
 	for _, pid := range pids {
-		postGracefulQuitPass(pid)
+		second += postGracefulQuitPass(pid)
 	}
+	// A tray app can hide its root between passes, so either pass finding a window counts.
+	if second > posted {
+		posted = second
+	}
+	return posted
 }
 
 var gracefulQuitCb uintptr
+
+// gracefulQuitMu serialises the enumeration so the counter below belongs to one pass.
+// KillByName fans out a goroutine per image, so passes can otherwise overlap.
+var (
+	gracefulQuitMu    sync.Mutex
+	gracefulQuitCount int
+)
 
 func init() {
 	gracefulQuitCb = syscall.NewCallback(func(hwnd, lParam uintptr) uintptr {
@@ -213,17 +244,23 @@ func init() {
 		if owner != 0 {
 			return 1
 		}
+		gracefulQuitCount++
 		procPostMessageW.Call(hwnd, uintptr(winWMSysCommand), uintptr(winSCClose), 0)
 		procPostMessageW.Call(hwnd, uintptr(winWMClose), 0, 0)
 		return 1
 	})
 }
 
-func postGracefulQuitPass(pid uint32) {
+// postGracefulQuitPass returns how many top-level windows it asked to close.
+func postGracefulQuitPass(pid uint32) int {
 	if err := procEnumWindows.Find(); err != nil {
-		return
+		return 0
 	}
+	gracefulQuitMu.Lock()
+	defer gracefulQuitMu.Unlock()
+	gracefulQuitCount = 0
 	_, _, _ = procEnumWindows.Call(gracefulQuitCb, uintptr(pid))
+	return gracefulQuitCount
 }
 
 func syncSendCloseToHWNDs(hwnds []windows.HWND) {

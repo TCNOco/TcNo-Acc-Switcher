@@ -41,6 +41,7 @@
       },
       "AllFilesRequired": true,
       "Extras": {
+        "ClosingMethod": "TaskKill",
         "CachePaths": [
           "%LocalAppData%\\Epic Games\\Epic Online Services\\UI Helper\\Cache\\Cache",
           "%LocalAppData%\\Epic Games\\Epic Online Services\\UI Helper\\Cache\\GPUCache",
@@ -679,5 +680,5 @@
   },
   "Platform-WIP": {
   },
-  "Version": "4.0.4"
+  "Version": "4.0.5"
 }

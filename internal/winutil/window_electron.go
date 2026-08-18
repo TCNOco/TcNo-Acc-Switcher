@@ -380,7 +380,8 @@ func requestElectronChromiumExit(exeImage string, restoreTo windows.HWND, foregr
 	if err != nil {
 		log.Printf("winutil: electron exit snapshot err=%v fallback=all", err)
 		// Joined immediately: this fallback has no wait of its own to overlap with.
-		requestGracefulProcessExit(exeImage, false)()
+		_, join := requestGracefulProcessExit(exeImage, false)
+		join()
 		return
 	}
 	want := normalizeExeBase(exeImage)
