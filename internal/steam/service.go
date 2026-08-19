@@ -956,7 +956,14 @@ func (s *SteamService) ForgetSteamAccount(steamID64 string) error {
 	if root == "" {
 		return fmt.Errorf("steam install folder not found")
 	}
-	// The store first: it is now the thing that decides whether the account is
+	// Steam Guard first, because its index rebuilds a row of its own: an account
+	// forgotten while a record survives comes back on the next refresh, nameless,
+	// since the login name went with the vdf row. This also refuses outright for
+	// an authenticator, whose secrets cannot be recreated.
+	if err := releaseSteamGuardRecord(steamID64); err != nil {
+		return err
+	}
+	// The store next: it is now the thing that decides whether the account is
 	// listed, so a failure here has to abort before Steam's file is touched.
 	// Otherwise the row would come back on the next refresh and look like the
 	// Forget silently did nothing.

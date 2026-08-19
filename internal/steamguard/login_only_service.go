@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"unicode/utf8"
 
+	"TcNo-Acc-Switcher/internal/steam"
 	"TcNo-Acc-Switcher/internal/steamguard/loginrecord"
 	"TcNo-Acc-Switcher/internal/steamguard/registry"
 	"TcNo-Acc-Switcher/internal/steamguard/vault"
@@ -97,30 +98,8 @@ func (s *Service) RemoveLoginOnlyAccount(accountID, token string) (SteamLoginRes
 	}
 	wanted := strconv.FormatUint(steamID, 10)
 
-	var removed bool
-	if err := s.withServiceLock(func() error {
-		v, err := s.requireVaultLocked()
-		if err != nil {
-			return err
-		}
-		// Re-resolve under the lock: the vault can change between authorizing
-		// and acting, and this is the check that protects an authenticator.
-		kind, recordID, err := recordKindForSteamID(v, wanted)
-		if err != nil {
-			return err
-		}
-		if recordID == "" {
-			return ErrAccountNotFound
-		}
-		if kind != vaultrecord.KindLoginOnly {
-			return ErrNotAuthenticator
-		}
-		if err := v.DeleteRecord(recordID); err != nil {
-			return err
-		}
-		removed = true
-		return nil
-	}); err != nil {
+	removed, err := s.deleteLoginOnlyRecord(wanted)
+	if err != nil {
 		return SteamLoginResult{}, err
 	}
 
@@ -142,4 +121,73 @@ func (s *Service) RemoveLoginOnlyAccount(accountID, token string) (SteamLoginRes
 		CapabilityRefreshRequired: true,
 		RegistryUpdated:           registryUpdated,
 	}, nil
+}
+
+// deleteLoginOnlyRecord removes the login-only record for wanted and reports
+// whether one was actually there to remove.
+//
+// The kind is re-resolved under the service lock rather than trusted from the
+// caller: the vault can change between authorizing and acting, and this is the
+// check that protects an authenticator.
+func (s *Service) deleteLoginOnlyRecord(wanted string) (bool, error) {
+	var removed bool
+	err := s.withServiceLock(func() error {
+		v, err := s.requireVaultLocked()
+		if err != nil {
+			return err
+		}
+		// Named here rather than left to the first read that needs the keys, so
+		// a locked vault is one error the caller can act on instead of whichever
+		// decryption failed first.
+		if v.IsLocked() {
+			return vault.ErrLocked
+		}
+		kind, recordID, err := recordKindForSteamID(v, wanted)
+		if err != nil {
+			return err
+		}
+		if recordID == "" {
+			return ErrAccountNotFound
+		}
+		if kind != vaultrecord.KindLoginOnly {
+			return ErrNotAuthenticator
+		}
+		if err := v.DeleteRecord(recordID); err != nil {
+			return err
+		}
+		removed = true
+		return nil
+	})
+	return removed, err
+}
+
+// forgetLoginOnlyRecord drops the Steam Guard side of an account the switcher is
+// forgetting. Registered with the steam package at startup; unexported so it
+// stays an in-process hook rather than becoming a bound frontend call, since it
+// carries no capability token.
+//
+// The kind is still re-checked under the lock, so an authenticator is refused
+// here as well as by the menu that offers no Forget for one. The index entry goes
+// even when the vault holds no record: a stale entry is enough on its own to
+// rebuild the account's row, nameless, which is the whole failure this prevents.
+func (s *Service) forgetLoginOnlyRecord(steamID64 string) error {
+	steamID, err := canonicalSteamID(steamID64)
+	if err != nil {
+		return err
+	}
+	wanted := strconv.FormatUint(steamID, 10)
+	if _, err := s.deleteLoginOnlyRecord(wanted); err != nil {
+		switch {
+		case errors.Is(err, ErrNotAuthenticator):
+			return steam.ErrForgetSteamGuardAuthenticator
+		case errors.Is(err, vault.ErrLocked):
+			return steam.ErrForgetSteamGuardLocked
+		case errors.Is(err, ErrAccountNotFound), errors.Is(err, ErrVaultNotReady), errors.Is(err, ErrFeatureDisabled):
+			// Nothing to delete. The index entry is all that is left of the
+			// account, and clearing it below is what makes the row go away.
+		default:
+			return err
+		}
+	}
+	return registry.Remove(wanted)
 }

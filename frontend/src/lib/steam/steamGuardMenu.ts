@@ -15,6 +15,19 @@ export function heldInSteamGuardVault(acc: SteamAccountRow): boolean {
   return acc.hasSteamGuard || acc.steamGuardPending === true || acc.steamGuardLoginOnly === true;
 }
 
+/**
+ * Whether Forget may be offered for an account.
+ *
+ * An authenticator, half-finished enrollment included, has no Forget: the row
+ * would come back nameless from the Steam Guard index, and deleting the record
+ * with it would take a shared secret and a revocation code that exist nowhere
+ * else. A session-only record holds nothing that cannot simply be signed in for
+ * again, so that one is forgotten along with the account.
+ */
+export function canForgetSteamAccount(acc: SteamAccountRow): boolean {
+  return !acc.hasSteamGuard && acc.steamGuardPending !== true;
+}
+
 export type SteamGuardMenuDeps = {
   openSteamGuard: OpenSteamGuard;
   /** Absent on a build with no session-browser support, which hides the submenu. */

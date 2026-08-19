@@ -10,7 +10,7 @@ import * as Shortcuts from "wails-shortcuts-service";
 
 export interface ContextMenuContext {
   name: string;
-  adapter: AccountCommands & Pick<AccountRowProjection<unknown>, "name" | "imageUrl" | "manualProfileImage" | "tags" | "accountLogin" | "savedDataBroken">;
+  adapter: AccountCommands & Pick<AccountRowProjection<unknown>, "name" | "imageUrl" | "manualProfileImage" | "tags" | "accountLogin" | "savedDataBroken" | "forgetPrompt">;
   isActionBusy: boolean;
   hasGameStatsSupport: boolean;
   tr: (key: string, vars?: Record<string, string | number>) => string;
@@ -100,7 +100,9 @@ export function buildSharedItems(
       label: tr("Forget"),
       action: async () => {
         const ok = await openConfirm({
-          title: tr("Forget"), body: tr("Prompt_ForgetAccount", { platform: name }), style: "yesno",
+          title: tr("Forget"),
+          body: adapter.forgetPrompt?.(acc) ?? tr("Prompt_ForgetAccount", { platform: name }),
+          style: "yesno",
         });
         if (!ok) return;
         try {

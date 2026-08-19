@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"TcNo-Acc-Switcher/internal/steam"
 	"TcNo-Acc-Switcher/internal/steamguard/loginrecord"
 	"TcNo-Acc-Switcher/internal/steamguard/registry"
 	"TcNo-Acc-Switcher/internal/steamguard/vault"
@@ -241,4 +242,92 @@ func mustRecordID(t *testing.T, v *vault.Vault, steamID64 string) string {
 	}
 	t.Fatalf("no record for %s", steamID64)
 	return ""
+}
+
+// The switcher's Forget reaches this in-process, with no capability token, so
+// what it may delete is decided here rather than by whoever called it.
+func TestForgetLoginOnlyRecordDeletesTheRecordAndRegistryEntry(t *testing.T) {
+	service, _, _ := newAuthServiceFixture(t)
+	loginID := seedLoginOnlyRecord(t, service.vault, loginOnlySteamID, "session_only")
+	if err := registry.Upsert(loginID, registry.StateLoginOnly); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := service.forgetLoginOnlyRecord(loginID); err != nil {
+		t.Fatalf("forgetLoginOnlyRecord: %v", err)
+	}
+
+	if _, err := recordForSteamID64(service.vault, loginID); !errors.Is(err, ErrAccountNotFound) {
+		t.Fatalf("record still present: %v", err)
+	}
+	if registryHolds(t, loginID) {
+		t.Fatal("registry entry survived the forget, so the row would come back")
+	}
+}
+
+func TestForgetLoginOnlyRecordRefusesAnAuthenticator(t *testing.T) {
+	service, accountID, _ := newAuthServiceFixture(t)
+
+	err := service.forgetLoginOnlyRecord(accountID)
+
+	if !errors.Is(err, steam.ErrForgetSteamGuardAuthenticator) {
+		t.Fatalf("err = %v, want ErrForgetSteamGuardAuthenticator", err)
+	}
+	if _, err := accountFromRecord(service.vault, mustRecordID(t, service.vault, accountID)); err != nil {
+		t.Fatalf("authenticator was removed: %v", err)
+	}
+}
+
+// Deleting needs the keys, and forgetting the row while the record survives is
+// exactly the half-state this path exists to prevent.
+func TestForgetLoginOnlyRecordRefusesALockedVault(t *testing.T) {
+	service, _, _ := newAuthServiceFixture(t)
+	loginID := seedLoginOnlyRecord(t, service.vault, loginOnlySteamID, "session_only")
+	if err := registry.Upsert(loginID, registry.StateLoginOnly); err != nil {
+		t.Fatal(err)
+	}
+	if err := service.vault.Lock(); err != nil {
+		t.Fatal(err)
+	}
+
+	err := service.forgetLoginOnlyRecord(loginID)
+
+	if !errors.Is(err, steam.ErrForgetSteamGuardLocked) {
+		t.Fatalf("err = %v, want ErrForgetSteamGuardLocked", err)
+	}
+	if !registryHolds(t, loginID) {
+		t.Fatal("registry entry cleared while its record survives")
+	}
+}
+
+// An index entry with no record behind it is enough on its own to rebuild the
+// account's row, so clearing it is the whole job.
+func TestForgetLoginOnlyRecordClearsAStaleIndexEntry(t *testing.T) {
+	service, _, _ := newAuthServiceFixture(t)
+	staleID := strconv.FormatUint(loginOnlySteamID, 10)
+	if err := registry.Upsert(staleID, registry.StateLoginOnly); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := service.forgetLoginOnlyRecord(staleID); err != nil {
+		t.Fatalf("forgetLoginOnlyRecord: %v", err)
+	}
+
+	if registryHolds(t, staleID) {
+		t.Fatal("stale registry entry survived the forget")
+	}
+}
+
+func registryHolds(t *testing.T, steamID64 string) bool {
+	t.Helper()
+	entries, err := registry.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, entry := range entries {
+		if entry.SteamID64 == steamID64 {
+			return true
+		}
+	}
+	return false
 }

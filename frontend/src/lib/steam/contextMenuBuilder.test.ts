@@ -488,3 +488,61 @@ describe("Personal Game Data rows", () => {
       .toEqual(["Open folder", "Context_Game_CopySettingsFrom", "Context_Game_BackupData"]);
   });
 });
+
+// Forgetting an account whose vault record holds an authenticator left the row to
+// come back from the Steam Guard index, nameless, with no way to get the secrets
+// back. A session-only record has nothing that cannot be signed in for again, so
+// that one is still forgettable and its record goes with it.
+describe("Forget", () => {
+  const shared = (): SharedMenuItems => {
+    const item = (label: string): MenuItemDef => ({ label, action: vi.fn() });
+    return {
+      swapTo: item("Swap"),
+      changeName: item("Rename"),
+      createShortcut: item("Shortcut"),
+      changeImage: item("Image"),
+      forget: item("Forget"),
+      notes: item("Notes"),
+      tags: item("Tags"),
+      gameStats: null,
+    };
+  };
+
+  const deps = (): SteamMenuDeps => ({
+    name: "Steam",
+    installedGames: [],
+    gameDataBySteamId: {},
+    steamIds: [],
+    refreshGameDataAppSets: async () => {},
+    openSteamGuard: vi.fn(),
+    steamGuardVaultUnlocked: true,
+  });
+
+  const forgetRow = (acc: SteamAccountRow): MenuItemDef | undefined => {
+    const menu = buildSteamExtraMenu(acc, shared(), deps());
+    const manage = menu.find((candidate) => candidate.label === "Context_ManageSubmenu");
+    if (!manage) throw new Error("missing Manage submenu");
+    return manage.children?.find((candidate) => candidate.label === "Forget");
+  };
+
+  it.each([
+    ["an account the vault does not hold", {}, true],
+    ["a login-only record", { steamGuardLoginOnly: true }, true],
+    ["a full authenticator", { hasSteamGuard: true }, false],
+    // Half-finished, but its revocation code is already the only copy.
+    ["a half-finished enrollment", { steamGuardPending: true }, false],
+  ] as const)("%s: offered = %o", (_name, overrides, offered) => {
+    expect(forgetRow(account(overrides)) !== undefined).toBe(offered);
+  });
+
+  it("leaves the rest of the Manage submenu alone", () => {
+    const menu = buildSteamExtraMenu(account({ hasSteamGuard: true }), shared(), deps());
+    const manage = menu.find((candidate) => candidate.label === "Context_ManageSubmenu");
+    expect((manage?.children ?? []).map((c) => c.label)).toEqual([
+      "Context_GameDataSubmenu",
+      "Context_Steam_OpenUserdata",
+      "Image",
+      "Notes",
+    ]);
+  });
+});

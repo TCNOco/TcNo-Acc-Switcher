@@ -4,7 +4,7 @@ import type { MenuItemDef } from "../../stores/contextMenu";
 import type { SharedMenuItems } from "../../components/PlatformAccountAdapter";
 import type { SteamAccountRow } from "./types";
 import { createSteamMenuCommands, type SteamMenuDeps } from "./menuCommands";
-import { buildSteamGuardMenuItem, heldInSteamGuardVault } from "./steamGuardMenu";
+import { buildSteamGuardMenuItem, canForgetSteamAccount, heldInSteamGuardVault } from "./steamGuardMenu";
 import { gameDataSite } from "./steamBrowserSites";
 import { steamGuardCodeRemaining } from "./steamGuardCodePeriod";
 
@@ -174,7 +174,10 @@ export function buildSteamExtraMenu(
         },
         shared.changeImage,
         shared.notes,
-        shared.forget,
+        // No Forget for an account the vault holds an authenticator for: see
+        // canForgetSteamAccount. A session-only record still forgets, and the
+        // record goes with it.
+        canForgetSteamAccount(acc) ? shared.forget : null,
       ] as (MenuItemDef | null)[]).filter((x): x is MenuItemDef => x != null),
     },
   ];

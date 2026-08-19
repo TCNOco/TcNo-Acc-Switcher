@@ -36,6 +36,13 @@ export interface AccountRowProjection<TAccount> {
   currentSession(a: TAccount): boolean;
   manualProfileImage(a: TAccount): boolean;
   savedDataBroken?(a: TAccount): boolean;
+  /**
+   * The Forget confirmation body, for a platform where forgetting an account
+   * does more than the shared prompt describes. Returning nothing - which is
+   * every platform, for every account that has nothing extra to say - leaves the
+   * shared prompt in place.
+   */
+  forgetPrompt?(a: TAccount): string | undefined;
   nameStatus?(a: TAccount): AccountNameStatus | null;
   /**
    * Extra spoken status lines for things only the platform knows about. A

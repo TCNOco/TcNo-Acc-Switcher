@@ -23,7 +23,7 @@
   import * as Shortcuts from "wails-shortcuts-service";
   import { ListPayload } from "../../bindings/TcNo-Acc-Switcher/internal/shortcuts/models.js";
   import { offlineMode } from "../stores/offlineMode";
-  import { formatToastWithError } from "../lib/formatWailsError";
+  import { formatToastWithError, formatWailsError } from "../lib/formatWailsError";
   import * as BasicService from "../../bindings/TcNo-Acc-Switcher/internal/basic/basicservice.js";
   import { buildSteamExtraMenu } from "../lib/steam/contextMenuBuilder";
   import type { SteamMenuDeps } from "../lib/steam/menuCommands";
@@ -57,6 +57,13 @@
 
 
   const STEAM_CONTEXT_MENU_HIDDEN_APP_IDS = new Set(["228980"]);
+
+  /** Forget refusals Go names as i18n keys, so the shared toast can say them. */
+  const STEAM_FORGET_ERR_KEYS = new Set([
+    "Toast_Steam_ForgetHasAuthenticator",
+    "Toast_Steam_ForgetNeedsVaultUnlock",
+    "Toast_Steam_ForgetGuardUnavailable",
+  ]);
 
 
 
@@ -147,6 +154,12 @@
     shouldShowLastUsed: (a: SteamAccountRow) => a.showLastLogin === true && !!(a.lastLogin ?? "").trim(),
     lastUsed: (a: SteamAccountRow) => a.lastLogin ?? "",
     accountLogin: (a: SteamAccountRow) => (a.accountName ?? "").trim(),
+
+    // Forgetting a session-only Steam Guard account deletes that record with it,
+    // which the shared prompt does not cover. An account with an authenticator is
+    // never asked, because it is offered no Forget at all.
+    forgetPrompt: (a: SteamAccountRow) =>
+      a.steamGuardLoginOnly === true ? $t("Prompt_ForgetAccount_SteamGuard") : undefined,
     nameStatus: (a: SteamAccountRow): AccountNameStatus | null => {
       // VAC outranks limited: it is the harder verdict, and an account can be both.
       if (a.showVac === true && a.vac === true) return { kind: "vac", label: $t("Steam_Status_VacBanned") };
@@ -217,7 +230,18 @@
     swapTo: (id: string) => SteamService.SwapToSteamAccount(id, -1, []),
     saveOrder: (ids: string[]) => SteamService.SaveSteamAccountOrder(ids),
     addNew: () => SteamService.SteamAddNew(),
-    forget: (id: string) => SteamService.ForgetSteamAccount(id),
+    forget: async (id: string) => {
+      try {
+        await SteamService.ForgetSteamAccount(id);
+      } catch (e) {
+        // The shared Forget toast does no i18n of its own, so the keys Go names
+        // its refusals with are resolved here rather than shown raw.
+        throw new Error(formatWailsError(e, {
+          i18nFirstLineKeys: STEAM_FORGET_ERR_KEYS,
+          translateMessage: (key) => $t(key),
+        }));
+      }
+    },
     rename: async (id: string, newName: string) => {
       await BasicService.RenameAccount("Steam", id, newName);
     },

@@ -1078,6 +1078,14 @@ func RegisterAccountNameResolver(s *Service) {
 	steam.RegisterAccountNameResolver(s.accountNameForSteamID)
 }
 
+// RegisterForgetHandler wires the vault into the switcher's Forget, so an account
+// that leaves the list leaves its session-only Steam Guard record behind with it -
+// and so forgetting an account that has an authenticator is refused rather than
+// half-done. Package-level for the same reason as the resolver above.
+func RegisterForgetHandler(s *Service) {
+	steam.RegisterSteamGuardForgetHandler(s.forgetLoginOnlyRecord)
+}
+
 // accountNameForSteamID reads the login name out of the vault. Only a name: the
 // same string loginusers.vdf holds in plain text for every other account. An
 // unopened or locked vault simply has no answer.

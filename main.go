@@ -92,6 +92,9 @@ func init() {
 	// An account restored from a Steam Guard vault is known only by SteamID64
 	// until the vault is asked for its login name.
 	steamguard.RegisterAccountNameResolver(steamGuardSvc)
+	// Forgetting an account has to take its Steam Guard record with it, or the
+	// account list rebuilds a nameless row from the Steam Guard index.
+	steamguard.RegisterForgetHandler(steamGuardSvc)
 
 	platform.SetSteamLaunchHooks(steam.SaveFolderFromConfirmedExe, steam.ResolveSteamExePath)
 	platform.SetSteamReset(steam.ResetToDefaults)
