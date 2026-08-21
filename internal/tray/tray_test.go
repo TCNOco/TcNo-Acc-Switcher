@@ -1,6 +1,9 @@
 package tray
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
 func TestTrayTextFallsBackWhenTranslationMissing(t *testing.T) {
 	tests := []struct {
@@ -32,5 +35,14 @@ func TestTrayTextUsesTranslation(t *testing.T) {
 	got := trayText(tr, "Tray_Switch", map[string]string{"account": "Marc"}, "Switch to: {account}")
 	if got != "Cambiar a: Marc" {
 		t.Fatalf("tray text = %q, want %q", got, "Cambiar a: Marc")
+	}
+}
+
+func TestTrayImageCandidateIDs(t *testing.T) {
+	if got, want := trayImageCandidateIDs("Steam", "7656119"), []string{"7656119", "7656119_static"}; !reflect.DeepEqual(got, want) {
+		t.Fatalf("Steam candidates = %#v, want %#v", got, want)
+	}
+	if got, want := trayImageCandidateIDs("Epic", "account"), []string{"account"}; !reflect.DeepEqual(got, want) {
+		t.Fatalf("Epic candidates = %#v, want %#v", got, want)
 	}
 }
