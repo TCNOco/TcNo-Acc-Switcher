@@ -320,25 +320,37 @@ func menuBitmapForAccount(platformKey, arg string) []byte {
 	if uid == "" {
 		return nil
 	}
-	p, ok := profileimage.CachedFilePath(platformKey, uid)
-	if !ok {
-		return nil
-	}
-	st, err := os.Stat(p)
-	if err != nil || st.Size() > 512*1024 {
-		return nil
-	}
-	b, err := os.ReadFile(p)
-	if err != nil || len(b) == 0 {
-		return nil
-	}
-	out := cachedImageBytesAsMenuPNG(b)
-	if len(out) > 0 {
+	for _, imageID := range trayImageCandidateIDs(platformKey, uid) {
+		p, ok := profileimage.CachedFilePath(platformKey, imageID)
+		if !ok {
+			continue
+		}
+		st, err := os.Stat(p)
+		if err != nil || st.Size() > 512*1024 {
+			continue
+		}
+		b, err := os.ReadFile(p)
+		if err != nil || len(b) == 0 {
+			continue
+		}
+		out := cachedImageBytesAsMenuPNG(b)
+		if len(out) == 0 {
+			continue
+		}
 		menuBitmapCacheMu.Lock()
 		menuBitmapCache[key] = append([]byte(nil), out...)
 		menuBitmapCacheMu.Unlock()
+		return out
 	}
-	return out
+	return nil
+}
+
+func trayImageCandidateIDs(platformKey, uid string) []string {
+	ids := []string{uid}
+	if strings.EqualFold(strings.TrimSpace(platformKey), "steam") {
+		ids = append(ids, uid+"_static")
+	}
+	return ids
 }
 
 func cachedImageBytesAsMenuPNG(b []byte) []byte {
