@@ -157,10 +157,10 @@ func (m *Manager) rebuildMenuLocked() {
 	tr := m.trayTranslator()
 
 	if security.AppLocked() {
-		menu.Add(tr("Tray_Unlock", nil)).OnClick(func(_ *application.Context) {
+		menu.Add(trayText(tr, "Tray_Unlock", nil, "Unlock")).OnClick(func(_ *application.Context) {
 			m.showHome()
 		})
-		menu.Add(tr("Tray_Exit", nil)).OnClick(func(_ *application.Context) {
+		menu.Add(trayText(tr, "Tray_Exit", nil, "Exit")).OnClick(func(_ *application.Context) {
 			m.SetQuitting(true)
 			m.app.Quit()
 		})
@@ -199,7 +199,8 @@ func (m *Manager) rebuildMenuLocked() {
 		for _, u := range list {
 			u := u
 			plat := plat
-			item := sub.Add(tr("Tray_Switch", map[string]string{"account": u.Name}))
+			vars := map[string]string{"account": u.Name}
+			item := sub.Add(trayText(tr, "Tray_Switch", vars, "Switch to: {account}"))
 			if b := menuBitmapForAccount(plat, u.Arg); len(b) > 0 {
 				item.SetBitmap(b)
 			}
@@ -217,12 +218,25 @@ func (m *Manager) rebuildMenuLocked() {
 	}
 
 	menu.AddSeparator()
-	menu.Add(tr("Tray_Exit", nil)).OnClick(func(_ *application.Context) {
+	menu.Add(trayText(tr, "Tray_Exit", nil, "Exit")).OnClick(func(_ *application.Context) {
 		m.SetQuitting(true)
 		m.app.Quit()
 	})
 
 	m.systray.SetMenu(menu)
+}
+
+// trayText keeps native tray menus readable when localization resources are
+// unavailable, while preserving translated labels whenever they resolve.
+func trayText(tr func(string, map[string]string) string, key string, vars map[string]string, fallback string) string {
+	translated := strings.TrimSpace(tr(key, vars))
+	if translated != "" && translated != key {
+		return translated
+	}
+	for name, value := range vars {
+		fallback = strings.ReplaceAll(fallback, "{"+name+"}", value)
+	}
+	return fallback
 }
 
 func (m *Manager) trayTranslator() func(string, map[string]string) string {
@@ -306,25 +320,37 @@ func menuBitmapForAccount(platformKey, arg string) []byte {
 	if uid == "" {
 		return nil
 	}
-	p, ok := profileimage.CachedFilePath(platformKey, uid)
-	if !ok {
-		return nil
-	}
-	st, err := os.Stat(p)
-	if err != nil || st.Size() > 512*1024 {
-		return nil
-	}
-	b, err := os.ReadFile(p)
-	if err != nil || len(b) == 0 {
-		return nil
-	}
-	out := cachedImageBytesAsMenuPNG(b)
-	if len(out) > 0 {
+	for _, imageID := range trayImageCandidateIDs(platformKey, uid) {
+		p, ok := profileimage.CachedFilePath(platformKey, imageID)
+		if !ok {
+			continue
+		}
+		st, err := os.Stat(p)
+		if err != nil || st.Size() > 512*1024 {
+			continue
+		}
+		b, err := os.ReadFile(p)
+		if err != nil || len(b) == 0 {
+			continue
+		}
+		out := cachedImageBytesAsMenuPNG(b)
+		if len(out) == 0 {
+			continue
+		}
 		menuBitmapCacheMu.Lock()
 		menuBitmapCache[key] = append([]byte(nil), out...)
 		menuBitmapCacheMu.Unlock()
+		return out
 	}
-	return out
+	return nil
+}
+
+func trayImageCandidateIDs(platformKey, uid string) []string {
+	ids := []string{uid}
+	if strings.EqualFold(strings.TrimSpace(platformKey), "steam") {
+		ids = append(ids, uid+"_static")
+	}
+	return ids
 }
 
 func cachedImageBytesAsMenuPNG(b []byte) []byte {
