@@ -172,3 +172,62 @@ func TestWriteAutoLoginClearsForAddNew(t *testing.T) {
 		t.Errorf("registry.vdf still names an account after Add New:\n%s", got)
 	}
 }
+
+// TestWriteAutoLoginDoesNotStackEscapes is the regression for a measured bug:
+// steamvdf's text parser hands back the raw bytes between the quotes without
+// unescaping, so escaping them again on write doubled every backslash - and
+// doubled the doubled one on the next switch. Steam keeps SourceModInstallPath
+// in this file, so two switches took its separator from two backslashes to
+// eight.
+func TestWriteAutoLoginDoesNotStackEscapes(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	root := filepath.Join(home, ".local", "share", "Steam")
+	path := registryVDFPath(root)
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		t.Fatal(err)
+	}
+
+	// One logical backslash, written the way Steam writes it.
+	const escapedPath = `/home/u/.local/share/Steam/steamapps\\sourcemods`
+	existing := "\"Registry\"\n{\n\t\"HKCU\"\n\t{\n\t\t\"Software\"\n\t\t{\n\t\t\t\"Valve\"\n\t\t\t{\n\t\t\t\t\"Steam\"\n\t\t\t\t{\n\t\t\t\t\t\"SourceModInstallPath\"\t\t\"" + escapedPath + "\"\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n}\n"
+	if err := os.WriteFile(path, []byte(existing), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	for i := 1; i <= 3; i++ {
+		if err := writeAutoLogin(root, "alpha"); err != nil {
+			t.Fatalf("writeAutoLogin #%d: %v", i, err)
+		}
+		got, err := os.ReadFile(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !strings.Contains(string(got), escapedPath) {
+			t.Fatalf("after switch #%d the escaping changed:\n%s", i, got)
+		}
+	}
+}
+
+// TestWriteAutoLoginKeepsAnEmptyValue guards the other way this rewrite can
+// quietly edit Steam's file: a leaf that happens to be blank is still Steam's.
+func TestWriteAutoLoginKeepsAnEmptyValue(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	root := filepath.Join(home, ".local", "share", "Steam")
+	path := registryVDFPath(root)
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	existing := "\"Registry\"\n{\n\t\"HKCU\"\n\t{\n\t\t\"Software\"\n\t\t{\n\t\t\t\"Valve\"\n\t\t\t{\n\t\t\t\t\"Steam\"\n\t\t\t\t{\n\t\t\t\t\t\"LastGameNameUsed\"\t\t\"\"\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n}\n"
+	if err := os.WriteFile(path, []byte(existing), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := writeAutoLogin(root, "alpha"); err != nil {
+		t.Fatalf("writeAutoLogin: %v", err)
+	}
+	got, _ := os.ReadFile(path)
+	if !strings.Contains(string(got), `"LastGameNameUsed"`) {
+		t.Errorf("an empty-valued key Steam owns was dropped:\n%s", got)
+	}
+}

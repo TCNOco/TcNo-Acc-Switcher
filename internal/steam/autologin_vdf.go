@@ -45,7 +45,7 @@ func writeAutoLogin(steamRoot, autoUser string) error {
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		return err
 	}
-	return fsutil.WriteFileAtomic(path, KeyValueToText(kv), 0o644)
+	return fsutil.WriteFileAtomic(path, registryVDFText(kv), 0o644)
 }
 
 // registryVDFPath locates registry.vdf for a resolved install root.
@@ -94,6 +94,7 @@ func readRegistryVDF(path string) (steamvdf.KeyValue, error) {
 	if err != nil {
 		return steamvdf.KeyValue{}, fmt.Errorf("read %s: %w", path, err)
 	}
+	unescapeRegistryVDF(&kv)
 	if strings.TrimSpace(kv.Key) == "" {
 		kv.Key = "Registry"
 	}
@@ -126,4 +127,98 @@ func childByNameCI(parent *steamvdf.KeyValue, name string) *steamvdf.KeyValue {
 	}
 	parent.Children = append(parent.Children, steamvdf.KeyValue{Key: name})
 	return &parent.Children[len(parent.Children)-1]
+}
+
+// registry.vdf belongs to Steam, and a switch rewrites the whole file to change
+// two values in it. So reading and writing have to be exactly inverse, or the
+// parts we never meant to touch drift further on every switch.
+//
+// steamvdf's text parser does not unescape. It tracks backslashes only well
+// enough to find the closing quote and hands back the raw bytes between them,
+// so escaping that again on the way out doubles every backslash - and doubles
+// the doubled one next time. Measured on a real install: Steam's
+// SourceModInstallPath went from two backslashes to four to eight across two
+// switches.
+//
+// This pair is deliberately local rather than reusing escapeVDF and
+// KeyValueToText. Those are the loginusers.vdf path and carry the same
+// asymmetry, but they also run on Windows and interact with a deliberate
+// localconfig.vdf workaround - not something to change as a side effect.
+var registryVDFEscapes = []struct {
+	plain   string
+	escaped string
+}{
+	{plain: `\`, escaped: `\\`},
+	{plain: `"`, escaped: `\"`},
+	{plain: "\n", escaped: `\n`},
+	{plain: "\r", escaped: `\r`},
+	{plain: "\t", escaped: `\t`},
+}
+
+func unescapeRegistryVDF(kv *steamvdf.KeyValue) {
+	kv.Key = unescapeRegistryValue(kv.Key)
+	kv.Value = unescapeRegistryValue(kv.Value)
+	for i := range kv.Children {
+		unescapeRegistryVDF(&kv.Children[i])
+	}
+}
+
+func unescapeRegistryValue(s string) string {
+	if !strings.Contains(s, `\`) {
+		return s
+	}
+	var b strings.Builder
+	b.Grow(len(s))
+	for i := 0; i < len(s); i++ {
+		if s[i] != '\\' || i+1 >= len(s) {
+			b.WriteByte(s[i])
+			continue
+		}
+		matched := false
+		for _, e := range registryVDFEscapes {
+			if s[i+1] == e.escaped[1] {
+				b.WriteString(e.plain)
+				i++
+				matched = true
+				break
+			}
+		}
+		// An escape Valve does not define is left exactly as it was found.
+		// Guessing at it would change a value we are only passing through.
+		if !matched {
+			b.WriteByte(s[i])
+		}
+	}
+	return b.String()
+}
+
+func escapeRegistryValue(s string) string {
+	for _, e := range registryVDFEscapes {
+		s = strings.ReplaceAll(s, e.plain, e.escaped)
+	}
+	return s
+}
+
+// registryVDFText serialises the tree back to Steam's text format.
+//
+// Unlike KeyValueToText it keeps a leaf whose value is empty. Steam owns the
+// other keys in this file, and silently dropping the ones that happen to be
+// blank is an edit to somebody else's data.
+func registryVDFText(kv steamvdf.KeyValue) []byte {
+	var b strings.Builder
+	writeRegistryKV(&b, kv, 0)
+	return []byte(b.String())
+}
+
+func writeRegistryKV(b *strings.Builder, kv steamvdf.KeyValue, depth int) {
+	indent := strings.Repeat("\t", depth)
+	if len(kv.Children) == 0 {
+		fmt.Fprintf(b, "%s\"%s\"\t\t\"%s\"\n", indent, escapeRegistryValue(kv.Key), escapeRegistryValue(kv.Value))
+		return
+	}
+	fmt.Fprintf(b, "%s\"%s\"\n%s{\n", indent, escapeRegistryValue(kv.Key), indent)
+	for _, child := range kv.Children {
+		writeRegistryKV(b, child, depth+1)
+	}
+	fmt.Fprintf(b, "%s}\n", indent)
 }
