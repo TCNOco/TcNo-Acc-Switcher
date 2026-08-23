@@ -29,19 +29,6 @@ const (
 	gracefulQuitSettle = 200 * time.Millisecond
 )
 
-// KillOpts tunes how KillByName ends a platform.
-type KillOpts struct {
-	// NativeQuit, when non-nil, issues the platform's own quit command once before any
-	// window messages are sent, and replaces the WM_CLOSE broadcast as the graceful signal.
-	//
-	// Steam needs this: it treats WM_CLOSE on its main window as "minimise to tray", so the
-	// WM_CLOSE path can never make it exit and the graceful window burns its full deadline
-	// on every single switch. "steam.exe -shutdown" drains the whole tree in ~1.6-2.5s.
-	NativeQuit func() error
-	// BeforeElectronSynth runs before Electron Alt+F4 (e.g. launch platform + wait for foreground).
-	BeforeElectronSynth func() error
-}
-
 // KillByName terminates processes by image name (e.g. "steam.exe") or stops Windows services
 // when the name is prefixed with SERVICE:.
 // beforeElectronSynth, when non-nil, runs before Electron Alt+F4 (e.g. launch platform + wait for foreground).
