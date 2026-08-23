@@ -185,7 +185,7 @@ func newSteamTestEnv(t *testing.T) *steamTestEnv {
 	if err := os.MkdirAll(userData, 0o755); err != nil {
 		t.Fatal(err)
 	}
-	if err := os.WriteFile(filepath.Join(userData, "Platforms.json"),
+	if err := os.WriteFile(filepath.Join(userData, platform.PlatformsFileName()),
 		[]byte(`{"Version":"test","Platforms":{"Steam":{"ExeLocationDefault":[]}}}`), 0o644); err != nil {
 		t.Fatal(err)
 	}

@@ -77,7 +77,7 @@ func loadCatalogWithEmbedded(t *testing.T, localCatalog, embedded string) []stri
 	if err := atomicWriteBytes(filepath.Join(userDataDir, settingsFileName), []byte(`{"version":1,"language":"en-US"}`), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	if err := atomicWriteBytes(filepath.Join(userDataDir, "Platforms.json"), []byte(localCatalog), 0o644); err != nil {
+	if err := atomicWriteBytes(filepath.Join(userDataDir, PlatformsFileName()), []byte(localCatalog), 0o644); err != nil {
 		t.Fatal(err)
 	}
 	previous := append([]byte(nil), embeddedPlatformsJSON...)

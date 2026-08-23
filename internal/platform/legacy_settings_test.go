@@ -72,7 +72,7 @@ func TestLegacyWindowSettingsMigratesPlatformsAndStats(t *testing.T) {
   "Epic Games":{"Identifiers":["e","epic"]},
   "GOG Galaxy":{"Identifiers":["g","gog"]}
 }}`)
-	if err := os.WriteFile(filepath.Join(userDataDir, "Platforms.json"), legacyCatalog, 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(userDataDir, PlatformsFileName()), legacyCatalog, 0o644); err != nil {
 		t.Fatal(err)
 	}
 	previousEmbedded := append([]byte(nil), embeddedPlatformsJSON...)

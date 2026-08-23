@@ -31,9 +31,17 @@ type pathToken struct {
 // as a relative directory. The home-anchored ones resolve everywhere, so a
 // catalog can write %UserProfile% and mean it on any platform.
 func pathTokens() []pathToken {
-	home, err := os.UserHomeDir()
-	if err != nil {
-		home = os.Getenv("USERPROFILE")
+	// USERPROFILE first, and not only on Windows: it is what os.UserHomeDir reads
+	// there anyway, and elsewhere it is the one handle a test has to move the
+	// home-anchored tokens somewhere disposable. Other code resolves these bases
+	// the same way, and the two have to agree - a cache path that expands against
+	// one home and is safety-checked against another passes a check that was
+	// meant to stop it deleting the real Desktop.
+	home := strings.TrimSpace(os.Getenv("USERPROFILE"))
+	if home == "" {
+		if h, err := os.UserHomeDir(); err == nil {
+			home = h
+		}
 	}
 	sub := func(name string) string {
 		if home == "" {

@@ -1,3 +1,9 @@
+//go:build windows
+
+// The fake backend makes this look portable, but the fixtures are Windows window
+// handles and Windows paths, and the only real backend is platform_windows.go -
+// platform_other.go refuses. Elsewhere the path prefix matching compares
+// C:\Steam against a filesystem where a backslash is an ordinary character.
 package qrcapture
 
 import (

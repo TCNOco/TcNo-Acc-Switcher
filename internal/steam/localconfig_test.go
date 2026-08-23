@@ -3,6 +3,7 @@ package steam
 import (
 	"os"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 	"testing"
@@ -12,6 +13,11 @@ import (
 
 func TestWriteFileAtomic_LockedFile(t *testing.T) {
 	t.Parallel()
+	if runtime.GOOS != "windows" {
+		// POSIX rename replaces a path whatever else holds it open, so there is
+		// no failure here to assert on.
+		t.Skip("only Windows refuses to replace a file another handle has open")
+	}
 	dir := t.TempDir()
 	path := filepath.Join(dir, "locked.vdf")
 
@@ -110,7 +116,11 @@ func TestSetPersonaStateLocalConfig_BadSteamID(t *testing.T) {
 	}
 }
 
-func TestWriteLoginUsersAndRegistry_FieldSwapping(t *testing.T) {
+func TestWriteLoginUsersAndAutoLogin_FieldSwapping(t *testing.T) {
+	// Off Windows the AutoLoginUser half of this writes Steam's registry.vdf,
+	// which lives under $HOME rather than under the root passed in. Without a
+	// home of its own the test would edit the machine's real one.
+	t.Setenv("HOME", t.TempDir())
 	dir := t.TempDir()
 	configDir := filepath.Join(dir, "config")
 	os.MkdirAll(configDir, 0o755)
