@@ -32,3 +32,54 @@ func TestReadBytes_wellFormedStillParses(t *testing.T) {
 		t.Errorf("kv = %+v, want the parsed tree", kv)
 	}
 }
+
+// TestEscapeIsInverseOfUnescape is the property the whole package rests on.
+// When it did not hold, every value holding a backslash grew one more on every
+// write: a Steam persona name went 2, 4, 8, 16 backslashes across three
+// account switches, and Steam's own SourceModInstallPath did the same.
+func TestEscapeIsInverseOfUnescape(t *testing.T) {
+	t.Parallel()
+	for _, plain := range []string{
+		"",
+		"plain",
+		`one\backslash`,
+		`two\\backslashes`,
+		`a "quoted" name`,
+		"tab\tand\nnewline",
+		`C:\Program Files (x86)\Steam\steam.exe`,
+		`ends with a backslash\`,
+	} {
+		escaped := Escape(plain)
+		if got := Unescape(escaped); got != plain {
+			t.Errorf("Unescape(Escape(%q)) = %q, want %q (escaped: %q)", plain, got, plain, escaped)
+		}
+	}
+}
+
+// TestUnescapeLeavesUndefinedSequencesAlone pins the choice for an escape Valve
+// does not define: keep it exactly as found. Dropping the backslash would
+// rewrite a value we are only passing through, and keeping it means Escape puts
+// the pair back unchanged.
+func TestUnescapeLeavesUndefinedSequencesAlone(t *testing.T) {
+	t.Parallel()
+	const raw = `steamapps\sourcemods`
+	if got := Unescape(raw); got != raw {
+		t.Errorf("Unescape(%q) = %q, want it unchanged", raw, got)
+	}
+}
+
+// TestReadBytesResolvesEscapes covers the half that used to be missing:
+// steamvdf hands back the raw bytes between the quotes, still escaped.
+func TestReadBytesResolvesEscapes(t *testing.T) {
+	t.Parallel()
+	kv, err := ReadBytes([]byte("\"root\"\n{\n\t\"path\"\t\t\"a\\\\b\"\n}\n"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(kv.Children) != 1 {
+		t.Fatalf("children = %d, want 1", len(kv.Children))
+	}
+	if got, want := kv.Children[0].Value, `a\b`; got != want {
+		t.Errorf("value = %q, want %q", got, want)
+	}
+}

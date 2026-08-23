@@ -70,6 +70,10 @@ func migrateLegacyWindowSettings(exeDir string) (AppSettings, string, bool, erro
 }
 
 func legacyMigrationCatalog(userDataDir string) ([]byte, error) {
+	// The literal name rather than PlatformsFileName: this reads the catalog a
+	// pre-v4 C# install left behind, and that only ever ran on Windows under
+	// this one name. A Linux build looking for Platforms.linux.json here would
+	// find nothing and silently migrate against the embedded catalog instead.
 	path := filepath.Join(userDataDir, "Platforms.json")
 	base, err := os.ReadFile(path)
 	if err != nil {
