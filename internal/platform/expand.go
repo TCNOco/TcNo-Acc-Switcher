@@ -4,6 +4,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"strings"
 )
 
@@ -16,36 +17,80 @@ type PathTokenContext struct {
 	LargestPath    string
 }
 
+// pathToken is one %Name% placeholder a catalog path may use and the value this
+// OS gives it. A token with no value here has none on this OS at all.
+type pathToken struct {
+	name  string
+	value string
+}
+
+// pathTokens resolves the placeholder table for the running OS.
+//
+// Most entries are Windows shell folders and come back empty elsewhere, which is
+// the point: a Linux build must not silently treat "%ProgramFiles(x86)%\Steam"
+// as a relative directory. The home-anchored ones resolve everywhere, so a
+// catalog can write %UserProfile% and mean it on any platform.
+func pathTokens() []pathToken {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		home = os.Getenv("USERPROFILE")
+	}
+	sub := func(name string) string {
+		if home == "" {
+			return ""
+		}
+		return filepath.Join(home, name)
+	}
+	return []pathToken{
+		{"%ProgramFiles(x86)%", os.Getenv("ProgramFiles(x86)")},
+		{"%ProgramFiles%", os.Getenv("ProgramFiles")},
+		{"%LocalAppData%", os.Getenv("LocalAppData")},
+		{"%AppData%", os.Getenv("AppData")},
+		{"%ProgramData%", os.Getenv("ProgramData")},
+		{"%StartMenuAppData%", filepath.Join(os.Getenv("APPDATA"), `Microsoft\Windows\Start Menu\Programs`)},
+		{"%StartMenuProgramData%", filepath.Join(os.Getenv("ProgramData"), `Microsoft\Windows\Start Menu\Programs`)},
+		{"%UserProfile%", home},
+		{"%USERPROFILE%", home},
+		{"%Desktop%", sub("Desktop")},
+		{"%Documents%", sub("Documents")},
+		{"%Music%", sub("Music")},
+		{"%Pictures%", sub("Pictures")},
+		{"%Videos%", sub("Videos")},
+	}
+}
+
+// ExpandWindowsPath resolves the %Name% placeholders a catalog path may carry.
+//
+// A path naming a placeholder this OS has no value for comes back empty rather
+// than with the literal token left in it. Callers already read "" as "no path";
+// a leftover "%ProgramFiles(x86)%\Steam\steam.exe" instead looks like a
+// relative directory, and that is how a Linux build ends up reporting it looked
+// for Steam somewhere no filesystem could ever have it.
+//
+// Separators are rewritten off Windows, because the catalogs are written with
+// backslashes and nothing else on a Unix filesystem treats one as a separator.
+// %Platform_Folder% and the other context tokens are left alone for
+// [ExpandPathTokens] to fill in.
 func ExpandWindowsPath(s string) string {
 	if s == "" {
 		return ""
 	}
 	s = strings.TrimSpace(s)
-	up := os.Getenv("USERPROFILE")
-	m := map[string]string{
-		"%ProgramFiles%":         os.Getenv("ProgramFiles"),
-		"%ProgramFiles(x86)%":    os.Getenv("ProgramFiles(x86)"),
-		"%LocalAppData%":         os.Getenv("LocalAppData"),
-		"%AppData%":              os.Getenv("AppData"),
-		"%UserProfile%":          up,
-		"%USERPROFILE%":          up,
-		"%Desktop%":              filepath.Join(up, "Desktop"),
-		"%Documents%":            filepath.Join(up, "Documents"),
-		"%Music%":                filepath.Join(up, "Music"),
-		"%Pictures%":             filepath.Join(up, "Pictures"),
-		"%Videos%":               filepath.Join(up, "Videos"),
-		"%ProgramData%":          os.Getenv("ProgramData"),
-		"%StartMenuAppData%":     filepath.Join(os.Getenv("APPDATA"), `Microsoft\Windows\Start Menu\Programs`),
-		"%StartMenuProgramData%": filepath.Join(os.Getenv("ProgramData"), `Microsoft\Windows\Start Menu\Programs`),
-	}
 	out := s
-	for k, v := range m {
-		if v != "" {
-			out = strings.ReplaceAll(out, k, v)
+	for _, tok := range pathTokens() {
+		if !strings.Contains(out, tok.name) {
+			continue
 		}
+		if tok.value == "" {
+			return ""
+		}
+		out = strings.ReplaceAll(out, tok.name, tok.value)
 	}
 	if lt := strings.ToLower(strings.TrimSpace(out)); strings.HasPrefix(lt, "http://") || strings.HasPrefix(lt, "https://") {
 		return out
+	}
+	if runtime.GOOS != "windows" {
+		out = strings.ReplaceAll(out, `\`, "/")
 	}
 	return filepath.Clean(out)
 }

@@ -3,7 +3,6 @@ package steam
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 	"strings"
 
 	"TcNo-Acc-Switcher/internal/platform"
@@ -38,7 +37,7 @@ func steamNativeQuit(root string) func() error {
 	if root == "" {
 		return nil
 	}
-	exe := filepath.Join(root, "steam.exe")
+	exe := SteamExePath(root)
 	if st, err := os.Stat(exe); err != nil || st.IsDir() {
 		return nil
 	}

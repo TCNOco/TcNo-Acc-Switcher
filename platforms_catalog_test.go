@@ -25,6 +25,17 @@ func clearTargetPath(entry string) (string, bool) {
 	return rest, true
 }
 
+// allCatalogs is every catalog shipped in the binary, so an invariant that
+// matters for one OS is checked for all of them rather than only whichever the
+// tests happen to run on.
+func allCatalogs() map[string][]byte {
+	return map[string][]byte{
+		"Platforms.json":       windowsPlatformsJSON,
+		"Platforms.linux.json": linuxPlatformsJSON,
+		"Platforms.mac.json":   macPlatformsJSON,
+	}
+}
+
 // TestPlatformsClearOnlyOwnPaths pins the invariant that a platform may only
 // clear files it also saves and restores. Clearing is a recursive delete or an
 // in-place JSON edit, so a descriptor that names another platform's path
@@ -37,17 +48,28 @@ func clearTargetPath(entry string) (string, bool) {
 func TestPlatformsClearOnlyOwnPaths(t *testing.T) {
 	t.Parallel()
 
+	for file, raw := range allCatalogs() {
+		t.Run(file, func(t *testing.T) {
+			t.Parallel()
+			assertPlatformsClearOnlyOwnPaths(t, file, raw)
+		})
+	}
+}
+
+func assertPlatformsClearOnlyOwnPaths(t *testing.T, file string, raw []byte) {
+	t.Helper()
+
 	var catalog struct {
 		Platforms map[string]struct {
 			PathListToClear []string          `json:"PathListToClear"`
 			LoginFiles      map[string]string `json:"LoginFiles"`
 		} `json:"Platforms"`
 	}
-	if err := json.Unmarshal(embeddedPlatformsJSON, &catalog); err != nil {
-		t.Fatalf("parse embedded Platforms.json: %v", err)
+	if err := json.Unmarshal(raw, &catalog); err != nil {
+		t.Fatalf("parse embedded %s: %v", file, err)
 	}
 	if len(catalog.Platforms) == 0 {
-		t.Fatal("embedded Platforms.json has no platforms")
+		t.Fatalf("embedded %s has no platforms", file)
 	}
 
 	for name, p := range catalog.Platforms {
@@ -80,17 +102,19 @@ func TestPlatformsClearOnlyOwnPaths(t *testing.T) {
 func TestSteamDeclaresQuitArgs(t *testing.T) {
 	t.Parallel()
 
-	var catalog struct {
-		Platforms map[string]struct {
-			Extras struct {
-				QuitArgs string `json:"QuitArgs"`
-			} `json:"Extras"`
-		} `json:"Platforms"`
-	}
-	if err := json.Unmarshal(embeddedPlatformsJSON, &catalog); err != nil {
-		t.Fatalf("parse catalog: %v", err)
-	}
-	if got := strings.TrimSpace(catalog.Platforms["Steam"].Extras.QuitArgs); got != "-shutdown" {
-		t.Fatalf("Steam Extras.QuitArgs = %q, want %q", got, "-shutdown")
+	for file, raw := range allCatalogs() {
+		var catalog struct {
+			Platforms map[string]struct {
+				Extras struct {
+					QuitArgs string `json:"QuitArgs"`
+				} `json:"Extras"`
+			} `json:"Platforms"`
+		}
+		if err := json.Unmarshal(raw, &catalog); err != nil {
+			t.Fatalf("parse %s: %v", file, err)
+		}
+		if got := strings.TrimSpace(catalog.Platforms["Steam"].Extras.QuitArgs); got != "-shutdown" {
+			t.Errorf("%s: Steam Extras.QuitArgs = %q, want %q", file, got, "-shutdown")
+		}
 	}
 }

@@ -109,7 +109,7 @@ func seedEmbeddedPlatforms(exeDir string) error {
 	if err := os.MkdirAll(ud, 0o755); err != nil {
 		return err
 	}
-	dest := filepath.Join(ud, "Platforms.json")
+	dest := filepath.Join(ud, PlatformsFileName())
 	st, err := os.Stat(dest)
 	switch {
 	case err == nil && !st.IsDir():

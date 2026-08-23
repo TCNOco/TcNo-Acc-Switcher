@@ -24,7 +24,7 @@ func setAndRecordSteamReg(t *testing.T, valueName, data string) {
 }
 
 // ---------------------------------------------------------------------------
-// writeLoginUsersAndRegistry — full VDF mutation + registry write
+// writeLoginUsersAndAutoLogin — full VDF mutation + AutoLoginUser write
 // ---------------------------------------------------------------------------
 
 func TestWriteLoginUsersAndRegistry(t *testing.T) {
@@ -59,8 +59,8 @@ func TestWriteLoginUsersAndRegistry(t *testing.T) {
 	os.WriteFile(loginPath, []byte(initialVDF), 0o644)
 
 	// Switch to account 2
-	if err := writeLoginUsersAndRegistry(dir, "76561198000000200"); err != nil {
-		t.Fatalf("writeLoginUsersAndRegistry: %v", err)
+	if err := writeLoginUsersAndAutoLogin(dir, "76561198000000200"); err != nil {
+		t.Fatalf("writeLoginUsersAndAutoLogin: %v", err)
 	}
 
 	// Verify loginusers.vdf was overwritten
@@ -119,7 +119,7 @@ func TestWriteLoginUsersAndRegistry(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------------
-// writeLoginUsersAndRegistry — "Add New" mode (empty selectedID64)
+// writeLoginUsersAndAutoLogin — "Add New" mode (empty selectedID64)
 // ---------------------------------------------------------------------------
 
 func TestWriteLoginUsersAndRegistry_AddNew(t *testing.T) {
@@ -143,8 +143,8 @@ func TestWriteLoginUsersAndRegistry_AddNew(t *testing.T) {
 	os.WriteFile(loginPath, []byte(initialVDF), 0o644)
 
 	// Add New: empty selectedID64 → AutoLoginUser is written as "" which deletes the value on Windows
-	if err := writeLoginUsersAndRegistry(dir, ""); err != nil {
-		t.Fatalf("writeLoginUsersAndRegistry: %v", err)
+	if err := writeLoginUsersAndAutoLogin(dir, ""); err != nil {
+		t.Fatalf("writeLoginUsersAndAutoLogin: %v", err)
 	}
 
 	users, _ := ParseLoginUsers(loginPath)
@@ -172,7 +172,7 @@ func TestWriteLoginUsersAndRegistry_AddNew(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------------
-// writeLoginUsersAndRegistry — accounts Steam does not know about
+// writeLoginUsersAndAutoLogin — accounts Steam does not know about
 // ---------------------------------------------------------------------------
 
 func seedStoredAccount(t *testing.T, rec accountstore.Record) {
@@ -215,8 +215,8 @@ func TestWriteLoginUsersAndRegistry_AppendsStoredAccount(t *testing.T) {
 }
 `), 0o644)
 
-	if err := writeLoginUsersAndRegistry(dir, "76561198000000200"); err != nil {
-		t.Fatalf("writeLoginUsersAndRegistry: %v", err)
+	if err := writeLoginUsersAndAutoLogin(dir, "76561198000000200"); err != nil {
+		t.Fatalf("writeLoginUsersAndAutoLogin: %v", err)
 	}
 
 	users, err := ParseLoginUsers(loginPath)
@@ -269,8 +269,8 @@ func TestWriteLoginUsersAndRegistry_RebuildsDeletedFile(t *testing.T) {
 	dir := t.TempDir()
 	os.MkdirAll(filepath.Join(dir, "config"), 0o755)
 
-	if err := writeLoginUsersAndRegistry(dir, "76561198000000100"); err != nil {
-		t.Fatalf("writeLoginUsersAndRegistry: %v", err)
+	if err := writeLoginUsersAndAutoLogin(dir, "76561198000000100"); err != nil {
+		t.Fatalf("writeLoginUsersAndAutoLogin: %v", err)
 	}
 
 	users, err := ParseLoginUsers(filepath.Join(dir, "config", "loginusers.vdf"))
@@ -308,7 +308,7 @@ func TestWriteLoginUsersAndRegistry_NoAccountNameFallsBackToChooser(t *testing.T
 }
 `), 0o644)
 
-	if err := writeLoginUsersAndRegistry(dir, "76561198000000300"); err != nil {
+	if err := writeLoginUsersAndAutoLogin(dir, "76561198000000300"); err != nil {
 		t.Fatalf("a nameless stored account should still switch: %v", err)
 	}
 
@@ -348,8 +348,8 @@ func TestWriteLoginUsersAndRegistry_RebuildsEmptyFile(t *testing.T) {
 	loginPath := filepath.Join(configDir, "loginusers.vdf")
 	os.WriteFile(loginPath, nil, 0o644)
 
-	if err := writeLoginUsersAndRegistry(dir, "76561198000000100"); err != nil {
-		t.Fatalf("writeLoginUsersAndRegistry: %v", err)
+	if err := writeLoginUsersAndAutoLogin(dir, "76561198000000100"); err != nil {
+		t.Fatalf("writeLoginUsersAndAutoLogin: %v", err)
 	}
 	users, err := ParseLoginUsers(loginPath)
 	if err != nil {
@@ -376,7 +376,7 @@ func TestWriteLoginUsersAndRegistry_KeepsUnreadableFile(t *testing.T) {
 	const body = `"users" { "76561198000000100" { "AccountName"`
 	os.WriteFile(loginPath, []byte(body), 0o644)
 
-	if err := writeLoginUsersAndRegistry(dir, "76561198000000100"); err == nil {
+	if err := writeLoginUsersAndAutoLogin(dir, "76561198000000100"); err == nil {
 		t.Fatal("a corrupt loginusers.vdf should abort the switch, not be replaced")
 	}
 	raw, err := os.ReadFile(loginPath)
@@ -394,7 +394,7 @@ func TestWriteLoginUsersAndRegistry_UnknownAccountFails(t *testing.T) {
 	dir := t.TempDir()
 	os.MkdirAll(filepath.Join(dir, "config"), 0o755)
 
-	if err := writeLoginUsersAndRegistry(dir, "76561198000000999"); err == nil {
+	if err := writeLoginUsersAndAutoLogin(dir, "76561198000000999"); err == nil {
 		t.Fatal("switching to an account neither Steam nor the switcher knows should fail")
 	}
 }

@@ -336,7 +336,7 @@ func resolvePlatformsPath(exeDir string, s AppSettings) string {
 		}
 		return filepath.Clean(filepath.Join(exeDir, rel))
 	}
-	return filepath.Join(UserDataDir(exeDir), "Platforms.json")
+	return filepath.Join(UserDataDir(exeDir), PlatformsFileName())
 }
 
 func parsePlatformNames(raw []byte) ([]string, error) {

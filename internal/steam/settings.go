@@ -71,7 +71,7 @@ func defaultSettings() Settings {
 	ps := platform.DefaultPlatformSettings()
 	return Settings{
 		PlatformSettings:     ps,
-		FolderPath:           `C:\Program Files (x86)\Steam\`,
+		FolderPath:           defaultFolderPath(),
 		SteamShowVAC:         true,
 		SteamShowLimited:     true,
 		SteamShowLastLogin:   true,

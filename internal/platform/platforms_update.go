@@ -51,7 +51,7 @@ func runLaunchPlatformsJSONCheck(exeDir string) {
 		return
 	}
 
-	destPath := filepath.Join(UserDataDir(exeDir), "Platforms.json")
+	destPath := filepath.Join(UserDataDir(exeDir), PlatformsFileName())
 	localRaw, err := os.ReadFile(destPath)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
@@ -66,7 +66,7 @@ func runLaunchPlatformsJSONCheck(exeDir string) {
 
 	localVer, _ := updatecheck.ParsePlatformsJSONVersion(localRaw)
 
-	remoteRaw, err := updatecheck.FetchRemotePlatformsJSON(ctx, appVersionFromBuildConfig())
+	remoteRaw, err := updatecheck.FetchRemotePlatformsJSON(ctx, appVersionFromBuildConfig(), PlatformsFileName())
 	if err != nil {
 		return
 	}

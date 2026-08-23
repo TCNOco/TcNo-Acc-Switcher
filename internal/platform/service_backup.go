@@ -16,7 +16,7 @@ func (p *PlatformService) PickPlatformsJSON() (string, error) {
 		return "", errors.New("application not initialised")
 	}
 	sel, err := app.Dialog.OpenFile().
-		SetTitle("Locate Platforms.json").
+		SetTitle("Locate "+PlatformsFileName()).
 		AddFilter("JSON", "*.json").
 		PromptForSingleSelection()
 	if err != nil {
@@ -65,7 +65,7 @@ func (p *PlatformService) ApplyPlatformsJSONFile(sourcePath string) error {
 	if err := os.MkdirAll(ud, 0o755); err != nil {
 		return err
 	}
-	dest := filepath.Join(ud, "Platforms.json")
+	dest := filepath.Join(ud, PlatformsFileName())
 	if err := atomicWriteBytes(dest, data, 0o644); err != nil {
 		return err
 	}
@@ -97,7 +97,7 @@ func (p *PlatformService) RestoreDefaultPlatformsJSON() error {
 	if err := os.MkdirAll(ud, 0o755); err != nil {
 		return err
 	}
-	dest := filepath.Join(ud, "Platforms.json")
+	dest := filepath.Join(ud, PlatformsFileName())
 	if err := atomicWriteBytes(dest, bytes.Clone(embeddedPlatformsJSON), 0o644); err != nil {
 		return err
 	}

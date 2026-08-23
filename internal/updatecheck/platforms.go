@@ -12,9 +12,20 @@ import (
 	"TcNo-Acc-Switcher/internal/appclient"
 )
 
-// PlatformsJSONRawURL is the canonical remote Platforms.json used for background updates.
+// platformsJSONRawBase is where the catalogs live in the repository.
 // TODO: switch refs/heads/go to refs/heads/main when the go branch is merged to main.
-const PlatformsJSONRawURL = "https://raw.githubusercontent.com/TCNOco/TcNo-Acc-Switcher/refs/heads/go/Platforms.json"
+const platformsJSONRawBase = "https://raw.githubusercontent.com/TCNOco/TcNo-Acc-Switcher/refs/heads/go/"
+
+// PlatformsJSONRawURL is the remote copy of one catalog file. The caller names
+// the file because the catalogs are per-OS and only the platform package knows
+// which one this build reads.
+func PlatformsJSONRawURL(fileName string) string {
+	fileName = strings.TrimSpace(fileName)
+	if fileName == "" {
+		fileName = "Platforms.json"
+	}
+	return platformsJSONRawBase + fileName
+}
 
 const maxPlatformsJSONBytes = 4 << 20
 
@@ -22,15 +33,15 @@ type platformsVersion struct {
 	Version string `json:"Version"`
 }
 
-// FetchRemotePlatformsJSON downloads Platforms.json from GitHub.
-func FetchRemotePlatformsJSON(ctx context.Context, appVersion string) ([]byte, error) {
+// FetchRemotePlatformsJSON downloads the named catalog file from GitHub.
+func FetchRemotePlatformsJSON(ctx context.Context, appVersion, fileName string) ([]byte, error) {
 	if appclient.IsOfflineMode() {
 		return nil, appclient.ErrOfflineMode
 	}
 	if ctx == nil {
 		ctx = context.Background()
 	}
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, PlatformsJSONRawURL, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, PlatformsJSONRawURL(fileName), nil)
 	if err != nil {
 		return nil, err
 	}

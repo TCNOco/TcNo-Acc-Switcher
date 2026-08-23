@@ -51,7 +51,7 @@ func ResolveSteamExePath() (string, bool) {
 	if err != nil || root == "" {
 		return "", false
 	}
-	p := filepath.Join(root, "steam.exe")
+	p := SteamExePath(root)
 	if st, err := os.Stat(p); err == nil && !st.IsDir() {
 		return p, true
 	}

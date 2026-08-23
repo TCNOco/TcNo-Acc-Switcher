@@ -95,7 +95,7 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 		pS = st.SteamOverrideState
 	}
 
-	if err := writeLoginUsersAndRegistry(root, steamID64); err != nil {
+	if err := writeLoginUsersAndAutoLogin(root, steamID64); err != nil {
 		return err
 	}
 
@@ -125,7 +125,7 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 
 	platform.EmitActionBarStatusI18nPlatform("Status_StartingPlatform", "Steam")
 	args := buildSteamArgs(st, extraLaunchArgs)
-	exe := filepath.Join(root, "steam.exe")
+	exe := SteamExePath(root)
 	opts := winutil.StartOpts{
 		Admin:         st.RunAsAdmin,
 		Method:        winutil.StartingMethod(strings.TrimSpace(st.StartingMethod)),
@@ -171,7 +171,7 @@ func LaunchSteamOnly(extraLaunchArgs []string) error {
 		return fmt.Errorf("steam install folder not found")
 	}
 	args := buildSteamArgs(st, extraLaunchArgs)
-	exe := filepath.Join(root, "steam.exe")
+	exe := SteamExePath(root)
 	opts := winutil.StartOpts{
 		Admin:         st.RunAsAdmin,
 		Method:        winutil.StartingMethod(strings.TrimSpace(st.StartingMethod)),
@@ -213,7 +213,7 @@ func LaunchSteamOnlyAs(forceAdmin bool, extraLaunchArgs []string) error {
 		return fmt.Errorf("steam install folder not found")
 	}
 	args := buildSteamArgs(st, extraLaunchArgs)
-	exe := filepath.Join(root, "steam.exe")
+	exe := SteamExePath(root)
 	admin := st.RunAsAdmin
 	if forceAdmin {
 		admin = true
@@ -236,7 +236,7 @@ func buildSteamArgs(st Settings, extraLaunchArgs []string) []string {
 	return args
 }
 
-func writeLoginUsersAndRegistry(steamRoot, selectedID64 string) error {
+func writeLoginUsersAndAutoLogin(steamRoot, selectedID64 string) error {
 	loginPath := LoginUsersPath(steamRoot)
 	selected := strings.TrimSpace(selectedID64)
 
@@ -302,15 +302,7 @@ func writeLoginUsersAndRegistry(steamRoot, selectedID64 string) error {
 		return err
 	}
 
-	regBase := `HKCU\Software\Valve\Steam`
-	platform.EmitActionBarStatusI18n("Status_UpdatingRegistry")
-	if err := winutil.RegistryWrite(regBase+":AutoLoginUser", autoUser); err != nil {
-		return err
-	}
-	if err := winutil.RegistryWrite(regBase+":RememberPassword", uint32(1)); err != nil {
-		return err
-	}
-	return nil
+	return writeAutoLogin(steamRoot, autoUser)
 }
 
 func setShowSteamSwitcher(steamRoot string, show bool) error {
