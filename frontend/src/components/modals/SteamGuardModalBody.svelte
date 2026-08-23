@@ -96,6 +96,10 @@
   let unlockKeyfilePath = "";
   let unlockBackupKey = "";
   let busy = false;
+  // Which browse button has a window opening. Separate from busy on purpose:
+  // busy shuts the whole modal, close button included, and a page opening in
+  // its own window has nothing in here to protect.
+  let openingBrowserSite: SteamBrowserSite | null = null;
   let refreshing = false;
   let inlineError = "";
   let statusMessage = "";
@@ -941,12 +945,14 @@
   // the same tokens; only the id differs by screen.
   async function openBrowser(site: SteamBrowserSite): Promise<void> {
     const open = controller.openSteamBrowser;
-    if (!open || busy) return;
+    if (!open || busy || openingBrowserSite) return;
     const account =
       state.screen === "account-code" ? state.view.account :
       state.screen === "login-only" ? loginOnlyAccountSummary : null;
     if (!account?.id) return;
-    busy = true;
+    // Set before the first await, so a double-click is refused by the guard
+    // above rather than by a disabled attribute Svelte has not flushed yet.
+    openingBrowserSite = site;
     try {
       const result = await withCapability(account, (capability) => open(account.id, site, capability));
       // Opening a window renews a lapsed session, and that write rotates the
@@ -954,16 +960,19 @@
       // next thing the user clicked failed instead.
       await refreshCapabilityIfRequired(account, result?.capabilityRefreshRequired === true);
       // A session too old to renew is not an error to read and dismiss; the
-      // only thing to do about it is sign in, so go straight there.
+      // only thing to do about it is sign in, so go straight there - but the
+      // modal stayed usable throughout, so only take it over if it is still on
+      // the account this open started from and nothing else is running.
+      // startLoginAgain bails while busy, which would strand its refreshing
+      // screen with no work behind it.
       if (result?.needsLogin) {
-        busy = false;
-        showLoginAgainState();
+        if (!busy && steamGuardAccountForState(state)?.id === account.id) showLoginAgainState();
         return;
       }
     } catch (error) {
       reportFailure($t("SteamGuard_Error_BrowserOpenFailed"), error);
     } finally {
-      busy = false;
+      openingBrowserSite = null;
     }
   }
 
@@ -2633,16 +2642,16 @@
 				     already the thing to do about that. -->
 				{#if controller.openSteamBrowser && canBrowse}
 					<div class="steam-guard__browse" use:controllerSpatialNavigation>
-						<button type="button" class="btnicontext" disabled={busy} on:click={() => openBrowser("store")}>
-							<svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>
+						<button type="button" class="btnicontext" aria-busy={openingBrowserSite === "store"} disabled={busy || openingBrowserSite !== null} on:click={() => openBrowser("store")}>
+							{#if openingBrowserSite === "store"}<span class="steam-guard__spinner" aria-hidden="true"></span>{:else}<svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>{/if}
 							{$t("SteamGuard_Browse_Store")}
 						</button>
-						<button type="button" class="btnicontext" disabled={busy} on:click={() => openBrowser("community")}>
-							<svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>
+						<button type="button" class="btnicontext" aria-busy={openingBrowserSite === "community"} disabled={busy || openingBrowserSite !== null} on:click={() => openBrowser("community")}>
+							{#if openingBrowserSite === "community"}<span class="steam-guard__spinner" aria-hidden="true"></span>{:else}<svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>{/if}
 							{$t("SteamGuard_Browse_Community")}
 						</button>
-						<button type="button" class="btnicontext" disabled={busy} on:click={() => openBrowser("chat")}>
-							<svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>
+						<button type="button" class="btnicontext" aria-busy={openingBrowserSite === "chat"} disabled={busy || openingBrowserSite !== null} on:click={() => openBrowser("chat")}>
+							{#if openingBrowserSite === "chat"}<span class="steam-guard__spinner" aria-hidden="true"></span>{:else}<svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>{/if}
 							{$t("SteamGuard_Browse_Chat")}
 						</button>
 					</div>
@@ -2777,16 +2786,16 @@
            as long as the session is still one Steam accepts. -->
       {#if controller.openSteamBrowser && canBrowse}
         <div class="steam-guard__browse" use:controllerSpatialNavigation>
-          <button type="button" class="btnicontext" disabled={busy} on:click={() => openBrowser("store")}>
-            <svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>
+          <button type="button" class="btnicontext" aria-busy={openingBrowserSite === "store"} disabled={busy || openingBrowserSite !== null} on:click={() => openBrowser("store")}>
+            {#if openingBrowserSite === "store"}<span class="steam-guard__spinner" aria-hidden="true"></span>{:else}<svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>{/if}
             {$t("SteamGuard_Browse_Store")}
           </button>
-          <button type="button" class="btnicontext" disabled={busy} on:click={() => openBrowser("community")}>
-            <svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>
+          <button type="button" class="btnicontext" aria-busy={openingBrowserSite === "community"} disabled={busy || openingBrowserSite !== null} on:click={() => openBrowser("community")}>
+            {#if openingBrowserSite === "community"}<span class="steam-guard__spinner" aria-hidden="true"></span>{:else}<svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>{/if}
             {$t("SteamGuard_Browse_Community")}
           </button>
-          <button type="button" class="btnicontext" disabled={busy} on:click={() => openBrowser("chat")}>
-            <svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>
+          <button type="button" class="btnicontext" aria-busy={openingBrowserSite === "chat"} disabled={busy || openingBrowserSite !== null} on:click={() => openBrowser("chat")}>
+            {#if openingBrowserSite === "chat"}<span class="steam-guard__spinner" aria-hidden="true"></span>{:else}<svg class="steam-guard__icon" viewBox={ICONS.globe.box} aria-hidden="true"><path d={ICONS.globe.path} /></svg>{/if}
             {$t("SteamGuard_Browse_Chat")}
           </button>
         </div>
