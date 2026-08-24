@@ -18,7 +18,9 @@ license: "GPL-3.0-only"
 release: "1"
 
 contents:
-  - src: "./bin/tcno-acc-switcher"
+  # The build task names the binary after APP_NAME in the root Taskfile; it is
+  # installed under the lowercase name the desktop entry's Exec resolves.
+  - src: "./bin/TcNo-Acc-Switcher"
     dst: "/usr/local/bin/tcno-acc-switcher"
 
   - src: "./build/linux/desktop"

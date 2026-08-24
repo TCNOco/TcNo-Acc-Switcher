@@ -2,7 +2,10 @@
 Version=1.0
 Name=TcNo Account Switcher
 Comment=A Superfast open-source account switcher
-Exec=/usr/local/bin/tcno-acc-switcher %u
+# A bare name, not a path: the packages put the binary on PATH, and linuxdeploy
+# matches this against the binary bundled in the AppImage, where no /usr/local
+# exists. Both need it to equal the deployed binary's name.
+Exec=tcno-acc-switcher %u
 Terminal=false
 Type=Application
 Icon=tcno-acc-switcher

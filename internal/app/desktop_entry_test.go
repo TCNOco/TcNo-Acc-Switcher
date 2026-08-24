@@ -64,6 +64,30 @@ func TestDesktopEntryMatchesWaylandAppID(t *testing.T) {
 	}
 }
 
+// Exec names the binary the packages install. The scaffolding these files came
+// from had the two disagreeing - a .exe suffix on Linux - which launches
+// nothing from the menu, so the names are checked against each other.
+func TestDesktopEntryExecMatchesInstalledBinary(t *testing.T) {
+	exec := desktopEntryKey(t, "Exec")
+	execBin, _, _ := strings.Cut(exec, " ")
+	if execBin == "" {
+		t.Fatal("build/linux/desktop has no Exec key")
+	}
+	if strings.ContainsAny(execBin, "/\\") {
+		t.Errorf("Exec = %q, want a bare binary name so it resolves on PATH and inside an AppImage", execBin)
+	}
+
+	nfpmPath := filepath.Join("..", "..", "build", "linux", "nfpm", "nfpm.yaml")
+	raw, err := os.ReadFile(nfpmPath)
+	if err != nil {
+		t.Fatalf("read %s: %v", nfpmPath, err)
+	}
+	want := "/usr/local/bin/" + execBin
+	if !strings.Contains(string(raw), `dst: "`+want+`"`) {
+		t.Errorf("nfpm.yaml installs no binary at %q, which Exec=%q needs", want, execBin)
+	}
+}
+
 // The Icon key is a theme name, not a path: it only resolves if an icon of that
 // name is installed into a hicolor theme directory, which build/linux/icons
 // supplies and the nfpm contents install.
