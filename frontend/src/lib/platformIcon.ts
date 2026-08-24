@@ -1,8 +1,10 @@
+import { platformArtworkName } from "./platformName";
+
 /** Windows: <>:"/\|?* ; Unix: / ; strip all for consistent asset filenames. */
 const ILLEGAL_FILENAME_CHARS = /[<>:"/\\|?*\u0000-\u001f]/g;
 
 function iconFileBase(platformName: string): string {
-  return platformName.trim().replace(ILLEGAL_FILENAME_CHARS, "").trim();
+  return platformArtworkName(platformName).replace(ILLEGAL_FILENAME_CHARS, "").trim();
 }
 
 /** Href for `<use href="...">` — same pattern as legacy Blazor (`img/platform/Name.svg#FG`). */

@@ -11,6 +11,7 @@
   import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import type { PlatformStartup } from "../../bindings/TcNo-Acc-Switcher/internal/platform/models.js";
   import { platformIconFgHref } from "../lib/platformIcon";
+  import { platformDisplayLabels } from "../lib/platformName";
   import { contextMenu } from "../lib/actions/contextMenu";
   import type { MenuItemDef } from "../stores/contextMenu";
   import * as Shortcuts from "wails-shortcuts-service";
@@ -57,6 +58,11 @@
       debouncedOverlayQuery = q;
     }, 150);
   }
+  // Derived from what is on the home screen, not from the whole catalog: an
+  // install method the user cannot see is not a distinction worth drawing.
+  $: tileLabels = platformDisplayLabels(homeOrder);
+  $: tileLabel = (name: string) => tileLabels.get(name) ?? name;
+
   $: commandMode = isCommandQuery(overlayQuery);
   $: homeSearchPrimary = commandMode
     ? commandRows(overlayQuery, buildHomeCommands(), get(t)("Search_Section_Command"))
@@ -414,17 +420,18 @@
           ariaLabel={$t("Preview_Platforms")}
           listRole="group"
           itemRole="button"
-          itemAriaLabel={(id) => $t("Aria_OpenPlatform", { platform: id })}
+          itemAriaLabel={(id) => $t("Aria_OpenPlatform", { platform: tileLabel(id) })}
           itemActivatesOnSpace={true}
           on:reorder={onReorder}
           on:itemclick={(e) => void openPlatform(e.detail.id)}
         >
           <svelte:fragment slot="item" let:rowId>
             {@const rid = slotKey(rowId)}
+            {@const label = tileLabel(rid)}
             <!-- svelte-ignore a11y-no-static-element-interactions -->
             <div class="platform_tile_ctx" use:contextMenu={() => tileContextMenu(rid)}>
-              <div class="fgText {textClass(rid)}">
-                <p>{rid.toUpperCase()}</p>
+              <div class="fgText {textClass(label)}">
+                <p>{label.toUpperCase()}</p>
               </div>
               <div class="fgImg" aria-hidden="true">
                 <svg viewBox="0 0 500 500" aria-hidden="true">
