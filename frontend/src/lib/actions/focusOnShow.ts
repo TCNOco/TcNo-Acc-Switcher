@@ -1,73 +1,72 @@
 /**
- * Whether focus that is no longer on the node should be taken back.
- *
- * Anywhere inside the same dialog is somewhere the user could have put it, and
- * is left alone. Focus that has left the dialog entirely, or that nothing holds,
- * was taken by something else settling after the screen appeared.
+ * How long after the field appears the caret is still claimed for it, and when
+ * inside that window it is tried. The screen it belongs to is opened by a click
+ * elsewhere - a context menu item, a button - and several things settle focus
+ * over the frames that follow: the modal's focus trap choosing a first element,
+ * the menu handing focus back to the row it was opened from, the screen's own
+ * transition. All of them are done well inside this window, and none of them is
+ * the user.
  */
-export function focusEscapedSurface(surface: Element | null, active: Element | null): boolean {
-  if (!active) return true;
-  if (!surface) return false;
-  return !surface.contains(active);
-}
+const ATTEMPT_DELAYS_MS = [40, 100, 200, 350];
+const WINDOW_MS = 500;
 
 /**
- * Delays, in ms, at which a lost caret is taken back. Long enough to outlast the
- * frame or two in which a modal, its focus trap and the context menu that opened
- * it all settle; short enough that nothing can move focus in between by hand.
- * The context menu answers the same problem the same way - see
- * scheduleMenuFocusAfterOpen in ContextMenu.svelte.
- */
-const RECLAIM_DELAYS_MS = [60, 160];
-
-/**
- * Puts the caret in a field as the screen it belongs to appears.
+ * Puts the caret in a field as the screen it belongs to appears, and keeps it
+ * there for the moment it takes everything else to settle.
  *
- * Focusing from the screen transition instead means guessing when the field will
- * exist and when it will stop being disabled, and then holding the caret against
- * everything that moves focus over the next frame or two - the modal's own focus
- * trap, and the context menu restoring focus to the row it was opened from. This
- * waits for the field, so the caret lands whichever path opened the screen.
+ * Focusing once, from the screen transition, means guessing when the field will
+ * exist, when it will stop being disabled, and whether anything will move focus
+ * afterwards - and a guess that loses leaves the user typing into nothing. This
+ * waits for the field, checks that the caret actually arrived, and tries again
+ * for a few hundred milliseconds if it did not.
+ *
+ * It stops the instant the user does anything - a key, a pointer - so it can
+ * never take the caret off something they chose themselves. That is the whole
+ * safety rule: no window, no heuristic about which element is "allowed" to hold
+ * focus, just "if they have not touched anything yet, this field is still what
+ * they are about to type into".
  *
  * The parameter is whether the field can take focus yet; pass `!busy` for one
  * that is disabled while work is in flight.
  */
 export function focusOnShow(node: HTMLElement, enabled = true) {
+  const doc = node.ownerDocument;
   let armed = enabled;
-  let claimed = false;
+  let running = false;
+  let stopped = false;
   let frame = 0;
   const timers: ReturnType<typeof setTimeout>[] = [];
 
-  function canFocus(): boolean {
-    return node.isConnected && !(node as Partial<HTMLInputElement>).disabled;
+  function stop(): void {
+    stopped = true;
+    running = false;
+    cancelAnimationFrame(frame);
+    for (const timer of timers) clearTimeout(timer);
+    timers.length = 0;
+    doc.removeEventListener("pointerdown", stop, true);
+    doc.removeEventListener("keydown", stop, true);
   }
 
-  function claim(): void {
-    if (!canFocus()) return;
+  function attempt(): void {
+    if (stopped || !armed) return;
+    if (!node.isConnected || (node as Partial<HTMLInputElement>).disabled) return;
+    if (doc.activeElement === node) return;
     node.focus({ preventScroll: true });
-    if (node instanceof HTMLInputElement || node instanceof HTMLTextAreaElement) {
-      node.select();
-    }
-    claimed = true;
-  }
-
-  function reclaimIfLost(): void {
-    const active = node.ownerDocument.activeElement;
-    if (active === node) return;
-    if (!focusEscapedSurface(node.closest("[role='dialog']"), active)) return;
-    claim();
+    // Duck-typed rather than instanceof: the field is normally empty, but after a
+    // rejected attempt it still holds what was typed, and selecting it means the
+    // next keystroke replaces it instead of appending.
+    const selectable = node as Partial<HTMLInputElement>;
+    if (typeof selectable.select === "function") selectable.select();
   }
 
   function start(): void {
-    if (!armed || claimed) return;
-    cancelAnimationFrame(frame);
-    frame = requestAnimationFrame(() => {
-      if (!canFocus()) return;
-      claim();
-      for (const delay of RECLAIM_DELAYS_MS) {
-        timers.push(setTimeout(reclaimIfLost, delay));
-      }
-    });
+    if (stopped || running || !armed) return;
+    running = true;
+    doc.addEventListener("pointerdown", stop, true);
+    doc.addEventListener("keydown", stop, true);
+    frame = requestAnimationFrame(attempt);
+    for (const delay of ATTEMPT_DELAYS_MS) timers.push(setTimeout(attempt, delay));
+    timers.push(setTimeout(stop, WINDOW_MS));
   }
 
   start();
@@ -75,11 +74,10 @@ export function focusOnShow(node: HTMLElement, enabled = true) {
   return {
     update(next: boolean) {
       armed = next;
-      start();
+      if (armed) start();
     },
     destroy() {
-      cancelAnimationFrame(frame);
-      timers.forEach((timer) => clearTimeout(timer));
+      stop();
     },
   };
 }
