@@ -119,7 +119,7 @@ func (a *AuthenticationClient) UpdateAuthSessionWithSteamGuardCode(ctx context.C
 }
 
 func (a *AuthenticationClient) PollAuthSessionStatus(ctx context.Context, session AuthSession, timeout time.Duration) (PollResult, error) {
-	if a == nil || a.client == nil || !validateAuthSession(session) {
+	if a == nil || a.client == nil || !validatePollableSession(session) {
 		return PollResult{}, protocolError(CodeInvalidRequest, StateInvalid)
 	}
 	message := marshalPollRequest(session)

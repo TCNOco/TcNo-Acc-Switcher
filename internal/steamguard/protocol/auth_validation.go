@@ -123,6 +123,45 @@ func validateAuthSession(session AuthSession) bool {
 		len(session.requestID) > 0 && len(session.requestID) <= maxRequestIDBytes && hasNonzeroByte(session.requestID)
 }
 
+// validatePollableSession is validateAuthSession with the SteamID requirement
+// lifted for a QR session, which has none until it is scanned. Polling is the
+// only call that takes one: a guard code is submitted for a named account, and
+// marshalSteamGuardCodeRequest would put a zero SteamID on the wire.
+func validatePollableSession(session AuthSession) bool {
+	if session.viaQR && session.steamID == 0 {
+		return validateAuthSessionExceptSteamID(session)
+	}
+	return validateAuthSession(session)
+}
+
+func validateAuthSessionExceptSteamID(session AuthSession) bool {
+	decodedID, err := base64.RawURLEncoding.DecodeString(session.id)
+	validID := err == nil && len(decodedID) == localSessionIDBytes
+	wipeBytes(decodedID)
+	return validID && session.clientID != 0 &&
+		len(session.requestID) > 0 && len(session.requestID) <= maxRequestIDBytes && hasNonzeroByte(session.requestID)
+}
+
+func validateBeginQRRequest(request BeginQRRequest) *Error {
+	if !validProtocolString(request.DeviceFriendlyName, maxFriendlyNameBytes, false) ||
+		!validProtocolString(request.WebsiteID, maxWebsiteIDBytes, false) ||
+		!validPlatform(request.Platform) {
+		return protocolError(CodeInvalidRequest, StateInvalid)
+	}
+	if !validDeviceDetails(request.Device) || request.Device.Platform != request.Platform ||
+		request.Device.FriendlyName != request.DeviceFriendlyName {
+		return protocolError(CodeInvalidRequest, StateInvalid)
+	}
+	return nil
+}
+
+// challengeURLNamesClient checks that a challenge URL points at the session it
+// arrived with. validChallengeURL already fixes the shape; this is what stops a
+// response naming one session and handing back a URL that signs into another.
+func challengeURLNamesClient(value string, clientID uint64) bool {
+	return validChallengeURL(value) && strings.HasSuffix(value, "/"+strconv.FormatUint(clientID, 10))
+}
+
 func validAccountSteamID(steamID uint64) bool {
 	return steamID >= steamIDAccountMin && steamID <= steamIDAccountMax
 }

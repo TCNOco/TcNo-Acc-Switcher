@@ -30,21 +30,28 @@ func marshalGetAuthSessionInfoRequest(clientID uint64) []byte {
 	return appendVarintField(nil, 1, clientID)
 }
 
+// marshalDeviceDetails encodes CAuthentication_DeviceDetails, which both begin
+// calls embed. Shared so the two cannot drift: Steam matches the device on a QR
+// session against the one that started it.
+func marshalDeviceDetails(device DeviceDetails) []byte {
+	encoded := make([]byte, 0, 256)
+	encoded = appendStringField(encoded, 1, device.FriendlyName)
+	encoded = appendVarintField(encoded, 2, uint64(device.Platform))
+	encoded = appendVarintField(encoded, 3, uint64(device.OSType))
+	if device.GamingDeviceType != 0 {
+		encoded = appendVarintField(encoded, 4, uint64(device.GamingDeviceType))
+	}
+	if device.ClientCount != 0 {
+		encoded = appendVarintField(encoded, 5, uint64(device.ClientCount))
+	}
+	if len(device.MachineID) != 0 {
+		encoded = appendBytesField(encoded, 6, device.MachineID)
+	}
+	return appendVarintField(encoded, 7, uint64(device.App))
+}
+
 func marshalBeginCredentialsRequest(request BeginCredentialsRequest) []byte {
-	device := make([]byte, 0, 256)
-	device = appendStringField(device, 1, request.Device.FriendlyName)
-	device = appendVarintField(device, 2, uint64(request.Device.Platform))
-	device = appendVarintField(device, 3, uint64(request.Device.OSType))
-	if request.Device.GamingDeviceType != 0 {
-		device = appendVarintField(device, 4, uint64(request.Device.GamingDeviceType))
-	}
-	if request.Device.ClientCount != 0 {
-		device = appendVarintField(device, 5, uint64(request.Device.ClientCount))
-	}
-	if len(request.Device.MachineID) != 0 {
-		device = appendBytesField(device, 6, request.Device.MachineID)
-	}
-	device = appendVarintField(device, 7, uint64(request.Device.App))
+	device := marshalDeviceDetails(request.Device)
 
 	message := make([]byte, 0, 1024)
 	message = appendStringField(message, 1, request.DeviceFriendlyName)

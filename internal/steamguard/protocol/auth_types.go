@@ -118,9 +118,14 @@ type AuthSession struct {
 	steamID      uint64
 	pollInterval time.Duration
 	challenges   []AllowedChallenge
+	// viaQR marks a session opened by BeginAuthSessionViaQR, which has no
+	// SteamID until somebody scans it. Unexported and set in one place, so no
+	// caller can present a credentials session as one.
+	viaQR bool
 }
 
 func (s AuthSession) ID() string                  { return s.id }
+func (s AuthSession) ViaQR() bool                 { return s.viaQR }
 func (s AuthSession) ClientID() uint64            { return s.clientID }
 func (s AuthSession) SteamID() uint64             { return s.steamID }
 func (s AuthSession) PollInterval() time.Duration { return s.pollInterval }
@@ -141,6 +146,7 @@ func (s *AuthSession) Destroy() {
 	s.steamID = 0
 	s.pollInterval = 0
 	s.challenges = nil
+	s.viaQR = false
 }
 
 // BeginCredentialsResult reports the session and its next required action.
