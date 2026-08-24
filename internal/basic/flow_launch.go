@@ -122,12 +122,11 @@ func launchBasicNoStatusAs(deps FlowDeps, platformKey string, forceAdmin bool, e
 	}
 	opts := winutil.StartOpts{
 		Admin:         admin,
-		Method:        winutil.StartingMethod(strings.TrimSpace(fc.Settings.StartingMethod)),
 		HideWindow:    false,
 		WorkingDir:    filepath.Dir(exe),
 		AsDesktopUser: winutil.IsProcessElevated() && !admin,
 	}
-	logFlow().Debug("start request", "platform", platformKey, "exe", exe, "args", len(args), "method", opts.Method, "admin", opts.Admin)
+	logFlow().Debug("start request", "platform", platformKey, "exe", exe, "args", len(args), "admin", opts.Admin)
 	if err := winutil.Start(exe, args, opts); err != nil {
 		logFlow().Warn("start failed", "platform", platformKey, "exe", exe, "err", err)
 		return err

@@ -10,9 +10,7 @@
   import { openAlert } from "../../stores/modal";
   import {
     closingValues,
-    startingValues,
     closingLabel,
-    startingLabel,
     overrideStates,
     withLaunchArgFlag,
   } from "../../lib/platformSettingsShared";
@@ -82,15 +80,6 @@
       label={$t("Settings_AutoStart", { platform: name })}
       on:change={() => {
         steamSettings.AutoStart = !steamSettings.AutoStart;
-        dispatch("save");
-      }}
-    />
-    <SettingsToggle
-      id="ps-forget"
-      checked={steamSettings.ForgetAccountEnabled}
-      label={$t("Settings_ForgetAccountEnabled")}
-      on:change={() => {
-        steamSettings.ForgetAccountEnabled = !steamSettings.ForgetAccountEnabled;
         dispatch("save");
       }}
     />
@@ -388,8 +377,10 @@
   </SettingsField>
 </SettingsGroup>
 
-<SettingsGroup title={$t("Settings_Header_ProcessManagement")}>
-  {#if $capabilities.closingMethods && !closingMethodUiLocked}
+<!-- The closing-method picker is the only thing left in this group, so the
+     group itself goes when the picker does rather than leaving a bare heading. -->
+{#if $capabilities.closingMethods && !closingMethodUiLocked}
+  <SettingsGroup title={$t("Settings_Header_ProcessManagement")}>
     <ProcessMethodDropdown
       values={closingValues}
       current={steamSettings.ClosingMethod}
@@ -401,19 +392,8 @@
         dispatch("save");
       }}
     />
-  {/if}
-  <ProcessMethodDropdown
-    values={startingValues}
-    current={steamSettings.StartingMethod}
-    label={$t("Settings_Header_StartingMethod", { platform: name })}
-    labelFn={startingLabel}
-    tooltip={$t("Tooltip_StartingMethod")}
-    on:select={(e) => {
-      steamSettings.StartingMethod = e.detail.value;
-      dispatch("save");
-    }}
-  />
-</SettingsGroup>
+  </SettingsGroup>
+{/if}
 
 <style lang="scss">
   .dropdown-toggle {

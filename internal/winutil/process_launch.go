@@ -13,14 +13,14 @@ import (
 // Uses PowerShell Start-Process -Verb RunAs when opts.Admin.
 func Start(exe string, args []string, opts StartOpts) error {
 	if opts.AsDesktopUser && IsProcessElevated() {
-		slogWin().Debug("start request", "exe", exe, "mode", "desktop-user", "args", len(args), "admin", opts.Admin, "method", opts.Method)
+		slogWin().Debug("start request", "exe", exe, "mode", "desktop-user", "args", len(args), "admin", opts.Admin)
 		return startAsDesktopUser(exe, args, opts)
 	}
 	exe = strings.TrimSpace(exe)
 	if exe == "" {
 		return fmt.Errorf("empty executable")
 	}
-	slogWin().Debug("start request", "exe", exe, "args", len(args), "admin", opts.Admin, "method", opts.Method, "workingDir", strings.TrimSpace(opts.WorkingDir))
+	slogWin().Debug("start request", "exe", exe, "args", len(args), "admin", opts.Admin, "workingDir", strings.TrimSpace(opts.WorkingDir))
 	if opts.Admin {
 		err := startElevated(exe, args, opts)
 		if err != nil {

@@ -186,9 +186,6 @@ func LoadSettings() (Settings, error) {
 		s.ClosingMethod = defClose
 	}
 	s.ClosingMethodForced = forceClose
-	if strings.TrimSpace(s.StartingMethod) == "" {
-		s.StartingMethod = "Default"
-	}
 	return s, nil
 }
 

@@ -128,7 +128,6 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 	exe := SteamExePath(root)
 	opts := winutil.StartOpts{
 		Admin:         st.RunAsAdmin,
-		Method:        winutil.StartingMethod(strings.TrimSpace(st.StartingMethod)),
 		HideWindow:    false,
 		WorkingDir:    root,
 		AsDesktopUser: winutil.IsProcessElevated() && !st.RunAsAdmin,
@@ -174,7 +173,6 @@ func LaunchSteamOnly(extraLaunchArgs []string) error {
 	exe := SteamExePath(root)
 	opts := winutil.StartOpts{
 		Admin:         st.RunAsAdmin,
-		Method:        winutil.StartingMethod(strings.TrimSpace(st.StartingMethod)),
 		HideWindow:    false,
 		WorkingDir:    root,
 		AsDesktopUser: winutil.IsProcessElevated() && !st.RunAsAdmin,
@@ -220,7 +218,6 @@ func LaunchSteamOnlyAs(forceAdmin bool, extraLaunchArgs []string) error {
 	}
 	opts := winutil.StartOpts{
 		Admin:         admin,
-		Method:        winutil.StartingMethod(strings.TrimSpace(st.StartingMethod)),
 		HideWindow:    false,
 		WorkingDir:    root,
 		AsDesktopUser: winutil.IsProcessElevated() && !admin,

@@ -3,7 +3,6 @@ export const ARG_VGUI = "-vgui";
 
 export const closingValues = ["Combined", "Close", "TaskKill", "Electron"] as const;
 
-export const startingValues = ["Default", "Direct"] as const;
 
 export function closingLabel(v: string): string {
   if (v === "Combined") return "Combined (Best)";
@@ -13,11 +12,6 @@ export function closingLabel(v: string): string {
   return v;
 }
 
-export function startingLabel(v: string): string {
-  if (v === "Default") return "Default (Best)";
-  if (v === "Direct") return "Direct";
-  return v;
-}
 
 export const overrideStates: { v: number; key: string }[] = [
   { v: -1, key: "NoDefault" },

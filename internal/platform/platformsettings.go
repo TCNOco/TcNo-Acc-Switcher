@@ -97,10 +97,8 @@ func settingsDirUnderExe() (string, error) {
 type PlatformSettings struct {
 	RunAsAdmin                bool                `json:"RunAsAdmin"`
 	TrayAccNumber             int                 `json:"TrayAccNumber"`
-	ForgetAccountEnabled      bool                `json:"ForgetAccountEnabled"`
 	ClosingMethod             string              `json:"ClosingMethod"`
 	ClosingMethodForced       bool                `json:"ClosingMethodForced,omitempty"`
-	StartingMethod            string              `json:"StartingMethod"`
 	AutoStart                 bool                `json:"AutoStart"`
 	ShowShortNotes            bool                `json:"ShowShortNotes"`
 	ShowLastUsed              bool                `json:"ShowLastUsed"`
@@ -116,13 +114,11 @@ func DefaultPlatformSettings() PlatformSettings {
 	return PlatformSettings{
 		TrayAccNumber:             3,
 		ClosingMethod:             "Combined",
-		StartingMethod:            "Default",
 		AutoStart:                 true,
 		ShowShortNotes:            true,
 		ShowLastUsed:              true,
 		AccountNotes:              map[string]string{},
 		Shortcuts:                 []GameShortcutEntry{},
-		ForgetAccountEnabled:      false,
 		RunAsAdmin:                false,
 		AlwaysSwapOnShortcut:      true,
 		ProfileImageExpiryDays:    7,
@@ -309,9 +305,6 @@ func loadPlatformSettingsFromDisk(platformKey string) (PlatformSettings, error) 
 		s.ClosingMethod = defaultClosingMethod
 	}
 	s.ClosingMethodForced = closingForced
-	if strings.TrimSpace(s.StartingMethod) == "" {
-		s.StartingMethod = "Default"
-	}
 	if s.Shortcuts == nil {
 		s.Shortcuts = []GameShortcutEntry{}
 	}

@@ -4,9 +4,7 @@
   import { capabilities } from "../../stores/osCapabilities";
   import {
     closingValues,
-    startingValues,
     closingLabel,
-    startingLabel,
   } from "../../lib/platformSettingsShared";
   import SettingsGroup from "./SettingsGroup.svelte";
   import SettingsToggle from "./SettingsToggle.svelte";
@@ -62,15 +60,6 @@
       label={$t("Settings_AutoStart", { platform: name })}
       on:change={() => {
         genericPS.AutoStart = !genericPS.AutoStart;
-        dispatch("save");
-      }}
-    />
-    <SettingsToggle
-      id="gp-forget"
-      checked={genericPS.ForgetAccountEnabled}
-      label={$t("Settings_ForgetAccountEnabled")}
-      on:change={() => {
-        genericPS.ForgetAccountEnabled = !genericPS.ForgetAccountEnabled;
         dispatch("save");
       }}
     />
@@ -160,8 +149,10 @@
 </SettingsGroup>
 {/if}
 
-<SettingsGroup title={$t("Settings_Header_ProcessManagement")}>
-  {#if $capabilities.closingMethods && !closingMethodUiLocked}
+<!-- The closing-method picker is the only thing left in this group, so the
+     group itself goes when the picker does rather than leaving a bare heading. -->
+{#if $capabilities.closingMethods && !closingMethodUiLocked}
+  <SettingsGroup title={$t("Settings_Header_ProcessManagement")}>
     <ProcessMethodDropdown
       values={closingValues}
       current={genericPS.ClosingMethod}
@@ -173,16 +164,5 @@
         dispatch("save");
       }}
     />
-  {/if}
-  <ProcessMethodDropdown
-    values={startingValues}
-    current={genericPS.StartingMethod}
-    label={$t("Settings_Header_StartingMethod", { platform: name })}
-    labelFn={startingLabel}
-    tooltip={$t("Tooltip_StartingMethod")}
-    on:select={(e) => {
-      genericPS.StartingMethod = e.detail.value;
-      dispatch("save");
-    }}
-  />
-</SettingsGroup>
+  </SettingsGroup>
+{/if}

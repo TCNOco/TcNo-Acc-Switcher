@@ -208,7 +208,7 @@ func Start(exe string, args []string, opts StartOpts) error {
 	if opts.Admin {
 		slogWin().Debug("ignoring admin launch request on linux", "exe", exe)
 	}
-	slogWin().Debug("start request", "exe", exe, "args", len(args), "method", opts.Method, "workingDir", strings.TrimSpace(opts.WorkingDir))
+	slogWin().Debug("start request", "exe", exe, "args", len(args), "workingDir", strings.TrimSpace(opts.WorkingDir))
 
 	cmd := exec.Command(exe, args...)
 	cmd.Dir = strings.TrimSpace(opts.WorkingDir)

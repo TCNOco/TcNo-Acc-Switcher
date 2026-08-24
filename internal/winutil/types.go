@@ -49,18 +49,9 @@ type KillOpts struct {
 	BeforeElectronSynth func() error
 }
 
-// StartingMethod matches platform settings: Default, Direct (both launch the exe; shim optional).
-type StartingMethod string
-
-const (
-	StartingDefault StartingMethod = "Default"
-	StartingDirect  StartingMethod = "Direct"
-)
-
 // StartOpts controls process creation.
 type StartOpts struct {
 	Admin         bool
-	Method        StartingMethod
 	HideWindow    bool
 	WorkingDir    string
 	AsDesktopUser bool // drop elevation when switcher is admin but target should not inherit admin
