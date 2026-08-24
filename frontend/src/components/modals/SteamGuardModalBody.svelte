@@ -49,6 +49,7 @@
 	  import { formatToastWithError, formatUnknownError } from "../../lib/formatWailsError";
 	  import { requestModalAutoFit } from "../../lib/modalFrame";
 	  import { controllerSpatialNavigation } from "../../lib/actions/controllerSpatialNavigation";
+	  import { focusOnShow } from "../../lib/actions/focusOnShow";
 	  import SteamAccountAvatar from "../SteamAccountAvatar.svelte";
   import SteamGuardVaultFactors from "./SteamGuardVaultFactors.svelte";
 	  import { loadSteamGuardSwitcherProfile } from "../../lib/steamGuardBridge";
@@ -2484,6 +2485,7 @@
           autocomplete="current-password"
           disabled={busy}
           data-steamguard-focus
+          use:focusOnShow={!busy}
           aria-invalid={inlineError ? "true" : undefined}
           aria-describedby={inlineError ? "steam-guard-unlock-error" : undefined}
           on:keydown={(event) => runOnEnter(event, unlockAccount)}
