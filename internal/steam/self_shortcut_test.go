@@ -1,6 +1,8 @@
 package steam
 
 import (
+	"os"
+	"path/filepath"
 	"testing"
 
 	"TcNo-Acc-Switcher/internal/steam/shortcutsvdf"
@@ -141,5 +143,43 @@ func TestRemoveWhenAbsentReportsNoChange(t *testing.T) {
 	list := []*shortcutsvdf.Node{theirShortcut()}
 	if _, changed := removeSelfShortcut(list); changed {
 		t.Fatal("remove reported a change with nothing of ours present")
+	}
+}
+
+func TestSelfShortcutRootsCountsOneInstallOnce(t *testing.T) {
+	// A Linux Steam answers to three paths: ~/.local/share/Steam, and
+	// ~/.steam/root and ~/.steam/steam symlinked to it. Left undeduplicated,
+	// every shortcut file gets written - and backed up over - once per alias.
+	real := filepath.Join(t.TempDir(), "Steam")
+	if err := os.MkdirAll(filepath.Join(real, "config"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(real, "config", "loginusers.vdf"), []byte(`"users"{}`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	link := filepath.Join(t.TempDir(), "root")
+	if err := os.Symlink(real, link); err != nil {
+		t.Skipf("symlinks unavailable: %v", err)
+	}
+
+	prev := steamRootCandidatesFn
+	steamRootCandidatesFn = func() []string { return []string{real, link, real} }
+	t.Cleanup(func() { steamRootCandidatesFn = prev })
+
+	got := selfShortcutRoots()
+	if len(got) != 1 {
+		t.Fatalf("roots = %v, want the one install once", got)
+	}
+}
+
+func TestSelfShortcutRootsSkipsAnInstallNeverSignedInto(t *testing.T) {
+	// No loginusers.vdf means no userdata folder to write the entry into.
+	empty := t.TempDir()
+	prev := steamRootCandidatesFn
+	steamRootCandidatesFn = func() []string { return []string{empty} }
+	t.Cleanup(func() { steamRootCandidatesFn = prev })
+
+	if got := selfShortcutRoots(); len(got) != 0 {
+		t.Fatalf("roots = %v, want none", got)
 	}
 }

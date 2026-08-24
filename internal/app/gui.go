@@ -218,6 +218,13 @@ func RunGUI(params RunGUIParams) {
 	if err := platform.SyncAutostartPreference(wailsApp, guiSettings.StartTrayWithWindows, guiSettings.AlwaysRunAsAdmin); err != nil {
 		wailsApp.Logger.Warn("autostart sync", "error", err)
 	}
+	// Off the startup path: this reads every Steam user's shortcut list, and
+	// nothing on screen waits for the answer.
+	go func() {
+		if err := steam.SyncSelfShortcut(guiSettings.AddToSteam); err != nil {
+			wailsApp.Logger.Warn("steam shortcut sync", "error", err)
+		}
+	}()
 
 	currentVersion := buildinfo.Version()
 

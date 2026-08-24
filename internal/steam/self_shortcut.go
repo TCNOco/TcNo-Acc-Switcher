@@ -122,6 +122,20 @@ func (s *SteamService) SetAddToSteam(enabled bool) (SteamShortcutApplyResult, er
 	return result, platform.SaveAppSettings(exeDir, app)
 }
 
+// SyncSelfShortcut re-points Steam's entry at wherever the app is now. The entry
+// stores an absolute path, so an installer update or an AppImage dragged
+// somewhere else leaves it launching nothing until this runs.
+//
+// Safe with Steam open: Steam only writes the shortcut list back when its own
+// copy changes, so this cannot lose what is already there.
+func SyncSelfShortcut(enabled bool) error {
+	if !enabled {
+		return nil
+	}
+	_, _, err := applySelfShortcut(true)
+	return err
+}
+
 // applySelfShortcut writes or removes the entry across every Steam install and
 // every user of each. It reports how many shortcut files it wrote.
 //
@@ -321,7 +335,14 @@ func selfShortcutRoots() []string {
 		if p = strings.TrimSpace(p); p == "" {
 			return
 		}
+		// One Linux install answers to three of these paths: ~/.steam/root and
+		// ~/.steam/steam are both symlinks to whatever ~/.local/share/Steam is.
+		// Without resolving them the same shortcut file gets rewritten - and
+		// backed up over - once per alias.
 		p = filepath.Clean(p)
+		if resolved, err := filepath.EvalSymlinks(p); err == nil {
+			p = resolved
+		}
 		if slices.Contains(out, p) || !LoginUsersFileExists(p) {
 			return
 		}
