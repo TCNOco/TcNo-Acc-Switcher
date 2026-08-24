@@ -139,6 +139,10 @@ func stableAppImageIcon() string {
 		return ""
 	}
 	dest := filepath.Join(dataRoot, "steam-shortcut-icon.png")
+	// Reading the state of the row must not keep rewriting this.
+	if fileExists(dest) {
+		return dest
+	}
 	for _, name := range []string{selfBinaryPrefix + ".png", ".DirIcon"} {
 		data, err := os.ReadFile(filepath.Join(appDir, name))
 		if err != nil {
