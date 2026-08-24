@@ -15,6 +15,13 @@ import (
 // do not walk out of the process tree that owns the only window there is.
 func InGamescopeSession() bool { return inGamescopeSession(os.Getenv) }
 
+// GamescopeSessionEnv carries the verdict to a process this app starts through
+// the user's systemd manager. Such a process inherits the manager's environment,
+// which has none of the session variables the verdict is read from - so it has
+// to be decided here and passed on explicitly, or the helper concludes it is on
+// a desktop and behaves like one.
+const GamescopeSessionEnv = "TCNO_GAMESCOPE_SESSION"
+
 // inGamescopeSession takes its environment so the shapes can be checked
 // off-device.
 //
@@ -26,6 +33,9 @@ func InGamescopeSession() bool { return inGamescopeSession(os.Getenv) }
 // ordinary desktop too, where the window belongs to a real compositor and none
 // of this applies.
 func inGamescopeSession(env func(string) string) bool {
+	if strings.TrimSpace(env(GamescopeSessionEnv)) != "" {
+		return true
+	}
 	if strings.TrimSpace(env("GAMESCOPE_WAYLAND_DISPLAY")) != "" {
 		return true
 	}

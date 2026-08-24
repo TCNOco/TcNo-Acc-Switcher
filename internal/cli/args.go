@@ -52,6 +52,12 @@ type Parsed struct {
 	// asked for: that protection is what keeps codes and trades out of screen
 	// shares and remote-desktop sessions.
 	AllowSteamGuardCapture bool // --allow-steamguard-capture
+
+	// GameModeSwitch marks this process as the helper a Game Mode switch handed
+	// its swap to, so the swap runs here instead of being handed off again.
+	// Internal, like --clean-legacy-install: set by the app, not by a user, and
+	// deliberately absent from HelpText.
+	GameModeSwitch bool // --gamescope-switch
 }
 
 const steamPlatformName = "Steam"
@@ -118,6 +124,9 @@ func Parse(argv []string, idx *PlatformIndex) (Parsed, error) {
 			continue
 		case "--json", "-json":
 			p.OutputJSON = true
+			continue
+		case "--gamescope-switch", "-gamescope-switch":
+			p.GameModeSwitch = true
 			continue
 		case "--allow-steamguard-capture", "-allow-steamguard-capture":
 			p.AllowSteamGuardCapture = true

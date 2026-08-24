@@ -197,6 +197,12 @@ func main() {
 		os.Exit(legacyinstall.RunCleanupCommand(exeDir))
 	}
 
+	// Before anything can ask whether this process is the helper, and before the
+	// breakaway, which must not move a helper that is already outside the tree.
+	if parsed.GameModeSwitch {
+		steam.MarkSwitchHelper()
+	}
+
 	// Before the singleton, because the replacement needs to be the one holding
 	// it, and after the CLI commands above, which are short-lived and never
 	// close Steam.

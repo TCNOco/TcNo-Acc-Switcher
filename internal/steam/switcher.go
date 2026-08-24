@@ -80,6 +80,19 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 		return err
 	}
 
+	pS := personaState
+	if pS == -1 {
+		pS = st.SteamOverrideState
+	}
+
+	gameMode := platform.InGamescopeSession()
+	// Everything below closes Steam, and in Game Mode this process is inside
+	// Steam's tree and dies with it - before any of the writing happens. The
+	// helper is outside that tree and finishes the job.
+	if shouldHandOffSwitch(gameMode, runningAsSwitchHelper()) {
+		return handOffSwitch(steamID64, pS)
+	}
+
 	platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatform", "Steam")
 	if err := winutil.ErrIfCannotKill(steamKillNames, winutil.ClosingMethod(st.ClosingMethod)); err != nil {
 		platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatformFailed", "Steam")
@@ -90,10 +103,6 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 	}
 
 	platform.EmitActionBarStatusI18n("Status_ActionBar_UpdatingSteamLogin")
-	pS := personaState
-	if pS == -1 {
-		pS = st.SteamOverrideState
-	}
 
 	if err := writeLoginUsersAndAutoLogin(root, steamID64); err != nil {
 		return err
@@ -118,7 +127,7 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 	}
 	platform.TriggerDiscordPresenceRefresh()
 
-	if !st.AutoStart {
+	if !startsSteamAfterSwap(st.AutoStart, gameMode) {
 		tray.MaybeHideMainWindow()
 		return nil
 	}
