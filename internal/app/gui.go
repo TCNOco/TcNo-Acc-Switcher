@@ -100,6 +100,14 @@ func mainWindowOptions(guiSettings platform.AppSettings, parsed cli.Parsed) appl
 	if parsed.StartInTray {
 		winOpts.Hidden = true
 	}
+	// Game Mode is one app on a handheld screen with no window management, so
+	// the saved position and size mean nothing there: a window that opens at 96,96
+	// is a small box in the corner of a television. Last, so it wins over the
+	// centred/positioned branches above.
+	if platform.InGamescopeSession() {
+		winOpts.StartState = application.WindowStateFullscreen
+		winOpts.InitialPosition = application.WindowCentered
+	}
 	return winOpts
 }
 

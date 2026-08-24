@@ -8,6 +8,7 @@
     import { searchOverlayCtrl } from '../stores/searchOverlay'
     import { steamPageTab, toggleSteamPageTab } from '../stores/steamPageTab'
     import { Events, Window } from "@wailsio/runtime";
+    import { gameMode } from '../stores/osCapabilities'
 
     let minimised = false
     let maximised = false
@@ -142,6 +143,10 @@
         {titleLabel}
     </span>
     <span class="window-controls" role="toolbar">
+        <!-- Game Mode has no window management to minimise into and nothing to
+             restore to: the app fills the screen and the only way out is to close
+             it, so offering the other two would be offering nothing. -->
+        {#if !$gameMode}
         <button type="button" class="win-btn win-btn-min" aria-label={$t("Aria_WindowMinimize")} on:click={() => Window.Minimise()}>
             <svg class="win-btn__glyph win-btn__glyph--min" viewBox="0 0 10 10" aria-hidden="true">
                 <path d="M1 5h8" />
@@ -160,6 +165,7 @@
                     <path d="M1.5 1.5h7v7h-7z" />
                 </svg>
             </button>
+        {/if}
         {/if}
         <button type="button" class="win-btn win-btn-close" aria-label={$t("Aria_WindowClose")} on:click={() => Window.Close()}>
             <svg class="win-btn__glyph win-btn__glyph--close" viewBox="0 0 10 10" aria-hidden="true">

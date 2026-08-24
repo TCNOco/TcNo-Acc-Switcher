@@ -57,6 +57,12 @@ type PlatformStartup struct {
 	// could only ever answer "is this Windows" and never Linux from macOS.
 	OS           string         `json:"os"`
 	Capabilities OSCapabilities `json:"capabilities"`
+
+	// GameMode reports a gamescope session: one app on screen, no window
+	// management, no tray. Not a capability of the build but of the session it
+	// was started in, which is why it sits beside OS rather than inside
+	// Capabilities.
+	GameMode bool `json:"gameMode"`
 }
 
 // PlatformTagCountInfo is a per-platform tag statistic (used in startup skeleton hints).
@@ -147,6 +153,7 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 				AppVersion:               appVersionFromBuildConfig(),
 				OS:                       CurrentOS(),
 				Capabilities:             Capabilities(),
+				GameMode:                 InGamescopeSession(),
 			}, nil
 		}
 		return PlatformStartup{}, err
@@ -207,6 +214,7 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 		AppVersion:               appVersionFromBuildConfig(),
 		OS:                       CurrentOS(),
 		Capabilities:             Capabilities(),
+		GameMode:                 InGamescopeSession(),
 	}, nil
 }
 

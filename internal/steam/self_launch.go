@@ -4,6 +4,8 @@ import (
 	"log/slog"
 	"os"
 	"strings"
+
+	"TcNo-Acc-Switcher/internal/platform"
 )
 
 // Steam does not merely start a non-Steam shortcut, it owns it. On Linux the
@@ -41,39 +43,6 @@ func LaunchedBySteam() bool {
 	return strings.TrimSpace(os.Getenv(steamClientLaunchEnv)) != ""
 }
 
-// InGamescopeSession reports that this is Steam's Game Mode - a gamescope
-// session on a handheld - rather than a desktop with Steam running on it.
-//
-// The difference decides whether leaving Steam's process tree is the right move
-// or the wrong one. On a desktop the window belongs to the user's compositor and
-// survives on its own. Under gamescope there is no other compositor: gamescope
-// draws the window of the process Steam launched as the game, so a process that
-// has moved out of that tree renders into nothing. Measured on an ROG Ally: the
-// relaunched instance came up healthy on DISPLAY=:1 and was never shown.
-func InGamescopeSession() bool { return inGamescopeSession(os.Getenv) }
-
-// inGamescopeSession takes its environment so the shapes can be checked off-device.
-//
-// The values are the ones a Game Mode launch on Bazzite 43 actually carries:
-// GAMESCOPE_WAYLAND_DISPLAY=gamescope-0, XDG_CURRENT_DESKTOP=gamescope,
-// DESKTOP_SESSION=gamescope-session.
-//
-// SteamGamepadUI is deliberately not one of them. Big Picture sets it on an
-// ordinary desktop too, and there the breakaway is right.
-func inGamescopeSession(env func(string) string) bool {
-	if strings.TrimSpace(env("GAMESCOPE_WAYLAND_DISPLAY")) != "" {
-		return true
-	}
-	// XDG_SESSION_DESKTOP is not one of the three the Ally carried, but the
-	// session files on other distributions set it and not always the others.
-	for _, key := range []string{"XDG_CURRENT_DESKTOP", "DESKTOP_SESSION", "XDG_SESSION_DESKTOP"} {
-		if strings.Contains(strings.ToLower(env(key)), "gamescope") {
-			return true
-		}
-	}
-	return false
-}
-
 // BreakAwayFromSteamLaunch restarts the app outside Steam's process tree when
 // Steam is what started it, and reports whether it did. When it returns true the
 // caller has been replaced and must exit without doing anything else - notably
@@ -94,7 +63,7 @@ func BreakAwayFromSteamLaunch() (bool, error) {
 	// and gamescope never treats it as a candidate - so the app runs perfectly
 	// and is never drawn. Staying put costs us the process when Steam closes,
 	// which in Game Mode is the end of the session anyway.
-	if InGamescopeSession() {
+	if platform.InGamescopeSession() {
 		slog.Info("startup: Game Mode, staying in Steam's process tree so the window can be shown", steamLaunchEnvAttrs()...)
 		return false, nil
 	}

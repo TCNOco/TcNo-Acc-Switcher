@@ -47,6 +47,16 @@ export const capabilities: Readable<OSCapabilities> = derived(
   ($startup) => $startup?.capabilities ?? NONE,
 );
 
+/**
+ * A gamescope session: Steam's Game Mode on a handheld, where the app is the
+ * only thing on screen. False until startup data arrives, so a control is
+ * briefly present rather than briefly missing.
+ */
+export const gameMode: Readable<boolean> = derived(
+  homeScreenData,
+  ($startup) => $startup?.gameMode ?? false,
+);
+
 /** "windows" | "linux" | "darwin", or "" before startup data arrives. */
 export const currentOS: Readable<string> = derived(
   homeScreenData,
