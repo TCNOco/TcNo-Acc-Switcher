@@ -12,6 +12,9 @@
 #   docker run --rm -v $(pwd):/app wails-cross linux arm64
 #   docker run --rm -v $(pwd):/app wails-cross windows amd64
 #   docker run --rm -v $(pwd):/app wails-cross windows arm64
+#
+# Build args:
+#   MACOS_SDK=skip   skip the 1.6 GB macOS SDK when only targeting linux/windows
 
 # Trixie, not bookworm: Wails v3 calls GtkFileDialog, which arrived in GTK
 # 4.10, and bookworm carries 4.8. Trixie has 4.18. The cost is the glibc
@@ -24,33 +27,73 @@ ENV GOTOOLCHAIN=auto
 
 ARG TARGETARCH
 
-# Install base tools, GCC, and GTK/WebKit dev packages
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl xz-utils nodejs npm pkg-config gcc libc6-dev \
+# GCC and the GTK/WebKit dev packages.
+#
+# No nodejs/npm: Debian's npm drags in ~350 separate node-* packages, doubling
+# the package count of this image on its own. The upstream Node tarball below
+# is one file and carries the same npm.
+#
+# eatmydata because dpkg fsyncs its database after every package, and on a
+# Docker Desktop VHDX each of those blocks in jbd2_log_wait_commit for a second
+# or more - most of this step's wall clock was spent asleep in the ext4 journal
+# rather than doing work. Dropping those fsyncs is the bet Debian's own
+# force-unsafe-io already makes in this image: a build container that loses
+# power gets thrown away.
+#
+# path-exclude keeps dpkg from writing the changelogs, manpages and translations
+# that nothing in here reads.
+RUN --mount=type=cache,id=apt-cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,id=apt-lists,target=/var/lib/apt/lists,sharing=locked \
+    rm -f /etc/apt/apt.conf.d/docker-clean && \
+    echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache && \
+    printf 'path-exclude /usr/share/doc/*\npath-exclude /usr/share/man/*\npath-exclude /usr/share/info/*\npath-exclude /usr/share/locale/*\n' \
+      > /etc/dpkg/dpkg.cfg.d/01-nodoc && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends eatmydata && \
+    eatmydata apt-get install -y --no-install-recommends \
+    xz-utils pkg-config gcc libc6-dev \
     libgtk-3-dev libwebkit2gtk-4.1-dev \
-    libgtk-4-dev libwebkitgtk-6.0-dev \
-    && rm -rf /var/lib/apt/lists/*
+    libgtk-4-dev libwebkitgtk-6.0-dev
 
-# Install Zig - automatically selects correct binary for host architecture
+# pipefail so a failed curl aborts instead of handing tar an empty pipe.
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+# Zig, Node and the macOS SDK, fetched concurrently and unpacked straight into
+# this layer. A stage per download parallelises the same work, but copying the
+# ~2 GB back into the final image costs more than the serialisation saves.
 ARG ZIG_VERSION=0.14.0
-RUN ZIG_ARCH=$(case "${TARGETARCH}" in arm64) echo "aarch64" ;; *) echo "x86_64" ;; esac) && \
-    curl -L "https://ziglang.org/download/${ZIG_VERSION}/zig-linux-${ZIG_ARCH}-${ZIG_VERSION}.tar.xz" \
-    | tar -xJ -C /opt \
-    && ln -s /opt/zig-linux-${ZIG_ARCH}-${ZIG_VERSION}/zig /usr/local/bin/zig
-
-# Download macOS SDK (required for darwin targets)
+ARG NODE_VERSION=24.19.0
 ARG MACOS_SDK_VERSION=14.5
-RUN curl -L "https://github.com/joseluisq/macosx-sdks/releases/download/${MACOS_SDK_VERSION}/MacOSX${MACOS_SDK_VERSION}.sdk.tar.xz" \
-    | tar -xJ -C /opt \
-    && mv /opt/MacOSX${MACOS_SDK_VERSION}.sdk /opt/macos-sdk
+ARG MACOS_SDK=include
+RUN set -e; \
+    ZIG_ARCH=$(case "${TARGETARCH}" in arm64) echo "aarch64" ;; *) echo "x86_64" ;; esac); \
+    NODE_ARCH=$(case "${TARGETARCH}" in arm64) echo "arm64" ;; *) echo "x64" ;; esac); \
+    mkdir -p /opt/zig /opt/node /opt/macos-sdk; \
+    curl -fsSL "https://ziglang.org/download/${ZIG_VERSION}/zig-linux-${ZIG_ARCH}-${ZIG_VERSION}.tar.xz" \
+      | tar -xJ -C /opt/zig --strip-components=1 & \
+    zig_pid=$!; \
+    curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-${NODE_ARCH}.tar.xz" \
+      | tar -xJ -C /opt/node --strip-components=1 & \
+    node_pid=$!; \
+    sdk_pid=""; \
+    if [ "${MACOS_SDK}" != "skip" ]; then \
+      curl -fsSL "https://github.com/joseluisq/macosx-sdks/releases/download/${MACOS_SDK_VERSION}/MacOSX${MACOS_SDK_VERSION}.sdk.tar.xz" \
+        | tar -xJ -C /opt/macos-sdk --strip-components=1 & \
+      sdk_pid=$!; \
+    fi; \
+    wait $zig_pid; \
+    wait $node_pid; \
+    if [ -n "$sdk_pid" ]; then wait $sdk_pid; fi; \
+    rm -rf /opt/node/share /opt/node/include
 
+ENV PATH=/opt/zig:/opt/node/bin:$PATH
 ENV MACOS_SDK_PATH=/opt/macos-sdk
 
 # Create Zig CC wrappers for cross-compilation targets
 # Darwin and Windows use Zig; Linux uses native GCC (run with --platform for cross-arch)
 
 # Darwin arm64
-COPY <<'ZIGWRAP' /usr/local/bin/zcc-darwin-arm64
+COPY --chmod=0755 <<'ZIGWRAP' /usr/local/bin/zcc-darwin-arm64
 #!/bin/sh
 ARGS=""
 SKIP_NEXT=0
@@ -67,10 +110,9 @@ for arg in "$@"; do
 done
 exec zig cc -fno-sanitize=all -target aarch64-macos-none -isysroot /opt/macos-sdk -I/opt/macos-sdk/usr/include -L/opt/macos-sdk/usr/lib -F/opt/macos-sdk/System/Library/Frameworks -w $ARGS
 ZIGWRAP
-RUN chmod +x /usr/local/bin/zcc-darwin-arm64
 
 # Darwin amd64
-COPY <<'ZIGWRAP' /usr/local/bin/zcc-darwin-amd64
+COPY --chmod=0755 <<'ZIGWRAP' /usr/local/bin/zcc-darwin-amd64
 #!/bin/sh
 ARGS=""
 SKIP_NEXT=0
@@ -87,10 +129,9 @@ for arg in "$@"; do
 done
 exec zig cc -fno-sanitize=all -target x86_64-macos-none -isysroot /opt/macos-sdk -I/opt/macos-sdk/usr/include -L/opt/macos-sdk/usr/lib -F/opt/macos-sdk/System/Library/Frameworks -w $ARGS
 ZIGWRAP
-RUN chmod +x /usr/local/bin/zcc-darwin-amd64
 
 # Windows amd64 - uses Zig's bundled mingw
-COPY <<'ZIGWRAP' /usr/local/bin/zcc-windows-amd64
+COPY --chmod=0755 <<'ZIGWRAP' /usr/local/bin/zcc-windows-amd64
 #!/bin/sh
 ARGS=""
 SKIP_NEXT=0
@@ -107,10 +148,9 @@ for arg in "$@"; do
 done
 exec zig cc -target x86_64-windows-gnu $ARGS
 ZIGWRAP
-RUN chmod +x /usr/local/bin/zcc-windows-amd64
 
 # Windows arm64 - uses Zig's bundled mingw
-COPY <<'ZIGWRAP' /usr/local/bin/zcc-windows-arm64
+COPY --chmod=0755 <<'ZIGWRAP' /usr/local/bin/zcc-windows-arm64
 #!/bin/sh
 ARGS=""
 SKIP_NEXT=0
@@ -127,10 +167,9 @@ for arg in "$@"; do
 done
 exec zig cc -target aarch64-windows-gnu $ARGS
 ZIGWRAP
-RUN chmod +x /usr/local/bin/zcc-windows-arm64
 
 # Build script
-COPY <<'SCRIPT' /usr/local/bin/build.sh
+COPY --chmod=0755 <<'SCRIPT' /usr/local/bin/build.sh
 #!/bin/sh
 set -e
 
@@ -176,12 +215,22 @@ case "${OS}-${ARCH}" in
         ;;
 esac
 
+if [ "$GOOS" = "darwin" ] && [ ! -d /opt/macos-sdk/usr/include ]; then
+    echo "This image was built with MACOS_SDK=skip; darwin targets need the SDK." >&2
+    exit 1
+fi
+
 export CGO_ENABLED=1
 export CGO_CFLAGS="-w"
 
 # Build frontend if exists and not already built (host may have built it)
 if [ -d "frontend" ] && [ -f "frontend/package.json" ] && [ ! -d "frontend/dist" ]; then
-    (cd frontend && npm install --silent && npm run build --silent)
+    if [ -f "frontend/pnpm-lock.yaml" ]; then
+        corepack enable >/dev/null 2>&1 || true
+        (cd frontend && corepack pnpm install --frozen-lockfile && corepack pnpm run build)
+    else
+        (cd frontend && npm install --silent && npm run build --silent)
+    fi
 fi
 
 # Build
@@ -203,7 +252,6 @@ fi
 go build -tags "$TAGS" -trimpath -buildvcs=false -ldflags="$LDFLAGS" -o bin/${APP}-${GOOS}-${GOARCH}${EXT} .
 echo "Built: bin/${APP}-${GOOS}-${GOARCH}${EXT}"
 SCRIPT
-RUN chmod +x /usr/local/bin/build.sh
 
 WORKDIR /app
 ENTRYPOINT ["/usr/local/bin/build.sh"]
