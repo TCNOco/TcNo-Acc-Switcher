@@ -121,7 +121,7 @@ func (s *SteamService) RunAdvancedClearingAction(action string) (AdvancedClearRe
 		clearDirectoryContents(filepath.Join(root, "dumps"), appendLine, "dumps")
 
 	case acClearHTMLCache:
-		p, err := steamLocalHTMLCachePath()
+		p, err := steamLocalHTMLCachePath(root)
 		if err != nil {
 			return AdvancedClearResult{}, err
 		}
@@ -164,27 +164,40 @@ func (s *SteamService) RunAdvancedClearingAction(action string) (AdvancedClearRe
 	return AdvancedClearResult{Lines: lines}, nil
 }
 
-func steamLocalHTMLCachePath() (string, error) {
-	switch runtime.GOOS {
-	case "windows":
+// steamLocalHTMLCachePath locates the CEF cache for an already-resolved install
+// root.
+//
+// Only Windows keeps it away from the client's data: there it is under
+// %LocalAppData% while the install sits in Program Files. Everywhere else it
+// lives inside the root, which is what makes this work for a Flatpak or Snap
+// Steam - deriving it from $HOME instead would clear the native install's cache,
+// or nothing at all, on a machine that only has the sandboxed one.
+//
+// Measured on Linux the directory is <root>/config/htmlcache; older clients put
+// it directly under the root. Both are checked so neither layout is missed, and
+// when neither exists the config path is returned so the "skipped, missing"
+// line names the one to expect.
+func steamLocalHTMLCachePath(root string) (string, error) {
+	if runtime.GOOS == "windows" {
 		la := strings.TrimSpace(os.Getenv("LOCALAPPDATA"))
 		if la == "" {
 			return "", fmt.Errorf("LOCALAPPDATA is not set")
 		}
 		return filepath.Join(la, "Steam", "htmlcache"), nil
-	case "darwin":
-		hd, err := os.UserHomeDir()
-		if err != nil {
-			return "", err
-		}
-		return filepath.Join(hd, "Library", "Application Support", "Steam", "htmlcache"), nil
-	default:
-		hd, err := os.UserHomeDir()
-		if err != nil {
-			return "", err
-		}
-		return filepath.Join(hd, ".local", "share", "Steam", "htmlcache"), nil
 	}
+	root = strings.TrimSpace(root)
+	if root == "" {
+		return "", fmt.Errorf("steam install folder is not known")
+	}
+	inConfig := filepath.Join(root, "config", "htmlcache")
+	if st, err := os.Stat(inConfig); err == nil && st.IsDir() {
+		return inConfig, nil
+	}
+	atRoot := filepath.Join(root, "htmlcache")
+	if st, err := os.Stat(atRoot); err == nil && st.IsDir() {
+		return atRoot, nil
+	}
+	return inConfig, nil
 }
 
 func clearDirectoryContents(dir string, appendLine func(string), label string) {
