@@ -1,8 +1,10 @@
 package steamguard
 
 import (
+	"errors"
 	"strings"
 
+	"TcNo-Acc-Switcher/internal/steam/accountstore"
 	"TcNo-Acc-Switcher/internal/steamguard/authflow"
 	"TcNo-Acc-Switcher/internal/steamguard/protocol"
 	"TcNo-Acc-Switcher/internal/steamguard/qrrender"
@@ -27,13 +29,39 @@ func (s *Service) qrFlowAuthorizer(accountID, token string) steamFlowAuthorizer 
 		}
 		// Resolved outside authorizeSteamFlow, not inside it: both take the
 		// service lock, and nesting them deadlocks.
-		accountName, known := s.accountNameForSteamID(binding.AccountID)
-		if !known || strings.TrimSpace(accountName) == "" {
+		accountName := s.expectedQRAccountName(binding.AccountID)
+		if accountName == "" {
 			return nil, authflow.Binding{}, 0, ErrAccountNotFound
 		}
-		binding.ExpectedAccountName = strings.TrimSpace(accountName)
+		binding.ExpectedAccountName = accountName
 		return v, binding, steamID, nil
 	}
+}
+
+// expectedQRAccountName resolves the login name a scan is checked against.
+//
+// The vault answers for an account it already holds. It cannot answer for the
+// screen this was written for: a login-only setup runs before there is any
+// record to read, so asking the vault first and stopping there refused every QR
+// sign-in the feature exists to offer. The account store holds the same login
+// name for every account the switcher lists, which is where the row the user
+// right-clicked came from, so it answers when the vault cannot.
+//
+// Deliberately not taken from the caller. It is the one thing standing between
+// a scan and somebody else's tokens being stored under this account, so it is
+// derived from what is on disk rather than from an argument - and derived the
+// same way on every step, since authflow compares the whole binding each time.
+func (s *Service) expectedQRAccountName(accountID string) string {
+	if name, known := s.accountNameForSteamID(accountID); known {
+		if trimmed := strings.TrimSpace(name); trimmed != "" {
+			return trimmed
+		}
+	}
+	record, found, err := accountstore.Get(accountID)
+	if err != nil || !found {
+		return ""
+	}
+	return strings.TrimSpace(record.AccountName)
 }
 
 // BeginQRLogin opens a sign-in the user completes by scanning, for the account
@@ -48,6 +76,15 @@ func (s *Service) BeginQRLogin(accountID, token string, purpose SteamAuthPurpose
 	authorize := s.qrFlowAuthorizer(accountID, token)
 	_, binding, _, err := authorize()
 	if err != nil {
+		if errors.Is(err, ErrAccountNotFound) {
+			// Not a failure. Without a login name there is nothing to check a
+			// scan against, so there is no code worth offering - and an empty
+			// result says exactly that. Returning an error instead put a red
+			// "Binding call failed" in the log for a screen that was working.
+			authflowLogger().Debug("Steam QR login not offered: no login name for the account",
+				"steamId64", strings.TrimSpace(accountID))
+			return SteamCredentialResult{}, nil
+		}
 		return SteamCredentialResult{}, err
 	}
 	manager, epoch, err := s.authenticationManager()

@@ -3,7 +3,40 @@ package steamguard
 import (
 	"strings"
 	"testing"
+
+	"TcNo-Acc-Switcher/internal/steam/accountstore"
 )
+
+// The screen this feature exists for runs before the account has a vault record:
+// choosing Login Only signs in precisely so there is something to store. Reading
+// the name from the vault and stopping there refused every one of those with
+// "Steam Guard account not found", and no code was ever drawn.
+func TestExpectedQRAccountNameFallsBackToTheSwitchersOwnList(t *testing.T) {
+	service, _, _ := newAuthServiceFixture(t)
+	const unheldID = "76561198000000200"
+
+	if name := service.expectedQRAccountName(unheldID); name != "" {
+		t.Fatalf("an account nothing knows about resolved to %q", name)
+	}
+	if _, err := accountstore.Upsert(accountstore.Record{SteamID64: unheldID, AccountName: "listed_account"}); err != nil {
+		t.Fatal(err)
+	}
+	if name := service.expectedQRAccountName(unheldID); name != "listed_account" {
+		t.Fatalf("account name = %q, want the switcher's own", name)
+	}
+}
+
+// A held account keeps answering from the vault, which is the record that
+// actually governs the sign-in.
+func TestExpectedQRAccountNamePrefersTheVault(t *testing.T) {
+	service, accountID, _ := newAuthServiceFixture(t)
+	if _, err := accountstore.Upsert(accountstore.Record{SteamID64: accountID, AccountName: "stale_list_name"}); err != nil {
+		t.Fatal(err)
+	}
+	if name := service.expectedQRAccountName(accountID); name != "test_account" {
+		t.Fatalf("account name = %q, want the vault's", name)
+	}
+}
 
 func TestBeginQRLoginDrawsACodeForTheAccountsOwnName(t *testing.T) {
 	service, accountID, grant := newAuthServiceFixture(t)
