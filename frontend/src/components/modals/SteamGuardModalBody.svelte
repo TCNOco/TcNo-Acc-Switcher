@@ -131,6 +131,8 @@
 	let qrLoginPollTimer: ReturnType<typeof setTimeout> | undefined;
 	let qrLoginStartedFor = "";
 	let qrLoginAccount: SteamGuardAccountRef | null = null;
+	/** The close of the previous code, which the next one has to wait for. */
+	let qrLoginClosing: Promise<void> | null = null;
 	let authPurpose: SteamAuthPurpose = "login_again";
 	let authStage: "idle" | "refreshing" | "credentials" | "challenge" | "polling" | "success" | "error" = "idle";
 	let authAccountName = account.username;
@@ -471,6 +473,7 @@
 	// enrollment form beside it needs the password itself, to add an
 	// authenticator. Started once per account, because re-running it would throw
 	// away a code the user may already have their phone pointed at.
+	$: showQRLogin = state.screen === "login-only-setup" && qrLoginStage !== "unavailable";
 	$: if (state.screen === "login-only-setup" && authStage === "credentials" && state.account) {
 		if (qrLoginStartedFor !== state.account.id) {
 			qrLoginStartedFor = state.account.id;
@@ -1905,6 +1908,14 @@
 		qrLoginStage = "starting";
 		qrLoginImage = "";
 		qrLoginHandle = "";
+		// Steam holds one scan session per account, so the previous code has to
+		// be closed before the next can open. Leaving and coming straight back
+		// used to race that cancel and be refused as a conflict, which left the
+		// screen with no code on it at all.
+		if (qrLoginClosing) {
+			await qrLoginClosing;
+			qrLoginClosing = null;
+		}
 		try {
 			const result = await begin(currentAccount.id, await ensureCapability(currentAccount), purpose);
 			handleQRResult(currentAccount, result);
@@ -1973,9 +1984,10 @@
 		if (!handle || !cancel) return;
 		const capability = capabilityFor(currentAccount);
 		if (!capability) return;
-		await cancel(currentAccount.id, capability, handle).catch((error: unknown) => {
+		qrLoginClosing = cancel(currentAccount.id, capability, handle).catch((error: unknown) => {
 			console.warn("Steam Guard: the sign-in QR code could not be closed", error);
 		});
+		await qrLoginClosing;
 	}
 
 	async function submitCredentialCode(): Promise<void> {
@@ -3024,7 +3036,7 @@
           <p>{$t("SteamGuard_AddAccount_Body")}</p>
           <label class="steam-guard__field" for="steam-add-account">
             <span>{$t("SteamGuard_Field_SteamAccountName")}</span>
-            <input id="steam-add-account" class="modal-input" bind:value={authAccountName} autocomplete="username" disabled={busy} data-steamguard-autofocus />
+            <input id="steam-add-account" class="modal-input" bind:value={authAccountName} autocomplete="username" disabled={busy} data-steamguard-autofocus use:focusOnShow={!busy} />
           </label>
           <label class="steam-guard__field" for="steam-add-password">
             <span>{$t("SteamGuard_Field_SteamPassword")}</span>
@@ -3065,7 +3077,7 @@
           {/if}
           <label class="steam-guard__field" for="steam-add-code">
             <span>{authChallenge === "email_code" ? $t("SteamGuard_Challenge_EmailCode") : $t("SteamGuard_Challenge_DeviceCode")}</span>
-            <input id="steam-add-code" class="modal-input" bind:value={authCode} autocomplete="one-time-code" disabled={busy} data-steamguard-autofocus on:keydown={(event) => runOnEnter(event, submitCredentialCode)} />
+            <input id="steam-add-code" class="modal-input" bind:value={authCode} autocomplete="one-time-code" disabled={busy} data-steamguard-autofocus use:focusOnShow={!busy} on:keydown={(event) => runOnEnter(event, submitCredentialCode)} />
           </label>
           <div class="steam-guard__actions steam-guard__actions--end">
             <button type="button" class="btnicontext modal-primary" aria-busy={busy} disabled={busy || !authCode} on:click={submitCredentialCode}>{#if busy}<span class="steam-guard__spinner" aria-hidden="true"></span>{/if}{busy ? $t("SteamGuard_Challenge_Submitting") : $t("SteamGuard_Challenge_Submit")}</button>
@@ -3117,7 +3129,7 @@
 					: $t("SteamGuard_Enrollment_VaultCreateBody")}</p>
 				<label class="steam-guard__field" for="steam-enrollment-vault-password">
 					<span>{$t("SteamGuard_Field_Password")}</span>
-					<input id="steam-enrollment-vault-password" class="modal-input" bind:value={vaultPassword} type="password" autocomplete={vaultStatus.configured ? "current-password" : "new-password"} disabled={busy} data-steamguard-autofocus on:keydown={(event) => runOnEnter(event, submitVaultPreparation)} />
+					<input id="steam-enrollment-vault-password" class="modal-input" bind:value={vaultPassword} type="password" autocomplete={vaultStatus.configured ? "current-password" : "new-password"} disabled={busy} data-steamguard-autofocus use:focusOnShow={!busy} on:keydown={(event) => runOnEnter(event, submitVaultPreparation)} />
 				</label>
 				{#if vaultStatus.configured}
 					<div class="steam-guard__check">
@@ -3175,36 +3187,38 @@
 				     sign-in progress text, which would replace this the moment the
 				     form is submitted. -->
 				<p>{credentialsHint || $t("SteamGuard_Enrollment_CredentialsBody")}</p>
-				{#if state.screen === "login-only-setup" && qrLoginStage !== "unavailable"}
-					<!-- Steam's own login page puts the code beside the password box, and
-					     it is the quicker way in for anyone whose phone is already signed
-					     in. Hidden entirely when it is not on offer, rather than left as
-					     an empty frame the user waits on. -->
-					<div class="steam-guard__qr-login">
-						<p class="steam-guard__hint">{$t("SteamGuard_QRLogin_Body")}</p>
-						<div class="steam-guard__qr-login-code" aria-busy={qrLoginStage === "starting"}>
-							{#if qrLoginImage}
-								<img src={qrLoginImage} alt={$t("SteamGuard_QRLogin_CodeAlt")} draggable="false" />
-							{:else}
-								<span class="steam-guard__spinner" aria-hidden="true"></span>
-							{/if}
+				<!-- Steam's own login page puts the code beside the password box, and it
+				     is the quicker way in for anyone whose phone is already signed in.
+				     Beside rather than above: stacked, the two together made the screen
+				     tall enough to scroll. Hidden entirely when it is not on offer, so
+				     the fields simply take the whole width back. -->
+				<div class="steam-guard__signin" class:steam-guard__signin--split={showQRLogin}>
+					{#if showQRLogin}
+						<div class="steam-guard__qr-login">
+							<div class="steam-guard__qr-login-code" aria-busy={qrLoginStage === "starting"}>
+								{#if qrLoginImage}
+									<img src={qrLoginImage} alt={$t("SteamGuard_QRLogin_CodeAlt")} draggable="false" />
+								{:else}
+									<span class="steam-guard__spinner" aria-hidden="true"></span>
+								{/if}
+							</div>
+							<p class="steam-guard__qr-login-caption">{$t("SteamGuard_QRLogin_Body")}</p>
+							<p class="sr-only" role="status">
+								{qrLoginStage === "waiting" ? $t("SteamGuard_QRLogin_Waiting") : $t("SteamGuard_QRLogin_Preparing")}
+							</p>
 						</div>
-						<p class="sr-only" role="status">
-							{qrLoginStage === "waiting" ? $t("SteamGuard_QRLogin_Waiting") : $t("SteamGuard_QRLogin_Preparing")}
-						</p>
+					{/if}
+					<div class="steam-guard__signin-fields">
+						<label class="steam-guard__field" for="steam-enrollment-account">
+							<span>{$t("SteamGuard_Field_SteamAccountName")}</span>
+							<input id="steam-enrollment-account" class="modal-input" bind:value={authAccountName} autocomplete="username" disabled={busy} on:keydown={(event) => runOnEnter(event, beginCredentialLogin)} />
+						</label>
+						<label class="steam-guard__field" for="steam-enrollment-password">
+							<span>{$t("SteamGuard_Field_SteamPassword")}</span>
+							<input id="steam-enrollment-password" class="modal-input" bind:value={authPassword} type="password" autocomplete="current-password" disabled={busy} data-steamguard-autofocus use:focusOnShow={!busy} on:keydown={(event) => runOnEnter(event, beginCredentialLogin)} />
+						</label>
 					</div>
-					<div class="steam-guard__or" role="separator">
-						<span>{$t("SteamGuard_SignIn_Or")}</span>
-					</div>
-				{/if}
-				<label class="steam-guard__field" for="steam-enrollment-account">
-					<span>{$t("SteamGuard_Field_SteamAccountName")}</span>
-					<input id="steam-enrollment-account" class="modal-input" bind:value={authAccountName} autocomplete="username" disabled={busy} on:keydown={(event) => runOnEnter(event, beginCredentialLogin)} />
-				</label>
-				<label class="steam-guard__field" for="steam-enrollment-password">
-					<span>{$t("SteamGuard_Field_SteamPassword")}</span>
-					<input id="steam-enrollment-password" class="modal-input" bind:value={authPassword} type="password" autocomplete="current-password" disabled={busy} data-steamguard-autofocus on:keydown={(event) => runOnEnter(event, beginCredentialLogin)} />
-				</label>
+				</div>
 				<div class="steam-guard__actions steam-guard__actions--end">
 					<button type="button" class="btnicontext modal-primary" aria-busy={busy} disabled={busy || !authAccountName.trim() || !authPassword} on:click={beginCredentialLogin}>{#if busy}<span class="steam-guard__spinner" aria-hidden="true"></span>{/if}{busy ? $t("SteamGuard_Challenge_SigningIn") : $t("SteamGuard_SignIn")}</button>
 					<button type="button" class="btnicontext" disabled={busy} on:click={cancelCredentialLogin}>{$t("SteamGuard_Cancel")}</button>
@@ -3222,7 +3236,7 @@
 				{/if}
 				<label class="steam-guard__field" for="steam-enrollment-code">
 					<span>{authChallenge === "email_code" ? $t("SteamGuard_Challenge_EmailCode") : $t("SteamGuard_Challenge_DeviceCode")}</span>
-					<input id="steam-enrollment-code" class="modal-input" bind:value={authCode} autocomplete="one-time-code" disabled={busy} data-steamguard-autofocus on:keydown={(event) => runOnEnter(event, submitCredentialCode)} />
+					<input id="steam-enrollment-code" class="modal-input" bind:value={authCode} autocomplete="one-time-code" disabled={busy} data-steamguard-autofocus use:focusOnShow={!busy} on:keydown={(event) => runOnEnter(event, submitCredentialCode)} />
 				</label>
 				<div class="steam-guard__actions steam-guard__actions--end">
 					<button type="button" class="btnicontext modal-primary" aria-busy={busy} disabled={busy || !authCode} on:click={submitCredentialCode}>{#if busy}<span class="steam-guard__spinner" aria-hidden="true"></span>{/if}{busy ? $t("SteamGuard_Challenge_Submitting") : $t("SteamGuard_Challenge_Submit")}</button>
@@ -3243,7 +3257,7 @@
 			<form class="steam-guard__stack" on:submit|preventDefault={acknowledgeRevocationCode}>
 				<label class="steam-guard__field" for="steam-recovery-confirmation">
 					<span>{$t("SteamGuard_RecoveryCode_ConfirmLabel")}</span>
-					<input id="steam-recovery-confirmation" class="modal-input" bind:value={revocationConfirmation} autocomplete="off" spellcheck="false" disabled={busy} data-steamguard-autofocus on:keydown={(event) => runOnEnter(event, acknowledgeRevocationCode)} />
+					<input id="steam-recovery-confirmation" class="modal-input" bind:value={revocationConfirmation} autocomplete="off" spellcheck="false" disabled={busy} data-steamguard-autofocus use:focusOnShow={!busy} on:keydown={(event) => runOnEnter(event, acknowledgeRevocationCode)} />
 				</label>
 				{#if authMessage}<p class="steam-guard__error" role="alert">{authMessage}</p>{/if}
 				<div class="steam-guard__actions steam-guard__actions--end">
@@ -3262,7 +3276,7 @@
 				{#if confirmationError}<p class="steam-guard__error" role="alert">{confirmationError}</p>{/if}
 				<label class="steam-guard__field" for="steam-enrollment-confirmation">
 					<span>{$t("SteamGuard_Field_ConfirmationCode")}</span>
-					<input id="steam-enrollment-confirmation" class="modal-input" bind:value={confirmationCode} autocomplete="one-time-code" disabled={busy || enrollmentRetrySeconds > 0} data-steamguard-autofocus on:keydown={(event) => runOnEnter(event, finalizeEnrollment)} />
+					<input id="steam-enrollment-confirmation" class="modal-input" bind:value={confirmationCode} autocomplete="one-time-code" disabled={busy || enrollmentRetrySeconds > 0} data-steamguard-autofocus use:focusOnShow={!busy && enrollmentRetrySeconds === 0} on:keydown={(event) => runOnEnter(event, finalizeEnrollment)} />
 				</label>
 				<div class="steam-guard__actions steam-guard__actions--end">
 					<button type="button" class="btnicontext modal-primary" aria-busy={busy} disabled={busy || !confirmationCode || enrollmentRetrySeconds > 0} on:click={finalizeEnrollment}>{#if busy}<span class="steam-guard__spinner" aria-hidden="true"></span>{/if}{busy ? $t("SteamGuard_Enrollment_Finishing") : $t("SteamGuard_Enrollment_Finish")}</button>
@@ -3407,7 +3421,7 @@
 			<div class="steam-guard__stack">
 				<p>{authMessage || $t("SteamGuard_LoginAgain_TokenRejected")}</p>
 				<label class="steam-guard__field" for="steam-login-account"><span>{$t("SteamGuard_Field_SteamAccountName")}</span><input id="steam-login-account" class="modal-input" bind:value={authAccountName} autocomplete="username" disabled={busy} on:keydown={(event) => runOnEnter(event, beginCredentialLogin)} /></label>
-				<label class="steam-guard__field" for="steam-login-password"><span>{$t("SteamGuard_Field_SteamPassword")}</span><input id="steam-login-password" class="modal-input" bind:value={authPassword} type="password" autocomplete="current-password" disabled={busy} data-steamguard-autofocus on:keydown={(event) => runOnEnter(event, beginCredentialLogin)} /></label>
+				<label class="steam-guard__field" for="steam-login-password"><span>{$t("SteamGuard_Field_SteamPassword")}</span><input id="steam-login-password" class="modal-input" bind:value={authPassword} type="password" autocomplete="current-password" disabled={busy} data-steamguard-autofocus use:focusOnShow={!busy} on:keydown={(event) => runOnEnter(event, beginCredentialLogin)} /></label>
 				<!-- Cancel leaves the login-again flow entirely: the renewal that
 				     precedes this form has already finished by the time it shows, so
 				     staying on this screen would strand the user on its "Refreshing…"
@@ -3418,7 +3432,7 @@
 			<form class="steam-guard__stack" on:submit|preventDefault={submitCredentialCode}>
 				<p>{authMessage}</p>
 				{#if authResult.canSubmitEmailCode && authResult.canSubmitDeviceCode}<fieldset class="steam-guard__challenge-options"><legend>{$t("SteamGuard_Challenge_CodeSource")}</legend><label><input type="radio" bind:group={authChallenge} value="email_code" /> {$t("SteamGuard_Challenge_EmailCode")}</label><label><input type="radio" bind:group={authChallenge} value="device_code" /> {$t("SteamGuard_Challenge_DeviceCode")}</label></fieldset>{/if}
-				<label class="steam-guard__field" for="steam-login-code"><span>{authChallenge === "email_code" ? $t("SteamGuard_Challenge_EmailCode") : $t("SteamGuard_Challenge_DeviceCode")}</span><input id="steam-login-code" class="modal-input" bind:value={authCode} autocomplete="one-time-code" disabled={busy} data-steamguard-autofocus on:keydown={(event) => runOnEnter(event, submitCredentialCode)} /></label>
+				<label class="steam-guard__field" for="steam-login-code"><span>{authChallenge === "email_code" ? $t("SteamGuard_Challenge_EmailCode") : $t("SteamGuard_Challenge_DeviceCode")}</span><input id="steam-login-code" class="modal-input" bind:value={authCode} autocomplete="one-time-code" disabled={busy} data-steamguard-autofocus use:focusOnShow={!busy} on:keydown={(event) => runOnEnter(event, submitCredentialCode)} /></label>
 				<div class="steam-guard__actions steam-guard__actions--end"><button type="button" class="btnicontext modal-primary" disabled={busy || !authCode} on:click={submitCredentialCode}>{$t("SteamGuard_Challenge_Submit")}</button><button type="button" class="btnicontext" disabled={busy} on:click={() => { void cancelCredentialLogin().then(backToAccount); }}>{$t("SteamGuard_Cancel")}</button></div>
 			</form>
 		{:else if authStage === "success"}
@@ -3468,7 +3482,7 @@
             type="password"
             autocomplete="current-password"
             disabled={busy}
-            data-steamguard-autofocus
+            data-steamguard-autofocus use:focusOnShow={!busy}
             aria-invalid={exportError ? "true" : undefined}
             aria-describedby={exportError ? "steam-guard-export-error" : undefined}
             on:keydown={(event) => runOnEnter(event, submitExport)}
@@ -4132,26 +4146,51 @@
 	   enough that a button which only greys out reads as a click that did
 	   nothing. currentColor keeps it legible on any button in any theme. */
 	/*
-	 * The scan-to-sign-in code. Its SVG leaves the light modules transparent, so the
-	 * plate behind it is drawn here: a scanner needs a light quiet zone around the
-	 * code, and the modal around it is dark.
+	 * The scan-to-sign-in code, drawn beside the sign-in fields rather than above
+	 * them: stacked, the two together made the screen tall enough to scroll.
 	 */
-	.steam-guard__qr-login {
+	.steam-guard__signin {
 		display: flex;
 		flex-direction: column;
-		align-items: center;
 		gap: $sg-1;
+	}
+
+	.steam-guard__signin--split {
+		flex-direction: row;
+		align-items: center;
+		gap: $sg-2;
+	}
+
+	.steam-guard__signin-fields {
+		display: flex;
+		flex: 1 1 auto;
+		flex-direction: column;
+		gap: $sg-1;
+		/* Without this the fields refuse to shrink below their content and push the
+		   code off the edge of a narrow frame. */
+		min-width: 0;
+	}
+
+	.steam-guard__qr-login {
+		display: flex;
+		flex: 0 0 auto;
+		flex-direction: column;
+		align-items: center;
+		gap: $sg-half;
+		width: 8.5rem;
 	}
 
 	.steam-guard__qr-login-code {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 11rem;
-		height: 11rem;
-		padding: $sg-half;
+		width: 8.5rem;
+		height: 8.5rem;
 		border-radius: $sg-half;
+		/* The SVG paints its own white quiet zone, so this only rounds the corners
+		   and stands in while the code is still being fetched. */
 		background: #fff;
+		overflow: hidden;
 	}
 
 	.steam-guard__qr-login-code img {
@@ -4162,28 +4201,11 @@
 		image-rendering: pixelated;
 	}
 
-	/*
-	 * "OR" between the two ways to sign in. Half width and centred, so it reads as a
-	 * break between them rather than as a heading over the fields below.
-	 */
-	.steam-guard__or {
-		display: flex;
-		align-items: center;
-		gap: $sg-1;
-		width: 50%;
-		margin: $sg-half auto;
-		color: var(--white, #fff);
-		opacity: 0.65;
-		font-size: 0.85em;
-		letter-spacing: 0.08em;
-	}
-
-	.steam-guard__or::before,
-	.steam-guard__or::after {
-		content: "";
-		flex: 1 1 auto;
-		height: 1px;
-		background: currentColor;
+	.steam-guard__qr-login-caption {
+		margin: 0;
+		font-size: 0.8em;
+		opacity: 0.75;
+		text-align: center;
 	}
 
 	.steam-guard__spinner {

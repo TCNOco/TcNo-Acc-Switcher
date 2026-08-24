@@ -24,10 +24,14 @@ func TestSVGDataURIDrawsTheChallengeURL(t *testing.T) {
 	if !strings.Contains(string(svg), "<svg") || !strings.Contains(string(svg), "viewBox") {
 		t.Fatalf("payload is not an SVG: %.120q", svg)
 	}
-	// A transparent light colour is what lets the page's own background show
-	// through in both themes; a painted one would be a white slab in dark mode.
-	if strings.Contains(string(svg), `fill="#FFFFFF"`) {
-		t.Fatal("the quiet zone was painted rather than left transparent")
+	// A transparent light colour is written as fill="", which browsers resolve to
+	// the initial value - black - across the whole background rect, so the code
+	// arrived as a solid black square.
+	if !strings.Contains(string(svg), `fill="#FFFFFF"`) {
+		t.Fatal("the quiet zone was left without a colour to paint it")
+	}
+	if strings.Contains(string(svg), `fill=""`) {
+		t.Fatal("an empty fill reached the page, which paints black")
 	}
 }
 

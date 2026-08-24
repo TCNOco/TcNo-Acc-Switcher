@@ -34,9 +34,13 @@ var ErrNothingToEncode = errors.New("qrrender: nothing to encode")
 //
 // SVG rather than PNG because the code is drawn at whatever size the screen has
 // room for, and a resampled PNG of a QR code is exactly the thing phone cameras
-// struggle with. The light colour is left transparent so the page's own
-// background shows through in either theme; the dark modules stay black, which
-// is what a scanner expects and what keeps the contrast honest on a light card.
+// struggle with.
+//
+// Painted white rather than left transparent. go-qr writes a transparent light
+// colour as fill="" on the background rect, which is not a valid presentation
+// attribute value: the browser drops it, fill falls back to its initial value -
+// black - and the rect covers the whole code. A scanner wants a light quiet zone
+// anyway, so white is what this should have asked for to begin with.
 func SVGDataURI(text string) (string, error) {
 	text = strings.TrimSpace(text)
 	if text == "" || len(text) > maxTextBytes {
@@ -49,7 +53,7 @@ func SVGDataURI(text string) (string, error) {
 		return "", fmt.Errorf("qrrender: encode: %w", err)
 	}
 	config := goqr.NewQrCodeImgConfig(scale, border,
-		goqr.WithLight(color.Transparent),
+		goqr.WithLight(color.White),
 		goqr.WithDark(color.Black),
 	)
 	svg, err := code.ToSVGBytes(config)
