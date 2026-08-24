@@ -641,7 +641,7 @@
   "SteamGuard_CloseAndResume": "Close and resume later",
   "SteamGuard_SignIn": "Sign in",
   "SteamGuard_SignInWithPassword": "Sign in with password",
-  "SteamGuard_QRLogin_Body": "Scan this with the Steam Mobile app to sign in.",
+  "SteamGuard_QRLogin_Body": "Steam Mobile\nsign in",
   "SteamGuard_QRLogin_CodeAlt": "Steam sign-in QR code",
   "SteamGuard_QRLogin_Preparing": "Preparing the sign-in code…",
   "SteamGuard_QRLogin_Waiting": "Waiting for the code to be scanned…",

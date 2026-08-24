@@ -4209,6 +4209,10 @@
 
 	.steam-guard__qr-login-caption {
 		margin: 0;
+		/* The line break lives in the resource, so a translation can put it where
+		   its own wording needs it rather than wherever this column happens to
+		   wrap. */
+		white-space: pre-line;
 		font-size: 0.8em;
 		opacity: 0.75;
 		text-align: center;
