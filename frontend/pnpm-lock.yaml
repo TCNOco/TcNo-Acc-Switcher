@@ -15,8 +15,8 @@ importers:
   .:
     dependencies:
       '@wailsio/runtime':
-        specifier: 3.0.0-beta.5
-        version: 3.0.0-beta.5
+        specifier: 3.0.0-beta.12
+        version: 3.0.0-beta.12
       yaml:
         specifier: 2.9.0
         version: 2.9.0
@@ -530,8 +530,8 @@ packages:
   '@vitest/utils@3.2.7':
     resolution: {integrity: sha512-x6BDOd7dyo3PFLY3I9/HJ25X/6OurhGXk2/B9gOZNPF7XDVjeBK4k01lQE5uvDpbuheErh91qYuE1E2OEjK3Rw==}
 
-  '@wailsio/runtime@3.0.0-beta.5':
-    resolution: {integrity: sha512-WPJcKfD/iN5EbzLAE0B2AjwRVVSSnhpGQSjgFORtIA3h1bkiw/k7rTd06emNsI1ZFGFgMiUEEmXgEcVfeWoRVQ==}
+  '@wailsio/runtime@3.0.0-beta.12':
+    resolution: {integrity: sha512-2B456rspX5rDXYhNjRqXNDOPkRXjletGJ4R3beF2FGs7K67MTovLy9acXHYb8nolzL96kygyJ622RIjB45oumg==}
 
   acorn@8.18.0:
     resolution: {integrity: sha512-lGq+9yr1/GuAWaVYIHRjvvySG5/4VfKIvC8EWxStPdcDh/Ka7FG3twP6v4d5BkravUilhIAsG4Qj83t02LWUPQ==}
@@ -1203,7 +1203,7 @@ snapshots:
       loupe: 3.2.1
       tinyrainbow: 2.0.0
 
-  '@wailsio/runtime@3.0.0-beta.5': {}
+  '@wailsio/runtime@3.0.0-beta.12': {}
 
   acorn@8.18.0: {}
 

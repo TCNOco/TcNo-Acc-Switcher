@@ -22,7 +22,7 @@ require (
 	github.com/tidwall/gjson v1.19.0
 	github.com/tidwall/sjson v1.2.5
 	github.com/ulikunitz/xz v0.5.16
-	github.com/wailsapp/wails/v3 v3.0.0-beta.6
+	github.com/wailsapp/wails/v3 v3.0.0-beta.12
 	golang.org/x/crypto v0.54.0
 	golang.org/x/image v0.45.0
 	golang.org/x/mod v0.40.0
