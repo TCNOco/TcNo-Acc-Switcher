@@ -1,6 +1,7 @@
 package steam
 
 import (
+	"log/slog"
 	"os"
 	"strings"
 )
@@ -40,6 +41,37 @@ func LaunchedBySteam() bool {
 	return strings.TrimSpace(os.Getenv(steamClientLaunchEnv)) != ""
 }
 
+// InGamescopeSession reports that this is Steam's Game Mode - a gamescope
+// session on a handheld - rather than a desktop with Steam running on it.
+//
+// The difference decides whether leaving Steam's process tree is the right move
+// or the wrong one. On a desktop the window belongs to the user's compositor and
+// survives on its own. Under gamescope there is no other compositor: gamescope
+// draws the window of the process Steam launched as the game, so a process that
+// has moved out of that tree renders into nothing. Measured on an ROG Ally: the
+// relaunched instance came up healthy on DISPLAY=:1 and was never shown.
+func InGamescopeSession() bool { return inGamescopeSession(os.Getenv) }
+
+// inGamescopeSession takes its environment so the shapes can be checked off-device.
+//
+// The values are the ones a Game Mode launch on Bazzite 43 actually carries:
+// GAMESCOPE_WAYLAND_DISPLAY=gamescope-0, XDG_CURRENT_DESKTOP=gamescope,
+// DESKTOP_SESSION=gamescope-session.
+//
+// SteamGamepadUI is deliberately not one of them. Big Picture sets it on an
+// ordinary desktop too, and there the breakaway is right.
+func inGamescopeSession(env func(string) string) bool {
+	if strings.TrimSpace(env("GAMESCOPE_WAYLAND_DISPLAY")) != "" {
+		return true
+	}
+	for _, key := range []string{"XDG_CURRENT_DESKTOP", "DESKTOP_SESSION"} {
+		if strings.Contains(strings.ToLower(env(key)), "gamescope") {
+			return true
+		}
+	}
+	return false
+}
+
 // BreakAwayFromSteamLaunch restarts the app outside Steam's process tree when
 // Steam is what started it, and reports whether it did. When it returns true the
 // caller has been replaced and must exit without doing anything else - notably
@@ -50,14 +82,49 @@ func LaunchedBySteam() bool {
 // still works.
 func BreakAwayFromSteamLaunch() (bool, error) {
 	if !LaunchedBySteam() {
+		slog.Info("startup: not a Steam launch, staying where we are", steamLaunchEnvAttrs()...)
 		return false, nil
 	}
 	exe, err := os.Executable()
 	if err != nil {
 		return false, err
 	}
+	slog.Info("startup: Steam started us, moving out of its process tree", steamLaunchEnvAttrs()...)
 	if err := relaunchOutsideSteam(exe, os.Args[1:]); err != nil {
 		return false, err
 	}
+	slog.Info("startup: relaunched outside Steam's process tree, this process is done")
 	return true, nil
+}
+
+// steamLaunchEnvKeys are the variables that decide what happens at startup, or
+// explain it afterwards. A fixed list rather than the whole environment, which
+// carries tokens.
+var steamLaunchEnvKeys = []string{
+	"SteamClientLaunch",
+	"SteamEnv",
+	"SteamAppId",
+	"SteamGameId",
+	"SteamDeck",
+	"SteamGamepadUI",
+	"GAMESCOPE_WAYLAND_DISPLAY",
+	"XDG_CURRENT_DESKTOP",
+	"XDG_SESSION_TYPE",
+	"DESKTOP_SESSION",
+	"WAYLAND_DISPLAY",
+	"DISPLAY",
+}
+
+// steamLaunchEnvAttrs records what the process was handed. Without it a log
+// showing a healthy startup and a log showing a startup that was about to hand
+// over and exit read exactly the same, which is how "it launches but no window
+// appears" stayed ambiguous across three rounds of testing on a handheld.
+func steamLaunchEnvAttrs() []any {
+	attrs := make([]any, 0, len(steamLaunchEnvKeys)*2)
+	for _, key := range steamLaunchEnvKeys {
+		if value := strings.TrimSpace(os.Getenv(key)); value != "" {
+			attrs = append(attrs, key, value)
+		}
+	}
+	return attrs
 }

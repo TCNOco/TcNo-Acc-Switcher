@@ -36,3 +36,60 @@ func TestBreakAwayDoesNothingWhenSteamDidNotStartUs(t *testing.T) {
 		t.Fatalf("BreakAwayFromSteamLaunch() = %v, %v; want false, nil", brokeAway, err)
 	}
 }
+
+func TestInGamescopeSession(t *testing.T) {
+	cases := []struct {
+		name string
+		env  map[string]string
+		want bool
+	}{
+		{
+			// Captured from a Game Mode launch on an ROG Ally, Bazzite 43.
+			name: "Game Mode on a handheld",
+			env: map[string]string{
+				"GAMESCOPE_WAYLAND_DISPLAY": "gamescope-0",
+				"XDG_CURRENT_DESKTOP":       "gamescope",
+				"DESKTOP_SESSION":           "gamescope-session",
+				"XDG_SESSION_TYPE":          "x11",
+				"DISPLAY":                   ":1",
+				"SteamGamepadUI":            "1",
+			},
+			want: true,
+		},
+		{
+			// The relaunched instance keeps the session variables but loses
+			// Steam's, and still has to be recognised as Game Mode.
+			name: "same session, no Steam variables",
+			env: map[string]string{
+				"XDG_CURRENT_DESKTOP": "gamescope",
+				"DESKTOP_SESSION":     "gamescope-session",
+				"DISPLAY":             ":1",
+			},
+			want: true,
+		},
+		{
+			// Big Picture on a desktop sets SteamGamepadUI as well, and there
+			// leaving Steam's process tree is the correct behaviour.
+			name: "Big Picture on a KDE desktop",
+			env: map[string]string{
+				"XDG_CURRENT_DESKTOP": "KDE",
+				"DESKTOP_SESSION":     "plasmawayland",
+				"WAYLAND_DISPLAY":     "wayland-0",
+				"SteamGamepadUI":      "1",
+				"SteamClientLaunch":   "1",
+			},
+			want: false,
+		},
+		{name: "plain desktop", env: map[string]string{"XDG_CURRENT_DESKTOP": "KDE"}, want: false},
+		{name: "nothing set", env: map[string]string{}, want: false},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			got := inGamescopeSession(func(k string) string { return tc.env[k] })
+			if got != tc.want {
+				t.Fatalf("inGamescopeSession() = %v, want %v", got, tc.want)
+			}
+		})
+	}
+}
