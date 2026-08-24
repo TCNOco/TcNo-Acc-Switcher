@@ -141,6 +141,21 @@ func (p *PlatformService) GetStartTrayWithWindows() (bool, error) {
 	return val, err
 }
 
+func (p *PlatformService) GetAlwaysRunAsAdmin() (bool, error) {
+	var val bool
+	err := p.withSettingsRead(func(s *AppSettings) error {
+		val = s.AlwaysRunAsAdmin
+		return nil
+	})
+	return val, err
+}
+
+// IsRunningAsAdmin reports whether this process is already elevated, so the UI can
+// tell whether turning on "always run as admin" needs a restart to take effect.
+func (p *PlatformService) IsRunningAsAdmin() (bool, error) {
+	return winutil.IsProcessElevated(), nil
+}
+
 func (p *PlatformService) GetStartProgramCentered() (bool, error) {
 	var val bool
 	err := p.withSettingsRead(func(s *AppSettings) error {

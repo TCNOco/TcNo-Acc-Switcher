@@ -289,14 +289,32 @@ func (p *PlatformService) SetMinimizeOnSwitch(enabled bool) error {
 }
 
 func (p *PlatformService) SetStartTrayWithWindows(enabled bool) error {
+	var elevated bool
 	err := p.withSettingsWrite(func(s *AppSettings) error {
 		s.StartTrayWithWindows = enabled
+		elevated = s.AlwaysRunAsAdmin
 		return nil
 	})
 	if err != nil {
 		return err
 	}
-	return SetAutostartPreference(enabled)
+	return SetAutostartPreference(enabled, elevated)
+}
+
+// SetAlwaysRunAsAdmin stores the preference and re-registers Windows startup,
+// which has to switch between a Run entry and an elevated logon task. It does not
+// elevate the running process; the frontend offers that restart.
+func (p *PlatformService) SetAlwaysRunAsAdmin(enabled bool) error {
+	var startTray bool
+	err := p.withSettingsWrite(func(s *AppSettings) error {
+		s.AlwaysRunAsAdmin = enabled
+		startTray = s.StartTrayWithWindows
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+	return SetAutostartPreference(startTray, enabled)
 }
 
 func (p *PlatformService) SetStartProgramCentered(enabled bool) error {

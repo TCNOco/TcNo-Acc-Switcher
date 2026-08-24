@@ -72,6 +72,9 @@ type AppSettings struct {
 	// StartTrayWithWindows registers Windows startup with the -tray flag (Tray-only launch).
 	StartTrayWithWindows bool `json:"startTrayWithWindows,omitempty"`
 
+	// AlwaysRunAsAdmin re-launches the app elevated on startup when it is not already.
+	AlwaysRunAsAdmin bool `json:"alwaysRunAsAdmin,omitempty"`
+
 	// StartProgramCentered places the main window in the center of the screen when the app opens.
 	StartProgramCentered bool `json:"startProgramCentered,omitempty"`
 

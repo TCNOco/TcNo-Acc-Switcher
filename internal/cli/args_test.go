@@ -118,6 +118,19 @@ func TestParseOpenPageFlag(t *testing.T) {
 	}
 }
 
+// A restart-as-admin from the settings pane has to land back on it, not on the
+// platform page a bare name would resolve to.
+func TestParseOpenPageSubPageRoute(t *testing.T) {
+	idx := &PlatformIndex{Names: map[string]string{"steam": "Steam"}}
+	p, err := Parse([]string{"--open-page=settings"}, idx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := p.RouteJSONForOpenPage(); got != `{"page":"settings"}` {
+		t.Fatalf("route json: %q", got)
+	}
+}
+
 func TestParseLogLevel(t *testing.T) {
 	idx := &PlatformIndex{Names: map[string]string{"steam": "Steam"}}
 	p, err := Parse([]string{"--log-level=warn", "Steam"}, idx)

@@ -11,6 +11,7 @@ type settingsBatchEffects struct {
 	offlineMode            *bool
 	controllerSupport      *bool
 	discordPresenceRefresh bool
+	autostart              bool
 }
 
 func applySettingsBatchUpdate(s *AppSettings, req SettingsBatchUpdate) settingsBatchEffects {
@@ -57,6 +58,10 @@ func applySettingsBatchUpdate(s *AppSettings, req SettingsBatchUpdate) settingsB
 	}
 	applyBool(&s.MinimizeOnSwitch, req.MinimizeOnSwitch)
 	applyBool(&s.StartTrayWithWindows, req.StartTrayWithWindows)
+	applyBool(&s.AlwaysRunAsAdmin, req.AlwaysRunAsAdmin)
+	if req.StartTrayWithWindows != nil || req.AlwaysRunAsAdmin != nil {
+		effects.autostart = true
+	}
 	applyBool(&s.StartProgramCentered, req.StartProgramCentered)
 	applyBool(&s.AnimationsEnabled, req.AnimationsEnabled)
 	applyBool(&s.ControllerSupportEnabled, req.ControllerSupportEnabled)

@@ -109,6 +109,36 @@
     get(t)("Settings_Tray_StartWindows"),
   );
 
+  const alwaysRunAsAdmin = createToggle(
+    () => PlatformService.GetAlwaysRunAsAdmin(),
+    (v) => PlatformService.SetAlwaysRunAsAdmin(v),
+    get(t)("Settings_AlwaysAdmin"),
+  );
+
+  /* Saving the preference cannot elevate the process that is already running,
+     and registering the elevated startup task needs admin rights, so offer the
+     restart that makes both true. */
+  async function toggleAlwaysRunAsAdmin(): Promise<void> {
+    const enabling = !get(alwaysRunAsAdmin.value);
+    await alwaysRunAsAdmin.toggle();
+    if (!enabling || !get(alwaysRunAsAdmin.value)) return;
+    let elevated: boolean;
+    try {
+      elevated = await PlatformService.IsRunningAsAdmin();
+    } catch {
+      return;
+    }
+    if (elevated) return;
+    const ok = await openConfirm({
+      title: $t("Modal_Title_ConfirmAction"),
+      body: $t("Prompt_RestartAsAdmin"),
+      style: "yesno",
+      positiveLabel: $t("Ok"),
+      negativeLabel: $t("No"),
+    });
+    if (ok) await PlatformService.RestartAsAdmin(["--open-page=settings"]);
+  }
+
   const streamerMode = createToggle(
     () => PlatformService.GetStreamerMode(),
     (v) => setStreamerMode(v),
@@ -286,6 +316,7 @@
     discordRpcShare.value.set(settings.discordRpcShare);
     minimizeOnSwitch.value.set(settings.minimizeOnSwitch);
     startTrayWithWindows.value.set(settings.startTrayWithWindows);
+    alwaysRunAsAdmin.value.set(settings.alwaysRunAsAdmin);
     startProgramCentered.value.set(settings.startProgramCentered);
     streamerMode.value.set(settings.streamerMode);
     autoStreamerMode.value.set(settings.autoStreamerMode);
@@ -321,6 +352,7 @@
       .catch(() => { currentVersion = ""; });
     if (isWindows) {
       void startTrayWithWindows.init();
+      void alwaysRunAsAdmin.init();
     }
   }
 
@@ -657,6 +689,14 @@
         disabled={$startTrayWithWindows.loading}
         label={$t("Settings_Tray_StartWindows")}
         on:change={() => void startTrayWithWindows.toggle()}
+      />
+      <SettingsToggle
+        id="gs-always-admin"
+        checked={$alwaysRunAsAdmin.value}
+        disabled={$alwaysRunAsAdmin.loading}
+        label={$t("Settings_AlwaysAdmin")}
+        tooltip={$t("Settings_AlwaysAdmin_Tooltip")}
+        on:change={() => void toggleAlwaysRunAsAdmin()}
       />
       <SettingsToggle
         id="gs-exit-tray"

@@ -36,6 +36,7 @@ type PlatformStartup struct {
 	DiscordRpcShare          bool   `json:"discordRpcShare"`
 	MinimizeOnSwitch         bool   `json:"minimizeOnSwitch"`
 	StartTrayWithWindows     bool   `json:"startTrayWithWindows"`
+	AlwaysRunAsAdmin         bool   `json:"alwaysRunAsAdmin"`
 	StartProgramCentered     bool   `json:"startProgramCentered"`
 	StreamerMode             bool   `json:"streamerMode"`
 	AutoStreamerMode         bool   `json:"autoStreamerMode"`
@@ -123,6 +124,7 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 				DiscordRpcShare:          settings.DiscordRpcShare,
 				MinimizeOnSwitch:         settings.MinimizeOnSwitch,
 				StartTrayWithWindows:     settings.StartTrayWithWindows,
+				AlwaysRunAsAdmin:         settings.AlwaysRunAsAdmin,
 				StartProgramCentered:     settings.StartProgramCentered,
 				StreamerMode:             settings.StreamerMode,
 				AutoStreamerMode:         settings.AutoStreamerMode,
@@ -180,6 +182,7 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 		DiscordRpcShare:          settings.DiscordRpcShare,
 		MinimizeOnSwitch:         settings.MinimizeOnSwitch,
 		StartTrayWithWindows:     settings.StartTrayWithWindows,
+		AlwaysRunAsAdmin:         settings.AlwaysRunAsAdmin,
 		StartProgramCentered:     settings.StartProgramCentered,
 		StreamerMode:             settings.StreamerMode,
 		AutoStreamerMode:         settings.AutoStreamerMode,
@@ -209,6 +212,7 @@ type SettingsBatchUpdate struct {
 	DiscordRpcShare          *bool   `json:"discordRpcShare,omitempty"`
 	MinimizeOnSwitch         *bool   `json:"minimizeOnSwitch,omitempty"`
 	StartTrayWithWindows     *bool   `json:"startTrayWithWindows,omitempty"`
+	AlwaysRunAsAdmin         *bool   `json:"alwaysRunAsAdmin,omitempty"`
 	StartProgramCentered     *bool   `json:"startProgramCentered,omitempty"`
 	AnimationsEnabled        *bool   `json:"animationsEnabled,omitempty"`
 	ControllerSupportEnabled *bool   `json:"controllerSupportEnabled,omitempty"`
@@ -252,6 +256,11 @@ func (p *PlatformService) UpdateSettings(req SettingsBatchUpdate) error {
 	}
 	if effects.discordPresenceRefresh {
 		TriggerDiscordPresenceRefresh()
+	}
+	if effects.autostart {
+		if err := SetAutostartPreference(s.StartTrayWithWindows, s.AlwaysRunAsAdmin); err != nil {
+			return err
+		}
 	}
 	return nil
 }

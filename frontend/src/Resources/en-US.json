@@ -310,6 +310,8 @@
   "Settings_ExitToTray": "Exit minimises to tray",
   "Settings_DesktopShortcut": "Desktop shortcut",
   "Settings_Tray_StartWindows": "Start Tray with Windows",
+  "Settings_AlwaysAdmin": "Always start as admin",
+  "Settings_AlwaysAdmin_Tooltip": "Starts the switcher elevated every time, so closing stubborn games and platforms never needs a separate restart. With \"Start Tray with Windows\" on as well, a scheduled task handles startup so there is no UAC prompt at sign-in.",
   "Settings_CurrentStyle": "Current Style",
   "Settings_AccentColor": "Accent Color",
   "Settings_AccentColor_Custom": "Custom",

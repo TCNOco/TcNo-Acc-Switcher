@@ -611,6 +611,7 @@ func (p Parsed) RunsBeforeSingleton() bool {
 // the user was, and "Steam" alone would drop them on the account list.
 var SubPageRoutes = map[string]string{
 	"steam/serverpicker": `{"page":"steam-server-picker"}`,
+	"settings":           `{"page":"settings"}`,
 }
 
 // RouteJSONForOpenPage returns a JSON string for the Wails "navigate" event payload.

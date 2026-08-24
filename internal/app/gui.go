@@ -215,7 +215,7 @@ func RunGUI(params RunGUIParams) {
 
 	wailsApp = application.New(appOpts)
 	registerSecurityLifecycle(wailsApp, lifecycle)
-	if err := platform.SyncAutostartPreference(wailsApp, guiSettings.StartTrayWithWindows); err != nil {
+	if err := platform.SyncAutostartPreference(wailsApp, guiSettings.StartTrayWithWindows, guiSettings.AlwaysRunAsAdmin); err != nil {
 		wailsApp.Logger.Warn("autostart sync", "error", err)
 	}
 
@@ -495,7 +495,14 @@ func syncProtocolRegistration() {
 	_ = winutil.RegisterProtocol(filepath.Clean(self))
 }
 
-// linuxProgramName is what g_set_prgname reports, and so what the compositor
-// matches against StartupWMClass in build/linux/desktop. The two have to stay
-// equal or a packaged install still shows a generic icon.
+// linuxProgramName is what g_set_prgname reports. It names the process to the
+// session and is the window title Wails starts with, but it is NOT what a
+// Wayland compositor matches on: Wails builds a GtkApplication whose id wins as
+// the app_id. See appName and build/linux/desktop.
 const linuxProgramName = "tcno-acc-switcher"
+
+// appName is the name Wails shows and, lowercased with non-alphanumerics turned
+// to underscores, the tail of the "org.wails.<name>" GtkApplication id it
+// derives. That id is the Wayland app_id, so renaming the app renames the thing
+// build/linux/desktop has to declare as StartupWMClass to keep its icon.
+const appName = "TcNo Account Switcher"

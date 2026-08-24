@@ -212,8 +212,26 @@ func main() {
 		}
 		os.Exit(0)
 	}
-	defer releaseSingleton()
+	// Wrapped so a failed elevation below can swap in the lock it re-took.
+	defer func() { releaseSingleton() }()
 	winutil.RegisterSingletonReleaser(releaseSingleton)
+
+	// "Always run as admin" hands over to an elevated copy here, after the
+	// single-instance check, so a launch that only forwards a command to a
+	// running instance does not raise a second UAC prompt to do it.
+	if app.ShouldElevateAtStartup(parsed, startupSettings) {
+		if err := winutil.RestartElevated(os.Args[1:]); err != nil {
+			// Declined at the UAC prompt, or blocked by policy. Carry on
+			// unelevated rather than leaving a preference the user cannot reach
+			// to turn off. RestartElevated drops the single-instance lock before
+			// it asks, so take it back.
+			slog.Warn("always run as admin: continuing unelevated", "err", err)
+			if again, alreadyRunning, aerr := winutil.TryAcquireSingleton(); aerr == nil && !alreadyRunning {
+				releaseSingleton = again
+				winutil.RegisterSingletonReleaser(again)
+			}
+		}
+	}
 
 	platform.RunUserDataMoveCleanup(exeDir, parsed.UserDataMoveFrom, parsed.UserDataMoveTo)
 
