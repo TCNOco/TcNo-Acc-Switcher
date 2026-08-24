@@ -4,6 +4,7 @@
   import { get } from "svelte/store";
   import { route, previousPage, appBarTitle } from "../stores/nav";
   import { t } from "../stores/i18n";
+  import { capabilities } from "../stores/osCapabilities";
   import { openExternalUrl } from "../lib/openExternalUrl";
   import { sanitizeHtml } from "../lib/sanitizeHtml";
   import { pushToast } from "../stores/toast";
@@ -63,18 +64,14 @@
   const i18nLogPrefix = "i18n:";
   const i18nLogSep = "\u001f";
 
-  function isWindowsClient(): boolean {
-    if (typeof navigator === "undefined") return false;
-    const uaData = (navigator as { userAgentData?: { platform?: string } }).userAgentData;
-    const platform = (uaData?.platform || navigator.platform || navigator.userAgent || "").toLowerCase();
-    return platform.includes("win");
-  }
-
   onMount(() => {
     previousPage.set({ page: "platform-settings", platformName: "Steam" });
-    // UI visibility is client-platform based; backend still enforces OS support.
-    registrySupported = isWindowsClient();
   });
+
+  // The backend still enforces OS support; this only decides what to offer.
+  // Reads the capability the backend reported rather than sniffing navigator,
+  // which is what the rest of the app now does.
+  $: registrySupported = $capabilities.registry;
 
   function showAction(_id: string): boolean {
     return true;

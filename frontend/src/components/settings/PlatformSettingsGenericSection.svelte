@@ -1,6 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { t } from "../../stores/i18n";
+  import { capabilities } from "../../stores/osCapabilities";
   import {
     closingValues,
     startingValues,
@@ -36,21 +37,25 @@
 
 <SettingsGroup title={$t("Settings_Header_GeneralSettings")}>
   <div class="settings-grid">
-    <SettingsToggle
-      id="gp-desktop-shortcut"
-      checked={hasDesktopShortcut}
-      label={$t("Settings_Shortcut", { platform: name })}
-      on:change={() => dispatch("toggleDesktopShortcut")}
-    />
-    <SettingsToggle
-      id="gp-run-admin"
-      checked={genericPS.RunAsAdmin}
-      label={$t("Settings_Admin", { platform: name })}
-      on:change={() => {
-        genericPS.RunAsAdmin = !genericPS.RunAsAdmin;
-        dispatch("save");
-      }}
-    />
+    {#if $capabilities.shortcuts}
+      <SettingsToggle
+        id="gp-desktop-shortcut"
+        checked={hasDesktopShortcut}
+        label={$t("Settings_Shortcut", { platform: name })}
+        on:change={() => dispatch("toggleDesktopShortcut")}
+      />
+    {/if}
+    {#if $capabilities.elevation}
+      <SettingsToggle
+        id="gp-run-admin"
+        checked={genericPS.RunAsAdmin}
+        label={$t("Settings_Admin", { platform: name })}
+        on:change={() => {
+          genericPS.RunAsAdmin = !genericPS.RunAsAdmin;
+          dispatch("save");
+        }}
+      />
+    {/if}
     <SettingsToggle
       id="gp-autostart"
       checked={genericPS.AutoStart}
@@ -156,7 +161,7 @@
 {/if}
 
 <SettingsGroup title={$t("Settings_Header_ProcessManagement")}>
-  {#if !closingMethodUiLocked}
+  {#if $capabilities.closingMethods && !closingMethodUiLocked}
     <ProcessMethodDropdown
       values={closingValues}
       current={genericPS.ClosingMethod}

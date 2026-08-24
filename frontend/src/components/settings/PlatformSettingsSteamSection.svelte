@@ -4,6 +4,7 @@
   import { viewportDropdown } from "../../lib/actions/viewportDropdown";
   import { dropdownDismiss } from "../../lib/actions/dropdownDismiss";
   import { t } from "../../stores/i18n";
+  import { capabilities } from "../../stores/osCapabilities";
   import { route } from "../../stores/nav";
   import { offlineMode } from "../../stores/offlineMode";
   import { openAlert } from "../../stores/modal";
@@ -56,21 +57,25 @@
 
 <SettingsGroup title={$t("Settings_Header_GeneralSettings")}>
   <div class="settings-grid">
-    <SettingsToggle
-      id="ps-desktop-shortcut"
-      checked={hasDesktopShortcut}
-      label={$t("Settings_Shortcut", { platform: name })}
-      on:change={() => dispatch("toggleDesktopShortcut")}
-    />
-    <SettingsToggle
-      id="ps-run-admin"
-      checked={steamSettings.RunAsAdmin}
-      label={$t("Settings_Admin", { platform: name })}
-      on:change={() => {
-        steamSettings.RunAsAdmin = !steamSettings.RunAsAdmin;
-        dispatch("save");
-      }}
-    />
+    {#if $capabilities.shortcuts}
+      <SettingsToggle
+        id="ps-desktop-shortcut"
+        checked={hasDesktopShortcut}
+        label={$t("Settings_Shortcut", { platform: name })}
+        on:change={() => dispatch("toggleDesktopShortcut")}
+      />
+    {/if}
+    {#if $capabilities.elevation}
+      <SettingsToggle
+        id="ps-run-admin"
+        checked={steamSettings.RunAsAdmin}
+        label={$t("Settings_Admin", { platform: name })}
+        on:change={() => {
+          steamSettings.RunAsAdmin = !steamSettings.RunAsAdmin;
+          dispatch("save");
+        }}
+      />
+    {/if}
     <SettingsToggle
       id="ps-autostart"
       checked={steamSettings.AutoStart}
@@ -100,10 +105,12 @@
     />
   </div>
   <div class="settings-actions">
-    <button type="button" class="btnicontext" on:click={() => void openServerPicker()}>
+    {#if $capabilities.serverPicker}
+      <button type="button" class="btnicontext" on:click={() => void openServerPicker()}>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 2.5h18A1.5 1.5 0 0 1 22.5 4v2A1.5 1.5 0 0 1 21 7.5H3A1.5 1.5 0 0 1 1.5 6V4A1.5 1.5 0 0 1 3 2.5zM5 3.8a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 1 0 0-2.4zM8.5 4.1h10.5v1.8H8.5zM3 9.5h18a1.5 1.5 0 0 1 1.5 1.5v2a1.5 1.5 0 0 1-1.5 1.5H3A1.5 1.5 0 0 1 1.5 13v-2A1.5 1.5 0 0 1 3 9.5zM5 10.8a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 1 0 0-2.4zM8.5 11.1h10.5v1.8H8.5zM3 16.5h18a1.5 1.5 0 0 1 1.5 1.5v2a1.5 1.5 0 0 1-1.5 1.5H3A1.5 1.5 0 0 1 1.5 20v-2A1.5 1.5 0 0 1 3 16.5zM5 17.8a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 1 0 0-2.4zM8.5 18.1h10.5v1.8H8.5z" fill-rule="evenodd"/></svg>
-      {$t("ServerPicker_Button")}
-    </button>
+        {$t("ServerPicker_Button")}
+      </button>
+    {/if}
   </div>
 </SettingsGroup>
 
@@ -382,7 +389,7 @@
 </SettingsGroup>
 
 <SettingsGroup title={$t("Settings_Header_ProcessManagement")}>
-  {#if !closingMethodUiLocked}
+  {#if $capabilities.closingMethods && !closingMethodUiLocked}
     <ProcessMethodDropdown
       values={closingValues}
       current={steamSettings.ClosingMethod}

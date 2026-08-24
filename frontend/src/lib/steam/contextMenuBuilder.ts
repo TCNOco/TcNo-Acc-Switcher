@@ -151,7 +151,7 @@ export function buildSteamExtraMenu(
     { label: tr("Context_Game_LoginAndLaunch"), children: launchChildren },
     { label: tr("Context_LoginAsSubmenu"), children: loginAsChildren },
     { label: tr("Context_CopySubmenu"), children: copyChildren },
-    { ...shared.createShortcut, children: shortcutChildren },
+    ...(shared.createShortcut ? [{ ...shared.createShortcut, children: shortcutChildren }] : []),
     shared.tags,
     {
       label: tr("Context_ManageSubmenu"),

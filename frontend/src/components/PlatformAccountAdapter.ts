@@ -20,7 +20,8 @@ export type AccountNameStatus = { kind: "vac" | "limited"; label: string };
 export interface SharedMenuItems {
   swapTo: MenuItemDef;
   changeName: MenuItemDef;
-  createShortcut: MenuItemDef;
+  /** Null where the build cannot write shortcuts - .lnk is the only format implemented. */
+  createShortcut: MenuItemDef | null;
   changeImage: MenuItemDef;
   forget: MenuItemDef;
   notes: MenuItemDef;
