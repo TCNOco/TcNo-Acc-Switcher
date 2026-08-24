@@ -91,6 +91,17 @@ func qrLogger() *slog.Logger {
 
 // logQRFailure records the underlying error before it collapses into a
 // QRScanState the UI can render.
+// logQRAttempt records what the decoder was actually handed.
+//
+// A scan that finds nothing says only "no-code", which is the same answer for a
+// photograph too blurred to read and for a capture that grabbed sixty pixels
+// because the screen is scaled. The size tells those apart, and it is the one
+// thing about the image that is safe to write down.
+func logQRAttempt(step, accountID string, width, height int) {
+	qrLogger().Debug("Steam QR decode attempt",
+		"step", step, "steamId64", accountID, "width", width, "height", height)
+}
+
 func logQRFailure(step, accountID string, state QRScanState, err error) {
 	attributes := []any{"step", step, "steamId64", accountID, "state", string(state)}
 	if err != nil {
@@ -151,6 +162,7 @@ func (s *Service) DecodeQRScreenshot(accountID, path, token string) (QRScanResul
 		logQRFailure("load", binding.AccountID, QRScanInvalidImage, err)
 		return QRScanResult{State: QRScanInvalidImage}, nil
 	}
+	logQRAttempt("screenshot", binding.AccountID, frame.Width, frame.Height)
 	ctx, cancel := context.WithTimeout(context.Background(), qrimage.MaxCandidateDecodeTime+time.Second)
 	candidates, err := qrimage.DecodeCandidates(ctx, frame)
 	cancel()
@@ -207,6 +219,9 @@ func (s *Service) ScanSteamQR(accountID, token string) (QRScanResult, error) {
 		logQRFailure("capture", binding.AccountID, QRScanUnavailable, nil)
 		return QRScanResult{State: QRScanUnavailable}, nil
 	}
+	for _, captured := range frames {
+		logQRAttempt("capture", binding.AccountID, captured.Width, captured.Height)
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), qrimage.MaxCandidateDecodeTime+time.Second)
 	candidates, decodeErr := qrimage.DecodeCandidates(ctx, frames...)
 	cancel()
@@ -262,6 +277,7 @@ func (s *Service) SelectQRRegion(accountID, token string) (QRScanResult, error) 
 		logQRFailure("region", original.AccountID, QRScanCaptureFailed, nil)
 		return QRScanResult{State: QRScanCaptureFailed}, nil
 	}
+	logQRAttempt("region", original.AccountID, normalized.Width, normalized.Height)
 	decodeCtx, decodeCancel := context.WithTimeout(ctx, qrimage.MaxCandidateDecodeTime+time.Second)
 	candidates, decodeErr := qrimage.DecodeCandidates(decodeCtx, normalized)
 	decodeCancel()
