@@ -1,14 +1,17 @@
-//go:build !windows && !linux
+//go:build !windows && !unix
 
 package winutil
 
 import "time"
 
+// Neither Windows nor a Unix: no process table this package knows how to read.
+// Kept so the package still builds for a target the app does not ship to, rather
+// than to describe anything real.
+
 func KillByName(names []string, method ClosingMethod, _ func() error) error {
 	return ErrUnsupported
 }
 
-// WaitForegroundForExe is a Windows-only helper; stub always returns false.
 func WaitForegroundForExe(_ string, _ time.Duration) bool {
 	return false
 }
@@ -25,17 +28,14 @@ func StartAsDesktopUser(exe string, args []string, opts StartOpts) error {
 	return ErrUnsupported
 }
 
-// SnapshotRunningExeBasenames is Windows-only; returns an empty set elsewhere.
 func SnapshotRunningExeBasenames() (map[string]struct{}, error) {
 	return map[string]struct{}{}, nil
 }
 
-// IsExeRunning is Windows-only.
 func IsExeRunning(_ string) bool {
 	return false
 }
 
-// SnapshotMatchingPIDs is Windows-only; returns nothing elsewhere.
 func SnapshotMatchingPIDs(_ map[string]struct{}) (map[uint32]string, error) {
 	return nil, nil
 }

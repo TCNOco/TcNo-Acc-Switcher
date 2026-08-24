@@ -1,14 +1,16 @@
 package platform
 
-// macOS has no process layer yet: winutil/process_other.go is built for
-// !windows && !linux and stubs Start, KillByName and every snapshot to
-// ErrUnsupported. Until that lands, the app cannot close or relaunch a client,
-// which is most of a switch - so ProcessControl is false and the controls that
-// depend on it stay hidden rather than failing at the point of use.
+// macOS shares the POSIX process layer with Linux - winutil/process_unix.go -
+// and differs only in how the process table is read, which is a kern.proc.all
+// sysctl here rather than a /proc walk. So closing and relaunching a client
+// works, and with it the switch itself.
+//
+// ScreenCaptureExclusion is true here and false on Linux: Wails implements
+// setContentProtection for NSWindow and leaves the GTK one an empty function.
 var osCapabilities = OSCapabilities{
 	Shortcuts:              false,
 	Elevation:              false,
-	ProcessControl:         false,
+	ProcessControl:         true,
 	ClosingMethods:         false,
 	Registry:               false,
 	ProtocolHandler:        false,

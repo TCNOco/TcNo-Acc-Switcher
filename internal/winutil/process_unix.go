@@ -1,4 +1,4 @@
-//go:build linux
+//go:build unix
 
 package winutil
 
@@ -8,7 +8,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"slices"
-	"strconv"
 	"strings"
 	"syscall"
 	"time"
@@ -140,46 +139,15 @@ func unixMatchingPIDs(targets []string) map[int]string {
 	return out
 }
 
-func forEachProcess(fn func(pid int, names []string)) {
-	entries, err := os.ReadDir("/proc")
-	if err != nil {
-		slogWin().Warn("read /proc", "err", err)
-		return
-	}
-	for _, entry := range entries {
-		if !entry.IsDir() {
-			continue
-		}
-		pid, err := strconv.Atoi(entry.Name())
-		if err != nil {
-			continue
-		}
-		var names []string
-		// A process that exits mid-walk simply has no names to match.
-		if comm, err := os.ReadFile(filepath.Join("/proc", entry.Name(), "comm")); err == nil {
-			if c := strings.TrimSpace(string(comm)); c != "" {
-				names = append(names, c)
-			}
-		}
-		if exe, err := os.Readlink(filepath.Join("/proc", entry.Name(), "exe")); err == nil {
-			if base := filepath.Base(strings.TrimSuffix(exe, " (deleted)")); base != "" && base != "." {
-				names = append(names, base)
-			}
-		}
-		if len(names) == 0 {
-			continue
-		}
-		fn(pid, names)
-	}
-}
-
-// unixNameMatches compares a process's names against one target. /proc/<pid>/comm
-// is truncated to 15 characters, so a longer target is also compared against its
-// own truncation - otherwise a process whose exe link is unreadable never matches.
+// unixNameMatches compares a process's names against one target.
+//
+// A kernel-reported process name is truncated - to 15 characters on Linux, 16 on
+// macOS - so a longer target is also compared against its own truncation.
+// Otherwise a process whose full path is unreadable never matches.
 func unixNameMatches(names []string, target string) bool {
 	truncated := target
-	if len(truncated) > 15 {
-		truncated = truncated[:15]
+	if len(truncated) > procNameMaxLen {
+		truncated = truncated[:procNameMaxLen]
 	}
 	for _, name := range names {
 		if strings.EqualFold(name, target) || strings.EqualFold(name, truncated) {
@@ -189,7 +157,7 @@ func unixNameMatches(names []string, target string) bool {
 	return false
 }
 
-// WaitForegroundForExe has no Linux counterpart.
+// WaitForegroundForExe has no Unix counterpart.
 func WaitForegroundForExe(_ string, _ time.Duration) bool {
 	return false
 }
@@ -206,7 +174,7 @@ func Start(exe string, args []string, opts StartOpts) error {
 		return fmt.Errorf("empty executable")
 	}
 	if opts.Admin {
-		slogWin().Debug("ignoring admin launch request on linux", "exe", exe)
+		slogWin().Debug("ignoring admin launch request", "exe", exe)
 	}
 	slogWin().Debug("start request", "exe", exe, "args", len(args), "workingDir", strings.TrimSpace(opts.WorkingDir))
 
@@ -229,7 +197,7 @@ func IsProcessElevated() bool {
 	return os.Geteuid() == 0
 }
 
-// StartAsDesktopUser has no Linux counterpart: Start never elevates, so there is
+// StartAsDesktopUser has no Unix counterpart: Start never elevates, so there is
 // no elevation to drop.
 func StartAsDesktopUser(exe string, args []string, opts StartOpts) error {
 	return ErrUnsupported
