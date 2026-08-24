@@ -8,6 +8,7 @@
   import { openAlertNoButton } from "../stores/modal";
   import HelpAboutModalBody from "./modals/HelpAboutModalBody.svelte";
   import GameShortcutBar from "./GameShortcutBar.svelte";
+  import { capabilities } from "../stores/osCapabilities";
   import SteamGamesAccountBar from "./SteamGamesAccountBar.svelte";
   import { steamPageTab } from "../stores/steamPageTab";
   import { openContextMenu } from "../stores/contextMenu";
@@ -91,7 +92,11 @@
       {#if steamGamesMode}
         <SteamGamesAccountBar />
       {:else}
-      <GameShortcutBar platformName={platformName} />
+      <!-- Every action in the bar - scan, run, create, the drop-import - goes
+           through winutil shortcut/.lnk code that is ErrUnsupported off Windows. -->
+      {#if $capabilities.shortcuts}
+        <GameShortcutBar platformName={platformName} />
+      {/if}
       <button class="btnicontext actionbar__add" type="button" aria-label={$t("Button_AddNew")} use:tooltip={$t("Tooltip_AddNew")} disabled={isActionBusy} on:click={() => triggerPlatformAction("addNew")}
         ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true"
           ><path

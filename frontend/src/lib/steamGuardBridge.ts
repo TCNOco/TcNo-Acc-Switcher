@@ -28,6 +28,8 @@ import { configureSteamGuardDropAdapter } from "../stores/steamGuardDrop";
 import { configureSteamGuardSettingsAdapter } from "../stores/steamGuardSettings";
 import { passwordPolicyMessage, validateNewPassword } from "./passwordPolicy";
 import { escapeHtml } from "./html";
+import { getCapabilities } from "../stores/osCapabilities";
+import type { SteamBrowserSite } from "./steam/steamBrowserSites";
 import { extraFactorsNeeded } from "./steamGuardFactors";
 import { publishSteamGuardActionAccounts } from "../stores/steamGuardAction";
 import { requestPlatformAccountsRefresh } from "../stores/platformPage";
@@ -1180,15 +1182,25 @@ const controller: SteamGuardModalController = {
 	async unlock(accountId, password, rememberForSession, capability) {
 		return codeView(await SteamGuardService.UnlockAccount(accountId, password, rememberForSession, capability));
 	},
-	copyCode: (accountId, capability) => SteamGuardService.CopyCode(accountId, capability),
+	// The clipboard write is Win32: secureclipboard/platform_other.go returns
+	// UnsupportedError, so the button would only ever raise an error toast.
+	...(getCapabilities().secureClipboard
+		? { copyCode: (accountId: string, capability: string) => SteamGuardService.CopyCode(accountId, capability) }
+		: {}),
 	openConfirmations: (accountId, capability) => SteamGuardService.OpenConfirmations(accountId, capability),
-	openSteamBrowser: async (accountId, site, capability) => {
-		const result = await SteamBrowserService.OpenBrowser(accountId, site, capability);
-		return {
-			needsLogin: result.needsLogin === true,
-			capabilityRefreshRequired: result.capabilityRefreshRequired === true,
-		};
-	},
+	// steambrowser has no Linux or macOS backend yet - host_other.go returns
+	// ErrUnsupportedPlatform - and Supported() is what the capability reports.
+	...(getCapabilities().steamBrowser
+		? {
+			openSteamBrowser: async (accountId: string, site: SteamBrowserSite, capability: string) => {
+				const result = await SteamBrowserService.OpenBrowser(accountId, site, capability);
+				return {
+					needsLogin: result.needsLogin === true,
+					capabilityRefreshRequired: result.capabilityRefreshRequired === true,
+				};
+			},
+		}
+		: {}),
 	getTradeLink: async (accountId, capability) => {
 		const result = await SteamGuardService.GetSteamTradeLink(accountId, capability);
 		return {
@@ -1331,9 +1343,12 @@ const controller: SteamGuardModalController = {
 				path: result.path ?? "",
 				manifestSkipped: result.manifestSkipped === true,
 			})),
-	async captureQrFromSteam(accountId, capability) {
-		return qrScanResult(await SteamGuardService.ScanSteamQR(accountId, capability));
-	},
+	...(getCapabilities().qrCapture
+		? {
+			captureQrFromSteam: async (accountId: string, capability: string) =>
+				qrScanResult(await SteamGuardService.ScanSteamQR(accountId, capability)),
+		}
+		: {}),
 	async pickQrScreenshot() {
 		return (await SteamGuardService.PickQRScreenshot()) ?? "";
 	},
@@ -1347,9 +1362,12 @@ const controller: SteamGuardModalController = {
 		SteamGuardService.AuthorizeQRLogin(accountId, attempt, capability),
 		dismissQrLogin: (accountId, attempt, capability) =>
 			SteamGuardService.DismissQRLogin(accountId, attempt, capability),
-		async selectQrRegion(accountId, capability) {
-			return qrScanResult(await SteamGuardService.SelectQRRegion(accountId, capability));
-		},
+		...(getCapabilities().qrCapture
+			? {
+				selectQrRegion: async (accountId: string, capability: string) =>
+					qrScanResult(await SteamGuardService.SelectQRRegion(accountId, capability)),
+			}
+			: {}),
 		unlockWithFactors: async (accountId, password, keyfilePath, backupKey, rememberForSession, capability) =>
 			codeView(await SteamGuardService.UnlockAccountWithFactors(
 				accountId, password, keyfilePath, backupKey, rememberForSession, capability,

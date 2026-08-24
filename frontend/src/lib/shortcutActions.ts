@@ -1,12 +1,10 @@
 import { get } from "svelte/store";
+import { getCapabilities } from "../stores/osCapabilities";
 import * as Shortcuts from "wails-shortcuts-service";
 import type { MenuItemDef } from "../stores/contextMenu";
 import { t } from "../stores/i18n";
 import { pushToast } from "../stores/toast";
-import {
-  selectedAccount,
-  platformActionBusy,
-} from "../stores/platformPage";
+import { selectedAccount, platformActionBusy } from "../stores/platformPage";
 import { LaunchPlatformAs } from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
 import { reportLaunchFailure } from "./adminFlow";
 import { formatToastWithError } from "./formatWailsError";
@@ -32,15 +30,17 @@ export async function runShortcut(
   let a = admin;
   const tr = get(t);
   if (a && isUrl) {
-    pushToast({ type: "warning", message: tr("Toast_UrlAdminErr"), duration: 8000 });
+    pushToast({
+      type: "warning",
+      message: tr("Toast_UrlAdminErr"),
+      duration: 8000,
+    });
     a = false;
   }
   try {
     const sel = get(selectedAccount);
     const uid =
-      sel.platformKey === platformName
-        ? String(sel.uniqueId ?? "").trim()
-        : "";
+      sel.platformKey === platformName ? String(sel.uniqueId ?? "").trim() : "";
     await Shortcuts.RunShortcut(platformName, fileName, a, uid);
     onAccountsRefresh();
     pushToast({
@@ -73,9 +73,7 @@ export async function hideShortcut(
   }
 }
 
-export async function openShortcutFolder(
-  platformName: string,
-): Promise<void> {
+export async function openShortcutFolder(platformName: string): Promise<void> {
   const tr = get(t);
   try {
     await Shortcuts.OpenShortcutFolder(platformName);
@@ -148,9 +146,7 @@ export function buildShortcutContextMenu(opts: {
       sel.platformKey === opts.platformName &&
       String(sel.uniqueId ?? "").trim() !== "";
     const swapName =
-      opts.swapLabel ||
-      String(sel.displayName ?? "").trim() ||
-      sel.uniqueId;
+      opts.swapLabel || String(sel.displayName ?? "").trim() || sel.uniqueId;
     const swapLabel = hasSel
       ? tr("Context_CreateShortcut_SwapTo").replace("{name}", swapName)
       : tr("Context_CreateShortcut_SelectAccount");
@@ -160,49 +156,82 @@ export function buildShortcutContextMenu(opts: {
           {
             label: tr("Context_Reorder"),
             children: [
-              { label: tr("Context_MoveLeft"), disabled: !reorder.canMoveLeft || busy, action: reorder.onMoveLeft },
-              { label: tr("Context_MoveRight"), disabled: !reorder.canMoveRight || busy, action: reorder.onMoveRight },
-              { label: tr("Context_Pin"), disabled: !reorder.canPin || busy, action: reorder.onPin },
-              { label: tr("Context_Unpin"), disabled: !reorder.canUnpin || busy, action: reorder.onUnpin },
-              { label: tr("Context_MoveToPinned"), disabled: !reorder.canMoveToPinned || busy, action: reorder.onMoveToPinned },
-              { label: tr("Context_MoveToDropdown"), disabled: !reorder.canMoveToDropdown || busy, action: reorder.onMoveToDropdown },
+              {
+                label: tr("Context_MoveLeft"),
+                disabled: !reorder.canMoveLeft || busy,
+                action: reorder.onMoveLeft,
+              },
+              {
+                label: tr("Context_MoveRight"),
+                disabled: !reorder.canMoveRight || busy,
+                action: reorder.onMoveRight,
+              },
+              {
+                label: tr("Context_Pin"),
+                disabled: !reorder.canPin || busy,
+                action: reorder.onPin,
+              },
+              {
+                label: tr("Context_Unpin"),
+                disabled: !reorder.canUnpin || busy,
+                action: reorder.onUnpin,
+              },
+              {
+                label: tr("Context_MoveToPinned"),
+                disabled: !reorder.canMoveToPinned || busy,
+                action: reorder.onMoveToPinned,
+              },
+              {
+                label: tr("Context_MoveToDropdown"),
+                disabled: !reorder.canMoveToDropdown || busy,
+                action: reorder.onMoveToDropdown,
+              },
             ],
           },
         ]
       : [];
 
+    const caps = getCapabilities();
     return [
-      {
-        label: swapLabel,
-        disabled: !hasSel || busy,
-        action: async () => {
-          if (!hasSel) return;
-          try {
-            const res = await Shortcuts.CreateGameAccountShortcut(
-              opts.platformName,
-              sel.uniqueId,
-              sel.displayName,
-              sel.accountLogin,
-              opts.fileName,
-            );
-            pushShortcutCreatedToast(res, tr, 8000);
-          } catch (e: unknown) {
-            pushToast({
-              type: "error",
-              message: formatToastWithError(
-                tr("Toast_CreateShortcutFailed"),
-                e,
-              ),
-              duration: 8000,
-            });
-          }
-        },
-      },
-      {
-        label: tr("Context_RunAdmin"),
-        disabled: busy,
-        action: opts.onRunAsAdmin,
-      },
+      ...(!caps.shortcuts
+        ? []
+        : [
+            {
+              label: swapLabel,
+              disabled: !hasSel || busy,
+              action: async () => {
+                if (!hasSel) return;
+                try {
+                  const res = await Shortcuts.CreateGameAccountShortcut(
+                    opts.platformName,
+                    sel.uniqueId,
+                    sel.displayName,
+                    sel.accountLogin,
+                    opts.fileName,
+                  );
+                  pushShortcutCreatedToast(res, tr, 8000);
+                } catch (e: unknown) {
+                  pushToast({
+                    type: "error",
+                    message: formatToastWithError(
+                      tr("Toast_CreateShortcutFailed"),
+                      e,
+                    ),
+                    duration: 8000,
+                  });
+                }
+              },
+            },
+          ]),
+      ...(!caps.elevation
+        ? []
+        : [
+            {
+              label: tr("Context_RunAdmin"),
+              disabled: busy,
+              action: opts.onRunAsAdmin,
+            },
+          ]),
       ...(opts.onClose
         ? [{ label: tr("Context_Exit"), disabled: busy, action: opts.onClose }]
         : []),
@@ -224,16 +253,28 @@ export function buildPlatformContextMenu(
     const tr = get(t);
     const busy = get(platformActionBusy).busy;
     return [
-      {
-        label: tr("Context_RunAdmin"),
-        disabled: busy,
-        action: () => {
-          void LaunchPlatformAs(platformName, true).catch((e: unknown) => {
-            void reportLaunchFailure(e, platformName);
-          });
-        },
-      },
-      ...(onClose ? [{ label: tr("Context_Exit"), disabled: busy, action: onClose }] : []),
+      // Elevation is a Windows concept here: off it RunSelfElevatedAndWait is
+      // unimplemented, so the entry would launch un-elevated while claiming
+      // otherwise. Silently ignoring a request to elevate is worse than not
+      // offering it.
+      ...(!getCapabilities().elevation
+        ? []
+        : [
+            {
+              label: tr("Context_RunAdmin"),
+              disabled: busy,
+              action: () => {
+                void LaunchPlatformAs(platformName, true).catch(
+                  (e: unknown) => {
+                    void reportLaunchFailure(e, platformName);
+                  },
+                );
+              },
+            },
+          ]),
+      ...(onClose
+        ? [{ label: tr("Context_Exit"), disabled: busy, action: onClose }]
+        : []),
     ];
   };
 }
