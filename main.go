@@ -197,6 +197,15 @@ func main() {
 		os.Exit(legacyinstall.RunCleanupCommand(exeDir))
 	}
 
+	// Before the singleton, because the replacement needs to be the one holding
+	// it, and after the CLI commands above, which are short-lived and never
+	// close Steam.
+	if brokeAway, berr := steam.BreakAwayFromSteamLaunch(); brokeAway {
+		os.Exit(0)
+	} else if berr != nil {
+		slog.Warn("still inside Steam's process tree; closing Steam will close the switcher with it", "err", berr)
+	}
+
 	releaseSingleton, running, err := winutil.TryAcquireSingleton()
 	if err != nil {
 		// No console is attached on the GUI path, so slog is the only way these
