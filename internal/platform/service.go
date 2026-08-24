@@ -51,6 +51,12 @@ type PlatformStartup struct {
 	ThemeAccentPreset        string `json:"themeAccentPreset"`
 	ThemeAccentCustom        string `json:"themeAccentCustom"`
 	AppVersion               string `json:"appVersion"`
+
+	// OS and Capabilities let the UI hide a control because the capability
+	// behind it is missing, instead of sniffing navigator.userAgent - which
+	// could only ever answer "is this Windows" and never Linux from macOS.
+	OS           string         `json:"os"`
+	Capabilities OSCapabilities `json:"capabilities"`
 }
 
 // PlatformTagCountInfo is a per-platform tag statistic (used in startup skeleton hints).
@@ -139,6 +145,8 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 				ThemeAccentPreset:        settings.ThemeAccentPreset,
 				ThemeAccentCustom:        settings.ThemeAccentCustom,
 				AppVersion:               appVersionFromBuildConfig(),
+				OS:                       CurrentOS(),
+				Capabilities:             Capabilities(),
 			}, nil
 		}
 		return PlatformStartup{}, err
@@ -197,6 +205,8 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 		ThemeAccentPreset:        settings.ThemeAccentPreset,
 		ThemeAccentCustom:        settings.ThemeAccentCustom,
 		AppVersion:               appVersionFromBuildConfig(),
+		OS:                       CurrentOS(),
+		Capabilities:             Capabilities(),
 	}, nil
 }
 

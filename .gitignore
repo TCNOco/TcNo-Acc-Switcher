@@ -36,3 +36,6 @@ CLAUDE.md
 /.gocache
 internal/steamguard/DEPENDENCY_AUDIT.md
 probe.exe
+
+# Staged copy of build/linux/desktop, written by the generate:dotdesktop task.
+build/linux/*.desktop
