@@ -10,10 +10,8 @@ import (
 	"testing"
 )
 
-// TestRegistryVDFPathDerivesFromRoot pins where the AutoLoginUser write lands.
-// Linux keeps registry.vdf a level out from the install root, so a Flatpak Steam
-// and a native one have to resolve to their own copies - writing the native
-// file for a Flatpak switch would set an account the Flatpak client never reads.
+// A Flatpak Steam and a native one must resolve to their own registry.vdf:
+// writing the native file for a Flatpak switch sets an account it never reads.
 func TestRegistryVDFPathDerivesFromRoot(t *testing.T) {
 	if runtime.GOOS == "darwin" {
 		t.Skip("macOS keeps registry.vdf inside the install root")
@@ -53,10 +51,8 @@ func TestRegistryVDFPathDerivesFromRoot(t *testing.T) {
 	}
 }
 
-// TestWriteAutoLoginKeepsSteamsOtherKeys is the invariant that matters: the file
-// is Steam's, and it holds language, the client launcher type and whatever else
-// Steam decided to keep there. Rewriting it as if it only contained the login
-// would silently reset all of it on every switch.
+// The file is Steam's and holds far more than the login. Rewriting it as if it
+// did not would reset the rest on every switch.
 func TestWriteAutoLoginKeepsSteamsOtherKeys(t *testing.T) {
 	home := t.TempDir()
 	t.Setenv("HOME", home)
@@ -128,9 +124,7 @@ func TestWriteAutoLoginKeepsSteamsOtherKeys(t *testing.T) {
 	}
 }
 
-// TestWriteAutoLoginCreatesMissingFile covers the account that has never signed
-// in on this machine: Steam has not written a registry.vdf yet, and the switch
-// still has to leave one naming the account.
+// Steam has not written a registry.vdf until it first signs in.
 func TestWriteAutoLoginCreatesMissingFile(t *testing.T) {
 	home := t.TempDir()
 	t.Setenv("HOME", home)
@@ -150,9 +144,7 @@ func TestWriteAutoLoginCreatesMissingFile(t *testing.T) {
 	}
 }
 
-// TestWriteAutoLoginClearsForAddNew covers "Add New": no account is selected, so
-// Steam must be left on its own account chooser rather than signed in as
-// whoever was there before.
+// Add New selects no account, so Steam must land on its own chooser.
 func TestWriteAutoLoginClearsForAddNew(t *testing.T) {
 	home := t.TempDir()
 	t.Setenv("HOME", home)
@@ -173,12 +165,8 @@ func TestWriteAutoLoginClearsForAddNew(t *testing.T) {
 	}
 }
 
-// TestWriteAutoLoginDoesNotStackEscapes is the regression for a measured bug:
-// steamvdf's text parser hands back the raw bytes between the quotes without
-// unescaping, so escaping them again on write doubled every backslash - and
-// doubled the doubled one on the next switch. Steam keeps SourceModInstallPath
-// in this file, so two switches took its separator from two backslashes to
-// eight.
+// Regression: read and write were not inverse, so Steam's SourceModInstallPath
+// went from two backslashes to eight across two switches.
 func TestWriteAutoLoginDoesNotStackEscapes(t *testing.T) {
 	home := t.TempDir()
 	t.Setenv("HOME", home)
@@ -209,8 +197,7 @@ func TestWriteAutoLoginDoesNotStackEscapes(t *testing.T) {
 	}
 }
 
-// TestWriteAutoLoginKeepsAnEmptyValue guards the other way this rewrite can
-// quietly edit Steam's file: a leaf that happens to be blank is still Steam's.
+// A leaf that happens to be blank is still Steam's.
 func TestWriteAutoLoginKeepsAnEmptyValue(t *testing.T) {
 	home := t.TempDir()
 	t.Setenv("HOME", home)

@@ -28,13 +28,11 @@ func KillByName(names []string, method ClosingMethod, beforeElectronSynth func()
 	return KillByNameWithOpts(names, method, KillOpts{BeforeElectronSynth: beforeElectronSynth})
 }
 
-// KillByNameWithOpts ends a platform the way KillByNameWithOpts does on Windows, but with the
-// signals a Unix process table understands.
+// KillByNameWithOpts ends a platform with native quit, then SIGTERM, then SIGKILL.
 //
-// Every ClosingMethod except TaskKill collapses to the same escalation here - native quit, then
-// SIGTERM, then SIGKILL. Close and Electron name Windows-only mechanics (a WM_CLOSE broadcast
-// and synthesised Alt+F4) that have no counterpart on Linux, and pretending otherwise would only
-// mean burning their deadlines before arriving at the signal that was always going to do it.
+// Close and Electron name Windows mechanics - a WM_CLOSE broadcast, synthesised
+// Alt+F4 - with no counterpart here, so every method except TaskKill collapses
+// to that one escalation rather than burning a deadline first.
 func KillByNameWithOpts(names []string, method ClosingMethod, opts KillOpts) error {
 	targets := unixKillTargets(names)
 	if len(targets) == 0 {
@@ -68,10 +66,9 @@ func KillByNameWithOpts(names []string, method ClosingMethod, opts KillOpts) err
 	return nil
 }
 
-// unixKillTargets reshapes the catalog's Windows process names for a Unix process table.
-// Platforms.json names images as Windows sees them ("steam.exe"); the same program is "steam"
-// here. SERVICE: entries name Windows services and are dropped - the Linux Steam has no
-// equivalent of the Steam Client Service.
+// unixKillTargets reshapes the catalog's Windows process names for a Unix
+// process table: "steam.exe" is "steam" here, and SERVICE: entries name Windows
+// services that have no equivalent.
 func unixKillTargets(names []string) []string {
 	var out []string
 	for _, raw := range names {
@@ -120,9 +117,9 @@ func waitForUnixExit(targets []string, timeout time.Duration) bool {
 	}
 }
 
-// unixMatchingPIDs maps every live PID whose executable matches a target to the name it matched.
-// The switcher's own process is never a candidate: a platform image sharing our name would
-// otherwise have us signal ourselves.
+// unixMatchingPIDs maps live PIDs to the target they matched. Our own process is
+// never a candidate: a platform image sharing our name would have us signal
+// ourselves.
 func unixMatchingPIDs(targets []string) map[int]string {
 	out := map[int]string{}
 	if len(targets) == 0 {
@@ -143,8 +140,6 @@ func unixMatchingPIDs(targets []string) map[int]string {
 	return out
 }
 
-// forEachProcess walks /proc and hands each live PID the names it can be recognised by:
-// its comm value and the basename of its executable.
 func forEachProcess(fn func(pid int, names []string)) {
 	entries, err := os.ReadDir("/proc")
 	if err != nil {
@@ -178,9 +173,9 @@ func forEachProcess(fn func(pid int, names []string)) {
 	}
 }
 
-// unixNameMatches compares a process's names against one target. /proc/<pid>/comm is truncated
-// to 15 characters, so a longer target has to be compared against its own truncation or a
-// process whose executable link is unreadable would never match.
+// unixNameMatches compares a process's names against one target. /proc/<pid>/comm
+// is truncated to 15 characters, so a longer target is also compared against its
+// own truncation - otherwise a process whose exe link is unreadable never matches.
 func unixNameMatches(names []string, target string) bool {
 	truncated := target
 	if len(truncated) > 15 {
@@ -194,19 +189,17 @@ func unixNameMatches(names []string, target string) bool {
 	return false
 }
 
-// WaitForegroundForExe has no Linux counterpart; the window managers the switcher would have to
-// ask are not a single API here.
+// WaitForegroundForExe has no Linux counterpart.
 func WaitForegroundForExe(_ string, _ time.Duration) bool {
 	return false
 }
 
-// Start launches exe detached from this process: its own session, no inherited standard streams,
-// and released so it is never reaped as our child. A platform must outlive the switcher, and a
-// switcher crash must not take the platform with it.
+// Start launches exe in its own session and releases it, so the platform
+// outlives the switcher and a switcher crash cannot take it down.
 //
-// opts.Admin and opts.AsDesktopUser are Windows elevation concepts and are ignored. There is no
-// UAC to satisfy, and launching a game platform through sudo/pkexec would leave root-owned files
-// in the user's home - worse than the setting not applying.
+// opts.Admin and opts.AsDesktopUser are Windows elevation concepts and are
+// ignored: there is no UAC to satisfy, and launching a game platform through
+// sudo would leave root-owned files in the user's home.
 func Start(exe string, args []string, opts StartOpts) error {
 	exe = strings.TrimSpace(exe)
 	if exe == "" {
@@ -232,19 +225,17 @@ func Start(exe string, args []string, opts StartOpts) error {
 	return nil
 }
 
-// IsProcessElevated reports whether the switcher is running as root.
 func IsProcessElevated() bool {
 	return os.Geteuid() == 0
 }
 
-// StartAsDesktopUser has no Linux counterpart: Start never elevates, so there is no elevation to
-// drop on the way to the desktop session.
+// StartAsDesktopUser has no Linux counterpart: Start never elevates, so there is
+// no elevation to drop.
 func StartAsDesktopUser(exe string, args []string, opts StartOpts) error {
 	return ErrUnsupported
 }
 
-// SnapshotRunningExeBasenames returns the set of executable names currently running, lowercased
-// so callers can compare against catalog names regardless of case.
+// SnapshotRunningExeBasenames returns running executable names, lowercased.
 func SnapshotRunningExeBasenames() (map[string]struct{}, error) {
 	out := map[string]struct{}{}
 	forEachProcess(func(_ int, names []string) {
@@ -255,7 +246,6 @@ func SnapshotRunningExeBasenames() (map[string]struct{}, error) {
 	return out, nil
 }
 
-// IsExeRunning reports whether any live process matches the given image name.
 func IsExeRunning(name string) bool {
 	targets := unixKillTargets([]string{name})
 	if len(targets) == 0 {
@@ -264,7 +254,7 @@ func IsExeRunning(name string) bool {
 	return len(unixMatchingPIDs(targets)) > 0
 }
 
-// SnapshotMatchingPIDs maps live PIDs to the lowercased name they matched, for the names in want.
+// SnapshotMatchingPIDs maps live PIDs to the lowercased name they matched.
 func SnapshotMatchingPIDs(want map[string]struct{}) (map[uint32]string, error) {
 	if len(want) == 0 {
 		return nil, nil

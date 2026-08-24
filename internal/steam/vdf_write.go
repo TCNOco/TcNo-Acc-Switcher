@@ -9,9 +9,9 @@ import (
 	"github.com/Jleagle/steam-go/steamvdf"
 )
 
-// escapeVDF is the write half of the pair in vdfsafe. It lives there with the
-// unescaping vdfsafe.ReadBytes applies so the two cannot drift apart: when they
-// did, every value holding a backslash doubled it on each write.
+// escapeVDF lives in vdfsafe alongside the unescaping ReadBytes applies, so the
+// two cannot drift apart. When they did, every value holding a backslash doubled
+// it on each write.
 func escapeVDF(s string) string { return vdfsafe.Escape(s) }
 
 // KeyValueToText serializes a KeyValue tree to Steam text VDF (tab-indented).

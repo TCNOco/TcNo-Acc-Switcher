@@ -17,8 +17,7 @@ import (
 const platformsJSONRawBase = "https://raw.githubusercontent.com/TCNOco/TcNo-Acc-Switcher/refs/heads/go/"
 
 // PlatformsJSONRawURL is the remote copy of one catalog file. The caller names
-// the file because the catalogs are per-OS and only the platform package knows
-// which one this build reads.
+// it: the catalogs are per-OS and only the platform package knows which.
 func PlatformsJSONRawURL(fileName string) string {
 	fileName = strings.TrimSpace(fileName)
 	if fileName == "" {

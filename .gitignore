@@ -35,3 +35,4 @@ docs/RELEASING.md
 CLAUDE.md
 /.gocache
 internal/steamguard/DEPENDENCY_AUDIT.md
+probe.exe

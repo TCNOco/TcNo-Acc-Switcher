@@ -25,9 +25,7 @@ func clearTargetPath(entry string) (string, bool) {
 	return rest, true
 }
 
-// allCatalogs is every catalog shipped in the binary, so an invariant that
-// matters for one OS is checked for all of them rather than only whichever the
-// tests happen to run on.
+// allCatalogs checks every shipped catalog, not just the running OS's.
 func allCatalogs() map[string][]byte {
 	return map[string][]byte{
 		"Platforms.json":       windowsPlatformsJSON,

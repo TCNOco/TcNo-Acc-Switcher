@@ -33,10 +33,8 @@ func TestReadBytes_wellFormedStillParses(t *testing.T) {
 	}
 }
 
-// TestEscapeIsInverseOfUnescape is the property the whole package rests on.
-// When it did not hold, every value holding a backslash grew one more on every
-// write: a Steam persona name went 2, 4, 8, 16 backslashes across three
-// account switches, and Steam's own SourceModInstallPath did the same.
+// The property the package rests on. When it did not hold, every value holding
+// a backslash grew one more on each write.
 func TestEscapeIsInverseOfUnescape(t *testing.T) {
 	t.Parallel()
 	for _, plain := range []string{
@@ -56,10 +54,8 @@ func TestEscapeIsInverseOfUnescape(t *testing.T) {
 	}
 }
 
-// TestUnescapeLeavesUndefinedSequencesAlone pins the choice for an escape Valve
-// does not define: keep it exactly as found. Dropping the backslash would
-// rewrite a value we are only passing through, and keeping it means Escape puts
-// the pair back unchanged.
+// An escape Valve does not define is kept as found: dropping the backslash
+// would rewrite a value we are only passing through.
 func TestUnescapeLeavesUndefinedSequencesAlone(t *testing.T) {
 	t.Parallel()
 	const raw = `steamapps\sourcemods`
@@ -68,7 +64,6 @@ func TestUnescapeLeavesUndefinedSequencesAlone(t *testing.T) {
 	}
 }
 
-// TestReadBytesResolvesEscapes covers the half that used to be missing:
 // steamvdf hands back the raw bytes between the quotes, still escaped.
 func TestReadBytesResolvesEscapes(t *testing.T) {
 	t.Parallel()

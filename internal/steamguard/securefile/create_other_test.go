@@ -9,9 +9,8 @@ import (
 	"testing"
 )
 
-// TestCreateNewIsOwnerOnly pins the guarantee the vault relies on: a Steam Guard
-// secret is never readable by another account on the machine, not even for the
-// instant between creating the file and tightening it.
+// A Steam Guard secret must never be readable by another account, not even for
+// the instant between creating the file and tightening it.
 func TestCreateNewIsOwnerOnly(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "secret")
 	file, err := CreateNew(path)
@@ -29,8 +28,7 @@ func TestCreateNewIsOwnerOnly(t *testing.T) {
 	}
 }
 
-// TestCreateNewRefusesAnExistingPath is why O_EXCL is there: reusing a file
-// somebody else already created would inherit their permissions on it.
+// Reusing a file somebody else created would inherit their permissions.
 func TestCreateNewRefusesAnExistingPath(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "secret")
 	if err := os.WriteFile(path, []byte("theirs"), 0o644); err != nil {
@@ -50,9 +48,7 @@ func TestCreateNewRefusesAnExistingPath(t *testing.T) {
 	}
 }
 
-// TestCreateNewRefusesASymlink covers the path being a link somebody planted:
-// following it would create the secret wherever they pointed, at whatever
-// permissions that location has.
+// Following a planted symlink would put the secret wherever it pointed.
 func TestCreateNewRefusesASymlink(t *testing.T) {
 	dir := t.TempDir()
 	target := filepath.Join(dir, "elsewhere")

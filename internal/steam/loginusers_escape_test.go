@@ -7,14 +7,9 @@ import (
 	"testing"
 )
 
-// TestLoginUsersRoundTripKeepsEscaping is the regression for a measured
-// corruption: parse and write were not inverse, so a persona name holding one
-// backslash gained one on every account switch. Measured before the fix, on
-// this exact input: 2, 4, 8, then 16 backslashes across three switches.
-//
-// A switch rewrites this whole file, so anything in it that is not a plain
-// word - a persona name with a backslash or a quote in it - depends on the
-// round trip being lossless.
+// Regression: parse and write were not inverse, so a persona name holding one
+// backslash measurably reached 16 of them across three switches. A switch
+// rewrites this whole file, so the round trip has to be lossless.
 func TestLoginUsersRoundTripKeepsEscaping(t *testing.T) {
 	t.Parallel()
 
@@ -51,9 +46,8 @@ func TestLoginUsersRoundTripKeepsEscaping(t *testing.T) {
 	}
 }
 
-// TestParseLoginUsersResolvesEscapes checks the value the rest of the app sees:
-// a name is handed over as the user typed it, not as the file spells it. The
-// account list and the tray both show this string.
+// The account list and tray show this string, so it must be the name as typed,
+// not as the file spells it.
 func TestParseLoginUsersResolvesEscapes(t *testing.T) {
 	t.Parallel()
 

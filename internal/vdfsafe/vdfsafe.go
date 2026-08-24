@@ -13,9 +13,8 @@ import (
 	"github.com/Jleagle/steam-go/steamvdf"
 )
 
-// escapes is the whole escape table, used in both directions. Escape and the
-// unescaping ReadBytes performs are exact inverses of each other, and they have
-// to stay that way - see [ReadBytes].
+// escapes is used in both directions. Escape and Unescape have to stay exact
+// inverses - see [ReadBytes].
 var escapes = []struct {
 	plain   string
 	escaped string
@@ -36,16 +35,15 @@ var escapes = []struct {
 // "unreadable" from "absent" to decide whether overwriting it is safe, and a
 // panic answers neither question.
 //
-// The unescaping matters just as much. steamvdf's text parser tracks
-// backslashes only well enough to find the closing quote and then hands back
-// the raw bytes between them, still escaped. Anything that writes a parsed tree
-// back out escapes it a second time, so one backslash becomes two, then four,
-// then eight - measured on a real install, a Steam persona name holding a
-// backslash and Steam's own SourceModInstallPath both doubled on every account
-// switch. Resolving escapes here is what makes [Escape] a true inverse.
+// The unescaping matters as much. steamvdf's text parser tracks backslashes only
+// well enough to find the closing quote, then hands back the raw bytes between
+// them - still escaped. Writing a parsed tree back escaped it a second time, so
+// one backslash became two, then four: a Steam persona name measurably went to
+// 16 backslashes across three account switches. Resolving escapes here is what
+// makes [Escape] a true inverse.
 //
-// Binary VDF carries no escapes: its values are already literal, and running
-// them through the same pass would eat backslashes that belong to the data.
+// Binary VDF carries no escapes; the same pass would eat backslashes that belong
+// to the data.
 func ReadBytes(raw []byte) (kv steamvdf.KeyValue, err error) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -63,8 +61,7 @@ func ReadBytes(raw []byte) (kv steamvdf.KeyValue, err error) {
 	return kv, nil
 }
 
-// Escape renders a value for text VDF. It is the inverse of the unescaping
-// [ReadBytes] applies, so a tree read and written back is unchanged.
+// Escape renders a value for text VDF, inverting what [ReadBytes] resolves.
 func Escape(s string) string {
 	for _, e := range escapes {
 		s = strings.ReplaceAll(s, e.plain, e.escaped)
@@ -80,11 +77,9 @@ func unescapeTree(kv *steamvdf.KeyValue) {
 	}
 }
 
-// Unescape resolves the escapes in one text VDF value.
-//
-// A sequence Valve does not define is left exactly as it was found, backslash
-// included. Dropping the backslash would silently rewrite a value we are only
-// passing through, and the next Escape puts the pair back the way it was.
+// Unescape resolves the escapes in one text VDF value. A sequence Valve does not
+// define is kept exactly as found, backslash included: dropping it would rewrite
+// a value we are only passing through, and [Escape] puts the pair back unchanged.
 func Unescape(s string) string {
 	if !strings.Contains(s, `\`) {
 		return s

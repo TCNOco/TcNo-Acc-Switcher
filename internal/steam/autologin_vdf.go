@@ -18,16 +18,12 @@ import (
 
 const registryVDFName = "registry.vdf"
 
-// autoLoginKeyPath is where Steam keeps the Windows registry keys the switcher
-// writes, inside registry.vdf.
 var autoLoginKeyPath = []string{"HKCU", "Software", "Valve", "Steam"}
 
-// writeAutoLogin points Steam at the account to sign in as.
-//
-// Off Windows there is no registry: Steam keeps the same HKCU\Software\Valve\Steam
-// values in a KeyValues file it writes on exit. Which means this is only safe
-// once Steam has actually stopped - the switch flow kills it first, and a write
-// while it is still running would be overwritten by Steam's own copy on shutdown.
+// writeAutoLogin points Steam at the account to sign in as. Off Windows there is
+// no registry: Steam keeps the same HKCU\Software\Valve\Steam values in a
+// KeyValues file it rewrites on exit, so this is only safe once Steam has
+// actually stopped - which the switch flow guarantees by killing it first.
 func writeAutoLogin(steamRoot, autoUser string) error {
 	path := registryVDFPath(steamRoot)
 	if path == "" {
@@ -48,14 +44,10 @@ func writeAutoLogin(steamRoot, autoUser string) error {
 	return fsutil.WriteFileAtomic(path, registryVDFText(kv), 0o644)
 }
 
-// registryVDFPath locates registry.vdf for a resolved install root.
-//
-// macOS keeps it beside the rest of the data. Linux keeps it one level out, in
-// ~/.steam, next to the symlinks that point back into the install root - so the
-// path is derived by stripping the .local/share/Steam tail rather than assuming
-// $HOME, which is what makes the Flatpak install under
-// ~/.var/app/com.valvesoftware.Steam resolve to its own copy instead of the
-// native one.
+// registryVDFPath locates registry.vdf for a resolved install root. macOS keeps
+// it beside the data; Linux keeps it in ~/.steam, so the path is derived by
+// stripping the .local/share/Steam tail rather than assuming $HOME - which is
+// what makes a Flatpak install resolve to its own copy and not the native one.
 func registryVDFPath(steamRoot string) string {
 	root := strings.TrimSpace(steamRoot)
 	if runtime.GOOS == "darwin" {
@@ -79,9 +71,9 @@ func registryVDFPath(steamRoot string) string {
 	return filepath.Join(home, ".steam", registryVDFName)
 }
 
-// readRegistryVDF returns the parsed file, or an empty tree when there is none
-// to read. A file that exists but cannot be parsed is an error: overwriting it
-// would throw away whatever else Steam keeps in there.
+// readRegistryVDF returns an empty tree when there is no file. A file that
+// exists but cannot be parsed is an error: overwriting it would throw away
+// whatever else Steam keeps in there.
 func readRegistryVDF(path string) (steamvdf.KeyValue, error) {
 	raw, err := os.ReadFile(path)
 	if err != nil {
@@ -100,9 +92,8 @@ func readRegistryVDF(path string) (steamvdf.KeyValue, error) {
 	return kv, nil
 }
 
-// setRegistryVDFValue sets key under the named section, creating any part of the
-// path that is missing. Section and key names are matched case-insensitively,
-// the way Steam's own registry keys are.
+// setRegistryVDFValue sets key under the named section, creating any missing
+// part of the path. Names match case-insensitively, as Steam's own keys do.
 func setRegistryVDFValue(root *steamvdf.KeyValue, section []string, key, value string) {
 	node := root
 	for _, name := range section {
@@ -128,17 +119,9 @@ func childByNameCI(parent *steamvdf.KeyValue, name string) *steamvdf.KeyValue {
 	return &parent.Children[len(parent.Children)-1]
 }
 
-// registry.vdf belongs to Steam, and a switch rewrites the whole file to change
-// two values in it. The escaping that makes such a rewrite safe now lives in
-// vdfsafe, where reading and writing are each other's inverse; this file only
-// needs a serialiser that treats Steam's own keys more carefully than the
-// loginusers.vdf one does.
-
-// registryVDFText serialises the tree back to Steam's text format.
-//
-// Unlike KeyValueToText it keeps a leaf whose value is empty. Steam owns the
-// other keys in this file, and silently dropping the ones that happen to be
-// blank is an edit to somebody else's data.
+// registryVDFText serialises the tree back to text VDF. Unlike KeyValueToText it
+// keeps a leaf whose value is empty: this file is Steam's, and dropping the keys
+// that happen to be blank is an edit to somebody else's data.
 func registryVDFText(kv steamvdf.KeyValue) []byte {
 	var b strings.Builder
 	writeRegistryKV(&b, kv, 0)

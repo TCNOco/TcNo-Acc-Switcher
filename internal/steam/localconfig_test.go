@@ -117,9 +117,8 @@ func TestSetPersonaStateLocalConfig_BadSteamID(t *testing.T) {
 }
 
 func TestWriteLoginUsersAndAutoLogin_FieldSwapping(t *testing.T) {
-	// Off Windows the AutoLoginUser half of this writes Steam's registry.vdf,
-	// which lives under $HOME rather than under the root passed in. Without a
-	// home of its own the test would edit the machine's real one.
+	// Off Windows the AutoLoginUser half writes registry.vdf under $HOME, not
+	// under the root passed in, so the test needs a home of its own.
 	t.Setenv("HOME", t.TempDir())
 	dir := t.TempDir()
 	configDir := filepath.Join(dir, "config")
