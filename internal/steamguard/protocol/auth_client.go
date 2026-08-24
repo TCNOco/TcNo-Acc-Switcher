@@ -48,14 +48,21 @@ func (a *AuthenticationClient) BeginAuthSessionViaCredentials(ctx context.Contex
 		return BeginCredentialsResult{}, idErr
 	}
 	message := marshalBeginCredentialsRequest(request)
-	response, err := a.call(ctx, beginCredentialsEndpoint, message, timeout)
+	response, err := a.callResponse(ctx, beginCredentialsEndpoint, message, timeout)
 	wipeBytes(message)
 	if err != nil {
 		return BeginCredentialsResult{}, err
 	}
-	defer wipeBytes(response)
+	defer wipeBytes(response.Body)
+	// A rejected account name or password comes back as HTTP 200 with a non-OK
+	// x-eresult and an empty body, which the parser can only read as a malformed
+	// response. The header is not required, so a response that omits it still
+	// goes to the parser.
+	if response.HasEResult && response.EResult != steamResultOK {
+		return BeginCredentialsResult{}, &Error{Code: CodeSteamResult, State: StateDenied, EResult: response.EResult, HasEResult: true}
+	}
 
-	wireResult, parseErr := unmarshalBeginCredentialsResponse(response)
+	wireResult, parseErr := unmarshalBeginCredentialsResponse(response.Body)
 	if parseErr != nil {
 		return BeginCredentialsResult{}, parseErr
 	}
@@ -116,13 +123,19 @@ func (a *AuthenticationClient) PollAuthSessionStatus(ctx context.Context, sessio
 		return PollResult{}, protocolError(CodeInvalidRequest, StateInvalid)
 	}
 	message := marshalPollRequest(session)
-	response, err := a.call(ctx, pollAuthSessionEndpoint, message, timeout)
+	response, err := a.callResponse(ctx, pollAuthSessionEndpoint, message, timeout)
 	wipeBytes(message)
 	if err != nil {
 		return PollResult{}, err
 	}
-	defer wipeBytes(response)
-	wireResult, parseErr := unmarshalPollResponse(response)
+	defer wipeBytes(response.Body)
+	// A session Steam has already dropped answers with an empty body, which is
+	// also what a session still waiting for approval sends. A live session always
+	// carries eresult 1, so the header is the only thing telling the two apart.
+	if response.HasEResult && response.EResult != steamResultOK {
+		return PollResult{}, &Error{Code: CodeSteamResult, State: StateDenied, EResult: response.EResult, HasEResult: true}
+	}
+	wireResult, parseErr := unmarshalPollResponse(response.Body)
 	if parseErr != nil {
 		return PollResult{}, parseErr
 	}
@@ -228,14 +241,6 @@ func (a *AuthenticationClient) UpdateAuthSessionWithMobileConfirmation(ctx conte
 	return ChallengeResult{State: state}, nil
 }
 
-func (a *AuthenticationClient) call(ctx context.Context, endpoint string, protobufMessage []byte, timeout time.Duration) ([]byte, error) {
-	response, err := a.callResponse(ctx, endpoint, protobufMessage, timeout)
-	if err != nil {
-		return nil, err
-	}
-	return response.Body, nil
-}
-
 // getResponse issues a read-only IAuthenticationService method. Steam registers
 // those for GET only and answers a POST with an HTTP error status, so the
 // protobuf payload travels as a query parameter instead of a form body.
@@ -285,7 +290,7 @@ func authenticatedEndpoint(endpoint, accessToken string) string {
 
 func requireSuccessfulEResult(response Response) *Error {
 	if !response.HasEResult {
-		return invalidResponse()
+		return invalidResponseDetail("missing_eresult_header")
 	}
 	if response.EResult != steamResultOK {
 		return &Error{Code: CodeSteamResult, State: StateDenied, EResult: response.EResult, HasEResult: true}

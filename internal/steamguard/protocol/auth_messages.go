@@ -111,28 +111,28 @@ func unmarshalBeginCredentialsResponse(data []byte) (beginCredentialsWireResult,
 		case 1:
 			value, valid := fieldVarint(field)
 			if !valid || !markSingleton(&seen, field.number) {
-				return beginCredentialsWireResult{}, invalidResponse()
+				return beginCredentialsWireResult{}, invalidResponseDetail("begin_client_id_field")
 			}
 			result.clientID = value
 		case 2:
 			value, valid := fieldBytes(field, maxRequestIDBytes)
 			if !valid || len(value) == 0 || !markSingleton(&seen, field.number) {
-				return beginCredentialsWireResult{}, invalidResponse()
+				return beginCredentialsWireResult{}, invalidResponseDetail("begin_request_id_field")
 			}
 			result.requestID = value
 		case 3:
 			if field.typeID != wireFixed32 || !markSingleton(&seen, field.number) {
-				return beginCredentialsWireResult{}, invalidResponse()
+				return beginCredentialsWireResult{}, invalidResponseDetail("begin_interval_field")
 			}
 			seconds := math.Float32frombits(field.fixed32)
 			if math.IsNaN(float64(seconds)) || math.IsInf(float64(seconds), 0) || seconds < 0.25 || seconds > 60 {
-				return beginCredentialsWireResult{}, invalidResponse()
+				return beginCredentialsWireResult{}, invalidResponseDetail("begin_interval_range")
 			}
 			result.interval = time.Duration(float64(seconds) * float64(time.Second))
 		case 4:
 			value, valid := fieldBytes(field, 512)
 			if !valid || len(result.challenges) >= 8 {
-				return beginCredentialsWireResult{}, invalidResponse()
+				return beginCredentialsWireResult{}, invalidResponseDetail("begin_confirmation_field")
 			}
 			challenge, parseErr := unmarshalAllowedChallenge(value)
 			if parseErr != nil {
@@ -142,33 +142,50 @@ func unmarshalBeginCredentialsResponse(data []byte) (beginCredentialsWireResult,
 		case 5:
 			value, valid := fieldVarint(field)
 			if !valid || !markSingleton(&seen, field.number) {
-				return beginCredentialsWireResult{}, invalidResponse()
+				return beginCredentialsWireResult{}, invalidResponseDetail("begin_steamid_field")
 			}
 			result.steamID = value
 		case 6:
 			value, valid := fieldBytes(field, maxTokenBytes)
 			if !valid || (len(value) != 0 && !validOpaqueBytes(value, maxTokenBytes)) || !markSingleton(&seen, field.number) {
-				return beginCredentialsWireResult{}, invalidResponse()
+				return beginCredentialsWireResult{}, invalidResponseDetail("begin_weak_token_field")
 			}
 		case 7:
 			value, valid := fieldBytes(field, maxAgreementURLBytes)
 			if !valid || !markSingleton(&seen, field.number) {
-				return beginCredentialsWireResult{}, invalidResponse()
+				return beginCredentialsWireResult{}, invalidResponseDetail("begin_agreement_field")
 			}
 			agreementURL = value
 		case 8:
 			value, valid := fieldBytes(field, maxMessageBytes)
 			if !valid || !validProtocolText(value, maxMessageBytes, true) || !markSingleton(&seen, field.number) {
-				return beginCredentialsWireResult{}, invalidResponse()
+				return beginCredentialsWireResult{}, invalidResponseDetail("begin_server_message_field")
 			}
 			serverMessage = value
 		default:
-			return beginCredentialsWireResult{}, invalidResponse()
+			return beginCredentialsWireResult{}, invalidResponseDetail("begin_unknown_field")
 		}
 	}
-	if !decoder.validEnd() || result.clientID == 0 || len(result.requestID) == 0 || result.interval == 0 || !validAccountSteamID(result.steamID) ||
-		(seen&(uint64(1)<<7) != 0 && !validAgreementURL(string(agreementURL))) {
-		return beginCredentialsWireResult{}, invalidResponse()
+	if !decoder.validEnd() {
+		return beginCredentialsWireResult{}, invalidResponseDetail("begin_trailing_bytes")
+	}
+	// Steam answers a refused sign-in with an empty body, which lands here with
+	// no client ID, so this is the label a rejected credential surfaces under
+	// when the EResult header is missing too.
+	if result.clientID == 0 {
+		return beginCredentialsWireResult{}, invalidResponseDetail("begin_missing_client_id")
+	}
+	if len(result.requestID) == 0 {
+		return beginCredentialsWireResult{}, invalidResponseDetail("begin_missing_request_id")
+	}
+	if result.interval == 0 {
+		return beginCredentialsWireResult{}, invalidResponseDetail("begin_missing_interval")
+	}
+	if !validAccountSteamID(result.steamID) {
+		return beginCredentialsWireResult{}, invalidResponseDetail("begin_steamid_range")
+	}
+	if seen&(uint64(1)<<7) != 0 && !validAgreementURL(string(agreementURL)) {
+		return beginCredentialsWireResult{}, invalidResponseDetail("begin_agreement_url")
 	}
 	result.requestID = append([]byte(nil), result.requestID...)
 	result.agreementURL = string(agreementURL)
@@ -190,21 +207,24 @@ func unmarshalAllowedChallenge(data []byte) (AllowedChallenge, *Error) {
 		case 1:
 			value, valid := fieldVarint(field)
 			if !valid || value > math.MaxUint32 || !validChallengeType(ChallengeType(value)) || !markSingleton(&seen, field.number) {
-				return AllowedChallenge{}, invalidResponse()
+				return AllowedChallenge{}, invalidResponseDetail("challenge_type_field")
 			}
 			result.Type = ChallengeType(value)
 		case 2:
 			value, valid := fieldBytes(field, 256)
 			if !valid || !validProtocolText(value, 256, true) || !markSingleton(&seen, field.number) {
-				return AllowedChallenge{}, invalidResponse()
+				return AllowedChallenge{}, invalidResponseDetail("challenge_message_field")
 			}
 			associatedMessage = value
 		default:
-			return AllowedChallenge{}, invalidResponse()
+			return AllowedChallenge{}, invalidResponseDetail("challenge_unknown_field")
 		}
 	}
-	if !decoder.validEnd() || !validChallengeType(result.Type) {
-		return AllowedChallenge{}, invalidResponse()
+	if !decoder.validEnd() {
+		return AllowedChallenge{}, invalidResponseDetail("challenge_trailing_bytes")
+	}
+	if !validChallengeType(result.Type) {
+		return AllowedChallenge{}, invalidResponseDetail("challenge_missing_type")
 	}
 	result.AssociatedMessage = string(associatedMessage)
 	return result, nil
@@ -258,65 +278,72 @@ func unmarshalPollResponse(data []byte) (pollWireResult, *Error) {
 			break
 		}
 		if !markSingleton(&seen, field.number) {
-			return pollWireResult{}, invalidResponse()
+			return pollWireResult{}, invalidResponseDetail("poll_repeated_field")
 		}
 		switch field.number {
 		case 1:
 			value, valid := fieldVarint(field)
 			if !valid || value == 0 {
-				return pollWireResult{}, invalidResponse()
+				return pollWireResult{}, invalidResponseDetail("poll_client_id_field")
 			}
 			result.newClientID = value
 		case 2:
 			value, valid := fieldBytes(field, maxChallengeURLBytes)
 			if !valid {
-				return pollWireResult{}, invalidResponse()
+				return pollWireResult{}, invalidResponseDetail("poll_challenge_url_field")
 			}
 			challengeURL = value
 		case 3:
 			value, valid := fieldBytes(field, maxTokenBytes)
 			if !valid || !validOpaqueBytes(value, maxTokenBytes) {
-				return pollWireResult{}, invalidResponse()
+				return pollWireResult{}, invalidResponseDetail("poll_refresh_token_field")
 			}
 			refreshToken = value
 		case 4:
 			value, valid := fieldBytes(field, maxTokenBytes)
 			if !valid || !validOpaqueBytes(value, maxTokenBytes) {
-				return pollWireResult{}, invalidResponse()
+				return pollWireResult{}, invalidResponseDetail("poll_access_token_field")
 			}
 			accessToken = value
 		case 5:
 			value, valid := fieldVarint(field)
 			if !valid || value > 1 {
-				return pollWireResult{}, invalidResponse()
+				return pollWireResult{}, invalidResponseDetail("poll_interaction_field")
 			}
 			result.hadRemoteInteraction = value == 1
 		case 6:
 			value, valid := fieldBytes(field, maxAccountNameBytes)
 			if !valid || !validProtocolText(value, maxAccountNameBytes, false) {
-				return pollWireResult{}, invalidResponse()
+				return pollWireResult{}, invalidResponseDetail("poll_account_name_field")
 			}
 			accountName = value
 		case 7:
 			value, valid := fieldBytes(field, maxGuardDataBytes)
 			if !valid || !validOpaqueBytes(value, maxGuardDataBytes) {
-				return pollWireResult{}, invalidResponse()
+				return pollWireResult{}, invalidResponseDetail("poll_guard_data_field")
 			}
 			guardData = value
 		case 8:
 			value, valid := fieldBytes(field, maxAgreementURLBytes)
 			if !valid {
-				return pollWireResult{}, invalidResponse()
+				return pollWireResult{}, invalidResponseDetail("poll_agreement_field")
 			}
 			agreementURL = value
 		default:
-			return pollWireResult{}, invalidResponse()
+			return pollWireResult{}, invalidResponseDetail("poll_unknown_field")
 		}
 	}
-	if !decoder.validEnd() || (seen&(uint64(1)<<2) != 0 && (result.newClientID == 0 || !validChallengeURL(string(challengeURL)))) ||
-		(len(accountName) != 0 && !validProtocolString(string(accountName), maxAccountNameBytes, false)) ||
-		(seen&(uint64(1)<<8) != 0 && !validAgreementURL(string(agreementURL))) {
-		return pollWireResult{}, invalidResponse()
+	if !decoder.validEnd() {
+		return pollWireResult{}, invalidResponseDetail("poll_trailing_bytes")
+	}
+	if seen&(uint64(1)<<2) != 0 && (result.newClientID == 0 || !validChallengeURL(string(challengeURL))) {
+		return pollWireResult{}, invalidResponseDetail("poll_challenge_url")
+	}
+	if len(accountName) != 0 && !validProtocolString(string(accountName), maxAccountNameBytes, false) {
+		return pollWireResult{}, invalidResponseDetail("poll_account_name")
+	}
+	if seen&(uint64(1)<<8) != 0 && !validAgreementURL(string(agreementURL)) {
+		return pollWireResult{}, invalidResponseDetail("poll_agreement_url")
 	}
 	result.challengeURL = string(challengeURL)
 	result.refreshToken = string(refreshToken)

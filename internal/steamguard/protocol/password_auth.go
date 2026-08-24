@@ -128,58 +128,66 @@ func unmarshalGetPasswordRSAPublicKeyResponse(data []byte) (passwordRSAKey, *Err
 			break
 		}
 		if !markSingleton(&seen, field.number) {
-			return passwordRSAKey{}, invalidResponse()
+			return passwordRSAKey{}, invalidResponseDetail("rsa_repeated_field")
 		}
 		switch field.number {
 		case 1:
 			value, valid := fieldBytes(field, maxPasswordRSAKeyBits/4)
 			if !valid {
-				return passwordRSAKey{}, invalidResponse()
+				return passwordRSAKey{}, invalidResponseDetail("rsa_modulus_field")
 			}
 			modulusHex = value
 		case 2:
 			value, valid := fieldBytes(field, maxRSAExponentHexBytes)
 			if !valid {
-				return passwordRSAKey{}, invalidResponse()
+				return passwordRSAKey{}, invalidResponseDetail("rsa_exponent_field")
 			}
 			exponentHex = value
 		case 3:
 			value, valid := fieldVarint(field)
 			if !valid || value == 0 {
-				return passwordRSAKey{}, invalidResponse()
+				return passwordRSAKey{}, invalidResponseDetail("rsa_timestamp_field")
 			}
 			timestamp = value
 		default:
-			return passwordRSAKey{}, invalidResponse()
+			return passwordRSAKey{}, invalidResponseDetail("rsa_unknown_field")
 		}
 	}
 	const required = uint64(1)<<1 | uint64(1)<<2 | uint64(1)<<3
-	if !decoder.validEnd() || seen != required || !validHexBytes(modulusHex) || !validHexBytes(exponentHex) {
-		return passwordRSAKey{}, invalidResponse()
+	if !decoder.validEnd() {
+		return passwordRSAKey{}, invalidResponseDetail("rsa_trailing_bytes")
+	}
+	if seen != required {
+		return passwordRSAKey{}, invalidResponseDetail("rsa_missing_fields")
+	}
+	if !validHexBytes(modulusHex) || !validHexBytes(exponentHex) {
+		return passwordRSAKey{}, invalidResponseDetail("rsa_key_not_hex")
 	}
 
 	modulusBytes := make([]byte, hex.DecodedLen(len(modulusHex)))
 	if _, err := hex.Decode(modulusBytes, modulusHex); err != nil {
 		wipeBytes(modulusBytes)
-		return passwordRSAKey{}, invalidResponse()
+		return passwordRSAKey{}, invalidResponseDetail("rsa_modulus_decode")
 	}
 	defer wipeBytes(modulusBytes)
 	exponentBytes := make([]byte, hex.DecodedLen(len(exponentHex)))
 	if _, err := hex.Decode(exponentBytes, exponentHex); err != nil {
 		wipeBytes(exponentBytes)
-		return passwordRSAKey{}, invalidResponse()
+		return passwordRSAKey{}, invalidResponseDetail("rsa_exponent_decode")
 	}
 	defer wipeBytes(exponentBytes)
 
 	modulus := new(big.Int).SetBytes(modulusBytes)
 	exponentValue := new(big.Int).SetBytes(exponentBytes)
-	if modulus.BitLen() < minPasswordRSAKeyBits || modulus.BitLen() > maxPasswordRSAKeyBits || modulus.Bit(0) == 0 ||
-		!exponentValue.IsInt64() || exponentValue.Sign() <= 0 || exponentValue.Int64() > math.MaxInt32 {
-		return passwordRSAKey{}, invalidResponse()
+	if modulus.BitLen() < minPasswordRSAKeyBits || modulus.BitLen() > maxPasswordRSAKeyBits || modulus.Bit(0) == 0 {
+		return passwordRSAKey{}, invalidResponseDetail("rsa_modulus_range")
+	}
+	if !exponentValue.IsInt64() || exponentValue.Sign() <= 0 || exponentValue.Int64() > math.MaxInt32 {
+		return passwordRSAKey{}, invalidResponseDetail("rsa_exponent_range")
 	}
 	exponent := int(exponentValue.Int64())
 	if exponent < 3 || exponent&1 == 0 {
-		return passwordRSAKey{}, invalidResponse()
+		return passwordRSAKey{}, invalidResponseDetail("rsa_exponent_value")
 	}
 	return passwordRSAKey{
 		publicKey: rsa.PublicKey{N: modulus, E: exponent},

@@ -84,6 +84,43 @@ func TestBeginAuthSessionViaCredentials(t *testing.T) {
 	}
 }
 
+// Live shape: Steam refuses a wrong account name or password with HTTP 200, a
+// non-OK EResult and an empty body, which the response parser can only read as a
+// malformed response. Without the header the body is all there is, so the parser
+// has to name the check that refused it.
+func TestBeginAuthSessionViaCredentialsReportsRefusal(t *testing.T) {
+	t.Parallel()
+
+	for _, testCase := range []struct {
+		name    string
+		header  http.Header
+		code    Code
+		eresult int
+		detail  string
+	}{
+		{name: "refused", header: steamEResultHeader("5"), code: CodeSteamResult, eresult: 5},
+		{name: "throttled", header: steamEResultHeader("84"), code: CodeSteamResult, eresult: 84},
+		{name: "no header", code: CodeInvalidResponse, detail: "begin_missing_client_id"},
+	} {
+		t.Run(testCase.name, func(t *testing.T) {
+			t.Parallel()
+			transport := roundTripFunc(func(request *http.Request) (*http.Response, error) {
+				return response(request, http.StatusOK, testCase.header, nil), nil
+			})
+			entropy := bytes.Repeat([]byte{0xa5}, localSessionIDBytes)
+			auth := newAuthenticationClientForTest(NewClient(Options{Transport: transport}), bytes.NewReader(entropy))
+			_, err := auth.BeginAuthSessionViaCredentials(context.Background(), validBeginRequest(), time.Second)
+			protocolErr := assertProtocolCode(t, err, testCase.code)
+			if testCase.eresult != 0 && (!protocolErr.HasEResult || protocolErr.EResult != testCase.eresult) {
+				t.Fatalf("Steam result metadata = %#v", protocolErr)
+			}
+			if protocolErr.Detail != testCase.detail {
+				t.Fatalf("detail = %q, want %q", protocolErr.Detail, testCase.detail)
+			}
+		})
+	}
+}
+
 func TestUpdateAuthSessionWithSteamGuardCode(t *testing.T) {
 	t.Parallel()
 
@@ -241,6 +278,36 @@ func TestPollAuthSessionStatus(t *testing.T) {
 	}
 	if result.AccountName != "account_name" || result.GuardData != "guard-data" || result.ChallengeURL != "https://s.team/q/1/9999" {
 		t.Fatalf("poll metadata = %#v", result)
+	}
+}
+
+// Live shape: a session Steam has dropped answers with an empty body, the same
+// bytes a session still waiting for approval sends. Only the EResult separates
+// them, and reading a dropped session as waiting leaves the caller polling a
+// session that can never authorize.
+func TestPollAuthSessionStatusSeparatesWaitingFromDroppedSession(t *testing.T) {
+	t.Parallel()
+
+	waiting := roundTripFunc(func(request *http.Request) (*http.Response, error) {
+		return response(request, http.StatusOK, steamEResultHeader("1"), appendVarintField(nil, 5, 0)), nil
+	})
+	auth := NewAuthenticationClient(NewClient(Options{Transport: waiting}))
+	result, err := auth.PollAuthSessionStatus(context.Background(), testSession(), time.Second)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.State != AuthResultWaiting || result.HadRemoteInteraction {
+		t.Fatalf("waiting poll result = %#v", result)
+	}
+
+	dropped := roundTripFunc(func(request *http.Request) (*http.Response, error) {
+		return response(request, http.StatusOK, steamEResultHeader("9"), nil), nil
+	})
+	auth = NewAuthenticationClient(NewClient(Options{Transport: dropped}))
+	_, err = auth.PollAuthSessionStatus(context.Background(), testSession(), time.Second)
+	protocolErr := assertProtocolCode(t, err, CodeSteamResult)
+	if !protocolErr.HasEResult || protocolErr.EResult != 9 {
+		t.Fatalf("dropped session error = %#v", protocolErr)
 	}
 }
 

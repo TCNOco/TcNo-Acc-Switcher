@@ -17,6 +17,7 @@ import (
 // succeed on retry, which is the difference the user needs to see.
 const (
 	eresultInvalidPassword            = 5
+	eresultSessionNotFound            = 9
 	eresultExpired                    = 27
 	eresultRateLimitExceeded          = 84
 	eresultAccountLoginDeniedThrottle = 87
@@ -207,6 +208,8 @@ func (e *Error) protocolCause() string {
 			return "Steam rejected the Steam Guard code"
 		case eresultExpired:
 			return "the sign-in attempt expired"
+		case eresultSessionNotFound:
+			return "Steam no longer has this sign-in attempt; start again"
 		}
 		return "Steam refused the request (result " + strconv.Itoa(e.EResult) + ")"
 	}
