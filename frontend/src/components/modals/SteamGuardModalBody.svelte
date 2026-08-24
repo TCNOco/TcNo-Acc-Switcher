@@ -3573,7 +3573,7 @@
     flex-direction: column;
     width: 100%;
     min-width: 0;
-    max-width: 34rem;
+    max-width: 40rem;
     margin: auto;
     color: var(--white, #fff);
   }
@@ -3584,7 +3584,7 @@
    * therefore the spawn size) deterministic.
    */
   :global(.modalFG:not(.modalFG--ready)) .steam-guard {
-    width: 30rem;
+    width: 34rem;
   }
 
   /* The global `button { margin: 0 0.25em }` rule fights every flex row's gap. */
@@ -4157,7 +4157,10 @@
 
 	.steam-guard__signin--split {
 		flex-direction: row;
-		align-items: center;
+		/* The code column is taller than the two fields beside it. Centred, that
+		   difference sat above the first label as a band of nothing; from the top
+		   the leftover falls under the fields, where there is nothing to push down. */
+		align-items: flex-start;
 		gap: $sg-2;
 	}
 

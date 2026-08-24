@@ -27,7 +27,7 @@ export const MODAL_FRAME_MIN_W_FOLDER = 720;
  * Steam Guard's action rows wrap below a 402px inner width. The frame is
  * border-box, so this is that width plus the 1px frame border on each side.
  */
-export const MODAL_FRAME_MIN_W_STEAM_GUARD = 404;
+export const MODAL_FRAME_MIN_W_STEAM_GUARD = 460;
 export const MODAL_FRAME_MIN_H = 160;
 export const MODAL_FRAME_MIN_H_FOLDER = 400;
 export const MODAL_FRAME_MAX_W_RATIO = 0.8;
