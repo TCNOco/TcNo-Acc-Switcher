@@ -2,9 +2,13 @@
   import { onDestroy, onMount } from "svelte";
   import { get, writable } from "svelte/store";
   import { t } from "../stores/i18n";
+  import { capabilities, currentOS } from "../stores/osCapabilities";
   import { pushToast } from "../stores/toast";
   import { formatToastWithError } from "../lib/formatWailsError";
   import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
+  import * as SteamService from "../../bindings/TcNo-Acc-Switcher/internal/steam/steamservice.js";
+  import type { SteamShortcutState } from "../../bindings/TcNo-Acc-Switcher/internal/steam/models.js";
+  import { addToSteamNotices } from "../lib/steamShortcutNotices";
   import { offlineMode, setUserOfflineMode } from "../stores/offlineMode";
   import {
     setAutoStreamerMode,
@@ -46,7 +50,7 @@
   import { createToggle } from "../lib/useToggleSetting";
   import { openMoveUserDataModal, openUserDataFolder, onCheckForUpdates, openStatsModal } from "../lib/settingsOperations";
 
-  let isWindows = false;
+
   let currentVersion = "";
   let userDataPath = "";
 
@@ -137,6 +141,37 @@
       negativeLabel: $t("No"),
     });
     if (ok) await PlatformService.RestartAsAdmin(["--open-page=settings"]);
+  }
+
+  /* The shortcut file, not the saved flag, is what decides how this row reads,
+     so every path through it ends by re-reading the backend. */
+  let steamShortcut: SteamShortcutState | null = null;
+  const addToSteamLoading = writable(false);
+
+  async function refreshSteamShortcut(): Promise<void> {
+    try {
+      steamShortcut = await SteamService.GetSteamShortcutState();
+    } catch {
+      steamShortcut = null;
+    }
+  }
+
+  async function toggleAddToSteam(next: boolean): Promise<void> {
+    if (get(addToSteamLoading)) return;
+    addToSteamLoading.set(true);
+    try {
+      await SteamService.SetAddToSteam(next);
+      pushToast({
+        type: "success",
+        message: $t("Toast_SavedItem", { item: $t("Settings_AddToSteam") }),
+        duration: 4000,
+      });
+    } catch (e) {
+      pushToast({ type: "error", message: formatToastWithError($t("Settings_AddToSteam"), e), duration: 8000 });
+    } finally {
+      await refreshSteamShortcut();
+      addToSteamLoading.set(false);
+    }
   }
 
   const streamerMode = createToggle(
@@ -341,7 +376,7 @@
     void startProgramCentered.init();
     void streamerMode.init();
     void autoStreamerMode.init();
-    if (isWindows) {
+    if ($capabilities.screenCaptureExclusion) {
       void hideFromScreenshots.init();
     }
     void animations.init();
@@ -350,8 +385,10 @@
     void PlatformService.GetAppVersion()
       .then((v) => { currentVersion = v || ""; })
       .catch(() => { currentVersion = ""; });
-    if (isWindows) {
+    if ($capabilities.autostart) {
       void startTrayWithWindows.init();
+    }
+    if ($capabilities.elevation) {
       void alwaysRunAsAdmin.init();
     }
   }
@@ -549,13 +586,13 @@
   }
 
   onMount(() => {
-    isWindows = /windows/i.test(navigator.userAgent) || /win32/i.test(navigator.userAgent);
     void hydrateSettings();
     void PlatformService.GetUserDataLocation()
       .then((v) => { userDataPath = v || ""; })
       .catch(() => { userDataPath = ""; });
     void refreshSecurity();
-    if (isWindows) {
+    void refreshSteamShortcut();
+    if ($capabilities.shortcuts) {
       void desktopHomeShortcut.init();
     }
   });
@@ -596,14 +633,16 @@
       label={$t("Settings_AnimationsEnabled")}
       on:change={() => void animations.toggle()}
     />
-    <SettingsToggle
-      id="settings-controller-support"
-      checked={$controllerSupport.value}
-      disabled={$controllerSupport.loading}
-      label={$t("Settings_ControllerSupport")}
-      on:change={() => void controllerSupport.toggle()}
-    />
-    {#if isWindows}
+    {#if $capabilities.controllerInput}
+      <SettingsToggle
+        id="settings-controller-support"
+        checked={$controllerSupport.value}
+        disabled={$controllerSupport.loading}
+        label={$t("Settings_ControllerSupport")}
+        on:change={() => void controllerSupport.toggle()}
+      />
+    {/if}
+    {#if $capabilities.shortcuts}
       <SettingsToggle
         id="gs-desktop-home"
         checked={$desktopHomeShortcut.value}
@@ -630,7 +669,7 @@
 
 <SettingsGroup title={$t("Settings_Header_Privacy")}>
   <div class="settings-grid">
-    {#if isWindows}
+    {#if $capabilities.screenCaptureExclusion}
       <SettingsToggle
         id="gs-hide-from-screenshots"
         checked={$hideFromScreenshots.value}
@@ -649,20 +688,22 @@
         tooltip={$t("Settings_StreamerMode_Tooltip")}
         on:change={() => void streamerMode.toggle()}
       />
-      <div class="settings-sub">
-        <SettingsToggle
-          id="gs-auto-streamer-mode"
+      {#if $capabilities.broadcastDetection}
+        <div class="settings-sub">
+          <SettingsToggle
+            id="gs-auto-streamer-mode"
           checked={$autoStreamerMode.value}
           disabled={$autoStreamerMode.loading}
           label={$t("Settings_AutoStreamerMode")}
           tooltip={$t("Settings_AutoStreamerMode_Tooltip")}
-          on:change={() => void autoStreamerMode.toggle()}
-        />
-      </div>
-      {#if $streamerState.autoEnabled && $streamerState.autoActive}
-        <p class="settings-note">
-          {$t("Settings_AutoStreamerMode_Active", { app: $streamerState.detectedExe })}
-        </p>
+            on:change={() => void autoStreamerMode.toggle()}
+          />
+        </div>
+        {#if $streamerState.autoEnabled && $streamerState.autoActive}
+          <p class="settings-note">
+            {$t("Settings_AutoStreamerMode_Active", { app: $streamerState.detectedExe })}
+          </p>
+        {/if}
       {/if}
     </div>
   </div>
@@ -681,15 +722,19 @@
       >{$t("Settings_OpenUserDataFolder")}</button>
   </p>
 
-  {#if isWindows}
-    <div class="settings-grid">
+  <div class="settings-grid">
+    {#if $capabilities.autostart}
       <SettingsToggle
         id="gs-start-tray-win"
         checked={$startTrayWithWindows.value}
         disabled={$startTrayWithWindows.loading}
-        label={$t("Settings_Tray_StartWindows")}
+        label={$currentOS === "windows"
+          ? $t("Settings_Tray_StartWindows")
+          : $t("Settings_Tray_StartWithSystem")}
         on:change={() => void startTrayWithWindows.toggle()}
       />
+    {/if}
+    {#if $capabilities.elevation}
       <SettingsToggle
         id="gs-always-admin"
         checked={$alwaysRunAsAdmin.value}
@@ -698,13 +743,27 @@
         tooltip={$t("Settings_AlwaysAdmin_Tooltip")}
         on:change={() => void toggleAlwaysRunAsAdmin()}
       />
+    {/if}
+    <SettingsToggle
+      id="gs-exit-tray"
+      checked={$exitToTray.value}
+      disabled={$exitToTray.loading}
+      label={$t("Settings_ExitToTray")}
+      on:change={() => void exitToTray.toggle()}
+    />
+    {#if steamShortcut?.steamInstalled}
       <SettingsToggle
-        id="gs-exit-tray"
-        checked={$exitToTray.value}
-        disabled={$exitToTray.loading}
-        label={$t("Settings_ExitToTray")}
-        on:change={() => void exitToTray.toggle()}
+        id="gs-add-to-steam"
+        checked={steamShortcut.enabled}
+        disabled={$addToSteamLoading}
+        label={$t("Settings_AddToSteam")}
+        tooltip={$t("Settings_AddToSteam_Tooltip")}
+        span
+        manual
+        on:change={(e) => void toggleAddToSteam(e.detail)}
       />
+    {/if}
+    {#if $capabilities.protocolHandler}
       <SettingsToggle
         id="gs-protocol"
         checked={$protocol.value}
@@ -713,8 +772,11 @@
         span
         on:change={() => void protocol.toggle()}
       />
-    </div>
-  {/if}
+    {/if}
+  </div>
+  {#each addToSteamNotices(steamShortcut) as notice (notice)}
+    <p class="settings-note">{$t(notice)}</p>
+  {/each}
 </SettingsGroup>
 
 <SettingsGroup title={$t("Settings_Header_Security")}>

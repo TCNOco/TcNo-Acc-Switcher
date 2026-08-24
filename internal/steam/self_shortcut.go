@@ -22,6 +22,9 @@ type SteamShortcutState struct {
 	// Present reports that the entry on disk is there and points at where this
 	// copy of the app actually lives, which stops being true when it is moved.
 	Present bool `json:"present"`
+	// Users counts the Steam users there are shortcut lists to write to. Zero
+	// with Steam installed means it has never been signed into.
+	Users int `json:"users"`
 	// SteamRunning means the entry will not show up until Steam is restarted:
 	// Steam reads the shortcut list once, at startup.
 	SteamRunning bool `json:"steamRunning"`
@@ -73,6 +76,7 @@ func (s *SteamService) GetSteamShortcutState() (SteamShortcutState, error) {
 			state.FlatpakSteam = true
 		}
 		for _, path := range shortcutsVDFPaths(root) {
+			state.Users++
 			list, err := readShortcuts(path)
 			if err != nil {
 				continue
