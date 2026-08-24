@@ -586,12 +586,15 @@
   .container.busyCursor * {
     cursor: progress !important;
   }
+  /* Clipped rather than translated out of view. Translating by its own height
+     lands the bottom edge on exactly y=0, so any sub-pixel rounding leaves a
+     sliver of the accent border drawn across the top of the window. */
   .skip-link {
     position: absolute;
     left: 1rem;
     top: 1rem;
     z-index: 1000000;
-    transform: translateY(calc(-100% - 1rem));
+    clip-path: inset(100%);
     padding: 0.5rem 0.75rem;
     background: var(--mainContentBackground);
     color: var(--whiteSecondary);
@@ -600,7 +603,7 @@
     text-decoration: none;
   }
   .skip-link:focus-visible {
-    transform: translateY(0);
+    clip-path: none;
   }
   .page {
     position: relative;

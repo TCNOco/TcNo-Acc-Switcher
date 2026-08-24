@@ -10,3 +10,10 @@ export function platformIconFgHref(platformName: string): string {
   const base = iconFileBase(platformName);
   return `/img/platform/${encodeURIComponent(base)}.svg#FG`;
 }
+
+/** `src` for the whole bundled platform artwork, for use as an `<img>`. */
+export function platformIconSrc(platformName: string): string {
+  const base = iconFileBase(platformName);
+  if (!base) return "";
+  return `/img/platform/${encodeURIComponent(base)}.svg`;
+}

@@ -156,6 +156,10 @@ button,
 button:not(.fancyLink) {
   transition: filter 0.12s ease-out, background 0.12s ease-out;
 
+  /* A button label never wraps. Buttons are sized for one line, so a second one
+     overflows the height instead of growing the control. */
+  white-space: nowrap;
+
   &:active:not(:disabled) {
     filter: brightness(0.85);
   }

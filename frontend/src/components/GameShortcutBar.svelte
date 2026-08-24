@@ -77,6 +77,7 @@
   import { fileDropAcceptor } from "../stores/fileDrop";
   import { runShortcut, closeShortcut, hideShortcut, openShortcutFolder, buildShortcutContextMenu, buildPlatformContextMenu } from "../lib/shortcutActions";
   import { tooltip } from "../lib/actions/tooltip";
+  import { platformIconSrc } from "../lib/platformIcon";
   import { contextMenu } from "../lib/actions/contextMenu";
   import {
     focusShortcutArrowNavigationTarget,
@@ -156,6 +157,7 @@
   $: if (platformName !== prevPlatform) {
     prevPlatform = platformName;
     iconBroken = false;
+    artBroken = false;
     ddOpen = false;
     dnd.resetState();
     void (async () => {
@@ -171,6 +173,21 @@
 
   let includeMainExe = false;
   let iconBroken = false;
+  let artBroken = false;
+
+  // The executable's own icon when we could read it, otherwise the platform's
+  // bundled artwork. Only Windows keeps an icon inside the executable, so on
+  // every other OS the exe icon is always empty and the artwork is the answer.
+  $: launchIconSrc = $platformExeIconUrl && !iconBroken
+    ? $platformExeIconUrl
+    : artBroken
+      ? ""
+      : platformIconSrc(platformName);
+
+  function onLaunchIconError() {
+    if ($platformExeIconUrl && !iconBroken) iconBroken = true;
+    else artBroken = true;
+  }
 
   $: ctxPlatformItems = buildPlatformContextMenu(platformName, () => triggerPlatformAction("close"));
   let pinNames: string[] = [];
@@ -617,13 +634,8 @@
       use:contextMenu={ctxPlatformItems}
       on:click={() => triggerPlatformAction("launch")}
     >
-      {#if $platformExeIconUrl && !iconBroken}
-        <img
-          class="actionbar__exeicon"
-          src={$platformExeIconUrl}
-          alt=""
-          on:error={() => (iconBroken = true)}
-        />
+      {#if launchIconSrc}
+        <img class="actionbar__exeicon" src={launchIconSrc} alt="" on:error={onLaunchIconError} />
       {:else}
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true"
           ><path
@@ -642,13 +654,8 @@
       use:contextMenu={ctxPlatformItems}
       on:click={() => triggerPlatformAction("launch")}
     >
-      {#if $platformExeIconUrl && !iconBroken}
-        <img
-          class="actionbar__exeicon"
-          src={$platformExeIconUrl}
-          alt=""
-          on:error={() => (iconBroken = true)}
-        />
+      {#if launchIconSrc}
+        <img class="actionbar__exeicon" src={launchIconSrc} alt="" on:error={onLaunchIconError} />
       {:else}
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true"
           ><path
