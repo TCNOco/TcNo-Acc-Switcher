@@ -1174,7 +1174,15 @@ async function runSteamGuardPasswordChange(
   }
 }
 
-const controller: SteamGuardModalController = {
+/**
+ * The Steam Guard modal's back end.
+ *
+ * Exported so a test can check that the capability-gated entries below are
+ * decided when they are read rather than when this module is imported - the
+ * startup payload they ask about has not arrived at import, and freezing them
+ * there left the controls they back dead for the whole session.
+ */
+export const controller: SteamGuardModalController = {
 	requestSensitiveView,
 	endSensitiveView: (capability, lease) => SteamGuardService.EndSensitiveView(capability, lease),
 	async getCode(accountId, capability) {
@@ -1186,23 +1194,29 @@ const controller: SteamGuardModalController = {
 	},
 	// The clipboard write is Win32: secureclipboard/platform_other.go returns
 	// UnsupportedError, so the button would only ever raise an error toast.
-	...(getCapabilities().secureClipboard
-		? { copyCode: (accountId: string, capability: string) => SteamGuardService.CopyCode(accountId, capability) }
-		: {}),
+	//
+	// A getter, not a conditional spread: this object is built when the module is
+	// imported, and the capabilities it asks about arrive later, on the startup
+	// payload. Spread, every one of these read false and stayed missing for the
+	// life of the app, so the controls they back were greyed out on Windows too.
+	get copyCode() {
+		return getCapabilities().secureClipboard
+			? (accountId: string, capability: string) => SteamGuardService.CopyCode(accountId, capability)
+			: undefined;
+	},
 	openConfirmations: (accountId, capability) => SteamGuardService.OpenConfirmations(accountId, capability),
 	// steambrowser has no Linux or macOS backend yet - host_other.go returns
 	// ErrUnsupportedPlatform - and Supported() is what the capability reports.
-	...(getCapabilities().steamBrowser
-		? {
-			openSteamBrowser: async (accountId: string, site: SteamBrowserSite, capability: string) => {
-				const result = await SteamBrowserService.OpenBrowser(accountId, site, capability);
-				return {
-					needsLogin: result.needsLogin === true,
-					capabilityRefreshRequired: result.capabilityRefreshRequired === true,
-				};
-			},
-		}
-		: {}),
+	get openSteamBrowser() {
+		if (!getCapabilities().steamBrowser) return undefined;
+		return async (accountId: string, site: SteamBrowserSite, capability: string) => {
+			const result = await SteamBrowserService.OpenBrowser(accountId, site, capability);
+			return {
+				needsLogin: result.needsLogin === true,
+				capabilityRefreshRequired: result.capabilityRefreshRequired === true,
+			};
+		};
+	},
 	getTradeLink: async (accountId, capability) => {
 		const result = await SteamGuardService.GetSteamTradeLink(accountId, capability);
 		return {
@@ -1353,12 +1367,12 @@ const controller: SteamGuardModalController = {
 				path: result.path ?? "",
 				manifestSkipped: result.manifestSkipped === true,
 			})),
-	...(getCapabilities().qrCapture
-		? {
-			captureQrFromSteam: async (accountId: string, capability: string) =>
-				qrScanResult(await SteamGuardService.ScanSteamQR(accountId, capability)),
-		}
-		: {}),
+	get captureQrFromSteam() {
+		return getCapabilities().qrCapture
+			? async (accountId: string, capability: string) =>
+				qrScanResult(await SteamGuardService.ScanSteamQR(accountId, capability))
+			: undefined;
+	},
 	async pickQrScreenshot() {
 		return (await SteamGuardService.PickQRScreenshot()) ?? "";
 	},
@@ -1372,12 +1386,12 @@ const controller: SteamGuardModalController = {
 		SteamGuardService.AuthorizeQRLogin(accountId, attempt, capability),
 		dismissQrLogin: (accountId, attempt, capability) =>
 			SteamGuardService.DismissQRLogin(accountId, attempt, capability),
-		...(getCapabilities().qrCapture
-			? {
-				selectQrRegion: async (accountId: string, capability: string) =>
-					qrScanResult(await SteamGuardService.SelectQRRegion(accountId, capability)),
-			}
-			: {}),
+		get selectQrRegion() {
+			return getCapabilities().qrCapture
+				? async (accountId: string, capability: string) =>
+					qrScanResult(await SteamGuardService.SelectQRRegion(accountId, capability))
+				: undefined;
+		},
 		unlockWithFactors: async (accountId, password, keyfilePath, backupKey, rememberForSession, capability) =>
 			codeView(await SteamGuardService.UnlockAccountWithFactors(
 				accountId, password, keyfilePath, backupKey, rememberForSession, capability,

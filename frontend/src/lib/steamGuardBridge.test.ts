@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const service = vi.hoisted(() => ({
 	GetSettingsStatus: vi.fn(),
@@ -22,7 +22,35 @@ vi.mock("../../bindings/TcNo-Acc-Switcher/internal/steamguard/service.js", () =>
 vi.mock("../../bindings/TcNo-Acc-Switcher/internal/steam/steamservice.js", () => steamService);
 vi.mock("../stores/modal", () => modal);
 
-import { mergeSteamGuardAccountRows, runImport } from "./steamGuardBridge";
+import { controller, mergeSteamGuardAccountRows, runImport } from "./steamGuardBridge";
+import { homeScreenData } from "../stores/homeScreenData";
+
+// The controller is built as this module is imported, and the capabilities it
+// asks about ride in on the startup payload, which is fetched later. Deciding
+// them at import meant every gated entry was missing for the life of the app -
+// Scan again, Select region, Copy code and Open in browser were greyed out on
+// Windows, where all four are supported.
+describe("capability-gated controller entries", () => {
+	afterEach(() => homeScreenData.set(null));
+
+	it("are absent until the startup payload says otherwise", () => {
+		homeScreenData.set(null);
+		expect(controller.captureQrFromSteam).toBeUndefined();
+		expect(controller.selectQrRegion).toBeUndefined();
+		expect(controller.copyCode).toBeUndefined();
+		expect(controller.openSteamBrowser).toBeUndefined();
+	});
+
+	it("appear once it does, without this module being imported again", () => {
+		homeScreenData.set({
+			capabilities: { qrCapture: true, secureClipboard: true, steamBrowser: true },
+		} as never);
+		expect(typeof controller.captureQrFromSteam).toBe("function");
+		expect(typeof controller.selectQrRegion).toBe("function");
+		expect(typeof controller.copyCode).toBe("function");
+		expect(typeof controller.openSteamBrowser).toBe("function");
+	});
+});
 
 const status = {
 	vaultConfigured: true,
