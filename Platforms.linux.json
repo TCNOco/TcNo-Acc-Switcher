@@ -283,12 +283,12 @@
         "%UserProfile%/.config/heroic/gog_store/auth.json": "auth.json"
       }
     },
-    "GeForce NOW (Flatpak)": {
+    "GeForce Now (Flatpak)": {
       "_note": "NVIDIA ships com.nvidia.geforcenow from its own flatpak repo. UNVERIFIED: state layout not inspected.",
       "ExeLocationDefault": [
         "%UserProfile%/.var/app/com.nvidia.geforcenow/"
       ]
     }
   },
-  "Version": "4.0.7"
+  "Version": "4.0.8"
 }
