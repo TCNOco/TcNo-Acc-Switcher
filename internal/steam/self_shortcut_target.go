@@ -24,6 +24,10 @@ const selfBinaryPrefix = "tcno-acc-switcher"
 // sandbox has no host /usr, so a host path in Exe launches nothing.
 const flatpakSteamMarker = "com.valvesoftware.Steam"
 
+// appImageIconName is the copy taken out of an AppImage mount, kept in the data
+// folder because everything under $APPDIR goes away when the app exits.
+const appImageIconName = "steam-shortcut-icon.png"
+
 // flatpakSpawn is the only way out of the Flatpak sandbox. It is present in every
 // Flatpak runtime, but only works when the Steam Flatpak has been granted
 // org.freedesktop.Flatpak talk permission, which it does not ship with.
@@ -138,7 +142,7 @@ func stableAppImageIcon() string {
 	if err != nil {
 		return ""
 	}
-	dest := filepath.Join(dataRoot, "steam-shortcut-icon.png")
+	dest := filepath.Join(dataRoot, appImageIconName)
 	// Reading the state of the row must not keep rewriting this.
 	if fileExists(dest) {
 		return dest

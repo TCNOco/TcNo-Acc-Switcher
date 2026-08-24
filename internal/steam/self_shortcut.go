@@ -103,23 +103,25 @@ func (s *SteamService) SetAddToSteam(enabled bool) (SteamShortcutApplyResult, er
 	defer s.mu.Unlock()
 
 	result := SteamShortcutApplyResult{Enabled: enabled, SteamRunning: steamIsRunning()}
-	users, flatpak, err := applySelfShortcut(enabled)
+	users, flatpak, applyErr := applySelfShortcut(enabled)
 	result.Users = users
 	result.FlatpakSteam = flatpak
-	if err != nil {
-		return result, err
-	}
 
+	// The preference is saved even when some users failed. applySelfShortcut
+	// carries on past a user it cannot write, so a failure still leaves entries
+	// behind - and not recording what was asked for would hide those from the
+	// startup repair for good, with the toggle drawn off over a Steam library
+	// that has the app in it.
 	exeDir, err := platform.ResolveExeDir()
 	if err != nil {
-		return result, err
+		return result, errors.Join(applyErr, err)
 	}
 	app, err := platform.LoadAppSettings(exeDir)
 	if err != nil {
-		return result, err
+		return result, errors.Join(applyErr, err)
 	}
 	app.AddToSteam = enabled
-	return result, platform.SaveAppSettings(exeDir, app)
+	return result, errors.Join(applyErr, platform.SaveAppSettings(exeDir, app))
 }
 
 // SyncSelfShortcut re-points Steam's entry at wherever the app is now. The entry
@@ -192,21 +194,63 @@ func upsertSelfShortcut(list []*shortcutsvdf.Node, target shortcutTarget) ([]*sh
 		if !isSelfShortcut(entry) {
 			continue
 		}
-		if entryMatchesTarget(entry, target) {
-			return list, false
-		}
-		if entry.GetInt32("appid") == 0 {
-			entry.SetInt32("appid", shortcutsvdf.ShortcutAppID(target.Exe, SelfShortcutAppName))
-		}
-		// AppName is left as it stands. Someone who renamed the entry in Steam
-		// meant it, and the name is not what identifies the entry anyway.
-		entry.SetString("Exe", target.Exe)
-		entry.SetString("StartDir", target.StartDir)
-		entry.SetString("icon", target.Icon)
-		entry.SetString("LaunchOptions", target.LaunchOptions)
-		return list, true
+		return list, pointEntryAtTarget(entry, target)
 	}
 	return append(list, newSelfShortcut(target)), true
+}
+
+// pointEntryAtTarget updates an existing entry and reports whether anything
+// actually changed, so a startup that finds nothing to fix writes nothing.
+//
+// Only the fields this code owns are touched. AppName, the icon and the launch
+// options are all things a user can set from Steam's own properties dialog, and
+// the startup repair runs on every launch - rewriting them would undo the
+// change every time they made it.
+func pointEntryAtTarget(entry *shortcutsvdf.Node, target shortcutTarget) bool {
+	changed := false
+	set := func(key, want string) {
+		if entry.GetString(key) != want {
+			entry.SetString(key, want)
+			changed = true
+		}
+	}
+
+	if entry.GetInt32("appid") == 0 {
+		entry.SetInt32("appid", shortcutsvdf.ShortcutAppID(target.Exe, SelfShortcutAppName))
+		changed = true
+	}
+	set("Exe", target.Exe)
+	set("StartDir", target.StartDir)
+	if isManagedIcon(entry.GetString("icon")) {
+		set("icon", target.Icon)
+	}
+	// The Flatpak form keeps the app's real path in LaunchOptions, so there it is
+	// ours whatever it currently says.
+	if target.Flatpak || isManagedLaunchOptions(entry.GetString("LaunchOptions")) {
+		set("LaunchOptions", target.LaunchOptions)
+	}
+	return changed
+}
+
+// isManagedIcon reports an icon this code could have written: blank, one of our
+// own binaries (which is what Windows stores), the packaged hicolor PNG, or the
+// copy taken out of an AppImage. Anything else is a picture the user chose.
+func isManagedIcon(icon string) bool {
+	if strings.TrimSpace(icon) == "" {
+		return true
+	}
+	return isSelfBinaryPath(icon) || filepath.Base(icon) == appImageIconName
+}
+
+// isManagedLaunchOptions reports launch options this code could have written:
+// empty, or the flatpak-spawn form naming one of our binaries.
+func isManagedLaunchOptions(opts string) bool {
+	opts = strings.TrimSpace(opts)
+	if opts == "" {
+		return true
+	}
+	rest := strings.TrimSpace(strings.TrimPrefix(opts, "--host"))
+	return rest != opts && isSelfBinaryPath(unquotePath(rest))
 }
 
 // removeSelfShortcut drops every entry that launches the switcher.
@@ -232,11 +276,11 @@ func newSelfShortcut(target shortcutTarget) *shortcutsvdf.Node {
 	n.SetString("ShortcutPath", "")
 	n.SetString("LaunchOptions", target.LaunchOptions)
 	n.SetInt32("IsHidden", 0)
-	// Worth having in Game Mode, which is where this feature earns its keep.
+	// Both of these are Steam's own defaults for a shortcut added through its UI,
+	// and the overlay is not optional here: in Game Mode it is what puts the
+	// on-screen keyboard up, and this app has password fields.
 	n.SetInt32("AllowDesktopConfig", 1)
-	// The overlay injects itself into the launched process. There is nothing here
-	// for it to draw over, and a WebView window is not what it expects.
-	n.SetInt32("AllowOverlay", 0)
+	n.SetInt32("AllowOverlay", 1)
 	n.SetInt32("OpenVR", 0)
 	n.SetInt32("Devkit", 0)
 	n.SetString("DevkitGameID", "")
@@ -285,11 +329,14 @@ func matchesTarget(list []*shortcutsvdf.Node, target shortcutTarget) bool {
 	return false
 }
 
+// entryMatchesTarget asks only whether the entry launches this copy of the app.
+// The icon and the name are not part of the question: a user is free to change
+// both, and doing so does not make the shortcut stale.
 func entryMatchesTarget(entry *shortcutsvdf.Node, target shortcutTarget) bool {
-	return entry.GetString("Exe") == target.Exe &&
-		entry.GetString("StartDir") == target.StartDir &&
-		entry.GetString("LaunchOptions") == target.LaunchOptions &&
-		entry.GetString("icon") == target.Icon
+	if entry.GetString("Exe") != target.Exe || entry.GetString("StartDir") != target.StartDir {
+		return false
+	}
+	return !target.Flatpak || entry.GetString("LaunchOptions") == target.LaunchOptions
 }
 
 func unquotePath(p string) string {

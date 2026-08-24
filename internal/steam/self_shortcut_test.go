@@ -103,6 +103,7 @@ func TestUpsertFindsOurEntryBehindFlatpakSpawn(t *testing.T) {
 	flatpak.Exe = `"/usr/bin/flatpak-spawn"`
 	flatpak.StartDir = `"/usr/bin/"`
 	flatpak.LaunchOptions = `--host "/usr/local/bin/tcno-acc-switcher"`
+	flatpak.Flatpak = true
 
 	list, _ := upsertSelfShortcut(nil, flatpak)
 	list[0].SetString("AppName", "renamed by the user")
@@ -181,5 +182,98 @@ func TestSelfShortcutRootsSkipsAnInstallNeverSignedInto(t *testing.T) {
 
 	if got := selfShortcutRoots(); len(got) != 0 {
 		t.Fatalf("roots = %v, want none", got)
+	}
+}
+
+func TestUpsertKeepsWhatTheUserSetInSteamsProperties(t *testing.T) {
+	// The startup repair runs on every launch, so anything it overwrites here is
+	// overwritten every launch - a customisation the user can never make stick.
+	list, _ := upsertSelfShortcut(nil, linuxTarget())
+	list[0].SetString("LaunchOptions", "mangohud %command%")
+	list[0].SetString("icon", "/home/u/Pictures/my-own-icon.png")
+
+	moved := linuxTarget()
+	moved.Exe = `"/home/u/Applications/tcno-acc-switcher-x86_64.AppImage"`
+	moved.StartDir = `"/home/u/Applications/"`
+
+	list, changed := upsertSelfShortcut(list, moved)
+	if !changed {
+		t.Fatal("upsert reported no change, want the moved path repaired")
+	}
+	if got := list[0].GetString("Exe"); got != moved.Exe {
+		t.Fatalf("Exe = %s, want the repaired %s", got, moved.Exe)
+	}
+	if got := list[0].GetString("LaunchOptions"); got != "mangohud %command%" {
+		t.Fatalf("LaunchOptions = %q, want the user's own kept", got)
+	}
+	if got := list[0].GetString("icon"); got != "/home/u/Pictures/my-own-icon.png" {
+		t.Fatalf("icon = %q, want the user's own kept", got)
+	}
+}
+
+func TestUpsertRepairsAnIconItWroteItself(t *testing.T) {
+	// Windows stores the exe in the icon field, so a moved app leaves a dead path
+	// there - one we put there, so one we may fix.
+	list, _ := upsertSelfShortcut(nil, shortcutTarget{
+		Exe:      `"C:\Old\TcNo-Acc-Switcher.exe"`,
+		StartDir: `"C:\Old\"`,
+		Icon:     `C:\Old\TcNo-Acc-Switcher.exe`,
+		Binary:   `C:\Old\TcNo-Acc-Switcher.exe`,
+	})
+
+	moved := shortcutTarget{
+		Exe:      `"C:\New\TcNo-Acc-Switcher.exe"`,
+		StartDir: `"C:\New\"`,
+		Icon:     `C:\New\TcNo-Acc-Switcher.exe`,
+		Binary:   `C:\New\TcNo-Acc-Switcher.exe`,
+	}
+	list, _ = upsertSelfShortcut(list, moved)
+	if got := list[0].GetString("icon"); got != moved.Icon {
+		t.Fatalf("icon = %q, want the repaired %q", got, moved.Icon)
+	}
+}
+
+func TestUpsertStillOwnsLaunchOptionsForFlatpakSteam(t *testing.T) {
+	// There the option is not a preference, it is how the app gets launched at all.
+	flatpak := linuxTarget()
+	flatpak.Exe = `"/usr/bin/flatpak-spawn"`
+	flatpak.StartDir = `"/usr/bin/"`
+	flatpak.LaunchOptions = `--host "/usr/local/bin/tcno-acc-switcher"`
+	flatpak.Flatpak = true
+
+	list, _ := upsertSelfShortcut(nil, flatpak)
+	list[0].SetString("LaunchOptions", "mangohud %command%")
+
+	list, changed := upsertSelfShortcut(list, flatpak)
+	if !changed {
+		t.Fatal("upsert reported no change, want the launch path put back")
+	}
+	if got := list[0].GetString("LaunchOptions"); got != flatpak.LaunchOptions {
+		t.Fatalf("LaunchOptions = %q, want %q", got, flatpak.LaunchOptions)
+	}
+}
+
+func TestUpsertClearsTheFlatpakFormWhenSteamIsNoLongerFlatpak(t *testing.T) {
+	flatpak := linuxTarget()
+	flatpak.Exe = `"/usr/bin/flatpak-spawn"`
+	flatpak.StartDir = `"/usr/bin/"`
+	flatpak.LaunchOptions = `--host "/usr/local/bin/tcno-acc-switcher"`
+	flatpak.Flatpak = true
+	list, _ := upsertSelfShortcut(nil, flatpak)
+
+	list, _ = upsertSelfShortcut(list, linuxTarget())
+	if got := list[0].GetString("LaunchOptions"); got != "" {
+		t.Fatalf("LaunchOptions = %q, want the flatpak-spawn form cleared", got)
+	}
+}
+
+func TestUpsertMakesNoChangeWhenOnlyTheNameAndIconDiffer(t *testing.T) {
+	// Otherwise every launch rewrites the file - and its backup - for nothing.
+	list, _ := upsertSelfShortcut(nil, linuxTarget())
+	list[0].SetString("AppName", "Switcher")
+	list[0].SetString("icon", "/home/u/Pictures/my-own-icon.png")
+
+	if _, changed := upsertSelfShortcut(list, linuxTarget()); changed {
+		t.Fatal("upsert reported a change, want the file left alone")
 	}
 }
