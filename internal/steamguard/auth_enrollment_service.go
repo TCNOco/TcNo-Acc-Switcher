@@ -111,6 +111,11 @@ type SteamCredentialResult struct {
 	// account it just signed in, so this is what the caller re-keys to before
 	// continuing into the enrollment steps, which stay strictly SteamID-keyed.
 	SteamID64 string `json:"steamId64,omitempty"`
+	// ChallengeURL and QRImage are set only by the QR sign-in, which draws the
+	// URL as a code for a phone to scan. Steam replaces the code while it waits,
+	// so both change from one poll to the next.
+	ChallengeURL string `json:"challengeUrl,omitempty"`
+	QRImage      string `json:"qrImage,omitempty"`
 }
 
 type SteamEnrollmentStatus struct {
@@ -138,6 +143,7 @@ func (SteamRevocationView) GoString() string { return "Steam Guard revocation vi
 
 type steamCredentialAuthManager interface {
 	Begin(context.Context, authflow.Binding, protocol.PasswordCredentialsRequest, []byte) (authflow.Status, error)
+	BeginQR(context.Context, authflow.Binding, protocol.BeginQRRequest) (authflow.Status, error)
 	SubmitCode(context.Context, authflow.Binding, string, authflow.Challenge, []byte) (authflow.Status, error)
 	Poll(context.Context, authflow.Binding, string) (authflow.Status, error)
 	Cancel(authflow.Binding, string) error
@@ -398,10 +404,10 @@ func (s *Service) submitLoginCode(authorize steamFlowAuthorizer, key, handle, ch
 }
 
 func (s *Service) PollCredentialLogin(accountID, token, handle string) (SteamCredentialResult, error) {
-	return s.pollLogin(s.accountFlowAuthorizer(accountID, token), accountID, handle)
+	return s.pollLogin(s.accountFlowAuthorizer(accountID, token), accountID, handle, false)
 }
 
-func (s *Service) pollLogin(authorize steamFlowAuthorizer, key, handle string) (SteamCredentialResult, error) {
+func (s *Service) pollLogin(authorize steamFlowAuthorizer, key, handle string, viaQR bool) (SteamCredentialResult, error) {
 	manager, operation, binding, err := s.authenticationOperation(authorize, handle)
 	if err != nil {
 		return SteamCredentialResult{}, err
@@ -417,6 +423,9 @@ func (s *Service) pollLogin(authorize steamFlowAuthorizer, key, handle string) (
 		return SteamCredentialResult{}, err
 	}
 	result := credentialResult(status)
+	if viaQR {
+		result = qrCredentialResult(status)
+	}
 	if status.State != authflow.StateAuthorizedReady {
 		authflowLogger().Debug("Steam credential login still pending", "steamId64", key, "state", string(status.State))
 		return result, nil
@@ -447,12 +456,23 @@ func (s *Service) pollLogin(authorize steamFlowAuthorizer, key, handle string) (
 		// guarantees a real account's id is never zero, so zero means "the caller
 		// could not have known it yet" - and Steam's answer is then authoritative.
 		// Anything else must match exactly.
-		if expectedSteamID != 0 && authorizedSteamID != expectedSteamID {
+		if expectedSteamID != 0 && authorizedSteamID != expectedSteamID && !viaQR {
 			return ErrSteamAuthenticationState
 		}
 		// Everything below keys off what Steam authorised rather than what was
 		// asked for. They are identical on the account path by the check above.
 		steamID := authorizedSteamID
+		if viaQR {
+			// A QR poll never answers with a SteamID - Steam names the account
+			// instead - so there is nothing here to compare. The identity was
+			// settled in authflow, which refuses to authorise a QR session for
+			// any account name but the one its binding expects, so the account
+			// this session was opened for is the account that signed in.
+			if authorizedSteamID != 0 && authorizedSteamID != expectedSteamID {
+				return ErrSteamAuthenticationState
+			}
+			steamID = expectedSteamID
+		}
 		accountID := strconv.FormatUint(steamID, 10)
 		authorizedAccountID = accountID
 		switch operation.purpose {

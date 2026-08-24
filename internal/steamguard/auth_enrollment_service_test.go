@@ -35,6 +35,8 @@ func (f *authServiceTokenClient) GenerateAccessTokenForApp(context.Context, prot
 
 type authServiceCredentialManager struct {
 	beginCalls   int
+	beginQRCalls int
+	qrURL        string
 	submitCalls  int
 	pollCalls    int
 	consumeCalls int
@@ -53,6 +55,20 @@ func (f *authServiceCredentialManager) Begin(_ context.Context, binding authflow
 	return authflow.Status{
 		Handle: "opaque-auth-handle", State: authflow.StateChallengeRequired,
 		Challenges: []authflow.Challenge{authflow.ChallengeDeviceCode}, CanSubmitDeviceCode: true,
+		ExpiresAtUnix: time.Now().Add(time.Minute).Unix(),
+	}, nil
+}
+
+func (f *authServiceCredentialManager) BeginQR(_ context.Context, binding authflow.Binding, _ protocol.BeginQRRequest) (authflow.Status, error) {
+	f.beginQRCalls++
+	f.binding = binding
+	url := f.qrURL
+	if url == "" {
+		url = "https://s.team/q/1/4123"
+	}
+	return authflow.Status{
+		Handle: "opaque-qr-handle", State: authflow.StateWaiting, CanPoll: true,
+		ChallengeURL:  url,
 		ExpiresAtUnix: time.Now().Add(time.Minute).Unix(),
 	}, nil
 }

@@ -184,7 +184,7 @@ func (s *Service) SubmitAddAccountCode(pendingID, token, handle, challenge, code
 }
 
 func (s *Service) PollAddAccountLogin(pendingID, token, handle string) (SteamCredentialResult, error) {
-	result, err := s.pollLogin(s.pendingFlowAuthorizer(pendingID, token), pendingID, handle)
+	result, err := s.pollLogin(s.pendingFlowAuthorizer(pendingID, token), pendingID, handle, false)
 	// The attempt is spent the moment Steam names an account: from here the
 	// caller continues under the real SteamID64, through the strict endpoints.
 	if err == nil && result.SteamID64 != "" {
