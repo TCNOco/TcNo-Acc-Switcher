@@ -245,6 +245,13 @@ if [ "$GOOS" = "windows" ]; then
 fi
 
 TAGS="production,devtools"
+if [ "$GOOS" = "linux" ]; then
+    # wails v3.0.0-beta.12 has no Linux devtools implementation that survives
+    # the production tag: webview_window_linux_dev.go is `!production` and
+    # webview_window_linux_production.go is `!devtools`, so production,devtools
+    # matches neither and openDevTools goes undefined.
+    TAGS="production"
+fi
 if [ -n "$EXTRA_TAGS" ]; then
     TAGS="${TAGS},${EXTRA_TAGS}"
 fi
