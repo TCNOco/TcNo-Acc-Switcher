@@ -14,6 +14,11 @@ interface Window {
   notification?: {
     new: (opts: WindowToastOpts) => void
   }
+  /** Boot watchdog from public/boot-watchdog.js; absent if that script failed to load. */
+  __tcnoBoot?: {
+    ready: () => void
+    fail: (stage: string, error: unknown) => void
+  }
 }
 
 /** Typings for Wails shortcuts bindings (see `wails-shortcuts-service` path in tsconfig / Vite alias). */

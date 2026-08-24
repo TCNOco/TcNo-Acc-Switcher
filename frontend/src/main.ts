@@ -15,15 +15,59 @@ import { resolveInitialRoute, installHashSync } from './stores/nav'
 import { initTheme } from './lib/themes'
 import { installNavigationGuard } from './lib/navigationGuard'
 
-installNavigationGuard()
+/**
+ * Nothing before mount() may decide whether the app paints. The window is
+ * frameless, so an app that never mounts is a bare rectangle of background
+ * colour with no title bar and no way to report what happened - a step that
+ * fails or hangs degrades to its defaults instead.
+ */
+const STEP_TIMEOUT_MS = 8000
 
-const app = void (async () => {
-  await initI18n()
-  await initOfflineMode()
-  await initTheme()
-  await resolveInitialRoute()
-  installHashSync()
-  mount(App, { target: document.getElementById('app')! })
+function guard(name: string, run: () => void): void {
+  try {
+    run()
+  } catch (err) {
+    console.error(`[boot] ${name} failed`, err)
+  }
+}
+
+async function step(name: string, run: () => Promise<unknown>): Promise<void> {
+  let timer: ReturnType<typeof setTimeout> | undefined
+  try {
+    await Promise.race([
+      run(),
+      new Promise((_, reject) => {
+        timer = setTimeout(
+          () => reject(new Error(`${name} timed out after ${STEP_TIMEOUT_MS}ms`)),
+          STEP_TIMEOUT_MS,
+        )
+      }),
+    ])
+  } catch (err) {
+    console.error(`[boot] ${name} failed`, err)
+  } finally {
+    clearTimeout(timer)
+  }
+}
+
+guard('navigation guard', installNavigationGuard)
+
+void (async () => {
+  await step('i18n', initI18n)
+  await step('offline mode', initOfflineMode)
+  await step('theme', initTheme)
+  await step('initial route', resolveInitialRoute)
+  guard('hash sync', installHashSync)
+
+  try {
+    const target = document.getElementById('app')
+    if (!target) {
+      throw new Error('#app is missing from the document')
+    }
+    mount(App, { target })
+    window.__tcnoBoot?.ready()
+  } catch (err) {
+    window.__tcnoBoot?.fail('mount', err)
+    throw err
+  }
 })()
-
-export default app
