@@ -64,7 +64,9 @@ func inGamescopeSession(env func(string) string) bool {
 	if strings.TrimSpace(env("GAMESCOPE_WAYLAND_DISPLAY")) != "" {
 		return true
 	}
-	for _, key := range []string{"XDG_CURRENT_DESKTOP", "DESKTOP_SESSION"} {
+	// XDG_SESSION_DESKTOP is not one of the three the Ally carried, but the
+	// session files on other distributions set it and not always the others.
+	for _, key := range []string{"XDG_CURRENT_DESKTOP", "DESKTOP_SESSION", "XDG_SESSION_DESKTOP"} {
 		if strings.Contains(strings.ToLower(env(key)), "gamescope") {
 			return true
 		}
@@ -85,6 +87,18 @@ func BreakAwayFromSteamLaunch() (bool, error) {
 		slog.Info("startup: not a Steam launch, staying where we are", steamLaunchEnvAttrs()...)
 		return false, nil
 	}
+	// Leaving the tree is what makes the window impossible to show here.
+	// gamescope only considers a window for focus when it can find a Steam app
+	// id by walking that window's owner up the process tree to Steam's reaper.
+	// Re-spawned under systemd there is no such ancestor, the id comes out zero,
+	// and gamescope never treats it as a candidate - so the app runs perfectly
+	// and is never drawn. Staying put costs us the process when Steam closes,
+	// which in Game Mode is the end of the session anyway.
+	if InGamescopeSession() {
+		slog.Info("startup: Game Mode, staying in Steam's process tree so the window can be shown", steamLaunchEnvAttrs()...)
+		return false, nil
+	}
+
 	exe, err := os.Executable()
 	if err != nil {
 		return false, err

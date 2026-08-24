@@ -93,3 +93,16 @@ func TestInGamescopeSession(t *testing.T) {
 		})
 	}
 }
+
+func TestBreakAwayStaysInSteamsTreeUnderGamescope(t *testing.T) {
+	// The assertion is really "it did not relaunch": if the gate regressed, this
+	// test binary would spawn a copy of itself.
+	t.Setenv(brokeAwayEnv, "")
+	t.Setenv(steamClientLaunchEnv, "1")
+	t.Setenv("XDG_CURRENT_DESKTOP", "gamescope")
+
+	brokeAway, err := BreakAwayFromSteamLaunch()
+	if brokeAway || err != nil {
+		t.Fatalf("BreakAwayFromSteamLaunch() = %v, %v; want false, nil under gamescope", brokeAway, err)
+	}
+}
