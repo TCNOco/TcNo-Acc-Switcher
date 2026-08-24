@@ -1,13 +1,14 @@
 [Desktop Entry]
 Version=1.0
-Name=My Product
-Comment=A TcNo-Acc-Switcher application
-# The Exec line includes %u to pass the URL to the application
-Exec=/usr/local/bin/tcno-acc-switcher.exe %u
+Name=TcNo Account Switcher
+Comment=A Superfast open-source account switcher
+Exec=/usr/local/bin/tcno-acc-switcher %u
 Terminal=false
 Type=Application
-Icon=tcno-acc-switcher.exe
-Categories=Utility;
-StartupWMClass=tcno-acc-switcher.exe
-
- 
+Icon=tcno-acc-switcher
+Categories=Utility;Game;
+Keywords=steam;account;switcher;
+# Must equal the ProgramName passed to Wails (internal/app/gui.go): GTK4 has no
+# way to set a window icon, so the desktop matches the window to this file by
+# WM_CLASS and takes the icon from here.
+StartupWMClass=tcno-acc-switcher

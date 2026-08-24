@@ -54,6 +54,7 @@ type RunGUIParams struct {
 	StartupToast     string
 	EmbeddedAssets   fs.FS
 	TrayIconPNG      []byte
+	AppIconPNG       []byte
 	UpdaterPublicKey []byte
 	Done             chan struct{}
 }
@@ -191,6 +192,14 @@ func RunGUI(params RunGUIParams) {
 		},
 		Mac: application.MacOptions{
 			ApplicationShouldTerminateAfterLastWindowClosed: true,
+		},
+		// GTK4 dropped gtk_window_set_icon, so Icon only reaches the about box
+		// and GTK3 builds. What actually gives the window an icon on a Linux
+		// desktop is a .desktop file matched by StartupWMClass, which is why the
+		// program name is pinned here rather than left as the executable's.
+		Icon: params.AppIconPNG,
+		Linux: application.LinuxOptions{
+			ProgramName: linuxProgramName,
 		},
 	}
 	configurePlatformSecurityLifecycle(&appOpts, lifecycle)
@@ -485,3 +494,8 @@ func syncProtocolRegistration() {
 	}
 	_ = winutil.RegisterProtocol(filepath.Clean(self))
 }
+
+// linuxProgramName is what g_set_prgname reports, and so what the compositor
+// matches against StartupWMClass in build/linux/desktop. The two have to stay
+// equal or a packaged install still shows a generic icon.
+const linuxProgramName = "tcno-acc-switcher"

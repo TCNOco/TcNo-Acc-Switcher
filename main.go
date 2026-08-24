@@ -42,6 +42,9 @@ var assets embed.FS
 //go:embed build/trayicon.png
 var trayIconPNG []byte
 
+//go:embed build/appicon.png
+var appIconPNG []byte
+
 //go:embed updater-key.pub
 var updaterPublicKey []byte
 
@@ -241,6 +244,7 @@ func main() {
 		StartupToast:     parsed.StartupToast,
 		EmbeddedAssets:   assets,
 		TrayIconPNG:      trayIconPNG,
+		AppIconPNG:       appIconPNG,
 		UpdaterPublicKey: updaterPublicKey,
 	})
 }
