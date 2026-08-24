@@ -75,6 +75,10 @@ type AppSettings struct {
 	// AlwaysRunAsAdmin re-launches the app elevated on startup when it is not already.
 	AlwaysRunAsAdmin bool `json:"alwaysRunAsAdmin,omitempty"`
 
+	// AddToSteam keeps the app in Steam's non-Steam game list, so it can be
+	// launched from Big Picture and Game Mode.
+	AddToSteam bool `json:"addToSteam,omitempty"`
+
 	// StartProgramCentered places the main window in the center of the screen when the app opens.
 	StartProgramCentered bool `json:"startProgramCentered,omitempty"`
 
