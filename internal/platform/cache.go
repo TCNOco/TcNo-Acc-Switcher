@@ -134,7 +134,7 @@ func hasPlaceholderToken(path string) bool {
 }
 
 func cachePlaceholderBases(raw string, ctx PathTokenContext) ([]string, error) {
-	home := os.Getenv("USERPROFILE")
+	home := userHomeDir()
 	appData := os.Getenv("APPDATA")
 	programData := os.Getenv("ProgramData")
 	known := map[string]string{

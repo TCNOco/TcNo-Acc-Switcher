@@ -1,13 +1,22 @@
 {
   "Platforms": {
     "Steam": {
-      "Identifiers": [ "s", "steam", "valve" ],
+      "Identifiers": [
+        "s",
+        "steam",
+        "valve"
+      ],
       "ExeLocationDefault": [
         "/Applications/Steam.app/Contents/MacOS/steam_osx",
         "%UserProfile%/Applications/Steam.app/Contents/MacOS/steam_osx"
       ],
-      "ExesToEnd": [ "steam_osx", "steamwebhelper" ],
-      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+      "ExesToEnd": [
+        "steam_osx",
+        "steamwebhelper"
+      ],
+      "PathListToClear": [
+        "SAME_AS_LOGIN_FILES"
+      ],
       "LoginFiles": {
         "%Platform_Folder%/config/loginusers.vdf": "loginusers.vdf"
       },
@@ -38,9 +47,117 @@
           ".xml"
         ]
       }
+    },
+    "Discord": {
+      "Identifiers": [
+        "d",
+        "discord"
+      ],
+      "ExeLocationDefault": [
+        "/Applications/Discord.app/Contents/MacOS/Discord",
+        "%UserProfile%/Applications/Discord.app/Contents/MacOS/Discord"
+      ],
+      "ExesToEnd": [
+        "Discord"
+      ],
+      "PathListToClear": [
+        "SAME_AS_LOGIN_FILES"
+      ],
+      "LoginFiles": {
+        "%UserProfile%/Library/Application Support/discord/blob_storage": "blob_storage/",
+        "%UserProfile%/Library/Application Support/discord/Cache/index": "Cache/index",
+        "%UserProfile%/Library/Application Support/discord/Cache/data_*": "Cache/",
+        "%UserProfile%/Library/Application Support/discord/Code Cache/js/index-dir/the-real-index": "Code Cache/js/index-dir/the-real-index",
+        "%UserProfile%/Library/Application Support/discord/DawnGraphiteCache/data_*": "DawnGraphiteCache/",
+        "%UserProfile%/Library/Application Support/discord/DawnWebGPUCache/data_*": "DawnWebGPUCache/",
+        "%UserProfile%/Library/Application Support/discord/GPUCache/data_*": "GPUCache/",
+        "%UserProfile%/Library/Application Support/discord/Local Storage/leveldb/": "Local Storage/leveldb/",
+        "%UserProfile%/Library/Application Support/discord/Network/": "Network/",
+        "%UserProfile%/Library/Application Support/discord/sentry/": "sentry/",
+        "%UserProfile%/Library/Application Support/discord/Service Worker/CacheStorage": "Service Worker/CacheStorage/",
+        "%UserProfile%/Library/Application Support/discord/Session Storage/": "Session Storage/",
+        "%UserProfile%/Library/Application Support/discord/shared_proto_db/": "shared_proto_db/",
+        "%UserProfile%/Library/Application Support/discord/settings.json": "settings.json",
+        "%UserProfile%/Library/Application Support/discord/Network Persistent State": "Network Persistent State",
+        "%UserProfile%/Library/Application Support/discord/Preferences": "Preferences",
+        "%UserProfile%/Library/Application Support/discord/TransportSecurity": "TransportSecurity",
+        "%UserProfile%/Library/Application Support/discord/Cookies": "Cookies"
+      },
+      "AllFilesRequired": false,
+      "DisabledByDefault": true,
+      "ExitBeforeInteract": true,
+      "ExitBeforeSave": true,
+      "Extras": {
+        "CachePaths": [
+          "%UserProfile%/Library/Application Support/discord/Cache/f_*"
+        ],
+        "BuiltInUsernameFile": "%userusername%",
+        "BuiltInProfileImageFile": "https://cdn.discordapp.com/avatars/%userid%/%useravatar%.webp",
+        "BuiltInUserId": "%userid%",
+        "variables": {
+          "userid": "leveldb:%UserProfile%/Library/Application Support/discord/Local Storage/leveldb:_https://discord.comMultiAccountStore:_state.users.0.id",
+          "useravatar": "leveldb:%UserProfile%/Library/Application Support/discord/Local Storage/leveldb:_https://discord.comMultiAccountStore:_state.users.0.avatar",
+          "userusername": "leveldb:%UserProfile%/Library/Application Support/discord/Local Storage/leveldb:_https://discord.comMultiAccountStore:_state.users.0.username"
+        }
+      },
+      "UniqueIdFile": "leveldb:%UserProfile%/Library/Application Support/discord/Local Storage/leveldb:_https://discord.comMultiAccountStore:_state.users.0.id",
+      "UniqueIdMethod": "LEVELDB"
+    },
+    "OBS Studio": {
+      "Identifiers": [
+        "obs"
+      ],
+      "ExeLocationDefault": [
+        "/Applications/OBS.app/Contents/MacOS/OBS",
+        "%UserProfile%/Applications/OBS.app/Contents/MacOS/OBS"
+      ],
+      "ExesToEnd": [
+        "OBS"
+      ],
+      "PathListToClear": [],
+      "LoginFiles": {
+        "%UserProfile%/Library/Application Support/obs-studio/global.ini": "global.ini",
+        "%UserProfile%/Library/Application Support/obs-studio/user.ini": "user.ini",
+        "%UserProfile%/Library/Application Support/obs-studio/basic/*": "basic/",
+        "%UserProfile%/Library/Application Support/obs-studio/TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
+      },
+      "AllFilesRequired": false,
+      "DisabledByDefault": true,
+      "UniqueIdFile": "%UserProfile%/Library/Application Support/obs-studio/TcNoAccSwitcher-ID.instance",
+      "UniqueIdMethod": "CREATE_ID_FILE"
     }
   },
   "Platform-WIP": {
+    "Epic Games": {
+      "_note": "App Support root confirmed. UNVERIFIED: the Saved/Config editor subfolder name, and where AccountId lands with no registry. Needs a Mac.",
+      "ExeLocationDefault": [
+        "/Applications/Epic Games Launcher.app/Contents/MacOS/EpicGamesLauncher"
+      ],
+      "LoginFiles": {
+        "%UserProfile%/Library/Application Support/Epic/EpicGamesLauncher/Saved/Config/": "Config/"
+      }
+    },
+    "GOG Galaxy": {
+      "_note": "App Support root confirmed. UNVERIFIED: the file or plist equivalents of the three HKCU values. Needs a Mac.",
+      "ExeLocationDefault": [
+        "/Applications/GOG Galaxy.app/Contents/MacOS/GOG Galaxy"
+      ],
+      "LoginFiles": {
+        "%UserProfile%/Library/Application Support/GOG.com/Galaxy/Configuration/config.json": "config.json"
+      }
+    },
+    "BattleNet": {
+      "_note": "State spans ~/Library/Application Support/Battle.net, .../Blizzard and /Users/Shared/Battle.net. UNVERIFIED: Battle.net.config presence. Needs a Mac.",
+      "ExeLocationDefault": [
+        "/Applications/Battle.net.app/Contents/MacOS/Battle.net"
+      ]
+    },
+    "Riot Games": {
+      "_note": "Data and Config subtree expected identical to Windows. UNVERIFIED, and the embedded Vanguard interaction is untested. Needs a Mac.",
+      "ExeLocationDefault": [
+        "/Applications/Riot Client.app/Contents/MacOS/RiotClientServices"
+      ]
+    }
   },
-  "Version": "4.0.6"
+  "Version": "4.0.7"
 }

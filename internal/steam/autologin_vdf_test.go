@@ -35,6 +35,20 @@ func TestRegistryVDFPathDerivesFromRoot(t *testing.T) {
 			want: filepath.Join(home, ".var", "app", "com.valvesoftware.Steam", ".steam", "registry.vdf"),
 		},
 		{
+			// The snap runs Valve's own launcher with HOME=$SNAP_USER_COMMON, so
+			// the whole native layout repeats one level down.
+			name: "snap",
+			root: filepath.Join(home, "snap", "steam", "common", ".local", "share", "Steam"),
+			want: filepath.Join(home, "snap", "steam", "common", ".steam", "registry.vdf"),
+		},
+		{
+			// Debian's steam-installer puts the client in ~/.steam itself, so the
+			// tail never matches and the $HOME fallback is the right answer.
+			name: "debian-installation",
+			root: filepath.Join(home, ".steam", "debian-installation"),
+			want: filepath.Join(home, ".steam", "registry.vdf"),
+		},
+		{
 			// Steam creates ~/.steam wherever the data lives, so a root that is
 			// not home-shaped still reads its login from the one in $HOME.
 			name: "root elsewhere falls back to $HOME",

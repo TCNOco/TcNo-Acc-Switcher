@@ -1,14 +1,27 @@
 {
   "Platforms": {
     "Steam": {
-      "Identifiers": [ "s", "steam", "valve" ],
+      "Identifiers": [
+        "s",
+        "steam",
+        "valve"
+      ],
       "ExeLocationDefault": [
         "%UserProfile%/.local/share/Steam/steam.sh",
+        "%UserProfile%/.steam/debian-installation/steam.sh",
         "%UserProfile%/.steam/steam/steam.sh",
-        "%UserProfile%/.var/app/com.valvesoftware.Steam/.local/share/Steam/steam.sh"
+        "%UserProfile%/.steam/root/steam.sh",
+        "%UserProfile%/Steam/steam.sh",
+        "%UserProfile%/.var/app/com.valvesoftware.Steam/.local/share/Steam/steam.sh",
+        "%UserProfile%/snap/steam/common/.local/share/Steam/steam.sh"
       ],
-      "ExesToEnd": [ "steam", "steamwebhelper" ],
-      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+      "ExesToEnd": [
+        "steam",
+        "steamwebhelper"
+      ],
+      "PathListToClear": [
+        "SAME_AS_LOGIN_FILES"
+      ],
       "LoginFiles": {
         "%Platform_Folder%/config/loginusers.vdf": "loginusers.vdf"
       },
@@ -39,9 +52,243 @@
           ".xml"
         ]
       }
+    },
+    "Discord": {
+      "Identifiers": [
+        "d",
+        "discord"
+      ],
+      "ExeLocationDefault": [
+        "%UserProfile%/.config/discord/Discord",
+        "/usr/bin/discord"
+      ],
+      "ExesToEnd": [
+        "Discord"
+      ],
+      "PathListToClear": [
+        "SAME_AS_LOGIN_FILES"
+      ],
+      "LoginFiles": {
+        "%UserProfile%/.config/discord/blob_storage": "blob_storage/",
+        "%UserProfile%/.config/discord/Cache/index": "Cache/index",
+        "%UserProfile%/.config/discord/Cache/data_*": "Cache/",
+        "%UserProfile%/.config/discord/Code Cache/js/index-dir/the-real-index": "Code Cache/js/index-dir/the-real-index",
+        "%UserProfile%/.config/discord/DawnGraphiteCache/data_*": "DawnGraphiteCache/",
+        "%UserProfile%/.config/discord/DawnWebGPUCache/data_*": "DawnWebGPUCache/",
+        "%UserProfile%/.config/discord/GPUCache/data_*": "GPUCache/",
+        "%UserProfile%/.config/discord/Local Storage/leveldb/": "Local Storage/leveldb/",
+        "%UserProfile%/.config/discord/Network/": "Network/",
+        "%UserProfile%/.config/discord/sentry/": "sentry/",
+        "%UserProfile%/.config/discord/Service Worker/CacheStorage": "Service Worker/CacheStorage/",
+        "%UserProfile%/.config/discord/Session Storage/": "Session Storage/",
+        "%UserProfile%/.config/discord/shared_proto_db/": "shared_proto_db/",
+        "%UserProfile%/.config/discord/settings.json": "settings.json",
+        "%UserProfile%/.config/discord/Network Persistent State": "Network Persistent State",
+        "%UserProfile%/.config/discord/Preferences": "Preferences",
+        "%UserProfile%/.config/discord/TransportSecurity": "TransportSecurity",
+        "%UserProfile%/.config/discord/Cookies": "Cookies"
+      },
+      "AllFilesRequired": false,
+      "DisabledByDefault": true,
+      "ExitBeforeInteract": true,
+      "ExitBeforeSave": true,
+      "Extras": {
+        "CachePaths": [
+          "%UserProfile%/.config/discord/Cache/f_*"
+        ],
+        "BuiltInUsernameFile": "%userusername%",
+        "BuiltInProfileImageFile": "https://cdn.discordapp.com/avatars/%userid%/%useravatar%.webp",
+        "BuiltInUserId": "%userid%",
+        "variables": {
+          "userid": "leveldb:%UserProfile%/.config/discord/Local Storage/leveldb:_https://discord.comMultiAccountStore:_state.users.0.id",
+          "useravatar": "leveldb:%UserProfile%/.config/discord/Local Storage/leveldb:_https://discord.comMultiAccountStore:_state.users.0.avatar",
+          "userusername": "leveldb:%UserProfile%/.config/discord/Local Storage/leveldb:_https://discord.comMultiAccountStore:_state.users.0.username"
+        }
+      },
+      "UniqueIdFile": "leveldb:%UserProfile%/.config/discord/Local Storage/leveldb:_https://discord.comMultiAccountStore:_state.users.0.id",
+      "UniqueIdMethod": "LEVELDB"
+    },
+    "Discord (Flatpak)": {
+      "Identifiers": [
+        "dfp",
+        "discordflatpak"
+      ],
+      "ExeLocationDefault": [
+        "%UserProfile%/.var/app/com.discordapp.Discord/config/discord/settings.json"
+      ],
+      "ExesToEnd": [
+        "Discord"
+      ],
+      "PathListToClear": [
+        "SAME_AS_LOGIN_FILES"
+      ],
+      "LoginFiles": {
+        "%UserProfile%/.var/app/com.discordapp.Discord/config/discord/blob_storage": "blob_storage/",
+        "%UserProfile%/.var/app/com.discordapp.Discord/config/discord/Cache/index": "Cache/index",
+        "%UserProfile%/.var/app/com.discordapp.Discord/config/discord/Cache/data_*": "Cache/",
+        "%UserProfile%/.var/app/com.discordapp.Discord/config/discord/Code Cache/js/index-dir/the-real-index": "Code Cache/js/index-dir/the-real-index",
+        "%UserProfile%/.var/app/com.discordapp.Discord/config/discord/DawnGraphiteCache/data_*": "DawnGraphiteCache/",
+        "%UserProfile%/.var/app/com.discordapp.Discord/config/discord/DawnWebGPUCache/data_*": "DawnWebGPUCache/",
+        "%UserProfile%/.var/app/com.discordapp.Discord/config/discord/GPUCache/data_*": "GPUCache/",
+        "%UserProfile%/.var/app/com.discordapp.Discord/config/discord/Local Storage/leveldb/": "Local Storage/leveldb/",
+        "%UserProfile%/.var/app/com.discordapp.Discord/config/discord/Network/": "Network/",
+        "%UserProfile%/.var/app/com.discordapp.Discord/config/discord/sentry/": "sentry/",
+        "%UserProfile%/.var/app/com.discordapp.Discord/config/discord/Service Worker/CacheStorage": "Service Worker/CacheStorage/",
+        "%UserProfile%/.var/app/com.discordapp.Discord/config/discord/Session Storage/": "Session Storage/",
+        "%UserProfile%/.var/app/com.discordapp.Discord/config/discord/shared_proto_db/": "shared_proto_db/",
+        "%UserProfile%/.var/app/com.discordapp.Discord/config/discord/settings.json": "settings.json",
+        "%UserProfile%/.var/app/com.discordapp.Discord/config/discord/Network Persistent State": "Network Persistent State",
+        "%UserProfile%/.var/app/com.discordapp.Discord/config/discord/Preferences": "Preferences",
+        "%UserProfile%/.var/app/com.discordapp.Discord/config/discord/TransportSecurity": "TransportSecurity",
+        "%UserProfile%/.var/app/com.discordapp.Discord/config/discord/Cookies": "Cookies"
+      },
+      "AllFilesRequired": false,
+      "DisabledByDefault": true,
+      "ExitBeforeInteract": true,
+      "ExitBeforeSave": true,
+      "Extras": {
+        "CachePaths": [
+          "%UserProfile%/.var/app/com.discordapp.Discord/config/discord/Cache/f_*"
+        ],
+        "BuiltInUsernameFile": "%userusername%",
+        "BuiltInProfileImageFile": "https://cdn.discordapp.com/avatars/%userid%/%useravatar%.webp",
+        "BuiltInUserId": "%userid%",
+        "variables": {
+          "userid": "leveldb:%UserProfile%/.var/app/com.discordapp.Discord/config/discord/Local Storage/leveldb:_https://discord.comMultiAccountStore:_state.users.0.id",
+          "useravatar": "leveldb:%UserProfile%/.var/app/com.discordapp.Discord/config/discord/Local Storage/leveldb:_https://discord.comMultiAccountStore:_state.users.0.avatar",
+          "userusername": "leveldb:%UserProfile%/.var/app/com.discordapp.Discord/config/discord/Local Storage/leveldb:_https://discord.comMultiAccountStore:_state.users.0.username"
+        }
+      },
+      "UniqueIdFile": "leveldb:%UserProfile%/.var/app/com.discordapp.Discord/config/discord/Local Storage/leveldb:_https://discord.comMultiAccountStore:_state.users.0.id",
+      "UniqueIdMethod": "LEVELDB"
+    },
+    "Discord (Snap)": {
+      "Identifiers": [
+        "dsnap",
+        "discordsnap"
+      ],
+      "ExeLocationDefault": [
+        "%UserProfile%/snap/discord/current/.config/discord/settings.json"
+      ],
+      "ExesToEnd": [
+        "Discord"
+      ],
+      "PathListToClear": [
+        "SAME_AS_LOGIN_FILES"
+      ],
+      "LoginFiles": {
+        "%UserProfile%/snap/discord/current/.config/discord/blob_storage": "blob_storage/",
+        "%UserProfile%/snap/discord/current/.config/discord/Cache/index": "Cache/index",
+        "%UserProfile%/snap/discord/current/.config/discord/Cache/data_*": "Cache/",
+        "%UserProfile%/snap/discord/current/.config/discord/Code Cache/js/index-dir/the-real-index": "Code Cache/js/index-dir/the-real-index",
+        "%UserProfile%/snap/discord/current/.config/discord/DawnGraphiteCache/data_*": "DawnGraphiteCache/",
+        "%UserProfile%/snap/discord/current/.config/discord/DawnWebGPUCache/data_*": "DawnWebGPUCache/",
+        "%UserProfile%/snap/discord/current/.config/discord/GPUCache/data_*": "GPUCache/",
+        "%UserProfile%/snap/discord/current/.config/discord/Local Storage/leveldb/": "Local Storage/leveldb/",
+        "%UserProfile%/snap/discord/current/.config/discord/Network/": "Network/",
+        "%UserProfile%/snap/discord/current/.config/discord/sentry/": "sentry/",
+        "%UserProfile%/snap/discord/current/.config/discord/Service Worker/CacheStorage": "Service Worker/CacheStorage/",
+        "%UserProfile%/snap/discord/current/.config/discord/Session Storage/": "Session Storage/",
+        "%UserProfile%/snap/discord/current/.config/discord/shared_proto_db/": "shared_proto_db/",
+        "%UserProfile%/snap/discord/current/.config/discord/settings.json": "settings.json",
+        "%UserProfile%/snap/discord/current/.config/discord/Network Persistent State": "Network Persistent State",
+        "%UserProfile%/snap/discord/current/.config/discord/Preferences": "Preferences",
+        "%UserProfile%/snap/discord/current/.config/discord/TransportSecurity": "TransportSecurity",
+        "%UserProfile%/snap/discord/current/.config/discord/Cookies": "Cookies"
+      },
+      "AllFilesRequired": false,
+      "DisabledByDefault": true,
+      "ExitBeforeInteract": true,
+      "ExitBeforeSave": true,
+      "Extras": {
+        "CachePaths": [
+          "%UserProfile%/snap/discord/current/.config/discord/Cache/f_*"
+        ],
+        "BuiltInUsernameFile": "%userusername%",
+        "BuiltInProfileImageFile": "https://cdn.discordapp.com/avatars/%userid%/%useravatar%.webp",
+        "BuiltInUserId": "%userid%",
+        "variables": {
+          "userid": "leveldb:%UserProfile%/snap/discord/current/.config/discord/Local Storage/leveldb:_https://discord.comMultiAccountStore:_state.users.0.id",
+          "useravatar": "leveldb:%UserProfile%/snap/discord/current/.config/discord/Local Storage/leveldb:_https://discord.comMultiAccountStore:_state.users.0.avatar",
+          "userusername": "leveldb:%UserProfile%/snap/discord/current/.config/discord/Local Storage/leveldb:_https://discord.comMultiAccountStore:_state.users.0.username"
+        }
+      },
+      "UniqueIdFile": "leveldb:%UserProfile%/snap/discord/current/.config/discord/Local Storage/leveldb:_https://discord.comMultiAccountStore:_state.users.0.id",
+      "UniqueIdMethod": "LEVELDB"
+    },
+    "OBS Studio": {
+      "Identifiers": [
+        "obs"
+      ],
+      "ExeLocationDefault": [
+        "/usr/bin/obs",
+        "/usr/local/bin/obs"
+      ],
+      "ExesToEnd": [
+        "obs"
+      ],
+      "PathListToClear": [],
+      "LoginFiles": {
+        "%UserProfile%/.config/obs-studio/global.ini": "global.ini",
+        "%UserProfile%/.config/obs-studio/user.ini": "user.ini",
+        "%UserProfile%/.config/obs-studio/basic/*": "basic/",
+        "%UserProfile%/.config/obs-studio/TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
+      },
+      "AllFilesRequired": false,
+      "DisabledByDefault": true,
+      "UniqueIdFile": "%UserProfile%/.config/obs-studio/TcNoAccSwitcher-ID.instance",
+      "UniqueIdMethod": "CREATE_ID_FILE"
+    },
+    "OBS Studio (Flatpak)": {
+      "Identifiers": [
+        "obsfp",
+        "obsflatpak"
+      ],
+      "ExeLocationDefault": [
+        "%UserProfile%/.var/app/com.obsproject.Studio/config/obs-studio/user.ini"
+      ],
+      "ExesToEnd": [
+        "obs"
+      ],
+      "PathListToClear": [],
+      "LoginFiles": {
+        "%UserProfile%/.var/app/com.obsproject.Studio/config/obs-studio/global.ini": "global.ini",
+        "%UserProfile%/.var/app/com.obsproject.Studio/config/obs-studio/user.ini": "user.ini",
+        "%UserProfile%/.var/app/com.obsproject.Studio/config/obs-studio/basic/*": "basic/",
+        "%UserProfile%/.var/app/com.obsproject.Studio/config/obs-studio/TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
+      },
+      "AllFilesRequired": false,
+      "DisabledByDefault": true,
+      "UniqueIdFile": "%UserProfile%/.var/app/com.obsproject.Studio/config/obs-studio/TcNoAccSwitcher-ID.instance",
+      "UniqueIdMethod": "CREATE_ID_FILE"
     }
   },
   "Platform-WIP": {
+    "Heroic (Epic)": {
+      "_note": "Legendary token store used by Heroic. UNVERIFIED: no Heroic install was tested.",
+      "ExeLocationDefault": [
+        "%UserProfile%/.config/heroic/legendaryConfig/legendary/user.json",
+        "%UserProfile%/.var/app/com.heroicgameslauncher.hgl/config/heroic/legendaryConfig/legendary/user.json"
+      ],
+      "LoginFiles": {
+        "%UserProfile%/.config/heroic/legendaryConfig/legendary/user.json": "user.json"
+      }
+    },
+    "Heroic (GOG)": {
+      "_note": "Heroic gog_store/auth.json. UNVERIFIED: no Heroic install was tested.",
+      "ExeLocationDefault": [
+        "%UserProfile%/.config/heroic/gog_store/auth.json"
+      ],
+      "LoginFiles": {
+        "%UserProfile%/.config/heroic/gog_store/auth.json": "auth.json"
+      }
+    },
+    "GeForce NOW (Flatpak)": {
+      "_note": "NVIDIA ships com.nvidia.geforcenow from its own flatpak repo. UNVERIFIED: state layout not inspected.",
+      "ExeLocationDefault": [
+        "%UserProfile%/.var/app/com.nvidia.geforcenow/"
+      ]
+    }
   },
-  "Version": "4.0.6"
+  "Version": "4.0.7"
 }

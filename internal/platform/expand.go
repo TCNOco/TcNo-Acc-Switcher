@@ -22,19 +22,27 @@ type pathToken struct {
 	value string
 }
 
-// pathTokens resolves the placeholder table for the running OS. An empty value
-// means this OS has no such folder.
+// userHomeDir resolves the home directory the placeholder tables are built on.
 //
-// USERPROFILE is preferred over os.UserHomeDir even off Windows: the cache-path
-// safety check resolves these bases its own way, and the two have to agree or a
-// delete aimed at the real Desktop passes the check meant to stop it.
-func pathTokens() []pathToken {
+// USERPROFILE is preferred over os.UserHomeDir even off Windows, and both
+// pathTokens and the cache-path safety check must call this: the two have to
+// agree or a delete aimed at the real Desktop passes the check meant to stop it.
+// Off Windows USERPROFILE is unset, so without the fallback every
+// %UserProfile%-rooted path would fail the safety check as having no base.
+func userHomeDir() string {
 	home := strings.TrimSpace(os.Getenv("USERPROFILE"))
 	if home == "" {
 		if h, err := os.UserHomeDir(); err == nil {
 			home = h
 		}
 	}
+	return home
+}
+
+// pathTokens resolves the placeholder table for the running OS. An empty value
+// means this OS has no such folder.
+func pathTokens() []pathToken {
+	home := userHomeDir()
 	sub := func(name string) string {
 		if home == "" {
 			return ""
