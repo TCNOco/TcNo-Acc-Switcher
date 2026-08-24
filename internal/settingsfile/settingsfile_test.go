@@ -23,11 +23,7 @@ func TestDiscover_prefersPortableOverAppData(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	orig := os.Getenv("APPDATA")
-	if err := os.Setenv("APPDATA", filepath.Join(dir, "appdata")); err != nil {
-		t.Fatal(err)
-	}
-	t.Cleanup(func() { _ = os.Setenv("APPDATA", orig) })
+	setTestUserConfig(t, filepath.Join(dir, "appdata"))
 
 	got, ok := Discover(exeDir)
 	if !ok {
@@ -39,15 +35,7 @@ func TestDiscover_prefersPortableOverAppData(t *testing.T) {
 }
 
 func TestDiscover_fallsBackToExeRoot(t *testing.T) {
-	orig := os.Getenv("APPDATA")
-	tmpAppData := filepath.Join(t.TempDir(), "appdata")
-	if err := os.MkdirAll(tmpAppData, 0o755); err != nil {
-		t.Fatal(err)
-	}
-	if err := os.Setenv("APPDATA", tmpAppData); err != nil {
-		t.Fatal(err)
-	}
-	t.Cleanup(func() { _ = os.Setenv("APPDATA", orig) })
+	setTestUserConfig(t, filepath.Join(t.TempDir(), "appdata"))
 
 	exeDir := t.TempDir()
 	legacy := filepath.Join(exeDir, FileName)
@@ -69,5 +57,25 @@ func TestIsDefaultUserDataDir(t *testing.T) {
 	}
 	if IsDefaultUserDataDir(custom, exeDir) {
 		t.Fatal("custom should not be default")
+	}
+}
+
+// setTestUserConfig points the user config directory at dir.
+//
+// All three variables, because DefaultSearchDirs goes through os.UserConfigDir:
+// that reads APPDATA on Windows but XDG_CONFIG_HOME, then HOME, elsewhere. With
+// only APPDATA set these tests find the real user's settings file, so they pass
+// only on a machine where the app is not installed.
+func setTestUserConfig(t *testing.T, dir string) {
+	t.Helper()
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	for _, key := range []string{"APPDATA", "XDG_CONFIG_HOME", "HOME"} {
+		orig := os.Getenv(key)
+		if err := os.Setenv(key, dir); err != nil {
+			t.Fatalf("set %s: %v", key, err)
+		}
+		t.Cleanup(func() { _ = os.Setenv(key, orig) })
 	}
 }

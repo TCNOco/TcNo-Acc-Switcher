@@ -95,24 +95,24 @@ func assertPlatformsClearOnlyOwnPaths(t *testing.T, file string, raw []byte) {
 
 // TestSteamDeclaresQuitArgs pins the catalog half of the native-quit wiring. Steam ignores
 // WM_CLOSE - its main window close means minimise to tray - so without this argument the
-// graceful window expires on every switch and the client is force-killed ~5s later. The code
-// falls back to the same value, so a missing field costs speed silently rather than failing.
+// graceful window expires on every switch and the client is force-killed ~5s later.
+//
+// Windows only: off it, SIGTERM is the native quit and a shutdown argument measurably makes
+// closing slower, so the Unix catalogs deliberately carry no QuitArgs.
 func TestSteamDeclaresQuitArgs(t *testing.T) {
 	t.Parallel()
 
-	for file, raw := range allCatalogs() {
-		var catalog struct {
-			Platforms map[string]struct {
-				Extras struct {
-					QuitArgs string `json:"QuitArgs"`
-				} `json:"Extras"`
-			} `json:"Platforms"`
-		}
-		if err := json.Unmarshal(raw, &catalog); err != nil {
-			t.Fatalf("parse %s: %v", file, err)
-		}
-		if got := strings.TrimSpace(catalog.Platforms["Steam"].Extras.QuitArgs); got != "-shutdown" {
-			t.Errorf("%s: Steam Extras.QuitArgs = %q, want %q", file, got, "-shutdown")
-		}
+	var catalog struct {
+		Platforms map[string]struct {
+			Extras struct {
+				QuitArgs string `json:"QuitArgs"`
+			} `json:"Extras"`
+		} `json:"Platforms"`
+	}
+	if err := json.Unmarshal(windowsPlatformsJSON, &catalog); err != nil {
+		t.Fatalf("parse Platforms.json: %v", err)
+	}
+	if got := strings.TrimSpace(catalog.Platforms["Steam"].Extras.QuitArgs); got != "-shutdown" {
+		t.Errorf("Steam Extras.QuitArgs = %q, want %q", got, "-shutdown")
 	}
 }
