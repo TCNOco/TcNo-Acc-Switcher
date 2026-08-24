@@ -176,7 +176,7 @@ func RunGUI(params RunGUIParams) {
 	})
 	var wailsApp *application.App
 	appOpts := application.Options{
-		Name:        "TcNo Account Switcher",
+		Name:        appName,
 		Description: "A Superfast open-source account switcher",
 		LogLevel:    wailsLvl,
 		Logger:      wailsLogger,

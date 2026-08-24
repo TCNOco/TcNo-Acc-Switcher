@@ -16,6 +16,7 @@ import (
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/profileimage"
 	"TcNo-Acc-Switcher/internal/security"
+	"TcNo-Acc-Switcher/internal/winutil"
 
 	"github.com/nfnt/resize"
 	"github.com/wailsapp/wails/v3/pkg/application"
@@ -116,6 +117,33 @@ func MaybeHideMainWindow() {
 	})
 }
 
+// fitTrayIcon renders iconPNG at the size this OS wants a tray icon to be.
+//
+// The shipped art is deliberately larger than any tray draws it, so that every
+// host scales down rather than up. Windows then rescales it again to
+// SM_CXSMICON, and doing that here with Lanczos instead beats letting GDI
+// stretch it at the fractional DPIs where the result looked softest. Hosts that
+// want the source untouched report no size and get the original bytes back.
+func fitTrayIcon(iconPNG []byte) []byte {
+	size := winutil.TrayIconSize()
+	if size <= 0 || len(iconPNG) == 0 {
+		return iconPNG
+	}
+	src, err := png.Decode(bytes.NewReader(iconPNG))
+	if err != nil {
+		return iconPNG
+	}
+	b := src.Bounds()
+	if b.Dx() == size && b.Dy() == size {
+		return iconPNG
+	}
+	var out bytes.Buffer
+	if err := png.Encode(&out, resize.Resize(uint(size), uint(size), src, resize.Lanczos3)); err != nil {
+		return iconPNG
+	}
+	return out.Bytes()
+}
+
 // Start creates the systray, wires menu actions, and calls Run().
 func (m *Manager) Start(iconPNG []byte) {
 	if m.app == nil {
@@ -123,7 +151,7 @@ func (m *Manager) Start(iconPNG []byte) {
 	}
 	m.systray = m.app.SystemTray.New()
 	if len(iconPNG) > 0 {
-		m.systray.SetIcon(iconPNG)
+		m.systray.SetIcon(fitTrayIcon(iconPNG))
 	}
 	m.systray.SetLabel("TcNo Account Switcher")
 	m.rebuildMenuLocked()

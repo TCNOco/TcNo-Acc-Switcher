@@ -6,9 +6,11 @@ Exec=/usr/local/bin/tcno-acc-switcher %u
 Terminal=false
 Type=Application
 Icon=tcno-acc-switcher
-Categories=Utility;Game;
+Categories=Utility;
 Keywords=steam;account;switcher;
-# Must equal the ProgramName passed to Wails (internal/app/gui.go): GTK4 has no
-# way to set a window icon, so the desktop matches the window to this file by
-# WM_CLASS and takes the icon from here.
-StartupWMClass=tcno-acc-switcher
+# Wayland compositors match a window to this file by its app_id, and Wails takes
+# that from the GtkApplication id it builds as "org.wails." plus the lowercased
+# app name - g_set_prgname loses to it, so LinuxOptions.ProgramName cannot
+# change it. Anything else here shows the compositor's fallback icon instead.
+# TestDesktopEntryMatchesWaylandAppID derives this from the name in gui.go.
+StartupWMClass=org.wails.tcno_account_switcher

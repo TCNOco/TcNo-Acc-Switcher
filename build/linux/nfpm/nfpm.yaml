@@ -1,67 +1,68 @@
-# Feel free to remove those if you don't want/need to use them.
-# Make sure to check the documentation at https://nfpm.goreleaser.com
+# nfpm configuration. See https://nfpm.goreleaser.com
 #
-# The lines below are called `modelines`. See `:help modeline`
+# Nothing here may carry a .exe suffix: the names below are the ones the desktop
+# entry points at, so a mismatch means the menu launches nothing and the icon
+# lookup fails, which leaves the compositor drawing its own placeholder.
 
-name: "tcno-acc-switcher.exe"
+name: "tcno-acc-switcher"
 arch: ${GOARCH}
 platform: "linux"
 version: "0.1.0"
-section: "default"
-priority: "extra"
+section: "utils"
+priority: "optional"
 maintainer: ${GIT_COMMITTER_NAME} <${GIT_COMMITTER_EMAIL}>
-description: "A TcNo-Acc-Switcher application"
-vendor: "My Company"
-homepage: "https://wails.io"
-license: "MIT"
+description: "A Superfast open-source account switcher"
+vendor: "TcNo"
+homepage: "https://github.com/TCNOco/TcNo-Acc-Switcher"
+license: "GPL-3.0-only"
 release: "1"
 
 contents:
-  - src: "./bin/tcno-acc-switcher.exe"
-    dst: "/usr/local/bin/tcno-acc-switcher.exe"
-  - src: "./build/appicon.png"
-    dst: "/usr/share/icons/hicolor/128x128/apps/tcno-acc-switcher.exe.png"
-  - src: "./build/linux/tcno-acc-switcher.exe.desktop"
-    dst: "/usr/share/applications/tcno-acc-switcher.exe.desktop"
+  - src: "./bin/tcno-acc-switcher"
+    dst: "/usr/local/bin/tcno-acc-switcher"
 
-# Default dependencies for Debian 12/Ubuntu 22.04+ with WebKit 4.1
+  - src: "./build/linux/desktop"
+    dst: "/usr/share/applications/tcno-acc-switcher.desktop"
+
+  # Icon= in the desktop entry is a theme name, so the icon has to be installed
+  # into hicolor at a size the theme declares. A single oversized PNG dropped in
+  # one size directory is not found reliably.
+  - src: "./build/linux/icons/16x16/apps/tcno-acc-switcher.png"
+    dst: "/usr/share/icons/hicolor/16x16/apps/tcno-acc-switcher.png"
+  - src: "./build/linux/icons/24x24/apps/tcno-acc-switcher.png"
+    dst: "/usr/share/icons/hicolor/24x24/apps/tcno-acc-switcher.png"
+  - src: "./build/linux/icons/32x32/apps/tcno-acc-switcher.png"
+    dst: "/usr/share/icons/hicolor/32x32/apps/tcno-acc-switcher.png"
+  - src: "./build/linux/icons/48x48/apps/tcno-acc-switcher.png"
+    dst: "/usr/share/icons/hicolor/48x48/apps/tcno-acc-switcher.png"
+  - src: "./build/linux/icons/64x64/apps/tcno-acc-switcher.png"
+    dst: "/usr/share/icons/hicolor/64x64/apps/tcno-acc-switcher.png"
+  - src: "./build/linux/icons/128x128/apps/tcno-acc-switcher.png"
+    dst: "/usr/share/icons/hicolor/128x128/apps/tcno-acc-switcher.png"
+  - src: "./build/linux/icons/256x256/apps/tcno-acc-switcher.png"
+    dst: "/usr/share/icons/hicolor/256x256/apps/tcno-acc-switcher.png"
+  - src: "./build/linux/icons/512x512/apps/tcno-acc-switcher.png"
+    dst: "/usr/share/icons/hicolor/512x512/apps/tcno-acc-switcher.png"
+
+# Wails v3 links GTK4 and WebKitGTK 6.0, not the GTK3/WebKit2 4.1 pair the
+# scaffolding declared. Read back off the linked binary with ldd.
 depends:
-  - libgtk-3-0
-  - libwebkit2gtk-4.1-0
+  - libgtk-4-1
+  - libwebkitgtk-6.0-4
+  - libsoup-3.0-0
 
-# Distribution-specific overrides for different package formats and WebKit versions
 overrides:
-  # RPM packages for RHEL/CentOS/AlmaLinux/Rocky Linux (WebKit 4.0)
   rpm:
     depends:
-      - gtk3
-      - webkit2gtk4.1
-  
-  # Arch Linux packages (WebKit 4.1)  
+      - gtk4
+      - webkitgtk6.0
+      - libsoup3
   archlinux:
     depends:
-      - gtk3
-      - webkit2gtk-4.1
+      - gtk4
+      - webkitgtk-6.0
+      - libsoup3
 
-# scripts section to ensure desktop database is updated after install
 scripts:
   postinstall: "./build/linux/nfpm/scripts/postinstall.sh"
-  # You can also add preremove, postremove if needed
-  # preremove: "./build/linux/nfpm/scripts/preremove.sh"
-  # postremove: "./build/linux/nfpm/scripts/postremove.sh"
-
-# replaces:
-#   - foobar
-# provides:
-#   - bar
-# depends:
-#   - gtk3
-#   - libwebkit2gtk
-# recommends:
-#   - whatever
-# suggests:
-#   - something-else
-# conflicts:
-#   - not-foo
-#   - not-bar
-# changelog: "changelog.yaml"
+  postremove: "./build/linux/nfpm/scripts/postremove.sh"
