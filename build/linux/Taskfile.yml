@@ -75,7 +75,7 @@ tasks:
           Docker image '{{.CROSS_IMAGE}}' not found.
           Build it first: wails3 task setup:docker
     cmds:
-      - docker run --rm -v "{{.ROOT_DIR}}:/app" {{.GO_CACHE_MOUNT}} {{.REPLACE_MOUNTS}} -e APP_NAME="{{.APP_NAME}}" {{if .EXTRA_TAGS}}-e EXTRA_TAGS="{{.EXTRA_TAGS}}"{{end}} "{{.CROSS_IMAGE}}" linux {{.DOCKER_ARCH}}
+      - docker run --rm -v "{{.ROOT_DIR}}:/app" -v "{{.GO_MOD_CACHE}}:/go/pkg/mod" {{.REPLACE_MOUNTS}} -e APP_NAME="{{.APP_NAME}}" -e GOTOOLCHAIN=auto {{if .EXTRA_TAGS}}-e EXTRA_TAGS="{{.EXTRA_TAGS}}"{{end}} "{{.CROSS_IMAGE}}" linux {{.DOCKER_ARCH}}
       - docker run --rm -v "{{.ROOT_DIR}}:/app" alpine chown -R $(id -u):$(id -g) /app/bin
       - mkdir -p {{.BIN_DIR}}
       - mv "bin/{{.APP_NAME}}-linux-{{.DOCKER_ARCH}}" "{{.OUTPUT}}"
@@ -84,8 +84,12 @@ tasks:
       DEFAULT_OUTPUT: '{{.BIN_DIR}}/{{.APP_NAME}}'
       OUTPUT: '{{ .OUTPUT | default .DEFAULT_OUTPUT }}'
       # Mount Go module cache for faster builds
-      GO_CACHE_MOUNT:
-        sh: 'echo "-v ${GOPATH:-$HOME/go}/pkg/mod:/go/pkg/mod"'
+      # The path alone, quoted where it is used: a Windows host's backslashes do
+      # not survive interpolation unquoted, and Docker reads what is left as a
+      # relative path (mkdir C:Userstcnogo: Access is denied). Asking Go beats
+      # rebuilding the path from GOPATH, which misses a set GOMODCACHE.
+      GO_MOD_CACHE:
+        sh: 'go env GOMODCACHE'
       # Extract replace directives from go.mod and create -v mounts for each
       REPLACE_MOUNTS:
         sh: |

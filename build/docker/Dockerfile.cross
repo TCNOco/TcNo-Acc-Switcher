@@ -13,7 +13,14 @@
 #   docker run --rm -v $(pwd):/app wails-cross windows amd64
 #   docker run --rm -v $(pwd):/app wails-cross windows arm64
 
-FROM golang:1.25-bookworm
+# Trixie, not bookworm: Wails v3 calls GtkFileDialog, which arrived in GTK
+# 4.10, and bookworm carries 4.8. Trixie has 4.18. The cost is the glibc
+# floor of anything built here, which moves from 2.36 to 2.41.
+FROM golang:1.26-trixie
+
+# The base image pins GOTOOLCHAIN=local, so a go.mod that asks for a newer
+# Go than the image ships fails outright instead of fetching it.
+ENV GOTOOLCHAIN=auto
 
 ARG TARGETARCH
 
