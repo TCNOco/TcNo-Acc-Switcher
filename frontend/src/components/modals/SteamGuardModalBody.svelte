@@ -4189,7 +4189,10 @@
 		justify-content: center;
 		width: 8.5rem;
 		height: 8.5rem;
-		border-radius: $sg-half;
+		/* Rounded into the code's own quiet zone, which is four modules deep - a
+		   little over a rem at this size. Anything much larger starts cutting the
+		   corner finder patterns, which is what a camera looks for first. */
+		border-radius: $sg-1;
 		/* The SVG paints its own white quiet zone, so this only rounds the corners
 		   and stands in while the code is still being fetched. */
 		background: #fff;
