@@ -11,8 +11,6 @@ import (
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
-
-	"github.com/tidwall/gjson"
 )
 
 const settingsFileName = "SteamSettings.json"
@@ -151,17 +149,16 @@ func LoadSettings() (Settings, error) {
 		return Settings{}, err
 	}
 
-	var s Settings
+	// Onto the defaults, not onto a zero value. A key absent from the file
+	// otherwise decodes to false and is then written back, which is how a
+	// settings file that predates a flag silently turns the feature off - it took
+	// AutoStart and four Steam_Show* flags with it.
+	s := defaultSettings()
 	if err := json.Unmarshal(data2, &s); err != nil {
 		return defaultSettings(), err
 	}
 	if legacySilent {
 		s.LaunchArguments = platform.EnsureLaunchArg(s.LaunchArguments, "-silent")
-	}
-	if gjson.GetBytes(data2, "AlwaysSwapOnShortcut").Exists() {
-		s.AlwaysSwapOnShortcut = gjson.GetBytes(data2, "AlwaysSwapOnShortcut").Bool()
-	} else {
-		s.AlwaysSwapOnShortcut = true
 	}
 	s.FolderPath = NormalizeFolderPath(s.FolderPath)
 	if len(s.Shortcuts) == 0 && len(s.ShortcutsJSON) > 0 {
@@ -176,12 +173,6 @@ func LoadSettings() (Settings, error) {
 	}
 	if s.SteamImageExpiryTime <= 0 {
 		s.SteamImageExpiryTime = 7
-	}
-	// Honor explicit 0 to disable tray MRU; default to 3 when the key was absent from JSON.
-	if gjson.GetBytes(data, "TrayAccNumber").Exists() || gjson.GetBytes(data, "Steam_TrayAccNumber").Exists() {
-		// keep unmarshaled TrayAccNumber (including 0)
-	} else if s.TrayAccNumber <= 0 {
-		s.TrayAccNumber = 3
 	}
 	if strings.TrimSpace(s.ClosingMethod) == "" {
 		s.ClosingMethod = "Combined"
@@ -198,27 +189,6 @@ func LoadSettings() (Settings, error) {
 	if strings.TrimSpace(s.StartingMethod) == "" {
 		s.StartingMethod = "Default"
 	}
-	// New bools default to true when absent from JSON (unmarshal sets false).
-	if !gjson.GetBytes(data2, "Steam_ShowMiniProfile").Exists() {
-		s.SteamShowMiniProfile = true
-	}
-	if !gjson.GetBytes(data2, "Steam_ShowAvatarFrame").Exists() {
-		s.SteamShowAvatarFrame = true
-	}
-	// Absent in every settings file written before the lock existed, and a
-	// missing bool decodes to false, so it has to be defaulted on explicitly or
-	// existing installs would silently get the feature turned off.
-	if !gjson.GetBytes(data2, "Steam_ShowSteamGuardLock").Exists() {
-		s.SteamShowSteamGuardLock = true
-	}
-	if !gjson.GetBytes(data2, "Steam_CollectCS2Cooldowns").Exists() {
-		s.SteamCollectCS2Cooldowns = true
-	}
-	if !gjson.GetBytes(data2, "Steam_ShowCS2Rank").Exists() {
-		s.SteamShowCS2Rank = true
-	}
-	// Steam_ShowCS2PrimeTag is deliberately absent here: it defaults off, which is
-	// what a missing bool already decodes to.
 	return s, nil
 }
 
