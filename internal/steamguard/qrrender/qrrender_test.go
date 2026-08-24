@@ -2,8 +2,13 @@ package qrrender
 
 import (
 	"encoding/base64"
+	"fmt"
 	"strings"
 	"testing"
+
+	"github.com/makiuchi-d/gozxing"
+	"github.com/makiuchi-d/gozxing/qrcode"
+	"github.com/makiuchi-d/gozxing/qrcode/decoder"
 )
 
 func TestSVGDataURIDrawsTheChallengeURL(t *testing.T) {
@@ -49,5 +54,46 @@ func TestSVGDataURIRefusesNothingToDraw(t *testing.T) {
 				t.Fatal("a code was drawn for nothing")
 			}
 		})
+	}
+}
+
+// The path is written by hand here rather than by a library, so the geometry is
+// this package's to get wrong: one square per dark module, and a viewBox that
+// leaves the quiet zone room on all four sides.
+func TestSVGDataURIDrawsEveryModuleAndNothingElse(t *testing.T) {
+	t.Parallel()
+
+	const text = "https://s.team/q/1/1234567890123456789"
+	matrix, err := qrcode.NewQRCodeWriter().Encode(text, gozxing.BarcodeFormat_QR_CODE, 0, 0,
+		map[gozxing.EncodeHintType]interface{}{
+			gozxing.EncodeHintType_ERROR_CORRECTION: decoder.ErrorCorrectionLevel_M,
+			gozxing.EncodeHintType_MARGIN:           0,
+		})
+	if err != nil {
+		t.Fatal(err)
+	}
+	dark := 0
+	for y := 0; y < matrix.GetHeight(); y++ {
+		for x := 0; x < matrix.GetWidth(); x++ {
+			if matrix.Get(x, y) {
+				dark++
+			}
+		}
+	}
+
+	uri, err := SVGDataURI(text)
+	if err != nil {
+		t.Fatal(err)
+	}
+	svg, err := base64.StdEncoding.DecodeString(strings.TrimPrefix(uri, "data:image/svg+xml;base64,"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := strings.Count(string(svg), "M"); got != dark {
+		t.Fatalf("drew %d modules, symbol has %d", got, dark)
+	}
+	want := fmt.Sprintf(`viewBox="0 0 %d %d"`, (matrix.GetWidth()+border*2)*scale, (matrix.GetHeight()+border*2)*scale)
+	if !strings.Contains(string(svg), want) {
+		t.Fatalf("viewBox does not leave the quiet zone room; wanted %s", want)
 	}
 }

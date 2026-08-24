@@ -13,8 +13,8 @@ require (
 	github.com/hugolgst/rich-go v0.0.0-20240715122152-74618cc1ace2
 	github.com/jchv/go-winloader v0.0.0-20250406163304-c1995be93bd1
 	github.com/ldclabs/cose v1.3.2
+	github.com/makiuchi-d/gozxing v0.1.1
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
-	github.com/piglig/go-qr v1.1.0
 	github.com/srwiley/oksvg v0.0.0-20221011165216-be6e8873101c
 	github.com/srwiley/rasterx v0.0.0-20220730225603-2ab79fcdd4ef
 	github.com/syndtr/goleveldb v1.0.0
@@ -54,6 +54,7 @@ require (
 	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 	golang.org/x/exp v0.0.0-20260528193900-50dc527dd6c7 // indirect
+	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
 	modernc.org/libc v1.74.1 // indirect
 	modernc.org/mathutil v1.7.1 // indirect

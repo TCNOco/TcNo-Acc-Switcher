@@ -1,18 +1,20 @@
 // Package qrrender draws a Steam sign-in challenge URL as a QR code.
 //
 // The sibling qrimage package reads QR codes out of screenshots; this one writes
-// them. Both sit on github.com/piglig/go-qr, which is pure Go and does its own
-// encoding, so nothing here reaches the network or the filesystem.
+// them. Both sit on github.com/makiuchi-d/gozxing, which is pure Go, so nothing
+// here reaches the network or the filesystem.
 package qrrender
 
 import (
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"image/color"
+	"strconv"
 	"strings"
 
-	goqr "github.com/piglig/go-qr"
+	"github.com/makiuchi-d/gozxing"
+	"github.com/makiuchi-d/gozxing/qrcode"
+	"github.com/makiuchi-d/gozxing/qrcode/decoder"
 )
 
 const (
@@ -26,6 +28,10 @@ const (
 	// maxTextBytes is well past a Steam challenge URL, which is around forty
 	// characters. It only stops an unbounded string reaching the encoder.
 	maxTextBytes = 512
+	// maxModules is version 40, the largest symbol the specification defines.
+	// A challenge URL is nowhere near it; this only bounds the SVG a malformed
+	// encode could ask for.
+	maxModules = 177
 )
 
 var ErrNothingToEncode = errors.New("qrrender: nothing to encode")
@@ -36,11 +42,11 @@ var ErrNothingToEncode = errors.New("qrrender: nothing to encode")
 // room for, and a resampled PNG of a QR code is exactly the thing phone cameras
 // struggle with.
 //
-// Painted white rather than left transparent. go-qr writes a transparent light
-// colour as fill="" on the background rect, which is not a valid presentation
-// attribute value: the browser drops it, fill falls back to its initial value -
-// black - and the rect covers the whole code. A scanner wants a light quiet zone
-// anyway, so white is what this should have asked for to begin with.
+// The markup is written here rather than by a library. It is a background rect
+// and one path of module squares, and owning it means the colours are always
+// spelled out: a library that wrote a transparent light colour as an empty fill
+// attribute once turned the whole code black, because an invalid presentation
+// attribute falls back to the property's initial value.
 func SVGDataURI(text string) (string, error) {
 	text = strings.TrimSpace(text)
 	if text == "" || len(text) > maxTextBytes {
@@ -48,17 +54,64 @@ func SVGDataURI(text string) (string, error) {
 	}
 	// Medium correction: enough to survive a little glare or a fingerprint on the
 	// screen, without the module count that makes a code harder to focus on.
-	code, err := goqr.EncodeText(text, goqr.Medium)
+	// The zero size asks the writer for the symbol's natural module count, and
+	// the quiet zone is drawn here, so it asks for none of its own.
+	matrix, err := qrcode.NewQRCodeWriter().Encode(text, gozxing.BarcodeFormat_QR_CODE, 0, 0,
+		map[gozxing.EncodeHintType]interface{}{
+			gozxing.EncodeHintType_ERROR_CORRECTION: decoder.ErrorCorrectionLevel_M,
+			gozxing.EncodeHintType_MARGIN:           0,
+		})
 	if err != nil {
 		return "", fmt.Errorf("qrrender: encode: %w", err)
 	}
-	config := goqr.NewQrCodeImgConfig(scale, border,
-		goqr.WithLight(color.White),
-		goqr.WithDark(color.Black),
-	)
-	svg, err := code.ToSVGBytes(config)
+	svg, err := svgFromMatrix(matrix)
 	if err != nil {
-		return "", fmt.Errorf("qrrender: render: %w", err)
+		return "", err
 	}
-	return "data:image/svg+xml;base64," + base64.StdEncoding.EncodeToString(svg), nil
+	return "data:image/svg+xml;base64," + base64.StdEncoding.EncodeToString([]byte(svg)), nil
+}
+
+func svgFromMatrix(matrix *gozxing.BitMatrix) (string, error) {
+	if matrix == nil {
+		return "", ErrNothingToEncode
+	}
+	modules := matrix.GetWidth()
+	if modules <= 0 || modules != matrix.GetHeight() || modules > maxModules {
+		return "", fmt.Errorf("qrrender: unexpected symbol size %dx%d", matrix.GetWidth(), matrix.GetHeight())
+	}
+	dimension := strconv.Itoa((modules + border*2) * scale)
+
+	var out strings.Builder
+	out.Grow(256 + modules*modules*20)
+	out.WriteString(`<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 `)
+	out.WriteString(dimension)
+	out.WriteByte(' ')
+	out.WriteString(dimension)
+	out.WriteString(`" stroke="none">`)
+	out.WriteString(`<rect width="`)
+	out.WriteString(dimension)
+	out.WriteString(`" height="`)
+	out.WriteString(dimension)
+	out.WriteString(`" fill="#FFFFFF"/>`)
+	out.WriteString(`<path fill="#000000" d="`)
+	for y := 0; y < modules; y++ {
+		for x := 0; x < modules; x++ {
+			if !matrix.Get(x, y) {
+				continue
+			}
+			out.WriteByte('M')
+			out.WriteString(strconv.Itoa((x + border) * scale))
+			out.WriteByte(',')
+			out.WriteString(strconv.Itoa((y + border) * scale))
+			out.WriteByte('h')
+			out.WriteString(strconv.Itoa(scale))
+			out.WriteByte('v')
+			out.WriteString(strconv.Itoa(scale))
+			out.WriteByte('h')
+			out.WriteString(strconv.Itoa(-scale))
+			out.WriteByte('z')
+		}
+	}
+	out.WriteString(`"/></svg>`)
+	return out.String(), nil
 }

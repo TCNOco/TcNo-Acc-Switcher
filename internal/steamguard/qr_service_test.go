@@ -5,7 +5,9 @@ import (
 	"context"
 	"encoding/base64"
 	"errors"
+	"image"
 	"image/color"
+	"image/draw"
 	"image/png"
 	"os"
 	"path/filepath"
@@ -21,7 +23,9 @@ import (
 	"TcNo-Acc-Switcher/internal/steamguard/qrregion"
 	"TcNo-Acc-Switcher/internal/steamguard/vault"
 
-	goqr "github.com/piglig/go-qr"
+	"github.com/makiuchi-d/gozxing"
+	"github.com/makiuchi-d/gozxing/qrcode"
+	"github.com/makiuchi-d/gozxing/qrcode/decoder"
 )
 
 const (
@@ -450,16 +454,39 @@ func setupQRService(t *testing.T) (*Service, SensitiveViewGrant) {
 	return service, issueSensitiveGrant(t, service, qrTestAccountID, "request-qr-service-0001")
 }
 
+// qrTestImage paints a symbol at six pixels a module with a four-module quiet
+// zone, which is what these fixtures have always been.
+func qrTestImage(t *testing.T, payload string) image.Image {
+	t.Helper()
+	const (
+		module    = 6
+		quietZone = 4
+	)
+	matrix, err := qrcode.NewQRCodeWriter().Encode(payload, gozxing.BarcodeFormat_QR_CODE, 0, 0,
+		map[gozxing.EncodeHintType]interface{}{
+			gozxing.EncodeHintType_ERROR_CORRECTION: decoder.ErrorCorrectionLevel_M,
+			gozxing.EncodeHintType_MARGIN:           quietZone,
+		})
+	if err != nil {
+		t.Fatal(err)
+	}
+	img := image.NewNRGBA(image.Rect(0, 0, matrix.GetWidth()*module, matrix.GetHeight()*module))
+	draw.Draw(img, img.Bounds(), image.NewUniform(color.NRGBA{R: 0xff, G: 0xff, B: 0xff, A: 0xff}), image.Point{}, draw.Src)
+	for y := 0; y < matrix.GetHeight(); y++ {
+		for x := 0; x < matrix.GetWidth(); x++ {
+			if !matrix.Get(x, y) {
+				continue
+			}
+			draw.Draw(img, image.Rect(x*module, y*module, (x+1)*module, (y+1)*module),
+				image.NewUniform(color.NRGBA{A: 0xff}), image.Point{}, draw.Src)
+		}
+	}
+	return img
+}
+
 func writeQRPNG(t *testing.T, payload string) string {
 	t.Helper()
-	symbol, err := goqr.EncodeText(payload, goqr.Medium)
-	if err != nil {
-		t.Fatal(err)
-	}
-	source, err := symbol.ToImage(goqr.NewQrCodeImgConfig(6, 4))
-	if err != nil {
-		t.Fatal(err)
-	}
+	source := qrTestImage(t, payload)
 	path := filepath.Join(tempDir(t), "steam-login.png")
 	file, err := os.Create(path)
 	if err != nil {
@@ -477,14 +504,7 @@ func writeQRPNG(t *testing.T, payload string) string {
 
 func makeQRCaptureFrame(t *testing.T, payload string) (qrcapture.Frame, []byte) {
 	t.Helper()
-	symbol, err := goqr.EncodeText(payload, goqr.Medium)
-	if err != nil {
-		t.Fatal(err)
-	}
-	source, err := symbol.ToImage(goqr.NewQrCodeImgConfig(6, 4))
-	if err != nil {
-		t.Fatal(err)
-	}
+	source := qrTestImage(t, payload)
 	bounds := source.Bounds()
 	stride := bounds.Dx() * 4
 	pixels := make([]byte, stride*bounds.Dy())

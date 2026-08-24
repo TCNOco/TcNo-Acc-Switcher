@@ -15,7 +15,9 @@ import (
 
 	"TcNo-Acc-Switcher/internal/steamguard/qr"
 
-	goqr "github.com/piglig/go-qr"
+	"github.com/makiuchi-d/gozxing"
+	"github.com/makiuchi-d/gozxing/qrcode"
+	"github.com/makiuchi-d/gozxing/qrcode/decoder"
 )
 
 func TestDecodePNGAndWipe(t *testing.T) {
@@ -488,14 +490,19 @@ func FuzzDecodeCandidatesImages(f *testing.F) {
 
 func makeQRFrame(t testing.TB, payload string) *Frame {
 	t.Helper()
-	symbol, err := goqr.EncodeText(payload, goqr.Medium)
+	const (
+		module    = 6
+		quietZone = 4
+	)
+	matrix, err := qrcode.NewQRCodeWriter().Encode(payload, gozxing.BarcodeFormat_QR_CODE, 0, 0,
+		map[gozxing.EncodeHintType]interface{}{
+			gozxing.EncodeHintType_ERROR_CORRECTION: decoder.ErrorCorrectionLevel_M,
+			gozxing.EncodeHintType_MARGIN:           quietZone,
+		})
 	if err != nil {
 		t.Fatal(err)
 	}
-	source, err := symbol.ToImage(goqr.NewQrCodeImgConfig(6, 4))
-	if err != nil {
-		t.Fatal(err)
-	}
+	source := matrixImage(matrix, module)
 	bounds := source.Bounds()
 	frame := &Frame{
 		Width:  bounds.Dx(),
@@ -505,6 +512,26 @@ func makeQRFrame(t testing.TB, payload string) *Frame {
 	}
 	draw.Draw(frame.Image(), frame.Image().Bounds(), source, bounds.Min, draw.Src)
 	return frame
+}
+
+// matrixImage paints a symbol at module-sized squares, which is what the
+// decoder's fixtures were before and what makes them independent of any one
+// library's own renderer.
+func matrixImage(matrix *gozxing.BitMatrix, module int) image.Image {
+	width := matrix.GetWidth() * module
+	height := matrix.GetHeight() * module
+	img := image.NewNRGBA(image.Rect(0, 0, width, height))
+	draw.Draw(img, img.Bounds(), image.NewUniform(color.NRGBA{R: 0xff, G: 0xff, B: 0xff, A: 0xff}), image.Point{}, draw.Src)
+	for y := 0; y < matrix.GetHeight(); y++ {
+		for x := 0; x < matrix.GetWidth(); x++ {
+			if !matrix.Get(x, y) {
+				continue
+			}
+			cell := image.Rect(x*module, y*module, (x+1)*module, (y+1)*module)
+			draw.Draw(img, cell, image.NewUniform(color.NRGBA{A: 0xff}), image.Point{}, draw.Src)
+		}
+	}
+	return img
 }
 
 func makeQRComposite(t testing.TB, payloads ...string) *Frame {

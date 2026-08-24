@@ -10,7 +10,8 @@ import (
 
 	"TcNo-Acc-Switcher/internal/steamguard/qr"
 
-	goqr "github.com/piglig/go-qr"
+	"github.com/makiuchi-d/gozxing"
+	"github.com/makiuchi-d/gozxing/qrcode"
 )
 
 const (
@@ -245,6 +246,11 @@ func checkDecodeBudget(ctx context.Context, started time.Time, now decodeClock, 
 	return nil
 }
 
+// decodeFrame reads the first symbol in one region.
+//
+// A fresh reader per call: the decoder holds per-decode state, and this is
+// reached from a service whose operations are only bounded per account, so two
+// windows can decode at once.
 func decodeFrame(frame image.Image) (payload string, err error) {
 	defer func() {
 		if recover() != nil {
@@ -252,7 +258,17 @@ func decodeFrame(frame image.Image) (payload string, err error) {
 			err = ErrDecoderFailure
 		}
 	}()
-	return goqr.Decode(frame)
+	bitmap, bitmapErr := gozxing.NewBinaryBitmapFromImage(frame)
+	if bitmapErr != nil {
+		// Nothing about the image is decodable, which is the same answer as a
+		// region with no code in it.
+		return "", bitmapErr
+	}
+	result, decodeErr := qrcode.NewQRCodeReader().Decode(bitmap, nil)
+	if decodeErr != nil {
+		return "", decodeErr
+	}
+	return result.GetText(), nil
 }
 
 func wipeFrames(frames []*Frame) {
