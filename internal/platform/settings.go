@@ -180,7 +180,13 @@ func defaultSettings() AppSettings {
 	}
 }
 
-func normalizeAppSettingsDefaults(s *AppSettings, raw map[string]json.RawMessage) {
+// normalizeAppSettingsShape enforces what has to hold of any settings value,
+// whatever produced it: a version and a language, a map rather than nil, values
+// inside the set their field allows, and the interlocks between related fields.
+//
+// It says nothing about what a setting should default to, so it is safe to run
+// over settings on their way out to disk as well as on the way in.
+func normalizeAppSettingsShape(s *AppSettings) {
 	if s == nil {
 		return
 	}
@@ -192,6 +198,36 @@ func normalizeAppSettingsDefaults(s *AppSettings, raw map[string]json.RawMessage
 	}
 	if s.PlatformExePaths == nil {
 		s.PlatformExePaths = map[string]string{}
+	}
+	s.AppBgAlignment = normalizeBackgroundAlignment(s.AppBgAlignment)
+	s.AppBgFit = normalizeBackgroundFit(s.AppBgFit)
+	for key, background := range s.PlatformBgs {
+		background.Alignment = normalizeBackgroundAlignment(background.Alignment)
+		background.Fit = normalizeBackgroundFit(background.Fit)
+		s.PlatformBgs[key] = background
+	}
+	s.CommandPaletteHotkey = normalizeCommandPaletteHotkey(s.CommandPaletteHotkey)
+	if !s.DiscordRpc {
+		s.DiscordRpcShare = false
+	}
+	if s.OfflineMode {
+		s.DiscordRpc = false
+		s.DiscordRpcShare = false
+	}
+}
+
+// normalizeAppSettingsDefaults turns on the settings that default to on for a
+// file written before they existed, then applies the shape rules.
+//
+// raw is the decoded JSON object, and it is only ever consulted to tell a key
+// that was absent from one the user explicitly set to false. That makes this a
+// function about reading a file, and only about reading one: on the way out
+// every field already holds the value the user chose, so asking "was this key in
+// the JSON" of a struct that never came from JSON answers no for all of them and
+// turns each one back on.
+func normalizeAppSettingsDefaults(s *AppSettings, raw map[string]json.RawMessage) {
+	if s == nil {
+		return
 	}
 	if _, ok := raw["statsEnabled"]; !ok {
 		s.StatsEnabled = true
@@ -214,21 +250,7 @@ func normalizeAppSettingsDefaults(s *AppSettings, raw map[string]json.RawMessage
 	if _, ok := raw["controllerSupportEnabled"]; !ok {
 		s.ControllerSupportEnabled = true
 	}
-	s.AppBgAlignment = normalizeBackgroundAlignment(s.AppBgAlignment)
-	s.AppBgFit = normalizeBackgroundFit(s.AppBgFit)
-	for key, background := range s.PlatformBgs {
-		background.Alignment = normalizeBackgroundAlignment(background.Alignment)
-		background.Fit = normalizeBackgroundFit(background.Fit)
-		s.PlatformBgs[key] = background
-	}
-	s.CommandPaletteHotkey = normalizeCommandPaletteHotkey(s.CommandPaletteHotkey)
-	if !s.DiscordRpc {
-		s.DiscordRpcShare = false
-	}
-	if s.OfflineMode {
-		s.DiscordRpc = false
-		s.DiscordRpcShare = false
-	}
+	normalizeAppSettingsShape(s)
 }
 
 func resolveSettingsSavePath(exeDir string, s AppSettings) (string, error) {
@@ -337,17 +359,11 @@ func loadSettings(exeDir string) (AppSettings, error) {
 }
 
 func saveSettingsAtomic(exeDir string, s AppSettings) error {
-	if s.PlatformExePaths == nil {
-		s.PlatformExePaths = map[string]string{}
-	}
-	normalizeAppSettingsDefaults(&s, map[string]json.RawMessage{
-		"animationsEnabled":        {},
-		"statsEnabled":             {},
-		"statsShare":               {},
-		"prereleaseUpdates":        {},
-		"discordRpc":               {},
-		"controllerSupportEnabled": {},
-	})
+	// Shape only. This used to call normalizeAppSettingsDefaults with a
+	// hand-written map of "keys to pretend were present", which had to list every
+	// field that defaults to on and silently turned back on any it missed - which
+	// is what happened to crashReportAutoSubmit, on every single save.
+	normalizeAppSettingsShape(&s)
 	path, err := resolveSettingsSavePath(exeDir, s)
 	if err != nil {
 		return err
