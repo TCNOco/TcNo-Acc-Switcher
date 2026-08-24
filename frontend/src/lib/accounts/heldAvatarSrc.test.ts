@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { heldAvatarSrc, resetHeldAvatars, setAvatarPreloader } from "./heldAvatarSrc";
+import { heldAvatarKey, heldAvatarSrc, resetHeldAvatars, setAvatarPreloader } from "./heldAvatarSrc";
 
 /** A preloader whose outcome each test decides, and settles on demand. */
 function controllablePreloader() {
@@ -95,5 +95,31 @@ describe("heldAvatarSrc", () => {
   it("passes an empty src through rather than holding anything", () => {
     heldAvatarSrc("acc", "/img/a.jpg");
     expect(heldAvatarSrc("acc", "")).toBe("");
+  });
+});
+
+describe("heldAvatarKey", () => {
+  beforeEach(() => {
+    resetHeldAvatars();
+    setAvatarPreloader(null);
+  });
+
+  it("gives two views of one account a hold each", () => {
+    const loader = controllablePreloader();
+    const list = heldAvatarKey("list", "acc");
+    const vault = heldAvatarKey("steam-guard", "acc");
+
+    expect(heldAvatarSrc(list, "/img/a.jpg?_tcv=1")).toBe("/img/a.jpg?_tcv=1");
+    expect(heldAvatarSrc(vault, "/img/a.jpg?_tcv=0")).toBe("/img/a.jpg?_tcv=0");
+
+    // The vault settling on its own src must not take the list's away from it.
+    // Sharing one slot, each swap re-rendered the other view, which asked for its
+    // own src back: the pair alternated a frame at a time until one view closed.
+    expect(loader.pending).toHaveLength(0);
+    expect(heldAvatarSrc(list, "/img/a.jpg?_tcv=1")).toBe("/img/a.jpg?_tcv=1");
+  });
+
+  it("has no hold for an account with no id", () => {
+    expect(heldAvatarKey("list", "  ")).toBe("");
   });
 });

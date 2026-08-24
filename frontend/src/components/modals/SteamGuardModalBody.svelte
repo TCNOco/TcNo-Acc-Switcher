@@ -2463,7 +2463,7 @@
       {#if !openAllAccountsOnReady}
         <div class="steam-guard__identity">
           <span class="steam-guard__identity-avatar">
-            <SteamAccountAvatar account={avatarRow(lockedAccountSummary ?? refSummary(state.account, true))} fallback={PROFILE_FALLBACK} />
+            <SteamAccountAvatar account={avatarRow(lockedAccountSummary ?? refSummary(state.account, true))} fallback={PROFILE_FALLBACK} scope="steam-guard" />
           </span>
           <span class="steam-guard__identity-name">
             <span class="steam-guard__identity-display">{state.account.username}</span>
@@ -2544,7 +2544,7 @@
     <section class="steam-guard__stack">
       <div class="steam-guard__identity" data-steamguard-focus tabindex="-1">
         <span class="steam-guard__identity-avatar">
-          <SteamAccountAvatar account={avatarRow(codeAccountSummary)} fallback={PROFILE_FALLBACK} />
+          <SteamAccountAvatar account={avatarRow(codeAccountSummary)} fallback={PROFILE_FALLBACK} scope="steam-guard" />
         </span>
         <span class="steam-guard__identity-name">
           <span class="steam-guard__identity-display">{codeAccountSummary.username}</span>
@@ -2676,7 +2676,7 @@
     <section class="steam-guard__stack">
       <div class="steam-guard__identity" data-steamguard-focus tabindex="-1">
         <span class="steam-guard__identity-avatar">
-          <SteamAccountAvatar account={avatarRow(setupAccountSummary)} fallback={PROFILE_FALLBACK} />
+          <SteamAccountAvatar account={avatarRow(setupAccountSummary)} fallback={PROFILE_FALLBACK} scope="steam-guard" />
         </span>
         <span class="steam-guard__identity-name">
           <span class="steam-guard__identity-display">{setupAccountSummary.username}</span>
@@ -2727,7 +2727,7 @@
     <section class="steam-guard__stack">
       <div class="steam-guard__identity" data-steamguard-focus tabindex="-1">
         <span class="steam-guard__identity-avatar">
-          <SteamAccountAvatar account={avatarRow(loginOnlyAccountSummary)} fallback={PROFILE_FALLBACK} />
+          <SteamAccountAvatar account={avatarRow(loginOnlyAccountSummary)} fallback={PROFILE_FALLBACK} scope="steam-guard" />
         </span>
         <span class="steam-guard__identity-name">
           <span class="steam-guard__identity-display">{loginOnlyAccountSummary.username}</span>
@@ -2817,7 +2817,7 @@
             <li>
               <button type="button" disabled={busy} on:click={() => openAccountScreen(listedAccount)}>
                 <span class="steam-guard__accounts-avatar">
-                  <SteamAccountAvatar account={avatarRow(listedAccount)} fallback={PROFILE_FALLBACK} />
+                  <SteamAccountAvatar account={avatarRow(listedAccount)} fallback={PROFILE_FALLBACK} scope="steam-guard" />
                 </span>
                 <span class="steam-guard__accounts-name">
                   <span
@@ -3299,7 +3299,7 @@
     <section class="steam-guard__stack">
       <div class="steam-guard__identity">
         <span class="steam-guard__identity-avatar">
-          <SteamAccountAvatar account={avatarRow(exportAccountSummary)} fallback={PROFILE_FALLBACK} />
+          <SteamAccountAvatar account={avatarRow(exportAccountSummary)} fallback={PROFILE_FALLBACK} scope="steam-guard" />
         </span>
         <span class="steam-guard__identity-name">
           <span class="steam-guard__identity-display">{exportAccountSummary.username}</span>

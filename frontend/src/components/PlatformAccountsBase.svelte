@@ -47,7 +47,8 @@
   import { offlineMode } from "../stores/offlineMode";
   import { avatarSalt, censoredName, censorName, streamerMode } from "../stores/streamerMode";
   import { accountAvatarSrc } from "../lib/accountAvatarSrc";
-  import { avatarSwapped, heldAvatarSrc } from "../lib/accounts/heldAvatarSrc";
+  import { avatarSwapped, heldAvatarKey, heldAvatarSrc } from "../lib/accounts/heldAvatarSrc";
+  import { currentPlatformAvatarEpochs, setPlatformAvatarEpochs } from "../lib/accounts/avatarEpoch";
   import { formatLastLoginForLocale } from "../lib/formatLastLogin";
   import {
     openTagFilterMenu,
@@ -143,7 +144,7 @@
   let overlayQuery = "";
   let overlayQueryDebounceTimer: ReturnType<typeof setTimeout> | null = null;
   let debouncedOverlayQuery = "";
-  let avatarEpoch: Record<string, number> = {};
+  let avatarEpoch: Record<string, number> = currentPlatformAvatarEpochs(name);
   let rowVersions: Record<string, number> = {};
   let tagDefs: TagDefRow[] = [];
   let tagFilterMode: TagFilterMode = { kind: "all" };
@@ -357,10 +358,21 @@
     );
   }
 
+  /**
+   * The list is not the only view of these accounts - the Steam Guard vault draws
+   * the same faces - and a view left on an older counter asks for an older URL,
+   * so every write goes to the shared store as well as to the local copy. The
+   * local copy stays because callers read it back in the same tick.
+   */
+  function setAvatarEpoch(next: Record<string, number>): void {
+    avatarEpoch = next;
+    setPlatformAvatarEpochs(name, next);
+  }
+
   function bumpAvatarEpoch(id: string): void {
     const uid = id.trim();
     if (!uid) return;
-    avatarEpoch = { ...avatarEpoch, [uid]: (avatarEpoch[uid] ?? 0) + 1 };
+    setAvatarEpoch({ ...avatarEpoch, [uid]: (avatarEpoch[uid] ?? 0) + 1 });
   }
 
   // ---- Context factories for extracted modules ----
@@ -764,7 +776,8 @@
         avatarEpoch, accounts, accountIds, selectedId,
       };
       const listChanged = applyLoadedAccounts(adapter, name, mergedList, prevById, state, touchStatus);
-      ({ avatarEpoch, accounts, accountIds, selectedId } = state);
+      ({ accounts, accountIds, selectedId } = state);
+      setAvatarEpoch(state.avatarEpoch);
       accountsLoading = false;
       if (listChanged || !nonCriticalWorkStarted) deferNonCriticalAccountWork(accountIds);
 
@@ -778,7 +791,8 @@
             avatarEpoch, accounts, accountIds, selectedId,
           };
           const enrichChanged = applyLoadedAccounts(adapter, name, merged, enrichPrev, enrichState, touchStatus);
-          ({ avatarEpoch, accounts, accountIds, selectedId } = enrichState);
+          ({ accounts, accountIds, selectedId } = enrichState);
+          setAvatarEpoch(enrichState.avatarEpoch);
           if (enrichChanged || !nonCriticalWorkStarted) deferNonCriticalAccountWork(accountIds);
           await adapter.onAfterLoad?.(accounts, { hadCachedAccounts, enrichChanged });
         } catch {
@@ -813,7 +827,7 @@
     if (!result.changed) return;
     accounts = result.accounts;
     rowVersions = result.rowVersions;
-    avatarEpoch = result.avatarEpoch;
+    setAvatarEpoch(result.avatarEpoch);
     setPlatformAccountsCache(name, { accounts, accountIds });
     if (targetId === selectedId) touchStatus();
   }
@@ -1224,7 +1238,7 @@
 
                   <slot name="account-avatar" {acc} epoch={avatarEpoch[rid] ?? 0} fallback={adapter.profileFallback}>
                     <img
-                      src={heldAvatarSrc(rid, accountAvatarSrc({
+                      src={heldAvatarSrc(heldAvatarKey("list", rid), accountAvatarSrc({
                         streamer: $streamerMode,
                         salt: $avatarSalt,
                         platformKey: adapter.platformKey,

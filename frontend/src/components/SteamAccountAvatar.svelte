@@ -4,7 +4,8 @@
   import { avatarSalt, streamerMode } from "../stores/streamerMode";
   import { animationsSuspended } from "../stores/screenCovered";
   import { accountAvatarSrc } from "../lib/accountAvatarSrc";
-  import { avatarSwapped, heldAvatarSrc } from "../lib/accounts/heldAvatarSrc";
+  import { avatarEpochOf, avatarEpochs } from "../lib/accounts/avatarEpoch";
+  import { avatarSwapped, heldAvatarKey, heldAvatarSrc } from "../lib/accounts/heldAvatarSrc";
   import { isProfileVideoUrl } from "../lib/profileImageDrop";
   import { miniProfileHover } from "../lib/actions/miniProfileHover";
   import { t } from "../stores/i18n";
@@ -12,9 +13,17 @@
   import type { SteamAccountRow } from "../lib/steam/types";
 
   export let account: SteamAccountRow;
-  export let epoch = 0;
+  /**
+   * Cache-bust counter. Null, not 0: 0 is a real and different URL, and a view
+   * that quietly settled for it drew the avatar from before the last refresh.
+   * Left unset, the account's shared counter is used, which is what every other
+   * view of the same account is drawing.
+   */
+  export let epoch: number | null = null;
   export let fallback = "";
   export let boundary: HTMLElement | null = null;
+  /** Which view this avatar belongs to; see heldAvatarKey. */
+  export let scope = "list";
 
   function steamListAvatarUrl(): string | undefined {
     const acc = account;
@@ -31,6 +40,7 @@
     return primary ?? fb;
   }
 
+  $: avatarEpoch = epoch ?? avatarEpochOf($avatarEpochs, "Steam", account.steamId64 ?? "");
   $: avatarSrc = accountAvatarSrc({
     streamer: $streamerMode,
     salt: $avatarSalt,
@@ -38,13 +48,13 @@
     accountKey: account.accountName || account.steamId64 || "",
     imageUrl: steamListAvatarUrl(),
     pending: account.avatarPending === true,
-    epoch,
+    epoch: avatarEpoch,
     offline: $offlineMode,
     fallback,
   });
   // $avatarSwapped is passed for its dependency rather than its value: the src
   // held for each account lives in a plain map, which Svelte cannot observe.
-  $: displaySrc = heldAvatarSrc(account.steamId64 || "", avatarSrc, $avatarSwapped);
+  $: displaySrc = heldAvatarSrc(heldAvatarKey(scope, account.steamId64 ?? ""), avatarSrc, $avatarSwapped);
   // Computed from what is actually painted, not from what was asked for. While a
   // held image is still on screen the two differ, and reading the wrong one puts
   // an image URL inside a <video>.
