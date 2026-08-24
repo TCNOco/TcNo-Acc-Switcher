@@ -80,6 +80,23 @@ type QRApprovalView struct {
 	HighUsageLogin           bool   `json:"highUsageLogin"`
 	PreviouslyUsedLocation   bool   `json:"previouslyUsedLocation"`
 	RequestorDeviceTrustCode int32  `json:"requestorDeviceTrustCode,omitempty"`
+	// Expired means Steam has no such sign-in waiting. A QR challenge lives about
+	// a minute, so this is the ordinary answer for a code photographed earlier,
+	// or one left on screen while the user found the scan button - not a failure
+	// of the scan, and not a reason to make the user sign in again.
+	Expired bool `json:"expired,omitempty"`
+}
+
+// steamResultFileNotFound is EResult 9. For an auth-session call it means the
+// session named by the challenge is gone: expired, already used, or cancelled.
+const steamResultFileNotFound = 9
+
+func steamDroppedSession(err error) bool {
+	var protocolErr *protocol.Error
+	if !errors.As(err, &protocolErr) {
+		return false
+	}
+	return protocolErr.HasEResult && protocolErr.EResult == steamResultFileNotFound
 }
 
 // qrLogger is the component logger for the QR login flow. It records the failing
@@ -334,6 +351,15 @@ func (s *Service) GetQRApproval(accountID, attempt, token string) (QRApprovalVie
 		return parseErr
 	})
 	if err != nil {
+		if steamDroppedSession(err) {
+			// Reported rather than raised: the scan worked, the code is simply
+			// too old to sign anything in. Raising it put a red "Binding call
+			// failed: Steam result 9" in the log and told the user their session
+			// needed a new login, which was never true.
+			qrLogger().Debug("Steam QR code is no longer live",
+				"step", "approval-info", "steamId64", binding.AccountID)
+			return QRApprovalView{Expired: true}, nil
+		}
 		logQRFailure("approval-info", binding.AccountID, "", err)
 		return QRApprovalView{}, err
 	}

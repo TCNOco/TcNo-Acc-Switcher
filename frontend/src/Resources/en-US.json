@@ -623,6 +623,7 @@
   "SteamGuard_Confirmations_SelectedActions": "Actions for selected confirmations",
   "SteamGuard_QRFailure_SteamNotFound": "Steam could not be found on this computer.",
   "SteamGuard_QRFailure_NoWindow": "No visible Steam login window was found. Open the Steam sign-in QR code and scan again.",
+  "SteamGuard_QRFailure_Expired": "That sign-in code has expired. Show a new one on the Steam sign-in page and scan it within a minute.",
   "SteamGuard_QRFailure_NoCode": "No Steam login QR code was visible. Bring Steam forward or choose a screenshot.",
   "SteamGuard_QRFailure_MultipleCodes": "More than one Steam QR code was found. Crop or recapture a single code.",
   "SteamGuard_QRFailure_InvalidImage": "The image was invalid or was not a supported PNG or JPEG.",

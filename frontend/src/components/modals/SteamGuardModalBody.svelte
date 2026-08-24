@@ -2278,7 +2278,17 @@
 		qrAttempt = result.attempt;
 		qrMessage = $t("SteamGuard_QR_CheckingRequester");
 		try {
-			qrApproval = await controller.getQrApproval(currentAccount.id, qrAttempt, capability);
+			const approval = await controller.getQrApproval(currentAccount.id, qrAttempt, capability);
+			if (approval.expired) {
+				// The scan worked; the code is simply too old to sign anything in.
+				// Not a reason to send the user to the sign-in form - their stored
+				// session is untouched, they just need a code that is still live.
+				qrApproval = null;
+				qrStage = "error";
+				qrMessage = $t("SteamGuard_QRFailure_Expired");
+				return;
+			}
+			qrApproval = approval;
 			qrStage = "approval";
 			qrMessage = "";
 		} catch (error) {

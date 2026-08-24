@@ -99,6 +99,10 @@ export type SteamGuardQRApproval = {
 	highUsageLogin: boolean;
 	previouslyUsedLocation: boolean;
 	requestorDeviceTrustCode?: number;
+	/** Steam has no such sign-in waiting: the code has expired, or has already
+	 *  been used. A challenge lives about a minute, so a photographed code is
+	 *  usually this. Nothing is wrong with the account's own session. */
+	expired?: boolean;
 };
 
 export type SteamAuthPurpose = "login_again" | "add_authenticator" | "login_only";
