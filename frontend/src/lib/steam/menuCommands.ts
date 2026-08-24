@@ -1,4 +1,5 @@
 import { dismissToastById, pushToast } from "../../stores/toast";
+import { copyText } from "../clipboard";
 import { requestPlatformAccountsRefresh } from "../../stores/platformPage";
 import type { SteamAccountRow, SteamGuardMenuRequest } from "./types";
 import type { SteamBrowserSite } from "./steamBrowserSites";
@@ -69,7 +70,7 @@ function mapSteamUserdataI18nError(err: unknown, tr: Translate): string {
 
 async function clipboardWrite(text: string, tr: Translate): Promise<void> {
   try {
-    await navigator.clipboard.writeText(text);
+    await copyText(text);
     pushToast({ type: "success", message: tr("Toast_Copied"), duration: 2500 });
   } catch {
     pushToast({ type: "error", message: tr("Toast_CopyFailed"), duration: 4000 });

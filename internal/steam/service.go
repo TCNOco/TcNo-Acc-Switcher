@@ -23,7 +23,6 @@ import (
 	"TcNo-Acc-Switcher/internal/security"
 	"TcNo-Acc-Switcher/internal/stats"
 	"TcNo-Acc-Switcher/internal/steam/accountstore"
-	"TcNo-Acc-Switcher/internal/winutil"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 	"golang.org/x/sync/semaphore"
@@ -1046,7 +1045,7 @@ func (s *SteamService) LoginAndLaunchGame(steamID64 string, personaState int, ap
 		}
 	}
 	url := "steam://rungameid/" + appID
-	if err := winutil.Start("cmd.exe", []string{"/c", "start", "", url}, winutil.StartOpts{HideWindow: true}); err != nil {
+	if err := platform.OpenSteamURI(url); err != nil {
 		return err
 	}
 	_ = stats.IncrementGamesLaunched(PlatformKey)

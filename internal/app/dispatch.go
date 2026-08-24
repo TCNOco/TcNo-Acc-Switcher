@@ -13,7 +13,6 @@ import (
 	"TcNo-Acc-Switcher/internal/security"
 	"TcNo-Acc-Switcher/internal/shortcuts"
 	"TcNo-Acc-Switcher/internal/steam"
-	"TcNo-Acc-Switcher/internal/winutil"
 )
 
 type Dispatch struct {
@@ -179,7 +178,7 @@ func (d *Dispatch) LaunchAfterSwap(p cli.Parsed) error {
 	}
 	if strings.TrimSpace(p.RunAppID) != "" {
 		url := "steam://rungameid/" + strings.TrimSpace(p.RunAppID)
-		return winutil.Start("cmd.exe", []string{"/c", "start", "", url}, winutil.StartOpts{HideWindow: true})
+		return platform.OpenSteamURI(url)
 	}
 	fn := strings.TrimSpace(p.RunShortcutFile)
 	pk := strings.TrimSpace(p.PlatformKey)

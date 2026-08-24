@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { t } from "../../stores/i18n";
+  import { copyText } from "../../lib/clipboard";
   import { pushToast } from "../../stores/toast";
   import { formatToastWithError, formatUnknownError } from "../../lib/formatWailsError";
   import { passwordPolicyMessage, validateNewPassword } from "../../lib/passwordPolicy";
@@ -165,9 +166,9 @@
   }
 
   async function copyPath(): Promise<void> {
-    if (!path || !navigator.clipboard?.writeText) return;
+    if (!path) return;
     try {
-      await navigator.clipboard.writeText(path);
+      await copyText(path);
       pushToast({ type: "success", message: $t("SteamGuard_Settings_PathCopied"), duration: 3000 });
     } catch (error) {
       actionError(error);
