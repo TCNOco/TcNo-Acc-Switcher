@@ -96,3 +96,37 @@ func TestSignedProviderPassesThroughUpToDate(t *testing.T) {
 		t.Fatalf("Check = %v, %v; want nil, nil for up to date", r, err)
 	}
 }
+
+// A release carries a signature per artifact. Picking by a ".exe.sig" suffix
+// found the Windows one whatever platform asked, so a Linux or macOS client
+// would have verified its download against the wrong file - or, once no .exe
+// ships in a release, refused to update at all.
+func TestSignedProviderPicksTheSignatureForItsOwnArtifact(t *testing.T) {
+	linuxSig := []byte("linux-signature-01234567890123456789012345678901234567890123456789012345678")
+	var srv *httptest.Server
+	srv = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case "/repos/owner/repo/releases/tags/v1.2.3":
+			fmt.Fprintf(w, `{"assets":[
+				{"name":"TcNo-Acc-Switcher.exe.sig","browser_download_url":"%s/windows"},
+				{"name":"TcNo-Acc-Switcher-linux-amd64.tar.gz.sig","browser_download_url":"%s/linux"}
+			]}`, srv.URL, srv.URL)
+		case "/linux":
+			fmt.Fprintln(w, base64.StdEncoding.EncodeToString(linuxSig))
+		default:
+			http.Error(w, "wrong signature fetched", http.StatusNotFound)
+		}
+	}))
+	defer srv.Close()
+
+	release := &updater.Release{Version: "1.2.3"}
+	release.Artifact.Filename = "TcNo-Acc-Switcher-linux-amd64.tar.gz"
+
+	got, err := newTestProvider(release, srv.URL).Check(context.Background(), updater.CheckRequest{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.Verification == nil || string(got.Verification.Signature) != string(linuxSig) {
+		t.Errorf("attached the wrong signature: %q", got.Verification.Signature)
+	}
+}
