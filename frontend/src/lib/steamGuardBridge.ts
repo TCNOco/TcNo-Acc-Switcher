@@ -112,6 +112,8 @@ function credentialResult(result: SteamGuardModels.SteamCredentialResult): Steam
 		capabilityRefreshRequired: result.capabilityRefreshRequired,
 		registryUpdated: result.registryUpdated,
 		steamId64: result.steamId64 || undefined,
+		challengeUrl: result.challengeUrl || undefined,
+		qrImage: result.qrImage || undefined,
 	};
 }
 
@@ -1247,6 +1249,14 @@ const controller: SteamGuardModalController = {
 			.then(credentialResult).then(refreshAccountsIfRegistryUpdated),
 	cancelCredentialLogin: (accountId, capability, handle) =>
 		SteamGuardService.CancelCredentialLogin(accountId, capability, handle),
+	beginQRLogin: (accountId, capability, purpose) =>
+		SteamGuardService.BeginQRLogin(accountId, capability, authPurpose(purpose))
+			.then(credentialResult).then(refreshAccountsIfRegistryUpdated),
+	pollQRLogin: (accountId, capability, handle) =>
+		SteamGuardService.PollQRLogin(accountId, capability, handle)
+			.then(credentialResult).then(refreshAccountsIfRegistryUpdated),
+	cancelQRLogin: (accountId, capability, handle) =>
+		SteamGuardService.CancelQRLogin(accountId, capability, handle),
 	newAddAccountAttempt: () => SteamGuardService.NewAddAccountAttempt(),
 	requestAddAccountView: (pendingId, requestId) =>
 		SteamGuardService.RequestAddAccountView(pendingId, requestId),

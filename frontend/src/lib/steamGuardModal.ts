@@ -204,6 +204,11 @@ export type SteamCredentialResult = {
 	 *  to learn its SteamID64, and any enrollment that follows is keyed on the
 	 *  real id, never the pending one it logged in under. */
 	steamId64?: string;
+	/** Set only by the QR sign-in: the URL its code stands for, and that code
+	 *  drawn as a data URI. Steam replaces the code while it waits to be
+	 *  scanned, so both change from one poll to the next. */
+	challengeUrl?: string;
+	qrImage?: string;
 };
 
 export type SteamRevocationView = {
@@ -401,6 +406,23 @@ export type SteamGuardModalController = {
 		handle: string,
 	  ) => Promise<SteamCredentialResult>;
 	  cancelCredentialLogin?: (accountId: string, capability: string, handle: string) => Promise<void>;
+	  /**
+	   * Signing in by scanning, offered beside the password form rather than
+	   * instead of it, so both are live and whichever the user finishes wins.
+	   * The session belongs to this account: a scan by any other one is refused
+	   * rather than signed in under the wrong name.
+	   */
+	  beginQRLogin?: (
+		accountId: string,
+		capability: string,
+		purpose: SteamAuthPurpose,
+	  ) => Promise<SteamCredentialResult>;
+	  pollQRLogin?: (
+		accountId: string,
+		capability: string,
+		handle: string,
+	  ) => Promise<SteamCredentialResult>;
+	  cancelQRLogin?: (accountId: string, capability: string, handle: string) => Promise<void>;
 	  /**
 	   * Adding an account nobody has named yet. Steam does not say which account
 	   * the credentials belong to until it authorises them, so these run under a

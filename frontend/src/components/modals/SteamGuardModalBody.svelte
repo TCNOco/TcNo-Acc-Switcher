@@ -119,6 +119,18 @@
 	let qrApproval: SteamGuardQRApproval | null = null;
 	let qrRegionSelecting = false;
 	let qrNeedsLogin = false;
+	/**
+	 * The scan-to-sign-in code shown beside the password form. Its own state,
+	 * because it is its own sign-in: the two are live at the same time and either
+	 * can finish first, so sharing authStage/authHandle would have one wipe the
+	 * other's session out from under it.
+	 */
+	let qrLoginStage: "idle" | "starting" | "waiting" | "unavailable" = "idle";
+	let qrLoginHandle = "";
+	let qrLoginImage = "";
+	let qrLoginPollTimer: ReturnType<typeof setTimeout> | undefined;
+	let qrLoginStartedFor = "";
+	let qrLoginAccount: SteamGuardAccountRef | null = null;
 	let authPurpose: SteamAuthPurpose = "login_again";
 	let authStage: "idle" | "refreshing" | "credentials" | "challenge" | "polling" | "success" | "error" = "idle";
 	let authAccountName = account.username;
@@ -452,6 +464,20 @@
 	$: if (state.screen === "locked" && !unlockStatusChecked) {
 		unlockStatusChecked = true;
 		void loadVaultStatusForUnlock();
+	}
+
+	// Signing in by scanning is offered on the login-only form only. That screen
+	// exists to store a session, which is exactly what a scan produces; the
+	// enrollment form beside it needs the password itself, to add an
+	// authenticator. Started once per account, because re-running it would throw
+	// away a code the user may already have their phone pointed at.
+	$: if (state.screen === "login-only-setup" && authStage === "credentials" && state.account) {
+		if (qrLoginStartedFor !== state.account.id) {
+			qrLoginStartedFor = state.account.id;
+			void startQRLogin(state.account, "login_only");
+		}
+	} else if (qrLoginStartedFor) {
+		void stopQRLogin(qrLoginAccount ?? account);
 	}
 
 	// Opening straight onto the add screen - from the account list's background
@@ -1182,6 +1208,11 @@
 		if (required) await contentProtection.acquire(currentAccount.id);
 	}
 
+	function clearQRLoginTimer(): void {
+		if (qrLoginPollTimer) clearTimeout(qrLoginPollTimer);
+		qrLoginPollTimer = undefined;
+	}
+
 	function clearAuthTimer(): void {
 		if (authPollTimer) clearTimeout(authPollTimer);
 		authPollTimer = undefined;
@@ -1855,6 +1886,98 @@
 		authMessage = $t("SteamGuard_Challenge_PreparingNextStep");
 	}
 
+	/**
+	 * Opens the scan-to-sign-in code for the account whose form is on screen.
+	 *
+	 * Failure is deliberately quiet. This is the second of two ways to sign in on
+	 * the same screen, so a Steam that will not open a QR session, or a build
+	 * whose backend has no such call, should leave the user with the password
+	 * form rather than an error over the top of it.
+	 */
+	async function startQRLogin(currentAccount: SteamGuardAccountRef, purpose: SteamAuthPurpose): Promise<void> {
+		const begin = controller.beginQRLogin;
+		if (!begin || !currentAccount.id) {
+			qrLoginStage = "unavailable";
+			return;
+		}
+		clearQRLoginTimer();
+		qrLoginAccount = currentAccount;
+		qrLoginStage = "starting";
+		qrLoginImage = "";
+		qrLoginHandle = "";
+		try {
+			const result = await begin(currentAccount.id, await ensureCapability(currentAccount), purpose);
+			handleQRResult(currentAccount, result);
+		} catch (error) {
+			console.warn("Steam Guard: the sign-in QR code could not be opened", error);
+			qrLoginStage = "unavailable";
+		}
+	}
+
+	function handleQRResult(currentAccount: SteamGuardAccountRef, result: SteamCredentialResult): void {
+		qrLoginHandle = result.handle || qrLoginHandle;
+		// Steam replaces the code while it waits, so every poll can bring a new
+		// one. Only overwrite when there is a replacement: a poll that carries no
+		// image must not blank the one on screen.
+		if (result.qrImage) qrLoginImage = result.qrImage;
+		const step = steamCredentialStep(result);
+		if (step === "complete") {
+			clearQRLoginTimer();
+			qrLoginStage = "idle";
+			qrLoginHandle = "";
+			qrLoginImage = "";
+			void handleCredentialResult(currentAccount, result);
+			return;
+		}
+		if (step === "failed" || (!result.canPoll && !result.qrImage && !qrLoginImage)) {
+			clearQRLoginTimer();
+			qrLoginStage = "unavailable";
+			qrLoginHandle = "";
+			return;
+		}
+		qrLoginStage = "waiting";
+		const delay = Math.max(750, Math.min(result.pollAfterMillis || 2_000, 10_000));
+		qrLoginPollTimer = setTimeout(() => void pollQRLogin(currentAccount), delay);
+	}
+
+	async function pollQRLogin(currentAccount: SteamGuardAccountRef): Promise<void> {
+		const poll = controller.pollQRLogin;
+		if (!poll || !qrLoginHandle) return;
+		const handle = qrLoginHandle;
+		try {
+			const result = await poll(currentAccount.id, await ensureCapability(currentAccount), handle);
+			// The screen moved on while this was in flight - the password form
+			// finished, or the user left - so this answer is about a session that
+			// no longer matters.
+			if (qrLoginHandle !== handle) return;
+			handleQRResult(currentAccount, result);
+		} catch (error) {
+			console.warn("Steam Guard: the sign-in QR code could not be checked", error);
+			if (qrLoginHandle !== handle) return;
+			clearQRLoginTimer();
+			qrLoginStage = "unavailable";
+			qrLoginHandle = "";
+		}
+	}
+
+	/** Ends the scan session, so a code nobody used does not outlive its screen. */
+	async function stopQRLogin(currentAccount: SteamGuardAccountRef): Promise<void> {
+		clearQRLoginTimer();
+		const handle = qrLoginHandle;
+		qrLoginHandle = "";
+		qrLoginImage = "";
+		qrLoginStage = "idle";
+		qrLoginStartedFor = "";
+		qrLoginAccount = null;
+		const cancel = controller.cancelQRLogin;
+		if (!handle || !cancel) return;
+		const capability = capabilityFor(currentAccount);
+		if (!capability) return;
+		await cancel(currentAccount.id, capability, handle).catch((error: unknown) => {
+			console.warn("Steam Guard: the sign-in QR code could not be closed", error);
+		});
+	}
+
 	async function submitCredentialCode(): Promise<void> {
 		if (busy || !authHandle || !authChallenge || !authCode) return;
 		const currentAccount = steamGuardAccountForState(state) ?? account;
@@ -1915,6 +2038,7 @@
 	async function cancelCredentialLogin(): Promise<void> {
 		clearAuthTimer();
 		const currentAccount = steamGuardAccountForState(state) ?? account;
+		await stopQRLogin(qrLoginAccount ?? currentAccount);
 		const handle = authHandle;
 		authHandle = "";
 		clearAuthSecrets();
@@ -2434,6 +2558,7 @@
     setSteamGuardDropTarget("none");
     if (clockTimer) clearInterval(clockTimer);
     if (statusTimer) clearTimeout(statusTimer);
+    clearQRLoginTimer();
 	    password = "";
 			clearAuthSecrets();
 			authHandle = "";
@@ -3050,6 +3175,28 @@
 				     sign-in progress text, which would replace this the moment the
 				     form is submitted. -->
 				<p>{credentialsHint || $t("SteamGuard_Enrollment_CredentialsBody")}</p>
+				{#if state.screen === "login-only-setup" && qrLoginStage !== "unavailable"}
+					<!-- Steam's own login page puts the code beside the password box, and
+					     it is the quicker way in for anyone whose phone is already signed
+					     in. Hidden entirely when it is not on offer, rather than left as
+					     an empty frame the user waits on. -->
+					<div class="steam-guard__qr-login">
+						<p class="steam-guard__hint">{$t("SteamGuard_QRLogin_Body")}</p>
+						<div class="steam-guard__qr-login-code" aria-busy={qrLoginStage === "starting"}>
+							{#if qrLoginImage}
+								<img src={qrLoginImage} alt={$t("SteamGuard_QRLogin_CodeAlt")} draggable="false" />
+							{:else}
+								<span class="steam-guard__spinner" aria-hidden="true"></span>
+							{/if}
+						</div>
+						<p class="sr-only" role="status">
+							{qrLoginStage === "waiting" ? $t("SteamGuard_QRLogin_Waiting") : $t("SteamGuard_QRLogin_Preparing")}
+						</p>
+					</div>
+					<div class="steam-guard__or" role="separator">
+						<span>{$t("SteamGuard_SignIn_Or")}</span>
+					</div>
+				{/if}
 				<label class="steam-guard__field" for="steam-enrollment-account">
 					<span>{$t("SteamGuard_Field_SteamAccountName")}</span>
 					<input id="steam-enrollment-account" class="modal-input" bind:value={authAccountName} autocomplete="username" disabled={busy} on:keydown={(event) => runOnEnter(event, beginCredentialLogin)} />
@@ -3984,6 +4131,61 @@
 	   steps derive a key and the Steam steps wait on the network, both long
 	   enough that a button which only greys out reads as a click that did
 	   nothing. currentColor keeps it legible on any button in any theme. */
+	/*
+	 * The scan-to-sign-in code. Its SVG leaves the light modules transparent, so the
+	 * plate behind it is drawn here: a scanner needs a light quiet zone around the
+	 * code, and the modal around it is dark.
+	 */
+	.steam-guard__qr-login {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: $sg-1;
+	}
+
+	.steam-guard__qr-login-code {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 11rem;
+		height: 11rem;
+		padding: $sg-half;
+		border-radius: $sg-half;
+		background: #fff;
+	}
+
+	.steam-guard__qr-login-code img {
+		width: 100%;
+		height: 100%;
+		/* A QR code is a grid of hard squares, and smoothing it on the way to the
+		   panel's pixel grid is what makes a camera hunt for focus. */
+		image-rendering: pixelated;
+	}
+
+	/*
+	 * "OR" between the two ways to sign in. Half width and centred, so it reads as a
+	 * break between them rather than as a heading over the fields below.
+	 */
+	.steam-guard__or {
+		display: flex;
+		align-items: center;
+		gap: $sg-1;
+		width: 50%;
+		margin: $sg-half auto;
+		color: var(--white, #fff);
+		opacity: 0.65;
+		font-size: 0.85em;
+		letter-spacing: 0.08em;
+	}
+
+	.steam-guard__or::before,
+	.steam-guard__or::after {
+		content: "";
+		flex: 1 1 auto;
+		height: 1px;
+		background: currentColor;
+	}
+
 	.steam-guard__spinner {
 		display: inline-block;
 		width: 0.9em;
